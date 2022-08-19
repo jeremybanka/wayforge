@@ -1,0 +1,3 @@
+[submodule "wayfarer"]
+	path = wayfarer
+	url = https://github.com/jeremybanka/wayfarer
