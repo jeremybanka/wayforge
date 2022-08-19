@@ -1,0 +1,42 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/wayforge-client",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "nx-plugin-vite:serve",
+      "options": {
+        "configFile": "apps/wayforge-client/vite.config.ts",
+        "port": 3000,
+        "host": false,
+        "https": false
+      }
+    },
+    "preview": {
+      "executor": "nx-plugin-vite:preview",
+      "options": {
+        "configFile": "apps/wayforge-client/vite.config.ts"
+      }
+    },
+    "build": {
+      "executor": "nx-plugin-vite:build",
+      "options": {
+        "outDir": "dist",
+        "configFile": "apps/wayforge-client/vite.config.ts",
+        "watch": false,
+        "write": true,
+        "emitAtRootLevel": false,
+        "manifest": true
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/react-sample-app-name"],
+      "options": {
+        "jestConfig": "apps/wayforge-client/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

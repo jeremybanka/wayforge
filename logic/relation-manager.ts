@@ -7,7 +7,7 @@ const mob = <K extends keyof any, I, O>(
   obj: Record<K, I>,
   fn: (val: I, key: K) => O
 ): Record<K, O> => {
-  const newObj = {} as { [Key in K]: O }
+  const newObj = {} as Record<K, O>
   const entries = Object.entries(obj) as [K, I][]
   entries.forEach(([key, val]) => {
     newObj[key] = fn(val, key)
@@ -93,7 +93,9 @@ export const recordToHamt = <T>(json: Record<string, T>): Hamt<T> => {
 }
 
 export class RelationManager<
-  RoleKeys extends string,
+  Black extends string,
+  Red extends string,
+  RoleKeys extends Black | Red,
   TypeKeys extends string,
   RelationProperties,
   RelationContribution,

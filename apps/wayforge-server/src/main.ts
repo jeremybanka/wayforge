@@ -21,7 +21,7 @@ export const server = new HttpServer(app)
 
 export const io = new WebSocketServer(3333, {
   cors: {
-    origin: `http://localhost:5173`,
+    origin: `http://localhost:4200`,
     methods: [`GET`, `POST`],
   },
 })
