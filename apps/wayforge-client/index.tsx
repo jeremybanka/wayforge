@@ -14,6 +14,5 @@ root.render(
     <SocketContext.Provider value={socket}>
       <App />
     </SocketContext.Provider>
-    {` `}
   </StrictMode>
 )

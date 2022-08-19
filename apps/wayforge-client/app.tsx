@@ -3,9 +3,22 @@ import { useEffect, useState } from "react"
 
 import { css } from "@emotion/react"
 
-import reactLogo from "./assets/react.svg"
+// import reactLogo from "./assets/react.svg"
+import { ErrorBoundary } from "./ErrorBoundary"
 import { socket } from "./services/socket"
 import "./App.css"
+
+console.log(process.env)
+
+export const WillThrow: FC = () => {
+  const foo = undefined
+  foo.bar()
+  return (
+    <div>
+      <button>Throw</button>
+    </div>
+  )
+}
 
 export const App: FC = () => {
   const [count, setCount] = useState(0)
@@ -53,6 +66,9 @@ export const App: FC = () => {
       >
         w
       </i>
+      <ErrorBoundary>
+        <WillThrow />
+      </ErrorBoundary>
       {/* <div>
         <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
           <img src="/vite.svg" className="logo" alt="Vite logo" />

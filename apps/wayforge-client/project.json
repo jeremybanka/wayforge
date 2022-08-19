@@ -1,34 +1,83 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/wayforge-client",
   "projectType": "application",
-  "sourceRoot": "apps/wayforge-client/src",
-  "tags": [],
   "targets": {
-    "serve": {
-      "executor": "nx-plugin-vite:serve",
-      "options": {
-        "configFile": "apps/wayforge-client/vite.config.ts",
-        "port": 3000,
-        "host": false,
-        "https": false
-      }
-    },
-    "preview": {
-      "executor": "nx-plugin-vite:preview",
-      "options": {
-        "configFile": "apps/wayforge-client/vite.config.ts"
-      }
-    },
     "build": {
-      "executor": "nx-plugin-vite:build",
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
-        "outDir": "dist",
-        "configFile": "apps/wayforge-client/vite.config.ts",
-        "watch": false,
-        "write": true,
-        "emitAtRootLevel": false,
-        "manifest": true
+        "compiler": "babel",
+        "outputPath": "dist/apps/wayforge-client",
+        "index": "apps/wayforge-client/index.html",
+        "baseHref": "/",
+        "main": "apps/wayforge-client/index.tsx",
+        "polyfills": "apps/wayforge-client/polyfills.ts",
+        "tsConfig": "apps/wayforge-client/tsconfig.app.json",
+        "assets": [
+          "apps/wayforge-client/public/favicon.ico",
+          "apps/wayforge-client/assets"
+        ],
+        "styles": [],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/wayforge-client/environments/environment.ts",
+              "with": "apps/wayforge-client/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "wayforge-client:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "wayforge-client:build:development"
+        },
+        "production": {
+          "buildTarget": "wayforge-client:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/wayforge-client/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/wayforge-client"],
+      "options": {
+        "jestConfig": "apps/wayforge-client/jest.config.ts",
+        "passWithNoTests": true
       }
     }
-  }
+  },
+  "tags": []
 }
