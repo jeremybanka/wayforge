@@ -1,0 +1,19 @@
+@font-face {
+  font-family: name;
+  src: url(assets/love_yanone.ttf);
+}
+
+@font-face {
+  font-family: "|_'_|";
+  src: url(assets/DelveSystem-Regular.otf);
+}
+
+body {
+  font-family: name;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+
+i {
+  font-family: "|_'_|";
+}
