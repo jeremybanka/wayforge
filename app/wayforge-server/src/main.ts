@@ -1,14 +1,9 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Server as HttpServer } from "http"
 
-import * as compression from "compression"
-import * as cors from "cors"
-import * as express from "express"
-import * as morgan from "morgan"
+import compression from "compression"
+import cors from "cors"
+import express from "express"
+import morgan from "morgan"
 import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 
@@ -25,6 +20,8 @@ export const io = new WebSocketServer(3333, {
     methods: [`GET`, `POST`],
   },
 })
+
+console.log(`Listening on port 3333`)
 
 io.on(`connection`, (socket: Socket) => {
   console.log(socket.id, `connected`)

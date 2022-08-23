@@ -6,9 +6,18 @@ export type FallbackProps = {
   errorInfo?: ErrorInfo
 }
 
+const NOT_A_FUNCTION = true
+
+const throwTypeError = () => (NOT_A_FUNCTION as unknown as VoidFunction)()
+
+export const OOPS: FC = () => {
+  throwTypeError()
+  return null
+}
+
 export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => (
   <div style={{ flex: `1` }}>
-    <img src="./assets/kablooey.gif" alt="error" />
+    <img src="./src/assets/kablooey.gif" alt="error" />
     <div
       style={{
         margin: `50px`,
@@ -17,12 +26,7 @@ export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => (
         border: `1px solid dashed`,
       }}
     >
-      <h2>😱 Uh Oh.</h2>
-      <br />
-      {error?.toString()}
-      <details style={{ whiteSpace: `pre-wrap` }}>
-        {errorInfo?.componentStack}
-      </details>
+      <h2>⚠️ Error</h2>
     </div>
   </div>
 )

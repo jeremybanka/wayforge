@@ -1,0 +1,19 @@
+{
+  "name": "wayforge-server",
+  "packageManager": "yarn@3.2.2",
+  "scripts": {
+    "serve": "nodemon ./dist/server.js --watch",
+    "build": "webpack build --watch",
+    "dev-webpack": "concurrently \"npm:build\" \"npm:serve\"",
+    "dev": "tsx watch src/main.ts"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "concurrently": "^7.3.0",
+    "dotenv-webpack": "^8.0.1",
+    "path-browserify": "^1.0.1",
+    "tsx": "^3.8.2",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
