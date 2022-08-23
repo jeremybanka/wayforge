@@ -85,7 +85,7 @@ export const hamtToRecord = <T>(hamt: Hamt<T>): Record<string, T> => {
 }
 
 export const recordToHamt = <T>(json: Record<string, T>): Hamt<T> => {
-  let hamt = inventory.empty<T>()
+  let hamt = inventory.make<T>()
   for (const [key, value] of Object.entries(json)) {
     hamt = hamt.set(key, value)
   }
