@@ -1,7 +1,7 @@
 import inventory from "hamt_plus"
 import type { Hamt } from "hamt_plus"
 
-import type { JsonObj } from "../types/json"
+import type { JsonObj } from "./json"
 
 const mob = <K extends keyof any, I, O>(
   obj: Record<K, I>,

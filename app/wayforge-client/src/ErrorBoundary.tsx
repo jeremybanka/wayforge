@@ -1,4 +1,4 @@
-import type { ErrorInfo, ReactNode, FC } from "react"
+import type { ErrorInfo, ReactNode, FC, FunctionComponent } from "react"
 import React, { Component } from "react"
 
 export type FallbackProps = {
@@ -7,13 +7,10 @@ export type FallbackProps = {
 }
 
 const NOT_A_FUNCTION = true
+// @ts-expect-error CALL IT TO THROW A TYPE ERROR
+const throwTypeError = (): never => NOT_A_FUNCTION()
 
-const throwTypeError = () => (NOT_A_FUNCTION as unknown as VoidFunction)()
-
-export const OOPS: FC = () => {
-  throwTypeError()
-  return null
-}
+export const OOPS: FunctionComponent = () => throwTypeError()
 
 export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => (
   <div style={{ flex: `1` }}>
