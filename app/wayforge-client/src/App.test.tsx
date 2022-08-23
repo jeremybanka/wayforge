@@ -1,9 +1,40 @@
+import { createServer } from "http"
+
 import { fireEvent, render, screen } from "@testing-library/react"
+import type { Server } from "socket.io"
+import type { Socket } from "socket.io-client"
+import { io as Client } from "socket.io-client"
+import type { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { describe, expect, test } from "vitest"
 
 import { App } from "./App"
 
 describe(`counter tests`, () => {
+  let io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  let serverSocket: any
+  let clientSocket: Socket
+
+  // before((done) => {
+  //   const httpServer = createServer()
+  //   const yho = new Server(httpServer)
+  //   httpServer.listen(() => {
+  //     const address = httpServer.address()
+  //     if (address !== null && typeof address === `object`) {
+  //       const { port } = address
+  //       clientSocket = Client(`http://localhost:${port}`)
+  //       io.on(`connection`, (socket) => {
+  //         serverSocket = socket
+  //       })
+  //       clientSocket.on(`connect`, done)
+  //     }
+  //   })
+  // })
+
+  // after(() => {
+  //   io.close()
+  //   clientSocket.close()
+  // })
+
   test(`Counter should be 0 at the start`, () => {
     render(<App />)
     expect(screen.getByText(`count is 0`)).toBeDefined()

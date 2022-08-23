@@ -6,3 +6,5 @@ package-lock.json
 src/lab
 .env
 .yarn
+*.js
+*.js.map

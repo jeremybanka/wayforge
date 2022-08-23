@@ -1,6 +1,7 @@
 import { StrictMode } from "react"
 
 import { createRoot } from "react-dom/client"
+import { RecoilRoot } from "recoil"
 
 import { App } from "./App"
 import "./index.css"
@@ -11,8 +12,10 @@ const container = document.getElementById(`root`)
 const root = createRoot(container as Element)
 root.render(
   <StrictMode>
-    <SocketContext.Provider value={socket}>
-      <App />
-    </SocketContext.Provider>
+    <RecoilRoot>
+      <SocketContext.Provider value={socket}>
+        <App />
+      </SocketContext.Provider>
+    </RecoilRoot>
   </StrictMode>
 )

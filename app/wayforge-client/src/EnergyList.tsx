@@ -73,9 +73,10 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
 
 export const EnergyList: FC = () => {
   const [ids, setIds] = useRecoilState(energyIndex)
+  console.log(ids)
   const unlink = (id: string) => setIds((ids) => ids.filter((i) => i !== id))
   return (
-    <li>
+    <ul>
       {ids.map((id) => (
         <EnergyListItem
           key={id}
@@ -84,6 +85,6 @@ export const EnergyList: FC = () => {
           unlink={() => unlink(id)}
         />
       ))}
-    </li>
+    </ul>
   )
 }
