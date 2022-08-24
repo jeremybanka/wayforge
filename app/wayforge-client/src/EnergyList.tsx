@@ -4,12 +4,17 @@ import { css as style } from "@emotion/react"
 import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
-import { findEnergyState, energyIndex } from "./services/energy"
+import {
+  findEnergyState,
+  energyIndex,
+  useAddEnergy,
+  useRemoveEnergy,
+} from "./services/energy"
 import type { Energy } from "./services/energy"
 
 export type RecoilIndexProps<T> = {
-  id: string
-  findState: (key: string) => RecoilState<T>
+  id: number
+  findState: (key: number) => RecoilState<T>
   unlink: () => void
 }
 
@@ -55,14 +60,14 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   const energyState = findState(id)
   const [energy, setEnergy] = useRecoilState(energyState)
   const set = {
-    id: (value: string) => setEnergy((e) => ({ ...e, id: value })),
-    name: (value: string) => setEnergy((e) => ({ ...e, name: value })),
+    id: (id: number) => setEnergy((e) => ({ ...e, id })),
+    name: (name: string) => setEnergy((e) => ({ ...e, name })),
   }
   return (
     <li>
       <TextInput
-        value={energy.id}
-        set={set.id}
+        value={energy.name}
+        set={set.name}
         label="Name"
         placeholder="Name"
       />
@@ -74,17 +79,22 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
 export const EnergyList: FC = () => {
   const [ids, setIds] = useRecoilState(energyIndex)
   console.log(ids)
-  const unlink = (id: string) => setIds((ids) => ids.filter((i) => i !== id))
+  const addEnergy = useAddEnergy()
+  const removeEnergy = useRemoveEnergy()
+
   return (
-    <ul>
-      {ids.map((id) => (
-        <EnergyListItem
-          key={id}
-          id={id}
-          findState={findEnergyState}
-          unlink={() => unlink(id)}
-        />
-      ))}
-    </ul>
+    <>
+      <ul>
+        {[...ids].map((id) => (
+          <EnergyListItem
+            key={id}
+            id={id}
+            findState={findEnergyState}
+            unlink={() => removeEnergy(id)}
+          />
+        ))}
+      </ul>
+      <button onClick={addEnergy}>Add</button>
+    </>
   )
 }
