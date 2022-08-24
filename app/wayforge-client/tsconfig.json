@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -15,8 +16,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react"
+    "jsxImportSource": "@emotion/react",
+    "baseUrl": "../..",
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src", "../../lib"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

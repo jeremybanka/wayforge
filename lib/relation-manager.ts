@@ -22,29 +22,38 @@ export type RelationMember<Contribution> = {
 export type RelationBase<
   RoleKeys extends string,
   RelationProperties,
-  RelationContribution
+  MemberContribution
 > = {
-  members: Record<RoleKeys, RelationMember<RelationContribution>[]>
+  members: Record<RoleKeys, RelationMember<MemberContribution>[]>
   data: RelationProperties
 }
 
 export type RoleConfigJson<
   RoleKeys extends string,
-  EntityKeys extends string
-> = JsonObj<RoleKeys, EntityKeys>
+  TypeKeys extends string
+> = JsonObj<RoleKeys, TypeKeys>
 
-const indexRoles = <RoleKeys extends string, EntityKeys extends string>(
-  config: RoleConfigJson<RoleKeys, EntityKeys>
-): Record<EntityKeys, Set<RoleKeys>> => {
-  const roles = {} as Record<EntityKeys, Set<RoleKeys>>
-  for (const [roleKey, entityKey] of Object.entries(config) as [
+export type RelationManagerConfigJson<
+  RoleKeys extends string,
+  TypeKeys extends string,
+  RelationProperties,
+  MemberContribution
+> = {
+  roles: RoleConfigJson<RoleKeys, TypeKeys>
+}
+
+const indexRoles = <RoleKeys extends string, TypeKeys extends string>(
+  config: RoleConfigJson<RoleKeys, TypeKeys>
+): Record<TypeKeys, Set<RoleKeys>> => {
+  const roles = {} as Record<TypeKeys, Set<RoleKeys>>
+  for (const [roleKey, typeKey] of Object.entries(config) as [
     role: RoleKeys,
-    entity: EntityKeys
+    entity: TypeKeys
   ][]) {
-    if (!roles[entityKey]) {
-      roles[entityKey] = new Set()
+    if (!roles[typeKey]) {
+      roles[typeKey] = new Set()
     }
-    roles[entityKey].add(roleKey)
+    roles[typeKey].add(roleKey)
   }
   return roles
 }
@@ -58,19 +67,15 @@ export class RoleConfig<RoleKeys extends string, TypeKeys extends string> {
     this.rolesByType = indexRoles(json)
   }
 
-  public toJson = (): RoleConfigJson<RoleKeys, TypeKeys> => this.typesByRole
+  public toJSON = (): RoleConfigJson<RoleKeys, TypeKeys> => this.typesByRole
 }
 
 export type RelationManagerJson<
   TypeKeys extends string,
   RoleKeys extends string,
   RelationProperties,
-  RelationContribution,
-  Relation extends RelationBase<
-    RoleKeys,
-    RelationProperties,
-    RelationContribution
-  >
+  MemberContribution,
+  Relation extends RelationBase<RoleKeys, RelationProperties, MemberContribution>
 > = {
   config: RoleConfigJson<RoleKeys, TypeKeys>
   relations: Record<string, Relation>
@@ -93,9 +98,7 @@ export const recordToHamt = <T>(json: Record<string, T>): Hamt<T> => {
 }
 
 export class RelationManager<
-  Black extends string,
-  Red extends string,
-  RoleKeys extends Black | Red,
+  RoleKeys extends string,
   TypeKeys extends string,
   RelationProperties,
   RelationContribution,
@@ -122,6 +125,7 @@ export class RelationManager<
     this.config = new RoleConfig(config)
     this.relations = recordToHamt(relations)
   }
+
   // CharacterRelations.where(`kid`).named(`finger`).plays[`capableGuy`]
   public where(type: TypeKeys): {
     named: (id: string) => { plays: Record<RoleKeys, Relation[]> }
@@ -150,4 +154,15 @@ export class RelationManager<
 
     return { named: methodToRetrieveByName }
   }
+
+  public toJSON = (): RelationManagerJson<
+    TypeKeys,
+    RoleKeys,
+    RelationProperties,
+    RelationContribution,
+    Relation
+  > => ({
+    config: this.config.toJSON(),
+    relations: hamtToRecord(this.relations),
+  })
 }
