@@ -8,6 +8,11 @@
   src: url(assets/DelveSystem-Regular.otf);
 }
 
+@font-face {
+  font-family: sudo;
+  src: url(assets/Sudo-Code.otf);
+}
+
 body {
   font-family: name;
   font-size: 1.2em;
@@ -16,4 +21,8 @@ body {
 
 i {
   font-family: "|_'_|";
+}
+
+code {
+  font-family: sudo;
 }

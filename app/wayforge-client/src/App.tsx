@@ -6,7 +6,6 @@ import { css } from "@emotion/react"
 import { EnergyList } from "./EnergyList"
 import { OOPS, ErrorBoundary } from "./ErrorBoundary"
 import { socket } from "./services/socket"
-import "./App.css"
 
 export const App: FC = () => {
   const [count, setCount] = useState(0)

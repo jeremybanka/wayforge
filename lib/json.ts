@@ -1,6 +1,14 @@
 /* eslint-disable quotes */
 /* eslint-enable quotes */
 
+import { pipe } from "fp-ts/lib/function"
+
+export const serializeSet = <T>(set: Set<T>): string =>
+  pipe(set, Array.from, JSON.stringify)
+
+export const deserializeSet = <T>(str: string): Set<T> =>
+  pipe(str, JSON.parse, Array.from, (a) => new Set(a as T[]))
+
 export type Primitive = boolean | number | string | null
 
 export type Serializable =

@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react"
+import { sassPlugin } from "esbuild-sass-plugin"
 import { defineConfig } from "vite"
 import svgrPlugin from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
@@ -13,6 +14,7 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
+    sassPlugin(),
     svgrPlugin({
       svgrOptions: {
         icon: true,

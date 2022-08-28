@@ -1,3 +1,6 @@
 [submodule "wayfarer"]
 	path = wayfarer
 	url = https://github.com/jeremybanka/wayfarer
+[submodule "luum"]
+	path = luum
+	url = https://github.com/jeremybanka/luum
