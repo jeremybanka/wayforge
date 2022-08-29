@@ -10,6 +10,7 @@ import type z from "zod"
 import type energySchema from "~/gen/energy.schema"
 import { now } from "~/lib/id/now"
 import { deserializeSet, serializeSet } from "~/lib/json"
+import type { LuumSpec } from "~/lib/Luum/src"
 import {
   localStorageSerializationEffect,
   localStorageEffect,
@@ -20,7 +21,6 @@ import {
 } from "~/lib/recoil-tools/recoil-set"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 import { RelationManager } from "~/lib/relation-manager"
-import type { LuumSpec } from "~/luum/src"
 
 export type Energy = z.infer<typeof energySchema>
 

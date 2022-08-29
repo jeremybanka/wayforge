@@ -3,8 +3,9 @@ import { useEffect, useState } from "react"
 
 import { css } from "@emotion/react"
 
-import { EnergyList } from "./EnergyList"
-import { OOPS, ErrorBoundary } from "./ErrorBoundary"
+import { ErrorBoundary } from "~/lib/gui/error-boundary"
+
+import { EnergyList } from "./components/energy/EnergyList"
 import { socket } from "./services/socket"
 
 export const App: FC = () => {
@@ -26,7 +27,6 @@ export const App: FC = () => {
     })
     socket.on(`unauthorized`, (reason) => {
       console.log(`Unauthorized:`, reason)
-
       socket.disconnect()
     })
     socket.on(`message`, (data) => {
