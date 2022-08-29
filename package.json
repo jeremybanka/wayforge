@@ -21,10 +21,7 @@
     "@banka/eslint-config-react": "^1.0.0",
     "@emotion/styled": "^11.10.0",
     "@testing-library/react": "^13.3.0",
-    "@types/compression": "^1.7.2",
-    "@types/express": "4.17.13",
     "@types/jest": "^28.0.0",
-    "@types/morgan": "^1.9.3",
     "@types/node": "16.11.7",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
@@ -43,7 +40,6 @@
     "eslint-plugin-react": "^7.22.0",
     "framer-motion": "^7.2.1",
     "fs-extra": "^10.0.0",
-    "jest": "^28.0.0",
     "jest-environment-jsdom": "^28.1.3",
     "json-schema-to-zod": "^0.1.5",
     "prettier": "^2.7.1",
@@ -55,30 +51,22 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
     "fp-ts": "^2.12.2",
     "hamt_plus": "^1.0.2",
     "helmet": "^4.6.0",
-    "morgan": "^1.10.0",
     "pretty-print-json": "^1.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recoil": "^0.7.5",
     "recoil-sync": "^0.1.0",
-    "refine": "^0.0.1-alpha",
-    "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "styled-components": "^5.3.5",
     "zod": "^3.18.0"
   },
   "keywords": [
     "react",
     "express",
     "typescript",
-    "esbuild",
-    "tailwindcss"
+    "esbuild"
   ],
   "husky": {
     "hooks": {
