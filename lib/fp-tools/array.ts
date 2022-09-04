@@ -5,6 +5,9 @@ export const each =
   (input: unknown): T[] =>
     isType(input) ? [input] : Array.isArray(input) ? input.filter(isType) : []
 
+export const ifLast = <T>(input: ReadonlyArray<T>): T | undefined =>
+  input[input.length - 1]
+
 export const doesEachElementMatch =
   <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): input is T[] =>

@@ -21,13 +21,12 @@ export const TextInput: FC<TextInputProps> = ({
   return (
     <div
       css={css`
-        display: flex;
+        /* display: flex;
         flex-direction: column;
         input {
           max-width: 200px;
           font-size: 24px;
           font-family: name;
-          /* background: none; */
           border: none;
           border-bottom: 1px solid;
           padding: none;
@@ -41,10 +40,11 @@ export const TextInput: FC<TextInputProps> = ({
         }
         label {
           font-size: 18px;
-        }
+        } */
         ${customCss}
       `}
     >
+      <label>{label}</label>
       <input
         type="text"
         value={value}
@@ -52,7 +52,6 @@ export const TextInput: FC<TextInputProps> = ({
         disabled={set === undefined}
         placeholder={placeholder}
       />
-      <label>{label}</label>
     </div>
   )
 }

@@ -35,7 +35,7 @@ const valueToText = (numericValue?: number | null): string =>
 
 export type NumberInputProps = {
   value: number
-  set: (value: number) => void
+  set?: (value: number) => void
   allowDecimal?: boolean
   min?: number
   max?: number
@@ -58,6 +58,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     // if (onChange) onChange(event)
+    if (set === undefined) return
     const input = event.target.value
     if (input === ``) {
       isEmpty.current = true
@@ -90,7 +91,7 @@ export const NumberInput: FC<NumberInputProps> = ({
   return (
     <div
       css={css`
-        display: flex;
+        /* display: flex;
         flex-direction: column;
         input {
           max-width: 200px;
@@ -110,17 +111,18 @@ export const NumberInput: FC<NumberInputProps> = ({
         }
         label {
           font-size: 18px;
-        }
+        } */
         ${customCss}
       `}
     >
+      <label>{label}</label>
       <input
         type="number"
         value={isEmpty.current ? `` : valueToText(value)}
         onChange={handleChange}
+        disabled={set === undefined}
         placeholder={placeholder}
       />
-      <label>{label}</label>
     </div>
   )
 }

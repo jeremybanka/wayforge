@@ -96,9 +96,9 @@ export const SaveJsonWebsocketServer = (
         const formatted = formatter(valueAsString)
         const newFilePath = nameFile(type, value) + `.json`
         const allFileNames = fs.readdirSync(`${jsonRoot}/${type}`)
-        const prevFilePath =
-          type + `/` + allFileNames.find((fileName) => fileName.includes(id))
-        if (prevFilePath && prevFilePath !== newFilePath) {
+        const prevFileName = allFileNames.find((name) => name.includes(id))
+        const prevFilePath = type + `/` + prevFileName
+        if (prevFileName && prevFilePath !== newFilePath) {
           fs.renameSync(
             `${jsonRoot}/${prevFilePath}`,
             `${jsonRoot}/${newFilePath}`

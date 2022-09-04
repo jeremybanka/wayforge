@@ -3,13 +3,15 @@ import type { FC } from "react"
 import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
-import type { RecoilState, SetterOrUpdater } from "recoil"
-import { useRecoilState } from "recoil"
+import type { SetterOrUpdater } from "recoil"
 
 import { become } from "../fp-tools"
-import type { Json, JsonArr, JsonObj, Primitive } from "../json"
+import { ifLast } from "../fp-tools/array"
+import type { Json, JsonArr, JsonObj } from "../json"
 import { isPlainObject } from "../json"
 import mapObject from "../Luum/src/utils/mapObject"
+import { NumberInput } from "./number-input"
+import { TextInput } from "./text-input"
 
 export const refineJsonType = (
   data: Json
@@ -57,11 +59,6 @@ export interface JsonTypes extends Record<JsonTypeName, Json> {
   string: string
 }
 
-// export type SubEditorProps<T extends Json | Primitive> = {
-//   data: T
-//   setData: SetterOrUpdater<T>
-// }
-
 export const makePropertySetters = <T extends JsonObj>(
   data: T,
   set: SetterOrUpdater<T>
@@ -85,33 +82,44 @@ export const makeElementSetters = <T extends JsonArr>(
       })
   )
 
+// export const Label = ({ children }: { children?: string }) => (
+
 export const ObjectEditor = <T extends JsonObj>({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<T>): ReturnType<FC> => {
-  // console.log(set)
   const setProperty = makePropertySetters(data, set)
   const keys = Object.keys(data)
   return (
-    <>
-      {keys.map((key) => {
-        const newPath = [...path, `[${key}]`]
-        return (
-          <JsonEditor
-            key={newPath.join(``)}
-            path={newPath}
-            data={data[key as keyof T]}
-            set={setProperty[key as keyof T]}
-          />
-        )
-      })}
-    </>
+    <div>
+      <label>
+        <span>{ifLast(path)}</span>: {`{`}
+      </label>
+
+      <div style={{ paddingLeft: 20 }}>
+        {keys.map((key) => {
+          const newPath = [...path, key]
+          return (
+            <JsonEditor
+              key={newPath.join(``)}
+              path={newPath}
+              isReadonly={isReadonly}
+              data={data[key as keyof T]}
+              set={setProperty[key as keyof T]}
+            />
+          )
+        })}
+      </div>
+      <label>{`}`}</label>
+    </div>
   )
 }
 
 export const ArrayEditor = <T extends JsonArr>({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<T>): ReturnType<FC> => {
@@ -119,11 +127,12 @@ export const ArrayEditor = <T extends JsonArr>({
   return (
     <>
       {data.map((element, index) => {
-        const newPath = [...path, `[${index}]`]
+        const newPath = [...path, String(index)]
         return (
           <JsonEditor
             key={newPath.join(``)}
             path={newPath}
+            isReadonly={isReadonly}
             data={element}
             set={setElement[index]}
           />
@@ -135,6 +144,7 @@ export const ArrayEditor = <T extends JsonArr>({
 
 export const BooleanEditor = ({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<boolean>): ReturnType<FC> => (
@@ -147,6 +157,7 @@ export const BooleanEditor = ({
 
 export const NullEditor = ({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<null>): ReturnType<FC> => (
@@ -155,28 +166,27 @@ export const NullEditor = ({
 
 export const NumberEditor = ({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<number>): ReturnType<FC> => (
-  <div>
-    <label htmlFor={path.join(``)}>{path.join(``)}</label>
-    <input
-      type="number"
-      value={data}
-      onChange={(event) => set(Number(event.target.value))}
-    />
-  </div>
+  <NumberInput
+    label={ifLast(path)}
+    value={data}
+    set={isReadonly(path) ? undefined : set}
+  />
 )
 
 export const StringEditor = ({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<string>): ReturnType<FC> => (
-  <input
-    type="text"
+  <TextInput
+    label={ifLast(path)}
     value={data}
-    onChange={(event) => set(event.target.value)}
+    set={isReadonly(path) ? undefined : set}
   />
 )
 
@@ -190,7 +200,8 @@ export const SubEditors: Record<keyof JsonTypes, FC<JsonEditorProps<any>>> = {
 }
 
 export type JsonEditorProps<T extends Json> = {
-  path?: string[]
+  path?: ReadonlyArray<string>
+  isReadonly?: (path: ReadonlyArray<string>) => boolean
   data: T
   set: SetterOrUpdater<T>
 }
@@ -199,6 +210,7 @@ type JSX = ReturnType<FC>
 
 export const JsonEditor = <T extends Json>({
   path = [],
+  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<T>): JSX => {
@@ -208,6 +220,7 @@ export const JsonEditor = <T extends Json>({
   return (
     <SubEditor
       path={path} // we haven't changed the path yet
+      isReadonly={isReadonly}
       data={json.data}
       set={set}
     />
