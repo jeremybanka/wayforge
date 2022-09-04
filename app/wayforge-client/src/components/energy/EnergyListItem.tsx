@@ -56,16 +56,20 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   // const dec = paletteToScssDeclaration(palette, 0)
   // console.log({ scssA, scssB })
 
-  return true ? (
-    <JsonEditor data={energy} set={setEnergy} />
-  ) : (
+  return (
     <li
       css={css`
-        display: flex;
-        gap: 10px;
+        /* display: flex;
+        gap: 10px; */
       `}
     >
-      <span
+      <label>{energy.name}</label>
+      <JsonEditor
+        data={energy}
+        set={setEnergy}
+        isReadonly={(path) => path.includes(`id`)}
+      />
+      {/* <span
         css={css`
           input {
             width: 100px;
@@ -110,7 +114,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
       <span>
         <EnergyColorPicker state={colorAState} />
         <EnergyColorPicker state={colorBState} />
-      </span>
+      </span> */}
 
       <button onClick={unlink}>Unlink</button>
     </li>
