@@ -1,3 +1,4 @@
+import { pipe } from "fp-ts/lib/function"
 import {
   useRecoilTransaction_UNSTABLE,
   atom,
@@ -5,16 +6,18 @@ import {
   selectorFamily,
   DefaultValue,
 } from "recoil"
-import type z from "zod"
+import z, { string } from "zod"
 
-import type energySchema from "~/gen/energy.schema"
+import energySchema from "~/gen/energy.schema"
 import { now } from "~/lib/id/now"
+import type { Json } from "~/lib/json"
 import { deserializeSet, serializeSet } from "~/lib/json"
 import type { LuumSpec } from "~/lib/Luum/src"
 import {
   localStorageSerializationEffect,
   localStorageEffect,
 } from "~/lib/recoil-tools/effects/local-storage"
+import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
 import {
   addToRecoilSet,
   removeFromRecoilSet,
@@ -22,39 +25,66 @@ import {
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 import { RelationManager } from "~/lib/relation-manager"
 
+import { socket } from "./socket"
+
 export type Energy = z.infer<typeof energySchema>
+
+export const DEFAULT_ENERGY: Energy = {
+  id: `⚠️DEFAULT_ID⚠️`,
+  name: `New Energy`,
+  colorA: {
+    hue: 0,
+    sat: 0,
+    lum: 0,
+    prefer: `sat`,
+  },
+  colorB: {
+    hue: 0,
+    sat: 0,
+    lum: 0,
+    prefer: `sat`,
+  },
+  icon: ``,
+}
+
+const stringSetJsonInterface = {
+  toJson: (s: Set<string>) => Array.from(s),
+  fromJson: (a: Json): Set<string> =>
+    pipe(a, z.array(string()).parse, () => new Set()),
+}
 
 export const energyIndex = atom<Set<string>>({
   key: `energyIndex`,
   default: new Set(),
   effects: [
-    localStorageSerializationEffect(`energyIndex`, {
-      serialize: serializeSet,
-      deserialize: deserializeSet,
+    socketIndex({
+      type: `energy`,
+      socket,
+      jsonInterface: stringSetJsonInterface,
     }),
+
+    // localStorageSerializationEffect(`energyIndex`, {
+    //   serialize: serializeSet,
+    //   deserialize: deserializeSet,
+    // }),
   ],
 })
 
 export const findEnergyState = atomFamily<Energy, string>({
   key: `energy`,
-  default: {
-    id: `⚠️DEFAULT_ID⚠️`,
-    name: `New Energy`,
-    colorA: {
-      hue: 0,
-      sat: 0,
-      lum: 0,
-      prefer: `sat`,
-    },
-    colorB: {
-      hue: 0,
-      sat: 0,
-      lum: 0,
-      prefer: `sat`,
-    },
-    icon: ``,
-  },
-  effects: (id) => [localStorageEffect(`energy_${id}`)],
+  default: DEFAULT_ENERGY,
+  effects: (id) => [
+    // localStorageEffect(`energy_${id}`),
+    socketSync({
+      id,
+      socket,
+      type: `energy`,
+      jsonInterface: {
+        toJson: (energy) => energy,
+        fromJson: (json) => energySchema.parse(json),
+      },
+    }),
+  ],
 })
 
 export type EnergyColorFinder = {

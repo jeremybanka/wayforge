@@ -1,3 +1,4 @@
+import fs from "fs"
 import { Server as HttpServer } from "http"
 
 import compression from "compression"
@@ -6,6 +7,11 @@ import express from "express"
 import morgan from "morgan"
 import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
+
+import energySchema from "~/gen/energy.schema"
+import { getDirectoryJsonEntries } from "~/lib/fs"
+
+import { formatJson } from "./services/formatJson"
 
 const app = express()
 app.use(cors())
@@ -23,12 +29,40 @@ export const io = new WebSocketServer(3333, {
 
 console.log(`Listening on port 3333`)
 
+const getFileById = ({ id, type }) => {
+  const fileNames = fs.readdirSync(`./data/${type}`)
+}
+
 io.on(`connection`, (socket: Socket) => {
   console.log(socket.id, `connected`)
   socket.emit(`event`, `connected!`)
-  socket.on(`something`, (data) => {
-    console.log(socket.id, data)
-    socket.emit(`event`, `pong`)
+  socket.on(`write`, ({ id, type, value }) => {
+    console.log(socket.id, `write`, id, value)
+    const valueAsString = JSON.stringify(value)
+    const formatted = formatJson(valueAsString)
+    fs.writeFileSync(`./projects/wayfarer/${type}/${value.name}.json`, formatted)
+  })
+  socket.on(`read`, ({ id, type }) => {
+    console.log(socket.id, `read`, id, type)
+    const dir = `./projects/wayfarer/${type}`
+    const entries = getDirectoryJsonEntries({
+      dir,
+      refine: (json) => energySchema.parse(json),
+      enableWarnings: true,
+    })
+    const [, fileContents] = entries.find(([, data]) => data.id === id)
+    socket.emit(`${type}:${id}`, fileContents)
+  })
+  socket.on(`index`, ({ type }) => {
+    console.log(socket.id, `index`, type)
+    const dir = `./projects/wayfarer/${type}`
+    const entries = getDirectoryJsonEntries({
+      dir,
+      refine: (json) => energySchema.parse(json),
+      enableWarnings: true,
+    })
+    const fileContents = entries.map(([, data]) => data.id)
+    socket.emit(`${type}:index`, fileContents)
   })
 })
 

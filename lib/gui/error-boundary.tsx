@@ -7,7 +7,7 @@ export type FallbackProps = {
 }
 
 const NOT_A_FUNCTION = true
-// @ts-expect-error CALL IT TO THROW A TYPE ERROR
+// @ts-expect-error 😂😂😂
 const throwTypeError = (): never => NOT_A_FUNCTION()
 
 export const OOPS: FunctionComponent = () => throwTypeError()

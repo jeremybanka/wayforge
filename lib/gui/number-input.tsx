@@ -1,5 +1,5 @@
 import type { ChangeEvent, FC } from "react"
-import { useRef } from "react"
+import React, { useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 import { css } from "@emotion/react"
@@ -43,10 +43,6 @@ export type NumberInputProps = {
   placeholder?: string
   customCss?: SerializedStyles
 }
-
-// export const interfaceCore = (transform: Transformer<number>) => {
-//   ;(n: number) => string
-// }
 
 export const NumberInput: FC<NumberInputProps> = ({
   value,

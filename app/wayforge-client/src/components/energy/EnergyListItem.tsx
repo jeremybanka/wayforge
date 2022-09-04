@@ -53,7 +53,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   // const palette = mixPaletteStatic(colorScheme)
   // const paletteIsInteractive = isInteractivePalette(palette)
   // const dec = paletteToScssDeclaration(palette, 0)
-  console.log({ scssA, scssB })
+  // console.log({ scssA, scssB })
 
   return (
     <li

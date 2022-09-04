@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://tempest.games/wayfarer/schemata/card.schema.json",
+  "title": "Card",
+  "description": "A card in the game of Wayfarer.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier of the card."
+    },
+    "artwork": {
+      "type": "string",
+      "description": "The URL of the card's artwork."
+    },
+    "contentId": {
+      "type": "string",
+      "description": "The unique identifier of the card's content."
+    },
+    "setId": {
+      "type": "array",
+      "description": "The unique identifier of the card's set."
+    }
+  },
+  "required": ["id", "artwork", "contentId", "setId"]
+}
