@@ -6,7 +6,6 @@ import { RecoilRoot } from "recoil"
 import { RecoilInspector } from "~/lib/recoil-tools/Inspector"
 
 import { App } from "./App"
-import { socket, SocketContext } from "./services/socket"
 
 import "./index.scss"
 import "./font-face.scss"
@@ -16,9 +15,7 @@ const root = createRoot(container as Element)
 root.render(
   <StrictMode>
     <RecoilRoot>
-      <SocketContext.Provider value={socket}>
-        <App />
-      </SocketContext.Provider>
+      <App />
       <RecoilInspector />
     </RecoilRoot>
   </StrictMode>

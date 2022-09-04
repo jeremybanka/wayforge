@@ -1,10 +1,12 @@
 import { pipe } from "fp-ts/lib/function"
+import { isString } from "fp-ts/lib/string"
 
-import type { Modifier, Validator } from "~/lib/fp-tools"
+import type { Modifier, OneOrMany, Validator } from "~/lib/fp-tools"
+import { isUndefined, isModifier } from "~/lib/fp-tools"
 import {
   content,
   each,
-  isArrayWhereEveryElement,
+  doesEachElementMatch,
   join,
   map,
 } from "~/lib/fp-tools/array"
@@ -221,9 +223,11 @@ export const CSS_COLOR_PROPERTY_KEYS = [
   `text-shadow`,
 ] as const
 
+export type CssVariable = `--${string}`
+
 export type CssColorPropertyKey =
+  | CssVariable
   | typeof CSS_COLOR_PROPERTY_KEYS[number]
-  | `--${string}`
 
 export const isCssColorPropertyKey = (
   input: unknown
@@ -234,40 +238,13 @@ export const isCssColorPropertyKey = (
   ) ||
     input.startsWith(`--`))
 
-export const isString = (input: unknown): input is string =>
-  typeof input === `string`
-
-export const isUndefined = (input: unknown): input is undefined =>
-  typeof input === `undefined`
-
-export const maybeIsOrContainsOnly =
-  <T>(isType: Validator<T>) =>
-  (input: unknown): input is T | T[] | undefined =>
-    isUndefined(input) || content(isType)(input)
-
-export type OneOrMany<T> = T | T[]
-
-export const isModifier =
-  <T>(validate: Validator<T>) =>
-  (sample: T): Validator<Modifier<T>> => {
-    const sampleIsValid = validate(sample)
-    if (!sampleIsValid) {
-      throw new Error(`Invalid test case: JSON.stringify(${sample})`)
-    }
-    return (input: unknown): input is Modifier<T> => {
-      if (typeof input !== `function`) return false
-      const testResult = input(sample)
-      return validate(testResult)
-    }
-  }
-
 export const isFilterPoint = (input: unknown): input is FilterPoint =>
   typeof input === `object` &&
   typeof (input as FilterPoint).hue === `number` &&
   typeof (input as FilterPoint).sat === `number`
 
 export const isFilter = (input: unknown): input is Filter =>
-  isArrayWhereEveryElement(isFilterPoint)(input)
+  doesEachElementMatch(isFilterPoint)(input)
 
 export const maybe =
   <T>(validate: Validator<T>) =>

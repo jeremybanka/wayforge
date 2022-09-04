@@ -1,19 +1,19 @@
-import type { Validator } from "."
+import type { Refinement } from "fp-ts/lib/Refinement"
 
 export const each =
-  <T>(isType: Validator<T>) =>
+  <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): T[] =>
     isType(input) ? [input] : Array.isArray(input) ? input.filter(isType) : []
 
-export const isArrayWhereEveryElement =
-  <T>(isType: Validator<T>) =>
+export const doesEachElementMatch =
+  <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): input is T[] =>
     Array.isArray(input) && input.every((item) => isType(item))
 
 export const content =
-  <T>(isType: Validator<T>) =>
+  <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): input is T | T[] =>
-    isType(input) || isArrayWhereEveryElement(isType)(input)
+    isType(input) || doesEachElementMatch(isType)(input)
 
 export const join =
   (separator?: string) =>

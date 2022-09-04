@@ -3,29 +3,11 @@ import type { AtomEffect } from "recoil"
 
 import type { Json, Primitive } from "~/lib/json"
 
-export const localStorageEffect: <T extends Json | Primitive>(
-  key: string
-) => AtomEffect<T> =
-  (key) =>
-  ({ setSelf, onSet }) => {
-    const savedValue = localStorage.getItem(key)
-    if (savedValue != null) {
-      setSelf(JSON.parse(savedValue))
-    }
-
-    onSet((newValue, _, isReset) => {
-      isReset
-        ? localStorage.removeItem(key)
-        : localStorage.setItem(key, JSON.stringify(newValue))
-    })
-  }
+import type { SerializationInterface } from "."
 
 export const localStorageSerializationEffect: <T>(
   key: string,
-  storageInterface: {
-    serialize: (t: T) => string
-    deserialize: (j: string) => T
-  }
+  serializationInterface: SerializationInterface<T>
 ) => AtomEffect<T> =
   (key, { serialize, deserialize }) =>
   ({ setSelf, onSet }) => {
@@ -39,3 +21,11 @@ export const localStorageSerializationEffect: <T>(
         : pipe(newValue, serialize, (s) => localStorage.setItem(key, s))
     })
   }
+
+export const localStorageEffect: <T extends Json | Primitive>(
+  key: string
+) => AtomEffect<T> = (key) =>
+  localStorageSerializationEffect(key, {
+    serialize: JSON.stringify,
+    deserialize: JSON.parse,
+  })

@@ -1,6 +1,3 @@
 [submodule "wayfarer"]
-	path = wayfarer
+	path = app/wayforge-server/projects/wayfarer
 	url = https://github.com/jeremybanka/wayfarer
-[submodule "luum"]
-	path = luum
-	url = https://github.com/jeremybanka/luum
