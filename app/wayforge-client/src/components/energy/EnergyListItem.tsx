@@ -4,6 +4,7 @@ import { css } from "@emotion/react"
 import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
+import { JsonEditor } from "~/lib/gui/json-editor"
 import { TextInput } from "~/lib/gui/text-input"
 import type { LuumCssRule } from "~/lib/Luum"
 import { luumToCss } from "~/lib/Luum"
@@ -55,7 +56,9 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   // const dec = paletteToScssDeclaration(palette, 0)
   // console.log({ scssA, scssB })
 
-  return (
+  return true ? (
+    <JsonEditor data={energy} set={setEnergy} />
+  ) : (
     <li
       css={css`
         display: flex;

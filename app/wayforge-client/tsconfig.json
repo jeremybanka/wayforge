@@ -19,7 +19,8 @@
     "jsxImportSource": "@emotion/react",
     "baseUrl": "../..",
     "paths": {
-      "~/*": ["./*"]
+      "~/*": ["./*"],
+      "wayforge-server/*": ["./wayforge-server/src/services/*"]
     }
   },
   "include": ["src", "../../lib"],

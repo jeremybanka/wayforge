@@ -15,7 +15,7 @@ export type Serializable =
   | Primitive
   | Readonly<{ [key: string]: Serializable }>
   | ReadonlyArray<Serializable>
-  | { toJSON: () => string }
+// | { toJSON: () => string }
 
 export type JsonObj<
   Key extends string = string,
@@ -25,6 +25,11 @@ export type JsonObj<
 export type JsonArr<Element extends Serializable = Serializable> =
   ReadonlyArray<Element>
 
-export type Json = JsonArr | JsonObj
+export type Json = JsonArr | JsonObj | Primitive
 
 export type Empty = Record<string, never>
+
+export const isPlainObject = (input: unknown): input is JsonObj =>
+  typeof input === `object` &&
+  input !== null &&
+  Object.getPrototypeOf(input) === Object.prototype

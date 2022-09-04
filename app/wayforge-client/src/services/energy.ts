@@ -50,7 +50,7 @@ export const DEFAULT_ENERGY: Energy = {
 const stringSetJsonInterface = {
   toJson: (s: Set<string>) => Array.from(s),
   fromJson: (a: Json): Set<string> =>
-    pipe(a, z.array(string()).parse, () => new Set()),
+    pipe(a, z.array(string()).parse, (a) => new Set(a)),
 }
 
 export const energyIndex = atom<Set<string>>({
