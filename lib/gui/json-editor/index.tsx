@@ -1,17 +1,21 @@
 import type { FC } from "react"
+import { useMemo } from "react"
 
 import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 import type { SetterOrUpdater } from "recoil"
 
-import { become } from "../fp-tools"
-import { ifLast } from "../fp-tools/array"
-import type { Json, JsonArr, JsonObj } from "../json"
-import { isPlainObject } from "../json"
-import mapObject from "../Luum/src/utils/mapObject"
-import { NumberInput } from "./number-input"
-import { TextInput } from "./text-input"
+import { become } from "~/lib/fp-tools"
+import { ifLast } from "~/lib/fp-tools/array"
+import type { Json, JsonArr, JsonObj } from "~/lib/json"
+import { isPlainObject } from "~/lib/json"
+import type { JsonSchema } from "~/lib/json-schema"
+import mapObject from "~/lib/Luum/src/utils/mapObject"
+
+import { NumberInput } from "../number-input"
+import { TextInput } from "../text-input"
+import { makeElementSetters, makePropertySetters } from "./setters"
 
 export const refineJsonType = (
   data: Json
@@ -38,7 +42,7 @@ export const refineJsonType = (
         throw new Error(
           `${data} with prototype ${Object.getPrototypeOf(
             data
-          )} passed to refineJsonType. This is not a valid JSON type.`
+          )} passed to refineJsonType. This is not valid JSON.`
         )
       })()
 
@@ -59,51 +63,69 @@ export interface JsonTypes extends Record<JsonTypeName, Json> {
   string: string
 }
 
-export const makePropertySetters = <T extends JsonObj>(
-  data: T,
-  set: SetterOrUpdater<T>
-): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
-  mapObject<T, any, SetterOrUpdater<any>>(
-    data,
-    (value, key) => (newValue) =>
-      set({ ...data, [key]: become(newValue)(value[key]) })
-  )
-
-export const makeElementSetters = <T extends JsonArr>(
-  data: T,
-  set: SetterOrUpdater<T>
-): SetterOrUpdater<T[number]>[] =>
-  data.map(
-    (value, index) => (newValue) =>
-      set((): T => {
-        const newData = [...data]
-        newData[index] = become(newValue)(value)
-        return newData as unknown as T
-      })
-  )
-
 // export const Label = ({ children }: { children?: string }) => (
 
 export const ObjectEditor = <T extends JsonObj>({
+  schema,
   path = [],
   isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<T>): ReturnType<FC> => {
   const setProperty = makePropertySetters(data, set)
-  const keys = Object.keys(data)
+  const schemaIsObject = typeof schema === `object`
+  const subschema: JsonSchema | undefined = schemaIsObject
+    ? path.reduce<JsonSchema | undefined>(
+        (acc, key) =>
+          acc && !isBoolean(acc)
+            ? isString(key)
+              ? acc.properties?.[key]
+              : acc.items
+            : undefined,
+        schema
+      )
+    : undefined
+  console.log(subschema)
+  const subschemaIsObject = typeof subschema === `object`
+  if (subschemaIsObject && subschema.$ref) {
+    const ref = subschema.$ref
+      ?.split(`/`)
+      .reduce<JsonSchema | undefined>(
+        (acc, key, idx) =>
+          idx === 0 && key === `#` ? schema : acc?.[key as keyof typeof acc],
+        undefined
+      )
+    if (isPlainObject(ref)) {
+      Object.assign(subschema, ref)
+    }
+  }
+  const schemaKeys = subschemaIsObject
+    ? Object.keys(subschema?.properties ?? {})
+    : []
+  const dataKeys = Object.keys(data)
+  const [unofficialKeys, officialKeys] = dataKeys.reduce(
+    ([unofficial, official], key) => {
+      const isOfficial = schemaIsObject && schemaKeys.includes(key)
+      return isOfficial
+        ? [unofficial, [...official, key]]
+        : [[...unofficial, key], official]
+    },
+    [[], []] as [string[], string[]]
+  )
+  const missingKeys = schemaIsObject
+
   return (
     <div>
       <label>
         <span>{ifLast(path)}</span>: {`{`}
       </label>
-
       <div style={{ paddingLeft: 20 }}>
-        {keys.map((key) => {
+        {officialKeys.map((key) => {
           const newPath = [...path, key]
           return (
             <JsonEditor
               key={newPath.join(``)}
+              schema={schema}
               path={newPath}
               isReadonly={isReadonly}
               data={data[key as keyof T]}
@@ -111,6 +133,20 @@ export const ObjectEditor = <T extends JsonObj>({
             />
           )
         })}
+        <div style={{ backgroundColor: `#8882` }}>
+          {unofficialKeys.map((key) => {
+            const newPath = [...path, key]
+            return (
+              <JsonEditor
+                key={newPath.join(``)}
+                path={newPath}
+                isReadonly={isReadonly}
+                data={data[key as keyof T]}
+                set={setProperty[key as keyof T]}
+              />
+            )
+          })}
+        </div>
       </div>
       <label>{`}`}</label>
     </div>
@@ -127,7 +163,7 @@ export const ArrayEditor = <T extends JsonArr>({
   return (
     <>
       {data.map((element, index) => {
-        const newPath = [...path, String(index)]
+        const newPath = [...path, index]
         return (
           <JsonEditor
             key={newPath.join(``)}
@@ -171,7 +207,7 @@ export const NumberEditor = ({
   set,
 }: JsonEditorProps<number>): ReturnType<FC> => (
   <NumberInput
-    label={ifLast(path)}
+    label={String(ifLast(path))}
     value={data}
     set={isReadonly(path) ? undefined : set}
   />
@@ -184,7 +220,7 @@ export const StringEditor = ({
   set,
 }: JsonEditorProps<string>): ReturnType<FC> => (
   <TextInput
-    label={ifLast(path)}
+    label={String(ifLast(path))}
     value={data}
     set={isReadonly(path) ? undefined : set}
   />
@@ -200,26 +236,30 @@ export const SubEditors: Record<keyof JsonTypes, FC<JsonEditorProps<any>>> = {
 }
 
 export type JsonEditorProps<T extends Json> = {
-  path?: ReadonlyArray<string>
-  isReadonly?: (path: ReadonlyArray<string>) => boolean
+  schema?: JsonSchema
+  path?: ReadonlyArray<number | string>
+  isReadonly?: (path: ReadonlyArray<number | string>) => boolean
   data: T
   set: SetterOrUpdater<T>
 }
 
-type JSX = ReturnType<FC>
+type JSX = ReturnType<FC> // return for FunctionComponents w Generic Props
 
 export const JsonEditor = <T extends Json>({
+  schema,
   path = [],
   isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps<T>): JSX => {
   const json = refineJsonType(data)
+  // const root = path[0] // memoize tail
   const SubEditor = SubEditors[json.type]
 
   return (
     <SubEditor
-      path={path} // we haven't changed the path yet
+      schema={schema}
+      path={path} // path only changes with each element or property
       isReadonly={isReadonly}
       data={json.data}
       set={set}

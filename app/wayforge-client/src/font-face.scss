@@ -12,9 +12,13 @@
   font-family: sudo;
   src: url(assets/Sudo-Code.otf);
 }
+@font-face {
+  font-family: theia;
+  src: url(assets/Theia0.2.500-500.otf);
+}
 
 body {
-  font-family: name;
+  font-family: theia;
   font-size: 1.2em;
   line-height: 1.5;
 }
