@@ -1,9 +1,11 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
+import Ajv from "ajv/dist/core"
 import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
+import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
 import { JsonEditor } from "~/lib/gui/json-editor"
 import { TextInput } from "~/lib/gui/text-input"
 import type { LuumCssRule } from "~/lib/Luum"
@@ -65,6 +67,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
     >
       <label>{energy.name}</label>
       <JsonEditor
+        schema={energySchema}
         data={energy}
         set={setEnergy}
         isReadonly={(path) => path.includes(`id`)}

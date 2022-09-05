@@ -1,28 +1,42 @@
 import fs from "fs"
 
+import type { Refinement } from "fp-ts/lib/Refinement"
 import type { Socket, ServerOptions } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 import type { EventsMap } from "socket.io/dist/typed-events"
-import type { SomeZodObject, ZodObject } from "zod"
 
-import energySchema from "~/gen/energy.schema"
+// import energySchema from "~/gen/energy.schema"
 import type { Modifier } from "~/lib/fp-tools"
 import { getDirectoryJsonEntries } from "~/lib/fs"
 import type { JsonObj } from "~/lib/json"
 
 const { log } = console
 
-export const types = ``
+export type Identified = { id: string }
 
-const index = (type: string): string[] => {
-  const dir = `./projects/wayfarer/${type}`
-  const entries = getDirectoryJsonEntries({
-    dir,
-    refine: (json) => energySchema.parse(json),
-  })
-  const fileContents = entries.map(([, data]) => data.id)
-  return fileContents
+export const hasId: Refinement<unknown, Identified> = (
+  input
+): input is Identified =>
+  typeof input === `object` &&
+  input !== null &&
+  typeof (input as Identified)[`id`] === `string`
+
+export const identify = (input: unknown): { id: string } => {
+  if (hasId(input)) return input
+  throw new Error(`${input} could not be identified`)
 }
+
+const makeIndexer =
+  (jsonRoot: string) =>
+  (type: string): string[] => {
+    const dir = `${jsonRoot}/${type}`
+    const entries = getDirectoryJsonEntries({
+      dir,
+      refine: identify,
+    })
+    const fileContents = entries.map(([, data]) => data.id)
+    return fileContents
+  }
 
 export type SaveJsonListenEvents = Record<
   `indexRead_${string}`,
@@ -41,9 +55,6 @@ export interface SaveJsonServerSideEvents extends EventsMap {
   indexRead: ({ type }: { type: string }) => void
 }
 
-// export const io =
-// })
-
 export type SaveJsonOptions = {
   formatter: Modifier<string>
   nameFile: (type: string, value: unknown) => string
@@ -59,12 +70,7 @@ export const SaveJsonWebsocketServer = (
   SaveJsonEmitEvents,
   SaveJsonServerSideEvents
 > =>
-  new WebSocketServer(port, {
-    cors: {
-      origin: `http://localhost:5173`,
-      methods: [`GET`, `POST`],
-    },
-  }).on(
+  new WebSocketServer(port, opts).on(
     `connection`,
     (
       socket: Socket<
@@ -76,12 +82,14 @@ export const SaveJsonWebsocketServer = (
       console.log(socket.id, `connected`)
       socket.emit(`event`, `connected!`)
 
+      const index = makeIndexer(jsonRoot)
+
       socket.on(`read`, ({ id, type }) => {
         log(socket.id, `read`, id, type)
         const dir = `${jsonRoot}/${type}`
         const entries = getDirectoryJsonEntries({
           dir,
-          refine: (json) => energySchema.parse(json),
+          refine: identify,
         })
         const matchingEntry = entries.find(([, data]) => data.id === id)
         if (matchingEntry) {
