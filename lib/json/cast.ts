@@ -1,6 +1,5 @@
 import type { Json, JsonArr, JsonObj, Serializable } from "~/lib/json"
-
-import { refineJsonType } from "."
+import { refineJsonType } from "~/lib/json/refine"
 
 export const stringToBoolean = (str: string): boolean => str === `true`
 export const stringToNumber = (str: string): number => Number(str)
@@ -22,7 +21,7 @@ export const objectToArray = <T extends Serializable>(
 ): [key: string, value: T][] => Object.entries(obj)
 
 export const booleanToString = (bool: boolean): string => bool.toString()
-export const booleanToNumber = (bool: boolean): number => (bool ? 1 : 0)
+export const booleanToNumber = (bool: boolean): number => +bool
 export const booleanToObject = (bool: boolean): JsonObj => ({
   [bool.toString()]: bool,
 })
@@ -33,7 +32,7 @@ export const numberToBoolean = (num: number): boolean => num === 1
 export const numberToObject = (num: number): JsonObj => ({
   number: num,
 })
-export const numberToArray = (num: number): null[] => Array(4).fill(null)
+export const numberToArray = (num: number): null[] => Array(num).fill(null)
 
 export const arrayToString = (arr: JsonArr): string => arr.join(`,`)
 export const arrayToNumber = (arr: JsonArr): number => arr.length

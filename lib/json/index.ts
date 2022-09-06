@@ -33,3 +33,29 @@ export const isPlainObject = (input: unknown): input is JsonObj =>
   typeof input === `object` &&
   input !== null &&
   Object.getPrototypeOf(input) === Object.prototype
+
+export type JsonTypeName =
+  | `array`
+  | `boolean`
+  | `null`
+  | `number`
+  | `object`
+  | `string`
+
+export interface JsonTypes extends Record<JsonTypeName, Json> {
+  array: JsonArr
+  boolean: boolean
+  null: null
+  number: number
+  object: JsonObj
+  string: string
+}
+
+export const JSON_DEFAULTS: JsonTypes = {
+  array: [],
+  boolean: false,
+  null: null,
+  number: 0,
+  object: {},
+  string: ``,
+}

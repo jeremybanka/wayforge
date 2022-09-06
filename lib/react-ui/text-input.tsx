@@ -3,12 +3,15 @@ import type { FC } from "react"
 import type { SerializedStyles } from "@emotion/react"
 import { css } from "@emotion/react"
 
+import { AutoSizeInput } from "./auto-size-input"
+
 export type TextInputProps = {
   value: string
   set?: (value: string) => void
   label?: string
   placeholder?: string
   customCss?: SerializedStyles
+  autoSize?: boolean
 }
 
 export const TextInput: FC<TextInputProps> = ({
@@ -17,9 +20,10 @@ export const TextInput: FC<TextInputProps> = ({
   label,
   placeholder,
   customCss,
+  autoSize = false,
 }) => {
   return (
-    <div
+    <span
       css={css`
         /* display: flex;
         flex-direction: column;
@@ -45,13 +49,23 @@ export const TextInput: FC<TextInputProps> = ({
       `}
     >
       <label>{label}</label>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => set?.(e.target.value)}
-        disabled={set === undefined}
-        placeholder={placeholder}
-      />
-    </div>
+      {autoSize ? (
+        <AutoSizeInput
+          type="text"
+          value={value}
+          onChange={(e) => set?.(e.target.value)}
+          disabled={set === undefined}
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => set?.(e.target.value)}
+          disabled={set === undefined}
+          placeholder={placeholder}
+        />
+      )}
+    </span>
   )
 }

@@ -1,0 +1,35 @@
+import { isBoolean } from "fp-ts/lib/boolean"
+import { isNumber } from "fp-ts/lib/number"
+import { isString } from "fp-ts/lib/string"
+
+import type { Json, JsonArr, JsonObj } from "~/lib/json"
+import { isPlainObject } from "~/lib/json"
+
+export const refineJsonType = (
+  data: Json
+):
+  | { type: `array`; data: JsonArr }
+  | { type: `boolean`; data: boolean }
+  | { type: `null`; data: null }
+  | { type: `number`; data: number }
+  | { type: `object`; data: JsonObj }
+  | { type: `string`; data: string } =>
+  data === null
+    ? { type: `null`, data }
+    : isBoolean(data)
+    ? { type: `boolean`, data }
+    : isNumber(data)
+    ? { type: `number`, data }
+    : isString(data)
+    ? { type: `string`, data }
+    : Array.isArray(data)
+    ? { type: `array`, data }
+    : isPlainObject(data)
+    ? { type: `object`, data }
+    : (() => {
+        throw new Error(
+          `${data} with prototype ${Object.getPrototypeOf(
+            data
+          )} passed to refineJsonType. This is not valid JSON.`
+        )
+      })()

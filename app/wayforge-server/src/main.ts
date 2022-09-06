@@ -5,12 +5,7 @@ import compression from "compression"
 import cors from "cors"
 import express from "express"
 import morgan from "morgan"
-import type { Socket } from "socket.io"
-import { Server as WebSocketServer } from "socket.io"
-import type { EventsMap } from "socket.io/dist/typed-events"
 
-import energySchema from "~/gen/energy.schema"
-import { getDirectoryJsonEntries } from "~/lib/fs"
 import { SaveJsonWebsocketServer } from "~/lib/recoil-tools/effects/socket-io.server"
 
 import { formatJson } from "./services/formatJson"
@@ -25,8 +20,6 @@ app.use(morgan(`tiny`))
 export const server = new HttpServer(app)
 
 console.log(`Listening on port 3333`)
-
-// io.use(saveJson)
 
 SaveJsonWebsocketServer(
   3333,

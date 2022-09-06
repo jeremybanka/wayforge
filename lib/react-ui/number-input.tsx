@@ -4,6 +4,8 @@ import React, { useRef } from "react"
 import type { SerializedStyles } from "@emotion/react"
 import { css } from "@emotion/react"
 
+import { AutoSizeInput } from "./auto-size-input"
+
 const textToValue = (input: string, allowDecimal: boolean): number => {
   let interpretation: number
   switch (input) {
@@ -42,6 +44,7 @@ export type NumberInputProps = {
   label?: string
   placeholder?: string
   customCss?: SerializedStyles
+  autoSize?: boolean
 }
 
 export const NumberInput: FC<NumberInputProps> = ({
@@ -53,6 +56,7 @@ export const NumberInput: FC<NumberInputProps> = ({
   allowDecimal = true,
   max,
   min,
+  autoSize = false,
 }) => {
   const isEmpty = useRef<boolean>(false)
 
@@ -89,7 +93,7 @@ export const NumberInput: FC<NumberInputProps> = ({
     }
   }
   return (
-    <div
+    <span
       css={css`
         /* display: flex;
         flex-direction: column;
@@ -116,13 +120,23 @@ export const NumberInput: FC<NumberInputProps> = ({
       `}
     >
       <label>{label}</label>
-      <input
-        type="number"
-        value={isEmpty.current ? `` : valueToText(value)}
-        onChange={handleChange}
-        disabled={set === undefined}
-        placeholder={placeholder}
-      />
-    </div>
+      {autoSize ? (
+        <AutoSizeInput
+          type="text"
+          value={value}
+          onChange={handleChange}
+          disabled={set === undefined}
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          type="number"
+          value={isEmpty.current ? `` : valueToText(value)}
+          onChange={handleChange}
+          disabled={set === undefined}
+          placeholder={placeholder}
+        />
+      )}
+    </span>
   )
 }
