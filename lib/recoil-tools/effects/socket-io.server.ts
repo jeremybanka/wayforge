@@ -7,8 +7,8 @@ import type { EventsMap } from "socket.io/dist/typed-events"
 
 // import energySchema from "~/gen/energy.schema"
 import type { Modifier } from "~/lib/fp-tools"
-import { getDirectoryJsonEntries } from "~/lib/fs"
 import type { JsonObj } from "~/lib/json"
+import { getDirectoryJsonEntries } from "~/lib/node/fs"
 
 const { log } = console
 

@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { ErrorBoundary, OOPS } from "~/lib/gui/error-boundary"
+import { ErrorBoundary, OOPS } from "~/lib/react-ui/error-boundary"
 
 import { EnergyList } from "./components/energy/EnergyList"
 

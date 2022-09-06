@@ -1,4 +1,4 @@
 {
-  "cSpell.words": ["hamt", "Luum", "svgr", "wayforge"],
+  "cSpell.words": ["Deleters", "hamt", "Luum", "Renamers", "svgr", "wayforge"],
   "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -8,7 +8,7 @@ import {
 } from "recoil"
 import z, { string } from "zod"
 
-import energySchema from "~/gen/energy.schema"
+import type energySchema from "~/gen/energy.schema"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { deserializeSet, serializeSet } from "~/lib/json"
@@ -81,7 +81,7 @@ export const findEnergyState = atomFamily<Energy, string>({
       type: `energy`,
       jsonInterface: {
         toJson: (energy) => energy,
-        fromJson: (json) => energySchema.parse(json),
+        fromJson: (json) => json as Energy,
       },
     }),
   ],

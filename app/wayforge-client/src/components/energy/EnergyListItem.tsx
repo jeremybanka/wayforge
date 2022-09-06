@@ -6,10 +6,10 @@ import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
 import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
-import { JsonEditor } from "~/lib/gui/json-editor"
-import { TextInput } from "~/lib/gui/text-input"
 import type { LuumCssRule } from "~/lib/Luum"
 import { luumToCss } from "~/lib/Luum"
+import { JsonEditor } from "~/lib/react-ui/json-editor"
+import { TextInput } from "~/lib/react-ui/text-input"
 
 import { findEnergyColorState } from "../../services/energy"
 import type { Energy } from "../../services/energy"
@@ -33,7 +33,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
     name: (name: string) => setEnergy((e) => ({ ...e, name })),
     icon: (icon: string) => setEnergy((e) => ({ ...e, icon })),
   }
-
+  /*
   const colorSchemeA: LuumCssRule = {
     root: energy.colorA,
     attributes: [`color`, []],
@@ -52,6 +52,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
     ${scssA};
     ${scssB};
   `
+  */
   // const schemeIsInteractive = isInteractiveScheme(colorScheme)
   // const palette = mixPaletteStatic(colorScheme)
   // const paletteIsInteractive = isInteractivePalette(palette)
@@ -67,10 +68,19 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
     >
       <label>{energy.name}</label>
       <JsonEditor
-        schema={energySchema}
         data={energy}
         set={setEnergy}
+        schema={energySchema}
         isReadonly={(path) => path.includes(`id`)}
+        customCss={css`
+          input {
+            font-size: 20px;
+            font-family: theia;
+          }
+          .__JSON__unofficial {
+            background-color: #f083;
+          }
+        `}
       />
       {/* <span
         css={css`

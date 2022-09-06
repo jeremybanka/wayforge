@@ -1,18 +1,7 @@
 import type { SetterOrUpdater } from "recoil"
 
 import { become } from "~/lib/fp-tools"
-import type { JsonArr, JsonObj } from "~/lib/json"
-import mapObject from "~/lib/Luum/src/utils/mapObject"
-
-export const makePropertySetters = <T extends JsonObj>(
-  data: T,
-  set: SetterOrUpdater<T>
-): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
-  mapObject<T, any, SetterOrUpdater<any>>(
-    data,
-    (value, key) => (newValue) =>
-      set({ ...data, [key]: become(newValue)(value[key]) })
-  )
+import type { JsonArr } from "~/lib/json"
 
 export const makeElementSetters = <T extends JsonArr>(
   data: T,
