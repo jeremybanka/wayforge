@@ -28,13 +28,13 @@ export const makePropertyRenamers = <T extends JsonObj>(
     (value, key) => (newKey) =>
       Object.hasOwn(data, newKey)
         ? null
-        : set((current) => {
-            const entries = Object.entries(current)
+        : set(() => {
+            const entries = Object.entries(data)
             const index = entries.findIndex(([k]) => k === key)
             entries[index] = [newKey, value]
             const stableKeyMap = stableKeyMapRef.current
             stableKeyMapRef.current = {
-              ...stableKeyMapRef.current,
+              ...stableKeyMap,
               [newKey]: stableKeyMap[key],
             }
             return Object.fromEntries(entries) as T
@@ -47,11 +47,24 @@ export const makePropertyRemovers = <T extends JsonObj>(
 ): { [K in keyof T]: () => void } =>
   mapObject<T, any, () => void>(
     data,
-    (value, key) => () =>
-      set((current) => {
-        const { [key]: _, ...rest } = current
+    (_, key) => () =>
+      set(() => {
+        const { [key]: _, ...rest } = data
         return rest as T
       })
+  )
+
+export const makePropertyRecasters = <T extends JsonObj>(
+  data: T,
+  set: SetterOrUpdater<T>
+): { [K in keyof T]: (newType: JsonTypeName) => void } =>
+  mapObject<T, any, (newType: JsonTypeName) => void>(
+    data,
+    (value, key) => (newType) =>
+      set(() => ({
+        ...data,
+        [key]: cast(value).to[newType](),
+      }))
   )
 
 export const makePropertyCreationInterface =

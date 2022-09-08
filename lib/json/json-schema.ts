@@ -1,3 +1,6 @@
+import type { Json, JsonTypeName } from "."
+import { JSON_DEFAULTS } from "."
+
 export type JsonSchemaCoreTypes =
   | `array`
   | `boolean`
@@ -22,7 +25,7 @@ export type JsonSchemaStringFormat =
   | `uuid`
 
 export type StringSchema = {
-  type: `string`
+  // type: `string`
   enum?: string[]
   minLength?: number
   maxLength?: number
@@ -80,3 +83,33 @@ export type JsonSchema =
         type: JsonSchemaCoreTypes
       }> &
       StringSchema)
+
+export const schemaToTemplate = (schema: JsonSchema): Json => {
+  if (schema === true) {
+    return {}
+  } else if (schema === false) {
+    return null
+  }
+  const { type: schemaType } = schema
+  const type: JsonTypeName =
+    schemaType === `integer` ? `number` : schemaType || `null`
+  const template = JSON_DEFAULTS[type]
+  if (type === `object`) {
+    const { properties } = schema
+    if (properties) {
+      return Object.entries(properties).reduce(
+        (obj, [key, value]) => ({
+          ...obj,
+          [key]: schemaToTemplate(value),
+        }),
+        {}
+      )
+    }
+  } else if (type === `array`) {
+    const { items } = schema
+    if (items) {
+      return [schemaToTemplate(items)]
+    }
+  }
+  return template
+}

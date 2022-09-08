@@ -122,7 +122,7 @@ export const NumberInput: FC<NumberInputProps> = ({
       <label>{label}</label>
       {autoSize ? (
         <AutoSizeInput
-          type="text"
+          type="number"
           value={value}
           onChange={handleChange}
           disabled={set === undefined}
