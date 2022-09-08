@@ -6,6 +6,7 @@ import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
 import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
+import type { JsonSchema } from "~/lib/json/json-schema"
 import type { LuumCssRule } from "~/lib/Luum"
 import { luumToCss } from "~/lib/Luum"
 import { JsonEditor } from "~/lib/react-ui/json-editor"
@@ -60,25 +61,74 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   // console.log({ scssA, scssB })
 
   return (
-    <li
-      css={css`
-        /* display: flex;
-        gap: 10px; */
-      `}
-    >
-      <label>{energy.name}</label>
+    <li>
       <JsonEditor
+        Header={() => (
+          <header>
+            <TextInput value={energy.name} set={set.name} autoSize={true} />
+          </header>
+        )}
+        remove={unlink}
         data={energy}
         set={setEnergy}
-        schema={energySchema}
+        schema={energySchema as JsonSchema}
         isReadonly={(path) => path.includes(`id`)}
         customCss={css`
+          border: 2px solid #333;
+          padding: 20px;
           input {
             font-size: 20px;
             font-family: theia;
+            border: none;
+            border-bottom: 1px solid;
+            background: none;
+            &:disabled {
+              border: none;
+            }
           }
-          .__JSON__unofficial {
-            background-color: #f083;
+          button {
+            background: none;
+            margin-left: auto;
+            color: #777;
+            border: none;
+            font-family: theia;
+            font-size: 14px;
+            margin: none;
+            padding: 4px;
+            padding-bottom: 6px;
+            cursor: pointer;
+            &:hover {
+              color: #333;
+              background-color: #aaa;
+            }
+          }
+          select {
+            font-family: theia;
+            font-size: 14px;
+            background: none;
+          }
+          .json_editor_unofficial {
+            background-color: #777;
+            button {
+              color: #333;
+            }
+          }
+          .json_editor_missing {
+            background-color: #f055;
+          }
+          .json_editor_key {
+          }
+          .json_editor_object {
+            border-left: 2px solid #333;
+            padding-left: 20px;
+            .json_editor_properties {
+              /* padding: 20px; */
+              /* background-color: #8882; */
+              > * {
+                border-bottom: 2px solid #333;
+                margin-bottom: 2px;
+              }
+            }
           }
         `}
       />

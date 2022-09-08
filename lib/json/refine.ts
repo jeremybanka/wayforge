@@ -5,15 +5,15 @@ import { isString } from "fp-ts/lib/string"
 import type { Json, JsonArr, JsonObj } from "~/lib/json"
 import { isPlainObject } from "~/lib/json"
 
-export const refineJsonType = (
-  data: Json
-):
+export type RefinedJson =
   | { type: `array`; data: JsonArr }
   | { type: `boolean`; data: boolean }
   | { type: `null`; data: null }
   | { type: `number`; data: number }
   | { type: `object`; data: JsonObj }
-  | { type: `string`; data: string } =>
+  | { type: `string`; data: string }
+
+export const refineJsonType = (data: Json): RefinedJson =>
   data === null
     ? { type: `null`, data }
     : isBoolean(data)
