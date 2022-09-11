@@ -9,6 +9,7 @@ import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.
 import type { JsonSchema } from "~/lib/json/json-schema"
 import type { LuumCssRule } from "~/lib/Luum"
 import { luumToCss } from "~/lib/Luum"
+import { ErrorBoundary } from "~/lib/react-ui/error-boundary"
 import { JsonEditor } from "~/lib/react-ui/json-editor"
 import { TextInput } from "~/lib/react-ui/text-input"
 
@@ -20,6 +21,21 @@ export type RecoilIndexProps<T> = {
   id: string
   findState: (key: string) => RecoilState<T>
   unlink: () => void
+}
+
+export const EnergyIcon: FC<{ energy: Energy }> = ({ energy }) => {
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        font-size: 54px;
+        font-family: "|_'_|";
+        text-align: center;
+      `}
+    >
+      {energy.icon}
+    </div>
+  )
 }
 
 export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
@@ -34,7 +50,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
     name: (name: string) => setEnergy((e) => ({ ...e, name })),
     icon: (icon: string) => setEnergy((e) => ({ ...e, icon })),
   }
-  /*
+
   const colorSchemeA: LuumCssRule = {
     root: energy.colorA,
     attributes: [`color`, []],
@@ -44,16 +60,13 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
     attributes: [`background-color`, []],
   }
 
-  const colorAState = findEnergyColorState({ id, colorKey: `colorA` })
-  const colorBState = findEnergyColorState({ id, colorKey: `colorB` })
-
   const scssA = luumToCss(colorSchemeA)
   const scssB = luumToCss(colorSchemeB)
   const scss = css`
     ${scssA};
     ${scssB};
   `
-  */
+
   // const schemeIsInteractive = isInteractiveScheme(colorScheme)
   // const palette = mixPaletteStatic(colorScheme)
   // const paletteIsInteractive = isInteractivePalette(palette)
@@ -61,7 +74,15 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   // console.log({ scssA, scssB })
 
   return (
-    <li>
+    <li
+      css={css`
+        border: 2px solid #333;
+        padding: 20px;
+      `}
+    >
+      <ErrorBoundary>
+        <EnergyIcon energy={energy} />
+      </ErrorBoundary>
       <JsonEditor
         Header={() => (
           <header>
@@ -74,8 +95,6 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
         schema={energySchema as JsonSchema}
         isReadonly={(path) => path.includes(`id`)}
         customCss={css`
-          border: 2px solid #333;
-          padding: 20px;
           input {
             font-size: 20px;
             font-family: theia;
@@ -132,54 +151,6 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
           }
         `}
       />
-      {/* <span
-        css={css`
-          input {
-            width: 100px;
-            ${scss};
-          }
-        `}
-      >
-        <TextInput
-          value={energy.icon}
-          set={set.icon}
-          placeholder="-"
-          customCss={css`
-            input {
-              font-size: 54px;
-              font-family: "|_'_|";
-              text-align: center;
-            }
-          `}
-        />
-
-        <TextInput
-          value={energy.icon}
-          set={set.icon}
-          placeholder="-"
-          customCss={css`
-            input {
-              font-family: sudo;
-              text-align: center;
-            }
-          `}
-        />
-      </span>
-      <span>
-        <TextInput
-          label="name"
-          value={energy.name}
-          set={set.name}
-          placeholder="-"
-        />
-        <TextInput label="id" value={energy.id} placeholder="-" />
-      </span>
-      <span>
-        <EnergyColorPicker state={colorAState} />
-        <EnergyColorPicker state={colorBState} />
-      </span> */}
-
-      <button onClick={unlink}>Unlink</button>
     </li>
   )
 }
