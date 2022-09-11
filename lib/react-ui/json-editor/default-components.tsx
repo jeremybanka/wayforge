@@ -2,6 +2,8 @@ import type { FC, ReactNode } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 
+import { ErrorBoundary } from "../error-boundary"
+
 export type Dict<T> = Record<string, T>
 
 export type WrapperComponent<T extends Dict<unknown> = Dict<unknown>> = FC<
@@ -15,6 +17,8 @@ export type WC<T extends Dict<unknown> = Dict<unknown>> = WrapperComponent<T>
 //   <div className="__JSON__object">{children}</div>
 // )
 export type JsonEditorComponents = {
+  ErrorBoundary: WC
+
   Button: WC<{ onClick: () => void }>
   DeleteIcon: FC
 
@@ -44,6 +48,7 @@ export type JsonEditorComponents = {
 }
 
 export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
+  ErrorBoundary: ({ children }) => <ErrorBoundary>{children}</ErrorBoundary>,
   Button: ({ onClick, children }) => (
     <button className="json_editor_button" onClick={onClick}>
       {children}
