@@ -36,6 +36,7 @@ export type JsonEditorProps<T extends Json> = {
   data: T
   set: SetterOrUpdater<T>
   ref?: RefObject<HTMLInputElement>
+  name?: string
   rename?: (newKey: string) => void
   remove?: () => void
   schema?: JsonSchema
@@ -51,9 +52,9 @@ export const JsonEditor = <T extends Json>({
   data,
   set,
   schema,
+  name,
   rename,
   remove,
-  path = [],
   isReadonly = () => false,
   // isHidden = () => false,
   // isIllegal = () => false,
@@ -70,10 +71,11 @@ export const JsonEditor = <T extends Json>({
     <JsonEditor_INTERNAL
       data={data}
       set={set}
+      name={name}
       schema={schema}
       rename={rename}
       remove={remove}
-      path={path}
+      path={[]}
       isReadonly={isReadonly}
       className={className}
       customCss={customCss}

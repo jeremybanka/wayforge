@@ -1,41 +1,18 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
-import Ajv from "ajv/dist/core"
 import type { RecoilState } from "recoil"
-import { useRecoilState } from "recoil"
+import { useRecoilValue } from "recoil"
 
-import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
-import type { JsonSchema } from "~/lib/json/json-schema"
-import type { LuumCssRule } from "~/lib/Luum"
-import { luumToCss } from "~/lib/Luum"
-import { ErrorBoundary } from "~/lib/react-ui/error-boundary"
-import { JsonEditor } from "~/lib/react-ui/json-editor"
-import { TextInput } from "~/lib/react-ui/text-input"
+import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
 
-import { findEnergyColorState } from "../../services/energy"
 import type { Energy } from "../../services/energy"
-import { EnergyColorPicker } from "./EnergyColorPicker"
+import { EnergyIcon } from "./EnergyIcon_SVG"
 
 export type RecoilIndexProps<T> = {
   id: string
   findState: (key: string) => RecoilState<T>
   unlink: () => void
-}
-
-export const EnergyIcon: FC<{ energy: Energy }> = ({ energy }) => {
-  return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        font-size: 54px;
-        font-family: "|_'_|";
-        text-align: center;
-      `}
-    >
-      {energy.icon}
-    </div>
-  )
 }
 
 export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
@@ -44,34 +21,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   unlink,
 }) => {
   const energyState = findState(id)
-  const [energy, setEnergy] = useRecoilState(energyState)
-  const set = {
-    id: (id: string) => setEnergy((e) => ({ ...e, id })),
-    name: (name: string) => setEnergy((e) => ({ ...e, name })),
-    icon: (icon: string) => setEnergy((e) => ({ ...e, icon })),
-  }
-
-  const colorSchemeA: LuumCssRule = {
-    root: energy.colorA,
-    attributes: [`color`, []],
-  }
-  const colorSchemeB: LuumCssRule = {
-    root: energy.colorB,
-    attributes: [`background-color`, []],
-  }
-
-  const scssA = luumToCss(colorSchemeA)
-  const scssB = luumToCss(colorSchemeB)
-  const scss = css`
-    ${scssA};
-    ${scssB};
-  `
-
-  // const schemeIsInteractive = isInteractiveScheme(colorScheme)
-  // const palette = mixPaletteStatic(colorScheme)
-  // const paletteIsInteractive = isInteractivePalette(palette)
-  // const dec = paletteToScssDeclaration(palette, 0)
-  // console.log({ scssA, scssB })
+  const energy = useRecoilValue(energyState)
 
   return (
     <li
@@ -80,77 +30,9 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
         padding: 20px;
       `}
     >
-      <ErrorBoundary>
+      <RecoverableErrorBoundary>
         <EnergyIcon energy={energy} />
-      </ErrorBoundary>
-      <JsonEditor
-        Header={() => (
-          <header>
-            <TextInput value={energy.name} set={set.name} autoSize={true} />
-          </header>
-        )}
-        remove={unlink}
-        data={energy}
-        set={setEnergy}
-        schema={energySchema as JsonSchema}
-        isReadonly={(path) => path.includes(`id`)}
-        customCss={css`
-          input {
-            font-size: 20px;
-            font-family: theia;
-            border: none;
-            border-bottom: 1px solid;
-            background: none;
-            &:disabled {
-              border: none;
-            }
-          }
-          button {
-            background: none;
-            margin-left: auto;
-            color: #777;
-            border: none;
-            font-family: theia;
-            font-size: 14px;
-            margin: none;
-            padding: 4px;
-            padding-bottom: 6px;
-            cursor: pointer;
-            &:hover {
-              color: #333;
-              background-color: #aaa;
-            }
-          }
-          select {
-            font-family: theia;
-            font-size: 14px;
-            background: none;
-          }
-          .json_editor_unofficial {
-            background-color: #777;
-            button {
-              color: #333;
-            }
-          }
-          .json_editor_missing {
-            background-color: #f055;
-          }
-          .json_editor_key {
-          }
-          .json_editor_object {
-            border-left: 2px solid #333;
-            padding-left: 20px;
-            .json_editor_properties {
-              /* padding: 20px; */
-              /* background-color: #8882; */
-              > * {
-                border-bottom: 2px solid #333;
-                margin-bottom: 2px;
-              }
-            }
-          }
-        `}
-      />
+      </RecoverableErrorBoundary>
     </li>
   )
 }

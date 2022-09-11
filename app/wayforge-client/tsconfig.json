@@ -26,6 +26,7 @@
   "include": [".", "../../lib"],
   "references": [
     { "path": "./tsconfig.node.json" },
-    { "path": "../../lib/tsconfig.json" }
+    { "path": "../../lib/tsconfig.json" },
+    { "path": "../../lib/Luum/tsconfig.json" }
   ]
 }
