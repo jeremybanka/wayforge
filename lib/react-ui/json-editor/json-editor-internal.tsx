@@ -108,13 +108,15 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   )
 
   return (
-    <Components.EditorLayout
-      DeleteButton={DeleteButton}
-      Header={Header}
-      KeyInput={KeyInput}
-      TypeSelect={TypeSelect}
-      ValueEditor={ValueEditor}
-      Wrapper={Wrapper}
-    />
+    <Components.ErrorBoundary>
+      <Components.EditorLayout
+        DeleteButton={DeleteButton}
+        Header={Header}
+        KeyInput={KeyInput}
+        TypeSelect={TypeSelect}
+        ValueEditor={ValueEditor}
+        Wrapper={Wrapper}
+      />
+    </Components.ErrorBoundary>
   )
 }

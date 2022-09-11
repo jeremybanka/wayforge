@@ -54,18 +54,20 @@ export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {
   )
 }
 
-type ClockState = {
+export type ErrorBoundaryState = {
   error?: Error | string
   errorInfo?: ErrorInfo
 }
 
-type ErrorBoundaryProps = {
-  [key: string]: unknown
+export type ErrorBoundaryProps = {
   children: ReactNode
   Fallback?: FC<FallbackProps>
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ClockState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   public constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { error: undefined, errorInfo: undefined }
