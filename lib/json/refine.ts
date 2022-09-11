@@ -15,7 +15,7 @@ export type RefinedJson =
 
 export const refineJsonType = (data: Json): RefinedJson =>
   data === null
-    ? { type: `null`, data }
+    ? { type: `null`, data: null }
     : isBoolean(data)
     ? { type: `boolean`, data }
     : isNumber(data)

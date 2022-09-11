@@ -23,6 +23,9 @@
       "wayforge-server/*": ["./wayforge-server/src/services/*"]
     }
   },
-  "include": ["src", "../../lib"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [".", "../../lib"],
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "../../lib/tsconfig.json" }
+  ]
 }

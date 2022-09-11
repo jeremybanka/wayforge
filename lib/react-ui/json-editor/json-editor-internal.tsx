@@ -4,7 +4,7 @@ import type { SerializedStyles } from "@emotion/react"
 import { isString } from "fp-ts/lib/string"
 import type { SetterOrUpdater } from "recoil"
 
-import { ifLast as lastOf, join } from "~/lib/fp-tools/array"
+import { ifLast as lastOf } from "~/lib/fp-tools/array"
 import type { Json, JsonTypes } from "~/lib/json"
 import type { JsonSchema } from "~/lib/json/json-schema"
 import { refineJsonType } from "~/lib/json/refine"

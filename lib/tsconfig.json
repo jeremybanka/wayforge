@@ -1,5 +1,14 @@
 {
   "extends": "../tsconfig.base.json",
-  "files": [],
-  "include": []
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["../*"]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react"
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/*.server.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

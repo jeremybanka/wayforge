@@ -1,4 +1,4 @@
-import fs from "fs"
+import { readdirSync, renameSync, writeFileSync } from "fs"
 
 import type { Refinement } from "fp-ts/lib/Refinement"
 import type { Socket, ServerOptions } from "socket.io"
@@ -8,7 +8,7 @@ import type { EventsMap } from "socket.io/dist/typed-events"
 // import energySchema from "~/gen/energy.schema"
 import type { Modifier } from "~/lib/fp-tools"
 import type { JsonObj } from "~/lib/json"
-import { getDirectoryJsonEntries } from "~/lib/node/fs"
+import { getDirectoryJsonEntries } from "~/lib/node/json-fs.server"
 
 const { log } = console
 
@@ -32,7 +32,7 @@ const makeIndexer =
     const dir = `${jsonRoot}/${type}`
     const entries = getDirectoryJsonEntries({
       dir,
-      refine: identify,
+      coerce: identify,
     })
     const fileContents = entries.map(([, data]) => data.id)
     return fileContents
@@ -89,7 +89,7 @@ export const SaveJsonWebsocketServer = (
         const dir = `${jsonRoot}/${type}`
         const entries = getDirectoryJsonEntries({
           dir,
-          refine: identify,
+          coerce: identify,
         })
         const matchingEntry = entries.find(([, data]) => data.id === id)
         if (matchingEntry) {
@@ -103,16 +103,13 @@ export const SaveJsonWebsocketServer = (
         const valueAsString = JSON.stringify(value)
         const formatted = formatter(valueAsString)
         const newFilePath = nameFile(type, value) + `.json`
-        const allFileNames = fs.readdirSync(`${jsonRoot}/${type}`)
+        const allFileNames = readdirSync(`${jsonRoot}/${type}`)
         const prevFileName = allFileNames.find((name) => name.includes(id))
         const prevFilePath = type + `/` + prevFileName
         if (prevFileName && prevFilePath !== newFilePath) {
-          fs.renameSync(
-            `${jsonRoot}/${prevFilePath}`,
-            `${jsonRoot}/${newFilePath}`
-          )
+          renameSync(`${jsonRoot}/${prevFilePath}`, `${jsonRoot}/${newFilePath}`)
         }
-        fs.writeFileSync(`${jsonRoot}/${newFilePath}`, formatted)
+        writeFileSync(`${jsonRoot}/${newFilePath}`, formatted)
       })
 
       socket.on(`indexRead`, ({ type }) => {
@@ -126,11 +123,11 @@ export const SaveJsonWebsocketServer = (
         log(socket.id, `indexWrite`, type)
         const ids = index(type)
         const toBeDeleted = ids.filter((id) => !newIds.includes(id))
-        const fileNames = fs.readdirSync(`${jsonRoot}/${type}`)
+        const fileNames = readdirSync(`${jsonRoot}/${type}`)
 
         toBeDeleted.forEach((id) => {
           const fileName = fileNames.find((name) => name.includes(id))
-          fs.renameSync(
+          renameSync(
             `${jsonRoot}/${type}/${fileName}`,
             `${jsonRoot}/${type}/_trash/${fileName}`
           )

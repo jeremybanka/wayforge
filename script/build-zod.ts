@@ -2,7 +2,7 @@ import fs from "fs"
 
 import { jsonSchemaToZodDereffed } from "json-schema-to-zod"
 
-import { getBareJsonFileNames } from "../lib/fs"
+import { getBareJsonFileNames } from "../lib/node/fs"
 
 const schemaNames = getBareJsonFileNames(
   fs.readdirSync(`${process.cwd()}/wayfarer/schema`)
