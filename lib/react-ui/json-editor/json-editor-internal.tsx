@@ -18,6 +18,7 @@ export type JsonEditorProps_INTERNAL<T extends Json> = {
   data: T
   set: SetterOrUpdater<T>
   ref?: RefObject<HTMLInputElement>
+  name?: string
   rename?: (newKey: string) => void
   remove?: () => void
   recast?: (newType: keyof JsonTypes) => void
@@ -34,6 +35,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   data,
   set,
   schema,
+  name,
   rename,
   remove,
   recast,
@@ -116,10 +118,10 @@ export const JsonEditor_INTERNAL = <T extends Json>({
           </Components.Button>
         )}
         {HeaderDisplay && <HeaderDisplay data={data} schema={schema} />}
-        {isString(key) && (
+        {rename && (
           <Components.KeyWrapper>
             <AutoSizeInput
-              value={key}
+              value={name}
               onChange={
                 rename && !disabled ? (e) => rename(e.target.value) : () => null
               }

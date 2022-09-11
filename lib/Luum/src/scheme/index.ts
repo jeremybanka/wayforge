@@ -221,6 +221,8 @@ export const CSS_COLOR_PROPERTY_KEYS = [
   `text-decoration-color`,
   `text-decoration`,
   `text-shadow`,
+
+  `fill`,
 ] as const
 
 export type CssVariable = `--${string}`
@@ -392,12 +394,9 @@ export const luumToCss = (rule: LuumCssRule): string => {
     oneOrManyAttributes,
     each(isLuumCssAttribute),
     map(([oneOrManyKeys, oneOrManyModifiers]) => {
-      const transformers = each(isLuumSpecModifier)(oneOrManyModifiers)
-      const transformedSpec = transformers.reduce(
-        (acc, transformer) => transformer(acc),
-        root
-      )
-      const hex = specToHex(transformedSpec, maybeFilter)
+      const modifiers = each(isLuumSpecModifier)(oneOrManyModifiers)
+      const modifiedSpec = modifiers.reduce((last, modify) => modify(last), root)
+      const hex = specToHex(modifiedSpec, maybeFilter)
       return pipe(
         oneOrManyKeys,
         each(isCssColorPropertyKey),

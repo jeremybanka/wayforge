@@ -5,7 +5,7 @@ import { isBoolean } from "fp-ts/lib/boolean"
 import { isString } from "fp-ts/lib/string"
 import type { SetterOrUpdater } from "recoil"
 
-import { ifLast } from "~/lib/fp-tools/array"
+import { ifLast as lastOf } from "~/lib/fp-tools/array"
 import type { Json, JsonObj } from "~/lib/json"
 import { isPlainObject } from "~/lib/json"
 import type { JsonSchema } from "~/lib/json/json-schema"
@@ -70,7 +70,7 @@ export const ObjectEditor = <T extends JsonObj>({
   const sortProperties = makePropertySorter(data, set)
   const makePropertyAdder = makePropertyCreationInterface(data, set)
 
-  const parentKey = ifLast(path)
+  const parentKey = lastOf(path)
 
   const schemaIsObject = typeof schema === `object`
   const subSchema: JsonSchema | undefined = schemaIsObject
@@ -117,7 +117,9 @@ export const ObjectEditor = <T extends JsonObj>({
 
   return (
     <>
-      <button onClick={() => sortProperties()}>Sort</button>
+      <Components.Button onClick={() => sortProperties()}>
+        Sort
+      </Components.Button>
       <Components.ObjectWrapper>
         <div className="json_editor_properties">
           {[...missingKeys, ...officialKeys, ...unofficialKeys].map((key) => {
@@ -141,6 +143,7 @@ export const ObjectEditor = <T extends JsonObj>({
                 key={originalPath.join(`.`)}
                 schema={schema}
                 path={newPath}
+                name={key}
                 isReadonly={isReadonly}
                 data={data[key as keyof T]}
                 set={setProperty[key as keyof T]}

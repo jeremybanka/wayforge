@@ -1,5 +1,12 @@
 import type { ErrorInfo, ReactNode, FC, FunctionComponent } from "react"
-import { Component } from "react"
+import { useId, Component } from "react"
+
+import {
+  atomFamily,
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+} from "recoil"
 
 export type FallbackProps = {
   error?: Error | string
@@ -9,7 +16,6 @@ export type FallbackProps = {
 const NOT_A_FUNCTION = true
 // @ts-expect-error 😂😂😂
 const throwTypeError = (): never => NOT_A_FUNCTION()
-
 export const OOPS: FunctionComponent = () => throwTypeError()
 
 export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {
@@ -61,6 +67,7 @@ export type ErrorBoundaryState = {
 
 export type ErrorBoundaryProps = {
   children: ReactNode
+  onError?: (error: Error | string, errorInfo: ErrorInfo) => void
   Fallback?: FC<FallbackProps>
 }
 
@@ -76,6 +83,7 @@ export class ErrorBoundary extends Component<
   }
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    this.props.onError?.(error, errorInfo)
     this.setState({
       error,
       errorInfo,
@@ -92,4 +100,35 @@ export class ErrorBoundary extends Component<
       (children as ReactNode)
     )
   }
+}
+
+export const findErrorState = atomFamily<ErrorBoundaryState, string>({
+  key: `findErrorState`,
+  default: { error: undefined, errorInfo: undefined },
+})
+
+export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
+  children,
+  Fallback = DefaultFallback,
+}) => {
+  const nodeId = useId()
+  const [{ error }, setError] = useRecoilState(findErrorState(nodeId))
+  const resetError = useResetRecoilState(findErrorState(nodeId))
+  const hasError = Boolean(error)
+
+  return hasError ? (
+    <div>
+      <button onClick={resetError}>Reset</button>
+      <ErrorBoundary Fallback={Fallback}>{children}</ErrorBoundary>
+    </div>
+  ) : (
+    <ErrorBoundary
+      Fallback={Fallback}
+      onError={(newError, newErrorInfo) =>
+        setError({ error: newError, errorInfo: newErrorInfo })
+      }
+    >
+      {children}
+    </ErrorBoundary>
+  )
 }
