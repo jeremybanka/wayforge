@@ -27,6 +27,8 @@ export type JsonArr<Element extends Serializable = Serializable> =
 
 export type Json = JsonArr | JsonObj | Primitive
 
+export const parseJson = (str: string): Json => JSON.parse(str)
+
 export type Empty = Record<string, never>
 
 export const isPlainObject = (input: unknown): input is JsonObj =>
