@@ -52,71 +52,104 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   const key = lastOf(path)
   const disabled = isReadonly(path)
 
-  const DeleteButton = remove
-    ? () => (
-        <Components.Button onClick={remove}>
-          <Components.DeleteIcon />
-        </Components.Button>
-      )
-    : undefined
-  const Header = HeaderDisplay
-    ? () => <HeaderDisplay data={data} schema={schema} />
-    : undefined
-  const KeyInput = isString(key)
-    ? () => (
-        <Components.KeyWrapper>
-          <AutoSizeInput
-            value={key}
-            onChange={
-              rename && !disabled ? (e) => rename(e.target.value) : () => null
-            }
-            disabled={disabled}
-          />
-        </Components.KeyWrapper>
-      )
-    : undefined
-  const TypeSelect = recast
-    ? () => (
-        <select
-          onChange={(e) => recast(e.target.value as keyof JsonTypes)}
-          value={json.type}
-        >
-          {Object.keys(SubEditors).map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      )
-    : undefined
-  const ValueEditor = () => (
-    <SubEditor
-      data={json.data}
-      set={set}
-      schema={schema}
-      remove={remove}
-      rename={rename}
-      path={path}
-      isReadonly={isReadonly}
-      Components={Components}
-    />
-  )
-  const Wrapper: WC = ({ children }) => (
-    <Components.EditorWrapper className={className} customCss={customCss}>
-      {children}
-    </Components.EditorWrapper>
-  )
+  // const DeleteButton = remove
+  //   ? () => (
+  //       <Components.Button onClick={remove}>
+  //         <Components.DeleteIcon />
+  //       </Components.Button>
+  //     )
+  //   : undefined
+  // const Header = HeaderDisplay
+  //   ? () => <HeaderDisplay data={data} schema={schema} />
+  //   : undefined
+  // const KeyInput = isString(key)
+  //   ? () => (
+  //       <Components.KeyWrapper>
+  //         <AutoSizeInput
+  //           value={key}
+  //           onChange={
+  //             rename && !disabled ? (e) => rename(e.target.value) : () => null
+  //           }
+  //           disabled={disabled}
+  //         />
+  //       </Components.KeyWrapper>
+  //     )
+  //   : undefined
+  // const TypeSelect = recast
+  //   ? () => (
+  //       <select
+  //         onChange={(e) => recast(e.target.value as keyof JsonTypes)}
+  //         value={json.type}
+  //       >
+  //         {Object.keys(SubEditors).map((type) => (
+  //           <option key={type} value={type}>
+  //             {type}
+  //           </option>
+  //         ))}
+  //       </select>
+  //     )
+  //   : undefined
+  // const ValueEditor = () => (
+  //   <SubEditor
+  //     data={json.data}
+  //     set={set}
+  //     schema={schema}
+  //     remove={remove}
+  //     rename={rename}
+  //     path={path}
+  //     isReadonly={isReadonly}
+  //     Components={Components}
+  //   />
+  // )
+  // const Wrapper: WC = ({ children }) => (
+  //   <Components.EditorWrapper className={className} customCss={customCss}>
+  //     {children}
+  //   </Components.EditorWrapper>
+  // )
 
   return (
     <Components.ErrorBoundary>
-      <Components.EditorLayout
-        DeleteButton={DeleteButton}
-        Header={Header}
-        KeyInput={KeyInput}
-        TypeSelect={TypeSelect}
-        ValueEditor={ValueEditor}
-        Wrapper={Wrapper}
-      />
+      <Components.EditorWrapper className={className} customCss={customCss}>
+        {remove && (
+          <Components.Button onClick={remove}>
+            <Components.DeleteIcon />
+          </Components.Button>
+        )}
+        {HeaderDisplay && <HeaderDisplay data={data} schema={schema} />}
+        {isString(key) && (
+          <Components.KeyWrapper>
+            <AutoSizeInput
+              value={key}
+              onChange={
+                rename && !disabled ? (e) => rename(e.target.value) : () => null
+              }
+              disabled={disabled}
+            />
+          </Components.KeyWrapper>
+        )}
+        <SubEditor
+          data={json.data}
+          set={set}
+          schema={schema}
+          remove={remove}
+          rename={rename}
+          path={path}
+          isReadonly={isReadonly}
+          Components={Components}
+        />
+        {recast && (
+          <select
+            onChange={(e) => recast(e.target.value as keyof JsonTypes)}
+            value={json.type}
+          >
+            {Object.keys(SubEditors).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        )}
+      </Components.EditorWrapper>
     </Components.ErrorBoundary>
   )
 }
