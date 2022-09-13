@@ -9,12 +9,13 @@ import {
   useAddEnergy,
   useRemoveEnergy,
 } from "../../services/energy"
+import { useSetTitle } from "../../services/view"
 import { EnergyListItem } from "./EnergyListItem"
 
 export const EnergyOverview: FC = () => {
   const ids = useRecoilValue(energyIndex)
   const addEnergy = useAddEnergy()
-  const removeEnergy = useRemoveEnergy()
+  useSetTitle(`Energy`)
 
   return (
     <div
