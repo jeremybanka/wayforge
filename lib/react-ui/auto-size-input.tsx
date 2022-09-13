@@ -156,7 +156,7 @@ export class AutoSizeInput extends Component<
     if (!this.mounted || this.sizer === null) {
       return
     }
-    let newInputWidth
+    let newInputWidth: number
     if (
       this.props.placeholder &&
       (!this.props.value ||
@@ -178,7 +178,7 @@ export class AutoSizeInput extends Component<
         : this.props.extraWidth ?? 0
     newInputWidth += extraWidth
     if (newInputWidth < (this.props.minWidth ?? 0)) {
-      newInputWidth = this.props.minWidth
+      newInputWidth = Number(this.props.minWidth)
     }
     if (newInputWidth !== this.state.inputWidth) {
       this.setState({
@@ -212,14 +212,7 @@ export class AutoSizeInput extends Component<
   //   ) : null
   // }
   public render(): EmotionJSX.Element {
-    const sizerValue = [this.props.defaultValue, this.props.value, ``].reduce(
-      (previousValue, currentValue) => {
-        if (previousValue !== null && previousValue !== undefined) {
-          return previousValue
-        }
-        return currentValue
-      }
-    )
+    const sizerValue = this.props.defaultValue ?? this.props.value ?? ``
 
     const wrapperStyle = { ...this.props.style }
     if (!wrapperStyle.display) wrapperStyle.display = `inline-block`

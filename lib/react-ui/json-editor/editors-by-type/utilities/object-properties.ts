@@ -1,12 +1,12 @@
 import type { MutableRefObject } from "react"
 
+import mapObject from "Luum/src/utils/mapObject"
 import type { SetterOrUpdater } from "recoil"
 
 import { become } from "~/lib/fp-tools"
 import type { Json, JsonObj, JsonTypeName } from "~/lib/json"
 import { JSON_DEFAULTS } from "~/lib/json"
 import { cast } from "~/lib/json/cast"
-import mapObject from "~/lib/Luum/src/utils/mapObject"
 
 export const makePropertySetters = <T extends JsonObj>(
   data: T,

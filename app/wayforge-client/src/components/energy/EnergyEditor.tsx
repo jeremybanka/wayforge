@@ -1,85 +1,43 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
+import { Link, useParams } from "react-router-dom"
 import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
+import type { RecoilEditorProps } from "~/app/wayforge-client/recoil-editor"
+import { RecoilEditor } from "~/app/wayforge-client/recoil-editor"
 import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
 import type { JsonSchema } from "~/lib/json/json-schema"
-import type { LuumCssRule } from "~/lib/Luum"
-import { luumToCss } from "~/lib/Luum"
 import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
+import type { JsxElements } from "~/lib/react-ui/json-editor"
 import { JsonEditor } from "~/lib/react-ui/json-editor"
 
 import type { Energy } from "../../services/energy"
+import { findEnergyState, useRemoveEnergy } from "../../services/energy"
+import { EnergyIcon } from "./EnergyIcon_SVG"
 
-export type RecoilIndexProps<T> = {
-  id: string
-  findState: (key: string) => RecoilState<T>
-  unlink: () => void
-}
-
-export const EnergyIcon: FC<{ energy: Energy }> = ({ energy }) => {
-  const colorSchemeA: LuumCssRule = {
-    root: energy.colorA,
-    attributes: [`fill`, []],
-  }
-  const colorSchemeB: LuumCssRule = {
-    root: energy.colorB,
-    attributes: [`fill`, []],
-  }
-
-  const scssA = luumToCss(colorSchemeA)
-  const scssB = luumToCss(colorSchemeB)
-
-  return (
-    <g>
-      <circle
-        cx="50"
-        cy="50"
-        r="40"
-        fill="white"
-        css={css`
-          ${scssB};
-        `}
-      />
-      <text
-        x="24"
-        y="63"
-        css={css`
-          font-family: "|_'_|";
-          font-size: 45px;
-          ${scssA};
-        `}
-      >
-        {energy.icon}
-      </text>
-    </g>
-  )
-}
-
-export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
+export const EnergyEditor_INTERNAL: FC<RecoilEditorProps<Energy>> = ({
   id,
   findState,
-  unlink,
+  useRemove,
 }) => {
   const energyState = findState(id)
   const [energy, setEnergy] = useRecoilState(energyState)
   const set = {
     name: (name: string) => setEnergy((e) => ({ ...e, name })),
-    // id: (id: string) => setEnergy((e) => ({ ...e, id })),
-    // icon: (icon: string) => setEnergy((e) => ({ ...e, icon })),
   }
+  const remove = useRemove()
 
   return (
-    <li
+    <div
       css={css`
         border: 2px solid #333;
         padding: 20px;
       `}
     >
       <RecoverableErrorBoundary>
-        <EnergyIcon energy={energy} />
+        <EnergyIcon energy={energy} size={100} />
       </RecoverableErrorBoundary>
       <JsonEditor
         schema={energySchema as JsonSchema}
@@ -87,7 +45,7 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
         set={setEnergy}
         name={energy.name}
         rename={set.name}
-        remove={unlink}
+        remove={() => remove(id)}
         isReadonly={(path) => path.includes(`id`)}
         customCss={css`
           input {
@@ -150,8 +108,6 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
               border-color: #ccc;
             }
             .json_editor_properties {
-              /* padding: 20px; */
-              /* background-color: #8882; */
               > * {
                 border-bottom: 2px solid #333;
                 margin-bottom: 2px;
@@ -160,6 +116,14 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
           }
         `}
       />
-    </li>
+    </div>
   )
 }
+
+export const EnergyEditor: FC = () => (
+  <RecoilEditor.RouterAdaptor
+    Editor={EnergyEditor_INTERNAL}
+    findState={findEnergyState}
+    useRemove={useRemoveEnergy}
+  />
+)

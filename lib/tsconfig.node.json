@@ -1,7 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "express"]
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["../*"]
+    },
+    "types": ["node", "express", "jest"]
   },
-  "include": ["**/*.server.ts", "**/*.server.tsx"]
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }

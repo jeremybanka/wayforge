@@ -5,7 +5,7 @@ export const each =
   (input: unknown): T[] =>
     isType(input) ? [input] : Array.isArray(input) ? input.filter(isType) : []
 
-export const ifLast = <T>(input: ReadonlyArray<T>): T | undefined =>
+export const lastOf = <T>(input: ReadonlyArray<T>): T | undefined =>
   input[input.length - 1]
 
 export const doesEachElementMatch =

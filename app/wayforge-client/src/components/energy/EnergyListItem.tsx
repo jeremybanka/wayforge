@@ -1,6 +1,7 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
+import { useNavigate } from "react-router-dom"
 import type { RecoilState } from "recoil"
 import { useRecoilValue } from "recoil"
 
@@ -12,17 +13,15 @@ import { EnergyIcon } from "./EnergyIcon_SVG"
 export type RecoilIndexProps<T> = {
   id: string
   findState: (key: string) => RecoilState<T>
-  unlink: () => void
 }
 
 export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
   id,
   findState,
-  unlink,
 }) => {
   const energyState = findState(id)
   const energy = useRecoilValue(energyState)
-
+  const navigate = useNavigate()
   return (
     <li
       css={css`
@@ -31,8 +30,9 @@ export const EnergyListItem: FC<RecoilIndexProps<Energy>> = ({
       `}
     >
       <RecoverableErrorBoundary>
-        <EnergyIcon energy={energy} />
+        <EnergyIcon energy={energy} size={70} />
       </RecoverableErrorBoundary>
+      <button onClick={() => navigate(`/energy/${id}`)}>View</button>
     </li>
   )
 }
