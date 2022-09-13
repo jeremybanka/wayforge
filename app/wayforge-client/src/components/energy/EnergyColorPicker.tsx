@@ -1,9 +1,9 @@
 import type { FC } from "react"
 
+import type { LuumSpec } from "luum"
 import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
-import type { LuumSpec } from "~/lib/Luum/src"
 import { NumberInput } from "~/lib/react-ui/number-input"
 
 export type EnergyColorPickerProps = {

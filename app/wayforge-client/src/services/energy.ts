@@ -1,22 +1,10 @@
 import { pipe } from "fp-ts/lib/function"
-import {
-  useRecoilTransaction_UNSTABLE,
-  atom,
-  atomFamily,
-  selectorFamily,
-  DefaultValue,
-} from "recoil"
+import { useRecoilTransaction_UNSTABLE, atom, atomFamily } from "recoil"
 import z, { string } from "zod"
 
 import type energySchema from "~/gen/energy.schema"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
-import { deserializeSet, serializeSet } from "~/lib/json"
-import type { LuumSpec } from "~/lib/Luum/src"
-import {
-  localStorageSerializationEffect,
-  localStorageEffect,
-} from "~/lib/recoil-tools/effects/local-storage"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
 import {
   addToRecoilSet,
@@ -30,8 +18,8 @@ import { socket } from "./socket"
 export type Energy = z.infer<typeof energySchema>
 
 export const DEFAULT_ENERGY: Energy = {
-  id: `⚠️DEFAULT_ID⚠️`,
-  name: `New Energy`,
+  id: ``,
+  name: ``,
   colorA: {
     hue: 0,
     sat: 0,
@@ -62,11 +50,6 @@ export const energyIndex = atom<Set<string>>({
       socket,
       jsonInterface: stringSetJsonInterface,
     }),
-
-    // localStorageSerializationEffect(`energyIndex`, {
-    //   serialize: serializeSet,
-    //   deserialize: deserializeSet,
-    // }),
   ],
 })
 
@@ -74,7 +57,6 @@ export const findEnergyState = atomFamily<Energy, string>({
   key: `energy`,
   default: DEFAULT_ENERGY,
   effects: (id) => [
-    // localStorageEffect(`energy_${id}`),
     socketSync({
       id,
       socket,
@@ -92,34 +74,13 @@ export type EnergyColorFinder = {
   colorKey: `colorA` | `colorB`
 }
 
-export const findEnergyColorState = selectorFamily<LuumSpec, EnergyColorFinder>({
-  key: `energyColor`,
-  get:
-    ({ id, colorKey }) =>
-    ({ get }) => {
-      const energy = get(findEnergyState(id))
-      return energy[colorKey]
-    },
-  set:
-    ({ id, colorKey }) =>
-    ({ set }, newValue) => {
-      if (newValue instanceof DefaultValue) {
-        console.warn(`Cannot set default value for ${id} ${colorKey}`)
-        return
-      }
-      set(findEnergyState(id), (current) => ({
-        ...current,
-        [colorKey]: newValue,
-      }))
-    },
-})
-
 const addEnergy: TransactionOperation = ({ set }) => {
   const id = now()
   addToRecoilSet(set, energyIndex, id)
   set(findEnergyState(id), (current) => ({
     ...current,
     id,
+    name: `New Energy`,
   }))
 }
 

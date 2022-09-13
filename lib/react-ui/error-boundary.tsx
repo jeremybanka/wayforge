@@ -102,8 +102,8 @@ export class ErrorBoundary extends Component<
   }
 }
 
-export const findErrorState = atomFamily<ErrorBoundaryState, string>({
-  key: `findErrorState`,
+export const findErrorBoundaryState = atomFamily<ErrorBoundaryState, string>({
+  key: `errorBoundary`,
   default: { error: undefined, errorInfo: undefined },
 })
 
@@ -112,8 +112,8 @@ export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
   Fallback = DefaultFallback,
 }) => {
   const nodeId = useId()
-  const [{ error }, setError] = useRecoilState(findErrorState(nodeId))
-  const resetError = useResetRecoilState(findErrorState(nodeId))
+  const [{ error }, setError] = useRecoilState(findErrorBoundaryState(nodeId))
+  const resetError = useResetRecoilState(findErrorBoundaryState(nodeId))
   const hasError = Boolean(error)
 
   return hasError ? (

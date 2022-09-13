@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "types": ["vitest"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["../*"]
@@ -9,6 +10,13 @@
     "jsxImportSource": "@emotion/react"
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["**/*.server.ts"],
+  "exclude": [
+    "**/*.server.ts",
+    "**/*.server.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

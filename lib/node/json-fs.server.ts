@@ -1,9 +1,15 @@
-import { readdirSync, readFileSync } from "fs"
+import { readdirSync, readFileSync, writeFileSync } from "fs"
+
+import { isString } from "fp-ts/lib/string"
 
 import type { Entries } from "../fp-tools/object"
 import { entriesToRecord } from "../fp-tools/object"
-import type { Json } from "../json"
-import { parseJson } from "../json"
+import { sprawl } from "../fp-tools/sprawl"
+import type { Json, JsonObj } from "../json"
+import { isPlainObject, parseJson } from "../json"
+import { isResourceIdentifier } from "../json/json-api"
+import type { ResourceIdentifierObject } from "../json/json-api"
+import { refineJsonType } from "../json/refine"
 
 export const getJsonFileNames = (dir: string): string[] => {
   const fileNames = readdirSync(dir)
@@ -79,3 +85,75 @@ export const getDirectoryJsonArr = <T>({
     coerce,
     suppressWarnings,
   }).map(([, content]) => content)
+
+export type AssignToJsonFileOptions = {
+  path: string
+  properties: JsonObj
+}
+
+export const assignToJsonFile = ({
+  path,
+  properties,
+}: AssignToJsonFileOptions): void => {
+  const fileContents = readFileSync(path, `utf8`)
+  const content = parseJson(fileContents)
+  const json = refineJsonType(content)
+  if (json.type !== `object`) {
+    throw new Error(`The file ${path} does not hold a JSON object.`)
+  }
+  const newJson = { ...json.data, ...properties }
+  const newFileContents = JSON.stringify(newJson, null, 2)
+  writeFileSync(path, newFileContents)
+}
+
+export type PriorRelation = {
+  to: ResourceIdentifierObject
+  path: string
+  meta?: Json
+}
+
+export const extractPriorRelations = <T extends JsonObj>(
+  toRemove: ResourceIdentifierObject,
+  data: T
+): { data: T; priorRelations: PriorRelation[] } => {
+  if (!isString(data.id) || !isString(data.type)) {
+    throw new Error(`The data does not hold a resource identifier.`)
+  }
+  const dataIdentifier: ResourceIdentifierObject = {
+    id: data.id,
+    type: data.type,
+  }
+  const priorRelations: PriorRelation[] = []
+  const cleanup: string[] = []
+  sprawl(data, (path, value) => {
+    if (isResourceIdentifier(value)) {
+      if (value.id === toRemove.id) {
+        const priorRelation: PriorRelation = {
+          to: dataIdentifier,
+          path,
+        }
+        if (value.meta) priorRelation.meta = value.meta
+        priorRelations.push(priorRelation)
+        cleanup.push(path)
+      }
+    }
+  })
+  const dataDeepCopy = parseJson(JSON.stringify(data)) as T
+  const newData = cleanup.reduce<T>((memo, path) => {
+    const dataCopy = { ...memo }
+    const parentPath = path.slice(0, path.lastIndexOf(`/`))
+    const parent = parentPath
+      .split(`/`)
+      .reduce((memo, key) => (key === `` ? memo : memo[key]), dataCopy)
+    if (Array.isArray(parent)) {
+      const index = parseInt(path.slice(path.lastIndexOf(`/`) + 1))
+      parent.splice(index, 1)
+    }
+    if (isPlainObject(parent)) {
+      const key = path.slice(path.lastIndexOf(`/`) + 1)
+      delete parent[key]
+    }
+    return dataCopy
+  }, dataDeepCopy)
+  return { data: newData, priorRelations }
+}

@@ -23,7 +23,7 @@ describe(`RelationManager`, () => {
         },
       },
     })
-    console.log(manager.toJSON().relations)
+    // console.log(manager.toJSON().relations)
     expect(manager).toBeDefined()
   })
 })

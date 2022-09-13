@@ -2,6 +2,7 @@ import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 
+import { raiseError } from "~/lib/fp-tools"
 import type { Json, JsonArr, JsonObj } from "~/lib/json"
 import { isPlainObject } from "~/lib/json"
 
@@ -26,10 +27,17 @@ export const refineJsonType = (data: Json): RefinedJson =>
     ? { type: `array`, data }
     : isPlainObject(data)
     ? { type: `object`, data }
-    : (() => {
-        throw new Error(
-          `${data} with prototype ${Object.getPrototypeOf(
-            data
-          )} passed to refineJsonType. This is not valid JSON.`
-        )
-      })()
+    : raiseError(
+        `${data} with prototype ${Object.getPrototypeOf(
+          data
+        )} passed to refineJsonType. This is not valid JSON.`
+      )
+
+export const isJson = (input: unknown): input is Json => {
+  try {
+    JSON.stringify(input)
+    return true
+  } catch {
+    return false
+  }
+}

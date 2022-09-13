@@ -3,15 +3,13 @@ import { useRef } from "react"
 
 import { isBoolean } from "fp-ts/lib/boolean"
 import { isString } from "fp-ts/lib/string"
-import type { SetterOrUpdater } from "recoil"
 
-import { ifLast as lastOf } from "~/lib/fp-tools/array"
-import type { Json, JsonObj } from "~/lib/json"
+import { lastOf } from "~/lib/fp-tools/array"
+import type { JsonObj } from "~/lib/json"
 import { isPlainObject } from "~/lib/json"
 import type { JsonSchema } from "~/lib/json/json-schema"
 
 import type { JsxElements } from ".."
-import { JsonEditor } from ".."
 import { AutoSizeInput } from "../../auto-size-input"
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"

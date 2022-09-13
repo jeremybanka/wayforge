@@ -8,7 +8,11 @@ import type { EventsMap } from "socket.io/dist/typed-events"
 // import energySchema from "~/gen/energy.schema"
 import type { Modifier } from "~/lib/fp-tools"
 import type { JsonObj } from "~/lib/json"
-import { getDirectoryJsonEntries } from "~/lib/node/json-fs.server"
+import {
+  assignToJsonFile,
+  getDirectoryJsonArr,
+  getDirectoryJsonEntries,
+} from "~/lib/node/json-fs.server"
 
 const { log } = console
 
@@ -29,13 +33,13 @@ export const identify = (input: unknown): { id: string } => {
 const makeIndexer =
   (jsonRoot: string) =>
   (type: string): string[] => {
-    const dir = `${jsonRoot}/${type}`
-    const entries = getDirectoryJsonEntries({
-      dir,
+    const directory = `${jsonRoot}/${type}`
+    const jsonContents = getDirectoryJsonArr({
+      dir: directory,
       coerce: identify,
     })
-    const fileContents = entries.map(([, data]) => data.id)
-    return fileContents
+    const ids = jsonContents.map((data) => data.id)
+    return ids
   }
 
 export type SaveJsonListenEvents = Record<
@@ -83,6 +87,19 @@ export const SaveJsonWebsocketServer = (
       socket.emit(`event`, `connected!`)
 
       const index = makeIndexer(jsonRoot)
+
+      const sendToTrash = (type: string, id: string) => {
+        const fileNames = readdirSync(`${jsonRoot}/${type}`)
+        const fileName = fileNames.find((name) => name.includes(id))
+        renameSync(
+          `${jsonRoot}/${type}/${fileName}`,
+          `${jsonRoot}/${type}/_trash/${fileName}`
+        )
+        // assignToJsonFile({
+        //   path: `${jsonRoot}/${type}/index.json`,
+        //   properties: { [id]: undefined },
+        // })
+      }
 
       socket.on(`read`, ({ id, type }) => {
         log(socket.id, `read`, id, type)
@@ -135,7 +152,3 @@ export const SaveJsonWebsocketServer = (
       })
     }
   )
-
-// export const saveJson =
-//   <TypeMap extends Record<string, SomeZodObject>>() =>
-//   (socket: Socket): void => {}

@@ -1,5 +1,5 @@
 import type { ChangeEvent, FC } from "react"
-import React, { useRef } from "react"
+import { useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 import { css } from "@emotion/react"
@@ -47,6 +47,11 @@ export type NumberInputProps = {
   autoSize?: boolean
 }
 
+export const VALID_NON_NUMBERS = [``, `-`, `.`, `-.`, `0.`] as const
+export type ValidNonNumber = typeof VALID_NON_NUMBERS[number]
+export const isValidNonNumber = (input: string): input is ValidNonNumber =>
+  VALID_NON_NUMBERS.includes(input as ValidNonNumber)
+
 export const NumberInput: FC<NumberInputProps> = ({
   value,
   set,
@@ -58,20 +63,20 @@ export const NumberInput: FC<NumberInputProps> = ({
   min,
   autoSize = false,
 }) => {
-  const isEmpty = useRef<boolean>(false)
+  const temporaryEntry = useRef<ValidNonNumber | null>(null)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     // if (onChange) onChange(event)
     if (set === undefined) return
     const input = event.target.value
-    if (input === ``) {
-      isEmpty.current = true
+    if (isValidNonNumber(input)) {
+      temporaryEntry.current = input
       const textInterpretation = min?.toString() ?? `0`
       const newValue = textToValue(textInterpretation, allowDecimal)
       set(newValue)
       return
     }
-    isEmpty.current = false
+    temporaryEntry.current = null
     const inputIsNumeric =
       (!isNaN(Number(input)) && !input.includes(` `)) ||
       (allowDecimal && input === `.`) ||
@@ -92,6 +97,7 @@ export const NumberInput: FC<NumberInputProps> = ({
       set(textToValue(input, allowDecimal))
     }
   }
+  const displayValue = temporaryEntry.current ?? valueToText(value)
   return (
     <span
       css={css`
@@ -122,16 +128,16 @@ export const NumberInput: FC<NumberInputProps> = ({
       <label>{label}</label>
       {autoSize ? (
         <AutoSizeInput
-          type="number"
-          value={value}
+          type="text"
+          value={displayValue}
           onChange={handleChange}
           disabled={set === undefined}
           placeholder={placeholder}
         />
       ) : (
         <input
-          type="number"
-          value={isEmpty.current ? `` : valueToText(value)}
+          type="text"
+          value={displayValue}
           onChange={handleChange}
           disabled={set === undefined}
           placeholder={placeholder}

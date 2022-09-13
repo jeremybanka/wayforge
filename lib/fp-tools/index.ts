@@ -61,3 +61,7 @@ export const typeOf =
   <T>(input: unknown) =>
   (isType: Refinement<unknown, T>): boolean =>
     isType(input)
+
+export const raiseError = (message: string): never => {
+  throw new Error(message)
+}

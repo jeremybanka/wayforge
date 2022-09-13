@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "types": ["jest"]
+    "baseUrl": ".",
+    "types": ["vitest"],
+    "paths": {
+      "~/*": ["../*"]
+    }
   },
   "include": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]
 }
