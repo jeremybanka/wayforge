@@ -1,12 +1,21 @@
+import { useEffect } from "react"
+
 import type { Location } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import {
   atom,
   atomFamily,
+  DefaultValue,
+  selector,
+  selectorFamily,
   useRecoilTransaction_UNSTABLE as useRecoilTransaction,
+  useRecoilValue,
+  useSetRecoilState,
 } from "recoil"
 
 import { Index1ToMany } from "~/lib/dynamic-relations/1ToMany"
 import { lastOf } from "~/lib/fp-tools/array"
+import type { Entries } from "~/lib/fp-tools/object"
 import { now } from "~/lib/id/now"
 import {
   localStorageEffect,
@@ -22,7 +31,7 @@ export const spaceIndexState = atom<Set<string>>({
   key: `spaceIndex`,
   default: new Set(),
   effects: [
-    localStorageSerializationEffect(`viewIndex`, {
+    localStorageSerializationEffect(`spaceIndex`, {
       serialize: (set) => JSON.stringify([...set]),
       deserialize: (json) => new Set(JSON.parse(json)),
     }),
@@ -116,16 +125,26 @@ export const viewIndexState = atom<Set<string>>({
   ],
 })
 
-const removeView: TransactionOperation<string> = ({ set }, id) => {
-  removeFromRecoilSet(set, viewIndexState, id)
-  set(viewsPerSpaceState, (current) => {
-    current.delete(undefined, id)
-    return current
-  })
-}
+export const allViewsState = selector<Entries<string, View>>({
+  key: `allViews`,
+  get: ({ get }) => {
+    const viewIndex = get(viewIndexState)
+    return [...viewIndex].map((id) => [id, get(findViewState(id))])
+  },
+})
 
-export const useRemoveView = (): ((id: string) => void) =>
-  useRecoilTransaction((transactors) => (id) => removeView(transactors, id))
+export const useSetTitle = (title: string): void => {
+  const location = useLocation()
+  const views = useRecoilValue(allViewsState)
+  const locationView = views.find(
+    ([, view]) => view.location.key === location.key
+  )
+  const viewId = locationView?.[0] ?? ``
+  const setView = useSetRecoilState(findViewState(viewId))
+  useEffect(() => {
+    setView((v) => ({ ...v, title }))
+  }, [title, setView])
+}
 
 type AddViewOptions = { spaceId?: string; path?: string }
 
@@ -136,11 +155,17 @@ const addView: TransactionOperation<AddViewOptions | undefined> = (
   const { get, set } = transactors
   const id = `view-${now()}`
   addToRecoilSet(set, viewIndexState, id)
-  set(findViewState(id), (current) => ({
-    ...current,
-    path: path ?? `/`,
-    id,
-  }))
+  set(
+    findViewState(id),
+    (current): View => ({
+      ...current,
+      location: {
+        ...current.location,
+        pathname: path ?? `/`,
+        state: { id },
+      },
+    })
+  )
   const spaceId =
     maybeSpaceId ?? lastOf([...get(spaceIndexState)]) ?? addSpace(transactors)
   set(viewsPerSpaceState, (current) => {
@@ -153,3 +178,14 @@ export const useAddView = (): ((options?: AddViewOptions) => void) =>
     (transactors) => (options) =>
       options ? addView(transactors, options) : addView(transactors)
   )
+
+const removeView: TransactionOperation<string> = ({ set }, id) => {
+  removeFromRecoilSet(set, viewIndexState, id)
+  set(viewsPerSpaceState, (current) => {
+    current.delete(undefined, id)
+    return current
+  })
+}
+
+export const useRemoveView = (): ((id: string) => void) =>
+  useRecoilTransaction((transactors) => (id) => removeView(transactors, id))

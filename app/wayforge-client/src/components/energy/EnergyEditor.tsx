@@ -1,9 +1,14 @@
 import type { FC } from "react"
+import { useEffect } from "react"
 
 import { css } from "@emotion/react"
-import { Link, useParams } from "react-router-dom"
-import type { RecoilState } from "recoil"
-import { useRecoilState } from "recoil"
+import { Link, useLocation, useParams } from "react-router-dom"
+import {
+  RecoilState,
+  useSetRecoilState,
+  useRecoilState,
+  useRecoilValue,
+} from "recoil"
 
 import type { RecoilEditorProps } from "~/app/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/wayforge-client/recoil-editor"
@@ -15,6 +20,12 @@ import { JsonEditor } from "~/lib/react-ui/json-editor"
 
 import type { Energy } from "../../services/energy"
 import { findEnergyState, useRemoveEnergy } from "../../services/energy"
+import {
+  allViewsState,
+  findViewState,
+  useSetTitle,
+  viewIndexState,
+} from "../../services/view"
 import { EnergyIcon } from "./EnergyIcon_SVG"
 
 export const EnergyEditor_INTERNAL: FC<RecoilEditorProps<Energy>> = ({
@@ -28,6 +39,7 @@ export const EnergyEditor_INTERNAL: FC<RecoilEditorProps<Energy>> = ({
     name: (name: string) => setEnergy((e) => ({ ...e, name })),
   }
   const remove = useRemove()
+  useSetTitle(energy.name)
 
   return (
     <div
