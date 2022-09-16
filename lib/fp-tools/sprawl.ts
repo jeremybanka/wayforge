@@ -21,7 +21,7 @@ export const sprawl = (
       return null
     }
     const result = inspect(path, node)
-    if (result?.jobComplete) {
+    if (result?.jobComplete || result?.pathComplete) {
       return result
     }
     const subNodes = Array.isArray(node)

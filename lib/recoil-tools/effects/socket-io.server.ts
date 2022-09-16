@@ -42,15 +42,23 @@ const makeIndexer =
     return ids
   }
 
-export type SaveJsonListenEvents = Record<
-  `indexRead_${string}`,
-  (vars: JsonObj) => void
-> & {
-  read: (vars: { type: string; id: string }) => void
-  write: (vars: { type: string; id: string; value: unknown }) => void
-  indexRead: (vars: { type: string }) => void
-  indexWrite: (vars: { type: string; value: string[] }) => void
-}
+/* prettier-ignore */
+export type SaveJsonListenEvents = 
+  Record<
+    `indexRead_${string}`, 
+    (vars: JsonObj) => void
+  > &
+  Record<
+    `relationIndexRead_${string}`, 
+    (vars: JsonObj) => void
+  > & {
+    read: (vars: { type: string; id: string }) => void
+    write: (vars: { type: string; id: string; value: unknown }) => void
+    indexRead: (vars: { type: string }) => void
+    indexWrite: (vars: { type: string; value: string[] }) => void
+  }
+/* end-prettier-ignore */
+
 export interface SaveJsonEmitEvents extends EventsMap {
   indexRead: ({ type }: { type: string }) => void
 }

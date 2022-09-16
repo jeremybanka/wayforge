@@ -23,6 +23,7 @@ declare module "hamt_plus" {
     _size: number
     setTree: (newRoot: any, sizeValue: number) => Hamt<T>
     set: (key: string, value: T) => Hamt<T>
+    remove: (key: string) => Hamt<T>
     get: (key: string, alt?: T) => T
     values: () => T[]
     keys: () => string[]
@@ -35,6 +36,8 @@ declare module "hamt_plus" {
 
     setHash: <T>(hash: number, key: string, value: T, map: Hamt<T>) => Hamt<T>
     set: <T>(key: string, value: T, map: Hamt<T>) => Hamt<T>
+    removeHash: <T>(hash: number, key: string, map: Hamt<T>) => Hamt<T>
+    remove: <T>(key: string, map: Hamt<T>) => Hamt<T>
 
     tryGetHash: <T>(alt: T, hash: number, key: string, map: Hamt<T>) => T
     tryGet: <T>(alt: T, key: string, map: Hamt<T>) => T

@@ -12,6 +12,7 @@ import {
   useRecoilValue,
   useSetRecoilState,
 } from "recoil"
+import { string } from "zod"
 
 import { Index1ToMany } from "~/lib/dynamic-relations/1ToMany"
 import { lastOf } from "~/lib/fp-tools/array"
@@ -65,10 +66,10 @@ export const removeSpace: TransactionOperation<string> = ({ set }, id) => {
 
 export class ViewsPerSpace extends Index1ToMany<string, string> {
   public getViews(spaceId: string): Set<string> | undefined {
-    return this.getChildren(spaceId)
+    return this.getViews(spaceId)
   }
   public getSpace(viewId: string): string | undefined {
-    return this.getParent(viewId)
+    return this.getSpace(viewId)
   }
   // public override toJson(): [string, string[]][] {
   //   const assignments = new Index1To1().toJson.bind(this)()

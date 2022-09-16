@@ -36,3 +36,19 @@ export const socketIndex: <T>(options: SocketIndexOptions<T>) => AtomEffect<T> =
     socket.on(`indexRead_${type}`, (json) => setSelf(fromJson(json)))
     onSet((v) => socket.emit(`indexWrite`, { type, value: toJson(v) }))
   }
+
+export type SocketRelationIndexOptions<T> = {
+  type: string
+  socket: Socket<SaveJsonListenEvents, SaveJsonEmitEvents>
+  jsonInterface: JsonInterface<T>
+}
+
+export const socketRelations: <T>(
+  options: SocketRelationIndexOptions<T>
+) => AtomEffect<T> =
+  ({ type, socket, jsonInterface: { toJson, fromJson } }) =>
+  ({ setSelf, onSet }) => {
+    socket.emit(`relationIndexRead`, { type })
+    socket.on(`relationIndexRead_${type}`, (json) => setSelf(fromJson(json)))
+    onSet((v) => socket.emit(`relationIndexWrite`, { type, value: toJson(v) }))
+  }
