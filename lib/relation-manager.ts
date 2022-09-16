@@ -1,19 +1,8 @@
 import inventory from "hamt_plus"
 import type { Hamt } from "hamt_plus"
 
+import { mob } from "./fp-tools/object"
 import type { JsonObj } from "./json"
-
-const mob = <K extends keyof any, I, O>(
-  obj: Record<K, I>,
-  fn: (val: I, key: K) => O
-): Record<K, O> => {
-  const newObj = {} as Record<K, O>
-  const entries = Object.entries(obj) as [K, I][]
-  entries.forEach(([key, val]) => {
-    newObj[key] = fn(val, key)
-  })
-  return newObj
-}
 
 export type RelationMember<Contribution> = {
   id: string
@@ -42,7 +31,7 @@ export type RelationManagerConfigJson<
   roles: RoleConfigJson<RoleKeys, TypeKeys>
 }
 
-const indexRoles = <RoleKeys extends string, TypeKeys extends string>(
+const setupRolesByType = <RoleKeys extends string, TypeKeys extends string>(
   config: RoleConfigJson<RoleKeys, TypeKeys>
 ): Record<TypeKeys, Set<RoleKeys>> => {
   const roles = {} as Record<TypeKeys, Set<RoleKeys>>
@@ -64,7 +53,7 @@ export class RoleConfig<RoleKeys extends string, TypeKeys extends string> {
 
   public constructor(json: RoleConfigJson<RoleKeys, TypeKeys>) {
     this.typesByRole = json
-    this.rolesByType = indexRoles(json)
+    this.rolesByType = setupRolesByType(json)
   }
 
   public toJSON = (): RoleConfigJson<RoleKeys, TypeKeys> => this.typesByRole
@@ -126,7 +115,7 @@ export class RelationManager<
     this.relations = recordToHamt(relations)
   }
 
-  // CharacterRelations.where(`kid`).named(`finger`).plays[`capableGuy`]
+  // CharacterRelations.where(`energy`).by(fireId).plays[`reagent`]
   public where(type: TypeKeys): {
     named: (id: string) => { plays: Record<RoleKeys, Relation[]> }
   } {
