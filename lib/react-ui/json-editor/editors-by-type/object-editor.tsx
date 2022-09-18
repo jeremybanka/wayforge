@@ -5,8 +5,8 @@ import { isBoolean } from "fp-ts/lib/boolean"
 import { isString } from "fp-ts/lib/string"
 
 import { lastOf } from "~/lib/fp-tools/array"
+import { isPlainObject } from "~/lib/fp-tools/object"
 import type { JsonObj } from "~/lib/json"
-import { isPlainObject } from "~/lib/json"
 import type { JsonSchema } from "~/lib/json/json-schema"
 
 import type { JsxElements } from ".."

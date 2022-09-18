@@ -3,13 +3,7 @@ import { isString } from "fp-ts/lib/string"
 
 import type { Modifier, OneOrMany, Validator } from "~/lib/fp-tools"
 import { isUndefined, isModifier } from "~/lib/fp-tools"
-import {
-  content,
-  each,
-  doesEachElementMatch,
-  join,
-  map,
-} from "~/lib/fp-tools/array"
+import { content, each, isArray, join, map } from "~/lib/fp-tools/array"
 import { key } from "~/lib/fp-tools/object"
 
 import { specToHex } from "^"
@@ -246,7 +240,7 @@ export const isFilterPoint = (input: unknown): input is FilterPoint =>
   typeof (input as FilterPoint).sat === `number`
 
 export const isFilter = (input: unknown): input is Filter =>
-  doesEachElementMatch(isFilterPoint)(input)
+  isArray(isFilterPoint)(input)
 
 export const maybe =
   <T>(validate: Validator<T>) =>

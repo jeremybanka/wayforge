@@ -31,11 +31,6 @@ export const parseJson = (str: string): Json => JSON.parse(str)
 
 export type Empty = Record<string, never>
 
-export const isPlainObject = (input: unknown): input is JsonObj =>
-  typeof input === `object` &&
-  input !== null &&
-  Object.getPrototypeOf(input) === Object.prototype
-
 export type JsonTypeName =
   | `array`
   | `boolean`

@@ -4,11 +4,13 @@ import {
   atom,
   atomFamily,
   selectorFamily,
+  selector,
 } from "recoil"
 import z, { string } from "zod"
 
 import type energySchema from "~/gen/energy.schema"
 import type { Index1ToMany } from "~/lib/dynamic-relations/1ToMany"
+import { isNull, isUndefined } from "~/lib/fp-tools"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
@@ -18,8 +20,10 @@ import {
 } from "~/lib/recoil-tools/recoil-set"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 import { RelationManager } from "~/lib/relation-manager"
+import { isRelationSetJson, RelationSet } from "~/lib/RelationSet"
 
 import type { Reaction } from "./reaction"
+import { findReactionState } from "./reaction"
 import { socket } from "./socket"
 
 export type Energy = z.infer<typeof energySchema>
@@ -105,10 +109,50 @@ export type EnergyRelationsExtracted = {
   }
 }
 
-export const findEnergyWithRelationsState = selectorFamily<
-  Energy & { $relations: EnergyRelationsExtracted },
+export const energyFeaturesState = atom<RelationSet>({
+  key: `energyFeatures`,
+  default: new RelationSet(),
+  effects: [
+    socketSync({
+      id: `energyFeatures`,
+      socket,
+      type: `energy:reaction`,
+      jsonInterface: {
+        toJson: (relationSet) => relationSet.toJSON(),
+        fromJson: (json) => pipe(json, RelationSet.fromJSON(isNull)),
+      },
+    }),
+  ],
+})
+
+type EnergyRelations = { features: Record<string, Reaction> }
+
+export type EnergyStateQuery = { id: string; include: string[] }
+
+export const findEnergyWithFeaturesState = selectorFamily<
+  Energy & { features: EnergyRelations[`features`] },
   string
->({})
+>({
+  key: `energyWithFeatures`,
+  get:
+    (id) =>
+    ({ get }) => {
+      const energy = get(findEnergyState(id))
+      const featureRelationSet = get(energyFeaturesState)
+      const featureIds = featureRelationSet.getRelations(id)
+      const featuresEntries = featureIds.map((id): [string, Reaction] => [
+        id,
+        get(findReactionState(id)),
+      ])
+      const features = Object.fromEntries(featuresEntries)
+      return { ...energy, features }
+    },
+})
+
+// export const findEnergyWithRelationsState = selectorFamily<
+//   Energy & { $relations: EnergyRelationsExtracted },
+//   string
+// >({})
 
 export type EnergyColorFinder = {
   id: string

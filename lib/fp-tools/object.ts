@@ -1,3 +1,6 @@
+import type { Refinement } from "fp-ts/lib/Refinement"
+import { isString } from "fp-ts/lib/string"
+
 import { isUndefined } from "."
 
 export const key =
@@ -6,6 +9,27 @@ export const key =
     (obj as Record<keyof any, any>)[k]
 
 export type Entries<K extends keyof any, V> = [key: K, value: V][]
+
+export const isPlainObject = (
+  input: unknown
+): input is Record<keyof any, unknown> =>
+  typeof input === `object` &&
+  input !== null &&
+  Object.getPrototypeOf(input) === Object.prototype
+
+export const isRecord =
+  <K extends keyof any, V>(
+    isKey: Refinement<unknown, K>,
+    isValue: Refinement<unknown, V>
+  ) =>
+  (input: unknown): input is Record<K, V> =>
+    isPlainObject(input) &&
+    Object.entries(input).every(([k, v]) => isKey(k) && isValue(v))
+
+export const isDictionary =
+  <V>(isValue: Refinement<unknown, V>) =>
+  (input: unknown): input is Record<string, V> =>
+    isRecord(isString, isValue)(input)
 
 export const recordToEntries = <K extends keyof any, V>(
   obj: Record<K, V>
