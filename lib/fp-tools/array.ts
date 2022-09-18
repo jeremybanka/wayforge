@@ -8,7 +8,7 @@ export const each =
 export const lastOf = <T>(input: ReadonlyArray<T>): T | undefined =>
   input[input.length - 1]
 
-export const doesEachElementMatch =
+export const isArray =
   <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): input is T[] =>
     Array.isArray(input) && input.every((item) => isType(item))
@@ -16,7 +16,7 @@ export const doesEachElementMatch =
 export const content =
   <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): input is T | T[] =>
-    isType(input) || doesEachElementMatch(isType)(input)
+    isType(input) || isArray(isType)(input)
 
 export const join =
   (separator?: string) =>

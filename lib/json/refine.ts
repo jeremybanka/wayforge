@@ -3,8 +3,8 @@ import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 
 import { raiseError } from "~/lib/fp-tools"
+import { isPlainObject } from "~/lib/fp-tools/object"
 import type { Json, JsonArr, JsonObj } from "~/lib/json"
-import { isPlainObject } from "~/lib/json"
 
 export type RefinedJson =
   | { type: `array`; data: JsonArr }

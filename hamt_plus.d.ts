@@ -24,7 +24,10 @@ declare module "hamt_plus" {
     setTree: (newRoot: any, sizeValue: number) => Hamt<T>
     set: (key: string, value: T) => Hamt<T>
     remove: (key: string) => Hamt<T>
-    get: (key: string, alt?: T) => T
+    get: (
+      key: string,
+      alt?: T
+    ) => typeof alt extends undefined ? T | undefined : T
     values: () => T[]
     keys: () => string[]
     entries: () => [key: string, value: T][]
