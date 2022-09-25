@@ -187,10 +187,9 @@ export const addReactionAsEnergyFeature: TransactionOperation<string> = (
   const energyFeatures = get(energyFeaturesState).clone()
   set(energyFeaturesState, energyFeatures.set(energyId, reactionId))
 }
-export const useAddReactionAsEnergyFeature = (): ((energyId: string) => void) =>
+export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
   useRecoilTransaction_UNSTABLE(
-    (transactors) => (energyId) =>
-      addReactionAsEnergyFeature(transactors, energyId)
+    (transactors) => () => addReactionAsEnergyFeature(transactors, energyId)
   )
 
 export const removeReaction: TransactionOperation<string> = (

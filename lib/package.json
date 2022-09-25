@@ -6,7 +6,6 @@
     "test": "vitest"
   },
   "dependencies": {
-    "luum": "./Luum",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",

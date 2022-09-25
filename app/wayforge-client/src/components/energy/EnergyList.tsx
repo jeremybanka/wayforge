@@ -11,6 +11,5 @@ export const EnergyList: FC<{ ids: string[]; createNew: () => void }> = ({
     {ids.map((id) => (
       <EnergyListItem key={id} id={id} findState={findEnergyState} />
     ))}
-    <button onClick={createNew}>Add</button>
   </ul>
 )
