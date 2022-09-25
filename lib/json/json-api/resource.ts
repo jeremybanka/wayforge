@@ -1,7 +1,7 @@
 import { maybe } from "luum"
 
+import { isPlainObject } from "~/lib/fp-tools/object"
 import type { Json, JsonObj } from "~/lib/json"
-import { isPlainObject } from "~/lib/json"
 import { isJson } from "~/lib/json/refine"
 
 import type { RequireAtLeastOne } from "."

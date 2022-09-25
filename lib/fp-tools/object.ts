@@ -1,7 +1,9 @@
+import { pipe } from "fp-ts/lib/function"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
 
 import { isUndefined } from "."
+import { allTrue, every } from "./array"
 
 export const key =
   <T extends object>(k: keyof T) =>
@@ -17,9 +19,22 @@ export const isPlainObject = (
   input !== null &&
   Object.getPrototypeOf(input) === Object.prototype
 
+export const isObject =
+  <OBJ extends object>(isValue: {
+    [K in keyof OBJ]: Refinement<unknown, OBJ[K]>
+  }): Refinement<unknown, OBJ> =>
+  (input: unknown): input is OBJ =>
+    isPlainObject(input) &&
+    pipe(
+      input as Record<keyof OBJ, unknown>,
+      mob((val, key) => isValue[key](val)),
+      Object.values,
+      allTrue
+    )
+
 export const isRecord =
   <K extends keyof any, V>(
-    isKey: Refinement<unknown, K>,
+    isKey: Refinement<keyof any, K>,
     isValue: Refinement<unknown, V>
   ) =>
   (input: unknown): input is Record<K, V> =>

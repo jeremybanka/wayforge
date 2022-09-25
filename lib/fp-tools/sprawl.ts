@@ -1,4 +1,4 @@
-import { isPlainObject } from "../json"
+import { isPlainObject } from "./object"
 
 // if you found what you were looking for, return true and break
 export type InspectionResult = Partial<{

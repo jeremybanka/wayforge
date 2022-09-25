@@ -9,6 +9,7 @@ import { makeElementSetters } from "./utilities/array-elements"
 export const ArrayEditor = <T extends JsonArr>({
   path = [],
   isReadonly = () => false,
+  isHidden = () => false,
   data,
   set,
   Components,
@@ -23,6 +24,7 @@ export const ArrayEditor = <T extends JsonArr>({
             key={newPath.join(``)}
             path={newPath}
             isReadonly={isReadonly}
+            isHidden={isHidden}
             data={element}
             set={setElement[index]}
             Components={Components}

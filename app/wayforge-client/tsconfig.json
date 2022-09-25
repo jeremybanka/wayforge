@@ -20,7 +20,7 @@
     "baseUrl": "../..",
     "paths": {
       "~/*": ["./*"],
-      "wayforge-server/*": ["./wayforge-server/src/services/*"]
+      "wayforge-server/*": ["./wayforge-server/*"]
     }
   },
   "include": [".", "../../lib"],

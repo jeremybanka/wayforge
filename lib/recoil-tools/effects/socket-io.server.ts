@@ -1,4 +1,4 @@
-import { readdirSync, renameSync, writeFileSync } from "fs"
+import { readdirSync, readFileSync, renameSync, writeFileSync } from "fs"
 
 import type { Refinement } from "fp-ts/lib/Refinement"
 import type { Socket, ServerOptions } from "socket.io"
@@ -7,7 +7,8 @@ import type { EventsMap } from "socket.io/dist/typed-events"
 
 // import energySchema from "~/gen/energy.schema"
 import type { Modifier } from "~/lib/fp-tools"
-import type { JsonObj } from "~/lib/json"
+import type { Json, JsonObj } from "~/lib/json"
+import { parseJson } from "~/lib/json"
 import {
   assignToJsonFile,
   getDirectoryJsonArr,
@@ -30,6 +31,11 @@ export const identify = (input: unknown): { id: string } => {
   throw new Error(`${input} could not be identified`)
 }
 
+export type RelationType = `${string}_${string}`
+
+const isRelationType = (input: unknown): input is RelationType =>
+  typeof input === `string` && input.length > 2 && input.split(`_`).length === 2
+
 const makeIndexer =
   (jsonRoot: string) =>
   (type: string): string[] => {
@@ -42,6 +48,16 @@ const makeIndexer =
     return ids
   }
 
+const makeRelationIndexReader =
+  (jsonRoot: string) =>
+  (type: RelationType, id: string): Json => {
+    const directory = `${jsonRoot}/_relations/${type}`
+    const fileName = `${directory}/${id}.json`
+    const fileText = readFileSync(fileName, `utf8`)
+    const json = parseJson(fileText)
+    return json
+  }
+
 /* prettier-ignore */
 export type SaveJsonListenEvents = 
   Record<
@@ -49,13 +65,15 @@ export type SaveJsonListenEvents =
     (vars: JsonObj) => void
   > &
   Record<
-    `relationIndexRead_${string}`, 
+    `relationsRead_${string}`, 
     (vars: JsonObj) => void
   > & {
     read: (vars: { type: string; id: string }) => void
     write: (vars: { type: string; id: string; value: unknown }) => void
     indexRead: (vars: { type: string }) => void
     indexWrite: (vars: { type: string; value: string[] }) => void
+    relationsRead: (vars: { type: string; id: string }) => void
+    relationsWrite: (vars: { type: string; id: string; value: Json }) => void
   }
 /* end-prettier-ignore */
 
@@ -95,6 +113,7 @@ export const SaveJsonWebsocketServer = (
       socket.emit(`event`, `connected!`)
 
       const index = makeIndexer(jsonRoot)
+      const relate = makeRelationIndexReader(jsonRoot)
 
       const sendToTrash = (type: string, id: string) => {
         const fileNames = readdirSync(`${jsonRoot}/${type}`)
@@ -122,6 +141,23 @@ export const SaveJsonWebsocketServer = (
           socket.emit(`${type}_${id}`, fileContents)
         }
       })
+      socket.on(`relationsRead`, ({ id, type }) => {
+        log(socket.id, `relationsRead`, type, id)
+        const dir = `${jsonRoot}/_relations/${type}`
+        console.log(dir)
+        if (isRelationType(type)) {
+          const data = relate(type, id)
+          console.log({ data })
+          socket.emit(`relationsRead_${id}`, data)
+        }
+      })
+
+      socket.on(`indexRead`, ({ type }) => {
+        log(socket.id, `indexRead`, type)
+        const ids = index(type)
+        console.log({ ids })
+        socket.emit(`indexRead_${type}`, ids)
+      })
 
       socket.on(`write`, ({ id, type, value }) => {
         log(socket.id, `write`, id, value)
@@ -137,11 +173,12 @@ export const SaveJsonWebsocketServer = (
         writeFileSync(`${jsonRoot}/${newFilePath}`, formatted)
       })
 
-      socket.on(`indexRead`, ({ type }) => {
-        log(socket.id, `indexRead`, type)
-        const ids = index(type)
-        console.log({ ids })
-        socket.emit(`indexRead_${type}`, ids)
+      socket.on(`relationsWrite`, ({ id, type, value }) => {
+        log(socket.id, `relationsWrite`, id, value)
+        const valueAsString = JSON.stringify(value)
+        const formatted = formatter(valueAsString)
+        const newFilePath = `${type}/${id}.json`
+        writeFileSync(`${jsonRoot}/_relations/${newFilePath}`, formatted)
       })
 
       socket.on(`indexWrite`, ({ type, value: newIds }) => {

@@ -3,10 +3,10 @@ import { readdirSync, readFileSync, writeFileSync } from "fs"
 import { isString } from "fp-ts/lib/string"
 
 import type { Entries } from "../fp-tools/object"
-import { entriesToRecord } from "../fp-tools/object"
+import { entriesToRecord, isPlainObject } from "../fp-tools/object"
 import { sprawl } from "../fp-tools/sprawl"
 import type { Json, JsonObj } from "../json"
-import { isPlainObject, parseJson } from "../json"
+import { parseJson } from "../json"
 import { isResourceIdentifier } from "../json/json-api"
 import type { ResourceIdentifierObject } from "../json/json-api"
 import { refineJsonType } from "../json/refine"
@@ -151,7 +151,7 @@ export const extractPriorRelations = <T extends JsonObj>(
     }
     if (isPlainObject(parent)) {
       const key = path.slice(path.lastIndexOf(`/`) + 1)
-      delete parent[key]
+      delete (parent as Record<string, any>)[key]
     }
     return dataCopy
   }, dataDeepCopy)

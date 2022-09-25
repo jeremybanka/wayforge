@@ -25,6 +25,7 @@ export type JsonEditorProps_INTERNAL<T extends Json> = {
   schema?: JsonSchema
   path?: ReadonlyArray<number | string>
   isReadonly?: (path: ReadonlyArray<number | string>) => boolean
+  isHidden?: (path: ReadonlyArray<number | string>) => boolean
   className?: string
   customCss?: SerializedStyles
   Header?: FC<{ data: T; schema?: JsonSchema }>
@@ -41,7 +42,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   recast,
   path = [],
   isReadonly = () => false,
-  // isHidden = () => false,
+  isHidden = () => false,
   // isIllegal = () => false,
   className,
   customCss,
@@ -109,7 +110,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   //   </Components.EditorWrapper>
   // )
 
-  return (
+  return isHidden(path) ? null : (
     <Components.ErrorBoundary>
       <Components.EditorWrapper className={className} customCss={customCss}>
         {remove && (
@@ -137,6 +138,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
           rename={rename}
           path={path}
           isReadonly={isReadonly}
+          isHidden={isHidden}
           Components={Components}
         />
         {recast && (
