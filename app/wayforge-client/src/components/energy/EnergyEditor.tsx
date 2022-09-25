@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil"
 import type { RecoilEditorProps } from "~/app/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/wayforge-client/recoil-editor"
 import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
+import { includesAny } from "~/lib/fp-tools/venn"
 import type { JsonSchema } from "~/lib/json/json-schema"
 import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
 import { JsonEditor } from "~/lib/react-ui/json-editor"
@@ -19,10 +20,11 @@ import { useAddReactionAsEnergyFeature } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { ReactionList } from "../reaction/ReactionList"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
+import { EnergyCard } from "./EnergyCard_SVG"
 import { EnergyIcon } from "./EnergyIcon_SVG"
 
 export const EnergyEditor_INTERNAL: FC<
-  RecoilEditorProps<Energy & { features: EnergyRelations[`features`] }>
+  RecoilEditorProps<Energy & EnergyRelations>
 > = ({ id, findState, useRemove }) => {
   const energyState = findState(id)
   const [energy, setEnergy] = useRecoilState(energyState)
@@ -31,7 +33,6 @@ export const EnergyEditor_INTERNAL: FC<
   }
   const remove = useRemove()
   useSetTitle(energy.name)
-  const addFeature = useAddReactionAsEnergyFeature()
 
   return (
     <div
@@ -41,7 +42,8 @@ export const EnergyEditor_INTERNAL: FC<
       `}
     >
       <RecoverableErrorBoundary>
-        <EnergyIcon energy={energy} size={100} />
+        <EnergyIcon energyId={id} size={100} />
+        <EnergyCard energyId={id} size={100} />
       </RecoverableErrorBoundary>
       <JsonEditor
         schema={energySchema as JsonSchema}
@@ -50,13 +52,12 @@ export const EnergyEditor_INTERNAL: FC<
         name={energy.name}
         rename={set.name}
         remove={() => remove(id)}
-        isReadonly={(path) => path.includes(`id`)}
-        isHidden={(path) => path.includes(`features`)}
+        isHidden={includesAny([`features`, `id`, `name`])}
         customCss={skeletalJsonEditorCss}
       />
       <ReactionList
         ids={energy.features.map(({ id }) => id)}
-        createNew={() => (console.log(`create new feature`), addFeature(id))}
+        useCreate={() => useAddReactionAsEnergyFeature(id)}
       />
     </div>
   )

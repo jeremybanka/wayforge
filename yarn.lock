@@ -1768,7 +1768,6 @@ __metadata:
     "@types/mocha": ^9.1.1
     c8: ^7.12.0
     hamt_plus: ^1.0.2
-    luum: ./Luum
     react: ^18.2.0
     react-dom: ^18.2.0
     react-is: ^18.2.0
@@ -1814,6 +1813,7 @@ __metadata:
     jest-environment-jsdom: ^28.1.3
     json-schema: ^0.4.0
     json-schema-to-zod: ^0.1.5
+    luum: "file:.yalc/luum"
     prettier: ^2.7.1
     pretty-print-json: ^1.2.5
     react: ^18.2.0
@@ -5194,10 +5194,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luum@file:./Luum::locator=%40wayforge%2Flib%40workspace%3Alib":
+"luum@file:.yalc/luum::locator=%40wayforge%2Fmonorepo%40workspace%3A.":
   version: 0.0.12
-  resolution: "luum@file:./Luum#./Luum::hash=344a99&locator=%40wayforge%2Flib%40workspace%3Alib"
-  checksum: cd3a87c223b5daa14115fbdfb64fec1999dd57ed7c185aff91e4193d600e282913ad13efa964e23477dda35486d1c15c6cfa7573994f63a085bcc2bf5cdc8d76
+  resolution: "luum@file:.yalc/luum#.yalc/luum::hash=82cc2f&locator=%40wayforge%2Fmonorepo%40workspace%3A."
+  checksum: c54a0cf57ccab9eb264b197a5c78816e9e2129bca7bf58775251666e4dc8edac2289f3f2c8d6a369343fe1735c1e73db036e55aabbf831f08310951e7364a0e8
   languageName: node
   linkType: hard
 

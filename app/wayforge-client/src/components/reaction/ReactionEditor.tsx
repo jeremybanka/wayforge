@@ -1,12 +1,16 @@
 import type { FC } from "react"
 import React, { Fragment } from "react"
 
+import { css } from "@emotion/react"
 import { useNavigate } from "react-router-dom"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
+import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
+import { RecoilListProps } from "~/app/wayforge-client/recoil-list"
 import reactionSchema from "~/app/wayforge-server/projects/wayfarer/schema/reaction.schema.json"
 import { become, raiseError } from "~/lib/fp-tools"
+import { includesAny } from "~/lib/fp-tools/venn"
 import type { JsonObj } from "~/lib/json"
 import type { JsonSchema } from "~/lib/json/json-schema"
 import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
@@ -17,9 +21,48 @@ import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Amount, Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
-import type { RecoilIndexProps } from "../energy/EnergyListItem"
+import { EnergyIcon } from "../energy/EnergyIcon_SVG"
 import { EnergyListItem } from "../energy/EnergyListItem"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
+
+// export const EnergyAmountsEditor: FC<{
+//   title: string
+//   energyAmounts: Settable<Amount & Identified>[]
+// }> = ({ title, energyAmounts }) => {
+//   return (
+//     <div>
+//       <p>{title}</p>
+//       {energyAmounts.map(({ id: energyId, amount: energyAmount, set }) => (
+//         <ul key={energyId}>
+//           <EnergyIcon energyId={energyId} size={40} />
+//           <JsonEditor
+//             data={energyAmount}
+//             set={(amount) =>
+//               set((current) => ({
+//                 ...current,
+//                 amount: become(amount)(current.amount),
+//               }))
+//             }
+//           />
+//           <button onClick={() => remove.reagent(reagentId)}>remove</button>
+//         </ul>
+//       ))}
+//       <select onChange={(e) => add.reagent(e.target.value)}>
+//         {[null, ...energySelectables].map((option) =>
+//           option === null ? (
+//             <option key={id + `reagent_add`} value={``}>
+//               Add reagent
+//             </option>
+//           ) : (
+//             <option key={option.value + id + `reagent`} value={option.value}>
+//               {option.text}
+//             </option>
+//           )
+//         )}
+//       </select>
+//     </div>
+//   )
+// }
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
   key: `energyCatalog`,
@@ -38,8 +81,8 @@ export type Settable<T extends JsonObj> = T & { set: SetterOrUpdater<T> }
 export const isFn = (x: unknown): x is Function => typeof x === `function`
 
 export const ReactionEditor: FC<
-  RecoilIndexProps<Reaction & ReactionRelations>
-> = ({ id, findState }) => {
+  RecoilListItemProps<Reaction & ReactionRelations>
+> = ({ id, findState, removeMe }) => {
   const reactionState = findState(id)
   const [reaction, setReaction] = useRecoilState(reactionState)
   const set: {
@@ -114,74 +157,78 @@ export const ReactionEditor: FC<
         set={setReaction}
         name={reaction.name}
         rename={set.name}
-        remove={() => console.log(`remove reaction`)}
-        isReadonly={(path) => path.includes(`id`)}
-        isHidden={(path) =>
-          path.includes(`reagents`) || path.includes(`products`)
-        }
+        remove={() => (console.log(`remove reaction ${id}`), removeMe())}
+        isHidden={includesAny([`id`, `name`, `reagents`, `products`])}
         customCss={skeletalJsonEditorCss}
       />
-      <div>
-        <p>Reagents</p>
-        {reaction.reagents.map(({ id: reagentId }) => (
-          <ul key={reagentId}>
-            <EnergyListItem id={reagentId} findState={findEnergyState} />
-            <JsonEditor
-              data={find.reagent(reagentId).amount}
-              set={(amount) =>
-                find.reagent(reagentId).set((current) => ({
-                  ...current,
-                  amount: become(amount)(current.amount),
-                }))
-              }
-            />
-            <button onClick={() => remove.reagent(reagentId)}>remove</button>
-          </ul>
-        ))}
-        <select onChange={(e) => add.reagent(e.target.value)}>
-          {[null, ...energySelectables].map((option) =>
-            option === null ? (
-              <option key={id + `reagent_add`} value={``}>
-                Add reagent
-              </option>
-            ) : (
-              <option key={option.value + id + `reagent`} value={option.value}>
-                {option.text}
-              </option>
-            )
-          )}
-        </select>
-      </div>
-      <div>
-        <p>Products</p>
-        {reaction.products.map(({ id: productId }) => (
-          <ul key={id}>
-            <EnergyListItem id={id} findState={findEnergyState} />
-            <NumberInput
-              value={find.product(productId).amount}
-              set={(amount) =>
-                find
-                  .product(productId)
-                  .set((current) => ({ ...current, amount }))
-              }
-            />
-            <button onClick={() => remove.product(productId)}>remove</button>
-          </ul>
-        ))}
-        <select onChange={(e) => add.product(e.target.value)}>
-          {[null, ...energySelectables].map((option) =>
-            option === null ? (
-              <option key={id + `product_add`} value={``}>
-                Add product
-              </option>
-            ) : (
-              <option key={option.value + id + `product`} value={option.value}>
-                {option.text}
-              </option>
-            )
-          )}
-        </select>
-      </div>
+      {reaction.reagents.map(({ id: reagentId }) => (
+        <span key={reagentId}>
+          <JsonEditor
+            data={find.reagent(reagentId).amount}
+            set={(amount) =>
+              find.reagent(reagentId).set((current) => ({
+                ...current,
+                amount: become(amount)(current.amount),
+              }))
+            }
+            remove={() => remove.reagent(reagentId)}
+            customCss={css`
+              display: inline;
+              ${skeletalJsonEditorCss}
+            `}
+          />
+          <EnergyIcon energyId={reagentId} size={40} />
+        </span>
+      ))}
+      <select onChange={(e) => add.reagent(e.target.value)}>
+        {[null, ...energySelectables].map((option) =>
+          option === null ? (
+            <option key={id + `reagent_add`} value={``}>
+              +
+            </option>
+          ) : (
+            <option key={option.value + id + `reagent`} value={option.value}>
+              {option.text}
+            </option>
+          )
+        )}
+      </select>
+      {`->`}
+      {reaction.products.map(({ id: productId }) => (
+        <span key={productId}>
+          <JsonEditor
+            data={find.product(productId).amount}
+            set={(amount) =>
+              find.product(productId).set((current) => ({
+                ...current,
+                amount: become(amount)(current.amount),
+              }))
+            }
+            remove={() => remove.product(productId)}
+            customCss={css`
+              display: inline;
+              ${skeletalJsonEditorCss}
+            `}
+          />
+          <EnergyIcon energyId={productId} size={40} />
+        </span>
+      ))}
+      <select
+        onChange={({ target: { value } }) => value && add.product(value)}
+        value={``}
+      >
+        {[null, ...energySelectables].map((option) =>
+          option === null ? (
+            <option key={id + `product_add`} value={``}>
+              +
+            </option>
+          ) : (
+            <option key={option.value + id + `product`} value={option.value}>
+              {option.text}
+            </option>
+          )
+        )}
+      </select>
     </RecoverableErrorBoundary>
   )
 }

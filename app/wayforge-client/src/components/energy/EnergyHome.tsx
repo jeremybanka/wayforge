@@ -3,9 +3,16 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { energyIndex, useAddEnergy } from "../../services/energy"
+import { RecoilList } from "~/app/wayforge-client/recoil-list"
+
+import {
+  energyIndex,
+  findEnergyState,
+  useAddEnergy,
+  useRemoveEnergy,
+} from "../../services/energy"
 import { useSetTitle } from "../../services/view"
-import { EnergyList } from "./EnergyList"
+import { EnergyListItem } from "./EnergyListItem"
 
 export const EnergyHome: FC = () => {
   const ids = useRecoilValue(energyIndex)
@@ -25,7 +32,22 @@ export const EnergyHome: FC = () => {
         }
       `}
     >
-      <EnergyList ids={[...ids]} createNew={addEnergy} />
+      {/* <EnergyList ids={[...ids]} createNew={addEnergy} /> */}
+      <RecoilList
+        ids={[...ids]}
+        findState={findEnergyState}
+        useCreate={useAddEnergy}
+        useRemove={useRemoveEnergy}
+        Components={{
+          Wrapper: ({ children }) => <ul>{children}</ul>,
+          ListItemWrapper: ({ children }) => <li>{children}</li>,
+          ListItem: EnergyListItem,
+          ItemCreator: ({ useCreate }) => {
+            const create = useCreate()
+            return <button onClick={create}>Add</button>
+          },
+        }}
+      />
     </div>
   )
 }

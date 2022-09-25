@@ -24,9 +24,14 @@ body {
 }
 
 i {
-  font-family: "|_'_|";
+  font-family: "Uruz";
 }
 
 code {
   font-family: sudo;
+}
+
+@font-face {
+  font-family: "Uruz";
+  src: url(./assets/Uruz/Uruz-5r.otf);
 }

@@ -1,0 +1,39 @@
+{
+  "name": "luum",
+  "version": "0.0.12",
+  "description": "generate colors dynamically",
+  "main": "web/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:cov": "jest --watch",
+    "test:once": "jest",
+    "prelint": "ls-lint",
+    "lint": "eslint \"{src,test}/**/*.ts{,x}\"",
+    "lint!": "yarn lint -- --fix",
+    "prebuild": "rm -rf dist",
+    "build": "node esbuild.config.js"
+  },
+  "lint-staged": {
+    "*.ts{,x}": "yarn lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremybanka/luum.git"
+  },
+  "keywords": [
+    "color",
+    "css",
+    "javascript",
+    "library"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Jeremy Banka",
+  "bugs": {
+    "url": "https://github.com/jeremybanka/luum/issues"
+  },
+  "homepage": "https://github.com/jeremybanka/luum#readme",
+  "yalcSig": "77dd052191a8ccaf7a49bc253cd2965d"
+}
