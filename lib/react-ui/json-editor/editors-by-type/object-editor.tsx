@@ -45,6 +45,7 @@ export const ObjectEditor = <T extends JsonObj>({
   schema,
   path = [],
   isReadonly = () => false,
+  isHidden = () => false,
   data,
   set,
   // remove,
@@ -98,10 +99,10 @@ export const ObjectEditor = <T extends JsonObj>({
       Object.assign(subSchema, ref)
     }
   }
-  const schemaKeys = subSchemaIsObject
+  const schemaKeys: ReadonlyArray<string> = subSchemaIsObject
     ? Object.keys(subSchema?.properties ?? {})
     : []
-  const dataKeys = Object.keys(data)
+  const dataKeys: ReadonlyArray<string> = Object.keys(data)
   const [unofficialKeys, officialKeys] = dataKeys.reduce(
     ([unofficial, official], key) => {
       const isOfficial = subSchemaIsObject && schemaKeys.includes(key)
@@ -111,7 +112,9 @@ export const ObjectEditor = <T extends JsonObj>({
     },
     [[], []] as [string[], string[]]
   )
-  const missingKeys = schemaKeys.filter((key) => !dataKeys.includes(key))
+  const missingKeys: ReadonlyArray<string> = schemaKeys.filter(
+    (key) => !dataKeys.includes(key)
+  )
 
   return (
     <>
@@ -121,9 +124,7 @@ export const ObjectEditor = <T extends JsonObj>({
       <Components.ObjectWrapper>
         <div className="json_editor_properties">
           {[...missingKeys, ...officialKeys, ...unofficialKeys].map((key) => {
-            // we hate to see it!
-            // TS should know that keyof T is a string, since T extends JsonObj
-            const originalKey = stableKeyMap.current[key] as string
+            const originalKey = stableKeyMap.current[key]
             const newPath = [...path, key]
             const originalPath = [...path, originalKey]
             const isOfficial = schemaKeys.includes(key)
@@ -143,6 +144,7 @@ export const ObjectEditor = <T extends JsonObj>({
                 path={newPath}
                 name={key}
                 isReadonly={isReadonly}
+                isHidden={isHidden}
                 data={data[key as keyof T]}
                 set={setProperty[key as keyof T]}
                 rename={renameProperty[key as keyof T]}

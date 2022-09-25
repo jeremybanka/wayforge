@@ -39,6 +39,7 @@ export const NumberEditor = ({
 )
 
 export const StringEditor = ({
+  schema,
   path = [],
   isReadonly = () => false,
   data,

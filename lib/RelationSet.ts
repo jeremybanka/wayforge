@@ -1,5 +1,3 @@
-// import { _ } from "fp-ts/lib/function"
-import { toEntries } from "fp-ts/lib/ReadonlyRecord"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
 import type { Hamt } from "hamt_plus"
@@ -19,13 +17,18 @@ export const isRelationSetJson =
     isContent: Refinement<unknown, CONTENT>
   ) =>
   (json: Json): json is RelationSetJson<CONTENT> =>
-    isPlainObject(json) &&
-    isRecord(isString, isContent)(json.contents) &&
-    isRecord(isString, isArray(isString))(json.relations)
+    isPlainObject(json)
+      ? isRecord(isString, isContent)(json.contents)
+        ? isRecord(isString, isArray(isString))(json.relations) ||
+          (console.warn(`input.relations is not a Record<string, string[]>`),
+          false)
+        : (console.warn(`input.contents is not a Record<string, CONTENT>`),
+          false)
+      : (console.warn(`"input is not an object`), false)
 
 export class RelationSet<CONTENT extends Json | null = null> {
-  protected contents: Hamt<CONTENT>
-  protected relations: Hamt<ReadonlyArray<string>>
+  public contents: Hamt<CONTENT>
+  public relations: Hamt<ReadonlyArray<string>>
   public constructor(
     json: RelationSetJson<CONTENT> = {
       contents: {},
@@ -50,8 +53,13 @@ export class RelationSet<CONTENT extends Json | null = null> {
       if (isRelationSetJson(isContent)(json)) {
         return new RelationSet(json)
       }
-      throw new Error(`invalid json`)
+      throw new Error(
+        `Saved JSON for this RelationSet is invalid: ${JSON.stringify(json)}`
+      )
     }
+  }
+  public clone(): RelationSet<CONTENT> {
+    return new RelationSet(this.toJSON())
   }
   protected setContent(
     idA: string,

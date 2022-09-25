@@ -3,16 +3,11 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import {
-  findEnergyState,
-  energyIndex,
-  useAddEnergy,
-  useRemoveEnergy,
-} from "../../services/energy"
+import { energyIndex, useAddEnergy } from "../../services/energy"
 import { useSetTitle } from "../../services/view"
-import { EnergyListItem } from "./EnergyListItem"
+import { EnergyList } from "./EnergyList"
 
-export const EnergyOverview: FC = () => {
+export const EnergyHome: FC = () => {
   const ids = useRecoilValue(energyIndex)
   const addEnergy = useAddEnergy()
   useSetTitle(`Energy`)
@@ -30,12 +25,7 @@ export const EnergyOverview: FC = () => {
         }
       `}
     >
-      <ul>
-        {[...ids].map((id) => (
-          <EnergyListItem key={id} id={id} findState={findEnergyState} />
-        ))}
-        <button onClick={addEnergy}>Add</button>
-      </ul>
+      <EnergyList ids={[...ids]} createNew={addEnergy} />
     </div>
   )
 }

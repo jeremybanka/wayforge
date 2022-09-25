@@ -712,9 +712,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eyecuelab/recoil-devtools@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "@eyecuelab/recoil-devtools@npm:0.1.3"
+"@eyecuelab/recoil-devtools@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@eyecuelab/recoil-devtools@npm:0.1.5"
   dependencies:
     framer-motion: ^7.3.2
     react-icons: ^4.4.0
@@ -723,7 +723,7 @@ __metadata:
     styled-components: ^5.3.5
   peerDependencies:
     react: ">=16"
-  checksum: b0043fc65244dba80173546208ce8e5b84137daa737a35eb7faf072eb1865f97f062913c0c5b81358fcd281b1dab1b6196d9199e4edf2451a5af5b26d75b09e2
+  checksum: 21be7db1628a4853a5321d0199d42afc7689a5d7dbe53b04da9efe3400271c05a6e8293c27f6c62dd11f3d99c581253c81c7da8bf83a90892e9d2217b4e7d0c7
   languageName: node
   linkType: hard
 
@@ -1773,6 +1773,7 @@ __metadata:
     react-dom: ^18.2.0
     react-is: ^18.2.0
     styled-components: ^5.3.5
+    tsx: ^3.0.0
     vite: ^3.0.7
     vitest: ^0.19.1
   languageName: unknown
@@ -1811,6 +1812,7 @@ __metadata:
     hamt_plus: ^1.0.2
     helmet: ^4.6.0
     jest-environment-jsdom: ^28.1.3
+    json-schema: ^0.4.0
     json-schema-to-zod: ^0.1.5
     prettier: ^2.7.1
     pretty-print-json: ^1.2.5
@@ -1820,6 +1822,7 @@ __metadata:
     recoil-sync: ^0.1.0
     socket.io: ^4.5.1
     socket.io-client: ^4.5.1
+    tsconfig-paths: ^4.1.0
     typescript: ^4.8.2
     vite: ^3.0.9
     vite-plugin-svgr: ^2.2.1
@@ -1833,7 +1836,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/web@workspace:app/wayforge-client"
   dependencies:
-    "@eyecuelab/recoil-devtools": ^0.1.3
+    "@eyecuelab/recoil-devtools": ^0.1.5
     "@testing-library/react": ^13.3.0
     "@types/react": ^18.0.17
     "@types/react-dom": ^18.0.6
@@ -5025,6 +5028,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-schema@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "json-schema@npm:0.4.0"
+  checksum: 66389434c3469e698da0df2e7ac5a3281bcff75e797a5c127db7c5b56270e01ae13d9afa3c03344f76e32e81678337a8c912bdbb75101c62e487dc3778461d72
+  languageName: node
+  linkType: hard
+
 "json-stable-stringify-without-jsonify@npm:^1.0.1":
   version: 1.0.1
   resolution: "json-stable-stringify-without-jsonify@npm:1.0.1"
@@ -5186,8 +5196,8 @@ __metadata:
 
 "luum@file:./Luum::locator=%40wayforge%2Flib%40workspace%3Alib":
   version: 0.0.12
-  resolution: "luum@file:./Luum#./Luum::hash=1eee56&locator=%40wayforge%2Flib%40workspace%3Alib"
-  checksum: c0b23b78b95f3c41261c1d96ed36d7a55723a9ceccba80abd49104928c35dcebfacf5643309aa4e11e6683c0c1e2ed665180ab2b3f5c99c3687ffbc1db5ea46d
+  resolution: "luum@file:./Luum#./Luum::hash=344a99&locator=%40wayforge%2Flib%40workspace%3Alib"
+  checksum: cd3a87c223b5daa14115fbdfb64fec1999dd57ed7c185aff91e4193d600e282913ad13efa964e23477dda35486d1c15c6cfa7573994f63a085bcc2bf5cdc8d76
   languageName: node
   linkType: hard
 
@@ -6862,7 +6872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^4.0.0":
+"tsconfig-paths@npm:^4.0.0, tsconfig-paths@npm:^4.1.0":
   version: 4.1.0
   resolution: "tsconfig-paths@npm:4.1.0"
   dependencies:

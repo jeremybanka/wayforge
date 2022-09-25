@@ -17,7 +17,7 @@ import { ErrorBoundary } from "~/lib/react-ui/error-boundary"
 import type { WC } from "~/lib/react-ui/json-editor"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
-import { EnergyOverview } from "./components/energy/EnergyIndex"
+import { EnergyHome } from "./components/energy/EnergyHome"
 import {
   findViewState,
   useAddView,
@@ -56,7 +56,7 @@ export const InnerView: FC<{ viewId: string; close: () => void }> = ({
         <Route path="/" element={<Outlet />}>
           <Route index element={<Link to="energy">energy</Link>} />
           <Route path="energy" element={<Outlet />}>
-            <Route index element={<EnergyOverview />} />
+            <Route index element={<EnergyHome />} />
             <Route path=":id" element={<EnergyEditor />} />
           </Route>
         </Route>

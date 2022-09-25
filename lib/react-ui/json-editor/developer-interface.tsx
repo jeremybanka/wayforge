@@ -42,6 +42,7 @@ export type JsonEditorProps<T extends Json> = {
   schema?: JsonSchema
   path?: ReadonlyArray<number | string>
   isReadonly?: (path: ReadonlyArray<number | string>) => boolean
+  isHidden?: (path: ReadonlyArray<number | string>) => boolean
   className?: string
   customCss?: SerializedStyles
   Header?: FC<{ data: T; schema?: JsonSchema }>
@@ -56,7 +57,7 @@ export const JsonEditor = <T extends Json>({
   rename,
   remove,
   isReadonly = () => false,
-  // isHidden = () => false,
+  isHidden = () => false,
   // isIllegal = () => false,
   className,
   customCss,
@@ -77,6 +78,7 @@ export const JsonEditor = <T extends Json>({
       remove={remove}
       path={[]}
       isReadonly={isReadonly}
+      isHidden={isHidden}
       className={className}
       customCss={customCss}
       Header={Header}

@@ -4,13 +4,13 @@ import {
   atom,
   atomFamily,
   selectorFamily,
+  DefaultValue,
   selector,
 } from "recoil"
+import type energySchema from "wayforge-server/gen/energy.schema.json"
 import z, { string } from "zod"
 
-import type energySchema from "~/gen/energy.schema"
-import type { Index1ToMany } from "~/lib/dynamic-relations/1ToMany"
-import { isNull, isUndefined } from "~/lib/fp-tools"
+import { isNull } from "~/lib/fp-tools"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
@@ -19,17 +19,15 @@ import {
   removeFromRecoilSet,
 } from "~/lib/recoil-tools/recoil-set"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
-import { RelationManager } from "~/lib/relation-manager"
-import { isRelationSetJson, RelationSet } from "~/lib/RelationSet"
+import { RelationSet } from "~/lib/RelationSet"
 
-import type { Reaction } from "./reaction"
-import { findReactionState } from "./reaction"
+import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
 
 export type Energy = z.infer<typeof energySchema>
 
 // each energy has many reactions as features on its card
-// each reaction has one card on which it is a feature
+// each reaction has one energy card on which it is a feature
 
 // each reaction has many energies as reagents
 // each energy has many reactions where it is a reagent
@@ -89,75 +87,55 @@ export const findEnergyState = atomFamily<Energy, string>({
   ],
 })
 
-// export const findEnergyReactionsState = atom<Index1ToMany>({
-//   key: `energyReactions`,
-//   default: new Index1ToMany(),
-//   effects: [
-
-// export type EnergyGlobalRelations = {
-//   reaction: {
-//     provider: Index1ToMany<string, string>
-//     prod
-//   }
-// }
-
-export type EnergyRelationsExtracted = {
-  reaction: {
-    provider: Reaction[]
-    product: Reaction[]
-    reagent: Reaction[]
-  }
+export type EnergyRelations = {
+  features: { id: string }[]
 }
 
-export const energyFeaturesState = atom<RelationSet>({
-  key: `energyFeatures`,
-  default: new RelationSet(),
-  effects: [
-    socketSync({
-      id: `energyFeatures`,
-      socket,
-      type: `energy:reaction`,
-      jsonInterface: {
-        toJson: (relationSet) => relationSet.toJSON(),
-        fromJson: (json) => pipe(json, RelationSet.fromJSON(isNull)),
-      },
-    }),
-  ],
-})
-
-type EnergyRelations = { features: Record<string, Reaction> }
-
-export type EnergyStateQuery = { id: string; include: string[] }
-
-export const findEnergyWithFeaturesState = selectorFamily<
-  Energy & { features: EnergyRelations[`features`] },
+export const findEnergyWithRelationsState = selectorFamily<
+  Energy & EnergyRelations,
   string
 >({
-  key: `energyWithFeatures`,
+  key: `energyWithRelations`,
   get:
     (id) =>
     ({ get }) => {
       const energy = get(findEnergyState(id))
       const featureRelationSet = get(energyFeaturesState)
       const featureIds = featureRelationSet.getRelations(id)
-      const featuresEntries = featureIds.map((id): [string, Reaction] => [
-        id,
-        get(findReactionState(id)),
-      ])
-      const features = Object.fromEntries(featuresEntries)
+      const features = featureIds.map((id): { id: string } => ({ id }))
       return { ...energy, features }
     },
+  set:
+    (energyId) =>
+    ({ set }, newValue) => {
+      if (newValue instanceof DefaultValue) {
+        return console.warn(`cannot set default value for energy`)
+      }
+      const { features: newFeatures, ...newEnergy } = newValue
+      set(findEnergyState(energyId), newEnergy)
+      set(energyFeaturesState, (oldEnergyFeatures) => {
+        const removedFeatureIds = oldEnergyFeatures
+          .getRelations(energyId)
+          .filter(
+            (oldFeatureId) =>
+              !newFeatures.find((newFeature) => newFeature.id === oldFeatureId)
+          )
+        const addedFeatureIds = newFeatures
+          .filter(
+            (newFeature) =>
+              !oldEnergyFeatures.getRelations(energyId).includes(newFeature.id)
+          )
+          .map((newFeature) => newFeature.id)
+        removedFeatureIds.forEach((removedFeatureId) =>
+          oldEnergyFeatures.remove(energyId, removedFeatureId)
+        )
+        addedFeatureIds.forEach((addedFeatureId) =>
+          oldEnergyFeatures.set1ToMany(energyId, addedFeatureId)
+        )
+        return RelationSet.fromJSON(isNull)(oldEnergyFeatures.toJSON())
+      })
+    },
 })
-
-// export const findEnergyWithRelationsState = selectorFamily<
-//   Energy & { $relations: EnergyRelationsExtracted },
-//   string
-// >({})
-
-export type EnergyColorFinder = {
-  id: string
-  colorKey: `colorA` | `colorB`
-}
 
 const addEnergy: TransactionOperation = ({ set }) => {
   const id = now()
@@ -180,11 +158,3 @@ export const useRemoveEnergy = (): ((id: string) => void) =>
   useRecoilTransaction_UNSTABLE(
     (transactors) => (id) => removeEnergy(transactors, id)
   )
-
-export const Reactions = new RelationManager({
-  config: {
-    reagents: `energy`,
-    products: `energy`,
-  },
-  relations: {},
-})
