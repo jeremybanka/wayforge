@@ -13,10 +13,6 @@ import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
 import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
-import {
-  addToRecoilSet,
-  removeFromRecoilSet,
-} from "~/lib/recoil-tools/recoil-set"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 
 import type { Amount } from "./energy_reaction"
@@ -167,7 +163,6 @@ export const findReactionWithRelationsState = selectorFamily<
 
 const addReaction: TransactionOperation<undefined, string> = ({ set }) => {
   const id = now()
-  addToRecoilSet(set, reactionIndex, id)
   set(findReactionState(id), (current) => {
     return {
       ...current,
@@ -198,7 +193,6 @@ export const removeReaction: TransactionOperation<string> = (
   { get, set },
   id
 ) => {
-  removeFromRecoilSet(set, reactionIndex, id)
   const energyFeatures = get(energyFeaturesState).clone()
   const reactionReagents = get(reactionReagentsState).clone()
   const reactionProducts = get(reactionProductsState).clone()
