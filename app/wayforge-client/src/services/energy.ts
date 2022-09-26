@@ -14,10 +14,7 @@ import { isNull } from "~/lib/fp-tools"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
-import {
-  addToRecoilSet,
-  removeFromRecoilSet,
-} from "~/lib/recoil-tools/recoil-set"
+import { addToIndex, removeFromIndex } from "~/lib/recoil-tools/recoil-set"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 import { RelationSet } from "~/lib/RelationSet"
 
@@ -137,9 +134,10 @@ export const findEnergyWithRelationsState = selectorFamily<
     },
 })
 
-const addEnergy: TransactionOperation = ({ set }) => {
+const addEnergy: TransactionOperation = (transactors) => {
+  const { set } = transactors
   const id = now()
-  addToRecoilSet(set, energyIndex, id)
+  addToIndex(transactors, { id, indexAtom: energyIndex })
   set(findEnergyState(id), (current) => ({
     ...current,
     id,
@@ -147,9 +145,8 @@ const addEnergy: TransactionOperation = ({ set }) => {
   }))
 }
 
-const removeEnergy: TransactionOperation<string> = ({ set }, id) => {
-  removeFromRecoilSet(set, energyIndex, id)
-}
+const removeEnergy: TransactionOperation<string> = (transactors, id) =>
+  removeFromIndex(transactors, { id, indexAtom: energyIndex })
 
 export const useAddEnergy = (): (() => void) =>
   useRecoilTransaction_UNSTABLE((transactors) => () => addEnergy(transactors))
