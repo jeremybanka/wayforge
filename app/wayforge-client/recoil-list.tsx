@@ -3,16 +3,19 @@ import type { FC } from "react"
 import type { RecoilState } from "recoil"
 
 import type { JsxElements, WC } from "~/lib/react-ui/json-editor"
+import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
 
-export type RecoilListItemProps<T> = {
-  id: string
-  findState: (key: string) => RecoilState<T>
+/* eslint-disable @typescript-eslint/ban-types */
+
+export type RecoilListItemProps<DATA, META = {}> = {
+  label: Identified & META
+  findState: (key: string) => RecoilState<DATA>
   removeMe: () => void
 }
 
-export type RecoilListProps<T> = {
-  ids: string[]
-  findState: (id: string) => RecoilState<T>
+export type RecoilListProps<DATA, META = {}> = {
+  labels: (Identified & META)[]
+  findState: (id: string) => RecoilState<DATA>
   useCreate?: () => () => void
   useRemove?: () => (id: string) => void
   Components: {
@@ -20,13 +23,13 @@ export type RecoilListProps<T> = {
     ItemCreator?: FC<{
       useCreate: () => () => void
     }>
-    ListItem: FC<RecoilListItemProps<T>>
+    ListItem: FC<RecoilListItemProps<DATA, META>>
     ListItemWrapper?: WC
   }
 }
 
-export const RecoilList = <T,>({
-  ids,
+export const RecoilList = <DATA, META = {}>({
+  labels,
   findState,
   useCreate,
   useRemove,
@@ -36,16 +39,20 @@ export const RecoilList = <T,>({
     ListItemWrapper = ({ children }) => <>{children}</>,
     ItemCreator,
   },
-}: RecoilListProps<T>): JsxElements => {
+}: RecoilListProps<DATA, META>): JsxElements => {
   const remove =
     useRemove?.() ||
     ((id) =>
       console.warn(`tried to remove ${id}, but no useRemove was provided`))
   return (
     <Wrapper>
-      {ids.map((id) => (
-        <ListItemWrapper key={id}>
-          <ListItem id={id} findState={findState} removeMe={() => remove(id)} />
+      {labels.map((label) => (
+        <ListItemWrapper key={label.id}>
+          <ListItem
+            label={label}
+            findState={findState}
+            removeMe={() => remove(label.id)}
+          />
         </ListItemWrapper>
       ))}
       {ItemCreator && useCreate && <ItemCreator useCreate={useCreate} />}

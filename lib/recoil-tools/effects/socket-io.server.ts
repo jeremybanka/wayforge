@@ -185,6 +185,7 @@ export const SaveJsonWebsocketServer = (
         log(socket.id, `indexWrite`, type)
         const ids = index(type)
         const toBeDeleted = ids.filter((id) => !newIds.includes(id))
+        console.log(`⚠️`, { newIds, toBeDeleted })
         const fileNames = readdirSync(`${jsonRoot}/${type}`)
 
         toBeDeleted.forEach((id) => {

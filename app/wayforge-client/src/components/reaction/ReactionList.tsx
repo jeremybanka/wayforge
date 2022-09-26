@@ -42,11 +42,11 @@ const PaddedListWrapper: WC = ({ children }) => (
 )
 
 export const ReactionList: FC<{
-  ids: string[]
+  labels: Identified[]
   useCreate: () => () => void
-}> = ({ ids, useCreate }) => (
+}> = ({ labels, useCreate }) => (
   <RecoilList
-    ids={ids}
+    labels={labels}
     findState={findReactionWithRelationsState}
     useCreate={useCreate}
     useRemove={useRemoveReaction}

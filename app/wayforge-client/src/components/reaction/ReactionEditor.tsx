@@ -82,8 +82,8 @@ export const isFn = (x: unknown): x is Function => typeof x === `function`
 
 export const ReactionEditor: FC<
   RecoilListItemProps<Reaction & ReactionRelations>
-> = ({ id, findState, removeMe }) => {
-  const reactionState = findState(id)
+> = ({ label, findState, removeMe }) => {
+  const reactionState = findState(label.id)
   const [reaction, setReaction] = useRecoilState(reactionState)
   const set: {
     [K in keyof Omit<Reaction & ReactionRelations, `id`>]: SetterOrUpdater<
@@ -157,7 +157,7 @@ export const ReactionEditor: FC<
         set={setReaction}
         name={reaction.name}
         rename={set.name}
-        remove={() => (console.log(`remove reaction ${id}`), removeMe())}
+        remove={() => (console.log(`remove reaction ${label.id}`), removeMe())}
         isHidden={includesAny([`id`, `name`, `reagents`, `products`])}
         customCss={skeletalJsonEditorCss}
       />
@@ -183,11 +183,14 @@ export const ReactionEditor: FC<
       <select onChange={(e) => add.reagent(e.target.value)}>
         {[null, ...energySelectables].map((option) =>
           option === null ? (
-            <option key={id + `reagent_add`} value={``}>
+            <option key={label.id + `reagent_add`} value={``}>
               +
             </option>
           ) : (
-            <option key={option.value + id + `reagent`} value={option.value}>
+            <option
+              key={option.value + label.id + `reagent`}
+              value={option.value}
+            >
               {option.text}
             </option>
           )
@@ -219,11 +222,14 @@ export const ReactionEditor: FC<
       >
         {[null, ...energySelectables].map((option) =>
           option === null ? (
-            <option key={id + `product_add`} value={``}>
+            <option key={label.id + `product_add`} value={``}>
               +
             </option>
           ) : (
-            <option key={option.value + id + `product`} value={option.value}>
+            <option
+              key={option.value + label.id + `product`}
+              value={option.value}
+            >
               {option.text}
             </option>
           )

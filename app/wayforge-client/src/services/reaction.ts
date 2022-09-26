@@ -168,11 +168,13 @@ export const findReactionWithRelationsState = selectorFamily<
 const addReaction: TransactionOperation<undefined, string> = ({ set }) => {
   const id = now()
   addToRecoilSet(set, reactionIndex, id)
-  set(findReactionState(id), (current) => ({
-    ...current,
-    id,
-    name: `New Reaction`,
-  }))
+  set(findReactionState(id), (current) => {
+    return {
+      ...current,
+      id,
+      name: `New Reaction`,
+    }
+  })
   return id
 }
 export const useAddReaction = (): (() => void) =>
