@@ -34,7 +34,7 @@ export const EnergyHome: FC = () => {
     >
       {/* <EnergyList ids={[...ids]} createNew={addEnergy} /> */}
       <RecoilList
-        ids={[...ids]}
+        labels={[...ids].map((id) => ({ id }))}
         findState={findEnergyState}
         useCreate={useAddEnergy}
         useRemove={useRemoveEnergy}

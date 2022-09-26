@@ -11,12 +11,12 @@ import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
 import type { Energy } from "../../services/energy"
 import { EnergyIcon } from "./EnergyIcon_SVG"
 
-export const EnergyListItem: FC<RecoilListItemProps<Energy>> = ({ id }) => {
+export const EnergyListItem: FC<RecoilListItemProps<Energy>> = ({ label }) => {
   const navigate = useNavigate()
   return (
     <RecoverableErrorBoundary>
-      <button onClick={() => navigate(`/energy/${id}`)}>
-        <EnergyIcon energyId={id} size={70} />
+      <button onClick={() => navigate(`/energy/${label.id}`)}>
+        <EnergyIcon energyId={label.id} size={70} />
       </button>
     </RecoverableErrorBoundary>
   )

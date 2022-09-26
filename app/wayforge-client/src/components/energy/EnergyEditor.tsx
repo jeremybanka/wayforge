@@ -42,8 +42,18 @@ export const EnergyEditor_INTERNAL: FC<
       `}
     >
       <RecoverableErrorBoundary>
-        <EnergyIcon energyId={id} size={100} />
-        <EnergyCard energyId={id} size={100} />
+        <article
+          css={css`
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            gap: 30px;
+          `}
+        >
+          <EnergyIcon energyId={id} size={100} />
+          <EnergyCard.A energyId={id} size={100} />
+          <EnergyCard.B energyId={id} size={100} />
+        </article>
       </RecoverableErrorBoundary>
       <JsonEditor
         schema={energySchema as JsonSchema}
@@ -56,7 +66,7 @@ export const EnergyEditor_INTERNAL: FC<
         customCss={skeletalJsonEditorCss}
       />
       <ReactionList
-        ids={energy.features.map(({ id }) => id)}
+        labels={energy.features}
         useCreate={() => useAddReactionAsEnergyFeature(id)}
       />
     </div>
