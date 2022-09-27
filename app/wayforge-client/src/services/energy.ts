@@ -14,7 +14,7 @@ import { isNull } from "~/lib/fp-tools"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
-import { addToIndex, removeFromIndex } from "~/lib/recoil-tools/recoil-set"
+import { addToIndex, removeFromIndex } from "~/lib/recoil-tools/recoil-index"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 import { RelationSet } from "~/lib/RelationSet"
 

@@ -22,10 +22,7 @@ import {
   localStorageEffect,
   localStorageSerializationEffect,
 } from "~/lib/recoil-tools/effects/local-storage"
-import {
-  addToRecoilSet,
-  removeFromRecoilSet,
-} from "~/lib/recoil-tools/recoil-set"
+import { addToIndex, removeFromIndex } from "~/lib/recoil-tools/recoil-index"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 
 export const spaceIndexState = atom<Set<string>>({
@@ -53,16 +50,18 @@ const findSpaceState = atomFamily<number, string>({
   effects: (id) => [localStorageEffect(id)],
 })
 
-export const addSpace: TransactionOperation<undefined, string> = ({ set }) => {
+export const addSpace: TransactionOperation<undefined, string> = (
+  transactors
+) => {
+  const { set } = transactors
   const id = `space-${now()}`
-  addToRecoilSet(set, spaceIndexState, id)
+  addToIndex(transactors, { indexAtom: spaceIndexState, id })
   set(findSpaceState(id), 1)
   return id
 }
 
-export const removeSpace: TransactionOperation<string> = ({ set }, id) => {
-  removeFromRecoilSet(set, spaceIndexState, id)
-}
+export const removeSpace: TransactionOperation<string> = (transactors, id) =>
+  removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
 
 export class ViewsPerSpace extends Index1ToMany<string, string> {
   public getViews(spaceId: string): Set<string> | undefined {
@@ -155,7 +154,7 @@ const addView: TransactionOperation<AddViewOptions | undefined> = (
 ) => {
   const { get, set } = transactors
   const id = `view-${now()}`
-  addToRecoilSet(set, viewIndexState, id)
+  addToIndex(transactors, { indexAtom: viewIndexState, id })
   set(
     findViewState(id),
     (current): View => ({
@@ -180,8 +179,9 @@ export const useAddView = (): ((options?: AddViewOptions) => void) =>
       options ? addView(transactors, options) : addView(transactors)
   )
 
-const removeView: TransactionOperation<string> = ({ set }, id) => {
-  removeFromRecoilSet(set, viewIndexState, id)
+const removeView: TransactionOperation<string> = (transactors, id) => {
+  const { get, set } = transactors
+  removeFromIndex(transactors, { indexAtom: viewIndexState, id })
   set(viewsPerSpaceState, (current) => {
     current.delete(undefined, id)
     return current
