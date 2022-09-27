@@ -61,3 +61,11 @@ export const every =
     a.every(f)
 
 export const allTrue = every((x: boolean) => x === true)
+
+export const addTo =
+  <I>(a: I[]) =>
+  (x: I): I[] =>
+    a.includes(x) ? a : [...a, x]
+
+export const isEmptyArray = (input: unknown): input is [] =>
+  Array.isArray(input) && input.length === 0

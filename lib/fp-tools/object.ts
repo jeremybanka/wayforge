@@ -55,13 +55,13 @@ export const entriesToRecord = <K extends keyof any, V>(
 ): Record<K, V> => Object.fromEntries(entries) as Record<K, V>
 
 export const treeShake =
-  (shouldDiscard: (value: unknown) => boolean = isUndefined) =>
+  (shouldDiscard: (val: unknown, key: keyof any) => boolean = isUndefined) =>
   <T>(obj?: T): Partial<T> => {
     if (!obj) return {}
     const newObj = {} as Partial<T>
     const entries = Object.entries(obj) as [keyof T, any][]
     entries.forEach(([key, val]) =>
-      !shouldDiscard(val) ? (newObj[key] = val) : null
+      !shouldDiscard(val, key) ? (newObj[key] = val) : null
     )
     return newObj
   }
