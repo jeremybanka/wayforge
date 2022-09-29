@@ -28,4 +28,16 @@ describe(`isObject`, () => {
       expect(myFancyObject.c).toBe(true)
     }
   })
+  it(`won't match an object with a missing key`, () => {
+    const isMyFancyType = isObject({
+      a: isString,
+      b: isNumber,
+      c: isBoolean,
+    })
+    const myFancyObject: unknown = JSON.parse(`{
+      "a": "hello",
+      "b": 42
+    }`)
+    expect(isMyFancyType(myFancyObject)).toBe(false)
+  })
 })

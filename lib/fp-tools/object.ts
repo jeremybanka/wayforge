@@ -37,18 +37,22 @@ export const isObject =
       allTrue
     )
 
-export const isRecord =
-  <K extends keyof any, V>(
-    isKey: Refinement<keyof any, K>,
-    isValue: Refinement<unknown, V>
+/* prettier-ignore */
+export const isRecord = <
+    KEY extends keyof any, 
+    VAL
+  >( 
+    isKey: Refinement<keyof any, KEY>,
+    isValue: Refinement<unknown, VAL>
   ) =>
-  (input: unknown): input is Record<K, V> =>
+  (input: unknown): input is Record<KEY, VAL> =>
     isPlainObject(input) &&
     Object.entries(input).every(([k, v]) => isKey(k) && isValue(v))
+/* prettier-ignore-end */
 
 export const isDictionary =
-  <V>(isValue: Refinement<unknown, V>) =>
-  (input: unknown): input is Record<string, V> =>
+  <VAL>(isValue: Refinement<unknown, VAL>) =>
+  (input: unknown): input is Record<string, VAL> =>
     isRecord(isString, isValue)(input)
 
 export const recordToEntries = <K extends keyof any, V>(
