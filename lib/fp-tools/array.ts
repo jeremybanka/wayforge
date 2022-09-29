@@ -13,6 +13,11 @@ export const isArray =
   (input: unknown): input is T[] =>
     Array.isArray(input) && input.every((item) => isType(item))
 
+export const at =
+  <T>(index: number) =>
+  (input: T[]): T | undefined =>
+    input.at(index)
+
 export const content =
   <T>(isType: Refinement<unknown, T>) =>
   (input: unknown): input is T | T[] =>
