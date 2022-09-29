@@ -64,28 +64,13 @@ export const addSpace: TransactionOperation<undefined, string> = (
 export const removeSpace: TransactionOperation<string> = (transactors, id) =>
   removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
 
-export class ViewsPerSpace extends Index1ToMany<string, string> {
-  public getViews(spaceId: string): Set<string> | undefined {
-    return this.getViews(spaceId)
-  }
-  public getSpace(viewId: string): string | undefined {
-    return this.getSpace(viewId)
-  }
-  // public override toJson(): [string, string[]][] {
-  //   const assignments = new Index1To1().toJson.bind(this)()
-  // }
-  // private _focusedViews = {}
-  // public getFocusedView(spaceId: string): string | undefined {
-  // public set
-}
-
 export const viewsPerSpaceState = atom<Join>({
   key: `viewsPerSpace`,
   default: new Join({ relationType: `1:n` }),
   effects: [
     localStorageSerializationEffect(`viewsPerSpace`, {
       serialize: (index) => JSON.stringify(index.toJSON()),
-      deserialize: (json) => Join.fromJSON()(JSON.parse(json)),
+      deserialize: (json) => Join.fromJSON(JSON.parse(json)),
     }),
   ],
 })

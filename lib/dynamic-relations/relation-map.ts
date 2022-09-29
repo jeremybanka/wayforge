@@ -271,18 +271,17 @@ export class Join<CONTENT extends Json | null = null>
     }
   }
   public static fromJSON<CONTENT extends Json | null = null>(
+    json: Json,
     isContent: Refinement<unknown, CONTENT> = isUndefined
-  ) {
-    return (json: Json): Join<CONTENT> => {
-      const isValid = isRelationMap(isContent)(json)
-      console.log({ isValid })
-      if (isValid) {
-        return new Join(json)
-      }
-      throw new Error(
-        `Saved JSON for this Join is invalid: ${JSON.stringify(json)}`
-      )
+  ): Join<CONTENT> {
+    const isValid = isRelationMap(isContent)(json)
+    console.log({ isValid })
+    if (isValid) {
+      return new Join(json)
     }
+    throw new Error(
+      `Saved JSON for this Join is invalid: ${JSON.stringify(json)}`
+    )
   }
 
   public getRelation(idA: string, idB?: string): string | undefined {
