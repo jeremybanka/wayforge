@@ -58,8 +58,7 @@ export const socketRelations: <CONTENT extends Json>(
       `relationsRead_${id}`,
       (json) => (
         console.log(`received relations: ${id}`),
-        // console.log({ json, refined: Join.fromJSON(refineContent)(json) }),
-        setSelf(Join.fromJSON(refineContent)(json))
+        setSelf(Join.fromJSON(json, refineContent))
       )
     )
     onSet((v) => socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }))
