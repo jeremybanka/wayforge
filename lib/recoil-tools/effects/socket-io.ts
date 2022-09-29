@@ -7,9 +7,10 @@ import type {
   SaveJsonEmitEvents,
   SaveJsonListenEvents,
 } from "~/lib/recoil-tools/effects/socket-io.server"
-import { RelationSet } from "~/lib/RelationSet"
+// import { RelationSet } from "~/lib/RelationSet"
 
 import type { JsonInterface } from "."
+import { Join } from "../../dynamic-relations/relation-map"
 
 export type SocketSyncOptions<T> = {
   id: string
@@ -49,7 +50,7 @@ export type SocketRelationsOptions<CONTENT extends Json> = {
 
 export const socketRelations: <CONTENT extends Json>(
   options: SocketRelationsOptions<CONTENT>
-) => AtomEffect<RelationSet<CONTENT>> =
+) => AtomEffect<Join<CONTENT>> =
   ({ type, id, socket, refineContent }) =>
   ({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
@@ -57,7 +58,8 @@ export const socketRelations: <CONTENT extends Json>(
       `relationsRead_${id}`,
       (json) => (
         console.log(`received relations: ${id}`),
-        setSelf(RelationSet.fromJSON(refineContent)(json))
+        // console.log({ json, refined: Join.fromJSON(refineContent)(json) }),
+        setSelf(Join.fromJSON(refineContent)(json))
       )
     )
     onSet((v) => socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }))
