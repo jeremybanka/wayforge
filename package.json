@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "cd app/wayforge-client && yarn dev",
-    "start": "cd app/wayforge-server && yarn dev",
+    "serve": "cd app/wayforge-server && yarn dev",
     "gen": "cd app/wayforge-server && yarn gen",
     "test": "cd lib && yarn test"
   },
