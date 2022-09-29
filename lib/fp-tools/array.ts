@@ -74,3 +74,8 @@ export const addTo =
 
 export const isEmptyArray = (input: unknown): input is [] =>
   Array.isArray(input) && input.length === 0
+
+export const isOneOf =
+  <T>(...args: ReadonlyArray<T>) =>
+  (input: unknown): input is T =>
+    args.includes(input as T)
