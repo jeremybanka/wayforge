@@ -15,6 +15,7 @@ import {
 import { string } from "zod"
 
 import { Index1ToMany } from "~/lib/dynamic-relations/1ToMany"
+import { Join } from "~/lib/dynamic-relations/relation-map"
 import { lastOf } from "~/lib/fp-tools/array"
 import type { Entries } from "~/lib/fp-tools/object"
 import { now } from "~/lib/id/now"
@@ -78,13 +79,13 @@ export class ViewsPerSpace extends Index1ToMany<string, string> {
   // public set
 }
 
-export const viewsPerSpaceState = atom<ViewsPerSpace>({
+export const viewsPerSpaceState = atom<Join>({
   key: `viewsPerSpace`,
-  default: new ViewsPerSpace(),
+  default: new Join({ relationType: `1:n` }),
   effects: [
     localStorageSerializationEffect(`viewsPerSpace`, {
-      serialize: (index) => JSON.stringify(index.toJson()),
-      deserialize: (json) => new ViewsPerSpace(JSON.parse(json)),
+      serialize: (index) => JSON.stringify(index.toJSON()),
+      deserialize: (json) => Join.fromJSON()(JSON.parse(json)),
     }),
   ],
 })
@@ -182,10 +183,7 @@ export const useAddView = (): ((options?: AddViewOptions) => void) =>
 const removeView: TransactionOperation<string> = (transactors, id) => {
   const { get, set } = transactors
   removeFromIndex(transactors, { indexAtom: viewIndexState, id })
-  set(viewsPerSpaceState, (current) => {
-    current.delete(undefined, id)
-    return current
-  })
+  set(viewsPerSpaceState, (current) => current.remove(id))
 }
 
 export const useRemoveView = (): ((id: string) => void) =>

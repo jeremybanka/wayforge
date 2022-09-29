@@ -2,6 +2,7 @@ import { pipe } from "fp-ts/lib/function"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
 
+import { isUndefined } from "../fp-tools"
 import { addTo, isArray, isEmptyArray, map } from "../fp-tools/array"
 import {
   entriesToRecord,
@@ -270,7 +271,7 @@ export class Join<CONTENT extends Json | null = null>
     }
   }
   public static fromJSON<CONTENT extends Json | null = null>(
-    isContent: Refinement<unknown, CONTENT>
+    isContent: Refinement<unknown, CONTENT> = isUndefined
   ) {
     return (json: Json): Join<CONTENT> => {
       const isValid = isRelationMap(isContent)(json)
