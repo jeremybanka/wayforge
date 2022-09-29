@@ -26,15 +26,15 @@ export const isObject =
   (input: unknown): input is OBJ =>
     isPlainObject(input) &&
     pipe(
+      isValue,
+      Object.keys,
+      every((key) => key in input)
+    ) &&
+    pipe(
       input,
       mob((val, key) => isValue[key]?.(val) ?? false),
       Object.values,
       allTrue
-    ) &&
-    pipe(
-      isValue,
-      Object.keys,
-      every((key) => key in input)
     )
 
 export const isRecord =
