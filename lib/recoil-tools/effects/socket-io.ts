@@ -10,7 +10,7 @@ import type {
 // import { RelationSet } from "~/lib/RelationSet"
 
 import type { JsonInterface } from "."
-import { Join } from "../../dynamic-relations/relation-map"
+import { Join } from "../../join"
 
 export type SocketSyncOptions<T> = {
   id: string
@@ -54,12 +54,9 @@ export const socketRelations: <CONTENT extends Json>(
   ({ type, id, socket, refineContent }) =>
   ({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
-    socket.on(
-      `relationsRead_${id}`,
-      (json) => (
-        console.log(`received relations: ${id}`),
-        setSelf(Join.fromJSON(json, refineContent))
-      )
+    socket.on(`relationsRead_${id}`, (json) =>
+      // console.log(`received relations: ${id}`),
+      setSelf(Join.fromJSON(json, refineContent))
     )
     onSet((v) => socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }))
   }

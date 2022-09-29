@@ -2,9 +2,9 @@ import { isNumber } from "fp-ts/lib/number"
 import { atom } from "recoil"
 import { object } from "zod"
 
-import { Join } from "~/lib/dynamic-relations/relation-map"
 import { isNull } from "~/lib/fp-tools"
 import { isRecord } from "~/lib/fp-tools/object"
+import { Join } from "~/lib/join"
 import { socketRelations } from "~/lib/recoil-tools/effects/socket-io"
 import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
 

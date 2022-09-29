@@ -1,7 +1,7 @@
 import { vitest } from "vitest"
 
+import { Join } from "."
 import type { JsonObj } from "../json"
-import { Join } from "./relation-map"
 
 // pass in an id get all ids related to that id
 // set a relation with 2 ids and some data
