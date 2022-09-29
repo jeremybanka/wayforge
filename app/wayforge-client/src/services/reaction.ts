@@ -90,13 +90,13 @@ export const findReactionWithRelationsState = selectorFamily<
     (id) =>
     ({ get }) => {
       const reaction = get(findReactionState(id))
-      const reagentRelationSet = get(reactionReagentsState)
-      const reagentEntries = reagentRelationSet.getRelationContentEntries(id)
+      const reactionReagents = get(reactionReagentsState)
+      const reagentEntries = reactionReagents.getRelationContentEntries(id)
       const reagents = reagentEntries.map(
         ([id, { amount }]): Amount & Identified => ({ id, amount })
       )
-      const productRelationSet = get(reactionProductsState)
-      const productEntries = productRelationSet.getRelationContentEntries(id)
+      const reactionProducts = get(reactionProductsState)
+      const productEntries = reactionProducts.getRelationContentEntries(id)
       const products = productEntries.map(
         ([id, { amount }]): Amount & Identified => ({ id, amount })
       )
@@ -110,54 +110,63 @@ export const findReactionWithRelationsState = selectorFamily<
       }
       const { products, reagents, ...reaction } = newValue
       set(findReactionState(reactionId), reaction)
-      const newReagentRelationSet = get(reactionReagentsState).clone()
-      const newProductRelationSet = get(reactionProductsState).clone()
-      const newReagentEntries =
-        newReagentRelationSet.getRelationContentEntries(reactionId)
-      const removedReagentRelations = newReagentEntries.filter(
+      const reactionReagents = get(reactionReagentsState)
+      const reagentEntries =
+        reactionReagents.getRelationContentEntries(reactionId)
+      const removedReagentRelations = reagentEntries.filter(
         ([id]) => !reagents.some((r) => r.id === id)
       )
       const addedReagentRelations = reagents.filter(
-        (r) => !newReagentEntries.some(([id]) => id === r.id)
+        (r) => !reagentEntries.some(([id]) => id === r.id)
       )
       const modifiedReagentRelations = reagents.filter((r) =>
-        newReagentEntries.some(
+        reagentEntries.some(
           ([id, { amount }]) => id === r.id && amount !== r.amount
         )
       )
-      removedReagentRelations.forEach(([id]) =>
-        newReagentRelationSet.remove(reactionId, id)
+
+      const newReactionReagents0 = removedReagentRelations.reduce(
+        (acc, [id]) => acc.remove(reactionId, id),
+        reactionReagents
       )
-      addedReagentRelations.forEach(({ id, amount }) =>
-        newReagentRelationSet.set(reactionId, id, { amount })
+      const newReactionReagents1 = addedReagentRelations.reduce(
+        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+        newReactionReagents0
       )
-      modifiedReagentRelations.forEach(({ id, amount }) =>
-        newReagentRelationSet.set(reactionId, id, { amount })
+      const newReactionReagents2 = modifiedReagentRelations.reduce(
+        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+        newReactionReagents1
       )
-      const newProductEntries =
-        newProductRelationSet.getRelationContentEntries(reactionId)
-      const removedProductRelations = newProductEntries.filter(
+
+      const reactionProducts = get(reactionProductsState)
+      const productEntries =
+        reactionProducts.getRelationContentEntries(reactionId)
+      const removedProductRelations = productEntries.filter(
         ([id]) => !products.some((p) => p.id === id)
       )
       const addedProductRelations = products.filter(
-        (p) => !newProductEntries.some(([id]) => id === p.id)
+        (p) => !productEntries.some(([id]) => id === p.id)
       )
       const modifiedProductRelations = products.filter((p) =>
-        newProductEntries.some(
+        productEntries.some(
           ([id, { amount }]) => id === p.id && amount !== p.amount
         )
       )
-      removedProductRelations.forEach(([id]) =>
-        newProductRelationSet.remove(reactionId, id)
+      const newReactionProducts0 = removedProductRelations.reduce(
+        (acc, [id]) => acc.remove(reactionId, id),
+        reactionProducts
       )
-      addedProductRelations.forEach(({ id, amount }) =>
-        newProductRelationSet.set(reactionId, id, { amount })
+      const newReactionProducts1 = addedProductRelations.reduce(
+        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+        newReactionProducts0
       )
-      modifiedProductRelations.forEach(({ id, amount }) =>
-        newProductRelationSet.set(reactionId, id, { amount })
+      const newReactionProducts2 = modifiedProductRelations.reduce(
+        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+        newReactionProducts1
       )
-      set(reactionReagentsState, newReagentRelationSet)
-      set(reactionProductsState, newProductRelationSet)
+
+      set(reactionReagentsState, newReactionReagents2)
+      set(reactionProductsState, newReactionProducts2)
     },
 })
 
@@ -181,7 +190,7 @@ export const addReactionAsEnergyFeature: TransactionOperation<string> = (
 ) => {
   const { get, set } = transactors
   const reactionId = addReaction(transactors)
-  const energyFeatures = get(energyFeaturesState).clone()
+  const energyFeatures = get(energyFeaturesState)
   set(energyFeaturesState, energyFeatures.set(energyId, reactionId))
 }
 export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
@@ -193,9 +202,9 @@ export const removeReaction: TransactionOperation<string> = (
   { get, set },
   id
 ) => {
-  const energyFeatures = get(energyFeaturesState).clone()
-  const reactionReagents = get(reactionReagentsState).clone()
-  const reactionProducts = get(reactionProductsState).clone()
+  const energyFeatures = get(energyFeaturesState)
+  const reactionReagents = get(reactionReagentsState)
+  const reactionProducts = get(reactionProductsState)
   set(energyFeaturesState, energyFeatures.remove(id))
   set(reactionReagentsState, reactionReagents.remove(id))
   set(reactionProductsState, reactionProducts.remove(id))

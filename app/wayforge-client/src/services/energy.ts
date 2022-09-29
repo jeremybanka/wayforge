@@ -10,13 +10,13 @@ import {
 import type energySchema from "wayforge-server/gen/energy.schema.json"
 import z, { string } from "zod"
 
+import type { Join } from "~/lib/dynamic-relations/relation-map"
 import { isNull } from "~/lib/fp-tools"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
 import { addToIndex, removeFromIndex } from "~/lib/recoil-tools/recoil-index"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
-import { RelationSet } from "~/lib/RelationSet"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
@@ -97,8 +97,7 @@ export const findEnergyWithRelationsState = selectorFamily<
     (id) =>
     ({ get }) => {
       const energy = get(findEnergyState(id))
-      const featureRelationSet = get(energyFeaturesState)
-      const featureIds = featureRelationSet.getRelations(id)
+      const featureIds = get(energyFeaturesState).getRelations(id)
       const features = featureIds.map((id): { id: string } => ({ id }))
       return { ...energy, features }
     },
@@ -110,8 +109,8 @@ export const findEnergyWithRelationsState = selectorFamily<
       }
       const { features: newFeatures, ...newEnergy } = newValue
       set(findEnergyState(energyId), newEnergy)
-      set(energyFeaturesState, (oldEnergyFeatures) => {
-        const removedFeatureIds = oldEnergyFeatures
+      set(energyFeaturesState, (current) => {
+        const removedFeatureIds = current
           .getRelations(energyId)
           .filter(
             (oldFeatureId) =>
@@ -120,16 +119,18 @@ export const findEnergyWithRelationsState = selectorFamily<
         const addedFeatureIds = newFeatures
           .filter(
             (newFeature) =>
-              !oldEnergyFeatures.getRelations(energyId).includes(newFeature.id)
+              !current.getRelations(energyId).includes(newFeature.id)
           )
           .map((newFeature) => newFeature.id)
-        removedFeatureIds.forEach((removedFeatureId) =>
-          oldEnergyFeatures.remove(energyId, removedFeatureId)
+        const removed = removedFeatureIds.reduce<Join>(
+          (acc, id) => acc.remove(id, energyId),
+          current
         )
-        addedFeatureIds.forEach((addedFeatureId) =>
-          oldEnergyFeatures.set1ToMany(energyId, addedFeatureId)
+        const added = addedFeatureIds.reduce<Join>(
+          (acc, id) => acc.set(id, energyId),
+          removed
         )
-        return RelationSet.fromJSON(isNull)(oldEnergyFeatures.toJSON())
+        return added
       })
     },
 })

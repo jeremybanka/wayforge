@@ -1,17 +1,18 @@
-import { addTo, isArray, isEmptyArray, map } from "fp-tools/array"
+import { pipe } from "fp-ts/lib/function"
+import type { Refinement } from "fp-ts/lib/Refinement"
+import { isString } from "fp-ts/lib/string"
+
+import { addTo, isArray, isEmptyArray, map } from "../fp-tools/array"
 import {
   entriesToRecord,
   isObject,
   isRecord,
   recordToEntries,
   treeShake as removeProperties,
-} from "fp-tools/object"
-import { split } from "fp-tools/string"
-import { comprises } from "fp-tools/venn"
-import { pipe } from "fp-ts/lib/function"
-import type { Refinement } from "fp-ts/lib/Refinement"
-import { isString } from "fp-ts/lib/string"
-import type { Json, JsonObj } from "json"
+} from "../fp-tools/object"
+import { split } from "../fp-tools/string"
+import { comprises } from "../fp-tools/venn"
+import type { Json, JsonObj } from "../json"
 
 /* eslint-disable max-lines */
 
@@ -272,7 +273,9 @@ export class Join<CONTENT extends Json | null = null>
     isContent: Refinement<unknown, CONTENT>
   ) {
     return (json: Json): Join<CONTENT> => {
-      if (isRelationMap(isContent)(json)) {
+      const isValid = isRelationMap(isContent)(json)
+      console.log({ isValid })
+      if (isValid) {
         return new Join(json)
       }
       throw new Error(
