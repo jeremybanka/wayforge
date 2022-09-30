@@ -107,7 +107,9 @@ export const findReactionWithRelationsState = selectorFamily<
       }
       const { products, reagents, ...reaction } = newValue
       set(findReactionState(reactionId), reaction)
-      set(findProductsOfReaction(reactionId), products)
+      set(reactionProductsState, (current) =>
+        current.setRelations(reactionId, products)
+      )
 
       const reactionReagents = get(reactionReagentsState)
       const reagentEntries = reactionReagents.getRelationEntries(reactionId)

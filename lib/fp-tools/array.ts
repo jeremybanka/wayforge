@@ -38,6 +38,12 @@ export const reduce =
   (a: I[]): O =>
     a.reduce(f, initial)
 
+export const using =
+  <I, O>(a: I[]) =>
+  (f: (acc: O, value: I, index: number, array: I[]) => O) =>
+  (initial: O): O =>
+    a.reduce(f, initial)
+
 export const reduceRight =
   <I, O>(f: (acc: O, value: I, index: number, array: I[]) => O, initial: O) =>
   (a: I[]): O =>

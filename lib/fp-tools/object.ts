@@ -55,6 +55,11 @@ export const isDictionary =
   (input: unknown): input is Record<string, VAL> =>
     isRecord(isString, isValue)(input)
 
+export const isEmptyObject = (
+  input: unknown
+): input is Record<keyof any, never> =>
+  isPlainObject(input) && Object.keys(input).length === 0
+
 export const recordToEntries = <K extends keyof any, V>(
   obj: Record<K, V>
 ): Entries<K, V> => Object.entries(obj) as Entries<K, V>
