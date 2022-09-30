@@ -9,10 +9,10 @@ import {
 } from "../fp-tools/object"
 import { split } from "../fp-tools/string"
 import { comprises } from "../fp-tools/venn"
-import type { Json } from "../json"
+import type { Json, JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 
-export const removeSpecific = <CONTENT extends Json | null = null>(
+export const removeSpecific = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idA: string,
   idB: string
@@ -42,7 +42,7 @@ export const removeSpecific = <CONTENT extends Json | null = null>(
   return next
 }
 
-export const removeAll = <CONTENT extends Json | null = null>(
+export const removeAll = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idToRemove: string
 ): RelationData<CONTENT> => {
@@ -68,7 +68,7 @@ export const removeAll = <CONTENT extends Json | null = null>(
   return next
 }
 
-export const removeRelation = <CONTENT extends Json | null = null>(
+export const removeRelation = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idA: string,
   idB?: string

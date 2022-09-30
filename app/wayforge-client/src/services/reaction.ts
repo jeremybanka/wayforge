@@ -9,14 +9,15 @@ import {
 import type reactionSchema from "wayforge-server/gen/reaction.schema.json"
 import z, { string } from "zod"
 
+import type { Identified } from "~/lib/id/identified"
 import { now } from "~/lib/id/now"
 import type { Json } from "~/lib/json"
 import { socketIndex, socketSync } from "~/lib/recoil-tools/effects/socket-io"
-import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
 import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 
 import type { Amount } from "./energy_reaction"
 import {
+  findProductsOfReaction,
   reactionProductsState,
   reactionReagentsState,
   energyFeaturesState,
@@ -91,15 +92,11 @@ export const findReactionWithRelationsState = selectorFamily<
     ({ get }) => {
       const reaction = get(findReactionState(id))
       const reactionReagents = get(reactionReagentsState)
-      const reagentEntries = reactionReagents.getRelationContentEntries(id)
+      const reagentEntries = reactionReagents.getRelationEntries(id)
       const reagents = reagentEntries.map(
         ([id, { amount }]): Amount & Identified => ({ id, amount })
       )
-      const reactionProducts = get(reactionProductsState)
-      const productEntries = reactionProducts.getRelationContentEntries(id)
-      const products = productEntries.map(
-        ([id, { amount }]): Amount & Identified => ({ id, amount })
-      )
+      const products = get(findProductsOfReaction(id))
       return { ...reaction, reagents, products }
     },
   set:
@@ -110,9 +107,10 @@ export const findReactionWithRelationsState = selectorFamily<
       }
       const { products, reagents, ...reaction } = newValue
       set(findReactionState(reactionId), reaction)
+      set(findProductsOfReaction(reactionId), products)
+
       const reactionReagents = get(reactionReagentsState)
-      const reagentEntries =
-        reactionReagents.getRelationContentEntries(reactionId)
+      const reagentEntries = reactionReagents.getRelationEntries(reactionId)
       const removedReagentRelations = reagentEntries.filter(
         ([id]) => !reagents.some((r) => r.id === id)
       )
@@ -138,35 +136,8 @@ export const findReactionWithRelationsState = selectorFamily<
         newReactionReagents1
       )
 
-      const reactionProducts = get(reactionProductsState)
-      const productEntries =
-        reactionProducts.getRelationContentEntries(reactionId)
-      const removedProductRelations = productEntries.filter(
-        ([id]) => !products.some((p) => p.id === id)
-      )
-      const addedProductRelations = products.filter(
-        (p) => !productEntries.some(([id]) => id === p.id)
-      )
-      const modifiedProductRelations = products.filter((p) =>
-        productEntries.some(
-          ([id, { amount }]) => id === p.id && amount !== p.amount
-        )
-      )
-      const newReactionProducts0 = removedProductRelations.reduce(
-        (acc, [id]) => acc.remove(reactionId, id),
-        reactionProducts
-      )
-      const newReactionProducts1 = addedProductRelations.reduce(
-        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
-        newReactionProducts0
-      )
-      const newReactionProducts2 = modifiedProductRelations.reduce(
-        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
-        newReactionProducts1
-      )
-
       set(reactionReagentsState, newReactionReagents2)
-      set(reactionProductsState, newReactionProducts2)
+      // set(reactionProductsState, newReactionProducts2)
     },
 })
 

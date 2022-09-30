@@ -97,7 +97,7 @@ export const findEnergyWithRelationsState = selectorFamily<
     (id) =>
     ({ get }) => {
       const energy = get(findEnergyState(id))
-      const featureIds = get(energyFeaturesState).getRelations(id)
+      const featureIds = get(energyFeaturesState).getRelatedIds(id)
       const features = featureIds.map((id): { id: string } => ({ id }))
       return { ...energy, features }
     },
@@ -111,7 +111,7 @@ export const findEnergyWithRelationsState = selectorFamily<
       set(findEnergyState(energyId), newEnergy)
       set(energyFeaturesState, (current) => {
         const removedFeatureIds = current
-          .getRelations(energyId)
+          .getRelatedIds(energyId)
           .filter(
             (oldFeatureId) =>
               !newFeatures.find((newFeature) => newFeature.id === oldFeatureId)
@@ -119,7 +119,7 @@ export const findEnergyWithRelationsState = selectorFamily<
         const addedFeatureIds = newFeatures
           .filter(
             (newFeature) =>
-              !current.getRelations(energyId).includes(newFeature.id)
+              !current.getRelatedIds(energyId).includes(newFeature.id)
           )
           .map((newFeature) => newFeature.id)
         const removed = removedFeatureIds.reduce<Join>(

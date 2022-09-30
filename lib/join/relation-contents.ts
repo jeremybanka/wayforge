@@ -1,17 +1,19 @@
-import type { Json } from "../json"
+import type { Identified } from "id/identified"
+
+import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
-import { getRelations } from "./get-relation"
+import { getRelatedId, getRelatedIds } from "./get-relation"
 
 export const makeContentId = (idA: string, idB: string): string =>
   [idA, idB].sort().join(`/`)
 
-export const getContent = <CONTENT extends Json | null = null>(
+export const getContent = <CONTENT extends JsonObj | null = null>(
   relationMap: RelationData<CONTENT>,
   idA: string,
   idB: string
 ): CONTENT | undefined => relationMap.contents[makeContentId(idA, idB)]
 
-export const setContent = <CONTENT extends Json | null = null>(
+export const setContent = <CONTENT extends JsonObj | null = null>(
   map: RelationData<CONTENT>,
   idA: string,
   idB: string,
@@ -24,17 +26,39 @@ export const setContent = <CONTENT extends Json | null = null>(
   },
 })
 
-export const getRelationContentEntries = <CONTENT extends Json | null = null>(
+export const getRelationEntries = <CONTENT extends JsonObj | null = null>(
   relationMap: RelationData<CONTENT>,
   idA: string
 ): [string, CONTENT][] =>
-  getRelations(relationMap, idA).map((idB) => [
+  getRelatedIds(relationMap, idA).map((idB) => [
     idB,
     getContent(relationMap, idA, idB) as CONTENT,
   ])
 
-export const getRelationContentRecord = <CONTENT extends Json | null = null>(
+export const getRelationRecord = <CONTENT extends JsonObj | null = null>(
   relationMap: RelationData<CONTENT>,
   id: string
 ): Record<string, CONTENT> =>
-  Object.fromEntries(getRelationContentEntries(relationMap, id))
+  Object.fromEntries(getRelationEntries(relationMap, id))
+
+export const getRelations = <CONTENT extends JsonObj | null = null>(
+  relationMap: RelationData<CONTENT>,
+  id: string
+): (CONTENT & Identified)[] =>
+  getRelationEntries(relationMap, id).map(([id, content]) => ({
+    id,
+    ...content,
+  }))
+
+export const getRelation = <CONTENT extends JsonObj | null = null>(
+  relationMap: RelationData<CONTENT>,
+  id: string
+): (CONTENT & Identified) | undefined => {
+  const relatedId = getRelatedId(relationMap, id)[0]
+  if (relatedId) {
+    const content = getContent(relationMap, id, relatedId)
+    if (content) {
+      return { id: relatedId, ...content }
+    }
+  }
+}

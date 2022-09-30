@@ -9,7 +9,7 @@ export type RelationType = typeof RELATION_TYPES[number]
 export const isRelationType = (x: unknown): x is RelationType =>
   RELATION_TYPES.includes(x as RelationType)
 
-export type RelationData<CONTENT extends Json | null = null> = {
+export type RelationData<CONTENT extends JsonObj | null = null> = {
   contents: JsonObj<string, CONTENT>
   relations: JsonObj<string, string[]>
   relationType: RelationType
@@ -21,7 +21,7 @@ export const EMPTY_RELATION_DATA: RelationData = {
 }
 
 export const isRelationData =
-  <CONTENT extends Json | null = null>(
+  <CONTENT extends JsonObj | null = null>(
     isContent?: (json: Json) => json is CONTENT
   ) =>
   (input: unknown): input is RelationData<CONTENT> =>

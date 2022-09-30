@@ -1,12 +1,12 @@
 import { isNumber } from "fp-ts/lib/number"
-import { atom } from "recoil"
+import { atom, DefaultValue, selectorFamily } from "recoil"
 import { object } from "zod"
 
-import { isNull } from "~/lib/fp-tools"
+import { isNull, isUndefined } from "~/lib/fp-tools"
 import { isRecord } from "~/lib/fp-tools/object"
+import type { Identified } from "~/lib/id/identified"
 import { Join } from "~/lib/join"
 import { socketRelations } from "~/lib/recoil-tools/effects/socket-io"
-import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
 
 import { socket } from "./socket"
 
@@ -18,7 +18,6 @@ export const energyFeaturesState = atom<Join>({
       type: `energy_reaction`,
       id: `energyFeatures`,
       socket,
-      refineContent: isNull,
     }),
   ],
 })
@@ -54,4 +53,55 @@ export const reactionProductsState = atom<Join<Amount>>({
       refineContent: hasAmount,
     }),
   ],
+})
+
+export const findProductsOfReaction = selectorFamily<Product[], string>({
+  key: `productsOfReaction`,
+  get:
+    (reactionId) =>
+    ({ get }) => {
+      const reactionProducts = get(reactionProductsState)
+      const productEntries = reactionProducts.getRelationEntries(reactionId)
+      const products = productEntries.map(
+        ([id, { amount }]): Amount & Identified => ({ id, amount })
+      )
+      return products
+    },
+  set:
+    (reactionId) =>
+    ({ get, set }, newValue) => {
+      if (newValue instanceof DefaultValue) {
+        return console.warn(`cannot set default value for products of reaction`)
+      }
+      const products = newValue
+      const reactionProducts = get(reactionProductsState)
+
+      const productEntries = reactionProducts.getRelationEntries(reactionId)
+      const removedProductRelations = productEntries.filter(
+        ([id]) => !products.some((p) => p.id === id)
+      )
+      const newReactionProducts0 = removedProductRelations.reduce(
+        (acc, [id]) => acc.remove(reactionId, id),
+        reactionProducts
+      )
+
+      const addedProductRelations = products.filter(
+        (p) => !productEntries.some(([id]) => id === p.id)
+      )
+      const modifiedProductRelations = products.filter((p) =>
+        productEntries.some(
+          ([id, { amount }]) => id === p.id && amount !== p.amount
+        )
+      )
+
+      const newReactionProducts1 = addedProductRelations.reduce(
+        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+        newReactionProducts0
+      )
+      const newReactionProducts2 = modifiedProductRelations.reduce(
+        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+        newReactionProducts1
+      )
+      set(reactionProductsState, newReactionProducts2)
+    },
 })

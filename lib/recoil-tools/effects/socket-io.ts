@@ -2,14 +2,14 @@ import type { Refinement } from "fp-ts/lib/Refinement"
 import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
-import type { Json } from "~/lib/json"
+import type { JsonObj } from "~/lib/json"
 import type {
   SaveJsonEmitEvents,
   SaveJsonListenEvents,
 } from "~/lib/recoil-tools/effects/socket-io.server"
-// import { RelationSet } from "~/lib/RelationSet"
 
 import type { JsonInterface } from "."
+import { isUndefined } from "../../fp-tools"
 import { Join } from "../../join"
 
 export type SocketSyncOptions<T> = {
@@ -41,22 +41,26 @@ export const socketIndex: <T>(options: SocketIndexOptions<T>) => AtomEffect<T> =
     onSet((v) => socket.emit(`indexWrite`, { type, value: toJson(v) }))
   }
 
-export type SocketRelationsOptions<CONTENT extends Json> = {
-  id: string
-  type: string
-  socket: Socket<SaveJsonListenEvents, SaveJsonEmitEvents>
-  refineContent: Refinement<unknown, CONTENT>
-}
+export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
+  (CONTENT extends null
+    ? {} // eslint-disable-line @typescript-eslint/ban-types
+    : {
+        refineContent: Refinement<unknown, CONTENT>
+      }) & {
+    id: string
+    type: string
+    socket: Socket<SaveJsonListenEvents, SaveJsonEmitEvents>
+  }
 
-export const socketRelations: <CONTENT extends Json>(
+export const socketRelations: <CONTENT extends JsonObj | null = null>(
   options: SocketRelationsOptions<CONTENT>
 ) => AtomEffect<Join<CONTENT>> =
   ({ type, id, socket, refineContent }) =>
   ({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
-    socket.on(`relationsRead_${id}`, (json) =>
-      // console.log(`received relations: ${id}`),
-      setSelf(Join.fromJSON(json, refineContent))
+    socket.on(
+      `relationsRead_${id}`,
+      (json) => setSelf(Join.fromJSON(json, refineContent as any)) // eugh...
     )
     onSet((v) => socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }))
   }

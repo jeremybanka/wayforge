@@ -1,11 +1,11 @@
 import { addTo, isEmptyArray } from "../fp-tools/array"
 import { treeShake as removeProperties } from "../fp-tools/object"
-import type { Json } from "../json"
+import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
-import { getRelation } from "./get-relation"
+import { getRelatedId } from "./get-relation"
 import { setContent } from "./relation-contents"
 
-export const setManyToMany = <CONTENT extends Json | null = null>(
+export const setManyToMany = <CONTENT extends JsonObj | null = null>(
   map: RelationData<CONTENT>,
   idA: string,
   idB: string,
@@ -25,14 +25,14 @@ export const setManyToMany = <CONTENT extends Json | null = null>(
 
 const removeEmpties = removeProperties(isEmptyArray)
 
-export const set1ToMany = <CONTENT extends Json | null = null>(
+export const set1ToMany = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   leaderId: string,
   followerId: string,
   ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
 ): RelationData<CONTENT> => {
   const relations = { ...current.relations }
-  const prevLeaderId = getRelation(current, followerId)
+  const prevLeaderId = getRelatedId(current, followerId)
   const next = {
     ...current,
     relations: {
@@ -51,14 +51,14 @@ export const set1ToMany = <CONTENT extends Json | null = null>(
   return content ? setContent(next, leaderId, followerId, content) : next
 }
 
-export const set1To1 = <CONTENT extends Json | null = null>(
+export const set1To1 = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   wifeId: string,
   husbandId: string,
   ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
 ): RelationData<CONTENT> => {
-  const prevWifeId = getRelation(current, husbandId)
-  const prevHusbandId = getRelation(current, wifeId)
+  const prevWifeId = getRelatedId(current, husbandId)
+  const prevHusbandId = getRelatedId(current, wifeId)
   const next = {
     ...current,
     relations: removeEmpties({
@@ -74,7 +74,7 @@ export const set1To1 = <CONTENT extends Json | null = null>(
   return content ? setContent(next, wifeId, husbandId, content) : next
 }
 
-export const setRelation = <CONTENT extends Json | null = null>(
+export const setRelation = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idA: string,
   idB: string,

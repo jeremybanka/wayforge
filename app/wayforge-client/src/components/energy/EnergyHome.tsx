@@ -16,7 +16,6 @@ import { EnergyListItem } from "./EnergyListItem"
 
 export const EnergyHome: FC = () => {
   const ids = useRecoilValue(energyIndex)
-  const addEnergy = useAddEnergy()
   useSetTitle(`Energy`)
 
   return (
@@ -32,7 +31,6 @@ export const EnergyHome: FC = () => {
         }
       `}
     >
-      {/* <EnergyList ids={[...ids]} createNew={addEnergy} /> */}
       <RecoilList
         labels={[...ids].map((id) => ({ id }))}
         findState={findEnergyState}
