@@ -1,3 +1,5 @@
+import type { Identified } from "id/identified"
+
 import { addTo, isEmptyArray } from "../fp-tools/array"
 import { treeShake as removeProperties } from "../fp-tools/object"
 import type { JsonObj } from "../json"
@@ -35,7 +37,7 @@ export const set1ToMany = <CONTENT extends JsonObj | null = null>(
   const prevLeaderId = getRelatedId(current, followerId)
   const next = {
     ...current,
-    relations: {
+    relations: removeEmpties({
       ...relations,
       ...(prevLeaderId &&
         prevLeaderId !== leaderId && {
@@ -45,7 +47,7 @@ export const set1ToMany = <CONTENT extends JsonObj | null = null>(
         }),
       [followerId]: [leaderId],
       [leaderId]: addTo(relations[leaderId] ?? [])(followerId),
-    },
+    }),
   }
   const content = rest[0] as CONTENT | undefined
   return content ? setContent(next, leaderId, followerId, content) : next
@@ -74,7 +76,7 @@ export const set1To1 = <CONTENT extends JsonObj | null = null>(
   return content ? setContent(next, wifeId, husbandId, content) : next
 }
 
-export const setRelation = <CONTENT extends JsonObj | null = null>(
+export const setRelationWithContent = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idA: string,
   idB: string,

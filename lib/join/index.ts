@@ -1,17 +1,18 @@
 import type { Refinement } from "fp-ts/lib/Refinement"
+import type { Identified } from "id/identified"
 
 import { isUndefined } from "../fp-tools"
 import type { Json, JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-relation"
-import {
-  getContent,
-  getRelationEntries,
-  getRelationRecord,
-} from "./relation-contents"
+import { getContent, getRelations, setRelations } from "./relation-contents"
+import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
-import { setRelation } from "./set-relation"
+import {
+  // setRelation,
+  setRelationWithContent,
+} from "./set-relation"
 
 export class Join<CONTENT extends JsonObj | null = null>
   implements RelationData<CONTENT>
@@ -59,12 +60,24 @@ export class Join<CONTENT extends JsonObj | null = null>
   public getRelationRecord(id: string): Record<string, CONTENT> {
     return getRelationRecord(this, id)
   }
+  public getRelation(id: string): (CONTENT & Identified) | undefined {
+    return getRelations(this, id)[0]
+  }
+  public getRelations(id: string): (CONTENT & Identified)[] {
+    return getRelations(this, id)
+  }
+  public setRelations(
+    id: string,
+    relations: (CONTENT & Identified)[]
+  ): Join<CONTENT> {
+    return new Join(setRelations(this, id, relations))
+  }
   public set(
     idA: string,
     idB: string,
     ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
   ): Join<CONTENT> {
-    return new Join(setRelation(this, idA, idB, ...rest))
+    return new Join(setRelationWithContent(this, idA, idB, ...rest))
   }
   public remove(idA: string, idB?: string): Join<CONTENT> {
     return new Join(removeRelation(this, idA, idB))

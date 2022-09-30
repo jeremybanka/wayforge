@@ -1,3 +1,4 @@
+import { pipe } from "fp-ts/lib/function"
 import { isNumber } from "fp-ts/lib/number"
 import { atom, DefaultValue, selectorFamily } from "recoil"
 import { object } from "zod"
@@ -80,11 +81,6 @@ export const findProductsOfReaction = selectorFamily<Product[], string>({
       const removedProductRelations = productEntries.filter(
         ([id]) => !products.some((p) => p.id === id)
       )
-      const newReactionProducts0 = removedProductRelations.reduce(
-        (acc, [id]) => acc.remove(reactionId, id),
-        reactionProducts
-      )
-
       const addedProductRelations = products.filter(
         (p) => !productEntries.some(([id]) => id === p.id)
       )
@@ -94,14 +90,26 @@ export const findProductsOfReaction = selectorFamily<Product[], string>({
         )
       )
 
-      const newReactionProducts1 = addedProductRelations.reduce(
-        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
-        newReactionProducts0
+      set(
+        reactionProductsState,
+        pipe(
+          reactionProducts,
+          (x) =>
+            removedProductRelations.reduce(
+              (acc, [id]) => acc.remove(reactionId, id),
+              x
+            ),
+          (x) =>
+            addedProductRelations.reduce(
+              (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+              x
+            ),
+          (x) =>
+            modifiedProductRelations.reduce(
+              (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
+              x
+            )
+        )
       )
-      const newReactionProducts2 = modifiedProductRelations.reduce(
-        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
-        newReactionProducts1
-      )
-      set(reactionProductsState, newReactionProducts2)
     },
 })
