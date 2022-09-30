@@ -97,8 +97,7 @@ export const findEnergyWithRelationsState = selectorFamily<
     (id) =>
     ({ get }) => {
       const energy = get(findEnergyState(id))
-      const featureIds = get(energyFeaturesState).getRelatedIds(id)
-      const features = featureIds.map((id): { id: string } => ({ id }))
+      const features = get(energyFeaturesState).getRelations(id)
       return { ...energy, features }
     },
   set:
@@ -107,31 +106,9 @@ export const findEnergyWithRelationsState = selectorFamily<
       if (newValue instanceof DefaultValue) {
         return console.warn(`cannot set default value for energy`)
       }
-      const { features: newFeatures, ...newEnergy } = newValue
-      set(findEnergyState(energyId), newEnergy)
-      set(energyFeaturesState, (current) => {
-        const removedFeatureIds = current
-          .getRelatedIds(energyId)
-          .filter(
-            (oldFeatureId) =>
-              !newFeatures.find((newFeature) => newFeature.id === oldFeatureId)
-          )
-        const addedFeatureIds = newFeatures
-          .filter(
-            (newFeature) =>
-              !current.getRelatedIds(energyId).includes(newFeature.id)
-          )
-          .map((newFeature) => newFeature.id)
-        const removed = removedFeatureIds.reduce<Join>(
-          (acc, id) => acc.remove(id, energyId),
-          current
-        )
-        const added = addedFeatureIds.reduce<Join>(
-          (acc, id) => acc.set(id, energyId),
-          removed
-        )
-        return added
-      })
+      const { features, ...energy } = newValue
+      set(findEnergyState(energyId), energy)
+      set(energyFeaturesState, (j) => j.setRelations(energyId, features))
     },
 })
 

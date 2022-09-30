@@ -1,12 +1,11 @@
 import { pipe } from "fp-ts/lib/function"
 import type { Identified } from "id/identified"
 
-import { using } from "~/lib/fp-tools/array"
 import { isEmptyObject } from "~/lib/fp-tools/object"
 
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
-import { getRelatedId, getRelatedIds } from "./get-relation"
+import { getRelatedIds } from "./get-relation"
 import { getRelationEntries } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
@@ -45,7 +44,7 @@ export const getRelations = <CONTENT extends JsonObj | null = null>(
 export const setRelations = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idA: string,
-  relations: (CONTENT & Identified)[]
+  relations: (CONTENT extends null ? Identified : CONTENT & Identified)[]
 ): RelationData<CONTENT> =>
   pipe(
     current,
