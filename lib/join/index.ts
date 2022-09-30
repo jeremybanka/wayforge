@@ -68,7 +68,7 @@ export class Join<CONTENT extends JsonObj | null = null>
   }
   public setRelations(
     id: string,
-    relations: (CONTENT & Identified)[]
+    relations: (CONTENT extends null ? Identified : CONTENT & Identified)[]
   ): Join<CONTENT> {
     return new Join(setRelations(this, id, relations))
   }
