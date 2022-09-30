@@ -17,7 +17,6 @@ import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 
 import type { Amount } from "./energy_reaction"
 import {
-  findProductsOfReaction,
   reactionProductsState,
   reactionReagentsState,
   energyFeaturesState,
@@ -49,17 +48,17 @@ const stringSetJsonInterface = {
     pipe(a, z.array(string()).parse, (a) => new Set(a)),
 }
 
-export const reactionIndex = atom<Set<string>>({
-  key: `reactionIndex`,
-  default: new Set(),
-  effects: [
-    socketIndex({
-      type: `reaction`,
-      socket,
-      jsonInterface: stringSetJsonInterface,
-    }),
-  ],
-})
+// export const reactionIndex = atom<Set<string>>({
+//   key: `reactionIndex`,
+//   default: new Set(),
+//   effects: [
+//     socketIndex({
+//       type: `reaction`,
+//       socket,
+//       jsonInterface: stringSetJsonInterface,
+//     }),
+//   ],
+// })
 
 export const findReactionState = atomFamily<Reaction, string>({
   key: `reaction`,
@@ -92,54 +91,21 @@ export const findReactionWithRelationsState = selectorFamily<
     ({ get }) => {
       const reaction = get(findReactionState(id))
       const reactionReagents = get(reactionReagentsState)
-      const reagentEntries = reactionReagents.getRelationEntries(id)
-      const reagents = reagentEntries.map(
-        ([id, { amount }]): Amount & Identified => ({ id, amount })
-      )
-      const products = get(findProductsOfReaction(id))
+      const reagents = reactionReagents.getRelations(id)
+      const reactionProducts = get(reactionProductsState)
+      const products = reactionProducts.getRelations(id)
       return { ...reaction, reagents, products }
     },
   set:
     (reactionId) =>
-    ({ get, set }, newValue) => {
+    ({ set }, newValue) => {
       if (newValue instanceof DefaultValue) {
         return console.warn(`cannot set default value for reaction`)
       }
       const { products, reagents, ...reaction } = newValue
       set(findReactionState(reactionId), reaction)
-      set(reactionProductsState, (current) =>
-        current.setRelations(reactionId, products)
-      )
-
-      const reactionReagents = get(reactionReagentsState)
-      const reagentEntries = reactionReagents.getRelationEntries(reactionId)
-      const removedReagentRelations = reagentEntries.filter(
-        ([id]) => !reagents.some((r) => r.id === id)
-      )
-      const addedReagentRelations = reagents.filter(
-        (r) => !reagentEntries.some(([id]) => id === r.id)
-      )
-      const modifiedReagentRelations = reagents.filter((r) =>
-        reagentEntries.some(
-          ([id, { amount }]) => id === r.id && amount !== r.amount
-        )
-      )
-
-      const newReactionReagents0 = removedReagentRelations.reduce(
-        (acc, [id]) => acc.remove(reactionId, id),
-        reactionReagents
-      )
-      const newReactionReagents1 = addedReagentRelations.reduce(
-        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
-        newReactionReagents0
-      )
-      const newReactionReagents2 = modifiedReagentRelations.reduce(
-        (acc, { id, amount }) => acc.set(reactionId, id, { amount }),
-        newReactionReagents1
-      )
-
-      set(reactionReagentsState, newReactionReagents2)
-      // set(reactionProductsState, newReactionProducts2)
+      set(reactionProductsState, (j) => j.setRelations(reactionId, products))
+      set(reactionReagentsState, (j) => j.setRelations(reactionId, reagents))
     },
 })
 
