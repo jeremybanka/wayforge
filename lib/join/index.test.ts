@@ -125,7 +125,7 @@ describe(`Join.prototype.set1ToMany`, () => {
       .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
       .set(fire, fireAndWaterBecomeSteam, { amount: 2 })
     const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
-    expect(amountOfFire).toEqual(2)
+    expect(amountOfFire).toEqual({ amount: 2 })
     const featureIds = newReagents.getRelatedIds(fire)
     expect(featureIds).toEqual([fireAndWaterBecomeSteam])
   })
