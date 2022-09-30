@@ -14,7 +14,7 @@ describe(`Join`, () => {
   })
 })
 
-describe(`Join.prototype.getRelations`, () => {
+describe(`Join.prototype.getRelatedIds`, () => {
   it(`gets all ids related to a given id`, () => {
     const heart = `01`
     const heartMayBurn = `225`
@@ -25,12 +25,12 @@ describe(`Join.prototype.getRelations`, () => {
       },
       contents: {},
     })
-    const featureIds = energyCardFeatures.getRelations(heart)
+    const featureIds = energyCardFeatures.getRelatedIds(heart)
     expect(featureIds).toEqual([heartMayBurn])
   })
 })
 
-describe(`Join.prototype.getRelation`, () => {
+describe(`Join.prototype.getRelatedId`, () => {
   it(`warns if there are multiple relations`, () => {
     const warn = vitest.spyOn(global.console, `warn`)
     const heart = `01`
@@ -43,7 +43,7 @@ describe(`Join.prototype.getRelation`, () => {
       },
       contents: {},
     })
-    const featureId = energyCardFeatures.getRelation(heart)
+    const featureId = energyCardFeatures.getRelatedId(heart)
     expect(featureId).toEqual(heartMayBurn)
     expect(warn).toHaveBeenCalledWith(
       `entry with id ${heart} was not expected to have multiple relations`
@@ -58,33 +58,33 @@ describe(`Join.prototype.set`, () => {
     const energyCardFeatures = new Join()
     const featureIds = energyCardFeatures
       .set(water, waterMayFreeze)
-      .getRelations(water)
+      .getRelatedIds(water)
     expect(featureIds).toEqual([waterMayFreeze])
   })
   it(`sets data between 2 ids`, () => {
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
-    const reactionReagents = new Join<number>().set(
+    const reactionReagents = new Join<{ amount: number }>().set(
       fire,
       fireAndWaterBecomeSteam,
-      1
+      { amount: 1 }
     )
     const amountOfFire = reactionReagents.getContent(
       fire,
       fireAndWaterBecomeSteam
     )
-    expect(amountOfFire).toEqual(1)
+    expect(amountOfFire).toEqual({ amount: 1 })
   })
   it(`changes the data but doesn't duplicate the relation`, () => {
-    const reactionReagents = new Join<number>()
+    const reactionReagents = new Join<{ amount: number }>()
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
     const newReagents = reactionReagents
-      .set(fire, fireAndWaterBecomeSteam, 1)
-      .set(fire, fireAndWaterBecomeSteam, 2)
+      .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
+      .set(fire, fireAndWaterBecomeSteam, { amount: 2 })
     const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
-    expect(amountOfFire).toEqual(2)
-    const featureIds = newReagents.getRelations(fire)
+    expect(amountOfFire).toEqual({ amount: 2 })
+    const featureIds = newReagents.getRelatedIds(fire)
     expect(featureIds).toEqual([fireAndWaterBecomeSteam])
   })
 })
@@ -99,30 +99,34 @@ describe(`Join.prototype.set1ToMany`, () => {
     const newMemberships = memberships
       .set(yellowGroup, joey)
       .set(yellowGroup, mary)
-    expect(newMemberships.getRelations(yellowGroup)).toEqual([joey, mary])
+    expect(newMemberships.getRelatedIds(yellowGroup)).toEqual([joey, mary])
     const newerMemberships = newMemberships.set(redGroup, joey)
-    expect(newerMemberships.getRelations(redGroup)).toEqual([joey])
-    expect(newerMemberships.getRelations(yellowGroup)).toEqual([mary])
+    expect(newerMemberships.getRelatedIds(redGroup)).toEqual([joey])
+    expect(newerMemberships.getRelatedIds(yellowGroup)).toEqual([mary])
   })
   it(`sets data between a leader and a follower`, () => {
-    const reactionReagents = new Join<number>({ relationType: `1:n` })
+    const reactionReagents = new Join<{ amount: number }>({
+      relationType: `1:n`,
+    })
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
     const amountOfFire = reactionReagents
-      .set(fire, fireAndWaterBecomeSteam, 1)
+      .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
       .getContent(fire, fireAndWaterBecomeSteam)
-    expect(amountOfFire).toEqual(1)
+    expect(amountOfFire).toEqual({ amount: 1 })
   })
   it(`changes the data but doesn't duplicate the relation`, () => {
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
-    const reactionReagents = new Join<number>({ relationType: `1:n` })
+    const reactionReagents = new Join<{ amount: number }>({
+      relationType: `1:n`,
+    })
     const newReagents = reactionReagents
-      .set(fire, fireAndWaterBecomeSteam, 1)
-      .set(fire, fireAndWaterBecomeSteam, 2)
+      .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
+      .set(fire, fireAndWaterBecomeSteam, { amount: 2 })
     const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
     expect(amountOfFire).toEqual(2)
-    const featureIds = newReagents.getRelations(fire)
+    const featureIds = newReagents.getRelatedIds(fire)
     expect(featureIds).toEqual([fireAndWaterBecomeSteam])
   })
 })
@@ -133,10 +137,10 @@ describe(`Join.prototype.set1To1`, () => {
     const joey = `da_man_joey`
     const huey = `hueys_world`
     const marriedCouples = new Join({ relationType: `1:1` }).set(mary, joey)
-    expect(marriedCouples.getRelation(mary)).toEqual(joey)
+    expect(marriedCouples.getRelatedId(mary)).toEqual(joey)
     const newMarriedCouples = marriedCouples.set(mary, huey)
-    expect(newMarriedCouples.getRelation(mary)).toEqual(huey)
-    expect(newMarriedCouples.getRelation(joey)).toBeUndefined()
+    expect(newMarriedCouples.getRelatedId(mary)).toEqual(huey)
+    expect(newMarriedCouples.getRelatedId(joey)).toBeUndefined()
   })
 })
 
@@ -147,17 +151,17 @@ describe(`Join.prototype.remove`, () => {
     const energyCardFeatures = new Join()
       .set(water, waterMayFreeze)
       .remove(water, waterMayFreeze)
-    const featureIds = energyCardFeatures.getRelations(water)
+    const featureIds = energyCardFeatures.getRelatedIds(water)
     expect(featureIds).toEqual([])
   })
   it(`removes the content when removing two ids`, () => {
     const snad = `snad_pitt`
     const cassilda = `cassilda_jolie`
-    const celebrityCouples = new Join<string>()
-      .set(snad, cassilda, `snassilda`)
+    const celebrityCouples = new Join<{ name: string }>()
+      .set(snad, cassilda, { name: `snassilda` })
       .remove(snad, cassilda)
-    expect(celebrityCouples.getRelation(snad)).toEqual(undefined)
-    expect(celebrityCouples.getRelation(cassilda)).toEqual(undefined)
+    expect(celebrityCouples.getRelatedId(snad)).toEqual(undefined)
+    expect(celebrityCouples.getRelatedId(cassilda)).toEqual(undefined)
     expect(celebrityCouples.getContent(snad, cassilda)).toEqual(undefined)
   })
   it(`removes all relations and content for a given id`, () => {
@@ -166,20 +170,20 @@ describe(`Join.prototype.remove`, () => {
       .set(`grass`, `oddish`)
       .set(`grass`, `bellsprout`)
       .remove(`grass`)
-    expect(pokemonPrimaryTypes.getRelations(`grass`)).toEqual([])
-    expect(pokemonPrimaryTypes.getRelation(`bulbasaur`)).toBeUndefined()
-    expect(pokemonPrimaryTypes.getRelation(`oddish`)).toBeUndefined()
-    expect(pokemonPrimaryTypes.getRelation(`bellsprout`)).toBeUndefined()
+    expect(pokemonPrimaryTypes.getRelatedIds(`grass`)).toEqual([])
+    expect(pokemonPrimaryTypes.getRelatedId(`bulbasaur`)).toBeUndefined()
+    expect(pokemonPrimaryTypes.getRelatedId(`oddish`)).toBeUndefined()
+    expect(pokemonPrimaryTypes.getRelatedId(`bellsprout`)).toBeUndefined()
   })
 })
 
-describe(`Join.prototype.getRelationContentEntries`, () => {
+describe(`Join.prototype.getRelatedIdEntries`, () => {
   it(`gets all content entries for a given id`, () => {
     const friendships = new Join<JsonObj>()
       .set(`omori`, `kel`, { trust: 1 })
       .set(`hero`, `kel`, { brothers: true })
       .set(`hero`, `omori`, { agreeThat: `mari is very nice` })
-    const heroFriendships = friendships.getRelationContentEntries(`hero`)
+    const heroFriendships = friendships.getRelationEntries(`hero`)
     expect(heroFriendships).toEqual([
       [`kel`, { brothers: true }],
       [`omori`, { agreeThat: `mari is very nice` }],
@@ -187,13 +191,13 @@ describe(`Join.prototype.getRelationContentEntries`, () => {
   })
 })
 
-describe(`Join.prototype.getRelationContentRecord`, () => {
+describe(`Join.prototype.getRelationRecorrd`, () => {
   it(`gets all content for a given id`, () => {
     const friendships = new Join<JsonObj>()
       .set(`omori`, `kel`, { trust: 1 })
       .set(`hero`, `kel`, { brothers: true })
       .set(`hero`, `omori`, { agreeThat: `mari is very nice` })
-    const heroFriendships = friendships.getRelationContentRecord(`hero`)
+    const heroFriendships = friendships.getRelationRecord(`hero`)
     expect(heroFriendships).toEqual({
       kel: { brothers: true },
       omori: { agreeThat: `mari is very nice` },

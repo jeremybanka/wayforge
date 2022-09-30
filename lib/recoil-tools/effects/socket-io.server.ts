@@ -1,35 +1,19 @@
 import { readdirSync, readFileSync, renameSync, writeFileSync } from "fs"
 
-import type { Refinement } from "fp-ts/lib/Refinement"
 import type { Socket, ServerOptions } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 import type { EventsMap } from "socket.io/dist/typed-events"
 
-// import energySchema from "~/gen/energy.schema"
 import type { Modifier } from "~/lib/fp-tools"
+import { identify } from "~/lib/id/identified"
 import type { Json, JsonObj } from "~/lib/json"
 import { parseJson } from "~/lib/json"
 import {
-  assignToJsonFile,
   getDirectoryJsonArr,
   getDirectoryJsonEntries,
 } from "~/lib/node/json-fs.server"
 
 const { log } = console
-
-export type Identified = { id: string }
-
-export const hasId: Refinement<unknown, Identified> = (
-  input
-): input is Identified =>
-  typeof input === `object` &&
-  input !== null &&
-  typeof (input as Identified)[`id`] === `string`
-
-export const identify = (input: unknown): { id: string } => {
-  if (hasId(input)) return input
-  throw new Error(`${input} could not be identified`)
-}
 
 export type RelationType = `${string}_${string}`
 

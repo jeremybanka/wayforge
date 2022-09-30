@@ -1,19 +1,19 @@
 import type { Refinement } from "fp-ts/lib/Refinement"
 
 import { isUndefined } from "../fp-tools"
-import type { Json } from "../json"
+import type { Json, JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
-import { getRelation, getRelations } from "./get-relation"
+import { getRelatedId, getRelatedIds } from "./get-relation"
 import {
   getContent,
-  getRelationContentEntries,
-  getRelationContentRecord,
+  getRelationEntries,
+  getRelationRecord,
 } from "./relation-contents"
 import { removeRelation } from "./remove-relation"
 import { setRelation } from "./set-relation"
 
-export class Join<CONTENT extends Json | null = null>
+export class Join<CONTENT extends JsonObj | null = null>
   implements RelationData<CONTENT>
 {
   public readonly relationType: `1:1` | `1:n` | `n:n`
@@ -31,7 +31,7 @@ export class Join<CONTENT extends Json | null = null>
       contents: this.contents,
     }
   }
-  public static fromJSON<CONTENT extends Json | null = null>(
+  public static fromJSON<CONTENT extends JsonObj | null = null>(
     json: Json,
     isContent: Refinement<unknown, CONTENT> = isUndefined
   ): Join<CONTENT> {
@@ -44,20 +44,20 @@ export class Join<CONTENT extends Json | null = null>
     )
   }
 
-  public getRelation(idA: string, idB?: string): string | undefined {
-    return getRelation(this, idA)
+  public getRelatedId(idA: string, idB?: string): string | undefined {
+    return getRelatedId(this, idA)
   }
-  public getRelations(idA: string): string[] {
-    return getRelations(this, idA)
+  public getRelatedIds(idA: string): string[] {
+    return getRelatedIds(this, idA)
   }
   public getContent(idA: string, idB: string): CONTENT | undefined {
     return getContent(this, idA, idB)
   }
-  public getRelationContentEntries(id: string): [string, CONTENT][] {
-    return getRelationContentEntries(this, id)
+  public getRelationEntries(id: string): [string, CONTENT][] {
+    return getRelationEntries(this, id)
   }
-  public getRelationContentRecord(id: string): Record<string, CONTENT> {
-    return getRelationContentRecord(this, id)
+  public getRelationRecord(id: string): Record<string, CONTENT> {
+    return getRelationRecord(this, id)
   }
   public set(
     idA: string,
