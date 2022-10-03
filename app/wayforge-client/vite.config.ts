@@ -23,6 +23,12 @@ export default defineConfig({
     }),
   ],
 
+  esbuild: {
+    define: {
+      this: `window`,
+    },
+  },
+
   // @ts-expect-error vitest expects "test" key; vite does not acknowledge
   test: {
     globals: true,
@@ -30,9 +36,5 @@ export default defineConfig({
     setupFiles: `./before-tests.ts`,
     // parsing CSS is slow
     css: false,
-  },
-
-  define: {
-    this: `window`,
   },
 })
