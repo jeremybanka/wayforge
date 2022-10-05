@@ -60,10 +60,14 @@ export class Join<CONTENT extends JsonObj | null = null>
   public getRelationRecord(id: string): Record<string, CONTENT> {
     return getRelationRecord(this, id)
   }
-  public getRelation(id: string): (CONTENT & Identified) | undefined {
+  public getRelation(
+    id: string
+  ): (CONTENT extends null ? Identified : CONTENT & Identified) | undefined {
     return getRelations(this, id)[0]
   }
-  public getRelations(id: string): (CONTENT & Identified)[] {
+  public getRelations(
+    id: string
+  ): (CONTENT extends null ? Identified : CONTENT & Identified)[] {
     return getRelations(this, id)
   }
   public setRelations(
