@@ -1,6 +1,7 @@
 import { pipe } from "fp-ts/lib/function"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
+import type { Identified } from "id/identified"
 
 import { isUndefined } from "."
 import { allTrue, every } from "./array"
@@ -55,9 +56,9 @@ export const isDictionary =
   (input: unknown): input is Record<string, VAL> =>
     isRecord(isString, isValue)(input)
 
-export const isEmptyObject = (
-  input: unknown
-): input is Record<keyof any, never> =>
+export type EmptyObject = Record<keyof any, never>
+
+export const isEmptyObject = (input: unknown): input is EmptyObject =>
   isPlainObject(input) && Object.keys(input).length === 0
 
 export const recordToEntries = <K extends keyof any, V>(
