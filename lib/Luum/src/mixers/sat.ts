@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/lib/function"
 
 import type { Modifier } from "~/lib/fp-tools"
-import { clampInto, to } from "~/lib/fp-tools"
+import { clampInto, become } from "~/lib/fp-tools"
 
 import type { LuumApplicator } from "."
 import type { LuumSpec } from ".."
@@ -9,17 +9,23 @@ import type { LuumSpec } from ".."
 export const setSat: LuumApplicator<number> = (newSat) => (currentColor) => {
   const newColor = {
     ...currentColor,
-    sat: pipe(currentColor.sat, to(newSat), clampInto([0, 255])),
+    sat: pipe(currentColor.sat, become(newSat), clampInto([0, 255])),
   }
   console.log(newColor)
   return newColor
 }
-export const amp =
+export const ampBy =
   (value: number): Modifier<LuumSpec> =>
   (color) =>
     setSat((sat) => sat + value)(color)
 
-export const mute =
+export const muteBy =
   (value: number): Modifier<LuumSpec> =>
   (color) =>
     setSat((sat) => sat - value)(color)
+
+export const amp = (color: LuumSpec, value: number): LuumSpec =>
+  ampBy(value)(color)
+
+export const mute = (color: LuumSpec, value: number): LuumSpec =>
+  muteBy(value)(color)

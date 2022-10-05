@@ -3960,6 +3960,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luum@file:.yalc/luum::locator=luum%40workspace%3A.":
+  version: 0.0.12
+  resolution: "luum@file:.yalc/luum#.yalc/luum::hash=4d73a9&locator=luum%40workspace%3A."
+  checksum: 066f2c33ba3007aaa49b9dfa15532709875779dc35d49d081794c35a547e3ce4f835926353c3fc8994712c68223506134ae9b6b92e824732d4ee40e0bc7b2ce9
+  languageName: node
+  linkType: hard
+
 "luum@workspace:.":
   version: 0.0.0-use.local
   resolution: "luum@workspace:."
@@ -3984,6 +3991,7 @@ __metadata:
     faker: ^5.5.3
     husky: ^7.0.4
     lint-staged: ^12.1.1
+    luum: "file:.yalc/luum"
     prettier: ^2.4.1
     ts-node: ^10.2.1
     tsconfig-paths: ^3.11.0

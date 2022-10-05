@@ -9,7 +9,7 @@ import { key } from "~/lib/fp-tools/object"
 import { specToHex } from "^"
 import type { Filter, LuumSpec, FilterPoint } from "^"
 import { defaultSpec } from "^/constants/luum-spec"
-import { shade } from "^/mixers/lum"
+import { shade, shadeBy } from "^/mixers/lum"
 
 // export * from "./export"
 // export * from "./import"
@@ -360,13 +360,13 @@ export const WAYFORGE_CORE_COLORS: Readonly<
 export const PAINT_MY_WAGON_RED: LuumScssRule = {
   rootSelectors: [`.wagon`],
   root: RED,
-  attributes: [`background-color`, shade(5)],
+  attributes: [`background-color`, shadeBy(5)],
   states: [
     [
       [`:hover`, `:focus`],
-      [`background-color`, shade(10)],
+      [`background-color`, shadeBy(10)],
     ],
-    [`:active`, [`background-color`, shade(15)]],
+    [`:active`, [`background-color`, shadeBy(15)]],
   ],
 }
 
