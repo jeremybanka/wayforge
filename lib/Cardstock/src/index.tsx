@@ -51,20 +51,20 @@ export const cardstock: (
     : styled[tag]`
         ${s}
       `
-  // return memo(Component, (prev, next) => {
-  //   const childrenEqual = prev.children === next.children
-  //   const styleEqual = prev.style === next.style
-  //   const cornersEqual = prev.corners === next.corners
-  //   const cornerOptionsEqual = prev.cornerOptions === next.cornerOptions
-  //   console.log({
-  //     childrenEqual,
-  //     styleEqual,
-  //     cornersEqual,
-  //     cornerOptionsEqual,
-  //   })
-  //   return childrenEqual && styleEqual && cornersEqual && cornerOptionsEqual
-  // })
-  return Component
+  return memo(Component, (prev, next) => {
+    const childrenEqual = prev.children === next.children
+    const styleEqual = prev.style === next.style
+    const cornersEqual = prev.corners === next.corners
+    const cornerOptionsEqual = prev.cornerOptions === next.cornerOptions
+    console.log({
+      childrenEqual,
+      styleEqual,
+      cornersEqual,
+      cornerOptionsEqual,
+    })
+    return childrenEqual && styleEqual && cornersEqual && cornerOptionsEqual
+  })
+  // return Component
 }
 
 export const Test: FC<PropsWithChildren> = ({ children }) => {
