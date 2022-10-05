@@ -1,13 +1,14 @@
-import type { FC } from "react"
 import { useId } from "react"
+import type { FC } from "react"
 
 import { css } from "@emotion/react"
-import type { LuumCssRule } from "luum"
-import { specToHex, luumToCss } from "luum"
+import styled from "@emotion/styled"
+import corners, { chamfer } from "corners"
 import { useRecoilValue } from "recoil"
 
 import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
 import { RecoilList } from "~/app/wayforge-client/recoil-list"
+import { Luum } from "~/lib/luum"
 
 import type { Energy } from "../../services/energy"
 import {
@@ -15,173 +16,237 @@ import {
   findEnergyState,
 } from "../../services/energy"
 import type { Amount } from "../../services/energy_reaction"
+import { findReactionEnergyState } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
-import {
-  findReactionWithRelationsState,
-  findReactionState,
-} from "../../services/reaction"
+import { findReactionWithRelationsState } from "../../services/reaction"
 import { EnergyAmountTag, EnergyIcon } from "./EnergyIcon_SVG"
 
-const A: FC<{
-  energyId: string
-  size: number
-  cx?: number
-  cy?: number
-}> = ({ energyId, size, cx = size / 2, cy = size / 2 }) => {
+export const rightSlant = corners(null, chamfer)
+
+export const EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
+  const domId = useId()
   const energy = useRecoilValue(findEnergyState(energyId))
-  const colorSchemeA: LuumCssRule = {
-    root: energy.colorA,
-    attributes: [`background-color`, []],
-  }
-  const colorSchemeB: LuumCssRule = {
-    root: energy.colorB,
-    attributes: [`fill`, []],
-  }
 
-  const colorA = specToHex(colorSchemeA.root)
-  const colorB = specToHex(colorSchemeB.root)
-
-  const scssA = luumToCss(colorSchemeA)
-  const scssB = luumToCss(colorSchemeB)
+  const colorA = Luum.fromJSON(energy.colorA)
+  const colorB = Luum.fromJSON(energy.colorB)
 
   return (
-    <svg
+    <div
       css={css`
         width: ${252}px;
         height: ${360}px;
         paint-order: stroke fill;
-        display: inline;
-        ${scssA};
+        display: flex;
+        flex-flow: column;
+        background: ${colorA.hex};
         font-family: "Uruz";
+        position: relative;
+        font-size: 10.8px;
+        header {
+          font-size: 1.5em;
+          padding: 10px;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        main {
+          flex-grow: 1;
+          display: flex;
+          flex-flow: column;
+          padding-top: 5px;
+          padding-bottom: 40px;
+          > * {
+            display: flex;
+            flex-flow: row;
+            width: 100%;
+            height: 10px;
+            padding: 0 10px;
+            flex-grow: 1;
+            font-size: 7.2px;
+            justify-content: flex-end;
+            align-items: center;
+            color: ${colorB.hex};
+          }
+          > * ~ * {
+            border-top: 1px solid ${colorA.shade(5).hex};
+          }
+        }
       `}
     >
-      <>
-        <rect x={0} y={300} width={252} height={2} />
-        <text
-          x={60}
-          y={342}
-          fill={colorB}
-          fontSize={33}
-          style={{ fontWeight: 600 }}
-        >
-          {energy.name}
-        </text>
-      </>
-
-      <EnergyIcon energyId={energyId} size={50} cx={36} cy={330} />
-    </svg>
+      <header>
+        <EnergyIcon energyId={energyId} size={36} />
+      </header>
+      <main>
+        {Array(30)
+          .fill(0)
+          .map((_, i) => (
+            <div key={domId + `bar` + i + 1}>{i + 1}</div>
+          ))}
+      </main>
+    </div>
   )
 }
 
-export const EnergyCardReagent: FC<RecoilListItemProps<Energy, Amount>> = ({
+export const EnergyAmount: FC<RecoilListItemProps<Energy, Amount>> = ({
   label,
   findState,
 }) => {
   const { id, amount } = label
   const energy = useRecoilValue(findState(label.id))
   const domId = useId()
-  return <EnergyAmountTag energyId={energy.id} amount={amount} size={20} />
+  return amount <= 3 ? (
+    <span
+      css={css`
+        display: inline-flex;
+        align-items: center;
+      `}
+    >
+      {Array(amount)
+        .fill(null)
+        .map((_, i) => (
+          <EnergyIcon key={domId + `-icon-` + i} energyId={id} size={15} />
+        ))}
+    </span>
+  ) : (
+    <EnergyAmountTag energyId={energy.id} amount={amount} size={15} />
+  )
 }
+
+const energyListCss = css`
+  flex-grow: 1;
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 2px;
+`
 
 export const EnergyCardFeature: FC<
   RecoilListItemProps<Reaction & ReactionRelations>
 > = ({ label, findState }) => {
   const reaction = useRecoilValue(findState(label.id))
+  const energy = useRecoilValue(findReactionEnergyState(reaction.id))
+  const colorB = Luum.fromJSON(energy.colorB)
+  const energyIsPresentColor = colorB.tint(10)
+  const energyIsAbsentColor = colorB.shade(10)
+  const reactionProducesEnergy = reaction.products.some(
+    (product) => product.id === energy.id
+  )
+  const reactionConsumesEnergy = reaction.reagents.some(
+    (reagent) => reagent.id === energy.id
+  )
 
   return (
-    <div
-      css={css`
-        border: 1px solid black;
-      `}
-    >
-      <span>
-        {reaction.time}
-        {reaction.timeUnit}:{` `}
-      </span>
-      <RecoilList
-        findState={findEnergyState}
-        labels={reaction.reagents}
-        Components={{
-          ListItem: EnergyCardReagent,
-        }}
-      />
-      {`->`}
-      {reaction.products.length > 0 ? (
+    <div>
+      <h2
+        css={css`
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          margin: 0;
+          font-size: 13.5px;
+          small {
+            font-size: 10.8px;
+          }
+        `}
+      >
+        {reaction.name}
+        <small>
+          {reaction.time}
+          {reaction.timeUnit}
+        </small>
+      </h2>
+      <div
+        css={css`
+          display: flex;
+          gap: 2px;
+        `}
+      >
+        <RecoilList
+          findState={findEnergyState}
+          labels={reaction.reagents}
+          Components={{
+            Wrapper: styled(corners(null, null, chamfer, null).size(5).span)(
+              css`
+                background-color: ${reactionConsumesEnergy
+                  ? energyIsPresentColor.hex
+                  : energyIsAbsentColor.hex};
+                ${energyListCss}
+              `
+            ),
+            ListItem: EnergyAmount,
+          }}
+        />
         <RecoilList
           findState={findEnergyState}
           labels={reaction.products}
           Components={{
-            ListItem: EnergyCardReagent,
+            Wrapper: styled(corners(chamfer, null, null, null).size(5).span)(
+              css`
+                background: ${reactionProducesEnergy
+                  ? energyIsPresentColor.hex
+                  : energyIsAbsentColor.hex};
+                ${energyListCss}
+              `
+            ),
+            ListItem: EnergyAmount,
           }}
         />
-      ) : (
-        `void`
-      )}
+      </div>
     </div>
   )
 }
 
-const B: FC<{
-  energyId: string
-  size: number
-  cx?: number
-  cy?: number
-}> = ({ energyId, size, cx = size / 2, cy = size / 2 }) => {
+export const EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
   const energy = useRecoilValue(findEnergyWithRelationsState(energyId))
-  const domId = useId()
-  const colorSchemeA: LuumCssRule = {
-    root: energy.colorA,
-    attributes: [`background-color`, []],
-  }
-  const colorSchemeB: LuumCssRule = {
-    root: energy.colorB,
-    attributes: [`background-color`, []],
-  }
-
-  const colorA = specToHex(colorSchemeA.root)
-  const colorB = specToHex(colorSchemeB.root)
-
-  const scssA = luumToCss(colorSchemeA)
-  const scssB = luumToCss(colorSchemeB)
+  const colorB = Luum.fromJSON(energy.colorB)
 
   return (
-    <svg
+    <div
       css={css`
-        width: ${252}px;
-        height: ${360}px;
-        paint-order: stroke fill;
-        display: inline;
-        ${scssA};
+        background-color: ${colorB.hex};
+        width: 252px;
+        height: 360px;
+        display: flex;
+        flex-direction: column;
         font-family: "Uruz";
+        font-size: 10.8px;
+        color: white;
+        header {
+          font-size: 1.5em;
+          padding: 10px;
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          h1 {
+            margin: 0;
+          }
+        }
       `}
     >
+      <header>
+        <EnergyIcon energyId={energyId} size={36} />
+        <h1>{energy.name}</h1>
+      </header>
       <RecoilList
         labels={energy.features}
         findState={findReactionWithRelationsState}
         Components={{
           ListItem: EnergyCardFeature,
-          // ListItemWrapper: ({ children }) => <li>{children}</li>,
           Wrapper: ({ children }) => (
-            <foreignObject width={252} height={360}>
-              <div
-                css={css`
-                  padding: 10px;
-                  display: flex;
-                  flex-direction: column;
-                  gap: 10px;
-                `}
-              >
-                {children}
-              </div>
-            </foreignObject>
+            <div
+              css={css`
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+              `}
+            >
+              {children}
+            </div>
           ),
         }}
       />
-    </svg>
+    </div>
   )
-}
-
-export const EnergyCard = {
-  A,
-  B,
 }

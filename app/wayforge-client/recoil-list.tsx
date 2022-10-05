@@ -2,8 +2,8 @@ import type { FC } from "react"
 
 import type { RecoilState } from "recoil"
 
+import type { Identified } from "~/lib/id/identified"
 import type { JsxElements, WC } from "~/lib/react-ui/json-editor"
-import type { Identified } from "~/lib/recoil-tools/effects/socket-io.server"
 
 /* eslint-disable @typescript-eslint/ban-types */
 

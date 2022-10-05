@@ -94,6 +94,8 @@ export const findReactionWithRelationsState = selectorFamily<
       const reagents = reactionReagents.getRelations(id)
       const reactionProducts = get(reactionProductsState)
       const products = reactionProducts.getRelations(id)
+      const energyFeatures = get(energyFeaturesState)
+      // const [energy] = energyFeatures.getRelations(id)
       return { ...reaction, reagents, products }
     },
   set:
@@ -106,6 +108,7 @@ export const findReactionWithRelationsState = selectorFamily<
       set(findReactionState(reactionId), reaction)
       set(reactionProductsState, (j) => j.setRelations(reactionId, products))
       set(reactionReagentsState, (j) => j.setRelations(reactionId, reagents))
+      // set(energyFeaturesState, (j) => j.setRelations(reactionId, [energy]))
     },
 })
 

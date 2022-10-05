@@ -9,6 +9,8 @@ import type { Identified } from "~/lib/id/identified"
 import { Join } from "~/lib/join"
 import { socketRelations } from "~/lib/recoil-tools/effects/socket-io"
 
+import type { Energy } from "./energy"
+import { DEFAULT_ENERGY, findEnergyState } from "./energy"
 import { socket } from "./socket"
 
 export const energyFeaturesState = atom<Join>({
@@ -54,4 +56,14 @@ export const reactionProductsState = atom<Join<Amount>>({
       refineContent: hasAmount,
     }),
   ],
+})
+
+export const findReactionEnergyState = selectorFamily<Energy, string>({
+  key: `reactionEnergy`,
+  get:
+    (id) =>
+    ({ get }) => {
+      const energyId = get(energyFeaturesState).getRelatedId(id)
+      return energyId ? findEnergyState(energyId) : DEFAULT_ENERGY
+    },
 })

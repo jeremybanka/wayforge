@@ -1,9 +1,6 @@
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
 import { useNavigate } from "react-router-dom"
-import type { RecoilState } from "recoil"
-import { useRecoilValue } from "recoil"
 
 import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
 import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
