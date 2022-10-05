@@ -1,7 +1,9 @@
 import { createServer } from "http"
 
+import { css } from "@emotion/react"
 import { RecoilInspector } from "@eyecuelab/recoil-devtools"
 import { fireEvent, render, screen } from "@testing-library/react"
+import { RecoilRoot } from "recoil"
 import type { Server } from "socket.io"
 import type { Socket } from "socket.io-client"
 import { io as Client } from "socket.io-client"
@@ -37,7 +39,12 @@ describe(`counter tests`, () => {
   // })
 
   test(`Counter should be 0 at the start`, () => {
-    render(<RecoilInspector />)
+    render(
+      <RecoilRoot>
+        <div css={css``}></div>
+        <RecoilInspector />
+      </RecoilRoot>
+    )
     expect(true).toBeDefined()
   })
 
