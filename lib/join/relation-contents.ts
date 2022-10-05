@@ -35,11 +35,14 @@ export const setContent = <CONTENT extends JsonObj | null = null>(
 export const getRelations = <CONTENT extends JsonObj | null = null>(
   relationMap: RelationData<CONTENT>,
   id: string
-): (CONTENT & Identified)[] =>
-  getRelationEntries(relationMap, id).map(([id, content]) => ({
-    id,
-    ...content,
-  }))
+): (CONTENT extends null ? Identified : CONTENT & Identified)[] =>
+  getRelationEntries(relationMap, id).map(
+    ([id, content]) =>
+      ({
+        id,
+        ...content,
+      } as CONTENT extends null ? Identified : CONTENT & Identified)
+  )
 
 export const setRelations = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
