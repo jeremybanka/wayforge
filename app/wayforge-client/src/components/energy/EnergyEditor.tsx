@@ -20,7 +20,7 @@ import { useAddReactionAsEnergyFeature } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { ReactionList } from "../reaction/ReactionList"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
-import { EnergyCard } from "./EnergyCard_SVG"
+import { EnergyCard_A, EnergyCard_B } from "./EnergyCard_SVG"
 import { EnergyIcon } from "./EnergyIcon_SVG"
 
 export const EnergyEditor_INTERNAL: FC<
@@ -51,8 +51,8 @@ export const EnergyEditor_INTERNAL: FC<
           `}
         >
           <EnergyIcon energyId={id} size={100} />
-          <EnergyCard.A energyId={id} size={100} />
-          <EnergyCard.B energyId={id} size={100} />
+          <EnergyCard_A energyId={id} size={100} />
+          <EnergyCard_B energyId={id} size={100} />
         </article>
       </RecoverableErrorBoundary>
       <JsonEditor

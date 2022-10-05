@@ -2,20 +2,19 @@ import type { FC } from "react"
 import { useId } from "react"
 
 import { css } from "@emotion/react"
-import type { LuumCssRule } from "luum"
-import { specToHex, luumToCss } from "luum"
 import { useRecoilValue } from "recoil"
 
-import type { Energy } from "../../services/energy"
+import { luumToCss } from "~/lib/luum"
+import type { LuumCssRule } from "~/lib/luum"
+
 import { findEnergyState } from "../../services/energy"
 
 export const EnergyIcon: FC<{
   energyId: string
-  amount?: number
   size: number
   cx?: number
   cy?: number
-}> = ({ energyId, amount, size, cx = size / 2, cy = size / 2 }) => {
+}> = ({ energyId, size, cx = size / 2, cy = size / 2 }) => {
   const energy = useRecoilValue(findEnergyState(energyId))
   const domId = useId()
   const colorSchemeA: LuumCssRule = {
@@ -32,7 +31,6 @@ export const EnergyIcon: FC<{
 
   return (
     <svg
-      // viewBox={`0 0 ${size} ${size}`}
       css={css`
         width: ${size}px;
         height: ${size}px;
@@ -41,19 +39,18 @@ export const EnergyIcon: FC<{
       `}
     >
       <clipPath id={`${domId}-clip`}>
-        <circle cx={cx} cy={cy} r={size * 0.5} />
+        <circle cx={cx} cy={cy} r={size} />
       </clipPath>
       <text
         id={domId + `-text`}
         textAnchor="middle"
         x={cx}
-        y={cy + size * 0.2}
+        y={cy + size * 0.25}
         clipPath={`url(#${domId}-clip)`}
         css={css`
           font-family: "Uruz";
-          font-size: ${size * 0.67}px;
+          font-size: ${size}px;
           ${scssB};
-          /* stroke-width: ${size * 0.12}; */
         `}
       >
         <tspan
@@ -72,13 +69,12 @@ export const EnergyIcon: FC<{
         id={domId + `-text`}
         textAnchor="middle"
         x={cx}
-        y={cy + size * 0.2}
+        y={cy + size * 0.25}
         clipPath={`url(#${domId}-clip)`}
         css={css`
           font-family: "Uruz";
-          font-size: ${size * 0.67}px;
+          font-size: ${size}px;
           ${scssA};
-          /* stroke-width: ${size * 0.12}px; */
         `}
       >
         <tspan
@@ -93,8 +89,6 @@ export const EnergyIcon: FC<{
           style={{ userSelect: `none` }}
         >{`-`}</tspan>
       </text>
-
-      {/* <use clipPath={`url(#${domId}-clip)`} href={domId + `-text`} /> */}
     </svg>
   )
 }
@@ -104,35 +98,35 @@ export const EnergyAmountTag: FC<{
   amount: number
   size: number
 }> = ({ energyId, amount, size }) => {
-  const energy = useRecoilValue(findEnergyState(energyId))
-  const colorA = specToHex(energy.colorA)
-  const colorB = specToHex(energy.colorB)
+  const small = size * 0.6
   return (
     <span
       css={css`
         display: inline-flex;
-        align-items: center;
+        align-items: bottom;
+        justify-content: baseline;
       `}
     >
+      <EnergyIcon energyId={energyId} size={size} />
       <span
         css={css`
-          background-color: ${colorB};
-          color: ${colorA};
-          padding-left: 4px;
-          padding-right: 10px;
-          padding-bottom: 2px;
-          display: flex;
+          background-color: black;
+          color: white;
+          border: 0px solid white;
+          padding: 1px;
           font-weight: 600;
-          font-size: ${size}px;
-          line-height: ${size * 0.8}px;
+          min-width: ${small}px;
+          font-size: ${small}px;
+          line-height: ${small * 0.8}px;
+          height: ${small}px;
+          text-align: center;
           align-items: center;
           justify-content: center;
-          margin-right: ${size * -0.8}px;
+          margin-left: ${small * -0.2}px;
         `}
       >
         {amount}
       </span>
-      <EnergyIcon energyId={energyId} size={size * 1.7} />
     </span>
   )
 }
