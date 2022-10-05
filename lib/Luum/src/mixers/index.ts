@@ -4,6 +4,11 @@ import type { LuumSpec } from ".."
 
 export type LuumApplicator<X> = Applicator<X, LuumSpec>
 
+export * from "./hue"
+export * from "./sat"
+export * from "./lum"
+export * from "./contrast"
+
 // import type { LuumSpec } from "~"
 
 // import { specToHexFixLimit } from "~/export"

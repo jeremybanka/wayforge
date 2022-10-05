@@ -4,6 +4,7 @@ import type { Modifier } from "~/lib/fp-tools/index"
 import { become, clampInto } from "~/lib/fp-tools/index"
 
 import type { LuumApplicator } from "."
+import { specToHex, hexToSpec } from ".."
 import type { LuumSpec } from "^"
 
 export const setLum: LuumApplicator<number> = (newLum) => (currentColor) => {
@@ -11,15 +12,24 @@ export const setLum: LuumApplicator<number> = (newLum) => (currentColor) => {
     ...currentColor,
     lum: pipe(currentColor.lum, become(newLum), clampInto([0, 1])),
   }
-  console.log(newColor)
   return newColor
 }
-export const tint =
+export const tintBy =
   (tintAmount: number): Modifier<LuumSpec> =>
   (color) =>
-    setLum((lum) => (lum * 100 + tintAmount) / 100)(color)
+    setLum((lum) => (lum * 100 + tintAmount) / 100)(
+      pipe(color, specToHex, hexToSpec)
+    )
 
-export const shade =
+export const shadeBy =
   (shadeAmount: number): Modifier<LuumSpec> =>
   (color) =>
-    setLum((lum) => (lum * 100 - shadeAmount) / 100)(color)
+    setLum((lum) => (lum * 100 - shadeAmount) / 100)(
+      pipe(color, specToHex, hexToSpec)
+    )
+
+export const tint = (color: LuumSpec, tintAmount: number): LuumSpec =>
+  tintBy(tintAmount)(color)
+
+export const shade = (color: LuumSpec, shadeAmount: number): LuumSpec =>
+  shadeBy(shadeAmount)(color)

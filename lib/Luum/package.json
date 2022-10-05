@@ -13,7 +13,7 @@
     "lint": "eslint \"{src,test}/**/*.ts{,x}\"",
     "lint!": "yarn lint -- --fix",
     "prebuild": "rm -rf dist",
-    "build": "node esbuild.config.js"
+    "build": "node esbuild.config.web.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -61,5 +61,8 @@
   "bugs": {
     "url": "https://github.com/jeremybanka/luum/issues"
   },
-  "homepage": "https://github.com/jeremybanka/luum#readme"
+  "homepage": "https://github.com/jeremybanka/luum#readme",
+  "dependencies": {
+    "luum": "file:.yalc/luum"
+  }
 }
