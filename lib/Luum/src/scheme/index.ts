@@ -2,8 +2,9 @@ import { pipe } from "fp-ts/lib/function"
 import { isString } from "fp-ts/lib/string"
 
 import type { Modifier, OneOrMany, Validator } from "~/lib/Anvil"
-import { isUndefined, isModifier } from "~/lib/Anvil"
+import { isModifier } from "~/lib/Anvil"
 import { content, each, isArray, join, map } from "~/lib/Anvil/array"
+import { isUndefined } from "~/lib/Anvil/nullish"
 import { key } from "~/lib/Anvil/object"
 
 import { specToHex } from "^"
