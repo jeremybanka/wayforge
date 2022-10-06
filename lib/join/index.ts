@@ -2,17 +2,15 @@ import type { Refinement } from "fp-ts/lib/Refinement"
 import type { Identified } from "id/identified"
 
 import { isUndefined } from "../fp-tools"
+import type { NullSafeRest, NullSafeUnion } from "../fp-tools/nullable"
 import type { Json, JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
-import { getRelatedId, getRelatedIds } from "./get-relation"
+import { getRelatedId, getRelatedIds } from "./get-related-ids"
 import { getContent, getRelations, setRelations } from "./relation-contents"
 import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
-import {
-  // setRelation,
-  setRelationWithContent,
-} from "./set-relation"
+import { setRelationWithContent } from "./set-relation"
 
 export class Join<CONTENT extends JsonObj | null = null>
   implements RelationData<CONTENT>
@@ -45,11 +43,11 @@ export class Join<CONTENT extends JsonObj | null = null>
     )
   }
 
-  public getRelatedId(idA: string, idB?: string): string | undefined {
-    return getRelatedId(this, idA)
+  public getRelatedId(id: string): string | undefined {
+    return getRelatedId(this, id)
   }
-  public getRelatedIds(idA: string): string[] {
-    return getRelatedIds(this, idA)
+  public getRelatedIds(id: string): string[] {
+    return getRelatedIds(this, id)
   }
   public getContent(idA: string, idB: string): CONTENT | undefined {
     return getContent(this, idA, idB)
@@ -62,24 +60,22 @@ export class Join<CONTENT extends JsonObj | null = null>
   }
   public getRelation(
     id: string
-  ): (CONTENT extends null ? Identified : CONTENT & Identified) | undefined {
+  ): NullSafeUnion<Identified, CONTENT> | undefined {
     return getRelations(this, id)[0]
   }
-  public getRelations(
-    id: string
-  ): (CONTENT extends null ? Identified : CONTENT & Identified)[] {
+  public getRelations(id: string): NullSafeUnion<Identified, CONTENT>[] {
     return getRelations(this, id)
   }
   public setRelations(
     id: string,
-    relations: (CONTENT extends null ? Identified : CONTENT & Identified)[]
+    relations: NullSafeUnion<Identified, CONTENT>[]
   ): Join<CONTENT> {
     return new Join(setRelations(this, id, relations))
   }
   public set(
     idA: string,
     idB: string,
-    ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
+    ...rest: NullSafeRest<CONTENT>
   ): Join<CONTENT> {
     return new Join(setRelationWithContent(this, idA, idB, ...rest))
   }

@@ -1,7 +1,4 @@
-import { vitest } from "vitest"
-
 import { Join } from "."
-import type { JsonObj } from "../json"
 
 describe(`Join.prototype.set1ToMany`, () => {
   it(`sets data between a leader and a follower`, () => {
