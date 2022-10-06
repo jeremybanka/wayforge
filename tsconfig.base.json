@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    // "types": ["jest"],
     "noEmit": true,
     "rootDir": ".",
     "sourceMap": true,
@@ -22,7 +21,6 @@
   },
   "exclude": ["node_modules", "tmp", "script"],
   "ts-node": {
-    // Do not forget to `npm i -D tsconfig-paths`
     "require": ["tsconfig-paths/register"]
   }
 }
