@@ -12,7 +12,7 @@ import styled from "@emotion/styled"
 import type { CornerOptions, DrawCorner, HTMLTagName } from "corners"
 import corners, { round } from "corners"
 
-import { isUndefined } from "~/lib/Anvil"
+import { isUndefined } from "~/lib/Anvil/nullish"
 
 export type CssProp = {
   s: SerializedStyles

@@ -8,7 +8,7 @@ import {
   recordToEntries,
   treeShake as removeProperties,
 } from "../Anvil/object"
-import { split } from "../Anvil/string"
+import { split } from "../Anvil/string/split"
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 
