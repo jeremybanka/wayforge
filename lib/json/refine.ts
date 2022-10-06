@@ -2,8 +2,8 @@ import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 
-import { raiseError } from "~/lib/fp-tools"
-import { isPlainObject } from "~/lib/fp-tools/object"
+import { raiseError } from "~/lib/Anvil"
+import { isPlainObject } from "~/lib/Anvil/object"
 import type { Json, JsonArr, JsonObj } from "~/lib/json"
 
 export type RefinedJson =

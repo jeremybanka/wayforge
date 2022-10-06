@@ -1,4 +1,4 @@
-import type { Applicator } from "~/lib/fp-tools"
+import type { Applicator } from "~/lib/Anvil"
 
 import type { LuumSpec } from ".."
 

@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil"
 import type { RecoilEditorProps } from "~/app/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/wayforge-client/recoil-editor"
 import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
-import { includesAny } from "~/lib/fp-tools/venn"
+import { includesAny } from "~/lib/Anvil/array/venn"
 import type { JsonSchema } from "~/lib/json/json-schema"
 import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
 import { JsonEditor } from "~/lib/react-ui/json-editor"
@@ -51,8 +51,8 @@ export const EnergyEditor_INTERNAL: FC<
           `}
         >
           <EnergyIcon energyId={id} size={100} />
-          <EnergyCard_A energyId={id} size={100} />
-          <EnergyCard_B energyId={id} size={100} />
+          <EnergyCard_A energyId={id} />
+          <EnergyCard_B energyId={id} />
         </article>
       </RecoverableErrorBoundary>
       <JsonEditor

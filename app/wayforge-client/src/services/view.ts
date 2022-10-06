@@ -11,8 +11,8 @@ import {
   useSetRecoilState,
 } from "recoil"
 
-import { lastOf } from "~/lib/fp-tools/array"
-import type { Entries } from "~/lib/fp-tools/object"
+import { lastOf } from "~/lib/Anvil/array"
+import type { Entries } from "~/lib/Anvil/object"
 import { now } from "~/lib/id/now"
 import { Join } from "~/lib/join"
 import {

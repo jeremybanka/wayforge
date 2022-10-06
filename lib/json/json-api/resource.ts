@@ -1,4 +1,4 @@
-import { isPlainObject } from "~/lib/fp-tools/object"
+import { isPlainObject } from "~/lib/Anvil/object"
 import type { Json, JsonObj } from "~/lib/json"
 import { isJson } from "~/lib/json/refine"
 import { maybe } from "~/lib/luum"

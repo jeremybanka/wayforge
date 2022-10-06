@@ -4,7 +4,7 @@ import type { Socket, ServerOptions } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 import type { EventsMap } from "socket.io/dist/typed-events"
 
-import type { Modifier } from "~/lib/fp-tools"
+import type { Modifier } from "~/lib/Anvil"
 import { identify } from "~/lib/id/identified"
 import type { Json, JsonObj } from "~/lib/json"
 import { parseJson } from "~/lib/json"

@@ -1,3 +1,5 @@
+import { Ref } from "react"
+
 import type { Refinement } from "fp-ts/lib/Refinement"
 import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
@@ -9,7 +11,7 @@ import type {
 } from "~/lib/recoil-tools/effects/socket-io.server"
 
 import type { JsonInterface } from "."
-import { isUndefined } from "../../fp-tools"
+import { isUndefined } from "../../Anvil"
 import { Join } from "../../join"
 
 export type SocketSyncOptions<T> = {
@@ -33,6 +35,7 @@ export type SocketIndexOptions<T> = {
   jsonInterface: JsonInterface<T>
 }
 
+// Type 'AtomEffect<Join<JsonObj<string, Serializable> | null>>
 export const socketIndex: <T>(options: SocketIndexOptions<T>) => AtomEffect<T> =
   ({ type, socket, jsonInterface: { toJson, fromJson } }) =>
   ({ setSelf, onSet }) => {
@@ -45,22 +48,29 @@ export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
   (CONTENT extends null
     ? {} // eslint-disable-line @typescript-eslint/ban-types
     : {
-        refineContent: Refinement<unknown, CONTENT>
+        refineContent?: Refinement<unknown, CONTENT>
       }) & {
     id: string
     type: string
     socket: Socket<SaveJsonListenEvents, SaveJsonEmitEvents>
   }
 
-export const socketRelations: <CONTENT extends JsonObj | null = null>(
+export const socketRelations: <
+  CONTENT extends JsonObj | null = null,
+  JOIN extends Join<CONTENT> = Join<CONTENT>
+>(
   options: SocketRelationsOptions<CONTENT>
-) => AtomEffect<Join<CONTENT>> =
+) => AtomEffect<JOIN> =
   ({ type, id, socket, refineContent }) =>
-  ({ setSelf, onSet }) => {
+  <CONTENT extends JsonObj | null = null>({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
-    socket.on(
-      `relationsRead_${id}`,
-      (json) => setSelf(Join.fromJSON(json, refineContent as any)) // eugh...
+    socket.on(`relationsRead_${id}`, (json) =>
+      setSelf(
+        Join.fromJSON<CONTENT>(
+          json,
+          refineContent as Refinement<unknown, CONTENT>
+        )
+      )
     )
     onSet((v) => socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }))
   }

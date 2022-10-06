@@ -2,9 +2,9 @@ import { readdirSync, readFileSync, writeFileSync } from "fs"
 
 import { isString } from "fp-ts/lib/string"
 
-import type { Entries } from "../fp-tools/object"
-import { entriesToRecord, isPlainObject } from "../fp-tools/object"
-import { sprawl } from "../fp-tools/sprawl"
+import type { Entries } from "../Anvil/object"
+import { entriesToRecord, isPlainObject } from "../Anvil/object"
+import { sprawl } from "../Anvil/object/sprawl"
 import type { Json, JsonObj } from "../json"
 import { parseJson } from "../json"
 import { isResourceIdentifier } from "../json/json-api"
