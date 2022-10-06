@@ -10,8 +10,10 @@ describe(`sprawl`, () => {
       },
     }
     const paths: string[] = []
-    sprawl(tree, (path) => {
+    const nodes: unknown[] = []
+    sprawl(tree, (path, node) => {
       paths.push(path)
+      nodes.push(node)
     })
     expect(paths).toEqual([
       ``,
@@ -23,5 +25,6 @@ describe(`sprawl`, () => {
       `/b/c`,
       `/b/d`,
     ])
+    expect(nodes).toEqual([tree, tree.a, 1, 2, 3, tree.b, 4, 5])
   })
 })
