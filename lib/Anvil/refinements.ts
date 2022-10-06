@@ -1,5 +1,4 @@
-import type { Validator } from "Anvil"
-
+import type { Validator } from "."
 import { content } from "./array"
 import { isUndefined } from "./nullish"
 
