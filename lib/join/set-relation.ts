@@ -1,5 +1,5 @@
 import { addTo, isEmptyArray } from "../Anvil/array"
-import type { NullSafeRest } from "../Anvil/nullable"
+import type { NullSafeRest } from "../Anvil/nullish"
 import { treeShake as removeProperties } from "../Anvil/object"
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"

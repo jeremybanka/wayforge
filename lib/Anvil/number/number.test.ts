@@ -1,4 +1,5 @@
-import { wrapInto, clampInto } from "."
+import { clampInto } from "./clamp"
+import { wrapInto } from "./wrap"
 
 describe(`wrapInto`, () => {
   it(`should wrap a number into a range`, () => {
