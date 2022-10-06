@@ -1,4 +1,4 @@
-import type { Modifier } from "Anvil"
+import type { Modifier } from ".."
 
 export const clampInto =
   ([min, max]: [number, number]): Modifier<number> =>
