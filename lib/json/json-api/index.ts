@@ -1,5 +1,5 @@
-import { isUndefined } from "~/lib/fp-tools"
-import { treeShake } from "~/lib/fp-tools/object"
+import { isUndefined } from "~/lib/Anvil"
+import { treeShake } from "~/lib/Anvil/object"
 import type { JsonObj } from "~/lib/json"
 
 import type {

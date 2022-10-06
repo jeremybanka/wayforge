@@ -1,10 +1,10 @@
 import { pipe } from "fp-ts/lib/function"
 import { isString } from "fp-ts/lib/string"
 
-import type { Modifier, OneOrMany, Validator } from "~/lib/fp-tools"
-import { isUndefined, isModifier } from "~/lib/fp-tools"
-import { content, each, isArray, join, map } from "~/lib/fp-tools/array"
-import { key } from "~/lib/fp-tools/object"
+import type { Modifier, OneOrMany, Validator } from "~/lib/Anvil"
+import { isUndefined, isModifier } from "~/lib/Anvil"
+import { content, each, isArray, join, map } from "~/lib/Anvil/array"
+import { key } from "~/lib/Anvil/object"
 
 import { specToHex } from "^"
 import type { Filter, LuumSpec, FilterPoint } from "^"

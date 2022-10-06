@@ -2,7 +2,7 @@ import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 
-import { isObject } from "./object"
+import { isObject } from "~/lib/Anvil/object"
 
 describe(`isObject`, () => {
   it(`refines an empty object`, () => {

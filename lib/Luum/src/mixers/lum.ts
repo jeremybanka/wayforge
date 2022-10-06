@@ -1,7 +1,8 @@
 import { pipe } from "fp-ts/lib/function"
 
-import type { Modifier } from "~/lib/fp-tools/index"
-import { become, clampInto } from "~/lib/fp-tools/index"
+import type { Modifier } from "~/lib/Anvil"
+import { become } from "~/lib/Anvil"
+import { clampInto } from "~/lib/Anvil/number/clamp"
 
 import type { LuumApplicator } from "."
 import { specToHex, hexToSpec } from ".."

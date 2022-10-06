@@ -1,4 +1,4 @@
-import { isPlainObject } from "./object"
+import { isPlainObject } from "."
 import { sprawl } from "./sprawl"
 
 export type Fragment<T> = Partial<{

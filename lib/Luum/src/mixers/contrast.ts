@@ -1,4 +1,4 @@
-import type { Modifier } from "~/lib/fp-tools"
+import type { Modifier } from "~/lib/Anvil"
 
 import type { LuumSpec } from "^"
 
