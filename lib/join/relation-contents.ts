@@ -5,7 +5,7 @@ import { isEmptyObject } from "~/lib/fp-tools/object"
 
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
-import { getRelatedIds } from "./get-relation"
+import { getRelatedIds } from "./get-related-ids"
 import { getRelationEntries } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
@@ -80,24 +80,3 @@ export const setRelations = <CONTENT extends JsonObj | null = null>(
       }
     }
   )
-
-// export const getRelation = <CONTENT extends JsonObj | null = null>(
-//   relationMap: RelationData<CONTENT>,
-//   id: string
-// ): (CONTENT & Identified) | undefined => {
-//   const relatedId = getRelatedId(relationMap, id)[0]
-//   if (relatedId) {
-//     const content = getContent(relationMap, id, relatedId)
-//     if (content) {
-//       return { id: relatedId, ...content }
-//     }
-//   }
-// }
-
-// export const setRelation = <CONTENT extends JsonObj | null = null>(
-//   current: RelationData<CONTENT>,
-//   idA: string,
-//   { id: idB, ...content }: CONTENT & Identified
-// ): RelationData<CONTENT> =>
-//   // @ts-expect-error Omit<CONTENT & Identified, "id"> === CONTENT
-//   setRelationWithContent(current, idA, idB, content)

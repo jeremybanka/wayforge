@@ -1,4 +1,4 @@
-import type { Json, JsonObj } from "../json"
+import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 
 export const getRelatedIds = <CONTENT extends JsonObj | null = null>(

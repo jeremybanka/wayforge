@@ -9,7 +9,7 @@ import {
 } from "../fp-tools/object"
 import { split } from "../fp-tools/string"
 import { comprises } from "../fp-tools/venn"
-import type { Json, JsonObj } from "../json"
+import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 
 export const removeSpecific = <CONTENT extends JsonObj | null = null>(

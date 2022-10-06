@@ -1,8 +1,6 @@
-import type { Identified } from "id/identified"
-
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
-import { getRelatedId, getRelatedIds } from "./get-relation"
+import { getRelatedIds } from "./get-related-ids"
 import { getContent } from "./relation-contents"
 
 export const getRelationEntries = <CONTENT extends JsonObj | null = null>(

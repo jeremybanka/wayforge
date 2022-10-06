@@ -1,17 +1,16 @@
-import type { Identified } from "id/identified"
-
 import { addTo, isEmptyArray } from "../fp-tools/array"
+import type { NullSafeRest } from "../fp-tools/nullable"
 import { treeShake as removeProperties } from "../fp-tools/object"
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
-import { getRelatedId } from "./get-relation"
+import { getRelatedId } from "./get-related-ids"
 import { setContent } from "./relation-contents"
 
 export const setManyToMany = <CONTENT extends JsonObj | null = null>(
   map: RelationData<CONTENT>,
   idA: string,
   idB: string,
-  ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
+  ...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT> => {
   const next = {
     ...map,
@@ -31,7 +30,7 @@ export const set1ToMany = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   leaderId: string,
   followerId: string,
-  ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
+  ...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT> => {
   const relations = { ...current.relations }
   const prevLeaderId = getRelatedId(current, followerId)
@@ -57,7 +56,7 @@ export const set1To1 = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   wifeId: string,
   husbandId: string,
-  ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
+  ...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT> => {
   const prevWifeId = getRelatedId(current, husbandId)
   const prevHusbandId = getRelatedId(current, wifeId)
@@ -80,7 +79,7 @@ export const setRelationWithContent = <CONTENT extends JsonObj | null = null>(
   current: RelationData<CONTENT>,
   idA: string,
   idB: string,
-  ...rest: CONTENT extends null ? [] | [undefined] : [CONTENT]
+  ...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT> => {
   switch (current.relationType) {
     case `1:1`:
