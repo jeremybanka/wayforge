@@ -11,7 +11,6 @@ import type {
 } from "~/lib/recoil-tools/effects/socket-io.server"
 
 import type { JsonInterface } from "."
-import { isUndefined } from "../../Anvil"
 import { Join } from "../../join"
 
 export type SocketSyncOptions<T> = {

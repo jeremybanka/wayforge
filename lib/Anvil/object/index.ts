@@ -3,8 +3,8 @@ import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
 import type { Identified } from "id/identified"
 
-import { isUndefined } from ".."
 import { allTrue, every } from "../array"
+import { isUndefined } from "../nullish"
 
 export const key =
   <T extends object>(k: keyof T) =>

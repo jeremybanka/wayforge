@@ -16,21 +16,6 @@ export type Validator<T> = (input: unknown) => input is T
 
 export type OneOrMany<T> = T | T[]
 
-export const wrapInto =
-  ([min, max]: [number, number]): Modifier<number> =>
-  (value) =>
-    value < min
-      ? max - ((min - value) % (max - min))
-      : min + ((value - min) % (max - min))
-
-export const isUndefined = (input: unknown): input is undefined =>
-  typeof input === `undefined`
-
-export const isNull = (input: unknown): input is null => input === null
-
-export const isNullish = (input: unknown): input is null | undefined =>
-  isUndefined(input) || isNull(input)
-
 export const isModifier =
   <T>(validate: Validator<T>) =>
   (sample: T): Validator<Modifier<T>> => {

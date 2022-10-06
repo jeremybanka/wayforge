@@ -1,8 +1,8 @@
 import type { Refinement } from "fp-ts/lib/Refinement"
 import type { Identified } from "id/identified"
 
-import { isUndefined } from "../Anvil"
-import type { NullSafeRest, NullSafeUnion } from "../Anvil/nullable"
+import { isUndefined } from "../Anvil/nullish"
+import type { NullSafeRest, NullSafeUnion } from "../Anvil/nullish"
 import type { Json, JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"

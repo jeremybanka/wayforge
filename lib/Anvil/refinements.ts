@@ -1,7 +1,7 @@
 import type { Validator } from "Anvil"
-import { isUndefined } from "Anvil"
 
 import { content } from "./array"
+import { isUndefined } from "./nullish"
 
 export { content }
 
