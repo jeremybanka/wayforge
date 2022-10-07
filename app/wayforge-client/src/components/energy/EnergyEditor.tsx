@@ -3,13 +3,13 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { includesAny } from "anvl/array/venn"
 import type { JsonSchema } from "anvl/json/json-schema"
+import { RecoverableErrorBoundary } from "hamr/react-ui/error-boundary"
+import { JsonEditor } from "hamr/react-ui/json-editor"
 import { useRecoilState } from "recoil"
 
 import type { RecoilEditorProps } from "~/app/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/wayforge-client/recoil-editor"
 import energySchema from "~/app/wayforge-server/projects/wayfarer/schema/energy.schema.json"
-import { RecoverableErrorBoundary } from "~/lib/react-ui/error-boundary"
-import { JsonEditor } from "~/lib/react-ui/json-editor"
 
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {

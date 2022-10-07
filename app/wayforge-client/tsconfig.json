@@ -22,7 +22,9 @@
       "~/*": ["./*"],
       "wayforge-server/*": ["./app/wayforge-server/*"],
       "anvl": ["./lib/Anvil"],
-      "anvl/*": ["./lib/Anvil/*"]
+      "anvl/*": ["./lib/Anvil/*"],
+      "hamr": ["./lib/Hammer"],
+      "hamr/*": ["./lib/Hammer/*"]
     }
   },
   "include": [".", "../../lib"],

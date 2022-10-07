@@ -4,6 +4,12 @@ import { lastOf } from "anvl/array"
 import { now } from "anvl/id/now"
 import { Join } from "anvl/join"
 import type { Entries } from "anvl/object"
+import {
+  localStorageEffect,
+  localStorageSerializationEffect,
+} from "hamr/recoil-tools/effects/local-storage"
+import { addToIndex, removeFromIndex } from "hamr/recoil-tools/recoil-index"
+import type { TransactionOperation } from "hamr/recoil-tools/recoil-utils"
 import type { Location } from "react-router-dom"
 import { useLocation } from "react-router-dom"
 import {
@@ -14,13 +20,6 @@ import {
   useRecoilValue,
   useSetRecoilState,
 } from "recoil"
-
-import {
-  localStorageEffect,
-  localStorageSerializationEffect,
-} from "~/lib/recoil-tools/effects/local-storage"
-import { addToIndex, removeFromIndex } from "~/lib/recoil-tools/recoil-index"
-import type { TransactionOperation } from "~/lib/recoil-tools/recoil-utils"
 
 export const spaceIndexState = atom<Set<string>>({
   key: `spaceIndex`,

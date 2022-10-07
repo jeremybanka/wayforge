@@ -16,7 +16,8 @@
     "app/*",
     "lib",
     "wayfarer",
-    "lib/Anvil"
+    "lib/Anvil",
+    "lib/Hammer"
   ],
   "devDependencies": {
     "@banka/eslint-config": "^1.0.0",

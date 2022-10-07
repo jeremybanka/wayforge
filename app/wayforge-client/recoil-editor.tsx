@@ -1,9 +1,8 @@
 import type { FC } from "react"
 
+import type { JsxElements } from "hamr/react-ui/json-editor"
 import { useParams } from "react-router-dom"
 import type { RecoilState } from "recoil"
-
-import type { JsxElements } from "~/lib/react-ui/json-editor"
 
 export type RecoilEditorProps<T> = {
   id: string

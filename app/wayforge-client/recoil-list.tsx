@@ -1,9 +1,8 @@
 import type { FC } from "react"
 
 import type { Identified } from "anvl/id/identified"
+import type { JsxElements, WC } from "hamr/react-ui/json-editor"
 import type { RecoilState } from "recoil"
-
-import type { JsxElements, WC } from "~/lib/react-ui/json-editor"
 
 /* eslint-disable @typescript-eslint/ban-types */
 

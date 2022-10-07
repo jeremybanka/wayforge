@@ -4,12 +4,11 @@ import type { Refinement } from "fp-ts/lib/Refinement"
 import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
+import type { JsonInterface } from "."
 import type {
   SaveJsonEmitEvents,
   SaveJsonListenEvents,
-} from "~/lib/recoil-tools/effects/socket-io.server"
-
-import type { JsonInterface } from "."
+} from "./socket-io.server"
 
 export type SocketSyncOptions<T> = {
   id: string

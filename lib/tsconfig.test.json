@@ -6,7 +6,9 @@
     "paths": {
       "~/*": ["./*"],
       "anvl": ["./Anvil"],
-      "anvl/*": ["./Anvil/*"]
+      "anvl/*": ["./Anvil/*"],
+      "hamr": ["./Hammer"],
+      "hamr/*": ["./Hammer/*"]
     }
   },
   "include": ["**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]

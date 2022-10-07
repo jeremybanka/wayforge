@@ -1,10 +1,10 @@
 import { Join } from "anvl/join"
 import { isRecord } from "anvl/object"
 import { isNumber } from "fp-ts/lib/number"
+import { socketRelations } from "hamr/recoil-tools/effects/socket-io"
 import { atom, selectorFamily } from "recoil"
 
 import type { Identified } from "~/lib/Anvil/id/identified"
-import { socketRelations } from "~/lib/recoil-tools/effects/socket-io"
 
 import type { Energy } from "./energy"
 import { DEFAULT_ENERGY, findEnergyState } from "./energy"

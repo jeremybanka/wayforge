@@ -2,6 +2,8 @@ import type { FC } from "react"
 import { useEffect } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
+import { ErrorBoundary } from "hamr/react-ui/error-boundary"
+import type { WC } from "hamr/react-ui/json-editor"
 import {
   Link,
   MemoryRouter,
@@ -13,8 +15,6 @@ import {
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 
 import { now } from "~/lib/Anvil/id/now"
-import { ErrorBoundary } from "~/lib/react-ui/error-boundary"
-import type { WC } from "~/lib/react-ui/json-editor"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"

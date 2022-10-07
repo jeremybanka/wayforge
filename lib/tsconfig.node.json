@@ -5,6 +5,8 @@
     "paths": {
       "anvl": ["./lib/Anvil"],
       "anvl/*": ["./lib/Anvil/*"],
+      "hamr": ["./Hammer"],
+      "hamr/*": ["./Hammer/*"],
       "~/*": ["./*"]
     },
     "types": ["node", "express", "jest"]
