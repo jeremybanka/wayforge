@@ -1,7 +1,7 @@
 {
-  "name": "anvl",
+  "name": "hamr",
   "version": "0.0.0",
-  "description": "core typescript utilities for wayforge",
+  "description": "core react and recoil utilities for wayforge",
   "main": "object/index.ts",
   "files": [
     "**/*"
@@ -9,8 +9,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "fp-ts": "^2.12.3"
+  "peerDependencies": {
+    "fp-ts": "^2.12.3",
+    "react": "^18.0.0",
+    "recoil": "^0.7.5"
   },
   "repository": {
     "type": "git",

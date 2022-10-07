@@ -4544,6 +4544,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hamr@workspace:lib/Hammer":
+  version: 0.0.0-use.local
+  resolution: "hamr@workspace:lib/Hammer"
+  peerDependencies:
+    fp-ts: ^2.12.3
+    react: ^18.0.0
+    recoil: ^0.7.5
+  languageName: unknown
+  linkType: soft
+
 "hamt_plus@npm:1.0.2, hamt_plus@npm:^1.0.2":
   version: 1.0.2
   resolution: "hamt_plus@npm:1.0.2"

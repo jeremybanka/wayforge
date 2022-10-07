@@ -6,7 +6,9 @@
     "paths": {
       "~/*": ["./*"],
       "anvl": ["./Anvil"],
-      "anvl/*": ["./Anvil/*"]
+      "anvl/*": ["./Anvil/*"],
+      "hamr": ["./Hammer"],
+      "hamr/*": ["./Hammer/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react"

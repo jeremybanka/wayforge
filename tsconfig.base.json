@@ -18,7 +18,9 @@
     "paths": {
       "~/*": ["./*"],
       "anvl": ["./lib/Anvil"],
-      "anvl/*": ["./lib/Anvil/*"]
+      "anvl/*": ["./lib/Anvil/*"],
+      "hamr": ["./lib/Hammer"],
+      "hamr/*": ["./lib/Hammer/*"]
     }
   },
   "exclude": ["node_modules", "tmp", "script"],
