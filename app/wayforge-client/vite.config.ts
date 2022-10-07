@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from "@vitejs/plugin-react"
 import { sassPlugin } from "esbuild-sass-plugin"
 import { defineConfig } from "vite"
