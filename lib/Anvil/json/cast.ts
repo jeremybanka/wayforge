@@ -1,5 +1,5 @@
-import type { Json, JsonArr, JsonObj, Serializable } from "~/lib/json"
-import { refineJsonType } from "~/lib/json/refine"
+import type { Json, JsonArr, JsonObj, Serializable } from "anvl/json"
+import { refineJsonType } from "anvl/json/refine"
 
 export const stringToBoolean = (str: string): boolean => str === `true`
 export const stringToNumber = (str: string): number => Number(str)

@@ -2,9 +2,9 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
+import type { Identified } from "anvl/id/identified"
 
 import { RecoilList } from "~/app/wayforge-client/recoil-list"
-import type { Identified } from "~/lib/id/identified"
 
 import {
   findReactionWithRelationsState,

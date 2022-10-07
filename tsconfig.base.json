@@ -16,11 +16,17 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"]
+      "~/*": ["./*"],
+      "anvl": ["./lib/Anvil"],
+      "anvl/*": ["./lib/Anvil/*"]
     }
   },
   "exclude": ["node_modules", "tmp", "script"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
-  }
+  },
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.test.json.json" }
+  ]
 }

@@ -1,9 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "..",
     "paths": {
-      "~/*": ["../*"]
+      "anvl": ["./lib/Anvil"],
+      "anvl/*": ["./lib/Anvil/*"],
+      "~/*": ["./*"]
     },
     "types": ["node", "express", "jest"]
   },

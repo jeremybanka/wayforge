@@ -1,6 +1,6 @@
-import { isUndefined } from "~/lib/Anvil/nullish"
-import { treeShake } from "~/lib/Anvil/object"
-import type { JsonObj } from "~/lib/json"
+import type { JsonObj } from "anvl/json"
+import { isUndefined } from "anvl/nullish"
+import { treeShake } from "anvl/object"
 
 import type {
   ResourceFlat,

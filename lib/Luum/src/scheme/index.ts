@@ -1,9 +1,10 @@
 import { pipe } from "fp-ts/lib/function"
+import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
 
-import type { Modifier, OneOrMany, Validator } from "~/lib/Anvil"
-import { isModifier } from "~/lib/Anvil"
 import { content, each, isArray, join, map } from "~/lib/Anvil/array"
+import { isModifier } from "~/lib/Anvil/function"
+import type { Modifier, OneOrMany } from "~/lib/Anvil/function"
 import { isUndefined } from "~/lib/Anvil/nullish"
 import { key } from "~/lib/Anvil/object"
 
@@ -245,7 +246,7 @@ export const isFilter = (input: unknown): input is Filter =>
   isArray(isFilterPoint)(input)
 
 export const maybe =
-  <T>(validate: Validator<T>) =>
+  <T>(validate: Refinement<unknown, T>) =>
   (input: unknown): input is T | undefined =>
     isUndefined(input) || validate(input)
 
@@ -257,7 +258,10 @@ export const isLuumSpec = (input: unknown): input is LuumSpec =>
   typeof (input as LuumSpec).lum === `number` &&
   [`sat`, `lum`].includes((input as LuumSpec).prefer)
 
-export const isLuumSpecModifier = isModifier(isLuumSpec)(defaultSpec)
+export const isLuumSpecModifier: Refinement<
+  unknown,
+  Modifier<LuumSpec>
+> = isModifier(isLuumSpec)(defaultSpec)
 
 export type LuumCssAttribute = [
   keys: OneOrMany<CssColorPropertyKey>,

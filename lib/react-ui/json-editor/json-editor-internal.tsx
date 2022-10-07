@@ -1,13 +1,11 @@
 import type { FC, ReactNode, RefObject } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
-import { isString } from "fp-ts/lib/string"
+import { lastOf } from "anvl/array"
+import type { Json, JsonTypes } from "anvl/json"
+import type { JsonSchema } from "anvl/json/json-schema"
+import { refineJsonType } from "anvl/json/refine"
 import type { SetterOrUpdater } from "recoil"
-
-import { lastOf } from "~/lib/Anvil/array"
-import type { Json, JsonTypes } from "~/lib/json"
-import type { JsonSchema } from "~/lib/json/json-schema"
-import { refineJsonType } from "~/lib/json/refine"
 
 import type { JsxElements } from "."
 import { SubEditors } from "."

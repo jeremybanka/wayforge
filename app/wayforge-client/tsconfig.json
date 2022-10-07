@@ -20,13 +20,15 @@
     "baseUrl": "../..",
     "paths": {
       "~/*": ["./*"],
-      "wayforge-server/*": ["./wayforge-server/*"]
+      "wayforge-server/*": ["./app/wayforge-server/*"],
+      "anvl": ["./lib/Anvil"],
+      "anvl/*": ["./lib/Anvil/*"]
     }
   },
   "include": [".", "../../lib"],
   "references": [
     { "path": "./tsconfig.node.json" },
-    { "path": "../../lib/tsconfig.json" },
-    { "path": "../../lib/Luum/tsconfig.json" }
+    { "path": "../../lib/tsconfig.json" }
+    // { "path": "../../lib/Luum/tsconfig.json" }
   ]
 }

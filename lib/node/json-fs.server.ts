@@ -1,15 +1,14 @@
 import { readdirSync, readFileSync, writeFileSync } from "fs"
 
+import type { Json, JsonObj } from "anvl/json"
+import { parseJson } from "anvl/json"
+import { isResourceIdentifier } from "anvl/json/json-api"
+import type { ResourceIdentifierObject } from "anvl/json/json-api"
+import { refineJsonType } from "anvl/json/refine"
+import { entriesToRecord, isPlainObject } from "anvl/object"
+import type { Entries } from "anvl/object"
+import { sprawl } from "anvl/object/sprawl"
 import { isString } from "fp-ts/lib/string"
-
-import type { Entries } from "../Anvil/object"
-import { entriesToRecord, isPlainObject } from "../Anvil/object"
-import { sprawl } from "../Anvil/object/sprawl"
-import type { Json, JsonObj } from "../json"
-import { parseJson } from "../json"
-import { isResourceIdentifier } from "../json/json-api"
-import type { ResourceIdentifierObject } from "../json/json-api"
-import { refineJsonType } from "../json/refine"
 
 export const getJsonFileNames = (dir: string): string[] => {
   const fileNames = readdirSync(dir)

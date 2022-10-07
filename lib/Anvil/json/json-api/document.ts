@@ -1,4 +1,4 @@
-import type { Json } from "json"
+import type { Json } from "anvl/json"
 
 import type { ErrorObject } from "./errors"
 import type { Resource, ResourceObject, ResourceUpdate } from "./resource"

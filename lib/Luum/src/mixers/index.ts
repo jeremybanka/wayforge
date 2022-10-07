@@ -1,4 +1,4 @@
-import type { Applicator } from "~/lib/Anvil"
+import type { Applicator } from "~/lib/Anvil/function"
 
 import type { LuumSpec } from ".."
 

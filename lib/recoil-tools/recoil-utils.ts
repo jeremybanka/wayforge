@@ -1,13 +1,9 @@
-import { pipe } from "fp-ts/lib/function"
 import type {
-  AtomEffect,
   GetRecoilValue,
   RecoilState,
   RecoilValue,
   TransactionInterface_UNSTABLE as Transactors,
 } from "recoil"
-
-import type { Json, Primitive } from "../json"
 
 export type Getter<T> = (a: RecoilValue<T>) => T
 

@@ -4,7 +4,12 @@
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
     "types": ["node", "express"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "~/*": ["./*"],
+      "anvl": ["./Anvil"],
+      "anvl/*": ["./Anvil/*"]
+    }
   },
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts"]

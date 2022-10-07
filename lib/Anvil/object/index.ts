@@ -1,7 +1,6 @@
 import { pipe } from "fp-ts/lib/function"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
-import type { Identified } from "id/identified"
 
 import { allTrue, every } from "../array"
 import { isUndefined } from "../nullish"

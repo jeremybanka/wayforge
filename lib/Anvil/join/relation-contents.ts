@@ -1,7 +1,7 @@
+import { isEmptyObject } from "anvl/object"
 import { pipe } from "fp-ts/lib/function"
-import type { Identified } from "id/identified"
 
-import { isEmptyObject } from "~/lib/Anvil/object"
+import type { Identified } from "~/lib/Anvil/id/identified"
 
 import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"

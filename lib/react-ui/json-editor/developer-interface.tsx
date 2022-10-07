@@ -1,10 +1,9 @@
 import type { FC, RefObject } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
+import type { Json, JsonTypes } from "anvl/json"
+import type { JsonSchema } from "anvl/json/json-schema"
 import type { SetterOrUpdater } from "recoil"
-
-import type { Json, JsonTypes } from "~/lib/json"
-import type { JsonSchema } from "~/lib/json/json-schema"
 
 import type { JsxElements } from "."
 import type { JsonEditorComponents } from "./default-components"

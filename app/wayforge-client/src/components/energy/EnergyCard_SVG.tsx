@@ -8,7 +8,7 @@ import { useRecoilValue } from "recoil"
 
 import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
 import { RecoilList } from "~/app/wayforge-client/recoil-list"
-import { Luum } from "~/lib/luum"
+import { Luum } from "~/lib/Luum"
 
 import type { Energy } from "../../services/energy"
 import {
