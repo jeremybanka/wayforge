@@ -61,8 +61,5 @@
   "bugs": {
     "url": "https://github.com/jeremybanka/luum/issues"
   },
-  "homepage": "https://github.com/jeremybanka/luum#readme",
-  "dependencies": {
-    "luum": "file:.yalc/luum"
-  }
+  "homepage": "https://github.com/jeremybanka/luum#readme"
 }

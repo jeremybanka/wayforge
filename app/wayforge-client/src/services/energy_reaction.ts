@@ -1,9 +1,9 @@
+import { Join } from "anvl/join"
+import { isRecord } from "anvl/object"
 import { isNumber } from "fp-ts/lib/number"
 import { atom, selectorFamily } from "recoil"
 
-import { isRecord } from "~/lib/Anvil/object"
-import type { Identified } from "~/lib/id/identified"
-import { Join } from "~/lib/join"
+import type { Identified } from "~/lib/Anvil/id/identified"
 import { socketRelations } from "~/lib/recoil-tools/effects/socket-io"
 
 import type { Energy } from "./energy"

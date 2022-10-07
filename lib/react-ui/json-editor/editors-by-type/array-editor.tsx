@@ -1,4 +1,4 @@
-import type { JsonArr } from "~/lib/json"
+import type { JsonArr } from "anvl/json"
 
 import type { JsonEditorProps, JsxElements } from ".."
 import { JsonEditor } from ".."

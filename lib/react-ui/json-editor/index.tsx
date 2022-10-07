@@ -1,6 +1,6 @@
 import type { FC } from "react"
 
-import type { JsonTypes } from "~/lib/json"
+import type { JsonTypes } from "anvl/json"
 
 import { ArrayEditor } from "./editors-by-type/array-editor"
 import { ObjectEditor } from "./editors-by-type/object-editor"

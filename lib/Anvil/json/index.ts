@@ -1,6 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-enable quotes */
-
 import { pipe } from "fp-ts/lib/function"
 
 export const serializeSet = <T>(set: Set<T>): string =>
@@ -15,7 +12,6 @@ export type Serializable =
   | Primitive
   | Readonly<{ [key: string]: Serializable }>
   | ReadonlyArray<Serializable>
-// | { toJSON: () => string }
 
 export type JsonObj<
   Key extends string = string,

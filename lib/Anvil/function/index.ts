@@ -12,13 +12,12 @@ export const become =
 
 export type Applicator<X, Y> = (next: Modifier<X> | X) => Modifier<Y>
 export type Modifier<T> = (thing: T) => T
-export type Validator<T> = (input: unknown) => input is T
 
 export type OneOrMany<T> = T | T[]
 
 export const isModifier =
-  <T>(validate: Validator<T>) =>
-  (sample: T): Validator<Modifier<T>> => {
+  <T>(validate: Refinement<unknown, T>) =>
+  (sample: T): Refinement<unknown, Modifier<T>> => {
     const sampleIsValid = validate(sample)
     if (!sampleIsValid) {
       throw new Error(`Invalid test case: JSON.stringify(${sample})`)

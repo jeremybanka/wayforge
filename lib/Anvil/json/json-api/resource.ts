@@ -1,7 +1,8 @@
-import { isPlainObject } from "~/lib/Anvil/object"
-import type { Json, JsonObj } from "~/lib/json"
-import { isJson } from "~/lib/json/refine"
-import { maybe } from "~/lib/luum"
+import type { Json, JsonObj } from "anvl/json"
+import { isJson } from "anvl/json/refine"
+import { isPlainObject } from "anvl/object"
+
+import { maybe } from "~/lib/Luum"
 
 import type { RequireAtLeastOne } from "."
 import type { Link, Links } from "./document"

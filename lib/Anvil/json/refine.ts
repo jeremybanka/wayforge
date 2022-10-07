@@ -1,10 +1,10 @@
+import { isPlainObject } from "anvl/object"
 import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 
-import { raiseError } from "~/lib/Anvil"
-import { isPlainObject } from "~/lib/Anvil/object"
-import type { Json, JsonArr, JsonObj } from "~/lib/json"
+import type { Json, JsonArr, JsonObj } from "."
+import { raiseError } from "../function"
 
 export type RefinedJson =
   | { type: `array`; data: JsonArr }

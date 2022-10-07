@@ -1,8 +1,8 @@
+import type { Json, JsonObj } from "anvl/json"
 import { isString } from "fp-ts/lib/string"
-import type { Json, JsonObj } from "json"
 
-import { isArray } from "../Anvil/array"
-import { isObject, isRecord } from "../Anvil/object"
+import { isArray } from "../array"
+import { isObject, isRecord } from "../object"
 
 export const RELATION_TYPES = [`1:1`, `1:n`, `n:n`] as const
 

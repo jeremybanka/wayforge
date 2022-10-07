@@ -4,7 +4,9 @@
     "types": ["vitest"],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["../*"]
+      "~/*": ["./*"],
+      "anvl": ["./Anvil"],
+      "anvl/*": ["./Anvil/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react"
@@ -18,5 +20,8 @@
     "**/*.spec.ts",
     "**/*.spec.tsx"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.test.json.json" }
+  ]
 }

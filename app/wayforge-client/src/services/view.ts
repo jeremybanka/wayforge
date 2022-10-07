@@ -1,5 +1,9 @@
 import { useEffect } from "react"
 
+import { lastOf } from "anvl/array"
+import { now } from "anvl/id/now"
+import { Join } from "anvl/join"
+import type { Entries } from "anvl/object"
 import type { Location } from "react-router-dom"
 import { useLocation } from "react-router-dom"
 import {
@@ -11,10 +15,6 @@ import {
   useSetRecoilState,
 } from "recoil"
 
-import { lastOf } from "~/lib/Anvil/array"
-import type { Entries } from "~/lib/Anvil/object"
-import { now } from "~/lib/id/now"
-import { Join } from "~/lib/join"
 import {
   localStorageEffect,
   localStorageSerializationEffect,

@@ -1,15 +1,15 @@
 import { pipe } from "fp-ts/lib/function"
 import { isString } from "fp-ts/lib/string"
 
-import { isEmptyArray, isOneOf, map } from "../Anvil/array"
-import { comprises } from "../Anvil/array/venn"
+import { isEmptyArray, isOneOf, map } from "../array"
+import { comprises } from "../array/venn"
+import type { JsonObj } from "../json"
 import {
   entriesToRecord,
   recordToEntries,
   treeShake as removeProperties,
-} from "../Anvil/object"
-import { split } from "../Anvil/string/split"
-import type { JsonObj } from "../json"
+} from "../object"
+import { split } from "../string/split"
 import type { RelationData } from "./core-relation-data"
 
 export const removeSpecific = <CONTENT extends JsonObj | null = null>(

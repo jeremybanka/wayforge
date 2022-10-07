@@ -1,13 +1,12 @@
 import type { FC } from "react"
 import { useRef } from "react"
 
+import type { JsonObj } from "Anvil/json"
+import type { JsonSchema } from "Anvil/json/json-schema"
+import { lastOf } from "anvl/array"
+import { isPlainObject } from "anvl/object"
 import { isBoolean } from "fp-ts/lib/boolean"
 import { isString } from "fp-ts/lib/string"
-
-import { lastOf } from "~/lib/Anvil/array"
-import { isPlainObject } from "~/lib/Anvil/object"
-import type { JsonObj } from "~/lib/json"
-import type { JsonSchema } from "~/lib/json/json-schema"
 
 import type { JsxElements } from ".."
 import { AutoSizeInput } from "../../auto-size-input"

@@ -1,7 +1,6 @@
+import { become } from "anvl/function"
+import type { JsonArr } from "anvl/json"
 import type { SetterOrUpdater } from "recoil"
-
-import { become } from "~/lib/Anvil"
-import type { JsonArr } from "~/lib/json"
 
 export const makeElementSetters = <T extends JsonArr>(
   data: T,

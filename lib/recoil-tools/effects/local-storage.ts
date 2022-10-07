@@ -1,7 +1,6 @@
+import type { Json, Primitive } from "anvl/json"
 import { pipe } from "fp-ts/lib/function"
 import type { AtomEffect } from "recoil"
-
-import type { Json, Primitive } from "~/lib/json"
 
 import type { SerializationInterface } from "."
 

@@ -1,4 +1,4 @@
-import type { Modifier } from "~/lib/Anvil"
+import type { Modifier } from "~/lib/Anvil/function"
 
 import type { LuumSpec } from "^"
 

@@ -15,7 +15,8 @@
   "workspaces": [
     "app/*",
     "lib",
-    "wayfarer"
+    "wayfarer",
+    "lib/Anvil"
   ],
   "devDependencies": {
     "@banka/eslint-config": "^1.0.0",

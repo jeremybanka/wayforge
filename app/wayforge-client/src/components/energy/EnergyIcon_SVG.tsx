@@ -4,8 +4,8 @@ import { useId } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { luumToCss } from "~/lib/luum"
-import type { LuumCssRule } from "~/lib/luum"
+import { luumToCss } from "~/lib/Luum"
+import type { LuumCssRule } from "~/lib/Luum"
 
 import { findEnergyState } from "../../services/energy"
 

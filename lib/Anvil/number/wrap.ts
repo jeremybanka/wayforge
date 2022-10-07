@@ -1,4 +1,4 @@
-import type { Modifier } from ".."
+import type { Modifier } from "../function"
 
 export const wrapInto =
   ([min, max]: [number, number]): Modifier<number> =>

@@ -1,4 +1,4 @@
-import type { Json } from "json"
+import type { Json } from "anvl/json"
 
 import type { Link, Links } from "./document"
 

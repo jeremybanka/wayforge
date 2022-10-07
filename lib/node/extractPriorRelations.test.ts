@@ -1,4 +1,5 @@
-import type { ResourceIdentifierObject } from "../json/json-api"
+import type { ResourceIdentifierObject } from "anvl/json/json-api"
+
 import { extractPriorRelations } from "./json-fs.server"
 
 describe(`extractPriorRelations`, () => {

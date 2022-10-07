@@ -1,4 +1,4 @@
-import type { Json } from "~/lib/json"
+import type { Json } from "anvl/json"
 
 export type SerializationInterface<T> = {
   serialize: (t: T) => string

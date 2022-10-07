@@ -1,17 +1,15 @@
-import { Ref } from "react"
-
+import { Join } from "anvl/join"
+import type { JsonObj } from "anvl/json"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
-import type { JsonObj } from "~/lib/json"
 import type {
   SaveJsonEmitEvents,
   SaveJsonListenEvents,
 } from "~/lib/recoil-tools/effects/socket-io.server"
 
 import type { JsonInterface } from "."
-import { Join } from "../../join"
 
 export type SocketSyncOptions<T> = {
   id: string
