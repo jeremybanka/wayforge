@@ -13,7 +13,7 @@ export const EnergyListItem: FC<RecoilListItemProps<Energy>> = ({ label }) => {
   return (
     <RecoverableErrorBoundary>
       <button onClick={() => navigate(`/energy/${label.id}`)}>
-        <EnergyIcon energyId={label.id} size={70} />
+        <EnergyIcon energyId={label.id} size={30} />
       </button>
     </RecoverableErrorBoundary>
   )

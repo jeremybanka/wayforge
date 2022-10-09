@@ -92,7 +92,7 @@ export const EnergyAmount: FC<RecoilListItemProps<Energy, Amount>> = ({
   findState,
 }) => {
   const { id, amount } = label
-  const energy = useRecoilValue(findState(label.id))
+  const energy = useRecoilValue(findState(id))
   const domId = useId()
   return amount <= 3 ? (
     <span
@@ -162,36 +162,44 @@ export const EnergyCardFeature: FC<
           gap: 2px;
         `}
       >
-        <RecoilList
-          findState={findEnergyState}
-          labels={reaction.reagents}
-          Components={{
-            Wrapper: styled(corners(null, null, chamfer, null).size(5).span)(
-              css`
-                background-color: ${reactionConsumesEnergy
-                  ? energyIsPresentColor.hex
-                  : energyIsAbsentColor.hex};
-                ${energyListCss}
-              `
-            ),
-            ListItem: EnergyAmount,
-          }}
-        />
-        <RecoilList
-          findState={findEnergyState}
-          labels={reaction.products}
-          Components={{
-            Wrapper: styled(corners(chamfer, null, null, null).size(5).span)(
-              css`
-                background: ${reactionProducesEnergy
-                  ? energyIsPresentColor.hex
-                  : energyIsAbsentColor.hex};
-                ${energyListCss}
-              `
-            ),
-            ListItem: EnergyAmount,
-          }}
-        />
+        {reaction.reagents.length > 0 ? (
+          <RecoilList
+            findState={findEnergyState}
+            labels={reaction.reagents}
+            Components={{
+              Wrapper: styled(corners(null, null, chamfer, null).size(5).span)(
+                css`
+                  background-color: ${reactionConsumesEnergy
+                    ? energyIsPresentColor.hex
+                    : energyIsAbsentColor.hex};
+                  ${energyListCss}
+                `
+              ),
+              ListItem: EnergyAmount,
+            }}
+          />
+        ) : (
+          <EnergyIcon size={15} />
+        )}
+        {reaction.products.length > 0 ? (
+          <RecoilList
+            findState={findEnergyState}
+            labels={reaction.products}
+            Components={{
+              Wrapper: styled(corners(chamfer, null, null, null).size(5).span)(
+                css`
+                  background: ${reactionProducesEnergy
+                    ? energyIsPresentColor.hex
+                    : energyIsAbsentColor.hex};
+                  ${energyListCss}
+                `
+              ),
+              ListItem: EnergyAmount,
+            }}
+          />
+        ) : (
+          <EnergyIcon size={15} />
+        )}
       </div>
     </div>
   )
