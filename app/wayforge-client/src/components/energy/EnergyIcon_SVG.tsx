@@ -4,30 +4,23 @@ import { useId } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { luumToCss } from "~/lib/Luum"
-import type { LuumCssRule } from "~/lib/Luum"
+import { Luum } from "~/lib/Luum"
 
+import type { Energy } from "../../services/energy"
 import { findEnergyState } from "../../services/energy"
 
-export const EnergyIcon: FC<{
-  energyId: string
-  size: number
-  cx?: number
-  cy?: number
-}> = ({ energyId, size, cx = size / 2, cy = size / 2 }) => {
-  const energy = useRecoilValue(findEnergyState(energyId))
-  const domId = useId()
-  const colorSchemeA: LuumCssRule = {
-    root: energy.colorA,
-    attributes: [`fill`, []],
-  }
-  const colorSchemeB: LuumCssRule = {
-    root: energy.colorB,
-    attributes: [`fill`, []],
-  }
+export const SvgTSpan_Spacer: FC = () => (
+  <tspan fill="none" stroke="none" style={{ userSelect: `none` }}>{`-`}</tspan>
+)
 
-  const scssA = luumToCss(colorSchemeA)
-  const scssB = luumToCss(colorSchemeB)
+export const EnergyIcon_INTERNAL: FC<{ energy: Energy; size: number }> = ({
+  energy,
+  size,
+}) => {
+  const domId = useId()
+  const middle = size / 2
+  const colorA = Luum.fromJSON(energy.colorA)
+  const colorB = Luum.fromJSON(energy.colorB)
 
   return (
     <svg
@@ -39,58 +32,66 @@ export const EnergyIcon: FC<{
       `}
     >
       <clipPath id={`${domId}-clip`}>
-        <circle cx={cx} cy={cy} r={size} />
+        <circle cx={middle} cy={middle} r={size} />
       </clipPath>
       <text
-        id={domId + `-text`}
         textAnchor="middle"
-        x={cx}
-        y={cy + size * 0.25}
+        x={middle}
+        y={middle + size * 0.25}
         clipPath={`url(#${domId}-clip)`}
         css={css`
           font-family: "Uruz";
           font-size: ${size}px;
-          ${scssB};
+          fill: ${colorB.hex};
         `}
       >
-        <tspan
-          fill="none"
-          stroke="none"
-          style={{ userSelect: `none` }}
-        >{`-`}</tspan>
+        <SvgTSpan_Spacer />
         {` MT `}
-        <tspan
-          fill="none"
-          stroke="none"
-          style={{ userSelect: `none` }}
-        >{`-`}</tspan>
+        <SvgTSpan_Spacer />
       </text>
       <text
-        id={domId + `-text`}
         textAnchor="middle"
-        x={cx}
-        y={cy + size * 0.25}
+        x={middle}
+        y={middle + size * 0.25}
         clipPath={`url(#${domId}-clip)`}
         css={css`
           font-family: "Uruz";
           font-size: ${size}px;
-          ${scssA};
+          fill: ${colorA.hex};
         `}
       >
-        <tspan
-          fill="none"
-          stroke="none"
-          style={{ userSelect: `none` }}
-        >{`-`}</tspan>
+        <SvgTSpan_Spacer />
         {` ${energy.icon} `}
-        <tspan
-          fill="none"
-          stroke="none"
-          style={{ userSelect: `none` }}
-        >{`-`}</tspan>
+        <SvgTSpan_Spacer />
       </text>
     </svg>
   )
+}
+
+export const VOID: Energy = {
+  id: `VOID`,
+  icon: `VD`,
+  name: `Void`,
+  colorA: {
+    hue: 0,
+    sat: 0,
+    lum: 0,
+    prefer: `lum`,
+  },
+  colorB: {
+    hue: 0,
+    sat: 0,
+    lum: 0,
+    prefer: `lum`,
+  },
+}
+
+export const EnergyIcon: FC<{ energyId?: string; size: number }> = ({
+  energyId,
+  size,
+}) => {
+  const energy = energyId ? useRecoilValue(findEnergyState(energyId)) : VOID
+  return <EnergyIcon_INTERNAL energy={energy} size={size} />
 }
 
 export const EnergyAmountTag: FC<{
