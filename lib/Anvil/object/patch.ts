@@ -1,4 +1,4 @@
-import { isPlainObject } from "."
+import { isPlainObject, key } from "."
 import { sprawl } from "./sprawl"
 
 export type Fragment<T> = Partial<{
@@ -13,7 +13,7 @@ export const patch = <Base extends object, Update extends Fragment<Base>>(
   sprawl(update, (path, node) => {
     if (path === ``) return
     const [_, ...pathParts] = path.split(`/`)
-    const target = pathParts.reduce((acc, part) => acc?.[part], result)
+    const target = pathParts.reduce((acc, part) => key(part)(acc), result)
     if (Array.isArray(target) && Array.isArray(node)) {
       target.push(...node)
     }

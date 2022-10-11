@@ -5,8 +5,10 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #fff;
-  background-color: #000;
+  --fg-color: #fff;
+  --bg-color: #000;
+  color: var(--fg-color);
+  background-color: var(--bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -64,8 +66,10 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #333;
-    background-color: #ffffff;
+    --fg-color: #333;
+    --bg-color: #fff;
+    color: var(--fg-color);
+    background-color: var(--bg-color);
   }
   a:hover {
     color: #08f;
