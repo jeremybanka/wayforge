@@ -24,10 +24,11 @@ export type RecoilListProps<DATA, META = {}> = {
     }>
     ListItem: FC<RecoilListItemProps<DATA, META>>
     ListItemWrapper?: WC
+    NoItems?: FC
   }
 }
 
-export const RecoilList = <DATA, META = {}>({
+export const ListItems = <DATA, META = {}>({
   labels,
   findState,
   useCreate,
@@ -37,6 +38,7 @@ export const RecoilList = <DATA, META = {}>({
     ListItem,
     ListItemWrapper = ({ children }) => <>{children}</>,
     ItemCreator,
+    NoItems,
   },
 }: RecoilListProps<DATA, META>): JsxElements => {
   const remove =
@@ -45,15 +47,19 @@ export const RecoilList = <DATA, META = {}>({
       console.warn(`tried to remove ${id}, but no useRemove was provided`))
   return (
     <Wrapper>
-      {labels.map((label) => (
-        <ListItemWrapper key={label.id}>
-          <ListItem
-            label={label}
-            findState={findState}
-            removeMe={() => remove(label.id)}
-          />
-        </ListItemWrapper>
-      ))}
+      {labels.length > 0 || NoItems === undefined ? (
+        labels.map((label) => (
+          <ListItemWrapper key={label.id}>
+            <ListItem
+              label={label}
+              findState={findState}
+              removeMe={() => remove(label.id)}
+            />
+          </ListItemWrapper>
+        ))
+      ) : (
+        <NoItems />
+      )}
       {ItemCreator && useCreate && <ItemCreator useCreate={useCreate} />}
     </Wrapper>
   )

@@ -4,10 +4,12 @@ import { useId } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
+import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
 import { Luum } from "~/lib/Luum"
 
 import type { Energy } from "../../services/energy"
 import { findEnergyState } from "../../services/energy"
+import type { Amount } from "../../services/energy_reaction"
 
 export const SvgTSpan_Spacer: FC = () => (
   <tspan fill="none" stroke="none" style={{ userSelect: `none` }}>{`-`}</tspan>
@@ -68,14 +70,22 @@ export const EnergyIcon_INTERNAL: FC<{ energy: Energy; size: number }> = ({
   )
 }
 
+export const SVG_EnergyIcon: FC<{ energyId: string; size: number }> = ({
+  energyId,
+  size,
+}) => {
+  const energy = useRecoilValue(findEnergyState(energyId))
+  return <EnergyIcon_INTERNAL energy={energy} size={size} />
+}
+
 export const VOID: Energy = {
   id: `VOID`,
-  icon: `VD`,
+  icon: ``,
   name: `Void`,
   colorA: {
     hue: 0,
     sat: 0,
-    lum: 0,
+    lum: 0.8,
     prefer: `lum`,
   },
   colorB: {
@@ -86,13 +96,28 @@ export const VOID: Energy = {
   },
 }
 
-export const EnergyIcon: FC<{ energyId?: string; size: number }> = ({
-  energyId,
-  size,
-}) => {
-  const energy = energyId ? useRecoilValue(findEnergyState(energyId)) : VOID
-  return <EnergyIcon_INTERNAL energy={energy} size={size} />
-}
+export const SVG_VoidIcon: FC<{
+  size: number
+  colorA: Luum
+  colorB: Luum
+}> = ({ size, colorA, colorB }) => (
+  <EnergyIcon_INTERNAL energy={{ ...VOID, colorA, colorB }} size={size} />
+)
+
+export const Span_VoidIcon: FC<{
+  size: number
+  colorA: Luum
+  colorB: Luum
+}> = ({ size, colorA, colorB }) => (
+  <span
+    css={css`
+      display: inline-flex;
+      align-items: center;
+    `}
+  >
+    <SVG_VoidIcon size={size} colorA={colorA} colorB={colorB} />
+  </span>
+)
 
 export const EnergyAmountTag: FC<{
   energyId: string
@@ -108,7 +133,7 @@ export const EnergyAmountTag: FC<{
         justify-content: baseline;
       `}
     >
-      <EnergyIcon energyId={energyId} size={size} />
+      <SVG_EnergyIcon energyId={energyId} size={size} />
       <span
         css={css`
           background-color: black;
@@ -128,6 +153,34 @@ export const EnergyAmountTag: FC<{
       >
         {amount}
       </span>
+    </span>
+  )
+}
+
+export const Span_EnergyAmount: FC<RecoilListItemProps<Energy, Amount>> = ({
+  label,
+  findState,
+}) => {
+  const { id, amount } = label
+  const energy = useRecoilValue(findState(id))
+  const domId = useId()
+  return (
+    <span
+      css={css`
+        display: inline-flex;
+        align-items: center;
+        gap: 1px;
+      `}
+    >
+      {amount <= 3 ? (
+        Array(amount)
+          .fill(null)
+          .map((_, i) => (
+            <SVG_EnergyIcon key={domId + `-icon-` + i} energyId={id} size={15} />
+          ))
+      ) : (
+        <EnergyAmountTag energyId={energy.id} amount={amount} size={15} />
+      )}
     </span>
   )
 }

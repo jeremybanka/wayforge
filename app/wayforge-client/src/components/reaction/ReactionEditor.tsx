@@ -10,13 +10,13 @@ import { JsonEditor } from "hamr/react-ui/json-editor"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
+import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list-items"
 import reactionSchema from "~/app/wayforge-server/projects/wayfarer/schema/reaction.schema.json"
 
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
-import { EnergyIcon } from "../energy/EnergyIcon_SVG"
+import { SVG_EnergyIcon } from "../energy/EnergyIcon_SVG"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
@@ -132,7 +132,7 @@ export const ReactionEditor: FC<
               ${skeletalJsonEditorCss}
             `}
           />
-          <EnergyIcon energyId={reagentId} size={40} />
+          <SVG_EnergyIcon energyId={reagentId} size={40} />
         </span>
       ))}
       <select onChange={(e) => add.reagent(e.target.value)}>
@@ -168,7 +168,7 @@ export const ReactionEditor: FC<
               ${skeletalJsonEditorCss}
             `}
           />
-          <EnergyIcon energyId={productId} size={40} />
+          <SVG_EnergyIcon energyId={productId} size={40} />
         </span>
       ))}
       <select

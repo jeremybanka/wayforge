@@ -4,7 +4,7 @@ import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { useRecoilValue } from "recoil"
 
-import { RecoilList } from "~/app/wayforge-client/recoil-list"
+import { ListItems } from "~/app/wayforge-client/recoil-list"
 
 import {
   energyIndex,
@@ -25,7 +25,7 @@ export const EnergyHome: FC = () => {
         border: 2px solid #333;
       `}
     >
-      <RecoilList
+      <ListItems
         labels={[...ids].map((id) => ({ id }))}
         findState={findEnergyState}
         useCreate={useAddEnergy}

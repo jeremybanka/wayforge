@@ -4,7 +4,7 @@ import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import type { Identified } from "anvl/id/identified"
 
-import { RecoilList } from "~/app/wayforge-client/recoil-list"
+import { ListItems } from "~/app/wayforge-client/recoil-list"
 
 import {
   findReactionWithRelationsState,
@@ -16,7 +16,7 @@ export const ReactionList: FC<{
   labels: Identified[]
   useCreate: () => () => void
 }> = ({ labels, useCreate }) => (
-  <RecoilList
+  <ListItems
     labels={labels}
     findState={findReactionWithRelationsState}
     useCreate={useCreate}
