@@ -44,7 +44,7 @@ const energyListCss = css`
   gap: 1px;
 `
 
-export const H2Div_EnergyCardFeature: FC<
+export const Div_EnergyCardFeature: FC<
   RecoilListItemProps<Reaction & ReactionRelations>
 > = ({ label, findState }) => {
   const reaction = useRecoilValue(findState(label.id))
@@ -60,9 +60,13 @@ export const H2Div_EnergyCardFeature: FC<
   )
 
   return (
-    <>
-      <h2
-        css={css`
+    <div
+      css={css`
+        display: flex;
+        flex-flow: column;
+        flex-grow: 1;
+        /* height: 100%; */
+        h2 {
           display: flex;
           align-items: baseline;
           justify-content: space-between;
@@ -73,21 +77,24 @@ export const H2Div_EnergyCardFeature: FC<
           small {
             font-size: 10.8px;
           }
-        `}
-      >
+        }
+        div {
+          display: flex;
+          align-items: center;
+          min-height: 24px;
+          height: 100%;
+          flex-grow: 1;
+        }
+      `}
+    >
+      <h2>
         {reaction.name}
         <small>
           {reaction.time}
           {reaction.timeUnit}
         </small>
       </h2>
-      <div
-        css={css`
-          display: flex;
-          align-items: center;
-          height: 24px;
-        `}
-      >
+      <div>
         <ListItems
           findState={findEnergyState}
           labels={reaction.reagents}
@@ -167,7 +174,7 @@ export const H2Div_EnergyCardFeature: FC<
           }}
         />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -179,6 +186,9 @@ export const Data_EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
     <data css={cssCard(colorB, colorB)}>
       <article
         css={css`
+          height: 384px;
+          display: flex;
+          flex-flow: column;
           header {
             font-size: 1.5em;
             padding: 22px;
@@ -191,28 +201,28 @@ export const Data_EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
               color: white;
             }
           }
+          main {
+            display: flex;
+            flex-flow: column;
+            flex-grow: 1;
+            height: 100%;
+            gap: 6px;
+            padding: 0 22px 22px;
+          }
         `}
       >
         <header>
           <SVG_EnergyIcon energyId={energyId} size={36} />
           <h1>{energy.name}</h1>
         </header>
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding: 0 22px;
-          `}
-        >
+        <main>
           <ListItems
+            Components={{ ListItem: Div_EnergyCardFeature }}
             labels={energy.features}
             findState={findReactionWithRelationsState}
-            Components={{
-              ListItem: H2Div_EnergyCardFeature,
-            }}
           />
-        </div>
+        </main>
+        <footer />
       </article>
     </data>
   )
