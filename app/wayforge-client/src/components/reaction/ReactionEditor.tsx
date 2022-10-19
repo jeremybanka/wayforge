@@ -10,7 +10,7 @@ import { JsonEditor } from "hamr/react-ui/json-editor"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list-items"
+import type { RecoilListItemProps } from "~/app/wayforge-client/recoil-list"
 import reactionSchema from "~/app/wayforge-server/projects/wayfarer/schema/reaction.schema.json"
 
 import { energyIndex, findEnergyState } from "../../services/energy"
