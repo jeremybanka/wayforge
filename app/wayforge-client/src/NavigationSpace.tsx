@@ -18,6 +18,7 @@ import { now } from "~/lib/Anvil/id/now"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
+import { Home } from "./components/Home"
 import {
   findViewState,
   useAddView,
@@ -54,7 +55,7 @@ export const InnerView: FC<{ viewId: string; close: () => void }> = ({
       </div>
       <Routes>
         <Route path="/" element={<Outlet />}>
-          <Route index element={<Link to="energy">energy</Link>} />
+          <Route index element={<Home />} />
           <Route path="energy" element={<Outlet />}>
             <Route index element={<EnergyHome />} />
             <Route path=":id" element={<EnergyEditor />} />
