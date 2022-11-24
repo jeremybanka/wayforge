@@ -1,8 +1,8 @@
 import type { Json, JsonObj } from "anvl/json"
-import { isJson } from "anvl/json/refine"
-import { isPlainObject } from "anvl/object"
-
-import { maybe } from "~/lib/Luum"
+import { ifDefined } from "anvl/nullish"
+import { hasProperties } from "anvl/object"
+import type { Refinement } from "fp-ts/lib/Refinement"
+import { isString } from "fp-ts/lib/string"
 
 import type { RequireAtLeastOne } from "."
 import type { Link, Links } from "./document"
@@ -22,13 +22,16 @@ export type ResourceIdentifierObject<
   meta?: META
 }
 
-export const isResourceIdentifier = (
-  input: unknown
-): input is ResourceIdentifierObject =>
-  isPlainObject(input) &&
-  typeof input[`id`] === `string` &&
-  typeof input[`type`] === `string` &&
-  maybe(isJson)(input.meta)
+export const isResourceIdentifier = <META extends Json | undefined>({
+  whoseMeta: isMeta,
+}: {
+  whoseMeta: Refinement<unknown, META>
+}): Refinement<unknown, ResourceIdentifierObject<Resource, META>> =>
+  hasProperties({
+    id: isString,
+    type: isString,
+    meta: isMeta,
+  })
 
 export type Identifier<
   RESOURCE extends Resource = Resource,
