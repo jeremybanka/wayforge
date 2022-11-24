@@ -1,5 +1,15 @@
+import type { Refinement } from "fp-ts/lib/Refinement"
+
 export const isUndefined = (input: unknown): input is undefined =>
-  typeof input === `undefined`
+  input === undefined
+
+export const ifDefined = <T>(
+  validate: Refinement<unknown, T>
+): Refinement<unknown, T | undefined> =>
+  ((input) => isUndefined(input) || validate(input)) as Refinement<
+    unknown,
+    T | undefined
+  >
 
 export const isNull = (input: unknown): input is null => input === null
 
