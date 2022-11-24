@@ -3,6 +3,9 @@ import { vitest } from "vitest"
 import { Join } from "."
 import type { JsonObj } from "../json"
 
+console.warn = () => undefined
+const warn = vitest.spyOn(global.console, `warn`)
+
 // pass in an id get all ids related to that id
 // set a relation with 2 ids and some data
 // remove a relation with 2 ids
@@ -32,7 +35,6 @@ describe(`Join.prototype.getRelatedIds`, () => {
 
 describe(`Join.prototype.getRelatedId`, () => {
   it(`warns if there are multiple relations`, () => {
-    const warn = vitest.spyOn(global.console, `warn`)
     const heart = `01`
     const heartMayBurn = `225`
     const heartMayBleed = `226`
