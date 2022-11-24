@@ -1,5 +1,4 @@
 import type { Json, JsonObj } from "anvl/json"
-import { ifDefined } from "anvl/nullish"
 import { hasProperties } from "anvl/object"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
