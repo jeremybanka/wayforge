@@ -15,7 +15,8 @@
             "scss": "always",
             "web": "always",
             "node": "always",
-            "schema": "always"
+            "schema": "always",
+            "json": "always"
           }
         ],
         "react/no-unknown-property": ["error", { "ignore": ["css"] }]
