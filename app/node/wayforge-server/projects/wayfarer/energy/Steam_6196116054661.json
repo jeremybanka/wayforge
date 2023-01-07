@@ -1,7 +1,0 @@
-{
-  "id": "6196116054661",
-  "name": "Steam",
-  "colorA": { "hue": 200, "sat": 255, "lum": 0.98, "prefer": "lum" },
-  "colorB": { "hue": 220, "sat": 20, "lum": 0.25, "prefer": "lum" },
-  "icon": "SM"
-}
