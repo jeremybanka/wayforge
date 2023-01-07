@@ -2,12 +2,19 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
+import { Explorer } from "./Explorer"
 import { Spaces } from "./NavigationSpace"
 
 export const App: FC = () => {
   return (
-    <div className="App">
+    <main
+      css={css`
+        display: flex;
+        flex-flow: row;
+      `}
+    >
+      <Explorer />
       <Spaces />
-    </div>
+    </main>
   )
 }
