@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"]
+  },
+  "include": [
+    "lib/common",
+    "lib/web",
+    "app/web",
+    "packages"
+    // "~/app/node/wayforge-server/projects/wayfarer/schema"
+  ],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.config.ts"]
+
+  // "exclude": [
+  //   // "**/*.node.ts",
+  //   // "**/*.node.tsx",
+  //   "**/*.test.ts",
+  //   "**/*.test.tsx",
+  // ]
+}

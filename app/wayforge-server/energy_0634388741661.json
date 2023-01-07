@@ -1,8 +1,0 @@
-{
-  "id": "0634388741661",
-  "name": "Fire",
-  "colorA": { "hue": 31, "sat": 255, "lum": 0.5, "prefer": "sat" },
-  "colorB": { "hue": 0, "sat": 255, "lum": 0.1, "prefer": "lum" },
-  "icon": "F",
-  "color": 1
-}

@@ -1,0 +1,39 @@
+{
+  "name": "luum",
+  "version": "0.0.12",
+  "description": "generate colors dynamically",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "build:types": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
+    "build:main": "tsx -- esbuild.config.ts",
+    "build": "yarn build:main && yarn build:types",
+    "dev": "cd example && vite",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:once": "vitest run"
+  },
+  "dependencies": {
+    "fp-ts": "^2.13.1"
+  },
+  "lint-staged": {
+    "*.ts{,x}": "yarn lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremybanka/luum.git"
+  },
+  "keywords": [
+    "color",
+    "css",
+    "javascript",
+    "library"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Jeremy Banka",
+  "bugs": {
+    "url": "https://github.com/jeremybanka/luum/issues"
+  },
+  "homepage": "https://github.com/jeremybanka/luum#readme"
+}
