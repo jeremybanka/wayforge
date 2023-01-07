@@ -1,0 +1,7 @@
+{
+  "id": "0471641434661",
+  "name": "Ice",
+  "colorA": { "hue": 200, "sat": 25, "lum": 0.98, "prefer": "lum" },
+  "colorB": { "hue": 220, "sat": 255, "lum": 0.5, "prefer": "lum" },
+  "icon": "IC"
+}

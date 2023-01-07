@@ -1,6 +1,5 @@
-import type { ResourceIdentifierObject } from "anvl/json/json-api"
-
-import { extractPriorRelations } from "./json-fs.server"
+import type { ResourceIdentifierObject } from "../../packages/Anvil/src/json/json-api"
+import { extractPriorRelations } from "./json-fs.node"
 
 describe(`extractPriorRelations`, () => {
   it(`should extract prior relations`, () => {
@@ -30,7 +29,7 @@ describe(`extractPriorRelations`, () => {
     })
     expect(priorRelations).toEqual([
       {
-        path: `/rockets/0`,
+        path: [`rockets`, 0],
         to: {
           id: `65`,
           type: `hangar`,

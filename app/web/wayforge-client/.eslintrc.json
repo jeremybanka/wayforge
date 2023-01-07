@@ -1,0 +1,25 @@
+{
+  "extends": ["@banka/react"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "import/extensions": [
+          "error",
+          {
+            "ts": "never",
+            "tsx": "never",
+            "js": "never",
+            "jsx": "never",
+            "css": "always",
+            "scss": "always",
+            "web": "always",
+            "node": "always",
+            "schema": "always"
+          }
+        ],
+        "react/no-unknown-property": ["error", { "ignore": ["css"] }]
+      }
+    }
+  ]
+}

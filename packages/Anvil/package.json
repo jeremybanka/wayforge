@@ -1,0 +1,30 @@
+{
+  "name": "anvl",
+  "version": "0.0.0",
+  "description": "core typescript utilities for wayforge",
+  "main": "~/lib/index.js",
+  "types": "~/lib/index.d.ts",
+  "files": [
+    "**/*"
+  ],
+  "scripts": {
+    "build:types": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
+    "build:main": "tsx -- esbuild.config.ts",
+    "build": "tsx build.ts",
+    "dev": "cd example && vite",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:once": "vitest run"
+  },
+  "peerDependencies": {
+    "fp-ts": "^2.13.1",
+    "io-ts": "^2.2.19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremybanka/wayforge.git"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Jeremy Banka"
+}

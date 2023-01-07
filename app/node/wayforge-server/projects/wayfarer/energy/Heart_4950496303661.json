@@ -1,0 +1,7 @@
+{
+  "id": "4950496303661",
+  "name": "Heart",
+  "colorA": { "hue": 340, "lum": 1, "prefer": "sat", "sat": 255 },
+  "colorB": { "hue": 160, "lum": 0.15, "prefer": "sat", "sat": 10 },
+  "icon": "s"
+}

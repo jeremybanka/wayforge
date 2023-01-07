@@ -5,6 +5,7 @@
     "anvl",
     "Cardstock",
     "Deleters",
+    "esbuild",
     "hamr",
     "hamt",
     "Luum",
@@ -39,5 +40,6 @@
   "[json]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "references.preferredLocation": "peek"
 }

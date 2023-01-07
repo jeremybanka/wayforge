@@ -1,0 +1,7 @@
+{
+  "colorA": { "hue": 200, "sat": 255, "lum": 0.1, "prefer": "sat" },
+  "colorB": { "hue": 220, "sat": 255, "lum": 0.2, "prefer": "lum" },
+  "icon": "WA",
+  "id": "8826724882661",
+  "name": "Water"
+}
