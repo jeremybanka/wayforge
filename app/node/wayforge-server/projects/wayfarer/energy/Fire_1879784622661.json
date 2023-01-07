@@ -1,7 +1,0 @@
-{
-  "colorA": { "hue": 30, "lum": 0.75, "prefer": "lum", "sat": 255 },
-  "colorB": { "hue": 10, "lum": 0.25, "prefer": "lum", "sat": 255 },
-  "icon": "FI",
-  "id": "1879784622661",
-  "name": "Fire"
-}

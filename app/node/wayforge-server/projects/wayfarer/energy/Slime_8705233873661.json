@@ -1,7 +1,0 @@
-{
-  "id": "8705233873661",
-  "name": "Slime",
-  "colorA": { "hue": 90, "sat": 255, "lum": 0, "prefer": "sat" },
-  "colorB": { "hue": 100, "sat": 255, "lum": 0.2, "prefer": "lum" },
-  "icon": "SL"
-}
