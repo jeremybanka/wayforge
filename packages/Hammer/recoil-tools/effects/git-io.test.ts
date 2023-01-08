@@ -1,23 +1,31 @@
+import { pipe } from "fp-ts/lib/function"
+import type { StatusResult } from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
-import { vitest } from "vitest"
+import { expectTypeOf, vitest } from "vitest"
 
+import { DEFAULT_STATUS_RESULT } from "./git-io"
 import { serveSimpleGit } from "./git-io.node"
 import type { GitClientSocket } from "./git-io.web"
 
-// mock console with vitest
+const PORT = 2451
 
 vitest.spyOn(console, `info`)
 
-beforeAll(() => {
-  const server = new WebSocketServer(3333)
-  serveSimpleGit({ logger: console })(server)
-})
+beforeAll(
+  () =>
+    pipe(new WebSocketServer(PORT), serveSimpleGit({ logger: console })).close
+)
 
 describe(`git-io`, () => {
-  it(`should work hit the server`, async () => {
-    const socket: GitClientSocket = io(`http://localhost:3333/`)
-    socket.emit(`status`)
-    expect(console.info).toHaveBeenCalledWith(`status`)
-  })
+  it(`should get status from the server`, async () =>
+    new Promise<void>((done, reject) => {
+      const socket: GitClientSocket = io(`http://localhost:${PORT}/`)
+      socket.emit(`status`)
+      socket.on(`status`, (status) => {
+        expect(console.info).toHaveBeenCalledWith(socket.id, `status`)
+        expectTypeOf(status).toEqualTypeOf<StatusResult>(DEFAULT_STATUS_RESULT)
+        done()
+      })
+    }))
 })
