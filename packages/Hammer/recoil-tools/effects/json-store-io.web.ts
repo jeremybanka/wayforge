@@ -3,33 +3,35 @@ import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { Join } from "~/packages/Anvil/src/join"
-import type { JsonObj } from "~/packages/Anvil/src/json"
+import type { JsonArr, JsonObj } from "~/packages/Anvil/src/json"
 
 import type { JsonInterface } from "."
-import type { SaveJsonEmitEvents, SaveJsonListenEvents } from "./socket-io.node"
+import type {
+  JsonStoreClientEvents,
+  JsonStoreServerEvents,
+} from "./json-store-io.node"
 
 export type SocketSyncOptions<T> = {
   id: string
   type: string
-  socket: Socket
+  socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
   jsonInterface: JsonInterface<T>
 }
 
 export const socketSync: <T>(options: SocketSyncOptions<T>) => AtomEffect<T> =
   ({ id, type, socket, jsonInterface: { toJson, fromJson } }) =>
   ({ setSelf, onSet }) => {
-    socket.emit(`read`, { type, id })
+    socket.emit(`read`, { id, type })
     socket.on(`${type}_${id}`, (json) => setSelf(fromJson(json)))
     onSet((v) => socket.emit(`write`, { id, type, value: toJson(v) }))
   }
 
 export type SocketIndexOptions<T> = {
   type: string
-  socket: Socket<SaveJsonListenEvents, SaveJsonEmitEvents>
-  jsonInterface: JsonInterface<T>
+  socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
+  jsonInterface: JsonInterface<T, JsonArr<string>>
 }
 
-// Type 'AtomEffect<Join<JsonObj<string, Serializable> | null>>
 export const socketIndex: <T>(options: SocketIndexOptions<T>) => AtomEffect<T> =
   ({ type, socket, jsonInterface: { toJson, fromJson } }) =>
   ({ setSelf, onSet }) => {
@@ -48,19 +50,16 @@ export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
       }) & {
     id: string
     type: string
-    socket: Socket<SaveJsonListenEvents, SaveJsonEmitEvents>
+    socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
   }
 
-export const socketRelations: <
-  CONTENT extends JsonObj | null = null,
-  JOIN extends Join<CONTENT> = Join<CONTENT>
->(
+export const socketRelations: <CONTENT extends JsonObj | null = null>(
   options: SocketRelationsOptions<CONTENT>
-) => AtomEffect<JOIN> =
+) => AtomEffect<Join<CONTENT>> =
   ({ type, id, socket, refineContent }) =>
   <CONTENT extends JsonObj | null = null>({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
-    socket.on(`relationsRead_${id}`, (json) =>
+    socket.on(`relationsRead_${type}_${id}`, (json) =>
       setSelf(
         Join.fromJSON<CONTENT>(
           json,

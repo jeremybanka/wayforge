@@ -1,46 +1,40 @@
-import fs from "fs"
-import { Server as HttpServer } from "http"
+import { pipe } from "fp-ts/function"
+import { Server as WebSocketServer } from "socket.io"
 
-import { hasProperties } from "anvl/src/object"
-import compression from "compression"
-import cors from "cors"
-import express from "express"
-import morgan from "morgan"
+import { serveSimpleGit } from "~/packages/Hammer/recoil-tools/effects/git-io"
+import { serveJsonStore } from "~/packages/Hammer/recoil-tools/effects/json-store-io.node"
 
-import { SaveJsonWebsocketServer } from "~/packages/Hammer/recoil-tools/effects/socket-io.node"
-
+import { logger } from "./logger"
 import { formatJson } from "./services/formatJson"
 
-const { log } = console
-
-const app = express()
-app.use(cors())
-app.use(compression())
-app.use(morgan(`tiny`))
-
-export const server = new HttpServer(app)
-
-console.log(`Listening on port 3333`)
-
-SaveJsonWebsocketServer(
-  3333,
-  {
+pipe(
+  new WebSocketServer(3333, {
     cors: {
       origin: `http://localhost:5173`,
       methods: [`GET`, `POST`],
     },
-  },
-  {
-    formatter: formatJson,
-    jsonRoot: `./projects/wayfarer`,
-  }
+  }),
+  serveJsonStore({
+    logger,
+    formatResource: formatJson,
+    baseDir: `./projects/wayfarer`,
+  }),
+  serveSimpleGit({
+    logger,
+    baseDir: `./projects/`,
+  })
 )
 
-// http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
-app.disable(`x-powered-by`)
+// const app = express()
+// const server = new HttpServer(app)
+// server.on(`error`, logger.error)
 
-const port = process.env.port || 3333
+// logger.info(`Listening on port 3333`)
+// http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
+// app.disable(`x-powered-by`)
+
+// const port = process.env.port || 3333
+// app.use(cors())
 // const server = app.listen(port, () => {
 //   console.log(`Listening at http://localhost:${port}/api`)
 // })
-server.on(`error`, console.error)
