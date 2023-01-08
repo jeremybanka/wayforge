@@ -9,7 +9,7 @@
     "npmlog": "^7.0.1",
     "prettier": "^2.7.1",
     "simple-git": "^3.0.0",
-    "socket.io": "^4.5.1"
+    "socket.io": "^4.5.4"
   },
   "devDependencies": {
     "@types/npmlog": "^4.1.4",

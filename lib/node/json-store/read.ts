@@ -14,6 +14,12 @@ export class NotFoundError extends Error {
     this.name = `NotFound`
   }
 }
+export class BadRequestError extends Error {
+  public constructor(message: string) {
+    super(message)
+    this.name = `BadRequest`
+  }
+}
 
 export type ReadResourceOptions = { type: string; id: string }
 export type ReadResource = (
@@ -22,7 +28,6 @@ export type ReadResource = (
 
 export const initReader = ({ baseDir }: JsonStoreOptions): ReadResource => {
   const readResource = ({ id, type }) => {
-    console.log(`current`, readdirSync(`.`))
     const dir = `${baseDir}/${type}`
     try {
       const allResources = getDirectoryJsonArr({
@@ -80,15 +85,19 @@ export const initRelationReader = ({
 }: JsonStoreOptions): ReadRelations => {
   const readRelations: ReadRelations = ({ id, type }) => {
     const dir = `${baseDir}/_relations/${type}`
-    console.log(dir)
     if (isRelationType(type)) {
-      const directory = `${baseDir}/_relations/${type}`
-      const fileName = `${directory}/${id}.json`
-      const fileText = readFileSync(fileName, `utf8`)
-      const json = parseJson(fileText)
-      return json
+      try {
+        const directory = `${baseDir}/_relations/${type}`
+        const fileName = `${directory}/${id}.json`
+        const fileText = readFileSync(fileName, `utf8`)
+        const json = parseJson(fileText)
+        return json
+      } catch (e) {
+        logger.warn(`Caught reading relations for "${type}" in ${dir}`)
+        if (e instanceof Error) return e
+      }
     }
-    return new NotFoundError(`Not a relation type: ${type}`)
+    return new BadRequestError(`Not a relation type: ${type}`)
   }
   return readRelations
 }

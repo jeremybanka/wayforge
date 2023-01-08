@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import { serveSimpleGit } from "~/packages/Hammer/recoil-tools/effects/git-io"
+import { serveSimpleGit } from "~/packages/Hammer/recoil-tools/effects/git-io.node"
 import { serveJsonStore } from "~/packages/Hammer/recoil-tools/effects/json-store-io.node"
 
 import { logger } from "./logger"

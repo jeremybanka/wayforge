@@ -1,25 +1,24 @@
-import type { SimpleGitOptions } from "simple-git"
+import type { SimpleGitOptions, StatusResult } from "simple-git"
 import { simpleGit } from "simple-git"
 import type { Socket, Server as WebSocketServer } from "socket.io"
-import type { EventsMap } from "socket.io/dist/typed-events"
 
 /* prettier-ignore */
-export type GitListenEvents = {
+// server "on" / client "emit"
+export type GitClientEvents = {
   status: () => void
 }
-/* end-prettier-ignore */
 
-export interface GitEmitEvents extends EventsMap {
-  indexRead: ({ type }: { type: string }) => void
+/* prettier-ignore */
+// server "emit" / client "on"
+export type GitServerEvents = {
+  status: (s: StatusResult) => void
 }
 
-export interface GitServerSideEvents extends EventsMap {
-  indexRead: ({ type }: { type: string }) => void
-}
+export type GitServerSideEvents = Record<keyof any, unknown>
 
 type GitSocketServer = WebSocketServer<
-  GitListenEvents,
-  GitEmitEvents,
+  GitClientEvents,
+  GitServerEvents,
   GitServerSideEvents
 >
 
@@ -31,7 +30,7 @@ const options: Partial<SimpleGitOptions> = {
 }
 
 export type ServeGitOptions = Partial<SimpleGitOptions> & {
-  logger: Pick<Console, `debug` | `error` | `info` | `trace` | `warn`>
+  logger: Pick<Console, `error` | `info` | `warn`>
 }
 
 export const serveSimpleGit =
@@ -41,10 +40,13 @@ export const serveSimpleGit =
   ): GitSocketServer & YourServer =>
     server.on(
       `connection`,
-      (socket: Socket<GitListenEvents, GitEmitEvents, GitServerSideEvents>) => {
+      (
+        socket: Socket<GitClientEvents, GitServerEvents, GitServerSideEvents>
+      ) => {
         const { logger } = options
         const git = simpleGit(options)
         socket.on(`status`, async () => {
+          logger.info(socket.id, `status`)
           try {
             const status = await git.status()
             socket.emit(`status`, status)

@@ -8,6 +8,6 @@ export type JsonStoreOptions = {
 
 export const DEFAULT_JSON_STORE_OPTIONS: JsonStoreOptions = {
   formatResource: identity,
-  baseDir: `./json`,
+  baseDir: `json`,
   logger: console,
 }

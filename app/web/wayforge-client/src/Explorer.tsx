@@ -1,8 +1,16 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
+import { useRecoilValue } from "recoil"
+
+import { initGitStatusState } from "~/packages/Hammer/recoil-tools/effects/git-io.web"
+
+import { socket } from "./services/socket"
+
+const gitStatusState = initGitStatusState(socket)
 
 export const Explorer: FC = () => {
+  const gitStatus = useRecoilValue(gitStatusState)
   return (
     <div
       css={css`
