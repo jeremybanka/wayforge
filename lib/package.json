@@ -2,20 +2,13 @@
   "name": "@wayforge/lib",
   "private": true,
   "version": "0.0.0",
-  "scripts": {
-    "test": "vitest"
-  },
   "dependencies": {
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.19",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-is": "^18.2.0",
-    "styled-components": "^5.3.5"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.1",
-    "hamt_plus": "^1.0.2",
-    "vitest": "^0.26.3"
+    "hamt_plus": "^1.0.2"
   }
 }
