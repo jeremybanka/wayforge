@@ -4,9 +4,9 @@ import { mySchemable, make } from "./integer"
 
 describe(``, () => {
   it(``, () => {
-    console.log(D.number.decode(`foo`))
+    // console.log(D.number.decode(`foo`))
   })
   it(``, () => {
-    console.log(mySchemable.Int.decode(1.111))
+    // console.log(mySchemable.Int.decode(1.111))
   })
 })
