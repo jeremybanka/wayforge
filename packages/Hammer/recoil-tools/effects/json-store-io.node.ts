@@ -15,7 +15,11 @@ import {
   initReader,
   initRelationReader,
 } from "~/lib/node/json-store/read"
-import type { WriteResource } from "~/lib/node/json-store/write"
+import type {
+  WriteIndex,
+  WriteRelations,
+  WriteResource,
+} from "~/lib/node/json-store/write"
 import {
   initRelationsWriter,
   initIndexWriter,
@@ -23,23 +27,20 @@ import {
 } from "~/lib/node/json-store/write"
 import type { Json, JsonArr, JsonObj } from "~/packages/Anvil/src/json"
 
-const pathToThisFile = basename(__filename)
-
 type Encapsulate<T extends (...args: any[]) => any> = (
   ...args: Parameters<T>
 ) => void
 
 /* prettier-ignore */
 // server "on" / client "emit"
-export type JsonStoreClientEvents =
-  & {
-    read: Encapsulate<ReadResource>
-    write: Encapsulate<WriteResource>,
-    indexRead: Encapsulate<ReadIndex>,
-    indexWrite: (vars: { type: string; value: JsonArr<string> }) => void
-    relationsRead: Encapsulate<ReadRelations>
-    relationsWrite: (vars: { type: string; id: string; value: Json }) => void
-  }
+export type JsonStoreClientEvents = {
+  read: Encapsulate<ReadResource>
+  write: Encapsulate<WriteResource>
+  indexRead: Encapsulate<ReadIndex> 
+  indexWrite: Encapsulate<WriteIndex>
+  relationsRead: Encapsulate<ReadRelations>
+  relationsWrite: Encapsulate<WriteRelations>
+}
 /* prettier-ignore */
 // server "emit" / client "on"
 export type JsonStoreServerEvents =
@@ -47,9 +48,7 @@ export type JsonStoreServerEvents =
   & Record<`indexRead_${string}`, (ids: JsonArr<string>) => void>
   & Record<`read_${string}`, (resource: Json) => void>
   & Record<`relationsRead_${string}`, (relations: Json) => void> 
-  & {
-      event: (message: string) => void
-  }
+  & { event: (message: string) => void }
 
 export type JsonStoreServerSideEvents = Record<keyof any, unknown>
 
@@ -84,69 +83,49 @@ export const serveJsonStore =
         const writeIndex = initIndexWriter(options, readIndex)
         const writeRelations = initRelationsWriter(options)
 
-        const onSocketRead: JsonStoreClientEvents[`read`] = ({ id, type }) => {
-          logger.info(socket.id, `read`, id, type)
-          const resource = readResource({ id, type })
-          if (resource instanceof Error) {
-            console.error(pathToThisFile, resource)
-          } else {
-            socket.emit(`read_${id}`, resource)
-          }
-        }
+        const handle: JsonStoreClientEvents = {
+          read: ({ id, type }) => {
+            logger.info(socket.id, `read`, id, type)
+            const result = readResource({ id, type })
+            return result instanceof Error
+              ? console.error(result)
+              : socket.emit(`read_${id}`, result)
+          },
+          relationsRead: ({ id, type }) => {
+            logger.info(socket.id, `relationsRead`, type, id)
+            const result = readRelations({ id, type })
+            return result instanceof Error
+              ? console.error(result)
+              : socket.emit(`relationsRead_${type}_${id}`, result)
+          },
+          indexRead: ({ type }) => {
+            logger.info(socket.id, `indexRead`, type)
+            const result = readIndex({ type })
+            return result instanceof Error
+              ? console.error(result)
+              : socket.emit(`indexRead_${type}`, result)
+          },
 
-        const onSocketRelationsRead: JsonStoreClientEvents[`relationsRead`] = ({
-          id,
-          type,
-        }) => {
-          logger.info(socket.id, `relationsRead`, type, id)
-          const relations = readRelations({ id, type })
-          if (relations instanceof Error) {
-            console.error(relations)
-          } else {
-            socket.emit(`relationsRead_${type}_${id}`, relations)
-          }
-        }
+          write: ({ id, type, value }) => {
+            logger.info(socket.id, `write`, id, value)
+            writeResource({ id, type, value })
+          },
 
-        const onSocketIndexRead: JsonStoreClientEvents[`indexRead`] = ({
-          type,
-        }) => {
-          logger.info(socket.id, `indexRead`, type)
-          const ids = readIndex({ type })
-          if (ids instanceof Error) {
-            console.error(ids)
-          } else {
-            socket.emit(`indexRead_${type}`, ids)
-          }
-        }
-
-        const onSocketWrite: JsonStoreClientEvents[`write`] = ({
-          id,
-          type,
-          value,
-        }) => {
-          logger.info(socket.id, `write`, id, value)
-          writeResource({ id, type, value })
-        }
-
-        const onSocketRelationsWrite: JsonStoreClientEvents[`relationsWrite`] =
-          ({ id, type, value }) => {
+          relationsWrite: ({ id, type, value }) => {
             logger.info(`${socket.id}  relationsWrite`, id, value)
             writeRelations({ id, type, value })
-          }
+          },
 
-        const onSocketIndexWrite: JsonStoreClientEvents[`indexWrite`] = ({
-          type,
-          value,
-        }) => {
-          logger.info(socket.id, `indexWrite`, type)
-          writeIndex({ type, value })
+          indexWrite: ({ type, value }) => {
+            logger.info(socket.id, `indexWrite`, type)
+            writeIndex({ type, value })
+          },
         }
-
-        socket.on(`read`, onSocketRead)
-        socket.on(`write`, onSocketWrite)
-        socket.on(`indexRead`, onSocketIndexRead)
-        socket.on(`indexWrite`, onSocketIndexWrite)
-        socket.on(`relationsRead`, onSocketRelationsRead)
-        socket.on(`relationsWrite`, onSocketRelationsWrite)
+        socket.on(`read`, handle.read)
+        socket.on(`write`, handle.write)
+        socket.on(`indexRead`, handle.indexRead)
+        socket.on(`indexWrite`, handle.indexWrite)
+        socket.on(`relationsRead`, handle.relationsRead)
+        socket.on(`relationsWrite`, handle.relationsWrite)
       }
     )

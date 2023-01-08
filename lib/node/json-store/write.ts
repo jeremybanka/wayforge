@@ -18,16 +18,16 @@ export const initWriter = ({
 }: JsonStoreOptions): WriteResource => {
   const writeResource: WriteResource = ({ id, type, value }) => {
     const formatted = pipe(value, JSON.stringify, formatResource)
-    const filename =
+    const name =
       (hasProperties({ name: isString })(value) ? `${value.name}_` : ``) + id
-    const nextFilepath = `${type}/${baseDir}/${filename}.json`
+    const nextFilepath = `${baseDir}/${type}/${name}.json`
     const allFileNames = readdirSync(`${baseDir}/${type}`)
     const prevFileName = allFileNames.find((name) => name.includes(id))
-    const prevFilePath = type + `/` + prevFileName
+    const prevFilePath = `${baseDir}/${type}/${prevFileName}`
     if (prevFileName && prevFilePath !== nextFilepath) {
       renameSync(`${baseDir}/${prevFilePath}`, `${baseDir}/${nextFilepath}`)
     }
-    writeFileSync(`${baseDir}/${nextFilepath}`, formatted)
+    writeFileSync(nextFilepath, formatted)
   }
   return writeResource
 }
@@ -43,12 +43,11 @@ export const initIndexWriter = (
   readIndex: ReadIndex
 ): WriteIndex => {
   const writeIndex: WriteIndex = ({ type, value: newIds }) => {
-    const ids = readIndex({ type })
-    if (ids instanceof Error) {
-      console.error(ids)
-      return
+    const result = readIndex({ type })
+    if (result instanceof Error) {
+      return result
     }
-    const toBeDeleted = ids.filter((id) => !newIds.includes(id))
+    const toBeDeleted = result.filter((id) => !newIds.includes(id))
     console.log(`⚠️`, { newIds, toBeDeleted })
     const fileNames = readdirSync(`${baseDir}/${type}`)
 

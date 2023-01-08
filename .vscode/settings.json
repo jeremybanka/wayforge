@@ -12,6 +12,7 @@
     "Recasters",
     "Renamers",
     "Schemable",
+    "Selectables",
     "svgr",
     "wayforge"
   ],

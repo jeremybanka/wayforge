@@ -1,3 +1,5 @@
+import { readdirSync } from "fs"
+
 import mock from "mock-fs"
 
 import { DEFAULT_JSON_STORE_OPTIONS } from "./json-store"
@@ -30,6 +32,7 @@ describe(`read script`, () => {
       type: `whatever`,
       value: { id: `new`, type: `whatever`, bar: `baz` },
     })
+    console.log(readdirSync(`./json`))
     const result = read({ id: `new`, type: `whatever` })
     expect(result).toEqual({ id: `new`, type: `whatever`, bar: `baz` })
   })

@@ -3,7 +3,8 @@ import type { FC, ReactNode } from "react"
 import { css } from "@emotion/react"
 import { useRecoilState } from "recoil"
 
-import energySchema from "~/app/node/wayforge-server/projects/wayfarer/schema/energy.schema.json"
+// import energySchema from
+// "~/app/node/wayforge-server/projects/wayfarer/schema/energy.schema.json"
 import type { RecoilEditorProps } from "~/app/web/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/web/wayforge-client/recoil-editor"
 import { includesAny } from "~/packages/Anvil/src/array/venn"
@@ -102,7 +103,7 @@ export const EnergyEditor_INTERNAL: FC<
         </article>
       </RecoverableErrorBoundary>
       <JsonEditor
-        schema={energySchema as JsonSchema}
+        // schema={energySchema as JsonSchema}
         data={energy}
         set={setEnergy}
         name={energy.name}
