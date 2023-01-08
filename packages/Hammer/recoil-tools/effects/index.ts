@@ -5,7 +5,7 @@ export type SerializationInterface<T> = {
   deserialize: (s: string) => T
 }
 
-export type JsonInterface<T> = {
-  toJson: (t: T) => Json
-  fromJson: (json: Json) => T
+export type JsonInterface<T, J extends Json = Json> = {
+  toJson: (t: T) => J
+  fromJson: (json: J) => T
 }

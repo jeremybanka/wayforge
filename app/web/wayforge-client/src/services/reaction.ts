@@ -5,7 +5,7 @@ import type { Json } from "~/packages/Anvil/src/json"
 import {
   socketIndex,
   socketSync,
-} from "~/packages/Hammer/recoil-tools/effects/socket-io.web"
+} from "~/packages/Hammer/recoil-tools/effects/json-store-io.web"
 import type { TransactionOperation } from "~/packages/Hammer/recoil-tools/recoil-utils"
 import {
   useRecoilTransaction_UNSTABLE,

@@ -4,7 +4,7 @@ import { atom, selectorFamily } from "recoil"
 import type { Identified } from "~/packages/Anvil/src/id/identified"
 import { Join } from "~/packages/Anvil/src/join"
 import { isRecord } from "~/packages/Anvil/src/object"
-import { socketRelations } from "~/packages/Hammer/recoil-tools/effects/socket-io.web"
+import { socketRelations } from "~/packages/Hammer/recoil-tools/effects/json-store-io.web"
 
 import type { Energy } from "./energy"
 import { DEFAULT_ENERGY, findEnergyState } from "./energy"
