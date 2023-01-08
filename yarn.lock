@@ -1601,13 +1601,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@types/mocha@npm:10.0.1"
-  checksum: 224ea9fce7b1734ccdb9aa99a622d902a538ce1847bca7fd22c5fb38adcf3ed536f50f48f587085db988a4bb3c2eb68f4b98e1cd6a38bc5547bd3bbbedc54495
-  languageName: node
-  linkType: hard
-
 "@types/mock-fs@npm:^4.13.1":
   version: 4.13.1
   resolution: "@types/mock-fs@npm:4.13.1"
@@ -1893,15 +1886,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/lib@workspace:lib"
   dependencies:
-    "@types/mocha": ^10.0.1
     fp-ts: ^2.13.1
     hamt_plus: ^1.0.2
     io-ts: ^2.2.19
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-is: ^18.2.0
-    styled-components: ^5.3.5
-    vitest: ^0.26.3
   languageName: unknown
   linkType: soft
 
@@ -6121,7 +6110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^18.0.0, react-is@npm:^18.2.0":
+"react-is@npm:^18.0.0":
   version: 18.2.0
   resolution: "react-is@npm:18.2.0"
   checksum: e72d0ba81b5922759e4aff17e0252bd29988f9642ed817f56b25a3e217e13eea8a7f2322af99a06edb779da12d5d636e9fda473d620df9a3da0df2a74141d53e
@@ -6588,7 +6577,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io@npm:^4.5.1, socket.io@npm:^4.5.4":
+"socket.io@npm:^4.5.4":
   version: 4.5.4
   resolution: "socket.io@npm:4.5.4"
   dependencies:
@@ -7355,7 +7344,7 @@ __metadata:
     npmlog: ^7.0.1
     prettier: ^2.7.1
     simple-git: ^3.0.0
-    socket.io: ^4.5.1
+    socket.io: ^4.5.4
     tsx: ^3.0.0
   languageName: unknown
   linkType: soft

@@ -6,9 +6,7 @@
   "files": [
     "**/*"
   ],
-  "scripts": {
-    "test": "vitest watch"
-  },
+  "scripts": {},
   "dependencies": {
     "fp-ts": "^2.13.1",
     "react": "^18.0.0",

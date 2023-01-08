@@ -10,7 +10,7 @@
     "dev": "cd app/web/wayforge-client && yarn dev",
     "serve": "cd app/node/wayforge-server && yarn dev",
     "gen": "cd app/wayforge-server && yarn gen",
-    "test": "cd lib && yarn test"
+    "test": "vitest"
   },
   "workspaces": [
     "app/web/*",
