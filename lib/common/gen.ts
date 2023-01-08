@@ -153,9 +153,9 @@ export class TypescriptInstructions<
     }
   }
   public writeStatement(statement: Statement): string {
-    console.log(isStatement(statement), statement[IS])
-    console.log(isDeclaration(statement), statement[DECLARE])
-    console.log(isVariableDeclaration(statement), statement[NAME])
+    // console.log(isStatement(statement), statement[IS])
+    // console.log(isDeclaration(statement), statement[DECLARE])
+    // console.log(isVariableDeclaration(statement), statement[NAME])
     return isVariableDeclaration(statement)
       ? `const ${statement[NAME]} = ${statement[VALUE]}`
       : `// unknown statement type: ${statement[IS]}`
