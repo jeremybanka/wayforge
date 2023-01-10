@@ -1,4 +1,4 @@
-import type { Refinement } from "fp-ts/lib/Refinement"
+import type { Refinement } from "fp-ts/Refinement"
 
 export const isUndefined = (input: unknown): input is undefined =>
   input === undefined

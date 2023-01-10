@@ -1926,6 +1926,7 @@ __metadata:
     mock-fs: ^5.2.0
     prettier: ^2.8.1
     tsconfig-paths: ^4.1.2
+    tsx: 3.12.1
     typescript: ^4.9.4
     vite: ^4.0.4
     vite-plugin-svgr: ^2.4.0
@@ -7016,7 +7017,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.0.0":
+"tsx@npm:3.12.1, tsx@npm:^3.0.0":
   version: 3.12.1
   resolution: "tsx@npm:3.12.1"
   dependencies:

@@ -6,7 +6,7 @@ import type { Json, JsonArr } from "~/packages/Anvil/src/json"
 import { parseJson } from "~/packages/Anvil/src/json"
 
 import type { JsonStoreOptions } from "."
-import { getDirectoryJsonArr } from "../json-fs.node"
+import { getDirectoryJsonArr } from "./utils"
 
 export class NotFoundError extends Error {
   public constructor(message: string) {

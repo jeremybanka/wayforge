@@ -11,9 +11,14 @@ export const key =
     (obj as Record<keyof any, any>)[k]
 
 export const redact =
-  <K extends keyof any, O extends Record<K, any>>(...args: K[]) =>
-  (obj: O): Omit<O, K> =>
+  <K extends keyof any>(...args: K[]) =>
+  <O extends Record<K, any>>(obj: O): Omit<O, K> =>
     reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
+
+// export const redactId = redact(`id`)
+// const myUser: { name: string; id: string } = { id: `123`, name: `John` }
+// const myUserWithoutId = redactId(myUser)
+// const { name } = myUserWithoutId
 
 export type Entries<K extends keyof any, V> = [key: K, value: V][]
 
