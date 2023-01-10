@@ -4,7 +4,7 @@ gen
 coverage
 package-lock.json
 .DS_STORE
-src/lab
+lab
 .env
 .yarn
 *.js

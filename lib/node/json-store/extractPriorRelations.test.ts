@@ -1,5 +1,6 @@
-import type { ResourceIdentifierObject } from "../../packages/Anvil/src/json/json-api"
-import { extractPriorRelations } from "./json-fs.node"
+import type { ResourceIdentifierObject } from "anvl/src/json/json-api"
+
+import { extractPriorRelations } from "./utils"
 
 describe(`extractPriorRelations`, () => {
   it(`should extract prior relations`, () => {
