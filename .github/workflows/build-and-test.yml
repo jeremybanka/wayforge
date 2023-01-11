@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3.3.0
-      - name: Yarn Stable
-        run: yarn set version ./.yarn/releases/yarn-3.3.1.cjs
+      # - name: Yarn Stable
+      #   run: yarn set version ./.yarn/releases/yarn-3.3.1.cjs
       # - name: Cache node_modules
       #   uses: actions/cache@v3.2.3
       #   env:
@@ -23,11 +23,8 @@ jobs:
       #   with:
       #     path: node_modules/
       #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        run: |
-          if [ ! -d node_modules ]; then
-            yarn
-          fi
+      - name: Install Dependencies
+        run: yarn
       - name: Lint
         run: yarn lint
       - name: Type Check
@@ -45,8 +42,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3.3.0
-      - name: Yarn Stable
-        run: yarn set version ./.yarn/releases/yarn-3.3.1.cjs
+      # - name: Yarn Stable
+      #   run: yarn set version ./.yarn/releases/yarn-3.3.1.cjs
       # - name: Cache node_modules
       #   uses: actions/cache@v3.2.3
       #   env:
@@ -54,11 +51,8 @@ jobs:
       #   with:
       #     path: node_modules/
       #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        run: |
-          if [ ! -d node_modules ]; then
-            yarn
-          fi
+      - name: Install Dependencies
+        run: yarn
       - name: Test
         run: yarn test:once
       - name: Cleanup
