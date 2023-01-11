@@ -11,6 +11,7 @@
     "serve": "cd app/node/wayforge-server && yarn dev",
     "gen": "cd app/wayforge-server && yarn gen",
     "test": "vitest",
+    "test:once": "cross-env CI=true vitest run",
     "lint": "eslint",
     "format": "eslint --fix"
   },
