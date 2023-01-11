@@ -14,15 +14,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3.3.0
-      # - name: Yarn Stable
-      #   run: yarn set version ./.yarn/releases/yarn-3.3.1.cjs
-      # - name: Cache node_modules
-      #   uses: actions/cache@v3.2.3
-      #   env:
-      #     cache-name: node-modules
-      #   with:
-      #     path: node_modules/
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn
       - name: Lint
@@ -42,19 +33,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3.3.0
-      # - name: Yarn Stable
-      #   run: yarn set version ./.yarn/releases/yarn-3.3.1.cjs
-      # - name: Cache node_modules
-      #   uses: actions/cache@v3.2.3
-      #   env:
-      #     cache-name: node-modules
-      #   with:
-      #     path: node_modules/
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn
-      - name: Change Git Settings
-        run: git config --global init.defaultBranch main
+      - name: Set up Git
+        run: |
+          git config --global init.defaultBranch main
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
       - name: Test
         run: yarn test:once
       - name: Cleanup
