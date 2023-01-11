@@ -1726,6 +1726,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-router-dom: ^6.6.2
+    recoil: ^0.7.6
     vitest: ^0.26.3
     zod: ^3.18.0
   languageName: unknown

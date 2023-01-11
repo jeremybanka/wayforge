@@ -53,6 +53,8 @@ jobs:
       #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn
+      - name: Change Git Settings
+        run: git config --global init.defaultBranch main
       - name: Test
         run: yarn test:once
       - name: Cleanup

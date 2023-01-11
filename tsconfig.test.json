@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "vitest", "mocha"]
+    "types": ["vite/client", "node", "vitest", "mocha"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/*.config.ts", "**/*.test.tsx"]
