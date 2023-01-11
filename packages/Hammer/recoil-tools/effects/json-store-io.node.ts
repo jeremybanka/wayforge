@@ -1,8 +1,4 @@
-import { readdirSync, renameSync, writeFileSync } from "fs"
-import { basename } from "path"
-
 import type { Socket, Server as WebSocketServer } from "socket.io"
-import type { EventsMap } from "socket.io/dist/typed-events"
 
 import type { JsonStoreOptions } from "~/lib/node/json-store"
 import type {
@@ -25,11 +21,8 @@ import {
   initIndexWriter,
   initWriter,
 } from "~/lib/node/json-store/write"
+import type { Encapsulate } from "~/packages/Anvil/src/function"
 import type { Json, JsonArr, JsonObj } from "~/packages/Anvil/src/json"
-
-type Encapsulate<T extends (...args: any[]) => any> = (
-  ...args: Parameters<T>
-) => void
 
 /* prettier-ignore */
 // server "on" / client "emit"
