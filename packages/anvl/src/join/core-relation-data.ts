@@ -7,7 +7,7 @@ import { hasProperties, isRecord } from "../object"
 
 export const RELATION_TYPES = [`1:1`, `1:n`, `n:n`] as const
 
-export type RelationType = typeof RELATION_TYPES[number]
+export type RelationType = (typeof RELATION_TYPES)[number]
 
 export const isRelationType = (x: unknown): x is RelationType =>
   RELATION_TYPES.includes(x as RelationType)

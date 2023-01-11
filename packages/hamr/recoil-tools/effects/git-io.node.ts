@@ -22,7 +22,7 @@ export const SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET = [
 
 export type GitInterface = Omit<
   SimpleGit,
-  typeof SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET[number]
+  (typeof SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET)[number]
 >
 
 export type GitSocketError = ErrorObject<`title`>

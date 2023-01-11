@@ -1,5 +1,6 @@
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
+
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
 import { hasProperties } from "~/packages/anvl/src/object"
 
