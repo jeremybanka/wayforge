@@ -15,11 +15,6 @@ export const redact =
   <O extends Record<K, any>>(obj: O): Omit<O, K> =>
     reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
 
-// export const redactId = redact(`id`)
-// const myUser: { name: string; id: string } = { id: `123`, name: `John` }
-// const myUserWithoutId = redactId(myUser)
-// const { name } = myUserWithoutId
-
 export type Entries<K extends keyof any, V> = [key: K, value: V][]
 
 export const isPlainObject = (
@@ -29,7 +24,7 @@ export const isPlainObject = (
   input !== null &&
   Object.getPrototypeOf(input) === Object.prototype
 
-export const isObject =
+export const hasProperties =
   <OBJ extends object>(isValue: {
     [K in keyof OBJ]: Refinement<unknown, OBJ[K]>
   }): Refinement<unknown, OBJ> =>
@@ -46,7 +41,6 @@ export const isObject =
       Object.values,
       allTrue
     )
-export const hasProperties = isObject
 
 /* prettier-ignore */
 export const isRecord = <

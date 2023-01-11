@@ -3,7 +3,7 @@ import { isString } from "fp-ts/lib/string"
 import type { Json, JsonObj } from "~/packages/Anvil/src/json"
 
 import { isArray } from "../array"
-import { isObject, isRecord } from "../object"
+import { hasProperties, isRecord } from "../object"
 
 export const RELATION_TYPES = [`1:1`, `1:n`, `n:n`] as const
 
@@ -29,8 +29,8 @@ export const isRelationData =
     isContent?: (json: Json) => json is CONTENT
   ) =>
   (input: unknown): input is RelationData<CONTENT> =>
-    isObject<RelationData<CONTENT>>({
-      contents: isContent ? isRecord(isString, isContent) : isObject({}),
+    hasProperties<RelationData<CONTENT>>({
+      contents: isContent ? isRecord(isString, isContent) : hasProperties({}),
       relations: isRecord(isString, isArray(isString)),
       relationType: isRelationType,
     })(input)
