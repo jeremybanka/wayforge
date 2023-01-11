@@ -1722,7 +1722,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.4.0
     corners: 0.0.13
-    framer-motion: 8.4.0
+    framer-motion: 8.4.2
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.6.2
@@ -3697,9 +3697,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:8.4.0":
-  version: 8.4.0
-  resolution: "framer-motion@npm:8.4.0"
+"framer-motion@npm:8.4.2":
+  version: 8.4.2
+  resolution: "framer-motion@npm:8.4.2"
   dependencies:
     "@emotion/is-prop-valid": ^0.8.2
     "@motionone/dom": ^10.15.3
@@ -3711,7 +3711,7 @@ __metadata:
   dependenciesMeta:
     "@emotion/is-prop-valid":
       optional: true
-  checksum: c727ed02bb8dd933fe2fae0f62d74053582e02a0ede13df011bdc9666e9f5b236f72f5fb6e89a07623f62ae46caa6b91ea82592be7ab2f05a5527a7466c4d5b7
+  checksum: 3d2f371470e32471e298a01061088929eae27093128b1334cd8aefecd8d8e374f4c1a39558452a6cdff32a41a5ff36cdc96bb373e83ee3d8e798f5d062380e3e
   languageName: node
   linkType: hard
 
