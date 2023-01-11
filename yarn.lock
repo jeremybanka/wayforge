@@ -330,6 +330,15 @@ __metadata:
     "@types/styled-components": ^5.1.26
     "@typescript-eslint/eslint-plugin": ^5.48.0
     "@typescript-eslint/parser": ^5.48.0
+    eslint-config-prettier: ^8.6.0
+    eslint-plugin-import: ^2.26.0
+    eslint-plugin-jsx-a11y: ^6.6.1
+    eslint-plugin-mocha: ^10.1.0
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-react: ^7.31.11
+  peerDependencies:
+    eslint: ^8.31.0
+    prettier: ^2.8.2
   languageName: unknown
   linkType: soft
 
@@ -740,18 +749,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eyecuelab/recoil-devtools@npm:^0.1.5":
-  version: 0.1.6
-  resolution: "@eyecuelab/recoil-devtools@npm:0.1.6"
+"@eyecuelab/recoil-devtools@file:../../../.yalc/@eyecuelab/recoil-devtools::locator=%40wayforge%2Fweb%40workspace%3Aapp%2Fweb%2Fwayforge-client":
+  version: 0.1.7
+  resolution: "@eyecuelab/recoil-devtools@file:../../../.yalc/@eyecuelab/recoil-devtools#../../../.yalc/@eyecuelab/recoil-devtools::hash=1fe1df&locator=%40wayforge%2Fweb%40workspace%3Aapp%2Fweb%2Fwayforge-client"
   dependencies:
     framer-motion: ^7.3.2
     react-icons: ^4.4.0
+    react-is: ^18.2.0
     react-portal: ^4.2.2
     recoil: ^0.7.5
     styled-components: ^5.3.5
   peerDependencies:
-    react: ">=16"
-  checksum: 918ccbf6e48701bcff9947820cc9e6590f9a5aa01e145e427a61873b95b56460ad2b50ebd01098bf2915daab6465226ce53f29f48c15f080365e661eead93346
+    react: ">=17"
+    react-dom: ">=17"
+    recoil: ">=0.7.6"
+  checksum: 841463c37758a1619a21a03389dd72b6ee4a0e4b26da00d3af8ae90bd20dcc0268d606eeb8dd178185ad061ec7061e28c4722d3111d0e34480fef24e516b8715
   languageName: node
   linkType: hard
 
@@ -1711,7 +1723,6 @@ __metadata:
   resolution: "@wayforge/lib@workspace:lib"
   dependencies:
     fp-ts: ^2.13.1
-    hamt_plus: ^1.0.2
     io-ts: ^2.2.19
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -1728,17 +1739,11 @@ __metadata:
     dts-bundle-generator: ^7.1.0
     esbuild-sass-plugin: ^2.4.5
     eslint: ^8.31.0
-    eslint-config-prettier: ^8.6.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-jsx-a11y: ^6.6.1
-    eslint-plugin-mocha: ^10.1.0
-    eslint-plugin-prettier: ^4.2.1
-    eslint-plugin-react: ^7.31.11
     fs-extra: ^11.1.0
     jest-environment-jsdom: ^29.3.1
     json-schema-to-zod: ^0.6.1
     mock-fs: ^5.2.0
-    prettier: ^2.8.1
+    prettier: ^2.8.2
     tsconfig-paths: ^4.1.2
     tsx: 3.12.1
     typescript: ^4.9.4
@@ -1755,14 +1760,14 @@ __metadata:
   dependencies:
     "@emotion/react": ^11.10.5
     "@emotion/styled": ^11.10.5
-    "@eyecuelab/recoil-devtools": ^0.1.5
+    "@eyecuelab/recoil-devtools": "file:../../../.yalc/@eyecuelab/recoil-devtools"
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     corners: 0.0.13
     framer-motion: ^8.1.9
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-router-dom: 6
+    react-router-dom: ^6.6.2
     vitest: ^0.26.3
     zod: ^3.18.0
   languageName: unknown
@@ -4097,7 +4102,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"hamt_plus@npm:1.0.2, hamt_plus@npm:^1.0.2":
+"hamt_plus@npm:1.0.2":
   version: 1.0.2
   resolution: "hamt_plus@npm:1.0.2"
   checksum: af26ea32db03009019cc83dfa9411521a2fa16079443de1a502c9be46d8b3c975acda8ed93fc5750ef08d3186d35901e2d8cfe717dd54bea67b358601fa74e4c
@@ -5656,7 +5661,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.4.1, prettier@npm:^2.7.1, prettier@npm:^2.8.1":
+"prettier@npm:^2.4.1, prettier@npm:^2.7.1, prettier@npm:^2.8.2":
   version: 2.8.2
   resolution: "prettier@npm:2.8.2"
   bin:
@@ -5792,7 +5797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^18.0.0":
+"react-is@npm:^18.0.0, react-is@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-is@npm:18.2.0"
   checksum: e72d0ba81b5922759e4aff17e0252bd29988f9642ed817f56b25a3e217e13eea8a7f2322af99a06edb779da12d5d636e9fda473d620df9a3da0df2a74141d53e
@@ -5818,7 +5823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6":
+"react-router-dom@npm:^6.6.2":
   version: 6.6.2
   resolution: "react-router-dom@npm:6.6.2"
   dependencies:

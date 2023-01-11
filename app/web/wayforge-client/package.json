@@ -12,12 +12,12 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@eyecuelab/recoil-devtools": "^0.1.5",
+    "@eyecuelab/recoil-devtools": "file:../../../.yalc/@eyecuelab/recoil-devtools",
     "corners": "0.0.13",
     "framer-motion": "^8.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "6",
+    "react-router-dom": "^6.6.2",
     "zod": "^3.18.0"
   },
   "devDependencies": {

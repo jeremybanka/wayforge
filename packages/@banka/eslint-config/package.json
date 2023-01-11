@@ -30,7 +30,8 @@
     "eslint-plugin-react": "^7.31.11"
   },
   "peerDependencies": {
-    "eslint": "^8.31.0"
+    "eslint": "^8.31.0",
+    "prettier": "^2.8.2"
   },
   "bugs": {
     "url": "https://github.com/wayforge/issues"
