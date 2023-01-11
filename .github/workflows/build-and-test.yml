@@ -1,4 +1,4 @@
-name: Build & Test
+name: Lint & Test
 
 on: [push, pull_request]
 
@@ -7,14 +7,15 @@ defaults:
     shell: bash
 
 jobs:
-  lint:
+  Lint:
+    runs-on: ubuntu-latest
     container:
       image: node:lts
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache node modules
-        uses: actions/cache@v2
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
+      - name: Cache node_modules
+        uses: actions/cache@v3.2.3
         env:
           cache-name: node-modules
         with:
@@ -27,25 +28,29 @@ jobs:
           fi
       - name: Lint
         run: yarn lint
+      - name: Type Check
+        run: yarn tsc
       - name: Cleanup
         if: ${{ always() }}
         run: |
           shopt -s dotglob
           rm -rf *
-  test:
+  
+  Test:
+    runs-on: ubuntu-latest
     container:
       image: node:lts
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache node modules
-        uses: actions/cache@v2
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
+      - name: Cache node_modules
+        uses: actions/cache@v3.2.3
         env:
           cache-name: node-modules
         with:
           path: node_modules/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           if [ ! -d node_modules ]; then
             yarn
