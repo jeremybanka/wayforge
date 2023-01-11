@@ -25,13 +25,6 @@
   "lint-staged": {
     "*.ts{,x}": "yarn lint"
   },
-  "peerDependencies": {
-    "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0",
-    "corners": "^0.0.9",
-    "react": ">=17.0.0",
-    "react-dom": ">=17.0.0"
-  },
   "homepage": "https://github.com/jeremybanka/wayforge/blob/main/lib/Cardstock#readme",
   "bugs": {
     "url": "https://github.com/jeremybanka/wayforge/issues"
