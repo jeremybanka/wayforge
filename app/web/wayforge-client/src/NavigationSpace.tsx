@@ -12,9 +12,9 @@ import {
 } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 
-import { now } from "~/packages/Anvil/src/id/now"
-import { ErrorBoundary } from "~/packages/Hammer/react-ui/error-boundary"
-import type { WC } from "~/packages/Hammer/react-ui/json-editor"
+import { now } from "~/packages/anvl/src/id/now"
+import { ErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
+import type { WC } from "~/packages/hamr/react-ui/json-editor"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"

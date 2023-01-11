@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { useNavigate } from "react-router-dom"
 
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
-import { RecoverableErrorBoundary } from "~/packages/Hammer/react-ui/error-boundary"
+import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 
 import type { Energy } from "../../services/energy"
 import { SVG_EnergyIcon } from "./EnergyIcon_SVG"

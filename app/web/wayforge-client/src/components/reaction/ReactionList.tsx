@@ -4,7 +4,7 @@ import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 
 import { ListItems } from "~/app/web/wayforge-client/recoil-list"
-import type { Identified } from "~/packages/Anvil/src/id/identified"
+import type { Identified } from "~/packages/anvl/src/id/identified"
 
 import {
   findReactionWithRelationsState,

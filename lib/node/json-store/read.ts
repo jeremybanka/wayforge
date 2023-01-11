@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync } from "fs"
 
-import type { Identified } from "~/packages/Anvil/src/id/identified"
-import { identify } from "~/packages/Anvil/src/id/identified"
-import type { Json, JsonArr } from "~/packages/Anvil/src/json"
-import { parseJson } from "~/packages/Anvil/src/json"
+import type { Identified } from "~/packages/anvl/src/id/identified"
+import { identify } from "~/packages/anvl/src/id/identified"
+import type { Json, JsonArr } from "~/packages/anvl/src/json"
+import { parseJson } from "~/packages/anvl/src/json"
 
 import type { JsonStoreOptions } from "."
 import { getDirectoryJsonArr } from "./utils"

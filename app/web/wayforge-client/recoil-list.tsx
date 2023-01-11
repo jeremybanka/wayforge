@@ -2,8 +2,8 @@ import type { FC } from "react"
 
 import type { RecoilState } from "recoil"
 
-import type { Identified } from "~/packages/Anvil/src/id/identified"
-import type { JsxElements, WC } from "~/packages/Hammer/react-ui/json-editor"
+import type { Identified } from "~/packages/anvl/src/id/identified"
+import type { JsxElements, WC } from "~/packages/hamr/react-ui/json-editor"
 
 /* eslint-disable @typescript-eslint/ban-types */
 

@@ -2,14 +2,14 @@ import { readdirSync, readFileSync, writeFileSync } from "fs"
 
 import { isString } from "fp-ts/lib/string"
 
-import type { Json, JsonObj } from "~/packages/Anvil/src/json"
-import { parseJson } from "~/packages/Anvil/src/json"
-import { isResourceIdentifier } from "~/packages/Anvil/src/json/json-api"
-import type { ResourceIdentifierObject } from "~/packages/Anvil/src/json/json-api"
-import { refineJsonType } from "~/packages/Anvil/src/json/refine"
-import { entriesToRecord, isPlainObject } from "~/packages/Anvil/src/object"
-import type { Entries } from "~/packages/Anvil/src/object"
-import { sprawl } from "~/packages/Anvil/src/object/sprawl"
+import type { Json, JsonObj } from "~/packages/anvl/src/json"
+import { parseJson } from "~/packages/anvl/src/json"
+import { isResourceIdentifier } from "~/packages/anvl/src/json/json-api"
+import type { ResourceIdentifierObject } from "~/packages/anvl/src/json/json-api"
+import { refineJsonType } from "~/packages/anvl/src/json/refine"
+import { entriesToRecord, isPlainObject } from "~/packages/anvl/src/object"
+import type { Entries } from "~/packages/anvl/src/object"
+import { sprawl } from "~/packages/anvl/src/object/sprawl"
 
 export const getJsonFileNames = (dir: string): string[] => {
   const fileNames = readdirSync(dir)

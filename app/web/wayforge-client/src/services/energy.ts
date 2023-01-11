@@ -9,17 +9,17 @@ import {
 import type energySchema from "wayforge-server/gen/energy.schema.json"
 import z, { string } from "zod"
 
-import { now } from "~/packages/Anvil/src/id/now"
-import type { Json } from "~/packages/Anvil/src/json"
+import { now } from "~/packages/anvl/src/id/now"
+import type { Json } from "~/packages/anvl/src/json"
 import {
   socketIndex,
   socketSync,
-} from "~/packages/Hammer/recoil-tools/effects/json-store-io.web"
+} from "~/packages/hamr/recoil-tools/effects/json-store-io.web"
 import {
   addToIndex,
   removeFromIndex,
-} from "~/packages/Hammer/recoil-tools/recoil-index"
-import type { TransactionOperation } from "~/packages/Hammer/recoil-tools/recoil-utils"
+} from "~/packages/hamr/recoil-tools/recoil-index"
+import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
