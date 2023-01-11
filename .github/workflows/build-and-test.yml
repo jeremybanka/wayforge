@@ -20,7 +20,7 @@ jobs:
           cache-name: node-modules
         with:
           path: node_modules/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn-lock.json') }}
       - name: Install dependencies
         run: |
           if [ ! -d node_modules ]; then
@@ -35,7 +35,7 @@ jobs:
         run: |
           shopt -s dotglob
           rm -rf *
-  
+
   Test:
     runs-on: ubuntu-latest
     container:
@@ -49,7 +49,7 @@ jobs:
           cache-name: node-modules
         with:
           path: node_modules/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn-lock.json') }}
       - name: Install dependencies
         run: |
           if [ ! -d node_modules ]; then
