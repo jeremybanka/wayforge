@@ -22,7 +22,7 @@ jobs:
           cache-name: node-modules
         with:
           path: node_modules/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: |
           if [ ! -d node_modules ]; then
@@ -53,7 +53,7 @@ jobs:
           cache-name: node-modules
         with:
           path: node_modules/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: |
           if [ ! -d node_modules ]; then

@@ -12,7 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@eyecuelab/recoil-devtools": "file:../../../.yalc/@eyecuelab/recoil-devtools",
+    "@eyecuelab/recoil-devtools": "file:.yalc/@eyecuelab/recoil-devtools",
     "corners": "0.0.13",
     "framer-motion": "^8.1.9",
     "react": "^18.2.0",

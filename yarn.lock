@@ -749,9 +749,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eyecuelab/recoil-devtools@file:../../../.yalc/@eyecuelab/recoil-devtools::locator=%40wayforge%2Fweb%40workspace%3Aapp%2Fweb%2Fwayforge-client":
+"@eyecuelab/recoil-devtools@file:.yalc/@eyecuelab/recoil-devtools::locator=%40wayforge%2Fweb%40workspace%3Aapp%2Fweb%2Fwayforge-client":
   version: 0.1.7
-  resolution: "@eyecuelab/recoil-devtools@file:../../../.yalc/@eyecuelab/recoil-devtools#../../../.yalc/@eyecuelab/recoil-devtools::hash=1fe1df&locator=%40wayforge%2Fweb%40workspace%3Aapp%2Fweb%2Fwayforge-client"
+  resolution: "@eyecuelab/recoil-devtools@file:.yalc/@eyecuelab/recoil-devtools#.yalc/@eyecuelab/recoil-devtools::hash=1fe1df&locator=%40wayforge%2Fweb%40workspace%3Aapp%2Fweb%2Fwayforge-client"
   dependencies:
     framer-motion: ^7.3.2
     react-icons: ^4.4.0
@@ -1760,7 +1760,7 @@ __metadata:
   dependencies:
     "@emotion/react": ^11.10.5
     "@emotion/styled": ^11.10.5
-    "@eyecuelab/recoil-devtools": "file:../../../.yalc/@eyecuelab/recoil-devtools"
+    "@eyecuelab/recoil-devtools": "file:.yalc/@eyecuelab/recoil-devtools"
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     corners: 0.0.13
