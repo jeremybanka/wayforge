@@ -313,23 +313,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@banka/eslint-config@workspace:packages/@banka/eslint-config"
   dependencies:
-    "@types/mocha": ^10.0.0
-    "@types/mock-fs": ^4.13.1
+    "@types/mocha": 10.0.1
+    "@types/mock-fs": 4.13.1
     "@types/node": 18.11.18
-    "@types/react": ^18.0.26
-    "@types/react-dom": ^18.0.10
-    "@types/styled-components": ^5.1.26
-    "@typescript-eslint/eslint-plugin": ^5.48.0
-    "@typescript-eslint/parser": ^5.48.0
-    eslint-config-prettier: ^8.6.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-jsx-a11y: ^6.6.1
-    eslint-plugin-mocha: ^10.1.0
-    eslint-plugin-prettier: ^4.2.1
-    eslint-plugin-react: ^7.31.11
+    "@types/react": 18.0.26
+    "@types/react-dom": 18.0.10
+    "@types/styled-components": 5.1.26
+    "@typescript-eslint/eslint-plugin": 5.48.1
+    "@typescript-eslint/parser": 5.48.1
+    eslint-config-prettier: 8.6.0
+    eslint-plugin-import: 2.26.0
+    eslint-plugin-jsx-a11y: 6.7.0
+    eslint-plugin-mocha: 10.1.0
+    eslint-plugin-prettier: 4.2.1
+    eslint-plugin-react: 7.32.0
   peerDependencies:
-    eslint: ^8.31.0
-    prettier: ^2.8.2
+    eslint: 8.31.0
+    prettier: 2.8.2
   languageName: unknown
   linkType: soft
 
@@ -414,7 +414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.10.5":
+"@emotion/react@npm:11.10.5":
   version: 11.10.5
   resolution: "@emotion/react@npm:11.10.5"
   dependencies:
@@ -458,7 +458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.10.5":
+"@emotion/styled@npm:11.10.5":
   version: 11.10.5
   resolution: "@emotion/styled@npm:11.10.5"
   dependencies:
@@ -511,7 +511,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild-kit/cjs-loader@npm:^2.4.0, @esbuild-kit/cjs-loader@npm:^2.4.1":
+"@esbuild-kit/cjs-loader@npm:^2.4.1":
   version: 2.4.1
   resolution: "@esbuild-kit/cjs-loader@npm:2.4.1"
   dependencies:
@@ -531,7 +531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild-kit/esm-loader@npm:^2.5.0, @esbuild-kit/esm-loader@npm:^2.5.4":
+"@esbuild-kit/esm-loader@npm:^2.5.4":
   version: 2.5.4
   resolution: "@esbuild-kit/esm-loader@npm:2.5.4"
   dependencies:
@@ -1253,7 +1253,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^5.16.5":
+"@testing-library/jest-dom@npm:5.16.5":
   version: 5.16.5
   resolution: "@testing-library/jest-dom@npm:5.16.5"
   dependencies:
@@ -1270,7 +1270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^13.4.0":
+"@testing-library/react@npm:13.4.0":
   version: 13.4.0
   resolution: "@testing-library/react@npm:13.4.0"
   dependencies:
@@ -1407,14 +1407,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.0":
+"@types/mocha@npm:10.0.1":
   version: 10.0.1
   resolution: "@types/mocha@npm:10.0.1"
   checksum: 224ea9fce7b1734ccdb9aa99a622d902a538ce1847bca7fd22c5fb38adcf3ed536f50f48f587085db988a4bb3c2eb68f4b98e1cd6a38bc5547bd3bbbedc54495
   languageName: node
   linkType: hard
 
-"@types/mock-fs@npm:^4.13.1":
+"@types/mock-fs@npm:4.13.1":
   version: 4.13.1
   resolution: "@types/mock-fs@npm:4.13.1"
   dependencies:
@@ -1430,7 +1430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/npmlog@npm:^4.1.4":
+"@types/npmlog@npm:4.1.4":
   version: 4.1.4
   resolution: "@types/npmlog@npm:4.1.4"
   checksum: 740f7431ccfc0e127aa8d162fe05c6ce8aa71290be020d179b2824806d19bd2c706c7e0c9a3c9963cefcdf2ceacb1dec6988c394c3694451387759dafe0aa927
@@ -1444,7 +1444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:^2.7.0":
+"@types/prettier@npm:2.7.2":
   version: 2.7.2
   resolution: "@types/prettier@npm:2.7.2"
   checksum: b47d76a5252265f8d25dd2fe2a5a61dc43ba0e6a96ffdd00c594cb4fd74c1982c2e346497e3472805d97915407a09423804cc2110a0b8e1b22cffcab246479b7
@@ -1458,7 +1458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.0.0, @types/react-dom@npm:^18.0.10":
+"@types/react-dom@npm:18.0.10, @types/react-dom@npm:^18.0.0":
   version: 18.0.10
   resolution: "@types/react-dom@npm:18.0.10"
   dependencies:
@@ -1467,7 +1467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.0.26":
+"@types/react@npm:*, @types/react@npm:18.0.26":
   version: 18.0.26
   resolution: "@types/react@npm:18.0.26"
   dependencies:
@@ -1499,7 +1499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/styled-components@npm:^5.1.26":
+"@types/styled-components@npm:5.1.26":
   version: 5.1.26
   resolution: "@types/styled-components@npm:5.1.26"
   dependencies:
@@ -1542,7 +1542,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.48.0":
+"@typescript-eslint/eslint-plugin@npm:5.48.1":
   version: 5.48.1
   resolution: "@typescript-eslint/eslint-plugin@npm:5.48.1"
   dependencies:
@@ -1565,7 +1565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.48.0":
+"@typescript-eslint/parser@npm:5.48.1":
   version: 5.48.1
   resolution: "@typescript-eslint/parser@npm:5.48.1"
   dependencies:
@@ -1662,7 +1662,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:^3.0.1":
+"@vitejs/plugin-react@npm:3.0.1":
   version: 3.0.1
   resolution: "@vitejs/plugin-react@npm:3.0.1"
   dependencies:
@@ -1681,10 +1681,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/lib@workspace:lib"
   dependencies:
-    fp-ts: ^2.13.1
-    io-ts: ^2.2.19
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    fp-ts: 2.13.1
+    io-ts: 2.2.20
+    react: 18.2.0
+    react-dom: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -1692,24 +1692,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/monorepo@workspace:."
   dependencies:
-    "@vitejs/plugin-react": ^3.0.1
-    c8: ^7.12.0
-    cross-env: ^7.0.3
-    dts-bundle-generator: ^7.1.0
-    esbuild-sass-plugin: ^2.4.5
-    eslint: ^8.31.0
-    fs-extra: ^11.1.0
-    jest-environment-jsdom: ^29.3.1
-    json-schema-to-zod: ^0.6.1
-    mock-fs: ^5.2.0
-    prettier: ^2.8.2
-    tsconfig-paths: ^4.1.2
-    tsx: 3.12.1
-    typescript: ^4.9.4
-    vite: ^4.0.4
-    vite-plugin-svgr: ^2.4.0
-    vite-tsconfig-paths: ^4.0.3
-    vitest: ^0.26.3
+    "@vitejs/plugin-react": 3.0.1
+    c8: 7.12.0
+    cross-env: 7.0.3
+    dts-bundle-generator: 7.1.0
+    esbuild-sass-plugin: 2.4.5
+    eslint: 8.31.0
+    fs-extra: 11.1.0
+    jest-environment-jsdom: 29.3.1
+    json-schema-to-zod: 0.6.2
+    mock-fs: 5.2.0
+    prettier: 2.8.2
+    tsconfig-paths: 4.1.2
+    tsx: 3.12.2
+    typescript: 4.9.4
+    vite: 4.0.4
+    vite-plugin-svgr: 2.4.0
+    vite-tsconfig-paths: 4.0.3
+    vitest: 0.26.3
   languageName: unknown
   linkType: soft
 
@@ -1717,18 +1717,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/web@workspace:app/web/wayforge-client"
   dependencies:
-    "@emotion/react": ^11.10.5
-    "@emotion/styled": ^11.10.5
-    "@testing-library/jest-dom": ^5.16.5
-    "@testing-library/react": ^13.4.0
+    "@emotion/react": 11.10.5
+    "@emotion/styled": 11.10.5
+    "@testing-library/jest-dom": 5.16.5
+    "@testing-library/react": 13.4.0
     corners: 0.0.13
-    framer-motion: ^8.1.9
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    react-router-dom: ^6.6.2
-    recoil: ^0.7.6
-    vitest: ^0.26.3
-    zod: ^3.18.0
+    framer-motion: 8.4.0
+    react: 18.2.0
+    react-dom: 18.2.0
+    react-router-dom: 6.6.2
+    recoil: 0.7.6
+    vitest: 0.26.3
+    zod: 3.20.2
   languageName: unknown
   linkType: soft
 
@@ -1878,8 +1878,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "anvl@workspace:packages/anvl"
   peerDependencies:
-    fp-ts: ^2.13.1
-    io-ts: ^2.2.19
+    fp-ts: 2.13.1
+    io-ts: 2.2.20
   languageName: unknown
   linkType: soft
 
@@ -2135,7 +2135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c8@npm:^7.12.0":
+"c8@npm:7.12.0":
   version: 7.12.0
   resolution: "c8@npm:7.12.0"
   dependencies:
@@ -2449,7 +2449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^7.0.3":
+"cross-env@npm:7.0.3":
   version: 7.0.3
   resolution: "cross-env@npm:7.0.3"
   dependencies:
@@ -2686,7 +2686,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dts-bundle-generator@npm:^7.1.0":
+"dts-bundle-generator@npm:7.1.0":
   version: 7.1.0
   resolution: "dts-bundle-generator@npm:7.1.0"
   dependencies:
@@ -2996,7 +2996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-sass-plugin@npm:^2.4.5":
+"esbuild-sass-plugin@npm:2.4.5":
   version: 2.4.5
   resolution: "esbuild-sass-plugin@npm:2.4.5"
   dependencies:
@@ -3236,7 +3236,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.6.0":
+"eslint-config-prettier@npm:8.6.0":
   version: 8.6.0
   resolution: "eslint-config-prettier@npm:8.6.0"
   peerDependencies:
@@ -3269,7 +3269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.26.0":
+"eslint-plugin-import@npm:2.26.0":
   version: 2.26.0
   resolution: "eslint-plugin-import@npm:2.26.0"
   dependencies:
@@ -3292,7 +3292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsx-a11y@npm:^6.6.1":
+"eslint-plugin-jsx-a11y@npm:6.7.0":
   version: 6.7.0
   resolution: "eslint-plugin-jsx-a11y@npm:6.7.0"
   dependencies:
@@ -3318,7 +3318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-mocha@npm:^10.1.0":
+"eslint-plugin-mocha@npm:10.1.0":
   version: 10.1.0
   resolution: "eslint-plugin-mocha@npm:10.1.0"
   dependencies:
@@ -3330,7 +3330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.2.1":
+"eslint-plugin-prettier@npm:4.2.1":
   version: 4.2.1
   resolution: "eslint-plugin-prettier@npm:4.2.1"
   dependencies:
@@ -3345,7 +3345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.31.11":
+"eslint-plugin-react@npm:7.32.0":
   version: 7.32.0
   resolution: "eslint-plugin-react@npm:7.32.0"
   dependencies:
@@ -3415,7 +3415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.31.0":
+"eslint@npm:8.31.0":
   version: 8.31.0
   resolution: "eslint@npm:8.31.0"
   dependencies:
@@ -3690,14 +3690,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fp-ts@npm:^2.13.1":
+"fp-ts@npm:2.13.1":
   version: 2.13.1
   resolution: "fp-ts@npm:2.13.1"
   checksum: 618e0028aca9ff1d52b86f438499ccab149825bdab14c678d22c3e2ccbf9d36fd1f26d463bf0ae1e63f5cd79dd54c8218af2cca0daeea68b039307b751ae9563
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^8.1.9":
+"framer-motion@npm:8.4.0":
   version: 8.4.0
   resolution: "framer-motion@npm:8.4.0"
   dependencies:
@@ -3715,7 +3715,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^11.1.0":
+"fs-extra@npm:11.1.0":
   version: 11.1.0
   resolution: "fs-extra@npm:11.1.0"
   dependencies:
@@ -3986,13 +3986,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hamr@workspace:packages/hamr"
   dependencies:
-    fp-ts: ^2.13.1
-    react: ^18.0.0
-    recoil: ^0.7.6
-    recoil-sync: ^0.2.0
-    simple-git: ^3.15.1
-    socket.io: ^4.5.4
-    socket.io-client: ^4.5.4
+    fp-ts: 2.13.1
+    react: 18.2.0
+    recoil: 0.7.6
+    recoil-sync: 0.2.0
+    simple-git: 3.15.1
+    socket.io: 4.5.4
+    socket.io-client: 4.5.4
   languageName: unknown
   linkType: soft
 
@@ -4230,7 +4230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"io-ts@npm:^2.2.19":
+"io-ts@npm:2.2.20":
   version: 2.2.20
   resolution: "io-ts@npm:2.2.20"
   peerDependencies:
@@ -4538,7 +4538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.3.1":
+"jest-environment-jsdom@npm:29.3.1":
   version: 29.3.1
   resolution: "jest-environment-jsdom@npm:29.3.1"
   dependencies:
@@ -4700,7 +4700,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema-to-zod@npm:^0.6.1":
+"json-schema-to-zod@npm:0.6.2":
   version: 0.6.2
   resolution: "json-schema-to-zod@npm:0.6.2"
   dependencies:
@@ -4899,7 +4899,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "luum@workspace:packages/Luum"
   dependencies:
-    fp-ts: ^2.13.1
+    fp-ts: 2.13.1
   languageName: unknown
   linkType: soft
 
@@ -5119,7 +5119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-fs@npm:^5.2.0":
+"mock-fs@npm:5.2.0":
   version: 5.2.0
   resolution: "mock-fs@npm:5.2.0"
   checksum: c25835247bd26fa4e0189addd61f98973f61a72741e4d2a5694b143a2069b84978443a7ac0fdb1a71aead99273ec22ff4e9c968de11bbd076db020264c5b8312
@@ -5222,6 +5222,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"npmlog@npm:7.0.1":
+  version: 7.0.1
+  resolution: "npmlog@npm:7.0.1"
+  dependencies:
+    are-we-there-yet: ^4.0.0
+    console-control-strings: ^1.1.0
+    gauge: ^5.0.0
+    set-blocking: ^2.0.0
+  checksum: caabeb1f557c1094ad7ed3275b968b83ccbaefc133f17366ebb9fe8eb44e1aace28c31419d6244bfc0422aede1202875d555fe6661978bf04386f6cf617f43a4
+  languageName: node
+  linkType: hard
+
 "npmlog@npm:^6.0.0":
   version: 6.0.2
   resolution: "npmlog@npm:6.0.2"
@@ -5231,18 +5243,6 @@ __metadata:
     gauge: ^4.0.3
     set-blocking: ^2.0.0
   checksum: ae238cd264a1c3f22091cdd9e2b106f684297d3c184f1146984ecbe18aaa86343953f26b9520dedd1b1372bc0316905b736c1932d778dbeb1fcf5a1001390e2a
-  languageName: node
-  linkType: hard
-
-"npmlog@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "npmlog@npm:7.0.1"
-  dependencies:
-    are-we-there-yet: ^4.0.0
-    console-control-strings: ^1.1.0
-    gauge: ^5.0.0
-    set-blocking: ^2.0.0
-  checksum: caabeb1f557c1094ad7ed3275b968b83ccbaefc133f17366ebb9fe8eb44e1aace28c31419d6244bfc0422aede1202875d555fe6661978bf04386f6cf617f43a4
   languageName: node
   linkType: hard
 
@@ -5548,7 +5548,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.4.1, prettier@npm:^2.7.1, prettier@npm:^2.8.2":
+"prettier@npm:2.8.2, prettier@npm:^2.4.1":
   version: 2.8.2
   resolution: "prettier@npm:2.8.2"
   bin:
@@ -5649,7 +5649,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.2.0":
+"react-dom@npm:18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
@@ -5689,7 +5689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.6.2":
+"react-router-dom@npm:6.6.2":
   version: 6.6.2
   resolution: "react-router-dom@npm:6.6.2"
   dependencies:
@@ -5713,7 +5713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.0.0, react@npm:^18.2.0":
+"react@npm:18.2.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:
@@ -5754,7 +5754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil-sync@npm:^0.2.0":
+"recoil-sync@npm:0.2.0":
   version: 0.2.0
   resolution: "recoil-sync@npm:0.2.0"
   dependencies:
@@ -5766,7 +5766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil@npm:^0.7.6":
+"recoil@npm:0.7.6":
   version: 0.7.6
   resolution: "recoil@npm:0.7.6"
   dependencies:
@@ -6055,7 +6055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.0.0, simple-git@npm:^3.15.1":
+"simple-git@npm:3.15.1":
   version: 3.15.1
   resolution: "simple-git@npm:3.15.1"
   dependencies:
@@ -6087,7 +6087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io-client@npm:^4.5.4":
+"socket.io-client@npm:4.5.4":
   version: 4.5.4
   resolution: "socket.io-client@npm:4.5.4"
   dependencies:
@@ -6109,7 +6109,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io@npm:^4.5.4":
+"socket.io@npm:4.5.4":
   version: 4.5.4
   resolution: "socket.io@npm:4.5.4"
   dependencies:
@@ -6449,6 +6449,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfig-paths@npm:4.1.2":
+  version: 4.1.2
+  resolution: "tsconfig-paths@npm:4.1.2"
+  dependencies:
+    json5: ^2.2.2
+    minimist: ^1.2.6
+    strip-bom: ^3.0.0
+  checksum: 3d9151ecea139594e25618717de15769ab9f38f8e6d510ac16e592b23e7f7105ea13cec5694c3de7e132c98277b775e18edd1651964164ee6d75737c408494cc
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths@npm:^3.14.1":
   version: 3.14.1
   resolution: "tsconfig-paths@npm:3.14.1"
@@ -6458,17 +6469,6 @@ __metadata:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: 8afa01c673ebb4782ba53d3a12df97fa837ce524f8ad38ee4e2b2fd57f5ac79abc21c574e9e9eb014d93efe7fe8214001b96233b5c6ea75bd1ea82afe17a4c6d
-  languageName: node
-  linkType: hard
-
-"tsconfig-paths@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "tsconfig-paths@npm:4.1.2"
-  dependencies:
-    json5: ^2.2.2
-    minimist: ^1.2.6
-    strip-bom: ^3.0.0
-  checksum: 3d9151ecea139594e25618717de15769ab9f38f8e6d510ac16e592b23e7f7105ea13cec5694c3de7e132c98277b775e18edd1651964164ee6d75737c408494cc
   languageName: node
   linkType: hard
 
@@ -6497,24 +6497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:3.12.1":
-  version: 3.12.1
-  resolution: "tsx@npm:3.12.1"
-  dependencies:
-    "@esbuild-kit/cjs-loader": ^2.4.0
-    "@esbuild-kit/core-utils": ^3.0.0
-    "@esbuild-kit/esm-loader": ^2.5.0
-    fsevents: ~2.3.2
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    tsx: dist/cli.js
-  checksum: 7251ad550b82cc95716599b5f4fc8825d3896722f30ee6abfff5e5dd63b9ba8ad1c41fefbf27657ff5375f71bb69fb2b001dfe87f1f81e5d017b55616e1691cb
-  languageName: node
-  linkType: hard
-
-"tsx@npm:^3.0.0":
+"tsx@npm:3.12.2":
   version: 3.12.2
   resolution: "tsx@npm:3.12.2"
   dependencies:
@@ -6574,7 +6557,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:>=4.5.2, typescript@npm:^4.9.4":
+"typescript@npm:4.9.4, typescript@npm:>=4.5.2":
   version: 4.9.4
   resolution: "typescript@npm:4.9.4"
   bin:
@@ -6584,7 +6567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@>=4.5.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.9.4#~builtin<compat/typescript>, typescript@patch:typescript@>=4.5.2#~builtin<compat/typescript>":
   version: 4.9.4
   resolution: "typescript@patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=ad5954"
   bin:
@@ -6719,7 +6702,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-svgr@npm:^2.4.0":
+"vite-plugin-svgr@npm:2.4.0":
   version: 2.4.0
   resolution: "vite-plugin-svgr@npm:2.4.0"
   dependencies:
@@ -6731,7 +6714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-tsconfig-paths@npm:^4.0.3":
+"vite-tsconfig-paths@npm:4.0.3":
   version: 4.0.3
   resolution: "vite-tsconfig-paths@npm:4.0.3"
   dependencies:
@@ -6744,7 +6727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^3.0.0 || ^4.0.0, vite@npm:^4.0.4":
+"vite@npm:4.0.4, vite@npm:^3.0.0 || ^4.0.0":
   version: 4.0.4
   resolution: "vite@npm:4.0.4"
   dependencies:
@@ -6782,7 +6765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^0.26.3":
+"vitest@npm:0.26.3":
   version: 0.26.3
   resolution: "vitest@npm:0.26.3"
   dependencies:
@@ -6837,13 +6820,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wayforge-server@workspace:app/node/wayforge-server"
   dependencies:
-    "@types/npmlog": ^4.1.4
-    "@types/prettier": ^2.7.0
-    npmlog: ^7.0.1
-    prettier: ^2.7.1
-    simple-git: ^3.0.0
-    socket.io: ^4.5.4
-    tsx: ^3.0.0
+    "@types/npmlog": 4.1.4
+    "@types/prettier": 2.7.2
+    npmlog: 7.0.1
+    prettier: 2.8.2
+    simple-git: 3.15.1
+    socket.io: 4.5.4
+    tsx: 3.12.2
   languageName: unknown
   linkType: soft
 
@@ -7094,7 +7077,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.18.0":
+"zod@npm:3.20.2":
   version: 3.20.2
   resolution: "zod@npm:3.20.2"
   checksum: 04172f7e9350372684ccd298d4716908edc9113751295b6c4e1b3ea84e2af8997e504b33ba36f4741417bb2a5dc90bfd40501f6b0e7389df10e42a63d6d8366c
