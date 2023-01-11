@@ -139,27 +139,58 @@ describe(`git-io usage`, () => {
     }))
 
   it(`adds file`, async () =>
+    new Promise<void>((pass, fail) => {
+      try {
+        client
+          .on(`add`, (result) => {
+            expect(console.info).toHaveBeenCalledWith(
+              client.id,
+              `add`,
+              `README.md`
+            )
+            expect(pipe(result, ensureAgainst(isGitSocketError))).toStrictEqual(
+              ``
+            )
+          })
+          .emit(`add`, `README.md`)
+      } catch (thrown) {
+        fail(thrown)
+      }
+      pass()
+    }))
+
+  it(`commits file`, async () =>
     new Promise<void>((pass, fail) =>
       client
-        .on(`add`, (result) => {
+        .on(`commit`, (result) => {
           try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `add`)
+            expect(console.info).toHaveBeenCalledWith(
+              client.id,
+              `commit`,
+              `📝 Add README.md`
+            )
             expect(
               pipe(
                 result,
                 ensureAgainst(isGitSocketError),
-                redact(`gitDir` /* this is local to runner's machine */)
+                redact(`commit` /* this is timing-based */)
               )
             ).toStrictEqual({
-              path: `../wayforge-lab`,
-              files: [`README.md`],
+              author: null,
+              branch: `main`,
+              root: true,
+              summary: {
+                changes: 1,
+                deletions: 0,
+                insertions: 1,
+              },
             })
           } catch (thrown) {
             fail(thrown)
           }
           pass()
         })
-        .emit(`add`, `README.md`)
+        .emit(`commit`, `📝 Add README.md`)
     ))
 
   it(`reports diff`, async () =>
