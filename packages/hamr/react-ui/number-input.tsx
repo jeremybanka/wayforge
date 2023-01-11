@@ -48,7 +48,7 @@ export type NumberInputProps = {
 }
 
 export const VALID_NON_NUMBERS = [``, `-`, `.`, `-.`, `0.`] as const
-export type ValidNonNumber = typeof VALID_NON_NUMBERS[number]
+export type ValidNonNumber = (typeof VALID_NON_NUMBERS)[number]
 export const isValidNonNumber = (input: string): input is ValidNonNumber =>
   VALID_NON_NUMBERS.includes(input as ValidNonNumber)
 

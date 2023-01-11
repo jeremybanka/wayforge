@@ -1,6 +1,7 @@
 import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
+
 import { isPlainObject } from "~/packages/anvl/src/object"
 
 import type { Json, JsonArr, JsonObj } from "."

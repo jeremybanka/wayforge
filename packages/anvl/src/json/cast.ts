@@ -1,4 +1,9 @@
-import type { Json, JsonArr, JsonObj, Serializable } from "~/packages/anvl/src/json"
+import type {
+  Json,
+  JsonArr,
+  JsonObj,
+  Serializable,
+} from "~/packages/anvl/src/json"
 import { refineJsonType } from "~/packages/anvl/src/json/refine"
 
 export const stringToBoolean = (str: string): boolean => str === `true`

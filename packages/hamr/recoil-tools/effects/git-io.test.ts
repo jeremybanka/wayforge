@@ -7,7 +7,7 @@ import { vitest } from "vitest"
 
 import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"
-import { setupLab } from "~/script/lab-tools"
+import { setupLab } from "~/util/lab-tools"
 
 import { isGitSocketError, serveSimpleGit } from "./git-io.node"
 import type { GitClientSocket } from "./git-io.web"

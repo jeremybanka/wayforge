@@ -1,0 +1,42 @@
+{
+  "name": "@banka/eslint-config",
+  "version": "1.1.6",
+  "description": "my personal style preferences",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jeremybanka/eslint-config.git",
+    "directory": "pkg/npm/eslint-config"
+  },
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jeremybanka",
+  "license": "MIT",
+  "dependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/mock-fs": "^4.13.1",
+    "@types/node": "18.11.18",
+    "@types/react": "^18.0.26",
+    "@types/react-dom": "^18.0.10",
+    "@types/styled-components": "^5.1.26",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-mocha": "^10.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11"
+  },
+  "peerDependencies": {
+    "eslint": "^8.31.0"
+  },
+  "bugs": {
+    "url": "https://github.com/wayforge/issues"
+  },
+  "homepage": "https://github.com/jeremybanka/wayforge",
+  "keywords": [
+    "eslint"
+  ]
+}
