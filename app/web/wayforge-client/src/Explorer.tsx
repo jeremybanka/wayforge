@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { initGitStatusState } from "~/packages/Hammer/recoil-tools/effects/git-io.web"
+import { initGitStatusState } from "~/packages/hamr/recoil-tools/effects/git-io.web"
 
 import { socket } from "./services/socket"
 

@@ -6,7 +6,7 @@ import { pipe } from "fp-ts/lib/function"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import { isString } from "fp-ts/lib/string"
 
-import type { Modifier, OneOrMany } from "~/packages/Anvil/src/function"
+import type { Modifier, OneOrMany } from "~/packages/anvl/src/function"
 import { specToHex } from "~/packages/Luum/src"
 import type { Filter, LuumSpec, FilterPoint } from "~/packages/Luum/src"
 import { defaultSpec } from "~/packages/Luum/src/constants/luum-spec"

@@ -3,8 +3,8 @@ import { readdirSync, renameSync, writeFileSync } from "fs"
 import { pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
 
-import type { Json, JsonArr, JsonObj } from "~/packages/Anvil/src/json"
-import { hasProperties } from "~/packages/Anvil/src/object"
+import type { Json, JsonArr, JsonObj } from "~/packages/anvl/src/json"
+import { hasProperties } from "~/packages/anvl/src/object"
 
 import type { JsonStoreOptions } from "."
 import type { ReadIndex } from "./read"

@@ -1,4 +1,4 @@
-import type { Modifier } from "~/packages/Anvil/src/function"
+import type { Modifier } from "~/packages/anvl/src/function"
 import type { LuumSpec } from "~/packages/Luum"
 
 export const contrastMax: Modifier<LuumSpec> = (color) => ({
