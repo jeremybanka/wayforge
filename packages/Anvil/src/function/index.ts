@@ -37,3 +37,7 @@ export const typeOf =
 export const raiseError = (message: string): never => {
   throw new Error(message)
 }
+
+export type Encapsulate<T extends (...args: any[]) => any> = (
+  ...args: Parameters<T>
+) => void
