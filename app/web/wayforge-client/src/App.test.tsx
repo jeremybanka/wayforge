@@ -1,7 +1,7 @@
 import { createServer } from "http"
 
 import { css } from "@emotion/react"
-import { RecoilInspector } from "@eyecuelab/recoil-devtools"
+// import { RecoilInspector } from "@eyecuelab/recoil-devtools"
 import { fireEvent, render, screen } from "@testing-library/react"
 import { RecoilRoot } from "recoil"
 import type { Server } from "socket.io"
@@ -42,7 +42,7 @@ describe(`counter tests`, () => {
     render(
       <RecoilRoot>
         <div css={css``}></div>
-        <RecoilInspector />
+        {/* <RecoilInspector /> */}
       </RecoilRoot>
     )
     expect(true).toBeDefined()
