@@ -1,6 +1,6 @@
 {
   "name": "wayforge-server",
-  "packageManager": "yarn@3.2.2",
+  "packageManager": "yarn@3.3.1",
   "scripts": {
     "dev": "tsx watch src/main.ts ",
     "gen": "tsx ./src/script/build-zod.server.ts"
