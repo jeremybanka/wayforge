@@ -2,15 +2,15 @@ import { isBoolean } from "fp-ts/lib/boolean"
 import { isNumber } from "fp-ts/lib/number"
 import { isString } from "fp-ts/lib/string"
 
-import { isObject } from "."
+import { hasProperties } from "."
 
-describe(`isObject`, () => {
+describe(`hasProperties`, () => {
   it(`refines an empty object`, () => {
-    const isEmptyObject = isObject({})
+    const isEmptyObject = hasProperties({})
     expect(isEmptyObject({})).toBe(true)
   })
   it(`refines an object with keys of different types`, () => {
-    const isMyFancyType = isObject({
+    const isMyFancyType = hasProperties({
       a: isString,
       b: isNumber,
       c: isBoolean,
@@ -29,7 +29,7 @@ describe(`isObject`, () => {
     }
   })
   it(`won't match an object with a missing key`, () => {
-    const isMyFancyType = isObject({
+    const isMyFancyType = hasProperties({
       a: isString,
       b: isNumber,
       c: isBoolean,
