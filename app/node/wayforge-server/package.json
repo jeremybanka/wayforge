@@ -6,14 +6,14 @@
     "gen": "tsx ./src/script/build-zod.server.ts"
   },
   "dependencies": {
-    "npmlog": "^7.0.1",
-    "prettier": "^2.7.1",
-    "simple-git": "^3.0.0",
-    "socket.io": "^4.5.4"
+    "npmlog": "7.0.1",
+    "prettier": "2.7.1",
+    "simple-git": "3.0.0",
+    "socket.io": "4.5.4"
   },
   "devDependencies": {
-    "@types/npmlog": "^4.1.4",
-    "@types/prettier": "^2.7.0",
-    "tsx": "^3.0.0"
+    "@types/npmlog": "4.1.4",
+    "@types/prettier": "2.7.0",
+    "tsx": "3.0.0"
   }
 }

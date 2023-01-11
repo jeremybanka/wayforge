@@ -17,8 +17,8 @@
     "test:once": "vitest run"
   },
   "peerDependencies": {
-    "fp-ts": "^2.13.1",
-    "io-ts": "^2.2.19"
+    "fp-ts": "2.13.1",
+    "io-ts": "2.2.19"
   },
   "repository": {
     "type": "git",

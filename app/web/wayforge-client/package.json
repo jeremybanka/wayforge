@@ -10,19 +10,19 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
+    "@emotion/react": "11.10.5",
+    "@emotion/styled": "11.10.5",
     "corners": "0.0.13",
-    "framer-motion": "^8.1.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.6.2",
-    "recoil": "^0.7.6",
-    "zod": "^3.18.0"
+    "framer-motion": "8.1.9",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.6.2",
+    "recoil": "0.7.6",
+    "zod": "3.18.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "vitest": "^0.26.3"
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "13.4.0",
+    "vitest": "0.26.3"
   }
 }

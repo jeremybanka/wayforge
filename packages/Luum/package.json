@@ -14,7 +14,7 @@
     "test:once": "vitest run"
   },
   "dependencies": {
-    "fp-ts": "^2.13.1"
+    "fp-ts": "2.13.1"
   },
   "lint-staged": {
     "*.ts{,x}": "yarn lint"
