@@ -1,6 +1,4 @@
-import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
-import { isString } from "fp-ts/string"
 
 export const mustBe =
   <T>(...args: ReadonlyArray<T>) =>
