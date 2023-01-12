@@ -10,3 +10,4 @@ lab
 *.js
 !.eslintrc.js
 *.js.map
+projects
