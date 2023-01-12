@@ -37,18 +37,17 @@ export type JsonStoreClientEvents = {
 /* prettier-ignore */
 // server "emit" / client "on"
 export type JsonStoreServerEvents =
-  & Record<`${string}_${string}`, (resource: JsonObj) => void>
   & Record<`indexRead_${string}`, (ids: JsonArr<string>) => void>
   & Record<`read_${string}`, (resource: Json) => void>
   & Record<`relationsRead_${string}`, (relations: Json) => void> 
   & { event: (message: string) => void }
 
-export type JsonStoreServerSideEvents = Record<keyof any, unknown>
+export type JsonStoreClusterEvents = Record<keyof any, unknown>
 
 type JsonStoreSocketServer = WebSocketServer<
   JsonStoreClientEvents,
   JsonStoreServerEvents,
-  JsonStoreServerSideEvents
+  JsonStoreClusterEvents
 >
 
 export const serveJsonStore =
@@ -62,7 +61,7 @@ export const serveJsonStore =
         socket: Socket<
           JsonStoreClientEvents,
           JsonStoreServerEvents,
-          JsonStoreServerSideEvents
+          JsonStoreClusterEvents
         >
       ) => {
         const { logger } = options
@@ -105,7 +104,7 @@ export const serveJsonStore =
           },
 
           relationsWrite: ({ id, type, value }) => {
-            logger.info(`${socket.id}  relationsWrite`, id, value)
+            logger.info(`${socket.id} relationsWrite`, id, value)
             writeRelations({ id, type, value })
           },
 
