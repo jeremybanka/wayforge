@@ -25,7 +25,7 @@ export const initWriter = ({
     const prevFileName = allFileNames.find((name) => name.includes(id))
     const prevFilePath = `${baseDir}/${type}/${prevFileName}`
     if (prevFileName && prevFilePath !== nextFilepath) {
-      renameSync(`${baseDir}/${prevFilePath}`, `${baseDir}/${nextFilepath}`)
+      renameSync(prevFilePath, nextFilepath)
     }
     writeFileSync(nextFilepath, formatted)
   }
