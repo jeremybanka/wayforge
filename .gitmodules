@@ -1,3 +1,0 @@
-[submodule "~/app/node/wayforge-server/projects/wayfarer"]
-	path = app/node/wayforge-server/projects/wayfarer
-	url = https://github.com/jeremybanka/wayfarer
