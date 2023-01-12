@@ -1,6 +1,6 @@
 import { StrictMode } from "react"
 
-// import { RecoilInspector } from "@eyecuelab/recoil-devtools"
+import { RecoilInspector } from "@eyecuelab/recoil-devtools"
 import { createRoot } from "react-dom/client"
 import { RecoilRoot } from "recoil"
 
@@ -15,7 +15,7 @@ root.render(
   <StrictMode>
     <RecoilRoot>
       <App />
-      {/* <RecoilInspector /> */}
+      <RecoilInspector />
     </RecoilRoot>
   </StrictMode>
 )
