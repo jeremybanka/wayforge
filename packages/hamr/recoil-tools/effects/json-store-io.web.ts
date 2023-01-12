@@ -1,9 +1,11 @@
+import { identity } from "fp-ts/lib/function"
 import type { Refinement } from "fp-ts/lib/Refinement"
 import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { Join } from "~/packages/anvl/src/join"
-import type { JsonArr, JsonObj } from "~/packages/anvl/src/json"
+import type { Json, JsonArr, JsonObj } from "~/packages/anvl/src/json"
+import { isJson } from "~/packages/anvl/src/json/refine"
 
 import type { JsonInterface } from "."
 import type {
@@ -11,20 +13,30 @@ import type {
   JsonStoreServerEvents,
 } from "./json-store-io.node"
 
-export type SocketSyncOptions<T> = {
+export type SocketSyncOptions = {
   id: string
   type: string
   socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
-  jsonInterface: JsonInterface<T>
 }
 
-export const socketSync: <T>(options: SocketSyncOptions<T>) => AtomEffect<T> =
-  ({ id, type, socket, jsonInterface: { toJson, fromJson } }) =>
-  ({ setSelf, onSet }) => {
+export const socketSync: <T>(
+  options: T extends Json
+    ? SocketSyncOptions
+    : JsonInterface<T> & SocketSyncOptions
+) => AtomEffect<T> = (options) =>
+  // @ts-expect-error typescript isn't smart enough to get this idea
+  smartSocketSync({ toJson: identity, fromJson: identity, ...options })
+
+export const smartSocketSync = <T>(
+  options: JsonInterface<T> & SocketSyncOptions
+): AtomEffect<T> => {
+  const { id, type, socket, toJson, fromJson } = options
+  return ({ setSelf, onSet }) => {
     socket.emit(`read`, { id, type })
-    socket.on(`${type}_${id}`, (json) => setSelf(fromJson(json)))
+    socket.on(`read_${id}`, (json) => setSelf(fromJson(json)))
     onSet((v) => socket.emit(`write`, { id, type, value: toJson(v) }))
   }
+}
 
 export type SocketIndexOptions<T> = {
   type: string

@@ -71,10 +71,6 @@ export const findReactionState = atomFamily<Reaction, string>({
       id,
       socket,
       type: `reaction`,
-      jsonInterface: {
-        toJson: (reaction) => reaction,
-        fromJson: (json) => json as Reaction,
-      },
     }),
   ],
 })

@@ -79,10 +79,6 @@ export const findEnergyState = atomFamily<Energy, string>({
       id,
       socket,
       type: `energy`,
-      jsonInterface: {
-        toJson: (energy) => energy,
-        fromJson: (json) => json as Energy,
-      },
     }),
   ],
 })
