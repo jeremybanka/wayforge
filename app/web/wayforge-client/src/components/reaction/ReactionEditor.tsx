@@ -4,8 +4,7 @@ import { css } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-// import reactionSchema from
-// "~/app/node/wayforge-server/projects/wayfarer/schema/reaction.schema.json"
+import reactionSchema from "~/app/node/wayforge-server/projects/wayfarer/schema/reaction.schema.json"
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
@@ -64,9 +63,7 @@ export const ReactionEditor: FC<
     reagents: (reagents) =>
       setReaction((current) => ({
         ...current,
-        reagents:
-          (console.log(become(reagents)(current.reagents)),
-          become(reagents)(current.reagents)),
+        reagents: become(reagents)(current.reagents),
       })),
     products: (products) =>
       setReaction((current) => ({
@@ -108,7 +105,7 @@ export const ReactionEditor: FC<
   return (
     <RecoverableErrorBoundary>
       <JsonEditor
-        // schema={reactionSchema as unknown as JsonSchema}
+        schema={reactionSchema as unknown as JsonSchema}
         data={reaction}
         set={setReaction}
         name={reaction.name}
