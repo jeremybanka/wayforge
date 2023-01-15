@@ -2042,14 +2042,9 @@ __metadata:
     json-schema-to-zod: 0.6.2
     mock-fs: 5.2.0
     prettier: 2.8.2
-    tsconfig-paths: 4.1.2
     tsx: 3.12.2
     turbo: 1.7.0
     typescript: 4.9.4
-    vite: 4.0.4
-    vite-plugin-svgr: 2.4.0
-    vite-tsconfig-paths: 4.0.3
-    vitest: 0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2092,6 +2087,8 @@ __metadata:
     react-router-dom: 6.6.2
     recoil: 0.7.6
     vite: 4.0.4
+    vite-plugin-svgr: 2.4.0
+    vite-tsconfig-paths: 4.0.3
     vitest: 0.27.1
     zod: 3.20.2
   languageName: unknown
@@ -2253,6 +2250,7 @@ __metadata:
     eslint: 8.31.0
     fp-ts: 2.13.1
     io-ts: 2.2.20
+    vite-tsconfig-paths: 4.0.3
     vitest: 0.27.1
   peerDependencies:
     fp-ts: ^2.13.1
@@ -7947,17 +7945,6 @@ __metadata:
   bin:
     tsconfck: bin/tsconfck.js
   checksum: bc914042b2f5e1f9d7bbadd05b74031f32e2f1757061743d70d86d17dda0734d838e67abb0105b81db67c30b66496e5d408cbe216bb43b3d567a181b0448ddc1
-  languageName: node
-  linkType: hard
-
-"tsconfig-paths@npm:4.1.2":
-  version: 4.1.2
-  resolution: "tsconfig-paths@npm:4.1.2"
-  dependencies:
-    json5: ^2.2.2
-    minimist: ^1.2.6
-    strip-bom: ^3.0.0
-  checksum: 3d9151ecea139594e25618717de15769ab9f38f8e6d510ac16e592b23e7f7105ea13cec5694c3de7e132c98277b775e18edd1651964164ee6d75737c408494cc
   languageName: node
   linkType: hard
 

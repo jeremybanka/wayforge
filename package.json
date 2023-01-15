@@ -15,7 +15,7 @@
     "lint": "eslint",
     "format": "eslint --fix",
     "build": "turbo run build",
-    "test": "turbo run test"
+    "test": "turbo run test:once"
   },
   "workspaces": [
     "app/web/*",
@@ -35,14 +35,9 @@
     "json-schema-to-zod": "0.6.2",
     "mock-fs": "5.2.0",
     "prettier": "2.8.2",
-    "tsconfig-paths": "4.1.2",
     "tsx": "3.12.2",
     "turbo": "1.7.0",
-    "typescript": "4.9.4",
-    "vite": "4.0.4",
-    "vite-plugin-svgr": "2.4.0",
-    "vite-tsconfig-paths": "4.0.3",
-    "vitest": "0.27.1"
+    "typescript": "4.9.4"
   },
   "keywords": [
     "react",
