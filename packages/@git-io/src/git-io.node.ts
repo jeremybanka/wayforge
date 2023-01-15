@@ -70,7 +70,8 @@ export const serveSimpleGit =
   (options: ServeGitOptions) =>
   <YourServer extends WebSocketServer>(
     server: YourServer
-  ): GitSocketServer & YourServer =>
+  ): GitSocketServer & YourServer => (
+    options.logger.info(`init`, `git-io`),
     server.on(
       `connection`,
       (
@@ -173,3 +174,4 @@ export const serveSimpleGit =
         }
       }
     )
+  )

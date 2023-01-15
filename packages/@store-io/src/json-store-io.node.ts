@@ -39,7 +39,8 @@ export const serveJsonStore =
   (options: JsonStoreOptions) =>
   <YourServer extends WebSocketServer>(
     server: YourServer
-  ): JsonStoreSocketServer & YourServer =>
+  ): JsonStoreSocketServer & YourServer => (
+    options.logger.info(`init`, `json-store-io`),
     server.on(
       `connection`,
       (
@@ -106,3 +107,4 @@ export const serveJsonStore =
         socket.on(`relationsWrite`, handle.relationsWrite)
       }
     )
+  )
