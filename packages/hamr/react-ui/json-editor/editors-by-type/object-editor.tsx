@@ -1,8 +1,8 @@
 import { useRef } from "react"
 import type { FC } from "react"
 
-import { isBoolean } from "fp-ts/lib/boolean"
-import { isString } from "fp-ts/lib/string"
+import { isBoolean } from "fp-ts/boolean"
+import { isString } from "fp-ts/string"
 
 import { lastOf } from "~/packages/anvl/src/array"
 import type { JsonObj } from "~/packages/anvl/src/json"

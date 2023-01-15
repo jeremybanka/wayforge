@@ -4,11 +4,11 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { Luum } from "~/packages/Luum"
+import { Luum } from "~/packages/Luum/src"
 
+import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_WIDTH, cssCard } from "../Card"
-import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
 
 export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
   const domId = useId()

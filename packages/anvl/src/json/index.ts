@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 
 export const serializeSet = <T>(set: Set<T>): string =>
   pipe(set, Array.from, JSON.stringify)
@@ -51,4 +51,9 @@ export const JSON_DEFAULTS: JsonTypes = {
   number: 0,
   object: {},
   string: ``,
+}
+
+export type JsonInterface<T, J extends Json = Json> = {
+  toJson: (t: T) => J
+  fromJson: (json: J) => T
 }

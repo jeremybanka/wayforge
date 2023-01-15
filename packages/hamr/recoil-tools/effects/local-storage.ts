@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 import type { AtomEffect } from "recoil"
 
 import type { Json, Primitive } from "~/packages/anvl/src/json"

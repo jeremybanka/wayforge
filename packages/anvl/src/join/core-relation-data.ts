@@ -1,4 +1,4 @@
-import { isString } from "fp-ts/lib/string"
+import { isString } from "fp-ts/string"
 
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
 

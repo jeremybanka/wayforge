@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 
 import { reduce, slice } from "../array"
 import { sprawl } from "./sprawl"

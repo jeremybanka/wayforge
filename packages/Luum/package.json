@@ -5,19 +5,20 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "build:types": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
-    "build:main": "tsx -- esbuild.config.ts",
-    "build": "yarn build:main && yarn build:types",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "cd example && vite",
     "lint": "eslint",
     "test": "vitest",
-    "test:once": "vitest run"
+    "test:once": "vitest run",
+    "release": "changesets publish"
   },
   "dependencies": {
     "fp-ts": "2.13.1"
   },
-  "lint-staged": {
-    "*.ts{,x}": "yarn lint"
+  "devDependencies": {
+    "eslint": "8.31.0",
+    "tsup": "^6.5.0",
+    "vitest": "^0.27.1"
   },
   "repository": {
     "type": "git",

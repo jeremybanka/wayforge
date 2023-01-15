@@ -1,6 +1,6 @@
-import { isBoolean } from "fp-ts/lib/boolean"
-import { isNumber } from "fp-ts/lib/number"
-import { isString } from "fp-ts/lib/string"
+import { isBoolean } from "fp-ts/boolean"
+import { isNumber } from "fp-ts/number"
+import { isString } from "fp-ts/string"
 
 import { isPlainObject } from "~/packages/anvl/src/object"
 

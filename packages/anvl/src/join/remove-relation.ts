@@ -1,5 +1,5 @@
-import { pipe } from "fp-ts/lib/function"
-import { isString } from "fp-ts/lib/string"
+import { pipe } from "fp-ts/function"
+import { isString } from "fp-ts/string"
 
 import { isEmptyArray, isOneOf, map } from "../array"
 import { comprises } from "../array/venn"
