@@ -2,10 +2,10 @@ import type { FC } from "react"
 import { useId } from "react"
 
 import { css } from "@emotion/react"
-import { Luum } from "luum"
 import { useRecoilValue } from "recoil"
 
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
+import { Luum } from "~/packages/Luum/src"
 
 import type { Energy } from "../../services/energy"
 import { findEnergyState } from "../../services/energy"

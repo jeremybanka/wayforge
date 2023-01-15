@@ -1,6 +1,6 @@
-import { pipe } from "fp-ts/lib/function"
-import * as ARNE from "fp-ts/lib/ReadonlyNonEmptyArray"
-import * as S from "fp-ts/lib/string"
+import { pipe } from "fp-ts/function"
+import * as ARNE from "fp-ts/ReadonlyNonEmptyArray"
+import * as S from "fp-ts/string"
 
 // function to hash a string
 const hashString = (str: string) => {

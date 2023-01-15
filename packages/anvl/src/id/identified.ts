@@ -1,4 +1,4 @@
-import type { Refinement } from "fp-ts/lib/Refinement"
+import type { Refinement } from "fp-ts/Refinement"
 
 import type { Energy } from "~/app/web/wayforge-client/src/services/energy"
 

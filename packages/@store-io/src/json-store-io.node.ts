@@ -1,28 +1,13 @@
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
-import type { JsonStoreOptions } from "~/lib/node/json-store"
-import type {
-  ReadIndex,
-  ReadRelations,
-  ReadResource,
-} from "~/lib/node/json-store/read"
-import {
-  initIndexer,
-  initReader,
-  initRelationReader,
-} from "~/lib/node/json-store/read"
-import type {
-  WriteIndex,
-  WriteRelations,
-  WriteResource,
-} from "~/lib/node/json-store/write"
-import {
-  initRelationsWriter,
-  initIndexWriter,
-  initWriter,
-} from "~/lib/node/json-store/write"
+import type { JsonStoreOptions } from "~/packages/@store-io/src"
 import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { Json, JsonArr, JsonObj } from "~/packages/anvl/src/json"
+import type { Json, JsonArr } from "~/packages/anvl/src/json"
+
+import { initIndexer, initReader, initRelationReader } from "./read"
+import type { ReadIndex, ReadRelations, ReadResource } from "./read"
+import { initRelationsWriter, initIndexWriter, initWriter } from "./write"
+import type { WriteIndex, WriteRelations, WriteResource } from "./write"
 
 /* prettier-ignore */
 // server "on" / client "emit"

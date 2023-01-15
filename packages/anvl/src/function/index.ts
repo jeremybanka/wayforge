@@ -1,4 +1,4 @@
-import type { Refinement } from "fp-ts/lib/Refinement"
+import type { Refinement } from "fp-ts/Refinement"
 
 /* eslint-disable prettier/prettier */
 export const become =

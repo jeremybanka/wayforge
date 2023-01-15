@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 import { become } from "~/packages/anvl/src/function"

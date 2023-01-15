@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 import {
   useRecoilTransaction_UNSTABLE,
   atom,
@@ -6,15 +6,15 @@ import {
   selectorFamily,
   DefaultValue,
 } from "recoil"
-import type energySchema from "wayforge-server/gen/energy.schema.json"
 import z, { string } from "zod"
 
-import { now } from "~/packages/anvl/src/id/now"
-import type { Json } from "~/packages/anvl/src/json"
+import type energySchema from "~/app/node/wayforge-server/gen/energy.schema.json"
 import {
   socketIndex,
   socketSync,
-} from "~/packages/hamr/recoil-tools/effects/json-store-io.web"
+} from "~/packages/@store-io/src/json-store-io.web"
+import { now } from "~/packages/anvl/src/id/now"
+import type { Json } from "~/packages/anvl/src/json"
 import {
   addToIndex,
   removeFromIndex,

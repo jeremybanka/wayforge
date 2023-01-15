@@ -1,6 +1,10 @@
-name: Lint & Test
+name: Lint, Build & Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
 
 defaults:
   run:
@@ -11,39 +15,51 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: node:lts
+    timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
       - name: Install Dependencies
         run: yarn
+
       - name: Lint
         run: yarn lint
+
       - name: Type Check
         run: yarn tsc
-      - name: Cleanup
-        if: ${{ always() }}
-        run: |
-          shopt -s dotglob
-          rm -rf *
 
   Test:
+    name: Build, Then Test
     runs-on: ubuntu-latest
     container:
       image: node:lts
+    timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
       - name: Install Dependencies
         run: yarn
+
       - name: Set up Git
         run: |
           git config --global init.defaultBranch main
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
+
+      - name: Build
+        run: yarn build
+
       - name: Test
         run: yarn test:once
-      - name: Cleanup
-        if: ${{ always() }}
-        run: |
-          shopt -s dotglob
-          rm -rf *
+
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@v1
+        with:
+          # This expects you to have a script called release which does a build for your packages and calls changeset publish
+          publish: yarn release

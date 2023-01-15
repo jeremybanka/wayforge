@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { isEmptyObject } from "~/packages/anvl/src/object"
