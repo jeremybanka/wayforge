@@ -4,6 +4,7 @@ import type { Identified } from "~/packages/anvl/src/id/identified"
 import { identify } from "~/packages/anvl/src/id/identified"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
+import { JsonSchema } from "~/packages/anvl/src/json/json-schema"
 
 import type { JsonStoreOptions } from "."
 import { getDirectoryJsonArr } from "./utils"
@@ -47,7 +48,7 @@ export const initReader = ({ baseDir }: JsonStoreOptions): ReadResource => {
 }
 
 export type ReadIndexOptions = { type: string }
-export type ReadIndex = (type: ReadIndexOptions) => Error | JsonArr<string>
+export type ReadIndex = (options: ReadIndexOptions) => Error | JsonArr<string>
 
 export const initIndexer = ({
   baseDir,
@@ -92,12 +93,35 @@ export const initRelationReader = ({
         const fileText = readFileSync(fileName, `utf8`)
         const json = parseJson(fileText)
         return json
-      } catch (e) {
+      } catch (thrown) {
         logger.warn(`Caught reading relations for "${type}" in ${dir}`)
-        if (e instanceof Error) return e
+        if (thrown instanceof Error) return thrown
       }
     }
     return new BadRequestError(`Not a relation type: ${type}`)
   }
   return readRelations
+}
+
+export type ReadSchemaOptions = { type: string }
+export type ReadSchema = (options: ReadSchemaOptions) => Error | Json
+
+export const initSchemaReader = ({
+  baseDir,
+  logger,
+}: JsonStoreOptions): ReadSchema => {
+  const readSchema = ({ type }) => {
+    const dir = `${baseDir}/_schemas/${type}`
+    try {
+      const directory = `${baseDir}/_schemas`
+      const fileName = `${directory}/${type}.schema.json`
+      const fileText = readFileSync(fileName, `utf8`)
+      const json = parseJson(fileText)
+      return json
+    } catch (thrown) {
+      logger.warn(`Caught reading schema for "${type}" in ${dir}`)
+      if (thrown instanceof Error) return thrown
+    }
+  }
+  return readSchema
 }
