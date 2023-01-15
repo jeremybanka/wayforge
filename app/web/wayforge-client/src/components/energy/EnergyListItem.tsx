@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom"
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 
-import type { Energy } from "../../services/energy"
 import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
+import type { Energy } from "../../services/energy"
 
 export const EnergyListItem: FC<RecoilListItemProps<Energy>> = ({ label }) => {
   const navigate = useNavigate()
