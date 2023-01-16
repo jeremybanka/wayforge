@@ -9,11 +9,6 @@ import type { JsonObj } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object"
 
-import type { JsxElements } from ".."
-import { AutoSizeInput } from "../../auto-size-input"
-import type { JsonEditorComponents } from "../default-components"
-import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
-import { JsonEditor_INTERNAL } from "../json-editor-internal"
 import {
   makePropertyCreationInterface,
   makePropertyRecasters,
@@ -22,6 +17,11 @@ import {
   makePropertySetters,
   makePropertySorter,
 } from "./utilities/object-properties"
+import type { JsxElements } from ".."
+import { AutoSizeInput } from "../../auto-size-input"
+import type { JsonEditorComponents } from "../default-components"
+import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
+import { JsonEditor_INTERNAL } from "../json-editor-internal"
 
 export type PropertyAdderProps = {
   addProperty: () => void
@@ -77,9 +77,11 @@ export const ObjectEditor = <T extends JsonObj>({
         const hasSchema = acc && !isBoolean(acc)
         const keyIsString = isString(key)
         const nextLayer = hasSchema
-          ? keyIsString
+          ? keyIsString && acc.type === `object`
             ? acc.properties?.[key]
-            : acc.items
+            : acc.type === `array` && acc.items && acc.items[key]
+            ? acc.items[key]
+            : undefined
           : undefined
 
         return nextLayer
@@ -99,9 +101,10 @@ export const ObjectEditor = <T extends JsonObj>({
       Object.assign(subSchema, ref)
     }
   }
-  const schemaKeys: ReadonlyArray<string> = subSchemaIsObject
-    ? Object.keys(subSchema?.properties ?? {})
-    : []
+  const schemaKeys: ReadonlyArray<string> =
+    subSchemaIsObject && subSchema.type === `object`
+      ? Object.keys(subSchema.properties ?? {})
+      : []
   const dataKeys: ReadonlyArray<string> = Object.keys(data)
   const [unofficialKeys, officialKeys] = dataKeys.reduce(
     ([unofficial, official], key) => {

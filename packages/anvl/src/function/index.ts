@@ -29,6 +29,11 @@ export const isModifier =
     }
   }
 
+export const pass =
+  <Params extends ReadonlyArray<any>, Out>(...params: Params) =>
+  (fn: (...params: Params) => Out): Out =>
+    fn(...params)
+
 export const typeOf =
   <T>(input: unknown) =>
   (isType: Refinement<unknown, T>): boolean =>
