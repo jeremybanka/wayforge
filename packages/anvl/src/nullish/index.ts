@@ -27,3 +27,8 @@ export type NullSafeRest<MaybeArg> = MaybeArg extends null
 export interface Discard {
   readonly _discard: unique symbol
 }
+
+export const ifNullish =
+  <X, Y>(alt: Y) =>
+  (input: X): Exclude<X, null | undefined> | Y =>
+    (input ?? alt) as Exclude<X, null | undefined> | Y

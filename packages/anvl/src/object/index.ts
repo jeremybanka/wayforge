@@ -3,12 +3,23 @@ import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
 import { allTrue, every, reduce } from "../array"
-import { isUndefined } from "../nullish"
+import { pass } from "../function"
+import { ifNullish, isUndefined } from "../nullish"
 
 export const key =
   <T extends object>(k: keyof T) =>
   (obj: Exclude<object, null>): unknown =>
     (obj as Record<keyof any, any>)[k]
+
+export const access = <V, T extends Record<keyof any, V>>(
+  k: keyof any
+): {
+  (obj: T): T[keyof T] | undefined
+  in: (obj: T) => T[keyof T] | undefined
+} =>
+  Object.assign((obj: T) => obj[k as keyof T], {
+    in: (obj: T) => obj[k as keyof T],
+  })
 
 export const redact =
   <K extends keyof any>(...args: K[]) =>
@@ -24,23 +35,52 @@ export const isPlainObject = (
   input !== null &&
   Object.getPrototypeOf(input) === Object.prototype
 
-export const hasProperties =
+export type HasPropertiesOptions = {
+  readonly allowExtraProperties?: boolean
+}
+
+export const hasProperties = <OBJ extends object>(
+  isValue: {
+    [K in keyof OBJ]: Refinement<unknown, OBJ[K]>
+  },
+  options?: HasPropertiesOptions
+): Refinement<unknown, OBJ> => {
+  const name = `{${recordToEntries(
+    isValue as Record<keyof any, Refinement<any, any>>
+  )
+    .map(([k, v]) => String(k) + `:` + v.name)
+    .join(`,`)}}`
+
+  const _ = {
+    [name]: (input: unknown): input is OBJ =>
+      isPlainObject(input) &&
+      pipe(
+        isValue,
+        Object.keys,
+        every((key) => key in input)
+      ) &&
+      pipe(
+        input,
+        mob((val, key) =>
+          pipe(
+            isValue,
+            access(key),
+            ifNullish(() => options?.allowExtraProperties ?? false),
+            pass(val)
+          )
+        ),
+        Object.values,
+        allTrue
+      ),
+  }
+  return _[name]
+}
+
+export const doesExtend /* alias for hasProperties with allowExtraProperties */ =
   <OBJ extends object>(isValue: {
     [K in keyof OBJ]: Refinement<unknown, OBJ[K]>
   }): Refinement<unknown, OBJ> =>
-  (input: unknown): input is OBJ =>
-    isPlainObject(input) &&
-    pipe(
-      isValue,
-      Object.keys,
-      every((key) => key in input)
-    ) &&
-    pipe(
-      input,
-      mob((val, key) => isValue[key as keyof OBJ]?.(val) ?? false),
-      Object.values,
-      allTrue
-    )
+    hasProperties(isValue, { allowExtraProperties: true })
 
 /* prettier-ignore */
 export const isRecord = <
