@@ -27,13 +27,16 @@ export const parseJson = (str: string): Json => JSON.parse(str)
 
 export type Empty = Record<string, never>
 
-export type JsonTypeName =
-  | `array`
-  | `boolean`
-  | `null`
-  | `number`
-  | `object`
-  | `string`
+export const JSON_TYPE_NAMES = [
+  `array`,
+  `boolean`,
+  `null`,
+  `number`,
+  `object`,
+  `string`,
+] as const
+
+export type JsonTypeName = (typeof JSON_TYPE_NAMES)[number]
 
 export interface JsonTypes extends Record<JsonTypeName, Json> {
   array: JsonArr
