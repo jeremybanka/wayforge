@@ -3,6 +3,11 @@ import type { Refinement } from "fp-ts/Refinement"
 export const canExist = (_: unknown): _ is unknown => true
 export const cannotExist = (_: unknown): _ is never => false
 
+export const isLiteral =
+  <T extends boolean | number | string>(value: T): Refinement<unknown, T> =>
+  (input: unknown): input is T =>
+    input === value
+
 export const isWithin =
   <Options extends ReadonlyArray<any>>(args: Options) =>
   (input: unknown): input is Options[number] =>

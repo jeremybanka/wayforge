@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/function"
 
-import { reduce, slice } from "../array"
 import { sprawl } from "./sprawl"
+import { reduce, slice } from "../array"
 
 // type Container =
 
