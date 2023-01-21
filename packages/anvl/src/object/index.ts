@@ -29,13 +29,26 @@ export const redact =
 type MappedC<A, B> = {
   [K in keyof A & keyof B]: A[K] extends B[K] ? never : K
 }
+type OptionalPropertyOf<T extends object> = Exclude<
+  {
+    [K in keyof T]: T extends Record<K, T[K]> ? never : K
+  }[keyof T],
+  undefined
+>
 
-type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T]
+const O: OptionalPropertyOf<{ a: string; b?: number }> = `b`
 
 export const select =
   <Key extends keyof any>(...args: Key[]) =>
-  // @ts-expect-error fuk u
-  <Obj extends object>(obj: Obj): Pick<Obj, Key> =>
+  <Obj extends object>(
+    obj: Obj
+  ): {
+    // @ts-expect-error fuk u
+    [K in keyof Pick<Obj, Key>]: any extends Pick<Obj, Key>[K]
+      ? undefined
+      : // @ts-expect-error fuk u
+        Pick<Obj, Key>[K]
+  } =>
     // @ts-expect-error fuk u ts
     reduce<Key, Pick<Obj, Key>>(
       // @ts-expect-error i will fite u
@@ -48,7 +61,7 @@ export const modify =
   <Mod extends Record<keyof any, any>>(modifications: Mod) =>
   <
     Obj extends {
-      [Key in keyof Mod]: Key extends keyof Mod
+      [Key in keyof Mod]?: Key extends keyof Mod
         ? Mod[Key] extends (v: any) => any
           ? Parameters<Mod[Key]>[0]
           : Obj[Key]
@@ -64,7 +77,12 @@ export const modify =
       : Obj[Key]
   } =>
     Object.entries(modifications).reduce(
-      (acc, [key, mod]) => ((acc[key as keyof Obj] = mod?.(obj[key])), acc),
+      (acc, [key, mod]) => (
+        obj[key] &&
+          (acc[key as keyof Obj] =
+            typeof mod === `function` ? mod?.(obj[key]) : mod),
+        acc
+      ),
       { ...obj } as Obj
     ) as any
 
@@ -212,6 +230,9 @@ export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Partial<Pick<T, Exclude<keyof T, K>>> & Required<Pick<T, K>>
 }[keyof T]
 
-// export type Mixed<T> = {
-//   [K in keyof T]:
-// }
+type Z = {
+  a: string
+  b?: number
+}
+
+type Z2 = OptionalPropertyOf<Z>

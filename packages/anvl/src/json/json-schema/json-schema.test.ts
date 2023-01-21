@@ -1,4 +1,4 @@
-import { writeFileSync } from "fs"
+/* eslint-disable max-lines */
 
 import schema07 from "~/app/node/wayforge-server/projects/wayfarer/07.schema.json"
 
@@ -7,15 +7,65 @@ import {
   isJsonSchemaCore,
   dereference,
   refineJsonSchema,
+  isJsonSchemaRoot,
+  isMixedSchema,
+  isJsonSchemaRef,
+  isArraySchema,
+  arraySchemaStructure,
+  unionSchemaStructure,
+  mixedSchemaStructure,
 } from "./json-schema"
 
 describe(`isJsonSchema`, () => {
   it(`should recognize booleans as schemas`, () => {
     expect(isJsonSchema(true)).toBe(true)
+
     expect(isJsonSchema(false)).toBe(true)
   })
   it(`should validate the draft 7 meta schema as a schema`, () => {
     const result = isJsonSchema(schema07)
+    console.log({
+      isJsonSchemaRoot: isJsonSchemaRoot(schema07),
+      isJsonSchemaCore: isJsonSchemaCore(schema07),
+      isMixedSchema: isMixedSchema(schema07),
+      properties: {
+        fitsMixedSchema: mixedSchemaStructure.properties(schema07.properties),
+      },
+    })
+    for (const [key, value] of Object.entries(mixedSchemaStructure)) {
+      console.log({ key, matches: value(schema07[key]) })
+    }
+    const failingCases = Object.entries(schema07.properties)
+      .map(([key, value]) => {
+        const isRef = isJsonSchemaRef(value)
+        const isSch = isJsonSchema(value)
+        const isValid = isRef || isSch
+        return [+isValid, { key, c: +isSch, r: +isRef }]
+      })
+      .filter(([key]) => key === 0)
+    failingCases.forEach(([key, value]) => console.log(key, value))
+    console.log({ failingCases: failingCases.length })
+    console.log(`type`, schema07.properties.type, {
+      isJsonSchema: isJsonSchema(schema07.properties.type),
+    })
+    const failingTypeCases = Object.entries(unionSchemaStructure).map(
+      ([key, value]) =>
+        console.log(`type.${key}`, value(schema07.properties.type[key]))
+    )
+    console.log({ 0: isJsonSchemaRef(schema07.properties.type.anyOf[0]) })
+    console.log({ 1: isJsonSchema(schema07.properties.type.anyOf[1]) })
+    console.log({ 1: isArraySchema(schema07.properties.type.anyOf[1]) })
+
+    console.log(`type.anyOf[1]`, schema07.properties.type.anyOf[1], {
+      isJsonSchema: isJsonSchema(schema07.properties.type),
+    })
+    const failingTypeAnyOf1Cases = Object.entries(arraySchemaStructure).map(
+      ([key, value]) =>
+        console.log(
+          `type.anyOf[1].${key}`,
+          value(schema07.properties.type.anyOf[1][key])
+        )
+    )
     expect(result).toBe(true)
   })
 })
@@ -47,7 +97,37 @@ describe(`refineJsonSchema`, () => {
     const result = refineJsonSchema({ type: `string` })
     expect(result).toStrictEqual([{ type: `string`, data: { type: `string` } }])
   })
-  it(`should refine a simple schema with a reference`, () => {
+  it(`refines a mixed schema`, () => {
+    const result = refineJsonSchema({
+      type: [`object`, `string`],
+      properties: {
+        a: { type: `string` },
+        b: { type: `number` },
+      },
+      maxLength: 10,
+    })
+    // console.log({ result })
+    expect(result).toStrictEqual([
+      {
+        type: `object`,
+        data: {
+          type: `object`,
+          properties: {
+            a: { type: `string` },
+            b: { type: `number` },
+          },
+        },
+      },
+      {
+        type: `string`,
+        data: {
+          type: `string`,
+          maxLength: 10,
+        },
+      },
+    ])
+  })
+  it(`refines a simple schema with a reference`, () => {
     const result = refineJsonSchema({
       description: `A flavor of stuff in the world.`,
       type: `object`,
@@ -144,5 +224,16 @@ describe(`refineJsonSchema`, () => {
         },
       },
     ])
+  })
+  // it(`refines schema 7`, () => {
+  //   const result = refineJsonSchema(schema07)
+  //   // expect(result).toStrictEqual()
+  // })
+})
+
+describe(`validateWithSchema`, () => {
+  it(`should produce a function to validate a simple object`, () => {
+    const result = validateWithSchema({ a: 1, b: 2 }, { type: `object` })
+    expect(result).toBe(true)
   })
 })

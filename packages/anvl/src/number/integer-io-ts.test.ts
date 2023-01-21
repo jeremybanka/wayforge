@@ -1,6 +1,6 @@
 import * as D from "io-ts/Decoder"
 
-import { mySchemable, make } from "./integer"
+import { mySchemable, make } from "./integer-io-ts"
 
 describe(``, () => {
   it(``, () => {
