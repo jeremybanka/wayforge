@@ -3,8 +3,8 @@ import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 
 import { delve, hasProperties, modify, redact, select } from "."
-import type { integer } from "../json/json-schema/json-schema"
-import { Int } from "../json/json-schema/json-schema"
+import type { integer } from "../json/json-schema/integer"
+import { Int } from "../json/json-schema/integer"
 import { ifDefined } from "../nullish"
 
 describe(`hasProperties`, () => {
@@ -99,7 +99,7 @@ const G: Pick<{ a: number; b: integer; c: string }, `a` | `b`> = {
 
 type MySelectable = { a: number; b?: string; c: boolean }
 
-describe(`select Pick<Obj, Keys>`, () => {
+describe(`select (Pick<Obj, Keys>)`, () => {
   it(`returns a subset of an object`, () => {
     const result = select(`a`, `b`)({ a: 1, b: 2, c: 3 })
     expect(result).toStrictEqual({ a: 1, b: 2 })
@@ -108,9 +108,11 @@ describe(`select Pick<Obj, Keys>`, () => {
     const result0 = select(`a`, `b`)({ a: 1, c: true })
     // @ts-expect-error c was not selected
     const { a, b, c } = result0
-    const result1 = select(`a`, `b`)({ a: 1, c: true })
+    console.log(b)
+    const result1 = select(`a`, `b`)<MySelectable>({ a: 1, c: true })
     // @ts-expect-error c was not selected
     const { a: a1, b: b1, c: c1 } = result1
+    console.log({ result0, result1 })
     expect(result0).toStrictEqual({ a: 1 })
   })
 })
@@ -118,6 +120,7 @@ describe(`select Pick<Obj, Keys>`, () => {
 describe(`modify`, () => {
   it(`modifies a property`, () => {
     const result = modify({ a: `yo` })({ a: 1, b: 2 })
-    expect(result).toStrictEqual({ a: 2, b: 2 })
+    const { a, b } = result
+    expect(result).toStrictEqual({ a: `yo`, b: 2 })
   })
 })

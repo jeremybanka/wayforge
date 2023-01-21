@@ -5,20 +5,12 @@ import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
+import type { integer } from "./integer"
+import { isInteger } from "./integer"
 import { JSON_TYPE_NAMES } from ".."
 import { isArray } from "../../array"
 import { ifDefined } from "../../nullish"
-import {
-  delve,
-  doesExtend,
-  hasProperties,
-  isPlainObject,
-  isRecord,
-  mob,
-  modify,
-  select,
-  tweak,
-} from "../../object"
+import { delve, doesExtend, isRecord, modify, select, tweak } from "../../object"
 import { deepMob } from "../../object/deepMob"
 import { sprawl } from "../../object/sprawl"
 import {
@@ -28,60 +20,6 @@ import {
   isWithin,
   isUnion,
 } from "../../refinement"
-
-export type IntegerBrand = {
-  readonly integer: unique symbol // totally virtual
-}
-export type integer = IntegerBrand & number
-export const isInteger = (input: unknown): input is integer =>
-  Number.isInteger(input as number)
-
-export const parseInt = (input: unknown): integer => {
-  if (isInteger(input)) return input
-  throw new IntegerParseError(input)
-}
-
-export class Fraction extends Number {
-  public readonly numerator: integer
-  public readonly denominator: integer
-
-  public constructor(n: integer | number, d: integer | number) {
-    super(n / d)
-    if (d === 0) {
-      throw new Error(`Denominator cannot be zero`)
-    }
-    this.numerator = parseInt(n)
-    this.denominator = parseInt(d)
-  }
-  public readonly [Symbol.toPrimitive]: () => number = () =>
-    this.numerator / this.denominator
-}
-export const isFraction = (input: unknown): input is Fraction =>
-  input instanceof Fraction
-
-export class IntegerParseError extends Error {
-  public constructor(value: unknown) {
-    super(`Could not parse integer from ${JSON.stringify(value)}`)
-  }
-}
-
-export type IntegerParseResult =
-  | {
-      value: integer
-      error: null
-      round: null
-      upper: null
-      lower: null
-      ratio: null
-    }
-  | {
-      value: null
-      error: IntegerParseError
-      round: integer
-      upper: integer
-      lower: integer
-      ratio: Fraction | null
-    }
 
 export const JSON_SCHEMA_TYPES = [...JSON_TYPE_NAMES, `integer`] as const
 export type JsonSchemaType = (typeof JSON_SCHEMA_TYPES)[number]
@@ -161,6 +99,7 @@ export type JsonSchemaCore =
   | NumberSchema
   | ObjectSchema
   | StringSchema
+  | UnionSchema
 
 export const isJsonSchemaCore = isUnion
   .or(isArraySchema)
@@ -171,6 +110,7 @@ export const isJsonSchemaCore = isUnion
   .or(isObjectSchema)
   .or(isStringSchema)
   .or(isMixedSchema)
+  .or(isUnionSchema)
 
 export type JsonSchemaRoot = {
   $id?: string
@@ -181,9 +121,6 @@ export type JsonSchemaRoot = {
 export const isJsonSchemaRoot = doesExtend({
   $id: ifDefined(isString),
   $schema: ifDefined(isString),
-  type: couldBe(isWithin(JSON_SCHEMA_TYPES)).or(
-    isArray(isWithin(JSON_SCHEMA_TYPES))
-  ),
 })
 
 /* prettier-ignore */
@@ -287,41 +224,153 @@ export const refineJsonSchema = (
         }
       }
       if (isMixedSchema(result)) {
-        result.type.map((type) => {
-          switch (type) {
-            case `array`:
-              return pipe(
-                result,
-                select(
-                  `$id`,
-                  `$schema`,
-                  `type`,
-                  `items`,
-                  `maxItems`,
-                  `minItems`,
-                  `uniqueItems`
-                ),
-                modify({
+        const separated: (Error | RefinedJsonSchema)[] = result.type.map(
+          (type) => {
+            switch (type) {
+              case `array`: {
+                return {
                   type: `array`,
-                } as const)
-              )
-            case `boolean`:
-              return pipe(
-                result,
-                ({ $id }) => ({ $id }),
-                select(`$id`, `$schema`, `type`, `enum`),
-                ({ $id, $schema, type, enum: e }) =>
+                  data: pipe(
+                    result,
+                    select(
+                      `$id`,
+                      `$schema`,
+                      `type`,
+                      `items`,
+                      `minItems`,
+                      `maxItems`,
+                      `uniqueItems`
+                    ),
+                    modify({
+                      type: `array`,
+                    } as const)
+                  ),
+                }
+              }
+              case `boolean`: {
+                const data = pipe(
+                  result,
+                  select(`$id`, `$schema`, `type`, `enum`),
                   modify({
                     type: `boolean`,
-                    enum: (e: ReadonlyArray<JsonSchemaType> | unknown) =>
-                      e.filter(isBoolean),
-                  } as const)(a)
-              )
+                    enum: (e: MixedSchema[`enum`]) => e?.filter(isBoolean),
+                  } as const)
+                )
+                return { data, type: `boolean` }
+              }
+              case `integer`: {
+                const data: IntegerSchema & JsonSchemaRoot = pipe(
+                  result,
+                  select(
+                    `$id`,
+                    `$schema`,
+                    `type`,
+                    `minimum`,
+                    `maximum`,
+                    `exclusiveMinimum`,
+                    `exclusiveMaximum`,
+                    `enum`
+                  ),
+                  modify({
+                    type: `integer`,
+                    enum: (e: MixedSchema[`enum`]) => e?.filter(isInteger),
+                    minimum: (m: MixedSchema[`minimum`]) =>
+                      isInteger(m) ? m : undefined,
+                    maximum: (m: MixedSchema[`maximum`]) =>
+                      isInteger(m) ? m : undefined,
+                    exclusiveMinimum: (m: MixedSchema[`exclusiveMinimum`]) =>
+                      isInteger(m) ? m : undefined,
+                    exclusiveMaximum: (m: MixedSchema[`exclusiveMaximum`]) =>
+                      isInteger(m) ? m : undefined,
+                  } as const)
+                )
+                return { data, type: `integer` }
+              }
+              case `null`: {
+                const data: JsonSchemaRoot & NullSchema = pipe(
+                  result,
+                  select(`$id`, `$schema`, `type`, `enum`),
+                  modify({
+                    type: `null`,
+                  } as const)
+                )
+                return { data, type: `null` }
+              }
+              case `number`: {
+                const data: JsonSchemaRoot & NumberSchema = pipe(
+                  result,
+                  select(
+                    `$id`,
+                    `$schema`,
+                    `type`,
+                    `minimum`,
+                    `maximum`,
+                    `exclusiveMinimum`,
+                    `exclusiveMaximum`,
+                    `enum`
+                  ),
+                  modify({
+                    type: `number`,
+                    enum: (e: MixedSchema[`enum`]) => e?.filter(isNumber),
+                    minimum: (m: MixedSchema[`minimum`]) =>
+                      isNumber(m) ? m : undefined,
+                    maximum: (m: MixedSchema[`maximum`]) =>
+                      isNumber(m) ? m : undefined,
+                    exclusiveMinimum: (m: MixedSchema[`exclusiveMinimum`]) =>
+                      isNumber(m) ? m : undefined,
+                    exclusiveMaximum: (m: MixedSchema[`exclusiveMaximum`]) =>
+                      isNumber(m) ? m : undefined,
+                  } as const)
+                )
+                return { data, type: `number` }
+              }
+              case `object`: {
+                const data: JsonSchemaRoot & ObjectSchema = pipe(
+                  result,
+                  select(
+                    `$id`,
+                    `$schema`,
+                    `type`,
+                    `properties`,
+                    `required`,
+                    `minProperties`,
+                    `maxProperties`,
+                    `additionalProperties`
+                  ),
+                  modify({
+                    type: `object`,
+                  } as const)
+                )
+                return { data, type: `object` }
+              }
+              case `string`: {
+                const data: JsonSchemaRoot & StringSchema = pipe(
+                  result,
+                  select(
+                    `$id`,
+                    `$schema`,
+                    `type`,
+                    `minLength`,
+                    `maxLength`,
+                    `pattern`,
+                    `format`,
+                    `enum`
+                  ),
+                  modify({
+                    type: `string`,
+                    enum: (e: MixedSchema[`enum`]) => e?.filter(isString),
+                  } as const)
+                )
+                return { data, type: `string` }
+              }
+            }
           }
-        })
+        )
+        return separated
       }
     }
   }
+  return [new Error(`Invalid schema`)]
 }
 
 export const JSON_SCHEMA_STRING_FORMATS = [
@@ -339,72 +388,6 @@ export const JSON_SCHEMA_STRING_FORMATS = [
   `uuid`,
 ] as const
 
-export function asNumber(input: Fraction | integer | number): number
-export function asNumber(input: Fraction[] | integer[] | number[]): number[]
-export function asNumber<
-  R extends Record<
-    keyof any,
-    Fraction | Fraction[] | integer | integer[] | number[] | number
-  >
->(
-  input: R
-): {
-  [K in keyof R]: R[K] extends Fraction | integer | number ? number : number[]
-}
-export function asNumber(input: unknown): unknown {
-  return input as any
-}
-
-export const a = asNumber(new Fraction(1, 2))
-export const b = asNumber([new Fraction(1, 2)])
-export const c = asNumber({ a: new Fraction(1, 2) })
-
-export const Int = Object.assign((input: unknown) => parseInt(input), {
-  from: (input: unknown): IntegerParseResult =>
-    pipe(input, String, parseFloat, (num) =>
-      isInteger(num)
-        ? {
-            value: num,
-            error: null,
-            round: null,
-            upper: null,
-            lower: null,
-            ratio: null,
-          }
-        : {
-            value: null,
-            error: new IntegerParseError(input),
-            round: Math.round(num) as integer,
-            upper: Math.ceil(num) as integer,
-            lower: Math.floor(num) as integer,
-            ratio: null,
-          }
-    ),
-
-  formula: <
-    I extends Record<
-      keyof any,
-      Fraction | Fraction[] | integer | integer[] | number[] | number
-    >,
-    O extends Record<
-      keyof any,
-      Fraction | Fraction[] | integer | integer[] | number[] | number
-    >
-  >(
-    fm: (input: {
-      [K in keyof I]: I[K] extends (Fraction | integer)[] ? number[] : number
-    }) => O
-  ) => {
-    return (input: I): O => {
-      return fm(
-        input as {
-          [K in keyof I]: I[K] extends (Fraction | integer)[] ? number[] : number
-        }
-      )
-    }
-  },
-})
-
 export type JsonSchemaStringFormat = (typeof JSON_SCHEMA_STRING_FORMATS)[number]
 
 export type StringSchema = {
@@ -415,15 +398,16 @@ export type StringSchema = {
   pattern?: string
   format?: JsonSchemaStringFormat
 }
+export const stringSchemaStructure = {
+  type: isLiteral(`string`),
+  enum: ifDefined(isArray(isString)),
+  minLength: ifDefined(isInteger),
+  maxLength: ifDefined(isInteger),
+  pattern: ifDefined(isString),
+  format: ifDefined(isWithin(JSON_SCHEMA_STRING_FORMATS)),
+}
 export function isStringSchema(input: unknown): input is StringSchema {
-  return doesExtend({
-    type: isLiteral(`string`),
-    enum: ifDefined(isArray(isString)),
-    minLength: ifDefined(isNumber),
-    maxLength: ifDefined(isNumber),
-    pattern: ifDefined(isString),
-    format: ifDefined(isWithin(JSON_SCHEMA_STRING_FORMATS)),
-  })(input)
+  return doesExtend(stringSchemaStructure)(input)
 }
 
 export type NumberSchema = {
@@ -435,16 +419,17 @@ export type NumberSchema = {
   exclusiveMaximum?: number
   multipleOf?: number
 }
+export const numberSchemaStructure = {
+  type: isLiteral(`number`),
+  enum: ifDefined(isArray(isNumber)),
+  minimum: ifDefined(isNumber),
+  maximum: ifDefined(isNumber),
+  exclusiveMinimum: ifDefined(isNumber),
+  exclusiveMaximum: ifDefined(isNumber),
+  multipleOf: ifDefined(isNumber),
+}
 export function isNumberSchema(input: unknown): input is NumberSchema {
-  return doesExtend({
-    type: isLiteral(`number`),
-    enum: ifDefined(isArray(isNumber)),
-    minimum: ifDefined(isNumber),
-    maximum: ifDefined(isNumber),
-    exclusiveMinimum: ifDefined(isNumber),
-    exclusiveMaximum: ifDefined(isNumber),
-    multipleOf: ifDefined(isNumber),
-  })(input)
+  return doesExtend(numberSchemaStructure)(input)
 }
 
 export type IntegerSchema = {
@@ -456,82 +441,98 @@ export type IntegerSchema = {
   exclusiveMaximum?: integer
   multipleOf?: integer
 }
+export const integerSchemaStructure = {
+  type: isLiteral(`integer`),
+  enum: ifDefined(isArray(isInteger)),
+  minimum: ifDefined(isInteger),
+  maximum: ifDefined(isInteger),
+  exclusiveMinimum: ifDefined(isInteger),
+  exclusiveMaximum: ifDefined(isInteger),
+  multipleOf: ifDefined(isInteger),
+}
 export function isIntegerSchema(input: unknown): input is IntegerSchema {
-  return doesExtend({
-    type: isLiteral(`integer`),
-    enum: ifDefined(isArray(isInteger)),
-    minimum: ifDefined(isInteger),
-    maximum: ifDefined(isInteger),
-    exclusiveMinimum: ifDefined(isInteger),
-    exclusiveMaximum: ifDefined(isInteger),
-    multipleOf: ifDefined(isInteger),
-  })(input)
+  return doesExtend(integerSchemaStructure)(input)
 }
 
 export type BooleanSchema = {
   type: `boolean`
   enum?: boolean[]
 }
+export const booleanSchemaStructure = {
+  type: isLiteral(`boolean`),
+  enum: ifDefined(isArray(isBoolean)),
+}
 export function isBooleanSchema(input: unknown): input is BooleanSchema {
-  return doesExtend({
-    type: isLiteral(`boolean`),
-    enum: ifDefined(isArray(isBoolean)),
-  })(input)
+  return doesExtend(booleanSchemaStructure)(input)
 }
 
 export type NullSchema = {
   type: `null`
 }
+export const nullSchemaStructure = {
+  type: isLiteral(`null`),
+}
 export function isNullSchema(input: unknown): input is NullSchema {
-  return doesExtend({
-    type: isLiteral(`null`),
-  })(input)
+  return doesExtend(nullSchemaStructure)(input)
 }
 
 export type ObjectSchema = {
   type: `object`
   properties?: Record<string, JsonSchema>
   required?: string[]
-  additionalProperties?: boolean | { type: JsonSchemaType }
+  additionalProperties?:
+    | JsonSchema
+    | JsonSchemaRef
+    | boolean
+    | { type: JsonSchemaType }
   minProperties?: number
   maxProperties?: number
 }
-
-export function isObjectSchema(input: unknown): input is ObjectSchema {
-  return doesExtend({
-    type: isLiteral(`object`),
-    properties: ifDefined(
-      isRecord(isString, isUnion.or(isJsonSchemaCore).or(isJsonSchemaRef))
-    ),
-    required: ifDefined(isArray(isString)),
-    additionalProperties: ifDefined(
-      isUnion.or(isBoolean).or(
+export const objectSchemaStructure = {
+  type: isLiteral(`object`),
+  properties: ifDefined(
+    isRecord(isString, isUnion.or(isJsonSchema).or(isJsonSchemaRef))
+  ),
+  required: ifDefined(isArray(isString)),
+  additionalProperties: ifDefined(
+    isUnion
+      .or(isBoolean)
+      .or(
         doesExtend({
           type: isWithin(JSON_SCHEMA_TYPES),
         })
       )
-    ),
-    minProperties: ifDefined(isNumber),
-    maxProperties: ifDefined(isNumber),
-  })(input)
+      .or(isJsonSchemaRef)
+      .or(isJsonSchema)
+  ),
+  minProperties: ifDefined(isInteger),
+  maxProperties: ifDefined(isInteger),
+}
+export function isObjectSchema(input: unknown): input is ObjectSchema {
+  return doesExtend(objectSchemaStructure)(input)
 }
 
 export type ArraySchema = {
   type: `array`
-  items?: JsonSchema
+  items?: (JsonSchema | JsonSchemaRef)[] | JsonSchema | JsonSchemaRef
   minItems?: number
   maxItems?: number
   uniqueItems?: boolean
 }
-
+export const arraySchemaStructure = {
+  type: isLiteral(`array`),
+  items: ifDefined(
+    isUnion
+      .or(isJsonSchema)
+      .or(isJsonSchemaRef)
+      .or(isArray(isUnion.or(isJsonSchemaRef).or(isJsonSchema)))
+  ),
+  minItems: ifDefined(isInteger),
+  maxItems: ifDefined(isInteger),
+  uniqueItems: ifDefined(isBoolean),
+}
 export function isArraySchema(input: unknown): input is ArraySchema {
-  return doesExtend({
-    type: isLiteral(`array`),
-    items: ifDefined(isUnion.or(isJsonSchemaCore).or(isArray(isJsonSchemaRef))),
-    minItems: ifDefined(isNumber),
-    maxItems: ifDefined(isNumber),
-    uniqueItems: ifDefined(isBoolean),
-  })(input)
+  return doesExtend(arraySchemaStructure)(input)
 }
 
 export type MixedSchema = Partial<
@@ -546,38 +547,56 @@ export type MixedSchema = Partial<
   type: ReadonlyArray<JsonSchemaType>
   enum?: ReadonlyArray<integer | boolean | number | string>
 }
-
-export function isMixedSchema(input: unknown): input is MixedSchema {
-  return doesExtend({
-    type: isArray(isWithin(JSON_SCHEMA_TYPES)),
-    enum: ifDefined(
-      isArray(isUnion.or(isNumber).or(isString).or(isBoolean).or(isInteger))
-    ),
-    items: ifDefined(isUnion.or(isJsonSchemaCore).or(isArray(isJsonSchemaRef))),
-    minItems: ifDefined(isNumber),
-    maxItems: ifDefined(isNumber),
-    uniqueItems: ifDefined(isBoolean),
-    properties: ifDefined(
-      isRecord(isString, isUnion.or(isJsonSchemaCore).or(isJsonSchemaRef))
-    ),
-    required: ifDefined(isArray(isString)),
-    additionalProperties: ifDefined(
-      isUnion.or(isBoolean).or(
-        doesExtend({
-          type: isWithin(JSON_SCHEMA_TYPES),
-        })
-      )
-    ),
-    minProperties: ifDefined(isNumber),
-    maxProperties: ifDefined(isNumber),
-    minLength: ifDefined(isNumber),
-    maxLength: ifDefined(isNumber),
-    pattern: ifDefined(isString),
-    format: ifDefined(isWithin(JSON_SCHEMA_STRING_FORMATS)),
-    minimum: ifDefined(isNumber),
-    maximum: ifDefined(isNumber),
-    exclusiveMinimum: ifDefined(isNumber),
-    exclusiveMaximum: ifDefined(isNumber),
-    multipleOf: ifDefined(isNumber),
-  })(input)
+export const mixedSchemaStructure = {
+  type: isArray(isWithin(JSON_SCHEMA_TYPES)),
+  enum: ifDefined(
+    isArray(isUnion.or(isNumber).or(isString).or(isBoolean).or(isInteger))
+  ),
+  items: ifDefined(isJsonSchema),
+  minItems: ifDefined(isInteger),
+  maxItems: ifDefined(isInteger),
+  uniqueItems: ifDefined(isBoolean),
+  properties: ifDefined(
+    isRecord(isString, isUnion.or(isJsonSchema).or(isJsonSchemaRef))
+  ),
+  required: ifDefined(isArray(isString)),
+  additionalProperties: ifDefined(
+    isUnion.or(isBoolean).or(
+      doesExtend({
+        type: isWithin(JSON_SCHEMA_TYPES),
+      })
+    )
+  ),
+  minProperties: ifDefined(isInteger),
+  maxProperties: ifDefined(isInteger),
+  minLength: ifDefined(isInteger),
+  maxLength: ifDefined(isInteger),
+  pattern: ifDefined(isString),
+  format: ifDefined(isWithin(JSON_SCHEMA_STRING_FORMATS)),
+  minimum: ifDefined(isNumber),
+  maximum: ifDefined(isNumber),
+  exclusiveMinimum: ifDefined(isNumber),
+  exclusiveMaximum: ifDefined(isNumber),
+  multipleOf: ifDefined(isNumber),
 }
+export function isMixedSchema(input: unknown): input is MixedSchema {
+  return doesExtend(mixedSchemaStructure)(input)
+}
+
+export type UnionSchema = {
+  anyOf: JsonSchema[]
+}
+export const unionSchemaStructure = {
+  anyOf: isArray(isUnion.or(isJsonSchema).or(isJsonSchemaRef)),
+}
+export function isUnionSchema(input: unknown): input is UnionSchema {
+  return doesExtend(unionSchemaStructure)(input)
+}
+
+type OptionalPropertyOf<T extends object> = Exclude<
+  {
+    [K in keyof T]: T extends Record<K, T[K]> ? never : K
+  }[keyof T],
+  undefined
+>
+export type OptionalsOfMixedSchema = OptionalPropertyOf<MixedSchema>
