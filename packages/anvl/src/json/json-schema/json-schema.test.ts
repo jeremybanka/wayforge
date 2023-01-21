@@ -2,19 +2,21 @@
 
 import schema07 from "~/app/node/wayforge-server/projects/wayfarer/07.schema.json"
 
+import { dereference } from "./dereference"
 import {
   isJsonSchema,
   isJsonSchemaCore,
-  dereference,
-  refineJsonSchema,
   isJsonSchemaRoot,
-  isMixedSchema,
   isJsonSchemaRef,
+} from "./json-schema"
+import { refineJsonSchema } from "./refine-schema"
+import {
+  isMixedSchema,
   isArraySchema,
   arraySchemaStructure,
   unionSchemaStructure,
   mixedSchemaStructure,
-} from "./json-schema"
+} from "./typed-schemas"
 
 describe(`isJsonSchema`, () => {
   it(`should recognize booleans as schemas`, () => {
@@ -231,9 +233,23 @@ describe(`refineJsonSchema`, () => {
   // })
 })
 
-describe(`validateWithSchema`, () => {
-  it(`should produce a function to validate a simple object`, () => {
-    const result = validateWithSchema({ a: 1, b: 2 }, { type: `object` })
-    expect(result).toBe(true)
-  })
-})
+// const validateWithSchema = (schema: JsonSchema) => {
+//   const refinedSchema = refineJsonSchema(schema)
+//   return (value: unknown) => {
+//     if (refinedSchema.length === 1) {
+//       return validate(refinedSchema[0].data, value)
+//     }
+//     return refinedSchema.some((refined) => validate(refined.data, value))
+//   }
+// }
+
+// describe(`validateWithSchema`, () => {
+//   it(`should produce a function to validate a simple object`, () => {
+//     const result = validateWithSchema({ type: `object` })
+//     expect(result({})).toBe(true)
+//     expect(result(``)).toBe(false)
+//   })
+// })
+
+// input: unknown
+// validateSchema:
