@@ -1,6 +1,6 @@
 import { readdirSync, renameSync, writeFileSync } from "fs"
 
-import { pipe } from "fp-ts/function"
+import { identity, pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
 
 import type { Json, JsonArr, JsonObj } from "~/packages/anvl/src/json"
@@ -13,7 +13,7 @@ export type WriteResourceOptions = { type: string; id: string; value: Json }
 export type WriteResource = (options: WriteResourceOptions) => void
 
 export const initWriter = ({
-  formatResource,
+  formatResource = identity,
   baseDir,
 }: JsonStoreOptions): WriteResource => {
   const writeResource: WriteResource = ({ id, type, value }) => {
@@ -70,7 +70,7 @@ export type WriteRelationsOptions = {
 export type WriteRelations = (options: WriteRelationsOptions) => void
 
 export const initRelationsWriter = ({
-  formatResource,
+  formatResource = identity,
   baseDir,
 }: JsonStoreOptions): WriteRelations => {
   const writeRelations: WriteRelations = ({ id, type, value }) => {
