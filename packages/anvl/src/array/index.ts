@@ -90,3 +90,8 @@ export const isOneOf =
   <T>(...args: ReadonlyArray<T>) =>
   (input: unknown): input is T =>
     args.includes(input as T)
+
+export const filter =
+  <I>(f: (value: I, index: number, array: I[]) => boolean) =>
+  (a: I[]): I[] =>
+    a.filter(f)
