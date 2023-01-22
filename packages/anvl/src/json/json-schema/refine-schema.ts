@@ -5,19 +5,20 @@ import { isString } from "fp-ts/string"
 
 import { dereference } from "./dereference"
 import { isInteger } from "./integer"
-import type { JsonSchemaRoot } from "./json-schema"
-import { isJsonSchemaRoot, JSON_SCHEMA_TYPE_NAMES } from "./json-schema"
 import type {
+  JsonSchemaRoot,
   ArraySchema,
   BooleanSchema,
   IntegerSchema,
   MixedSchema,
   NullSchema,
-  NumberSchema,
   ObjectSchema,
   StringSchema,
-} from "./typed-schemas"
+  NumberSchema,
+} from "./json-schema"
 import {
+  isJsonSchemaRoot,
+  JSON_SCHEMA_TYPE_NAMES,
   isArraySchema,
   isBooleanSchema,
   isIntegerSchema,
@@ -26,7 +27,7 @@ import {
   isNumberSchema,
   isObjectSchema,
   isStringSchema,
-} from "./typed-schemas"
+} from "./json-schema"
 import { isArray } from "../../array"
 import { doesExtend, modify, select } from "../../object"
 import { couldBe, isWithin } from "../../refinement"
