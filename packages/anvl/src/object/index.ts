@@ -26,18 +26,6 @@ export const redact =
   <O extends Record<K, any>>(obj: O): Omit<O, K> =>
     reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
 
-type MappedC<A, B> = {
-  [K in keyof A & keyof B]: A[K] extends B[K] ? never : K
-}
-type OptionalPropertyOf<T extends object> = Exclude<
-  {
-    [K in keyof T]: T extends Record<K, T[K]> ? never : K
-  }[keyof T],
-  undefined
->
-
-const O: OptionalPropertyOf<{ a: string; b?: number }> = `b`
-
 export const select =
   <Key extends keyof any>(...args: Key[]) =>
   <Obj extends object>(
@@ -229,10 +217,3 @@ export const tweak = (
 export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Partial<Pick<T, Exclude<keyof T, K>>> & Required<Pick<T, K>>
 }[keyof T]
-
-type Z = {
-  a: string
-  b?: number
-}
-
-type Z2 = OptionalPropertyOf<Z>
