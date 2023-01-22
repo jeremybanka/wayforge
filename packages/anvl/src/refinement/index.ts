@@ -1,5 +1,7 @@
 import type { Refinement } from "fp-ts/Refinement"
 
+export * from "./refined"
+
 export const canExist = (_: unknown): _ is unknown => true
 export const cannotExist = (_: unknown): _ is never => false
 
@@ -12,6 +14,24 @@ export const isWithin =
   <Options extends ReadonlyArray<any>>(args: Options) =>
   (input: unknown): input is Options[number] =>
     args.includes(input as Options[number])
+
+export const ensure =
+  <T>(isType: Refinement<unknown, T>) =>
+  (input: unknown): T => {
+    if (!isType(input)) {
+      throw new TypeError(`Expected ${input} to be of type ${isType.name}`)
+    }
+    return input as T
+  }
+
+export const ensureAgainst =
+  <A, B>(isType: Refinement<unknown, A>) =>
+  (input: A | B): Exclude<A | B, A> => {
+    if (isType(input)) {
+      throw new TypeError(`Expected ${input} to not be of type ${isType.name}`)
+    }
+    return input as Exclude<A | B, A>
+  }
 
 export type ExtendsSome<A, B> = Refinement<unknown, A | B> & {
   or: <C>(isType: Refinement<unknown, C>) => ExtendsSome<unknown, A | B | C>
@@ -93,32 +113,3 @@ export const mustBe = <A>(
 }
 
 export const isIntersection = mustBe(canExist)
-
-export const ensure =
-  <T>(isType: Refinement<unknown, T>) =>
-  (input: unknown): T => {
-    if (!isType(input)) {
-      throw new TypeError(`Expected ${input} to be of type ${isType.name}`)
-    }
-    return input as T
-  }
-
-export const ensureAgainst =
-  <A, B>(isType: Refinement<unknown, A>) =>
-  (input: A | B): Exclude<A | B, A> => {
-    if (isType(input)) {
-      throw new TypeError(`Expected ${input} to not be of type ${isType.name}`)
-    }
-    return input as Exclude<A | B, A>
-  }
-
-// remove last element from tuple
-export type Pop<T extends any[]> = T extends [...infer U, any] ? U : never
-
-// remove last element from tuple if it is a function
-export type PopIfFunction<T extends any[]> = T extends [
-  ...infer U,
-  (...args: any[]) => any
-]
-  ? U
-  : T
