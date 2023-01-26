@@ -24,17 +24,34 @@ pipe(
     baseDir: `./projects/`,
   })
 )
+logger.info(
+  `   `,
+  `|¯\\_________________________________|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\_|`
+)
+logger.info(``, ``)
 
-// const app = express()
-// const server = new HttpServer(app)
-// server.on(`error`, logger.error)
-
-// logger.info(`Listening on port 3333`)
-// http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
-// app.disable(`x-powered-by`)
-
-// const port = process.env.port || 3333
-// app.use(cors())
-// const server = app.listen(port, () => {
-//   console.log(`Listening at http://localhost:${port}/api`)
-// })
+logger.info(
+  `[/]`,
+  `|__________________________/ `,
+  `🟨   🟨   🟨`,
+  ` \\___________________________|`
+)
+logger.info(`[/]`, `                             `, `🟨   🟨   🟨`)
+logger.info(
+  `[/]`,
+  `  00                         `,
+  `🟨   🟨   🟨`,
+  `                    WAYFORGE`
+)
+logger.info(`[/]`, `                             `, `🟨        🟨`)
+logger.info(
+  `[/]`,
+  `|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\ `,
+  `🟨🟨🟨🟨🟨🟨`,
+  ` /¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|`
+)
+logger.info(``, ``)
+logger.info(
+  `   `,
+  `|_/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|_________________________________/¯|`
+)
