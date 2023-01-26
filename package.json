@@ -43,5 +43,9 @@
     "react",
     "express",
     "typescript"
-  ]
+  ],
+  "dependencies": {
+    "@floating-ui/dom": "^1.1.0",
+    "@floating-ui/react": "^0.18.1"
+  }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 
-import schema07 from "~/app/node/wayforge-server/projects/wayfarer/07.schema.json"
+import schema07 from "~/app/node/wayforge-server/projects/wayfarer_/07.schema.json"
 
 import { dereference } from "./dereference"
 import { refineJsonSchema } from "./refine-schema"
