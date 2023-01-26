@@ -21,7 +21,7 @@ pipe(
   }),
   serveSimpleGit({
     logger,
-    baseDir: `./projects/`,
+    baseDir: `./projects/wayfarer`,
   })
 )
 logger.info(

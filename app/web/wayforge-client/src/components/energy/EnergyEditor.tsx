@@ -3,7 +3,7 @@ import type { FC, ReactNode } from "react"
 import { css } from "@emotion/react"
 import { useRecoilState } from "recoil"
 
-import energySchema from "~/app/node/wayforge-server/projects/wayfarer/_schemas/energy.schema.json"
+import energySchema from "~/app/node/wayforge-server/projects/wayfarer_/_schemas/energy.schema.json"
 import type { RecoilEditorProps } from "~/app/web/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/web/wayforge-client/recoil-editor"
 import { includesAny } from "~/packages/anvl/src/array/venn"

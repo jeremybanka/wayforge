@@ -74,7 +74,7 @@ export const serveJsonStore =
             logger.info(socket.id, `read`, id, type)
             const result = readResource({ id, type })
             return result instanceof Error
-              ? console.error(result)
+              ? logger.error(result)
               : socket.emit(`read_${id}`, result)
           },
           relationsRead: ({ id, type }) => {
@@ -88,14 +88,14 @@ export const serveJsonStore =
             logger.info(socket.id, `indexRead`, type)
             const result = readIndex({ type })
             return result instanceof Error
-              ? console.error(result)
+              ? logger.error(result)
               : socket.emit(`indexRead_${type}`, result)
           },
           schemaRead: ({ type }) => {
             logger.info(socket.id, `schemaRead`, type)
             const result = readSchema({ type })
             return result instanceof Error
-              ? console.error(result)
+              ? logger.error(result)
               : socket.emit(`schemaRead_${type}`, result)
           },
           write: ({ id, type, value }) => {

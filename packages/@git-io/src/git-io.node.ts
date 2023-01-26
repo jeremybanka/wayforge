@@ -83,6 +83,7 @@ export const serveSimpleGit =
           simpleGit(options),
           redact(...SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET)
         )
+        options.logger.info(`init`, git)
 
         const makeHandler =
           (key: keyof GitInterface) =>

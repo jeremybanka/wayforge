@@ -4,7 +4,7 @@ import { css } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-import reactionSchema from "~/app/node/wayforge-server/projects/wayfarer/_schemas/reaction.schema.json"
+import reactionSchema from "~/app/node/wayforge-server/projects/wayfarer_/_schemas/reaction.schema.json"
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
