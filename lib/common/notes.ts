@@ -15,3 +15,25 @@ export type OptionalPropertyOf<T extends object> = Exclude<
   }[keyof T],
   undefined
 >
+
+export type DesiredStructure = {
+  a: boolean
+  b: number
+  c: string
+}
+
+export const parseStructure = <
+  InputStructure extends { [Key in keyof DesiredStructure]?: unknown }
+>(
+  input: InputStructure
+): {
+  [Key in Extract<
+    keyof DesiredStructure,
+    keyof InputStructure
+  >]: DesiredStructure[Key]
+} => {
+  // actual implementation
+  return input
+}
+
+const a = parseStructure({ a: true, b: 1 })
