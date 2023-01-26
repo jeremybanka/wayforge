@@ -2082,6 +2082,7 @@ __metadata:
     eslint: 8.31.0
     fp-ts: 2.13.1
     framer-motion: 8.4.2
+    io-ts: ^2.2.20
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.6.2
@@ -4998,7 +4999,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"io-ts@npm:2.2.20":
+"io-ts@npm:2.2.20, io-ts@npm:^2.2.20":
   version: 2.2.20
   resolution: "io-ts@npm:2.2.20"
   peerDependencies:
