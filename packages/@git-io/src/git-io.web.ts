@@ -1,32 +1,60 @@
 import type { RecoilValueReadOnly } from "recoil"
 import { atom, selector } from "recoil"
-import type { StatusResult } from "simple-git"
 import type { Socket } from "socket.io-client"
 
-import { DEFAULT_STATUS_RESULT } from "./git-io"
+import { recordToEntries } from "~/packages/anvl/src/object"
+
 import type {
+  GitInterface,
   GitClientEvents,
   GitServerEvents,
   GitSocketError,
-} from "./git-io.node"
+} from "./git-io"
+import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./static/defaults"
 
 export type GitClientSocket = Socket<GitServerEvents, GitClientEvents>
 
-export const initGitStatusState = (
-  socket: GitClientSocket
-): RecoilValueReadOnly<GitSocketError | StatusResult> => {
-  const gitStatusState_INTERNAL = atom<GitSocketError | StatusResult>({
-    key: `gitStatus_INTERNAL`,
-    default: DEFAULT_STATUS_RESULT,
-    effects: [
-      ({ setSelf }) => {
-        socket.emit(`status`)
-        socket.on(`status`, (status) => setSelf(status))
-      },
-    ],
-  })
-  return selector({
-    key: `gitStatus`,
-    get: ({ get }) => get(gitStatusState_INTERNAL),
-  })
+export type GitClientTools = {
+  [GitFunction in keyof GitInterface]: GitInterface[GitFunction] extends (
+    ...args: any[]
+  ) => any
+    ? {
+        state: RecoilValueReadOnly<
+          Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
+        >
+        action: (...args: Parameters<GitInterface[GitFunction]>) => void
+      }
+    : never
+}
+
+export const capitalize = (str: string): string =>
+  str[0].toUpperCase() + str.slice(1)
+
+export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
+  const completeInterface = {} as GitClientTools
+
+  const makeClientInterface = (key: keyof GitInterface) => {
+    const state_INTERNAL = atom<GitSocketError | any>({
+      key: `git${capitalize(key)}_INTERNAL`,
+      default: DEFAULT_SIMPLE_GIT_RETURN_VALUES[key],
+      effects: [
+        ({ setSelf }) => {
+          socket.on(key, (result) => setSelf(result))
+        },
+      ],
+    })
+    const clientInterface = {
+      state: selector({
+        key: `git${capitalize(key)}`,
+        get: ({ get }) => get(state_INTERNAL),
+      }),
+      action: (...args: Parameters<GitInterface[keyof GitInterface]>) =>
+        socket.emit(key, ...args),
+    }
+    return clientInterface
+  }
+  for (const [key] of recordToEntries(DEFAULT_SIMPLE_GIT_RETURN_VALUES)) {
+    completeInterface[key] = makeClientInterface(key)
+  }
+  return completeInterface
 }
