@@ -11,6 +11,7 @@
     "release": "echo release: @wayforge/node"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "fp-ts": "2.13.1",
     "io-ts": "2.2.20",
     "npmlog": "7.0.1",

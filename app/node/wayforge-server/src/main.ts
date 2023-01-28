@@ -1,3 +1,4 @@
+import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
@@ -7,6 +8,7 @@ import { serveJsonStore } from "~/packages/@store-io/src/json-store-io.node"
 import { logger } from "./logger"
 import { formatJson } from "./services/formatJson"
 
+dotenv.config()
 pipe(
   new WebSocketServer(3333, {
     cors: {
@@ -17,11 +19,11 @@ pipe(
   serveJsonStore({
     logger,
     formatResource: formatJson,
-    baseDir: `./projects/wayfarer`,
+    baseDir: process.env.BASE_DIR || `json`,
   }),
   serveSimpleGit({
     logger,
-    baseDir: `./projects/wayfarer`,
+    baseDir: process.env.BASE_DIR,
   })
 )
 logger.info(
