@@ -1,0 +1,43 @@
+// Vitest Snapshot v1
+
+exports[`Combo > renders 1`] = `
+<div>
+  <div>
+    <div>
+      <span>
+        <input
+          value=""
+        />
+      </span>
+      <button
+        tabindex="-1"
+        type="button"
+      >
+        +
+      </button>
+    </div>
+    <ul />
+  </div>
+</div>
+`;
+
+exports[`renders 1`] = `
+<div>
+  <div>
+    <div>
+      <span>
+        <input
+          value=""
+        />
+      </span>
+      <button
+        tabindex="-1"
+        type="button"
+      >
+        +
+      </button>
+    </div>
+    <ul />
+  </div>
+</div>
+`;
