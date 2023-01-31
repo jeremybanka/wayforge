@@ -1,5 +1,7 @@
 import type { Refinement } from "fp-ts/Refinement"
 
+export const doNothing = (): void => undefined
+
 /* eslint-disable prettier/prettier */
 export const become =
   <T>

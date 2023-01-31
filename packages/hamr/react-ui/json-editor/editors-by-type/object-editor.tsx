@@ -5,8 +5,9 @@ import { isBoolean } from "fp-ts/boolean"
 import { isString } from "fp-ts/string"
 
 import { lastOf } from "~/packages/anvl/src/array"
+import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object"
 
 import {
@@ -25,19 +26,23 @@ import { JsonEditor_INTERNAL } from "../json-editor-internal"
 
 export type PropertyAdderProps = {
   addProperty: () => void
+  disabled: boolean
   propertyKey: string
   Components: JsonEditorComponents
 }
 
 export const PropertyAdder: FC<PropertyAdderProps> = ({
   addProperty,
+  disabled,
   propertyKey,
   Components,
 }) => (
   <Components.MissingPropertyWrapper>
     <AutoSizeInput disabled defaultValue={propertyKey}></AutoSizeInput>
     <AutoSizeInput disabled defaultValue="is missing"></AutoSizeInput>
-    <Components.Button onClick={() => addProperty()}>+</Components.Button>
+    <Components.Button onClick={() => addProperty()} disabled={disabled}>
+      +
+    </Components.Button>
   </Components.MissingPropertyWrapper>
 )
 
@@ -55,6 +60,8 @@ export const ObjectEditor = <T extends JsonObj>({
   className,
   Components,
 }: JsonEditorProps_INTERNAL<T>): JsxElements => {
+  const disabled = isReadonly(path)
+
   const stableKeyMap = useRef<Record<keyof T, keyof T>>(
     Object.keys(data).reduce((acc, key: keyof T) => {
       acc[key] = key
@@ -121,7 +128,7 @@ export const ObjectEditor = <T extends JsonObj>({
 
   return (
     <>
-      <Components.Button onClick={() => sortProperties()}>
+      <Components.Button onClick={() => sortProperties()} disabled={disabled}>
         Sort
       </Components.Button>
       <Components.ObjectWrapper>
@@ -138,6 +145,7 @@ export const ObjectEditor = <T extends JsonObj>({
                 key={key + `IsMissing`}
                 propertyKey={key}
                 addProperty={makePropertyAdder(key, `string`)}
+                disabled={disabled}
                 Components={Components}
               />
             ) : (
@@ -162,7 +170,12 @@ export const ObjectEditor = <T extends JsonObj>({
           })}
         </div>
         <Components.Button
-          onClick={() => makePropertyAdder(`new_property`, `string`)()}
+          onClick={
+            disabled
+              ? doNothing
+              : () => makePropertyAdder(`new_property`, `string`)()
+          }
+          disabled={disabled}
         >
           +
         </Components.Button>

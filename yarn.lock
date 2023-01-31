@@ -2133,6 +2133,8 @@ __metadata:
     react-dom: 18.2.0
     react-router-dom: 6.6.2
     recoil: 0.7.6
+    recoil-devtools: ^0.4.0
+    recoil-devtools-logger: ^0.4.0
     vite: 4.0.4
     vite-plugin-svgr: 2.4.0
     vite-tsconfig-paths: 4.0.3
@@ -3206,6 +3208,13 @@ __metadata:
   version: 10.4.3
   resolution: "decimal.js@npm:10.4.3"
   checksum: 796404dcfa9d1dbfdc48870229d57f788b48c21c603c3f6554a1c17c10195fc1024de338b0cf9e1efe0c7c167eeb18f04548979bcc5fdfabebb7cc0ae3287bae
+  languageName: node
+  linkType: hard
+
+"deep-diff@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "deep-diff@npm:1.0.2"
+  checksum: 9de8b5eedc1957116e1b47e4c3c4e3dbe23cb741abefc5ec8829a12e77958c689ac46888a3c35320f976cf42fb6de2b016e158facdb24d894ab5b5fdabad9b34
   languageName: node
   linkType: hard
 
@@ -7066,6 +7075,28 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 1ced032e6e45670b6d7352d71d21ce7edf7b9b928494dcaba6f11fba63180d9da6cd7061ebc34175ffda6ff529f481818c962952004d273178acd70f7059b320
+  languageName: node
+  linkType: hard
+
+"recoil-devtools-logger@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "recoil-devtools-logger@npm:0.4.0"
+  dependencies:
+    deep-diff: ^1.0.2
+  peerDependencies:
+    react: ">=16"
+    recoil: ^0.4.0
+  checksum: 05ba99bb5db917fd08c9bc1608b7e48cdbb5dd267722112d431860208a2fa537cd32ffcb92f17d774873a88e7ccdc2df672586095d5851e98b025d8592f8e84a
+  languageName: node
+  linkType: hard
+
+"recoil-devtools@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "recoil-devtools@npm:0.4.0"
+  peerDependencies:
+    react: ">=16"
+    recoil: ^0.4.0
+  checksum: c9e9aa1a0f4c6cb8397b121b339d498e216d420502c73a438d2d3573cff21e0f2c4276215b2b4a7799a16f6908fe4da9b692c416f703bbb95b23a982da7a63df
   languageName: node
   linkType: hard
 

@@ -4,14 +4,15 @@ import type { SerializedStyles } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
 
 import { lastOf } from "~/packages/anvl/src/array"
+import { doNothing } from "~/packages/anvl/src/function"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { refineJsonType } from "~/packages/anvl/src/json/refine"
 
 import type { JsxElements } from "."
 import { SubEditors } from "."
-import { AutoSizeInput } from "../auto-size-input"
 import type { JsonEditorComponents, WC } from "./default-components"
+import { AutoSizeInput } from "../auto-size-input"
 
 export type JsonEditorProps_INTERNAL<T extends Json> = {
   data: T
@@ -113,7 +114,10 @@ export const JsonEditor_INTERNAL = <T extends Json>({
     <Components.ErrorBoundary>
       <Components.EditorWrapper className={className} customCss={customCss}>
         {remove && (
-          <Components.Button onClick={remove}>
+          <Components.Button
+            onClick={disabled ? doNothing : remove}
+            disabled={disabled}
+          >
             <Components.DeleteIcon />
           </Components.Button>
         )}
@@ -122,9 +126,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
           <Components.KeyWrapper>
             <AutoSizeInput
               value={name}
-              onChange={
-                rename && !disabled ? (e) => rename(e.target.value) : () => null
-              }
+              onChange={disabled ? doNothing : (e) => rename(e.target.value)}
               disabled={disabled}
             />
           </Components.KeyWrapper>
@@ -142,8 +144,13 @@ export const JsonEditor_INTERNAL = <T extends Json>({
         />
         {recast && (
           <select
-            onChange={(e) => recast(e.target.value as keyof JsonTypes)}
+            onChange={
+              disabled
+                ? doNothing
+                : (e) => recast(e.target.value as keyof JsonTypes)
+            }
             value={json.type}
+            disabled={disabled}
           >
             {Object.keys(SubEditors).map((type) => (
               <option key={type} value={type}>

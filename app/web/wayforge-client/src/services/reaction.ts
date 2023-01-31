@@ -51,17 +51,17 @@ const stringSetJsonInterface = {
     pipe(a, z.array(string()).parse, (a) => new Set(a)),
 }
 
-// export const reactionIndex = atom<Set<string>>({
-//   key: `reactionIndex`,
-//   default: new Set(),
-//   effects: [
-//     socketIndex({
-//       type: `reaction`,
-//       socket,
-//       jsonInterface: stringSetJsonInterface,
-//     }),
-//   ],
-// })
+export const reactionIndex = atom<Set<string>>({
+  key: `reactionIndex`,
+  default: new Set(),
+  effects: [
+    socketIndex({
+      type: `reaction`,
+      socket,
+      jsonInterface: stringSetJsonInterface,
+    }),
+  ],
+})
 
 export const findReactionState = atomFamily<Reaction, string>({
   key: `reaction`,
