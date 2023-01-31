@@ -9,13 +9,15 @@ import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 
+import { RecoilEditor } from "../../../recoil-editor"
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
+import { findReactionState, useRemoveReaction } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon_SVG"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
 
@@ -35,7 +37,7 @@ export type Settable<T extends JsonObj> = T & { set: SetterOrUpdater<T> }
 export const isFn = (x: unknown): x is CallableFunction =>
   typeof x === `function`
 
-export const ReactionEditor: FC<
+export const ReactionEditor_INTERNAL: FC<
   RecoilListItemProps<Reaction & ReactionRelations>
 > = ({ label, findState, removeMe }) => {
   const reactionState = findState(label.id)
@@ -191,3 +193,11 @@ export const ReactionEditor: FC<
     </RecoverableErrorBoundary>
   )
 }
+
+export const ReactionEditor: FC = () => (
+  <RecoilEditor.IdFromRoute
+    Editor={ReactionEditor_INTERNAL}
+    findState={findReactionState}
+    useRemove={useRemoveReaction}
+  />
+)

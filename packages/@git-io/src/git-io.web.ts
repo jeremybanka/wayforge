@@ -1,8 +1,9 @@
-import type { RecoilValueReadOnly } from "recoil"
+import type { RecoilValueReadOnly, RecoilState } from "recoil"
 import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
+import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 import type {
   GitInterface,
@@ -19,10 +20,14 @@ export type GitClientTools = {
     ...args: any[]
   ) => any
     ? {
+        (...args: Parameters<GitInterface[GitFunction]>): void
         state: RecoilValueReadOnly<
           Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
         >
-        action: (...args: Parameters<GitInterface[GitFunction]>) => void
+        getCurrentState: TransactionOperation<
+          undefined,
+          Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
+        >
       }
     : never
 }
@@ -39,18 +44,25 @@ export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
       default: DEFAULT_SIMPLE_GIT_RETURN_VALUES[key],
       effects: [
         ({ setSelf }) => {
-          socket.on(key, (result) => setSelf(result))
+          socket.on(key, (result) => {
+            setSelf(result)
+          })
         },
       ],
     })
-    const clientInterface = {
-      state: selector({
-        key: `git${capitalize(key)}`,
-        get: ({ get }) => get(state_INTERNAL),
-      }),
-      action: (...args: Parameters<GitInterface[keyof GitInterface]>) =>
+    const getInternalState: TransactionOperation<undefined, any> = ({ get }) =>
+      get(state_INTERNAL)
+    const clientInterface = Object.assign(
+      (...args: Parameters<GitInterface[keyof GitInterface]>) =>
         socket.emit(key, ...args),
-    }
+      {
+        state: selector({
+          key: `git${capitalize(key)}`,
+          get: ({ get }) => get(state_INTERNAL),
+        }),
+        getCurrentState: getInternalState,
+      }
+    )
     return clientInterface
   }
   for (const [key] of recordToEntries(DEFAULT_SIMPLE_GIT_RETURN_VALUES)) {

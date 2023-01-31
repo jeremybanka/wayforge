@@ -5,6 +5,8 @@ import type { RecoilState } from "recoil"
 
 import type { JsxElements } from "~/packages/hamr/react-ui/json-editor"
 
+import type { RecoilListItemProps } from "./recoil-list"
+
 export type RecoilEditorProps<T> = {
   id: string
   findState: (key: string) => RecoilState<T>
@@ -17,7 +19,7 @@ export type RecoilEditorRouterAdaptorProps<T> = {
   useRemove: () => (id: string) => void
 }
 
-export const RouterAdaptor = <T,>({
+export const IdFromRoute = <T,>({
   Editor,
   findState,
   useRemove,
@@ -29,6 +31,22 @@ export const RouterAdaptor = <T,>({
   return <Editor id={id} findState={findState} useRemove={useRemove} />
 }
 
+export const makeListItemAdaptor = <T,>(
+  Editor: FC<RecoilEditorProps<T>>
+): { ListItemAdaptor: FC<RecoilListItemProps<T>> } => ({
+  ListItemAdaptor: ({
+    label,
+    findState,
+    removeMe,
+  }: RecoilListItemProps<T> & {
+    Editor: FC<RecoilEditorProps<T>>
+  }): JsxElements => {
+    const { id } = label
+    return <Editor id={id} findState={findState} useRemove={() => removeMe} />
+  },
+})
+
 export const RecoilEditor = {
-  RouterAdaptor,
+  makeListItemAdaptor,
+  IdFromRoute,
 }

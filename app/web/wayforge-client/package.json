@@ -25,6 +25,8 @@
     "react-dom": "18.2.0",
     "react-router-dom": "6.6.2",
     "recoil": "0.7.6",
+    "recoil-devtools": "^0.4.0",
+    "recoil-devtools-logger": "^0.4.0",
     "zod": "3.20.2"
   },
   "devDependencies": {

@@ -19,7 +19,7 @@ export type WC<T extends Dict<unknown> = Dict<unknown>> = WrapperComponent<T>
 export type JsonEditorComponents = {
   ErrorBoundary: WC
 
-  Button: WC<{ onClick: () => void }>
+  Button: WC<{ onClick: () => void; disabled: boolean }>
   DeleteIcon: FC
 
   EditorLayout: FC<{
@@ -49,8 +49,8 @@ export type JsonEditorComponents = {
 
 export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
   ErrorBoundary: ({ children }) => <ErrorBoundary>{children}</ErrorBoundary>,
-  Button: ({ onClick, children }) => (
-    <button className="json_editor_button" onClick={onClick}>
+  Button: ({ onClick, children, disabled }) => (
+    <button className="json_editor_button" onClick={onClick} disabled={disabled}>
       {children}
     </button>
   ),

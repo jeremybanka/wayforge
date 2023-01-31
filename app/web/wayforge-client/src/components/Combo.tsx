@@ -4,7 +4,8 @@ import { useId, useRef, useEffect, useState } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import type { RecoilState, RecoilValueReadOnly, SetterOrUpdater } from "recoil"
 
-export type ComboPropsCore = {
+export type ComboPropsCore<T> = {
+  onSetSelections?: (newSelection: T) => void
   label?: string
   nullified?: boolean
   disabled?: boolean
@@ -30,7 +31,7 @@ export type ComboOptions<T> = {
 /* eslint-disable @typescript-eslint/sort-type-union-intersection-members */
 /* prettier-ignore */
 export type ComboProps<T> = 
-( ComboPropsCore 
+( ComboPropsCore<T>
 ) & (
   | ComboOptions<T>
   | ComboOptionsRecoil<T>
@@ -45,13 +46,14 @@ export type ComboProps<T> =
 )
 /* prettier-ignore */
 export type ComboProps_INTERNAL<T> = 
-  & ComboPropsCore
+  & ComboPropsCore<T>
   & ComboOptions<T>
   & ComboSelections<T>
   & { getName: (value: T) => string }
 /* eslint-enable @typescript-eslint/sort-type-union-intersection-members */
 
 const Combo_INTERNAL = <State,>({
+  onSetSelections,
   options,
   selections,
   setSelections,
@@ -90,6 +92,7 @@ const Combo_INTERNAL = <State,>({
   const remove = (v: State) =>
     setSelections((current) => current.filter((v2) => v2 !== v))
   const add = (v: State) => {
+    if (onSetSelections) onSetSelections(v)
     setSelections((current) => [...new Set([...current, v])])
     setEntry(``)
     setSelectedIdx(0)
