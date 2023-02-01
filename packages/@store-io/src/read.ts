@@ -1,10 +1,9 @@
-import { readdirSync, readFileSync } from "fs"
+import { readFileSync } from "fs"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { identify } from "~/packages/anvl/src/id/identified"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
-import { JsonSchema } from "~/packages/anvl/src/json/json-schema"
 
 import type { JsonStoreOptions } from "."
 import { getDirectoryJsonArr } from "./utils"
@@ -40,8 +39,9 @@ export const initReader = ({ baseDir }: JsonStoreOptions): ReadResource => {
         resource ??
         new NotFoundError(`Resource not found. looked in ${dir}/ for ${id}`)
       )
-    } catch (error) {
-      if (error instanceof Error) return error
+    } catch (caught) {
+      if (caught instanceof Error) return caught
+      throw caught
     }
   }
   return readResource
@@ -63,9 +63,10 @@ export const initIndexer = ({
       })
       const ids = jsonContents.map((data) => data.id)
       return ids
-    } catch (e) {
+    } catch (caught) {
       logger.warn(`Error reading index for "${type}" in ${directory}`)
-      if (e instanceof Error) return e
+      if (caught instanceof Error) return caught
+      throw caught
     }
   }
   return readIndex
@@ -118,9 +119,10 @@ export const initSchemaReader = ({
       const fileText = readFileSync(fileName, `utf8`)
       const json = parseJson(fileText)
       return json
-    } catch (thrown) {
+    } catch (caught) {
       logger.warn(`Caught reading schema for "${type}" in ${dir}`)
-      if (thrown instanceof Error) return thrown
+      if (caught instanceof Error) return caught
+      throw caught
     }
   }
   return readSchema

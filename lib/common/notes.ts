@@ -33,7 +33,7 @@ export const parseStructure = <
   >]: DesiredStructure[Key]
 } => {
   // actual implementation
-  return input
+  return input as any
 }
 
 const a = parseStructure({ a: true, b: 1 })

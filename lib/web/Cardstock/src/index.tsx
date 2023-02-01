@@ -54,7 +54,9 @@ export const cardstock: (
   return memo(Component, (prev, next) => {
     const childrenEqual = prev.children === next.children
     const styleEqual = prev.style === next.style
+    // @ts-expect-error derelict
     const cornersEqual = prev.corners === next.corners
+    // @ts-expect-error derelict
     const cornerOptionsEqual = prev.cornerOptions === next.cornerOptions
     console.log({
       childrenEqual,

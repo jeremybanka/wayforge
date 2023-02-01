@@ -3,7 +3,7 @@ import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 
 import { couldBe, mustBe, isIntersection, isUnion } from "."
-import { doesExtend } from "../object"
+import { doesExtend } from "../object/refinement"
 
 /* type tests */
 const case1 = (input: unknown): void => {

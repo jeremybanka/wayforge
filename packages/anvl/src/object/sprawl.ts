@@ -1,4 +1,4 @@
-import { isPlainObject } from "."
+import { isPlainObject } from "./refinement"
 
 // if you found what you were looking for, return true and break
 export type InspectionResult = Partial<{
