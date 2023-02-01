@@ -13,7 +13,7 @@ import { isInteger } from "./integer"
 import { JSON_TYPE_NAMES } from ".."
 import { isArray } from "../../array"
 import { ifDefined } from "../../nullish"
-import { doesExtend, isRecord } from "../../object"
+import { doesExtend, isRecord } from "../../object/refinement"
 import {
   isLiteral,
   isWithin,

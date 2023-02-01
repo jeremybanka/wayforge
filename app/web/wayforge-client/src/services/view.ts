@@ -14,7 +14,7 @@ import {
 import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id/now"
 import { Join } from "~/packages/anvl/src/join"
-import type { Entries } from "~/packages/anvl/src/object"
+import type { Entries } from "~/packages/anvl/src/object/entries"
 import {
   localStorageEffect,
   localStorageSerializationEffect,
@@ -23,7 +23,7 @@ import {
   addToIndex,
   removeFromIndex,
 } from "~/packages/hamr/recoil-tools/recoil-index"
-import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
+import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 export const spaceIndexState = atom<Set<string>>({
   key: `spaceIndex`,
@@ -50,9 +50,7 @@ const findSpaceState = atomFamily<number, string>({
   effects: (id) => [localStorageEffect(id)],
 })
 
-export const addSpace: TransactionOperation<undefined, string> = (
-  transactors
-) => {
+export const addSpace: Transact<() => string> = (transactors) => {
   const { set } = transactors
   const id = `space-${now()}`
   addToIndex(transactors, { indexAtom: spaceIndexState, id })
@@ -60,7 +58,7 @@ export const addSpace: TransactionOperation<undefined, string> = (
   return id
 }
 
-export const removeSpace: TransactionOperation<string> = (transactors, id) =>
+export const removeSpace: Transact<(id: string) => void> = (transactors, id) =>
   removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
 
 export const viewsPerSpaceState = atom<Join>({
@@ -133,7 +131,7 @@ export const useSetTitle = (title: string): void => {
 
 type AddViewOptions = { spaceId?: string; path?: string }
 
-const addView: TransactionOperation<AddViewOptions | undefined> = (
+const OP_addView: Transact<(options?: AddViewOptions) => void> = (
   transactors,
   { spaceId: maybeSpaceId, path } = {}
 ) => {
@@ -160,20 +158,18 @@ const addView: TransactionOperation<AddViewOptions | undefined> = (
 }
 
 export const useOperation = <Options>(
-  operation: TransactionOperation<Options>
-): ((...args: Options extends undefined ? [] : [Options]) => void) =>
+  operation: Transact<(options: Options) => void>
+): ((param: Options) => void) =>
   useRecoilTransaction(
-    (transactors) =>
-      (...args) =>
-        operation(transactors, ...args)
+    (transactors) => (options) => operation(transactors, options)
   )
 
 export const useAddView = (): ((options?: AddViewOptions) => void) =>
   useRecoilTransaction(
-    (transactors) => (options) => addView(transactors, options)
+    (transactors) => (options) => OP_addView(transactors, options)
   )
 
-const removeView: TransactionOperation<string> = (transactors, id) => {
+const removeView: Transact<(id: string) => void> = (transactors, id) => {
   const { set } = transactors
   removeFromIndex(transactors, { indexAtom: viewIndexState, id })
   set(viewsPerSpaceState, (current) => current.remove(id))

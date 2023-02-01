@@ -1,18 +1,18 @@
-import type { RecoilState, TransactionInterface_UNSTABLE } from "recoil"
+import type { RecoilState } from "recoil"
 
-import type { TransactionOperation } from "./recoil-utils"
+import type { Transact } from "./recoil-utils"
 
 export type RecoilIndexOptions = {
   indexAtom: RecoilState<Set<string>>
   id: string
 }
 
-export const addToIndex: TransactionOperation<RecoilIndexOptions> = (
+export const addToIndex: Transact<(options: RecoilIndexOptions) => void> = (
   { set },
   { indexAtom, id }
 ): void => set(indexAtom, (currentSet) => new Set(currentSet).add(id))
 
-export const removeFromIndex: TransactionOperation<RecoilIndexOptions> = (
+export const removeFromIndex: Transact<(options: RecoilIndexOptions) => void> = (
   { set },
   { indexAtom, id }
 ): void =>

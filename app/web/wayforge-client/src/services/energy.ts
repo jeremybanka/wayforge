@@ -19,7 +19,7 @@ import {
   addToIndex,
   removeFromIndex,
 } from "~/packages/hamr/recoil-tools/recoil-index"
-import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
+import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
@@ -111,7 +111,7 @@ export const findEnergyWithRelationsState = selectorFamily<
     },
 })
 
-const addEnergy: TransactionOperation = (transactors) => {
+const addEnergy: Transact = (transactors) => {
   const { set } = transactors
   const id = now()
   addToIndex(transactors, { id, indexAtom: energyIndex })
@@ -122,7 +122,7 @@ const addEnergy: TransactionOperation = (transactors) => {
   }))
 }
 
-const removeEnergy: TransactionOperation<string> = (transactors, id) =>
+const removeEnergy: Transact<(id: string) => void> = (transactors, id) =>
   removeFromIndex(transactors, { id, indexAtom: energyIndex })
 
 export const useAddEnergy = (): (() => void) =>

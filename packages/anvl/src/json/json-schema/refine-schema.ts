@@ -29,7 +29,9 @@ import {
   isStringSchema,
 } from "./json-schema"
 import { isArray } from "../../array"
-import { doesExtend, modify, select } from "../../object"
+import { select } from "../../object"
+import { modify } from "../../object/modify"
+import { doesExtend } from "../../object/refinement"
 import { couldBe, isWithin } from "../../refinement"
 
 export type RefinedJsonSchema =

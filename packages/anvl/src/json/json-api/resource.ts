@@ -2,12 +2,12 @@ import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
-import { hasProperties } from "~/packages/anvl/src/object"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import type { RequireAtLeastOne } from "."
+import type { Link, Links } from "./document"
 import { ifDefined } from "../../nullish"
 import { isJson } from "../refine"
-import type { Link, Links } from "./document"
 
 export type Relationships = Record<
   string,
@@ -42,7 +42,7 @@ export type ResourceIdentifierObject<
 
 export const isResourceIdentifier = Object.assign(
   (thing: unknown): thing is ResourceIdentifierObject =>
-    hasProperties({
+    hasExactProperties({
       id: isString,
       type: isString,
       meta: ifDefined(isJson),

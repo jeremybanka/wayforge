@@ -3,7 +3,8 @@ import type { SimpleGitOptions } from "simple-git"
 import { simpleGit } from "simple-git"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
-import { recordToEntries, redact } from "~/packages/anvl/src/object"
+import { redact } from "~/packages/anvl/src/object"
+import { recordToEntries } from "~/packages/anvl/src/object/entries"
 
 import type {
   GitClientEvents,

@@ -11,10 +11,10 @@ export type Setter<T> = (s: RecoilState<T>, u: T | ((currVal: T) => T)) => void
 
 export type Resetter = (s: RecoilState<any>) => void
 
-export type TransactionOperation<ARG = undefined, RETURN = void> = (
+export type Transact<FN extends (...ps: any[]) => any = () => void> = (
   transactors: Transactors,
-  ...rest: ARG extends undefined ? [] : [argument: ARG]
-) => RETURN
+  ...rest: Parameters<FN>
+) => ReturnType<FN>
 
 export const readonlyTransactors = (get: GetRecoilValue): Transactors => ({
   get,

@@ -1,14 +1,14 @@
 import { pipe } from "fp-ts/function"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
-import { isEmptyObject } from "~/packages/anvl/src/object"
+import { isEmptyObject } from "~/packages/anvl/src/object/refinement"
 
-import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
 import { getRelatedIds } from "./get-related-ids"
 import { getRelationEntries } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
+import type { JsonObj } from "../json"
 
 export const makeContentId = (idA: string, idB: string): string =>
   [idA, idB].sort().join(`/`)
