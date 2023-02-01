@@ -2075,13 +2075,11 @@ __metadata:
   resolution: "@wayforge/monorepo@workspace:."
   dependencies:
     "@changesets/cli": 2.26.0
-    "@floating-ui/dom": ^1.1.0
-    "@floating-ui/react": ^0.18.1
     "@vitejs/plugin-react": 3.0.1
     c8: 7.12.0
     cross-env: 7.0.3
     dts-bundle-generator: 7.1.0
-    eslint: ^8.33.0
+    eslint: 8.33.0
     fs-extra: 11.1.0
     jest-environment-jsdom: 29.3.1
     json-schema-to-zod: 0.6.2
@@ -2120,6 +2118,8 @@ __metadata:
     "@emotion/react": 11.10.5
     "@emotion/styled": 11.10.5
     "@eyecuelab/recoil-devtools": 0.1.7
+    "@floating-ui/dom": ^1.1.0
+    "@floating-ui/react": ^0.18.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.4.0
     corners: 0.0.13
@@ -4152,7 +4152,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.33.0":
+"eslint@npm:8.33.0":
   version: 8.33.0
   resolution: "eslint@npm:8.33.0"
   dependencies:
