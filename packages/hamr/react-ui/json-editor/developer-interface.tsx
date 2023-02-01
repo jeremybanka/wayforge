@@ -4,7 +4,7 @@ import type { SerializedStyles } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
 
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 
 import type { JsxElements } from "."
 import type { JsonEditorComponents } from "./default-components"

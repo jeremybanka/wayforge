@@ -1,3 +1,4 @@
+import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
@@ -7,6 +8,7 @@ import { serveJsonStore } from "~/packages/@store-io/src/json-store-io.node"
 import { logger } from "./logger"
 import { formatJson } from "./services/formatJson"
 
+dotenv.config()
 pipe(
   new WebSocketServer(3333, {
     cors: {
@@ -17,24 +19,41 @@ pipe(
   serveJsonStore({
     logger,
     formatResource: formatJson,
-    baseDir: `./projects/wayfarer`,
+    baseDir: process.env.BASE_DIR || `json`,
   }),
   serveSimpleGit({
     logger,
-    baseDir: `./projects/`,
+    baseDir: process.env.BASE_DIR,
   })
 )
+logger.info(
+  `   `,
+  `|¯\\_________________________________|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\_|`
+)
+logger.info(``, ``)
 
-// const app = express()
-// const server = new HttpServer(app)
-// server.on(`error`, logger.error)
-
-// logger.info(`Listening on port 3333`)
-// http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
-// app.disable(`x-powered-by`)
-
-// const port = process.env.port || 3333
-// app.use(cors())
-// const server = app.listen(port, () => {
-//   console.log(`Listening at http://localhost:${port}/api`)
-// })
+logger.info(
+  `[/]`,
+  `|__________________________/ `,
+  `🟨   🟨   🟨`,
+  ` \\___________________________|`
+)
+logger.info(`[/]`, `                             `, `🟨   🟨   🟨`)
+logger.info(
+  `[/]`,
+  `  00                         `,
+  `🟨   🟨   🟨`,
+  `                    WAYFORGE`
+)
+logger.info(`[/]`, `                             `, `🟨        🟨`)
+logger.info(
+  `[/]`,
+  `|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\ `,
+  `🟨🟨🟨🟨🟨🟨`,
+  ` /¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|`
+)
+logger.info(``, ``)
+logger.info(
+  `   `,
+  `|_/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|_________________________________/¯|`
+)

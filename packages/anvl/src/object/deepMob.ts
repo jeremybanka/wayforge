@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/function"
 
-import { reduce, slice } from "../array"
 import { sprawl } from "./sprawl"
+import { reduce, slice } from "../array"
 
 // type Container =
 
@@ -28,8 +28,8 @@ export const deepMob = <Tree extends Array<unknown> | object>(
       : typeof oldChild === `object` && oldChild !== null
       ? { ...oldChild }
       : oldChild
-    if (Array.isArray(parent)) parent[key] = oldChild
-    else parent[key] = newChild
+    if (Array.isArray(newParent)) newParent[key] = oldChild
+    else newParent[key] = newChild
   }
 
   sprawl(tree, setNewNode)

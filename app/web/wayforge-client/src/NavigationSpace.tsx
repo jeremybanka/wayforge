@@ -18,7 +18,12 @@ import type { WC } from "~/packages/hamr/react-ui/json-editor"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
+import { ReactionHome } from "./components/energy/ReactionHome"
 import { Home } from "./components/Home"
+import {
+  ReactionEditor,
+  ReactionEditorFromRoute,
+} from "./components/reaction/ReactionEditor"
 import {
   findViewState,
   useAddView,
@@ -59,6 +64,10 @@ export const InnerView: FC<{ viewId: string; close: () => void }> = ({
           <Route path="energy" element={<Outlet />}>
             <Route index element={<EnergyHome />} />
             <Route path=":id" element={<EnergyEditor />} />
+          </Route>
+          <Route path="reaction" element={<Outlet />}>
+            <Route index element={<ReactionHome />} />
+            <Route path=":id" element={<ReactionEditorFromRoute />} />
           </Route>
         </Route>
       </Routes>

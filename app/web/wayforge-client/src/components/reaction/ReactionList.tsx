@@ -6,11 +6,11 @@ import styled from "@emotion/styled"
 import { ListItems } from "~/app/web/wayforge-client/recoil-list"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
+import { ReactionEditorListItem } from "./ReactionEditor"
 import {
   findReactionWithRelationsState,
   useRemoveReaction,
 } from "../../services/reaction"
-import { ReactionEditor } from "./ReactionEditor"
 
 export const ReactionList: FC<{
   labels: Identified[]
@@ -37,7 +37,7 @@ export const ReactionList: FC<{
         border: 2px solid #333;
         padding: 20px;
       `),
-      ListItem: ReactionEditor,
+      ListItem: ReactionEditorListItem,
       ItemCreator: ({ useCreate }) => {
         const create = useCreate()
         return <button onClick={create}>Add</button>

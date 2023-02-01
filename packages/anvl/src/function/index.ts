@@ -1,5 +1,7 @@
 import type { Refinement } from "fp-ts/Refinement"
 
+export const doNothing = (): void => undefined
+
 /* eslint-disable prettier/prettier */
 export const become =
   <T>
@@ -28,6 +30,11 @@ export const isModifier =
       return validate(testResult)
     }
   }
+
+export const pass =
+  <Params extends ReadonlyArray<any>, Out>(...params: Params) =>
+  (fn: (...params: Params) => Out): Out =>
+    fn(...params)
 
 export const typeOf =
   <T>(input: unknown) =>

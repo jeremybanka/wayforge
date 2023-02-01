@@ -1,60 +1,17 @@
 import { pipe } from "fp-ts/function"
-import { isString } from "fp-ts/string"
-import type { SimpleGitOptions, SimpleGit } from "simple-git"
+import type { SimpleGitOptions } from "simple-git"
 import { simpleGit } from "simple-git"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
-import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { ErrorObject } from "~/packages/anvl/src/json/json-api"
-import {
-  hasProperties,
-  recordToEntries,
-  redact,
-} from "~/packages/anvl/src/object"
+import { recordToEntries, redact } from "~/packages/anvl/src/object"
 
-export const SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET = [
-  `clearQueue`,
-  `customBinary`,
-  `env`,
-  `silent`,
-  `outputHandler`,
-] as const
-
-export type GitInterface = Omit<
-  SimpleGit,
-  (typeof SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET)[number]
->
-
-export type GitSocketError = ErrorObject<`title`>
-
-export const isGitSocketError = (value: unknown): value is GitSocketError =>
-  hasProperties({
-    type: (a: unknown): a is `error` => `error` === a,
-    title: isString,
-  })(value)
-
-/* prettier-ignore */
-// server "on" / client "emit"
-export type GitClientEvents = {
-  [GitFunction in keyof GitInterface]: Encapsulate<GitInterface[GitFunction]>
-}
-
-export type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
-
-/* prettier-ignore */
-// server "emit" / client "on"
-export type GitServerEvents = {
-  [GitFunction in keyof GitInterface]: 
-  GitInterface[GitFunction] extends (...args: any[]) => any 
-      ? (
-        result: 
-          | GitSocketError
-          | UnwrapPromise<ReturnType<GitInterface[GitFunction]>>
-      ) => void 
-      : never
-}
-
-export type GitServerSideEvents = Record<keyof any, unknown>
+import type {
+  GitClientEvents,
+  GitInterface,
+  GitServerEvents,
+  GitServerSideEvents,
+} from "./git-io"
+import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./git-io"
 
 type GitSocketServer = WebSocketServer<
   GitClientEvents,
@@ -70,7 +27,8 @@ export const serveSimpleGit =
   (options: ServeGitOptions) =>
   <YourServer extends WebSocketServer>(
     server: YourServer
-  ): GitSocketServer & YourServer =>
+  ): GitSocketServer & YourServer => (
+    options.logger.info(`init`, `git-io`),
     server.on(
       `connection`,
       (
@@ -173,3 +131,4 @@ export const serveSimpleGit =
         }
       }
     )
+  )

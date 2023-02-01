@@ -1,28 +1,31 @@
 import type { FC, ReactNode } from "react"
+import { useEffect } from "react"
 
 import { css } from "@emotion/react"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 
-import energySchema from "~/app/node/wayforge-server/projects/wayfarer/schema/energy.schema.json"
+import energySchema from "~/app/node/wayforge-server/projects/wayfarer_/_schemas/energy.schema.json"
 import type { RecoilEditorProps } from "~/app/web/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/web/wayforge-client/recoil-editor"
+import { isGitSocketError } from "~/packages/@git-io/src/git-io"
 import { includesAny } from "~/packages/anvl/src/array/venn"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 
+import { Data_EnergyCard_A } from "./EnergyCard_A"
+import { Data_EnergyCard_B } from "./EnergyCard_B"
+import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {
   findEnergyWithRelationsState,
   useRemoveEnergy,
 } from "../../services/energy"
+import { git } from "../../services/git"
 import { useAddReactionAsEnergyFeature } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { ReactionList } from "../reaction/ReactionList"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
-import { Data_EnergyCard_A } from "./EnergyCard_A"
-import { Data_EnergyCard_B } from "./EnergyCard_B"
-import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
 
 export const Slot_PreviewCardSleeve: FC<{
   children: ReactNode
@@ -68,6 +71,10 @@ export const Slot_PreviewCardSleeve: FC<{
 export const EnergyEditor_INTERNAL: FC<
   RecoilEditorProps<Energy & EnergyRelations>
 > = ({ id, findState, useRemove }) => {
+  const gitBranch = useRecoilValue(git.branch.state)
+  useEffect(() => {
+    git.branch()
+  }, [])
   const energyState = findState(id)
   const [energy, setEnergy] = useRecoilState(energyState)
   const set = {
@@ -110,6 +117,9 @@ export const EnergyEditor_INTERNAL: FC<
         remove={() => remove(id)}
         isHidden={includesAny([`features`, `id`, `name`])}
         customCss={skeletalJsonEditorCss}
+        isReadonly={() =>
+          isGitSocketError(gitBranch) || gitBranch.current === `main`
+        }
       />
       <ReactionList
         labels={energy.features}
@@ -120,7 +130,7 @@ export const EnergyEditor_INTERNAL: FC<
 }
 
 export const EnergyEditor: FC = () => (
-  <RecoilEditor.RouterAdaptor
+  <RecoilEditor.IdFromRoute
     Editor={EnergyEditor_INTERNAL}
     findState={findEnergyWithRelationsState}
     useRemove={useRemoveEnergy}

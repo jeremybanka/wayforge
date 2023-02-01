@@ -6,6 +6,7 @@ import { useRecoilValue } from "recoil"
 
 import { ListItems } from "~/app/web/wayforge-client/recoil-list"
 
+import { EnergyListItem } from "./EnergyListItem"
 import {
   energyIndex,
   findEnergyState,
@@ -13,7 +14,6 @@ import {
   useRemoveEnergy,
 } from "../../services/energy"
 import { useSetTitle } from "../../services/view"
-import { EnergyListItem } from "./EnergyListItem"
 
 export const EnergyHome: FC = () => {
   const ids = useRecoilValue(energyIndex)

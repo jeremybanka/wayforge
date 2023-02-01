@@ -1002,6 +1002,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.0.5":
+  version: 1.1.0
+  resolution: "@floating-ui/core@npm:1.1.0"
+  checksum: ac48969915247320e52d173480c224e2ded94d557ba4cc504547bb314d126348dcc0aeef05686673e1b289596e6ce15118edc84900dd310c613d805f83b4e27d
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@floating-ui/dom@npm:1.1.0"
+  dependencies:
+    "@floating-ui/core": ^1.0.5
+  checksum: 717551da6f470101cd1de0edc449b229fade7f94c2ff98d09e14ced041e27092aac94bd78756c4247a42b57129f187292f145f0001a81ece399a89b20b4be60b
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@floating-ui/react-dom@npm:1.2.1"
+  dependencies:
+    "@floating-ui/dom": ^1.1.0
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: db9a734798c84da6c6e5964a3535f1f26169a2358a47d7173c4b2fe18a3a4b856b521a3bb7394b4977b85a99e77544ed2867a88dc8903d91e228d478b57af08d
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react@npm:^0.18.1":
+  version: 0.18.1
+  resolution: "@floating-ui/react@npm:0.18.1"
+  dependencies:
+    "@floating-ui/react-dom": ^1.2.1
+    aria-hidden: ^1.1.3
+    tabbable: ^6.0.1
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 01bacb98151cf88ac11389c1a6b79023685246b620031572e5a95be1be825f67fdc7b118cd003169d5dbfe63d72f8ef886e892c5d710c6744fddfd64cda4f4e2
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -2033,6 +2075,8 @@ __metadata:
   resolution: "@wayforge/monorepo@workspace:."
   dependencies:
     "@changesets/cli": 2.26.0
+    "@floating-ui/dom": ^1.1.0
+    "@floating-ui/react": ^0.18.1
     "@vitejs/plugin-react": 3.0.1
     c8: 7.12.0
     cross-env: 7.0.3
@@ -2042,14 +2086,9 @@ __metadata:
     json-schema-to-zod: 0.6.2
     mock-fs: 5.2.0
     prettier: 2.8.2
-    tsconfig-paths: 4.1.2
     tsx: 3.12.2
     turbo: 1.7.0
     typescript: 4.9.4
-    vite: 4.0.4
-    vite-plugin-svgr: 2.4.0
-    vite-tsconfig-paths: 4.0.3
-    vitest: 0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2060,6 +2099,7 @@ __metadata:
     "@types/npmlog": 4.1.4
     "@types/prettier": 2.7.2
     cross-env: 7.0.3
+    dotenv: ^16.0.3
     eslint: 8.31.0
     fp-ts: 2.13.1
     io-ts: 2.2.20
@@ -2087,11 +2127,17 @@ __metadata:
     eslint: 8.31.0
     fp-ts: 2.13.1
     framer-motion: 8.4.2
+    happy-dom: ^8.1.5
+    io-ts: ^2.2.20
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.6.2
     recoil: 0.7.6
+    recoil-devtools: ^0.4.0
+    recoil-devtools-logger: ^0.4.0
     vite: 4.0.4
+    vite-plugin-svgr: 2.4.0
+    vite-tsconfig-paths: 4.0.3
     vitest: 0.27.1
     zod: 3.20.2
   languageName: unknown
@@ -2253,6 +2299,7 @@ __metadata:
     eslint: 8.31.0
     fp-ts: 2.13.1
     io-ts: 2.2.20
+    vite-tsconfig-paths: 4.0.3
     vitest: 0.27.1
   peerDependencies:
     fp-ts: ^2.13.1
@@ -2317,6 +2364,21 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 83644b56493e89a254bae05702abf3a1101b4fa4d0ca31df1c9985275a5a5bd47b3c27b7fa0b71098d41114d8ca000e6ed90cad764b306f8a503665e4d517ced
+  languageName: node
+  linkType: hard
+
+"aria-hidden@npm:^1.1.3":
+  version: 1.2.2
+  resolution: "aria-hidden@npm:1.2.2"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    "@types/react": ^16.9.0 || ^17.0.0 || ^18.0.0
+    react: ^16.9.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: ee1a3688db5491eeb87b73eea624614f24ef62a74cf9e47bc8229dde1ff7457f7e4a26425cadc0d3efd89380305e6fb4a4e505bccdee16beaa4686014861d7b1
   languageName: node
   linkType: hard
 
@@ -3149,6 +3211,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deep-diff@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "deep-diff@npm:1.0.2"
+  checksum: 9de8b5eedc1957116e1b47e4c3c4e3dbe23cb741abefc5ec8829a12e77958c689ac46888a3c35320f976cf42fb6de2b016e158facdb24d894ab5b5fdabad9b34
+  languageName: node
+  linkType: hard
+
 "deep-eql@npm:^4.1.2":
   version: 4.1.3
   resolution: "deep-eql@npm:4.1.3"
@@ -3284,6 +3353,13 @@ __metadata:
   dependencies:
     webidl-conversions: ^7.0.0
   checksum: ddbc1268edf33a8ba02ccc596735ede80375ee0cf124b30d2f05df5b464ba78ef4f49889b6391df4a04954e63d42d5631c7fcf8b1c4f12bc531252977a5f13d5
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.0.3":
+  version: 16.0.3
+  resolution: "dotenv@npm:16.0.3"
+  checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
   languageName: node
   linkType: hard
 
@@ -4736,6 +4812,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"happy-dom@npm:^8.1.5":
+  version: 8.1.5
+  resolution: "happy-dom@npm:8.1.5"
+  dependencies:
+    css.escape: ^1.5.1
+    he: ^1.2.0
+    node-fetch: ^2.x.x
+    webidl-conversions: ^7.0.0
+    whatwg-encoding: ^2.0.0
+    whatwg-mimetype: ^3.0.0
+  checksum: 10158948a598c3306086e14ec38cb98110ed31ad3c066a533540e89fc80d01cdf377f570081296a12d5cd60dbd0eff23107f2b6a91806113359d70cd6150fdf8
+  languageName: node
+  linkType: hard
+
 "hard-rejection@npm:^2.1.0":
   version: 2.1.0
   resolution: "hard-rejection@npm:2.1.0"
@@ -4809,6 +4899,15 @@ __metadata:
   dependencies:
     function-bind: ^1.1.1
   checksum: b9ad53d53be4af90ce5d1c38331e712522417d017d5ef1ebd0507e07c2fbad8686fffb8e12ddecd4c39ca9b9b47431afbb975b8abf7f3c3b82c98e9aad052792
+  languageName: node
+  linkType: hard
+
+"he@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "he@npm:1.2.0"
+  bin:
+    he: bin/he
+  checksum: 3d4d6babccccd79c5c5a3f929a68af33360d6445587d628087f39a965079d84f18ce9c3d3f917ee1e3978916fc833bb8b29377c3b403f919426f91bc6965e7a7
   languageName: node
   linkType: hard
 
@@ -5000,7 +5099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"io-ts@npm:2.2.20":
+"io-ts@npm:2.2.20, io-ts@npm:^2.2.20":
   version: 2.2.20
   resolution: "io-ts@npm:2.2.20"
   peerDependencies:
@@ -6164,6 +6263,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:^2.x.x":
+  version: 2.6.8
+  resolution: "node-fetch@npm:2.6.8"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 91f57be68e29f9b1382750693619e199733a6936998e6d618f1aa779853ad8fc4a2facf170db7957bf1d2510bad33449edf74b5802713d81b63de5986fa3be00
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:latest":
   version: 9.3.1
   resolution: "node-gyp@npm:9.3.1"
@@ -6962,6 +7075,28 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 1ced032e6e45670b6d7352d71d21ce7edf7b9b928494dcaba6f11fba63180d9da6cd7061ebc34175ffda6ff529f481818c962952004d273178acd70f7059b320
+  languageName: node
+  linkType: hard
+
+"recoil-devtools-logger@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "recoil-devtools-logger@npm:0.4.0"
+  dependencies:
+    deep-diff: ^1.0.2
+  peerDependencies:
+    react: ">=16"
+    recoil: ^0.4.0
+  checksum: 05ba99bb5db917fd08c9bc1608b7e48cdbb5dd267722112d431860208a2fa537cd32ffcb92f17d774873a88e7ccdc2df672586095d5851e98b025d8592f8e84a
+  languageName: node
+  linkType: hard
+
+"recoil-devtools@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "recoil-devtools@npm:0.4.0"
+  peerDependencies:
+    react: ">=16"
+    recoil: ^0.4.0
+  checksum: c9e9aa1a0f4c6cb8397b121b339d498e216d420502c73a438d2d3573cff21e0f2c4276215b2b4a7799a16f6908fe4da9b692c416f703bbb95b23a982da7a63df
   languageName: node
   linkType: hard
 
@@ -7773,6 +7908,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tabbable@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "tabbable@npm:6.0.1"
+  checksum: 65e378ad69a97416f2fdce34ade11b8ff68b33d9b2d978920a9d285c77e1bb88cb35113a8f00af8c4f0163d788d451a48840a216fa918d6a3f0c554951deb984
+  languageName: node
+  linkType: hard
+
 "tar@npm:^6.1.11, tar@npm:^6.1.2":
   version: 6.1.13
   resolution: "tar@npm:6.1.13"
@@ -7906,6 +8048,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tr46@npm:~0.0.3":
+  version: 0.0.3
+  resolution: "tr46@npm:0.0.3"
+  checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
 "transit-js@npm:^0.8.874":
   version: 0.8.874
   resolution: "transit-js@npm:0.8.874"
@@ -7950,17 +8099,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:4.1.2":
-  version: 4.1.2
-  resolution: "tsconfig-paths@npm:4.1.2"
-  dependencies:
-    json5: ^2.2.2
-    minimist: ^1.2.6
-    strip-bom: ^3.0.0
-  checksum: 3d9151ecea139594e25618717de15769ab9f38f8e6d510ac16e592b23e7f7105ea13cec5694c3de7e132c98277b775e18edd1651964164ee6d75737c408494cc
-  languageName: node
-  linkType: hard
-
 "tsconfig-paths@npm:^3.14.1":
   version: 3.14.1
   resolution: "tsconfig-paths@npm:3.14.1"
@@ -7987,7 +8125,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.3.1, tslib@npm:^2.4.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 19480d6e0313292bd6505d4efe096a6b31c70e21cf08b5febf4da62e95c265c8f571f7b36fcc3d1a17e068032f59c269fab3459d6cd3ed6949eafecf64315fca
@@ -8500,6 +8638,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webidl-conversions@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "webidl-conversions@npm:3.0.1"
+  checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
 "webidl-conversions@npm:^4.0.2":
   version: 4.0.2
   resolution: "webidl-conversions@npm:4.0.2"
@@ -8537,6 +8682,16 @@ __metadata:
     tr46: ^3.0.0
     webidl-conversions: ^7.0.0
   checksum: ed4826aaa57e66bb3488a4b25c9cd476c46ba96052747388b5801f137dd740b73fde91ad207d96baf9f17fbcc80fc1a477ad65181b5eb5fa718d27c69501d7af
+  languageName: node
+  linkType: hard
+
+"whatwg-url@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "whatwg-url@npm:5.0.0"
+  dependencies:
+    tr46: ~0.0.3
+    webidl-conversions: ^3.0.0
+  checksum: b8daed4ad3356cc4899048a15b2c143a9aed0dfae1f611ebd55073310c7b910f522ad75d727346ad64203d7e6c79ef25eafd465f4d12775ca44b90fa82ed9e2c
   languageName: node
   linkType: hard
 
