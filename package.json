@@ -12,7 +12,7 @@
     "serve": "cd app/node/wayforge-server && yarn dev",
     "gen": "cd app/wayforge-server && yarn gen",
     "test:once": "cross-env CI=true vitest run",
-    "lint": "eslint",
+    "lint": "turbo run lint",
     "format": "eslint --fix",
     "build": "turbo run build",
     "turbo:test": "turbo run test:once",
