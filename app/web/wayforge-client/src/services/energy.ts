@@ -11,10 +11,12 @@ import z, { string } from "zod"
 import type energySchema from "~/app/node/wayforge-server/gen/energy.schema.json"
 import {
   socketIndex,
+  socketSchema,
   socketSync,
 } from "~/packages/@store-io/src/json-store-io.web"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import {
   addToIndex,
   removeFromIndex,
@@ -109,6 +111,12 @@ export const findEnergyWithRelationsState = selectorFamily<
       set(findEnergyState(energyId), energy)
       set(energyFeaturesState, (j) => j.setRelations(energyId, features))
     },
+})
+
+export const energySchemaState = atom<JsonSchema>({
+  key: `energySchema`,
+  default: true,
+  effects: [socketSchema({ type: `energy`, socket })],
 })
 
 const addEnergy: Transact = (transactors) => {

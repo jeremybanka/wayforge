@@ -53,11 +53,6 @@ export const ObjectEditor = <T extends JsonObj>({
   isHidden = () => false,
   data,
   set,
-  // remove,
-  // rename,
-  // recast,
-  customCss,
-  className,
   Components,
 }: JsonEditorProps_INTERNAL<T>): JsxElements => {
   const disabled = isReadonly(path)
@@ -95,9 +90,12 @@ export const ObjectEditor = <T extends JsonObj>({
       }, schema)
     : undefined
 
-  const subSchemaIsObject = typeof subSchema === `object`
-  if (subSchemaIsObject && subSchema.$ref) {
-    const ref = subSchema.$ref
+  const subSchemaCopy =
+    typeof subSchema === `object` ? { ...subSchema } : subSchema
+
+  const subSchemaIsObject = typeof subSchemaCopy === `object`
+  if (subSchemaIsObject && subSchemaCopy.$ref) {
+    const ref = subSchemaCopy.$ref
       ?.split(`/`)
       .reduce<JsonSchema | undefined>(
         (acc, key, idx) =>
@@ -105,12 +103,12 @@ export const ObjectEditor = <T extends JsonObj>({
         undefined
       )
     if (isPlainObject(ref)) {
-      Object.assign(subSchema, ref)
+      Object.assign(subSchemaCopy, ref)
     }
   }
   const schemaKeys: ReadonlyArray<string> =
-    subSchemaIsObject && subSchema.type === `object`
-      ? Object.keys(subSchema.properties ?? {})
+    subSchemaIsObject && subSchemaCopy.type === `object`
+      ? Object.keys(subSchemaCopy.properties ?? {})
       : []
   const dataKeys: ReadonlyArray<string> = Object.keys(data)
   const [unofficialKeys, officialKeys] = dataKeys.reduce(

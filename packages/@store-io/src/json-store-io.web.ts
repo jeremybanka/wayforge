@@ -10,6 +10,8 @@ import type {
   JsonInterface,
   JsonObj,
 } from "~/packages/anvl/src/json"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
+import { isJsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 
 import type {
   JsonStoreClientEvents,
@@ -47,7 +49,9 @@ export type SocketIndexOptions<T> = {
   jsonInterface: JsonInterface<T, JsonArr<string>>
 }
 
-export const socketIndex: <T>(options: SocketIndexOptions<T>) => AtomEffect<T> =
+export const socketIndex: <IDS extends Iterable<string>>(
+  options: SocketIndexOptions<IDS>
+) => AtomEffect<IDS> =
   ({ type, socket, jsonInterface: { toJson, fromJson } }) =>
   ({ setSelf, onSet }) => {
     socket.emit(`indexRead`, { type })
@@ -85,4 +89,21 @@ export const socketRelations: <CONTENT extends JsonObj | null = null>(
     onSet((v: Join) =>
       socket.emit(`relationsWrite`, { id, type, value: v.toJSON() })
     )
+  }
+
+export type SocketSchemaOptions = {
+  type: string
+  socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
+}
+
+export const socketSchema: (
+  options: SocketSchemaOptions
+) => AtomEffect<JsonSchema> =
+  ({ type, socket }) =>
+  ({ setSelf, onSet }) => {
+    socket.emit(`schemaRead`, { type })
+    socket.on(`schemaRead_${type}`, (json) =>
+      isJsonSchema(json) ? setSelf(json) : null
+    )
+    onSet((v) => console.warn(`editing schema not yet supported`))
   }
