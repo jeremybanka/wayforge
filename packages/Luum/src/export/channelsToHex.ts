@@ -1,4 +1,4 @@
-import type { ChannelObject, Hex } from "~/packages/Luum"
+import type { ChannelObject, Hex } from "~/packages/Luum/src"
 
 const channelsToHex = (channels: ChannelObject): Hex =>
   `#${Object.values(channels)

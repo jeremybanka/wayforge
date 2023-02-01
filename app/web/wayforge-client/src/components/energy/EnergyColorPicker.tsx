@@ -4,7 +4,7 @@ import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
 import { NumberInput } from "~/packages/hamr/react-ui/number-input"
-import type { LuumSpec } from "~/packages/Luum"
+import type { LuumSpec } from "~/packages/Luum/src"
 
 export type EnergyColorPickerProps = {
   state: RecoilState<LuumSpec>

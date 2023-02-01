@@ -1,4 +1,4 @@
-import type { Filter, Hex, LuumSpec } from "~/packages/Luum"
+import type { Filter, Hex, LuumSpec } from "~/packages/Luum/src"
 
 import specToHexFixLimit from "./specToHexFixLimit"
 
