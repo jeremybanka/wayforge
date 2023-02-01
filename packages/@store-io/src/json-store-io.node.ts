@@ -4,8 +4,13 @@ import type { JsonStoreOptions } from "~/packages/@store-io/src"
 import type { Encapsulate } from "~/packages/anvl/src/function"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 
-import { initIndexer, initReader, initRelationReader } from "./read"
-import type { ReadIndex, ReadRelations, ReadResource } from "./read"
+import {
+  initIndexer,
+  initReader,
+  initRelationReader,
+  initSchemaReader,
+} from "./read"
+import type { ReadIndex, ReadRelations, ReadResource, ReadSchema } from "./read"
 import { initRelationsWriter, initIndexWriter, initWriter } from "./write"
 import type { WriteIndex, WriteRelations, WriteResource } from "./write"
 
@@ -18,6 +23,7 @@ export type JsonStoreClientEvents = {
   indexWrite: Encapsulate<WriteIndex>
   relationsRead: Encapsulate<ReadRelations>
   relationsWrite: Encapsulate<WriteRelations>
+  schemaRead: Encapsulate<ReadSchema>
 }
 /* prettier-ignore */
 // server "emit" / client "on"
@@ -25,6 +31,7 @@ export type JsonStoreServerEvents =
   & Record<`indexRead_${string}`, (ids: JsonArr<string>) => void>
   & Record<`read_${string}`, (resource: Json) => void>
   & Record<`relationsRead_${string}`, (relations: Json) => void> 
+  & Record<`schemaRead_${string}`, (schema: Json) => void>
   & { event: (message: string) => void }
 
 export type JsonStoreClusterEvents = Record<keyof any, unknown>
@@ -39,7 +46,8 @@ export const serveJsonStore =
   (options: JsonStoreOptions) =>
   <YourServer extends WebSocketServer>(
     server: YourServer
-  ): JsonStoreSocketServer & YourServer =>
+  ): JsonStoreSocketServer & YourServer => (
+    options.logger.info(`init`, `json-store-io`),
     server.on(
       `connection`,
       (
@@ -56,6 +64,7 @@ export const serveJsonStore =
         const readResource = initReader(options)
         const readIndex = initIndexer(options)
         const readRelations = initRelationReader(options)
+        const readSchema = initSchemaReader(options)
         const writeResource = initWriter(options)
         const writeIndex = initIndexWriter(options, readIndex)
         const writeRelations = initRelationsWriter(options)
@@ -65,7 +74,7 @@ export const serveJsonStore =
             logger.info(socket.id, `read`, id, type)
             const result = readResource({ id, type })
             return result instanceof Error
-              ? console.error(result)
+              ? logger.error(result)
               : socket.emit(`read_${id}`, result)
           },
           relationsRead: ({ id, type }) => {
@@ -79,20 +88,24 @@ export const serveJsonStore =
             logger.info(socket.id, `indexRead`, type)
             const result = readIndex({ type })
             return result instanceof Error
-              ? console.error(result)
+              ? logger.error(result)
               : socket.emit(`indexRead_${type}`, result)
           },
-
+          schemaRead: ({ type }) => {
+            logger.info(socket.id, `schemaRead`, type)
+            const result = readSchema({ type })
+            return result instanceof Error
+              ? logger.error(result)
+              : socket.emit(`schemaRead_${type}`, result)
+          },
           write: ({ id, type, value }) => {
             logger.info(socket.id, `write`, id, value)
             writeResource({ id, type, value })
           },
-
           relationsWrite: ({ id, type, value }) => {
             logger.info(`${socket.id} relationsWrite`, id, value)
             writeRelations({ id, type, value })
           },
-
           indexWrite: ({ type, value }) => {
             logger.info(socket.id, `indexWrite`, type)
             writeIndex({ type, value })
@@ -106,3 +119,4 @@ export const serveJsonStore =
         socket.on(`relationsWrite`, handle.relationsWrite)
       }
     )
+  )

@@ -1,9 +1,9 @@
 import type { JsonArr } from "~/packages/anvl/src/json"
 
+import { makeElementSetters } from "./utilities/array-elements"
 import type { JsxElements } from ".."
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
-import { makeElementSetters } from "./utilities/array-elements"
 
 export const ArrayEditor = <T extends JsonArr>({
   path = [],

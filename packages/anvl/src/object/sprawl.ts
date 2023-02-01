@@ -16,6 +16,7 @@ export const sprawl = (
 ): void => {
   const walk = (path: string[], node: unknown): InspectionResult => {
     const inspect = (path: string[], node: unknown): InspectionResult | null => {
+      // console.log(parent)
       const result = inspector(path, node)
       if (result) return result
       return null

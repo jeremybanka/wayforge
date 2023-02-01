@@ -82,5 +82,7 @@ export const socketRelations: <CONTENT extends JsonObj | null = null>(
         )
       )
     )
-    onSet((v) => socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }))
+    onSet((v: Join) =>
+      socket.emit(`relationsWrite`, { id, type, value: v.toJSON() })
+    )
   }

@@ -25,6 +25,7 @@ export const Home: FC = () => {
     >
       <Header />
       <Link to="energy">energy</Link>
+      <Link to="reaction">reaction</Link>
     </article>
   )
 }
