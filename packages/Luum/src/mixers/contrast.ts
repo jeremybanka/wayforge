@@ -1,5 +1,5 @@
 import type { Modifier } from "~/packages/anvl/src/function"
-import type { LuumSpec } from "~/packages/Luum"
+import type { LuumSpec } from "~/packages/Luum/src"
 
 export const contrastMax: Modifier<LuumSpec> = (color) => ({
   ...color,

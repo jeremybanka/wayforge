@@ -1,4 +1,4 @@
-import type { ChannelObject } from "~/packages/Luum"
+import type { ChannelObject } from "~/packages/Luum/src"
 
 import { CHANNEL_SPECIFIC_LUM } from "../constants"
 

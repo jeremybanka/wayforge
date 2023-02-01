@@ -1,4 +1,4 @@
-import type { Degree } from "~/packages/Luum"
+import type { Degree } from "~/packages/Luum/src"
 
 import { wrapAround } from "../utils"
 

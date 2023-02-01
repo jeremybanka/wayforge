@@ -1,4 +1,4 @@
-import type { ChannelObject, HSL } from "~/packages/Luum"
+import type { ChannelObject, HSL } from "~/packages/Luum/src"
 
 import { hueFromChannels, satFromChannels, lumFromChannels } from "../solveFor"
 

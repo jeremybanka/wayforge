@@ -6,7 +6,7 @@ import type {
   LuumSpec,
   OutOf255,
   Range,
-} from "~/packages/Luum"
+} from "~/packages/Luum/src"
 
 import { unfiltered } from "../constants/filters"
 import hueToRelativeChannels from "../import/hueToRelativeChannels"

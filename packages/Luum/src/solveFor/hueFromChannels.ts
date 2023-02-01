@@ -1,4 +1,4 @@
-import type { ChannelObject } from "~/packages/Luum"
+import type { ChannelObject } from "~/packages/Luum/src"
 
 const hueFromChannels = ({ R, G, B }: ChannelObject): number => {
   let hue = 0
