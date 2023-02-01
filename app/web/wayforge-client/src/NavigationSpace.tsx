@@ -20,7 +20,10 @@ import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
 import { ReactionHome } from "./components/energy/ReactionHome"
 import { Home } from "./components/Home"
-import { ReactionEditor } from "./components/reaction/ReactionEditor"
+import {
+  ReactionEditor,
+  ReactionEditorFromRoute,
+} from "./components/reaction/ReactionEditor"
 import {
   findViewState,
   useAddView,
@@ -64,7 +67,7 @@ export const InnerView: FC<{ viewId: string; close: () => void }> = ({
           </Route>
           <Route path="reaction" element={<Outlet />}>
             <Route index element={<ReactionHome />} />
-            <Route path=":id" element={<ReactionEditor />} />
+            <Route path=":id" element={<ReactionEditorFromRoute />} />
           </Route>
         </Route>
       </Routes>

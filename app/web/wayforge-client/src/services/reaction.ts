@@ -16,6 +16,7 @@ import {
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
+import { removeFromIndex } from "~/packages/hamr/recoil-tools/recoil-index"
 import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 import type { Amount } from "./energy_reaction"
@@ -78,6 +79,7 @@ export const findReactionState = atomFamily<Reaction, string>({
 export type ReactionRelations = {
   reagents: (Amount & Identified)[]
   products: (Amount & Identified)[]
+  featureOf: Identified | null
 }
 
 export const findReactionWithRelationsState = selectorFamily<
@@ -94,8 +96,8 @@ export const findReactionWithRelationsState = selectorFamily<
       const reactionProducts = get(reactionProductsState)
       const products = reactionProducts.getRelations(id)
       const energyFeatures = get(energyFeaturesState)
-      // const [energy] = energyFeatures.getRelations(id)
-      return { ...reaction, reagents, products }
+      const featureOf = energyFeatures.getRelation(id) ?? null
+      return { ...reaction, reagents, products, featureOf }
     },
   set:
     (reactionId) =>
@@ -103,11 +105,13 @@ export const findReactionWithRelationsState = selectorFamily<
       if (newValue instanceof DefaultValue) {
         return console.warn(`cannot set default value for reaction`)
       }
-      const { products, reagents, ...reaction } = newValue
+      const { products, reagents, featureOf, ...reaction } = newValue
       set(findReactionState(reactionId), reaction)
       set(reactionProductsState, (j) => j.setRelations(reactionId, products))
       set(reactionReagentsState, (j) => j.setRelations(reactionId, reagents))
-      // set(energyFeaturesState, (j) => j.setRelations(reactionId, [energy]))
+      if (featureOf !== null) {
+        set(energyFeaturesState, (j) => j.set(reactionId, featureOf.id))
+      }
     },
 })
 
@@ -140,15 +144,17 @@ export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
   )
 
 export const removeReaction: TransactionOperation<string> = (
-  { get, set },
+  transactors,
   id
 ) => {
+  const { get, set } = transactors
   const energyFeatures = get(energyFeaturesState)
   const reactionReagents = get(reactionReagentsState)
   const reactionProducts = get(reactionProductsState)
   set(energyFeaturesState, energyFeatures.remove(id))
   set(reactionReagentsState, reactionReagents.remove(id))
   set(reactionProductsState, reactionProducts.remove(id))
+  removeFromIndex(transactors, { id, indexAtom: reactionIndex })
 }
 export const useRemoveReaction = (): ((id: string) => void) =>
   useRecoilTransaction_UNSTABLE(

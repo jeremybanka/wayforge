@@ -6,7 +6,7 @@ import styled from "@emotion/styled"
 import { ListItems } from "~/app/web/wayforge-client/recoil-list"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-import { ReactionEditor } from "./ReactionEditor"
+import { ReactionEditorListItem } from "./ReactionEditor"
 import {
   findReactionWithRelationsState,
   useRemoveReaction,
@@ -37,7 +37,7 @@ export const ReactionList: FC<{
         border: 2px solid #333;
         padding: 20px;
       `),
-      ListItem: ReactionEditor,
+      ListItem: ReactionEditorListItem,
       ItemCreator: ({ useCreate }) => {
         const create = useCreate()
         return <button onClick={create}>Add</button>

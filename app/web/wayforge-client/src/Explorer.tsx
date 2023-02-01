@@ -1,7 +1,7 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
-import { atom, useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 
 import { isGitSocketError } from "~/packages/@git-io/src/git-io"
 
