@@ -13,7 +13,7 @@ export type RecoilEditorProps<T> = {
   useRemove: () => (id: string) => void
 }
 
-export type RecoilEditorRouterAdaptorProps<T> = {
+export type IdFromRouteProps<T> = {
   Editor: FC<RecoilEditorProps<T>>
   findState: (key: string) => RecoilState<T>
   useRemove: () => (id: string) => void
@@ -23,7 +23,7 @@ export const IdFromRoute = <T,>({
   Editor,
   findState,
   useRemove,
-}: RecoilEditorRouterAdaptorProps<T>): JsxElements => {
+}: IdFromRouteProps<T>): JsxElements => {
   const { id } = useParams<{ id: string }>()
   if (!id) {
     throw new Error(`RouterAdaptor must be used with a route that has an id`)
@@ -31,22 +31,22 @@ export const IdFromRoute = <T,>({
   return <Editor id={id} findState={findState} useRemove={useRemove} />
 }
 
-export const makeListItemAdaptor = <T,>(
+export type FromListItemProps<T> = RecoilListItemProps<T> & {
   Editor: FC<RecoilEditorProps<T>>
-): { ListItemAdaptor: FC<RecoilListItemProps<T>> } => ({
-  ListItemAdaptor: ({
-    label,
-    findState,
-    removeMe,
-  }: RecoilListItemProps<T> & {
-    Editor: FC<RecoilEditorProps<T>>
-  }): JsxElements => {
-    const { id } = label
-    return <Editor id={id} findState={findState} useRemove={() => removeMe} />
-  },
-})
+}
+
+export const ListItem = <T,>({
+  Editor,
+  label,
+  findState,
+  removeMe,
+}: FromListItemProps<T>): JsxElements => {
+  return (
+    <Editor id={label.id} findState={findState} useRemove={() => removeMe} />
+  )
+}
 
 export const RecoilEditor = {
-  makeListItemAdaptor,
+  ListItem,
   IdFromRoute,
 }

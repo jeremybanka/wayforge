@@ -13,11 +13,19 @@ import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schem
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 
+import type {
+  FromListItemProps,
+  RecoilEditorProps,
+} from "../../../recoil-editor"
 import { RecoilEditor } from "../../../recoil-editor"
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
-import { findReactionState, useRemoveReaction } from "../../services/reaction"
+import {
+  findReactionWithRelationsState,
+  findReactionState,
+  useRemoveReaction,
+} from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon_SVG"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
 
@@ -37,11 +45,12 @@ export type Settable<T extends JsonObj> = T & { set: SetterOrUpdater<T> }
 export const isFn = (x: unknown): x is CallableFunction =>
   typeof x === `function`
 
-export const ReactionEditor_INTERNAL: FC<
-  RecoilListItemProps<Reaction & ReactionRelations>
-> = ({ label, findState, removeMe }) => {
-  const reactionState = findState(label.id)
+export const ReactionEditor: FC<
+  RecoilEditorProps<Reaction & ReactionRelations>
+> = ({ id, findState, useRemove }) => {
+  const reactionState = findState(id)
   const [reaction, setReaction] = useRecoilState(reactionState)
+
   const set: {
     [K in keyof Omit<Reaction & ReactionRelations, `id`>]: SetterOrUpdater<
       (Reaction & ReactionRelations)[K]
@@ -72,6 +81,11 @@ export const ReactionEditor_INTERNAL: FC<
         ...current,
         products: become(products)(current.products),
       })),
+    featureOf: (featureOf) =>
+      setReaction((current) => ({
+        ...current,
+        featureOf: become(featureOf)(current.featureOf),
+      })),
   }
   const add = {
     reagent: (id: string) =>
@@ -79,12 +93,13 @@ export const ReactionEditor_INTERNAL: FC<
     product: (id: string) =>
       set.products([...reaction.products, { id, amount: 1 }]),
   }
-  const remove = {
+  const remove = Object.assign(useRemove(), {
     reagent: (id: string) =>
       set.reagents(reaction.reagents.filter((r) => r.id !== id)),
     product: (id: string) =>
       set.products(reaction.products.filter((p) => p.id !== id)),
-  }
+    featureOf: () => set.featureOf(null),
+  })
   const find = {
     reagent: (reagentId: string): Settable<Reagent> => ({
       ...(reaction.reagents.find((r) => r.id === reagentId) ??
@@ -103,6 +118,9 @@ export const ReactionEditor_INTERNAL: FC<
         ),
     }),
   }
+
+  const removeMe = () => remove(id)
+
   const energySelectables = useRecoilValue(energySelectState)
   return (
     <RecoverableErrorBoundary>
@@ -112,8 +130,15 @@ export const ReactionEditor_INTERNAL: FC<
         set={setReaction}
         name={reaction.name}
         rename={set.name}
-        remove={() => (console.log(`remove reaction ${label.id}`), removeMe())}
-        isHidden={includesAny([`id`, `name`, `reagents`, `products`, `energy`])}
+        remove={() => (console.log(`remove reaction ${id}`), removeMe())}
+        isHidden={includesAny([
+          `id`,
+          `name`,
+          `reagents`,
+          `products`,
+          `featureOf`,
+          `energy`,
+        ])}
         customCss={skeletalJsonEditorCss}
       />
       {reaction.reagents.map(({ id: reagentId }) => (
@@ -138,14 +163,11 @@ export const ReactionEditor_INTERNAL: FC<
       <select onChange={(e) => add.reagent(e.target.value)}>
         {[null, ...energySelectables].map((option) =>
           option === null ? (
-            <option key={label.id + `reagent_add`} value={``}>
+            <option key={id + `reagent_add`} value={``}>
               +
             </option>
           ) : (
-            <option
-              key={option.value + label.id + `reagent`}
-              value={option.value}
-            >
+            <option key={option.value + id + `reagent`} value={option.value}>
               {option.text}
             </option>
           )
@@ -177,27 +199,65 @@ export const ReactionEditor_INTERNAL: FC<
       >
         {[null, ...energySelectables].map((option) =>
           option === null ? (
-            <option key={label.id + `product_add`} value={``}>
+            <option key={id + `product_add`} value={``}>
               +
             </option>
           ) : (
-            <option
-              key={option.value + label.id + `product`}
-              value={option.value}
-            >
+            <option key={option.value + id + `product`} value={option.value}>
               {option.text}
             </option>
           )
         )}
       </select>
+      <div>
+        {reaction.featureOf ? (
+          <span>
+            <SVG_EnergyIcon energyId={reaction.featureOf.id} size={40} />
+            <button onClick={() => set.featureOf(null)}>remove</button>
+          </span>
+        ) : (
+          <select
+            onChange={({ target: { value } }) =>
+              value && set.featureOf({ id: value })
+            }
+            value={``}
+          >
+            {[null, ...energySelectables].map((option) =>
+              option === null ? (
+                <option key={id + `featureOf_add`} value={``}>
+                  +
+                </option>
+              ) : (
+                <option
+                  key={option.value + id + `featureOf`}
+                  value={option.value}
+                >
+                  {option.text}
+                </option>
+              )
+            )}
+          </select>
+        )}
+      </div>
     </RecoverableErrorBoundary>
   )
 }
 
-export const ReactionEditor: FC = () => (
+export const ReactionEditorListItem: FC<
+  FromListItemProps<Reaction & ReactionRelations>
+> = ({ label, findState, removeMe }) => (
+  <RecoilEditor.ListItem
+    label={label}
+    findState={findState}
+    removeMe={removeMe}
+    Editor={ReactionEditor}
+  />
+)
+
+export const ReactionEditorFromRoute: FC = () => (
   <RecoilEditor.IdFromRoute
-    Editor={ReactionEditor_INTERNAL}
-    findState={findReactionState}
+    Editor={ReactionEditor}
+    findState={findReactionWithRelationsState}
     useRemove={useRemoveReaction}
   />
 )

@@ -48,7 +48,7 @@ export const initIndexWriter = (
       return result
     }
     const toBeDeleted = result.filter((id) => !newIds.includes(id))
-    console.log(`⚠️`, { newIds, toBeDeleted })
+    logger.info(`⚠️`, { newIds, toBeDeleted })
     const fileNames = readdirSync(`${baseDir}/${type}`)
 
     toBeDeleted.forEach((id) => {
