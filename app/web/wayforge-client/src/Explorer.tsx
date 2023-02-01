@@ -30,7 +30,8 @@ export const Explorer: FC = () => {
         width: 400px;
       `}
     >
-      Explorer - {gitBranch.current}
+      Explorer -{` `}
+      {isGitSocketError(gitBranch) ? gitBranch.title : gitBranch.current}
       <div>
         {isGitSocketError(gitStatus) ? (
           gitStatus.title

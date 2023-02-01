@@ -7,8 +7,9 @@ import { parseJson } from "~/packages/anvl/src/json"
 import { isResourceIdentifier } from "~/packages/anvl/src/json/json-api"
 import type { ResourceIdentifierObject } from "~/packages/anvl/src/json/json-api"
 import { refineJsonType } from "~/packages/anvl/src/json/refine"
-import { entriesToRecord, isPlainObject } from "~/packages/anvl/src/object"
-import type { Entries } from "~/packages/anvl/src/object"
+import type { Entries } from "~/packages/anvl/src/object/entries"
+import { entriesToRecord } from "~/packages/anvl/src/object/entries"
+import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 import { sprawl } from "~/packages/anvl/src/object/sprawl"
 
 export const getJsonFileNames = (dir: string): string[] => {
@@ -148,12 +149,12 @@ export const extractPriorRelations = <T extends JsonObj>(
     )
     const key = path.at(-1)
     if (Array.isArray(parent)) {
-      const index = parseInt(path.at(-1))
+      const index = parseInt(path.at(-1) as string, 10)
       parent.splice(index, 1)
     }
     if (isPlainObject(parent)) {
       const key = path.at(-1)
-      delete (parent as Record<string, any>)[key]
+      delete (parent as Record<string, any>)[key as string]
     }
     return dataCopy
   }, dataDeepCopy)

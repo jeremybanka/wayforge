@@ -2,9 +2,6 @@ import type { Refinement } from "fp-ts/Refinement"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-import type { Json, JsonObj } from "../json"
-import { isUndefined } from "../nullish"
-import type { NullSafeRest, NullSafeUnion } from "../nullish"
 import type { RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-related-ids"
@@ -12,6 +9,10 @@ import { getContent, getRelations, setRelations } from "./relation-contents"
 import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
+import type { Json, JsonObj } from "../json"
+import type { NullSafeRest, NullSafeUnion } from "../nullish"
+import { isUndefined } from "../nullish"
+import { cannotExist } from "../refinement"
 
 export class Join<CONTENT extends JsonObj | null = null>
   implements RelationData<CONTENT>
@@ -19,9 +20,7 @@ export class Join<CONTENT extends JsonObj | null = null>
   public readonly relationType: `1:1` | `1:n` | `n:n`
   public readonly relations: Record<string, string[]>
   public readonly contents: Record<string, CONTENT>
-  public constructor(
-    json: Partial<RelationData<CONTENT>> = EMPTY_RELATION_DATA
-  ) {
+  public constructor(json?: Partial<RelationData<CONTENT>>) {
     Object.assign(this, { ...EMPTY_RELATION_DATA, ...json })
   }
   public toJSON(): RelationData<CONTENT> {
@@ -33,7 +32,7 @@ export class Join<CONTENT extends JsonObj | null = null>
   }
   public static fromJSON<CONTENT extends JsonObj | null = null>(
     json: Json,
-    isContent: Refinement<unknown, CONTENT> = isUndefined
+    isContent: Refinement<unknown, CONTENT> = cannotExist
   ): Join<CONTENT> {
     const isValid = isRelationData(isContent)(json)
     if (isValid) {

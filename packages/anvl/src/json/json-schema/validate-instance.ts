@@ -6,19 +6,17 @@ import { isString } from "fp-ts/string"
 
 import type { integer } from "./integer"
 import { isInteger, Int } from "./integer"
-import { isJsonSchemaLeaf, isUnionSchema } from "./json-schema"
+import { isJsonSchemaLeaf } from "./json-schema"
 import type {
   JsonSchema,
   JsonSchemaMetaTypeName,
   JsonSchemaSystem,
   JsonSchemaTypeName,
   JsonSchemaLeaf,
-  JsonSchemaTree,
 } from "./json-schema"
 import { filter } from "../../array"
 import { isNull } from "../../nullish"
-import { isPlainObject, recordToEntries } from "../../object"
-import type { Fragment } from "../../object/patch"
+import { isPlainObject } from "../../object/refinement"
 import { canExist, cannotExist } from "../../refinement"
 
 export interface JsonSchemaMetaTypes
