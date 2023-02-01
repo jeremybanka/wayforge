@@ -15,6 +15,7 @@
     "lint": "eslint",
     "format": "eslint --fix",
     "build": "turbo run build",
+    "turbo:test": "turbo run test:once",
     "test": "turbo run test:once"
   },
   "workspaces": [

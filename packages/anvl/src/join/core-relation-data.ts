@@ -3,7 +3,7 @@ import { isString } from "fp-ts/string"
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
 
 import { isArray } from "../array"
-import { hasProperties, isRecord } from "../object"
+import { hasExactProperties, isRecord } from "../object/refinement"
 
 export const RELATION_TYPES = [`1:1`, `1:n`, `n:n`] as const
 
@@ -29,8 +29,10 @@ export const isRelationData =
     isContent?: (json: Json) => json is CONTENT
   ) =>
   (input: unknown): input is RelationData<CONTENT> =>
-    hasProperties<RelationData<CONTENT>>({
-      contents: isContent ? isRecord(isString, isContent) : hasProperties({}),
+    hasExactProperties<RelationData<CONTENT>>({
+      contents: isContent
+        ? isRecord(isString, isContent)
+        : hasExactProperties({}),
       relations: isRecord(isString, isArray(isString)),
       relationType: isRelationType,
     })(input)

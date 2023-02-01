@@ -2,12 +2,12 @@ import { isString } from "fp-ts/lib/string"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
 import type { ErrorObject } from "~/packages/anvl/src/json/json-api"
-import { hasProperties } from "~/packages/anvl/src/object"
+import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 export type ClienteleError = ErrorObject<`title`>
 
 export const ClienteleError = (value: unknown): value is ClienteleError =>
-  hasProperties({
+  hasExactProperties({
     type: (a: unknown): a is `error` => `error` === a,
     title: isString,
   })(value)

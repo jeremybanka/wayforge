@@ -3,7 +3,7 @@ import type { SimpleGit } from "simple-git"
 
 import type { Encapsulate } from "~/packages/anvl/src/function"
 import type { ErrorObject } from "~/packages/anvl/src/json/json-api"
-import { hasProperties } from "~/packages/anvl/src/object"
+import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 export const SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET = [
   `clearQueue`,
@@ -16,7 +16,7 @@ export const SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET = [
 export type GitSocketError = ErrorObject<`title`>
 
 export const isGitSocketError = (value: unknown): value is GitSocketError =>
-  hasProperties({
+  hasExactProperties({
     type: (a: unknown): a is `error` => `error` === a,
     title: isString,
   })(value)

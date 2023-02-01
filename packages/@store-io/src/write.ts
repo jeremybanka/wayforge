@@ -4,7 +4,7 @@ import { identity, pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
 
 import type { Json, JsonArr, JsonObj } from "~/packages/anvl/src/json"
-import { hasProperties } from "~/packages/anvl/src/object"
+import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 import type { JsonStoreOptions } from "."
 import type { ReadIndex } from "./read"
@@ -19,7 +19,8 @@ export const initWriter = ({
   const writeResource: WriteResource = ({ id, type, value }) => {
     const formatted = pipe(value, JSON.stringify, formatResource)
     const name =
-      (hasProperties({ name: isString })(value) ? `${value.name}_` : ``) + id
+      (hasExactProperties({ name: isString })(value) ? `${value.name}_` : ``) +
+      id
     const nextFilepath = `${baseDir}/${type}/${name}.json`
     const allFileNames = readdirSync(`${baseDir}/${type}`)
     const prevFileName = allFileNames.find((name) => name.includes(id))

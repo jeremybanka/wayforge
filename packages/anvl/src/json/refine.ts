@@ -2,7 +2,7 @@ import { isBoolean } from "fp-ts/boolean"
 import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 
-import { isPlainObject } from "~/packages/anvl/src/object"
+import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 
 import type { Json, JsonArr, JsonObj } from "."
 import { raiseError } from "../function"

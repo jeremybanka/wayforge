@@ -17,7 +17,7 @@ import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
 import { removeFromIndex } from "~/packages/hamr/recoil-tools/recoil-index"
-import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
+import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 import type { Amount } from "./energy_reaction"
 import {
@@ -115,7 +115,7 @@ export const findReactionWithRelationsState = selectorFamily<
     },
 })
 
-const addReaction: TransactionOperation<undefined, string> = ({ set }) => {
+const addReaction: Transact<() => string> = ({ set }) => {
   const id = now()
   set(findReactionState(id), (current) => {
     return {
@@ -129,7 +129,7 @@ const addReaction: TransactionOperation<undefined, string> = ({ set }) => {
 export const useAddReaction = (): (() => void) =>
   useRecoilTransaction_UNSTABLE((transactors) => () => addReaction(transactors))
 
-export const addReactionAsEnergyFeature: TransactionOperation<string> = (
+export const addReactionAsEnergyFeature: Transact<(id: string) => void> = (
   transactors,
   energyId
 ) => {
@@ -143,7 +143,7 @@ export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
     (transactors) => () => addReactionAsEnergyFeature(transactors, energyId)
   )
 
-export const removeReaction: TransactionOperation<string> = (
+export const removeReaction: Transact<(id: string) => void> = (
   transactors,
   id
 ) => {

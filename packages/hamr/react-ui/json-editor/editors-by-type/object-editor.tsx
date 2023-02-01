@@ -8,8 +8,7 @@ import { lastOf } from "~/packages/anvl/src/array"
 import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
-import { refineJsonSchema } from "~/packages/anvl/src/json/json-schema/refine-schema"
-import { isPlainObject } from "~/packages/anvl/src/object"
+import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 
 import {
   makePropertyCreationInterface,

@@ -2,8 +2,8 @@ import type { RecoilValueReadOnly, RecoilState } from "recoil"
 import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
 
-import { recordToEntries } from "~/packages/anvl/src/object"
-import type { TransactionOperation } from "~/packages/hamr/recoil-tools/recoil-utils"
+import { recordToEntries } from "~/packages/anvl/src/object/entries"
+import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
 
 import type {
   GitInterface,
@@ -24,9 +24,8 @@ export type GitClientTools = {
         state: RecoilValueReadOnly<
           Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
         >
-        getCurrentState: TransactionOperation<
-          undefined,
-          Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
+        getCurrentState: Transact<
+          () => Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
         >
       }
     : never
@@ -50,7 +49,7 @@ export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
         },
       ],
     })
-    const getInternalState: TransactionOperation<undefined, any> = ({ get }) =>
+    const getInternalState: Transact<() => any> = ({ get }) =>
       get(state_INTERNAL)
     const clientInterface = Object.assign(
       (...args: Parameters<GitInterface[keyof GitInterface]>) =>

@@ -2,18 +2,20 @@ import { isBoolean } from "fp-ts/boolean"
 import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 
-import { delve, hasProperties, modify, redact, select } from "."
+import { delve, redact, select } from "."
+import { modify } from "./modify"
+import { hasExactProperties } from "./refinement"
 import type { integer } from "../json/json-schema/integer"
 import { Int } from "../json/json-schema/integer"
 import { ifDefined } from "../nullish"
 
-describe(`hasProperties`, () => {
+describe(`hasExactProperties`, () => {
   it(`refines an empty object`, () => {
-    const isEmptyObject = hasProperties({})
+    const isEmptyObject = hasExactProperties({})
     expect(isEmptyObject({})).toBe(true)
   })
   it(`refines an object with keys of different types`, () => {
-    const isMyFancyType = hasProperties({
+    const isMyFancyType = hasExactProperties({
       a: isString,
       b: isNumber,
       c: isBoolean,
@@ -32,7 +34,7 @@ describe(`hasProperties`, () => {
     }
   })
   it(`won't match an object with a missing key`, () => {
-    const isMyFancyType = hasProperties({
+    const isMyFancyType = hasExactProperties({
       a: isString,
       b: isNumber,
       c: isBoolean,
@@ -44,7 +46,7 @@ describe(`hasProperties`, () => {
     expect(isMyFancyType(myFancyObject)).toBe(false)
   })
   it(`can handle optional properties with ifDefined`, () => {
-    const isMyFancyType = hasProperties({
+    const isMyFancyType = hasExactProperties({
       a: isString,
       b: isNumber,
       c: ifDefined(isBoolean),
