@@ -56,7 +56,7 @@ jobs:
         run: yarn build
 
       - name: Test
-        run: yarn test:once
+        run: yarn test
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
