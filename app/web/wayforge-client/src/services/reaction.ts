@@ -11,11 +11,13 @@ import z, { string } from "zod"
 import type reactionSchema from "~/app/node/wayforge-server/gen/reaction.schema.json"
 import {
   socketIndex,
+  socketSchema,
   socketSync,
 } from "~/packages/@store-io/src/json-store-io.web"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
+import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { removeFromIndex } from "~/packages/hamr/recoil-tools/recoil-index"
 import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
 
@@ -113,6 +115,12 @@ export const findReactionWithRelationsState = selectorFamily<
         set(energyFeaturesState, (j) => j.set(reactionId, featureOf.id))
       }
     },
+})
+
+export const reactionSchemaState = atom<JsonSchema>({
+  key: `reactionSchema`,
+  default: true,
+  effects: [socketSchema({ type: `reaction`, socket })],
 })
 
 const addReaction: Transact<() => string> = ({ set }) => {

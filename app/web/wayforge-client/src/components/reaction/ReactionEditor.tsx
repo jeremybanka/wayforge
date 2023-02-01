@@ -4,7 +4,6 @@ import { css } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-import reactionSchema from "~/app/node/wayforge-server/projects/wayfarer_/_schemas/reaction.schema.json"
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
@@ -22,6 +21,7 @@ import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import {
+  reactionSchemaState,
   findReactionWithRelationsState,
   findReactionState,
   useRemoveReaction,
@@ -121,11 +121,13 @@ export const ReactionEditor: FC<
 
   const removeMe = () => remove(id)
 
+  const reactionSchema = useRecoilValue(reactionSchemaState)
+
   const energySelectables = useRecoilValue(energySelectState)
   return (
     <RecoverableErrorBoundary>
       <JsonEditor
-        schema={reactionSchema as unknown as JsonSchema}
+        schema={reactionSchema}
         data={reaction}
         set={setReaction}
         name={reaction.name}

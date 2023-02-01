@@ -4,7 +4,6 @@ import { useEffect } from "react"
 import { css } from "@emotion/react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import energySchema from "~/app/node/wayforge-server/projects/wayfarer_/_schemas/energy.schema.json"
 import type { RecoilEditorProps } from "~/app/web/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/web/wayforge-client/recoil-editor"
 import { isGitSocketError } from "~/packages/@git-io/src/git-io"
@@ -18,6 +17,7 @@ import { Data_EnergyCard_B } from "./EnergyCard_B"
 import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {
+  energySchemaState,
   findEnergyWithRelationsState,
   useRemoveEnergy,
 } from "../../services/energy"
@@ -83,6 +83,8 @@ export const EnergyEditor_INTERNAL: FC<
   const remove = useRemove()
   useSetTitle(energy.name)
 
+  const energySchema = useRecoilValue(energySchemaState)
+
   return (
     <div
       css={css`
@@ -109,7 +111,7 @@ export const EnergyEditor_INTERNAL: FC<
         </article>
       </RecoverableErrorBoundary>
       <JsonEditor
-        schema={energySchema as JsonSchema}
+        schema={energySchema}
         data={energy}
         set={setEnergy}
         name={energy.name}

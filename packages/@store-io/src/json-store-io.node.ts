@@ -117,6 +117,7 @@ export const serveJsonStore =
         socket.on(`indexWrite`, handle.indexWrite)
         socket.on(`relationsRead`, handle.relationsRead)
         socket.on(`relationsWrite`, handle.relationsWrite)
+        socket.on(`schemaRead`, handle.schemaRead)
       }
     )
   )
