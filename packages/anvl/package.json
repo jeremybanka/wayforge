@@ -14,14 +14,14 @@
     "build": "echo not yet implemented",
     "lint": "eslint",
     "test": "vitest",
-    "test:once": "vitest run",
-    "release": "changesets publish"
+    "test:once": "vitest run"
   },
   "devDependencies": {
     "eslint": "8.31.0",
     "fp-ts": "2.13.1",
     "io-ts": "2.2.20",
-    "vite-tsconfig-paths": "4.0.3",
+    "vite": "4.0.4",
+    "vite-tsconfig-paths": "4.0.5",
     "vitest": "0.27.1"
   },
   "peerDependencies": {

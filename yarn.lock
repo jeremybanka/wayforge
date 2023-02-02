@@ -1002,45 +1002,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.0.5":
-  version: 1.1.0
-  resolution: "@floating-ui/core@npm:1.1.0"
-  checksum: ac48969915247320e52d173480c224e2ded94d557ba4cc504547bb314d126348dcc0aeef05686673e1b289596e6ce15118edc84900dd310c613d805f83b4e27d
+"@floating-ui/core@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "@floating-ui/core@npm:1.1.1"
+  checksum: a8497bf981eedf652d275f7207342a9b24c1a67909dca9e042e2379b24321e6688c7774415f3ea607c466adf82b02d8779513f449376c46b2982f2380c80cd35
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@floating-ui/dom@npm:1.1.0"
+"@floating-ui/dom@npm:1.1.1, @floating-ui/dom@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@floating-ui/dom@npm:1.1.1"
   dependencies:
-    "@floating-ui/core": ^1.0.5
-  checksum: 717551da6f470101cd1de0edc449b229fade7f94c2ff98d09e14ced041e27092aac94bd78756c4247a42b57129f187292f145f0001a81ece399a89b20b4be60b
+    "@floating-ui/core": ^1.1.0
+  checksum: 8b7f3b98ed7ec0b634e4a0b735253b0442358c5cea8302935fc185b2bd882202a053622abe9248c76d0908645dd35f93adeaed2d64371b2ab76b36725ce3f7d3
   languageName: node
   linkType: hard
 
-"@floating-ui/react-dom@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@floating-ui/react-dom@npm:1.2.1"
+"@floating-ui/react-dom@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@floating-ui/react-dom@npm:1.2.2"
   dependencies:
-    "@floating-ui/dom": ^1.1.0
+    "@floating-ui/dom": ^1.1.1
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: db9a734798c84da6c6e5964a3535f1f26169a2358a47d7173c4b2fe18a3a4b856b521a3bb7394b4977b85a99e77544ed2867a88dc8903d91e228d478b57af08d
+  checksum: 5cb7879a8fe53ce4ca8361473d93e18806402d6bcde4e935d5aafa2b72032019e62f7d019d7d7145ead1ed829569ac14d6d8c50d7beedcea04cb3d02af661597
   languageName: node
   linkType: hard
 
-"@floating-ui/react@npm:^0.18.1":
-  version: 0.18.1
-  resolution: "@floating-ui/react@npm:0.18.1"
+"@floating-ui/react@npm:0.19.1":
+  version: 0.19.1
+  resolution: "@floating-ui/react@npm:0.19.1"
   dependencies:
-    "@floating-ui/react-dom": ^1.2.1
+    "@floating-ui/react-dom": ^1.2.2
     aria-hidden: ^1.1.3
     tabbable: ^6.0.1
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 01bacb98151cf88ac11389c1a6b79023685246b620031572e5a95be1be825f67fdc7b118cd003169d5dbfe63d72f8ef886e892c5d710c6744fddfd64cda4f4e2
+  checksum: b36000fbb7148d8403072ad0408d6b9463bfa9cdc7e8f91cf741dee159b2ca9f73461f3ae56e4c94def67c16db75337d5ea90624e0a5c0dbb064cfa86ea025e2
   languageName: node
   linkType: hard
 
@@ -2075,7 +2075,6 @@ __metadata:
   resolution: "@wayforge/monorepo@workspace:."
   dependencies:
     "@changesets/cli": 2.26.0
-    "@vitejs/plugin-react": 3.0.1
     c8: 7.12.0
     cross-env: 7.0.3
     dts-bundle-generator: 7.1.0
@@ -2118,10 +2117,11 @@ __metadata:
     "@emotion/react": 11.10.5
     "@emotion/styled": 11.10.5
     "@eyecuelab/recoil-devtools": 0.1.7
-    "@floating-ui/dom": ^1.1.0
-    "@floating-ui/react": ^0.18.1
+    "@floating-ui/dom": 1.1.1
+    "@floating-ui/react": 0.19.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.4.0
+    "@vitejs/plugin-react": 3.0.1
     corners: 0.0.13
     cross-env: 7.0.3
     esbuild-sass-plugin: 2.4.5
@@ -2129,13 +2129,11 @@ __metadata:
     fp-ts: 2.13.1
     framer-motion: 8.4.2
     happy-dom: ^8.1.5
-    io-ts: ^2.2.20
+    io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.6.2
     recoil: 0.7.6
-    recoil-devtools: ^0.4.0
-    recoil-devtools-logger: ^0.4.0
     vite: 4.0.4
     vite-plugin-svgr: 2.4.0
     vite-tsconfig-paths: 4.0.3
@@ -2300,7 +2298,8 @@ __metadata:
     eslint: 8.31.0
     fp-ts: 2.13.1
     io-ts: 2.2.20
-    vite-tsconfig-paths: 4.0.3
+    vite: 4.0.4
+    vite-tsconfig-paths: 4.0.5
     vitest: 0.27.1
   peerDependencies:
     fp-ts: ^2.13.1
@@ -3209,13 +3208,6 @@ __metadata:
   version: 10.4.3
   resolution: "decimal.js@npm:10.4.3"
   checksum: 796404dcfa9d1dbfdc48870229d57f788b48c21c603c3f6554a1c17c10195fc1024de338b0cf9e1efe0c7c167eeb18f04548979bcc5fdfabebb7cc0ae3287bae
-  languageName: node
-  linkType: hard
-
-"deep-diff@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "deep-diff@npm:1.0.2"
-  checksum: 9de8b5eedc1957116e1b47e4c3c4e3dbe23cb741abefc5ec8829a12e77958c689ac46888a3c35320f976cf42fb6de2b016e158facdb24d894ab5b5fdabad9b34
   languageName: node
   linkType: hard
 
@@ -5149,7 +5141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"io-ts@npm:2.2.20, io-ts@npm:^2.2.20":
+"io-ts@npm:2.2.20":
   version: 2.2.20
   resolution: "io-ts@npm:2.2.20"
   peerDependencies:
@@ -7128,28 +7120,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil-devtools-logger@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "recoil-devtools-logger@npm:0.4.0"
-  dependencies:
-    deep-diff: ^1.0.2
-  peerDependencies:
-    react: ">=16"
-    recoil: ^0.4.0
-  checksum: 05ba99bb5db917fd08c9bc1608b7e48cdbb5dd267722112d431860208a2fa537cd32ffcb92f17d774873a88e7ccdc2df672586095d5851e98b025d8592f8e84a
-  languageName: node
-  linkType: hard
-
-"recoil-devtools@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "recoil-devtools@npm:0.4.0"
-  peerDependencies:
-    react: ">=16"
-    recoil: ^0.4.0
-  checksum: c9e9aa1a0f4c6cb8397b121b339d498e216d420502c73a438d2d3573cff21e0f2c4276215b2b4a7799a16f6908fe4da9b692c416f703bbb95b23a982da7a63df
-  languageName: node
-  linkType: hard
-
 "recoil-sync@npm:0.2.0":
   version: 0.2.0
   resolution: "recoil-sync@npm:0.2.0"
@@ -8584,6 +8554,17 @@ __metadata:
   peerDependencies:
     vite: ">2.0.0-0"
   checksum: 491bc977e1510ed8481d6492ffa06d3c6510e9fe6b418540b1d818539c91261e7c500a13f60ce2ed2b1435e00b45e62302a8257c365c8ce19a2784fb0f290652
+  languageName: node
+  linkType: hard
+
+"vite-tsconfig-paths@npm:4.0.5":
+  version: 4.0.5
+  resolution: "vite-tsconfig-paths@npm:4.0.5"
+  dependencies:
+    debug: ^4.1.1
+    globrex: ^0.1.2
+    tsconfck: ^2.0.1
+  checksum: 49b4064881343ef0b75e52eeb1d5cdfe1f26b32ded68e71efc84022e8e96bdb3d3f37f79f3678b43e935dca279cc24c5936942b5fdbaf1489b497e48572314d9
   languageName: node
   linkType: hard
 

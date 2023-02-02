@@ -16,8 +16,7 @@
     "dev": "cd example && vite",
     "lint": "eslint",
     "test": "echo no target",
-    "test:once": "echo no target",
-    "release": "changesets publish"
+    "test:once": "echo no target"
   },
   "devDependencies": {
     "eslint": "8.31.0",

@@ -1,10 +1,8 @@
 /* eslint-disable max-lines */
 
-import schema07 from "~/app/node/wayforge-server/projects/wayfarer_/07.schema.json"
-
+import schema07 from "./07.schema.json"
 import { dereference } from "./dereference"
 import { refineJsonSchema } from "./refine-schema"
-// import { refineJsonSchema } from "./refine-schema"
 
 describe(`dereference`, () => {
   it(`should dereference a simple object`, () => {

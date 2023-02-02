@@ -27,9 +27,6 @@
       // `test`, and `lint` scripts of the same package
       // being completed. It also has no filesystem outputs.
       "dependsOn": ["build", "test:once", "lint"]
-    },
-    "release": {
-      "dependsOn": ["build", "test:once", "lint"]
     }
   }
 }

@@ -6,7 +6,12 @@ import { isString } from "fp-ts/string"
 
 import type { integer } from "./integer"
 import { isInteger, Int } from "./integer"
-import { isJsonSchemaLeaf } from "./json-schema"
+import {
+  isJsonSchemaLeaf,
+  isJsonSchemaRef,
+  isJsonSchemaTree,
+  isUnionSchema,
+} from "./json-schema"
 import type {
   JsonSchema,
   JsonSchemaMetaTypeName,
@@ -180,6 +185,17 @@ export const validateInstanceBy =
     if (isJsonSchemaLeaf(schema)) {
       const validate = validateInstanceAsLeaf(schema)
       return validate(instance) as InstanceValidationResult<Schema>
+    }
+    if (isUnionSchema(schema)) {
+      const validationResults = schema.anyOf.map((unionMember) =>
+        validateInstanceAsLeaf(unionMember)(instance)
+      )
+      const isValid = validationResults.some((result) => result.isValid)
+      if (isValid) return { isValid: true, details: null }
+      const failedConstraints = validationResults.reduce((acc, result) => ({
+        ...acc,
+        ...result.details.failedConstraints,
+      }))
     }
     return {
       isValid: false,
