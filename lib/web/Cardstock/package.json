@@ -19,8 +19,7 @@
     "test:cov": "jest --watch",
     "test:once": "jest",
     "lint": "eslint \"{src,test}/**/*.ts{,x}\"",
-    "lint:fix": "yarn lint -- --fix",
-    "release": "yarn build && changeset publish"
+    "lint:fix": "yarn lint -- --fix"
   },
   "lint-staged": {
     "*.ts{,x}": "yarn lint"

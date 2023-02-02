@@ -8,9 +8,7 @@
     "directory": "pkg/npm/eslint-config"
   },
   "main": ".eslintrc.js",
-  "scripts": {
-    "release": "changesets publish"
-  },
+  "scripts": {},
   "author": "jeremybanka",
   "license": "MIT",
   "dependencies": {

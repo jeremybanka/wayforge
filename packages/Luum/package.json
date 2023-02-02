@@ -10,8 +10,7 @@
     "dev": "cd example && vite",
     "lint": "eslint",
     "test": "vitest",
-    "test:once": "vitest run",
-    "release": "changesets publish"
+    "test:once": "vitest run"
   },
   "dependencies": {
     "fp-ts": "2.13.1"
