@@ -1,4 +1,4 @@
-import { isJsonSchemaRef } from "./json-schema"
+import { isJsonSchemaRef } from "./refs"
 import { delve, tweak } from "../../object"
 import { deepMob } from "../../object/deepMob"
 import { sprawl } from "../../object/sprawl"

@@ -1,10 +1,7 @@
 import { isBoolean } from "fp-ts/boolean"
-import { Option } from "fp-ts/lib/Option"
 import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
-
-import { OptionalPropertyOf } from "~/lib/common/notes"
 
 import type { JsonSchemaStringFormat } from "./format"
 import { JSON_SCHEMA_STRING_FORMATS } from "./format"
@@ -34,29 +31,6 @@ export const JSON_SCHEMA_META_TYPE_NAMES = [
   `never`,
 ] as const
 export type JsonSchemaMetaTypeName = (typeof JSON_SCHEMA_META_TYPE_NAMES)[number]
-
-export type JsonSchemaRef = {
-  $ref: string
-}
-export function isJsonSchemaRef(input: unknown): input is JsonSchemaRef {
-  return doesExtend({
-    $ref: isString,
-  })(input)
-}
-
-export type Reffed<
-  T extends ReadonlyArray<unknown> | { [key: string]: unknown }
-> = T extends ReadonlyArray<unknown>
-  ? JsonSchemaRef | T[number]
-  : {
-      [K in keyof T]: K extends `type`
-        ? T[K]
-        : T[K] extends { [key: string]: unknown }
-        ? JsonSchemaRef | Reffed<T[K]>
-        : T[K] extends ReadonlyArray<any>
-        ? JsonSchemaRef | Reffed<T[K]>
-        : JsonSchemaRef | T[K]
-    }
 
 export interface JsonSchemaSystem extends Record<JsonSchemaMetaTypeName, any> {
   array: ArraySchema
@@ -106,6 +80,8 @@ export const JSON_SCHEMA_LOGIC_OPERATORS = [
   `else`,
   `dependentSchemas`,
 ] as const
+export type JsonSchemaLogicOperator =
+  (typeof JSON_SCHEMA_LOGIC_OPERATORS)[number]
 
 // export interface
 
@@ -178,18 +154,16 @@ export type ObjectSchema = {
   type: `object`
   properties?: Record<string, JsonSchema>
   required?: string[]
-  additionalProperties?: JsonSchema | JsonSchemaRef
-  propertyNames?: JsonSchema | JsonSchemaRef
+  additionalProperties?: JsonSchema
+  propertyNames?: JsonSchema
   minProperties?: integer
   maxProperties?: integer
 }
 export const objectSchemaStructure = {
   type: isLiteral(`object`),
-  properties: ifDefined(
-    isRecord(isString, isUnion.or(isJsonSchema).or(isJsonSchemaRef))
-  ),
+  properties: ifDefined(isRecord(isString, isJsonSchema)),
   required: ifDefined(isArray(isString)),
-  additionalProperties: ifDefined(isUnion.or(isJsonSchemaRef).or(isJsonSchema)),
+  additionalProperties: ifDefined(isJsonSchema),
   propertyNames: ifDefined(isStringSchema),
   minProperties: ifDefined(isInteger),
   maxProperties: ifDefined(isInteger),
@@ -200,19 +174,14 @@ export function isObjectSchema(input: unknown): input is ObjectSchema {
 
 export type ArraySchema = {
   type: `array`
-  items?: (JsonSchema | JsonSchemaRef)[] | JsonSchema | JsonSchemaRef
+  items?: JsonSchema | JsonSchema[]
   minItems?: integer
   maxItems?: integer
   uniqueItems?: boolean
 }
 export const arraySchemaStructure = {
   type: isLiteral(`array`),
-  items: ifDefined(
-    isUnion
-      .or(isJsonSchema)
-      .or(isJsonSchemaRef)
-      .or(isArray(isUnion.or(isJsonSchemaRef).or(isJsonSchema)))
-  ),
+  items: ifDefined(couldBe(isJsonSchema).or(isArray(isJsonSchema))),
   minItems: ifDefined(isInteger),
   maxItems: ifDefined(isInteger),
   uniqueItems: ifDefined(isBoolean),
@@ -242,9 +211,7 @@ export const mixedSchemaStructure = {
   minItems: ifDefined(isInteger),
   maxItems: ifDefined(isInteger),
   uniqueItems: ifDefined(isBoolean),
-  properties: ifDefined(
-    isRecord(isString, isUnion.or(isJsonSchema).or(isJsonSchemaRef))
-  ),
+  properties: ifDefined(isRecord(isString, isJsonSchema)),
   required: ifDefined(isArray(isString)),
   additionalProperties: ifDefined(
     isUnion.or(isBoolean).or(
@@ -269,9 +236,9 @@ export function isMixedSchema(input: unknown): input is MixedSchema {
   return doesExtend(mixedSchemaStructure)(input)
 }
 
-export type UnionSchema = { anyOf: (JsonSchema | JsonSchemaRef)[] }
+export type UnionSchema = { anyOf: JsonSchema[] }
 export const unionSchemaStructure = {
-  anyOf: isArray(couldBe(isJsonSchema).or(isJsonSchemaRef)),
+  anyOf: isArray(isJsonSchema),
 }
 export function isUnionSchema(input: unknown): input is UnionSchema {
   return doesExtend(unionSchemaStructure)(input)
@@ -330,6 +297,7 @@ export function isJsonSchemaTree(input: unknown): input is JsonSchemaTree {
 export type JsonSchemaRoot = {
   $id?: string
   $schema?: string
+  $defs?: Record<string, JsonSchema>
   definitions?: Record<string, JsonSchema>
 }
 
