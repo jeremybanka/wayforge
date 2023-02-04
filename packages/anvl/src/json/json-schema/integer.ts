@@ -1,8 +1,6 @@
 import { pipe } from "fp-ts/function"
 
-export type IntegerBrand = {
-  readonly integer: unique symbol // totally virtual
-}
+export type IntegerBrand = { readonly integer: unique symbol /* virtual */ }
 export type integer = IntegerBrand & number
 export const isInteger = (input: unknown): input is integer =>
   Number.isInteger(input as number)

@@ -6,12 +6,7 @@ import { isString } from "fp-ts/string"
 
 import type { integer } from "./integer"
 import { isInteger, Int } from "./integer"
-import {
-  isJsonSchemaLeaf,
-  isJsonSchemaRef,
-  isJsonSchemaTree,
-  isUnionSchema,
-} from "./json-schema"
+import { isJsonSchemaLeaf, isUnionSchema } from "./json-schema"
 import type {
   JsonSchema,
   JsonSchemaMetaTypeName,
@@ -37,6 +32,8 @@ export interface JsonSchemaMetaTypes
   never: never
 }
 
+export const NEVER = Symbol(`never`)
+
 export const JSON_SCHEMA_META_TYPES: JsonSchemaMetaTypes = {
   integer: Int(0),
   number: 0,
@@ -46,7 +43,7 @@ export const JSON_SCHEMA_META_TYPES: JsonSchemaMetaTypes = {
   array: [],
   object: {},
   any: null,
-  never: undefined as never,
+  never: { NEVER } as never,
 }
 
 export const JSON_SCHEMA_META_REFINERY: {
@@ -188,7 +185,7 @@ export const validateInstanceBy =
     }
     if (isUnionSchema(schema)) {
       const validationResults = schema.anyOf.map((unionMember) =>
-        validateInstanceAsLeaf(unionMember)(instance)
+        validateInstanceBy(unionMember)(instance)
       )
       const isValid = validationResults.some((result) => result.isValid)
       if (isValid) return { isValid: true, details: null }
@@ -205,4 +202,10 @@ export const validateInstanceBy =
         failedConstraints: schema,
       },
     }
+  }
+
+export const validateWithSchema =
+  <Schema extends JsonSchema>(schema: Schema) =>
+  (instance: unknown): InstanceValidationResult<Schema> => {
+    return
   }

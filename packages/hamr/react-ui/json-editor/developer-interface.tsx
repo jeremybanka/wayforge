@@ -1,6 +1,8 @@
 import type { FC, RefObject } from "react"
+import { useMemo } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
+import Ajv from "ajv"
 import type { SetterOrUpdater } from "recoil"
 
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
@@ -52,7 +54,7 @@ export type JsonEditorProps<T extends Json> = {
 export const JsonEditor = <T extends Json>({
   data,
   set,
-  schema,
+  schema = true,
   name,
   rename,
   remove,
@@ -68,6 +70,14 @@ export const JsonEditor = <T extends Json>({
     ...DEFAULT_JSON_EDITOR_COMPONENTS,
     ...CustomComponents,
   }
+
+  const ajv = new Ajv({ allErrors: true, verbose: true })
+  const validate = useMemo(() => {
+    return ajv.compile(schema)
+  }, [schema])
+  const validationResults = validate(data)
+  console.log({ validate, validationResults, errors: { ...validate.errors } })
+
   return (
     <JsonEditor_INTERNAL
       data={data}

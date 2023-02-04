@@ -1,13 +1,10 @@
 import { useRef } from "react"
 import type { FC } from "react"
 
-import { isBoolean } from "fp-ts/boolean"
-import { isString } from "fp-ts/string"
-
-import { lastOf } from "~/packages/anvl/src/array"
 import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
+import { findSubSchema } from "~/packages/anvl/src/json/json-schema/find-sub-schema"
+import { isObjectSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 
 import {
@@ -71,49 +68,14 @@ export const ObjectEditor = <T extends JsonObj>({
   const sortProperties = makePropertySorter(data, set)
   const makePropertyAdder = makePropertyCreationInterface(data, set)
 
-  const parentKey = lastOf(path)
-
-  const schemaIsObject = typeof schema === `object`
-  const subSchema: JsonSchema | undefined = schemaIsObject
-    ? path.reduce<JsonSchema | undefined>((acc, key) => {
-        const hasSchema = acc && !isBoolean(acc)
-        const keyIsString = isString(key)
-        const nextLayer = hasSchema
-          ? keyIsString && acc.type === `object`
-            ? acc.properties?.[key]
-            : acc.type === `array` && acc.items && acc.items[key]
-            ? acc.items[key]
-            : undefined
-          : undefined
-
-        return nextLayer
-      }, schema)
-    : undefined
-
-  const subSchemaCopy =
-    typeof subSchema === `object` ? { ...subSchema } : subSchema
-
-  const subSchemaIsObject = typeof subSchemaCopy === `object`
-  if (subSchemaIsObject && subSchemaCopy.$ref) {
-    const ref = subSchemaCopy.$ref
-      ?.split(`/`)
-      .reduce<JsonSchema | undefined>(
-        (acc, key, idx) =>
-          idx === 0 && key === `#` ? schema : acc?.[key as keyof typeof acc],
-        undefined
-      )
-    if (isPlainObject(ref)) {
-      Object.assign(subSchemaCopy, ref)
-    }
-  }
-  const schemaKeys: ReadonlyArray<string> =
-    subSchemaIsObject && subSchemaCopy.type === `object`
-      ? Object.keys(subSchemaCopy.properties ?? {})
-      : []
+  const subSchema = isPlainObject(schema) ? findSubSchema(schema)(path) : true
+  const schemaKeys: ReadonlyArray<string> = isObjectSchema(subSchema)
+    ? Object.keys(subSchema.properties ?? {})
+    : []
   const dataKeys: ReadonlyArray<string> = Object.keys(data)
   const [unofficialKeys, officialKeys] = dataKeys.reduce(
     ([unofficial, official], key) => {
-      const isOfficial = subSchemaIsObject && schemaKeys.includes(key)
+      const isOfficial = schemaKeys.includes(key)
       return isOfficial
         ? [unofficial, [...official, key]]
         : [[...unofficial, key], official]

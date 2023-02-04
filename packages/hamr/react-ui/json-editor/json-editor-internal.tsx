@@ -1,9 +1,9 @@
-import type { FC, ReactNode, RefObject } from "react"
+import type { FC, RefObject } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
+import Ajv from "ajv"
 import type { SetterOrUpdater } from "recoil"
 
-import { lastOf } from "~/packages/anvl/src/array"
 import { doNothing } from "~/packages/anvl/src/function"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
@@ -11,7 +11,7 @@ import { refineJsonType } from "~/packages/anvl/src/json/refine"
 
 import type { JsxElements } from "."
 import { SubEditors } from "."
-import type { JsonEditorComponents, WC } from "./default-components"
+import type { JsonEditorComponents } from "./default-components"
 import { AutoSizeInput } from "../auto-size-input"
 
 export type JsonEditorProps_INTERNAL<T extends Json> = {
@@ -43,7 +43,6 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   path = [],
   isReadonly = () => false,
   isHidden = () => false,
-  // isIllegal = () => false,
   className,
   customCss,
   Header: HeaderDisplay,
@@ -52,63 +51,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   const json = refineJsonType(data)
   const SubEditor = SubEditors[json.type]
 
-  const key = lastOf(path)
   const disabled = isReadonly(path)
-
-  // const DeleteButton = remove
-  //   ? () => (
-  //       <Components.Button onClick={remove}>
-  //         <Components.DeleteIcon />
-  //       </Components.Button>
-  //     )
-  //   : undefined
-  // const Header = HeaderDisplay
-  //   ? () => <HeaderDisplay data={data} schema={schema} />
-  //   : undefined
-  // const KeyInput = isString(key)
-  //   ? () => (
-  //       <Components.KeyWrapper>
-  //         <AutoSizeInput
-  //           value={key}
-  //           onChange={
-  //             rename && !disabled ? (e) => rename(e.target.value) : () => null
-  //           }
-  //           disabled={disabled}
-  //         />
-  //       </Components.KeyWrapper>
-  //     )
-  //   : undefined
-  // const TypeSelect = recast
-  //   ? () => (
-  //       <select
-  //         onChange={(e) => recast(e.target.value as keyof JsonTypes)}
-  //         value={json.type}
-  //       >
-  //         {Object.keys(SubEditors).map((type) => (
-  //           <option key={type} value={type}>
-  //             {type}
-  //           </option>
-  //         ))}
-  //       </select>
-  //     )
-  //   : undefined
-  // const ValueEditor = () => (
-  //   <SubEditor
-  //     data={json.data}
-  //     set={set}
-  //     schema={schema}
-  //     remove={remove}
-  //     rename={rename}
-  //     path={path}
-  //     isReadonly={isReadonly}
-  //     Components={Components}
-  //   />
-  // )
-  // const Wrapper: WC = ({ children }) => (
-  //   <Components.EditorWrapper className={className} customCss={customCss}>
-  //     {children}
-  //   </Components.EditorWrapper>
-  // )
 
   return isHidden(path) ? null : (
     <Components.ErrorBoundary>
