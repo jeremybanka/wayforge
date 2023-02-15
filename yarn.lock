@@ -4965,6 +4965,7 @@ __metadata:
     socket.io: 4.5.4
     socket.io-client: 4.5.4
     tsup: 6.6.3
+    vitest: ^0.27.1
   peerDependencies:
     react: ^18.2.0
     recoil: ^0.7.6
