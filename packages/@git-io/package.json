@@ -1,0 +1,36 @@
+{
+  "name": "git-io",
+  "version": "0.0.0",
+  "description": "remote control a simple-git instance over a socket.io connection",
+  "files": [
+    "*"
+  ],
+  "scripts": {
+    "build:web": ""
+  },
+  "dependencies": {
+    "fp-ts": "2.13.1",
+    "simple-git": "3.15.1"
+  },
+  "devDependencies": {
+    "react": "18.2.0",
+    "recoil": "0.7.6",
+    "recoil-sync": "0.2.0",
+    "socket.io": "4.5.4",
+    "socket.io-client": "4.5.4",
+    "tsup": "6.6.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "recoil": "^0.7.6",
+    "socket.io": "4.5.4",
+    "socket.io-client": "4.5.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremybanka/wayforge.git"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Jeremy Banka"
+}
