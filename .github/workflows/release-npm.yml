@@ -22,14 +22,13 @@ jobs:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
 
-      - uses: actions/checkout@v2
       - name: Cache node modules
         uses: actions/cache@v2
         env:
           cache-name: node-modules
         with:
           path: node_modules/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: |
           if [ ! -d node_modules ]; then
