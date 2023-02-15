@@ -393,7 +393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/cli@npm:2.26.0":
+"@changesets/cli@npm:^2.26.0":
   version: 2.26.0
   resolution: "@changesets/cli@npm:2.26.0"
   dependencies:
@@ -2228,7 +2228,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/monorepo@workspace:."
   dependencies:
-    "@changesets/cli": 2.26.0
+    "@changesets/cli": ^2.26.0
     c8: 7.12.0
     cross-env: 7.0.3
     dts-bundle-generator: 7.1.0
@@ -4952,27 +4952,6 @@ __metadata:
   checksum: 2597aab99aa3a24db209e192a3e5874ac47fc5abc71703ee26346e0c5816cb346ca09fc813c739db5862d3a2905d89aeca1b0cbc46c2b272398d672309aaf414
   languageName: node
   linkType: hard
-
-"git-io@workspace:packages/@git-io":
-  version: 0.0.0-use.local
-  resolution: "git-io@workspace:packages/@git-io"
-  dependencies:
-    fp-ts: 2.13.1
-    react: 18.2.0
-    recoil: 0.7.6
-    recoil-sync: 0.2.0
-    simple-git: 3.15.1
-    socket.io: 4.5.4
-    socket.io-client: 4.5.4
-    tsup: 6.6.3
-    vitest: ^0.27.1
-  peerDependencies:
-    react: ^18.2.0
-    recoil: ^0.7.6
-    socket.io: 4.5.4
-    socket.io-client: 4.5.4
-  languageName: unknown
-  linkType: soft
 
 "glob-parent@npm:^5.1.2, glob-parent@npm:~5.1.2":
   version: 5.1.2
@@ -7814,6 +7793,27 @@ __metadata:
   checksum: 1a6833eb1c3d8488b036df66dcab37dcdda5270bb9629c471155785c09ee1b591177a9774c588c43f8fa28833204500019265da2ffed28ac7bbf4589b943d2fa
   languageName: node
   linkType: hard
+
+"socket-io.git@workspace:packages/@git-io":
+  version: 0.0.0-use.local
+  resolution: "socket-io.git@workspace:packages/@git-io"
+  dependencies:
+    fp-ts: 2.13.1
+    react: 18.2.0
+    recoil: 0.7.6
+    recoil-sync: 0.2.0
+    simple-git: 3.15.1
+    socket.io: 4.5.4
+    socket.io-client: 4.5.4
+    tsup: 6.6.3
+    vitest: ^0.27.1
+  peerDependencies:
+    react: ^18.2.0
+    recoil: ^0.7.6
+    socket.io: 4.5.4
+    socket.io-client: 4.5.4
+  languageName: unknown
+  linkType: soft
 
 "socket.io-adapter@npm:~2.4.0":
   version: 2.4.0

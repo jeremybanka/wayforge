@@ -1,5 +1,5 @@
 {
-  "name": "git-io",
+  "name": "socket-io.git",
   "version": "0.0.0",
   "description": "remote control a simple-git instance over a socket.io connection",
   "files": [
