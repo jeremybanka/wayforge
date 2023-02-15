@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import { serveSimpleGit } from "~/packages/@git-io/src/git-io.node"
+import { serveSimpleGit } from "~/packages/@git-io/node"
 import { serveJsonStore } from "~/packages/@store-io/src/json-store-io.node"
 
 import { logger } from "./logger"

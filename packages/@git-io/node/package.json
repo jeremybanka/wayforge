@@ -1,6 +1,6 @@
 {
   "name": "@git-io/node",
-  "main": "dist/git-io.node.js",
-  "types": "dist/git-io.node.d.ts",
-  "module": "dist/git-io.node.mjs"
+  "main": "../dist/git-io-node.js",
+  "types": "../dist/git-io-node.d.ts",
+  "module": "../dist/git-io-node.mjs"
 }

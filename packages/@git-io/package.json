@@ -6,7 +6,7 @@
     "*"
   ],
   "scripts": {
-    "build:web": ""
+    "build": "tsup --entry src/git-io-node.ts --entry src/git-io-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client"
   },
   "dependencies": {
     "fp-ts": "2.13.1",
@@ -18,7 +18,8 @@
     "recoil-sync": "0.2.0",
     "socket.io": "4.5.4",
     "socket.io-client": "4.5.4",
-    "tsup": "6.6.3"
+    "tsup": "6.6.3",
+    "vitest": "^0.27.1"
   },
   "peerDependencies": {
     "react": "^18.2.0",
