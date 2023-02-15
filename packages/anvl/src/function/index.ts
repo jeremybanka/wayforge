@@ -48,3 +48,12 @@ export const raiseError = (message: string): never => {
 export type Encapsulate<T extends (...args: any[]) => any> = (
   ...args: Parameters<T>
 ) => void
+
+export const attempt = (fn: () => void): boolean => {
+  try {
+    fn()
+    return true
+  } catch (_) {
+    return false
+  }
+}
