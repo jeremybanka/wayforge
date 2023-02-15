@@ -3,10 +3,12 @@ import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
-import type { JsonSchemaStringFormat } from "./format"
-import { JSON_SCHEMA_STRING_FORMATS } from "./format"
 import type { integer } from "./integer"
 import { isInteger } from "./integer"
+import type { JsonSchemaRef } from "./refs"
+import { isJsonSchemaRef } from "./refs"
+import type { JsonSchemaStringFormat } from "./string-formats"
+import { JSON_SCHEMA_STRING_FORMATS } from "./string-formats"
 import { JSON_TYPE_NAMES } from ".."
 import { isArray } from "../../array"
 import { ifDefined } from "../../nullish"
@@ -32,7 +34,17 @@ export const JSON_SCHEMA_META_TYPE_NAMES = [
 ] as const
 export type JsonSchemaMetaTypeName = (typeof JSON_SCHEMA_META_TYPE_NAMES)[number]
 
-export interface JsonSchemaSystem extends Record<JsonSchemaMetaTypeName, any> {
+export const JSON_SCHEMA_LOGIC_MODES = [
+  `union`,
+  `exclusive`,
+  `intersection`,
+  `negation`,
+  `conditional`,
+] as const
+export type JsonSchemaLogicMode = (typeof JSON_SCHEMA_LOGIC_MODES)[number]
+
+export interface JsonSchemaSystem
+  extends Record<JsonSchemaLogicMode & JsonSchemaMetaTypeName, any> {
   array: ArraySchema
   boolean: BooleanSchema
   integer: IntegerSchema
@@ -42,22 +54,35 @@ export interface JsonSchemaSystem extends Record<JsonSchemaMetaTypeName, any> {
   string: StringSchema
   any: true
   never: false
+  union: UnionSchema
+  exclusive: ExclusiveSchema
+  intersection: IntersectionSchema
+  negation: NegationSchema
+  conditional: ConditionalSchema
 }
 
-export const JSON_SCHEMA_SYSTEM: JsonSchemaSystem = {
-  array: { type: `array` },
-  boolean: { type: `boolean` },
-  integer: { type: `integer` },
-  null: { type: `null` },
-  number: { type: `number` },
-  object: { type: `object` },
-  string: { type: `string` },
-  any: true,
-  never: false,
-} as const
+// export const JSON_SCHEMA_SYSTEM: JsonSchemaSystem = {
+//   array: { type: `array` },
+//   boolean: { type: `boolean` },
+//   integer: { type: `integer` },
+//   null: { type: `null` },
+//   number: { type: `number` },
+//   object: { type: `object` },
+//   string: { type: `string` },
+//   any: true,
+//   never: false,
+//   union: { anyOf: [true] },
+//   exclusive: { oneOf: [true] },
+//   intersection: { allOf: [true] },
+//   negation: { not: false },
+//   conditional: { if: true, then: true, else: false },
+// } as const
 
 export const JSON_SCHEMA_REFINERY: {
-  [K in JsonSchemaMetaTypeName]: Refinement<unknown, JsonSchemaSystem[K]>
+  [K in JsonSchemaLogicMode & JsonSchemaMetaTypeName]: Refinement<
+    unknown,
+    JsonSchemaSystem[K]
+  >
 } = {
   array: isArraySchema,
   boolean: isBooleanSchema,
@@ -68,22 +93,11 @@ export const JSON_SCHEMA_REFINERY: {
   string: isStringSchema,
   any: isLiteral(true),
   never: isLiteral(false),
+  union: isUnionSchema,
+  intersection: isIntersectionSchema,
+  negation: isNegationSchema,
+  conditional: isConditionalSchema,
 }
-
-export const JSON_SCHEMA_LOGIC_OPERATORS = [
-  `allOf`,
-  `anyOf`,
-  `oneOf`,
-  `not`,
-  `if`,
-  `then`,
-  `else`,
-  `dependentSchemas`,
-] as const
-export type JsonSchemaLogicOperator =
-  (typeof JSON_SCHEMA_LOGIC_OPERATORS)[number]
-
-// export interface
 
 export type StringSchema = {
   type: `string`
@@ -153,11 +167,13 @@ export function isNullSchema(input: unknown): input is NullSchema {
 export type ObjectSchema = {
   type: `object`
   properties?: Record<string, JsonSchema>
+  patternProperties?: Record<string, JsonSchema>
   required?: string[]
   additionalProperties?: JsonSchema
   propertyNames?: JsonSchema
   minProperties?: integer
   maxProperties?: integer
+  dependentSchemas?: Record<string, JsonSchema>
 }
 export const objectSchemaStructure = {
   type: isLiteral(`object`),
@@ -167,6 +183,7 @@ export const objectSchemaStructure = {
   propertyNames: ifDefined(isStringSchema),
   minProperties: ifDefined(isInteger),
   maxProperties: ifDefined(isInteger),
+  dependentSchemas: ifDefined(isRecord(isString, isJsonSchema)),
 }
 export function isObjectSchema(input: unknown): input is ObjectSchema {
   return doesExtend(objectSchemaStructure)(input)
@@ -190,6 +207,49 @@ export function isArraySchema(input: unknown): input is ArraySchema {
   return doesExtend(arraySchemaStructure)(input)
 }
 
+export type UnionSchema = { anyOf: JsonSchema[] }
+export const unionSchemaStructure = { anyOf: isArray(isJsonSchema) }
+export function isUnionSchema(input: unknown): input is UnionSchema {
+  return doesExtend(unionSchemaStructure)(input)
+}
+export type IntersectionSchema = {
+  allOf: JsonSchema[] | ReadonlyArray<JsonSchema>
+}
+export type ExclusiveSchema = {
+  oneOf: JsonSchema[] | ReadonlyArray<JsonSchema>
+}
+export const exclusiveSchemaStructure = { oneOf: isArray(isJsonSchema) }
+export function isExclusiveSchema(input: unknown): input is ExclusiveSchema {
+  return doesExtend(exclusiveSchemaStructure)(input)
+}
+
+export const intersectionSchemaStructure = { allOf: isArray(isJsonSchema) }
+export function isIntersectionSchema(
+  input: unknown
+): input is IntersectionSchema {
+  return doesExtend(intersectionSchemaStructure)(input)
+}
+
+export type ConditionalSchema = {
+  if: JsonSchema
+  then?: JsonSchema
+  else?: JsonSchema
+}
+export const conditionalSchemaStructure = {
+  if: isJsonSchema,
+  then: ifDefined(isJsonSchema),
+  else: ifDefined(isJsonSchema),
+}
+export function isConditionalSchema(input: unknown): input is ConditionalSchema {
+  return doesExtend(conditionalSchemaStructure)(input)
+}
+
+export type NegationSchema = { not: JsonSchema }
+export const negationSchemaStructure = { not: isJsonSchema }
+export function isNegationSchema(input: unknown): input is NegationSchema {
+  return doesExtend(negationSchemaStructure)(input)
+}
+
 export type MixedSchema = Partial<
   Omit<ArraySchema, `type`> &
     Omit<BooleanSchema, `enum` | `type`> &
@@ -203,52 +263,31 @@ export type MixedSchema = Partial<
   enum?: ReadonlyArray<integer | boolean | number | string>
 }
 export const mixedSchemaStructure = {
+  ...arraySchemaStructure,
+  ...booleanSchemaStructure,
+  ...integerSchemaStructure,
+  ...nullSchemaStructure,
+  ...numberSchemaStructure,
+  ...objectSchemaStructure,
+  ...stringSchemaStructure,
   type: isArray(isWithin(JSON_SCHEMA_TYPE_NAMES)),
   enum: ifDefined(
-    isArray(isUnion.or(isNumber).or(isString).or(isBoolean).or(isInteger))
+    isArray(isUnion.or(isInteger).or(isBoolean).or(isNumber).or(isString))
   ),
-  items: ifDefined(isJsonSchema),
-  minItems: ifDefined(isInteger),
-  maxItems: ifDefined(isInteger),
-  uniqueItems: ifDefined(isBoolean),
-  properties: ifDefined(isRecord(isString, isJsonSchema)),
-  required: ifDefined(isArray(isString)),
-  additionalProperties: ifDefined(
-    isUnion.or(isBoolean).or(
-      doesExtend({
-        type: isWithin(JSON_SCHEMA_TYPE_NAMES),
-      })
-    )
-  ),
-  minProperties: ifDefined(isInteger),
-  maxProperties: ifDefined(isInteger),
-  minLength: ifDefined(isInteger),
-  maxLength: ifDefined(isInteger),
-  pattern: ifDefined(isString),
-  format: ifDefined(isWithin(JSON_SCHEMA_STRING_FORMATS)),
-  minimum: ifDefined(isNumber),
-  maximum: ifDefined(isNumber),
-  exclusiveMinimum: ifDefined(isNumber),
-  exclusiveMaximum: ifDefined(isNumber),
-  multipleOf: ifDefined(isNumber),
 }
 export function isMixedSchema(input: unknown): input is MixedSchema {
   return doesExtend(mixedSchemaStructure)(input)
 }
 
-export type UnionSchema = { anyOf: JsonSchema[] }
-export const unionSchemaStructure = {
-  anyOf: isArray(isJsonSchema),
-}
-export function isUnionSchema(input: unknown): input is UnionSchema {
-  return doesExtend(unionSchemaStructure)(input)
-}
-
 export type JsonSchemaCore =
   | ArraySchema
   | BooleanSchema
+  | ConditionalSchema
+  | ExclusiveSchema
   | IntegerSchema
+  | IntersectionSchema
   | MixedSchema
+  | NegationSchema
   | NullSchema
   | NumberSchema
   | ObjectSchema
@@ -258,12 +297,16 @@ export type JsonSchemaCore =
 export const isJsonSchemaCore = isUnion
   .or(isArraySchema)
   .or(isBooleanSchema)
+  .or(isConditionalSchema)
+  .or(isExclusiveSchema)
   .or(isIntegerSchema)
+  .or(isIntersectionSchema)
+  .or(isMixedSchema)
+  .or(isNegationSchema)
   .or(isNullSchema)
   .or(isNumberSchema)
   .or(isObjectSchema)
   .or(isStringSchema)
-  .or(isMixedSchema)
   .or(isUnionSchema)
 
 export type JsonSchemaLeaf =
@@ -283,7 +326,11 @@ export function isJsonSchemaLeaf(input: unknown): input is JsonSchemaLeaf {
 
 export type JsonSchemaTree =
   | ArraySchema
+  | ConditionalSchema
+  | ExclusiveSchema
+  | IntersectionSchema
   | MixedSchema
+  | NegationSchema
   | ObjectSchema
   | UnionSchema
 export function isJsonSchemaTree(input: unknown): input is JsonSchemaTree {
@@ -291,7 +338,11 @@ export function isJsonSchemaTree(input: unknown): input is JsonSchemaTree {
     .or(isArraySchema)
     .or(isMixedSchema)
     .or(isObjectSchema)
-    .or(isUnionSchema)(input)
+    .or(isUnionSchema)
+    .or(isIntersectionSchema)
+    .or(isExclusiveSchema)
+    .or(isConditionalSchema)
+    .or(isNegationSchema)(input)
 }
 
 export type JsonSchemaRoot = {
@@ -314,7 +365,7 @@ export const isJsonSchemaObject = isIntersection
   .and(isJsonSchemaCore)
   .and(isJsonSchemaRoot)
 
-export type JsonSchema = JsonSchemaObject | boolean
+export type JsonSchema = JsonSchemaObject | JsonSchemaRef | boolean
 export function isJsonSchema(input: unknown): input is JsonSchema {
-  return couldBe(isJsonSchemaObject).or(isBoolean)(input)
+  return couldBe(isJsonSchemaObject).or(isBoolean).or(isJsonSchemaRef)(input)
 }

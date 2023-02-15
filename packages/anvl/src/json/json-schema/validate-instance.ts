@@ -3,21 +3,40 @@ import { pipe } from "fp-ts/lib/function"
 import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
+import { Schema } from "io-ts/lib/Schema"
 
 import type { integer } from "./integer"
-import { isInteger, Int } from "./integer"
-import { isJsonSchemaLeaf, isUnionSchema } from "./json-schema"
+import { isInteger } from "./integer"
+import {
+  isArraySchema,
+  isConditionalSchema,
+  isExclusiveSchema,
+  isIntersectionSchema,
+  isJsonSchemaLeaf,
+  isJsonSchemaTree,
+  isNegationSchema,
+  isObjectSchema,
+  isUnionSchema,
+} from "./json-schema"
 import type {
   JsonSchema,
   JsonSchemaMetaTypeName,
   JsonSchemaSystem,
   JsonSchemaTypeName,
   JsonSchemaLeaf,
+  JsonSchemaLogicMode,
+  JsonSchemaTree,
+  ArraySchema,
+  ObjectSchema,
 } from "./json-schema"
+import { isJsonSchemaRef, retrieveRef } from "./refs"
 import { filter } from "../../array"
 import { isNull } from "../../nullish"
+import type { Fragment } from "../../object/patch"
 import { isPlainObject } from "../../object/refinement"
 import { canExist, cannotExist } from "../../refinement"
+
+/* eslint-disable max-lines */
 
 export interface JsonSchemaMetaTypes
   extends Record<JsonSchemaMetaTypeName, any> {
@@ -30,20 +49,6 @@ export interface JsonSchemaMetaTypes
   object: Record<string, any>
   any: any
   never: never
-}
-
-export const NEVER = Symbol(`never`)
-
-export const JSON_SCHEMA_META_TYPES: JsonSchemaMetaTypes = {
-  integer: Int(0),
-  number: 0,
-  string: ``,
-  boolean: false,
-  null: null,
-  array: [],
-  object: {},
-  any: null,
-  never: { NEVER } as never,
 }
 
 export const JSON_SCHEMA_META_REFINERY: {
@@ -63,149 +68,365 @@ export const JSON_SCHEMA_META_REFINERY: {
   never: cannotExist,
 }
 
-export const validate: {
+export const TREE_KEYWORDS = [
+  `properties`,
+  `patternProperties`,
+  `additionalProperties`,
+  `dependentSchemas`,
+  `items`,
+  `additionalItems`,
+  `contains`,
+] as const
+
+export const validateAsType: {
   [Name in JsonSchemaTypeName]: {
-    [KeyWord in keyof Required<JsonSchemaSystem[Name]>]: KeyWord extends `type`
+    [Keyword in keyof Required<JsonSchemaSystem[Name]>]: Keyword extends `type`
       ? (v?: Name) => (typeof JSON_SCHEMA_META_REFINERY)[Name]
-      : (
-          spec: Required<JsonSchemaSystem[Name]>[KeyWord]
-        ) => (instance: JsonSchemaMetaTypes[Name]) => boolean
+      : (options: {
+          spec: Required<JsonSchemaSystem[Name]>[Keyword]
+          refMap: Record<string, JsonSchema>
+          root: JsonSchema
+        }) => (instance: JsonSchemaMetaTypes[Name]) => boolean
   }
 } = {
   integer: {
     type: () => JSON_SCHEMA_META_REFINERY.integer,
-    enum: (spec) => (instance) => spec.includes(instance),
-    minimum: (spec) => (instance) => instance >= spec,
-    maximum: (spec) => (instance) => instance <= spec,
-    exclusiveMinimum: (spec) => (instance) => instance > spec,
-    exclusiveMaximum: (spec) => (instance) => instance < spec,
-    multipleOf: (spec) => (instance) => instance % spec === 0,
+    enum: (opts) => (instance) => opts.spec.includes(instance),
+    minimum: (opts) => (instance) => instance >= opts.spec,
+    maximum: (opts) => (instance) => instance <= opts.spec,
+    exclusiveMinimum: (opts) => (instance) => instance > opts.spec,
+    exclusiveMaximum: (opts) => (instance) => instance < opts.spec,
+    multipleOf: (opts) => (instance) => instance % opts.spec === 0,
   },
   number: {
     type: () => JSON_SCHEMA_META_REFINERY.number,
-    enum: (spec) => (instance) => spec.includes(instance),
-    minimum: (spec) => (instance) => instance >= spec,
-    maximum: (spec) => (instance) => instance <= spec,
-    exclusiveMinimum: (spec) => (instance) => instance > spec,
-    exclusiveMaximum: (spec) => (instance) => instance < spec,
-    multipleOf: (spec) => (instance) => instance % spec === 0,
+    enum: (opts) => (instance) => opts.spec.includes(instance),
+    minimum: (opts) => (instance) => instance >= opts.spec,
+    maximum: (opts) => (instance) => instance <= opts.spec,
+    exclusiveMinimum: (opts) => (instance) => instance > opts.spec,
+    exclusiveMaximum: (opts) => (instance) => instance < opts.spec,
+    multipleOf: (opts) => (instance) => instance % opts.spec === 0,
   },
   string: {
     type: () => JSON_SCHEMA_META_REFINERY.string,
-    enum: (spec) => (instance) => spec.includes(instance),
-    minLength: (spec) => (instance) => instance.length >= spec,
-    maxLength: (spec) => (instance) => instance.length <= spec,
-    pattern: (spec) => (instance) => new RegExp(spec).test(instance),
-    format: (spec) => (instance) => true,
+    enum: (opts) => (instance) => opts.spec.includes(instance),
+    minLength: (opts) => (instance) => instance.length >= opts.spec,
+    maxLength: (opts) => (instance) => instance.length <= opts.spec,
+    pattern: (opts) => (instance) => new RegExp(opts.spec).test(instance),
+    format: (opts) => (instance) => true,
   },
   boolean: {
     type: () => JSON_SCHEMA_META_REFINERY.boolean,
-    enum: (spec) => (instance) => spec.includes(instance),
+    enum: (opts) => (instance) => opts.spec.includes(instance),
   },
   null: {
     type: () => JSON_SCHEMA_META_REFINERY.null,
   },
   array: {
     type: () => JSON_SCHEMA_META_REFINERY.array,
-    items: (spec) => (instance) => true, // TODO
-    minItems: (spec) => (instance) => instance.length >= spec,
-    maxItems: (spec) => (instance) => instance.length <= spec,
-    uniqueItems: (spec) => (instance) =>
-      spec === false || new Set(instance).size === instance.length,
+    items: (opts) => (instance) => true, // TODO
+    minItems: (opts) => (instance) => instance.length >= opts.spec,
+    maxItems: (opts) => (instance) => instance.length <= opts.spec,
+    uniqueItems: (opts) => (instance) =>
+      opts.spec === false || new Set(instance).size === instance.length,
   },
   object: {
     type: () => JSON_SCHEMA_META_REFINERY.object,
-    properties: (spec) => (instance) => true, // TODO
-    required: (spec) => (instance) => spec.every((key) => key in instance),
-    propertyNames: (spec) => (instance) => true, // TODO
-    minProperties: (spec) => (instance) => Object.keys(instance).length >= spec,
-    maxProperties: (spec) => (instance) => Object.keys(instance).length <= spec,
-    additionalProperties: (spec) => (instance) => true, // TODO
+    properties: (opts) => (instance) => {
+      console.log(`> properties`)
+      console.log({ opts, instance })
+      const propertyNames = Object.keys(opts.spec)
+      return propertyNames.every((propertyName) => {
+        const propertySchema = opts.spec[propertyName]
+        console.log(`> property "${propertyName}"`)
+        console.log({
+          propertyName,
+          propertySchema,
+          instanceProperty: instance[propertyName],
+        })
+        return propertyName in instance
+          ? validateBy(
+              propertySchema,
+              opts.refMap,
+              opts.root
+            )(instance[propertyName]).isValid
+          : true
+      })
+    },
+    required: (opts) => (instance) => opts.spec.every((key) => key in instance),
+    propertyNames: (opts) => (instance) => true, // TODO
+    patternProperties: (opts) => (instance) => true, // TODO
+    minProperties: (opts) => (instance) =>
+      Object.keys(instance).length >= opts.spec,
+    maxProperties: (opts) => (instance) =>
+      Object.keys(instance).length <= opts.spec,
+    additionalProperties: (opts) => (instance) => true, // TODO
+    dependentSchemas: (opts) => (instance) => true, // TODO
   },
 }
 
-export type InstanceValidationResult<Schema extends JsonSchema> =
-  | {
-      isValid: false
-      details: {
-        instance: unknown
-        schema: Schema
-        failedConstraints: Partial<Schema>
+export const validateByLogicMode: {
+  [LogicMode in JsonSchemaLogicMode]: (options: {
+    schema: JsonSchemaSystem[LogicMode]
+    refMap: Record<string, JsonSchema>
+    root: JsonSchema
+  }) => (instance: unknown) => InstanceValidationResult
+} = {
+  union: (opts) => (instance) => {
+    const validationResults = (
+      opts.schema.anyOf as ReadonlyArray<JsonSchema>
+    ).map((schema) => validateBy(schema)(instance))
+    const isValid = validationResults.some((result) => result.isValid)
+    const violations: InstanceValidationResult[`violations`] = isValid
+      ? []
+      : [
+          {
+            instance,
+            schema: {
+              anyOf: validationResults.flatMap((result) =>
+                result.violations.map(({ schema }) => schema)
+              ),
+            },
+          },
+        ]
+
+    return { isValid, violations }
+  },
+  exclusive: (opts) => (instance) => {
+    const validationResults = (
+      opts.schema.oneOf as ReadonlyArray<JsonSchema>
+    ).map((schema) => validateBy(schema)(instance))
+    const validResults = validationResults.filter((result) => result.isValid)
+    const isValid = validResults.length === 1
+
+    const violations: InstanceValidationResult[`violations`] = isValid
+      ? []
+      : [
+          {
+            instance,
+            schema: {
+              oneOf:
+                validResults.length === 0
+                  ? validationResults.flatMap((result) =>
+                      result.violations.map(({ schema }) => schema)
+                    )
+                  : (opts.schema.oneOf as ReadonlyArray<JsonSchema>),
+            },
+            problem: `${
+              validationResults.filter((result) => result.isValid).length
+            } of these ${
+              opts.schema.oneOf.length
+            } schemas were able to validate the instance`,
+          },
+        ]
+    return { isValid, violations }
+  },
+  intersection: (opts) => (instance) => {
+    const validationResults = (
+      opts.schema.allOf as ReadonlyArray<JsonSchema>
+    ).map((schema) => validateBy(schema)(instance))
+    const isValid = validationResults.every((result) => result.isValid)
+    const violations: InstanceValidationResult[`violations`] = isValid
+      ? []
+      : [
+          {
+            instance,
+            schema: {
+              allOf: validationResults.flatMap((result) =>
+                result.violations.map(({ schema }) => schema)
+              ),
+            },
+          },
+        ]
+    return { isValid, violations }
+  },
+  negation: (opts) => (instance) => {
+    const validationResult = validateBy(opts.schema.not)(instance)
+    const isValid = !validationResult.isValid
+    const violations: InstanceValidationResult[`violations`] = isValid
+      ? []
+      : [
+          {
+            instance,
+            schema: {
+              not: opts.schema.not,
+            },
+          },
+        ]
+    return { isValid, violations }
+  },
+  conditional: (opts) => (instance) => {
+    if (`then` in opts.schema || `else` in opts.schema) {
+      const ifResult = validateBy(opts.schema.if)(instance)
+      if (ifResult.isValid && `then` in opts.schema) {
+        const thenResult = validateBy(opts.schema.then)(instance)
+        const violations: InstanceValidationResult[`violations`] =
+          thenResult.isValid
+            ? []
+            : [
+                {
+                  instance,
+                  schema: {
+                    if: opts.schema.if,
+                    then: thenResult.violations[0].schema,
+                  },
+                },
+              ]
+        return { isValid: thenResult.isValid, violations }
+      } else if (!ifResult.isValid && `else` in opts.schema) {
+        const elseResult = validateBy(opts.schema.else)(instance)
+        const violations: InstanceValidationResult[`violations`] =
+          elseResult.isValid
+            ? []
+            : [
+                {
+                  instance,
+                  schema: {
+                    if: opts.schema.if,
+                    else: elseResult.violations[0].schema,
+                  },
+                },
+              ]
+        return { isValid: elseResult.isValid, violations }
       }
     }
-  | {
-      isValid: true
-      details: null
-    }
+    return { isValid: true, violations: [] }
+  },
+}
 
-export const validateInstanceAsLeaf =
-  <Schema extends JsonSchemaLeaf>(
-    schema: Schema
-  ): ((instance: unknown) => InstanceValidationResult<Schema>) =>
-  (instance): InstanceValidationResult<Schema> => {
-    const validateByType = validate[schema.type]
-    const passesValidation = Object.entries(schema).every(([key, value]) =>
-      validateByType[key](value)(instance)
-    )
-    if (passesValidation) return { isValid: true, details: null }
-    const failedConstraints: Partial<Schema> = pipe(
-      Object.entries(schema),
-      filter(([key, value]) => !validateByType[key](value)(instance)),
-      Object.fromEntries
-    )
-    return {
-      isValid: false,
-      details: {
-        instance,
-        schema,
-        failedConstraints,
-      },
-    }
-  }
+type InstanceFailure = {
+  instance: unknown
+  schema: Fragment<JsonSchema>
+  problem?: `${number} of these ${number} schemas were able to validate the instance`
+}
+type InstanceValidationResult = {
+  isValid: boolean
+  violations: InstanceFailure[]
+}
 
-export const validateInstanceBy =
-  <Schema extends JsonSchema>(
-    schema: Schema
-  ): ((instance: unknown) => InstanceValidationResult<Schema>) =>
-  (instance): InstanceValidationResult<Schema> => {
-    if (schema === true) return { isValid: true, details: null }
-    if (schema === false) {
-      return {
-        isValid: schema,
-        details: {
-          instance,
-          schema,
-          failedConstraints: schema,
-        },
-      }
-    }
-    if (isJsonSchemaLeaf(schema)) {
-      const validate = validateInstanceAsLeaf(schema)
-      return validate(instance) as InstanceValidationResult<Schema>
-    }
-    if (isUnionSchema(schema)) {
-      const validationResults = schema.anyOf.map((unionMember) =>
-        validateInstanceBy(unionMember)(instance)
+export const collectPropertyViolations =
+  <Schema extends ObjectSchema>(
+    schema: Schema,
+    refMap: Record<string, JsonSchema>,
+    root: JsonSchema
+  ) =>
+  (instance: unknown): InstanceValidationResult => {
+    const violations: InstanceFailure[] = []
+    if (schema.properties && isPlainObject(instance)) {
+      const isValid = Object.entries(schema.properties).every(
+        ([key, propertySchema]) => {
+          const propertyInstance = (instance as Record<string, unknown>)[key]
+          const validationResult = validateBy(propertySchema)({
+            instance: propertyInstance,
+            refMap,
+            root,
+          })
+          if (!validationResult.isValid) {
+            violations.push({
+              instance: propertyInstance,
+              schema: validationResult.violations[0].schema,
+            })
+          }
+          return validationResult.isValid
+        }
       )
-      const isValid = validationResults.some((result) => result.isValid)
-      if (isValid) return { isValid: true, details: null }
-      const failedConstraints = validationResults.reduce((acc, result) => ({
-        ...acc,
-        ...result.details.failedConstraints,
-      }))
+      return { isValid, violations }
     }
+    return { isValid: true, violations: [] }
+  }
+
+export const validateLeaf =
+  <Schema extends ArraySchema | JsonSchemaLeaf | ObjectSchema>(
+    schema: Schema,
+    refMap: Record<string, JsonSchema>,
+    root: JsonSchema
+  ): ((instance: unknown) => InstanceValidationResult) =>
+  (instance): InstanceValidationResult => {
+    console.log(`> validateLeaf`)
+    console.log({ instance, schema, refMap, root })
+    const check = validateAsType[schema.type]
+    const passesValidation = Object.entries(schema).every(([keyword, spec]) =>
+      keyword in check ? check[keyword]({ spec, refMap, root })(instance) : true
+    )
+    if (passesValidation) return { isValid: true, violations: [] }
+    const { type, ...rest } = schema
+    const failedConstraints: Fragment<JsonSchema> = JSON_SCHEMA_META_REFINERY[
+      type
+    ](instance)
+      ? pipe(
+          Object.entries(rest),
+          filter(
+            ([keyword, spec]) =>
+              keyword in check &&
+              !check[keyword]({ spec, refMap, root })(instance)
+          ),
+          Object.fromEntries
+        )
+      : { type }
     return {
       isValid: false,
-      details: {
-        instance,
-        schema,
-        failedConstraints: schema,
-      },
+      violations: [{ instance, schema: failedConstraints }],
     }
   }
 
-export const validateWithSchema =
-  <Schema extends JsonSchema>(schema: Schema) =>
-  (instance: unknown): InstanceValidationResult<Schema> => {
-    return
+export const validateLogic =
+  <Schema extends JsonSchemaTree>(
+    schema: Schema,
+    refMap: Record<string, JsonSchema>,
+    root: JsonSchema
+  ): ((instance: unknown) => InstanceValidationResult) =>
+  (instance): InstanceValidationResult => {
+    if (isUnionSchema(schema)) {
+      return validateByLogicMode.union({ schema, refMap, root })(instance)
+    }
+    if (isExclusiveSchema(schema)) {
+      return validateByLogicMode.exclusive({ schema, refMap, root })(instance)
+    }
+    if (isIntersectionSchema(schema)) {
+      return validateByLogicMode.intersection({ schema, refMap, root })(instance)
+    }
+    if (isNegationSchema(schema)) {
+      return validateByLogicMode.negation({ schema, refMap, root })(instance)
+    }
+    if (isConditionalSchema(schema)) {
+      return validateByLogicMode.conditional({ schema, refMap, root })(instance)
+    }
+    throw new Error(`not implemented`)
   }
+
+export function validateBy(
+  schema: unknown,
+  refMap: Record<string, JsonSchema> = {},
+  root: JsonSchema = schema as JsonSchema
+): (instance: unknown) => InstanceValidationResult {
+  const validateInstance = (instance: unknown): InstanceValidationResult => {
+    console.log(`> validateBy`)
+    console.log({ instance, schema, refMap, root })
+    if (schema === true) return { isValid: true, violations: [] }
+    if (schema === false) {
+      return { isValid: false, violations: [{ instance, schema }] }
+    }
+    if (isJsonSchemaRef(schema)) {
+      console.log(`> isJsonSchemaRef`)
+      const { node, refMap: newRefMap } = retrieveRef({
+        refNode: schema,
+        refMap,
+        root,
+      })
+      console.log({ node, newRefMap })
+      return validateBy(node, newRefMap, root)(instance)
+    }
+    if (
+      isJsonSchemaLeaf(schema) ||
+      isObjectSchema(schema) ||
+      isArraySchema(schema)
+    ) {
+      return validateLeaf(schema, refMap, root)(instance)
+    }
+    if (isJsonSchemaTree(schema)) {
+      return validateLogic(schema, refMap, root)(instance)
+    }
+    throw new Error(`not implemented`)
+  }
+  return validateInstance
+}
