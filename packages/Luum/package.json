@@ -16,7 +16,7 @@
     "fp-ts": "2.13.1"
   },
   "devDependencies": {
-    "eslint": "8.31.0",
+    "eslint": "8.34.0",
     "tsup": "^6.5.0",
     "vitest": "^0.27.1"
   },

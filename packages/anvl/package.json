@@ -17,7 +17,7 @@
     "test:once": "vitest run"
   },
   "devDependencies": {
-    "eslint": "8.31.0",
+    "eslint": "8.34.0",
     "fp-ts": "2.13.1",
     "io-ts": "2.2.20",
     "vite": "4.0.4",
