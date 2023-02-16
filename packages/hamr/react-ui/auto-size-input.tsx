@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, CSSProperties, ReactNode, Ref } from "react"
+import type { ChangeEventHandler, CSSProperties, Ref } from "react"
 import { Component } from "react"
 
 import type { EmotionJSX } from "@emotion/react/types/jsx-namespace"
@@ -114,7 +114,7 @@ export class AutoSizeInput extends Component<
     this.updateInputWidth()
   }
   public componentDidUpdate(
-    prevProps: AutoSizeInputProps,
+    _: AutoSizeInputProps,
     prevState: AutoSizeInputState
   ): void {
     if (prevState.inputWidth !== this.state.inputWidth) {

@@ -26,5 +26,5 @@ export const modify =
       ),
       { ...obj } as Obj
     ) as any
-const a = modify({ a: (v: string) => v.length })({ a: `hello` })
-const b = modify({ a: `hello` })({ a: `hello` })
+// const a = modify({ a: (v: string) => v.length })({ a: `hello` })
+// const b = modify({ a: `hello` })({ a: `hello` })

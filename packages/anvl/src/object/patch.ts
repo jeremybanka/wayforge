@@ -8,17 +8,17 @@ export type Fragment<T> = {
     : Fragment<Partial<T[K]>>
 }
 
-interface ExampleTree extends Record<keyof any, any> {
-  a?: {
-    b: {
-      c: number | null
-    }[]
-  }
-}
+// interface ExampleTree extends Record<keyof any, any> {
+//   a?: {
+//     b: {
+//       c: number | null
+//     }[]
+//   }
+// }
 
-type ExampleFragment = Fragment<ExampleTree>
+// type ExampleFragment = Fragment<ExampleTree>
 
-const exampleTreeFragment: ExampleFragment = { a: { b: [{}] } }
+// const exampleTreeFragment: ExampleFragment = { a: { b: [{}] } }
 
 export const patch = <Base extends object, Update extends Fragment<Base>>(
   base: Base,

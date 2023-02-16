@@ -1,10 +1,5 @@
-import { pipe } from "fp-ts/function"
-import type { Refinement } from "fp-ts/Refinement"
-import { isString } from "fp-ts/string"
-
-import { allTrue, every, reduce } from "../array"
-import { pass } from "../function"
-import { ifNullish, isUndefined } from "../nullish"
+import { reduce } from "../array"
+import { isUndefined } from "../nullish"
 
 export const redact =
   <K extends keyof any>(...args: K[]) =>

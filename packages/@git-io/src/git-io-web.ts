@@ -1,4 +1,4 @@
-import type { RecoilValueReadOnly, RecoilState } from "recoil"
+import type { RecoilValueReadOnly } from "recoil"
 import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
 

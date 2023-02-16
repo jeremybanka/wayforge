@@ -1,12 +1,10 @@
 import { select } from "../../../object"
-import { Int } from "../integer"
 import type {
   BooleanSchema,
   ConditionalSchema,
   JsonSchema,
   NumberSchema,
 } from "../json-schema"
-import { isJsonSchemaTree, isConditionalSchema } from "../json-schema"
 import { validateBy } from "../validate-instance"
 
 const trueFalse: BooleanSchema = { type: `boolean` }

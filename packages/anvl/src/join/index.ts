@@ -11,7 +11,6 @@ import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
 import type { Json, JsonObj } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
-import { isUndefined } from "../nullish"
 import { cannotExist } from "../refinement"
 
 export class Join<CONTENT extends JsonObj | null = null>

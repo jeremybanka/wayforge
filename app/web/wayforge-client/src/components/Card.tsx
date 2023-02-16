@@ -8,7 +8,7 @@ export const CARD_WIDTH = 252
 export const CARD_HEIGHT = 360
 export const CARD_PADDING = 12
 
-export const cssCard = (colorA: Luum, colorB: Luum): SerializedStyles => css`
+export const cssCard = (colorA: Luum, _: Luum): SerializedStyles => css`
   background: ${colorA.hex};
   font-family: "Uruz";
   font-size: 10.8px;

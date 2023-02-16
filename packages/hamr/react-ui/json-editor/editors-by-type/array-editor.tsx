@@ -5,7 +5,7 @@ import type { JsxElements } from ".."
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
 
-export const ArrayEditor = <T extends JsonArr>({
+export const ArrayEditor = <_ extends JsonArr>({
   path = [],
   isReadonly = () => false,
   isHidden = () => false,

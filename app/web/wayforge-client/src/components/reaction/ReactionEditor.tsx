@@ -4,11 +4,9 @@ import { css } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 
@@ -23,7 +21,6 @@ import type { Reaction, ReactionRelations } from "../../services/reaction"
 import {
   reactionSchemaState,
   findReactionWithRelationsState,
-  findReactionState,
   useRemoveReaction,
 } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon_SVG"

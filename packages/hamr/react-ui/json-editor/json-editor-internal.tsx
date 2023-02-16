@@ -1,7 +1,6 @@
 import type { FC, RefObject } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
-import Ajv from "ajv"
 import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"

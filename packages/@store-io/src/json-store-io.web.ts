@@ -105,5 +105,5 @@ export const socketSchema: (
     socket.on(`schemaRead_${type}`, (json) =>
       isJsonSchema(json) ? setSelf(json) : null
     )
-    onSet((v) => console.warn(`editing schema not yet supported`))
+    onSet((_) => console.warn(`editing schema not yet supported`))
   }

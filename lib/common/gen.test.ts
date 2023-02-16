@@ -1,5 +1,3 @@
-import * as ts from "typescript"
-
 import { TypescriptInstructions } from "./gen"
 
 describe(`gen`, () => {

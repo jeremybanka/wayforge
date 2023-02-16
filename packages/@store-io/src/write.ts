@@ -3,7 +3,7 @@ import { readdirSync, renameSync, writeFileSync } from "fs"
 import { identity, pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
 
-import type { Json, JsonArr, JsonObj } from "~/packages/anvl/src/json"
+import type { Json, JsonArr } from "~/packages/anvl/src/json"
 import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 import type { JsonStoreOptions } from "."
