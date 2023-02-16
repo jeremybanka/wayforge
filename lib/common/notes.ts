@@ -36,4 +36,4 @@ export const parseStructure = <
   return input as any
 }
 
-const a = parseStructure({ a: true, b: 1 })
+// const a = parseStructure({ a: true, b: 1 })

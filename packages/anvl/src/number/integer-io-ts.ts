@@ -1,7 +1,6 @@
-import { pipe, unsafeCoerce } from "fp-ts/function"
+import { pipe } from "fp-ts/function"
 import type { Kind, Kind2, URIS, URIS2, HKT } from "fp-ts/HKT"
 import * as D from "io-ts/Decoder"
-import * as SC from "io-ts/Schema"
 import * as S from "io-ts/Schemable"
 
 export interface IntBrand {
@@ -42,9 +41,9 @@ export const mySchemable: MySchemable2C<D.URI> = {
   ),
 }
 
-const interpreter: {
-  <S extends URIS2>(S: MySchemable2C<S>): <A>(
-    schema: MySchema<A>
-  ) => Kind2<S, unknown, A>
-  <S extends URIS>(S: MySchemable1<S>): <A>(schema: MySchema<A>) => Kind<S, A>
-} = unsafeCoerce(SC.interpreter)
+// const interpreter: {
+//   <S extends URIS2>(S: MySchemable2C<S>): <A>(
+//     schema: MySchema<A>
+//   ) => Kind2<S, unknown, A>
+//   <S extends URIS>(S: MySchemable1<S>): <A>(schema: MySchema<A>) => Kind<S, A>
+// } = unsafeCoerce(SC.interpreter)

@@ -405,22 +405,22 @@ export const luumToCss = (rule: LuumCssRule): string => {
   return rootSelectors ? join(LF)([rootSelectors, attributes, `}`]) : attributes
 }
 
-export const luumToScss = (rule: LuumScssRule): string => {
-  const {
-    rootSelectors: maybeOneOrManyRootSelectors,
-    root,
-    attributes: oneOrManyAttributes,
-    filter,
-    states: maybeOneOrManyStates,
-    children: maybeOneOrManyChildren,
-  } = rule
-  const rootSelectors = pipe(
-    maybeOneOrManyRootSelectors,
-    each(isString),
-    join(`, ` + LF)
-  )
-  return ``
-}
+// export const luumToScss = (rule: LuumScssRule): string => {
+//   const {
+//     rootSelectors: maybeOneOrManyRootSelectors,
+//     root,
+//     attributes: oneOrManyAttributes,
+//     filter,
+//     states: maybeOneOrManyStates,
+//     children: maybeOneOrManyChildren,
+//   } = rule
+//   const rootSelectors = pipe(
+//     maybeOneOrManyRootSelectors,
+//     each(isString),
+//     join(`, ` + LF)
+//   )
+//   return ``
+// }
 
 // export const luumToScss = (rule: LuumScssRule): string => {
 //   const { rootSelector, root, filter, attributes, states, children } = rule

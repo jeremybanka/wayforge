@@ -1,4 +1,3 @@
-import { exec } from "child_process"
 import * as fs from "fs"
 
 import { pipe } from "fp-ts/function"
@@ -17,8 +16,6 @@ import type { GitClientSocket } from "./git-io-web"
 const PORT = 2451
 
 vitest.spyOn(console, `info`)
-
-const $_LOG_$ = <T>(value: T): T => (console.log(value), value)
 
 beforeAll(() => setupLab().disposeLab)
 

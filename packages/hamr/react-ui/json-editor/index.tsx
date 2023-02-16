@@ -15,7 +15,6 @@ import type { JsonEditorProps_INTERNAL } from "./json-editor-internal"
 export type JsxElements = ReturnType<FC>
 
 export * from "./default-components"
-export * from "./recoil-interface"
 export * from "./developer-interface"
 
 export const SubEditors: Record<

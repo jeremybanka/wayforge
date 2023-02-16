@@ -122,7 +122,6 @@ describe(`select (Pick<Obj, Keys>)`, () => {
 describe(`modify`, () => {
   it(`modifies a property`, () => {
     const result = modify({ a: `yo` })({ a: 1, b: 2 })
-    const { a, b } = result
     expect(result).toStrictEqual({ a: `yo`, b: 2 })
   })
 })

@@ -3,7 +3,6 @@ import { pipe } from "fp-ts/lib/function"
 import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
-import { Schema } from "io-ts/lib/Schema"
 
 import type { integer } from "./integer"
 import { isInteger } from "./integer"
@@ -113,7 +112,7 @@ export const validateAsType: {
     minLength: (opts) => (instance) => instance.length >= opts.spec,
     maxLength: (opts) => (instance) => instance.length <= opts.spec,
     pattern: (opts) => (instance) => new RegExp(opts.spec).test(instance),
-    format: (opts) => (instance) => true,
+    format: (_) => (_) => true,
   },
   boolean: {
     type: () => JSON_SCHEMA_META_REFINERY.boolean,
@@ -124,7 +123,7 @@ export const validateAsType: {
   },
   array: {
     type: () => JSON_SCHEMA_META_REFINERY.array,
-    items: (opts) => (instance) => true, // TODO
+    items: (_) => (_) => true, // TODO
     minItems: (opts) => (instance) => instance.length >= opts.spec,
     maxItems: (opts) => (instance) => instance.length <= opts.spec,
     uniqueItems: (opts) => (instance) =>
@@ -154,14 +153,14 @@ export const validateAsType: {
       })
     },
     required: (opts) => (instance) => opts.spec.every((key) => key in instance),
-    propertyNames: (opts) => (instance) => true, // TODO
-    patternProperties: (opts) => (instance) => true, // TODO
+    propertyNames: (_) => (_) => true, // TODO
+    patternProperties: (_) => (_) => true, // TODO
     minProperties: (opts) => (instance) =>
       Object.keys(instance).length >= opts.spec,
     maxProperties: (opts) => (instance) =>
       Object.keys(instance).length <= opts.spec,
-    additionalProperties: (opts) => (instance) => true, // TODO
-    dependentSchemas: (opts) => (instance) => true, // TODO
+    additionalProperties: (_) => (_) => true, // TODO
+    dependentSchemas: (_) => (_) => true, // TODO
   },
 }
 

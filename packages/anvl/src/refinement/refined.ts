@@ -28,5 +28,3 @@ export type Refined<
   /* eslint-disable-next-line max-len */
   /* eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members */
 > = RequiredProperties & OptionalProperties
-
-import { canExist, cannotExist } from "."

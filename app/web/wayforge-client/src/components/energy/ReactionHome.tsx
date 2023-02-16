@@ -6,14 +6,7 @@ import { useRecoilValue } from "recoil"
 
 import { ListItems } from "~/app/web/wayforge-client/recoil-list"
 
-import { EnergyListItem } from "./EnergyListItem"
 import { ReactionListItem } from "./ReactionListItem"
-import {
-  energyIndex,
-  findEnergyState,
-  useAddEnergy,
-  useRemoveEnergy,
-} from "../../services/energy"
 import {
   findReactionState,
   reactionIndex,

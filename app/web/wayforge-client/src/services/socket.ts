@@ -26,7 +26,7 @@ export const initConnectionState = (
     key: `connection_INTERNAL`,
     default: `Searching`,
     effects: [
-      ({ setSelf, onSet }) => {
+      ({ setSelf }) => {
         socket.on(`connection`, () => {
           console.log(`Connected`)
           setSelf(`Connected`)

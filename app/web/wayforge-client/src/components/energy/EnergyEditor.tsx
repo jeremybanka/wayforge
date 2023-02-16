@@ -8,7 +8,6 @@ import type { RecoilEditorProps } from "~/app/web/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/web/wayforge-client/recoil-editor"
 import { isGitSocketError } from "~/packages/@git-io/src/git-io"
 import { includesAny } from "~/packages/anvl/src/array/venn"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 

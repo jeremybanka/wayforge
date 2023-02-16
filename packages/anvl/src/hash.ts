@@ -3,7 +3,7 @@ import * as ARNE from "fp-ts/ReadonlyNonEmptyArray"
 import * as S from "fp-ts/string"
 
 // function to hash a string
-const hashString = (str: string) => {
+export const hashString = (str: string): number => {
   let hash = 0
   if (str.length === 0) return hash
   for (let i = 0; i < str.length; i++) {
@@ -14,7 +14,7 @@ const hashString = (str: string) => {
   return hash
 }
 // using fp-ts
-const hash = (str: string) =>
+export const hash = (str: string): number =>
   pipe(
     str,
     S.split(``),

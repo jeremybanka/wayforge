@@ -15,7 +15,7 @@ import {
 
 export const Explorer: FC = () => {
   const gitStatus = useRecoilValue(git.status.state)
-  const gitLog = useRecoilValue(git.log.state)
+  // const gitLog = useRecoilValue(git.log.state)
   const gitBranch = useRecoilValue(git.branch.state)
   const commitAll = useCommitAll()
   const makeNewBranch = useMakeNewBranch()

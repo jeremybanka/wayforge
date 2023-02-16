@@ -1,7 +1,5 @@
 import type { Refinement } from "fp-ts/Refinement"
 
-import type { Energy } from "~/app/web/wayforge-client/src/services/energy"
-
 export type Identified = { id: string }
 export type TypeBranded = { type: string }
 

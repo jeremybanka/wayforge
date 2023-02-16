@@ -4,8 +4,6 @@ import { TextInput } from "../../text-input"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 
 export const BooleanEditor = ({
-  path = [],
-  isReadonly = () => false,
   data,
   set,
 }: JsonEditorProps_INTERNAL<boolean>): JsxElements => (
@@ -16,12 +14,7 @@ export const BooleanEditor = ({
   />
 )
 
-export const NullEditor = ({
-  path = [],
-  isReadonly = () => false,
-  data,
-  set,
-}: JsonEditorProps_INTERNAL<null>): JsxElements => (
+export const NullEditor = (): JsxElements => (
   <input type="text" value="null" readOnly />
 )
 
@@ -39,14 +32,10 @@ export const NumberEditor = ({
 )
 
 export const StringEditor = ({
-  schema,
   path = [],
   isReadonly = () => false,
   data,
   set,
-  remove,
-  rename,
-  className,
   Components,
 }: JsonEditorProps_INTERNAL<string>): JsxElements => {
   return (

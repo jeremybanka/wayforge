@@ -5,7 +5,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil"
 import type { RecoilState, RecoilValueReadOnly, SetterOrUpdater } from "recoil"
 
 export type ComboPropsCore<T> = {
-  onSetSelections?: (newSelection: T) => void
+  onSetSelections?: (change: { added: T } | { removed: T }) => void
   label?: string
   nullified?: boolean
   disabled?: boolean
@@ -89,11 +89,21 @@ const Combo_INTERNAL = <State,>({
     }
   }, [nullified])
 
-  const remove = (v: State) =>
-    setSelections((current) => current.filter((v2) => v2 !== v))
+  const remove = (v: State) => {
+    if (selections.length <= minItems) return
+    setSelections((current) => {
+      const newSelections = current.filter((v2) => v2 !== v)
+      return newSelections
+    })
+    if (onSetSelections) onSetSelections({ removed: v })
+  }
   const add = (v: State) => {
-    if (onSetSelections) onSetSelections(v)
-    setSelections((current) => [...new Set([...current, v])])
+    if (selections.length >= maxItems) return
+    setSelections((current) => {
+      const newSelections = [...new Set([...current, v])]
+      return newSelections
+    })
+    if (onSetSelections) onSetSelections({ added: v })
     setEntry(``)
     setSelectedIdx(0)
     inputRef.current?.focus()

@@ -1,6 +1,4 @@
-import { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
-import { Schemable } from "io-ts/lib/Guard"
 
 import type { Substitute } from "~/packages/anvl/tree/substitute"
 

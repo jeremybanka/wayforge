@@ -1,16 +1,11 @@
 import { readdirSync, readFileSync, writeFileSync } from "fs"
 
-import { isString } from "fp-ts/string"
-
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
-import { isResourceIdentifier } from "~/packages/anvl/src/json/json-api"
 import type { ResourceIdentifierObject } from "~/packages/anvl/src/json/json-api"
 import { refineJsonType } from "~/packages/anvl/src/json/refine"
 import type { Entries } from "~/packages/anvl/src/object/entries"
 import { entriesToRecord } from "~/packages/anvl/src/object/entries"
-import { isPlainObject } from "~/packages/anvl/src/object/refinement"
-import { sprawl } from "~/packages/anvl/src/object/sprawl"
 
 export const getJsonFileNames = (dir: string): string[] => {
   const fileNames = readdirSync(dir)
@@ -111,52 +106,4 @@ export type PriorRelation = {
   to: ResourceIdentifierObject
   path: string[]
   meta?: Json
-}
-
-export const extractPriorRelations = <T extends JsonObj>(
-  toRemove: ResourceIdentifierObject,
-  data: T
-): { data: T; priorRelations: PriorRelation[] } => {
-  if (!isString(data.id) || !isString(data.type)) {
-    throw new Error(`The data does not hold a resource identifier.`)
-  }
-  const dataIdentifier: ResourceIdentifierObject = {
-    id: data.id,
-    type: data.type,
-  }
-  const priorRelations: PriorRelation[] = []
-  const cleanup: string[][] = []
-  sprawl(data, (path, value) => {
-    if (isResourceIdentifier(value)) {
-      if (value.id === toRemove.id) {
-        const priorRelation: PriorRelation = {
-          to: dataIdentifier,
-          path,
-        }
-        if (value.meta) priorRelation.meta = value.meta
-        priorRelations.push(priorRelation)
-        cleanup.push(path)
-      }
-    }
-  })
-  const dataDeepCopy = parseJson(JSON.stringify(data)) as T
-  const newData = cleanup.reduce<T>((memo, path) => {
-    const dataCopy = { ...memo }
-    const parentPath = path.slice(0, path.length - 1)
-    const parent = parentPath.reduce(
-      (memo, key) => (key === `` ? memo : memo[key]),
-      dataCopy
-    )
-    const key = path.at(-1)
-    if (Array.isArray(parent)) {
-      const index = parseInt(path.at(-1) as string, 10)
-      parent.splice(index, 1)
-    }
-    if (isPlainObject(parent)) {
-      const key = path.at(-1)
-      delete (parent as Record<string, any>)[key as string]
-    }
-    return dataCopy
-  }, dataDeepCopy)
-  return { data: newData, priorRelations }
 }

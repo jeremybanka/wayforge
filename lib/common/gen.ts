@@ -2,13 +2,6 @@ import { isString } from "fp-ts/string"
 
 import { ifDefined } from "~/packages/anvl/src/nullish"
 
-// generic type that extracts the type of a function's parameters
-type Parameters<T extends (...args: any) => any> = T extends (
-  ...args: infer P
-) => any
-  ? P
-  : never
-
 export const DECLARE = Symbol(`DECLARE`)
 export const IS = Symbol(`IS`)
 export const EXPORT = Symbol(`EXPORT`)
@@ -125,7 +118,7 @@ export class TypescriptInstructions<
     this.contents = []
   }
   public declare<Type, Name extends string>(
-    thing: Declarable
+    _: Declarable
   ): {
     named: (name: Name) => {
       toBe: (
@@ -170,3 +163,5 @@ const myInstructions = new TypescriptInstructions()
   .declare(`class`)
   .named(`MyClass`)
   .toBe(``)
+
+console.log(myInstructions.write())
