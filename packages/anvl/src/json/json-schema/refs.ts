@@ -49,8 +49,8 @@ export const colorPalette: ReffedJsonSchema = {
 
 type RetrieveRefOptions = {
   refNode: JsonSchemaRef
-  refMap: Record<string, JsonSchema>
-  root: JsonSchema
+  refMap?: Record<string, JsonSchema>
+  root: ReffedJsonSchema
 }
 type RetrieveRefResult = {
   node: JsonSchema
@@ -59,7 +59,7 @@ type RetrieveRefResult = {
 
 export const retrieveRef = ({
   refNode: { $ref },
-  refMap,
+  refMap = {},
   root,
 }: RetrieveRefOptions): RetrieveRefResult => {
   if (typeof root === `boolean`) {

@@ -9,6 +9,7 @@ export type Substitute<Container, Content, Substitution> =
     ? (Item extends Content
         ? Substitute<Item, Content, Substitution> | Substitution
         : Substitute<Item, Content, Substitution>)[]
-    : Container extends Content
-    ? Substitution
     : Container
+// extends Content
+// ? Substitution
+// : Container

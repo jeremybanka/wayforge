@@ -1,12 +1,10 @@
-import type { JsonSchema } from "./json-schema"
 import { isJsonSchema } from "./json-schema"
 import { expandPathForSchema } from "./path-into"
 import { isJsonSchemaRef, retrieveRef } from "./refs"
 import type { ReffedJsonSchema, JsonSchemaRef } from "./refs"
-import { delve } from "../../object"
 
 export const findSubSchema = (
-  schema: JsonSchema | ReffedJsonSchema
+  schema: ReffedJsonSchema
 ): ((
   path: (number | string)[] | ReadonlyArray<number | string>
 ) => Error | ReffedJsonSchema) => {
@@ -14,24 +12,23 @@ export const findSubSchema = (
     throw new Error(`The schema does not contain subSchemas`)
   }
   return (path: string[]) => {
-    const refMap: Record<string, ReffedJsonSchema> = {}
-
     const pathIntoSchema = expandPathForSchema(path)
     if (pathIntoSchema instanceof Error) return pathIntoSchema
     if (typeof schema === `boolean`) {
       return new TypeError(`The schema is not a JsonSchema`)
     }
-    let subSchema: JsonSchemaRef | ReffedJsonSchema = pathIntoSchema.reduce(
-      (acc, key) => (
-        console.log({ acc, key }),
-        isJsonSchemaRef(acc)
-          ? retrieveRef({ refNode: acc, root: schema, refMap })
-          : acc?.[key]
+    const { node, refMap } = pathIntoSchema.reduce(
+      ({ node, refMap = undefined }, key) => (
+        console.log({ node, key }),
+        isJsonSchemaRef(node)
+          ? retrieveRef({ refNode: node, root: schema, refMap })
+          : { node: node[key], refMap }
       ),
-      schema
+      { node: schema, refMap: undefined }
     )
-    if (subSchema instanceof Error) throw subSchema
+    if (node instanceof Error) throw node
 
+    let subSchema = node
     while (isJsonSchemaRef(subSchema)) {
       console.log({ subSchema })
       subSchema = retrieveRef({ refNode: subSchema, root: schema, refMap }).node
