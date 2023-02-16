@@ -2257,7 +2257,7 @@ __metadata:
     io-ts: 2.2.20
     npmlog: 7.0.1
     prettier: 2.8.2
-    simple-git: 3.15.1
+    simple-git: 3.16.1
     socket.io: 4.5.4
     tsx: 3.12.2
     vitest: 0.27.1
@@ -5088,7 +5088,7 @@ __metadata:
     ajv: 8.12.0
     eslint: 8.31.0
     fp-ts: 2.13.1
-    simple-git: 3.15.1
+    simple-git: 3.16.1
     socket.io: 4.5.4
     socket.io-client: 4.5.4
   peerDependencies:
@@ -7753,14 +7753,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:3.15.1":
-  version: 3.15.1
-  resolution: "simple-git@npm:3.15.1"
+"simple-git@npm:3.16.1":
+  version: 3.16.1
+  resolution: "simple-git@npm:3.16.1"
   dependencies:
     "@kwsites/file-exists": ^1.1.1
     "@kwsites/promise-deferred": ^1.1.1
     debug: ^4.3.4
-  checksum: 2b97c3ba3c0709eded408013336bf1822be4171d965f3ab45f5bfc05ec690f9e488e11280bec8e2faa05d3039c4769e9d8197040a48dc5cf21cc5c7fa22fe77f
+  checksum: 02ed36d580ea20efc0d26571742d120ff86edebba5a94cc91c8de17529d4e8cf4ea57fc11cbbae11f4713400fab11df5e4f1639cfbf643fcce5e80e79effa762
   languageName: node
   linkType: hard
 
@@ -7802,7 +7802,7 @@ __metadata:
     react: 18.2.0
     recoil: 0.7.6
     recoil-sync: 0.2.0
-    simple-git: 3.15.1
+    simple-git: 3.16.1
     socket.io: 4.5.4
     socket.io-client: 4.5.4
     tsup: 6.6.3
@@ -8003,7 +8003,7 @@ __metadata:
     react: 18.2.0
     recoil: 0.7.6
     recoil-sync: 0.2.0
-    simple-git: 3.15.1
+    simple-git: 3.16.1
     socket.io: 4.5.4
     socket.io-client: 4.5.4
   peerDependencies:
