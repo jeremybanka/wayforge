@@ -29,7 +29,7 @@
   },
   "peerDependencies": {
     "eslint": "8.34.0",
-    "prettier": "2.8.2"
+    "prettier": "2.8.4"
   },
   "keywords": [
     "eslint"
