@@ -1156,13 +1156,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "@floating-ui/core@npm:1.1.1"
-  checksum: a8497bf981eedf652d275f7207342a9b24c1a67909dca9e042e2379b24321e6688c7774415f3ea607c466adf82b02d8779513f449376c46b2982f2380c80cd35
-  languageName: node
-  linkType: hard
-
 "@floating-ui/core@npm:^1.2.1":
   version: 1.2.1
   resolution: "@floating-ui/core@npm:1.2.1"
@@ -1170,16 +1163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:1.1.1":
-  version: 1.1.1
-  resolution: "@floating-ui/dom@npm:1.1.1"
-  dependencies:
-    "@floating-ui/core": ^1.1.0
-  checksum: 8b7f3b98ed7ec0b634e4a0b735253b0442358c5cea8302935fc185b2bd882202a053622abe9248c76d0908645dd35f93adeaed2d64371b2ab76b36725ce3f7d3
-  languageName: node
-  linkType: hard
-
-"@floating-ui/dom@npm:^1.2.1":
+"@floating-ui/dom@npm:1.2.1, @floating-ui/dom@npm:^1.2.1":
   version: 1.2.1
   resolution: "@floating-ui/dom@npm:1.2.1"
   dependencies:
@@ -2352,7 +2336,7 @@ __metadata:
     "@emotion/react": 11.10.5
     "@emotion/styled": 11.10.5
     "@eyecuelab/recoil-devtools": 0.1.7
-    "@floating-ui/dom": 1.1.1
+    "@floating-ui/dom": 1.2.1
     "@floating-ui/react": 0.19.2
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.4.0
