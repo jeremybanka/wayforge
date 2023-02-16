@@ -2337,7 +2337,7 @@ __metadata:
     esbuild-sass-plugin: 2.4.5
     eslint: 8.34.0
     fp-ts: 2.13.1
-    framer-motion: 8.4.2
+    framer-motion: 8.5.5
     happy-dom: ^8.1.5
     io-ts: 2.2.20
     react: 18.2.0
@@ -4780,9 +4780,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:8.4.2":
-  version: 8.4.2
-  resolution: "framer-motion@npm:8.4.2"
+"framer-motion@npm:8.5.5":
+  version: 8.5.5
+  resolution: "framer-motion@npm:8.5.5"
   dependencies:
     "@emotion/is-prop-valid": ^0.8.2
     "@motionone/dom": ^10.15.3
@@ -4794,7 +4794,7 @@ __metadata:
   dependenciesMeta:
     "@emotion/is-prop-valid":
       optional: true
-  checksum: 3d2f371470e32471e298a01061088929eae27093128b1334cd8aefecd8d8e374f4c1a39558452a6cdff32a41a5ff36cdc96bb373e83ee3d8e798f5d062380e3e
+  checksum: 25912b88eaa954d641f0b5f2b811badfb9ca0dbff659cb0dfdae79216ee917b0004d43b9eeb3f74144f4924cf63d8fbd1c93de519eadd8968b6344ed0d5d9d4c
   languageName: node
   linkType: hard
 
