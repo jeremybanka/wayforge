@@ -21,7 +21,7 @@
     "test:once": "echo no target"
   },
   "devDependencies": {
-    "eslint": "8.31.0"
+    "eslint": "8.34.0"
   },
   "peerDependencies": {
     "react": "18.2.0",
