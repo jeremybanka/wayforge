@@ -1,4 +1,4 @@
-name: Lint, Build & Test
+name: Build, Lint, Test
 
 on:
   push:
@@ -18,12 +18,15 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           fetch-depth: 2
 
       - name: Install Dependencies
         run: yarn
+
+      - name: Build
+        run: yarn build
 
       - name: Lint
         run: yarn lint
@@ -39,7 +42,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           fetch-depth: 2
 
