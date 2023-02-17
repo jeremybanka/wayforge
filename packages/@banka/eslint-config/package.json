@@ -13,7 +13,7 @@
   "dependencies": {
     "@types/mocha": "10.0.1",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "18.11.18",
+    "@types/node": "18.14.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.10",
     "@types/styled-components": "5.1.26",
