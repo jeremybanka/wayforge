@@ -1,4 +1,4 @@
-import type { GitInterface } from "../git-io"
+import type { GitInterface } from "./core"
 
 export const FILLER = `—`
 
