@@ -1,0 +1,6 @@
+{
+  "name": "@anvl/json-api",
+  "main": "../dist/json-api/index.js",
+  "types": "../dist/json-api/index.d.ts",
+  "module": "../dist/json-api/index.mjs"
+}

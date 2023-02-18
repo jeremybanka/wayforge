@@ -1,0 +1,6 @@
+{
+  "name": "@anvl/number",
+  "main": "../dist/number/index.js",
+  "types": "../dist/number/index.d.ts",
+  "module": "../dist/number/index.mjs"
+}
