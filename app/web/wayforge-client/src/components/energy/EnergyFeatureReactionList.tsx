@@ -6,11 +6,11 @@ import styled from "@emotion/styled"
 import { ListItems } from "~/app/web/wayforge-client/recoil-list"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-import { ReactionEditorListItem } from "./ReactionEditor"
 import {
   findReactionWithRelationsState,
   useRemoveReaction,
 } from "../../services/reaction"
+import { ReactionEditorListItem } from "../reaction/ReactionEditor"
 
 export const ReactionList: FC<{
   labels: Identified[]
