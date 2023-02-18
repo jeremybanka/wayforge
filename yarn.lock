@@ -7938,9 +7938,6 @@ __metadata:
     recoil: 0.7.6
     socket.io: 4.6.0
     socket.io-client: 4.6.0
-  dependenciesMeta:
-    simple-git:
-      optional: true
   languageName: unknown
   linkType: soft
 
