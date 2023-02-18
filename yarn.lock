@@ -2342,7 +2342,6 @@ __metadata:
     "@changesets/cli": ^2.26.0
     c8: 7.12.0
     cross-env: 7.0.3
-    dts-bundle-generator: 7.1.0
     eslint: 8.34.0
     fs-extra: 11.1.0
     jest-environment-jsdom: 29.4.3
@@ -3672,18 +3671,6 @@ __metadata:
   version: 16.0.3
   resolution: "dotenv@npm:16.0.3"
   checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
-  languageName: node
-  linkType: hard
-
-"dts-bundle-generator@npm:7.1.0":
-  version: 7.1.0
-  resolution: "dts-bundle-generator@npm:7.1.0"
-  dependencies:
-    typescript: ">=4.5.2"
-    yargs: ^17.6.0
-  bin:
-    dts-bundle-generator: dist/bin/dts-bundle-generator.js
-  checksum: 120c6b0724da0d91076714f45a27ff62776e1b64319e0dfd7a88fb28e6bf0b47bced738ecb25380dfb0afdf5232ce48ac6a2aaeef90da867810c00012321d9ba
   languageName: node
   linkType: hard
 
@@ -8898,7 +8885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.9.4, typescript@npm:>=4.5.2":
+"typescript@npm:4.9.4":
   version: 4.9.4
   resolution: "typescript@npm:4.9.4"
   bin:
@@ -8908,7 +8895,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.9.4#~builtin<compat/typescript>, typescript@patch:typescript@>=4.5.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.9.4#~builtin<compat/typescript>":
   version: 4.9.4
   resolution: "typescript@patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=23ec76"
   bin:
@@ -9559,7 +9546,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.1.1, yargs@npm:^17.6.0":
+"yargs@npm:^17.1.1":
   version: 17.6.2
   resolution: "yargs@npm:17.6.2"
   dependencies:

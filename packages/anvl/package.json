@@ -9,8 +9,6 @@
   ],
   "scripts": {
     "dev": "cd example && vite",
-    "build:types": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
-    "build:main": "tsx -- esbuild.config.ts",
     "build": "echo not yet implemented",
     "lint": "eslint",
     "test": "vitest",
