@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import { isGitSocketError } from "~/packages/@git-io/src/core"
+import { isGitSocketError } from "~/packages/@git-io/web"
 
 import {
   commitMessageState,

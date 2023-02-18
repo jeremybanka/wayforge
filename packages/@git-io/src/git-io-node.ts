@@ -14,6 +14,8 @@ import type {
 } from "./core"
 import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./core"
 
+export * from "./core"
+
 type GitSocketServer = WebSocketServer<
   GitClientEvents,
   GitServerEvents,
