@@ -13,7 +13,7 @@ import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 
 import { Data_EnergyCard_A } from "./EnergyCard_A"
 import { Data_EnergyCard_B } from "./EnergyCard_B"
-import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {
   energySchemaState,

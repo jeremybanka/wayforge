@@ -112,7 +112,9 @@ export const findReactionWithRelationsState = selectorFamily<
       set(reactionProductsState, (j) => j.setRelations(reactionId, products))
       set(reactionReagentsState, (j) => j.setRelations(reactionId, reagents))
       if (featureOf !== null) {
-        set(energyFeaturesState, (j) => j.set(reactionId, featureOf.id))
+        set(energyFeaturesState, (j) => j.set(featureOf.id, reactionId))
+      } else {
+        set(energyFeaturesState, (j) => j.remove(reactionId))
       }
     },
 })

@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil"
 
 import { Luum } from "~/packages/Luum/src"
 
-import { SVG_EnergyIcon } from "./EnergyIcon_SVG"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_WIDTH, cssCard } from "../Card"
 
