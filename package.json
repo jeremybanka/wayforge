@@ -15,7 +15,8 @@
     "format": "eslint --fix",
     "build": "turbo run build",
     "test": "cross-env CI=true turbo run test:once",
-    "release": "yarn build && changesets publish"
+    "release": "yarn build && changesets publish",
+    "notes": "changeset"
   },
   "workspaces": [
     "app/web/*",
