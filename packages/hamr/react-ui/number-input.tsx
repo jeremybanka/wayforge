@@ -2,7 +2,6 @@ import type { ChangeEvent, FC } from "react"
 import { useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
-import { css } from "@emotion/react"
 
 import { AutoSizeInput } from "./auto-size-input"
 
@@ -99,32 +98,7 @@ export const NumberInput: FC<NumberInputProps> = ({
   }
   const displayValue = temporaryEntry.current ?? valueToText(value)
   return (
-    <span
-      css={css`
-        /* display: flex;
-        flex-direction: column;
-        input {
-          max-width: 200px;
-          font-size: 24px;
-          font-family: name;
-          background: none;
-          border: none;
-          border-bottom: 1px solid;
-          padding: none;
-          padding-bottom: 5px;
-          &:focus {
-            background-color: #333;
-            @media (prefers-color-scheme: light) {
-              background-color: #eee;
-            }
-          }
-        }
-        label {
-          font-size: 18px;
-        } */
-        ${customCss}
-      `}
-    >
+    <span css={customCss}>
       <label>{label}</label>
       {autoSize ? (
         <AutoSizeInput
