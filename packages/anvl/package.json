@@ -1,7 +1,6 @@
 {
   "name": "anvl",
-  "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "core typescript utilities for wayforge",
   "main": "~/lib/index.js",
   "types": "~/lib/index.d.ts",
