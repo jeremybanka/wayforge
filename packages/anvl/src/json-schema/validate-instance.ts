@@ -29,11 +29,11 @@ import type {
   ObjectSchema,
 } from "./json-schema"
 import { isJsonSchemaRef, retrieveRef } from "./refs"
-import { filter } from "../../array"
-import { isNull } from "../../nullish"
-import type { Fragment } from "../../object/patch"
-import { isPlainObject } from "../../object/refinement"
-import { canExist, cannotExist } from "../../refinement"
+import { filter } from "../array"
+import { isNull } from "../nullish"
+import type { Fragment } from "../object/patch"
+import { isPlainObject } from "../object/refinement"
+import { canExist, cannotExist } from "../refinement"
 
 /* eslint-disable max-lines */
 

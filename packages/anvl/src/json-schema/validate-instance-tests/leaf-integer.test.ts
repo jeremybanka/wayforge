@@ -1,4 +1,4 @@
-import { select } from "../../../object"
+import { select } from "../../object"
 import { Int } from "../integer"
 import type { IntegerSchema } from "../json-schema"
 import { validateBy } from "../validate-instance"

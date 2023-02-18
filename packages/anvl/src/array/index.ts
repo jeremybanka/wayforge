@@ -1,3 +1,5 @@
+export * from "./match"
+
 import type { Refinement } from "fp-ts/Refinement"
 
 export const each =

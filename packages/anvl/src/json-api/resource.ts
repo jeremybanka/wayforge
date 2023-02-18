@@ -6,8 +6,8 @@ import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 import type { RequireAtLeastOne } from "."
 import type { Link, Links } from "./document"
-import { ifDefined } from "../../nullish"
-import { isJson } from "../refine"
+import { isJson } from "../json/refine"
+import { ifDefined } from "../nullish"
 
 export type Relationships = Record<
   string,

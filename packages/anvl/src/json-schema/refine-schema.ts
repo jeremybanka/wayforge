@@ -28,11 +28,11 @@ import {
   isObjectSchema,
   isStringSchema,
 } from "./json-schema"
-import { isArray } from "../../array"
-import { select } from "../../object"
-import { modify } from "../../object/modify"
-import { doesExtend } from "../../object/refinement"
-import { couldBe, isWithin } from "../../refinement"
+import { isArray } from "../array"
+import { select } from "../object"
+import { modify } from "../object/modify"
+import { doesExtend } from "../object/refinement"
+import { couldBe, isWithin } from "../refinement"
 
 export type RefinedJsonSchema =
   | { type: `any`; data: true }

@@ -1,4 +1,4 @@
-import { select } from "../../../object"
+import { select } from "../../object"
 import { Int } from "../integer"
 import type {
   ExclusiveSchema,
