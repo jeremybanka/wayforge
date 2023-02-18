@@ -33,11 +33,9 @@ type ClienteleSocketServer = WebSocketServer<
 >
 export const serveSimpleGit = <YourServer extends WebSocketServer>(
   server: YourServer
-): ClienteleSocketServer & YourServer => (
+): ClienteleSocketServer & YourServer =>
   server.on(`connection`, (socket) => {
     socket.on(`error`, (error) => {
       console.error(`client error`, error)
     })
-  }),
-  server
-)
+  }) as ClienteleSocketServer & YourServer
