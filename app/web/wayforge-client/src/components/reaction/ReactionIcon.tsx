@@ -3,26 +3,49 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import corners, { chamfer, writePathPoint } from "corners"
+import { pipe } from "fp-ts/function"
 import { useRecoilValue } from "recoil"
 
 import { Luum } from "~/packages/Luum/src"
 
-import { Span_VoidIcon, Span_EnergyAmount } from "./EnergyIcon"
 import { ListItems } from "../../../recoil-list"
 import { findEnergyState } from "../../services/energy"
 import { findReactionEnergyState } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
+import { Span_VoidIcon, Span_EnergyAmount } from "../energy/EnergyIcon"
 
-export const energyListCss = css`
-  flex-grow: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 10px;
-  gap: 1px;
+const fancyModeListCss = css`
+  width: 50%;
 `
+
+const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 12 12"
+    style={{
+      marginRight: -9,
+      marginLeft: -9,
+      zIndex: 1,
+    }}
+  >
+    <path
+      d={[
+        writePathPoint(2, 4, `M`),
+        writePathPoint(5, 4, `L`),
+        writePathPoint(5, 0, `L`),
+        writePathPoint(10, 6, `L`),
+        writePathPoint(5, 12, `L`),
+        writePathPoint(5, 8, `L`),
+        writePathPoint(2, 8, `L`),
+        `Z`,
+      ].join(` `)}
+      fill={props.fillHex}
+      stroke={props.strokeHex}
+    />
+  </svg>
+)
 
 export const ReactionIcon_INTERNAL: FC<{
   reaction: Reaction & ReactionRelations
@@ -46,13 +69,24 @@ export const ReactionIcon_INTERNAL: FC<{
       css={css`
         display: flex;
         align-items: center;
+        > span {
+          ${mode === `fancy` ? fancyModeListCss : ``}
+          flex-grow: 1;
+          height: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          padding: 10px;
+          gap: 1px;
+        }
       `}
     >
       <ListItems
         findState={findEnergyState}
         labels={reaction.reagents}
         Components={{
-          Wrapper: styled(
+          Wrapper: pipe(
+            `span`,
             corners(null, null, chamfer, null).options({
               cornerSize: 5,
               noClipping: true,
@@ -63,8 +97,8 @@ export const ReactionIcon_INTERNAL: FC<{
                   width: 1,
                 },
               },
-            }).span
-          )(energyListCss),
+            })
+          ),
           ListItem: ({ label, findState }) => (
             <Span_EnergyAmount
               label={label}
@@ -78,36 +112,13 @@ export const ReactionIcon_INTERNAL: FC<{
           ),
         }}
       />
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 12 12"
-        style={{
-          marginRight: -9,
-          marginLeft: -9,
-          zIndex: 1,
-        }}
-      >
-        <path
-          d={[
-            writePathPoint(2, 4, `M`),
-            writePathPoint(5, 4, `L`),
-            writePathPoint(5, 0, `L`),
-            writePathPoint(10, 6, `L`),
-            writePathPoint(5, 12, `L`),
-            writePathPoint(5, 8, `L`),
-            writePathPoint(2, 8, `L`),
-            `Z`,
-          ].join(` `)}
-          fill={colorA.hex}
-          stroke={energyPresentHex}
-        />
-      </svg>
+      <SvgArrow fillHex={colorA.hex} strokeHex={energyPresentHex} />
       <ListItems
         findState={findEnergyState}
         labels={reaction.products}
         Components={{
-          Wrapper: styled(
+          Wrapper: pipe(
+            `span`,
             corners(null, null, null, null).options({
               noClipping: true,
               below: {
@@ -117,8 +128,8 @@ export const ReactionIcon_INTERNAL: FC<{
                   width: 1,
                 },
               },
-            }).span
-          )(energyListCss),
+            })
+          ),
           ListItem: ({ label, findState }) => (
             <Span_EnergyAmount
               label={label}

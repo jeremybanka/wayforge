@@ -17,9 +17,9 @@ import type { WC } from "~/packages/hamr/react-ui/json-editor"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
-import { ReactionHome } from "./components/energy/ReactionHome"
 import { Home } from "./components/Home"
 import { ReactionEditorFromRoute } from "./components/reaction/ReactionEditor"
+import { ReactionHome } from "./components/reaction/ReactionHome"
 import {
   findViewState,
   useAddView,

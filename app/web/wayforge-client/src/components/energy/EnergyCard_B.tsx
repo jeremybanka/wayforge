@@ -8,11 +8,11 @@ import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
 import { Luum } from "~/packages/Luum/src"
 
 import { SVG_EnergyIcon } from "./EnergyIcon"
-import { ReactionIcon_INTERNAL } from "./ReactionIcon"
 import { findEnergyWithRelationsState } from "../../services/energy"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
 import { cssCard } from "../Card"
+import { ReactionIcon_INTERNAL } from "../reaction/ReactionIcon"
 
 type SvgCommandCode = `C` | `L` | `M` | `Q` | `S`
 
@@ -64,7 +64,7 @@ export const Div_EnergyCardFeature: FC<
           {reaction.timeUnit}
         </small>
       </h2>
-      <ReactionIcon_INTERNAL reaction={reaction} size={20} />
+      <ReactionIcon_INTERNAL reaction={reaction} size={20} mode="fancy" />
     </div>
   )
 }
