@@ -11,8 +11,8 @@ import type {
   GitInterface,
   GitServerEvents,
   GitServerSideEvents,
-} from "./git-io"
-import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./git-io"
+} from "./core"
+import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./core"
 
 type GitSocketServer = WebSocketServer<
   GitClientEvents,

@@ -10,8 +10,8 @@ import type {
   GitClientEvents,
   GitServerEvents,
   GitSocketError,
-} from "./git-io"
-import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./static/defaults"
+} from "./core"
+import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 
 export type GitClientSocket = Socket<GitServerEvents, GitClientEvents>
 

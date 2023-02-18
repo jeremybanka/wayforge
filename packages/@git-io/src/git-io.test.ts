@@ -9,7 +9,7 @@ import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"
 import { setupLab } from "~/util/lab-tools"
 
-import { isGitSocketError } from "./git-io"
+import { isGitSocketError } from "./core"
 import { serveSimpleGit } from "./git-io-node"
 import type { GitClientSocket } from "./git-io-web"
 
