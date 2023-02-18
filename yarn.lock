@@ -2336,7 +2336,7 @@ __metadata:
     eslint: 8.34.0
     fs-extra: 11.1.0
     jest-environment-jsdom: 29.4.3
-    json-schema-to-zod: 0.6.2
+    json-schema-to-zod: 0.6.3
     mock-fs: 5.2.0
     prettier: 2.8.4
     tsx: 3.12.2
@@ -6040,16 +6040,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema-to-zod@npm:0.6.2":
-  version: 0.6.2
-  resolution: "json-schema-to-zod@npm:0.6.2"
+"json-schema-to-zod@npm:0.6.3":
+  version: 0.6.3
+  resolution: "json-schema-to-zod@npm:0.6.3"
   dependencies:
     "@apidevtools/json-schema-ref-parser": ^9.1.0
     "@types/json-schema": ^7.0.9
     prettier: ^2.4.1
   bin:
     json-schema-to-zod: cli.js
-  checksum: af52e1c966f22b320aa544f17e2138a9ce8c37f2c9092619de36c60ba66aff2b53feb61a85f8ae8de4588ce351a019f958278a9dd9eabcbc3bb632d83c35fda0
+  checksum: 528b25f6fa781cee63adcd1bb3ec34070a1e25e6c9bf2739e2c73b90cfd7e787affa729edc1f74d261faedf371edb71e1839909774387c7f8ec7e46b4ca2d99a
   languageName: node
   linkType: hard
 
