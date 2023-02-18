@@ -1,4 +1,5 @@
 import type { Refinement } from "fp-ts/Refinement"
+export * from "./curry"
 
 export const doNothing = (): void => undefined
 

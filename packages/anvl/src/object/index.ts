@@ -1,6 +1,15 @@
 import { reduce } from "../array"
 import { isUndefined } from "../nullish"
 
+export * from "./access"
+export * from "./deepMob"
+export * from "./entries"
+export * from "./mapObject"
+export * from "./modify"
+export * from "./patch"
+export * from "./refinement"
+export * from "./sprawl"
+
 export const redact =
   <K extends keyof any>(...args: K[]) =>
   <O extends Record<K, any>>(obj: O): Omit<O, K> =>

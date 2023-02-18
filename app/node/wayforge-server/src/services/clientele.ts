@@ -1,7 +1,7 @@
 import { isString } from "fp-ts/lib/string"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
-import type { ErrorObject } from "~/packages/anvl/src/json/json-api"
+import type { ErrorObject } from "~/packages/anvl/src/json-api"
 import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 export type ClienteleError = ErrorObject<`title`>

@@ -3,8 +3,8 @@ import type { FC } from "react"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
-import { findSubSchema } from "~/packages/anvl/src/json/json-schema/find-sub-schema"
-import { isObjectSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
+import { findSubSchema } from "~/packages/anvl/src/json-schema/find-sub-schema"
+import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 
 import {

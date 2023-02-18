@@ -1,0 +1,6 @@
+{
+  "name": "@anvl/tree",
+  "main": "../dist/tree/index.js",
+  "types": "../dist/tree/index.d.ts",
+  "module": "../dist/tree/index.mjs"
+}
