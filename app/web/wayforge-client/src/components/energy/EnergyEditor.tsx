@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue } from "recoil"
 
 import type { RecoilEditorProps } from "~/app/web/wayforge-client/recoil-editor"
 import { RecoilEditor } from "~/app/web/wayforge-client/recoil-editor"
-import { isGitSocketError } from "~/packages/@git-io/src/git-io"
+import { isGitSocketError } from "~/packages/@git-io/web"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
