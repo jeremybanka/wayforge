@@ -1,7 +1,7 @@
 {
   "name": "cardstock",
+  "private": true,
   "version": "0.0.1",
-  "private": false,
   "files": [
     "dist",
     "src",
