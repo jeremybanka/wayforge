@@ -36,6 +36,7 @@
     "esbuild-sass-plugin": "2.5.0",
     "eslint": "8.34.0",
     "happy-dom": "8.5.0",
+    "sass": "^1.58.3",
     "vite": "4.0.4",
     "vite-plugin-svgr": "2.4.0",
     "vite-tsconfig-paths": "4.0.5",
