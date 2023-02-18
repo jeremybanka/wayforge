@@ -1,5 +1,6 @@
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
+import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 
 import { serveSimpleGit } from "~/packages/@git-io/node"
@@ -23,7 +24,7 @@ pipe(
   }),
   serveSimpleGit({
     logger,
-    baseDir: process.env.BASE_DIR,
+    git: git({ baseDir: process.env.BASE_DIR }),
   })
 )
 logger.info(

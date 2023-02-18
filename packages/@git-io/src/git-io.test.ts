@@ -1,6 +1,7 @@
 import * as fs from "fs"
 
 import { pipe } from "fp-ts/function"
+import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
 import { vitest } from "vitest"
@@ -23,7 +24,10 @@ beforeAll(
   () =>
     pipe(
       new WebSocketServer(PORT),
-      serveSimpleGit({ logger: console, baseDir: `../wayforge-lab` })
+      serveSimpleGit({
+        logger: console,
+        git: git({ baseDir: `../wayforge-lab` }),
+      })
     ).close
 )
 
