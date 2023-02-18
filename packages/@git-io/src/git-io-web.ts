@@ -13,6 +13,8 @@ import type {
 } from "./core"
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 
+export * from "./core"
+
 export type GitClientSocket = Socket<GitServerEvents, GitClientEvents>
 
 export type GitClientTools = {
