@@ -1,5 +1,5 @@
 import { pipe } from "fp-ts/function"
-import type { SimpleGitOptions } from "simple-git"
+import type { SimpleGit, SimpleGitOptions } from "simple-git"
 import { simpleGit } from "simple-git"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
@@ -20,8 +20,9 @@ type GitSocketServer = WebSocketServer<
   GitServerSideEvents
 >
 
-export type ServeGitOptions = Partial<SimpleGitOptions> & {
+export type ServeGitOptions = {
   logger: Pick<Console, `error` | `info` | `warn`>
+  git?: SimpleGit
 }
 
 export const serveSimpleGit =
@@ -38,7 +39,7 @@ export const serveSimpleGit =
         const { logger } = options
 
         const git = pipe(
-          simpleGit(options),
+          options.git ?? simpleGit(),
           redact(...SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET)
         )
 

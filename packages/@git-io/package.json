@@ -8,9 +8,17 @@
   "scripts": {
     "build": "tsup --entry src/git-io-node.ts --entry src/git-io-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client"
   },
-  "dependencies": {
-    "fp-ts": "2.13.1",
+  "peerDependencies": {
+    "react": "18.2.0",
+    "recoil": "0.7.6",
+    "socket.io": "4.6.0",
+    "socket.io-client": "4.6.0"
+  },
+  "optionalDependencies": {
     "simple-git": "3.16.1"
+  },
+  "dependencies": {
+    "fp-ts": "2.13.1"
   },
   "devDependencies": {
     "react": "18.2.0",
@@ -20,12 +28,6 @@
     "socket.io-client": "4.6.0",
     "tsup": "6.6.3",
     "vitest": "0.28.5"
-  },
-  "peerDependencies": {
-    "react": "18.2.0",
-    "recoil": "0.7.6",
-    "socket.io": "4.6.0",
-    "socket.io-client": "4.6.0"
   },
   "repository": {
     "type": "git",
