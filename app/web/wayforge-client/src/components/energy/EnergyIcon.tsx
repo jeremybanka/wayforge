@@ -157,10 +157,9 @@ export const EnergyAmountTag: FC<{
   )
 }
 
-export const Span_EnergyAmount: FC<RecoilListItemProps<Energy, Amount>> = ({
-  label,
-  findState,
-}) => {
+export const Span_EnergyAmount: FC<
+  RecoilListItemProps<Energy, Amount> & { size: number }
+> = ({ label, findState, size }) => {
   const { id, amount } = label
   const energy = useRecoilValue(findState(id))
   const domId = useId()
@@ -169,6 +168,7 @@ export const Span_EnergyAmount: FC<RecoilListItemProps<Energy, Amount>> = ({
       css={css`
         display: inline-flex;
         align-items: center;
+        flex-shrink: 0;
         gap: 1px;
       `}
     >
@@ -176,10 +176,14 @@ export const Span_EnergyAmount: FC<RecoilListItemProps<Energy, Amount>> = ({
         Array(amount)
           .fill(null)
           .map((_, i) => (
-            <SVG_EnergyIcon key={domId + `-icon-` + i} energyId={id} size={15} />
+            <SVG_EnergyIcon
+              key={domId + `-icon-` + i}
+              energyId={id}
+              size={size}
+            />
           ))
       ) : (
-        <EnergyAmountTag energyId={energy.id} amount={amount} size={15} />
+        <EnergyAmountTag energyId={energy.id} amount={amount} size={size} />
       )}
     </span>
   )
