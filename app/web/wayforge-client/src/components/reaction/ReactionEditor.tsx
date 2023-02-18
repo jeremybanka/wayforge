@@ -23,7 +23,7 @@ import {
   findReactionWithRelationsState,
   useRemoveReaction,
 } from "../../services/reaction"
-import { SVG_EnergyIcon } from "../energy/EnergyIcon_SVG"
+import { SVG_EnergyIcon } from "../energy/EnergyIcon"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
