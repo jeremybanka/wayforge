@@ -2962,17 +2962,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bundle-require@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "bundle-require@npm:3.1.2"
-  dependencies:
-    load-tsconfig: ^0.2.0
-  peerDependencies:
-    esbuild: ">=0.13"
-  checksum: 71f8cb81bcde97825317b0e516b7e479ec70bd2370f55a8f02795c0df6d541e6562c4b9ec0427cc7b5b835103a8dcf306da04e3846fa468146358471490fcf81
-  languageName: node
-  linkType: hard
-
 "bundle-require@npm:^4.0.0":
   version: 4.0.1
   resolution: "bundle-require@npm:4.0.1"
@@ -4062,7 +4051,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.15.1, esbuild@npm:^0.15.17, esbuild@npm:~0.15.10":
+"esbuild@npm:^0.15.17, esbuild@npm:~0.15.10":
   version: 0.15.18
   resolution: "esbuild@npm:0.15.18"
   dependencies:
@@ -6244,7 +6233,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"load-tsconfig@npm:^0.2.0, load-tsconfig@npm:^0.2.3":
+"load-tsconfig@npm:^0.2.3":
   version: 0.2.3
   resolution: "load-tsconfig@npm:0.2.3"
   checksum: e28d1b2725fda76ee69fa4ee21b1257fd5b77b12e1be09cdc0b67f953e62ffbc3e7ac1a6267ec21309f95310cd10635e28a3cb38d04be3f7d683c4fe7914d7a9
@@ -6377,8 +6366,8 @@ __metadata:
   dependencies:
     eslint: 8.34.0
     fp-ts: 2.13.1
-    tsup: 6.5.0
-    vitest: 0.28.0
+    tsup: 6.6.3
+    vitest: 0.28.5
   languageName: unknown
   linkType: soft
 
@@ -8690,42 +8679,6 @@ __metadata:
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 19480d6e0313292bd6505d4efe096a6b31c70e21cf08b5febf4da62e95c265c8f571f7b36fcc3d1a17e068032f59c269fab3459d6cd3ed6949eafecf64315fca
-  languageName: node
-  linkType: hard
-
-"tsup@npm:6.5.0":
-  version: 6.5.0
-  resolution: "tsup@npm:6.5.0"
-  dependencies:
-    bundle-require: ^3.1.2
-    cac: ^6.7.12
-    chokidar: ^3.5.1
-    debug: ^4.3.1
-    esbuild: ^0.15.1
-    execa: ^5.0.0
-    globby: ^11.0.3
-    joycon: ^3.0.1
-    postcss-load-config: ^3.0.1
-    resolve-from: ^5.0.0
-    rollup: ^3.2.5
-    source-map: 0.8.0-beta.0
-    sucrase: ^3.20.3
-    tree-kill: ^1.2.2
-  peerDependencies:
-    "@swc/core": ^1
-    postcss: ^8.4.12
-    typescript: ^4.1.0
-  peerDependenciesMeta:
-    "@swc/core":
-      optional: true
-    postcss:
-      optional: true
-    typescript:
-      optional: true
-  bin:
-    tsup: dist/cli-default.js
-    tsup-node: dist/cli-node.js
-  checksum: 625082f2a2afc63024ddd54f5aca28372a7b4ec4f7c402f8aacefd0c56d8da7250665dbb4097d40edcf2cbd4168d96ed4593ecb903ab36e625628f375980e266
   languageName: node
   linkType: hard
 
