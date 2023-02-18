@@ -1,0 +1,6 @@
+{
+  "name": "@anvl/nullish",
+  "main": "../dist/nullish/index.js",
+  "types": "../dist/nullish/index.d.ts",
+  "module": "../dist/nullish/index.mjs"
+}

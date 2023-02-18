@@ -12,12 +12,18 @@
     "id",
     "join",
     "json",
+    "json-api",
+    "json-schema",
     "nullish",
-    "number"
+    "number",
+    "object",
+    "refinement",
+    "string",
+    "tree"
   ],
   "scripts": {
     "dev": "cd example && vite",
-    "build": "echo not yet implemented",
+    "build": "tsup",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
@@ -27,6 +33,7 @@
     "io-ts": "2.2.20"
   },
   "devDependencies": {
+    "tsup": "6.6.3",
     "vite-tsconfig-paths": "4.0.5",
     "vitest": "0.28.5"
   },
