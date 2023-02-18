@@ -2363,7 +2363,7 @@ __metadata:
     eslint: 8.34.0
     fp-ts: 2.13.1
     framer-motion: 9.0.4
-    happy-dom: 8.1.5
+    happy-dom: 8.4.4
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -5154,9 +5154,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:8.1.5":
-  version: 8.1.5
-  resolution: "happy-dom@npm:8.1.5"
+"happy-dom@npm:8.4.4":
+  version: 8.4.4
+  resolution: "happy-dom@npm:8.4.4"
   dependencies:
     css.escape: ^1.5.1
     he: ^1.2.0
@@ -5164,7 +5164,7 @@ __metadata:
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-  checksum: 10158948a598c3306086e14ec38cb98110ed31ad3c066a533540e89fc80d01cdf377f570081296a12d5cd60dbd0eff23107f2b6a91806113359d70cd6150fdf8
+  checksum: cb2dfc587fea1aed46f89ae65261771bd8d0631cce9159cbb89b242ac8442b126c27d2b25f9be60b97bff7d2288ce34f16062e50b10cb43d039bb3a44f79a86e
   languageName: node
   linkType: hard
 
