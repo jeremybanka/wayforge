@@ -2,7 +2,7 @@ import { isString } from "fp-ts/string"
 import type { SimpleGit } from "simple-git"
 
 import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { ErrorObject } from "~/packages/anvl/src/json/json-api"
+import type { ErrorObject } from "~/packages/anvl/src/json-api"
 import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 export const SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET = [

@@ -16,7 +16,7 @@ import {
 } from "~/packages/@store-io/src/json-store-io.web"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import {
   addToIndex,
   removeFromIndex,

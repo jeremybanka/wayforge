@@ -5,8 +5,8 @@ import { isString } from "fp-ts/string"
 import { delve, redact, select } from "."
 import { modify } from "./modify"
 import { hasExactProperties } from "./refinement"
-import type { integer } from "../json/json-schema/integer"
-import { Int } from "../json/json-schema/integer"
+import type { integer } from "../json-schema/integer"
+import { Int } from "../json-schema/integer"
 import { ifDefined } from "../nullish"
 
 describe(`hasExactProperties`, () => {
