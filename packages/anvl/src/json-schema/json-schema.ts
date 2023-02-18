@@ -9,18 +9,18 @@ import type { JsonSchemaRef } from "./refs"
 import { isJsonSchemaRef } from "./refs"
 import type { JsonSchemaStringFormat } from "./string-formats"
 import { JSON_SCHEMA_STRING_FORMATS } from "./string-formats"
-import { JSON_TYPE_NAMES } from ".."
-import { isArray } from "../../array"
-import { ifDefined } from "../../nullish"
-import { doesExtend, isRecord } from "../../object/refinement"
+import { isArray } from "../array"
+import { JSON_TYPE_NAMES } from "../json"
+import { ifDefined } from "../nullish"
+import { doesExtend, isRecord } from "../object/refinement"
 import {
   isLiteral,
   isWithin,
   couldBe,
   isIntersection,
   isUnion,
-} from "../../refinement"
-import type { Refined } from "../../refinement/refined"
+} from "../refinement"
+import type { Refined } from "../refinement/refined"
 
 /* eslint-disable max-lines */
 

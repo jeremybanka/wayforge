@@ -10,8 +10,8 @@ import type {
   JsonInterface,
   JsonObj,
 } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
-import { isJsonSchema } from "~/packages/anvl/src/json/json-schema/json-schema"
+import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
+import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
 import type {
   JsonStoreClientEvents,

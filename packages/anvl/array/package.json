@@ -1,0 +1,6 @@
+{
+  "name": "@anvl/array",
+  "main": "../dist/array/index.js",
+  "types": "../dist/array/index.d.ts",
+  "module": "../dist/array/index.mjs"
+}

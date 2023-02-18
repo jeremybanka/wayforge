@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from "fs"
 
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
-import type { ResourceIdentifierObject } from "~/packages/anvl/src/json/json-api"
+import type { ResourceIdentifierObject } from "~/packages/anvl/src/json-api"
 import { refineJsonType } from "~/packages/anvl/src/json/refine"
 import type { Entries } from "~/packages/anvl/src/object/entries"
 import { entriesToRecord } from "~/packages/anvl/src/object/entries"

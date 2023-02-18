@@ -9,6 +9,10 @@ import type {
   Relationships,
 } from "./resource"
 
+export * from "./resource"
+export * from "./errors"
+export * from "./document"
+
 const removeUndefinedProperties = treeShake(isUndefined)
 
 export type Empty = Record<string, never>
@@ -56,10 +60,6 @@ export const serializeResource = <
   type,
   id,
 })
-
-export * from "./resource"
-export * from "./errors"
-export * from "./document"
 
 // export const deserialize = <
 //   DATA extends ResourceObject<Resource> | ResourceObject<Resource>[]

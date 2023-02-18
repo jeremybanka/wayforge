@@ -1,3 +1,6 @@
+export * from "./match"
+export * from "./venn"
+
 import type { Refinement } from "fp-ts/Refinement"
 
 export const each =

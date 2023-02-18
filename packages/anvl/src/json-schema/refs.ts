@@ -1,12 +1,12 @@
 import { isString } from "fp-ts/string"
 
-import type { Substitute } from "~/packages/anvl/tree/substitute"
+import type { Substitute } from "~/packages/anvl/src/tree/substitute"
 
 import { Int } from "./integer"
 import type { JsonSchema } from "./json-schema"
 import { isJsonSchema } from "./json-schema"
-import { delve } from "../../object"
-import { doesExtend } from "../../object/refinement"
+import { delve } from "../object"
+import { doesExtend } from "../object/refinement"
 
 export type JsonSchemaRef = {
   $ref: string
