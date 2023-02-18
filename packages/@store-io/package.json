@@ -1,6 +1,6 @@
 {
   "name": "store-io",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@3.4.1",
   "version": "0.0.0",
   "description": "remote control a simple-git instance over a socket.io connection",
   "main": "object/index.ts",

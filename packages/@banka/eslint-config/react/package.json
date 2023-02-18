@@ -2,7 +2,7 @@
   "name": "@banka/eslint-config-react",
   "version": "1.1.6",
   "description": "my personal style preferences, extended to react",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@3.4.1",
   "main": "index.js",
   "scripts": {
     "build": "esbuild .eslintrc.js --bundle --platform=node --outfile=index.js"
