@@ -13,8 +13,8 @@ import { JsonEditor } from "~/packages/hamr/react-ui/json-editor"
 import type {
   FromListItemProps,
   RecoilEditorProps,
-} from "../../../recoil-editor"
-import { RecoilEditor } from "../../../recoil-editor"
+} from "../../../../../../packages/hamr/recoil-tools/recoil-editor"
+import { RecoilEditor } from "../../../../../../packages/hamr/recoil-tools/recoil-editor"
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
