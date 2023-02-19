@@ -28,12 +28,15 @@
     "eslint-plugin-react": "7.32.2"
   },
   "peerDependencies": {
-    "eslint": "8.34.0",
-    "prettier": "2.8.4"
+    "eslint": "^8.34.0",
+    "prettier": "^2.8.4"
   },
   "keywords": [
     "eslint"
   ],
   "author": "jeremybanka",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }
