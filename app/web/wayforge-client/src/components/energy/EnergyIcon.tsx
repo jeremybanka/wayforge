@@ -2,6 +2,7 @@ import type { FC } from "react"
 import { useId } from "react"
 
 import { css } from "@emotion/react"
+import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 
 import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
@@ -15,14 +16,16 @@ export const SvgTSpan_Spacer: FC = () => (
   <tspan fill="none" stroke="none" style={{ userSelect: `none` }}>{`-`}</tspan>
 )
 
-export const EnergyIcon_INTERNAL: FC<{ energy: Energy; size: number }> = ({
-  energy,
-  size,
-}) => {
+export const EnergyIcon_INTERNAL: FC<{
+  energy: Energy
+  size: number
+  clickable?: boolean
+}> = ({ energy, size, clickable = true }) => {
   const domId = useId()
   const middle = size / 2
   const colorA = Luum.fromJSON(energy.colorA)
   const colorB = Luum.fromJSON(energy.colorB)
+  const navigate = useNavigate()
 
   return (
     <svg
@@ -31,7 +34,9 @@ export const EnergyIcon_INTERNAL: FC<{ energy: Energy; size: number }> = ({
         height: ${size}px;
         paint-order: stroke fill;
         display: inline;
+        cursor: pointer;
       `}
+      onClick={clickable ? () => navigate(`/energy/${energy.id}`) : undefined}
     >
       <clipPath id={`${domId}-clip`}>
         <circle cx={middle} cy={middle} r={size} />
@@ -70,12 +75,15 @@ export const EnergyIcon_INTERNAL: FC<{ energy: Energy; size: number }> = ({
   )
 }
 
-export const SVG_EnergyIcon: FC<{ energyId: string; size: number }> = ({
-  energyId,
-  size,
-}) => {
+export const SVG_EnergyIcon: FC<{
+  energyId: string
+  size: number
+  clickable?: boolean
+}> = ({ energyId, size, clickable = true }) => {
   const energy = useRecoilValue(findEnergyState(energyId))
-  return <EnergyIcon_INTERNAL energy={energy} size={size} />
+  return (
+    <EnergyIcon_INTERNAL energy={energy} size={size} clickable={clickable} />
+  )
 }
 
 export const VOID: Energy = {
@@ -123,7 +131,8 @@ export const EnergyAmountTag: FC<{
   energyId: string
   amount: number
   size: number
-}> = ({ energyId, amount, size }) => {
+  clickable?: boolean
+}> = ({ energyId, amount, size, clickable = true }) => {
   const small = size * 0.6
   return (
     <span
@@ -133,7 +142,7 @@ export const EnergyAmountTag: FC<{
         justify-content: baseline;
       `}
     >
-      <SVG_EnergyIcon energyId={energyId} size={size} />
+      <SVG_EnergyIcon energyId={energyId} size={size} clickable={clickable} />
       <span
         css={css`
           background-color: black;
@@ -158,8 +167,8 @@ export const EnergyAmountTag: FC<{
 }
 
 export const Span_EnergyAmount: FC<
-  RecoilListItemProps<Energy, Amount> & { size: number }
-> = ({ label, findState, size }) => {
+  RecoilListItemProps<Energy, Amount> & { size: number; clickable?: boolean }
+> = ({ label, findState, size, clickable = true }) => {
   const { id, amount } = label
   const energy = useRecoilValue(findState(id))
   const domId = useId()
@@ -180,10 +189,16 @@ export const Span_EnergyAmount: FC<
               key={domId + `-icon-` + i}
               energyId={id}
               size={size}
+              clickable={clickable}
             />
           ))
       ) : (
-        <EnergyAmountTag energyId={energy.id} amount={amount} size={size} />
+        <EnergyAmountTag
+          energyId={energy.id}
+          amount={amount}
+          size={size}
+          clickable={clickable}
+        />
       )}
     </span>
   )
