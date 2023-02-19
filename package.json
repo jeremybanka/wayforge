@@ -23,6 +23,7 @@
     "app/node/*",
     "packages/*",
     "packages/@banka/*",
+    "packages/@banka/eslint-config/react",
     "lib"
   ],
   "devDependencies": {

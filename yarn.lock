@@ -307,6 +307,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@banka/eslint-config-react@workspace:packages/@banka/eslint-config/react":
+  version: 0.0.0-use.local
+  resolution: "@banka/eslint-config-react@workspace:packages/@banka/eslint-config/react"
+  dependencies:
+    "@types/mocha": 10.0.1
+    "@types/mock-fs": 4.13.1
+    "@types/node": 18.14.0
+    "@types/react": 18.0.28
+    "@types/react-dom": 18.0.11
+    "@types/styled-components": 5.1.26
+    "@typescript-eslint/eslint-plugin": 5.52.0
+    "@typescript-eslint/parser": 5.52.0
+    eslint-config-prettier: 8.6.0
+    eslint-plugin-import: 2.27.5
+    eslint-plugin-jsx-a11y: 6.7.1
+    eslint-plugin-mocha: 10.1.0
+    eslint-plugin-prettier: 4.2.1
+    eslint-plugin-react: 7.32.2
+  peerDependencies:
+    eslint: ^8.34.0
+    prettier: ^2.8.4
+  languageName: unknown
+  linkType: soft
+
 "@banka/eslint-config@workspace:packages/@banka/eslint-config":
   version: 0.0.0-use.local
   resolution: "@banka/eslint-config@workspace:packages/@banka/eslint-config"
@@ -326,8 +350,8 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     eslint-plugin-react: 7.32.2
   peerDependencies:
-    eslint: 8.34.0
-    prettier: 2.8.4
+    eslint: ^8.34.0
+    prettier: ^2.8.4
   languageName: unknown
   linkType: soft
 
