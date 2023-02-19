@@ -21,7 +21,6 @@
     "tree"
   ],
   "scripts": {
-    "dev": "cd example && vite",
     "build": "tsup",
     "lint": "eslint",
     "test": "vitest",
