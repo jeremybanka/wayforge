@@ -8,7 +8,7 @@ import {
 } from "recoil"
 import z, { string } from "zod"
 
-import type energySchema from "~/app/node/wayforge-server/gen/energy.schema.json"
+import type energySchema from "~/app/node/store/gen/energy.schema.json"
 import {
   socketIndex,
   socketSchema,

@@ -3,8 +3,8 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { ListItems } from "~/app/web/wayforge-client/recoil-list"
-import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
+import { ListItems } from "~/app/web/studio/recoil-list"
+import type { RecoilListItemProps } from "~/app/web/studio/recoil-list"
 import { Luum } from "~/packages/Luum/src"
 
 import { SVG_EnergyIcon } from "./EnergyIcon"
