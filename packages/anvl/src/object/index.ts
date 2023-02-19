@@ -13,7 +13,7 @@ export * from "./sprawl"
 export const redact =
   <K extends keyof any>(...args: K[]) =>
   <O extends Record<K, any>>(obj: O): Omit<O, K> =>
-    reduce<K, O>((acc, key) => (delete acc[key], acc), { ...obj })(args)
+    reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
 
 export const select =
   <Key extends keyof any>(...args: Key[]) =>

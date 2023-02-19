@@ -7567,10 +7567,10 @@ __metadata:
     tsup: 6.6.3
     vitest: 0.28.5
   peerDependencies:
-    react: 18.2.0
-    recoil: 0.7.6
-    socket.io: 4.6.0
-    socket.io-client: 4.6.0
+    react: ^18.2.0
+    recoil: ^0.7.6
+    socket.io: ^4.6.0
+    socket.io-client: ^4.6.0
   languageName: unknown
   linkType: soft
 
