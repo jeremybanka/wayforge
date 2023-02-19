@@ -8,7 +8,7 @@ export type NoisyTools<ToolNames extends string> = Record<
 
 const labTools: NoisyTools<`disposeLab` | `setupLab`> = {
   disposeLab: ({ silent = false } = { silent: false }) => {
-    const wayforgeLabDir = path.join(process.cwd(), `../wayforge-lab`)
+    const wayforgeLabDir = path.join(process.cwd(), `../../../wayforge-lab`)
     if (fs.existsSync(wayforgeLabDir)) {
       fs.rmSync(wayforgeLabDir, { recursive: true })
       if (!silent) console.info(`removed wayforge-lab directory`)
@@ -19,7 +19,7 @@ const labTools: NoisyTools<`disposeLab` | `setupLab`> = {
   },
   setupLab: ({ silent = false } = { silent: false }) => {
     const currentDir = process.cwd()
-    const wayforgeLabDir = path.join(currentDir, `../wayforge-lab`)
+    const wayforgeLabDir = path.join(currentDir, `../../../wayforge-lab`)
 
     if (!fs.existsSync(wayforgeLabDir)) {
       fs.mkdirSync(wayforgeLabDir)
