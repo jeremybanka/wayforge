@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "description": "remote control a simple-git instance over a socket.io connection",
   "files": [
-    "*"
+    "dist",
+    "node",
+    "web",
+    "CHANGELOG.md",
+    "README.md"
   ],
   "scripts": {
-    "build": "tsup --entry src/git-io-node.ts --entry src/git-io-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client"
+    "build": "tsup --entry src/git-io-node.ts --entry src/git-io-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:once": "vitest run"
   },
   "peerDependencies": {
-    "react": "18.2.0",
-    "recoil": "0.7.6",
-    "socket.io": "4.6.0",
-    "socket.io-client": "4.6.0"
+    "react": "^18.2.0",
+    "recoil": "^0.7.6",
+    "socket.io": "^4.6.0",
+    "socket.io-client": "^4.6.0"
   },
   "dependencies": {
     "fp-ts": "2.13.1",
