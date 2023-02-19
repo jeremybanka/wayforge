@@ -27,8 +27,8 @@
     "eslint-plugin-react": "7.32.2"
   },
   "peerDependencies": {
-    "eslint": "8.34.0",
-    "prettier": "2.8.4"
+    "eslint": "^8.34.0",
+    "prettier": "^2.8.4"
   },
   "bugs": {
     "url": "https://github.com/wayforge/issues"
@@ -36,5 +36,8 @@
   "homepage": "https://github.com/jeremybanka/wayforge",
   "keywords": [
     "eslint"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
