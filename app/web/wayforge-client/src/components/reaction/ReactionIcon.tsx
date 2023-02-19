@@ -4,6 +4,7 @@ import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import corners, { chamfer, writePathPoint } from "corners"
 import { pipe } from "fp-ts/function"
+import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 
 import { Luum } from "~/packages/Luum/src"
@@ -24,11 +25,12 @@ const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (
     width="18"
     height="18"
     viewBox="0 0 12 12"
-    style={{
-      marginRight: -9,
-      marginLeft: -9,
-      zIndex: 1,
-    }}
+    css={css`
+      margin-right: -9px;
+      margin-left: -9px;
+      z-index: 1;
+      cursor: pointer;
+    `}
   >
     <path
       d={[
@@ -51,7 +53,8 @@ export const ReactionIcon_INTERNAL: FC<{
   reaction: Reaction & ReactionRelations
   size: number
   mode?: `basic` | `fancy`
-}> = ({ reaction, size, mode = `basic` }) => {
+  clickable?: boolean
+}> = ({ reaction, size, mode = `basic`, clickable = true }) => {
   const energy = useRecoilValue(findReactionEnergyState(reaction.id))
   const colorA = Luum.fromJSON(energy.colorA)
   const colorB = Luum.fromJSON(energy.colorB)
@@ -63,9 +66,13 @@ export const ReactionIcon_INTERNAL: FC<{
   const doesConsumeEnergy = reaction.reagents.some(
     (reagent) => reagent.id === energy.id
   )
+  const navigate = useNavigate()
 
   return (
     <div
+      onClick={
+        clickable ? () => navigate(`/reaction/${reaction.id}`) : undefined
+      }
       css={css`
         display: flex;
         align-items: center;
@@ -105,6 +112,7 @@ export const ReactionIcon_INTERNAL: FC<{
               findState={findState}
               removeMe={() => null}
               size={size}
+              clickable={false}
             />
           ),
           NoItems: () => (
@@ -136,6 +144,7 @@ export const ReactionIcon_INTERNAL: FC<{
               findState={findState}
               removeMe={() => null}
               size={size}
+              clickable={false}
             />
           ),
           NoItems: () => (
@@ -151,7 +160,7 @@ export const ReactionIcon_INTERNAL: FC<{
   )
 }
 
-export const SVG_ReactionIcon: FC<{ reactionId: string; size: number }> = ({
+export const Div_ReactionIcon: FC<{ reactionId: string; size: number }> = ({
   reactionId,
   size,
 }) => {
