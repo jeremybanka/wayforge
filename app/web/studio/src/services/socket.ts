@@ -6,7 +6,7 @@ import type { Socket } from "socket.io-client"
 import type {
   Clientele,
   ClienteleError,
-} from "~/app/node/wayforge-server/src/services/clientele"
+} from "~/app/node/store/src/services/clientele"
 
 export const socket = io(`http://localhost:3333/`)
 

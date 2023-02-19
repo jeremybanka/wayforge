@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 
-import { ListItems } from "~/app/web/wayforge-client/recoil-list"
+import { ListItems } from "~/app/web/studio/recoil-list"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
 import {

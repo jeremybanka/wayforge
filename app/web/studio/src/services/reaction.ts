@@ -8,7 +8,7 @@ import {
 } from "recoil"
 import z, { string } from "zod"
 
-import type reactionSchema from "~/app/node/wayforge-server/gen/reaction.schema.json"
+import type reactionSchema from "~/app/node/store/gen/reaction.schema.json"
 import {
   socketIndex,
   socketSchema,

@@ -1,6 +1,6 @@
 import type { FC } from "react"
 
-import type { RecoilListItemProps } from "~/app/web/wayforge-client/recoil-list"
+import type { RecoilListItemProps } from "~/app/web/studio/recoil-list"
 import { RecoverableErrorBoundary } from "~/packages/hamr/react-ui/error-boundary"
 
 import { Div_ReactionIcon } from "./ReactionIcon"
