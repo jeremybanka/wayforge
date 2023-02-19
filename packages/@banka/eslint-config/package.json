@@ -7,6 +7,10 @@
     "url": "git+ssh://git@github.com/jeremybanka/eslint-config.git",
     "directory": "pkg/npm/eslint-config"
   },
+  "scripts": {
+    "build": "echo this package is zero-build",
+    "test:once": "echo no tests"
+  },
   "main": ".eslintrc.js",
   "author": "jeremybanka",
   "license": "MIT",
@@ -27,8 +31,8 @@
     "eslint-plugin-react": "7.32.2"
   },
   "peerDependencies": {
-    "eslint": "8.34.0",
-    "prettier": "2.8.4"
+    "eslint": "^8.34.0",
+    "prettier": "^2.8.4"
   },
   "bugs": {
     "url": "https://github.com/wayforge/issues"
@@ -36,5 +40,8 @@
   "homepage": "https://github.com/jeremybanka/wayforge",
   "keywords": [
     "eslint"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
