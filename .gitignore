@@ -1,7 +1,7 @@
 node_modules
 dist
 gen
-!app/node/wayforge-server/gen
+!app/node/store/gen
 coverage
 package-lock.json
 .DS_STORE
