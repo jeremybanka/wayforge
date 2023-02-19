@@ -1537,13 +1537,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@recoiljs/refine@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@recoiljs/refine@npm:0.1.1"
-  checksum: 63b3e468f4ce7417cd13470f39a85a7318b902d411121759fc0a7ee427cd8882328a2c999ef0913e086f0c99f732e5478378b4ebe514bd811bb6e96333c747c3
-  languageName: node
-  linkType: hard
-
 "@remix-run/router@npm:1.3.2":
   version: 1.3.2
   resolution: "@remix-run/router@npm:1.3.2"
@@ -4861,16 +4854,22 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hamr@workspace:packages/hamr"
   dependencies:
+    "@testing-library/jest-dom": 5.16.5
+    "@testing-library/react": 14.0.0
     ajv: 8.12.0
     eslint: 8.34.0
     fp-ts: 2.13.1
+    happy-dom: 8.5.0
+    react: 18.2.0
+    react-dom: 18.2.0
     simple-git: 3.16.1
     socket.io: 4.6.0
     socket.io-client: 4.6.0
+    tsup: 6.6.3
+    vitest: 0.28.5
   peerDependencies:
-    react: 18.2.0
-    recoil: 0.7.6
-    recoil-sync: 0.2.0
+    react: ^18.2.0
+    recoil: ^0.7.6
   languageName: unknown
   linkType: soft
 
@@ -4878,6 +4877,20 @@ __metadata:
   version: 1.0.2
   resolution: "hamt_plus@npm:1.0.2"
   checksum: af26ea32db03009019cc83dfa9411521a2fa16079443de1a502c9be46d8b3c975acda8ed93fc5750ef08d3186d35901e2d8cfe717dd54bea67b358601fa74e4c
+  languageName: node
+  linkType: hard
+
+"happy-dom@npm:8.5.0":
+  version: 8.5.0
+  resolution: "happy-dom@npm:8.5.0"
+  dependencies:
+    css.escape: ^1.5.1
+    he: ^1.2.0
+    node-fetch: ^2.x.x
+    webidl-conversions: ^7.0.0
+    whatwg-encoding: ^2.0.0
+    whatwg-mimetype: ^3.0.0
+  checksum: 9c1f2e49619b19d1e4ed5a88650309aff041fc578ceafc35ac924daac8637da7824c3d011733e10f7078c21392a970b959a767c3f67d722dbb272847faa5ac67
   languageName: node
   linkType: hard
 
@@ -7152,18 +7165,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil-sync@npm:0.2.0":
-  version: 0.2.0
-  resolution: "recoil-sync@npm:0.2.0"
-  dependencies:
-    "@recoiljs/refine": ^0.1.1
-    transit-js: ^0.8.874
-  peerDependencies:
-    recoil: ">=0.7.3"
-  checksum: a0bd98acbc92ae58099a283056cb0c3cfcc08312bbe8bccd2662ecb3410b856fe3db33df765c7f5e9f030f73c44630e2c0f39266123eb1fcb7285d0f4b53c52a
-  languageName: node
-  linkType: hard
-
 "recoil@npm:0.7.6":
   version: 0.7.6
   resolution: "recoil@npm:0.7.6"
@@ -7571,7 +7572,6 @@ __metadata:
     fp-ts: 2.13.1
     react: 18.2.0
     recoil: 0.7.6
-    recoil-sync: 0.2.0
     simple-git: 3.16.1
     socket.io: 4.6.0
     socket.io-client: 4.6.0
@@ -8163,13 +8163,6 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
-  languageName: node
-  linkType: hard
-
-"transit-js@npm:^0.8.874":
-  version: 0.8.874
-  resolution: "transit-js@npm:0.8.874"
-  checksum: a1d3a78a0ce926320ba32cdd59a74104e1b440855497753b91f8e71831302b23adfb21416cdba30153305cf41cf96b75421a607a1799b676572fe6072ee04798
   languageName: node
   linkType: hard
 

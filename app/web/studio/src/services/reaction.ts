@@ -18,8 +18,8 @@ import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { removeFromIndex } from "~/packages/hamr/recoil-tools/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
+import { removeFromIndex } from "~/packages/hamr/src/recoil-tools/recoil-index"
+import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-utils"
 
 import type { Amount } from "./energy_reaction"
 import {

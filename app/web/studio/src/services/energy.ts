@@ -20,8 +20,8 @@ import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import {
   addToIndex,
   removeFromIndex,
-} from "~/packages/hamr/recoil-tools/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
+} from "~/packages/hamr/src/recoil-tools/recoil-index"
+import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-utils"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"

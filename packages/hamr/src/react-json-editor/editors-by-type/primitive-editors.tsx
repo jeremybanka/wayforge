@@ -1,6 +1,6 @@
 import type { JsxElements } from ".."
-import { NumberInput } from "../../number-input"
-import { TextInput } from "../../text-input"
+import { NumberInput } from "../../react-ui/number-input"
+import { TextInput } from "../../react-ui/text-input"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 
 export const BooleanEditor = ({

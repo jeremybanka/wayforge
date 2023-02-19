@@ -16,7 +16,7 @@ import {
   makePropertySorter,
 } from "./utilities/object-properties"
 import type { JsxElements } from ".."
-import { AutoSizeInput } from "../../auto-size-input"
+import { AutoSizeInput } from "../../react-ui/auto-size-input"
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"

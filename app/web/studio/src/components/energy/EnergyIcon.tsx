@@ -5,7 +5,7 @@ import { css } from "@emotion/react"
 import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/recoil-list"
+import type { RecoilListItemProps } from "~/packages/hamr/src/recoil-tools/recoil-list"
 import { Luum } from "~/packages/Luum/src"
 
 import type { Energy } from "../../services/energy"

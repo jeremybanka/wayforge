@@ -16,18 +16,23 @@
   },
   "scripts": {
     "build": "echo no target",
-    "dev": "cd example && vite",
     "lint": "eslint",
-    "test": "echo no target",
-    "test:once": "echo no target"
+    "test": "vitest",
+    "test:once": "vitest run"
   },
   "devDependencies": {
-    "eslint": "8.34.0"
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "14.0.0",
+    "eslint": "8.34.0",
+    "happy-dom": "8.5.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tsup": "6.6.3",
+    "vitest": "0.28.5"
   },
   "peerDependencies": {
-    "react": "18.2.0",
-    "recoil": "0.7.6",
-    "recoil-sync": "0.2.0"
+    "react": "^18.2.0",
+    "recoil": "^0.7.6"
   },
   "repository": {
     "type": "git",
