@@ -7,6 +7,10 @@
     "url": "git+ssh://git@github.com/jeremybanka/eslint-config.git",
     "directory": "pkg/npm/eslint-config"
   },
+  "scripts": {
+    "build": "echo this package is zero-build",
+    "test:once": "echo no tests"
+  },
   "main": ".eslintrc.js",
   "author": "jeremybanka",
   "license": "MIT",
