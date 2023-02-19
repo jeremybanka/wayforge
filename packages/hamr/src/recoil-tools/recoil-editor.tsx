@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { useParams } from "react-router-dom"
 import type { RecoilState } from "recoil"
 
-import type { JsxElements } from "~/packages/hamr/react-ui/json-editor"
+import type { JsxElements } from "~/packages/hamr/src/react-json-editor"
 
 import type { RecoilListItemProps } from "./recoil-list"
 

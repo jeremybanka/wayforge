@@ -3,8 +3,8 @@ import type { FC } from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/recoil-list"
-import { ListItems } from "~/packages/hamr/recoil-tools/recoil-list"
+import type { RecoilListItemProps } from "~/packages/hamr/src/recoil-tools/recoil-list"
+import { ListItems } from "~/packages/hamr/src/recoil-tools/recoil-list"
 import { Luum } from "~/packages/Luum/src"
 
 import { SVG_EnergyIcon } from "./EnergyIcon"

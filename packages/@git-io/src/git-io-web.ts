@@ -3,7 +3,7 @@ import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object/entries"
-import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
+import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-utils"
 
 import type {
   GitInterface,

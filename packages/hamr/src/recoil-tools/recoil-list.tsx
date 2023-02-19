@@ -3,7 +3,7 @@ import type { FC } from "react"
 import type { RecoilState } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
-import type { JsxElements, WC } from "~/packages/hamr/react-ui/json-editor"
+import type { JsxElements, WC } from "~/packages/hamr/src/react-json-editor"
 
 /* eslint-disable @typescript-eslint/ban-types */
 

@@ -11,7 +11,7 @@ import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import type { JsxElements } from "."
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
-import { AutoSizeInput } from "../auto-size-input"
+import { AutoSizeInput } from "../react-ui/auto-size-input"
 
 export type JsonEditorProps_INTERNAL<T extends Json> = {
   data: T

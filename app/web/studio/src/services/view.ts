@@ -18,12 +18,12 @@ import type { Entries } from "~/packages/anvl/src/object/entries"
 import {
   localStorageEffect,
   localStorageSerializationEffect,
-} from "~/packages/hamr/recoil-tools/effects/local-storage"
+} from "~/packages/hamr/src/recoil-tools/effects/local-storage"
 import {
   addToIndex,
   removeFromIndex,
-} from "~/packages/hamr/recoil-tools/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/recoil-utils"
+} from "~/packages/hamr/src/recoil-tools/recoil-index"
+import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-utils"
 
 export const spaceIndexState = atom<Set<string>>({
   key: `spaceIndex`,
