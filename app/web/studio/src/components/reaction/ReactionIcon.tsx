@@ -1,7 +1,6 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
-import styled from "@emotion/styled"
 import corners, { chamfer, writePathPoint } from "corners"
 import { pipe } from "fp-ts/function"
 import { useNavigate } from "react-router-dom"
