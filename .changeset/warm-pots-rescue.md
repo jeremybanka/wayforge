@@ -1,6 +1,6 @@
 ---
-"@banka/eslint-config-react": patch
-"@banka/eslint-config": patch
+"@banka/eslint-config-react": minor
+"@banka/eslint-config": minor
 ---
 
 Loosen version requirements.
