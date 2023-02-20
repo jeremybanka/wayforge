@@ -19,6 +19,7 @@
     "Schemable",
     "Selectables",
     "svgr",
+    "testid",
     "tsup",
     "wayforge"
   ],

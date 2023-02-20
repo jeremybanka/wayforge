@@ -8,9 +8,9 @@
   "private": true,
   "packageManager": "yarn@3.4.1",
   "scripts": {
-    "dev": "cd app/web/wayforge-client && yarn dev",
-    "serve": "cd app/node/wayforge-server && yarn dev",
-    "gen": "cd app/wayforge-server && yarn gen",
+    "dev": "cd app/web/studio && yarn dev",
+    "serve": "cd app/node/store && yarn dev",
+    "gen": "cd app/node/store && yarn gen",
     "lint": "turbo run lint",
     "format": "eslint --fix",
     "build": "turbo run build",
