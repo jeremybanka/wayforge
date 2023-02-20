@@ -28,7 +28,6 @@
   "devDependencies": {
     "react": "18.2.0",
     "recoil": "0.7.6",
-    "recoil-sync": "0.2.0",
     "socket.io": "4.6.0",
     "socket.io-client": "4.6.0",
     "tsup": "6.6.3",

@@ -26,7 +26,7 @@ beforeAll(
       new WebSocketServer(PORT),
       serveSimpleGit({
         logger: console,
-        git: git({ baseDir: `../wayforge-lab` }),
+        git: git({ baseDir: `../../../wayforge-lab` }),
       })
     ).close
 )
@@ -36,178 +36,130 @@ describe(`git-io usage`, () => {
 
   beforeEach(client.removeAllListeners)
 
-  it(`fails to report status before initialization`, async () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`status`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `status`)
-            expect(isGitSocketError(result))
-          } catch (thrown) {
-            fail(thrown)
-          }
-          pass()
-        })
-        .emit(`status`)
-    ))
+  it(`fails to report status before initialization`, () => {
+    client
+      .on(`status`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(client.id, `status`)
+        expect(isGitSocketError(result))
+      })
+      .emit(`status`)
+  })
 
-  it(`initializes git`, async () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`init`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `init`)
-            expect(
-              pipe(
-                result,
-                ensureAgainst(isGitSocketError),
-                redact(`gitDir` /* this is local to runner's machine */)
-              )
-            ).toStrictEqual({
-              bare: false,
-              existing: false,
-              path: `../wayforge-lab`,
-            })
-          } catch (thrown) {
-            fail(thrown)
-          }
-          pass()
+  it(`initializes git`, () => {
+    client
+      .on(`init`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(client.id, `init`)
+        expect(
+          pipe(
+            result,
+            ensureAgainst(isGitSocketError),
+            redact(`gitDir` /* this is local to runner's machine */)
+          )
+        ).toStrictEqual({
+          bare: false,
+          existing: false,
+          path: `../../../wayforge-lab`,
         })
-        .emit(`init`)
-    ))
+      })
+      .emit(`init`)
+  })
 
-  it(`reports clean status`, async () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`status`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `status`)
-            expect(result).toStrictEqual({
-              current: `main`,
-              tracking: null,
-              detached: false,
-              ahead: 0,
-              behind: 0,
-              created: [],
-              deleted: [],
-              modified: [],
-              conflicted: [],
-              files: [],
-              not_added: [],
-              renamed: [],
-              staged: [],
-            })
-          } catch (thrown) {
-            fail(thrown)
-          }
-          pass()
+  it(`reports clean status`, () => {
+    client
+      .on(`status`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(client.id, `status`)
+        expect(result).toStrictEqual({
+          current: `main`,
+          tracking: null,
+          detached: false,
+          ahead: 0,
+          behind: 0,
+          created: [],
+          deleted: [],
+          modified: [],
+          conflicted: [],
+          files: [],
+          not_added: [],
+          renamed: [],
+          staged: [],
         })
-        .emit(`status`)
-    ))
+      })
+      .emit(`status`)
+  })
 
-  it(`reports dirty status`, async () =>
-    new Promise<void>((pass, fail) => {
-      fs.writeFileSync(`../wayforge-lab/README.md`, `# Hello, World!`)
-      client
-        .on(`status`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `status`)
-            expect(result).toStrictEqual({
-              current: `main`,
-              tracking: null,
-              detached: false,
-              ahead: 0,
-              behind: 0,
-              created: [],
-              deleted: [],
-              modified: [],
-              conflicted: [],
-              files: [
-                {
-                  path: `README.md`,
-                  index: `?`,
-                  working_dir: `?`,
-                },
-              ],
-              not_added: [`README.md`],
-              renamed: [],
-              staged: [],
-            })
-          } catch (thrown) {
-            fail(thrown)
-          }
-          pass()
+  it(`reports dirty status`, () => {
+    fs.writeFileSync(`../../../wayforge-lab/README.md`, `# Hello, World!`)
+    client
+      .on(`status`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(client.id, `status`)
+        expect(result).toStrictEqual({
+          current: `main`,
+          tracking: null,
+          detached: false,
+          ahead: 0,
+          behind: 0,
+          created: [],
+          deleted: [],
+          modified: [],
+          conflicted: [],
+          files: [
+            {
+              path: `README.md`,
+              index: `?`,
+              working_dir: `?`,
+            },
+          ],
+          not_added: [`README.md`],
+          renamed: [],
+          staged: [],
         })
-        .emit(`status`)
-    }))
+      })
+      .emit(`status`)
+  })
 
-  it(`adds file`, async () =>
-    new Promise<void>((pass, fail) => {
-      try {
-        client
-          .on(`add`, (result) => {
-            expect(console.info).toHaveBeenCalledWith(
-              client.id,
-              `add`,
-              `README.md`
-            )
-            expect(pipe(result, ensureAgainst(isGitSocketError))).toStrictEqual(
-              ``
-            )
-          })
-          .emit(`add`, `README.md`)
-      } catch (thrown) {
-        fail(thrown)
-      }
-      pass()
-    }))
+  it(`adds file`, () => {
+    client
+      .on(`add`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(client.id, `add`, `README.md`)
+        expect(pipe(result, ensureAgainst(isGitSocketError))).toStrictEqual(``)
+      })
+      .emit(`add`, `README.md`)
+  })
 
-  it(`commits file`, async () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`commit`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(
-              client.id,
-              `commit`,
-              `📝 Add README.md`
-            )
-            expect(
-              pipe(
-                result,
-                ensureAgainst(isGitSocketError),
-                redact(`commit` /* this is timing-based */)
-              )
-            ).toStrictEqual({
-              author: null,
-              branch: `main`,
-              root: true,
-              summary: {
-                changes: 1,
-                deletions: 0,
-                insertions: 1,
-              },
-            })
-          } catch (thrown) {
-            fail(thrown)
-          }
-          pass()
+  it(`commits file`, () => {
+    client
+      .on(`commit`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(
+          client.id,
+          `commit`,
+          `📝 Add README.md`
+        )
+        expect(
+          pipe(
+            result,
+            ensureAgainst(isGitSocketError),
+            redact(`commit` /* this is timing-based */)
+          )
+        ).toStrictEqual({
+          author: null,
+          branch: `main`,
+          root: true,
+          summary: {
+            changes: 1,
+            deletions: 0,
+            insertions: 1,
+          },
         })
-        .emit(`commit`, `📝 Add README.md`)
-    ))
+      })
+      .emit(`commit`, `📝 Add README.md`)
+  })
 
-  it(`reports diff`, async () =>
-    new Promise<void>((pass, fail) => {
-      client
-        .on(`diff`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `diff`)
-            expect(result).toStrictEqual(``)
-          } catch (thrown) {
-            fail(thrown)
-          }
-          pass()
-        })
-        .emit(`diff`)
-    }))
+  it(`reports diff`, async () => {
+    client
+      .on(`diff`, (result) => {
+        expect(console.info).toHaveBeenCalledWith(client.id, `diff`)
+        expect(result).toStrictEqual(``)
+      })
+      .emit(`diff`)
+  })
 })
