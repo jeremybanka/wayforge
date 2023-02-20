@@ -1,6 +1,5 @@
 {
   "name": "hamr",
-  "private": true,
   "version": "0.0.0",
   "description": "core react and recoil utilities for wayforge",
   "main": "object/index.ts",
@@ -40,5 +39,8 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "author": "Jeremy Banka"
+  "author": "Jeremy Banka",
+  "publishConfig": {
+    "access": "public"
+  }
 }
