@@ -25,16 +25,15 @@ const lettersState = atom<string[]>({
   default: [],
 })
 
-const Managed: FC = () => {
-  const [letters, setLetters] = useRecoilState(lettersState)
-  return (
-    <manager is="div">
-      <Combo options={[`a`]} selections={letters} setSelections={setLetters} />
-    </manager>
-  )
-}
-
 const scenarioA_Managed = () => {
+  const Managed: FC = () => {
+    const [letters, setLetters] = useRecoilState(lettersState)
+    return (
+      <manager is="div">
+        <Combo options={[`a`]} selections={letters} setSelections={setLetters} />
+      </manager>
+    )
+  }
   const utils = render(
     <RecoilRoot>
       <RecoilObserver node={lettersState} onChange={onChange} />
@@ -61,11 +60,10 @@ it(`accepts user input with externally managed state`, () => {
   expect(onChange).toHaveBeenCalledWith([`a`])
 })
 
-const SelfManaged: FC = () => (
-  <Combo options={[`a`]} selectionsState={lettersState} />
-)
-
 const scenarioB_SelfManaged = () => {
+  const SelfManaged: FC = () => (
+    <Combo options={[`a`]} selectionsState={lettersState} />
+  )
   const utils = render(
     <RecoilRoot>
       <RecoilObserver node={lettersState} onChange={onChange} />
