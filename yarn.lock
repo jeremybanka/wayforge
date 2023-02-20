@@ -4859,7 +4859,6 @@ __metadata:
     ajv: 8.12.0
     eslint: 8.34.0
     fp-ts: 2.13.1
-    happy-dom: 8.5.0
     react: 18.2.0
     react-dom: 18.2.0
     simple-git: 3.16.1
@@ -4877,20 +4876,6 @@ __metadata:
   version: 1.0.2
   resolution: "hamt_plus@npm:1.0.2"
   checksum: af26ea32db03009019cc83dfa9411521a2fa16079443de1a502c9be46d8b3c975acda8ed93fc5750ef08d3186d35901e2d8cfe717dd54bea67b358601fa74e4c
-  languageName: node
-  linkType: hard
-
-"happy-dom@npm:8.5.0":
-  version: 8.5.0
-  resolution: "happy-dom@npm:8.5.0"
-  dependencies:
-    css.escape: ^1.5.1
-    he: ^1.2.0
-    node-fetch: ^2.x.x
-    webidl-conversions: ^7.0.0
-    whatwg-encoding: ^2.0.0
-    whatwg-mimetype: ^3.0.0
-  checksum: 9c1f2e49619b19d1e4ed5a88650309aff041fc578ceafc35ac924daac8637da7824c3d011733e10f7078c21392a970b959a767c3f67d722dbb272847faa5ac67
   languageName: node
   linkType: hard
 
