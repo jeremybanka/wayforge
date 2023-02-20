@@ -11,6 +11,7 @@ export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {
     error?.toString() ?? errorInfo?.componentStack ?? `Unknown error`
   return (
     <div
+      data-testid="error-boundary"
       style={{
         flex: `1`,
         background: `black`,
