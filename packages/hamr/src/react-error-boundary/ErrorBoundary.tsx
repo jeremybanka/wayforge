@@ -1,59 +1,10 @@
-import type { ErrorInfo, ReactNode, FC, FunctionComponent } from "react"
+import type { ErrorInfo, ReactNode, FC } from "react"
 import { useId, Component } from "react"
 
 import { atomFamily, useRecoilState, useResetRecoilState } from "recoil"
 
-export type FallbackProps = {
-  error?: Error | string
-  errorInfo?: ErrorInfo
-}
-
-const NOT_A_FUNCTION = true
-// @ts-expect-error 😂😂😂
-const throwTypeError = (): never => NOT_A_FUNCTION()
-export const OOPS: FunctionComponent = () => throwTypeError()
-
-export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {
-  const component = errorInfo?.componentStack.split(` `).filter(Boolean)[2]
-  const message =
-    error?.toString() ?? errorInfo?.componentStack ?? `Unknown error`
-  return (
-    <div
-      style={{
-        flex: `1`,
-        background: `black`,
-        backgroundImage: `url(./src/assets/kablooey.gif)`,
-        backgroundPosition: `center`,
-        // backgroundRepeat: `no-repeat`,
-        backgroundSize: `overlay`,
-      }}
-    >
-      {/* <img src="./src/assets/kablooey.gif" alt="error" /> */}
-      <div
-        style={{
-          margin: `50px`,
-          marginTop: `0`,
-          padding: `50px`,
-          border: `1px solid dashed`,
-        }}
-      >
-        <span
-          style={{
-            background: `black`,
-            color: `white`,
-            padding: 10,
-            paddingTop: 5,
-          }}
-        >
-          {` ⚠️ `}
-          <span style={{ color: `#fc0`, fontWeight: 700 }}>{component}</span>
-          {` ⚠️ `}
-          {message}
-        </span>
-      </div>
-    </div>
-  )
-}
+import type { FallbackProps } from "./DefaultFallback"
+import { DefaultFallback } from "./DefaultFallback"
 
 export type ErrorBoundaryState = {
   error?: Error | string

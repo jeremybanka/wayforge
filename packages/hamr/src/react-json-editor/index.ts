@@ -12,8 +12,6 @@ import {
 } from "./editors-by-type/primitive-editors"
 import type { JsonEditorProps_INTERNAL } from "./json-editor-internal"
 
-export type JsxElements = ReturnType<FC>
-
 export * from "./default-components"
 export * from "./developer-interface"
 

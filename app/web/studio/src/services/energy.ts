@@ -21,7 +21,7 @@ import {
   addToIndex,
   removeFromIndex,
 } from "~/packages/hamr/src/recoil-tools/recoil-index"
-import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-utils"
+import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"

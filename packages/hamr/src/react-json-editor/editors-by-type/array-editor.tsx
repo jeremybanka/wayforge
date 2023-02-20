@@ -1,7 +1,8 @@
+import type { ReactElement } from "react"
+
 import type { JsonArr } from "~/packages/anvl/src/json"
 
 import { makeElementSetters } from "./utilities/array-elements"
-import type { JsxElements } from ".."
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
 
@@ -12,7 +13,7 @@ export const ArrayEditor = <_ extends JsonArr>({
   data,
   set,
   Components,
-}: JsonEditorProps_INTERNAL<JsonArr>): JsxElements => {
+}: JsonEditorProps_INTERNAL<JsonArr>): ReactElement => {
   const setElement = makeElementSetters(data, set)
   return (
     <>

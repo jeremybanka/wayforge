@@ -4,7 +4,7 @@ import {
   isGitSocketError,
   initGitClientTools,
 } from "~/packages/@git-io/src/git-io-web"
-import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-utils"
+import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
 
 import { socket } from "./socket"
 

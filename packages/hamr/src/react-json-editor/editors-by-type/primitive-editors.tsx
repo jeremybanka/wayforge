@@ -1,12 +1,12 @@
-import type { JsxElements } from ".."
-import { NumberInput } from "../../react-ui/number-input"
-import { TextInput } from "../../react-ui/text-input"
+import type { ReactElement } from "react"
+
+import { NumberInput, TextInput } from "../../react-elastic-input"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 
 export const BooleanEditor = ({
   data,
   set,
-}: JsonEditorProps_INTERNAL<boolean>): JsxElements => (
+}: JsonEditorProps_INTERNAL<boolean>): ReactElement => (
   <input
     type="checkbox"
     checked={data}
@@ -14,7 +14,7 @@ export const BooleanEditor = ({
   />
 )
 
-export const NullEditor = (): JsxElements => (
+export const NullEditor = (): ReactElement => (
   <input type="text" value="null" readOnly />
 )
 
@@ -23,7 +23,7 @@ export const NumberEditor = ({
   isReadonly = () => false,
   data,
   set,
-}: JsonEditorProps_INTERNAL<number>): JsxElements => (
+}: JsonEditorProps_INTERNAL<number>): ReactElement => (
   <NumberInput
     value={data}
     set={isReadonly(path) ? undefined : set}
@@ -37,7 +37,7 @@ export const StringEditor = ({
   data,
   set,
   Components,
-}: JsonEditorProps_INTERNAL<string>): JsxElements => {
+}: JsonEditorProps_INTERNAL<string>): ReactElement => {
   return (
     <Components.StringWrapper>
       <TextInput

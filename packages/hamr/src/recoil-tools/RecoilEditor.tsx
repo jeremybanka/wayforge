@@ -1,11 +1,9 @@
-import type { FC } from "react"
+import type { FC, ReactElement } from "react"
 
 import { useParams } from "react-router-dom"
 import type { RecoilState } from "recoil"
 
-import type { JsxElements } from "~/packages/hamr/src/react-json-editor"
-
-import type { RecoilListItemProps } from "./recoil-list"
+import type { RecoilListItemProps } from "./RecoilList"
 
 export type RecoilEditorProps<T> = {
   id: string
@@ -23,7 +21,7 @@ export const IdFromRoute = <T,>({
   Editor,
   findState,
   useRemove,
-}: IdFromRouteProps<T>): JsxElements => {
+}: IdFromRouteProps<T>): ReactElement => {
   const { id } = useParams<{ id: string }>()
   if (!id) {
     throw new Error(`RouterAdaptor must be used with a route that has an id`)
@@ -40,7 +38,7 @@ export const ListItem = <T,>({
   label,
   findState,
   removeMe,
-}: FromListItemProps<T>): JsxElements => {
+}: FromListItemProps<T>): ReactElement => {
   return (
     <Editor id={label.id} findState={findState} useRemove={() => removeMe} />
   )
