@@ -1,4 +1,4 @@
-import type { FC, RefObject } from "react"
+import type { FC, ReactElement, RefObject } from "react"
 import { useMemo } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
@@ -8,7 +8,6 @@ import type { SetterOrUpdater } from "recoil"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
-import type { JsxElements } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { DEFAULT_JSON_EDITOR_COMPONENTS } from "./default-components"
 import { ArrayEditor } from "./editors-by-type/array-editor"
@@ -65,7 +64,7 @@ export const JsonEditor = <T extends Json>({
   customCss,
   Header,
   Components: CustomComponents = {},
-}: JsonEditorProps<T>): JsxElements => {
+}: JsonEditorProps<T>): ReactElement => {
   const Components = {
     ...DEFAULT_JSON_EDITOR_COMPONENTS,
     ...CustomComponents,

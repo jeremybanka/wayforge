@@ -6,10 +6,10 @@ import { useRecoilState, useRecoilValue } from "recoil"
 
 import { isGitSocketError } from "~/packages/@git-io/src/git-io-web"
 import { includesAny } from "~/packages/anvl/src/array/venn"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
-import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-ui/error-boundary"
-import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/recoil-editor"
-import type { RecoilEditorProps } from "~/packages/hamr/src/recoil-tools/recoil-editor"
+import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
+import type { RecoilEditorProps } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
 
 import { Data_EnergyCard_A } from "./EnergyCard_A"
 import { Data_EnergyCard_B } from "./EnergyCard_B"

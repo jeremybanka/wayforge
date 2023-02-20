@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 
-import { AutoSizeInput } from "./auto-size-input"
+import { ElasticInput } from "./ElasticInput"
 
 export type TextInputProps = {
   value: string
@@ -25,7 +25,7 @@ export const TextInput: FC<TextInputProps> = ({
     <span css={customCss}>
       <label>{label}</label>
       {autoSize ? (
-        <AutoSizeInput
+        <ElasticInput
           type="text"
           value={value}
           onChange={(e) => set?.(e.target.value)}

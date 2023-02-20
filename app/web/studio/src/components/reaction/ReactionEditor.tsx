@@ -7,14 +7,14 @@ import { selector, useRecoilState, useRecoilValue } from "recoil"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
-import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-ui/error-boundary"
 
 import type {
   FromListItemProps,
   RecoilEditorProps,
-} from "../../../../../../packages/hamr/src/recoil-tools/recoil-editor"
-import { RecoilEditor } from "../../../../../../packages/hamr/src/recoil-tools/recoil-editor"
+} from "../../../../../../packages/hamr/src/recoil-tools/RecoilEditor"
+import { RecoilEditor } from "../../../../../../packages/hamr/src/recoil-tools/RecoilEditor"
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"

@@ -1,6 +1,6 @@
 import type { RecoilState } from "recoil"
 
-import type { Transact } from "./recoil-utils"
+import type { Transact } from "./recoil-transaction-tools"
 
 export type RecoilIndexOptions = {
   indexAtom: RecoilState<Set<string>>

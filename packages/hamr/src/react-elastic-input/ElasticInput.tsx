@@ -26,7 +26,7 @@ const INPUT_PROPS_BLACKLIST = [
   `placeholderIsMinWidth`,
 ] as const
 
-const cleanInputProps = (inputProps: AutoSizeInputProps) => {
+const cleanInputProps = (inputProps: ElasticInputProps) => {
   INPUT_PROPS_BLACKLIST.forEach((field) => delete inputProps[field])
   return inputProps
 }
@@ -56,7 +56,7 @@ const copyStyles = (
 //   return isIE ? `_` + Math.random().toString(36).substr(2, 12) : undefined
 // }
 
-export type AutoSizeInputProps = {
+export type ElasticInputProps = {
   // injectStyles?: boolean
   className?: string
   defaultValue?: any
@@ -75,15 +75,15 @@ export type AutoSizeInputProps = {
   type?: string
   value?: any
 }
-export type AutoSizeInputState = {
+export type ElasticInputState = {
   inputWidth?: number | string
   inputId?: string
   prevId?: string
 }
 
-export class AutoSizeInput extends Component<
-  AutoSizeInputProps,
-  AutoSizeInputState
+export class ElasticInput extends Component<
+  ElasticInputProps,
+  ElasticInputState
 > {
   public mounted = false
 
@@ -94,13 +94,13 @@ export class AutoSizeInput extends Component<
   public placeHolderSizer: HTMLDivElement | null = null
 
   public static getDerivedStateFromProps(
-    props: AutoSizeInputProps,
-    state: AutoSizeInputState
-  ): AutoSizeInputState | null {
+    props: ElasticInputProps,
+    state: ElasticInputState
+  ): ElasticInputState | null {
     const { id } = props
     return id !== state.prevId ? { inputId: id, prevId: id } : null
   }
-  public constructor(props: AutoSizeInputProps) {
+  public constructor(props: ElasticInputProps) {
     super(props)
     this.state = {
       inputWidth: props.minWidth ?? 1,
@@ -114,8 +114,8 @@ export class AutoSizeInput extends Component<
     this.updateInputWidth()
   }
   public componentDidUpdate(
-    _: AutoSizeInputProps,
-    prevState: AutoSizeInputState
+    _: ElasticInputProps,
+    prevState: ElasticInputState
   ): void {
     if (prevState.inputWidth !== this.state.inputWidth) {
       if (typeof this.props.onAutoSize === `function`) {

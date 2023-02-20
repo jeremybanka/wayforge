@@ -1,4 +1,4 @@
-import type { FC, RefObject } from "react"
+import type { FC, ReactElement, RefObject } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 import type { SetterOrUpdater } from "recoil"
@@ -8,10 +8,9 @@ import type { Json, JsonTypes } from "~/packages/anvl/src/json"
 import { refineJsonType } from "~/packages/anvl/src/json/refine"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
-import type { JsxElements } from "."
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
-import { AutoSizeInput } from "../react-ui/auto-size-input"
+import { ElasticInput } from "../react-elastic-input"
 
 export type JsonEditorProps_INTERNAL<T extends Json> = {
   data: T
@@ -46,7 +45,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
   customCss,
   Header: HeaderDisplay,
   Components,
-}: JsonEditorProps_INTERNAL<T>): JsxElements => {
+}: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
   const json = refineJsonType(data)
   const SubEditor = SubEditors[json.type]
 
@@ -66,7 +65,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
         {HeaderDisplay && <HeaderDisplay data={data} schema={schema} />}
         {rename && (
           <Components.KeyWrapper>
-            <AutoSizeInput
+            <ElasticInput
               value={name}
               onChange={disabled ? doNothing : (e) => rename(e.target.value)}
               disabled={disabled}

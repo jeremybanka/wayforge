@@ -2,7 +2,7 @@ import type { FC, ReactNode } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 
-import { ErrorBoundary } from "../react-ui/error-boundary"
+import { ErrorBoundary } from "../react-error-boundary"
 
 export type Dict<T> = Record<string, T>
 

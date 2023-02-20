@@ -3,7 +3,7 @@ import type { FC } from "react"
 import styled from "@emotion/styled"
 import { useRecoilValue } from "recoil"
 
-import { ListItems } from "~/packages/hamr/src/recoil-tools/recoil-list"
+import { ListItems } from "~/packages/hamr/src/recoil-tools/RecoilList"
 
 import { ReactionListItem } from "./ReactionListItem"
 import {

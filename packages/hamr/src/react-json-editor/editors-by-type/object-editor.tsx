@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import type { FC } from "react"
+import type { FC, ReactElement } from "react"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
@@ -15,8 +15,7 @@ import {
   makePropertySetters,
   makePropertySorter,
 } from "./utilities/object-properties"
-import type { JsxElements } from ".."
-import { AutoSizeInput } from "../../react-ui/auto-size-input"
+import { ElasticInput } from "../../react-elastic-input"
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
@@ -35,8 +34,8 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
   Components,
 }) => (
   <Components.MissingPropertyWrapper>
-    <AutoSizeInput disabled defaultValue={propertyKey}></AutoSizeInput>
-    <AutoSizeInput disabled defaultValue="is missing"></AutoSizeInput>
+    <ElasticInput disabled defaultValue={propertyKey}></ElasticInput>
+    <ElasticInput disabled defaultValue="is missing"></ElasticInput>
     <Components.Button onClick={() => addProperty()} disabled={disabled}>
       +
     </Components.Button>
@@ -51,7 +50,7 @@ export const ObjectEditor = <T extends JsonObj>({
   data,
   set,
   Components,
-}: JsonEditorProps_INTERNAL<T>): JsxElements => {
+}: JsonEditorProps_INTERNAL<T>): ReactElement => {
   const disabled = isReadonly(path)
 
   const stableKeyMap = useRef<Record<keyof T, keyof T>>(

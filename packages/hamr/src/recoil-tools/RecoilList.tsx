@@ -1,9 +1,9 @@
-import type { FC } from "react"
+import type { FC, ReactElement } from "react"
 
 import type { RecoilState } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
-import type { JsxElements, WC } from "~/packages/hamr/src/react-json-editor"
+import type { WC } from "~/packages/hamr/src/react-json-editor"
 
 /* eslint-disable @typescript-eslint/ban-types */
 
@@ -41,7 +41,7 @@ export const ListItems = <DATA, META = {}>({
     ItemCreator,
     NoItems,
   },
-}: RecoilListProps<DATA, META>): JsxElements => {
+}: RecoilListProps<DATA, META>): ReactElement => {
   const remove =
     useRemove?.() ||
     ((id) =>

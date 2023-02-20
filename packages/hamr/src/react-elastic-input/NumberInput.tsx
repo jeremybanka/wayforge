@@ -3,7 +3,7 @@ import { useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 
-import { AutoSizeInput } from "./auto-size-input"
+import { ElasticInput } from "./ElasticInput"
 
 const textToValue = (input: string, allowDecimal: boolean): number => {
   let interpretation: number
@@ -101,7 +101,7 @@ export const NumberInput: FC<NumberInputProps> = ({
     <span css={customCss}>
       <label>{label}</label>
       {autoSize ? (
-        <AutoSizeInput
+        <ElasticInput
           type="text"
           value={displayValue}
           onChange={handleChange}

@@ -12,8 +12,8 @@ import {
 } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
 
+import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
-import { ErrorBoundary } from "~/packages/hamr/src/react-ui/error-boundary"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
