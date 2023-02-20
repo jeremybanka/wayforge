@@ -4866,6 +4866,7 @@ __metadata:
     tsup: 6.6.3
     vitest: 0.28.5
   peerDependencies:
+    "@emotion/react": 11.10.6
     react: ^18.2.0
     react-router-dom: ^6.8.1
     recoil: ^0.7.6
