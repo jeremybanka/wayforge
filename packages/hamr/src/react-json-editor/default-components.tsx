@@ -12,10 +12,6 @@ export type WrapperComponent<T extends Dict<unknown> = Dict<unknown>> = FC<
 
 export type WC<T extends Dict<unknown> = Dict<unknown>> = WrapperComponent<T>
 
-// export const JsonObjectWrapper:
-// FC<{ children: ReactNode }> = ({ children }) => (
-//   <div className="__JSON__object">{children}</div>
-// )
 export type JsonEditorComponents = {
   ErrorBoundary: WC
 
