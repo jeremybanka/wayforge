@@ -12,7 +12,7 @@
     "fp-ts": "2.13.1",
     "simple-git": "3.16.1",
     "socket.io": "4.6.1",
-    "socket.io-client": "4.6.0"
+    "socket.io-client": "4.6.1"
   },
   "devDependencies": {
     "react": "18.2.0",
