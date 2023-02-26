@@ -23,7 +23,7 @@
     "@types/npmlog": "4.1.4",
     "@types/prettier": "2.7.2",
     "cross-env": "7.0.3",
-    "eslint": "8.34.0",
+    "eslint": "8.35.0",
     "tsx": "3.12.3",
     "vitest": "0.28.5"
   }
