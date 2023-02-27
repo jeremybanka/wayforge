@@ -2462,7 +2462,7 @@ __metadata:
     cross-env: 7.0.3
     eslint: 8.34.0
     fp-ts: 2.13.1
-    framer-motion: 9.0.7
+    framer-motion: 10.0.1
     happy-dom: 8.7.1
     io-ts: 2.2.20
     react: 18.2.0
@@ -4735,13 +4735,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:9.0.7":
-  version: 9.0.7
-  resolution: "framer-motion@npm:9.0.7"
+"framer-motion@npm:10.0.1":
+  version: 10.0.1
+  resolution: "framer-motion@npm:10.0.1"
   dependencies:
     "@emotion/is-prop-valid": ^0.8.2
-    "@motionone/dom": ^10.15.3
-    hey-listen: ^1.0.8
     tslib: ^2.4.0
   peerDependencies:
     react: ^18.0.0
@@ -4749,7 +4747,7 @@ __metadata:
   dependenciesMeta:
     "@emotion/is-prop-valid":
       optional: true
-  checksum: f9ef0facc708cc934345c192c6bad11fee38562df07a8d2928502bc61af6133fdd19eb24ee10b24bd90689447c1fcce27087b4914f33ed7268984d5792e6373c
+  checksum: 37081c26f949b8e3e86ad6268ed44661c64b20de3da118677375f8e77f3b04a762085d467d328cb8866e5667e03ad2397be18b9c29a1aeca4be223c8971fe826
   languageName: node
   linkType: hard
 
