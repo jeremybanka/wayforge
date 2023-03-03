@@ -1,4 +1,10 @@
-import type { Filter, Hex, LuumFix, LuumLimit, LuumSpec } from "~/packages/Luum/src"
+import type {
+  Filter,
+  Hex,
+  LuumFix,
+  LuumLimit,
+  LuumSpec,
+} from "~/packages/Luum/src"
 
 import channelsToHex from "./channelsToHex"
 import specToChannels from "./specToChannelsFixLimit"
