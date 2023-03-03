@@ -2477,7 +2477,7 @@ __metadata:
     eslint: 8.35.0
     fp-ts: 2.13.1
     framer-motion: 10.0.1
-    happy-dom: 8.7.1
+    happy-dom: 8.9.0
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -5124,17 +5124,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:8.7.1":
-  version: 8.7.1
-  resolution: "happy-dom@npm:8.7.1"
+"happy-dom@npm:8.9.0":
+  version: 8.9.0
+  resolution: "happy-dom@npm:8.9.0"
   dependencies:
     css.escape: ^1.5.1
     he: ^1.2.0
+    iconv-lite: ^0.6.3
     node-fetch: ^2.x.x
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-  checksum: ca4d6db353225db13b8c5d1746bd76ab60f6074df9e94873ed7ac01048911325868d2e9c970dc05a324462e8bbe37bac03f15fbf859a29ae482d9a0805938ede
+  checksum: 2a9d853199e924e4445c11844a3d0fdd75b9831edab4c5dda52c4725c4f7889cd919814333162b70b3ae43884ec70ed50fbc22564eb94ba09408218922870a34
   languageName: node
   linkType: hard
 
@@ -5313,7 +5314,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2":
+"iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2, iconv-lite@npm:^0.6.3":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
   dependencies:
