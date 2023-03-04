@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "fp-ts": "2.13.1",
-    "simple-git": "3.16.1"
+    "simple-git": "3.17.0"
   },
   "devDependencies": {
     "react": "18.2.0",
