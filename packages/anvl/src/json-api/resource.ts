@@ -1,12 +1,12 @@
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
+import { isJson } from "~/packages/anvl/src/json"
 import type { Json, JsonObj } from "~/packages/anvl/src/json"
 import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 import type { RequireAtLeastOne } from "."
 import type { Link, Links } from "./document"
-import { isJson } from "../json/refine"
 import { ifDefined } from "../nullish"
 
 export type Relationships = Record<

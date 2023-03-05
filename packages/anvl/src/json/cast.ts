@@ -4,7 +4,7 @@ import type {
   JsonObj,
   Serializable,
 } from "~/packages/anvl/src/json"
-import { refineJsonType } from "~/packages/anvl/src/json/refine"
+import { refineJsonType } from "~/packages/anvl/src/json"
 
 export const stringToBoolean = (str: string): boolean => str === `true`
 export const stringToNumber = (str: string): number => Number(str)
