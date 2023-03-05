@@ -3,7 +3,7 @@ import { writeFileSync } from "fs"
 import type { JSONSchema7 } from "json-schema"
 import { jsonSchemaToZodDereffed } from "json-schema-to-zod"
 
-import { getDirectoryJsonEntries } from "~/packages/@store-io/src/utils"
+import { getDirectoryJsonEntries } from "~/packages/socket-io.filestore/src/utils"
 
 // const schemaNames = getBareJsonFileNames(
 //   fs.readdirSync(`${process.cwd()}/wayfarer/schema`)

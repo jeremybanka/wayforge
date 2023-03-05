@@ -7873,9 +7873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket-io.git@workspace:packages/@git-io":
+"socket-io.git@workspace:packages/socket-io.git":
   version: 0.0.0-use.local
-  resolution: "socket-io.git@workspace:packages/@git-io"
+  resolution: "socket-io.git@workspace:packages/socket-io.git"
   dependencies:
     fp-ts: 2.13.1
     react: 18.2.0
@@ -8091,9 +8091,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"store-io@workspace:packages/@store-io":
+"store-io@workspace:packages/socket-io.filestore":
   version: 0.0.0-use.local
-  resolution: "store-io@workspace:packages/@store-io"
+  resolution: "store-io@workspace:packages/socket-io.filestore"
   dependencies:
     fp-ts: 2.13.1
     react: 18.2.0
