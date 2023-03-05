@@ -5,8 +5,8 @@ import { identify } from "~/packages/anvl/src/id/identified"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
 
-import type { JsonStoreOptions } from "."
-import { getDirectoryJsonArr } from "./utils"
+import { getDirectoryJsonArr } from "./utils.node"
+import type { JsonStoreOptions } from "../core"
 
 export class NotFoundError extends Error {
   public constructor(message: string) {

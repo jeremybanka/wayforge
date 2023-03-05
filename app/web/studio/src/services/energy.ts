@@ -21,7 +21,7 @@ import {
   socketIndex,
   socketSchema,
   socketSync,
-} from "~/packages/socket-io.filestore/src/json-store-io.web"
+} from "~/packages/socket-io.filestore/src/socket-io-filestore.web"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"

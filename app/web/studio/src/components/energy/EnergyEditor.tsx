@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { css } from "@emotion/react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import { isGitSocketError } from "~/packages/socket-io.git/src/socket-io-git-web"
+import { isGitSocketError } from "~/packages/socket-io.git/src/socket-io-git.web"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"

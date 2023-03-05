@@ -10,7 +10,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup --entry src/git-io-node.ts --entry src/git-io-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
+    "build": "tsup",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"

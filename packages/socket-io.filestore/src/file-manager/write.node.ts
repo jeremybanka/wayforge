@@ -6,8 +6,8 @@ import { isString } from "fp-ts/string"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
-import type { JsonStoreOptions } from "."
-import type { ReadIndex } from "./read"
+import type { ReadIndex } from "./read.node"
+import type { JsonStoreOptions } from "../core"
 
 export type WriteResourceOptions = { type: string; id: string; value: Json }
 export type WriteResource = (options: WriteResourceOptions) => void

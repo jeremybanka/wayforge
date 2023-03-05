@@ -16,7 +16,10 @@ import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import type {
   JsonStoreClientEvents,
   JsonStoreServerEvents,
-} from "./json-store-io.node"
+} from "./socket-io-filestore.node"
+
+export * from "./core"
+export * from "./socket-io-filestore.node"
 
 export type SocketSyncOptions = {
   id: string

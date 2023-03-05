@@ -2,17 +2,28 @@ import type { Socket, Server as WebSocketServer } from "socket.io"
 
 import type { Encapsulate } from "~/packages/anvl/src/function"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
-import type { JsonStoreOptions } from "~/packages/socket-io.filestore/src"
 
+import type { JsonStoreOptions } from "./core"
+import type {
+  ReadIndex,
+  ReadRelations,
+  ReadResource,
+  ReadSchema,
+  WriteIndex,
+  WriteRelations,
+  WriteResource,
+} from "./file-manager"
 import {
   initIndexer,
   initReader,
   initRelationReader,
   initSchemaReader,
-} from "./read"
-import type { ReadIndex, ReadRelations, ReadResource, ReadSchema } from "./read"
-import { initRelationsWriter, initIndexWriter, initWriter } from "./write"
-import type { WriteIndex, WriteRelations, WriteResource } from "./write"
+  initRelationsWriter,
+  initIndexWriter,
+  initWriter,
+} from "./file-manager"
+
+export * from "./file-manager"
 
 /* prettier-ignore */
 // server "on" / client "emit"
