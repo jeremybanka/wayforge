@@ -1,8 +1,8 @@
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
-import type { JsonStoreOptions } from "~/packages/socket-io.filestore/src"
 import type { Encapsulate } from "~/packages/anvl/src/function"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
+import type { JsonStoreOptions } from "~/packages/socket-io.filestore/src"
 
 import {
   initIndexer,
