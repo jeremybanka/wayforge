@@ -10,11 +10,12 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup --entry src/git-io-node.ts --entry src/git-io-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
+    "build": "tsup --entry src/socket-io-git-node.ts --entry src/socket-io-git-web.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
   },
+  "packageManager": "yarn@3.4.1",
   "peerDependencies": {
     "react": "^18.2.0",
     "recoil": "^0.7.6",

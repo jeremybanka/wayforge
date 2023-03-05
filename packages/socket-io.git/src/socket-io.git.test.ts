@@ -11,8 +11,8 @@ import { ensureAgainst } from "~/packages/anvl/src/refinement"
 import { setupLab } from "~/util/lab-tools"
 
 import { isGitSocketError } from "./core"
-import { serveSimpleGit } from "./git-io-node"
-import type { GitClientSocket } from "./git-io-web"
+import { serveSimpleGit } from "./socket-io-git-node"
+import type { GitClientSocket } from "./socket-io-git-web"
 
 const PORT = 2451
 
