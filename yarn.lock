@@ -2518,7 +2518,7 @@ __metadata:
     vite-plugin-svgr: 2.4.0
     vite-tsconfig-paths: 4.0.5
     vitest: 0.29.2
-    zod: 3.21.3
+    zod: 3.21.4
   languageName: unknown
   linkType: soft
 
@@ -9430,9 +9430,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.21.3":
-  version: 3.21.3
-  resolution: "zod@npm:3.21.3"
-  checksum: 499b392cde880c523dd0e83c89b7aeab2c59d6cdeb121981a2e2304de2d895041ec5f37b265c7b54a156feed26569c22130b904f600b7c64ad28fe3e7731e102
+"zod@npm:3.21.4":
+  version: 3.21.4
+  resolution: "zod@npm:3.21.4"
+  checksum: f185ba87342ff16f7a06686767c2b2a7af41110c7edf7c1974095d8db7a73792696bcb4a00853de0d2edeb34a5b2ea6a55871bc864227dace682a0a28de33e1f
   languageName: node
   linkType: hard
