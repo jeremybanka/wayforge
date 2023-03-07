@@ -1,6 +1,6 @@
 {
   "name": "@socket-io.filestore/recoil",
-  "main": "../dist/socket-io.filestore-recoil.js",
-  "types": "../dist/socket-io.filestore-recoil.d.ts",
-  "module": "../dist/socket-io.filestore-recoil.mjs"
+  "main": "../dist/recoil/index.js",
+  "types": "../dist/recoil/index.d.ts",
+  "module": "../dist/recoil/index.mjs"
 }

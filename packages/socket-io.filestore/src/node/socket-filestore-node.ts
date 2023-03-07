@@ -1,18 +1,5 @@
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
-import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { Json, JsonArr } from "~/packages/anvl/src/json"
-
-import type { JsonStoreOptions } from "./core"
-import type {
-  ReadIndex,
-  ReadRelations,
-  ReadResource,
-  ReadSchema,
-  WriteIndex,
-  WriteRelations,
-  WriteResource,
-} from "./file-manager"
 import {
   initIndexer,
   initReader,
@@ -21,51 +8,37 @@ import {
   initRelationsWriter,
   initIndexWriter,
   initWriter,
-} from "./file-manager"
+  initResourceTypeInitializer,
+} from "./json-filestore"
+import type { FilestoreOptions } from "./json-filestore/json-filestore"
+import type {
+  FilestoreClientEvents,
+  FilestoreClusterEvents,
+  FilestoreServerEvents,
+} from "../interface"
 
-export * from "./file-manager"
+export * from "../interface"
+export * from "./json-filestore"
 
-/* prettier-ignore */
-// server "on" / client "emit"
-export type JsonStoreClientEvents = {
-  read: Encapsulate<ReadResource>
-  write: Encapsulate<WriteResource>
-  indexRead: Encapsulate<ReadIndex> 
-  indexWrite: Encapsulate<WriteIndex>
-  relationsRead: Encapsulate<ReadRelations>
-  relationsWrite: Encapsulate<WriteRelations>
-  schemaRead: Encapsulate<ReadSchema>
-}
-/* prettier-ignore */
-// server "emit" / client "on"
-export type JsonStoreServerEvents =
-  & Record<`indexRead_${string}`, (ids: JsonArr<string>) => void>
-  & Record<`read_${string}`, (resource: Json) => void>
-  & Record<`relationsRead_${string}`, (relations: Json) => void> 
-  & Record<`schemaRead_${string}`, (schema: Json) => void>
-  & { event: (message: string) => void }
-
-export type JsonStoreClusterEvents = Record<keyof any, unknown>
-
-type JsonStoreSocketServer = WebSocketServer<
-  JsonStoreClientEvents,
-  JsonStoreServerEvents,
-  JsonStoreClusterEvents
+export type FilestoreSocketServer = WebSocketServer<
+  FilestoreClientEvents,
+  FilestoreServerEvents,
+  FilestoreClusterEvents
 >
 
-export const serveJsonStore =
-  (options: JsonStoreOptions) =>
+export const serveFilestore =
+  (options: FilestoreOptions) =>
   <YourServer extends WebSocketServer>(
     server: YourServer
-  ): JsonStoreSocketServer & YourServer => {
-    options.logger.info(`init`, `json-store-io`)
+  ): FilestoreSocketServer & YourServer => {
+    options.logger.info(`init`, `filestore server`)
     server.on(
       `connection`,
       (
         socket: Socket<
-          JsonStoreClientEvents,
-          JsonStoreServerEvents,
-          JsonStoreClusterEvents
+          FilestoreClientEvents,
+          FilestoreServerEvents,
+          FilestoreClusterEvents
         >
       ) => {
         const { logger } = options
@@ -79,13 +52,15 @@ export const serveJsonStore =
         const writeResource = initWriter(options)
         const writeIndex = initIndexWriter(options, readIndex)
         const writeRelations = initRelationsWriter(options)
+        const initResourceType = initResourceTypeInitializer(options)
 
-        const handle: JsonStoreClientEvents = {
+        const handle: FilestoreClientEvents = {
           read: ({ id, type }) => {
             logger.info(socket.id, `read`, id, type)
             const result = readResource({ id, type })
             return result instanceof Error
-              ? logger.error(result)
+              ? (logger.error(result),
+                socket.emit(`error_filestore`, result.message))
               : socket.emit(`read_${id}`, result)
           },
           relationsRead: ({ id, type }) => {
@@ -121,6 +96,9 @@ export const serveJsonStore =
             logger.info(socket.id, `indexWrite`, type)
             writeIndex({ type, value })
           },
+          initType: ({ type }) => {
+            logger.info(socket.id, `initType`, type)
+          },
         }
         socket.on(`read`, handle.read)
         socket.on(`write`, handle.write)
@@ -131,5 +109,5 @@ export const serveJsonStore =
         socket.on(`schemaRead`, handle.schemaRead)
       }
     )
-    return server as JsonStoreSocketServer & YourServer
+    return server as FilestoreSocketServer & YourServer
   }

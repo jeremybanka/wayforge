@@ -103,6 +103,8 @@ export type RO<RESOURCE extends Resource> = ResourceObject<RESOURCE>
 // is [attributes]
 // optional
 // in a resource object?
+//--------------/
+//
 //¯¯¯¯¯¯¯¯¯¯¯¯¯//
 
 export type ResourceUpdate<RESOURCE extends Resource> = {

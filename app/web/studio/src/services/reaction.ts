@@ -19,7 +19,7 @@ import {
   socketIndex,
   socketSchema,
   socketSync,
-} from "~/packages/socket-io.filestore/src/socket-io-filestore.web"
+} from "~/packages/socket-io.filestore/src/recoil"
 
 import type { Amount } from "./energy_reaction"
 import {
