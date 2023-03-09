@@ -30,9 +30,10 @@ export type FilestoreServerEvents =
   & Record<`indexRead_${string}`, (ids: JsonArr<string>) => void>
   & Record<`read_${string}`, (resource: Json) => void>
   & Record<`relationsRead_${string}`, (relations: Json) => void> 
+  & Record<`scan_${string}`, (contents: JsonArr<string>) => void>
   & Record<`schemaRead_${string}`, (schema: Json) => void>
-  & { 
-      event: (message: string) => void, 
+  & {
+      event: (message: string) => void,
       error_filestore: (message: string) => void 
     }
 
