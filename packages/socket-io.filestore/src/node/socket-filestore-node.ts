@@ -1,5 +1,7 @@
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
+import { recordToEntries } from "~/packages/anvl/src/object"
+
 import {
   initIndexer,
   initReader,
@@ -30,8 +32,8 @@ export const serveFilestore =
   (options: FilestoreOptions) =>
   <YourServer extends WebSocketServer>(
     server: YourServer
-  ): FilestoreSocketServer & YourServer => {
-    options.logger.info(`init`, `filestore server`)
+  ): FilestoreSocketServer & YourServer => (
+    options.logger.info(`init`, `filestore server`),
     server.on(
       `connection`,
       (
@@ -84,9 +86,13 @@ export const serveFilestore =
               ? logger.error(result)
               : socket.emit(`schemaRead_${type}`, result)
           },
-          write: ({ id, type, value }) => {
+          write: async ({ id, type, value }) => {
             logger.info(socket.id, `write`, id, value)
-            writeResource({ id, type, value })
+            const result = await writeResource({ id, type, value })
+            if (result instanceof Error) {
+              logger.error(result)
+              socket.emit(`error_filestore`, result.message)
+            }
           },
           relationsWrite: ({ id, type, value }) => {
             logger.info(`${socket.id} relationsWrite`, id, value)
@@ -96,8 +102,17 @@ export const serveFilestore =
             logger.info(socket.id, `indexWrite`, type)
             writeIndex({ type, value })
           },
-          initType: ({ type }) => {
+          initType: (type) => {
             logger.info(socket.id, `initType`, type)
+            const result = initResourceType(type)
+            if (result instanceof Error) {
+              logger.error(result)
+              socket.emit(`error_filestore`, result.message)
+            } else {
+              recordToEntries(result).forEach(([key, value]) =>
+                socket.emit(`scan_${key}`, value)
+              )
+            }
           },
         }
         socket.on(`read`, handle.read)
@@ -107,7 +122,8 @@ export const serveFilestore =
         socket.on(`relationsRead`, handle.relationsRead)
         socket.on(`relationsWrite`, handle.relationsWrite)
         socket.on(`schemaRead`, handle.schemaRead)
+        socket.on(`initType`, handle.initType)
       }
-    )
-    return server as FilestoreSocketServer & YourServer
-  }
+    ) as FilestoreSocketServer & YourServer
+  )
+// return server as FilestoreSocketServer & YourServer

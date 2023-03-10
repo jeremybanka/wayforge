@@ -1,7 +1,3 @@
-import * as fs from "fs"
-
-import { redact } from "anvl/object"
-import { ensureAgainst } from "anvl/refinement"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
@@ -9,10 +5,7 @@ import { vitest } from "vitest"
 
 import { setupLab } from "~/util/lab-tools"
 
-import {
-  FilestoreSocketServer,
-  serveFilestore,
-} from "../src/node/socket-filestore-node"
+import { serveFilestore } from "../src/node/socket-filestore-node"
 import type { FilestoreClientSocket } from "../src/recoil"
 
 const PORT = 2451
@@ -27,11 +20,9 @@ beforeAll(
       new WebSocketServer(PORT),
       serveFilestore({
         logger: console,
-        baseDir: `../../../../wayforge-lab`,
+        baseDir: `../../../wayforge-lab`,
       })
-      // (s) => (console.log(s), s)
-    )
-  //.close
+    ).close
 )
 
 describe(`filestore socket api`, () => {
@@ -39,63 +30,91 @@ describe(`filestore socket api`, () => {
 
   beforeEach(client.removeAllListeners)
 
-  it(`fails to read a resource where the type has not been initialized`, () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`error_filestore`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(
-              client.id,
-              `read`,
-              `1`,
-              `user`
-            )
-            expect(result).toEqual(
-              `ENOENT: no such file or directory, scandir '../../../../wayforge-lab/user'`
-            )
-          } catch (caught) {
-            fail(caught)
-          }
-          pass()
-        })
-        .emit(`read`, { type: `user`, id: `1` })
-    ))
+  it(
+    `fails to read a resource where the type has not been initialized`,
+    () =>
+      new Promise<void>((pass, fail) =>
+        client
+          .on(`error_filestore`, (result) => {
+            try {
+              expect(console.info).toHaveBeenCalledWith(
+                client.id,
+                `read`,
+                `1`,
+                `user`
+              )
+              expect(result).toEqual(
+                `ENOENT: no such file or directory, scandir '../../../wayforge-lab/user'`
+              )
+            } catch (caught) {
+              fail(caught)
+            }
+            pass()
+          })
+          .emit(`read`, { type: `user`, id: `1` })
+      ),
+    100
+  )
 
-  it(`fails to write a resource where the type has not been initialized`, () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`error_filestore`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(
-              client.id,
-              `write`,
-              `1`,
-              `user`
-            )
-            expect(result).toEqual(
-              `ENOENT: no such file or directory, scandir '../../../../wayforge-lab/user'`
-            )
-            console.log({ result })
-          } catch (caught) {
-            fail(caught)
-          }
-          pass()
-        })
-        .emit(`write`, { type: `user`, id: `1`, value: { name: `test` } })
-    ))
+  it(
+    `fails to write a resource where the type has not been initialized`,
+    () =>
+      new Promise<void>((pass, fail) =>
+        client
+          .on(`error_filestore`, (result) => {
+            try {
+              console.log({ result })
+              expect(console.info).toHaveBeenCalledWith(
+                client.id,
+                `write`,
+                `1`,
+                { name: `test` }
+              )
+              expect(result).toEqual(
+                `ENOENT: no such file or directory, scandir '../../../wayforge-lab/user'`
+              )
+            } catch (caught) {
+              fail(caught)
+            }
+            pass()
+          })
+          .emit(`write`, { type: `user`, id: `1`, value: { name: `test` } })
+      ),
+    100
+  )
 
-  it(`initializes a new resource type`, () =>
-    new Promise<void>((pass, fail) =>
-      client
-        .on(`f`, (result) => {
-          try {
-            expect(console.info).toHaveBeenCalledWith(client.id, `init`, `user`)
-            expect(result).toEqual(`ok`)
-          } catch (caught) {
-            fail(caught)
-          }
-          pass()
-        })
-        .emit(`initType`, { type: `user` })
-    ))
+  it(
+    `initializes a new resource type`,
+    () =>
+      Promise.all([
+        new Promise<void>((pass, fail) =>
+          client.on(`scan_/`, (result) => {
+            try {
+              expect(console.info).toHaveBeenCalledWith(
+                client.id,
+                `initType`,
+                `user`
+              )
+              expect(result).toEqual([`user`])
+            } catch (caught) {
+              fail(caught)
+            }
+            pass()
+          })
+        ),
+        new Promise<void>((pass, fail) =>
+          client
+            .on(`scan_/user`, (result) => {
+              try {
+                expect(result).toEqual([`.gitkeep`])
+              } catch (caught) {
+                fail(caught)
+              }
+              pass()
+            })
+            .emit(`initType`, `user`)
+        ),
+      ]),
+    100
+  )
 })

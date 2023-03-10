@@ -1,4 +1,5 @@
-import { readdirSync, renameSync, writeFileSync } from "fs"
+import type { PathLike } from "fs"
+import { mkdirSync, readdirSync, renameSync, writeFileSync } from "fs"
 
 import { identity, pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
@@ -9,19 +10,54 @@ import { doesExtend } from "~/packages/anvl/src/object/refinement"
 import type { FilestoreOptions } from "./json-filestore"
 import type { ReadIndex } from "./read"
 
+const readDirectory = (dir: PathLike): Error | JsonArr<string> => {
+  try {
+    const files = readdirSync(dir)
+    return files
+  } catch (caught) {
+    if (caught instanceof Error) return caught
+    throw caught
+  }
+}
+
+type ScanResult = Record<`/${string}`, JsonArr<string>>
+type Scan = (...paths: PathLike[]) => Error | ScanResult
+
+export const initScanner = ({ baseDir }: FilestoreOptions): Scan => {
+  const scan: Scan = (...paths: PathLike[]): Error | ScanResult => {
+    try {
+      return paths.reduce<ScanResult>((acc, path) => {
+        const files = readDirectory(baseDir + path)
+        if (files instanceof Error) throw files
+        return { ...acc, [String(path)]: files }
+      }, {})
+    } catch (caught) {
+      if (caught instanceof Error) return caught
+      throw caught
+    }
+  }
+  return scan
+}
+
 export type WriteResourceOptions = { type: string; id: string; value: Json }
-export type WriteResource = (options: WriteResourceOptions) => void
+export type WriteResource = (
+  options: WriteResourceOptions
+) => Promise<Error | void>
 
 export const initWriter = ({
   formatResource = identity,
   baseDir,
 }: FilestoreOptions): WriteResource => {
-  const writeResource: WriteResource = ({ id, type, value }) => {
+  const writeResource: WriteResource = async ({ id, type, value }) => {
     const formatted = pipe(value, JSON.stringify, formatResource)
     const hasName = doesExtend({ name: isString })
     const name = (hasName(value) ? `${value.name}_` : ``) + id
     const nextFilepath = `${baseDir}/${type}/${name}.json`
-    const allFileNames = readdirSync(`${baseDir}/${type}`)
+    const allFileNames = readDirectory(`${baseDir}/${type}`)
+    console.log({ allFileNames })
+    if (allFileNames instanceof Error) {
+      return allFileNames
+    }
     const prevFileName = allFileNames.find((name) => name.includes(id))
     const prevFilePath = `${baseDir}/${type}/${prevFileName}`
     if (prevFileName && prevFilePath !== nextFilepath) {
@@ -50,7 +86,6 @@ export const initIndexWriter = (
     const toBeDeleted = result.filter((id) => !newIds.includes(id))
     logger.info(`⚠️`, { newIds, toBeDeleted })
     const fileNames = readdirSync(`${baseDir}/${type}`)
-
     toBeDeleted.forEach((id) => {
       const fileName = fileNames.find((name) => name.includes(id))
       renameSync(
@@ -82,23 +117,27 @@ export const initRelationsWriter = ({
   return writeRelations
 }
 
-export type InitTypeOptions = {
-  type: string
-}
-export type InitType = (options: InitTypeOptions) => void
+export type InitType = (type: string) => Error | ScanResult
 
 export const initResourceTypeInitializer = ({
   baseDir,
+  logger,
 }: FilestoreOptions): InitType => {
-  const initType: InitType = ({ type }) => {
-    const dir = `${baseDir}/${type}`
-    const dirExists = readdirSync(baseDir).includes(type)
-    if (dirExists) {
-      return RangeError(
-        `Tried to initialize a type, but a directory already exists at ${dir}.`
+  const initType: InitType = (type) => {
+    const readDirectoryResult = readDirectory(baseDir)
+    if (readDirectoryResult instanceof Error) {
+      return readDirectoryResult
+    }
+    const typeExists = readDirectoryResult.includes(type)
+    if (typeExists) {
+      return Error(
+        `Tried to initialize type "${type}" but a folder with that name already exists in "${baseDir}"`
       )
     }
-    writeFileSync(`${dir}/.gitkeep`, ``)
+    mkdirSync(`${baseDir}/${type}`)
+    writeFileSync(`${baseDir}/${type}/.gitkeep`, ``)
+    const scan = initScanner({ baseDir, logger })
+    return scan(`/`, `/${type}`)
   }
   return initType
 }
