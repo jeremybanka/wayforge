@@ -1,10 +1,10 @@
 import { isNumber } from "fp-ts/number"
 import { atom, selectorFamily } from "recoil"
 
-import { socketRelations } from "~/packages/@store-io/src/json-store-io.web"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { Join } from "~/packages/anvl/src/join"
 import { isRecord } from "~/packages/anvl/src/object/refinement"
+import { socketRelations } from "~/packages/socket-io.filestore/src/recoil"
 
 import type { Energy } from "./energy"
 import { DEFAULT_ENERGY, findEnergyState } from "./energy"

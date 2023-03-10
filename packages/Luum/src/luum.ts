@@ -5,9 +5,9 @@ import { shade, tint } from "./mixers/lum"
 import { amp, mute } from "./mixers/sat"
 
 export class Luum implements LuumSpec {
-  public hue = 359
-  public sat = 255
-  public lum = 0.5
+  public hue: number
+  public sat: number
+  public lum: number
   public prefer: `lum` | `sat` = `lum`
   public constructor(json: Partial<LuumSpec> = {}) {
     Object.assign(this, { hue: 0, sat: 0, lum: 0, prefer: `lum`, ...json })

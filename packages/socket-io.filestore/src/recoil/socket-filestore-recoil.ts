@@ -13,15 +13,18 @@ import type {
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
-import type {
-  JsonStoreClientEvents,
-  JsonStoreServerEvents,
-} from "./json-store-io.node"
+import type { FilestoreClientEvents, FilestoreServerEvents } from "../interface"
+export * from "../interface"
+
+export type FilestoreClientSocket = Socket<
+  FilestoreServerEvents,
+  FilestoreClientEvents
+>
 
 export type SocketSyncOptions = {
   id: string
   type: string
-  socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
+  socket: FilestoreClientSocket
 }
 
 export const socketSync: <T>(
@@ -45,7 +48,7 @@ export const smartSocketSync = <T>(
 
 export type SocketIndexOptions<T> = {
   type: string
-  socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
+  socket: Socket<FilestoreServerEvents, FilestoreClientEvents>
   jsonInterface: JsonInterface<T, JsonArr<string>>
 }
 
@@ -69,7 +72,7 @@ export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
       }) & {
     id: string
     type: string
-    socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
+    socket: Socket<FilestoreServerEvents, FilestoreClientEvents>
   }
 
 export const socketRelations: <CONTENT extends JsonObj | null = null>(
@@ -93,7 +96,7 @@ export const socketRelations: <CONTENT extends JsonObj | null = null>(
 
 export type SocketSchemaOptions = {
   type: string
-  socket: Socket<JsonStoreServerEvents, JsonStoreClientEvents>
+  socket: Socket<FilestoreServerEvents, FilestoreClientEvents>
 }
 
 export const socketSchema: (

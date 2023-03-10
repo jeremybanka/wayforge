@@ -5,28 +5,16 @@ import { identify } from "~/packages/anvl/src/id/identified"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
 
-import type { JsonStoreOptions } from "."
+import { BadRequestError, NotFoundError } from "./errors"
+import type { FilestoreOptions } from "./json-filestore"
 import { getDirectoryJsonArr } from "./utils"
-
-export class NotFoundError extends Error {
-  public constructor(message: string) {
-    super(message)
-    this.name = `NotFound`
-  }
-}
-export class BadRequestError extends Error {
-  public constructor(message: string) {
-    super(message)
-    this.name = `BadRequest`
-  }
-}
 
 export type ReadResourceOptions = { type: string; id: string }
 export type ReadResource = (
   options: ReadResourceOptions
 ) => Identified | NotFoundError
 
-export const initReader = ({ baseDir }: JsonStoreOptions): ReadResource => {
+export const initReader = ({ baseDir }: FilestoreOptions): ReadResource => {
   const readResource = ({ id, type }) => {
     const dir = `${baseDir}/${type}`
     try {
@@ -53,7 +41,7 @@ export type ReadIndex = (options: ReadIndexOptions) => Error | JsonArr<string>
 export const initIndexer = ({
   baseDir,
   logger,
-}: JsonStoreOptions): ReadIndex => {
+}: FilestoreOptions): ReadIndex => {
   const readIndex: ReadIndex = ({ type }) => {
     const directory = `${baseDir}/${type}`
     try {
@@ -84,7 +72,7 @@ const isRelationType = (input: unknown): input is RelationType =>
 export const initRelationReader = ({
   logger,
   baseDir,
-}: JsonStoreOptions): ReadRelations => {
+}: FilestoreOptions): ReadRelations => {
   const readRelations: ReadRelations = ({ id, type }) => {
     const dir = `${baseDir}/_relations/${type}`
     if (isRelationType(type)) {
@@ -110,7 +98,7 @@ export type ReadSchema = (options: ReadSchemaOptions) => Error | Json
 export const initSchemaReader = ({
   baseDir,
   logger,
-}: JsonStoreOptions): ReadSchema => {
+}: FilestoreOptions): ReadSchema => {
   const readSchema = ({ type }) => {
     const dir = `${baseDir}/_schemas/${type}`
     try {
