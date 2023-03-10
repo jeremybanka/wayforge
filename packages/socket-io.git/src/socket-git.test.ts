@@ -10,9 +10,9 @@ import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"
 import { setupLab } from "~/util/lab-tools"
 
-import { isGitSocketError } from "./core"
-import { serveSimpleGit } from "./socket-io-git.node"
-import type { GitClientSocket } from "./socket-io-git.web"
+import { isGitSocketError } from "./interface"
+import { serveSimpleGit } from "./socket-git-node"
+import type { GitClientSocket } from "./socket-git-recoil"
 
 const PORT = 2451
 
