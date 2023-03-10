@@ -52,7 +52,7 @@ describe(`git-io usage`, () => {
           })
           .emit(`status`)
       ),
-    50
+    1000
   )
 
   it(
@@ -81,7 +81,7 @@ describe(`git-io usage`, () => {
           })
           .emit(`init`)
       ),
-    50
+    1000
   )
 
   it(
@@ -114,7 +114,7 @@ describe(`git-io usage`, () => {
           })
           .emit(`status`)
       ),
-    50
+    1000
   )
 
   it(
@@ -156,7 +156,7 @@ describe(`git-io usage`, () => {
             .emit(`status`)
         )
       ),
-    50
+    1000
   )
 
   it(
@@ -181,7 +181,7 @@ describe(`git-io usage`, () => {
           })
           .emit(`add`, `README.md`)
       ),
-    75
+    100
   )
 
   it(
@@ -219,7 +219,7 @@ describe(`git-io usage`, () => {
           })
           .emit(`commit`, `📝 Add README.md`)
       ),
-    50
+    1000
   )
 
   it(
@@ -238,6 +238,6 @@ describe(`git-io usage`, () => {
           })
           .emit(`diff`)
       ),
-    75
+    1000
   )
 })

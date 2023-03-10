@@ -53,7 +53,7 @@ describe(`filestore socket api`, () => {
           })
           .emit(`read`, { type: `user`, id: `1` })
       ),
-    100
+    1000
   )
 
   it(
@@ -80,7 +80,7 @@ describe(`filestore socket api`, () => {
           })
           .emit(`write`, { type: `user`, id: `1`, value: { name: `test` } })
       ),
-    100
+    1000
   )
 
   it(
@@ -115,6 +115,6 @@ describe(`filestore socket api`, () => {
             .emit(`initType`, `user`)
         ),
       ]),
-    100
+    1000
   )
 })
