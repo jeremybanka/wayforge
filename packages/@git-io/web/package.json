@@ -1,6 +1,0 @@
-{
-  "name": "@socket-io.git/web",
-  "main": "../dist/git-io-web.js",
-  "types": "../dist/git-io-web.d.ts",
-  "module": "../dist/git-io-web.mjs"
-}

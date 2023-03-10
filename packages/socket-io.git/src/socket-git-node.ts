@@ -11,10 +11,10 @@ import type {
   GitInterface,
   GitServerEvents,
   GitServerSideEvents,
-} from "./core"
-import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./core"
+} from "./interface"
+import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./interface"
 
-export * from "./core"
+export * from "./interface"
 
 type GitSocketServer = WebSocketServer<
   GitClientEvents,

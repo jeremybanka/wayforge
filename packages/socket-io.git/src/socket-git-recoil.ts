@@ -5,15 +5,15 @@ import type { Socket } from "socket.io-client"
 import { recordToEntries } from "~/packages/anvl/src/object/entries"
 import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
 
+import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 import type {
   GitInterface,
   GitClientEvents,
   GitServerEvents,
   GitSocketError,
-} from "./core"
-import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
+} from "./interface"
 
-export * from "./core"
+export * from "./interface"
 
 export type GitClientSocket = Socket<GitServerEvents, GitClientEvents>
 

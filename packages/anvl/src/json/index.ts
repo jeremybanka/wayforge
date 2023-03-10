@@ -1,5 +1,7 @@
 import { pipe } from "fp-ts/function"
 
+export * from "./refine"
+
 export const serializeSet = <T>(set: Set<T>): string =>
   pipe(set, Array.from, JSON.stringify)
 

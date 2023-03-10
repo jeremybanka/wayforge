@@ -3,8 +3,8 @@ import { pipe } from "fp-ts/function"
 import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 
-import { serveSimpleGit } from "~/packages/@git-io/src/git-io-node"
-import { serveJsonStore } from "~/packages/@store-io/src/json-store-io.node"
+import { serveFilestore } from "~/packages/socket-io.filestore/src/node/socket-filestore-node"
+import { serveSimpleGit } from "~/packages/socket-io.git/src/socket-git-node"
 
 import { logger } from "./logger"
 import { formatJson } from "./services/formatJson"
@@ -17,7 +17,7 @@ pipe(
       methods: [`GET`, `POST`],
     },
   }),
-  serveJsonStore({
+  serveFilestore({
     logger,
     formatResource: formatJson,
     baseDir: process.env.BASE_DIR || `json`,

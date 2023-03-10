@@ -9,17 +9,17 @@ import {
 import z, { string } from "zod"
 
 import type reactionSchema from "~/app/node/store/gen/reaction.schema.json"
-import {
-  socketIndex,
-  socketSchema,
-  socketSync,
-} from "~/packages/@store-io/src/json-store-io.web"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { removeFromIndex } from "~/packages/hamr/src/recoil-tools/recoil-index"
 import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
+import {
+  socketIndex,
+  socketSchema,
+  socketSync,
+} from "~/packages/socket-io.filestore/src/recoil"
 
 import type { Amount } from "./energy_reaction"
 import {

@@ -2,13 +2,13 @@ import { readdirSync } from "fs"
 
 import mock from "mock-fs"
 
-import { DEFAULT_JSON_STORE_OPTIONS } from "."
+import { DEFAULT_FILESTORE_OPTIONS } from "./json-filestore"
 import { initIndexer, initReader } from "./read"
 import { initWriter } from "./write"
 
-const write = initWriter(DEFAULT_JSON_STORE_OPTIONS)
-const read = initReader(DEFAULT_JSON_STORE_OPTIONS)
-const readIndex = initIndexer(DEFAULT_JSON_STORE_OPTIONS)
+const write = initWriter(DEFAULT_FILESTORE_OPTIONS)
+const read = initReader(DEFAULT_FILESTORE_OPTIONS)
+const readIndex = initIndexer(DEFAULT_FILESTORE_OPTIONS)
 
 describe(`read script`, () => {
   beforeEach(() => {

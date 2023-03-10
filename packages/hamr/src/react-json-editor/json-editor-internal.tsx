@@ -5,7 +5,7 @@ import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
-import { refineJsonType } from "~/packages/anvl/src/json/refine"
+import { refineJsonType } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
 import { SubEditors } from "."
