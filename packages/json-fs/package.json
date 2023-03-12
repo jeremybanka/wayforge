@@ -2,11 +2,13 @@
   "name": "json-fs",
   "version": "0.1.1",
   "description": "core typescript utilities for wayforge",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
