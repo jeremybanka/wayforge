@@ -1,26 +1,25 @@
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
-
 import {
   initIndexer,
-  initReader,
+  initResourceReader,
   initRelationReader,
   initSchemaReader,
   initRelationsWriter,
   initIndexWriter,
-  initWriter,
+  initResourceWriter,
   initResourceTypeInitializer,
-} from "./json-filestore"
-import type { FilestoreOptions } from "./json-filestore/json-filestore"
+} from "~/packages/json-fs/src"
+import type { FilestoreOptions } from "~/packages/json-fs/src"
+
 import type {
   FilestoreClientEvents,
   FilestoreClusterEvents,
   FilestoreServerEvents,
-} from "../interface"
+} from "./interface"
 
-export * from "../interface"
-export * from "./json-filestore"
+export * from "./interface"
 
 export type FilestoreSocketServer = WebSocketServer<
   FilestoreClientEvents,
@@ -47,11 +46,11 @@ export const serveFilestore =
         logger.info(socket.id, `connected`)
         socket.emit(`event`, `connected!`)
 
-        const readResource = initReader(options)
+        const readResource = initResourceReader(options)
         const readIndex = initIndexer(options)
         const readRelations = initRelationReader(options)
         const readSchema = initSchemaReader(options)
-        const writeResource = initWriter(options)
+        const writeResource = initResourceWriter(options)
         const writeIndex = initIndexWriter(options, readIndex)
         const writeRelations = initRelationsWriter(options)
         const initResourceType = initResourceTypeInitializer(options)

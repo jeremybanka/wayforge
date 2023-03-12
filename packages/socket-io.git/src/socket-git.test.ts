@@ -4,11 +4,11 @@ import { pipe } from "fp-ts/function"
 import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
+import tmp from "tmp"
 import { vitest } from "vitest"
 
 import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"
-import { setupLab } from "~/util/lab-tools"
 
 import { isGitSocketError } from "./interface"
 import { serveSimpleGit } from "./socket-git-node"
@@ -18,7 +18,8 @@ const PORT = 2452
 
 vitest.spyOn(console, `info`)
 
-beforeAll(() => setupLab().disposeLab)
+const tmpDir = tmp.dirSync({ unsafeCleanup: true })
+afterAll(tmpDir.removeCallback)
 
 beforeAll(
   () =>
@@ -26,7 +27,7 @@ beforeAll(
       new WebSocketServer(PORT),
       serveSimpleGit({
         logger: console,
-        git: git({ baseDir: `../../../wayforge-lab` }),
+        git: git({ baseDir: tmpDir.name }),
       })
     ).close
 )
@@ -67,12 +68,12 @@ describe(`git-io usage`, () => {
                 pipe(
                   result,
                   ensureAgainst(isGitSocketError),
-                  redact(`gitDir` /* this is local to runner's machine */)
+                  redact(`gitDir` /* this is specific to runner OS */)
                 )
               ).toStrictEqual({
                 bare: false,
                 existing: false,
-                path: `../../../wayforge-lab`,
+                path: tmpDir.name,
               })
             } catch (caught) {
               fail(caught)
@@ -122,7 +123,7 @@ describe(`git-io usage`, () => {
     async () =>
       new Promise<void>(
         (pass, fail) => (
-          fs.writeFileSync(`../../../wayforge-lab/README.md`, `# Hello, World!`),
+          fs.writeFileSync(`${tmpDir.name}/README.md`, `# Hello, World!`),
           client
             .on(`status`, (result) => {
               try {

@@ -1,0 +1,40 @@
+{
+  "name": "json-fs",
+  "version": "0.1.1",
+  "description": "core typescript utilities for wayforge",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:once": "vitest run"
+  },
+  "dependencies": {
+    "fp-ts": "2.13.1",
+    "io-ts": "2.2.20"
+  },
+  "devDependencies": {
+    "tsup": "6.6.3",
+    "vite": "4.1.2",
+    "vite-tsconfig-paths": "4.0.5",
+    "vitest": "0.29.2"
+  },
+  "peerDependencies": {
+    "fp-ts": "^2.13.1",
+    "io-ts": "^2.2.20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremybanka/wayforge.git"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Jeremy Banka",
+  "publishConfig": {
+    "access": "public"
+  }
+}
