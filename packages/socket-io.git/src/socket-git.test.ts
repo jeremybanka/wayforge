@@ -14,7 +14,7 @@ import { isGitSocketError } from "./interface"
 import { serveSimpleGit } from "./socket-git-node"
 import type { GitClientSocket } from "./socket-git-recoil"
 
-const PORT = 2451
+const PORT = 2452
 
 vitest.spyOn(console, `info`)
 
