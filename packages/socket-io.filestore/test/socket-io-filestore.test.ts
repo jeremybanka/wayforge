@@ -1,9 +1,8 @@
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
+import tmp from "tmp"
 import { vitest } from "vitest"
-
-import { setupLab } from "~/util/lab-tools"
 
 import { serveFilestore } from "../src/socket-filestore-node"
 import type { FilestoreClientSocket } from "../src/socket-filestore-recoil"
@@ -12,14 +11,16 @@ const PORT = 2451
 
 vitest.spyOn(console, `info`)
 
-beforeAll(() => setupLab().disposeLab)
+const tmpDir = tmp.dirSync({ unsafeCleanup: true })
+afterAll(tmpDir.removeCallback)
+
 beforeAll(
   () =>
     pipe(
       new WebSocketServer(PORT),
       serveFilestore({
         logger: console,
-        baseDir: `../../../wayforge-lab`,
+        baseDir: tmpDir.name,
       })
     ).close
 )
@@ -42,9 +43,7 @@ describe(`filestore socket api`, () => {
                 `1`,
                 `user`
               )
-              expect(result).toEqual(
-                `ENOENT: no such file or directory, scandir '../../../wayforge-lab/user'`
-              )
+              expect(result).toContain(`ENOENT: no such file or directory`)
             } catch (caught) {
               fail(caught)
             }
@@ -69,9 +68,7 @@ describe(`filestore socket api`, () => {
                 `1`,
                 { name: `test` }
               )
-              expect(result).toEqual(
-                `ENOENT: no such file or directory, scandir '../../../wayforge-lab/user'`
-              )
+              expect(result).toContain(`ENOENT: no such file or directory`)
             } catch (caught) {
               fail(caught)
             }
