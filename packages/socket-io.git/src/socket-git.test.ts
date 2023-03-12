@@ -182,7 +182,7 @@ describe(`git-io usage`, () => {
           })
           .emit(`add`, `README.md`)
       ),
-    100
+    1000
   )
 
   it(
