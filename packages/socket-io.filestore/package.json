@@ -10,7 +10,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
