@@ -21,7 +21,7 @@ import {
   socketIndex,
   socketSchema,
   socketSync,
-} from "~/packages/socket-io.filestore/src/recoil"
+} from "~/packages/socket-io.filestore/src/socket-filestore-recoil"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"

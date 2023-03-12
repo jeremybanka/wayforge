@@ -2,7 +2,7 @@ import type { Encapsulate } from "~/packages/anvl/src/function"
 import type { Json, JsonArr } from "~/packages/anvl/src/json"
 
 import type {
-  InitType,
+  InitResource,
   ReadIndex,
   ReadRelations,
   ReadResource,
@@ -10,7 +10,7 @@ import type {
   WriteIndex,
   WriteRelations,
   WriteResource,
-} from "./node/json-filestore"
+} from "../../json-fs/src"
 
 /* prettier-ignore */
 // server "on" / client "emit"
@@ -22,7 +22,7 @@ export type FilestoreClientEvents = {
   relationsRead: Encapsulate<ReadRelations>
   relationsWrite: Encapsulate<WriteRelations>
   schemaRead: Encapsulate<ReadSchema>
-  initType: Encapsulate<InitType>
+  initType: Encapsulate<InitResource>
 }
 /* prettier-ignore */
 // server "emit" / client "on"
