@@ -26,10 +26,12 @@
     "fp-ts": "2.13.1"
   },
   "devDependencies": {
+    "@types/tmp": "0.2.3",
     "react": "18.2.0",
     "recoil": "0.7.7",
     "socket.io": "4.6.1",
     "socket.io-client": "4.6.1",
+    "tmp": "0.2.1",
     "tsup": "6.6.3",
     "vitest": "0.29.2"
   },
