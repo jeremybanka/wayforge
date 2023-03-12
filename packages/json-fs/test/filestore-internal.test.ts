@@ -2,9 +2,9 @@ import { readdirSync } from "fs"
 
 import mock from "mock-fs"
 
-import { DEFAULT_FILESTORE_OPTIONS } from "./json-filestore"
-import { initIndexer, initReader } from "./read"
-import { initWriter } from "./write"
+import { DEFAULT_FILESTORE_OPTIONS } from "../src/Filestore"
+import { initIndexer, initReader } from "../src/read"
+import { initWriter } from "../src/write"
 
 const write = initWriter(DEFAULT_FILESTORE_OPTIONS)
 const read = initReader(DEFAULT_FILESTORE_OPTIONS)

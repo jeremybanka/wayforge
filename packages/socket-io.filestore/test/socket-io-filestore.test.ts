@@ -5,15 +5,14 @@ import { vitest } from "vitest"
 
 import { setupLab } from "~/util/lab-tools"
 
-import { serveFilestore } from "../src/node/socket-filestore-node"
-import type { FilestoreClientSocket } from "../src/recoil"
+import { serveFilestore } from "../src/socket-filestore-node"
+import type { FilestoreClientSocket } from "../src/socket-filestore-recoil"
 
 const PORT = 2451
 
 vitest.spyOn(console, `info`)
 
 beforeAll(() => setupLab().disposeLab)
-
 beforeAll(
   () =>
     pipe(

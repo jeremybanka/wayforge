@@ -11,8 +11,8 @@ import {
   initIndexWriter,
   initWriter,
   initResourceTypeInitializer,
-} from "./json-filestore"
-import type { FilestoreOptions } from "./json-filestore/json-filestore"
+} from "../../../json-fs/json-filestore"
+import type { FilestoreOptions } from "../../../json-fs/json-filestore/json-filestore"
 import type {
   FilestoreClientEvents,
   FilestoreClusterEvents,
@@ -20,7 +20,7 @@ import type {
 } from "../interface"
 
 export * from "../interface"
-export * from "./json-filestore"
+export * from "../../../json-fs/json-filestore"
 
 export type FilestoreSocketServer = WebSocketServer<
   FilestoreClientEvents,
