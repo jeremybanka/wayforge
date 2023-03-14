@@ -10,8 +10,8 @@ import {
   initIndexWriter,
   initResourceWriter,
   initResourceTypeInitializer,
-} from "~/packages/json-fs/src"
-import type { FilestoreOptions } from "~/packages/json-fs/src"
+} from "~/packages/ingt/src"
+import type { FilestoreOptions } from "~/packages/ingt/src"
 
 import type {
   FilestoreClientEvents,
