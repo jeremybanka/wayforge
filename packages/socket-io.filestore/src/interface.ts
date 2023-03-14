@@ -10,7 +10,7 @@ import type {
   WriteIndex,
   WriteRelations,
   WriteResource,
-} from "../../json-fs/src"
+} from "../../ingt/src"
 
 /* prettier-ignore */
 // server "on" / client "emit"

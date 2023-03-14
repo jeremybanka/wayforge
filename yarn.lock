@@ -5454,6 +5454,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ingt@workspace:packages/ingt":
+  version: 0.0.0-use.local
+  resolution: "ingt@workspace:packages/ingt"
+  dependencies:
+    fp-ts: 2.13.1
+    io-ts: 2.2.20
+    tsup: 6.6.3
+    vite: 4.1.2
+    vite-tsconfig-paths: 4.0.5
+    vitest: 0.29.2
+  peerDependencies:
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.20
+  languageName: unknown
+  linkType: soft
+
 "inherits@npm:2, inherits@npm:^2.0.3":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
@@ -6032,22 +6048,6 @@ __metadata:
   checksum: 4dc190771129e12023f729ce20e1e0bfceac84d73a85bc3119f7f938843fe25a4aeccb54b6494dce26fcf263d815f5f31acdefac7cc9329efb8422a4f4d9fa9d
   languageName: node
   linkType: hard
-
-"json-fs@workspace:packages/json-fs":
-  version: 0.0.0-use.local
-  resolution: "json-fs@workspace:packages/json-fs"
-  dependencies:
-    fp-ts: 2.13.1
-    io-ts: 2.2.20
-    tsup: 6.6.3
-    vite: 4.1.2
-    vite-tsconfig-paths: 4.0.5
-    vitest: 0.29.2
-  peerDependencies:
-    fp-ts: ^2.13.1
-    io-ts: ^2.2.20
-  languageName: unknown
-  linkType: soft
 
 "json-parse-even-better-errors@npm:^2.3.0":
   version: 2.3.1
