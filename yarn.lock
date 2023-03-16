@@ -2355,7 +2355,7 @@ __metadata:
     react-router-dom: 6.9.0
     recoil: 0.7.7
     sass: 1.59.3
-    vite: 4.1.4
+    vite: 4.2.0
     vite-plugin-svgr: 2.4.0
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
@@ -2545,7 +2545,7 @@ __metadata:
     fp-ts: 2.13.1
     io-ts: 2.2.20
     tsup: 6.6.3
-    vite: 4.1.4
+    vite: 4.2.0
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
   peerDependencies:
@@ -3828,7 +3828,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.17.11, esbuild@npm:^0.17.6, esbuild@npm:~0.17.6":
+"esbuild@npm:0.17.11, esbuild@npm:^0.17.5, esbuild@npm:^0.17.6, esbuild@npm:~0.17.6":
   version: 0.17.11
   resolution: "esbuild@npm:0.17.11"
   dependencies:
@@ -5205,7 +5205,7 @@ __metadata:
     fp-ts: 2.13.1
     io-ts: 2.2.20
     tsup: 6.6.3
-    vite: 4.1.4
+    vite: 4.2.0
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
   peerDependencies:
@@ -7379,7 +7379,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^3.10.0, rollup@npm:^3.2.5":
+"rollup@npm:^3.10.0, rollup@npm:^3.18.0, rollup@npm:^3.2.5":
   version: 3.19.1
   resolution: "rollup@npm:3.19.1"
   dependencies:
@@ -8713,7 +8713,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:4.1.4, vite@npm:^3.0.0 || ^4.0.0":
+"vite@npm:4.2.0":
+  version: 4.2.0
+  resolution: "vite@npm:4.2.0"
+  dependencies:
+    esbuild: ^0.17.5
+    fsevents: ~2.3.2
+    postcss: ^8.4.21
+    resolve: ^1.22.1
+    rollup: ^3.18.0
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 1088cdc0c89ab835aab07a0a114397b749e8dfb20f4b94241ba179d9c371b72d31e13782b22893860c3d65da596e43b24fce5e023f79cfde427f42549f2e1844
+  languageName: node
+  linkType: hard
+
+"vite@npm:^3.0.0 || ^4.0.0":
   version: 4.1.4
   resolution: "vite@npm:4.1.4"
   dependencies:
