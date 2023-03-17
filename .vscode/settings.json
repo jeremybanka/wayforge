@@ -10,6 +10,8 @@
     "filestore",
     "hamr",
     "hamt",
+    "immer",
+    "immerable",
     "ingt",
     "jeremybanka",
     "Luum",
@@ -23,7 +25,8 @@
     "svgr",
     "testid",
     "tsup",
-    "wayforge"
+    "wayforge",
+    "zustand"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.codeActionsOnSave": {

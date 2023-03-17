@@ -6,11 +6,11 @@ interface ICardValueProps {
 }
 
 export class CardValue {
-  id: CardValueId
+  public id: CardValueId
 
-  content: unknown
+  public content: unknown
 
-  constructor({ id, content } : ICardValueProps) {
+  public constructor({ id, content }: ICardValueProps) {
     this.id = new CardValueId(id)
     this.content = content
   }

@@ -1,48 +1,91 @@
 import { nanoid } from "nanoid"
 
-export const isNanoId = (x:string): boolean => new RegExp(/^[A-Za-z0-9_-]{0,21}$/).test(x)
+export const isNanoId = (x: string): boolean =>
+  new RegExp(/^[A-Za-z0-9_-]{0,21}$/).test(x)
 
-export default class Id {
+export default abstract class Id {
   private str: string
 
-  constructor(str?: string) {
+  public constructor(str?: string) {
     this.str = str || nanoid()
   }
 
-  toString = (): string => this.str
+  public toString = (): string => this.str
 
-  isVirtual = false
+  public isVirtual = false
 
-  isAnon = false
+  public isAnon = false
 
-  of = ``
+  public of: string
 }
 
-export class TrueId extends Id {}
-export class VirtualId extends Id { isVirtual = true }
-export class AnonId extends VirtualId { isAnon = true }
+export abstract class TrueId extends Id {}
+export abstract class VirtualId extends Id {
+  public isVirtual = true as const
+}
+export abstract class AnonId extends VirtualId {
+  public isAnon = true as const
+}
 
-export class CardId extends TrueId { of = `Card` }
-export class CardCycleId extends TrueId { of = `CardCycle` }
-export class CardGroupId extends TrueId { of = `CardGroup` }
-export class CardValueId extends TrueId { of = `CardValue` }
-export class GameId extends TrueId { of = `Game` }
-export class PlayerId extends TrueId { of = `Player` }
-export class ZoneId extends TrueId { of = `Zone` }
-export class ZoneLayoutId extends TrueId { of = `ZoneLayout` }
+export class CardId extends TrueId {
+  public of = `Card` as const
+}
+export class CardCycleId extends TrueId {
+  public of = `CardCycle` as const
+}
+export class CardGroupId extends TrueId {
+  public of = `CardGroup` as const
+}
+export class CardValueId extends TrueId {
+  public of = `CardValue` as const
+}
+export class GameId extends TrueId {
+  public of = `Game` as const
+}
+export class PlayerId extends TrueId {
+  public of = `Player` as const
+}
+export class ZoneId extends TrueId {
+  public of = `Zone` as const
+}
+export class ZoneLayoutId extends TrueId {
+  public of = `ZoneLayout` as const
+}
 
-export class VirtualCardId extends VirtualId { of = `Card` }
-export class VirtualCardCycleId extends VirtualId { of = `CardCycle` }
-export class VirtualCardGroupId extends VirtualId { of = `CardGroup` }
-export class VirtualCardValueId extends VirtualId { of = `CardValue` }
-export class VirtualGameId extends VirtualId { of = `Game` }
-export class VirtualPlayerId extends VirtualId { of = `Player` }
-export class VirtualZoneId extends VirtualId { of = `Zone` }
-export class VirtualZoneLayoutId extends VirtualId { of = `ZoneLayout` }
+export class VirtualCardId extends VirtualId {
+  public of = `Card` as const
+}
+export class VirtualCardCycleId extends VirtualId {
+  public of = `CardCycle` as const
+}
+export class VirtualCardGroupId extends VirtualId {
+  public of = `CardGroup` as const
+}
+export class VirtualCardValueId extends VirtualId {
+  public of = `CardValue` as const
+}
+export class VirtualGameId extends VirtualId {
+  public of = `Game` as const
+}
+export class VirtualPlayerId extends VirtualId {
+  public of = `Player` as const
+}
+export class VirtualZoneId extends VirtualId {
+  public of = `Zone` as const
+}
+export class VirtualZoneLayoutId extends VirtualId {
+  public of = `ZoneLayout` as const
+}
 
-export class AnonCardId extends AnonId { of = `Card` }
-export class AnonCardGroupId extends AnonId { of = `Card` }
-export class AnonCardCycleId extends AnonId { of = `Card` }
+export class AnonCardId extends AnonId {
+  public of = `Card` as const
+}
+export class AnonCardGroupId extends AnonId {
+  public of = `Card` as const
+}
+export class AnonCardCycleId extends AnonId {
+  public of = `Card` as const
+}
 
 export const trueIdClassDict = {
   Card: CardId,
@@ -89,6 +132,6 @@ export const thawId = (frozenId: string): Id => {
   return isAnon
     ? new anonClassDict[of](str)
     : isVirtual
-      ? new virtualIdClassDict[of](str)
-      : new trueIdClassDict[of](str)
+    ? new virtualIdClassDict[of](str)
+    : new trueIdClassDict[of](str)
 }

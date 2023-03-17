@@ -9,7 +9,7 @@ enum ranks {
   rank7 = `7`,
   rank8 = `8`,
   rank9 = `9`,
-  rank10= `10`,
+  rank10 = `10`,
   rankJ = `J`,
   rankQ = `Q`,
   rankK = `K`,
@@ -23,11 +23,9 @@ enum suits {
 }
 
 export class PlayingCard {
-  rank: ranks
-
-  suit: suits
-
-  constructor(rank:string, suit:string) {
+  public rank: ranks
+  public suit: suits
+  public constructor(rank: string, suit: string) {
     this.rank = rank as ranks
     this.suit = suit as suits
   }
@@ -35,9 +33,10 @@ export class PlayingCard {
 
 type Enum = Record<string, string>
 
-export const generatePlayingCardDeck
-= (ranks:Enum, suits:Enum)
-: PlayingCard[] => {
+export const generatePlayingCardDeck = (
+  ranks: Enum,
+  suits: Enum
+): PlayingCard[] => {
   const playingCards: PlayingCard[] = []
   for (const s in suits) {
     if (Object.prototype.hasOwnProperty.call(suits, s)) {

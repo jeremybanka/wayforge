@@ -1,8 +1,10 @@
-import { immerable } from "immer"
 import { a } from "eny/build/node"
-import { CardCycleId, CardGroupId, CardId, PlayerId } from "../util/Id"
-import { privacy } from "./types"
-import toggle from "../util/toggle"
+import { immerable } from "immer"
+
+import type { Privacy } from "./types"
+import type { CardCycleId, CardId, PlayerId } from "../util/Id"
+import { CardGroupId } from "../util/Id"
+import { toggleBetween } from "../util/toggle"
 
 const { shuffle } = a
 
@@ -12,33 +14,33 @@ export interface ICardGroupProps {
   cardCycleId?: CardCycleId
   ownerId?: PlayerId
   rotated?: 0
-  privacy?: privacy
+  privacy?: Privacy
 }
 
 export class CardGroup {
-  [immerable] = true
+  public [immerable] = true
 
-  cardIds: CardId[]
+  public cardIds: CardId[]
 
-  cardCycleId: CardCycleId | null
+  public cardCycleId: CardCycleId | null
 
-  class: string
+  public class: string
 
-  id: CardGroupId
+  public id: CardGroupId
 
-  ownerId: PlayerId | null
+  public ownerId: PlayerId | null
 
-  privacy: privacy
+  public privacy: Privacy
 
-  rotated: number
+  public rotated: number
 
-  constructor({
+  public constructor({
     id,
     cardIds = [],
     cardCycleId,
     ownerId,
     rotated = 0,
-  }:ICardGroupProps) {
+  }: ICardGroupProps) {
     this.id = new CardGroupId(id)
     this.class = `CardGroup`
     this.cardIds = cardIds
@@ -48,23 +50,23 @@ export class CardGroup {
     this.rotated = rotated
   }
 
-  add(newCard: CardId, idx = 0): void {
+  public add(newCard: CardId, idx = 0): void {
     this.cardIds.splice(idx, 0, newCard)
   }
 }
 
 export class Deck extends CardGroup {
-  [immerable] = true
+  public [immerable] = true
 
-  constructor(props: ICardGroupProps) {
+  public constructor(props: ICardGroupProps) {
     super(props)
     this.class = `Deck`
     this.privacy = `public`
   }
 
-  shuffle = (): void => (this.cardIds = shuffle(this.cardIds))
+  public shuffle = (): void => (this.cardIds = shuffle(this.cardIds))
 
-  draw = (): CardId => {
+  public draw = (): CardId => {
     // console.log(this.cardIds.shift)
     // console.log(this.cardIds.slice(1).length)
 
@@ -77,22 +79,23 @@ export class Deck extends CardGroup {
 }
 
 export class Pile extends CardGroup {
-  class = `Pile`
+  public class = `Pile`
 
-  constructor(props:ICardGroupProps) {
+  public constructor(props: ICardGroupProps) {
     super(props)
     this.privacy = props.privacy || `public`
   }
 
-  flip = (): void => {
-    this.privacy = toggle(this.privacy, `hidden`, `public`)
-  }
+  public flip = (): Privacy =>
+    (this.privacy = toggleBetween<Privacy>(`hidden`, `public`)(this.privacy))
 }
 
-export class Trick extends CardGroup { class = `Trick` }
+export class Trick extends CardGroup {
+  public class = `Trick`
+}
 
 export class Hand extends CardGroup {
-  constructor(props:ICardGroupProps) {
+  public constructor(props: ICardGroupProps) {
     super(props)
     this.class = `Hand`
     this.privacy = `secret`

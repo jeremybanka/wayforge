@@ -1,1 +1,1 @@
-export type privacy = `secret` | `public` | `hidden`
+export type Privacy = `hidden` | `public` | `secret`

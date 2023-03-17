@@ -1,5 +1,5 @@
-import create from 'zustand/vanilla'
-import produce from 'immer'
+import { produce } from "immer"
+import create from "zustand/vanilla"
 
 interface ISignInSheet {
   set: CallableFunction
@@ -8,19 +8,19 @@ interface ISignInSheet {
   signOut: CallableFunction
 }
 
-const signInSheet = create<ISignInSheet>(set => ({
-  set: fn => set(produce(fn)),
+const signInSheet = create<ISignInSheet>((set) => ({
+  set: (fn) => set(produce(fn)),
   signedInUserIds: new Set(),
-  signIn: (id:number) => {
-    set(state => {
+  signIn: (id: number) => {
+    set((state) => {
       if (state.signedInUserIds.has(id)) {
         throw new Error(`User is already signed in.`)
       }
       state.signedInUserIds.add(id)
     })
   },
-  signOut: (id:number) => {
-    set(state => {
+  signOut: (id: number) => {
+    set((state) => {
       if (!state.signedInUserIds.has(id)) {
         throw new Error(`User is not signed in.`)
       }
@@ -29,7 +29,4 @@ const signInSheet = create<ISignInSheet>(set => ({
   },
 }))
 
-export const {
-  signIn,
-  signOut,
-} = signInSheet.getState()
+export const { signIn, signOut } = signInSheet.getState()

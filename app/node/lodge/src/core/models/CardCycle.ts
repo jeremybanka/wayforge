@@ -1,17 +1,13 @@
-import { CardCycleId, CardGroupId, PlayerId, ZoneId } from "../util/Id"
+import type { CardGroupId, PlayerId, ZoneId } from "../util/Id"
+import { CardCycleId } from "../util/Id"
 
-export type TStatus =
-  | `Dormant`
-  | `Ready`
-  | `Active`
-  | `Dead`
-  | `Exiled`
+export type TStatus = `Active` | `Dead` | `Dormant` | `Exiled` | `Ready`
 
 type TPhase =
   | CardGroupId
-  | ZoneId
   | Map<PlayerId, CardGroupId>
   | Map<PlayerId, ZoneId>
+  | ZoneId
 
 interface ICardCycleProps {
   id?: string
@@ -19,12 +15,12 @@ interface ICardCycleProps {
 }
 
 export class CardCycle {
- id:CardCycleId
+  public id: CardCycleId
 
- phases: TPhase[]
+  public phases: TPhase[]
 
- constructor({ id, phases } : ICardCycleProps) {
-   this.id = new CardCycleId(id)
-   this.phases = phases
- }
+  public constructor({ id, phases }: ICardCycleProps) {
+    this.id = new CardCycleId(id)
+    this.phases = phases
+  }
 }

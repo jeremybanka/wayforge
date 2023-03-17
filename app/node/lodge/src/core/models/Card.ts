@@ -1,22 +1,23 @@
-import { CardCycleId, CardId, CardValueId, PlayerId } from "../util/Id"
-import { privacy } from "./types"
+import type { Privacy } from "./types"
+import type { CardCycleId, CardValueId, PlayerId } from "../util/Id"
+import { CardId } from "../util/Id"
 
 export class Card {
-  id: CardId
+  public id: CardId
 
-  class = `Card`
+  public class = `Card`
 
-  valueId: CardValueId
+  public valueId: CardValueId
 
-  cycleId: CardCycleId | null
+  public cycleId: CardCycleId | null
 
-  ownerId: PlayerId | null
+  public ownerId: PlayerId | null
 
-  privacy: privacy
+  public privacy: Privacy
 
-  rotated: number
+  public rotated: number
 
-  constructor(
+  public constructor(
     valueId: CardValueId,
     cycleId?: CardCycleId,
     ownerId?: PlayerId
@@ -29,19 +30,19 @@ export class Card {
     this.rotated = 0
   }
 
-  straighten(): void {
+  public straighten(): void {
     this.rotated = 0
   }
 
-  reveal(): void {
+  public reveal(): void {
     this.privacy = `public`
   }
 
-  hide(): void {
+  public hide(): void {
     this.privacy = `hidden`
   }
 
-  seclude(): void {
+  public seclude(): void {
     this.privacy = `secret`
   }
 

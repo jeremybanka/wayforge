@@ -1,24 +1,24 @@
-import socketAuth from 'socketio-auth'
-import {
+import socketAuth from "socketio-auth"
+
+import type {
   IVirtualActionRequest,
   IVirtualImperative,
-} from './core/actions/types'
+} from "./core/actions/types"
+import useHeartsActions, { installHeartsActions } from "./plugin/hearts"
 import { io } from "./server"
 import createGame from "./store/game"
-import useHeartsActions, { installHeartsActions } from './plugin/hearts'
 
 const game = createGame()
 installHeartsActions(game)
 console.log(useHeartsActions(game))
 const g = () => game.getState()
 
-io.on(`connection`, socket => {
+io.on(`connection`, (socket) => {
   console.log(`connect: ${socket.id}`)
 
   game.subscribe(
-    (state:IVirtualImperative[]) =>
-      socket.emit(`message`, state),
-    state =>
+    (state: IVirtualImperative[]) => socket.emit(`message`, state),
+    (state) =>
       state.playersById[state.playerIdsBySocketId[socket.id]]?.imperativeLog,
     (prev, next) => {
       console.log(`prev`, prev?.length)
@@ -27,14 +27,13 @@ io.on(`connection`, socket => {
       // console.log(`isEqual?`, isEqual)
       return isEqual
     }
-
   )
 
-  socket.on(`hello!`, data => {
+  socket.on(`hello!`, (data) => {
     console.log(data)
   })
 
-  socket.on(`actionRequest`, (virtualActionRequest:IVirtualActionRequest) => {
+  socket.on(`actionRequest`, (virtualActionRequest: IVirtualActionRequest) => {
     const player = g().getSocketOwner(socket.id)
     const actionRequest = player.devirtualizeRequest(virtualActionRequest)
     console.log(`request`, actionRequest)
@@ -59,10 +58,12 @@ async function verifyUser(token) {
             token: `banka`,
           },
         ]
-        const user = users.find(user => user.token === token)
+        const user = users.find((user) => user.token === token)
         if (!user) throw new Error(`User not Found.`)
         return resolve(user)
-      } catch (error) { return reject(error) }
+      } catch (error) {
+        return reject(error)
+      }
     }, 200)
   })
 }
@@ -87,7 +88,7 @@ socketAuth(io, {
       return callback({ message: `UNAUTHORIZED` })
     }
   },
-  postAuthenticate: socket => {
+  postAuthenticate: (socket) => {
     console.log(`Socket ${socket.id} authenticated as ${socket.user.name}.`)
     g().dispatch({
       type: `CREATE_PLAYER`,
@@ -99,7 +100,7 @@ socketAuth(io, {
 
     // game.playersBySocketId.forEach(logIdMap)
   },
-  disconnect: socket => {
+  disconnect: (socket) => {
     console.log(`auth disconnect: ${socket.id}.`)
   },
 })

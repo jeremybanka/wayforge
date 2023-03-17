@@ -1,27 +1,29 @@
 import { immerable } from "immer"
-import { CardGroupId, CardId, PlayerId, ZoneId } from "../util/Id"
-import { Card } from "./Card"
-import { CardGroup, Deck, Pile, Trick } from "./CardGroup"
+
+import type { Card } from "./Card"
+import type { CardGroup, Deck, Pile, Trick } from "./CardGroup"
+import type { CardGroupId, CardId, PlayerId } from "../util/Id"
+import { ZoneId } from "../util/Id"
 
 export interface IZoneProps {
   id?: string
   ownerId?: PlayerId
-  contentType?: null | `Card` | `Trick` | `Deck` | `Pile`
-  content?: CardGroup | Card
+  contentType?: `Card` | `Deck` | `Pile` | `Trick` | null
+  content?: Card | CardGroup
 }
 
 export class Zone {
-  [immerable] = true
+  public [immerable] = true
 
-  id: ZoneId
+  public id: ZoneId
 
-  ownerId: PlayerId | null
+  public ownerId: PlayerId | null
 
-  contentType: null | `Card` | `Trick` | `Deck` | `Pile`
+  public contentType: `Card` | `Deck` | `Pile` | `Trick` | null
 
-  content: null | CardId | CardGroupId
+  public content: CardGroupId | CardId | null
 
-  constructor({ id, ownerId, contentType, content }: IZoneProps) {
+  public constructor({ id, ownerId, contentType, content }: IZoneProps) {
     // console.log(`ctor`, ownerId)
     this.id = new ZoneId(id)
     this.ownerId = ownerId || null
@@ -29,7 +31,7 @@ export class Zone {
     this.content = content?.id || null
   }
 
-  place = (entity:(Deck|Trick|Pile|Card)): void => {
+  public place = (entity: Card | Deck | Pile | Trick): void => {
     // console.log(entity)
     if (this.content) throw new Error(`zone is full`)
     if (this.contentType) {

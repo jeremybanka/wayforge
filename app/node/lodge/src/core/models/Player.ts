@@ -1,6 +1,8 @@
-import produce, { immerable } from "immer"
+import { produce, immerable } from "immer"
 import { nanoid } from "nanoid"
-import {
+
+import type { Card } from "."
+import type {
   IActionRequest,
   IVirtualActionRequest,
   IVirtualImperative,
@@ -8,9 +10,7 @@ import {
   TargetType,
   VirtualTargets,
 } from "../actions/types"
-import { Card } from "."
-import {
-  PlayerId,
+import type {
   CardGroupId,
   TrueId,
   VirtualId,
@@ -19,92 +19,97 @@ import {
   VirtualCardGroupId,
   VirtualCardCycleId,
   CardCycleId,
-  anonClassDict,
-  virtualIdClassDict,
 } from "../util/Id"
+import { PlayerId, anonClassDict, virtualIdClassDict } from "../util/Id"
 import mapObject from "../util/mapObject"
 
-export class Perspective { // players[playerId].virtualize(trueId)
-  [immerable] = true
+export class Perspective {
+  // players[playerId].virtualize(trueId)
+  public [immerable] = true
 
-  virtualIds: Record<string, VirtualId>
+  public virtualIds: Record<string, VirtualId>
 
-  trueIds: Record<string, TrueId>
+  public trueIds: Record<string, TrueId>
 
-  virtualActionLog: IVirtualActionRequest[]
+  public virtualActionLog: IVirtualActionRequest[]
 
-  constructor() {
+  public constructor() {
     this.virtualIds = {}
     this.trueIds = {}
     this.virtualActionLog = []
   }
 
-  virtualizeId: {
+  public virtualizeId: {
     (id: CardId): VirtualCardId
     (id: CardGroupId): VirtualCardGroupId
     (id: CardCycleId): VirtualCardCycleId
   } = (id: TrueId): VirtualId => {
-    const virtual = this.virtualIds[id.toString()]
-    || new anonClassDict[id.of](nanoid())
+    const virtual =
+      this.virtualIds[id.toString()] || new anonClassDict[id.of](nanoid())
     // console.log(id)
     return virtual
   }
 
-  virtualizeIds = (reals: TrueId[]): VirtualId[] =>
-    reals.map((target:TrueId) => this.virtualizeId(target))
+  public virtualizeIds = (reals: TrueId[]): VirtualId[] =>
+    reals.map((target: TrueId) => this.virtualizeId(target))
 
-  virtualizeEntry = (real:TrueId[]|TrueId): VirtualId[]|VirtualId =>
-    Array.isArray(real)
-      ? this.virtualizeIds(real)
-      : this.virtualizeId(real)
+  public virtualizeEntry = (real: TrueId | TrueId[]): VirtualId | VirtualId[] =>
+    Array.isArray(real) ? this.virtualizeIds(real) : this.virtualizeId(real)
 
-  virtualizeTargets = (targets?:RealTargets): VirtualTargets|undefined =>
-    targets && mapObject<TargetType, TrueId|TrueId[], VirtualId|VirtualId[]>(
-      targets, this.virtualizeEntry
+  public virtualizeTargets = (
+    targets?: RealTargets
+  ): VirtualTargets | undefined =>
+    targets &&
+    mapObject<TargetType, TrueId | TrueId[], VirtualId | VirtualId[]>(
+      targets,
+      this.virtualizeEntry
     )
 
-  devirtualizeId: {
+  public devirtualizeId: {
     (id: VirtualCardId): CardId
     (id: VirtualCardGroupId): CardGroupId
     (id: VirtualCardCycleId): CardCycleId
   } = (id: VirtualId): TrueId => this.trueIds[id.toString()]
 
-  devirtualizeIds = (virtuals: VirtualId[] = []): TrueId[] =>
-    virtuals.map(target => this.devirtualizeId(target))
+  public devirtualizeIds = (virtuals: VirtualId[] = []): TrueId[] =>
+    virtuals.map((target) => this.devirtualizeId(target))
 
-  devirtualizeEntry = (virtual:VirtualId[]|VirtualId): TrueId[]|TrueId =>
+  public devirtualizeEntry = (
+    virtual: VirtualId | VirtualId[]
+  ): TrueId | TrueId[] =>
     Array.isArray(virtual)
       ? this.virtualizeIds(virtual)
       : this.virtualizeId(virtual)
 
-  devirtualizeTargets = (targets?: VirtualTargets): RealTargets|undefined =>
-    targets && mapObject<TargetType, VirtualId|VirtualId[], TrueId|TrueId[]>(
-      targets, this.devirtualizeEntry
+  public devirtualizeTargets = (
+    targets?: VirtualTargets
+  ): RealTargets | undefined =>
+    targets &&
+    mapObject<TargetType, VirtualId | VirtualId[], TrueId | TrueId[]>(
+      targets,
+      this.devirtualizeEntry
     )
 
-  deriveImperative = (action: IActionRequest): IVirtualImperative => ({
+  public deriveImperative = (action: IActionRequest): IVirtualImperative => ({
     id: nanoid(),
     options: action.payload.options,
     type: action.type,
-    actorId: action.payload.actorId
-    && this.virtualizeId(action.payload.actorId),
+    actorId: action.payload.actorId && this.virtualizeId(action.payload.actorId),
     targets: this.virtualizeTargets(action.payload.targets),
   })
 
-  hide = (trueId:TrueId): void => {
+  public hide = (trueId: TrueId): void => {
     const trueIdString = trueId.toString()
     const virtualIdString = this.virtualizeId(trueId).toString()
-    this.trueIds = produce(
-      this.trueIds,
-      draft => { delete draft[virtualIdString] }
-    )
-    this.virtualIds = produce(
-      this.virtualIds,
-      draft => { delete draft[trueIdString] }
-    )
+    this.trueIds = produce(this.trueIds, (draft) => {
+      delete draft[virtualIdString]
+    })
+    this.virtualIds = produce(this.virtualIds, (draft) => {
+      delete draft[trueIdString]
+    })
   }
 
-  show = (trueId:TrueId): void => {
+  public show = (trueId: TrueId): void => {
     const virtualId = new virtualIdClassDict[trueId.of]()
     const trueIdString = trueId.toString()
     const virtualIdString = virtualId.toString()
@@ -118,21 +123,21 @@ export class Perspective { // players[playerId].virtualize(trueId)
 }
 
 export class Player extends Perspective {
-  [immerable] = true
+  public [immerable] = true
 
-  id: PlayerId
+  public id: PlayerId
 
-  displayName: string
+  public displayName: string
 
-  handIdsByCycleId: Record<string, CardGroupId>
+  public handIdsByCycleId: Record<string, CardGroupId>
 
-  inbox: (CardId|CardGroupId)[]
+  public inbox: (CardGroupId | CardId)[]
 
-  userId: number
+  public userId: number
 
-  imperativeLog: IVirtualImperative[]
+  public imperativeLog: IVirtualImperative[]
 
-  constructor(displayName:string, userId:number) {
+  public constructor(displayName: string, userId: number) {
     super()
     this.id = new PlayerId()
     this.handIdsByCycleId = {}
@@ -145,21 +150,21 @@ export class Player extends Perspective {
     // discardPile = []
   }
 
-  devirtualizeRequest
-  = (request: IVirtualActionRequest)
-  : IActionRequest => {
+  public devirtualizeRequest = (
+    request: IVirtualActionRequest
+  ): IActionRequest => {
     const { type, options } = request
-    return ({
+    return {
       type,
       payload: {
         actorId: this.id,
         options,
         targets: this.devirtualizeTargets(request.targets),
       },
-    })
+    }
   }
 
-  receive = (card:Card): void => {
+  public receive = (card: Card): void => {
     if (card.ownerId?.toString() === this.id.toString()) console.log(`bingo`)
   }
 }
