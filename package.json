@@ -8,6 +8,7 @@
   "private": true,
   "packageManager": "yarn@3.5.0",
   "scripts": {
+    "lodge": "cd app/node/lodge && yarn start",
     "dev": "cd app/web/smithy && yarn dev",
     "serve": "cd app/node/forge && yarn dev",
     "gen": "cd app/node/forge && yarn gen",

@@ -18,7 +18,7 @@ describe(``, () => {
   //   await expect(myPromise).resolves.toEqual(`foo`)
   // })
 
-  it(``, done => {
+  it(``, (done) => {
     const spy = jest.fn()
     socket.on(`connect`, () => {
       spy()
