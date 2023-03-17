@@ -66,7 +66,7 @@ export type ElasticInputProps = {
   inputClassName?: string
   inputRef?: (el: HTMLInputElement | null) => void
   inputStyle?: React.CSSProperties
-  minWidth?: number | string
+  minWidth?: number
   onAutoSize?: (newWidth?: number | string) => void
   onChange?: ChangeEventHandler<HTMLInputElement>
   placeholder?: string
