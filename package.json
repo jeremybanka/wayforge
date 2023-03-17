@@ -6,7 +6,7 @@
   "author": "jeremybanka",
   "license": "GPL-3.0",
   "private": true,
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@3.5.0",
   "scripts": {
     "dev": "cd app/web/studio && yarn dev",
     "serve": "cd app/node/store && yarn dev",

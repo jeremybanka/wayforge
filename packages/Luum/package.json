@@ -1,6 +1,6 @@
 {
   "name": "luum",
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@3.5.0",
   "version": "0.0.12",
   "description": "generate colors dynamically",
   "main": "dist/index.js",
