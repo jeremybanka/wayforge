@@ -6,7 +6,7 @@ import type { StoreApi } from "zustand/vanilla"
 
 import type { ActionType, IAction, RealTargets } from "./types"
 import type { GameSession } from "../../store/game"
-import type { CardGroup, IZoneProps } from "../models"
+import type { CardGroup, IZoneProps, TPhase } from "../models"
 import {
   Card,
   CardCycle,
@@ -88,8 +88,12 @@ export const useCoreActions = (
               } else {
                 throw new Error(`invalid phase array`)
               }
-            })
-            return new Map(phaseProtoMap)
+            }) as
+              | Iterable<readonly [PlayerId, CardGroupId]>
+              | Iterable<readonly [PlayerId, ZoneId]> as any
+            return new Map(phaseProtoMap) as
+              | Map<PlayerId, CardGroupId>
+              | Map<PlayerId, ZoneId>
           }
           if (phase instanceof CardGroupId) return phase
           if (phase instanceof ZoneId) return phase

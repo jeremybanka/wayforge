@@ -1,6 +1,6 @@
-import { IActionRequest } from "../src/core/actions/types"
+import type { IActionRequest } from "../src/core/actions/types"
 import installHeartsActions from "../src/plugin/hearts"
-import createGame from "../src/store/game"
+import { createGame } from "../src/store/game"
 
 describe(`hearts actions`, () => {
   let g
@@ -10,7 +10,7 @@ describe(`hearts actions`, () => {
     installHeartsActions(game)
     g = () => game.getState()
     make = (request: IActionRequest) => g().dispatch(request)
-    const addPlayers = (x:number) => {
+    const addPlayers = (x: number) => {
       while (x) {
         const eny = Math.random()
         const request: IActionRequest = {
@@ -29,7 +29,7 @@ describe(`hearts actions`, () => {
       // console.log(g().actions)
       const request = {
         type: `INIT`,
-        payload: { },
+        payload: {},
       }
       make(request)
       console.log(g().cardGroupsById)

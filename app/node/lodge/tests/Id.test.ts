@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import Id, {
+  CardId,
   freezeId,
   isNanoId,
   thawId,
@@ -7,10 +8,7 @@ import Id, {
 } from "../src/core/util/Id"
 
 /* eslint-disable @typescript-eslint/ban-types */
-const areDeepSame = (
-  thing1:object,
-  thing2:object
-):boolean => {
+const areDeepSame = (thing1: object, thing2: object): boolean => {
   const entries = Object.keys(thing1)
   for (const key of entries) {
     const value1 = thing1[key]
@@ -34,7 +32,7 @@ const areDeepSame = (
 
 describe(`Id Constructors`, () => {
   it(`makes a new Id`, () => {
-    const id = new Id()
+    const id = new CardId()
     const idString = id.toString()
     const idStringIsNanoId = isNanoId(idString)
     // console.log(id)

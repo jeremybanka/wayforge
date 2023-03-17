@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import { produce } from "immer"
 import type { StoreApi } from "zustand/vanilla"
 import create from "zustand/vanilla"
@@ -26,13 +28,21 @@ import type {
   CardValueId,
   PlayerId,
   TrueId,
+  VirtualCardCycleId,
+  VirtualCardGroupId,
+  VirtualCardId,
+  VirtualCardValueId,
+  virtualIdClassDict,
+  VirtualPlayerId,
+  VirtualZoneId,
+  VirtualZoneLayoutId,
   ZoneId,
   ZoneLayoutId,
 } from "../core/util/Id"
 import { GameId } from "../core/util/Id"
 import mapObject from "../core/util/mapObject"
 
-type GameEntity =
+export type GameEntity =
   | Card
   | CardCycle
   | CardGroup
@@ -41,7 +51,7 @@ type GameEntity =
   | Zone
   | ZoneLayout
 
-type GameEntityId =
+export type GameEntityId =
   | CardCycleId
   | CardGroupId
   | CardId
@@ -50,15 +60,42 @@ type GameEntityId =
   | ZoneId
   | ZoneLayoutId
 
-interface GameEntityIdSystem
-  extends Record<GameEntityId[`of`], { id: GameEntityId; entity: GameEntity }> {
-  Card: { entity: Card; id: CardId }
-  CardCycle: { entity: CardCycle; id: CardCycleId }
-  CardGroup: { entity: CardGroup; id: CardGroupId }
-  CardValue: { entity: CardValue; id: CardValueId }
-  Player: { entity: Player; id: PlayerId }
-  Zone: { entity: Zone; id: ZoneId }
-  ZoneLayout: { entity: ZoneLayout; id: ZoneLayoutId }
+export type VirtualGameEntityId =
+  | VirtualCardCycleId
+  | VirtualCardGroupId
+  | VirtualCardId
+  | VirtualCardValueId
+  | VirtualPlayerId
+  | VirtualZoneId
+  | VirtualZoneLayoutId
+
+export interface GameEntityIdSystem
+  extends Record<
+    GameEntityId[`of`],
+    {
+      entity: GameEntity
+      id: { true: GameEntityId; virtual: VirtualGameEntityId }
+    }
+  > {
+  Card: { entity: Card; id: { true: CardId; virtual: VirtualCardId } }
+  CardCycle: {
+    entity: CardCycle
+    id: { true: CardCycleId; virtual: VirtualCardCycleId }
+  }
+  CardGroup: {
+    entity: CardGroup
+    id: { true: CardGroupId; virtual: VirtualCardGroupId }
+  }
+  CardValue: {
+    entity: CardValue
+    id: { true: CardValueId; virtual: VirtualCardValueId }
+  }
+  Player: { entity: Player; id: { true: PlayerId; virtual: VirtualPlayerId } }
+  Zone: { entity: Zone; id: { true: ZoneId; virtual: VirtualZoneId } }
+  ZoneLayout: {
+    entity: ZoneLayout
+    id: { true: ZoneLayoutId; virtual: VirtualZoneLayoutId }
+  }
 }
 
 const SLICE_NAMES_BY_TYPE: Record<string, keyof GameData> = {
@@ -79,15 +116,6 @@ export interface GameData {
   playersById: Record<string, Player>
   zonesById: Record<string, Zone>
   zoneLayoutsById: Record<string, ZoneLayout>
-}
-
-interface Identif {
-  (id: CardId): Card
-  (id: CardGroupId): CardGroup
-  (id: CardValueId): CardValue
-  (id: PlayerId): Player
-  (id: ZoneId): Zone
-  (id: ZoneLayoutId): ZoneLayout
 }
 
 type Identify = <Id extends GameEntityId>(
@@ -274,9 +302,6 @@ export const createGame = (): StoreApi<GameSession> =>
         state.playersById = newPlayers
       })
     },
-
-    target: (type, id) => ({ [type]: get().match(type, id) }),
-    target: (type, id) => ({ [type]: get().match(type, id) }),
 
     target: (type, id) => ({ [type]: get().match(type, id) }),
   }))

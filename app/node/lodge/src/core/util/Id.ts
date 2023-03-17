@@ -4,7 +4,7 @@ export const isNanoId = (x: string): boolean =>
   new RegExp(/^[A-Za-z0-9_-]{0,21}$/).test(x)
 
 export default abstract class Id {
-  private str: string
+  public readonly str: string
 
   public constructor(str?: string) {
     this.str = str || nanoid()
@@ -20,6 +20,7 @@ export default abstract class Id {
 }
 
 export abstract class TrueId extends Id {}
+
 export abstract class VirtualId extends Id {
   public isVirtual = true as const
 }
@@ -86,6 +87,21 @@ export class AnonCardGroupId extends AnonId {
 export class AnonCardCycleId extends AnonId {
   public of = `Card` as const
 }
+export class AnonZoneId extends AnonId {
+  public of = `Zone` as const
+}
+
+export class AnonZoneLayoutId extends AnonId {
+  public of = `ZoneLayout` as const
+}
+
+export class AnonPlayerId extends AnonId {
+  public of = `Player` as const
+}
+
+export class AnonGameId extends AnonId {
+  public of = `Game` as const
+}
 
 export const trueIdClassDict = {
   Card: CardId,
@@ -96,7 +112,7 @@ export const trueIdClassDict = {
   Player: PlayerId,
   Zone: ZoneId,
   ZoneLayout: ZoneLayoutId,
-}
+} as const
 export const virtualIdClassDict = {
   Card: VirtualCardId,
   CardCycle: VirtualCardCycleId,
@@ -106,12 +122,17 @@ export const virtualIdClassDict = {
   Player: VirtualPlayerId,
   Zone: VirtualZoneId,
   ZoneLayout: VirtualZoneLayoutId,
-}
+} as const
 export const anonClassDict = {
   Card: AnonCardId,
   CardCycle: AnonCardGroupId,
   CardGroup: AnonCardCycleId,
-}
+  CardValue: AnonCardGroupId,
+  Game: AnonGameId,
+  Player: AnonPlayerId,
+  Zone: AnonZoneId,
+  ZoneLayout: AnonZoneLayoutId,
+} as const
 
 export interface IPreFrozenId {
   str: string

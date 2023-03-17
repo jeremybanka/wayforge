@@ -3,7 +3,7 @@ import { CardCycleId } from "../util/Id"
 
 export type TStatus = `Active` | `Dead` | `Dormant` | `Exiled` | `Ready`
 
-type TPhase =
+export type TPhase =
   | CardGroupId
   | Map<PlayerId, CardGroupId>
   | Map<PlayerId, ZoneId>

@@ -2,6 +2,7 @@ import { produce, immerable } from "immer"
 import { nanoid } from "nanoid"
 
 import type { Card } from "."
+import type { GameEntityId, GameEntityIdSystem } from "../../store/game"
 import type {
   IActionRequest,
   IVirtualActionRequest,
@@ -39,21 +40,23 @@ export class Perspective {
     this.virtualActionLog = []
   }
 
-  public virtualizeId: {
-    (id: CardId): VirtualCardId
-    (id: CardGroupId): VirtualCardGroupId
-    (id: CardCycleId): VirtualCardCycleId
-  } = (id: TrueId): VirtualId => {
-    const virtual =
-      this.virtualIds[id.toString()] || new anonClassDict[id.of](nanoid())
+  public virtualizeId = <Id extends GameEntityId>(
+    id: Id
+  ): GameEntityIdSystem[Id[`of`]][`id`][`virtual`] => {
+    const virtual = (this.virtualIds[id.str] ||
+      new anonClassDict[id.of](
+        nanoid()
+      )) as GameEntityIdSystem[Id[`of`]][`id`][`virtual`]
     // console.log(id)
     return virtual
   }
 
-  public virtualizeIds = (reals: TrueId[]): VirtualId[] =>
-    reals.map((target: TrueId) => this.virtualizeId(target))
+  public virtualizeIds = (reals: GameEntityId[]): VirtualId[] =>
+    reals.map((target: GameEntityId) => this.virtualizeId(target))
 
-  public virtualizeEntry = (real: TrueId | TrueId[]): VirtualId | VirtualId[] =>
+  public virtualizeEntry = (
+    real: GameEntityId | GameEntityId[]
+  ): VirtualId | VirtualId[] =>
     Array.isArray(real) ? this.virtualizeIds(real) : this.virtualizeId(real)
 
   public virtualizeTargets = (
@@ -65,11 +68,7 @@ export class Perspective {
       this.virtualizeEntry
     )
 
-  public devirtualizeId: {
-    (id: VirtualCardId): CardId
-    (id: VirtualCardGroupId): CardGroupId
-    (id: VirtualCardCycleId): CardCycleId
-  } = (id: VirtualId): TrueId => this.trueIds[id.toString()]
+  public devirtualizeId = (id: VirtualId): TrueId => this.trueIds[id.toString()]
 
   public devirtualizeIds = (virtuals: VirtualId[] = []): TrueId[] =>
     virtuals.map((target) => this.devirtualizeId(target))
@@ -78,8 +77,8 @@ export class Perspective {
     virtual: VirtualId | VirtualId[]
   ): TrueId | TrueId[] =>
     Array.isArray(virtual)
-      ? this.virtualizeIds(virtual)
-      : this.virtualizeId(virtual)
+      ? this.devirtualizeIds(virtual)
+      : this.devirtualizeId(virtual)
 
   public devirtualizeTargets = (
     targets?: VirtualTargets
@@ -98,7 +97,7 @@ export class Perspective {
     targets: this.virtualizeTargets(action.payload.targets),
   })
 
-  public hide = (trueId: TrueId): void => {
+  public hide = (trueId: GameEntityId): void => {
     const trueIdString = trueId.toString()
     const virtualIdString = this.virtualizeId(trueId).toString()
     this.trueIds = produce(this.trueIds, (draft) => {

@@ -6,7 +6,7 @@ import type {
 } from "./core/actions/types"
 import useHeartsActions, { installHeartsActions } from "./plugin/hearts"
 import { io } from "./server"
-import createGame from "./store/game"
+import { createGame } from "./store/game"
 
 const game = createGame()
 installHeartsActions(game)

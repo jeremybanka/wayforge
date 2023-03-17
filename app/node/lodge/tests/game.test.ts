@@ -1,12 +1,12 @@
 import installCoreActions from "../src/core/actions"
-import { IActionRequest } from "../src/core/actions/types"
-import { CardGroup, CardValue } from "../src/core/models"
+import type { IActionRequest } from "../src/core/actions/types"
+import type { CardGroup, CardValue } from "../src/core/models"
 import { frenchPlayingCardDeck } from "../src/plugin/PlayingCard"
-import createGame from "../src/store/game"
+import { createGame } from "../src/store/game"
 
 const { entries, values } = Object
-const zeroth = <T> (obj:Record<string, T>): T => values(obj)[0]
-const tallyOf =  (obj:Record<string, unknown>): number => entries(obj).length
+const zeroth = <T>(obj: Record<string, T>): T => values(obj)[0]
+const tallyOf = (obj: Record<string, unknown>): number => entries(obj).length
 
 describe(`Core Actions`, () => {
   let g
@@ -33,7 +33,7 @@ describe(`Core Actions`, () => {
         `zonesById`,
         `zoneLayoutsById`,
       ]
-      shouldBeEmpty.forEach(holder => {
+      shouldBeEmpty.forEach((holder) => {
         tally += tallyOf(g()[holder])
       })
       expect(tally).toBe(0)
@@ -71,7 +71,7 @@ describe(`Core Actions`, () => {
       make(request1)
       const { cardValuesById } = g()
       const cardValues: CardValue[] = Object.values(cardValuesById)
-      const cardValueIds = cardValues.map(val => val.id)
+      const cardValueIds = cardValues.map((val) => val.id)
       const request2: IActionRequest = {
         type: `CREATE_DECK`,
         payload: { targets: { cardValueIds } },
