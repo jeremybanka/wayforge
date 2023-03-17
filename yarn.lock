@@ -2709,6 +2709,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wayforge/forge@workspace:app/node/forge":
+  version: 0.0.0-use.local
+  resolution: "@wayforge/forge@workspace:app/node/forge"
+  dependencies:
+    "@types/npmlog": 4.1.4
+    "@types/prettier": 2.7.2
+    cross-env: 7.0.3
+    dotenv: 16.0.3
+    eslint: 8.36.0
+    fp-ts: 2.13.1
+    io-ts: 2.2.20
+    npmlog: 7.0.1
+    prettier: 2.8.4
+    simple-git: 3.17.0
+    socket.io: 4.6.1
+    tsx: 3.12.5
+    vitest: 0.29.3
+  languageName: unknown
+  linkType: soft
+
 "@wayforge/lib@workspace:lib":
   version: 0.0.0-use.local
   resolution: "@wayforge/lib@workspace:lib"
@@ -2718,6 +2738,24 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     vitest: 0.29.3
+  languageName: unknown
+  linkType: soft
+
+"@wayforge/lodge@workspace:app/node/lodge":
+  version: 0.0.0-use.local
+  resolution: "@wayforge/lodge@workspace:app/node/lodge"
+  dependencies:
+    dotenv: 16.0.3
+    eny: ^0.0.6
+    express: ^4.17.1
+    immer: ^9.0.3
+    lodash: ^4.17.21
+    nanoid: ^3.1.23
+    socket.io: ^4.6.1
+    socketio-auth: ^0.1.1
+    tsx: 3.12.5
+    vitest: 0.29.3
+    zustand: ^3.5.4
   languageName: unknown
   linkType: soft
 
@@ -2740,29 +2778,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wayforge/node@workspace:app/node/forge":
+"@wayforge/smithy@workspace:app/web/smithy":
   version: 0.0.0-use.local
-  resolution: "@wayforge/node@workspace:app/node/forge"
-  dependencies:
-    "@types/npmlog": 4.1.4
-    "@types/prettier": 2.7.2
-    cross-env: 7.0.3
-    dotenv: 16.0.3
-    eslint: 8.36.0
-    fp-ts: 2.13.1
-    io-ts: 2.2.20
-    npmlog: 7.0.1
-    prettier: 2.8.4
-    simple-git: 3.17.0
-    socket.io: 4.6.1
-    tsx: 3.12.5
-    vitest: 0.29.3
-  languageName: unknown
-  linkType: soft
-
-"@wayforge/web@workspace:app/web/smithy":
-  version: 0.0.0-use.local
-  resolution: "@wayforge/web@workspace:app/web/smithy"
+  resolution: "@wayforge/smithy@workspace:app/web/smithy"
   dependencies:
     "@emotion/react": 11.10.6
     "@emotion/styled": 11.10.6
@@ -6325,23 +6343,6 @@ __metadata:
   checksum: c955394bdab888a1e9bb10eb33029e0f7ce5a2ac7b3f158099dc8c486c99e73809dca609f5694b223920ca2174db33d32b12f9a2a47141dc59607c29da5a62dd
   languageName: node
   linkType: hard
-
-"hotc@workspace:app/node/lodge":
-  version: 0.0.0-use.local
-  resolution: "hotc@workspace:app/node/lodge"
-  dependencies:
-    eny: ^0.0.6
-    express: ^4.17.1
-    immer: ^9.0.3
-    lodash: ^4.17.21
-    nanoid: ^3.1.23
-    socket.io: ^4.6.1
-    socketio-auth: ^0.1.1
-    tsx: 3.12.5
-    vitest: 0.29.3
-    zustand: ^3.5.4
-  languageName: unknown
-  linkType: soft
 
 "html-encoding-sniffer@npm:^2.0.1":
   version: 2.0.1
