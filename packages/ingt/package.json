@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "tsup": "6.6.3",
-    "vite": "4.1.4",
+    "vite": "4.2.0",
     "vite-tsconfig-paths": "4.0.7",
     "vitest": "0.29.3"
   },
