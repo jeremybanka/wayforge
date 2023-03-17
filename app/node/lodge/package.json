@@ -1,16 +1,14 @@
 {
-  "name": "hotc",
+  "name": "@wayforge/lodge",
   "version": "0.0.1",
-  "description": "cards and dice server library",
+  "description": "cards and dice server",
   "main": "src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts ",
-    "serve": "nodemon ./dist/hotc.js --watch",
-    "build": "webpack build --watch",
-    "start": "concurrently \"npm:build\" \"npm:serve\"",
-    "pretest": "tsc --noEmit",
+    "build": "echo zero-build app powered by tsx",
     "test": "vitest",
-    "test:once": "cross-env CI=true vitest run"
+    "test:once": "cross-env CI=true vitest run",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
