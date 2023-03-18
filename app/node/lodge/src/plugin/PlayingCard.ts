@@ -1,55 +1,106 @@
-/* eslint-disable no-restricted-syntax */
-enum ranks {
-  rankA = `A`,
-  rank2 = `2`,
-  rank3 = `3`,
-  rank4 = `4`,
-  rank5 = `5`,
-  rank6 = `6`,
-  rank7 = `7`,
-  rank8 = `8`,
-  rank9 = `9`,
-  rank10 = `10`,
-  rankJ = `J`,
-  rankQ = `Q`,
-  rankK = `K`,
-}
+import { recordToEntries } from "~/packages/anvl/src/object"
 
-enum suits {
-  Spades = `Spades`,
-  Clubs = `Clubs`,
-  Diamonds = `Diamonds`,
-  Hearts = `Hearts`,
-}
+import type { Deck } from "../core/models"
 
-export class PlayingCard {
-  public rank: ranks
-  public suit: suits
-  public constructor(rank: string, suit: string) {
-    this.rank = rank as ranks
-    this.suit = suit as suits
+const RANKS: unique symbol = Symbol()
+const SUITS: unique symbol = Symbol()
+
+type PlayingCardRanks = Readonly<Record<string, string>> // & { [RANKS]: true }>
+type PlayingCardSuits = Readonly<Record<string, string>> // & { [SUITS]: true }>
+type RankFrom<Ranks extends PlayingCardRanks> = keyof Ranks
+type SuitFrom<Suits extends PlayingCardSuits> = keyof Suits
+
+const FRENCH_PLAYING_CARD_RANKS: PlayingCardRanks = {
+  // [RANKS]: true,
+  "A": `Ace`,
+  "2": `Two`,
+  "3": `Three`,
+  "4": `Four`,
+  "5": `Five`,
+  "6": `Six`,
+  "7": `Seven`,
+  "8": `Eight`,
+  "9": `Nine`,
+  "10": `Ten`,
+  "J": `Jack`,
+  "Q": `Queen`,
+  "K": `King`,
+} as const
+type FrenchPlayingCardRank = RankFrom<typeof FRENCH_PLAYING_CARD_RANKS>
+
+const FRENCH_PLAYING_CARD_SUITS: PlayingCardSuits = {
+  // [SUITS]: true,
+  "♣": `Clubs`,
+  "♦": `Diamonds`,
+  "♥": `Hearts`,
+  "♠": `Spades`,
+} as const
+type FrenchPlayingCardSuit = keyof typeof FRENCH_PLAYING_CARD_SUITS
+
+export class PlayingCard<
+  Ranks extends PlayingCardRanks,
+  Suits extends PlayingCardSuits
+> {
+  public rank: RankFrom<Ranks>
+  public suit: SuitFrom<Suits>
+  public name: string
+  public constructor(
+    rank: RankFrom<Ranks>,
+    suit: SuitFrom<Suits>,
+    name: string
+  ) {
+    this.rank = rank
+    this.suit = suit
+    this.name = name
   }
 }
 
-type Enum = Record<string, string>
-
-export const generatePlayingCardDeck = (
-  ranks: Enum,
-  suits: Enum
-): PlayingCard[] => {
-  const playingCards: PlayingCard[] = []
-  for (const s in suits) {
-    if (Object.prototype.hasOwnProperty.call(suits, s)) {
-      const suit = suits[s]
-      for (const r in ranks) {
-        if (Object.prototype.hasOwnProperty.call(ranks, r)) {
-          const rank = ranks[r]
-          playingCards.push(new PlayingCard(rank, suit))
-        }
-      }
+export const generatePlayingCardDeck = <
+  Ranks extends PlayingCardRanks,
+  Suits extends PlayingCardSuits
+>({
+  ranks,
+  suits,
+}: {
+  ranks: Ranks
+  suits: Suits
+}): PlayingCard<Ranks, Suits>[] => {
+  const playingCards: PlayingCard<Ranks, Suits>[] = []
+  const suitEntries = recordToEntries(suits)
+  const rankEntries = recordToEntries(ranks)
+  for (const [rank, rankName] of rankEntries) {
+    for (const [suit, suitName] of suitEntries) {
+      playingCards.push(
+        new PlayingCard(rank, suit, `${rankName} of ${suitName}`)
+      )
     }
   }
   return playingCards
 }
 
-export const frenchPlayingCardDeck = generatePlayingCardDeck(ranks, suits)
+export const frenchPlayingCardDeck = generatePlayingCardDeck({
+  ranks: FRENCH_PLAYING_CARD_RANKS,
+  suits: FRENCH_PLAYING_CARD_SUITS,
+})
+
+// const initPlayingCards = <
+//   Suits extends PlayingCardSuits,
+//   Ranks extends PlayingCardRanks
+// >({
+//   ranks,
+//   suits,
+// }: {
+//   ranks: Ranks
+//   suits: Suits
+// }): {
+//   createDeck: () => PlayingCard<Suits, Ranks>[]
+//   isPlayingCard: (input: unknown) => input is PlayingCard<Suits, Ranks>
+// } => {
+//   const createDeck: Deck
+
+//   const
+// isPlayingCard = (input: unknown): input is PlayingCard<Suits, Ranks> =>
+//     input instanceof PlayingCard
+
+//   return { createDeck, isPlayingCard }
+// }

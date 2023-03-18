@@ -17,7 +17,7 @@ export interface ICardGroupProps {
   privacy?: Privacy
 }
 
-export class CardGroup {
+export abstract class CardGroup {
   public [immerable] = true
 
   public cardIds: CardId[]

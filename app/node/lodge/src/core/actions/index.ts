@@ -1,12 +1,11 @@
 /* eslint-disable max-lines */
 
-import { a } from "eny/build/node"
 import { produce } from "immer"
 import type { StoreApi } from "zustand/vanilla"
 
 import type { ActionType, IAction, RealTargets } from "./types"
 import type { GameSession } from "../../store/game"
-import type { CardGroup, IZoneProps, TPhase } from "../models"
+import type { CardGroup, IZoneProps } from "../models"
 import {
   Card,
   CardCycle,
@@ -166,7 +165,7 @@ export const useCoreActions = (
         const { values } = options as {
           values: { rank: string; suit: string }[]
         }
-        const newCardValues: CardValue[] = values.map(
+        const newCardValues: CardValue<unknown>[] = values.map(
           (value) => new CardValue({ content: value })
         )
         newCardValues.forEach((value) => showPlayers(value.id))

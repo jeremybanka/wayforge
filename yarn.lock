@@ -2754,6 +2754,7 @@ __metadata:
     socket.io: ^4.6.1
     socketio-auth: ^0.1.1
     tsx: 3.12.5
+    vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
     zustand: ^3.5.4
   languageName: unknown

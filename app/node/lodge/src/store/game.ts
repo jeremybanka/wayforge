@@ -46,7 +46,7 @@ export type GameEntity =
   | Card
   | CardCycle
   | CardGroup
-  | CardValue
+  | CardValue<unknown>
   | Player
   | Zone
   | ZoneLayout
@@ -87,7 +87,7 @@ export interface GameEntityIdSystem
     id: { true: CardGroupId; virtual: VirtualCardGroupId }
   }
   CardValue: {
-    entity: CardValue
+    entity: CardValue<unknown>
     id: { true: CardValueId; virtual: VirtualCardValueId }
   }
   Player: { entity: Player; id: { true: PlayerId; virtual: VirtualPlayerId } }
@@ -112,7 +112,7 @@ export interface GameData {
   cardsById: Record<string, Card>
   cardCyclesById: Record<string, CardCycle>
   cardGroupsById: Record<string, CardGroup>
-  cardValuesById: Record<string, CardValue>
+  cardValuesById: Record<string, CardValue<unknown>>
   playersById: Record<string, Player>
   zonesById: Record<string, Zone>
   zoneLayoutsById: Record<string, ZoneLayout>

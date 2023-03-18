@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "tsx": "3.12.5",
+    "vite-tsconfig-paths": "4.0.7",
     "vitest": "0.29.3"
   }
 }

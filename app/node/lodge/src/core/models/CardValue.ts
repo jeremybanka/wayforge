@@ -1,16 +1,16 @@
 import { CardValueId } from "../util/Id"
 
-interface ICardValueProps {
+type CardValueOptions<T> = {
   id?: string
-  content: unknown
+  content: T
 }
 
-export class CardValue {
+export class CardValue<T> {
   public id: CardValueId
 
-  public content: unknown
+  public content: T
 
-  public constructor({ id, content }: ICardValueProps) {
+  public constructor({ id, content }: CardValueOptions<T>) {
     this.id = new CardValueId(id)
     this.content = content
   }

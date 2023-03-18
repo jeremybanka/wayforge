@@ -70,7 +70,7 @@ describe(`Core Actions`, () => {
       }
       make(request1)
       const { cardValuesById } = g()
-      const cardValues: CardValue[] = Object.values(cardValuesById)
+      const cardValues: CardValue<unknown>[] = Object.values(cardValuesById)
       const cardValueIds = cardValues.map((val) => val.id)
       const request2: IActionRequest = {
         type: `CREATE_DECK`,
