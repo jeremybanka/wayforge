@@ -4,8 +4,8 @@
   "description": "my personal style preferences",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/jeremybanka/eslint-config.git",
-    "directory": "pkg/npm/eslint-config"
+    "url": "git+ssh://git@github.com/jeremybanka/wayforge.git",
+    "directory": "packages/@banka/eslint-config"
   },
   "scripts": {
     "build": "echo this package is zero-build",
