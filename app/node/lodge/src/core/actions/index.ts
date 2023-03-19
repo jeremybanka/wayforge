@@ -206,7 +206,10 @@ export const useCoreActions = (
           state.playersById = newPlayers
           newPlayer.show(newPlayer.id)
           forEach<Player>(`playersById`, (player) => newPlayer.show(player.id))
+          return state
         })
+        const state = get()
+        console.log({ state })
         const playersById = {
           ...get().playersById,
           [playerId]: newPlayer,

@@ -1,5 +1,5 @@
 import { produce } from "immer"
-import create from "zustand/vanilla"
+import { createStore } from "zustand/vanilla"
 
 interface ISignInSheet {
   set: CallableFunction
@@ -8,7 +8,7 @@ interface ISignInSheet {
   signOut: CallableFunction
 }
 
-const signInSheet = create<ISignInSheet>((set) => ({
+const signInSheet = createStore<ISignInSheet>((set) => ({
   set: (fn) => set(produce<ISignInSheet>(fn)),
   signedInUserIds: new Set(),
   signIn: (id: number) => {
