@@ -2602,7 +2602,7 @@ __metadata:
     tsx: 3.12.5
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
-    zustand: 3.5.4
+    zustand: 4.3.6
   languageName: unknown
   linkType: soft
 
@@ -11285,6 +11285,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-sync-external-store@npm:1.2.0":
+  version: 1.2.0
+  resolution: "use-sync-external-store@npm:1.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 5c639e0f8da3521d605f59ce5be9e094ca772bd44a4ce7322b055a6f58eeed8dda3c94cabd90c7a41fb6fa852210092008afe48f7038792fd47501f33299116a
+  languageName: node
+  linkType: hard
+
 "use@npm:^3.1.0":
   version: 3.1.1
   resolution: "use@npm:3.1.1"
@@ -12006,14 +12015,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:3.5.4":
-  version: 3.5.4
-  resolution: "zustand@npm:3.5.4"
+"zustand@npm:4.3.6":
+  version: 4.3.6
+  resolution: "zustand@npm:4.3.6"
+  dependencies:
+    use-sync-external-store: 1.2.0
   peerDependencies:
+    immer: ">=9.0"
     react: ">=16.8"
   peerDependenciesMeta:
+    immer:
+      optional: true
     react:
       optional: true
-  checksum: c78cb4f811b0356a4e72e23f26764671f051ffcaf76c809bb76fdd47154df645edc9f0fb582cbce4626058cc0ad4bb4cc0873f95475864a03a83378be58e3b43
+  checksum: 4d3cec03526f04ff3de6dc45b6f038c47f091836af9660fbf5f682cae1628221102882df20e4048dfe699a43f67424e5d6afc1116f3838a80eea5dd4f95ddaed
   languageName: node
   linkType: hard
