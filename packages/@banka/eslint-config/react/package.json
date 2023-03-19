@@ -8,9 +8,8 @@
     "build": "esbuild .eslintrc.js --bundle --platform=node --outfile=index.js"
   },
   "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/jeremybanka/wayforge.git",
-    "directory": "packages/@banka/eslint-config"
+    "url": "https://github.com/jeremybanka/wayforge",
+    "directory": "packages/@banka/eslint-config/react"
   },
   "dependencies": {
     "@types/mocha": "10.0.1",
