@@ -368,12 +368,13 @@ export const useCoreActions = (
 }
 
 export const installCoreActions = (game: StoreApi<GameSession>): void => {
-  game.setState((state) => {
-    state.actions = {
+  game.setState((state) => ({
+    ...state,
+    actions: {
       ...state.actions,
       ...useCoreActions(game),
-    }
-  })
+    },
+  }))
 }
 
 export default installCoreActions

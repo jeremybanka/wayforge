@@ -92,12 +92,13 @@ export const hearts = {
 
 export const installHeartsActions = (game: StoreApi<GameSession>): void => {
   const heartsActions = useHeartsActions(game)
-  game.setState((state) => {
-    state.actions = {
+  game.setState((state) => ({
+    ...state,
+    actions: {
       ...state.actions,
       ...heartsActions,
-    }
-  })
+    },
+  }))
 }
 
 export default installHeartsActions

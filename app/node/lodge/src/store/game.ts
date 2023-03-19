@@ -288,9 +288,13 @@ export const createGame = (): StoreApi<GameSession> =>
 
     registerSocket: (socketId) => ({
       to: (player: Player) => {
-        set((state) => {
-          state.playerIdsBySocketId[socketId] = player.id.toString()
-        })
+        set((state) => ({
+          ...state,
+          playerIdsBySocketId: {
+            ...state.playerIdsBySocketId,
+            [socketId]: player.id.toString(),
+          },
+        }))
       },
     }),
 
@@ -299,7 +303,10 @@ export const createGame = (): StoreApi<GameSession> =>
     showPlayers(id) {
       set((state: GameSession) => {
         const newPlayers = get().mapPlayers((player) => player.show(id))
-        state.playersById = newPlayers
+        return {
+          ...state,
+          playersById: newPlayers,
+        }
       })
     },
 
