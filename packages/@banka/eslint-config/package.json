@@ -4,7 +4,7 @@
   "description": "my personal style preferences",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeremybanka/wayforge",
+    "url": "git+ssh://git@github.com/jeremybanka/wayforge.git",
     "directory": "packages/@banka/eslint-config"
   },
   "scripts": {
