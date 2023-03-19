@@ -37,6 +37,7 @@ describe(`Core Actions`, () => {
         tally += tallyOf(g()[holder])
       })
       expect(tally).toBe(0)
+      console.log(`g() 0`, g())
     })
   })
 
