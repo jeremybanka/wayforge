@@ -1,5 +1,5 @@
 {
-  "name": "@wayforge/node",
+  "name": "@wayforge/forge",
   "packageManager": "yarn@3.5.0",
   "private": true,
   "scripts": {

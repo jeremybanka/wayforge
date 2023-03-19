@@ -8,9 +8,10 @@
   "private": true,
   "packageManager": "yarn@3.5.0",
   "scripts": {
-    "dev": "cd app/web/studio && yarn dev",
-    "serve": "cd app/node/store && yarn dev",
-    "gen": "cd app/node/store && yarn gen",
+    "lodge": "cd app/node/lodge && yarn start",
+    "dev": "cd app/web/smithy && yarn dev",
+    "serve": "cd app/node/forge && yarn dev",
+    "gen": "cd app/node/forge && yarn gen",
     "lint": "turbo run lint",
     "format": "eslint --fix",
     "build": "turbo run build",

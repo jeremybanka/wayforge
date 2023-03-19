@@ -8,7 +8,7 @@ import {
 } from "recoil"
 import z, { string } from "zod"
 
-import type reactionSchema from "~/app/node/store/gen/reaction.schema.json"
+import type reactionSchema from "~/app/node/forge/gen/reaction.schema.json"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"

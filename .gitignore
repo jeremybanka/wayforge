@@ -1,7 +1,7 @@
 node_modules
 dist
 gen
-!app/node/store/gen
+!app/node/forge/gen
 coverage
 package-lock.json
 .DS_STORE

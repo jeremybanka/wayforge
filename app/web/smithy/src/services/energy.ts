@@ -8,7 +8,7 @@ import {
 } from "recoil"
 import z, { string } from "zod"
 
-import type energySchema from "~/app/node/store/gen/energy.schema.json"
+import type energySchema from "~/app/node/forge/gen/energy.schema.json"
 import { now } from "~/packages/anvl/src/id/now"
 import type { Json } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
