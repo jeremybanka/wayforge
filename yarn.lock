@@ -2594,7 +2594,7 @@ __metadata:
     dotenv: 16.0.3
     eny: 0.0.6
     express: 4.17.1
-    immer: 9.0.3
+    immer: 9.0.19
     lodash: 4.17.21
     nanoid: 4.0.1
     socket.io: 4.6.1
@@ -6267,10 +6267,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:9.0.3":
-  version: 9.0.3
-  resolution: "immer@npm:9.0.3"
-  checksum: 1af2c642efc91988feb0a635a727a782c52dd8d92b14a87f73fc9432c326b6a46a08084f249faf1252b9b390d993080de42a968b3892f8ab1a5e270910f5638f
+"immer@npm:9.0.19":
+  version: 9.0.19
+  resolution: "immer@npm:9.0.19"
+  checksum: f02ee53989989c287cd548a3d817fccf0bfe56db919755ee94a72ea3ae78a00363fba93ee6c010fe54a664380c29c53d44ed4091c6a86cae60957ad2cfabc010
   languageName: node
   linkType: hard
 
