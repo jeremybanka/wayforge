@@ -1,8 +1,8 @@
 {
   "name": "@wayforge/lodge",
-  "version": "0.0.1",
   "description": "cards and dice server",
-  "main": "src/index.ts",
+  "packageManager": "yarn@3.5.0",
+  "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts ",
     "build": "echo zero-build app powered by tsx",
@@ -10,34 +10,16 @@
     "test:once": "cross-env CI=true vitest run",
     "lint": "eslint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremybanka/hotc.git"
-  },
-  "keywords": [
-    "cards",
-    "dice",
-    "tabletop",
-    "deck",
-    "shuffle",
-    "game"
-  ],
-  "author": "Jeremy Banka",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jeremybanka/wayforge/issues"
-  },
-  "homepage": "https://github.com/jeremybanka/wayforge#readme",
   "dependencies": {
     "dotenv": "16.0.3",
-    "eny": "^0.0.6",
-    "express": "^4.17.1",
-    "immer": "^9.0.3",
-    "lodash": "^4.17.21",
-    "nanoid": "^4.0.0",
-    "socket.io": "^4.6.1",
-    "socketio-auth": "^0.1.1",
-    "zustand": "^3.5.4"
+    "eny": "0.0.6",
+    "express": "4.17.1",
+    "immer": "9.0.3",
+    "lodash": "4.17.21",
+    "nanoid": "4.0.0",
+    "socket.io": "4.6.1",
+    "socketio-auth": "0.1.1",
+    "zustand": "3.5.4"
   },
   "devDependencies": {
     "tsx": "3.12.5",
