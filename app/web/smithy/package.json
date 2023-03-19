@@ -1,0 +1,44 @@
+{
+  "name": "@wayforge/smithy",
+  "packageManager": "yarn@3.5.0",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:once": "vitest run",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@emotion/react": "11.10.6",
+    "@emotion/styled": "11.10.6",
+    "@eyecuelab/recoil-devtools": "0.1.7",
+    "@floating-ui/dom": "1.2.4",
+    "@floating-ui/react": "0.21.1",
+    "corners": "0.0.13",
+    "fp-ts": "2.13.1",
+    "framer-motion": "10.6.0",
+    "io-ts": "2.2.20",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.9.0",
+    "recoil": "0.7.7",
+    "zod": "3.21.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "14.0.0",
+    "@vitejs/plugin-react": "3.1.0",
+    "cross-env": "7.0.3",
+    "eslint": "8.36.0",
+    "happy-dom": "8.9.0",
+    "sass": "1.59.3",
+    "vite": "4.2.0",
+    "vite-plugin-svgr": "2.4.0",
+    "vite-tsconfig-paths": "4.0.7",
+    "vitest": "0.29.3"
+  }
+}

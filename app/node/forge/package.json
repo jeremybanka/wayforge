@@ -1,0 +1,30 @@
+{
+  "name": "@wayforge/forge",
+  "packageManager": "yarn@3.5.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/main.ts ",
+    "gen": "tsx ./src/script/build-zod.server.ts",
+    "build": "echo zero-build app powered by tsx",
+    "test": "vitest",
+    "test:once": "cross-env CI=true vitest run",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "dotenv": "16.0.3",
+    "fp-ts": "2.13.1",
+    "io-ts": "2.2.20",
+    "npmlog": "7.0.1",
+    "prettier": "2.8.4",
+    "simple-git": "3.17.0",
+    "socket.io": "4.6.1"
+  },
+  "devDependencies": {
+    "@types/npmlog": "4.1.4",
+    "@types/prettier": "2.7.2",
+    "cross-env": "7.0.3",
+    "eslint": "8.36.0",
+    "tsx": "3.12.5",
+    "vitest": "0.29.3"
+  }
+}
