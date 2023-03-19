@@ -2873,7 +2873,7 @@ __metadata:
   dependencies:
     fp-ts: 2.13.1
     io-ts: 2.2.20
-    tsup: 6.6.3
+    tsup: 6.7.0
     vite: 4.2.0
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
@@ -5932,7 +5932,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.9.0
-    tsup: 6.6.3
+    tsup: 6.7.0
     vitest: 0.29.3
   peerDependencies:
     "@emotion/react": 11.10.6
@@ -6323,7 +6323,7 @@ __metadata:
   dependencies:
     fp-ts: 2.13.1
     io-ts: 2.2.20
-    tsup: 6.6.3
+    tsup: 6.7.0
     vite: 4.2.0
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.3
@@ -7929,7 +7929,7 @@ __metadata:
   dependencies:
     eslint: 8.36.0
     fp-ts: 2.13.1
-    tsup: 6.6.3
+    tsup: 6.7.0
     vitest: 0.29.3
   languageName: unknown
   linkType: soft
@@ -10022,7 +10022,7 @@ __metadata:
     socket.io: 4.6.1
     socket.io-client: 4.6.1
     tmp: 0.2.1
-    tsup: 6.6.3
+    tsup: 6.7.0
     vitest: 0.29.3
   peerDependencies:
     react: ^18.2.0
@@ -10044,7 +10044,7 @@ __metadata:
     socket.io: 4.6.1
     socket.io-client: 4.6.1
     tmp: 0.2.1
-    tsup: 6.6.3
+    tsup: 6.7.0
     vitest: 0.29.3
   peerDependencies:
     react: ^18.2.0
@@ -10877,9 +10877,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:6.6.3":
-  version: 6.6.3
-  resolution: "tsup@npm:6.6.3"
+"tsup@npm:6.7.0":
+  version: 6.7.0
+  resolution: "tsup@npm:6.7.0"
   dependencies:
     bundle-require: ^4.0.0
     cac: ^6.7.12
@@ -10898,7 +10898,7 @@ __metadata:
   peerDependencies:
     "@swc/core": ^1
     postcss: ^8.4.12
-    typescript: ^4.1.0
+    typescript: ">=4.1.0"
   peerDependenciesMeta:
     "@swc/core":
       optional: true
@@ -10909,7 +10909,7 @@ __metadata:
   bin:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
-  checksum: 4fa45fd7493971e5bf1f142a2590eabc1de536dc251d4b90bfce7dfaf1d7f40e19ef04ee541f9d2ab6a55841b72d265b7ddd3ea70c6371d746b5aed782f08094
+  checksum: 91ff179f0b9828a6880b6decaa8603fd7af0311f46a38d3a93647a2497298750d676810aeff533a335443a01a7b340dbba7c76523bcd7a87d7b05b7677742901
   languageName: node
   linkType: hard
 

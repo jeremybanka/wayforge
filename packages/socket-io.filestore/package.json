@@ -32,7 +32,7 @@
     "socket.io": "4.6.1",
     "socket.io-client": "4.6.1",
     "tmp": "0.2.1",
-    "tsup": "6.6.3",
+    "tsup": "6.7.0",
     "vitest": "0.29.3"
   },
   "repository": {
