@@ -1,4 +1,4 @@
-import { a } from "eny/build/node"
+import { a } from "eny/src"
 import { immerable } from "immer"
 
 import type { Privacy } from "./types"
