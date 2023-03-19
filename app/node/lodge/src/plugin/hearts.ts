@@ -8,9 +8,11 @@ import type { IAction } from "../core/actions/types"
 import type { CardGroup, Player, Zone } from "../core/models"
 import type { GameSession } from "../store/game"
 
-export const useHeartsActions = (
-  game: StoreApi<GameSession>
-): Record<string, IAction> => {
+export type HeartsActions = {
+  INIT: IAction
+}
+
+export const useHeartsActions = (game: StoreApi<GameSession>): HeartsActions => {
   installCoreActions(game)
   const get = () => game.getState()
   const getAllCardValueIds = () =>
@@ -90,14 +92,22 @@ export const hearts = {
   useHeartsActions,
 }
 
-export const installHeartsActions = (game: StoreApi<GameSession>): void => {
+export const installHeartsActions = (
+  game: StoreApi<GameSession>
+): StoreApi<
+  GameSession & { actions: GameSession[`actions`] & HeartsActions }
+> => {
   const heartsActions = useHeartsActions(game)
-  game.setState((state) => {
-    state.actions = {
+  game.setState((state) => ({
+    ...state,
+    actions: {
       ...state.actions,
       ...heartsActions,
-    }
-  })
+    },
+  }))
+  return game as StoreApi<
+    GameSession & { actions: GameSession[`actions`] & HeartsActions }
+  >
 }
 
 export default installHeartsActions

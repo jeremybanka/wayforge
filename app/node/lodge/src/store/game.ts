@@ -2,7 +2,7 @@
 
 import { produce } from "immer"
 import type { StoreApi } from "zustand/vanilla"
-import create from "zustand/vanilla"
+import { createStore } from "zustand/vanilla"
 
 import type {
   ActionType,
@@ -153,7 +153,7 @@ export interface GameSession extends GameData {
 }
 
 export const createGame = (): StoreApi<GameSession> =>
-  create<GameSession>((set, get) => ({
+  createStore<GameSession>((set, get) => ({
     id: new GameId(),
     actions: {},
     actionLog: [],
@@ -178,6 +178,12 @@ export const createGame = (): StoreApi<GameSession> =>
         const update = action.run({ actorId, targets, options })
         // console.log(`update`, update)
         set((state: GameSession) => {
+          console.log({
+            type,
+            payload,
+            state,
+            update,
+          })
           state = { ...state, ...update }
           // console.log(state)
           state.actionLog.push(actionRequest)
@@ -288,9 +294,13 @@ export const createGame = (): StoreApi<GameSession> =>
 
     registerSocket: (socketId) => ({
       to: (player: Player) => {
-        set((state) => {
-          state.playerIdsBySocketId[socketId] = player.id.toString()
-        })
+        set((state) => ({
+          ...state,
+          playerIdsBySocketId: {
+            ...state.playerIdsBySocketId,
+            [socketId]: player.id.toString(),
+          },
+        }))
       },
     }),
 
@@ -299,7 +309,10 @@ export const createGame = (): StoreApi<GameSession> =>
     showPlayers(id) {
       set((state: GameSession) => {
         const newPlayers = get().mapPlayers((player) => player.show(id))
-        state.playersById = newPlayers
+        return {
+          ...state,
+          playersById: newPlayers,
+        }
       })
     },
 

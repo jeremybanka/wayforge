@@ -17,16 +17,8 @@ io.on(`connection`, (socket) => {
   console.log(`connect: ${socket.id}`)
 
   game.subscribe(
-    (state: IVirtualImperative[]) => socket.emit(`message`, state),
     (state) =>
-      state.playersById[state.playerIdsBySocketId[socket.id]]?.imperativeLog,
-    (prev, next) => {
-      console.log(`prev`, prev?.length)
-      console.log(`next`, next?.length)
-      const isEqual = prev?.length === next?.length
-      // console.log(`isEqual?`, isEqual)
-      return isEqual
-    }
+      state.playersById[state.playerIdsBySocketId[socket.id]]?.imperativeLog
   )
 
   socket.on(`hello!`, (data) => {

@@ -206,7 +206,10 @@ export const useCoreActions = (
           state.playersById = newPlayers
           newPlayer.show(newPlayer.id)
           forEach<Player>(`playersById`, (player) => newPlayer.show(player.id))
+          return state
         })
+        const state = get()
+        console.log({ state })
         const playersById = {
           ...get().playersById,
           [playerId]: newPlayer,
@@ -368,12 +371,13 @@ export const useCoreActions = (
 }
 
 export const installCoreActions = (game: StoreApi<GameSession>): void => {
-  game.setState((state) => {
-    state.actions = {
+  game.setState((state) => ({
+    ...state,
+    actions: {
       ...state.actions,
       ...useCoreActions(game),
-    }
-  })
+    },
+  }))
 }
 
 export default installCoreActions
