@@ -9893,6 +9893,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "shrine@workspace:app/web/shrine"
   dependencies:
+    fp-ts: 2.13.1
     immer: 9.0.19
     phaser: 3.55.2
     socket.io: 4.6.0

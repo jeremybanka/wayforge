@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "fp-ts": "2.13.1",
     "immer": "9.0.19",
     "phaser": "3.55.2",
     "socket.io-client": "4.6.0",
