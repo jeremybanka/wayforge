@@ -4,8 +4,13 @@ import { produce } from "immer"
 import type { StoreApi } from "zustand/vanilla"
 import { createStore } from "zustand/vanilla"
 
+import type { EmptyObject } from "~/packages/anvl/src/object"
+
 import type {
   ActionType,
+  CoreGameActions,
+  CoreGameData,
+  GameAction,
   IAction,
   IActionRequest,
   IActionRequestPayload,
@@ -122,13 +127,16 @@ type Identify = <Id extends GameEntityId>(
   id: Id
 ) => GameEntityIdSystem[Id[`of`]][`entity`]
 
-export interface GameSession extends GameData {
+export interface GameSession<
+  Props extends Record<string, any>,
+  Actions extends Record<string, GameAction<CoreGameData & Props>>
+> extends GameData {
   id: GameId
-  actions: Record<string, IAction>
+  actions: Actions
   actionLog: IActionRequest[]
   playerIdsByUserId: Record<number, string>
   playerIdsBySocketId: Record<string, string>
-  dispatch(actionRequest: IActionRequest): void
+  // dispatch(actionRequest: IActionRequest): void
   every<T extends GameEntity>(type: IdType, fn: (entity: T) => boolean): TrueId[]
   forEach<T>(slice: keyof GameData, fn: (entity: T) => void): void
   getPlayers(): Player[]
@@ -144,7 +152,7 @@ export interface GameSession extends GameData {
     pattern: string | ((entity: T) => boolean)
   ): TrueId
   merge(entities: GameEntity[]): {
-    into: (sliceName: keyof GameData) => Partial<GameData>
+    into: (sliceName: keyof GameData) => GameData
   }
   registerSocket(socketId: string): { to: (player: Player) => void }
   run(type: ActionType, payload: IActionRequestPayload): void
@@ -152,8 +160,8 @@ export interface GameSession extends GameData {
   target(type: IdType, id: string): RealTargets
 }
 
-export const createGame = (): StoreApi<GameSession> =>
-  createStore<GameSession>((set, get) => ({
+export const createGame = (): StoreApi<GameSession<CoreGameData, EmptyObject>> =>
+  createStore<GameSession<CoreGameData, EmptyObject>>((set, get) => ({
     id: new GameId(),
     actions: {},
     actionLog: [],
@@ -167,42 +175,42 @@ export const createGame = (): StoreApi<GameSession> =>
     zonesById: {},
     zoneLayoutsById: {},
 
-    dispatch: (actionRequest) => {
-      const { type, payload } = actionRequest
-      const { actorId, targets, options } = payload
-      const action = get().actions[type]
+    // dispatch: (actionRequest) => {
+    //   const { type, payload } = actionRequest
+    //   const { actorId, targets, options } = payload
 
-      //console.log(`action`, type, { ...payload, actorId: actorId?.toString() })
-
-      try {
-        const update = action.run({ actorId, targets, options })
-        // console.log(`update`, update)
-        set((state: GameSession) => {
-          console.log({
-            type,
-            payload,
-            state,
-            update,
-          })
-          state = { ...state, ...update }
-          // console.log(state)
-          state.actionLog.push(actionRequest)
-          const newPlayersById = { ...state.playersById }
-          Object.values(newPlayersById).forEach((player) => {
-            const newPlayer = produce(player, (draft) => {
-              const imperative = draft.deriveImperative(actionRequest)
-              draft.imperativeLog.push(imperative)
-            })
-            newPlayersById[player.id.toString()] = newPlayer
-          })
-          state.playersById = newPlayersById
-          return state
-        })
-      } catch (error) {
-        console.log(error)
-        return error
-      }
-    },
+    //   try {
+    //     const action = get().actions[type]
+    //     if (typeof action === `function`) {
+    //       const update = action({ actorId, targets, options })
+    //       // console.log(`update`, update)
+    //       set((state: GameSession<CoreGameData, EmptyObject>) => {
+    //         console.log({
+    //           type,
+    //           payload,
+    //           state,
+    //           update,
+    //         })
+    //         state = { ...state, ...update }
+    //         // console.log(state)
+    //         state.actionLog.push(actionRequest)
+    //         const newPlayersById = { ...state.playersById }
+    //         Object.values(newPlayersById).forEach((player) => {
+    //           const newPlayer = produce(player, (draft) => {
+    //             const imperative = draft.deriveImperative(actionRequest)
+    //             draft.imperativeLog.push(imperative)
+    //           })
+    //           newPlayersById[player.id.toString()] = newPlayer
+    //         })
+    //         state.playersById = newPlayersById
+    //         return state
+    //       })
+    //     }
+    //   } catch (error) {
+    //     console.log(error)
+    //     return error
+    //   }
+    // },
 
     every<T extends GameEntity>(
       type: IdType,
@@ -278,14 +286,15 @@ export const createGame = (): StoreApi<GameSession> =>
 
     merge: (entities) => ({
       into: (sliceName) => {
-        const slice = get()[sliceName]
-        const newEntitiesById: Partial<typeof slice> = {}
+        const state = get()
+        const newEntitiesById: Partial<typeof state> = {}
         entities.forEach((entity) => {
           newEntitiesById[entity.id.toString()] = entity
         })
         return {
+          ...state,
           [sliceName]: {
-            ...slice,
+            ...state[sliceName],
             ...newEntitiesById,
           },
         }
@@ -307,7 +316,7 @@ export const createGame = (): StoreApi<GameSession> =>
     run: (type, payload) => get().dispatch({ type, payload }),
 
     showPlayers(id) {
-      set((state: GameSession) => {
+      set((state: GameSession<CoreGameData, EmptyObject>) => {
         const newPlayers = get().mapPlayers((player) => player.show(id))
         return {
           ...state,

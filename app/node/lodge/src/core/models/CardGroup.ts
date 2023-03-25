@@ -6,6 +6,8 @@ import type { CardCycleId, CardId, PlayerId } from "../util/Id"
 import { CardGroupId } from "../util/Id"
 import { toggleBetween } from "../util/toggle"
 
+export type CardGroupTypeName = `Deck` | `Hand` | `Pile` | `Trick`
+
 const { shuffle } = a
 
 export interface ICardGroupProps {

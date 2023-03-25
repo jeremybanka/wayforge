@@ -5,14 +5,14 @@ import { Scene, Game, WEBGL } from "phaser"
 const canvas = document.getElementById(`game`) as HTMLCanvasElement
 
 class GameScene extends Scene {
-  private textbox: GameObjects.Text | undefined
+  private welcomeMessage: GameObjects.Text | undefined
 
   public constructor() {
     super(`scene-game`)
   }
 
   public create() {
-    this.textbox = this.add.text(
+    this.welcomeMessage = this.add.text(
       window.innerWidth / 2,
       window.innerHeight / 2,
       `Welcome to Phaser x Vite!`,
@@ -23,15 +23,15 @@ class GameScene extends Scene {
       }
     )
 
-    this.textbox.setOrigin(0.5, 0.5)
+    this.welcomeMessage.setOrigin(0.5, 0.5)
   }
 
   public update(_: number, delta: number) {
-    if (!this.textbox) {
+    if (!this.welcomeMessage) {
       return
     }
 
-    this.textbox.rotation += 0.0005 * delta
+    this.welcomeMessage.rotation += 0.0005 * delta
   }
 }
 
@@ -44,7 +44,7 @@ const config: Types.Core.GameConfig = {
     default: `arcade`,
     arcade: {
       gravity: { y: 0 },
-      // debug: true
+      debug: true,
     },
   },
   scene: [GameScene],

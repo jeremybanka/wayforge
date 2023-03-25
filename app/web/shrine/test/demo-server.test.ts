@@ -5,6 +5,21 @@ import { immer } from "zustand/middleware/immer"
 
 const PORT = 2063
 
+type Player = {
+  id: string
+  name: string
+}
+
+type 
+
+type Character = {
+  id: string
+  name: string
+
+type GameState = {
+  players: Record<string, Player>
+}
+
 /*
 CLIENT ACTS AND REPORTS
 - input event fires
@@ -40,7 +55,7 @@ CLIENT BEHOLDS AND REACTS
       - if so, BAIL -- you have an accurate copy of the event!
       - if not, delete the existing event from the event log
 - add event to event log based on idPrev
-  - as you iterate through the log, undo each event until you find idPrev
+  - rewind through the log, undoing each until you find the one with idPrev
   - run redo on the new event
   - run redo on all events after the new event
 */

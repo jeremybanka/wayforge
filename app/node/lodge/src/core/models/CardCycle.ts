@@ -11,13 +11,13 @@ export type TPhase =
 
 interface ICardCycleProps {
   id?: string
-  phases: TPhase[]
+  phases: (TPhase | TPhase[])[]
 }
 
 export class CardCycle {
   public id: CardCycleId
 
-  public phases: TPhase[]
+  public phases: (TPhase | TPhase[])[]
 
   public constructor({ id, phases }: ICardCycleProps) {
     this.id = new CardCycleId(id)
