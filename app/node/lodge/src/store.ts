@@ -2,6 +2,7 @@ import type { StoreApi } from "zustand/vanilla"
 import { createStore } from "zustand/vanilla"
 
 import { Join } from "~/packages/anvl/src/join"
+import type { ResourceIdentifierObject } from "~/packages/anvl/src/json-api"
 import type { Fragment } from "~/packages/anvl/src/object"
 import { patch, hasExactProperties } from "~/packages/anvl/src/object"
 import { Dictionary } from "~/packages/anvl/src/object/dictionary"
@@ -33,8 +34,19 @@ export type GameState = {
 }
 export type GameStore = StoreApi<GameState>
 export interface GameActions
-  extends Record<string, (id: string) => Fragment<GameState>> {
-  addPlayer: (id: string) => Pick<GameState, `players`>
+  extends Record<
+    string,
+    (
+      payload:
+        | {
+            options: any
+            targets: Record<string, ResourceIdentifierObject>
+          }
+        | { options: any }
+        | { targets: Record<string, ResourceIdentifierObject> }
+    ) => Fragment<GameState>
+  > {
+  addPlayer: (payload: { options: { id: string } }) => Pick<GameState, `players`>
 }
 
 export const initGame = (): GameStore =>
@@ -50,7 +62,7 @@ export const useActions = (
 ): { store: GameStore; actions: GameActions } => ({
   store,
   actions: {
-    addPlayer: (id: string) => ({
+    addPlayer: ({ options: { id } }) => ({
       players: {
         [id]: {
           perspective: createPerspective(),
@@ -66,10 +78,13 @@ export const useDispatch = ({
 }: ReturnType<typeof useActions>): {
   store: GameStore
   actions: GameActions
-  dispatch: (action: keyof GameActions, id: string) => void
+  dispatch: <Key extends keyof GameActions>(
+    action: Key,
+    payload: Parameters<GameActions[Key]>[0]
+  ) => void
 } => ({
   store,
   actions,
-  dispatch: (action, id) =>
-    store.setState(patch(store.getState(), actions[action](id))),
+  dispatch: (action, payload) =>
+    store.setState(patch(store.getState(), actions[action](payload))),
 })
