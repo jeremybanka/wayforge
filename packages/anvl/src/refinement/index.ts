@@ -116,7 +116,9 @@ export const isIntersection = mustBe(canExist)
 
 /* eslint-disable @typescript-eslint/ban-types */
 export const isClass =
-  <ClassSignature extends Function>(C: ClassSignature) =>
-  (input: unknown): input is Class =>
+  <ClassSignature extends abstract new (...args: any) => any>(
+    C: ClassSignature
+  ) =>
+  (input: unknown): input is InstanceType<ClassSignature> =>
     input instanceof C
 /* eslint-enable @typescript-eslint/ban-types */
