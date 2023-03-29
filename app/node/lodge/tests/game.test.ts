@@ -1,4 +1,4 @@
-import installCoreActions from "../src/core/actions"
+import { installCoreActions } from "../src/core/actions"
 import type { IActionRequest } from "../src/core/actions/types"
 import type { CardGroup, CardValue } from "../src/core/models"
 import { frenchPlayingCardDeck } from "../src/plugin/PlayingCard"
@@ -37,7 +37,7 @@ describe(`Core Actions`, () => {
         tally += tallyOf(g()[holder])
       })
       expect(tally).toBe(0)
-      console.log(`g() 0`, g())
+      // console.log(`g() 0`, g())
     })
   })
 
@@ -67,7 +67,7 @@ describe(`Core Actions`, () => {
     it(`creates a standard deck of cards`, () => {
       const request1: IActionRequest = {
         type: `CREATE_CARD_VALUES`,
-        payload: { options: { values: frenchPlayingCardDeck } },
+        payload: { options: { data: frenchPlayingCardDeck } },
       }
       make(request1)
       const { cardValuesById } = g()
@@ -88,7 +88,7 @@ describe(`Core Actions`, () => {
     it(`loads new CardValues`, () => {
       const request: IActionRequest = {
         type: `CREATE_CARD_VALUES`,
-        payload: { options: { values: frenchPlayingCardDeck } },
+        payload: { options: { data: frenchPlayingCardDeck } },
       }
       make(request)
       const { cardValuesById } = g()

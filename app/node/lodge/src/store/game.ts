@@ -7,8 +7,8 @@ import { createStore } from "zustand/vanilla"
 import type { EmptyObject } from "~/packages/anvl/src/object"
 
 import type {
-  ActionType,
-  CoreGameActions,
+  CoreGameActionType,
+  CoreGameActionSystem,
   CoreGameData,
   GameAction,
   IAction,
@@ -136,7 +136,7 @@ export interface GameSession<
   actionLog: IActionRequest[]
   playerIdsByUserId: Record<number, string>
   playerIdsBySocketId: Record<string, string>
-  // dispatch(actionRequest: IActionRequest): void
+  dispatch(actionRequest: IActionRequest): void
   every<T extends GameEntity>(type: IdType, fn: (entity: T) => boolean): TrueId[]
   forEach<T>(slice: keyof GameData, fn: (entity: T) => void): void
   getPlayers(): Player[]
@@ -155,7 +155,7 @@ export interface GameSession<
     into: (sliceName: keyof GameData) => GameData
   }
   registerSocket(socketId: string): { to: (player: Player) => void }
-  run(type: ActionType, payload: IActionRequestPayload): void
+  run(type: string, payload: IActionRequestPayload): void
   showPlayers(id: TrueId): void
   target(type: IdType, id: string): RealTargets
 }
@@ -175,42 +175,47 @@ export const createGame = (): StoreApi<GameSession<CoreGameData, EmptyObject>> =
     zonesById: {},
     zoneLayoutsById: {},
 
-    // dispatch: (actionRequest) => {
-    //   const { type, payload } = actionRequest
-    //   const { actorId, targets, options } = payload
+    dispatch: (actionRequest) => {
+      console.log(`dispatch`, actionRequest)
+      const { type, payload } = actionRequest
+      const { actorId, targets, options } = payload
 
-    //   try {
-    //     const action = get().actions[type]
-    //     if (typeof action === `function`) {
-    //       const update = action({ actorId, targets, options })
-    //       // console.log(`update`, update)
-    //       set((state: GameSession<CoreGameData, EmptyObject>) => {
-    //         console.log({
-    //           type,
-    //           payload,
-    //           state,
-    //           update,
-    //         })
-    //         state = { ...state, ...update }
-    //         // console.log(state)
-    //         state.actionLog.push(actionRequest)
-    //         const newPlayersById = { ...state.playersById }
-    //         Object.values(newPlayersById).forEach((player) => {
-    //           const newPlayer = produce(player, (draft) => {
-    //             const imperative = draft.deriveImperative(actionRequest)
-    //             draft.imperativeLog.push(imperative)
-    //           })
-    //           newPlayersById[player.id.toString()] = newPlayer
-    //         })
-    //         state.playersById = newPlayersById
-    //         return state
-    //       })
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //     return error
-    //   }
-    // },
+      try {
+        const action = get().actions[type]
+        if (typeof action === `function`) {
+          const update = (action as CallableFunction)({
+            actorId,
+            targets,
+            options,
+          })
+          // console.log(`update`, update)
+          set((state: GameSession<CoreGameData, EmptyObject>) => {
+            console.log({
+              type,
+              payload,
+              state,
+              update,
+            })
+            state = { ...state, ...update }
+            // console.log(state)
+            state.actionLog.push(actionRequest)
+            const newPlayersById = { ...state.playersById }
+            Object.values(newPlayersById).forEach((player) => {
+              const newPlayer = produce(player, (draft) => {
+                const imperative = draft.deriveImperative(actionRequest)
+                draft.imperativeLog.push(imperative)
+              })
+              newPlayersById[player.id.toString()] = newPlayer
+            })
+            state.playersById = newPlayersById
+            return state
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        return error
+      }
+    },
 
     every<T extends GameEntity>(
       type: IdType,

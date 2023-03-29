@@ -10,7 +10,7 @@ import { createGame } from "./store/game"
 
 const game = createGame()
 installHeartsActions(game)
-console.log(useHeartsActions(game))
+// console.log(useHeartsActions(game))
 const g = () => game.getState()
 
 io.on(`connection`, (socket) => {
@@ -29,7 +29,7 @@ io.on(`connection`, (socket) => {
     const player = g().getSocketOwner(socket.id)
     const actionRequest = player.devirtualizeRequest(virtualActionRequest)
     console.log(`request`, actionRequest)
-    g().dispatch(actionRequest)
+    g().run(actionRequest.type, actionRequest.payload)
   })
 
   socket.on(`disconnect`, () => {
@@ -82,9 +82,8 @@ socketAuth(io, {
   },
   postAuthenticate: (socket) => {
     console.log(`Socket ${socket.id} authenticated as ${socket.user.name}.`)
-    g().dispatch({
-      type: `CREATE_PLAYER`,
-      payload: { options: { userId: socket.user.id, socketId: socket.id } },
+    g().run(`CREATE_PLAYER`, {
+      options: { userId: socket.user.id, socketId: socket.id },
     })
     socket.playerId = g().playerIdsBySocketId[socket.id]
 

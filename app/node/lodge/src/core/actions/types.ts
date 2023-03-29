@@ -2,16 +2,23 @@ import type { Join } from "~/packages/anvl/src/join"
 import type { JsonObj } from "~/packages/anvl/src/json"
 
 import type { GameData } from "../../store/game"
-import { GameSession } from "../../store/game"
-import type { CardGroupTypeName } from "../models"
+import type {
+  CardCycle,
+  CardGroup,
+  CardGroupTypeName,
+  CardValue,
+  Player,
+  Zone,
+  ZoneLayout,
+} from "../models"
 import type {
   CardGroupId,
-  CardId,
   CardValueId,
   PlayerId,
   TrueId,
   VirtualId,
   ZoneId,
+  ZoneLayoutId,
 } from "../util/Id"
 
 export type IdType =
@@ -37,24 +44,6 @@ export type DomainType = `Deck` | `System`
 
 export type OptionType = `id`
 
-export type ActionType =
-  | `CLEAR_TABLE`
-  | `CREATE_CARD_CYCLE`
-  | `CREATE_CARD_GROUP`
-  | `CREATE_CARD_VALUES`
-  | `CREATE_DECK`
-  | `CREATE_HAND`
-  | `CREATE_PILE`
-  | `CREATE_PLAYER`
-  | `CREATE_TRICK`
-  | `CREATE_ZONE_LAYOUT`
-  | `CREATE_ZONE`
-  | `DEAL_ALL`
-  | `DEAL`
-  | `MOVE`
-  | `PLACE`
-  | `SHUFFLE`
-
 export type CoreGameData = {
   cardsInGroup: Join
   cardOrGroupInZone: Join
@@ -78,9 +67,31 @@ export type GameAction<GameData extends CoreGameData> = (
     | { options: Record<string, any> }
     | { targets: Record<string, TrueId | TrueId[]> }
 ) => Partial<GameData>
-export interface CoreGameActions
-  extends Record<string, GameAction<CoreGameData>> {
-  clearTable: () => Pick<
+
+export const CORE_GAME_ACTION_TYPES = [
+  `CLEAR_TABLE`,
+  `CREATE_CARD_CYCLE`,
+  `CREATE_CARD_GROUP`,
+  `CREATE_CARD_VALUES`,
+  `CREATE_PLAYER`,
+  `CREATE_ZONE`,
+  `CREATE_ZONE_LAYOUT`,
+  `DEAL`,
+  `DRAW`,
+  `MOVE`,
+  `MOVE_TO_ZONE`,
+  `MOVE_TO_ZONE_LAYOUT`,
+  `SHUFFLE`,
+  `SHUFFLE_INTO`,
+  `SHUFFLE_INTO_ZONE`,
+  `SHUFFLE_INTO_ZONE_LAYOUT`,
+] as const
+
+export type CoreGameActionType = (typeof CORE_GAME_ACTION_TYPES)[number]
+
+export interface CoreGameActionSystem
+  extends Record<CoreGameActionType, GameAction<CoreGameData>> {
+  CLEAR_TABLE: () => Pick<
     GameData,
     | `cardGroupsById`
     | `cardGroupsById`
@@ -89,24 +100,48 @@ export interface CoreGameActions
     | `zoneLayoutsById`
     | `zonesById`
   >
-  createCardCycle: <PhaseNames extends string>(payload: {
+  CREATE_CARD_CYCLE: <PhaseNames extends string>(payload: {
     options: { phaseNames: ReadonlyArray<PhaseNames> }
     targets: { [NameOfPhase in PhaseNames]: CardGroupId | CardGroupId[] }
   }) => Pick<GameData, `cardCyclesById`>
-  createCardGroup: (payload: {
+  CREATE_CARD_GROUP: (payload: {
     targets: { ownerId: PlayerId; cardValueIds: CardValueId[]; zoneId?: ZoneId }
     options: { type: CardGroupTypeName }
   }) => Pick<GameData, `cardGroupsById`>
-  createCardValues: <CardData extends JsonObj>(payload: {
+  CREATE_DECK: (payload: {
+    targets: { ownerId: PlayerId; cardValueIds: CardValueId[]; zoneId?: ZoneId }
+    options: { type: CardGroupTypeName }
+  }) => Pick<GameData, `cardGroupsById`>
+  CREATE_CARD_VALUES: <CardData extends JsonObj>(payload: {
     options: { data: CardData[] }
   }) => Pick<GameData, `cardValuesById`>
-  deal: (payload: {
+  CREATE_PLAYER: (payload: {
+    options: {
+      userId: number
+      socketId: string
+    }
+  }) => Pick<GameData, `playersById`>
+  CREATE_ZONE: (payload: {
+    targets: { zoneLayoutId: ZoneLayoutId; ownerId: PlayerId }
+    options: { id: string; contentTypel }
+  }) => Pick<GameData, `zonesById`>
+  CREATE_ZONE_LAYOUT: (payload: {
+    targets: { ownerId: PlayerId }
+    options: { id: string }
+  }) => Pick<GameData, `zoneLayoutsById`>
+
+  DEAL: (payload: {
     targets: { deckId: CardGroupId }
     options: { dealHowMany: number }
   }) => Pick<GameData, `cardGroupsById`>
-  draw: (payload: {
-    targets: { deckId: CardGroupId; handId: CardGroupId }
+  DRAW: (payload: {
+    targets: { deckId: CardGroupId; playerId: PlayerId }
     options: { drawHowMany: number }
+  }) => Pick<GameData, `cardGroupsById`>
+
+  MOVE: (payload: {
+    targets: { originId: CardGroupId; destinationId: CardGroupId }
+    options: { howMany: number; destinationIndex?: number }
   }) => Pick<GameData, `cardGroupsById`>
 }
 
@@ -115,7 +150,7 @@ export type RealTargets = Partial<Record<TargetType, TrueId | TrueId[]>>
 export type VirtualTargets = Partial<Record<TargetType, VirtualId | VirtualId[]>>
 
 export interface IVirtualActionRequest {
-  type: ActionType
+  type: CoreGameActionType
   targets?: VirtualTargets
   options?: Record<string, number | string>
 }
@@ -127,7 +162,7 @@ export interface IActionRequestPayload {
 }
 
 export interface IActionRequest {
-  type: ActionType
+  type: string
   payload: IActionRequestPayload
 }
 
@@ -144,6 +179,6 @@ export interface IVirtualImperative {
   actorId?: PlayerId
   targets?: VirtualTargets
   options?: Record<string, any>
-  type: ActionType
+  type: CoreGameActionType
   id: string
 }

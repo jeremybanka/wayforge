@@ -10,12 +10,10 @@ type Player = {
   name: string
 }
 
-type 
-
 type Character = {
   id: string
   name: string
-
+}
 type GameState = {
   players: Record<string, Player>
 }
@@ -59,16 +57,6 @@ CLIENT BEHOLDS AND REACTS
   - run redo on the new event
   - run redo on all events after the new event
 */
-
-type Player = {
-  x: number
-  y: number
-}
-
-type GameState = {
-  players: Record<string, Player>
-  events: { timestamp: number; message: string }[]
-}
 
 type State = {
   count: number

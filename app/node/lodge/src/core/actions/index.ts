@@ -6,7 +6,7 @@ import type { StoreApi } from "zustand/vanilla"
 
 import type { JsonObj } from "~/packages/anvl/src/json"
 
-import type { CoreGameActions, CoreGameData, GameAction } from "./types"
+import type { CoreGameActionSystem, CoreGameData, GameAction } from "./types"
 import type { GameSession } from "../../store/game"
 import type { CardGroup, IZoneProps } from "../models"
 import {
@@ -29,8 +29,11 @@ export const useCoreActions = <
   GameData extends CoreGameData,
   GameActions extends Record<string, GameAction<GameData>>
 >(
-  game: StoreApi<GameSession>
-): CoreGameActions => {
+  game: StoreApi<GameSession<GameData, GameActions>>
+): CoreGameActionSystem => {
+  const { getState, setState } = game as StoreApi<
+    GameSession<GameData, CoreGameActionSystem & GameActions>
+  >
   const {
     forEach,
     getPlayers,
@@ -40,9 +43,9 @@ export const useCoreActions = <
     merge,
     run,
     showPlayers,
-  } = game.getState()
+  } = getState()
   return {
-    clearTable: () => {
+    CLEAR_TABLE: () => {
       const clearPlayer = (player: Player): Player =>
         produce(player, (draft) => {
           draft.inbox = []
@@ -62,7 +65,7 @@ export const useCoreActions = <
       }
     },
 
-    createCardCycle: ({ targets, options: { phaseNames } }) => {
+    CREATE_CARD_CYCLE: ({ targets, options: { phaseNames } }) => {
       const phases = phaseNames.map((phaseName) => {
         if (Array.isArray(targets[phaseName])) {
           const cardGroupIds = targets[phaseName] as CardGroupId[]
@@ -94,12 +97,14 @@ export const useCoreActions = <
       return merge([newCardCycle]).into(`cardCyclesById`)
     },
 
-    createCardGroup: ({
+    CREATE_CARD_GROUP: ({
       targets: { ownerId, cardValueIds, zoneId },
       options: { type },
     }) => {
+      // console.log({ targets, options })
       // console.log(`CREATE_CARD_GROUP`)
-      const classes = { Deck, Pile, Trick }
+      const subClasses = { Deck, Pile, Trick, Hand }
+      const SubClass = subClasses[type]
 
       // if (options.className === `Pile`)console.log(ownerId)
       // const cardsById = { ...get().cardsById }
@@ -113,8 +118,17 @@ export const useCoreActions = <
         }) || []
       // console.log(`newCards`, newCards?.length)
 
+      console.log({
+        ownerId,
+        cardValueIds,
+        zoneId,
+        type,
+        SubClass,
+        newCards,
+      })
+
       const cardIds = newCards.map((card) => card.id)
-      const newCardGroup = new classes[type]({ id: nanoid(), cardIds, ownerId })
+      const newCardGroup = new SubClass({ id: nanoid(), cardIds, ownerId })
 
       if (zoneId) {
         // console.log(`ZONE_ID`)
@@ -142,7 +156,7 @@ export const useCoreActions = <
       return update
     },
 
-    createCardValues: <CardData extends JsonObj>({ options: { data } }) => {
+    CREATE_CARD_VALUES: <CardData extends JsonObj>({ options: { data } }) => {
       const newCardValues: CardValue<CardData>[] = data.map(
         (value) => new CardValue<CardData>({ content: value })
       )
@@ -150,11 +164,11 @@ export const useCoreActions = <
       return merge(newCardValues).into(`cardValuesById`)
     },
 
-    // CREATE_DECK: ({ targets, options = {} }) =>
-    //   game.getState().actions.CREATE_CARD_GROUP.run({
-    //     targets,
-    //     options: { ...options, className: `Deck` },
-    //   }),
+    CREATE_DECK: ({ targets, options }) =>
+      getState().actions.CREATE_CARD_GROUP({
+        targets,
+        options: { ...options, type: `Deck` },
+      }),
 
     // CREATE_HAND: ({ targets, options = {} }) => {
     //   const { ownerId } = targets as { ownerId: PlayerId }
@@ -163,14 +177,11 @@ export const useCoreActions = <
     //   return merge([newHand]).into(`cardGroupsById`)
     // },
 
-    createPlayer: ({ options }) => {
-      const { userId, socketId } = options as {
-        userId: number
-        socketId: string
-      }
+    CREATE_PLAYER: ({ options }) => {
+      const { userId, socketId } = options
       const newPlayer = new Player(`displayName`, userId)
       const playerId = newPlayer.id.toString()
-      game.setState((state: GameSession) => {
+      game.setState((state) => {
         const newPlayers = mapPlayers((player) => player.show(newPlayer.id))
         state.playersById = newPlayers
         newPlayer.show(newPlayer.id)
@@ -178,7 +189,7 @@ export const useCoreActions = <
         return state
       })
       const state = game.getState()
-      console.log({ state })
+      // console.log({ state })
       const playersById = {
         ...game.getState().playersById,
         [playerId]: newPlayer,
@@ -188,33 +199,30 @@ export const useCoreActions = <
       return { playersById, playerIdsByUserId }
     },
 
-    CREATE_PILE: ({ targets, options = {} }) =>
-      game.getState().actions.CREATE_CARD_GROUP.run({
-        targets,
-        options: { ...options, className: `Pile` },
-      }),
+    // CREATE_PILE: ({ targets, options = {} }) =>
+    //   game.getState().actions.CREATE_CARD_GROUP.run({
+    //     targets,
+    //     options: { ...options, className: `Pile` },
+    //   }),
 
-    CREATE_TRICK: () => ({}),
+    // CREATE_TRICK: () => ({}),
 
-    CREATE_ZONE: {
-      domain: `System`,
-      run: ({ targets, options = {} }) => {
-        const { zoneLayoutId, ownerId } = targets as {
-          zoneLayoutId: ZoneLayoutId
-          ownerId: PlayerId
-        }
-        const { id, contentType } = options as IZoneProps
-        const newZone = new Zone({ id, contentType, ownerId })
-        const zoneLayout = get(zoneLayoutId) as ZoneLayout
-        const newZoneLayout = produce(zoneLayout, (draft) => {
-          draft.content.push(newZone.id)
-        })
-        showPlayers(newZone.id)
-        return {
-          ...merge([newZone]).into(`zonesById`),
-          ...merge([newZoneLayout]).into(`zoneLayoutsById`),
-        }
-      },
+    CREATE_ZONE: ({ targets, options = {} }) => {
+      const { zoneLayoutId, ownerId } = targets as {
+        zoneLayoutId: ZoneLayoutId
+        ownerId: PlayerId
+      }
+      const { id, contentType } = options as IZoneProps
+      const newZone = new Zone({ id, contentType, ownerId })
+      const zoneLayout = get(zoneLayoutId) as ZoneLayout
+      const newZoneLayout = produce(zoneLayout, (draft) => {
+        draft.content.push(newZone.id)
+      })
+      showPlayers(newZone.id)
+      return {
+        ...merge([newZone]).into(`zonesById`),
+        ...merge([newZoneLayout]).into(`zoneLayoutsById`),
+      }
     },
 
     CREATE_ZONE_LAYOUT: ({ targets = {}, options = {} }) => {
@@ -226,18 +234,19 @@ export const useCoreActions = <
       return merge([newZoneLayout]).into(`zoneLayoutsById`)
     },
 
-    deal: ({ targets: { deckId }, options: { dealHowMany } }) => {
+    DEAL: ({ targets: { deckId }, options: { dealHowMany } }) => {
       // console.log(`DEAL`, targets)
-      // while (roundsRemaining) {
-      //   const deck = identify(deckId) as Deck
-      //   // console.log(roundsRemaining, `rounds remaining`,
-      //   // deck.cardIds.length, `cards left`)
-      //   if (deck.cardIds.length < getPlayers().length) break
-      //   forEach<Player>(`playersById`, (p) => {
-      //     run(`DRAW`, { actorId: p.id, targets: { deckId } })
-      //   })
-      //   --roundsRemaining
-      // }
+      let roundsRemaining = dealHowMany
+      while (roundsRemaining) {
+        const deck = get(deckId) as Deck
+        // console.log(roundsRemaining, `rounds remaining`,
+        // deck.cardIds.length, `cards left`)
+        if (deck.cardIds.length < getPlayers().length) break
+        forEach<Player>(`playersById`, (p) => {
+          run(`draw`, { actorId: p.id, targets: { deckId } })
+        })
+        --roundsRemaining
+      }
       const group = get(deckId)
       if (!(group instanceof Deck)) {
         throw new Error(`Can only deal from a deck, not a ${group.class}`)
@@ -253,34 +262,35 @@ export const useCoreActions = <
       // console.log(`DEAL_ALL`, targets)
       const { deckId } = targets as { deckId: CardGroupId }
       const deck = get(deckId) as Deck
-      return game.getState().actions.DEAL.run({
+      return game.getState().actions.deal({
         targets,
         options: { howMany: deck.cardIds.length },
       })
     },
 
-    DRAW: ({ actorId, targets }) => {
-      if (!actorId) throw new Error(``)
-      const { deckId } = targets as { deckId: CardGroupId }
+    DRAW: ({ targets, options }) => {
+      const { deckId, playerId } = targets
+      const { drawHowMany } = options
+
       // console.log(`DRAW`, targets, actorId)
-      const actor = get(actorId) as Player | undefined
+      // const actor = get(actorId) as Player | undefined
       const targetDeck = get(deckId) as Deck | undefined
-      if (!actor) throw new Error(``)
+      // if (!actor) throw new Error(``)
       if (!targetDeck) throw new Error(``)
 
       const handId = match<CardGroup>(
         `cardGroupId`,
         (cardGroup) =>
-          cardGroup.ownerId === actorId && cardGroup.class === `Hand`
+          cardGroup.ownerId === playerId && cardGroup.class === `Hand`
       )
-      run(`MOVE`, {
+      const cardGroupsById = run(`MOVE`, {
         targets: {
           originId: deckId,
           destinationId: handId,
         },
-        options: { howMany: 1, originIdx: 0, destinationIdx: 0 },
+        options: { howMany: drawHowMany, originIdx: 0, destinationIdx: 0 },
       })
-      return {}
+      return { cardGroupsById }
     },
 
     MOVE: ({ targets, options }) => {
@@ -305,12 +315,17 @@ export const useCoreActions = <
         cardGroup.cardIds.splice(destinationIdx, 0, cardIds)
       })
 
-      return merge([newOrigin, newDestination]).into(`cardGroupsById`)
+      return {
+        cardGroupsById: {
+          [originId]: newOrigin,
+          [destinationId]: newDestination,
+        },
+      }
     },
 
-    PLACE: () => ({}),
+    place: () => ({}),
 
-    SHUFFLE: () => {
+    shuffle: () => {
       console.log(`shuffle`)
       return {}
     },
@@ -319,10 +334,10 @@ export const useCoreActions = <
 
 export const installCoreActions = <
   Props extends Record<string, any>,
-  Actions extends Record<string, GameAction<CoreGameData & Props>>
+  ActionSystem extends Record<string, GameAction<CoreGameData & Props>>
 >(
-  game: StoreApi<GameSession<Props, Actions>>
-): StoreApi<GameSession<Props, Actions & CoreGameActions>> => (
+  game: StoreApi<GameSession<Props, ActionSystem>>
+): StoreApi<GameSession<Props, ActionSystem & CoreGameActionSystem>> => (
   game.setState((state) => ({
     ...state,
     actions: {
@@ -330,5 +345,5 @@ export const installCoreActions = <
       ...useCoreActions(game),
     },
   })),
-  game as StoreApi<GameSession<Props, Actions & CoreGameActions>>
+  game as StoreApi<GameSession<Props, ActionSystem & CoreGameActionSystem>>
 )

@@ -3,8 +3,12 @@
 import type { StoreApi } from "zustand/vanilla"
 
 import { frenchPlayingCardDeck } from "./PlayingCard"
-import installCoreActions from "../core/actions"
-import type { IAction } from "../core/actions/types"
+import { installCoreActions } from "../core/actions"
+import type {
+  CoreGameActionSystem,
+  CoreGameData,
+  IAction,
+} from "../core/actions/types"
 import type { CardGroup, Player, Zone } from "../core/models"
 import type { GameSession } from "../store/game"
 
@@ -12,7 +16,9 @@ export type HeartsActions = {
   INIT: IAction
 }
 
-export const useHeartsActions = (game: StoreApi<GameSession>): HeartsActions => {
+export const useHeartsActions = (
+  game: StoreApi<GameSession<CoreGameData, CoreGameActionSystem>>
+): HeartsActions => {
   installCoreActions(game)
   const get = () => game.getState()
   const getAllCardValueIds = () =>

@@ -1,3 +1,25 @@
+import { produce, immerable } from "immer"
+import { nanoid } from "nanoid"
+
+import type {
+  IActionRequest,
+  IVirtualActionRequest,
+  IVirtualImperative,
+  RealTargets,
+  TargetType,
+  VirtualTargets,
+} from "~/app/node/lodge/src/core/actions/types"
+import type { TrueId, VirtualId } from "~/app/node/lodge/src/core/util/Id"
+import {
+  virtualIdClassDict,
+  anonClassDict,
+} from "~/app/node/lodge/src/core/util/Id"
+import type {
+  GameEntityId,
+  GameEntityIdSystem,
+} from "~/app/node/lodge/src/store/game"
+import { mapObject } from "~/packages/anvl/src/object"
+
 export class Perspective {
   // players[playerId].virtualize(trueId)
   public [immerable] = true
@@ -25,8 +47,8 @@ export class Perspective {
     return virtual
   }
 
-  public virtualizeIds = (reals: GameEntityId[]): VirtualId[] =>
-    reals.map((target: GameEntityId) => this.virtualizeId(target))
+  public virtualizeIds = (realIds: GameEntityId[]): VirtualId[] =>
+    realIds.map((target: GameEntityId) => this.virtualizeId(target))
 
   public virtualizeEntry = (
     real: GameEntityId | GameEntityId[]
@@ -34,18 +56,18 @@ export class Perspective {
     Array.isArray(real) ? this.virtualizeIds(real) : this.virtualizeId(real)
 
   public virtualizeTargets = (
-    targets?: RealTargets
+    targets: RealTargets | undefined
   ): VirtualTargets | undefined =>
     targets &&
-    mapObject<TargetType, TrueId | TrueId[], VirtualId | VirtualId[]>(
-      targets,
+    mapObject(
+      targets as Record<TargetType, TrueId | TrueId[] | undefined>,
       this.virtualizeEntry
     )
 
   public devirtualizeId = (id: VirtualId): TrueId => this.trueIds[id.toString()]
 
-  public devirtualizeIds = (virtuals: VirtualId[] = []): TrueId[] =>
-    virtuals.map((target) => this.devirtualizeId(target))
+  public devirtualizeIds = (virtualIds: VirtualId[] = []): TrueId[] =>
+    virtualIds.map((target) => this.devirtualizeId(target))
 
   public devirtualizeEntry = (
     virtual: VirtualId | VirtualId[]
@@ -58,8 +80,8 @@ export class Perspective {
     targets?: VirtualTargets
   ): RealTargets | undefined =>
     targets &&
-    mapObject<TargetType, VirtualId | VirtualId[], TrueId | TrueId[]>(
-      targets,
+    mapObject(
+      targets as Record<TargetType, VirtualId | VirtualId[] | undefined>,
       this.devirtualizeEntry
     )
 
