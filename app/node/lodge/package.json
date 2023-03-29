@@ -4,7 +4,7 @@
   "packageManager": "yarn@3.5.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts ",
+    "dev": "tsx watch src/main.ts ",
     "build": "echo zero-build app powered by tsx",
     "test": "vitest",
     "test:once": "cross-env CI=true vitest run",
