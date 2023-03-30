@@ -22,7 +22,7 @@
     "zustand": "4.3.6"
   },
   "devDependencies": {
-    "tsx": "3.12.5",
+    "tsx": "3.12.6",
     "vite-tsconfig-paths": "4.0.7",
     "vitest": "0.29.3"
   }
