@@ -20,7 +20,7 @@
     "@emotion/react": "11.10.6",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "6.10.0",
