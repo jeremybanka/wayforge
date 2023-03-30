@@ -2642,6 +2642,7 @@ __metadata:
     lodash: 4.17.21
     nanoid: 4.0.2
     socket.io: 4.6.1
+    socket.io-client: 4.6.1
     socketio-auth: 0.1.1
     tsx: 3.12.6
     vite-tsconfig-paths: 4.0.7

@@ -1,10 +1,8 @@
-import { Perspective } from "../src"
+import { createPerspective } from "../src"
 
-describe(`Perspective`, () => {
-  describe(`constructor`, () => {
-    it(`creates a new perspective`, () => {
-      const p = new Perspective()
-      expect(p).toBeInstanceOf(Perspective)
-    })
+describe(`createPerspective`, () => {
+  it(`creates a new perspective`, () => {
+    const perspective = createPerspective()
+    expect(perspective).toBeDefined()
   })
 })

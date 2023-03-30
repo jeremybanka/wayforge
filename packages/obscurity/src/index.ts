@@ -1,118 +1,32 @@
-import { produce, immerable } from "immer"
-import { nanoid } from "nanoid"
+import { isString } from "fp-ts/lib/string"
 
 import type {
-  IActionRequest,
-  IVirtualActionRequest,
-  IVirtualImperative,
-  RealTargets,
-  TargetType,
-  VirtualTargets,
-} from "~/app/node/lodge/src/core/actions/types"
-import type { TrueId, VirtualId } from "~/app/node/lodge/src/core/util/Id"
-import {
-  virtualIdClassDict,
-  anonClassDict,
-} from "~/app/node/lodge/src/core/util/Id"
-import type {
-  GameEntityId,
-  GameEntityIdSystem,
-} from "~/app/node/lodge/src/store/game"
-import { mapObject } from "~/packages/anvl/src/object"
+  Resource,
+  ResourceIdentifierObject,
+} from "~/packages/anvl/src/json-api"
+import { isResourceIdentifier } from "~/packages/anvl/src/json-api"
+import { Dictionary } from "~/packages/anvl/src/object/dictionary"
+import { isLiteral } from "~/packages/anvl/src/refinement"
 
-export class Perspective {
-  // players[playerId].virtualize(trueId)
-  public [immerable] = true
+export const createPerspective = () =>
+  new Dictionary({ from: `trueId`, into: `virtualId` })
 
-  public virtualIds: Record<string, VirtualId>
+export type VirtualIdentifier<R extends Resource> = ResourceIdentifierObject<
+  R,
+  string
+>
+export const isVirtualIdentifier = (
+  thing: unknown
+): thing is VirtualIdentifier<Resource> =>
+  isResourceIdentifier.whoseMeta(isString)(thing)
 
-  public trueIds: Record<string, TrueId>
+export type TrueIdentifier<R extends Resource> = ResourceIdentifierObject<
+  R,
+  true
+>
+export const isTrueIdentifier = (
+  thing: unknown
+): thing is TrueIdentifier<Resource> =>
+  isResourceIdentifier.whoseMeta(isLiteral(true))(thing)
 
-  public virtualActionLog: IVirtualActionRequest[]
-
-  public constructor() {
-    this.virtualIds = {}
-    this.trueIds = {}
-    this.virtualActionLog = []
-  }
-
-  public virtualizeId = <Id extends GameEntityId>(
-    id: Id
-  ): GameEntityIdSystem[Id[`of`]][`id`][`virtual`] => {
-    const virtual = (this.virtualIds[id.str] ||
-      new anonClassDict[id.of](
-        nanoid()
-      )) as GameEntityIdSystem[Id[`of`]][`id`][`virtual`]
-    // console.log(id)
-    return virtual
-  }
-
-  public virtualizeIds = (realIds: GameEntityId[]): VirtualId[] =>
-    realIds.map((target: GameEntityId) => this.virtualizeId(target))
-
-  public virtualizeEntry = (
-    real: GameEntityId | GameEntityId[]
-  ): VirtualId | VirtualId[] =>
-    Array.isArray(real) ? this.virtualizeIds(real) : this.virtualizeId(real)
-
-  public virtualizeTargets = (
-    targets: RealTargets | undefined
-  ): VirtualTargets | undefined =>
-    targets &&
-    mapObject(
-      targets as Record<TargetType, TrueId | TrueId[] | undefined>,
-      this.virtualizeEntry
-    )
-
-  public devirtualizeId = (id: VirtualId): TrueId => this.trueIds[id.toString()]
-
-  public devirtualizeIds = (virtualIds: VirtualId[] = []): TrueId[] =>
-    virtualIds.map((target) => this.devirtualizeId(target))
-
-  public devirtualizeEntry = (
-    virtual: VirtualId | VirtualId[]
-  ): TrueId | TrueId[] =>
-    Array.isArray(virtual)
-      ? this.devirtualizeIds(virtual)
-      : this.devirtualizeId(virtual)
-
-  public devirtualizeTargets = (
-    targets?: VirtualTargets
-  ): RealTargets | undefined =>
-    targets &&
-    mapObject(
-      targets as Record<TargetType, VirtualId | VirtualId[] | undefined>,
-      this.devirtualizeEntry
-    )
-
-  public deriveImperative = (action: IActionRequest): IVirtualImperative => ({
-    id: nanoid(),
-    options: action.payload.options,
-    type: action.type,
-    actorId: action.payload.actorId && this.virtualizeId(action.payload.actorId),
-    targets: this.virtualizeTargets(action.payload.targets),
-  })
-
-  public hide = (trueId: GameEntityId): void => {
-    const trueIdString = trueId.toString()
-    const virtualIdString = this.virtualizeId(trueId).toString()
-    this.trueIds = produce(this.trueIds, (draft) => {
-      delete draft[virtualIdString]
-    })
-    this.virtualIds = produce(this.virtualIds, (draft) => {
-      delete draft[trueIdString]
-    })
-  }
-
-  public show = (trueId: TrueId): void => {
-    const virtualId = new virtualIdClassDict[trueId.of]()
-    const trueIdString = trueId.toString()
-    const virtualIdString = virtualId.toString()
-    this.trueIds = { ...this.trueIds, [virtualIdString]: trueId }
-    this.virtualIds = { ...this.virtualIds, [trueIdString]: virtualId }
-    // console.log(`trueIds`, this.trueIds)
-    // console.log(`virtualIds`, this.virtualIds)
-    // this.trueIds[virtualIdString] = trueId
-    // this.virtualIds[trueIdString] = virtualId
-  }
-}
+export type Visibility = `hidden` | `private` | `public` | `secret`

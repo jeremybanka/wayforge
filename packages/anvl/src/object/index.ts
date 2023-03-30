@@ -1,4 +1,6 @@
-import { reduce } from "../array"
+import { deepMob } from "./deepMob"
+import { isPlainObject } from "./refinement"
+import { includesAny, reduce } from "../array"
 import { isUndefined } from "../nullish"
 
 export * from "./access"
@@ -14,6 +16,29 @@ export const redact =
   <K extends keyof any>(...args: K[]) =>
   <O extends Record<K, any>>(obj: O): Omit<O, K> =>
     reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
+
+export type Redacted<Holder, RedactProp extends keyof any> = Omit<
+  {
+    [K in keyof Holder]: Holder[K] extends (infer Item)[]
+      ? Redacted<Item, RedactProp>[]
+      : Redacted<Omit<Holder[K], RedactProp>, RedactProp>
+  },
+  RedactProp
+>
+export const redactDeep =
+  <K extends keyof any>(...args: K[]) =>
+  <O extends Record<K, any>>(base: O): Redacted<O, K> =>
+    deepMob(base, (node, path) =>
+      includesAny(args)(path)
+        ? {
+            meta: { pathComplete: true },
+          }
+        : {
+            data: isPlainObject(node)
+              ? redact(...args)(node as Record<keyof any, any>)
+              : node,
+          }
+    )
 
 export const select =
   <Key extends keyof any>(...args: Key[]) =>
