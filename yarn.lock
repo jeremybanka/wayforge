@@ -2830,7 +2830,7 @@ __metadata:
     react-router-dom: 6.10.0
     recoil: 0.7.7
     sass: 1.60.0
-    vite: 4.2.0
+    vite: 4.2.1
     vite-plugin-svgr: 2.4.0
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.8
@@ -3055,7 +3055,7 @@ __metadata:
     fp-ts: 2.13.1
     io-ts: 2.2.20
     tsup: 6.7.0
-    vite: 4.2.0
+    vite: 4.2.1
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.8
   peerDependencies:
@@ -6589,7 +6589,7 @@ __metadata:
     fp-ts: 2.13.1
     io-ts: 2.2.20
     tsup: 6.7.0
-    vite: 4.2.0
+    vite: 4.2.1
     vite-tsconfig-paths: 4.0.7
     vitest: 0.29.8
   peerDependencies:
@@ -10161,7 +10161,7 @@ __metadata:
   resolution: "shrine@workspace:app/web/shrine"
   dependencies:
     phaser: 3.55.2
-    vite: 4.2.0
+    vite: 4.2.1
     vite-tsconfig-paths: 4.0.7
   languageName: unknown
   linkType: soft
@@ -11661,7 +11661,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:4.2.0, vite@npm:^3.0.0 || ^4.0.0":
+"vite@npm:4.2.1":
+  version: 4.2.1
+  resolution: "vite@npm:4.2.1"
+  dependencies:
+    esbuild: ^0.17.5
+    fsevents: ~2.3.2
+    postcss: ^8.4.21
+    resolve: ^1.22.1
+    rollup: ^3.18.0
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 70eb162ffc299017a3c310e3adc95e9661def6b17aafd1f8e5e02e516766060435590dbe3df1e4e95acc3583c728a76e91f07c546221d1e701f1b2b021293f45
+  languageName: node
+  linkType: hard
+
+"vite@npm:^3.0.0 || ^4.0.0":
   version: 4.2.0
   resolution: "vite@npm:4.2.0"
   dependencies:
