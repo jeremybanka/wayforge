@@ -1200,9 +1200,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react@npm:0.22.0":
-  version: 0.22.0
-  resolution: "@floating-ui/react@npm:0.22.0"
+"@floating-ui/react@npm:0.22.2":
+  version: 0.22.2
+  resolution: "@floating-ui/react@npm:0.22.2"
   dependencies:
     "@floating-ui/react-dom": ^1.3.0
     aria-hidden: ^1.1.3
@@ -1210,7 +1210,7 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 964aab420e0288ba391425f2e682383c3519b0b298bd8aaaa14b0773a6e889fb458c48d1384f260575d71fe04001ebf52f4daeabab2aed242e99d7e5a30d62cc
+  checksum: 590285aaf0baacdc044694b4423107250bccaf679e503d61dd133f6f844cb1767845c66be3e9979d04887a53a059697dfcaddca39188d8677dc2de5c67f65347
   languageName: node
   linkType: hard
 
@@ -2642,7 +2642,7 @@ __metadata:
     "@emotion/styled": 11.10.6
     "@eyecuelab/recoil-devtools": 0.1.7
     "@floating-ui/dom": 1.2.5
-    "@floating-ui/react": 0.22.0
+    "@floating-ui/react": 0.22.2
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@vitejs/plugin-react": 3.1.0
