@@ -1,18 +1,12 @@
 import { pipe } from "fp-ts/function"
-import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import type { GameClientSocket } from "../src/store"
-import {
-  GameClientEvents,
-  initGame,
-  serveGame,
-  useActions,
-  useDispatch,
-} from "../src/store"
+import type { GameClientSocket } from "../src/socket-interface"
+import { serveGame } from "../src/socket-interface"
+import { initGame, useActions, useDispatch } from "../src/store"
 
 it(`adds a player`, () => {
   const game = pipe(initGame(), useActions, useDispatch)
@@ -48,11 +42,11 @@ describe(`game server usage`, () => {
     async () =>
       new Promise<void>((pass, fail) =>
         client
-          .on(`ADD_PLAYER`, (result) => {
+          .on(`ACTION:ADD_PLAYER`, (result) => {
             try {
               expect(console.info).toHaveBeenCalledWith(
                 client.id,
-                `ADD_PLAYER`,
+                `ACTION:ADD_PLAYER`,
                 { options: { id: `player1` } }
               )
               expect(result).toEqual({
@@ -65,7 +59,7 @@ describe(`game server usage`, () => {
             }
             pass()
           })
-          .emit(`ADD_PLAYER`, { options: { id: `player1` } })
+          .emit(`ACTION:ADD_PLAYER`, { options: { id: `player1` } })
       ),
     1000
   )

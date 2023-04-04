@@ -1,28 +1,16 @@
-import { pipe } from "fp-ts/function"
-import type { Socket, Server as WebSocketServer } from "socket.io"
-import type { Socket as ClientSocket } from "socket.io-client"
+import { nanoid } from "nanoid"
 import type { StoreApi } from "zustand/vanilla"
 import { createStore } from "zustand/vanilla"
 
-import type { Encapsulate } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 import type {
-  ErrorObject,
   Resource,
   ResourceIdentifierObject,
 } from "~/packages/anvl/src/json-api"
-import { ifDefined } from "~/packages/anvl/src/nullish"
 import type { Fragment } from "~/packages/anvl/src/object"
-import {
-  redactDeep,
-  isPlainObject,
-  entriesToRecord,
-  recordToEntries,
-  patch,
-  hasExactProperties,
-} from "~/packages/anvl/src/object"
+import { patch, hasExactProperties } from "~/packages/anvl/src/object"
 import { Dictionary } from "~/packages/anvl/src/object/dictionary"
-import { isClass, isUnion } from "~/packages/anvl/src/refinement"
+import { isClass } from "~/packages/anvl/src/refinement"
 import type { Visibility } from "~/packages/obscurity/src"
 
 export interface GameEntity extends Resource {
@@ -51,15 +39,74 @@ export interface Card {
 export type CardGroup = Card
 
 export type GameState = {
+  playerStatus: Record<string, string>
   players: Record<string, Player>
   cards: Record<string, Card>
   cardGroups: Record<string, CardGroup>
+  cardValues: Record<string, { content: string }>
   cardsInGroups: Join
+  valuesOfCards: Join
 }
 
 export type GameStore = StoreApi<GameState>
 
-export const GAME_ACTIONS = [`ADD_PLAYER`] as const
+export const GAME_ACTION_KEYS = [
+  `ADD_PLAYER`,
+  `ADD_CARD_VALUE`,
+  `ADD_CARD`,
+] as const
+export type GameActionKey = (typeof GAME_ACTION_KEYS)[number]
+export type GameActionKeyWrapped = `ACTION:${GameActionKey}`
+export const unwrapGameActionKey = (key: GameActionKeyWrapped): GameActionKey =>
+  key.split(`:`)[1] as GameActionKey
+export const wrapGameActionKey = (key: GameActionKey): GameActionKeyWrapped =>
+  `ACTION:${key}` as GameActionKeyWrapped
+
+export const STATUS_EVENT_KEYS = [`FOCUS`, `MESSAGE`, `EMOTE`] as const
+export type StatusEventKey = (typeof STATUS_EVENT_KEYS)[number]
+export type StatusEventKeyWrapped = `STATUS:${StatusEventKey}`
+export const unwrapStatusEventKey = (
+  key: StatusEventKeyWrapped
+): StatusEventKey => key.split(`:`)[1] as StatusEventKey
+export const wrapStatusEventKey = (key: StatusEventKey): StatusEventKeyWrapped =>
+  `STATUS:${key}` as StatusEventKeyWrapped
+
+export const refineSignal = (
+  signal: string
+):
+  | { action: GameActionKeyWrapped }
+  | { status: StatusEventKeyWrapped }
+  | { unknown: string } => {
+  const [type, key] = signal.split(`:`)
+  if (type === `ACTION`) {
+    if (GAME_ACTION_KEYS.includes(key as GameActionKey)) {
+      return { action: signal as GameActionKeyWrapped }
+    }
+  }
+  if (type === `STATUS`) {
+    if (STATUS_EVENT_KEYS.includes(key as StatusEventKey)) {
+      return { status: signal as StatusEventKeyWrapped }
+    }
+  }
+  return { unknown: signal }
+}
+
+export type StatusEventPayload = any
+export interface StatusEvents
+  extends Record<
+    StatusEventKey,
+    (payload: StatusEventPayload) => Fragment<GameState[`playerStatus`]>
+  > {
+  FOCUS: (payload: {
+    options: { id: string }
+  }) => Partial<GameState[`playerStatus`]>
+  MESSAGE: (payload: {
+    options: { message: string }
+  }) => Partial<GameState[`playerStatus`]>
+  EMOTE: (payload: {
+    options: { emote: string }
+  }) => Partial<GameState[`playerStatus`]>
+}
 
 export type GameActionPayload =
   | {
@@ -70,37 +117,70 @@ export type GameActionPayload =
   | { targets: Record<string, ResourceIdentifierObject> }
 export interface GameActions
   extends Record<
-    GameActionType,
+    GameActionKey,
     (payload: GameActionPayload) => Fragment<GameState>
   > {
   ADD_PLAYER: (payload: {
     options: { id: string }
   }) => Pick<GameState, `players`>
+  ADD_CARD_VALUE: (payload: {
+    options: { content: string }
+  }) => Pick<GameState, `cardValues`>
+  ADD_CARD: (payload: {
+    targets: { cardValue: { id: string; type: `cardValue` } }
+  }) => Pick<GameState, `cards` | `valuesOfCards`>
 }
-export type GameActionType = (typeof GAME_ACTIONS)[number]
 
 export const initGame = (): GameStore =>
   createStore<GameState>(() => ({
+    playerStatus: {},
     players: {},
     cards: {},
     cardGroups: {},
+    cardValues: {},
     cardsInGroups: new Join(),
+    valuesOfCards: new Join(),
   }))
 
-export const useActions = (
-  store: GameStore
-): { store: GameStore; actions: GameActions } => ({
-  store,
-  actions: {
-    ADD_PLAYER: ({ options: { id } }) => ({
-      players: {
-        [id]: {
-          perspective: createPerspective(),
+export const configureActions = (config: {
+  idFn: () => string
+}): ((store: GameStore) => { store: GameStore; actions: GameActions }) => {
+  const useActions: ReturnType<typeof configureActions> = (store) => ({
+    store,
+    actions: {
+      ADD_PLAYER: ({ options: { id } }) => ({
+        players: {
+          [id]: {
+            perspective: createPerspective(),
+          },
         },
+      }),
+      ADD_CARD_VALUE: ({ options: { content } }) => {
+        const id = config.idFn()
+        return {
+          cardValues: {
+            [id]: {
+              content,
+            },
+          },
+        }
       },
-    }),
-  },
-})
+      ADD_CARD: ({ targets: { cardValue } }) => {
+        const id = config.idFn()
+        return {
+          cards: {
+            [id]: {
+              rotation: 0,
+            },
+          },
+          valuesOfCards: store.getState().valuesOfCards.set(cardValue.id, id),
+        }
+      },
+    },
+  })
+  return useActions
+}
+export const useActions = configureActions({ idFn: nanoid })
 
 export const useDispatch = ({
   store,
@@ -116,105 +196,8 @@ export const useDispatch = ({
   store,
   actions,
   dispatch: (key, payload) => {
-    const delta = actions[key](payload)
+    const delta = actions[key](payload as any)
     store.setState((state) => patch(state, delta))
     return delta
   },
 })
-
-export type GameSocketError = ErrorObject<`title`>
-
-export type ServeGameOptions = {
-  logger: Pick<Console, `error` | `info` | `warn`>
-  game: ReturnType<typeof useDispatch>
-}
-
-export type GameClientEvents = {
-  [GameActionType in keyof GameActions]: Encapsulate<GameActions[GameActionType]>
-}
-
-export type GameServerEvents = {
-  [GameActionType in keyof GameActions]: GameActions[GameActionType] extends (
-    ...args: any[]
-  ) => any
-    ? (
-        result:
-          | Awaited<ReturnType<GameActions[GameActionType]>>
-          | GameSocketError
-      ) => void
-    : never
-}
-
-export type GameServerSideEvents = Record<string, unknown>
-
-export type GameClientSocket = ClientSocket<GameServerEvents, GameClientEvents>
-
-export type GameSocketServer = WebSocketServer<
-  GameClientEvents,
-  GameServerEvents,
-  GameServerSideEvents
->
-
-export const serveGame =
-  (options: ServeGameOptions) =>
-  <YourServer extends WebSocketServer>(server: YourServer): YourServer =>
-    server.on(
-      `connection`,
-      (
-        socket: Socket<GameClientEvents, GameServerEvents, GameServerSideEvents>
-      ) => {
-        const { game, logger } = options
-
-        const makeHandler = (key: GameActionType) => (payload: any) => {
-          try {
-            const result = game.dispatch(key, payload)
-            console.info(result)
-            socket.emit(key, redactDeep(`perspective`)(result as any) as any)
-          } catch (thrown) {
-            if (thrown instanceof Error) {
-              logger.error(thrown.message)
-              socket.emit(key, {
-                type: `error`,
-                title: thrown.message,
-              })
-            } else {
-              throw thrown
-            }
-          }
-        }
-
-        const handle: GameClientEvents = pipe(
-          game.actions,
-          recordToEntries,
-          (keys) => keys.map(([key]) => [key, makeHandler(key)] as const),
-          entriesToRecord
-        )
-
-        socket.onAny((key: string, payload: unknown) => {
-          logger.info(socket.id, key, payload)
-          if (key in handle) {
-            if (
-              ifDefined(
-                isUnion
-                  .or(
-                    hasExactProperties({
-                      options: ifDefined(isPlainObject),
-                    })
-                  )
-                  .or(
-                    hasExactProperties({
-                      targets: ifDefined(isPlainObject),
-                    })
-                  )
-              )(payload)
-            ) {
-              handle[key as keyof GameClientEvents](payload as any)
-            } else {
-              logger.error(`Invalid payload for ${key}: ${payload}`)
-            }
-          } else {
-            logger.error(`Unknown event type: ${key}`)
-          }
-        })
-      }
-    )
