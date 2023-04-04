@@ -108,25 +108,29 @@ export interface StatusEvents
   }) => Partial<GameState[`playerStatus`]>
 }
 
-export type GameActionPayload =
+export type GameActionPayload = { id: string } & (
   | {
       options: any
       targets: Record<string, ResourceIdentifierObject>
     }
   | { options: any }
   | { targets: Record<string, ResourceIdentifierObject> }
+)
 export interface GameActions
   extends Record<
     GameActionKey,
     (payload: GameActionPayload) => Fragment<GameState>
   > {
   ADD_PLAYER: (payload: {
+    id: string
     options: { id: string }
   }) => Pick<GameState, `players`>
   ADD_CARD_VALUE: (payload: {
+    id: string
     options: { content: string }
   }) => Pick<GameState, `cardValues`>
   ADD_CARD: (payload: {
+    id: string
     targets: { cardValue: { id: string; type: `cardValue` } }
   }) => Pick<GameState, `cards` | `valuesOfCards`>
 }

@@ -23,11 +23,6 @@ import { unwrapGameActionKey, wrapGameActionKey, refineSignal } from "./store"
 
 export type GameSocketError = ErrorObject<`title`>
 
-export type ServeGameOptions = {
-  logger: Pick<Console, `error` | `info` | `warn`>
-  game: ReturnType<typeof useDispatch>
-}
-
 export type GameClientActionEvents = {
   [Key in GameActionKey as `ACTION:${Key}`]: Encapsulate<GameActions[Key]>
 }
@@ -53,6 +48,11 @@ export type GameSocketServer = WebSocketServer<
   GameServerEvents,
   GameServerSideEvents
 >
+
+export type ServeGameOptions = {
+  logger: Pick<Console, `error` | `info` | `warn`>
+  game: ReturnType<typeof useDispatch>
+}
 
 export const serveGame =
   (options: ServeGameOptions) =>
@@ -107,6 +107,7 @@ export const serveGame =
 
         socket.onAny((signal: string, payload: unknown) => {
           logger.info(socket.id, signal, payload)
+
           const refined = refineSignal(signal)
 
           if (`action` in refined) {
