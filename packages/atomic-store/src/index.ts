@@ -28,6 +28,7 @@ export type Store = {
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   atoms: Hamt<Atom<any>, string>
+  done: Set<string>
 }
 
 export const createStore = (): Store =>
@@ -37,6 +38,7 @@ export const createStore = (): Store =>
     atoms: HAMT.make<Atom<any>, string>(),
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
+    done: new Set(),
   } satisfies Store)
 
 export const IMPLICIT = {
@@ -49,29 +51,56 @@ export const IMPLICIT = {
   },
 }
 
+export const operationComplete = (store: Store): void => {
+  console.log(`   ✅`, `operation complete`)
+  store.done.clear()
+}
+
 export const getAtomState = <T>(
   atom: Atom<T>,
   store: Store = IMPLICIT.STORE
-): T => HAMT.get(atom.key, store.valueMap)
+): T => {
+  const value = HAMT.get(atom.key, store.valueMap)
+  return value
+}
 
-export const getSelectorState = <T>(selector: Selector<T>): T => selector.get()
+export const getSelectorState = <T>(
+  selector: ReadonlySelector<T> | Selector<T>
+): T => selector.get()
 
 export const getState = <T>(
-  state: Atom<T> | Selector<T>,
+  state: Atom<T> | ReadonlySelector<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): T => (`get` in state ? getSelectorState(state) : getAtomState(state, store))
 
-export const setDownstreamState = <T>(
-  atom: Atom<T>,
+export const propagateChanges = <T>(
+  state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
-  const selectorKeys = store.selectorGraph.getRelations(atom.key)
-  selectorKeys.forEach(({ id: selectorKey }) => {
-    console.log(`->`, `bumping`, selectorKey)
-    const selector = HAMT.get(selectorKey, store.selectors)
-    const newValue = getState(selector, store)
-    console.log(`   <-`, selectorKey, `became`, newValue)
-    selector.subject.next(newValue)
+  const relatedStateKeys = store.selectorGraph.getRelations(state.key)
+  console.log(
+    `   ||`,
+    `bumping`,
+    relatedStateKeys.length,
+    `states:`,
+    relatedStateKeys.map(({ id }) => id)
+  )
+  console.log(`   ||`, `done:`, store.done)
+  relatedStateKeys.forEach(({ id: stateKey }) => {
+    if (store.done.has(stateKey)) {
+      console.log(`   ||`, stateKey, `already done`)
+      return
+    }
+    console.log(`->`, `bumping`, stateKey)
+    const state =
+      HAMT.get(stateKey, store.selectors) ??
+      HAMT.get(stateKey, store.atoms) ??
+      HAMT.get(stateKey, store.readonlySelectors)
+    const newValue = getState(state, store)
+    console.log(`   <-`, stateKey, `became`, newValue)
+    state.subject.next(newValue)
+    store.done.add(stateKey)
+    propagateChanges(state, store)
   })
 }
 
@@ -80,50 +109,89 @@ export const setAtomState = <T>(
   value: T,
   store: Store = IMPLICIT.STORE
 ): void => {
+  console.log(`->`, `setting atom`, `"${atom.key}"`, `to`, value)
   store.valueMap = HAMT.set(atom.key, value, store.valueMap)
+  store.done.add(atom.key)
   atom.subject.next(value)
-  setDownstreamState(atom, store)
+  console.log(`   ||`, `propagating change to`, `"${atom.key}"`)
+  propagateChanges(atom, store)
+}
+export const setSelectorState = <T>(
+  selector: Selector<T>,
+  value: T,
+  store: Store = IMPLICIT.STORE
+): void => {
+  console.log(`->`, `setting selector`, `"${selector.key}"`, `to`, value)
+  selector.set(value)
+  store.done.add(selector.key)
+  console.log(`   ||`, `propagating change to`, `"${selector.key}"`)
+  propagateChanges(selector, store)
+}
+export const setState__INTERNAL = <T>(
+  state: Atom<T> | Selector<T>,
+  value: T,
+  store: Store = IMPLICIT.STORE
+): void => {
+  if (`set` in state) {
+    setSelectorState(state, value, store)
+  } else {
+    setAtomState(state, value, store)
+  }
+}
+export const setState = <T>(
+  state: Atom<T> | Selector<T>,
+  value: T,
+  store: Store = IMPLICIT.STORE
+): void => {
+  setState__INTERNAL(state, value, store)
+  operationComplete(store)
 }
 
 export const registerSelector = (
   selectorKey: string,
   store: Store = IMPLICIT.STORE
 ): {
-  getState: <T>(atom: Atom<T>) => T
-  setState: <T>(atom: Atom<T>, newValue: T | ((oldValue: T) => T)) => void
+  getState: <T>(state: Atom<T> | ReadonlySelector<T> | Selector<T>) => T
+  setState: <T>(state: Atom<T> | Selector<T>, value: T) => void
 } => ({
-  getState: (atom) => {
+  getState: (state) => {
     const isRegistered = store.selectorGraph
       .getRelatedIds(selectorKey)
-      .includes(atom.key)
+      .includes(state.key)
     if (isRegistered) {
-      console.log(`   ||`, selectorKey, `<-`, atom.key)
+      console.log(`   ||`, selectorKey, `<-`, state.key)
     } else {
-      console.log(`🔌 registerSelector`, atom.key, `->`, selectorKey)
-      store.selectorGraph = store.selectorGraph.set(selectorKey, atom.key)
+      console.log(`🔌 registerSelector`, state.key, `->`, selectorKey)
+      store.selectorGraph = store.selectorGraph.set(selectorKey, state.key)
     }
-
-    const currentAtomValue = getState(atom, store)
-    console.log(`   ||`, `currentAtomValue`, currentAtomValue)
-    return currentAtomValue
+    const currentValue = getState(state, store)
+    console.log(`   ||`, state.key, `=`, currentValue)
+    return currentValue
   },
-  setState: (atom, newValue) => {
-    store.selectorGraph.set(atom.key, selectorKey)
-    setAtomState(atom, newValue, store)
+  setState: (state, newValue) => {
+    store.selectorGraph.set(state.key, selectorKey)
+    setState__INTERNAL(state, newValue, store)
   },
 })
 
-export const atom = <T>(options: { key: string; default: T }): Atom<T> => {
+export const atom = <T>(
+  options: { key: string; default: T },
+  store: Store = IMPLICIT.STORE
+): Atom<T> => {
   const subject = new Rx.Subject<T>()
   const newAtom = { ...options, subject }
-  setAtomState(newAtom, options.default)
-
+  store.atoms = HAMT.set(options.key, newAtom, store.atoms)
+  getState(newAtom, store)
+  setState(newAtom, options.default)
   return newAtom
 }
 
 export type Transactors = {
-  get: <S>(state: Atom<S>) => S
-  set: <S>(state: Atom<S>, newValue: S | ((oldValue: S) => S)) => void
+  get: <S>(state: Atom<S> | ReadonlySelector<S> | Selector<S>) => S
+  set: <S>(
+    state: Atom<S> | Selector<S>,
+    newValue: S | ((oldValue: S) => S)
+  ) => void
 }
 export type ReadonlyTransactors = Omit<Transactors, `set`>
 
@@ -152,8 +220,8 @@ export function selector<T>(
 
   const subject = new Rx.Subject<T>()
 
-  const { getState } = registerSelector(options.key, store)
-  const getSelf = () => options.get({ get: getState })
+  const { getState: get, setState: set } = registerSelector(options.key, store)
+  const getSelf = () => options.get({ get })
 
   if (!(`set` in options)) {
     const readonlySelector = {
@@ -161,29 +229,33 @@ export function selector<T>(
       subject,
       get: getSelf,
     }
-    store.valueMap = HAMT.set(
+    store.readonlySelectors = HAMT.set(
       options.key,
       readonlySelector,
       store.readonlySelectors
     )
+    const initialValue = getSelf()
+    console.log(`   ✨`, options.key, `=`, initialValue)
     return readonlySelector
   }
 
-  const { setState } = registerSelector(options.key, store)
+  const setSelf = (next: T | ((oldValue: T) => T)): void => {
+    console.log(`${options.key}.set`, next)
+    const newValue = become(next)(getSelf)
+    store.done.add(options.key)
+    subject.next(newValue)
+    options.set(newValue, { get, set })
+  }
 
   const stateInterface: GetSetInterface<T> = {
-    get: (): T => options.get({ get: getState }),
-    set: (next: T | ((oldValue: T) => T)): void => {
-      console.log(`set`, options.key, next)
-      const newValue = become(next)(getSelf)
-      console.log(`newValue =>`, newValue)
-      options.set(newValue, { get: getState, set: setState })
-      subject.next(newValue)
-    },
+    get: getSelf,
+    set: setSelf,
   }
 
   const mySelector = { ...options, subject, ...stateInterface }
   store.selectors = HAMT.set(options.key, mySelector, store.selectors)
+  const initialValue = getSelf()
+  console.log(`   ✨`, options.key, `=`, initialValue)
   return mySelector
 }
 

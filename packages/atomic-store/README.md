@@ -1,0 +1,12 @@
+- [x] atoms and selectors
+- [x] implicit store
+- [x] readonly selectors
+- [x] settable selectors
+- [x] safe recursive update propagation
+- [ ] selector memoization
+- [ ] atom and selector families
+- [ ] atom effects
+- [ ] transactions
+- [ ] trampoline for recursive propagation
+- [ ] optional default value for atoms
+- [ ] optional state keys
