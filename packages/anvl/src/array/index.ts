@@ -95,6 +95,6 @@ export const isOneOf =
     args.includes(input as T)
 
 export const filter =
-  <I>(f: (value: I, index: number, array: I[]) => boolean) =>
-  (a: I[]): I[] =>
+  <I, O extends I>(f: (value: I, index: number, array: I[]) => value is O) =>
+  (a: I[]): O[] =>
     a.filter(f)

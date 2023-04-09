@@ -1,7 +1,7 @@
 import type { Json } from "~/packages/anvl/src/json"
 
 import type { ErrorObject } from "./errors"
-import type { Resource, ResourceObject, ResourceUpdate } from "./resource"
+import type { JsonApiResource, ResourceObject, ResourceUpdate } from "./resource"
 
 export type JsonApiObject = {
   version: string
@@ -26,23 +26,25 @@ export type JsonApiDocument_Error<
 }
 
 export type JsonApiDocument_Happy<
-  RESOURCE extends Resource,
+  RESOURCE extends JsonApiResource,
   META extends Json | undefined = undefined,
-  DATA extends Resource | Resource[] = RESOURCE
+  DATA extends JsonApiResource | JsonApiResource[] = RESOURCE
 > = {
   data: DATA extends RESOURCE[]
     ? ResourceObject<RESOURCE>[]
     : ResourceObject<RESOURCE>
   meta?: META
-  included?: ResourceObject<Resource>[]
+  included?: ResourceObject<JsonApiResource>[]
   errors?: never
 }
 
 export type JsonApiDocument_Required<
-  DATA extends Resource | Resource[],
+  DATA extends JsonApiResource | JsonApiResource[],
   META extends Json | undefined = undefined,
   ERROR extends ErrorObject | undefined = undefined,
-  RESOURCE extends Resource = DATA extends Resource[] ? DATA[number] : DATA
+  RESOURCE extends JsonApiResource = DATA extends JsonApiResource[]
+    ? DATA[number]
+    : DATA
 > =
   | JsonApiDocument_Error<ERROR, META>
   | JsonApiDocument_Happy<RESOURCE, META, DATA>
@@ -54,7 +56,7 @@ export type JsonApiDocument_Optional = {
 
 /* prettier-ignore */
 export type JsonApiDocument<
-  DATA extends Resource | Resource[],
+  DATA extends JsonApiResource | JsonApiResource[],
   META extends Json | undefined = undefined,
   ERROR extends ErrorObject | undefined = undefined,
 > 
@@ -66,6 +68,6 @@ export type JsonApiDocument<
   >
 /* prettier-ignore-end */
 
-export type JsonApiUpdate<RESOURCE extends Resource> = {
+export type JsonApiUpdate<RESOURCE extends JsonApiResource> = {
   data: ResourceUpdate<RESOURCE>
 }

@@ -1,19 +1,24 @@
 import type { JsonObj } from "~/packages/anvl/src/json"
-import { isUndefined } from "~/packages/anvl/src/nullish"
-import { treeShake } from "~/packages/anvl/src/object"
+import type { EmptyObject, PlainObject } from "~/packages/anvl/src/object"
+import { filterProperties } from "~/packages/anvl/src/object"
 
 import type {
   ResourceFlat,
   Resource,
   ResourceObject,
   Relationships,
+  JsonApiResource,
 } from "./resource"
+import { cannotExist, isWithin } from "../refinement"
 
 export * from "./resource"
 export * from "./errors"
 export * from "./document"
 
-const removeUndefinedProperties = treeShake(isUndefined)
+const filterOutIdentifier = filterProperties(
+  cannotExist,
+  isWithin([`id`, `type`] as const)
+)
 
 export type Empty = Record<string, never>
 
@@ -26,7 +31,7 @@ export type DeleteKeysFrom<T, K extends number | string | symbol> = T & {
   [P in K]?: never
 }
 
-export const flattenResourceObject = <RESOURCE extends Resource>(
+export const flattenResourceObject = <RESOURCE extends JsonApiResource>(
   resource: ResourceObject<RESOURCE>
 ): ResourceFlat<RESOURCE> => {
   if (resource.attributes) {
@@ -39,24 +44,12 @@ export const flattenResourceObject = <RESOURCE extends Resource>(
   }
   throw new Error(`Resource ${resource.id} has no attributes`)
 }
-export const serializeResource = <
-  OBJ extends JsonObj,
-  RESOURCE extends Resource = {
-    id: string
-    type: string
-    attributes: OBJ
-    relationships: Relationships
-  }
->(
-  obj: OBJ,
+export const serializeResource = <ATTRIBUTES extends JsonObj & PlainObject>(
+  obj: ATTRIBUTES,
   type: string,
   id: string
-): ResourceObject<RESOURCE> => ({
-  attributes: removeUndefinedProperties({
-    ...obj,
-    id: undefined,
-    type: undefined,
-  }),
+): ResourceObject<Resource<ATTRIBUTES, EmptyObject>> => ({
+  attributes: filterOutIdentifier(obj),
   type,
   id,
 })

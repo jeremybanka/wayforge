@@ -2,23 +2,24 @@ import { key } from "./access"
 import { isPlainObject } from "./refinement"
 import { sprawl } from "./sprawl"
 
-export type Fragment<T> = {
+export type Fragment<T> = Partial<{
   [K in keyof T]: T[K] extends (infer Item)[]
     ? Fragment<Item>[]
     : Fragment<Partial<T[K]>>
+}>
+
+interface ExampleTree extends Record<keyof any, any> {
+  a?: {
+    b: {
+      c: number | null
+    }[]
+  }
+  z: number
 }
 
-// interface ExampleTree extends Record<keyof any, any> {
-//   a?: {
-//     b: {
-//       c: number | null
-//     }[]
-//   }
-// }
+type ExampleFragment = Fragment<ExampleTree>
 
-// type ExampleFragment = Fragment<ExampleTree>
-
-// const exampleTreeFragment: ExampleFragment = { a: { b: [{}] } }
+const exampleTreeFragment: ExampleFragment = { a: { b: [{}] } }
 
 export const patch = <Base extends object, Update extends Fragment<Base>>(
   base: Base,

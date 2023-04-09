@@ -25,7 +25,14 @@ export type JsonArr<Element extends Serializable = Serializable> =
 
 export type Json = JsonArr | JsonObj | Primitive
 
-export const parseJson = (str: string): Json => JSON.parse(str)
+export const parseJson = <J extends Json, S extends Stringified<J> | string>(
+  str: S | string
+): S extends Stringified<J> ? J : Json => JSON.parse(str)
+
+export type Stringified<J extends Json> = string & { __json: J }
+
+export const stringifyJson = <J extends Json>(json: J): Stringified<J> =>
+  JSON.stringify(json) as Stringified<J>
 
 export type Empty = Record<string, never>
 

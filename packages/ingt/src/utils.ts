@@ -102,7 +102,7 @@ export const assignToJsonFile = ({
 }
 
 export type PriorRelation = {
-  to: ResourceIdentifierObject
+  to: ResourceIdentifierObject<any, any>
   path: string[]
   meta?: Json
 }
