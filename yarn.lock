@@ -2811,7 +2811,7 @@ __metadata:
     socket.io-client: 4.6.1
     socketio-auth: 0.1.1
     tsx: 3.12.6
-    vite-tsconfig-paths: 4.0.7
+    vite-tsconfig-paths: 4.0.8
     vitest: 0.29.8
     zustand: 4.3.7
   languageName: unknown
@@ -2862,7 +2862,7 @@ __metadata:
     sass: 1.61.0
     vite: 4.2.1
     vite-plugin-svgr: 2.4.0
-    vite-tsconfig-paths: 4.0.7
+    vite-tsconfig-paths: 4.0.8
     vitest: 0.29.8
     zod: 3.21.4
   languageName: unknown
@@ -3086,7 +3086,7 @@ __metadata:
     io-ts: 2.2.20
     tsup: 6.7.0
     vite: 4.2.1
-    vite-tsconfig-paths: 4.0.7
+    vite-tsconfig-paths: 4.0.8
     vitest: 0.29.8
   peerDependencies:
     fp-ts: ^2.13.1
@@ -6619,7 +6619,7 @@ __metadata:
     io-ts: 2.2.20
     tsup: 6.7.0
     vite: 4.2.1
-    vite-tsconfig-paths: 4.0.7
+    vite-tsconfig-paths: 4.0.8
     vitest: 0.29.8
   peerDependencies:
     fp-ts: ^2.13.1
@@ -8958,7 +8958,7 @@ __metadata:
     nanoid: 3.3.6
     tsup: 6.7.0
     vite: 4.2.0
-    vite-tsconfig-paths: 4.0.7
+    vite-tsconfig-paths: 4.0.8
     vitest: 0.29.3
   peerDependencies:
     fp-ts: ^2.13.1
@@ -10199,7 +10199,7 @@ __metadata:
     socket.io: 4.6.0
     socket.io-client: 4.6.0
     vite: 4.2.1
-    vite-tsconfig-paths: 4.0.7
+    vite-tsconfig-paths: 4.0.8
     zustand: 4.3.7
   languageName: unknown
   linkType: soft
@@ -11168,7 +11168,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfck@npm:^2.0.1":
+"tsconfck@npm:^2.1.0":
   version: 2.1.1
   resolution: "tsconfck@npm:2.1.1"
   peerDependencies:
@@ -11725,19 +11725,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-tsconfig-paths@npm:4.0.7":
-  version: 4.0.7
-  resolution: "vite-tsconfig-paths@npm:4.0.7"
+"vite-tsconfig-paths@npm:4.0.8":
+  version: 4.0.8
+  resolution: "vite-tsconfig-paths@npm:4.0.8"
   dependencies:
     debug: ^4.1.1
     globrex: ^0.1.2
-    tsconfck: ^2.0.1
+    tsconfck: ^2.1.0
   peerDependencies:
     vite: "*"
   peerDependenciesMeta:
     vite:
       optional: true
-  checksum: 490123daa28dcf0b1290c2374876041e0ed2964d5244f08ad2cb8354436eff110592d5ffec0960276552943b46361b6a98f2363406e89ae0988287769188f5e8
+  checksum: 4ec41f5d2eb167c1d7dfa6dd196ce253406c071671199239f9721fd5f8aee5b0107503a520ca996da67bad7d2750829534ec6e93801abe6d24fbc71d46ae8665
   languageName: node
   linkType: hard
 
