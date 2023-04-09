@@ -12,11 +12,11 @@
     "fp-ts": "2.13.1",
     "immer": "9.0.19",
     "phaser": "3.55.2",
-    "socket.io-client": "4.6.0",
+    "socket.io-client": "4.6.1",
     "zustand": "4.3.7"
   },
   "devDependencies": {
-    "socket.io": "4.6.0",
+    "socket.io": "4.6.1",
     "vite": "4.2.1",
     "vite-tsconfig-paths": "4.0.7"
   }
