@@ -7,9 +7,12 @@ export const doNothing = (): void => undefined
 export const become =
   <T>
   (nextVersionOfThing: Modifier<T> | T) =>
-  (originalThing: T): T =>
+  (originalThing: T | (() => T)): T =>
     nextVersionOfThing instanceof Function
-      ? nextVersionOfThing(originalThing)
+      ? nextVersionOfThing(originalThing instanceof Function 
+          ? originalThing() 
+          : originalThing
+        )
       : nextVersionOfThing
 /* eslint-enable prettier/prettier */
 
