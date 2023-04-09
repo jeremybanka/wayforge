@@ -19,7 +19,7 @@ import {
   isRecord,
 } from "~/packages/anvl/src/object"
 import { isLiteral } from "~/packages/anvl/src/refinement"
-import type { TrueIdentifier } from "~/packages/obscurity/src"
+import type { TrueIdentifier } from "~/packages/occlusion/src"
 
 import type {
   GameActionKey,

@@ -1,7 +1,7 @@
 {
-  "name": "obscurity",
+  "name": "occlusion",
   "version": "0.0.0",
-  "description": "don't tell clients actual entity ids",
+  "description": "it's a matter of perspective",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

@@ -2,20 +2,16 @@ import { nanoid } from "nanoid"
 import type { StoreApi } from "zustand/vanilla"
 import { createStore } from "zustand/vanilla"
 
-import type { Identified, Parcel } from "~/packages/anvl/src/id"
+import type { Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
-import type { Json } from "~/packages/anvl/src/json"
 import type {
   JsonApiResource,
-  Resource,
   ResourceAttributes,
   ResourceIdentifierObject,
 } from "~/packages/anvl/src/json-api"
 import type { Fragment, KeysExtending } from "~/packages/anvl/src/object"
-import { patch, hasExactProperties } from "~/packages/anvl/src/object"
-import { Dictionary } from "~/packages/anvl/src/object/dictionary"
-import { isClass } from "~/packages/anvl/src/refinement"
-import { Perspective, Identifier } from "~/packages/obscurity/src"
+import { patch } from "~/packages/anvl/src/object"
+import { Perspective } from "~/packages/occlusion/src"
 
 export class Player {
   public perspective: Perspective
