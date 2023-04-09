@@ -2,53 +2,82 @@ import { nanoid } from "nanoid"
 import type { StoreApi } from "zustand/vanilla"
 import { createStore } from "zustand/vanilla"
 
+import type { Identified, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
+import type { Json } from "~/packages/anvl/src/json"
 import type {
+  JsonApiResource,
   Resource,
+  ResourceAttributes,
   ResourceIdentifierObject,
 } from "~/packages/anvl/src/json-api"
-import type { Fragment } from "~/packages/anvl/src/object"
+import type { Fragment, KeysExtending } from "~/packages/anvl/src/object"
 import { patch, hasExactProperties } from "~/packages/anvl/src/object"
 import { Dictionary } from "~/packages/anvl/src/object/dictionary"
 import { isClass } from "~/packages/anvl/src/refinement"
-import type { Visibility } from "~/packages/obscurity/src"
+import { Perspective, Identifier } from "~/packages/obscurity/src"
 
-export interface GameEntity extends Resource {
-  id: string
-  type: string
-  attributes: { visibility: Visibility }
+export class Player {
+  public perspective: Perspective
+
+  public constructor() {
+    this.perspective = new Perspective()
+  }
+
+  public toJSON(): {
+    [K in keyof Omit<
+      Player,
+      KeysExtending<Player, (...args: any) => any> | `perspective`
+    >]: Player[K]
+  } {
+    return {}
+  }
+}
+export type PlayerParcel = Parcel<`Player`, Player>
+
+export interface Card extends JsonApiResource {
+  type: `Card`
+  attributes: {
+    rotation: number
+  }
 }
 
-export type Player = {
-  perspective: Dictionary<string, string, `trueId`, `virtualId`>
-}
-export const isPlayer = hasExactProperties({
-  perspective: isClass(Dictionary),
-})
-export const createPerspective = (): Player[`perspective`] =>
-  new Dictionary({ from: `trueId`, into: `virtualId` })
-
-export const createPlayer = (): Player => ({
-  perspective: createPerspective(),
-})
-
-export interface Card {
-  rotation: number
+export interface CardGroup extends JsonApiResource {
+  type: `CardGroup`
+  attributes: {
+    rotation: number
+  }
 }
 
-export type CardGroup = Card
+export type GameEvent = {
+  action: GameActions[GameActionKey]
+  idPrev: string
+}
 
 export type GameState = {
+  eventLog: GameEvent[]
   playerStatus: Record<string, string>
   players: Record<string, Player>
-  cards: Record<string, Card>
-  cardGroups: Record<string, CardGroup>
+  cards: Record<string, ResourceAttributes<Card>>
+  cardGroups: Record<string, ResourceAttributes<CardGroup>>
   cardValues: Record<string, { content: string }>
   cardsInGroups: Join
   valuesOfCards: Join
 }
 
 export type GameStore = StoreApi<GameState>
+
+export const initGame = (): GameStore =>
+  createStore<GameState>(() => ({
+    eventLog: [],
+    playerStatus: {},
+    players: {},
+    cards: {},
+    cardGroups: {},
+    cardValues: {},
+    cardsInGroups: new Join(),
+    valuesOfCards: new Join(),
+  }))
 
 export const GAME_ACTION_KEYS = [
   `ADD_PLAYER`,
@@ -108,19 +137,16 @@ export interface StatusEvents
   }) => Partial<GameState[`playerStatus`]>
 }
 
-export type GameActionPayload = { id: string } & (
-  | {
-      options: any
-      targets: Record<string, ResourceIdentifierObject>
-    }
-  | { options: any }
-  | { targets: Record<string, ResourceIdentifierObject> }
-)
-export interface GameActions
-  extends Record<
-    GameActionKey,
-    (payload: GameActionPayload) => Fragment<GameState>
-  > {
+export type GameActionPayload = {
+  id: string
+  options?: any
+  targets?: Record<
+    string,
+    ResourceIdentifierObject<any> | ResourceIdentifierObject<any>[]
+  >
+}
+
+export type GameActions = {
   ADD_PLAYER: (payload: {
     id: string
     options: { id: string }
@@ -133,18 +159,15 @@ export interface GameActions
     id: string
     targets: { cardValue: { id: string; type: `cardValue` } }
   }) => Pick<GameState, `cards` | `valuesOfCards`>
+  ADD_CARD_GROUP: (payload: { id: string }) => Pick<GameState, `cardGroups`>
+  MOVE_CARD: (payload: {
+    id: string
+    targets: {
+      card: ResourceIdentifierObject<Card>
+      group: ResourceIdentifierObject<CardGroup>
+    }
+  }) => Pick<GameState, `cardsInGroups`>
 }
-
-export const initGame = (): GameStore =>
-  createStore<GameState>(() => ({
-    playerStatus: {},
-    players: {},
-    cards: {},
-    cardGroups: {},
-    cardValues: {},
-    cardsInGroups: new Join(),
-    valuesOfCards: new Join(),
-  }))
 
 export const configureActions = (config: {
   idFn: () => string
@@ -154,9 +177,7 @@ export const configureActions = (config: {
     actions: {
       ADD_PLAYER: ({ options: { id } }) => ({
         players: {
-          [id]: {
-            perspective: createPerspective(),
-          },
+          [id]: new Player(),
         },
       }),
       ADD_CARD_VALUE: ({ options: { content } }) => {
@@ -180,6 +201,19 @@ export const configureActions = (config: {
           valuesOfCards: store.getState().valuesOfCards.set(cardValue.id, id),
         }
       },
+      ADD_CARD_GROUP: () => {
+        const id = config.idFn()
+        return {
+          cardGroups: {
+            [id]: {
+              rotation: 0,
+            },
+          },
+        }
+      },
+      MOVE_CARD: ({ targets: { card, group } }) => ({
+        cardsInGroups: store.getState().cardsInGroups.set(card.id, group.id),
+      }),
     },
   })
   return useActions
@@ -189,19 +223,22 @@ export const useActions = configureActions({ idFn: nanoid })
 export const useDispatch = ({
   store,
   actions,
-}: ReturnType<typeof useActions>): {
+}: {
   store: GameStore
   actions: GameActions
-  dispatch: <Key extends keyof GameActions>(
-    action: Key,
-    payload: Parameters<GameActions[Key]>[0]
-  ) => Fragment<GameState>
+}): {
+  store: GameStore
+  actions: GameActions
+  dispatch: (
+    action: GameActionKey,
+    payload: GameActionPayload
+  ) => Partial<GameState>
 } => ({
   store,
   actions,
   dispatch: (key, payload) => {
     const delta = actions[key](payload as any)
-    store.setState((state) => patch(state, delta))
+    store.setState((state) => patch(state, delta as Fragment<GameState>))
     return delta
   },
 })

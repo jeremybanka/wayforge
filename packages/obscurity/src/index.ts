@@ -1,5 +1,6 @@
 import { isString } from "fp-ts/lib/string"
 
+import { Stringified } from "~/packages/anvl/src/json"
 import type {
   Resource,
   ResourceIdentifierObject,
@@ -8,25 +9,47 @@ import { isResourceIdentifier } from "~/packages/anvl/src/json-api"
 import { Dictionary } from "~/packages/anvl/src/object/dictionary"
 import { isLiteral } from "~/packages/anvl/src/refinement"
 
-export const createPerspective = () =>
-  new Dictionary({ from: `trueId`, into: `virtualId` })
+export type Identifier<TypeName extends string> = {
+  id: string
+  type: TypeName
+}
 
-export type VirtualIdentifier<R extends Resource> = ResourceIdentifierObject<
-  R,
-  string
->
-export const isVirtualIdentifier = (
-  thing: unknown
-): thing is VirtualIdentifier<Resource> =>
-  isResourceIdentifier.whoseMeta(isString)(thing)
+export interface TrueIdentifier<TypeName extends string>
+  extends Identifier<TypeName> {
+  reality: true
+}
+export interface VirtualIdentifier<TypeName extends string>
+  extends Identifier<TypeName> {
+  reality: false
+}
 
-export type TrueIdentifier<R extends Resource> = ResourceIdentifierObject<
-  R,
-  true
->
-export const isTrueIdentifier = (
-  thing: unknown
-): thing is TrueIdentifier<Resource> =>
-  isResourceIdentifier.whoseMeta(isLiteral(true))(thing)
+export class Perspective extends Dictionary<
+  string,
+  string,
+  `trueId`,
+  `virtualId`
+> {
+  public constructor(base?: Record<string, string>) {
+    super({ base, from: `trueId`, into: `virtualId` })
+  }
 
-export type Visibility = `hidden` | `private` | `public` | `secret`
+  public virtualize<T extends string>(
+    trueIdentifier: TrueIdentifier<T>
+  ): VirtualIdentifier<T> {
+    return {
+      id: this.get(trueIdentifier.id),
+      type: trueIdentifier.type,
+      reality: false,
+    }
+  }
+
+  public devirtualize<T extends string>(
+    virtualIdentifier: VirtualIdentifier<T>
+  ): TrueIdentifier<T> {
+    return {
+      id: this.get(virtualIdentifier.id),
+      type: virtualIdentifier.type,
+      reality: true,
+    }
+  }
+}

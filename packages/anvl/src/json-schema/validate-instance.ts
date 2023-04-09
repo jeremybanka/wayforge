@@ -354,10 +354,14 @@ export const validateLeaf =
     ](instance)
       ? pipe(
           Object.entries(rest),
-          filter(
-            ([keyword, spec]) =>
-              keyword in check &&
-              !check[keyword]({ spec, refMap, root })(instance)
+          filter<[keyof any, any], [keyof any, any]>(
+            (entry): entry is [keyof any, any] => {
+              const [keyword, spec] = entry
+              return (
+                keyword in check &&
+                !check[keyword]({ spec, refMap, root })(instance)
+              )
+            }
           ),
           Object.fromEntries
         )

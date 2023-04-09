@@ -1,6 +1,10 @@
+import { flow, pipe } from "fp-ts/function"
+import type { Refinement } from "fp-ts/lib/Refinement"
+
 import { deepMob } from "./deepMob"
+import { entriesToRecord, recordToEntries } from "./entries"
 import { isPlainObject } from "./refinement"
-import { includesAny, reduce } from "../array"
+import { includesAny, map, reduce, filter } from "../array"
 import { isUndefined } from "../nullish"
 
 export * from "./access"
@@ -71,6 +75,39 @@ export const treeShake =
     )
     return newObj as T extends Record<keyof any, unknown> ? T : Partial<T>
   }
+
+export type KeysExtending<T, V> = keyof {
+  [K in keyof T]: T[K] extends V ? K : never
+}
+
+const a: never | null = null
+
+export const filterProperties =
+  <DiscardVal, DiscardKey extends keyof any>(
+    shouldDiscardVal: Refinement<unknown, DiscardVal>,
+    shouldDiscardKey: Refinement<unknown, DiscardKey>
+  ) =>
+  <P extends Record<keyof any, any>>(
+    props: P
+  ): DiscardVal extends never
+    ? DiscardKey extends never
+      ? P
+      : Omit<P, DiscardKey>
+    : Omit<P, DiscardKey | KeysExtending<P, DiscardVal>> =>
+    // @ts-expect-error oh well
+    pipe(
+      props,
+      recordToEntries,
+      filter(
+        (
+          entry
+        ): entry is [
+          Exclude<keyof P, DiscardKey>,
+          Exclude<P[keyof P], DiscardVal>
+        ] => !shouldDiscardKey(entry[0]) || !shouldDiscardVal(entry[1])
+      ),
+      entriesToRecord
+    )
 
 export const delve = (
   obj: Record<keyof any, any>,

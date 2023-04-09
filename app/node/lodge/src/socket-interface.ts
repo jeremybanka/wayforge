@@ -1,15 +1,25 @@
 import { flow, pipe } from "fp-ts/function"
+import { isString } from "fp-ts/lib/string"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 
 import { map } from "~/packages/anvl/src/array"
 import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { ErrorObject } from "~/packages/anvl/src/json-api"
+import type {
+  ErrorObject,
+  ResourceIdentifierObject,
+} from "~/packages/anvl/src/json-api"
+import { isResourceIdentifier } from "~/packages/anvl/src/json-api"
 import {
   redactDeep,
   entriesToRecord,
   recordToEntries,
+  doesExtend,
+  isPlainObject,
+  isRecord,
 } from "~/packages/anvl/src/object"
+import { isLiteral } from "~/packages/anvl/src/refinement"
+import type { TrueIdentifier } from "~/packages/obscurity/src"
 
 import type {
   GameActionKey,
@@ -111,8 +121,45 @@ export const serveGame =
           const refined = refineSignal(signal)
 
           if (`action` in refined) {
-            const { action: wrappedKey } = refined
-            handleAction[wrappedKey](payload as any)
+            if (doesExtend({ id: isString })(payload)) {
+              const {
+                id,
+                targets: virtualTargets,
+                options,
+              } = {
+                targets: {},
+                options: {},
+                ...payload,
+              }
+              const trueTargets: Record<
+                string,
+                ResourceIdentifierObject<any, true>
+              > = isRecord(isString, isResourceIdentifier)(virtualTargets)
+                ? pipe(
+                    virtualTargets,
+                    recordToEntries,
+                    map(([key, { id: virtualId, type }]) => {
+                      const state = game.store.getState()
+                      const { perspective } = state.players[socket.id]
+                      return [
+                        key,
+                        {
+                          id: perspective.getPairOf({ virtualId }).trueId,
+                          type,
+                        },
+                      ] as const
+                    }),
+                    entriesToRecord
+                  )
+                : {}
+              const { action: wrappedKey } = refined
+              const newPayload = {
+                id,
+                targets: trueTargets,
+                options,
+              }
+              handleAction[wrappedKey](newPayload as any)
+            }
           } else if (`status` in refined) {
             const { status: wrappedKey } = refined
             handleStatus[wrappedKey](payload as any)

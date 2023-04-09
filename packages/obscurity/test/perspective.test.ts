@@ -1,8 +1,8 @@
-import { createPerspective } from "../src"
+import { Perspective } from "../src"
 
 describe(`createPerspective`, () => {
   it(`creates a new perspective`, () => {
-    const perspective = createPerspective()
+    const perspective = new Perspective()
     expect(perspective).toBeDefined()
   })
 })

@@ -2,7 +2,7 @@ import { pipe } from "fp-ts/function"
 
 import { entriesToRecord, recordToEntries } from "./entries"
 import { map } from "../array"
-import type { JsonObj } from "../json"
+import type { Json, JsonObj } from "../json"
 
 export const reverseRecord = <A extends keyof any, B extends keyof any>(
   record: Record<A, B>
@@ -14,7 +14,7 @@ export const reverseRecord = <A extends keyof any, B extends keyof any>(
     entriesToRecord
   )
 
-export interface PairingsOptions<
+export interface DictionaryOptions<
   A extends string,
   B extends string,
   NameOfA extends string,
@@ -40,11 +40,17 @@ export class Dictionary<
     base = {} as Record<A, B>,
     from = `A` as NameOfA,
     into = `B` as NameOfB,
-  }: Partial<PairingsOptions<A, B, NameOfA, NameOfB>> = {}) {
+  }: Partial<DictionaryOptions<A, B, NameOfA, NameOfB>> = {}) {
     this.aSide = base
     this.bSide = reverseRecord(base)
     this.nameOfA = from
     this.nameOfB = into
+  }
+
+  protected get<S extends A | B>(s: S): S extends A ? B : A {
+    return (
+      s in this.aSide ? this.aSide[s as A] : this.bSide[s as B]
+    ) as S extends A ? B : A
   }
 
   public getPairOf<Name extends NameOfA | NameOfB>(item: {
@@ -88,7 +94,7 @@ export class Dictionary<
     return this
   }
 
-  public toJSON(): PairingsOptions<A, B, NameOfA, NameOfB> {
+  public toJSON(): DictionaryOptions<A, B, NameOfA, NameOfB> {
     return {
       base: this.aSide,
       from: this.nameOfA,
