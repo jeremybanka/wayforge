@@ -11,10 +11,11 @@ import { ifNullish } from "../nullish"
 export type PlainObject = Record<keyof any, unknown>
 export type EmptyObject = Record<keyof any, never>
 
+export const isNonNullObject = (input: unknown): input is object =>
+  typeof input === `object` && input !== null
+
 export const isPlainObject = (input: unknown): input is PlainObject =>
-  typeof input === `object` &&
-  input !== null &&
-  Object.getPrototypeOf(input) === Object.prototype
+  isNonNullObject(input) && Object.getPrototypeOf(input) === Object.prototype
 
 export const isEmptyObject = (input: unknown): input is EmptyObject =>
   isPlainObject(input) && Object.keys(input).length === 0

@@ -1,5 +1,5 @@
 import { pipe } from "fp-ts/function"
-import type { SimpleGit, SimpleGitOptions } from "simple-git"
+import type { SimpleGit } from "simple-git"
 import { simpleGit } from "simple-git"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
