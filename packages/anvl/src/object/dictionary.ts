@@ -47,7 +47,7 @@ export class Dictionary<
     this.nameOfB = into
   }
 
-  protected get<S extends A | B>(s: S): S extends A ? B : A {
+  protected get<S extends A | B>(s: S): (S extends A ? B : A) | undefined {
     return (
       s in this.aSide ? this.aSide[s as A] : this.bSide[s as B]
     ) as S extends A ? B : A
@@ -55,7 +55,9 @@ export class Dictionary<
 
   public getPairOf<Name extends NameOfA | NameOfB>(item: {
     [K in Name]: Name extends NameOfA ? A : B
-  }): Name extends NameOfA ? { [K in NameOfB]: B } : { [K in NameOfA]: A } {
+  }): Name extends NameOfA
+    ? { [K in NameOfB]: B | undefined }
+    : { [K in NameOfA]: A | undefined } {
     const [name, value] = recordToEntries(item as { [K in Name]: A | B })[0]
     const otherName = name === this.nameOfA ? this.nameOfB : this.nameOfA
     const otherValue =
