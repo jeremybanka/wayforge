@@ -30,9 +30,9 @@ export const getState = <T>(
   return getState__INTERNAL(state, store)
 }
 
-export const setState = <T>(
-  state: StateToken<T>,
-  value: T,
+export const setState = <State, Value extends State>(
+  state: StateToken<State>,
+  value: Value,
   store: Store = IMPLICIT.STORE
 ): void => {
   setState__INTERNAL(state, value, store)

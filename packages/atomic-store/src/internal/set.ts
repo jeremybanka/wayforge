@@ -36,7 +36,7 @@ export const propagateChanges = <T>(
     store.config.logger?.info(`   <-`, stateKey, `became`, newValue)
     state.subject.next(newValue)
     store.done.add(stateKey)
-    propagateChanges(state, store)
+    if (`set` in state) propagateChanges(state, store)
   })
 }
 
