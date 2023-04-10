@@ -9,6 +9,8 @@
 - [ ] selector memoization
 - [ ] atom and selector families
 - [ ] atom effects
+- [ ] resettable atoms
+- [ ] resettable selectors
 - [ ] transactions
 - [ ] trampoline for recursive propagation
 - [ ] optional default value for atoms

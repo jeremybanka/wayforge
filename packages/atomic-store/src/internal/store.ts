@@ -30,3 +30,8 @@ export const IMPLICIT = {
     return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = createStore())
   },
 }
+
+export const operationComplete = (store: Store): void => {
+  console.log(`   ✅`, `operation complete`)
+  store.done.clear()
+}

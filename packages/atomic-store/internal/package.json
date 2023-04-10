@@ -1,0 +1,6 @@
+{
+  "name": "@atomic-store/internal",
+  "main": "../dist/internal/index.js",
+  "types": "../dist/internal/index.d.ts",
+  "module": "../dist/internal/index.mjs"
+}

@@ -1,5 +1,7 @@
 import { atom, getState, selector, setState, subscribe } from "../src"
-import { IMPLICIT } from "../src/store"
+import * as INTERNALS from "../src/internal"
+
+const { STORE } = INTERNALS.IMPLICIT
 
 describe(`Store`, () => {
   it(`holds selectable state`, () => {
