@@ -9,7 +9,7 @@ export const silence: Pick<Console, `error` | `info` | `warn`> = {
   info: () => null,
 }
 const loggers = [silence, console] as const
-const choose = 0
+const choose = 1
 const logger = loggers[choose]
 
 INTERNALS.configureStore({ logger })

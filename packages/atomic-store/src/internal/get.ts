@@ -5,11 +5,11 @@ import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 import type { ReadonlyValueToken, StateToken } from ".."
 
-export const getAtomState = <T>(
-  atom: Atom<T>,
+export const getCachedState = <T>(
+  state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): T => {
-  const value = HAMT.get(atom.key, store.valueMap)
+  const value = HAMT.get(state.key, store.valueMap)
   return value
 }
 
@@ -40,8 +40,14 @@ export const getState__INTERNAL = <T>(
   state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): T => {
+  if (HAMT.has(state.key, store.valueMap)) {
+    return getCachedState(state, store)
+  }
   if (`get` in state) {
     return getSelectorState(state)
   }
-  return getAtomState(state, store)
+  store.config.logger?.error(
+    `Attempted to get atom "${state.key}", which was never initialized in store "${store.config.name}".`
+  )
+  return state.default
 }

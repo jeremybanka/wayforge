@@ -36,8 +36,12 @@ export function selector<T>(
 
   const subject = new Rx.Subject<T>()
 
-  const { getState: get, setState: set } = registerSelector(options.key, store)
-  const getSelf = () => options.get({ get })
+  const { get, set } = registerSelector(options.key, store)
+  const getSelf = () => {
+    const value = options.get({ get })
+    store.valueMap = HAMT.set(options.key, value, store.valueMap)
+    return value
+  }
 
   if (!(`set` in options)) {
     const readonlySelector = {
@@ -58,8 +62,8 @@ export function selector<T>(
   const setSelf = (next: T | ((oldValue: T) => T)): void => {
     store.config.logger?.info(`${options.key}.set`, next)
     const newValue = become(next)(getSelf)
-    store.done.add(options.key)
     subject.next(newValue)
+    store.valueMap = HAMT.set(options.key, newValue, store.valueMap)
     options.set({ get, set }, newValue)
   }
 
@@ -78,11 +82,8 @@ export function selector<T>(
 export const registerSelector = (
   selectorKey: string,
   store: Store = IMPLICIT.STORE
-): {
-  getState: <T>(state: ReadonlyValueToken<T> | StateToken<T>) => T
-  setState: <T>(state: StateToken<T>, value: T) => void
-} => ({
-  getState: (state) => {
+): Transactors => ({
+  get: (state) => {
     const isRegistered = store.selectorGraph
       .getRelatedIds(selectorKey)
       .includes(state.key)
@@ -101,7 +102,7 @@ export const registerSelector = (
     store.config.logger?.info(`   ||`, state.key, `=`, currentValue)
     return currentValue
   },
-  setState: (token, newValue) => {
+  set: (token, newValue) => {
     store.selectorGraph.set(token.key, selectorKey)
     setState__INTERNAL(token, newValue, store)
   },

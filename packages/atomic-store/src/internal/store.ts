@@ -13,11 +13,12 @@ export type Store = {
   atoms: Hamt<Atom<any>, string>
   done: Set<string>
   config: {
+    name: string
     logger: Pick<Console, `error` | `info` | `warn`> | null
   }
 }
 
-export const createStore = (): Store =>
+export const createStore = (name: string): Store =>
   ({
     valueMap: HAMT.make<any, string>(),
     selectorGraph: new Join({ relationType: `n:n` }),
@@ -25,13 +26,16 @@ export const createStore = (): Store =>
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
     done: new Set(),
-    config: { logger: null },
+    config: {
+      name,
+      logger: null,
+    },
   } satisfies Store)
 
 export const IMPLICIT = {
   STORE_INTERNAL: undefined as Store | undefined,
   get STORE(): Store {
-    return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = createStore())
+    return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = createStore(`DEFAULT`))
   },
 }
 
@@ -49,6 +53,6 @@ export const configureStore = (
 
 export const clearStore = (store: Store = IMPLICIT.STORE): void => {
   const { config } = store
-  Object.assign(store, createStore())
+  Object.assign(store, createStore(config.name))
   store.config = config
 }

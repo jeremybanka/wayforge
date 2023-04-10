@@ -25,9 +25,12 @@ export const propagateChanges = <T>(
       return
     }
     store.config.logger?.info(`->`, `bumping`, stateKey)
+    // if (!HAMT.has(stateKey, store.atoms)) {
+    store.valueMap = HAMT.remove(stateKey, store.valueMap)
+    // }
     const state =
       HAMT.get(stateKey, store.selectors) ??
-      HAMT.get(stateKey, store.atoms) ??
+      // HAMT.get(stateKey, store.atoms) ??
       HAMT.get(stateKey, store.readonlySelectors)
     const newValue = getState__INTERNAL(state, store)
     store.config.logger?.info(`   <-`, stateKey, `became`, newValue)
@@ -61,13 +64,14 @@ export const setSelectorState = <T>(
     `to`,
     value
   )
-  selector.set(value)
-  store.done.add(selector.key)
   store.config.logger?.info(
     `   ||`,
     `propagating change to`,
     `"${selector.key}"`
   )
+
+  selector.set(value)
+  store.done.add(selector.key)
   propagateChanges(selector, store)
 }
 export const setState__INTERNAL = <T>(
