@@ -7,11 +7,16 @@
 - [x] give atoms and selectors separate types with a common base
 - [x] utility function to pass logger to your store
 - [x] selector memoization
-- [ ] atom and selector families
+- [x] atom and selector families
 - [ ] atom effects
+- [ ] transactions
+- [ ] atom default as function
+- [ ] atom default as promise
 - [ ] resettable atoms
 - [ ] resettable selectors
-- [ ] transactions
+- [ ] refactor selector dependencies to be asymmetrical
+      this would mean rebuilding the dependency graph on every update
+      but it would allow for more efficient selector memoization
 - [ ] trampoline for recursive propagation
 - [ ] optional default value for atoms
 - [ ] optional state keys
