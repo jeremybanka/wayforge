@@ -1,11 +1,5 @@
-import {
-  atom,
-  getState,
-  selector,
-  setAtomState,
-  setState,
-  subscribe,
-} from "../src"
+import { atom, getState, selector, setState, subscribe } from "../src"
+import { IMPLICIT } from "../src/store"
 
 describe(`Store`, () => {
   it(`holds selectable state`, () => {
@@ -21,6 +15,11 @@ describe(`Store`, () => {
     const doubleCountPlusOneSelector = selector<number>({
       key: `doubleCountPlusOne`,
       get: ({ get }) => get(doubleCountSelector) + 1,
+      set: (newValue: number, { set }) => set(doubleCountSelector, newValue - 1),
+    })
+    const doubleCountPlusOneTimesTwoSelector = selector<number>({
+      key: `doubleCountPlusOneTimesTwo`,
+      get: ({ get }) => get(doubleCountPlusOneSelector) * 2,
     })
 
     const atomSubscription = subscribe(countAtom, (value) => {
@@ -48,6 +47,6 @@ describe(`Store`, () => {
     setState(countAtom, 2)
 
     console.log(`🧪 3`)
-    setState(doubleCountSelector, 8)
+    setState(doubleCountPlusOneSelector, 5)
   })
 })

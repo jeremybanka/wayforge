@@ -1,11 +1,27 @@
-import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
 import { become } from "~/packages/anvl/src/function"
-import { Join } from "~/packages/anvl/src/join"
 
-type Atom<T> = {
+import type { Store } from "./store"
+import { IMPLICIT } from "./store"
+
+export type StoreToken<_> = {
+  key: string
+}
+export interface AtomToken<T> extends StoreToken<T> {
+  type: `atom`
+}
+export interface SelectorToken<T> extends StoreToken<T> {
+  type: `selector`
+}
+export type StateToken<T> = AtomToken<T> | SelectorToken<T>
+
+export interface ReadonlyValueToken<_> extends StoreToken<_> {
+  type: `readonly_selector`
+}
+
+export type Atom<T> = {
   key: string
   default: T
   subject: Rx.Subject<T>
@@ -16,40 +32,11 @@ export type GetSetInterface<T> = {
   set: (newValue: T | ((oldValue: T) => T)) => void
 }
 
-type Selector<T> = GetSetInterface<T> & {
+export type Selector<T> = GetSetInterface<T> & {
   key: string
   subject: Rx.Subject<T>
 }
-type ReadonlySelector<T> = Omit<Selector<T>, `set`>
-
-export type Store = {
-  valueMap: Hamt<any, string>
-  selectorGraph: Join
-  selectors: Hamt<Selector<any>, string>
-  readonlySelectors: Hamt<ReadonlySelector<any>, string>
-  atoms: Hamt<Atom<any>, string>
-  done: Set<string>
-}
-
-export const createStore = (): Store =>
-  ({
-    valueMap: HAMT.make<any, string>(),
-    selectorGraph: new Join({ relationType: `n:n` }),
-    atoms: HAMT.make<Atom<any>, string>(),
-    selectors: HAMT.make<Selector<any>, string>(),
-    readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-    done: new Set(),
-  } satisfies Store)
-
-export const IMPLICIT = {
-  STORE_INTERNAL: undefined as Store | undefined,
-  get STORE(): Store {
-    return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = createStore())
-  },
-  set STORE(value: Store) {
-    this.STORE_INTERNAL = value
-  },
-}
+export type ReadonlySelector<T> = Omit<Selector<T>, `set`>
 
 export const operationComplete = (store: Store): void => {
   console.log(`   ✅`, `operation complete`)
@@ -68,10 +55,42 @@ export const getSelectorState = <T>(
   selector: ReadonlySelector<T> | Selector<T>
 ): T => selector.get()
 
-export const getState = <T>(
-  state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+export function detokenize<T>(
+  token: ReadonlyValueToken<T> | StateToken<T>,
+  store: Store
+): Atom<T> | Selector<T>
+export function detokenize<T>(
+  token: ReadonlyValueToken<T> | StateToken<T>,
+  store: Store
+): ReadonlySelector<T>
+export function detokenize<T>(
+  token: ReadonlyValueToken<T> | StateToken<T>,
+  store: Store
+): Atom<T> | ReadonlySelector<T> | Selector<T> {
+  return (
+    HAMT.get(token.key, store.atoms) ??
+    HAMT.get(token.key, store.selectors) ??
+    HAMT.get(token.key, store.readonlySelectors)
+  )
+}
+
+export const getState__INTERNAL = <T>(
+  state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
-): T => (`get` in state ? getSelectorState(state) : getAtomState(state, store))
+): T => {
+  if (`get` in state) {
+    return getSelectorState(state)
+  }
+  return getAtomState(state, store)
+}
+
+export const getState = <T>(
+  token: ReadonlyValueToken<T> | StateToken<T>,
+  store: Store = IMPLICIT.STORE
+): T => {
+  const state = detokenize<T>(token, store)
+  return `get` in state ? getSelectorState(state) : getAtomState(state, store)
+}
 
 export const propagateChanges = <T>(
   state: Atom<T> | Selector<T>,
@@ -96,7 +115,7 @@ export const propagateChanges = <T>(
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.atoms) ??
       HAMT.get(stateKey, store.readonlySelectors)
-    const newValue = getState(state, store)
+    const newValue = getState__INTERNAL(state, store)
     console.log(`   <-`, stateKey, `became`, newValue)
     state.subject.next(newValue)
     store.done.add(stateKey)
@@ -128,10 +147,11 @@ export const setSelectorState = <T>(
   propagateChanges(selector, store)
 }
 export const setState__INTERNAL = <T>(
-  state: Atom<T> | Selector<T>,
+  token: StateToken<T>,
   value: T,
   store: Store = IMPLICIT.STORE
 ): void => {
+  const state = detokenize<T>(token, store)
   if (`set` in state) {
     setSelectorState(state, value, store)
   } else {
@@ -139,7 +159,7 @@ export const setState__INTERNAL = <T>(
   }
 }
 export const setState = <T>(
-  state: Atom<T> | Selector<T>,
+  state: StateToken<T>,
   value: T,
   store: Store = IMPLICIT.STORE
 ): void => {
@@ -151,8 +171,8 @@ export const registerSelector = (
   selectorKey: string,
   store: Store = IMPLICIT.STORE
 ): {
-  getState: <T>(state: Atom<T> | ReadonlySelector<T> | Selector<T>) => T
-  setState: <T>(state: Atom<T> | Selector<T>, value: T) => void
+  getState: <T>(state: ReadonlyValueToken<T> | StateToken<T>) => T
+  setState: <T>(state: StateToken<T>, value: T) => void
 } => ({
   getState: (state) => {
     const isRegistered = store.selectorGraph
@@ -168,30 +188,28 @@ export const registerSelector = (
     console.log(`   ||`, state.key, `=`, currentValue)
     return currentValue
   },
-  setState: (state, newValue) => {
-    store.selectorGraph.set(state.key, selectorKey)
-    setState__INTERNAL(state, newValue, store)
+  setState: (token, newValue) => {
+    store.selectorGraph.set(token.key, selectorKey)
+    setState__INTERNAL(token, newValue, store)
   },
 })
 
 export const atom = <T>(
   options: { key: string; default: T },
   store: Store = IMPLICIT.STORE
-): Atom<T> => {
+): AtomToken<T> => {
   const subject = new Rx.Subject<T>()
   const newAtom = { ...options, subject }
   store.atoms = HAMT.set(options.key, newAtom, store.atoms)
-  getState(newAtom, store)
-  setState(newAtom, options.default)
-  return newAtom
+  const token: AtomToken<T> = { ...newAtom, type: `atom` }
+  getState__INTERNAL(newAtom, store)
+  setState(token, options.default)
+  return token
 }
 
 export type Transactors = {
-  get: <S>(state: Atom<S> | ReadonlySelector<S> | Selector<S>) => S
-  set: <S>(
-    state: Atom<S> | Selector<S>,
-    newValue: S | ((oldValue: S) => S)
-  ) => void
+  get: <S>(state: ReadonlyValueToken<S> | StateToken<S>) => S
+  set: <S>(state: StateToken<S>, newValue: S | ((oldValue: S) => S)) => void
 }
 export type ReadonlyTransactors = Omit<Transactors, `set`>
 
@@ -205,15 +223,15 @@ export type ReadonlySelectorOptions<T> = Omit<SelectorOptions<T>, `set`>
 export function selector<T>(
   options: SelectorOptions<T>,
   store?: Store
-): Selector<T>
+): SelectorToken<T>
 export function selector<T>(
   options: ReadonlySelectorOptions<T>,
   store?: Store
-): ReadonlySelector<T>
+): ReadonlyValueToken<T>
 export function selector<T>(
   options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
   store: Store = IMPLICIT.STORE
-): ReadonlySelector<T> | Selector<T> {
+): ReadonlyValueToken<T> | SelectorToken<T> {
   if (HAMT.has(options.key, store.selectors)) {
     throw new Error(`Key "${options.key}" already exists in the store.`)
   }
@@ -236,7 +254,7 @@ export function selector<T>(
     )
     const initialValue = getSelf()
     console.log(`   ✨`, options.key, `=`, initialValue)
-    return readonlySelector
+    return { ...readonlySelector, type: `readonly_selector` }
   }
 
   const setSelf = (next: T | ((oldValue: T) => T)): void => {
@@ -246,6 +264,7 @@ export function selector<T>(
     subject.next(newValue)
     options.set(newValue, { get, set })
   }
+  /* eslint-disable max-lines */
 
   const stateInterface: GetSetInterface<T> = {
     get: getSelf,
@@ -256,13 +275,14 @@ export function selector<T>(
   store.selectors = HAMT.set(options.key, mySelector, store.selectors)
   const initialValue = getSelf()
   console.log(`   ✨`, options.key, `=`, initialValue)
-  return mySelector
+  return { ...mySelector, type: `selector` }
 }
-
 export const subscribe = <T>(
-  item: Atom<T> | ReadonlySelector<T> | Selector<T>,
-  callback: (value: T) => void
+  token: ReadonlyValueToken<T> | StateToken<T>,
+  callback: (value: T) => void,
+  store: Store = IMPLICIT.STORE
 ): (() => void) => {
-  const subscription = item.subject.subscribe(callback)
+  const state = detokenize<T>(token, store)
+  const subscription = state.subject.subscribe(callback)
   return () => subscription.unsubscribe()
 }
