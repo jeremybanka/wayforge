@@ -11,26 +11,26 @@ export const propagateChanges = <T>(
   store: Store = IMPLICIT.STORE
 ): void => {
   const relatedStateKeys = store.selectorGraph.getRelations(state.key)
-  console.log(
+  store.config.logger?.info(
     `   ||`,
     `bumping`,
     relatedStateKeys.length,
     `states:`,
     relatedStateKeys.map(({ id }) => id)
   )
-  console.log(`   ||`, `done:`, store.done)
+  store.config.logger?.info(`   ||`, `done:`, store.done)
   relatedStateKeys.forEach(({ id: stateKey }) => {
     if (store.done.has(stateKey)) {
-      console.log(`   ||`, stateKey, `already done`)
+      store.config.logger?.info(`   ||`, stateKey, `already done`)
       return
     }
-    console.log(`->`, `bumping`, stateKey)
+    store.config.logger?.info(`->`, `bumping`, stateKey)
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.atoms) ??
       HAMT.get(stateKey, store.readonlySelectors)
     const newValue = getState__INTERNAL(state, store)
-    console.log(`   <-`, stateKey, `became`, newValue)
+    store.config.logger?.info(`   <-`, stateKey, `became`, newValue)
     state.subject.next(newValue)
     store.done.add(stateKey)
     propagateChanges(state, store)
@@ -42,11 +42,11 @@ export const setAtomState = <T>(
   value: T,
   store: Store = IMPLICIT.STORE
 ): void => {
-  console.log(`->`, `setting atom`, `"${atom.key}"`, `to`, value)
+  store.config.logger?.info(`->`, `setting atom`, `"${atom.key}"`, `to`, value)
   store.valueMap = HAMT.set(atom.key, value, store.valueMap)
   store.done.add(atom.key)
   atom.subject.next(value)
-  console.log(`   ||`, `propagating change to`, `"${atom.key}"`)
+  store.config.logger?.info(`   ||`, `propagating change to`, `"${atom.key}"`)
   propagateChanges(atom, store)
 }
 export const setSelectorState = <T>(
@@ -54,10 +54,20 @@ export const setSelectorState = <T>(
   value: T,
   store: Store = IMPLICIT.STORE
 ): void => {
-  console.log(`->`, `setting selector`, `"${selector.key}"`, `to`, value)
+  store.config.logger?.info(
+    `->`,
+    `setting selector`,
+    `"${selector.key}"`,
+    `to`,
+    value
+  )
   selector.set(value)
   store.done.add(selector.key)
-  console.log(`   ||`, `propagating change to`, `"${selector.key}"`)
+  store.config.logger?.info(
+    `   ||`,
+    `propagating change to`,
+    `"${selector.key}"`
+  )
   propagateChanges(selector, store)
 }
 export const setState__INTERNAL = <T>(

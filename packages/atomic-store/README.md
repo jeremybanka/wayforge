@@ -5,7 +5,7 @@
 - [x] safe recursive update propagation
 - [x] safely expose atoms and selectors
 - [x] give atoms and selectors separate types with a common base
-- [ ] utility function to pass logger to your store
+- [x] utility function to pass logger to your store
 - [ ] selector memoization
 - [ ] atom and selector families
 - [ ] atom effects

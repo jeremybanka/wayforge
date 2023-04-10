@@ -14,7 +14,7 @@ import type { ReadonlyTransactors, Transactors } from "./transact"
 export type SelectorOptions<T> = {
   key: string
   get: (readonlyTransactors: ReadonlyTransactors) => T
-  set: (newValue: T | ((oldValue: T) => T), transactors: Transactors) => void
+  set: (transactors: Transactors, newValue: T) => void
 }
 export type ReadonlySelectorOptions<T> = Omit<SelectorOptions<T>, `set`>
 
@@ -51,16 +51,16 @@ export function selector<T>(
       store.readonlySelectors
     )
     const initialValue = getSelf()
-    console.log(`   ✨`, options.key, `=`, initialValue)
+    store.config.logger?.info(`   ✨`, options.key, `=`, initialValue)
     return { ...readonlySelector, type: `readonly_selector` }
   }
 
   const setSelf = (next: T | ((oldValue: T) => T)): void => {
-    console.log(`${options.key}.set`, next)
+    store.config.logger?.info(`${options.key}.set`, next)
     const newValue = become(next)(getSelf)
     store.done.add(options.key)
     subject.next(newValue)
-    options.set(newValue, { get, set })
+    options.set({ get, set }, newValue)
   }
 
   const mySelector: Selector<T> = {
@@ -71,7 +71,7 @@ export function selector<T>(
   }
   store.selectors = HAMT.set(options.key, mySelector, store.selectors)
   const initialValue = getSelf()
-  console.log(`   ✨`, options.key, `=`, initialValue)
+  store.config.logger?.info(`   ✨`, options.key, `=`, initialValue)
   return { ...mySelector, type: `selector` }
 }
 
@@ -87,13 +87,18 @@ export const registerSelector = (
       .getRelatedIds(selectorKey)
       .includes(state.key)
     if (isRegistered) {
-      console.log(`   ||`, selectorKey, `<-`, state.key)
+      store.config.logger?.info(`   ||`, selectorKey, `<-`, state.key)
     } else {
-      console.log(`🔌 registerSelector`, state.key, `->`, selectorKey)
+      store.config.logger?.info(
+        `🔌 registerSelector`,
+        state.key,
+        `->`,
+        selectorKey
+      )
       store.selectorGraph = store.selectorGraph.set(selectorKey, state.key)
     }
     const currentValue = getState(state, store)
-    console.log(`   ||`, state.key, `=`, currentValue)
+    store.config.logger?.info(`   ||`, state.key, `=`, currentValue)
     return currentValue
   },
   setState: (token, newValue) => {

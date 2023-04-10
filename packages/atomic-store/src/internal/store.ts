@@ -12,6 +12,9 @@ export type Store = {
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   atoms: Hamt<Atom<any>, string>
   done: Set<string>
+  config: {
+    logger: Pick<Console, `error` | `info` | `warn`> | null
+  }
 }
 
 export const createStore = (): Store =>
@@ -22,6 +25,7 @@ export const createStore = (): Store =>
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
     done: new Set(),
+    config: { logger: null },
   } satisfies Store)
 
 export const IMPLICIT = {
@@ -32,6 +36,19 @@ export const IMPLICIT = {
 }
 
 export const operationComplete = (store: Store): void => {
-  console.log(`   ✅`, `operation complete`)
+  store.config.logger?.info(`   ✅`, `operation complete`)
   store.done.clear()
+}
+
+export const configureStore = (
+  config: Partial<Store[`config`]>,
+  store: Store = IMPLICIT.STORE
+): void => {
+  Object.assign(store.config, config)
+}
+
+export const clearStore = (store: Store = IMPLICIT.STORE): void => {
+  const { config } = store
+  Object.assign(store, createStore())
+  store.config = config
 }
