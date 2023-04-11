@@ -6,12 +6,12 @@ import { stringifyJson } from "~/packages/anvl/src/json"
 
 import type { AtomToken } from "."
 import { setState } from "."
-import { tokenize } from "./internal"
+import { deposit } from "./internal"
 import type { Store } from "./internal/store"
 import { IMPLICIT } from "./internal/store"
 
 export type Effectors<T> = {
-  setSelf: (newValue: T | ((oldValue: T) => T)) => void
+  setSelf: <V extends T>(next: V | ((oldValue: T) => V)) => void
   onSet: (callback: (options: { newValue: T; oldValue: T }) => void) => void
 }
 
@@ -27,13 +27,18 @@ export const atom = <T>(
   options: AtomOptions<T>,
   store: Store = IMPLICIT.STORE
 ): AtomToken<T> => {
+  if (HAMT.has(options.key, store.atoms)) {
+    store.config.logger?.error?.(
+      `Key "${options.key}" already exists in the store.`
+    )
+    return deposit(store.atoms.get(options.key))
+  }
   const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
   const newAtom = { ...options, subject }
   store.atoms = HAMT.set(options.key, newAtom, store.atoms)
   store.valueMap = HAMT.set(options.key, options.default, store.valueMap)
-  const token: AtomToken<T> = { ...newAtom, type: `atom` }
-  const setSelf = <V extends T>(next: V | ((oldValue: T) => V)) =>
-    setState<T, V>(token, next)
+  const token = deposit(newAtom)
+  const setSelf = (next) => setState(token, next)
   const onSet = (callback: (change: { newValue: T; oldValue: T }) => void) => {
     newAtom.subject.subscribe(callback)
   }
@@ -57,7 +62,7 @@ export const atomFamily =
     const fullKey = `${options.key}__${stringifyJson(key)}`
     const existing = store.atoms.get(fullKey)
     if (existing) {
-      return tokenize(existing)
+      return deposit(existing)
     }
     return atom<T>(
       {

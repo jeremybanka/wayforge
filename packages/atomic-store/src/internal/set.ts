@@ -3,9 +3,10 @@ import HAMT from "hamt_plus"
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
-import { detokenize, getState__INTERNAL } from "./get"
+import { withdraw, getState__INTERNAL } from "./get"
+import { isDone, recall, markDone } from "./operation"
 import type { Store } from "./store"
-import { isDone, recall, markDone, IMPLICIT } from "./store"
+import { IMPLICIT } from "./store"
 import type { StateToken } from ".."
 
 export const propagateChanges = <T>(
@@ -20,8 +21,8 @@ export const propagateChanges = <T>(
     `states:`,
     relatedStateKeys.map(({ id }) => id)
   )
-  if (`done` in store.action) {
-    store.config.logger?.info(`   ||`, `done:`, store.action.done)
+  if (store.operation.open) {
+    store.config.logger?.info(`   ||`, `done:`, store.operation.done)
   }
   relatedStateKeys.forEach(({ id: stateKey }) => {
     if (isDone(stateKey, store)) {
@@ -93,7 +94,7 @@ export const setState__INTERNAL = <T>(
   value: T | ((oldValue: T) => T),
   store: Store = IMPLICIT.STORE
 ): void => {
-  const state = detokenize<T>(token, store)
+  const state = withdraw<T>(token, store)
   if (`set` in state) {
     setSelectorState(state, value, store)
   } else {

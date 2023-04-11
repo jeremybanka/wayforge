@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./test-utils"
+import * as UTIL from "./-util"
 import { atom, getState, selector, setState, subscribe } from "../src"
 import * as INTERNALS from "../src/internal"
 

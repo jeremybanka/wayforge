@@ -8,11 +8,11 @@ import { stringifyJson } from "~/packages/anvl/src/json"
 import type { ReadonlyValueToken, SelectorToken, StateToken } from "."
 import { getState } from "."
 import type { Selector } from "./internal"
-import { tokenize } from "./internal"
+import { deposit } from "./internal"
 import { setState__INTERNAL } from "./internal/set"
 import type { Store } from "./internal/store"
 import { IMPLICIT } from "./internal/store"
-import type { ReadonlyTransactors, Transactors } from "./transact"
+import type { ReadonlyTransactors, Transactors } from "./transaction"
 
 export type SelectorOptions<T> = {
   key: string
@@ -111,7 +111,7 @@ export function selectorFamily<T, K extends Serializable>(
     const existing =
       store.selectors.get(fullKey) ?? store.readonlySelectors.get(fullKey)
     if (existing) {
-      return tokenize(existing)
+      return deposit(existing)
     }
     const readonlySelectorOptions: ReadonlySelectorOptions<T> = {
       key: fullKey,

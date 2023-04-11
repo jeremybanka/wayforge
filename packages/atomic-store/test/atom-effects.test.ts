@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "fs"
 import mock from "mock-fs"
 import { vitest } from "vitest"
 
-import * as UTIL from "./test-utils"
+import * as UTIL from "./-util"
 import { atom, atomFamily, getState, setState } from "../src"
 import * as INTERNALS from "../src/internal"
 

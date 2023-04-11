@@ -22,21 +22,21 @@ export const getSelectorState = <T>(
   selector: ReadonlySelector<T> | Selector<T>
 ): T => selector.get()
 
-export function detokenize<T>(token: AtomToken<T>, store: Store): Atom<T>
-export function detokenize<T>(token: SelectorToken<T>, store: Store): Selector<T>
-export function detokenize<T>(
+export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T>
+export function withdraw<T>(token: SelectorToken<T>, store: Store): Selector<T>
+export function withdraw<T>(
   token: StateToken<T>,
   store: Store
 ): Atom<T> | Selector<T>
-export function detokenize<T>(
+export function withdraw<T>(
   token: ReadonlyValueToken<T>,
   store: Store
 ): ReadonlySelector<T>
-export function detokenize<T>(
+export function withdraw<T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
   store: Store
 ): Atom<T> | ReadonlySelector<T> | Selector<T>
-export function detokenize<T>(
+export function withdraw<T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
   store: Store
 ): Atom<T> | ReadonlySelector<T> | Selector<T> {
@@ -47,14 +47,14 @@ export function detokenize<T>(
   )
 }
 
-export function tokenize<T>(state: Atom<T>): AtomToken<T>
-export function tokenize<T>(state: Selector<T>): SelectorToken<T>
-export function tokenize<T>(state: Atom<T> | Selector<T>): StateToken<T>
-export function tokenize<T>(state: ReadonlySelector<T>): ReadonlyValueToken<T>
-export function tokenize<T>(
+export function deposit<T>(state: Atom<T>): AtomToken<T>
+export function deposit<T>(state: Selector<T>): SelectorToken<T>
+export function deposit<T>(state: Atom<T> | Selector<T>): StateToken<T>
+export function deposit<T>(state: ReadonlySelector<T>): ReadonlyValueToken<T>
+export function deposit<T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>
 ): ReadonlyValueToken<T> | StateToken<T>
-export function tokenize<T>(
+export function deposit<T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>
 ): ReadonlyValueToken<T> | StateToken<T> {
   if (`get` in state) {

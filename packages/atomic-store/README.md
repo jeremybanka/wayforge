@@ -9,7 +9,7 @@
 - [x] selector memoization
 - [x] atom and selector families
 - [x] atom effects
-- [ ] transactions
+- [x] transactions
 - [ ] atom default as function
 - [ ] atom default as promise
 - [ ] resettable atoms
