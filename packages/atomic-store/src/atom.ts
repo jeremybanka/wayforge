@@ -37,8 +37,8 @@ export const atom = <T>(
   const onSet = (callback: (change: { newValue: T; oldValue: T }) => void) => {
     newAtom.subject.subscribe(callback)
   }
-  options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   setSelf(options.default)
+  options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   return token
 }
 

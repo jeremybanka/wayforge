@@ -1,7 +1,10 @@
+import { readFileSync, writeFileSync } from "fs"
+
+import mock from "mock-fs"
 import { vitest } from "vitest"
 
 import * as UTIL from "./test-utils"
-import { atomFamily, getState, setState } from "../src"
+import { atom, atomFamily, getState, setState } from "../src"
 import * as INTERNALS from "../src/internal"
 
 const loggers = [UTIL.silence, console] as const
@@ -16,6 +19,9 @@ beforeEach(() => {
   vitest.spyOn(logger, `warn`)
   vitest.spyOn(logger, `info`)
   vitest.spyOn(UTIL, `stdout`)
+  mock({
+    "name.txt": `Mavis`,
+  })
 })
 
 describe(`atom effects`, () => {
@@ -36,5 +42,23 @@ describe(`atom effects`, () => {
       newValue: { x: 1, y: 1 },
       oldValue: { x: 0, y: 0 },
     })
+  })
+  it(`sets itself from the file-system, then writes to the filestore onSet`, () => {
+    const nameState = atom<string>({
+      key: `name`,
+      default: ``,
+      effects: [
+        ({ setSelf, onSet }) => {
+          const name = readFileSync(`name.txt`, `utf8`)
+          setSelf(name)
+          onSet((change) => {
+            writeFileSync(`name.txt`, change.newValue)
+          })
+        },
+      ],
+    })
+    expect(getState(nameState)).toBe(`Mavis`)
+    setState(nameState, `Mavis2`)
+    expect(readFileSync(`name.txt`, `utf8`)).toBe(`Mavis2`)
   })
 })
