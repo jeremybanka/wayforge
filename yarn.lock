@@ -445,7 +445,6 @@ __metadata:
   resolution: "@banka/eslint-config-react@workspace:packages/@banka/eslint-config/react"
   dependencies:
     "@types/mocha": 10.0.1
-    "@types/mock-fs": 4.13.1
     "@types/node": 18.15.11
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
@@ -470,7 +469,6 @@ __metadata:
   resolution: "@banka/eslint-config@workspace:packages/@banka/eslint-config"
   dependencies:
     "@types/mocha": 10.0.1
-    "@types/mock-fs": 4.13.1
     "@types/node": 18.15.11
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
@@ -3348,10 +3346,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "atomic-store@workspace:packages/atomic-store"
   dependencies:
+    "@types/mock-fs": 4.13.1
     fp-ts: 2.13.1
     hamt_plus: 1.0.2
     immer: 9.0.21
     io-ts: 2.2.20
+    mock-fs: 5.2.0
     nanoid: 3.3.6
     rxjs: 7.8.0
     tsup: 6.7.0
