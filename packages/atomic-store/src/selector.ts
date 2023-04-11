@@ -37,7 +37,7 @@ export function selector<T>(
     throw new Error(`Key "${options.key}" already exists in the store.`)
   }
 
-  const subject = new Rx.Subject<T>()
+  const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
 
   const { get, set } = registerSelector(options.key, store)
   const getSelf = () => {
@@ -64,9 +64,11 @@ export function selector<T>(
 
   const setSelf = (next: T | ((oldValue: T) => T)): void => {
     store.config.logger?.info(`${options.key}.set`, next)
-    const newValue = become(next)(getSelf)
-    subject.next(newValue)
+    const oldValue = getSelf()
+    const newValue = become(next)(oldValue)
     store.valueMap = HAMT.set(options.key, newValue, store.valueMap)
+    console.error({ oldValue })
+    subject.next({ newValue, oldValue })
     options.set({ get, set }, newValue)
   }
 

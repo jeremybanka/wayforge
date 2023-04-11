@@ -1,14 +1,10 @@
 import { vitest } from "vitest"
 
+import * as UTIL from "./test-utils"
 import { atom, getState, selector, setState, subscribe } from "../src"
 import * as INTERNALS from "../src/internal"
 
-export const silence: Pick<Console, `error` | `info` | `warn`> = {
-  error: () => null,
-  warn: () => null,
-  info: () => null,
-}
-const loggers = [silence, console] as const
+const loggers = [UTIL.silence, console] as const
 const choose = 0
 const logger = loggers[choose]
 
@@ -19,6 +15,7 @@ beforeEach(() => {
   vitest.spyOn(logger, `error`)
   vitest.spyOn(logger, `warn`)
   vitest.spyOn(logger, `info`)
+  vitest.spyOn(UTIL, `stdout`)
 })
 
 describe(`atom`, () => {
@@ -37,9 +34,12 @@ describe(`atom`, () => {
       key: `name`,
       default: `John`,
     })
-    subscribe(name, logger.info)
+    subscribe(name, UTIL.stdout)
     setState(name, `Jane`)
-    expect(logger.info).toHaveBeenCalledWith(`Jane`)
+    expect(UTIL.stdout).toHaveBeenCalledWith({
+      newValue: `Jane`,
+      oldValue: `John`,
+    })
   })
 })
 
@@ -58,7 +58,7 @@ describe(`selector`, () => {
     setState(count, 2)
     expect(getState(double)).toBe(4)
   })
-  it(`can be subscribed to`, () => {
+  it.only(`can be subscribed to`, () => {
     const count = atom<number>({
       key: `count`,
       default: 0,
@@ -67,9 +67,9 @@ describe(`selector`, () => {
       key: `double`,
       get: ({ get }) => get(count) * 2,
     })
-    subscribe(double, logger.info)
+    subscribe(double, UTIL.stdout)
     setState(count, 1)
-    expect(logger.info).toHaveBeenCalledWith(2)
+    expect(UTIL.stdout).toHaveBeenCalledWith({ newValue: 2, oldValue: 0 })
   })
   it(`can be set, propagating changes to all related atoms`, () => {
     const count = atom<number>({

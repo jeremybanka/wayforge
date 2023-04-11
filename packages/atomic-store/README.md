@@ -8,7 +8,7 @@
 - [x] utility function to pass logger to your store
 - [x] selector memoization
 - [x] atom and selector families
-- [ ] atom effects
+- [x] atom effects
 - [ ] transactions
 - [ ] atom default as function
 - [ ] atom default as promise

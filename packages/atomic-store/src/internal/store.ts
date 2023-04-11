@@ -5,13 +5,24 @@ import { Join } from "~/packages/anvl/src/join"
 
 import type { Atom, ReadonlySelector, Selector } from "."
 
-export type Store = {
+export type StoreBase = {
   valueMap: Hamt<any, string>
   selectorGraph: Join
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   atoms: Hamt<Atom<any>, string>
-  done: Set<string>
+}
+
+export interface Store extends StoreBase {
+  action:
+    | {
+        open: false
+      }
+    | {
+        open: true
+        done: Set<string>
+        prev: Hamt<any, string>
+      }
   config: {
     name: string
     logger: Pick<Console, `error` | `info` | `warn`> | null
@@ -25,7 +36,9 @@ export const createStore = (name: string): Store =>
     atoms: HAMT.make<Atom<any>, string>(),
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-    done: new Set(),
+    action: {
+      open: false,
+    },
     config: {
       name,
       logger: null,
@@ -39,9 +52,49 @@ export const IMPLICIT = {
   },
 }
 
-export const operationComplete = (store: Store): void => {
+export const finishAction = (store: Store): void => {
+  store.action = { open: false }
   store.config.logger?.info(`   ✅`, `operation complete`)
-  store.done.clear()
+}
+
+export const startAction = (store: Store): void => {
+  store.action = {
+    open: true,
+    done: new Set(),
+    prev: store.valueMap,
+  }
+  store.config.logger?.info(`   ⚠️`, `action started`)
+}
+
+export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
+  if (!store.action.open) {
+    store.config.logger?.warn(
+      `isDone called outside of an action. This is probably a bug.`
+    )
+    return true
+  }
+  return store.action.done.has(key)
+}
+export const markDone = (key: string, store: Store = IMPLICIT.STORE): void => {
+  if (!store.action.open) {
+    store.config.logger?.warn(
+      `markDone called outside of an action. This is probably a bug.`
+    )
+    return
+  }
+  store.action.done.add(key)
+}
+export const recall = <T>(
+  state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+  store: Store = IMPLICIT.STORE
+): T => {
+  if (!store.action.open) {
+    store.config.logger?.warn(
+      `recall called outside of an action. This is probably a bug.`
+    )
+    return HAMT.get(state.key, store.valueMap)
+  }
+  return HAMT.get(state.key, store.action.prev)
 }
 
 export const configureStore = (

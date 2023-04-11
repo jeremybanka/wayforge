@@ -1,7 +1,7 @@
 import { detokenize, getState__INTERNAL } from "./internal/get"
 import { setState__INTERNAL } from "./internal/set"
 import type { Store } from "./internal/store"
-import { operationComplete, IMPLICIT } from "./internal/store"
+import { startAction, finishAction, IMPLICIT } from "./internal/store"
 
 export * from "./atom"
 export * from "./selector"
@@ -32,16 +32,17 @@ export const getState = <T>(
 
 export const setState = <State, Value extends State>(
   state: StateToken<State>,
-  value: Value,
+  value: Value | ((oldValue: State) => Value),
   store: Store = IMPLICIT.STORE
 ): void => {
+  startAction(store)
   setState__INTERNAL(state, value, store)
-  operationComplete(store)
+  finishAction(store)
 }
 
 export const subscribe = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
-  callback: (value: T) => void,
+  callback: (update: { newValue: T; oldValue: T }) => void,
   store: Store = IMPLICIT.STORE
 ): (() => void) => {
   const state = detokenize<T>(token, store)

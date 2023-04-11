@@ -1,21 +1,11 @@
 import { vitest } from "vitest"
 
-import {
-  atomFamily,
-  getState,
-  selectorFamily,
-  setState,
-  subscribe,
-} from "../src"
+import * as UTIL from "./test-utils"
+import { atomFamily, getState, selectorFamily, setState } from "../src"
 import * as INTERNALS from "../src/internal"
 
-export const silence: Pick<Console, `error` | `info` | `warn`> = {
-  error: () => null,
-  warn: () => null,
-  info: () => null,
-}
-const loggers = [silence, console] as const
-const choose = 1
+const loggers = [UTIL.silence, console] as const
+const choose = 0
 const logger = loggers[choose]
 
 INTERNALS.configureStore({ logger })
