@@ -5,15 +5,12 @@ import { Join } from "~/packages/anvl/src/join"
 
 import type { Atom, ReadonlySelector, Selector } from "."
 
-export type StoreBase = {
+export interface Store {
   valueMap: Hamt<any, string>
   selectorGraph: Join
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   atoms: Hamt<Atom<any>, string>
-}
-
-export interface Store extends StoreBase {
   action:
     | {
         open: false
