@@ -1,5 +1,5 @@
 {
-  "name": "atomic-store",
+  "name": "atom.io",
   "version": "0.0.0",
   "description": "like recoil for node",
   "main": "dist/index.js",

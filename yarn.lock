@@ -3342,9 +3342,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"atomic-store@workspace:packages/atomic-store":
+"atom.io@workspace:packages/atom.io":
   version: 0.0.0-use.local
-  resolution: "atomic-store@workspace:packages/atomic-store"
+  resolution: "atom.io@workspace:packages/atom.io"
   dependencies:
     "@types/mock-fs": 4.13.1
     fp-ts: 2.13.1
