@@ -68,7 +68,11 @@ export const setAtomState = <T>(
   store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
   markDone(atom.key, store)
   atom.subject.next({ newValue, oldValue })
-  store.config.logger?.info(`   ||`, `propagating change to`, `"${atom.key}"`)
+  store.config.logger?.info(
+    `   ||`,
+    `propagating change made to`,
+    `"${atom.key}"`
+  )
   propagateDown(atom, store)
 }
 export const setSelectorState = <T>(
@@ -88,7 +92,7 @@ export const setSelectorState = <T>(
   )
   store.config.logger?.info(
     `   ||`,
-    `propagating change to`,
+    `propagating change made to`,
     `"${selector.key}"`
   )
 

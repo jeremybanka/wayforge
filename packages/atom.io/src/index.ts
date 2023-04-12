@@ -15,17 +15,17 @@ export * from "./selector"
 export * from "./transaction"
 export { __INTERNAL__, configure }
 
-export interface AtomToken<_> {
+export type AtomToken<_> = {
   key: string
   type: `atom`
 }
-export interface SelectorToken<_> {
+export type SelectorToken<_> = {
   key: string
   type: `selector`
 }
 export type StateToken<T> = AtomToken<T> | SelectorToken<T>
 
-export interface ReadonlyValueToken<_> {
+export type ReadonlyValueToken<_> = {
   key: string
   type: `readonly_selector`
 }
@@ -38,9 +38,9 @@ export const getState = <T>(
   return getState__INTERNAL(state, store)
 }
 
-export const setState = <State, Value extends State>(
-  state: StateToken<State>,
-  value: Value | ((oldValue: State) => Value),
+export const setState = <T, New extends T>(
+  state: StateToken<T>,
+  value: New | ((oldValue: T) => New),
   store: Store = IMPLICIT.STORE
 ): void => {
   startAction(store)

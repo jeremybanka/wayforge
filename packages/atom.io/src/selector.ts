@@ -148,9 +148,9 @@ export const registerSelector = (
     } else {
       store.config.logger?.info(
         `🔌 registerSelector`,
-        state.key,
-        `->`,
-        selectorKey
+        selectorKey,
+        `<-`,
+        state.key
       )
       store.selectorGraph = store.selectorGraph.set(selectorKey, state.key)
     }

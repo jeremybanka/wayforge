@@ -3377,10 +3377,7 @@ __metadata:
     "@types/mock-fs": 4.13.1
     fp-ts: 2.13.1
     hamt_plus: 1.0.2
-    immer: 9.0.21
-    io-ts: 2.2.20
     mock-fs: 5.2.0
-    nanoid: 3.3.6
     react: 18.2.0
     react-dom: 18.2.0
     rxjs: 7.8.0
