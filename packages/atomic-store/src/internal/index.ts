@@ -3,6 +3,8 @@ import type * as Rx from "rxjs"
 export * from "./get"
 export * from "./set"
 export * from "./store"
+export * from "./operation"
+export * from "./transaction-internal"
 
 export type Atom<T> = {
   key: string

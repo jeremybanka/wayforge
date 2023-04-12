@@ -31,7 +31,6 @@ export const propagateChanges = <T>(
     }
     store.config.logger?.info(`->`, `bumping`, stateKey)
     store.valueMap = HAMT.remove(stateKey, store.valueMap)
-    // }
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.readonlySelectors)

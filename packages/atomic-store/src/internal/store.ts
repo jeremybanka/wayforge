@@ -66,8 +66,7 @@ export const IMPLICIT = {
     return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = createStore(`DEFAULT`))
   },
 }
-
-export const configureStore = (
+export const configure = (
   config: Partial<Store[`config`]>,
   store: Store = IMPLICIT.STORE
 ): void => {

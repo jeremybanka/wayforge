@@ -5,23 +5,24 @@ import { Join } from "~/packages/anvl/src/join"
 
 import * as UTIL from "./-util"
 import {
+  __INTERNAL__,
   atom,
   atomFamily,
+  configure,
   getState,
   selectorFamily,
   setState,
   transaction,
 } from "../src"
-import * as INTERNALS from "../src/internal"
 
 const loggers = [UTIL.silence, console] as const
 const choose = 0
 const logger = loggers[choose]
 
-INTERNALS.configureStore({ logger })
+configure({ logger })
 
 beforeEach(() => {
-  INTERNALS.clearStore()
+  __INTERNAL__.clearStore()
   vitest.spyOn(logger, `error`)
   vitest.spyOn(logger, `warn`)
   vitest.spyOn(logger, `info`)
@@ -153,5 +154,7 @@ describe(`transaction`, () => {
       }
     }
     expect(logger.error).toHaveBeenCalledTimes(1)
+
+    setState(globalInventoryState, (current) => current.remove(victimState.key))
   })
 })

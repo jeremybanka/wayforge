@@ -5,7 +5,7 @@ import { become } from "~/packages/anvl/src/function"
 import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { ReadonlyValueToken, SelectorToken, StateToken } from "."
+import type { ReadonlyValueToken, SelectorToken } from "."
 import { getState } from "."
 import type { Selector } from "./internal"
 import { deposit } from "./internal"

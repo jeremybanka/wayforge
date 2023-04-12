@@ -1,12 +1,19 @@
-import { IMPLICIT } from "./internal"
-import { withdraw, getState__INTERNAL } from "./internal/get"
-import { finishAction, startAction } from "./internal/operation"
-import { setState__INTERNAL } from "./internal/set"
+import {
+  IMPLICIT,
+  configure,
+  finishAction,
+  getState__INTERNAL,
+  setState__INTERNAL,
+  startAction,
+  withdraw,
+} from "./internal"
+import * as __INTERNAL__ from "./internal"
 import type { Store } from "./internal/store"
 
 export * from "./atom"
 export * from "./selector"
 export * from "./transaction"
+export { __INTERNAL__, configure }
 
 export interface AtomToken<_> {
   key: string
@@ -41,12 +48,14 @@ export const setState = <State, Value extends State>(
   finishAction(store)
 }
 
+export type Observe<T> = (change: { newValue: T; oldValue: T }) => void
+
 export const subscribe = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
-  callback: (update: { newValue: T; oldValue: T }) => void,
+  observe: Observe<T>,
   store: Store = IMPLICIT.STORE
 ): (() => void) => {
   const state = withdraw<T>(token, store)
-  const subscription = state.subject.subscribe(callback)
+  const subscription = state.subject.subscribe(observe)
   return () => subscription.unsubscribe()
 }

@@ -1,17 +1,23 @@
 import { vitest } from "vitest"
 
 import * as UTIL from "./-util"
-import { atomFamily, getState, selectorFamily, setState } from "../src"
-import * as INTERNALS from "../src/internal"
+import {
+  __INTERNAL__,
+  atomFamily,
+  configure,
+  getState,
+  selectorFamily,
+  setState,
+} from "../src"
 
 const loggers = [UTIL.silence, console] as const
 const choose = 0
 const logger = loggers[choose]
 
-INTERNALS.configureStore({ logger })
+configure({ logger })
 
 beforeEach(() => {
-  INTERNALS.clearStore()
+  __INTERNAL__.clearStore()
   vitest.spyOn(logger, `error`)
   vitest.spyOn(logger, `warn`)
   vitest.spyOn(logger, `info`)
