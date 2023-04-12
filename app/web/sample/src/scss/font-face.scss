@@ -1,24 +1,24 @@
 @font-face {
   font-family: name;
-  src: url(assets/love_yanone.ttf);
+  src: url(../assets/love_yanone.ttf);
 }
 
 @font-face {
   font-family: "|_'_|";
-  src: url(assets/DelveSystem-Regular.otf);
+  src: url(../assets/DelveSystem-Regular.otf);
 }
 
 @font-face {
   font-family: sudo;
-  src: url(assets/Sudo-Code.otf);
+  src: url(../assets/Sudo-Code.otf);
 }
 @font-face {
   font-family: theia;
-  src: url(assets/Theia0.2.500-500.otf);
+  src: url(../assets/Theia0.2.500-500.otf);
 }
 
 :root {
-  font-family: theia;
+  font-family: name;
   font-size: 20px;
   line-height: 1.5;
   font-synthesis: none;
