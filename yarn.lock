@@ -2863,6 +2863,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wayforge/shrine@workspace:app/web/shrine":
+  version: 0.0.0-use.local
+  resolution: "@wayforge/shrine@workspace:app/web/shrine"
+  dependencies:
+    fp-ts: 2.13.1
+    immer: 9.0.19
+    phaser: 3.55.2
+    socket.io: 4.6.1
+    socket.io-client: 4.6.1
+    vite: 4.2.1
+    vite-tsconfig-paths: 4.0.8
+    zustand: 4.3.7
+  languageName: unknown
+  linkType: soft
+
 "@wayforge/smithy@workspace:app/web/smithy":
   version: 0.0.0-use.local
   resolution: "@wayforge/smithy@workspace:app/web/smithy"
@@ -3370,7 +3385,6 @@ __metadata:
     react-dom: 18.2.0
     rxjs: 7.8.0
     tsup: 6.7.0
-    vite: 4.2.0
     vite-tsconfig-paths: 4.0.8
     vitest: 0.29.3
   dependenciesMeta:
@@ -3840,9 +3854,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001449":
-  version: 1.0.30001477
-  resolution: "caniuse-lite@npm:1.0.30001477"
-  checksum: 22db0feccf43b0c16a46bb59b4e26ae05011f41c6947f1dd176d5056e0db58c3415a5ff7ee5a60903a6bda7311b71705d1d29fc4c43a8b8a1bdeef8c1d93f6a8
+  version: 1.0.30001478
+  resolution: "caniuse-lite@npm:1.0.30001478"
+  checksum: 27a370dcb32a6a35e186307aabc570da1cd0fccc849913665e7df6822a87286de99509b163304e0586c23c539a991717fb68ed84b85bbd21b2cb86475ae5ffb2
   languageName: node
   linkType: hard
 
@@ -9065,7 +9079,6 @@ __metadata:
     io-ts: 2.2.20
     nanoid: 3.3.6
     tsup: 6.7.0
-    vite: 4.2.0
     vite-tsconfig-paths: 4.0.8
     vitest: 0.30.1
   peerDependencies:
@@ -10296,21 +10309,6 @@ __metadata:
   checksum: 8d73a5e9861f5e5f1068e2cfc39bc0002400fe58558ab5e5fa75630d2c3adf44ca1fac81957609c8320d5533e093802fcafc72904bf1a32b95de3c19a0b1c0d4
   languageName: node
   linkType: hard
-
-"shrine@workspace:app/web/shrine":
-  version: 0.0.0-use.local
-  resolution: "shrine@workspace:app/web/shrine"
-  dependencies:
-    fp-ts: 2.13.1
-    immer: 9.0.19
-    phaser: 3.55.2
-    socket.io: 4.6.1
-    socket.io-client: 4.6.1
-    vite: 4.2.1
-    vite-tsconfig-paths: 4.0.8
-    zustand: 4.3.7
-  languageName: unknown
-  linkType: soft
 
 "side-channel@npm:^1.0.4":
   version: 1.0.4
@@ -11835,44 +11833,6 @@ __metadata:
     vite:
       optional: true
   checksum: 4ec41f5d2eb167c1d7dfa6dd196ce253406c071671199239f9721fd5f8aee5b0107503a520ca996da67bad7d2750829534ec6e93801abe6d24fbc71d46ae8665
-  languageName: node
-  linkType: hard
-
-"vite@npm:4.2.0":
-  version: 4.2.0
-  resolution: "vite@npm:4.2.0"
-  dependencies:
-    esbuild: ^0.17.5
-    fsevents: ~2.3.2
-    postcss: ^8.4.21
-    resolve: ^1.22.1
-    rollup: ^3.18.0
-  peerDependencies:
-    "@types/node": ">= 14"
-    less: "*"
-    sass: "*"
-    stylus: "*"
-    sugarss: "*"
-    terser: ^5.4.0
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  peerDependenciesMeta:
-    "@types/node":
-      optional: true
-    less:
-      optional: true
-    sass:
-      optional: true
-    stylus:
-      optional: true
-    sugarss:
-      optional: true
-    terser:
-      optional: true
-  bin:
-    vite: bin/vite.js
-  checksum: 1088cdc0c89ab835aab07a0a114397b749e8dfb20f4b94241ba179d9c371b72d31e13782b22893860c3d65da596e43b24fce5e023f79cfde427f42549f2e1844
   languageName: node
   linkType: hard
 
