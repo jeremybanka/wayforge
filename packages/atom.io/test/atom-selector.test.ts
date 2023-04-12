@@ -65,7 +65,7 @@ describe(`selector`, () => {
     setState(count, 2)
     expect(getState(double)).toBe(4)
   })
-  it.only(`can be subscribed to`, () => {
+  it(`can be subscribed to`, () => {
     const count = atom<number>({
       key: `count`,
       default: 0,
