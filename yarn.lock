@@ -445,7 +445,6 @@ __metadata:
   resolution: "@banka/eslint-config-react@workspace:packages/@banka/eslint-config/react"
   dependencies:
     "@types/mocha": 10.0.1
-    "@types/mock-fs": 4.13.1
     "@types/node": 18.15.11
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
@@ -470,7 +469,6 @@ __metadata:
   resolution: "@banka/eslint-config@workspace:packages/@banka/eslint-config"
   dependencies:
     "@types/mocha": 10.0.1
-    "@types/mock-fs": 4.13.1
     "@types/node": 18.15.11
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
@@ -3343,6 +3341,25 @@ __metadata:
   checksum: dfeeeb70090c5ebea7be4b9f787f866686c645d9f39a0d184c817252d0cf08455ed25267d79c03254d3be1f03ac399992a792edcd5ffb9c91e097ab5ef42833a
   languageName: node
   linkType: hard
+
+"atom.io@workspace:packages/atom.io":
+  version: 0.0.0-use.local
+  resolution: "atom.io@workspace:packages/atom.io"
+  dependencies:
+    "@types/mock-fs": 4.13.1
+    fp-ts: 2.13.1
+    hamt_plus: 1.0.2
+    immer: 9.0.21
+    io-ts: 2.2.20
+    mock-fs: 5.2.0
+    nanoid: 3.3.6
+    rxjs: 7.8.0
+    tsup: 6.7.0
+    vite: 4.2.0
+    vite-tsconfig-paths: 4.0.8
+    vitest: 0.29.3
+  languageName: unknown
+  linkType: soft
 
 "available-typed-arrays@npm:^1.0.5":
   version: 1.0.5
@@ -9969,7 +9986,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.8.0":
+"rxjs@npm:7.8.0, rxjs@npm:^7.8.0":
   version: 7.8.0
   resolution: "rxjs@npm:7.8.0"
   dependencies:
