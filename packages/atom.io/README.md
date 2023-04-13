@@ -14,6 +14,7 @@
 
 # atom.io
 ## features
+- [ ] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [ ] atom default as function
 - [ ] async effects
 - [ ] resettable atoms
@@ -22,7 +23,6 @@
 - [ ] subscribe to token creation
 - [ ] logging levels (debug, info, warn, error)
 - [ ] store observation api
-- [ ] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [ ] optional default value for atoms
 - [ ] optional state keys
 ## fixes & improvements
