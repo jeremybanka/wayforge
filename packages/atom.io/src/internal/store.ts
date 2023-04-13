@@ -7,7 +7,7 @@ import type { Atom, ReadonlySelector, Selector } from "."
 
 export interface Store {
   valueMap: Hamt<any, string>
-  selectorGraph: Join
+  selectorGraph: Join<{ source: string }>
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   atoms: Hamt<Atom<any>, string>

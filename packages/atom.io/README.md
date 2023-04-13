@@ -26,9 +26,7 @@
 - [ ] optional default value for atoms
 - [ ] optional state keys
 ## fixes & improvements
-- [ ] refactor selector dependencies to be asymmetrical
-      just include the id of the leader in the relation between the leader and the follower
-      this will permit us to rebuild the dependency graph on every update
+- [x] refactor selector dependencies to be asymmetrical
 - [ ] apply and emit transactions all at once
 - [ ] trampoline for recursive propagation
 
