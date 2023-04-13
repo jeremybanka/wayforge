@@ -15,8 +15,9 @@ export const Divisor: FC = () => {
   const [divisor, setDivisor] = useStore(divisorState)
   return (
     <div>
-      <h1>Divisor: {divisor}</h1>
+      <h1 data-testid="divisor">Divisor: {divisor}</h1>
       <button
+        data-testid="divisorButton+"
         onClick={() => setDivisor((divisor) => divisor + 1)}
         css={css`
           font-size: 2rem;
@@ -25,6 +26,7 @@ export const Divisor: FC = () => {
         +
       </button>
       <button
+        data-testid="divisorButton-"
         onClick={() => setDivisor((divisor) => divisor - 1)}
         css={css`
           font-size: 2rem;

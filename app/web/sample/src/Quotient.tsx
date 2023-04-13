@@ -25,8 +25,9 @@ export const Quotient: FC = () => {
   const [quotient, setQuotient] = useStore(quotientState)
   return (
     <div>
-      <h1>Quotient: {quotient}</h1>
+      <h1 data-testid="quotient">Quotient: {quotient}</h1>
       <button
+        data-testid="quotientButton+"
         onClick={() => setQuotient((q) => q + 1)}
         css={css`
           font-size: 2rem;
@@ -35,6 +36,7 @@ export const Quotient: FC = () => {
         +
       </button>
       <button
+        data-testid="quotientButton-"
         onClick={() => setQuotient((q) => q - 1)}
         css={css`
           font-size: 2rem;
