@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import type { ContentsOf as In, Parcel } from "~/packages/anvl/src/id"
+import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
 import * as UTIL from "./-util"
@@ -64,7 +64,7 @@ type Item = Parcel<
 
 describe(`transaction`, () => {
   it(`gets and sets state`, () => {
-    const findBeingState = atomFamily<In<Being>, string>({
+    const findBeingState = atomFamily<$<Being>, string>({
       key: `Being`,
       default: {
         name: ``,
@@ -73,7 +73,7 @@ describe(`transaction`, () => {
         ...DEFAULT_CORE_STATS,
       },
     })
-    const findItemState = atomFamily<In<Item>, string>({
+    const findItemState = atomFamily<$<Item>, string>({
       key: `Item`,
       default: {
         name: ``,
@@ -133,7 +133,7 @@ describe(`transaction`, () => {
       keen: 1,
     })
     setState(globalInventoryState, (current) =>
-      current.set(`Being__"Victim"`, `Item__"Prize"`)
+      current.set(victimState.key, prizeState.key)
     )
     const thiefInvState = findBeingInventoryState(thiefState.key)
     const victimInvState = findBeingInventoryState(victimState.key)

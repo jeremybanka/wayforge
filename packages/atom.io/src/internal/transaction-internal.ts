@@ -2,7 +2,7 @@ import type { Store } from "./store"
 
 export const finishTransaction = (store: Store): void => {
   store.transaction = { open: false }
-  store.config.logger?.info(`💸`, `transaction done`)
+  store.config.logger?.info(`🛬`, `transaction done`)
 }
 export const startTransaction = (store: Store): void => {
   store.transaction = {
@@ -15,7 +15,7 @@ export const startTransaction = (store: Store): void => {
       valueMap: store.valueMap,
     },
   }
-  store.config.logger?.info(`🏦`, `transaction start`)
+  store.config.logger?.info(`🛫`, `transaction start`)
 }
 export const abortTransaction = (store: Store): void => {
   if (!store.transaction.open) {

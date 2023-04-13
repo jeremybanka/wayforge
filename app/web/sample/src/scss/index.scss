@@ -1,0 +1,38 @@
+:root {
+  color-scheme: light dark;
+  --fg-color: #fff;
+  --bg-color: #000;
+  color: var(--fg-color);
+  background-color: var(--bg-color);
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+a {
+  font-weight: 500;
+  color: #09f;
+  text-decoration: inherit;
+  &:hover {
+    color: #0df;
+    text-decoration: underline;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --fg-color: #333;
+    --bg-color: #fff;
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+  }
+  a:hover {
+    color: #08f;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

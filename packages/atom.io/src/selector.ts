@@ -8,7 +8,7 @@ import { stringifyJson } from "~/packages/anvl/src/json"
 import type { ReadonlyValueToken, SelectorToken } from "."
 import { getState } from "."
 import type { Selector } from "./internal"
-import { deposit } from "./internal"
+import { markDone, deposit } from "./internal"
 import { setState__INTERNAL } from "./internal/set"
 import type { Store } from "./internal/store"
 import { IMPLICIT } from "./internal/store"
@@ -67,7 +67,7 @@ export function selector<T>(
     const oldValue = getSelf()
     const newValue = become(next)(oldValue)
     store.valueMap = HAMT.set(options.key, newValue, store.valueMap)
-    console.error({ oldValue })
+    markDone(options.key, store)
     subject.next({ newValue, oldValue })
     options.set({ get, set }, newValue)
   }
@@ -148,9 +148,9 @@ export const registerSelector = (
     } else {
       store.config.logger?.info(
         `🔌 registerSelector`,
-        state.key,
-        `->`,
-        selectorKey
+        selectorKey,
+        `<-`,
+        state.key
       )
       store.selectorGraph = store.selectorGraph.set(selectorKey, state.key)
     }
