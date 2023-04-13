@@ -9,7 +9,7 @@ import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 import type { StateToken } from ".."
 
-export const propagateChanges = <T>(
+export const propagateDown = <T>(
   state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
@@ -30,16 +30,24 @@ export const propagateChanges = <T>(
       return
     }
     store.config.logger?.info(`->`, `bumping`, stateKey)
-    store.valueMap = HAMT.remove(stateKey, store.valueMap)
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.readonlySelectors)
+    if (!state) {
+      store.config.logger?.info(
+        `   ||`,
+        stateKey,
+        `is an atom - no need to propagate down`
+      )
+      return
+    }
+    store.valueMap = HAMT.remove(stateKey, store.valueMap)
     const newValue = getState__INTERNAL(state, store)
     store.config.logger?.info(`   <-`, stateKey, `became`, newValue)
     const oldValue = recall(state, store)
     state.subject.next({ newValue, oldValue })
     markDone(stateKey, store)
-    if (`set` in state) propagateChanges(state, store)
+    if (`set` in state) propagateDown(state, store)
   })
 }
 
@@ -60,8 +68,12 @@ export const setAtomState = <T>(
   store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
   markDone(atom.key, store)
   atom.subject.next({ newValue, oldValue })
-  store.config.logger?.info(`   ||`, `propagating change to`, `"${atom.key}"`)
-  propagateChanges(atom, store)
+  store.config.logger?.info(
+    `   ||`,
+    `propagating change made to`,
+    `"${atom.key}"`
+  )
+  propagateDown(atom, store)
 }
 export const setSelectorState = <T>(
   selector: Selector<T>,
@@ -80,13 +92,12 @@ export const setSelectorState = <T>(
   )
   store.config.logger?.info(
     `   ||`,
-    `propagating change to`,
+    `propagating change made to`,
     `"${selector.key}"`
   )
 
   selector.set(newValue)
-  markDone(selector.key, store)
-  propagateChanges(selector, store)
+  propagateDown(selector, store)
 }
 export const setState__INTERNAL = <T>(
   token: StateToken<T>,

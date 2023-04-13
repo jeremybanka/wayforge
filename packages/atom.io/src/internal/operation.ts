@@ -4,17 +4,17 @@ import type { Atom, ReadonlySelector, Selector } from "."
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 
-export const finishAction = (store: Store): void => {
-  store.operation = { open: false }
-  store.config.logger?.info(`   ✅`, `operation complete`)
-}
 export const startAction = (store: Store): void => {
   store.operation = {
     open: true,
     done: new Set(),
     prev: store.valueMap,
   }
-  store.config.logger?.info(`   ⚠️`, `action started`)
+  store.config.logger?.info(`☐`, `operation start`)
+}
+export const finishAction = (store: Store): void => {
+  store.operation = { open: false }
+  store.config.logger?.info(`☑️`, `operation done`)
 }
 
 export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {

@@ -1,0 +1,59 @@
+@font-face {
+  font-family: name;
+  src: url(../assets/love_yanone.ttf);
+}
+
+@font-face {
+  font-family: "|_'_|";
+  src: url(../assets/DelveSystem-Regular.otf);
+}
+
+@font-face {
+  font-family: sudo;
+  src: url(../assets/Sudo-Code.otf);
+}
+@font-face {
+  font-family: theia;
+  src: url(../assets/Theia0.2.500-500.otf);
+}
+
+:root {
+  font-family: name;
+  font-size: 20px;
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+i {
+  font-family: "Uruz";
+}
+
+b {
+  font-family: "|_'_|";
+}
+
+code {
+  font-family: sudo;
+}
+
+@font-face {
+  font-family: "Uruz";
+  src: url(./assets/Uruz/Uruz-5r.otf);
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Uruz";
+  src: url(./assets/Uruz/Uruz-6r.otf);
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Uruz";
+  src: url(./assets/Uruz/Uruz-7r.otf);
+  font-weight: 700;
+}
