@@ -14,9 +14,10 @@
 
 # atom.io
 ## features
-- [ ] "lazy mode": only propagate updates downstream to selectors with an active subscription
+- [x] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [ ] atom default as function
 - [ ] async effects
+- [ ] check whether an atom is "default" (never set)
 - [ ] resettable atoms
 - [ ] resettable selectors
 - [ ] subscribe to transactions
