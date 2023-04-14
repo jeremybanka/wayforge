@@ -5,9 +5,9 @@ import { render, fireEvent } from "@testing-library/react"
 
 import type { StateToken } from "../src"
 import { atom } from "../src"
-import { composeStoreHook } from "../src/react"
+import { composeStoreHooks } from "../src/react"
 
-const { useStore } = composeStoreHook({ useState, useEffect })
+const { useStore } = composeStoreHooks({ useState, useEffect })
 
 export const onChange = [() => undefined, console.log][0]
 

@@ -16,12 +16,28 @@ export type AtomStoreReactConfig = {
 }
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const composeStoreHook = ({
+export const composeStoreHooks = ({
   useState,
   useEffect,
   store = __INTERNAL__.IMPLICIT.STORE,
 }: AtomStoreReactConfig) => {
   const { useSubject } = composeSubjectHook({ useState, useEffect })
+
+  function useI<T>(token: StateToken<T>): (next: Modifier<T> | T) => void {
+    const updateState = (next: Modifier<T> | T) => setState(token, next, store)
+    return updateState
+  }
+
+  function useO<T>(token: ReadonlyValueToken<T> | StateToken<T>): T {
+    const state = withdraw(token, store)
+    const initialValue = __INTERNAL__.getState__INTERNAL(state, store)
+    const [current] = useSubject<T>(state.subject, initialValue)
+    return current
+  }
+
+  function useIO<T>(token: StateToken<T>): [T, (next: Modifier<T> | T) => void] {
+    return [useO(token), useI(token)]
+  }
 
   function useStore<T>(
     token: StateToken<T>
@@ -30,18 +46,10 @@ export const composeStoreHook = ({
   function useStore<T>(
     token: ReadonlyValueToken<T> | StateToken<T>
   ): T | [T, (next: Modifier<T> | T) => void] {
-    const { type } = token
-    const state = withdraw(token, store)
-    const initialValue = __INTERNAL__.getState__INTERNAL(state, store)
-    const [value] = useSubject<T>(state.subject, initialValue)
-
-    if (type === `readonly_selector`) {
-      return value
+    if (token.type === `readonly_selector`) {
+      return useO(token)
     }
-
-    const updateState = (next: Modifier<T> | T) => setState(token, next, store)
-
-    return [value, updateState]
+    return useIO(token)
   }
-  return { useStore }
+  return { useI, useO, useIO, useStore }
 }
