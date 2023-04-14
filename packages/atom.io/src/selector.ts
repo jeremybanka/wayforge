@@ -152,14 +152,16 @@ export const registerSelector = (
         `<-`,
         state.key
       )
-      store.selectorGraph = store.selectorGraph.set(selectorKey, state.key)
+      store.selectorGraph = store.selectorGraph.set(selectorKey, state.key, {
+        source: state.key,
+      })
     }
     const currentValue = getState(state, store)
     store.config.logger?.info(`   ||`, state.key, `=`, currentValue)
     return currentValue
   },
   set: (token, newValue) => {
-    store.selectorGraph.set(token.key, selectorKey)
+    store.selectorGraph.set(token.key, selectorKey, { source: selectorKey })
     setState__INTERNAL(token, newValue, store)
   },
 })

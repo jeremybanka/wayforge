@@ -12,7 +12,7 @@ import {
 } from "../src"
 
 const loggers = [UTIL.silence, console] as const
-const choose = 0
+const choose = 1
 const logger = loggers[choose]
 
 configure({ logger })

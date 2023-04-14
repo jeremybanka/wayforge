@@ -13,37 +13,34 @@ export const propagateDown = <T>(
   state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
-  const relatedStateKeys = store.selectorGraph.getRelations(state.key)
+  const stateRelations = store.selectorGraph.getRelations(state.key)
+  const downstream = stateRelations.filter(({ source }) => source === state.key)
+  const downstreamKeys = downstream.map(({ id }) => id)
   store.config.logger?.info(
-    `   ||`,
-    `bumping`,
-    relatedStateKeys.length,
-    `states:`,
-    relatedStateKeys.map(({ id }) => id)
+    `   || ${downstreamKeys.length} downstream:`,
+    downstreamKeys
   )
   if (store.operation.open) {
-    store.config.logger?.info(`   ||`, `done:`, store.operation.done)
+    store.config.logger?.info(`   ||`, [...store.operation.done], `already done`)
   }
-  relatedStateKeys.forEach(({ id: stateKey }) => {
+  downstream.forEach(({ id: stateKey }) => {
     if (isDone(stateKey, store)) {
-      store.config.logger?.info(`   ||`, stateKey, `already done`)
+      store.config.logger?.info(`   || ${stateKey} already done`)
       return
     }
-    store.config.logger?.info(`->`, `bumping`, stateKey)
+    store.config.logger?.info(`-> bumping ${stateKey}`)
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.readonlySelectors)
     if (!state) {
       store.config.logger?.info(
-        `   ||`,
-        stateKey,
-        `is an atom - no need to propagate down`
+        `   || ${stateKey} is an atom, and can't be downstream`
       )
       return
     }
     store.valueMap = HAMT.remove(stateKey, store.valueMap)
     const newValue = getState__INTERNAL(state, store)
-    store.config.logger?.info(`   <-`, stateKey, `became`, newValue)
+    store.config.logger?.info(`   <- ${stateKey} became ${newValue}`)
     const oldValue = recall(state, store)
     state.subject.next({ newValue, oldValue })
     markDone(stateKey, store)
