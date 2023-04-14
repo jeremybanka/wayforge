@@ -2725,7 +2725,7 @@ __metadata:
   resolution: "@wayforge/shrine@workspace:app/web/shrine"
   dependencies:
     fp-ts: 2.13.1
-    immer: 9.0.19
+    immer: 9.0.21
     phaser: 3.55.2
     socket.io: 4.6.1
     socket.io-client: 4.6.1
@@ -6422,13 +6422,6 @@ __metadata:
   version: 5.2.4
   resolution: "ignore@npm:5.2.4"
   checksum: 3d4c309c6006e2621659311783eaea7ebcd41fe4ca1d78c91c473157ad6666a57a2df790fe0d07a12300d9aac2888204d7be8d59f9aaf665b1c7fcdb432517ef
-  languageName: node
-  linkType: hard
-
-"immer@npm:9.0.19":
-  version: 9.0.19
-  resolution: "immer@npm:9.0.19"
-  checksum: f02ee53989989c287cd548a3d817fccf0bfe56db919755ee94a72ea3ae78a00363fba93ee6c010fe54a664380c29c53d44ed4091c6a86cae60957ad2cfabc010
   languageName: node
   linkType: hard
 
