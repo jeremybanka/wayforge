@@ -14,8 +14,16 @@
     "test:once": "vitest run"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "preact": ">=10.0.0"
+    "preact": ">=10.0.0",
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   },
   "dependencies": {
     "fp-ts": "2.13.1",
@@ -23,6 +31,8 @@
     "rxjs": "7.8.0"
   },
   "devDependencies": {
+    "@testing-library/preact": "3.2.3",
+    "@testing-library/react": "14.0.0",
     "@types/mock-fs": "4.13.1",
     "mock-fs": "5.2.0",
     "preact": "10.13.2",
