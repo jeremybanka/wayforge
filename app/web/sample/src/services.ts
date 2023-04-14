@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 
 import { configure } from "~/packages/atom.io/src"
-import { composeStoreHook } from "~/packages/atom.io/src/react"
+import { composeStoreHooks } from "~/packages/atom.io/src/react"
 
-const { useStore } = composeStoreHook({ useState, useEffect })
+const { useStore } = composeStoreHooks({ useState, useEffect })
 
 configure({
   logger: console,
