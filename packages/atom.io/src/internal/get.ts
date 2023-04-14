@@ -68,7 +68,8 @@ export function deposit<T>(
 
 export const getState__INTERNAL = <T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>,
-  store: Store = IMPLICIT.STORE
+  store: Store = IMPLICIT.STORE,
+  path: string[] = []
 ): T => {
   if (HAMT.has(state.key, store.valueMap)) {
     return getCachedState(state, store)

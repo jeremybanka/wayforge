@@ -6,12 +6,15 @@ import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
 import type { ReadonlyValueToken, SelectorToken } from "."
-import { getState } from "."
-import type { Selector } from "./internal"
-import { markDone, deposit } from "./internal"
-import { setState__INTERNAL } from "./internal/set"
-import type { Store } from "./internal/store"
-import { IMPLICIT } from "./internal/store"
+import type { Selector, Store } from "./internal"
+import {
+  IMPLICIT,
+  getState__INTERNAL,
+  setState__INTERNAL,
+  withdraw,
+  markDone,
+  deposit,
+} from "./internal"
 import type { ReadonlyTransactors, Transactors } from "./transaction"
 
 export type SelectorOptions<T> = {
@@ -137,31 +140,36 @@ export function selectorFamily<T, K extends Serializable>(
 
 export const registerSelector = (
   selectorKey: string,
-  store: Store = IMPLICIT.STORE
+  store: Store = IMPLICIT.STORE,
+  path: string[] = []
 ): Transactors => ({
-  get: (state) => {
-    const isRegistered = store.selectorGraph
-      .getRelatedIds(selectorKey)
-      .includes(state.key)
-    if (isRegistered) {
-      store.config.logger?.info(`   ||`, selectorKey, `<-`, state.key)
+  get: (token) => {
+    const alreadyRegistered = store.selectorGraph
+      .getRelations(selectorKey)
+      .some(({ source }) => source === token.key)
+
+    const state = withdraw(token, store)
+    const currentValue = getState__INTERNAL(state, store, [...path, selectorKey])
+
+    if (alreadyRegistered) {
+      store.config.logger?.info(
+        `   || ${selectorKey} <- ${token.key} =`,
+        currentValue
+      )
     } else {
       store.config.logger?.info(
-        `🔌 registerSelector`,
-        selectorKey,
-        `<-`,
-        state.key
+        `🔌 registerSelector ${selectorKey} <- ${token.key} =`,
+        currentValue
       )
-      store.selectorGraph = store.selectorGraph.set(selectorKey, state.key, {
-        source: state.key,
+      store.selectorGraph = store.selectorGraph.set(selectorKey, token.key, {
+        source: token.key,
       })
     }
-    const currentValue = getState(state, store)
-    store.config.logger?.info(`   ||`, state.key, `=`, currentValue)
+
     return currentValue
   },
   set: (token, newValue) => {
-    store.selectorGraph.set(token.key, selectorKey, { source: selectorKey })
-    setState__INTERNAL(token, newValue, store)
+    const state = withdraw(token, store)
+    setState__INTERNAL(state, newValue, store)
   },
 })

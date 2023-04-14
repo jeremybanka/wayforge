@@ -80,28 +80,17 @@ export const setSelectorState = <T>(
   const oldValue = getState__INTERNAL(selector, store)
   const newValue = become(next)(oldValue)
 
-  store.config.logger?.info(
-    `->`,
-    `setting selector`,
-    `"${selector.key}"`,
-    `to`,
-    newValue
-  )
-  store.config.logger?.info(
-    `   ||`,
-    `propagating change made to`,
-    `"${selector.key}"`
-  )
+  store.config.logger?.info(`-> setting selector "${selector.key}" to`, newValue)
+  store.config.logger?.info(`   || propagating change made to "${selector.key}"`)
 
   selector.set(newValue)
   propagateDown(selector, store)
 }
 export const setState__INTERNAL = <T>(
-  token: StateToken<T>,
+  state: Atom<T> | Selector<T>,
   value: T | ((oldValue: T) => T),
   store: Store = IMPLICIT.STORE
 ): void => {
-  const state = withdraw<T>(token, store)
   if (`set` in state) {
     setSelectorState(state, value, store)
   } else {
