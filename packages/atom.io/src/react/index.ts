@@ -1,3 +1,5 @@
+import type Preact from "preact/hooks"
+
 import type React from "react"
 
 import type { Modifier } from "~/packages/anvl/src/function"
@@ -8,8 +10,8 @@ import { setState, __INTERNAL__ } from ".."
 import { withdraw } from "../internal"
 
 export type AtomStoreReactConfig = {
-  useState: typeof React.useState
-  useEffect: typeof React.useEffect
+  useState: typeof Preact.useState | typeof React.useState
+  useEffect: typeof Preact.useEffect | typeof React.useEffect
   store?: __INTERNAL__.Store
 }
 
@@ -19,7 +21,7 @@ export const composeStoreHook = ({
   useEffect,
   store = __INTERNAL__.IMPLICIT.STORE,
 }: AtomStoreReactConfig) => {
-  const useSubject = composeSubjectHook(useState, useEffect)
+  const { useSubject } = composeSubjectHook({ useState, useEffect })
 
   function useStore<T>(
     token: StateToken<T>

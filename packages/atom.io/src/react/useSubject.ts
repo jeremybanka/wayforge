@@ -1,3 +1,5 @@
+import type Preact from "preact/hooks"
+
 import type React from "react"
 
 import type * as Rx from "rxjs"
@@ -9,11 +11,16 @@ type StateUpdate<N, O = N> = {
 
 const eq = <T>(oldValue: T, newValue: T): boolean => oldValue === newValue
 
+type UseSubjectConfig = {
+  useState: typeof Preact.useState | typeof React.useState
+  useEffect: typeof Preact.useEffect | typeof React.useEffect
+}
+
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const composeSubjectHook = (
-  useState: typeof React.useState,
-  useEffect: typeof React.useEffect
-) => {
+export const composeSubjectHook = ({
+  useState,
+  useEffect,
+}: UseSubjectConfig) => {
   function useSubject<T>(
     subject: Rx.Subject<StateUpdate<T>>,
     initialValue: T,
@@ -39,5 +46,5 @@ export const composeSubjectHook = (
 
     return [state, updateState]
   }
-  return useSubject
+  return { useSubject }
 }
