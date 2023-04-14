@@ -2,10 +2,9 @@ import type { FC } from "react"
 import { useEffect, useState } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
-import { vitest } from "vitest"
 
 import type { StateToken } from "../src"
-import { ReadonlyValueToken, setState, atom } from "../src"
+import { atom } from "../src"
 import { composeStoreHook } from "../src/react"
 
 const { useStore } = composeStoreHook({ useState, useEffect })
