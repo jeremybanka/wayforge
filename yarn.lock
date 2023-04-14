@@ -2652,7 +2652,7 @@ __metadata:
     socket.io-client: 4.6.1
     socketio-auth: 0.1.1
     tsx: 3.12.6
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
     zustand: 4.3.7
   languageName: unknown
@@ -2703,7 +2703,7 @@ __metadata:
     sass: 1.61.0
     vite: 4.2.1
     vite-plugin-svgr: 2.4.0
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
     zod: 3.21.4
   languageName: unknown
@@ -2719,7 +2719,7 @@ __metadata:
     socket.io: 4.6.1
     socket.io-client: 4.6.1
     vite: 4.2.1
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     zustand: 4.3.7
   languageName: unknown
   linkType: soft
@@ -2750,7 +2750,7 @@ __metadata:
     sass: 1.61.0
     vite: 4.2.1
     vite-plugin-svgr: 2.4.0
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
     zod: 3.21.4
   languageName: unknown
@@ -2974,7 +2974,7 @@ __metadata:
     io-ts: 2.2.20
     tsup: 6.7.0
     vite: 4.2.1
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
   peerDependencies:
     fp-ts: ^2.13.1
@@ -3228,7 +3228,7 @@ __metadata:
     react-dom: 18.2.0
     rxjs: 7.8.0
     tsup: 6.7.0
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.29.3
   dependenciesMeta:
     react:
@@ -6496,7 +6496,7 @@ __metadata:
     io-ts: 2.2.20
     tsup: 6.7.0
     vite: 4.2.1
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
   peerDependencies:
     fp-ts: ^2.13.1
@@ -8859,7 +8859,7 @@ __metadata:
     io-ts: 2.2.20
     nanoid: 3.3.6
     tsup: 6.7.0
-    vite-tsconfig-paths: 4.0.8
+    vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
   peerDependencies:
     fp-ts: ^2.13.1
@@ -11600,9 +11600,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-tsconfig-paths@npm:4.0.8":
-  version: 4.0.8
-  resolution: "vite-tsconfig-paths@npm:4.0.8"
+"vite-tsconfig-paths@npm:4.2.0":
+  version: 4.2.0
+  resolution: "vite-tsconfig-paths@npm:4.2.0"
   dependencies:
     debug: ^4.1.1
     globrex: ^0.1.2
@@ -11612,7 +11612,7 @@ __metadata:
   peerDependenciesMeta:
     vite:
       optional: true
-  checksum: 4ec41f5d2eb167c1d7dfa6dd196ce253406c071671199239f9721fd5f8aee5b0107503a520ca996da67bad7d2750829534ec6e93801abe6d24fbc71d46ae8665
+  checksum: 73a8467de72d7ac502328454fd00c19571cd4bad2dd5982643b24718bb95e449a3f4153cfc2d58a358bfc8f37e592fb442fc10884b59ae82138c1329160cd952
   languageName: node
   linkType: hard
 
