@@ -26,6 +26,16 @@ module.exports = {
         pathGroups: [
           ...baseConfig.rules[`import/order`][1].pathGroups,
           {
+            pattern: `preact`,
+            group: `external`,
+            position: `before`,
+          },
+          {
+            pattern: `preact/*`,
+            group: `external`,
+            position: `before`,
+          },
+          {
             pattern: `react`,
             group: `external`,
             position: `before`,
@@ -36,7 +46,7 @@ module.exports = {
             position: `before`,
           },
         ],
-        pathGroupsExcludedImportTypes: [`react`, `remix`],
+        pathGroupsExcludedImportTypes: [`react`, `remix`, `preact`],
       },
     ],
     "react/no-unknown-property": [`error`, { ignore: [`css`] }],

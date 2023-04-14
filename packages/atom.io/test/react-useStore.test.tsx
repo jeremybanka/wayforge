@@ -2,13 +2,12 @@ import type { FC } from "react"
 import { useEffect, useState } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
-import { vitest } from "vitest"
 
 import type { StateToken } from "../src"
-import { ReadonlyValueToken, setState, atom } from "../src"
-import { composeStoreHook } from "../src/react"
+import { atom } from "../src"
+import { composeStoreHooks } from "../src/react"
 
-const { useStore } = composeStoreHook({ useState, useEffect })
+const { useStore } = composeStoreHooks({ useState, useEffect })
 
 export const onChange = [() => undefined, console.log][0]
 
