@@ -51,5 +51,5 @@ export const composeStoreHooks = ({
     }
     return useIO(token)
   }
-  return { useI, useO, useIO, useStore }
+  return { useI, useO, useIO, useStore, useSubject }
 }
