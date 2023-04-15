@@ -3,11 +3,10 @@ import HAMT from "hamt_plus"
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
-import { withdraw, getState__INTERNAL } from "./get"
+import { getState__INTERNAL } from "./get"
 import { isDone, recall, markDone } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
-import type { StateToken } from ".."
 
 export const propagateDown = <T>(
   state: Atom<T> | Selector<T>,
@@ -28,7 +27,7 @@ export const propagateDown = <T>(
       store.config.logger?.info(`   || ${stateKey} already done`)
       return
     }
-    store.config.logger?.info(`-> bumping ${stateKey}`)
+    store.config.logger?.info(`-> bumping "${stateKey}"`)
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.readonlySelectors)
@@ -40,7 +39,7 @@ export const propagateDown = <T>(
     }
     store.valueMap = HAMT.remove(stateKey, store.valueMap)
     const newValue = getState__INTERNAL(state, store)
-    store.config.logger?.info(`   <- ${stateKey} became ${newValue}`)
+    store.config.logger?.info(`   <- ${stateKey} became`, newValue)
     const oldValue = recall(state, store)
     state.subject.next({ newValue, oldValue })
     markDone(stateKey, store)

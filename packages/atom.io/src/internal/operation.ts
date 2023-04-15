@@ -10,11 +10,11 @@ export const startAction = (store: Store): void => {
     done: new Set(),
     prev: store.valueMap,
   }
-  store.config.logger?.info(`☐`, `operation start`)
+  store.config.logger?.info(`⭕`, `operation start`)
 }
 export const finishAction = (store: Store): void => {
   store.operation = { open: false }
-  store.config.logger?.info(`☑️`, `operation done`)
+  store.config.logger?.info(`🔴`, `operation done`)
 }
 
 export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
