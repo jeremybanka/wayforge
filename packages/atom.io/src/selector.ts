@@ -16,6 +16,7 @@ import {
   markDone,
   deposit,
 } from "./internal"
+import { registerSelector } from "./internal/selector-internal"
 import type { ReadonlyTransactors, Transactors } from "./transaction"
 
 export type SelectorOptions<T> = {
@@ -45,7 +46,6 @@ export function selector<T>(
 
   const { get, set } = registerSelector(options.key, store)
   const getSelf = () => {
-    // store.config.logger?.info(`  ||`, path)
     const value = options.get({ get })
     store.valueMap = HAMT.set(options.key, value, store.valueMap)
     return value
@@ -139,91 +139,3 @@ export function selectorFamily<T, K extends Serializable>(
     )
   }
 }
-
-export const lookupSources = (
-  key: string,
-  store: Store
-): (
-  | AtomToken<unknown>
-  | ReadonlyValueToken<unknown>
-  | SelectorToken<unknown>
-)[] =>
-  store.selectorGraph
-    .getRelations(key)
-    .filter(({ source }) => source !== key)
-    .map(({ source }) => lookup(source, store))
-
-export const setRoots = (
-  selectorKey: string,
-  dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
-  store: Store
-): void => {
-  if (dependency.type === `atom`) {
-    store.selectorAtoms = store.selectorAtoms.set(selectorKey, dependency.key)
-    return
-  }
-
-  const roots: AtomToken<unknown>[] = []
-
-  const sources = lookupSources(dependency.key, store)
-  let depth = 0
-  while (sources.length > 0) {
-    ++depth
-    if (depth > 999) {
-      throw new Error(
-        `Maximum selector dependency depth exceeded in selector "${selectorKey}".`
-      )
-    }
-    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-    const source = sources.shift()!
-    if (source.type !== `atom`) {
-      sources.push(...lookupSources(source.key, store))
-    } else {
-      roots.push(source)
-    }
-  }
-
-  store.config.logger?.info(`   || adding roots for "${selectorKey}"`, roots)
-  roots.forEach((root) => {
-    store.selectorAtoms = store.selectorAtoms.set(selectorKey, root.key)
-  })
-}
-
-export const registerSelector = (
-  selectorKey: string,
-  store: Store = IMPLICIT.STORE
-): Transactors => ({
-  get: (dependency) => {
-    const alreadyRegistered = store.selectorGraph
-      .getRelations(selectorKey)
-      .some(({ source }) => source === dependency.key)
-
-    const state = withdraw(dependency, store)
-    const currentValue = getState__INTERNAL(state, store)
-
-    if (alreadyRegistered) {
-      store.config.logger?.info(
-        `   || ${selectorKey} <- ${dependency.key} =`,
-        currentValue
-      )
-    } else {
-      store.config.logger?.info(
-        `🔌 registerSelector "${selectorKey}" <- "${dependency.key}" =`,
-        currentValue
-      )
-      store.selectorGraph = store.selectorGraph.set(
-        selectorKey,
-        dependency.key,
-        {
-          source: dependency.key,
-        }
-      )
-    }
-    setRoots(selectorKey, dependency, store)
-    return currentValue
-  },
-  set: (token, newValue) => {
-    const state = withdraw(token, store)
-    setState__INTERNAL(state, newValue, store)
-  },
-})

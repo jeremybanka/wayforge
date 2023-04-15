@@ -49,11 +49,11 @@ export const setState = <T, New extends T>(
   finishAction(store)
 }
 
-export type Observe<T> = (change: { newValue: T; oldValue: T }) => void
+export type ObserveState<T> = (change: { newValue: T; oldValue: T }) => void
 
 export const subscribe = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
-  observe: Observe<T>,
+  observe: ObserveState<T>,
   store: Store = IMPLICIT.STORE
 ): (() => void) => {
   const state = withdraw<T>(token, store)
