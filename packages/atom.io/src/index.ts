@@ -59,11 +59,18 @@ export const subscribe = <T>(
 ): (() => void) => {
   const state = withdraw<T>(token, store)
   const subscription = state.subject.subscribe(observe)
+  store.config.logger?.info(`👀 subscribe to "${state.key}"`)
   const dependencySubscriptions = subscribeToRootAtoms(state, store)
   const unsubscribe =
     dependencySubscriptions === null
-      ? () => subscription.unsubscribe()
+      ? () => {
+          store.config.logger?.info(`🙈 unsubscribe from "${state.key}"`)
+          subscription.unsubscribe()
+        }
       : () => {
+          store.config.logger?.info(
+            `🙈 unsubscribe from "${state.key}" and its dependencies`
+          )
           subscription.unsubscribe()
           for (const dependencySubscription of dependencySubscriptions) {
             dependencySubscription.unsubscribe()

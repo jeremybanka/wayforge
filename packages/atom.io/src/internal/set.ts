@@ -9,11 +9,10 @@ import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 
 export const evictDownStream = <T>(
-  state: Atom<T> | Selector<T>,
+  state: Atom<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
-  const stateRelations = store.selectorGraph.getRelations(state.key)
-  const downstream = stateRelations.filter(({ source }) => source === state.key)
+  const downstream = store.selectorAtoms.getRelations(state.key)
   const downstreamKeys = downstream.map(({ id }) => id)
   store.config.logger?.info(
     `   || ${downstreamKeys.length} downstream:`,
@@ -40,7 +39,6 @@ export const evictDownStream = <T>(
     store.config.logger?.info(`   xx evicted "${stateKey}"`)
 
     markDone(stateKey, store)
-    if (`set` in state) evictDownStream(state, store)
   })
 }
 
@@ -72,7 +70,6 @@ export const setSelectorState = <T>(
   store.config.logger?.info(`   || propagating change made to "${selector.key}"`)
 
   selector.set(newValue)
-  evictDownStream(selector, store)
 }
 export const setState__INTERNAL = <T>(
   state: Atom<T> | Selector<T>,
