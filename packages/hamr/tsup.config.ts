@@ -5,6 +5,7 @@ const entry = [
   `react-elastic-input`,
   `react-error-boundary`,
   `react-json-editor`,
+  `react-rx`,
   `recoil-effect-storage`,
   `recoil-tools`,
 ].map((path) => `src/${path}/index.ts`)

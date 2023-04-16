@@ -6055,6 +6055,10 @@ __metadata:
     react: ^18.2.0
     react-router-dom: ^6.8.1
     recoil: ^0.7.6
+    rxjs: ^7.8.0
+  peerDependenciesMeta:
+    rxjs:
+      optional: true
   languageName: unknown
   linkType: soft
 

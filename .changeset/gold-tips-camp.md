@@ -2,4 +2,4 @@
 "atom.io": minor
 ---
 
-✨ `atom.io/react` module: `composeStoreHooks` ✨ `useI` `useO` `useIO` `useSubject`
+✨ `atom.io/react` module: `composeStoreHooks` ✨ `useI` `useO` `useIO`
