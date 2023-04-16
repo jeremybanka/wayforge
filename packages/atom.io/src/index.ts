@@ -5,6 +5,7 @@ import {
   getState__INTERNAL,
   setState__INTERNAL,
   startAction,
+  subscribeToRootAtoms,
   withdraw,
 } from "./internal"
 import * as __INTERNAL__ from "./internal"
@@ -58,5 +59,16 @@ export const subscribe = <T>(
 ): (() => void) => {
   const state = withdraw<T>(token, store)
   const subscription = state.subject.subscribe(observe)
-  return () => subscription.unsubscribe()
+  const dependencySubscriptions = subscribeToRootAtoms(state, store)
+  const unsubscribe =
+    dependencySubscriptions === null
+      ? () => subscription.unsubscribe()
+      : () => {
+          subscription.unsubscribe()
+          for (const dependencySubscription of dependencySubscriptions) {
+            dependencySubscription.unsubscribe()
+          }
+        }
+
+  return unsubscribe
 }

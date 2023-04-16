@@ -35,7 +35,7 @@ export const markDone = (key: string, store: Store = IMPLICIT.STORE): void => {
   }
   store.operation.done.add(key)
 }
-export const recall = <T>(
+export const recallState = <T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): T => {

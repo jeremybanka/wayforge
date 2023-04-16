@@ -4,7 +4,7 @@ import * as Rx from "rxjs"
 import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { AtomToken, Observe } from "."
+import type { AtomToken, ObserveState } from "."
 import { subscribe, setState } from "."
 import { deposit } from "./internal"
 import type { Store } from "./internal/store"
@@ -39,7 +39,7 @@ export const atom = <T>(
   store.valueMap = HAMT.set(options.key, options.default, store.valueMap)
   const token = deposit(newAtom)
   const setSelf = (next) => setState(token, next, store)
-  const onSet = (observe: Observe<T>) => subscribe(token, observe, store)
+  const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
   setSelf(options.default)
   options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   return token

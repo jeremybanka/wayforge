@@ -4,11 +4,11 @@ import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
 import { getState__INTERNAL } from "./get"
-import { isDone, recall, markDone } from "./operation"
+import { isDone, markDone } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 
-export const propagateDown = <T>(
+export const evictDownStream = <T>(
   state: Atom<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
@@ -27,7 +27,6 @@ export const propagateDown = <T>(
       store.config.logger?.info(`   || ${stateKey} already done`)
       return
     }
-    store.config.logger?.info(`-> bumping "${stateKey}"`)
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.readonlySelectors)
@@ -38,12 +37,10 @@ export const propagateDown = <T>(
       return
     }
     store.valueMap = HAMT.remove(stateKey, store.valueMap)
-    const newValue = getState__INTERNAL(state, store)
-    store.config.logger?.info(`   <- ${stateKey} became`, newValue)
-    const oldValue = recall(state, store)
-    state.subject.next({ newValue, oldValue })
+    store.config.logger?.info(`   xx evicted "${stateKey}"`)
+
     markDone(stateKey, store)
-    if (`set` in state) propagateDown(state, store)
+    if (`set` in state) evictDownStream(state, store)
   })
 }
 
@@ -54,22 +51,14 @@ export const setAtomState = <T>(
 ): void => {
   const oldValue = getState__INTERNAL(atom, store)
   const newValue = become(next)(oldValue)
-  store.config.logger?.info(
-    `->`,
-    `setting atom`,
-    `"${atom.key}"`,
-    `to`,
-    newValue
-  )
+  store.config.logger?.info(`-> setting atom "${atom.key}" to`, newValue)
   store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
   markDone(atom.key, store)
-  atom.subject.next({ newValue, oldValue })
   store.config.logger?.info(
-    `   ||`,
-    `propagating change made to`,
-    `"${atom.key}"`
+    `   || evicting caches downstream from "${atom.key}"`
   )
-  propagateDown(atom, store)
+  evictDownStream(atom, store)
+  atom.subject.next({ newValue, oldValue })
 }
 export const setSelectorState = <T>(
   selector: Selector<T>,
@@ -83,7 +72,7 @@ export const setSelectorState = <T>(
   store.config.logger?.info(`   || propagating change made to "${selector.key}"`)
 
   selector.set(newValue)
-  propagateDown(selector, store)
+  evictDownStream(selector, store)
 }
 export const setState__INTERNAL = <T>(
   state: Atom<T> | Selector<T>,

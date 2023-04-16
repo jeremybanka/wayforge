@@ -27,7 +27,7 @@ export const lookupSelectorSources = (
     .filter(({ source }) => source !== key)
     .map(({ source }) => lookup(source, store))
 
-export const traceSelectorRoots = (
+export const traceSelectorAtoms = (
   selectorKey: string,
   dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
   store: Store
@@ -37,14 +37,15 @@ export const traceSelectorRoots = (
   const sources = lookupSelectorSources(dependency.key, store)
   let depth = 0
   while (sources.length > 0) {
+    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+    const source = sources.shift()!
     ++depth
     if (depth > 999) {
       throw new Error(
         `Maximum selector dependency depth exceeded in selector "${selectorKey}".`
       )
     }
-    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-    const source = sources.shift()!
+
     if (source.type !== `atom`) {
       sources.push(...lookupSelectorSources(source.key, store))
     } else {
@@ -53,6 +54,18 @@ export const traceSelectorRoots = (
   }
 
   return roots
+}
+
+export const traceAllSelectorAtoms = (
+  selectorKey: string,
+  store: Store
+): AtomToken<unknown>[] => {
+  const sources = lookupSelectorSources(selectorKey, store)
+  return sources.flatMap((source) =>
+    source.type === `atom`
+      ? source
+      : traceSelectorAtoms(selectorKey, source, store)
+  )
 }
 
 export const updateSelectorAtoms = (
@@ -67,7 +80,7 @@ export const updateSelectorAtoms = (
     )
     return
   }
-  const roots = traceSelectorRoots(selectorKey, dependency, store)
+  const roots = traceSelectorAtoms(selectorKey, dependency, store)
   store.config.logger?.info(`   || adding roots for "${selectorKey}":`, roots)
   for (const root of roots) {
     store.selectorAtoms = store.selectorAtoms.set(selectorKey, root.key)

@@ -2,7 +2,9 @@ import type * as Rx from "rxjs"
 
 export * from "./get"
 export * from "./set"
+export * from "./selector-internal"
 export * from "./store"
+export * from "./subscribe-internal"
 export * from "./operation"
 export * from "./transaction-internal"
 

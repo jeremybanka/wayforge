@@ -95,11 +95,11 @@ export const getState__INTERNAL = <T>(
   store: Store = IMPLICIT.STORE
 ): T => {
   if (HAMT.has(state.key, store.valueMap)) {
-    store.config.logger?.info(`   💬 read "${state.key}"`)
+    store.config.logger?.info(`>> read "${state.key}"`)
     return getCachedState(state, store)
   }
   if (`get` in state) {
-    store.config.logger?.info(`   🧮 calc "${state.key}"`)
+    store.config.logger?.info(`-> calc "${state.key}"`)
     return getSelectorState(state)
   }
   store.config.logger?.error(

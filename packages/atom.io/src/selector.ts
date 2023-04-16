@@ -5,18 +5,9 @@ import { become } from "~/packages/anvl/src/function"
 import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { AtomToken, ReadonlyValueToken, SelectorToken, StateToken } from "."
+import type { ReadonlyValueToken, SelectorToken } from "."
 import type { Selector, Store } from "./internal"
-import {
-  lookup,
-  IMPLICIT,
-  getState__INTERNAL,
-  setState__INTERNAL,
-  withdraw,
-  markDone,
-  deposit,
-} from "./internal"
-import { registerSelector } from "./internal/selector-internal"
+import { IMPLICIT, markDone, deposit, registerSelector } from "./internal"
 import type { ReadonlyTransactors, Transactors } from "./transaction"
 
 export type SelectorOptions<T> = {
