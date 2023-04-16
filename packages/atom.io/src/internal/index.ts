@@ -2,6 +2,7 @@ import type * as Rx from "rxjs"
 
 export * from "./get"
 export * from "./set"
+export * from "./is-default"
 export * from "./selector-internal"
 export * from "./store"
 export * from "./subscribe-internal"

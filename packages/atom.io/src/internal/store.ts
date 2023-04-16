@@ -9,9 +9,10 @@ export interface Store {
   valueMap: Hamt<any, string>
   selectorGraph: Join<{ source: string }>
   selectorAtoms: Join
+  atoms: Hamt<Atom<any>, string>
+  atomsAreDefault: Hamt<boolean, string>
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
-  atoms: Hamt<Atom<any>, string>
   operation:
     | {
         open: false
@@ -48,6 +49,7 @@ export const createStore = (name: string): Store =>
     selectorGraph: new Join({ relationType: `n:n` }),
     selectorAtoms: new Join({ relationType: `n:n` }),
     atoms: HAMT.make<Atom<any>, string>(),
+    atomsAreDefault: HAMT.make<boolean, string>(),
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
     operation: {
