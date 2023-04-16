@@ -17,7 +17,7 @@
 ## upcoming features
 - [x] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [x] async effects
-- [ ] atom default as function
+- [x] atom default as function
 - [ ] check whether an atom is "default" (never set)
 - [ ] timelines
 - [ ] resettable atoms

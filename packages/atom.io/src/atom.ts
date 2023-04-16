@@ -19,7 +19,7 @@ export type AtomEffect<T> = (tools: Effectors<T>) => void
 
 export type AtomOptions<T> = {
   key: string
-  default: T
+  default: T | (() => T)
   effects?: AtomEffect<T>[]
 }
 
@@ -35,12 +35,13 @@ export const atom = <T>(
   }
   const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
   const newAtom = { ...options, subject }
+  const initialValue =
+    options.default instanceof Function ? options.default() : options.default
   store.atoms = HAMT.set(options.key, newAtom, store.atoms)
-  store.valueMap = HAMT.set(options.key, options.default, store.valueMap)
+  store.valueMap = HAMT.set(options.key, initialValue, store.valueMap)
   const token = deposit(newAtom)
   const setSelf = (next) => setState(token, next, store)
   const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
-  setSelf(options.default)
   options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   return token
 }

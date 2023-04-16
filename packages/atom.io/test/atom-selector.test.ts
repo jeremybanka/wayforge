@@ -48,6 +48,13 @@ describe(`atom`, () => {
       oldValue: `John`,
     })
   })
+  it(`can use a function as a default value`, () => {
+    const count = atom<number>({
+      key: `count`,
+      default: () => 0,
+    })
+    expect(getState(count)).toBe(0)
+  })
 })
 
 describe(`selector`, () => {
