@@ -1,5 +1,11 @@
 # hamr
 
+## 0.2.0
+
+### Minor Changes
+
+- 309bb23: 🎉 `hamr/react-rx` module ✨ `useSubject` hook
+
 ## 0.1.0
 
 ### Minor Changes
