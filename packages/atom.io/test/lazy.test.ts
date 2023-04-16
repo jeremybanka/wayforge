@@ -5,6 +5,7 @@ import {
   __INTERNAL__,
   atom,
   configure,
+  getState,
   selector,
   setState,
   subscribe,
@@ -12,7 +13,7 @@ import {
 import { withdraw } from "../src/internal"
 
 const loggers = [UTIL.silence, console] as const
-const choose = 1
+const choose = 0
 const logger = loggers[choose]
 
 configure({ logger })
@@ -52,7 +53,7 @@ describe(`lazy propagation system`, () => {
     expect(UTIL.stdout).toHaveBeenCalledWith({ newValue: 10, oldValue: 0 })
     expect(UTIL.stdout).toHaveBeenCalledWith({ newValue: 100, oldValue: 0 })
   })
-  test(`subscriptions are cleaned up when in a domino effect`, () => {
+  test(`subscriptions are cleaned up in a domino effect`, () => {
     const a = atom({
       key: `a`,
       default: 0,
@@ -69,5 +70,41 @@ describe(`lazy propagation system`, () => {
     unsubscribe()
     expect(myAtom.subject.observers.length).toBe(0)
     expect(mySelector.subject.observers.length).toBe(0)
+  })
+  test(`selectors are not eagerly evaluated, unless they have a subscription`, () => {
+    const a = atom({
+      key: `a`,
+      default: 0,
+    })
+    const selector0 = selector({
+      key: `selector0`,
+      get: ({ get }) => {
+        logger.warn(`selector0 evaluated`)
+        return get(a) * 10
+      },
+    })
+    const selector1 = selector({
+      key: `selector1`,
+      get: ({ get }) => {
+        logger.warn(`selector1 evaluated`)
+        return get(a) - 1
+      },
+    })
+
+    expect(logger.warn).toHaveBeenCalledWith(`selector0 evaluated`)
+    expect(logger.warn).toHaveBeenCalledWith(`selector1 evaluated`)
+
+    vitest.spyOn(logger, `warn`)
+
+    subscribe(selector0, UTIL.stdout)
+    setState(a, 1)
+    expect(logger.warn).toHaveBeenCalledWith(`selector0 evaluated`)
+    expect(logger.warn).not.toHaveBeenCalledWith(`selector1 evaluated`)
+
+    vitest.spyOn(logger, `warn`)
+
+    getState(selector1)
+
+    expect(logger.warn).toHaveBeenCalledWith(`selector1 evaluated`)
   })
 })
