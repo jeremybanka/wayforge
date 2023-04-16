@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs"
+import { readFileSync, writeFileSync, readFile, writeFile } from "fs"
 
 import mock from "mock-fs"
 import { vitest } from "vitest"
@@ -66,5 +66,29 @@ describe(`atom effects`, () => {
     expect(getState(nameState)).toBe(`Mavis`)
     setState(nameState, `Mavis2`)
     expect(readFileSync(`name.txt`, `utf8`)).toBe(`Mavis2`)
+  })
+  test(`effects can operate with asynchronous functions`, () => {
+    const nameState = atom<string>({
+      key: `name`,
+      default: ``,
+      effects: [
+        ({ setSelf, onSet }) => {
+          readFile(`name.txt`, `utf8`, (_, data) => {
+            setSelf(data)
+          })
+          onSet((change) => {
+            writeFile(`name.txt`, change.newValue, () => UTIL.stdout(`done`))
+          })
+        },
+      ],
+    })
+    setTimeout(() => {
+      expect(getState(nameState)).toBe(`Mavis`)
+      setState(nameState, `Mavis2`)
+      setTimeout(() => {
+        expect(readFileSync(`name.txt`, `utf8`)).toBe(`Mavis2`)
+        expect(UTIL.stdout).toHaveBeenCalledWith(`done`)
+      }, 100)
+    })
   })
 })

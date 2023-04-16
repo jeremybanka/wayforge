@@ -1,4 +1,4 @@
-## MVP
+## features
 - [x] atoms and selectors
 - [x] implicit store
 - [x] readonly selectors
@@ -12,8 +12,9 @@
 - [x] atom effects
 - [x] transactions
 
+
 # atom.io
-## features
+## upcoming features
 - [x] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [x] async effects
 - [ ] atom default as function
