@@ -30,7 +30,9 @@ export function selector<T>(
   store: Store = IMPLICIT.STORE
 ): ReadonlyValueToken<T> | SelectorToken<T> {
   if (HAMT.has(options.key, store.selectors)) {
-    throw new Error(`Key "${options.key}" already exists in the store.`)
+    store.config.logger?.error(
+      `Key "${options.key}" already exists in the store.`
+    )
   }
 
   const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
