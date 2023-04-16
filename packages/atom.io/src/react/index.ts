@@ -40,7 +40,7 @@ export const composeStoreHooks = ({
         store
       )
       return unsubscribe
-    }, [current, dispatch])
+    }, [])
 
     return current
   }
