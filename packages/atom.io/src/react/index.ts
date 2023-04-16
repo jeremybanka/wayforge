@@ -4,9 +4,8 @@ import type React from "react"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 
-import { composeSubjectHook } from "./useSubject"
 import type { ReadonlyValueToken, StateToken } from ".."
-import { setState, __INTERNAL__ } from ".."
+import { subscribe, setState, __INTERNAL__ } from ".."
 import { withdraw } from "../internal"
 
 export type AtomStoreReactConfig = {
@@ -21,8 +20,6 @@ export const composeStoreHooks = ({
   useEffect,
   store = __INTERNAL__.IMPLICIT.STORE,
 }: AtomStoreReactConfig) => {
-  const { useSubject } = composeSubjectHook({ useState, useEffect })
-
   function useI<T>(token: StateToken<T>): (next: Modifier<T> | T) => void {
     const updateState = (next: Modifier<T> | T) => setState(token, next, store)
     return updateState
@@ -31,7 +28,20 @@ export const composeStoreHooks = ({
   function useO<T>(token: ReadonlyValueToken<T> | StateToken<T>): T {
     const state = withdraw(token, store)
     const initialValue = __INTERNAL__.getState__INTERNAL(state, store)
-    const [current] = useSubject<T>(state.subject, initialValue)
+    const [current, dispatch] = useState(initialValue)
+    useEffect(() => {
+      const unsubscribe = subscribe(
+        token,
+        ({ newValue, oldValue }) => {
+          if (oldValue !== newValue) {
+            dispatch(newValue)
+          }
+        },
+        store
+      )
+      return unsubscribe
+    }, [current, dispatch])
+
     return current
   }
 
@@ -51,5 +61,5 @@ export const composeStoreHooks = ({
     }
     return useIO(token)
   }
-  return { useI, useO, useIO, useStore, useSubject }
+  return { useI, useO, useIO, useStore }
 }

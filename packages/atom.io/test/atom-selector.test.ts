@@ -95,12 +95,16 @@ describe(`selector`, () => {
     const doublePlusOne = selector<number>({
       key: `doublePlusOne`,
       get: ({ get }) => get(double) + 1,
+      set: ({ set }, newValue) => set(double, newValue - 1),
     })
     setState(double, 20)
     expect(getState(count)).toBe(10)
     expect(getState(double)).toBe(20)
     expect(getState(triple)).toBe(30)
     expect(getState(doublePlusOne)).toBe(21)
+
+    setState(doublePlusOne, 43)
+    expect(getState(count)).toBe(21)
   })
   it(`may depend on more than one atom or selector`, () => {
     const firstNameState = atom<string>({

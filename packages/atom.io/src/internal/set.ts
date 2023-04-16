@@ -3,18 +3,16 @@ import HAMT from "hamt_plus"
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
-import { withdraw, getState__INTERNAL } from "./get"
-import { isDone, recall, markDone } from "./operation"
+import { getState__INTERNAL } from "./get"
+import { isDone, markDone } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
-import type { StateToken } from ".."
 
-export const propagateDown = <T>(
-  state: Atom<T> | Selector<T>,
+export const evictDownStream = <T>(
+  state: Atom<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
-  const stateRelations = store.selectorGraph.getRelations(state.key)
-  const downstream = stateRelations.filter(({ source }) => source === state.key)
+  const downstream = store.selectorAtoms.getRelations(state.key)
   const downstreamKeys = downstream.map(({ id }) => id)
   store.config.logger?.info(
     `   || ${downstreamKeys.length} downstream:`,
@@ -28,7 +26,6 @@ export const propagateDown = <T>(
       store.config.logger?.info(`   || ${stateKey} already done`)
       return
     }
-    store.config.logger?.info(`-> bumping ${stateKey}`)
     const state =
       HAMT.get(stateKey, store.selectors) ??
       HAMT.get(stateKey, store.readonlySelectors)
@@ -39,12 +36,9 @@ export const propagateDown = <T>(
       return
     }
     store.valueMap = HAMT.remove(stateKey, store.valueMap)
-    const newValue = getState__INTERNAL(state, store)
-    store.config.logger?.info(`   <- ${stateKey} became ${newValue}`)
-    const oldValue = recall(state, store)
-    state.subject.next({ newValue, oldValue })
+    store.config.logger?.info(`   xx evicted "${stateKey}"`)
+
     markDone(stateKey, store)
-    if (`set` in state) propagateDown(state, store)
   })
 }
 
@@ -55,22 +49,14 @@ export const setAtomState = <T>(
 ): void => {
   const oldValue = getState__INTERNAL(atom, store)
   const newValue = become(next)(oldValue)
-  store.config.logger?.info(
-    `->`,
-    `setting atom`,
-    `"${atom.key}"`,
-    `to`,
-    newValue
-  )
+  store.config.logger?.info(`-> setting atom "${atom.key}" to`, newValue)
   store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
   markDone(atom.key, store)
-  atom.subject.next({ newValue, oldValue })
   store.config.logger?.info(
-    `   ||`,
-    `propagating change made to`,
-    `"${atom.key}"`
+    `   || evicting caches downstream from "${atom.key}"`
   )
-  propagateDown(atom, store)
+  evictDownStream(atom, store)
+  atom.subject.next({ newValue, oldValue })
 }
 export const setSelectorState = <T>(
   selector: Selector<T>,
@@ -80,28 +66,16 @@ export const setSelectorState = <T>(
   const oldValue = getState__INTERNAL(selector, store)
   const newValue = become(next)(oldValue)
 
-  store.config.logger?.info(
-    `->`,
-    `setting selector`,
-    `"${selector.key}"`,
-    `to`,
-    newValue
-  )
-  store.config.logger?.info(
-    `   ||`,
-    `propagating change made to`,
-    `"${selector.key}"`
-  )
+  store.config.logger?.info(`-> setting selector "${selector.key}" to`, newValue)
+  store.config.logger?.info(`   || propagating change made to "${selector.key}"`)
 
   selector.set(newValue)
-  propagateDown(selector, store)
 }
 export const setState__INTERNAL = <T>(
-  token: StateToken<T>,
+  state: Atom<T> | Selector<T>,
   value: T | ((oldValue: T) => T),
   store: Store = IMPLICIT.STORE
 ): void => {
-  const state = withdraw<T>(token, store)
   if (`set` in state) {
     setSelectorState(state, value, store)
   } else {

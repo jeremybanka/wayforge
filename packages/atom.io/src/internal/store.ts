@@ -8,6 +8,7 @@ import type { Atom, ReadonlySelector, Selector } from "."
 export interface Store {
   valueMap: Hamt<any, string>
   selectorGraph: Join<{ source: string }>
+  selectorAtoms: Join
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   atoms: Hamt<Atom<any>, string>
@@ -45,6 +46,7 @@ export const createStore = (name: string): Store =>
   ({
     valueMap: HAMT.make<any, string>(),
     selectorGraph: new Join({ relationType: `n:n` }),
+    selectorAtoms: new Join({ relationType: `n:n` }),
     atoms: HAMT.make<Atom<any>, string>(),
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
