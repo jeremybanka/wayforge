@@ -3,7 +3,6 @@
 - [x] implicit store
 - [x] readonly selectors
 - [x] settable selectors
-- [x] safe recursive update propagation
 - [x] "tokens" safely expose atoms and selectors
 - [x] give atoms and selectors separate types with a common base
 - [x] utility function to pass logger to your store
@@ -11,14 +10,12 @@
 - [x] atom and selector families
 - [x] atom effects
 - [x] transactions
-
-
-# atom.io
-## upcoming features
-- [x] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [x] async effects
 - [x] atom default as function
 - [x] check whether an atom is "default" (never set)
+
+# atom.io
+## upcoming features
 - [ ] timelines
 - [ ] resettable atoms
 - [ ] resettable selectors
