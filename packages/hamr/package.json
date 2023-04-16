@@ -31,7 +31,13 @@
     "@emotion/react": "11.10.6",
     "react": "^18.2.0",
     "react-router-dom": "^6.8.1",
-    "recoil": "^0.7.6"
+    "recoil": "^0.7.6",
+    "rxjs": "^7.8.0"
+  },
+  "peerDependenciesMeta": {
+    "rxjs": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",
