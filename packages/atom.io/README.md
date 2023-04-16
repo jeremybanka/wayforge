@@ -1,4 +1,4 @@
-## MVP
+## features
 - [x] atoms and selectors
 - [x] implicit store
 - [x] readonly selectors
@@ -12,24 +12,25 @@
 - [x] atom effects
 - [x] transactions
 
+
 # atom.io
-## features
+## upcoming features
 - [x] "lazy mode": only propagate updates downstream to selectors with an active subscription
-- [ ] atom default as function
-- [ ] async effects
-- [ ] check whether an atom is "default" (never set)
+- [x] async effects
+- [x] atom default as function
+- [x] check whether an atom is "default" (never set)
+- [ ] timelines
 - [ ] resettable atoms
 - [ ] resettable selectors
 - [ ] subscribe to transactions
 - [ ] subscribe to token creation
 - [ ] logging levels (debug, info, warn, error)
 - [ ] store observation api
-- [ ] optional default value for atoms
-- [ ] optional state keys
+
 ## fixes & improvements
 - [x] refactor selector dependencies to be asymmetrical
+- [ ] tokens explicitly contain the key of their family
 - [ ] apply and emit transactions all at once
-- [ ] trampoline for recursive propagation
 
 ## documentation
 - [ ] document atom and selector families
