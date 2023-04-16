@@ -26,10 +26,10 @@
 - [ ] subscribe to token creation
 - [ ] logging levels (debug, info, warn, error)
 - [ ] store observation api
-- [ ] optional default value for atoms
-- [ ] optional state keys
+
 ## fixes & improvements
 - [x] refactor selector dependencies to be asymmetrical
+- [ ] tokens explicitly contain the key of their family
 - [ ] apply and emit transactions all at once
 
 ## documentation
