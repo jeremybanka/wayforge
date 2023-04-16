@@ -5,6 +5,7 @@ import {
   getState__INTERNAL,
   setState__INTERNAL,
   startAction,
+  subscribeToRootAtoms,
   withdraw,
 } from "./internal"
 import * as __INTERNAL__ from "./internal"
@@ -39,23 +40,42 @@ export const getState = <T>(
 }
 
 export const setState = <T, New extends T>(
-  state: StateToken<T>,
+  token: StateToken<T>,
   value: New | ((oldValue: T) => New),
   store: Store = IMPLICIT.STORE
 ): void => {
   startAction(store)
+  const state = withdraw(token, store)
   setState__INTERNAL(state, value, store)
   finishAction(store)
 }
 
-export type Observe<T> = (change: { newValue: T; oldValue: T }) => void
+export type ObserveState<T> = (change: { newValue: T; oldValue: T }) => void
 
 export const subscribe = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
-  observe: Observe<T>,
+  observe: ObserveState<T>,
   store: Store = IMPLICIT.STORE
 ): (() => void) => {
   const state = withdraw<T>(token, store)
   const subscription = state.subject.subscribe(observe)
-  return () => subscription.unsubscribe()
+  store.config.logger?.info(`👀 subscribe to "${state.key}"`)
+  const dependencySubscriptions = subscribeToRootAtoms(state, store)
+  const unsubscribe =
+    dependencySubscriptions === null
+      ? () => {
+          store.config.logger?.info(`🙈 unsubscribe from "${state.key}"`)
+          subscription.unsubscribe()
+        }
+      : () => {
+          store.config.logger?.info(
+            `🙈 unsubscribe from "${state.key}" and its dependencies`
+          )
+          subscription.unsubscribe()
+          for (const dependencySubscription of dependencySubscriptions) {
+            dependencySubscription.unsubscribe()
+          }
+        }
+
+  return unsubscribe
 }

@@ -1,3 +1,4 @@
+import { pipe } from "fp-ts/function"
 import HAMT from "hamt_plus"
 
 import type { Atom, ReadonlySelector, Selector } from "."
@@ -14,6 +15,17 @@ export const getCachedState = <T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): T => {
+  const path = []
+  if (`default` in state) {
+    const atomKey = state.key
+    store.selectorAtoms = pipe(store.selectorAtoms, (oldValue) => {
+      let newValue = oldValue
+      for (const selectorKey of path) {
+        newValue = newValue.set(selectorKey, atomKey)
+      }
+      return newValue
+    })
+  }
   const value = HAMT.get(state.key, store.valueMap)
   return value
 }
@@ -21,6 +33,18 @@ export const getCachedState = <T>(
 export const getSelectorState = <T>(
   selector: ReadonlySelector<T> | Selector<T>
 ): T => selector.get()
+
+export function lookup(
+  key: string,
+  store: Store
+): AtomToken<unknown> | ReadonlyValueToken<unknown> | SelectorToken<unknown> {
+  const type = HAMT.has(key, store.atoms)
+    ? `atom`
+    : HAMT.has(key, store.selectors)
+    ? `selector`
+    : `readonly_selector`
+  return { key, type }
+}
 
 export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T>
 export function withdraw<T>(token: SelectorToken<T>, store: Store): Selector<T>
@@ -71,9 +95,11 @@ export const getState__INTERNAL = <T>(
   store: Store = IMPLICIT.STORE
 ): T => {
   if (HAMT.has(state.key, store.valueMap)) {
+    store.config.logger?.info(`>> read "${state.key}"`)
     return getCachedState(state, store)
   }
   if (`get` in state) {
+    store.config.logger?.info(`-> calc "${state.key}"`)
     return getSelectorState(state)
   }
   store.config.logger?.error(
