@@ -2,11 +2,13 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { transaction } from "~/packages/atom.io/src"
+import { atom, transaction } from "~/packages/atom.io/src"
 
 import { Dividend, dividendState } from "./Dividend"
 import { Divisor, divisorState } from "./Divisor"
 import { Quotient } from "./Quotient"
+import { useStore } from "./services"
+import { StressTest } from "./StressTest"
 
 export const resetEquation = transaction({
   key: `resetEquation`,
@@ -16,22 +18,41 @@ export const resetEquation = transaction({
   },
 })
 
+const DEMOS = [`stress_test`, `basic_arithmetic`] as const
+type Demo = (typeof DEMOS)[number]
+
+const demoAtom = atom<Demo>({
+  key: `demo`,
+  default: DEMOS[0],
+})
+
 export const App: FC = () => {
+  const [demo, setDemo] = useStore(demoAtom)
   return (
     <main
       css={css`
         display: flex;
-        flex-flow: row;
+        flex-flow: column;
       `}
     >
-      <div>
-        <Dividend />
-        / <Divisor />
-        = <Quotient />
+      <select value={demo} onChange={(e) => setDemo(e.target.value as Demo)}>
+        {DEMOS.map((demo) => (
+          <option key={demo} value={demo}>
+            {demo}
+          </option>
+        ))}
+      </select>
+      {demo === `basic_arithmetic` && (
         <div>
-          <button onClick={resetEquation}>Reset</button>
+          <Dividend />
+          / <Divisor />
+          = <Quotient />
+          <div>
+            <button onClick={resetEquation}>Reset</button>
+          </div>
         </div>
-      </div>
+      )}
+      {demo === `stress_test` && <StressTest />}
     </main>
   )
 }
