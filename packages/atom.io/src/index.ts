@@ -4,6 +4,8 @@ import {
   finishAction,
   getState__INTERNAL,
   setState__INTERNAL,
+  isAtomDefault,
+  isSelectorDefault,
   startAction,
   subscribeToRootAtoms,
   withdraw,
@@ -49,6 +51,14 @@ export const setState = <T, New extends T>(
   setState__INTERNAL(state, value, store)
   finishAction(store)
 }
+
+export const isDefault = (
+  token: ReadonlyValueToken<unknown> | StateToken<unknown>,
+  store: Store = IMPLICIT.STORE
+): boolean =>
+  token.type === `atom`
+    ? isAtomDefault(token.key, store)
+    : isSelectorDefault(token.key, store)
 
 export type ObserveState<T> = (change: { newValue: T; oldValue: T }) => void
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { render, fireEvent } from "@testing-library/react"
 
 import type { StateToken } from "../src"
-import { atom } from "../src"
+import { isDefault, atom } from "../src"
 import { composeStoreHooks } from "../src/react"
 
 const { useStore } = composeStoreHooks({ useState, useEffect })
@@ -29,9 +29,11 @@ describe(`single atom`, () => {
     })
     const Letter: FC = () => {
       const [letter, setLetter] = useStore(letterState)
+      const isDefaultLetter = isDefault(letterState)
       return (
         <>
           <div data-testid={letter}>{letter}</div>
+          <div data-testid={isDefaultLetter}>{isDefaultLetter}</div>
           <button
             onClick={() => setLetter(`B`)}
             data-testid="changeStateButton"
@@ -50,9 +52,11 @@ describe(`single atom`, () => {
 
   it(`accepts user input with externally managed state`, () => {
     const { getByTestId } = scenario()
+    expect(getByTestId(`true`)).toBeTruthy()
     const changeStateButton = getByTestId(`changeStateButton`)
     fireEvent.click(changeStateButton)
     const option = getByTestId(`B`)
     expect(option).toBeTruthy()
+    expect(getByTestId(`false`)).toBeTruthy()
   })
 })

@@ -3,6 +3,7 @@ import HAMT from "hamt_plus"
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
+import { isAtomDefault } from "."
 import { getState__INTERNAL } from "./get"
 import { isDone, markDone } from "./operation"
 import type { Store } from "./store"
@@ -51,6 +52,9 @@ export const setAtomState = <T>(
   const newValue = become(next)(oldValue)
   store.config.logger?.info(`-> setting atom "${atom.key}" to`, newValue)
   store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
+  if (isAtomDefault(atom.key)) {
+    store.atomsAreDefault = HAMT.set(atom.key, false, store.atomsAreDefault)
+  }
   markDone(atom.key, store)
   store.config.logger?.info(
     `   || evicting caches downstream from "${atom.key}"`

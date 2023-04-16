@@ -38,6 +38,7 @@ export const atom = <T>(
   const initialValue =
     options.default instanceof Function ? options.default() : options.default
   store.atoms = HAMT.set(options.key, newAtom, store.atoms)
+  store.atomsAreDefault = HAMT.set(options.key, true, store.atomsAreDefault)
   store.valueMap = HAMT.set(options.key, initialValue, store.valueMap)
   const token = deposit(newAtom)
   const setSelf = (next) => setState(token, next, store)

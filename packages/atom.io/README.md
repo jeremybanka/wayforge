@@ -18,7 +18,7 @@
 - [x] "lazy mode": only propagate updates downstream to selectors with an active subscription
 - [x] async effects
 - [x] atom default as function
-- [ ] check whether an atom is "default" (never set)
+- [x] check whether an atom is "default" (never set)
 - [ ] timelines
 - [ ] resettable atoms
 - [ ] resettable selectors
