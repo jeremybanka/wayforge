@@ -1,14 +1,7 @@
-import HAMT from "hamt_plus"
-import * as Rx from "rxjs"
-
 import type { Serializable } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { AtomToken, ObserveState } from "."
-import { subscribe, setState } from "."
-import { deposit } from "./internal"
-import type { Store } from "./internal/store"
-import { IMPLICIT } from "./internal/store"
+import type { AtomToken } from "."
+import { atomFamily__INTERNAL, atom__INTERNAL } from "./internal"
 
 export type Effectors<T> = {
   setSelf: <V extends T>(next: V | ((oldValue: T) => V)) => void
@@ -23,28 +16,8 @@ export type AtomOptions<T> = {
   effects?: AtomEffect<T>[]
 }
 
-export const atom = <T>(
-  options: AtomOptions<T>,
-  store: Store = IMPLICIT.STORE
-): AtomToken<T> => {
-  if (HAMT.has(options.key, store.atoms)) {
-    store.config.logger?.error?.(
-      `Key "${options.key}" already exists in the store.`
-    )
-    return deposit(store.atoms.get(options.key))
-  }
-  const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
-  const newAtom = { ...options, subject }
-  const initialValue =
-    options.default instanceof Function ? options.default() : options.default
-  store.atoms = HAMT.set(options.key, newAtom, store.atoms)
-  store.atomsAreDefault = HAMT.set(options.key, true, store.atomsAreDefault)
-  store.valueMap = HAMT.set(options.key, initialValue, store.valueMap)
-  const token = deposit(newAtom)
-  const setSelf = (next) => setState(token, next, store)
-  const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
-  options.effects?.forEach((effect) => effect({ setSelf, onSet }))
-  return token
+export function atom<T>(options: AtomOptions<T>): AtomToken<T> {
+  return atom__INTERNAL<T>(options)
 }
 
 export type AtomFamilyOptions<T, K extends Serializable> = {
@@ -53,26 +26,8 @@ export type AtomFamilyOptions<T, K extends Serializable> = {
   effects?: (key: K) => AtomEffect<T>[]
 }
 
-export const atomFamily =
-  <T, K extends Serializable>(
-    options: AtomFamilyOptions<T, K>,
-    store: Store = IMPLICIT.STORE
-  ) =>
-  (key: K): AtomToken<T> => {
-    const fullKey = `${options.key}__${stringifyJson(key)}`
-    const existing = store.atoms.get(fullKey)
-    if (existing) {
-      return deposit(existing)
-    }
-    return atom<T>(
-      {
-        key: fullKey,
-        default:
-          options.default instanceof Function
-            ? options.default(key)
-            : options.default,
-        effects: options.effects?.(key),
-      },
-      store
-    )
-  }
+export function atomFamily<T, K extends Serializable>(
+  options: AtomFamilyOptions<T, K>
+): (key: K) => AtomToken<T> {
+  return atomFamily__INTERNAL<T, K>(options)
+}

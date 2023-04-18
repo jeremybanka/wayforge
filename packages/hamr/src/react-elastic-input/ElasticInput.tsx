@@ -74,6 +74,7 @@ export type ElasticInputProps = {
   style?: React.CSSProperties
   type?: string
   value?: any
+  step?: number
 }
 export type ElasticInputState = {
   inputWidth?: number | string

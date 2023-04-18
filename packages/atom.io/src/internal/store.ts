@@ -1,9 +1,11 @@
 import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
 
+import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 
 import type { Atom, ReadonlySelector, Selector } from "."
+import type { Logger } from "./logger"
 
 export interface Store {
   valueMap: Hamt<any, string>
@@ -39,7 +41,8 @@ export interface Store {
       }
   config: {
     name: string
-    logger: Pick<Console, `error` | `info` | `warn`> | null
+    logger: Logger | null
+    logger__INTERNAL: Logger
   }
 }
 
@@ -60,7 +63,11 @@ export const createStore = (name: string): Store =>
     },
     config: {
       name,
-      logger: null,
+      logger: {
+        ...console,
+        info: doNothing,
+      },
+      logger__INTERNAL: console,
     },
   } satisfies Store)
 
@@ -69,12 +76,6 @@ export const IMPLICIT = {
   get STORE(): Store {
     return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = createStore(`DEFAULT`))
   },
-}
-export const configure = (
-  config: Partial<Store[`config`]>,
-  store: Store = IMPLICIT.STORE
-): void => {
-  Object.assign(store.config, config)
 }
 
 export const clearStore = (store: Store = IMPLICIT.STORE): void => {

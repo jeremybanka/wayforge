@@ -2,14 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { atom } from "~/packages/atom.io/src"
-
-import { useStore } from "./services"
-
-export const divisorState = atom<number>({
-  key: `divisor`,
-  default: 2,
-})
+import { divisorState, useStore } from "./services"
 
 export const Divisor: FC = () => {
   const [divisor, setDivisor] = useStore(divisorState)

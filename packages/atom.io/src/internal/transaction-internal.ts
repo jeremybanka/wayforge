@@ -1,4 +1,7 @@
 import type { Store } from "./store"
+import { IMPLICIT } from "./store"
+import { getState, setState } from ".."
+import type { TransactionOptions, ƒn } from "../transaction"
 
 export const finishTransaction = (store: Store): void => {
   store.transaction = { open: false }
@@ -31,4 +34,31 @@ export const abortTransaction = (store: Store): void => {
   store.valueMap = store.transaction.prev.valueMap
   store.transaction = { open: false }
   store.config.logger?.info(`🪂`, `transaction fail`)
+}
+
+export function transaction__INTERNAL<ƒ extends ƒn>(
+  options: TransactionOptions<ƒ>,
+  store: Store = IMPLICIT.STORE
+): ((...parameters: Parameters<ƒ>) => ReturnType<ƒ>) & { key: string } {
+  return Object.assign(
+    (...parameters: Parameters<ƒ>) => {
+      startTransaction(store)
+      try {
+        const result = options.do(
+          {
+            get: (token) => getState(token, store),
+            set: (token, value) => setState(token, value, store),
+          },
+          ...parameters
+        )
+        finishTransaction(store)
+        return result
+      } catch (thrown) {
+        abortTransaction(store)
+        store.config.logger?.error(`Transaction ${options.key} failed`, thrown)
+        throw thrown
+      }
+    },
+    { key: options.key }
+  )
 }
