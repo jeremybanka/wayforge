@@ -8,8 +8,8 @@ const { useStore, useO, useI, useIO } = composeStoreHooks({
   useEffect,
 })
 
-// configure({
-//   logger: console,
-// })
+configure({
+  logger: console,
+})
 
 export { useStore, useO, useIO, useI }

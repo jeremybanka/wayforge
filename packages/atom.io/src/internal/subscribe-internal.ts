@@ -17,7 +17,7 @@ export const subscribeToRootAtoms = <T>(
           const atom = withdraw(atomToken, store)
           return atom.subject.subscribe((atomChange) => {
             store.config.logger?.info(
-              `📢 selector ${state.key} saw its root atom "${atomToken.key}" change (`,
+              `📢 selector "${state.key}" saw root "${atomToken.key}" go (`,
               atomChange.oldValue,
               `->`,
               atomChange.newValue,
