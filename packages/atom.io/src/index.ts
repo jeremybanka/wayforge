@@ -17,7 +17,7 @@ export * from "./atom"
 export * from "./selector"
 export * from "./transaction"
 export { __INTERNAL__, configure }
-export { Serializable } from "~/packages/anvl/json"
+export type { Serializable } from "~/packages/anvl/json"
 
 export type AtomToken<_> = {
   key: string
