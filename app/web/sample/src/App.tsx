@@ -4,13 +4,13 @@ import { css } from "@emotion/react"
 
 import { atom, transaction } from "~/packages/atom.io/src"
 
-import { Dividend, dividendState } from "./Dividend"
-import { Divisor, divisorState } from "./Divisor"
+import { Dividend } from "./Dividend"
+import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
-import { useStore } from "./services"
+import { dividendState, divisorState, useStore } from "./services"
 import { StressTest } from "./StressTest"
 
-export const resetEquation = transaction({
+const resetEquation = transaction({
   key: `resetEquation`,
   do: ({ set }) => {
     set(dividendState, 1)
