@@ -1,16 +1,35 @@
 {
   "name": "atom.io",
   "version": "0.2.0",
-  "description": "like recoil for node",
+  "private": false,
+  "description": "Reactive state graph for React, Preact, and vanilla",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
   "files": [
     "dist",
-    "react",
+    "react/dist",
+    "react/package.json",
     "src"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react/package.json": "./react/package.json",
+    "./react": {
+      "types": "./react/dist/index.d.ts",
+      "browser": "./react/dist/index.mjs",
+      "import": "./react/dist/index.mjs",
+      "require": "./react/dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && cd react && tsup",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
