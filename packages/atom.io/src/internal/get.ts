@@ -1,8 +1,6 @@
 import { pipe } from "fp-ts/function"
 import HAMT from "hamt_plus"
 
-import { select } from "~/packages/anvl/src/object"
-
 import type { Atom, ReadonlySelector, Selector } from "."
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
