@@ -26,7 +26,7 @@
 
 ## fixes & improvements
 - [x] refactor selector dependencies to be asymmetrical
-- [ ] tokens explicitly contain the key of their family
+- [x] tokens explicitly contain the key of their family
 - [ ] apply and emit transactions all at once
 
 ## documentation

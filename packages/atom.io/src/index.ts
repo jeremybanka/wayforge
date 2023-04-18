@@ -21,16 +21,24 @@ export { __INTERNAL__, configure }
 export type AtomToken<_> = {
   key: string
   type: `atom`
+  family?: FamilyMetadata
 }
 export type SelectorToken<_> = {
   key: string
   type: `selector`
+  family?: FamilyMetadata
 }
 export type StateToken<T> = AtomToken<T> | SelectorToken<T>
 
 export type ReadonlyValueToken<_> = {
   key: string
   type: `readonly_selector`
+  family?: FamilyMetadata
+}
+
+export type FamilyMetadata = {
+  key: string
+  subKey: string
 }
 
 export const getState = <T>(

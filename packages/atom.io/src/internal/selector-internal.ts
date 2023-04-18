@@ -1,5 +1,11 @@
-import type { Store } from "."
+import HAMT from "hamt_plus"
+import * as Rx from "rxjs"
+
+import { become } from "~/packages/anvl/src/function"
+
+import type { Selector, ReadonlySelector, Store } from "."
 import {
+  markDone,
   lookup,
   IMPLICIT,
   getState__INTERNAL,
@@ -8,7 +14,10 @@ import {
 } from "."
 import type {
   AtomToken,
+  FamilyMetadata,
+  ReadonlySelectorOptions,
   ReadonlyValueToken,
+  SelectorOptions,
   SelectorToken,
   StateToken,
 } from ".."
@@ -125,3 +134,74 @@ export const registerSelector = (
     setState__INTERNAL(state, newValue, store)
   },
 })
+
+export function selector__INTERNAL<T>(
+  options: SelectorOptions<T>,
+  family?: FamilyMetadata,
+  store?: Store
+): SelectorToken<T>
+export function selector__INTERNAL<T>(
+  options: ReadonlySelectorOptions<T>,
+  family?: FamilyMetadata,
+  store?: Store
+): ReadonlyValueToken<T>
+export function selector__INTERNAL<T>(
+  options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
+  family?: FamilyMetadata,
+  store: Store = IMPLICIT.STORE
+): ReadonlyValueToken<T> | SelectorToken<T> {
+  if (HAMT.has(options.key, store.selectors)) {
+    store.config.logger?.error(
+      `Key "${options.key}" already exists in the store.`
+    )
+  }
+
+  const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
+
+  const { get, set } = registerSelector(options.key, store)
+  const getSelf = () => {
+    const value = options.get({ get })
+    store.valueMap = HAMT.set(options.key, value, store.valueMap)
+    return value
+  }
+
+  if (!(`set` in options)) {
+    const readonlySelector: ReadonlySelector<T> = {
+      ...options,
+      subject,
+      get: getSelf,
+      type: `readonly_selector`,
+      ...(family && { family }),
+    }
+    store.readonlySelectors = HAMT.set(
+      options.key,
+      readonlySelector,
+      store.readonlySelectors
+    )
+    const initialValue = getSelf()
+    store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
+    return { ...readonlySelector, type: `readonly_selector` }
+  }
+  const setSelf = (next: T | ((oldValue: T) => T)): void => {
+    store.config.logger?.info(`   <- "${options.key}" became`, next)
+    const oldValue = getSelf()
+    const newValue = become(next)(oldValue)
+    store.valueMap = HAMT.set(options.key, newValue, store.valueMap)
+    markDone(options.key, store)
+    subject.next({ newValue, oldValue })
+    options.set({ get, set }, newValue)
+  }
+
+  const mySelector: Selector<T> = {
+    ...options,
+    subject,
+    get: getSelf,
+    set: setSelf,
+    type: `selector`,
+    ...(family && { family }),
+  }
+  store.selectors = HAMT.set(options.key, mySelector, store.selectors)
+  const initialValue = getSelf()
+  store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
+  return { ...mySelector, type: `selector` }
+}

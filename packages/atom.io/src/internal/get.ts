@@ -1,6 +1,8 @@
 import { pipe } from "fp-ts/function"
 import HAMT from "hamt_plus"
 
+import { select } from "~/packages/anvl/src/object"
+
 import type { Atom, ReadonlySelector, Selector } from "."
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
@@ -81,13 +83,11 @@ export function deposit<T>(
 export function deposit<T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>
 ): ReadonlyValueToken<T> | StateToken<T> {
-  if (`get` in state) {
-    if (`set` in state) {
-      return { key: state.key, type: `selector` }
-    }
-    return { key: state.key, type: `readonly_selector` }
+  return {
+    key: state.key,
+    type: state.type,
+    ...(`family` in state && { family: state.family }),
   }
-  return { key: state.key, type: `atom` }
 }
 
 export const getState__INTERNAL = <T>(

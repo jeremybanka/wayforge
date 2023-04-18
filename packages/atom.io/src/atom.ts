@@ -1,12 +1,9 @@
-import HAMT from "hamt_plus"
-import * as Rx from "rxjs"
-
 import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { AtomToken, ObserveState } from "."
-import { subscribe, setState } from "."
+import type { AtomToken, FamilyMetadata } from "."
 import { deposit } from "./internal"
+import { atom__INTERNAL } from "./internal/atom-internal"
 import type { Store } from "./internal/store"
 import { IMPLICIT } from "./internal/store"
 
@@ -26,26 +23,7 @@ export type AtomOptions<T> = {
 export const atom = <T>(
   options: AtomOptions<T>,
   store: Store = IMPLICIT.STORE
-): AtomToken<T> => {
-  if (HAMT.has(options.key, store.atoms)) {
-    store.config.logger?.error?.(
-      `Key "${options.key}" already exists in the store.`
-    )
-    return deposit(store.atoms.get(options.key))
-  }
-  const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
-  const newAtom = { ...options, subject }
-  const initialValue =
-    options.default instanceof Function ? options.default() : options.default
-  store.atoms = HAMT.set(options.key, newAtom, store.atoms)
-  store.atomsAreDefault = HAMT.set(options.key, true, store.atomsAreDefault)
-  store.valueMap = HAMT.set(options.key, initialValue, store.valueMap)
-  const token = deposit(newAtom)
-  const setSelf = (next) => setState(token, next, store)
-  const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
-  options.effects?.forEach((effect) => effect({ setSelf, onSet }))
-  return token
-}
+): AtomToken<T> => atom__INTERNAL(options, undefined, store)
 
 export type AtomFamilyOptions<T, K extends Serializable> = {
   key: string
@@ -59,12 +37,17 @@ export const atomFamily =
     store: Store = IMPLICIT.STORE
   ) =>
   (key: K): AtomToken<T> => {
-    const fullKey = `${options.key}__${stringifyJson(key)}`
+    const subKey = stringifyJson(key)
+    const family: FamilyMetadata = { key: options.key, subKey }
+    const fullKey = `${options.key}__${subKey}`
     const existing = store.atoms.get(fullKey)
     if (existing) {
+      store.config.logger?.error?.(
+        `Key "${fullKey}" already exists in the store. This is likely due to reloading a module in development.`
+      )
       return deposit(existing)
     }
-    return atom<T>(
+    return atom__INTERNAL<T>(
       {
         key: fullKey,
         default:
@@ -73,6 +56,7 @@ export const atomFamily =
             : options.default,
         effects: options.effects?.(key),
       },
+      family,
       store
     )
   }
