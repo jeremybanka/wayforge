@@ -23,7 +23,7 @@ type Demo = (typeof DEMOS)[number]
 
 const demoAtom = atom<Demo>({
   key: `demo`,
-  default: DEMOS[0],
+  default: DEMOS[1],
 })
 
 export const App: FC = () => {
