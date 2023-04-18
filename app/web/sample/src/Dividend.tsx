@@ -2,14 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { atom } from "~/packages/atom.io/src"
-
-import { useStore } from "./services"
-
-export const dividendState = atom<number>({
-  key: `dividend`,
-  default: 1,
-})
+import { dividendState, useStore } from "./services"
 
 export const Dividend: FC = () => {
   const [dividend, setDividend] = useStore(dividendState)

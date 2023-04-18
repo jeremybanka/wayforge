@@ -2,26 +2,9 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { selector } from "~/packages/atom.io/src"
+import { quotientState, useStore } from "./services"
 
-import { dividendState } from "./Dividend"
-import { divisorState } from "./Divisor"
-import { useStore } from "./services"
-
-export const quotientState = selector<number>({
-  key: `quotient`,
-  get: ({ get }) => {
-    const divisor = get(divisorState)
-    const dividend = get(dividendState)
-    return dividend / divisor
-  },
-  set: ({ get, set }, newValue) => {
-    const divisor = get(divisorState)
-    set(dividendState, newValue * divisor)
-  },
-})
 export const Quotient: FC = () => {
-  // const quotient = useStore(quotientState)
   const [quotient, setQuotient] = useStore(quotientState)
   return (
     <div>

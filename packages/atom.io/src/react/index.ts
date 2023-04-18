@@ -2,11 +2,10 @@ import type Preact from "preact/hooks"
 
 import type React from "react"
 
-import type { Modifier } from "~/packages/anvl/src/function"
+import { subscribe, setState, __INTERNAL__ } from "atom.io"
+import type { ReadonlyValueToken, StateToken } from "atom.io"
 
-import type { ReadonlyValueToken, StateToken } from ".."
-import { subscribe, setState, __INTERNAL__ } from ".."
-import { withdraw } from "../internal"
+import type { Modifier } from "~/packages/anvl/src/function"
 
 export type AtomStoreReactConfig = {
   useState: typeof Preact.useState | typeof React.useState
@@ -26,7 +25,7 @@ export const composeStoreHooks = ({
   }
 
   function useO<T>(token: ReadonlyValueToken<T> | StateToken<T>): T {
-    const state = withdraw(token, store)
+    const state = __INTERNAL__.withdraw(token, store)
     const initialValue = __INTERNAL__.getState__INTERNAL(state, store)
     const [current, dispatch] = useState(initialValue)
     useEffect(() => {
@@ -40,7 +39,7 @@ export const composeStoreHooks = ({
         store
       )
       return unsubscribe
-    }, [current, dispatch])
+    }, [])
 
     return current
   }

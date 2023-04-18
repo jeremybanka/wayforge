@@ -1,12 +1,34 @@
 import { useState, useEffect } from "react"
 
-import { configure } from "~/packages/atom.io/src"
+import { atom, selector } from "~/packages/atom.io/src"
 import { composeStoreHooks } from "~/packages/atom.io/src/react"
 
-const { useStore } = composeStoreHooks({ useState, useEffect })
-
-configure({
-  logger: console,
+const { useStore, useO, useI, useIO } = composeStoreHooks({
+  useState,
+  useEffect,
 })
 
-export { useStore }
+export { useStore, useO, useIO, useI }
+
+export const dividendState = atom<number>({
+  key: `dividend`,
+  default: 1,
+})
+
+export const divisorState = atom<number>({
+  key: `divisor`,
+  default: 2,
+})
+
+export const quotientState = selector<number>({
+  key: `quotient`,
+  get: ({ get }) => {
+    const divisor = get(divisorState)
+    const dividend = get(dividendState)
+    return dividend / divisor
+  },
+  set: ({ get, set }, newValue) => {
+    const divisor = get(divisorState)
+    set(dividendState, newValue * divisor)
+  },
+})

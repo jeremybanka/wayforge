@@ -50,7 +50,7 @@ export const setAtomState = <T>(
 ): void => {
   const oldValue = getState__INTERNAL(atom, store)
   const newValue = become(next)(oldValue)
-  store.config.logger?.info(`-> setting atom "${atom.key}" to`, newValue)
+  store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)
   store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
   if (isAtomDefault(atom.key)) {
     store.atomsAreDefault = HAMT.set(atom.key, false, store.atomsAreDefault)
@@ -70,7 +70,7 @@ export const setSelectorState = <T>(
   const oldValue = getState__INTERNAL(selector, store)
   const newValue = become(next)(oldValue)
 
-  store.config.logger?.info(`-> setting selector "${selector.key}" to`, newValue)
+  store.config.logger?.info(`<< setting selector "${selector.key}" to`, newValue)
   store.config.logger?.info(`   || propagating change made to "${selector.key}"`)
 
   selector.set(newValue)

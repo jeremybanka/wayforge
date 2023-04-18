@@ -8,24 +8,25 @@ import {
   __INTERNAL__,
   atom,
   atomFamily,
-  configure,
   getState,
   selectorFamily,
   setState,
   transaction,
+  useLogger,
 } from "../src"
 
 const loggers = [UTIL.silence, console] as const
 const choose = 0
 const logger = loggers[choose]
 
-configure({ logger })
+useLogger(logger)
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
-  vitest.spyOn(logger, `error`)
-  vitest.spyOn(logger, `warn`)
-  vitest.spyOn(logger, `info`)
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
+  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `error`)
+  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `warn`)
+  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `info`)
   vitest.spyOn(UTIL, `stdout`)
 })
 
@@ -143,7 +144,9 @@ describe(`transaction`, () => {
     steal(thiefState.key, victimState.key)
     expect(getState(thiefInvState)).toEqual([prizeState.key])
     expect(getState(victimInvState)).toEqual([])
-    expect(logger.error).not.toHaveBeenCalled()
+    expect(
+      __INTERNAL__.IMPLICIT.STORE.config.logger!.error
+    ).not.toHaveBeenCalled()
 
     try {
       steal(thiefState.key, victimState.key)
@@ -153,7 +156,9 @@ describe(`transaction`, () => {
         expect(thrown.message).toEqual(`No items to steal!`)
       }
     }
-    expect(logger.error).toHaveBeenCalledTimes(1)
+    expect(
+      __INTERNAL__.IMPLICIT.STORE.config.logger!.error
+    ).toHaveBeenCalledTimes(1)
 
     setState(globalInventoryState, (current) => current.remove(victimState.key))
   })

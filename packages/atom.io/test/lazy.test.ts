@@ -4,7 +4,7 @@ import * as UTIL from "./-util"
 import {
   __INTERNAL__,
   atom,
-  configure,
+  useLogger,
   getState,
   selector,
   setState,
@@ -16,7 +16,7 @@ const loggers = [UTIL.silence, console] as const
 const choose = 0
 const logger = loggers[choose]
 
-configure({ logger })
+useLogger(logger)
 
 beforeEach(() => {
   __INTERNAL__.clearStore()

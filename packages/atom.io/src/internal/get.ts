@@ -81,13 +81,11 @@ export function deposit<T>(
 export function deposit<T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>
 ): ReadonlyValueToken<T> | StateToken<T> {
-  if (`get` in state) {
-    if (`set` in state) {
-      return { key: state.key, type: `selector` }
-    }
-    return { key: state.key, type: `readonly_selector` }
+  return {
+    key: state.key,
+    type: state.type,
+    ...(`family` in state && { family: state.family }),
   }
-  return { key: state.key, type: `atom` }
 }
 
 export const getState__INTERNAL = <T>(
