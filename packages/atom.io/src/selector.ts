@@ -1,9 +1,7 @@
 import type { Serializable } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { FamilyMetadata, ReadonlyValueToken, SelectorToken } from "."
-import type { Store } from "./internal"
-import { selector__INTERNAL, IMPLICIT, deposit } from "./internal"
+import type { ReadonlyValueToken, SelectorToken } from "."
+import { selectorFamily__INTERNAL, selector__INTERNAL } from "./internal"
 import type { ReadonlyTransactors, Transactors } from "./transaction"
 
 export type SelectorOptions<T> = {
@@ -13,19 +11,14 @@ export type SelectorOptions<T> = {
 }
 export type ReadonlySelectorOptions<T> = Omit<SelectorOptions<T>, `set`>
 
+export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
 export function selector<T>(
-  options: SelectorOptions<T>,
-  store?: Store
-): SelectorToken<T>
-export function selector<T>(
-  options: ReadonlySelectorOptions<T>,
-  store?: Store
+  options: ReadonlySelectorOptions<T>
 ): ReadonlyValueToken<T>
 export function selector<T>(
-  options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
-  store: Store = IMPLICIT.STORE
+  options: ReadonlySelectorOptions<T> | SelectorOptions<T>
 ): ReadonlyValueToken<T> | SelectorToken<T> {
-  return selector__INTERNAL(options, undefined, store)
+  return selector__INTERNAL(options)
 }
 
 export type SelectorFamilyOptions<T, K extends Serializable> = {
@@ -39,46 +32,13 @@ export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = Omit<
 >
 
 export function selectorFamily<T, K extends Serializable>(
-  options: SelectorFamilyOptions<T, K>,
-  store?: Store
+  options: SelectorFamilyOptions<T, K>
 ): (key: K) => SelectorToken<T>
 export function selectorFamily<T, K extends Serializable>(
-  options: ReadonlySelectorFamilyOptions<T, K>,
-  store?: Store
+  options: ReadonlySelectorFamilyOptions<T, K>
 ): (key: K) => ReadonlyValueToken<T>
 export function selectorFamily<T, K extends Serializable>(
-  options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
-  store: Store = IMPLICIT.STORE
+  options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>
 ): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
-  return (key: K): ReadonlyValueToken<T> | SelectorToken<T> => {
-    const subKey = stringifyJson(key)
-    const family: FamilyMetadata = { key: options.key, subKey }
-    const fullKey = `${options.key}__${subKey}`
-    const existing =
-      store.selectors.get(fullKey) ?? store.readonlySelectors.get(fullKey)
-    if (existing) {
-      return deposit(existing)
-    }
-    const readonlySelectorOptions: ReadonlySelectorOptions<T> = {
-      key: fullKey,
-      get: options.get(key),
-    }
-    if (!(`set` in options)) {
-      return selector__INTERNAL<T>(
-        {
-          ...readonlySelectorOptions,
-        },
-        family,
-        store
-      )
-    }
-    return selector__INTERNAL<T>(
-      {
-        ...readonlySelectorOptions,
-        set: options.set(key),
-      },
-      family,
-      store
-    )
-  }
+  return selectorFamily__INTERNAL(options)
 }

@@ -2,9 +2,12 @@ import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
 import { become } from "~/packages/anvl/src/function"
+import type { Serializable } from "~/packages/anvl/src/json"
+import { stringifyJson } from "~/packages/anvl/src/json"
 
 import type { Selector, ReadonlySelector, Store } from "."
 import {
+  deposit,
   markDone,
   lookup,
   IMPLICIT,
@@ -15,8 +18,10 @@ import {
 import type {
   AtomToken,
   FamilyMetadata,
+  ReadonlySelectorFamilyOptions,
   ReadonlySelectorOptions,
   ReadonlyValueToken,
+  SelectorFamilyOptions,
   SelectorOptions,
   SelectorToken,
   StateToken,
@@ -204,4 +209,48 @@ export function selector__INTERNAL<T>(
   const initialValue = getSelf()
   store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
   return { ...mySelector, type: `selector` }
+}
+
+export function selectorFamily__INTERNAL<T, K extends Serializable>(
+  options: SelectorFamilyOptions<T, K>,
+  store?: Store
+): (key: K) => SelectorToken<T>
+export function selectorFamily__INTERNAL<T, K extends Serializable>(
+  options: ReadonlySelectorFamilyOptions<T, K>,
+  store?: Store
+): (key: K) => ReadonlyValueToken<T>
+export function selectorFamily__INTERNAL<T, K extends Serializable>(
+  options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
+  store: Store = IMPLICIT.STORE
+): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
+  return (key: K): ReadonlyValueToken<T> | SelectorToken<T> => {
+    const subKey = stringifyJson(key)
+    const family: FamilyMetadata = { key: options.key, subKey }
+    const fullKey = `${options.key}__${subKey}`
+    const existing =
+      store.selectors.get(fullKey) ?? store.readonlySelectors.get(fullKey)
+    if (existing) {
+      return deposit(existing)
+    }
+    const readonlySelectorOptions: ReadonlySelectorOptions<T> = {
+      key: fullKey,
+      get: options.get(key),
+    }
+    if (!(`set` in options)) {
+      return selector__INTERNAL<T>(
+        {
+          ...readonlySelectorOptions,
+        },
+        family
+      )
+    }
+    return selector__INTERNAL<T>(
+      {
+        ...readonlySelectorOptions,
+        set: options.set(key),
+      },
+      family,
+      store
+    )
+  }
 }

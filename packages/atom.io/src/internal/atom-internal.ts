@@ -1,18 +1,21 @@
 import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
+import type { Serializable } from "~/packages/anvl/src/json"
+import { stringifyJson } from "~/packages/anvl/src/json"
+
 import { deposit } from "./get"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 import type { AtomToken, FamilyMetadata, ObserveState } from ".."
 import { setState, subscribe } from ".."
-import type { AtomOptions } from "../atom"
+import type { AtomFamilyOptions, AtomOptions } from "../atom"
 
-export const atom__INTERNAL = <T>(
+export function atom__INTERNAL<T>(
   options: AtomOptions<T>,
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
-): AtomToken<T> => {
+): AtomToken<T> {
   if (HAMT.has(options.key, store.atoms)) {
     store.config.logger?.error?.(
       `Key "${options.key}" already exists in the store.`
@@ -36,4 +39,31 @@ export const atom__INTERNAL = <T>(
   const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
   options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   return token
+}
+
+export function atomFamily__INTERNAL<T, K extends Serializable>(
+  options: AtomFamilyOptions<T, K>,
+  store: Store = IMPLICIT.STORE
+) {
+  return (key: K): AtomToken<T> => {
+    const subKey = stringifyJson(key)
+    const family: FamilyMetadata = { key: options.key, subKey }
+    const fullKey = `${options.key}__${subKey}`
+    const existing = store.atoms.get(fullKey)
+    if (existing) {
+      return deposit(existing)
+    }
+    return atom__INTERNAL<T>(
+      {
+        key: fullKey,
+        default:
+          options.default instanceof Function
+            ? options.default(key)
+            : options.default,
+        effects: options.effects?.(key),
+      },
+      family,
+      store
+    )
+  }
 }
