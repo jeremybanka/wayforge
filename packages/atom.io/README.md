@@ -13,6 +13,7 @@
 - [x] async effects
 - [x] atom default as function
 - [x] check whether an atom is "default" (never set)
+- [x] customizable logging
 
 # atom.io
 ## upcoming features
@@ -21,12 +22,9 @@
 - [ ] resettable selectors
 - [ ] subscribe to transactions
 - [ ] subscribe to token creation
-- [ ] logging levels (debug, info, warn, error)
 - [ ] store observation api
 
 ## fixes & improvements
-- [x] refactor selector dependencies to be asymmetrical
-- [ ] tokens explicitly contain the key of their family
 - [ ] apply and emit transactions all at once
 
 ## documentation
