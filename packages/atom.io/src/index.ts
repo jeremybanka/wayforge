@@ -1,6 +1,5 @@
 import {
   IMPLICIT,
-  configure,
   finishAction,
   getState__INTERNAL,
   setState__INTERNAL,
@@ -9,6 +8,8 @@ import {
   startAction,
   subscribeToRootAtoms,
   withdraw,
+  setLogLevel,
+  useLogger,
 } from "./internal"
 import * as __INTERNAL__ from "./internal"
 import type { Store } from "./internal/store"
@@ -16,7 +17,7 @@ import type { Store } from "./internal/store"
 export * from "./atom"
 export * from "./selector"
 export * from "./transaction"
-export { __INTERNAL__, configure }
+export { __INTERNAL__, setLogLevel, useLogger }
 export type { Serializable } from "~/packages/anvl/json"
 
 export type AtomToken<_> = {

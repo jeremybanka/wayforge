@@ -4,17 +4,17 @@ import * as UTIL from "./-util"
 import {
   __INTERNAL__,
   atomFamily,
-  configure,
   getState,
   selectorFamily,
   setState,
+  useLogger,
 } from "../src"
 
 const loggers = [UTIL.silence, console] as const
 const choose = 0
 const logger = loggers[choose]
 
-configure({ logger })
+useLogger(logger)
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
