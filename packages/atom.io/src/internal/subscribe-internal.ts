@@ -7,7 +7,7 @@ import { IMPLICIT } from "./store"
 import { __INTERNAL__ } from ".."
 
 export const subscribeToRootAtoms = <T>(
-  state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+  state: ReadonlySelector<T> | Selector<T>,
   store: Store = IMPLICIT.STORE
 ): { unsubscribe: () => void }[] | null => {
   const dependencySubscriptions =
@@ -17,11 +17,11 @@ export const subscribeToRootAtoms = <T>(
           const atom = withdraw(atomToken, store)
           return atom.subject.subscribe((atomChange) => {
             store.config.logger?.info(
-              `📢 atom changed: "${atomToken.key}" (`,
+              `📢 selector ${state.key} saw its root atom "${atomToken.key}" change (`,
               atomChange.oldValue,
               `->`,
               atomChange.newValue,
-              `) re-evaluating "${state.key}"`
+              `)`
             )
             const oldValue = recallState(state, store)
             const newValue = getState__INTERNAL(state, store)
