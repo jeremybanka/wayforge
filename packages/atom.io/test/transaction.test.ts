@@ -10,16 +10,18 @@ import {
   atomFamily,
   getState,
   selectorFamily,
+  setLogLevel,
   setState,
   transaction,
   useLogger,
 } from "../src"
 
 const loggers = [UTIL.silence, console] as const
-const choose = 0
+const choose = 1
 const logger = loggers[choose]
 
 useLogger(logger)
+setLogLevel(`info`)
 
 beforeEach(() => {
   __INTERNAL__.clearStore()

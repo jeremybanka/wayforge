@@ -70,7 +70,7 @@ export const isDefault = (
     ? isAtomDefault(token.key, store)
     : isSelectorDefault(token.key, store)
 
-export type ObserveState<T> = (change: { newValue: T; oldValue: T }) => void
+export type ObserveState<T> = (update: { newValue: T; oldValue: T }) => void
 
 export const subscribe = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,

@@ -3,9 +3,9 @@ import HAMT from "hamt_plus"
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
-import { isAtomDefault } from "."
+import { target, markAtomAsNotDefault, isAtomDefault } from "."
 import { getState__INTERNAL } from "./get"
-import { isDone, markDone } from "./operation"
+import { cacheValue, evictCachedValue, isDone, markDone } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 
@@ -13,14 +13,15 @@ export const evictDownStream = <T>(
   state: Atom<T>,
   store: Store = IMPLICIT.STORE
 ): void => {
-  const downstream = store.selectorAtoms.getRelations(state.key)
+  const core = target(store)
+  const downstream = core.selectorAtoms.getRelations(state.key)
   const downstreamKeys = downstream.map(({ id }) => id)
   store.config.logger?.info(
     `   || ${downstreamKeys.length} downstream:`,
     downstreamKeys
   )
-  if (store.operation.open) {
-    store.config.logger?.info(`   ||`, [...store.operation.done], `already done`)
+  if (core.operation.open) {
+    store.config.logger?.info(`   ||`, [...core.operation.done], `already done`)
   }
   downstream.forEach(({ id: stateKey }) => {
     if (isDone(stateKey, store)) {
@@ -28,15 +29,15 @@ export const evictDownStream = <T>(
       return
     }
     const state =
-      HAMT.get(stateKey, store.selectors) ??
-      HAMT.get(stateKey, store.readonlySelectors)
+      HAMT.get(stateKey, core.selectors) ??
+      HAMT.get(stateKey, core.readonlySelectors)
     if (!state) {
       store.config.logger?.info(
         `   || ${stateKey} is an atom, and can't be downstream`
       )
       return
     }
-    store.valueMap = HAMT.remove(stateKey, store.valueMap)
+    evictCachedValue(stateKey, store)
     store.config.logger?.info(`   xx evicted "${stateKey}"`)
 
     markDone(stateKey, store)
@@ -51,9 +52,9 @@ export const setAtomState = <T>(
   const oldValue = getState__INTERNAL(atom, store)
   const newValue = become(next)(oldValue)
   store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)
-  store.valueMap = HAMT.set(atom.key, newValue, store.valueMap)
+  cacheValue(atom.key, newValue, store)
   if (isAtomDefault(atom.key)) {
-    store.atomsAreDefault = HAMT.set(atom.key, false, store.atomsAreDefault)
+    markAtomAsNotDefault(atom.key, store)
   }
   markDone(atom.key, store)
   store.config.logger?.info(

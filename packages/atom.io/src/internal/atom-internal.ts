@@ -4,9 +4,12 @@ import * as Rx from "rxjs"
 import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import { deposit } from "./get"
+import { deposit, withdraw } from "./get"
+import { markAtomAsDefault } from "./is-default"
+import { cacheValue, hasKeyBeenUsed, storeAtom } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
+import { target } from "./transaction-internal"
 import type { AtomToken, FamilyMetadata, ObserveState } from ".."
 import { setState, subscribe } from ".."
 import type { AtomFamilyOptions, AtomOptions } from "../atom"
@@ -16,11 +19,12 @@ export function atom__INTERNAL<T>(
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
 ): AtomToken<T> {
-  if (HAMT.has(options.key, store.atoms)) {
+  const core = target(store)
+  if (hasKeyBeenUsed(options.key, store)) {
     store.config.logger?.error?.(
       `Key "${options.key}" already exists in the store.`
     )
-    return deposit(store.atoms.get(options.key))
+    return deposit(core.atoms.get(options.key))
   }
   const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
   const newAtom = {
@@ -31,9 +35,9 @@ export function atom__INTERNAL<T>(
   } as const
   const initialValue =
     options.default instanceof Function ? options.default() : options.default
-  store.atoms = HAMT.set(options.key, newAtom, store.atoms)
-  store.atomsAreDefault = HAMT.set(options.key, true, store.atomsAreDefault)
-  store.valueMap = HAMT.set(options.key, initialValue, store.valueMap)
+  storeAtom(newAtom, store)
+  markAtomAsDefault(options.key, store)
+  cacheValue(options.key, initialValue, store)
   const token = deposit(newAtom)
   const setSelf = (next) => setState(token, next, store)
   const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
@@ -49,7 +53,7 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
     const subKey = stringifyJson(key)
     const family: FamilyMetadata = { key: options.key, subKey }
     const fullKey = `${options.key}__${subKey}`
-    const existing = store.atoms.get(fullKey)
+    const existing = withdraw({ key: fullKey, type: `atom` }, store)
     if (existing) {
       return deposit(existing)
     }

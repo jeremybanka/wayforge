@@ -1,13 +1,31 @@
 import HAMT from "hamt_plus"
 
 import type { Store } from "."
-import { IMPLICIT, traceAllSelectorAtoms } from "."
+import { target, IMPLICIT, traceAllSelectorAtoms } from "."
 
 export const isAtomDefault = (
   key: string,
   store: Store = IMPLICIT.STORE
 ): boolean => {
-  return HAMT.get(key, store.atomsAreDefault)
+  const core = target(store)
+  return core.atomsThatAreDefault.has(key)
+}
+
+export const markAtomAsDefault = (
+  key: string,
+  store: Store = IMPLICIT.STORE
+): void => {
+  const core = target(store)
+  core.atomsThatAreDefault = new Set(core.atomsThatAreDefault).add(key)
+}
+
+export const markAtomAsNotDefault = (
+  key: string,
+  store: Store = IMPLICIT.STORE
+): void => {
+  const core = target(store)
+  core.atomsThatAreDefault = new Set(target(store).atomsThatAreDefault)
+  core.atomsThatAreDefault.delete(key)
 }
 
 export const isSelectorDefault = (

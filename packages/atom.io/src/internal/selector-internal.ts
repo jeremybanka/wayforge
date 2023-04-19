@@ -7,6 +7,8 @@ import { stringifyJson } from "~/packages/anvl/src/json"
 
 import type { Selector, ReadonlySelector, Store } from "."
 import {
+  target,
+  cacheValue,
   deposit,
   markDone,
   lookup,
@@ -36,8 +38,8 @@ export const lookupSelectorSources = (
   | ReadonlyValueToken<unknown>
   | SelectorToken<unknown>
 )[] =>
-  store.selectorGraph
-    .getRelations(key)
+  target(store)
+    .selectorGraph.getRelations(key)
     .filter(({ source }) => source !== key)
     .map(({ source }) => lookup(source, store))
 
@@ -88,7 +90,10 @@ export const updateSelectorAtoms = (
   store: Store
 ): void => {
   if (dependency.type === `atom`) {
-    store.selectorAtoms = store.selectorAtoms.set(selectorKey, dependency.key)
+    target(store).selectorAtoms = target(store).selectorAtoms.set(
+      selectorKey,
+      dependency.key
+    )
     store.config.logger?.info(
       `   || adding root for "${selectorKey}": ${dependency.key}`
     )
@@ -97,7 +102,10 @@ export const updateSelectorAtoms = (
   const roots = traceSelectorAtoms(selectorKey, dependency, store)
   store.config.logger?.info(`   || adding roots for "${selectorKey}":`, roots)
   for (const root of roots) {
-    store.selectorAtoms = store.selectorAtoms.set(selectorKey, root.key)
+    target(store).selectorAtoms = target(store).selectorAtoms.set(
+      selectorKey,
+      root.key
+    )
   }
 }
 
@@ -106,8 +114,8 @@ export const registerSelector = (
   store: Store = IMPLICIT.STORE
 ): Transactors => ({
   get: (dependency) => {
-    const alreadyRegistered = store.selectorGraph
-      .getRelations(selectorKey)
+    const alreadyRegistered = target(store)
+      .selectorGraph.getRelations(selectorKey)
       .some(({ source }) => source === dependency.key)
 
     const dependencyState = withdraw(dependency, store)
@@ -123,7 +131,7 @@ export const registerSelector = (
         `🔌 registerSelector "${selectorKey}" <- "${dependency.key}" =`,
         dependencyValue
       )
-      store.selectorGraph = store.selectorGraph.set(
+      target(store).selectorGraph = target(store).selectorGraph.set(
         selectorKey,
         dependency.key,
         {
@@ -155,7 +163,7 @@ export function selector__INTERNAL<T>(
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
 ): ReadonlyValueToken<T> | SelectorToken<T> {
-  if (HAMT.has(options.key, store.selectors)) {
+  if (HAMT.has(options.key, target(store).selectors)) {
     store.config.logger?.error(
       `Key "${options.key}" already exists in the store.`
     )
@@ -166,7 +174,7 @@ export function selector__INTERNAL<T>(
   const { get, set } = registerSelector(options.key, store)
   const getSelf = () => {
     const value = options.get({ get })
-    store.valueMap = HAMT.set(options.key, value, store.valueMap)
+    cacheValue(options.key, value, store)
     return value
   }
 
@@ -178,10 +186,10 @@ export function selector__INTERNAL<T>(
       type: `readonly_selector`,
       ...(family && { family }),
     }
-    store.readonlySelectors = HAMT.set(
+    target(store).readonlySelectors = HAMT.set(
       options.key,
       readonlySelector,
-      store.readonlySelectors
+      target(store).readonlySelectors
     )
     const initialValue = getSelf()
     store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
@@ -191,7 +199,7 @@ export function selector__INTERNAL<T>(
     store.config.logger?.info(`   <- "${options.key}" became`, next)
     const oldValue = getSelf()
     const newValue = become(next)(oldValue)
-    store.valueMap = HAMT.set(options.key, newValue, store.valueMap)
+    cacheValue(options.key, newValue, store)
     markDone(options.key, store)
     subject.next({ newValue, oldValue })
     options.set({ get, set }, newValue)
@@ -205,7 +213,11 @@ export function selector__INTERNAL<T>(
     type: `selector`,
     ...(family && { family }),
   }
-  store.selectors = HAMT.set(options.key, mySelector, store.selectors)
+  target(store).selectors = HAMT.set(
+    options.key,
+    mySelector,
+    target(store).selectors
+  )
   const initialValue = getSelf()
   store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
   return { ...mySelector, type: `selector` }
@@ -228,7 +240,8 @@ export function selectorFamily__INTERNAL<T, K extends Serializable>(
     const family: FamilyMetadata = { key: options.key, subKey }
     const fullKey = `${options.key}__${subKey}`
     const existing =
-      store.selectors.get(fullKey) ?? store.readonlySelectors.get(fullKey)
+      target(store).selectors.get(fullKey) ??
+      target(store).readonlySelectors.get(fullKey)
     if (existing) {
       return deposit(existing)
     }
