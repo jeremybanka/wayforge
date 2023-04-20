@@ -5,50 +5,58 @@ import { IMPLICIT } from "./store"
 import { getState, setState } from ".."
 import type { TransactionOptions, ƒn } from "../transaction"
 
-export type TransactionStore =
+export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
+export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
+
+export type TransactionAtomUpdate = [
+  string,
+  { newValue: unknown; oldValue?: unknown }
+]
+
+export type TransactionProgress =
   | {
-      open: false
-    }
-  | {
-      open: true
-      closing: boolean
-      next: StoreCore
+      key: string
+      phase: `applying` | `building`
+      core: StoreCore
       atomsUpdated: Set<string>
+      atomUpdates: TransactionAtomUpdate[]
       params: unknown[]
       output: unknown
-      update: [string, { newValue: unknown; oldValue?: unknown }][]
+    }
+  | {
+      phase: `idle`
     }
 
-export const finishTransaction = (output: unknown, store: Store): void => {
-  if (!store.transaction.open) {
+export const applyTransaction = (output: unknown, store: Store): void => {
+  if (store.transaction.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
     )
     return
   }
-  store.transaction.closing = true
+  const { core } = store.transaction
+  const { atomsUpdated } = store.transaction
   store.transaction.output = output
-  store.atoms = store.transaction.next.atoms
-  store.readonlySelectors = store.transaction.next.readonlySelectors
-  store.selectorGraph = store.transaction.next.selectorGraph
-  store.selectorAtoms = store.transaction.next.selectorAtoms
-  store.selectors = store.transaction.next.selectors
-  store.valueMap = store.transaction.next.valueMap
-  for (const key of store.transaction.atomsUpdated) {
-    setState(
-      { key, type: `atom` },
-      HAMT.get(key, store.transaction.next.valueMap),
-      store
-    )
+  store.transaction.phase = `applying`
+  store = {
+    ...store,
+    ...core,
   }
-  store.transaction = { open: false }
+  for (const key of atomsUpdated) {
+    setState({ key, type: `atom` }, HAMT.get(key, core.valueMap), store)
+  }
+  store.transaction = { phase: `idle` }
   store.config.logger?.info(`🛬`, `transaction done`)
 }
-export const startTransaction = (params: unknown[], store: Store): void => {
+export const buildTransaction = (
+  key: string,
+  params: unknown[],
+  store: Store
+): void => {
   store.transaction = {
-    open: true,
-    closing: false,
-    next: {
+    key,
+    phase: `building`,
+    core: {
       atoms: store.atoms,
       atomsThatAreDefault: store.atomsThatAreDefault,
       operation: { open: false },
@@ -59,20 +67,20 @@ export const startTransaction = (params: unknown[], store: Store): void => {
       valueMap: store.valueMap,
     },
     atomsUpdated: new Set(),
+    atomUpdates: [],
     params,
     output: undefined,
-    update: [],
   }
   store.config.logger?.info(`🛫`, `transaction start`)
 }
 export const abortTransaction = (store: Store): void => {
-  if (!store.transaction.open) {
+  if (store.transaction.phase === `idle`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
     )
     return
   }
-  store.transaction = { open: false }
+  store.transaction = { phase: `idle` }
   store.config.logger?.info(`🪂`, `transaction fail`)
 }
 
@@ -82,7 +90,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 ): ((...params: Parameters<ƒ>) => ReturnType<ƒ>) & { key: string } {
   return Object.assign(
     (...params: Parameters<ƒ>) => {
-      startTransaction(params, store)
+      buildTransaction(options.key, params, store)
       try {
         const result = options.do(
           {
@@ -91,7 +99,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
           },
           ...params
         )
-        finishTransaction(result, store)
+        applyTransaction(result, store)
         return result
       } catch (thrown) {
         abortTransaction(store)
@@ -104,4 +112,4 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 }
 
 export const target = (store: Store = IMPLICIT.STORE): StoreCore =>
-  store.transaction.open ? store.transaction.next : store
+  store.transaction.phase === `idle` ? store : store.transaction.core

@@ -4,7 +4,13 @@ import HAMT from "hamt_plus"
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 
-import type { Atom, ReadonlySelector, Selector, TransactionStore } from "."
+import type {
+  Atom,
+  OperationProgress,
+  ReadonlySelector,
+  Selector,
+  TransactionProgress,
+} from "."
 import type { Logger } from "./logger"
 
 export type StoreCore = Pick<
@@ -27,16 +33,8 @@ export interface Store {
   atomsThatAreDefault: Set<string>
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
-  operation:
-    | {
-        open: false
-      }
-    | {
-        open: true
-        done: Set<string>
-        prev: Hamt<any, string>
-      }
-  transaction: TransactionStore
+  operation: OperationProgress
+  transaction: TransactionProgress
   config: {
     name: string
     logger: Logger | null
@@ -57,7 +55,7 @@ export const createStore = (name: string): Store =>
       open: false,
     },
     transaction: {
-      open: false,
+      phase: `idle`,
     },
     config: {
       name,

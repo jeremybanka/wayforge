@@ -1,3 +1,4 @@
+import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
 
 import type { Atom, ReadonlySelector, Selector } from "."
@@ -5,7 +6,17 @@ import { target } from "."
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 
-export const startAction = (store: Store): void => {
+export type OperationProgress =
+  | {
+      open: false
+    }
+  | {
+      open: true
+      done: Set<string>
+      prev: Hamt<any, string>
+    }
+
+export const openOperation = (store: Store): void => {
   const core = target(store)
   core.operation = {
     open: true,
@@ -14,7 +25,7 @@ export const startAction = (store: Store): void => {
   }
   store.config.logger?.info(`⭕`, `operation start`)
 }
-export const finishAction = (store: Store): void => {
+export const closeOperation = (store: Store): void => {
   const core = target(store)
   core.operation = { open: false }
   store.config.logger?.info(`🔴`, `operation done`)

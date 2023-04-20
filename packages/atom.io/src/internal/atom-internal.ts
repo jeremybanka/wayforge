@@ -10,7 +10,7 @@ import { cacheValue, hasKeyBeenUsed, storeAtom } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 import { target } from "./transaction-internal"
-import type { AtomToken, FamilyMetadata, ObserveState } from ".."
+import type { AtomToken, FamilyMetadata, UpdateHandler } from ".."
 import { setState, subscribe } from ".."
 import type { AtomFamilyOptions, AtomOptions } from "../atom"
 
@@ -40,7 +40,7 @@ export function atom__INTERNAL<T>(
   cacheValue(options.key, initialValue, store)
   const token = deposit(newAtom)
   const setSelf = (next) => setState(token, next, store)
-  const onSet = (observe: ObserveState<T>) => subscribe(token, observe, store)
+  const onSet = (handle: UpdateHandler<T>) => subscribe(token, handle, store)
   options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   return token
 }

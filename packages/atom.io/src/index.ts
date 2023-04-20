@@ -1,11 +1,11 @@
 import {
   IMPLICIT,
-  finishAction,
+  closeOperation,
+  openOperation,
   getState__INTERNAL,
   setState__INTERNAL,
   isAtomDefault,
   isSelectorDefault,
-  startAction,
   subscribeToRootAtoms,
   withdraw,
   setLogLevel,
@@ -56,10 +56,10 @@ export const setState = <T, New extends T>(
   value: New | ((oldValue: T) => New),
   store: Store = IMPLICIT.STORE
 ): void => {
-  startAction(store)
+  openOperation(store)
   const state = withdraw(token, store)
   setState__INTERNAL(state, value, store)
-  finishAction(store)
+  closeOperation(store)
 }
 
 export const isDefault = (
@@ -70,18 +70,20 @@ export const isDefault = (
     ? isAtomDefault(token.key, store)
     : isSelectorDefault(token.key, store)
 
-export type ObserveState<T> = (update: { newValue: T; oldValue: T }) => void
+export type StateUpdate<T> = { newValue: T; oldValue: T }
+export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
 export const subscribe = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
-  observe: ObserveState<T>,
+  handleUpdate: UpdateHandler<T>,
   store: Store = IMPLICIT.STORE
 ): (() => void) => {
   const state = withdraw<T>(token, store)
-  const subscription = state.subject.subscribe(observe)
+  const subscription = state.subject.subscribe(handleUpdate)
   store.config.logger?.info(`👀 subscribe to "${state.key}"`)
   const dependencySubscriptions =
     `get` in state ? subscribeToRootAtoms(state, store) : null
+
   const unsubscribe =
     dependencySubscriptions === null
       ? () => {
