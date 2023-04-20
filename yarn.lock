@@ -2604,7 +2604,7 @@ __metadata:
     cross-env: 7.0.3
     dotenv: 16.0.3
     eslint: 8.38.0
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     io-ts: 2.2.20
     npmlog: 7.0.1
     prettier: 2.8.7
@@ -2619,7 +2619,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/lib@workspace:lib"
   dependencies:
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -2634,7 +2634,7 @@ __metadata:
     dotenv: 16.0.3
     eny: 0.0.6
     express: 4.18.2
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     immer: 10.0.1
     lodash: 4.17.21
     nanoid: ^4.0.2
@@ -2683,7 +2683,7 @@ __metadata:
     corners: 0.0.13
     cross-env: 7.0.3
     eslint: 8.38.0
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     framer-motion: 10.12.4
     happy-dom: 9.8.4
     io-ts: 2.2.20
@@ -2704,7 +2704,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/shrine@workspace:app/web/shrine"
   dependencies:
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     immer: 10.0.1
     phaser: 3.60.0
     socket.io: 4.6.1
@@ -2730,7 +2730,7 @@ __metadata:
     corners: 0.0.13
     cross-env: 7.0.3
     eslint: 8.38.0
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     framer-motion: 10.12.4
     happy-dom: 9.8.4
     io-ts: 2.2.20
@@ -2947,7 +2947,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "anvl@workspace:packages/anvl"
   dependencies:
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     io-ts: 2.2.20
     tsup: 6.7.0
     vite: 4.2.2
@@ -3200,7 +3200,7 @@ __metadata:
     "@testing-library/preact": 3.2.3
     "@testing-library/react": 14.0.0
     "@types/mock-fs": 4.13.1
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     hamt_plus: 1.0.2
     mock-fs: 5.2.0
     preact: 10.13.2
@@ -5630,10 +5630,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fp-ts@npm:2.13.2":
-  version: 2.13.2
-  resolution: "fp-ts@npm:2.13.2"
-  checksum: 3f60aa968b5ebbcd1c944f0ee68cd21ad9dcdcafcd02a6235e54a7345bbef3aeda6839a1ad3f188546a255be69d6dc1f230d9ee8dbf280320dc35d57f4a7f2a6
+"fp-ts@npm:2.14.0":
+  version: 2.14.0
+  resolution: "fp-ts@npm:2.14.0"
+  checksum: 39928f45fead3a62640480e48bb8c082ce6368d68ea7a338d4953cb5c2edc738a1465ffecf7850aa9561c25e0d730beabeb850e4c12ad91aac25f8303874be20
   languageName: node
   linkType: hard
 
@@ -6040,7 +6040,7 @@ __metadata:
     "@testing-library/react": 14.0.0
     ajv: 8.12.0
     eslint: 8.38.0
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.10.0
@@ -6436,7 +6436,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ingt@workspace:packages/ingt"
   dependencies:
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     io-ts: 2.2.20
     tsup: 6.7.0
     vite: 4.2.2
@@ -8036,7 +8036,7 @@ __metadata:
   resolution: "luum@workspace:packages/Luum"
   dependencies:
     eslint: 8.38.0
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     tsup: 6.7.0
     vitest: 0.30.1
   languageName: unknown
@@ -8784,7 +8784,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "occlusion@workspace:packages/occlusion"
   dependencies:
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     immer: 10.0.1
     io-ts: 2.2.20
     nanoid: 4.0.2
@@ -10130,7 +10130,7 @@ __metadata:
   resolution: "socket-io.filestore@workspace:packages/socket-io.filestore"
   dependencies:
     "@types/tmp": 0.2.3
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     react: 18.2.0
     recoil: 0.7.7
     socket.io: 4.6.1
@@ -10151,7 +10151,7 @@ __metadata:
   resolution: "socket-io.git@workspace:packages/socket-io.git"
   dependencies:
     "@types/tmp": 0.2.3
-    fp-ts: 2.13.2
+    fp-ts: 2.14.0
     react: 18.2.0
     recoil: 0.7.7
     simple-git: 3.17.0
