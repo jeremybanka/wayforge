@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-import { atom, selector } from "~/packages/atom.io/src"
+import { atom, selector, setLogLevel } from "~/packages/atom.io/src"
 import { composeStoreHooks } from "~/packages/atom.io/src/react"
 
 const { useStore, useO, useI, useIO } = composeStoreHooks({
@@ -9,6 +9,8 @@ const { useStore, useO, useI, useIO } = composeStoreHooks({
 })
 
 export { useStore, useO, useIO, useI }
+
+setLogLevel(`info`)
 
 export const dividendState = atom<number>({
   key: `dividend`,

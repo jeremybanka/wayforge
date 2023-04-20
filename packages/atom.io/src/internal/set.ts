@@ -3,7 +3,13 @@ import HAMT from "hamt_plus"
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector } from "."
-import { target, markAtomAsNotDefault, isAtomDefault } from "."
+import {
+  stowUpdate,
+  emitUpdate,
+  target,
+  markAtomAsNotDefault,
+  isAtomDefault,
+} from "."
 import { getState__INTERNAL } from "./get"
 import { cacheValue, evictCachedValue, isDone, markDone } from "./operation"
 import type { Store } from "./store"
@@ -61,7 +67,12 @@ export const setAtomState = <T>(
     `   || evicting caches downstream from "${atom.key}"`
   )
   evictDownStream(atom, store)
-  atom.subject.next({ newValue, oldValue })
+  const update = { oldValue, newValue }
+  if (store.transaction.phase !== `building`) {
+    emitUpdate(atom, update, store)
+  } else {
+    stowUpdate(atom, update, store)
+  }
 }
 export const setSelectorState = <T>(
   selector: Selector<T>,

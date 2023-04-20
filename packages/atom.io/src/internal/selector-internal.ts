@@ -89,11 +89,9 @@ export const updateSelectorAtoms = (
   dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
   store: Store
 ): void => {
+  const core = target(store)
   if (dependency.type === `atom`) {
-    target(store).selectorAtoms = target(store).selectorAtoms.set(
-      selectorKey,
-      dependency.key
-    )
+    core.selectorAtoms = core.selectorAtoms.set(selectorKey, dependency.key)
     store.config.logger?.info(
       `   || adding root for "${selectorKey}": ${dependency.key}`
     )
@@ -102,10 +100,7 @@ export const updateSelectorAtoms = (
   const roots = traceSelectorAtoms(selectorKey, dependency, store)
   store.config.logger?.info(`   || adding roots for "${selectorKey}":`, roots)
   for (const root of roots) {
-    target(store).selectorAtoms = target(store).selectorAtoms.set(
-      selectorKey,
-      root.key
-    )
+    core.selectorAtoms = core.selectorAtoms.set(selectorKey, root.key)
   }
 }
 
@@ -114,8 +109,9 @@ export const registerSelector = (
   store: Store = IMPLICIT.STORE
 ): Transactors => ({
   get: (dependency) => {
-    const alreadyRegistered = target(store)
-      .selectorGraph.getRelations(selectorKey)
+    const core = target(store)
+    const alreadyRegistered = core.selectorGraph
+      .getRelations(selectorKey)
       .some(({ source }) => source === dependency.key)
 
     const dependencyState = withdraw(dependency, store)
@@ -131,13 +127,9 @@ export const registerSelector = (
         `🔌 registerSelector "${selectorKey}" <- "${dependency.key}" =`,
         dependencyValue
       )
-      target(store).selectorGraph = target(store).selectorGraph.set(
-        selectorKey,
-        dependency.key,
-        {
-          source: dependency.key,
-        }
-      )
+      core.selectorGraph = core.selectorGraph.set(selectorKey, dependency.key, {
+        source: dependency.key,
+      })
     }
     updateSelectorAtoms(selectorKey, dependency, store)
     return dependencyValue
@@ -163,7 +155,8 @@ export function selector__INTERNAL<T>(
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
 ): ReadonlyValueToken<T> | SelectorToken<T> {
-  if (HAMT.has(options.key, target(store).selectors)) {
+  const core = target(store)
+  if (HAMT.has(options.key, core.selectors)) {
     store.config.logger?.error(
       `Key "${options.key}" already exists in the store.`
     )
@@ -186,10 +179,10 @@ export function selector__INTERNAL<T>(
       type: `readonly_selector`,
       ...(family && { family }),
     }
-    target(store).readonlySelectors = HAMT.set(
+    core.readonlySelectors = HAMT.set(
       options.key,
       readonlySelector,
-      target(store).readonlySelectors
+      core.readonlySelectors
     )
     const initialValue = getSelf()
     store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
@@ -201,7 +194,9 @@ export function selector__INTERNAL<T>(
     const newValue = become(next)(oldValue)
     cacheValue(options.key, newValue, store)
     markDone(options.key, store)
-    subject.next({ newValue, oldValue })
+    if (store.transaction.phase === `idle`) {
+      subject.next({ newValue, oldValue })
+    }
     options.set({ get, set }, newValue)
   }
 
@@ -213,11 +208,7 @@ export function selector__INTERNAL<T>(
     type: `selector`,
     ...(family && { family }),
   }
-  target(store).selectors = HAMT.set(
-    options.key,
-    mySelector,
-    target(store).selectors
-  )
+  core.selectors = HAMT.set(options.key, mySelector, core.selectors)
   const initialValue = getSelf()
   store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
   return { ...mySelector, type: `selector` }
@@ -236,12 +227,12 @@ export function selectorFamily__INTERNAL<T, K extends Serializable>(
   store: Store = IMPLICIT.STORE
 ): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
   return (key: K): ReadonlyValueToken<T> | SelectorToken<T> => {
+    const core = target(store)
     const subKey = stringifyJson(key)
     const family: FamilyMetadata = { key: options.key, subKey }
     const fullKey = `${options.key}__${subKey}`
     const existing =
-      target(store).selectors.get(fullKey) ??
-      target(store).readonlySelectors.get(fullKey)
+      core.selectors.get(fullKey) ?? core.readonlySelectors.get(fullKey)
     if (existing) {
       return deposit(existing)
     }

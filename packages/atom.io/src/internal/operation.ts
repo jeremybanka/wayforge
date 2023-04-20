@@ -24,6 +24,15 @@ export const openOperation = (store: Store): void => {
     prev: store.valueMap,
   }
   store.config.logger?.info(`⭕`, `operation start`)
+  console.log(
+    core.operation === store.operation
+      ? `core.operation === store.operation`
+      : store.transaction.phase !== `idle` &&
+        core.operation === store.transaction.core.operation
+      ? `core.operation === store.transaction.core.operation`
+      : `???`,
+    core.operation
+  )
 }
 export const closeOperation = (store: Store): void => {
   const core = target(store)
@@ -35,7 +44,7 @@ export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
   const core = target(store)
   if (!core.operation.open) {
     store.config.logger?.warn(
-      `isDone called outside of an action. This is probably a bug.`
+      `isDone called outside of an operation. This is probably a bug.`
     )
     return true
   }
@@ -45,7 +54,7 @@ export const markDone = (key: string, store: Store = IMPLICIT.STORE): void => {
   const core = target(store)
   if (!core.operation.open) {
     store.config.logger?.warn(
-      `markDone called outside of an action. This is probably a bug.`
+      `markDone called outside of an operation. This is probably a bug.`
     )
     return
   }
@@ -58,7 +67,7 @@ export const recallState = <T>(
   const core = target(store)
   if (!core.operation.open) {
     store.config.logger?.warn(
-      `recall called outside of an action. This is probably a bug.`
+      `recall called outside of an operation. This is probably a bug.`
     )
     return HAMT.get(state.key, core.valueMap)
   }
