@@ -14,7 +14,7 @@
     "test:once": "vitest run"
   },
   "dependencies": {
-    "fp-ts": "2.13.1",
+    "fp-ts": "2.13.2",
     "immer": "10.0.1",
     "io-ts": "2.2.20",
     "nanoid": "4.0.2"
