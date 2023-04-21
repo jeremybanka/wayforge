@@ -1,8 +1,6 @@
 import { withdraw } from "./get"
-import { closeOperation, openOperation } from "./operation"
 import type { Store, StoreCore } from "./store"
 import { IMPLICIT } from "./store"
-import { emitUpdate } from "./subscribe-internal"
 import type { AtomToken } from ".."
 import { getState, setState } from ".."
 import type { TransactionOptions, ƒn } from "../transaction"
@@ -59,18 +57,14 @@ export const applyTransaction = (output: unknown, store: Store): void => {
     )
     return
   }
-  const { core } = store.transaction
-  const { atomUpdates } = store.transaction
-  store.transaction.output = output
   store.transaction.phase = `applying`
-  store = Object.assign(store, core)
-  openOperation(store)
+  store.transaction.output = output
+  const { atomUpdates } = store.transaction
   for (const [key, update] of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
-    emitUpdate(state, { oldValue: state.default, ...update }, store)
+    setState(state, update.newValue, store)
   }
-  closeOperation(store)
   store.transaction = { phase: `idle` }
   store.config.logger?.info(`🛬`, `transaction done`)
 }
@@ -93,15 +87,15 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
     (...params: Parameters<ƒ>) => {
       buildTransaction(options.key, params, store)
       try {
-        const result = options.do(
+        const output = options.do(
           {
             get: (token) => getState(token, store),
             set: (token, value) => setState(token, value, store),
           },
           ...params
         )
-        applyTransaction(result, store)
-        return result
+        applyTransaction(output, store)
+        return output
       } catch (thrown) {
         abortTransaction(store)
         store.config.logger?.error(`Transaction ${options.key} failed`, thrown)
