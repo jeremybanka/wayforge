@@ -24,15 +24,6 @@ export const openOperation = (store: Store): void => {
     prev: store.valueMap,
   }
   store.config.logger?.info(`⭕`, `operation start`)
-  console.log(
-    core.operation === store.operation
-      ? `core.operation === store.operation`
-      : store.transaction.phase !== `idle` &&
-        core.operation === store.transaction.core.operation
-      ? `core.operation === store.transaction.core.operation`
-      : `???`,
-    core.operation
-  )
 }
 export const closeOperation = (store: Store): void => {
   const core = target(store)

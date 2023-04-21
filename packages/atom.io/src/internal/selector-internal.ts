@@ -98,7 +98,10 @@ export const updateSelectorAtoms = (
     return
   }
   const roots = traceSelectorAtoms(selectorKey, dependency, store)
-  store.config.logger?.info(`   || adding roots for "${selectorKey}":`, roots)
+  store.config.logger?.info(
+    `   || adding roots for "${selectorKey}":`,
+    roots.map((r) => r.key)
+  )
   for (const root of roots) {
     core.selectorAtoms = core.selectorAtoms.set(selectorKey, root.key)
   }
