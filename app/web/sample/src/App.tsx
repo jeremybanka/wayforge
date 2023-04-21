@@ -2,13 +2,15 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { atom, transaction } from "~/packages/atom.io/src"
+import { atom, runTransaction, transaction } from "~/packages/atom.io/src"
 
 import { Dividend } from "./Dividend"
 import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
 import { dividendState, divisorState, useStore } from "./services"
 import { StressTest } from "./StressTest"
+
+type vƒ = () => void
 
 const resetEquation = transaction({
   key: `resetEquation`,
@@ -48,7 +50,7 @@ export const App: FC = () => {
           / <Divisor />
           = <Quotient />
           <div>
-            <button onClick={resetEquation}>Reset</button>
+            <button onClick={runTransaction(resetEquation)}>Reset</button>
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
-import type { ReadonlyValueToken, StateToken } from "."
-import { transaction__INTERNAL } from "./internal"
+import type { ReadonlyValueToken, StateToken, TransactionToken } from "."
+import type { Store } from "./internal"
+import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
 
 export type ƒn = (...parameters: any[]) => any
 
@@ -19,11 +20,22 @@ export type TransactionOptions<ƒ extends ƒn> = {
   do: Action<ƒ>
 }
 
+export type Transaction<ƒ extends ƒn> = {
+  key: string
+  type: `transaction`
+  run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
+}
+
 export function transaction<ƒ extends ƒn>(
   options: TransactionOptions<ƒ>
-): ((...parameters: Parameters<ƒ>) => ReturnType<ƒ>) & { key: string } {
+): TransactionToken<ƒ> {
   return transaction__INTERNAL(options)
 }
+
+export const runTransaction =
+  <ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
+  (...parameters: Parameters<ƒ>): ReturnType<ƒ> =>
+    withdraw(token, store).run(...parameters)
 
 export type ObserveTransaction<ƒ extends ƒn> = (data: {
   params: Parameters<ƒ>
@@ -31,7 +43,7 @@ export type ObserveTransaction<ƒ extends ƒn> = (data: {
   update: [string, { newValue: any; oldValue?: any }][]
 }) => void
 
-// begin ({open: true, closing: false, next: {…}, atomsUpdated: Set(0)})
+// begin ({ open: true, closing: false, next: {…}, atomsUpdated: Set(0) })
 // save parameters to transaction.params
 // (skip emissions while transaction is open and closing is false)
 // (make all updates to transaction.next instead of store)

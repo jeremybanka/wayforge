@@ -43,6 +43,11 @@ export type FamilyMetadata = {
   subKey: string
 }
 
+export type TransactionToken<_> = {
+  key: string
+  type: `transaction`
+}
+
 export const getState = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
   store: Store = IMPLICIT.STORE

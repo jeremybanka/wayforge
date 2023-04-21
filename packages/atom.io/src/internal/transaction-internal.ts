@@ -1,9 +1,11 @@
-import { withdraw } from "./get"
+import HAMT from "hamt_plus"
+
+import { deposit, withdraw } from "./get"
 import type { Store, StoreCore } from "./store"
 import { IMPLICIT } from "./store"
-import type { AtomToken } from ".."
+import type { AtomToken, TransactionToken } from ".."
 import { getState, setState } from ".."
-import type { TransactionOptions, ƒn } from "../transaction"
+import type { Transaction, TransactionOptions, ƒn } from "../transaction"
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
@@ -39,6 +41,7 @@ export const buildTransaction = (
       atomsThatAreDefault: store.atomsThatAreDefault,
       operation: { open: false },
       readonlySelectors: store.readonlySelectors,
+      actions: store.actions,
       selectorAtoms: store.selectorAtoms,
       selectorGraph: store.selectorGraph,
       selectors: store.selectors,
@@ -82,9 +85,11 @@ export const abortTransaction = (store: Store): void => {
 export function transaction__INTERNAL<ƒ extends ƒn>(
   options: TransactionOptions<ƒ>,
   store: Store = IMPLICIT.STORE
-): ((...params: Parameters<ƒ>) => ReturnType<ƒ>) & { key: string } {
-  return Object.assign(
-    (...params: Parameters<ƒ>) => {
+): TransactionToken<ƒ> {
+  const newTransaction: Transaction<ƒ> = {
+    key: options.key,
+    type: `transaction`,
+    run: (...params: Parameters<ƒ>) => {
       buildTransaction(options.key, params, store)
       try {
         const output = options.do(
@@ -102,8 +107,11 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
         throw thrown
       }
     },
-    { key: options.key }
-  )
+  }
+  const core = target(store)
+  core.actions = HAMT.set(newTransaction.key, newTransaction, core.actions)
+  const token = deposit(newTransaction)
+  return token
 }
 
 export const target = (store: Store = IMPLICIT.STORE): StoreCore =>

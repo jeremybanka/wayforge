@@ -9,6 +9,9 @@ import type {
   ReadonlyValueToken,
   SelectorToken,
   StateToken,
+  Transaction,
+  TransactionToken,
+  ƒn,
 } from ".."
 
 export const computeSelectorState = <T>(
@@ -39,18 +42,27 @@ export function withdraw<T>(
   store: Store
 ): ReadonlySelector<T>
 export function withdraw<T>(
+  token: TransactionToken<T>,
+  store: Store
+): Transaction<T extends ƒn ? T : never>
+export function withdraw<T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
   store: Store
 ): Atom<T> | ReadonlySelector<T> | Selector<T>
 export function withdraw<T>(
-  token: ReadonlyValueToken<T> | StateToken<T>,
+  token: ReadonlyValueToken<T> | StateToken<T> | TransactionToken<T>,
   store: Store
-): Atom<T> | ReadonlySelector<T> | Selector<T> {
+):
+  | Atom<T>
+  | ReadonlySelector<T>
+  | Selector<T>
+  | Transaction<T extends ƒn ? T : never> {
   const core = target(store)
   return (
     HAMT.get(token.key, core.atoms) ??
     HAMT.get(token.key, core.selectors) ??
-    HAMT.get(token.key, core.readonlySelectors)
+    HAMT.get(token.key, core.readonlySelectors) ??
+    HAMT.get(token.key, core.actions)
   )
 }
 
@@ -59,11 +71,18 @@ export function deposit<T>(state: Selector<T>): SelectorToken<T>
 export function deposit<T>(state: Atom<T> | Selector<T>): StateToken<T>
 export function deposit<T>(state: ReadonlySelector<T>): ReadonlyValueToken<T>
 export function deposit<T>(
+  state: Transaction<T extends ƒn ? T : never>
+): TransactionToken<T>
+export function deposit<T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>
 ): ReadonlyValueToken<T> | StateToken<T>
 export function deposit<T>(
-  state: Atom<T> | ReadonlySelector<T> | Selector<T>
-): ReadonlyValueToken<T> | StateToken<T> {
+  state:
+    | Atom<T>
+    | ReadonlySelector<T>
+    | Selector<T>
+    | Transaction<T extends ƒn ? T : never>
+): ReadonlyValueToken<T> | StateToken<T> | TransactionToken<T> {
   return {
     key: state.key,
     type: state.type,

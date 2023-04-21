@@ -11,6 +11,7 @@ import {
   atom,
   atomFamily,
   getState,
+  runTransaction,
   selector,
   selectorFamily,
   setLogLevel,
@@ -147,7 +148,7 @@ describe(`transaction`, () => {
     expect(getState(thiefInvState)).toEqual([])
     expect(getState(victimInvState)).toEqual([prizeState.key])
 
-    steal(thiefState.key, victimState.key)
+    runTransaction(steal)(thiefState.key, victimState.key)
     expect(getState(thiefInvState)).toEqual([prizeState.key])
     expect(getState(victimInvState)).toEqual([])
     expect(
@@ -155,7 +156,7 @@ describe(`transaction`, () => {
     ).not.toHaveBeenCalled()
 
     try {
-      steal(thiefState.key, victimState.key)
+      runTransaction(steal)(thiefState.key, victimState.key)
     } catch (thrown) {
       expect(thrown).toBeInstanceOf(Error)
       if (thrown instanceof Error) {
@@ -236,7 +237,7 @@ describe(`transaction implementation specifics`, () => {
     vitest.spyOn(UTIL, `stdout`)
     subscribe(expressionState, UTIL.stdout)
 
-    modifyExpression(`3 children`)
+    runTransaction(modifyExpression)(`3 children`)
     // 2 atoms were set, therefore 2 updates were made to the selector
     // this is a "playback" strategy, where the entire transaction is
     // captured, one atom at a time. An all-at-once strategy can be
@@ -249,7 +250,7 @@ describe(`transaction implementation specifics`, () => {
     // but what if the transaction fails?
     let caught: unknown
     try {
-      modifyExpression(`3 ants`)
+      runTransaction(modifyExpression)(`3 ants`)
     } catch (thrown) {
       caught = thrown
     }
