@@ -17,6 +17,7 @@ import type { Store } from "./internal/store"
 export * from "./atom"
 export * from "./selector"
 export * from "./transaction"
+export * from "./subscribe"
 export { __INTERNAL__, setLogLevel, useLogger }
 export type { Serializable } from "~/packages/anvl/src/json"
 
@@ -74,36 +75,3 @@ export const isDefault = (
   token.type === `atom`
     ? isAtomDefault(token.key, store)
     : isSelectorDefault(token.key, store)
-
-export type StateUpdate<T> = { newValue: T; oldValue: T }
-export type UpdateHandler<T> = (update: StateUpdate<T>) => void
-
-export const subscribe = <T>(
-  token: ReadonlyValueToken<T> | StateToken<T>,
-  handleUpdate: UpdateHandler<T>,
-  store: Store = IMPLICIT.STORE
-): (() => void) => {
-  const state = withdraw<T>(token, store)
-  const subscription = state.subject.subscribe(handleUpdate)
-  store.config.logger?.info(`👀 subscribe to "${state.key}"`)
-  const dependencySubscriptions =
-    `get` in state ? subscribeToRootAtoms(state, store) : null
-
-  const unsubscribe =
-    dependencySubscriptions === null
-      ? () => {
-          store.config.logger?.info(`🙈 unsubscribe from "${state.key}"`)
-          subscription.unsubscribe()
-        }
-      : () => {
-          store.config.logger?.info(
-            `🙈 unsubscribe from "${state.key}" and its dependencies`
-          )
-          subscription.unsubscribe()
-          for (const dependencySubscription of dependencySubscriptions) {
-            dependencySubscription.unsubscribe()
-          }
-        }
-
-  return unsubscribe
-}

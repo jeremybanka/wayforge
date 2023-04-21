@@ -9,7 +9,7 @@ import type {
   OperationProgress,
   ReadonlySelector,
   Selector,
-  TransactionProgress,
+  TransactionStatus,
 } from "."
 import type { Logger } from "./logger"
 import type { Transaction } from "../transaction"
@@ -37,7 +37,7 @@ export interface Store {
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
   actions: Hamt<Transaction<any>, string>
   operation: OperationProgress
-  transaction: TransactionProgress
+  transaction: TransactionStatus
   config: {
     name: string
     logger: Logger | null

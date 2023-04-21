@@ -1,4 +1,5 @@
 import HAMT from "hamt_plus"
+import * as Rx from "rxjs"
 
 import { deposit, withdraw } from "./get"
 import type { Store, StoreCore } from "./store"
@@ -15,18 +16,26 @@ export type TransactionAtomUpdate = [
   { newValue: unknown; oldValue?: unknown }
 ]
 
-export type TransactionProgress =
-  | {
-      key: string
-      phase: `applying` | `building`
-      core: StoreCore
-      atomUpdates: TransactionAtomUpdate[]
-      params: unknown[]
-      output: unknown
-    }
-  | {
-      phase: `idle`
-    }
+export type TransactionInProgress<ƒ extends ƒn> = {
+  key: string
+  phase: `applying` | `building`
+  core: StoreCore
+  atomUpdates: TransactionAtomUpdate[]
+  params: Parameters<ƒ>[]
+  output: ReturnType<ƒ>
+}
+type TransactionIdle = {
+  phase: `idle`
+}
+
+export type TransactionStatus<ƒ extends ƒn> =
+  | TransactionIdle
+  | TransactionInProgress<ƒ>
+
+export type TransactionUpdate<ƒ extends ƒn> = Pick<
+  TransactionInProgress<ƒ>,
+  `atomUpdates` | `key` | `output` | `params`
+>
 
 export const buildTransaction = (
   key: string,
@@ -53,7 +62,10 @@ export const buildTransaction = (
   }
   store.config.logger?.info(`🛫`, `transaction start`)
 }
-export const applyTransaction = (output: unknown, store: Store): void => {
+export const applyTransaction = <ƒ extends ƒn>(
+  output: ReturnType<ƒ>,
+  store: Store
+): void => {
   if (store.transaction.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
@@ -68,6 +80,16 @@ export const applyTransaction = (output: unknown, store: Store): void => {
     const state = withdraw(token, store)
     setState(state, update.newValue, store)
   }
+  const tx = withdraw<ƒ>(
+    { key: store.transaction.key, type: `transaction` },
+    store
+  )
+  tx.subject.next({
+    key: store.transaction.key,
+    atomUpdates,
+    output,
+    params: store.transaction.params,
+  })
   store.transaction = { phase: `idle` }
   store.config.logger?.info(`🛬`, `transaction done`)
 }
@@ -107,6 +129,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
         throw thrown
       }
     },
+    subject: new Rx.Subject(),
   }
   const core = target(store)
   core.actions = HAMT.set(newTransaction.key, newTransaction, core.actions)

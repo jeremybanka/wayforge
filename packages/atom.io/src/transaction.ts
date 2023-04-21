@@ -1,5 +1,7 @@
+import type * as Rx from "rxjs"
+
 import type { ReadonlyValueToken, StateToken, TransactionToken } from "."
-import type { Store } from "./internal"
+import type { Store, TransactionUpdate } from "./internal"
 import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
 
 export type ƒn = (...parameters: any[]) => any
@@ -24,6 +26,7 @@ export type Transaction<ƒ extends ƒn> = {
   key: string
   type: `transaction`
   run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
+  subject: Rx.Subject<TransactionUpdate<ƒ>>
 }
 
 export function transaction<ƒ extends ƒn>(
@@ -36,12 +39,6 @@ export const runTransaction =
   <ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
   (...parameters: Parameters<ƒ>): ReturnType<ƒ> =>
     withdraw(token, store).run(...parameters)
-
-export type ObserveTransaction<ƒ extends ƒn> = (data: {
-  params: Parameters<ƒ>
-  output: ReturnType<ƒ>
-  update: [string, { newValue: any; oldValue?: any }][]
-}) => void
 
 // begin ({ open: true, closing: false, next: {…}, atomsUpdated: Set(0) })
 // save parameters to transaction.params
