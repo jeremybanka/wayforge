@@ -68,7 +68,7 @@ export const setAtomState = <T>(
   )
   evictDownStream(atom, store)
   const update = { oldValue, newValue }
-  if (store.transaction.phase !== `building`) {
+  if (store.transactionStatus.phase !== `building`) {
     emitUpdate(atom, update, store)
   } else {
     stowUpdate(atom, update, store)

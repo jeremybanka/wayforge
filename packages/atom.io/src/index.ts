@@ -6,7 +6,6 @@ import {
   setState__INTERNAL,
   isAtomDefault,
   isSelectorDefault,
-  subscribeToRootAtoms,
   withdraw,
   setLogLevel,
   useLogger,

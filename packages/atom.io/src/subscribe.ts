@@ -1,5 +1,4 @@
 import type { ReadonlyValueToken, StateToken, TransactionToken, ƒn } from "."
-import { transaction } from "."
 import type { Store, TransactionUpdate } from "./internal"
 import { IMPLICIT, subscribeToRootAtoms, withdraw } from "./internal"
 

@@ -21,13 +21,13 @@ export const stowUpdate = <T>(
 ): void => {
   const { key } = state
   const { logger } = store.config
-  if (store.transaction.phase !== `building`) {
+  if (store.transactionStatus.phase !== `building`) {
     store.config.logger?.warn(
       `stowUpdate called outside of a transaction. This is probably a bug.`
     )
     return
   }
-  store.transaction.atomUpdates.push([key, update])
+  store.transactionStatus.atomUpdates.push([key, update])
   logger?.info(`📝 ${key} stowed (`, update.oldValue, `->`, update.newValue, `)`)
 }
 

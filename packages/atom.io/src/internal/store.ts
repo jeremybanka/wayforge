@@ -12,11 +12,10 @@ import type {
   TransactionStatus,
 } from "."
 import type { Logger } from "./logger"
-import type { Transaction } from "../transaction"
+import type { Transaction, ƒn } from "../transaction"
 
 export type StoreCore = Pick<
   Store,
-  | `actions`
   | `atoms`
   | `atomsThatAreDefault`
   | `operation`
@@ -24,6 +23,7 @@ export type StoreCore = Pick<
   | `selectorAtoms`
   | `selectorGraph`
   | `selectors`
+  | `transactions`
   | `valueMap`
 >
 
@@ -35,9 +35,9 @@ export interface Store {
   atomsThatAreDefault: Set<string>
   selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
-  actions: Hamt<Transaction<any>, string>
+  transactions: Hamt<Transaction<any>, string>
   operation: OperationProgress
-  transaction: TransactionStatus
+  transactionStatus: TransactionStatus<ƒn>
   config: {
     name: string
     logger: Logger | null
@@ -54,11 +54,11 @@ export const createStore = (name: string): Store =>
     atomsThatAreDefault: new Set(),
     selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-    actions: HAMT.make<Transaction<any>, string>(),
+    transactions: HAMT.make<Transaction<any>, string>(),
     operation: {
       open: false,
     },
-    transaction: {
+    transactionStatus: {
       phase: `idle`,
     },
     config: {

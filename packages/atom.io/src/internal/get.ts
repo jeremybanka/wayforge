@@ -62,7 +62,7 @@ export function withdraw<T>(
     HAMT.get(token.key, core.atoms) ??
     HAMT.get(token.key, core.selectors) ??
     HAMT.get(token.key, core.readonlySelectors) ??
-    HAMT.get(token.key, core.actions)
+    HAMT.get(token.key, core.transactions)
   )
 }
 

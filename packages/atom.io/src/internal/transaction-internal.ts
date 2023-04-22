@@ -39,10 +39,10 @@ export type TransactionUpdate<ƒ extends ƒn> = Pick<
 
 export const buildTransaction = (
   key: string,
-  params: unknown[],
+  params: any[],
   store: Store
 ): void => {
-  store.transaction = {
+  store.transactionStatus = {
     key,
     phase: `building`,
     core: {
@@ -50,7 +50,7 @@ export const buildTransaction = (
       atomsThatAreDefault: store.atomsThatAreDefault,
       operation: { open: false },
       readonlySelectors: store.readonlySelectors,
-      actions: store.actions,
+      transactions: store.transactions,
       selectorAtoms: store.selectorAtoms,
       selectorGraph: store.selectorGraph,
       selectors: store.selectors,
@@ -66,41 +66,41 @@ export const applyTransaction = <ƒ extends ƒn>(
   output: ReturnType<ƒ>,
   store: Store
 ): void => {
-  if (store.transaction.phase !== `building`) {
+  if (store.transactionStatus.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
     )
     return
   }
-  store.transaction.phase = `applying`
-  store.transaction.output = output
-  const { atomUpdates } = store.transaction
+  store.transactionStatus.phase = `applying`
+  store.transactionStatus.output = output
+  const { atomUpdates } = store.transactionStatus
   for (const [key, update] of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
     setState(state, update.newValue, store)
   }
   const tx = withdraw<ƒ>(
-    { key: store.transaction.key, type: `transaction` },
+    { key: store.transactionStatus.key, type: `transaction` },
     store
   )
   tx.subject.next({
-    key: store.transaction.key,
+    key: store.transactionStatus.key,
     atomUpdates,
     output,
-    params: store.transaction.params,
+    params: store.transactionStatus.params as Parameters<ƒ>,
   })
-  store.transaction = { phase: `idle` }
+  store.transactionStatus = { phase: `idle` }
   store.config.logger?.info(`🛬`, `transaction done`)
 }
 export const abortTransaction = (store: Store): void => {
-  if (store.transaction.phase === `idle`) {
+  if (store.transactionStatus.phase === `idle`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
     )
     return
   }
-  store.transaction = { phase: `idle` }
+  store.transactionStatus = { phase: `idle` }
   store.config.logger?.info(`🪂`, `transaction fail`)
 }
 
@@ -132,10 +132,16 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
     subject: new Rx.Subject(),
   }
   const core = target(store)
-  core.actions = HAMT.set(newTransaction.key, newTransaction, core.actions)
+  core.transactions = HAMT.set(
+    newTransaction.key,
+    newTransaction,
+    core.transactions
+  )
   const token = deposit(newTransaction)
   return token
 }
 
 export const target = (store: Store = IMPLICIT.STORE): StoreCore =>
-  store.transaction.phase === `building` ? store.transaction.core : store
+  store.transactionStatus.phase === `building`
+    ? store.transactionStatus.core
+    : store

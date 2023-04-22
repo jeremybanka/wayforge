@@ -197,7 +197,7 @@ export function selector__INTERNAL<T>(
     const newValue = become(next)(oldValue)
     cacheValue(options.key, newValue, store)
     markDone(options.key, store)
-    if (store.transaction.phase === `idle`) {
+    if (store.transactionStatus.phase === `idle`) {
       subject.next({ newValue, oldValue })
     }
     options.set({ get, set }, newValue)
