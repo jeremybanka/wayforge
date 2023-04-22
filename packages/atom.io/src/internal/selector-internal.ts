@@ -20,9 +20,11 @@ import {
 import type {
   AtomToken,
   FamilyMetadata,
+  ReadonlySelectorFamily,
   ReadonlySelectorFamilyOptions,
   ReadonlySelectorOptions,
   ReadonlyValueToken,
+  SelectorFamily,
   SelectorFamilyOptions,
   SelectorOptions,
   SelectorToken,
@@ -173,7 +175,6 @@ export function selector__INTERNAL<T>(
     cacheValue(options.key, value, store)
     return value
   }
-
   if (!(`set` in options)) {
     const readonlySelector: ReadonlySelector<T> = {
       ...options,
@@ -202,7 +203,6 @@ export function selector__INTERNAL<T>(
     }
     options.set({ get, set }, newValue)
   }
-
   const mySelector: Selector<T> = {
     ...options,
     subject,
@@ -220,44 +220,51 @@ export function selector__INTERNAL<T>(
 export function selectorFamily__INTERNAL<T, K extends Serializable>(
   options: SelectorFamilyOptions<T, K>,
   store?: Store
-): (key: K) => SelectorToken<T>
+): SelectorFamily<T, K>
 export function selectorFamily__INTERNAL<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K>,
   store?: Store
-): (key: K) => ReadonlyValueToken<T>
+): ReadonlySelectorFamily<T, K>
 export function selectorFamily__INTERNAL<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
   store: Store = IMPLICIT.STORE
-): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
-  return (key: K): ReadonlyValueToken<T> | SelectorToken<T> => {
-    const core = target(store)
-    const subKey = stringifyJson(key)
-    const family: FamilyMetadata = { key: options.key, subKey }
-    const fullKey = `${options.key}__${subKey}`
-    const existing =
-      core.selectors.get(fullKey) ?? core.readonlySelectors.get(fullKey)
-    if (existing) {
-      return deposit(existing)
-    }
-    const readonlySelectorOptions: ReadonlySelectorOptions<T> = {
-      key: fullKey,
-      get: options.get(key),
-    }
-    if (!(`set` in options)) {
+): ((key: K) => ReadonlyValueToken<T> | SelectorToken<T>) & {
+  key: string
+} {
+  return Object.assign(
+    (key: K): ReadonlyValueToken<T> | SelectorToken<T> => {
+      const core = target(store)
+      const subKey = stringifyJson(key)
+      const family: FamilyMetadata = { key: options.key, subKey }
+      const fullKey = `${options.key}__${subKey}`
+      const existing =
+        core.selectors.get(fullKey) ?? core.readonlySelectors.get(fullKey)
+      if (existing) {
+        return deposit(existing)
+      }
+      const readonlySelectorOptions: ReadonlySelectorOptions<T> = {
+        key: fullKey,
+        get: options.get(key),
+      }
+      if (!(`set` in options)) {
+        return selector__INTERNAL<T>(
+          {
+            ...readonlySelectorOptions,
+          },
+          family
+        )
+      }
       return selector__INTERNAL<T>(
         {
           ...readonlySelectorOptions,
+          set: options.set(key),
         },
-        family
+        family,
+        store
       )
+    },
+    {
+      key: options.key,
     }
-    return selector__INTERNAL<T>(
-      {
-        ...readonlySelectorOptions,
-        set: options.set(key),
-      },
-      family,
-      store
-    )
-  }
+  )
 }

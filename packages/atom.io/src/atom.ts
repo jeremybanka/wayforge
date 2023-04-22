@@ -26,8 +26,14 @@ export type AtomFamilyOptions<T, K extends Serializable> = {
   effects?: (key: K) => AtomEffect<T>[]
 }
 
+export type AtomFamily<T, K extends Serializable = Serializable> = ((
+  key: K
+) => AtomToken<T>) & {
+  key: string
+}
+
 export function atomFamily<T, K extends Serializable>(
   options: AtomFamilyOptions<T, K>
-): (key: K) => AtomToken<T> {
+): AtomFamily<T, K> {
   return atomFamily__INTERNAL<T, K>(options)
 }

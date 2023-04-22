@@ -12,7 +12,7 @@ import { IMPLICIT } from "./store"
 import { target } from "./transaction-internal"
 import type { AtomToken, FamilyMetadata, UpdateHandler } from ".."
 import { setState, subscribe } from ".."
-import type { AtomFamilyOptions, AtomOptions } from "../atom"
+import type { AtomFamily, AtomFamilyOptions, AtomOptions } from "../atom"
 
 export function atom__INTERNAL<T>(
   options: AtomOptions<T>,
@@ -48,26 +48,31 @@ export function atom__INTERNAL<T>(
 export function atomFamily__INTERNAL<T, K extends Serializable>(
   options: AtomFamilyOptions<T, K>,
   store: Store = IMPLICIT.STORE
-) {
-  return (key: K): AtomToken<T> => {
-    const subKey = stringifyJson(key)
-    const family: FamilyMetadata = { key: options.key, subKey }
-    const fullKey = `${options.key}__${subKey}`
-    const existing = withdraw({ key: fullKey, type: `atom` }, store)
-    if (existing) {
-      return deposit(existing)
+): AtomFamily<T, K> {
+  return Object.assign(
+    (key: K): AtomToken<T> => {
+      const subKey = stringifyJson(key)
+      const family: FamilyMetadata = { key: options.key, subKey }
+      const fullKey = `${options.key}__${subKey}`
+      const existing = withdraw({ key: fullKey, type: `atom` }, store)
+      if (existing) {
+        return deposit(existing)
+      }
+      return atom__INTERNAL<T>(
+        {
+          key: fullKey,
+          default:
+            options.default instanceof Function
+              ? options.default(key)
+              : options.default,
+          effects: options.effects?.(key),
+        },
+        family,
+        store
+      )
+    },
+    {
+      key: options.key,
     }
-    return atom__INTERNAL<T>(
-      {
-        key: fullKey,
-        default:
-          options.default instanceof Function
-            ? options.default(key)
-            : options.default,
-        effects: options.effects?.(key),
-      },
-      family,
-      store
-    )
-  }
+  )
 }

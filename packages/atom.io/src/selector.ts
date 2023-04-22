@@ -31,14 +31,26 @@ export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = Omit<
   `set`
 >
 
+export type SelectorFamily<T, K extends Serializable = Serializable> = ((
+  key: K
+) => SelectorToken<T>) & {
+  key: string
+}
+
+export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = ((
+  key: K
+) => ReadonlyValueToken<T>) & {
+  key: string
+}
+
 export function selectorFamily<T, K extends Serializable>(
   options: SelectorFamilyOptions<T, K>
-): (key: K) => SelectorToken<T>
+): SelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K>
-): (key: K) => ReadonlyValueToken<T>
+): ReadonlySelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>
-): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
+): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
   return selectorFamily__INTERNAL(options)
 }
