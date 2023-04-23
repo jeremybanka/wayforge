@@ -44,35 +44,3 @@ export function atom__INTERNAL<T>(
   options.effects?.forEach((effect) => effect({ setSelf, onSet }))
   return token
 }
-
-export function atomFamily__INTERNAL<T, K extends Serializable>(
-  options: AtomFamilyOptions<T, K>,
-  store: Store = IMPLICIT.STORE
-): AtomFamily<T, K> {
-  return Object.assign(
-    (key: K): AtomToken<T> => {
-      const subKey = stringifyJson(key)
-      const family: FamilyMetadata = { key: options.key, subKey }
-      const fullKey = `${options.key}__${subKey}`
-      const existing = withdraw({ key: fullKey, type: `atom` }, store)
-      if (existing) {
-        return deposit(existing)
-      }
-      return atom__INTERNAL<T>(
-        {
-          key: fullKey,
-          default:
-            options.default instanceof Function
-              ? options.default(key)
-              : options.default,
-          effects: options.effects?.(key),
-        },
-        family,
-        store
-      )
-    },
-    {
-      key: options.key,
-    }
-  )
-}

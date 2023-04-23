@@ -21,7 +21,7 @@ export type TransactionInProgress<ƒ extends ƒn> = {
   phase: `applying` | `building`
   core: StoreCore
   atomUpdates: TransactionAtomUpdate[]
-  params: Parameters<ƒ>[]
+  params: Parameters<ƒ>
   output: ReturnType<ƒ>
 }
 export type TransactionIdle = {

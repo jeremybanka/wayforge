@@ -1,3 +1,5 @@
+import type * as Rx from "rxjs"
+
 import type { AtomFamily, AtomToken } from "."
 import type { Store } from "./internal"
 import { target, IMPLICIT, withdraw } from "./internal"
@@ -28,7 +30,32 @@ export function timeline__INTERNAL(
   store: Store = IMPLICIT.STORE
 ): TimelineToken {
   const core = target(store)
-  for (const atomOrAtomFamily of options.atoms) {
-    return
+
+  const subscribeToAtom = (token: AtomToken<any>) => {
+    const state = withdraw(token, store)
+    state.subject.subscribe((update) => {
+      console.log(
+        `📣 timeline "${options.key}" saw atom "${token.key}" go (`,
+        update.oldValue,
+        `->`,
+        update.newValue,
+        `)`
+      )
+    })
+  }
+
+  for (const tokenOrFamily of options.atoms) {
+    if (tokenOrFamily.type === `atom_family`) {
+      const family = tokenOrFamily
+      family.subject.subscribe((token) => subscribeToAtom(token))
+    } else {
+      const token = tokenOrFamily
+      subscribeToAtom(token)
+    }
+  }
+
+  return {
+    key: options.key,
+    type: `timeline`,
   }
 }

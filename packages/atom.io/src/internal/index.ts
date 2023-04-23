@@ -2,15 +2,16 @@ import type * as Rx from "rxjs"
 
 import type { FamilyMetadata } from ".."
 
-export * from "./get"
-export * from "./set"
-export * from "./is-default"
 export * from "./atom-internal"
-export * from "./selector-internal"
+export * from "./get"
+export * from "./is-default"
+export * from "./families-internal"
 export * from "./logger"
+export * from "./operation"
+export * from "./selector-internal"
+export * from "./set"
 export * from "./store"
 export * from "./subscribe-internal"
-export * from "./operation"
 export * from "./transaction-internal"
 
 export type Atom<T> = {

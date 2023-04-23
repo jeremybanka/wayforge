@@ -1,3 +1,5 @@
+import type * as Rx from "rxjs"
+
 import type { Serializable } from "~/packages/anvl/src/json"
 
 import type { AtomToken } from "."
@@ -30,6 +32,8 @@ export type AtomFamily<T, K extends Serializable = Serializable> = ((
   key: K
 ) => AtomToken<T>) & {
   key: string
+  type: `atom_family`
+  subject: Rx.Subject<AtomToken<T>>
 }
 
 export function atomFamily<T, K extends Serializable>(
