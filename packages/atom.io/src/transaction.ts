@@ -39,17 +39,3 @@ export const runTransaction =
   <ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
   (...parameters: Parameters<ƒ>): ReturnType<ƒ> =>
     withdraw(token, store).run(...parameters)
-
-// begin ({ open: true, closing: false, next: {…}, atomsUpdated: Set(0) })
-// save parameters to transaction.params
-// (skip emissions while transaction is open and closing is false)
-// (make all updates to transaction.next instead of store)
-// finishing transaction
-// save output to transaction.output
-// set transaction.closing to true
-// build transaction update
-// // get all atoms that were updated
-// // map => [atom.key, {newValue: from next.valueMap, oldValue: from .valueMap}]
-// save transaction.update
-// set maps in transaction.next into store
-// // for each item in transaction.update

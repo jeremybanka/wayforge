@@ -12,6 +12,7 @@ import type {
   TransactionStatus,
 } from "."
 import type { Logger } from "./logger"
+import type { Timeline } from "../timeline"
 import type { Transaction, ƒn } from "../transaction"
 
 export type StoreCore = Pick<
@@ -23,19 +24,24 @@ export type StoreCore = Pick<
   | `selectorAtoms`
   | `selectorGraph`
   | `selectors`
+  | `timelineAtoms`
+  | `timelines`
   | `transactions`
   | `valueMap`
 >
 
 export interface Store {
-  valueMap: Hamt<any, string>
-  selectorGraph: Join<{ source: string }>
-  selectorAtoms: Join
   atoms: Hamt<Atom<any>, string>
   atomsThatAreDefault: Set<string>
-  selectors: Hamt<Selector<any>, string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
+  selectorAtoms: Join
+  selectorGraph: Join<{ source: string }>
+  selectors: Hamt<Selector<any>, string>
+  timelines: Hamt<Timeline, string>
+  timelineAtoms: Join
   transactions: Hamt<Transaction<any>, string>
+  valueMap: Hamt<any, string>
+
   operation: OperationProgress
   transactionStatus: TransactionStatus<ƒn>
   config: {
@@ -47,14 +53,17 @@ export interface Store {
 
 export const createStore = (name: string): Store =>
   ({
-    valueMap: HAMT.make<any, string>(),
-    selectorGraph: new Join({ relationType: `n:n` }),
-    selectorAtoms: new Join({ relationType: `n:n` }),
     atoms: HAMT.make<Atom<any>, string>(),
     atomsThatAreDefault: new Set(),
-    selectors: HAMT.make<Selector<any>, string>(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
+    selectorAtoms: new Join({ relationType: `n:n` }),
+    selectorGraph: new Join({ relationType: `n:n` }),
+    selectors: HAMT.make<Selector<any>, string>(),
+    timelines: HAMT.make<Timeline, string>(),
     transactions: HAMT.make<Transaction<any>, string>(),
+    timelineAtoms: new Join({ relationType: `1:n` }),
+    valueMap: HAMT.make<any, string>(),
+
     operation: {
       open: false,
     },

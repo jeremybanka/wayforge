@@ -24,7 +24,7 @@ export type TransactionInProgress<ƒ extends ƒn> = {
   params: Parameters<ƒ>[]
   output: ReturnType<ƒ>
 }
-type TransactionIdle = {
+export type TransactionIdle = {
   phase: `idle`
 }
 
@@ -50,6 +50,8 @@ export const buildTransaction = (
       atomsThatAreDefault: store.atomsThatAreDefault,
       operation: { open: false },
       readonlySelectors: store.readonlySelectors,
+      timelines: store.timelines,
+      timelineAtoms: store.timelineAtoms,
       transactions: store.transactions,
       selectorAtoms: store.selectorAtoms,
       selectorGraph: store.selectorGraph,
