@@ -224,20 +224,17 @@ describe(`transaction`, () => {
       params: [3],
       output: undefined,
       atomUpdates: [
-        [
-          `count1`,
-          {
-            oldValue: 2,
-            newValue: 3,
-          },
-        ],
-        [
-          `count2`,
-          {
-            oldValue: 2,
-            newValue: 3,
-          },
-        ],
+        {
+          key: `count1`,
+          oldValue: 2,
+          newValue: 3,
+        },
+
+        {
+          key: `count2`,
+          oldValue: 2,
+          newValue: 3,
+        },
       ],
     })
   })

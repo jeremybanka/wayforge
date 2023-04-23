@@ -27,7 +27,7 @@ export const stowUpdate = <T>(
     )
     return
   }
-  store.transactionStatus.atomUpdates.push([key, update])
+  store.transactionStatus.atomUpdates.push({ key, ...update })
   logger?.info(`📝 ${key} stowed (`, update.oldValue, `->`, update.newValue, `)`)
 }
 

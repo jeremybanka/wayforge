@@ -1,7 +1,7 @@
 import type * as Rx from "rxjs"
 
-import type { AtomFamily, AtomToken } from "."
-import type { Store } from "./internal"
+import type { AtomFamily, AtomToken, ƒn } from "."
+import type { Store, KeyedStateUpdate, TransactionUpdate } from "./internal"
 import { target, IMPLICIT, withdraw } from "./internal"
 
 export type TimelineToken = {
@@ -16,6 +16,17 @@ export type Timeline = {
   prev: () => void
 }
 
+export type TimelineStateUpdate = KeyedStateUpdate<unknown> & {
+  type: `state_update`
+}
+export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
+  type: `transaction_update`
+}
+
+export type TimelineData = {
+  at: number
+  history: (TimelineStateUpdate | TimelineTransactionUpdate)[]
+}
 export type TimelineOptions = {
   key: string
   atoms: (AtomFamily<any> | AtomToken<any>)[]

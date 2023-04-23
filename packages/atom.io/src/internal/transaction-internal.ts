@@ -4,38 +4,33 @@ import * as Rx from "rxjs"
 import { deposit, withdraw } from "./get"
 import type { Store, StoreCore } from "./store"
 import { IMPLICIT } from "./store"
-import type { AtomToken, TransactionToken } from ".."
+import type { AtomToken, StateUpdate, TransactionToken } from ".."
 import { getState, setState } from ".."
 import type { Transaction, TransactionOptions, ƒn } from "../transaction"
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
-export type TransactionAtomUpdate = [
-  string,
-  { newValue: unknown; oldValue?: unknown }
-]
-
-export type TransactionInProgress<ƒ extends ƒn> = {
+export type KeyedStateUpdate<T> = StateUpdate<T> & {
   key: string
-  phase: `applying` | `building`
-  core: StoreCore
-  atomUpdates: TransactionAtomUpdate[]
+}
+export type TransactionUpdate<ƒ extends ƒn> = {
+  key: string
+  atomUpdates: KeyedStateUpdate<unknown>[]
   params: Parameters<ƒ>
   output: ReturnType<ƒ>
+}
+
+export type TransactionUpdateInProgress<ƒ extends ƒn> = TransactionUpdate<ƒ> & {
+  phase: `applying` | `building`
+  core: StoreCore
 }
 export type TransactionIdle = {
   phase: `idle`
 }
-
 export type TransactionStatus<ƒ extends ƒn> =
   | TransactionIdle
-  | TransactionInProgress<ƒ>
-
-export type TransactionUpdate<ƒ extends ƒn> = Pick<
-  TransactionInProgress<ƒ>,
-  `atomUpdates` | `key` | `output` | `params`
->
+  | TransactionUpdateInProgress<ƒ>
 
 export const buildTransaction = (
   key: string,
@@ -77,10 +72,10 @@ export const applyTransaction = <ƒ extends ƒn>(
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output
   const { atomUpdates } = store.transactionStatus
-  for (const [key, update] of atomUpdates) {
+  for (const { key, oldValue, newValue } of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
-    setState(state, update.newValue, store)
+    setState(state, newValue, store)
   }
   const tx = withdraw<ƒ>(
     { key: store.transactionStatus.key, type: `transaction` },
