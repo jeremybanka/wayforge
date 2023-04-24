@@ -2,4 +2,4 @@
 "atom.io": minor
 ---
 
-✨ `runTransaction` `subscribeToTransaction`
+✨ `runTransaction` accepts a `TransactionToken` and returns the function signature of the transaction.

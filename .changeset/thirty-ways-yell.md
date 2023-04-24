@@ -2,4 +2,4 @@
 "atom.io": minor
 ---
 
-✨ include family metadata in tokens
+✨ `AtomToken`, `SelectorToken`, and `ReadonlyValueToken` include family metadata if they were created by a family function
