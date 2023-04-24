@@ -1,8 +1,16 @@
 import { vitest } from "vitest"
 
 import * as UTIL from "./-util"
-import { __INTERNAL__, atom, setLogLevel, setState, useLogger } from "../src"
-import { Timeline, timeline } from "../src/timeline"
+import {
+  __INTERNAL__,
+  atom,
+  runTransaction,
+  setLogLevel,
+  setState,
+  transaction,
+  useLogger,
+} from "../src"
+import { timeline } from "../src/timeline"
 
 const loggers = [UTIL.silence, console] as const
 const choose = 1
@@ -33,11 +41,32 @@ describe(`timeline`, () => {
       key: `c`,
       default: 0,
     })
-    const t = timeline({
-      key: `my timeline`,
+    const tl = timeline({
+      key: `a, b, & c`,
       atoms: [a, b, c],
     })
+
+    const tx_ab = transaction<() => void>({
+      key: `increment a & b`,
+      do: ({ set }) => {
+        set(a, (n) => n + 1)
+        set(b, (n) => n + 1)
+      },
+    })
+
+    const tx_bc = transaction<(plus: number) => void>({
+      key: `increment b & c`,
+      do: ({ set }, add = 1) => {
+        set(b, (n) => n + add)
+        set(c, (n) => n + add)
+      },
+    })
+
     setState(a, 1)
+    runTransaction(tx_ab)()
+    runTransaction(tx_bc)(2)
+
+    console.log(__INTERNAL__.IMPLICIT.STORE.timelineStore.get(tl.key).history)
 
     // t.next()
     // t.prev()

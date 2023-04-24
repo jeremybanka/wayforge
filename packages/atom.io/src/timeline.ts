@@ -1,3 +1,4 @@
+import HAMT from "hamt_plus"
 import type * as Rx from "rxjs"
 
 import type { AtomFamily, AtomToken, ƒn } from "."
@@ -40,18 +41,70 @@ export function timeline__INTERNAL(
   options: TimelineOptions,
   store: Store = IMPLICIT.STORE
 ): TimelineToken {
-  const core = target(store)
+  let incompleteTransactionKey: string | null = null
+  const timelineData: TimelineData = {
+    at: 0,
+    history: [],
+  }
 
   const subscribeToAtom = (token: AtomToken<any>) => {
     const state = withdraw(token, store)
     state.subject.subscribe((update) => {
-      console.log(
-        `📣 timeline "${options.key}" saw atom "${token.key}" go (`,
+      const storeCurrentTransactionKey =
+        store.transactionStatus.phase === `applying`
+          ? store.transactionStatus.key
+          : null
+      store.config.logger?.info(
+        `⏳ timeline "${options.key}" saw atom "${token.key}" go (`,
         update.oldValue,
         `->`,
         update.newValue,
-        `)`
+        storeCurrentTransactionKey
+          ? `) in transaction "${storeCurrentTransactionKey}"`
+          : `) independently`
       )
+
+      if (
+        storeCurrentTransactionKey &&
+        store.transactionStatus.phase === `applying`
+      ) {
+        const currentTransaction = withdraw(
+          { key: storeCurrentTransactionKey, type: `transaction` },
+          store
+        )
+        if (incompleteTransactionKey !== storeCurrentTransactionKey) {
+          if (incompleteTransactionKey) {
+            store.config.logger?.error(
+              `Timeline "${options.key}" was unable to resolve transaction "${incompleteTransactionKey}. This is probably a bug.`
+            )
+          }
+          incompleteTransactionKey = storeCurrentTransactionKey
+          const subscription = currentTransaction.subject.subscribe((update) => {
+            timelineData.history.push({
+              type: `transaction_update`,
+              ...update,
+              atomUpdates: update.atomUpdates.filter((atomUpdate) =>
+                options.atoms.some((atom) => atom.key === atomUpdate.key)
+              ),
+            })
+            subscription.unsubscribe()
+            incompleteTransactionKey = null
+            store.config.logger?.info(
+              `⌛ timeline "${options.key}" pushed a transaction_update from "${update.key}"`
+            )
+          })
+        }
+      } else {
+        timelineData.history.push({
+          type: `state_update`,
+          key: token.key,
+          oldValue: update.oldValue,
+          newValue: update.newValue,
+        })
+        store.config.logger?.info(
+          `⌛ timeline "${options.key}" pushed a state_update to "${token.key}"`
+        )
+      }
     })
   }
 
@@ -64,6 +117,8 @@ export function timeline__INTERNAL(
       subscribeToAtom(token)
     }
   }
+
+  store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)
 
   return {
     key: options.key,

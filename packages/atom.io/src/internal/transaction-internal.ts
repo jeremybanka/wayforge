@@ -57,12 +57,13 @@ export const buildTransaction = (
     params,
     output: undefined,
   }
-  store.config.logger?.info(`🛫`, `transaction start`)
+  store.config.logger?.info(`🛫`, `transaction "${key}" started`)
 }
 export const applyTransaction = <ƒ extends ƒn>(
   output: ReturnType<ƒ>,
   store: Store
 ): void => {
+  store.config.logger?.info(`🛩️ `, `transaction apply`)
   if (store.transactionStatus.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
@@ -77,11 +78,11 @@ export const applyTransaction = <ƒ extends ƒn>(
     const state = withdraw(token, store)
     setState(state, newValue, store)
   }
-  const tx = withdraw<ƒ>(
+  const myTransaction = withdraw<ƒ>(
     { key: store.transactionStatus.key, type: `transaction` },
     store
   )
-  tx.subject.next({
+  myTransaction.subject.next({
     key: store.transactionStatus.key,
     atomUpdates,
     output,
