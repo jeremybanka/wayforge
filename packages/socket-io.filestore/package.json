@@ -23,7 +23,7 @@
     "socket.io-client": "^4.6.0"
   },
   "dependencies": {
-    "fp-ts": "2.13.2"
+    "fp-ts": "2.14.0"
   },
   "devDependencies": {
     "@types/tmp": "0.2.3",
