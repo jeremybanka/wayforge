@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import type { Store } from "."
 import { target, IMPLICIT, traceAllSelectorAtoms } from "."
 

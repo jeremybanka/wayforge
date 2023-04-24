@@ -2,18 +2,20 @@ import HAMT from "hamt_plus"
 
 import { become } from "~/packages/anvl/src/function"
 
-import type { Atom, Selector } from "."
+import type { Atom, Selector, Store } from "."
 import {
-  stowUpdate,
+  IMPLICIT,
+  cacheValue,
   emitUpdate,
-  target,
-  markAtomAsNotDefault,
+  evictCachedValue,
+  getState__INTERNAL,
   isAtomDefault,
+  isDone,
+  markAtomAsNotDefault,
+  markDone,
+  stowUpdate,
+  target,
 } from "."
-import { getState__INTERNAL } from "./get"
-import { cacheValue, evictCachedValue, isDone, markDone } from "./operation"
-import type { Store } from "./store"
-import { IMPLICIT } from "./store"
 
 export const evictDownStream = <T>(
   state: Atom<T>,

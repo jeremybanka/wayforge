@@ -1,10 +1,6 @@
-import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
-import type { Serializable } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
-
-import { deposit, withdraw } from "./get"
+import { deposit } from "./get"
 import { markAtomAsDefault } from "./is-default"
 import { cacheValue, hasKeyBeenUsed, storeAtom } from "./operation"
 import type { Store } from "./store"
@@ -12,7 +8,15 @@ import { IMPLICIT } from "./store"
 import { target } from "./transaction-internal"
 import type { AtomToken, FamilyMetadata, UpdateHandler } from ".."
 import { setState, subscribe } from ".."
-import type { AtomFamily, AtomFamilyOptions, AtomOptions } from "../atom"
+import type { AtomOptions } from "../atom"
+
+export type Atom<T> = {
+  key: string
+  type: `atom`
+  family?: FamilyMetadata
+  subject: Rx.Subject<{ newValue: T; oldValue: T }>
+  default: T
+}
 
 export function atom__INTERNAL<T>(
   options: AtomOptions<T>,

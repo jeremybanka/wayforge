@@ -3,7 +3,7 @@ import * as Rx from "rxjs"
 
 import { become } from "~/packages/anvl/src/function"
 
-import type { Selector, ReadonlySelector, Store } from "."
+import type { Store } from "."
 import {
   target,
   cacheValue,
@@ -24,6 +24,22 @@ import type {
   StateToken,
 } from ".."
 import type { Transactors } from "../transaction"
+
+export type Selector<T> = {
+  key: string
+  type: `selector`
+  family?: FamilyMetadata
+  subject: Rx.Subject<{ newValue: T; oldValue: T }>
+  get: () => T
+  set: (newValue: T | ((oldValue: T) => T)) => void
+}
+export type ReadonlySelector<T> = {
+  key: string
+  type: `readonly_selector`
+  family?: FamilyMetadata
+  subject: Rx.Subject<{ newValue: T; oldValue: T }>
+  get: () => T
+}
 
 export const lookupSelectorSources = (
   key: string,

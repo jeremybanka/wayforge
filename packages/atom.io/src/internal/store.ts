@@ -10,10 +10,11 @@ import type {
   ReadonlySelector,
   Selector,
   TransactionStatus,
+  Logger,
+  Timeline,
+  TimelineData,
 } from "."
-import type { Logger } from "./logger"
-import type { Timeline, TimelineData } from "../timeline"
-import type { Transaction, ƒn } from "../transaction"
+import type { Transaction, ƒn } from ".."
 
 export type StoreCore = Pick<
   Store,

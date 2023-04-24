@@ -15,7 +15,7 @@ import {
 import { redo, timeline, undo } from "../src/timeline"
 
 const loggers = [UTIL.silence, console] as const
-const choose = 1
+const choose = 0
 const logger = loggers[choose]
 
 useLogger(logger)

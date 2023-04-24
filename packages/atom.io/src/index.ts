@@ -15,6 +15,7 @@ import type { Store } from "./internal/store"
 
 export * from "./atom"
 export * from "./selector"
+export * from "./timeline"
 export * from "./transaction"
 export * from "./subscribe"
 export { __INTERNAL__, setLogLevel, useLogger }

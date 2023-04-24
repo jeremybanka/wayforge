@@ -1,12 +1,17 @@
 import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
-import { deposit, withdraw } from "./get"
-import type { Store, StoreCore } from "./store"
-import { IMPLICIT } from "./store"
-import type { AtomToken, StateUpdate, TransactionToken } from ".."
+import type { Store, StoreCore } from "."
+import { deposit, withdraw, IMPLICIT } from "."
 import { getState, setState } from ".."
-import type { Transaction, TransactionOptions, ƒn } from "../transaction"
+import type {
+  AtomToken,
+  StateUpdate,
+  Transaction,
+  TransactionOptions,
+  TransactionToken,
+  ƒn,
+} from ".."
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]

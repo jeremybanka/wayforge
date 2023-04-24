@@ -1,9 +1,7 @@
 import HAMT from "hamt_plus"
 
-import type { Atom, ReadonlySelector, Selector } from "."
-import { target, isValueCached, readCachedValue } from "."
-import type { Store } from "./store"
-import { IMPLICIT } from "./store"
+import type { Atom, ReadonlySelector, Selector, Store } from "."
+import { target, isValueCached, readCachedValue, IMPLICIT } from "."
 import type {
   AtomToken,
   ReadonlyValueToken,

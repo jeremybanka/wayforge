@@ -1,8 +1,10 @@
-import type { Atom, ReadonlySelector, Selector } from "."
-import { getState__INTERNAL, withdraw } from "./get"
-import { recallState } from "./operation"
-import { traceAllSelectorAtoms } from "./selector-internal"
-import type { Store } from "./store"
+import {
+  getState__INTERNAL,
+  withdraw,
+  recallState,
+  traceAllSelectorAtoms,
+} from "."
+import type { Atom, ReadonlySelector, Selector, Store } from "."
 import type { StateUpdate } from ".."
 
 export const prepareUpdate = <T>(
