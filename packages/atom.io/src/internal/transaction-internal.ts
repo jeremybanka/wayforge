@@ -63,13 +63,15 @@ export const applyTransaction = <ƒ extends ƒn>(
   output: ReturnType<ƒ>,
   store: Store
 ): void => {
-  store.config.logger?.info(`🛩️ `, `transaction apply`)
   if (store.transactionStatus.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
     )
     return
   }
+  store.config.logger?.info(
+    ` ▶️ apply transaction "${store.transactionStatus.key}" (init)`
+  )
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output
   const { atomUpdates } = store.transactionStatus
@@ -91,6 +93,29 @@ export const applyTransaction = <ƒ extends ƒn>(
   store.transactionStatus = { phase: `idle` }
   store.config.logger?.info(`🛬`, `transaction done`)
 }
+export const undoTransactionUpdate = <ƒ extends ƒn>(
+  update: TransactionUpdate<ƒ>,
+  store: Store
+): void => {
+  store.config.logger?.info(` ⏮ undo transaction "${update.key}" (undo)`)
+  for (const { key, oldValue, newValue } of update.atomUpdates) {
+    const token: AtomToken<unknown> = { key, type: `atom` }
+    const state = withdraw(token, store)
+    setState(state, oldValue, store)
+  }
+}
+export const redoTransactionUpdate = <ƒ extends ƒn>(
+  update: TransactionUpdate<ƒ>,
+  store: Store
+): void => {
+  store.config.logger?.info(` ⏭ redo transaction "${update.key}" (redo)`)
+  for (const { key, oldValue, newValue } of update.atomUpdates) {
+    const token: AtomToken<unknown> = { key, type: `atom` }
+    const state = withdraw(token, store)
+    setState(state, newValue, store)
+  }
+}
+
 export const abortTransaction = (store: Store): void => {
   if (store.transactionStatus.phase === `idle`) {
     store.config.logger?.warn(

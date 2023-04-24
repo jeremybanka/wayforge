@@ -10,7 +10,7 @@ import {
   transaction,
   useLogger,
 } from "../src"
-import { timeline } from "../src/timeline"
+import { timeline, undo } from "../src/timeline"
 
 const loggers = [UTIL.silence, console] as const
 const choose = 1
@@ -41,7 +41,7 @@ describe(`timeline`, () => {
       key: `c`,
       default: 0,
     })
-    const tl = timeline({
+    const tl_abc = timeline({
       key: `a, b, & c`,
       atoms: [a, b, c],
     })
@@ -65,8 +65,16 @@ describe(`timeline`, () => {
     setState(a, 1)
     runTransaction(tx_ab)()
     runTransaction(tx_bc)(2)
+    undo(tl_abc)
 
-    console.log(__INTERNAL__.IMPLICIT.STORE.timelineStore.get(tl.key).history)
+    console.log(
+      `at`,
+      __INTERNAL__.IMPLICIT.STORE.timelineStore.get(tl_abc.key).at
+    )
+    console.log(
+      `history`,
+      __INTERNAL__.IMPLICIT.STORE.timelineStore.get(tl_abc.key).history
+    )
 
     // t.next()
     // t.prev()

@@ -2,6 +2,7 @@ import HAMT from "hamt_plus"
 import type * as Rx from "rxjs"
 
 import type { AtomFamily, AtomToken, ƒn } from "."
+import { setState } from "."
 import type { Store, KeyedStateUpdate, TransactionUpdate } from "./internal"
 import { target, IMPLICIT, withdraw } from "./internal"
 
@@ -26,6 +27,7 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 
 export type TimelineData = {
   at: number
+  timeTraveling: boolean
   history: (TimelineStateUpdate | TimelineTransactionUpdate)[]
 }
 export type TimelineOptions = {
@@ -44,6 +46,7 @@ export function timeline__INTERNAL(
   let incompleteTransactionKey: string | null = null
   const timelineData: TimelineData = {
     at: 0,
+    timeTraveling: false,
     history: [],
   }
 
@@ -60,7 +63,7 @@ export function timeline__INTERNAL(
         `->`,
         update.newValue,
         storeCurrentTransactionKey
-          ? `) in transaction "${storeCurrentTransactionKey}"`
+          ? `) in "${storeCurrentTransactionKey}"`
           : `) independently`
       )
 
@@ -80,13 +83,16 @@ export function timeline__INTERNAL(
           }
           incompleteTransactionKey = storeCurrentTransactionKey
           const subscription = currentTransaction.subject.subscribe((update) => {
-            timelineData.history.push({
-              type: `transaction_update`,
-              ...update,
-              atomUpdates: update.atomUpdates.filter((atomUpdate) =>
-                options.atoms.some((atom) => atom.key === atomUpdate.key)
-              ),
-            })
+            if (timelineData.timeTraveling === false) {
+              timelineData.history.push({
+                type: `transaction_update`,
+                ...update,
+                atomUpdates: update.atomUpdates.filter((atomUpdate) =>
+                  options.atoms.some((atom) => atom.key === atomUpdate.key)
+                ),
+              })
+            }
+            timelineData.at = timelineData.history.length
             subscription.unsubscribe()
             incompleteTransactionKey = null
             store.config.logger?.info(
@@ -95,15 +101,18 @@ export function timeline__INTERNAL(
           })
         }
       } else {
-        timelineData.history.push({
-          type: `state_update`,
-          key: token.key,
-          oldValue: update.oldValue,
-          newValue: update.newValue,
-        })
-        store.config.logger?.info(
-          `⌛ timeline "${options.key}" pushed a state_update to "${token.key}"`
-        )
+        if (timelineData.timeTraveling === false) {
+          timelineData.history.push({
+            type: `state_update`,
+            key: token.key,
+            oldValue: update.oldValue,
+            newValue: update.newValue,
+          })
+          store.config.logger?.info(
+            `⌛ timeline "${options.key}" pushed a state_update to "${token.key}"`
+          )
+          timelineData.at = timelineData.history.length
+        }
       }
     })
   }
@@ -124,4 +133,86 @@ export function timeline__INTERNAL(
     key: options.key,
     type: `timeline`,
   }
+}
+
+export const redo = (token: TimelineToken): void => {
+  return redo__INTERNAL(token, IMPLICIT.STORE)
+}
+
+export const redo__INTERNAL = (
+  token: TimelineToken,
+  store: Store = IMPLICIT.STORE
+): void => {
+  const timelineData = store.timelineStore.get(token.key)
+  if (!timelineData) {
+    store.config.logger?.error(
+      `Tried to redo on timeline "${token.key}" has not been initialized.`
+    )
+    return
+  }
+  if (timelineData.at === timelineData.history.length) {
+    store.config.logger?.warn(
+      `Tried to redo on timeline "${token.key}" but there is nothing to redo.`
+    )
+    return
+  }
+  timelineData.timeTraveling = true
+  const update = timelineData.history[timelineData.at]
+  switch (update.type) {
+    case `state_update`: {
+      const { key, newValue } = update
+      setState({ key, type: `atom` }, newValue)
+      break
+    }
+    case `transaction_update`: {
+      for (const atomUpdate of update.atomUpdates) {
+        const { key, newValue } = atomUpdate
+        setState({ key, type: `atom` }, newValue)
+      }
+      break
+    }
+  }
+  ++timelineData.at
+  timelineData.timeTraveling = false
+}
+
+export const undo = (token: TimelineToken): void => {
+  return undo__INTERNAL(token, IMPLICIT.STORE)
+}
+
+export const undo__INTERNAL = (
+  token: TimelineToken,
+  store: Store = IMPLICIT.STORE
+): void => {
+  const timelineData = store.timelineStore.get(token.key)
+  if (!timelineData) {
+    store.config.logger?.error(
+      `Tried to undo on timeline "${token.key}" has not been initialized.`
+    )
+    return
+  }
+  if (timelineData.at === 0) {
+    store.config.logger?.warn(
+      `Tried to undo on timeline "${token.key}" but there is nothing to undo.`
+    )
+    return
+  }
+  timelineData.timeTraveling = true
+  --timelineData.at
+  const update = timelineData.history[timelineData.at]
+  switch (update.type) {
+    case `state_update`: {
+      const { key, oldValue } = update
+      setState({ key, type: `atom` }, oldValue)
+      break
+    }
+    case `transaction_update`: {
+      for (const atomUpdate of update.atomUpdates) {
+        const { key, oldValue } = atomUpdate
+        setState({ key, type: `atom` }, oldValue)
+      }
+      break
+    }
+  }
+  timelineData.timeTraveling = false
 }
