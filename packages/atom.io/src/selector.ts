@@ -1,3 +1,5 @@
+import type * as Rx from "rxjs"
+
 import type { Serializable } from "~/packages/anvl/src/json"
 
 import type { ReadonlyValueToken, SelectorToken } from "."
@@ -31,14 +33,30 @@ export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = Omit<
   `set`
 >
 
+export type SelectorFamily<T, K extends Serializable = Serializable> = ((
+  key: K
+) => SelectorToken<T>) & {
+  key: string
+  type: `selector_family`
+  subject: Rx.Subject<SelectorToken<T>>
+}
+
+export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = ((
+  key: K
+) => ReadonlyValueToken<T>) & {
+  key: string
+  type: `readonly_selector_family`
+  subject: Rx.Subject<ReadonlyValueToken<T>>
+}
+
 export function selectorFamily<T, K extends Serializable>(
   options: SelectorFamilyOptions<T, K>
-): (key: K) => SelectorToken<T>
+): SelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K>
-): (key: K) => ReadonlyValueToken<T>
+): ReadonlySelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>
-): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
+): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
   return selectorFamily__INTERNAL(options)
 }

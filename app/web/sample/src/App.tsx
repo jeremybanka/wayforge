@@ -2,21 +2,20 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { atom, transaction } from "~/packages/atom.io/src"
+import { atom, runTransaction, transaction } from "~/packages/atom.io/src"
+import { redo, undo } from "~/packages/atom.io/src/timeline"
 
 import { Dividend } from "./Dividend"
 import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
-import { dividendState, divisorState, useStore } from "./services"
+import {
+  dividendState,
+  divisionTimeline,
+  divisorState,
+  resetEquation,
+  useStore,
+} from "./services"
 import { StressTest } from "./StressTest"
-
-const resetEquation = transaction({
-  key: `resetEquation`,
-  do: ({ set }) => {
-    set(dividendState, 1)
-    set(divisorState, 2)
-  },
-})
 
 const DEMOS = [`stress_test`, `basic_arithmetic`] as const
 type Demo = (typeof DEMOS)[number]
@@ -48,7 +47,9 @@ export const App: FC = () => {
           / <Divisor />
           = <Quotient />
           <div>
-            <button onClick={resetEquation}>Reset</button>
+            <button onClick={runTransaction(resetEquation)}>Reset</button>
+            <button onClick={() => undo(divisionTimeline)}>Undo</button>
+            <button onClick={() => redo(divisionTimeline)}>Redo</button>
           </div>
         </div>
       )}

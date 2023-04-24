@@ -2,4 +2,4 @@
 "atom.io": minor
 ---
 
-✨ include family metadata in tokens"
+✨ include family metadata in tokens

@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import { vitest } from "vitest"
 
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
@@ -9,8 +11,13 @@ import {
   atom,
   atomFamily,
   getState,
+  runTransaction,
+  selector,
   selectorFamily,
+  setLogLevel,
   setState,
+  subscribe,
+  subscribeToTransaction,
   transaction,
   useLogger,
 } from "../src"
@@ -20,6 +27,7 @@ const choose = 0
 const logger = loggers[choose]
 
 useLogger(logger)
+setLogLevel(`info`)
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
@@ -141,7 +149,7 @@ describe(`transaction`, () => {
     expect(getState(thiefInvState)).toEqual([])
     expect(getState(victimInvState)).toEqual([prizeState.key])
 
-    steal(thiefState.key, victimState.key)
+    runTransaction(steal)(thiefState.key, victimState.key)
     expect(getState(thiefInvState)).toEqual([prizeState.key])
     expect(getState(victimInvState)).toEqual([])
     expect(
@@ -149,7 +157,7 @@ describe(`transaction`, () => {
     ).not.toHaveBeenCalled()
 
     try {
-      steal(thiefState.key, victimState.key)
+      runTransaction(steal)(thiefState.key, victimState.key)
     } catch (thrown) {
       expect(thrown).toBeInstanceOf(Error)
       if (thrown instanceof Error) {
@@ -161,5 +169,73 @@ describe(`transaction`, () => {
     ).toHaveBeenCalledTimes(1)
 
     setState(globalInventoryState, (current) => current.remove(victimState.key))
+  })
+  it(`can be subscribed to`, () => {
+    const count1State = atom<number>({
+      key: `count1`,
+      default: 2,
+    })
+    const count2State = atom<number>({
+      key: `count2`,
+      default: 2,
+    })
+    const count1Plus2State = selector<number>({
+      key: `count1Plus2`,
+      get: ({ get }) => get(count1State) + get(count2State),
+      set: ({ set }, value) => {
+        set(count1State, 1)
+        set(count2State, value - 1)
+      },
+    })
+    const setAllCounts = transaction({
+      key: `setAllCounts`,
+      do: ({ set }, value: number) => {
+        set(count1State, value)
+        set(count2State, value)
+      },
+    })
+
+    const unsubscribeToTransaction = subscribeToTransaction(
+      setAllCounts,
+      (data) => {
+        UTIL.stdout(`Transaction data:`, data)
+        data.atomUpdates.forEach((update) => {
+          UTIL.stdout(`Atom update:`, update)
+        })
+      }
+    )
+    const unsubscribeToCount1Plus2 = subscribe(count1Plus2State, (data) => {
+      UTIL.stdout(`Selector data:`, data)
+    })
+
+    runTransaction(setAllCounts)(3)
+
+    expect(getState(count1State)).toEqual(3)
+    expect(UTIL.stdout).toHaveBeenCalledWith(`Selector data:`, {
+      oldValue: 4,
+      newValue: 5,
+    })
+    expect(UTIL.stdout).toHaveBeenCalledWith(`Selector data:`, {
+      oldValue: 5,
+      newValue: 6,
+    })
+    expect(UTIL.stdout).toHaveBeenCalledWith(`Transaction data:`, {
+      key: `setAllCounts`,
+      params: [3],
+      output: undefined,
+      atomUpdates: [
+        {
+          key: `count1`,
+          oldValue: 2,
+          newValue: 3,
+        },
+
+        {
+          key: `count2`,
+          oldValue: 2,
+          newValue: 3,
+        },
+      ],
+    })
   })
 })

@@ -4,41 +4,48 @@ import HAMT from "hamt_plus"
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 
-import type { Atom, ReadonlySelector, Selector } from "."
-import type { Logger } from "./logger"
+import type {
+  Atom,
+  OperationProgress,
+  ReadonlySelector,
+  Selector,
+  TransactionStatus,
+  Logger,
+  Timeline,
+  TimelineData,
+} from "."
+import type { Transaction, ƒn } from ".."
+
+export type StoreCore = Pick<
+  Store,
+  | `atoms`
+  | `atomsThatAreDefault`
+  | `operation`
+  | `readonlySelectors`
+  | `selectorAtoms`
+  | `selectorGraph`
+  | `selectors`
+  | `timelineAtoms`
+  | `timelines`
+  | `transactions`
+  | `valueMap`
+>
 
 export interface Store {
-  valueMap: Hamt<any, string>
-  selectorGraph: Join<{ source: string }>
-  selectorAtoms: Join
   atoms: Hamt<Atom<any>, string>
-  atomsAreDefault: Hamt<boolean, string>
-  selectors: Hamt<Selector<any>, string>
+  atomsThatAreDefault: Set<string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
-  operation:
-    | {
-        open: false
-      }
-    | {
-        open: true
-        done: Set<string>
-        prev: Hamt<any, string>
-      }
-  transaction:
-    | {
-        open: false
-      }
-    | {
-        open: true
-        prev: Pick<
-          Store,
-          | `atoms`
-          | `readonlySelectors`
-          | `selectorGraph`
-          | `selectors`
-          | `valueMap`
-        >
-      }
+  selectorAtoms: Join
+  selectorGraph: Join<{ source: string }>
+  selectors: Hamt<Selector<any>, string>
+  timelines: Hamt<Timeline, string>
+  timelineAtoms: Join
+  timelineStore: Hamt<TimelineData, string>
+  transactions: Hamt<Transaction<any>, string>
+  valueMap: Hamt<any, string>
+
+  operation: OperationProgress
+  transactionStatus: TransactionStatus<ƒn>
   config: {
     name: string
     logger: Logger | null
@@ -48,18 +55,23 @@ export interface Store {
 
 export const createStore = (name: string): Store =>
   ({
-    valueMap: HAMT.make<any, string>(),
-    selectorGraph: new Join({ relationType: `n:n` }),
-    selectorAtoms: new Join({ relationType: `n:n` }),
     atoms: HAMT.make<Atom<any>, string>(),
-    atomsAreDefault: HAMT.make<boolean, string>(),
-    selectors: HAMT.make<Selector<any>, string>(),
+    atomsThatAreDefault: new Set(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
+    selectorAtoms: new Join({ relationType: `n:n` }),
+    selectorGraph: new Join({ relationType: `n:n` }),
+    selectors: HAMT.make<Selector<any>, string>(),
+    timelines: HAMT.make<Timeline, string>(),
+    timelineAtoms: new Join({ relationType: `1:n` }),
+    timelineStore: HAMT.make<TimelineData, string>(),
+    transactions: HAMT.make<Transaction<any>, string>(),
+    valueMap: HAMT.make<any, string>(),
+
     operation: {
       open: false,
     },
-    transaction: {
-      open: false,
+    transactionStatus: {
+      phase: `idle`,
     },
     config: {
       name,

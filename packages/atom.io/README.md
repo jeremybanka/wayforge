@@ -17,11 +17,11 @@
 
 # atom.io
 ## upcoming features
+- [ ] subscribe to token creation
+- [ ] subscribe to transactions
 - [ ] timelines
 - [ ] resettable atoms
 - [ ] resettable selectors
-- [ ] subscribe to transactions
-- [ ] subscribe to token creation
 - [ ] store observation api
 
 ## fixes & improvements
