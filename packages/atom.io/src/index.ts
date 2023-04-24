@@ -1,12 +1,11 @@
 import {
   IMPLICIT,
-  finishAction,
+  closeOperation,
+  openOperation,
   getState__INTERNAL,
   setState__INTERNAL,
   isAtomDefault,
   isSelectorDefault,
-  startAction,
-  subscribeToRootAtoms,
   withdraw,
   setLogLevel,
   useLogger,
@@ -16,7 +15,9 @@ import type { Store } from "./internal/store"
 
 export * from "./atom"
 export * from "./selector"
+export * from "./timeline"
 export * from "./transaction"
+export * from "./subscribe"
 export { __INTERNAL__, setLogLevel, useLogger }
 export type { Serializable } from "~/packages/anvl/src/json"
 
@@ -43,6 +44,11 @@ export type FamilyMetadata = {
   subKey: string
 }
 
+export type TransactionToken<_> = {
+  key: string
+  type: `transaction`
+}
+
 export const getState = <T>(
   token: ReadonlyValueToken<T> | StateToken<T>,
   store: Store = IMPLICIT.STORE
@@ -56,10 +62,10 @@ export const setState = <T, New extends T>(
   value: New | ((oldValue: T) => New),
   store: Store = IMPLICIT.STORE
 ): void => {
-  startAction(store)
+  openOperation(store)
   const state = withdraw(token, store)
   setState__INTERNAL(state, value, store)
-  finishAction(store)
+  closeOperation(store)
 }
 
 export const isDefault = (
@@ -69,34 +75,3 @@ export const isDefault = (
   token.type === `atom`
     ? isAtomDefault(token.key, store)
     : isSelectorDefault(token.key, store)
-
-export type ObserveState<T> = (change: { newValue: T; oldValue: T }) => void
-
-export const subscribe = <T>(
-  token: ReadonlyValueToken<T> | StateToken<T>,
-  observe: ObserveState<T>,
-  store: Store = IMPLICIT.STORE
-): (() => void) => {
-  const state = withdraw<T>(token, store)
-  const subscription = state.subject.subscribe(observe)
-  store.config.logger?.info(`👀 subscribe to "${state.key}"`)
-  const dependencySubscriptions =
-    `get` in state ? subscribeToRootAtoms(state, store) : null
-  const unsubscribe =
-    dependencySubscriptions === null
-      ? () => {
-          store.config.logger?.info(`🙈 unsubscribe from "${state.key}"`)
-          subscription.unsubscribe()
-        }
-      : () => {
-          store.config.logger?.info(
-            `🙈 unsubscribe from "${state.key}" and its dependencies`
-          )
-          subscription.unsubscribe()
-          for (const dependencySubscription of dependencySubscriptions) {
-            dependencySubscription.unsubscribe()
-          }
-        }
-
-  return unsubscribe
-}

@@ -2,12 +2,11 @@ import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
 import { become } from "~/packages/anvl/src/function"
-import type { Serializable } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { Selector, ReadonlySelector, Store } from "."
+import type { Store } from "."
 import {
-  deposit,
+  target,
+  cacheValue,
   markDone,
   lookup,
   IMPLICIT,
@@ -18,15 +17,29 @@ import {
 import type {
   AtomToken,
   FamilyMetadata,
-  ReadonlySelectorFamilyOptions,
   ReadonlySelectorOptions,
   ReadonlyValueToken,
-  SelectorFamilyOptions,
   SelectorOptions,
   SelectorToken,
   StateToken,
 } from ".."
 import type { Transactors } from "../transaction"
+
+export type Selector<T> = {
+  key: string
+  type: `selector`
+  family?: FamilyMetadata
+  subject: Rx.Subject<{ newValue: T; oldValue: T }>
+  get: () => T
+  set: (newValue: T | ((oldValue: T) => T)) => void
+}
+export type ReadonlySelector<T> = {
+  key: string
+  type: `readonly_selector`
+  family?: FamilyMetadata
+  subject: Rx.Subject<{ newValue: T; oldValue: T }>
+  get: () => T
+}
 
 export const lookupSelectorSources = (
   key: string,
@@ -36,8 +49,8 @@ export const lookupSelectorSources = (
   | ReadonlyValueToken<unknown>
   | SelectorToken<unknown>
 )[] =>
-  store.selectorGraph
-    .getRelations(key)
+  target(store)
+    .selectorGraph.getRelations(key)
     .filter(({ source }) => source !== key)
     .map(({ source }) => lookup(source, store))
 
@@ -87,17 +100,21 @@ export const updateSelectorAtoms = (
   dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
   store: Store
 ): void => {
+  const core = target(store)
   if (dependency.type === `atom`) {
-    store.selectorAtoms = store.selectorAtoms.set(selectorKey, dependency.key)
+    core.selectorAtoms = core.selectorAtoms.set(selectorKey, dependency.key)
     store.config.logger?.info(
       `   || adding root for "${selectorKey}": ${dependency.key}`
     )
     return
   }
   const roots = traceSelectorAtoms(selectorKey, dependency, store)
-  store.config.logger?.info(`   || adding roots for "${selectorKey}":`, roots)
+  store.config.logger?.info(
+    `   || adding roots for "${selectorKey}":`,
+    roots.map((r) => r.key)
+  )
   for (const root of roots) {
-    store.selectorAtoms = store.selectorAtoms.set(selectorKey, root.key)
+    core.selectorAtoms = core.selectorAtoms.set(selectorKey, root.key)
   }
 }
 
@@ -106,7 +123,8 @@ export const registerSelector = (
   store: Store = IMPLICIT.STORE
 ): Transactors => ({
   get: (dependency) => {
-    const alreadyRegistered = store.selectorGraph
+    const core = target(store)
+    const alreadyRegistered = core.selectorGraph
       .getRelations(selectorKey)
       .some(({ source }) => source === dependency.key)
 
@@ -123,13 +141,9 @@ export const registerSelector = (
         `🔌 registerSelector "${selectorKey}" <- "${dependency.key}" =`,
         dependencyValue
       )
-      store.selectorGraph = store.selectorGraph.set(
-        selectorKey,
-        dependency.key,
-        {
-          source: dependency.key,
-        }
-      )
+      core.selectorGraph = core.selectorGraph.set(selectorKey, dependency.key, {
+        source: dependency.key,
+      })
     }
     updateSelectorAtoms(selectorKey, dependency, store)
     return dependencyValue
@@ -155,7 +169,8 @@ export function selector__INTERNAL<T>(
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
 ): ReadonlyValueToken<T> | SelectorToken<T> {
-  if (HAMT.has(options.key, store.selectors)) {
+  const core = target(store)
+  if (HAMT.has(options.key, core.selectors)) {
     store.config.logger?.error(
       `Key "${options.key}" already exists in the store.`
     )
@@ -166,10 +181,9 @@ export function selector__INTERNAL<T>(
   const { get, set } = registerSelector(options.key, store)
   const getSelf = () => {
     const value = options.get({ get })
-    store.valueMap = HAMT.set(options.key, value, store.valueMap)
+    cacheValue(options.key, value, store)
     return value
   }
-
   if (!(`set` in options)) {
     const readonlySelector: ReadonlySelector<T> = {
       ...options,
@@ -178,10 +192,10 @@ export function selector__INTERNAL<T>(
       type: `readonly_selector`,
       ...(family && { family }),
     }
-    store.readonlySelectors = HAMT.set(
+    core.readonlySelectors = HAMT.set(
       options.key,
       readonlySelector,
-      store.readonlySelectors
+      core.readonlySelectors
     )
     const initialValue = getSelf()
     store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
@@ -191,12 +205,13 @@ export function selector__INTERNAL<T>(
     store.config.logger?.info(`   <- "${options.key}" became`, next)
     const oldValue = getSelf()
     const newValue = become(next)(oldValue)
-    store.valueMap = HAMT.set(options.key, newValue, store.valueMap)
+    cacheValue(options.key, newValue, store)
     markDone(options.key, store)
-    subject.next({ newValue, oldValue })
+    if (store.transactionStatus.phase === `idle`) {
+      subject.next({ newValue, oldValue })
+    }
     options.set({ get, set }, newValue)
   }
-
   const mySelector: Selector<T> = {
     ...options,
     subject,
@@ -205,52 +220,8 @@ export function selector__INTERNAL<T>(
     type: `selector`,
     ...(family && { family }),
   }
-  store.selectors = HAMT.set(options.key, mySelector, store.selectors)
+  core.selectors = HAMT.set(options.key, mySelector, core.selectors)
   const initialValue = getSelf()
   store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
   return { ...mySelector, type: `selector` }
-}
-
-export function selectorFamily__INTERNAL<T, K extends Serializable>(
-  options: SelectorFamilyOptions<T, K>,
-  store?: Store
-): (key: K) => SelectorToken<T>
-export function selectorFamily__INTERNAL<T, K extends Serializable>(
-  options: ReadonlySelectorFamilyOptions<T, K>,
-  store?: Store
-): (key: K) => ReadonlyValueToken<T>
-export function selectorFamily__INTERNAL<T, K extends Serializable>(
-  options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
-  store: Store = IMPLICIT.STORE
-): (key: K) => ReadonlyValueToken<T> | SelectorToken<T> {
-  return (key: K): ReadonlyValueToken<T> | SelectorToken<T> => {
-    const subKey = stringifyJson(key)
-    const family: FamilyMetadata = { key: options.key, subKey }
-    const fullKey = `${options.key}__${subKey}`
-    const existing =
-      store.selectors.get(fullKey) ?? store.readonlySelectors.get(fullKey)
-    if (existing) {
-      return deposit(existing)
-    }
-    const readonlySelectorOptions: ReadonlySelectorOptions<T> = {
-      key: fullKey,
-      get: options.get(key),
-    }
-    if (!(`set` in options)) {
-      return selector__INTERNAL<T>(
-        {
-          ...readonlySelectorOptions,
-        },
-        family
-      )
-    }
-    return selector__INTERNAL<T>(
-      {
-        ...readonlySelectorOptions,
-        set: options.set(key),
-      },
-      family,
-      store
-    )
-  }
 }

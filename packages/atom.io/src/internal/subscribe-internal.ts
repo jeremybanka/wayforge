@@ -1,14 +1,58 @@
-import type { Atom, ReadonlySelector, Selector } from "."
-import { getState__INTERNAL, withdraw } from "./get"
-import { recallState } from "./operation"
-import { traceAllSelectorAtoms } from "./selector-internal"
-import type { Store } from "./store"
-import { IMPLICIT } from "./store"
-import { __INTERNAL__ } from ".."
+import {
+  getState__INTERNAL,
+  withdraw,
+  recallState,
+  traceAllSelectorAtoms,
+} from "."
+import type { Atom, ReadonlySelector, Selector, Store } from "."
+import type { StateUpdate } from ".."
+
+export const prepareUpdate = <T>(
+  state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+  store: Store
+): StateUpdate<T> => {
+  const oldValue = recallState(state, store)
+  const newValue = getState__INTERNAL(state, store)
+  return { newValue, oldValue }
+}
+
+export const stowUpdate = <T>(
+  state: Atom<T>,
+  update: StateUpdate<T>,
+  store: Store
+): void => {
+  const { key } = state
+  const { logger } = store.config
+  if (store.transactionStatus.phase !== `building`) {
+    store.config.logger?.warn(
+      `stowUpdate called outside of a transaction. This is probably a bug.`
+    )
+    return
+  }
+  store.transactionStatus.atomUpdates.push({ key, ...update })
+  logger?.info(`📝 ${key} stowed (`, update.oldValue, `->`, update.newValue, `)`)
+}
+
+export const emitUpdate = <T>(
+  state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+  update: StateUpdate<T>,
+  store: Store
+): void => {
+  const { key } = state
+  const { logger } = store.config
+  logger?.info(
+    `📢 ${state.type} "${key}" went (`,
+    update.oldValue,
+    `->`,
+    update.newValue,
+    `)`
+  )
+  state.subject.next(update)
+}
 
 export const subscribeToRootAtoms = <T>(
   state: ReadonlySelector<T> | Selector<T>,
-  store: Store = IMPLICIT.STORE
+  store: Store
 ): { unsubscribe: () => void }[] | null => {
   const dependencySubscriptions =
     `default` in state
