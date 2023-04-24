@@ -2,4 +2,4 @@
 "atom.io": patch
 ---
 
-♻️ transactions do not emit changes until complete
+♻️ `transaction`s do not emit changes until they succeed
