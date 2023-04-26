@@ -5,6 +5,7 @@ import type { Atom, ReadonlySelector, Selector } from "."
 import { target } from "."
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
+import type { StateToken } from ".."
 
 export type OperationProgress =
   | {
@@ -14,21 +15,32 @@ export type OperationProgress =
       open: true
       done: Set<string>
       prev: Hamt<any, string>
+      time: number
+      token: StateToken<any>
     }
 
-export const openOperation = (store: Store): void => {
+export const openOperation = (token: StateToken<any>, store: Store): void => {
   const core = target(store)
+  if (core.operation.open) {
+    console.warn(core.operation.open)
+    store.config.logger?.error(
+      `❌ failed to setState to "${token.key}" during a setState for "${core.operation.token.key}"`
+    )
+    throw Symbol(`violation`)
+  }
   core.operation = {
     open: true,
     done: new Set(),
     prev: store.valueMap,
+    time: Date.now(),
+    token,
   }
-  store.config.logger?.info(`⭕`, `operation start`)
+  store.config.logger?.info(`⭕ operation start from "${token.key}"`)
 }
 export const closeOperation = (store: Store): void => {
   const core = target(store)
   core.operation = { open: false }
-  store.config.logger?.info(`🔴`, `operation done`)
+  store.config.logger?.info(`🔴 operation done`)
 }
 
 export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {

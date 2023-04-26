@@ -62,7 +62,14 @@ export const setState = <T, New extends T>(
   value: New | ((oldValue: T) => New),
   store: Store = IMPLICIT.STORE
 ): void => {
-  openOperation(store)
+  try {
+    openOperation(token, store)
+  } catch (thrown) {
+    if (!(typeof thrown === `symbol`)) {
+      throw thrown
+    }
+    return
+  }
   const state = withdraw(token, store)
   setState__INTERNAL(state, value, store)
   closeOperation(store)
