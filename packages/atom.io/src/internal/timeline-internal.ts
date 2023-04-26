@@ -154,7 +154,7 @@ export function timeline__INTERNAL(
     const timelineKey = core.timelineAtoms.getRelatedId(tokenOrFamily.key)
     if (timelineKey) {
       store.config.logger?.error(
-        `❌ failed to add atom "${tokenOrFamily.key}" to timeline "${options.key}" because it belongs to timeline "${timelineKey}"`
+        `❌ Failed to add atom "${tokenOrFamily.key}" to timeline "${options.key}" because it belongs to timeline "${timelineKey}"`
       )
       continue
     }
@@ -169,7 +169,7 @@ export function timeline__INTERNAL(
         )
         if (familyTimelineKey) {
           store.config.logger?.error(
-            `❌ failed to add atom "${token.key}" to timeline "${options.key}" because its family "${token.family.key}" belongs to timeline "${familyTimelineKey}"`
+            `❌ Failed to add atom "${token.key}" to timeline "${options.key}" because its family "${token.family.key}" belongs to timeline "${familyTimelineKey}"`
           )
           continue
         }
@@ -195,13 +195,13 @@ export const redo__INTERNAL = (
   const timelineData = store.timelineStore.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
-      `Tried to redo on timeline "${token.key}" has not been initialized.`
+      `Failed to redo on timeline "${token.key}". This timeline has not been initialized.`
     )
     return
   }
   if (timelineData.at === timelineData.history.length) {
     store.config.logger?.warn(
-      `Tried to redo on timeline "${token.key}" but there is nothing to redo.`
+      `Failed to redo at the end of timeline "${token.key}". There is nothing to redo.`
     )
     return
   }
@@ -233,13 +233,13 @@ export const undo__INTERNAL = (
   const timelineData = store.timelineStore.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
-      `Tried to undo on timeline "${token.key}" has not been initialized.`
+      `Failed to undo on timeline "${token.key}". This timeline has not been initialized.`
     )
     return
   }
   if (timelineData.at === 0) {
     store.config.logger?.warn(
-      `Tried to undo on timeline "${token.key}" but there is nothing to undo.`
+      `Failed to undo at the beginning of timeline "${token.key}". There is nothing to undo.`
     )
     return
   }

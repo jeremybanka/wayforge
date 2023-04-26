@@ -105,7 +105,7 @@ describe(`graceful handling of improper usage`, () => {
       const timelineData_b = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`tb`)
 
       expect(logger.error).toHaveBeenCalledWith(
-        `❌ failed to add atom "a" to timeline "tb" because it belongs to timeline "ta"`
+        `❌ Failed to add atom "a" to timeline "tb" because it belongs to timeline "ta"`
       )
       expect(timelineData_a.history).toHaveLength(1)
       expect(timelineData_b.history).toHaveLength(0)
@@ -129,7 +129,7 @@ describe(`graceful handling of improper usage`, () => {
       const timelineData_f = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`tf`)
       const timelineData_a = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`ta`)
       expect(logger.error).toHaveBeenCalledWith(
-        `❌ failed to add atom "f("a")" to timeline "ta" because its family "f" belongs to timeline "tf"`
+        `❌ Failed to add atom "f("a")" to timeline "ta" because its family "f" belongs to timeline "tf"`
       )
       expect(timelineData_f.history).toHaveLength(1)
       expect(timelineData_a.history).toHaveLength(0)
