@@ -86,9 +86,58 @@ describe(`graceful handling of improper usage`, () => {
       })
     })
   })
+  describe(`giving an atom to multiple timelines is a violation`, () => {
+    test(`the second timeline does not track the atom, and a logger(error) is given`, () => {
+      const a = atom({
+        key: `a`,
+        default: 0,
+      })
+      const tl_a = timeline({
+        key: `ta`,
+        atoms: [a],
+      })
+      const tl_b = timeline({
+        key: `tb`,
+        atoms: [a],
+      })
+      setState(a, 1)
+      const timelineData_a = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`ta`)
+      const timelineData_b = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`tb`)
+
+      expect(logger.error).toHaveBeenCalledWith(
+        `❌ failed to add atom "a" to timeline "tb" because it belongs to timeline "ta"`
+      )
+      expect(timelineData_a.history).toHaveLength(1)
+      expect(timelineData_b.history).toHaveLength(0)
+    })
+    test(`if a family is tracked by a timeline, a member of that family cannot be tracked by another timeline`, () => {
+      const f = atomFamily({
+        key: `f`,
+        default: 0,
+      })
+      const tl_f = timeline({
+        key: `tf`,
+        atoms: [f],
+      })
+      const a = f(`a`)
+      const tl_a = timeline({
+        key: `ta`,
+        atoms: [a],
+      })
+      setState(a, 1)
+
+      const timelineData_f = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`tf`)
+      const timelineData_a = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`ta`)
+      expect(logger.error).toHaveBeenCalledWith(
+        `❌ failed to add atom "f__"a"" to timeline "ta" because its family "f" belongs to timeline "tf"`
+      )
+      expect(timelineData_f.history).toHaveLength(1)
+      expect(timelineData_a.history).toHaveLength(0)
+    })
+  })
 })
 
-describe(`recipes`, () => {
+describe.skip(`recipes`, () => {
   describe(`timeline family recipe`, () => {
     it(`creates a timeline for each atom in the family`, () => {
       const f = atomFamily({

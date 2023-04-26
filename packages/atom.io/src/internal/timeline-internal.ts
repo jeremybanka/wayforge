@@ -38,7 +38,6 @@ export function timeline__INTERNAL(
   options: TimelineOptions,
   store: Store = IMPLICIT.STORE
 ): TimelineToken {
-  const core = target(store)
   let incompleteSelectorTime: number | null = null
   let selectorAtomUpdates: TimelineAtomUpdate[] = []
   let incompleteTransactionKey: string | null = null
@@ -150,14 +149,35 @@ export function timeline__INTERNAL(
     })
   }
 
+  const core = target(store)
   for (const tokenOrFamily of options.atoms) {
+    const timelineKey = core.timelineAtoms.getRelatedId(tokenOrFamily.key)
+    console.log(core.timelineAtoms)
+    if (timelineKey) {
+      store.config.logger?.error(
+        `❌ failed to add atom "${tokenOrFamily.key}" to timeline "${options.key}" because it belongs to timeline "${timelineKey}"`
+      )
+      continue
+    }
     if (tokenOrFamily.type === `atom_family`) {
       const family = tokenOrFamily
       family.subject.subscribe((token) => subscribeToAtom(token))
     } else {
       const token = tokenOrFamily
+      if (`family` in token && token.family) {
+        const familyTimelineKey = core.timelineAtoms.getRelatedId(
+          token.family.key
+        )
+        if (familyTimelineKey) {
+          store.config.logger?.error(
+            `❌ failed to add atom "${token.key}" to timeline "${options.key}" because its family "${token.family.key}" belongs to timeline "${familyTimelineKey}"`
+          )
+          continue
+        }
+      }
       subscribeToAtom(token)
     }
+    core.timelineAtoms = core.timelineAtoms.set(tokenOrFamily.key, options.key)
   }
 
   store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)
