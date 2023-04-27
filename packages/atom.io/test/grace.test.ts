@@ -69,7 +69,7 @@ describe(`graceful handling of improper usage`, () => {
       expect(logger.error).toHaveBeenCalledWith(
         `❌ failed to setState to "b" during a setState for "a"`
       )
-      expect(timelineData.history).toHaveLength(2)
+      expect(timelineData.history).toHaveLength(3)
       expect(timelineData.history[0]).toEqual({
         type: `atom_update`,
         key: `a`,
@@ -82,6 +82,14 @@ describe(`graceful handling of improper usage`, () => {
         atomUpdates: [
           { type: `atom_update`, key: `a`, oldValue: 1, newValue: 2 },
           { type: `atom_update`, key: `b`, oldValue: false, newValue: true },
+        ],
+      })
+      expect(timelineData.history[2]).toEqual({
+        type: `selector_update`,
+        key: `s`,
+        atomUpdates: [
+          { type: `atom_update`, key: `a`, oldValue: 2, newValue: 3 },
+          { type: `atom_update`, key: `b`, oldValue: true, newValue: true },
         ],
       })
     })
@@ -137,7 +145,7 @@ describe(`graceful handling of improper usage`, () => {
   })
 })
 
-describe.skip(`recipes`, () => {
+describe(`recipes`, () => {
   describe(`timeline family recipe`, () => {
     it(`creates a timeline for each atom in the family`, () => {
       const f = atomFamily({

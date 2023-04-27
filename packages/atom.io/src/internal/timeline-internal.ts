@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import HAMT from "hamt_plus"
 
 import type { KeyedStateUpdate, TransactionUpdate, Store } from "."
@@ -39,7 +41,7 @@ export function timeline__INTERNAL(
   store: Store = IMPLICIT.STORE
 ): TimelineToken {
   let incompleteSelectorTime: number | null = null
-  let selectorAtomUpdates: TimelineAtomUpdate[] = []
+  // let selectorAtomUpdates: TimelineAtomUpdate[] = []
   let incompleteTransactionKey: string | null = null
   const timelineData: TimelineData = {
     at: 0,
@@ -90,6 +92,9 @@ export function timeline__INTERNAL(
           incompleteTransactionKey = storeCurrentTransactionKey
           const subscription = currentTransaction.subject.subscribe((update) => {
             if (timelineData.timeTraveling === false) {
+              if (timelineData.at !== timelineData.history.length) {
+                timelineData.history.splice(timelineData.at)
+              }
               timelineData.history.push({
                 type: `transaction_update`,
                 ...update,
@@ -109,31 +114,48 @@ export function timeline__INTERNAL(
       } else if (storeCurrentSelectorKey) {
         if (timelineData.timeTraveling === false) {
           if (storeCurrentSelectorTime !== incompleteSelectorTime) {
-            if (incompleteSelectorTime) {
-              timelineData.history.push({
-                type: `selector_update`,
-                key: storeCurrentSelectorKey,
-                atomUpdates: selectorAtomUpdates,
-              })
+            const newSelectorUpdate: TimelineSelectorUpdate = {
+              type: `selector_update`,
+              key: storeCurrentSelectorKey,
+              atomUpdates: [],
             }
+            newSelectorUpdate.atomUpdates.push({
+              key: token.key,
+              type: `atom_update`,
+              ...update,
+            })
+            if (timelineData.at !== timelineData.history.length) {
+              timelineData.history.splice(timelineData.at)
+            }
+            timelineData.history.push(newSelectorUpdate)
+
             store.config.logger?.info(
               `⌛ timeline "${options.key}" got a selector_update "${storeCurrentSelectorKey}" with`,
-              selectorAtomUpdates.map((atomUpdate) => atomUpdate.key)
+              newSelectorUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key)
             )
             timelineData.at = timelineData.history.length
-            selectorAtomUpdates = []
             incompleteSelectorTime = storeCurrentSelectorTime
+          } else {
+            const latestUpdate = timelineData.history.at(-1)
+            if (latestUpdate?.type === `selector_update`) {
+              latestUpdate.atomUpdates.push({
+                key: token.key,
+                type: `atom_update`,
+                ...update,
+              })
+              store.config.logger?.info(
+                `   ⌛ timeline "${options.key}" set selector_update "${storeCurrentSelectorKey}" to`,
+                latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key)
+              )
+            }
           }
-          selectorAtomUpdates.push({
-            key: token.key,
-            type: `atom_update`,
-            ...update,
-          })
         }
       } else {
         if (timelineData.timeTraveling === false) {
-          selectorAtomUpdates = []
           incompleteSelectorTime = null
+          if (timelineData.at !== timelineData.history.length) {
+            timelineData.history.splice(timelineData.at)
+          }
           timelineData.history.push({
             type: `atom_update`,
             key: token.key,
@@ -148,7 +170,6 @@ export function timeline__INTERNAL(
       }
     })
   }
-
   const core = target(store)
   for (const tokenOrFamily of options.atoms) {
     const timelineKey = core.timelineAtoms.getRelatedId(tokenOrFamily.key)
@@ -180,7 +201,6 @@ export function timeline__INTERNAL(
   }
 
   store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)
-
   return {
     key: options.key,
     type: `timeline`,
@@ -191,7 +211,7 @@ export const redo__INTERNAL = (
   token: TimelineToken,
   store: Store = IMPLICIT.STORE
 ): void => {
-  store.config.logger?.info(`⏩ redo on "${token.key}"`)
+  store.config.logger?.info(`⏩ redo "${token.key}"`)
   const timelineData = store.timelineStore.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
@@ -213,6 +233,7 @@ export const redo__INTERNAL = (
       setState({ key, type: `atom` }, newValue)
       break
     }
+    case `selector_update`:
     case `transaction_update`: {
       for (const atomUpdate of update.atomUpdates) {
         const { key, newValue } = atomUpdate
@@ -223,13 +244,16 @@ export const redo__INTERNAL = (
   }
   ++timelineData.at
   timelineData.timeTraveling = false
+  store.config.logger?.info(
+    `⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`
+  )
 }
 
 export const undo__INTERNAL = (
   token: TimelineToken,
   store: Store = IMPLICIT.STORE
 ): void => {
-  store.config.logger?.info(`⏮️  undo on "${token.key}"`)
+  store.config.logger?.info(`⏪ undo "${token.key}"`)
   const timelineData = store.timelineStore.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
@@ -244,6 +268,7 @@ export const undo__INTERNAL = (
     return
   }
   timelineData.timeTraveling = true
+
   --timelineData.at
   const update = timelineData.history[timelineData.at]
   switch (update.type) {
@@ -252,6 +277,7 @@ export const undo__INTERNAL = (
       setState({ key, type: `atom` }, oldValue)
       break
     }
+    case `selector_update`:
     case `transaction_update`: {
       for (const atomUpdate of update.atomUpdates) {
         const { key, oldValue } = atomUpdate
@@ -261,4 +287,7 @@ export const undo__INTERNAL = (
     }
   }
   timelineData.timeTraveling = false
+  store.config.logger?.info(
+    `⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`
+  )
 }
