@@ -21,7 +21,7 @@
 # atom.io
 ## upcoming features
 - [ ] store observation api
-- [ ] subscribe to creation of atom tokens
+- [x] subscribe to creation of atom tokens
 - [ ] subscribe to creation of selector tokens
 - [ ] subscribe to creation of readonly selector tokens
 - [ ] subscribe to creation of transaction tokens
