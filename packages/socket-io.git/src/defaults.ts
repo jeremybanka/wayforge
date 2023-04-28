@@ -206,6 +206,7 @@ export const DEFAULT_SIMPLE_GIT_RETURN_VALUES: SimpleGitReturnValues = {
   rm: undefined,
   rmKeepLocal: undefined,
   show: FILLER,
+  showBuffer: Buffer.from(FILLER),
   stash: FILLER,
   stashList: {
     all: [],
