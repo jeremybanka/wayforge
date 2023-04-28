@@ -14,18 +14,16 @@
 - [x] atom default as function
 - [x] check whether an atom is "default" (never set)
 - [x] customizable logging
+- [x] subscribe to transactions
+- [x] timelines
+- [x] subscribe to families
 
 # atom.io
 ## upcoming features
-- [ ] subscribe to token creation
-- [ ] subscribe to transactions
-- [ ] timelines
+- [ ] subscribe to creation of all tokens
 - [ ] resettable atoms
 - [ ] resettable selectors
 - [ ] store observation api
-
-## fixes & improvements
-- [ ] apply and emit transactions all at once
 
 ## documentation
 - [ ] document atom and selector families

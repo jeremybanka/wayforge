@@ -1,7 +1,9 @@
+/* eslint-disable max-lines */
+
 import HAMT from "hamt_plus"
 
 import type { KeyedStateUpdate, TransactionUpdate, Store } from "."
-import { IMPLICIT, withdraw } from "."
+import { target, IMPLICIT, withdraw } from "."
 import { setState } from ".."
 import type { AtomToken, TimelineOptions, TimelineToken, ƒn } from ".."
 
@@ -12,8 +14,13 @@ export type Timeline = {
   prev: () => void
 }
 
-export type TimelineStateUpdate = KeyedStateUpdate<unknown> & {
-  type: `state_update`
+export type TimelineAtomUpdate = KeyedStateUpdate<unknown> & {
+  type: `atom_update`
+}
+export type TimelineSelectorUpdate = {
+  key: string
+  type: `selector_update`
+  atomUpdates: TimelineAtomUpdate[]
 }
 export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
   type: `transaction_update`
@@ -22,13 +29,19 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 export type TimelineData = {
   at: number
   timeTraveling: boolean
-  history: (TimelineStateUpdate | TimelineTransactionUpdate)[]
+  history: (
+    | TimelineAtomUpdate
+    | TimelineSelectorUpdate
+    | TimelineTransactionUpdate
+  )[]
 }
 
 export function timeline__INTERNAL(
   options: TimelineOptions,
   store: Store = IMPLICIT.STORE
 ): TimelineToken {
+  let incompleteSelectorTime: number | null = null
+  // let selectorAtomUpdates: TimelineAtomUpdate[] = []
   let incompleteTransactionKey: string | null = null
   const timelineData: TimelineData = {
     at: 0,
@@ -39,6 +52,15 @@ export function timeline__INTERNAL(
   const subscribeToAtom = (token: AtomToken<any>) => {
     const state = withdraw(token, store)
     state.subject.subscribe((update) => {
+      const storeCurrentSelectorKey =
+        store.operation.open && store.operation.token.type === `selector`
+          ? store.operation.token.key
+          : null
+      const storeCurrentSelectorTime =
+        store.operation.open && store.operation.token.type === `selector`
+          ? store.operation.time
+          : null
+
       const storeCurrentTransactionKey =
         store.transactionStatus.phase === `applying`
           ? store.transactionStatus.key
@@ -70,6 +92,9 @@ export function timeline__INTERNAL(
           incompleteTransactionKey = storeCurrentTransactionKey
           const subscription = currentTransaction.subject.subscribe((update) => {
             if (timelineData.timeTraveling === false) {
+              if (timelineData.at !== timelineData.history.length) {
+                timelineData.history.splice(timelineData.at)
+              }
               timelineData.history.push({
                 type: `transaction_update`,
                 ...update,
@@ -82,39 +107,100 @@ export function timeline__INTERNAL(
             subscription.unsubscribe()
             incompleteTransactionKey = null
             store.config.logger?.info(
-              `⌛ timeline "${options.key}" pushed a transaction_update from "${update.key}"`
+              `⌛ timeline "${options.key}" got a transaction_update "${update.key}"`
             )
           })
         }
+      } else if (storeCurrentSelectorKey) {
+        if (timelineData.timeTraveling === false) {
+          if (storeCurrentSelectorTime !== incompleteSelectorTime) {
+            const newSelectorUpdate: TimelineSelectorUpdate = {
+              type: `selector_update`,
+              key: storeCurrentSelectorKey,
+              atomUpdates: [],
+            }
+            newSelectorUpdate.atomUpdates.push({
+              key: token.key,
+              type: `atom_update`,
+              ...update,
+            })
+            if (timelineData.at !== timelineData.history.length) {
+              timelineData.history.splice(timelineData.at)
+            }
+            timelineData.history.push(newSelectorUpdate)
+
+            store.config.logger?.info(
+              `⌛ timeline "${options.key}" got a selector_update "${storeCurrentSelectorKey}" with`,
+              newSelectorUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key)
+            )
+            timelineData.at = timelineData.history.length
+            incompleteSelectorTime = storeCurrentSelectorTime
+          } else {
+            const latestUpdate = timelineData.history.at(-1)
+            if (latestUpdate?.type === `selector_update`) {
+              latestUpdate.atomUpdates.push({
+                key: token.key,
+                type: `atom_update`,
+                ...update,
+              })
+              store.config.logger?.info(
+                `   ⌛ timeline "${options.key}" set selector_update "${storeCurrentSelectorKey}" to`,
+                latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key)
+              )
+            }
+          }
+        }
       } else {
         if (timelineData.timeTraveling === false) {
+          incompleteSelectorTime = null
+          if (timelineData.at !== timelineData.history.length) {
+            timelineData.history.splice(timelineData.at)
+          }
           timelineData.history.push({
-            type: `state_update`,
+            type: `atom_update`,
             key: token.key,
             oldValue: update.oldValue,
             newValue: update.newValue,
           })
           store.config.logger?.info(
-            `⌛ timeline "${options.key}" pushed a state_update to "${token.key}"`
+            `⌛ timeline "${options.key}" got a state_update to "${token.key}"`
           )
           timelineData.at = timelineData.history.length
         }
       }
     })
   }
-
+  const core = target(store)
   for (const tokenOrFamily of options.atoms) {
+    const timelineKey = core.timelineAtoms.getRelatedId(tokenOrFamily.key)
+    if (timelineKey) {
+      store.config.logger?.error(
+        `❌ Failed to add atom "${tokenOrFamily.key}" to timeline "${options.key}" because it belongs to timeline "${timelineKey}"`
+      )
+      continue
+    }
     if (tokenOrFamily.type === `atom_family`) {
       const family = tokenOrFamily
       family.subject.subscribe((token) => subscribeToAtom(token))
     } else {
       const token = tokenOrFamily
+      if (`family` in token && token.family) {
+        const familyTimelineKey = core.timelineAtoms.getRelatedId(
+          token.family.key
+        )
+        if (familyTimelineKey) {
+          store.config.logger?.error(
+            `❌ Failed to add atom "${token.key}" to timeline "${options.key}" because its family "${token.family.key}" belongs to timeline "${familyTimelineKey}"`
+          )
+          continue
+        }
+      }
       subscribeToAtom(token)
     }
+    core.timelineAtoms = core.timelineAtoms.set(tokenOrFamily.key, options.key)
   }
 
   store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)
-
   return {
     key: options.key,
     type: `timeline`,
@@ -125,27 +211,29 @@ export const redo__INTERNAL = (
   token: TimelineToken,
   store: Store = IMPLICIT.STORE
 ): void => {
+  store.config.logger?.info(`⏩ redo "${token.key}"`)
   const timelineData = store.timelineStore.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
-      `Tried to redo on timeline "${token.key}" has not been initialized.`
+      `Failed to redo on timeline "${token.key}". This timeline has not been initialized.`
     )
     return
   }
   if (timelineData.at === timelineData.history.length) {
     store.config.logger?.warn(
-      `Tried to redo on timeline "${token.key}" but there is nothing to redo.`
+      `Failed to redo at the end of timeline "${token.key}". There is nothing to redo.`
     )
     return
   }
   timelineData.timeTraveling = true
   const update = timelineData.history[timelineData.at]
   switch (update.type) {
-    case `state_update`: {
+    case `atom_update`: {
       const { key, newValue } = update
       setState({ key, type: `atom` }, newValue)
       break
     }
+    case `selector_update`:
     case `transaction_update`: {
       for (const atomUpdate of update.atomUpdates) {
         const { key, newValue } = atomUpdate
@@ -156,34 +244,40 @@ export const redo__INTERNAL = (
   }
   ++timelineData.at
   timelineData.timeTraveling = false
+  store.config.logger?.info(
+    `⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`
+  )
 }
 
 export const undo__INTERNAL = (
   token: TimelineToken,
   store: Store = IMPLICIT.STORE
 ): void => {
+  store.config.logger?.info(`⏪ undo "${token.key}"`)
   const timelineData = store.timelineStore.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
-      `Tried to undo on timeline "${token.key}" has not been initialized.`
+      `Failed to undo on timeline "${token.key}". This timeline has not been initialized.`
     )
     return
   }
   if (timelineData.at === 0) {
     store.config.logger?.warn(
-      `Tried to undo on timeline "${token.key}" but there is nothing to undo.`
+      `Failed to undo at the beginning of timeline "${token.key}". There is nothing to undo.`
     )
     return
   }
   timelineData.timeTraveling = true
+
   --timelineData.at
   const update = timelineData.history[timelineData.at]
   switch (update.type) {
-    case `state_update`: {
+    case `atom_update`: {
       const { key, oldValue } = update
       setState({ key, type: `atom` }, oldValue)
       break
     }
+    case `selector_update`:
     case `transaction_update`: {
       for (const atomUpdate of update.atomUpdates) {
         const { key, oldValue } = atomUpdate
@@ -193,4 +287,7 @@ export const undo__INTERNAL = (
     }
   }
   timelineData.timeTraveling = false
+  store.config.logger?.info(
+    `⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`
+  )
 }
