@@ -14,7 +14,7 @@ export const subscribe = <T>(
   const subscription = state.subject.subscribe(handleUpdate)
   store.config.logger?.info(`👀 subscribe to "${state.key}"`)
   const dependencySubscriptions =
-    `get` in state ? subscribeToRootAtoms(state, store) : null
+    state.type !== `atom` ? subscribeToRootAtoms(state, store) : null
 
   const unsubscribe =
     dependencySubscriptions === null

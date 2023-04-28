@@ -96,7 +96,7 @@ export const getState__INTERNAL = <T>(
     store.config.logger?.info(`>> read "${state.key}"`)
     return readCachedValue(state.key, store)
   }
-  if (`get` in state) {
+  if (state.type !== `atom`) {
     store.config.logger?.info(`-> calc "${state.key}"`)
     return computeSelectorState(state)
   }
