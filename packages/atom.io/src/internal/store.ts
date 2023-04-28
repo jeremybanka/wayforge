@@ -1,5 +1,6 @@
 import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
+import type * as Rx from "rxjs"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
@@ -13,7 +14,14 @@ import type {
   Timeline,
   TimelineData,
 } from "."
-import type { Logger, Transaction, ƒn } from ".."
+import type {
+  AtomToken,
+  Logger,
+  ReadonlySelectorToken,
+  SelectorToken,
+  Transaction,
+  ƒn,
+} from ".."
 
 export type StoreCore = Pick<
   Store,

@@ -18,7 +18,7 @@ import type {
   AtomToken,
   FamilyMetadata,
   ReadonlySelectorOptions,
-  ReadonlyValueToken,
+  ReadonlySelectorToken,
   SelectorOptions,
   SelectorToken,
   StateToken,
@@ -46,7 +46,7 @@ export const lookupSelectorSources = (
   store: Store
 ): (
   | AtomToken<unknown>
-  | ReadonlyValueToken<unknown>
+  | ReadonlySelectorToken<unknown>
   | SelectorToken<unknown>
 )[] =>
   target(store)
@@ -56,7 +56,7 @@ export const lookupSelectorSources = (
 
 export const traceSelectorAtoms = (
   selectorKey: string,
-  dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
+  dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
   store: Store
 ): AtomToken<unknown>[] => {
   const roots: AtomToken<unknown>[] = []
@@ -97,7 +97,7 @@ export const traceAllSelectorAtoms = (
 
 export const updateSelectorAtoms = (
   selectorKey: string,
-  dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
+  dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
   store: Store
 ): void => {
   const core = target(store)
@@ -164,12 +164,12 @@ export function selector__INTERNAL<T>(
   options: ReadonlySelectorOptions<T>,
   family?: FamilyMetadata,
   store?: Store
-): ReadonlyValueToken<T>
+): ReadonlySelectorToken<T>
 export function selector__INTERNAL<T>(
   options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
-): ReadonlyValueToken<T> | SelectorToken<T> {
+): ReadonlySelectorToken<T> | SelectorToken<T> {
   const core = target(store)
   if (HAMT.has(options.key, core.selectors)) {
     store.config.logger?.error(

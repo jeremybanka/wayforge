@@ -4,7 +4,7 @@ import type { Atom, ReadonlySelector, Selector, Store } from "."
 import { target, isValueCached, readCachedValue, IMPLICIT } from "."
 import type {
   AtomToken,
-  ReadonlyValueToken,
+  ReadonlySelectorToken,
   SelectorToken,
   StateToken,
   Transaction,
@@ -19,7 +19,7 @@ export const computeSelectorState = <T>(
 export function lookup(
   key: string,
   store: Store
-): AtomToken<unknown> | ReadonlyValueToken<unknown> | SelectorToken<unknown> {
+): AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown> {
   const core = target(store)
   const type = HAMT.has(key, core.atoms)
     ? `atom`
@@ -36,7 +36,7 @@ export function withdraw<T>(
   store: Store
 ): Atom<T> | Selector<T>
 export function withdraw<T>(
-  token: ReadonlyValueToken<T>,
+  token: ReadonlySelectorToken<T>,
   store: Store
 ): ReadonlySelector<T>
 export function withdraw<T>(
@@ -44,11 +44,11 @@ export function withdraw<T>(
   store: Store
 ): Transaction<T extends ƒn ? T : never>
 export function withdraw<T>(
-  token: ReadonlyValueToken<T> | StateToken<T>,
+  token: ReadonlySelectorToken<T> | StateToken<T>,
   store: Store
 ): Atom<T> | ReadonlySelector<T> | Selector<T>
 export function withdraw<T>(
-  token: ReadonlyValueToken<T> | StateToken<T> | TransactionToken<T>,
+  token: ReadonlySelectorToken<T> | StateToken<T> | TransactionToken<T>,
   store: Store
 ):
   | Atom<T>
@@ -67,20 +67,20 @@ export function withdraw<T>(
 export function deposit<T>(state: Atom<T>): AtomToken<T>
 export function deposit<T>(state: Selector<T>): SelectorToken<T>
 export function deposit<T>(state: Atom<T> | Selector<T>): StateToken<T>
-export function deposit<T>(state: ReadonlySelector<T>): ReadonlyValueToken<T>
+export function deposit<T>(state: ReadonlySelector<T>): ReadonlySelectorToken<T>
 export function deposit<T>(
   state: Transaction<T extends ƒn ? T : never>
 ): TransactionToken<T>
 export function deposit<T>(
   state: Atom<T> | ReadonlySelector<T> | Selector<T>
-): ReadonlyValueToken<T> | StateToken<T>
+): ReadonlySelectorToken<T> | StateToken<T>
 export function deposit<T>(
   state:
     | Atom<T>
     | ReadonlySelector<T>
     | Selector<T>
     | Transaction<T extends ƒn ? T : never>
-): ReadonlyValueToken<T> | StateToken<T> | TransactionToken<T> {
+): ReadonlySelectorToken<T> | StateToken<T> | TransactionToken<T> {
   return {
     key: state.key,
     type: state.type,
