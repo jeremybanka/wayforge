@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.3.1
+
+### Patch Changes
+
+- 75b0edc: 🏷️ `Read<ƒ>` and `Write<ƒ>` types for selectors and transactions
+- 90cca7f: 🥅 nested calls to `setState` are no longer performed and an error is logged
+- 90cca7f: 🐛 `timeline` now properly erases the future when a change is made in the past
+- 90cca7f: 🐛 setting a `selector` no longer results in multiple timeline events
+- 90cca7f: 🥅 an `atom` or `atomFamily` can no longer be tracked by multiple timelines. instead they must belong to only one.
+
 ## 0.3.0
 
 ### Minor Changes
