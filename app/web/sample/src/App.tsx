@@ -10,6 +10,7 @@ import { redo, undo } from "~/packages/atom.io/src/timeline"
 
 import { Dividend } from "./Dividend"
 import { Divisor } from "./Divisor"
+import { DraggableResizableModal } from "./DraggableResizableModal"
 import { Quotient } from "./Quotient"
 import { divisionTimeline, resetEquation, useStore } from "./services"
 import { StateEditor } from "./StateEditor"
@@ -55,14 +56,18 @@ export const App: FC = () => {
         </div>
       )}
       {demo === `stress_test` && <StressTest />}
-      <div>
+      <div
+        css={css`
+          margin-top: 100px;
+        `}
+      >
         Atoms
         {Object.entries(atomTokenIndex).map(([key, token]) => (
           <Fragment key={key}>
             {key.startsWith(`👁️‍🗨️_`) ? null : (
               <div
                 css={css`
-                  border: 1px solid white;
+                  border: 1px solid var(--fg-color);
                   padding: 5px;
                   margin: 5px;
                 `}
@@ -91,6 +96,7 @@ export const App: FC = () => {
           </Fragment>
         ))}
       </div>
+      {/* <DraggableResizableModal /> */}
     </main>
   )
 }
