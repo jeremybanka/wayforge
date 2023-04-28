@@ -147,7 +147,7 @@ describe(`timeline`, () => {
       },
     })
 
-    const tl_ab = timeline({
+    const timeline_ab = timeline({
       key: `a & b`,
       atoms: [a, b],
     })
@@ -155,9 +155,7 @@ describe(`timeline`, () => {
     subscribe(a, UTIL.stdout)
 
     setState(product_ab, 1)
-    undo(tl_ab)
-
-    const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(tl_ab.key)
+    undo(timeline_ab)
 
     expect(getState(a)).toBe(3)
 
