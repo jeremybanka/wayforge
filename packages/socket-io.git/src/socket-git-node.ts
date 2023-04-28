@@ -117,6 +117,7 @@ export const serveSimpleGit =
           rm: makeHandler(`rm`),
           rmKeepLocal: makeHandler(`rmKeepLocal`),
           show: makeHandler(`show`),
+          showBuffer: makeHandler(`showBuffer`),
           stash: makeHandler(`stash`),
           stashList: makeHandler(`stashList`),
           status: makeHandler(`status`),
