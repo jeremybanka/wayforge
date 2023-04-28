@@ -201,8 +201,10 @@ export function timeline__INTERNAL(
   }
 
   store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)
-  return {
+  const token: TimelineToken = {
     key: options.key,
     type: `timeline`,
   }
+  store.subject.timelineCreation.next(token)
+  return token
 }

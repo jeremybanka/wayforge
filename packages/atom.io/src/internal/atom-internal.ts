@@ -46,5 +46,6 @@ export function atom__INTERNAL<T>(
   const setSelf = (next) => setState(token, next, store)
   const onSet = (handle: UpdateHandler<T>) => subscribe(token, handle, store)
   options.effects?.forEach((effect) => effect({ setSelf, onSet }))
+  store.subject.atomCreation.next(token)
   return token
 }

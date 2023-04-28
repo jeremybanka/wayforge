@@ -80,7 +80,7 @@ export const applyTransaction = <ƒ extends ƒn>(
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output
   const { atomUpdates } = store.transactionStatus
-  for (const { key, oldValue, newValue } of atomUpdates) {
+  for (const { key, newValue } of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
     setState(state, newValue, store)
@@ -166,6 +166,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
     core.transactions
   )
   const token = deposit(newTransaction)
+  store.subject.transactionCreation.next(token)
   return token
 }
 

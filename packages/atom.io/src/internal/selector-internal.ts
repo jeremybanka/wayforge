@@ -200,7 +200,13 @@ export function selector__INTERNAL<T>(
     )
     const initialValue = getSelf()
     store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
-    return { ...readonlySelector, type: `readonly_selector` }
+    const token: ReadonlySelectorToken<T> = {
+      key: options.key,
+      type: `readonly_selector`,
+      family,
+    }
+    store.subject.selectorCreation.next(token)
+    return token
   }
   const setSelf = (next: T | ((oldValue: T) => T)): void => {
     store.config.logger?.info(`   <- "${options.key}" became`, next)
@@ -224,5 +230,11 @@ export function selector__INTERNAL<T>(
   core.selectors = HAMT.set(options.key, mySelector, core.selectors)
   const initialValue = getSelf()
   store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
-  return { ...mySelector, type: `selector` }
+  const token: SelectorToken<T> = {
+    key: options.key,
+    type: `selector`,
+    family,
+  }
+  store.subject.selectorCreation.next(token)
+  return token
 }
