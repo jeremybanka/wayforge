@@ -1,5 +1,11 @@
 # socket-io.git
 
+## 0.2.0
+
+### Minor Changes
+
+- 96a640d: ✨ add showBuffer from simple-git v3.18.0
+
 ## 0.1.1
 
 ### Patch Changes
