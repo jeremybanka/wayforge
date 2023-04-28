@@ -20,10 +20,15 @@
 
 # atom.io
 ## upcoming features
-- [ ] subscribe to creation of all tokens
+- [ ] store observation api
+- [ ] subscribe to creation of atom tokens
+- [ ] subscribe to creation of selector tokens
+- [ ] subscribe to creation of readonly selector tokens
+- [ ] subscribe to creation of transaction tokens
+- [ ] subscribe to creation of timeline tokens
+- [ ] subscribe to changes in store configuration
 - [ ] resettable atoms
 - [ ] resettable selectors
-- [ ] store observation api
 
 ## documentation
 - [ ] document atom and selector families
@@ -32,8 +37,11 @@
 
 # /react
 ## features
-- [x] useSubject
 - [x] useStore
+- [x] useI, useO, useIO
+- [ ] useTimeline
+- [ ] useStoreIndex
+- [ ] useTransactionIO 
 
 # /effects
 ## features
