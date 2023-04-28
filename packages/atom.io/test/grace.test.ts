@@ -1,4 +1,3 @@
-import { count } from "rxjs"
 import { vitest } from "vitest"
 
 import * as UTIL from "./-util"
@@ -16,7 +15,7 @@ import {
 import { setLogLevel } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 1
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 

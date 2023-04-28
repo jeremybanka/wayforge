@@ -15,12 +15,10 @@ import {
 } from "../src"
 import { redo, timeline, undo } from "../src/timeline"
 
-const loggers = [UTIL.silence, console] as const
-const choose = 1
-const logger = loggers[choose]
-
-useLogger(logger)
-setLogLevel(`warn`)
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 0
+setLogLevel(LOG_LEVELS[CHOOSE])
+const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
   __INTERNAL__.clearStore()

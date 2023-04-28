@@ -4,19 +4,17 @@ import * as UTIL from "./-util"
 import {
   __INTERNAL__,
   atom,
-  useLogger,
   getState,
   selector,
   setState,
   subscribe,
 } from "../src"
-import { withdraw } from "../src/internal"
+import { setLogLevel, withdraw } from "../src/internal"
 
-const loggers = [UTIL.silence, console] as const
-const choose = 0
-const logger = loggers[choose]
-
-useLogger(logger)
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 0
+setLogLevel(LOG_LEVELS[CHOOSE])
+const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
@@ -79,32 +77,32 @@ describe(`lazy propagation system`, () => {
     const selector0 = selector({
       key: `selector0`,
       get: ({ get }) => {
-        logger.warn(`selector0 evaluated`)
+        UTIL.stdout(`selector0 evaluated`)
         return get(a) * 10
       },
     })
     const selector1 = selector({
       key: `selector1`,
       get: ({ get }) => {
-        logger.warn(`selector1 evaluated`)
+        UTIL.stdout(`selector1 evaluated`)
         return get(a) - 1
       },
     })
 
-    expect(logger.warn).toHaveBeenCalledWith(`selector0 evaluated`)
-    expect(logger.warn).toHaveBeenCalledWith(`selector1 evaluated`)
+    expect(UTIL.stdout).toHaveBeenCalledWith(`selector0 evaluated`)
+    expect(UTIL.stdout).toHaveBeenCalledWith(`selector1 evaluated`)
 
-    vitest.spyOn(logger, `warn`)
+    vitest.spyOn(UTIL, `stdout`)
 
     subscribe(selector0, UTIL.stdout)
     setState(a, 1)
-    expect(logger.warn).toHaveBeenCalledWith(`selector0 evaluated`)
-    expect(logger.warn).not.toHaveBeenCalledWith(`selector1 evaluated`)
+    expect(UTIL.stdout).toHaveBeenCalledWith(`selector0 evaluated`)
+    expect(UTIL.stdout).not.toHaveBeenCalledWith(`selector1 evaluated`)
 
-    vitest.spyOn(logger, `warn`)
+    vitest.spyOn(UTIL, `stdout`)
 
     getState(selector1)
 
-    expect(logger.warn).toHaveBeenCalledWith(`selector1 evaluated`)
+    expect(UTIL.stdout).toHaveBeenCalledWith(`selector1 evaluated`)
   })
 })
