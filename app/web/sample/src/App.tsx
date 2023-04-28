@@ -1,20 +1,18 @@
 import type { FC } from "react"
+import { Fragment } from "react"
 
 import { css } from "@emotion/react"
 
-import { atom, runTransaction, transaction } from "~/packages/atom.io/src"
+import { recordToEntries } from "~/packages/anvl/src/object"
+import { atom, runTransaction } from "~/packages/atom.io/src"
+import { attachMetaState } from "~/packages/atom.io/src/internal/meta-state"
 import { redo, undo } from "~/packages/atom.io/src/timeline"
 
 import { Dividend } from "./Dividend"
 import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
-import {
-  dividendState,
-  divisionTimeline,
-  divisorState,
-  resetEquation,
-  useStore,
-} from "./services"
+import { divisionTimeline, resetEquation, useStore } from "./services"
+import { StateEditor } from "./StateEditor"
 import { StressTest } from "./StressTest"
 
 const DEMOS = [`stress_test`, `basic_arithmetic`] as const
@@ -25,8 +23,11 @@ const demoAtom = atom<Demo>({
   default: DEMOS[1],
 })
 
+const { atomTokenIndexState } = attachMetaState()
+
 export const App: FC = () => {
   const [demo, setDemo] = useStore(demoAtom)
+  const atomTokenIndex = useStore(atomTokenIndexState)
   return (
     <main
       css={css`
@@ -54,6 +55,42 @@ export const App: FC = () => {
         </div>
       )}
       {demo === `stress_test` && <StressTest />}
+      <div>
+        Atoms
+        {Object.entries(atomTokenIndex).map(([key, token]) => (
+          <Fragment key={key}>
+            {key.startsWith(`👁️‍🗨️_`) ? null : (
+              <div
+                css={css`
+                  border: 1px solid white;
+                  padding: 5px;
+                  margin: 5px;
+                `}
+              >
+                {key}:
+                {`type` in token ? (
+                  <StateEditor token={token} />
+                ) : (
+                  <>
+                    {recordToEntries(token.atoms).map(([key, token]) => (
+                      <div
+                        key={key}
+                        css={css`
+                          display: flex;
+                          flex-flow: row;
+                          align-items: center;
+                        `}
+                      >
+                        {key}:<StateEditor token={token} />
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+          </Fragment>
+        ))}
+      </div>
     </main>
   )
 }
