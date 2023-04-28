@@ -2,39 +2,28 @@
 
 import { vitest } from "vitest"
 
-import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
-import { Join } from "~/packages/anvl/src/join"
-
 import * as UTIL from "./-util"
 import {
   __INTERNAL__,
   atom,
-  atomFamily,
   getState,
   runTransaction,
   selector,
-  selectorFamily,
   setLogLevel,
-  setState,
   subscribe,
-  subscribeToTransaction,
   transaction,
-  useLogger,
 } from "../src"
 
-const loggers = [UTIL.silence, console] as const
-const choose = 0
-const logger = loggers[choose]
-
-useLogger(logger)
-setLogLevel(`info`)
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 1
+setLogLevel(LOG_LEVELS[CHOOSE])
+const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
-  /* eslint-disable @typescript-eslint/no-non-null-assertion */
-  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `error`)
-  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `warn`)
-  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `info`)
+  vitest.spyOn(logger, `error`)
+  vitest.spyOn(logger, `warn`)
+  vitest.spyOn(logger, `info`)
   vitest.spyOn(UTIL, `stdout`)
 })
 

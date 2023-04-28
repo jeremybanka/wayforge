@@ -1,20 +1,18 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./-util"
 import {
   __INTERNAL__,
   atomFamily,
   getState,
   selectorFamily,
+  setLogLevel,
   setState,
-  useLogger,
 } from "../src"
 
-const loggers = [UTIL.silence, console] as const
-const choose = 0
-const logger = loggers[choose]
-
-useLogger(logger)
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 1
+setLogLevel(LOG_LEVELS[CHOOSE])
+const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
   __INTERNAL__.clearStore()

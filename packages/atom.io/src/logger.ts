@@ -1,7 +1,7 @@
 import { doNothing } from "~/packages/anvl/src/function"
 
-import type { Store } from "./store"
-import { IMPLICIT } from "./store"
+import type { Store } from "./internal/store"
+import { IMPLICIT } from "./internal/store"
 
 export type Logger = Pick<Console, `error` | `info` | `warn`>
 export const LOG_LEVELS: ReadonlyArray<keyof Logger> = [

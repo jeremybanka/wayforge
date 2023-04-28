@@ -9,17 +9,15 @@ import {
   selector,
   setLogLevel,
   setState,
+  subscribe,
   transaction,
-  useLogger,
 } from "../src"
 import { redo, timeline, undo } from "../src/timeline"
 
-const loggers = [UTIL.silence, console] as const
-const choose = 0
-const logger = loggers[choose]
-
-useLogger(logger)
-setLogLevel(`info`)
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 0
+setLogLevel(LOG_LEVELS[CHOOSE])
+const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
@@ -33,7 +31,7 @@ describe(`timeline`, () => {
   it(`tracks the state of a group of atoms`, () => {
     const a = atom({
       key: `a`,
-      default: 0,
+      default: 5,
     })
     const b = atom({
       key: `b`,
@@ -73,7 +71,7 @@ describe(`timeline`, () => {
     })
 
     const expectation0 = () => {
-      expect(getState(a)).toBe(0)
+      expect(getState(a)).toBe(5)
       expect(getState(b)).toBe(0)
       expect(getState(c)).toBe(0)
       expect(getState(product_abc)).toBe(0)
@@ -124,5 +122,102 @@ describe(`timeline`, () => {
     )
     expect(timelineData.at).toBe(0)
     expect(timelineData.history.length).toBe(3)
+  })
+  test(`subscriptions when time-traveling`, () => {
+    const a = atom({
+      key: `a`,
+      default: 3,
+    })
+    const b = atom({
+      key: `b`,
+      default: 6,
+    })
+
+    const product_ab = selector({
+      key: `product of a & b`,
+      get: ({ get }) => {
+        return get(a) * get(b)
+      },
+      set: ({ set }, value) => {
+        set(a, Math.sqrt(value))
+        set(b, Math.sqrt(value))
+      },
+    })
+
+    const timeline_ab = timeline({
+      key: `a & b`,
+      atoms: [a, b],
+    })
+
+    subscribe(a, UTIL.stdout)
+
+    setState(product_ab, 1)
+    undo(timeline_ab)
+
+    expect(getState(a)).toBe(3)
+
+    expect(UTIL.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
+    expect(UTIL.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
+  })
+  test(`history erasure from the past`, () => {
+    const nameState = atom<string>({
+      key: `name`,
+      default: `josie`,
+    })
+    const nameCapitalizedState = selector<string>({
+      key: `name_capitalized`,
+      get: ({ get }) => {
+        return get(nameState).toUpperCase()
+      },
+      set: ({ set }, value) => {
+        set(nameState, value.toLowerCase())
+      },
+    })
+    const setName = transaction<(s: string) => void>({
+      key: `set name`,
+      do: ({ set }, name) => {
+        set(nameCapitalizedState, name)
+      },
+    })
+
+    const nameHistory = timeline({
+      key: `name history`,
+      atoms: [nameState],
+    })
+
+    expect(getState(nameState)).toBe(`josie`)
+
+    setState(nameState, `vance`)
+    setState(nameCapitalizedState, `JON`)
+    runTransaction(setName)(`Sylvia`)
+
+    const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(
+      nameHistory.key
+    )
+
+    expect(getState(nameState)).toBe(`sylvia`)
+    expect(timelineData.at).toBe(3)
+    expect(timelineData.history.length).toBe(3)
+
+    undo(nameHistory)
+    expect(getState(nameState)).toBe(`jon`)
+    expect(timelineData.at).toBe(2)
+    expect(timelineData.history.length).toBe(3)
+
+    undo(nameHistory)
+    expect(getState(nameState)).toBe(`vance`)
+    expect(timelineData.at).toBe(1)
+    expect(timelineData.history.length).toBe(3)
+
+    undo(nameHistory)
+    expect(getState(nameState)).toBe(`josie`)
+    expect(timelineData.at).toBe(0)
+    expect(timelineData.history.length).toBe(3)
+
+    runTransaction(setName)(`Mr. Jason Gold`)
+
+    expect(getState(nameState)).toBe(`mr. jason gold`)
+    expect(timelineData.at).toBe(1)
+    expect(timelineData.history.length).toBe(1)
   })
 })

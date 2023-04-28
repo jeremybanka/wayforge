@@ -34,7 +34,7 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
     (key: K): AtomToken<T> => {
       const subKey = stringifyJson(key)
       const family: FamilyMetadata = { key: options.key, subKey }
-      const fullKey = `${options.key}__${subKey}`
+      const fullKey = `${options.key}(${subKey})`
       const existing = withdraw({ key: fullKey, type: `atom` }, store)
       const token = existing
         ? deposit(existing)
@@ -71,7 +71,7 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
     (key: K): ReadonlyValueToken<T> => {
       const subKey = stringifyJson(key)
       const family: FamilyMetadata = { key: options.key, subKey }
-      const fullKey = `${options.key}__${subKey}`
+      const fullKey = `${options.key}(${subKey})`
       const existing = core.readonlySelectors.get(fullKey)
       if (existing) {
         return deposit(existing)
@@ -117,7 +117,7 @@ export function selectorFamily__INTERNAL<T, K extends Serializable>(
     (key: K): SelectorToken<T> => {
       const subKey = stringifyJson(key)
       const family: FamilyMetadata = { key: options.key, subKey }
-      const fullKey = `${options.key}__${subKey}`
+      const fullKey = `${options.key}(${subKey})`
       const existing = core.selectors.get(fullKey)
       if (existing) {
         return deposit(existing)

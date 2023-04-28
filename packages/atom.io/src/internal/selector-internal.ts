@@ -138,8 +138,9 @@ export const registerSelector = (
       )
     } else {
       store.config.logger?.info(
-        `🔌 registerSelector "${selectorKey}" <- "${dependency.key}" =`,
-        dependencyValue
+        `🔌 registerSelector "${selectorKey}" <- ( "${dependency.key}" =`,
+        dependencyValue,
+        `)`
       )
       core.selectorGraph = core.selectorGraph.set(selectorKey, dependency.key, {
         source: dependency.key,

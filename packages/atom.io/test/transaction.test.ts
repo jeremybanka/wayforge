@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import { vitest } from "vitest"
 
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
@@ -19,22 +17,18 @@ import {
   subscribe,
   subscribeToTransaction,
   transaction,
-  useLogger,
 } from "../src"
 
-const loggers = [UTIL.silence, console] as const
-const choose = 0
-const logger = loggers[choose]
-
-useLogger(logger)
-setLogLevel(`info`)
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 1
+setLogLevel(LOG_LEVELS[CHOOSE])
+const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
   __INTERNAL__.clearStore()
-  /* eslint-disable @typescript-eslint/no-non-null-assertion */
-  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `error`)
-  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `warn`)
-  vitest.spyOn(__INTERNAL__.IMPLICIT.STORE.config.logger!, `info`)
+  vitest.spyOn(logger, `error`)
+  vitest.spyOn(logger, `warn`)
+  vitest.spyOn(logger, `info`)
   vitest.spyOn(UTIL, `stdout`)
 })
 
@@ -152,9 +146,7 @@ describe(`transaction`, () => {
     runTransaction(steal)(thiefState.key, victimState.key)
     expect(getState(thiefInvState)).toEqual([prizeState.key])
     expect(getState(victimInvState)).toEqual([])
-    expect(
-      __INTERNAL__.IMPLICIT.STORE.config.logger!.error
-    ).not.toHaveBeenCalled()
+    expect(logger.error).not.toHaveBeenCalled()
 
     try {
       runTransaction(steal)(thiefState.key, victimState.key)
@@ -164,9 +156,7 @@ describe(`transaction`, () => {
         expect(thrown.message).toEqual(`No items to steal!`)
       }
     }
-    expect(
-      __INTERNAL__.IMPLICIT.STORE.config.logger!.error
-    ).toHaveBeenCalledTimes(1)
+    expect(logger.error).toHaveBeenCalledTimes(1)
 
     setState(globalInventoryState, (current) => current.remove(victimState.key))
   })

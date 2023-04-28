@@ -22,20 +22,21 @@ done
 
 total_lines=0
 
-for file in ./**/*.ts ./**/*.tsx; do
-  if [ -f "$file" ]; then
-    if ! $include_tests && [[ $file =~ \.(test|spec)\.tsx?$ ]]; then
-      continue
-    fi
+# Find all .ts and .tsx files
+files=$(find . -type f \( -iname "*.ts" -o -iname "*.tsx" \))
 
-    if $ignore_imports; then
-      lines=$(grep -v '^\s*import\s' "$file" | wc -l)
-    else
-      lines=$(wc -l < "$file")
-    fi
-
-    total_lines=$((total_lines + lines))
+for file in $files; do
+  if ! $include_tests && [[ $file =~ \.(test|spec)\.tsx?$ ]]; then
+    continue
   fi
+
+  if $ignore_imports; then
+    lines=$(grep -v '^\s*import\s' "$file" | wc -l)
+  else
+    lines=$(wc -l < "$file")
+  fi
+
+  total_lines=$((total_lines + lines))
 done
 
 if $ignore_imports; then
