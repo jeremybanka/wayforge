@@ -6,10 +6,11 @@ import {
   atom,
   getState,
   selector,
+  setLogLevel,
   setState,
   subscribe,
 } from "../src"
-import { setLogLevel, withdraw } from "../src/internal"
+import { withdraw } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0

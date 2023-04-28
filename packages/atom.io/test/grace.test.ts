@@ -11,8 +11,8 @@ import {
   setState,
   timeline,
   atomFamily,
+  setLogLevel,
 } from "../src"
-import { setLogLevel } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

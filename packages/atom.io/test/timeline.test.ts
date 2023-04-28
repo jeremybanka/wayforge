@@ -11,7 +11,6 @@ import {
   setState,
   subscribe,
   transaction,
-  useLogger,
 } from "../src"
 import { redo, timeline, undo } from "../src/timeline"
 

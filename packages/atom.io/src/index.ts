@@ -7,18 +7,17 @@ import {
   isAtomDefault,
   isSelectorDefault,
   withdraw,
-  setLogLevel,
-  useLogger,
 } from "./internal"
 import * as __INTERNAL__ from "./internal"
 import type { Store } from "./internal/store"
 
 export * from "./atom"
+export * from "./logger"
 export * from "./selector"
+export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
-export * from "./subscribe"
-export { __INTERNAL__, setLogLevel, useLogger }
+export { __INTERNAL__ }
 export type { Serializable } from "~/packages/anvl/src/json"
 
 export type AtomToken<_> = {
