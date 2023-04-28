@@ -12,14 +12,19 @@ export type Transactors = {
 }
 export type ReadonlyTransactors = Pick<Transactors, `get`>
 
-export type Action<ƒ extends ƒn> = (
+export type Read<ƒ extends ƒn> = (
+  transactors: ReadonlyTransactors,
+  ...parameters: Parameters<ƒ>
+) => ReturnType<ƒ>
+
+export type Write<ƒ extends ƒn> = (
   transactors: Transactors,
   ...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
 export type TransactionOptions<ƒ extends ƒn> = {
   key: string
-  do: Action<ƒ>
+  do: Write<ƒ>
 }
 
 export type Transaction<ƒ extends ƒn> = {

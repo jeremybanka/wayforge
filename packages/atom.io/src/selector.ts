@@ -4,12 +4,12 @@ import type { Serializable } from "~/packages/anvl/src/json"
 
 import type { ReadonlyValueToken, SelectorToken } from "."
 import { selectorFamily__INTERNAL, selector__INTERNAL } from "./internal"
-import type { ReadonlyTransactors, Transactors } from "./transaction"
+import type { Read, Write } from "./transaction"
 
 export type SelectorOptions<T> = {
   key: string
-  get: (readonlyTransactors: ReadonlyTransactors) => T
-  set: (transactors: Transactors, newValue: T) => void
+  get: Read<() => T>
+  set: Write<(newValue: T) => void>
 }
 export type ReadonlySelectorOptions<T> = Omit<SelectorOptions<T>, `set`>
 
@@ -25,8 +25,8 @@ export function selector<T>(
 
 export type SelectorFamilyOptions<T, K extends Serializable> = {
   key: string
-  get: (key: K) => (readonlyTransactors: ReadonlyTransactors) => T
-  set: (key: K) => (transactors: Transactors, newValue: T) => void
+  get: (key: K) => Read<() => T>
+  set: (key: K) => Write<(newValue: T) => void>
 }
 export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = Omit<
   SelectorFamilyOptions<T, K>,
