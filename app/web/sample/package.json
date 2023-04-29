@@ -12,8 +12,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@emotion/react": "11.10.6",
-    "@emotion/styled": "11.10.6",
+    "@emotion/react": "11.10.8",
+    "@emotion/styled": "11.10.8",
     "@eyecuelab/recoil-devtools": "0.1.7",
     "@floating-ui/dom": "1.2.7",
     "@floating-ui/react": "0.23.1",
