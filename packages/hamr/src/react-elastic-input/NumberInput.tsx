@@ -135,7 +135,6 @@ export const NumberInput: FC<NumberInputProps> = ({
     if (set === undefined) return
     userHasMadeDeliberateChange.current = true
     const input = event.target.value
-    console.log({ input })
     if (isValidNonNumber(input) || isDecimalInProgress(input)) {
       temporaryEntry.current = input
       const textInterpretation = isDecimalInProgress(input)
