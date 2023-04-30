@@ -26,7 +26,7 @@ export const NumberEditor = ({
 }: JsonEditorProps_INTERNAL<number>): ReactElement => (
   <NumberInput
     value={data}
-    set={isReadonly(path) ? undefined : set}
+    set={isReadonly(path) ? undefined : (newValue) => set(Number(newValue))}
     autoSize={true}
   />
 )

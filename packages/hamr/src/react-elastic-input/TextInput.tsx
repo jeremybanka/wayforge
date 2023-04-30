@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 
-import { ElasticInput } from "./ElasticInput"
+import { ElasticInput } from "."
 
 export type TextInputProps = {
   value: string
