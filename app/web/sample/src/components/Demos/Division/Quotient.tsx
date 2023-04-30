@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { quotientState, useStore } from "./services"
+import { quotientState, useStore } from "../../../services"
 
 export const Quotient: FC = () => {
   const [quotient, setQuotient] = useStore(quotientState)

@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { divisorState, useStore } from "./services"
+import { divisorState, useStore } from "../../../services"
 
 export const Divisor: FC = () => {
   const [divisor, setDivisor] = useStore(divisorState)

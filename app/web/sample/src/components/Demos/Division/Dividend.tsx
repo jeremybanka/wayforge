@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { dividendState, useStore } from "./services"
+import { dividendState, useStore } from "../../../services"
 
 export const Dividend: FC = () => {
   const [dividend, setDividend] = useStore(dividendState)

@@ -41,29 +41,40 @@ const ResizeHandle = styled.div`
 
 export const DraggableResizableModal: FC = () => {
   const [resizeActive, setResizeActive] = useState(false)
-  const closestCornerRef = useRef({ x: 0, y: 0 })
+  const currentCornerRef = useRef({ x: 0, y: 0 })
+  const getCorner = (x: 0 | 1, y: 0 | 1) => ({
+    x: x * window.innerWidth,
+    y: y * window.innerHeight,
+  })
+
+  const handleDrag: DragHandlers[`onDrag`] = (_, info) => {
+    const { offset } = info
+    const { innerWidth, innerHeight } = window
+
+    const nearestCorner = {
+      x: offset.x + (offset.x < innerWidth / 2 ? 0 : innerWidth),
+      y: offset.y + (offset.y < innerHeight / 2 ? 0 : innerHeight),
+    }
+
+    console.log(nearestCorner)
+  }
 
   const handleDragEnd: DragHandlers[`onDragEnd`] = (_, info) => {
     if (!resizeActive) {
       const { offset } = info
       const { innerWidth, innerHeight } = window
 
-      const nearestCorner = {
-        x: offset.x + (offset.x < innerWidth / 2 ? 0 : innerWidth),
-        y: offset.y + (offset.y < innerHeight / 2 ? 0 : innerHeight),
-      }
-
-      info.point.x = nearestCorner.x - info.point.x
-      info.point.y = nearestCorner.y - info.point.y
+      // info.point.x = nearestCorner.x - info.point.x
+      // info.point.y = nearestCorner.y - info.point.y
     }
   }
   return (
     <Modal
       drag
-      dragElastic={resizeActive ? 0.05 : 0.5}
-      onDrag={() => null}
+      dragElastic={0.5}
+      onDrag={(e, info) => handleDrag(e, info)}
       onDragEnd={(e, info) => handleDragEnd(e, info)}
-      dragConstraints={{ left: 100, right: 100, top: 100, bottom: 100 }}
+      dragConstraints={{ top: 0, left: 0, bottom: 0, right: 0 }}
       dragMomentum={false}
     >
       <TitleBar onPointerDown={() => setResizeActive(false)} />

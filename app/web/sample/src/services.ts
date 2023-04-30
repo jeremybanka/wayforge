@@ -11,7 +11,7 @@ const { useStore, useO, useI, useIO } = composeStoreHooks({
 
 export { useStore, useO, useIO, useI }
 
-setLogLevel(`info`)
+setLogLevel(`error`)
 
 export const dividendState = atom<number>({
   key: `dividend`,
