@@ -36,12 +36,12 @@ export const ElasticInput = forwardRef<
   useLayoutEffect(() => {
     if (spanRef.current) {
       setInputWidth(`${spanRef.current.offsetWidth + extraWidth}px`)
-      const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
         if (spanRef.current) {
           setInputWidth(`${spanRef.current.offsetWidth + extraWidth}px`)
         }
-      }, 50)
-      return () => clearTimeout(timeout)
+      }, 1000)
+      return () => clearInterval(interval)
     }
   }, [inputRef.current?.value, props.value])
 
