@@ -1,28 +1,35 @@
 import type { FC } from "react"
 import { useRef } from "react"
 
-import type { SerializedStyles } from "@emotion/react"
 import { motion } from "framer-motion"
 
+import { atom } from "~/packages/atom.io/src"
 import { attachMetaState } from "~/packages/atom.io/src/internal/meta/attach-meta"
 
 import { TokenList } from "./TokenList"
 import { useStore } from "../../services"
 
+import "./devtools.scss"
+
 const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
 
-export const DevTools: FC<{ customCss?: SerializedStyles }> = ({
-  customCss,
-}) => {
+const panelSizeState = atom({
+  key: `👁️‍🗨️_panel_size`,
+  default: { width: 300, height: 700 },
+})
+
+export const DevTools: FC = () => {
   const atomTokenIndex = useStore(atomTokenIndexState)
   const selectorTokenIndex = useStore(selectorTokenIndexState)
   const constraintsRef = useRef(null)
+
+  const [panelSize, setPanelSize] = useStore(panelSizeState)
 
   return (
     <>
       <motion.span
         ref={constraintsRef}
-        className="atom-io-devtools-constraints"
+        className="atom.io_devtools_zone"
         style={{
           position: `absolute`,
           top: 0,
@@ -32,16 +39,26 @@ export const DevTools: FC<{ customCss?: SerializedStyles }> = ({
           pointerEvents: `none`,
         }}
       />
-      <motion.main drag dragConstraints={constraintsRef} css={customCss}>
-        <section>
-          <h1>Atoms</h1>
-          <TokenList tokenIndex={atomTokenIndex} />
-        </section>
-        <section>
-          <h1>Selectors</h1>
-          <TokenList tokenIndex={selectorTokenIndex} />
-        </section>
-      </motion.main>
+      <motion.body
+        drag
+        dragConstraints={constraintsRef}
+        className="atom_io_devtools_body"
+      >
+        <header>
+          <h1>atom.io</h1>
+        </header>
+        <main>
+          <section>
+            <h2>Atoms</h2>
+            <TokenList tokenIndex={atomTokenIndex} />
+          </section>
+          <section>
+            <h2>Selectors</h2>
+            <TokenList tokenIndex={selectorTokenIndex} />
+          </section>
+        </main>
+        <footer>😃</footer>
+      </motion.body>
     </>
   )
 }

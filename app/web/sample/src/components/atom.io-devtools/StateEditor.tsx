@@ -11,14 +11,9 @@ import { useStore } from "../../services"
 export const StateEditor: FC<{ token: StateToken<unknown> }> = ({ token }) => {
   const [data, set] = useStore(token)
   return isPlainJson(data) ? (
-    <JsonEditor
-      data={data}
-      set={set}
-      customCss={skeletalJsonEditorCss}
-      schema={true}
-    />
+    <JsonEditor data={data} set={set} schema={true} />
   ) : (
-    <div css={skeletalJsonEditorCss}>
+    <div className="json_editor">
       <ElasticInput
         value={
           Object.getPrototypeOf(data).constructor.name +
@@ -39,12 +34,11 @@ export const ReadonlySelectorEditor: FC<{
     <JsonEditor
       data={data}
       set={() => null}
-      customCss={skeletalJsonEditorCss}
       schema={true}
       isReadonly={() => true}
     />
   ) : (
-    <div css={skeletalJsonEditorCss}>
+    <div className="json_editor">
       <ElasticInput
         value={
           Object.getPrototypeOf(data).constructor.name +

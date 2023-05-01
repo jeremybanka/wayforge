@@ -2,7 +2,6 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { defaultStyles } from "./components/atom.io-devtools/default-styles"
 import { DevTools } from "./components/atom.io-devtools/DevTools"
 import { Demos } from "./components/Demos"
 
@@ -15,7 +14,7 @@ export const App: FC = () => {
       `}
     >
       <Demos />
-      <DevTools customCss={defaultStyles} />
+      <DevTools />
     </main>
   )
 }
