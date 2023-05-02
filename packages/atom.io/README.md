@@ -22,8 +22,8 @@
 ## upcoming features
 - [ ] store observation api
 - [x] subscribe to creation of atom tokens
-- [ ] subscribe to creation of selector tokens
-- [ ] subscribe to creation of readonly selector tokens
+- [x] subscribe to creation of selector tokens
+- [x] subscribe to creation of readonly selector tokens
 - [ ] subscribe to creation of transaction tokens
 - [ ] subscribe to creation of timeline tokens
 - [ ] subscribe to changes in store configuration
