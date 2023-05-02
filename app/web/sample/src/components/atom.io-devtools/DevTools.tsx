@@ -1,7 +1,7 @@
 import type { FC } from "react"
 import { useRef } from "react"
 
-import { motion } from "framer-motion"
+import { LayoutGroup, motion, spring } from "framer-motion"
 
 import { atom } from "~/packages/atom.io/src"
 import { attachMetaState } from "~/packages/atom.io/src/internal/meta/attach-meta"
@@ -13,9 +13,9 @@ import "./devtools.scss"
 
 const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
 
-const panelSizeState = atom({
-  key: `👁️‍🗨️_panel_size`,
-  default: { width: 300, height: 700 },
+const devtoolsAreOpenState = atom<boolean>({
+  key: `👁️‍🗨️_devtools_are_open`,
+  default: true,
 })
 
 export const DevTools: FC = () => {
@@ -23,13 +23,15 @@ export const DevTools: FC = () => {
   const selectorTokenIndex = useStore(selectorTokenIndexState)
   const constraintsRef = useRef(null)
 
-  const [panelSize, setPanelSize] = useStore(panelSizeState)
+  const [devtoolsAreOpen, setDevtoolsAreOpen] = useStore(devtoolsAreOpenState)
+
+  const mouseHasMoved = useRef(false)
 
   return (
     <>
       <motion.span
         ref={constraintsRef}
-        className="atom.io_devtools_zone"
+        className="atom_io_devtools_zone"
         style={{
           position: `absolute`,
           top: 0,
@@ -39,26 +41,55 @@ export const DevTools: FC = () => {
           pointerEvents: `none`,
         }}
       />
-      <motion.body
+      <motion.main
         drag
         dragConstraints={constraintsRef}
-        className="atom_io_devtools_body"
+        className="atom_io_devtools"
+        transition={spring}
+        style={
+          devtoolsAreOpen
+            ? {}
+            : {
+                backgroundColor: `#0000`,
+                borderColor: `#0000`,
+                maxHeight: 28,
+                maxWidth: 33,
+              }
+        }
       >
-        <header>
-          <h1>atom.io</h1>
-        </header>
-        <main>
-          <section>
-            <h2>Atoms</h2>
-            <TokenList tokenIndex={atomTokenIndex} />
-          </section>
-          <section>
-            <h2>Selectors</h2>
-            <TokenList tokenIndex={selectorTokenIndex} />
-          </section>
-        </main>
-        <footer>😃</footer>
-      </motion.body>
+        {devtoolsAreOpen ? (
+          <>
+            <motion.header>
+              <h1>atom.io</h1>
+            </motion.header>
+            <motion.main>
+              <LayoutGroup>
+                <section>
+                  <h2>atoms</h2>
+                  <TokenList tokenIndex={atomTokenIndex} />
+                </section>
+                <section>
+                  <h2>selectors</h2>
+                  <TokenList tokenIndex={selectorTokenIndex} />
+                </section>
+              </LayoutGroup>
+            </motion.main>
+          </>
+        ) : null}
+        <footer>
+          <button
+            onMouseDown={() => (mouseHasMoved.current = false)}
+            onMouseMove={() => (mouseHasMoved.current = true)}
+            onMouseUp={() => {
+              if (!mouseHasMoved.current) {
+                setDevtoolsAreOpen((open) => !open)
+              }
+            }}
+          >
+            👁️‍🗨️
+          </button>
+        </footer>
+      </motion.main>
     </>
   )
 }

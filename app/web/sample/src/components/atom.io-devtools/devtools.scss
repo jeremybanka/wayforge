@@ -1,8 +1,8 @@
-.atom_io_devtools_body {
+main.atom_io_devtools {
   --fg-color: #eee;
   --bg-color: #111;
   @media (prefers-color-scheme: light) {
-    --fg-color: #444;
+    --fg-color: #222;
     --bg-color: #ddd;
   }
   box-sizing: border-box;
@@ -13,18 +13,24 @@
   right: 0;
   bottom: 0;
   height: 100%;
+  display: flex;
+  flex-flow: column;
   max-height: 800px;
   width: 100%;
   max-width: 460px;
   overflow-y: scroll;
   padding: 5px;
   header {
+    display: flex;
+    justify-content: space-between;
     h1 {
       font-size: inherit;
       margin: 0;
     }
   }
   main {
+    overflow-y: scroll;
+    flex-grow: 1;
     section {
       margin-top: 30px;
       h2 {
@@ -37,6 +43,19 @@
         margin: 5px;
         overflow-x: scroll;
       }
+    }
+  }
+  footer {
+    display: flex;
+    justify-content: flex-end;
+    button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: none;
+      position: absolute;
+      right: 0;
+      bottom: 0;
     }
   }
 
