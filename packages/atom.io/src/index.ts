@@ -62,6 +62,7 @@ export const setState = <T, New extends T>(
   store: Store = IMPLICIT.STORE
 ): void => {
   try {
+    console.log(`setState`, token, value, store)
     openOperation(token, store)
   } catch (thrown) {
     if (!(typeof thrown === `symbol`)) {

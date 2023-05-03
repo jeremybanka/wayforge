@@ -68,6 +68,7 @@ export const applyTransaction = <ƒ extends ƒn>(
   output: ReturnType<ƒ>,
   store: Store
 ): void => {
+  console.log(`🕵️‍♂️ applyTransaction`, store.transactionStatus)
   if (store.transactionStatus.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
@@ -80,9 +81,19 @@ export const applyTransaction = <ƒ extends ƒn>(
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output
   const { atomUpdates } = store.transactionStatus
+
+  console.log(`🕵️‍♂️ atomUpdates`, atomUpdates)
+  console.log(
+    `🕵️‍♂️ what's in the store?`,
+    atomUpdates.map((u) => [
+      u.key,
+      withdraw({ key: u.key, type: `atom` }, store),
+    ])
+  )
   for (const { key, newValue } of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
+    console.log(`🕵️‍♂️ setting state`, state, newValue)
     setState(state, newValue, store)
   }
   const myTransaction = withdraw<ƒ>(

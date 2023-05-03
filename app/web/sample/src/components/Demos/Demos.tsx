@@ -4,14 +4,15 @@ import { atom } from "~/packages/atom.io/src"
 
 import { Colors } from "./Colors"
 import { Division } from "./Division"
+import { ExplorerDemo } from "./Explorer"
 import { useStore } from "../../services"
 
-const DEMOS = [`colors`, `division`] as const
+const DEMOS = [`explorer`, `colors`, `division`] as const
 type Demo = (typeof DEMOS)[number]
 
 const demoAtom = atom<Demo>({
   key: `demo`,
-  default: DEMOS[1],
+  default: DEMOS[0],
 })
 
 export const Demos: FC = () => {
@@ -25,6 +26,7 @@ export const Demos: FC = () => {
           </option>
         ))}
       </select>
+      {demo === `explorer` && <ExplorerDemo />}
       {demo === `division` && <Division />}
       {demo === `colors` && <Colors />}
     </>

@@ -2,16 +2,18 @@ import { useState, useEffect } from "react"
 
 import { atom, selector, setLogLevel, transaction } from "~/packages/atom.io/src"
 import { composeStoreHooks } from "~/packages/atom.io/src/react"
+import { composeDevtools } from "~/packages/atom.io/src/react/Devtools/AtomIODevtools"
+import { composeExplorer } from "~/packages/atom.io/src/react/Explorer/Explorer"
 import { timeline } from "~/packages/atom.io/src/timeline"
 
-const { useStore, useO, useI, useIO } = composeStoreHooks({
-  useState,
-  useEffect,
-})
+const storeHooks = composeStoreHooks({ useState, useEffect })
 
-export { useStore, useO, useIO, useI }
+export const { Devtools } = composeDevtools({ storeHooks })
+export const { Explorer, useSetTitle } = composeExplorer({ storeHooks })
 
-setLogLevel(`error`)
+export const { useStore, useO, useIO, useI } = storeHooks
+
+setLogLevel(`info`)
 
 export const dividendState = atom<number>({
   key: `dividend`,

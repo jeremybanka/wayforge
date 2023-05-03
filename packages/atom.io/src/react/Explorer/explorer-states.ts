@@ -7,33 +7,42 @@ import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id/now"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object/entries"
-import {
-  atom,
-  atomFamily,
-  selector,
-  useRecoilTransaction_UNSTABLE as useRecoilTransaction,
-  useRecoilValue,
-  useSetRecoilState,
-} from "~/packages/atom.io/src"
+import { atom, atomFamily, selector, transaction } from "~/packages/atom.io/src"
+import type { Write, AtomToken } from "~/packages/atom.io/src"
 import {
   localStorageEffect,
   localStorageSerializationEffect,
 } from "~/packages/hamr/src/recoil-effect-storage/local-storage"
-import {
-  addToIndex,
-  removeFromIndex,
-} from "~/packages/hamr/src/recoil-tools/recoil-index"
-import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
+
+export type AtomicIndexOptions = {
+  indexAtom: AtomToken<Set<string>>
+  id: string
+}
+
+export const addToIndex: Write<(options: AtomicIndexOptions) => void> = (
+  { set },
+  { indexAtom, id }
+): void => set(indexAtom, (currentSet) => new Set(currentSet).add(id))
+
+export const removeFromIndex: Write<(options: AtomicIndexOptions) => void> = (
+  { set },
+  { indexAtom, id }
+): void =>
+  set(indexAtom, (currentSet) => {
+    const newSet = new Set(currentSet)
+    newSet.delete(id)
+    return newSet
+  })
 
 export const spaceIndexState = atom<Set<string>>({
   key: `spaceIndex`,
   default: new Set(),
-  effects: [
-    localStorageSerializationEffect(`spaceIndex`, {
-      serialize: (set) => JSON.stringify([...set]),
-      deserialize: (json) => new Set(JSON.parse(json)),
-    }),
-  ],
+  // effects: [
+  //   localStorageSerializationEffect(`spaceIndex`, {
+  //     serialize: (set) => JSON.stringify([...set]),
+  //     deserialize: (json) => new Set(JSON.parse(json)),
+  //   }),
+  // ],
 })
 
 type InfinitelyNestedArray<T> = InfinitelyNestedArray<T>[] | T
@@ -41,16 +50,16 @@ type InfinitelyNestedArray<T> = InfinitelyNestedArray<T>[] | T
 export const spaceLayoutState = atom<InfinitelyNestedArray<string>>({
   key: `spaceLayout`,
   default: [],
-  effects: [localStorageEffect(`spaceLayout`)],
+  // effects: [localStorageEffect(`spaceLayout`)],
 })
 
 const findSpaceState = atomFamily<number, string>({
   key: `space`,
   default: 1,
-  effects: (id) => [localStorageEffect(id)],
+  // effects: (id) => [localStorageEffect(id)],
 })
 
-export const addSpace: Transact<() => string> = (transactors) => {
+export const addSpace: Write<() => string> = (transactors) => {
   const { set } = transactors
   const id = `space-${now()}`
   addToIndex(transactors, { indexAtom: spaceIndexState, id })
@@ -58,18 +67,18 @@ export const addSpace: Transact<() => string> = (transactors) => {
   return id
 }
 
-export const removeSpace: Transact<(id: string) => void> = (transactors, id) =>
+export const removeSpace: Write<(id: string) => void> = (transactors, id) =>
   removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
 
 export const viewsPerSpaceState = atom<Join>({
   key: `viewsPerSpace`,
   default: new Join({ relationType: `1:n` }),
-  effects: [
-    localStorageSerializationEffect(`viewsPerSpace`, {
-      serialize: (index) => JSON.stringify(index.toJSON()),
-      deserialize: (json) => Join.fromJSON(JSON.parse(json)),
-    }),
-  ],
+  // effects: [
+  //   localStorageSerializationEffect(`viewsPerSpace`, {
+  //     serialize: (index) => JSON.stringify(index.toJSON()),
+  //     deserialize: (json) => Join.fromJSON(JSON.parse(json)),
+  //   }),
+  // ],
 })
 
 export type View = {
@@ -89,23 +98,23 @@ export const findViewState = atomFamily<View, string>({
       key: ``,
     },
   },
-  effects: (id) => [
-    localStorageSerializationEffect(id, {
-      serialize: (view) => JSON.stringify(view),
-      deserialize: (json) => JSON.parse(json),
-    }),
-  ],
+  // effects: (id) => [
+  //   localStorageSerializationEffect(id, {
+  //     serialize: (view) => JSON.stringify(view),
+  //     deserialize: (json) => JSON.parse(json),
+  //   }),
+  // ],
 })
 
 export const viewIndexState = atom<Set<string>>({
   key: `viewIndex`,
   default: new Set(),
-  effects: [
-    localStorageSerializationEffect(`viewIndex`, {
-      serialize: (set) => JSON.stringify([...set]),
-      deserialize: (json) => new Set(JSON.parse(json)),
-    }),
-  ],
+  // effects: [
+  //   localStorageSerializationEffect(`viewIndex`, {
+  //     serialize: (set) => JSON.stringify([...set]),
+  //     deserialize: (json) => new Set(JSON.parse(json)),
+  //   }),
+  // ],
 })
 
 export const allViewsState = selector<Entries<string, View>>({
@@ -116,27 +125,20 @@ export const allViewsState = selector<Entries<string, View>>({
   },
 })
 
-export const useSetTitle = (title: string): void => {
-  const location = useLocation()
-  const views = useRecoilValue(allViewsState)
-  const locationView = views.find(
-    ([, view]) => view.location.key === location.key
-  )
-  const viewId = locationView?.[0] ?? ``
-  const setView = useSetRecoilState(findViewState(viewId))
-  useEffect(() => {
-    setView((v) => ({ ...v, title }))
-  }, [title, setView])
-}
-
 type AddViewOptions = { spaceId?: string; path?: string }
 
-const OP_addView: Transact<(options?: AddViewOptions) => void> = (
+const writeOperationAddView: Write<(options?: AddViewOptions) => void> = (
   transactors,
   { spaceId: maybeSpaceId, path } = {}
 ) => {
   const { get, set } = transactors
-  const id = `view-${now()}`
+  const id = now()
+  console.log({
+    id,
+    maybeSpaceId,
+    path,
+    spaceIndex: viewIndexState,
+  })
   addToIndex(transactors, { indexAtom: viewIndexState, id })
   set(
     findViewState(id),
@@ -157,23 +159,21 @@ const OP_addView: Transact<(options?: AddViewOptions) => void> = (
   })
 }
 
-export const useOperation = <Options>(
-  operation: Transact<(options: Options) => void>
-): ((param: Options) => void) =>
-  useRecoilTransaction(
-    (transactors) => (options) => operation(transactors, options)
-  )
-
-export const useAddView = (): ((options?: AddViewOptions) => void) =>
-  useRecoilTransaction(
-    (transactors) => (options) => OP_addView(transactors, options)
-  )
-
-const removeView: Transact<(id: string) => void> = (transactors, id) => {
+export const writeOperationRemoveView: Write<(id: string) => void> = (
+  transactors,
+  id
+) => {
   const { set } = transactors
   removeFromIndex(transactors, { indexAtom: viewIndexState, id })
   set(viewsPerSpaceState, (current) => current.remove(id))
 }
 
-export const useRemoveView = (): ((id: string) => void) =>
-  useRecoilTransaction((transactors) => (id) => removeView(transactors, id))
+export const addView = transaction<(options?: AddViewOptions) => void>({
+  key: `add_view`,
+  do: writeOperationAddView,
+})
+
+export const removeView = transaction({
+  key: `remove_view`,
+  do: writeOperationRemoveView,
+})

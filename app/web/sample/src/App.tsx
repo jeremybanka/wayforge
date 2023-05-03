@@ -2,8 +2,8 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 
-import { DevTools } from "./components/atom.io-devtools/DevTools"
 import { Demos } from "./components/Demos"
+import { Devtools } from "./services"
 
 export const App: FC = () => {
   return (
@@ -14,7 +14,7 @@ export const App: FC = () => {
       `}
     >
       <Demos />
-      <DevTools />
+      {/* <Devtools /> */}
     </main>
   )
 }
