@@ -2,7 +2,7 @@ import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
 import type { Store, StoreCore } from "."
-import { deposit, withdraw, IMPLICIT } from "."
+import { cacheValue, deposit, withdraw, IMPLICIT } from "."
 import { getState, setState } from ".."
 import type {
   AtomToken,
@@ -68,7 +68,6 @@ export const applyTransaction = <ƒ extends ƒn>(
   output: ReturnType<ƒ>,
   store: Store
 ): void => {
-  console.log(`🕵️‍♂️ applyTransaction`, store.transactionStatus)
   if (store.transactionStatus.phase !== `building`) {
     store.config.logger?.warn(
       `abortTransaction called outside of a transaction. This is probably a bug.`
@@ -82,18 +81,15 @@ export const applyTransaction = <ƒ extends ƒn>(
   store.transactionStatus.output = output
   const { atomUpdates } = store.transactionStatus
 
-  console.log(`🕵️‍♂️ atomUpdates`, atomUpdates)
-  console.log(
-    `🕵️‍♂️ what's in the store?`,
-    atomUpdates.map((u) => [
-      u.key,
-      withdraw({ key: u.key, type: `atom` }, store),
-    ])
-  )
   for (const { key, newValue } of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
+    if (!HAMT.has(token.key, store.valueMap)) {
+      const atom = HAMT.get(token.key, store.transactionStatus.core.atoms)
+      store.atoms = HAMT.set(atom.key, atom, store.atoms)
+      store.valueMap = HAMT.set(atom.key, atom.default, store.valueMap)
+    }
     const state = withdraw(token, store)
-    console.log(`🕵️‍♂️ setting state`, state, newValue)
+
     setState(state, newValue, store)
   }
   const myTransaction = withdraw<ƒ>(
@@ -114,7 +110,7 @@ export const undoTransactionUpdate = <ƒ extends ƒn>(
   store: Store
 ): void => {
   store.config.logger?.info(` ⏮ undo transaction "${update.key}" (undo)`)
-  for (const { key, oldValue, newValue } of update.atomUpdates) {
+  for (const { key, oldValue } of update.atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
     setState(state, oldValue, store)
@@ -125,7 +121,7 @@ export const redoTransactionUpdate = <ƒ extends ƒn>(
   store: Store
 ): void => {
   store.config.logger?.info(` ⏭ redo transaction "${update.key}" (redo)`)
-  for (const { key, oldValue, newValue } of update.atomUpdates) {
+  for (const { key, newValue } of update.atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
     setState(state, newValue, store)

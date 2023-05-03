@@ -14,7 +14,7 @@ export const App: FC = () => {
       `}
     >
       <Demos />
-      {/* <Devtools /> */}
+      <Devtools />
     </main>
   )
 }

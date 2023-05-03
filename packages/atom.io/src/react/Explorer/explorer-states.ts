@@ -133,12 +133,7 @@ const writeOperationAddView: Write<(options?: AddViewOptions) => void> = (
 ) => {
   const { get, set } = transactors
   const id = now()
-  console.log({
-    id,
-    maybeSpaceId,
-    path,
-    spaceIndex: viewIndexState,
-  })
+
   addToIndex(transactors, { indexAtom: viewIndexState, id })
   set(
     findViewState(id),
