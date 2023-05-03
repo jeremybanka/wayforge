@@ -15,9 +15,13 @@ export const StateEditor: FC<{ token: StateToken<unknown> }> = ({ token }) => {
     <div className="json_editor">
       <ElasticInput
         value={
-          Object.getPrototypeOf(data).constructor.name +
-          ` ` +
-          JSON.stringify(data)
+          data instanceof Set
+            ? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
+            : data instanceof Map
+            ? `Map ` + JSON.stringify([...data])
+            : Object.getPrototypeOf(data).constructor.name +
+              ` ` +
+              JSON.stringify(data)
         }
         disabled={true}
       />
@@ -40,9 +44,13 @@ export const ReadonlySelectorEditor: FC<{
     <div className="json_editor">
       <ElasticInput
         value={
-          Object.getPrototypeOf(data).constructor.name +
-          ` ` +
-          JSON.stringify(data)
+          data instanceof Set
+            ? `Set ` + JSON.stringify([...data])
+            : data instanceof Map
+            ? `Map ` + JSON.stringify([...data])
+            : Object.getPrototypeOf(data).constructor.name +
+              ` ` +
+              JSON.stringify(data)
         }
         disabled={true}
       />
