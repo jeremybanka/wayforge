@@ -30,9 +30,11 @@ export const refineJsonType = (data: Json): RefinedJson =>
     : isPlainObject(data)
     ? { type: `object`, data }
     : raiseError(
-        `${stringifyJson(data)} with prototype "${
-          Object.getPrototypeOf(data).constructor.name
-        }" passed to refineJsonType. This is not valid JSON.`
+        data === undefined
+          ? `undefined passed to refineJsonType. This is not valid JSON.`
+          : `${stringifyJson(data)} with prototype "${
+              Object.getPrototypeOf(data).constructor.name
+            }" passed to refineJsonType. This is not valid JSON.`
       )
 
 export const isJson = (input: unknown): input is Json => {
