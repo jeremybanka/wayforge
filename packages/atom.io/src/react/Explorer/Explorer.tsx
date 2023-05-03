@@ -16,6 +16,7 @@ import {
   removeView,
   viewIndexState,
 } from "./explorer-states"
+import { setState } from "../.."
 import { runTransaction } from "../../transaction"
 
 export type SpacesComponents = {
@@ -49,11 +50,11 @@ export const composeExplorer = (options: {
   }> = ({ children, viewId, close }) => {
     const location = useLocation()
     const viewState = findViewState(viewId)
-    console.warn({ viewId, viewState })
+    // console.warn({ viewId, viewState })
     const [view, setView] = options.storeHooks.useIO(viewState)
-    // useEffect(() => {
-    //   setView((view) => ({ ...view, location }))
-    // }, [location, setView])
+    useEffect(() => {
+      setView((view) => ({ ...view, location }))
+    }, [location.key])
     return (
       <>
         <div>
@@ -128,11 +129,11 @@ export const composeExplorer = (options: {
       ([, view]) => view.location.key === location.key
     )
     const viewId = locationView?.[0] ?? ``
-    const setView = options.storeHooks.useI(findViewState(viewId))
     useEffect(() => {
-      console.warn({ location, views, locationView, viewId, setView })
-      setView((v) => ({ ...v, title }))
-    }, [title, setView])
+      if (viewId) {
+        setState(findViewState(viewId), (v) => ({ ...v, title }))
+      }
+    }, [viewId])
   }
 
   return { Explorer, useSetTitle }
