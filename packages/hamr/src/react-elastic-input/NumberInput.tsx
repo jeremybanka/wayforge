@@ -1,5 +1,5 @@
 import type { FC } from "react"
-import { ChangeEvent, useId, useRef } from "react"
+import { useState, ChangeEvent, useId, useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 import { pipe } from "fp-ts/function"
@@ -115,7 +115,9 @@ export const NumberInput: FC<NumberInputProps> = ({
   value = null,
 }) => {
   const id = useId()
-  const temporaryEntry = useRef<DecimalInProgress | ValidNonNumber | null>(null)
+  const [temporaryEntry, setTemporaryEntry] = useState<
+    DecimalInProgress | ValidNonNumber | null
+  >(null)
   const userHasMadeDeliberateChange = useRef<boolean>(false)
 
   const refine = initRefinery({ max, min, decimalPlaces, nullable: true })
@@ -125,7 +127,7 @@ export const NumberInput: FC<NumberInputProps> = ({
   const handleBlur = () => {
     if (userHasMadeDeliberateChange.current) {
       set(refine(value ?? null))
-      temporaryEntry.current = null
+      setTemporaryEntry(null)
     }
     userHasMadeDeliberateChange.current = false
   }
@@ -136,7 +138,7 @@ export const NumberInput: FC<NumberInputProps> = ({
     userHasMadeDeliberateChange.current = true
     const input = event.target.value
     if (isValidNonNumber(input) || isDecimalInProgress(input)) {
-      temporaryEntry.current = input
+      setTemporaryEntry(input)
       const textInterpretation = isDecimalInProgress(input)
         ? input
         : min?.toString() ?? `0`
@@ -144,7 +146,7 @@ export const NumberInput: FC<NumberInputProps> = ({
       set(refine(newValue))
       return
     }
-    temporaryEntry.current = null
+    setTemporaryEntry(null)
     const inputIsNumeric =
       (!isNaN(Number(input)) && !input.includes(` `)) ||
       (allowDecimal && input === `.`) ||
@@ -159,7 +161,7 @@ export const NumberInput: FC<NumberInputProps> = ({
   }
 
   const displayValue =
-    temporaryEntry.current ?? valueToText(value ? refine(value) : value)
+    temporaryEntry ?? valueToText(value ? refine(value) : value)
 
   return (
     <span css={customCss}>
