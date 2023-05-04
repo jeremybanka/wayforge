@@ -19,25 +19,21 @@ import {
 import { setState } from "../.."
 import { runTransaction } from "../../transaction"
 
-export type SpacesComponents = {
-  SpaceWrapper: WC
-  SpacesWrapper: WC
-}
-// export type SpacesProps = {
-//   customCss?: SerializedStyles
-//   Components?: Partial<SpacesComponents>
-//   Routes
-// }
-
-const DEFAULT_COMPONENTS: SpacesComponents = {
-  SpaceWrapper: ({ children }) => <div>{children}</div>,
-  SpacesWrapper: ({ children }) => <div>{children}</div>,
-}
-
-export const composeExplorer = (options: {
-  Components?: SpacesComponents
+export type ExplorerOptions = {
+  key: string
+  Components?: {
+    SpaceWrapper: WC
+  }
   storeHooks: ReturnType<typeof composeStoreHooks>
-}): {
+}
+
+const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
+  SpaceWrapper: ({ children }) => <div>{children}</div>,
+}
+
+export const composeExplorer = (
+  options: ExplorerOptions
+): {
   Explorer: FC<{ children: ReactNode | VNode }>
   useSetTitle: (viewId: string) => void
 } => {
@@ -96,17 +92,9 @@ export const composeExplorer = (options: {
 
   const Explorer: FC<{ children: ReactNode | VNode }> = ({ children }) => {
     const viewIds = options.storeHooks.useO(viewIndexState)
-    // {
-    //   const id = `view-${now()}`
-    //   setViewIds((viewIds) => {
-    //     const newViewIds = new Set(viewIds)
-    //     newViewIds.add(id)
-    //     return newViewIds
-    //   })
-    // }
 
     return (
-      <Components.SpacesWrapper>
+      <>
         {[...viewIds].map((viewId) => (
           <View
             key={viewId}
@@ -118,7 +106,7 @@ export const composeExplorer = (options: {
         ))}
         <br />
         <button onClick={() => runTransaction(addView)()}>Add Space</button>
-      </Components.SpacesWrapper>
+      </>
     )
   }
 
@@ -128,7 +116,7 @@ export const composeExplorer = (options: {
     const locationView = views.find(
       ([, view]) => view.location.key === location.key
     )
-    const viewId = locationView?.[0] ?? ``
+    const viewId = locationView?.[0] ?? null
     useEffect(() => {
       if (viewId) {
         setState(findViewState(viewId), (v) => ({ ...v, title }))
