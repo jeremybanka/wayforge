@@ -5,7 +5,7 @@ import { atom } from "~/packages/atom.io/src"
 import { Colors } from "./Colors"
 import { Division } from "./Division"
 import { ExplorerDemo } from "./Explorer"
-import { useStore } from "../../services"
+import { useStore } from "../../services/store"
 
 const DEMOS = [`explorer`, `colors`, `division`] as const
 type Demo = (typeof DEMOS)[number]

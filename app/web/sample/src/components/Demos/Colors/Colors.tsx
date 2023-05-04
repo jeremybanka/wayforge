@@ -7,7 +7,7 @@ import { atom, selector, selectorFamily } from "~/packages/atom.io/src"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { Luum, setHue, setLum, setSat } from "~/packages/Luum/src"
 
-import { useIO, useO } from "../../../services"
+import { useIO, useO } from "../../../services/store"
 
 const colorAtom = atom<Luum>({
   key: `color`,

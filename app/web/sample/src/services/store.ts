@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react"
 
 import { atom, selector, setLogLevel, transaction } from "~/packages/atom.io/src"
-import { composeStoreHooks } from "~/packages/atom.io/src/react"
-import { composeDevtools } from "~/packages/atom.io/src/react/Devtools/AtomIODevtools"
-import { composeExplorer } from "~/packages/atom.io/src/react/Explorer/Explorer"
+import { composeStoreHooks } from "~/packages/atom.io/src/react-state"
+import { composeDevtools } from "~/packages/atom.io/src/react-state/Devtools/AtomIODevtools"
+import { composeExplorer } from "~/packages/atom.io/src/react-state/Explorer/Explorer"
 import { timeline } from "~/packages/atom.io/src/timeline"
 
 const storeHooks = composeStoreHooks({ useState, useEffect })
 
 export const { Devtools } = composeDevtools({ storeHooks })
-export const { Explorer, useSetTitle } = composeExplorer({ storeHooks })
+export const { Explorer, useSetTitle } = composeExplorer({
+  key: `🤓`,
+  storeHooks,
+})
 
 export const { useStore, useO, useIO, useI } = storeHooks
 

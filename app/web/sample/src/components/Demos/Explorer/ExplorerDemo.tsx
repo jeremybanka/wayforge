@@ -2,7 +2,7 @@ import type { FC } from "react"
 
 import { Link, Route, Routes, Outlet } from "react-router-dom"
 
-import { Explorer, useSetTitle } from "../../../services"
+import { Explorer, useSetTitle } from "../../../services/store"
 
 const Home: FC = () => {
   useSetTitle(`Home`)

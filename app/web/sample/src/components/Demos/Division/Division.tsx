@@ -5,7 +5,7 @@ import { redo, runTransaction, undo } from "~/packages/atom.io/src"
 import { Dividend } from "./Dividend"
 import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
-import { divisionTimeline, resetEquation } from "../../../services"
+import { divisionTimeline, resetEquation } from "../../../services/store"
 
 export const Division: FC = () => (
   <div>

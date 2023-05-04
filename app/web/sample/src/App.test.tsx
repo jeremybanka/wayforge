@@ -6,7 +6,7 @@ import { render, fireEvent } from "@testing-library/react"
 import type { StateToken } from "~/packages/atom.io/src"
 
 import { App } from "./App"
-import { useStore } from "./services"
+import { useStore } from "./services/store"
 
 export const onChange = [() => undefined, console.log][0]
 

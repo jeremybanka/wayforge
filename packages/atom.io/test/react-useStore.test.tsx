@@ -5,7 +5,7 @@ import { render, fireEvent } from "@testing-library/react"
 
 import type { StateToken } from "../src"
 import { isDefault, atom } from "../src"
-import { composeStoreHooks } from "../src/react"
+import { composeStoreHooks } from "../src/react-state"
 
 const { useStore } = composeStoreHooks({ useState, useEffect })
 
