@@ -2700,7 +2700,6 @@ __metadata:
     react-dom: 18.2.0
     react-resizable: 3.0.5
     react-router-dom: 6.10.0
-    recoil: 0.7.7
     sass: 1.62.1
     vite: 4.3.3
     vite-plugin-svgr: 2.4.0
