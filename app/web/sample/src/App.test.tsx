@@ -23,6 +23,10 @@ export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
 describe(`App`, () => {
   it(`Shows a basic state graph in operation`, () => {
     const { getByTestId } = render(<App />)
+    const demoSelect = getByTestId(`which-demo`)
+
+    fireEvent.change(demoSelect, { target: { value: `division` } })
+
     const incDividend = getByTestId(`dividendButton+`)
     const decDividend = getByTestId(`dividendButton-`)
     const incDivisor = getByTestId(`divisorButton+`)

@@ -19,7 +19,11 @@ export const Demos: FC = () => {
   const [demo, setDemo] = useStore(demoAtom)
   return (
     <>
-      <select value={demo} onChange={(e) => setDemo(e.target.value as Demo)}>
+      <select
+        value={demo}
+        onChange={(e) => setDemo(e.target.value as Demo)}
+        data-testid="which-demo"
+      >
         {DEMOS.map((demo) => (
           <option key={demo} value={demo}>
             {demo}
