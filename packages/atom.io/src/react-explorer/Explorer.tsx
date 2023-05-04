@@ -5,7 +5,7 @@ import { useEffect } from "react"
 
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
-import type { composeStoreHooks } from "~/packages/atom.io/src/react-state"
+import type { composeStoreHooks } from "~/packages/atom.io/src/react"
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
@@ -16,8 +16,8 @@ import {
   removeView,
   viewIndexState,
 } from "./explorer-states"
-import { setState } from "../.."
-import { runTransaction } from "../../transaction"
+import { setState } from ".."
+import { runTransaction } from "../transaction"
 
 export type ExplorerOptions = {
   key: string

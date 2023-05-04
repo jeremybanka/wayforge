@@ -7,7 +7,7 @@ import { atom } from "~/packages/atom.io/src"
 import { attachMetaState } from "~/packages/atom.io/src/internal/meta/attach-meta"
 
 import { TokenList } from "./TokenList"
-import type { composeStoreHooks } from ".."
+import type { composeStoreHooks } from "../react"
 
 import "./devtools.scss"
 

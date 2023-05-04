@@ -5,7 +5,7 @@ import type { ReadonlySelectorToken, StateToken } from "~/packages/atom.io/src"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 
-import { useStore } from "../../../../../app/web/sample/src/services/store"
+import { useStore } from "../../../../app/web/sample/src/services/store"
 
 export const StateEditor: FC<{ token: StateToken<unknown> }> = ({ token }) => {
   const [data, set] = useStore(token)
