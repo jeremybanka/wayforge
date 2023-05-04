@@ -3,8 +3,13 @@ import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
 
+import type { InfinitelyNestedArray } from "."
 import { addToIndex, removeFromIndex } from "."
-import { makeFindSpaceState, makeSpaceIndexState } from "./space-states"
+import {
+  makeFindSpaceState,
+  makeSpaceIndexState,
+  makeSpaceLayoutState,
+} from "./space-states"
 import type { View } from "./view-states"
 import { makeFindViewState, makeViewIndexState } from "./view-states"
 import type {
@@ -32,6 +37,7 @@ export const makeViewsPerSpaceState = (key: string): AtomToken<Join> =>
 export type ExplorerState = {
   findSpaceState: AtomFamily<string, string>
   spaceIndexState: AtomToken<Set<string>>
+  spaceLayoutState: AtomToken<InfinitelyNestedArray<string>>
   writeOperationRemoveSpace: Write<(id: string) => void>
   writeOperationAddSpace: Write<() => string>
   findViewState: AtomFamily<View, string>
@@ -49,6 +55,7 @@ export type ExplorerState = {
 export const attachExplorerState = (key: string): ExplorerState => {
   const findSpaceState = makeFindSpaceState(key)
   const spaceIndexState = makeSpaceIndexState(key)
+  const spaceLayoutState = makeSpaceLayoutState(key)
   const viewsPerSpaceState = makeViewsPerSpaceState(key)
   const findViewState = makeFindViewState(key)
   const viewIndexState = makeViewIndexState(key)
@@ -81,7 +88,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
     { spaceId: maybeSpaceId, path } = {}
   ) => {
     const { get, set } = transactors
-    const id = now()
+    const id = `view-${now()}`
 
     addToIndex(transactors, { indexAtom: viewIndexState, id })
     set(
@@ -126,6 +133,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
   return {
     findSpaceState,
     spaceIndexState,
+    spaceLayoutState,
     writeOperationRemoveSpace,
     writeOperationAddSpace,
     findViewState,

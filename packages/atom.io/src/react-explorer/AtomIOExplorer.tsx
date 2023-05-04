@@ -1,5 +1,3 @@
-import type { VNode } from "preact"
-
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
 
@@ -29,7 +27,7 @@ const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
 export const composeExplorer = (
   options: ExplorerOptions
 ): ExplorerState & {
-  Explorer: FC<{ children: ReactNode | VNode }>
+  Explorer: FC<{ children: ReactNode }>
   useSetTitle: (viewId: string) => void
 } => {
   const Components = { ...DEFAULT_COMPONENTS, ...options.Components }
@@ -40,7 +38,7 @@ export const composeExplorer = (
     state
 
   const InnerView: FC<{
-    children: ReactNode | VNode
+    children: ReactNode
     viewId: string
     close: () => void
   }> = ({ children, viewId, close }) => {
@@ -52,7 +50,7 @@ export const composeExplorer = (
       setView((view) => ({ ...view, location }))
     }, [location.key])
     return (
-      <>
+      <div className="view">
         <div>
           {view.title}
           {`: `}
@@ -69,12 +67,12 @@ export const composeExplorer = (
           <button onClick={close}>close</button>
         </div>
         {children}
-      </>
+      </div>
     )
   }
 
   const View: FC<{
-    children: ReactNode | VNode
+    children: ReactNode
     viewId: string
     close: () => void
   }> = ({ children, viewId, close }) => {
@@ -90,7 +88,7 @@ export const composeExplorer = (
     )
   }
 
-  const Explorer: FC<{ children: ReactNode | VNode }> = ({ children }) => {
+  const Explorer: FC<{ children: ReactNode }> = ({ children }) => {
     const viewIds = options.storeHooks.useO(viewIndexState)
 
     return (
