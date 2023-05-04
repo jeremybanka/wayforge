@@ -9,13 +9,8 @@ import type { composeStoreHooks } from "~/packages/atom.io/src/react"
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
-import {
-  addView,
-  allViewsState,
-  findViewState,
-  removeView,
-  viewIndexState,
-} from "./explorer-states"
+import type { ExplorerState } from "./explorer-states"
+import { attachExplorerState } from "./explorer-states"
 import { setState } from ".."
 import { runTransaction } from "../transaction"
 
@@ -33,11 +28,16 @@ const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
 
 export const composeExplorer = (
   options: ExplorerOptions
-): {
+): ExplorerState & {
   Explorer: FC<{ children: ReactNode | VNode }>
   useSetTitle: (viewId: string) => void
 } => {
   const Components = { ...DEFAULT_COMPONENTS, ...options.Components }
+
+  const state = attachExplorerState(options.key)
+
+  const { findViewState, viewIndexState, allViewsState, removeView, addView } =
+    state
 
   const InnerView: FC<{
     children: ReactNode | VNode
@@ -124,5 +124,5 @@ export const composeExplorer = (
     }, [viewId])
   }
 
-  return { Explorer, useSetTitle }
+  return { Explorer, useSetTitle, ...state }
 }

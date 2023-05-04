@@ -1,3 +1,5 @@
+import type { Json } from "~/packages/anvl/src/json"
+
 import type { AtomEffect } from "../index"
 
 export type StringInterface<T> = {
@@ -18,3 +20,7 @@ export const persistAtom =
       storage.setItem(key, stringify(newValue))
     })
   }
+
+export const lazyLocalStorageEffect: <J extends Json>(
+  key: string
+) => AtomEffect<J> = persistAtom(localStorage)(JSON)
