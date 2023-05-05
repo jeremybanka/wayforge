@@ -59,7 +59,7 @@ export const composeExplorer = ({
     }, [location.key])
     return (
       <div className="view">
-        <div>
+        <header>
           {view.title}
           {`: `}
           {location.pathname.split(`/`).map((pathPiece, idx, array) =>
@@ -73,8 +73,8 @@ export const composeExplorer = ({
             )
           )}
           <button onClick={close}>close</button>
-        </div>
-        {children}
+        </header>
+        <main>{children}</main>
       </div>
     )
   }
@@ -99,7 +99,13 @@ export const composeExplorer = ({
   const Space: FC<{ children: ReactNode; spaceId: string }> = ({
     children,
     spaceId,
-  }) => {}
+  }) => {
+    return (
+      <SpaceWrapper>
+        <div className="space">{children}</div>
+      </SpaceWrapper>
+    )
+  }
 
   const Spaces: FC<{ children: ReactNode }> = ({ children }) => {
     const spaceLayout = useO(spaceLayoutState)

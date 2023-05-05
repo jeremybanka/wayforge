@@ -1,1 +1,1 @@
-export * from "./ExplorerDemo"
+export * from "./DemoExplorer"

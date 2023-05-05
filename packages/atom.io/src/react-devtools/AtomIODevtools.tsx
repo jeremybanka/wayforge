@@ -8,6 +8,7 @@ import { attachMetaState } from "~/packages/atom.io/src/internal/meta/attach-met
 
 import { TokenList } from "./TokenList"
 import type { composeStoreHooks } from "../react"
+import { lazyLocalStorageEffect } from "../web-effects"
 
 import "./devtools.scss"
 
@@ -16,6 +17,7 @@ const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
 const devtoolsAreOpenState = atom<boolean>({
   key: `👁️‍🗨️_devtools_are_open`,
   default: true,
+  effects: [lazyLocalStorageEffect(`👁️‍🗨️_devtools_are_open`)],
 })
 
 export const composeDevtools = (options: {

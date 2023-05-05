@@ -3,7 +3,7 @@ main.atom_io_devtools {
   --bg-color: #111;
   @media (prefers-color-scheme: light) {
     --fg-color: #222;
-    --bg-color: #ddd;
+    --bg-color: #ccc;
   }
   box-sizing: border-box;
   color: var(--fg-color);
