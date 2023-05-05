@@ -1,9 +1,9 @@
 import { isString } from "fp-ts/lib/string"
 
+import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
+import { isFractalArray } from "~/packages/anvl/src/array/fractal-array"
 import { parseJson, stringifyJson } from "~/packages/anvl/src/json"
 
-import type { InfinitelyNestedArray } from "."
-import { isInfinitelyNestedArray } from "."
 import { persistStringSetAtom } from "./explorer-effects"
 import type { AtomToken } from ".."
 import type { AtomFamily } from "../atom"
@@ -19,17 +19,17 @@ export const makeSpaceIndexState = (key: string): AtomToken<Set<string>> =>
 
 export const makeSpaceLayoutState = (
   key: string
-): AtomToken<InfinitelyNestedArray<string>> =>
-  atom<InfinitelyNestedArray<string>>({
+): AtomToken<FractalArray<string>> =>
+  atom<FractalArray<string>>({
     key: `${key}_explorer_space_layout`,
     default: [],
     effects: [
-      persistAtom<InfinitelyNestedArray<string>>(localStorage)({
+      persistAtom<FractalArray<string>>(localStorage)({
         stringify: (array) => stringifyJson(array),
         parse: (string) => {
           try {
             const json = parseJson(string)
-            const array = isInfinitelyNestedArray(isString)(json) ? json : []
+            const array = isFractalArray(isString)(json) ? json : []
             return array
           } catch (thrown) {
             console.error(`Error parsing spaceLayoutState from localStorage`)

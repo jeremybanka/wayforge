@@ -3,6 +3,7 @@ import { useEffect } from "react"
 
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
+import { fractalMap } from "~/packages/anvl/src/array/fractal-array"
 import type { composeStoreHooks } from "~/packages/atom.io/src/react"
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
@@ -24,18 +25,26 @@ const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
   SpaceWrapper: ({ children }) => <div>{children}</div>,
 }
 
-export const composeExplorer = (
-  options: ExplorerOptions
-): ExplorerState & {
+export const composeExplorer = ({
+  key,
+  Components,
+  storeHooks: { useO, useIO },
+}: ExplorerOptions): ExplorerState & {
   Explorer: FC<{ children: ReactNode }>
   useSetTitle: (viewId: string) => void
 } => {
-  const Components = { ...DEFAULT_COMPONENTS, ...options.Components }
+  const { SpaceWrapper } = { ...DEFAULT_COMPONENTS, ...Components }
 
-  const state = attachExplorerState(options.key)
+  const state = attachExplorerState(key)
 
-  const { findViewState, viewIndexState, allViewsState, removeView, addView } =
-    state
+  const {
+    spaceLayoutState,
+    findViewState,
+    viewIndexState,
+    allViewsState,
+    removeView,
+    addView,
+  } = state
 
   const InnerView: FC<{
     children: ReactNode
@@ -44,8 +53,7 @@ export const composeExplorer = (
   }> = ({ children, viewId, close }) => {
     const location = useLocation()
     const viewState = findViewState(viewId)
-    // console.warn({ viewId, viewState })
-    const [view, setView] = options.storeHooks.useIO(viewState)
+    const [view, setView] = useIO(viewState)
     useEffect(() => {
       setView((view) => ({ ...view, location }))
     }, [location.key])
@@ -76,7 +84,7 @@ export const composeExplorer = (
     viewId: string
     close: () => void
   }> = ({ children, viewId, close }) => {
-    const view = options.storeHooks.useO(findViewState(viewId))
+    const view = useO(findViewState(viewId))
     return (
       <ErrorBoundary>
         <MemoryRouter initialEntries={[view.location.pathname]}>
@@ -88,9 +96,33 @@ export const composeExplorer = (
     )
   }
 
-  const Explorer: FC<{ children: ReactNode }> = ({ children }) => {
-    const viewIds = options.storeHooks.useO(viewIndexState)
+  const Space: FC<{ children: ReactNode; spaceId: string }> = ({
+    children,
+    spaceId,
+  }) => {}
 
+  const Spaces: FC<{ children: ReactNode }> = ({ children }) => {
+    const spaceLayout = useO(spaceLayoutState)
+    return (
+      <div className="spaces">
+        {fractalMap(spaceLayout, (viewId) => (
+          <View
+            key={viewId}
+            viewId={viewId}
+            close={() => runTransaction(removeView)(viewId)}
+          >
+            {children}
+          </View>
+        ))}
+        <br />
+        <button onClick={() => runTransaction(addView)()}>Add Space</button>
+      </div>
+    )
+  }
+
+  const Explorer: FC<{ children: ReactNode }> = ({ children }) => {
+    const viewIds = useO(viewIndexState)
+    const spaceLayout = useO(spaceLayoutState)
     return (
       <>
         {[...viewIds].map((viewId) => (
@@ -110,7 +142,7 @@ export const composeExplorer = (
 
   const useSetTitle = (title: string): void => {
     const location = useLocation()
-    const views = options.storeHooks.useO(allViewsState)
+    const views = useO(allViewsState)
     const locationView = views.find(
       ([, view]) => view.location.key === location.key
     )

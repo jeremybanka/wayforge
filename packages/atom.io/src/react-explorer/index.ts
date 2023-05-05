@@ -1,16 +1,11 @@
 import type { Refinement } from "fp-ts/lib/Refinement"
 
 import { isArray } from "~/packages/anvl/src/array"
+import { isUnion } from "~/packages/anvl/src/refinement"
 
 import type { AtomToken, Write } from ".."
 
 export * from "./AtomIOExplorer"
-
-export type InfinitelyNestedArray<T> = InfinitelyNestedArray<T>[] | T
-export const isInfinitelyNestedArray =
-  <T>(isContent: Refinement<unknown, T>) =>
-  (value: unknown): value is InfinitelyNestedArray<T> =>
-    isArray(isInfinitelyNestedArray(isContent))(value) || isContent(value)
 
 export type AtomicIndexOptions = {
   indexAtom: AtomToken<Set<string>>

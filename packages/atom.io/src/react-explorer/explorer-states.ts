@@ -1,9 +1,9 @@
 import { lastOf } from "~/packages/anvl/src/array"
+import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
 import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
 
-import type { InfinitelyNestedArray } from "."
 import { addToIndex, removeFromIndex } from "."
 import {
   makeFindSpaceState,
@@ -37,7 +37,7 @@ export const makeViewsPerSpaceState = (key: string): AtomToken<Join> =>
 export type ExplorerState = {
   findSpaceState: AtomFamily<string, string>
   spaceIndexState: AtomToken<Set<string>>
-  spaceLayoutState: AtomToken<InfinitelyNestedArray<string>>
+  spaceLayoutState: AtomToken<FractalArray<string>>
   writeOperationRemoveSpace: Write<(id: string) => void>
   writeOperationAddSpace: Write<() => string>
   findViewState: AtomFamily<View, string>
