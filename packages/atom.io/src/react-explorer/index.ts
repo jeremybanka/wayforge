@@ -1,8 +1,3 @@
-import type { Refinement } from "fp-ts/lib/Refinement"
-
-import { isArray } from "~/packages/anvl/src/array"
-import { isUnion } from "~/packages/anvl/src/refinement"
-
 import type { AtomToken, Write } from ".."
 
 export * from "./AtomIOExplorer"

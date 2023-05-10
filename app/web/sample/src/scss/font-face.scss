@@ -1,20 +1,24 @@
 @font-face {
   font-family: name;
-  src: url(../assets/love_yanone.ttf);
+  src: url(../../../../../fonts/love_yanone.ttf);
 }
 
 @font-face {
   font-family: "|_'_|";
-  src: url(../assets/DelveSystem-Regular.otf);
+  src: url(../../../../../fonts/DelveSystem-Regular.otf);
+}
+@font-face {
+  font-family: "icon";
+  src: url(../../../../../fonts/IconVF.ttf);
 }
 
 @font-face {
   font-family: sudo;
-  src: url(../assets/Sudo-Code.otf);
+  src: url(../../../../../fonts/Sudo-Code.otf);
 }
 @font-face {
   font-family: theia;
-  src: url(../assets/Theia0.2.500-500.otf);
+  src: url(../../../../../fonts/Theia0.2.500-500.otf);
 }
 
 :root {

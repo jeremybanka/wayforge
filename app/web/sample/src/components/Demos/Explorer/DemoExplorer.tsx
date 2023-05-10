@@ -58,6 +58,7 @@ const Fractal: FC<{ items: FractalArray<number>; indices?: number[] }> = ({
   items,
   indices = [],
 }) => {
+  useSetTitle(`Fractal`)
   const flexDirection = indices.length % 2 === 0 ? `row` : `column`
   const backgroundColor = indices.length % 2 === 0 ? `red` : `cyan`
   return (
@@ -87,14 +88,33 @@ export const DemoExplorer: FC = () => {
     <div
       css={css`
         display: flex;
-        .spaces {
-          border: 1px solid black;
-          .space {
-            border: 1px solid black;
-          }
+        gap: 10px;
+        /* border: 1px solid var(--fg-color); */
+        @media (orientation: portrait) {
+          flex-direction: column;
         }
         .view {
-          border: 1px solid black;
+          border: 1px solid var(--fg-color);
+          display: flex;
+          flex-flow: column;
+          header {
+            background-color: var(--fg-color);
+            color: var(--bg-color);
+            display: flex;
+            justify-content: space-between;
+            padding: 2px;
+            h1 {
+              font-size: inherit;
+              margin: 0;
+            }
+          }
+          > main {
+            border: 1px solid var(--fg-color);
+            flex-grow: 1;
+          }
+          > footer {
+            flex-grow: 0;
+          }
         }
       `}
     >

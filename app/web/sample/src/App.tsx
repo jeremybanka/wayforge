@@ -11,8 +11,13 @@ export const App: FC = () => {
       css={css`
         display: flex;
         flex-flow: column;
+        justify-content: center;
+        h1 {
+          text-align: center;
+        }
       `}
     >
+      <h1>atom.io</h1>
       <DemoExplorer />
       <Devtools />
     </main>

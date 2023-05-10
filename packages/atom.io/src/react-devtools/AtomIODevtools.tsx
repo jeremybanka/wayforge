@@ -43,7 +43,7 @@ export const composeDevtools = (options: {
           ref={constraintsRef}
           className="atom_io_devtools_zone"
           style={{
-            position: `absolute`,
+            position: `fixed`,
             top: 0,
             left: 0,
             right: 0,

@@ -118,6 +118,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
     const { set } = transactors
     removeFromIndex(transactors, { indexAtom: viewIndexState, id })
     set(viewsPerSpaceState, (current) => current.remove(id))
+    set(findViewState(id), null)
   }
 
   const addView = transaction<(options?: AddViewOptions) => void>({

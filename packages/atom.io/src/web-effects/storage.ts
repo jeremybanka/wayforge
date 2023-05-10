@@ -17,6 +17,7 @@ export const persistAtom =
     if (savedValue != null) setSelf(parse(savedValue))
 
     onSet(({ newValue }) => {
+      if (newValue == null) storage.removeItem(key)
       storage.setItem(key, stringify(newValue))
     })
   }

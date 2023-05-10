@@ -17,12 +17,16 @@ export type ExplorerOptions = {
   key: string
   Components?: {
     SpaceWrapper: WC
+    NewSpaceButton: FC<{ onClick: () => void }>
+    CloseSpaceButton: FC<{ onClick: () => void }>
   }
   storeHooks: ReturnType<typeof composeStoreHooks>
 }
 
 const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
   SpaceWrapper: ({ children }) => <div>{children}</div>,
+  NewSpaceButton: ({ onClick }) => <button onClick={onClick}>+ Space</button>,
+  CloseSpaceButton: ({ onClick }) => <button onClick={onClick}>X</button>,
 }
 
 export const composeExplorer = ({
@@ -33,7 +37,10 @@ export const composeExplorer = ({
   Explorer: FC<{ children: ReactNode }>
   useSetTitle: (viewId: string) => void
 } => {
-  const { SpaceWrapper } = { ...DEFAULT_COMPONENTS, ...Components }
+  const { SpaceWrapper, NewSpaceButton, CloseSpaceButton } = {
+    ...DEFAULT_COMPONENTS,
+    ...Components,
+  }
 
   const state = attachExplorerState(key)
 
@@ -49,8 +56,7 @@ export const composeExplorer = ({
   const InnerView: FC<{
     children: ReactNode
     viewId: string
-    close: () => void
-  }> = ({ children, viewId, close }) => {
+  }> = ({ children, viewId }) => {
     const location = useLocation()
     const viewState = findViewState(viewId)
     const [view, setView] = useIO(viewState)
@@ -60,21 +66,25 @@ export const composeExplorer = ({
     return (
       <div className="view">
         <header>
-          {view.title}
-          {`: `}
-          {location.pathname.split(`/`).map((pathPiece, idx, array) =>
-            pathPiece === `` && idx === 1 ? null : (
-              <Link
-                to={array.slice(0, idx + 1).join(`/`)}
-                key={`${pathPiece}_${viewId}`}
-              >
-                {idx === 0 ? `home` : pathPiece}/
-              </Link>
-            )
-          )}
-          <button onClick={close}>close</button>
+          <h1>{view.title}</h1>
+
+          <CloseSpaceButton onClick={() => runTransaction(removeView)(viewId)} />
         </header>
         <main>{children}</main>
+        <footer>
+          <nav>
+            {location.pathname.split(`/`).map((pathPiece, idx, array) =>
+              pathPiece === `` && idx === 1 ? null : (
+                <Link
+                  to={array.slice(0, idx + 1).join(`/`)}
+                  key={`${pathPiece}_${viewId}`}
+                >
+                  {idx === 0 ? `home` : pathPiece}/
+                </Link>
+              )
+            )}
+          </nav>
+        </footer>
       </div>
     )
   }
@@ -82,15 +92,12 @@ export const composeExplorer = ({
   const View: FC<{
     children: ReactNode
     viewId: string
-    close: () => void
-  }> = ({ children, viewId, close }) => {
+  }> = ({ children, viewId }) => {
     const view = useO(findViewState(viewId))
     return (
       <ErrorBoundary>
         <MemoryRouter initialEntries={[view.location.pathname]}>
-          <InnerView viewId={viewId} close={close}>
-            {children}
-          </InnerView>
+          <InnerView viewId={viewId}>{children}</InnerView>
         </MemoryRouter>
       </ErrorBoundary>
     )
@@ -112,16 +119,11 @@ export const composeExplorer = ({
     return (
       <div className="spaces">
         {fractalMap(spaceLayout, (viewId) => (
-          <View
-            key={viewId}
-            viewId={viewId}
-            close={() => runTransaction(removeView)(viewId)}
-          >
+          <View key={viewId} viewId={viewId}>
             {children}
           </View>
         ))}
-        <br />
-        <button onClick={() => runTransaction(addView)()}>Add Space</button>
+        <NewSpaceButton onClick={() => runTransaction(addView)()} />
       </div>
     )
   }
@@ -132,16 +134,11 @@ export const composeExplorer = ({
     return (
       <>
         {[...viewIds].map((viewId) => (
-          <View
-            key={viewId}
-            viewId={viewId}
-            close={() => runTransaction(removeView)(viewId)}
-          >
+          <View key={viewId} viewId={viewId}>
             {children}
           </View>
         ))}
-        <br />
-        <button onClick={() => runTransaction(addView)()}>Add Space</button>
+        <NewSpaceButton onClick={runTransaction(addView)} />
       </>
     )
   }
