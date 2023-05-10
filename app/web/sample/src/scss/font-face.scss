@@ -4,21 +4,13 @@
 }
 
 @font-face {
-  font-family: "|_'_|";
-  src: url(../../../../../fonts/DelveSystem-Regular.otf);
-}
-@font-face {
-  font-family: "icon";
-  src: url(../../../../../fonts/IconVF.ttf);
+  font-family: icon;
+  src: url(../assets/IconVF.ttf);
 }
 
 @font-face {
-  font-family: sudo;
-  src: url(../../../../../fonts/Sudo-Code.otf);
-}
-@font-face {
   font-family: theia;
-  src: url(../../../../../fonts/Theia0.2.500-500.otf);
+  src: url(../assets/Theia0.2.500-500.otf);
 }
 
 :root {
@@ -33,31 +25,5 @@
 }
 
 i {
-  font-family: "Uruz";
-}
-
-b {
-  font-family: "|_'_|";
-}
-
-code {
-  font-family: sudo;
-}
-
-@font-face {
-  font-family: "Uruz";
-  src: url(./assets/Uruz/Uruz-5r.otf);
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: "Uruz";
-  src: url(./assets/Uruz/Uruz-6r.otf);
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "Uruz";
-  src: url(./assets/Uruz/Uruz-7r.otf);
-  font-weight: 700;
+  font-family: icon;
 }
