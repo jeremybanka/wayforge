@@ -16,7 +16,7 @@ export const { Explorer, useSetTitle } = composeExplorer({
 
 export const { useStore, useO, useIO, useI } = storeHooks
 
-setLogLevel(`info`)
+setLogLevel(`warn`)
 
 export const dividendState = atom<number>({
   key: `dividend`,
