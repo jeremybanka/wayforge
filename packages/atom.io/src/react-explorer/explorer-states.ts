@@ -6,38 +6,58 @@ import type { Entries } from "~/packages/anvl/src/object"
 
 import { addToIndex, removeFromIndex } from "."
 import {
-  makeFindSpaceState,
-  makeSpaceIndexState,
+  makeSpaceLayoutNodeFamily,
+  makeSpaceFamily,
+  makeSpaceIndex,
   makeSpaceLayoutState,
 } from "./space-states"
 import type { View } from "./view-states"
-import { makeFindViewState, makeViewIndexState } from "./view-states"
+import { makeViewFamily, makeViewIndex } from "./view-states"
 import type {
   AtomFamily,
   AtomToken,
+  ReadonlySelectorFamily,
   ReadonlySelectorToken,
   TransactionToken,
   Write,
 } from ".."
-import { selector, transaction, atom } from ".."
+import { selectorFamily, selector, transaction, atom } from ".."
 import { persistAtom } from "../web-effects"
 
 export const makeViewsPerSpaceState = (key: string): AtomToken<Join> =>
   atom<Join>({
-    key: `${key}_explorer_views_per_space`,
+    key: `${key}:views_per_space`,
     default: new Join({ relationType: `1:n` }),
     effects: [
       persistAtom<Join>(localStorage)({
         stringify: (index) => JSON.stringify(index.toJSON()),
         parse: (json) => Join.fromJSON(JSON.parse(json)),
-      })(`viewsPerSpace`),
+      })(`${key}:views_per_space`),
     ],
+  })
+
+export const makeSpaceViewsFamily = (
+  viewsPerSpaceState: AtomToken<Join>
+): ReadonlySelectorFamily<string[], string> =>
+  selectorFamily<string[], string>({
+    key: `${viewsPerSpaceState.key}:space_views`,
+    get:
+      (spaceId) =>
+      ({ get }) => {
+        const join = get(viewsPerSpaceState)
+        const viewIds = join.getRelatedIds(spaceId)
+        return viewIds
+      },
   })
 
 export type ExplorerState = {
   findSpaceState: AtomFamily<string, string>
   spaceIndexState: AtomToken<Set<string>>
-  spaceLayoutState: AtomToken<FractalArray<string>>
+  spaceLayoutState: AtomToken<Join<{ size: number }>>
+  findSpaceLayoutNode: ReadonlySelectorFamily<{
+    childKeys: string[]
+    size: number
+  }>
   writeOperationRemoveSpace: Write<(id: string) => void>
   writeOperationAddSpace: Write<() => string>
   findViewState: AtomFamily<View, string>
@@ -49,37 +69,51 @@ export type ExplorerState = {
   >
   removeView: TransactionToken<(id: string) => void>
   addView: TransactionToken<() => string>
+  removeSpace: TransactionToken<(id: string) => void>
+  addSpace: TransactionToken<(parentKey?: string) => string>
   viewsPerSpaceState: AtomToken<Join>
+  findSpaceViewsState: ReadonlySelectorFamily<string[], string>
 }
 
 export const attachExplorerState = (key: string): ExplorerState => {
-  const findSpaceState = makeFindSpaceState(key)
-  const spaceIndexState = makeSpaceIndexState(key)
+  const findSpaceState = makeSpaceFamily(key)
+  const spaceIndexState = makeSpaceIndex(key)
   const spaceLayoutState = makeSpaceLayoutState(key)
+  const findSpaceLayoutNode = makeSpaceLayoutNodeFamily(spaceLayoutState)
   const viewsPerSpaceState = makeViewsPerSpaceState(key)
-  const findViewState = makeFindViewState(key)
-  const viewIndexState = makeViewIndexState(key)
+  const findSpaceViewsState = makeSpaceViewsFamily(viewsPerSpaceState)
+  const findViewState = makeViewFamily(key)
+  const viewIndexState = makeViewIndex(key)
 
   const allViewsState = selector<Entries<string, View>>({
-    key: `${key}_explorer_all_views`,
+    key: `${key}_all_views`,
     get: ({ get }) => {
       const viewIndex = get(viewIndexState)
       return [...viewIndex].map((id) => [id, get(findViewState(id))])
     },
   })
 
-  const writeOperationAddSpace: Write<() => string> = (transactors) => {
+  const writeOperationAddSpace: Write<(parentKey?: string) => string> = (
+    transactors,
+    parentKey = `root`
+  ) => {
     const { set } = transactors
-    const id = `space-${now()}`
-    addToIndex(transactors, { indexAtom: spaceIndexState, id })
-    set(findSpaceState(id), 1)
-    return id
+    const key = `s-${now()}`
+    addToIndex(transactors, { indexAtom: spaceIndexState, id: key })
+    set(spaceLayoutState, (current) =>
+      current.set(`parent:${parentKey}`, key, { size: 1 })
+    )
+    set(findSpaceState(key), 1)
+    return key
   }
 
   const writeOperationRemoveSpace: Write<(id: string) => void> = (
     transactors,
     id
-  ) => removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
+  ) => {
+    removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
+    transactors.set(findSpaceState(id), null)
+  }
 
   type AddViewOptions = { spaceId?: string; path?: string }
 
@@ -88,7 +122,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
     { spaceId: maybeSpaceId, path } = {}
   ) => {
     const { get, set } = transactors
-    const id = `view-${now()}`
+    const id = `v-${now()}`
 
     addToIndex(transactors, { indexAtom: viewIndexState, id })
     set(
@@ -105,10 +139,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
       maybeSpaceId ??
       lastOf([...get(spaceIndexState)]) ??
       writeOperationAddSpace(transactors)
-    set(viewsPerSpaceState, (current) => {
-      current.set(spaceId, id)
-      return current
-    })
+    set(viewsPerSpaceState, (current) => current.set(spaceId, id))
   }
 
   const writeOperationRemoveView: Write<(id: string) => void> = (
@@ -122,19 +153,30 @@ export const attachExplorerState = (key: string): ExplorerState => {
   }
 
   const addView = transaction<(options?: AddViewOptions) => void>({
-    key: `${key}_explorer_add_view`,
+    key: `${key}:add_view`,
     do: writeOperationAddView,
   })
 
   const removeView = transaction({
-    key: `${key}_explorer_remove_view`,
+    key: `${key}:remove_view`,
     do: writeOperationRemoveView,
+  })
+
+  const addSpace = transaction({
+    key: `${key}:add_space`,
+    do: writeOperationAddSpace,
+  })
+
+  const removeSpace = transaction({
+    key: `${key}:remove_space`,
+    do: writeOperationRemoveSpace,
   })
 
   return {
     findSpaceState,
     spaceIndexState,
     spaceLayoutState,
+    findSpaceLayoutNode,
     writeOperationRemoveSpace,
     writeOperationAddSpace,
     findViewState,
@@ -144,6 +186,9 @@ export const attachExplorerState = (key: string): ExplorerState => {
     writeOperationAddView,
     removeView,
     addView,
+    removeSpace,
+    addSpace,
     viewsPerSpaceState,
+    findSpaceViewsState,
   }
 }

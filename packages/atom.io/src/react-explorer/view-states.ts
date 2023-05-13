@@ -11,9 +11,9 @@ export type View = {
   location: Omit<Location, `state`>
 }
 
-export const makeFindViewState = (key: string): AtomFamily<View, string> =>
+export const makeViewFamily = (key: string): AtomFamily<View, string> =>
   atomFamily<View, string>({
-    key: `${key}_explorer_view`,
+    key: `${key}:view`,
     default: {
       title: ``,
       location: {
@@ -23,12 +23,12 @@ export const makeFindViewState = (key: string): AtomFamily<View, string> =>
         key: ``,
       },
     },
-    effects: (id) => [lazyLocalStorageEffect(id)],
+    effects: (subKey) => [lazyLocalStorageEffect(`${key}:${subKey}`)],
   })
 
-export const makeViewIndexState = (key: string): AtomToken<Set<string>> =>
+export const makeViewIndex = (key: string): AtomToken<Set<string>> =>
   atom<Set<string>>({
-    key: `${key}_explorer_view_index`,
+    key: `${key}:view_index`,
     default: new Set(),
-    effects: [persistStringSetAtom(`viewIndex`)],
+    effects: [persistStringSetAtom(`${key}:view_index`)],
   })

@@ -50,11 +50,11 @@ export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = (
 }
 
 export function selectorFamily<T, K extends Serializable>(
-  options: SelectorFamilyOptions<T, K>
-): SelectorFamily<T, K>
-export function selectorFamily<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K>
 ): ReadonlySelectorFamily<T, K>
+export function selectorFamily<T, K extends Serializable>(
+  options: SelectorFamilyOptions<T, K>
+): SelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
   options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {

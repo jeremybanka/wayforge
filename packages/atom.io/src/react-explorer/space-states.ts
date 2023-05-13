@@ -1,48 +1,70 @@
-import { isString } from "fp-ts/lib/string"
+import { isNumber } from "fp-ts/lib/number"
 
-import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
-import { isFractalArray } from "~/packages/anvl/src/array/fractal-array"
+import { Join } from "~/packages/anvl/src/join"
 import { parseJson, stringifyJson } from "~/packages/anvl/src/json"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import { persistStringSetAtom } from "./explorer-effects"
-import type { AtomToken } from ".."
+import type { AtomToken, ReadonlySelectorFamily } from ".."
+import { SelectorFamily, selectorFamily } from ".."
 import type { AtomFamily } from "../atom"
 import { atom, atomFamily } from "../atom"
 import { lazyLocalStorageEffect, persistAtom } from "../web-effects"
 
-export const makeSpaceIndexState = (key: string): AtomToken<Set<string>> =>
+export const makeSpaceIndex = (key: string): AtomToken<Set<string>> =>
   atom<Set<string>>({
-    key: `${key}_explorer_space_index`,
-    default: new Set(),
-    effects: [persistStringSetAtom(`spaceIndex`)],
+    key: `${key}:space_index`,
+    default: new Set([`root`]),
+    effects: [persistStringSetAtom(`${key}:space_index`)],
   })
 
 export const makeSpaceLayoutState = (
   key: string
-): AtomToken<FractalArray<string>> =>
-  atom<FractalArray<string>>({
-    key: `${key}_explorer_space_layout`,
-    default: [],
+): AtomToken<Join<{ size: number }>> =>
+  atom({
+    key: `${key}:space_layout`,
+    default: new Join({ relationType: `1:n` }),
     effects: [
-      persistAtom<FractalArray<string>>(localStorage)({
-        stringify: (array) => stringifyJson(array),
+      persistAtom<Join<{ size: number }>>(localStorage)({
+        stringify: (join) => stringifyJson(join.toJSON()),
         parse: (string) => {
           try {
             const json = parseJson(string)
-            const array = isFractalArray(isString)(json) ? json : []
-            return array
+            const join = Join.fromJSON(
+              json,
+              hasExactProperties({ size: isNumber })
+            )
+            return join
           } catch (thrown) {
             console.error(`Error parsing spaceLayoutState from localStorage`)
-            return []
+            return new Join({ relationType: `1:n` })
           }
         },
-      })(`spaceLayout`),
+      })(`${key}:space_layout`),
     ],
   })
 
-export const makeFindSpaceState = (key: string): AtomFamily<number, string> =>
+export const makeSpaceLayoutNodeFamily = (
+  spaceLayoutState: AtomToken<Join<{ size: number }>>
+): ReadonlySelectorFamily<{ childKeys: string[]; size: number }, string> =>
+  selectorFamily<{ childKeys: string[]; size: number }, string>({
+    key: `${spaceLayoutState.key}:explorer_space`,
+    get:
+      (me) =>
+      ({ get }) => {
+        const join = get(spaceLayoutState)
+        const myFollowers = join.getRelatedIds(`parent:${me}`)
+        const myLeader = join.getRelatedId(me)
+        const { size } = myLeader
+          ? join.getContent(myLeader, me) ?? { size: NaN }
+          : { size: NaN }
+        return { childKeys: myFollowers, size }
+      },
+  })
+
+export const makeSpaceFamily = (key: string): AtomFamily<number, string> =>
   atomFamily<number, string>({
-    key: `${key}_explorer_space`,
+    key: `${key}:space`,
     default: 1,
-    effects: (id) => [lazyLocalStorageEffect(id)],
+    effects: (subKey) => [lazyLocalStorageEffect(`${key}:${subKey}`)],
   })

@@ -6,6 +6,7 @@ import type { JsonObj } from "~/packages/anvl/src/json"
 import { findSubSchema } from "~/packages/anvl/src/json-schema/find-sub-schema"
 import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
+import { isLiteral } from "~/packages/anvl/src/refinement"
 
 import {
   makePropertyCreationInterface,
@@ -68,22 +69,25 @@ export const ObjectEditor = <T extends JsonObj>({
   const makePropertyAdder = makePropertyCreationInterface(data, set)
 
   const subSchema = isPlainObject(schema) ? findSubSchema(schema)(path) : true
-  const schemaKeys: ReadonlyArray<string> = isObjectSchema(subSchema)
+  const schemaKeys: ReadonlyArray<string> | true = isLiteral(true)(subSchema)
+    ? true
+    : isObjectSchema(subSchema)
     ? Object.keys(subSchema.properties ?? {})
     : []
   const dataKeys: ReadonlyArray<string> = Object.keys(data)
   const [unofficialKeys, officialKeys] = dataKeys.reduce(
     ([unofficial, official], key) => {
-      const isOfficial = schemaKeys.includes(key)
+      const isOfficial = schemaKeys === true || schemaKeys.includes(key)
       return isOfficial
         ? [unofficial, [...official, key]]
         : [[...unofficial, key], official]
     },
     [[], []] as [string[], string[]]
   )
-  const missingKeys: ReadonlyArray<string> = schemaKeys.filter(
-    (key) => !dataKeys.includes(key)
-  )
+  const missingKeys: ReadonlyArray<string> =
+    schemaKeys === true
+      ? []
+      : schemaKeys.filter((key) => !dataKeys.includes(key))
 
   return (
     <>
@@ -96,7 +100,7 @@ export const ObjectEditor = <T extends JsonObj>({
             const originalKey = stableKeyMap.current[key]
             const newPath = [...path, key]
             const originalPath = [...path, originalKey]
-            const isOfficial = schemaKeys.includes(key)
+            const isOfficial = schemaKeys === true || schemaKeys.includes(key)
             const isMissing = missingKeys.includes(key)
 
             return isMissing ? (

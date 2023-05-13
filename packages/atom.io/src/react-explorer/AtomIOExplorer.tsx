@@ -46,11 +46,15 @@ export const composeExplorer = ({
 
   const {
     spaceLayoutState,
+    findSpaceLayoutNode,
     findViewState,
     viewIndexState,
     allViewsState,
     removeView,
     addView,
+    removeSpace,
+    addSpace,
+    findSpaceViewsState,
   } = state
 
   const InnerView: FC<{
@@ -103,27 +107,32 @@ export const composeExplorer = ({
     )
   }
 
-  const Space: FC<{ children: ReactNode; spaceId: string }> = ({
+  const Spaces: FC<{ children: ReactNode; nodeKey?: string }> = ({
     children,
-    spaceId,
+    nodeKey = `root`,
   }) => {
-    return (
-      <SpaceWrapper>
-        <div className="space">{children}</div>
-      </SpaceWrapper>
-    )
-  }
-
-  const Spaces: FC<{ children: ReactNode }> = ({ children }) => {
-    const spaceLayout = useO(spaceLayoutState)
+    const spaceLayout = useO(findSpaceLayoutNode(nodeKey))
+    const viewIds = useO(findSpaceViewsState(nodeKey))
+    const focusedViewId = viewIds[0]
+    console.log({ spaceLayout, viewIds, focusedViewId })
     return (
       <div className="spaces">
-        {fractalMap(spaceLayout, (viewId) => (
-          <View key={viewId} viewId={viewId}>
-            {children}
-          </View>
-        ))}
-        <NewSpaceButton onClick={() => runTransaction(addView)()} />
+        {spaceLayout.childKeys.length === 0 ? (
+          <div className="space">
+            {focusedViewId ? (
+              <View viewId={focusedViewId}>{children}</View>
+            ) : (
+              `no view`
+            )}
+          </div>
+        ) : (
+          spaceLayout.childKeys.map((childKey) => (
+            <Spaces key={childKey} nodeKey={childKey}>
+              {children}
+            </Spaces>
+          ))
+        )}
+        <NewSpaceButton onClick={() => runTransaction(addSpace)(nodeKey)} />
       </div>
     )
   }
@@ -133,11 +142,12 @@ export const composeExplorer = ({
     const spaceLayout = useO(spaceLayoutState)
     return (
       <>
-        {[...viewIds].map((viewId) => (
+        {/* {[...viewIds].map((viewId) => (
           <View key={viewId} viewId={viewId}>
             {children}
           </View>
-        ))}
+        ))} */}
+        <Spaces>{children}</Spaces>
         <NewSpaceButton onClick={runTransaction(addView)} />
       </>
     )
