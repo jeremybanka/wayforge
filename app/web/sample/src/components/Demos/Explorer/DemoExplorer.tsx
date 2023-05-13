@@ -93,6 +93,13 @@ export const DemoExplorer: FC = () => {
         @media (orientation: portrait) {
           flex-direction: column;
         }
+        .spaces,
+        .space {
+          display: flex;
+          gap: 5px;
+          padding: 5px;
+          border: 1px solid var(--fg-color);
+        }
         .view {
           border: 1px solid var(--fg-color);
           display: flex;
