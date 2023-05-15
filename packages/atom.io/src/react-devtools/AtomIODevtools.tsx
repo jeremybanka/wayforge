@@ -15,9 +15,9 @@ import "./devtools.scss"
 const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
 
 const devtoolsAreOpenState = atom<boolean>({
-  key: `👁️‍🗨️_devtools_are_open`,
+  key: `👁‍🗨_devtools_are_open`,
   default: true,
-  effects: [lazyLocalStorageEffect(`👁️‍🗨️_devtools_are_open`)],
+  effects: [lazyLocalStorageEffect(`👁‍🗨_devtools_are_open`)],
 })
 
 export const composeDevtools = (options: {
@@ -96,7 +96,7 @@ export const composeDevtools = (options: {
                 }
               }}
             >
-              👁️‍🗨️
+              👁‍🗨
             </button>
           </footer>
         </motion.main>

@@ -86,7 +86,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
   const viewIndexState = makeViewIndex(key)
 
   const allViewsState = selector<Entries<string, View>>({
-    key: `${key}_all_views`,
+    key: `${key}:all_views`,
     get: ({ get }) => {
       const viewIndex = get(viewIndexState)
       return [...viewIndex].map((id) => [id, get(findViewState(id))])

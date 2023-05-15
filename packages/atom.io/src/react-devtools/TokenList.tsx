@@ -20,7 +20,7 @@ export const TokenList: FC<{
     <>
       {Object.entries(tokenIndex).map(([key, token]) => (
         <Fragment key={key}>
-          {key.startsWith(`👁️‍🗨️_`) ? null : (
+          {key.startsWith(`👁‍🗨_`) ? null : (
             <div className="node">
               {key}:
               {`type` in token ? (
