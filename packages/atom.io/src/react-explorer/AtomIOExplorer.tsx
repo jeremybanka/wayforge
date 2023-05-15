@@ -17,7 +17,6 @@ export type ExplorerOptions = {
   key: string
   Components?: {
     SpaceWrapper: WC
-    NewSpaceButton: FC<{ onClick: () => void }>
     CloseSpaceButton: FC<{ onClick: () => void }>
   }
   storeHooks: ReturnType<typeof composeStoreHooks>
@@ -25,7 +24,6 @@ export type ExplorerOptions = {
 
 const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
   SpaceWrapper: ({ children }) => <div>{children}</div>,
-  NewSpaceButton: ({ onClick }) => <button onClick={onClick}>+ Space</button>,
   CloseSpaceButton: ({ onClick }) => <button onClick={onClick}>X</button>,
 }
 
@@ -37,7 +35,7 @@ export const composeExplorer = ({
   Explorer: FC<{ children: ReactNode }>
   useSetTitle: (viewId: string) => void
 } => {
-  const { SpaceWrapper, NewSpaceButton, CloseSpaceButton } = {
+  const { SpaceWrapper, CloseSpaceButton } = {
     ...DEFAULT_COMPONENTS,
     ...Components,
   }
@@ -132,7 +130,12 @@ export const composeExplorer = ({
             </Spaces>
           ))
         )}
-        <NewSpaceButton onClick={() => runTransaction(addSpace)(nodeKey)} />
+        <button onClick={() => runTransaction(addView)({ spaceKey: nodeKey })}>
+          + View
+        </button>
+        <button onClick={() => runTransaction(addSpace)(nodeKey)}>
+          + Space
+        </button>
       </div>
     )
   }
@@ -148,7 +151,7 @@ export const composeExplorer = ({
           </View>
         ))} */}
         <Spaces>{children}</Spaces>
-        <NewSpaceButton onClick={runTransaction(addView)} />
+        <button onClick={() => runTransaction(addView)()}>+ View</button>
       </>
     )
   }

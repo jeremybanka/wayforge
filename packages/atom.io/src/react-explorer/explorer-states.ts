@@ -12,7 +12,11 @@ import {
   makeSpaceLayoutState,
 } from "./space-states"
 import type { View } from "./view-states"
-import { makeViewFamily, makeViewIndex } from "./view-states"
+import {
+  makeViewFocusedState,
+  makeViewFamily,
+  makeViewIndex,
+} from "./view-states"
 import type {
   AtomFamily,
   AtomToken,
@@ -50,40 +54,41 @@ export const makeSpaceViewsFamily = (
       },
   })
 
+type AddViewOptions = { spaceKey?: string; path?: string }
+type SpaceLayoutNode = { childKeys: string[]; size: number }
+
 export type ExplorerState = {
+  addSpace: TransactionToken<(parentKey?: string) => string>
+  addView: TransactionToken<(options?: AddViewOptions) => string>
+  allViewsState: ReadonlySelectorToken<Entries<string, View>>
+  findSpaceLayoutNode: ReadonlySelectorFamily<SpaceLayoutNode>
   findSpaceState: AtomFamily<string, string>
+  findSpaceViewsState: ReadonlySelectorFamily<string[], string>
+  findViewFocusedState: AtomFamily<number, string>
+  findViewState: AtomFamily<View, string>
+  removeSpace: TransactionToken<(id: string) => void>
+  removeView: TransactionToken<(id: string) => void>
   spaceIndexState: AtomToken<Set<string>>
   spaceLayoutState: AtomToken<Join<{ size: number }>>
-  findSpaceLayoutNode: ReadonlySelectorFamily<{
-    childKeys: string[]
-    size: number
-  }>
-  writeOperationRemoveSpace: Write<(id: string) => void>
-  writeOperationAddSpace: Write<() => string>
-  findViewState: AtomFamily<View, string>
   viewIndexState: AtomToken<Set<string>>
-  allViewsState: ReadonlySelectorToken<Entries<string, View>>
-  writeOperationRemoveView: Write<(id: string) => void>
-  writeOperationAddView: Write<
-    (options?: { spaceId?: string; path?: string }) => void
-  >
-  removeView: TransactionToken<(id: string) => void>
-  addView: TransactionToken<() => string>
-  removeSpace: TransactionToken<(id: string) => void>
-  addSpace: TransactionToken<(parentKey?: string) => string>
   viewsPerSpaceState: AtomToken<Join>
-  findSpaceViewsState: ReadonlySelectorFamily<string[], string>
+  writeOperationAddSpace: Write<() => string>
+  writeOperationAddView: Write<(options?: AddViewOptions) => void>
+  writeOperationRemoveSpace: Write<(id: string) => void>
+  writeOperationRemoveView: Write<(id: string) => void>
 }
 
 export const attachExplorerState = (key: string): ExplorerState => {
   const findSpaceState = makeSpaceFamily(key)
+  const findViewState = makeViewFamily(key)
+  const findViewFocusedState = makeViewFocusedState(key)
   const spaceIndexState = makeSpaceIndex(key)
   const spaceLayoutState = makeSpaceLayoutState(key)
-  const findSpaceLayoutNode = makeSpaceLayoutNodeFamily(spaceLayoutState)
-  const viewsPerSpaceState = makeViewsPerSpaceState(key)
-  const findSpaceViewsState = makeSpaceViewsFamily(viewsPerSpaceState)
-  const findViewState = makeViewFamily(key)
   const viewIndexState = makeViewIndex(key)
+  const viewsPerSpaceState = makeViewsPerSpaceState(key)
+
+  const findSpaceLayoutNode = makeSpaceLayoutNodeFamily(spaceLayoutState)
+  const findSpaceViewsState = makeSpaceViewsFamily(viewsPerSpaceState)
 
   const allViewsState = selector<Entries<string, View>>({
     key: `${key}:all_views`,
@@ -115,11 +120,9 @@ export const attachExplorerState = (key: string): ExplorerState => {
     transactors.set(findSpaceState(id), null)
   }
 
-  type AddViewOptions = { spaceId?: string; path?: string }
-
   const writeOperationAddView: Write<(options?: AddViewOptions) => void> = (
     transactors,
-    { spaceId: maybeSpaceId, path } = {}
+    { spaceKey: maybeSpaceId, path } = {}
   ) => {
     const { get, set } = transactors
     const id = `v-${now()}`
@@ -173,22 +176,23 @@ export const attachExplorerState = (key: string): ExplorerState => {
   })
 
   return {
+    addSpace,
+    addView,
+    allViewsState,
+    findSpaceLayoutNode,
     findSpaceState,
+    findSpaceViewsState,
+    findViewState,
+    findViewFocusedState,
+    removeSpace,
+    removeView,
     spaceIndexState,
     spaceLayoutState,
-    findSpaceLayoutNode,
-    writeOperationRemoveSpace,
-    writeOperationAddSpace,
-    findViewState,
     viewIndexState,
-    allViewsState,
-    writeOperationRemoveView,
-    writeOperationAddView,
-    removeView,
-    addView,
-    removeSpace,
-    addSpace,
     viewsPerSpaceState,
-    findSpaceViewsState,
+    writeOperationAddSpace,
+    writeOperationAddView,
+    writeOperationRemoveSpace,
+    writeOperationRemoveView,
   }
 }
