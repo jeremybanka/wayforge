@@ -141,19 +141,7 @@ export const composeExplorer = ({
   }
 
   const Explorer: FC<{ children: ReactNode }> = ({ children }) => {
-    const viewIds = useO(viewIndexState)
-    const spaceLayout = useO(spaceLayoutState)
-    return (
-      <>
-        {/* {[...viewIds].map((viewId) => (
-          <View key={viewId} viewId={viewId}>
-            {children}
-          </View>
-        ))} */}
-        <Spaces>{children}</Spaces>
-        <button onClick={() => runTransaction(addView)()}>+ View</button>
-      </>
-    )
+    return <Spaces>{children}</Spaces>
   }
 
   const useSetTitle = (title: string): void => {
