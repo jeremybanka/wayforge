@@ -75,7 +75,7 @@ export const applyTransaction = <ƒ extends ƒn>(
     return
   }
   store.config.logger?.info(
-    ` ▶️ apply transaction "${store.transactionStatus.key}" (init)`
+    ` 🛃 apply transaction "${store.transactionStatus.key}"`
   )
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output
@@ -87,6 +87,7 @@ export const applyTransaction = <ƒ extends ƒn>(
       const atom = HAMT.get(token.key, store.transactionStatus.core.atoms)
       store.atoms = HAMT.set(atom.key, atom, store.atoms)
       store.valueMap = HAMT.set(atom.key, atom.default, store.valueMap)
+      store.config.logger?.info(`🔧`, `add atom "${atom.key}"`)
     }
     const state = withdraw(token, store)
 
