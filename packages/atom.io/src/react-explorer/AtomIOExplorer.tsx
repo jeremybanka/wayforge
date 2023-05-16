@@ -145,7 +145,15 @@ export const composeExplorer = ({
   }
 
   const useSetTitle = (title: string): void => {
-    const location = useLocation()
+    let location: ReturnType<typeof useLocation>
+    try {
+      location = useLocation()
+    } catch (thrown) {
+      console.warn(
+        `Failed to set title to "${title}"; useSetTitle must be called within the children of Explorer`
+      )
+      return
+    }
     const views = useO(allViewsState)
     const locationView = views.find(
       ([, view]) => view.location.key === location.key
