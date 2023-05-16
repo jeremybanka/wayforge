@@ -1,5 +1,4 @@
 import { lastOf } from "~/packages/anvl/src/array"
-import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
 import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
@@ -13,7 +12,7 @@ import {
 } from "./space-states"
 import type { View } from "./view-states"
 import {
-  makeViewFocusedState,
+  makeViewFocusedFamily,
   makeViewFamily,
   makeViewIndex,
 } from "./view-states"
@@ -22,6 +21,7 @@ import type {
   AtomToken,
   ReadonlySelectorFamily,
   ReadonlySelectorToken,
+  SelectorFamily,
   TransactionToken,
   Write,
 } from ".."
@@ -54,6 +54,38 @@ export const makeSpaceViewsFamily = (
       },
   })
 
+export const makeSpaceFocusedViewFamily = (
+  findSpaceViewsState: ReadonlySelectorFamily<string[], string>,
+  findViewFocusedState: AtomFamily<number, string>
+): SelectorFamily<string | null, string> =>
+  selectorFamily<string | null, string>({
+    key: `${findSpaceViewsState}:space_focused_view`,
+    get:
+      (spaceKey) =>
+      ({ get }) => {
+        const views = get(findSpaceViewsState(spaceKey))
+        const viewsLastFocused = views.map((viewKey): [string, number] => [
+          viewKey,
+          get(findViewFocusedState(viewKey)),
+        ])
+        const lastFocused = lastOf(viewsLastFocused.sort((a, b) => b[1] - a[1]))
+        return lastFocused ? lastFocused[0] : null
+      },
+    set:
+      (spaceKey) =>
+      ({ get, set }, viewKey) => {
+        if (viewKey === null) {
+          return
+        }
+        const views = get(findSpaceViewsState(spaceKey))
+        if (views.includes(viewKey)) {
+          set(findViewFocusedState(viewKey), Date.now())
+        } else {
+          console.warn(`View ${viewKey} not found in space ${spaceKey}`)
+        }
+      },
+  })
+
 type AddViewOptions = { spaceKey?: string; path?: string }
 type SpaceLayoutNode = { childKeys: string[]; size: number }
 
@@ -62,6 +94,7 @@ export type ExplorerState = {
   addView: TransactionToken<(options?: AddViewOptions) => string>
   allViewsState: ReadonlySelectorToken<Entries<string, View>>
   findSpaceLayoutNode: ReadonlySelectorFamily<SpaceLayoutNode>
+  findSpaceFocusedViewState: SelectorFamily<string | null, string>
   findSpaceState: AtomFamily<string, string>
   findSpaceViewsState: ReadonlySelectorFamily<string[], string>
   findViewFocusedState: AtomFamily<number, string>
@@ -81,7 +114,7 @@ export type ExplorerState = {
 export const attachExplorerState = (key: string): ExplorerState => {
   const findSpaceState = makeSpaceFamily(key)
   const findViewState = makeViewFamily(key)
-  const findViewFocusedState = makeViewFocusedState(key)
+  const findViewFocusedState = makeViewFocusedFamily(key)
   const spaceIndexState = makeSpaceIndex(key)
   const spaceLayoutState = makeSpaceLayoutState(key)
   const viewIndexState = makeViewIndex(key)
@@ -89,6 +122,10 @@ export const attachExplorerState = (key: string): ExplorerState => {
 
   const findSpaceLayoutNode = makeSpaceLayoutNodeFamily(spaceLayoutState)
   const findSpaceViewsState = makeSpaceViewsFamily(viewsPerSpaceState)
+  const findSpaceFocusedViewState = makeSpaceFocusedViewFamily(
+    findSpaceViewsState,
+    findViewFocusedState
+  )
 
   const allViewsState = selector<Entries<string, View>>({
     key: `${key}:all_views`,
@@ -180,6 +217,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
     addView,
     allViewsState,
     findSpaceLayoutNode,
+    findSpaceFocusedViewState,
     findSpaceState,
     findSpaceViewsState,
     findViewState,

@@ -3,7 +3,6 @@ import { useEffect } from "react"
 
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
-import { fractalMap } from "~/packages/anvl/src/array/fractal-array"
 import type { composeStoreHooks } from "~/packages/atom.io/src/react"
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
@@ -43,19 +42,21 @@ export const composeExplorer = ({
   const state = attachExplorerState(key)
 
   const {
-    spaceLayoutState,
-    findSpaceLayoutNode,
-    findViewState,
-    viewIndexState,
-    allViewsState,
-    removeView,
-    addView,
-    removeSpace,
     addSpace,
+    addView,
+    allViewsState,
+    findSpaceFocusedViewState,
+    findSpaceLayoutNode,
     findSpaceViewsState,
+    findViewFocusedState,
+    findViewState,
+    removeSpace,
+    removeView,
+    spaceLayoutState,
+    viewIndexState,
   } = state
 
-  const InnerView: FC<{
+  const View: FC<{
     children: ReactNode
     viewId: string
   }> = ({ children, viewId }) => {
@@ -69,7 +70,6 @@ export const composeExplorer = ({
       <div className="view">
         <header>
           <h1>{view.title}</h1>
-
           <CloseSpaceButton onClick={() => runTransaction(removeView)(viewId)} />
         </header>
         <main>{children}</main>
@@ -91,17 +91,19 @@ export const composeExplorer = ({
     )
   }
 
-  const View: FC<{
+  const Space: FC<{
     children: ReactNode
     viewId: string
   }> = ({ children, viewId }) => {
     const view = useO(findViewState(viewId))
     return (
-      <ErrorBoundary>
-        <MemoryRouter initialEntries={[view.location.pathname]}>
-          <InnerView viewId={viewId}>{children}</InnerView>
-        </MemoryRouter>
-      </ErrorBoundary>
+      <div className="space">
+        <ErrorBoundary>
+          <MemoryRouter initialEntries={[view.location.pathname]}>
+            <View viewId={viewId}>{children}</View>
+          </MemoryRouter>
+        </ErrorBoundary>
+      </div>
     )
   }
 
@@ -111,18 +113,16 @@ export const composeExplorer = ({
   }) => {
     const spaceLayout = useO(findSpaceLayoutNode(nodeKey))
     const viewIds = useO(findSpaceViewsState(nodeKey))
-    const focusedViewId = viewIds[0]
+    const focusedViewId = useO(findSpaceFocusedViewState(nodeKey))
     console.log({ spaceLayout, viewIds, focusedViewId })
     return (
       <div className="spaces">
         {spaceLayout.childKeys.length === 0 ? (
-          <div className="space">
-            {focusedViewId ? (
-              <View viewId={focusedViewId}>{children}</View>
-            ) : (
-              `no view`
-            )}
-          </div>
+          focusedViewId ? (
+            <Space viewId={focusedViewId}>{children}</Space>
+          ) : (
+            `no view`
+          )
         ) : (
           spaceLayout.childKeys.map((childKey) => (
             <Spaces key={childKey} nodeKey={childKey}>

@@ -35,7 +35,7 @@ export const makeViewIndex = (key: string): AtomToken<Set<string>> =>
     effects: [persistStringSetAtom(`${key}:view_index`)],
   })
 
-export const makeViewFocusedState = (key: string): AtomFamily<number, string> =>
+export const makeViewFocusedFamily = (key: string): AtomFamily<number, string> =>
   atomFamily<number, string>({
     key: `${key}:view_focused`,
     default: 0,
