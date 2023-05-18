@@ -2760,7 +2760,7 @@ __metadata:
     prettier: 2.8.8
     simple-git: 3.18.0
     socket.io: 4.6.1
-    tsx: 3.12.6
+    tsx: 3.12.7
     vitest: 0.30.1
   languageName: unknown
   linkType: soft
@@ -2792,7 +2792,7 @@ __metadata:
     socket.io: 4.6.1
     socket.io-client: 4.6.1
     socketio-auth: 0.1.1
-    tsx: 3.12.6
+    tsx: 3.12.7
     vite-tsconfig-paths: 4.2.0
     vitest: 0.30.1
     zustand: 4.3.7
@@ -2812,7 +2812,7 @@ __metadata:
     json-schema-to-zod: 0.6.3
     mock-fs: 5.2.0
     prettier: 2.8.8
-    tsx: 3.12.6
+    tsx: 3.12.7
     turbo: 1.9.3
     typescript: 5.0.4
   languageName: unknown
@@ -11238,9 +11238,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:3.12.6":
-  version: 3.12.6
-  resolution: "tsx@npm:3.12.6"
+"tsx@npm:3.12.7":
+  version: 3.12.7
+  resolution: "tsx@npm:3.12.7"
   dependencies:
     "@esbuild-kit/cjs-loader": ^2.4.2
     "@esbuild-kit/core-utils": ^3.0.0
@@ -11251,7 +11251,7 @@ __metadata:
       optional: true
   bin:
     tsx: dist/cli.js
-  checksum: f503096f3b56ea521eaf8ed65bf7ad6f04749f9251ce168981d7b7483fadd4a6247a35184099c3bc5d43574c6f4eef6f2a58e45e31f002e78ba94120765f95c5
+  checksum: ddec149ad263e5c75fc8fde5c6ba7ec2ee390934c0a2e2c23897bacab83bc8c665955a23b608a19c42f49c14a7362cf74ad793b52cc94eda684be5c2c13fdb4d
   languageName: node
   linkType: hard
 
