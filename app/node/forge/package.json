@@ -1,6 +1,6 @@
 {
   "name": "@wayforge/forge",
-  "packageManager": "yarn@3.5.0",
+  "packageManager": "yarn@3.5.1",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/main.ts ",
