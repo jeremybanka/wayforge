@@ -3,7 +3,7 @@ import type Preact from "preact/hooks"
 import type React from "react"
 
 import { subscribe, setState, __INTERNAL__ } from "atom.io"
-import type { ReadonlyValueToken, StateToken } from "atom.io"
+import type { ReadonlySelectorToken, StateToken } from "atom.io"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 
@@ -24,7 +24,7 @@ export const composeStoreHooks = ({
     return updateState
   }
 
-  function useO<T>(token: ReadonlyValueToken<T> | StateToken<T>): T {
+  function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
     const state = __INTERNAL__.withdraw(token, store)
     const initialValue = __INTERNAL__.getState__INTERNAL(state, store)
     const [current, dispatch] = useState(initialValue)
@@ -51,14 +51,14 @@ export const composeStoreHooks = ({
   function useStore<T>(
     token: StateToken<T>
   ): [T, (next: Modifier<T> | T) => void]
-  function useStore<T>(token: ReadonlyValueToken<T>): T
+  function useStore<T>(token: ReadonlySelectorToken<T>): T
   function useStore<T>(
-    token: ReadonlyValueToken<T> | StateToken<T>
+    token: ReadonlySelectorToken<T> | StateToken<T>
   ): T | [T, (next: Modifier<T> | T) => void] {
     if (token.type === `readonly_selector`) {
       return useO(token)
     }
     return useIO(token)
   }
-  return { useI, useO, useIO, useStore }
+  return { useI, useO, useIO, useStore, useEffect, useState }
 }

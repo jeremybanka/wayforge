@@ -18,7 +18,7 @@ import type {
   AtomToken,
   FamilyMetadata,
   ReadonlySelectorOptions,
-  ReadonlyValueToken,
+  ReadonlySelectorToken,
   SelectorOptions,
   SelectorToken,
   StateToken,
@@ -46,7 +46,7 @@ export const lookupSelectorSources = (
   store: Store
 ): (
   | AtomToken<unknown>
-  | ReadonlyValueToken<unknown>
+  | ReadonlySelectorToken<unknown>
   | SelectorToken<unknown>
 )[] =>
   target(store)
@@ -56,7 +56,7 @@ export const lookupSelectorSources = (
 
 export const traceSelectorAtoms = (
   selectorKey: string,
-  dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
+  dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
   store: Store
 ): AtomToken<unknown>[] => {
   const roots: AtomToken<unknown>[] = []
@@ -97,7 +97,7 @@ export const traceAllSelectorAtoms = (
 
 export const updateSelectorAtoms = (
   selectorKey: string,
-  dependency: ReadonlyValueToken<unknown> | StateToken<unknown>,
+  dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
   store: Store
 ): void => {
   const core = target(store)
@@ -164,12 +164,12 @@ export function selector__INTERNAL<T>(
   options: ReadonlySelectorOptions<T>,
   family?: FamilyMetadata,
   store?: Store
-): ReadonlyValueToken<T>
+): ReadonlySelectorToken<T>
 export function selector__INTERNAL<T>(
   options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
   family?: FamilyMetadata,
   store: Store = IMPLICIT.STORE
-): ReadonlyValueToken<T> | SelectorToken<T> {
+): ReadonlySelectorToken<T> | SelectorToken<T> {
   const core = target(store)
   if (HAMT.has(options.key, core.selectors)) {
     store.config.logger?.error(
@@ -200,7 +200,13 @@ export function selector__INTERNAL<T>(
     )
     const initialValue = getSelf()
     store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
-    return { ...readonlySelector, type: `readonly_selector` }
+    const token: ReadonlySelectorToken<T> = {
+      key: options.key,
+      type: `readonly_selector`,
+      family,
+    }
+    store.subject.selectorCreation.next(token)
+    return token
   }
   const setSelf = (next: T | ((oldValue: T) => T)): void => {
     store.config.logger?.info(`   <- "${options.key}" became`, next)
@@ -224,5 +230,11 @@ export function selector__INTERNAL<T>(
   core.selectors = HAMT.set(options.key, mySelector, core.selectors)
   const initialValue = getSelf()
   store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
-  return { ...mySelector, type: `selector` }
+  const token: SelectorToken<T> = {
+    key: options.key,
+    type: `selector`,
+    family,
+  }
+  store.subject.selectorCreation.next(token)
+  return token
 }

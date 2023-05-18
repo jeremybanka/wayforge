@@ -1,81 +1,152 @@
-import type { ChangeEvent, FC } from "react"
-import { useRef } from "react"
+import type { FC } from "react"
+import { useState, ChangeEvent, useId, useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
+import { pipe } from "fp-ts/function"
+import type { SetterOrUpdater } from "recoil"
 
-import { ElasticInput } from "./ElasticInput"
+import { clampInto } from "~/packages/anvl/src/number"
 
-const textToValue = (input: string, allowDecimal: boolean): number => {
-  let interpretation: number
-  switch (input) {
-    case ``:
-      interpretation = 0
-      break
-    case `.`:
-      interpretation = 0
-      break
-    case `-`:
-      interpretation = 0
-      break
-    case `-.`:
-      interpretation = 0
-      break
-    default:
-      interpretation = allowDecimal
-        ? parseFloat(input)
-        : Math.round(parseFloat(input))
-      break
-  }
-  return interpretation
+import { ElasticInput } from "."
+
+function round(value: number, decimalPlaces?: number): number {
+  if (decimalPlaces === undefined) return value
+  const factor = Math.pow(10, decimalPlaces)
+  return Math.round(value * factor) / factor
+}
+function roundAndPad(value: number, decimalPlaces?: number): string {
+  const roundedValue = round(value, decimalPlaces)
+  const paddedString = roundedValue.toFixed(decimalPlaces)
+  return paddedString
 }
 
-const valueToText = (numericValue?: number | null): string =>
-  numericValue === null || numericValue === undefined
-    ? ``
-    : numericValue.toString()
-
-export type NumberInputProps = {
-  value: number
-  set?: (value: number) => void
-  allowDecimal?: boolean
-  min?: number
-  max?: number
-  label?: string
-  placeholder?: string
-  customCss?: SerializedStyles
-  autoSize?: boolean
-}
-
-export const VALID_NON_NUMBERS = [``, `-`, `.`, `-.`, `0.`] as const
+export const VALID_NON_NUMBERS = [``, `-`, `.`, `-.`] as const
 export type ValidNonNumber = (typeof VALID_NON_NUMBERS)[number]
 export const isValidNonNumber = (input: string): input is ValidNonNumber =>
   VALID_NON_NUMBERS.includes(input as ValidNonNumber)
+export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<
+  Record<ValidNonNumber, number | null>
+> = {
+  "": null,
+  "-": 0,
+  ".": 0,
+  "-.": 0,
+} as const
+export type DecimalInProgress = `${number | ``}.${number}`
+export const isDecimalInProgress = (input: string): input is DecimalInProgress =>
+  input === `0` || (!isNaN(Number(input)) && input.includes(`.`))
+
+const textToValue = (input: string, allowDecimal: boolean): number | null => {
+  if (isValidNonNumber(input)) return VALID_NON_NUMBER_INTERPRETATIONS[input]
+  return allowDecimal ? parseFloat(input) : Math.round(parseFloat(input))
+}
+
+export type NumberConstraints = {
+  max: number
+  min: number
+  decimalPlaces: number
+  nullable: boolean
+}
+export const DEFAULT_NUMBER_CONSTRAINTS: NumberConstraints = {
+  max: Infinity,
+  min: -Infinity,
+  decimalPlaces: 100,
+  nullable: true,
+}
+
+const initRefinery =
+  <Constraints extends NumberConstraints>(constraints: Partial<Constraints>) =>
+  (
+    input: number | null
+  ): Constraints extends { nullable: true | undefined }
+    ? number | null
+    : number => {
+    if (input === null && constraints.nullable === true) {
+      return null as Constraints extends { nullable: true }
+        ? number | null
+        : number
+    }
+    const { max, min, decimalPlaces } = {
+      ...DEFAULT_NUMBER_CONSTRAINTS,
+      ...constraints,
+    }
+    const constrained = pipe(input ?? 0, clampInto([min, max]), (n) =>
+      decimalPlaces ? round(n, decimalPlaces) : n
+    )
+    return constrained
+  }
+
+const valueToText = (numericValue: number | null): string => {
+  if (numericValue === null || numericValue === undefined) {
+    return ``
+  }
+  return numericValue.toString()
+}
+
+type NumberInputProps = Partial<NumberConstraints> & {
+  autoSize?: boolean
+  customCss?: SerializedStyles
+  disabled?: boolean
+  id?: string
+  label?: string
+  name?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  placeholder?: string
+  set?: (newValue: number | null) => void
+  testId?: string
+  value?: number | null
+}
 
 export const NumberInput: FC<NumberInputProps> = ({
-  value,
-  set,
-  label,
-  placeholder,
+  autoSize = false,
   customCss,
-  allowDecimal = true,
+  decimalPlaces,
+  disabled = false,
+  label,
   max,
   min,
-  autoSize = false,
+  name,
+  onChange,
+  onClick,
+  placeholder = ``,
+  set = () => null,
+  testId,
+  value = null,
 }) => {
-  const temporaryEntry = useRef<ValidNonNumber | null>(null)
+  const id = useId()
+  const [temporaryEntry, setTemporaryEntry] = useState<
+    DecimalInProgress | ValidNonNumber | null
+  >(null)
+  const userHasMadeDeliberateChange = useRef<boolean>(false)
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    // if (onChange) onChange(event)
+  const refine = initRefinery({ max, min, decimalPlaces, nullable: true })
+
+  const allowDecimal = decimalPlaces === undefined || decimalPlaces > 0
+
+  const handleBlur = () => {
+    if (userHasMadeDeliberateChange.current) {
+      set(refine(value ?? null))
+      setTemporaryEntry(null)
+    }
+    userHasMadeDeliberateChange.current = false
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) onChange(event)
     if (set === undefined) return
+    userHasMadeDeliberateChange.current = true
     const input = event.target.value
-    if (isValidNonNumber(input)) {
-      temporaryEntry.current = input
-      const textInterpretation = min?.toString() ?? `0`
+    if (isValidNonNumber(input) || isDecimalInProgress(input)) {
+      setTemporaryEntry(input)
+      const textInterpretation = isDecimalInProgress(input)
+        ? input
+        : min?.toString() ?? `0`
       const newValue = textToValue(textInterpretation, allowDecimal)
-      set(newValue)
+      set(refine(newValue))
       return
     }
-    temporaryEntry.current = null
+    setTemporaryEntry(null)
     const inputIsNumeric =
       (!isNaN(Number(input)) && !input.includes(` `)) ||
       (allowDecimal && input === `.`) ||
@@ -84,37 +155,42 @@ export const NumberInput: FC<NumberInputProps> = ({
       input === `-`
     const numericValue = textToValue(input, allowDecimal)
 
-    if (numericValue !== null && max !== undefined && numericValue > max) {
-      window.alert(`Value must be less than or equal to ${max}`)
-      return
-    }
-    if (numericValue !== null && min !== undefined && numericValue < min) {
-      window.alert(`Value must be greater than or equal to ${min}`)
-      return
-    }
     if (inputIsNumeric) {
-      set(textToValue(input, allowDecimal))
+      set(refine(numericValue))
     }
   }
-  const displayValue = temporaryEntry.current ?? valueToText(value)
+
+  const displayValue =
+    temporaryEntry ?? valueToText(value ? refine(value) : value)
+
   return (
     <span css={customCss}>
-      <label>{label}</label>
+      {label && <label htmlFor={id}>{label}</label>}
       {autoSize ? (
         <ElasticInput
           type="text"
           value={displayValue}
+          placeholder={placeholder ?? `-`}
           onChange={handleChange}
-          disabled={set === undefined}
-          placeholder={placeholder}
+          onBlur={handleBlur}
+          disabled={disabled}
+          name={name ?? id}
+          id={id}
+          onClick={onClick}
+          data-testid={`number-input-${testId ?? id}`}
         />
       ) : (
         <input
           type="text"
           value={displayValue}
+          placeholder={placeholder ?? `-`}
           onChange={handleChange}
-          disabled={set === undefined}
-          placeholder={placeholder}
+          onBlur={handleBlur}
+          disabled={disabled}
+          name={name ?? id}
+          id={id}
+          onClick={onClick}
+          data-testid={`number-input-${testId ?? id}`}
         />
       )}
     </span>

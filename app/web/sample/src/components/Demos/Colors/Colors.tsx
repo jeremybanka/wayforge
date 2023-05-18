@@ -7,7 +7,7 @@ import { atom, selector, selectorFamily } from "~/packages/atom.io/src"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { Luum, setHue, setLum, setSat } from "~/packages/Luum/src"
 
-import { useIO, useO } from "./services"
+import { useIO, useO, useSetTitle } from "../../../services/store"
 
 const colorAtom = atom<Luum>({
   key: `color`,
@@ -42,14 +42,14 @@ const findAltHueSelector = selectorFamily<Luum, number>({
     },
 })
 
-export const StressTest: FC = () => {
+export const Colors: FC = () => {
+  useSetTitle(`Colors`)
+
   const [hue, setHue] = useIO(hueSelector)
   const [lum, setLum] = useIO(lumSelector)
   const [sat, setSat] = useIO(satSelector)
 
   const [isPending, startTransition] = useTransition()
-
-  const color = useO(colorAtom)
 
   const tints = Array.from({ length: 360 }).map((_, i) =>
     useO(findAltHueSelector(i))

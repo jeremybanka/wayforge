@@ -1,13 +1,13 @@
 import type * as Rx from "rxjs"
 
-import type { ReadonlyValueToken, StateToken, TransactionToken } from "."
+import type { ReadonlySelectorToken, StateToken, TransactionToken } from "."
 import type { Store, TransactionUpdate } from "./internal"
 import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
 
 export type ƒn = (...parameters: any[]) => any
 
 export type Transactors = {
-  get: <S>(state: ReadonlyValueToken<S> | StateToken<S>) => S
+  get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
   set: <S>(state: StateToken<S>, newValue: S | ((oldValue: S) => S)) => void
 }
 export type ReadonlyTransactors = Pick<Transactors, `get`>

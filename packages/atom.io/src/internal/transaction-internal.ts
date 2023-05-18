@@ -2,7 +2,7 @@ import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
 import type { Store, StoreCore } from "."
-import { deposit, withdraw, IMPLICIT } from "."
+import { cacheValue, deposit, withdraw, IMPLICIT } from "."
 import { getState, setState } from ".."
 import type {
   AtomToken,
@@ -75,14 +75,22 @@ export const applyTransaction = <ƒ extends ƒn>(
     return
   }
   store.config.logger?.info(
-    ` ▶️ apply transaction "${store.transactionStatus.key}" (init)`
+    `🛃 apply transaction "${store.transactionStatus.key}"`
   )
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output
   const { atomUpdates } = store.transactionStatus
-  for (const { key, oldValue, newValue } of atomUpdates) {
+
+  for (const { key, newValue } of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
+    if (!HAMT.has(token.key, store.valueMap)) {
+      const atom = HAMT.get(token.key, store.transactionStatus.core.atoms)
+      store.atoms = HAMT.set(atom.key, atom, store.atoms)
+      store.valueMap = HAMT.set(atom.key, atom.default, store.valueMap)
+      store.config.logger?.info(`🔧`, `add atom "${atom.key}"`)
+    }
     const state = withdraw(token, store)
+
     setState(state, newValue, store)
   }
   const myTransaction = withdraw<ƒ>(
@@ -103,7 +111,7 @@ export const undoTransactionUpdate = <ƒ extends ƒn>(
   store: Store
 ): void => {
   store.config.logger?.info(` ⏮ undo transaction "${update.key}" (undo)`)
-  for (const { key, oldValue, newValue } of update.atomUpdates) {
+  for (const { key, oldValue } of update.atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
     setState(state, oldValue, store)
@@ -114,7 +122,7 @@ export const redoTransactionUpdate = <ƒ extends ƒn>(
   store: Store
 ): void => {
   store.config.logger?.info(` ⏭ redo transaction "${update.key}" (redo)`)
-  for (const { key, oldValue, newValue } of update.atomUpdates) {
+  for (const { key, newValue } of update.atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
     setState(state, newValue, store)
@@ -166,6 +174,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
     core.transactions
   )
   const token = deposit(newTransaction)
+  store.subject.transactionCreation.next(token)
   return token
 }
 

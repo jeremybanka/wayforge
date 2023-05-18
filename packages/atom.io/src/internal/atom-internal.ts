@@ -1,8 +1,9 @@
+import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
 import { deposit } from "./get"
 import { markAtomAsDefault } from "./is-default"
-import { cacheValue, hasKeyBeenUsed, storeAtom } from "./operation"
+import { cacheValue, hasKeyBeenUsed } from "./operation"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
 import { target } from "./transaction-internal"
@@ -39,12 +40,16 @@ export function atom__INTERNAL<T>(
   } as const
   const initialValue =
     options.default instanceof Function ? options.default() : options.default
-  storeAtom(newAtom, store)
+  core.atoms = HAMT.set(newAtom.key, newAtom, core.atoms)
   markAtomAsDefault(options.key, store)
   cacheValue(options.key, initialValue, store)
   const token = deposit(newAtom)
-  const setSelf = (next) => setState(token, next, store)
-  const onSet = (handle: UpdateHandler<T>) => subscribe(token, handle, store)
-  options.effects?.forEach((effect) => effect({ setSelf, onSet }))
+  options.effects?.forEach((effect) =>
+    effect({
+      setSelf: (next) => setState(token, next, store),
+      onSet: (handle: UpdateHandler<T>) => subscribe(token, handle, store),
+    })
+  )
+  store.subject.atomCreation.next(token)
   return token
 }

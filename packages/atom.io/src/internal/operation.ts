@@ -22,7 +22,6 @@ export type OperationProgress =
 export const openOperation = (token: StateToken<any>, store: Store): void => {
   const core = target(store)
   if (core.operation.open) {
-    console.warn(core.operation.open)
     store.config.logger?.error(
       `❌ failed to setState to "${token.key}" during a setState for "${core.operation.token.key}"`
     )

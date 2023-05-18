@@ -2,11 +2,13 @@ import type { FC } from "react"
 import { useEffect } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
+import { BrowserRouter } from "react-router-dom"
 
 import type { StateToken } from "~/packages/atom.io/src"
 
 import { App } from "./App"
-import { useStore } from "./services"
+import { Division } from "./components/Demos/Division"
+import { useStore } from "./services/store"
 
 export const onChange = [() => undefined, console.log][0]
 
@@ -22,7 +24,12 @@ export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
 
 describe(`App`, () => {
   it(`Shows a basic state graph in operation`, () => {
-    const { getByTestId } = render(<App />)
+    const { getByTestId } = render(
+      <BrowserRouter>
+        <Division />
+      </BrowserRouter>
+    )
+
     const incDividend = getByTestId(`dividendButton+`)
     const decDividend = getByTestId(`dividendButton-`)
     const incDivisor = getByTestId(`divisorButton+`)
