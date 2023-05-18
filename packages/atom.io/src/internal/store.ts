@@ -1,5 +1,6 @@
 import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
+import * as Rx from "rxjs"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
@@ -13,7 +14,16 @@ import type {
   Timeline,
   TimelineData,
 } from "."
-import type { Logger, Transaction, ƒn } from ".."
+import type {
+  AtomToken,
+  Logger,
+  ReadonlySelectorToken,
+  SelectorToken,
+  TimelineToken,
+  Transaction,
+  TransactionToken,
+  ƒn,
+} from ".."
 
 export type StoreCore = Pick<
   Store,
@@ -43,6 +53,15 @@ export interface Store {
   transactions: Hamt<Transaction<any>, string>
   valueMap: Hamt<any, string>
 
+  subject: {
+    atomCreation: Rx.Subject<AtomToken<unknown>>
+    selectorCreation: Rx.Subject<
+      ReadonlySelectorToken<unknown> | SelectorToken<unknown>
+    >
+    transactionCreation: Rx.Subject<TransactionToken<unknown>>
+    timelineCreation: Rx.Subject<TimelineToken>
+  }
+
   operation: OperationProgress
   transactionStatus: TransactionStatus<ƒn>
   config: {
@@ -65,6 +84,13 @@ export const createStore = (name: string): Store =>
     timelineStore: HAMT.make<TimelineData, string>(),
     transactions: HAMT.make<Transaction<any>, string>(),
     valueMap: HAMT.make<any, string>(),
+
+    subject: {
+      atomCreation: new Rx.Subject(),
+      selectorCreation: new Rx.Subject(),
+      transactionCreation: new Rx.Subject(),
+      timelineCreation: new Rx.Subject(),
+    },
 
     operation: {
       open: false,

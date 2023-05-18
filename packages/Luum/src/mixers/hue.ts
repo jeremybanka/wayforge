@@ -12,7 +12,6 @@ export const setHue: LuumApplicator<number> = (newHue) => (currentColor) => {
     ...currentColor,
     hue: pipe(currentColor.hue, become(newHue), wrapInto([0, 360])),
   }
-  console.log(newColor)
   return newColor
 }
 export const trine =

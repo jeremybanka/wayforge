@@ -1,10 +1,6 @@
 import type { AtomFamily, AtomToken } from "."
 import { IMPLICIT } from "./internal"
-import {
-  redo__INTERNAL,
-  timeline__INTERNAL,
-  undo__INTERNAL,
-} from "./internal/timeline-internal"
+import { redo__INTERNAL, timeline__INTERNAL, undo__INTERNAL } from "./internal/"
 
 export type TimelineToken = {
   key: string

@@ -19,7 +19,7 @@ import type {
   FamilyMetadata,
   ReadonlySelectorFamily,
   ReadonlySelectorFamilyOptions,
-  ReadonlyValueToken,
+  ReadonlySelectorToken,
   SelectorFamily,
   SelectorFamilyOptions,
   SelectorToken,
@@ -66,9 +66,9 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
   store?: Store
 ): ReadonlySelectorFamily<T, K> {
   const core = target(store)
-  const subject = new Rx.Subject<ReadonlyValueToken<T>>()
+  const subject = new Rx.Subject<ReadonlySelectorToken<T>>()
   return Object.assign(
-    (key: K): ReadonlyValueToken<T> => {
+    (key: K): ReadonlySelectorToken<T> => {
       const subKey = stringifyJson(key)
       const family: FamilyMetadata = { key: options.key, subKey }
       const fullKey = `${options.key}(${subKey})`
@@ -83,7 +83,7 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
         },
         family,
         store
-      ) as ReadonlyValueToken<T>
+      ) as ReadonlySelectorToken<T>
     },
     {
       key: options.key,

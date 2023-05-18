@@ -1,4 +1,4 @@
-import type { ReadonlyValueToken, StateToken, TransactionToken, ƒn } from "."
+import type { ReadonlySelectorToken, StateToken, TransactionToken, ƒn } from "."
 import type { Store, TransactionUpdate } from "./internal"
 import { IMPLICIT, subscribeToRootAtoms, withdraw } from "./internal"
 
@@ -6,7 +6,7 @@ export type StateUpdate<T> = { newValue: T; oldValue: T }
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
 export const subscribe = <T>(
-  token: ReadonlyValueToken<T> | StateToken<T>,
+  token: ReadonlySelectorToken<T> | StateToken<T>,
   handleUpdate: UpdateHandler<T>,
   store: Store = IMPLICIT.STORE
 ): (() => void) => {

@@ -61,13 +61,15 @@ describe(`graceful handling of improper usage`, () => {
         setState(b, true)
         return n + 1
       })
-      setState(s, 2)
-      setState(s, 3)
-      const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`a & b`)
 
       expect(logger.error).toHaveBeenCalledWith(
         `❌ failed to setState to "b" during a setState for "a"`
       )
+
+      setState(s, 2)
+      const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`a & b`)
+      setState(s, 3)
+
       expect(timelineData.history).toHaveLength(3)
       expect(timelineData.history[0]).toEqual({
         type: `atom_update`,

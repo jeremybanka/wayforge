@@ -228,4 +228,24 @@ describe(`transaction`, () => {
       ],
     })
   })
+
+  it(`can create an atom in a transaction`, () => {
+    const findPointState = atomFamily<{ x: number; y: number }, number>({
+      key: `point`,
+      default: { x: 0, y: 0 },
+    })
+
+    const addPoint = transaction<
+      (key: number, x: number, y: number) => { x: number; y: number }
+    >({
+      key: `add_point`,
+      do: ({ set }, pointKey: number, x: number, y: number) => {
+        const point = { x, y }
+        set(findPointState(pointKey), point)
+        return point
+      },
+    })
+
+    const point = runTransaction(addPoint)(777, 1, 2)
+  })
 })

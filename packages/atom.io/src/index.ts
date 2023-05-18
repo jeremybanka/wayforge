@@ -32,7 +32,7 @@ export type SelectorToken<_> = {
 }
 export type StateToken<T> = AtomToken<T> | SelectorToken<T>
 
-export type ReadonlyValueToken<_> = {
+export type ReadonlySelectorToken<_> = {
   key: string
   type: `readonly_selector`
   family?: FamilyMetadata
@@ -49,7 +49,7 @@ export type TransactionToken<_> = {
 }
 
 export const getState = <T>(
-  token: ReadonlyValueToken<T> | StateToken<T>,
+  token: ReadonlySelectorToken<T> | StateToken<T>,
   store: Store = IMPLICIT.STORE
 ): T => {
   const state = withdraw<T>(token, store)
@@ -75,7 +75,7 @@ export const setState = <T, New extends T>(
 }
 
 export const isDefault = (
-  token: ReadonlyValueToken<unknown> | StateToken<unknown>,
+  token: ReadonlySelectorToken<unknown> | StateToken<unknown>,
   store: Store = IMPLICIT.STORE
 ): boolean =>
   token.type === `atom`

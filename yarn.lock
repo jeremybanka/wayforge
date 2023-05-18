@@ -1763,6 +1763,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@remix-run/router@npm:1.6.0":
+  version: 1.6.0
+  resolution: "@remix-run/router@npm:1.6.0"
+  checksum: 9f08f20500b2fc9d689c06c3c25504baf2ece861a9f4d0c49ba043ef4040a96b85c15a57a1c11377e64bf78b727ce8fb58b300345642efb05a75d49e4b638344
+  languageName: node
+  linkType: hard
+
 "@rollup/pluginutils@npm:^5.0.2":
   version: 5.0.2
   resolution: "@rollup/pluginutils@npm:5.0.2"
@@ -2300,6 +2307,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-resizable@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@types/react-resizable@npm:3.0.4"
+  dependencies:
+    "@types/react": "*"
+  checksum: 8c8ab9ec6481195f1875cbc76c95f26794d1d1ce7fcd833078252d6378e197a5b4483bdf4f8c90ae8f3f6f7a9503c518388bd7d09985e72fff3b4d77153f6ebd
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:*, @types/react@npm:18.2.0":
   version: 18.2.0
   resolution: "@types/react@npm:18.2.0"
@@ -2671,6 +2687,7 @@ __metadata:
     "@floating-ui/react": 0.23.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
+    "@types/react-resizable": 3.0.4
     "@vitejs/plugin-react": 4.0.0
     corners: 0.0.13
     cross-env: 7.0.3
@@ -2681,8 +2698,8 @@ __metadata:
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
+    react-resizable: 3.0.5
     react-router-dom: 6.10.0
-    recoil: 0.7.7
     sass: 1.62.1
     vite: 4.3.3
     vite-plugin-svgr: 2.4.0
@@ -3198,6 +3215,7 @@ __metadata:
     preact: 10.13.2
     react: 18.2.0
     react-dom: 18.2.0
+    react-router-dom: 6.11.0
     rxjs: 7.8.1
     tsup: 6.7.0
     vite-tsconfig-paths: 4.2.0
@@ -3859,6 +3877,13 @@ __metadata:
   version: 1.0.4
   resolution: "clone@npm:1.0.4"
   checksum: d06418b7335897209e77bdd430d04f882189582e67bd1f75a04565f3f07f5b3f119a9d670c943b6697d0afb100f03b866b3b8a1f91d4d02d72c4ecf2bb64b5dd
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^1.1.1":
+  version: 1.2.1
+  resolution: "clsx@npm:1.2.1"
+  checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
   languageName: node
   linkType: hard
 
@@ -9274,7 +9299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.8, prop-types@npm:^15.8.1":
+"prop-types@npm:15.x, prop-types@npm:^15.5.8, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -9394,6 +9419,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-draggable@npm:^4.0.3":
+  version: 4.4.5
+  resolution: "react-draggable@npm:4.4.5"
+  dependencies:
+    clsx: ^1.1.1
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 21c3775db086e13020967627c20acd41d1ddbc7c7d7fca51491a5bbb54a0aa7e1730a4bc9af17141eb50a4954e547a5e25b2368f5f54b70db6f2686a897bacf2
+  languageName: node
+  linkType: hard
+
 "react-icons@npm:^4.4.0":
   version: 4.8.0
   resolution: "react-icons@npm:4.8.0"
@@ -9443,6 +9481,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-resizable@npm:3.0.5":
+  version: 3.0.5
+  resolution: "react-resizable@npm:3.0.5"
+  dependencies:
+    prop-types: 15.x
+    react-draggable: ^4.0.3
+  peerDependencies:
+    react: ">= 16.3"
+  checksum: 616a10205acfaf8cc3aa0824b60f6d037eef87143d8f338cf826deb74a353db9b9baad67a65dc8535fe90840bfc3e1b8a901f9c247033ffeec2f30405ac7528e
+  languageName: node
+  linkType: hard
+
 "react-router-dom@npm:6.10.0":
   version: 6.10.0
   resolution: "react-router-dom@npm:6.10.0"
@@ -9456,6 +9506,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:6.11.0":
+  version: 6.11.0
+  resolution: "react-router-dom@npm:6.11.0"
+  dependencies:
+    "@remix-run/router": 1.6.0
+    react-router: 6.11.0
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 85c9e302de8f5730bd63fc1f0f712ca0645b7ec843828f43b60712b0a38105d101c7412487eeb35cc25d940cc026e8832e6492eba9772d26779e2856f18e7923
+  languageName: node
+  linkType: hard
+
 "react-router@npm:6.10.0":
   version: 6.10.0
   resolution: "react-router@npm:6.10.0"
@@ -9464,6 +9527,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: c9fce46147c04257d7d6fa1f5bbfac96c5fdd0b15f26918bd12b2e5fe9143977c5a4452272f9b85795a22e29ec105a60d0bbe036118efc52b383d163cd8829ab
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.11.0":
+  version: 6.11.0
+  resolution: "react-router@npm:6.11.0"
+  dependencies:
+    "@remix-run/router": 1.6.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: c27d64b074da711d59a94d7b64fe82360da8a49077a5e8326c27e9fb48a7650080f73b5ba3b94d0b11f2d7e315255fabc3bad818cd26d1cec3a52220ad9d64cd
   languageName: node
   linkType: hard
 

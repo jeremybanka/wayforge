@@ -4,8 +4,9 @@ import { isString } from "fp-ts/string"
 
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 
-import type { Json, JsonArr, JsonObj } from "."
-import { raiseError } from "../function"
+import { stringifyJson } from "."
+import type { JsonArr, JsonObj, Json } from "."
+import { attempt, raiseError } from "../function"
 
 export type RefinedJson =
   | { type: `array`; data: JsonArr }
@@ -29,9 +30,11 @@ export const refineJsonType = (data: Json): RefinedJson =>
     : isPlainObject(data)
     ? { type: `object`, data }
     : raiseError(
-        `${data} with prototype ${Object.getPrototypeOf(
-          data
-        )} passed to refineJsonType. This is not valid JSON.`
+        data === undefined
+          ? `undefined passed to refineJsonType. This is not valid JSON.`
+          : `${stringifyJson(data)} with prototype "${
+              Object.getPrototypeOf(data).constructor.name
+            }" passed to refineJsonType. This is not valid JSON.`
       )
 
 export const isJson = (input: unknown): input is Json => {
@@ -42,3 +45,6 @@ export const isJson = (input: unknown): input is Json => {
     return false
   }
 }
+
+export const isPlainJson = (input: unknown): input is Json =>
+  attempt(() => isJson(input) && refineJsonType(input))

@@ -38,7 +38,7 @@ export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {
             paddingTop: 5,
           }}
         >
-          {` ⚠️ `}
+          {`⚠️ `}
           <span style={{ color: `#fc0`, fontWeight: 700 }}>{component}</span>
           {` ⚠️ `}
           {message}

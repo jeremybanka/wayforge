@@ -75,7 +75,6 @@ export const JsonEditor = <T extends Json>({
     return ajv.compile(schema)
   }, [schema])
   const validationResults = validate(data)
-  console.log({ validate, validationResults, errors: { ...validate.errors } })
 
   return (
     <JsonEditor_INTERNAL

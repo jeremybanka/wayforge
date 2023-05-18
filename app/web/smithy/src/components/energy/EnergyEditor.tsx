@@ -4,12 +4,12 @@ import { useEffect } from "react"
 import { css } from "@emotion/react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
 import type { RecoilEditorProps } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
+import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
 
 import { Data_EnergyCard_A } from "./EnergyCard_A"
 import { Data_EnergyCard_B } from "./EnergyCard_B"
