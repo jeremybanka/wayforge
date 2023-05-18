@@ -2852,7 +2852,7 @@ __metadata:
     eslint: 8.39.0
     fp-ts: 2.14.0
     framer-motion: 10.12.12
-    happy-dom: 9.9.2
+    happy-dom: 9.18.3
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -2899,7 +2899,7 @@ __metadata:
     eslint: 8.39.0
     fp-ts: 2.14.0
     framer-motion: 10.12.12
-    happy-dom: 9.9.2
+    happy-dom: 9.18.3
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -4820,7 +4820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.4.0":
+"entities@npm:^4.4.0, entities@npm:^4.5.0":
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
@@ -6253,17 +6253,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:9.9.2":
-  version: 9.9.2
-  resolution: "happy-dom@npm:9.9.2"
+"happy-dom@npm:9.18.3":
+  version: 9.18.3
+  resolution: "happy-dom@npm:9.18.3"
   dependencies:
     css.escape: ^1.5.1
-    he: ^1.2.0
+    entities: ^4.5.0
     iconv-lite: ^0.6.3
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-  checksum: da41bef3628d5c134a62c87047ac382b0ade7bf620185d8526021d71728171e32ba2eca9441c38d30e2cb15cca2cf3513e7193044028b7d206ed8a759e6498e1
+  checksum: 0709a046ce170cfb0186786a7daa8f2656df179f9a482ec3de4b75e50935c914e6aef40fa50f6ee12daa4ca45b514ff8c5a192ed7cb47c02f677e5e48cf8f881
   languageName: node
   linkType: hard
 
@@ -6379,15 +6379,6 @@ __metadata:
   dependencies:
     function-bind: ^1.1.1
   checksum: b9ad53d53be4af90ce5d1c38331e712522417d017d5ef1ebd0507e07c2fbad8686fffb8e12ddecd4c39ca9b9b47431afbb975b8abf7f3c3b82c98e9aad052792
-  languageName: node
-  linkType: hard
-
-"he@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "he@npm:1.2.0"
-  bin:
-    he: bin/he
-  checksum: 3d4d6babccccd79c5c5a3f929a68af33360d6445587d628087f39a965079d84f18ce9c3d3f917ee1e3978916fc833bb8b29377c3b403f919426f91bc6965e7a7
   languageName: node
   linkType: hard
 
