@@ -7,7 +7,6 @@ import type { composeStoreHooks } from "~/packages/atom.io/src/react"
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
-import type { ExplorerState } from "./explorer-states"
 import { attachExplorerState } from "./explorer-states"
 import { setState } from ".."
 import { runTransaction } from "../transaction"
@@ -30,7 +29,7 @@ export const composeExplorer = ({
   key,
   Components,
   storeHooks: { useO, useIO },
-}: ExplorerOptions): ExplorerState & {
+}: ExplorerOptions): ReturnType<typeof attachExplorerState> & {
   Explorer: FC<{ children: ReactNode }>
   useSetTitle: (viewId: string) => void
 } => {
@@ -91,49 +90,88 @@ export const composeExplorer = ({
     )
   }
 
+  const Tab: FC<{ viewId: string; spaceId: string }> = ({ viewId, spaceId }) => {
+    const view = useO(findViewState(viewId))
+    const [spaceFocusedView, setSpaceFocusedView] = useIO(
+      findSpaceFocusedViewState(spaceId)
+    )
+    return (
+      <div
+        className={`tab ${spaceFocusedView === viewId ? `focused` : ``}`}
+        onClick={() => setSpaceFocusedView(viewId)}
+      >
+        {view.title}
+      </div>
+    )
+  }
+
+  const TabBar: FC<{
+    spaceId: string
+    viewIds: string[]
+  }> = ({ spaceId, viewIds }) => {
+    return (
+      <nav className="tab-bar">
+        {viewIds.map((viewId) => (
+          <Tab key={viewId} viewId={viewId} spaceId={spaceId} />
+        ))}
+      </nav>
+    )
+  }
+
   const Space: FC<{
     children: ReactNode
-    viewId: string
-  }> = ({ children, viewId }) => {
-    const view = useO(findViewState(viewId))
+    focusedViewId: string
+    spaceId: string
+    viewIds: string[]
+  }> = ({ children, focusedViewId, spaceId, viewIds }) => {
+    const view = useO(findViewState(focusedViewId))
     return (
       <div className="space">
         <ErrorBoundary>
-          <MemoryRouter initialEntries={[view.location.pathname]}>
-            <View viewId={viewId}>{children}</View>
+          <MemoryRouter
+            initialEntries={view.location ? [view.location.pathname] : []}
+          >
+            <TabBar spaceId={spaceId} viewIds={viewIds} />
+            <View viewId={focusedViewId}>{children}</View>
           </MemoryRouter>
         </ErrorBoundary>
       </div>
     )
   }
 
-  const Spaces: FC<{ children: ReactNode; nodeKey?: string }> = ({
+  const Spaces: FC<{ children: ReactNode; spaceId?: string }> = ({
     children,
-    nodeKey = `root`,
+    spaceId = `root`,
   }) => {
-    const spaceLayout = useO(findSpaceLayoutNode(nodeKey))
-    const viewIds = useO(findSpaceViewsState(nodeKey))
-    const focusedViewId = useO(findSpaceFocusedViewState(nodeKey))
+    const spaceLayout = useO(findSpaceLayoutNode(spaceId))
+    const viewIds = useO(findSpaceViewsState(spaceId))
+    const focusedViewId = useO(findSpaceFocusedViewState(spaceId))
     console.log({ spaceLayout, viewIds, focusedViewId })
     return (
       <div className="spaces">
-        {spaceLayout.childKeys.length === 0 ? (
+        {spaceLayout.childSpaceIds.length === 0 ? (
           focusedViewId ? (
-            <Space viewId={focusedViewId}>{children}</Space>
+            <Space
+              focusedViewId={focusedViewId}
+              spaceId={spaceId}
+              viewIds={viewIds}
+            >
+              {children}
+            </Space>
           ) : (
             `no view`
           )
         ) : (
-          spaceLayout.childKeys.map((childKey) => (
-            <Spaces key={childKey} nodeKey={childKey}>
+          spaceLayout.childSpaceIds.map((childSpaceId) => (
+            <Spaces key={childSpaceId} spaceId={childSpaceId}>
               {children}
             </Spaces>
           ))
         )}
-        <button onClick={() => runTransaction(addView)({ spaceKey: nodeKey })}>
+        <button onClick={() => runTransaction(addView)({ spaceId })}>
           + View
         </button>
-        <button onClick={() => runTransaction(addSpace)(nodeKey)}>
+        <button onClick={() => runTransaction(addSpace)({ parentId: spaceId })}>
           + Space
         </button>
       </div>

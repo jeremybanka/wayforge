@@ -75,7 +75,7 @@ export const applyTransaction = <ƒ extends ƒn>(
     return
   }
   store.config.logger?.info(
-    ` 🛃 apply transaction "${store.transactionStatus.key}"`
+    `🛃 apply transaction "${store.transactionStatus.key}"`
   )
   store.transactionStatus.phase = `applying`
   store.transactionStatus.output = output

@@ -41,10 +41,11 @@ export const makeViewsPerSpaceState = (key: string): AtomToken<Join> =>
   })
 
 export const makeSpaceViewsFamily = (
+  key: string,
   viewsPerSpaceState: AtomToken<Join>
 ): ReadonlySelectorFamily<string[], string> =>
   selectorFamily<string[], string>({
-    key: `${viewsPerSpaceState.key}:space_views`,
+    key: `${key}:space_views`,
     get:
       (spaceId) =>
       ({ get }) => {
@@ -55,11 +56,12 @@ export const makeSpaceViewsFamily = (
   })
 
 export const makeSpaceFocusedViewFamily = (
+  key: string,
   findSpaceViewsState: ReadonlySelectorFamily<string[], string>,
   findViewFocusedState: AtomFamily<number, string>
 ): SelectorFamily<string | null, string> =>
   selectorFamily<string | null, string>({
-    key: `${findSpaceViewsState}:space_focused_view`,
+    key: `${key}:space_focused_view`,
     get:
       (spaceKey) =>
       ({ get }) => {
@@ -86,32 +88,11 @@ export const makeSpaceFocusedViewFamily = (
       },
   })
 
-type AddViewOptions = { spaceKey?: string; path?: string }
-type SpaceLayoutNode = { childKeys: string[]; size: number }
+type AddViewOptions = { spaceId?: string; path?: string }
+type SplitSpaceOptions = { parentId?: string }
 
-export type ExplorerState = {
-  addSpace: TransactionToken<(parentKey?: string) => string>
-  addView: TransactionToken<(options?: AddViewOptions) => string>
-  allViewsState: ReadonlySelectorToken<Entries<string, View>>
-  findSpaceLayoutNode: ReadonlySelectorFamily<SpaceLayoutNode>
-  findSpaceFocusedViewState: SelectorFamily<string | null, string>
-  findSpaceState: AtomFamily<string, string>
-  findSpaceViewsState: ReadonlySelectorFamily<string[], string>
-  findViewFocusedState: AtomFamily<number, string>
-  findViewState: AtomFamily<View, string>
-  removeSpace: TransactionToken<(id: string) => void>
-  removeView: TransactionToken<(id: string) => void>
-  spaceIndexState: AtomToken<Set<string>>
-  spaceLayoutState: AtomToken<Join<{ size: number }>>
-  viewIndexState: AtomToken<Set<string>>
-  viewsPerSpaceState: AtomToken<Join>
-  writeOperationAddSpace: Write<() => string>
-  writeOperationAddView: Write<(options?: AddViewOptions) => void>
-  writeOperationRemoveSpace: Write<(id: string) => void>
-  writeOperationRemoveView: Write<(id: string) => void>
-}
-
-export const attachExplorerState = (key: string): ExplorerState => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const attachExplorerState = (key: string) => {
   const findSpaceState = makeSpaceFamily(key)
   const findViewState = makeViewFamily(key)
   const findViewFocusedState = makeViewFocusedFamily(key)
@@ -120,9 +101,10 @@ export const attachExplorerState = (key: string): ExplorerState => {
   const viewIndexState = makeViewIndex(key)
   const viewsPerSpaceState = makeViewsPerSpaceState(key)
 
-  const findSpaceLayoutNode = makeSpaceLayoutNodeFamily(spaceLayoutState)
-  const findSpaceViewsState = makeSpaceViewsFamily(viewsPerSpaceState)
+  const findSpaceLayoutNode = makeSpaceLayoutNodeFamily(key, spaceLayoutState)
+  const findSpaceViewsState = makeSpaceViewsFamily(key, viewsPerSpaceState)
   const findSpaceFocusedViewState = makeSpaceFocusedViewFamily(
+    key,
     findSpaceViewsState,
     findViewFocusedState
   )
@@ -135,15 +117,14 @@ export const attachExplorerState = (key: string): ExplorerState => {
     },
   })
 
-  const writeOperationAddSpace: Write<(parentKey?: string) => string> = (
-    transactors,
-    parentKey = `root`
-  ) => {
+  const writeOperationAddSpace: Write<
+    (options?: SplitSpaceOptions) => string
+  > = (transactors, { parentId = `root` } = {}) => {
     const { set } = transactors
     const key = `s-${now()}`
     addToIndex(transactors, { indexAtom: spaceIndexState, id: key })
     set(spaceLayoutState, (current) =>
-      current.set(`parent:${parentKey}`, key, { size: 1 })
+      current.set(`parent:${parentId}`, key, { size: 1 })
     )
     set(findSpaceState(key), 1)
     return key
@@ -159,7 +140,7 @@ export const attachExplorerState = (key: string): ExplorerState => {
 
   const writeOperationAddView: Write<(options?: AddViewOptions) => void> = (
     transactors,
-    { spaceKey: maybeSpaceId, path } = {}
+    { spaceId: maybeSpaceId, path } = {}
   ) => {
     const { get, set } = transactors
     const id = `v-${now()}`
@@ -179,7 +160,10 @@ export const attachExplorerState = (key: string): ExplorerState => {
       maybeSpaceId ??
       lastOf([...get(spaceIndexState)]) ??
       writeOperationAddSpace(transactors)
+    set(findViewFocusedState(id), Date.now())
+
     set(viewsPerSpaceState, (current) => current.set(spaceId, id))
+    set(findViewFocusedState(id), Date.now())
   }
 
   const writeOperationRemoveView: Write<(id: string) => void> = (
