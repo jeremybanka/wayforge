@@ -742,7 +742,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/babel-plugin@npm:^11.10.8":
+"@emotion/babel-plugin@npm:^11.11.0":
   version: 11.11.0
   resolution: "@emotion/babel-plugin@npm:11.11.0"
   dependencies:
@@ -761,7 +761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/cache@npm:^11.10.8":
+"@emotion/cache@npm:^11.11.0":
   version: 11.11.0
   resolution: "@emotion/cache@npm:11.11.0"
   dependencies:
@@ -790,7 +790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/is-prop-valid@npm:^1.1.0, @emotion/is-prop-valid@npm:^1.2.0":
+"@emotion/is-prop-valid@npm:^1.1.0, @emotion/is-prop-valid@npm:^1.2.1":
   version: 1.2.1
   resolution: "@emotion/is-prop-valid@npm:1.2.1"
   dependencies:
@@ -813,28 +813,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:11.10.8":
-  version: 11.10.8
-  resolution: "@emotion/react@npm:11.10.8"
+"@emotion/react@npm:11.11.0":
+  version: 11.11.0
+  resolution: "@emotion/react@npm:11.11.0"
   dependencies:
     "@babel/runtime": ^7.18.3
-    "@emotion/babel-plugin": ^11.10.8
-    "@emotion/cache": ^11.10.8
-    "@emotion/serialize": ^1.1.1
-    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.0
-    "@emotion/utils": ^1.2.0
-    "@emotion/weak-memoize": ^0.3.0
+    "@emotion/babel-plugin": ^11.11.0
+    "@emotion/cache": ^11.11.0
+    "@emotion/serialize": ^1.1.2
+    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.1
+    "@emotion/utils": ^1.2.1
+    "@emotion/weak-memoize": ^0.3.1
     hoist-non-react-statics: ^3.3.1
   peerDependencies:
     react: ">=16.8.0"
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: ac56ef6375fa3bc7acd5a62eb5b2cf9eb4b1586a6a06cb05caab11a516700cf2f7857e0ad65bac57abd74e1141388e01fe65238f2de0075a912e129271c658b8
+  checksum: 2653e7c3de7b6fd5b0e18dea15621a9886104cc7c8cd5522ca69e52bd547ef6f13644193f8e0a906eea1e29a4f1d8167cdfa4667572fb7fafe0c62ab30fbaab6
   languageName: node
   linkType: hard
 
-"@emotion/serialize@npm:^1.1.1, @emotion/serialize@npm:^1.1.2":
+"@emotion/serialize@npm:^1.1.2":
   version: 1.1.2
   resolution: "@emotion/serialize@npm:1.1.2"
   dependencies:
@@ -854,23 +854,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:11.10.8":
-  version: 11.10.8
-  resolution: "@emotion/styled@npm:11.10.8"
+"@emotion/styled@npm:11.11.0":
+  version: 11.11.0
+  resolution: "@emotion/styled@npm:11.11.0"
   dependencies:
     "@babel/runtime": ^7.18.3
-    "@emotion/babel-plugin": ^11.10.8
-    "@emotion/is-prop-valid": ^1.2.0
-    "@emotion/serialize": ^1.1.1
-    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.0
-    "@emotion/utils": ^1.2.0
+    "@emotion/babel-plugin": ^11.11.0
+    "@emotion/is-prop-valid": ^1.2.1
+    "@emotion/serialize": ^1.1.2
+    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.1
+    "@emotion/utils": ^1.2.1
   peerDependencies:
     "@emotion/react": ^11.0.0-rc.0
     react: ">=16.8.0"
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: ceff0ac12f92289ea8febb1c3b4b70c1f3e110354452b9f6ee6461a7c01a24a0e2f071eb4303a7a289aad5cc8b62096561a150b0b6ed096bb1fd3e8503633226
+  checksum: 904f641aad3892c65d7d6c0808b036dae1e6d6dad4861c1c7dc0baa59977047c6cad220691206eba7b4059f1a1c6e6c1ef4ebb8c829089e280fa0f2164a01e6b
   languageName: node
   linkType: hard
 
@@ -895,7 +895,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/use-insertion-effect-with-fallbacks@npm:^1.0.0":
+"@emotion/use-insertion-effect-with-fallbacks@npm:^1.0.1":
   version: 1.0.1
   resolution: "@emotion/use-insertion-effect-with-fallbacks@npm:1.0.1"
   peerDependencies:
@@ -904,14 +904,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/utils@npm:^1.2.0, @emotion/utils@npm:^1.2.1":
+"@emotion/utils@npm:^1.2.1":
   version: 1.2.1
   resolution: "@emotion/utils@npm:1.2.1"
   checksum: e0b44be0705b56b079c55faff93952150be69e79b660ae70ddd5b6e09fc40eb1319654315a9f34bb479d7f4ec94be6068c061abbb9e18b9778ae180ad5d97c73
   languageName: node
   linkType: hard
 
-"@emotion/weak-memoize@npm:^0.3.0, @emotion/weak-memoize@npm:^0.3.1":
+"@emotion/weak-memoize@npm:^0.3.1":
   version: 0.3.1
   resolution: "@emotion/weak-memoize@npm:0.3.1"
   checksum: b2be47caa24a8122622ea18cd2d650dbb4f8ad37b636dc41ed420c2e082f7f1e564ecdea68122b546df7f305b159bf5ab9ffee872abd0f052e687428459af594
@@ -2677,8 +2677,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/sample@workspace:app/web/sample"
   dependencies:
-    "@emotion/react": 11.10.8
-    "@emotion/styled": 11.10.8
+    "@emotion/react": 11.11.0
+    "@emotion/styled": 11.11.0
     "@eyecuelab/recoil-devtools": 0.1.7
     "@floating-ui/dom": 1.2.8
     "@floating-ui/react": 0.24.1
@@ -2725,8 +2725,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/smithy@workspace:app/web/smithy"
   dependencies:
-    "@emotion/react": 11.10.8
-    "@emotion/styled": 11.10.8
+    "@emotion/react": 11.11.0
+    "@emotion/styled": 11.11.0
     "@eyecuelab/recoil-devtools": 0.1.7
     "@floating-ui/dom": 1.2.8
     "@floating-ui/react": 0.24.1
@@ -6063,7 +6063,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hamr@workspace:packages/hamr"
   dependencies:
-    "@emotion/react": 11.10.8
+    "@emotion/react": 11.11.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     ajv: 8.12.0
@@ -6075,7 +6075,7 @@ __metadata:
     tsup: 6.7.0
     vitest: 0.30.1
   peerDependencies:
-    "@emotion/react": 11.10.8
+    "@emotion/react": 11.11.0
     react: ^18.2.0
     react-router-dom: ^6.8.1
     recoil: ^0.7.6
