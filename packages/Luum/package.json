@@ -13,7 +13,7 @@
     "test:once": "vitest run"
   },
   "dependencies": {
-    "fp-ts": "2.14.0"
+    "fp-ts": "2.15.0"
   },
   "devDependencies": {
     "eslint": "8.39.0",
