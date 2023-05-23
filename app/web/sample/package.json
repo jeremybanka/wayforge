@@ -14,7 +14,6 @@
   "dependencies": {
     "@emotion/react": "11.11.0",
     "@emotion/styled": "11.11.0",
-    "@eyecuelab/recoil-devtools": "0.1.7",
     "@floating-ui/dom": "1.2.8",
     "@floating-ui/react": "0.24.1",
     "corners": "0.0.13",
@@ -23,14 +22,12 @@
     "io-ts": "2.2.20",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-resizable": "3.0.5",
     "react-router-dom": "6.11.2",
     "zod": "3.21.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
-    "@types/react-resizable": "3.0.4",
     "@vitejs/plugin-react": "4.0.0",
     "cross-env": "7.0.3",
     "eslint": "8.41.0",
