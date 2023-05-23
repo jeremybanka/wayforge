@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch src/main.ts ",
+    "start": "tsx src/main.ts",
     "build": "echo zero-build app powered by tsx",
     "test": "vitest",
     "test:once": "cross-env CI=true vitest run",
