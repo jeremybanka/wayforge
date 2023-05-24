@@ -10,7 +10,7 @@ export const socket = io(env.VITE_REMOTE_ORIGIN)
 
 export const initConnectionState = (
   socket: Socket
-): ReadonlySelectorToken<`Connected` | `Disconnected` | `Searching` | null> => {
+): ReadonlySelectorToken<string | null> => {
   const socketIdState_INTERNAL = atom<string | null>({
     key: `socketIdState_INTERNAL`,
     default: null,
@@ -27,7 +27,7 @@ export const initConnectionState = (
       },
     ],
   })
-  return selector<`Connected` | `Disconnected` | `Searching` | null>({
+  return selector<string | null>({
     key: `socketIdState`,
     get: ({ get }) => get(socketIdState_INTERNAL),
   })

@@ -41,12 +41,6 @@ pipe(
   }),
   (io) => {
     io.on(`connection`, (socket) => {
-      socket.onAny((event) => {
-        const [method, state] = event.split(`:`)
-        if (method === `set`) {
-          record[state] = socket.id
-        }
-      })
       socket.emit(`set:roomsIndex`, [...getState(roomsIndex)])
       logger.info(socket.id, `connected`)
       io.emit(`connection`)
@@ -54,7 +48,7 @@ pipe(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
-      const unsubRoomsIndex = subscribe(roomsIndex, ({ newValue, oldValue }) => {
+      const unsubRoomsIndex = subscribe(roomsIndex, ({ newValue }) => {
         socket.emit(`set:roomsIndex`, [...newValue])
       })
       socket.on(`new:room`, (update: TransactionUpdate<() => string>) => {
@@ -75,7 +69,7 @@ pipe(
         ])
         const unsubscribeFromPlayersInRoom = subscribe(
           findPlayersInRoomState(roomId),
-          ({ newValue, oldValue }) => {
+          ({ newValue }) => {
             socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
           }
         )
@@ -110,7 +104,7 @@ pipe(
           socket.join(roomId)
           const unsubscribeFromPlayersInRoom = subscribe(
             findPlayersInRoomState(roomId),
-            ({ newValue, oldValue }) => {
+            ({ newValue }) => {
               socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
             }
           )

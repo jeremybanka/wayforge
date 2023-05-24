@@ -104,7 +104,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
           </div>
         ))}
       </div>
-      <button onClick={() => A.runTransaction(joinRoom)(roomId, socketId)}>
+      <button onClick={() => A.runTransaction(joinRoom)(roomId, socketId ?? ``)}>
         Join Room
       </button>
     </article>
