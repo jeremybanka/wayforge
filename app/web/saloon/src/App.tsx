@@ -1,6 +1,7 @@
 import type { FC } from "react"
 import { useEffect } from "react"
 
+import * as A from "atom.io"
 import { Link, Route } from "wouter"
 
 import {
@@ -10,7 +11,6 @@ import {
   playersInRoomsState,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
-import * as A from "~/packages/atom.io/src"
 
 import { ReactComponent as Connected } from "./assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"

@@ -1,13 +1,7 @@
+import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
 import { Join } from "~/packages/anvl/src/join"
-import {
-  atom,
-  atomFamily,
-  selector,
-  selectorFamily,
-  transaction,
-} from "~/packages/atom.io/src"
 
 export const roomsIndex = atom<Set<string>>({
   key: `roomsIndex`,

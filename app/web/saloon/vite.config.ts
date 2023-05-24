@@ -20,7 +20,8 @@ export default defineConfig({
   ],
   server: {
     fs: {
-      allow: [`.`], // `../../../packages`],
+      allow: [`src`], // `../../../packages`],
+      strict: true,
     },
   },
   build: {

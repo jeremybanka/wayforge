@@ -1,8 +1,7 @@
+import { atom, selector } from "atom.io"
+import type { ReadonlySelectorToken } from "atom.io"
 import { io } from "socket.io-client"
 import type { Socket } from "socket.io-client"
-
-import type { ReadonlySelectorToken } from "~/packages/atom.io/src"
-import { atom, selector } from "~/packages/atom.io/src"
 
 import { env } from "./env"
 
