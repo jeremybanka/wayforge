@@ -18,6 +18,17 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    fs: {
+      allow: [`.`], // `../../../packages`],
+    },
+  },
+  build: {
+    sourcemap: true,
+  },
+  esbuild: {
+    exclude: `../sample`,
+  },
 
   // esbuild: {
   //   define: {

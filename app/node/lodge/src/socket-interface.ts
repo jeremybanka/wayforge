@@ -28,8 +28,8 @@ import type {
   StatusEventKey,
   StatusEvents,
   useDispatch,
-} from "./store"
-import { unwrapGameActionKey, wrapGameActionKey, refineSignal } from "./store"
+} from "./store/game"
+import { unwrapGameActionKey, wrapGameActionKey, refineSignal } from "./store/game"
 
 export type GameSocketError = ErrorObject<`title`>
 

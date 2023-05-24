@@ -8,29 +8,29 @@ import { env } from "./env"
 
 export const socket = io(env.VITE_REMOTE_ORIGIN)
 
-// export const initConnectionState = (
-//   socket: ClienteleUser
-// ): ReadonlySelectorToken<
-//   ClienteleError | `Connected` | `Disconnected` | `Searching`
-// > => {
-//   const connectionState_INTERNAL = atom<
-//     ClienteleError | `Connected` | `Disconnected` | `Searching`
-//   >({
-//     key: `connection_INTERNAL`,
-//     default: `Searching`,
-//     effects: [
-//       ({ setSelf }) => {
-//         socket.on(`connection`, () => {
-//           console.log(`Connected`)
-//           setSelf(`Connected`)
-//         })
-//       },
-//     ],
-//   })
-//   return selector({
-//     key: `connection`,
-//     get: ({ get }) => get(connectionState_INTERNAL),
-//   })
-// }
+export const initConnectionState = (
+  socket: Socket
+): ReadonlySelectorToken<`Connected` | `Disconnected` | `Searching` | null> => {
+  const socketIdState_INTERNAL = atom<string | null>({
+    key: `socketIdState_INTERNAL`,
+    default: null,
+    effects: [
+      ({ setSelf, onSet }) => {
+        onSet((newValue) => {
+          console.log(`Connection state changed to ${newValue}`)
+        })
+        console.log(`Connecting...`)
+        socket.on(`connection`, () => {
+          console.log(`Connected`)
+          setSelf(socket.id)
+        })
+      },
+    ],
+  })
+  return selector<`Connected` | `Disconnected` | `Searching` | null>({
+    key: `socketIdState`,
+    get: ({ get }) => get(socketIdState_INTERNAL),
+  })
+}
 
-export const connectionState = initConnectionState(socket)
+export const socketIdState = initConnectionState(socket)

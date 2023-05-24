@@ -11,7 +11,7 @@ import {
   initGame,
   useActions,
   useDispatch,
-} from "../src/store"
+} from "../src/store/game"
 import { ID } from "../test/test-utils"
 
 it(`adds a player`, () => {
