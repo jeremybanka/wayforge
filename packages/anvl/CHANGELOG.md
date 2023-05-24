@@ -1,5 +1,12 @@
 # anvl
 
+## 0.1.2
+
+### Patch Changes
+
+- 381887c: ✨ isPlainJson (fails when prototype is anything but Object or Array)
+- 381887c: ✨ FractalArray
+
 ## 0.1.1
 
 ### Patch Changes

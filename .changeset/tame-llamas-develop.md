@@ -1,5 +1,0 @@
----
-"anvl": patch
----
-
-✨ FractalArray
