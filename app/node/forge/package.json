@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "dotenv": "16.0.3",
-    "fp-ts": "2.15.0",
+    "fp-ts": "2.16.0",
     "io-ts": "2.2.20",
     "npmlog": "7.0.1",
     "prettier": "2.8.8",
