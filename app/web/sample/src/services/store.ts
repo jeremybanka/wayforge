@@ -8,7 +8,7 @@ import { timeline } from "~/packages/atom.io/src/timeline"
 
 const storeHooks = composeStoreHooks({ useState, useEffect })
 
-export const { Devtools } = composeDevtools({ storeHooks })
+// export const { Devtools } = composeDevtools({ storeHooks })
 export const { Explorer, useSetTitle } = composeExplorer({
   key: `🤓`,
   storeHooks,

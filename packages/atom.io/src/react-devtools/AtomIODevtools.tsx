@@ -26,10 +26,6 @@ export const composeDevtools = (options: {
   Devtools: FC
 } => {
   const Devtools: FC = () => {
-    const atomTokenIndex = options.storeHooks.useStore(atomTokenIndexState)
-    const selectorTokenIndex = options.storeHooks.useStore(
-      selectorTokenIndexState
-    )
     const constraintsRef = useRef(null)
 
     const [devtoolsAreOpen, setDevtoolsAreOpen] =
@@ -76,11 +72,17 @@ export const composeDevtools = (options: {
                 <LayoutGroup>
                   <section>
                     <h2>atoms</h2>
-                    <TokenList tokenIndex={atomTokenIndex} />
+                    <TokenList
+                      useStore={options.storeHooks.useStore}
+                      tokenIndex={atomTokenIndexState}
+                    />
                   </section>
                   <section>
                     <h2>selectors</h2>
-                    <TokenList tokenIndex={selectorTokenIndex} />
+                    <TokenList
+                      useStore={options.storeHooks.useStore}
+                      tokenIndex={selectorTokenIndexState}
+                    />
                   </section>
                 </LayoutGroup>
               </motion.main>

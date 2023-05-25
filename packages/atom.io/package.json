@@ -9,6 +9,8 @@
     "dist",
     "react/dist",
     "react/package.json",
+    "react-devtools/dist",
+    "react-devtools/package.json",
     "src"
   ],
   "exports": {
@@ -25,10 +27,17 @@
       "browser": "./react/dist/index.mjs",
       "import": "./react/dist/index.mjs",
       "require": "./react/dist/index.js"
+    },
+    "./react-devtools/package.json": "./react-devtools/package.json",
+    "./react-devtools": {
+      "types": "./react-devtools/dist/index.d.ts",
+      "browser": "./react-devtools/dist/index.mjs",
+      "import": "./react-devtools/dist/index.mjs",
+      "require": "./react-devtools/dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsup && cd react && tsup",
+    "build": "tsup && (cd react && tsup) && (cd react-devtools && tsup)",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"

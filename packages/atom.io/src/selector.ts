@@ -13,10 +13,10 @@ export type SelectorOptions<T> = {
 }
 export type ReadonlySelectorOptions<T> = Omit<SelectorOptions<T>, `set`>
 
-export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
 export function selector<T>(
   options: ReadonlySelectorOptions<T>
 ): ReadonlySelectorToken<T>
+export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
 export function selector<T>(
   options: ReadonlySelectorOptions<T> | SelectorOptions<T>
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
