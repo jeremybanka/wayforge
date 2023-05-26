@@ -20,19 +20,21 @@ export const makeSpaceIndex = (key: string): AtomToken<Set<string>> =>
 
 export const makeSpaceLayoutState = (
   key: string
-): AtomToken<Join<{ size: number }>> =>
+): AtomToken<Join<{ size: number }, `parent`, `child`>> =>
   atom({
     key: `${key}:space_layout`,
     default: new Join({ relationType: `1:n` }),
     effects: [
-      persistAtom<Join<{ size: number }>>(localStorage)({
+      persistAtom<Join<{ size: number }, `parent`, `child`>>(localStorage)({
         stringify: (join) => stringifyJson(join.toJSON()),
         parse: (string) => {
           try {
             const json = parseJson(string)
             const join = Join.fromJSON(
               json,
-              hasExactProperties({ size: isNumber })
+              hasExactProperties({ size: isNumber }),
+              `parent`,
+              `child`
             )
             return join
           } catch (thrown) {
