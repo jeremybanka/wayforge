@@ -43,13 +43,13 @@ export const isRelationData =
     a: A = `from` as A,
     b: B = `to` as B
   ) =>
-  (input: unknown): input is RelationData<CONTENT> =>
-    hasExactProperties<RelationData<CONTENT>>({
+  (input: unknown): input is RelationData<CONTENT, A, B> =>
+    hasExactProperties<RelationData<CONTENT, A, B>>({
       contents: isContent
         ? isRecord(isString, isContent)
         : hasExactProperties({}),
       relations: isRecord(isString, isArray(isString)),
       relationType: isRelationType,
-      a: isLiteral(a as `from`),
-      b: isLiteral(b as `to`),
+      a: isLiteral(a),
+      b: isLiteral(b),
     })(input)

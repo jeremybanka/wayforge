@@ -10,15 +10,17 @@ import type { Energy } from "./energy"
 import { DEFAULT_ENERGY, findEnergyState } from "./energy"
 import { socket } from "./socket"
 
-export const energyFeaturesState = atom<Join>({
+export const energyFeaturesState = atom<Join<null, `energyId`, `reactionId`>>({
   key: `energyFeatures`,
-  default: new Join({ relationType: `1:n` }),
+  default: new Join({ relationType: `1:n` }).from(`energyId`).to(`reactionId`),
   effects: [
     socketRelations({
       type: `energy_reaction`,
       id: `energyFeatures`,
       socket,
       refineContent: null,
+      a: `energyId`,
+      b: `reactionId`,
     }),
   ],
 })
@@ -30,28 +32,40 @@ export const DEFAULT_ENERGY_AMOUNT: Amount = { amount: 1 }
 export type Reagent = Amount & Identified
 export type Product = Amount & Identified
 
-export const reactionReagentsState = atom<Join<Amount>>({
+export const reactionReagentsState = atom<
+  Join<Amount, `reactionId`, `energyId`>
+>({
   key: `reactionReagents`,
-  default: new Join<{ amount: number }>({ relationType: `n:n` }),
+  default: new Join<{ amount: number }>({ relationType: `n:n` })
+    .from(`reactionId`)
+    .to(`energyId`),
   effects: [
     socketRelations({
       type: `energy_reaction`,
       id: `reactionReagents`,
       socket,
       refineContent: hasAmount,
+      a: `reactionId`,
+      b: `energyId`,
     }),
   ],
 })
 
-export const reactionProductsState = atom<Join<Amount>>({
+export const reactionProductsState = atom<
+  Join<Amount, `reactionId`, `energyId`>
+>({
   key: `reactionProducts`,
-  default: new Join<Amount>({ relationType: `n:n` }),
+  default: new Join<Amount>({ relationType: `n:n` })
+    .from(`reactionId`)
+    .to(`energyId`),
   effects: [
     socketRelations({
       type: `energy_reaction`,
       id: `reactionProducts`,
       socket,
       refineContent: hasAmount,
+      a: `reactionId`,
+      b: `energyId`,
     }),
   ],
 })

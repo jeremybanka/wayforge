@@ -125,7 +125,9 @@ pipe(
           (playersIndex) =>
             new Set([...playersIndex].filter((id) => id !== socket.id))
         )
-        setState(playersInRoomsState, (current) => current.remove(socket.id))
+        setState(playersInRoomsState, (current) =>
+          current.remove({ playerId: socket.id })
+        )
       })
     })
   }

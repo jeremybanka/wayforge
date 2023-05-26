@@ -36,15 +36,19 @@ export class Join<
       b: this.b,
     }
   }
-  public static fromJSON<CONTENT extends JsonObj | null = null>(
+  public static fromJSON<
+    CONTENT extends JsonObj | null,
+    A extends string,
+    B extends string
+  >(
     json: Json,
     isContent: Refinement<unknown, CONTENT> = cannotExist,
-    a = `from`,
-    b = `to`
-  ): Join<CONTENT> {
-    const isValid = isRelationData(isContent, a, b)(json)
+    a: A = `from` as A,
+    b: B = `to` as B
+  ): Join<CONTENT, A, B> {
+    const isValid = isRelationData<CONTENT, A, B>(isContent, a, b)(json)
     if (isValid) {
-      return new Join(json)
+      return new Join<CONTENT, A, B>(json)
     }
     throw new Error(
       `Saved JSON for this Join is invalid: ${JSON.stringify(json)}`

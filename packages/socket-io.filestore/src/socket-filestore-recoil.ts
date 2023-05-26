@@ -73,19 +73,27 @@ export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
     id: string
     type: string
     socket: Socket<FilestoreServerEvents, FilestoreClientEvents>
+    a: string
+    b: string
   }
 
-export const socketRelations: <CONTENT extends JsonObj | null = null>(
+export const socketRelations: <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
   options: SocketRelationsOptions<CONTENT>
-) => AtomEffect<Join<CONTENT>> =
-  ({ type, id, socket, refineContent }) =>
+) => AtomEffect<Join<CONTENT, A, B>> =
+  ({ type, id, socket, refineContent, a, b }) =>
   <CONTENT extends JsonObj | null = null>({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
     socket.on(`relationsRead_${type}_${id}`, (json) =>
       setSelf(
-        Join.fromJSON<CONTENT>(
+        Join.fromJSON<CONTENT, A, B>(
           json,
-          refineContent as Refinement<unknown, CONTENT>
+          refineContent as Refinement<unknown, CONTENT>,
+          a,
+          b
         )
       )
     )
