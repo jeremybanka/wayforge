@@ -1,5 +1,5 @@
 import type { FC } from "react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
 
@@ -7,7 +7,7 @@ import type { StateToken } from "../src"
 import { isDefault, atom } from "../src"
 import { composeStoreHooks } from "../src/react"
 
-const { useStore } = composeStoreHooks({ useState, useEffect })
+const { useIO } = composeStoreHooks()
 
 export const onChange = [() => undefined, console.log][0]
 
@@ -16,7 +16,7 @@ export type ObserverProps = {
   onChange: (value: any) => void
 }
 export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
-  const [value] = useStore(node)
+  const [value] = useIO(node)
   useEffect(() => onChange(value), [onChange, value])
   return null
 }
@@ -28,7 +28,7 @@ describe(`single atom`, () => {
       default: `A`,
     })
     const Letter: FC = () => {
-      const [letter, setLetter] = useStore(letterState)
+      const [letter, setLetter] = useIO(letterState)
       const isDefaultLetter = isDefault(letterState)
       return (
         <>
