@@ -17,28 +17,32 @@ export class Join<
   CONTENT extends JsonObj | null = null,
   A extends string = `from`,
   B extends string = `to`
-> implements RelationData<CONTENT>
+> implements RelationData<CONTENT, A, B>
 {
   public readonly relationType: `1:1` | `1:n` | `n:n`
   public readonly a: A = `from` as A
   public readonly b: B = `to` as B
   public readonly relations: Record<string, string[]>
   public readonly contents: Record<string, CONTENT>
-  public constructor(json?: Partial<RelationData<CONTENT>>) {
+  public constructor(json?: Partial<RelationData<CONTENT, A, B>>) {
     Object.assign(this, { ...EMPTY_RELATION_DATA, ...json })
   }
-  public toJSON(): RelationData<CONTENT> {
+  public toJSON(): RelationData<CONTENT, A, B> {
     return {
       relationType: this.relationType,
       relations: this.relations,
       contents: this.contents,
+      a: this.a,
+      b: this.b,
     }
   }
   public static fromJSON<CONTENT extends JsonObj | null = null>(
     json: Json,
-    isContent: Refinement<unknown, CONTENT> = cannotExist
+    isContent: Refinement<unknown, CONTENT> = cannotExist,
+    a = `from`,
+    b = `to`
   ): Join<CONTENT> {
-    const isValid = isRelationData(isContent)(json)
+    const isValid = isRelationData(isContent, a, b)(json)
     if (isValid) {
       return new Join(json)
     }
@@ -79,19 +83,29 @@ export class Join<
     return getRelations(this, id)
   }
   public setRelations(
-    id: string,
+    subject: { [from in A]: string } | { [to in B]: string },
     relations: NullSafeUnion<Identified, CONTENT>[]
   ): Join<CONTENT> {
-    return new Join(setRelations(this, id, relations))
+    return new Join(setRelations(this, subject, relations))
   }
   public set(
-    idA: string,
-    idB: string,
+    relation: { [key in A | B]: string },
     ...rest: NullSafeRest<CONTENT>
   ): Join<CONTENT> {
-    return new Join(setRelationWithContent(this, idA, idB, ...rest))
+    return new Join(setRelationWithContent(this, relation, ...rest))
   }
-  public remove(idA: string, idB?: string): Join<CONTENT> {
-    return new Join(removeRelation(this, idA, idB))
+  public remove(
+    relation:
+      | {
+          [key in A | B]: string
+        }
+      | {
+          [key in A]: string
+        }
+      | {
+          [key in B]: string
+        }
+  ): Join<CONTENT> {
+    return new Join(removeRelation(this, relation))
   }
 }

@@ -52,12 +52,17 @@ export const set1ToMany = <CONTENT extends JsonObj | null = null>(
   return content ? setContent(next, leaderId, followerId, content) : next
 }
 
-export const set1To1 = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
-  wifeId: string,
-  husbandId: string,
+export const set1To1 = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
+  relation: { [key in A | B]: string },
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
+  const { [relation[current.a]]: wifeId, [relation[current.b]]: husbandId } =
+    relation
   const prevWifeId = getRelatedId(current, husbandId)
   const prevHusbandId = getRelatedId(current, wifeId)
   const next = {
@@ -75,18 +80,21 @@ export const set1To1 = <CONTENT extends JsonObj | null = null>(
   return content ? setContent(next, wifeId, husbandId, content) : next
 }
 
-export const setRelationWithContent = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
-  idA: string,
-  idB: string,
+export const setRelationWithContent = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
+  relation: { [key in A | B]: string },
   ...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT> => {
   switch (current.relationType) {
     case `1:1`:
-      return set1To1(current, idA, idB, ...rest)
+      return set1To1(current, relation, ...rest)
     case `1:n`:
-      return set1ToMany(current, idA, idB, ...rest)
+      return set1ToMany(current, relation, ...rest)
     case `n:n`:
-      return setManyToMany(current, idA, idB, ...rest)
+      return setManyToMany(current, relation, ...rest)
   }
 }
