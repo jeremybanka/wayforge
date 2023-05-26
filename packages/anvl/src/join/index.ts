@@ -13,10 +13,15 @@ import type { Json, JsonObj } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
 import { cannotExist } from "../refinement"
 
-export class Join<CONTENT extends JsonObj | null = null>
-  implements RelationData<CONTENT>
+export class Join<
+  CONTENT extends JsonObj | null = null,
+  A extends string = `from`,
+  B extends string = `to`
+> implements RelationData<CONTENT>
 {
   public readonly relationType: `1:1` | `1:n` | `n:n`
+  public readonly a: A = `from` as A
+  public readonly b: B = `to` as B
   public readonly relations: Record<string, string[]>
   public readonly contents: Record<string, CONTENT>
   public constructor(json?: Partial<RelationData<CONTENT>>) {
@@ -40,6 +45,14 @@ export class Join<CONTENT extends JsonObj | null = null>
     throw new Error(
       `Saved JSON for this Join is invalid: ${JSON.stringify(json)}`
     )
+  }
+
+  public from<AA extends string>(newA: AA): Join<CONTENT, AA, B> {
+    return new Join({ ...this, a: newA })
+  }
+
+  public to<BB extends string>(newB: BB): Join<CONTENT, A, BB> {
+    return new Join({ ...this, b: newB })
   }
 
   public getRelatedId(id: string): string | undefined {
