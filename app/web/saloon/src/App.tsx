@@ -11,11 +11,12 @@ import {
   playersInRoomsState,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
+import { AtomIODevtools } from "~/packages/atom.io/src/react-devtools"
 
 import { ReactComponent as Connected } from "./assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
 import { socketIdState, socket } from "./services/socket"
-import { Devtools, useO } from "./services/store"
+import { useO } from "./services/store"
 socket.on(`set:roomsIndex`, (ids) =>
   A.setState(roomsIndex, new Set<string>(ids))
 )
@@ -44,7 +45,7 @@ export const App: FC = () => {
       <Route path="/room/:roomId">
         {(params) => <Room roomId={params.roomId} />}
       </Route>
-      <Devtools />
+      <AtomIODevtools />
     </main>
   )
 }
