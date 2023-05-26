@@ -14,8 +14,12 @@ import type { NullSafeRest } from "../nullish"
 export const makeContentId = (idA: string, idB: string): string =>
   [idA, idB].sort().join(`/`)
 
-export const getContent = <CONTENT extends JsonObj | null = null>(
-  relationMap: RelationData<CONTENT>,
+export const getContent = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  relationMap: RelationData<CONTENT, A, B>,
   idA: string,
   idB: string
 ): CONTENT | undefined => relationMap.contents[makeContentId(idA, idB)]
@@ -37,8 +41,12 @@ export const setContent = <
   },
 })
 
-export const getRelations = <CONTENT extends JsonObj | null = null>(
-  relationMap: RelationData<CONTENT>,
+export const getRelations = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  relationMap: RelationData<CONTENT, A, B>,
   id: string
 ): (CONTENT extends null ? Identified : CONTENT & Identified)[] =>
   getRelationEntries(relationMap, id).map(
