@@ -1,11 +1,9 @@
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
-
-import { dividendState, useStore } from "../../../services/store"
+import { dividendState, useIO } from "../../../services/store"
 
 export const Dividend: FC = () => {
-  const [dividend, setDividend] = useStore(dividendState)
+  const [dividend, setDividend] = useIO(dividendState)
   return (
     <div>
       <h1 data-testid="dividend">{dividend}</h1>

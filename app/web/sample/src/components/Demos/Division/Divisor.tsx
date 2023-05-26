@@ -1,11 +1,9 @@
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
-
-import { divisorState, useStore } from "../../../services/store"
+import { divisorState, useIO } from "../../../services/store"
 
 export const Divisor: FC = () => {
-  const [divisor, setDivisor] = useStore(divisorState)
+  const [divisor, setDivisor] = useIO(divisorState)
   return (
     <div>
       <h1 data-testid="divisor">{divisor}</h1>

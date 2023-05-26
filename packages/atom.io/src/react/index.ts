@@ -1,64 +1,46 @@
-import type Preact from "preact/hooks"
+import { useSyncExternalStore } from "react"
 
-import type React from "react"
-
-import { subscribe, setState, __INTERNAL__ } from "atom.io"
+import { subscribe, setState, __INTERNAL__, getState } from "atom.io"
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 
-export type AtomStoreReactConfig = {
-  useState: typeof Preact.useState | typeof React.useState
-  useEffect: typeof Preact.useEffect | typeof React.useEffect
-  store?: __INTERNAL__.Store
+export type StoreHooks = {
+  useI: <T>(token: StateToken<T>) => (next: Modifier<T> | T) => void
+  useO: <T>(token: ReadonlySelectorToken<T> | StateToken<T>) => T
+  useIO: <T>(token: StateToken<T>) => [T, (next: Modifier<T> | T) => void]
 }
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const composeStoreHooks = ({
-  useState,
-  useEffect,
-  store = __INTERNAL__.IMPLICIT.STORE,
-}: AtomStoreReactConfig) => {
+export const composeStoreHooks = (
+  store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE
+): StoreHooks => {
   function useI<T>(token: StateToken<T>): (next: Modifier<T> | T) => void {
     const updateState = (next: Modifier<T> | T) => setState(token, next, store)
     return updateState
   }
 
   function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
-    const state = __INTERNAL__.withdraw(token, store)
-    const initialValue = __INTERNAL__.getState__INTERNAL(state, store)
-    const [current, dispatch] = useState(initialValue)
-    useEffect(() => {
-      const unsubscribe = subscribe(
-        token,
-        ({ newValue, oldValue }) => {
-          if (oldValue !== newValue) {
-            dispatch(newValue)
-          }
-        },
-        store
-      )
-      return unsubscribe
-    }, [])
-
-    return current
+    return useSyncExternalStore<T>(
+      (observe) => subscribe(token, observe, store),
+      () => getState(token, store)
+    )
   }
 
   function useIO<T>(token: StateToken<T>): [T, (next: Modifier<T> | T) => void] {
     return [useO(token), useI(token)]
   }
 
-  function useStore<T>(
-    token: StateToken<T>
-  ): [T, (next: Modifier<T> | T) => void]
-  function useStore<T>(token: ReadonlySelectorToken<T>): T
-  function useStore<T>(
-    token: ReadonlySelectorToken<T> | StateToken<T>
-  ): T | [T, (next: Modifier<T> | T) => void] {
-    if (token.type === `readonly_selector`) {
-      return useO(token)
-    }
-    return useIO(token)
-  }
-  return { useI, useO, useIO, useStore, useEffect, useState }
+  return { useI, useO, useIO }
+}
+
+export const { useI, useO, useIO } = composeStoreHooks()
+
+export function useStore<T>(
+  token: StateToken<T>
+): [T, (next: Modifier<T> | T) => void]
+export function useStore<T>(token: ReadonlySelectorToken<T>): T
+export function useStore<T>(
+  token: ReadonlySelectorToken<T> | StateToken<T>
+): T | [T, (next: Modifier<T> | T) => void] {
+  return token.type === `readonly_selector` ? useO(token) : useIO(token)
 }

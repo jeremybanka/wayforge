@@ -1,11 +1,9 @@
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
-
-import { quotientState, useStore } from "../../../services/store"
+import { quotientState, useIO } from "../../../services/store"
 
 export const Quotient: FC = () => {
-  const [quotient, setQuotient] = useStore(quotientState)
+  const [quotient, setQuotient] = useIO(quotientState)
   return (
     <div>
       <h1 data-testid="quotient">{quotient}</h1>

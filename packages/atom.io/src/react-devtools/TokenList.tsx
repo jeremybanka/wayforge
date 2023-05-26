@@ -1,28 +1,29 @@
 import type { FC } from "react"
 import { Fragment } from "react"
 
-import { recordToEntries } from "~/packages/anvl/src/object"
 import type {
   AtomToken,
   ReadonlySelectorToken,
   SelectorToken,
-} from "~/packages/atom.io/src"
-import type { StateTokenIndex } from "~/packages/atom.io/src/internal/meta/meta-state"
+  __INTERNAL__,
+} from "atom.io"
+import type { StoreHooks } from "atom.io/react"
+
+import { recordToEntries } from "~/packages/anvl/src/object"
 
 import { StoreEditor } from "./StateEditor"
-import type { composeStoreHooks } from "../react"
 
 export const TokenList: FC<{
-  useStore: ReturnType<typeof composeStoreHooks>[`useStore`]
+  storeHooks: StoreHooks
   tokenIndex: ReadonlySelectorToken<
-    StateTokenIndex<
+    __INTERNAL__.Meta.StateTokenIndex<
       | AtomToken<unknown>
       | ReadonlySelectorToken<unknown>
       | SelectorToken<unknown>
     >
   >
-}> = ({ useStore, tokenIndex }) => {
-  const tokenIds = useStore(tokenIndex)
+}> = ({ storeHooks, tokenIndex }) => {
+  const tokenIds = storeHooks.useO(tokenIndex)
   return (
     <>
       {Object.entries(tokenIds).map(([key, token]) => (
@@ -31,11 +32,11 @@ export const TokenList: FC<{
             <div className="node">
               {key}:
               {`type` in token ? (
-                <StoreEditor useStore={useStore} token={token} />
+                <StoreEditor storeHooks={storeHooks} token={token} />
               ) : (
                 recordToEntries(token.familyMembers).map(([key, token]) => (
                   <div key={key} className="node">
-                    {key}:<StoreEditor useStore={useStore} token={token} />
+                    {key}:<StoreEditor storeHooks={storeHooks} token={token} />
                   </div>
                 ))
               )}

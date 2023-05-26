@@ -6,9 +6,8 @@ import { BrowserRouter } from "react-router-dom"
 
 import type { StateToken } from "~/packages/atom.io/src"
 
-import { App } from "./App"
 import { Division } from "./components/Demos/Division"
-import { useStore } from "./services/store"
+import { useO } from "./services/store"
 
 export const onChange = [() => undefined, console.log][0]
 
@@ -17,7 +16,7 @@ export type ObserverProps = {
   onChange: (value: any) => void
 }
 export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
-  const [value] = useStore(node)
+  const [value] = useO(node)
   useEffect(() => onChange(value), [onChange, value])
   return null
 }

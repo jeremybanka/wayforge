@@ -1,18 +1,18 @@
 import type { FC } from "react"
 import { useRef } from "react"
 
+import { atom, __INTERNAL__ } from "atom.io"
+import { useI, useO, useIO } from "atom.io/react"
+import type { StoreHooks } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 
-import { atom } from "~/packages/atom.io/src"
-import { attachMetaState } from "~/packages/atom.io/src/internal/meta/attach-meta"
-
 import { TokenList } from "./TokenList"
-import type { composeStoreHooks } from "../react"
 import { lazyLocalStorageEffect } from "../web-effects"
 
 import "./devtools.scss"
 
-const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
+const { atomTokenIndexState, selectorTokenIndexState } =
+  __INTERNAL__.Meta.attachMetaState()
 
 const devtoolsAreOpenState = atom<boolean>({
   key: `👁‍🗨_devtools_are_open`,
@@ -20,16 +20,12 @@ const devtoolsAreOpenState = atom<boolean>({
   effects: [lazyLocalStorageEffect(`👁‍🗨_devtools_are_open`)],
 })
 
-export const composeDevtools = (options: {
-  storeHooks: ReturnType<typeof composeStoreHooks>
-}): {
-  Devtools: FC
-} => {
+export const composeDevtools = (storeHooks: StoreHooks): FC => {
   const Devtools: FC = () => {
     const constraintsRef = useRef(null)
 
     const [devtoolsAreOpen, setDevtoolsAreOpen] =
-      options.storeHooks.useStore(devtoolsAreOpenState)
+      storeHooks.useIO(devtoolsAreOpenState)
 
     const mouseHasMoved = useRef(false)
 
@@ -73,14 +69,14 @@ export const composeDevtools = (options: {
                   <section>
                     <h2>atoms</h2>
                     <TokenList
-                      useStore={options.storeHooks.useStore}
+                      storeHooks={storeHooks}
                       tokenIndex={atomTokenIndexState}
                     />
                   </section>
                   <section>
                     <h2>selectors</h2>
                     <TokenList
-                      useStore={options.storeHooks.useStore}
+                      storeHooks={storeHooks}
                       tokenIndex={selectorTokenIndexState}
                     />
                   </section>
@@ -105,5 +101,7 @@ export const composeDevtools = (options: {
       </>
     )
   }
-  return { Devtools }
+  return Devtools
 }
+
+export const AtomIODevtools = composeDevtools({ useI, useO, useIO })

@@ -1,17 +1,17 @@
 import type { FC } from "react"
 
+import type { ReadonlySelectorToken, StateToken } from "atom.io"
+import type { StoreHooks } from "atom.io/react"
+
 import { isPlainJson } from "~/packages/anvl/src/json"
-import type { ReadonlySelectorToken, StateToken } from "~/packages/atom.io/src"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 
-import type { composeStoreHooks } from "../react"
-
 export const StateEditor: FC<{
-  useStore: ReturnType<typeof composeStoreHooks>[`useStore`]
+  storeHooks: StoreHooks
   token: StateToken<unknown>
-}> = ({ useStore, token }) => {
-  const [data, set] = useStore(token)
+}> = ({ storeHooks, token }) => {
+  const [data, set] = storeHooks.useIO(token)
   return isPlainJson(data) ? (
     <JsonEditor data={data} set={set} schema={true} />
   ) : (
@@ -33,10 +33,10 @@ export const StateEditor: FC<{
 }
 
 export const ReadonlySelectorEditor: FC<{
-  useStore: ReturnType<typeof composeStoreHooks>[`useStore`]
+  storeHooks: StoreHooks
   token: ReadonlySelectorToken<unknown>
-}> = ({ useStore, token }) => {
-  const data = useStore(token)
+}> = ({ storeHooks, token }) => {
+  const data = storeHooks.useO(token)
   return isPlainJson(data) ? (
     <JsonEditor
       data={data}
@@ -63,11 +63,11 @@ export const ReadonlySelectorEditor: FC<{
 }
 
 export const StoreEditor: FC<{
-  useStore: ReturnType<typeof composeStoreHooks>[`useStore`]
+  storeHooks: StoreHooks
   token: ReadonlySelectorToken<unknown> | StateToken<unknown>
-}> = ({ useStore, token }) => {
+}> = ({ storeHooks, token }) => {
   if (token.type === `readonly_selector`) {
-    return <ReadonlySelectorEditor useStore={useStore} token={token} />
+    return <ReadonlySelectorEditor storeHooks={storeHooks} token={token} />
   }
-  return <StateEditor useStore={useStore} token={token} />
+  return <StateEditor storeHooks={storeHooks} token={token} />
 }
