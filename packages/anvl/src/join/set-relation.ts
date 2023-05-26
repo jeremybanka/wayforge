@@ -6,12 +6,16 @@ import type { JsonObj } from "../json"
 import type { NullSafeRest } from "../nullish"
 import { treeShake as removeProperties } from "../object"
 
-export const setManyToMany = <CONTENT extends JsonObj | null = null>(
-  map: RelationData<CONTENT>,
+export const setManyToMany = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  map: RelationData<CONTENT, A, B>,
   idA: string,
   idB: string,
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
   const next = {
     ...map,
     relations: {
@@ -26,12 +30,16 @@ export const setManyToMany = <CONTENT extends JsonObj | null = null>(
 
 const removeEmpties = removeProperties(isEmptyArray)
 
-export const set1ToMany = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
+export const set1ToMany = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
   leaderId: string,
   followerId: string,
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
   const relations = { ...current.relations }
   const prevLeaderId = getRelatedId(current, followerId)
   const next = {
@@ -52,12 +60,16 @@ export const set1ToMany = <CONTENT extends JsonObj | null = null>(
   return content ? setContent(next, leaderId, followerId, content) : next
 }
 
-export const set1To1 = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
+export const set1To1 = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
   wifeId: string,
   husbandId: string,
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
   const prevWifeId = getRelatedId(current, husbandId)
   const prevHusbandId = getRelatedId(current, wifeId)
   const next = {
@@ -75,12 +87,22 @@ export const set1To1 = <CONTENT extends JsonObj | null = null>(
   return content ? setContent(next, wifeId, husbandId, content) : next
 }
 
-export const setRelationWithContent = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
-  idA: string,
-  idB: string,
+export const setRelationWithContent = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
+  relation: Record<A | B, string>,
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
+  const { [current.a]: idA, [current.b]: idB } = relation
+  // console.log({
+  //   current,
+  //   relation,
+  //   idA,
+  //   idB,
+  // })
   switch (current.relationType) {
     case `1:1`:
       return set1To1(current, idA, idB, ...rest)

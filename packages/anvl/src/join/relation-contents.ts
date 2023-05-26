@@ -9,22 +9,31 @@ import { getRelationEntries } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
 import type { JsonObj } from "../json"
+import type { NullSafeRest } from "../nullish"
 
 export const makeContentId = (idA: string, idB: string): string =>
   [idA, idB].sort().join(`/`)
 
-export const getContent = <CONTENT extends JsonObj | null = null>(
-  relationMap: RelationData<CONTENT>,
+export const getContent = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  relationMap: RelationData<CONTENT, A, B>,
   idA: string,
   idB: string
 ): CONTENT | undefined => relationMap.contents[makeContentId(idA, idB)]
 
-export const setContent = <CONTENT extends JsonObj | null = null>(
-  map: RelationData<CONTENT>,
+export const setContent = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  map: RelationData<CONTENT, A, B>,
   idA: string,
   idB: string,
   content: CONTENT
-): RelationData<CONTENT> => ({
+): RelationData<CONTENT, A, B> => ({
   ...map,
   contents: {
     ...map.contents,
@@ -32,8 +41,12 @@ export const setContent = <CONTENT extends JsonObj | null = null>(
   },
 })
 
-export const getRelations = <CONTENT extends JsonObj | null = null>(
-  relationMap: RelationData<CONTENT>,
+export const getRelations = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  relationMap: RelationData<CONTENT, A, B>,
   id: string
 ): (CONTENT extends null ? Identified : CONTENT & Identified)[] =>
   getRelationEntries(relationMap, id).map(
@@ -44,12 +57,18 @@ export const getRelations = <CONTENT extends JsonObj | null = null>(
       } as CONTENT extends null ? Identified : CONTENT & Identified)
   )
 
-export const setRelations = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
-  idA: string,
+export const setRelations = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
+  subject: { [from in A]: string } | { [to in B]: string },
   relations: (CONTENT extends null ? Identified : CONTENT & Identified)[]
-): RelationData<CONTENT> =>
-  pipe(
+): RelationData<CONTENT, A, B> => {
+  const idA: string | undefined = (subject as { [from in A]: string })[current.a]
+  const idB: string | undefined = (subject as { [to in B]: string })[current.b]
+  return pipe(
     current,
     (relationData) => {
       const relatedIds = getRelatedIds(current, idA)
@@ -57,15 +76,28 @@ export const setRelations = <CONTENT extends JsonObj | null = null>(
         (id) => !relations.some((r) => r.id === id)
       )
       let step = relationData
-      for (const idB of removedIds) step = removeRelation(step, idA, idB)
+      for (const id of removedIds) {
+        const remove = {
+          [current.a]: idA ?? id,
+          [current.b]: idB ?? id,
+        } as Record<A | B, string>
+        step = removeRelation(step, remove)
+      }
       return step
     },
     (relationData) => {
       let step = relationData
-      for (const { id: idB, ...rest } of relations) {
+      for (const { id, ...rest } of relations) {
         const content = isEmptyObject(rest) ? undefined : rest
-        // @ts-expect-error Omit<CONTENT & Identified, "id"> === CONTENT
-        step = setRelationWithContent(step, idA, idB, content)
+        step = setRelationWithContent(
+          step,
+          { [current.a]: idA ?? id, [current.b]: idB ?? id } as Record<
+            A | B,
+            string
+          >,
+          // @ts-expect-error hacky
+          content as NullSafeRest<CONTENT>
+        )
       }
       return step
     },
@@ -75,8 +107,9 @@ export const setRelations = <CONTENT extends JsonObj | null = null>(
         ...relationData,
         relations: {
           ...relationData.relations,
-          [idA]: newlyOrderedIds,
+          [idA ?? idB]: newlyOrderedIds,
         },
       }
     }
   )
+}

@@ -109,7 +109,7 @@ export const findEnergyWithRelationsState = selectorFamily<
       }
       const { features, ...energy } = newValue
       set(findEnergyState(energyId), energy)
-      set(energyFeaturesState, (j) => j.setRelations(energyId, features))
+      set(energyFeaturesState, (j) => j.setRelations({ energyId }, features))
     },
 })
 
