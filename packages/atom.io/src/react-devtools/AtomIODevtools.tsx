@@ -29,7 +29,7 @@ export const composeDevtools = (options: {
     const constraintsRef = useRef(null)
 
     const [devtoolsAreOpen, setDevtoolsAreOpen] =
-      options.storeHooks.useStore(devtoolsAreOpenState)
+      options.storeHooks.useIO(devtoolsAreOpenState)
 
     const mouseHasMoved = useRef(false)
 
@@ -73,14 +73,14 @@ export const composeDevtools = (options: {
                   <section>
                     <h2>atoms</h2>
                     <TokenList
-                      useStore={options.storeHooks.useStore}
+                      storeHooks={options.storeHooks}
                       tokenIndex={atomTokenIndexState}
                     />
                   </section>
                   <section>
                     <h2>selectors</h2>
                     <TokenList
-                      useStore={options.storeHooks.useStore}
+                      storeHooks={options.storeHooks}
                       tokenIndex={selectorTokenIndexState}
                     />
                   </section>
