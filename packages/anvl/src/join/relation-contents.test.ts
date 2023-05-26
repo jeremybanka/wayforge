@@ -5,10 +5,14 @@ describe(`Join.prototype.set1ToMany`, () => {
     const reactionReagents = new Join<{ amount: number }>({
       relationType: `1:n`,
     })
+      .from(`reagent`)
+      .to(`reaction`)
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
     const fireRelations = reactionReagents
-      .setRelations(fire, [{ id: fireAndWaterBecomeSteam, amount: 1 }])
+      .setRelations({ reagent: fire }, [
+        { id: fireAndWaterBecomeSteam, amount: 1 },
+      ])
       .getRelations(fire)
     expect(fireRelations).toEqual([{ id: fireAndWaterBecomeSteam, amount: 1 }])
   })
@@ -18,9 +22,11 @@ describe(`Join.prototype.set1ToMany`, () => {
     const reactionReagents = new Join<{ amount: number }>({
       relationType: `1:n`,
     })
+      .from(`reagent`)
+      .to(`reaction`)
     const newReagents = reactionReagents
-      .setRelations(fire, [{ id: boil, amount: 1 }])
-      .setRelations(fire, [{ id: boil, amount: 2 }])
+      .setRelations({ reagent: fire }, [{ id: boil, amount: 1 }])
+      .setRelations({ reagent: fire }, [{ id: boil, amount: 2 }])
     const amountOfFire = newReagents.getContent(fire, boil)
     expect(amountOfFire).toEqual({ amount: 2 })
     const featureIds = newReagents.getRelatedIds(fire)
@@ -33,12 +39,14 @@ describe(`Join.prototype.set1ToMany`, () => {
     const reactionReagents = new Join<{ amount: number }>({
       relationType: `1:n`,
     })
+      .from(`reagent`)
+      .to(`reaction`)
     const newReagents = reactionReagents
-      .setRelations(fire, [
+      .setRelations({ reagent: fire }, [
         { id: boil, amount: 1 },
         { id: melt, amount: 1 },
       ])
-      .setRelations(fire, [
+      .setRelations({ reagent: fire }, [
         { id: melt, amount: 1 },
         { id: boil, amount: 1 },
       ])
@@ -53,12 +61,14 @@ describe(`Join.prototype.set1ToMany`, () => {
     const reactionReagents = new Join<{ amount: number }>({
       relationType: `1:n`,
     })
+      .from(`reagent`)
+      .to(`reaction`)
     const newReagents = reactionReagents
-      .setRelations(fire, [
+      .setRelations({ reagent: fire }, [
         { id: boil, amount: 1 },
         { id: melt, amount: 1 },
       ])
-      .setRelations(fire, [{ id: boil, amount: 1 }])
+      .setRelations({ reagent: fire }, [{ id: boil, amount: 1 }])
     const featureIds = newReagents.getRelatedIds(fire)
     expect(featureIds).toEqual([boil])
     const amountOfFire = newReagents.getContent(fire, melt)

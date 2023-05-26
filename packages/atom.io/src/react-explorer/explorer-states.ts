@@ -2,6 +2,7 @@ import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
+import { cannotExist } from "~/packages/anvl/src/refinement"
 
 import { addToIndex, removeFromIndex } from "."
 import {
@@ -28,14 +29,17 @@ import type {
 import { selectorFamily, selector, transaction, atom } from ".."
 import { persistAtom } from "../web-effects"
 
-export const makeViewsPerSpaceState = (key: string): AtomToken<Join> =>
-  atom<Join>({
+export const makeViewsPerSpaceState = (
+  key: string
+): AtomToken<Join<null, `viewId`, `spaceId`>> =>
+  atom<Join<null, `viewId`, `spaceId`>>({
     key: `${key}:views_per_space`,
     default: new Join({ relationType: `1:n` }),
     effects: [
-      persistAtom<Join>(localStorage)({
+      persistAtom<Join<null, `viewId`, `spaceId`>>(localStorage)({
         stringify: (index) => JSON.stringify(index.toJSON()),
-        parse: (json) => Join.fromJSON(JSON.parse(json)),
+        parse: (json) =>
+          Join.fromJSON(JSON.parse(json), cannotExist, `viewId`, `spaceId`),
       })(`${key}:views_per_space`),
     ],
   })
@@ -124,7 +128,7 @@ export const attachExplorerState = (key: string) => {
     const key = `s-${now()}`
     addToIndex(transactors, { indexAtom: spaceIndexState, id: key })
     set(spaceLayoutState, (current) =>
-      current.set(`parent:${parentId}`, key, { size: 1 })
+      current.set({ parent: `parent:${parentId}`, child: key }, { size: 1 })
     )
     set(findSpaceState(key), 1)
     return key
@@ -162,18 +166,18 @@ export const attachExplorerState = (key: string) => {
       writeOperationAddSpace(transactors)
     set(findViewFocusedState(id), Date.now())
 
-    set(viewsPerSpaceState, (current) => current.set(spaceId, id))
+    set(viewsPerSpaceState, (current) => current.set({ spaceId, viewId: id }))
     set(findViewFocusedState(id), Date.now())
   }
 
-  const writeOperationRemoveView: Write<(id: string) => void> = (
+  const writeOperationRemoveView: Write<(viewId: string) => void> = (
     transactors,
-    id
+    viewId
   ) => {
     const { set } = transactors
-    removeFromIndex(transactors, { indexAtom: viewIndexState, id })
-    set(viewsPerSpaceState, (current) => current.remove(id))
-    set(findViewState(id), null)
+    removeFromIndex(transactors, { indexAtom: viewIndexState, id: viewId })
+    set(viewsPerSpaceState, (current) => current.remove({ viewId }))
+    set(findViewState(viewId), null)
   }
 
   const addView = transaction<(options?: AddViewOptions) => void>({

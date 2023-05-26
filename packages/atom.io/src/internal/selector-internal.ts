@@ -102,7 +102,10 @@ export const updateSelectorAtoms = (
 ): void => {
   const core = target(store)
   if (dependency.type === `atom`) {
-    core.selectorAtoms = core.selectorAtoms.set(selectorKey, dependency.key)
+    core.selectorAtoms = core.selectorAtoms.set({
+      selectorKey,
+      atomKey: dependency.key,
+    })
     store.config.logger?.info(
       `   || adding root for "${selectorKey}": ${dependency.key}`
     )
@@ -114,7 +117,10 @@ export const updateSelectorAtoms = (
     roots.map((r) => r.key)
   )
   for (const root of roots) {
-    core.selectorAtoms = core.selectorAtoms.set(selectorKey, root.key)
+    core.selectorAtoms = core.selectorAtoms.set({
+      selectorKey,
+      atomKey: root.key,
+    })
   }
 }
 
@@ -142,9 +148,12 @@ export const registerSelector = (
         dependencyValue,
         `)`
       )
-      core.selectorGraph = core.selectorGraph.set(selectorKey, dependency.key, {
-        source: dependency.key,
-      })
+      core.selectorGraph = core.selectorGraph.set(
+        { from: dependency.key, to: selectorKey },
+        {
+          source: dependency.key,
+        }
+      )
     }
     updateSelectorAtoms(selectorKey, dependency, store)
     return dependencyValue

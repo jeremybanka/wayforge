@@ -57,8 +57,8 @@ export type GameState = {
   cards: Record<string, ResourceAttributes<Card>>
   cardGroups: Record<string, ResourceAttributes<CardGroup>>
   cardValues: Record<string, { content: string }>
-  cardsInGroups: Join
-  valuesOfCards: Join
+  cardsInGroups: Join<null, `cardId`, `groupId`>
+  valuesOfCards: Join<null, `cardId`, `valueId`>
 }
 
 export type GameStore = StoreApi<GameState>
@@ -194,7 +194,9 @@ export const configureActions = (config: {
               rotation: 0,
             },
           },
-          valuesOfCards: store.getState().valuesOfCards.set(cardValue.id, id),
+          valuesOfCards: store
+            .getState()
+            .valuesOfCards.set({ cardId: id, valueId: cardValue.id }),
         }
       },
       ADD_CARD_GROUP: () => {
@@ -208,7 +210,9 @@ export const configureActions = (config: {
         }
       },
       MOVE_CARD: ({ targets: { card, group } }) => ({
-        cardsInGroups: store.getState().cardsInGroups.set(card.id, group.id),
+        cardsInGroups: store
+          .getState()
+          .cardsInGroups.set({ cardId: card.id, groupId: group.id }),
       }),
     },
   })

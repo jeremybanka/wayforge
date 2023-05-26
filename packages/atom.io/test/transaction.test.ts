@@ -85,9 +85,9 @@ describe(`transaction`, () => {
         ...DEFAULT_CORE_STATS,
       },
     })
-    const globalInventoryState = atom<Join>({
+    const globalInventoryState = atom<Join<null, `beingKey`, `itemKey`>>({
       key: `GlobalInventory`,
-      default: new Join({ relationType: `1:n` }),
+      default: new Join({ relationType: `1:n` }).from(`beingKey`).to(`itemKey`),
     })
     const findBeingInventoryState = selectorFamily<string[], string>({
       key: `BeingInventory`,
@@ -106,7 +106,7 @@ describe(`transaction`, () => {
         const itemKey = victimInventory[0]
         if (itemKey === undefined) throw new Error(`No items to steal!`)
         set(globalInventoryState, (current) => {
-          const next = current.set(thiefKey, itemKey)
+          const next = current.set({ beingKey: thiefKey, itemKey })
           return next
         })
       },
@@ -136,7 +136,7 @@ describe(`transaction`, () => {
       keen: 1,
     })
     setState(globalInventoryState, (current) =>
-      current.set(victimState.key, prizeState.key)
+      current.set({ beingKey: victimState.key, itemKey: prizeState.key })
     )
     const thiefInvState = findBeingInventoryState(thiefState.key)
     const victimInvState = findBeingInventoryState(victimState.key)
@@ -158,7 +158,9 @@ describe(`transaction`, () => {
     }
     expect(logger.error).toHaveBeenCalledTimes(1)
 
-    setState(globalInventoryState, (current) => current.remove(victimState.key))
+    setState(globalInventoryState, (current) =>
+      current.remove({ beingKey: thiefState.key })
+    )
   })
   it(`can be subscribed to`, () => {
     const count1State = atom<number>({

@@ -197,7 +197,10 @@ export function timeline__INTERNAL(
       }
       subscribeToAtom(token)
     }
-    core.timelineAtoms = core.timelineAtoms.set(tokenOrFamily.key, options.key)
+    core.timelineAtoms = core.timelineAtoms.set({
+      atomKey: tokenOrFamily.key,
+      timelineKey: options.key,
+    })
   }
 
   store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)

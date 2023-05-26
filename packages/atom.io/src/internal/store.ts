@@ -44,11 +44,11 @@ export interface Store {
   atoms: Hamt<Atom<any>, string>
   atomsThatAreDefault: Set<string>
   readonlySelectors: Hamt<ReadonlySelector<any>, string>
-  selectorAtoms: Join
+  selectorAtoms: Join<null, `selectorKey`, `atomKey`>
   selectorGraph: Join<{ source: string }>
   selectors: Hamt<Selector<any>, string>
   timelines: Hamt<Timeline, string>
-  timelineAtoms: Join
+  timelineAtoms: Join<null, `timelineKey`, `atomKey`>
   timelineStore: Hamt<TimelineData, string>
   transactions: Hamt<Transaction<any>, string>
   valueMap: Hamt<any, string>
@@ -76,11 +76,15 @@ export const createStore = (name: string): Store =>
     atoms: HAMT.make<Atom<any>, string>(),
     atomsThatAreDefault: new Set(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-    selectorAtoms: new Join({ relationType: `n:n` }),
+    selectorAtoms: new Join({ relationType: `n:n` })
+      .from(`selectorKey`)
+      .to(`atomKey`),
     selectorGraph: new Join({ relationType: `n:n` }),
     selectors: HAMT.make<Selector<any>, string>(),
     timelines: HAMT.make<Timeline, string>(),
-    timelineAtoms: new Join({ relationType: `1:n` }),
+    timelineAtoms: new Join({ relationType: `1:n` })
+      .from(`timelineKey`)
+      .to(`atomKey`),
     timelineStore: HAMT.make<TimelineData, string>(),
     transactions: HAMT.make<Transaction<any>, string>(),
     valueMap: HAMT.make<any, string>(),

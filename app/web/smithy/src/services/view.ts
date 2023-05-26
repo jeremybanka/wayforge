@@ -61,13 +61,19 @@ export const addSpace: Transact<() => string> = (transactors) => {
 export const removeSpace: Transact<(id: string) => void> = (transactors, id) =>
   removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
 
-export const viewsPerSpaceState = atom<Join>({
+export const viewsPerSpaceState = atom<Join<null, `viewId`, `spaceId`>>({
   key: `viewsPerSpace`,
-  default: new Join({ relationType: `1:n` }),
+  default: new Join({ relationType: `1:n` }).from(`viewId`).to(`spaceId`),
   effects: [
     localStorageSerializationEffect(`viewsPerSpace`, {
       serialize: (index) => JSON.stringify(index.toJSON()),
-      deserialize: (json) => Join.fromJSON(JSON.parse(json)),
+      deserialize: (json) =>
+        Join.fromJSON<null, `viewId`, `spaceId`>(
+          JSON.parse(json),
+          undefined,
+          `viewId`,
+          `spaceId`
+        ),
     }),
   ],
 })
@@ -136,23 +142,23 @@ const OP_addView: Transact<(options?: AddViewOptions) => void> = (
   { spaceId: maybeSpaceId, path } = {}
 ) => {
   const { get, set } = transactors
-  const id = `view-${now()}`
-  addToIndex(transactors, { indexAtom: viewIndexState, id })
+  const viewId = `view-${now()}`
+  addToIndex(transactors, { indexAtom: viewIndexState, id: viewId })
   set(
-    findViewState(id),
+    findViewState(viewId),
     (current): View => ({
       ...current,
       location: {
         ...current.location,
         pathname: path ?? `/`,
-        state: { id },
+        state: { id: viewId },
       },
     })
   )
   const spaceId =
     maybeSpaceId ?? lastOf([...get(spaceIndexState)]) ?? addSpace(transactors)
   set(viewsPerSpaceState, (current) => {
-    current.set(spaceId, id)
+    current.set({ spaceId, viewId })
     return current
   })
 }
@@ -169,10 +175,10 @@ export const useAddView = (): ((options?: AddViewOptions) => void) =>
     (transactors) => (options) => OP_addView(transactors, options)
   )
 
-const removeView: Transact<(id: string) => void> = (transactors, id) => {
+const removeView: Transact<(viewId: string) => void> = (transactors, viewId) => {
   const { set } = transactors
-  removeFromIndex(transactors, { indexAtom: viewIndexState, id })
-  set(viewsPerSpaceState, (current) => current.remove(id))
+  removeFromIndex(transactors, { indexAtom: viewIndexState, id: viewId })
+  set(viewsPerSpaceState, (current) => current.remove({ viewId }))
 }
 
 export const useRemoveView = (): ((id: string) => void) =>

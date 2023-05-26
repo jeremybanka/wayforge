@@ -5,15 +5,20 @@ import type { RelationData } from "./core-relation-data"
 import { isEmptyArray, isOneOf, map } from "../array"
 import { comprises } from "../array/venn"
 import type { JsonObj } from "../json"
+import type { RequireAtLeastOne } from "../object"
 import { treeShake as removeProperties } from "../object"
 import { entriesToRecord, recordToEntries } from "../object/entries"
 import { split } from "../string/split"
 
-export const removeSpecific = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
+export const removeSpecific = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
   idA: string,
   idB: string
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
   const isIdForRemoval = isOneOf(idA, idB)
   return {
     ...current,
@@ -38,11 +43,15 @@ export const removeSpecific = <CONTENT extends JsonObj | null = null>(
   }
 }
 
-export const removeAll = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
+export const removeAll = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
   idToRemove: string
-): RelationData<CONTENT> => {
-  const next: RelationData<CONTENT> = {
+): RelationData<CONTENT, A, B> => {
+  const next: RelationData<CONTENT, A, B> = {
     ...current,
     relations: pipe(
       current.relations,
@@ -64,9 +73,19 @@ export const removeAll = <CONTENT extends JsonObj | null = null>(
   return next
 }
 
-export const removeRelation = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
-  idA: string,
-  idB?: string
-): RelationData<CONTENT> =>
-  idB ? removeSpecific(current, idA, idB) : removeAll(current, idA)
+export const removeRelation = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
+  relation: Partial<Record<A | B, string>>
+): RelationData<CONTENT, A, B> => {
+  const idA: string | undefined = (relation as { [key in A | B]: string })[
+    current.a
+  ]
+  const idB: string | undefined = (relation as { [key in A | B]: string })[
+    current.b
+  ]
+  return idB ? removeSpecific(current, idA, idB) : removeAll(current, idA)
+}

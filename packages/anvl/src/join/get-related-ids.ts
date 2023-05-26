@@ -1,13 +1,21 @@
-import type { JsonObj } from "../json"
 import type { RelationData } from "./core-relation-data"
+import type { JsonObj } from "../json"
 
-export const getRelatedIds = <CONTENT extends JsonObj | null = null>(
-  relationMap: RelationData<CONTENT>,
+export const getRelatedIds = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  relationMap: RelationData<CONTENT, A, B>,
   id: string
 ): string[] => relationMap.relations[id] ?? []
 
-export const getRelatedId = <CONTENT extends JsonObj | null = null>(
-  relationMap: RelationData<CONTENT>,
+export const getRelatedId = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  relationMap: RelationData<CONTENT, A, B>,
   id: string
 ): string | undefined => {
   const relations = getRelatedIds(relationMap, id)

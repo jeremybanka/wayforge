@@ -109,12 +109,14 @@ export const findReactionWithRelationsState = selectorFamily<
       }
       const { products, reagents, featureOf, ...reaction } = newValue
       set(findReactionState(reactionId), reaction)
-      set(reactionProductsState, (j) => j.setRelations(reactionId, products))
-      set(reactionReagentsState, (j) => j.setRelations(reactionId, reagents))
+      set(reactionProductsState, (j) => j.setRelations({ reactionId }, products))
+      set(reactionReagentsState, (j) => j.setRelations({ reactionId }, reagents))
       if (featureOf !== null) {
-        set(energyFeaturesState, (j) => j.set(featureOf.id, reactionId))
+        set(energyFeaturesState, (j) =>
+          j.set({ energyId: featureOf.id, reactionId })
+        )
       } else {
-        set(energyFeaturesState, (j) => j.remove(reactionId))
+        set(energyFeaturesState, (j) => j.remove({ reactionId }))
       }
     },
 })
@@ -146,7 +148,7 @@ export const addReactionAsEnergyFeature: Transact<(id: string) => void> = (
   const { get, set } = transactors
   const reactionId = addReaction(transactors)
   const energyFeatures = get(energyFeaturesState)
-  set(energyFeaturesState, energyFeatures.set(energyId, reactionId))
+  set(energyFeaturesState, energyFeatures.set({ energyId, reactionId }))
 }
 export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
   useRecoilTransaction_UNSTABLE(
@@ -155,16 +157,16 @@ export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
 
 export const removeReaction: Transact<(id: string) => void> = (
   transactors,
-  id
+  reactionId
 ) => {
   const { get, set } = transactors
   const energyFeatures = get(energyFeaturesState)
   const reactionReagents = get(reactionReagentsState)
   const reactionProducts = get(reactionProductsState)
-  set(energyFeaturesState, energyFeatures.remove(id))
-  set(reactionReagentsState, reactionReagents.remove(id))
-  set(reactionProductsState, reactionProducts.remove(id))
-  removeFromIndex(transactors, { id, indexAtom: reactionIndex })
+  set(energyFeaturesState, energyFeatures.remove({ reactionId }))
+  set(reactionReagentsState, reactionReagents.remove({ reactionId }))
+  set(reactionProductsState, reactionProducts.remove({ reactionId }))
+  removeFromIndex(transactors, { id: reactionId, indexAtom: reactionIndex })
 }
 export const useRemoveReaction = (): ((id: string) => void) =>
   useRecoilTransaction_UNSTABLE(
