@@ -99,11 +99,13 @@ describe(`Join.prototype.set1ToMany`, () => {
     const joey = `da_man_joey`
     const mary = `mary_paints`
     const memberships = new Join({ relationType: `1:n` })
+      .from(`group`)
+      .to(`user`)
     const newMemberships = memberships
-      .set(yellowGroup, joey)
-      .set(yellowGroup, mary)
+      .set({ group: yellowGroup, user: joey })
+      .set({ group: yellowGroup, user: mary })
     expect(newMemberships.getRelatedIds(yellowGroup)).toEqual([joey, mary])
-    const newerMemberships = newMemberships.set(redGroup, joey)
+    const newerMemberships = newMemberships.set({ group: redGroup, user: joey })
     expect(newerMemberships.getRelatedIds(redGroup)).toEqual([joey])
     expect(newerMemberships.getRelatedIds(yellowGroup)).toEqual([mary])
   })
@@ -114,7 +116,7 @@ describe(`Join.prototype.set1ToMany`, () => {
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
     const amountOfFire = reactionReagents
-      .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
+      .set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 1 })
       .getContent(fire, fireAndWaterBecomeSteam)
     expect(amountOfFire).toEqual({ amount: 1 })
   })
@@ -125,8 +127,8 @@ describe(`Join.prototype.set1ToMany`, () => {
       relationType: `1:n`,
     })
     const newReagents = reactionReagents
-      .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
-      .set(fire, fireAndWaterBecomeSteam, { amount: 2 })
+      .set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 1 })
+      .set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 2 })
     const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
     expect(amountOfFire).toEqual({ amount: 2 })
     const featureIds = newReagents.getRelatedIds(fire)
@@ -139,9 +141,12 @@ describe(`Join.prototype.set1To1`, () => {
     const mary = `mary_paints`
     const joey = `da_man_joey`
     const huey = `hueys_world`
-    const marriedCouples = new Join({ relationType: `1:1` }).set(mary, joey)
+    const marriedCouples = new Join({ relationType: `1:1` })
+      .from(`wife`)
+      .to(`husband`)
+      .set({ wife: mary, husband: joey })
     expect(marriedCouples.getRelatedId(mary)).toEqual(joey)
-    const newMarriedCouples = marriedCouples.set(mary, huey)
+    const newMarriedCouples = marriedCouples.set({ wife: mary, husband: huey })
     expect(newMarriedCouples.getRelatedId(mary)).toEqual(huey)
     expect(newMarriedCouples.getRelatedId(joey)).toBeUndefined()
   })
@@ -152,8 +157,10 @@ describe(`Join.prototype.remove`, () => {
     const water = `06`
     const waterMayFreeze = `162`
     const energyCardFeatures = new Join()
-      .set(water, waterMayFreeze)
-      .remove(water, waterMayFreeze)
+      .from(`reagent`)
+      .to(`reaction`)
+      .set({ reagent: water, reaction: waterMayFreeze })
+      .remove({ reagent: water, reaction: waterMayFreeze })
     const featureIds = energyCardFeatures.getRelatedIds(water)
     expect(featureIds).toEqual([])
   })
@@ -161,18 +168,20 @@ describe(`Join.prototype.remove`, () => {
     const snad = `snad_pitt`
     const cassilda = `cassilda_jolie`
     const celebrityCouples = new Join<{ name: string }>()
-      .set(snad, cassilda, { name: `snassilda` })
-      .remove(snad, cassilda)
+      .set({ from: snad, to: cassilda }, { name: `snassilda` })
+      .remove({ from: snad, to: cassilda })
     expect(celebrityCouples.getRelatedId(snad)).toEqual(undefined)
     expect(celebrityCouples.getRelatedId(cassilda)).toEqual(undefined)
     expect(celebrityCouples.getContent(snad, cassilda)).toEqual(undefined)
   })
   it(`removes all relations and content for a given id`, () => {
     const pokemonPrimaryTypes = new Join({ relationType: `1:n` })
-      .set(`grass`, `bulbasaur`)
-      .set(`grass`, `oddish`)
-      .set(`grass`, `bellsprout`)
-      .remove(`grass`)
+      .from(`type`)
+      .to(`pokémon`)
+      .set({ type: `grass`, pokémon: `bulbasaur` })
+      .set({ type: `grass`, pokémon: `oddish` })
+      .set({ type: `grass`, pokémon: `bellsprout` })
+      .remove({ type: `grass` })
     expect(pokemonPrimaryTypes.getRelatedIds(`grass`)).toEqual([])
     expect(pokemonPrimaryTypes.getRelatedId(`bulbasaur`)).toBeUndefined()
     expect(pokemonPrimaryTypes.getRelatedId(`oddish`)).toBeUndefined()
@@ -183,9 +192,9 @@ describe(`Join.prototype.remove`, () => {
 describe(`Join.prototype.getRelatedIdEntries`, () => {
   it(`gets all content entries for a given id`, () => {
     const friendships = new Join<JsonObj>()
-      .set(`omori`, `kel`, { trust: 1 })
-      .set(`hero`, `kel`, { brothers: true })
-      .set(`hero`, `omori`, { agreeThat: `mari is very nice` })
+      .set({ from: `omori`, to: `kel` }, { trust: 1 })
+      .set({ from: `hero`, to: `kel` }, { brothers: true })
+      .set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
     const heroFriendships = friendships.getRelationEntries(`hero`)
     expect(heroFriendships).toEqual([
       [`kel`, { brothers: true }],
@@ -194,12 +203,12 @@ describe(`Join.prototype.getRelatedIdEntries`, () => {
   })
 })
 
-describe(`Join.prototype.getRelationRecorrd`, () => {
+describe(`Join.prototype.getRelationRecord`, () => {
   it(`gets all content for a given id`, () => {
     const friendships = new Join<JsonObj>()
-      .set(`omori`, `kel`, { trust: 1 })
-      .set(`hero`, `kel`, { brothers: true })
-      .set(`hero`, `omori`, { agreeThat: `mari is very nice` })
+      .set({ from: `omori`, to: `kel` }, { trust: 1 })
+      .set({ from: `hero`, to: `kel` }, { brothers: true })
+      .set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
     const heroFriendships = friendships.getRelationRecord(`hero`)
     expect(heroFriendships).toEqual({
       kel: { brothers: true },
@@ -211,12 +220,16 @@ describe(`Join.prototype.getRelationRecorrd`, () => {
 describe(`Join.prototype.toJSON`, () => {
   it(`converts a Join to JSON`, () => {
     const pokemonPrimaryTypes = new Join({ relationType: `1:n` })
-      .set(`grass`, `bulbasaur`)
-      .set(`grass`, `oddish`)
-      .set(`grass`, `bellsprout`)
+      .from(`type`)
+      .to(`pokémon`)
+      .set({ type: `grass`, pokémon: `bulbasaur` })
+      .set({ type: `grass`, pokémon: `oddish` })
+      .set({ type: `grass`, pokémon: `bellsprout` })
     const json = pokemonPrimaryTypes.toJSON()
     expect(json).toEqual({
       relationType: `1:n`,
+      a: `type`,
+      b: `pokémon`,
       contents: {},
       relations: {
         bellsprout: [`grass`],

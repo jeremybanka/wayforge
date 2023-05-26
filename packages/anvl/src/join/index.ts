@@ -86,7 +86,7 @@ export class Join<
   public setRelations(
     subject: { [from in A]: string } | { [to in B]: string },
     relations: NullSafeUnion<Identified, CONTENT>[]
-  ): Join<CONTENT> {
+  ): Join<CONTENT, A, B> {
     return new Join(setRelations(this, subject, relations))
   }
   public set(
