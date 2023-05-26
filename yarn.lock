@@ -2941,7 +2941,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     sass: 1.62.1
-    vite: 4.3.8
+    vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.31.1
@@ -2972,7 +2972,7 @@ __metadata:
     react-dom: 18.2.0
     react-router-dom: 6.11.2
     sass: 1.62.1
-    vite: 4.3.8
+    vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.31.1
@@ -2989,7 +2989,7 @@ __metadata:
     phaser: 3.60.0
     socket.io: 4.6.1
     socket.io-client: 4.6.1
-    vite: 4.3.8
+    vite: 4.3.9
     vite-tsconfig-paths: 4.2.0
     zustand: 4.3.8
   languageName: unknown
@@ -3019,7 +3019,7 @@ __metadata:
     react-router-dom: 6.11.2
     recoil: 0.7.7
     sass: 1.62.1
-    vite: 4.3.8
+    vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.31.1
@@ -3237,7 +3237,7 @@ __metadata:
     fp-ts: 2.16.0
     io-ts: 2.2.20
     tsup: 6.7.0
-    vite: 4.3.8
+    vite: 4.3.9
     vite-tsconfig-paths: 4.2.0
     vitest: 0.31.1
   peerDependencies:
@@ -6882,7 +6882,7 @@ __metadata:
     fp-ts: 2.16.0
     io-ts: 2.2.20
     tsup: 6.7.0
-    vite: 4.3.8
+    vite: 4.3.9
     vite-tsconfig-paths: 4.2.0
     vitest: 0.31.1
   peerDependencies:
@@ -11956,7 +11956,44 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:4.3.8, vite@npm:^3.0.0 || ^4.0.0, vite@npm:^4.1.4":
+"vite@npm:4.3.9":
+  version: 4.3.9
+  resolution: "vite@npm:4.3.9"
+  dependencies:
+    esbuild: ^0.17.5
+    fsevents: ~2.3.2
+    postcss: ^8.4.23
+    rollup: ^3.21.0
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 8c45a516278d1e0425fac00c0877336790f71484a851a318346a70e0d2aef9f3b9651deb2f9f002c791ceb920eda7d6a3cda753bdefd657321c99f448b02dd25
+  languageName: node
+  linkType: hard
+
+"vite@npm:^3.0.0 || ^4.0.0, vite@npm:^4.1.4":
   version: 4.3.8
   resolution: "vite@npm:4.3.8"
   dependencies:
