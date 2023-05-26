@@ -18,7 +18,7 @@
     "@t3-oss/env-core": "0.3.1",
     "@vanilla-extract/css": "1.11.0",
     "corners": "0.0.13",
-    "fp-ts": "2.15.0",
+    "fp-ts": "2.16.0",
     "framer-motion": "10.12.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
