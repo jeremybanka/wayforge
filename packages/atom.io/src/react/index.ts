@@ -32,3 +32,15 @@ export const composeStoreHooks = (
 
   return { useI, useO, useIO }
 }
+
+export const { useI, useO, useIO } = composeStoreHooks()
+
+export function useStore<T>(
+  token: StateToken<T>
+): [T, (next: Modifier<T> | T) => void]
+export function useStore<T>(token: ReadonlySelectorToken<T>): T
+export function useStore<T>(
+  token: ReadonlySelectorToken<T> | StateToken<T>
+): T | [T, (next: Modifier<T> | T) => void] {
+  return token.type === `readonly_selector` ? useO(token) : useIO(token)
+}
