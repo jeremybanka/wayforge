@@ -77,27 +77,28 @@ export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
     b: string
   }
 
-export const socketRelations: <
-  CONTENT extends JsonObj | null,
-  A extends string,
-  B extends string
->(
-  options: SocketRelationsOptions<CONTENT>
-) => AtomEffect<Join<CONTENT, A, B>> =
-  ({ type, id, socket, refineContent, a, b }) =>
-  <CONTENT extends JsonObj | null = null>({ setSelf, onSet }) => {
+export const socketRelations =
+  <CONTENT extends JsonObj | null, A extends string, B extends string>({
+    type,
+    id,
+    socket,
+    refineContent,
+    a,
+    b,
+  }: SocketRelationsOptions<CONTENT>): AtomEffect<Join<CONTENT, A, B>> =>
+  ({ setSelf, onSet }) => {
     socket.emit(`relationsRead`, { type, id })
     socket.on(`relationsRead_${type}_${id}`, (json) =>
       setSelf(
         Join.fromJSON<CONTENT, A, B>(
           json,
           refineContent as Refinement<unknown, CONTENT>,
-          a,
-          b
+          a as A,
+          b as B
         )
       )
     )
-    onSet((v: Join) =>
+    onSet((v: Join<CONTENT, A, B>) =>
       socket.emit(`relationsWrite`, { id, type, value: v.toJSON() })
     )
   }
