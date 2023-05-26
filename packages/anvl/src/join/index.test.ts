@@ -57,20 +57,21 @@ describe(`Join.prototype.set`, () => {
   it(`sets a relation between two ids`, () => {
     const water = `06`
     const waterMayFreeze = `162`
-    const energyCardFeatures = new Join()
+    const energyCardFeatures = new Join().from(`reagent`).to(`reaction`)
     const featureIds = energyCardFeatures
-      .set(water, waterMayFreeze)
+      .set({ reagent: water, reaction: waterMayFreeze })
       .getRelatedIds(water)
     expect(featureIds).toEqual([waterMayFreeze])
   })
   it(`sets data between 2 ids`, () => {
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
-    const reactionReagents = new Join<{ amount: number }>().set(
-      fire,
-      fireAndWaterBecomeSteam,
-      { amount: 1 }
-    )
+    const reactionReagents = new Join<{ amount: number }>({
+      relationType: `n:n`,
+    })
+      .from(`reagent`)
+      .to(`reaction`)
+      .set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
     const amountOfFire = reactionReagents.getContent(
       fire,
       fireAndWaterBecomeSteam
@@ -82,8 +83,8 @@ describe(`Join.prototype.set`, () => {
     const fire = `03`
     const fireAndWaterBecomeSteam = `486`
     const newReagents = reactionReagents
-      .set(fire, fireAndWaterBecomeSteam, { amount: 1 })
-      .set(fire, fireAndWaterBecomeSteam, { amount: 2 })
+      .set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 1 })
+      .set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 2 })
     const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
     expect(amountOfFire).toEqual({ amount: 2 })
     const featureIds = newReagents.getRelatedIds(fire)

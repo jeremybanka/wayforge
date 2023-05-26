@@ -6,12 +6,16 @@ import type { JsonObj } from "../json"
 import type { NullSafeRest } from "../nullish"
 import { treeShake as removeProperties } from "../object"
 
-export const setManyToMany = <CONTENT extends JsonObj | null = null>(
-  map: RelationData<CONTENT>,
+export const setManyToMany = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  map: RelationData<CONTENT, A, B>,
   idA: string,
   idB: string,
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
   const next = {
     ...map,
     relations: {
@@ -26,12 +30,16 @@ export const setManyToMany = <CONTENT extends JsonObj | null = null>(
 
 const removeEmpties = removeProperties(isEmptyArray)
 
-export const set1ToMany = <CONTENT extends JsonObj | null = null>(
-  current: RelationData<CONTENT>,
+export const set1ToMany = <
+  CONTENT extends JsonObj | null,
+  A extends string,
+  B extends string
+>(
+  current: RelationData<CONTENT, A, B>,
   leaderId: string,
   followerId: string,
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
   const relations = { ...current.relations }
   const prevLeaderId = getRelatedId(current, followerId)
   const next = {
@@ -58,11 +66,10 @@ export const set1To1 = <
   B extends string
 >(
   current: RelationData<CONTENT, A, B>,
-  relation: { [key in A | B]: string },
+  wifeId: string,
+  husbandId: string,
   ...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT, A, B> => {
-  const { [relation[current.a]]: wifeId, [relation[current.b]]: husbandId } =
-    relation
   const prevWifeId = getRelatedId(current, husbandId)
   const prevHusbandId = getRelatedId(current, wifeId)
   const next = {
@@ -88,13 +95,14 @@ export const setRelationWithContent = <
   current: RelationData<CONTENT, A, B>,
   relation: { [key in A | B]: string },
   ...rest: NullSafeRest<CONTENT>
-): RelationData<CONTENT> => {
+): RelationData<CONTENT, A, B> => {
+  const { [relation[current.a]]: idA, [relation[current.b]]: idB } = relation
   switch (current.relationType) {
     case `1:1`:
-      return set1To1(current, relation, ...rest)
+      return set1To1(current, idA, idB, ...rest)
     case `1:n`:
-      return set1ToMany(current, relation, ...rest)
+      return set1ToMany(current, idA, idB, ...rest)
     case `n:n`:
-      return setManyToMany(current, relation, ...rest)
+      return setManyToMany(current, idA, idB, ...rest)
   }
 }

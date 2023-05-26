@@ -57,7 +57,9 @@ export const setRelations = <CONTENT extends JsonObj | null = null>(
         (id) => !relations.some((r) => r.id === id)
       )
       let step = relationData
-      for (const idB of removedIds) step = removeRelation(step, idA, idB)
+      for (const idB of removedIds) {
+        step = removeRelation(step, { [current.a]: idA, [current.b]: idB })
+      }
       return step
     },
     (relationData) => {

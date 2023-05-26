@@ -11,6 +11,7 @@ import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
 import type { Json, JsonObj } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
+import type { RequireAtLeastOne } from "../object"
 import { cannotExist } from "../refinement"
 
 export class Join<
@@ -91,21 +92,14 @@ export class Join<
   public set(
     relation: { [key in A | B]: string },
     ...rest: NullSafeRest<CONTENT>
-  ): Join<CONTENT> {
+  ): Join<CONTENT, A, B> {
     return new Join(setRelationWithContent(this, relation, ...rest))
   }
   public remove(
-    relation:
-      | {
-          [key in A | B]: string
-        }
-      | {
-          [key in A]: string
-        }
-      | {
-          [key in B]: string
-        }
-  ): Join<CONTENT> {
-    return new Join(removeRelation(this, relation))
+    relation: RequireAtLeastOne<Record<A | B, string>>
+  ): Join<CONTENT, A, B> {
+    return new Join(
+      removeRelation(this, relation as Partial<Record<A | B, string>>)
+    )
   }
 }
