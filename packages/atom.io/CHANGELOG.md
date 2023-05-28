@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.4.0
+
+### Minor Changes
+
+- ba5d689: 🎉 New sub-package: `import { AtomIODevtools } from "atom.io/devtools"`. This is a component that shows you the state of every atom in your app, and allows you to change any atom whose value extends Json.
+- ba5d689: ✨ For your convenience, `useStore`, `useI`, `useO` and `useIO` can be imported directly from `atom.io/react`
+- ba5d689: 💥 BREAKING CHANGE: `useStore` is no longer returned from `composeStoreHooks`
+
 ## 0.3.1
 
 ### Patch Changes
