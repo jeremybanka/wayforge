@@ -16,7 +16,7 @@ import { StoreEditor } from "./StateEditor"
 export const TokenList: FC<{
   storeHooks: StoreHooks
   tokenIndex: ReadonlySelectorToken<
-    __INTERNAL__.Meta.StateTokenIndex<
+    __INTERNAL__.META.StateTokenIndex<
       | AtomToken<unknown>
       | ReadonlySelectorToken<unknown>
       | SelectorToken<unknown>
