@@ -3490,7 +3490,7 @@ __metadata:
     fp-ts: 2.16.0
     hamt_plus: 1.0.2
     mock-fs: 5.2.0
-    preact: 10.15.0
+    preact: 10.15.1
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.11.2
@@ -9621,10 +9621,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"preact@npm:10.15.0":
-  version: 10.15.0
-  resolution: "preact@npm:10.15.0"
-  checksum: 6fa78d31798305a33e5202421551d18f1cbe99ab5ca2a93935e29f48f33997b3ca5ebd1dff51270d0b1291414e98baff2dca00512b6fff8c6ebb670e1e01c15e
+"preact@npm:10.15.1":
+  version: 10.15.1
+  resolution: "preact@npm:10.15.1"
+  checksum: dabad11843b19b40b11846a25ff0b1fc4bc58268909e01a7faddb341a40983d24fbe7d44ad6e2c5d35e43091963af616800552fec9af44dd0a2f0f698d1bba1f
   languageName: node
   linkType: hard
 
