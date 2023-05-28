@@ -2,6 +2,8 @@ import type { FC } from "react"
 import { useEffect } from "react"
 
 import * as A from "atom.io"
+import { useO } from "atom.io/react"
+import { AtomIODevtools } from "atom.io/react-devtools"
 import { Link, Route } from "wouter"
 
 import {
@@ -11,22 +13,17 @@ import {
   playersInRoomsState,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
-import { AtomIODevtools } from "~/packages/atom.io/src/react-devtools"
 
 import { ReactComponent as Connected } from "./assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
 import { socketIdState, socket } from "./services/socket"
-import { useO } from "./services/store"
+
 socket.on(`set:roomsIndex`, (ids) =>
   A.setState(roomsIndex, new Set<string>(ids))
 )
 
-A.subscribeToTransaction(createRoom, (update) => {
-  socket.emit(`new:room`, update)
-})
-A.subscribeToTransaction(joinRoom, (update) => {
-  socket.emit(`join:room`, update)
-})
+A.subscribeToTransaction(createRoom, (update) => socket.emit(`new:room`, update))
+A.subscribeToTransaction(joinRoom, (update) => socket.emit(`join:room`, update))
 
 export const App: FC = () => {
   const myId = useO(socketIdState)
@@ -57,7 +54,6 @@ export const MyRoom: FC<{ myId: string }> = ({ myId }) => {
 
 export const Lobby: FC = () => {
   const roomIds = useO(roomsIndex)
-  const socketId = useO(socketIdState)
   return (
     <div>
       <h2>Lobby</h2>
