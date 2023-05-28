@@ -12,7 +12,7 @@ import { lazyLocalStorageEffect } from "../web-effects"
 import "./devtools.scss"
 
 const { atomTokenIndexState, selectorTokenIndexState } =
-  __INTERNAL__.Meta.attachMetaState()
+  __INTERNAL__.META.attachMetaState()
 
 const devtoolsAreOpenState = atom<boolean>({
   key: `👁‍🗨_devtools_are_open`,
