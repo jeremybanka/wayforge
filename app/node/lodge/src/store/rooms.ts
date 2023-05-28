@@ -35,14 +35,14 @@ export const findPlayerState = atomFamily<Player, string>({
 })
 
 export const playersInRoomsState = atom<
-  Join<{ enteredAt: number }, `playerId`, `roomId`>
+  Join<{ enteredAt: number }, `roomId`, `playerId`>
 >({
   key: `playersInRooms`,
   default: new Join<{ enteredAt: number }>({
     relationType: `1:n`,
   })
-    .from(`playerId`)
-    .to(`roomId`),
+    .from(`roomId`)
+    .to(`playerId`),
 })
 
 export const findPlayersInRoomState = selectorFamily<
