@@ -9,7 +9,7 @@ import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
-import type { JoinRoom } from "./store/rooms"
+import type { JoinRoomIO } from "./store/rooms"
 import {
   createRoom,
   findPlayersInRoomState,
@@ -88,7 +88,7 @@ pipe(
       })
 
       // join:room
-      socket.on(`join:room`, (update: TransactionUpdate<JoinRoom>) => {
+      socket.on(`join:room`, (update: TransactionUpdate<JoinRoomIO>) => {
         const { roomId, playerId } = update.params[0]
         if (playerId !== socket.id) {
           logger.error(socket.id, `tried to join:room as`, playerId)

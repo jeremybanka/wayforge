@@ -1,3 +1,4 @@
+import type { TransactionIO } from "atom.io"
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
@@ -62,17 +63,18 @@ export const findPlayersInRoomState = selectorFamily<
       ),
 })
 
-export type CreateRoom = (id?: string) => string
-export const createRoom = transaction<CreateRoom>({
+export const createRoom = transaction<(id?: string) => string>({
   key: `createRoom`,
   do: ({ set }, roomId = nanoid()) => {
     set(roomsIndex, (ids) => new Set([...ids, roomId].sort()))
     return roomId
   },
 })
+export type CreateRoomIO = TransactionIO<typeof createRoom>
 
-export type JoinRoom = (options: { roomId: string; playerId: string }) => void
-export const joinRoom = transaction<JoinRoom>({
+export const joinRoom = transaction<
+  (options: { roomId: string; playerId: string }) => void
+>({
   key: `joinRoom`,
   do: ({ set }, { roomId, playerId }) => {
     set(playersInRoomsState, (current) =>
@@ -85,11 +87,14 @@ export const joinRoom = transaction<JoinRoom>({
     )
   },
 })
+export type JoinRoomIO = TransactionIO<typeof joinRoom>
 
-export type LeaveRoom = (options: { roomId: string; playerId: string }) => void
-export const leaveRoom = transaction<LeaveRoom>({
+export const leaveRoom = transaction<
+  (options: { roomId: string; playerId: string }) => void
+>({
   key: `leaveRoom`,
   do: ({ set }, { roomId, playerId }) => {
     set(playersInRoomsState, (current) => current.remove({ roomId, playerId }))
   },
 })
+export type LeaveRoomIO = TransactionIO<typeof leaveRoom>
