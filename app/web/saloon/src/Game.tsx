@@ -1,1 +1,3 @@
-export const Game: FC
+import type { FC } from "react"
+
+export const Game: FC = () => null
