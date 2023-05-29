@@ -14,10 +14,7 @@ export const initConnectionState = (
     key: `socketIdState_INTERNAL`,
     default: null,
     effects: [
-      ({ setSelf, onSet }) => {
-        onSet((newValue) => {
-          console.log(`Connection state changed to ${newValue}`)
-        })
+      ({ setSelf }) => {
         console.log(`Connecting...`)
         socket.on(`connection`, () => {
           console.log(`Connected`)

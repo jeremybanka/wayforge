@@ -70,9 +70,11 @@ export const createRoom = transaction<(id?: string) => string>({
   },
 })
 
-export const joinRoom = transaction<(roomId: string, playerId: string) => void>({
+export const joinRoom = transaction<
+  (options: { roomId: string; playerId: string }) => void
+>({
   key: `joinRoom`,
-  do: ({ set }, roomId, playerId) => {
+  do: ({ set }, { roomId, playerId }) => {
     set(playersInRoomsState, (current) =>
       current.set(
         { roomId, playerId },
@@ -81,5 +83,14 @@ export const joinRoom = transaction<(roomId: string, playerId: string) => void>(
         }
       )
     )
+  },
+})
+
+export const leaveRoom = transaction<
+  (options: { roomId: string; playerId: string }) => void
+>({
+  key: `leaveRoom`,
+  do: ({ set }, { roomId, playerId }) => {
+    set(playersInRoomsState, (current) => current.remove({ roomId, playerId }))
   },
 })

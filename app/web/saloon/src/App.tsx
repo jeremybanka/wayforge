@@ -10,6 +10,7 @@ import {
   createRoom,
   findPlayersInRoomState,
   joinRoom,
+  leaveRoom,
   playersInRoomsState,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
@@ -17,6 +18,7 @@ import {
 import { ReactComponent as Connected } from "./assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
 import { socketIdState, socket } from "./services/socket"
+import { useServerFamily } from "./services/store"
 
 socket.on(`set:roomsIndex`, (ids) =>
   A.setState(roomsIndex, new Set<string>(ids))
@@ -24,6 +26,9 @@ socket.on(`set:roomsIndex`, (ids) =>
 
 A.subscribeToTransaction(createRoom, (update) => socket.emit(`new:room`, update))
 A.subscribeToTransaction(joinRoom, (update) => socket.emit(`join:room`, update))
+A.subscribeToTransaction(leaveRoom, (update) =>
+  socket.emit(`leave:room`, update)
+)
 
 export const App: FC = () => {
   const myId = useO(socketIdState)
@@ -33,7 +38,7 @@ export const App: FC = () => {
       <h1>Saloon</h1>
       <aside>
         <div>
-          {myId} # {myId ? <MyRoom myId={myId} /> : null}
+          {myId} # <MyRoom />
         </div>
       </aside>
       <Route path="/">
@@ -47,8 +52,18 @@ export const App: FC = () => {
   )
 }
 
-export const MyRoom: FC<{ myId: string }> = ({ myId }) => {
-  const myRoom = useO(playersInRoomsState).getRelatedId(myId)
+const myRoomState = A.selector<string | null>({
+  key: `myRoom`,
+  get: ({ get }) => {
+    const socketId = get(socketIdState)
+    return socketId
+      ? get(playersInRoomsState).getRelatedId(socketId) ?? null
+      : null
+  },
+})
+
+export const MyRoom: FC = () => {
+  const myRoom = useO(myRoomState)
   return <span>{myRoom}</span>
 }
 
@@ -70,26 +85,13 @@ export const Lobby: FC = () => {
 export const Room: FC<{ roomId: string }> = ({ roomId }) => {
   const socketId = useO(socketIdState)
   const playersInRoom = useO(findPlayersInRoomState(roomId))
+  const iAmInRoom = playersInRoom.some((player) => player.id === socketId)
 
-  useEffect(() => {
-    socket.emit(`sub:playersInRoom`, roomId)
-    return () => {
-      socket.emit(`unsub:playersInRoom:${roomId}`)
-    }
-  }, [roomId])
-
-  useEffect(() => {
-    socket.on(
-      `set:playersInRoom:${roomId}`,
-      (players: { id: string; enteredAt: number }[]) => {
-        console.log(`set:playersInRoom:${roomId}`, players)
-        return A.setState(findPlayersInRoomState(roomId), players)
-      }
-    )
-    return () => {
-      socket.off(`set:playersInRoom:${roomId}`)
-    }
+  useServerFamily(socket, findPlayersInRoomState, roomId, {
+    fromJson: (json) => json,
+    toJson: (value) => value,
   })
+
   return (
     <article className="room">
       <h2>Room # {roomId}</h2>
@@ -101,8 +103,22 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
           </div>
         ))}
       </div>
-      <button onClick={() => A.runTransaction(joinRoom)(roomId, socketId ?? ``)}>
+
+      <button
+        onClick={() =>
+          A.runTransaction(joinRoom)({ roomId, playerId: socketId ?? `` })
+        }
+        disabled={iAmInRoom}
+      >
         Join Room
+      </button>
+      <button
+        onClick={() =>
+          A.runTransaction(leaveRoom)({ roomId, playerId: socketId ?? `` })
+        }
+        disabled={!iAmInRoom}
+      >
+        Leave Room
       </button>
     </article>
   )

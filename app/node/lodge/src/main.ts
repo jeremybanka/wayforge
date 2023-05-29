@@ -1,15 +1,10 @@
+import * as AtomIO from "atom.io"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
-import { current } from "immer"
+import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 
-import {
-  getState,
-  runTransaction,
-  setLogLevel,
-  setState,
-  subscribe,
-} from "~/packages/atom.io/src"
+import type { JsonInterface } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
@@ -17,6 +12,7 @@ import {
   createRoom,
   findPlayersInRoomState,
   joinRoom,
+  leaveRoom,
   playersInRoomsState,
   playersIndex,
   roomsIndex,
@@ -25,11 +21,46 @@ import {
 // setLogLevel(`info`)
 
 const record: Record<string, string> = {}
+const serve = <T>(
+  socket: Socket,
+  token: AtomIO.StateToken<T>,
+  transform: JsonInterface<T>
+) => {
+  // socket.emit(`set:${token.key}`, transform.toJson(AtomIO.getState(token)))
+  socket.on(`sub:${token.key}`, () => {
+    logger.info(socket.id, `sub:${token.key}`)
+    socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
+    const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
+      token,
+      ({ newValue }) => {
+        socket.emit(`serve:${token.key}`, transform.toJson(newValue))
+      }
+    )
+    socket.on(`unsub:${token.key}`, () => {
+      logger.info(socket.id, `unsub:${token.key}`)
+      unsubscribeFromPlayersInRoom()
+    })
+  })
+}
 
-subscribe(playersInRoomsState, ({ newValue, oldValue }) => {
-  logger.info(`playersInRoomsState`, `oldValue`, oldValue.toJSON().relations)
-  logger.info(`playersInRoomsState`, `newValue`, newValue.toJSON().relations)
-})
+const serveFamily = <T>(
+  socket: Socket,
+  family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
+  transform: JsonInterface<T>
+) => {
+  socket.on(`sub:${family.key}`, (subKey: AtomIO.Serializable) => {
+    logger.info(socket.id, `sub:${family.key}`, subKey)
+    const token = family(subKey)
+    socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
+    const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
+      socket.emit(`serve:${token.key}`, transform.toJson(newValue))
+    })
+    socket.on(`unsub:${token.key}`, () => {
+      logger.info(socket.id, `unsub:${token.key}`)
+      unsubscribe()
+    })
+  })
+}
 
 dotenv.config()
 pipe(
@@ -41,42 +72,24 @@ pipe(
   }),
   (io) => {
     io.on(`connection`, (socket) => {
-      socket.emit(`set:roomsIndex`, [...getState(roomsIndex)])
+      socket.emit(`set:roomsIndex`, [...AtomIO.getState(roomsIndex)])
       logger.info(socket.id, `connected`)
       io.emit(`connection`)
-      setState(
+      AtomIO.setState(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
-      const unsubRoomsIndex = subscribe(roomsIndex, ({ newValue }) => {
+      const unsubRoomsIndex = AtomIO.subscribe(roomsIndex, ({ newValue }) => {
         socket.emit(`set:roomsIndex`, [...newValue])
       })
       socket.on(`new:room`, (update: TransactionUpdate<() => string>) => {
         logger.info(socket.id, `new:room`, update.output)
-        runTransaction(createRoom)(update.output)
-      })
-      socket.on(`get:playersInRoom`, (roomId: string) => {
-        logger.info(socket.id, `get:playersInRoom`, roomId)
-        socket.emit(`set:playersInRoom:${roomId}`, [
-          ...getState(findPlayersInRoomState(roomId)),
-        ])
+        AtomIO.runTransaction(createRoom)(update.output)
       })
 
-      socket.on(`sub:playersInRoom`, (roomId: string) => {
-        logger.info(socket.id, `sub:playersInRoom`, roomId)
-        socket.emit(`set:playersInRoom:${roomId}`, [
-          ...getState(findPlayersInRoomState(roomId)),
-        ])
-        const unsubscribeFromPlayersInRoom = subscribe(
-          findPlayersInRoomState(roomId),
-          ({ newValue }) => {
-            socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
-          }
-        )
-        socket.on(`unsub:playersInRoom`, () => {
-          logger.info(socket.id, `unsub:playersInRoom`, roomId)
-          unsubscribeFromPlayersInRoom()
-        })
+      serveFamily(socket, findPlayersInRoomState, {
+        fromJson: (json) => json,
+        toJson: (value) => value,
       })
 
       // join:room
@@ -84,9 +97,11 @@ pipe(
       socket.on(
         `join:room`,
         (
-          update: TransactionUpdate<(roomId: string, socketId: string) => void>
+          update: TransactionUpdate<
+            (options: { roomId: string; playerId: string }) => void
+          >
         ) => {
-          const [roomId, playerId] = update.params
+          const { roomId, playerId } = update.params[0]
           logger.info(socket.id, `join:room`, roomId)
           if (playerId !== socket.id) {
             logger.error(
@@ -97,19 +112,20 @@ pipe(
               `does not match socket.id`
             )
           }
-          runTransaction(joinRoom)(...update.params)
-          socket.emit(`set:playersInRoom:${roomId}`, [
-            ...getState(findPlayersInRoomState(roomId)),
-          ])
+
+          AtomIO.runTransaction(joinRoom)(...update.params)
+
           socket.join(roomId)
-          const unsubscribeFromPlayersInRoom = subscribe(
+          const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
             findPlayersInRoomState(roomId),
             ({ newValue }) => {
               socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
             }
           )
+
           socket.on(`leave:room`, () => {
             logger.info(socket.id, `leave:room`, roomId)
+            AtomIO.runTransaction(leaveRoom)({ roomId, playerId: socket.id })
             socket.leave(roomId)
             unsubscribeFromPlayersInRoom()
           })
@@ -120,12 +136,12 @@ pipe(
 
       socket.on(`disconnect`, () => {
         logger.info(socket.id, `disconnected`)
-        setState(
+        AtomIO.setState(
           playersIndex,
           (playersIndex) =>
             new Set([...playersIndex].filter((id) => id !== socket.id))
         )
-        setState(playersInRoomsState, (current) =>
+        AtomIO.setState(playersInRoomsState, (current) =>
           current.remove({ playerId: socket.id })
         )
       })
