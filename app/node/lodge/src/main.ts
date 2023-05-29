@@ -25,9 +25,7 @@ export const serve = <T>(
   token: AtomIO.StateToken<T>,
   transform: JsonInterface<T>
 ): void => {
-  // socket.emit(`set:${token.key}`, transform.toJson(AtomIO.getState(token)))
   socket.on(`sub:${token.key}`, () => {
-    logger.info(socket.id, `sub:${token.key}`)
     socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
     const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
       token,
@@ -36,7 +34,6 @@ export const serve = <T>(
       }
     )
     socket.on(`unsub:${token.key}`, () => {
-      logger.info(socket.id, `unsub:${token.key}`)
       unsubscribeFromPlayersInRoom()
     })
   })
@@ -48,14 +45,12 @@ const serveFamily = <T>(
   transform: JsonInterface<T>
 ) => {
   socket.on(`sub:${family.key}`, (subKey: AtomIO.Serializable) => {
-    logger.info(socket.id, `sub:${family.key}`, subKey)
     const token = family(subKey)
     socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
     const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
       socket.emit(`serve:${token.key}`, transform.toJson(newValue))
     })
     socket.on(`unsub:${token.key}`, () => {
-      logger.info(socket.id, `unsub:${token.key}`)
       unsubscribe()
     })
   })
@@ -77,6 +72,9 @@ pipe(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
+      socket.onAny((event, ...args) => {
+        logger.info(socket.id, event, ...args)
+      })
 
       serve(socket, roomsIndex, stringSetJsonInterface)
       serveFamily(socket, findPlayersInRoomState, {
@@ -85,16 +83,12 @@ pipe(
       })
 
       // create:room
-
       socket.on(`new:room`, (update: TransactionUpdate<() => string>) => {
-        logger.info(socket.id, `new:room`, update.output)
         AtomIO.runTransaction(createRoom)(update.output)
       })
 
       // join:room
-
       socket.on(`join:room`, (update: TransactionUpdate<JoinRoom>) => {
-        logger.info(socket.id, `join:room`, update)
         const { roomId, playerId } = update.params[0]
         if (playerId !== socket.id) {
           logger.error(socket.id, `tried to join:room as`, playerId)
@@ -112,7 +106,6 @@ pipe(
         )
 
         socket.on(`leave:room`, () => {
-          logger.info(socket.id, `leave:room`, roomId)
           AtomIO.runTransaction(leaveRoom)({ roomId, playerId: socket.id })
           socket.leave(roomId)
           unsubscribeFromPlayersInRoom()
@@ -122,7 +115,6 @@ pipe(
       // disconnect
 
       socket.on(`disconnect`, () => {
-        logger.info(socket.id, `disconnected`)
         AtomIO.setState(
           playersIndex,
           (playersIndex) =>
