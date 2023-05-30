@@ -11,10 +11,10 @@ import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 import { logger } from "./logger"
 import type { JoinRoomIO } from "./store/rooms"
 import {
-  createRoom,
+  createRoomTX,
   findPlayersInRoomState,
-  joinRoom,
-  leaveRoom,
+  joinRoomTX,
+  leaveRoomTX,
   playersInRoomsState,
   playersIndex,
   roomsIndex,
@@ -83,19 +83,18 @@ pipe(
       })
 
       // create:room
-      socket.on(`new:room`, (update: TransactionUpdate<() => string>) => {
-        AtomIO.runTransaction(createRoom)(update.output)
+      socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
+        AtomIO.runTransaction(createRoomTX)(update.output)
       })
 
-      // join:room
-      socket.on(`join:room`, (update: TransactionUpdate<JoinRoomIO>) => {
+      socket.on(`tx:joinRoom`, (update: TransactionUpdate<JoinRoomIO>) => {
         const { roomId, playerId } = update.params[0]
         if (playerId !== socket.id) {
           logger.error(socket.id, `tried to join:room as`, playerId)
           socket.disconnect()
         }
 
-        AtomIO.runTransaction(joinRoom)(...update.params)
+        AtomIO.runTransaction(joinRoomTX)(...update.params)
 
         socket.join(roomId)
         const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
@@ -105,8 +104,8 @@ pipe(
           }
         )
 
-        socket.on(`leave:room`, () => {
-          AtomIO.runTransaction(leaveRoom)({ roomId, playerId: socket.id })
+        socket.on(`tx:leaveRoom`, () => {
+          AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
           socket.leave(roomId)
           unsubscribeFromPlayersInRoom()
         })

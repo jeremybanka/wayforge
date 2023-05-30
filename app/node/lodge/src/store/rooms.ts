@@ -63,16 +63,16 @@ export const findPlayersInRoomState = selectorFamily<
       ),
 })
 
-export const createRoom = transaction<(id?: string) => string>({
+export const createRoomTX = transaction<(id?: string) => string>({
   key: `createRoom`,
   do: ({ set }, roomId = nanoid()) => {
     set(roomsIndex, (ids) => new Set([...ids, roomId].sort()))
     return roomId
   },
 })
-export type CreateRoomIO = TransactionIO<typeof createRoom>
+export type CreateRoomIO = TransactionIO<typeof createRoomTX>
 
-export const joinRoom = transaction<
+export const joinRoomTX = transaction<
   (options: { roomId: string; playerId: string }) => void
 >({
   key: `joinRoom`,
@@ -87,9 +87,9 @@ export const joinRoom = transaction<
     )
   },
 })
-export type JoinRoomIO = TransactionIO<typeof joinRoom>
+export type JoinRoomIO = TransactionIO<typeof joinRoomTX>
 
-export const leaveRoom = transaction<
+export const leaveRoomTX = transaction<
   (options: { roomId: string; playerId: string }) => void
 >({
   key: `leaveRoom`,
@@ -97,4 +97,4 @@ export const leaveRoom = transaction<
     set(playersInRoomsState, (current) => current.remove({ roomId, playerId }))
   },
 })
-export type LeaveRoomIO = TransactionIO<typeof leaveRoom>
+export type LeaveRoomIO = TransactionIO<typeof leaveRoomTX>
