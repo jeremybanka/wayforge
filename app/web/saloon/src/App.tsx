@@ -1,6 +1,5 @@
 import type { FC } from "react"
 
-import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { Link, Route } from "wouter"
@@ -10,13 +9,11 @@ import {
   findPlayersInRoomState,
   joinRoomTX,
   leaveRoomTX,
-  playersInRoomsState,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
 import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 
-import { ReactComponent as Connected } from "./assets/svg/connected.svg"
-import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
+import { SocketStatus } from "./components/SocketStatus"
 import {
   socketIdState,
   useRemoteTransaction,
@@ -25,40 +22,23 @@ import {
 } from "./services/store"
 
 export const App: FC = () => {
-  const myId = useO(socketIdState)
   return (
-    <main>
-      <div>{myId === null ? <Disconnected /> : <Connected />}</div>
-      <h1>Saloon</h1>
-      <aside>
-        <div>
-          {myId} # <MyRoom />
-        </div>
-      </aside>
-      <Route path="/">
-        <Lobby />
-      </Route>
-      <Route path="/room/:roomId">
-        {(params) => <Room roomId={params.roomId} />}
-      </Route>
-      <AtomIODevtools />
-    </main>
+    <>
+      <SocketStatus />
+      <header>
+        <h1>Saloon</h1>
+      </header>
+      <main>
+        <Route path="/">
+          <Lobby />
+        </Route>
+        <Route path="/room/:roomId">
+          {(params) => <Room roomId={params.roomId} />}
+        </Route>
+        <AtomIODevtools />
+      </main>
+    </>
   )
-}
-
-const myRoomState = AtomIO.selector<string | null>({
-  key: `myRoom`,
-  get: ({ get }) => {
-    const socketId = get(socketIdState)
-    return socketId
-      ? get(playersInRoomsState).getRelatedId(socketId) ?? null
-      : null
-  },
-})
-
-export const MyRoom: FC = () => {
-  const myRoom = useO(myRoomState)
-  return <span>{myRoom}</span>
 }
 
 export const Lobby: FC = () => {
