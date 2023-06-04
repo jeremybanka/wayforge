@@ -17,16 +17,10 @@ export const findRoomState = atomFamily<Room, string>({
   default: { id: ``, name: `` },
 })
 
-export const playersIndex = atom<Set<string>>({
-  key: `playersIndex`,
-  default: new Set<string>(),
-})
-
 export type Player = {
   id: string
   name: string
 }
-
 export const findPlayerState = atomFamily<Player, string>({
   key: `findPlayer`,
   default: {
@@ -34,7 +28,10 @@ export const findPlayerState = atomFamily<Player, string>({
     name: ``,
   },
 })
-
+export const playersIndex = atom<Set<string>>({
+  key: `playersIndex`,
+  default: new Set<string>(),
+})
 export const playersInRoomsState = atom<
   Join<{ enteredAt: number }, `roomId`, `playerId`>
 >({
@@ -45,7 +42,6 @@ export const playersInRoomsState = atom<
     .from(`roomId`)
     .to(`playerId`),
 })
-
 export const findPlayersInRoomState = selectorFamily<
   { id: string; enteredAt: number }[],
   string
@@ -78,12 +74,7 @@ export const joinRoomTX = transaction<
   key: `joinRoom`,
   do: ({ set }, { roomId, playerId }) => {
     set(playersInRoomsState, (current) =>
-      current.set(
-        { roomId, playerId },
-        {
-          enteredAt: Date.now(),
-        }
-      )
+      current.set({ roomId, playerId }, { enteredAt: Date.now() })
     )
   },
 })

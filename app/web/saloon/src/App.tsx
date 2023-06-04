@@ -1,5 +1,7 @@
 import type { FC } from "react"
+import { useEffect } from "react"
 
+import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { Link, Route } from "wouter"
@@ -9,11 +11,14 @@ import {
   findPlayersInRoomState,
   joinRoomTX,
   leaveRoomTX,
+  playersIndex,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
 import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 
 import { SocketStatus } from "./components/SocketStatus"
+import { Game } from "./Game"
+import { socket } from "./services/socket"
 import {
   socketIdState,
   useRemoteTransaction,
@@ -22,11 +27,22 @@ import {
 } from "./services/store"
 
 export const App: FC = () => {
+  // useEffect(() => {
+  //   socket.on(`welcome`, AtomIO.__INTERNAL__.clearStore)
+  //   return () => {
+  //     socket.off(`welcome`, AtomIO.__INTERNAL__.clearStore)
+  //   }
+  // }, [])
+  const players = useO(playersIndex)
+  useRemoteState(playersIndex, stringSetJsonInterface)
   return (
     <>
       <SocketStatus />
       <header>
         <h1>Saloon</h1>
+        {[...players].map((playerId) => (
+          <div key={playerId}>{playerId}</div>
+        ))}
       </header>
       <main>
         <Route path="/">
@@ -94,6 +110,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
       >
         Leave Room
       </button>
+      {iAmInRoom ? <Game /> : null}
     </article>
   )
 }

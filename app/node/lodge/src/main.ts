@@ -4,11 +4,30 @@ import { pipe } from "fp-ts/function"
 import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 
+import { Join } from "~/packages/anvl/src/join"
 import type { JsonInterface } from "~/packages/anvl/src/json"
 import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
+import {
+  add52ClassicCardsTX,
+  addCardValueTX,
+  addHandTx,
+  cardGroupIndex,
+  cardIndex,
+  cardValuesIndex,
+  spawnClassicDeckTX,
+  findCardGroupState,
+  findCardState,
+  findCardValueState,
+  groupsAndZonesOfCardCyclesState,
+  groupsOfCardsState,
+  ownersOfCardsState,
+  ownersOfGroupsState,
+  spawnCardTX,
+  valuesOfCardsState,
+} from "./store/game"
 import type { JoinRoomIO } from "./store/rooms"
 import {
   createRoomTX,
@@ -73,13 +92,67 @@ pipe(
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
       socket.onAny((event, ...args) => {
-        logger.info(socket.id, event, ...args)
+        logger.info(`${socket.id} >>`, event, ...args)
+      })
+      socket.onAnyOutgoing((event, ...args) => {
+        if (JSON.stringify(args).length > 1000) {
+          const summary = {
+            string: JSON.stringify(args).slice(0, 10) + `...`,
+          }[typeof args[0]]
+          logger.info(`${socket.id} <<`, event, summary, `...`)
+          return
+        }
+        logger.info(`${socket.id} <<`, event, ...args)
       })
 
       serve(socket, roomsIndex, stringSetJsonInterface)
       serveFamily(socket, findPlayersInRoomState, {
         fromJson: (json) => json,
         toJson: (value) => value,
+      })
+
+      const gameStateFamilies = [
+        findCardState,
+        findCardGroupState,
+        findCardValueState,
+      ]
+      gameStateFamilies.forEach((family) => {
+        serveFamily(socket, family, {
+          fromJson: (json) => json,
+          toJson: (value) => value,
+        })
+      })
+      const gameIndices = [cardIndex, cardGroupIndex, cardValuesIndex]
+      gameIndices.forEach((index) => {
+        serve(socket, index, stringSetJsonInterface)
+      })
+      const gameJoinStates = [
+        groupsAndZonesOfCardCyclesState,
+        groupsOfCardsState,
+        ownersOfCardsState,
+        ownersOfGroupsState,
+        valuesOfCardsState,
+      ]
+      gameJoinStates.forEach((join) =>
+        serve(socket, join, {
+          toJson: (j) => j.toJSON(),
+          fromJson: (json) => new Join(json as any),
+        })
+      )
+      const gameTransactions = [
+        add52ClassicCardsTX,
+        addCardValueTX,
+        addHandTx,
+        spawnCardTX,
+        spawnClassicDeckTX,
+      ]
+      gameTransactions.forEach((tx) => {
+        socket.on(
+          `tx:${tx.key}`,
+          <ƒ extends AtomIO.ƒn>(update: TransactionUpdate<ƒ>) => {
+            AtomIO.runTransaction<ƒ>(tx)(...update.params)
+          }
+        )
       })
 
       // create:room
