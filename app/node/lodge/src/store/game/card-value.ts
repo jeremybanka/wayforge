@@ -1,17 +1,7 @@
-import { nanoid } from "nanoid"
-
 import type { Identified } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Json } from "~/packages/anvl/src/json"
-import {
-  atom,
-  atomFamily,
-  transaction,
-  selectorFamily,
-} from "~/packages/atom.io/src"
-import { Perspective } from "~/packages/occlusion/src"
-
-import { playersIndex } from "../rooms"
+import { atom, atomFamily, transaction } from "~/packages/atom.io/src"
 
 export const findCardValueState = atomFamily<Identified & Json, string>({
   key: `findCardValue`,
