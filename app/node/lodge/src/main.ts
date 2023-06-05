@@ -6,7 +6,7 @@ import { Server as WebSocketServer } from "socket.io"
 
 import { Join } from "~/packages/anvl/src/join"
 import type { JsonInterface } from "~/packages/anvl/src/json"
-import { stringSetJsonInterface } from "~/packages/anvl/src/json"
+import { parseJson, stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
@@ -46,14 +46,12 @@ export const serve = <T>(
 ): void => {
   socket.on(`sub:${token.key}`, () => {
     socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
-    const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
-      token,
-      ({ newValue }) => {
-        socket.emit(`serve:${token.key}`, transform.toJson(newValue))
-      }
-    )
+    const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
+      socket.emit(`serve:${token.key}`, transform.toJson(newValue))
+    })
     socket.on(`unsub:${token.key}`, () => {
-      unsubscribeFromPlayersInRoom()
+      // socket.emit(`unsub:${token.key}`)
+      unsubscribe()
     })
   })
 }
@@ -61,19 +59,59 @@ export const serve = <T>(
 const serveFamily = <T>(
   socket: Socket,
   family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
+  index: AtomIO.StateToken<Set<string>>,
   transform: JsonInterface<T>
 ) => {
-  socket.on(`sub:${family.key}`, (subKey: AtomIO.Serializable) => {
-    const token = family(subKey)
-    socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
-    const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
-      socket.emit(`serve:${token.key}`, transform.toJson(newValue))
-    })
-    socket.on(`unsub:${token.key}`, () => {
-      unsubscribe()
-    })
+  socket.on(`sub:${family.key}`, (subKey?: AtomIO.Serializable) => {
+    if (subKey === undefined) {
+      const keys = AtomIO.getState(index)
+      keys.forEach((key) => {
+        const token = family(key)
+        socket.emit(
+          `serve:${token.key}`,
+          transform.toJson(AtomIO.getState(token))
+        )
+      })
+
+      const subscription =
+        family.type === `atom_family`
+          ? family.subject.subscribe((token) => {
+              AtomIO.subscribe(token, ({ newValue }) => {
+                socket.emit(
+                  `serve:${family.key}`,
+                  parseJson(token.family?.subKey || `null`),
+                  transform.toJson(newValue)
+                )
+              })
+            })
+          : family.subject.subscribe((token) => {
+              AtomIO.subscribe(token, ({ newValue }) => {
+                socket.emit(
+                  `serve:${family.key}`,
+                  parseJson(token.family?.subKey || `null`),
+                  transform.toJson(newValue)
+                )
+              })
+            })
+
+      socket.on(`unsub:${family.key}`, () => {
+        subscription.unsubscribe()
+      })
+    } else {
+      const token = family(subKey)
+      socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
+      const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
+        socket.emit(`serve:${token.key}`, transform.toJson(newValue))
+      })
+      socket.on(`unsub:${token.key}`, () => {
+        socket.emit(`unsub:${token.key}`)
+        unsubscribe()
+      })
+    }
   })
 }
+
+const TIMESTAMP = Date.now()
 
 dotenv.config()
 pipe(
@@ -86,13 +124,13 @@ pipe(
   (io) => {
     io.on(`connection`, (socket) => {
       logger.info(socket.id, `connected`)
-      io.emit(`connection`)
+      io.emit(`connection`, TIMESTAMP)
       AtomIO.setState(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
       socket.onAny((event, ...args) => {
-        logger.info(`${socket.id} >>`, event, ...args)
+        logger.info(`${socket.id}`, event, ...args)
       })
       socket.onAnyOutgoing((event, ...args) => {
         if (JSON.stringify(args).length > 1000) {
@@ -106,18 +144,18 @@ pipe(
       })
 
       serve(socket, roomsIndex, stringSetJsonInterface)
-      serveFamily(socket, findPlayersInRoomState, {
+      serveFamily(socket, findPlayersInRoomState, roomsIndex, {
         fromJson: (json) => json,
         toJson: (value) => value,
       })
 
       const gameStateFamilies = [
-        findCardState,
-        findCardGroupState,
-        findCardValueState,
-      ]
-      gameStateFamilies.forEach((family) => {
-        serveFamily(socket, family, {
+        [findCardState, cardIndex],
+        [findCardGroupState, cardGroupIndex],
+        [findCardValueState, cardValuesIndex],
+      ] as const
+      gameStateFamilies.forEach(([family, index]) => {
+        serveFamily(socket, family, index, {
           fromJson: (json) => json,
           toJson: (value) => value,
         })
@@ -183,8 +221,6 @@ pipe(
           unsubscribeFromPlayersInRoom()
         })
       })
-
-      // disconnect
 
       socket.on(`disconnect`, () => {
         AtomIO.setState(

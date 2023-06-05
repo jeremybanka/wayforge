@@ -1,7 +1,5 @@
 import type { FC } from "react"
-import { useEffect } from "react"
 
-import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { Link, Route } from "wouter"
@@ -18,12 +16,11 @@ import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 
 import { SocketStatus } from "./components/SocketStatus"
 import { Game } from "./Game"
-import { socket } from "./services/socket"
 import {
   socketIdState,
   useRemoteTransaction,
-  useRemoteFamily,
   useRemoteState,
+  useRemoteFamilyMember,
 } from "./services/store"
 
 export const App: FC = () => {
@@ -33,6 +30,7 @@ export const App: FC = () => {
   //     socket.off(`welcome`, AtomIO.__INTERNAL__.clearStore)
   //   }
   // }, [])
+  // useDevRefresh()
   const players = useO(playersIndex)
   useRemoteState(playersIndex, stringSetJsonInterface)
   return (
@@ -81,7 +79,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
   const joinRoom = useRemoteTransaction(joinRoomTX)
   const leaveRoom = useRemoteTransaction(leaveRoomTX)
-  useRemoteFamily(findPlayersInRoomState, roomId, {
+  useRemoteFamilyMember(findPlayersInRoomState, roomId, {
     fromJson: (json) => json,
     toJson: (value) => value,
   })

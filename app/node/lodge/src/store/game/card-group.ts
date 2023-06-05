@@ -2,14 +2,14 @@ import { Join } from "~/packages/anvl/src/join"
 import { atom, atomFamily } from "~/packages/atom.io/src"
 
 export type CardGroup = {
-  type: `deck` | `hand` | `pile`
+  type: `deck` | `hand` | `pile` | null
   name: string
   rotation: number
 }
 export const findCardGroupState = atomFamily<CardGroup, string>({
   key: `findCardGroup`,
   default: () => ({
-    type: `deck`,
+    type: null,
     name: ``,
     rotation: 0,
   }),

@@ -9,5 +9,6 @@ export const {
   socketIdState,
   useRemoteState,
   useRemoteFamily,
+  useRemoteFamilyMember,
   useRemoteTransaction,
 } = initConnectionState(socket)

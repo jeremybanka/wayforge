@@ -6,6 +6,7 @@ import { useO } from "atom.io/react"
 import corners, { chamfer } from "corners"
 import { nanoid } from "nanoid"
 
+import type { CardGroup } from "~/app/node/lodge/src/store/game"
 import {
   add52ClassicCardsTX,
   addHandTx,
@@ -23,6 +24,7 @@ import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 
 import {
   socketIdState,
+  useRemoteFamily,
   useRemoteState,
   useRemoteTransaction,
 } from "./services/store"
@@ -48,9 +50,16 @@ const publicDeckIndex = AtomIO.selector<string[]>({
   get: ({ get }) => {
     const ownersOfGroups = get(ownersOfGroupsState)
     const cardGroupIds = get(cardGroupIndex)
+    console.log(
+      [...cardGroupIds].map((id) => [
+        id,
+        ownersOfGroups.getRelatedId(id),
+        get(findCardGroupState(id)),
+      ])
+    )
     const unownedCardGroupIds = [...cardGroupIds].filter(
       (cardGroupId) =>
-        !ownersOfGroups.getRelatedId(cardGroupId) &&
+        ownersOfGroups.getRelatedId(cardGroupId) === undefined &&
         get(findCardGroupState(cardGroupId)).type === `deck`
     )
     return unownedCardGroupIds
@@ -71,10 +80,63 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
   return <DeckWrap>{cardIds.length}</DeckWrap>
 }
 
-export const Game: FC = () => {
-  const mySocketId = useO(socketIdState)
+const MyHands: FC = () => {
   const myHands = useO(myHandsIndex)
+  return (
+    <div className="my-hands">
+      <h4>My Hands</h4>
+      <div>
+        {myHands.map((id) => (
+          <Deck key={id} id={id} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const PublicDecks: FC = () => {
   const publicDeckIds = useO(publicDeckIndex)
+  return (
+    <div className="public-decks">
+      <h4>Public Decks</h4>
+      <div>
+        {publicDeckIds.map((id) => (
+          <Deck key={id} id={id} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export const Controls: FC = () => {
+  const mySocketId = useO(socketIdState)
+  const addHand = useRemoteTransaction(addHandTx)
+  const addClassic52 = useRemoteTransaction(add52ClassicCardsTX)
+  const spawnClassicDeck = useRemoteTransaction(spawnClassicDeckTX)
+  return (
+    <div className="controls">
+      <h4>Controls</h4>
+      <button
+        onClick={() =>
+          mySocketId
+            ? addHand({ playerId: mySocketId, groupId: nanoid() })
+            : null
+        }
+      >
+        Add Hand
+      </button>
+      <button
+        onClick={() =>
+          spawnClassicDeck(nanoid(), Array.from({ length: 52 }).map(nanoid))
+        }
+      >
+        Add Classic Deck
+      </button>
+    </div>
+  )
+}
+
+export const Game: FC = () => {
   useRemoteState(ownersOfGroupsState, {
     toJson: (groupsOfCards) => groupsOfCards.toJSON(),
     fromJson: (json) => new Join(json as any),
@@ -90,9 +152,11 @@ export const Game: FC = () => {
   useRemoteState(cardIndex, stringSetJsonInterface)
   useRemoteState(cardGroupIndex, stringSetJsonInterface)
   useRemoteState(cardValuesIndex, stringSetJsonInterface)
-  const addHand = useRemoteTransaction(addHandTx)
-  const addClassic52 = useRemoteTransaction(add52ClassicCardsTX)
-  const spawnClassicDeck = useRemoteTransaction(spawnClassicDeckTX)
+
+  useRemoteFamily(findCardGroupState, {
+    toJson: (v) => v,
+    fromJson: (j) => j as CardGroup,
+  })
 
   return (
     <>
@@ -102,28 +166,9 @@ export const Game: FC = () => {
         `}
       >
         <h3>Game</h3>
-        {myHands.map((id) => (
-          <div key={id}>{id}</div>
-        ))}
-        {publicDeckIds.map((id) => (
-          <Deck key={id} id={id} />
-        ))}
-        <button
-          onClick={() =>
-            mySocketId
-              ? addHand({ playerId: mySocketId, groupId: nanoid() })
-              : null
-          }
-        >
-          Add Hand
-        </button>
-        <button
-          onClick={() =>
-            spawnClassicDeck(nanoid(), Array.from({ length: 52 }).map(nanoid))
-          }
-        >
-          Add Classic Deck
-        </button>
+        <MyHands />
+        <PublicDecks />
+        <Controls />
       </header>
     </>
   )

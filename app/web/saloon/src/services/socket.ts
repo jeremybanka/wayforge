@@ -5,6 +5,7 @@ import { atom, selector } from "atom.io"
 import * as AtomIO from "atom.io"
 import { io } from "socket.io-client"
 import type * as SocketIO from "socket.io-client"
+import { navigate } from "wouter/use-location"
 
 import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 
@@ -15,10 +16,10 @@ export const socket = io(env.VITE_REMOTE_ORIGIN)
 export const composeServerHook =
   (socket: SocketIO.Socket) =>
   <T>(token: AtomIO.StateToken<T>, transform: JsonInterface<T>): void => {
-    console.log(`useServer`, token.key)
+    // console.log(`useServer`, token.key)
     useEffect(() => {
       socket.on(`serve:${token.key}`, (data: Json) => {
-        console.log(`serve:${token.key}`, data)
+        // console.log(`serve:${token.key}`, data)
         return AtomIO.setState(token, transform.fromJson(data))
       })
       socket.emit(`sub:${token.key}`)
@@ -33,15 +34,35 @@ export const composeServerFamilyHook =
   (socket: SocketIO.Socket) =>
   <T>(
     family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
-    subKey: AtomIO.Serializable,
     transform: JsonInterface<T>
   ): void => {
     console.log(`useServerFamily`, family.key)
+    useEffect(() => {
+      socket.on(`serve:${family.key}`, (key: Json, data: Json) => {
+        console.log(`serve:${family.key}`, key, data)
+        AtomIO.setState(family(key), transform.fromJson(data))
+      })
+      socket.emit(`sub:${family.key}`)
+      return () => {
+        socket.off(`serve:${family.key}`)
+        socket.emit(`unsub:${family.key}`)
+      }
+    }, [family.key])
+  }
+
+export const composeServerFamilyMemberHook =
+  (socket: SocketIO.Socket) =>
+  <T>(
+    family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
+    subKey: AtomIO.Serializable,
+    transform: JsonInterface<T>
+  ): void => {
+    console.log(`useServerFamilyMember`, family.key)
     const token = family(subKey)
     useEffect(() => {
       socket.on(`serve:${token.key}`, (data: Json) => {
-        console.log(`serve:${family.key}`, data)
-        return AtomIO.setState(family(subKey), transform.fromJson(data))
+        console.log(`serve:${token.key}`, data)
+        AtomIO.setState(family(subKey), transform.fromJson(data))
       })
       socket.emit(`sub:${family.key}`, subKey)
       return () => {
@@ -75,6 +96,10 @@ export const initConnectionState = (
   ) => void
   useRemoteFamily: <T>(
     family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
+    transform: JsonInterface<T>
+  ) => void
+  useRemoteFamilyMember: <T>(
+    family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
     subKey: string,
     transform: JsonInterface<T>
   ) => void
@@ -102,6 +127,7 @@ export const initConnectionState = (
     }),
     useRemoteState: composeServerHook(socket),
     useRemoteFamily: composeServerFamilyHook(socket),
+    useRemoteFamilyMember: composeServerFamilyMemberHook(socket),
     useRemoteTransaction: composeTransactionHook(socket),
   }
 }
