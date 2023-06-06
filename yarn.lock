@@ -2127,13 +2127,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@t3-oss/env-core@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@t3-oss/env-core@npm:0.3.1"
+"@t3-oss/env-core@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@t3-oss/env-core@npm:0.4.0"
   peerDependencies:
     typescript: ">=4.7.2"
     zod: ^3.0.0
-  checksum: 054f76e11522f6c6e07aa558f2fb325e9b05f83d13c8963ca3bb0cf3a398d54aec46c38c9ff7be9d08c8d05a11c5b221406f3908bf5c95517fe45756fc7df818
+  checksum: f299a28d8721f3d369929920c436fbff0b11966ba1e482f9438f48f9fec4d342e7a1f8a3015dc70da77326c0516afb8c7b70d51e81edbd79502dc0fe518520ca
   languageName: node
   linkType: hard
 
@@ -2961,7 +2961,7 @@ __metadata:
   dependencies:
     "@floating-ui/dom": 1.2.9
     "@floating-ui/react": 0.24.2
-    "@t3-oss/env-core": 0.3.1
+    "@t3-oss/env-core": 0.4.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@vanilla-extract/css": 1.11.1
