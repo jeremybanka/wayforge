@@ -4,10 +4,13 @@ import { css } from "@emotion/react"
 import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
 import corners, { chamfer } from "corners"
+import { AnimatePresence, motion } from "framer-motion"
 import { nanoid } from "nanoid"
 
 import type { CardGroup } from "~/app/node/lodge/src/store/game"
 import {
+  shuffleDeckTX,
+  dealCardsTX,
   add52ClassicCardsTX,
   addHandTx,
   cardGroupIndex,
@@ -33,14 +36,12 @@ const myHandsIndex = AtomIO.selector<string[]>({
   key: `myHands`,
   get: ({ get }) => {
     const myId = get(socketIdState)
-    console.log(`myId`, myId)
     if (!myId) {
       return []
     }
     const ownersOfGroups = get(ownersOfGroupsState)
     const myGroups = ownersOfGroups.getRelatedIds(myId)
     const myHands = myGroups.filter((id) => get(findCardGroupState(id)).type)
-    console.log({ ownersOfGroups, myGroups, myHands })
     return myHands
   },
 })
@@ -50,13 +51,7 @@ const publicDeckIndex = AtomIO.selector<string[]>({
   get: ({ get }) => {
     const ownersOfGroups = get(ownersOfGroupsState)
     const cardGroupIds = get(cardGroupIndex)
-    console.log(
-      [...cardGroupIds].map((id) => [
-        id,
-        ownersOfGroups.getRelatedId(id),
-        get(findCardGroupState(id)),
-      ])
-    )
+
     const unownedCardGroupIds = [...cardGroupIds].filter(
       (cardGroupId) =>
         ownersOfGroups.getRelatedId(cardGroupId) === undefined &&
@@ -66,8 +61,8 @@ const publicDeckIndex = AtomIO.selector<string[]>({
   },
 })
 
-const SemiChamfered = corners(chamfer, null).size(5)
-const DeckWrap = SemiChamfered.div.with({
+const SemiChamfered = corners(chamfer, null).options({
+  noClipping: true,
   below: [
     {
       color: `var(--bg-color)`,
@@ -75,9 +70,61 @@ const DeckWrap = SemiChamfered.div.with({
     },
   ],
 })
+
+const DeckWrap = SemiChamfered(motion.div)
+
 export const Deck: FC<{ id: string }> = ({ id }) => {
   const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
-  return <DeckWrap>{cardIds.length}</DeckWrap>
+
+  const shuffle = useRemoteTransaction(shuffleDeckTX)
+
+  return (
+    <>
+      <DeckWrap>{cardIds.length}</DeckWrap>
+      <button onClick={() => shuffle({ deckId: id })}>Shuffle</button>
+    </>
+  )
+}
+export const CardFace: FC<{ id: string }> = ({ id }) => {
+  const value = useO(valuesOfCardsState).getRelatedId(id)
+  return (
+    <AnimatePresence>
+      <DeckWrap>{value}</DeckWrap>
+    </AnimatePresence>
+  )
+}
+export const CardBack: FC<{ id: string }> = () => {
+  return <DeckWrap>🂠</DeckWrap>
+}
+
+export const Hand: FC<{ id: string }> = ({ id }) => {
+  const isMyHand = useO(myHandsIndex).includes(id)
+  const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
+  const publicDeckIds = useO(publicDeckIndex)
+
+  const dealCards = useRemoteTransaction(dealCardsTX)
+
+  return (
+    <AnimatePresence>
+      <DeckWrap
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        {isMyHand
+          ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
+          : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
+        <div>{cardIds.length}</div>
+        <button
+          onClick={() =>
+            dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 })
+          }
+        >
+          Deal
+        </button>
+      </DeckWrap>
+    </AnimatePresence>
+  )
 }
 
 const MyHands: FC = () => {
@@ -87,7 +134,7 @@ const MyHands: FC = () => {
       <h4>My Hands</h4>
       <div>
         {myHands.map((id) => (
-          <Deck key={id} id={id} />
+          <Hand key={id} id={id} />
         ))}
       </div>
     </div>

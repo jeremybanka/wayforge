@@ -27,6 +27,8 @@ import {
   ownersOfGroupsState,
   spawnCardTX,
   valuesOfCardsState,
+  dealCardsTX,
+  shuffleDeckTX,
 } from "./store/game"
 import type { JoinRoomIO } from "./store/rooms"
 import {
@@ -181,6 +183,8 @@ pipe(
         add52ClassicCardsTX,
         addCardValueTX,
         addHandTx,
+        dealCardsTX,
+        shuffleDeckTX,
         spawnCardTX,
         spawnClassicDeckTX,
       ]
@@ -193,20 +197,16 @@ pipe(
         )
       })
 
-      // create:room
       socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
         AtomIO.runTransaction(createRoomTX)(update.output)
       })
-
       socket.on(`tx:joinRoom`, (update: TransactionUpdate<JoinRoomIO>) => {
         const { roomId, playerId } = update.params[0]
         if (playerId !== socket.id) {
           logger.error(socket.id, `tried to join:room as`, playerId)
           socket.disconnect()
         }
-
         AtomIO.runTransaction(joinRoomTX)(...update.params)
-
         socket.join(roomId)
         const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
           findPlayersInRoomState(roomId),
@@ -214,7 +214,6 @@ pipe(
             socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
           }
         )
-
         socket.on(`tx:leaveRoom`, () => {
           AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
           socket.leave(roomId)

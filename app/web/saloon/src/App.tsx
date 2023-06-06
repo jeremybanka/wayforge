@@ -9,7 +9,6 @@ import {
   findPlayersInRoomState,
   joinRoomTX,
   leaveRoomTX,
-  playersIndex,
   roomsIndex,
 } from "~/app/node/lodge/src/store/rooms"
 import { stringSetJsonInterface } from "~/packages/anvl/src/json"
@@ -24,23 +23,11 @@ import {
 } from "./services/store"
 
 export const App: FC = () => {
-  // useEffect(() => {
-  //   socket.on(`welcome`, AtomIO.__INTERNAL__.clearStore)
-  //   return () => {
-  //     socket.off(`welcome`, AtomIO.__INTERNAL__.clearStore)
-  //   }
-  // }, [])
-  // useDevRefresh()
-  const players = useO(playersIndex)
-  useRemoteState(playersIndex, stringSetJsonInterface)
   return (
     <>
       <SocketStatus />
       <header>
         <h1>Saloon</h1>
-        {[...players].map((playerId) => (
-          <div key={playerId}>{playerId}</div>
-        ))}
       </header>
       <main>
         <Route path="/">

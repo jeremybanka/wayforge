@@ -124,7 +124,7 @@ export const spawnCardTX = transaction<
 export const addHandTx = transaction<
   (options: { playerId: string; groupId: string }) => void
 >({
-  key: `spawnCardGroup`,
+  key: `addHand`,
   do: ({ set }, { playerId, groupId }) => {
     const cardGroup: CardGroup = {
       type: `hand`,
@@ -134,5 +134,53 @@ export const addHandTx = transaction<
     set(cardGroupIndex, (current) => new Set([...current, groupId]))
     set(findCardGroupState(groupId), cardGroup)
     set(ownersOfGroupsState, (current) => current.set({ playerId, groupId }))
+  },
+})
+
+export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>({
+  key: `shuffleDeck`,
+  do: ({ get, set }, { deckId }) => {
+    const deckDoesExist = get(cardGroupIndex).has(deckId)
+    if (!deckDoesExist) {
+      throw new Error(`Deck does not exist`)
+    }
+    const cardIds = get(groupsOfCardsState).getRelatedIds(deckId)
+    const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
+    set(groupsOfCardsState, (current) =>
+      shuffledCardIds.reduce(
+        (acc, cardId) => acc.set({ groupId: deckId, cardId }),
+        current
+      )
+    )
+  },
+})
+
+export const dealCardsTX = transaction<
+  (options: { deckId: string; handId: string; count: number }) => {
+    cardIds: string[]
+  }
+>({
+  key: `dealCards`,
+  do: ({ get, set }, { deckId, handId, count }) => {
+    const deckDoesExist = get(cardGroupIndex).has(deckId)
+    if (!deckDoesExist) {
+      throw new Error(`Card group does not exist`)
+    }
+    const handDoesExist = get(cardGroupIndex).has(handId)
+    if (!handDoesExist) {
+      throw new Error(`Hand does not exist`)
+    }
+    const deckCardIds = get(groupsOfCardsState).getRelatedIds(deckId)
+    if (deckCardIds.length < count) {
+      throw new Error(`Not enough cards in deck`)
+    }
+    const cardIds = deckCardIds.slice(0, count)
+    set(groupsOfCardsState, (current) =>
+      cardIds.reduce(
+        (acc, cardId) => acc.set({ groupId: handId, cardId }),
+        current
+      )
+    )
+    return { cardIds }
   },
 })
