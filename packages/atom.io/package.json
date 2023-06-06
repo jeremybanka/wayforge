@@ -67,7 +67,7 @@
     "preact": "10.15.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.11.2",
+    "react-router-dom": "6.12.0",
     "tsup": "6.7.0",
     "vite-tsconfig-paths": "4.2.0",
     "vitest": "0.31.4"
