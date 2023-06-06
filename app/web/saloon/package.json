@@ -13,7 +13,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@floating-ui/dom": "1.2.8",
+    "@floating-ui/dom": "1.2.9",
     "@floating-ui/react": "0.24.2",
     "@t3-oss/env-core": "0.3.1",
     "@vanilla-extract/css": "1.11.1",
