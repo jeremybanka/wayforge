@@ -14,7 +14,7 @@
   "dependencies": {
     "@emotion/react": "11.11.0",
     "@emotion/styled": "11.11.0",
-    "@floating-ui/dom": "1.2.8",
+    "@floating-ui/dom": "1.2.9",
     "@floating-ui/react": "0.24.2",
     "corners": "0.0.13",
     "fp-ts": "2.16.0",

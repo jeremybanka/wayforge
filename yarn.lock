@@ -1333,7 +1333,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:1.2.8, @floating-ui/dom@npm:^1.2.7":
+"@floating-ui/dom@npm:1.2.9":
+  version: 1.2.9
+  resolution: "@floating-ui/dom@npm:1.2.9"
+  dependencies:
+    "@floating-ui/core": ^1.2.6
+  checksum: 16ae5e05a41c2ca16d51579d12729ca9d346241319f68ce5678f5fbeb9c4f9a16176c95089bbd7a0eb37c6ed90e5fd55a310ffc9948af7c841d5b8bfa0afe1b8
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.2.7":
   version: 1.2.8
   resolution: "@floating-ui/dom@npm:1.2.8"
   dependencies:
@@ -2950,7 +2959,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/saloon@workspace:app/web/saloon"
   dependencies:
-    "@floating-ui/dom": 1.2.8
+    "@floating-ui/dom": 1.2.9
     "@floating-ui/react": 0.24.2
     "@t3-oss/env-core": 0.3.1
     "@testing-library/jest-dom": 5.16.5
@@ -2982,7 +2991,7 @@ __metadata:
   dependencies:
     "@emotion/react": 11.11.0
     "@emotion/styled": 11.11.0
-    "@floating-ui/dom": 1.2.8
+    "@floating-ui/dom": 1.2.9
     "@floating-ui/react": 0.24.2
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
@@ -3028,7 +3037,7 @@ __metadata:
     "@emotion/react": 11.11.0
     "@emotion/styled": 11.11.0
     "@eyecuelab/recoil-devtools": 0.1.7
-    "@floating-ui/dom": 1.2.8
+    "@floating-ui/dom": 1.2.9
     "@floating-ui/react": 0.24.2
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
