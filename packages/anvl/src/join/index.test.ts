@@ -219,18 +219,30 @@ describe(`Join.prototype.getRelationRecord`, () => {
 
 describe(`Join.prototype.toJSON`, () => {
   it(`converts a Join to JSON`, () => {
-    const pokemonPrimaryTypes = new Join({ relationType: `1:n` })
+    const pokemonPrimaryTypes = new Join<{ isDelta: boolean }>({
+      relationType: `1:n`,
+    })
       .from(`type`)
       .to(`pokémon`)
-      .set({ type: `grass`, pokémon: `bulbasaur` })
-      .set({ type: `grass`, pokémon: `oddish` })
-      .set({ type: `grass`, pokémon: `bellsprout` })
+      .set({ type: `grass`, pokémon: `bulbasaur` }, { isDelta: true })
+      .set({ type: `grass`, pokémon: `oddish` }, { isDelta: true })
+      .set({ type: `grass`, pokémon: `bellsprout` }, { isDelta: false })
     const json = pokemonPrimaryTypes.toJSON()
     expect(json).toEqual({
       relationType: `1:n`,
       a: `type`,
       b: `pokémon`,
-      contents: {},
+      contents: {
+        "bellsprout/grass": {
+          isDelta: false,
+        },
+        "bulbasaur/grass": {
+          isDelta: true,
+        },
+        "grass/oddish": {
+          isDelta: true,
+        },
+      },
       relations: {
         bellsprout: [`grass`],
         bulbasaur: [`grass`],
