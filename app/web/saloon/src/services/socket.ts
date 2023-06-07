@@ -65,16 +65,26 @@ export const composeServerFamilyMemberHook =
     }, [family.key])
   }
 
+const TransactionSubscriptions = new Map<string, number>()
 export const composeTransactionHook =
   (socket: SocketIO.Socket) =>
   <ƒ extends AtomIO.ƒn>(
     token: AtomIO.TransactionToken<ƒ>
   ): ((...parameters: Parameters<ƒ>) => ReturnType<ƒ>) => {
     useEffect(() => {
-      const unsubscribe = AtomIO.subscribeToTransaction(token, (update) =>
-        socket.emit(`tx:${token.key}`, update)
-      )
-      return () => unsubscribe()
+      const count = TransactionSubscriptions.get(token.key) ?? 0
+      TransactionSubscriptions.set(token.key, count + 1)
+      const unsubscribe =
+        count === 0
+          ? AtomIO.subscribeToTransaction(token, (update) =>
+              socket.emit(`tx:${token.key}`, update)
+            )
+          : () => null
+      return () => {
+        const newCount = TransactionSubscriptions.get(token.key) ?? 0
+        TransactionSubscriptions.set(token.key, newCount - 1)
+        unsubscribe()
+      }
     }, [token.key])
     return AtomIO.runTransaction(token)
   }
