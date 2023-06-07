@@ -70,7 +70,8 @@ const serveFamily = <T>(
       keys.forEach((key) => {
         const token = family(key)
         socket.emit(
-          `serve:${token.key}`,
+          `serve:${family.key}`,
+          parseJson(token.family?.subKey || `null`),
           transform.toJson(AtomIO.getState(token))
         )
       })
