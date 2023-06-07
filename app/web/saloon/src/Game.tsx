@@ -1,6 +1,7 @@
 import type { FC } from "react"
 
 import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
 import corners, { chamfer } from "corners"
@@ -61,17 +62,56 @@ const publicDeckIndex = AtomIO.selector<string[]>({
   },
 })
 
-const SemiChamfered = corners(chamfer, null).options({
+const SemiChamfered = corners(chamfer, null).size(5)
+const DogEared = corners(null, null, chamfer, null).size(5)
+
+const DogEaredButton = styled(
+  DogEared(motion.button, {
+    noClipping: true,
+    below: [
+      {
+        color: `white`,
+        stroke: { width: 2, color: `var(--fg-color)` },
+      },
+    ],
+  })
+)`
+  font-family: Uruz;
+  font-size: 18px;
+  font-weight: 500;
+  border: none;
+  padding: 3px 13px 5px;
+  cursor: pointer;
+  position: relative;
+  &:hover {
+    transform: scale(1.1);
+    z-index: 10000 !important;
+    > svg > path {
+      fill: yellow;
+    }
+  }
+  &:active {
+    transform: scale(0.95);
+    > svg > path {
+      fill: orange;
+    }
+  }
+`
+
+const DeckWrap = SemiChamfered(motion.div, {
   noClipping: true,
   below: [
+    {
+      color: `#0005`,
+      blur: 2,
+      offset: { x: 0, y: -2 },
+    },
     {
       color: `var(--bg-color)`,
       stroke: { width: 2, color: `var(--fg-color)` },
     },
   ],
 })
-
-const DeckWrap = SemiChamfered(motion.div)
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
   const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
@@ -80,8 +120,16 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
 
   return (
     <>
-      <DeckWrap>{cardIds.length}</DeckWrap>
-      <button onClick={() => shuffle({ deckId: id })}>Shuffle</button>
+      <DeckWrap
+        css={css`
+          padding: 5px;
+        `}
+      >
+        {cardIds.length}
+      </DeckWrap>
+      <DogEaredButton onClick={() => shuffle({ deckId: id })}>
+        Shuffle
+      </DogEaredButton>
     </>
   )
 }
@@ -89,12 +137,26 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
   const value = useO(valuesOfCardsState).getRelatedId(id)
   return (
     <AnimatePresence>
-      <DeckWrap>{value}</DeckWrap>
+      <DeckWrap
+        css={css`
+          padding: 5px;
+        `}
+      >
+        {value}
+      </DeckWrap>
     </AnimatePresence>
   )
 }
 export const CardBack: FC<{ id: string }> = () => {
-  return <DeckWrap>🂠</DeckWrap>
+  return (
+    <AnimatePresence>
+      <DeckWrap
+        css={css`
+          padding: 5px;
+        `}
+      ></DeckWrap>
+    </AnimatePresence>
+  )
 }
 
 export const Hand: FC<{ id: string }> = ({ id }) => {
@@ -111,17 +173,17 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        {isMyHand
-          ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
-          : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
-        <div>{cardIds.length}</div>
-        <button
+        <DogEaredButton
           onClick={() =>
             dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 })
           }
         >
           Deal
-        </button>
+        </DogEaredButton>
+        {isMyHand
+          ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
+          : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
+        <div>{cardIds.length}</div>
       </DeckWrap>
     </AnimatePresence>
   )
@@ -163,7 +225,7 @@ export const Controls: FC = () => {
   return (
     <div className="controls">
       <h4>Controls</h4>
-      <button
+      <DogEaredButton
         onClick={() =>
           mySocketId
             ? addHand({ playerId: mySocketId, groupId: nanoid() })
@@ -171,14 +233,14 @@ export const Controls: FC = () => {
         }
       >
         Add Hand
-      </button>
-      <button
+      </DogEaredButton>
+      <DogEaredButton
         onClick={() =>
           spawnClassicDeck(nanoid(), Array.from({ length: 52 }).map(nanoid))
         }
       >
         Add Classic Deck
-      </button>
+      </DogEaredButton>
     </div>
   )
 }
