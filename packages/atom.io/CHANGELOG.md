@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.4.1
+
+### Patch Changes
+
+- ebfc6b7: 🏷️ New Type: `TransactionIO<TransactionToken>` infers the Params and ReturnType from the internal implementation of an AtomIO transaction.
+
 ## 0.4.0
 
 ### Minor Changes
