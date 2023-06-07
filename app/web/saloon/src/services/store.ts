@@ -1,10 +1,14 @@
-import { __INTERNAL__, setLogLevel } from "atom.io"
-import { composeStoreHooks } from "atom.io/react"
-import { composeDevtools } from "atom.io/react-devtools"
+import * as AtomIO from "atom.io"
 
-const storeHooks = composeStoreHooks()
-
-export const { useO, useIO, useI } = storeHooks
+import { initConnectionState, socket } from "./socket"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-setLogLevel(LOG_LEVELS[3])
+AtomIO.setLogLevel(LOG_LEVELS[2])
+
+export const {
+  socketIdState,
+  useRemoteState,
+  useRemoteFamily,
+  useRemoteFamilyMember,
+  useRemoteTransaction,
+} = initConnectionState(socket)

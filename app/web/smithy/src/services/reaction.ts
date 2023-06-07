@@ -1,4 +1,3 @@
-import { pipe } from "fp-ts/function"
 import {
   useRecoilTransaction_UNSTABLE,
   atom,
@@ -6,12 +5,12 @@ import {
   selectorFamily,
   DefaultValue,
 } from "recoil"
-import z, { string } from "zod"
+import type z from "zod"
 
 import type reactionSchema from "~/app/node/forge/gen/reaction.schema.json"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
-import type { Json } from "~/packages/anvl/src/json"
+import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { removeFromIndex } from "~/packages/hamr/src/recoil-tools/recoil-index"
 import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
@@ -46,12 +45,6 @@ export const DEFAULT_REACTION: Reaction = {
   name: ``,
   time: 0,
   timeUnit: `ms`,
-}
-
-const stringSetJsonInterface = {
-  toJson: (s: Set<string>) => Array.from(s),
-  fromJson: (a: Json): Set<string> =>
-    pipe(a, z.array(string()).parse, (a) => new Set(a)),
 }
 
 export const reactionIndex = atom<Set<string>>({

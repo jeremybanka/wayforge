@@ -33,6 +33,8 @@ export type Transaction<ƒ extends ƒn> = {
   run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
   subject: Rx.Subject<TransactionUpdate<ƒ>>
 }
+export type TransactionIO<Token extends TransactionToken<any>> =
+  Token extends TransactionToken<infer ƒ> ? ƒ : never
 
 export function transaction<ƒ extends ƒn>(
   options: TransactionOptions<ƒ>

@@ -7,6 +7,7 @@ import type {
   SelectorToken,
   __INTERNAL__,
 } from "atom.io"
+import { getState } from "atom.io"
 import type { StoreHooks } from "atom.io/react"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
@@ -30,14 +31,21 @@ export const TokenList: FC<{
         <Fragment key={key}>
           {key.startsWith(`👁‍🗨_`) ? null : (
             <div className="node">
-              {key}:
               {`type` in token ? (
-                <StoreEditor storeHooks={storeHooks} token={token} />
+                <>
+                  <label onClick={() => console.log(token, getState(token))}>
+                    {key}
+                  </label>
+                  <StoreEditor storeHooks={storeHooks} token={token} />
+                </>
               ) : (
                 recordToEntries(token.familyMembers).map(([key, token]) => (
-                  <div key={key} className="node">
-                    {key}:<StoreEditor storeHooks={storeHooks} token={token} />
-                  </div>
+                  <>
+                    <label>{key}</label>
+                    <div key={key} className="node">
+                      {key}:<StoreEditor storeHooks={storeHooks} token={token} />
+                    </div>
+                  </>
                 ))
               )}
             </div>
