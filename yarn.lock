@@ -2971,7 +2971,7 @@ __metadata:
     cross-env: 7.0.3
     eslint: 8.42.0
     fp-ts: 2.16.0
-    framer-motion: 10.12.12
+    framer-motion: 10.12.16
     happy-dom: 9.20.3
     react: 18.2.0
     react-dom: 18.2.0
@@ -6094,27 +6094,6 @@ __metadata:
   dependencies:
     map-cache: ^0.2.2
   checksum: 1cbbd0b0116b67d5790175de0038a11df23c1cd2e8dcdbade58ebba5594c2d641dade6b4f126d82a7b4a6ffc2ea12e3d387dbb64ea2ae97cf02847d436f60fdc
-  languageName: node
-  linkType: hard
-
-"framer-motion@npm:10.12.12":
-  version: 10.12.12
-  resolution: "framer-motion@npm:10.12.12"
-  dependencies:
-    "@emotion/is-prop-valid": ^0.8.2
-    tslib: ^2.4.0
-  peerDependencies:
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  dependenciesMeta:
-    "@emotion/is-prop-valid":
-      optional: true
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: 28ff7202b79833c0aa2fc412e64055b34f6405dc5b025eceb6fa737725f4005a2b29bec31011dd5c1c4cd44af2430b3d622e4a77a11a032e7b08e1e108456430
   languageName: node
   linkType: hard
 

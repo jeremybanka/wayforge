@@ -19,7 +19,7 @@
     "@vanilla-extract/css": "1.11.1",
     "corners": "0.0.13",
     "fp-ts": "2.16.0",
-    "framer-motion": "10.12.12",
+    "framer-motion": "10.12.16",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "wouter": "2.11.0",
