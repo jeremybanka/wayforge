@@ -2975,7 +2975,7 @@ __metadata:
     happy-dom: 9.20.3
     react: 18.2.0
     react-dom: 18.2.0
-    sass: 1.62.1
+    sass: 1.63.0
     vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
@@ -3006,7 +3006,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.12.0
-    sass: 1.62.1
+    sass: 1.63.0
     vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
@@ -3053,7 +3053,7 @@ __metadata:
     react-dom: 18.2.0
     react-router-dom: 6.12.0
     recoil: 0.7.7
-    sass: 1.62.1
+    sass: 1.63.0
     vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
@@ -10306,16 +10306,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:1.62.1":
-  version: 1.62.1
-  resolution: "sass@npm:1.62.1"
+"sass@npm:1.63.0":
+  version: 1.63.0
+  resolution: "sass@npm:1.63.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 1b1b3584b38a63dd94156b65f13b90e3f84b170a38c3d5e3fa578b7a32a37aeb349b4926b0eaf9448d48e955e86b1ee01b13993f19611dad8068af07a607c13b
+  checksum: 7b5b3ea0f6b09577a58ecd04634750e3ca9e9336f0b7048efad0b92f9d6c64966e031ebbffa7fb40a16387ea854904bf95bdcd00257800eb9d98f49e5ef04eb3
   languageName: node
   linkType: hard
 
