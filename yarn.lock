@@ -824,9 +824,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:11.11.0":
-  version: 11.11.0
-  resolution: "@emotion/react@npm:11.11.0"
+"@emotion/react@npm:11.11.1":
+  version: 11.11.1
+  resolution: "@emotion/react@npm:11.11.1"
   dependencies:
     "@babel/runtime": ^7.18.3
     "@emotion/babel-plugin": ^11.11.0
@@ -841,7 +841,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 2653e7c3de7b6fd5b0e18dea15621a9886104cc7c8cd5522ca69e52bd547ef6f13644193f8e0a906eea1e29a4f1d8167cdfa4667572fb7fafe0c62ab30fbaab6
+  checksum: aec3c36650f5f0d3d4445ff44d73dd88712b1609645b6af3e6d08049cfbc51f1785fe13dea1a1d4ab1b0800d68f2339ab11e459687180362b1ef98863155aae5
   languageName: node
   linkType: hard
 
@@ -2989,7 +2989,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/sample@workspace:app/web/sample"
   dependencies:
-    "@emotion/react": 11.11.0
+    "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
     "@floating-ui/dom": 1.2.9
     "@floating-ui/react": 0.24.2
@@ -3034,7 +3034,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wayforge/smithy@workspace:app/web/smithy"
   dependencies:
-    "@emotion/react": 11.11.0
+    "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
     "@eyecuelab/recoil-devtools": 0.1.7
     "@floating-ui/dom": 1.2.9
@@ -6494,7 +6494,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hamr@workspace:packages/hamr"
   dependencies:
-    "@emotion/react": 11.11.0
+    "@emotion/react": 11.11.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     ajv: 8.12.0
@@ -6506,7 +6506,7 @@ __metadata:
     tsup: 6.7.0
     vitest: 0.32.0
   peerDependencies:
-    "@emotion/react": 11.11.0
+    "@emotion/react": 11.11.1
     react: ^18.2.0
     react-router-dom: ^6.8.1
     recoil: ^0.7.6

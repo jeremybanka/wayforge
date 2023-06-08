@@ -17,7 +17,7 @@
     "test:once": "vitest run"
   },
   "devDependencies": {
-    "@emotion/react": "11.11.0",
+    "@emotion/react": "11.11.1",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "eslint": "8.42.0",
@@ -28,7 +28,7 @@
     "vitest": "0.32.0"
   },
   "peerDependencies": {
-    "@emotion/react": "11.11.0",
+    "@emotion/react": "11.11.1",
     "react": "^18.2.0",
     "react-router-dom": "^6.8.1",
     "recoil": "^0.7.6",
