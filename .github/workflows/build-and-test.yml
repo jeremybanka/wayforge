@@ -41,10 +41,10 @@ jobs:
     container:
       image: node:lts
     timeout-minutes: 15
-      env:
-       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-      
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
