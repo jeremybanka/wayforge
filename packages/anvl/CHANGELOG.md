@@ -1,5 +1,11 @@
 # anvl
 
+## 0.2.1
+
+### Patch Changes
+
+- e8f1879: 🏷️ `ƒn` type. Shorthand for `(...parameters: any[]) => any`
+
 ## 0.2.0
 
 ### Minor Changes
