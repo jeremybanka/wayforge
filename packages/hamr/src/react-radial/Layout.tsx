@@ -2,9 +2,18 @@ import type { FC, ReactElement } from "react"
 
 import { css } from "@emotion/react"
 
-type RadialOptions = {
+import { make } from "~/packages/anvl/src/number/integer-io-ts"
+
+import { makeMouseHandlers } from "../react-click-handlers"
+
+export type RadialAction = {
+  label: string
+  do: () => void
+}
+
+export type RadialOptions = {
   mouseActivationMethod?: string
-  readonly actions: string[]
+  readonly actions: RadialAction[]
   readonly activePosition?: {
     x: number
     y: number
@@ -14,21 +23,13 @@ type RadialOptions = {
     y: number
   }
   usePosition?: true
+  isActive?: boolean
 }
-
-// function mouseMove(e) {
-//   const position = { x: e.clientX, y: e.clientY };
-
-//   if (!this.getState().active) {
-//     return this.activate(position);
-//   }
-
-//   this.setPosition(position, this.mouseDown);
-// }
 
 export const Radial: FC<RadialOptions> = ({
   actions,
   passivePosition = { x: 0, y: 0 },
+  isActive = false,
   // activePosition = { x: 0, y: 0 },
 }) => {
   const { PI, sin, cos } = Math
@@ -38,7 +39,7 @@ export const Radial: FC<RadialOptions> = ({
     <div
       css={css`
         pointer-events: none;
-        --unit: 120px;
+        --unit: 60px;
         top: calc(${passivePosition.y}px - var(--unit) / 2);
         left: calc(${passivePosition.x}px - var(--unit) / 2);
         height: var(--unit);
@@ -47,6 +48,16 @@ export const Radial: FC<RadialOptions> = ({
         background: #9992;
         border-radius: 50%;
         z-index: 20;
+        transition: all 50ms ease-in-out;
+        .radial-option {
+          --element: 30px;
+          pointer-events: all;
+          position: absolute;
+          background: ${isActive ? `#fff` : `#0000`};
+          border: 1px solid #fff;
+          border-radius: 50%;
+          z-index: 10;
+        }
       `}
     >
       {actions.map((opt, idx): ReactElement => {
@@ -57,8 +68,14 @@ export const Radial: FC<RadialOptions> = ({
         return (
           <div
             key={idx}
+            className="radial-option"
+            {...makeMouseHandlers({
+              onMouseUpR: () => {
+                console.log(`click`, opt)
+                opt.do()
+              },
+            })}
             css={css`
-              --element: 30px;
               height: var(--element);
               width: var(--element);
               bottom: calc(
@@ -69,10 +86,6 @@ export const Radial: FC<RadialOptions> = ({
                 ((var(--unit) / 2) - var(--element) / 2) +
                   (${xx} * var(--unit) / 2)
               );
-              position: absolute;
-              background: #9992;
-              border-radius: 50%;
-              z-index: 10;
             `}
           />
         )

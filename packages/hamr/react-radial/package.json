@@ -1,6 +1,6 @@
 {
-  "name": "@hamr/react-combo",
-  "main": "../dist/react-combo/index.js",
-  "types": "../dist/react-combo/index.d.ts",
-  "module": "../dist/react-combo/index.mjs"
+  "name": "@hamr/react-radial",
+  "main": "../dist/react-radial/index.js",
+  "types": "../dist/react-radial/index.d.ts",
+  "module": "../dist/react-radial/index.mjs"
 }
