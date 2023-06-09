@@ -1,6 +1,3 @@
-import { pipe } from "fp-ts/function"
-import { z } from "zod"
-
 import type { Json, JsonArr } from "."
 
 export type JsonInterface<T, J extends Json = Json> = {
@@ -13,6 +10,5 @@ export const stringSetJsonInterface: JsonInterface<
   JsonArr<string>
 > = {
   toJson: (stringSet) => Array.from(stringSet),
-  fromJson: (input: unknown) =>
-    pipe(input, z.array(z.string()).parse, (strings) => new Set(strings)),
+  fromJson: (json) => new Set(json),
 }
