@@ -8,8 +8,8 @@ import { SocketStatus } from "./components/SocketStatus"
 import { Lobby } from "./components/views/Lobby"
 import { Room } from "./components/views/Room/Room"
 
-import "./index.scss"
-import "./font-face.scss"
+import "./scss/index.scss"
+import "./scss/font-face.scss"
 
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)
