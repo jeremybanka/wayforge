@@ -1,18 +1,32 @@
 import { StrictMode } from "react"
 
-import { RecoilInspector } from "@eyecuelab/recoil-devtools"
+import { AtomIODevtools } from "atom.io/react-devtools"
 import { createRoot } from "react-dom/client"
-import { RecoilRoot } from "recoil"
+import { Route } from "wouter"
 
-import { App } from "./App"
+import { SocketStatus } from "./components/SocketStatus"
+import { Lobby } from "./components/views/Lobby"
+import { Room } from "./components/views/Room/Room"
 
-import "./index.scss"
-import "./font-face.scss"
+import "./scss/index.scss"
+import "./scss/font-face.scss"
 
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)
 root.render(
   <StrictMode>
-    <App />
+    <SocketStatus />
+    <header>
+      <h1>Saloon</h1>
+    </header>
+    <main>
+      <Route path="/">
+        <Lobby />
+      </Route>
+      <Route path="/room/:roomId">
+        {(params) => <Room roomId={params.roomId} />}
+      </Route>
+      <AtomIODevtools />
+    </main>
   </StrictMode>
 )
