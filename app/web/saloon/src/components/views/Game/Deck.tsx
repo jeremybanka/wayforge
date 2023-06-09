@@ -9,8 +9,8 @@ import {
 } from "~/app/node/lodge/src/store/game"
 
 import { useRemoteTransaction } from "../../../services/store"
-import { DeckWrap } from "../../containers/DeckWrap"
-import { DogEaredButton } from "../../containers/DogEaredButton"
+import { Button } from "../../containers/Button"
+import { Div } from "../../containers/Div"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
   const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
@@ -19,16 +19,16 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
 
   return (
     <>
-      <DeckWrap
+      <Div.DropShadowDiagon
         css={css`
           padding: 5px;
         `}
       >
         {cardIds.length}
-      </DeckWrap>
-      <DogEaredButton onClick={() => shuffle({ deckId: id })}>
+      </Div.DropShadowDiagon>
+      <Button.FlashFire onClick={() => shuffle({ deckId: id })}>
         Shuffle
-      </DogEaredButton>
+      </Button.FlashFire>
     </>
   )
 }

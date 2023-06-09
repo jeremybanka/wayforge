@@ -9,8 +9,8 @@ import { CardBack, CardFace } from "./Card"
 import { myHandsIndex } from "./store/my-hands-index"
 import { publicDeckIndex } from "./store/public-deck-index"
 import { useRemoteTransaction } from "../../../services/store"
-import { DeckWrap } from "../../containers/DeckWrap"
-import { DogEaredButton } from "../../containers/DogEaredButton"
+import { Button } from "../../containers/Button"
+import { Div } from "../../containers/Div"
 
 export const Hand: FC<{ id: string }> = ({ id }) => {
   const isMyHand = useO(myHandsIndex).includes(id)
@@ -21,23 +21,23 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 
   return (
     <AnimatePresence>
-      <DeckWrap
+      <Div.DropShadowDiagon
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <DogEaredButton
+        <Button.FlashFire
           onClick={() =>
             dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 })
           }
         >
           Deal
-        </DogEaredButton>
+        </Button.FlashFire>
         {isMyHand
           ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
           : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
         <div>{cardIds.length}</div>
-      </DeckWrap>
+      </Div.DropShadowDiagon>
     </AnimatePresence>
   )
 }

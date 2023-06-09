@@ -4,8 +4,8 @@ import { AtomIODevtools } from "atom.io/react-devtools"
 import { createRoot } from "react-dom/client"
 import { Route } from "wouter"
 
-import { RadialDemo } from "./components/RadialDemo"
 import { SocketStatus } from "./components/SocketStatus"
+import { Lab } from "./components/views/Lab"
 import { Lobby } from "./components/views/Lobby"
 import { Room } from "./components/views/Room/Room"
 
@@ -19,6 +19,10 @@ root.render(
     <SocketStatus />
     <header>
       <h1>Saloon</h1>
+      <nav>
+        <a href="/">Lobby</a>
+        <a href="/lab">Lab</a>
+      </nav>
     </header>
     <main>
       <Route path="/">
@@ -27,8 +31,8 @@ root.render(
       <Route path="/room/:roomId">
         {(params) => <Room roomId={params.roomId} />}
       </Route>
-      <Route path="/radial-demo">
-        <RadialDemo />
+      <Route path="/lab">
+        <Lab />
       </Route>
       <AtomIODevtools />
     </main>

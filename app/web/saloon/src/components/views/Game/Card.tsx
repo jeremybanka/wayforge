@@ -6,30 +6,30 @@ import { AnimatePresence } from "framer-motion"
 
 import { valuesOfCardsState } from "~/app/node/lodge/src/store/game"
 
-import { DeckWrap } from "../../containers/DeckWrap"
+import { Div } from "../../containers/Div"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
   const value = useO(valuesOfCardsState).getRelatedId(id)
   return (
     <AnimatePresence>
-      <DeckWrap
+      <Div.DropShadowDiagon
         css={css`
           padding: 5px;
         `}
       >
         {value}
-      </DeckWrap>
+      </Div.DropShadowDiagon>
     </AnimatePresence>
   )
 }
 export const CardBack: FC<{ id: string }> = () => {
   return (
     <AnimatePresence>
-      <DeckWrap
+      <Div.DropShadowDiagon
         css={css`
           padding: 5px;
         `}
-      ></DeckWrap>
+      ></Div.DropShadowDiagon>
     </AnimatePresence>
   )
 }

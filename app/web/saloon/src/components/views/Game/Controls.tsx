@@ -31,7 +31,7 @@ import {
   useRemoteState,
   useRemoteTransaction,
 } from "../../../services/store"
-import { DogEaredButton } from "../../containers/DogEaredButton"
+import { Button } from "../../containers/Button"
 
 export const Controls: FC = () => {
   const mySocketId = useO(socketIdState)
@@ -40,7 +40,7 @@ export const Controls: FC = () => {
   return (
     <div className="controls">
       <h4>Controls</h4>
-      <DogEaredButton
+      <Button.FlashFire
         onClick={() =>
           mySocketId
             ? addHand({ playerId: mySocketId, groupId: nanoid() })
@@ -48,14 +48,14 @@ export const Controls: FC = () => {
         }
       >
         Add Hand
-      </DogEaredButton>
-      <DogEaredButton
+      </Button.FlashFire>
+      <Button.FlashFire
         onClick={() =>
           spawnClassicDeck(nanoid(), Array.from({ length: 52 }).map(nanoid))
         }
       >
         Add Classic Deck
-      </DogEaredButton>
+      </Button.FlashFire>
     </div>
   )
 }
