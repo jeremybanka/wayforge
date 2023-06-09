@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Install Dependencies
         run: yarn
@@ -41,11 +41,15 @@ jobs:
     container:
       image: node:lts
     timeout-minutes: 15
+      env:
+       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Install Dependencies
         run: yarn
