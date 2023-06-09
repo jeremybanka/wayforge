@@ -1,8 +1,10 @@
 import HAMT from "hamt_plus"
 
+import type { ƒn } from "~/packages/anvl/src/function"
+
 import type { KeyedStateUpdate, TransactionUpdate, Store } from "."
 import { target, IMPLICIT, withdraw } from "."
-import type { AtomToken, TimelineOptions, TimelineToken, ƒn } from ".."
+import type { AtomToken, TimelineOptions, TimelineToken } from ".."
 
 export type Timeline = {
   key: string

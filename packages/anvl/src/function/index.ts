@@ -1,6 +1,8 @@
 import type { Refinement } from "fp-ts/Refinement"
 export * from "./curry"
 
+export type ƒn = (...parameters: any[]) => any
+
 export const doNothing = (): void => undefined
 
 /* eslint-disable prettier/prettier */
