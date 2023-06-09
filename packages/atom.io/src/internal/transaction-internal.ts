@@ -1,8 +1,10 @@
 import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
+import type { ƒn } from "~/packages/anvl/src/function"
+
 import type { Store, StoreCore } from "."
-import { cacheValue, deposit, withdraw, IMPLICIT } from "."
+import { deposit, withdraw, IMPLICIT } from "."
 import { getState, setState } from ".."
 import type {
   AtomToken,
@@ -10,7 +12,6 @@ import type {
   Transaction,
   TransactionOptions,
   TransactionToken,
-  ƒn,
 } from ".."
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const

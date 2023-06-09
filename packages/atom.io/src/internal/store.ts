@@ -2,6 +2,7 @@ import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
 import * as Rx from "rxjs"
 
+import type { ƒn } from "~/packages/anvl/src/function"
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 
@@ -22,7 +23,6 @@ import type {
   TimelineToken,
   Transaction,
   TransactionToken,
-  ƒn,
 } from ".."
 
 export type StoreCore = Pick<

@@ -4,6 +4,7 @@ import { pipe } from "fp-ts/function"
 import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 
+import type { ƒn } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 import type { JsonInterface } from "~/packages/anvl/src/json"
 import { parseJson, stringSetJsonInterface } from "~/packages/anvl/src/json"
@@ -192,7 +193,7 @@ pipe(
       gameTransactions.forEach((tx) => {
         socket.on(
           `tx:${tx.key}`,
-          <ƒ extends AtomIO.ƒn>(update: TransactionUpdate<ƒ>) => {
+          <ƒ extends ƒn>(update: TransactionUpdate<ƒ>) => {
             AtomIO.runTransaction<ƒ>(tx)(...update.params)
           }
         )

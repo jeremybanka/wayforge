@@ -1,10 +1,10 @@
 import type * as Rx from "rxjs"
 
+import type { ƒn } from "~/packages/anvl/src/function"
+
 import type { ReadonlySelectorToken, StateToken, TransactionToken } from "."
 import type { Store, TransactionUpdate } from "./internal"
 import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
-
-export type ƒn = (...parameters: any[]) => any
 
 export type Transactors = {
   get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S

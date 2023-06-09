@@ -1,5 +1,7 @@
 import HAMT from "hamt_plus"
 
+import type { ƒn } from "~/packages/anvl/src/function"
+
 import type { Atom, ReadonlySelector, Selector, Store } from "."
 import { target, isValueCached, readCachedValue, IMPLICIT } from "."
 import type {
@@ -9,7 +11,6 @@ import type {
   StateToken,
   Transaction,
   TransactionToken,
-  ƒn,
 } from ".."
 
 export const computeSelectorState = <T>(

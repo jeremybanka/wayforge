@@ -2922,7 +2922,6 @@ __metadata:
     eny: 0.0.6
     express: 4.18.2
     fp-ts: 2.16.0
-    immer: 10.0.2
     lodash: 4.17.21
     nanoid: ^4.0.2
     rxjs: ^7.8.0
@@ -2932,7 +2931,6 @@ __metadata:
     tsx: 3.12.7
     vite-tsconfig-paths: 4.2.0
     vitest: 0.32.0
-    zustand: 4.3.8
   languageName: unknown
   linkType: soft
 
@@ -2976,6 +2974,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     sass: 1.63.0
+    typescript: 5.1.3
     vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0

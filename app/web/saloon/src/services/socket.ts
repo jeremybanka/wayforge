@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 
-import type { ƒn } from "atom.io"
 import { atom, selector } from "atom.io"
 import * as AtomIO from "atom.io"
 import { io } from "socket.io-client"
 import type * as SocketIO from "socket.io-client"
 
+import type { ƒn } from "~/packages/anvl/src/function"
 import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 
 import { env } from "./env"
@@ -68,7 +68,7 @@ export const composeServerFamilyMemberHook =
 const TransactionSubscriptions = new Map<string, number>()
 export const composeTransactionHook =
   (socket: SocketIO.Socket) =>
-  <ƒ extends AtomIO.ƒn>(
+  <ƒ extends ƒn>(
     token: AtomIO.TransactionToken<ƒ>
   ): ((...parameters: Parameters<ƒ>) => ReturnType<ƒ>) => {
     useEffect(() => {
