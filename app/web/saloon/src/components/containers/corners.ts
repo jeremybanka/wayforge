@@ -1,14 +1,5 @@
 import type { DrawCorner } from "corners"
-import corners, { chamfer, straight, writePathPoint } from "corners"
-
-export type Interpolate = (
-  from: number,
-  to: number,
-  completionRatio?: number
-) => number
-
-export const interpolate: Interpolate = (from, to, completionRatio = 0.5) =>
-  from + completionRatio * (to - from)
+import corners, { chamfer, interpolate, straight, writePathPoint } from "corners"
 
 export const ForwardDiagonal = corners(chamfer, null).size(5)
 export const CurledLeft = corners(null, null, chamfer, null).size(5)
