@@ -177,14 +177,15 @@ export const Radial: React.FC<RadialProps> = ({
         style={setCssVars({
           [`--x`]: currentPosition.x + `px`,
           [`--y`]: currentPosition.y + `px`,
+          [`--size`]: ringRatio * size + `px`,
         })}
         css={css`
           pointer-events: none;
           position: fixed;
-          top: calc(var(--y) - 180px);
-          left: calc(var(--x) - 180px);
-          width: 360px;
-          height: 360px;
+          top: calc(var(--y) - (100px + (var(--size) / 2)));
+          left: calc(var(--x) - 250px);
+          width: 500px;
+          height: var(--size);
           display: flex;
           flex-direction: row;
           justify-content: center;
@@ -195,11 +196,18 @@ export const Radial: React.FC<RadialProps> = ({
           }
         `}
       >
-        {label.current === null ? null : (
-          <AnimatePresence>
-            <header.roundedInverse>{label.current}</header.roundedInverse>
-          </AnimatePresence>
-        )}
+        <AnimatePresence>
+          {label.current === null ? null : (
+            <header.roundedInverse
+              initial={{ opacity: 0, transform: `scale(0.95)` }}
+              animate={{ opacity: 1, transform: `scale(1)` }}
+              exit={{ opacity: 0, transform: `scale(0.95)` }}
+              transition={{ duration: 0.1 }}
+            >
+              {label.current}
+            </header.roundedInverse>
+          )}
+        </AnimatePresence>
       </footer>
     </>
   )
