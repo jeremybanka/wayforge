@@ -65,6 +65,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
         display: flex;
         flex-direction: column;
         align-items: center;
+        overflow: hidden;
         header {
           height: 75px;
           display: inline-flex;

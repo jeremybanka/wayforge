@@ -34,7 +34,6 @@ export const App: React.FC = () => (
     <main.auspicious
       css={css`
         flex-grow: 1;
-        padding: 10px;
       `}
     >
       <Routes>
