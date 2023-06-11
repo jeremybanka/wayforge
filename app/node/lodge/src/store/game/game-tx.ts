@@ -15,27 +15,8 @@ import {
   findCardValueState,
   valuesOfCardsState,
 } from "./card-value"
+import { CARD_VALUES } from "./playing-card-data"
 import { playersIndex } from "../rooms"
-
-const CARD_RANKS = [
-  `2`,
-  `3`,
-  `4`,
-  `5`,
-  `6`,
-  `7`,
-  `8`,
-  `9`,
-  `10`,
-  `J`,
-  `Q`,
-  `K`,
-  `A`,
-] as const
-const CARD_SUITS = [`♠`, `♥`, `♦`, `♣`] as const
-const CARD_VALUES = CARD_RANKS.flatMap((value) =>
-  CARD_SUITS.map((suit) => ({ value, suit, id: value + suit }))
-)
 
 export const add52ClassicCardsTX = transaction<() => void>({
   key: `add52ClassicCards`,

@@ -2,7 +2,7 @@ import type { Layer } from "corners"
 
 import type { Fragment } from "~/packages/anvl/src/object"
 
-export const LAYER: Record<string, Fragment<Layer>> = {
+export const LAYER: Readonly<Record<string, Fragment<Layer>>> = {
   FAINT_SHADOW: {
     className: `faint-shadow`,
     color: `#0003`,
