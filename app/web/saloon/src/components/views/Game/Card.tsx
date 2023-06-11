@@ -25,7 +25,7 @@ export const CardBack: FC<{ id: string }> = ({ id }) => {
   return (
     <AnimatePresence>
       <article.roundedWhite layoutId={id}>
-        <PlayingCards.Back />
+        {/* <PlayingCards.Back /> */}
       </article.roundedWhite>
     </AnimatePresence>
   )

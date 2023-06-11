@@ -30,9 +30,9 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
       <div
         css={css`
           display: flex;
-          flex-wrap: wrap;
+          flex-flow: column-reverse nowrap;
           > * ~ * {
-            margin-left: -79.5px;
+            margin-bottom: -119.5px;
           }
         `}
       >

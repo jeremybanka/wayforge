@@ -145,17 +145,17 @@ export const dealCardsTX = transaction<
   do: ({ get, set }, { deckId, handId, count }) => {
     const deckDoesExist = get(cardGroupIndex).has(deckId)
     if (!deckDoesExist) {
-      throw new Error(`Card group does not exist`)
+      throw new Error(`Deck "${deckId}" does not exist`)
     }
     const handDoesExist = get(cardGroupIndex).has(handId)
     if (!handDoesExist) {
-      throw new Error(`Hand does not exist`)
+      throw new Error(`Hand "${handId}" does not exist`)
     }
     const deckCardIds = get(groupsOfCardsState).getRelatedIds(deckId)
     if (deckCardIds.length < count) {
-      throw new Error(`Not enough cards in deck`)
+      throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
     }
-    const cardIds = deckCardIds.slice(0, count)
+    const cardIds = deckCardIds.slice(-count)
     set(groupsOfCardsState, (current) =>
       cardIds.reduce(
         (acc, cardId) => acc.set({ groupId: handId, cardId }),
