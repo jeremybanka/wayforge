@@ -9,6 +9,7 @@ import { dealCardsTX, groupsOfCardsState } from "~/app/node/lodge/src/store/game
 import { CardBack, CardFace } from "./Card"
 import { myHandsIndex } from "./store/my-hands-index"
 import { publicDeckIndex } from "./store/public-deck-index"
+import { useRadial } from "../../../services/radial"
 import { useRemoteTransaction } from "../../../services/store"
 import { button } from "../../containers/<button>"
 import { div } from "../../containers/<div>"
@@ -20,20 +21,27 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 
   const dealCards = useRemoteTransaction(dealCardsTX)
 
+  const handlers = useRadial([
+    {
+      label: `Deal`,
+      do: () => dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 }),
+    },
+  ])
+
   return (
     <AnimatePresence>
       <div.dropShadowDiagon
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        {...handlers}
       >
-        <button.flashFire
-          onClick={() =>
-            dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 })
+        {/* <button.flashFire
+          onClick={
           }
         >
           Deal
-        </button.flashFire>
+        </button.flashFire> */}
         <div>{cardIds.length}</div>
         <div
           css={css`

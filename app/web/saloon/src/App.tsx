@@ -4,11 +4,16 @@ import { css } from "@emotion/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { Link, Route, Routes, Outlet } from "react-router-dom"
 
+import { useIO, useO } from "~/packages/atom.io/src/react"
+import { Radial } from "~/packages/hamr/src/react-radial/Radial"
+
 import { main } from "./components/containers/<main>"
 import { Lab } from "./components/views/Lab"
 import { RadialDemo } from "./components/views/Lab/RadialDemo"
 import { Lobby } from "./components/views/Lobby"
 import { RoomRoute } from "./components/views/Room/Room"
+import { windowMousePositionState } from "./services/mouse-position"
+import { actionsState, radialModeState } from "./services/radial"
 
 export const App: React.FC = () => (
   <main
@@ -47,6 +52,11 @@ export const App: React.FC = () => (
           </Route>
         </Route>
       </Routes>
+      <Radial
+        useMode={() => useIO(radialModeState)}
+        useActions={() => useO(actionsState)}
+        useMousePosition={() => useO(windowMousePositionState)}
+      />
       <AtomIODevtools />
     </main.auspicious>
   </main>

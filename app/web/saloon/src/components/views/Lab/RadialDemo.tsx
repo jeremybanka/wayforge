@@ -2,16 +2,9 @@ import * as React from "react"
 
 import { css } from "@emotion/react"
 
-import { useIO, useO } from "~/packages/atom.io/src/react"
-import { Radial } from "~/packages/hamr/src/react-radial/Radial"
 import { Luum } from "~/packages/Luum/src"
 
-import { windowMousePositionState } from "../../../services/mouse-position"
-import {
-  actionsState,
-  radialModeState,
-  useRadial,
-} from "../../../services/radial"
+import { useRadial } from "../../../services/radial"
 
 export const RadialDemo: React.FC = () => {
   return (
@@ -48,11 +41,6 @@ export const RadialDemo: React.FC = () => {
           )
         })}
       </span>
-      <Radial
-        useMode={() => useIO(radialModeState)}
-        useActions={() => useO(actionsState)}
-        useMousePosition={() => useO(windowMousePositionState)}
-      />
     </>
   )
 }
