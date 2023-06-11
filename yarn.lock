@@ -3127,13 +3127,13 @@ __metadata:
     happy-dom: 9.20.3
     react: 18.2.0
     react-dom: 18.2.0
+    react-router-dom: 6.12.1
     sass: 1.63.3
     typescript: 5.1.3
     vite: 4.3.9
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.32.0
-    wouter: 2.11.0
     zod: 3.21.4
   languageName: unknown
   linkType: soft
@@ -12052,7 +12052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.0.0":
+"use-sync-external-store@npm:1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:
@@ -12538,17 +12538,6 @@ __metadata:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 30b48f91fcf12106ed3186ae4fa86a6a1842416df425be7b60485de14bec665a54a68e4b5156647dec3a70f25e84d270ca8bc8cd23182ed095f5c7206a938c1f
-  languageName: node
-  linkType: hard
-
-"wouter@npm:2.11.0":
-  version: 2.11.0
-  resolution: "wouter@npm:2.11.0"
-  dependencies:
-    use-sync-external-store: ^1.0.0
-  peerDependencies:
-    react: ">=16.8.0"
-  checksum: 52ae7231db44d187c1c7f55029513413d270ada09f33a5dd3ab50bf01038f8dbda59669fbf201ae90e27262d18c5ae5fd11881ea8a31854727a14947c2003a0b
   languageName: node
   linkType: hard
 
