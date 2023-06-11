@@ -8,7 +8,7 @@ import { makeMouseHandlers } from "../react-click-handlers"
 
 //
 
-const cssVars = (vars: Record<`--${string}`, string>) =>
+const cssVars = (vars: Record<`--${string}`, number | string>) =>
   vars as Partial<React.CSSProperties>
 
 //
@@ -72,9 +72,9 @@ export const Radial: React.FC<RadialOptions> = ({
           [`--x`]: currentPosition.x + `px`,
           [`--y`]: currentPosition.y + `px`,
           [`--ring-size`]: ringRatio * size + `px`,
-          [`--option-size`]: (isActive ? size : 30) + `px`,
+          [`--option-size`]: (isActive ? size : 20) + `px`,
           [`--is-active-pointer-events`]: isActive ? `all` : `none`,
-          [`--is-active-opacity`]: isActive ? `1` : `0.1`,
+          [`--is-active-opacity`]: isActive ? 1 : 0.1,
           [`--is-active-background`]: isActive ? `#3337` : `#fff`,
           [`--is-active-border`]: isActive
             ? `1px solid #fff`
@@ -90,10 +90,11 @@ export const Radial: React.FC<RadialOptions> = ({
           border-radius: 50%;
           z-index: 20;
           transition: all 100ms ease-in;
+          opacity: var(--is-active-opacity);
           .radial-option {
+            color: #fff;
             transition: all 100ms ease-in;
             pointer-events: var(--is-active-pointer-events);
-            opacity: var(--is-active-opacity);
             user-select: none;
             position: absolute;
             border: var(--is-active-border);
