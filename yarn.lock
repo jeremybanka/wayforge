@@ -3119,7 +3119,7 @@ __metadata:
     "@vanilla-extract/css": 1.11.1
     "@vanilla-extract/vite-plugin": 3.8.2
     "@vitejs/plugin-react": 4.0.0
-    corners: 0.0.13
+    corners: 0.0.14
     cross-env: 7.0.3
     eslint: 8.42.0
     fp-ts: 2.16.0
@@ -3149,7 +3149,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@vitejs/plugin-react": 4.0.0
-    corners: 0.0.13
+    corners: 0.0.14
     cross-env: 7.0.3
     eslint: 8.42.0
     fp-ts: 2.16.0
@@ -3195,7 +3195,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@vitejs/plugin-react": 4.0.0
-    corners: 0.0.13
+    corners: 0.0.14
     cross-env: 7.0.3
     eslint: 8.42.0
     fp-ts: 2.16.0
@@ -4515,15 +4515,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"corners@npm:0.0.13":
-  version: 0.0.13
-  resolution: "corners@npm:0.0.13"
+"corners@npm:0.0.14":
+  version: 0.0.14
+  resolution: "corners@npm:0.0.14"
   dependencies:
     "@react-hook/resize-observer": ^1.2.5
   peerDependencies:
     react: ">=18.0.0"
     react-dom: ">=18.0.0"
-  checksum: 4e3ae9473992fd7effad34a482f8802dc2a6d1f695ca05cf8b43bbf77b12e1e67f8e3853db9631602e2322f29bc0173d58325e05e6d948d05070aa8918d1c47b
+  checksum: c585388aae733e24d137ce6c615ebdc09d027a8a9cf7c0637e4c424233e9de3496d2a1f5cb213a62a964410455983110782e75c22e67284492c62b90ad720ebe
   languageName: node
   linkType: hard
 
