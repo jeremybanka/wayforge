@@ -6728,6 +6728,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     ajv: 8.12.0
+    corners: 0.0.14
     eslint: 8.42.0
     fp-ts: 2.16.0
     react: 18.2.0

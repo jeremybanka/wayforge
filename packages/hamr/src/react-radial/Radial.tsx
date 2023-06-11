@@ -1,26 +1,14 @@
 import * as React from "react"
 
 import { css } from "@emotion/react"
+import { AnimatePresence } from "framer-motion"
+import { makeMouseHandlers } from "hamr/react-click-handlers"
+import { setCssVars } from "hamr/react-css-vars"
 
-import { header } from "~/app/web/saloon/src/components/containers/<header>"
+import type { RadialAction, RadialMode } from "."
+import { header } from "./<header>"
 
-import { makeMouseHandlers } from "../react-click-handlers"
-
-//
-
-const cssVars = (vars: Record<`--${string}`, number | string>) =>
-  vars as Partial<React.CSSProperties>
-
-//
-
-export type RadialMode = `held` | `idle` | `open`
-
-export type RadialAction = {
-  label: string
-  do: () => void
-}
-
-export type RadialOptions = {
+export type RadialProps = {
   mouseActivationMethod?: string
   useActions: () => RadialAction[]
   useMousePosition: () => {
@@ -31,7 +19,7 @@ export type RadialOptions = {
   size?: number
 }
 
-export const Radial: React.FC<RadialOptions> = ({
+export const Radial: React.FC<RadialProps> = ({
   useActions,
   useMousePosition,
   useMode,
@@ -67,7 +55,7 @@ export const Radial: React.FC<RadialOptions> = ({
   return (
     <>
       <div
-        style={cssVars({
+        style={setCssVars({
           [`--action-count`]: `${actions.length}`,
           [`--x`]: currentPosition.x + `px`,
           [`--y`]: currentPosition.y + `px`,
@@ -160,7 +148,7 @@ export const Radial: React.FC<RadialOptions> = ({
               })}
               onMouseEnter={() => (label.current = opt.label)}
               onMouseLeave={() => (label.current = null)}
-              style={cssVars({
+              style={setCssVars({
                 [`--idx`]: `${idx}`,
               })}
               css={css`
@@ -186,7 +174,7 @@ export const Radial: React.FC<RadialOptions> = ({
         })}
       </div>
       <footer
-        style={cssVars({
+        style={setCssVars({
           [`--x`]: currentPosition.x + `px`,
           [`--y`]: currentPosition.y + `px`,
         })}
@@ -208,7 +196,9 @@ export const Radial: React.FC<RadialOptions> = ({
         `}
       >
         {label.current === null ? null : (
-          <header.roundedInverse>{label.current}</header.roundedInverse>
+          <AnimatePresence>
+            <header.roundedInverse>{label.current}</header.roundedInverse>
+          </AnimatePresence>
         )}
       </footer>
     </>
