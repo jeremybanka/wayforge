@@ -5,12 +5,11 @@ import { useO } from "atom.io/react"
 import { Hand } from "./Hand"
 import { myHandsIndex } from "./store/my-hands-index"
 
-export const MyHands: React.FC = () => {
+export const MyDomain: React.FC = () => {
   const myHands = useO(myHandsIndex)
   return (
-    <div className="my-hands">
-      <h4>My Hands</h4>
-      <div>
+    <div className="my-domain">
+      <div className="my-hands">
         {myHands.map((id) => (
           <Hand key={id} id={id} />
         ))}

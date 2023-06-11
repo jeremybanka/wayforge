@@ -1,37 +1,12 @@
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
-import styled from "@emotion/styled"
-import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
-import corners, { chamfer } from "corners"
-import { AnimatePresence, motion } from "framer-motion"
 import { nanoid } from "nanoid"
 
-import type { CardGroup } from "~/app/node/lodge/src/store/game"
-import {
-  shuffleDeckTX,
-  dealCardsTX,
-  addHandTx,
-  cardGroupIndex,
-  cardIndex,
-  cardValuesIndex,
-  findCardGroupState,
-  groupsOfCardsState,
-  ownersOfGroupsState,
-  spawnClassicDeckTX,
-  valuesOfCardsState,
-} from "~/app/node/lodge/src/store/game"
-import { Join } from "~/packages/anvl/src/join"
-import { stringSetJsonInterface } from "~/packages/anvl/src/json"
+import { addHandTx, spawnClassicDeckTX } from "~/app/node/lodge/src/store/game"
 
-import {
-  socketIdState,
-  useRemoteFamily,
-  useRemoteState,
-  useRemoteTransaction,
-} from "../../../services/store"
-import { DogEaredButton } from "../../containers/DogEaredButton"
+import { socketIdState, useRemoteTransaction } from "../../../services/store"
+import { button } from "../../containers/<button>"
 
 export const Controls: FC = () => {
   const mySocketId = useO(socketIdState)
@@ -40,7 +15,7 @@ export const Controls: FC = () => {
   return (
     <div className="controls">
       <h4>Controls</h4>
-      <DogEaredButton
+      <button.flashFire
         onClick={() =>
           mySocketId
             ? addHand({ playerId: mySocketId, groupId: nanoid() })
@@ -48,14 +23,14 @@ export const Controls: FC = () => {
         }
       >
         Add Hand
-      </DogEaredButton>
-      <DogEaredButton
+      </button.flashFire>
+      <button.flashFire
         onClick={() =>
           spawnClassicDeck(nanoid(), Array.from({ length: 52 }).map(nanoid))
         }
       >
         Add Classic Deck
-      </DogEaredButton>
+      </button.flashFire>
     </div>
   )
 }
