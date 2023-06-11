@@ -3,6 +3,7 @@ import * as React from "react"
 import { css } from "@emotion/react"
 import * as AtomIO from "atom.io"
 import type { Point2d } from "corners"
+import { set } from "zod"
 
 import { useIO, useO } from "~/packages/atom.io/src/react"
 import { makeMouseHandlers } from "~/packages/hamr/src/react-click-handlers"
@@ -24,22 +25,57 @@ const radialModeState = AtomIO.atom<RadialMode>({
   default: `idle`,
 })
 
-export const RadialDemo: React.FC = () => {
-  const mousePosition = useO(windowMousePositionState)
-  const [actions, setActions] = useIO(actionsState)
-  const [radialMode, setRadialMode] = useIO(radialModeState)
-  const mouseHasMoved = React.useRef(false)
+//
 
-  const handlers = makeMouseHandlers({
-    onMouseDownR: () => ((mouseHasMoved.current = false), setRadialMode(`held`)),
-    onMouseUpR: () => {
-      if (mouseHasMoved.current) {
-        setRadialMode(`idle`)
-      } else {
-        setRadialMode(`open`)
-      }
-    },
-  })
+export const composeUseRadial =
+  (
+    setActions: (newActions: RadialAction[]) => void,
+    getRadialMode: () => RadialMode,
+    setRadialMode: (newMode: RadialMode) => void
+  ) =>
+  (
+    actions: RadialAction[]
+  ): Record<string, React.EventHandler<React.MouseEvent>> => {
+    const mouseHasMoved = React.useRef(false)
+    const handlers = {
+      onMouseEnter: () => {
+        if (getRadialMode() === `idle`) {
+          setActions(actions)
+        }
+      },
+      onMouseLeave: () => {
+        if (getRadialMode() === `idle`) {
+          setActions([])
+        }
+      },
+      onMouseMove: () => (mouseHasMoved.current = true),
+      ...makeMouseHandlers({
+        onMouseDownR: () => (
+          (mouseHasMoved.current = false), setRadialMode(`held`)
+        ),
+        onMouseUpR: () => {
+          if (mouseHasMoved.current) {
+            setRadialMode(`idle`)
+          } else {
+            setRadialMode(`open`)
+          }
+        },
+      }),
+    }
+    return handlers
+  }
+
+//
+
+export const useRadial = composeUseRadial(
+  (v) => AtomIO.setState(actionsState, v),
+  () => AtomIO.getState(radialModeState),
+  (v) => AtomIO.setState(radialModeState, v)
+)
+
+//
+
+export const RadialDemo: React.FC = () => {
   return (
     <>
       <span
@@ -48,43 +84,36 @@ export const RadialDemo: React.FC = () => {
           flex-flow: row wrap;
         `}
       >
-        {Array.from({ length: 12 }).map((_, idx) => (
-          <div
-            key={idx}
-            style={{
-              width: 100,
-              height: 100,
-              background: new Luum({
-                hue: idx * 30,
-                sat: 255,
-                lum: 0.5,
-                prefer: `lum`,
-              }).toHex(),
-            }}
-            onMouseEnter={() =>
-              setActions(
-                Array.from({ length: idx }).map((_, i) => ({
-                  label: `action ${i + 1}`,
-                  do: () => console.log(`action ${i + 1}`),
-                }))
-              )
-            }
-            onMouseLeave={() => {
-              if (radialMode === `idle`) {
-                setActions([])
-              }
-            }}
-            onMouseMove={() => (mouseHasMoved.current = true)}
-            {...handlers}
-            onClick={undefined}
-          />
-        ))}
+        {Array.from({ length: 12 }).map((_, idx) => {
+          const handlers = useRadial(
+            Array.from({ length: idx + 1 }).map((_, idx) => ({
+              label: `Action ${idx + 1}`,
+              do: () => console.log(`Action ${idx + 1}`),
+            }))
+          )
+
+          return (
+            <div
+              key={idx}
+              style={{
+                width: 100,
+                height: 100,
+                background: new Luum({
+                  hue: idx * 30,
+                  sat: 190,
+                  lum: 0.2,
+                  prefer: `sat`,
+                }).toHex(),
+              }}
+              {...handlers}
+            />
+          )
+        })}
       </span>
       <Radial
-        actions={actions}
-        position={mousePosition}
-        mode={radialMode}
-        setMode={setRadialMode}
+        useMode={() => useIO(radialModeState)}
+        useActions={() => useO(actionsState)}
+        useMousePosition={() => useO(windowMousePositionState)}
       />
     </>
   )

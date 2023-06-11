@@ -1,3 +1,4 @@
+import { rounded } from "corners"
 import { motion } from "framer-motion"
 
 import { Auspicious0 } from "./corners/factories"
@@ -8,6 +9,14 @@ export const header = {
     below: [
       {
         color: `#7772`,
+      },
+    ],
+  }),
+  roundedInverse: rounded(motion.header, {
+    noClipping: true,
+    below: [
+      {
+        color: `var(--fg-color)`,
       },
     ],
   }),
