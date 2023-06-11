@@ -1,5 +1,11 @@
 # hamr
 
+## 0.3.0
+
+### Minor Changes
+
+- b126378: ✨ New subpackages! `hamr/react-radial` and `hamr/react-css-vars`
+
 ## 0.2.0
 
 ### Minor Changes
