@@ -2,9 +2,11 @@ import { defineConfig } from "tsup"
 
 const entry = [
   `react-combo`,
+  `react-css-vars`,
   `react-elastic-input`,
   `react-error-boundary`,
   `react-json-editor`,
+  `react-radial`,
   `react-rx`,
   `recoil-effect-storage`,
   `recoil-tools`,
@@ -17,4 +19,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
+  external: [`@emotion/react`, `hamr`, `react`],
 })

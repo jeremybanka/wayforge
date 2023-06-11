@@ -1,5 +1,6 @@
 import type { FC } from "react"
 
+import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { AnimatePresence } from "framer-motion"
 
@@ -8,9 +9,10 @@ import { dealCardsTX, groupsOfCardsState } from "~/app/node/lodge/src/store/game
 import { CardBack, CardFace } from "./Card"
 import { myHandsIndex } from "./store/my-hands-index"
 import { publicDeckIndex } from "./store/public-deck-index"
+import { useRadial } from "../../../services/radial"
 import { useRemoteTransaction } from "../../../services/store"
-import { DeckWrap } from "../../containers/DeckWrap"
-import { DogEaredButton } from "../../containers/DogEaredButton"
+import { button } from "../../containers/<button>"
+import { div } from "../../containers/<div>"
 
 export const Hand: FC<{ id: string }> = ({ id }) => {
   const isMyHand = useO(myHandsIndex).includes(id)
@@ -19,25 +21,38 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 
   const dealCards = useRemoteTransaction(dealCardsTX)
 
+  const handlers = useRadial([
+    {
+      label: `Deal`,
+      do: () => dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 }),
+    },
+  ])
+
   return (
     <AnimatePresence>
-      <DeckWrap
+      <div.dropShadowDiagon
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        {...handlers}
       >
-        <DogEaredButton
-          onClick={() =>
-            dealCards({ deckId: publicDeckIds[0], handId: id, count: 1 })
+        {/* <button.flashFire
+          onClick={
           }
         >
           Deal
-        </DogEaredButton>
-        {isMyHand
-          ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
-          : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
+        </button.flashFire> */}
         <div>{cardIds.length}</div>
-      </DeckWrap>
+        <div
+          css={css`
+            display: flex;
+          `}
+        >
+          {isMyHand
+            ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
+            : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
+        </div>
+      </div.dropShadowDiagon>
     </AnimatePresence>
   )
 }

@@ -2,24 +2,12 @@ import type { FC } from "react"
 import { useState } from "react"
 
 import { css } from "@emotion/react"
-import * as AtomIO from "atom.io"
 import { useO } from "atom.io/react"
 
-import { playersInRoomsState } from "~/app/node/lodge/src/store/rooms"
-
+import { myRoomState } from "./views/Game/store/my-room"
 import { ReactComponent as Connected } from "../assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "../assets/svg/disconnected.svg"
 import { socketIdState } from "../services/store"
-
-const myRoomState = AtomIO.selector<string | null>({
-  key: `myRoom`,
-  get: ({ get }) => {
-    const socketId = get(socketIdState)
-    return socketId
-      ? get(playersInRoomsState).getRelatedId(socketId) ?? null
-      : null
-  },
-})
 
 export const MyRoom: FC = () => {
   const myRoom = useO(myRoomState)

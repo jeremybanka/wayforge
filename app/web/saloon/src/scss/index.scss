@@ -1,14 +1,21 @@
 :root {
+  --PI: 3.14159265358979;
   color-scheme: light dark;
   --fg-color: #fff;
-  --bg-color: #000;
+  --bg-color: #070707;
   color: var(--fg-color);
   background-color: var(--bg-color);
+  position: relative;
 
   *,
   *::before,
   *::after {
     box-sizing: border-box;
+  }
+
+  body {
+    padding: 0;
+    margin: 0;
   }
 }
 

@@ -1,7 +1,7 @@
 import type { FC } from "react"
 
 import { useO } from "atom.io/react"
-import { Link } from "wouter"
+import { Link } from "react-router-dom"
 
 import { createRoomTX, roomsIndex } from "~/app/node/lodge/src/store/rooms"
 import { stringSetJsonInterface } from "~/packages/anvl/src/json"
@@ -16,7 +16,7 @@ export const Lobby: FC = () => {
     <div>
       <h2>Lobby</h2>
       {[...roomIds].map((roomId) => (
-        <Link key={roomId} href={`/room/${roomId}`}>
+        <Link key={roomId} to={`/room/${roomId}`}>
           {roomId}
         </Link>
       ))}
