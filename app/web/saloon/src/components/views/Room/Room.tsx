@@ -1,6 +1,5 @@
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { useParams, Link } from "react-router-dom"
 
@@ -15,7 +14,7 @@ import {
   useRemoteTransaction,
   useRemoteFamilyMember,
 } from "../../../services/store"
-import { H3 } from "../../containers/H3"
+import { h3 } from "../../containers/<hX>"
 import { Game } from "../Game/Game"
 
 export const Room: FC<{ roomId: string }> = ({ roomId }) => {
@@ -60,5 +59,5 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
 export const RoomRoute: FC = () => {
   const { roomId } = useParams<{ roomId: string }>()
-  return roomId ? <Room roomId={roomId} /> : <H3.Wedge>Room not found</H3.Wedge>
+  return roomId ? <Room roomId={roomId} /> : <h3.wedge>Room not found</h3.wedge>
 }

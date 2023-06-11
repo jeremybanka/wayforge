@@ -19,7 +19,7 @@ import { Controls } from "./Controls"
 import { MyHands } from "./MyDomain"
 import { PublicDecks } from "./Public"
 import { useRemoteFamily, useRemoteState } from "../../../services/store"
-import { H3 } from "../../containers/H3"
+import { h3 } from "../../containers/<hX>"
 
 export const Game: FC = () => {
   useRemoteState(ownersOfGroupsState, {
@@ -61,7 +61,7 @@ export const Game: FC = () => {
         }
       `}
     >
-      <H3.Wedge>Game</H3.Wedge>
+      <h3.wedge>Game</h3.wedge>
       <MyHands />
       <PublicDecks />
       <Controls />

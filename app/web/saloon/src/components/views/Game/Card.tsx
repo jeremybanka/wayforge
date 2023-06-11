@@ -6,30 +6,30 @@ import { AnimatePresence } from "framer-motion"
 
 import { valuesOfCardsState } from "~/app/node/lodge/src/store/game"
 
-import { Div } from "../../containers/Div"
+import { div } from "../../containers/<div>"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
   const value = useO(valuesOfCardsState).getRelatedId(id)
   return (
     <AnimatePresence>
-      <Div.DropShadowDiagon
+      <div.dropShadowDiagon
         css={css`
           padding: 5px;
         `}
       >
         {value}
-      </Div.DropShadowDiagon>
+      </div.dropShadowDiagon>
     </AnimatePresence>
   )
 }
 export const CardBack: FC<{ id: string }> = () => {
   return (
     <AnimatePresence>
-      <Div.DropShadowDiagon
+      <div.dropShadowDiagon
         css={css`
           padding: 5px;
         `}
-      ></Div.DropShadowDiagon>
+      ></div.dropShadowDiagon>
     </AnimatePresence>
   )
 }

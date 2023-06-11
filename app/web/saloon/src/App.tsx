@@ -4,7 +4,7 @@ import { css } from "@emotion/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { Link, Route, Routes, Outlet } from "react-router-dom"
 
-import { Main } from "./components/containers/Main"
+import { main } from "./components/containers/<main>"
 import { Lab } from "./components/views/Lab"
 import { Lobby } from "./components/views/Lobby"
 import { RoomRoute } from "./components/views/Room/Room"
@@ -32,7 +32,7 @@ export const App: React.FC = () => (
         <Link to="/lab">Lab</Link>
       </nav>
     </header>
-    <Main.Auspicious
+    <main.auspicious
       css={css`
         flex-grow: 1;
         padding: 10px;
@@ -48,7 +48,7 @@ export const App: React.FC = () => (
         </Route>
       </Routes>
       <AtomIODevtools />
-    </Main.Auspicious>
+    </main.auspicious>
     <footer
       css={css`
         padding: 10px;

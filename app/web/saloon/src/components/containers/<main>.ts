@@ -1,9 +1,9 @@
 import { motion } from "framer-motion"
 
-import { Auspicious } from "./corners"
+import { Auspicious } from "./corners/factories"
 
-export const Main = {
-  Auspicious: Auspicious(motion.main, {
+export const main = {
+  auspicious: Auspicious(motion.main, {
     noClipping: true,
     below: [
       {

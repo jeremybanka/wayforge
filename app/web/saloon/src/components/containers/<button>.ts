@@ -1,8 +1,8 @@
 import Emotion from "@emotion/styled"
 import { motion } from "framer-motion"
 
-import { CurledLeft } from "./corners"
-import { LAYER } from "./LAYER"
+import { CurledLeft } from "./corners/factories"
+import { LAYER } from "./corners/layers"
 
 const styled = {
   ButtonCurledLeft: Emotion(
@@ -13,9 +13,9 @@ const styled = {
   ),
 }
 
-export const Button = {
+export const button = {
   // <Button.FlashFire>
-  FlashFire: styled.ButtonCurledLeft`
+  flashFire: styled.ButtonCurledLeft`
     font-family: Uruz;
     font-size: 18px;
     font-weight: 500;
