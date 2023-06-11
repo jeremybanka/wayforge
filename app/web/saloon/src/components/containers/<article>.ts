@@ -24,6 +24,7 @@ export const article = {
     height: 120px;
     width: 80px;
     display: flex;
+    flex-shrink: 0;
     svg:last-of-type {
       height: 100% !important;
       width: 100% !important;

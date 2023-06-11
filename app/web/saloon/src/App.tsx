@@ -19,19 +19,16 @@ export const App: React.FC = () => (
       flex-flow: column;
       position: relative;
       header {
+        display: flex;
         padding: 10px;
-        font-family: Uruz;
-        h1 {
-          margin: 0;
-        }
+        gap: 10px;
       }
     `}
   >
     <header>
-      <h1>Saloon</h1>
       <nav>
-        <Link to="/">Lobby</Link>
-        <Link to="/lab">Lab</Link>
+        <Link to="/">{`<-`}</Link>
+        <Link to="/lab">🧪</Link>
       </nav>
     </header>
     <main.auspicious
@@ -53,14 +50,5 @@ export const App: React.FC = () => (
       </Routes>
       <AtomIODevtools />
     </main.auspicious>
-    <footer
-      css={css`
-        padding: 10px;
-      `}
-    >
-      <p>
-        <a href="">About</a>
-      </p>
-    </footer>
   </main>
 )

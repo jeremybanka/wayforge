@@ -38,7 +38,6 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
         <div
           css={css`
             display: flex;
-            flex-wrap: wrap;
           `}
         >
           {isMyHand

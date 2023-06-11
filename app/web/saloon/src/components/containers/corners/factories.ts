@@ -31,7 +31,13 @@ export const auspice: DrawCorner = (p1, p2, idx) => {
     writePathPoint(p2.x, p2.y),
   ]
 }
-export const Auspicious = corners(auspice, null).size(200)
+export const Auspicious0 = corners(auspice).size(200)
+export const Auspicious1 = corners(auspice, null).size(200)
+export const Auspicious2 = corners(null, auspice).size(200)
+export const Auspicious3 = corners(auspice, null, null, null).size(200)
+export const Auspicious4 = corners(null, null, auspice, null).size(200)
+export const Auspicious5 = corners(null, auspice, null, null).size(200)
+export const Auspicious6 = corners(null, null, null, auspice).size(200)
 
 export const wedge: DrawCorner = (p1, p2, idx) => {
   if (idx === 0) {

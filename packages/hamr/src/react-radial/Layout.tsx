@@ -60,95 +60,97 @@ export const Radial: React.FC<RadialOptions> = ({
   const bigCircleRatio = Math.sqrt(Math.max(actions.length, 4) - 2)
 
   return (
-    <div
-      style={cssVars({
-        [`--action-count`]: `${actions.length}`,
-        [`--x`]: currentPosition.x + `px`,
-        [`--y`]: currentPosition.y + `px`,
-        [`--unit`]: bigCircleRatio * size + `px`,
-        [`--element`]: size + `px`,
-        [`--is-active-pointer-events`]: isActive ? `all` : `none`,
-        [`--is-active-opacity`]: isActive ? `1` : `0.5`,
-      })}
-      css={css`
-        pointer-events: none;
-        top: calc((var(--y)) - var(--unit) / 2);
-        left: calc((var(--x)) - var(--unit) / 2);
-        height: var(--unit);
-        width: var(--unit);
-        position: fixed;
-        border-radius: 50%;
-        z-index: 20;
-        transition: all 100ms ease-in;
-        .radial-option {
-          transition: all 100ms ease-in;
-          pointer-events: var(--is-active-pointer-events);
-          opacity: var(--is-active-opacity);
-          user-select: none;
-          position: absolute;
-          border: 1px solid #fff;
-          background: #3337;
+    <>
+      <div
+        style={cssVars({
+          [`--action-count`]: `${actions.length}`,
+          [`--x`]: currentPosition.x + `px`,
+          [`--y`]: currentPosition.y + `px`,
+          [`--unit`]: bigCircleRatio * size + `px`,
+          [`--element`]: size + `px`,
+          [`--is-active-pointer-events`]: isActive ? `all` : `none`,
+          [`--is-active-opacity`]: isActive ? `1` : `0.5`,
+        })}
+        css={css`
+          pointer-events: none;
+          top: calc((var(--y)) - var(--unit) / 2);
+          left: calc((var(--x)) - var(--unit) / 2);
+          height: var(--unit);
+          width: var(--unit);
+          position: fixed;
           border-radius: 50%;
-          z-index: 10;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-weight: 300;
-          font-size: 0.8em;
-          &:hover {
-            background: #fff;
-            color: #000;
-          }
-          &:active,
-          &:hover.pressed {
-            background: #000;
-            color: #fff;
-          }
-        }
-      `}
-    >
-      {actions.map((opt, idx): React.ReactElement => {
-        return (
-          <div
-            key={idx}
-            className={
-              `radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
+          z-index: 20;
+          transition: all 100ms ease-in;
+          .radial-option {
+            transition: all 100ms ease-in;
+            pointer-events: var(--is-active-pointer-events);
+            opacity: var(--is-active-opacity);
+            user-select: none;
+            position: absolute;
+            border: 1px solid #fff;
+            background: #3337;
+            border-radius: 50%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 300;
+            font-size: 0.8em;
+            &:hover {
+              background: #fff;
+              color: #000;
             }
-            {...makeMouseHandlers({
-              onMouseUpR: () => (
-                opt.do(),
-                (hasPressed.current = idx),
-                setTimeout(
-                  () => (setMode(`idle`), (hasPressed.current = null)),
-                  250
-                )
-              ),
-              onMouseUpL: opt.do,
-            })}
-            style={cssVars({
-              [`--idx`]: `${idx}`,
-            })}
-            css={css`
-              --opt-ratio: calc(var(--idx) / var(--action-count));
-              --opt-angle: calc(90deg + (360deg * var(--opt-ratio)));
-              --yy: sin(var(--opt-angle));
-              --xx: cos(var(--opt-angle));
-              height: var(--element);
-              width: var(--element);
-              bottom: calc(
-                ((var(--unit) / 2) - var(--element) / 2) +
-                  (var(--yy) * var(--unit) / 2)
-              );
-              left: calc(
-                ((var(--unit) / 2) - var(--element) / 2) +
-                  (var(--xx) * var(--unit) / 2)
-              );
-            `}
-          >
-            {idx + 1}
-          </div>
-        )
-      })}
-    </div>
+            &:active,
+            &:hover.pressed {
+              background: #000;
+              color: #fff;
+            }
+          }
+        `}
+      >
+        {actions.map((opt, idx): React.ReactElement => {
+          return (
+            <div
+              key={idx}
+              className={
+                `radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
+              }
+              {...makeMouseHandlers({
+                onMouseUpR: () => (
+                  opt.do(),
+                  (hasPressed.current = idx),
+                  setTimeout(
+                    () => (setMode(`idle`), (hasPressed.current = null)),
+                    250
+                  )
+                ),
+                onMouseUpL: opt.do,
+              })}
+              style={cssVars({
+                [`--idx`]: `${idx}`,
+              })}
+              css={css`
+                --opt-ratio: calc(var(--idx) / var(--action-count));
+                --opt-angle: calc(90deg + (360deg * var(--opt-ratio)));
+                --yy: sin(var(--opt-angle));
+                --xx: cos(var(--opt-angle));
+                height: var(--element);
+                width: var(--element);
+                bottom: calc(
+                  ((var(--unit) / 2) - var(--element) / 2) +
+                    (var(--yy) * var(--unit) / 2)
+                );
+                left: calc(
+                  ((var(--unit) / 2) - var(--element) / 2) +
+                    (var(--xx) * var(--unit) / 2)
+                );
+              `}
+            >
+              {idx + 1}
+            </div>
+          )
+        })}
+      </div>
+    </>
   )
 }

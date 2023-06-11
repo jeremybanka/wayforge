@@ -16,7 +16,9 @@ export const myHandsIndex = AtomIO.selector<string[]>({
     }
     const ownersOfGroups = get(ownersOfGroupsState)
     const myGroups = ownersOfGroups.getRelatedIds(myId)
-    const myHands = myGroups.filter((id) => get(findCardGroupState(id)).type)
+    const myHands = myGroups.filter(
+      (id) => get(findCardGroupState(id)).type === `hand`
+    )
     return myHands
   },
 })
