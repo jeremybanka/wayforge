@@ -20,7 +20,7 @@ main.atom_io_devtools {
   max-width: 460px;
   overflow-y: scroll;
   padding: 5px;
-  *:is(header) {
+  header {
     display: flex;
     justify-content: space-between;
     h1 {
@@ -28,7 +28,7 @@ main.atom_io_devtools {
       margin: 0;
     }
   }
-  *:is(main) {
+  main {
     overflow-y: scroll;
     flex-grow: 1;
     section {
