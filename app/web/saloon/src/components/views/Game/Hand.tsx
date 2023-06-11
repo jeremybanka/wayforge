@@ -1,5 +1,6 @@
 import type { FC } from "react"
 
+import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { AnimatePresence } from "framer-motion"
 
@@ -33,10 +34,17 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
         >
           Deal
         </button.flashFire>
-        {isMyHand
-          ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
-          : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
         <div>{cardIds.length}</div>
+        <div
+          css={css`
+            display: flex;
+            flex-wrap: wrap;
+          `}
+        >
+          {isMyHand
+            ? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
+            : cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
+        </div>
       </div.dropShadowDiagon>
     </AnimatePresence>
   )

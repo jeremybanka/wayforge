@@ -15,16 +15,18 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
   const PlayingCard = PlayingCards[value as keyof typeof PlayingCards]
   return (
     <AnimatePresence>
-      <article.roundedWhite>
+      <article.roundedWhite layoutId={id}>
         {PlayingCard ? <PlayingCard /> : null}
       </article.roundedWhite>
     </AnimatePresence>
   )
 }
-export const CardBack: FC<{ id: string }> = () => {
+export const CardBack: FC<{ id: string }> = ({ id }) => {
   return (
     <AnimatePresence>
-      <article.roundedWhite />
+      <article.roundedWhite layoutId={id}>
+        <PlayingCards.Back />
+      </article.roundedWhite>
     </AnimatePresence>
   )
 }

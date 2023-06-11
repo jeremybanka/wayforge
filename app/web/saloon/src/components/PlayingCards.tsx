@@ -1,5 +1,6 @@
 /* eslint-disable import/order */
 import type * as React from "react"
+import { ReactComponent as Back } from "../assets/svg/playing-cards/back.svg"
 import { ReactComponent as AceOfSpades } from "../assets/svg/playing-cards/A♠.svg"
 import { ReactComponent as TwoOfSpades } from "../assets/svg/playing-cards/2♠.svg"
 import { ReactComponent as ThreeOfSpades } from "../assets/svg/playing-cards/3♠.svg"
@@ -55,6 +56,7 @@ import { ReactComponent as KingOfDiamonds } from "../assets/svg/playing-cards/K�
 /* eslint-enable import/order */
 
 export const PlayingCards: Record<string, React.FC> = {
+  Back,
   "A♠": AceOfSpades,
   "2♠": TwoOfSpades,
   "3♠": ThreeOfSpades,

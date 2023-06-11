@@ -8,6 +8,7 @@ import {
   groupsOfCardsState,
 } from "~/app/node/lodge/src/store/game"
 
+import { CardBack } from "./Card"
 import { useRemoteTransaction } from "../../../services/store"
 import { button } from "../../containers/<button>"
 import { div } from "../../containers/<div>"
@@ -26,6 +27,19 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
       >
         {cardIds.length}
       </div.dropShadowDiagon>
+      <div
+        css={css`
+          display: flex;
+          flex-wrap: wrap;
+          > * ~ * {
+            margin-left: -79.5px;
+          }
+        `}
+      >
+        {cardIds.map((cardId) => (
+          <CardBack key={cardId} id={cardId} />
+        ))}
+      </div>
       <button.flashFire onClick={() => shuffle({ deckId: id })}>
         Shuffle
       </button.flashFire>
