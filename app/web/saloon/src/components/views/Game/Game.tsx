@@ -19,6 +19,7 @@ import { Controls } from "./Controls"
 import { MyHands } from "./MyDomain"
 import { PublicDecks } from "./Public"
 import { useRemoteFamily, useRemoteState } from "../../../services/store"
+import { H3 } from "../../containers/H3"
 
 export const Game: FC = () => {
   useRemoteState(ownersOfGroupsState, {
@@ -43,17 +44,27 @@ export const Game: FC = () => {
   })
 
   return (
-    <>
-      <header
-        css={css`
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        h3 {
+          padding: 0px 32px 0px 8px;
           background-color: #9992;
-        `}
-      >
-        <h3>Game</h3>
-        <MyHands />
-        <PublicDecks />
-        <Controls />
-      </header>
-    </>
+          margin: 0;
+        }
+        div {
+          padding: 5px;
+          background-color: #9992;
+          width: 100%;
+        }
+      `}
+    >
+      <H3.Wedge>Game</H3.Wedge>
+      <MyHands />
+      <PublicDecks />
+      <Controls />
+    </div>
   )
 }

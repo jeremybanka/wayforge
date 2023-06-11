@@ -4,11 +4,11 @@ import { motion } from "framer-motion"
 import { CurledLeft } from "./corners"
 import { LAYER } from "./LAYER"
 
-export const styled = {
+const styled = {
   ButtonCurledLeft: Emotion(
     CurledLeft(motion.button, {
       noClipping: true,
-      below: [LAYER.FG_OUTLINE],
+      below: [LAYER.FG_STROKE],
     })
   ),
 }
