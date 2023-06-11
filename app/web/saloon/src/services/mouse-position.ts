@@ -11,7 +11,7 @@ const mouse$ = Rx.fromEvent(window, `mousemove`).pipe(
     x: clientX,
     y: clientY,
   })),
-  Rx.sampleTime(200)
+  Rx.sampleTime(50)
 )
 
 export const windowMousePositionState = AtomIO.atom<Point2d>({

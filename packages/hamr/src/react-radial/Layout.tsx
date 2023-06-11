@@ -1,10 +1,17 @@
-import type { FC, ReactElement } from "react"
+import * as React from "react"
 
 import { css } from "@emotion/react"
 
-import { make } from "~/packages/anvl/src/number/integer-io-ts"
-
 import { makeMouseHandlers } from "../react-click-handlers"
+
+//
+
+const cssVars = (vars: Record<`--${string}`, string>) =>
+  vars as Partial<React.CSSProperties>
+
+//
+
+export type RadialMode = `held` | `idle` | `open`
 
 export type RadialAction = {
   label: string
@@ -14,80 +21,129 @@ export type RadialAction = {
 export type RadialOptions = {
   mouseActivationMethod?: string
   readonly actions: RadialAction[]
-  readonly activePosition?: {
+  readonly position?: {
     x: number
     y: number
   }
-  readonly passivePosition?: {
-    x: number
-    y: number
-  }
-  usePosition?: true
-  isActive?: boolean
+  mode?: RadialMode
+  setMode?: (newMode: RadialMode) => void
+  size?: number
 }
 
-export const Radial: FC<RadialOptions> = ({
+export const Radial: React.FC<RadialOptions> = ({
   actions,
-  passivePosition = { x: 0, y: 0 },
-  isActive = false,
-  // activePosition = { x: 0, y: 0 },
+  position = { x: 0, y: 0 },
+  mode = `idle`,
+  setMode = () => null,
+  size = 30,
 }) => {
-  const { PI, sin, cos } = Math
-  const actLen = actions.length
-  // console.log(activePosition)
+  const isActive = mode !== `idle`
+
+  const activePosition = React.useRef<{
+    x: number
+    y: number
+  } | null>(null)
+
+  const hasPressed = React.useRef<number | null>(null)
+
+  if (isActive && activePosition.current === null) {
+    activePosition.current = position
+  } else if (!isActive) {
+    activePosition.current = null
+  }
+
+  const currentPosition = {
+    ...position,
+    ...(activePosition.current ?? {}),
+  }
+
+  const bigCircleRatio = Math.sqrt(Math.max(actions.length, 4) - 2)
+
   return (
     <div
+      style={cssVars({
+        [`--action-count`]: `${actions.length}`,
+        [`--x`]: currentPosition.x + `px`,
+        [`--y`]: currentPosition.y + `px`,
+        [`--unit`]: bigCircleRatio * size + `px`,
+        [`--element`]: size + `px`,
+        [`--is-active`]: isActive ? `all` : `none`,
+      })}
       css={css`
         pointer-events: none;
-        --unit: 60px;
-        top: calc(${passivePosition.y}px - var(--unit) / 2);
-        left: calc(${passivePosition.x}px - var(--unit) / 2);
+        top: calc((var(--y)) - var(--unit) / 2);
+        left: calc((var(--x)) - var(--unit) / 2);
         height: var(--unit);
         width: var(--unit);
-        position: absolute;
-        background: #9992;
+        position: fixed;
+        /* background: #9992; */
         border-radius: 50%;
         z-index: 20;
-        transition: all 50ms ease-in-out;
+        transition: all 100ms ease-in;
         .radial-option {
-          --element: 30px;
-          pointer-events: all;
+          pointer-events: var(--is-active);
+          user-select: none;
           position: absolute;
-          background: ${isActive ? `#fff` : `#0000`};
           border: 1px solid #fff;
           border-radius: 50%;
           z-index: 10;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-weight: 300;
+          font-size: 0.8em;
+          &:hover {
+            background: #fff;
+            color: #000;
+          }
+          &:active,
+          &:hover.pressed {
+            background: #000;
+            color: #fff;
+          }
         }
       `}
     >
-      {actions.map((opt, idx): ReactElement => {
-        const optAngle = (2 * PI * idx) / actLen + 0.5 * PI
-        const yy = sin(optAngle)
-        const xx = cos(optAngle)
-        // console.log((optAngle / (PI * 2)) * 360, xx, yy)
+      {actions.map((opt, idx): React.ReactElement => {
         return (
           <div
             key={idx}
-            className="radial-option"
+            className={
+              `radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
+            }
             {...makeMouseHandlers({
-              onMouseUpR: () => {
-                console.log(`click`, opt)
-                opt.do()
-              },
+              onMouseUpR: () => (
+                opt.do(),
+                (hasPressed.current = idx),
+                setTimeout(
+                  () => (setMode(`idle`), (hasPressed.current = null)),
+                  250
+                )
+              ),
+              onMouseUpL: opt.do,
+            })}
+            style={cssVars({
+              [`--idx`]: `${idx}`,
             })}
             css={css`
+              --opt-ratio: calc(var(--idx) / var(--action-count));
+              --opt-angle: calc(90deg + (360deg * var(--opt-ratio)));
+              --yy: sin(var(--opt-angle));
+              --xx: cos(var(--opt-angle));
               height: var(--element);
               width: var(--element);
               bottom: calc(
                 ((var(--unit) / 2) - var(--element) / 2) +
-                  (${yy} * var(--unit) / 2)
+                  (var(--yy) * var(--unit) / 2)
               );
               left: calc(
                 ((var(--unit) / 2) - var(--element) / 2) +
-                  (${xx} * var(--unit) / 2)
+                  (var(--xx) * var(--unit) / 2)
               );
             `}
-          />
+          >
+            {idx + 1}
+          </div>
         )
       })}
     </div>

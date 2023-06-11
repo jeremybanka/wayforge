@@ -6,6 +6,7 @@ import { Link, Route, Routes, Outlet } from "react-router-dom"
 
 import { main } from "./components/containers/<main>"
 import { Lab } from "./components/views/Lab"
+import { RadialDemo } from "./components/views/Lab/RadialDemo"
 import { Lobby } from "./components/views/Lobby"
 import { RoomRoute } from "./components/views/Room/Room"
 
@@ -16,6 +17,7 @@ export const App: React.FC = () => (
       background: var(--bg-color);
       display: flex;
       flex-flow: column;
+      position: relative;
       header {
         padding: 10px;
         font-family: Uruz;
@@ -44,7 +46,9 @@ export const App: React.FC = () => (
           <Route path="room" element={<Outlet />}>
             <Route path=":roomId" element={<RoomRoute />} />
           </Route>
-          <Route path="lab" element={<Lab />} />
+          <Route path="lab" element={<Lab />}>
+            <Route path="radial-demo" element={<RadialDemo />} />
+          </Route>
         </Route>
       </Routes>
       <AtomIODevtools />
