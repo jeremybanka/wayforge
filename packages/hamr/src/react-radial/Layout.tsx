@@ -67,7 +67,8 @@ export const Radial: React.FC<RadialOptions> = ({
         [`--y`]: currentPosition.y + `px`,
         [`--unit`]: bigCircleRatio * size + `px`,
         [`--element`]: size + `px`,
-        [`--is-active`]: isActive ? `all` : `none`,
+        [`--is-active-pointer-events`]: isActive ? `all` : `none`,
+        [`--is-active-opacity`]: isActive ? `1` : `0.5`,
       })}
       css={css`
         pointer-events: none;
@@ -76,15 +77,17 @@ export const Radial: React.FC<RadialOptions> = ({
         height: var(--unit);
         width: var(--unit);
         position: fixed;
-        /* background: #9992; */
         border-radius: 50%;
         z-index: 20;
         transition: all 100ms ease-in;
         .radial-option {
-          pointer-events: var(--is-active);
+          transition: all 100ms ease-in;
+          pointer-events: var(--is-active-pointer-events);
+          opacity: var(--is-active-opacity);
           user-select: none;
           position: absolute;
           border: 1px solid #fff;
+          background: #3337;
           border-radius: 50%;
           z-index: 10;
           display: flex;
