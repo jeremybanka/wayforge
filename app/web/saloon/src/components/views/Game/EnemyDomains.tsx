@@ -27,7 +27,6 @@ export const EnemyDomains: React.FC = () => {
         width: 100%;
         display: flex;
         flex-flow: row nowrap;
-        overflow-x: scroll;
         > * ~ * {
           margin-left: 10px;
         }
