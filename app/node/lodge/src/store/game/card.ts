@@ -1,5 +1,6 @@
+import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+
 import { Join } from "~/packages/anvl/src/join"
-import { atom, atomFamily, selectorFamily } from "~/packages/atom.io/src"
 import { Perspective } from "~/packages/occlusion/src"
 
 export const ownersOfCardsState = atom({
@@ -9,6 +10,11 @@ export const ownersOfCardsState = atom({
   })
     .from(`playerId`)
     .to(`cardId`),
+})
+export const ownersOfCardsStateJSON = selector({
+  key: `ownersOfCardsJSON`,
+  get: ({ get }) => get(ownersOfCardsState).toJSON(),
+  set: ({ set }, newValue) => set(ownersOfCardsState, Join.fromJSON(newValue)),
 })
 export const findOwnerOfCardState = selectorFamily<string | null, string>({
   key: `findOwnerOfCard`,
@@ -38,6 +44,11 @@ export const cardIndex = atom<Set<string>>({
   key: `cardIndex`,
   default: new Set<string>(),
 })
+export const cardIndexJSON = selector<string[]>({
+  key: `cardIndexJSON`,
+  get: ({ get }) => [...get(cardIndex)],
+  set: ({ set }, newValue) => set(cardIndex, new Set(newValue)),
+})
 
 export type CardCycle = {
   name: string
@@ -55,4 +66,10 @@ export const groupsAndZonesOfCardCyclesState = atom({
   })
     .from(`cardCycleId`)
     .to(`groupOrZoneId`),
+})
+export const groupsAndZonesOfCardCyclesStateJSON = selector({
+  key: `groupsAndZonesOfCardCyclesJSON`,
+  get: ({ get }) => get(groupsAndZonesOfCardCyclesState).toJSON(),
+  set: ({ set }, newValue) =>
+    set(groupsAndZonesOfCardCyclesState, Join.fromJSON(newValue)),
 })

@@ -1,15 +1,21 @@
+import { atom, atomFamily, selector, transaction } from "atom.io"
+
 import type { Identified } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
-import type { Json } from "~/packages/anvl/src/json"
-import { atom, atomFamily, transaction } from "~/packages/atom.io/src"
+import type { Json, JsonObj } from "~/packages/anvl/src/json"
 
-export const findCardValueState = atomFamily<Identified & Json, string>({
+export const findCardValueState = atomFamily<Identified & JsonObj, string>({
   key: `findCardValue`,
   default: () => ({ id: `` }),
 })
 export const cardValuesIndex = atom<Set<string>>({
   key: `cardValuesIndex`,
   default: new Set<string>(),
+})
+export const cardValuesIndexJSON = selector({
+  key: `cardValuesIndexJSON`,
+  get: ({ get }) => [...get(cardValuesIndex)],
+  set: ({ set }, newValue) => set(cardValuesIndex, new Set(newValue)),
 })
 export const valuesOfCardsState = atom({
   key: `valuesOfCards`,
@@ -18,6 +24,11 @@ export const valuesOfCardsState = atom({
   })
     .from(`valueId`)
     .to(`cardId`),
+})
+export const valuesOfCardsStateJSON = selector({
+  key: `valuesOfCardsJSON`,
+  get: ({ get }) => get(valuesOfCardsState).toJSON(),
+  set: ({ set }, newValue) => set(valuesOfCardsState, Join.fromJSON(newValue)),
 })
 
 export const addCardValueTX = transaction<

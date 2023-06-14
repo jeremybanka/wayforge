@@ -1,16 +1,15 @@
-import type { Json, JsonInterface } from "anvl/json"
+import type { Json } from "anvl/json"
 import { parseJson } from "anvl/json"
 import * as AtomIO from "atom.io"
 
 import type { ServerConfig } from ".."
 
-export const useExposeFamily =
-  ({ socket, store }: ServerConfig) =>
-  <J extends Json>(
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+export const useExposeFamily = ({ socket, store }: ServerConfig) => {
+  function exposeFamily<J extends Json>(
     family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-    index: AtomIO.StateToken<Set<string>>,
-    transform: JsonInterface<J>
-  ): void => {
+    index: AtomIO.StateToken<Set<string>>
+  ): void {
     socket.on(`sub:${family.key}`, (subKey?: AtomIO.Serializable) => {
       if (subKey === undefined) {
         const keys = AtomIO.getState(index, store)
@@ -19,7 +18,7 @@ export const useExposeFamily =
           socket.emit(
             `serve:${family.key}`,
             parseJson(token.family?.subKey || `null`),
-            transform.toJson(AtomIO.getState(token, store))
+            AtomIO.getState(token, store)
           )
         })
 
@@ -32,7 +31,7 @@ export const useExposeFamily =
                     socket.emit(
                       `serve:${family.key}`,
                       parseJson(token.family?.subKey || `null`),
-                      transform.toJson(newValue)
+                      newValue
                     )
                   },
                   store
@@ -45,7 +44,7 @@ export const useExposeFamily =
                     socket.emit(
                       `serve:${family.key}`,
                       parseJson(token.family?.subKey || `null`),
-                      transform.toJson(newValue)
+                      newValue
                     )
                   },
                   store
@@ -57,14 +56,11 @@ export const useExposeFamily =
         })
       } else {
         const token = family(subKey)
-        socket.emit(
-          `serve:${token.key}`,
-          transform.toJson(AtomIO.getState(token, store))
-        )
+        socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
         const unsubscribe = AtomIO.subscribe(
           token,
           ({ newValue }) => {
-            socket.emit(`serve:${token.key}`, transform.toJson(newValue))
+            socket.emit(`serve:${token.key}`, newValue)
           },
           store
         )
@@ -75,3 +71,5 @@ export const useExposeFamily =
       }
     })
   }
+  return exposeFamily
+}

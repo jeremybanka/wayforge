@@ -3,15 +3,21 @@ import type { FC } from "react"
 import { useO } from "atom.io/react"
 import { Link } from "react-router-dom"
 
-import { createRoomTX, roomsIndex } from "~/app/node/lodge/src/store/rooms"
-import { stringSetJsonInterface } from "~/packages/anvl/src/json"
+import {
+  createRoomTX,
+  roomsIndex,
+  roomsIndexJSON,
+} from "~/app/node/lodge/src/store/rooms"
 
 import { useRemoteState, useRemoteTransaction } from "../../services/store"
 
 export const Lobby: FC = () => {
   const roomIds = useO(roomsIndex)
   const runCreateRoom = useRemoteTransaction(createRoomTX)
-  useRemoteState(roomsIndex, stringSetJsonInterface)
+  useRemoteState(roomsIndexJSON, {
+    toJson: (v) => v,
+    fromJson: (j) => j,
+  })
   return (
     <div>
       <h2>Lobby</h2>

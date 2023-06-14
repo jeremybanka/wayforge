@@ -22,11 +22,13 @@ export type { Store } from "./internal/store"
 export type { Serializable } from "~/packages/anvl/src/json"
 
 export type AtomToken<_> = {
+  _?: _
   key: string
   type: `atom`
   family?: FamilyMetadata
 }
 export type SelectorToken<_> = {
+  _?: _
   key: string
   type: `selector`
   family?: FamilyMetadata
@@ -34,6 +36,7 @@ export type SelectorToken<_> = {
 export type StateToken<T> = AtomToken<T> | SelectorToken<T>
 
 export type ReadonlySelectorToken<_> = {
+  _?: _
   key: string
   type: `readonly_selector`
   family?: FamilyMetadata

@@ -1,12 +1,18 @@
 import type { TransactionIO } from "atom.io"
-import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
+import { atom, atomFamily, selector, selectorFamily, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
 import { Join } from "~/packages/anvl/src/join"
+import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 
 export const roomsIndex = atom<Set<string>>({
   key: `roomsIndex`,
   default: new Set<string>(),
+})
+export const roomsIndexJSON = selector<string[]>({
+  key: `roomsIndexJSON`,
+  get: ({ get }) => [...get(roomsIndex)],
+  set: ({ set }, newValue) => set(roomsIndex, new Set(newValue)),
 })
 export type Room = {
   id: string
@@ -32,15 +38,28 @@ export const playersIndex = atom<Set<string>>({
   key: `playersIndex`,
   default: new Set<string>(),
 })
+export const playersIndexJSON = selector<string[]>({
+  key: `playersIndexJSON `,
+  get: ({ get }) => [...get(playersIndex)],
+  set: ({ set }, newValue) => set(playersIndex, new Set(newValue)),
+})
+
 export const playersInRoomsState = atom<
   Join<{ enteredAt: number }, `roomId`, `playerId`>
 >({
-  key: `playersInRooms`,
+  key: `playersInRoomsIndex`,
   default: new Join<{ enteredAt: number }>({
     relationType: `1:n`,
   })
     .from(`roomId`)
     .to(`playerId`),
+})
+export const playersInRoomsStateJSON = selector<
+  RelationData<{ enteredAt: number }, `roomId`, `playerId`>
+>({
+  key: `playersInRoomsJSON`,
+  get: ({ get }) => get(playersInRoomsState).toJSON(),
+  set: ({ set }, newValue) => set(playersInRoomsState, new Join(newValue)),
 })
 export const findPlayersInRoomState = selectorFamily<
   { id: string; enteredAt: number }[],

@@ -1,23 +1,17 @@
-import type { Json, JsonInterface } from "anvl/json"
+import type { Json } from "anvl/json"
 import * as AtomIO from "atom.io"
 
 import type { ServerConfig } from ".."
 
-export const useExposeSingle =
-  ({ socket, store }: ServerConfig) =>
-  <J extends Json>(
-    token: AtomIO.StateToken<J>,
-    transform: JsonInterface<J>
-  ): void => {
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+export const useExposeSingle = ({ socket, store }: ServerConfig) => {
+  function exposeSingle<J extends Json>(token: AtomIO.StateToken<J>): void {
     socket.on(`sub:${token.key}`, () => {
-      socket.emit(
-        `serve:${token.key}`,
-        transform.toJson(AtomIO.getState(token, store))
-      )
+      socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
       const unsubscribe = AtomIO.subscribe(
         token,
         ({ newValue }) => {
-          socket.emit(`serve:${token.key}`, transform.toJson(newValue))
+          socket.emit(`serve:${token.key}`, newValue)
         },
         store
       )
@@ -26,3 +20,5 @@ export const useExposeSingle =
       })
     })
   }
+  return exposeSingle
+}
