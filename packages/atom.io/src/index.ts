@@ -18,6 +18,7 @@ export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
 export { __INTERNAL__ }
+export type { Store } from "./internal/store"
 export type { Serializable } from "~/packages/anvl/src/json"
 
 export type AtomToken<_> = {

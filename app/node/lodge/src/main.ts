@@ -1,12 +1,13 @@
 import * as AtomIO from "atom.io"
-import { serve, serveFamily } from "atom.io/realtime"
+import * as RT from "atom.io/realtime"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
+import { isString } from "fp-ts/lib/string"
 import { Server as WebSocketServer } from "socket.io"
 
+import { isArray } from "~/packages/anvl/src/array"
 import type { ƒn } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
-import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
@@ -55,6 +56,10 @@ pipe(
     io.on(`connection`, (socket) => {
       logger.info(socket.id, `connected`)
       io.emit(`connection`, TIMESTAMP)
+
+      const exposeSingle = RT.useExposeSingle({ socket })
+      const exposeFamily = RT.useExposeFamily({ socket })
+
       AtomIO.setState(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
@@ -73,9 +78,13 @@ pipe(
         logger.info(`${socket.id} <<`, event, ...args)
       })
 
-      serve(socket, roomsIndex, stringSetJsonInterface)
-      serveFamily(socket, findPlayersInRoomState, roomsIndex, {
-        fromJson: (json) => json,
+      // @ts-expect-error Sets are not Json!
+      exposeSingle<Set<string>>(roomsIndex, {
+        toJson: (stringSet) => Array.from(stringSet),
+        fromJson: (json) => new Set(json as any),
+      })
+      exposeFamily<string[]>(findPlayersInRoomState, roomsIndex, {
+        fromJson: (json) => (isArray(isString)(json) ? json : []),
         toJson: (value) => value,
       })
 
@@ -85,14 +94,18 @@ pipe(
         [findCardValueState, cardValuesIndex],
       ] as const
       gameStateFamilies.forEach(([family, index]) => {
-        serveFamily(socket, family, index, {
+        exposeFamily(family, index, {
           fromJson: (json) => json,
           toJson: (value) => value,
         })
       })
       const gameIndices = [cardIndex, cardGroupIndex, cardValuesIndex]
       gameIndices.forEach((index) => {
-        serve(socket, index, stringSetJsonInterface)
+        // @ts-expect-error Sets are not Json!
+        exposeSingle<Set<string>>(index, {
+          toJson: (stringSet) => Array.from(stringSet),
+          fromJson: (json) => new Set(json as any),
+        })
       })
       const gameJoinStates = [
         groupsAndZonesOfCardCyclesState,
@@ -102,7 +115,8 @@ pipe(
         valuesOfCardsState,
       ]
       gameJoinStates.forEach((join) =>
-        serve(socket, join, {
+        // @ts-expect-error Joins are not Json!
+        exposeSingle<Join<any>>(join, {
           toJson: (j) => j.toJSON(),
           fromJson: (json) => new Join(json as any),
         })

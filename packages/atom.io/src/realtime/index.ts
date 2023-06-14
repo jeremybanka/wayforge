@@ -1,1 +1,1 @@
-export * from "./compose-server-side-hooks"
+export * from "./hook-composition"
