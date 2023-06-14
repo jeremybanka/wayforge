@@ -11,6 +11,8 @@
     "react/package.json",
     "react-devtools/dist",
     "react-devtools/package.json",
+    "realtime/dist",
+    "realtime/package.json",
     "src"
   ],
   "exports": {
@@ -34,10 +36,17 @@
       "browser": "./react-devtools/dist/index.mjs",
       "import": "./react-devtools/dist/index.mjs",
       "require": "./react-devtools/dist/index.js"
+    },
+    "./realtime/package.json": "./realtime/package.json",
+    "./realtime": {
+      "types": "./realtime/dist/index.d.ts",
+      "browser": "./realtime/dist/index.mjs",
+      "import": "./realtime/dist/index.mjs",
+      "require": "./realtime/dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsup && (cd react && tsup) && (cd react-devtools && tsup)",
+    "build": "tsup && (cd react && tsup) && (cd react-devtools && tsup) && (cd realtime && tsup)",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"

@@ -1,13 +1,12 @@
 import * as AtomIO from "atom.io"
+import { serve, serveFamily } from "atom.io/realtime"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
-import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
-import type { JsonInterface } from "~/packages/anvl/src/json"
-import { parseJson, stringSetJsonInterface } from "~/packages/anvl/src/json"
+import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
@@ -41,79 +40,6 @@ import {
   playersIndex,
   roomsIndex,
 } from "./store/rooms"
-
-export const serve = <T>(
-  socket: Socket,
-  token: AtomIO.StateToken<T>,
-  transform: JsonInterface<T>
-): void => {
-  socket.on(`sub:${token.key}`, () => {
-    socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
-    const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
-      socket.emit(`serve:${token.key}`, transform.toJson(newValue))
-    })
-    socket.on(`unsub:${token.key}`, () => {
-      // socket.emit(`unsub:${token.key}`)
-      unsubscribe()
-    })
-  })
-}
-
-const serveFamily = <T>(
-  socket: Socket,
-  family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
-  index: AtomIO.StateToken<Set<string>>,
-  transform: JsonInterface<T>
-) => {
-  socket.on(`sub:${family.key}`, (subKey?: AtomIO.Serializable) => {
-    if (subKey === undefined) {
-      const keys = AtomIO.getState(index)
-      keys.forEach((key) => {
-        const token = family(key)
-        socket.emit(
-          `serve:${family.key}`,
-          parseJson(token.family?.subKey || `null`),
-          transform.toJson(AtomIO.getState(token))
-        )
-      })
-
-      const subscription =
-        family.type === `atom_family`
-          ? family.subject.subscribe((token) => {
-              AtomIO.subscribe(token, ({ newValue }) => {
-                socket.emit(
-                  `serve:${family.key}`,
-                  parseJson(token.family?.subKey || `null`),
-                  transform.toJson(newValue)
-                )
-              })
-            })
-          : family.subject.subscribe((token) => {
-              AtomIO.subscribe(token, ({ newValue }) => {
-                socket.emit(
-                  `serve:${family.key}`,
-                  parseJson(token.family?.subKey || `null`),
-                  transform.toJson(newValue)
-                )
-              })
-            })
-
-      socket.on(`unsub:${family.key}`, () => {
-        subscription.unsubscribe()
-      })
-    } else {
-      const token = family(subKey)
-      socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
-      const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
-        socket.emit(`serve:${token.key}`, transform.toJson(newValue))
-      })
-      socket.on(`unsub:${token.key}`, () => {
-        socket.emit(`unsub:${token.key}`)
-        unsubscribe()
-      })
-    }
-  })
-}
 
 const TIMESTAMP = Date.now()
 
