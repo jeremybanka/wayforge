@@ -36,7 +36,7 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
       const family: FamilyMetadata = { key: options.key, subKey }
       const fullKey = `${options.key}(${subKey})`
       const existing = withdraw({ key: fullKey, type: `atom` }, store)
-      const token = existing
+      const token: AtomToken<any> = existing
         ? deposit(existing)
         : atom__INTERNAL<T>(
             {
@@ -62,7 +62,7 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
 }
 
 export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
-  options: SelectorFamilyOptions<T, K>,
+  options: ReadonlySelectorFamilyOptions<T, K>,
   store?: Store
 ): ReadonlySelectorFamily<T, K> {
   const core = target(store)
@@ -108,7 +108,7 @@ export function selectorFamily__INTERNAL<T, K extends Serializable>(
   const isReadonly = !(`set` in options)
 
   if (isReadonly) {
-    return readonlySelectorFamily__INTERNAL(options as any, store)
+    return readonlySelectorFamily__INTERNAL(options, store)
   }
   const core = target(store)
   const subject = new Rx.Subject<SelectorToken<T>>()

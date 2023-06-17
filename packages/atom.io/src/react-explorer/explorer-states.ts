@@ -46,7 +46,7 @@ export const makeViewsPerSpaceState = (
 
 export const makeSpaceViewsFamily = (
   key: string,
-  viewsPerSpaceState: AtomToken<Join>
+  viewsPerSpaceState: AtomToken<Join<null, `viewId`, `spaceId`>>
 ): ReadonlySelectorFamily<string[], string> =>
   selectorFamily<string[], string>({
     key: `${key}:space_views`,

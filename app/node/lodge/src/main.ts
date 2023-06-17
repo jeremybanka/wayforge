@@ -122,11 +122,13 @@ pipe(
         spawnCardTX,
         spawnClassicDeckTX,
       ] as const
-      gameTransactions.forEach((tx) => {
-        socket.on(`tx:${tx.key}`, <ƒ extends ƒn>(update: TransactionUpdate<ƒ>) =>
-          AtomIO.runTransaction<ƒ>(tx)(...update.params)
-        )
-      })
+      gameTransactions.forEach(
+        <ƒ extends ƒn>(tx: AtomIO.TransactionToken<ƒ>) => {
+          socket.on(`tx:${tx.key}`, (update: TransactionUpdate<ƒ>) =>
+            AtomIO.runTransaction<ƒ>(tx)(...update.params)
+          )
+        }
+      )
 
       socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
         AtomIO.runTransaction(createRoomTX)(update.output)

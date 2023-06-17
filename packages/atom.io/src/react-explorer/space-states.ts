@@ -48,7 +48,7 @@ export const makeSpaceLayoutState = (
 
 export const makeSpaceLayoutNodeFamily = (
   key: string,
-  spaceLayoutState: AtomToken<Join<{ size: number }>>
+  spaceLayoutState: AtomToken<Join<{ size: number }, `parent`, `child`>>
 ): ReadonlySelectorFamily<{ childSpaceIds: string[]; size: number }, string> =>
   selectorFamily<{ childSpaceIds: string[]; size: number }, string>({
     key: `${key}:explorer_space`,
