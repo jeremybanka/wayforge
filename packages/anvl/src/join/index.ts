@@ -52,9 +52,14 @@ export class Join<
   }
 
   public makeJsonInterface = (
-    isContent?: (json: Json) => json is CONTENT
+    ...params: CONTENT extends null ? [] : [(x: Json) => x is CONTENT]
   ): JsonInterface<Join<CONTENT, A, B>, RelationData<CONTENT, A, B>> => {
-    return makeJsonInterface({ isContent, from: this.a, to: this.b })
+    const isContent = params[0] as (x: Json) => x is CONTENT
+    return makeJsonInterface<CONTENT, A, B>({
+      isContent,
+      from: this.a,
+      to: this.b,
+    })
   }
 
   public from<AA extends string>(newA: AA): Join<CONTENT, AA, B> {
