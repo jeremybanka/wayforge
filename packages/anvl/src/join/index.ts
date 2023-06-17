@@ -2,7 +2,7 @@ import type { Refinement } from "fp-ts/Refinement"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-import type { RelationData } from "./core-relation-data"
+import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-related-ids"
 import { getContent, getRelations, setRelations } from "./relation-contents"
@@ -42,11 +42,9 @@ export class Join<
     B extends string
   >(
     json: Json,
-    isContent: Refinement<unknown, CONTENT> = cannotExist,
-    a: A = `from` as A,
-    b: B = `to` as B
+    options?: IsRelationDataOptions<CONTENT, A, B>
   ): Join<CONTENT, A, B> {
-    const isValid = isRelationData<CONTENT, A, B>(isContent, a, b)(json)
+    const isValid = isRelationData<CONTENT, A, B>(options)(json)
     if (isValid) {
       return new Join<CONTENT, A, B>(json)
     }

@@ -2,7 +2,6 @@ import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
-import { cannotExist } from "~/packages/anvl/src/refinement"
 
 import { addToIndex, removeFromIndex } from "."
 import {
@@ -21,9 +20,7 @@ import type {
   AtomFamily,
   AtomToken,
   ReadonlySelectorFamily,
-  ReadonlySelectorToken,
   SelectorFamily,
-  TransactionToken,
   Write,
 } from ".."
 import { selectorFamily, selector, transaction, atom } from ".."
@@ -39,7 +36,10 @@ export const makeViewsPerSpaceState = (
       persistAtom<Join<null, `viewId`, `spaceId`>>(localStorage)({
         stringify: (index) => JSON.stringify(index.toJSON()),
         parse: (json) =>
-          Join.fromJSON(JSON.parse(json), cannotExist, `viewId`, `spaceId`),
+          Join.fromJSON(JSON.parse(json), {
+            from: `viewId`,
+            to: `spaceId`,
+          }),
       })(`${key}:views_per_space`),
     ],
   })

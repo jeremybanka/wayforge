@@ -11,7 +11,6 @@ import { myHandsIndex } from "./store/my-hands-index"
 import { publicDeckIndex } from "./store/public-deck-index"
 import { useRadial } from "../../../services/radial"
 import { useRemoteTransaction } from "../../../services/store"
-import { button } from "../../containers/<button>"
 import { div } from "../../containers/<div>"
 
 export const Hand: FC<{ id: string }> = ({ id }) => {

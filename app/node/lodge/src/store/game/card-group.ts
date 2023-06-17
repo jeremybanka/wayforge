@@ -63,5 +63,12 @@ export const ownersOfGroupsState = atom({
 export const ownersOfGroupsStateJSON = selector({
   key: `ownersOfGroupsJSON`,
   get: ({ get }) => get(ownersOfGroupsState).toJSON(),
-  set: ({ set }, newValue) => set(ownersOfGroupsState, Join.fromJSON(newValue)),
+  set: ({ set }, newValue) =>
+    set(
+      ownersOfGroupsState,
+      Join.fromJSON(newValue, {
+        from: `playerId`,
+        to: `groupId`,
+      })
+    ),
 })

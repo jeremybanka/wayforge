@@ -30,12 +30,11 @@ export const makeSpaceLayoutState = (
         parse: (string) => {
           try {
             const json = parseJson(string)
-            const join = Join.fromJSON(
-              json,
-              hasExactProperties({ size: isNumber }),
-              `parent`,
-              `child`
-            )
+            const join = Join.fromJSON(json, {
+              isContent: hasExactProperties({ size: isNumber }),
+              from: `parent`,
+              to: `child`,
+            })
             return join
           } catch (thrown) {
             console.error(`Error parsing spaceLayoutState from localStorage`)
