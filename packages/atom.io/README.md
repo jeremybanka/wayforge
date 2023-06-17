@@ -20,13 +20,7 @@
 
 # atom.io
 ## upcoming features
-- [ ] store observation api
-- [x] subscribe to creation of atom tokens
-- [x] subscribe to creation of selector tokens
-- [x] subscribe to creation of readonly selector tokens
-- [ ] subscribe to creation of transaction tokens
-- [ ] subscribe to creation of timeline tokens
-- [ ] subscribe to changes in store configuration
+- [ ] suppressor: ({oldValue, newValue}) => boolean
 - [ ] resettable atoms
 - [ ] resettable selectors
 
@@ -34,6 +28,18 @@
 - [ ] document atom and selector families
 - [ ] document atom and selector
 - [ ] document transactions
+
+# src/internal/meta
+- [x] subscribe to creation of atom tokens
+- [x] subscribe to creation of selector tokens
+- [x] subscribe to creation of readonly selector tokens
+- [ ] reimplement state indices as selectors
+- [ ] subscribe to creation of transaction tokens
+- [ ] subscribe to creation of timeline tokens
+- [ ] subscribe to changes in store configuration
+
+# /react-devtools
+- [ ] 
 
 # /react
 ## features
@@ -43,8 +49,26 @@
 - [ ] useStoreIndex
 - [ ] useTransactionIO 
 
-# /effects
+# /realtime
+- [ ] expose single atom and selector
+- [ ] expose atom family and selector family
+- [ ] receive single atom and selector
+- [ ] receive atom family and selector family
+- [ ] receive transaction params, run transaction
+- [ ] assess transaction impact (active subscriptions influenced by transaction)
+- [ ] return transaction impact as timeline event
+
+# /react-realtime
+example: what's in the box? (options: green apple, green banana, red apple, red banana)
+- no player gets to see what's in the box
+- player 1 can see the color of the item in the box
+- player 2 can see the type of the item in the box
+  - atom<`${string} ${string}`> boxItem
+    - selector boxItemColor
+    - selector boxItemType
+  - 
+- 
+
+# /web-fx
 ## features
 - [ ] localStorage and sessionStorage effects
-- [ ] socket.io server effect
-- [ ] socket.io client effect
