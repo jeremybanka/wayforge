@@ -27,7 +27,7 @@
     "react-dom": "18.2.0",
     "react-router-dom": "6.13.0",
     "tsup": "7.0.0",
-    "vitest": "0.32.0"
+    "vitest": "0.32.2"
   },
   "peerDependencies": {
     "@emotion/react": "11.11.1",
