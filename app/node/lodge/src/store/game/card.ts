@@ -14,7 +14,14 @@ export const ownersOfCardsState = atom({
 export const ownersOfCardsStateJSON = selector({
   key: `ownersOfCardsJSON`,
   get: ({ get }) => get(ownersOfCardsState).toJSON(),
-  set: ({ set }, newValue) => set(ownersOfCardsState, Join.fromJSON(newValue)),
+  set: ({ set }, newValue) =>
+    set(
+      ownersOfCardsState,
+      Join.fromJSON(newValue, {
+        from: `playerId`,
+        to: `cardId`,
+      })
+    ),
 })
 export const findOwnerOfCardState = selectorFamily<string | null, string>({
   key: `findOwnerOfCard`,
@@ -71,5 +78,11 @@ export const groupsAndZonesOfCardCyclesStateJSON = selector({
   key: `groupsAndZonesOfCardCyclesJSON`,
   get: ({ get }) => get(groupsAndZonesOfCardCyclesState).toJSON(),
   set: ({ set }, newValue) =>
-    set(groupsAndZonesOfCardCyclesState, Join.fromJSON(newValue)),
+    set(
+      groupsAndZonesOfCardCyclesState,
+      Join.fromJSON(newValue, {
+        from: `cardCycleId`,
+        to: `groupOrZoneId`,
+      })
+    ),
 })

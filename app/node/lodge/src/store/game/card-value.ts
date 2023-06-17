@@ -28,7 +28,14 @@ export const valuesOfCardsState = atom({
 export const valuesOfCardsStateJSON = selector({
   key: `valuesOfCardsJSON`,
   get: ({ get }) => get(valuesOfCardsState).toJSON(),
-  set: ({ set }, newValue) => set(valuesOfCardsState, Join.fromJSON(newValue)),
+  set: ({ set }, newValue) =>
+    set(
+      valuesOfCardsState,
+      Join.fromJSON(newValue, {
+        from: `valueId`,
+        to: `cardId`,
+      })
+    ),
 })
 
 export const addCardValueTX = transaction<

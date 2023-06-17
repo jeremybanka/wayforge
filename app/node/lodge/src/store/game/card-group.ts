@@ -35,7 +35,13 @@ export const cardGroupsOfGamesStateJSON = selector({
   key: `cardGroupsOfGamesJSON`,
   get: ({ get }) => get(cardGroupsOfGamesState).toJSON(),
   set: ({ set }, newValue) =>
-    set(cardGroupsOfGamesState, Join.fromJSON(newValue)),
+    set(
+      cardGroupsOfGamesState,
+      Join.fromJSON(newValue, {
+        from: `gameId`,
+        to: `cardGroupId`,
+      })
+    ),
 })
 
 export const groupsOfCardsState = atom({
@@ -49,7 +55,14 @@ export const groupsOfCardsState = atom({
 export const groupsOfCardsStateJSON = selector({
   key: `groupsOfCardsJSON`,
   get: ({ get }) => get(groupsOfCardsState).toJSON(),
-  set: ({ set }, newValue) => set(groupsOfCardsState, Join.fromJSON(newValue)),
+  set: ({ set }, newValue) =>
+    set(
+      groupsOfCardsState,
+      Join.fromJSON(newValue, {
+        from: `groupId`,
+        to: `cardId`,
+      })
+    ),
 })
 
 export const ownersOfGroupsState = atom({
