@@ -50,23 +50,26 @@
 - [ ] useTransactionIO 
 
 # /realtime
-- [ ] expose single atom and selector
-- [ ] expose atom family and selector family
+- [x] expose single atom and selector
+- [x] expose atom family and selector family
 - [ ] receive single atom and selector
 - [ ] receive atom family and selector family
-- [ ] receive transaction params, run transaction
+- [x] receive transaction params, run transaction
 - [ ] assess transaction impact (active subscriptions influenced by transaction)
 - [ ] return transaction impact as timeline event
+- [ ] identity-based exposure and receipt
 
 # /react-realtime
 example: what's in the box? (options: green apple, green banana, red apple, red banana)
 - no player gets to see what's in the box
 - player 1 can see the color of the item in the box
+  - a register must be kept allocating "subscription permissions" per player
+  - sometimes permissions may refer to "true" or "global" state; sometimes to state that is "virtual" or "local" to the player
 - player 2 can see the type of the item in the box
-  - atom<`${string} ${string}`> boxItem
-    - selector boxItemColor
-    - selector boxItemType
-  - 
+- atom<`${string} ${string}`> boxItem
+  - selector boxItemColor
+  - selector boxItemType
+- 
 - 
 
 # /web-fx
