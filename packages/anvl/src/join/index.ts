@@ -1,17 +1,15 @@
-import type { Refinement } from "fp-ts/Refinement"
-
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
 import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-related-ids"
+import { makeJsonInterface } from "./make-json-interface"
 import { getContent, getRelations, setRelations } from "./relation-contents"
 import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
-import type { Json, JsonObj } from "../json"
+import type { Json, JsonInterface, JsonObj } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
-import { cannotExist } from "../refinement"
 
 export class Join<
   CONTENT extends JsonObj | null = null,
@@ -51,6 +49,12 @@ export class Join<
     throw new Error(
       `Saved JSON for this Join is invalid: ${JSON.stringify(json)}`
     )
+  }
+
+  public makeJsonInterface = (
+    isContent?: (json: Json) => json is CONTENT
+  ): JsonInterface<Join<CONTENT, A, B>, RelationData<CONTENT, A, B>> => {
+    return makeJsonInterface({ isContent, from: this.a, to: this.b })
   }
 
   public from<AA extends string>(newA: AA): Join<CONTENT, AA, B> {
