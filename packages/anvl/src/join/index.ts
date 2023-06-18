@@ -1,3 +1,5 @@
+import type { Refinement } from "fp-ts/lib/Refinement"
+
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
 import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
@@ -64,7 +66,7 @@ export class Join<
   }
 
   public makeJsonInterface = (
-    ...params: CONTENT extends null ? [] : [(x: Json) => x is CONTENT]
+    ...params: CONTENT extends null ? [] : [Refinement<unknown, CONTENT>]
   ): JsonInterface<Join<CONTENT, A, B>, RelationData<CONTENT, A, B>> => {
     return makeJsonInterface<CONTENT, A, B>(this, ...params)
   }
