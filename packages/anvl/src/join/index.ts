@@ -23,7 +23,11 @@ export class Join<
   public readonly relations: Record<string, string[]>
   public readonly contents: Record<string, CONTENT>
   public constructor(json?: Partial<RelationData<CONTENT, A, B>>) {
-    Object.assign(this, { ...EMPTY_RELATION_DATA, ...json })
+    Object.assign(this, {
+      ...EMPTY_RELATION_DATA,
+      ...json,
+      makeJsonInterface: this.makeJsonInterface,
+    })
   }
   public toJSON(): RelationData<CONTENT, A, B> {
     return {
@@ -51,23 +55,18 @@ export class Join<
     )
   }
 
-  public makeJsonInterface = (
-    ...params: CONTENT extends null ? [] : [(x: Json) => x is CONTENT]
-  ): JsonInterface<Join<CONTENT, A, B>, RelationData<CONTENT, A, B>> => {
-    const isContent = params[0] as (x: Json) => x is CONTENT
-    return makeJsonInterface<CONTENT, A, B>({
-      isContent,
-      from: this.a,
-      to: this.b,
-    })
-  }
-
   public from<AA extends string>(newA: AA): Join<CONTENT, AA, B> {
     return new Join({ ...this, a: newA })
   }
 
   public to<BB extends string>(newB: BB): Join<CONTENT, A, BB> {
     return new Join({ ...this, b: newB })
+  }
+
+  public makeJsonInterface = (
+    ...params: CONTENT extends null ? [] : [(x: Json) => x is CONTENT]
+  ): JsonInterface<Join<CONTENT, A, B>, RelationData<CONTENT, A, B>> => {
+    return makeJsonInterface<CONTENT, A, B>(this, ...params)
   }
 
   public getRelatedId(id: string): string | undefined {

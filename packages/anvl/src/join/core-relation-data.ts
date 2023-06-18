@@ -42,7 +42,6 @@ export type IsRelationDataOptions<
   to?: B
   isContent?: (json: Json) => json is CONTENT
 }
-
 export const isRelationData =
   <
     CONTENT extends JsonObj | null = null,
@@ -53,8 +52,8 @@ export const isRelationData =
     to: b = `to` as B,
     isContent,
   }: IsRelationDataOptions<CONTENT, A, B> = {}) =>
-  (input: unknown): input is RelationData<CONTENT, A, B> =>
-    hasExactProperties<RelationData<CONTENT, A, B>>({
+  (input: unknown): input is RelationData<CONTENT, A, B> => {
+    return hasExactProperties<RelationData<CONTENT, A, B>>({
       contents: isContent
         ? isRecord(isString, isContent)
         : hasExactProperties({}),
@@ -63,3 +62,4 @@ export const isRelationData =
       a: isLiteral(a),
       b: isLiteral(b),
     })(input)
+  }
