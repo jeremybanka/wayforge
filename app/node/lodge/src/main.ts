@@ -56,17 +56,25 @@ pipe(
   }),
   (io) => {
     io.on(`connection`, (socket) => {
+      // WELCOME
       logger.info(socket.id, `connected`)
       io.emit(`connection`, TIMESTAMP)
-
-      const exposeSingle = RT.useExposeSingle({ socket })
-      const exposeFamily = RT.useExposeFamily({ socket })
-      const receiveTransaction = RT.useReceiveTransaction({ socket })
-
       AtomIO.setState(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
+      socket.on(`disconnect`, () => {
+        AtomIO.setState(
+          playersIndex,
+          (playersIndex) =>
+            new Set([...playersIndex].filter((id) => id !== socket.id))
+        )
+        AtomIO.setState(playersInRoomsState, (current) =>
+          current.remove({ playerId: socket.id })
+        )
+      })
+
+      // LOGGING
       socket.onAny((event, ...args) => {
         logger.info(`${socket.id}`, event, ...args)
       })
@@ -81,12 +89,42 @@ pipe(
         logger.info(`${socket.id} <<`, event, ...args)
       })
 
+      // COMPOSE REALTIME SERVICE HOOKS
+      const exposeSingle = RT.useExposeSingle({ socket })
+      const exposeFamily = RT.useExposeFamily({ socket })
+      const receiveTransaction = RT.useReceiveTransaction({ socket })
+
+      // ROOM SERVICES
       exposeSingle<string[]>(roomsIndexJSON)
       exposeFamily<{ id: string; enteredAt: number }[]>(
         findPlayersInRoomState,
         roomsIndex
       )
+      socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
+        AtomIO.runTransaction(createRoomTX)(update.output)
+      })
+      socket.on(`tx:joinRoom`, (update: TransactionUpdate<JoinRoomIO>) => {
+        const { roomId, playerId } = update.params[0]
+        if (playerId !== socket.id) {
+          logger.error(socket.id, `tried to join:room as`, playerId)
+          socket.disconnect()
+        }
+        AtomIO.runTransaction(joinRoomTX)(...update.params)
+        socket.join(roomId)
+        const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
+          findPlayersInRoomState(roomId),
+          ({ newValue }) => {
+            socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
+          }
+        )
+        socket.on(`tx:leaveRoom`, () => {
+          AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
+          socket.leave(roomId)
+          unsubscribeFromPlayersInRoom()
+        })
+      })
 
+      // GAME SERVICES
       const gameStateFamilies: [
         AtomIO.AtomFamily<JsonObj>,
         AtomIO.StateToken<Set<string>>
@@ -123,41 +161,6 @@ pipe(
         spawnClassicDeckTX,
       ] as const
       gameTransactions.forEach(receiveTransaction)
-
-      socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
-        AtomIO.runTransaction(createRoomTX)(update.output)
-      })
-      socket.on(`tx:joinRoom`, (update: TransactionUpdate<JoinRoomIO>) => {
-        const { roomId, playerId } = update.params[0]
-        if (playerId !== socket.id) {
-          logger.error(socket.id, `tried to join:room as`, playerId)
-          socket.disconnect()
-        }
-        AtomIO.runTransaction(joinRoomTX)(...update.params)
-        socket.join(roomId)
-        const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
-          findPlayersInRoomState(roomId),
-          ({ newValue }) => {
-            socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
-          }
-        )
-        socket.on(`tx:leaveRoom`, () => {
-          AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
-          socket.leave(roomId)
-          unsubscribeFromPlayersInRoom()
-        })
-      })
-
-      socket.on(`disconnect`, () => {
-        AtomIO.setState(
-          playersIndex,
-          (playersIndex) =>
-            new Set([...playersIndex].filter((id) => id !== socket.id))
-        )
-        AtomIO.setState(playersInRoomsState, (current) =>
-          current.remove({ playerId: socket.id })
-        )
-      })
     })
   }
 )
