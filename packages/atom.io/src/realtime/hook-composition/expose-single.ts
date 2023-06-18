@@ -12,7 +12,6 @@ export const useExposeSingle = ({ socket, store }: ServerConfig) => {
 
     const fillUnsubRequest = () => {
       socket.off(`unsub:${token.key}`, fillUnsubRequest)
-      console.log({ token, unsubscribeFromStateUpdates })
       unsubscribeFromStateUpdates?.()
       unsubscribeFromStateUpdates = null
     }
