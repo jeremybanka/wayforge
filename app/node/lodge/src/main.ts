@@ -4,7 +4,6 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import type { ƒn } from "~/packages/anvl/src/function"
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { JsonObj } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
@@ -62,6 +61,7 @@ pipe(
 
       const exposeSingle = RT.useExposeSingle({ socket })
       const exposeFamily = RT.useExposeFamily({ socket })
+      const receiveTransaction = RT.useReceiveTransaction({ socket })
 
       AtomIO.setState(
         playersIndex,
@@ -102,7 +102,7 @@ pipe(
         cardGroupIndexJSON,
         cardValuesIndexJSON,
       ]
-      gameIndices.forEach((indexToken) => exposeSingle(indexToken))
+      gameIndices.forEach(exposeSingle)
 
       const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
         groupsAndZonesOfCardCyclesStateJSON,
@@ -111,7 +111,7 @@ pipe(
         ownersOfGroupsStateJSON,
         valuesOfCardsStateJSON,
       ]
-      gameJoinStates.forEach((stateToken) => exposeSingle(stateToken))
+      gameJoinStates.forEach(exposeSingle)
 
       const gameTransactions = [
         add52ClassicCardsTX,
@@ -122,13 +122,7 @@ pipe(
         spawnCardTX,
         spawnClassicDeckTX,
       ] as const
-      gameTransactions.forEach(
-        <ƒ extends ƒn>(tx: AtomIO.TransactionToken<ƒ>) => {
-          socket.on(`tx:${tx.key}`, (update: TransactionUpdate<ƒ>) =>
-            AtomIO.runTransaction<ƒ>(tx)(...update.params)
-          )
-        }
-      )
+      gameTransactions.forEach(receiveTransaction)
 
       socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
         AtomIO.runTransaction(createRoomTX)(update.output)

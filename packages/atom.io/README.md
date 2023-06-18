@@ -58,6 +58,7 @@
 - [ ] assess transaction impact (active subscriptions influenced by transaction)
 - [ ] return transaction impact as timeline event
 - [ ] identity-based exposure and receipt
+- [ ] expose selector as atom
 
 # /react-realtime
 example: what's in the box? (options: green apple, green banana, red apple, red banana)
@@ -66,7 +67,7 @@ example: what's in the box? (options: green apple, green banana, red apple, red 
   - a register must be kept allocating "subscription permissions" per player
   - sometimes permissions may refer to "true" or "global" state; sometimes to state that is "virtual" or "local" to the player
 - player 2 can see the type of the item in the box
-- atom<`${string} ${string}`> boxItem
+- atom<`${string}____${string}`> boxItem
   - selector boxItemColor
   - selector boxItemType
 - 

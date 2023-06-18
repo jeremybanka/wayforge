@@ -3,6 +3,7 @@ import type * as SocketIO from "socket.io"
 
 export * from "./expose-single"
 export * from "./expose-family"
+export * from "./receive-transaction"
 
 export type ServerConfig = {
   socket: SocketIO.Socket
