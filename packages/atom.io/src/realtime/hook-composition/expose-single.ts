@@ -7,19 +7,33 @@ import type { ServerConfig } from ".."
 export const useExposeSingle = ({ socket, store }: ServerConfig) => {
   return function exposeSingle<J extends Json>(
     token: AtomIO.StateToken<J>
-  ): void {
-    socket.on(`sub:${token.key}`, () => {
+  ): () => void {
+    let unsubscribeFromStateUpdates: (() => void) | null = null
+
+    const fillUnsubRequest = () => {
+      socket.off(`unsub:${token.key}`, fillUnsubRequest)
+      console.log({ token, unsubscribeFromStateUpdates })
+      unsubscribeFromStateUpdates?.()
+      unsubscribeFromStateUpdates = null
+    }
+
+    const fillSubRequest = () => {
       socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
-      const unsubscribe = AtomIO.subscribe(
+      unsubscribeFromStateUpdates = AtomIO.subscribe(
         token,
         ({ newValue }) => {
           socket.emit(`serve:${token.key}`, newValue)
         },
         store
       )
-      socket.on(`unsub:${token.key}`, () => {
-        unsubscribe()
-      })
-    })
+      socket.on(`unsub:${token.key}`, fillUnsubRequest)
+    }
+
+    socket.on(`sub:${token.key}`, fillSubRequest)
+
+    return () => {
+      socket.off(`sub:${token.key}`, fillSubRequest)
+      unsubscribeFromStateUpdates?.()
+    }
   }
 }
