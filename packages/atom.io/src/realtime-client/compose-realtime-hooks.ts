@@ -1,5 +1,5 @@
 import { atom, selector } from "atom.io"
-import type * as AtomIO from "atom.io"
+import * as AtomIO from "atom.io"
 import type * as SocketIO from "socket.io-client"
 
 import type { ƒn } from "~/packages/anvl/src/function"
@@ -11,7 +11,8 @@ import { composeRemoteSingleHook } from "./compose-remote-single-hook"
 import { composeRemoteTransactionHook } from "./compose-remote-transaction-hook"
 
 export const composeRealtimeHooks = (
-  socket: SocketIO.Socket
+  socket: SocketIO.Socket,
+  store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
 ): {
   socketIdState: AtomIO.ReadonlySelectorToken<string | null>
   useRemoteState: <T>(
@@ -47,9 +48,9 @@ export const composeRealtimeHooks = (
       key: `socketIdState`,
       get: ({ get }) => get(socketIdState_INTERNAL),
     }),
-    useRemoteState: composeRemoteSingleHook(socket),
-    useRemoteFamily: composeRemoteFamilyHook(socket),
-    useRemoteFamilyMember: composeRemoteFamilyMemberHook(socket),
-    useRemoteTransaction: composeRemoteTransactionHook(socket),
+    useRemoteState: composeRemoteSingleHook(socket, store),
+    useRemoteFamily: composeRemoteFamilyHook(socket, store),
+    useRemoteFamilyMember: composeRemoteFamilyMemberHook(socket, store),
+    useRemoteTransaction: composeRemoteTransactionHook(socket, store),
   }
 }

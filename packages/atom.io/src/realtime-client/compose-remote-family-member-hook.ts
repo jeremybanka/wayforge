@@ -6,7 +6,10 @@ import type * as SocketIO from "socket.io-client"
 import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 
 export const composeRemoteFamilyMemberHook =
-  (socket: SocketIO.Socket) =>
+  (
+    socket: SocketIO.Socket,
+    store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
+  ) =>
   <T>(
     family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
     subKey: AtomIO.Serializable,
@@ -15,7 +18,7 @@ export const composeRemoteFamilyMemberHook =
     const token = family(subKey)
     useEffect(() => {
       socket.on(`serve:${token.key}`, (data: Json) => {
-        AtomIO.setState(family(subKey), transform.fromJson(data))
+        AtomIO.setState(family(subKey), transform.fromJson(data), store)
       })
       socket.emit(`sub:${family.key}`, subKey)
       return () => {

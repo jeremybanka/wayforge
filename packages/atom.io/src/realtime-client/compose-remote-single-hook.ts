@@ -6,11 +6,14 @@ import type * as SocketIO from "socket.io-client"
 import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 
 export const composeRemoteSingleHook =
-  (socket: SocketIO.Socket) =>
+  (
+    socket: SocketIO.Socket,
+    store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
+  ) =>
   <T>(token: AtomIO.StateToken<T>, transform: JsonInterface<T>): void => {
     useEffect(() => {
       socket.on(`serve:${token.key}`, (data: Json) => {
-        return AtomIO.setState(token, transform.fromJson(data))
+        return AtomIO.setState(token, transform.fromJson(data), store)
       })
       socket.emit(`sub:${token.key}`)
       return () => {
