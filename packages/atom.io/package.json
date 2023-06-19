@@ -55,7 +55,7 @@
     }
   },
   "scripts": {
-    "build": "tsup && (cd json && tsup) && (cd react && tsup) && (cd react-devtools && tsup) && (cd realtime && tsup)",
+    "build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup)",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
