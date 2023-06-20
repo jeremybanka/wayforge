@@ -21,35 +21,14 @@ import { useRemoteFamily, useRemoteState } from "../../../services/store"
 import { h3 } from "../../containers/<hX>"
 
 export const Game: FC = () => {
-  useRemoteState(ownersOfGroupsStateJSON, {
-    toJson: (groupsOfCards) => groupsOfCards,
-    fromJson: (json) => json as any,
-  })
-  useRemoteState(valuesOfCardsStateJSON, {
-    toJson: (valuesOfCards) => valuesOfCards,
-    fromJson: (json) => json as any,
-  })
-  useRemoteState(groupsOfCardsStateJSON, {
-    toJson: (groupsOfCards) => groupsOfCards,
-    fromJson: (json) => json as any,
-  })
-  useRemoteState(cardIndexJSON, {
-    toJson: (cardIndex) => cardIndex,
-    fromJson: (json) => json as any,
-  })
-  useRemoteState(cardGroupIndexJSON, {
-    toJson: (cardGroupIndex) => cardGroupIndex,
-    fromJson: (json) => json as any,
-  })
-  useRemoteState(cardValuesIndexJSON, {
-    toJson: (cardValuesIndex) => cardValuesIndex,
-    fromJson: (json) => json as any,
-  })
+  useRemoteState(ownersOfGroupsStateJSON)
+  useRemoteState(valuesOfCardsStateJSON)
+  useRemoteState(groupsOfCardsStateJSON)
+  useRemoteState(cardIndexJSON)
+  useRemoteState(cardGroupIndexJSON)
+  useRemoteState(cardValuesIndexJSON)
 
-  useRemoteFamily(findCardGroupState, {
-    toJson: (v) => v,
-    fromJson: (j) => j as CardGroup,
-  })
+  useRemoteFamily(findCardGroupState)
 
   return (
     <div

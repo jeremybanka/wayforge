@@ -16,10 +16,8 @@ import { useRemoteState, useRemoteTransaction } from "../../services/store"
 export const Lobby: FC = () => {
   const roomIds = useO(roomsIndex)
   const runCreateRoom = useRemoteTransaction(createRoomTX)
-  useRemoteState(roomsIndexJSON, {
-    toJson: (v) => v,
-    fromJson: (j) => (isArray(isString)(j) ? j : []),
-  })
+  useRemoteState(roomsIndexJSON)
+
   return (
     <div>
       <h2>Lobby</h2>

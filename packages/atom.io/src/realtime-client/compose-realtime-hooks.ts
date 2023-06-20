@@ -3,7 +3,7 @@ import * as AtomIO from "atom.io"
 import type * as SocketIO from "socket.io-client"
 
 import type { ƒn } from "~/packages/anvl/src/function"
-import type { JsonInterface } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import { composeRemoteFamilyHook } from "./compose-remote-family-hook"
 import { composeRemoteFamilyMemberHook } from "./compose-remote-family-member-hook"
@@ -15,18 +15,13 @@ export const composeRealtimeHooks = (
   store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
 ): {
   socketIdState: AtomIO.ReadonlySelectorToken<string | null>
-  useRemoteState: <T>(
-    token: AtomIO.StateToken<T>,
-    transform: JsonInterface<T>
+  useRemoteState: <J extends Json>(token: AtomIO.StateToken<J>) => void
+  useRemoteFamily: <J extends Json>(
+    family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>
   ) => void
-  useRemoteFamily: <T>(
-    family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
-    transform: JsonInterface<T>
-  ) => void
-  useRemoteFamilyMember: <T>(
-    family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
-    subKey: string,
-    transform: JsonInterface<T>
+  useRemoteFamilyMember: <J extends Json>(
+    family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
+    subKey: string
   ) => void
   useRemoteTransaction: <ƒ extends ƒn>(
     token: AtomIO.TransactionToken<ƒ>
