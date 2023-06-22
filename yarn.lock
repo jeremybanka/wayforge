@@ -3454,7 +3454,7 @@ __metadata:
     npmlog: 7.0.1
     prettier: 2.8.8
     simple-git: 3.19.0
-    socket.io: 4.6.2
+    socket.io: 4.7.0
     tsx: 3.12.7
     vitest: 0.32.2
   languageName: unknown
@@ -3483,8 +3483,8 @@ __metadata:
     lodash: 4.17.21
     nanoid: ^4.0.2
     rxjs: ^7.8.0
-    socket.io: 4.6.2
-    socket.io-client: 4.6.2
+    socket.io: 4.7.0
+    socket.io-client: 4.7.0
     socketio-auth: 0.1.1
     tsx: 3.12.7
     vite-tsconfig-paths: 4.2.0
@@ -3579,8 +3579,8 @@ __metadata:
     fp-ts: 2.16.0
     immer: 10.0.2
     phaser: 3.60.0
-    socket.io: 4.6.2
-    socket.io-client: 4.6.2
+    socket.io: 4.7.0
+    socket.io-client: 4.7.0
     vite: 4.3.9
     vite-tsconfig-paths: 4.2.0
     zustand: 4.3.8
@@ -5508,29 +5508,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"engine.io-client@npm:~6.4.0":
-  version: 6.4.0
-  resolution: "engine.io-client@npm:6.4.0"
+"engine.io-client@npm:~6.5.0":
+  version: 6.5.0
+  resolution: "engine.io-client@npm:6.5.0"
   dependencies:
     "@socket.io/component-emitter": ~3.1.0
     debug: ~4.3.1
-    engine.io-parser: ~5.0.3
+    engine.io-parser: ~5.1.0
     ws: ~8.11.0
     xmlhttprequest-ssl: ~2.0.0
-  checksum: f412a5d490d073bc6b1240002ea9d46c4813bfb7ad98edd54db3760d75cac1d7f73c2f802a7ce04827c1e304fa26f4d464785efdb003d6231cadedca649a7146
+  checksum: 280435a93d5ba9441c9f0018311eb9aa0c1c1bb3ad840970729f474c388c7066a7811d43bb06b5c7bd306e2b898c9dc70a42847dde079ccf43220f55b637f0f9
   languageName: node
   linkType: hard
 
-"engine.io-parser@npm:~5.0.3":
-  version: 5.0.7
-  resolution: "engine.io-parser@npm:5.0.7"
-  checksum: 70ce4e22429ad4afbba187a0f71f87eb1448dbc2e4ff611857e46ca5ad09951408afa97f216e5fda993be4a944815b6f8eaebd6f70a9de522b54c7b8262fafb4
+"engine.io-parser@npm:~5.1.0":
+  version: 5.1.0
+  resolution: "engine.io-parser@npm:5.1.0"
+  checksum: a15fc0ba5d5fc5fb2c3029de1826538970463d0fa5c04d8dc2c72aabde92f1c923a9de409962490c3204da7245704286f9fb0ed4e5d71b55a6b035945f64c281
   languageName: node
   linkType: hard
 
-"engine.io@npm:~6.4.2":
-  version: 6.4.2
-  resolution: "engine.io@npm:6.4.2"
+"engine.io@npm:~6.5.0":
+  version: 6.5.0
+  resolution: "engine.io@npm:6.5.0"
   dependencies:
     "@types/cookie": ^0.4.1
     "@types/cors": ^2.8.12
@@ -5540,9 +5540,9 @@ __metadata:
     cookie: ~0.4.1
     cors: ~2.8.5
     debug: ~4.3.1
-    engine.io-parser: ~5.0.3
+    engine.io-parser: ~5.1.0
     ws: ~8.11.0
-  checksum: c4ca538c98d251ff00756ed955d924c3fd78e61af0a5825c9fa1d77ebb661ead7971598fb61daf079c2655c7be2d4a26094e446759e3c6786d8ac75ccffe36d5
+  checksum: 1b4550409591133267c8afdaeb2e6ab1e8e1fe7c7e5219baea1b874bc200db21701cf02c30d3a1e73be81a5131146893c23f1a45707f603405bb4cd59d4dee2a
   languageName: node
   linkType: hard
 
@@ -11335,8 +11335,8 @@ __metadata:
     fp-ts: 2.16.0
     react: 18.2.0
     recoil: 0.7.7
-    socket.io: 4.6.2
-    socket.io-client: 4.6.2
+    socket.io: 4.7.0
+    socket.io-client: 4.7.0
     tmp: 0.2.1
     tsup: 7.0.0
     vitest: 0.32.2
@@ -11357,8 +11357,8 @@ __metadata:
     react: 18.2.0
     recoil: 0.7.7
     simple-git: 3.19.0
-    socket.io: 4.6.2
-    socket.io-client: 4.6.2
+    socket.io: 4.7.0
+    socket.io-client: 4.7.0
     tmp: 0.2.1
     tsup: 7.0.0
     vitest: 0.32.2
@@ -11379,15 +11379,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io-client@npm:4.6.2":
-  version: 4.6.2
-  resolution: "socket.io-client@npm:4.6.2"
+"socket.io-client@npm:4.7.0":
+  version: 4.7.0
+  resolution: "socket.io-client@npm:4.7.0"
   dependencies:
     "@socket.io/component-emitter": ~3.1.0
     debug: ~4.3.2
-    engine.io-client: ~6.4.0
+    engine.io-client: ~6.5.0
     socket.io-parser: ~4.2.4
-  checksum: 2e0bb4518f0be0066f47fe89bdabb8169ad87f44c617d4b40aa196be04e6c0b1fd5daa9de322414f2d0b40757987f299168f916627120d9018ecf979d9a170f5
+  checksum: bcc0c7959ec49cb738957d353ceba2d794d743c597255110d49ec17c28f33005368ce46519f360135843b93b2270b20fab70691ce48c05c1c4f1cdcf75b36c11
   languageName: node
   linkType: hard
 
@@ -11401,17 +11401,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io@npm:4.6.2":
-  version: 4.6.2
-  resolution: "socket.io@npm:4.6.2"
+"socket.io@npm:4.7.0":
+  version: 4.7.0
+  resolution: "socket.io@npm:4.7.0"
   dependencies:
     accepts: ~1.3.4
     base64id: ~2.0.0
+    cors: ~2.8.5
     debug: ~4.3.2
-    engine.io: ~6.4.2
+    engine.io: ~6.5.0
     socket.io-adapter: ~2.5.2
     socket.io-parser: ~4.2.4
-  checksum: 17f48c65627f6663384529072e33bff631eb496f6189a1325dd6775b2a50779b2acb36b6f57c9fc26f28e3ae109fb238d39167aebfbf96838a5fb7dd1b74c209
+  checksum: 99e4a40d13b1f04e2febddd484870a3ea85e7cc310bf8dbb35adc8111a29fee416a3c01a2c1fd7d06a1bee5ede765e181966753fd28b718331744ef67c83a961
   languageName: node
   linkType: hard
 
