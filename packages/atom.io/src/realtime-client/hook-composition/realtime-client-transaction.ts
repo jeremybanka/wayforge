@@ -6,7 +6,7 @@ import type * as SocketIO from "socket.io-client"
 import type { ƒn } from "~/packages/anvl/src/function"
 
 const TX_SUBS = new Map<string, number>()
-export const composeRemoteTransactionHook =
+export const realtimeClientTransactionHook =
   (
     socket: SocketIO.Socket,
     store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE

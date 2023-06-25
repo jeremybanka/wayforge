@@ -5,10 +5,10 @@ import type * as SocketIO from "socket.io-client"
 import type { ƒn } from "~/packages/anvl/src/function"
 import type { Json } from "~/packages/anvl/src/json"
 
-import { composeRemoteFamilyHook } from "./compose-remote-family-hook"
-import { composeRemoteFamilyMemberHook } from "./compose-remote-family-member-hook"
-import { composeRemoteSingleHook } from "./compose-remote-single-hook"
-import { composeRemoteTransactionHook } from "./compose-remote-transaction-hook"
+import { realtimeClientFamilyHook } from "./realtime-client-family"
+import { realtimeClientFamilyMemberHook } from "./realtime-client-family-member"
+import { realtimeClientSingleHook } from "./realtime-client-single"
+import { realtimeClientTransactionHook } from "./realtime-client-transaction"
 
 export const composeRealtimeHooks = (
   socket: SocketIO.Socket,
@@ -43,9 +43,9 @@ export const composeRealtimeHooks = (
       key: `socketIdState`,
       get: ({ get }) => get(socketIdState_INTERNAL),
     }),
-    useRemoteState: composeRemoteSingleHook(socket, store),
-    useRemoteFamily: composeRemoteFamilyHook(socket, store),
-    useRemoteFamilyMember: composeRemoteFamilyMemberHook(socket, store),
-    useRemoteTransaction: composeRemoteTransactionHook(socket, store),
+    useRemoteState: realtimeClientSingleHook(socket, store),
+    useRemoteFamily: realtimeClientFamilyHook(socket, store),
+    useRemoteFamilyMember: realtimeClientFamilyMemberHook(socket, store),
+    useRemoteTransaction: realtimeClientTransactionHook(socket, store),
   }
 }

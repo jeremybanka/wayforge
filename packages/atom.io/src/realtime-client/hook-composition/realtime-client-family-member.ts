@@ -5,7 +5,7 @@ import type * as SocketIO from "socket.io-client"
 
 import type { Json } from "~/packages/anvl/src/json"
 
-export const composeRemoteFamilyMemberHook =
+export const realtimeClientFamilyMemberHook =
   (
     socket: SocketIO.Socket,
     store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
