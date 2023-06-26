@@ -16,6 +16,7 @@ import type { Store } from "./internal/store"
 export * from "./atom"
 export * from "./logger"
 export * from "./selector"
+export * from "./silo"
 export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
@@ -59,7 +60,7 @@ export const getState = <T>(
     throw new Error(
       `${capitalize(token.type)} "${token.key}" not found in store "${
         store.config.name
-      }.`
+      }".`
     )
   }
   return getState__INTERNAL(state, store)
