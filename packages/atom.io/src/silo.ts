@@ -1,5 +1,3 @@
-import { option } from "fp-ts/lib/Option"
-
 import type { timeline } from "."
 import { getState, setState, subscribe } from "."
 import type { atom, atomFamily } from "./atom"

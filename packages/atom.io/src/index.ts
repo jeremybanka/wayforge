@@ -1,4 +1,4 @@
-import { capitalize } from "~/packages/socket-io.git/src/socket-git-recoil"
+import { capitalize } from "~/packages/anvl/src/string/capitalize"
 
 import {
   IMPLICIT,
