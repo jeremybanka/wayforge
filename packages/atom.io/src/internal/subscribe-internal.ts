@@ -59,6 +59,11 @@ export const subscribeToRootAtoms = <T>(
       ? null
       : traceAllSelectorAtoms(state.key, store).map((atomToken) => {
           const atom = withdraw(atomToken, store)
+          if (atom === null) {
+            throw new Error(
+              `Atom "${atomToken.key}", a dependency of selector "${state.key}", not found in store "${store.config.name}".`
+            )
+          }
           return atom.subject.subscribe((atomChange) => {
             store.config.logger?.info(
               `📢 selector "${state.key}" saw root "${atomToken.key}" go (`,

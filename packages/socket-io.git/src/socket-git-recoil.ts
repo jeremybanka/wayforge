@@ -3,6 +3,7 @@ import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object/entries"
+import { capitalize } from "~/packages/anvl/src/string/capitalize"
 import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
 
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
@@ -32,9 +33,6 @@ export type GitClientTools = {
       }
     : never
 }
-
-export const capitalize = (str: string): string =>
-  str[0].toUpperCase() + str.slice(1)
 
 export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
   const completeInterface = {} as GitClientTools

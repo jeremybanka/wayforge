@@ -44,5 +44,12 @@ export function transaction<ƒ extends ƒn>(
 
 export const runTransaction =
   <ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
-  (...parameters: Parameters<ƒ>): ReturnType<ƒ> =>
-    withdraw(token, store).run(...parameters)
+  (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
+    const tx = withdraw(token, store)
+    if (tx) {
+      return tx.run(...parameters)
+    }
+    throw new Error(
+      `Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`
+    )
+  }
