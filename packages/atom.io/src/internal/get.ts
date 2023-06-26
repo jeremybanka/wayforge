@@ -30,24 +30,27 @@ export function lookup(
   return { key, type }
 }
 
-export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T>
-export function withdraw<T>(token: SelectorToken<T>, store: Store): Selector<T>
+export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T> | null
+export function withdraw<T>(
+  token: SelectorToken<T>,
+  store: Store
+): Selector<T> | null
 export function withdraw<T>(
   token: StateToken<T>,
   store: Store
-): Atom<T> | Selector<T>
+): Atom<T> | Selector<T> | null
 export function withdraw<T>(
   token: ReadonlySelectorToken<T>,
   store: Store
-): ReadonlySelector<T>
+): ReadonlySelector<T> | null
 export function withdraw<T>(
   token: TransactionToken<T>,
   store: Store
-): Transaction<T extends ƒn ? T : never>
+): Transaction<T extends ƒn ? T : never> | null
 export function withdraw<T>(
   token: ReadonlySelectorToken<T> | StateToken<T>,
   store: Store
-): Atom<T> | ReadonlySelector<T> | Selector<T>
+): Atom<T> | ReadonlySelector<T> | Selector<T> | null
 export function withdraw<T>(
   token: ReadonlySelectorToken<T> | StateToken<T> | TransactionToken<T>,
   store: Store
@@ -55,13 +58,15 @@ export function withdraw<T>(
   | Atom<T>
   | ReadonlySelector<T>
   | Selector<T>
-  | Transaction<T extends ƒn ? T : never> {
+  | Transaction<T extends ƒn ? T : never>
+  | null {
   const core = target(store)
   return (
     HAMT.get(token.key, core.atoms) ??
     HAMT.get(token.key, core.selectors) ??
     HAMT.get(token.key, core.readonlySelectors) ??
-    HAMT.get(token.key, core.transactions)
+    HAMT.get(token.key, core.transactions) ??
+    null
   )
 }
 

@@ -1,3 +1,5 @@
+import { capitalize } from "~/packages/socket-io.git/src/socket-git-recoil"
+
 import {
   IMPLICIT,
   closeOperation,
@@ -53,6 +55,13 @@ export const getState = <T>(
   store: Store = IMPLICIT.STORE
 ): T => {
   const state = withdraw<T>(token, store)
+  if (state === null) {
+    throw new Error(
+      `${capitalize(token.type)} "${token.key}" not found in store "${
+        store.config.name
+      }.`
+    )
+  }
   return getState__INTERNAL(state, store)
 }
 
@@ -70,6 +79,13 @@ export const setState = <T, New extends T>(
     return
   }
   const state = withdraw(token, store)
+  if (state === null) {
+    throw new Error(
+      `${capitalize(token.type)} "${token.key}" not found in store "${
+        store.config.name
+      }.`
+    )
+  }
   setState__INTERNAL(state, value, store)
   closeOperation(store)
 }
