@@ -68,12 +68,10 @@ export const viewsPerSpaceState = atom<Join<null, `viewId`, `spaceId`>>({
     localStorageSerializationEffect(`viewsPerSpace`, {
       serialize: (index) => JSON.stringify(index.toJSON()),
       deserialize: (json) =>
-        Join.fromJSON<null, `viewId`, `spaceId`>(
-          JSON.parse(json),
-          undefined,
-          `viewId`,
-          `spaceId`
-        ),
+        Join.fromJSON<null, `viewId`, `spaceId`>(JSON.parse(json), {
+          from: `viewId`,
+          to: `spaceId`,
+        }),
     }),
   ],
 })

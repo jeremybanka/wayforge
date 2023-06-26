@@ -1,4 +1,4 @@
-import type { AtomToken, Write } from ".."
+import type { AtomToken, Write } from "atom.io"
 
 export * from "./AtomIOExplorer"
 

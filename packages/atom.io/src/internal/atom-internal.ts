@@ -51,5 +51,5 @@ export function atom__INTERNAL<T>(
     })
   )
   store.subject.atomCreation.next(token)
-  return token
+  return token as AtomToken<T>
 }

@@ -11,12 +11,15 @@ export type SelectorOptions<T> = {
   get: Read<() => T>
   set: Write<(newValue: T) => void>
 }
-export type ReadonlySelectorOptions<T> = Omit<SelectorOptions<T>, `set`>
+export type ReadonlySelectorOptions<T> = {
+  key: string
+  get: Read<() => T>
+}
 
+export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
 export function selector<T>(
   options: ReadonlySelectorOptions<T>
 ): ReadonlySelectorToken<T>
-export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
 export function selector<T>(
   options: ReadonlySelectorOptions<T> | SelectorOptions<T>
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
@@ -28,10 +31,10 @@ export type SelectorFamilyOptions<T, K extends Serializable> = {
   get: (key: K) => Read<() => T>
   set: (key: K) => Write<(newValue: T) => void>
 }
-export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = Omit<
-  SelectorFamilyOptions<T, K>,
-  `set`
->
+export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = {
+  key: string
+  get: (key: K) => Read<() => T>
+}
 
 export type SelectorFamily<T, K extends Serializable = Serializable> = ((
   key: K

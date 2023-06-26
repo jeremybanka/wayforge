@@ -53,10 +53,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
   const joinRoom = useRemoteTransaction(joinRoomTX)
   const leaveRoom = useRemoteTransaction(leaveRoomTX)
-  useRemoteFamilyMember(findPlayersInRoomState, roomId, {
-    fromJson: (json) => json,
-    toJson: (value) => value,
-  })
+  useRemoteFamilyMember(findPlayersInRoomState, roomId)
 
   return (
     <article

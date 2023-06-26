@@ -33,18 +33,27 @@ export const EMPTY_RELATION_DATA: RelationData = {
   b: `to`,
 }
 
+export type IsRelationDataOptions<
+  CONTENT extends JsonObj | null = null,
+  A extends string = `from`,
+  B extends string = `to`
+> = {
+  from?: A
+  to?: B
+  isContent?: (json: Json) => json is CONTENT
+}
 export const isRelationData =
   <
     CONTENT extends JsonObj | null = null,
     A extends string = `from`,
     B extends string = `to`
-  >(
-    isContent?: (json: Json) => json is CONTENT,
-    a: A = `from` as A,
-    b: B = `to` as B
-  ) =>
-  (input: unknown): input is RelationData<CONTENT, A, B> =>
-    hasExactProperties<RelationData<CONTENT, A, B>>({
+  >({
+    from: a = `from` as A,
+    to: b = `to` as B,
+    isContent,
+  }: IsRelationDataOptions<CONTENT, A, B> = {}) =>
+  (input: unknown): input is RelationData<CONTENT, A, B> => {
+    return hasExactProperties<RelationData<CONTENT, A, B>>({
       contents: isContent
         ? isRecord(isString, isContent)
         : hasExactProperties({}),
@@ -53,3 +62,4 @@ export const isRelationData =
       a: isLiteral(a),
       b: isLiteral(b),
     })(input)
+  }
