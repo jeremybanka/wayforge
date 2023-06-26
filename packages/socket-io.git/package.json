@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "fp-ts": "2.16.0",
-    "simple-git": "3.19.0"
+    "simple-git": "3.19.1"
   },
   "devDependencies": {
     "@types/tmp": "0.2.3",
