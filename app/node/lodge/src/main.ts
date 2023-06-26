@@ -1,13 +1,11 @@
 import * as AtomIO from "atom.io"
+import * as RT from "atom.io/realtime"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
-import type { Socket } from "socket.io"
 import { Server as WebSocketServer } from "socket.io"
 
-import type { ƒn } from "~/packages/anvl/src/function"
-import { Join } from "~/packages/anvl/src/join"
-import type { JsonInterface } from "~/packages/anvl/src/json"
-import { parseJson, stringSetJsonInterface } from "~/packages/anvl/src/json"
+import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
+import type { JsonObj } from "~/packages/anvl/src/json"
 import type { TransactionUpdate } from "~/packages/atom.io/src/internal"
 
 import { logger } from "./logger"
@@ -22,14 +20,17 @@ import {
   findCardGroupState,
   findCardState,
   findCardValueState,
-  groupsAndZonesOfCardCyclesState,
-  groupsOfCardsState,
-  ownersOfCardsState,
-  ownersOfGroupsState,
   spawnCardTX,
-  valuesOfCardsState,
   dealCardsTX,
   shuffleDeckTX,
+  cardIndexJSON,
+  cardGroupIndexJSON,
+  cardValuesIndexJSON,
+  groupsAndZonesOfCardCyclesStateJSON,
+  groupsOfCardsStateJSON,
+  ownersOfCardsStateJSON,
+  ownersOfGroupsStateJSON,
+  valuesOfCardsStateJSON,
 } from "./store/game"
 import type { JoinRoomIO } from "./store/rooms"
 import {
@@ -40,80 +41,8 @@ import {
   playersInRoomsState,
   playersIndex,
   roomsIndex,
+  roomsIndexJSON,
 } from "./store/rooms"
-
-export const serve = <T>(
-  socket: Socket,
-  token: AtomIO.StateToken<T>,
-  transform: JsonInterface<T>
-): void => {
-  socket.on(`sub:${token.key}`, () => {
-    socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
-    const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
-      socket.emit(`serve:${token.key}`, transform.toJson(newValue))
-    })
-    socket.on(`unsub:${token.key}`, () => {
-      // socket.emit(`unsub:${token.key}`)
-      unsubscribe()
-    })
-  })
-}
-
-const serveFamily = <T>(
-  socket: Socket,
-  family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
-  index: AtomIO.StateToken<Set<string>>,
-  transform: JsonInterface<T>
-) => {
-  socket.on(`sub:${family.key}`, (subKey?: AtomIO.Serializable) => {
-    if (subKey === undefined) {
-      const keys = AtomIO.getState(index)
-      keys.forEach((key) => {
-        const token = family(key)
-        socket.emit(
-          `serve:${family.key}`,
-          parseJson(token.family?.subKey || `null`),
-          transform.toJson(AtomIO.getState(token))
-        )
-      })
-
-      const subscription =
-        family.type === `atom_family`
-          ? family.subject.subscribe((token) => {
-              AtomIO.subscribe(token, ({ newValue }) => {
-                socket.emit(
-                  `serve:${family.key}`,
-                  parseJson(token.family?.subKey || `null`),
-                  transform.toJson(newValue)
-                )
-              })
-            })
-          : family.subject.subscribe((token) => {
-              AtomIO.subscribe(token, ({ newValue }) => {
-                socket.emit(
-                  `serve:${family.key}`,
-                  parseJson(token.family?.subKey || `null`),
-                  transform.toJson(newValue)
-                )
-              })
-            })
-
-      socket.on(`unsub:${family.key}`, () => {
-        subscription.unsubscribe()
-      })
-    } else {
-      const token = family(subKey)
-      socket.emit(`serve:${token.key}`, transform.toJson(AtomIO.getState(token)))
-      const unsubscribe = AtomIO.subscribe(token, ({ newValue }) => {
-        socket.emit(`serve:${token.key}`, transform.toJson(newValue))
-      })
-      socket.on(`unsub:${token.key}`, () => {
-        socket.emit(`unsub:${token.key}`)
-        unsubscribe()
-      })
-    }
-  })
-}
 
 const TIMESTAMP = Date.now()
 
@@ -127,12 +56,25 @@ pipe(
   }),
   (io) => {
     io.on(`connection`, (socket) => {
+      // WELCOME
       logger.info(socket.id, `connected`)
       io.emit(`connection`, TIMESTAMP)
       AtomIO.setState(
         playersIndex,
         (playersIndex) => new Set([...playersIndex, socket.id])
       )
+      socket.on(`disconnect`, () => {
+        AtomIO.setState(
+          playersIndex,
+          (playersIndex) =>
+            new Set([...playersIndex].filter((id) => id !== socket.id))
+        )
+        AtomIO.setState(playersInRoomsState, (current) =>
+          current.remove({ playerId: socket.id })
+        )
+      })
+
+      // LOGGING
       socket.onAny((event, ...args) => {
         logger.info(`${socket.id}`, event, ...args)
       })
@@ -147,58 +89,17 @@ pipe(
         logger.info(`${socket.id} <<`, event, ...args)
       })
 
-      serve(socket, roomsIndex, stringSetJsonInterface)
-      serveFamily(socket, findPlayersInRoomState, roomsIndex, {
-        fromJson: (json) => json,
-        toJson: (value) => value,
-      })
+      // COMPOSE REALTIME SERVICE HOOKS
+      const exposeSingle = RT.useExposeSingle({ socket })
+      const exposeFamily = RT.useExposeFamily({ socket })
+      const receiveTransaction = RT.useReceiveTransaction({ socket })
 
-      const gameStateFamilies = [
-        [findCardState, cardIndex],
-        [findCardGroupState, cardGroupIndex],
-        [findCardValueState, cardValuesIndex],
-      ] as const
-      gameStateFamilies.forEach(([family, index]) => {
-        serveFamily(socket, family, index, {
-          fromJson: (json) => json,
-          toJson: (value) => value,
-        })
-      })
-      const gameIndices = [cardIndex, cardGroupIndex, cardValuesIndex]
-      gameIndices.forEach((index) => {
-        serve(socket, index, stringSetJsonInterface)
-      })
-      const gameJoinStates = [
-        groupsAndZonesOfCardCyclesState,
-        groupsOfCardsState,
-        ownersOfCardsState,
-        ownersOfGroupsState,
-        valuesOfCardsState,
-      ]
-      gameJoinStates.forEach((join) =>
-        serve(socket, join, {
-          toJson: (j) => j.toJSON(),
-          fromJson: (json) => new Join(json as any),
-        })
+      // ROOM SERVICES
+      exposeSingle<string[]>(roomsIndexJSON)
+      exposeFamily<{ id: string; enteredAt: number }[]>(
+        findPlayersInRoomState,
+        roomsIndex
       )
-      const gameTransactions = [
-        add52ClassicCardsTX,
-        addCardValueTX,
-        addHandTx,
-        dealCardsTX,
-        shuffleDeckTX,
-        spawnCardTX,
-        spawnClassicDeckTX,
-      ]
-      gameTransactions.forEach((tx) => {
-        socket.on(
-          `tx:${tx.key}`,
-          <ƒ extends ƒn>(update: TransactionUpdate<ƒ>) => {
-            AtomIO.runTransaction<ƒ>(tx)(...update.params)
-          }
-        )
-      })
-
       socket.on(`tx:createRoom`, (update: TransactionUpdate<() => string>) => {
         AtomIO.runTransaction(createRoomTX)(update.output)
       })
@@ -223,16 +124,43 @@ pipe(
         })
       })
 
-      socket.on(`disconnect`, () => {
-        AtomIO.setState(
-          playersIndex,
-          (playersIndex) =>
-            new Set([...playersIndex].filter((id) => id !== socket.id))
-        )
-        AtomIO.setState(playersInRoomsState, (current) =>
-          current.remove({ playerId: socket.id })
-        )
-      })
+      // GAME SERVICES
+      const gameStateFamilies: [
+        AtomIO.AtomFamily<JsonObj>,
+        AtomIO.StateToken<Set<string>>
+      ][] = [
+        [findCardState, cardIndex],
+        [findCardGroupState, cardGroupIndex],
+        [findCardValueState, cardValuesIndex],
+      ]
+      gameStateFamilies.forEach(([family, index]) => exposeFamily(family, index))
+
+      const gameIndices: AtomIO.StateToken<string[]>[] = [
+        cardIndexJSON,
+        cardGroupIndexJSON,
+        cardValuesIndexJSON,
+      ]
+      gameIndices.forEach(exposeSingle)
+
+      const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
+        groupsAndZonesOfCardCyclesStateJSON,
+        groupsOfCardsStateJSON,
+        ownersOfCardsStateJSON,
+        ownersOfGroupsStateJSON,
+        valuesOfCardsStateJSON,
+      ]
+      gameJoinStates.forEach(exposeSingle)
+
+      const gameTransactions = [
+        add52ClassicCardsTX,
+        addCardValueTX,
+        addHandTx,
+        dealCardsTX,
+        shuffleDeckTX,
+        spawnCardTX,
+        spawnClassicDeckTX,
+      ] as const
+      gameTransactions.forEach(receiveTransaction)
     })
   }
 )

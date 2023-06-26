@@ -30,12 +30,11 @@ export const makeSpaceLayoutState = (
         parse: (string) => {
           try {
             const json = parseJson(string)
-            const join = Join.fromJSON(
-              json,
-              hasExactProperties({ size: isNumber }),
-              `parent`,
-              `child`
-            )
+            const join = Join.fromJSON(json, {
+              isContent: hasExactProperties({ size: isNumber }),
+              from: `parent`,
+              to: `child`,
+            })
             return join
           } catch (thrown) {
             console.error(`Error parsing spaceLayoutState from localStorage`)
@@ -48,7 +47,7 @@ export const makeSpaceLayoutState = (
 
 export const makeSpaceLayoutNodeFamily = (
   key: string,
-  spaceLayoutState: AtomToken<Join<{ size: number }>>
+  spaceLayoutState: AtomToken<Join<{ size: number }, `parent`, `child`>>
 ): ReadonlySelectorFamily<{ childSpaceIds: string[]; size: number }, string> =>
   selectorFamily<{ childSpaceIds: string[]; size: number }, string>({
     key: `${key}:explorer_space`,

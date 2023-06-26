@@ -21,17 +21,20 @@ export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
 export { __INTERNAL__ }
+export type { Store } from "./internal/store"
 export type { Serializable } from "~/packages/anvl/src/json"
 
 export type AtomToken<_> = {
   key: string
   type: `atom`
   family?: FamilyMetadata
+  __brand?: _
 }
 export type SelectorToken<_> = {
   key: string
   type: `selector`
   family?: FamilyMetadata
+  __brand?: _
 }
 export type StateToken<T> = AtomToken<T> | SelectorToken<T>
 
@@ -39,6 +42,7 @@ export type ReadonlySelectorToken<_> = {
   key: string
   type: `readonly_selector`
   family?: FamilyMetadata
+  __brand?: _
 }
 
 export type FamilyMetadata = {
@@ -49,6 +53,7 @@ export type FamilyMetadata = {
 export type TransactionToken<_> = {
   key: string
   type: `transaction`
+  __brand?: _
 }
 
 export const getState = <T>(

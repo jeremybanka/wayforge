@@ -1,12 +1,20 @@
 import type { TransactionIO } from "atom.io"
-import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
+import { atom, atomFamily, selector, selectorFamily, transaction } from "atom.io"
+import { isNumber } from "fp-ts/number"
 import { nanoid } from "nanoid"
 
 import { Join } from "~/packages/anvl/src/join"
+import { hasExactProperties } from "~/packages/anvl/src/object"
+import { selectJson } from "~/packages/atom.io/src/json"
 
 export const roomsIndex = atom<Set<string>>({
   key: `roomsIndex`,
   default: new Set<string>(),
+})
+export const roomsIndexJSON = selector<string[]>({
+  key: `roomsIndexJSON`,
+  get: ({ get }) => [...get(roomsIndex)],
+  set: ({ set }, newValue) => set(roomsIndex, new Set(newValue)),
 })
 export type Room = {
   id: string
@@ -32,16 +40,28 @@ export const playersIndex = atom<Set<string>>({
   key: `playersIndex`,
   default: new Set<string>(),
 })
+export const playersIndexJSON = selector<string[]>({
+  key: `playersIndexJSON `,
+  get: ({ get }) => [...get(playersIndex)],
+  set: ({ set }, newValue) => set(playersIndex, new Set(newValue)),
+})
+
+export const PLAYERS_IN_ROOMS = new Join<{ enteredAt: number }>({
+  relationType: `1:n`,
+})
+  .from(`roomId`)
+  .to(`playerId`)
 export const playersInRoomsState = atom<
   Join<{ enteredAt: number }, `roomId`, `playerId`>
 >({
-  key: `playersInRooms`,
-  default: new Join<{ enteredAt: number }>({
-    relationType: `1:n`,
-  })
-    .from(`roomId`)
-    .to(`playerId`),
+  key: `playersInRoomsIndex`,
+  default: PLAYERS_IN_ROOMS,
 })
+export const playersInRoomsStateJSON = selectJson(
+  playersInRoomsState,
+  PLAYERS_IN_ROOMS.makeJsonInterface(hasExactProperties({ enteredAt: isNumber }))
+)
+
 export const findPlayersInRoomState = selectorFamily<
   { id: string; enteredAt: number }[],
   string

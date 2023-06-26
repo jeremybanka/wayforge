@@ -27,7 +27,7 @@ export function lookup(
     : HAMT.has(key, core.selectors)
     ? `selector`
     : `readonly_selector`
-  return { key, type }
+  return { key, type } as any
 }
 
 export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T> | null
@@ -86,12 +86,16 @@ export function deposit<T>(
     | ReadonlySelector<T>
     | Selector<T>
     | Transaction<T extends ƒn ? T : never>
-): ReadonlySelectorToken<T> | StateToken<T> | TransactionToken<T> {
+):
+  | AtomToken<T>
+  | ReadonlySelectorToken<T>
+  | SelectorToken<T>
+  | TransactionToken<T> {
   return {
     key: state.key,
     type: state.type,
     ...(`family` in state && { family: state.family }),
-  }
+  } as any
 }
 
 export const getState__INTERNAL = <T>(

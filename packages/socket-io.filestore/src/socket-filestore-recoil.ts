@@ -90,12 +90,11 @@ export const socketRelations =
     socket.emit(`relationsRead`, { type, id })
     socket.on(`relationsRead_${type}_${id}`, (json) =>
       setSelf(
-        Join.fromJSON<CONTENT, A, B>(
-          json,
-          refineContent as Refinement<unknown, CONTENT>,
-          a as A,
-          b as B
-        )
+        Join.fromJSON<CONTENT, A, B>(json, {
+          isContent: refineContent as Refinement<unknown, CONTENT>,
+          from: a as A,
+          to: b as B,
+        })
       )
     )
     onSet((v: Join<CONTENT, A, B>) =>

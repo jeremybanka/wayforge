@@ -1,17 +1,17 @@
-import type { Refinement } from "fp-ts/Refinement"
+import type { Refinement } from "fp-ts/lib/Refinement"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-import type { RelationData } from "./core-relation-data"
+import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-related-ids"
+import { makeJsonInterface } from "./make-json-interface"
 import { getContent, getRelations, setRelations } from "./relation-contents"
 import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
-import type { Json, JsonObj } from "../json"
+import type { Json, JsonInterface, JsonObj } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
-import { cannotExist } from "../refinement"
 
 export class Join<
   CONTENT extends JsonObj | null = null,
@@ -25,7 +25,11 @@ export class Join<
   public readonly relations: Record<string, string[]>
   public readonly contents: Record<string, CONTENT>
   public constructor(json?: Partial<RelationData<CONTENT, A, B>>) {
-    Object.assign(this, { ...EMPTY_RELATION_DATA, ...json })
+    Object.assign(this, {
+      ...EMPTY_RELATION_DATA,
+      ...json,
+      makeJsonInterface: this.makeJsonInterface,
+    })
   }
   public toJSON(): RelationData<CONTENT, A, B> {
     return {
@@ -42,11 +46,9 @@ export class Join<
     B extends string
   >(
     json: Json,
-    isContent: Refinement<unknown, CONTENT> = cannotExist,
-    a: A = `from` as A,
-    b: B = `to` as B
+    options?: IsRelationDataOptions<CONTENT, A, B>
   ): Join<CONTENT, A, B> {
-    const isValid = isRelationData<CONTENT, A, B>(isContent, a, b)(json)
+    const isValid = isRelationData<CONTENT, A, B>(options)(json)
     if (isValid) {
       return new Join<CONTENT, A, B>(json)
     }
@@ -61,6 +63,12 @@ export class Join<
 
   public to<BB extends string>(newB: BB): Join<CONTENT, A, BB> {
     return new Join({ ...this, b: newB })
+  }
+
+  public makeJsonInterface = (
+    ...params: CONTENT extends null ? [] : [Refinement<unknown, CONTENT>]
+  ): JsonInterface<Join<CONTENT, A, B>, RelationData<CONTENT, A, B>> => {
+    return makeJsonInterface<CONTENT, A, B>(this, ...params)
   }
 
   public getRelatedId(id: string): string | undefined {

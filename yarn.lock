@@ -4093,10 +4093,16 @@ __metadata:
   peerDependencies:
     preact: ">=10.0.0"
     react: ">=16.8.0"
+    socket.io: ">=4.0.0"
+    socket.io-client: ">=4.0.0"
   peerDependenciesMeta:
     preact:
       optional: true
     react:
+      optional: true
+    socket.io:
+      optional: true
+    socket.io-client:
       optional: true
   languageName: unknown
   linkType: soft

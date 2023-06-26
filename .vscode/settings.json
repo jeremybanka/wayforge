@@ -27,6 +27,7 @@
     "svgr",
     "testid",
     "tsup",
+    "unsub",
     "wayforge",
     "zustand"
   ],

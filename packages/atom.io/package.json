@@ -7,10 +7,14 @@
   "module": "dist/index.mjs",
   "files": [
     "dist",
+    "json/dist",
+    "json/package.json",
     "react/dist",
     "react/package.json",
     "react-devtools/dist",
     "react-devtools/package.json",
+    "realtime/dist",
+    "realtime/package.json",
     "src"
   ],
   "exports": {
@@ -20,6 +24,13 @@
       "browser": "./dist/index.mjs",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./json/package.json": "./json/package.json",
+    "./json": {
+      "types": "./json/dist/index.d.ts",
+      "browser": "./json/dist/index.mjs",
+      "import": "./json/dist/index.mjs",
+      "require": "./json/dist/index.js"
     },
     "./react/package.json": "./react/package.json",
     "./react": {
@@ -34,23 +45,38 @@
       "browser": "./react-devtools/dist/index.mjs",
       "import": "./react-devtools/dist/index.mjs",
       "require": "./react-devtools/dist/index.js"
+    },
+    "./realtime/package.json": "./realtime/package.json",
+    "./realtime": {
+      "types": "./realtime/dist/index.d.ts",
+      "browser": "./realtime/dist/index.mjs",
+      "import": "./realtime/dist/index.mjs",
+      "require": "./realtime/dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsup && (cd react && tsup) && (cd react-devtools && tsup)",
+    "build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup)",
     "lint": "eslint",
     "test": "vitest",
     "test:once": "vitest run"
   },
   "peerDependencies": {
     "preact": ">=10.0.0",
-    "react": ">=16.8.0"
+    "react": ">=16.8.0",
+    "socket.io": ">=4.0.0",
+    "socket.io-client": ">=4.0.0"
   },
   "peerDependenciesMeta": {
     "preact": {
       "optional": true
     },
     "react": {
+      "optional": true
+    },
+    "socket.io": {
+      "optional": true
+    },
+    "socket.io-client": {
       "optional": true
     }
   },
