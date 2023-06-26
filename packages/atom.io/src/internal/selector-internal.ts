@@ -135,6 +135,11 @@ export const registerSelector = (
       .some(({ source }) => source === dependency.key)
 
     const dependencyState = withdraw(dependency, store)
+    if (dependencyState === null) {
+      throw new Error(
+        `State "${dependency.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`
+      )
+    }
     const dependencyValue = getState__INTERNAL(dependencyState, store)
 
     if (alreadyRegistered) {
@@ -160,6 +165,11 @@ export const registerSelector = (
   },
   set: (stateToken, newValue) => {
     const state = withdraw(stateToken, store)
+    if (state === null) {
+      throw new Error(
+        `State "${stateToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`
+      )
+    }
     setState__INTERNAL(state, newValue, store)
   },
 })

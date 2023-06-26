@@ -85,19 +85,22 @@ export const applyTransaction = <ƒ extends ƒn>(
   for (const { key, newValue } of atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     if (!HAMT.has(token.key, store.valueMap)) {
-      const atom = HAMT.get(token.key, store.transactionStatus.core.atoms)
-      store.atoms = HAMT.set(atom.key, atom, store.atoms)
-      store.valueMap = HAMT.set(atom.key, atom.default, store.valueMap)
-      store.config.logger?.info(`🔧`, `add atom "${atom.key}"`)
+      const newAtom = HAMT.get(token.key, store.transactionStatus.core.atoms)
+      store.atoms = HAMT.set(newAtom.key, newAtom, store.atoms)
+      store.valueMap = HAMT.set(newAtom.key, newAtom.default, store.valueMap)
+      store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
     }
-    const state = withdraw(token, store)
-
-    setState(state, newValue, store)
+    setState(token, newValue, store)
   }
   const myTransaction = withdraw<ƒ>(
     { key: store.transactionStatus.key, type: `transaction` },
     store
   )
+  if (myTransaction === null) {
+    throw new Error(
+      `Transaction "${store.transactionStatus.key}" not found. Absurd. How is this running?`
+    )
+  }
   myTransaction.subject.next({
     key: store.transactionStatus.key,
     atomUpdates,
@@ -115,6 +118,12 @@ export const undoTransactionUpdate = <ƒ extends ƒn>(
   for (const { key, oldValue } of update.atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
+    if (state === null) {
+      throw new Error(
+        `State "${token.key}" not found in this store. This is surprising, because we are navigating the history of the store.`
+      )
+    }
+
     setState(state, oldValue, store)
   }
 }
@@ -126,6 +135,11 @@ export const redoTransactionUpdate = <ƒ extends ƒn>(
   for (const { key, newValue } of update.atomUpdates) {
     const token: AtomToken<unknown> = { key, type: `atom` }
     const state = withdraw(token, store)
+    if (state === null) {
+      throw new Error(
+        `State "${token.key}" not found in this store. This is surprising, because we are navigating the history of the store.`
+      )
+    }
     setState(state, newValue, store)
   }
 }

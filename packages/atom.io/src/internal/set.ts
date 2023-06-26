@@ -61,7 +61,7 @@ export const setAtomState = <T>(
   const newValue = become(next)(oldValue)
   store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)
   cacheValue(atom.key, newValue, store)
-  if (isAtomDefault(atom.key)) {
+  if (isAtomDefault(atom.key, store)) {
     markAtomAsNotDefault(atom.key, store)
   }
   markDone(atom.key, store)

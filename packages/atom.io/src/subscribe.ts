@@ -13,6 +13,11 @@ export const subscribe = <T>(
   store: Store = IMPLICIT.STORE
 ): (() => void) => {
   const state = withdraw<T>(token, store)
+  if (state === null) {
+    throw new Error(
+      `State "${token.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`
+    )
+  }
   const subscription = state.subject.subscribe(handleUpdate)
   store.config.logger?.info(`👀 subscribe to "${state.key}"`)
   const dependencySubscriptions =
@@ -47,6 +52,11 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
   store = IMPLICIT.STORE
 ): (() => void) => {
   const tx = withdraw(token, store)
+  if (tx === null) {
+    throw new Error(
+      `Cannot subscribe to transaction "${token.key}": transaction not found in store "${store.config.name}".`
+    )
+  }
   store.config.logger?.info(`👀 subscribe to transaction "${token.key}"`)
   const subscription = tx.subject.subscribe(handleUpdate)
   const unsubscribe = () => {

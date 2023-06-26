@@ -1,6 +1,7 @@
 import type { Socket } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object/entries"
+import { capitalize } from "~/packages/anvl/src/string/capitalize"
 import * as A_IO from "~/packages/atom.io/src"
 
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
@@ -30,9 +31,6 @@ export type GitClientTools = {
       }
     : never
 }
-
-export const capitalize = (str: string): string =>
-  str[0].toUpperCase() + str.slice(1)
 
 export const initGitAtomicTools = (socket: GitClientSocket): GitClientTools => {
   const completeInterface = {} as GitClientTools

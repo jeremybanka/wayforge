@@ -51,6 +51,11 @@ export function timeline__INTERNAL(
 
   const subscribeToAtom = (token: AtomToken<any>) => {
     const state = withdraw(token, store)
+    if (state === null) {
+      throw new Error(
+        `Cannot subscribe to atom "${token.key}" because it has not been initialized in store "${store.config.name}"`
+      )
+    }
     state.subject.subscribe((update) => {
       const storeCurrentSelectorKey =
         store.operation.open && store.operation.token.type === `selector`
@@ -85,6 +90,11 @@ export function timeline__INTERNAL(
           { key: storeCurrentTransactionKey, type: `transaction` },
           store
         )
+        if (currentTransaction === null) {
+          throw new Error(
+            `Transaction "${storeCurrentTransactionKey}" not found in store "${store.config.name}". This is surprising, because we are in the application phase of "${storeCurrentTransactionKey}".`
+          )
+        }
         if (timelineData.transactionKey !== storeCurrentTransactionKey) {
           if (timelineData.transactionKey) {
             store.config.logger?.error(
