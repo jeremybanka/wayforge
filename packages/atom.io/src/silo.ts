@@ -1,15 +1,15 @@
-import type { timeline } from "."
-import { getState, setState, subscribe } from "."
+import { type timeline, getState, setState, subscribe } from "."
 import type { atom, atomFamily } from "./atom"
-import { timeline__INTERNAL } from "./internal"
-import { atom__INTERNAL } from "./internal/atom-internal"
 import {
+  type Store,
   atomFamily__INTERNAL,
+  atom__INTERNAL,
+  createStore,
   selectorFamily__INTERNAL,
-} from "./internal/families-internal"
-import { selector__INTERNAL } from "./internal/selector-internal"
-import { createStore, type Store } from "./internal/store"
-import { transaction__INTERNAL } from "./internal/transaction-internal"
+  selector__INTERNAL,
+  timeline__INTERNAL,
+  transaction__INTERNAL,
+} from "./internal"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
 
