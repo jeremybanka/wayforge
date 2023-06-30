@@ -3285,9 +3285,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vanilla-extract/css@npm:1.11.1":
-  version: 1.11.1
-  resolution: "@vanilla-extract/css@npm:1.11.1"
+"@vanilla-extract/css@npm:1.12.0":
+  version: 1.12.0
+  resolution: "@vanilla-extract/css@npm:1.12.0"
   dependencies:
     "@emotion/hash": ^0.9.0
     "@vanilla-extract/private": ^1.0.3
@@ -3300,7 +3300,7 @@ __metadata:
     deepmerge: ^4.2.2
     media-query-parser: ^2.0.2
     outdent: ^0.8.0
-  checksum: 1498ced4ba1fd78f3e42567a49daac9eea15e0fa1418d39e4ba5a3e84ded66a5567733f5fa364eaf5fe9c0354124bd62a32ffd603427b76e36004ed49b55c7d2
+  checksum: b8691011b5ee5d4640d1ffb0a792fe97a34a07b0bfab371d23562bd7831f0a89241c0ff3bdde9eea660544aa62ae875a0a6184f9e8461c4b059c63bc185c0bd7
   languageName: node
   linkType: hard
 
@@ -3513,7 +3513,7 @@ __metadata:
     "@t3-oss/env-core": 0.6.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
-    "@vanilla-extract/css": 1.11.1
+    "@vanilla-extract/css": 1.12.0
     "@vanilla-extract/vite-plugin": 3.8.2
     "@vitejs/plugin-react": 4.0.1
     corners: 0.0.14
