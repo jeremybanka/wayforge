@@ -6,7 +6,7 @@
   "author": "jeremybanka",
   "license": "GPL-3.0",
   "private": true,
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@3.6.1",
   "scripts": {
     "lodge": "cd app/node/lodge && yarn start",
     "dev": "cd app/web/smithy && yarn dev",
