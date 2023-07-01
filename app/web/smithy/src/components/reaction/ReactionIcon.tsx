@@ -95,7 +95,7 @@ export const ReactionIcon_INTERNAL: FC<{
             `span`,
             corners(null, null, chamfer, null).options({
               cornerSize: 5,
-              noClipping: true,
+              useClipPath: false,
               below: {
                 color: doesConsumeEnergy ? energyPresentHex : energyAbsentHex,
                 stroke: {
@@ -127,7 +127,7 @@ export const ReactionIcon_INTERNAL: FC<{
           Wrapper: pipe(
             `span`,
             corners(null, null, null, null).options({
-              noClipping: true,
+              useClipPath: false,
               below: {
                 color: doesProduceEnergy ? energyPresentHex : energyAbsentHex,
                 stroke: {

@@ -4,7 +4,7 @@ import { Auspicious1 } from "./corners/factories"
 
 export const main = {
   auspicious: Auspicious1(motion.main, {
-    noClipping: true,
+    useClipPath: false,
     below: [
       {
         color: `#7772`,
