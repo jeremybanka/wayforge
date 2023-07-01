@@ -7,7 +7,7 @@ import { LAYER } from "./corners/layers"
 const styled = {
   RoundedCard: Emotion(
     rounded(motion.article, {
-      noClipping: true,
+      useClipPath: false,
       cornerSize: 5,
       below: [
         LAYER.SMALL_SHADOW,

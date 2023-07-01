@@ -2473,7 +2473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-hook/resize-observer@npm:^1.2.5":
+"@react-hook/resize-observer@npm:1.2.6":
   version: 1.2.6
   resolution: "@react-hook/resize-observer@npm:1.2.6"
   dependencies:
@@ -3523,7 +3523,7 @@ __metadata:
     "@vanilla-extract/css": 1.12.0
     "@vanilla-extract/vite-plugin": 3.8.2
     "@vitejs/plugin-react": 4.0.1
-    corners: 0.0.14
+    corners: 0.1.0
     cross-env: 7.0.3
     eslint: 8.44.0
     fp-ts: 2.16.0
@@ -3553,7 +3553,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@vitejs/plugin-react": 4.0.1
-    corners: 0.0.14
+    corners: 0.1.0
     cross-env: 7.0.3
     eslint: 8.44.0
     fp-ts: 2.16.0
@@ -3599,7 +3599,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     "@vitejs/plugin-react": 4.0.1
-    corners: 0.0.14
+    corners: 0.1.0
     cross-env: 7.0.3
     eslint: 8.44.0
     fp-ts: 2.16.0
@@ -4935,15 +4935,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"corners@npm:0.0.14":
-  version: 0.0.14
-  resolution: "corners@npm:0.0.14"
+"corners@npm:0.1.0":
+  version: 0.1.0
+  resolution: "corners@npm:0.1.0"
   dependencies:
-    "@react-hook/resize-observer": ^1.2.5
+    "@react-hook/resize-observer": 1.2.6
   peerDependencies:
     react: ">=18.0.0"
     react-dom: ">=18.0.0"
-  checksum: c585388aae733e24d137ce6c615ebdc09d027a8a9cf7c0637e4c424233e9de3496d2a1f5cb213a62a964410455983110782e75c22e67284492c62b90ad720ebe
+  checksum: 922b608143a5cdadbd8421d17eb230ce5a971a7727dc7ab645c7203ea5f01d9b31d477d2dde859d3441973732131e3fe1d9f3a8ec4cad37ec5753e8f1e700d65
   languageName: node
   linkType: hard
 
@@ -7225,7 +7225,7 @@ __metadata:
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
     ajv: 8.12.0
-    corners: 0.0.14
+    corners: 0.1.0
     eslint: 8.44.0
     fp-ts: 2.16.0
     framer-motion: 10.12.18

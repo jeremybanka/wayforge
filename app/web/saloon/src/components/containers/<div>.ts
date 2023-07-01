@@ -5,7 +5,7 @@ import { LAYER } from "./corners/layers"
 
 export const div = {
   dropShadowDiagon: ForwardDiagonal(motion.div, {
-    noClipping: true,
+    useClipPath: false,
     below: [LAYER.SMALL_SHADOW, LAYER.BG],
   }),
 }

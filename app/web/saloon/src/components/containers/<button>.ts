@@ -7,7 +7,7 @@ import { LAYER } from "./corners/layers"
 const styled = {
   ButtonCurledLeft: Emotion(
     CurledLeft(motion.button, {
-      noClipping: true,
+      useClipPath: false,
       below: [LAYER.FG_STROKE],
     })
   ),
