@@ -4072,6 +4072,7 @@ __metadata:
     "@testing-library/preact": 3.2.3
     "@testing-library/react": 14.0.0
     "@types/mock-fs": 4.13.1
+    eslint: 8.43.0
     fp-ts: 2.16.0
     hamt_plus: 1.0.2
     mock-fs: 5.2.0
