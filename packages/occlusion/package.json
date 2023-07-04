@@ -22,7 +22,7 @@
   "devDependencies": {
     "tsup": "7.1.0",
     "vite-tsconfig-paths": "4.2.0",
-    "vitest": "0.32.2"
+    "vitest": "0.32.4"
   },
   "peerDependencies": {
     "fp-ts": "^2.13.1",
