@@ -1,25 +1,14 @@
 import type { FC } from "react"
-import { useEffect } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
 
-import type { StateToken } from "../src"
+import { Observer } from "./__util__/Observer"
 import { isDefault, atom } from "../src"
 import { composeStoreHooks } from "../src/react"
 
 const { useIO } = composeStoreHooks()
 
 export const onChange = [() => undefined, console.log][0]
-
-export type ObserverProps = {
-  node: StateToken<any>
-  onChange: (value: any) => void
-}
-export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
-  const [value] = useIO(node)
-  useEffect(() => onChange(value), [onChange, value])
-  return null
-}
 
 describe(`single atom`, () => {
   const scenario = () => {
