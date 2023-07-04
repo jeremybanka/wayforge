@@ -89,7 +89,7 @@ export const setState = <T, New extends T>(
     throw new Error(
       `${capitalize(token.type)} "${token.key}" not found in store "${
         store.config.name
-      }.`
+      }".`
     )
   }
   setState__INTERNAL(state, value, store)
