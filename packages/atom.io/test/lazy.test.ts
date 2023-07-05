@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./-util"
+import * as UTIL from "./__util__"
 import {
   __INTERNAL__,
   atom,

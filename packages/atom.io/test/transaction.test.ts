@@ -3,7 +3,7 @@ import { vitest } from "vitest"
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
-import * as UTIL from "./-util"
+import * as UTIL from "./__util__"
 import {
   __INTERNAL__,
   atom,

@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./-util"
+import * as UTIL from "./__util__"
 import type { AtomToken, TimelineToken } from "../src"
 import {
   redo,
