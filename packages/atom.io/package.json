@@ -1,6 +1,6 @@
 {
   "name": "atom.io",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Reactive state graph for React, Preact, and vanilla",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
