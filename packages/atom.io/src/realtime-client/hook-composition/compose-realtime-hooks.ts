@@ -11,10 +11,7 @@ import { realtimeClientSingleHook } from "./realtime-client-single"
 import { realtimeClientTransactionHook } from "./realtime-client-transaction"
 import { atom__INTERNAL, selector__INTERNAL } from "../../internal"
 
-export const composeRealtimeHooks = (
-  socket: SocketIO.Socket,
-  store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
-): {
+export type RealtimeClientHooks = {
   socketIdState: AtomIO.ReadonlySelectorToken<string | null>
   useRemoteState: <J extends Json>(token: AtomIO.StateToken<J>) => void
   useRemoteFamily: <J extends Json>(
@@ -27,7 +24,12 @@ export const composeRealtimeHooks = (
   useRemoteTransaction: <ƒ extends ƒn>(
     token: AtomIO.TransactionToken<ƒ>
   ) => (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
-} => {
+}
+
+export const composeRealtimeHooks = (
+  socket: SocketIO.Socket,
+  store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
+): RealtimeClientHooks => {
   const socketIdState_INTERNAL = atom__INTERNAL<string | null>(
     {
       key: `socketIdState_INTERNAL`,

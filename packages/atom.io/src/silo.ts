@@ -13,6 +13,8 @@ import {
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
 
+export type Silo = ReturnType<typeof silo>
+
 export const silo = (
   name: string
 ): {

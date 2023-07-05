@@ -1,3 +1,6 @@
-export * from "./stdout"
 export * from "./Observer"
-export * from "./setup-realtime-test"
+export * from "./realtime/setup-realtime-test"
+export * from "./stdout"
+export * from "./summarize"
+import * as Realtime from "./realtime"
+export { Realtime }

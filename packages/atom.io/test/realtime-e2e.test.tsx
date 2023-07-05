@@ -1,47 +1,80 @@
 import * as React from "react"
 
-import { render, prettyDOM, act, waitFor } from "@testing-library/react"
-import * as AtomIO from "atom.io"
+import { render, act, waitFor } from "@testing-library/react"
 import * as RT from "atom.io/realtime"
 
-import * as U from "./__util__"
+import * as RTTest from "./__util__/realtime"
 
-const summarize = (store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE) => {
-  console.log(prettyDOM(document), {
-    atoms: [store.atoms.count()],
-  })
-}
-
-describe(`realtime client`, () => {
+describe(`single-client test case`, () => {
   const scenario = () => {
-    const { hooks, silos, tokens, teardown } = U.setupRealtimeTest({
+    const { server, client, teardown } = RTTest.singleClient({
       store: (silo) => {
         const count = silo.atom({ key: `count`, default: 0 })
         return { count }
       },
       server: ({ socket, tokens, silo: { store } }) => {
         const exposeSingle = RT.useExposeSingle({ socket, store })
-        exposeSingle(tokens.server.count)
+        exposeSingle(tokens.count)
       },
     })
 
-    const Letter: React.FC = () => {
-      hooks.useRemoteState(tokens.client.count)
-      const count = hooks.useO(tokens.client.count)
-      return <div data-testid={count}>{count}</div>
+    const App: React.FC = () => {
+      client.hooks.useRemoteState(client.tokens.count)
+      const count = client.hooks.useO(client.tokens.count)
+      return <i data-testid={count} />
     }
-    const utils = render(<Letter />)
+    const utils = render(<App />)
 
-    return { ...utils, silos, tokens, teardown }
+    return { ...utils, client, server, teardown }
   }
 
-  it(`can get state from the server`, async () => {
-    const { getByTestId, silos, tokens, teardown } = scenario()
+  it(`responds to changes on the server`, async () => {
+    const { getByTestId, server, teardown } = scenario()
     getByTestId(`0`)
-    summarize()
-    act(() => silos.server.setState(tokens.server.count, 1))
+    act(() => server.silo.setState(server.tokens.count, 1))
     await waitFor(() => getByTestId(`1`))
     teardown()
-    summarize()
+  })
+})
+
+describe(`multi-client test case`, () => {
+  const scenario = () => {
+    const { server, clients, teardown } = RTTest.multiClient({
+      store: (silo) => {
+        const count = silo.atom({ key: `count`, default: 0 })
+        return { count }
+      },
+      clientNames: [`jim`, `lee`],
+      server: ({ socket, tokens, silo: { store } }) => {
+        const exposeSingle = RT.useExposeSingle({ socket, store })
+        exposeSingle(tokens.count)
+      },
+    })
+
+    const Jim: React.FC = () => {
+      clients.jim.hooks.useRemoteState(clients.jim.tokens.count)
+      const count = clients.jim.hooks.useO(clients.jim.tokens.count)
+      return <i data-testid={count + `-jim`} />
+    }
+    const jim = render(<Jim />)
+
+    const Lee: React.FC = () => {
+      clients.lee.hooks.useRemoteState(clients.lee.tokens.count)
+      const count = clients.lee.hooks.useO(clients.lee.tokens.count)
+      return <i data-testid={count + `-lee`} />
+    }
+    const lee = render(<Lee />)
+
+    return { jim, lee, server, teardown }
+  }
+
+  test(`both clients respond to changes on the server`, async () => {
+    const { jim, lee, server, teardown } = scenario()
+    jim.getByTestId(`0-jim`)
+    lee.getByTestId(`0-lee`)
+    act(() => server.silo.setState(server.tokens.count, 1))
+    await waitFor(() => jim.getByTestId(`1-jim`))
+    await waitFor(() => lee.getByTestId(`1-lee`))
+    teardown()
   })
 })
