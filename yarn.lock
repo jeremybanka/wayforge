@@ -1661,7 +1661,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment@npm:^29.6.0":
+"@jest/environment@npm:^29.6.1":
   version: 29.6.1
   resolution: "@jest/environment@npm:29.6.1"
   dependencies:
@@ -1696,7 +1696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/fake-timers@npm:^29.6.0, @jest/fake-timers@npm:^29.6.1":
+"@jest/fake-timers@npm:^29.6.1":
   version: 29.6.1
   resolution: "@jest/fake-timers@npm:29.6.1"
   dependencies:
@@ -1838,7 +1838,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:^29.6.0, @jest/types@npm:^29.6.1":
+"@jest/types@npm:^29.6.1":
   version: 29.6.1
   resolution: "@jest/types@npm:29.6.1"
   dependencies:
@@ -3073,7 +3073,7 @@ __metadata:
     cross-env: 7.0.3
     eslint: 8.44.0
     fs-extra: 11.1.1
-    jest-environment-jsdom: 29.6.0
+    jest-environment-jsdom: 29.6.1
     json-schema-to-zod: 0.6.3
     mock-fs: 5.2.0
     prettier: 2.8.8
@@ -7822,24 +7822,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:29.6.0":
-  version: 29.6.0
-  resolution: "jest-environment-jsdom@npm:29.6.0"
+"jest-environment-jsdom@npm:29.6.1":
+  version: 29.6.1
+  resolution: "jest-environment-jsdom@npm:29.6.1"
   dependencies:
-    "@jest/environment": ^29.6.0
-    "@jest/fake-timers": ^29.6.0
-    "@jest/types": ^29.6.0
+    "@jest/environment": ^29.6.1
+    "@jest/fake-timers": ^29.6.1
+    "@jest/types": ^29.6.1
     "@types/jsdom": ^20.0.0
     "@types/node": "*"
-    jest-mock: ^29.6.0
-    jest-util: ^29.6.0
+    jest-mock: ^29.6.1
+    jest-util: ^29.6.1
     jsdom: ^20.0.0
   peerDependencies:
     canvas: ^2.5.0
   peerDependenciesMeta:
     canvas:
       optional: true
-  checksum: b90f4e4f1bbf48e4187c341422d0c296f95614ca18e3f71c6834ba3ccd26825a53647bb43f0353be296175c6b7f78f81423ebbdf846d5b138a99d220130d37cc
+  checksum: e8a9bff00a011235b004699f34bc85b18fdac82049513410cbf2dc1c2dd332bc1b4f108976412df1d29f2fa8bf0360aaf84eb0f5b4db1db2fb7fc7155dc14be7
   languageName: node
   linkType: hard
 
@@ -8015,7 +8015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock@npm:^29.6.0, jest-mock@npm:^29.6.1":
+"jest-mock@npm:^29.6.1":
   version: 29.6.1
   resolution: "jest-mock@npm:29.6.1"
   dependencies:
@@ -8185,7 +8185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^29.6.0, jest-util@npm:^29.6.1":
+"jest-util@npm:^29.6.1":
   version: 29.6.1
   resolution: "jest-util@npm:29.6.1"
   dependencies:
