@@ -1,3 +1,5 @@
+import * as http from "http"
+
 import * as AtomIO from "atom.io"
 import * as ReactAtomIO from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
@@ -15,7 +17,6 @@ export type StoreData = Record<
 >
 
 export type TestSetupOptions<AppData extends StoreData> = {
-  port?: number
   store: (silo: AtomIO.Silo) => AppData
   server: (tools: {
     socket: SocketIO.Socket
@@ -40,7 +41,9 @@ export type RealtimeTestingClient<AppData extends StoreData> = {
 export type RealtimeTestingServer<AppData extends StoreData> = Omit<
   RealtimeTestingClient<AppData>,
   `hooks`
->
+> & {
+  port: number
+}
 
 export type RealtimeTestUtilities<AppData extends StoreData> = {
   server: RealtimeTestingServer<AppData>
@@ -59,9 +62,13 @@ export type RealtimeTestUtilities__MultiClient<
 
 export const setupRealtimeTestServer = <AppData extends StoreData>(
   options: TestSetupOptions<AppData>
-): Omit<RealtimeTestingClient<AppData>, `hooks`> => {
-  const port = options.port ?? 4554
-  const server = new SocketIO.Server(port)
+): RealtimeTestingServer<AppData> => {
+  const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
+  const address = httpServer.listen().address()
+  const port =
+    typeof address === `string` ? 80 : address === null ? null : address.port
+  if (port === null) throw new Error(`Could not determine port for test server`)
+  const server = new SocketIO.Server(httpServer)
   const silo = AtomIO.silo(`SERVER`)
   const tokens = options.store(silo)
 
@@ -79,13 +86,14 @@ export const setupRealtimeTestServer = <AppData extends StoreData>(
     silo,
     tokens,
     dispose,
+    port,
   }
 }
 export const setupRealtimeTestClient = <AppData extends StoreData>(
   options: TestSetupOptions<AppData>,
-  name: string
+  name: string,
+  port: number
 ): RealtimeTestingClient<AppData> => {
-  const port = options.port ?? 4554
   const socket: ClientSocket = io(`http://localhost:${port}/`)
   const silo = AtomIO.silo(name)
 
@@ -116,8 +124,8 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
 export const singleClient = <AppData extends StoreData>(
   options: TestSetupOptions<AppData>
 ): RealtimeTestUtilities__SingleClient<AppData> => {
-  const client = setupRealtimeTestClient(options, `CLIENT`)
   const server = setupRealtimeTestServer(options)
+  const client = setupRealtimeTestClient(options, `CLIENT`, server.port)
 
   return {
     client,
@@ -139,7 +147,7 @@ export const multiClient = <
   const clients = options.clientNames.reduce(
     (clients, name) => ({
       ...clients,
-      [name]: setupRealtimeTestClient(options, name),
+      [name]: setupRealtimeTestClient(options, name, server.port),
     }),
     {} as Record<ClientNames, RealtimeTestingClient<AppData>>
   )
