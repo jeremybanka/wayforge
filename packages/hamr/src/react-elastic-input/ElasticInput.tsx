@@ -1,15 +1,10 @@
-import type {
-  DetailedHTMLProps,
-  InputHTMLAttributes,
-  ChangeEventHandler,
-} from "react"
+import type { DetailedHTMLProps, InputHTMLAttributes } from "react"
 import {
   useLayoutEffect,
   useImperativeHandle,
   forwardRef,
   useRef,
   useState,
-  useEffect,
 } from "react"
 
 export const ElasticInput = forwardRef<
