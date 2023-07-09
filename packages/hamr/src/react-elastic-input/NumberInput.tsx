@@ -1,9 +1,8 @@
 import type { FC } from "react"
-import { useState, ChangeEvent, useId, useRef } from "react"
+import { useState, useId, useRef } from "react"
 
 import type { SerializedStyles } from "@emotion/react"
 import { pipe } from "fp-ts/function"
-import type { SetterOrUpdater } from "recoil"
 
 import { clampInto } from "~/packages/anvl/src/number"
 
