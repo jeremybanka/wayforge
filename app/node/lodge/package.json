@@ -1,7 +1,6 @@
 {
   "name": "@wayforge/lodge",
   "description": "cards and dice server",
-  "packageManager": "yarn@3.6.1",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/main.ts ",

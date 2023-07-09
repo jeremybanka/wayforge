@@ -15,7 +15,6 @@
     "test": "vitest",
     "test:once": "vitest run"
   },
-  "packageManager": "yarn@3.6.1",
   "peerDependencies": {
     "react": "^18.2.0",
     "recoil": "^0.7.6",
