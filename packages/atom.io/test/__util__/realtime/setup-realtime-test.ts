@@ -1,17 +1,17 @@
 import * as AtomIO from "atom.io"
 import * as ReactAtomIO from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
+import * as RR from "fp-ts/lib/ReadonlyRecord"
 import * as SocketIO from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
-
-import { recordToEntries } from "~/packages/anvl/src/object"
 
 export type StoreData = Record<
   string,
   | AtomIO.AtomToken<any>
   | AtomIO.ReadonlySelectorToken<any>
   | AtomIO.SelectorToken<any>
+  | AtomIO.TransactionToken<any>
 >
 
 export type TestSetupOptions<AppData extends StoreData> = {
@@ -148,7 +148,7 @@ export const multiClient = <
     clients,
     server,
     teardown: () => {
-      recordToEntries(clients).forEach(([, client]) => client.dispose())
+      RR.toEntries(clients).forEach(([, client]) => client.dispose())
       server.dispose()
     },
   }
