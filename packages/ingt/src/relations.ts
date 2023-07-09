@@ -1,7 +1,5 @@
 import { readFileSync, writeFileSync } from "fs"
 
-import { identity } from "fp-ts/lib/function"
-
 import type { Json } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
 
@@ -50,12 +48,12 @@ export type WriteRelationsOptions = {
 export type WriteRelations = (options: WriteRelationsOptions) => void
 
 export const initRelationsWriter = ({
-  formatResource = identity,
+  formatResource = (unformatted) => Promise.resolve(unformatted),
   baseDir,
 }: FilestoreOptions): WriteRelations => {
-  const writeRelations: WriteRelations = ({ id, type, value }) => {
+  const writeRelations: WriteRelations = async ({ id, type, value }) => {
     const valueAsString = JSON.stringify(value)
-    const formatted = formatResource(valueAsString)
+    const formatted = await formatResource(valueAsString)
     const newFilePath = `${type}/${id}.json`
     writeFileSync(`${baseDir}/_relations/${newFilePath}`, formatted)
   }

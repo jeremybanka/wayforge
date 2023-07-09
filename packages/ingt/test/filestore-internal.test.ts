@@ -26,8 +26,8 @@ describe(`read script`, () => {
     expect(result).toEqual({ id: `foo`, type: `whatever`, bar: `baz` })
   })
 
-  it(`writes a file`, () => {
-    write({
+  it(`writes a file`, async () => {
+    await write({
       id: `new`,
       type: `whatever`,
       value: { id: `new`, type: `whatever`, bar: `baz` },

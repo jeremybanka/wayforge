@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync, renameSync } from "fs"
 
-import { identity, pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/lib/function"
 import { isString } from "fp-ts/lib/string"
 
 import type { Identified } from "~/packages/anvl/src/id"
@@ -73,11 +73,12 @@ export type WriteResource = (
 ) => Promise<Error | void>
 
 export const initResourceWriter = ({
-  formatResource = identity,
+  formatResource = (unformatted) => Promise.resolve(unformatted),
   baseDir,
 }: FilestoreOptions): WriteResource => {
   const writeResource: WriteResource = async ({ id, type, value }) => {
-    const formatted = pipe(value, JSON.stringify, formatResource)
+    const stringified = pipe(value, JSON.stringify)
+    const formatted = await formatResource(stringified)
     const hasName = doesExtend({ name: isString })
     const name = (hasName(value) ? `${value.name}_` : ``) + id
     const nextFilepath = `${baseDir}/${type}/${name}.json`

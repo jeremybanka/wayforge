@@ -110,7 +110,7 @@ export const createStore = (name: string): Store =>
       },
       logger__INTERNAL: console,
     },
-  } satisfies Store)
+  }) satisfies Store
 
 export const IMPLICIT = {
   STORE_INTERNAL: undefined as Store | undefined,
