@@ -21,41 +21,44 @@ type GameState = {
 /*
 CLIENT ACTS AND REPORTS
 - input event fires
-- event handler calls zustand action
-  - compute new state delta
-  - apply state delta to zustand store optimistically
-  - add optimistic event { id idPrev action targetIds redo undo } to event log
-  - client emits event request { id action targetIds } to server
+- event handler runs transaction
+  - client store updates optimistically
+- on success
+  - client generates transactionId and optimistic TransactionUpdate
+  - client pushes TransactionUpdate to TimelineData.history
+  - client sets TransactionUpdate in optimisticTransactions map by transactionId
+  - client emits TransactionRequest { key, params, transactionId }
 */
 
 /*
 SERVER VALIDATES, INTEGRATES, AND BROADCASTS
-- server receives event request
-- make { timestamp }
-- check if client has used this id before
+- server receives TransactionRequest { key, params, transactionId }
+- server adds timestamp to TransactionRequest
+  -> { key, params, transactionId, timestamp }
+- server pushes TransactionRequest to queue
+- check if client has used this transactionId before
   - if so, log error and BAIL
-- decode virtual { id targetIds } into true { id targetIds }
-- run action and computes { redo undo visibleTo }
-  - if failure, add to error log and BAIL
-- save true event { id timestamp action targetIds redo undo }
-- for each client in visibleTo
-  - encode true { id actorId } into virtual { id targetIds }
-  - determine virtual { idPrev } from client's log
-  - save client event { id idPrev action targetIds redo undo }
-  - emit event { id idPrev timestamp action targetIds redo undo }
+- server runs transaction, computing TransactionUpdate in the process
+  - if failure, log error and BAIL
+  - emit TransactionUpdate 
+    -> { key, params, transactionId, timestamp, atomUpdates, output }
+- server adds TransactionUpdate to TimelineData.history
 */
 
 /*
 CLIENT BEHOLDS AND REACTS
-- client receives client event { id timestamp action targetIds redo undo }
-  - check if event is in event log
-    - if so, check that they are internally equal
-      - if so, BAIL -- you have an accurate copy of the event!
-      - if not, delete the existing event from the event log
-- add event to event log based on idPrev
-  - rewind through the log, undoing each until you find the one with idPrev
-  - run redo on the new event
-  - run redo on all events after the new event
+- client receives official TransactionUpdate
+  - client retrieves its own TransactionUpdate from optimisticTransactions map
+  - client compares official and optimistic TransactionUpdates
+    - (stringify atomUpdates and compare strict)
+  - if match, client removes TransactionUpdate from optimisticTransactions map
+  - if mismatch
+    - client undoes timeline until it finds its own TransactionUpdate
+    - client replaces its own TransactionUpdate with official TransactionUpdate
+    - client removes its own TransactionUpdate from optimisticTransactions map
+    - client redoes timeline until it reaches the "HEAD"
+
+
 */
 
 type State = {
