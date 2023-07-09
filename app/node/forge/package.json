@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@types/npmlog": "4.1.4",
-    "@types/prettier": "2.7.3",
     "cross-env": "7.0.3",
     "eslint": "8.44.0",
     "tsx": "3.12.7",

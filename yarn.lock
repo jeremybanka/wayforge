@@ -2596,7 +2596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:2.7.3, @types/prettier@npm:^2.0.0":
+"@types/prettier@npm:^2.0.0":
   version: 2.7.3
   resolution: "@types/prettier@npm:2.7.3"
   checksum: 705384209cea6d1433ff6c187c80dcc0b95d99d5c5ce21a46a9a58060c527973506822e428789d842761e0280d25e3359300f017fbe77b9755bc772ab3dc2f83
@@ -2973,7 +2973,6 @@ __metadata:
   resolution: "@wayforge/forge@workspace:app/node/forge"
   dependencies:
     "@types/npmlog": 4.1.4
-    "@types/prettier": 2.7.3
     cross-env: 7.0.3
     dotenv: 16.3.1
     eslint: 8.44.0

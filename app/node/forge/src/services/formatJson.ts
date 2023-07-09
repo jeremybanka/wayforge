@@ -1,9 +1,5 @@
 import prettier from "prettier"
 
-export const prettierConfig = prettier.resolveConfig.sync(
-  `../../.prettierrc.yml`
-)
-
 export const alphabetize = <T extends Record<string, unknown>>(obj: T): T => {
   const sortedKeys = Object.keys(obj).sort()
   const sortedObj = {} as Record<string, unknown>
@@ -11,5 +7,10 @@ export const alphabetize = <T extends Record<string, unknown>>(obj: T): T => {
   return sortedObj as T
 }
 
-export const formatJson = (json: string): string =>
-  prettier.format(json, { ...prettierConfig, parser: `json` })
+export const formatJson = async (json: string): Promise<string> => {
+  const prettierConfig = await prettier.resolveConfig(process.cwd())
+  return prettier.format(json, {
+    ...prettierConfig,
+    parser: `json`,
+  })
+}
