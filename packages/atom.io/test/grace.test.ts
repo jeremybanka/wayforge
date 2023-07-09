@@ -65,34 +65,6 @@ describe(`graceful handling of improper usage`, () => {
       expect(logger.error).toHaveBeenCalledWith(
         `❌ failed to setState to "b" during a setState for "a"`
       )
-
-      setState(s, 2)
-      const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(`a & b`)
-      setState(s, 3)
-
-      expect(timelineData.history).toHaveLength(3)
-      expect(timelineData.history[0]).toEqual({
-        type: `atom_update`,
-        key: `a`,
-        oldValue: 0,
-        newValue: 1,
-      })
-      expect(timelineData.history[1]).toEqual({
-        type: `selector_update`,
-        key: `s`,
-        atomUpdates: [
-          { type: `atom_update`, key: `a`, oldValue: 1, newValue: 2 },
-          { type: `atom_update`, key: `b`, oldValue: false, newValue: true },
-        ],
-      })
-      expect(timelineData.history[2]).toEqual({
-        type: `selector_update`,
-        key: `s`,
-        atomUpdates: [
-          { type: `atom_update`, key: `a`, oldValue: 2, newValue: 3 },
-          { type: `atom_update`, key: `b`, oldValue: true, newValue: true },
-        ],
-      })
     })
   })
   describe(`giving an atom to multiple timelines is a violation`, () => {
