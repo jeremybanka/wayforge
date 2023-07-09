@@ -492,8 +492,8 @@ __metadata:
     eslint-plugin-mocha: 10.1.0
     eslint-plugin-prettier: ^5.0.0-alpha.2
   peerDependencies:
-    eslint: ^8.34.0
-    prettier: ^2.8.4 || ^3.0.0
+    eslint: ^8.44.0
+    prettier: ^3.0.0
   languageName: unknown
   linkType: soft
 
@@ -3097,8 +3097,8 @@ __metadata:
     express: 4.18.2
     fp-ts: 2.16.0
     lodash: 4.17.21
-    nanoid: ^4.0.2
-    rxjs: ^7.8.0
+    nanoid: 4.0.2
+    rxjs: 7.8.0
     socket.io: 4.7.1
     socket.io-client: 4.7.1
     socketio-auth: 0.1.1
@@ -9337,7 +9337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:4.0.2, nanoid@npm:^4.0.2":
+"nanoid@npm:4.0.2":
   version: 4.0.2
   resolution: "nanoid@npm:4.0.2"
   bin:
@@ -10750,7 +10750,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:7.8.1, rxjs@npm:^7.8.0":
+"rxjs@npm:7.8.0":
+  version: 7.8.0
+  resolution: "rxjs@npm:7.8.0"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: 61b4d4fd323c1043d8d6ceb91f24183b28bcf5def4f01ca111511d5c6b66755bc5578587fe714ef5d67cf4c9f2e26f4490d4e1d8cabf9bd5967687835e9866a2
+  languageName: node
+  linkType: hard
+
+"rxjs@npm:7.8.1":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
   dependencies:
