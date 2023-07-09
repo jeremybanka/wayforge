@@ -11,6 +11,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: `module`,
   },
+  ignorePatterns: [`**/dist/**`],
   env: {
     node: true,
     browser: true,

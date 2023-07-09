@@ -7,7 +7,7 @@ export type StateTokenIndex<
   Token extends
     | AtomToken<unknown>
     | ReadonlySelectorToken<unknown>
-    | SelectorToken<unknown>
+    | SelectorToken<unknown>,
 > = Record<
   string,
   | Token

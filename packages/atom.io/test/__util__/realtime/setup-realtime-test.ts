@@ -25,7 +25,7 @@ export type TestSetupOptions<AppData extends StoreData> = {
 }
 export type TestSetupOptions__MultiClient<
   AppData extends StoreData,
-  ClientNames extends string
+  ClientNames extends string,
 > = TestSetupOptions<AppData> & {
   clientNames: ClientNames[]
 }
@@ -52,7 +52,7 @@ export type RealtimeTestUtilities__SingleClient<AppData extends StoreData> =
   }
 export type RealtimeTestUtilities__MultiClient<
   AppData extends StoreData,
-  ClientNames extends string
+  ClientNames extends string,
 > = RealtimeTestUtilities<AppData> & {
   clients: Record<ClientNames, RealtimeTestingClient<AppData>>
 }
@@ -131,7 +131,7 @@ export const singleClient = <AppData extends StoreData>(
 
 export const multiClient = <
   AppData extends StoreData,
-  ClientNames extends string
+  ClientNames extends string,
 >(
   options: TestSetupOptions__MultiClient<AppData, ClientNames>
 ): RealtimeTestUtilities__MultiClient<AppData, ClientNames> => {
