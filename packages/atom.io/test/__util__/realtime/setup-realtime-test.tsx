@@ -118,11 +118,10 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   const socket: ClientSocket = io(`http://localhost:${port}/`)
   const silo = AtomIO.silo(name)
 
-  const storeHooks = ReactAtomIO.composeStoreHooks()
   const realtimeHooks = RTC.composeRealtimeHooks(socket, silo.store)
 
   const hooks = {
-    ...storeHooks,
+    ...ReactAtomIO.storeHooks,
     ...realtimeHooks,
   }
 

@@ -6,8 +6,6 @@ import * as AR from "atom.io/react"
 import { Observer } from "./__util__/Observer"
 import { isDefault, atom } from "../src"
 
-const { useIO } = AR.composeStoreHooks()
-
 export const onChange = [() => undefined, console.log][0]
 
 describe(`single atom`, () => {
@@ -17,7 +15,7 @@ describe(`single atom`, () => {
       default: `A`,
     })
     const Letter: FC = () => {
-      const [letter, setLetter] = useIO(letterState)
+      const [letter, setLetter] = AR.useIO(letterState)
       const isDefaultLetter = isDefault(letterState)
       return (
         <>

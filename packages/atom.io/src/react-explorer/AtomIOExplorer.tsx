@@ -1,9 +1,9 @@
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
 
+import type { StoreHooks } from "atom.io/react"
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
-import type { composeStoreHooks } from "~/packages/atom.io/src/react"
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
@@ -17,7 +17,7 @@ export type ExplorerOptions = {
     SpaceWrapper: WC
     CloseSpaceButton: FC<{ onClick: () => void }>
   }
-  storeHooks: ReturnType<typeof composeStoreHooks>
+  storeHooks: StoreHooks
 }
 
 const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
