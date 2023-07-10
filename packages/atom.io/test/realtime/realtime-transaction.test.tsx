@@ -55,7 +55,25 @@ describe(`running transactions`, () => {
 
     act(() => dave.renderResult.getByTestId(`increment`).click())
 
+    jane.renderResult.getByTestId(`0`)
     jane.reconnect()
+    await waitFor(() => jane.renderResult.getByTestId(`1`))
+
+    teardown()
+  })
+
+  test(`client 1 disconnects, makes update, reconnects`, async () => {
+    const {
+      clients: { dave, jane },
+      teardown,
+    } = scenario()
+    jane.renderResult.getByTestId(`0`)
+
+    dave.disconnect()
+    act(() => dave.renderResult.getByTestId(`increment`).click())
+
+    jane.renderResult.getByTestId(`0`)
+    dave.reconnect()
     await waitFor(() => jane.renderResult.getByTestId(`1`))
 
     teardown()
