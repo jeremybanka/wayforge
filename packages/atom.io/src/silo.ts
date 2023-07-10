@@ -17,7 +17,8 @@ import type { transaction } from "./transaction"
 export type Silo = ReturnType<typeof silo>
 
 export const silo = (
-  name: string
+  name: string,
+  fromStore: Store | null = null
 ): {
   store: Store
   atom: typeof atom
@@ -30,7 +31,7 @@ export const silo = (
   setState: typeof setState
   subscribe: typeof subscribe
 } => {
-  const store = createStore(name)
+  const store = createStore(name, fromStore)
   return {
     store,
     atom: (options) => atom__INTERNAL(options, undefined, store),

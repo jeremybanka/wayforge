@@ -71,44 +71,52 @@ export interface Store {
   }
 }
 
-export const createStore = (name: string): Store =>
+export const createStore = (name: string, store: Store | null = null): Store =>
   ({
-    atoms: HAMT.make<Atom<any>, string>(),
-    atomsThatAreDefault: new Set(),
-    readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-    selectorAtoms: new Join({ relationType: `n:n` })
-      .from(`selectorKey`)
-      .to(`atomKey`),
-    selectorGraph: new Join({ relationType: `n:n` }),
-    selectors: HAMT.make<Selector<any>, string>(),
-    timelines: HAMT.make<Timeline, string>(),
-    timelineAtoms: new Join({ relationType: `1:n` })
-      .from(`timelineKey`)
-      .to(`atomKey`),
-    timelineStore: HAMT.make<TimelineData, string>(),
-    transactions: HAMT.make<Transaction<any>, string>(),
-    valueMap: HAMT.make<any, string>(),
+    ...(store ??
+      (() => ({
+        atoms: HAMT.make<Atom<any>, string>(),
+        atomsThatAreDefault: new Set(),
+        readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
+        selectorAtoms: new Join({ relationType: `n:n` })
+          .from(`selectorKey`)
+          .to(`atomKey`),
+        selectorGraph: new Join({ relationType: `n:n` }),
+        selectors: HAMT.make<Selector<any>, string>(),
+        timelines: HAMT.make<Timeline, string>(),
+        timelineAtoms: new Join({ relationType: `1:n` })
+          .from(`timelineKey`)
+          .to(`atomKey`),
+        timelineStore: HAMT.make<TimelineData, string>(),
+        transactions: HAMT.make<Transaction<any>, string>(),
+        valueMap: HAMT.make<any, string>(),
+      }))()),
 
     subject: {
       atomCreation: new Rx.Subject(),
       selectorCreation: new Rx.Subject(),
       transactionCreation: new Rx.Subject(),
       timelineCreation: new Rx.Subject(),
+      ...store?.subject,
     },
 
     operation: {
       open: false,
+      ...store?.operation,
     },
     transactionStatus: {
       phase: `idle`,
+      ...store?.transactionStatus,
     },
     config: {
       name,
       logger: {
         ...console,
         info: doNothing,
+        ...store?.config?.logger,
       },
       logger__INTERNAL: console,
+      ...store?.config,
     },
   }) satisfies Store
 
