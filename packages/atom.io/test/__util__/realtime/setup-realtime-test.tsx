@@ -15,6 +15,7 @@ export type StoreData = Record<
   | AtomIO.AtomToken<any>
   | AtomIO.ReadonlySelectorToken<any>
   | AtomIO.SelectorToken<any>
+  | AtomIO.TimelineToken
   | AtomIO.TransactionToken<any>
 >
 
@@ -117,7 +118,7 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   const socket: ClientSocket = io(`http://localhost:${port}/`)
   const silo = AtomIO.silo(name)
 
-  const storeHooks = ReactAtomIO.composeStoreHooks(silo.store)
+  const storeHooks = ReactAtomIO.composeStoreHooks()
   const realtimeHooks = RTC.composeRealtimeHooks(socket, silo.store)
 
   const hooks = {
@@ -130,11 +131,11 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   const { document } = new Happy.Window()
   document.body.innerHTML = `<div id="app"></div>`
   const renderResult = render(
-    <options.client name={name} hooks={hooks} tokens={tokens} silo={silo} />,
+    <ReactAtomIO.StoreProvider store={silo.store}>
+      <options.client name={name} hooks={hooks} tokens={tokens} silo={silo} />
+    </ReactAtomIO.StoreProvider>,
     {
-      container: new Happy.Window().document.querySelector(
-        `#app`
-      ) as unknown as HTMLElement,
+      container: document.querySelector(`#app`) as unknown as HTMLElement,
     }
   )
 

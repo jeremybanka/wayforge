@@ -1,12 +1,12 @@
 import type { FC } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
+import * as AR from "atom.io/react"
 
 import { Observer } from "./__util__/Observer"
 import { isDefault, atom } from "../src"
-import { composeStoreHooks } from "../src/react"
 
-const { useIO } = composeStoreHooks()
+const { useIO } = AR.composeStoreHooks()
 
 export const onChange = [() => undefined, console.log][0]
 
@@ -31,10 +31,10 @@ describe(`single atom`, () => {
       )
     }
     const utils = render(
-      <>
+      <AR.StoreProvider>
         <Observer node={letterState} onChange={onChange} />
         <Letter />
-      </>
+      </AR.StoreProvider>
     )
     return { ...utils }
   }
