@@ -1,14 +1,11 @@
-import * as React from "react"
-
-import { render, act, waitFor } from "@testing-library/react"
+import { act, waitFor } from "@testing-library/react"
 import * as RT from "atom.io/realtime"
 
 import * as RTTest from "../__util__/realtime"
 
 describe(`running transactions`, () => {
-  const scenario = () => {
-    const { server, clients, teardown } = RTTest.multiClient({
-      clientNames: [`dave`, `jane`],
+  const scenario = () =>
+    RTTest.multiClient({
       store: (silo) => {
         const count = silo.atom({ key: `count`, default: 0 })
         const incrementTX = silo.transaction({
@@ -23,40 +20,44 @@ describe(`running transactions`, () => {
         exposeSingle(tokens.count)
         receiveTransaction(tokens.incrementTX)
       },
+      clients: {
+        dave: ({ hooks, tokens }) => {
+          const increment = hooks.useRemoteTransaction(tokens.incrementTX)
+          return <button onClick={() => increment()} data-testid={`increment`} />
+        },
+        jane: ({ hooks, tokens }) => {
+          hooks.useRemoteState(tokens.count)
+          const count = hooks.useO(tokens.count)
+          return <i data-testid={count} />
+        },
+      },
     })
 
-    const Dave: React.FC = () => {
-      clients.dave.hooks.useRemoteState(clients.dave.tokens.count)
-      const count = clients.dave.hooks.useO(clients.dave.tokens.count)
-      const increment = clients.dave.hooks.useRemoteTransaction(
-        clients.dave.tokens.incrementTX
-      )
-      return (
-        <>
-          <i data-testid={count + `-dave`} />
-          <button onClick={() => increment()} data-testid={`increment-dave`} />
-        </>
-      )
-    }
-    const dave = render(<Dave />)
+  test(`client 1 -> server -> client 2`, async () => {
+    const {
+      clients: { jane, dave },
+      teardown,
+    } = scenario()
+    jane.renderResult.getByTestId(`0`)
+    act(() => dave.renderResult.getByTestId(`increment`).click())
+    await waitFor(() => jane.renderResult.getByTestId(`1`))
+    teardown()
+  })
 
-    const Jane: React.FC = () => {
-      clients.jane.hooks.useRemoteState(clients.jane.tokens.count)
-      const count = clients.jane.hooks.useO(clients.jane.tokens.count)
-      return <i data-testid={count + `-jane`} />
-    }
-    const jane = render(<Jane />)
+  test(`client 2 disconnects/reconnects, gets update`, async () => {
+    const {
+      clients: { dave, jane },
+      teardown,
+    } = scenario()
+    jane.renderResult.getByTestId(`0`)
 
-    return { dave, jane, server, teardown }
-  }
+    jane.disconnect()
 
-  test(`client 1 runs; server runs; client 2 gets updates`, async () => {
-    const { dave, jane, teardown } = scenario()
-    dave.getByTestId(`0-dave`)
-    jane.getByTestId(`0-jane`)
-    act(() => dave.getByTestId(`increment-dave`).click())
-    await waitFor(() => dave.getByTestId(`1-dave`))
-    await waitFor(() => jane.getByTestId(`1-jane`))
+    act(() => dave.renderResult.getByTestId(`increment`).click())
+
+    jane.reconnect()
+    await waitFor(() => jane.renderResult.getByTestId(`1`))
+
     teardown()
   })
 })

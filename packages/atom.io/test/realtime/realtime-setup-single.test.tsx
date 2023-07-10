@@ -1,6 +1,4 @@
-import * as React from "react"
-
-import { render, act, waitFor } from "@testing-library/react"
+import { act, waitFor } from "@testing-library/react"
 import * as RT from "atom.io/realtime"
 
 import * as RTTest from "../__util__/realtime"
@@ -16,23 +14,21 @@ describe(`single-client scenario`, () => {
         const exposeSingle = RT.useExposeSingle({ socket, store })
         exposeSingle(tokens.count)
       },
+      client: ({ hooks, tokens }) => {
+        hooks.useRemoteState(tokens.count)
+        const count = hooks.useO(tokens.count)
+        return <i data-testid={count} />
+      },
     })
 
-    const App: React.FC = () => {
-      client.hooks.useRemoteState(client.tokens.count)
-      const count = client.hooks.useO(client.tokens.count)
-      return <i data-testid={count} />
-    }
-    const utils = render(<App />)
-
-    return { ...utils, client, server, teardown }
+    return { client, server, teardown }
   }
 
   it(`responds to changes on the server`, async () => {
-    const { getByTestId, server, teardown } = scenario()
-    getByTestId(`0`)
+    const { client, server, teardown } = scenario()
+    client.renderResult.getByTestId(`0`)
     act(() => server.silo.setState(server.tokens.count, 1))
-    await waitFor(() => getByTestId(`1`))
+    await waitFor(() => client.renderResult.getByTestId(`1`))
     teardown()
   })
 })

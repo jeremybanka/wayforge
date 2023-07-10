@@ -1,9 +1,11 @@
 import * as http from "http"
 
+import { prettyDOM, render, type RenderResult } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as ReactAtomIO from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RR from "fp-ts/ReadonlyRecord"
+import * as Happy from "happy-dom"
 import * as SocketIO from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
@@ -16,6 +18,13 @@ export type StoreData = Record<
   | AtomIO.TransactionToken<any>
 >
 
+export type RealtimeTestFC<AppData extends StoreData> = React.FC<{
+  name: string
+  hooks: ReactAtomIO.StoreHooks & RTC.RealtimeClientHooks
+  tokens: AppData
+  silo: AtomIO.Silo
+}>
+
 export type TestSetupOptions<AppData extends StoreData> = {
   store: (silo: AtomIO.Silo) => AppData
   server: (tools: {
@@ -24,45 +33,56 @@ export type TestSetupOptions<AppData extends StoreData> = {
     tokens: AppData
   }) => void
 }
+export type TestSetupOptions__SingleClient<AppData extends StoreData> =
+  TestSetupOptions<AppData> & {
+    client: RealtimeTestFC<AppData>
+  }
 export type TestSetupOptions__MultiClient<
   AppData extends StoreData,
   ClientNames extends string,
 > = TestSetupOptions<AppData> & {
-  clientNames: ClientNames[]
+  clients: {
+    [K in ClientNames]: RealtimeTestFC<AppData>
+  }
 }
 
-export type RealtimeTestingClient<AppData extends StoreData> = {
+export type RealtimeTestTools<AppData extends StoreData> = {
   name: string
   silo: AtomIO.Silo
-  hooks: ReactAtomIO.StoreHooks & RTC.RealtimeClientHooks
   tokens: AppData
   dispose: () => void
 }
-export type RealtimeTestingServer<AppData extends StoreData> = Omit<
-  RealtimeTestingClient<AppData>,
-  `hooks`
-> & {
-  port: number
-}
+export type RealtimeTestClient<AppData extends StoreData> =
+  RealtimeTestTools<AppData> & {
+    hooks: ReactAtomIO.StoreHooks & RTC.RealtimeClientHooks
+    renderResult: RenderResult
+    prettyPrint: () => void
+    reconnect: () => void
+    disconnect: () => void
+  }
+export type RealtimeTestServer<AppData extends StoreData> =
+  RealtimeTestTools<AppData> & {
+    port: number
+  }
 
-export type RealtimeTestUtilities<AppData extends StoreData> = {
-  server: RealtimeTestingServer<AppData>
+export type RealtimeTestAPI<AppData extends StoreData> = {
+  server: RealtimeTestServer<AppData>
   teardown: () => void
 }
-export type RealtimeTestUtilities__SingleClient<AppData extends StoreData> =
-  RealtimeTestUtilities<AppData> & {
-    client: RealtimeTestingClient<AppData>
+export type RealtimeTestAPI__SingleClient<AppData extends StoreData> =
+  RealtimeTestAPI<AppData> & {
+    client: RealtimeTestClient<AppData>
   }
-export type RealtimeTestUtilities__MultiClient<
+export type RealtimeTestAPI__MultiClient<
   AppData extends StoreData,
   ClientNames extends string,
-> = RealtimeTestUtilities<AppData> & {
-  clients: Record<ClientNames, RealtimeTestingClient<AppData>>
+> = RealtimeTestAPI<AppData> & {
+  clients: Record<ClientNames, RealtimeTestClient<AppData>>
 }
 
 export const setupRealtimeTestServer = <AppData extends StoreData>(
   options: TestSetupOptions<AppData>
-): RealtimeTestingServer<AppData> => {
+): RealtimeTestServer<AppData> => {
   const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
   const address = httpServer.listen().address()
   const port =
@@ -90,10 +110,10 @@ export const setupRealtimeTestServer = <AppData extends StoreData>(
   }
 }
 export const setupRealtimeTestClient = <AppData extends StoreData>(
-  options: TestSetupOptions<AppData>,
+  options: TestSetupOptions__SingleClient<AppData>,
   name: string,
   port: number
-): RealtimeTestingClient<AppData> => {
+): RealtimeTestClient<AppData> => {
   const socket: ClientSocket = io(`http://localhost:${port}/`)
   const silo = AtomIO.silo(name)
 
@@ -107,6 +127,28 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
 
   const tokens = options.store(silo)
 
+  const { document } = new Happy.Window()
+  document.body.innerHTML = `<div id="app"></div>`
+  const renderResult = render(
+    <options.client name={name} hooks={hooks} tokens={tokens} silo={silo} />,
+    {
+      container: new Happy.Window().document.querySelector(
+        `#app`
+      ) as unknown as HTMLElement,
+    }
+  )
+
+  const prettyPrint = () => {
+    console.log(prettyDOM(renderResult.container))
+  }
+
+  const disconnect = () => {
+    socket.disconnect()
+  }
+  const reconnect = () => {
+    socket.connect()
+  }
+
   const dispose = () => {
     socket.disconnect()
     AtomIO.__INTERNAL__.clearStore(silo.store)
@@ -117,13 +159,17 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
     silo,
     hooks,
     tokens,
+    renderResult,
+    prettyPrint,
+    disconnect,
+    reconnect,
     dispose,
   }
 }
 
 export const singleClient = <AppData extends StoreData>(
-  options: TestSetupOptions<AppData>
-): RealtimeTestUtilities__SingleClient<AppData> => {
+  options: TestSetupOptions__SingleClient<AppData>
+): RealtimeTestAPI__SingleClient<AppData> => {
   const server = setupRealtimeTestServer(options)
   const client = setupRealtimeTestClient(options, `CLIENT`, server.port)
 
@@ -142,14 +188,14 @@ export const multiClient = <
   ClientNames extends string,
 >(
   options: TestSetupOptions__MultiClient<AppData, ClientNames>
-): RealtimeTestUtilities__MultiClient<AppData, ClientNames> => {
+): RealtimeTestAPI__MultiClient<AppData, ClientNames> => {
   const server = setupRealtimeTestServer(options)
-  const clients = options.clientNames.reduce(
-    (clients, name) => ({
+  const clients = RR.toEntries(options.clients).reduce(
+    (clients, [name, client]) => ({
       ...clients,
-      [name]: setupRealtimeTestClient(options, name, server.port),
+      [name]: setupRealtimeTestClient({ ...options, client }, name, server.port),
     }),
-    {} as Record<ClientNames, RealtimeTestingClient<AppData>>
+    {} as Record<ClientNames, RealtimeTestClient<AppData>>
   )
 
   return {

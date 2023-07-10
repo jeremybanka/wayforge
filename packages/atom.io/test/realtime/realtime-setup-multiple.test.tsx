@@ -8,7 +8,6 @@ import * as RTTest from "../__util__/realtime"
 describe(`multi-client scenario`, () => {
   const scenario = () => {
     const { server, clients, teardown } = RTTest.multiClient({
-      clientNames: [`jim`, `lee`],
       store: (silo) => {
         const count = silo.atom({ key: `count`, default: 0 })
         return { count }
@@ -16,6 +15,18 @@ describe(`multi-client scenario`, () => {
       server: ({ socket, tokens, silo: { store } }) => {
         const exposeSingle = RT.useExposeSingle({ socket, store })
         exposeSingle(tokens.count)
+      },
+      clients: {
+        jim: ({ hooks, tokens }) => {
+          hooks.useRemoteState(tokens.count)
+          const count = hooks.useO(tokens.count)
+          return <i data-testid={count} />
+        },
+        lee: ({ hooks, tokens }) => {
+          hooks.useRemoteState(tokens.count)
+          const count = hooks.useO(tokens.count)
+          return <i data-testid={count} />
+        },
       },
     })
 
