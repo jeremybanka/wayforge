@@ -1,5 +1,7 @@
 import * as http from "http"
 
+import * as React from "react"
+
 import { prettyDOM, render, type RenderResult } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
@@ -35,14 +37,14 @@ export type TestSetupOptions<AppData extends StoreData> = {
 }
 export type TestSetupOptions__SingleClient<AppData extends StoreData> =
   TestSetupOptions<AppData> & {
-    client: RealtimeTestFC<AppData>
+    client: React.FC
   }
 export type TestSetupOptions__MultiClient<
   AppData extends StoreData,
   ClientNames extends string,
 > = TestSetupOptions<AppData> & {
   clients: {
-    [K in ClientNames]: RealtimeTestFC<AppData>
+    [K in ClientNames]: React.FC
   }
 }
 
@@ -88,7 +90,7 @@ export const setupRealtimeTestServer = <AppData extends StoreData>(
     typeof address === `string` ? 80 : address === null ? null : address.port
   if (port === null) throw new Error(`Could not determine port for test server`)
   const server = new SocketIO.Server(httpServer)
-  const silo = AtomIO.silo(`SERVER`)
+  const silo = AtomIO.silo(`SERVER`, AtomIO.__INTERNAL__.IMPLICIT.STORE)
   const tokens = options.store(silo)
 
   server.on(`connection`, (socket: SocketIO.Socket) => {
@@ -123,7 +125,7 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   const renderResult = render(
     <AR.StoreProvider store={silo.store}>
       <RTC.RealtimeProvider socket={socket}>
-        <options.client name={name} tokens={tokens} silo={silo} />
+        <options.client />
       </RTC.RealtimeProvider>
     </AR.StoreProvider>,
     {

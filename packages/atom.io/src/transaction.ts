@@ -31,6 +31,7 @@ export type Transaction<ƒ extends ƒn> = {
   key: string
   type: `transaction`
   run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
+  install: (store: Store) => void
   subject: Rx.Subject<TransactionUpdate<ƒ>>
 }
 export type TransactionIO<Token extends TransactionToken<any>> =

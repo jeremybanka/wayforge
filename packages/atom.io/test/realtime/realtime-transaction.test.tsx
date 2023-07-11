@@ -1,35 +1,41 @@
 import { act, waitFor } from "@testing-library/react"
+import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 
 import * as RTTest from "../__util__/realtime"
 
+const countState = AtomIO.atom({ key: `count`, default: 0 })
+const incrementTX = AtomIO.transaction({
+  key: `increment`,
+  do: ({ set }) => set(countState, (c) => c + 1),
+})
+
 describe(`running transactions`, () => {
   const scenario = () =>
     RTTest.multiClient({
       store: (silo) => {
-        const count = silo.atom({ key: `count`, default: 0 })
         const incrementTX = silo.transaction({
           key: `increment`,
-          do: ({ set }) => set(count, (c) => c + 1),
+          do: ({ set }) => set(countState, (c) => c + 1),
         })
-        return { count, incrementTX }
+        return { countState, incrementTX }
       },
       server: ({ socket, tokens, silo: { store } }) => {
         const exposeSingle = RT.useExposeSingle({ socket, store })
         const receiveTransaction = RT.useReceiveTransaction({ socket, store })
-        exposeSingle(tokens.count)
+        exposeSingle(countState)
         receiveTransaction(tokens.incrementTX)
       },
       clients: {
-        dave: ({ tokens }) => {
-          const increment = RTR.useServerAction(tokens.incrementTX)
+        dave: () => {
+          const increment = RTR.useServerAction(incrementTX)
           return <button onClick={() => increment()} data-testid={`increment`} />
         },
-        jane: ({ tokens }) => {
-          RTR.usePull(tokens.count)
-          const count = AR.useO(tokens.count)
+        jane: () => {
+          RTR.usePull(countState)
+          const count = AR.useO(countState)
           return <i data-testid={count} />
         },
       },

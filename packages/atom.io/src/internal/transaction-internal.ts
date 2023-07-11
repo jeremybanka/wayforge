@@ -63,7 +63,10 @@ export const buildTransaction = (
     params,
     output: undefined,
   }
-  store.config.logger?.info(`🛫`, `transaction "${key}" started`)
+  store.config.logger?.info(
+    `🛫`,
+    `transaction "${key}" started in store "${store.config.name}"`
+  )
 }
 export const applyTransaction = <ƒ extends ƒn>(
   output: ReturnType<ƒ>,
@@ -180,6 +183,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
         throw thrown
       }
     },
+    install: (store) => transaction__INTERNAL(options, store),
     subject: new Rx.Subject(),
   }
   const core = target(store)
