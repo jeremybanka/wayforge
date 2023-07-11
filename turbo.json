@@ -21,7 +21,18 @@
     },
     // A package's `lint` script has no dependencies and
     // can be run whenever. It also has no filesystem outputs.
-    "lint": {},
+    "lint": {
+      "inputs": [
+        "**/*.tsx",
+        "**/*.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.json",
+        "!**/node_modules/**"
+      ]
+    },
     "deploy": {
       // A package's `deploy` script depends on the `build`,
       // `test`, and `lint` scripts of the same package
