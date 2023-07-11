@@ -1,5 +1,7 @@
 import { act, waitFor } from "@testing-library/react"
+import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
+import * as RTR from "atom.io/realtime-react"
 
 import * as RTTest from "../__util__/realtime"
 
@@ -14,9 +16,9 @@ describe(`single-client scenario`, () => {
         const exposeSingle = RT.useExposeSingle({ socket, store })
         exposeSingle(tokens.count)
       },
-      client: ({ hooks, tokens }) => {
-        hooks.usePull(tokens.count)
-        const count = hooks.useO(tokens.count)
+      client: ({ tokens }) => {
+        RTR.usePull(tokens.count)
+        const count = AR.useO(tokens.count)
         return <i data-testid={count} />
       },
     })

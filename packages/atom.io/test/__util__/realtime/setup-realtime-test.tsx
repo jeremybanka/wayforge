@@ -21,7 +21,6 @@ export type StoreData = Record<
 
 export type RealtimeTestFC<AppData extends StoreData> = React.FC<{
   name: string
-  hooks: AR.StoreHooks & RTC.RealtimeHooks
   tokens: AppData
   silo: AtomIO.Silo
 }>
@@ -55,7 +54,6 @@ export type RealtimeTestTools<AppData extends StoreData> = {
 }
 export type RealtimeTestClient<AppData extends StoreData> =
   RealtimeTestTools<AppData> & {
-    hooks: AR.StoreHooks & RTC.RealtimeHooks
     renderResult: RenderResult
     prettyPrint: () => void
     reconnect: () => void
@@ -118,8 +116,6 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   const socket: ClientSocket = io(`http://localhost:${port}/`)
   const silo = AtomIO.silo(name, AtomIO.__INTERNAL__.IMPLICIT.STORE)
 
-  const hooks = { ...AR.storeHooks, ...RTC.realtimeHooks }
-
   const tokens = options.store(silo)
 
   const { document } = new Happy.Window()
@@ -127,7 +123,7 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   const renderResult = render(
     <AR.StoreProvider store={silo.store}>
       <RTC.RealtimeProvider socket={socket}>
-        <options.client name={name} hooks={hooks} tokens={tokens} silo={silo} />
+        <options.client name={name} tokens={tokens} silo={silo} />
       </RTC.RealtimeProvider>
     </AR.StoreProvider>,
     {
@@ -148,7 +144,6 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   return {
     name,
     silo,
-    hooks,
     tokens,
     renderResult,
     prettyPrint,

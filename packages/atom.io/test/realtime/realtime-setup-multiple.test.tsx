@@ -1,8 +1,7 @@
-import * as React from "react"
-
-import { render, act, waitFor } from "@testing-library/react"
+import { act, waitFor } from "@testing-library/react"
+import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
-import { cons } from "fp-ts/lib/ReadonlyNonEmptyArray"
+import * as RTR from "atom.io/realtime-react"
 
 import * as RTTest from "../__util__/realtime"
 
@@ -18,14 +17,14 @@ describe(`multi-client scenario`, () => {
         exposeSingle(tokens.count)
       },
       clients: {
-        jim: ({ hooks, tokens }) => {
-          hooks.usePull(tokens.count)
-          const count = hooks.useO(tokens.count)
+        jim: ({ tokens }) => {
+          RTR.usePull(tokens.count)
+          const count = AR.useO(tokens.count)
           return <i data-testid={count} />
         },
-        lee: ({ hooks, tokens }) => {
-          hooks.usePull(tokens.count)
-          const count = hooks.useO(tokens.count)
+        lee: ({ tokens }) => {
+          RTR.usePull(tokens.count)
+          const count = AR.useO(tokens.count)
           return <i data-testid={count} />
         },
       },

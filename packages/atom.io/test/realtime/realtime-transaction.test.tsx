@@ -1,5 +1,7 @@
 import { act, waitFor } from "@testing-library/react"
+import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
+import * as RTR from "atom.io/realtime-react"
 
 import * as RTTest from "../__util__/realtime"
 
@@ -21,13 +23,13 @@ describe(`running transactions`, () => {
         receiveTransaction(tokens.incrementTX)
       },
       clients: {
-        dave: ({ hooks, tokens }) => {
-          const increment = hooks.useServerAction(tokens.incrementTX)
+        dave: ({ tokens }) => {
+          const increment = RTR.useServerAction(tokens.incrementTX)
           return <button onClick={() => increment()} data-testid={`increment`} />
         },
-        jane: ({ hooks, tokens }) => {
-          hooks.usePull(tokens.count)
-          const count = hooks.useO(tokens.count)
+        jane: ({ tokens }) => {
+          RTR.usePull(tokens.count)
+          const count = AR.useO(tokens.count)
           return <i data-testid={count} />
         },
       },
