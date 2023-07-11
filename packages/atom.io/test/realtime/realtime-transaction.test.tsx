@@ -37,7 +37,6 @@ describe(`running transactions`, () => {
   test(`client 1 -> server -> client 2`, async () => {
     const {
       clients: { jane, dave },
-      server,
       teardown,
     } = scenario()
     jane.renderResult.getByTestId(`0`)

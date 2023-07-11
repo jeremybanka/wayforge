@@ -111,7 +111,6 @@ export const createStore = (name: string, store: Store | null = null): Store => 
       ...store?.transactionStatus,
     },
     config: {
-      name,
       logger: {
         ...console,
         info: doNothing,
@@ -119,6 +118,7 @@ export const createStore = (name: string, store: Store | null = null): Store => 
       },
       logger__INTERNAL: console,
       ...store?.config,
+      name,
     },
   } satisfies Store
 
