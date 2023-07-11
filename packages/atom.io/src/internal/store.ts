@@ -71,36 +71,28 @@ export interface Store {
   }
 }
 
-export const createStore = (name: string, store: Store | null = null): Store =>
-  ({
-    ...(store
-      ? (() => {
-          const copiedStore = {
-            ...store,
-            transactions: HAMT.make<Transaction<any>, string>(),
-          }
-          store.transactions.forEach((tx) => {
-            tx.install(copiedStore)
-          })
-          return copiedStore
-        })()
-      : (() => ({
-          atoms: HAMT.make<Atom<any>, string>(),
-          atomsThatAreDefault: new Set(),
-          readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-          selectorAtoms: new Join({ relationType: `n:n` })
-            .from(`selectorKey`)
-            .to(`atomKey`),
-          selectorGraph: new Join({ relationType: `n:n` }),
-          selectors: HAMT.make<Selector<any>, string>(),
-          timelines: HAMT.make<Timeline, string>(),
-          timelineAtoms: new Join({ relationType: `1:n` })
-            .from(`timelineKey`)
-            .to(`atomKey`),
-          timelineStore: HAMT.make<TimelineData, string>(),
-          transactions: HAMT.make<Transaction<any>, string>(),
-          valueMap: HAMT.make<any, string>(),
-        }))()),
+export const createStore = (name: string, store: Store | null = null): Store => {
+  const copiedStore = {
+    ...(store ??
+      (() => ({
+        atoms: HAMT.make<Atom<any>, string>(),
+        atomsThatAreDefault: new Set(),
+        readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
+        selectorAtoms: new Join({ relationType: `n:n` })
+          .from(`selectorKey`)
+          .to(`atomKey`),
+        selectorGraph: new Join({ relationType: `n:n` }),
+
+        timelineAtoms: new Join({ relationType: `1:n` })
+          .from(`timelineKey`)
+          .to(`atomKey`),
+        timelineStore: HAMT.make<TimelineData, string>(),
+        valueMap: HAMT.make<any, string>(),
+      }))()),
+
+    selectors: HAMT.make<Selector<any>, string>(),
+    timelines: HAMT.make<Timeline, string>(),
+    transactions: HAMT.make<Transaction<any>, string>(),
 
     subject: {
       atomCreation: new Rx.Subject(),
@@ -128,7 +120,14 @@ export const createStore = (name: string, store: Store | null = null): Store =>
       logger__INTERNAL: console,
       ...store?.config,
     },
-  }) satisfies Store
+  } satisfies Store
+
+  store?.transactions.forEach((tx) => {
+    tx.install(copiedStore)
+  })
+
+  return copiedStore
+}
 
 export const IMPLICIT = {
   STORE_INTERNAL: undefined as Store | undefined,

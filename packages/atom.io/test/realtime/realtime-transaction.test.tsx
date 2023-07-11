@@ -15,18 +15,11 @@ const incrementTX = AtomIO.transaction({
 describe(`running transactions`, () => {
   const scenario = () =>
     RTTest.multiClient({
-      store: (silo) => {
-        const incrementTX = silo.transaction({
-          key: `increment`,
-          do: ({ set }) => set(countState, (c) => c + 1),
-        })
-        return { countState, incrementTX }
-      },
-      server: ({ socket, tokens, silo: { store } }) => {
+      server: ({ socket, silo: { store } }) => {
         const exposeSingle = RT.useExposeSingle({ socket, store })
         const receiveTransaction = RT.useReceiveTransaction({ socket, store })
         exposeSingle(countState)
-        receiveTransaction(tokens.incrementTX)
+        receiveTransaction(incrementTX)
       },
       clients: {
         dave: () => {
@@ -44,6 +37,7 @@ describe(`running transactions`, () => {
   test(`client 1 -> server -> client 2`, async () => {
     const {
       clients: { jane, dave },
+      server,
       teardown,
     } = scenario()
     jane.renderResult.getByTestId(`0`)
