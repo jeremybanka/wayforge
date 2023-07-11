@@ -4,7 +4,7 @@ import * as AtomIO from "atom.io"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 
-import { storeContext } from "./store-context"
+import { StoreContext } from "./store-context"
 
 export type StoreHooks = {
   useI: <T>(token: AtomIO.StateToken<T>) => (next: Modifier<T> | T) => void
@@ -16,7 +16,7 @@ export const storeHooks: StoreHooks = { useI, useO, useIO }
 export function useI<T>(
   token: AtomIO.StateToken<T>
 ): (next: Modifier<T> | T) => void {
-  const store = React.useContext(storeContext)
+  const store = React.useContext(StoreContext)
   const update = (next: Modifier<T> | T) => AtomIO.setState(token, next, store)
   return update
 }
@@ -24,7 +24,7 @@ export function useI<T>(
 export function useO<T>(
   token: AtomIO.ReadonlySelectorToken<T> | AtomIO.StateToken<T>
 ): T {
-  const store = React.useContext(storeContext)
+  const store = React.useContext(StoreContext)
   return React.useSyncExternalStore<T>(
     (observe) => AtomIO.subscribe(token, observe, store),
     () => AtomIO.getState(token, store)

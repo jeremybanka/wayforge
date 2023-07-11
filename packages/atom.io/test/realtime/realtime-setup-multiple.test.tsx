@@ -19,12 +19,12 @@ describe(`multi-client scenario`, () => {
       },
       clients: {
         jim: ({ hooks, tokens }) => {
-          hooks.useRemoteState(tokens.count)
+          hooks.usePull(tokens.count)
           const count = hooks.useO(tokens.count)
           return <i data-testid={count} />
         },
         lee: ({ hooks, tokens }) => {
-          hooks.useRemoteState(tokens.count)
+          hooks.usePull(tokens.count)
           const count = hooks.useO(tokens.count)
           return <i data-testid={count} />
         },

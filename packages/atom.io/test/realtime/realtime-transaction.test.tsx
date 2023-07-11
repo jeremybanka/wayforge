@@ -22,11 +22,11 @@ describe(`running transactions`, () => {
       },
       clients: {
         dave: ({ hooks, tokens }) => {
-          const increment = hooks.useRemoteTransaction(tokens.incrementTX)
+          const increment = hooks.useServerAction(tokens.incrementTX)
           return <button onClick={() => increment()} data-testid={`increment`} />
         },
         jane: ({ hooks, tokens }) => {
-          hooks.useRemoteState(tokens.count)
+          hooks.usePull(tokens.count)
           const count = hooks.useO(tokens.count)
           return <i data-testid={count} />
         },

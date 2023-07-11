@@ -2,8 +2,8 @@ import * as http from "http"
 
 import { prettyDOM, render, type RenderResult } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import * as ReactAtomIO from "atom.io/react"
-import * as RTC from "atom.io/realtime-client"
+import * as AR from "atom.io/react"
+import * as RTC from "atom.io/realtime-react"
 import * as RR from "fp-ts/ReadonlyRecord"
 import * as Happy from "happy-dom"
 import * as SocketIO from "socket.io"
@@ -21,7 +21,7 @@ export type StoreData = Record<
 
 export type RealtimeTestFC<AppData extends StoreData> = React.FC<{
   name: string
-  hooks: ReactAtomIO.StoreHooks & RTC.RealtimeClientHooks
+  hooks: AR.StoreHooks & RTC.RealtimeHooks
   tokens: AppData
   silo: AtomIO.Silo
 }>
@@ -55,7 +55,7 @@ export type RealtimeTestTools<AppData extends StoreData> = {
 }
 export type RealtimeTestClient<AppData extends StoreData> =
   RealtimeTestTools<AppData> & {
-    hooks: ReactAtomIO.StoreHooks & RTC.RealtimeClientHooks
+    hooks: AR.StoreHooks & RTC.RealtimeHooks
     renderResult: RenderResult
     prettyPrint: () => void
     reconnect: () => void
@@ -116,23 +116,20 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
   port: number
 ): RealtimeTestClient<AppData> => {
   const socket: ClientSocket = io(`http://localhost:${port}/`)
-  const silo = AtomIO.silo(name)
+  const silo = AtomIO.silo(name, AtomIO.__INTERNAL__.IMPLICIT.STORE)
 
-  const realtimeHooks = RTC.composeRealtimeHooks(socket, silo.store)
-
-  const hooks = {
-    ...ReactAtomIO.storeHooks,
-    ...realtimeHooks,
-  }
+  const hooks = { ...AR.storeHooks, ...RTC.realtimeHooks }
 
   const tokens = options.store(silo)
 
   const { document } = new Happy.Window()
   document.body.innerHTML = `<div id="app"></div>`
   const renderResult = render(
-    <ReactAtomIO.StoreProvider store={silo.store}>
-      <options.client name={name} hooks={hooks} tokens={tokens} silo={silo} />
-    </ReactAtomIO.StoreProvider>,
+    <AR.StoreProvider store={silo.store}>
+      <RTC.RealtimeProvider socket={socket}>
+        <options.client name={name} hooks={hooks} tokens={tokens} silo={silo} />
+      </RTC.RealtimeProvider>
+    </AR.StoreProvider>,
     {
       container: document.querySelector(`#app`) as unknown as HTMLElement,
     }
