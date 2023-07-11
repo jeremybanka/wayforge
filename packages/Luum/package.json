@@ -19,21 +19,19 @@
     "tsup": "7.1.0",
     "vitest": "0.33.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremybanka/luum.git"
-  },
   "keywords": [
     "color",
     "css",
     "javascript",
     "library"
   ],
-  "license": "MIT",
-  "sideEffects": false,
-  "author": "Jeremy Banka",
-  "bugs": {
-    "url": "https://github.com/jeremybanka/luum/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremybanka/wayforge.git"
   },
-  "homepage": "https://github.com/jeremybanka/luum#readme"
+  "license": "MIT",
+  "author": "Jeremy Banka",
+  "publishConfig": {
+    "access": "public"
+  }
 }
