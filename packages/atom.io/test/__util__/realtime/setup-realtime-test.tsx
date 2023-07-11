@@ -138,16 +138,10 @@ export const setupRealtimeTestClient = <AppData extends StoreData>(
     }
   )
 
-  const prettyPrint = () => {
-    console.log(prettyDOM(renderResult.container))
-  }
+  const prettyPrint = () => console.log(prettyDOM(renderResult.container))
 
-  const disconnect = () => {
-    socket.disconnect()
-  }
-  const reconnect = () => {
-    socket.connect()
-  }
+  const disconnect = () => socket.disconnect()
+  const reconnect = () => socket.connect()
 
   const dispose = () => {
     socket.disconnect()
