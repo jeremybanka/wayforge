@@ -1,7 +1,8 @@
-import { type timeline, getState, setState, subscribe } from "."
+import type { timeline } from "."
+import { getState, setState, subscribe } from "."
 import type { atom, atomFamily } from "./atom"
+import type { Store } from "./internal"
 import {
-  type Store,
   atomFamily__INTERNAL,
   atom__INTERNAL,
   createStore,

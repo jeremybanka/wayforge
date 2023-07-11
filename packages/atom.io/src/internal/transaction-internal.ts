@@ -5,7 +5,6 @@ import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store, StoreCore } from "."
 import { deposit, withdraw, IMPLICIT } from "."
-import { getState, setState } from ".."
 import type {
   AtomToken,
   StateUpdate,
@@ -13,6 +12,7 @@ import type {
   TransactionOptions,
   TransactionToken,
 } from ".."
+import { getState, setState } from ".."
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]

@@ -30,7 +30,7 @@ module.exports = {
     "@typescript-eslint/prefer-enum-initializers": `error`,
     "@typescript-eslint/prefer-literal-enum-member": `error`,
     "@typescript-eslint/prefer-optional-chain": `error`,
-    "@typescript-eslint/sort-type-union-intersection-members": `error`,
+    "@typescript-eslint/sort-type-constituents": `error`,
     "@typescript-eslint/type-annotation-spacing": `error`,
     "@typescript-eslint/unified-signatures": `error`,
     "@typescript-eslint/no-unused-vars": `off`,
@@ -39,7 +39,8 @@ module.exports = {
     "@typescript-eslint/consistent-type-imports": [
       `error`,
       {
-        prefer: `type-imports`,
+        fixStyle: `separate-type-imports`,
+        prefer: `type-imports`, 
       },
     ],
     "import/extensions": [

@@ -1,10 +1,10 @@
+import type { Atom, ReadonlySelector, Selector, Store } from "."
 import {
   getState__INTERNAL,
   withdraw,
   recallState,
   traceAllSelectorAtoms,
 } from "."
-import type { Atom, ReadonlySelector, Selector, Store } from "."
 import type { StateUpdate } from ".."
 
 export const prepareUpdate = <T>(

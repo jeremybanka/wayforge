@@ -1,7 +1,7 @@
 import type { Store } from "."
 import { IMPLICIT } from "."
-import { setState } from ".."
 import type { TimelineToken } from ".."
+import { setState } from ".."
 
 export const redo__INTERNAL = (
   token: TimelineToken,
