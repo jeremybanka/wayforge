@@ -22,22 +22,16 @@
     // A package's `lint` script has no dependencies and
     // can be run whenever. It also has no filesystem outputs.
     "lint": {
-      "inputs": [
-        "**/*.tsx",
-        "**/*.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.json",
-        "!**/node_modules/**"
-      ]
+      "cache": false
     },
     "deploy": {
       // A package's `deploy` script depends on the `build`,
       // `test`, and `lint` scripts of the same package
       // being completed. It also has no filesystem outputs.
       "dependsOn": ["build", "test:once", "lint"]
+    },
+    "globalDependencies": {
+      "inputs": [".eslintrc.js"]
     }
   }
 }

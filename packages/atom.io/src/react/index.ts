@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react"
 
-import { subscribe, setState, __INTERNAL__, getState } from "atom.io"
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
+import { subscribe, setState, __INTERNAL__, getState } from "atom.io"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 
