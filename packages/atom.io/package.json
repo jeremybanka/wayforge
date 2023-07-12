@@ -64,7 +64,7 @@
     }
   },
   "scripts": {
-    "build": "for dir in . json react react-devtools realtime realtime-react; do (cd $dir && tsup); done",
+    "build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup) & (cd realtime-react && tsup)",
     "lint": "eslint ./**/*.ts{,x}",
     "test": "vitest",
     "test:once": "vitest run"

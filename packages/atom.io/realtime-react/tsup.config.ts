@@ -8,5 +8,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: [`atom.io`, `fp-ts`, `socket.io-client`],
+  external: [`atom.io`, `fp-ts`, `socket.io-client`, `react`, `@emotion/react`],
 })
