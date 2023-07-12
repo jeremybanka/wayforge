@@ -11,6 +11,7 @@ export default defineConfig({
   loader: {
     ".scss": `css`,
   },
+  tsconfig: `../tsconfig.json`,
   external: [
     `atom.io`,
     `@emotion/react`,
