@@ -8,5 +8,6 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
+  jsxFactory: `React.createElement`,
   external: [`atom.io`, `react`, `@emotion/react`],
 })
