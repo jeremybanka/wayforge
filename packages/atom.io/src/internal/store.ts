@@ -14,6 +14,7 @@ import type {
   TransactionStatus,
   Timeline,
   TimelineData,
+  Transaction,
 } from "."
 import type {
   AtomToken,
@@ -21,7 +22,6 @@ import type {
   ReadonlySelectorToken,
   SelectorToken,
   TimelineToken,
-  Transaction,
   TransactionToken,
 } from ".."
 

@@ -8,11 +8,18 @@ import { deposit, withdraw, IMPLICIT } from "."
 import type {
   AtomToken,
   StateUpdate,
-  Transaction,
   TransactionOptions,
   TransactionToken,
 } from ".."
 import { getState, setState } from ".."
+
+export type Transaction<ƒ extends ƒn> = {
+  key: string
+  type: `transaction`
+  install: (store: Store) => void
+  subject: Rx.Subject<TransactionUpdate<ƒ>>
+  run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
+}
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]

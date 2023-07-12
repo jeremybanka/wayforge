@@ -27,13 +27,6 @@ export type TransactionOptions<ƒ extends ƒn> = {
   do: Write<ƒ>
 }
 
-export type Transaction<ƒ extends ƒn> = {
-  key: string
-  type: `transaction`
-  run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
-  install: (store: Store) => void
-  subject: Rx.Subject<TransactionUpdate<ƒ>>
-}
 export type TransactionIO<Token extends TransactionToken<any>> =
   Token extends TransactionToken<infer ƒ> ? ƒ : never
 

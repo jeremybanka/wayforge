@@ -2,14 +2,13 @@ import HAMT from "hamt_plus"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { Atom, ReadonlySelector, Selector, Store } from "."
+import type { Atom, ReadonlySelector, Selector, Store, Transaction } from "."
 import { target, isValueCached, readCachedValue, IMPLICIT } from "."
 import type {
   AtomToken,
   ReadonlySelectorToken,
   SelectorToken,
   StateToken,
-  Transaction,
   TransactionToken,
 } from ".."
 
