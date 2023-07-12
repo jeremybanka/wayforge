@@ -3,7 +3,7 @@ import * as Rx from "rxjs"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { Store, StoreCore, TransactionUpdate } from "."
+import type { Store, StoreCore } from "."
 import {
   abortTransaction,
   applyTransaction,
@@ -11,7 +11,7 @@ import {
   deposit,
   IMPLICIT,
 } from "."
-import type { TransactionOptions, TransactionToken } from ".."
+import type { TransactionOptions, TransactionToken, TransactionUpdate } from ".."
 import { getState, setState } from ".."
 
 export type Transaction<ƒ extends ƒn> = {

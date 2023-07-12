@@ -1,7 +1,7 @@
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { StoreCore } from ".."
-import type { StateUpdate } from "../.."
+import type { StateUpdate, TransactionUpdate } from "../.."
 
 export * from "./abort-transaction"
 export * from "./apply-transaction"
@@ -14,12 +14,6 @@ export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
 export type KeyedStateUpdate<T> = StateUpdate<T> & {
   key: string
-}
-export type TransactionUpdate<ƒ extends ƒn> = {
-  key: string
-  atomUpdates: KeyedStateUpdate<unknown>[]
-  params: Parameters<ƒ>
-  output: ReturnType<ƒ>
 }
 
 export type TransactionUpdateInProgress<ƒ extends ƒn> = TransactionUpdate<ƒ> & {

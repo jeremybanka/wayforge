@@ -1,8 +1,8 @@
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { Store, TransactionUpdate } from ".."
+import type { Store } from ".."
 import { withdraw } from ".."
-import type { AtomToken } from "../.."
+import type { AtomToken, TransactionUpdate } from "../.."
 import { setState } from "../.."
 
 export const undoTransactionUpdate = <ƒ extends ƒn>(
