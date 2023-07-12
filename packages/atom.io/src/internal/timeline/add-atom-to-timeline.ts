@@ -15,78 +15,84 @@ export const addAtomToTimeline = (
     )
   }
   atom.subject.subscribe((update) => {
-    const storeCurrentSelectorKey =
+    const currentSelectorKey =
       store.operation.open && store.operation.token.type === `selector`
         ? store.operation.token.key
         : null
-    const storeCurrentSelectorTime =
+    const currentSelectorTime =
       store.operation.open && store.operation.token.type === `selector`
         ? store.operation.time
         : null
-
-    const storeCurrentTransactionKey =
+    const currentTransactionKey =
       store.transactionStatus.phase === `applying`
         ? store.transactionStatus.key
         : null
+    const currentTransactionTime =
+      store.transactionStatus.phase === `applying`
+        ? store.transactionStatus.time
+        : null
+
     store.config.logger?.info(
       `⏳ timeline "${tl.key}" saw atom "${atomToken.key}" go (`,
       update.oldValue,
       `->`,
       update.newValue,
-      storeCurrentTransactionKey
-        ? `) in transaction "${storeCurrentTransactionKey}"`
-        : storeCurrentSelectorKey
-        ? `) in selector "${storeCurrentSelectorKey}"`
+      currentTransactionKey
+        ? `) in transaction "${currentTransactionKey}"`
+        : currentSelectorKey
+        ? `) in selector "${currentSelectorKey}"`
         : `)`
     )
 
-    if (
-      storeCurrentTransactionKey &&
-      store.transactionStatus.phase === `applying`
-    ) {
-      const currentTransaction = withdraw(
-        { key: storeCurrentTransactionKey, type: `transaction` },
-        store
-      )
-      if (currentTransaction === null) {
-        throw new Error(
-          `Transaction "${storeCurrentTransactionKey}" not found in store "${store.config.name}". This is surprising, because we are in the application phase of "${storeCurrentTransactionKey}".`
+    if (tl.timeTraveling === false) {
+      if (
+        currentTransactionKey &&
+        store.transactionStatus.phase === `applying`
+      ) {
+        const currentTransaction = withdraw(
+          { key: currentTransactionKey, type: `transaction` },
+          store
         )
-      }
-      if (tl.transactionKey !== storeCurrentTransactionKey) {
-        if (tl.transactionKey) {
-          store.config.logger?.error(
-            `Timeline "${tl.key}" was unable to resolve transaction "${tl.transactionKey}. This is probably a bug.`
+        if (currentTransaction === null) {
+          throw new Error(
+            `Transaction "${currentTransactionKey}" not found in store "${store.config.name}". This is surprising, because we are in the application phase of "${currentTransactionKey}".`
           )
         }
-        tl.transactionKey = storeCurrentTransactionKey
-        const subscription = currentTransaction.subject.subscribe((update) => {
-          if (tl.timeTraveling === false) {
-            if (tl.at !== tl.history.length) {
-              tl.history.splice(tl.at)
-            }
-            tl.history.push({
-              type: `transaction_update`,
-              ...update,
-              atomUpdates: update.atomUpdates.filter((atomUpdate) =>
-                atoms.some((atom) => atom.key === atomUpdate.key)
-              ),
-            })
+        if (tl.transactionKey !== currentTransactionKey) {
+          if (tl.transactionKey) {
+            store.config.logger?.error(
+              `Timeline "${tl.key}" was unable to resolve transaction "${tl.transactionKey}. This is probably a bug.`
+            )
           }
-          tl.at = tl.history.length
-          subscription.unsubscribe()
-          tl.transactionKey = null
-          store.config.logger?.info(
-            `⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`
-          )
-        })
-      }
-    } else if (storeCurrentSelectorKey) {
-      if (tl.timeTraveling === false) {
-        if (storeCurrentSelectorTime !== tl.selectorTime) {
+          tl.transactionKey = currentTransactionKey
+          const subscription = currentTransaction.subject.subscribe((update) => {
+            if (tl.timeTraveling === false && currentTransactionTime) {
+              if (tl.at !== tl.history.length) {
+                tl.history.splice(tl.at)
+              }
+              tl.history.push({
+                type: `transaction_update`,
+                timestamp: currentTransactionTime,
+                ...update,
+                atomUpdates: update.atomUpdates.filter((atomUpdate) =>
+                  atoms.some((atom) => atom.key === atomUpdate.key)
+                ),
+              })
+            }
+            tl.at = tl.history.length
+            subscription.unsubscribe()
+            tl.transactionKey = null
+            store.config.logger?.info(
+              `⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`
+            )
+          })
+        }
+      } else if (currentSelectorKey && currentSelectorTime) {
+        if (currentSelectorTime !== tl.selectorTime) {
           const newSelectorUpdate: TimelineSelectorUpdate = {
             type: `selector_update`,
-            key: storeCurrentSelectorKey,
+            timestamp: currentSelectorTime,
+            key: currentSelectorKey,
             atomUpdates: [],
           }
           newSelectorUpdate.atomUpdates.push({
@@ -100,11 +106,11 @@ export const addAtomToTimeline = (
           tl.history.push(newSelectorUpdate)
 
           store.config.logger?.info(
-            `⌛ timeline "${tl.key}" got a selector_update "${storeCurrentSelectorKey}" with`,
+            `⌛ timeline "${tl.key}" got a selector_update "${currentSelectorKey}" with`,
             newSelectorUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key)
           )
           tl.at = tl.history.length
-          tl.selectorTime = storeCurrentSelectorTime
+          tl.selectorTime = currentSelectorTime
         } else {
           const latestUpdate = tl.history.at(-1)
           if (latestUpdate?.type === `selector_update`) {
@@ -114,20 +120,20 @@ export const addAtomToTimeline = (
               ...update,
             })
             store.config.logger?.info(
-              `   ⌛ timeline "${tl.key}" set selector_update "${storeCurrentSelectorKey}" to`,
+              `   ⌛ timeline "${tl.key}" set selector_update "${currentSelectorKey}" to`,
               latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key)
             )
           }
         }
-      }
-    } else {
-      if (tl.timeTraveling === false) {
+      } else {
+        const timestamp = Date.now()
         tl.selectorTime = null
         if (tl.at !== tl.history.length) {
           tl.history.splice(tl.at)
         }
         tl.history.push({
           type: `atom_update`,
+          timestamp,
           key: atom.key,
           oldValue: update.oldValue,
           newValue: update.newValue,

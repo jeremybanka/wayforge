@@ -8,6 +8,7 @@ export const buildTransaction = (
   store.transactionStatus = {
     key,
     phase: `building`,
+    time: Date.now(),
     core: {
       atoms: store.atoms,
       atomsThatAreDefault: store.atomsThatAreDefault,

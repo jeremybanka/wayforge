@@ -1,4 +1,5 @@
 import HAMT from "hamt_plus"
+import * as Rx from "rxjs"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 
@@ -6,36 +7,41 @@ import type { Store } from "."
 import { target, IMPLICIT } from "."
 import { addAtomToTimeline } from "./timeline/add-atom-to-timeline"
 import type {
-  KeyedStateUpdate,
+  StateUpdate,
   TimelineOptions,
   TimelineToken,
+  TimelineUpdate,
   TransactionUpdate,
 } from ".."
 
-export type TimelineAtomUpdate = KeyedStateUpdate<unknown> & {
+export type TimelineAtomUpdate = StateUpdate<unknown> & {
+  key: string
   type: `atom_update`
+  timestamp: number
 }
 export type TimelineSelectorUpdate = {
   key: string
   type: `selector_update`
-  atomUpdates: TimelineAtomUpdate[]
+  timestamp: number
+  atomUpdates: Omit<TimelineAtomUpdate, `timestamp`>[]
 }
 export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
+  key: string
   type: `transaction_update`
+  timestamp: number
 }
 
 export type Timeline = {
   key: string
   at: number
   timeTraveling: boolean
-  history: (
-    | TimelineAtomUpdate
-    | TimelineSelectorUpdate
-    | TimelineTransactionUpdate
-  )[]
+  history: TimelineUpdate[]
   selectorTime: number | null
   transactionKey: string | null
   install: (store: Store) => void
+  subject: Rx.Subject<
+    TimelineAtomUpdate | TimelineSelectorUpdate | TimelineTransactionUpdate
+  >
 }
 
 export function timeline__INTERNAL(
@@ -52,6 +58,7 @@ export function timeline__INTERNAL(
     ...data,
     history: data?.history.map((update) => ({ ...update })) ?? [],
     install: (store) => timeline__INTERNAL(options, store, tl),
+    subject: new Rx.Subject(),
   }
 
   const core = target(store)

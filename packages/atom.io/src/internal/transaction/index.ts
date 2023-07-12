@@ -14,6 +14,7 @@ export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
 export type TransactionUpdateInProgress<ƒ extends ƒn> = TransactionUpdate<ƒ> & {
   phase: `applying` | `building`
+  time: number
   core: StoreCore
 }
 export type TransactionIdle = {
