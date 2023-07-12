@@ -39,10 +39,10 @@ export function timeline__INTERNAL(
   const tl: Timeline = {
     at: 0,
     timeTraveling: false,
-    history: [],
     selectorTime: null,
     transactionKey: null,
     ...data,
+    history: data?.history.map((update) => ({ ...update })) ?? [],
     install: (store) => timeline__INTERNAL(options, store, tl),
   }
 
