@@ -78,9 +78,6 @@ export const createStore = (name: string, store: Store | null = null): Store => 
           .from(`selectorKey`)
           .to(`atomKey`),
         selectorGraph: new Join({ relationType: `n:n` }),
-        timelineAtoms: new Join({ relationType: `1:n` })
-          .from(`timelineKey`)
-          .to(`atomKey`),
         valueMap: HAMT.make<any, string>(),
       }))()),
 
@@ -89,6 +86,10 @@ export const createStore = (name: string, store: Store | null = null): Store => 
     selectors: HAMT.make<Selector<any>, string>(),
     transactions: HAMT.make<Transaction<any>, string>(),
     timelines: HAMT.make<Timeline, string>(),
+
+    timelineAtoms: new Join({ relationType: `1:n` })
+      .from(`timelineKey`)
+      .to(`atomKey`),
 
     subject: {
       atomCreation: new Rx.Subject(),

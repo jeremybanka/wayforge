@@ -26,14 +26,14 @@ export const redo__INTERNAL = (
   switch (update.type) {
     case `atom_update`: {
       const { key, newValue } = update
-      setState({ key, type: `atom` }, newValue)
+      setState({ key, type: `atom` }, newValue, store)
       break
     }
     case `selector_update`:
     case `transaction_update`: {
       for (const atomUpdate of update.atomUpdates) {
         const { key, newValue } = atomUpdate
-        setState({ key, type: `atom` }, newValue)
+        setState({ key, type: `atom` }, newValue, store)
       }
       break
     }
@@ -70,14 +70,14 @@ export const undo__INTERNAL = (
   switch (update.type) {
     case `atom_update`: {
       const { key, oldValue } = update
-      setState({ key, type: `atom` }, oldValue)
+      setState({ key, type: `atom` }, oldValue, store)
       break
     }
     case `selector_update`:
     case `transaction_update`: {
       for (const atomUpdate of update.atomUpdates) {
         const { key, oldValue } = atomUpdate
-        setState({ key, type: `atom` }, oldValue)
+        setState({ key, type: `atom` }, oldValue, store)
       }
       break
     }
