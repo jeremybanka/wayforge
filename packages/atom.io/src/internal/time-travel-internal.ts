@@ -8,7 +8,7 @@ export const redo__INTERNAL = (
   store: Store = IMPLICIT.STORE
 ): void => {
   store.config.logger?.info(`⏩ redo "${token.key}"`)
-  const timelineData = store.timelineStore.get(token.key)
+  const timelineData = store.timelines.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
       `Failed to redo on timeline "${token.key}". This timeline has not been initialized.`
@@ -50,7 +50,7 @@ export const undo__INTERNAL = (
   store: Store = IMPLICIT.STORE
 ): void => {
   store.config.logger?.info(`⏪ undo "${token.key}"`)
-  const timelineData = store.timelineStore.get(token.key)
+  const timelineData = store.timelines.get(token.key)
   if (!timelineData) {
     store.config.logger?.error(
       `Failed to undo on timeline "${token.key}". This timeline has not been initialized.`

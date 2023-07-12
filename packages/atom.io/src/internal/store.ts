@@ -13,7 +13,6 @@ import type {
   Selector,
   TransactionStatus,
   Timeline,
-  TimelineData,
   Transaction,
 } from "."
 import type {
@@ -47,9 +46,8 @@ export interface Store {
   selectorAtoms: Join<null, `selectorKey`, `atomKey`>
   selectorGraph: Join<{ source: string }>
   selectors: Hamt<Selector<any>, string>
-  timelines: Hamt<Timeline, string>
   timelineAtoms: Join<null, `timelineKey`, `atomKey`>
-  timelineStore: Hamt<TimelineData, string>
+  timelines: Hamt<Timeline, string>
   transactions: Hamt<Transaction<any>, string>
   valueMap: Hamt<any, string>
 
@@ -83,8 +81,6 @@ export const createStore = (name: string, store: Store | null = null): Store => 
         timelineAtoms: new Join({ relationType: `1:n` })
           .from(`timelineKey`)
           .to(`atomKey`),
-        timelines: HAMT.make<Timeline, string>(),
-        timelineStore: HAMT.make<TimelineData, string>(),
         valueMap: HAMT.make<any, string>(),
       }))()),
 
@@ -92,6 +88,7 @@ export const createStore = (name: string, store: Store | null = null): Store => 
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
     selectors: HAMT.make<Selector<any>, string>(),
     transactions: HAMT.make<Transaction<any>, string>(),
+    timelines: HAMT.make<Timeline, string>(),
 
     subject: {
       atomCreation: new Rx.Subject(),
@@ -133,6 +130,9 @@ export const createStore = (name: string, store: Store | null = null): Store => 
   })
   store?.transactions.forEach((tx) => {
     tx.install(copiedStore)
+  })
+  store?.timelines.forEach((timeline) => {
+    timeline.install(copiedStore)
   })
 
   return copiedStore

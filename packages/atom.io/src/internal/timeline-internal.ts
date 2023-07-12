@@ -6,13 +6,6 @@ import type { KeyedStateUpdate, TransactionUpdate, Store } from "."
 import { target, IMPLICIT, withdraw } from "."
 import type { AtomToken, TimelineOptions, TimelineToken } from ".."
 
-export type Timeline = {
-  key: string
-  type: `timeline`
-  next: () => void
-  prev: () => void
-}
-
 export type TimelineAtomUpdate = KeyedStateUpdate<unknown> & {
   type: `atom_update`
 }
@@ -25,7 +18,7 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
   type: `transaction_update`
 }
 
-export type TimelineData = {
+export type Timeline = {
   at: number
   timeTraveling: boolean
   history: (
@@ -35,18 +28,22 @@ export type TimelineData = {
   )[]
   selectorTime: number | null
   transactionKey: string | null
+  install: (store: Store) => void
 }
 
 export function timeline__INTERNAL(
   options: TimelineOptions,
-  store: Store = IMPLICIT.STORE
+  store: Store = IMPLICIT.STORE,
+  data: Timeline | null = null
 ): TimelineToken {
-  const timelineData: TimelineData = {
+  const tl: Timeline = {
     at: 0,
     timeTraveling: false,
     history: [],
     selectorTime: null,
     transactionKey: null,
+    ...data,
+    install: (store) => timeline__INTERNAL(options, store, tl),
   }
 
   const subscribeToAtom = (token: AtomToken<any>) => {
@@ -95,19 +92,19 @@ export function timeline__INTERNAL(
             `Transaction "${storeCurrentTransactionKey}" not found in store "${store.config.name}". This is surprising, because we are in the application phase of "${storeCurrentTransactionKey}".`
           )
         }
-        if (timelineData.transactionKey !== storeCurrentTransactionKey) {
-          if (timelineData.transactionKey) {
+        if (tl.transactionKey !== storeCurrentTransactionKey) {
+          if (tl.transactionKey) {
             store.config.logger?.error(
-              `Timeline "${options.key}" was unable to resolve transaction "${timelineData.transactionKey}. This is probably a bug.`
+              `Timeline "${options.key}" was unable to resolve transaction "${tl.transactionKey}. This is probably a bug.`
             )
           }
-          timelineData.transactionKey = storeCurrentTransactionKey
+          tl.transactionKey = storeCurrentTransactionKey
           const subscription = currentTransaction.subject.subscribe((update) => {
-            if (timelineData.timeTraveling === false) {
-              if (timelineData.at !== timelineData.history.length) {
-                timelineData.history.splice(timelineData.at)
+            if (tl.timeTraveling === false) {
+              if (tl.at !== tl.history.length) {
+                tl.history.splice(tl.at)
               }
-              timelineData.history.push({
+              tl.history.push({
                 type: `transaction_update`,
                 ...update,
                 atomUpdates: update.atomUpdates.filter((atomUpdate) =>
@@ -115,17 +112,17 @@ export function timeline__INTERNAL(
                 ),
               })
             }
-            timelineData.at = timelineData.history.length
+            tl.at = tl.history.length
             subscription.unsubscribe()
-            timelineData.transactionKey = null
+            tl.transactionKey = null
             store.config.logger?.info(
               `⌛ timeline "${options.key}" got a transaction_update "${update.key}"`
             )
           })
         }
       } else if (storeCurrentSelectorKey) {
-        if (timelineData.timeTraveling === false) {
-          if (storeCurrentSelectorTime !== timelineData.selectorTime) {
+        if (tl.timeTraveling === false) {
+          if (storeCurrentSelectorTime !== tl.selectorTime) {
             const newSelectorUpdate: TimelineSelectorUpdate = {
               type: `selector_update`,
               key: storeCurrentSelectorKey,
@@ -136,19 +133,19 @@ export function timeline__INTERNAL(
               type: `atom_update`,
               ...update,
             })
-            if (timelineData.at !== timelineData.history.length) {
-              timelineData.history.splice(timelineData.at)
+            if (tl.at !== tl.history.length) {
+              tl.history.splice(tl.at)
             }
-            timelineData.history.push(newSelectorUpdate)
+            tl.history.push(newSelectorUpdate)
 
             store.config.logger?.info(
               `⌛ timeline "${options.key}" got a selector_update "${storeCurrentSelectorKey}" with`,
               newSelectorUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key)
             )
-            timelineData.at = timelineData.history.length
-            timelineData.selectorTime = storeCurrentSelectorTime
+            tl.at = tl.history.length
+            tl.selectorTime = storeCurrentSelectorTime
           } else {
-            const latestUpdate = timelineData.history.at(-1)
+            const latestUpdate = tl.history.at(-1)
             if (latestUpdate?.type === `selector_update`) {
               latestUpdate.atomUpdates.push({
                 key: token.key,
@@ -163,12 +160,12 @@ export function timeline__INTERNAL(
           }
         }
       } else {
-        if (timelineData.timeTraveling === false) {
-          timelineData.selectorTime = null
-          if (timelineData.at !== timelineData.history.length) {
-            timelineData.history.splice(timelineData.at)
+        if (tl.timeTraveling === false) {
+          tl.selectorTime = null
+          if (tl.at !== tl.history.length) {
+            tl.history.splice(tl.at)
           }
-          timelineData.history.push({
+          tl.history.push({
             type: `atom_update`,
             key: token.key,
             oldValue: update.oldValue,
@@ -177,7 +174,7 @@ export function timeline__INTERNAL(
           store.config.logger?.info(
             `⌛ timeline "${options.key}" got a state_update to "${token.key}"`
           )
-          timelineData.at = timelineData.history.length
+          tl.at = tl.history.length
         }
       }
     })
@@ -215,7 +212,7 @@ export function timeline__INTERNAL(
     })
   }
 
-  store.timelineStore = HAMT.set(options.key, timelineData, store.timelineStore)
+  store.timelines = HAMT.set(options.key, tl, store.timelines)
   const token: TimelineToken = {
     key: options.key,
     type: `timeline`,

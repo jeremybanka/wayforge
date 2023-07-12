@@ -117,9 +117,7 @@ describe(`timeline`, () => {
     undo(tl_abc)
     expectation0()
 
-    const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(
-      tl_abc.key
-    )
+    const timelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(tl_abc.key)
     expect(timelineData.at).toBe(0)
     expect(timelineData.history.length).toBe(3)
   })
@@ -191,7 +189,7 @@ describe(`timeline`, () => {
     setState(nameCapitalizedState, `JON`)
     runTransaction(setName)(`Sylvia`)
 
-    const timelineData = __INTERNAL__.IMPLICIT.STORE.timelineStore.get(
+    const timelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
       nameHistory.key
     )
 
