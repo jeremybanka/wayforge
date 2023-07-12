@@ -10,6 +10,7 @@ import {
   setLogLevel,
   setState,
   subscribe,
+  subscribeToTimeline,
   transaction,
 } from "../src"
 import { redo, timeline, undo } from "../src/timeline"
@@ -69,6 +70,8 @@ describe(`timeline`, () => {
         set(c, (n) => n + add)
       },
     })
+
+    subscribeToTimeline(tl_abc, (update) => console.error(update))
 
     const expectation0 = () => {
       expect(getState(a)).toBe(5)
