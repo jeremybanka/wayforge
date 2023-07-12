@@ -90,6 +90,7 @@ export const createStore = (name: string, store: Store | null = null): Store => 
         valueMap: HAMT.make<any, string>(),
       }))()),
 
+    atoms: HAMT.make<Atom<any>, string>(),
     selectors: HAMT.make<Selector<any>, string>(),
     timelines: HAMT.make<Timeline, string>(),
     transactions: HAMT.make<Transaction<any>, string>(),
@@ -122,6 +123,10 @@ export const createStore = (name: string, store: Store | null = null): Store => 
     },
   } satisfies Store
 
+  store?.atoms.forEach((atom) => {
+    const copiedAtom = { ...atom, subject: new Rx.Subject() } satisfies Atom<any>
+    copiedStore.atoms = HAMT.set(atom.key, copiedAtom, copiedStore.atoms)
+  })
   store?.transactions.forEach((tx) => {
     tx.install(copiedStore)
   })
