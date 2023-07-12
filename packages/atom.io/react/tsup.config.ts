@@ -8,5 +8,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: [`atom.io`, `react`],
+  external: [`atom.io`, `react`, `@emotion/react`],
 })

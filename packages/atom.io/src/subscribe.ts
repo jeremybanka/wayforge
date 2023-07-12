@@ -1,10 +1,18 @@
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { ReadonlySelectorToken, StateToken, TransactionToken } from "."
-import type { Store, TransactionUpdate } from "./internal"
+import type {
+  ReadonlySelectorToken,
+  StateToken,
+  TimelineToken,
+  TimelineUpdate,
+  TransactionToken,
+  TransactionUpdate,
+} from "."
+import type { Store } from "./internal"
 import { IMPLICIT, subscribeToRootAtoms, withdraw } from "./internal"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
+export type KeyedStateUpdate<T> = StateUpdate<T> & { key: string }
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
 export const subscribe = <T>(
@@ -61,6 +69,26 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
   const subscription = tx.subject.subscribe(handleUpdate)
   const unsubscribe = () => {
     store.config.logger?.info(`🙈 unsubscribe from transaction "${token.key}"`)
+    subscription.unsubscribe()
+  }
+  return unsubscribe
+}
+
+export const subscribeToTimeline = (
+  token: TimelineToken,
+  handleUpdate: (update: TimelineUpdate) => void,
+  store = IMPLICIT.STORE
+): (() => void) => {
+  const tl = withdraw(token, store)
+  if (tl === null) {
+    throw new Error(
+      `Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`
+    )
+  }
+  store.config.logger?.info(`👀 subscribe to timeline "${token.key}"`)
+  const subscription = tl.subject.subscribe(handleUpdate)
+  const unsubscribe = () => {
+    store.config.logger?.info(`🙈 unsubscribe from timeline "${token.key}"`)
     subscription.unsubscribe()
   }
   return unsubscribe

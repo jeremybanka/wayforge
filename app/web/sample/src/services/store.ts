@@ -1,9 +1,7 @@
 import { atom, selector, setLogLevel, transaction } from "~/packages/atom.io/src"
-import { composeStoreHooks } from "~/packages/atom.io/src/react"
+import { storeHooks } from "~/packages/atom.io/src/react"
 import { composeExplorer } from "~/packages/atom.io/src/react-explorer/AtomIOExplorer"
 import { timeline } from "~/packages/atom.io/src/timeline"
-
-const storeHooks = composeStoreHooks()
 
 export const { Explorer, useSetTitle } = composeExplorer({
   key: `🤓`,

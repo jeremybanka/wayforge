@@ -4,155 +4,22 @@ import * as Rx from "rxjs"
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store, StoreCore } from "."
-import { deposit, withdraw, IMPLICIT } from "."
-import type {
-  AtomToken,
-  StateUpdate,
-  Transaction,
-  TransactionOptions,
-  TransactionToken,
-} from ".."
+import {
+  abortTransaction,
+  applyTransaction,
+  buildTransaction,
+  deposit,
+  IMPLICIT,
+} from "."
+import type { TransactionOptions, TransactionToken, TransactionUpdate } from ".."
 import { getState, setState } from ".."
 
-export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
-export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
-
-export type KeyedStateUpdate<T> = StateUpdate<T> & {
+export type Transaction<ƒ extends ƒn> = {
   key: string
-}
-export type TransactionUpdate<ƒ extends ƒn> = {
-  key: string
-  atomUpdates: KeyedStateUpdate<unknown>[]
-  params: Parameters<ƒ>
-  output: ReturnType<ƒ>
-}
-
-export type TransactionUpdateInProgress<ƒ extends ƒn> = TransactionUpdate<ƒ> & {
-  phase: `applying` | `building`
-  core: StoreCore
-}
-export type TransactionIdle = {
-  phase: `idle`
-}
-export type TransactionStatus<ƒ extends ƒn> =
-  | TransactionIdle
-  | TransactionUpdateInProgress<ƒ>
-
-export const buildTransaction = (
-  key: string,
-  params: any[],
-  store: Store
-): void => {
-  store.transactionStatus = {
-    key,
-    phase: `building`,
-    core: {
-      atoms: store.atoms,
-      atomsThatAreDefault: store.atomsThatAreDefault,
-      operation: { open: false },
-      readonlySelectors: store.readonlySelectors,
-      timelines: store.timelines,
-      timelineAtoms: store.timelineAtoms,
-      transactions: store.transactions,
-      selectorAtoms: store.selectorAtoms,
-      selectorGraph: store.selectorGraph,
-      selectors: store.selectors,
-      valueMap: store.valueMap,
-    },
-    atomUpdates: [],
-    params,
-    output: undefined,
-  }
-  store.config.logger?.info(`🛫`, `transaction "${key}" started`)
-}
-export const applyTransaction = <ƒ extends ƒn>(
-  output: ReturnType<ƒ>,
-  store: Store
-): void => {
-  if (store.transactionStatus.phase !== `building`) {
-    store.config.logger?.warn(
-      `abortTransaction called outside of a transaction. This is probably a bug.`
-    )
-    return
-  }
-  store.config.logger?.info(
-    `🛃 apply transaction "${store.transactionStatus.key}"`
-  )
-  store.transactionStatus.phase = `applying`
-  store.transactionStatus.output = output
-  const { atomUpdates } = store.transactionStatus
-
-  for (const { key, newValue } of atomUpdates) {
-    const token: AtomToken<unknown> = { key, type: `atom` }
-    if (!HAMT.has(token.key, store.valueMap)) {
-      const newAtom = HAMT.get(token.key, store.transactionStatus.core.atoms)
-      store.atoms = HAMT.set(newAtom.key, newAtom, store.atoms)
-      store.valueMap = HAMT.set(newAtom.key, newAtom.default, store.valueMap)
-      store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
-    }
-    setState(token, newValue, store)
-  }
-  const myTransaction = withdraw<ƒ>(
-    { key: store.transactionStatus.key, type: `transaction` },
-    store
-  )
-  if (myTransaction === null) {
-    throw new Error(
-      `Transaction "${store.transactionStatus.key}" not found. Absurd. How is this running?`
-    )
-  }
-  myTransaction.subject.next({
-    key: store.transactionStatus.key,
-    atomUpdates,
-    output,
-    params: store.transactionStatus.params as Parameters<ƒ>,
-  })
-  store.transactionStatus = { phase: `idle` }
-  store.config.logger?.info(`🛬`, `transaction done`)
-}
-export const undoTransactionUpdate = <ƒ extends ƒn>(
-  update: TransactionUpdate<ƒ>,
-  store: Store
-): void => {
-  store.config.logger?.info(` ⏮ undo transaction "${update.key}" (undo)`)
-  for (const { key, oldValue } of update.atomUpdates) {
-    const token: AtomToken<unknown> = { key, type: `atom` }
-    const state = withdraw(token, store)
-    if (state === null) {
-      throw new Error(
-        `State "${token.key}" not found in this store. This is surprising, because we are navigating the history of the store.`
-      )
-    }
-
-    setState(state, oldValue, store)
-  }
-}
-export const redoTransactionUpdate = <ƒ extends ƒn>(
-  update: TransactionUpdate<ƒ>,
-  store: Store
-): void => {
-  store.config.logger?.info(` ⏭ redo transaction "${update.key}" (redo)`)
-  for (const { key, newValue } of update.atomUpdates) {
-    const token: AtomToken<unknown> = { key, type: `atom` }
-    const state = withdraw(token, store)
-    if (state === null) {
-      throw new Error(
-        `State "${token.key}" not found in this store. This is surprising, because we are navigating the history of the store.`
-      )
-    }
-    setState(state, newValue, store)
-  }
-}
-
-export const abortTransaction = (store: Store): void => {
-  if (store.transactionStatus.phase === `idle`) {
-    store.config.logger?.warn(
-      `abortTransaction called outside of a transaction. This is probably a bug.`
-    )
-    return
-  }
-  store.transactionStatus = { phase: `idle` }
-  store.config.logger?.info(`🪂`, `transaction fail`)
+  type: `transaction`
+  install: (store: Store) => void
+  subject: Rx.Subject<TransactionUpdate<ƒ>>
+  run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
 }
 
 export function transaction__INTERNAL<ƒ extends ƒn>(
@@ -180,6 +47,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
         throw thrown
       }
     },
+    install: (store) => transaction__INTERNAL(options, store),
     subject: new Rx.Subject(),
   }
   const core = target(store)

@@ -4,10 +4,11 @@ import { useState } from "react"
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 
+import { myIdState } from "~/packages/atom.io/src/realtime-react"
+
 import { myRoomState } from "./views/Game/store/my-room"
 import { ReactComponent as Connected } from "../assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "../assets/svg/disconnected.svg"
-import { socketIdState } from "../services/store"
 
 export const MyRoom: FC = () => {
   const myRoom = useO(myRoomState)
@@ -15,7 +16,7 @@ export const MyRoom: FC = () => {
 }
 
 export const SocketStatus: FC = () => {
-  const myId = useO(socketIdState)
+  const myId = useO(myIdState)
   const [isOpen, setIsOpen] = useState(false)
   return (
     <aside
