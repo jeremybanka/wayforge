@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.6.1
+
+### Patch Changes
+
+- 5fb66302: 🐛 fix bug with react libraries relying on emotion.js
+
 ## 0.6.0
 
 ### Minor Changes

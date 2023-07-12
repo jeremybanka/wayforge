@@ -1,5 +1,11 @@
 # @banka/eslint-config-react
 
+## 2.0.0
+
+### Major Changes
+
+- 643880dc: 💥 Require Prettier 3
+
 ## 1.4.0
 
 ### Minor Changes
