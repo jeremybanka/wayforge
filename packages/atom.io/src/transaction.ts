@@ -1,10 +1,21 @@
-import type * as Rx from "rxjs"
-
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { ReadonlySelectorToken, StateToken, TransactionToken } from "."
-import type { Store, TransactionUpdate } from "./internal"
+import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken } from "."
+import type { Store } from "./internal"
 import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
+
+export type TransactionToken<_> = {
+  key: string
+  type: `transaction`
+  __brand?: _
+}
+
+export type TransactionUpdate<ƒ extends ƒn> = {
+  key: string
+  atomUpdates: KeyedStateUpdate<unknown>[]
+  params: Parameters<ƒ>
+  output: ReturnType<ƒ>
+}
 
 export type Transactors = {
   get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
@@ -27,12 +38,6 @@ export type TransactionOptions<ƒ extends ƒn> = {
   do: Write<ƒ>
 }
 
-export type Transaction<ƒ extends ƒn> = {
-  key: string
-  type: `transaction`
-  run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
-  subject: Rx.Subject<TransactionUpdate<ƒ>>
-}
 export type TransactionIO<Token extends TransactionToken<any>> =
   Token extends TransactionToken<infer ƒ> ? ƒ : never
 

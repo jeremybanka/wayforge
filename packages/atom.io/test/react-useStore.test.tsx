@@ -1,12 +1,10 @@
 import type { FC } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
+import * as AR from "atom.io/react"
 
 import { Observer } from "./__util__/Observer"
 import { isDefault, atom } from "../src"
-import { composeStoreHooks } from "../src/react"
-
-const { useIO } = composeStoreHooks()
 
 export const onChange = [() => undefined, console.log][0]
 
@@ -17,7 +15,7 @@ describe(`single atom`, () => {
       default: `A`,
     })
     const Letter: FC = () => {
-      const [letter, setLetter] = useIO(letterState)
+      const [letter, setLetter] = AR.useIO(letterState)
       const isDefaultLetter = isDefault(letterState)
       return (
         <>
@@ -31,10 +29,10 @@ describe(`single atom`, () => {
       )
     }
     const utils = render(
-      <>
+      <AR.StoreProvider>
         <Observer node={letterState} onChange={onChange} />
         <Letter />
-      </>
+      </AR.StoreProvider>
     )
     return { ...utils }
   }

@@ -2,6 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
+import { useServerAction } from "atom.io/realtime-react"
 
 import {
   shuffleDeckTX,
@@ -10,13 +11,12 @@ import {
 
 import { CardBack } from "./Card"
 import { useRadial } from "../../../services/radial"
-import { useRemoteTransaction } from "../../../services/store"
 import { div } from "../../containers/<div>"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
   const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
 
-  const shuffle = useRemoteTransaction(shuffleDeckTX)
+  const shuffle = useServerAction(shuffleDeckTX)
 
   const handlers = useRadial([
     {

@@ -13,7 +13,7 @@ import type {
   Selector,
   TransactionStatus,
   Timeline,
-  TimelineData,
+  Transaction,
 } from "."
 import type {
   AtomToken,
@@ -21,7 +21,6 @@ import type {
   ReadonlySelectorToken,
   SelectorToken,
   TimelineToken,
-  Transaction,
   TransactionToken,
 } from ".."
 
@@ -47,9 +46,8 @@ export interface Store {
   selectorAtoms: Join<null, `selectorKey`, `atomKey`>
   selectorGraph: Join<{ source: string }>
   selectors: Hamt<Selector<any>, string>
-  timelines: Hamt<Timeline, string>
   timelineAtoms: Join<null, `timelineKey`, `atomKey`>
-  timelineStore: Hamt<TimelineData, string>
+  timelines: Hamt<Timeline, string>
   transactions: Hamt<Transaction<any>, string>
   valueMap: Hamt<any, string>
 
@@ -71,46 +69,75 @@ export interface Store {
   }
 }
 
-export const createStore = (name: string): Store =>
-  ({
+export const createStore = (name: string, store: Store | null = null): Store => {
+  const copiedStore = {
+    ...(store ??
+      (() => ({
+        atomsThatAreDefault: new Set(),
+        selectorAtoms: new Join({ relationType: `n:n` })
+          .from(`selectorKey`)
+          .to(`atomKey`),
+        selectorGraph: new Join({ relationType: `n:n` }),
+        valueMap: HAMT.make<any, string>(),
+      }))()),
+
     atoms: HAMT.make<Atom<any>, string>(),
-    atomsThatAreDefault: new Set(),
     readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-    selectorAtoms: new Join({ relationType: `n:n` })
-      .from(`selectorKey`)
-      .to(`atomKey`),
-    selectorGraph: new Join({ relationType: `n:n` }),
     selectors: HAMT.make<Selector<any>, string>(),
+    transactions: HAMT.make<Transaction<any>, string>(),
     timelines: HAMT.make<Timeline, string>(),
+
     timelineAtoms: new Join({ relationType: `1:n` })
       .from(`timelineKey`)
       .to(`atomKey`),
-    timelineStore: HAMT.make<TimelineData, string>(),
-    transactions: HAMT.make<Transaction<any>, string>(),
-    valueMap: HAMT.make<any, string>(),
 
     subject: {
       atomCreation: new Rx.Subject(),
       selectorCreation: new Rx.Subject(),
       transactionCreation: new Rx.Subject(),
       timelineCreation: new Rx.Subject(),
+      ...store?.subject,
     },
 
     operation: {
       open: false,
+      ...store?.operation,
     },
     transactionStatus: {
       phase: `idle`,
+      ...store?.transactionStatus,
     },
     config: {
-      name,
       logger: {
         ...console,
         info: doNothing,
+        ...store?.config?.logger,
       },
       logger__INTERNAL: console,
+      ...store?.config,
+      name,
     },
-  }) satisfies Store
+  } satisfies Store
+
+  store?.atoms.forEach((atom) => {
+    const copiedAtom = { ...atom, subject: new Rx.Subject() } satisfies Atom<any>
+    copiedStore.atoms = HAMT.set(atom.key, copiedAtom, copiedStore.atoms)
+  })
+  store?.readonlySelectors.forEach((selector) => {
+    selector.install(copiedStore)
+  })
+  store?.selectors.forEach((selector) => {
+    selector.install(copiedStore)
+  })
+  store?.transactions.forEach((tx) => {
+    tx.install(copiedStore)
+  })
+  store?.timelines.forEach((timeline) => {
+    timeline.install(copiedStore)
+  })
+
+  return copiedStore
+}
 
 export const IMPLICIT = {
   STORE_INTERNAL: undefined as Store | undefined,

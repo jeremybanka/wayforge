@@ -34,7 +34,9 @@ export const openOperation = (token: StateToken<any>, store: Store): void => {
     time: Date.now(),
     token,
   }
-  store.config.logger?.info(`⭕ operation start from "${token.key}"`)
+  store.config.logger?.info(
+    `⭕ operation start from "${token.key}" in store "${store.config.name}"`
+  )
 }
 export const closeOperation = (store: Store): void => {
   const core = target(store)

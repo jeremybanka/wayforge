@@ -9,12 +9,12 @@ import {
   joinRoomTX,
   leaveRoomTX,
 } from "~/app/node/lodge/src/store/rooms"
-
 import {
-  socketIdState,
-  useRemoteTransaction,
-  useRemoteFamilyMember,
-} from "../../../services/store"
+  myIdState,
+  usePullFamilyMember,
+  useServerAction,
+} from "~/packages/atom.io/src/realtime-react"
+
 import { header } from "../../containers/<header>"
 import { h3 } from "../../containers/<hX>"
 import { Game } from "../Game/Game"
@@ -46,14 +46,14 @@ export const PlayersInRoom: FC<{ roomId: string }> = ({ roomId }) => {
 }
 
 export const Room: FC<{ roomId: string }> = ({ roomId }) => {
-  const socketId = useO(socketIdState)
+  const myId = useO(myIdState)
   const myRoom = useO(myRoomState)
 
   const iAmInRoom = myRoom === roomId
 
-  const joinRoom = useRemoteTransaction(joinRoomTX)
-  const leaveRoom = useRemoteTransaction(leaveRoomTX)
-  useRemoteFamilyMember(findPlayersInRoomState, roomId)
+  const joinRoom = useServerAction(joinRoomTX)
+  const leaveRoom = useServerAction(leaveRoomTX)
+  usePullFamilyMember(findPlayersInRoomState, roomId)
 
   return (
     <article
@@ -88,13 +88,13 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
       <header.auspicious0>
         <span>
           <button
-            onClick={() => joinRoom({ roomId, playerId: socketId ?? `` })}
+            onClick={() => joinRoom({ roomId, playerId: myId ?? `` })}
             disabled={iAmInRoom}
           >
             +
           </button>
           <button
-            onClick={() => leaveRoom({ roomId, playerId: socketId ?? `` })}
+            onClick={() => leaveRoom({ roomId, playerId: myId ?? `` })}
             disabled={!iAmInRoom}
           >
             {`<-`}

@@ -2,14 +2,21 @@ import HAMT from "hamt_plus"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { Atom, ReadonlySelector, Selector, Store } from "."
+import type {
+  Atom,
+  ReadonlySelector,
+  Selector,
+  Store,
+  Timeline,
+  Transaction,
+} from "."
 import { target, isValueCached, readCachedValue, IMPLICIT } from "."
 import type {
   AtomToken,
   ReadonlySelectorToken,
   SelectorToken,
   StateToken,
-  Transaction,
+  TimelineToken,
   TransactionToken,
 } from ".."
 
@@ -51,13 +58,19 @@ export function withdraw<T>(
   token: ReadonlySelectorToken<T> | StateToken<T>,
   store: Store
 ): Atom<T> | ReadonlySelector<T> | Selector<T> | null
+export function withdraw<T>(token: TimelineToken, store: Store): Timeline | null
 export function withdraw<T>(
-  token: ReadonlySelectorToken<T> | StateToken<T> | TransactionToken<T>,
+  token:
+    | ReadonlySelectorToken<T>
+    | StateToken<T>
+    | TimelineToken
+    | TransactionToken<T>,
   store: Store
 ):
   | Atom<T>
   | ReadonlySelector<T>
   | Selector<T>
+  | Timeline
   | Transaction<T extends ƒn ? T : never>
   | null {
   const core = target(store)
@@ -66,6 +79,7 @@ export function withdraw<T>(
     HAMT.get(token.key, core.selectors) ??
     HAMT.get(token.key, core.readonlySelectors) ??
     HAMT.get(token.key, core.transactions) ??
+    HAMT.get(token.key, core.timelines) ??
     null
   )
 }

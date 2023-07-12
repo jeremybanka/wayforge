@@ -1,15 +1,12 @@
 import * as AtomIO from "atom.io"
+import { myIdState } from "atom.io/realtime-react"
 
 import { playersInRoomsState } from "~/app/node/lodge/src/store/rooms"
-
-import { socketIdState } from "../../../../services/store"
 
 export const myRoomState = AtomIO.selector<string | null>({
   key: `myRoom`,
   get: ({ get }) => {
-    const socketId = get(socketIdState)
-    return socketId
-      ? get(playersInRoomsState).getRelatedId(socketId) ?? null
-      : null
+    const myId = get(myIdState)
+    return myId ? get(playersInRoomsState).getRelatedId(myId) ?? null : null
   },
 })

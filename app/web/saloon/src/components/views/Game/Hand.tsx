@@ -2,6 +2,7 @@ import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
+import { useServerAction } from "atom.io/realtime-react"
 import { AnimatePresence } from "framer-motion"
 
 import { dealCardsTX, groupsOfCardsState } from "~/app/node/lodge/src/store/game"
@@ -10,7 +11,6 @@ import { CardBack, CardFace } from "./Card"
 import { myHandsIndex } from "./store/my-hands-index"
 import { publicDeckIndex } from "./store/public-deck-index"
 import { useRadial } from "../../../services/radial"
-import { useRemoteTransaction } from "../../../services/store"
 import { div } from "../../containers/<div>"
 
 export const Hand: FC<{ id: string }> = ({ id }) => {
@@ -18,7 +18,7 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
   const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
   const publicDeckIds = useO(publicDeckIndex)
 
-  const dealCards = useRemoteTransaction(dealCardsTX)
+  const dealCards = useServerAction(dealCardsTX)
 
   const handlers = useRadial([
     {

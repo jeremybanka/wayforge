@@ -1,4 +1,4 @@
-import type { timeline } from "."
+import type { redo, timeline, undo } from "."
 import { getState, setState, subscribe } from "."
 import type { atom, atomFamily } from "./atom"
 import type { Store } from "./internal"
@@ -6,10 +6,12 @@ import {
   atomFamily__INTERNAL,
   atom__INTERNAL,
   createStore,
+  redo__INTERNAL,
   selectorFamily__INTERNAL,
   selector__INTERNAL,
   timeline__INTERNAL,
   transaction__INTERNAL,
+  undo__INTERNAL,
 } from "./internal"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
@@ -17,7 +19,8 @@ import type { transaction } from "./transaction"
 export type Silo = ReturnType<typeof silo>
 
 export const silo = (
-  name: string
+  name: string,
+  fromStore: Store | null = null
 ): {
   store: Store
   atom: typeof atom
@@ -29,8 +32,10 @@ export const silo = (
   getState: typeof getState
   setState: typeof setState
   subscribe: typeof subscribe
+  undo: typeof undo
+  redo: typeof redo
 } => {
-  const store = createStore(name)
+  const store = createStore(name, fromStore)
   return {
     store,
     atom: (options) => atom__INTERNAL(options, undefined, store),
@@ -42,5 +47,7 @@ export const silo = (
     getState: (token) => getState(token, store),
     setState: (token, newValue) => setState(token, newValue, store),
     subscribe: (token, handler) => subscribe(token, handler, store),
+    undo: (token) => undo__INTERNAL(token, store),
+    redo: (token) => redo__INTERNAL(token, store),
   }
 }

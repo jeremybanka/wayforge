@@ -1,25 +1,23 @@
 import type { FC } from "react"
 
 import { useO } from "atom.io/react"
+import { myIdState, useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
 import { addHandTx, spawnClassicDeckTX } from "~/app/node/lodge/src/store/game"
 
-import { socketIdState, useRemoteTransaction } from "../../../services/store"
 import { button } from "../../containers/<button>"
 
 export const Controls: FC = () => {
-  const mySocketId = useO(socketIdState)
-  const addHand = useRemoteTransaction(addHandTx)
-  const spawnClassicDeck = useRemoteTransaction(spawnClassicDeckTX)
+  const myId = useO(myIdState)
+  const addHand = useServerAction(addHandTx)
+  const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
   return (
     <div className="controls">
       <h4>Controls</h4>
       <button.flashFire
         onClick={() =>
-          mySocketId
-            ? addHand({ playerId: mySocketId, groupId: nanoid() })
-            : null
+          myId ? addHand({ playerId: myId, groupId: nanoid() }) : null
         }
       >
         Add Hand

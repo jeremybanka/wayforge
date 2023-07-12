@@ -1,16 +1,15 @@
 import * as AtomIO from "atom.io"
+import { myIdState } from "atom.io/realtime-react"
 
 import {
   findCardGroupState,
   ownersOfGroupsState,
 } from "~/app/node/lodge/src/store/game"
 
-import { socketIdState } from "../../../../services/store"
-
 export const myHandsIndex = AtomIO.selector<string[]>({
   key: `myHands`,
   get: ({ get }) => {
-    const myId = get(socketIdState)
+    const myId = get(myIdState)
     if (!myId) {
       return []
     }
