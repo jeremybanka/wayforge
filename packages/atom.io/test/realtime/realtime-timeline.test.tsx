@@ -6,7 +6,7 @@ import * as RTR from "atom.io/realtime-react"
 
 import * as RTTest from "../__util__/realtime"
 
-describe(`undo `, () => {
+describe(`undo/redo`, () => {
   const countState = AtomIO.atom({ key: `count`, default: 0 })
   const countTL = AtomIO.timeline({ key: `countTL`, atoms: [countState] })
   const scenario = () =>
@@ -22,11 +22,15 @@ describe(`undo `, () => {
       },
     })
 
-  test(`receive atomic update; derive selector update`, async () => {
+  test(`server update; server undo; server redo`, async () => {
     const { client, server, teardown } = scenario()
     client.renderResult.getByTestId(`count:0`)
     act(() => server.silo.setState(countState, 1))
-    // await waitFor(() => serv
+    await waitFor(() => client.renderResult.getByTestId(`count:1`))
+    act(() => server.silo.undo(countTL))
+    await waitFor(() => client.renderResult.getByTestId(`count:0`))
+    act(() => server.silo.redo(countTL))
+    await waitFor(() => client.renderResult.getByTestId(`count:1`))
     teardown()
   })
 })
