@@ -3,7 +3,13 @@ import * as Rx from "rxjs"
 
 import { become } from "~/packages/anvl/src/function"
 
-import { type Store, type Selector, type StoreCore, registerSelector } from ".."
+import {
+  type Store,
+  type Selector,
+  type StoreCore,
+  registerSelector,
+  selector__INTERNAL,
+} from ".."
 import type { FamilyMetadata, SelectorToken } from "../.."
 import type { SelectorOptions } from "../../selector"
 import { cacheValue, markDone } from "../operation"
@@ -37,6 +43,7 @@ export const createReadWriteSelector = <T>(
   const mySelector: Selector<T> = {
     ...options,
     subject,
+    install: (s: Store) => selector__INTERNAL(options, family, s),
     get: getSelf,
     set: setSelf,
     type: `selector`,

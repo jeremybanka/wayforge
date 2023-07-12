@@ -17,6 +17,7 @@ export type Selector<T> = {
   key: string
   type: `selector`
   family?: FamilyMetadata
+  install: (store: Store) => void
   subject: Rx.Subject<{ newValue: T; oldValue: T }>
   get: () => T
   set: (newValue: T | ((oldValue: T) => T)) => void
@@ -25,6 +26,7 @@ export type ReadonlySelector<T> = {
   key: string
   type: `readonly_selector`
   family?: FamilyMetadata
+  install: (store: Store) => void
   subject: Rx.Subject<{ newValue: T; oldValue: T }>
   get: () => T
 }

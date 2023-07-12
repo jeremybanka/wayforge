@@ -9,7 +9,7 @@ import type {
   Store,
 } from "../.."
 import { cacheValue } from "../operation"
-import type { ReadonlySelector } from "../selector-internal"
+import { selector__INTERNAL, type ReadonlySelector } from "../selector-internal"
 import type { StoreCore } from "../store"
 
 export const createReadonlySelector = <T>(
@@ -20,7 +20,7 @@ export const createReadonlySelector = <T>(
 ): ReadonlySelectorToken<T> => {
   const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
 
-  const { get, set } = registerSelector(options.key, store)
+  const { get } = registerSelector(options.key, store)
   const getSelf = () => {
     const value = options.get({ get })
     cacheValue(options.key, value, store)
@@ -30,6 +30,7 @@ export const createReadonlySelector = <T>(
   const readonlySelector: ReadonlySelector<T> = {
     ...options,
     subject,
+    install: (s: Store) => selector__INTERNAL(options, family, s),
     get: getSelf,
     type: `readonly_selector`,
     ...(family && { family }),

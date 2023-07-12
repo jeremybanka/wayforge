@@ -126,26 +126,10 @@ export const createStore = (name: string, store: Store | null = null): Store => 
     copiedStore.atoms = HAMT.set(atom.key, copiedAtom, copiedStore.atoms)
   })
   store?.readonlySelectors.forEach((selector) => {
-    const copiedSelector = {
-      ...selector,
-      subject: new Rx.Subject(),
-    } satisfies ReadonlySelector<any>
-    copiedStore.readonlySelectors = HAMT.set(
-      selector.key,
-      copiedSelector,
-      copiedStore.readonlySelectors
-    )
+    selector.install(copiedStore)
   })
   store?.selectors.forEach((selector) => {
-    const copiedSelector = {
-      ...selector,
-      subject: new Rx.Subject(),
-    } satisfies Selector<any>
-    copiedStore.selectors = HAMT.set(
-      selector.key,
-      copiedSelector,
-      copiedStore.selectors
-    )
+    selector.install(copiedStore)
   })
   store?.transactions.forEach((tx) => {
     tx.install(copiedStore)
