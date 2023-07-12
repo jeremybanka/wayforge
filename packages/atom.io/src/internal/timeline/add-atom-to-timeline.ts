@@ -1,6 +1,12 @@
 import { IMPLICIT, withdraw } from ".."
-import type { TimelineSelectorUpdate, Timeline, Store } from ".."
-import type { AtomFamily, AtomToken } from "../.."
+import type {
+  TimelineSelectorUpdate,
+  Timeline,
+  Store,
+  TimelineTransactionUpdate,
+  TimelineAtomUpdate,
+} from ".."
+import type { AtomFamily, AtomToken, TimelineUpdate } from "../.."
 
 export const addAtomToTimeline = (
   atomToken: AtomToken<any>,
@@ -45,6 +51,12 @@ export const addAtomToTimeline = (
     )
 
     if (tl.timeTraveling === false) {
+      if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
+        const mostRecentUpdate: TimelineUpdate = tl.history.at(-1)!
+        if (mostRecentUpdate.type === `selector_update`) {
+          tl.subject.next(mostRecentUpdate)
+        }
+      }
       if (
         currentTransactionKey &&
         store.transactionStatus.phase === `applying`
@@ -70,14 +82,16 @@ export const addAtomToTimeline = (
               if (tl.at !== tl.history.length) {
                 tl.history.splice(tl.at)
               }
-              tl.history.push({
+              const timelineTransactionUpdate: TimelineTransactionUpdate = {
                 type: `transaction_update`,
                 timestamp: currentTransactionTime,
                 ...update,
                 atomUpdates: update.atomUpdates.filter((atomUpdate) =>
                   atoms.some((atom) => atom.key === atomUpdate.key)
                 ),
-              })
+              }
+              tl.history.push(timelineTransactionUpdate)
+              tl.subject.next(timelineTransactionUpdate)
             }
             tl.at = tl.history.length
             subscription.unsubscribe()
@@ -131,13 +145,15 @@ export const addAtomToTimeline = (
         if (tl.at !== tl.history.length) {
           tl.history.splice(tl.at)
         }
-        tl.history.push({
+        const atomUpdate: TimelineAtomUpdate = {
           type: `atom_update`,
           timestamp,
           key: atom.key,
           oldValue: update.oldValue,
           newValue: update.newValue,
-        })
+        }
+        tl.history.push(atomUpdate)
+        tl.subject.next(atomUpdate)
         store.config.logger?.info(
           `⌛ timeline "${tl.key}" got a state_update to "${atom.key}"`
         )

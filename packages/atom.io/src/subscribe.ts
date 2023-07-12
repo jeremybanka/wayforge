@@ -3,6 +3,8 @@ import type { ƒn } from "~/packages/anvl/src/function"
 import type {
   ReadonlySelectorToken,
   StateToken,
+  TimelineToken,
+  TimelineUpdate,
   TransactionToken,
   TransactionUpdate,
 } from "."
@@ -67,6 +69,26 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
   const subscription = tx.subject.subscribe(handleUpdate)
   const unsubscribe = () => {
     store.config.logger?.info(`🙈 unsubscribe from transaction "${token.key}"`)
+    subscription.unsubscribe()
+  }
+  return unsubscribe
+}
+
+export const subscribeToTimeline = (
+  token: TimelineToken,
+  handleUpdate: (update: TimelineUpdate) => void,
+  store = IMPLICIT.STORE
+): (() => void) => {
+  const tl = withdraw(token, store)
+  if (tl === null) {
+    throw new Error(
+      `Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`
+    )
+  }
+  store.config.logger?.info(`👀 subscribe to timeline "${token.key}"`)
+  const subscription = tl.subject.subscribe(handleUpdate)
+  const unsubscribe = () => {
+    store.config.logger?.info(`🙈 unsubscribe from timeline "${token.key}"`)
     subscription.unsubscribe()
   }
   return unsubscribe
