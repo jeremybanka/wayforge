@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.6.0
+
+### Minor Changes
+
+- 4aa5896: ✨ `subscribeToTimeline` allows you to see all updates that occur on a timeline.
+- 4aa5896: ✨ Realtime hooks are now available as direct imports, e.g., `import { usePull } from "atom.io/realtime"`.
+- 4aa5896: ✨ `silo` and `__INTERNAL__.createStore` now accept an optional `Store` parameter that will be copied to the new store.
+- 4aa5896: 🎁 Package `atom.io/realtime-react` is now properly exported (previously internal as `atom.io/realtime-client`).
+- 4aa5896: ✨ `TimelineUpdate`s now include a `timestamp` when the update first began processing.
+
 ## 0.5.0
 
 ### Minor Changes
