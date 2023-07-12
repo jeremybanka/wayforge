@@ -10,6 +10,7 @@ import type { Store } from "./internal"
 import { IMPLICIT, subscribeToRootAtoms, withdraw } from "./internal"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
+export type KeyedStateUpdate<T> = StateUpdate<T> & { key: string }
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
 export const subscribe = <T>(
