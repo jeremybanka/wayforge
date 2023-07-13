@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": ["vite/client"],
-    "lib": ["dom", "dom.iterable", "esnext"]
-  },
-  "include": ["lib/common", "lib/web", "app/web", "packages"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.config.ts"]
-}
