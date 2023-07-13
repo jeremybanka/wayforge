@@ -1,4 +1,4 @@
-name: Build, Lint, Test
+name: Integration
 
 on:
   push:
@@ -30,6 +30,12 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Cache
+        uses: actions/cache@v1.2.1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+
       - name: Install Dependencies
         run: yarn
 
@@ -40,7 +46,7 @@ jobs:
         run: yarn tsc
 
   Test:
-    name: Build, Then Test
+    name: Build & Test
     runs-on: ubuntu-latest
     container:
       image: node:lts
@@ -51,6 +57,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
+
+      - name: Cache
+        uses: actions/cache@v1.2.1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
 
       - name: Install Dependencies
         run: yarn
