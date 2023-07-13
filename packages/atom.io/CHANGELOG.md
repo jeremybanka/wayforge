@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.6.3
+
+### Patch Changes
+
+- a79ddd0f: 🎁 New module: `atom.io/realtime-testing` can be used to test realtime logic and apps with multiple clients.
+
 ## 0.6.2
 
 ### Patch Changes
