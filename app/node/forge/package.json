@@ -3,7 +3,7 @@
   "packageManager": "yarn@3.6.1",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/main.ts ",
+    "dev": "tsx watch src/main.ts",
     "gen": "tsx ./src/script/build-zod.server.ts",
     "build": "echo zero-build app powered by tsx",
     "test": "vitest",
