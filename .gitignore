@@ -1,5 +1,4 @@
 !.eslintrc.js
-!apps/node/forge/gen
 .yarn/cache
 .yarn/install-state.gz
 *.js
