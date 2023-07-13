@@ -1,6 +1,6 @@
 {
-  "name": "@hamr/react-json-editor",
-  "main": "../dist/react-json-editor/index.js",
-  "types": "../dist/react-json-editor/index.d.ts",
-  "module": "../dist/react-json-editor/index.mjs"
+	"name": "@hamr/react-json-editor",
+	"main": "../dist/react-json-editor/index.js",
+	"types": "../dist/react-json-editor/index.d.ts",
+	"module": "../dist/react-json-editor/index.mjs"
 }

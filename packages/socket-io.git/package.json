@@ -1,48 +1,48 @@
 {
-  "name": "socket-io.git",
-  "version": "0.2.0",
-  "description": "remote control a simple-git instance over a socket.io connection",
-  "files": [
-    "dist",
-    "node",
-    "web",
-    "CHANGELOG.md",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "tsup --entry src/socket-git-node.ts --entry src/socket-git-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
-    "lint": "rome check .",
-    "test": "vitest",
-    "test:once": "vitest run"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "recoil": "^0.7.6",
-    "socket.io": "^4.6.0",
-    "socket.io-client": "^4.6.0"
-  },
-  "dependencies": {
-    "fp-ts": "2.16.0",
-    "simple-git": "3.19.1"
-  },
-  "devDependencies": {
-    "@types/tmp": "0.2.3",
-    "react": "18.2.0",
-    "recoil": "0.7.7",
-    "socket.io": "4.7.1",
-    "socket.io-client": "4.7.1",
-    "tmp": "0.2.1",
-    "tsup": "7.1.0",
-    "vitest": "0.33.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremybanka/wayforge.git"
-  },
-  "license": "MIT",
-  "sideEffects": false,
-  "author": "Jeremy Banka",
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "socket-io.git",
+	"version": "0.2.0",
+	"description": "remote control a simple-git instance over a socket.io connection",
+	"files": [
+		"dist",
+		"node",
+		"web",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsup --entry src/socket-git-node.ts --entry src/socket-git-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
+		"lint": "rome check .",
+		"test": "vitest",
+		"test:once": "vitest run"
+	},
+	"peerDependencies": {
+		"react": "^18.2.0",
+		"recoil": "^0.7.6",
+		"socket.io": "^4.6.0",
+		"socket.io-client": "^4.6.0"
+	},
+	"dependencies": {
+		"fp-ts": "2.16.0",
+		"simple-git": "3.19.1"
+	},
+	"devDependencies": {
+		"@types/tmp": "0.2.3",
+		"react": "18.2.0",
+		"recoil": "0.7.7",
+		"socket.io": "4.7.1",
+		"socket.io-client": "4.7.1",
+		"tmp": "0.2.1",
+		"tsup": "7.1.0",
+		"vitest": "0.33.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"license": "MIT",
+	"sideEffects": false,
+	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	}
 }
