@@ -11,18 +11,18 @@ import { DEFAULT_ENERGY, findEnergyState } from "./energy"
 import { socket } from "./socket"
 
 export const energyFeaturesState = atom<Join<null, `energyId`, `reactionId`>>({
-  key: `energyFeatures`,
-  default: new Join({ relationType: `1:n` }).from(`energyId`).to(`reactionId`),
-  effects: [
-    socketRelations({
-      type: `energy_reaction`,
-      id: `energyFeatures`,
-      socket,
-      refineContent: null,
-      a: `energyId`,
-      b: `reactionId`,
-    }),
-  ],
+	key: `energyFeatures`,
+	default: new Join({ relationType: `1:n` }).from(`energyId`).to(`reactionId`),
+	effects: [
+		socketRelations({
+			type: `energy_reaction`,
+			id: `energyFeatures`,
+			socket,
+			refineContent: null,
+			a: `energyId`,
+			b: `reactionId`,
+		}),
+	],
 })
 
 export type Amount = { amount: number }
@@ -33,49 +33,47 @@ export type Reagent = Amount & Identified
 export type Product = Amount & Identified
 
 export const reactionReagentsState = atom<
-  Join<Amount, `reactionId`, `energyId`>
+	Join<Amount, `reactionId`, `energyId`>
 >({
-  key: `reactionReagents`,
-  default: new Join<{ amount: number }>({ relationType: `n:n` })
-    .from(`reactionId`)
-    .to(`energyId`),
-  effects: [
-    socketRelations({
-      type: `energy_reaction`,
-      id: `reactionReagents`,
-      socket,
-      refineContent: hasAmount,
-      a: `reactionId`,
-      b: `energyId`,
-    }),
-  ],
+	key: `reactionReagents`,
+	default: new Join<{ amount: number }>({ relationType: `n:n` })
+		.from(`reactionId`)
+		.to(`energyId`),
+	effects: [
+		socketRelations({
+			type: `energy_reaction`,
+			id: `reactionReagents`,
+			socket,
+			refineContent: hasAmount,
+			a: `reactionId`,
+			b: `energyId`,
+		}),
+	],
 })
 
 export const reactionProductsState = atom<
-  Join<Amount, `reactionId`, `energyId`>
+	Join<Amount, `reactionId`, `energyId`>
 >({
-  key: `reactionProducts`,
-  default: new Join<Amount>({ relationType: `n:n` })
-    .from(`reactionId`)
-    .to(`energyId`),
-  effects: [
-    socketRelations({
-      type: `energy_reaction`,
-      id: `reactionProducts`,
-      socket,
-      refineContent: hasAmount,
-      a: `reactionId`,
-      b: `energyId`,
-    }),
-  ],
+	key: `reactionProducts`,
+	default: new Join<Amount>({ relationType: `n:n` })
+		.from(`reactionId`)
+		.to(`energyId`),
+	effects: [
+		socketRelations({
+			type: `energy_reaction`,
+			id: `reactionProducts`,
+			socket,
+			refineContent: hasAmount,
+			a: `reactionId`,
+			b: `energyId`,
+		}),
+	],
 })
 
 export const findReactionEnergyState = selectorFamily<Energy, string>({
-  key: `reactionEnergy`,
-  get:
-    (id) =>
-    ({ get }) => {
-      const energyId = get(energyFeaturesState).getRelatedId(id)
-      return energyId ? findEnergyState(energyId) : DEFAULT_ENERGY
-    },
+	key: `reactionEnergy`,
+	get: (id) => ({ get }) => {
+		const energyId = get(energyFeaturesState).getRelatedId(id)
+		return energyId ? findEnergyState(energyId) : DEFAULT_ENERGY
+	},
 })

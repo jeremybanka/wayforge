@@ -4,13 +4,13 @@ import { css } from "@emotion/react"
 import { usePull, usePullFamily } from "atom.io/realtime-react"
 
 import {
-  cardGroupIndexJSON,
-  cardIndexJSON,
-  cardValuesIndexJSON,
-  findCardGroupState,
-  groupsOfCardsStateJSON,
-  ownersOfGroupsStateJSON,
-  valuesOfCardsStateJSON,
+	cardGroupIndexJSON,
+	cardIndexJSON,
+	cardValuesIndexJSON,
+	findCardGroupState,
+	groupsOfCardsStateJSON,
+	ownersOfGroupsStateJSON,
+	valuesOfCardsStateJSON,
 } from "~/apps/node/lodge/src/store/game"
 
 import { Controls } from "./Controls"
@@ -20,18 +20,18 @@ import { Public } from "./Public"
 import { h3 } from "../../containers/<hX>"
 
 export const Game: FC = () => {
-  usePull(ownersOfGroupsStateJSON)
-  usePull(valuesOfCardsStateJSON)
-  usePull(groupsOfCardsStateJSON)
-  usePull(cardIndexJSON)
-  usePull(cardGroupIndexJSON)
-  usePull(cardValuesIndexJSON)
+	usePull(ownersOfGroupsStateJSON)
+	usePull(valuesOfCardsStateJSON)
+	usePull(groupsOfCardsStateJSON)
+	usePull(cardIndexJSON)
+	usePull(cardGroupIndexJSON)
+	usePull(cardValuesIndexJSON)
 
-  usePullFamily(findCardGroupState)
+	usePullFamily(findCardGroupState)
 
-  return (
-    <div
-      css={css`
+	return (
+		<div
+			css={css`
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -50,12 +50,12 @@ export const Game: FC = () => {
           width: 100%;
         }
       `}
-    >
-      <h3.wedge>Game</h3.wedge>
-      <EnemyDomains />
-      <Public />
-      <Controls />
-      <MyDomain />
-    </div>
-  )
+		>
+			<h3.wedge>Game</h3.wedge>
+			<EnemyDomains />
+			<Public />
+			<Controls />
+			<MyDomain />
+		</div>
+	)
 }

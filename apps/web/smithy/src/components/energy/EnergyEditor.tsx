@@ -17,9 +17,9 @@ import { ReactionList } from "./EnergyFeatureReactionList"
 import { SVG_EnergyIcon } from "./EnergyIcon"
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {
-  energySchemaState,
-  findEnergyWithRelationsState,
-  useRemoveEnergy,
+	energySchemaState,
+	findEnergyWithRelationsState,
+	useRemoveEnergy,
 } from "../../services/energy"
 import { git } from "../../services/git"
 import { useAddReactionAsEnergyFeature } from "../../services/reaction"
@@ -27,11 +27,11 @@ import { useSetTitle } from "../../services/view"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
 
 export const Slot_PreviewCardSleeve: FC<{
-  children: ReactNode
-  hex: string
+	children: ReactNode
+	hex: string
 }> = ({ children, hex }) => (
-  <slot
-    css={css`
+	<slot
+		css={css`
       background: #0f0;
       width: 276px;
       height: 384px;
@@ -61,79 +61,79 @@ export const Slot_PreviewCardSleeve: FC<{
         pointer-events: none;
       }
     `}
-  >
-    {children}
-    <span className="sleeve-bg" />
-  </slot>
+	>
+		{children}
+		<span className="sleeve-bg" />
+	</slot>
 )
 
 export const EnergyEditor_INTERNAL: FC<
-  RecoilEditorProps<Energy & EnergyRelations>
+	RecoilEditorProps<Energy & EnergyRelations>
 > = ({ id, findState, useRemove }) => {
-  const gitBranch = useRecoilValue(git.branch.state)
-  useEffect(() => {
-    git.branch()
-  }, [])
-  const energyState = findState(id)
-  const [energy, setEnergy] = useRecoilState(energyState)
-  const set = {
-    name: (name: string) => setEnergy((e) => ({ ...e, name })),
-  }
-  const remove = useRemove()
-  useSetTitle(energy.name)
+	const gitBranch = useRecoilValue(git.branch.state)
+	useEffect(() => {
+		git.branch()
+	}, [])
+	const energyState = findState(id)
+	const [energy, setEnergy] = useRecoilState(energyState)
+	const set = {
+		name: (name: string) => setEnergy((e) => ({ ...e, name })),
+	}
+	const remove = useRemove()
+	useSetTitle(energy.name)
 
-  const energySchema = useRecoilValue(energySchemaState)
+	const energySchema = useRecoilValue(energySchemaState)
 
-  return (
-    <div
-      css={css`
+	return (
+		<div
+			css={css`
         border: 2px solid #333;
         padding: 20px;
       `}
-    >
-      <RecoverableErrorBoundary>
-        <article
-          css={css`
+		>
+			<RecoverableErrorBoundary>
+				<article
+					css={css`
             display: flex;
             flex-direction: row;
             align-items: flex-end;
             gap: 30px;
           `}
-        >
-          <SVG_EnergyIcon energyId={id} size={100} />
-          <Slot_PreviewCardSleeve hex="var(--bg-color)">
-            <Data_EnergyCard_A energyId={id} />
-          </Slot_PreviewCardSleeve>
-          <Slot_PreviewCardSleeve hex="var(--bg-color)">
-            <Data_EnergyCard_B energyId={id} />
-          </Slot_PreviewCardSleeve>
-        </article>
-      </RecoverableErrorBoundary>
-      <JsonEditor
-        schema={energySchema}
-        data={energy}
-        set={setEnergy}
-        name={energy.name}
-        rename={set.name}
-        remove={() => remove(id)}
-        isHidden={includesAny([`features`, `id`, `name`])}
-        customCss={skeletalJsonEditorCss}
-        isReadonly={() =>
-          isGitSocketError(gitBranch) || gitBranch.current === `main`
-        }
-      />
-      <ReactionList
-        labels={energy.features}
-        useCreate={() => useAddReactionAsEnergyFeature(id)}
-      />
-    </div>
-  )
+				>
+					<SVG_EnergyIcon energyId={id} size={100} />
+					<Slot_PreviewCardSleeve hex="var(--bg-color)">
+						<Data_EnergyCard_A energyId={id} />
+					</Slot_PreviewCardSleeve>
+					<Slot_PreviewCardSleeve hex="var(--bg-color)">
+						<Data_EnergyCard_B energyId={id} />
+					</Slot_PreviewCardSleeve>
+				</article>
+			</RecoverableErrorBoundary>
+			<JsonEditor
+				schema={energySchema}
+				data={energy}
+				set={setEnergy}
+				name={energy.name}
+				rename={set.name}
+				remove={() => remove(id)}
+				isHidden={includesAny([`features`, `id`, `name`])}
+				customCss={skeletalJsonEditorCss}
+				isReadonly={() =>
+					isGitSocketError(gitBranch) || gitBranch.current === `main`
+				}
+			/>
+			<ReactionList
+				labels={energy.features}
+				useCreate={() => useAddReactionAsEnergyFeature(id)}
+			/>
+		</div>
+	)
 }
 
 export const EnergyEditor: FC = () => (
-  <RecoilEditor.IdFromRoute
-    Editor={EnergyEditor_INTERNAL}
-    findState={findEnergyWithRelationsState}
-    useRemove={useRemoveEnergy}
-  />
+	<RecoilEditor.IdFromRoute
+		Editor={EnergyEditor_INTERNAL}
+		findState={findEnergyWithRelationsState}
+		useRemove={useRemoveEnergy}
+	/>
 )

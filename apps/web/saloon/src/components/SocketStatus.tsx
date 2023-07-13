@@ -11,16 +11,17 @@ import { ReactComponent as Connected } from "../assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "../assets/svg/disconnected.svg"
 
 export const MyRoom: FC = () => {
-  const myRoom = useO(myRoomState)
-  return <span>{myRoom}</span>
+	const myRoom = useO(myRoomState)
+	return <span>{myRoom}</span>
 }
 
 export const SocketStatus: FC = () => {
-  const myId = useO(myIdState)
-  const [isOpen, setIsOpen] = useState(false)
-  return (
-    <aside
-      css={css`
+	const myId = useO(myIdState)
+	const [isOpen, setIsOpen] = useState(false)
+	const toggleOpen = () => setIsOpen((isOpen) => !isOpen)
+	return (
+		<aside
+			css={css`
         position: absolute;
         top: 0;
         right: 0;
@@ -38,15 +39,15 @@ export const SocketStatus: FC = () => {
           }
         }
       `}
-    >
-      <div className="icon" onClick={() => setIsOpen((isOpen) => !isOpen)}>
-        {myId === null ? <Disconnected /> : <Connected />}
-      </div>
-      {isOpen ? (
-        <div className="details">
-          {myId} # <MyRoom />
-        </div>
-      ) : null}
-    </aside>
-  )
+		>
+			<div className="icon" onClick={toggleOpen} onKeyUp={toggleOpen}>
+				{myId === null ? <Disconnected /> : <Connected />}
+			</div>
+			{isOpen ? (
+				<div className="details">
+					{myId} # <MyRoom />
+				</div>
+			) : null}
+		</aside>
+	)
 }

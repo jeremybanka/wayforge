@@ -157,20 +157,20 @@ import { shadeBy } from "~/packages/Luum/src/mixers/lum"
 // export type CssCombinator = ` ` | ` + ` | ` > ` | ` ~ `
 
 export const CSS_PSEUDO_CLASSES = [
-  `:active`,
-  `:checked`,
-  `:disabled`,
-  `:enabled`,
-  `:focus`,
-  `:hover`,
-  `:indeterminate`,
-  `:visited`,
+	`:active`,
+	`:checked`,
+	`:disabled`,
+	`:enabled`,
+	`:focus`,
+	`:hover`,
+	`:indeterminate`,
+	`:visited`,
 ] as const
 
-export type CssPseudoClass = (typeof CSS_PSEUDO_CLASSES)[number]
+export type CssPseudoClass = typeof CSS_PSEUDO_CLASSES[number]
 
 export const isCssPseudoClass = (s: unknown): s is CssPseudoClass =>
-  CSS_PSEUDO_CLASSES.includes(s as CssPseudoClass)
+	CSS_PSEUDO_CLASSES.includes(s as CssPseudoClass)
 
 // export type CssPseudoElement =
 //   | `::after`
@@ -193,216 +193,216 @@ export const isCssPseudoClass = (s: unknown): s is CssPseudoClass =>
 //   | `${CssSelectorCore}${CssSelectorExtension}`
 
 export const CSS_COLOR_PROPERTY_KEYS = [
-  `background-color`,
-  `background`,
-  `border-bottom-color`,
-  `border-color`,
-  `border-left-color`,
-  `border-right-color`,
-  `border-top-color`,
-  `border`,
-  `box-shadow`,
-  `caret-color`,
-  `color`,
-  `column-rule-color`,
-  `column-rule`,
-  `filter`,
-  `opacity`,
-  `outline-color`,
-  `outline`,
-  `text-decoration-color`,
-  `text-decoration`,
-  `text-shadow`,
+	`background-color`,
+	`background`,
+	`border-bottom-color`,
+	`border-color`,
+	`border-left-color`,
+	`border-right-color`,
+	`border-top-color`,
+	`border`,
+	`box-shadow`,
+	`caret-color`,
+	`color`,
+	`column-rule-color`,
+	`column-rule`,
+	`filter`,
+	`opacity`,
+	`outline-color`,
+	`outline`,
+	`text-decoration-color`,
+	`text-decoration`,
+	`text-shadow`,
 
-  `fill`,
-  `stroke`,
+	`fill`,
+	`stroke`,
 ] as const
 
 export type CssVariable = `--${string}`
 
 export type CssColorPropertyKey =
-  | (typeof CSS_COLOR_PROPERTY_KEYS)[number]
-  | CssVariable
+	| typeof CSS_COLOR_PROPERTY_KEYS[number]
+	| CssVariable
 
 export const isCssColorPropertyKey = (
-  input: unknown
+	input: unknown,
 ): input is CssColorPropertyKey =>
-  typeof input === `string` &&
-  (CSS_COLOR_PROPERTY_KEYS.includes(
-    input as (typeof CSS_COLOR_PROPERTY_KEYS)[number]
-  ) ||
-    input.startsWith(`--`))
+	typeof input === `string` &&
+	(CSS_COLOR_PROPERTY_KEYS.includes(
+		input as typeof CSS_COLOR_PROPERTY_KEYS[number],
+	) ||
+		input.startsWith(`--`))
 
 export const isFilterPoint = (input: unknown): input is FilterPoint =>
-  typeof input === `object` &&
-  typeof (input as FilterPoint).hue === `number` &&
-  typeof (input as FilterPoint).sat === `number`
+	typeof input === `object` &&
+	typeof (input as FilterPoint).hue === `number` &&
+	typeof (input as FilterPoint).sat === `number`
 
 export const isFilter = (input: unknown): input is Filter =>
-  isArray(isFilterPoint)(input)
+	isArray(isFilterPoint)(input)
 
 export const maybe =
-  <T>(validate: Refinement<unknown, T>) =>
-  (input: unknown): input is T | undefined =>
-    isUndefined(input) || validate(input)
+	<T>(validate: Refinement<unknown, T>) =>
+	(input: unknown): input is T | undefined =>
+		isUndefined(input) || validate(input)
 
 export const isLuumSpec = (input: unknown): input is LuumSpec =>
-  typeof input === `object` &&
-  input !== null &&
-  typeof (input as LuumSpec).hue === `number` &&
-  typeof (input as LuumSpec).sat === `number` &&
-  typeof (input as LuumSpec).lum === `number` &&
-  [`sat`, `lum`].includes((input as LuumSpec).prefer)
+	typeof input === `object` &&
+	input !== null &&
+	typeof (input as LuumSpec).hue === `number` &&
+	typeof (input as LuumSpec).sat === `number` &&
+	typeof (input as LuumSpec).lum === `number` &&
+	[`sat`, `lum`].includes((input as LuumSpec).prefer)
 
 export const isLuumSpecModifier: Refinement<
-  unknown,
-  Modifier<LuumSpec>
+	unknown,
+	Modifier<LuumSpec>
 > = isModifier(isLuumSpec)(defaultSpec)
 
 export type LuumCssAttribute = [
-  keys: OneOrMany<CssColorPropertyKey>,
-  transformers: OneOrMany<Modifier<LuumSpec>>
+	keys: OneOrMany<CssColorPropertyKey>,
+	transformers: OneOrMany<Modifier<LuumSpec>>,
 ]
 export const isLuumCssAttribute = (input: unknown): input is LuumCssAttribute =>
-  Array.isArray(input) &&
-  input.length === 2 &&
-  content(isCssColorPropertyKey)(input[0]) &&
-  content(isLuumSpecModifier)(input[1])
+	Array.isArray(input) &&
+	input.length === 2 &&
+	content(isCssColorPropertyKey)(input[0]) &&
+	content(isLuumSpecModifier)(input[1])
 
 export type LuumScssPseudoClassRule = [
-  selectors: OneOrMany<CssPseudoClass>,
-  attributes: OneOrMany<LuumCssAttribute>
+	selectors: OneOrMany<CssPseudoClass>,
+	attributes: OneOrMany<LuumCssAttribute>,
 ]
 
 export const isLuumScssPseudoClassRule = (
-  input: unknown
+	input: unknown,
 ): input is LuumScssPseudoClassRule =>
-  input instanceof Array &&
-  input.length === 2 &&
-  content(isCssPseudoClass)(input[0]) &&
-  content(isLuumCssAttribute)(input[1])
+	input instanceof Array &&
+	input.length === 2 &&
+	content(isCssPseudoClass)(input[0]) &&
+	content(isLuumCssAttribute)(input[1])
 
 export type LuumScssNestedRule = [
-  selectors: OneOrMany<string>,
-  attributes: OneOrMany<LuumCssAttribute>
+	selectors: OneOrMany<string>,
+	attributes: OneOrMany<LuumCssAttribute>,
 ]
 
 export const isLuumScssNestedRule = (
-  input: unknown
+	input: unknown,
 ): input is LuumScssNestedRule =>
-  input instanceof Array &&
-  input.length === 2 &&
-  content(isString)(input[0]) &&
-  content(isLuumCssAttribute)(input[1])
+	input instanceof Array &&
+	input.length === 2 &&
+	content(isString)(input[0]) &&
+	content(isLuumCssAttribute)(input[1])
 
 export type LuumCssRule = {
-  rootSelectors?: OneOrMany<string>
-  root: LuumSpec
-  attributes: OneOrMany<LuumCssAttribute>
-  filter?: Filter
+	rootSelectors?: OneOrMany<string>
+	root: LuumSpec
+	attributes: OneOrMany<LuumCssAttribute>
+	filter?: Filter
 }
 
 export const isLuumCssRule = (input: unknown): input is LuumCssRule =>
-  typeof input === `object` &&
-  input !== null &&
-  isLuumSpec((input as LuumCssRule).root) &&
-  content(isLuumCssAttribute)(key<LuumCssRule>(`attributes`)(input)) &&
-  maybe(content(isString))(key<LuumCssRule>(`rootSelectors`)(input)) &&
-  maybe(isFilter)(key<LuumCssRule>(`filter`)(input))
+	typeof input === `object` &&
+	input !== null &&
+	isLuumSpec((input as LuumCssRule).root) &&
+	content(isLuumCssAttribute)(key<LuumCssRule>(`attributes`)(input)) &&
+	maybe(content(isString))(key<LuumCssRule>(`rootSelectors`)(input)) &&
+	maybe(isFilter)(key<LuumCssRule>(`filter`)(input))
 
 export type LuumScssRule = LuumCssRule & {
-  states?: OneOrMany<LuumScssPseudoClassRule>
-  children?: OneOrMany<LuumScssNestedRule>
+	states?: OneOrMany<LuumScssPseudoClassRule>
+	children?: OneOrMany<LuumScssNestedRule>
 }
 
 export const isLuumScssRule = (input: unknown): input is LuumScssRule =>
-  isLuumCssRule(input) &&
-  maybe(content(isLuumScssPseudoClassRule))(
-    key<LuumScssRule>(`states`)(input)
-  ) &&
-  maybe(content(isLuumScssNestedRule))(key<LuumScssRule>(`children`)(input))
+	isLuumCssRule(input) &&
+	maybe(content(isLuumScssPseudoClassRule))(
+		key<LuumScssRule>(`states`)(input),
+	) &&
+	maybe(content(isLuumScssNestedRule))(key<LuumScssRule>(`children`)(input))
 
 export const RED: LuumSpec = {
-  hue: 0,
-  sat: 255,
-  lum: 0.5,
-  prefer: `sat`,
+	hue: 0,
+	sat: 255,
+	lum: 0.5,
+	prefer: `sat`,
 }
 
 export const WAYFORGE_CORE_COLOR_NAMES = [
-  `Red`,
-  `Orange`,
-  `Yellow`,
-  `Lime`,
-  `Green`,
-  `Teal`,
-  `Cyan`,
-  `Blue`,
-  `Indigo`,
-  `Violet`,
-  `Magenta`,
-  `Pink`,
+	`Red`,
+	`Orange`,
+	`Yellow`,
+	`Lime`,
+	`Green`,
+	`Teal`,
+	`Cyan`,
+	`Blue`,
+	`Indigo`,
+	`Violet`,
+	`Magenta`,
+	`Pink`,
 ] as const
 
-export type WayforgeCoreColorName = (typeof WAYFORGE_CORE_COLOR_NAMES)[number]
+export type WayforgeCoreColorName = typeof WAYFORGE_CORE_COLOR_NAMES[number]
 
 export const WAYFORGE_CORE_COLORS: Readonly<
-  Record<WayforgeCoreColorName, LuumSpec>
+	Record<WayforgeCoreColorName, LuumSpec>
 > = WAYFORGE_CORE_COLOR_NAMES.reduce((acc, name, idx) => {
-  acc[name] = {
-    hue: idx * 30,
-    sat: 255,
-    lum: 0.5,
-    prefer: `sat`,
-  }
-  return acc
+	acc[name] = {
+		hue: idx * 30,
+		sat: 255,
+		lum: 0.5,
+		prefer: `sat`,
+	}
+	return acc
 }, {} as Record<WayforgeCoreColorName, LuumSpec>)
 
 export const PAINT_MY_WAGON_RED: LuumScssRule = {
-  rootSelectors: [`.wagon`],
-  root: RED,
-  attributes: [`background-color`, shadeBy(5)],
-  states: [
-    [
-      [`:hover`, `:focus`],
-      [`background-color`, shadeBy(10)],
-    ],
-    [`:active`, [`background-color`, shadeBy(15)]],
-  ],
+	rootSelectors: [`.wagon`],
+	root: RED,
+	attributes: [`background-color`, shadeBy(5)],
+	states: [
+		[
+			[`:hover`, `:focus`],
+			[`background-color`, shadeBy(10)],
+		],
+		[`:active`, [`background-color`, shadeBy(15)]],
+	],
 }
 
 const LF = `\n`
 
 export const luumToCss = (rule: LuumCssRule): string => {
-  const {
-    attributes: oneOrManyAttributes,
-    root,
-    rootSelectors: maybeOneOrManyRootSelectors,
-    filter: maybeFilter,
-  } = rule
-  const rootSelectors = pipe(
-    maybeOneOrManyRootSelectors,
-    each(isString),
-    join(`, ` + LF),
-    (s) => (s ? s + ` {` + LF : ``)
-  )
-  const attributes = pipe(
-    oneOrManyAttributes,
-    each(isLuumCssAttribute),
-    map(([oneOrManyKeys, oneOrManyModifiers]) => {
-      const modifiers = each(isLuumSpecModifier)(oneOrManyModifiers)
-      const modifiedSpec = modifiers.reduce((last, modify) => modify(last), root)
-      const hex = specToHex(modifiedSpec, maybeFilter)
-      return pipe(
-        oneOrManyKeys,
-        each(isCssColorPropertyKey),
-        map((key) => `${key}: ${hex}`),
-        join(`; ` + LF)
-      )
-    }),
-    join(`; ` + LF)
-  )
-  return rootSelectors ? join(LF)([rootSelectors, attributes, `}`]) : attributes
+	const {
+		attributes: oneOrManyAttributes,
+		root,
+		rootSelectors: maybeOneOrManyRootSelectors,
+		filter: maybeFilter,
+	} = rule
+	const rootSelectors = pipe(
+		maybeOneOrManyRootSelectors,
+		each(isString),
+		join(`, ` + LF),
+		(s) => (s ? s + ` {` + LF : ``),
+	)
+	const attributes = pipe(
+		oneOrManyAttributes,
+		each(isLuumCssAttribute),
+		map(([oneOrManyKeys, oneOrManyModifiers]) => {
+			const modifiers = each(isLuumSpecModifier)(oneOrManyModifiers)
+			const modifiedSpec = modifiers.reduce((last, modify) => modify(last), root)
+			const hex = specToHex(modifiedSpec, maybeFilter)
+			return pipe(
+				oneOrManyKeys,
+				each(isCssColorPropertyKey),
+				map((key) => `${key}: ${hex}`),
+				join(`; ` + LF),
+			)
+		}),
+		join(`; ` + LF),
+	)
+	return rootSelectors ? join(LF)([rootSelectors, attributes, `}`]) : attributes
 }
 
 // export const luumToScss = (rule: LuumScssRule): string => {

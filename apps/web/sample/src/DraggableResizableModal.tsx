@@ -40,46 +40,46 @@ const ResizeHandle = styled.div`
 `
 
 export const DraggableResizableModal: FC = () => {
-  const [resizeActive, setResizeActive] = useState(false)
-  const currentCornerRef = useRef({ x: 0, y: 0 })
-  const getCorner = (x: 0 | 1, y: 0 | 1) => ({
-    x: x * window.innerWidth,
-    y: y * window.innerHeight,
-  })
+	const [resizeActive, setResizeActive] = useState(false)
+	const currentCornerRef = useRef({ x: 0, y: 0 })
+	const getCorner = (x: 0 | 1, y: 0 | 1) => ({
+		x: x * window.innerWidth,
+		y: y * window.innerHeight,
+	})
 
-  const handleDrag: DragHandlers[`onDrag`] = (_, info) => {
-    const { offset } = info
-    const { innerWidth, innerHeight } = window
+	const handleDrag: DragHandlers[`onDrag`] = (_, info) => {
+		const { offset } = info
+		const { innerWidth, innerHeight } = window
 
-    const nearestCorner = {
-      x: offset.x + (offset.x < innerWidth / 2 ? 0 : innerWidth),
-      y: offset.y + (offset.y < innerHeight / 2 ? 0 : innerHeight),
-    }
+		const nearestCorner = {
+			x: offset.x + (offset.x < innerWidth / 2 ? 0 : innerWidth),
+			y: offset.y + (offset.y < innerHeight / 2 ? 0 : innerHeight),
+		}
 
-    console.log(nearestCorner)
-  }
+		console.log(nearestCorner)
+	}
 
-  const handleDragEnd: DragHandlers[`onDragEnd`] = (_, info) => {
-    if (!resizeActive) {
-      const { offset } = info
-      const { innerWidth, innerHeight } = window
+	const handleDragEnd: DragHandlers[`onDragEnd`] = (_, info) => {
+		if (!resizeActive) {
+			const { offset } = info
+			const { innerWidth, innerHeight } = window
 
-      // info.point.x = nearestCorner.x - info.point.x
-      // info.point.y = nearestCorner.y - info.point.y
-    }
-  }
-  return (
-    <Modal
-      drag
-      dragElastic={0.5}
-      onDrag={(e, info) => handleDrag(e, info)}
-      onDragEnd={(e, info) => handleDragEnd(e, info)}
-      dragConstraints={{ top: 0, left: 0, bottom: 0, right: 0 }}
-      dragMomentum={false}
-    >
-      <TitleBar onPointerDown={() => setResizeActive(false)} />
-      <p>Modal content</p>
-      <ResizeHandle onPointerDown={() => setResizeActive(true)} />
-    </Modal>
-  )
+			// info.point.x = nearestCorner.x - info.point.x
+			// info.point.y = nearestCorner.y - info.point.y
+		}
+	}
+	return (
+		<Modal
+			drag
+			dragElastic={0.5}
+			onDrag={(e, info) => handleDrag(e, info)}
+			onDragEnd={(e, info) => handleDragEnd(e, info)}
+			dragConstraints={{ top: 0, left: 0, bottom: 0, right: 0 }}
+			dragMomentum={false}
+		>
+			<TitleBar onPointerDown={() => setResizeActive(false)} />
+			<p>Modal content</p>
+			<ResizeHandle onPointerDown={() => setResizeActive(true)} />
+		</Modal>
+	)
 }

@@ -8,17 +8,17 @@ import { Dividend } from "./Dividend"
 import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
 import {
-  divisionTimeline,
-  resetEquation,
-  useSetTitle,
+	divisionTimeline,
+	resetEquation,
+	useSetTitle,
 } from "../../../services/store"
 
 export const Division: FC = () => {
-  useSetTitle(`Division`)
+	useSetTitle(`Division`)
 
-  return (
-    <main
-      css={css`
+	return (
+		<main
+			css={css`
         display: flex;
         flex-flow: column;
         button {
@@ -71,22 +71,28 @@ export const Division: FC = () => {
           gap: 2px;
         }
       `}
-    >
-      <main>
-        <span>
-          <Dividend />
-          <Divisor />
-        </span>
-        <i>=</i>
-        <span>
-          <Quotient />
-        </span>
-      </main>
-      <footer>
-        <button onClick={runTransaction(resetEquation)}>Reset</button>
-        <button onClick={() => undo(divisionTimeline)}>Undo</button>
-        <button onClick={() => redo(divisionTimeline)}>Redo</button>
-      </footer>
-    </main>
-  )
+		>
+			<main>
+				<span>
+					<Dividend />
+					<Divisor />
+				</span>
+				<i>=</i>
+				<span>
+					<Quotient />
+				</span>
+			</main>
+			<footer>
+				<button type="button" onClick={runTransaction(resetEquation)}>
+					Reset
+				</button>
+				<button type="button" onClick={() => undo(divisionTimeline)}>
+					Undo
+				</button>
+				<button type="button" onClick={() => redo(divisionTimeline)}>
+					Redo
+				</button>
+			</footer>
+		</main>
+	)
 }

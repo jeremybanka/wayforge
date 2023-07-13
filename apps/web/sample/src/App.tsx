@@ -7,9 +7,9 @@ import { AtomIODevtools } from "~/packages/atom.io/src/react-devtools"
 import { DemoExplorer } from "./components/Demos"
 
 export const App: FC = () => {
-  return (
-    <main
-      css={css`
+	return (
+		<main
+			css={css`
         display: flex;
         flex-flow: column;
         justify-content: center;
@@ -17,10 +17,10 @@ export const App: FC = () => {
           text-align: center;
         }
       `}
-    >
-      <h1>atom.io</h1>
-      <DemoExplorer />
-      <AtomIODevtools />
-    </main>
-  )
+		>
+			<h1>atom.io</h1>
+			<DemoExplorer />
+			<AtomIODevtools />
+		</main>
+	)
 }

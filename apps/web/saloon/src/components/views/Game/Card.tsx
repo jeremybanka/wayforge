@@ -11,22 +11,22 @@ import { article } from "../../containers/<article>"
 import { PlayingCards } from "../../PlayingCards"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-  const value = useO(valuesOfCardsState).getRelatedId(id)
-  const PlayingCard = PlayingCards[value as keyof typeof PlayingCards]
-  return (
-    <AnimatePresence>
-      <article.roundedWhite layoutId={id}>
-        {PlayingCard ? <PlayingCard /> : null}
-      </article.roundedWhite>
-    </AnimatePresence>
-  )
+	const value = useO(valuesOfCardsState).getRelatedId(id)
+	const PlayingCard = PlayingCards[value as keyof typeof PlayingCards]
+	return (
+		<AnimatePresence>
+			<article.roundedWhite layoutId={id}>
+				{PlayingCard ? <PlayingCard /> : null}
+			</article.roundedWhite>
+		</AnimatePresence>
+	)
 }
 export const CardBack: FC<{ id: string }> = ({ id }) => {
-  return (
-    <AnimatePresence>
-      <article.roundedWhite layoutId={id}>
-        {/* <PlayingCards.Back /> */}
-      </article.roundedWhite>
-    </AnimatePresence>
-  )
+	return (
+		<AnimatePresence>
+			<article.roundedWhite layoutId={id}>
+				{/* <PlayingCards.Back /> */}
+			</article.roundedWhite>
+		</AnimatePresence>
+	)
 }

@@ -15,12 +15,12 @@ import "./scss/font-face.scss"
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)
 root.render(
-  <StrictMode>
-    <RealtimeProvider socket={io(`http://localhost:${env.VITE_REMOTE_ORIGIN}/`)}>
-      <SocketStatus />
-      <Router>
-        <App />
-      </Router>
-    </RealtimeProvider>
-  </StrictMode>
+	<StrictMode>
+		<RealtimeProvider socket={io(`http://localhost:${env.VITE_REMOTE_ORIGIN}/`)}>
+			<SocketStatus />
+			<Router>
+				<App />
+			</Router>
+		</RealtimeProvider>
+	</StrictMode>,
 )

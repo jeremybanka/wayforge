@@ -3,16 +3,16 @@ import * as AtomIO from "atom.io"
 import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 
 export const selectJson = <T, J extends Json>(
-  atom: AtomIO.AtomToken<T>,
-  transform: JsonInterface<T, J>,
-  store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE
+	atom: AtomIO.AtomToken<T>,
+	transform: JsonInterface<T, J>,
+	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
 ): AtomIO.SelectorToken<J> =>
-  AtomIO.__INTERNAL__.selector__INTERNAL(
-    {
-      key: `${atom.key}JSON`,
-      get: ({ get }) => transform.toJson(get(atom)),
-      set: ({ set }, newValue) => set(atom, transform.fromJson(newValue)),
-    },
-    undefined,
-    store
-  )
+	AtomIO.__INTERNAL__.selector__INTERNAL(
+		{
+			key: `${atom.key}JSON`,
+			get: ({ get }) => transform.toJson(get(atom)),
+			set: ({ set }, newValue) => set(atom, transform.fromJson(newValue)),
+		},
+		undefined,
+		store,
+	)
