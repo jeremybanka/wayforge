@@ -32,9 +32,6 @@
     "zustand"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  // "editor.codeActionsOnSave": {
-  //   "source.fixAll.rome": true
-  // },
   "[typescript]": {
     "editor.formatOnSave": true
   },
