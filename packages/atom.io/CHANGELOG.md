@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.6.2
+
+### Patch Changes
+
+- 1ea4c367: 🐛 Fix bad typing that would cause an error when adding an `AtomFamily` to a `timeline`
+
 ## 0.6.1
 
 ### Patch Changes
