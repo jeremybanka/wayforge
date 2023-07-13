@@ -14,7 +14,7 @@ export type TimelineToken = {
 
 export type TimelineOptions = {
   key: string
-  atoms: (AtomFamily<any> | AtomToken<any>)[]
+  atoms: (AtomFamily<any, any> | AtomToken<any>)[]
 }
 
 export type TimelineUpdate =
