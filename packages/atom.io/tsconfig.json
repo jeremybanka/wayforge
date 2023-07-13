@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    // "jsx": "preserve",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "typeRoots": [
+      "../../node_modules/@types",
+      "../../lib/types"
+    ]
   }
 }
