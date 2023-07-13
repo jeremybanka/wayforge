@@ -16,7 +16,7 @@ export default defineConfig({
 		`socket.io-client`,
 		`react`,
 		`@emotion/react`,
-		`socket-io`,
+		`socket.io`,
 		`@testing-library/react`,
 		`happy-dom`,
 	],
