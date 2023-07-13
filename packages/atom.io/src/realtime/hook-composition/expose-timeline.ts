@@ -11,7 +11,7 @@ export type TransactionRequest = {
   transactionId: string
 }
 
-export const useExposeTimeline = ({
+export const useExposeTimeline__UNSTABLE = ({
   socket,
   store,
 }: ServerConfig): ((tl: AtomIO.TimelineToken) => () => void) => {
