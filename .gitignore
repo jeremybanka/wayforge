@@ -1,5 +1,7 @@
 !.eslintrc.js
-!app/node/forge/gen
+!apps/node/forge/gen
+.yarn/cache
+.yarn/install-state.gz
 *.js
 *.js.map
 .DS_STORE
