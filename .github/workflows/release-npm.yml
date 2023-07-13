@@ -34,7 +34,7 @@ jobs:
 
       - name: Retrieve Yarn Cache
         id: retrieve-yarn-cache
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: ${{ steps.discover-yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
