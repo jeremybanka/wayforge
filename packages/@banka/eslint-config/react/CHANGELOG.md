@@ -1,5 +1,11 @@
 # @banka/eslint-config-react
 
+## 3.0.0
+
+### Major Changes
+
+- 9bb72410: 💥 Prettier 3; eslint-plugin-prettier alpha 5
+
 ## 2.0.0
 
 ### Major Changes
