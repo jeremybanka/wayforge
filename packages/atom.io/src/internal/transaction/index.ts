@@ -10,16 +10,16 @@ export * from "./redo-transaction"
 export * from "./undo-transaction"
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
-export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
+export type TransactionPhase = typeof TRANSACTION_PHASES[number]
 
 export type TransactionUpdateInProgress<ƒ extends ƒn> = TransactionUpdate<ƒ> & {
-  phase: `applying` | `building`
-  time: number
-  core: StoreCore
+	phase: `applying` | `building`
+	time: number
+	core: StoreCore
 }
 export type TransactionIdle = {
-  phase: `idle`
+	phase: `idle`
 }
 export type TransactionStatus<ƒ extends ƒn> =
-  | TransactionIdle
-  | TransactionUpdateInProgress<ƒ>
+	| TransactionIdle
+	| TransactionUpdateInProgress<ƒ>

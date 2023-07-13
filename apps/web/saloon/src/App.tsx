@@ -16,8 +16,8 @@ import { windowMousePositionState } from "./services/mouse-position"
 import { actionsState, radialModeState } from "./services/radial"
 
 export const App: React.FC = () => (
-  <main
-    css={css`
+	<main
+		css={css`
       height: 100vh;
       background: var(--bg-color);
       display: flex;
@@ -29,35 +29,35 @@ export const App: React.FC = () => (
         gap: 10px;
       }
     `}
-  >
-    <header>
-      <nav>
-        <Link to="/">{`<-`}</Link>
-        <Link to="/lab">🧪</Link>
-      </nav>
-    </header>
-    <main.auspicious
-      css={css`
+	>
+		<header>
+			<nav>
+				<Link to="/">{`<-`}</Link>
+				<Link to="/lab">🧪</Link>
+			</nav>
+		</header>
+		<main.auspicious
+			css={css`
         flex-grow: 1;
       `}
-    >
-      <Routes>
-        <Route path="/" element={<Outlet />}>
-          <Route index element={<Lobby />} />
-          <Route path="room" element={<Outlet />}>
-            <Route path=":roomId" element={<RoomRoute />} />
-          </Route>
-          <Route path="lab" element={<Lab />}>
-            <Route path="radial-demo" element={<RadialDemo />} />
-          </Route>
-        </Route>
-      </Routes>
-      <Radial
-        useMode={() => useIO(radialModeState)}
-        useActions={() => useO(actionsState)}
-        useMousePosition={() => useO(windowMousePositionState)}
-      />
-      <AtomIODevtools />
-    </main.auspicious>
-  </main>
+		>
+			<Routes>
+				<Route path="/" element={<Outlet />}>
+					<Route index element={<Lobby />} />
+					<Route path="room" element={<Outlet />}>
+						<Route path=":roomId" element={<RoomRoute />} />
+					</Route>
+					<Route path="lab" element={<Lab />}>
+						<Route path="radial-demo" element={<RadialDemo />} />
+					</Route>
+				</Route>
+			</Routes>
+			<Radial
+				useMode={() => useIO(radialModeState)}
+				useActions={() => useO(actionsState)}
+				useMousePosition={() => useO(windowMousePositionState)}
+			/>
+			<AtomIODevtools />
+		</main.auspicious>
+	</main>
 )

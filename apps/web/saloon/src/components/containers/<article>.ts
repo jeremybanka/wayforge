@@ -5,22 +5,22 @@ import { motion } from "framer-motion"
 import { LAYER } from "./corners/layers"
 
 const styled = {
-  RoundedCard: Emotion(
-    rounded(motion.article, {
-      useClipPath: false,
-      cornerSize: 5,
-      below: [
-        LAYER.SMALL_SHADOW,
-        {
-          color: `#fff`,
-        },
-      ],
-    })
-  ),
+	RoundedCard: Emotion(
+		rounded(motion.article, {
+			useClipPath: false,
+			cornerSize: 5,
+			below: [
+				LAYER.SMALL_SHADOW,
+				{
+					color: `#fff`,
+				},
+			],
+		}),
+	),
 }
 
 export const article = {
-  roundedWhite: styled.RoundedCard`
+	roundedWhite: styled.RoundedCard`
     height: 120px;
     width: 80px;
     display: flex;

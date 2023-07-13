@@ -11,22 +11,22 @@ export type ReadSchemaOptions = { type: string }
 export type ReadSchema = (options: ReadSchemaOptions) => Error | Json
 
 export const initSchemaReader = ({
-  baseDir,
-  logger,
+	baseDir,
+	logger,
 }: FilestoreOptions): ReadSchema => {
-  const readSchema = ({ type }) => {
-    const dir = `${baseDir}/_schemas/${type}`
-    try {
-      const directory = `${baseDir}/_schemas`
-      const fileName = `${directory}/${type}.schema.json`
-      const fileText = readFileSync(fileName, `utf8`)
-      const json = parseJson(fileText)
-      return json
-    } catch (caught) {
-      logger.warn(`Caught reading schema for "${type}" in ${dir}`)
-      if (caught instanceof Error) return caught
-      throw caught
-    }
-  }
-  return readSchema
+	const readSchema = ({ type }) => {
+		const dir = `${baseDir}/_schemas/${type}`
+		try {
+			const directory = `${baseDir}/_schemas`
+			const fileName = `${directory}/${type}.schema.json`
+			const fileText = readFileSync(fileName, `utf8`)
+			const json = parseJson(fileText)
+			return json
+		} catch (caught) {
+			logger.warn(`Caught reading schema for "${type}" in ${dir}`)
+			if (caught instanceof Error) return caught
+			throw caught
+		}
+	}
+	return readSchema
 }

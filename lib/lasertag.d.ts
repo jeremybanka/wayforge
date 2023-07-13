@@ -6,10 +6,10 @@
 //       \         \__   \____/ \_  \______/    \______     |      /        /
 
 declare namespace JSX {
-  interface IntrinsicElements {
-    [elemName: string]: React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    >
-  }
+	interface IntrinsicElements {
+		[elemName: string]: React.DetailedHTMLProps<
+			React.HTMLAttributes<HTMLDivElement>,
+			HTMLDivElement
+		>
+	}
 }

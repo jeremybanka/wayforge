@@ -6,14 +6,14 @@ import { Hand } from "./Hand"
 import { myHandsIndex } from "./store/my-hands-index"
 
 export const MyDomain: React.FC = () => {
-  const myHands = useO(myHandsIndex)
-  return (
-    <div className="my-domain">
-      <div className="my-hands">
-        {myHands.map((id) => (
-          <Hand key={id} id={id} />
-        ))}
-      </div>
-    </div>
-  )
+	const myHands = useO(myHandsIndex)
+	return (
+		<div className="my-domain">
+			<div className="my-hands">
+				{myHands.map((id) => (
+					<Hand key={id} id={id} />
+				))}
+			</div>
+		</div>
+	)
 }

@@ -5,13 +5,13 @@ import type { Store } from "../store"
 import { IMPLICIT } from "../store"
 
 export const attachMetaState = (
-  store: Store = IMPLICIT.STORE
+	store: Store = IMPLICIT.STORE,
 ): {
-  atomTokenIndexState: ReadonlySelectorToken<AtomTokenIndex>
-  selectorTokenIndexState: ReadonlySelectorToken<SelectorTokenIndex>
+	atomTokenIndexState: ReadonlySelectorToken<AtomTokenIndex>
+	selectorTokenIndexState: ReadonlySelectorToken<SelectorTokenIndex>
 } => {
-  return {
-    atomTokenIndexState: attachMetaAtoms(store),
-    selectorTokenIndexState: attachMetaSelectors(store),
-  }
+	return {
+		atomTokenIndexState: attachMetaAtoms(store),
+		selectorTokenIndexState: attachMetaSelectors(store),
+	}
 }

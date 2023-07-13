@@ -7,6 +7,6 @@ export * from "./receive-transaction"
 export * from "./receive-state"
 
 export type ServerConfig = {
-  socket: SocketIO.Socket
-  store?: AtomIO.__INTERNAL__.Store
+	socket: SocketIO.Socket
+	store?: AtomIO.__INTERNAL__.Store
 }

@@ -5,17 +5,17 @@ import { CurledLeft } from "./corners/factories"
 import { LAYER } from "./corners/layers"
 
 const styled = {
-  ButtonCurledLeft: Emotion(
-    CurledLeft(motion.button, {
-      useClipPath: false,
-      below: [LAYER.FG_STROKE],
-    })
-  ),
+	ButtonCurledLeft: Emotion(
+		CurledLeft(motion.button, {
+			useClipPath: false,
+			below: [LAYER.FG_STROKE],
+		}),
+	),
 }
 
 export const button = {
-  // <Button.FlashFire>
-  flashFire: styled.ButtonCurledLeft`
+	// <Button.FlashFire>
+	flashFire: styled.ButtonCurledLeft`
     font-family: Uruz;
     font-size: 18px;
     font-weight: 500;

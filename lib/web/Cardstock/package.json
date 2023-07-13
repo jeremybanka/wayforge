@@ -18,7 +18,7 @@
     "test": "jest --watch --no-coverage",
     "test:cov": "jest --watch",
     "test:once": "jest",
-    "lint": "eslint \"{src,test}/**/*.ts{,x}\"",
+    "lint": "rome check .",
     "lint:fix": "yarn lint -- --fix"
   },
   "lint-staged": {

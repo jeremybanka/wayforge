@@ -19,28 +19,28 @@ export type Hex = string
 export type Range = [min: number, max: number]
 
 export type ChannelObject = {
-  R: number
-  G: number
-  B: number
+	R: number
+	G: number
+	B: number
 }
 
 export type ChannelArray = [r: number, g: number, b: number]
 
 export type FilterPoint = {
-  hue: number
-  sat: number
+	hue: number
+	sat: number
 }
 
 export type Filter = FilterPoint[]
 
 export type HSL = {
-  hue: number
-  sat: number
-  lum: number
+	hue: number
+	sat: number
+	lum: number
 }
 
 export interface LuumSpec extends HSL {
-  prefer: `lum` | `sat`
+	prefer: `lum` | `sat`
 }
 
 export type LuumFix = { sat: number; lum: number }

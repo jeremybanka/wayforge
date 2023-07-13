@@ -5,9 +5,9 @@ import hueToRelativeChannels from "./hueToRelativeChannels"
 import normalizeHex from "./normalizeHex"
 
 export {
-  channelsToSpec,
-  hexToChannels,
-  hexToSpec,
-  hueToRelativeChannels,
-  normalizeHex,
+	channelsToSpec,
+	hexToChannels,
+	hexToSpec,
+	hueToRelativeChannels,
+	normalizeHex,
 }

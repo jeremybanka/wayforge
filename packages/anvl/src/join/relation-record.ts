@@ -4,24 +4,24 @@ import { getContent } from "./relation-contents"
 import type { JsonObj } from "../json"
 
 export const getRelationEntries = <
-  CONTENT extends JsonObj | null,
-  A extends string,
-  B extends string
+	CONTENT extends JsonObj | null,
+	A extends string,
+	B extends string,
 >(
-  relationMap: RelationData<CONTENT, A, B>,
-  idA: string
+	relationMap: RelationData<CONTENT, A, B>,
+	idA: string,
 ): [string, CONTENT][] =>
-  getRelatedIds(relationMap, idA).map((idB) => [
-    idB,
-    getContent(relationMap, idA, idB) as CONTENT,
-  ])
+	getRelatedIds(relationMap, idA).map((idB) => [
+		idB,
+		getContent(relationMap, idA, idB) as CONTENT,
+	])
 
 export const getRelationRecord = <
-  CONTENT extends JsonObj | null,
-  A extends string,
-  B extends string
+	CONTENT extends JsonObj | null,
+	A extends string,
+	B extends string,
 >(
-  relationMap: RelationData<CONTENT, A, B>,
-  id: string
+	relationMap: RelationData<CONTENT, A, B>,
+	id: string,
 ): Record<string, CONTENT> =>
-  Object.fromEntries(getRelationEntries(relationMap, id))
+	Object.fromEntries(getRelationEntries(relationMap, id))

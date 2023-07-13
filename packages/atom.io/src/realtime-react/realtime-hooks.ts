@@ -10,26 +10,26 @@ import { usePush } from "./use-push"
 import { useServerAction } from "./use-server-action"
 
 export type RealtimeHooks = {
-  usePull: <J extends Json>(token: AtomIO.StateToken<J>) => void
-  usePullFamily: <J extends Json>(
-    family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>
-  ) => void
-  usePullFamilyMember: <J extends Json>(
-    family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-    subKey: string
-  ) => void
-  usePush: <J extends Json>(token: AtomIO.StateToken<J>) => void
-  useServerAction: <ƒ extends ƒn>(
-    token: AtomIO.TransactionToken<ƒ>
-  ) => (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
+	usePull: <J extends Json>(token: AtomIO.StateToken<J>) => void
+	usePullFamily: <J extends Json>(
+		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
+	) => void
+	usePullFamilyMember: <J extends Json>(
+		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
+		subKey: string,
+	) => void
+	usePush: <J extends Json>(token: AtomIO.StateToken<J>) => void
+	useServerAction: <ƒ extends ƒn>(
+		token: AtomIO.TransactionToken<ƒ>,
+	) => (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
 }
 
 export const realtimeHooks: RealtimeHooks = {
-  usePull,
-  usePullFamily,
-  usePullFamilyMember,
-  usePush,
-  useServerAction,
+	usePull,
+	usePullFamily,
+	usePullFamilyMember,
+	usePush,
+	useServerAction,
 }
 
 export * from "./use-pull"

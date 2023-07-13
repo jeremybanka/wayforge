@@ -1,5 +1,5 @@
 describe(`main`, () => {
-  it(`stub`, () => {
-    expect(true).toBe(true)
-  })
+	it(`stub`, () => {
+		expect(true).toBe(true)
+	})
 })

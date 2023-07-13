@@ -10,16 +10,16 @@ import { getDirectoryJsonEntries } from "~/packages/ingt/src/utils"
 // )
 
 const schemaEntries = getDirectoryJsonEntries({
-  dir: `${process.cwd()}/projects/wayfarer/_schemas`,
-  coerce: (input) => input as JSONSchema7,
+	dir: `${process.cwd()}/projects/wayfarer/_schemas`,
+	coerce: (input) => input as JSONSchema7,
 })
 
 Promise.all(
-  schemaEntries.map(
-    async ([, jsonSchema]) => await jsonSchemaToZodDereffed(jsonSchema)
-  )
+	schemaEntries.map(
+		async ([, jsonSchema]) => await jsonSchemaToZodDereffed(jsonSchema),
+	),
 ).then((zodSchemas) =>
-  zodSchemas.forEach((schema, idx) =>
-    writeFileSync(`${process.cwd()}/gen/${schemaEntries[idx][0]}.ts`, schema)
-  )
+	zodSchemas.forEach((schema, idx) =>
+		writeFileSync(`${process.cwd()}/gen/${schemaEntries[idx][0]}.ts`, schema),
+	),
 )
