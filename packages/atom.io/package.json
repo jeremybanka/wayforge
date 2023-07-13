@@ -17,6 +17,8 @@
     "realtime/package.json",
     "realtime-react/dist",
     "realtime-react/package.json",
+    "realtime-testing/dist",
+    "realtime-testing/package.json",
     "src"
   ],
   "exports": {
@@ -61,10 +63,17 @@
       "browser": "./realtime-react/dist/index.mjs",
       "import": "./realtime-react/dist/index.mjs",
       "require": "./realtime-react/dist/index.js"
+    },
+    "./realtime-testing/package.json": "./realtime-testing/package.json",
+    "./realtime-testing": {
+      "types": "./realtime-testing/dist/index.d.ts",
+      "browser": "./realtime-testing/dist/index.mjs",
+      "import": "./realtime-testing/dist/index.mjs",
+      "require": "./realtime-testing/dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup) & (cd realtime-react && tsup)",
+    "build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup) & (cd realtime-react && tsup) & (cd realtime-testing && tsup)",
     "lint": "rome check .",
     "test": "vitest",
     "test:once": "vitest run"
@@ -106,6 +115,7 @@
     "tsup": "7.1.0",
     "vite-tsconfig-paths": "4.2.0",
     "vitest": "0.33.0"
+    
   },
   "repository": {
     "type": "git",

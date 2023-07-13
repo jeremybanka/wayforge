@@ -4,7 +4,7 @@ import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 
-import * as RTTest from "../__util__/realtime"
+import * as RTTest from "../../src/realtime-testing"
 
 const countState = AtomIO.atom({ key: `count`, default: 0 })
 

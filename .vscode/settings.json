@@ -1,58 +1,59 @@
 {
-  // $ is not a word separator
-  "editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
-  "cSpell.words": [
-    "anvl",
-    "Cardstock",
-    "Deleters",
-    "Diagon",
-    "esbuild",
-    "eyecuelab",
-    "filestore",
-    "hamr",
-    "hamt",
-    "immer",
-    "immerable",
-    "ingt",
-    "jeremybanka",
-    "Luum",
-    "npmlog",
-    "outfile",
-    "preact",
-    "Recasters",
-    "Renamers",
-    "revparse",
-    "Schemable",
-    "Selectables",
-    "svgr",
-    "testid",
-    "tsup",
-    "unsub",
-    "wayforge",
-    "zustand"
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "[typescript]": {
-    "editor.formatOnSave": true
-  },
-  "[typescriptreact]": {
-    "editor.formatOnSave": true
-  },
-  "[html]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[scss]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "references.preferredLocation": "peek"
+	"editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
+	"cSpell.words": [
+		"anvl",
+		"Cardstock",
+		"Deleters",
+		"Diagon",
+		"esbuild",
+		"eyecuelab",
+		"filestore",
+		"hamr",
+		"hamt",
+		"immer",
+		"immerable",
+		"ingt",
+		"jeremybanka",
+		"Luum",
+		"npmlog",
+		"outfile",
+		"preact",
+		"Recasters",
+		"Renamers",
+		"revparse",
+		"Schemable",
+		"Selectables",
+		"svgr",
+		"testid",
+		"tsup",
+		"unsub",
+		"wayforge",
+		"zustand"
+	],
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"[typescript]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rome.rome"
+	},
+	"[typescriptreact]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rome.rome"
+	},
+	"[html]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rome.rome"
+	},
+	"[css]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rome.rome"
+	},
+	"[scss]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rome.rome"
+	},
+	"[json]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rome.rome"
+	},
+	"references.preferredLocation": "peek"
 }

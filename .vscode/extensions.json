@@ -1,17 +1,14 @@
 {
-  "recommendations": [
-    "christian-kohler.path-intellisense",
-    "kuscamara.remove-unused-imports",
-    "rome.rome",
-    "streetsidesoftware.code-spell-checker",
-    "timonwong.shellcheck",
-    "tyriar.sort-lines",
-    "vunguyentuan.vscode-css-variables",
-    "wallabyjs.console-ninja",
-    "yoavbls.pretty-ts-errors",
-  ],
-  "unwantedRecommendations": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-  ]
+	"recommendations": [
+		"christian-kohler.path-intellisense",
+		"kuscamara.remove-unused-imports",
+		"rome.rome",
+		"streetsidesoftware.code-spell-checker",
+		"timonwong.shellcheck",
+		"tyriar.sort-lines",
+		"vunguyentuan.vscode-css-variables",
+		"wallabyjs.console-ninja",
+		"yoavbls.pretty-ts-errors"
+	],
+	"unwantedRecommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
 }
