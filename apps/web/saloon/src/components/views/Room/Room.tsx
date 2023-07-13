@@ -5,14 +5,14 @@ import { useO } from "atom.io/react"
 import { useParams, Link } from "react-router-dom"
 
 import {
-  findPlayersInRoomState,
-  joinRoomTX,
-  leaveRoomTX,
+	findPlayersInRoomState,
+	joinRoomTX,
+	leaveRoomTX,
 } from "~/apps/node/lodge/src/store/rooms"
 import {
-  myIdState,
-  usePullFamilyMember,
-  useServerAction,
+	myIdState,
+	usePullFamilyMember,
+	useServerAction,
 } from "~/packages/atom.io/src/realtime-react"
 
 import { header } from "../../containers/<header>"
@@ -21,10 +21,10 @@ import { Game } from "../Game/Game"
 import { myRoomState } from "../Game/store/my-room"
 
 export const PlayersInRoom: FC<{ roomId: string }> = ({ roomId }) => {
-  const playersInRoom = useO(findPlayersInRoomState(roomId))
-  return (
-    <div
-      css={css`
+	const playersInRoom = useO(findPlayersInRoomState(roomId))
+	return (
+		<div
+			css={css`
         display: flex;
         flex-flow: row;
         div {
@@ -37,28 +37,28 @@ export const PlayersInRoom: FC<{ roomId: string }> = ({ roomId }) => {
           border: 1px solid var(--fg-color);
         }
       `}
-    >
-      {playersInRoom.map((player) => (
-        <div key={player.id}>{player.id.slice(0, 2)}</div>
-      ))}
-    </div>
-  )
+		>
+			{playersInRoom.map((player) => (
+				<div key={player.id}>{player.id.slice(0, 2)}</div>
+			))}
+		</div>
+	)
 }
 
 export const Room: FC<{ roomId: string }> = ({ roomId }) => {
-  const myId = useO(myIdState)
-  const myRoom = useO(myRoomState)
+	const myId = useO(myIdState)
+	const myRoom = useO(myRoomState)
 
-  const iAmInRoom = myRoom === roomId
+	const iAmInRoom = myRoom === roomId
 
-  const joinRoom = useServerAction(joinRoomTX)
-  const leaveRoom = useServerAction(leaveRoomTX)
-  usePullFamilyMember(findPlayersInRoomState, roomId)
+	const joinRoom = useServerAction(joinRoomTX)
+	const leaveRoom = useServerAction(leaveRoomTX)
+	usePullFamilyMember(findPlayersInRoomState, roomId)
 
-  return (
-    <article
-      className="room"
-      css={css`
+	return (
+		<article
+			className="room"
+			css={css`
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -84,32 +84,34 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
           }
         }
       `}
-    >
-      <header.auspicious0>
-        <span>
-          <button
-            onClick={() => joinRoom({ roomId, playerId: myId ?? `` })}
-            disabled={iAmInRoom}
-          >
-            +
-          </button>
-          <button
-            onClick={() => leaveRoom({ roomId, playerId: myId ?? `` })}
-            disabled={!iAmInRoom}
-          >
-            {`<-`}
-          </button>
-        </span>
-        <h2>{roomId.slice(0, 2)}</h2>
-        <PlayersInRoom roomId={roomId} />
-      </header.auspicious0>
+		>
+			<header.auspicious0>
+				<span>
+					<button
+						type="button"
+						onClick={() => joinRoom({ roomId, playerId: myId ?? `` })}
+						disabled={iAmInRoom}
+					>
+						+
+					</button>
+					<button
+						type="button"
+						onClick={() => leaveRoom({ roomId, playerId: myId ?? `` })}
+						disabled={!iAmInRoom}
+					>
+						{`<-`}
+					</button>
+				</span>
+				<h2>{roomId.slice(0, 2)}</h2>
+				<PlayersInRoom roomId={roomId} />
+			</header.auspicious0>
 
-      {iAmInRoom ? <Game /> : null}
-    </article>
-  )
+			{iAmInRoom ? <Game /> : null}
+		</article>
+	)
 }
 
 export const RoomRoute: FC = () => {
-  const { roomId } = useParams<{ roomId: string }>()
-  return roomId ? <Room roomId={roomId} /> : <h3.wedge>Room not found</h3.wedge>
+	const { roomId } = useParams<{ roomId: string }>()
+	return roomId ? <Room roomId={roomId} /> : <h3.wedge>Room not found</h3.wedge>
 }

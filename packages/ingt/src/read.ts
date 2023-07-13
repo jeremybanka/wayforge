@@ -10,23 +10,23 @@ export type ReadIndexOptions = { type: string }
 export type ReadIndex = (options: ReadIndexOptions) => Error | JsonArr<string>
 
 export const initIndexer = ({
-  baseDir,
-  logger,
+	baseDir,
+	logger,
 }: FilestoreOptions): ReadIndex => {
-  const readIndex: ReadIndex = ({ type }) => {
-    const directory = `${baseDir}/${type}`
-    try {
-      const jsonContents = getDirectoryJsonArr({
-        dir: directory,
-        coerce: identify,
-      })
-      const ids = jsonContents.map((data) => data.id)
-      return ids
-    } catch (caught) {
-      logger.warn(`Error reading index for "${type}" in ${directory}`)
-      if (caught instanceof Error) return caught
-      throw caught
-    }
-  }
-  return readIndex
+	const readIndex: ReadIndex = ({ type }) => {
+		const directory = `${baseDir}/${type}`
+		try {
+			const jsonContents = getDirectoryJsonArr({
+				dir: directory,
+				coerce: identify,
+			})
+			const ids = jsonContents.map((data) => data.id)
+			return ids
+		} catch (caught) {
+			logger.warn(`Error reading index for "${type}" in ${directory}`)
+			if (caught instanceof Error) return caught
+			throw caught
+		}
+	}
+	return readIndex
 }

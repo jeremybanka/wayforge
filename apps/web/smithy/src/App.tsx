@@ -10,16 +10,16 @@ import { Spaces } from "./NavigationSpace"
 import { connectionState } from "./services/socket"
 
 export const App: FC = () => {
-  const connection = useRecoilValue(connectionState)
-  return (
-    <main
-      css={css`
+	const connection = useRecoilValue(connectionState)
+	return (
+		<main
+			css={css`
         display: flex;
         flex-flow: row;
       `}
-    >
-      <div
-        css={css`
+		>
+			<div
+				css={css`
           position: fixed;
           top: 10px;
           right: 10px;
@@ -30,11 +30,11 @@ export const App: FC = () => {
             width: 100%;
           }
         `}
-      >
-        {connection ? <Connected /> : <Disconnected />}
-      </div>
-      <Explorer />
-      <Spaces />
-    </main>
-  )
+			>
+				{connection ? <Connected /> : <Disconnected />}
+			</div>
+			<Explorer />
+			<Spaces />
+		</main>
+	)
 }

@@ -7,59 +7,59 @@ import { selectorFamily__INTERNAL, selector__INTERNAL } from "./internal"
 import type { Read, Write } from "./transaction"
 
 export type SelectorOptions<T> = {
-  key: string
-  get: Read<() => T>
-  set: Write<(newValue: T) => void>
+	key: string
+	get: Read<() => T>
+	set: Write<(newValue: T) => void>
 }
 export type ReadonlySelectorOptions<T> = {
-  key: string
-  get: Read<() => T>
+	key: string
+	get: Read<() => T>
 }
 
 export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
 export function selector<T>(
-  options: ReadonlySelectorOptions<T>
+	options: ReadonlySelectorOptions<T>,
 ): ReadonlySelectorToken<T>
 export function selector<T>(
-  options: ReadonlySelectorOptions<T> | SelectorOptions<T>
+	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
-  return selector__INTERNAL(options)
+	return selector__INTERNAL(options)
 }
 
 export type SelectorFamilyOptions<T, K extends Serializable> = {
-  key: string
-  get: (key: K) => Read<() => T>
-  set: (key: K) => Write<(newValue: T) => void>
+	key: string
+	get: (key: K) => Read<() => T>
+	set: (key: K) => Write<(newValue: T) => void>
 }
 export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = {
-  key: string
-  get: (key: K) => Read<() => T>
+	key: string
+	get: (key: K) => Read<() => T>
 }
 
 export type SelectorFamily<T, K extends Serializable = Serializable> = ((
-  key: K
+	key: K,
 ) => SelectorToken<T>) & {
-  key: string
-  type: `selector_family`
-  subject: Rx.Subject<SelectorToken<T>>
+	key: string
+	type: `selector_family`
+	subject: Rx.Subject<SelectorToken<T>>
 }
 
 export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = ((
-  key: K
+	key: K,
 ) => ReadonlySelectorToken<T>) & {
-  key: string
-  type: `readonly_selector_family`
-  subject: Rx.Subject<ReadonlySelectorToken<T>>
+	key: string
+	type: `readonly_selector_family`
+	subject: Rx.Subject<ReadonlySelectorToken<T>>
 }
 
 export function selectorFamily<T, K extends Serializable>(
-  options: SelectorFamilyOptions<T, K>
+	options: SelectorFamilyOptions<T, K>,
 ): SelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
-  options: ReadonlySelectorFamilyOptions<T, K>
+	options: ReadonlySelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K>
 export function selectorFamily<T, K extends Serializable>(
-  options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>
+	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
-  return selectorFamily__INTERNAL(options)
+	return selectorFamily__INTERNAL(options)
 }

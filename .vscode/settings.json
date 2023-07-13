@@ -32,14 +32,14 @@
     "zustand"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.rome": true
+  // },
   "[typescript]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
   },
   "[typescriptreact]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
   },
   "[html]": {
     "editor.formatOnSave": true,

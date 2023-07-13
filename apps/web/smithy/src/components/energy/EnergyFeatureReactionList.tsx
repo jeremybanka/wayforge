@@ -7,22 +7,22 @@ import type { Identified } from "~/packages/anvl/src/id/identified"
 import { ListItems } from "~/packages/hamr/src/recoil-tools/RecoilList"
 
 import {
-  findReactionWithRelationsState,
-  useRemoveReaction,
+	findReactionWithRelationsState,
+	useRemoveReaction,
 } from "../../services/reaction"
 import { ReactionEditorListItem } from "../reaction/ReactionEditor"
 
 export const ReactionList: FC<{
-  labels: Identified[]
-  useCreate: () => () => void
+	labels: Identified[]
+	useCreate: () => () => void
 }> = ({ labels, useCreate }) => (
-  <ListItems
-    labels={labels}
-    findState={findReactionWithRelationsState}
-    useCreate={useCreate}
-    useRemove={useRemoveReaction}
-    Components={{
-      Wrapper: styled.ul(css`
+	<ListItems
+		labels={labels}
+		findState={findReactionWithRelationsState}
+		useCreate={useCreate}
+		useRemove={useRemoveReaction}
+		Components={{
+			Wrapper: styled.ul(css`
         list-style-type: none;
         padding: 0;
         li ~ li {
@@ -33,15 +33,19 @@ export const ReactionList: FC<{
           padding: 0;
         }
       `),
-      ListItemWrapper: styled.li(css`
+			ListItemWrapper: styled.li(css`
         border: 2px solid #333;
         padding: 20px;
       `),
-      ListItem: ReactionEditorListItem,
-      ItemCreator: ({ useCreate }) => {
-        const create = useCreate()
-        return <button onClick={create}>Add</button>
-      },
-    }}
-  />
+			ListItem: ReactionEditorListItem,
+			ItemCreator: ({ useCreate }) => {
+				const create = useCreate()
+				return (
+					<button type="button" onClick={create}>
+						Add
+					</button>
+				)
+			},
+		}}
+	/>
 )

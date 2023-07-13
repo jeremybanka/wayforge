@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "lint": "eslint",
+    "lint": "rome check .",
     "test": "vitest",
     "test:once": "vitest run"
   },

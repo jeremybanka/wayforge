@@ -7,9 +7,9 @@ import { Div_ReactionIcon } from "./ReactionIcon"
 import type { Reaction } from "../../services/reaction"
 
 export const ReactionListItem: FC<RecoilListItemProps<Reaction>> = ({
-  label,
+	label,
 }) => (
-  <RecoverableErrorBoundary>
-    <Div_ReactionIcon reactionId={label.id} size={30} />
-  </RecoverableErrorBoundary>
+	<RecoverableErrorBoundary>
+		<Div_ReactionIcon reactionId={label.id} size={30} />
+	</RecoverableErrorBoundary>
 )

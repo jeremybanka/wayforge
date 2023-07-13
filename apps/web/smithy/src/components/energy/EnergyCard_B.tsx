@@ -17,21 +17,21 @@ import { ReactionIcon_INTERNAL } from "../reaction/ReactionIcon"
 type SvgCommandCode = `C` | `L` | `M` | `Q` | `S`
 
 export function writePathPoint(
-  x: number,
-  y: number,
-  command?: SvgCommandCode
+	x: number,
+	y: number,
+	command?: SvgCommandCode,
 ): string {
-  return command ? `${command} ${x},${y}` : `  ${x},${y}`
+	return command ? `${command} ${x},${y}` : `  ${x},${y}`
 }
 
 export const Div_EnergyCardFeature: FC<
-  RecoilListItemProps<Reaction & ReactionRelations>
+	RecoilListItemProps<Reaction & ReactionRelations>
 > = ({ label, findState }) => {
-  const reaction = useRecoilValue(findState(label.id))
+	const reaction = useRecoilValue(findState(label.id))
 
-  return (
-    <div
-      css={css`
+	return (
+		<div
+			css={css`
         display: flex;
         flex-flow: column;
         flex-grow: 1;
@@ -56,27 +56,27 @@ export const Div_EnergyCardFeature: FC<
           flex-grow: 1;
         }
       `}
-    >
-      <h2>
-        {reaction.name}
-        <small>
-          {reaction.time}
-          {reaction.timeUnit}
-        </small>
-      </h2>
-      <ReactionIcon_INTERNAL reaction={reaction} size={20} mode="fancy" />
-    </div>
-  )
+		>
+			<h2>
+				{reaction.name}
+				<small>
+					{reaction.time}
+					{reaction.timeUnit}
+				</small>
+			</h2>
+			<ReactionIcon_INTERNAL reaction={reaction} size={20} mode="fancy" />
+		</div>
+	)
 }
 
 export const Data_EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
-  const energy = useRecoilValue(findEnergyWithRelationsState(energyId))
-  const colorB = Luum.fromJSON(energy.colorB)
+	const energy = useRecoilValue(findEnergyWithRelationsState(energyId))
+	const colorB = Luum.fromJSON(energy.colorB)
 
-  return (
-    <data css={cssCard(colorB, colorB)}>
-      <article
-        css={css`
+	return (
+		<data css={cssCard(colorB, colorB)}>
+			<article
+				css={css`
           height: 384px;
           display: flex;
           flex-flow: column;
@@ -101,20 +101,20 @@ export const Data_EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
             padding: 0 22px 22px;
           }
         `}
-      >
-        <header>
-          <SVG_EnergyIcon energyId={energyId} size={36} />
-          <h1>{energy.name}</h1>
-        </header>
-        <main>
-          <ListItems
-            Components={{ ListItem: Div_EnergyCardFeature }}
-            labels={energy.features}
-            findState={findReactionWithRelationsState}
-          />
-        </main>
-        <footer />
-      </article>
-    </data>
-  )
+			>
+				<header>
+					<SVG_EnergyIcon energyId={energyId} size={36} />
+					<h1>{energy.name}</h1>
+				</header>
+				<main>
+					<ListItems
+						Components={{ ListItem: Div_EnergyCardFeature }}
+						labels={energy.features}
+						findState={findReactionWithRelationsState}
+					/>
+				</main>
+				<footer />
+			</article>
+		</data>
+	)
 }

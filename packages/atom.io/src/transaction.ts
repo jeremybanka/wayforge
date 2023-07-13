@@ -5,56 +5,56 @@ import type { Store } from "./internal"
 import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
 
 export type TransactionToken<_> = {
-  key: string
-  type: `transaction`
-  __brand?: _
+	key: string
+	type: `transaction`
+	__brand?: _
 }
 
 export type TransactionUpdate<ƒ extends ƒn> = {
-  key: string
-  atomUpdates: KeyedStateUpdate<unknown>[]
-  params: Parameters<ƒ>
-  output: ReturnType<ƒ>
+	key: string
+	atomUpdates: KeyedStateUpdate<unknown>[]
+	params: Parameters<ƒ>
+	output: ReturnType<ƒ>
 }
 
 export type Transactors = {
-  get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
-  set: <S>(state: StateToken<S>, newValue: S | ((oldValue: S) => S)) => void
+	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+	set: <S>(state: StateToken<S>, newValue: S | ((oldValue: S) => S)) => void
 }
 export type ReadonlyTransactors = Pick<Transactors, `get`>
 
 export type Read<ƒ extends ƒn> = (
-  transactors: ReadonlyTransactors,
-  ...parameters: Parameters<ƒ>
+	transactors: ReadonlyTransactors,
+	...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
 export type Write<ƒ extends ƒn> = (
-  transactors: Transactors,
-  ...parameters: Parameters<ƒ>
+	transactors: Transactors,
+	...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
 export type TransactionOptions<ƒ extends ƒn> = {
-  key: string
-  do: Write<ƒ>
+	key: string
+	do: Write<ƒ>
 }
 
 export type TransactionIO<Token extends TransactionToken<any>> =
-  Token extends TransactionToken<infer ƒ> ? ƒ : never
+	Token extends TransactionToken<infer ƒ> ? ƒ : never
 
 export function transaction<ƒ extends ƒn>(
-  options: TransactionOptions<ƒ>
+	options: TransactionOptions<ƒ>,
 ): TransactionToken<ƒ> {
-  return transaction__INTERNAL(options)
+	return transaction__INTERNAL(options)
 }
 
 export const runTransaction =
-  <ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
-  (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
-    const tx = withdraw(token, store)
-    if (tx) {
-      return tx.run(...parameters)
-    }
-    throw new Error(
-      `Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`
-    )
-  }
+	<ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
+	(...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
+		const tx = withdraw(token, store)
+		if (tx) {
+			return tx.run(...parameters)
+		}
+		throw new Error(
+			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,
+		)
+	}

@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint",
+    "lint": "rome check .",
     "test": "vitest",
     "test:once": "vitest run"
   },

@@ -11,16 +11,16 @@ import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_WIDTH, cssCard } from "../Card"
 
 export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
-  const domId = useId()
-  const energy = useRecoilValue(findEnergyState(energyId))
+	const domId = useId()
+	const energy = useRecoilValue(findEnergyState(energyId))
 
-  const colorA = Luum.fromJSON(energy.colorA)
-  const colorB = Luum.fromJSON(energy.colorB)
+	const colorA = Luum.fromJSON(energy.colorA)
+	const colorB = Luum.fromJSON(energy.colorB)
 
-  return (
-    <data css={cssCard(colorA, colorB)}>
-      <article
-        css={css`
+	return (
+		<data css={cssCard(colorA, colorB)}>
+			<article
+				css={css`
           display: flex;
           flex-flow: column;
           width: ${CARD_WIDTH + 24}px;
@@ -55,18 +55,18 @@ export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
             }
           }
         `}
-      >
-        <header>
-          <SVG_EnergyIcon energyId={energyId} size={36} />
-        </header>
-        <main>
-          {Array(30)
-            .fill(0)
-            .map((_, i) => (
-              <div key={domId + `bar` + i + 1}>{i + 1}</div>
-            ))}
-        </main>
-      </article>
-    </data>
-  )
+			>
+				<header>
+					<SVG_EnergyIcon energyId={energyId} size={36} />
+				</header>
+				<main>
+					{Array(30)
+						.fill(0)
+						.map((_, i) => (
+							<div key={`${domId}bar${i}1`}>{i + 1}</div>
+						))}
+				</main>
+			</article>
+		</data>
+	)
 }

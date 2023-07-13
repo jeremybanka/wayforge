@@ -4,8 +4,8 @@ import { composeExplorer } from "~/packages/atom.io/src/react-explorer/AtomIOExp
 import { timeline } from "~/packages/atom.io/src/timeline"
 
 export const { Explorer, useSetTitle } = composeExplorer({
-  key: `🤓`,
-  storeHooks,
+	key: `🤓`,
+	storeHooks,
 })
 
 export const { useO, useIO, useI } = storeHooks
@@ -14,37 +14,37 @@ const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 setLogLevel(LOG_LEVELS[3])
 
 export const dividendState = atom<number>({
-  key: `dividend`,
-  default: 1,
+	key: `dividend`,
+	default: 1,
 })
 
 export const divisorState = atom<number>({
-  key: `divisor`,
-  default: 2,
+	key: `divisor`,
+	default: 2,
 })
 
 export const quotientState = selector<number>({
-  key: `quotient`,
-  get: ({ get }) => {
-    const divisor = get(divisorState)
-    const dividend = get(dividendState)
-    return dividend / divisor
-  },
-  set: ({ get, set }, newValue) => {
-    const divisor = get(divisorState)
-    set(dividendState, newValue * divisor)
-  },
+	key: `quotient`,
+	get: ({ get }) => {
+		const divisor = get(divisorState)
+		const dividend = get(dividendState)
+		return dividend / divisor
+	},
+	set: ({ get, set }, newValue) => {
+		const divisor = get(divisorState)
+		set(dividendState, newValue * divisor)
+	},
 })
 
 export const resetEquation = transaction<() => void>({
-  key: `resetEquation`,
-  do: ({ set }) => {
-    set(dividendState, 1)
-    set(divisorState, 2)
-  },
+	key: `resetEquation`,
+	do: ({ set }) => {
+		set(dividendState, 1)
+		set(divisorState, 2)
+	},
 })
 
 export const divisionTimeline = timeline({
-  key: `division`,
-  atoms: [dividendState, divisorState],
+	key: `division`,
+	atoms: [dividendState, divisorState],
 })
