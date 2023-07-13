@@ -1,4 +1,4 @@
-import { ID } from "~/app/node/lodge/test/test-utils"
+import { ID } from "~/apps/node/lodge/test/test-utils"
 
 import { Perspective } from "../src"
 
