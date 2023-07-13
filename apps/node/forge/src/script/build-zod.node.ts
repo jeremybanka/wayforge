@@ -10,7 +10,7 @@ import { getDirectoryJsonEntries } from "~/packages/ingt/src/utils"
 // )
 
 const schemaEntries = getDirectoryJsonEntries({
-  dir: `${process.cwd()}/projects/wayfarer/schema`,
+  dir: `${process.cwd()}/projects/wayfarer/_schemas`,
   coerce: (input) => input as JSONSchema7,
 })
 

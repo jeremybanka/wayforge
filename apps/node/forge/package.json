@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch src/main.ts",
-    "gen": "tsx ./src/script/build-zod.server.ts",
+    "gen": "tsx ./src/script/build-zod.node.ts",
     "build": "echo zero-build app powered by tsx",
     "test": "vitest",
     "test:once": "cross-env CI=true vitest run",
