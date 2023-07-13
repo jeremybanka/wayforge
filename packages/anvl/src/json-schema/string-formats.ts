@@ -1,4 +1,4 @@
-import net from "net"
+// import net from "net"
 
 import { isString } from "fp-ts/string"
 
@@ -64,8 +64,7 @@ export const isIpv4 = (input: unknown): input is ipv4 =>
 		/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
 	)?.length === 1
 
-export const isIpv6 = (input: unknown): input is ipv6 =>
-	isString(input) && net.isIPv6(input)
+export const isIpv6 = (input: unknown): input is ipv6 => isString(input) // && net.isIPv6(input)
 
 export const isRegex = (input: unknown): input is regex =>
 	isString(input) && attempt(() => new RegExp(input))
