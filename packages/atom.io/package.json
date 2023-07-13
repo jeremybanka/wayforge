@@ -1,6 +1,6 @@
 {
   "name": "atom.io",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Reactive state graph for React, Preact, and vanilla",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -115,7 +115,6 @@
     "tsup": "7.1.0",
     "vite-tsconfig-paths": "4.2.0",
     "vitest": "0.33.0"
-    
   },
   "repository": {
     "type": "git",
