@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "echo \"No tests yet.\" && exit 0",
     "test:once": "echo \"No tests yet.\" && exit 0",
-    "lint": "eslint"
+    "lint": "rome check ."
   },
   "dependencies": {
     "@floating-ui/dom": "1.4.4",
