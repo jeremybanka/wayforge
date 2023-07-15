@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 
 import { ListItems } from "~/packages/hamr/src/recoil-tools/RecoilList"
-import { Luum } from "~/packages/Luum/src"
+import { Luum } from "~/packages/luum.js/src"
 
 import { findEnergyState } from "../../services/energy"
 import { findReactionEnergyState } from "../../services/energy_reaction"

@@ -6,7 +6,7 @@ import { become } from "~/packages/anvl/src/function"
 import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
 import type { Json, JsonObj, JsonTypeName } from "~/packages/anvl/src/json"
 import { cast } from "~/packages/anvl/src/json/cast"
-import mapObject from "~/packages/Luum/src/utils/mapObject"
+import mapObject from "~/packages/luum.js/src/utils/mapObject"
 
 export const makePropertySetters = <T extends JsonObj>(
 	data: T,

@@ -2,7 +2,7 @@ import type { SerializedStyles } from "@emotion/react"
 import { css } from "@emotion/react"
 import corners, { chamfer } from "corners"
 
-import type { Luum } from "~/packages/Luum/src"
+import type { Luum } from "~/packages/luum.js/src"
 
 export const CARD_WIDTH = 252
 export const CARD_HEIGHT = 360

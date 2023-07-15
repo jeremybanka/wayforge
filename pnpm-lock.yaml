@@ -502,34 +502,6 @@ importers:
         specifier: 0.18.13
         version: 0.18.13
 
-  packages/Luum:
-    dependencies:
-      fp-ts:
-        specifier: 2.16.0
-        version: 2.16.0
-    devDependencies:
-      '@types/node':
-        specifier: 18.16.19
-        version: 18.16.19
-      eslint:
-        specifier: 8.45.0
-        version: 8.45.0
-      tsup:
-        specifier: 7.1.0
-        version: 7.1.0(typescript@5.1.6)
-      typescript:
-        specifier: 5.1.6
-        version: 5.1.6
-      vite:
-        specifier: 4.4.4
-        version: 4.4.4(@types/node@18.16.19)(sass@1.63.6)
-      vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.1.6)(vite@4.4.4)
-      vitest:
-        specifier: 0.33.0
-        version: 0.33.0(happy-dom@10.3.2)(jsdom@22.1.0)
-
   packages/anvl:
     dependencies:
       fp-ts:
@@ -725,6 +697,34 @@ importers:
       mock-fs:
         specifier: 5.2.0
         version: 5.2.0
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.1.6)
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
+      vite:
+        specifier: 4.4.4
+        version: 4.4.4(@types/node@18.16.19)(sass@1.63.6)
+      vite-tsconfig-paths:
+        specifier: 4.2.0
+        version: 4.2.0(typescript@5.1.6)(vite@4.4.4)
+      vitest:
+        specifier: 0.33.0
+        version: 0.33.0(happy-dom@10.3.2)(jsdom@22.1.0)
+
+  packages/luum.js:
+    dependencies:
+      fp-ts:
+        specifier: 2.16.0
+        version: 2.16.0
+    devDependencies:
+      '@types/node':
+        specifier: 18.16.19
+        version: 18.16.19
+      eslint:
+        specifier: 8.45.0
+        version: 8.45.0
       tsup:
         specifier: 7.1.0
         version: 7.1.0(typescript@5.1.6)

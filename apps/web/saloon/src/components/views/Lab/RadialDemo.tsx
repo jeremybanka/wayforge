@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { css } from "@emotion/react"
 
-import { Luum } from "~/packages/Luum/src"
+import { Luum } from "~/packages/luum.js/src"
 
 import { useRadial } from "../../../services/radial"
 
