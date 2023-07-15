@@ -6,7 +6,6 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "yarn@3.6.1",
 	"scripts": {
 		"lint": "turbo run lint",
 		"lint:fix": "rome check --apply *",
@@ -38,9 +37,5 @@
 		"typescript": "5.1.6",
 		"vitest": "0.33.0"
 	},
-	"keywords": [
-		"react",
-		"express",
-		"typescript"
-	]
+	"keywords": ["react", "express", "typescript"]
 }
