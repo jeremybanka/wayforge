@@ -16,7 +16,7 @@ export type ObserverProps = {
 	onChange: (value: any) => void
 }
 export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
-	const [value] = useO(node)
+	const value = useO(node)
 	useEffect(() => onChange(value), [onChange, value])
 	return null
 }

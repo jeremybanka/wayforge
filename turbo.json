@@ -17,7 +17,7 @@
 			"dependsOn": ["build", "test:once", "lint"]
 		},
 		"globalDependencies": {
-			"inputs": [".eslintrc.js"]
+			"inputs": ["yarn.lock"]
 		}
 	}
 }

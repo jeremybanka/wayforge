@@ -1,129 +1,137 @@
 {
-  "name": "atom.io",
-  "version": "0.6.3",
-  "description": "Reactive state graph for React, Preact, and vanilla",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "module": "dist/index.mjs",
-  "files": [
-    "dist",
-    "json/dist",
-    "json/package.json",
-    "react/dist",
-    "react/package.json",
-    "react-devtools/dist",
-    "react-devtools/package.json",
-    "realtime/dist",
-    "realtime/package.json",
-    "realtime-react/dist",
-    "realtime-react/package.json",
-    "realtime-testing/dist",
-    "realtime-testing/package.json",
-    "src"
-  ],
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "browser": "./dist/index.mjs",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
-    "./json/package.json": "./json/package.json",
-    "./json": {
-      "types": "./json/dist/index.d.ts",
-      "browser": "./json/dist/index.mjs",
-      "import": "./json/dist/index.mjs",
-      "require": "./json/dist/index.js"
-    },
-    "./react/package.json": "./react/package.json",
-    "./react": {
-      "types": "./react/dist/index.d.ts",
-      "browser": "./react/dist/index.mjs",
-      "import": "./react/dist/index.mjs",
-      "require": "./react/dist/index.js"
-    },
-    "./react-devtools/package.json": "./react-devtools/package.json",
-    "./react-devtools": {
-      "types": "./react-devtools/dist/index.d.ts",
-      "browser": "./react-devtools/dist/index.mjs",
-      "import": "./react-devtools/dist/index.mjs",
-      "require": "./react-devtools/dist/index.js"
-    },
-    "./realtime/package.json": "./realtime/package.json",
-    "./realtime": {
-      "types": "./realtime/dist/index.d.ts",
-      "browser": "./realtime/dist/index.mjs",
-      "import": "./realtime/dist/index.mjs",
-      "require": "./realtime/dist/index.js"
-    },
-    "./realtime-react/package.json": "./realtime-react/package.json",
-    "./realtime-react": {
-      "types": "./realtime-react/dist/index.d.ts",
-      "browser": "./realtime-react/dist/index.mjs",
-      "import": "./realtime-react/dist/index.mjs",
-      "require": "./realtime-react/dist/index.js"
-    },
-    "./realtime-testing/package.json": "./realtime-testing/package.json",
-    "./realtime-testing": {
-      "types": "./realtime-testing/dist/index.d.ts",
-      "browser": "./realtime-testing/dist/index.mjs",
-      "import": "./realtime-testing/dist/index.mjs",
-      "require": "./realtime-testing/dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup) & (cd realtime-react && tsup) & (cd realtime-testing && tsup)",
-    "lint": "rome check .",
-    "test": "vitest",
-    "test:once": "vitest run"
-  },
-  "peerDependencies": {
-    "preact": ">=10.0.0",
-    "react": ">=16.8.0",
-    "socket.io": ">=4.0.0",
-    "socket.io-client": ">=4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "preact": {
-      "optional": true
-    },
-    "react": {
-      "optional": true
-    },
-    "socket.io": {
-      "optional": true
-    },
-    "socket.io-client": {
-      "optional": true
-    }
-  },
-  "dependencies": {
-    "fp-ts": "2.16.0",
-    "hamt_plus": "1.0.2",
-    "rxjs": "7.8.1"
-  },
-  "devDependencies": {
-    "@testing-library/react": "14.0.0",
-    "@types/mock-fs": "4.13.1",
-    "eslint": "8.44.0",
-    "happy-dom": "10.3.0",
-    "mock-fs": "5.2.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-router-dom": "6.14.1",
-    "tsup": "7.1.0",
-    "vite-tsconfig-paths": "4.2.0",
-    "vitest": "0.33.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremybanka/wayforge.git"
-  },
-  "license": "MIT",
-  "sideEffects": false,
-  "author": "Jeremy Banka",
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "atom.io",
+	"version": "0.6.3",
+	"description": "Reactive state graph for React, Preact, and vanilla",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/index.mjs",
+	"files": [
+		"dist",
+		"json/dist",
+		"json/package.json",
+		"react/dist",
+		"react/package.json",
+		"react-devtools/dist",
+		"react-devtools/package.json",
+		"realtime/dist",
+		"realtime/package.json",
+		"realtime-react/dist",
+		"realtime-react/package.json",
+		"realtime-testing/dist",
+		"realtime-testing/package.json",
+		"src"
+	],
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/index.d.ts",
+			"browser": "./dist/index.mjs",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		},
+		"./json/package.json": "./json/package.json",
+		"./json": {
+			"types": "./json/dist/index.d.ts",
+			"browser": "./json/dist/index.mjs",
+			"import": "./json/dist/index.mjs",
+			"require": "./json/dist/index.js"
+		},
+		"./react/package.json": "./react/package.json",
+		"./react": {
+			"types": "./react/dist/index.d.ts",
+			"browser": "./react/dist/index.mjs",
+			"import": "./react/dist/index.mjs",
+			"require": "./react/dist/index.js"
+		},
+		"./react-devtools/package.json": "./react-devtools/package.json",
+		"./react-devtools": {
+			"types": "./react-devtools/dist/index.d.ts",
+			"browser": "./react-devtools/dist/index.mjs",
+			"import": "./react-devtools/dist/index.mjs",
+			"require": "./react-devtools/dist/index.js"
+		},
+		"./realtime/package.json": "./realtime/package.json",
+		"./realtime": {
+			"types": "./realtime/dist/index.d.ts",
+			"browser": "./realtime/dist/index.mjs",
+			"import": "./realtime/dist/index.mjs",
+			"require": "./realtime/dist/index.js"
+		},
+		"./realtime-react/package.json": "./realtime-react/package.json",
+		"./realtime-react": {
+			"types": "./realtime-react/dist/index.d.ts",
+			"browser": "./realtime-react/dist/index.mjs",
+			"import": "./realtime-react/dist/index.mjs",
+			"require": "./realtime-react/dist/index.js"
+		},
+		"./realtime-testing/package.json": "./realtime-testing/package.json",
+		"./realtime-testing": {
+			"types": "./realtime-testing/dist/index.d.ts",
+			"browser": "./realtime-testing/dist/index.mjs",
+			"import": "./realtime-testing/dist/index.mjs",
+			"require": "./realtime-testing/dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup) & (cd realtime-react && tsup) & (cd realtime-testing && tsup)",
+		"lint": "rome check .",
+		"test": "vitest",
+		"test:once": "vitest run"
+	},
+	"peerDependencies": {
+		"preact": ">=10.0.0",
+		"react": ">=16.8.0",
+		"socket.io": ">=4.0.0",
+		"socket.io-client": ">=4.0.0"
+	},
+	"peerDependenciesMeta": {
+		"preact": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		},
+		"socket.io": {
+			"optional": true
+		},
+		"socket.io-client": {
+			"optional": true
+		}
+	},
+	"dependencies": {
+		"fp-ts": "2.16.0",
+		"hamt_plus": "1.0.2",
+		"rxjs": "7.8.1"
+	},
+	"devDependencies": {
+		"@emotion/react": "11.11.1",
+		"@testing-library/react": "14.0.0",
+		"@types/mock-fs": "4.13.1",
+		"@types/react": "18.2.14",
+		"@types/tmp": "0.2.3",
+		"eslint": "8.44.0",
+		"framer-motion": "10.12.20",
+		"happy-dom": "10.3.0",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-router-dom": "6.14.1",
+		"socket.io": "4.7.1",
+		"socket.io-client": "4.7.1",
+		"tmp": "0.2.1",
+		"tsup": "7.1.0",
+		"typescript": "5.1.6",
+		"vite": "4.4.3",
+		"vite-tsconfig-paths": "4.2.0",
+		"vitest": "0.33.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"license": "MIT",
+	"sideEffects": false,
+	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	}
 }

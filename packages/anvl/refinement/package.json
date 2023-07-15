@@ -1,6 +1,6 @@
 {
-  "name": "@anvl/refinement",
-  "main": "../dist/refinement/index.js",
-  "types": "../dist/refinement/index.d.ts",
-  "module": "../dist/refinement/index.mjs"
+	"name": "@anvl/refinement",
+	"main": "../dist/refinement/index.js",
+	"types": "../dist/refinement/index.d.ts",
+	"module": "../dist/refinement/index.mjs"
 }

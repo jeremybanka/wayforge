@@ -1,6 +1,6 @@
 {
-  "name": "@anvl/object",
-  "main": "../dist/object/index.js",
-  "types": "../dist/object/index.d.ts",
-  "module": "../dist/object/index.mjs"
+	"name": "@anvl/object",
+	"main": "../dist/object/index.js",
+	"types": "../dist/object/index.d.ts",
+	"module": "../dist/object/index.mjs"
 }

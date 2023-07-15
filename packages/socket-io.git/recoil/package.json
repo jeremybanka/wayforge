@@ -1,6 +1,6 @@
 {
-  "name": "@socket-io.git/recoil",
-  "main": "../dist/socket-git-recoil.js",
-  "types": "../dist/socket-git-recoil.d.ts",
-  "module": "../dist/socket-git-recoil.mjs"
+	"name": "@socket-io.git/recoil",
+	"main": "../dist/socket-git-recoil.js",
+	"types": "../dist/socket-git-recoil.d.ts",
+	"module": "../dist/socket-git-recoil.mjs"
 }

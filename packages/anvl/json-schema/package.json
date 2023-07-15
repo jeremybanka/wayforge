@@ -1,6 +1,6 @@
 {
-  "name": "@anvl/json-schema",
-  "main": "../dist/json-schema/index.js",
-  "types": "../dist/json-schema/index.d.ts",
-  "module": "../dist/json-schema/index.mjs"
+	"name": "@anvl/json-schema",
+	"main": "../dist/json-schema/index.js",
+	"types": "../dist/json-schema/index.d.ts",
+	"module": "../dist/json-schema/index.mjs"
 }

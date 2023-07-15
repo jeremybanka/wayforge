@@ -30,7 +30,7 @@
 		"wayforge",
 		"zustand"
 	],
-	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.tsdk": ".yarn/sdks/typescript/lib",
 	"[typescript]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "rome.rome"
@@ -41,19 +41,26 @@
 	},
 	"[html]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "rome.rome"
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[css]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "rome.rome"
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[scss]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "rome.rome"
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[json]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "rome.rome"
 	},
-	"references.preferredLocation": "peek"
+	"references.preferredLocation": "peek",
+	"search.exclude": {
+		"**/.yarn": true,
+		"**/.pnp.*": true
+	},
+	"eslint.nodePath": ".yarn/sdks",
+	"prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+	"typescript.enablePromptUseWorkspaceTsdk": true
 }

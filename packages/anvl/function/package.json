@@ -1,6 +1,6 @@
 {
-  "name": "@anvl/function",
-  "main": "../dist/function/index.js",
-  "types": "../dist/function/index.d.ts",
-  "module": "../dist/function/index.mjs"
+	"name": "@anvl/function",
+	"main": "../dist/function/index.js",
+	"types": "../dist/function/index.d.ts",
+	"module": "../dist/function/index.mjs"
 }

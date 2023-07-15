@@ -22,15 +22,15 @@ export default defineConfig({
 		}),
 	],
 
-	esbuild: {
-		define: {
-			this: `window`,
-		},
-	},
+	// esbuild: {
+	// 	define: {
+	// 		this: `window`,
+	// 	},
+	// },
 
 	test: {
 		globals: true,
 		environment: `happy-dom`,
-		css: false,
+		// css: false,
 	},
 })

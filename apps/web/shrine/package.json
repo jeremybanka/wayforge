@@ -1,21 +1,21 @@
 {
-  "name": "@wayforge/shrine",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "fp-ts": "2.16.0",
-    "phaser": "3.60.0",
-    "socket.io-client": "4.7.1"
-  },
-  "devDependencies": {
-    "socket.io": "4.7.1",
-    "vite": "4.4.3",
-    "vite-tsconfig-paths": "4.2.0"
-  }
+	"name": "@wayforge/shrine",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"fp-ts": "2.16.0",
+		"phaser": "3.60.0",
+		"socket.io-client": "4.7.1"
+	},
+	"devDependencies": {
+		"socket.io": "4.7.1",
+		"vite": "4.4.3",
+		"vite-tsconfig-paths": "4.2.0"
+	}
 }

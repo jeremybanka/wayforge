@@ -28,7 +28,9 @@ beforeAll(
 describe(`filestore socket api`, () => {
 	const client: FilestoreClientSocket = io(`http://localhost:${PORT}/`)
 
-	beforeEach(client.removeAllListeners)
+	beforeEach(() => {
+		client.removeAllListeners()
+	})
 
 	it(
 		`fails to read a resource where the type has not been initialized`,

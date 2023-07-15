@@ -1,6 +1,6 @@
 {
-  "name": "@anvl/json",
-  "main": "../dist/json/index.js",
-  "types": "../dist/json/index.d.ts",
-  "module": "../dist/json/index.mjs"
+	"name": "@anvl/json",
+	"main": "../dist/json/index.js",
+	"types": "../dist/json/index.d.ts",
+	"module": "../dist/json/index.mjs"
 }

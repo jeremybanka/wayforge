@@ -1,41 +1,41 @@
 {
-  "name": "@banka/eslint-config",
-  "version": "2.0.0",
-  "description": "my personal style preferences",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jeremybanka/wayforge",
-    "directory": "packages/@banka/eslint-config"
-  },
-  "scripts": {
-    "build": "echo this package is zero-build",
-    "test:once": "echo no tests"
-  },
-  "main": ".eslintrc.js",
-  "author": "jeremybanka",
-  "license": "MIT",
-  "dependencies": {
-    "@types/mocha": "10.0.1",
-    "@types/node": "18.16.19",
-    "@typescript-eslint/eslint-plugin": "6.0.0",
-    "@typescript-eslint/parser": "6.0.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-import": "2.27.5",
-    "eslint-plugin-mocha": "10.1.0",
-    "eslint-plugin-prettier": "^5.0.0-alpha.2"
-  },
-  "peerDependencies": {
-    "eslint": "^8.44.0",
-    "prettier": "^3.0.0"
-  },
-  "bugs": {
-    "url": "https://github.com/wayforge/issues"
-  },
-  "homepage": "https://github.com/jeremybanka/wayforge",
-  "keywords": [
-    "eslint"
-  ],
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@banka/eslint-config",
+	"version": "2.0.0",
+	"description": "my personal style preferences",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jeremybanka/wayforge",
+		"directory": "packages/@banka/eslint-config"
+	},
+	"scripts": {
+		"build": "echo this package is zero-build",
+		"test:once": "echo no tests"
+	},
+	"main": ".eslintrc.js",
+	"author": "jeremybanka",
+	"license": "MIT",
+	"dependencies": {
+		"@types/mocha": "10.0.1",
+		"@types/node": "18.16.19",
+		"@typescript-eslint/eslint-plugin": "6.0.0",
+		"@typescript-eslint/parser": "6.0.0",
+		"eslint-config-prettier": "8.8.0",
+		"eslint-plugin-import": "2.27.5",
+		"eslint-plugin-mocha": "10.1.0",
+		"eslint-plugin-prettier": "^5.0.0-alpha.2"
+	},
+	"peerDependencies": {
+		"eslint": "^8.44.0",
+		"prettier": "^3.0.0"
+	},
+	"bugs": {
+		"url": "https://github.com/wayforge/issues"
+	},
+	"homepage": "https://github.com/jeremybanka/wayforge",
+	"keywords": [
+		"eslint"
+	],
+	"publishConfig": {
+		"access": "public"
+	}
 }

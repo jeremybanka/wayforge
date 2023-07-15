@@ -4,7 +4,7 @@
 		"enabled": false
 	},
 	"files": {
-		"ignore": ["*.js", "dist", "coverage", "projects"]
+		"ignore": ["*.js", "dist", "node_modules", "coverage", "projects"]
 	},
 	"javascript": {
 		"formatter": {
