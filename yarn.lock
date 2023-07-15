@@ -3137,7 +3137,7 @@ __metadata:
     socket.io-client: 4.7.1
     socketio-auth: 0.1.1
     tsx: 3.12.7
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   languageName: unknown
@@ -3191,7 +3191,7 @@ __metadata:
     sass: 1.63.6
     socket.io-client: 4.7.1
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
@@ -3222,7 +3222,7 @@ __metadata:
     react-dom: 18.2.0
     react-router-dom: 6.14.1
     sass: 1.63.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
@@ -3238,7 +3238,7 @@ __metadata:
     phaser: 3.60.0
     socket.io: 4.7.1
     socket.io-client: 4.7.1
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
   languageName: unknown
   linkType: soft
@@ -3270,7 +3270,7 @@ __metadata:
     recoil: 0.7.7
     sass: 1.63.6
     socket.io-client: 4.7.1
-    vite: 4.4.3
+    vite: 4.4.4
     vite-plugin-svgr: 3.2.0
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
@@ -3493,7 +3493,7 @@ __metadata:
     io-ts: 2.2.20
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -3775,7 +3775,7 @@ __metadata:
     tmp: 0.2.1
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -7025,7 +7025,7 @@ __metadata:
     rxjs: 7.8.1
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -7417,7 +7417,7 @@ __metadata:
     mock-fs: 5.2.0
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -9027,7 +9027,7 @@ __metadata:
     fp-ts: 2.16.0
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   languageName: unknown
@@ -9810,7 +9810,7 @@ __metadata:
     nanoid: 4.0.2
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -11310,7 +11310,7 @@ __metadata:
     tmp: 0.2.1
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -11336,7 +11336,7 @@ __metadata:
     tmp: 0.2.1
     tsup: 7.1.0
     typescript: 5.1.6
-    vite: 4.4.3
+    vite: 4.4.4
     vite-tsconfig-paths: 4.2.0
     vitest: 0.33.0
   peerDependencies:
@@ -12731,7 +12731,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:4.4.3, vite@npm:^3.0.0 || ^4.0.0, vite@npm:^4.1.4":
+"vite@npm:4.4.4":
+  version: 4.4.4
+  resolution: "vite@npm:4.4.4"
+  dependencies:
+    esbuild: ^0.18.10
+    fsevents: ~2.3.2
+    postcss: ^8.4.25
+    rollup: ^3.25.2
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    lightningcss: ^1.21.0
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    lightningcss:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 51c208e53680fa46f7166e49b037625ae43d507f85f1fd3da7e290263bccb77d5f8c466fe82746285927620afeeff949ac3b8e1b6a7b4fe7bfe11419729256b4
+  languageName: node
+  linkType: hard
+
+"vite@npm:^3.0.0 || ^4.0.0, vite@npm:^4.1.4":
   version: 4.4.3
   resolution: "vite@npm:4.4.3"
   dependencies:
