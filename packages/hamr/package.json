@@ -19,15 +19,25 @@
 		"test:once": "vitest run"
 	},
 	"devDependencies": {
+		"@emotion/babel-plugin": "11.11.0",
 		"@emotion/react": "11.11.1",
+		"@emotion/styled": "11.11.0",
 		"@testing-library/jest-dom": "5.16.5",
 		"@testing-library/react": "14.0.0",
 		"@types/jsdom": "21.1.1",
+		"@types/react": "18.2.14",
+		"@vitejs/plugin-react": "4.0.3",
 		"eslint": "8.44.0",
+		"happy-dom": "10.3.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-router-dom": "6.14.1",
+		"recoil": "0.7.7",
+		"rxjs": "7.8.1",
 		"tsup": "7.1.0",
+		"typescript": "5.1.6",
+		"vite": "4.4.3",
+		"vite-tsconfig-paths": "4.2.0",
 		"vitest": "0.33.0"
 	},
 	"peerDependencies": {

@@ -17,6 +17,7 @@
 		"fp-ts": "2.16.0",
 		"lodash": "4.17.21",
 		"nanoid": "4.0.2",
+		"npmlog": "7.0.1",
 		"rxjs": "7.8.1",
 		"socket.io": "4.7.1",
 		"socketio-auth": "0.1.1"
@@ -24,6 +25,7 @@
 	"devDependencies": {
 		"socket.io-client": "4.7.1",
 		"tsx": "3.12.7",
+		"vite": "4.4.3",
 		"vite-tsconfig-paths": "4.2.0",
 		"vitest": "0.33.0"
 	}
