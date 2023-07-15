@@ -1,6 +1,7 @@
 !.eslintrc.js
 .yarn/cache
 .yarn/install-state.gz
+.pnp.*
 *.js
 *.js.map
 .DS_STORE

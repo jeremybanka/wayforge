@@ -1,10 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "jsxImportSource": "react",
-    "typeRoots": [
-      "../../node_modules/@types",
-      "../../lib/types"
-    ]
-  }
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"jsx": "react-jsxdev",
+		"jsxImportSource": "react",
+		"types": ["vitest/globals"]
+	},
+	"include": ["./src/**/*"]
 }

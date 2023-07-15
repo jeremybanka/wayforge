@@ -1,6 +1,6 @@
 {
-  "name": "@hamr/react-error-boundary",
-  "main": "../dist/react-error-boundary/index.js",
-  "types": "../dist/react-error-boundary/index.d.ts",
-  "module": "../dist/react-error-boundary/index.mjs"
+	"name": "@hamr/react-error-boundary",
+	"main": "../dist/react-error-boundary/index.js",
+	"types": "../dist/react-error-boundary/index.d.ts",
+	"module": "../dist/react-error-boundary/index.mjs"
 }

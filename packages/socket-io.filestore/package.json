@@ -1,44 +1,48 @@
 {
-  "name": "socket-io.filestore",
-  "version": "0.0.0",
-  "description": "save json to the filesystem over socket.io",
-  "files": [
-    "dist",
-    "node",
-    "web",
-    "CHANGELOG.md",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
-    "lint": "rome check .",
-    "test": "vitest",
-    "test:once": "vitest run"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "recoil": "^0.7.6",
-    "socket.io": "^4.6.0",
-    "socket.io-client": "^4.6.0"
-  },
-  "dependencies": {
-    "fp-ts": "2.16.0"
-  },
-  "devDependencies": {
-    "@types/tmp": "0.2.3",
-    "react": "18.2.0",
-    "recoil": "0.7.7",
-    "socket.io": "4.7.1",
-    "socket.io-client": "4.7.1",
-    "tmp": "0.2.1",
-    "tsup": "7.1.0",
-    "vitest": "0.33.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremybanka/wayforge.git"
-  },
-  "license": "MIT",
-  "sideEffects": false,
-  "author": "Jeremy Banka"
+	"name": "socket-io.filestore",
+	"version": "0.0.0",
+	"description": "save json to the filesystem over socket.io",
+	"files": [
+		"dist",
+		"node",
+		"web",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
+		"lint": "rome check .",
+		"test": "vitest",
+		"test:once": "vitest run"
+	},
+	"peerDependencies": {
+		"react": "^18.2.0",
+		"recoil": "^0.7.6",
+		"socket.io": "^4.6.0",
+		"socket.io-client": "^4.6.0"
+	},
+	"dependencies": {
+		"fp-ts": "2.16.0"
+	},
+	"devDependencies": {
+		"@types/node": "18.16.19",
+		"@types/tmp": "0.2.3",
+		"react": "18.2.0",
+		"recoil": "0.7.7",
+		"socket.io": "4.7.1",
+		"socket.io-client": "4.7.1",
+		"tmp": "0.2.1",
+		"tsup": "7.1.0",
+		"typescript": "5.1.6",
+		"vite": "4.4.3",
+		"vite-tsconfig-paths": "4.2.0",
+		"vitest": "0.33.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"license": "MIT",
+	"sideEffects": false,
+	"author": "Jeremy Banka"
 }

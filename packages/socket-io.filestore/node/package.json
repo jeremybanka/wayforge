@@ -1,6 +1,6 @@
 {
-  "name": "@socket-io.filestore/node",
-  "main": "../dist/socket-io.filestore-node.js",
-  "types": "../dist/socket-io.filestore-node.d.ts",
-  "module": "../dist/socket-io.filestore-node.mjs"
+	"name": "@socket-io.filestore/node",
+	"main": "../dist/socket-io.filestore-node.js",
+	"types": "../dist/socket-io.filestore-node.d.ts",
+	"module": "../dist/socket-io.filestore-node.mjs"
 }

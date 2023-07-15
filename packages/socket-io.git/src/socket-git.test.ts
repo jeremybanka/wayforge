@@ -35,7 +35,9 @@ beforeAll(
 describe(`git-io usage`, () => {
 	const client: GitClientSocket = io(`http://localhost:${PORT}/`)
 
-	beforeEach(client.removeAllListeners)
+	beforeEach(() => {
+		client.removeAllListeners()
+	})
 
 	it(
 		`fails to report status before initialization`,
