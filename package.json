@@ -6,7 +6,9 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "yarn@3.6.1",
+	"engines": {
+		"pnpm": "8.6.7"
+	},
 	"scripts": {
 		"lint": "turbo run lint",
 		"lint:fix": "rome check --apply *",
@@ -14,17 +16,9 @@
 		"fmt:fix": "rome format --write ",
 		"build": "turbo run build",
 		"test": "cross-env CI=true turbo run test:once",
-		"release": "yarn build && changeset publish",
+		"release": "pnpm build && changeset publish",
 		"notes": "changeset"
 	},
-	"workspaces": [
-		"apps/web/*",
-		"apps/node/*",
-		"packages/*",
-		"packages/@banka/*",
-		"packages/@banka/eslint-config/react",
-		"lib"
-	],
 	"devDependencies": {
 		"@changesets/cli": "2.26.2",
 		"c8": "8.0.0",
@@ -38,9 +32,5 @@
 		"typescript": "5.1.6",
 		"vitest": "0.33.0"
 	},
-	"keywords": [
-		"react",
-		"express",
-		"typescript"
-	]
+	"keywords": ["react", "express", "typescript"]
 }
