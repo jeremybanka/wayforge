@@ -18,7 +18,7 @@
 		"@emotion/styled": "11.11.0",
 		"@eyecuelab/recoil-devtools": "0.1.7",
 		"@floating-ui/dom": "1.4.5",
-		"@floating-ui/react": "0.24.7",
+		"@floating-ui/react": "0.24.8",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.0",
 		"framer-motion": "10.12.20",
