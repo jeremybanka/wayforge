@@ -3028,7 +3028,7 @@ __metadata:
     eslint: 8.44.0
     fp-ts: 2.16.0
     framer-motion: 10.12.20
-    happy-dom: 10.3.0
+    happy-dom: 10.3.2
     nanoid: 4.0.2
     react: 18.2.0
     react-dom: 18.2.0
@@ -3062,7 +3062,7 @@ __metadata:
     eslint: 8.44.0
     fp-ts: 2.16.0
     framer-motion: 10.12.20
-    happy-dom: 10.3.0
+    happy-dom: 10.3.2
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -3108,7 +3108,7 @@ __metadata:
     eslint: 8.44.0
     fp-ts: 2.16.0
     framer-motion: 10.12.20
-    happy-dom: 10.3.0
+    happy-dom: 10.3.2
     io-ts: 2.2.20
     react: 18.2.0
     react-dom: 18.2.0
@@ -3611,7 +3611,7 @@ __metadata:
     fp-ts: 2.16.0
     framer-motion: 10.12.20
     hamt_plus: 1.0.2
-    happy-dom: 10.3.0
+    happy-dom: 10.3.2
     react: 18.2.0
     react-dom: 18.2.0
     react-router-dom: 6.14.1
@@ -6830,20 +6830,6 @@ __metadata:
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
   checksum: 41aa80428168c81b0eeb43d073117cc88cc4645fb75740ed57253fa2f715edf001ec63f1aad669d414cbf469022c49fa9e54091110ba405f19310eb0370cd51f
-  languageName: node
-  linkType: hard
-
-"happy-dom@npm:10.3.0":
-  version: 10.3.0
-  resolution: "happy-dom@npm:10.3.0"
-  dependencies:
-    css.escape: ^1.5.1
-    entities: ^4.5.0
-    iconv-lite: ^0.6.3
-    webidl-conversions: ^7.0.0
-    whatwg-encoding: ^2.0.0
-    whatwg-mimetype: ^3.0.0
-  checksum: 2526b5dafbd22e5274babb6d06bf5d28db4fd77ca7d61a74931ff8969c07cd098f512e8453247e868fd3e5548d58b0e60858b9be7ac2d77e9abf881c592d9bfe
   languageName: node
   linkType: hard
 
