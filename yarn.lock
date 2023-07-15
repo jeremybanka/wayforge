@@ -416,7 +416,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.22.5, @babel/template@npm:^7.3.3":
+"@babel/template@npm:*, @babel/template@npm:^7.22.5, @babel/template@npm:^7.3.3":
   version: 7.22.5
   resolution: "@babel/template@npm:7.22.5"
   dependencies:
@@ -8495,7 +8495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema@npm:0.4.0":
+"json-schema@npm:*, json-schema@npm:0.4.0":
   version: 0.4.0
   resolution: "json-schema@npm:0.4.0"
   checksum: 66389434c3469e698da0df2e7ac5a3281bcff75e797a5c127db7c5b56270e01ae13d9afa3c03344f76e32e81678337a8c912bdbb75101c62e487dc3778461d72
@@ -10049,7 +10049,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.0.0":
+"prettier@npm:*, prettier@npm:3.0.0":
   version: 3.0.0
   resolution: "prettier@npm:3.0.0"
   bin:
