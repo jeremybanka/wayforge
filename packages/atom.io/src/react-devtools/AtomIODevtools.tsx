@@ -5,13 +5,13 @@ import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 import type { FC } from "react"
 
+import { attachMetaState } from "./meta"
 import { TokenList } from "./TokenList"
 import { lazyLocalStorageEffect } from "../web-effects"
 
 import "./devtools.scss"
 
-const { atomTokenIndexState, selectorTokenIndexState } =
-	__INTERNAL__.META.attachMetaState()
+const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
 
 const devtoolsAreOpenState = atom<boolean>({
 	key: `👁‍🗨_devtools_are_open`,

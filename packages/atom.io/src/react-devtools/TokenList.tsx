@@ -11,12 +11,13 @@ import type { FC } from "react"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
 
+import { StateTokenIndex } from "./meta"
 import { StoreEditor } from "./StateEditor"
 
 export const TokenList: FC<{
 	storeHooks: StoreHooks
 	tokenIndex: ReadonlySelectorToken<
-		__INTERNAL__.META.StateTokenIndex<
+		StateTokenIndex<
 			| AtomToken<unknown>
 			| ReadonlySelectorToken<unknown>
 			| SelectorToken<unknown>

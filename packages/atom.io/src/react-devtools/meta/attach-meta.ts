@@ -1,8 +1,8 @@
 import type { AtomTokenIndex, SelectorTokenIndex } from "./meta-state"
 import { attachMetaAtoms, attachMetaSelectors } from "./meta-state"
 import type { ReadonlySelectorToken } from "../.."
-import type { Store } from "../store"
-import { IMPLICIT } from "../store"
+import type { Store } from "../../internal/store"
+import { IMPLICIT } from "../../internal/store"
 
 export const attachMetaState = (
 	store: Store = IMPLICIT.STORE,

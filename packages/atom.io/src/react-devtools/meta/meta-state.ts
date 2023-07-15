@@ -1,7 +1,7 @@
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "../.."
 import { selector, atom } from "../.."
-import type { Store } from "../store"
-import { IMPLICIT } from "../store"
+import type { Store } from "../../internal/store"
+import { IMPLICIT } from "../../internal/store"
 
 export type StateTokenIndex<
 	Token extends
