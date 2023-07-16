@@ -1,7 +1,7 @@
-import * as React from "react"
 
 import * as AtomIO from "atom.io"
 import type { Point2d } from "corners"
+import * as React from "react"
 import * as Rx from "rxjs"
 
 import { findScrollPositionState } from "./scroll-position"

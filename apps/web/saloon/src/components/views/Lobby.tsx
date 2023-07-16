@@ -1,6 +1,5 @@
-import type { FC } from "react"
-
 import { useO } from "atom.io/react"
+import type { FC } from "react"
 import { Link } from "react-router-dom"
 
 import {

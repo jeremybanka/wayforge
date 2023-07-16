@@ -1,7 +1,7 @@
-import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
+import type { FC } from "react"
 import { useParams, Link } from "react-router-dom"
 
 import {

@@ -1,6 +1,5 @@
 import * as http from "http"
 
-import * as React from "react"
 
 import { prettyDOM, render, type RenderResult } from "@testing-library/react"
 import * as AtomIO from "atom.io"
@@ -8,6 +7,7 @@ import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-react"
 import * as RR from "fp-ts/ReadonlyRecord"
 import * as Happy from "happy-dom"
+import * as React from "react"
 import * as SocketIO from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"

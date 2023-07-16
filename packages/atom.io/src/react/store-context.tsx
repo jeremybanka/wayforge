@@ -1,6 +1,6 @@
+import * as AtomIO from "atom.io"
 import * as React from "react"
 
-import * as AtomIO from "atom.io"
 
 export const StoreContext = React.createContext<AtomIO.Store>(
 	AtomIO.__INTERNAL__.IMPLICIT.STORE,

@@ -7,13 +7,11 @@
 	"license": "GPL-3.0",
 	"private": true,
 	"packageManager": "pnpm@8.6.7",
-	"engines": {
-		"pnpm": "8.6.7"
-	},
+	"engines": { "pnpm": "8.6.7" },
 	"scripts": {
 		"lint": "turbo run lint",
 		"lint:fix:rome": "rome check --apply *",
-		"lint:fix:eslint": "eslint --fix *",
+		"lint:fix:eslint": "eslint --fix .",
 		"fmt": "rome format .",
 		"fmt:fix": "rome format --write ",
 		"build": "turbo run build",
@@ -33,6 +31,5 @@
 		"turbo": "1.10.7",
 		"typescript": "5.1.6",
 		"vitest": "0.33.0"
-	},
-	"keywords": ["react", "express", "typescript"]
+	}
 }

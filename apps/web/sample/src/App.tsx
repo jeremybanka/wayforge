@@ -1,6 +1,6 @@
+import { css } from "@emotion/react"
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
 
 import { AtomIODevtools } from "~/packages/atom.io/src/react-devtools"
 

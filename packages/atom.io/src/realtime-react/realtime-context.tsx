@@ -1,6 +1,5 @@
-import * as React from "react"
-
 import * as AR from "atom.io/react"
+import * as React from "react"
 import type { Socket } from "socket.io-client"
 import { io } from "socket.io-client"
 

@@ -1,7 +1,6 @@
+import { render, fireEvent } from "@testing-library/react"
 import type { FC } from "react"
 import { useEffect } from "react"
-
-import { render, fireEvent } from "@testing-library/react"
 import { BrowserRouter } from "react-router-dom"
 
 import type { StateToken } from "~/packages/atom.io/src"

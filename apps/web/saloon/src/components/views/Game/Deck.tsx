@@ -1,8 +1,8 @@
-import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { useServerAction } from "atom.io/realtime-react"
+import type { FC } from "react"
 
 import {
 	shuffleDeckTX,

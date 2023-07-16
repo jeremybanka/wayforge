@@ -1,7 +1,7 @@
-import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import { usePull, usePullFamily } from "atom.io/realtime-react"
+import type { FC } from "react"
 
 import {
 	cardGroupIndexJSON,

@@ -1,10 +1,10 @@
-import type { FC } from "react"
-import { useRef } from "react"
 
 import { atom, __INTERNAL__ } from "atom.io"
 import type { StoreHooks } from "atom.io/react"
 import { useI, useO, useIO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
+import { useRef } from "react"
+import type { FC } from "react"
 
 import { TokenList } from "./TokenList"
 import { lazyLocalStorageEffect } from "../web-effects"

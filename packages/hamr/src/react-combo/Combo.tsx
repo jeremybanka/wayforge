@@ -1,6 +1,5 @@
 import type { ReactElement, KeyboardEventHandler } from "react"
 import { useId, useRef, useEffect, useState } from "react"
-
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import type { RecoilState, RecoilValueReadOnly, SetterOrUpdater } from "recoil"
 
@@ -28,20 +27,18 @@ export type ComboOptions<T> = {
 	options: T[]
 }
 
-/* eslint-disable @typescript-eslint/sort-type-union-intersection-members */
-/* prettier-ignore */
+/* eslint-disable @typescript-eslint/sort-type-constituents */
 export type ComboProps<T> = ComboPropsCore<T> &
-	(ComboOptions<T> | ComboOptionsRecoil<T>) &
-	(ComboSelections<T> | ComboSelectionsRecoil<T>) &
 	(T extends string
 		? /* eslint-disable-next-line @typescript-eslint/ban-types */
 		  {}
-		: { getName: (value: T) => string })
-/* prettier-ignore */
+		: { getName: (value: T) => string }) &
+	(ComboOptions<T> | ComboOptionsRecoil<T>) &
+	(ComboSelections<T> | ComboSelectionsRecoil<T>)
 export type ComboProps_INTERNAL<T> = ComboPropsCore<T> &
 	ComboOptions<T> &
 	ComboSelections<T> & { getName: (value: T) => string }
-/* eslint-enable @typescript-eslint/sort-type-union-intersection-members */
+/* eslint-enable @typescript-eslint/sort-type-constituents */
 
 const Combo_INTERNAL = <State,>({
 	onSetSelections,

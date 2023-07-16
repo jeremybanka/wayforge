@@ -1,6 +1,5 @@
 import type { ErrorInfo, ReactNode, FC } from "react"
 import { useId, Component } from "react"
-
 import { atomFamily, useRecoilState, useResetRecoilState } from "recoil"
 
 import type { FallbackProps } from "./DefaultFallback"

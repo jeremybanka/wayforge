@@ -1,8 +1,8 @@
-import type { FC } from "react"
 
 import { css } from "@emotion/react"
 import corners, { chamfer, writePathPoint } from "corners"
 import { pipe } from "fp-ts/function"
+import type { FC } from "react"
 import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 

@@ -1,6 +1,6 @@
+import { makeMouseHandlers } from "hamr/react-click-handlers"
 import * as React from "react"
 
-import { makeMouseHandlers } from "hamr/react-click-handlers"
 
 import type { RadialAction, RadialMode } from "."
 

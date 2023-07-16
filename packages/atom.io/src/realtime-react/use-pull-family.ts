@@ -1,6 +1,6 @@
+import * as AtomIO from "atom.io"
 import * as React from "react"
 
-import * as AtomIO from "atom.io"
 
 import type { Json } from "~/packages/anvl/src/json"
 

@@ -1,3 +1,4 @@
+import { clampInto } from "~/packages/anvl/src/number"
 import type {
 	ChannelObject,
 	Degree,
@@ -15,7 +16,6 @@ import {
 	specificLumFromHue,
 	maxSatForHueInFilter,
 } from "../solveFor"
-import { clampInto } from "~/packages/anvl/src/number"
 
 const minChannelsForSaturationFromHue = (hue: Degree) => {
 	const relativeChannels = hueToRelativeChannels(hue)

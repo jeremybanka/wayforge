@@ -1,6 +1,6 @@
+import { css } from "@emotion/react"
 import type { FC } from "react"
 
-import { css } from "@emotion/react"
 
 import { redo, runTransaction, undo } from "~/packages/atom.io/src"
 

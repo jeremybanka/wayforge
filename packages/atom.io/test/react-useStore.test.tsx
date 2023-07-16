@@ -1,7 +1,7 @@
-import type { FC } from "react"
 
 import { render, fireEvent } from "@testing-library/react"
 import * as AR from "atom.io/react"
+import type { FC } from "react"
 
 import { Observer } from "./__util__/Observer"
 import { isDefault, atom } from "../src"
