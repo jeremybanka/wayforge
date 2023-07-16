@@ -2,7 +2,6 @@ import { wrapInto } from "~/packages/anvl/src/number"
 
 import type { Degree, Fraction } from ".."
 
-/*eslint-disable max-len */
 /**
  * Gives us the relative values of the channels,
  * irrespective of the white light beneath them.
@@ -112,7 +111,6 @@ import type { Degree, Fraction } from ".."
  *
  * here we see detailed breakdowns of the function's final output for our running examples.
  */
-/* eslint-enable max-len */
 export default (hue: Degree): [r: Fraction, g: Fraction, b: Fraction] => {
 	const hueWrapped = wrapInto(0, 360)(hue)
 	const hueReduced = hueWrapped / 60
@@ -121,7 +119,6 @@ export default (hue: Degree): [r: Fraction, g: Fraction, b: Fraction] => {
 	const x = hueDecimal
 	const y = 1 - hueDecimal
 	switch (hueInteger) {
-		/* eslint-disable prettier/prettier */
 		case 0:
 			return [1, x, 0]
 		case 1:
@@ -136,6 +133,5 @@ export default (hue: Degree): [r: Fraction, g: Fraction, b: Fraction] => {
 			return [1, 0, y]
 		default:
 			throw new Error(`invalid hue served: ${hue}`)
-		/* eslint-enable prettier/prettier */
 	}
 }

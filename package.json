@@ -12,7 +12,8 @@
 	},
 	"scripts": {
 		"lint": "turbo run lint",
-		"lint:fix": "rome check --apply *",
+		"lint:fix:rome": "rome check --apply *",
+		"lint:fix:eslint": "eslint --fix *",
 		"fmt": "rome format .",
 		"fmt:fix": "rome format --write ",
 		"build": "turbo run build",
