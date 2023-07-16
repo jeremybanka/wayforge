@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil"
 
 import type { RecoilListItemProps } from "~/packages/hamr/src/recoil-tools/RecoilList"
 import { ListItems } from "~/packages/hamr/src/recoil-tools/RecoilList"
-import { Luum } from "~/packages/luum.js/src"
+import { Luum } from "~/packages/luum/src"
 
 import { SVG_EnergyIcon } from "./EnergyIcon"
 import { findEnergyWithRelationsState } from "../../services/energy"
