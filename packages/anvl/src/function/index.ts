@@ -5,7 +5,6 @@ export type ƒn = (...parameters: any[]) => any
 
 export const doNothing = (): void => undefined
 
-/* eslint-disable prettier/prettier */
 export const become =
 	<T>(nextVersionOfThing: Modifier<T> | T) =>
 	(originalThing: T | (() => T)): T =>
@@ -14,7 +13,6 @@ export const become =
 					originalThing instanceof Function ? originalThing() : originalThing,
 			  )
 			: nextVersionOfThing
-/* eslint-enable prettier/prettier */
 
 export type Applicator<X, Y> = (next: Modifier<X> | X) => Modifier<Y>
 export type Modifier<T> = (thing: T) => T

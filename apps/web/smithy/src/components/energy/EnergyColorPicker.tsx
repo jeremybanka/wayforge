@@ -1,10 +1,9 @@
 import type { FC } from "react"
-
 import type { RecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 
 import { NumberInput } from "~/packages/hamr/src/react-elastic-input/NumberInput"
-import type { LuumSpec } from "~/packages/Luum/src"
+import type { LuumSpec } from "~/packages/luum/src"
 
 export type EnergyColorPickerProps = {
 	state: RecoilState<LuumSpec>

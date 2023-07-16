@@ -21,7 +21,7 @@
 		"eslint-plugin-import": "2.27.5",
 		"eslint-plugin-jsx-a11y": "6.7.1",
 		"eslint-plugin-mocha": "10.1.0",
-		"eslint-plugin-prettier": "^5.0.0-alpha.2",
+		"eslint-plugin-prettier": "5.0.0",
 		"eslint-plugin-react": "7.32.2"
 	},
 	"peerDependencies": {
@@ -31,9 +31,7 @@
 	"devDependencies": {
 		"esbuild": "0.18.13"
 	},
-	"keywords": [
-		"eslint"
-	],
+	"keywords": ["eslint"],
 	"author": "jeremybanka",
 	"license": "MIT",
 	"publishConfig": {

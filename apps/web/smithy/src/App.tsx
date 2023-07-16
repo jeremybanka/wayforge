@@ -1,6 +1,5 @@
-import type { FC } from "react"
-
 import { css } from "@emotion/react"
+import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
 import { ReactComponent as Connected } from "./assets/svg/connected.svg"

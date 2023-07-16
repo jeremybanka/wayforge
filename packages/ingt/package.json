@@ -4,12 +4,12 @@
 	"description": "json filestore",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
-		"lint": "rome check .",
+		"lint:rome": "rome check .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},

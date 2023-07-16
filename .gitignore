@@ -1,6 +1,6 @@
-!.eslintrc.js
 *.js
 *.js.map
+!.eslintrc.js
 .DS_STORE
 .env
 .turbo

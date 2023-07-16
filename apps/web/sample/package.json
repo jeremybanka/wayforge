@@ -8,7 +8,9 @@
 		"preview": "vite preview",
 		"test": "vitest",
 		"test:once": "vitest run",
-		"lint": "rome check ."
+		"lint:rome": "rome check .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:rome && npm run lint:eslint"
 	},
 	"dependencies": {
 		"@emotion/babel-plugin": "11.11.0",

@@ -1,7 +1,6 @@
-import type { FC, ReactNode } from "react"
-
 import type { SerializedStyles } from "@emotion/react"
 import type { StyledComponent } from "@emotion/styled"
+import type { FC, ReactNode } from "react"
 
 import { ErrorBoundary } from "../react-error-boundary"
 

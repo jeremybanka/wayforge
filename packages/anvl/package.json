@@ -20,7 +20,9 @@
 	],
 	"scripts": {
 		"build": "tsup",
-		"lint": "rome check .",
+		"lint:rome": "rome check .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},

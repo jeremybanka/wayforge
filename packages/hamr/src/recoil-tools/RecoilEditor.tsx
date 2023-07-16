@@ -1,5 +1,4 @@
 import type { FC, ReactElement } from "react"
-
 import { useParams } from "react-router-dom"
 import type { RecoilState } from "recoil"
 

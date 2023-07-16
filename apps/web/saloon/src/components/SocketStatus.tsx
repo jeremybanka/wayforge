@@ -1,8 +1,7 @@
-import type { FC } from "react"
-import { useState } from "react"
-
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
+import type { FC } from "react"
+import { useState } from "react"
 
 import { myIdState } from "~/packages/atom.io/src/realtime-react"
 

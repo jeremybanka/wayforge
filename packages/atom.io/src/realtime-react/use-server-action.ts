@@ -1,7 +1,6 @@
-import * as React from "react"
-
 import * as AtomIO from "atom.io"
 import { StoreContext } from "atom.io/react"
+import * as React from "react"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 

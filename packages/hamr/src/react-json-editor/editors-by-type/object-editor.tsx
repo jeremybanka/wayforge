@@ -35,7 +35,8 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 	Components,
 }) => (
 	<Components.MissingPropertyWrapper>
-		<ElasticInput disabled defaultValue={propertyKey} />{" "}
+		<ElasticInput disabled defaultValue={propertyKey} />
+		{` `}
 		{/* ❗ rome advised self-closing these, remove once tested */}
 		<ElasticInput disabled defaultValue="is missing" />
 		<Components.Button onClick={() => addProperty()} disabled={disabled}>

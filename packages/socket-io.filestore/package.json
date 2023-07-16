@@ -2,16 +2,12 @@
 	"name": "socket-io.filestore",
 	"version": "0.0.0",
 	"description": "save json to the filesystem over socket.io",
-	"files": [
-		"dist",
-		"node",
-		"web",
-		"CHANGELOG.md",
-		"README.md"
-	],
+	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
-		"lint": "rome check .",
+		"lint:rome": "rome check .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},

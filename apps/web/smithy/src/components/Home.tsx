@@ -1,6 +1,5 @@
-import type { FC } from "react"
-
 import { css } from "@emotion/react"
+import type { FC } from "react"
 import { Link } from "react-router-dom"
 
 export const Header: FC = () => (

@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable prettier/prettier */
 export function curry<F extends (...args: any[]) => any>(
 	f: F,
 ): (
