@@ -10,7 +10,10 @@
 
 			"inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
 		},
-		"lint": {
+		"lint:rome": {
+			"cache": false
+		},
+		"lint:eslint": {
 			"cache": false
 		},
 		"deploy": {
