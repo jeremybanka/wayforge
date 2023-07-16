@@ -7,14 +7,14 @@
 		},
 		"test:once": {
 			"dependsOn": ["build"],
-
 			"inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
 		},
 		"lint:rome": {
 			"cache": false
 		},
-		"lint:eslint": {
-			"cache": false
+		"lint:eslint": {},
+		"lint": {
+			"dependsOn": ["lint:rome", "lint:eslint"]
 		},
 		"deploy": {
 			"dependsOn": ["build", "test:once", "lint"]
