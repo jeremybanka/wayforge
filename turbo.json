@@ -13,9 +13,7 @@
 		"lint:rome": {
 			"cache": false
 		},
-		"lint:eslint": {
-			"cache": false
-		},
+		"lint:eslint": {},
 		"deploy": {
 			"dependsOn": ["build", "test:once", "lint"]
 		},
