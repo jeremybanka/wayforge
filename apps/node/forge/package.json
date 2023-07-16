@@ -7,7 +7,9 @@
 		"build": "echo zero-build app powered by tsx",
 		"test": "vitest",
 		"test:once": "cross-env CI=true vitest run",
-		"lint": "rome check ."
+		"lint:rome": "rome check .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:rome && npm run lint:eslint"
 	},
 	"dependencies": {
 		"dotenv": "16.3.1",

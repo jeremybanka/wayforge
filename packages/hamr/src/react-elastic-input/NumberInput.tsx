@@ -1,8 +1,7 @@
-import type { FC } from "react"
-import { useState, useId, useRef } from "react"
-
 import type { SerializedStyles } from "@emotion/react"
 import { pipe } from "fp-ts/function"
+import type { FC } from "react"
+import { useState, useId, useRef } from "react"
 
 import { clampInto } from "~/packages/anvl/src/number"
 
@@ -69,7 +68,7 @@ const initRefinery =
 			...DEFAULT_NUMBER_CONSTRAINTS,
 			...constraints,
 		}
-		const constrained = pipe(input ?? 0, clampInto([min, max]), (n) =>
+		const constrained = pipe(input ?? 0, clampInto(min, max), (n) =>
 			decimalPlaces ? round(n, decimalPlaces) : n,
 		)
 		return constrained

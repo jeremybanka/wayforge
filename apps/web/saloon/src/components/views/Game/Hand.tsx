@@ -1,9 +1,8 @@
-import type { FC } from "react"
-
 import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { useServerAction } from "atom.io/realtime-react"
 import { AnimatePresence } from "framer-motion"
+import type { FC } from "react"
 
 import {
 	dealCardsTX,

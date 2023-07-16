@@ -1,8 +1,7 @@
-import type { FC } from "react"
-
 import { useO } from "atom.io/react"
 import { myIdState, useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
+import type { FC } from "react"
 
 import { addHandTx, spawnClassicDeckTX } from "~/apps/node/lodge/src/store/game"
 

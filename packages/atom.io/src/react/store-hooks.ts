@@ -1,6 +1,5 @@
-import * as React from "react"
-
 import * as AtomIO from "atom.io"
+import * as React from "react"
 
 import type { Modifier } from "~/packages/anvl/src/function"
 

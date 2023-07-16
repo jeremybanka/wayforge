@@ -1,6 +1,5 @@
-import { StrictMode } from "react"
-
 import { RecoilInspector } from "@eyecuelab/recoil-devtools"
+import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { RecoilRoot } from "recoil"
 

@@ -30,6 +30,9 @@
 		"wayforge",
 		"zustand"
 	],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
 	"[typescript]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "rome.rome"
@@ -54,6 +57,5 @@
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "rome.rome"
 	},
-	"references.preferredLocation": "peek",
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"references.preferredLocation": "peek"
 }

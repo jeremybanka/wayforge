@@ -1,5 +1,4 @@
 import * as React from "react"
-
 import { Link, Outlet } from "react-router-dom"
 
 export const Lab: React.FC = () => {

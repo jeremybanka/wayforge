@@ -1,7 +1,6 @@
-import * as React from "react"
-
 import { css } from "@emotion/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
+import * as React from "react"
 import { Link, Route, Routes, Outlet } from "react-router-dom"
 
 import { useIO, useO } from "~/packages/atom.io/src/react"

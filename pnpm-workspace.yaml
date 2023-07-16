@@ -1,7 +1,8 @@
 packages:
-  - 'apps/web/*'
-  - 'apps/node/*'
-  - 'packages/*'
-  - 'packages/@banka/*'
-  - 'packages/@banka/eslint-config/react'
-  - 'lib'
+  - "apps/web/*"
+  - "apps/node/*"
+  - "packages/*"
+  - "packages/@banka/*"
+  - "packages/@banka/eslint-config/react"
+  - "packages/@banka/eslint-config/rome"
+  - "lib"

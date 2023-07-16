@@ -1,6 +1,3 @@
-import type { FC } from "react"
-import { Fragment } from "react"
-
 import type {
 	AtomToken,
 	ReadonlySelectorToken,
@@ -9,6 +6,8 @@ import type {
 } from "atom.io"
 import { getState } from "atom.io"
 import type { StoreHooks } from "atom.io/react"
+import { Fragment } from "react"
+import type { FC } from "react"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
 

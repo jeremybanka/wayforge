@@ -1,6 +1,5 @@
-import type { FC } from "react"
-
 import { css } from "@emotion/react"
+import type { FC } from "react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 

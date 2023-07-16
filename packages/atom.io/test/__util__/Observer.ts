@@ -1,6 +1,5 @@
-import * as React from "react"
-
 import type * as AtomIO from "atom.io"
+import * as React from "react"
 
 import * as ReactIO from "../../src/react"
 

@@ -22,7 +22,7 @@
 		"eslint-config-prettier": "8.8.0",
 		"eslint-plugin-import": "2.27.5",
 		"eslint-plugin-mocha": "10.1.0",
-		"eslint-plugin-prettier": "^5.0.0-alpha.2"
+		"eslint-plugin-prettier": "5.0.0"
 	},
 	"peerDependencies": {
 		"eslint": "^8.44.0",
@@ -32,9 +32,7 @@
 		"url": "https://github.com/wayforge/issues"
 	},
 	"homepage": "https://github.com/jeremybanka/wayforge",
-	"keywords": [
-		"eslint"
-	],
+	"keywords": ["eslint"],
 	"publishConfig": {
 		"access": "public"
 	}

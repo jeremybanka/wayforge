@@ -1,7 +1,6 @@
-import type { FC } from "react"
-
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
 import type { StoreHooks } from "atom.io/react"
+import type { FC } from "react"
 
 import { isPlainJson } from "~/packages/anvl/src/json"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"

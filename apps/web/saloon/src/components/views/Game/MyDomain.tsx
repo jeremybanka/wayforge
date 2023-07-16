@@ -1,6 +1,5 @@
-import * as React from "react"
-
 import { useO } from "atom.io/react"
+import * as React from "react"
 
 import { Hand } from "./Hand"
 import { myHandsIndex } from "./store/my-hands-index"

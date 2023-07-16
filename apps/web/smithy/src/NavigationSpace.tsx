@@ -1,7 +1,6 @@
+import type { SerializedStyles } from "@emotion/react"
 import type { FC } from "react"
 import { useEffect } from "react"
-
-import type { SerializedStyles } from "@emotion/react"
 import {
 	Link,
 	MemoryRouter,

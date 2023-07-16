@@ -1,7 +1,7 @@
 import type { Modifier } from "../function"
 
 export const wrapInto =
-	([min, max]: [number, number]): Modifier<number> =>
+	(min: number, max: number): Modifier<number> =>
 	(value) =>
 		value < min
 			? max - ((min - value) % (max - min))

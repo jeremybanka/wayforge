@@ -1,10 +1,9 @@
+import { css } from "@emotion/react"
 import { useId } from "react"
 import type { FC } from "react"
-
-import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil"
 
-import { Luum } from "~/packages/Luum/src"
+import { Luum } from "~/packages/luum/src"
 
 import { SVG_EnergyIcon } from "./EnergyIcon"
 import { findEnergyState } from "../../services/energy"

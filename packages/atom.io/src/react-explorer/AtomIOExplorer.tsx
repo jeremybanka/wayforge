@@ -1,7 +1,6 @@
+import type { StoreHooks } from "atom.io/react"
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
-
-import type { StoreHooks } from "atom.io/react"
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
 import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
