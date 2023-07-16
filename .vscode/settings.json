@@ -30,9 +30,9 @@
 		"wayforge",
 		"zustand"
 	],
-	 "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
 	"[typescript]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "rome.rome"
