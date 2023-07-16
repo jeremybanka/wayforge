@@ -1,4 +1,3 @@
-
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
 import type { StoreHooks } from "atom.io/react"
 import type { FC } from "react"

@@ -1,7 +1,6 @@
 import * as AtomIO from "atom.io"
 import * as React from "react"
 
-
 export const StoreContext = React.createContext<AtomIO.Store>(
 	AtomIO.__INTERNAL__.IMPLICIT.STORE,
 )

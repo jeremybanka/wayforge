@@ -1,7 +1,6 @@
 import { useO } from "atom.io/react"
 import * as React from "react"
 
-
 import { Deck } from "./Deck"
 import { publicDeckIndex } from "./store/public-deck-index"
 

@@ -1,4 +1,3 @@
-
 import * as AtomIO from "atom.io"
 import { StoreContext } from "atom.io/react"
 import * as React from "react"

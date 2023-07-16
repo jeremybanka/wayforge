@@ -3,7 +3,6 @@ import { useO } from "atom.io/react"
 import type { FC } from "react"
 import { useState } from "react"
 
-
 import { myIdState } from "~/packages/atom.io/src/realtime-react"
 
 import { myRoomState } from "./views/Game/store/my-room"

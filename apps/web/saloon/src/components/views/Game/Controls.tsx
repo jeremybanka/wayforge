@@ -1,4 +1,3 @@
-
 import { useO } from "atom.io/react"
 import { myIdState, useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"

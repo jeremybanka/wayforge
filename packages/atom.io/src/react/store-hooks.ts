@@ -1,7 +1,6 @@
 import * as AtomIO from "atom.io"
 import * as React from "react"
 
-
 import type { Modifier } from "~/packages/anvl/src/function"
 
 import { StoreContext } from "./store-context"
