@@ -6,13 +6,13 @@ import { become } from "~/packages/anvl/src/function"
 import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
 import type { Json, JsonObj, JsonTypeName } from "~/packages/anvl/src/json"
 import { cast } from "~/packages/anvl/src/json/cast"
-import mapObject from "~/packages/luum.js/src/utils/mapObject"
+import { mapObject } from "~/packages/anvl/src/object"
 
 export const makePropertySetters = <T extends JsonObj>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
-	mapObject<T, any, SetterOrUpdater<any>>(
+	mapObject<keyof T, any, SetterOrUpdater<any>>(
 		data,
 		(value, key) => (newValue) =>
 			set({ ...data, [key]: become(newValue)(value[key]) }),
@@ -23,7 +23,7 @@ export const makePropertyRenamers = <T extends JsonObj>(
 	set: SetterOrUpdater<T>,
 	stableKeyMapRef: MutableRefObject<{ [K in keyof T]: keyof T }>,
 ): { [K in keyof T]: (newKey: string) => void } =>
-	mapObject<T, any, (newKey: string) => void>(
+	mapObject<keyof T, any, (newKey: string) => void>(
 		data,
 		(value, key) => (newKey) =>
 			Object.hasOwn(data, newKey)
@@ -45,7 +45,7 @@ export const makePropertyRemovers = <T extends JsonObj>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: () => void } =>
-	mapObject<T, any, () => void>(
+	mapObject<keyof T, any, () => void>(
 		data,
 		(_, key) => () =>
 			set(() => {
@@ -58,7 +58,7 @@ export const makePropertyRecasters = <T extends JsonObj>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: (newType: JsonTypeName) => void } =>
-	mapObject<T, any, (newType: JsonTypeName) => void>(
+	mapObject<keyof T, any, (newType: JsonTypeName) => void>(
 		data,
 		(value, key) => (newType) =>
 			set(() => ({

@@ -69,7 +69,7 @@ const initRefinery =
 			...DEFAULT_NUMBER_CONSTRAINTS,
 			...constraints,
 		}
-		const constrained = pipe(input ?? 0, clampInto([min, max]), (n) =>
+		const constrained = pipe(input ?? 0, clampInto(min, max), (n) =>
 			decimalPlaces ? round(n, decimalPlaces) : n,
 		)
 		return constrained
