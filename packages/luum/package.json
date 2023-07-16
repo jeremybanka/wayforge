@@ -1,0 +1,41 @@
+{
+	"name": "luum",
+	"version": "0.0.12",
+	"description": "generate colors dynamically",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"dev": "cd example && vite",
+		"lint": "rome check .",
+		"test": "vitest",
+		"test:once": "vitest run"
+	},
+	"dependencies": {
+		"fp-ts": "2.16.0"
+	},
+	"devDependencies": {
+		"@types/node": "18.16.19",
+		"eslint": "8.45.0",
+		"tsup": "7.1.0",
+		"typescript": "5.1.6",
+		"vite": "4.4.4",
+		"vite-tsconfig-paths": "4.2.0",
+		"vitest": "0.33.0"
+	},
+	"keywords": [
+		"color",
+		"css",
+		"javascript",
+		"library"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"license": "MIT",
+	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	}
+}
