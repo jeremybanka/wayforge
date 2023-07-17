@@ -1,5 +1,5 @@
+import * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
-import * as Rx from "rxjs"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 

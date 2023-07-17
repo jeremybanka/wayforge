@@ -1,5 +1,5 @@
+import * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
-import * as Rx from "rxjs"
 
 import { deposit } from "./get"
 import { markAtomAsDefault } from "./is-default"

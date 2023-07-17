@@ -1,6 +1,6 @@
+import * as Rx from "atom.io/internal/subject"
 import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
-import * as Rx from "rxjs"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 import { doNothing } from "~/packages/anvl/src/function"

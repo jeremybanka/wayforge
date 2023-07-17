@@ -1,4 +1,4 @@
-import type * as Rx from "rxjs"
+import type * as Rx from "atom.io/internal/subject"
 
 import type { Serializable } from "~/packages/anvl/src/json"
 

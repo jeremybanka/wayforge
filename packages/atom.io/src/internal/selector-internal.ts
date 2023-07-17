@@ -1,5 +1,5 @@
+import type * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
-import type * as Rx from "rxjs"
 
 import type { Store } from "."
 import { target, IMPLICIT } from "."
