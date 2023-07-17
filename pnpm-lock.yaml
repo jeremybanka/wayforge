@@ -551,9 +551,6 @@ importers:
 
   packages/atom.io:
     dependencies:
-      fp-ts:
-        specifier: 2.16.0
-        version: 2.16.0
       preact:
         specifier: '>=10.0.0'
         version: 10.0.0
