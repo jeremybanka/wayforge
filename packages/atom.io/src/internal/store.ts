@@ -1,4 +1,3 @@
-import * as Rx from "atom.io/internal/subject"
 import type { Hamt } from "hamt_plus"
 import HAMT from "hamt_plus"
 
@@ -6,6 +5,7 @@ import type { ƒn } from "~/packages/anvl/src/function"
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 
+import { Subject } from "."
 import type {
 	Atom,
 	OperationProgress,
@@ -52,12 +52,12 @@ export interface Store {
 	valueMap: Hamt<any, string>
 
 	subject: {
-		atomCreation: Rx.Subject<AtomToken<unknown>>
-		selectorCreation: Rx.Subject<
+		atomCreation: Subject<AtomToken<unknown>>
+		selectorCreation: Subject<
 			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 		>
-		transactionCreation: Rx.Subject<TransactionToken<unknown>>
-		timelineCreation: Rx.Subject<TimelineToken>
+		transactionCreation: Subject<TransactionToken<unknown>>
+		timelineCreation: Subject<TimelineToken>
 	}
 
 	operation: OperationProgress
@@ -92,10 +92,10 @@ export const createStore = (name: string, store: Store | null = null): Store => 
 			.to(`atomKey`),
 
 		subject: {
-			atomCreation: new Rx.Subject(),
-			selectorCreation: new Rx.Subject(),
-			transactionCreation: new Rx.Subject(),
-			timelineCreation: new Rx.Subject(),
+			atomCreation: new Subject(),
+			selectorCreation: new Subject(),
+			transactionCreation: new Subject(),
+			timelineCreation: new Subject(),
 			...store?.subject,
 		},
 
@@ -120,7 +120,7 @@ export const createStore = (name: string, store: Store | null = null): Store => 
 	} satisfies Store
 
 	store?.atoms.forEach((atom) => {
-		const copiedAtom = { ...atom, subject: new Rx.Subject() } satisfies Atom<any>
+		const copiedAtom = { ...atom, subject: new Subject() } satisfies Atom<any>
 		copiedStore.atoms = HAMT.set(atom.key, copiedAtom, copiedStore.atoms)
 	})
 	store?.readonlySelectors.forEach((selector) => {

@@ -1,8 +1,7 @@
-import type * as Rx from "atom.io/internal/subject"
-
 import type { Serializable } from "~/packages/anvl/src/json"
 
 import type { AtomToken } from "."
+import type { Subject } from "./internal"
 import { atomFamily__INTERNAL, atom__INTERNAL } from "./internal"
 
 export type Effectors<T> = {
@@ -33,7 +32,7 @@ export type AtomFamily<T, K extends Serializable = Serializable> = ((
 ) => AtomToken<T>) & {
 	key: string
 	type: `atom_family`
-	subject: Rx.Subject<AtomToken<T>>
+	subject: Subject<AtomToken<T>>
 }
 
 export function atomFamily<T, K extends Serializable>(

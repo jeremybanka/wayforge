@@ -1,10 +1,10 @@
-import * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store, StoreCore } from "."
 import {
+	Subject,
 	abortTransaction,
 	applyTransaction,
 	buildTransaction,
@@ -18,7 +18,7 @@ export type Transaction<ƒ extends ƒn> = {
 	key: string
 	type: `transaction`
 	install: (store: Store) => void
-	subject: Rx.Subject<TransactionUpdate<ƒ>>
+	subject: Subject<TransactionUpdate<ƒ>>
 	run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
 }
 
@@ -48,7 +48,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 			}
 		},
 		install: (store) => transaction__INTERNAL(options, store),
-		subject: new Rx.Subject(),
+		subject: new Subject(),
 	}
 	const core = target(store)
 	core.transactions = HAMT.set(

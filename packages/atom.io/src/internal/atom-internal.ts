@@ -1,6 +1,6 @@
-import * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
 
+import { Subject } from "."
 import { deposit } from "./get"
 import { markAtomAsDefault } from "./is-default"
 import { cacheValue, hasKeyBeenUsed } from "./operation"
@@ -15,7 +15,7 @@ export type Atom<T> = {
 	key: string
 	type: `atom`
 	family?: FamilyMetadata
-	subject: Rx.Subject<{ newValue: T; oldValue: T }>
+	subject: Subject<{ newValue: T; oldValue: T }>
 	default: T
 }
 
@@ -31,7 +31,7 @@ export function atom__INTERNAL<T>(
 		)
 		return deposit(core.atoms.get(options.key))
 	}
-	const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
+	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const newAtom = {
 		...options,
 		subject,

@@ -1,10 +1,9 @@
-import * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store } from "."
-import { target, IMPLICIT } from "."
+import { Subject, target, IMPLICIT } from "."
 import { addAtomToTimeline } from "./timeline/add-atom-to-timeline"
 import type {
 	StateUpdate,
@@ -39,7 +38,7 @@ export type Timeline = {
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: Store) => void
-	subject: Rx.Subject<
+	subject: Subject<
 		TimelineAtomUpdate | TimelineSelectorUpdate | TimelineTransactionUpdate
 	>
 }
@@ -58,7 +57,7 @@ export function timeline__INTERNAL(
 		...data,
 		history: data?.history.map((update) => ({ ...update })) ?? [],
 		install: (store) => timeline__INTERNAL(options, store, tl),
-		subject: new Rx.Subject(),
+		subject: new Subject(),
 	}
 
 	const core = target(store)

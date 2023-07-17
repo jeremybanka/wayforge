@@ -1,8 +1,8 @@
-import * as Rx from "atom.io/internal/subject"
 import HAMT from "hamt_plus"
 
 import { become } from "~/packages/anvl/src/function"
 
+import { Subject } from ".."
 import {
 	type Store,
 	type Selector,
@@ -20,7 +20,7 @@ export const createReadWriteSelector = <T>(
 	store: Store,
 	core: StoreCore,
 ): SelectorToken<T> => {
-	const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
+	const subject = new Subject<{ newValue: T; oldValue: T }>()
 
 	const { get, set } = registerSelector(options.key, store)
 	const getSelf = () => {

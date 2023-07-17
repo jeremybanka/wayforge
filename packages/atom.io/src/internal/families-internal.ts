@@ -1,10 +1,9 @@
-import * as Rx from "atom.io/internal/subject"
-
 import type { Serializable } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
 import type { Store } from "."
 import {
+	Subject,
 	atom__INTERNAL,
 	withdraw,
 	selector__INTERNAL,
@@ -29,7 +28,7 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
 	options: AtomFamilyOptions<T, K>,
 	store: Store = IMPLICIT.STORE,
 ): AtomFamily<T, K> {
-	const subject = new Rx.Subject<AtomToken<T>>()
+	const subject = new Subject<AtomToken<T>>()
 	return Object.assign(
 		(key: K): AtomToken<T> => {
 			const subKey = stringifyJson(key)
@@ -66,7 +65,7 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
 	store?: Store,
 ): ReadonlySelectorFamily<T, K> {
 	const core = target(store)
-	const subject = new Rx.Subject<ReadonlySelectorToken<T>>()
+	const subject = new Subject<ReadonlySelectorToken<T>>()
 	return Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
 			const subKey = stringifyJson(key)
@@ -111,7 +110,7 @@ export function selectorFamily__INTERNAL<T, K extends Serializable>(
 		return readonlySelectorFamily__INTERNAL(options, store)
 	}
 	const core = target(store)
-	const subject = new Rx.Subject<SelectorToken<T>>()
+	const subject = new Subject<SelectorToken<T>>()
 
 	return Object.assign(
 		(key: K): SelectorToken<T> => {
