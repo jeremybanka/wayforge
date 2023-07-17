@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import { Subject } from "."
 import { deposit } from "./get"
 import { markAtomAsDefault } from "./is-default"
@@ -29,7 +27,7 @@ export function atom__INTERNAL<T>(
 		store.config.logger?.error?.(
 			`Key "${options.key}" already exists in the store.`,
 		)
-		return deposit(core.atoms.get(options.key))
+		return deposit(core.atoms[options.key])
 	}
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const newAtom = {
@@ -40,7 +38,7 @@ export function atom__INTERNAL<T>(
 	} as const
 	const initialValue =
 		options.default instanceof Function ? options.default() : options.default
-	core.atoms = HAMT.set(newAtom.key, newAtom, core.atoms)
+	core.atoms[newAtom.key] = newAtom
 	markAtomAsDefault(options.key, store)
 	cacheValue(options.key, initialValue, store)
 	const token = deposit(newAtom)

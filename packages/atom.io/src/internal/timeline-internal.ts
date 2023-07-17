@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store } from "."
@@ -95,7 +93,7 @@ export function timeline__INTERNAL(
 		})
 	}
 
-	store.timelines = HAMT.set(options.key, tl, store.timelines)
+	store.timelines[options.key] = tl
 	const token: TimelineToken = {
 		key: options.key,
 		type: `timeline`,

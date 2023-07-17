@@ -83,9 +83,9 @@ describe(`graceful handling of improper usage`, () => {
 			})
 			setState(countState, 1)
 			const countTimeline0Data =
-				__INTERNAL__.IMPLICIT.STORE.timelines.get(`count_history`)
+				__INTERNAL__.IMPLICIT.STORE.timelines[`count_history`]
 			const countTimeline1Data =
-				__INTERNAL__.IMPLICIT.STORE.timelines.get(`count_history_too`)
+				__INTERNAL__.IMPLICIT.STORE.timelines[`count_history_too`]
 
 			expect(logger.error).toHaveBeenCalledWith(
 				`❌ Failed to add atom "count" to timeline "count_history_too" because it belongs to timeline "count_history"`,
@@ -109,12 +109,10 @@ describe(`graceful handling of improper usage`, () => {
 			})
 			setState(aCount, 1)
 
-			const countTimelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
-				countTimeline.key,
-			)
-			const aCountTimelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
-				aCountTimeline.key,
-			)
+			const countTimelineData =
+				__INTERNAL__.IMPLICIT.STORE.timelines[countTimeline.key]
+			const aCountTimelineData =
+				__INTERNAL__.IMPLICIT.STORE.timelines[aCountTimeline.key]
 			expect(logger.error).toHaveBeenCalledWith(
 				`❌ Failed to add atom "counts("a")" to timeline "a_count_history" because its family "counts" belongs to timeline "counts_history"`,
 			)

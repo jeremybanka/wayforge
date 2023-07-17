@@ -1,9 +1,7 @@
-import type { Hamt } from "hamt_plus"
-import HAMT from "hamt_plus"
-
 import type { ƒn } from "~/packages/anvl/src/function"
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
+import { mapObject, recordToEntries } from "~/packages/anvl/src/object"
 
 import { Subject } from "."
 import type {
@@ -40,16 +38,16 @@ export type StoreCore = Pick<
 >
 
 export interface Store {
-	atoms: Hamt<Atom<any>, string>
+	atoms: Record<string, Atom<any>>
 	atomsThatAreDefault: Set<string>
-	readonlySelectors: Hamt<ReadonlySelector<any>, string>
+	readonlySelectors: Record<string, ReadonlySelector<any>>
 	selectorAtoms: Join<null, `selectorKey`, `atomKey`>
 	selectorGraph: Join<{ source: string }>
-	selectors: Hamt<Selector<any>, string>
+	selectors: Record<string, Selector<any>>
 	timelineAtoms: Join<null, `timelineKey`, `atomKey`>
-	timelines: Hamt<Timeline, string>
-	transactions: Hamt<Transaction<any>, string>
-	valueMap: Hamt<any, string>
+	timelines: Record<string, Timeline>
+	transactions: Record<string, Transaction<any>>
+	valueMap: Record<string, any>
 
 	subject: {
 		atomCreation: Subject<AtomToken<unknown>>
@@ -78,14 +76,19 @@ export const createStore = (name: string, store: Store | null = null): Store => 
 					.from(`selectorKey`)
 					.to(`atomKey`),
 				selectorGraph: new Join({ relationType: `n:n` }),
-				valueMap: HAMT.make<any, string>(),
+				valueMap: {},
 			}))()),
 
-		atoms: HAMT.make<Atom<any>, string>(),
-		readonlySelectors: HAMT.make<ReadonlySelector<any>, string>(),
-		selectors: HAMT.make<Selector<any>, string>(),
-		transactions: HAMT.make<Transaction<any>, string>(),
-		timelines: HAMT.make<Timeline, string>(),
+		valueMap: { ...store?.valueMap },
+
+		atoms: mapObject(store?.atoms ?? {}, (atom) => ({
+			...atom,
+			subject: new Subject(),
+		})),
+		readonlySelectors: {},
+		selectors: {},
+		transactions: {},
+		timelines: {},
 
 		timelineAtoms: new Join({ relationType: `1:n` })
 			.from(`timelineKey`)
@@ -119,20 +122,16 @@ export const createStore = (name: string, store: Store | null = null): Store => 
 		},
 	} satisfies Store
 
-	store?.atoms.forEach((atom) => {
-		const copiedAtom = { ...atom, subject: new Subject() } satisfies Atom<any>
-		copiedStore.atoms = HAMT.set(atom.key, copiedAtom, copiedStore.atoms)
-	})
-	store?.readonlySelectors.forEach((selector) => {
+	recordToEntries(store?.readonlySelectors ?? {}).forEach(([_, selector]) => {
 		selector.install(copiedStore)
 	})
-	store?.selectors.forEach((selector) => {
+	recordToEntries(store?.selectors ?? {}).forEach(([_, selector]) => {
 		selector.install(copiedStore)
 	})
-	store?.transactions.forEach((tx) => {
-		tx.install(copiedStore)
+	recordToEntries(store?.transactions ?? {}).forEach(([_, transaction]) => {
+		transaction.install(copiedStore)
 	})
-	store?.timelines.forEach((timeline) => {
+	recordToEntries(store?.timelines ?? {}).forEach(([_, timeline]) => {
 		timeline.install(copiedStore)
 	})
 

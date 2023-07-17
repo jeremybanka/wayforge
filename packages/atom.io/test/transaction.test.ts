@@ -202,12 +202,12 @@ describe(`transaction`, () => {
 
 		expect(getState(count1State)).toEqual(3)
 		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector data:`, {
-			oldValue: 4,
 			newValue: 5,
+			oldValue: 4,
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector data:`, {
-			oldValue: 5,
 			newValue: 6,
+			oldValue: 5,
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith(`Transaction data:`, {
 			key: `setAllCounts`,
@@ -216,14 +216,14 @@ describe(`transaction`, () => {
 			atomUpdates: [
 				{
 					key: `count1`,
-					oldValue: 2,
 					newValue: 3,
+					oldValue: 2,
 				},
 
 				{
 					key: `count2`,
-					oldValue: 2,
 					newValue: 3,
+					oldValue: 2,
 				},
 			],
 		})

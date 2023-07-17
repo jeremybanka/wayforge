@@ -1,6 +1,3 @@
-import type { Hamt } from "hamt_plus"
-import HAMT from "hamt_plus"
-
 import type { Atom, ReadonlySelector, Selector } from "."
 import { target } from "."
 import type { Store } from "./store"
@@ -14,7 +11,7 @@ export type OperationProgress =
 	| {
 			open: true
 			done: Set<string>
-			prev: Hamt<any, string>
+			prev: Record<string, any>
 			time: number
 			token: StateToken<any>
 	  }
@@ -30,7 +27,7 @@ export const openOperation = (token: StateToken<any>, store: Store): void => {
 	core.operation = {
 		open: true,
 		done: new Set(),
-		prev: store.valueMap,
+		prev: { ...store.valueMap },
 		time: Date.now(),
 		token,
 	}
@@ -73,9 +70,9 @@ export const recallState = <T>(
 		store.config.logger?.warn(
 			`recall called outside of an operation. This is probably a bug.`,
 		)
-		return HAMT.get(state.key, core.valueMap)
+		return core.valueMap[state.key]
 	}
-	return HAMT.get(state.key, core.operation.prev)
+	return core.operation.prev[state.key]
 }
 
 export const cacheValue = (
@@ -84,7 +81,7 @@ export const cacheValue = (
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const core = target(store)
-	core.valueMap = HAMT.set(key, value, core.valueMap)
+	core.valueMap[key] = value
 }
 
 export const evictCachedValue = (
@@ -92,24 +89,24 @@ export const evictCachedValue = (
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const core = target(store)
-	core.valueMap = HAMT.remove(key, core.valueMap)
+	delete core.valueMap[key]
 }
 export const readCachedValue = <T>(
 	key: string,
 	store: Store = IMPLICIT.STORE,
-): T => HAMT.get(key, target(store).valueMap)
+): T => target(store).valueMap[key]
 
 export const isValueCached = (
 	key: string,
 	store: Store = IMPLICIT.STORE,
-): boolean => HAMT.has(key, target(store).valueMap)
+): boolean => key in target(store).valueMap
 
 export const storeAtom = (
 	atom: Atom<any>,
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const core = target(store)
-	core.atoms = HAMT.set(atom.key, atom, core.atoms)
+	core.atoms[atom.key] = atom
 }
 
 export const storeSelector = (
@@ -117,7 +114,7 @@ export const storeSelector = (
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const core = target(store)
-	core.selectors = HAMT.set(selector.key, selector, core.selectors)
+	core.selectors[selector.key] = selector
 }
 
 export const storeReadonlySelector = (
@@ -125,11 +122,7 @@ export const storeReadonlySelector = (
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const core = target(store)
-	core.readonlySelectors = HAMT.set(
-		selector.key,
-		selector,
-		core.readonlySelectors,
-	)
+	core.readonlySelectors[selector.key] = selector
 }
 
 export const hasKeyBeenUsed = (
@@ -138,8 +131,6 @@ export const hasKeyBeenUsed = (
 ): boolean => {
 	const core = target(store)
 	return (
-		HAMT.has(key, core.atoms) ||
-		HAMT.has(key, core.selectors) ||
-		HAMT.has(key, core.readonlySelectors)
+		key in core.atoms || key in core.selectors || key in core.readonlySelectors
 	)
 }

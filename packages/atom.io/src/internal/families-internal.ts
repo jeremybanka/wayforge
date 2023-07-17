@@ -71,7 +71,7 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = core.readonlySelectors.get(fullKey)
+			const existing = core.readonlySelectors[fullKey]
 			if (existing) {
 				return deposit(existing)
 			}
@@ -117,7 +117,7 @@ export function selectorFamily__INTERNAL<T, K extends Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = core.selectors.get(fullKey)
+			const existing = core.selectors[fullKey]
 			if (existing) {
 				return deposit(existing)
 			}

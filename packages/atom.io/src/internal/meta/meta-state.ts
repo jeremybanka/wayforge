@@ -1,3 +1,5 @@
+import { recordToEntries } from "~/packages/anvl/src/object"
+
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "../.."
 import { selector, atom } from "../.."
 import type { Store } from "../store"
@@ -28,7 +30,7 @@ export const attachMetaAtoms = (
 	const atomTokenIndexState__INTERNAL = atom<AtomTokenIndex>({
 		key: `👁‍🗨_atom_token_index__INTERNAL`,
 		default: () =>
-			[...store.atoms].reduce<AtomTokenIndex>((acc, [key]) => {
+			recordToEntries(store.atoms).reduce<AtomTokenIndex>((acc, [key]) => {
 				acc[key] = { key, type: `atom` }
 				return acc
 			}, {}),
@@ -82,14 +84,20 @@ export const attachMetaSelectors = (
 		key: `👁‍🗨_selector_token_index__INTERNAL`,
 		default: () =>
 			Object.assign(
-				[...store.readonlySelectors].reduce<SelectorTokenIndex>((acc, [key]) => {
-					acc[key] = { key, type: `readonly_selector` }
-					return acc
-				}, {}),
-				[...store.selectors].reduce<SelectorTokenIndex>((acc, [key]) => {
-					acc[key] = { key, type: `selector` }
-					return acc
-				}, {}),
+				recordToEntries(store.readonlySelectors).reduce<SelectorTokenIndex>(
+					(acc, [key]) => {
+						acc[key] = { key, type: `readonly_selector` }
+						return acc
+					},
+					{},
+				),
+				recordToEntries(store.selectors).reduce<SelectorTokenIndex>(
+					(acc, [key]) => {
+						acc[key] = { key, type: `selector` }
+						return acc
+					},
+					{},
+				),
 			),
 		effects: [
 			({ setSelf }) => {

@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import { target, IMPLICIT } from "."
 import type { Store, Subject } from "."
 import { createReadWriteSelector } from "./selector/create-read-write-selector"
@@ -47,7 +45,7 @@ export function selector__INTERNAL<T>(
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
 	const core = target(store)
 
-	if (HAMT.has(options.key, core.selectors)) {
+	if (options.key in core.selectors) {
 		store.config.logger?.error(
 			`Key "${options.key}" already exists in the store.`,
 		)
