@@ -1,8 +1,7 @@
-import type * as Rx from "rxjs"
-
 import type { Serializable } from "~/packages/anvl/src/json"
 
 import type { ReadonlySelectorToken, SelectorToken } from "."
+import type { Subject } from "./internal"
 import { selectorFamily__INTERNAL, selector__INTERNAL } from "./internal"
 import type { Read, Write } from "./transaction"
 
@@ -41,7 +40,7 @@ export type SelectorFamily<T, K extends Serializable = Serializable> = ((
 ) => SelectorToken<T>) & {
 	key: string
 	type: `selector_family`
-	subject: Rx.Subject<SelectorToken<T>>
+	subject: Subject<SelectorToken<T>>
 }
 
 export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = ((
@@ -49,7 +48,7 @@ export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = (
 ) => ReadonlySelectorToken<T>) & {
 	key: string
 	type: `readonly_selector_family`
-	subject: Rx.Subject<ReadonlySelectorToken<T>>
+	subject: Subject<ReadonlySelectorToken<T>>
 }
 
 export function selectorFamily<T, K extends Serializable>(
