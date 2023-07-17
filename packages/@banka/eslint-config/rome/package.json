@@ -1,6 +1,6 @@
 {
 	"name": "@banka/eslint-config-rome",
-	"version": "2.0.0",
+	"version": "1.0.0",
 	"description": "isn't it fun to run three linters at once??",
 	"main": "index.js",
 	"scripts": {
