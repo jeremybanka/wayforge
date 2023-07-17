@@ -560,9 +560,6 @@ importers:
       preact:
         specifier: '>=10.0.0'
         version: 10.0.0
-      rxjs:
-        specifier: 7.8.1
-        version: 7.8.1
     devDependencies:
       '@emotion/react':
         specifier: 11.11.1

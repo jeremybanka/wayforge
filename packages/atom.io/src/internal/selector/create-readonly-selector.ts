@@ -1,7 +1,7 @@
 import HAMT from "hamt_plus"
-import * as Rx from "rxjs"
 
 import { registerSelector } from "./register-selector"
+import { Subject } from ".."
 import type {
 	FamilyMetadata,
 	ReadonlySelectorOptions,
@@ -18,7 +18,7 @@ export const createReadonlySelector = <T>(
 	store: Store,
 	core: StoreCore,
 ): ReadonlySelectorToken<T> => {
-	const subject = new Rx.Subject<{ newValue: T; oldValue: T }>()
+	const subject = new Subject<{ newValue: T; oldValue: T }>()
 
 	const { get } = registerSelector(options.key, store)
 	const getSelf = () => {

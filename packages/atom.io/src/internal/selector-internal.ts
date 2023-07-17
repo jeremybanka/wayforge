@@ -1,8 +1,7 @@
 import HAMT from "hamt_plus"
-import type * as Rx from "rxjs"
 
-import type { Store } from "."
 import { target, IMPLICIT } from "."
+import type { Store, Subject } from "."
 import { createReadWriteSelector } from "./selector/create-read-write-selector"
 import { createReadonlySelector } from "./selector/create-readonly-selector"
 import type {
@@ -18,7 +17,7 @@ export type Selector<T> = {
 	type: `selector`
 	family?: FamilyMetadata
 	install: (store: Store) => void
-	subject: Rx.Subject<{ newValue: T; oldValue: T }>
+	subject: Subject<{ newValue: T; oldValue: T }>
 	get: () => T
 	set: (newValue: T | ((oldValue: T) => T)) => void
 }
@@ -27,7 +26,7 @@ export type ReadonlySelector<T> = {
 	type: `readonly_selector`
 	family?: FamilyMetadata
 	install: (store: Store) => void
-	subject: Rx.Subject<{ newValue: T; oldValue: T }>
+	subject: Subject<{ newValue: T; oldValue: T }>
 	get: () => T
 }
 
