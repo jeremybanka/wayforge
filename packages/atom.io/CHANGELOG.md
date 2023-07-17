@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.6.4
+
+### Patch Changes
+
+- eba68841: ➖ `rxjs` dropping this dependency since the only purpose was IO with the Subject class. This can be accomplished much more simply.
+
 ## 0.6.3
 
 ### Patch Changes
