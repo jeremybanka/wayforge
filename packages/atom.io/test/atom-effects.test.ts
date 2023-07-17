@@ -1,10 +1,4 @@
-import {
-	readFileSync,
-	writeFileSync,
-	readFile,
-	writeFile,
-	readdirSync,
-} from "fs"
+import { readFileSync, writeFileSync, readFile, writeFile } from "fs"
 
 import tmp from "tmp"
 import { vitest } from "vitest"
