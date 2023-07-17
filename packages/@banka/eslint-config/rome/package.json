@@ -3,6 +3,7 @@
 	"version": "2.0.0",
 	"description": "isn't it fun to run three linters at once??",
 	"main": "index.js",
+	"files": ["index.js"],
 	"scripts": {
 		"build": "esbuild .eslintrc.js --bundle --platform=node --outfile=index.js"
 	},
@@ -22,9 +23,7 @@
 	"devDependencies": {
 		"esbuild": "0.18.13"
 	},
-	"keywords": [
-		"eslint"
-	],
+	"keywords": ["eslint"],
 	"author": "jeremybanka",
 	"license": "MIT",
 	"publishConfig": {
