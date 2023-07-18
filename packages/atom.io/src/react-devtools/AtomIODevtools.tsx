@@ -14,9 +14,17 @@ import "./devtools.scss"
 const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
 
 const devtoolsAreOpenState = atom<boolean>({
-	key: `👁‍🗨_devtools_are_open`,
+	key: `👁‍🗨 Devtools Are Open`,
 	default: true,
-	effects: [lazyLocalStorageEffect(`👁‍🗨_devtools_are_open`)],
+	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools Are Open`)],
+})
+
+type DevtoolsView = `atoms` | `selectors` | `transactions`
+
+const devtoolsViewState = atom<DevtoolsView>({
+	key: `👁‍🗨 Devtools View`,
+	default: `atoms`,
+	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View`)],
 })
 
 export const composeDevtools = (storeHooks: StoreHooks): FC => {
@@ -25,6 +33,7 @@ export const composeDevtools = (storeHooks: StoreHooks): FC => {
 
 		const [devtoolsAreOpen, setDevtoolsAreOpen] =
 			storeHooks.useIO(devtoolsAreOpenState)
+		const [devtoolsView, setDevtoolsView] = storeHooks.useIO(devtoolsViewState)
 
 		const mouseHasMoved = useRef(false)
 
@@ -65,20 +74,19 @@ export const composeDevtools = (storeHooks: StoreHooks): FC => {
 							</motion.header>
 							<motion.main>
 								<LayoutGroup>
-									<section>
-										<h2>atoms</h2>
+									{devtoolsView === `atoms` ? (
 										<TokenList
+											groupTitle="atoms"
 											storeHooks={storeHooks}
 											tokenIndex={atomTokenIndexState}
 										/>
-									</section>
-									<section>
-										<h2>selectors</h2>
+									) : devtoolsView === `selectors` ? (
 										<TokenList
+											groupTitle="selectors"
 											storeHooks={storeHooks}
 											tokenIndex={selectorTokenIndexState}
 										/>
-									</section>
+									) : devtoolsView === `transactions` ? null : null}
 								</LayoutGroup>
 							</motion.main>
 						</>

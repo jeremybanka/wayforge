@@ -26,7 +26,7 @@ export const attachMetaAtoms = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<AtomTokenIndex> => {
 	const atomTokenIndexState__INTERNAL = atom<AtomTokenIndex>({
-		key: `👁‍🗨_atom_token_index__INTERNAL`,
+		key: `👁‍🗨 Atom Token Index (Internal)`,
 		default: () =>
 			[...store.atoms].reduce<AtomTokenIndex>((acc, [key]) => {
 				acc[key] = { key, type: `atom` }
@@ -70,7 +70,7 @@ export const attachMetaAtoms = (
 		],
 	})
 	return selector({
-		key: `👁‍🗨_atom_token_index`,
+		key: `👁‍🗨 Atom Token Index`,
 		get: ({ get }) => get(atomTokenIndexState__INTERNAL),
 	})
 }
@@ -79,7 +79,7 @@ export const attachMetaSelectors = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<SelectorTokenIndex> => {
 	const readonlySelectorTokenIndexState__INTERNAL = atom<SelectorTokenIndex>({
-		key: `👁‍🗨_selector_token_index__INTERNAL`,
+		key: `👁‍🗨 Selector Token Index (Internal)`,
 		default: () =>
 			Object.assign(
 				[...store.readonlySelectors].reduce<SelectorTokenIndex>((acc, [key]) => {
@@ -129,7 +129,7 @@ export const attachMetaSelectors = (
 		],
 	})
 	return selector({
-		key: `👁‍🗨_selector_token_index`,
+		key: `👁‍🗨 Selector Token Index`,
 		get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
 	})
 }
