@@ -1,5 +1,3 @@
-import { isNumber } from "fp-ts/lib/number"
-
 import { Join } from "~/packages/anvl/src/join"
 import { parseJson, stringifyJson } from "~/packages/anvl/src/json"
 import { hasExactProperties } from "~/packages/anvl/src/object"
@@ -31,7 +29,9 @@ export const makeSpaceLayoutState = (
 					try {
 						const json = parseJson(string)
 						const join = Join.fromJSON(json, {
-							isContent: hasExactProperties({ size: isNumber }),
+							isContent: hasExactProperties({
+								size: (v): v is number => typeof v === `number`,
+							}),
 							from: `parent`,
 							to: `child`,
 						})
