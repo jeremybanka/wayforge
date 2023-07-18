@@ -1,5 +1,3 @@
-import { isString } from "fp-ts/lib/string"
-
 import { isArray } from "~/packages/anvl/src/array"
 import { parseJson, stringifyJson } from "~/packages/anvl/src/json"
 
@@ -10,7 +8,9 @@ export const persistStringSetAtom = persistAtom<Set<string>>(localStorage)({
 	parse: (string) => {
 		try {
 			const json = parseJson(string)
-			const array = isArray(isString)(json) ? json : []
+			const array = isArray((v): v is string => typeof v === `string`)(json)
+				? json
+				: []
 			return new Set(array)
 		} catch (thrown) {
 			console.error(`Error parsing spaceIndexState from localStorage`)
