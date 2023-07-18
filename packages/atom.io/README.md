@@ -1,78 +1,32 @@
-## features
-- [x] atoms and selectors
-- [x] implicit store
-- [x] readonly selectors
-- [x] settable selectors
-- [x] "tokens" safely expose atoms and selectors
-- [x] give atoms and selectors separate types with a common base
-- [x] utility function to pass logger to your store
-- [x] selector memoization
-- [x] atom and selector families
-- [x] atom effects
-- [x] transactions
-- [x] async effects
-- [x] atom default as function
-- [x] check whether an atom is "default" (never set)
-- [x] customizable logging
-- [x] subscribe to transactions
-- [x] timelines
-- [x] subscribe to families
+<hr>
 
-# atom.io
-## upcoming features
-- [ ] suppressor: ({oldValue, newValue}) => boolean
-- [ ] resettable atoms
-- [ ] resettable selectors
+<div align="center">
+  <img alt="corners logo" src="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/assets/logo.png"/>
+</div>
 
-## documentation
-- [ ] document atom and selector families
-- [ ] document atom and selector
-- [ ] document transactions
+<br>
 
-# src/internal/meta
-- [x] subscribe to creation of atom tokens
-- [x] subscribe to creation of selector tokens
-- [x] subscribe to creation of readonly selector tokens
-- [ ] reimplement state indices as selectors
-- [ ] subscribe to creation of transaction tokens
-- [ ] subscribe to creation of timeline tokens
-- [ ] subscribe to changes in store configuration
+<p align="center">
+  <a href="https://bundlephobia.com/result?p=atom.io">
+    <img alt="Bundlephobia" src="https://img.shields.io/bundlephobia/minzip/atom.io?style=for-the-badge&labelColor=333">
+  </a>
+  <a aria-label="Types" href="https://www.npmjs.com/package/atom.io">
+    <img alt="Types" src="https://img.shields.io/npm/types/atom.io?style=for-the-badge&labelColor=333">
+  </a>
+  <a aria-label="Build status" href="https://github.com/jeremybanka/wayforge/actions/workflows/integration.yml">
+    <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/jeremybanka/wayforge/integration.yml?branch=main&style=for-the-badge&labelColor=333">
+  </a>
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/atom.io">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/atom.io?style=for-the-badge&labelColor=333">
+  </a>
+</p>
 
-# /react-devtools
-- [ ] 
+```shell
+npm i atom.io
+```
+```shell
+pnpm add atom.io
+```
+<hr>
 
-# /react
-## features
-- [x] useStore
-- [x] useI, useO, useIO
-- [ ] useTimeline
-- [ ] useStoreIndex
-- [ ] useTransactionIO 
-
-# /realtime
-- [x] expose single atom and selector
-- [x] expose atom family and selector family
-- [ ] receive single atom and selector
-- [ ] receive atom family and selector family
-- [x] receive transaction params, run transaction
-- [ ] assess transaction impact (active subscriptions influenced by transaction)
-- [ ] return transaction impact as timeline event
-- [ ] identity-based exposure and receipt
-- [ ] expose selector as atom
-
-# /react-realtime
-example: what's in the box? (options: green apple, green banana, red apple, red banana)
-- no player gets to see what's in the box
-- player 1 can see the color of the item in the box
-  - a register must be kept allocating "subscription permissions" per player
-  - sometimes permissions may refer to "true" or "global" state; sometimes to state that is "virtual" or "local" to the player
-- player 2 can see the type of the item in the box
-- atom<`${string}____${string}`> boxItem
-  - selector boxItemColor
-  - selector boxItemType
-- 
-- 
-
-# /web-fx
-## features
-- [ ] localStorage and sessionStorage effects
+Reactive state graph for node and the browser inspired by [Recoil](https://recoiljs.org/).
