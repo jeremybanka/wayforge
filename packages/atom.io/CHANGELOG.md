@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.6.5
+
+### Patch Changes
+
+- f00af24: ➖ `fp-ts` this dependency was hardly used, and not worth the extra bundle size.
+
 ## 0.6.4
 
 ### Patch Changes
