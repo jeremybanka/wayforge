@@ -11,8 +11,8 @@ import type { FC } from "react"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
 
-import type { StateTokenIndex } from "./meta"
 import { StoreEditor } from "./StateEditor"
+import type { StateTokenIndex } from "../introspection"
 
 export const TokenList: FC<{
 	groupTitle: string

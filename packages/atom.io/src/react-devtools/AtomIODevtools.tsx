@@ -5,13 +5,13 @@ import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 import type { FC } from "react"
 
-import { attachMetaState } from "./meta"
 import { TokenList } from "./TokenList"
+import { attachIntrospectionStates } from "../introspection"
 import { lazyLocalStorageEffect } from "../web-effects"
 
 import "./devtools.scss"
 
-const { atomTokenIndexState, selectorTokenIndexState } = attachMetaState()
+const { atomIndex, selectorIndex } = attachIntrospectionStates()
 
 const devtoolsAreOpenState = atom<boolean>({
 	key: `👁‍🗨 Devtools Are Open`,
@@ -78,13 +78,13 @@ export const composeDevtools = (storeHooks: StoreHooks): FC => {
 										<TokenList
 											groupTitle="atoms"
 											storeHooks={storeHooks}
-											tokenIndex={atomTokenIndexState}
+											tokenIndex={atomIndex}
 										/>
 									) : devtoolsView === `selectors` ? (
 										<TokenList
 											groupTitle="selectors"
 											storeHooks={storeHooks}
-											tokenIndex={selectorTokenIndexState}
+											tokenIndex={selectorIndex}
 										/>
 									) : devtoolsView === `transactions` ? null : null}
 								</LayoutGroup>
