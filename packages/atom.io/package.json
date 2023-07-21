@@ -73,7 +73,7 @@
 		}
 	},
 	"scripts": {
-		"build": "tsup & (cd json && tsup) & (cd react && tsup) & (cd react-devtools && tsup) & (cd realtime && tsup) & (cd realtime-react && tsup) & (cd realtime-testing && tsup)",
+		"build": "./build.sh",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
