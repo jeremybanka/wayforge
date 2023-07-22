@@ -1,14 +1,12 @@
 import { atom, selector, setLogLevel, transaction } from "~/packages/atom.io/src"
-import { storeHooks } from "~/packages/atom.io/src/react"
+import { useO, useIO, useI } from "~/packages/atom.io/src/react"
 import { composeExplorer } from "~/packages/atom.io/src/react-explorer/AtomIOExplorer"
 import { timeline } from "~/packages/atom.io/src/timeline"
 
 export const { Explorer, useSetTitle } = composeExplorer({
 	key: `🤓`,
-	storeHooks,
+	storeHooks: { useO, useIO, useI },
 })
-
-export const { useO, useIO, useI } = storeHooks
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 setLogLevel(LOG_LEVELS[3])
