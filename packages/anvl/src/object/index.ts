@@ -135,3 +135,7 @@ export const tweak = (
 export type RequireAtLeastOne<T> = {
 	[K in keyof T]-?: Partial<Pick<T, Exclude<keyof T, K>>> & Required<Pick<T, K>>
 }[keyof T]
+
+export type RequireExactlyOne<T> = {
+	[K in keyof T]-?: Required<Pick<T, K>>
+}[keyof T]

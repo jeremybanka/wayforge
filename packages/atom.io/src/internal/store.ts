@@ -56,7 +56,7 @@ export interface Store {
 		selectorCreation: Subject<
 			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 		>
-		transactionCreation: Subject<TransactionToken<unknown>>
+		transactionCreation: Subject<TransactionToken<ƒn>>
 		timelineCreation: Subject<TimelineToken>
 	}
 

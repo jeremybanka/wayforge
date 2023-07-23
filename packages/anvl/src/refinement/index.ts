@@ -114,9 +114,9 @@ export const mustBe = <A>(
 
 export const isIntersection = mustBe(canExist)
 
+export type ClassSignature = abstract new (...args: any) => any
+
 export const isClass =
-	<ClassSignature extends abstract new (...args: any) => any>(
-		C: ClassSignature,
-	) =>
+	<CS extends ClassSignature>(signature: CS) =>
 	(input: unknown): input is InstanceType<ClassSignature> =>
-		input instanceof C
+		input instanceof signature
