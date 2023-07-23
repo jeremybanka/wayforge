@@ -1,13 +1,13 @@
 import { defineConfig } from "tsup"
 
 const entry = [
-	`react-combo`,
 	`react-css-vars`,
 	`react-elastic-input`,
 	`react-error-boundary`,
 	`react-json-editor`,
 	`react-radial`,
 	`react-rx`,
+	`recoil-combo`,
 	`recoil-effect-storage`,
 	`recoil-tools`,
 ].map((path) => `src/${path}/index.ts`)
