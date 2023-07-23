@@ -32,13 +32,17 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 			try {
 				if (
 					// @ts-expect-error that's the point
-					(refiner(input) === true && refiner !== Boolean) ||
-					input instanceof refiner
+					refiner(input) === true &&
+					refiner !== Boolean
 				) {
 					return { type: key, data: input } as any
 				}
 			} catch (e) {
-				// console.debug(e)
+				try {
+					if (input instanceof refiner) {
+						return { type: key, data: input } as any
+					}
+				} catch (e) {}
 			}
 		}
 		return null
@@ -54,21 +58,6 @@ const jsonRefinery = new Refinery({
 	array: (input: unknown): input is unknown[] => Array.isArray(input),
 	null: (input: unknown): input is null => input === null,
 })
-
-const myRefinery = new Refinery({
-	Set,
-	Map,
-})
-
-const a = myRefinery.refine(new Set([1, 2, 3]))
-
-if (a !== null) {
-	if (a.type === `Set`) {
-		a.data
-	} else {
-		a.data
-	}
-}
 
 export const discoverType = (input: unknown): string => {
 	if (input === undefined) {

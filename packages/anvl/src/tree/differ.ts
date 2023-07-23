@@ -32,13 +32,10 @@ export function diffObject(
 	const removed: Delta[`removed`] = []
 	const changed: Delta[`changed`] = []
 
-	// console.log({ a, b })
-
 	sprawl(a, (path, nodeA) => {
 		let key: string
 		for (key of path) {
 			const nodeB = b[key]
-			console.log({ a, path, nodeA, nodeB })
 			if (nodeB === undefined) {
 				removed.push([key, JSON.stringify(nodeA)])
 			} else {
@@ -46,6 +43,16 @@ export function diffObject(
 				if (delta.summary !== `No Change`) {
 					changed.push([key, delta])
 				}
+			}
+		}
+	})
+
+	sprawl(b, (path, nodeB) => {
+		let key: string
+		for (key of path) {
+			const nodeA = a[key]
+			if (nodeA === undefined) {
+				added.push([key, JSON.stringify(nodeB)])
 			}
 		}
 	})
@@ -65,24 +72,7 @@ export function diffArray(
 	b: unknown[],
 	recurse: Differ<any, any>[`diff`],
 ): Delta {
-	let summary = ``
-	const added: Delta[`added`] = []
-	const removed: Delta[`removed`] = []
-	const changed: Delta[`changed`] = []
-
-	// sprawl(a, b, (path, nodeA) => {
-	// 	for (key in path) {
-	// 	}
-	// })
-
-	summary = `～${changed.length} ＋${added.length} －${removed.length}`
-
-	return {
-		summary,
-		added: added.length > 0 ? added : undefined,
-		removed: removed.length > 0 ? removed : undefined,
-		changed: changed.length > 0 ? changed : undefined,
-	}
+	return diffObject(a as any, b as any, recurse)
 }
 
 type Delta = {

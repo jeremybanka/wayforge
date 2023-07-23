@@ -52,4 +52,12 @@ describe(`differ`, () => {
 			removed: [],
 		})
 	})
+	it(`diffs two arrays`, () => {
+		expect(prettyJson.diff([1, 2, 3], [1, 2, 3, 4])).toEqual({
+			summary: `～0 ＋1 －0`,
+			changed: [],
+			added: [[3, `4`]],
+			removed: [],
+		})
+	})
 })
