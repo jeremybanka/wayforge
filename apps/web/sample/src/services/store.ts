@@ -9,7 +9,7 @@ export const { Explorer, useSetTitle } = composeExplorer({
 })
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-setLogLevel(LOG_LEVELS[3])
+setLogLevel(LOG_LEVELS[1])
 
 export const dividendState = atom<number>({
 	key: `dividend`,
