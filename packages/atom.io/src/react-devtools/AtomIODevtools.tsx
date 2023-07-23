@@ -1,16 +1,15 @@
-import { atom, __INTERNAL__ } from "atom.io"
-import { useI, useO, useIO } from "atom.io/react"
+import { atom } from "atom.io"
+import { useO, useIO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 import type { FC } from "react"
 
-import { TokenList } from "./StateTokenList"
-import { attachIntrospectionStates } from "../introspection"
+import { atomIndex, selectorIndex } from "."
+import { StateIndex } from "./StateIndex"
+import { TransactionIndex } from "./TransactionIndex"
 import { lazyLocalStorageEffect } from "../web-effects"
 
 import "./devtools.scss"
-
-const { atomIndex, selectorIndex } = attachIntrospectionStates()
 
 const devtoolsAreOpenState = atom<boolean>({
 	key: `👁‍🗨 Devtools Are Open`,
@@ -28,7 +27,7 @@ const devtoolsViewSelectionState = atom<DevtoolsView>({
 
 const devtoolsViewOptionsState = atom<DevtoolsView[]>({
 	key: `👁‍🗨 Devtools View Options`,
-	default: [`atoms`, `selectors`, `timelines`, `transactions`],
+	default: [`atoms`, `selectors`, `transactions`, `timelines`],
 	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View Options`)],
 })
 
@@ -38,6 +37,7 @@ export const composeDevtools = (): FC => {
 
 		const [devtoolsAreOpen, setDevtoolsAreOpen] = useIO(devtoolsAreOpenState)
 		const [devtoolsView, setDevtoolsView] = useIO(devtoolsViewSelectionState)
+		const devtoolsViewOptions = useO(devtoolsViewOptionsState)
 
 		const mouseHasMoved = useRef(false)
 
@@ -75,17 +75,32 @@ export const composeDevtools = (): FC => {
 						<>
 							<motion.header>
 								<h1>atom.io</h1>
+								<nav>
+									{devtoolsViewOptions.map((viewOption) => (
+										<button
+											key={viewOption}
+											type="button"
+											className={viewOption === devtoolsView ? `active` : ``}
+											onClick={() => setDevtoolsView(viewOption)}
+											disabled={viewOption === devtoolsView}
+										>
+											{viewOption}
+										</button>
+									))}
+								</nav>
 							</motion.header>
 							<motion.main>
 								<LayoutGroup>
 									{devtoolsView === `atoms` ? (
-										<TokenList groupTitle="atoms" tokenIndex={atomIndex} />
+										<StateIndex groupTitle="atoms" tokenIndex={atomIndex} />
 									) : devtoolsView === `selectors` ? (
-										<TokenList
+										<StateIndex
 											groupTitle="selectors"
 											tokenIndex={selectorIndex}
 										/>
-									) : devtoolsView === `transactions` ? null : null}
+									) : devtoolsView === `transactions` ? (
+										<TransactionIndex />
+									) : null}
 								</LayoutGroup>
 							</motion.main>
 						</>

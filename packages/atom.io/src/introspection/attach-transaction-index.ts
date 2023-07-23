@@ -1,11 +1,13 @@
 import type { ReadonlySelectorToken, TransactionToken } from "atom.io"
 import { __INTERNAL__ } from "atom.io"
 
+import type { ƒn } from "~/packages/anvl/src/function"
+
 export const attachTransactionIndex = (
 	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,
-): ReadonlySelectorToken<TransactionToken<unknown>[]> => {
+): ReadonlySelectorToken<TransactionToken<ƒn>[]> => {
 	const transactionTokenIndexState__INTERNAL = __INTERNAL__.atom__INTERNAL<
-		TransactionToken<unknown>[]
+		TransactionToken<ƒn>[]
 	>(
 		{
 			key: `👁‍🗨 Transaction Token Index (Internal)`,

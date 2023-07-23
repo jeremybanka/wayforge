@@ -77,10 +77,12 @@ export const TokenListNode: FC<{
 	isOpenState: AtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
-	console.log(node)
+	if (node.key.startsWith(`👁‍🗨`)) {
+		return null
+	}
 	const [isOpen, setIsOpen] = useIO(isOpenState)
 	const stateType = useO(typeState)
-	return node.key.startsWith(`👁‍🗨`) ? null : (
+	return (
 		<div className="node">
 			{`type` in node ? (
 				<>
@@ -113,7 +115,7 @@ export const TokenListNode: FC<{
 	)
 }
 
-export const TokenList: FC<{
+export const StateIndex: FC<{
 	groupTitle: string
 	tokenIndex: ReadonlySelectorToken<
 		StateTokenIndex<
@@ -128,16 +130,19 @@ export const TokenList: FC<{
 		<section>
 			<h2>{groupTitle}</h2>
 			<main>
-				{Object.entries(tokenIds).map(([key, node]) => {
-					return (
-						<TokenListNode
-							key={key}
-							node={node}
-							isOpenState={findStateViewIsOpenState(node.key)}
-							typeState={findStateTypeState(node)}
-						/>
-					)
-				})}
+				{Object.entries(tokenIds)
+					.filter(([key]) => !key.startsWith(`👁‍🗨`))
+					.sort()
+					.map(([key, node]) => {
+						return (
+							<TokenListNode
+								key={key}
+								node={node}
+								isOpenState={findStateViewIsOpenState(node.key)}
+								typeState={findStateTypeState(node)}
+							/>
+						)
+					})}
 			</main>
 		</section>
 	)

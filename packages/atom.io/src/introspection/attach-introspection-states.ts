@@ -21,7 +21,7 @@ export const attachIntrospectionStates = (
 ): {
 	atomIndex: ReadonlySelectorToken<AtomTokenIndex>
 	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
-	transactionIndex: ReadonlySelectorToken<TransactionToken<unknown>[]>
+	transactionIndex: ReadonlySelectorToken<TransactionToken<ƒn>[]>
 	findTransactionLogState: ReadonlySelectorFamily<TransactionUpdate<ƒn>[]>
 } => {
 	return {
