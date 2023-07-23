@@ -183,23 +183,30 @@ main.atom_io_devtools {
           .transaction_update {
             display: flex;
             flex-flow: row;
-            padding: 5px 10px;
             align-items: flex-start;
             justify-content: flex-start;
             justify-items: flex-start;
             align-content: flex-start;
             border: 1px solid #333;
-            h4 {
-              margin: 0;
-              padding: 0;
-              font-size: inherit;
+            header {
+              padding: 5px;
+              h4 {
+                margin: 0;
+                padding: 0;
+                font-size: inherit;
+              }
             }
             main {
               display: flex;
-              flex-flow: column;
-              div.atom_update {
-                .value {
-                  white-space: nowrap;
+              flex-flow: row;
+              section {
+                border-left: 1px solid #333;
+                padding: 5px;
+                margin: 0;
+                div.atom_update {
+                  .summary {
+                    white-space: nowrap;
+                  }
                 }
               }
             }
