@@ -1,6 +1,7 @@
 import type { Refinement } from "fp-ts/refinement"
 
 import type { ClassSignature } from "."
+import { isPlainObject } from "../object"
 
 export type RefinementStrategy = ClassSignature | Refinement<unknown, any>
 
@@ -53,8 +54,7 @@ const jsonRefinery = new Refinery({
 	number: (input: unknown): input is number => typeof input === `number`,
 	string: (input: unknown): input is string => typeof input === `string`,
 	boolean: (input: unknown): input is boolean => typeof input === `boolean`,
-	object: (input: unknown): input is object =>
-		typeof input === `object` && input !== null,
+	object: isPlainObject,
 	array: (input: unknown): input is unknown[] => Array.isArray(input),
 	null: (input: unknown): input is null => input === null,
 })
