@@ -1,5 +1,5 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
-import type { StoreHooks } from "atom.io/react"
+import { useO, type StoreHooks, useIO } from "atom.io/react"
 import type { FC } from "react"
 
 import { fallback } from "~/packages/anvl/src/function"
@@ -8,10 +8,9 @@ import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 
 export const StateEditor: FC<{
-	storeHooks: StoreHooks
 	token: StateToken<unknown>
-}> = ({ storeHooks, token }) => {
-	const [data, set] = storeHooks.useIO(token)
+}> = ({ token }) => {
+	const [data, set] = useIO(token)
 	return isJson(data) ? (
 		<JsonEditor data={data} set={set} schema={true} />
 	) : (
@@ -33,10 +32,9 @@ export const StateEditor: FC<{
 }
 
 export const ReadonlySelectorViewer: FC<{
-	storeHooks: StoreHooks
 	token: ReadonlySelectorToken<unknown>
-}> = ({ storeHooks, token }) => {
-	const data = storeHooks.useO(token)
+}> = ({ token }) => {
+	const data = useO(token)
 	return isJson(data) ? (
 		<JsonEditor
 			data={data}
@@ -63,11 +61,10 @@ export const ReadonlySelectorViewer: FC<{
 }
 
 export const StoreEditor: FC<{
-	storeHooks: StoreHooks
 	token: ReadonlySelectorToken<unknown> | StateToken<unknown>
-}> = ({ storeHooks, token }) => {
+}> = ({ token }) => {
 	if (token.type === `readonly_selector`) {
-		return <ReadonlySelectorViewer storeHooks={storeHooks} token={token} />
+		return <ReadonlySelectorViewer token={token} />
 	}
-	return <StateEditor storeHooks={storeHooks} token={token} />
+	return <StateEditor token={token} />
 }

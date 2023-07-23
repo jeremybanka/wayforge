@@ -2,8 +2,8 @@ main.atom_io_devtools {
   --fg-color: #eee;
   --bg-color: #111;
   @media (prefers-color-scheme: light) {
-    --fg-color: #222;
-    --bg-color: #ccc;
+    --fg-color: #444;
+    --bg-color: #ddd;
   }
   box-sizing: border-box;
   color: var(--fg-color);
@@ -17,10 +17,13 @@ main.atom_io_devtools {
   flex-flow: column;
   max-height: 800px;
   width: 100%;
-  max-width: 460px;
+  max-width: 600px;
   overflow-y: scroll;
-  padding: 5px;
-  header {
+  * {
+    font-size: 16px;
+  }
+  > header {
+    padding: 5px;
     display: flex;
     justify-content: space-between;
     h1 {
@@ -31,17 +34,51 @@ main.atom_io_devtools {
   main {
     overflow-y: scroll;
     flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    gap: 0;
     section {
       margin-top: 30px;
       h2 {
+        padding: 5px;
         font-size: inherit;
         margin: 0;
       }
+      .node > .node {
+        margin: 5px 0;
+        margin-left: 12px;
+        border-left: 1px solid var(--fg-color);
+      }
       .node {
-        border: 1px solid var(--fg-color);
+        background: #fff3;
+        border-top: 1px solid var(--fg-color);
         padding: 5px;
-        margin: 5px;
         overflow-x: scroll;
+        header {
+          button {
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 20px;
+            &.open {
+              transform: rotate(90deg);
+            }
+          }
+          label {
+            .type {
+              color: #777;
+              @media (prefers-color-scheme: light) {
+                color: #999;
+              }
+            }
+          }
+        }
+        main {
+          margin-left: 15px;
+        }
+        &:last-of-type {
+          border-bottom: 1px solid var(--fg-color);
+        }
       }
     }
   }
@@ -61,7 +98,7 @@ main.atom_io_devtools {
 
   .json_editor {
     input {
-      font-size: 20px;
+      // font-size: 20px;
       font-family: theia;
       border: none;
       border-bottom: 1px solid;
@@ -106,6 +143,7 @@ main.atom_io_devtools {
       background-color: #f055;
     }
     .json_editor_key {
+      padding-right: 10px;
       input {
         color: #999;
         @media (prefers-color-scheme: light) {

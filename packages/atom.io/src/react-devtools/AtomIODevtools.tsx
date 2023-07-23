@@ -1,11 +1,10 @@
 import { atom, __INTERNAL__ } from "atom.io"
-import type { StoreHooks } from "atom.io/react"
 import { useI, useO, useIO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 import type { FC } from "react"
 
-import { TokenList } from "./TokenList"
+import { TokenList } from "./StateTokenList"
 import { attachIntrospectionStates } from "../introspection"
 import { lazyLocalStorageEffect } from "../web-effects"
 
@@ -19,21 +18,26 @@ const devtoolsAreOpenState = atom<boolean>({
 	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools Are Open`)],
 })
 
-type DevtoolsView = `atoms` | `selectors` | `transactions`
+type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
 
-const devtoolsViewState = atom<DevtoolsView>({
-	key: `👁‍🗨 Devtools View`,
+const devtoolsViewSelectionState = atom<DevtoolsView>({
+	key: `👁‍🗨 Devtools View Selection`,
 	default: `atoms`,
 	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View`)],
 })
 
-export const composeDevtools = (storeHooks: StoreHooks): FC => {
+const devtoolsViewOptionsState = atom<DevtoolsView[]>({
+	key: `👁‍🗨 Devtools View Options`,
+	default: [`atoms`, `selectors`, `timelines`, `transactions`],
+	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View Options`)],
+})
+
+export const composeDevtools = (): FC => {
 	const Devtools: FC = () => {
 		const constraintsRef = useRef(null)
 
-		const [devtoolsAreOpen, setDevtoolsAreOpen] =
-			storeHooks.useIO(devtoolsAreOpenState)
-		const [devtoolsView, setDevtoolsView] = storeHooks.useIO(devtoolsViewState)
+		const [devtoolsAreOpen, setDevtoolsAreOpen] = useIO(devtoolsAreOpenState)
+		const [devtoolsView, setDevtoolsView] = useIO(devtoolsViewSelectionState)
 
 		const mouseHasMoved = useRef(false)
 
@@ -75,15 +79,10 @@ export const composeDevtools = (storeHooks: StoreHooks): FC => {
 							<motion.main>
 								<LayoutGroup>
 									{devtoolsView === `atoms` ? (
-										<TokenList
-											groupTitle="atoms"
-											storeHooks={storeHooks}
-											tokenIndex={atomIndex}
-										/>
+										<TokenList groupTitle="atoms" tokenIndex={atomIndex} />
 									) : devtoolsView === `selectors` ? (
 										<TokenList
 											groupTitle="selectors"
-											storeHooks={storeHooks}
 											tokenIndex={selectorIndex}
 										/>
 									) : devtoolsView === `transactions` ? null : null}
@@ -112,4 +111,4 @@ export const composeDevtools = (storeHooks: StoreHooks): FC => {
 	return Devtools
 }
 
-export const AtomIODevtools = composeDevtools({ useI, useO, useIO })
+export const AtomIODevtools = composeDevtools()
