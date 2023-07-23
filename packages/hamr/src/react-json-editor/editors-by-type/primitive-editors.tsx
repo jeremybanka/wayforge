@@ -6,16 +6,23 @@ import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 export const BooleanEditor = ({
 	data,
 	set,
+	Components,
 }: JsonEditorProps_INTERNAL<boolean>): ReactElement => (
-	<input
-		type="checkbox"
-		checked={data}
-		onChange={(event) => set(event.target.checked)}
-	/>
+	<Components.BooleanWrapper>
+		<input
+			type="checkbox"
+			checked={data}
+			onChange={(event) => set(event.target.checked)}
+		/>
+	</Components.BooleanWrapper>
 )
 
-export const NullEditor = (): ReactElement => (
-	<input type="text" value="null" readOnly />
+export const NullEditor = ({
+	Components,
+}: JsonEditorProps_INTERNAL<null>): ReactElement => (
+	<Components.NullWrapper>
+		<></>
+	</Components.NullWrapper>
 )
 
 export const NumberEditor = ({
@@ -23,12 +30,15 @@ export const NumberEditor = ({
 	isReadonly = () => false,
 	data,
 	set,
+	Components,
 }: JsonEditorProps_INTERNAL<number>): ReactElement => (
-	<NumberInput
-		value={data}
-		set={isReadonly(path) ? undefined : (newValue) => set(Number(newValue))}
-		autoSize={true}
-	/>
+	<Components.NumberWrapper>
+		<NumberInput
+			value={data}
+			set={isReadonly(path) ? undefined : (newValue) => set(Number(newValue))}
+			autoSize={true}
+		/>
+	</Components.NumberWrapper>
 )
 
 export const StringEditor = ({
