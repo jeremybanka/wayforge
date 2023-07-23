@@ -1,5 +1,11 @@
 # hamr
 
+## 0.4.0
+
+### Minor Changes
+
+- 8a96b02: 💥 BREAKING CHANGE: `recoil-combo` is the new name for the subpackage previously called `react-combo
+
 ## 0.3.0
 
 ### Minor Changes
