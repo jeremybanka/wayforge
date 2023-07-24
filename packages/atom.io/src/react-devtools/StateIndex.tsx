@@ -1,19 +1,13 @@
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
-import { atomFamily, getState, selectorFamily } from "atom.io"
+import { getState, selectorFamily } from "atom.io"
 import { useO, useIO } from "atom.io/react"
-import { motion } from "framer-motion"
 import type { FC } from "react"
 
 import { isJson, refineJsonType } from "~/packages/anvl/src/json"
-import { recordToEntries } from "~/packages/anvl/src/object"
 
+import { findViewIsOpenState, primitiveRefinery } from "."
 import { StoreEditor } from "./StateEditor"
 import type { FamilyNode, StateTokenIndex } from "../introspection"
-
-export const findStateViewIsOpenState = atomFamily<boolean, string>({
-	key: `👁‍🗨 State View Is Open`,
-	default: false,
-})
 
 export const findStateTypeState = selectorFamily<string, { key: string }>({
 	key: `👁‍🗨 State Type`,
@@ -30,7 +24,50 @@ export const findStateTypeState = selectorFamily<string, { key: string }>({
 	},
 })
 
-export const TokenListFamilyNode: FC<{
+export const StateIndexLeafNode: FC<{
+	node:
+		| AtomToken<unknown>
+		| ReadonlySelectorToken<unknown>
+		| SelectorToken<unknown>
+	isOpenState: AtomToken<boolean>
+	typeState: ReadonlySelectorToken<string>
+}> = ({ node, isOpenState, typeState }) => {
+	const [isOpen, setIsOpen] = useIO(isOpenState)
+	const state = useO(node)
+	const stateType = useO(typeState)
+
+	const isPrimitive = Boolean(primitiveRefinery.refine(state))
+
+	return (
+		<>
+			<header>
+				<button
+					type="button"
+					className={isOpen ? `open` : `closed`}
+					onClick={() => setIsOpen((isOpen) => !isOpen)}
+				>
+					▶
+				</button>
+				<label
+					onClick={() => console.log(node, getState(node))}
+					onKeyUp={() => console.log(node, getState(node))}
+				>
+					<h3>{node.family?.subKey ?? node.key}</h3>
+					<span className="type detail">({stateType})</span>
+					{isPrimitive ? (
+						<span className="value">{JSON.stringify(state)}</span>
+					) : null}
+				</label>
+			</header>
+			{isOpen ? (
+				<main>
+					<StoreEditor token={node} />
+				</main>
+			) : null}
+		</>
+	)
+}
+export const StateIndexTreeNode: FC<{
 	node: FamilyNode<
 		AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 	>
@@ -38,7 +75,7 @@ export const TokenListFamilyNode: FC<{
 }> = ({ node, isOpenState }) => {
 	const [isOpen, setIsOpen] = useIO(isOpenState)
 	Object.entries(node.familyMembers).forEach(([key, childNode]) => {
-		findStateViewIsOpenState(key)
+		findViewIsOpenState(key)
 		findStateTypeState(childNode)
 	})
 	return (
@@ -52,16 +89,16 @@ export const TokenListFamilyNode: FC<{
 					▶
 				</button>
 				<label>
-					{node.key}
-					<span className="type"> (family)</span>
+					<h3>{node.key}</h3>
+					<span className="type detail"> (family)</span>
 				</label>
 			</header>
 			{isOpen
 				? Object.entries(node.familyMembers).map(([key, childNode]) => (
-						<TokenListNode
+						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findStateViewIsOpenState(childNode.key)}
+							isOpenState={findViewIsOpenState(childNode.key)}
 							typeState={findStateTypeState(childNode)}
 						/>
 				  ))
@@ -70,7 +107,7 @@ export const TokenListFamilyNode: FC<{
 	)
 }
 
-export const TokenListNode: FC<{
+export const StateIndexNode: FC<{
 	node: StateTokenIndex<
 		AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 	>[string]
@@ -80,38 +117,18 @@ export const TokenListNode: FC<{
 	if (node.key.startsWith(`👁‍🗨`)) {
 		return null
 	}
-	const [isOpen, setIsOpen] = useIO(isOpenState)
-	const stateType = useO(typeState)
 	return (
-		<div className="node">
+		<section className="node state">
 			{`type` in node ? (
-				<>
-					<header>
-						<button
-							type="button"
-							className={isOpen ? `open` : `closed`}
-							onClick={() => setIsOpen((isOpen) => !isOpen)}
-						>
-							▶
-						</button>
-						<label
-							onClick={() => console.log(node, getState(node))}
-							onKeyUp={() => console.log(node, getState(node))}
-						>
-							{node.key}
-							<span className="type"> ({stateType})</span>
-						</label>
-					</header>
-					{isOpen ? (
-						<main>
-							<StoreEditor token={node} />
-						</main>
-					) : null}
-				</>
+				<StateIndexLeafNode
+					node={node}
+					isOpenState={isOpenState}
+					typeState={typeState}
+				/>
 			) : (
-				<TokenListFamilyNode node={node} isOpenState={isOpenState} />
+				<StateIndexTreeNode node={node} isOpenState={isOpenState} />
 			)}
-		</div>
+		</section>
 	)
 }
 
@@ -127,7 +144,7 @@ export const StateIndex: FC<{
 }> = ({ groupTitle, tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 	return (
-		<section>
+		<article className="index state_index">
 			<h2>{groupTitle}</h2>
 			<main>
 				{Object.entries(tokenIds)
@@ -135,15 +152,15 @@ export const StateIndex: FC<{
 					.sort()
 					.map(([key, node]) => {
 						return (
-							<TokenListNode
+							<StateIndexNode
 								key={key}
 								node={node}
-								isOpenState={findStateViewIsOpenState(node.key)}
+								isOpenState={findViewIsOpenState(node.key)}
 								typeState={findStateTypeState(node)}
 							/>
 						)
 					})}
 			</main>
-		</section>
+		</article>
 	)
 }

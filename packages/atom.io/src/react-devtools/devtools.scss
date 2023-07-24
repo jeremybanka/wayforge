@@ -37,7 +37,7 @@ main.atom_io_devtools {
     display: flex;
     flex-flow: column;
     gap: 0;
-    section {
+    article.index {
       margin-top: 30px;
       h2 {
         padding: 5px;
@@ -55,6 +55,9 @@ main.atom_io_devtools {
         padding: 5px;
         overflow-x: scroll;
         header {
+          display: flex;
+          flex-flow: row;
+          gap: 5px;
           button {
             cursor: pointer;
             background: none;
@@ -65,7 +68,14 @@ main.atom_io_devtools {
             }
           }
           label {
-            .type {
+            display: flex;
+            flex-flow: row;
+            gap: 5px;
+            h3 {
+              display: inline-block;
+              margin: 0;
+            }
+            .detail {
               color: #777;
               @media (prefers-color-scheme: light) {
                 color: #999;
@@ -78,6 +88,47 @@ main.atom_io_devtools {
         }
         &:last-of-type {
           border-bottom: 1px solid var(--fg-color);
+        }
+      }
+      section.transaction_log {
+        margin-top: 0;
+        main {
+          margin-left: 15px;
+          display: flex;
+          flex-flow: row wrap;
+          gap: 5px;
+          .transaction_update {
+            width: 100%;
+            display: flex;
+            flex-flow: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            justify-items: flex-start;
+            align-content: flex-start;
+            border: 1px solid #333;
+            header {
+              padding: 5px;
+              h4 {
+                margin: 0;
+                padding: 0;
+                font-size: inherit;
+              }
+            }
+            main {
+              display: flex;
+              flex-flow: row;
+              section {
+                border-left: 1px solid #333;
+                padding: 5px;
+                margin: 0;
+                div.atom_update {
+                  .summary {
+                    white-space: nowrap;
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -161,56 +212,6 @@ main.atom_io_devtools {
         > * {
           border-bottom: 2px solid #333;
           margin-bottom: 2px;
-        }
-      }
-    }
-  }
-
-  .transaction_index {
-    main {
-      section.transaction_log {
-        margin-top: 0;
-        h3 {
-          margin: 0;
-          padding: 5px;
-          font-size: inherit;
-        }
-        main {
-          margin-left: 15px;
-          display: flex;
-          flex-flow: row wrap;
-          gap: 5px;
-          .transaction_update {
-            display: flex;
-            flex-flow: row;
-            align-items: flex-start;
-            justify-content: flex-start;
-            justify-items: flex-start;
-            align-content: flex-start;
-            border: 1px solid #333;
-            header {
-              padding: 5px;
-              h4 {
-                margin: 0;
-                padding: 0;
-                font-size: inherit;
-              }
-            }
-            main {
-              display: flex;
-              flex-flow: row;
-              section {
-                border-left: 1px solid #333;
-                padding: 5px;
-                margin: 0;
-                div.atom_update {
-                  .summary {
-                    white-space: nowrap;
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
