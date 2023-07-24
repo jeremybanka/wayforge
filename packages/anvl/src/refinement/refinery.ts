@@ -1,4 +1,4 @@
-import type { Refinement } from "fp-ts/lib/refinement"
+import type { Refinement } from "fp-ts/Refinement"
 
 import type { ClassSignature } from "."
 import { isPlainObject } from "../object"
