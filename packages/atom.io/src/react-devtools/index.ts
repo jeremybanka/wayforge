@@ -20,6 +20,8 @@ export const {
 	selectorIndex,
 	transactionIndex,
 	findTransactionLogState,
+	timelineIndex,
+	findTimelineLogState,
 } = attachIntrospectionStates()
 
 export const findViewIsOpenState = atomFamily<boolean, string>({

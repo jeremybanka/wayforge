@@ -10,7 +10,7 @@ export const attachTimelineLogs = (
 	>(
 		{
 			key: `👁‍🗨 Timeline Update Log (Internal)`,
-			default: () => [],
+			default: (key) => store.timelines.get(key).history,
 			effects: (key) => [
 				({ setSelf }) => {
 					const tx = store.timelines.get(key)

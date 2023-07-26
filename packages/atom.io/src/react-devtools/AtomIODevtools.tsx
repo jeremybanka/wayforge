@@ -6,6 +6,7 @@ import type { FC } from "react"
 
 import { atomIndex, selectorIndex } from "."
 import { StateIndex } from "./StateIndex"
+import { TimelineIndex } from "./TimelineIndex"
 import { TransactionIndex } from "./TransactionIndex"
 import { lazyLocalStorageEffect } from "../web-effects"
 
@@ -100,6 +101,8 @@ export const composeDevtools = (): FC => {
 										/>
 									) : devtoolsView === `transactions` ? (
 										<TransactionIndex />
+									) : devtoolsView === `timelines` ? (
+										<TimelineIndex />
 									) : null}
 								</LayoutGroup>
 							</motion.main>

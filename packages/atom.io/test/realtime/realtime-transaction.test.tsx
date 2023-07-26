@@ -42,7 +42,7 @@ describe(`running transactions`, () => {
 			},
 		})
 
-	test.only(`client 1 -> server -> client 2`, async () => {
+	test(`client 1 -> server -> client 2`, async () => {
 		const {
 			clients: { jane, dave },
 			teardown,
