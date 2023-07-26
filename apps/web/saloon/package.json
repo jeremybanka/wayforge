@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@testing-library/jest-dom": "5.17.0",
 		"@testing-library/react": "14.0.0",
-		"@types/react": "18.2.16",
+		"@types/react": "18.2.17",
 		"@vanilla-extract/vite-plugin": "3.8.2",
 		"@vitejs/plugin-react": "4.0.3",
 		"cross-env": "7.0.3",
