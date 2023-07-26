@@ -1,6 +1,7 @@
 main.atom_io_devtools {
   --fg-color: #eee;
   --bg-color: #111;
+  --fg-border: 1px solid var(--fg-color);
   @media (prefers-color-scheme: light) {
     --fg-color: #444;
     --bg-color: #ddd;
@@ -47,14 +48,21 @@ main.atom_io_devtools {
       .node > .node {
         margin: 5px 0;
         margin-left: 12px;
-        border-left: 1px solid var(--fg-color);
+        border-left: var(--fg-border);
       }
       .node {
         background: #fff3;
-        border-top: 1px solid var(--fg-color);
-        padding: 5px;
+        border-top: var(--fg-border);
         overflow-x: scroll;
-        header {
+        padding: 5px;
+        .node {
+          border-right: var(--fg-border);
+          padding-right: 0;
+        }
+        &.transaction_update {
+          padding: 0;
+        }
+        & header {
           display: flex;
           flex-flow: row;
           gap: 5px;
@@ -66,11 +74,15 @@ main.atom_io_devtools {
             &.open {
               transform: rotate(90deg);
             }
+            &:disabled {
+              cursor: default;
+            }
           }
           label {
             display: flex;
             flex-flow: row;
             gap: 5px;
+            cursor: help;
             h3 {
               display: inline-block;
               margin: 0;
@@ -87,13 +99,15 @@ main.atom_io_devtools {
           margin-left: 15px;
         }
         &:last-of-type {
-          border-bottom: 1px solid var(--fg-color);
+          border-bottom: var(--fg-border);
         }
       }
       section.transaction_log {
         margin-top: 0;
+        header: {
+          padding: 5px;
+        }
         main {
-          margin-left: 15px;
           display: flex;
           flex-flow: row wrap;
           gap: 5px;
@@ -105,7 +119,8 @@ main.atom_io_devtools {
             justify-content: flex-start;
             justify-items: flex-start;
             align-content: flex-start;
-            border: 1px solid #333;
+            border-left: var(--fg-border);
+            border-top: var(--fg-border);
             header {
               padding: 5px;
               h4 {
@@ -115,13 +130,31 @@ main.atom_io_devtools {
               }
             }
             main {
+              margin-left: 0;
               display: flex;
-              flex-flow: row;
+              flex-flow: column;
+              gap: 0px;
+              border-left: 1px solid #333;
+              section ~ section {
+                border-top: 1px solid #333;
+              }
               section {
-                border-left: 1px solid #333;
                 padding: 5px;
+                & .transaction_params {
+                  // border-color: blue;
+                }
+                &.transaction_output {
+                  // border-color: red;
+                  border-right: none;
+                }
+                &.transaction_impact {
+                  padding: 5px;
+                  // border-color: green;
+                }
                 margin: 0;
-                div.atom_update {
+                article {
+                  border-left: var(--fg-border);
+                  border-right: var(--fg-border);
                   .summary {
                     white-space: nowrap;
                   }
@@ -210,7 +243,7 @@ main.atom_io_devtools {
       }
       .json_editor_properties {
         > * {
-          border-bottom: 2px solid #333;
+          border-bottom: var(--fg-border);
           margin-bottom: 2px;
         }
       }

@@ -6,6 +6,8 @@ import * as RTR from "atom.io/realtime-react"
 
 import * as RTTest from "../../src/realtime-testing"
 
+AtomIO.setLogLevel(`info`)
+
 const countState = AtomIO.atom({ key: `count`, default: 0 })
 const incrementTX = AtomIO.transaction({
 	key: `increment`,
@@ -40,7 +42,7 @@ describe(`running transactions`, () => {
 			},
 		})
 
-	test(`client 1 -> server -> client 2`, async () => {
+	test.only(`client 1 -> server -> client 2`, async () => {
 		const {
 			clients: { jane, dave },
 			teardown,

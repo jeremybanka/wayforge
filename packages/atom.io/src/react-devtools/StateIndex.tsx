@@ -6,10 +6,11 @@ import type { FC } from "react"
 import { isJson, refineJsonType } from "~/packages/anvl/src/json"
 
 import { findViewIsOpenState, primitiveRefinery } from "."
+import { button } from "./Button"
 import { StoreEditor } from "./StateEditor"
 import type { FamilyNode, StateTokenIndex } from "../introspection"
 
-export const findStateTypeState = selectorFamily<string, { key: string }>({
+const findStateTypeState = selectorFamily<string, { key: string }>({
 	key: `👁‍🗨 State Type`,
 	get: (token) => ({ get }) => {
 		let state: unknown
@@ -41,25 +42,21 @@ export const StateIndexLeafNode: FC<{
 	return (
 		<>
 			<header>
-				<button
-					type="button"
-					className={isOpen ? `open` : `closed`}
-					onClick={() => setIsOpen((isOpen) => !isOpen)}
-				>
-					▶
-				</button>
+				<button.OpenClose
+					isOpen={isOpen && !isPrimitive}
+					setIsOpen={setIsOpen}
+					disabled={isPrimitive}
+				/>
 				<label
 					onClick={() => console.log(node, getState(node))}
 					onKeyUp={() => console.log(node, getState(node))}
 				>
 					<h3>{node.family?.subKey ?? node.key}</h3>
-					<span className="type detail">({stateType})</span>
-					{isPrimitive ? (
-						<span className="value">{JSON.stringify(state)}</span>
-					) : null}
 				</label>
+				<span className="type detail">({stateType})</span>
+				{isPrimitive ? <StoreEditor token={node} /> : null}
 			</header>
-			{isOpen ? (
+			{isOpen && !isPrimitive ? (
 				<main>
 					<StoreEditor token={node} />
 				</main>
@@ -81,13 +78,7 @@ export const StateIndexTreeNode: FC<{
 	return (
 		<>
 			<header>
-				<button
-					type="button"
-					className={isOpen ? `open` : `closed`}
-					onClick={() => setIsOpen((isOpen) => !isOpen)}
-				>
-					▶
-				</button>
+				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
 				<label>
 					<h3>{node.key}</h3>
 					<span className="type detail"> (family)</span>

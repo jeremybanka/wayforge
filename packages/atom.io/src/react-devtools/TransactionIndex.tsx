@@ -12,9 +12,10 @@ import type { ƒn } from "~/packages/anvl/src/function"
 import {
 	findTransactionLogState,
 	findViewIsOpenState,
-	prettyJson,
 	transactionIndex,
 } from "."
+import { button } from "./Button"
+import { article } from "./Updates"
 
 export const TransactionLog: FC<{
 	token: TransactionToken<ƒn>
@@ -27,13 +28,7 @@ export const TransactionLog: FC<{
 	return (
 		<section className="node transaction_log">
 			<header>
-				<button
-					type="button"
-					className={isOpen ? `open` : `closed`}
-					onClick={() => setIsOpen((isOpen) => !isOpen)}
-				>
-					▶
-				</button>
+				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
 				<label>
 					<h3>{token.key}</h3>
 					<span className="detail length">({log.length})</span>
@@ -41,67 +36,13 @@ export const TransactionLog: FC<{
 			</header>
 			{isOpen ? (
 				<main>
-					{log.map((update, index) => {
-						return (
-							<div key={update.key + index} className="transaction_update">
-								<header>
-									<h4>{index}</h4>
-								</header>
-								<main>
-									<section className="transaction_io">
-										<div className="transaction_params">
-											<span className="output_name">params: </span>
-											{update.params.map((param, index) => {
-												return (
-													<div
-														key={`param` + index}
-														className="transaction_param"
-													>
-														<span className="param_name">{param.name}</span>
-														<span className="param_value">
-															{JSON.stringify(param.value)}
-														</span>
-													</div>
-												)
-											})}
-										</div>
-										<div className="transaction_output">
-											<span className="output_name">output: </span>
-											<span className="output_value">
-												{JSON.stringify(update.output)}
-											</span>
-										</div>
-									</section>
-									<section className="transaction_impact">
-										{update.atomUpdates
-											.filter((token) => !token.key.startsWith(`👁‍🗨`))
-											.map((atomUpdate) => {
-												return (
-													<div
-														key={atomUpdate.key}
-														className="atom_update"
-														onClick={() => console.log(atomUpdate)}
-														onKeyUp={() => console.log(atomUpdate)}
-													>
-														<span>{atomUpdate.key}: </span>
-														<span>
-															<span className="summary">
-																{
-																	prettyJson.diff(
-																		atomUpdate.oldValue,
-																		atomUpdate.newValue,
-																	).summary
-																}
-															</span>
-														</span>
-													</div>
-												)
-											})}
-									</section>
-								</main>
-							</div>
-						)
-					})}
+					{log.map((update, index) => (
+						<article.TransactionUpdate
+							key={update.key + index}
+							serialNumber={index}
+							transactionUpdate={update}
+						/>
+					))}
 				</main>
 			) : null}
 		</section>

@@ -34,7 +34,7 @@ export const quotientState = selector<number>({
 	},
 })
 
-export const resetEquation = transaction<() => void>({
+export const resetEquationTX = transaction<() => void>({
 	key: `resetEquation`,
 	do: ({ set }) => {
 		set(dividendState, 1)
