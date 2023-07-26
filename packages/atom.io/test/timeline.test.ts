@@ -221,4 +221,30 @@ describe(`timeline`, () => {
 		expect(timelineData.at).toBe(1)
 		expect(timelineData.history.length).toBe(1)
 	})
+
+	test.only(`subscription to timeline itself`, () => {
+		setLogLevel(`info`)
+
+		const a = atom<number>({
+			key: `a`,
+			default: 0,
+		})
+		const aTl = timeline({
+			key: `a timeline`,
+			atoms: [a],
+		})
+		const aResetTx = transaction<() => void>({
+			key: `reset a`,
+			do: ({ set }) => {
+				set(a, 0)
+			},
+		})
+		const aTlSub = subscribeToTimeline(aTl, (update) => {
+			console.log(update)
+		})
+
+		setState(a, 1)
+		runTransaction(aResetTx)()
+		undo(aTl)
+	})
 })

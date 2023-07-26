@@ -13,10 +13,19 @@ export const attachTimelineLogs = (
 			default: (key) => store.timelines.get(key).history,
 			effects: (key) => [
 				({ setSelf }) => {
-					const tx = store.timelines.get(key)
-					tx.subject.subscribe((timelineUpdate) => {
-						if (timelineUpdate.key === key) {
-							setSelf((state) => [...state, timelineUpdate])
+					const tl = store.timelines.get(key)
+					tl.subject.subscribe((timelineUpdate) => {
+						if (store.operation.open === true) {
+							const subscription = store.subject.operationStatus.subscribe(
+								(operationStatus) => {
+									if (operationStatus.open === false) {
+										subscription.unsubscribe()
+										setSelf([...store.timelines.get(key).history])
+									}
+								},
+							)
+						} else {
+							setSelf([...store.timelines.get(key).history])
 						}
 					})
 				},
