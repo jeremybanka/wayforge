@@ -10,7 +10,7 @@ export const OpenClose: FC<{
 	return (
 		<button
 			type="button"
-			className={isOpen ? `open` : `closed`}
+			className={`carat ${isOpen ? `open` : `closed`}`}
 			onClick={() => setIsOpen((isOpen) => !isOpen)}
 			disabled={disabled}
 		>

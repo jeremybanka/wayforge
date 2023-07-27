@@ -9,7 +9,7 @@ import {
 	Differ,
 } from "~/packages/anvl/src/tree/differ"
 
-import { atomFamily } from ".."
+import { atom, atomFamily } from ".."
 import { attachIntrospectionStates } from "../introspection"
 import { lazyLocalStorageEffect } from "../web-effects"
 
@@ -21,8 +21,28 @@ export const {
 	transactionIndex,
 	findTransactionLogState,
 	timelineIndex,
-	findTimelineLogState,
+	findTimelineState,
 } = attachIntrospectionStates()
+
+export const devtoolsAreOpenState = atom<boolean>({
+	key: `👁‍🗨 Devtools Are Open`,
+	default: true,
+	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools Are Open`)],
+})
+
+type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
+
+export const devtoolsViewSelectionState = atom<DevtoolsView>({
+	key: `👁‍🗨 Devtools View Selection`,
+	default: `atoms`,
+	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View`)],
+})
+
+export const devtoolsViewOptionsState = atom<DevtoolsView[]>({
+	key: `👁‍🗨 Devtools View Options`,
+	default: [`atoms`, `selectors`, `transactions`, `timelines`],
+	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View Options`)],
+})
 
 export const findViewIsOpenState = atomFamily<boolean, string>({
 	key: `👁‍🗨 Devtools View Is Open`,

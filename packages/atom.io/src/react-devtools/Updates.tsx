@@ -97,42 +97,42 @@ export const TimelineUpdateFC: React.FC<{
 	return (
 		<article className="node timeline_update">
 			<header>
-				<h4>{timelineUpdate.timestamp}</h4>
+				<h4>
+					{timelineUpdate.timestamp}: {timelineUpdate.type} ({timelineUpdate.key}
+					)
+				</h4>
 			</header>
 			<main>
-				<section className="timeline_impact">
-					<span className="detail">impact: </span>
-					{timelineUpdate.type === `transaction_update` ? (
-						timelineUpdate.atomUpdates
-							.filter((token) => !token.key.startsWith(`👁‍🗨`))
-							.map((atomUpdate, index) => {
-								return (
-									<article.AtomUpdate
-										key={`${timelineUpdate.key}:${index}:${atomUpdate.key}`}
-										serialNumber={index}
-										atomUpdate={atomUpdate}
-									/>
-								)
-							})
-					) : timelineUpdate.type === `selector_update` ? (
-						timelineUpdate.atomUpdates
-							.filter((token) => !token.key.startsWith(`👁‍🗨`))
-							.map((atomUpdate, index) => {
-								return (
-									<article.AtomUpdate
-										key={`${timelineUpdate.key}:${index}:${atomUpdate.key}`}
-										serialNumber={index}
-										atomUpdate={atomUpdate}
-									/>
-								)
-							})
-					) : timelineUpdate.type === `atom_update` ? (
-						<article.AtomUpdate
-							serialNumber={timelineUpdate.timestamp}
-							atomUpdate={timelineUpdate}
-						/>
-					) : null}
-				</section>
+				{timelineUpdate.type === `transaction_update` ? (
+					timelineUpdate.atomUpdates
+						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.map((atomUpdate, index) => {
+							return (
+								<article.AtomUpdate
+									key={`${timelineUpdate.key}:${index}:${atomUpdate.key}`}
+									serialNumber={index}
+									atomUpdate={atomUpdate}
+								/>
+							)
+						})
+				) : timelineUpdate.type === `selector_update` ? (
+					timelineUpdate.atomUpdates
+						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.map((atomUpdate, index) => {
+							return (
+								<article.AtomUpdate
+									key={`${timelineUpdate.key}:${index}:${atomUpdate.key}`}
+									serialNumber={index}
+									atomUpdate={atomUpdate}
+								/>
+							)
+						})
+				) : timelineUpdate.type === `atom_update` ? (
+					<article.AtomUpdate
+						serialNumber={timelineUpdate.timestamp}
+						atomUpdate={timelineUpdate}
+					/>
+				) : null}
 			</main>
 		</article>
 	)

@@ -25,6 +25,8 @@ export const Division: FC = () => {
         button {
           background: blue;
           border: none;
+          color: white;
+          font-family: theia;
         }
         main {
           padding: 5px;

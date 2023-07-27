@@ -13,14 +13,19 @@ export const attachAtomIndex = (
 			{
 				key: `👁‍🗨 Atom Token Index (Internal)`,
 				default: () =>
-					[...store.atoms].reduce<AtomTokenIndex>((acc, [key]) => {
-						acc[key] = { key, type: `atom` }
-						return acc
-					}, {}),
+					[...store.atoms]
+						.filter(([key]) => !key.includes(`👁‍🗨`))
+						.reduce<AtomTokenIndex>((acc, [key]) => {
+							acc[key] = { key, type: `atom` }
+							return acc
+						}, {}),
 				effects: [
 					({ setSelf }) => {
 						store.subject.atomCreation.subscribe((atomToken) => {
 							if (store.operation.open) {
+								return
+							}
+							if (atomToken.key.includes(`👁‍🗨`)) {
 								return
 							}
 							setSelf((state) => {

@@ -51,9 +51,9 @@ export const StateIndexLeafNode: FC<{
 					onClick={() => console.log(node, getState(node))}
 					onKeyUp={() => console.log(node, getState(node))}
 				>
-					<h3>{node.family?.subKey ?? node.key}</h3>
+					<h2>{node.family?.subKey ?? node.key}</h2>
+					<span className="type detail">({stateType})</span>
 				</label>
-				<span className="type detail">({stateType})</span>
 				{isPrimitive ? <StoreEditor token={node} /> : null}
 			</header>
 			{isOpen && !isPrimitive ? (
@@ -80,7 +80,7 @@ export const StateIndexTreeNode: FC<{
 			<header>
 				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
 				<label>
-					<h3>{node.key}</h3>
+					<h2>{node.key}</h2>
 					<span className="type detail"> (family)</span>
 				</label>
 			</header>
@@ -124,7 +124,6 @@ export const StateIndexNode: FC<{
 }
 
 export const StateIndex: FC<{
-	groupTitle: string
 	tokenIndex: ReadonlySelectorToken<
 		StateTokenIndex<
 			| AtomToken<unknown>
@@ -132,26 +131,23 @@ export const StateIndex: FC<{
 			| SelectorToken<unknown>
 		>
 	>
-}> = ({ groupTitle, tokenIndex }) => {
+}> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 	return (
 		<article className="index state_index">
-			<h2>{groupTitle}</h2>
-			<main>
-				{Object.entries(tokenIds)
-					.filter(([key]) => !key.startsWith(`👁‍🗨`))
-					.sort()
-					.map(([key, node]) => {
-						return (
-							<StateIndexNode
-								key={key}
-								node={node}
-								isOpenState={findViewIsOpenState(node.key)}
-								typeState={findStateTypeState(node)}
-							/>
-						)
-					})}
-			</main>
+			{Object.entries(tokenIds)
+				.filter(([key]) => !key.startsWith(`👁‍🗨`))
+				.sort()
+				.map(([key, node]) => {
+					return (
+						<StateIndexNode
+							key={key}
+							node={node}
+							isOpenState={findViewIsOpenState(node.key)}
+							typeState={findStateTypeState(node)}
+						/>
+					)
+				})}
 		</article>
 	)
 }

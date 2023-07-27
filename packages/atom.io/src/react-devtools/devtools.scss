@@ -1,10 +1,12 @@
 main.atom_io_devtools {
   --fg-color: #eee;
   --bg-color: #111;
+  --bg-tint1: #222;
   --fg-border: 1px solid var(--fg-color);
   @media (prefers-color-scheme: light) {
     --fg-color: #444;
     --bg-color: #ddd;
+    --bg-tint1: #e3e3e3;
   }
   box-sizing: border-box;
   color: var(--fg-color);
@@ -18,19 +20,46 @@ main.atom_io_devtools {
   flex-flow: column;
   max-height: 800px;
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   overflow-y: scroll;
   * {
     font-size: 16px;
+    font-family: theia, monospace;
   }
   > header {
     padding: 5px;
+    padding-left: 10px;
+    padding-bottom: 0;
     display: flex;
     justify-content: space-between;
     h1 {
       font-size: inherit;
       margin: 0;
+      font-size: 24px;
+      font-family: charter;
     }
+    nav {
+      display: flex;
+      flex-flow: row nowrap;
+      button {
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: none;
+        margin-bottom: -2px;
+        z-index: 1000;
+        &:disabled {
+          cursor: default;
+          background-color: var(--bg-tint1);
+          color: var(--fg-color);
+          border: var(--fg-border);
+          border-bottom: none;
+        }
+      }
+    }
+  }
+  > main {
+    background: var(--bg-tint1);
   }
   main {
     overflow-y: scroll;
@@ -39,11 +68,10 @@ main.atom_io_devtools {
     flex-flow: column;
     gap: 0;
     article.index {
-      margin-top: 30px;
-      h2 {
-        padding: 5px;
-        font-size: inherit;
-        margin: 0;
+      .node .node {
+        border-right: var(--fg-border);
+        padding-right: 0;
+        background: #fff3;
       }
       .node > .node {
         margin: 5px 0;
@@ -51,22 +79,23 @@ main.atom_io_devtools {
         border-left: var(--fg-border);
       }
       .node {
-        background: #fff3;
         border-top: var(--fg-border);
         overflow-x: scroll;
         padding: 5px;
-        .node {
-          border-right: var(--fg-border);
-          padding-right: 0;
+        &:last-of-type {
+          border-bottom: var(--fg-border);
         }
         &.transaction_update {
           padding: 0;
         }
-        & header {
+        header {
           display: flex;
           flex-flow: row;
           gap: 5px;
-          button {
+          position: sticky;
+          z-index: 999;
+          top: 0;
+          button.carat {
             cursor: pointer;
             background: none;
             border: none;
@@ -83,7 +112,7 @@ main.atom_io_devtools {
             flex-flow: row;
             gap: 5px;
             cursor: help;
-            h3 {
+            h2 {
               display: inline-block;
               margin: 0;
             }
@@ -97,9 +126,6 @@ main.atom_io_devtools {
         }
         main {
           margin-left: 15px;
-        }
-        &:last-of-type {
-          border-bottom: var(--fg-border);
         }
       }
       section.transaction_log {
@@ -140,16 +166,11 @@ main.atom_io_devtools {
               }
               section {
                 padding: 5px;
-                & .transaction_params {
-                  // border-color: blue;
-                }
                 &.transaction_output {
-                  // border-color: red;
                   border-right: none;
                 }
                 &.transaction_impact {
                   padding: 5px;
-                  // border-color: green;
                 }
                 margin: 0;
                 article {
@@ -162,6 +183,44 @@ main.atom_io_devtools {
               }
             }
           }
+        }
+      }
+      section.timeline_log {
+        header {
+          display: flex;
+          label {
+            display: flex;
+            width: 100%;
+            flex-grow: 1;
+            .gap {
+              flex-grow: 1;
+            }
+            nav {
+              display: flex;
+              flex-flow: row nowrap;
+              gap: 5px;
+            }
+          }
+        }
+        .timeline_update {
+          padding: 5px;
+          border-left: var(--fg-border);
+          h4 {
+            margin: 0;
+            padding: 0;
+            font-size: inherit;
+          }
+          main {
+            margin: 0;
+            .node.atom_update {
+              border-left: var(--fg-border);
+            }
+          }
+        }
+        .you_are_here {
+          background: var(--fg-color);
+          color: var(--bg-color);
+          text-align: center;
         }
       }
     }

@@ -16,13 +16,12 @@ export const attachSelectorIndex = (
 				key: `👁‍🗨 Selector Token Index (Internal)`,
 				default: () =>
 					Object.assign(
-						[...store.readonlySelectors].reduce<SelectorTokenIndex>(
-							(acc, [key]) => {
+						[...store.readonlySelectors]
+							.filter(([key]) => !key.includes(`👁‍🗨`))
+							.reduce<SelectorTokenIndex>((acc, [key]) => {
 								acc[key] = { key, type: `readonly_selector` }
 								return acc
-							},
-							{},
-						),
+							}, {}),
 						[...store.selectors].reduce<SelectorTokenIndex>((acc, [key]) => {
 							acc[key] = { key, type: `selector` }
 							return acc
@@ -32,6 +31,9 @@ export const attachSelectorIndex = (
 					({ setSelf }) => {
 						store.subject.selectorCreation.subscribe((selectorToken) => {
 							if (store.operation.open) {
+								return
+							}
+							if (selectorToken.key.includes(`👁‍🗨`)) {
 								return
 							}
 							setSelf((state) => {

@@ -1,31 +1,33 @@
-import type { ReadonlySelectorFamily, Store, TimelineUpdate } from "atom.io"
+import type { ReadonlySelectorFamily, Store } from "atom.io"
 import { __INTERNAL__ } from "atom.io"
 
-export const attachTimelineLogs = (
+import type { Timeline } from "../internal"
+
+export const attachTimelineFamily = (
 	store: Store = __INTERNAL__.IMPLICIT.STORE,
-): ReadonlySelectorFamily<TimelineUpdate[]> => {
+): ReadonlySelectorFamily<Timeline> => {
 	const findTimelineLogState__INTERNAL = __INTERNAL__.atomFamily__INTERNAL<
-		TimelineUpdate[],
+		Timeline,
 		string
 	>(
 		{
 			key: `👁‍🗨 Timeline Update Log (Internal)`,
-			default: (key) => store.timelines.get(key).history,
+			default: (key) => store.timelines.get(key),
 			effects: (key) => [
 				({ setSelf }) => {
 					const tl = store.timelines.get(key)
-					tl.subject.subscribe(() => {
+					tl.subject.subscribe((_) => {
 						if (store.operation.open === true) {
 							const subscription = store.subject.operationStatus.subscribe(
 								(operationStatus) => {
 									if (operationStatus.open === false) {
 										subscription.unsubscribe()
-										setSelf([...store.timelines.get(key).history])
+										setSelf({ ...tl })
 									}
 								},
 							)
 						} else {
-							setSelf([...store.timelines.get(key).history])
+							setSelf({ ...tl })
 						}
 					})
 				},
@@ -34,7 +36,7 @@ export const attachTimelineLogs = (
 		store,
 	)
 	const findTimelineLogState = __INTERNAL__.selectorFamily__INTERNAL<
-		TimelineUpdate[],
+		Timeline,
 		string
 	>(
 		{

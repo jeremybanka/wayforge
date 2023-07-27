@@ -1,5 +1,5 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
-import { useO, type StoreHooks, useIO } from "atom.io/react"
+import { useO, useIO } from "atom.io/react"
 import type { FC } from "react"
 
 import { fallback } from "~/packages/anvl/src/function"

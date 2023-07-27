@@ -30,7 +30,7 @@ export const TransactionLog: FC<{
 			<header>
 				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
 				<label>
-					<h3>{token.key}</h3>
+					<h2>{token.key}</h2>
 					<span className="detail length">({log.length})</span>
 				</label>
 			</header>
@@ -53,21 +53,18 @@ export const TransactionIndex: FC = () => {
 	const tokenIds = useO(transactionIndex)
 	return (
 		<article className="index transaction_index">
-			<h2>transactions</h2>
-			<main>
-				{tokenIds
-					.filter((token) => !token.key.startsWith(`👁‍🗨`))
-					.map((token) => {
-						return (
-							<TransactionLog
-								key={token.key}
-								token={token}
-								isOpenState={findViewIsOpenState(token.key)}
-								logState={findTransactionLogState(token.key)}
-							/>
-						)
-					})}
-			</main>
+			{tokenIds
+				.filter((token) => !token.key.startsWith(`👁‍🗨`))
+				.map((token) => {
+					return (
+						<TransactionLog
+							key={token.key}
+							token={token}
+							isOpenState={findViewIsOpenState(token.key)}
+							logState={findTransactionLogState(token.key)}
+						/>
+					)
+				})}
 		</article>
 	)
 }

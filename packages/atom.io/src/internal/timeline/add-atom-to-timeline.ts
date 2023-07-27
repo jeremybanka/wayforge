@@ -1,6 +1,5 @@
 import { IMPLICIT, withdraw } from ".."
 import type {
-	TimelineSelectorUpdate,
 	Timeline,
 	Store,
 	TimelineTransactionUpdate,
@@ -80,6 +79,7 @@ export const addAtomToTimeline = (
 					}
 					tl.transactionKey = currentTransactionKey
 					const subscription = currentTransaction.subject.subscribe((update) => {
+						subscription.unsubscribe()
 						if (tl.timeTraveling === false && currentTransactionTime) {
 							if (tl.at !== tl.history.length) {
 								tl.history.splice(tl.at)
@@ -93,10 +93,9 @@ export const addAtomToTimeline = (
 								),
 							}
 							tl.history.push(timelineTransactionUpdate)
+							tl.at = tl.history.length
 							tl.subject.next(timelineTransactionUpdate)
 						}
-						tl.at = tl.history.length
-						subscription.unsubscribe()
 						tl.transactionKey = null
 						store.config.logger?.info(
 							`⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`,
