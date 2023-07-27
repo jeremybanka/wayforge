@@ -14,7 +14,7 @@ export const attachTimelineLogs = (
 			effects: (key) => [
 				({ setSelf }) => {
 					const tl = store.timelines.get(key)
-					tl.subject.subscribe((timelineUpdate) => {
+					tl.subject.subscribe(() => {
 						if (store.operation.open === true) {
 							const subscription = store.subject.operationStatus.subscribe(
 								(operationStatus) => {
