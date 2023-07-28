@@ -1,12 +1,11 @@
 import { render, fireEvent } from "@testing-library/react"
+import type { StateToken } from "atom.io"
+import { useO } from "atom.io/react"
 import type { FC } from "react"
 import { useEffect } from "react"
 import { BrowserRouter } from "react-router-dom"
 
-import type { StateToken } from "~/packages/atom.io/src"
-
 import { Division } from "./components/Demos/Division"
-import { useO } from "./services/store"
 
 export const onChange = [() => undefined, console.log][0]
 

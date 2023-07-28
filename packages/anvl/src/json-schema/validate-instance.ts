@@ -1,5 +1,5 @@
 import { isBoolean } from "fp-ts/boolean"
-import { pipe } from "fp-ts/lib/function"
+import { pipe } from "fp-ts/function"
 import { isNumber } from "fp-ts/number"
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"

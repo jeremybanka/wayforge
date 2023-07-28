@@ -4,11 +4,12 @@ import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
-import { refineJsonType } from "~/packages/anvl/src/json"
+import { isJson, refineJsonType } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
+import { NonJsonEditor } from "./editors-by-type/non-json"
 import { ElasticInput } from "../react-elastic-input"
 
 export type JsonEditorProps_INTERNAL<T extends Json> = {
@@ -45,8 +46,9 @@ export const JsonEditor_INTERNAL = <T extends Json>({
 	Header: HeaderDisplay,
 	Components,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
-	const json = refineJsonType(data)
-	const SubEditor = SubEditors[json.type]
+	const dataIsJson = isJson(data)
+	const refined = dataIsJson ? refineJsonType(data) : { type: `non-json`, data }
+	const SubEditor = dataIsJson ? SubEditors[refined.type] : NonJsonEditor
 
 	const disabled = isReadonly(path)
 
@@ -72,7 +74,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
 					</Components.KeyWrapper>
 				)}
 				<SubEditor
-					data={json.data}
+					data={refined.data}
 					set={set}
 					schema={schema}
 					remove={remove}
@@ -82,14 +84,14 @@ export const JsonEditor_INTERNAL = <T extends Json>({
 					isHidden={isHidden}
 					Components={Components}
 				/>
-				{recast && (
+				{recast && dataIsJson ? (
 					<select
 						onChange={
 							disabled
 								? doNothing
 								: (e) => recast(e.target.value as keyof JsonTypes)
 						}
-						value={json.type}
+						value={refined.type}
 						disabled={disabled}
 					>
 						{Object.keys(SubEditors).map((type) => (
@@ -98,7 +100,7 @@ export const JsonEditor_INTERNAL = <T extends Json>({
 							</option>
 						))}
 					</select>
-				)}
+				) : null}
 			</Components.EditorWrapper>
 		</Components.ErrorBoundary>
 	)

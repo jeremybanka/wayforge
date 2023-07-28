@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync, renameSync } from "fs"
 
-import { pipe } from "fp-ts/lib/function"
-import { isString } from "fp-ts/lib/string"
+import { pipe } from "fp-ts/function"
+import { isString } from "fp-ts/string"
 
 import type { Identified } from "~/packages/anvl/src/id"
 import { identify } from "~/packages/anvl/src/id"

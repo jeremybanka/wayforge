@@ -151,7 +151,6 @@ export const composeExplorer = ({
 		const spaceLayout = useO(findSpaceLayoutNode(spaceId))
 		const viewIds = useO(findSpaceViewsState(spaceId))
 		const focusedViewId = useO(findSpaceFocusedViewState(spaceId))
-		console.log({ spaceLayout, viewIds, focusedViewId })
 		return (
 			<div className="spaces">
 				{spaceLayout.childSpaceIds.length === 0 ? (

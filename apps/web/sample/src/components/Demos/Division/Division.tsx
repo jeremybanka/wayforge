@@ -8,12 +8,14 @@ import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
 import {
 	divisionTimeline,
-	resetEquation,
+	resetEquationTX,
 	useSetTitle,
 } from "../../../services/store"
 
 export const Division: FC = () => {
 	useSetTitle(`Division`)
+
+	const resetEquation = runTransaction(resetEquationTX)
 
 	return (
 		<main
@@ -23,6 +25,8 @@ export const Division: FC = () => {
         button {
           background: blue;
           border: none;
+          color: white;
+          font-family: theia;
         }
         main {
           padding: 5px;
@@ -82,7 +86,7 @@ export const Division: FC = () => {
 				</span>
 			</main>
 			<footer>
-				<button type="button" onClick={runTransaction(resetEquation)}>
+				<button type="button" onClick={() => resetEquation()}>
 					Reset
 				</button>
 				<button type="button" onClick={() => undo(divisionTimeline)}>

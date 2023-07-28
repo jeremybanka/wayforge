@@ -8,6 +8,14 @@ import { stringifyJson } from "."
 import type { JsonArr, JsonObj, Json } from "."
 import { attempt, raiseError } from "../function"
 
+const JSON_PROTOTYPES = [
+	`Array`,
+	`Boolean`,
+	`Number`,
+	`Object`,
+	`String`,
+] as const
+
 export type RefinedJson =
 	| { type: `array`; data: JsonArr }
 	| { type: `boolean`; data: boolean }
@@ -36,14 +44,12 @@ export const refineJsonType = (data: Json): RefinedJson =>
 							Object.getPrototypeOf(data).constructor.name
 					  }" passed to refineJsonType. This is not valid JSON.`,
 		  )
-
 export const isJson = (input: unknown): input is Json => {
-	try {
-		JSON.stringify(input)
-		return true
-	} catch {
-		return false
-	}
+	if (input === null) return true
+	if (input === undefined) return false
+	const prototype = Object.getPrototypeOf(input)?.constructor.name
+	const isJson = JSON_PROTOTYPES.includes(prototype)
+	return isJson
 }
 
 export const isPlainJson = (input: unknown): input is Json =>

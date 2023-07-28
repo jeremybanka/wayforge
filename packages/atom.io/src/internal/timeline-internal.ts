@@ -39,7 +39,11 @@ export type Timeline = {
 	transactionKey: string | null
 	install: (store: Store) => void
 	subject: Subject<
-		TimelineAtomUpdate | TimelineSelectorUpdate | TimelineTransactionUpdate
+		| TimelineAtomUpdate
+		| TimelineSelectorUpdate
+		| TimelineTransactionUpdate
+		| `redo`
+		| `undo`
 	>
 }
 

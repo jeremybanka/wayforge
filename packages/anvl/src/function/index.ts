@@ -59,3 +59,11 @@ export const attempt = (fn: () => void): boolean => {
 		return false
 	}
 }
+
+export const fallback = <T>(fn: () => T, fallbackValue: T): T => {
+	try {
+		return fn()
+	} catch (_) {
+		return fallbackValue
+	}
+}

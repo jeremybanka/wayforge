@@ -1,10 +1,10 @@
-import { flow, pipe } from "fp-ts/function"
-import type { Refinement } from "fp-ts/lib/Refinement"
+import { pipe } from "fp-ts/function"
+import type { Refinement } from "fp-ts/Refinement"
 
 import { deepMob } from "./deepMob"
 import { entriesToRecord, recordToEntries } from "./entries"
 import { isPlainObject } from "./refinement"
-import { includesAny, map, reduce, filter } from "../array"
+import { includesAny, reduce, filter } from "../array"
 import { isUndefined } from "../nullish"
 
 export * from "./access"
@@ -134,4 +134,8 @@ export const tweak = (
 
 export type RequireAtLeastOne<T> = {
 	[K in keyof T]-?: Partial<Pick<T, Exclude<keyof T, K>>> & Required<Pick<T, K>>
+}[keyof T]
+
+export type RequireExactlyOne<T> = {
+	[K in keyof T]-?: Required<Pick<T, K>>
 }[keyof T]

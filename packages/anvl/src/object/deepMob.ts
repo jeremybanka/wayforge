@@ -1,4 +1,4 @@
-import { identity, pipe } from "fp-ts/function"
+import { pipe } from "fp-ts/function"
 
 import type { InspectionResult } from "./sprawl"
 import { sprawl } from "./sprawl"
@@ -14,13 +14,11 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 		data: child,
 	}),
 ): Tree => {
-	const newTree = Array.isArray(tree)
-		? ([...tree] as Tree)
-		: ({ ...tree } as Tree)
+	const newTree = Array.isArray(tree) ? [...tree] : { ...tree }
 	const getNewNode = reduce<string, Tree>((acc, key) => {
 		if (Array.isArray(acc)) return acc[Number(key)]
 		return acc[key]
-	}, newTree)
+	}, newTree as Tree)
 	const getNewParentNode = (path: string[]): Error | Tree =>
 		path.length > 0
 			? pipe(path, slice(0, -1), getNewNode)
@@ -43,5 +41,5 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 	}
 
 	sprawl(tree, setNewNode)
-	return newTree
+	return newTree as Tree
 }

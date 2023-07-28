@@ -1,6 +1,5 @@
 import { IMPLICIT, withdraw } from ".."
 import type {
-	TimelineSelectorUpdate,
 	Timeline,
 	Store,
 	TimelineTransactionUpdate,
@@ -58,9 +57,6 @@ export const addAtomToTimeline = (
 						`Timeline "${tl.key}" has a selectorTime, but no history. This is most likely a bug in AtomIO.`,
 					)
 				}
-				if (mostRecentUpdate.type === `selector_update`) {
-					tl.subject.next(mostRecentUpdate)
-				}
 			}
 			if (
 				currentTransactionKey &&
@@ -83,6 +79,7 @@ export const addAtomToTimeline = (
 					}
 					tl.transactionKey = currentTransactionKey
 					const subscription = currentTransaction.subject.subscribe((update) => {
+						subscription.unsubscribe()
 						if (tl.timeTraveling === false && currentTransactionTime) {
 							if (tl.at !== tl.history.length) {
 								tl.history.splice(tl.at)
@@ -96,10 +93,9 @@ export const addAtomToTimeline = (
 								),
 							}
 							tl.history.push(timelineTransactionUpdate)
+							tl.at = tl.history.length
 							tl.subject.next(timelineTransactionUpdate)
 						}
-						tl.at = tl.history.length
-						subscription.unsubscribe()
 						tl.transactionKey = null
 						store.config.logger?.info(
 							`⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`,
@@ -107,14 +103,16 @@ export const addAtomToTimeline = (
 					})
 				}
 			} else if (currentSelectorKey && currentSelectorTime) {
+				let latestUpdate: TimelineUpdate | undefined = tl.history.at(-1)
+
 				if (currentSelectorTime !== tl.selectorTime) {
-					const newSelectorUpdate: TimelineSelectorUpdate = {
+					latestUpdate = {
 						type: `selector_update`,
 						timestamp: currentSelectorTime,
 						key: currentSelectorKey,
 						atomUpdates: [],
 					}
-					newSelectorUpdate.atomUpdates.push({
+					latestUpdate.atomUpdates.push({
 						key: atom.key,
 						type: `atom_update`,
 						...update,
@@ -122,16 +120,16 @@ export const addAtomToTimeline = (
 					if (tl.at !== tl.history.length) {
 						tl.history.splice(tl.at)
 					}
-					tl.history.push(newSelectorUpdate)
+					tl.history.push(latestUpdate)
 
 					store.config.logger?.info(
 						`⌛ timeline "${tl.key}" got a selector_update "${currentSelectorKey}" with`,
-						newSelectorUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
+						latestUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
 					)
+
 					tl.at = tl.history.length
 					tl.selectorTime = currentSelectorTime
 				} else {
-					const latestUpdate = tl.history.at(-1)
 					if (latestUpdate?.type === `selector_update`) {
 						latestUpdate.atomUpdates.push({
 							key: atom.key,
@@ -144,6 +142,7 @@ export const addAtomToTimeline = (
 						)
 					}
 				}
+				if (latestUpdate) tl.subject.next(latestUpdate)
 			} else {
 				const timestamp = Date.now()
 				tl.selectorTime = null
@@ -160,7 +159,7 @@ export const addAtomToTimeline = (
 				tl.history.push(atomUpdate)
 				tl.subject.next(atomUpdate)
 				store.config.logger?.info(
-					`⌛ timeline "${tl.key}" got a state_update to "${atom.key}"`,
+					`⌛ timeline "${tl.key}" got an atom_update to "${atom.key}"`,
 				)
 				tl.at = tl.history.length
 			}

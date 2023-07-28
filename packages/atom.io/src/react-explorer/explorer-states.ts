@@ -31,7 +31,7 @@ export const makeViewsPerSpaceState = (
 ): AtomToken<Join<null, `viewId`, `spaceId`>> =>
 	atom<Join<null, `viewId`, `spaceId`>>({
 		key: `${key}:views_per_space`,
-		default: new Join({ relationType: `1:n` }),
+		default: new Join({ relationType: `1:n` }).from(`viewId`).to(`spaceId`),
 		effects: [
 			persistAtom<Join<null, `viewId`, `spaceId`>>(localStorage)({
 				stringify: (index) => JSON.stringify(index.toJSON()),

@@ -40,3 +40,24 @@ export const sprawl = (
 	}
 	walk([], tree)
 }
+
+// const aIsJson = isJson(a)
+// 		const bIsJson = isJson(b)
+// 		if (aIsJson && bIsJson) {
+// 			const aRefined = refineJsonType(a)
+// 			const bRefined = refineJsonType(b)
+// 			const typesDoMatch = aRefined.type === bRefined.type
+// 			if (typesDoMatch) {
+// 				const delta = BASE_DIFF_CONFIG[aRefined.type](
+// 					aRefined.data,
+// 					bRefined.data,
+// 				)
+// 				return delta
+// 			} else {
+// 				const typeA = aRefined.type
+// 				const typeB = bRefined.type
+// 				return {
+// 					summary: `Type change: ${typeA} → ${typeB}`,
+// 				}
+// 			}
+// 		} else {

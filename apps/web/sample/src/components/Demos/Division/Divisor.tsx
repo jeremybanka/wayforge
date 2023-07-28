@@ -1,6 +1,7 @@
+import { useIO } from "atom.io/react"
 import type { FC } from "react"
 
-import { divisorState, useIO } from "../../../services/store"
+import { divisorState } from "../../../services/store"
 
 export const Divisor: FC = () => {
 	const [divisor, setDivisor] = useIO(divisorState)

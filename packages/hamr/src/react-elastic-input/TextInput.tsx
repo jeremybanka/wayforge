@@ -10,6 +10,7 @@ export type TextInputProps = {
 	placeholder?: string
 	customCss?: SerializedStyles
 	autoSize?: boolean
+	readOnly?: boolean
 }
 
 export const TextInput: FC<TextInputProps> = ({
