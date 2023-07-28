@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.6.6
+
+### Patch Changes
+
+- 9a2f4023: ✨ `atom.io/react-devtools`: better layout, views for Transactions and Timelines, no more pesky console errors.
+- 9a2f4023: 🎁 `atom.io/introspection` the bare necessities for making devtools for `atom.io`.
+
 ## 0.6.5
 
 ### Patch Changes

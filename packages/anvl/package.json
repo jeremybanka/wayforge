@@ -1,6 +1,6 @@
 {
 	"name": "anvl",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "core typescript utilities for wayforge",
 	"files": [
 		"dist",

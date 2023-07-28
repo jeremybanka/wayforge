@@ -1,5 +1,15 @@
 # anvl
 
+## 0.2.3
+
+### Patch Changes
+
+- 9a2f4023: ✨ `Refinery` class is good for sorting types. Just hand it some type-checker (or `Refinement`) functions and/or class constructors, and it can tell you what's what!
+- 9a2f4023: 🏷️ `ClassSignature` utility type can stand in for any class with a constructor. Useful in generics.
+- 9a2f4023: ✨ `discoverType` is a nice way to get the `prototype.constructor.name` or `typeof` any data.
+- 9a2f4023: ✨ `fallback(fn, val)` tries to return `fn()`, and if it catches, returns `val` instead.
+- 9a2f4023: ✨ `Differ` is a pluggable system that lets you print nice summaries of deltas between data of any types.
+
 ## 0.2.2
 
 ### Patch Changes

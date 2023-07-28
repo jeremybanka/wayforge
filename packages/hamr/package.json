@@ -1,6 +1,6 @@
 {
 	"name": "hamr",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "core react and recoil utilities for wayforge",
 	"main": "object/index.ts",
 	"files": [
