@@ -1,5 +1,13 @@
 # hamr
 
+## 0.4.1
+
+### Patch Changes
+
+- 9a2f4023: 🥅 `react-json-editor` handles non-json content more elegantly now.
+- 9a2f4023: ✨ `react-json-editor` now wraps all primitive editor in the appropriate wrapper passed to the `<JsonEditor>` component.
+- 9a2f4023: ✨ `react-elastic-input` component now accepts a `readOnly` prop.
+
 ## 0.4.0
 
 ### Minor Changes
