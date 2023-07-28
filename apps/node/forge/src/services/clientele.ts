@@ -1,4 +1,4 @@
-import { isString } from "fp-ts/lib/string"
+import { isString } from "fp-ts/string"
 import type { Socket, Server as WebSocketServer } from "socket.io"
 
 import type { ErrorObject } from "~/packages/anvl/src/json-api"

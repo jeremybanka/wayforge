@@ -39,6 +39,7 @@ export const redo__INTERNAL = (
 		}
 	}
 	++timelineData.at
+	timelineData.subject.next(`redo`)
 	timelineData.timeTraveling = false
 	store.config.logger?.info(
 		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
@@ -82,6 +83,7 @@ export const undo__INTERNAL = (
 			break
 		}
 	}
+	timelineData.subject.next(`undo`)
 	timelineData.timeTraveling = false
 	store.config.logger?.info(
 		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,

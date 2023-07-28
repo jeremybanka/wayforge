@@ -56,8 +56,9 @@ export interface Store {
 		selectorCreation: Subject<
 			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 		>
-		transactionCreation: Subject<TransactionToken<unknown>>
+		transactionCreation: Subject<TransactionToken<ƒn>>
 		timelineCreation: Subject<TimelineToken>
+		operationStatus: Subject<OperationProgress>
 	}
 
 	operation: OperationProgress
@@ -96,7 +97,7 @@ export const createStore = (name: string, store: Store | null = null): Store => 
 			selectorCreation: new Subject(),
 			transactionCreation: new Subject(),
 			timelineCreation: new Subject(),
-			...store?.subject,
+			operationStatus: new Subject(),
 		},
 
 		operation: {

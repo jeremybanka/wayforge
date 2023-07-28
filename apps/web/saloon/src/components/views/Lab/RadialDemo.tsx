@@ -24,6 +24,7 @@ export const RadialDemo: React.FC = () => {
 
 					return (
 						<div
+							key={`${idx}`}
 							style={{
 								width: 100,
 								height: 100,

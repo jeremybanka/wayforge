@@ -1,4 +1,4 @@
-import type { ReadonlyRecord } from "fp-ts/lib/ReadonlyRecord"
+import type { ReadonlyRecord } from "fp-ts/ReadonlyRecord"
 
 import { mapObject } from "~/packages/anvl/src/object"
 

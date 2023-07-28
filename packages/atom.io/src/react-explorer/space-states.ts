@@ -21,7 +21,9 @@ export const makeSpaceLayoutState = (
 ): AtomToken<Join<{ size: number }, `parent`, `child`>> =>
 	atom({
 		key: `${key}:space_layout`,
-		default: new Join({ relationType: `1:n` }),
+		default: new Join<{ size: number }>({ relationType: `1:n` })
+			.from(`parent`)
+			.to(`child`),
 		effects: [
 			persistAtom<Join<{ size: number }, `parent`, `child`>>(localStorage)({
 				stringify: (join) => stringifyJson(join.toJSON()),

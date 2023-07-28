@@ -1,12 +1,13 @@
 import { css } from "@emotion/react"
+import { atom, selector, selectorFamily } from "atom.io"
+import { useIO, useO } from "atom.io/react"
 import type { FC } from "react"
 import { useTransition } from "react"
 
-import { atom, selector, selectorFamily } from "~/packages/atom.io/src"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { Luum, setHue, setLum, setSat } from "~/packages/luum/src"
 
-import { useIO, useO, useSetTitle } from "../../../services/store"
+import { useSetTitle } from "../../../services/store"
 
 const colorAtom = atom<Luum>({
 	key: `color`,

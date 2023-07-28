@@ -1,7 +1,5 @@
 import type { Location } from "react-router-dom"
 
-import { key } from "~/packages/anvl/src/object"
-
 import { persistStringSetAtom } from "./explorer-effects"
 import type { AtomToken } from ".."
 import type { AtomFamily } from "../atom"

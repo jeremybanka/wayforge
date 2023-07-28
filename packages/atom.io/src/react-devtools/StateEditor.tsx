@@ -1,17 +1,17 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
-import type { StoreHooks } from "atom.io/react"
+import { useO, useIO } from "atom.io/react"
 import type { FC } from "react"
 
-import { isPlainJson } from "~/packages/anvl/src/json"
+import { fallback } from "~/packages/anvl/src/function"
+import { isJson } from "~/packages/anvl/src/json"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 
 export const StateEditor: FC<{
-	storeHooks: StoreHooks
 	token: StateToken<unknown>
-}> = ({ storeHooks, token }) => {
-	const [data, set] = storeHooks.useIO(token)
-	return isPlainJson(data) ? (
+}> = ({ token }) => {
+	const [data, set] = useIO(token)
+	return isJson(data) ? (
 		<JsonEditor data={data} set={set} schema={true} />
 	) : (
 		<div className="json_editor">
@@ -23,7 +23,7 @@ export const StateEditor: FC<{
 						? `Map ` + JSON.stringify([...data])
 						: Object.getPrototypeOf(data).constructor.name +
 						  ` ` +
-						  JSON.stringify(data)
+						  fallback(() => JSON.stringify(data), `?`)
 				}
 				disabled={true}
 			/>
@@ -31,12 +31,11 @@ export const StateEditor: FC<{
 	)
 }
 
-export const ReadonlySelectorEditor: FC<{
-	storeHooks: StoreHooks
+export const ReadonlySelectorViewer: FC<{
 	token: ReadonlySelectorToken<unknown>
-}> = ({ storeHooks, token }) => {
-	const data = storeHooks.useO(token)
-	return isPlainJson(data) ? (
+}> = ({ token }) => {
+	const data = useO(token)
+	return isJson(data) ? (
 		<JsonEditor
 			data={data}
 			set={() => null}
@@ -62,11 +61,10 @@ export const ReadonlySelectorEditor: FC<{
 }
 
 export const StoreEditor: FC<{
-	storeHooks: StoreHooks
 	token: ReadonlySelectorToken<unknown> | StateToken<unknown>
-}> = ({ storeHooks, token }) => {
+}> = ({ token }) => {
 	if (token.type === `readonly_selector`) {
-		return <ReadonlySelectorEditor storeHooks={storeHooks} token={token} />
+		return <ReadonlySelectorViewer token={token} />
 	}
-	return <StateEditor storeHooks={storeHooks} token={token} />
+	return <StateEditor token={token} />
 }

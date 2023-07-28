@@ -1,9 +1,12 @@
 main.atom_io_devtools {
   --fg-color: #eee;
   --bg-color: #111;
+  --bg-tint1: #222;
+  --fg-border: 1px solid var(--fg-color);
   @media (prefers-color-scheme: light) {
-    --fg-color: #222;
-    --bg-color: #ccc;
+    --fg-color: #444;
+    --bg-color: #ddd;
+    --bg-tint1: #e3e3e3;
   }
   box-sizing: border-box;
   color: var(--fg-color);
@@ -17,31 +20,208 @@ main.atom_io_devtools {
   flex-flow: column;
   max-height: 800px;
   width: 100%;
-  max-width: 460px;
+  max-width: 500px;
   overflow-y: scroll;
-  padding: 5px;
-  header {
+  * {
+    font-size: 16px;
+    font-family: theia, monospace;
+  }
+  > header {
+    padding: 5px;
+    padding-left: 10px;
+    padding-bottom: 0;
     display: flex;
     justify-content: space-between;
     h1 {
       font-size: inherit;
       margin: 0;
+      font-size: 24px;
+      font-family: charter;
     }
+    nav {
+      display: flex;
+      flex-flow: row nowrap;
+      button {
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: none;
+        margin-bottom: -2px;
+        z-index: 1000;
+        &:disabled {
+          cursor: default;
+          background-color: var(--bg-tint1);
+          color: var(--fg-color);
+          border: var(--fg-border);
+          border-bottom: none;
+        }
+      }
+    }
+  }
+  > main {
+    background: var(--bg-tint1);
   }
   main {
     overflow-y: scroll;
     flex-grow: 1;
-    section {
-      margin-top: 30px;
-      h2 {
-        font-size: inherit;
-        margin: 0;
+    display: flex;
+    flex-flow: column;
+    gap: 0;
+    article.index {
+      .node .node {
+        border-right: var(--fg-border);
+        padding-right: 0;
+        background: #fff3;
+      }
+      .node > .node {
+        margin: 5px 0;
+        margin-left: 12px;
+        border-left: var(--fg-border);
       }
       .node {
-        border: 1px solid var(--fg-color);
-        padding: 5px;
-        margin: 5px;
+        border-top: var(--fg-border);
         overflow-x: scroll;
+        padding: 5px;
+        &:last-of-type {
+          border-bottom: var(--fg-border);
+        }
+        &.transaction_update {
+          padding: 0;
+        }
+        header {
+          display: flex;
+          flex-flow: row;
+          gap: 5px;
+          position: sticky;
+          z-index: 999;
+          top: 0;
+          button.carat {
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 20px;
+            &.open {
+              transform: rotate(90deg);
+            }
+            &:disabled {
+              cursor: default;
+            }
+          }
+          label {
+            display: flex;
+            flex-flow: row;
+            gap: 5px;
+            cursor: help;
+            h2 {
+              display: inline-block;
+              margin: 0;
+            }
+            .detail {
+              color: #777;
+              @media (prefers-color-scheme: light) {
+                color: #999;
+              }
+            }
+          }
+        }
+        main {
+          margin-left: 15px;
+        }
+      }
+      section.transaction_log {
+        margin-top: 0;
+        header: {
+          padding: 5px;
+        }
+        main {
+          display: flex;
+          flex-flow: row wrap;
+          gap: 5px;
+          .transaction_update {
+            width: 100%;
+            display: flex;
+            flex-flow: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            justify-items: flex-start;
+            align-content: flex-start;
+            border-left: var(--fg-border);
+            border-top: var(--fg-border);
+            header {
+              padding: 5px;
+              h4 {
+                margin: 0;
+                padding: 0;
+                font-size: inherit;
+              }
+            }
+            main {
+              margin-left: 0;
+              display: flex;
+              flex-flow: column;
+              gap: 0px;
+              border-left: 1px solid #333;
+              section ~ section {
+                border-top: 1px solid #333;
+              }
+              section {
+                padding: 5px;
+                &.transaction_output {
+                  border-right: none;
+                }
+                &.transaction_impact {
+                  padding: 5px;
+                }
+                margin: 0;
+                article {
+                  border-left: var(--fg-border);
+                  border-right: var(--fg-border);
+                  .summary {
+                    white-space: nowrap;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      section.timeline_log {
+        header {
+          display: flex;
+          label {
+            display: flex;
+            width: 100%;
+            flex-grow: 1;
+            .gap {
+              flex-grow: 1;
+            }
+            nav {
+              display: flex;
+              flex-flow: row nowrap;
+              gap: 5px;
+            }
+          }
+        }
+        .timeline_update {
+          padding: 5px;
+          border-left: var(--fg-border);
+          h4 {
+            margin: 0;
+            padding: 0;
+            font-size: inherit;
+          }
+          main {
+            margin: 0;
+            .node.atom_update {
+              border-left: var(--fg-border);
+            }
+          }
+        }
+        .you_are_here {
+          background: var(--fg-color);
+          color: var(--bg-color);
+          text-align: center;
+        }
       }
     }
   }
@@ -61,7 +241,7 @@ main.atom_io_devtools {
 
   .json_editor {
     input {
-      font-size: 20px;
+      // font-size: 20px;
       font-family: theia;
       border: none;
       border-bottom: 1px solid;
@@ -106,6 +286,7 @@ main.atom_io_devtools {
       background-color: #f055;
     }
     .json_editor_key {
+      padding-right: 10px;
       input {
         color: #999;
         @media (prefers-color-scheme: light) {
@@ -121,7 +302,7 @@ main.atom_io_devtools {
       }
       .json_editor_properties {
         > * {
-          border-bottom: 2px solid #333;
+          border-bottom: var(--fg-border);
           margin-bottom: 2px;
         }
       }

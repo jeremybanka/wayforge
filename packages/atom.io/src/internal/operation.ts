@@ -42,6 +42,7 @@ export const closeOperation = (store: Store): void => {
 	const core = target(store)
 	core.operation = { open: false }
 	store.config.logger?.info(`🔴 operation done`)
+	store.subject.operationStatus.next(core.operation)
 }
 
 export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
