@@ -14,7 +14,7 @@
 		"test:once": "vitest run"
 	},
 	"dependencies": {
-		"fp-ts": "2.16.0"
+		"fp-ts": "2.16.1"
 	},
 	"devDependencies": {
 		"@types/node": "18.17.1",
