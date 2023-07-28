@@ -25,7 +25,7 @@
 		"@changesets/cli": "2.26.2",
 		"c8": "8.0.1",
 		"cross-env": "7.0.3",
-		"fp-ts": "2.16.0",
+		"fp-ts": "2.16.1",
 		"json-schema-to-zod": "1.1.1",
 		"mock-fs": "5.2.0",
 		"rome": "12.1.3",
