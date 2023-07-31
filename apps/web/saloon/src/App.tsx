@@ -22,7 +22,7 @@ export const App: React.FC = () => (
       display: flex;
       flex-flow: column;
       position: relative;
-      header {
+      > header {
         display: flex;
         padding: 10px;
         gap: 10px;
