@@ -1,11 +1,11 @@
-import { css } from "@emotion/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
-import * as React from "react"
+import type { FC } from "react"
 import { Link, Route, Routes, Outlet } from "react-router-dom"
 
 import { useIO, useO } from "~/packages/atom.io/src/react"
 import { Radial } from "~/packages/hamr/src/react-radial/Radial"
 
+import scss from "./App.module.scss"
 import { main } from "./components/containers/<main>"
 import { Lab } from "./components/views/Lab"
 import { RadialDemo } from "./components/views/Lab/RadialDemo"
@@ -14,32 +14,15 @@ import { RoomRoute } from "./components/views/Room/Room"
 import { windowMousePositionState } from "./services/mouse-position"
 import { actionsState, radialModeState } from "./services/radial"
 
-export const App: React.FC = () => (
-	<main
-		css={css`
-      height: 100vh;
-      background: var(--bg-color);
-      display: flex;
-      flex-flow: column;
-      position: relative;
-      > header {
-        display: flex;
-        padding: 10px;
-        gap: 10px;
-      }
-    `}
-	>
+export const App: FC = () => (
+	<main className={scss.class}>
 		<header>
 			<nav>
 				<Link to="/">{`<-`}</Link>
 				<Link to="/lab">🧪</Link>
 			</nav>
 		</header>
-		<main.auspicious
-			css={css`
-        flex-grow: 1;
-      `}
-		>
+		<main.auspicious>
 			<Routes>
 				<Route path="/" element={<Outlet />}>
 					<Route index element={<Lobby />} />

@@ -1,7 +1,7 @@
 {
 	"extends": "../../../tsconfig.json",
 	"compilerOptions": {
-		"jsxImportSource": "react",
+		"jsxImportSource": "@emotion/react",
 		"jsx": "react-jsx"
 	},
 	"include": ["./src"]

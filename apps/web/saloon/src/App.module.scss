@@ -1,0 +1,15 @@
+.class {
+  height: 100vh;
+  background: var(--bg-color);
+  display: flex;
+  flex-flow: column;
+  position: relative;
+  > header {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+  }
+  > main {
+    flex-grow: 1;
+  }
+}

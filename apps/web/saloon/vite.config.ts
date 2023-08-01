@@ -10,7 +10,6 @@ export default defineConfig({
 	plugins: [
 		preact(),
 		tsconfigPaths(),
-		vanillaExtractPlugin(),
 		svgrPlugin({
 			svgrOptions: {
 				icon: true,
@@ -20,7 +19,7 @@ export default defineConfig({
 	],
 	server: {
 		fs: {
-			allow: [`src`], // `../../../packages`],
+			allow: [`src`],
 			strict: true,
 		},
 	},
@@ -30,12 +29,6 @@ export default defineConfig({
 	esbuild: {
 		exclude: `../sample`,
 	},
-
-	// esbuild: {
-	//   define: {
-	//     this: `window`,
-	//   },
-	// },
 
 	test: {
 		globals: true,

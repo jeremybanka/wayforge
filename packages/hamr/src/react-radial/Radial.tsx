@@ -18,12 +18,12 @@ export type RadialProps = {
 	size?: number
 }
 
-export const Radial: React.FC<RadialProps> = ({
+export const Radial = ({
 	useActions,
 	useMousePosition,
 	useMode,
 	size = 60,
-}) => {
+}: RadialProps): JSX.Element => {
 	const actions = useActions()
 	const position = useMousePosition()
 	const [mode, setMode] = useMode()
