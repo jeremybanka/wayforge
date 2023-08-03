@@ -13,5 +13,5 @@ const FlashFire = CurledLeft(motion.button, {
 
 export const button = {
 	ff: (props: ButtonHTMLAttributes<HTMLButtonElement>): JSX.Element =>
-		h(FlashFire, { ...props, className: flashFire.class }),
+		h(FlashFire as any, { ...props, className: flashFire.class }),
 }

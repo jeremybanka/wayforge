@@ -4,5 +4,5 @@
 		"jsxImportSource": "react",
 		"jsx": "react-jsx"
 	},
-	"include": ["./src", "../../../lasertag.d.ts"]
+	"include": ["./src", "./lasertag.d.ts"]
 }

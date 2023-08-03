@@ -1,6 +1,5 @@
 /// <reference types="vitest" />
 import preact from "@preact/preset-vite"
-import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import { defineConfig } from "vite"
 import svgrPlugin from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
