@@ -1,7 +1,6 @@
 import { useO, useIO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
-import type { FC } from "react"
 
 import {
 	atomIndex,
@@ -16,7 +15,7 @@ import { TransactionIndex } from "./TransactionIndex"
 
 import "./devtools.scss"
 
-export const AtomIODevtools: FC = () => {
+export const AtomIODevtools = (): JSX.Element => {
 	const constraintsRef = useRef(null)
 
 	const [devtoolsAreOpen, setDevtoolsAreOpen] = useIO(devtoolsAreOpenState)

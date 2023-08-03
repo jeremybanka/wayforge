@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import { usePull, usePullFamily } from "atom.io/realtime-react"
 import type { FC } from "react"
 
@@ -14,6 +13,7 @@ import {
 
 import { Controls } from "./Controls"
 import { EnemyDomains } from "./EnemyDomains"
+import scss from "./Game.module.scss"
 import { MyDomain } from "./MyDomain"
 import { Public } from "./Public"
 import { h3 } from "../../containers/<hX>"
@@ -29,27 +29,7 @@ export const Game: FC = () => {
 	usePullFamily(findCardGroupState)
 
 	return (
-		<div
-			css={css`
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        flex-grow: 1;
-        border: 1px solid #9992;
-        background-color: #bbb1;
-        h3 {
-          padding: 0px 32px 0px 8px;
-          background-color: #9992;
-          margin: 0;
-        }
-        div {
-          padding: 5px;
-          background-color: #9992;
-          width: 100%;
-        }
-      `}
-		>
+		<div className={[`game`, scss.class].join(` `)}>
 			<h3.wedge>Game</h3.wedge>
 			<EnemyDomains />
 			<Public />

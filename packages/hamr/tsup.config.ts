@@ -1,6 +1,7 @@
 import { defineConfig } from "tsup"
 
 const entry = [
+	`react-click-handlers`,
 	`react-css-vars`,
 	`react-elastic-input`,
 	`react-error-boundary`,

@@ -1,0 +1,18 @@
+.class {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid var(--fg-color);
+  background: var(--bg-color);
+  display: flex;
+  flex-direction: row-reverse;
+  .icon {
+    user-select: none;
+    width: 45px;
+    height: 45px;
+    svg {
+      width: 45px;
+      height: 45px;
+    }
+  }
+}

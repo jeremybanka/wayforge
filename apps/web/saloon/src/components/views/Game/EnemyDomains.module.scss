@@ -1,0 +1,8 @@
+.class {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  > * ~ * {
+    margin-left: 10px;
+  }
+}
