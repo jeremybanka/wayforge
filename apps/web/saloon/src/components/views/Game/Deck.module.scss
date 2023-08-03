@@ -1,0 +1,10 @@
+.class {
+  padding: 5px;
+  > div {
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    > * ~ * {
+      margin-bottom: -119.5px;
+    }
+  }
+}

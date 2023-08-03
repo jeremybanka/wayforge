@@ -14,20 +14,22 @@ export const Controls: FC = () => {
 	return (
 		<div className="controls">
 			<h4>Controls</h4>
-			<button.flashFire
-				onClick={() =>
-					myId ? addHand({ playerId: myId, groupId: nanoid() }) : null
-				}
-			>
-				Add Hand
-			</button.flashFire>
-			<button.flashFire
-				onClick={() =>
-					spawnClassicDeck(nanoid(), Array.from({ length: 52 }).map(nanoid))
-				}
+			{myId ? (
+				<button.ff
+					onClick={() => addHand({ playerId: myId, groupId: nanoid() })}
+				>
+					Add Hand
+				</button.ff>
+			) : null}
+			<button.ff
+				onClick={() => {
+					const deckId = nanoid()
+					const cardIds = Array.from({ length: 52 }).map(nanoid)
+					spawnClassicDeck(deckId, cardIds)
+				}}
 			>
 				Add Classic Deck
-			</button.flashFire>
+			</button.ff>
 		</div>
 	)
 }
