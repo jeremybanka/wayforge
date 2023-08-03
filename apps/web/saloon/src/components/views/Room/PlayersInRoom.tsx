@@ -1,4 +1,5 @@
 import { useO } from "atom.io/react"
+import { Id } from "hamr/react-id"
 import type { FC } from "react"
 
 import { findPlayersInRoomState } from "~/apps/node/lodge/src/store/rooms"
@@ -10,7 +11,7 @@ export const PlayersInRoom: FC<{ roomId: string }> = ({ roomId }) => {
 	return (
 		<div className={scss.class}>
 			{playersInRoom.map((player) => (
-				<div key={player.id}>{player.id.slice(0, 2)}</div>
+				<Id id={player.id} key={player.id} />
 			))}
 		</div>
 	)

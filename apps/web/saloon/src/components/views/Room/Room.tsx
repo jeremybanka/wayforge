@@ -12,6 +12,7 @@ import {
 	usePullFamilyMember,
 	useServerAction,
 } from "~/packages/atom.io/src/realtime-react"
+import { Id } from "~/packages/hamr/src/react-id"
 
 import { PlayersInRoom } from "./PlayersInRoom"
 import scss from "./Room.module.scss"
@@ -49,7 +50,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 						{`<-`}
 					</button>
 				</span>
-				<h2>{roomId.slice(0, 2)}</h2>
+				<Id id={roomId} />
 				<PlayersInRoom roomId={roomId} />
 			</header.auspicious0>
 

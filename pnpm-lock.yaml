@@ -624,6 +624,12 @@ importers:
 
   packages/hamr:
     dependencies:
+      '@floating-ui/react':
+        specifier: 0.25.0
+        version: 0.25.0(react-dom@18.2.0)(react@18.2.0)
+      '@floating-ui/react-dom':
+        specifier: ^2.0.1
+        version: 2.0.1(react-dom@18.2.0)(react@18.2.0)
       ajv:
         specifier: 8.12.0
         version: 8.12.0
@@ -2362,7 +2368,7 @@ packages:
       '@motionone/easing': 10.15.1
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/dom@10.16.2:
@@ -2373,14 +2379,14 @@ packages:
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/easing@10.15.1:
     resolution: {integrity: sha512-6hIHBSV+ZVehf9dcKZLT7p5PEKHGhDwky2k8RKkmOvUoYP3S+dXsKupyZpqx5apjd9f+php4vXk4LuS+ADsrWw==}
     dependencies:
       '@motionone/utils': 10.15.1
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/generators@10.15.1:
@@ -2388,7 +2394,7 @@ packages:
     dependencies:
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/types@10.15.1:
@@ -2400,7 +2406,7 @@ packages:
     dependencies:
       '@motionone/types': 10.15.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:

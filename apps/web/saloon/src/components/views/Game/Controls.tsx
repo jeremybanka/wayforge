@@ -12,24 +12,22 @@ export const Controls: FC = () => {
 	const addHand = useServerAction(addHandTx)
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	return (
-		<div className="controls">
-			<h4>Controls</h4>
+		<controls>
+			<h>Controls</h>
 			{myId ? (
 				<button.ff
+					children="Add Hand"
 					onClick={() => addHand({ playerId: myId, groupId: nanoid() })}
-				>
-					Add Hand
-				</button.ff>
+				/>
 			) : null}
 			<button.ff
+				children="Add Deck"
 				onClick={() => {
 					const deckId = nanoid()
 					const cardIds = Array.from({ length: 52 }).map(nanoid)
 					spawnClassicDeck(deckId, cardIds)
 				}}
-			>
-				Add Classic Deck
-			</button.ff>
-		</div>
+			/>
+		</controls>
 	)
 }
