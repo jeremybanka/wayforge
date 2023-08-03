@@ -3,17 +3,17 @@
 	"version": "0.4.1",
 	"description": "core react and recoil utilities for wayforge",
 	"main": "object/index.ts",
-	"files": [
-		"**/*"
-	],
+	"files": ["**/*"],
 	"dependencies": {
+		"@floating-ui/react": "0.25.0",
+		"@floating-ui/react-dom": "^2.0.1",
 		"ajv": "8.12.0",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.1",
 		"framer-motion": "10.15.0"
 	},
 	"scripts": {
-		"build": "tsup",
+		"build": "vite build",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
@@ -32,15 +32,18 @@
 		"eslint": "8.46.0",
 		"happy-dom": "10.6.3",
 		"jsdom": "22.1.0",
+		"preact": "10.16.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-router-dom": "6.14.2",
 		"recoil": "0.7.7",
 		"rxjs": "7.8.1",
+		"sass": "1.64.2",
 		"tsup": "7.2.0",
 		"typescript": "5.1.6",
 		"vite": "4.4.8",
 		"vite-tsconfig-paths": "4.2.0",
+		"vite-plugin-dts": "3.4.0",
 		"vitest": "0.34.1"
 	},
 	"peerDependencies": {

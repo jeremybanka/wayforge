@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import { AnimatePresence } from "framer-motion"
 import { makeMouseHandlers } from "hamr/react-click-handlers"
 import { setCssVars } from "hamr/react-css-vars"
@@ -6,6 +5,8 @@ import * as React from "react"
 
 import type { RadialAction, RadialMode } from "."
 import { header } from "./<header>"
+
+import "./react-radial-styles.scss"
 
 export type RadialProps = {
 	mouseActivationMethod?: string
@@ -18,12 +19,12 @@ export type RadialProps = {
 	size?: number
 }
 
-export const Radial: React.FC<RadialProps> = ({
+export const Radial = ({
 	useActions,
 	useMousePosition,
 	useMode,
 	size = 60,
-}) => {
+}: RadialProps): JSX.Element => {
 	const actions = useActions()
 	const position = useMousePosition()
 	const [mode, setMode] = useMode()
@@ -54,6 +55,7 @@ export const Radial: React.FC<RadialProps> = ({
 	return (
 		<>
 			<div
+				className="react_radial_0123456790"
 				style={setCssVars({
 					[`--action-count`]: `${actions.length}`,
 					[`--x`]: currentPosition.x + `px`,
@@ -67,56 +69,6 @@ export const Radial: React.FC<RadialProps> = ({
 						? `1px solid #fff`
 						: `10px solid #000`,
 				})}
-				css={css`
-          pointer-events: none;
-          top: calc((var(--y)) - var(--ring-size) / 2);
-          left: calc((var(--x)) - var(--ring-size) / 2);
-          height: var(--ring-size);
-          width: var(--ring-size);
-          position: fixed;
-          border-radius: 50%;
-          z-index: 20;
-          transition: all 100ms ease-in;
-          opacity: var(--is-active-opacity);
-          .radial-option {
-            color: #fff;
-            transition: all 100ms ease-in;
-            pointer-events: var(--is-active-pointer-events);
-            user-select: none;
-            position: absolute;
-            border: var(--is-active-border);
-            background: var(--is-active-background);
-            border-radius: 50%;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 300;
-            font-size: 0.8em;
-            &:hover {
-              background: #fff;
-              color: #000;
-            }
-            &:active,
-            &:hover.pressed {
-              background: #000;
-              color: #fff;
-            }
-            &.back {
-              position: fixed;
-              top: calc(var(--y) - var(--option-size) / 4);
-              left: calc(var(--x) - var(--option-size) / 4);
-              height: calc(var(--option-size) * 0.5);
-              width: calc(var(--option-size) * 0.5);
-              background: #000;
-              color: #fff;
-              &:hover {
-                background: #fff;
-                color: #000;
-              }
-            }
-          }
-        `}
 			>
 				{mode === `open` ? (
 					<div
@@ -135,6 +87,7 @@ export const Radial: React.FC<RadialProps> = ({
 							className={
 								`radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
 							}
+							style={setCssVars({ [`--idx`]: `${idx}` })}
 							{...makeMouseHandlers({
 								onMouseUpR: () => (
 									opt.do(),
@@ -148,25 +101,6 @@ export const Radial: React.FC<RadialProps> = ({
 							})}
 							onMouseEnter={() => (label.current = opt.label)}
 							onMouseLeave={() => (label.current = null)}
-							style={setCssVars({
-								[`--idx`]: `${idx}`,
-							})}
-							css={css`
-                --opt-ratio: calc(var(--idx) / var(--action-count));
-                --opt-angle: calc(90deg + (-360deg * var(--opt-ratio)));
-                --yy: sin(var(--opt-angle));
-                --xx: cos(var(--opt-angle));
-                height: var(--option-size);
-                width: var(--option-size);
-                bottom: calc(
-                  ((var(--ring-size) / 2) - var(--option-size) / 2) +
-                    (var(--yy) * var(--ring-size) / 2)
-                );
-                left: calc(
-                  ((var(--ring-size) / 2) - var(--option-size) / 2) +
-                    (var(--xx) * var(--ring-size) / 2)
-                );
-              `}
 						>
 							{idx + 1}
 						</div>
@@ -174,27 +108,12 @@ export const Radial: React.FC<RadialProps> = ({
 				})}
 			</div>
 			<footer
+				className="react_radial_0123456790__info"
 				style={setCssVars({
 					[`--x`]: currentPosition.x + `px`,
 					[`--y`]: currentPosition.y + `px`,
 					[`--size`]: ringRatio * size + `px`,
 				})}
-				css={css`
-          pointer-events: none;
-          position: fixed;
-          top: calc(var(--y) - (100px + (var(--size) / 2)));
-          left: calc(var(--x) - 250px);
-          width: 500px;
-          height: var(--size);
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-items: flex-start;
-          color: var(--bg-color);
-          header {
-            padding: 10px 20px;
-          }
-        `}
 			>
 				<AnimatePresence>
 					{label.current === null ? null : (

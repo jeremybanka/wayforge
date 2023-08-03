@@ -1,5 +1,5 @@
 import type { Modifier } from "~/packages/anvl/src/function"
-import type { LuumSpec } from "~/packages/luum/src"
+import type { HSL, LuumSpec } from "~/packages/luum/src"
 
 export const contrastMax: Modifier<LuumSpec> = (color) => ({
 	...color,
@@ -17,3 +17,10 @@ export const contrastSoft: Modifier<LuumSpec> = (color) =>
 		: color.lum < 0.25
 		? { ...color, lum: color.lum + (1 - color.lum) / 2 }
 		: { ...color, lum: color.lum > 0.666 ? 1 : 0 }
+
+export const offset =
+	(offsetAmount: number): Modifier<HSL> =>
+	(color) => ({
+		...color,
+		lum: color.lum > 0.666 ? color.lum - offsetAmount : color.lum + offsetAmount,
+	})

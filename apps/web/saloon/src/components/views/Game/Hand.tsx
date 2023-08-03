@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { useServerAction } from "atom.io/realtime-react"
 import { AnimatePresence } from "framer-motion"
@@ -10,6 +9,7 @@ import {
 } from "~/apps/node/lodge/src/store/game"
 
 import { CardBack, CardFace } from "./Card"
+import scss from "./Hand.module.scss"
 import { myHandsIndex } from "./store/my-hands-index"
 import { publicDeckIndex } from "./store/public-deck-index"
 import { useRadial } from "../../../services/radial"
@@ -37,18 +37,8 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 				exit={{ opacity: 0 }}
 				{...handlers}
 			>
-				{/* <button.flashFire
-          onClick={
-          }
-        >
-          Deal
-        </button.flashFire> */}
 				<div>{cardIds.length}</div>
-				<div
-					css={css`
-            display: flex;
-          `}
-				>
+				<div className={scss.class}>
 					{isMyHand
 						? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
 						: cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
