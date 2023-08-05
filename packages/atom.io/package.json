@@ -121,7 +121,7 @@
 		"@types/tmp": "0.2.3",
 		"eslint": "8.46.0",
 		"framer-motion": "10.15.0",
-		"happy-dom": "10.7.0",
+		"happy-dom": "10.8.0",
 		"preact": "10.16.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
