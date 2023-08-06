@@ -707,8 +707,8 @@ importers:
         specifier: 4.4.8
         version: 4.4.8(@types/node@18.17.1)(sass@1.64.2)
       vite-plugin-dts:
-        specifier: 3.5.0
-        version: 3.5.0(typescript@5.1.6)(vite@4.4.8)
+        specifier: 3.5.1
+        version: 3.5.1(typescript@5.1.6)(vite@4.4.8)
       vite-tsconfig-paths:
         specifier: 4.2.0
         version: 4.2.0(typescript@5.1.6)(vite@4.4.8)
@@ -2591,7 +2591,7 @@ packages:
       '@rushstack/ts-command-line': 4.15.1
       colors: 1.2.5
       lodash: 4.17.21
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 7.5.4
       source-map: 0.6.1
       typescript: 5.0.4
@@ -2884,7 +2884,7 @@ packages:
       fs-extra: 7.0.1
       import-lazy: 4.0.0
       jju: 1.4.0
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 7.5.4
       z-schema: 5.0.5
     dev: true
@@ -2892,7 +2892,7 @@ packages:
   /@rushstack/rig-package@0.4.0:
     resolution: {integrity: sha512-FnM1TQLJYwSiurP6aYSnansprK5l8WUK8VG38CmAaZs29ZeL1msjK0AP1VS4ejD33G0kE/2cpsPsS9jDenBMxw==}
     dependencies:
-      resolve: 1.22.2
+      resolve: 1.22.3
       strip-json-comments: 3.1.1
     dev: true
 
@@ -4885,7 +4885,7 @@ packages:
     dependencies:
       debug: 3.2.7
       is-core-module: 2.12.1
-      resolve: 1.22.2
+      resolve: 1.22.3
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -6608,7 +6608,7 @@ packages:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
     dev: true
@@ -7354,7 +7354,6 @@ packages:
       is-core-module: 2.12.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
-    dev: false
 
   /resolve@2.0.0-next.4:
     resolution: {integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ==}
@@ -8414,8 +8413,8 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.5.0(typescript@5.1.6)(vite@4.4.8):
-    resolution: {integrity: sha512-oQKQmIJCWRwQQF1/BnjqBqZHLwThjWQ96vkfmwTi0LA8ArMdjUv1l4V5k64SpvlniVj2XlTbfvAPcTYZSrUEVg==}
+  /vite-plugin-dts@3.5.1(typescript@5.1.6)(vite@4.4.8):
+    resolution: {integrity: sha512-wrrIvRTWq9xL0HKOUvJyJ+wivEoLsZ2GU2I2000v5tAAUtu9gE+5OUmUJ9yNkmyYz3tSPedkkiXHeb5jnnSXhg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
