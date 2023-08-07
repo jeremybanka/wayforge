@@ -34,7 +34,6 @@ export const SubEditors: Record<
 export type JsonEditorProps<T extends Json> = {
 	data: T
 	set: (valOrUpdater: T | ((currVal: T) => T)) => void
-	ref?: RefObject<HTMLInputElement>
 	name?: string
 	rename?: (newKey: string) => void
 	remove?: () => void
