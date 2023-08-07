@@ -30,7 +30,7 @@
 		"@types/react": "18.2.18",
 		"@vitejs/plugin-react": "4.0.4",
 		"eslint": "8.46.0",
-		"happy-dom": "10.8.0",
+		"happy-dom": "10.8.1",
 		"jsdom": "22.1.0",
 		"preact": "10.16.0",
 		"react": "18.2.0",
