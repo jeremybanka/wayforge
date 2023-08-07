@@ -12,7 +12,10 @@ import {
 	setLogLevel,
 	setState,
 	subscribe,
+	subscribeToTimeline,
+	timeline,
 	transaction,
+	undo,
 } from "../src"
 import { IMPLICIT, Subject, withdraw } from "../src/internal"
 
@@ -188,6 +191,7 @@ describe(`hyperefficiency patterns`, () => {
 		}
 
 		public do(event: TimelineEvent): this {
+			console.log(`do`, event)
 			this.mode = PLAYBACK
 			const [_, next] = event.split(`::`)
 			const [type, a, b] = next.split(`:`)
@@ -265,6 +269,21 @@ describe(`hyperefficiency patterns`, () => {
 			effects: [
 				({ onSet, setSelf }) => {
 					onSet(({ newValue }) => {
+						const timelineId = IMPLICIT.STORE.timelineAtoms.getRelatedId(`dict`)
+						if (timelineId) {
+							const timelineData = IMPLICIT.STORE.timelines.get(timelineId)
+							if (timelineData.timeTraveling) {
+								const unsubscribe = subscribeToTimeline(
+									{ key: timelineId, type: `timeline` },
+									(update) => {
+										console.log(`update`, update)
+										unsubscribe()
+										setState(dictState, (dict) => dict.do(newValue))
+									},
+								)
+							}
+						}
+
 						const { unsubscribe } =
 							IMPLICIT.STORE.subject.operationStatus.subscribe(() => {
 								unsubscribe()
@@ -278,6 +297,11 @@ describe(`hyperefficiency patterns`, () => {
 					})
 				},
 			],
+		})
+
+		const eventTL = timeline({
+			key: `eventTL`,
+			atoms: [latestEventState],
 		})
 
 		subscribe(dictState, UTIL.stdout)
@@ -295,6 +319,14 @@ describe(`hyperefficiency patterns`, () => {
 		expect(getState(dictState).get(`1`)).toEqual(new Set([`a`]))
 		expect(getState(dictState).get(`2`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
+
+		undo(eventTL)
+
+		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`, `2`]))
+
+		undo(eventTL)
+
+		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`]))
 	})
 
 	test(`(FAIL) use the atomic store instead of a dict`, () => {
