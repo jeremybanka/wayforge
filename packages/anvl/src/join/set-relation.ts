@@ -97,12 +97,6 @@ export const setRelationWithContent = <
 	...rest: NullSafeRest<CONTENT>
 ): RelationData<CONTENT, A, B> => {
 	const { [current.a]: idA, [current.b]: idB } = relation
-	// console.log({
-	//   current,
-	//   relation,
-	//   idA,
-	//   idB,
-	// })
 	switch (current.relationType) {
 		case `1:1`:
 			return set1To1(current, idA, idB, ...rest)
