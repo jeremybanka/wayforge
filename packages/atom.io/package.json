@@ -117,7 +117,7 @@
 		"@emotion/react": "11.11.1",
 		"@testing-library/react": "14.0.0",
 		"@types/mock-fs": "4.13.1",
-		"@types/react": "18.2.18",
+		"@types/react": "18.2.19",
 		"@types/tmp": "0.2.3",
 		"eslint": "8.46.0",
 		"framer-motion": "10.15.1",
