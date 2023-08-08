@@ -123,13 +123,13 @@ v.describe(`copy itself a thousand times`, () => {
 })
 
 v.describe(`reduce a thousand properties`, () => {
-	const obj = {}
+	const obj: Record<string, number> = {}
 	const map = new Map()
-	let hamt = HAMT.make()
+	let hamt = HAMT.make<number, string>()
 	for (let i = 0; i < 1000; i++) {
 		obj[i] = i
 		map.set(i, new Map([[i, i]]))
-		hamt = hamt.set(i.toString(), HAMT.make())
+		hamt = hamt.set(i.toString(), i)
 	}
 	v.bench(`reduce: object`, () => {
 		let sum = 0
