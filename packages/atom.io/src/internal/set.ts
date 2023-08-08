@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import { become } from "~/packages/anvl/src/function"
 
 import type { Atom, Selector, Store } from "."
@@ -37,8 +35,7 @@ export const evictDownStream = <T>(
 			return
 		}
 		const state =
-			HAMT.get(stateKey, core.selectors) ??
-			HAMT.get(stateKey, core.readonlySelectors)
+			core.selectors.get(stateKey) ?? core.readonlySelectors.get(stateKey)
 		if (!state) {
 			store.config.logger?.info(
 				`   || ${stateKey} is an atom, and can't be downstream`,

@@ -121,6 +121,9 @@ describe(`timeline`, () => {
 		expectation0()
 
 		const timelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(tl_abc.key)
+
+		if (!timelineData) throw new Error(`timeline data not found`)
+
 		expect(timelineData.at).toBe(0)
 		expect(timelineData.history.length).toBe(3)
 	})
@@ -195,6 +198,8 @@ describe(`timeline`, () => {
 		const timelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
 			nameHistory.key,
 		)
+
+		if (!timelineData) throw new Error(`timeline data not found`)
 
 		expect(getState(nameState)).toBe(`sylvia`)
 		expect(timelineData.at).toBe(3)

@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import { registerSelector } from "./register-selector"
 import { Subject } from ".."
 import type {
@@ -35,11 +33,7 @@ export const createReadonlySelector = <T>(
 		type: `readonly_selector`,
 		...(family && { family }),
 	}
-	core.readonlySelectors = HAMT.set(
-		options.key,
-		readonlySelector,
-		core.readonlySelectors,
-	)
+	core.readonlySelectors.set(options.key, readonlySelector)
 	const initialValue = getSelf()
 	store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
 	const token: ReadonlySelectorToken<T> = {

@@ -16,7 +16,7 @@ export const attachTransactionLogs = (
 			effects: (key) => [
 				({ setSelf }) => {
 					const tx = store.transactions.get(key)
-					tx.subject.subscribe((transactionUpdate) => {
+					tx?.subject.subscribe((transactionUpdate) => {
 						if (transactionUpdate.key === key) {
 							setSelf((state) => [...state, transactionUpdate])
 						}

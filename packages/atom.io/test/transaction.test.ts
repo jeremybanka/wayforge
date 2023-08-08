@@ -185,31 +185,28 @@ describe(`transaction`, () => {
 			},
 		})
 
-		const unsubscribeToTransaction = subscribeToTransaction(
-			setAllCounts,
-			(data) => {
-				UTIL.stdout(`Transaction data:`, data)
-				data.atomUpdates.forEach((update) => {
-					UTIL.stdout(`Atom update:`, update)
-				})
-			},
-		)
-		const unsubscribeToCount1Plus2 = subscribe(count1Plus2State, (data) => {
-			UTIL.stdout(`Selector data:`, data)
+		subscribeToTransaction(setAllCounts, (data) => {
+			UTIL.stdout(`Transaction update:`, data)
+			data.atomUpdates.forEach((update) => {
+				UTIL.stdout(`Atom update:`, update)
+			})
+		})
+		subscribe(count1Plus2State, (data) => {
+			UTIL.stdout(`Selector update:`, data)
 		})
 
 		runTransaction(setAllCounts)(3)
 
 		expect(getState(count1State)).toEqual(3)
-		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector data:`, {
+		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector update:`, {
 			oldValue: 4,
 			newValue: 5,
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector data:`, {
+		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector update:`, {
 			oldValue: 5,
 			newValue: 6,
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith(`Transaction data:`, {
+		expect(UTIL.stdout).toHaveBeenCalledWith(`Transaction update:`, {
 			key: `setAllCounts`,
 			params: [3],
 			output: undefined,
