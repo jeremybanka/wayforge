@@ -13,7 +13,7 @@
 		"framer-motion": "10.15.1"
 	},
 	"scripts": {
-		"build": "vite build",
+		"build": "./build.sh",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
@@ -41,14 +41,18 @@
 		"sass": "1.64.2",
 		"tsup": "7.2.0",
 		"typescript": "5.1.6",
-		"vite": "4.4.9",
 		"vite-tsconfig-paths": "4.2.0",
 		"vite-plugin-dts": "3.5.1",
 		"vitest": "0.34.1"
 	},
 	"peerDependencies": {
-		"@emotion/react": "11.11.1",
-		"@vitejs/plugin-react": "4.0.4",
+		"@emotion/react": "^11.11.1",
+		"@floating-ui/react": "^0.25.0",
+		"@floating-ui/react-dom": "^2.0.1",
+		"@vitejs/plugin-react": "^4.0.4",
+		"ajv": "^8.12.0",
+		"corners": "^0.1.0",
+		"framer-motion": "^10.15.1",
 		"react": "^18.2.0",
 		"react-router-dom": "^6.8.1",
 		"recoil": "^0.7.6",

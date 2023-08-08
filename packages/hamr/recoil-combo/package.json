@@ -1,0 +1,6 @@
+{
+	"name": "@hamr/recoil-combo",
+	"main": "../dist/recoil-combo/index.js",
+	"types": "../dist/recoil-combo/index.d.ts",
+	"module": "../dist/recoil-combo/index.mjs"
+}

@@ -1,0 +1,6 @@
+{
+	"name": "@hamr/recoil-error-boundary",
+	"main": "../dist/recoil-error-boundary/index.js",
+	"types": "../dist/recoil-error-boundary/index.d.ts",
+	"module": "../dist/recoil-error-boundary/index.mjs"
+}

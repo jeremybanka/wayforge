@@ -45,28 +45,4 @@ export default defineConfig({
 		globals: true,
 		environment: `jsdom`,
 	},
-	build: {
-		lib: {
-			// Could also be a dictionary or array of multiple entry points
-			entry,
-			name: `hamr`,
-			formats: [`es`, `cjs`],
-			fileName: (format, submoduleName) => {
-				return `${submoduleName}.${format === `es` ? `mjs` : `js`}`
-			},
-		},
-		rollupOptions: {
-			// make sure to externalize deps that shouldn't be bundled
-			// into your library
-			external: [`react`, `@emotion/*`],
-			treeshake: true,
-			output: {
-				// Provide global variables to use in the UMD build
-				// for externalized deps
-				globals: {
-					react: `react`,
-				},
-			},
-		},
-	},
 })

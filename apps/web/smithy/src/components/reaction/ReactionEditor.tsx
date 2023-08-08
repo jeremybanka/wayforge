@@ -6,8 +6,8 @@ import { selector, useRecoilState, useRecoilValue } from "recoil"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
-import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
 
 import type {
 	FromListItemProps,

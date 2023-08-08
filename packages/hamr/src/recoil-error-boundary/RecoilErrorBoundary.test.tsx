@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react"
 
-import { ErrorBoundary } from "./ErrorBoundary"
-import { ThrowOnRender } from "./test-utils"
+import { RecoverableErrorBoundary } from "./RecoilErrorBoundary"
+import { ThrowOnRender } from "../react-error-boundary"
 
 let expectedErrors = 0
 let actualErrors = 0
@@ -25,9 +25,9 @@ afterEach(() => {
 const scenarios = {
 	componentThrowsOnRender: () => {
 		const utils = render(
-			<ErrorBoundary>
+			<RecoverableErrorBoundary>
 				<ThrowOnRender />
-			</ErrorBoundary>,
+			</RecoverableErrorBoundary>,
 		)
 		const errorBoundary = utils.getByTestId(`error-boundary`) as HTMLDivElement
 		return {

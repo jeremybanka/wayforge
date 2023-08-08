@@ -11,8 +11,8 @@ import {
 } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
@@ -77,13 +77,12 @@ export const View: FC<{ viewId: string; close: () => void }> = ({
 	close,
 }) => {
 	const view = useRecoilValue(findViewState(viewId))
-	// console.log(view)
 	return (
-		<ErrorBoundary>
+		<RecoverableErrorBoundary>
 			<MemoryRouter initialEntries={[view.location.pathname]}>
 				<InnerView viewId={viewId} close={close} />
 			</MemoryRouter>
-		</ErrorBoundary>
+		</RecoverableErrorBoundary>
 	)
 }
 

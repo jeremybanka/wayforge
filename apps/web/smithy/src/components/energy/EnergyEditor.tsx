@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
 import { includesAny } from "~/packages/anvl/src/array/venn"
-import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
 import type { RecoilEditorProps } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
