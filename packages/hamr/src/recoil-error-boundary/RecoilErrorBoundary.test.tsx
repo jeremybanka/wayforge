@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react"
+import { prettyDOM, render } from "@testing-library/react"
+import { RecoilRoot } from "recoil"
 
 import { RecoverableErrorBoundary } from "./RecoilErrorBoundary"
 import { ThrowOnRender } from "../react-error-boundary"
@@ -25,9 +26,12 @@ afterEach(() => {
 const scenarios = {
 	componentThrowsOnRender: () => {
 		const utils = render(
-			<RecoverableErrorBoundary>
-				<ThrowOnRender />
-			</RecoverableErrorBoundary>,
+			<RecoilRoot>
+				<RecoverableErrorBoundary>
+					<ThrowOnRender />
+				</RecoverableErrorBoundary>
+				,
+			</RecoilRoot>,
 		)
 		const errorBoundary = utils.getByTestId(`error-boundary`) as HTMLDivElement
 		return {
@@ -38,9 +42,10 @@ const scenarios = {
 }
 
 it(`renders the text of the thrown error`, () => {
-	expectedErrors = 2
+	expectedErrors = 4
 	const { errorBoundary } = scenarios.componentThrowsOnRender()
 	expect(errorBoundary.textContent).toContain(
 		`⚠️ ThrowOnRender ⚠️ TypeError: NOT_A_FUNCTION is not a function`,
 	)
+	console.log(prettyDOM(document))
 })
