@@ -8,12 +8,12 @@ import { become, raiseError } from "~/packages/anvl/src/function"
 import type { JsonObj } from "~/packages/anvl/src/json"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
-
 import type {
 	FromListItemProps,
 	RecoilEditorProps,
-} from "../../../../../../packages/hamr/src/recoil-tools/RecoilEditor"
-import { RecoilEditor } from "../../../../../../packages/hamr/src/recoil-tools/RecoilEditor"
+} from "~/packages/hamr/src/recoil-tools/RecoilEditor"
+import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
+
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"

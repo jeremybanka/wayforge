@@ -3,6 +3,7 @@
 packages=(
   react-css-vars
   react-elastic-input
+  react-error-boundary
   react-id
   react-json-editor
   react-radial
@@ -13,4 +14,5 @@ packages=(
   recoil-tools
 )
 
-for dir in "${packages[@]}"; do (cd $dir && tsup); done
+for dir in "${packages[@]}"; do (cd $dir && tsup) & done
+wait
