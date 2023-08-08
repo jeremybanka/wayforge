@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/react-elastic-input",
-	"main": "../dist/react-elastic-input/index.js",
-	"types": "../dist/react-elastic-input/index.d.ts",
-	"module": "../dist/react-elastic-input/index.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }

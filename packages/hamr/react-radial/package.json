@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/react-radial",
-	"main": "../dist/react-radial/index.js",
-	"types": "../dist/react-radial/index.d.ts",
-	"module": "../dist/react-radial/index.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }

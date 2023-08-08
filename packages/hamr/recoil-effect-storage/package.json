@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/recoil-effect-storage",
-	"main": "../dist/recoil-effect-storage/index.js",
-	"types": "../dist/recoil-effect-storage/index.d.ts",
-	"module": "../dist/recoil-effect-storage/index.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }

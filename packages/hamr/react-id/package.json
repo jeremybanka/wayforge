@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/react-id",
-	"main": "../dist/react-id/index.js",
-	"types": "../dist/react-id/index.d.ts",
-	"module": "../dist/react-id/index.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }
