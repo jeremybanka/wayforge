@@ -2,4 +2,4 @@
 "luum": patch
 ---
 
-✨ `offset` returns a Modifier<HSL> that lets you modify luminosity
+✨ The new `offset` function returns a Modifier<HSL> that lets you modify luminosity.

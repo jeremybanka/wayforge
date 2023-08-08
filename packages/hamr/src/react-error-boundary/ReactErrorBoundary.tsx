@@ -1,6 +1,5 @@
 import type { ErrorInfo, ReactNode, FC } from "react"
-import { useId, Component } from "react"
-import { atomFamily, useRecoilState, useResetRecoilState } from "recoil"
+import { Component, useState } from "react"
 
 import type { FallbackProps } from "./DefaultFallback"
 import { DefaultFallback } from "./DefaultFallback"
@@ -14,6 +13,15 @@ export type ErrorBoundaryProps = {
 	children: ReactNode
 	onError?: (error: Error | string, errorInfo: ErrorInfo) => void
 	Fallback?: FC<FallbackProps>
+	useResetErrorState?: () => () => void
+	useErrorState?: () => [
+		ErrorBoundaryState,
+		(
+			newState:
+				| ErrorBoundaryState
+				| ((currState: ErrorBoundaryState) => ErrorBoundaryState),
+		) => void,
+	]
 }
 
 export class ErrorBoundary extends Component<
@@ -47,18 +55,16 @@ export class ErrorBoundary extends Component<
 	}
 }
 
-export const findErrorBoundaryState = atomFamily<ErrorBoundaryState, string>({
-	key: `errorBoundary`,
-	default: { error: undefined, errorInfo: undefined },
-})
-
 export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	children,
 	Fallback = DefaultFallback,
+	useErrorState = () => useState<ErrorBoundaryState>({}),
+	useResetErrorState,
 }) => {
-	const nodeId = useId()
-	const [{ error }, setError] = useRecoilState(findErrorBoundaryState(nodeId))
-	const resetError = useResetRecoilState(findErrorBoundaryState(nodeId))
+	const [{ error }, setError] = useErrorState()
+	const resetError = useResetErrorState
+		? useResetErrorState()
+		: () => setError({})
 	const hasError = Boolean(error)
 
 	return hasError ? (

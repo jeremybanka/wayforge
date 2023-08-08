@@ -10,4 +10,5 @@ packages=(
   realtime-react
 )
 
-for dir in "${packages[@]}"; do (cd $dir && tsup); done
+for dir in "${packages[@]}"; do (cd $dir && tsup) & done
+wait

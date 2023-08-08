@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/react-css-vars",
-	"main": "../dist/react-css-vars.js",
-	"types": "../dist/react-css-vars.d.ts",
-	"module": "../dist/react-css-vars.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }

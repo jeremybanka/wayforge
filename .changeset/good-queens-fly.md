@@ -2,4 +2,4 @@
 "anvl": patch
 ---
 
-✨ `stringToColor` returns a deterministically generated hexcode from an arbitrary string
+✨ New `stringToColor` function returns a deterministically generated hexcode from an arbitrary string.

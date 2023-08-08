@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/recoil-tools",
-	"main": "../dist/recoil-tools/index.js",
-	"types": "../dist/recoil-tools/index.d.ts",
-	"module": "../dist/recoil-tools/index.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }
