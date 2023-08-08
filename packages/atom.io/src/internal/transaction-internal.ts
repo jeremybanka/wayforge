@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store, StoreCore } from "."
@@ -51,11 +49,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 		subject: new Subject(),
 	}
 	const core = target(store)
-	core.transactions = HAMT.set(
-		newTransaction.key,
-		newTransaction,
-		core.transactions,
-	)
+	core.transactions.set(newTransaction.key, newTransaction)
 	const token = deposit(newTransaction)
 	store.subject.transactionCreation.next(token)
 	return token

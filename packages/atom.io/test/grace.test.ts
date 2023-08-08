@@ -90,8 +90,8 @@ describe(`graceful handling of improper usage`, () => {
 			expect(logger.error).toHaveBeenCalledWith(
 				`❌ Failed to add atom "count" to timeline "count_history_too" because it belongs to timeline "count_history"`,
 			)
-			expect(countTimeline0Data.history).toHaveLength(1)
-			expect(countTimeline1Data.history).toHaveLength(0)
+			expect(countTimeline0Data?.history).toHaveLength(1)
+			expect(countTimeline1Data?.history).toHaveLength(0)
 		})
 		test(`if a family is tracked by a timeline, a member of that family cannot be tracked by another timeline`, () => {
 			const findCountState = atomFamily({
@@ -118,8 +118,8 @@ describe(`graceful handling of improper usage`, () => {
 			expect(logger.error).toHaveBeenCalledWith(
 				`❌ Failed to add atom "counts("a")" to timeline "a_count_history" because its family "counts" belongs to timeline "counts_history"`,
 			)
-			expect(countTimelineData.history).toHaveLength(1)
-			expect(aCountTimelineData.history).toHaveLength(0)
+			expect(countTimelineData?.history).toHaveLength(1)
+			expect(aCountTimelineData?.history).toHaveLength(0)
 		})
 	})
 })
