@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.6.7
+
+### Patch Changes
+
+- 7b9d422f: 🚀 Use a mutable `Map` for the core of the `atom.io` store. There should be less need for GC here than with an immutable `HAMT`.
+
 ## 0.6.6
 
 ### Patch Changes
