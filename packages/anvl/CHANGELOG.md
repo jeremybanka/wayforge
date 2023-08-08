@@ -1,5 +1,11 @@
 # anvl
 
+## 0.2.4
+
+### Patch Changes
+
+- 1bbac79d: ✨ New `stringToColor` function returns a deterministically generated hexcode from an arbitrary string.
+
 ## 0.2.3
 
 ### Patch Changes

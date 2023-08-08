@@ -1,5 +1,12 @@
 # hamr
 
+## 0.4.2
+
+### Patch Changes
+
+- 1bbac79d: 🎁 `hamr/react-id` is a beautiful and space-efficient way to render ids.
+- edb28ca9: 🧑‍🏫 Improve quality-of-life for importing from the `hamr/*` submodules.
+
 ## 0.4.1
 
 ### Patch Changes
