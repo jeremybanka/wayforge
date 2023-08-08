@@ -1,5 +1,5 @@
 {
-	"name": "@hamr/react-id",
+	"name": "@hamr/recoil-combo",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"module": "./dist/index.mjs"

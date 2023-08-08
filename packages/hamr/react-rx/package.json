@@ -1,6 +1,6 @@
 {
 	"name": "@hamr/react-rx",
-	"main": "../dist/react-rx/index.js",
-	"types": "../dist/react-rx/index.d.ts",
-	"module": "../dist/react-rx/index.mjs"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
 }

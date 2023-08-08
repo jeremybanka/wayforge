@@ -4,6 +4,85 @@
 	"description": "core react and recoil utilities for wayforge",
 	"main": "object/index.ts",
 	"files": ["**/*"],
+	"exports": {
+		"./react-css-vars/package.json": "./react-css-vars/package.json",
+		"./react-css-vars": {
+			"types": "./react-css-vars/dist/index.d.ts",
+			"browser": "./react-css-vars/dist/index.mjs",
+			"import": "./react-css-vars/dist/index.mjs",
+			"require": "./react-css-vars/dist/index.js"
+		},
+		"./react-elastic-input/package.json": "./react-elastic-input/package.json",
+		"./react-elastic-input": {
+			"types": "./react-elastic-input/dist/index.d.ts",
+			"browser": "./react-elastic-input/dist/index.mjs",
+			"import": "./react-elastic-input/dist/index.mjs",
+			"require": "./react-elastic-input/dist/index.js"
+		},
+		"./react-error-boundary/package.json": "./react-error-boundary/package.json",
+		"./react-error-boundary": {
+			"types": "./react-error-boundary/dist/index.d.ts",
+			"browser": "./react-error-boundary/dist/index.mjs",
+			"import": "./react-error-boundary/dist/index.mjs",
+			"require": "./react-error-boundary/dist/index.js"
+		},
+		"./react-id/package.json": "./react-id/package.json",
+		"./react-id": {
+			"types": "./react-id/dist/index.d.ts",
+			"browser": "./react-id/dist/index.mjs",
+			"import": "./react-id/dist/index.mjs",
+			"require": "./react-id/dist/index.js"
+		},
+		"./react-json-editor/package.json": "./react-json-editor/package.json",
+		"./react-json-editor": {
+			"types": "./react-json-editor/dist/index.d.ts",
+			"browser": "./react-json-editor/dist/index.mjs",
+			"import": "./react-json-editor/dist/index.mjs",
+			"require": "./react-json-editor/dist/index.js"
+		},
+		"./react-radial/package.json": "./react-radial/package.json",
+		"./react-radial": {
+			"types": "./react-radial/dist/index.d.ts",
+			"browser": "./react-radial/dist/index.mjs",
+			"import": "./react-radial/dist/index.mjs",
+			"require": "./react-radial/dist/index.js"
+		},
+		"./react-rx/package.json": "./react-rx/package.json",
+		"./react-rx": {
+			"types": "./react-rx/dist/index.d.ts",
+			"browser": "./react-rx/dist/index.mjs",
+			"import": "./react-rx/dist/index.mjs",
+			"require": "./react-rx/dist/index.js"
+		},
+		"./recoil-combo/package.json": "./recoil-combo/package.json",
+		"./recoil-combo": {
+			"types": "./recoil-combo/dist/index.d.ts",
+			"browser": "./recoil-combo/dist/index.mjs",
+			"import": "./recoil-combo/dist/index.mjs",
+			"require": "./recoil-combo/dist/index.js"
+		},
+		"./recoil-error-boundary/package.json": "./recoil-error-boundary/package.json",
+		"./recoil-error-boundary": {
+			"types": "./recoil-error-boundary/dist/index.d.ts",
+			"browser": "./recoil-error-boundary/dist/index.mjs",
+			"import": "./recoil-error-boundary/dist/index.mjs",
+			"require": "./recoil-error-boundary/dist/index.js"
+		},
+		"./recoil-effect-storage/package.json": "./recoil-effect-storage/package.json",
+		"./recoil-effect-storage": {
+			"types": "./recoil-effect-storage/dist/index.d.ts",
+			"browser": "./recoil-effect-storage/dist/index.mjs",
+			"import": "./recoil-effect-storage/dist/index.mjs",
+			"require": "./recoil-effect-storage/dist/index.js"
+		},
+		"./recoil-tools/package.json": "./recoil-tools/package.json",
+		"./recoil-tools": {
+			"types": "./recoil-tools/dist/index.d.ts",
+			"browser": "./recoil-tools/dist/index.mjs",
+			"import": "./recoil-tools/dist/index.mjs",
+			"require": "./recoil-tools/dist/index.js"
+		}
+	},
 	"dependencies": {
 		"@floating-ui/react": "0.25.0",
 		"@floating-ui/react-dom": "^2.0.1",
@@ -13,7 +92,7 @@
 		"framer-motion": "10.15.1"
 	},
 	"scripts": {
-		"build": "vite build",
+		"build": "./build.sh",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
@@ -41,14 +120,18 @@
 		"sass": "1.64.2",
 		"tsup": "7.2.0",
 		"typescript": "5.1.6",
-		"vite": "4.4.9",
 		"vite-tsconfig-paths": "4.2.0",
 		"vite-plugin-dts": "3.5.1",
 		"vitest": "0.34.1"
 	},
 	"peerDependencies": {
-		"@emotion/react": "11.11.1",
-		"@vitejs/plugin-react": "4.0.4",
+		"@emotion/react": "^11.11.1",
+		"@floating-ui/react": "^0.25.0",
+		"@floating-ui/react-dom": "^2.0.1",
+		"@vitejs/plugin-react": "^4.0.4",
+		"ajv": "^8.12.0",
+		"corners": "^0.1.0",
+		"framer-motion": "^10.15.1",
 		"react": "^18.2.0",
 		"react-router-dom": "^6.8.1",
 		"recoil": "^0.7.6",

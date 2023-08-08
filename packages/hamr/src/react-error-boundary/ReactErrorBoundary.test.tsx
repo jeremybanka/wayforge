@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react"
 
-import { ErrorBoundary } from "./ErrorBoundary"
+import { ErrorBoundary } from "./ReactErrorBoundary"
 import { ThrowOnRender } from "./test-utils"
 
 let expectedErrors = 0

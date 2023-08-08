@@ -3,7 +3,7 @@ import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
-import { ErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
 import { attachExplorerState } from "./explorer-states"
@@ -132,14 +132,14 @@ export const composeExplorer = ({
 		const view = useO(findViewState(focusedViewId))
 		return (
 			<div className="space">
-				<ErrorBoundary>
+				<RecoverableErrorBoundary>
 					<MemoryRouter
 						initialEntries={view.location ? [view.location.pathname] : []}
 					>
 						<TabBar spaceId={spaceId} viewIds={viewIds} />
 						<View viewId={focusedViewId}>{children}</View>
 					</MemoryRouter>
-				</ErrorBoundary>
+				</RecoverableErrorBoundary>
 			</div>
 		)
 	}

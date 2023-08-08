@@ -2,7 +2,6 @@ import type { SerializedStyles } from "@emotion/react"
 import Ajv from "ajv"
 import type { FC, ReactElement, RefObject } from "react"
 import { useMemo } from "react"
-import type { SetterOrUpdater } from "recoil"
 
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
@@ -34,7 +33,7 @@ export const SubEditors: Record<
 
 export type JsonEditorProps<T extends Json> = {
 	data: T
-	set: SetterOrUpdater<T>
+	set: (valOrUpdater: T | ((currVal: T) => T)) => void
 	ref?: RefObject<HTMLInputElement>
 	name?: string
 	rename?: (newKey: string) => void

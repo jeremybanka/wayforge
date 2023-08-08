@@ -1,6 +1,6 @@
 import type { FC } from "react"
 
-import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
+import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
 import type { RecoilListItemProps } from "~/packages/hamr/src/recoil-tools/RecoilList"
 
 import { SVG_EnergyIcon } from "./EnergyIcon"
