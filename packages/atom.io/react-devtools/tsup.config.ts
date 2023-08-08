@@ -18,7 +18,6 @@ export default defineConfig({
 		`fp-ts`,
 		`react`,
 		`framer-motion`,
-		`hamt_plus`,
 		`recoil`,
 		`rxjs`,
 		`ajv`,

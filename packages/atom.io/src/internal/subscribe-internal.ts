@@ -74,7 +74,13 @@ export const subscribeToRootAtoms = <T>(
 						)
 						const oldValue = recallState(state, store)
 						const newValue = getState__INTERNAL(state, store)
-						store.config.logger?.info(`   <- ${state.key} became`, newValue)
+						store.config.logger?.info(
+							`   <- "${state.key}" went (`,
+							oldValue,
+							`->`,
+							newValue,
+							`)`,
+						)
 						state.subject.next({ newValue, oldValue })
 					})
 			  })

@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import { become } from "~/packages/anvl/src/function"
 
 import { Subject } from ".."
@@ -30,8 +28,14 @@ export const createReadWriteSelector = <T>(
 	}
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
-		store.config.logger?.info(`   <- "${options.key}" became`, next)
 		const oldValue = getSelf()
+		store.config.logger?.info(
+			`   <- "${options.key}" went (`,
+			oldValue,
+			`->`,
+			next,
+			`)`,
+		)
 		const newValue = become(next)(oldValue)
 		cacheValue(options.key, newValue, store)
 		markDone(options.key, store)
@@ -49,7 +53,7 @@ export const createReadWriteSelector = <T>(
 		type: `selector`,
 		...(family && { family }),
 	}
-	core.selectors = HAMT.set(options.key, mySelector, core.selectors)
+	core.selectors.set(options.key, mySelector)
 	const initialValue = getSelf()
 	store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
 	const token: SelectorToken<T> = {

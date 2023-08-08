@@ -5,6 +5,6 @@ export const summarize = (
 	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
 ): void => {
 	console.log(prettyDOM(document), {
-		atoms: [store.atoms.count()],
+		atoms: [store.atoms.size],
 	})
 }

@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type {
@@ -29,9 +27,9 @@ export function lookup(
 	store: Store,
 ): AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown> {
 	const core = target(store)
-	const type = HAMT.has(key, core.atoms)
+	const type = core.atoms.has(key)
 		? `atom`
-		: HAMT.has(key, core.selectors)
+		: core.selectors.has(key)
 		? `selector`
 		: `readonly_selector`
 	return { key, type } as any
@@ -75,11 +73,11 @@ export function withdraw<T>(
 	| null {
 	const core = target(store)
 	return (
-		HAMT.get(token.key, core.atoms) ??
-		HAMT.get(token.key, core.selectors) ??
-		HAMT.get(token.key, core.readonlySelectors) ??
-		HAMT.get(token.key, core.transactions) ??
-		HAMT.get(token.key, core.timelines) ??
+		core.atoms.get(token.key) ??
+		core.selectors.get(token.key) ??
+		core.readonlySelectors.get(token.key) ??
+		core.transactions.get(token.key) ??
+		core.timelines.get(token.key) ??
 		null
 	)
 }

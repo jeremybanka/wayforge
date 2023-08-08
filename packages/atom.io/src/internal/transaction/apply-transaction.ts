@@ -1,5 +1,3 @@
-import HAMT from "hamt_plus"
-
 import type { ƒn } from "~/packages/anvl/src/function"
 
 import type { Store } from ".."
@@ -26,10 +24,15 @@ export const applyTransaction = <ƒ extends ƒn>(
 
 	for (const { key, newValue } of atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
-		if (!HAMT.has(token.key, store.valueMap)) {
-			const newAtom = HAMT.get(token.key, store.transactionStatus.core.atoms)
-			store.atoms = HAMT.set(newAtom.key, newAtom, store.atoms)
-			store.valueMap = HAMT.set(newAtom.key, newAtom.default, store.valueMap)
+		if (!store.valueMap.has(token.key)) {
+			const newAtom = store.transactionStatus.core.atoms.get(token.key)
+			if (!newAtom) {
+				throw new Error(
+					`Absurd Error: Atom "${token.key}" not found while copying updates from transaction "${store.transactionStatus.key}" to store "${store.config.name}"`,
+				)
+			}
+			store.atoms.set(newAtom.key, newAtom)
+			store.valueMap.set(newAtom.key, newAtom.default)
 			store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
 		}
 		setState(token, newValue, store)

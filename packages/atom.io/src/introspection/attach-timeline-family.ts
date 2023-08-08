@@ -1,7 +1,7 @@
 import type { ReadonlySelectorFamily, Store } from "atom.io"
-import { __INTERNAL__ } from "atom.io"
+import { __INTERNAL__, timeline } from "atom.io"
 
-import type { Timeline } from "../internal"
+import { withdraw, type Timeline, Subject } from "../internal"
 
 export const attachTimelineFamily = (
 	store: Store = __INTERNAL__.IMPLICIT.STORE,
@@ -12,11 +12,21 @@ export const attachTimelineFamily = (
 	>(
 		{
 			key: `👁‍🗨 Timeline Update Log (Internal)`,
-			default: (key) => store.timelines.get(key),
+			default: (key) =>
+				store.timelines.get(key) ?? {
+					key: ``,
+					at: 0,
+					timeTraveling: false,
+					history: [],
+					selectorTime: null,
+					transactionKey: null,
+					install: () => {},
+					subject: new Subject(),
+				},
 			effects: (key) => [
 				({ setSelf }) => {
 					const tl = store.timelines.get(key)
-					tl.subject.subscribe((_) => {
+					tl?.subject.subscribe((_) => {
 						if (store.operation.open === true) {
 							const subscription = store.subject.operationStatus.subscribe(
 								(operationStatus) => {
