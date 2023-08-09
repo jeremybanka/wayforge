@@ -1,6 +1,6 @@
 import type { SerializedStyles } from "@emotion/react"
 import Ajv from "ajv"
-import type { FC, ReactElement, RefObject } from "react"
+import type { FC, ReactElement } from "react"
 import { useMemo } from "react"
 
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
