@@ -16,7 +16,7 @@ export type DataContext = {
 
 export type TreeNodeType = `Leaf` | `Tree`
 
-export type DDCoreProps<Data, NodeType extends TreeNodeType> = {
+export type DDCoreProps<Data, _ extends TreeNodeType> = {
 	data: Data
 	set: (next: Next<Data>) => void
 }
