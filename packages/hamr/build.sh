@@ -4,6 +4,7 @@ packages=(
   react-css-vars
   react-elastic-input
   react-error-boundary
+  react-data-designer
   react-id
   react-json-editor
   react-radial
