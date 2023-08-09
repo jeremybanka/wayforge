@@ -37,7 +37,7 @@
 		"@preact/preset-vite": "2.5.0",
 		"@testing-library/jest-dom": "5.17.0",
 		"@testing-library/react": "14.0.0",
-		"@types/react": "18.2.19",
+		"@types/react": "18.2.20",
 		"@vanilla-extract/vite-plugin": "3.8.2",
 		"cross-env": "7.0.3",
 		"eslint": "8.46.0",
