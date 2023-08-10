@@ -182,8 +182,8 @@ importers:
         specifier: npm:@preact/compat
         version: /@preact/compat@17.1.2(preact@10.16.0)
       react-router-dom:
-        specifier: 6.14.2
-        version: 6.14.2(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 6.15.0
+        version: 6.15.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       rxjs:
         specifier: 7.8.1
         version: 7.8.1
@@ -273,8 +273,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       react-router-dom:
-        specifier: 6.14.2
-        version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 6.15.0
+        version: 6.15.0(react-dom@18.2.0)(react@18.2.0)
       zod:
         specifier: 3.21.4
         version: 3.21.4
@@ -374,8 +374,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       react-router-dom:
-        specifier: 6.14.2
-        version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 6.15.0
+        version: 6.15.0(react-dom@18.2.0)(react@18.2.0)
       recoil:
         specifier: 0.7.7
         version: 0.7.7(react-dom@18.2.0)(react@18.2.0)
@@ -592,8 +592,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       react-router-dom:
-        specifier: 6.14.2
-        version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 6.15.0
+        version: 6.15.0(react-dom@18.2.0)(react@18.2.0)
       socket.io:
         specifier: 4.7.2
         version: 4.7.2
@@ -683,8 +683,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       react-router-dom:
-        specifier: 6.14.2
-        version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 6.15.0
+        version: 6.15.0(react-dom@18.2.0)(react@18.2.0)
       recoil:
         specifier: 0.7.7
         version: 0.7.7(react-dom@18.2.0)(react@18.2.0)
@@ -2791,9 +2791,9 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@remix-run/router@1.7.2:
-    resolution: {integrity: sha512-7Lcn7IqGMV+vizMPoEl5F0XDshcdDYtMI6uJLQdQz5CfZAwy3vvGKYSUk789qndt5dEC4HfSjviSYlSoHGL2+A==}
-    engines: {node: '>=14'}
+  /@remix-run/router@1.8.0:
+    resolution: {integrity: sha512-mrfKqIHnSZRyIzBcanNJmVQELTnX+qagEDlcKO90RgRBVOZGSGvZKeDihTRfWcqoDn5N/NkUcwWTccnpN18Tfg==}
+    engines: {node: '>=14.0.0'}
 
   /@rollup/pluginutils@4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -7131,48 +7131,48 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /react-router-dom@6.14.2(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-5pWX0jdKR48XFZBuJqHosX3AAHjRAzygouMTyimnBPOLdY3WjzUSKhus2FVMihUFWzeLebDgr4r8UeQFAct7Bg==}
-    engines: {node: '>=14'}
+  /react-router-dom@6.15.0(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-aR42t0fs7brintwBGAv2+mGlCtgtFQeOzK0BM1/OiqEzRejOZtpMZepvgkscpMUnKb8YO84G7s3LsHnnDNonbQ==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
     dependencies:
-      '@remix-run/router': 1.7.2
+      '@remix-run/router': 1.8.0
       react: /@preact/compat@17.1.2(preact@10.16.0)
       react-dom: /@preact/compat@17.1.2(preact@10.16.0)
-      react-router: 6.14.2(@preact/compat@17.1.2)
+      react-router: 6.15.0(@preact/compat@17.1.2)
     dev: false
 
-  /react-router-dom@6.14.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-5pWX0jdKR48XFZBuJqHosX3AAHjRAzygouMTyimnBPOLdY3WjzUSKhus2FVMihUFWzeLebDgr4r8UeQFAct7Bg==}
-    engines: {node: '>=14'}
+  /react-router-dom@6.15.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-aR42t0fs7brintwBGAv2+mGlCtgtFQeOzK0BM1/OiqEzRejOZtpMZepvgkscpMUnKb8YO84G7s3LsHnnDNonbQ==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
     dependencies:
-      '@remix-run/router': 1.7.2
+      '@remix-run/router': 1.8.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-router: 6.14.2(react@18.2.0)
+      react-router: 6.15.0(react@18.2.0)
 
-  /react-router@6.14.2(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-09Zss2dE2z+T1D03IheqAFtK4UzQyX8nFPWx6jkwdYzGLXd5ie06A6ezS2fO6zJfEb/SpG6UocN2O1hfD+2urQ==}
-    engines: {node: '>=14'}
+  /react-router@6.15.0(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-NIytlzvzLwJkCQj2HLefmeakxxWHWAP+02EGqWEZy+DgfHHKQMUoBBjUQLOtFInBMhWtb3hiUy6MfFgwLjXhqg==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
     dependencies:
-      '@remix-run/router': 1.7.2
+      '@remix-run/router': 1.8.0
       react: /@preact/compat@17.1.2(preact@10.16.0)
     dev: false
 
-  /react-router@6.14.2(react@18.2.0):
-    resolution: {integrity: sha512-09Zss2dE2z+T1D03IheqAFtK4UzQyX8nFPWx6jkwdYzGLXd5ie06A6ezS2fO6zJfEb/SpG6UocN2O1hfD+2urQ==}
-    engines: {node: '>=14'}
+  /react-router@6.15.0(react@18.2.0):
+    resolution: {integrity: sha512-NIytlzvzLwJkCQj2HLefmeakxxWHWAP+02EGqWEZy+DgfHHKQMUoBBjUQLOtFInBMhWtb3hiUy6MfFgwLjXhqg==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
     dependencies:
-      '@remix-run/router': 1.7.2
+      '@remix-run/router': 1.8.0
       react: 18.2.0
 
   /react@18.2.0:
