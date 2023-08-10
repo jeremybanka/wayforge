@@ -20,6 +20,9 @@ importers:
       fp-ts:
         specifier: 2.16.1
         version: 2.16.1
+      hamt_plus:
+        specifier: 1.0.2
+        version: 1.0.2
       json-schema-to-zod:
         specifier: 1.1.1
         version: 1.1.1

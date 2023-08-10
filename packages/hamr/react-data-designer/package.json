@@ -1,0 +1,6 @@
+{
+	"name": "@hamr/react-data-designer",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
+}

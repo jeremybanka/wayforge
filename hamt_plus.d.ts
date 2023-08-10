@@ -63,7 +63,7 @@ declare module "hamt_plus" {
 		count: () => number
 		values: () => T[]
 		keys: () => K[]
-		entries: () => Iterator<[key: K, value: T]>
+		entries: () => Iterable<[key: K, value: T]>
 		fold: <Acc>(
 			callbackfn: (previousValue: Acc, currentValue: T, key: K) => Acc,
 			initialValue: Acc,
