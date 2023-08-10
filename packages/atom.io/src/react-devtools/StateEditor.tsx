@@ -3,7 +3,9 @@ import { useO, useIO } from "atom.io/react"
 import type { FC } from "react"
 
 import { fallback } from "~/packages/anvl/src/function"
+import { Join } from "~/packages/anvl/src/join"
 import { isJson } from "~/packages/anvl/src/json"
+import { RelationEditor } from "~/packages/hamr/src/react-data-designer"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 
@@ -13,6 +15,8 @@ export const StateEditor: FC<{
 	const [data, set] = useIO(token)
 	return isJson(data) ? (
 		<JsonEditor data={data} set={set} schema={true} />
+	) : data instanceof Join ? (
+		<RelationEditor data={data} set={set} />
 	) : (
 		<div className="json_editor">
 			<ElasticInput

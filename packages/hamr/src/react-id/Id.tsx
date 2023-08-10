@@ -43,6 +43,7 @@ export const Id: React.FC<{ id: string }> = ({ id }) => {
 					padding: `0px 4px`,
 					color: contrastColor,
 					userSelect: `none`,
+					whiteSpace: `nowrap`,
 				}}
 			>
 				{id.substring(0, 3)}

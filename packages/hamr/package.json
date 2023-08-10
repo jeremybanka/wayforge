@@ -3,9 +3,7 @@
 	"version": "0.4.2",
 	"description": "core react and recoil utilities for wayforge",
 	"main": "object/index.ts",
-	"files": [
-		"**/*"
-	],
+	"files": ["**/*"],
 	"exports": {
 		"./react-css-vars/package.json": "./react-css-vars/package.json",
 		"./react-css-vars": {
@@ -13,6 +11,13 @@
 			"browser": "./react-css-vars/dist/index.mjs",
 			"import": "./react-css-vars/dist/index.mjs",
 			"require": "./react-css-vars/dist/index.js"
+		},
+		"./react-data-designer/package.json": "./react-data-designer/package.json",
+		"./react-data-designer": {
+			"types": "./react-data-designer/dist/index.d.ts",
+			"browser": "./react-data-designer/dist/index.mjs",
+			"import": "./react-data-designer/dist/index.mjs",
+			"require": "./react-data-designer/dist/index.js"
 		},
 		"./react-elastic-input/package.json": "./react-elastic-input/package.json",
 		"./react-elastic-input": {

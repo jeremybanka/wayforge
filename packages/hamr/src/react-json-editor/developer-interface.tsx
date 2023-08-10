@@ -1,6 +1,6 @@
 import type { SerializedStyles } from "@emotion/react"
 import Ajv from "ajv"
-import type { FC, ReactElement, RefObject } from "react"
+import type { FC, ReactElement } from "react"
 import { useMemo } from "react"
 
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
@@ -34,7 +34,6 @@ export const SubEditors: Record<
 export type JsonEditorProps<T extends Json> = {
 	data: T
 	set: (valOrUpdater: T | ((currVal: T) => T)) => void
-	ref?: RefObject<HTMLInputElement>
 	name?: string
 	rename?: (newKey: string) => void
 	remove?: () => void

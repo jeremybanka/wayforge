@@ -15,7 +15,6 @@ import { ElasticInput } from "../react-elastic-input"
 export type JsonEditorProps_INTERNAL<T extends Json> = {
 	data: T
 	set: SetterOrUpdater<T>
-	ref?: RefObject<HTMLInputElement>
 	name?: string
 	rename?: (newKey: string) => void
 	remove?: () => void
