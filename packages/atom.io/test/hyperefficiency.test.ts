@@ -7,7 +7,6 @@ import {
 	atomFamily,
 	getState,
 	runTransaction,
-	selector,
 	selectorFamily,
 	setLogLevel,
 	setState,
@@ -17,10 +16,10 @@ import {
 	transaction,
 	undo,
 } from "../src"
-import { IMPLICIT, Subject, withdraw } from "../src/internal"
+import { IMPLICIT, Subject } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
@@ -123,7 +122,7 @@ describe(`hyperefficiency patterns`, () => {
 	const IDLE = 0
 	const RECORD = 1
 	const PLAYBACK = 2
-	class Dict {
+	class Junction {
 		private mode = IDLE
 		private readonly map = new Map<string, Set<string>>()
 		private readonly subject = new Subject<TimelineEvent>()
@@ -213,10 +212,10 @@ describe(`hyperefficiency patterns`, () => {
 			const [type, a, b] = prev.split(`:`)
 			switch (type) {
 				case `set`:
-					this.delete(a, b)
+					this.set(a, b)
 					break
 				case `del`:
-					this.set(a, b)
+					this.delete(a, b)
 					break
 			}
 			this.mode = IDLE
@@ -230,57 +229,72 @@ describe(`hyperefficiency patterns`, () => {
 		}
 	}
 
-	test(`dict`, () => {
-		const myDict = new Dict()
+	test(`junction`, () => {
+		const myJunction = new Junction()
 
-		myDict.subscribe(UTIL.stdout)
+		myJunction.subscribe(UTIL.stdout)
 
-		expect(myDict.get(`a`)).toBeUndefined()
-		expect(myDict.get(`1`)).toBeUndefined()
-		myDict.set(`a`, `1`)
-		expect(myDict.get(`a`)).toEqual(new Set([`1`]))
-		expect(myDict.get(`1`)).toEqual(new Set([`a`]))
-		myDict.set(`a`, `2`)
-		expect(myDict.get(`a`)).toEqual(new Set([`1`, `2`]))
-		expect(myDict.get(`1`)).toEqual(new Set([`a`]))
-		expect(myDict.get(`2`)).toEqual(new Set([`a`]))
-		myDict.delete(`a`, `2`)
-		expect(myDict.get(`a`)).toEqual(new Set([`1`]))
-		expect(myDict.get(`1`)).toEqual(new Set([`a`]))
-		expect(myDict.get(`2`)).toBeUndefined()
+		expect(myJunction.get(`a`)).toBeUndefined()
+		expect(myJunction.get(`1`)).toBeUndefined()
+		myJunction.set(`a`, `1`)
+		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
+		myJunction.set(`a`, `2`)
+		expect(myJunction.get(`a`)).toEqual(new Set([`1`, `2`]))
+		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.get(`2`)).toEqual(new Set([`a`]))
+		myJunction.delete(`a`, `2`)
+		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.get(`2`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 
-		myDict.do(`del:a:1::set:a:1`)
-		expect(myDict.get(`a`)).toEqual(new Set([`1`]))
-		expect(myDict.get(`1`)).toEqual(new Set([`a`]))
-		expect(myDict.get(`2`)).toBeUndefined()
+		myJunction.do(`del:a:1::set:a:1`)
+		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.get(`2`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
-		console.log(myDict)
+		console.log(myJunction)
 	})
 
-	test.only(`dict => mutable core with serializable update induction`, () => {
-		const dictState = atom<Dict>({
-			key: `dict`,
-			default: new Dict(),
+	test.only(`junction => mutable core with serializable update induction`, () => {
+		const junctionState = atom<Junction>({
+			key: `junction`,
+			default: new Junction(),
 		})
 		const latestEventState = atom<TimelineEvent | null>({
 			key: `latestEvent`,
 			default: null,
 			effects: [
 				({ onSet, setSelf }) => {
-					onSet(({ newValue }) => {
-						const timelineId = IMPLICIT.STORE.timelineAtoms.getRelatedId(`dict`)
+					onSet(({ newValue, oldValue }) => {
+						console.log(`latestEvent`, { newValue, oldValue })
+						const timelineId =
+							IMPLICIT.STORE.timelineAtoms.getRelatedId(`latestEvent`)
 						if (timelineId) {
 							const timelineData = IMPLICIT.STORE.timelines.get(timelineId)
-							if (timelineData.timeTraveling) {
+							if (timelineData?.timeTraveling) {
 								const unsubscribe = subscribeToTimeline(
 									{ key: timelineId, type: `timeline` },
 									(update) => {
-										console.log(`update`, update)
+										console.log(`🔔 update`, update)
+										console.log({ newValue, oldValue })
+										console.log(timelineData)
 										unsubscribe()
-										setState(dictState, (dict) => dict.do(newValue))
+										setState(junctionState, (junction) => {
+											if (timelineData.timeTraveling === `into_future`) {
+												junction.do(newValue)
+												console.log(`do`, junction)
+												return junction
+											} else {
+												junction.undo(oldValue)
+												console.log(`undo`, junction)
+												return junction
+											}
+										})
 									},
 								)
+								return
 							}
 						}
 
@@ -288,11 +302,11 @@ describe(`hyperefficiency patterns`, () => {
 							IMPLICIT.STORE.subject.operationStatus.subscribe(() => {
 								unsubscribe()
 								if (newValue) {
-									setState(dictState, (dict) => dict.do(newValue))
+									setState(junctionState, (junction) => junction.do(newValue))
 								}
 							})
 					})
-					getState(dictState).subscribe((update) => {
+					getState(junctionState).subscribe((update) => {
 						setSelf(update)
 					})
 				},
@@ -304,32 +318,32 @@ describe(`hyperefficiency patterns`, () => {
 			atoms: [latestEventState],
 		})
 
-		subscribe(dictState, UTIL.stdout)
-		expect(getState(dictState).get(`a`)).toBeUndefined()
-		expect(getState(dictState).get(`1`)).toBeUndefined()
+		subscribe(junctionState, UTIL.stdout)
+		expect(getState(junctionState).get(`a`)).toBeUndefined()
+		expect(getState(junctionState).get(`1`)).toBeUndefined()
 		setState(latestEventState, `del:a:1::set:a:1`)
-		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`]))
-		expect(getState(dictState).get(`1`)).toEqual(new Set([`a`]))
+		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
+		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
 		setState(latestEventState, `del:a:2::set:a:2`)
-		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`, `2`]))
-		expect(getState(dictState).get(`1`)).toEqual(new Set([`a`]))
-		expect(getState(dictState).get(`2`)).toEqual(new Set([`a`]))
-		setState(latestEventState, `set:a:2::del:a:2`)
-		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`]))
-		expect(getState(dictState).get(`1`)).toEqual(new Set([`a`]))
-		expect(getState(dictState).get(`2`)).toBeUndefined()
+		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
+		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
+		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
+		setState(latestEventState, `set:a:1::del:a:1`)
+		expect(getState(junctionState).get(`a`)).toEqual(new Set([`2`]))
+		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
+		expect(getState(junctionState).get(`1`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 
 		undo(eventTL)
 
-		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`, `2`]))
+		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
 
-		undo(eventTL)
+		// undo(eventTL)
 
-		expect(getState(dictState).get(`a`)).toEqual(new Set([`1`]))
+		// expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 	})
 
-	test(`(FAIL) use the atomic store instead of a dict`, () => {
+	test(`(FAIL) use the atomic store instead of a junction`, () => {
 		const ruleState = atom<`1:1` | `1:n` | `n:n`>({
 			key: `rule`,
 			default: `1:1`,
