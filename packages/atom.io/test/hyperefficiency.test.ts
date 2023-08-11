@@ -116,54 +116,60 @@ describe(`hyperefficiency patterns`, () => {
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 	})
 
-	type Update_Set = `set:${string}:${string}`
-	type Update_Delete = `del:${string}:${string}`
-	type Update = Update_Delete | Update_Set
-	type TimelineEvent = `${Update}::${Update}`
+	type JunctionUpdate_Set = `set:${string}:${string}`
+	type JunctionUpdate_Delete = `del:${string}:${string}`
+	type JunctionUpdate = JunctionUpdate_Delete | JunctionUpdate_Set
 
-	type Active<Struct extends Json> = {
-		constructor: (data: Struct) => Active<Struct>
-		toJSON: () => Struct
+	type TransmitterReceiver<Signal extends Json> = {
+		do: (update: Signal) => void
+		undo: (update: Signal) => void
+		observe: (fn: (update: Signal) => void) => () => void
 	}
 
-	type TransmitterReceiver<U> = {
-		do: (update: U) => void
-		undo: (update: U) => void
-		observe: (fn: (update: U) => void) => () => void
+	type JunctionData = {
+		readonly relations: [string, string[]][]
 	}
-
-	type JunctionCoreData = {}
 
 	const IDLE = 0
 	const RECORD = 1
 	const PLAYBACK = 2
-	class Junction implements TransmitterReceiver<Update>, Active<> {
+	class Junction implements TransmitterReceiver<JunctionUpdate> {
 		private mode = IDLE
-		private readonly map = new Map<string, Set<string>>()
-		private readonly subject = new Subject<TimelineEvent>()
+		private readonly relations = new Map<string, Set<string>>()
+		private readonly subject = new Subject<JunctionUpdate>()
 
-		
+		public constructor(data?: JunctionData) {
+			if (data) {
+				this.relations = new Map(data.relations.map(([a, b]) => [a, new Set(b)]))
+			}
+		}
+		public toJSON(): JunctionData {
+			return {
+				relations: [...this.relations.entries()].map(([a, b]) => [a, [...b]]),
+			}
+		}
 
 		public set(a: string, b: string): this {
 			if (this.mode === IDLE) {
 				this.mode = RECORD
 			}
-			const setA = this.map.get(a)
-			const setB = this.map.get(b)
-			const next: Update = `set:${a}:${b}`
-			const prev: Update = setA?.has(b) ? next : `del:${a}:${b}`
+			const setA = this.relations.get(a)
+			const setB = this.relations.get(b)
+			if (setA?.has(b)) {
+				return this
+			}
 			if (setA) {
 				setA.add(b)
 			} else {
-				this.map.set(a, new Set([b]))
+				this.relations.set(a, new Set([b]))
 			}
 			if (setB) {
 				setB.add(a)
 			} else {
-				this.map.set(b, new Set([a]))
+				this.relations.set(b, new Set([a]))
 			}
 			if (this.mode === RECORD) {
-				this.subject.next(`${prev}::${next}`)
+				this.subject.next(`set:${a}:${b}`)
 			}
 			return this
 		}
@@ -171,23 +177,21 @@ describe(`hyperefficiency patterns`, () => {
 			if (this.mode === IDLE) {
 				this.mode = RECORD
 			}
-			const setA = this.map.get(a)
-			const next: Update = `del:${a}:${b}`
-			const prev: Update = setA?.has(b) ? next : `set:${a}:${b}`
+			const setA = this.relations.get(a)
 			if (setA) {
 				setA.delete(b)
 				if (setA.size === 0) {
-					this.map.delete(a)
+					this.relations.delete(a)
 				}
-				const setB = this.map.get(b)
+				const setB = this.relations.get(b)
 				if (setB) {
 					setB.delete(a)
 					if (setB.size === 0) {
-						this.map.delete(b)
+						this.relations.delete(b)
 					}
 				}
 				if (this.mode === RECORD) {
-					this.subject.next(`${prev}::${next}`)
+					this.subject.next(`del:${a}:${b}`)
 				}
 			}
 			this.mode = IDLE
@@ -195,22 +199,21 @@ describe(`hyperefficiency patterns`, () => {
 		}
 
 		public get(a: string): Set<string> | undefined {
-			return this.map.get(a)
+			return this.relations.get(a)
 		}
 
 		public has(a: string, b?: string): boolean {
 			if (b) {
-				const setA = this.map.get(a)
+				const setA = this.relations.get(a)
 				return setA?.has(b) ?? false
 			}
-			return this.map.has(a)
+			return this.relations.has(a)
 		}
 
-		public do(event: TimelineEvent): this {
-			console.log(`do`, event)
+		public do(update: JunctionUpdate): this {
+			console.log(`do`, update)
 			this.mode = PLAYBACK
-			const [_, next] = event.split(`::`)
-			const [type, a, b] = next.split(`:`)
+			const [type, a, b] = update.split(`:`)
 			switch (type) {
 				case `set`:
 					this.set(a, b)
@@ -223,10 +226,9 @@ describe(`hyperefficiency patterns`, () => {
 			return this
 		}
 
-		public undo(event: TimelineEvent): this {
+		public undo(update: JunctionUpdate): this {
 			this.mode = PLAYBACK
-			const [prev, _] = event.split(`::`)
-			const [type, a, b] = prev.split(`:`)
+			const [type, a, b] = update.split(`:`)
 			switch (type) {
 				case `set`:
 					this.set(a, b)
@@ -239,7 +241,7 @@ describe(`hyperefficiency patterns`, () => {
 			return this
 		}
 
-		public observe(fn: (event: TimelineEvent) => void): () => void {
+		public observe(fn: (update: JunctionUpdate) => void): () => void {
 			return this.subject.subscribe(fn).unsubscribe
 		}
 	}
@@ -277,7 +279,7 @@ describe(`hyperefficiency patterns`, () => {
 			key: `junction`,
 			default: new Junction(),
 		})
-		const latestEventState = atom<TimelineEvent | null>({
+		const latestEventState = atom<JunctionUpdate | null>({
 			key: `latestEvent`,
 			default: null,
 			effects: [
@@ -297,15 +299,17 @@ describe(`hyperefficiency patterns`, () => {
 										console.log(timelineData)
 										unsubscribe()
 										setState(junctionState, (junction) => {
-											if (timelineData.timeTraveling === `into_future`) {
+											if (
+												timelineData.timeTraveling === `into_future` &&
+												newValue
+											) {
 												junction.do(newValue)
 												console.log(`do`, junction)
-												return junction
-											} else {
+											} else if (oldValue) {
 												junction.undo(oldValue)
 												console.log(`undo`, junction)
-												return junction
 											}
+											return junction
 										})
 									},
 								)
@@ -411,7 +415,7 @@ describe(`hyperefficiency patterns`, () => {
 		})
 		const deleteRelationTX = transaction<(a: string, b?: string) => void>({
 			key: `deleteRelation`,
-			do: ({ get, set }, a, b) => {},
+			do: () => {},
 		})
 
 		subscribe(findRelationState(`a`), UTIL.stdout)
