@@ -8,6 +8,7 @@ import {
 	atom,
 	atomFamily,
 	getState,
+	redo,
 	runTransaction,
 	selectorFamily,
 	setLogLevel,
@@ -21,7 +22,7 @@ import {
 import { IMPLICIT, Subject } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 2
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
@@ -178,6 +179,9 @@ describe(`hyperefficiency patterns`, () => {
 				this.mode = RECORD
 			}
 			const setA = this.relations.get(a)
+			if (!setA?.has(b)) {
+				return this
+			}
 			if (setA) {
 				setA.delete(b)
 				if (setA.size === 0) {
@@ -231,10 +235,10 @@ describe(`hyperefficiency patterns`, () => {
 			const [type, a, b] = update.split(`:`)
 			switch (type) {
 				case `set`:
-					this.set(a, b)
+					this.delete(a, b)
 					break
 				case `del`:
-					this.delete(a, b)
+					this.set(a, b)
 					break
 			}
 			this.mode = IDLE
@@ -266,7 +270,7 @@ describe(`hyperefficiency patterns`, () => {
 		expect(myJunction.get(`2`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 
-		myJunction.do(`del:a:1::set:a:1`)
+		myJunction.do(`set:a:1`)
 		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
 		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
 		expect(myJunction.get(`2`)).toBeUndefined()
@@ -340,26 +344,30 @@ describe(`hyperefficiency patterns`, () => {
 		subscribe(junctionState, UTIL.stdout)
 		expect(getState(junctionState).get(`a`)).toBeUndefined()
 		expect(getState(junctionState).get(`1`)).toBeUndefined()
-		setState(latestEventState, `del:a:1::set:a:1`)
+		setState(latestEventState, `set:a:1`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
-		setState(latestEventState, `del:a:2::set:a:2`)
+		setState(latestEventState, `set:a:2`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
 		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
 		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
-		setState(latestEventState, `set:a:1::del:a:1`)
+		setState(latestEventState, `del:a:1`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`2`]))
 		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
 		expect(getState(junctionState).get(`1`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 
 		undo(eventTL)
-
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
 
-		// undo(eventTL)
+		undo(eventTL)
+		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 
-		// expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
+		undo(eventTL)
+		expect(getState(junctionState).get(`a`)).toBeUndefined()
+
+		redo(eventTL)
+		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 	})
 
 	test(`(FAIL) use the atomic store instead of a junction`, () => {
