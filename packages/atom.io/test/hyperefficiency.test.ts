@@ -1,5 +1,7 @@
 import { vitest } from "vitest"
 
+import type { Json } from "~/packages/anvl/src/json"
+
 import * as UTIL from "./__util__"
 import {
 	__INTERNAL__,
@@ -119,13 +121,28 @@ describe(`hyperefficiency patterns`, () => {
 	type Update = Update_Delete | Update_Set
 	type TimelineEvent = `${Update}::${Update}`
 
+	type Active<Struct extends Json> = {
+		constructor: (data: Struct) => Active<Struct>
+		toJSON: () => Struct
+	}
+
+	type TransmitterReceiver<U> = {
+		do: (update: U) => void
+		undo: (update: U) => void
+		observe: (fn: (update: U) => void) => () => void
+	}
+
+	type JunctionCoreData = {}
+
 	const IDLE = 0
 	const RECORD = 1
 	const PLAYBACK = 2
-	class Junction {
+	class Junction implements TransmitterReceiver<Update>, Active<> {
 		private mode = IDLE
 		private readonly map = new Map<string, Set<string>>()
 		private readonly subject = new Subject<TimelineEvent>()
+
+		
 
 		public set(a: string, b: string): this {
 			if (this.mode === IDLE) {
@@ -222,17 +239,15 @@ describe(`hyperefficiency patterns`, () => {
 			return this
 		}
 
-		public subscribe(fn: (event: TimelineEvent) => void): {
-			unsubscribe: () => void
-		} {
-			return this.subject.subscribe(fn)
+		public observe(fn: (event: TimelineEvent) => void): () => void {
+			return this.subject.subscribe(fn).unsubscribe
 		}
 	}
 
 	test(`junction`, () => {
 		const myJunction = new Junction()
 
-		myJunction.subscribe(UTIL.stdout)
+		myJunction.observe(UTIL.stdout)
 
 		expect(myJunction.get(`a`)).toBeUndefined()
 		expect(myJunction.get(`1`)).toBeUndefined()
@@ -306,7 +321,7 @@ describe(`hyperefficiency patterns`, () => {
 								}
 							})
 					})
-					getState(junctionState).subscribe((update) => {
+					getState(junctionState).observe((update) => {
 						setSelf(update)
 					})
 				},
