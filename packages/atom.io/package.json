@@ -118,7 +118,7 @@
 		"@types/mock-fs": "4.13.1",
 		"@types/react": "18.2.20",
 		"@types/tmp": "0.2.3",
-		"eslint": "8.46.0",
+		"eslint": "8.47.0",
 		"framer-motion": "10.15.1",
 		"happy-dom": "10.9.0",
 		"preact": "10.16.0",
