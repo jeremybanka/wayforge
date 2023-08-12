@@ -1,9 +1,9 @@
 import { vitest } from "vitest"
 
-import type { Json } from "~/packages/anvl/src/json"
+import { cache } from "~/packages/atom.io/src/mutable-cache"
+import { Junct } from "~/packages/junct/src"
 
 import * as UTIL from "./__util__"
-import type { AtomToken, Store } from "../src"
 import {
 	__INTERNAL__,
 	atom,
@@ -15,12 +15,11 @@ import {
 	setLogLevel,
 	setState,
 	subscribe,
-	subscribeToTimeline,
 	timeline,
 	transaction,
 	undo,
 } from "../src"
-import { IMPLICIT, Subject } from "../src/internal"
+import { IMPLICIT } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -118,140 +117,8 @@ describe(`hyperefficiency patterns`, () => {
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 	})
 
-	type JunctionUpdate_Set = `set:${string}:${string}`
-	type JunctionUpdate_Delete = `del:${string}:${string}`
-	type JunctionUpdate = JunctionUpdate_Delete | JunctionUpdate_Set
-
-	type TransmitterReceiver<Signal extends Json> = {
-		do: (update: Signal) => void
-		undo: (update: Signal) => void
-		observe: (fn: (update: Signal) => void) => () => void
-	}
-
-	type JunctionData = {
-		readonly relations: [string, string[]][]
-	}
-
-	const IDLE = 0
-	const RECORD = 1
-	const PLAYBACK = 2
-	class Junction implements TransmitterReceiver<JunctionUpdate> {
-		private mode = IDLE
-		private readonly relations = new Map<string, Set<string>>()
-		private readonly subject = new Subject<JunctionUpdate>()
-
-		public constructor(data?: JunctionData) {
-			if (data) {
-				this.relations = new Map(data.relations.map(([a, b]) => [a, new Set(b)]))
-			}
-		}
-		public toJSON(): JunctionData {
-			return {
-				relations: [...this.relations.entries()].map(([a, b]) => [a, [...b]]),
-			}
-		}
-
-		public set(a: string, b: string): this {
-			if (this.mode === IDLE) {
-				this.mode = RECORD
-			}
-			const aRelations = this.relations.get(a)
-			const bRelations = this.relations.get(b)
-			if (aRelations?.has(b)) {
-				return this
-			}
-			if (aRelations) {
-				aRelations.add(b)
-			} else {
-				this.relations.set(a, new Set([b]))
-			}
-			if (bRelations) {
-				bRelations.add(a)
-			} else {
-				this.relations.set(b, new Set([a]))
-			}
-			if (this.mode === RECORD) {
-				this.subject.next(`set:${a}:${b}`)
-			}
-			return this
-		}
-		public delete(a: string, b: string): this {
-			if (this.mode === IDLE) {
-				this.mode = RECORD
-			}
-			const setA = this.relations.get(a)
-			if (!setA?.has(b)) {
-				return this
-			}
-			if (setA) {
-				setA.delete(b)
-				if (setA.size === 0) {
-					this.relations.delete(a)
-				}
-				const setB = this.relations.get(b)
-				if (setB) {
-					setB.delete(a)
-					if (setB.size === 0) {
-						this.relations.delete(b)
-					}
-				}
-				if (this.mode === RECORD) {
-					this.subject.next(`del:${a}:${b}`)
-				}
-			}
-			this.mode = IDLE
-			return this
-		}
-
-		public get(a: string): Set<string> | undefined {
-			return this.relations.get(a)
-		}
-
-		public has(a: string, b?: string): boolean {
-			if (b) {
-				const setA = this.relations.get(a)
-				return setA?.has(b) ?? false
-			}
-			return this.relations.has(a)
-		}
-
-		public do(update: JunctionUpdate): this {
-			this.mode = PLAYBACK
-			const [type, a, b] = update.split(`:`)
-			switch (type) {
-				case `set`:
-					this.set(a, b)
-					break
-				case `del`:
-					this.delete(a, b)
-					break
-			}
-			this.mode = IDLE
-			return this
-		}
-
-		public undo(update: JunctionUpdate): this {
-			this.mode = PLAYBACK
-			const [type, a, b] = update.split(`:`)
-			switch (type) {
-				case `set`:
-					this.delete(a, b)
-					break
-				case `del`:
-					this.set(a, b)
-					break
-			}
-			this.mode = IDLE
-			return this
-		}
-
-		public observe(fn: (update: JunctionUpdate) => void): () => void {
-			return this.subject.subscribe(fn).unsubscribe
-		}
-	}
-
 	test(`junction`, () => {
-		const myJunction = new Junction()
+		const myJunction = new Junct()
 
 		myJunction.observe(UTIL.stdout)
 
@@ -279,73 +146,9 @@ describe(`hyperefficiency patterns`, () => {
 	})
 
 	test.only(`junction => mutable core with serializable update induction`, () => {
-		type CacheOptions<Core extends TransmitterReceiver<any>> = {
-			key: string
-			default: Core
-		}
-
-		const cache = <Core extends TransmitterReceiver<any>>(
-			options: CacheOptions<Core>,
-			store: Store = IMPLICIT.STORE,
-		): [
-			mutableCore: AtomToken<Core>,
-			immutableProxy: AtomToken<
-				(Core extends TransmitterReceiver<infer Signal> ? Signal : never) | null
-			>,
-		] => {
-			const mutableCore = atom<Core>(options)
-			const signalKey = `${options.key}:signal`
-			const immutableProxy = atom<
-				(Core extends TransmitterReceiver<infer Signal> ? Signal : never) | null
-			>({
-				key: signalKey,
-				default: null,
-				effects: [
-					({ setSelf }) => {
-						getState(mutableCore).observe((update) => setSelf(update))
-					},
-					({ onSet }) => {
-						onSet(({ newValue, oldValue }) => {
-							const timelineId = store.timelineAtoms.getRelatedId(signalKey)
-							if (timelineId) {
-								const timelineData = store.timelines.get(timelineId)
-								if (timelineData?.timeTraveling) {
-									const unsubscribe = subscribeToTimeline(
-										{ key: timelineId, type: `timeline` },
-										(update) => {
-											unsubscribe()
-											setState(mutableCore, (core) => {
-												if (update === `redo` && newValue) {
-													core.do(newValue)
-												} else if (update === `undo` && oldValue) {
-													core.undo(oldValue)
-												}
-												return core
-											})
-										},
-									)
-									return
-								}
-							}
-
-							const { unsubscribe } = store.subject.operationStatus.subscribe(
-								() => {
-									unsubscribe()
-									if (newValue) {
-										setState(mutableCore, (core) => (core.do(newValue), core))
-									}
-								},
-							)
-						})
-					},
-				],
-			})
-			return [mutableCore, immutableProxy]
-		}
-
-		const [junctionState, junctionUpdater] = cache<Junction>({
+		const [junctionState, junctionUpdater] = cache<Junct>({
 			key: `junction`,
-			default: new Junction(),
+			default: new Junct(),
 		})
 
 		const eventTL = timeline({
