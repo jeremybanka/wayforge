@@ -1,19 +1,16 @@
 import type { Transceiver } from "~/packages/anvl/reactivity"
-import { Subject } from "~/packages/anvl/reactivity"
+import { Subject, TransceiverMode } from "~/packages/anvl/reactivity"
 
-export type JunctionUpdate_Set = `set:${string}:${string}`
-export type JunctionUpdate_Delete = `del:${string}:${string}`
-export type JunctionUpdate = JunctionUpdate_Delete | JunctionUpdate_Set
+export type JunctionUpdate =
+	| `del:${string}:${string}`
+	| `set:${string}:${string}`
 
 type JunctionData = {
 	readonly relations: [string, string[]][]
 }
 
-const IDLE = 0
-const RECORD = 1
-const PLAYBACK = 2
 export class Junction implements Transceiver<JunctionUpdate> {
-	private mode = IDLE
+	private mode = TransceiverMode.Record
 	private readonly relations = new Map<string, Set<string>>()
 	private readonly subject = new Subject<JunctionUpdate>()
 
@@ -29,9 +26,6 @@ export class Junction implements Transceiver<JunctionUpdate> {
 	}
 
 	public set(a: string, b: string): this {
-		if (this.mode === IDLE) {
-			this.mode = RECORD
-		}
 		const aRelations = this.relations.get(a)
 		const bRelations = this.relations.get(b)
 		if (aRelations?.has(b)) {
@@ -47,15 +41,12 @@ export class Junction implements Transceiver<JunctionUpdate> {
 		} else {
 			this.relations.set(b, new Set([a]))
 		}
-		if (this.mode === RECORD) {
+		if (this.mode === TransceiverMode.Record) {
 			this.subject.next(`set:${a}:${b}`)
 		}
 		return this
 	}
 	public delete(a: string, b: string): this {
-		if (this.mode === IDLE) {
-			this.mode = RECORD
-		}
 		const setA = this.relations.get(a)
 		if (!setA?.has(b)) {
 			return this
@@ -72,11 +63,10 @@ export class Junction implements Transceiver<JunctionUpdate> {
 					this.relations.delete(b)
 				}
 			}
-			if (this.mode === RECORD) {
+			if (this.mode === TransceiverMode.Record) {
 				this.subject.next(`del:${a}:${b}`)
 			}
 		}
-		this.mode = IDLE
 		return this
 	}
 
@@ -93,7 +83,7 @@ export class Junction implements Transceiver<JunctionUpdate> {
 	}
 
 	public do(update: JunctionUpdate): this {
-		this.mode = PLAYBACK
+		this.mode = TransceiverMode.Playback
 		const [type, a, b] = update.split(`:`)
 		switch (type) {
 			case `set`:
@@ -103,12 +93,12 @@ export class Junction implements Transceiver<JunctionUpdate> {
 				this.delete(a, b)
 				break
 		}
-		this.mode = IDLE
+		this.mode = TransceiverMode.Record
 		return this
 	}
 
 	public undo(update: JunctionUpdate): this {
-		this.mode = PLAYBACK
+		this.mode = TransceiverMode.Playback
 		const [type, a, b] = update.split(`:`)
 		switch (type) {
 			case `set`:
@@ -118,7 +108,7 @@ export class Junction implements Transceiver<JunctionUpdate> {
 				this.set(a, b)
 				break
 		}
-		this.mode = IDLE
+		this.mode = TransceiverMode.Record
 		return this
 	}
 
