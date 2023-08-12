@@ -2,22 +2,25 @@
 	"name": "rel8",
 	"version": "0.0.0",
 	"description": "Utilities for managing relations between data.",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+  "files": ["**/*"],
+  "exports": {
+    "./junction/package.json": "./junction/package.json",
+    "./junction": {
+      "types": "./junction/dist/index.d.ts",
+			"browser": "./junction/dist/index.mjs",
+			"import": "./junction/dist/index.mjs",
+			"require": "./junction/dist/index.js"
+    }
+  },
 	"scripts": {
-		"build": "tsup src/index.ts --format cjs,esm --dts",
-		"dev": "cd example && vite",
+		"build": "make -j",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},
-	"dependencies": {
-		"fp-ts": "2.16.1"
-	},
 	"devDependencies": {
-		"@types/node": "18.17.4",
 		"eslint": "8.46.0",
 		"tsup": "7.2.0",
 		"typescript": "5.1.6",
@@ -25,7 +28,7 @@
 		"vite-tsconfig-paths": "4.2.0",
 		"vitest": "0.34.1"
 	},
-	"keywords": ["color", "css", "javascript", "library"],
+	"keywords": ["relation", "data", "relational", "join", "bridge", "junction"],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git"

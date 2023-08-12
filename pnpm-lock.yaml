@@ -803,6 +803,27 @@ importers:
         specifier: 0.34.1
         version: 0.34.1(happy-dom@10.9.0)
 
+  packages/rel8:
+    devDependencies:
+      eslint:
+        specifier: 8.46.0
+        version: 8.46.0
+      tsup:
+        specifier: 7.2.0
+        version: 7.2.0(typescript@5.1.6)
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
+      vite:
+        specifier: 4.4.9
+        version: 4.4.9(@types/node@18.17.3)(sass@1.65.1)
+      vite-tsconfig-paths:
+        specifier: 4.2.0
+        version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
+      vitest:
+        specifier: 0.34.1
+        version: 0.34.1(happy-dom@10.9.0)
+
   packages/socket-io.filestore:
     dependencies:
       fp-ts:

@@ -1,0 +1,6 @@
+{
+	"name": "rel8-junction",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
+}
