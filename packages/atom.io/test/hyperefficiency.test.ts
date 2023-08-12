@@ -1,7 +1,7 @@
 import { vitest } from "vitest"
 
-import { cache } from "~/packages/atom.io/src/mutable-cache"
-import { Junction } from "~/packages/rel8/src"
+import { cache } from "~/packages/atom.io/src/tracker"
+import { JunctionTransceiver } from "~/packages/rel8/src"
 
 import * as UTIL from "./__util__"
 import {
@@ -118,7 +118,7 @@ describe(`hyperefficiency patterns`, () => {
 	})
 
 	test(`junction`, () => {
-		const myJunction = new Junction()
+		const myJunction = new JunctionTransceiver()
 
 		myJunction.observe(UTIL.stdout)
 
@@ -146,9 +146,9 @@ describe(`hyperefficiency patterns`, () => {
 	})
 
 	test.only(`junction => mutable core with serializable update induction`, () => {
-		const [junctionState, junctionUpdater] = cache<Junction>({
+		const [junctionState, junctionUpdater] = cache<JunctionTransceiver>({
 			key: `junction`,
-			default: new Junction(),
+			default: new JunctionTransceiver(),
 		})
 
 		const eventTL = timeline({

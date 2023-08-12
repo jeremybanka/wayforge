@@ -1,18 +1,12 @@
 import type { Transceiver } from "~/packages/anvl/reactivity"
 import { Subject, TransceiverMode } from "~/packages/anvl/reactivity"
 
-export type JunctionUpdate =
-	| `del:${string}:${string}`
-	| `set:${string}:${string}`
-
 type JunctionData = {
 	readonly relations: [string, string[]][]
 }
 
-export class Junction implements Transceiver<JunctionUpdate> {
-	private mode = TransceiverMode.Record
-	private readonly relations = new Map<string, Set<string>>()
-	private readonly subject = new Subject<JunctionUpdate>()
+export class Junction {
+	protected readonly relations = new Map<string, Set<string>>()
 
 	public constructor(data?: JunctionData) {
 		if (data) {
@@ -41,16 +35,11 @@ export class Junction implements Transceiver<JunctionUpdate> {
 		} else {
 			this.relations.set(b, new Set([a]))
 		}
-		if (this.mode === TransceiverMode.Record) {
-			this.subject.next(`set:${a}:${b}`)
-		}
+
 		return this
 	}
 	public delete(a: string, b: string): this {
 		const setA = this.relations.get(a)
-		if (!setA?.has(b)) {
-			return this
-		}
 		if (setA) {
 			setA.delete(b)
 			if (setA.size === 0) {
@@ -62,9 +51,6 @@ export class Junction implements Transceiver<JunctionUpdate> {
 				if (setB.size === 0) {
 					this.relations.delete(b)
 				}
-			}
-			if (this.mode === TransceiverMode.Record) {
-				this.subject.next(`del:${a}:${b}`)
 			}
 		}
 		return this
@@ -80,6 +66,38 @@ export class Junction implements Transceiver<JunctionUpdate> {
 			return setA?.has(b) ?? false
 		}
 		return this.relations.has(a)
+	}
+}
+
+export type JunctionUpdate =
+	| `del:${string}:${string}`
+	| `set:${string}:${string}`
+
+export class JunctionTransceiver
+	extends Junction
+	implements Transceiver<JunctionUpdate>
+{
+	protected mode = TransceiverMode.Record
+	protected readonly subject = new Subject<JunctionUpdate>()
+
+	public set(a: string, b: string): this {
+		super.set(a, b)
+		if (this.mode === TransceiverMode.Record) {
+			this.subject.next(`set:${a}:${b}`)
+		}
+		return this
+	}
+	public delete(a: string, b: string): this {
+		const setA = this.relations.get(a)
+		if (!setA?.has(b)) {
+			return this
+		}
+		super.delete(a, b)
+		if (this.mode === TransceiverMode.Record) {
+			this.subject.next(`del:${a}:${b}`)
+		}
+
+		return this
 	}
 
 	public do(update: JunctionUpdate): this {

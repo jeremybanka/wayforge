@@ -14,12 +14,12 @@ export enum TransceiverMode {
 
 export type SetUpdate = `add:${string}` | `clear:${string}` | `del:${string}`
 
-export class SetTV<T extends Primitive>
+export class TransceiverSet<T extends Primitive>
 	extends Set<T>
 	implements Transceiver<SetUpdate>
 {
 	protected mode: TransceiverMode = TransceiverMode.Record
-	protected subject = new Subject()
+	protected readonly subject = new Subject()
 
 	public add(value: T): this {
 		if (this.mode === TransceiverMode.Record) {
