@@ -1,25 +1,25 @@
 import * as AtomIO from "atom.io"
 
-import type { TransmitterReceiver } from "~/packages/anvl/reactivity"
+import type { Transceiver } from "~/packages/anvl/reactivity"
 
-export type CacheOptions<Core extends TransmitterReceiver<any>> = {
+export type CacheOptions<Core extends Transceiver<any>> = {
 	key: string
 	default: Core
 }
 
-export const cache = <Core extends TransmitterReceiver<any>>(
+export const cache = <Core extends Transceiver<any>>(
 	options: CacheOptions<Core>,
 	store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
 ): [
 	mutableCore: AtomIO.AtomToken<Core>,
 	immutableProxy: AtomIO.AtomToken<
-		(Core extends TransmitterReceiver<infer Signal> ? Signal : never) | null
+		(Core extends Transceiver<infer Signal> ? Signal : never) | null
 	>,
 ] => {
 	const mutableCore = AtomIO.atom<Core>(options)
 	const signalKey = `${options.key}:signal`
 	const immutableProxy = AtomIO.atom<
-		(Core extends TransmitterReceiver<infer Signal> ? Signal : never) | null
+		(Core extends Transceiver<infer Signal> ? Signal : never) | null
 	>({
 		key: signalKey,
 		default: null,

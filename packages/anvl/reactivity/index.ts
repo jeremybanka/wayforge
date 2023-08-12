@@ -1,2 +1,2 @@
 export * from "./subject"
-export * from "./transmitter-receiver"
+export * from "./transceiver"

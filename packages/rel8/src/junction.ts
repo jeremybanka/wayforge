@@ -1,4 +1,4 @@
-import type { TransmitterReceiver } from "~/packages/anvl/reactivity"
+import type { Transceiver } from "~/packages/anvl/reactivity"
 import { Subject } from "~/packages/anvl/reactivity"
 
 export type JunctionUpdate_Set = `set:${string}:${string}`
@@ -12,7 +12,7 @@ type JunctionData = {
 const IDLE = 0
 const RECORD = 1
 const PLAYBACK = 2
-export class Junct implements TransmitterReceiver<JunctionUpdate> {
+export class Junction implements Transceiver<JunctionUpdate> {
 	private mode = IDLE
 	private readonly relations = new Map<string, Set<string>>()
 	private readonly subject = new Subject<JunctionUpdate>()
