@@ -1,7 +1,9 @@
 import { vitest } from "vitest"
 
+import type { Transceiver } from "~/packages/anvl/reactivity"
+import { TransceiverMode } from "~/packages/anvl/reactivity"
 import { tracker } from "~/packages/atom.io/src/tracker"
-import { JunctionTransceiver } from "~/packages/rel8/src"
+import { Junction } from "~/packages/rel8/src"
 
 import * as UTIL from "./__util__"
 import {
@@ -19,7 +21,7 @@ import {
 	transaction,
 	undo,
 } from "../src"
-import { IMPLICIT } from "../src/internal"
+import { IMPLICIT, Subject } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -117,7 +119,71 @@ describe(`hyperefficiency patterns`, () => {
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 	})
 
-	test(`junction`, () => {
+	type JunctionUpdate = `del:${string}:${string}` | `set:${string}:${string}`
+
+	class JunctionTransceiver
+		extends Junction
+		implements Transceiver<JunctionUpdate>
+	{
+		protected mode = TransceiverMode.Record
+		protected readonly subject = new Subject<JunctionUpdate>()
+
+		public set(a: string, b: string): this {
+			super.set(a, b)
+			if (this.mode === TransceiverMode.Record) {
+				this.subject.next(`set:${a}:${b}`)
+			}
+			return this
+		}
+		public delete(a: string, b: string): this {
+			const setA = this.relations.get(a)
+			if (!setA?.has(b)) {
+				return this
+			}
+			super.delete(a, b)
+			if (this.mode === TransceiverMode.Record) {
+				this.subject.next(`del:${a}:${b}`)
+			}
+
+			return this
+		}
+
+		public do(update: JunctionUpdate): this {
+			this.mode = TransceiverMode.Playback
+			const [type, a, b] = update.split(`:`)
+			switch (type) {
+				case `set`:
+					this.set(a, b)
+					break
+				case `del`:
+					this.delete(a, b)
+					break
+			}
+			this.mode = TransceiverMode.Record
+			return this
+		}
+
+		public undo(update: JunctionUpdate): this {
+			this.mode = TransceiverMode.Playback
+			const [type, a, b] = update.split(`:`)
+			switch (type) {
+				case `set`:
+					this.delete(a, b)
+					break
+				case `del`:
+					this.set(a, b)
+					break
+			}
+			this.mode = TransceiverMode.Record
+			return this
+		}
+
+		public observe(fn: (update: JunctionUpdate) => void): () => void {
+			return this.subject.subscribe(fn).unsubscribe
+		}
+	}
+
+	test(`junction transceiver`, () => {
 		const myJunction = new JunctionTransceiver()
 
 		myJunction.observe(UTIL.stdout)
@@ -145,7 +211,7 @@ describe(`hyperefficiency patterns`, () => {
 		console.log(myJunction)
 	})
 
-	test.only(`junction => mutable core with serializable update induction`, () => {
+	test.only(`junction transceiver + tracker`, () => {
 		const junctionState = atom<JunctionTransceiver>({
 			key: `junction`,
 			default: new JunctionTransceiver(),
