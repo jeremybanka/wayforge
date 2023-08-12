@@ -7,29 +7,25 @@ export type CacheOptions<Core extends Transceiver<any>> = {
 	default: Core
 }
 
-export const cache = <Core extends Transceiver<any>>(
-	options: CacheOptions<Core>,
+export const tracker = <Core extends Transceiver<any>>(
+	coreState: AtomIO.AtomToken<Core>,
 	store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
-): [
-	mutableCore: AtomIO.AtomToken<Core>,
-	immutableProxy: AtomIO.AtomToken<
-		(Core extends Transceiver<infer Signal> ? Signal : never) | null
-	>,
-] => {
-	const mutableCore = AtomIO.atom<Core>(options)
-	const signalKey = `${options.key}:signal`
-	const immutableProxy = AtomIO.atom<
+): AtomIO.AtomToken<
+	(Core extends Transceiver<infer Signal> ? Signal : never) | null
+> => {
+	const trackerKey = `${coreState.key}:signal`
+	const trackerState = AtomIO.atom<
 		(Core extends Transceiver<infer Signal> ? Signal : never) | null
 	>({
-		key: signalKey,
+		key: trackerKey,
 		default: null,
 		effects: [
 			({ setSelf }) => {
-				AtomIO.getState(mutableCore).observe((update) => setSelf(update))
+				AtomIO.getState(coreState).observe((update) => setSelf(update))
 			},
 			({ onSet }) => {
 				onSet(({ newValue, oldValue }) => {
-					const timelineId = store.timelineAtoms.getRelatedId(signalKey)
+					const timelineId = store.timelineAtoms.getRelatedId(trackerKey)
 					if (timelineId) {
 						const timelineData = store.timelines.get(timelineId)
 						if (timelineData?.timeTraveling) {
@@ -37,7 +33,7 @@ export const cache = <Core extends Transceiver<any>>(
 								{ key: timelineId, type: `timeline` },
 								(update) => {
 									unsubscribe()
-									AtomIO.setState(mutableCore, (core) => {
+									AtomIO.setState(coreState, (core) => {
 										if (update === `redo` && newValue) {
 											core.do(newValue)
 										} else if (update === `undo` && oldValue) {
@@ -54,12 +50,12 @@ export const cache = <Core extends Transceiver<any>>(
 					const { unsubscribe } = store.subject.operationStatus.subscribe(() => {
 						unsubscribe()
 						if (newValue) {
-							AtomIO.setState(mutableCore, (core) => (core.do(newValue), core))
+							AtomIO.setState(coreState, (core) => (core.do(newValue), core))
 						}
 					})
 				})
 			},
 		],
 	})
-	return [mutableCore, immutableProxy]
+	return trackerState
 }

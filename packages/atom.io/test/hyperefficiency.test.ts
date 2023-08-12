@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import { cache } from "~/packages/atom.io/src/tracker"
+import { tracker } from "~/packages/atom.io/src/tracker"
 import { JunctionTransceiver } from "~/packages/rel8/src"
 
 import * as UTIL from "./__util__"
@@ -146,27 +146,28 @@ describe(`hyperefficiency patterns`, () => {
 	})
 
 	test.only(`junction => mutable core with serializable update induction`, () => {
-		const [junctionState, junctionUpdater] = cache<JunctionTransceiver>({
+		const junctionState = atom<JunctionTransceiver>({
 			key: `junction`,
 			default: new JunctionTransceiver(),
 		})
+		const junctionUTracker = tracker<JunctionTransceiver>(junctionState)
 
 		const eventTL = timeline({
 			key: `eventTL`,
-			atoms: [junctionUpdater],
+			atoms: [junctionUTracker],
 		})
 
 		subscribe(junctionState, UTIL.stdout)
 		expect(getState(junctionState).get(`a`)).toBeUndefined()
 		expect(getState(junctionState).get(`1`)).toBeUndefined()
-		setState(junctionUpdater, `set:a:1`)
+		setState(junctionUTracker, `set:a:1`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
-		setState(junctionUpdater, `set:a:2`)
+		setState(junctionUTracker, `set:a:2`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
 		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
 		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
-		setState(junctionUpdater, `del:a:1`)
+		setState(junctionUTracker, `del:a:1`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`2`]))
 		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
 		expect(getState(junctionState).get(`1`)).toBeUndefined()
