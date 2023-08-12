@@ -3,6 +3,7 @@ import { vitest } from "vitest"
 import type { Json } from "~/packages/anvl/src/json"
 
 import * as UTIL from "./__util__"
+import type { AtomToken, Store } from "../src"
 import {
 	__INTERNAL__,
 	atom,
@@ -154,18 +155,18 @@ describe(`hyperefficiency patterns`, () => {
 			if (this.mode === IDLE) {
 				this.mode = RECORD
 			}
-			const setA = this.relations.get(a)
-			const setB = this.relations.get(b)
-			if (setA?.has(b)) {
+			const aRelations = this.relations.get(a)
+			const bRelations = this.relations.get(b)
+			if (aRelations?.has(b)) {
 				return this
 			}
-			if (setA) {
-				setA.add(b)
+			if (aRelations) {
+				aRelations.add(b)
 			} else {
 				this.relations.set(a, new Set([b]))
 			}
-			if (setB) {
-				setB.add(a)
+			if (bRelations) {
+				bRelations.add(a)
 			} else {
 				this.relations.set(b, new Set([a]))
 			}
@@ -215,7 +216,6 @@ describe(`hyperefficiency patterns`, () => {
 		}
 
 		public do(update: JunctionUpdate): this {
-			console.log(`do`, update)
 			this.mode = PLAYBACK
 			const [type, a, b] = update.split(`:`)
 			switch (type) {
@@ -279,79 +279,91 @@ describe(`hyperefficiency patterns`, () => {
 	})
 
 	test.only(`junction => mutable core with serializable update induction`, () => {
-		const junctionState = atom<Junction>({
+		type CacheOptions<Core extends TransmitterReceiver<any>> = {
+			key: string
+			default: Core
+		}
+
+		const cache = <Core extends TransmitterReceiver<any>>(
+			options: CacheOptions<Core>,
+			store: Store = IMPLICIT.STORE,
+		): [
+			mutableCore: AtomToken<Core>,
+			immutableProxy: AtomToken<
+				(Core extends TransmitterReceiver<infer Signal> ? Signal : never) | null
+			>,
+		] => {
+			const mutableCore = atom<Core>(options)
+			const signalKey = `${options.key}:signal`
+			const immutableProxy = atom<
+				(Core extends TransmitterReceiver<infer Signal> ? Signal : never) | null
+			>({
+				key: signalKey,
+				default: null,
+				effects: [
+					({ setSelf }) => {
+						getState(mutableCore).observe((update) => setSelf(update))
+					},
+					({ onSet }) => {
+						onSet(({ newValue, oldValue }) => {
+							const timelineId = store.timelineAtoms.getRelatedId(signalKey)
+							if (timelineId) {
+								const timelineData = store.timelines.get(timelineId)
+								if (timelineData?.timeTraveling) {
+									const unsubscribe = subscribeToTimeline(
+										{ key: timelineId, type: `timeline` },
+										(update) => {
+											unsubscribe()
+											setState(mutableCore, (core) => {
+												if (update === `redo` && newValue) {
+													core.do(newValue)
+												} else if (update === `undo` && oldValue) {
+													core.undo(oldValue)
+												}
+												return core
+											})
+										},
+									)
+									return
+								}
+							}
+
+							const { unsubscribe } = store.subject.operationStatus.subscribe(
+								() => {
+									unsubscribe()
+									if (newValue) {
+										setState(mutableCore, (core) => (core.do(newValue), core))
+									}
+								},
+							)
+						})
+					},
+				],
+			})
+			return [mutableCore, immutableProxy]
+		}
+
+		const [junctionState, junctionUpdater] = cache<Junction>({
 			key: `junction`,
 			default: new Junction(),
-		})
-		const latestEventState = atom<JunctionUpdate | null>({
-			key: `latestEvent`,
-			default: null,
-			effects: [
-				({ onSet, setSelf }) => {
-					onSet(({ newValue, oldValue }) => {
-						console.log(`latestEvent`, { newValue, oldValue })
-						const timelineId =
-							IMPLICIT.STORE.timelineAtoms.getRelatedId(`latestEvent`)
-						if (timelineId) {
-							const timelineData = IMPLICIT.STORE.timelines.get(timelineId)
-							if (timelineData?.timeTraveling) {
-								const unsubscribe = subscribeToTimeline(
-									{ key: timelineId, type: `timeline` },
-									(update) => {
-										console.log(`🔔 update`, update)
-										console.log({ newValue, oldValue })
-										console.log(timelineData)
-										unsubscribe()
-										setState(junctionState, (junction) => {
-											if (
-												timelineData.timeTraveling === `into_future` &&
-												newValue
-											) {
-												junction.do(newValue)
-												console.log(`do`, junction)
-											} else if (oldValue) {
-												junction.undo(oldValue)
-												console.log(`undo`, junction)
-											}
-											return junction
-										})
-									},
-								)
-								return
-							}
-						}
-
-						const { unsubscribe } =
-							IMPLICIT.STORE.subject.operationStatus.subscribe(() => {
-								unsubscribe()
-								if (newValue) {
-									setState(junctionState, (junction) => junction.do(newValue))
-								}
-							})
-					})
-					getState(junctionState).observe((update) => {
-						setSelf(update)
-					})
-				},
-			],
 		})
 
 		const eventTL = timeline({
 			key: `eventTL`,
-			atoms: [latestEventState],
+			atoms: [junctionUpdater],
 		})
 
 		subscribe(junctionState, UTIL.stdout)
 		expect(getState(junctionState).get(`a`)).toBeUndefined()
 		expect(getState(junctionState).get(`1`)).toBeUndefined()
-		setState(latestEventState, `set:a:1`)
+		setState(junctionUpdater, `set:a:1`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
-		setState(latestEventState, `set:a:2`)
+		setState(junctionUpdater, `set:a:2`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
 		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
 		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
-		setState(latestEventState, `del:a:1`)
+		setState(junctionUpdater, `del:a:1`)
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`2`]))
 		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
 		expect(getState(junctionState).get(`1`)).toBeUndefined()

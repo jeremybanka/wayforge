@@ -76,7 +76,7 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 
 export const subscribeToTimeline = (
 	token: TimelineToken,
-	handleUpdate: (update: TimelineUpdate) => void,
+	handleUpdate: (update: TimelineUpdate | `redo` | `undo`) => void,
 	store = IMPLICIT.STORE,
 ): (() => void) => {
 	const tl = withdraw(token, store)
