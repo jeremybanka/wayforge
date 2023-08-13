@@ -3,6 +3,7 @@ export type JunctionData = {
 }
 
 export class Junction {
+ 	public readonly cardinality = [Infinity, Infinity]
 	protected readonly relations = new Map<string, Set<string>>()
 
 	public constructor(data?: JunctionData) {

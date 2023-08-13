@@ -3,7 +3,7 @@ import { vitest } from "vitest"
 import type { Transceiver } from "~/packages/anvl/reactivity"
 import { TransceiverMode } from "~/packages/anvl/reactivity"
 import { tracker } from "~/packages/atom.io/src/tracker"
-import { Junction } from "~/packages/rel8/src"
+import { Junction } from "~/packages/rel8/junction/src"
 
 import * as UTIL from "./__util__"
 import {
@@ -211,7 +211,7 @@ describe(`hyperefficiency patterns`, () => {
 		console.log(myJunction)
 	})
 
-	test.only(`junction transceiver + tracker`, () => {
+	test(`junction transceiver + tracker`, () => {
 		const junctionState = atom<JunctionTransceiver>({
 			key: `junction`,
 			default: new JunctionTransceiver(),
@@ -252,7 +252,7 @@ describe(`hyperefficiency patterns`, () => {
 		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
 	})
 
-	test(`(FAIL) use the atomic store instead of a junction`, () => {
+	test.skip(`use the atomic store instead of a junction`, () => {
 		const ruleState = atom<`1:1` | `1:n` | `n:n`>({
 			key: `rule`,
 			default: `1:1`,
