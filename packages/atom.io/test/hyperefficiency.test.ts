@@ -2,6 +2,7 @@ import { vitest } from "vitest"
 
 import type { Transceiver } from "~/packages/anvl/reactivity"
 import { TransceiverMode } from "~/packages/anvl/reactivity"
+import type { JsonObj } from "~/packages/anvl/src/json"
 import { tracker } from "~/packages/atom.io/src/tracker"
 import { Junction } from "~/packages/rel8/junction/src"
 
@@ -121,14 +122,26 @@ describe(`hyperefficiency patterns`, () => {
 
 	type JunctionUpdate = `del:${string}:${string}` | `set:${string}:${string}`
 
-	class JunctionTransceiver
-		extends Junction
+	class JunctionTransceiver<
+			ASide extends string,
+			BSide extends string,
+			Content extends JsonObj,
+		>
+		extends Junction<ASide, BSide, Content>
 		implements Transceiver<JunctionUpdate>
 	{
 		protected mode = TransceiverMode.Record
 		protected readonly subject = new Subject<JunctionUpdate>()
 
-		public set(a: string, b: string): this {
+		public set(a: string, b: string): this
+		public set(relation: { [Key in ASide | BSide]: string }, b?: undefined): this
+		public set(
+			a: string | { [Key in ASide | BSide]: string },
+			b?: string,
+		): this {
+			// @ts-expect-error we can deduce this.b may index a
+			b = b ?? (a[this.b] as string)
+			a = typeof a === `string` ? a : a[this.a]
 			super.set(a, b)
 			if (this.mode === TransceiverMode.Record) {
 				this.subject.next(`set:${a}:${b}`)
@@ -184,72 +197,82 @@ describe(`hyperefficiency patterns`, () => {
 	}
 
 	test(`junction transceiver`, () => {
-		const myJunction = new JunctionTransceiver()
+		const myJunction = new JunctionTransceiver({
+			between: [`a`, `b`],
+			cardinality: `n:n`,
+		})
 
 		myJunction.observe(UTIL.stdout)
 
-		expect(myJunction.get(`a`)).toBeUndefined()
-		expect(myJunction.get(`1`)).toBeUndefined()
+		expect(myJunction.getRelatedKeys(`a`)).toBeUndefined()
+		expect(myJunction.getRelatedKeys(`1`)).toBeUndefined()
 		myJunction.set(`a`, `1`)
-		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
-		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
 		myJunction.set(`a`, `2`)
-		expect(myJunction.get(`a`)).toEqual(new Set([`1`, `2`]))
-		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
-		expect(myJunction.get(`2`)).toEqual(new Set([`a`]))
+		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`, `2`]))
+		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.getRelatedKeys(`2`)).toEqual(new Set([`a`]))
 		myJunction.delete(`a`, `2`)
-		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
-		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
-		expect(myJunction.get(`2`)).toBeUndefined()
+		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.getRelatedKeys(`2`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 
 		myJunction.do(`set:a:1`)
-		expect(myJunction.get(`a`)).toEqual(new Set([`1`]))
-		expect(myJunction.get(`1`)).toEqual(new Set([`a`]))
-		expect(myJunction.get(`2`)).toBeUndefined()
+		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
+		expect(myJunction.getRelatedKeys(`2`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 		console.log(myJunction)
 	})
 
 	test(`junction transceiver + tracker`, () => {
-		const junctionState = atom<JunctionTransceiver>({
+		const junctionState = atom({
 			key: `junction`,
-			default: new JunctionTransceiver(),
+			default: new JunctionTransceiver({
+				between: [`a`, `b`],
+				cardinality: `n:n`,
+			}),
 		})
-		const junctionUTracker = tracker<JunctionTransceiver>(junctionState)
+		const junctionTracker = tracker(junctionState)
 
 		const eventTL = timeline({
 			key: `eventTL`,
-			atoms: [junctionUTracker],
+			atoms: [junctionTracker],
 		})
 
 		subscribe(junctionState, UTIL.stdout)
-		expect(getState(junctionState).get(`a`)).toBeUndefined()
-		expect(getState(junctionState).get(`1`)).toBeUndefined()
-		setState(junctionUTracker, `set:a:1`)
-		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
-		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
-		setState(junctionUTracker, `set:a:2`)
-		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
-		expect(getState(junctionState).get(`1`)).toEqual(new Set([`a`]))
-		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
-		setState(junctionUTracker, `del:a:1`)
-		expect(getState(junctionState).get(`a`)).toEqual(new Set([`2`]))
-		expect(getState(junctionState).get(`2`)).toEqual(new Set([`a`]))
-		expect(getState(junctionState).get(`1`)).toBeUndefined()
+		expect(getState(junctionState).getRelatedKeys(`a`)).toBeUndefined()
+		expect(getState(junctionState).getRelatedKeys(`1`)).toBeUndefined()
+		setState(junctionTracker, `set:a:1`)
+		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
+		expect(getState(junctionState).getRelatedKeys(`1`)).toEqual(new Set([`a`]))
+		setState(junctionTracker, `set:a:2`)
+		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(
+			new Set([`1`, `2`]),
+		)
+		expect(getState(junctionState).getRelatedKeys(`1`)).toEqual(new Set([`a`]))
+		expect(getState(junctionState).getRelatedKeys(`2`)).toEqual(new Set([`a`]))
+		setState(junctionTracker, `del:a:1`)
+		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`2`]))
+		expect(getState(junctionState).getRelatedKeys(`2`)).toEqual(new Set([`a`]))
+		expect(getState(junctionState).getRelatedKeys(`1`)).toBeUndefined()
 		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
 
 		undo(eventTL)
-		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`, `2`]))
+		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(
+			new Set([`1`, `2`]),
+		)
 
 		undo(eventTL)
-		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
+		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
 
 		undo(eventTL)
-		expect(getState(junctionState).get(`a`)).toBeUndefined()
+		expect(getState(junctionState).getRelatedKeys(`a`)).toBeUndefined()
 
 		redo(eventTL)
-		expect(getState(junctionState).get(`a`)).toEqual(new Set([`1`]))
+		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
 	})
 
 	test.skip(`use the atomic store instead of a junction`, () => {

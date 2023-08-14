@@ -11,7 +11,10 @@ const warn = vitest.spyOn(global.console, `warn`)
 
 describe(`Junction`, () => {
 	it(`can be constructed`, () => {
-		const j = new Junction()
+		const j = new Junction({
+			between: [`a`, `b`],
+			cardinality: `1:n`,
+		})
 		expect(j).toBeDefined()
 	})
 })
@@ -135,14 +138,14 @@ describe.skip(`Junction.prototype.set1To1`, () => {
 		const mary = `mary_paints`
 		const joey = `da_man_joey`
 		const huey = `hueys_world`
-		const marriedCouples = new Junction({ relationType: `1:1` })
-			.from(`wife`)
-			.to(`husband`)
-			.set({ wife: mary, husband: joey })
-		expect(marriedCouples.getRelatedId(mary)).toEqual(joey)
+		const marriedCouples = new Junction({
+			between: [`wife`, `husband`],
+			cardinality: `1:1`,
+		}).set({ wife: mary, husband: joey })
+		expect(marriedCouples.getRelatedKey(mary)).toEqual(joey)
 		const newMarriedCouples = marriedCouples.set({ wife: mary, husband: huey })
-		expect(newMarriedCouples.getRelatedId(mary)).toEqual(huey)
-		expect(newMarriedCouples.getRelatedId(joey)).toBeUndefined()
+		expect(newMarriedCouples.getRelatedKey(mary)).toEqual(huey)
+		expect(newMarriedCouples.getRelatedKey(joey)).toBeUndefined()
 	})
 })
 

@@ -2,21 +2,29 @@ import type { JsonObj } from "~/packages/anvl/src/json"
 
 export type Cardinality = `1:1` | `1:n` | `n:n`
 
-export interface JunctionJSON<ASide extends string, BSide extends string>
-	extends JsonObj {
+export interface JunctionJSON<
+	ASide extends string,
+	BSide extends string,
+	Content extends JsonObj | null,
+> extends JsonObj {
 	readonly between: [a: ASide, b: BSide]
 	readonly cardinality: Cardinality
 	readonly relations?: [string, string[]][]
+	readonly contents?: [string, Content][]
 }
 
-export class Junction<ASide extends string, BSide extends string> {
+export class Junction<
+	ASide extends string,
+	BSide extends string,
+	Content extends JsonObj,
+> {
 	public readonly a: ASide
 	public readonly b: BSide
 	public readonly cardinality: Cardinality
+	public readonly relations = new Map<string, Set<string>>()
+	public readonly contents = new Map<string, Content>()
 
-	protected readonly relations = new Map<string, Set<string>>()
-
-	public constructor(data?: JunctionJSON<ASide, BSide>) {
+	public constructor(data: JunctionJSON<ASide, BSide, Content>) {
 		if (data) {
 			this.a = data.between[0]
 			this.b = data.between[1]
@@ -24,7 +32,7 @@ export class Junction<ASide extends string, BSide extends string> {
 			this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
 		}
 	}
-	public toJSON(): JunctionJSON<ASide, BSide> {
+	public toJSON(): JunctionJSON<ASide, BSide, Content> {
 		return {
 			between: [this.a, this.b],
 			cardinality: this.cardinality,
@@ -35,30 +43,23 @@ export class Junction<ASide extends string, BSide extends string> {
 	public set(a: string, b: string): this
 	public set(relation: { [Key in ASide | BSide]: string }, b?: undefined): this
 	public set(a: string | { [Key in ASide | BSide]: string }, b?: string): this {
-		let a0: string
-		let b0: string
-		if (typeof a === `string`) {
-			a0 = a
-			// rome-ignore lint/style/noNonNullAssertion: this case is handled by the overload
-			b0 = b!
-		} else {
-			a0 = a[this.a]
-			b0 = a[this.b]
-		}
-		const aRelations = this.relations.get(a0)
-		const bRelations = this.relations.get(b0)
-		if (aRelations?.has(b0)) {
+		// @ts-expect-error we can deduce here that this.b may index a
+		b = b ?? (a[this.b] as string)
+		a = typeof a === `string` ? a : a[this.a]
+		const aRelations = this.relations.get(a)
+		const bRelations = this.relations.get(b)
+		if (aRelations?.has(b)) {
 			return this
 		}
 		if (aRelations) {
-			aRelations.add(b0)
+			aRelations.add(b)
 		} else {
-			this.relations.set(a0, new Set([b0]))
+			this.relations.set(a, new Set([b]))
 		}
 		if (bRelations) {
-			bRelations.add(a0)
+			bRelations.add(a)
 		} else {
-			this.relations.set(b0, new Set([a0]))
+			this.relations.set(b, new Set([a]))
 		}
 
 		return this

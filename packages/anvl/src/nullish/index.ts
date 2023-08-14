@@ -20,9 +20,9 @@ export type NullSafeUnion<Base, Extension> = Extension extends null
 	? Base
 	: Base & Extension
 
-export type NullSafeRest<MaybeArg> = MaybeArg extends null
+export type NullSafeRest<MaybeArg, IfArg = MaybeArg> = MaybeArg extends null
 	? [] | [undefined]
-	: [MaybeArg]
+	: [IfArg]
 
 export interface Discard {
 	readonly _discard: unique symbol
