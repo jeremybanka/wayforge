@@ -1,10 +1,10 @@
 import type { RelationData } from "./core-relation-data"
 import { getRelatedIds } from "./get-related-ids"
 import { getContent } from "./relation-contents"
-import type { JsonObj } from "../json"
+import type { Json } from "../json"
 
 export const getRelationEntries = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -17,7 +17,7 @@ export const getRelationEntries = <
 	])
 
 export const getRelationRecord = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(

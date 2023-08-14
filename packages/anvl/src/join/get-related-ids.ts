@@ -1,8 +1,8 @@
 import type { RelationData } from "./core-relation-data"
-import type { JsonObj } from "../json"
+import type { Json } from "../json"
 
 export const getRelatedIds = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -11,7 +11,7 @@ export const getRelatedIds = <
 ): string[] => relationMap.relations[id] ?? []
 
 export const getRelatedId = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(

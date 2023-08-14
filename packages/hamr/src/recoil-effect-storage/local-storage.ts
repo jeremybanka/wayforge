@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/function"
 import type { AtomEffect } from "recoil"
 
-import type { Json, Primitive } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import type { SerializationInterface } from "."
 
@@ -22,7 +22,7 @@ export const localStorageSerializationEffect: <T>(
 		})
 	}
 
-export const localStorageEffect: <T extends Json | Primitive>(
+export const localStorageEffect: <T extends Json.Serializable>(
 	key: string,
 ) => AtomEffect<T> = (key) =>
 	localStorageSerializationEffect(key, {

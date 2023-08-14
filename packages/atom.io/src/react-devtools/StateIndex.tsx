@@ -3,7 +3,10 @@ import { getState, selectorFamily } from "atom.io"
 import { useO, useIO } from "atom.io/react"
 import type { FC } from "react"
 
-import { isJson, refineJsonType } from "~/packages/anvl/src/json"
+import {
+	isJson,
+	refineJsonType,
+} from "~/packages/anvl/src/refinement/refine-json"
 
 import { findViewIsOpenState, primitiveRefinery } from "."
 import { button } from "./Button"

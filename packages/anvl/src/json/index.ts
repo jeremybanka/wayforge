@@ -1,39 +1,16 @@
-import { pipe } from "fp-ts/function"
-
-export * from "./refine"
 export * from "./json-interface"
+import type * as Json from "./json"
+export { Json }
 
-export const serializeSet = <T>(set: Set<T>): string =>
-	pipe(set, Array.from, JSON.stringify)
-
-export const deserializeSet = <T>(str: string): Set<T> =>
-	pipe(str, JSON.parse, Array.from, (a) => new Set(a as T[]))
-
-export type Primitive = boolean | number | string | null
-
-export type Serializable =
-	| Primitive
-	| Readonly<{ [key: string]: Serializable }>
-	| ReadonlyArray<Serializable>
-
-export type JsonObj<
-	Key extends string = string,
-	Value extends Serializable = Serializable,
-> = Record<Key, Value>
-
-export type JsonArr<Element extends Serializable = Serializable> =
-	ReadonlyArray<Element>
-
-export type Json = JsonArr | JsonObj | Primitive
-
-export const parseJson = <S extends Stringified<Json>>(
+export const parseJson = <S extends Stringified<Json.Serializable>>(
 	str: S | string,
-): S extends Stringified<infer J> ? J : Json => JSON.parse(str)
+): S extends Stringified<infer J> ? J : Json.Serializable => JSON.parse(str)
 
-export type Stringified<J extends Json> = string & { __json: J }
+export type Stringified<J extends Json.Serializable> = string & { __json: J }
 
-export const stringifyJson = <J extends Json>(json: J): Stringified<J> =>
-	JSON.stringify(json) as Stringified<J>
+export const stringifyJson = <J extends Json.Serializable>(
+	json: J,
+): Stringified<J> => JSON.stringify(json) as Stringified<J>
 
 export type Empty = Record<string, never>
 
@@ -48,12 +25,12 @@ export const JSON_TYPE_NAMES = [
 
 export type JsonTypeName = typeof JSON_TYPE_NAMES[number]
 
-export interface JsonTypes extends Record<JsonTypeName, Json> {
-	array: JsonArr
+export interface JsonTypes extends Record<JsonTypeName, Json.Serializable> {
+	array: Json.Array
 	boolean: boolean
 	null: null
 	number: number
-	object: JsonObj
+	object: Json.Object
 	string: string
 }
 

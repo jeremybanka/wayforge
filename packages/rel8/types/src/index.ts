@@ -1,4 +1,4 @@
-export * as Json from "./json"
+export * from "./json"
 
 export type Refinement<T, U extends T> = (value: T) => value is U
 

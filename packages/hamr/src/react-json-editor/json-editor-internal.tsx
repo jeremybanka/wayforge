@@ -4,15 +4,18 @@ import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
-import { isJson, refineJsonType } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
+import {
+	isJson,
+	refineJsonType,
+} from "~/packages/anvl/src/refinement/refine-json"
 
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 import { ElasticInput } from "../react-elastic-input"
 
-export type JsonEditorProps_INTERNAL<T extends Json> = {
+export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	data: T
 	set: SetterOrUpdater<T>
 	name?: string | undefined
@@ -29,7 +32,7 @@ export type JsonEditorProps_INTERNAL<T extends Json> = {
 	Components: JsonEditorComponents
 }
 
-export const JsonEditor_INTERNAL = <T extends Json>({
+export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 	data,
 	set,
 	schema,

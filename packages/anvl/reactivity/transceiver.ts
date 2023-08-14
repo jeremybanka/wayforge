@@ -1,7 +1,8 @@
 import { Subject } from "./subject"
-import type { Json, Primitive } from "../src/json"
+import type { Json } from "../src/json"
+import type { primitive } from "../src/primitive"
 
-export type Transceiver<Signal extends Json> = {
+export type Transceiver<Signal extends Json.Serializable> = {
 	do: (update: Signal) => void
 	undo: (update: Signal) => void
 	observe: (fn: (update: Signal) => void) => () => void
@@ -14,7 +15,7 @@ export enum TransceiverMode {
 
 export type SetUpdate = `add:${string}` | `clear:${string}` | `del:${string}`
 
-export class TransceiverSet<T extends Primitive>
+export class TransceiverSet<T extends primitive>
 	extends Set<T>
 	implements Transceiver<SetUpdate>
 {

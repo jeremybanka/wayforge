@@ -1,7 +1,7 @@
 import { vitest } from "vitest"
 
 import { Join } from "."
-import type { JsonObj } from "../json"
+import type { Json } from "../json"
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)
@@ -191,7 +191,7 @@ describe(`Join.prototype.remove`, () => {
 
 describe(`Join.prototype.getRelatedIdEntries`, () => {
 	it(`gets all content entries for a given id`, () => {
-		const friendships = new Join<JsonObj>()
+		const friendships = new Join<Json.Object>()
 			.set({ from: `omori`, to: `kel` }, { trust: 1 })
 			.set({ from: `hero`, to: `kel` }, { brothers: true })
 			.set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
@@ -205,7 +205,7 @@ describe(`Join.prototype.getRelatedIdEntries`, () => {
 
 describe(`Join.prototype.getRelationRecord`, () => {
 	it(`gets all content for a given id`, () => {
-		const friendships = new Join<JsonObj>()
+		const friendships = new Join<Json.Object>()
 			.set({ from: `omori`, to: `kel` }, { trust: 1 })
 			.set({ from: `hero`, to: `kel` }, { brothers: true })
 			.set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })

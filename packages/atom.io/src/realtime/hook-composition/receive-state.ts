@@ -5,7 +5,7 @@ import type { ServerConfig } from ".."
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const useReceiveState = ({ socket, store }: ServerConfig) => {
-	return function receiveState<J extends Json>(
+	return function receiveState<J extends Json.Serializable>(
 		token: AtomIO.StateToken<J>,
 	): () => void {
 		const publish = (newValue: J) => AtomIO.setState(token, newValue, store)

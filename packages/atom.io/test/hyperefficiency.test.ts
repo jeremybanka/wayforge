@@ -2,7 +2,7 @@ import { vitest } from "vitest"
 
 import type { Transceiver } from "~/packages/anvl/reactivity"
 import { TransceiverMode } from "~/packages/anvl/reactivity"
-import type { JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import { tracker } from "~/packages/atom.io/src/tracker"
 import { Junction } from "~/packages/rel8/junction/src"
 

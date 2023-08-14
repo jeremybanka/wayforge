@@ -2,10 +2,10 @@ import { atom, atomFamily, selector, transaction } from "atom.io"
 
 import type { Identified } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
-import type { Json, JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import { selectJson } from "~/packages/atom.io/src/json"
 
-export const findCardValueState = atomFamily<Identified & JsonObj, string>({
+export const findCardValueState = atomFamily<Identified & Json.Object, string>({
 	key: `findCardValue`,
 	default: () => ({ id: `` }),
 })
@@ -34,7 +34,7 @@ export const valuesOfCardsStateJSON = selectJson(
 )
 
 export const addCardValueTX = transaction<
-	<IJ extends Identified & Json>(value: IJ) => boolean
+	<IJ extends Identified & Json.Serializable>(value: IJ) => boolean
 >({
 	key: `addCardValue`,
 	do: ({ get, set }, value) => {

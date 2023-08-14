@@ -67,7 +67,11 @@ export const initResourceTypeInitializer = ({
 	return initType
 }
 
-export type WriteResourceOptions = { type: string; id: string; value: Json }
+export type WriteResourceOptions = {
+	type: string
+	id: string
+	value: Json.Serializable
+}
 export type WriteResource = (
 	options: WriteResourceOptions,
 ) => Promise<Error | void>

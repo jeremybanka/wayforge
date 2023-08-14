@@ -1,4 +1,4 @@
-import type { Serializable } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
 import type { Store } from "."
@@ -25,7 +25,7 @@ import type {
 	SelectorToken,
 } from ".."
 
-export function atomFamily__INTERNAL<T, K extends Serializable>(
+export function atomFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
 	store: Store = IMPLICIT.STORE,
 ): AtomFamily<T, K> {
@@ -63,7 +63,7 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
 	)
 }
 
-export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
+export function readonlySelectorFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store?: Store,
 ): ReadonlySelectorFamily<T, K> {
@@ -95,15 +95,15 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Serializable>(
 	) as ReadonlySelectorFamily<T, K>
 }
 
-export function selectorFamily__INTERNAL<T, K extends Serializable>(
+export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: SelectorFamilyOptions<T, K>,
 	store?: Store,
 ): SelectorFamily<T, K>
-export function selectorFamily__INTERNAL<T, K extends Serializable>(
+export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store?: Store,
 ): ReadonlySelectorFamily<T, K>
-export function selectorFamily__INTERNAL<T, K extends Serializable>(
+export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
