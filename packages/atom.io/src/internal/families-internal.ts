@@ -14,6 +14,7 @@ import {
 import type {
 	AtomFamily,
 	AtomFamilyOptions,
+	AtomOptions,
 	AtomToken,
 	FamilyMetadata,
 	ReadonlySelectorFamily,
@@ -35,20 +36,22 @@ export function atomFamily__INTERNAL<T, K extends Serializable>(
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
 			const existing = withdraw({ key: fullKey, type: `atom` }, store)
-			const token: AtomToken<any> = existing
-				? deposit(existing)
-				: atom__INTERNAL<T>(
-						{
-							key: fullKey,
-							default:
-								options.default instanceof Function
-									? options.default(key)
-									: options.default,
-							effects: options.effects?.(key),
-						},
-						family,
-						store,
-				  )
+			let token: AtomToken<any>
+			if (existing) {
+				token = deposit(existing)
+			} else {
+				const individualOptions: AtomOptions<any> = {
+					key: fullKey,
+					default:
+						options.default instanceof Function
+							? options.default(key)
+							: options.default,
+				}
+				if (options.effects) {
+					individualOptions.effects = options.effects(key)
+				}
+				token = atom__INTERNAL<T>(individualOptions, family, store)
+			}
 			subject.next(token)
 			return token
 		},

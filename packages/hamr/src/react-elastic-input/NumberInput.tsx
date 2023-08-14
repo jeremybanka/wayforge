@@ -9,7 +9,7 @@ import { ElasticInput } from "."
 
 function round(value: number, decimalPlaces?: number): number {
 	if (decimalPlaces === undefined) return value
-	const factor = Math.pow(10, decimalPlaces)
+	const factor = 10 ** decimalPlaces
 	return Math.round(value * factor) / factor
 }
 function roundAndPad(value: number, decimalPlaces?: number): string {
@@ -25,6 +25,7 @@ export const isValidNonNumber = (input: string): input is ValidNonNumber =>
 export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<
 	Record<ValidNonNumber, number | null>
 > = {
+	// rome-ignore lint/complexity/useLiteralKeys: bug in rome
 	"": null,
 	"-": 0,
 	".": 0,
@@ -53,7 +54,9 @@ export const DEFAULT_NUMBER_CONSTRAINTS: NumberConstraints = {
 }
 
 const initRefinery =
-	<Constraints extends NumberConstraints>(constraints: Partial<Constraints>) =>
+	<Constraints extends NumberConstraints>(
+		constraints: { [K in keyof Constraints]?: Constraints[K] | undefined },
+	) =>
 	(
 		input: number | null,
 	): Constraints extends { nullable: true | undefined }
@@ -91,7 +94,7 @@ type NumberInputProps = Partial<NumberConstraints> & {
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 	placeholder?: string
-	set?: (newValue: number | null) => void
+	set?: ((newValue: number | null) => void) | undefined
 	testId?: string
 	value?: number | null
 }

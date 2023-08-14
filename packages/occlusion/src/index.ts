@@ -25,7 +25,11 @@ export class Perspective extends Dictionary<
 		base?: Record<string, string>
 		idFn?: () => string
 	}) {
-		super({ base: options?.base, from: `trueId`, into: `virtualId` })
+		super({
+			...(options ? { base: options?.base } : {}),
+			from: `trueId`,
+			into: `virtualId`,
+		})
 		if (options?.idFn) this.idFn = options?.idFn
 	}
 

@@ -1,8 +1,8 @@
 import type { ErrorInfo, FC } from "react"
 
 export type FallbackProps = {
-	error?: Error | string
-	errorInfo?: ErrorInfo
+	error?: Error | string | undefined
+	errorInfo?: ErrorInfo | undefined
 }
 
 export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {

@@ -34,8 +34,8 @@ export const SubEditors: Record<
 export type JsonEditorProps<T extends Json> = {
 	data: T
 	set: (valOrUpdater: T | ((currVal: T) => T)) => void
-	name?: string
-	rename?: (newKey: string) => void
+	name?: string | undefined
+	rename?: ((newKey: string) => void) | undefined
 	remove?: () => void
 	schema?: JsonSchema
 	path?: ReadonlyArray<number | string>

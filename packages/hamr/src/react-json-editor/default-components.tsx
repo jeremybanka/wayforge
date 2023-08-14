@@ -25,7 +25,10 @@ export type JsonEditorComponents = {
 		ValueEditor: FC
 		Wrapper: WC
 	}>
-	EditorWrapper: WC<{ customCss?: SerializedStyles; className?: string }>
+	EditorWrapper: WC<{
+		customCss?: SerializedStyles | undefined
+		className?: string | undefined
+	}>
 
 	ArrayWrapper: WC
 	ObjectWrapper: WC

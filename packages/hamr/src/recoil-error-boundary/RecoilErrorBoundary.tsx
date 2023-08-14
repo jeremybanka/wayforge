@@ -10,7 +10,7 @@ import { RecoverableErrorBoundary as ReactErrorBoundary } from "../react-error-b
 
 export const findErrorBoundaryState = atomFamily<ErrorBoundaryState, string>({
 	key: `errorBoundary`,
-	default: { error: undefined, errorInfo: undefined },
+	default: {},
 })
 
 export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({

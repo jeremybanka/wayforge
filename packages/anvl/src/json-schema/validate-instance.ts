@@ -90,21 +90,23 @@ export const validateAsType: {
 } = {
 	integer: {
 		type: () => JSON_SCHEMA_META_REFINERY.integer,
-		enum: (opts) => (instance) => opts.spec.includes(instance),
-		minimum: (opts) => (instance) => instance >= opts.spec,
-		maximum: (opts) => (instance) => instance <= opts.spec,
-		exclusiveMinimum: (opts) => (instance) => instance > opts.spec,
-		exclusiveMaximum: (opts) => (instance) => instance < opts.spec,
-		multipleOf: (opts) => (instance) => instance % opts.spec === 0,
+		enum: (opts) => (instance) => opts.spec?.includes(instance) ?? false,
+		minimum: (opts) => (instance) => instance >= (opts.spec ?? -Infinity),
+		maximum: (opts) => (instance) => instance <= (opts.spec ?? Infinity),
+		exclusiveMinimum: (opts) => (instance) =>
+			instance > (opts.spec ?? -Infinity),
+		exclusiveMaximum: (opts) => (instance) => instance < (opts.spec ?? Infinity),
+		multipleOf: (opts) => (instance) => instance % (opts.spec ?? 1) === 0,
 	},
 	number: {
 		type: () => JSON_SCHEMA_META_REFINERY.number,
-		enum: (opts) => (instance) => opts.spec.includes(instance),
-		minimum: (opts) => (instance) => instance >= opts.spec,
-		maximum: (opts) => (instance) => instance <= opts.spec,
-		exclusiveMinimum: (opts) => (instance) => instance > opts.spec,
-		exclusiveMaximum: (opts) => (instance) => instance < opts.spec,
-		multipleOf: (opts) => (instance) => instance % opts.spec === 0,
+		enum: (opts) => (instance) => opts.spec?.includes(instance) ?? false,
+		minimum: (opts) => (instance) => instance >= (opts.spec ?? -Infinity),
+		maximum: (opts) => (instance) => instance <= (opts.spec ?? Infinity),
+		exclusiveMinimum: (opts) => (instance) =>
+			instance > (opts.spec ?? -Infinity),
+		exclusiveMaximum: (opts) => (instance) => instance < (opts.spec ?? Infinity),
+		multipleOf: (opts) => (instance) => instance % (opts.spec ?? 1) === 0,
 	},
 	string: {
 		type: () => JSON_SCHEMA_META_REFINERY.string,
@@ -116,7 +118,7 @@ export const validateAsType: {
 	},
 	boolean: {
 		type: () => JSON_SCHEMA_META_REFINERY.boolean,
-		enum: (opts) => (instance) => opts.spec.includes(instance),
+		enum: (opts) => (instance) => opts.spec?.includes(instance) ?? false,
 	},
 	null: {
 		type: () => JSON_SCHEMA_META_REFINERY.null,

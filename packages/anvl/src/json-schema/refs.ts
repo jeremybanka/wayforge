@@ -47,7 +47,7 @@ export const colorPalette: ReffedJsonSchema = {
 
 type RetrieveRefOptions = {
 	refNode: JsonSchemaRef
-	refMap?: Record<string, JsonSchema>
+	refMap?: Record<string, JsonSchema> | undefined
 	root: ReffedJsonSchema
 }
 type RetrieveRefResult = {

@@ -5,7 +5,7 @@ import { ElasticInput } from "."
 
 export type TextInputProps = {
 	value: string
-	set?: (value: string) => void
+	set?: ((value: string) => void) | undefined
 	label?: string
 	placeholder?: string
 	customCss?: SerializedStyles
