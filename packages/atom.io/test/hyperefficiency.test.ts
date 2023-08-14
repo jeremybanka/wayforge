@@ -122,38 +122,67 @@ describe(`hyperefficiency patterns`, () => {
 
 	type JunctionUpdate = `del:${string}:${string}` | `set:${string}:${string}`
 
-	class JunctionTransceiver<
-			ASide extends string,
-			BSide extends string,
-			Content extends JsonObj,
-		>
-		extends Junction<ASide, BSide, Content>
+	class JunctionTransceiver<ASide extends string, BSide extends string>
+		extends Junction<ASide, BSide, null>
 		implements Transceiver<JunctionUpdate>
 	{
 		protected mode = TransceiverMode.Record
 		protected readonly subject = new Subject<JunctionUpdate>()
 
-		public set(a: string, b: string): this
-		public set(relation: { [Key in ASide | BSide]: string }, b?: undefined): this
+		// public set(
+		// 	a: string,
+		// 	...rest: Content extends null ? [b: string] : [b: string, content: Content]
+		// ): this
+		// public set(
+		// 	relation: { [Key in ASide | BSide]: string },
+		// 	...rest: Content extends null ? [] | [b?: undefined] : [content: Content]
+		// ): this
 		public set(
 			a: string | { [Key in ASide | BSide]: string },
 			b?: string,
+			// ...rest: Content extends null
+			// 	? [] | [b?: string | undefined]
+			// 	: [b: string, content: Content] | [content: Content]
 		): this {
-			// @ts-expect-error we can deduce this.b may index a
-			b = b ?? (a[this.b] as string)
-			a = typeof a === `string` ? a : a[this.a]
-			super.set(a, b)
+			super.set(a as any, b as any)
+			// const b: string =
+			// 	// @ts-expect-error we deduce hereby that this.b may index a
+			// 	typeof rest[0] === `string` ? rest[0] : (a[this.b] as string)
+			// const content: Content | undefined =
+			// 	rest[1] ?? typeof rest[0] === `string` ? undefined : (rest[0] as Content)
+			a = typeof a === `string` ? (a as string) : a[this.a]
 			if (this.mode === TransceiverMode.Record) {
 				this.subject.next(`set:${a}:${b}`)
 			}
 			return this
 		}
-		public delete(a: string, b: string): this {
-			const setA = this.relations.get(a)
-			if (!setA?.has(b)) {
-				return this
+		public delete(a?: string, b?: string): this
+		public delete(
+			relation:
+				| Record<ASide | BSide, string>
+				| Record<ASide, string>
+				| Record<BSide, string>,
+			b?: undefined,
+		): this
+		public delete(
+			a?:
+				| Record<ASide | BSide, string>
+				| Record<ASide, string>
+				| Record<BSide, string>
+				| string,
+			b?: string,
+		): this {
+			// @ts-expect-error we deduce that this.b may index a
+			b = typeof b === `string` ? b : (a[this.b] as string | undefined)
+			// @ts-expect-error we deduce that this.a may index a
+			const a0 = typeof a === `string` ? a : (a[this.a] as string | undefined)
+			if (a0 && b) {
+				const setA = this.relations.get(a0)
+				if (!setA?.has(b)) {
+					return this
+				}
 			}
-			super.delete(a, b)
+			super.delete(a0, b)
 			if (this.mode === TransceiverMode.Record) {
 				this.subject.next(`del:${a}:${b}`)
 			}

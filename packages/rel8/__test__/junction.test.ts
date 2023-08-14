@@ -1,4 +1,7 @@
+import { isNumber } from "fp-ts/number"
 import { vitest } from "vitest"
+
+import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import { Junction } from "../junction/src"
 
@@ -59,10 +62,10 @@ describe(`Junction.prototype.set`, () => {
 			between: [`room`, `player`],
 			cardinality: `1:n`,
 		})
-		const roomIds = playersInRooms.set({ player, room }).getRelatedKeys(player)
-		expect(roomIds).toEqual(new Set([room]))
+		const roomKeys = playersInRooms.set({ player, room }).getRelatedKeys(player)
+		expect(roomKeys).toEqual(new Set([room]))
 	})
-	it.skip(`sets data between 2 ids`, () => {
+	it(`sets data between two ids`, () => {
 		const fire = `03`
 		const fireAndWaterBecomeSteam = `486`
 		const reactionReagents = new Junction({
@@ -75,65 +78,88 @@ describe(`Junction.prototype.set`, () => {
 		)
 		expect(amountOfFire).toEqual({ amount: 1 })
 	})
-	it.skip(`changes the data but doesn't duplicate the relation`, () => {
-		const reactionReagents = new Junction<{ amount: number }>()
+	it(`changes the data but doesn't duplicate the relation`, () => {
+		const reactionReagents = new Junction(
+			{
+				between: [`reagent`, `reaction`],
+				cardinality: `n:n`,
+			},
+			hasExactProperties({ amount: isNumber }),
+		)
 		const fire = `03`
 		const fireAndWaterBecomeSteam = `486`
 		const newReagents = reactionReagents
-			.set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 1 })
-			.set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 2 })
+			.set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
+			.set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 2 })
 		const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
 		expect(amountOfFire).toEqual({ amount: 2 })
-		const featureIds = newReagents.getRelatedIds(fire)
-		expect(featureIds).toEqual([fireAndWaterBecomeSteam])
+		const featureIds = newReagents.getRelatedKeys(fire)
+		expect(featureIds).toEqual(new Set([fireAndWaterBecomeSteam]))
 	})
 })
 
-describe.skip(`Junction.prototype.set1ToMany`, () => {
+describe(`Junction.prototype.set1ToMany`, () => {
 	it(`sets a relation between a leader and a follower`, () => {
-		const yellowGroup = `group_yellow`
-		const redGroup = `group_red`
-		const joey = `da_man_joey`
-		const mary = `mary_paints`
-		const memberships = new Junction({ relationType: `1:n` })
-			.from(`group`)
-			.to(`user`)
+		const redGroup = `red`
+		const yellowGroup = `yellow`
+		const joey = `joey`
+		const mary = `mary`
+
+		const memberships = new Junction({
+			between: [`group`, `user`],
+			cardinality: `1:n`,
+		})
+
 		const newMemberships = memberships
 			.set({ group: yellowGroup, user: joey })
 			.set({ group: yellowGroup, user: mary })
-		expect(newMemberships.getRelatedIds(yellowGroup)).toEqual([joey, mary])
+		console.log(newMemberships)
+		expect(newMemberships.getRelatedKeys(`yellow`)).toEqual(
+			new Set([joey, mary]),
+		)
 		const newerMemberships = newMemberships.set({ group: redGroup, user: joey })
-		expect(newerMemberships.getRelatedIds(redGroup)).toEqual([joey])
-		expect(newerMemberships.getRelatedIds(yellowGroup)).toEqual([mary])
+		expect(newerMemberships.getRelatedKeys(`yellow`)).toEqual(new Set([mary]))
+		expect(newerMemberships.getRelatedKeys(`red`)).toEqual(new Set([joey]))
 	})
 	it(`sets data between a leader and a follower`, () => {
-		const reactionReagents = new Junction<{ amount: number }>({
-			relationType: `1:n`,
+		const followersOfLeaders = new Junction<
+			`leader`,
+			`follower`,
+			{ loyalty: number }
+		>({
+			cardinality: `1:n`,
+			between: [`leader`, `follower`],
 		})
-		const fire = `03`
-		const fireAndWaterBecomeSteam = `486`
-		const amountOfFire = reactionReagents
-			.set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 1 })
-			.getContent(fire, fireAndWaterBecomeSteam)
-		expect(amountOfFire).toEqual({ amount: 1 })
+		const grandmasterCaz = `grandmaster caz`
+		const privateRival = `private rival`
+		followersOfLeaders.set(
+			{ leader: grandmasterCaz, follower: privateRival },
+			{ loyalty: 1 },
+		)
+		const loyalty = followersOfLeaders.getContent(grandmasterCaz, privateRival)
+		expect(loyalty).toEqual({ loyalty: 1 })
 	})
 	it(`changes the data but doesn't duplicate the relation`, () => {
 		const fire = `03`
 		const fireAndWaterBecomeSteam = `486`
-		const reactionReagents = new Junction<{ amount: number }>({
-			relationType: `1:n`,
-		})
+		const reactionReagents = new Junction(
+			{
+				between: [`reagent`, `reaction`],
+				cardinality: `1:n`,
+			},
+			hasExactProperties({ amount: isNumber }),
+		)
 		const newReagents = reactionReagents
-			.set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 1 })
-			.set({ from: fire, to: fireAndWaterBecomeSteam }, { amount: 2 })
+			.set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
+			.set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 2 })
 		const amountOfFire = newReagents.getContent(fire, fireAndWaterBecomeSteam)
 		expect(amountOfFire).toEqual({ amount: 2 })
-		const featureIds = newReagents.getRelatedIds(fire)
-		expect(featureIds).toEqual([fireAndWaterBecomeSteam])
+		const featureIds = newReagents.getRelatedKeys(fire)
+		expect(featureIds).toEqual(new Set([fireAndWaterBecomeSteam]))
 	})
 })
 
-describe.skip(`Junction.prototype.set1To1`, () => {
+describe(`Junction.prototype.set1To1`, () => {
 	it(`sets a relation between a wife and a husband`, () => {
 		const mary = `mary_paints`
 		const joey = `da_man_joey`
@@ -149,46 +175,55 @@ describe.skip(`Junction.prototype.set1To1`, () => {
 	})
 })
 
-describe.skip(`Junction.prototype.remove`, () => {
+describe(`Junction.prototype.delete`, () => {
 	it(`removes a relation between two ids`, () => {
 		const water = `06`
 		const waterMayFreeze = `162`
-		const energyCardFeatures = new Junction()
-			.from(`reagent`)
-			.to(`reaction`)
+		const energyCardFeatures = new Junction({
+			between: [`reagent`, `reaction`],
+			cardinality: `n:n`,
+		})
 			.set({ reagent: water, reaction: waterMayFreeze })
-			.remove({ reagent: water, reaction: waterMayFreeze })
-		const featureIds = energyCardFeatures.getRelatedIds(water)
-		expect(featureIds).toEqual([])
+			.delete({ reagent: water, reaction: waterMayFreeze })
+		const featureIds = energyCardFeatures.getRelatedKeys(water)
+		expect(featureIds).toBeUndefined()
 	})
 	it(`removes the content when removing two ids`, () => {
 		const snad = `snad_pitt`
 		const cassilda = `cassilda_jolie`
-		const celebrityCouples = new Junction<{ name: string }>()
-			.set({ from: snad, to: cassilda }, { name: `snassilda` })
-			.remove({ from: snad, to: cassilda })
-		expect(celebrityCouples.getRelatedId(snad)).toEqual(undefined)
-		expect(celebrityCouples.getRelatedId(cassilda)).toEqual(undefined)
+		const celebrityCouples = new Junction({
+			between: [`celebrity0`, `celebrity1`],
+			cardinality: `n:n`,
+		})
+			.set({ celebrity0: snad, celebrity1: cassilda }, { name: `snassilda` })
+			.delete({ celebrity0: snad, celebrity1: cassilda })
+		expect(celebrityCouples.getRelatedKey(snad)).toEqual(undefined)
+		expect(celebrityCouples.getRelatedKey(cassilda)).toEqual(undefined)
 		expect(celebrityCouples.getContent(snad, cassilda)).toEqual(undefined)
 	})
 	it(`removes all relations and content for a given id`, () => {
-		const pokemonPrimaryTypes = new Junction({ relationType: `1:n` })
-			.from(`type`)
-			.to(`pokémon`)
+		const pokemonPrimaryTypes = new Junction({
+			between: [`type`, `pokémon`],
+			cardinality: `1:n`,
+		})
+
 			.set({ type: `grass`, pokémon: `bulbasaur` })
 			.set({ type: `grass`, pokémon: `oddish` })
 			.set({ type: `grass`, pokémon: `bellsprout` })
-			.remove({ type: `grass` })
-		expect(pokemonPrimaryTypes.getRelatedIds(`grass`)).toEqual([])
-		expect(pokemonPrimaryTypes.getRelatedId(`bulbasaur`)).toBeUndefined()
-		expect(pokemonPrimaryTypes.getRelatedId(`oddish`)).toBeUndefined()
-		expect(pokemonPrimaryTypes.getRelatedId(`bellsprout`)).toBeUndefined()
+			.delete({ type: `grass` })
+		expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(undefined)
+		expect(pokemonPrimaryTypes.getRelatedKey(`bulbasaur`)).toBeUndefined()
+		expect(pokemonPrimaryTypes.getRelatedKey(`oddish`)).toBeUndefined()
+		expect(pokemonPrimaryTypes.getRelatedKey(`bellsprout`)).toBeUndefined()
 	})
 })
 
-describe.skip(`Junction.prototype.getRelatedIdEntries`, () => {
+describe(`Junction.prototype.getRelatedIdEntries`, () => {
 	it(`gets all content entries for a given id`, () => {
-		const friendships = new Junction<JsonObj>()
+		const friendships = new Junction({
+			between: [`from`, `to`],
+			cardinality: `n:n`,
+		})
 			.set({ from: `omori`, to: `kel` }, { trust: 1 })
 			.set({ from: `hero`, to: `kel` }, { brothers: true })
 			.set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
@@ -200,52 +235,30 @@ describe.skip(`Junction.prototype.getRelatedIdEntries`, () => {
 	})
 })
 
-describe.skip(`Junction.prototype.getRelationRecord`, () => {
-	it(`gets all content for a given id`, () => {
-		const friendships = new Junction<JsonObj>()
-			.set({ from: `omori`, to: `kel` }, { trust: 1 })
-			.set({ from: `hero`, to: `kel` }, { brothers: true })
-			.set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
-		const heroFriendships = friendships.getRelationRecord(`hero`)
-		expect(heroFriendships).toEqual({
-			kel: { brothers: true },
-			omori: { agreeThat: `mari is very nice` },
-		})
-	})
-})
-
-describe.skip(`Junction.prototype.toJSON`, () => {
+describe(`Junction.prototype.toJSON`, () => {
 	it(`converts a Junction to JSON`, () => {
-		const pokemonPrimaryTypes = new Junction<{ isDelta: boolean }>({
-			relationType: `1:n`,
+		const pokemonPrimaryTypes = new Junction({
+			between: [`type`, `pokémon`],
+			cardinality: `1:n`,
 		})
-			.from(`type`)
-			.to(`pokémon`)
 			.set({ type: `grass`, pokémon: `bulbasaur` }, { isDelta: true })
 			.set({ type: `grass`, pokémon: `oddish` }, { isDelta: true })
 			.set({ type: `grass`, pokémon: `bellsprout` }, { isDelta: false })
 		const json = pokemonPrimaryTypes.toJSON()
 		expect(json).toEqual({
-			relationType: `1:n`,
-			a: `type`,
-			b: `pokémon`,
-			contents: {
-				"bellsprout/grass": {
-					isDelta: false,
-				},
-				"bulbasaur/grass": {
-					isDelta: true,
-				},
-				"grass/oddish": {
-					isDelta: true,
-				},
-			},
-			relations: {
-				bellsprout: [`grass`],
-				bulbasaur: [`grass`],
-				grass: [`bulbasaur`, `oddish`, `bellsprout`],
-				oddish: [`grass`],
-			},
+			cardinality: `1:n`,
+			between: [`type`, `pokémon`],
+			contents: [
+				[`bulbasaur:grass`, { isDelta: true }],
+				[`grass:oddish`, { isDelta: true }],
+				[`bellsprout:grass`, { isDelta: false }],
+			],
+			relations: [
+				[`grass`, [`bulbasaur`, `oddish`, `bellsprout`]],
+				[`bulbasaur`, [`grass`]],
+				[`oddish`, [`grass`]],
+				[`bellsprout`, [`grass`]],
+			],
 		})
 	})
 })
