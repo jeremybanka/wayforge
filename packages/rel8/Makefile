@@ -1,5 +1,6 @@
 PACKAGES := \
-  junction
+  junction \
+	types
 
 all: $(PACKAGES)
 

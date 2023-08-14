@@ -1,14 +1,10 @@
-/** @exactOptionalPropertyTypes true */
-import type { JsonObj } from "~/packages/anvl/src/json"
-export type Refinement<T, U extends T> = (value: T) => value is U
-
-export type Cardinality = `1:1` | `1:n` | `n:n`
+import type { Cardinality, Json, Refinement } from "../../types/src"
 
 export interface JunctionJSON<
 	ASide extends string,
 	BSide extends string,
-	Content extends JsonObj | null,
-> extends JsonObj {
+	Content extends Json.Object | null,
+> extends Json.Object {
 	readonly between: [a: ASide, b: BSide]
 	readonly cardinality: Cardinality
 	readonly relations?: [string, string[]][]
@@ -18,7 +14,7 @@ export interface JunctionJSON<
 export class Junction<
 	ASide extends string,
 	BSide extends string,
-	Content extends JsonObj | null,
+	Content extends Json.Object | null,
 > {
 	public readonly a: ASide
 	public readonly b: BSide
