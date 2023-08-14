@@ -25,7 +25,6 @@ export const isValidNonNumber = (input: string): input is ValidNonNumber =>
 export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<
 	Record<ValidNonNumber, number | null>
 > = {
-	// rome-ignore lint/complexity/useLiteralKeys: bug in rome
 	"": null,
 	"-": 0,
 	".": 0,
