@@ -170,8 +170,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.15.1
-        version: 10.15.1(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 10.15.2
+        version: 10.15.2(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       nanoid:
         specifier: 4.0.2
         version: 4.0.2
@@ -264,8 +264,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.15.1
-        version: 10.15.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.15.2
+        version: 10.15.2(react-dom@18.2.0)(react@18.2.0)
       io-ts:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
@@ -365,8 +365,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.15.1
-        version: 10.15.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.15.2
+        version: 10.15.2(react-dom@18.2.0)(react@18.2.0)
       io-ts:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
@@ -580,8 +580,8 @@ importers:
         specifier: 8.47.0
         version: 8.47.0
       framer-motion:
-        specifier: 10.15.1
-        version: 10.15.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.15.2
+        version: 10.15.2(react-dom@18.2.0)(react@18.2.0)
       happy-dom:
         specifier: 10.9.0
         version: 10.9.0
@@ -640,8 +640,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.15.1
-        version: 10.15.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.15.2
+        version: 10.15.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@emotion/babel-plugin':
         specifier: 11.11.0
@@ -2624,7 +2624,7 @@ packages:
       '@motionone/easing': 10.15.1
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/dom@10.16.2:
@@ -2635,14 +2635,14 @@ packages:
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/easing@10.15.1:
     resolution: {integrity: sha512-6hIHBSV+ZVehf9dcKZLT7p5PEKHGhDwky2k8RKkmOvUoYP3S+dXsKupyZpqx5apjd9f+php4vXk4LuS+ADsrWw==}
     dependencies:
       '@motionone/utils': 10.15.1
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/generators@10.15.1:
@@ -2650,7 +2650,7 @@ packages:
     dependencies:
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@motionone/types@10.15.1:
@@ -2662,7 +2662,7 @@ packages:
     dependencies:
       '@motionone/types': 10.15.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.6.1
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:
@@ -5402,8 +5402,8 @@ packages:
   /fp-ts@2.16.1:
     resolution: {integrity: sha512-by7U5W8dkIzcvDofUcO42yl9JbnHTEDBrzu3pt5fKT+Z4Oy85I21K80EYJYdjQGC2qum4Vo55Ag57iiIK4FYuA==}
 
-  /framer-motion@10.15.1(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-6avJj/Uftblw0fMmo6jDHkKRH4TBdkMX/FiyR3G/hFe3hQHE4BUNJCqlMPKg9EzfI5jyqDOwO5oDnU+bW5y0eg==}
+  /framer-motion@10.15.2(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-z14GYH4WQXnuTgggwf0qyX0vo98PDE+dw21F7aLzUqEcrsmfLovy4jPiA82Cp/X0juWuEHte7rJGOjds9GAQFA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -5420,8 +5420,8 @@ packages:
       '@emotion/is-prop-valid': 0.8.8
     dev: false
 
-  /framer-motion@10.15.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-6avJj/Uftblw0fMmo6jDHkKRH4TBdkMX/FiyR3G/hFe3hQHE4BUNJCqlMPKg9EzfI5jyqDOwO5oDnU+bW5y0eg==}
+  /framer-motion@10.15.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-z14GYH4WQXnuTgggwf0qyX0vo98PDE+dw21F7aLzUqEcrsmfLovy4jPiA82Cp/X0juWuEHte7rJGOjds9GAQFA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
