@@ -1,6 +1,6 @@
 import { TransceiverSet } from "./transceiver"
 
-describe(`SetEX`, () => {
+describe(`TransceiverSet`, () => {
 	describe(`observe`, () => {
 		it(`should call the function when the set is updated`, () => {
 			const set = new TransceiverSet()
