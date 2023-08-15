@@ -1,5 +1,11 @@
 # hamr
 
+## 0.4.3
+
+### Patch Changes
+
+- a8efdaf5: 🏷️ Compatibility with tsconfig's "exactOptionalPropertyTypes" compiler option.
+
 ## 0.4.2
 
 ### Patch Changes
