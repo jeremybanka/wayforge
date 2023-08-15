@@ -1,6 +1,6 @@
 import * as AtomIO from "atom.io"
 
-import type { Transceiver } from "~/packages/anvl/reactivity"
+import type { Transceiver } from "."
 
 export type CacheOptions<Core extends Transceiver<any>> = {
 	key: string
