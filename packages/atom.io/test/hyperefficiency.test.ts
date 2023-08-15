@@ -1,7 +1,6 @@
 import { vitest } from "vitest"
 
-import type { Transceiver } from "~/packages/anvl/reactivity"
-import { TransceiverMode } from "~/packages/anvl/reactivity"
+import type { Transceiver, TransceiverMode } from "~/packages/anvl/reactivity"
 import type { Json } from "~/packages/anvl/src/json"
 import { tracker } from "~/packages/atom.io/src/tracker"
 import { Junction } from "~/packages/rel8/junction/src"
@@ -126,7 +125,7 @@ describe(`hyperefficiency patterns`, () => {
 		extends Junction<ASide, BSide, null>
 		implements Transceiver<JunctionUpdate>
 	{
-		protected mode = TransceiverMode.Record
+		protected mode: TransceiverMode = `record`
 		protected readonly subject = new Subject<JunctionUpdate>()
 
 		// public set(
@@ -151,7 +150,7 @@ describe(`hyperefficiency patterns`, () => {
 			// const content: Content | undefined =
 			// 	rest[1] ?? typeof rest[0] === `string` ? undefined : (rest[0] as Content)
 			a = typeof a === `string` ? (a as string) : a[this.a]
-			if (this.mode === TransceiverMode.Record) {
+			if (this.mode === `record`) {
 				this.subject.next(`set:${a}:${b}`)
 			}
 			return this
@@ -183,7 +182,7 @@ describe(`hyperefficiency patterns`, () => {
 				}
 			}
 			super.delete(a0, b)
-			if (this.mode === TransceiverMode.Record) {
+			if (this.mode === `record`) {
 				this.subject.next(`del:${a}:${b}`)
 			}
 
@@ -191,7 +190,7 @@ describe(`hyperefficiency patterns`, () => {
 		}
 
 		public do(update: JunctionUpdate): this {
-			this.mode = TransceiverMode.Playback
+			this.mode = `playback`
 			const [type, a, b] = update.split(`:`)
 			switch (type) {
 				case `set`:
@@ -201,12 +200,12 @@ describe(`hyperefficiency patterns`, () => {
 					this.delete(a, b)
 					break
 			}
-			this.mode = TransceiverMode.Record
+			this.mode = `record`
 			return this
 		}
 
 		public undo(update: JunctionUpdate): this {
-			this.mode = TransceiverMode.Playback
+			this.mode = `playback`
 			const [type, a, b] = update.split(`:`)
 			switch (type) {
 				case `set`:
@@ -216,7 +215,7 @@ describe(`hyperefficiency patterns`, () => {
 					this.set(a, b)
 					break
 			}
-			this.mode = TransceiverMode.Record
+			this.mode = `record`
 			return this
 		}
 
