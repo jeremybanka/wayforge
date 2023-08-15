@@ -8,10 +8,7 @@ export type Transceiver<Signal extends Json.Serializable> = {
 	observe: (fn: (update: Signal) => void) => () => void
 }
 
-export enum TransceiverMode {
-	Record = 0,
-	Playback = 1,
-}
+export type TransceiverMode = `playback` | `record`
 
 export type SetUpdate = `add:${string}` | `clear:${string}` | `del:${string}`
 
@@ -19,25 +16,25 @@ export class TransceiverSet<T extends primitive>
 	extends Set<T>
 	implements Transceiver<SetUpdate>
 {
-	protected mode: TransceiverMode = TransceiverMode.Record
+	protected mode: TransceiverMode = `record`
 	protected readonly subject = new Subject()
 
 	public add(value: T): this {
-		if (this.mode === TransceiverMode.Record) {
+		if (this.mode === `record`) {
 			this.subject.next(`add:${JSON.stringify(value)}`)
 		}
 		return super.add(value)
 	}
 
 	public clear(): void {
-		if (this.mode === TransceiverMode.Record) {
+		if (this.mode === `record`) {
 			this.subject.next(`clear:${JSON.stringify([...this])}`)
 		}
 		super.clear()
 	}
 
 	public delete(value: T): boolean {
-		if (this.mode === TransceiverMode.Record) {
+		if (this.mode === `record`) {
 			this.subject.next(`del:${JSON.stringify(value)}`)
 		}
 		return super.delete(value)
