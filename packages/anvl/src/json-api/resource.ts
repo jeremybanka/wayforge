@@ -1,8 +1,7 @@
 import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
-import { isJson } from "~/packages/anvl/src/json"
-import type { Json, JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import type {
 	EmptyObject,
 	PlainObject,
@@ -12,13 +11,14 @@ import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 import type { RequireAtLeastOne } from "."
 import type { Link, Links } from "./document"
 import { ifDefined } from "../nullish"
+import { isJson } from "../refinement/refine-json"
 
 export type Relationships = Record<
 	string,
 	{
 		data: JsonApiResource | JsonApiResource[]
 		links?: RelationshipLinks
-		meta?: Json
+		meta?: Json.Serializable
 	}
 >
 
@@ -41,7 +41,7 @@ export type RelationshipLinks = Links &
 
 export type ResourceIdentifierObject<
 	RESOURCE extends JsonApiResource,
-	META extends Json | undefined = undefined,
+	META extends Json.Serializable | undefined = undefined,
 > = {
 	id: RESOURCE[`id`]
 	type: RESOURCE[`type`]
@@ -57,7 +57,7 @@ export const isResourceIdentifier = Object.assign(
 		})(thing),
 	{
 		whoseMeta:
-			<META extends Json | undefined>(
+			<META extends Json.Serializable | undefined>(
 				isMeta: Refinement<unknown, META>,
 			): Refinement<unknown, ResourceIdentifierObject<any, META>> =>
 			(thing: unknown): thing is ResourceIdentifierObject<any, META> =>
@@ -67,12 +67,12 @@ export const isResourceIdentifier = Object.assign(
 
 export type Identifier<
 	RESOURCE extends JsonApiResource,
-	META extends Json | undefined = undefined,
+	META extends Json.Serializable | undefined = undefined,
 > = ResourceIdentifierObject<RESOURCE, META>
 
 export type Relationship<
 	RESOURCE extends JsonApiResource,
-	META extends Json | undefined = undefined,
+	META extends Json.Serializable | undefined = undefined,
 	LINKS extends RelationshipLinks | undefined = undefined,
 > = RequireAtLeastOne<{
 	links: LINKS

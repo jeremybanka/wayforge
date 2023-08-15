@@ -1,4 +1,4 @@
-import type { Serializable } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import type { AtomToken } from "."
 import type { Subject } from "./internal"
@@ -21,13 +21,13 @@ export function atom<T>(options: AtomOptions<T>): AtomToken<T> {
 	return atom__INTERNAL<T>(options)
 }
 
-export type AtomFamilyOptions<T, K extends Serializable> = {
+export type AtomFamilyOptions<T, K extends Json.Serializable> = {
 	key: string
 	default: T | ((key: K) => T)
 	effects?: (key: K) => AtomEffect<T>[]
 }
 
-export type AtomFamily<T, K extends Serializable = Serializable> = ((
+export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
 	key: K,
 ) => AtomToken<T>) & {
 	key: string
@@ -35,7 +35,7 @@ export type AtomFamily<T, K extends Serializable = Serializable> = ((
 	subject: Subject<AtomToken<T>>
 }
 
-export function atomFamily<T, K extends Serializable>(
+export function atomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
 ): AtomFamily<T, K> {
 	return atomFamily__INTERNAL<T, K>(options)

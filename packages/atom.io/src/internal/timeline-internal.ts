@@ -31,7 +31,7 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 export type Timeline = {
 	key: string
 	at: number
-	timeTraveling: boolean
+	timeTraveling: `into_future` | `into_past` | null
 	history: TimelineUpdate[]
 	selectorTime: number | null
 	transactionKey: string | null
@@ -53,7 +53,7 @@ export function timeline__INTERNAL(
 	const tl: Timeline = {
 		key: options.key,
 		at: 0,
-		timeTraveling: false,
+		timeTraveling: null,
 		selectorTime: null,
 		transactionKey: null,
 		...data,

@@ -1,6 +1,6 @@
 import { isString } from "fp-ts/string"
 
-import type { Json, JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import { isArray } from "../array"
 import { hasExactProperties, isRecord } from "../object/refinement"
@@ -14,12 +14,12 @@ export const isRelationType = (x: unknown): x is RelationType =>
 	RELATION_TYPES.includes(x as RelationType)
 
 export type RelationData<
-	CONTENT extends JsonObj | null = null,
+	CONTENT extends Json.Object | null = null,
 	A extends string = `from`,
 	B extends string = `to`,
 > = {
-	contents: JsonObj<string, CONTENT>
-	relations: JsonObj<string, string[]>
+	contents: Json.Object<string, CONTENT>
+	relations: Json.Object<string, string[]>
 	relationType: RelationType
 	a: A
 	b: B
@@ -34,17 +34,17 @@ export const EMPTY_RELATION_DATA: RelationData = {
 }
 
 export type IsRelationDataOptions<
-	CONTENT extends JsonObj | null = null,
+	CONTENT extends Json.Object | null = null,
 	A extends string = `from`,
 	B extends string = `to`,
 > = {
 	from?: A
 	to?: B
-	isContent?: (json: Json) => json is CONTENT
+	isContent?: (json: Json.Serializable) => json is CONTENT
 }
 export const isRelationData =
 	<
-		CONTENT extends JsonObj | null = null,
+		CONTENT extends Json.Object | null = null,
 		A extends string = `from`,
 		B extends string = `to`,
 	>({

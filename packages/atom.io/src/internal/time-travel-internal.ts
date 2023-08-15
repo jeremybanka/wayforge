@@ -21,7 +21,7 @@ export const redo__INTERNAL = (
 		)
 		return
 	}
-	timelineData.timeTraveling = true
+	timelineData.timeTraveling = `into_future`
 	const update = timelineData.history[timelineData.at]
 	switch (update.type) {
 		case `atom_update`: {
@@ -40,7 +40,7 @@ export const redo__INTERNAL = (
 	}
 	++timelineData.at
 	timelineData.subject.next(`redo`)
-	timelineData.timeTraveling = false
+	timelineData.timeTraveling = null
 	store.config.logger?.info(
 		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
@@ -64,7 +64,7 @@ export const undo__INTERNAL = (
 		)
 		return
 	}
-	timelineData.timeTraveling = true
+	timelineData.timeTraveling = `into_past`
 
 	--timelineData.at
 	const update = timelineData.history[timelineData.at]
@@ -84,7 +84,7 @@ export const undo__INTERNAL = (
 		}
 	}
 	timelineData.subject.next(`undo`)
-	timelineData.timeTraveling = false
+	timelineData.timeTraveling = null
 	store.config.logger?.info(
 		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)

@@ -4,9 +4,9 @@ import { isString } from "fp-ts/string"
 
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 
-import { stringifyJson } from "."
-import type { JsonArr, JsonObj, Json } from "."
 import { attempt, raiseError } from "../function"
+import { stringifyJson } from "../json"
+import type { Json } from "../json"
 
 const JSON_PROTOTYPES = [
 	`Array`,
@@ -17,14 +17,14 @@ const JSON_PROTOTYPES = [
 ] as const
 
 export type RefinedJson =
-	| { type: `array`; data: JsonArr }
+	| { type: `array`; data: Json.Array }
 	| { type: `boolean`; data: boolean }
 	| { type: `null`; data: null }
 	| { type: `number`; data: number }
-	| { type: `object`; data: JsonObj }
+	| { type: `object`; data: Json.Object }
 	| { type: `string`; data: string }
 
-export const refineJsonType = (data: Json): RefinedJson =>
+export const refineJsonType = (data: Json.Serializable): RefinedJson =>
 	data === null
 		? { type: `null`, data: null }
 		: isBoolean(data)
@@ -44,7 +44,7 @@ export const refineJsonType = (data: Json): RefinedJson =>
 							Object.getPrototypeOf(data).constructor.name
 					  }" passed to refineJsonType. This is not valid JSON.`,
 		  )
-export const isJson = (input: unknown): input is Json => {
+export const isJson = (input: unknown): input is Json.Serializable => {
 	if (input === null) return true
 	if (input === undefined) return false
 	const prototype = Object.getPrototypeOf(input)?.constructor.name
@@ -52,5 +52,5 @@ export const isJson = (input: unknown): input is Json => {
 	return isJson
 }
 
-export const isPlainJson = (input: unknown): input is Json =>
+export const isPlainJson = (input: unknown): input is Json.Serializable =>
 	attempt(() => isJson(input) && refineJsonType(input))

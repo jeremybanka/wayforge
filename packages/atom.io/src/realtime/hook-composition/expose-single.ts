@@ -5,7 +5,7 @@ import type { ServerConfig } from ".."
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const useExposeSingle = ({ socket, store }: ServerConfig) => {
-	return function exposeSingle<J extends Json>(
+	return function exposeSingle<J extends Json.Serializable>(
 		token: AtomIO.StateToken<J>,
 	): () => void {
 		let unsubscribeFromStateUpdates: (() => void) | null = null

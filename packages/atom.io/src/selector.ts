@@ -1,4 +1,4 @@
-import type { Serializable } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import type { ReadonlySelectorToken, SelectorToken } from "."
 import type { Subject } from "./internal"
@@ -25,39 +25,41 @@ export function selector<T>(
 	return selector__INTERNAL(options)
 }
 
-export type SelectorFamilyOptions<T, K extends Serializable> = {
+export type SelectorFamilyOptions<T, K extends Json.Serializable> = {
 	key: string
 	get: (key: K) => Read<() => T>
 	set: (key: K) => Write<(newValue: T) => void>
 }
-export type ReadonlySelectorFamilyOptions<T, K extends Serializable> = {
+export type ReadonlySelectorFamilyOptions<T, K extends Json.Serializable> = {
 	key: string
 	get: (key: K) => Read<() => T>
 }
 
-export type SelectorFamily<T, K extends Serializable = Serializable> = ((
-	key: K,
-) => SelectorToken<T>) & {
+export type SelectorFamily<
+	T,
+	K extends Json.Serializable = Json.Serializable,
+> = ((key: K) => SelectorToken<T>) & {
 	key: string
 	type: `selector_family`
 	subject: Subject<SelectorToken<T>>
 }
 
-export type ReadonlySelectorFamily<T, K extends Serializable = Serializable> = ((
-	key: K,
-) => ReadonlySelectorToken<T>) & {
+export type ReadonlySelectorFamily<
+	T,
+	K extends Json.Serializable = Json.Serializable,
+> = ((key: K) => ReadonlySelectorToken<T>) & {
 	key: string
 	type: `readonly_selector_family`
 	subject: Subject<ReadonlySelectorToken<T>>
 }
 
-export function selectorFamily<T, K extends Serializable>(
+export function selectorFamily<T, K extends Json.Serializable>(
 	options: SelectorFamilyOptions<T, K>,
 ): SelectorFamily<T, K>
-export function selectorFamily<T, K extends Serializable>(
+export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K>
-export function selectorFamily<T, K extends Serializable>(
+export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
 	return selectorFamily__INTERNAL(options)

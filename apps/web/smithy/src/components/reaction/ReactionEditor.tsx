@@ -5,7 +5,7 @@ import { selector, useRecoilState, useRecoilValue } from "recoil"
 
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
-import type { JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
 import type {
@@ -36,7 +36,7 @@ export const energySelectState = selector<{ value: string; text: string }[]>({
 	},
 })
 
-export type Settable<T extends JsonObj> = T & { set: SetterOrUpdater<T> }
+export type Settable<T extends Json.Object> = T & { set: SetterOrUpdater<T> }
 
 export const isFn = (x: unknown): x is CallableFunction =>
 	typeof x === `function`

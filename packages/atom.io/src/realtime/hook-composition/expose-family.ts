@@ -17,7 +17,7 @@ const subscribeToTokenCreation = <T>(
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const useExposeFamily = ({ socket, store }: ServerConfig) => {
-	return function exposeFamily<J extends Json>(
+	return function exposeFamily<J extends Json.Serializable>(
 		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
 		index: AtomIO.StateToken<Set<string>>,
 	): () => void {
@@ -39,7 +39,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 			}
 		}
 
-		const fillSubRequest = (subKey?: AtomIO.Serializable) => {
+		const fillSubRequest = (subKey?: AtomIO.Json.Serializable) => {
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
 				keys.forEach((key) => {

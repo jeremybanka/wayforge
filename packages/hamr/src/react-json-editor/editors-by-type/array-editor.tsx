@@ -1,19 +1,19 @@
 import type { ReactElement } from "react"
 
-import type { JsonArr } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import { makeElementSetters } from "./utilities/array-elements"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
 
-export const ArrayEditor = <_ extends JsonArr>({
+export const ArrayEditor = <_ extends Json.Array>({
 	path = [],
 	isReadonly = () => false,
 	isHidden = () => false,
 	data,
 	set,
 	Components,
-}: JsonEditorProps_INTERNAL<JsonArr>): ReactElement => {
+}: JsonEditorProps_INTERNAL<Json.Array>): ReactElement => {
 	const setElement = makeElementSetters(data, set)
 	return (
 		<>

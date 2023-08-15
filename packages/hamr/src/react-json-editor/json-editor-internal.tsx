@@ -4,32 +4,35 @@ import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
-import { isJson, refineJsonType } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
+import {
+	isJson,
+	refineJsonType,
+} from "~/packages/anvl/src/refinement/refine-json"
 
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 import { ElasticInput } from "../react-elastic-input"
 
-export type JsonEditorProps_INTERNAL<T extends Json> = {
+export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	data: T
 	set: SetterOrUpdater<T>
-	name?: string
-	rename?: (newKey: string) => void
-	remove?: () => void
+	name?: string | undefined
+	rename?: ((newKey: string) => void) | undefined
+	remove?: (() => void) | undefined
 	recast?: (newType: keyof JsonTypes) => void
-	schema?: JsonSchema
+	schema?: JsonSchema | undefined
 	path?: ReadonlyArray<number | string>
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
-	className?: string
-	customCss?: SerializedStyles
-	Header?: FC<{ data: T; schema?: JsonSchema }>
+	className?: string | undefined
+	customCss?: SerializedStyles | undefined
+	Header?: FC<{ data: T; schema?: JsonSchema | undefined }> | undefined
 	Components: JsonEditorComponents
 }
 
-export const JsonEditor_INTERNAL = <T extends Json>({
+export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 	data,
 	set,
 	schema,

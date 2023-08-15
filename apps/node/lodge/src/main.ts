@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
-import type { JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import { logger } from "./logger"
 import {
@@ -130,7 +130,7 @@ pipe(
 
 			// GAME SERVICES
 			const gameStateFamilies: [
-				AtomIO.AtomFamily<JsonObj>,
+				AtomIO.AtomFamily<Json.Object>,
 				AtomIO.StateToken<Set<string>>,
 			][] = [
 				[findCardState, cardIndex],

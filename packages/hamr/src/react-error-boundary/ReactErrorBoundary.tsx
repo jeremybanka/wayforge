@@ -11,8 +11,8 @@ export type ErrorBoundaryState = {
 
 export type ErrorBoundaryProps = {
 	children: ReactNode
-	onError?: (error: Error | string, errorInfo: ErrorInfo) => void
-	Fallback?: FC<FallbackProps>
+	onError?: ((error: Error | string, errorInfo: ErrorInfo) => void) | undefined
+	Fallback?: FC<FallbackProps> | undefined
 	useResetErrorState?: () => () => void
 	useErrorState?: () => [
 		ErrorBoundaryState,
@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<
 > {
 	public constructor(props: ErrorBoundaryProps) {
 		super(props)
-		this.state = { error: undefined, errorInfo: undefined }
+		this.state = {}
 		// We can filter or add information
 		// to airbrake notifications here:
 	}

@@ -4,14 +4,13 @@ import { isString } from "fp-ts/string"
 import type { RelationData } from "./core-relation-data"
 import { isEmptyArray, isOneOf, map } from "../array"
 import { comprises } from "../array/venn"
-import type { JsonObj } from "../json"
-import type { RequireAtLeastOne } from "../object"
+import type { Json } from "../json"
 import { treeShake as removeProperties } from "../object"
 import { entriesToRecord, recordToEntries } from "../object/entries"
 import { split } from "../string/split"
 
 export const removeSpecific = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -45,7 +44,7 @@ export const removeSpecific = <
 }
 
 export const removeAll = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -75,7 +74,7 @@ export const removeAll = <
 }
 
 export const removeRelation = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(

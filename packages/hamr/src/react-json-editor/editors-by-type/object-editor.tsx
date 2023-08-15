@@ -2,7 +2,7 @@ import { useRef } from "react"
 import type { FC, ReactElement } from "react"
 
 import { doNothing } from "~/packages/anvl/src/function"
-import type { JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import { findSubSchema } from "~/packages/anvl/src/json-schema/find-sub-schema"
 import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
@@ -44,7 +44,7 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 	</Components.MissingPropertyWrapper>
 )
 
-export const ObjectEditor = <T extends JsonObj>({
+export const ObjectEditor = <T extends Json.Object>({
 	schema,
 	path = [],
 	isReadonly = () => false,

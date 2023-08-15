@@ -10,11 +10,11 @@ import { getContent, getRelations, setRelations } from "./relation-contents"
 import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
-import type { Json, JsonInterface, JsonObj } from "../json"
+import type { Json, JsonInterface } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
 
 export class Join<
-	CONTENT extends JsonObj | null = null,
+	CONTENT extends Json.Object | null = null,
 	A extends string = `from`,
 	B extends string = `to`,
 > implements RelationData<CONTENT, A, B>
@@ -41,11 +41,11 @@ export class Join<
 		}
 	}
 	public static fromJSON<
-		CONTENT extends JsonObj | null,
+		CONTENT extends Json.Object | null,
 		A extends string,
 		B extends string,
 	>(
-		json: Json,
+		json: Json.Serializable,
 		options?: IsRelationDataOptions<CONTENT, A, B>,
 	): Join<CONTENT, A, B> {
 		const isValid = isRelationData<CONTENT, A, B>(options)(json)

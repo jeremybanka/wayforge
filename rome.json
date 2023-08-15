@@ -31,6 +31,7 @@
 			},
 			"style": {
 				"noCommaOperator": "off",
+				"noParameterAssign": "off",
 				"noUnusedTemplateLiteral": "off",
 				"useTemplate": "off"
 			}

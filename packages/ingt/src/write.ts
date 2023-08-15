@@ -1,6 +1,6 @@
 import { readdirSync, renameSync } from "fs"
 
-import type { JsonArr } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import type { FilestoreOptions } from "./options"
 import type { ReadIndex } from "./read"
@@ -10,7 +10,7 @@ export { initRelationsWriter, WriteRelations } from "./relations"
 
 export type WriteIndexOptions = {
 	type: string
-	value: JsonArr<string>
+	value: Json.Array<string>
 }
 export type WriteIndex = (options: WriteIndexOptions) => void
 

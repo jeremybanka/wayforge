@@ -1,4 +1,4 @@
-import type { JsonObj } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 import type { EmptyObject, PlainObject } from "~/packages/anvl/src/object"
 import { filterProperties } from "~/packages/anvl/src/object"
 
@@ -44,7 +44,7 @@ export const flattenResourceObject = <RESOURCE extends JsonApiResource>(
 	}
 	throw new Error(`Resource ${resource.id} has no attributes`)
 }
-export const serializeResource = <ATTRIBUTES extends JsonObj & PlainObject>(
+export const serializeResource = <ATTRIBUTES extends Json.Object & PlainObject>(
 	obj: ATTRIBUTES,
 	type: string,
 	id: string,

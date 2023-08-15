@@ -6,9 +6,9 @@ import type { Json } from "~/packages/anvl/src/json"
 import { RealtimeContext } from "./realtime-context"
 import { StoreContext } from "../react"
 
-export function usePullFamilyMember<J extends Json>(
+export function usePullFamilyMember<J extends Json.Serializable>(
 	family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-	subKey: AtomIO.Serializable,
+	subKey: AtomIO.Json.Serializable,
 ): void {
 	const token = family(subKey)
 	const { socket } = React.useContext(RealtimeContext)

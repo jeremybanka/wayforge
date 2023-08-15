@@ -1,5 +1,5 @@
 import { identify } from "~/packages/anvl/src/id/identified"
-import type { JsonArr } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
 
 import type { FilestoreOptions } from "./options"
 import { getDirectoryJsonArr } from "./utils"
@@ -7,7 +7,7 @@ export { initRelationReader, ReadRelations } from "./relations"
 export { initResourceReader, ReadResource } from "./resources"
 
 export type ReadIndexOptions = { type: string }
-export type ReadIndex = (options: ReadIndexOptions) => Error | JsonArr<string>
+export type ReadIndex = (options: ReadIndexOptions) => Error | Json.Array<string>
 
 export const initIndexer = ({
 	baseDir,

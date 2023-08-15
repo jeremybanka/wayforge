@@ -49,7 +49,7 @@ export const addAtomToTimeline = (
 				: `)`,
 		)
 
-		if (tl.timeTraveling === false) {
+		if (tl.timeTraveling === null) {
 			if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
 				const mostRecentUpdate: TimelineUpdate | undefined = tl.history.at(-1)
 				if (mostRecentUpdate === undefined) {
@@ -80,7 +80,7 @@ export const addAtomToTimeline = (
 					tl.transactionKey = currentTransactionKey
 					const subscription = currentTransaction.subject.subscribe((update) => {
 						subscription.unsubscribe()
-						if (tl.timeTraveling === false && currentTransactionTime) {
+						if (tl.timeTraveling === null && currentTransactionTime) {
 							if (tl.at !== tl.history.length) {
 								tl.history.splice(tl.at)
 							}

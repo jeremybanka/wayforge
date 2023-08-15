@@ -39,7 +39,9 @@ export const createReadonlySelector = <T>(
 	const token: ReadonlySelectorToken<T> = {
 		key: options.key,
 		type: `readonly_selector`,
-		family,
+	}
+	if (family) {
+		token.family = family
 	}
 	store.subject.selectorCreation.next(token)
 	return token

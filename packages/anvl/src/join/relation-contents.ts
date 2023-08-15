@@ -8,14 +8,14 @@ import { getRelatedIds } from "./get-related-ids"
 import { getRelationEntries } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
-import type { JsonObj } from "../json"
+import type { Json } from "../json"
 import type { NullSafeRest } from "../nullish"
 
 export const makeContentId = (idA: string, idB: string): string =>
 	[idA, idB].sort().join(`/`)
 
 export const getContent = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -25,7 +25,7 @@ export const getContent = <
 ): CONTENT | undefined => relationMap.contents[makeContentId(idA, idB)]
 
 export const setContent = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -42,7 +42,7 @@ export const setContent = <
 })
 
 export const getRelations = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -58,7 +58,7 @@ export const getRelations = <
 	)
 
 export const setRelations = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(

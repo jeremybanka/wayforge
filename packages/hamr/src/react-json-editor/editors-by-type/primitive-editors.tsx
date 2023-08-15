@@ -20,9 +20,7 @@ export const BooleanEditor = ({
 export const NullEditor = ({
 	Components,
 }: JsonEditorProps_INTERNAL<null>): ReactElement => (
-	<Components.NullWrapper>
-		<></>
-	</Components.NullWrapper>
+	<Components.NullWrapper>" "</Components.NullWrapper>
 )
 
 export const NumberEditor = ({
