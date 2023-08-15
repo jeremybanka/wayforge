@@ -24,7 +24,7 @@ pipe(
 	}),
 	serveSimpleGit({
 		logger,
-		git: git({ baseDir: process.env.BASE_DIR }),
+		git: git({ baseDir: process.env.BASE_DIR ?? `` }),
 	}),
 )
 logger.info(

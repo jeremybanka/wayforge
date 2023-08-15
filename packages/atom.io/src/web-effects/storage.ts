@@ -25,6 +25,6 @@ export const persistAtom =
 		})
 	}
 
-export const lazyLocalStorageEffect: <J extends Json>(
+export const lazyLocalStorageEffect: <J extends Json.Serializable>(
 	key: string,
 ) => AtomEffect<J> = persistAtom(localStorage)(JSON)

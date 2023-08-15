@@ -24,6 +24,7 @@
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strictNullChecks": true,
+		"exactOptionalPropertyTypes": true,
 		"useUnknownInCatchVariables": true,
 		"noUnusedParameters": true,
 		"skipLibCheck": true
@@ -32,8 +33,7 @@
 		"*/**/*.ts",
 		"*/**/*.tsx",
 		"*/**/*.config.ts",
-		"*/**/*.schema.json.ts",
-		"hamt_plus.d.ts"
+		"*/**/*.schema.json.ts"
 	],
 	"exclude": ["*/**/dist"]
 }

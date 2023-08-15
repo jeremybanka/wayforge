@@ -16,7 +16,7 @@ export const attachTimelineFamily = (
 				store.timelines.get(key) ?? {
 					key: ``,
 					at: 0,
-					timeTraveling: false,
+					timeTraveling: null,
 					history: [],
 					selectorTime: null,
 					transactionKey: null,

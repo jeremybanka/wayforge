@@ -4,12 +4,7 @@ import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { Join } from "~/packages/anvl/src/join"
-import type {
-	Json,
-	JsonArr,
-	JsonInterface,
-	JsonObj,
-} from "~/packages/anvl/src/json"
+import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
@@ -28,7 +23,7 @@ export type SocketSyncOptions = {
 }
 
 export const socketSync: <T>(
-	options: T extends Json
+	options: T extends Json.Serializable
 		? SocketSyncOptions
 		: JsonInterface<T> & SocketSyncOptions,
 ) => AtomEffect<T> = (options) =>
@@ -49,7 +44,7 @@ export const smartSocketSync = <T>(
 export type SocketIndexOptions<T> = {
 	type: string
 	socket: Socket<FilestoreServerEvents, FilestoreClientEvents>
-	jsonInterface: JsonInterface<T, JsonArr<string>>
+	jsonInterface: JsonInterface<T, Json.Array<string>>
 }
 
 export const socketIndex: <IDS extends Iterable<string>>(
@@ -62,7 +57,7 @@ export const socketIndex: <IDS extends Iterable<string>>(
 		onSet((v) => socket.emit(`indexWrite`, { type, value: toJson(v) }))
 	}
 
-export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
+export type SocketRelationsOptions<CONTENT extends Json.Object | null = null> =
 	(CONTENT extends null
 		? {
 				refineContent: null
@@ -78,7 +73,7 @@ export type SocketRelationsOptions<CONTENT extends JsonObj | null = null> =
 	}
 
 export const socketRelations =
-	<CONTENT extends JsonObj | null, A extends string, B extends string>({
+	<CONTENT extends Json.Object | null, A extends string, B extends string>({
 		type,
 		id,
 		socket,

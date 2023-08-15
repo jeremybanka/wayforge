@@ -13,13 +13,14 @@ export default defineConfig({
 	},
 	tsconfig: `../tsconfig.json`,
 	external: [
-		`atom.io`,
+		`@floating-ui/react`,
 		`@emotion/react`,
+		`ajv`,
+		`atom.io`,
 		`fp-ts`,
-		`react`,
 		`framer-motion`,
+		`react`,
 		`recoil`,
 		`rxjs`,
-		`ajv`,
 	],
 })

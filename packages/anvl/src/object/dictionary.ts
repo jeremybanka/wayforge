@@ -2,7 +2,7 @@ import { pipe } from "fp-ts/function"
 
 import { entriesToRecord, recordToEntries } from "./entries"
 import { map } from "../array"
-import type { Json, JsonObj } from "../json"
+import type { Json } from "../json"
 
 export const reverseRecord = <A extends keyof any, B extends keyof any>(
 	record: Record<A, B>,
@@ -19,7 +19,7 @@ export interface DictionaryOptions<
 	B extends string,
 	NameOfA extends string,
 	NameOfB extends string,
-> extends JsonObj {
+> extends Json.Object {
 	base: Record<A, B>
 	from: NameOfA
 	into: NameOfB

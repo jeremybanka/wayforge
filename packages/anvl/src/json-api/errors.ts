@@ -2,7 +2,9 @@ import type { Json } from "~/packages/anvl/src/json"
 
 import type { Link, Links } from "./document"
 
-export type ErrorObject_Optional<META extends Json | undefined = undefined> = {
+export type ErrorObject_Optional<
+	META extends Json.Serializable | undefined = undefined,
+> = {
 	id?: string
 	links?:
 		| (Links & {
@@ -22,7 +24,7 @@ export type ErrorKey = keyof ErrorObject_Optional
 /* prettier-ignore */
 export type ErrorObject<
 	REQUIRED extends ErrorKey | undefined = undefined,
-	META extends Json | undefined = undefined,
+	META extends Json.Serializable | undefined = undefined,
 > = (REQUIRED extends ErrorKey
 	? {
 			[KEY in REQUIRED]-?: Pick<ErrorObject_Optional<META>, KEY>[KEY]

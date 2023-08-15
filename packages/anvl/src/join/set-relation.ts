@@ -2,12 +2,12 @@ import type { RelationData } from "./core-relation-data"
 import { getRelatedId } from "./get-related-ids"
 import { setContent } from "./relation-contents"
 import { addTo, isEmptyArray } from "../array"
-import type { JsonObj } from "../json"
+import type { Json } from "../json"
 import type { NullSafeRest } from "../nullish"
 import { treeShake as removeProperties } from "../object"
 
 export const setManyToMany = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -31,7 +31,7 @@ export const setManyToMany = <
 const removeEmpties = removeProperties(isEmptyArray)
 
 export const set1ToMany = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -61,7 +61,7 @@ export const set1ToMany = <
 }
 
 export const set1To1 = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(
@@ -88,7 +88,7 @@ export const set1To1 = <
 }
 
 export const setRelationWithContent = <
-	CONTENT extends JsonObj | null,
+	CONTENT extends Json.Object | null,
 	A extends string,
 	B extends string,
 >(

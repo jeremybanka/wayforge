@@ -59,7 +59,9 @@ export const createReadWriteSelector = <T>(
 	const token: SelectorToken<T> = {
 		key: options.key,
 		type: `selector`,
-		family,
+	}
+	if (family) {
+		token.family = family
 	}
 	store.subject.selectorCreation.next(token)
 	return token

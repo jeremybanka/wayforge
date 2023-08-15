@@ -3,11 +3,11 @@ import type { SetterOrUpdater } from "recoil"
 
 import { become } from "~/packages/anvl/src/function"
 import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
-import type { Json, JsonObj, JsonTypeName } from "~/packages/anvl/src/json"
-import { cast } from "~/packages/anvl/src/json/cast"
+import type { Json, JsonTypeName } from "~/packages/anvl/src/json"
 import { mapObject } from "~/packages/anvl/src/object"
+import { castToJson } from "~/packages/anvl/src/refinement/smart-cast-json"
 
-export const makePropertySetters = <T extends JsonObj>(
+export const makePropertySetters = <T extends Json.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
@@ -17,7 +17,7 @@ export const makePropertySetters = <T extends JsonObj>(
 			set({ ...data, [key]: become(newValue)(value[key]) }),
 	)
 
-export const makePropertyRenamers = <T extends JsonObj>(
+export const makePropertyRenamers = <T extends Json.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 	stableKeyMapRef: MutableRefObject<{ [K in keyof T]: keyof T }>,
@@ -40,7 +40,7 @@ export const makePropertyRenamers = <T extends JsonObj>(
 				  }),
 	)
 
-export const makePropertyRemovers = <T extends JsonObj>(
+export const makePropertyRemovers = <T extends Json.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: () => void } =>
@@ -53,7 +53,7 @@ export const makePropertyRemovers = <T extends JsonObj>(
 			}),
 	)
 
-export const makePropertyRecasters = <T extends JsonObj>(
+export const makePropertyRecasters = <T extends Json.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: (newType: JsonTypeName) => void } =>
@@ -62,21 +62,24 @@ export const makePropertyRecasters = <T extends JsonObj>(
 		(value, key) => (newType) =>
 			set(() => ({
 				...data,
-				[key]: cast(value).to[newType](),
+				[key]: castToJson(value).to[newType](),
 			})),
 	)
 
 export const makePropertyCreationInterface =
-	<T extends JsonObj>(
+	<T extends Json.Object>(
 		data: T,
 		set: SetterOrUpdater<T>,
-	): ((key: string, type: JsonTypeName) => (value?: Json) => void) =>
+	): ((
+		key: string,
+		type: JsonTypeName,
+	) => (value?: Json.Serializable) => void) =>
 	(key, type) =>
 	(value) =>
 		set({ ...data, [key]: value ?? JSON_DEFAULTS[type] })
 
 export const makePropertySorter =
-	<T extends JsonObj>(
+	<T extends Json.Object>(
 		data: T,
 		set: SetterOrUpdater<T>,
 		sortFn?: (a: string, b: string) => number,
@@ -88,11 +91,11 @@ export const makePropertySorter =
 		set(sortedObj as T)
 	}
 
-// export const sortPropertiesAlphabetically = <T extends JsonObj>(data: T): T =>
+// export const sortPropertiesAlphabetically = <T extends Json.Object>(data: T): T =>
 //   sortProperties(data, (a, b) => a.localeCompare(b))
 
 export const deleteProperty =
-	<T extends JsonObj>(
+	<T extends Json.Object>(
 		data: T,
 		set: SetterOrUpdater<T>,
 	): ((key: keyof T) => void) =>
@@ -102,10 +105,10 @@ export const deleteProperty =
 	}
 
 export const addProperty =
-	<T extends JsonObj>(
+	<T extends Json.Object>(
 		data: T,
 		set: SetterOrUpdater<T>,
-	): ((key?: string, value?: Json) => void) =>
+	): ((key?: string, value?: Json.Serializable) => void) =>
 	(key, value) => {
 		const newKey = key ?? `newProperty`
 		const newValue = value ?? ``

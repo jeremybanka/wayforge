@@ -2,7 +2,6 @@
 	"name": "hamr",
 	"version": "0.4.2",
 	"description": "core react and recoil utilities for wayforge",
-	"main": "object/index.ts",
 	"files": ["**/*"],
 	"exports": {
 		"./react-css-vars/package.json": "./react-css-vars/package.json",

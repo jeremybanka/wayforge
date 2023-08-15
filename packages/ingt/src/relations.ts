@@ -10,7 +10,7 @@ import type { ReadResourceOptions } from "./resources"
 
 export type ReadRelations = (
 	options: ReadResourceOptions,
-) => Json | NotFoundError
+) => Json.Serializable | NotFoundError
 
 export type RelationType = `${string}_${string}`
 
@@ -43,7 +43,7 @@ export const initRelationReader = ({
 export type WriteRelationsOptions = {
 	type: string
 	id: string
-	value: Json
+	value: Json.Serializable
 }
 export type WriteRelations = (options: WriteRelationsOptions) => void
 

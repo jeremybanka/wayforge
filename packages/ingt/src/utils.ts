@@ -1,10 +1,11 @@
 import { readdirSync, readFileSync, writeFileSync } from "fs"
 
-import type { Json, JsonObj } from "~/packages/anvl/src/json"
-import { parseJson, refineJsonType } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/anvl/src/json"
+import { parseJson } from "~/packages/anvl/src/json"
 import type { ResourceIdentifierObject } from "~/packages/anvl/src/json-api"
 import type { Entries } from "~/packages/anvl/src/object/entries"
 import { entriesToRecord } from "~/packages/anvl/src/object/entries"
+import { refineJsonType } from "~/packages/anvl/src/refinement/refine-json"
 
 export const getJsonFileNames = (dir: string): string[] => {
 	const fileNames = readdirSync(dir)
@@ -16,7 +17,7 @@ export const getJsonFileNames = (dir: string): string[] => {
 
 export type GetJsonFromDirectoryOptions<T> = {
 	dir: string
-	coerce: (json: Json) => T
+	coerce: (json: Json.Serializable) => T
 	suppressWarnings?: boolean
 }
 
@@ -31,10 +32,10 @@ export const getDirectoryJsonEntries = <T>({
 			readFileSync(`${dir}/${fileName}`, `utf8`),
 		])
 		.map(([fileName, fileContents]) => {
-			let json: Json | undefined = undefined
+			let json: Json.Serializable | undefined = undefined
 			let content: T | undefined = undefined
 			try {
-				json = parseJson(fileContents) as Json
+				json = parseJson(fileContents) as Json.Serializable
 			} catch (error) {
 				if (!suppressWarnings) {
 					console.warn(
@@ -83,7 +84,7 @@ export const getDirectoryJsonArr = <T>({
 
 export type AssignToJsonFileOptions = {
 	path: string
-	properties: JsonObj
+	properties: Json.Object
 }
 
 export const assignToJsonFile = ({
@@ -104,5 +105,5 @@ export const assignToJsonFile = ({
 export type PriorRelation = {
 	to: ResourceIdentifierObject<any, any>
 	path: string[]
-	meta?: Json
+	meta?: Json.Serializable
 }

@@ -8,7 +8,9 @@ export { initRelationReader, ReadRelations } from "./relations"
 export { initResourceReader, ReadResource } from "./resources"
 
 export type ReadSchemaOptions = { type: string }
-export type ReadSchema = (options: ReadSchemaOptions) => Error | Json
+export type ReadSchema = (
+	options: ReadSchemaOptions,
+) => Error | Json.Serializable
 
 export const initSchemaReader = ({
 	baseDir,
