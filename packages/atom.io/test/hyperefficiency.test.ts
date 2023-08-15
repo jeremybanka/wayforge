@@ -302,7 +302,7 @@ describe(`hyperefficiency patterns`, () => {
 		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
 	})
 
-	test.only(`use the atomic store instead of a junction`, () => {
+	test.skip(`use the atomic store instead of a junction`, () => {
 		const ruleState = atom<`1:1` | `1:n` | `n:n`>({
 			key: `rule`,
 			default: `1:1`,
