@@ -1,8 +1,10 @@
 {
 	"name": "rel8",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "Utilities for managing relations between data.",
-	"files": ["**/*"],
+	"files": [
+		"**/*"
+	],
 	"exports": {
 		"./junction/package.json": "./junction/package.json",
 		"./junction": {
@@ -38,7 +40,14 @@
 		"vite-tsconfig-paths": "4.2.0",
 		"vitest": "0.34.1"
 	},
-	"keywords": ["relation", "data", "relational", "join", "bridge", "junction"],
+	"keywords": [
+		"relation",
+		"data",
+		"relational",
+		"join",
+		"bridge",
+		"junction"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git"

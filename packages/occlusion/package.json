@@ -1,10 +1,12 @@
 {
 	"name": "occlusion",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "it's a matter of perspective",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"lint:rome": "rome check .",

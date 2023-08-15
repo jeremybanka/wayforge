@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.6.8
+
+### Patch Changes
+
+- a8efdaf5: 🏷️ Compatibility with tsconfig's "exactOptionalPropertyTypes" compiler option.
+- a8efdaf5: 🎁 New `atom.io/tracker` submodule introduces a experimental new performance pattern for atom.io!
+
 ## 0.6.7
 
 ### Patch Changes
