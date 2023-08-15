@@ -10,6 +10,13 @@
 			"browser": "./junction/dist/index.mjs",
 			"import": "./junction/dist/index.mjs",
 			"require": "./junction/dist/index.js"
+		},
+		"./types/package.json": "./types/package.json",
+		"./types": {
+			"types": "./types/dist/index.d.ts",
+			"browser": "./types/dist/index.mjs",
+			"import": "./types/dist/index.mjs",
+			"require": "./types/dist/index.js"
 		}
 	},
 	"scripts": {
