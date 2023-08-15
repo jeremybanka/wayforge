@@ -1,3 +1,4 @@
+import type { SetUpdate } from "./transceiver"
 import { TransceiverSet } from "./transceiver"
 
 describe(`TransceiverSet`, () => {
@@ -27,7 +28,7 @@ describe(`TransceiverSet`, () => {
 		it(`should clear the set`, () => {
 			const set = new TransceiverSet()
 			set.add(1)
-			set.do(`clear:[]`)
+			set.do(`clear:[1]`)
 			expect(set.size).toBe(0)
 		})
 		it(`should delete a value from the set`, () => {
@@ -44,16 +45,17 @@ describe(`TransceiverSet`, () => {
 			set.undo(`add:1`)
 			expect(set.has(1)).toBe(false)
 		})
-		it(`should add a value to the set`, () => {
+		it(`should recover a clear`, () => {
 			const set = new TransceiverSet()
-			set.undo(`clear:[]`)
-			expect(set.size).toBe(0)
-		})
-		it(`should clear the set`, () => {
-			const set = new TransceiverSet()
+			let lastUpdate: SetUpdate | null = null
+			set.observe((u) => (lastUpdate = u))
 			set.add(1)
-			set.undo(`del:1`)
-			expect(set.has(1)).toBe(true)
+			set.add(2)
+			expect(set.size).toBe(2)
+			set.clear()
+			expect(set.size).toBe(0)
+			if (lastUpdate) set.undo(lastUpdate)
+			expect(set.size).toBe(2)
 		})
 	})
 })

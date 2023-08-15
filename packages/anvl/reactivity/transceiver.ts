@@ -1,5 +1,5 @@
 import { Subject } from "./subject"
-import type { Json } from "../src/json"
+import type { Json, Stringified } from "../src/json"
 import type { primitive } from "../src/primitive"
 
 export type Transceiver<Signal extends Json.Serializable> = {
@@ -12,14 +12,14 @@ export type TransceiverMode = `playback` | `record`
 
 export type SetUpdate = `add:${string}` | `clear:${string}` | `del:${string}`
 
-export class TransceiverSet<T extends primitive>
-	extends Set<T>
+export class TransceiverSet<P extends primitive>
+	extends Set<P>
 	implements Transceiver<SetUpdate>
 {
 	protected mode: TransceiverMode = `record`
 	protected readonly subject = new Subject()
 
-	public add(value: T): this {
+	public add(value: P): this {
 		if (this.mode === `record`) {
 			this.subject.next(`add:${JSON.stringify(value)}`)
 		}
@@ -33,7 +33,7 @@ export class TransceiverSet<T extends primitive>
 		super.clear()
 	}
 
-	public delete(value: T): boolean {
+	public delete(value: P): boolean {
 		if (this.mode === `record`) {
 			this.subject.next(`del:${JSON.stringify(value)}`)
 		}
@@ -45,6 +45,7 @@ export class TransceiverSet<T extends primitive>
 	}
 
 	public do(update: SetUpdate): void {
+		this.mode = `playback`
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
@@ -57,20 +58,25 @@ export class TransceiverSet<T extends primitive>
 				this.delete(JSON.parse(value))
 				break
 		}
+		this.mode = `record`
 	}
 
 	public undo(update: SetUpdate): void {
+		this.mode = `playback`
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
 				this.delete(JSON.parse(value))
 				break
-			case `clear`:
-				this.forEach((value) => this.add(value))
-				break
 			case `del`:
 				this.add(JSON.parse(value))
 				break
+			case `clear`: {
+				const values = JSON.parse(value) as P[]
+				values.forEach((v) => this.add(v))
+				break
+			}
 		}
+		this.mode = `record`
 	}
 }
