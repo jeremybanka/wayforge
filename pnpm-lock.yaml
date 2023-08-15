@@ -579,6 +579,9 @@ importers:
       '@types/tmp':
         specifier: 0.2.3
         version: 0.2.3
+      concurrently:
+        specifier: 8.2.0
+        version: 8.2.0
       eslint:
         specifier: 8.47.0
         version: 8.47.0

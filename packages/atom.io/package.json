@@ -82,7 +82,14 @@
 		}
 	},
 	"scripts": {
-		"build": "./build.sh",
+		"build": "concurrently \"npm:build:*\"",
+		"build:main": "tsup",
+		"build:introspection": "cd introspection && tsup",
+		"build:json": "cd json && tsup",
+		"build:react": "cd react && tsup",
+		"build:react-devtools": "cd react-devtools && tsup",
+		"build:realtime": "cd realtime && tsup",
+		"build:realtime-react": "cd realtime-react && tsup",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
@@ -118,6 +125,7 @@
 		"@types/mock-fs": "4.13.1",
 		"@types/react": "18.2.20",
 		"@types/tmp": "0.2.3",
+		"concurrently": "8.2.0",
 		"eslint": "8.47.0",
 		"framer-motion": "10.15.2",
 		"happy-dom": "10.9.0",
