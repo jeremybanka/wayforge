@@ -2,25 +2,28 @@
 	"name": "rel8",
 	"version": "0.0.0",
 	"description": "Utilities for managing relations between data.",
-  "files": ["**/*"],
-  "exports": {
-    "./junction/package.json": "./junction/package.json",
-    "./junction": {
-      "types": "./junction/dist/index.d.ts",
+	"files": ["**/*"],
+	"exports": {
+		"./junction/package.json": "./junction/package.json",
+		"./junction": {
+			"types": "./junction/dist/index.d.ts",
 			"browser": "./junction/dist/index.mjs",
 			"import": "./junction/dist/index.mjs",
 			"require": "./junction/dist/index.js"
-    }
-  },
+		}
+	},
 	"scripts": {
-		"build": "make -j",
+		"build": "concurrently \"npm:build:*\"",
+		"build:junction": "cd junction && tsup",
+		"build:types": "cd types && tsup",
+		"lint": "concurrently \"npm:lint:*\"",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},
 	"devDependencies": {
+		"concurrently": "8.2.0",
 		"eslint": "8.46.0",
 		"tsup": "7.2.0",
 		"typescript": "5.1.6",
