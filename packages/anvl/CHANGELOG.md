@@ -1,5 +1,11 @@
 # anvl
 
+## 0.2.5
+
+### Patch Changes
+
+- a8efdaf5: 🏷️ Compatibility with tsconfig's "exactOptionalPropertyTypes" compiler option.
+
 ## 0.2.4
 
 ### Patch Changes
