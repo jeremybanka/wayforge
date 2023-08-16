@@ -1,5 +1,13 @@
 # rel8
 
+## 0.0.2
+
+### Patch Changes
+
+- ac2744f: 🏷️ The type of a `Junction`'s `<Content>` type parameter now defaults to null unless directly passed, or inferred from a `Refinement` function passed to the `Junction` constructor.
+- ac2744f: 💥 Exports previously from `rel8/types` now come from `rel8`
+- ac2744f: 🏷️ Expose some helpful utility types from `rel8/junction`, including types to explicitly differentiate between the semi-optional `JunctionConfig` passed to the constructor and the `JunctionJSON` returned from the `Junction.toJSON()` method.
+
 ## 0.0.1
 
 ### Patch Changes
