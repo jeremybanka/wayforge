@@ -37,20 +37,18 @@ export class Junction<
 	public readonly contents = new Map<string, Content>()
 
 	public makeContentId = (...params: string[]): string => params.sort().join(`:`)
-	public isContent:
-		| (Content extends null ? null : Refinement<unknown, Content>)
-		| undefined
+	public isContent: Refinement<unknown, Content> | null
 
 	public constructor(
 		input: JunctionConfig<ASide, BSide, Content>,
-		isContent?: Content extends null ? null : Refinement<unknown, Content>,
+		isContent?: Refinement<unknown, Content>,
 	) {
 		this.a = input.between[0]
 		this.b = input.between[1]
 		this.cardinality = input.cardinality
 		this.relations = new Map(input.relations?.map(([a, b]) => [a, new Set(b)]))
 		this.contents = new Map(input.contents)
-		this.isContent = isContent
+		this.isContent = isContent ?? null
 	}
 	public toJSON(): JunctionJSON<ASide, BSide, Content> {
 		return {
