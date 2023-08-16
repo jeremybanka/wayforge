@@ -78,8 +78,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.0
-        version: 3.22.0
+        specifier: 3.22.1
+        version: 3.22.1
     devDependencies:
       '@types/npmlog':
         specifier: 4.1.4
@@ -162,7 +162,7 @@ importers:
         version: 0.25.1(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
         specifier: 0.6.0
-        version: 0.6.0(typescript@5.1.6)(zod@3.22.0)
+        version: 0.6.0(typescript@5.1.6)(zod@3.22.1)
       '@vanilla-extract/css':
         specifier: 1.12.0
         version: 1.12.0
@@ -197,8 +197,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.0
-        version: 3.22.0
+        specifier: 3.22.1
+        version: 3.22.1
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.5.0
@@ -282,8 +282,8 @@ importers:
         specifier: 6.15.0
         version: 6.15.0(react-dom@18.2.0)(react@18.2.0)
       zod:
-        specifier: 3.22.0
-        version: 3.22.0
+        specifier: 3.22.1
+        version: 3.22.1
     devDependencies:
       '@testing-library/react':
         specifier: 14.0.0
@@ -389,8 +389,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.0
-        version: 3.22.0
+        specifier: 3.22.1
+        version: 3.22.1
     devDependencies:
       '@testing-library/jest-dom':
         specifier: 6.0.0
@@ -3069,14 +3069,14 @@ packages:
       - supports-color
     dev: true
 
-  /@t3-oss/env-core@0.6.0(typescript@5.1.6)(zod@3.22.0):
+  /@t3-oss/env-core@0.6.0(typescript@5.1.6)(zod@3.22.1):
     resolution: {integrity: sha512-3FkPAba069WRZVVab/sB1m3eSGn/rZeypx5k+sWEu1d+k0OQdRDnvFS+7MtxYgqVrwaRk3b7yVnX2dgSPVmWPQ==}
     peerDependencies:
       typescript: '>=4.7.2'
       zod: ^3.0.0
     dependencies:
       typescript: 5.1.6
-      zod: 3.22.0
+      zod: 3.22.1
     dev: false
 
   /@testing-library/dom@9.3.1:
@@ -8962,6 +8962,6 @@ packages:
       commander: 9.5.0
     dev: true
 
-  /zod@3.22.0:
-    resolution: {integrity: sha512-y5KZY/ssf5n7hCGDGGtcJO/EBJEm5Pa+QQvFBeyMOtnFYOSflalxIFFvdaYevPhePcmcKC4aTbFkCcXN7D0O8Q==}
+  /zod@3.22.1:
+    resolution: {integrity: sha512-+qUhAMl414+Elh+fRNtpU+byrwjDFOS1N7NioLY+tSlcADTx4TkCUua/hxJvxwDXcV4397/nZ420jy4n4+3WUg==}
     dev: false
