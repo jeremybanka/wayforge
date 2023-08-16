@@ -1,9 +1,16 @@
+import { isBoolean } from "fp-ts/boolean"
 import { isNumber } from "fp-ts/number"
+import { isString } from "fp-ts/string"
 import { vitest } from "vitest"
 
-import { hasExactProperties } from "~/packages/anvl/src/object"
+import { hasExactProperties, isPlainObject } from "~/packages/anvl/src/object"
+import {
+	isJson,
+	refineJsonType,
+} from "~/packages/anvl/src/refinement/refine-json"
 
 import { Junction } from "../junction/src"
+import type { Json } from "../types/src"
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)
@@ -68,10 +75,13 @@ describe(`Junction.prototype.set`, () => {
 	it(`sets data between two ids`, () => {
 		const fire = `03`
 		const fireAndWaterBecomeSteam = `486`
-		const reactionReagents = new Junction({
-			between: [`reagent`, `reaction`],
-			cardinality: `n:n`,
-		}).set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
+		const reactionReagents = new Junction(
+			{
+				between: [`reagent`, `reaction`],
+				cardinality: `n:n`,
+			},
+			hasExactProperties({ amount: isNumber }),
+		).set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
 		const amountOfFire = reactionReagents.getContent(
 			fire,
 			fireAndWaterBecomeSteam,
@@ -191,10 +201,13 @@ describe(`Junction.prototype.delete`, () => {
 	it(`removes the content when removing two ids`, () => {
 		const snad = `snad_pitt`
 		const cassilda = `cassilda_jolie`
-		const celebrityCouples = new Junction({
-			between: [`celebrity0`, `celebrity1`],
-			cardinality: `n:n`,
-		})
+		const celebrityCouples = new Junction(
+			{
+				between: [`celebrity0`, `celebrity1`],
+				cardinality: `n:n`,
+			},
+			hasExactProperties({ name: isString }),
+		)
 			.set({ celebrity0: snad, celebrity1: cassilda }, { name: `snassilda` })
 			.delete({ celebrity0: snad, celebrity1: cassilda })
 		expect(celebrityCouples.getRelatedKey(snad)).toEqual(undefined)
@@ -220,10 +233,18 @@ describe(`Junction.prototype.delete`, () => {
 
 describe(`Junction.prototype.getRelatedIdEntries`, () => {
 	it(`gets all content entries for a given id`, () => {
-		const friendships = new Junction({
-			between: [`from`, `to`],
-			cardinality: `n:n`,
-		})
+		const friendships = new Junction(
+			{
+				between: [`from`, `to`],
+				cardinality: `n:n`,
+			},
+			(input): input is Json.Object => {
+				if (!isJson(input)) return false
+				const refined = refineJsonType(input)
+				return refined.type === `object`
+			},
+		)
+
 			.set({ from: `omori`, to: `kel` }, { trust: 1 })
 			.set({ from: `hero`, to: `kel` }, { brothers: true })
 			.set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
@@ -237,10 +258,13 @@ describe(`Junction.prototype.getRelatedIdEntries`, () => {
 
 describe(`Junction.prototype.toJSON`, () => {
 	it(`converts a Junction to JSON`, () => {
-		const pokemonPrimaryTypes = new Junction({
-			between: [`type`, `pokémon`],
-			cardinality: `1:n`,
-		})
+		const pokemonPrimaryTypes = new Junction(
+			{
+				between: [`type`, `pokémon`],
+				cardinality: `1:n`,
+			},
+			hasExactProperties({ isDelta: isBoolean }),
+		)
 			.set({ type: `grass`, pokémon: `bulbasaur` }, { isDelta: true })
 			.set({ type: `grass`, pokémon: `oddish` }, { isDelta: true })
 			.set({ type: `grass`, pokémon: `bellsprout` }, { isDelta: false })

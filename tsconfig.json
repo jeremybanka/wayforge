@@ -12,6 +12,8 @@
 			"anvl/*": ["./packages/anvl/src/*"],
 			"hamr/*": ["./packages/hamr/src/*"],
 			"luum": ["packages/luum/src"],
+			"rel8": ["packages/rel8/types/src"],
+			"rel8/*": ["packages/rel8/*/src"],
 			"socket-io.git/*": ["./packages/socket-io.git/src/*"],
 			"socket-io.filestore/*": ["./packages/socket-io.filestore/src/*"],
 			"atom.io": ["./packages/atom.io/src"],

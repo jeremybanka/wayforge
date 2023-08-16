@@ -1,20 +1,34 @@
-import type { Cardinality, Json, Refinement } from "../../types/src"
+import type { Cardinality, Json, Refinement } from "rel8"
 
-export interface JunctionJSON<
+export interface JunctionData<Content extends Json.Object | null,>
+	extends Json.Object {
+	readonly relations: [string, string[]][]
+	readonly contents: [string, Content][]
+}
+export interface JunctionConfigRequired<
 	ASide extends string,
 	BSide extends string,
-	Content extends Json.Object | null,
 > extends Json.Object {
 	readonly between: [a: ASide, b: BSide]
 	readonly cardinality: Cardinality
-	readonly relations?: [string, string[]][]
-	readonly contents?: [string, Content][]
 }
+
+export type JunctionConfig<
+	ASide extends string,
+	BSide extends string,
+	Content extends Json.Object | null,
+> = JunctionConfigRequired<ASide, BSide> & Partial<JunctionData<Content>>
+
+export type JunctionJSON<
+	ASide extends string,
+	BSide extends string,
+	Content extends Json.Object | null,
+> = JunctionConfigRequired<ASide, BSide> & JunctionData<Content>
 
 export class Junction<
 	ASide extends string,
 	BSide extends string,
-	Content extends Json.Object | null,
+	Content extends Json.Object | null = null,
 > {
 	public readonly a: ASide
 	public readonly b: BSide
@@ -23,22 +37,18 @@ export class Junction<
 	public readonly contents = new Map<string, Content>()
 
 	public makeContentId = (...params: string[]): string => params.sort().join(`:`)
-	public isContent:
-		| (Content extends null ? null : Refinement<unknown, Content>)
-		| undefined
+	public isContent: Refinement<unknown, Content> | null
 
 	public constructor(
-		data: JunctionJSON<ASide, BSide, Content>,
-		isContent?: Content extends null ? null : Refinement<unknown, Content>,
+		input: JunctionConfig<ASide, BSide, Content>,
+		isContent?: Refinement<unknown, Content>,
 	) {
-		if (data) {
-			this.a = data.between[0]
-			this.b = data.between[1]
-			this.cardinality = data.cardinality
-			this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
-			this.contents = new Map(data.contents)
-			this.isContent = isContent
-		}
+		this.a = input.between[0]
+		this.b = input.between[1]
+		this.cardinality = input.cardinality
+		this.relations = new Map(input.relations?.map(([a, b]) => [a, new Set(b)]))
+		this.contents = new Map(input.contents)
+		this.isContent = isContent ?? null
 	}
 	public toJSON(): JunctionJSON<ASide, BSide, Content> {
 		return {

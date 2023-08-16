@@ -2,7 +2,7 @@ import { Join } from "anvl/join"
 import * as v from "vitest"
 
 import type { EmptyObject } from "~/packages/anvl/src/object"
-import { hasExactProperties, isEmptyObject } from "~/packages/anvl/src/object"
+import { isEmptyObject } from "~/packages/anvl/src/object"
 import { Junction } from "~/packages/rel8/junction/src"
 
 v.describe(`constructor`, () => {
