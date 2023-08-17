@@ -161,8 +161,8 @@ importers:
         specifier: 0.25.1
         version: 0.25.1(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
-        specifier: 0.6.0
-        version: 0.6.0(typescript@5.1.6)(zod@3.22.1)
+        specifier: 0.6.1
+        version: 0.6.1(typescript@5.1.6)(zod@3.22.1)
       '@vanilla-extract/css':
         specifier: 1.12.0
         version: 1.12.0
@@ -3069,8 +3069,8 @@ packages:
       - supports-color
     dev: true
 
-  /@t3-oss/env-core@0.6.0(typescript@5.1.6)(zod@3.22.1):
-    resolution: {integrity: sha512-3FkPAba069WRZVVab/sB1m3eSGn/rZeypx5k+sWEu1d+k0OQdRDnvFS+7MtxYgqVrwaRk3b7yVnX2dgSPVmWPQ==}
+  /@t3-oss/env-core@0.6.1(typescript@5.1.6)(zod@3.22.1):
+    resolution: {integrity: sha512-KQD7qEDJtkWIWWmTVjNvk0wnHpkvAQ6CRbUxbWMFNG/fiosBQDQvtRpBNu6USxBscJCoC4z6y7P9MN52/mLOzw==}
     peerDependencies:
       typescript: '>=4.7.2'
       zod: ^3.0.0
