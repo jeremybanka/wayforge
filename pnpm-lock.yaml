@@ -46,7 +46,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   apps/node/forge:
     dependencies:
@@ -95,7 +95,7 @@ importers:
         version: 3.12.7
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   apps/node/lodge:
     dependencies:
@@ -141,7 +141,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   apps/web/saloon:
     dependencies:
@@ -222,8 +222,8 @@ importers:
         specifier: 8.47.0
         version: 8.47.0
       happy-dom:
-        specifier: 10.10.0
-        version: 10.10.0
+        specifier: 10.10.2
+        version: 10.10.2
       sass:
         specifier: 1.65.1
         version: 1.65.1
@@ -241,7 +241,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)(jsdom@22.1.0)(sass@1.65.1)
+        version: 0.34.1(happy-dom@10.10.2)(jsdom@22.1.0)(sass@1.65.1)
 
   apps/web/sample:
     dependencies:
@@ -301,8 +301,8 @@ importers:
         specifier: 8.47.0
         version: 8.47.0
       happy-dom:
-        specifier: 10.10.0
-        version: 10.10.0
+        specifier: 10.10.2
+        version: 10.10.2
       sass:
         specifier: 1.65.1
         version: 1.65.1
@@ -317,7 +317,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)(jsdom@22.1.0)(sass@1.65.1)
+        version: 0.34.1(happy-dom@10.10.2)(jsdom@22.1.0)(sass@1.65.1)
 
   apps/web/shrine:
     dependencies:
@@ -411,8 +411,8 @@ importers:
         specifier: 8.47.0
         version: 8.47.0
       happy-dom:
-        specifier: 10.10.0
-        version: 10.10.0
+        specifier: 10.10.2
+        version: 10.10.2
       sass:
         specifier: 1.65.1
         version: 1.65.1
@@ -427,7 +427,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)(jsdom@22.1.0)(sass@1.65.1)
+        version: 0.34.1(happy-dom@10.10.2)(jsdom@22.1.0)(sass@1.65.1)
 
   packages/@banka/eslint-config:
     dependencies:
@@ -556,7 +556,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/atom.io:
     dependencies:
@@ -589,8 +589,8 @@ importers:
         specifier: 10.16.0
         version: 10.16.0(react-dom@18.2.0)(react@18.2.0)
       happy-dom:
-        specifier: 10.10.0
-        version: 10.10.0
+        specifier: 10.10.2
+        version: 10.10.2
       preact:
         specifier: 10.17.0
         version: 10.17.0
@@ -626,7 +626,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/hamr:
     dependencies:
@@ -677,8 +677,8 @@ importers:
         specifier: 8.47.0
         version: 8.47.0
       happy-dom:
-        specifier: 10.10.0
-        version: 10.10.0
+        specifier: 10.10.2
+        version: 10.10.2
       jsdom:
         specifier: 22.1.0
         version: 22.1.0
@@ -717,7 +717,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)(jsdom@22.1.0)(sass@1.65.1)
+        version: 0.34.1(happy-dom@10.10.2)(jsdom@22.1.0)(sass@1.65.1)
 
   packages/ingt:
     dependencies:
@@ -751,7 +751,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/luum:
     dependencies:
@@ -779,7 +779,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/occlusion:
     dependencies:
@@ -807,7 +807,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/rel8:
     devDependencies:
@@ -831,7 +831,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/socket-io.filestore:
     dependencies:
@@ -874,7 +874,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
   packages/socket-io.git:
     dependencies:
@@ -920,7 +920,7 @@ importers:
         version: 4.2.0(typescript@5.1.6)(vite@4.4.9)
       vitest:
         specifier: 0.34.1
-        version: 0.34.1(happy-dom@10.10.0)
+        version: 0.34.1(happy-dom@10.10.2)
 
 packages:
 
@@ -3119,7 +3119,7 @@ packages:
       dom-accessibility-api: 0.5.16
       lodash: 4.17.21
       redent: 3.0.0
-      vitest: 0.34.1(happy-dom@10.10.0)(jsdom@22.1.0)(sass@1.65.1)
+      vitest: 0.34.1(happy-dom@10.10.2)(jsdom@22.1.0)(sass@1.65.1)
     dev: true
 
   /@testing-library/react@14.0.0(@preact/compat@17.1.2)(@preact/compat@17.1.2):
@@ -5715,8 +5715,8 @@ packages:
   /hamt_plus@1.0.2:
     resolution: {integrity: sha512-t2JXKaehnMb9paaYA7J0BX8QQAY8lwfQ9Gjf4pg/mk4krt+cmwmU652HOoWonf+7+EQV97ARPMhhVgU1ra2GhA==}
 
-  /happy-dom@10.10.0:
-    resolution: {integrity: sha512-rpWFSemZoid3OKuzMs47CDUOnAYV10vYlXaVBPD+dBDHTAFkyIIpkHXx8gd/uWMyf+XOluQNnxImWp17SprE2Q==}
+  /happy-dom@10.10.2:
+    resolution: {integrity: sha512-oge5nmnolkX9giU3wmv/qQ/s5AN4L3XGCRvw7Q9a6lnmRNKvVZYWinw0L9f+ZNE0P7BzbcHvlIwHEcfMCkU72A==}
     dependencies:
       css.escape: 1.5.1
       entities: 4.5.0
@@ -8606,7 +8606,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest@0.34.1(happy-dom@10.10.0):
+  /vitest@0.34.1(happy-dom@10.10.2):
     resolution: {integrity: sha512-G1PzuBEq9A75XSU88yO5G4vPT20UovbC/2osB2KEuV/FisSIIsw7m5y2xMdB7RsAGHAfg2lPmp2qKr3KWliVlQ==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -8650,7 +8650,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4(supports-color@5.5.0)
-      happy-dom: 10.10.0
+      happy-dom: 10.10.2
       local-pkg: 0.4.3
       magic-string: 0.30.2
       pathe: 1.1.1
@@ -8672,7 +8672,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@0.34.1(happy-dom@10.10.0)(jsdom@22.1.0)(sass@1.65.1):
+  /vitest@0.34.1(happy-dom@10.10.2)(jsdom@22.1.0)(sass@1.65.1):
     resolution: {integrity: sha512-G1PzuBEq9A75XSU88yO5G4vPT20UovbC/2osB2KEuV/FisSIIsw7m5y2xMdB7RsAGHAfg2lPmp2qKr3KWliVlQ==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -8716,7 +8716,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4(supports-color@5.5.0)
-      happy-dom: 10.10.0
+      happy-dom: 10.10.2
       jsdom: 22.1.0
       local-pkg: 0.4.3
       magic-string: 0.30.2
