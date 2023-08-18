@@ -1,5 +1,11 @@
 # rel8
 
+## 0.0.3
+
+### Patch Changes
+
+- ce3acb1: 🔧 Fix package configuration so that the entrypoint is properly identified.
+
 ## 0.0.2
 
 ### Patch Changes
