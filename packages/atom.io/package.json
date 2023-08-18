@@ -128,7 +128,7 @@
 		"concurrently": "8.2.0",
 		"eslint": "8.47.0",
 		"framer-motion": "10.16.0",
-		"happy-dom": "10.10.0",
+		"happy-dom": "10.10.2",
 		"preact": "10.17.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
