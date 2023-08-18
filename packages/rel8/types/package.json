@@ -1,6 +1,0 @@
-{
-	"name": "rel8-types",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"module": "./dist/index.mjs"
-}
