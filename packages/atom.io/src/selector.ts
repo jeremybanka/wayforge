@@ -1,7 +1,6 @@
 import type { Subject } from "atom.io/internal"
 import { selectorFamily__INTERNAL, selector__INTERNAL } from "atom.io/internal"
-
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
 
 import type { ReadonlySelectorToken, SelectorToken } from "."
 import type { Read, Write } from "./transaction"

@@ -1,7 +1,7 @@
+import { parseJson, stringifyJson } from "atom.io/json"
 import { persistAtom } from "atom.io/web-effects"
 
 import { isArray } from "~/packages/anvl/src/array"
-import { parseJson, stringifyJson } from "~/packages/anvl/src/json"
 
 export const persistStringSetAtom = persistAtom<Set<string>>(localStorage)({
 	stringify: (set) => stringifyJson([...set]),

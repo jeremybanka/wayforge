@@ -1,7 +1,6 @@
 import type { Subject } from "atom.io/internal"
 import { atomFamily__INTERNAL, atom__INTERNAL } from "atom.io/internal"
-
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
 
 import type { AtomToken } from "."
 

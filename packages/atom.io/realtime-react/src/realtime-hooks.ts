@@ -1,6 +1,5 @@
 import type * as AtomIO from "atom.io"
-
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
 
 import { usePull } from "./use-pull"
 import { usePullFamily } from "./use-pull-family"

@@ -1,10 +1,9 @@
 import * as AtomIO from "atom.io"
+import type { Json } from "atom.io/json"
+import { StoreContext } from "atom.io/react"
 import * as React from "react"
 
-import type { Json } from "~/packages/anvl/src/json"
-
 import { RealtimeContext } from "./realtime-context"
-import { StoreContext } from "atom.io/react"
 
 export function usePullFamilyMember<J extends Json.Serializable>(
 	family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,

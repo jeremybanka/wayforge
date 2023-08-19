@@ -5,9 +5,8 @@ import type {
 	AtomToken,
 	FamilyMetadata,
 } from "atom.io"
-
-import type { Json } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import { atom__INTERNAL } from "../atom"
 import { IMPLICIT, withdraw, type Store, deposit } from "../store"

@@ -1,6 +1,5 @@
 import * as AtomIO from "atom.io"
-
-import type { Json, JsonInterface } from "~/packages/anvl/src/json"
+import type { Json, JsonInterface } from "atom.io/json"
 
 export const selectJson = <T, J extends Json.Serializable>(
 	atom: AtomIO.AtomToken<T>,

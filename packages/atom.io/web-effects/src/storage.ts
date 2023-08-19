@@ -1,6 +1,5 @@
 import type { AtomEffect } from "atom.io"
-
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
 
 export type StringInterface<T> = {
 	stringify: (t: T) => string

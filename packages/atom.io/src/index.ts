@@ -25,7 +25,7 @@ export * from "./timeline"
 export * from "./transaction"
 export { __INTERNAL__ }
 export type { Store } from "atom.io/internal"
-export type { Json } from "~/packages/anvl/src/json"
+export type { Json } from "atom.io/json"
 
 export type AtomToken<_> = {
 	key: string

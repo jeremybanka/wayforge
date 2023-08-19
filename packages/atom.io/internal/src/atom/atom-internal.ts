@@ -1,5 +1,3 @@
-import { markAtomAsDefault } from "./is-default"
-import { Subject } from ".."
 import type {
 	AtomOptions,
 	AtomToken,
@@ -7,9 +5,12 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 import { setState, subscribe } from "atom.io"
+
+import { markAtomAsDefault } from "./is-default"
 import { cacheValue } from "../caching"
 import type { Store } from "../store"
 import { IMPLICIT, deposit } from "../store"
+import { Subject } from "../subject"
 import { target } from "../transaction"
 
 export type Atom<T> = {

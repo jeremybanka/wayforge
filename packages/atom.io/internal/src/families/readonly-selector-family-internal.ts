@@ -4,9 +4,8 @@ import type {
 	ReadonlySelectorFamilyOptions,
 	ReadonlySelectorToken,
 } from "atom.io"
-
-import type { Json } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import { selector__INTERNAL } from "../selector"
 import { deposit, type Store } from "../store"

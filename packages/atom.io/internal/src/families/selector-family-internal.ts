@@ -6,9 +6,8 @@ import type {
 	SelectorFamilyOptions,
 	SelectorToken,
 } from "atom.io"
-
-import type { Json } from "~/packages/anvl/src/json"
-import { stringifyJson } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import { readonlySelectorFamily__INTERNAL } from "./readonly-selector-family-internal"
 import { selector__INTERNAL } from "../selector"
