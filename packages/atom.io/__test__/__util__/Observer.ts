@@ -1,7 +1,6 @@
 import type * as AtomIO from "atom.io"
+import * as ReactIO from "atom.io/react"
 import * as React from "react"
-
-import * as ReactIO from "../../src/react"
 
 export type ObserverProps = {
 	node: AtomIO.StateToken<any>

@@ -1,8 +1,9 @@
+import type { Subject } from "atom.io/internal"
+import { atomFamily__INTERNAL, atom__INTERNAL } from "atom.io/internal"
+
 import type { Json } from "~/packages/anvl/src/json"
 
 import type { AtomToken } from "."
-import type { Subject } from "./internal"
-import { atomFamily__INTERNAL, atom__INTERNAL } from "./internal"
 
 export type Effectors<T> = {
 	setSelf: <V extends T>(next: V | ((oldValue: T) => V)) => void

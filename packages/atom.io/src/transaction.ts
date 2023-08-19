@@ -1,6 +1,7 @@
+import type { Store } from "atom.io/internal"
+import { IMPLICIT, transaction__INTERNAL, withdraw } from "atom.io/internal"
+
 import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken, ƒn } from "."
-import type { Store } from "./internal"
-import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
 
 export type TransactionToken<_> = {
 	key: string

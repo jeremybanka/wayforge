@@ -1,6 +1,6 @@
+import { IMPLICIT } from "../internal/src"
 import type { AtomOptions } from "../src"
 import { getState } from "../src"
-import { IMPLICIT } from "../src/internal"
 import { silo } from "../src/silo"
 
 const hasImplicitStoreBeenCreated = () => IMPLICIT.STORE_INTERNAL !== undefined

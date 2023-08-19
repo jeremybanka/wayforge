@@ -1,10 +1,10 @@
 import { vitest } from "vitest"
 
 import type { Transceiver, TransceiverMode } from "~/packages/anvl/reactivity"
-import { tracker } from "~/packages/atom.io/src/tracker"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import * as UTIL from "./__util__"
+import { IMPLICIT, Subject } from "../internal/src"
 import {
 	__INTERNAL__,
 	atom,
@@ -20,7 +20,7 @@ import {
 	transaction,
 	undo,
 } from "../src"
-import { IMPLICIT, Subject } from "../src/internal"
+import { tracker } from "../tracker/src"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2

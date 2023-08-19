@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"jsx": "react-jsxdev",
 		"jsxImportSource": "react",
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"noEmit": true
 	},
-	"include": ["./src/**/*", "./test/**/*", "../anvl/reactivity/subject.ts"]
+	"include": ["./src/**/*", "__test__/**/*", "../anvl/reactivity/subject.ts"]
 }

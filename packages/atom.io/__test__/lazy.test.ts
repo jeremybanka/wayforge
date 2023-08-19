@@ -1,6 +1,7 @@
 import { vitest } from "vitest"
 
 import * as UTIL from "./__util__"
+import { withdraw } from "../internal/src"
 import {
 	__INTERNAL__,
 	atom,
@@ -10,7 +11,6 @@ import {
 	setState,
 	subscribe,
 } from "../src"
-import { withdraw } from "../src/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
