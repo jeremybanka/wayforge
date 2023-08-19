@@ -21,7 +21,7 @@
 		"prettier": "3.0.2",
 		"simple-git": "3.19.1",
 		"socket.io": "4.7.2",
-		"zod": "3.22.1"
+		"zod": "3.22.2"
 	},
 	"devDependencies": {
 		"@types/npmlog": "4.1.4",
