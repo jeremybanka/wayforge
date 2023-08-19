@@ -79,6 +79,13 @@
 			"browser": "./realtime-testing/dist/index.mjs",
 			"import": "./realtime-testing/dist/index.mjs",
 			"require": "./realtime-testing/dist/index.js"
+		},
+		"./tracker/package.json": "./tracker/package.json",
+		"./tracker": {
+			"types": "./tracker/dist/index.d.ts",
+			"browser": "./tracker/dist/index.mjs",
+			"import": "./tracker/dist/index.mjs",
+			"require": "./tracker/dist/index.js"
 		}
 	},
 	"scripts": {
@@ -90,6 +97,7 @@
 		"build:react-devtools": "cd react-devtools && tsup",
 		"build:realtime": "cd realtime && tsup",
 		"build:realtime-react": "cd realtime-react && tsup",
+		"build:tracker": "cd tracker && tsup",
 		"lint:rome": "rome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
