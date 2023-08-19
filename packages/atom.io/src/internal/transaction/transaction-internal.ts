@@ -1,6 +1,6 @@
 import type { ƒn } from "~/packages/anvl/src/function"
 
-import type { Store, StoreCore } from "."
+import type { Store, StoreCore } from ".."
 import {
 	Subject,
 	abortTransaction,
@@ -8,9 +8,13 @@ import {
 	buildTransaction,
 	deposit,
 	IMPLICIT,
-} from "."
-import type { TransactionOptions, TransactionToken, TransactionUpdate } from ".."
-import { getState, setState } from ".."
+} from ".."
+import type {
+	TransactionOptions,
+	TransactionToken,
+	TransactionUpdate,
+} from "../.."
+import { getState, setState } from "../.."
 
 export type Transaction<ƒ extends ƒn> = {
 	key: string

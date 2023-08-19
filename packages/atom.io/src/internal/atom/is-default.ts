@@ -1,5 +1,5 @@
-import type { Store } from "."
-import { target, IMPLICIT, traceAllSelectorAtoms } from "."
+import type { Store } from ".."
+import { target, IMPLICIT, traceAllSelectorAtoms } from ".."
 
 export const isAtomDefault = (
 	key: string,

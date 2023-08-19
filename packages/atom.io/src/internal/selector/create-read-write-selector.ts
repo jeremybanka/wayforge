@@ -1,6 +1,6 @@
 import { become } from "~/packages/anvl/src/function"
 
-import { Subject } from ".."
+import { Subject, cacheValue } from ".."
 import {
 	type Store,
 	type Selector,
@@ -10,7 +10,7 @@ import {
 } from ".."
 import type { FamilyMetadata, SelectorToken } from "../.."
 import type { SelectorOptions } from "../../selector"
-import { cacheValue, markDone } from "../operation"
+import { markDone } from "../operation"
 
 export const createReadWriteSelector = <T>(
 	options: SelectorOptions<T>,

@@ -1,14 +1,14 @@
-import { target, IMPLICIT } from "."
-import type { Store, Subject } from "."
-import { createReadWriteSelector } from "./selector/create-read-write-selector"
-import { createReadonlySelector } from "./selector/create-readonly-selector"
+import { createReadWriteSelector } from "./create-read-write-selector"
+import { createReadonlySelector } from "./create-readonly-selector"
+import { target, IMPLICIT } from ".."
+import type { Store, Subject } from ".."
 import type {
 	FamilyMetadata,
 	ReadonlySelectorOptions,
 	ReadonlySelectorToken,
 	SelectorOptions,
 	SelectorToken,
-} from ".."
+} from "../.."
 
 export type Selector<T> = {
 	key: string

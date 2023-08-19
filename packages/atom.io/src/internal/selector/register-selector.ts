@@ -1,10 +1,10 @@
 import { updateSelectorAtoms } from "./update-selector-atoms"
 import type { Transactors } from "../../transaction"
-import { getState__INTERNAL, withdraw } from "../get"
-import { setState__INTERNAL } from "../set"
+import { getState__INTERNAL } from "../get-state-internal"
+import { setState__INTERNAL } from "../set-state"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
-import { target } from "../transaction-internal"
+import { IMPLICIT, withdraw } from "../store"
+import { target } from "../transaction/transaction-internal"
 
 export const registerSelector = (
 	selectorKey: string,

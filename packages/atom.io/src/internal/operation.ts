@@ -1,7 +1,6 @@
-import type { Atom, ReadonlySelector, Selector } from "."
-import { target } from "."
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
+import { target } from "./transaction"
 import type { StateToken } from ".."
 
 export type OperationProgress =
@@ -61,79 +60,4 @@ export const markDone = (key: string, store: Store = IMPLICIT.STORE): void => {
 		return
 	}
 	core.operation.done.add(key)
-}
-export const recallState = <T>(
-	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
-	store: Store = IMPLICIT.STORE,
-): T => {
-	const core = target(store)
-	if (!core.operation.open) {
-		store.config.logger?.warn(
-			`recall called outside of an operation. This is probably a bug.`,
-		)
-		return core.valueMap.get(state.key)
-	}
-	return core.operation.prev.get(state.key)
-}
-
-export const cacheValue = (
-	key: string,
-	value: unknown,
-	store: Store = IMPLICIT.STORE,
-): void => {
-	const core = target(store)
-	core.valueMap.set(key, value)
-}
-
-export const evictCachedValue = (
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): void => {
-	const core = target(store)
-	core.valueMap.delete(key)
-}
-export const readCachedValue = <T>(
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): T => target(store).valueMap.get(key)
-
-export const isValueCached = (
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): boolean => target(store).valueMap.has(key)
-
-export const storeAtom = (
-	atom: Atom<any>,
-	store: Store = IMPLICIT.STORE,
-): void => {
-	const core = target(store)
-	core.atoms.set(atom.key, atom)
-}
-
-export const storeSelector = (
-	selector: Selector<any>,
-	store: Store = IMPLICIT.STORE,
-): void => {
-	const core = target(store)
-	core.selectors.set(selector.key, selector)
-}
-
-export const storeReadonlySelector = (
-	selector: ReadonlySelector<any>,
-	store: Store = IMPLICIT.STORE,
-): void => {
-	const core = target(store)
-	core.readonlySelectors.set(selector.key, selector)
-}
-
-export const hasKeyBeenUsed = (
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): boolean => {
-	const core = target(store)
-	return (
-		core.atoms.has(key) ||
-		core.selectors.has(key) ||
-		core.readonlySelectors.has(key)
-	)
 }

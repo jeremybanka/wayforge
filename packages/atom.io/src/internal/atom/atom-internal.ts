@@ -1,13 +1,12 @@
-import { Subject } from "."
-import { deposit } from "./get"
 import { markAtomAsDefault } from "./is-default"
-import { cacheValue } from "./operation"
-import type { Store } from "./store"
-import { IMPLICIT } from "./store"
-import { target } from "./transaction-internal"
-import type { AtomToken, FamilyMetadata, UpdateHandler } from ".."
-import { setState, subscribe } from ".."
-import type { AtomOptions } from "../atom"
+import { Subject } from ".."
+import type { AtomToken, FamilyMetadata, UpdateHandler } from "../.."
+import { setState, subscribe } from "../.."
+import type { AtomOptions } from "../../atom"
+import { cacheValue } from "../caching"
+import type { Store } from "../store"
+import { IMPLICIT, deposit } from "../store"
+import { target } from "../transaction"
 
 export type Atom<T> = {
 	key: string
