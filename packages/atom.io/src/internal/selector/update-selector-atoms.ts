@@ -1,7 +1,7 @@
 import { traceSelectorAtoms } from "./trace-selector-atoms"
-import type { Store } from ".."
-import { target } from ".."
 import type { ReadonlySelectorToken, StateToken } from "../.."
+import type { Store } from "../store"
+import { target } from "../transaction"
 
 export const updateSelectorAtoms = (
 	selectorKey: string,

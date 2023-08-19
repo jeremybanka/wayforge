@@ -1,6 +1,5 @@
-import type { ƒn } from "~/packages/anvl/src/function"
-
 import type {
+	ƒn,
 	ReadonlySelectorToken,
 	StateToken,
 	TimelineToken,

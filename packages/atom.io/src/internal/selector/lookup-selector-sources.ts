@@ -1,6 +1,11 @@
-import type { Store } from ".."
-import { target, lookup } from ".."
-import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "../.."
+import type {
+	AtomToken,
+	ReadonlySelectorToken,
+	SelectorToken,
+	Store,
+} from "../.."
+import { lookup } from "../store"
+import { target } from "../transaction"
 
 export const lookupSelectorSources = (
 	key: string,

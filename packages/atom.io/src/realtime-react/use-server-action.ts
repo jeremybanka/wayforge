@@ -2,12 +2,10 @@ import * as AtomIO from "atom.io"
 import { StoreContext } from "atom.io/react"
 import * as React from "react"
 
-import type { ƒn } from "~/packages/anvl/src/function"
-
 import { RealtimeContext } from "./realtime-context"
 
 const TX_SUBS = new Map<string, number>()
-export function useServerAction<ƒ extends ƒn>(
+export function useServerAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)

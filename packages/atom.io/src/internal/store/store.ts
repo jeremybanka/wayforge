@@ -1,17 +1,6 @@
-import type { ƒn } from "~/packages/anvl/src/function"
 import { doNothing } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 
-import type {
-	Atom,
-	OperationProgress,
-	ReadonlySelector,
-	Selector,
-	TransactionStatus,
-	Timeline,
-	Transaction,
-} from ".."
-import { Subject } from ".."
 import type {
 	AtomToken,
 	Logger,
@@ -19,7 +8,14 @@ import type {
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
+	ƒn,
 } from "../.."
+import type { Atom } from "../atom"
+import type { OperationProgress } from "../operation"
+import type { ReadonlySelector, Selector } from "../selector"
+import { Subject } from "../subject"
+import type { Timeline } from "../timeline"
+import type { Transaction, TransactionStatus } from "../transaction"
 
 export * from "./deposit"
 export * from "./lookup"

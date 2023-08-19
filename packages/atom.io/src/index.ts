@@ -1,3 +1,4 @@
+import type { ƒn } from "~/packages/anvl/src/function"
 import { capitalize } from "~/packages/anvl/src/string/capitalize"
 
 import {
@@ -12,6 +13,8 @@ import {
 } from "./internal"
 import * as __INTERNAL__ from "./internal"
 import type { Store } from "./internal/store"
+
+export { ƒn }
 
 export * from "./atom"
 export * from "./logger"

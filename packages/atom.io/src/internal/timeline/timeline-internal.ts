@@ -1,15 +1,16 @@
-import type { ƒn } from "~/packages/anvl/src/function"
-
 import { addAtomToTimeline } from "./add-atom-to-timeline"
-import { Subject, target, IMPLICIT } from ".."
-import type { Store } from ".."
+import type { ƒn } from "../.."
+import type { StateUpdate } from "../../subscribe"
 import type {
-	StateUpdate,
 	TimelineOptions,
 	TimelineToken,
 	TimelineUpdate,
-	TransactionUpdate,
-} from "../.."
+} from "../../timeline"
+import type { TransactionUpdate } from "../../transaction"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
+import { Subject } from "../subject"
+import { target } from "../transaction"
 
 export type TimelineAtomUpdate = StateUpdate<unknown> & {
 	key: string

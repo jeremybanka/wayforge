@@ -1,7 +1,5 @@
-import type { ƒn } from "~/packages/anvl/src/function"
-
 import type { StoreCore } from ".."
-import type { TransactionUpdate } from "../.."
+import type { TransactionUpdate, ƒn } from "../.."
 
 export * from "./transaction-internal"
 

@@ -1,6 +1,9 @@
 import { recallState } from "./recall-state"
-import type { ReadonlySelector, Selector, Store } from ".."
-import { getState__INTERNAL, withdraw, traceAllSelectorAtoms } from ".."
+import { getState__INTERNAL } from "../get-state-internal"
+import type { ReadonlySelector, Selector } from "../selector"
+import { traceAllSelectorAtoms } from "../selector"
+import type { Store } from "../store"
+import { withdraw } from "../store"
 
 export const subscribeToRootAtoms = <T>(
 	state: ReadonlySelector<T> | Selector<T>,

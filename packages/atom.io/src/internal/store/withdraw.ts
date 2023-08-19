@@ -1,14 +1,4 @@
-import type { ƒn } from "~/packages/anvl/src/function"
-
-import type {
-	Atom,
-	ReadonlySelector,
-	Selector,
-	Store,
-	Timeline,
-	Transaction,
-} from ".."
-import { target } from ".."
+import type { Store } from "./store"
 import type {
 	AtomToken,
 	ReadonlySelectorToken,
@@ -16,7 +6,13 @@ import type {
 	StateToken,
 	TimelineToken,
 	TransactionToken,
+	ƒn,
 } from "../.."
+import type { Atom } from "../atom"
+import type { ReadonlySelector, Selector } from "../selector"
+import type { Timeline } from "../timeline"
+import type { Transaction } from "../transaction"
+import { target } from "../transaction"
 
 export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T> | null
 export function withdraw<T>(

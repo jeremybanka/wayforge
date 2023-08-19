@@ -3,11 +3,10 @@ import type {
 	ReadonlySelectorToken,
 	TransactionToken,
 	TransactionUpdate,
+	ƒn,
 } from "atom.io"
 import { useIO, useO } from "atom.io/react"
 import type { FC } from "react"
-
-import type { ƒn } from "~/packages/anvl/src/function"
 
 import {
 	findTransactionLogState,

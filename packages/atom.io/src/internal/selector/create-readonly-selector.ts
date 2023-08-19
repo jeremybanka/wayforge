@@ -1,15 +1,14 @@
 import { registerSelector } from "./register-selector"
 import type { ReadonlySelector } from "./selector-internal"
 import { selector__INTERNAL } from "./selector-internal"
-import { Subject } from ".."
 import type {
 	FamilyMetadata,
 	ReadonlySelectorOptions,
 	ReadonlySelectorToken,
-	Store,
 } from "../.."
 import { cacheValue } from "../caching"
-import type { StoreCore } from "../store"
+import type { Store, StoreCore } from "../store"
+import { Subject } from "../subject"
 
 export const createReadonlySelector = <T>(
 	options: ReadonlySelectorOptions<T>,

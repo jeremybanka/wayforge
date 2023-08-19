@@ -1,11 +1,9 @@
 import * as AtomIO from "atom.io"
 
-import type { ƒn } from "~/packages/anvl/src/function"
-
 import type { ServerConfig } from "."
 
 export const useReceiveTransaction = ({ socket, store }: ServerConfig) => {
-	return function receiveTransaction<ƒ extends ƒn>(
+	return function receiveTransaction<ƒ extends AtomIO.ƒn>(
 		tx: AtomIO.TransactionToken<ƒ>,
 	): () => void {
 		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) =>

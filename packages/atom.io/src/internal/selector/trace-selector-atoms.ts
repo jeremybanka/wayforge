@@ -1,5 +1,5 @@
 import { lookupSelectorSources } from "./lookup-selector-sources"
-import type { Store, AtomToken, ReadonlySelectorToken, StateToken } from "../.."
+import type { AtomToken, ReadonlySelectorToken, StateToken, Store } from "../.."
 
 export const traceSelectorAtoms = (
 	selectorKey: string,

@@ -1,14 +1,15 @@
 import type { Json } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { Store } from ".."
-import { Subject, selector__INTERNAL, target, deposit } from ".."
+import type { FamilyMetadata, ReadonlySelectorToken } from "../.."
 import type {
-	FamilyMetadata,
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyOptions,
-	ReadonlySelectorToken,
-} from "../.."
+} from "../../selector"
+import { selector__INTERNAL } from "../selector"
+import { deposit, type Store } from "../store"
+import { Subject } from "../subject"
+import { target } from "../transaction"
 
 export function readonlySelectorFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,

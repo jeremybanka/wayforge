@@ -1,4 +1,4 @@
-import type { Store } from ".."
+import type { Store } from "../store"
 
 export const abortTransaction = (store: Store): void => {
 	if (store.transactionStatus.phase === `idle`) {

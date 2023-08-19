@@ -1,6 +1,4 @@
-import type { ƒn } from "~/packages/anvl/src/function"
-
-import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken } from "."
+import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken, ƒn } from "."
 import type { Store } from "./internal"
 import { IMPLICIT, transaction__INTERNAL, withdraw } from "./internal"
 

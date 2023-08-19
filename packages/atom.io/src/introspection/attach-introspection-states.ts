@@ -6,9 +6,8 @@ import type {
 	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdate,
+	ƒn,
 } from "atom.io"
-
-import type { ƒn } from "~/packages/anvl/src/function"
 
 import { attachAtomIndex, type AtomTokenIndex } from "./attach-atom-index"
 import {

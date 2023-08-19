@@ -1,7 +1,9 @@
 import { setAtomState } from "./set-atom-state"
 import { setSelectorState } from "./set-selector-state"
-import type { Atom, Selector, Store } from ".."
-import { IMPLICIT } from ".."
+import type { Atom } from "../atom"
+import type { Selector } from "../selector"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
 
 export const setState__INTERNAL = <T>(
 	state: Atom<T> | Selector<T>,

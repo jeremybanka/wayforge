@@ -1,6 +1,6 @@
-import type { Store, ReadonlySelector, Selector } from ".."
-import type { StateUpdate } from "../.."
+import type { StateUpdate, Store } from "../.."
 import type { Atom } from "../atom"
+import type { ReadonlySelector, Selector } from "../selector"
 
 export const emitUpdate = <T>(
 	state: Atom<T> | ReadonlySelector<T> | Selector<T>,

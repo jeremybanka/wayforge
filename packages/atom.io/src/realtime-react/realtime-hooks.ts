@@ -1,6 +1,5 @@
 import type * as AtomIO from "atom.io"
 
-import type { ƒn } from "~/packages/anvl/src/function"
 import type { Json } from "~/packages/anvl/src/json"
 
 import { usePull } from "./use-pull"
@@ -19,7 +18,7 @@ export type RealtimeHooks = {
 		subKey: string,
 	) => void
 	usePush: <J extends Json.Serializable>(token: AtomIO.StateToken<J>) => void
-	useServerAction: <ƒ extends ƒn>(
+	useServerAction: <ƒ extends AtomIO.ƒn>(
 		token: AtomIO.TransactionToken<ƒ>,
 	) => (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
 }

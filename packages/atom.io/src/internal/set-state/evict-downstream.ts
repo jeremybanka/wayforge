@@ -1,5 +1,8 @@
-import type { Atom, Store } from ".."
-import { IMPLICIT, isDone, markDone, target } from ".."
+import type { Atom } from "../atom"
+import { isDone, markDone } from "../operation"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
+import { target } from "../transaction"
 
 export const evictDownStream = <T>(
 	state: Atom<T>,

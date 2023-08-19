@@ -1,7 +1,5 @@
-import type { ReadonlySelectorToken, TransactionToken } from "atom.io"
+import type { ReadonlySelectorToken, TransactionToken, ƒn } from "atom.io"
 import { __INTERNAL__ } from "atom.io"
-
-import type { ƒn } from "~/packages/anvl/src/function"
 
 export const attachTransactionIndex = (
 	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,

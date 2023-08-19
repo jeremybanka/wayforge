@@ -1,9 +1,5 @@
-import type { Store } from "../.."
-import type {
-	AtomToken,
-	ReadonlySelectorToken,
-	SelectorToken,
-} from "../../../dist"
+import type { Store } from "./store"
+import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "../.."
 import { target } from "../transaction"
 
 export function lookup(

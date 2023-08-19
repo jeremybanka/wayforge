@@ -1,7 +1,9 @@
 import { become } from "~/packages/anvl/src/function"
 
-import type { Selector, Store } from ".."
-import { IMPLICIT, getState__INTERNAL } from ".."
+import { getState__INTERNAL } from "../get-state-internal"
+import type { Selector } from "../selector"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
 
 export const setSelectorState = <T>(
 	selector: Selector<T>,

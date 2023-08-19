@@ -1,14 +1,10 @@
 import { createReadWriteSelector } from "./create-read-write-selector"
 import { createReadonlySelector } from "./create-readonly-selector"
-import { target, IMPLICIT } from ".."
-import type { Store, Subject } from ".."
-import type {
-	FamilyMetadata,
-	ReadonlySelectorOptions,
-	ReadonlySelectorToken,
-	SelectorOptions,
-	SelectorToken,
-} from "../.."
+import type { FamilyMetadata, ReadonlySelectorToken, SelectorToken } from "../.."
+import type { ReadonlySelectorOptions, SelectorOptions } from "../../selector"
+import { IMPLICIT, type Store } from "../store"
+import type { Subject } from "../subject"
+import { target } from "../transaction"
 
 export type Selector<T> = {
 	key: string

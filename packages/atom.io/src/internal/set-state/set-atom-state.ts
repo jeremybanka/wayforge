@@ -3,15 +3,13 @@ import { become } from "~/packages/anvl/src/function"
 import { emitUpdate } from "./emit-update"
 import { evictDownStream } from "./evict-downstream"
 import { stowUpdate } from "./stow-update"
-import type { Atom, Store } from ".."
-import {
-	IMPLICIT,
-	cacheValue,
-	getState__INTERNAL,
-	isAtomDefault,
-	markAtomAsNotDefault,
-	markDone,
-} from ".."
+import type { Atom } from "../atom"
+import { isAtomDefault, markAtomAsNotDefault } from "../atom"
+import { cacheValue } from "../caching"
+import { getState__INTERNAL } from "../get-state-internal"
+import { markDone } from "../operation"
+import { IMPLICIT } from "../store"
+import type { Store } from "../store"
 
 export const setAtomState = <T>(
 	atom: Atom<T>,

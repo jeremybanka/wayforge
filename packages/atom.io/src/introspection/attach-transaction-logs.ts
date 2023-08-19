@@ -1,7 +1,5 @@
-import type { ReadonlySelectorFamily, TransactionUpdate } from "atom.io"
+import type { ReadonlySelectorFamily, TransactionUpdate, ƒn } from "atom.io"
 import { __INTERNAL__ } from "atom.io"
-
-import type { ƒn } from "~/packages/anvl/src/function"
 
 export const attachTransactionLogs = (
 	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,

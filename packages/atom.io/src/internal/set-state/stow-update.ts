@@ -1,6 +1,6 @@
-import type { Store } from ".."
 import type { StateUpdate } from "../.."
 import type { Atom } from "../atom"
+import type { Store } from "../store"
 
 export const stowUpdate = <T>(
 	state: Atom<T>,

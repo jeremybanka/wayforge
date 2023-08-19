@@ -1,11 +1,11 @@
-import { IMPLICIT, withdraw } from ".."
 import type {
 	Timeline,
-	Store,
-	TimelineTransactionUpdate,
 	TimelineAtomUpdate,
-} from ".."
+	TimelineTransactionUpdate,
+} from "./timeline-internal"
 import type { AtomFamily, AtomToken, TimelineUpdate } from "../.."
+import type { Store } from "../store"
+import { IMPLICIT, withdraw } from "../store"
 
 export const addAtomToTimeline = (
 	atomToken: AtomToken<any>,

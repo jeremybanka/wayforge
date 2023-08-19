@@ -1,13 +1,14 @@
-import type { ƒn } from "~/packages/anvl/src/function"
-
-import type { Atom, ReadonlySelector, Selector, Transaction } from ".."
 import type {
+	ƒn,
 	AtomToken,
 	ReadonlySelectorToken,
 	SelectorToken,
 	StateToken,
 	TransactionToken,
 } from "../.."
+import type { Atom } from "../atom"
+import type { ReadonlySelector, Selector } from "../selector"
+import type { Transaction } from "../transaction"
 
 export function deposit<T>(state: Atom<T>): AtomToken<T>
 export function deposit<T>(state: Selector<T>): SelectorToken<T>

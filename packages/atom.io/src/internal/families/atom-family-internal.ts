@@ -1,8 +1,6 @@
 import type { Json } from "~/packages/anvl/src/json"
 import { stringifyJson } from "~/packages/anvl/src/json"
 
-import type { Store } from ".."
-import { Subject, atom__INTERNAL, withdraw, deposit, IMPLICIT } from ".."
 import type {
 	AtomFamily,
 	AtomFamilyOptions,
@@ -10,6 +8,9 @@ import type {
 	AtomToken,
 	FamilyMetadata,
 } from "../.."
+import { atom__INTERNAL } from "../atom"
+import { IMPLICIT, withdraw, type Store, deposit } from "../store"
+import { Subject } from "../subject"
 
 export function atomFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,

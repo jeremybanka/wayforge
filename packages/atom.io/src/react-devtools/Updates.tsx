@@ -1,7 +1,7 @@
-import type { ƒn } from "~/packages/anvl/src/function"
 import { discoverType } from "~/packages/anvl/src/refinement/refinery"
 
 import { prettyJson } from "."
+import type { ƒn } from ".."
 import type { KeyedStateUpdate } from "../subscribe"
 import type { TimelineUpdate } from "../timeline"
 import type { TransactionUpdate } from "../transaction"
