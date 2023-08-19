@@ -7,10 +7,19 @@ export function lookup(
 	store: Store,
 ): AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown> {
 	const core = target(store)
-	const type = core.atoms.has(key)
+	let type: string = core.atoms.has(key)
 		? `atom`
 		: core.selectors.has(key)
 		? `selector`
-		: `readonly_selector`
+		: core.readonlySelectors.has(key)
+		? `readonly_selector`
+		: ``
+	if (!type) {
+		const errorId = Math.random().toString(36)
+		type = `🚨 This state could not be found by lookup! Check the console for "${errorId}"`
+		store.config.logger?.error(
+			`${errorId}: Key "${key}" does not exist in the store.`,
+		)
+	}
 	return { key, type } as any
 }
