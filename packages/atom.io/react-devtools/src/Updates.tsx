@@ -2,12 +2,12 @@ import type {
 	KeyedStateUpdate,
 	TimelineUpdate,
 	TransactionUpdate,
+	ƒn,
 } from "atom.io"
 
 import { discoverType } from "~/packages/anvl/src/refinement/refinery"
 
 import { prettyJson } from "."
-import type { ƒn } from ".."
 
 const AtomUpdateFC: React.FC<{
 	serialNumber: number
