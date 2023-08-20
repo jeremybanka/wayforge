@@ -1,12 +1,14 @@
 import { defineConfig } from "tsup"
 
 export default defineConfig({
-	entry: [`../src/react/index.ts`],
+	entry: [`./src/index.ts`],
 	outDir: `./dist`,
 	dts: true,
 	format: [`esm`, `cjs`],
-	splitting: false,
+	splitting: true,
+	treeshake: true,
 	sourcemap: true,
+	minify: true,
 	clean: true,
 	jsxFactory: `React.createElement`,
 	external: [`atom.io`, `react`, `@emotion/react`],

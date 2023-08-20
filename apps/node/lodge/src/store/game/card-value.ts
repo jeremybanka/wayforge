@@ -1,9 +1,9 @@
 import { atom, atomFamily, selector, transaction } from "atom.io"
+import { selectJson } from "atom.io/json"
 
 import type { Identified } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Json } from "~/packages/anvl/src/json"
-import { selectJson } from "~/packages/atom.io/src/json"
 
 export const findCardValueState = atomFamily<Identified & Json.Object, string>({
 	key: `findCardValue`,

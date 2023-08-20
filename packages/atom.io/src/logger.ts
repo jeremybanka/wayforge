@@ -1,7 +1,7 @@
-import { doNothing } from "~/packages/anvl/src/function"
+import { IMPLICIT } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
 
-import type { Store } from "./internal/store"
-import { IMPLICIT } from "./internal/store"
+import { doNothing } from "~/packages/anvl/src/function"
 
 export type Logger = Pick<Console, `error` | `info` | `warn`>
 export const LOG_LEVELS: ReadonlyArray<keyof Logger> = [

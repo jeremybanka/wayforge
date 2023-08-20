@@ -25,6 +25,7 @@
 		"Selectables",
 		"svgr",
 		"testid",
+		"treeshake",
 		"tsup",
 		"unsub",
 		"wayforge",

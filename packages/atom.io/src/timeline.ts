@@ -1,11 +1,16 @@
-import type { AtomFamily, AtomToken } from "."
 import type {
 	TimelineAtomUpdate,
 	TimelineSelectorUpdate,
 	TimelineTransactionUpdate,
-} from "./internal"
-import { IMPLICIT } from "./internal"
-import { redo__INTERNAL, timeline__INTERNAL, undo__INTERNAL } from "./internal/"
+} from "atom.io/internal"
+import { IMPLICIT } from "atom.io/internal"
+import {
+	redo__INTERNAL,
+	timeline__INTERNAL,
+	undo__INTERNAL,
+} from "atom.io/internal/"
+
+import type { AtomFamily, AtomToken } from "."
 
 export type TimelineToken = {
 	key: string

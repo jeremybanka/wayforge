@@ -1,7 +1,6 @@
 import { css } from "@emotion/react"
+import { AtomIODevtools } from "atom.io/react-devtools"
 import type { FC } from "react"
-
-import { AtomIODevtools } from "~/packages/atom.io/src/react-devtools"
 
 import { DemoExplorer } from "./components/Demos"
 

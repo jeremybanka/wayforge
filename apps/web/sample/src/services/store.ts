@@ -1,7 +1,6 @@
-import { atom, selector, setLogLevel, transaction } from "~/packages/atom.io/src"
-import { useO, useIO, useI } from "~/packages/atom.io/src/react"
-import { composeExplorer } from "~/packages/atom.io/src/react-explorer/AtomIOExplorer"
-import { timeline } from "~/packages/atom.io/src/timeline"
+import { timeline, atom, selector, setLogLevel, transaction } from "atom.io"
+import { useO, useIO, useI } from "atom.io/react"
+import { composeExplorer } from "atom.io/react-explorer"
 
 export const { Explorer, useSetTitle } = composeExplorer({
 	key: `🤓`,

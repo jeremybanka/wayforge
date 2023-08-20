@@ -1,11 +1,11 @@
 import type { TransactionIO } from "atom.io"
 import { atom, atomFamily, selector, selectorFamily, transaction } from "atom.io"
+import { selectJson } from "atom.io/json"
 import { isNumber } from "fp-ts/number"
 import { nanoid } from "nanoid"
 
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
-import { selectJson } from "~/packages/atom.io/src/json"
 
 export const roomsIndex = atom<Set<string>>({
 	key: `roomsIndex`,

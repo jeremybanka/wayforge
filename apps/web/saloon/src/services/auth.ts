@@ -1,6 +1,5 @@
 import * as AtomIO from "atom.io"
-
-import { lazyLocalStorageEffect } from "~/packages/atom.io/src/web-effects"
+import { lazyLocalStorageEffect } from "atom.io/web-effects"
 
 export const secretState = AtomIO.atom<string>({
 	key: `secret`,

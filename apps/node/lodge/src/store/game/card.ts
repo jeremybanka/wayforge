@@ -1,9 +1,9 @@
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+import { selectJson } from "atom.io/json"
 
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
-import { isLiteral, isUnion, isWithin } from "~/packages/anvl/src/refinement"
-import { selectJson } from "~/packages/atom.io/src/json"
+import { isWithin } from "~/packages/anvl/src/refinement"
 import { Perspective } from "~/packages/occlusion/src"
 
 export const OWNERS_OF_CARDS = new Join({

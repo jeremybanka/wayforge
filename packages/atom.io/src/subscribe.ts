@@ -1,6 +1,8 @@
-import type { ƒn } from "~/packages/anvl/src/function"
+import type { Store } from "atom.io/internal"
+import { IMPLICIT, subscribeToRootAtoms, withdraw } from "atom.io/internal"
 
 import type {
+	ƒn,
 	ReadonlySelectorToken,
 	StateToken,
 	TimelineToken,
@@ -8,8 +10,6 @@ import type {
 	TransactionToken,
 	TransactionUpdate,
 } from "."
-import type { Store } from "./internal"
-import { IMPLICIT, subscribeToRootAtoms, withdraw } from "./internal"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
 export type KeyedStateUpdate<T> = StateUpdate<T> & { key: string }

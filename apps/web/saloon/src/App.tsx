@@ -1,8 +1,8 @@
+import { useIO, useO } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import type { FC } from "react"
 import { Link, Route, Routes, Outlet } from "react-router-dom"
 
-import { useIO, useO } from "~/packages/atom.io/src/react"
 import { Radial } from "~/packages/hamr/src/react-radial/Radial"
 
 import scss from "./App.module.scss"

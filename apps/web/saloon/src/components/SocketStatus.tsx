@@ -1,8 +1,7 @@
 import { useO } from "atom.io/react"
+import { myIdState } from "atom.io/realtime-react"
 import type { FC } from "react"
 import { useState } from "react"
-
-import { myIdState } from "~/packages/atom.io/src/realtime-react"
 
 import scss from "./SocketStatus.module.scss"
 import { myRoomState } from "./views/Game/store/my-room"

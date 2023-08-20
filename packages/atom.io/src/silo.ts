@@ -1,7 +1,4 @@
-import type { redo, timeline, undo } from "."
-import { getState, setState, subscribe } from "."
-import type { atom, atomFamily } from "./atom"
-import type { Store } from "./internal"
+import type { Store } from "atom.io/internal"
 import {
 	atomFamily__INTERNAL,
 	atom__INTERNAL,
@@ -12,7 +9,11 @@ import {
 	timeline__INTERNAL,
 	transaction__INTERNAL,
 	undo__INTERNAL,
-} from "./internal"
+} from "atom.io/internal"
+
+import type { redo, timeline, undo } from "."
+import { getState, setState, subscribe } from "."
+import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
 
