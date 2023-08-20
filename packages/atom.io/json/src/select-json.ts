@@ -1,5 +1,6 @@
 import * as AtomIO from "atom.io"
-import type { Json, JsonInterface } from "atom.io/json"
+
+import type { Json, JsonInterface } from "."
 
 export const selectJson = <T, J extends Json.Serializable>(
 	atom: AtomIO.AtomToken<T>,

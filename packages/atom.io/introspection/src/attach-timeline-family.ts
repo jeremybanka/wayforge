@@ -1,6 +1,7 @@
 import type { ReadonlySelectorFamily, Store } from "atom.io"
 import { __INTERNAL__ } from "atom.io"
-import { type Timeline, Subject } from "atom.io/internal"
+import type { Timeline } from "atom.io/internal"
+import { Subject } from "atom.io/internal"
 
 export const attachTimelineFamily = (
 	store: Store = __INTERNAL__.IMPLICIT.STORE,

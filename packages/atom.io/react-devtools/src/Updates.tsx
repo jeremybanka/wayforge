@@ -4,6 +4,7 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
+import * as React from "react"
 
 import { discoverType } from "~/packages/anvl/src/refinement/refinery"
 

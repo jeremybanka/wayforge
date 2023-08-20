@@ -10,10 +10,8 @@ import type {
 import type { Timeline } from "atom.io/internal"
 
 import { attachAtomIndex, type AtomTokenIndex } from "./attach-atom-index"
-import {
-	attachSelectorIndex,
-	type SelectorTokenIndex,
-} from "./attach-selector-index"
+import type { SelectorTokenIndex } from "./attach-selector-index"
+import { attachSelectorIndex } from "./attach-selector-index"
 import { attachTimelineFamily } from "./attach-timeline-family"
 import { attachTimelineIndex } from "./attach-timeline-index"
 import { attachTransactionIndex } from "./attach-transaction-index"
