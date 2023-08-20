@@ -1,9 +1,10 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"jsx": "react-jsxdev",
+		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"noEmit": true
 	},
-	"include": ["./src/**/*", "./test/**/*", "../anvl/reactivity/subject.ts"]
+	"include": ["./**/src/**/*", "__test__/**/*"]
 }

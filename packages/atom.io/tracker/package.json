@@ -1,5 +1,5 @@
 {
-	"name": "atom.io-mutable-cache",
+	"name": "atom.io-tracker",
 	"private": true,
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

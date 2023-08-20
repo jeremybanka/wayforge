@@ -1,5 +1,3 @@
-import { capitalize } from "~/packages/anvl/src/string/capitalize"
-
 import {
 	IMPLICIT,
 	closeOperation,
@@ -9,9 +7,14 @@ import {
 	isAtomDefault,
 	isSelectorDefault,
 	withdraw,
-} from "./internal"
-import * as __INTERNAL__ from "./internal"
-import type { Store } from "./internal/store"
+} from "atom.io/internal"
+import * as __INTERNAL__ from "atom.io/internal"
+import type { Store } from "atom.io/internal"
+
+import type { ƒn } from "~/packages/anvl/src/function"
+import { capitalize } from "~/packages/anvl/src/string/capitalize"
+
+export { ƒn }
 
 export * from "./atom"
 export * from "./logger"
@@ -21,8 +24,8 @@ export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
 export { __INTERNAL__ }
-export type { Store } from "./internal/store"
-export type { Json } from "~/packages/anvl/src/json"
+export type { Store } from "atom.io/internal"
+export type { Json } from "atom.io/json"
 
 export type AtomToken<_> = {
 	key: string

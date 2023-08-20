@@ -1,6 +1,7 @@
+import { atom, atomFamily, selector } from "atom.io"
+import { selectJson } from "atom.io/json"
+
 import { Join } from "~/packages/anvl/src/join"
-import { atom, atomFamily, selector } from "~/packages/atom.io/src"
-import { selectJson } from "~/packages/atom.io/src/json"
 
 export type CardGroup = {
 	type: `deck` | `hand` | `pile` | null
