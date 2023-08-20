@@ -1,23 +1,22 @@
 import { vitest } from "vitest"
 
 import type { Transceiver, TransceiverMode } from "~/packages/anvl/reactivity"
+import type { JunctionConfig } from "~/packages/rel8/junction/src"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import * as UTIL from "./__util__"
 import { IMPLICIT, Subject } from "../internal/src"
+import type { AtomFamily, AtomToken, Json } from "../src"
 import {
 	__INTERNAL__,
 	atom,
 	atomFamily,
 	getState,
 	redo,
-	runTransaction,
-	selectorFamily,
 	setLogLevel,
 	setState,
 	subscribe,
 	timeline,
-	transaction,
 	undo,
 } from "../src"
 import { tracker } from "../tracker/src"
@@ -302,71 +301,69 @@ describe(`hyperefficiency patterns`, () => {
 		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
 	})
 
-	test.skip(`use the atomic store instead of a junction`, () => {
-		const ruleState = atom<`1:1` | `1:n` | `n:n`>({
-			key: `rule`,
-			default: `1:1`,
+	test(`use the atomic store instead of a junction`, () => {
+		const createRelationFamily = (key: string) => {
+			const family = atomFamily<Set<string>, string>({
+				key,
+				default: new Set(),
+			})
+			return family
+		}
+		const createContentsFamily = <Content extends Json.Object>(
+			key: string,
+			base: Content,
+		) => {
+			const family = atomFamily<Content, string>({
+				key,
+				default: base,
+			})
+			return family
+		}
+		const cardinalityFamily = atomFamily<`1:1` | `1:n` | `n:1` | `n:n`, string>({
+			key: `cardinality`,
+			default: `n:n`,
 		})
-		const findRelationState__INTERNAL = atomFamily<Set<string> | null, string>({
-			key: `relations`,
-			default: null,
-		})
-		const findRelationState = selectorFamily<Set<string> | null, string>({
-			key: `findRelation`,
-			get: (key) => ({ get }) => get(findRelationState__INTERNAL(key)),
-			set: (key) => ({ get, set }, nextRelations) => {
-				const previousRelations = get(findRelationState__INTERNAL(key))
-				console.log(`START`)
-				console.log({ previousRelations, nextRelations })
-				if (previousRelations !== null) {
-					for (const previousRelation of previousRelations) {
-						if (!nextRelations?.has(previousRelation)) {
-							console.log(`deleting`, previousRelation)
-							const relationsOfFormerRelationState =
-								findRelationState__INTERNAL(previousRelation)
-							set(relationsOfFormerRelationState, (current) => {
-								current?.delete(key)
-								return current?.size === 0 ? null : current
-							})
-						}
-					}
-				}
-				if (nextRelations !== null) {
-					for (const nextRelation of nextRelations) {
-						if (!previousRelations?.has(nextRelation)) {
-							console.log(`adding`, nextRelation, `to`, key)
-							const relationsOfNextRelationState =
-								findRelationState__INTERNAL(nextRelation)
-							set(relationsOfNextRelationState, (current) => {
-								current?.add(key)
-								return current ?? new Set([key])
-							})
-						}
-					}
-				}
-				set(findRelationState__INTERNAL(key), nextRelations)
-			},
-		})
-		const setRelationTX = transaction<(a: string, b: string) => void>({
-			key: `setRelation`,
-			do: ({ set }, a, b) => {
-				set(findRelationState(a), (current) => current?.add(b) ?? new Set([b]))
-			},
-		})
-		const deleteRelationTX = transaction<(a: string, b?: string) => void>({
-			key: `deleteRelation`,
-			do: () => {},
+		const betweenFamily = atomFamily<[string, string], string>({
+			key: `between`,
+			default: [`a`, `b`],
 		})
 
-		subscribe(findRelationState(`a`), UTIL.stdout)
-		expect(getState(findRelationState(`a`))).toBeNull()
-		expect(getState(findRelationState(`1`))).toBeNull()
-		runTransaction(setRelationTX)(`a`, `1`)
-		expect(getState(findRelationState(`a`))).toEqual(new Set([`1`]))
-		expect(getState(findRelationState(`1`))).toEqual(new Set([`a`]))
-		runTransaction(setRelationTX)(`a`, `2`)
-		expect(getState(findRelationState(`a`))).toEqual(new Set([`1`, `2`]))
-		expect(getState(findRelationState(`1`))).toEqual(new Set([`a`]))
-		expect(getState(findRelationState(`2`))).toEqual(new Set([`a`]))
+		function join<
+			ASide extends string,
+			BSide extends string,
+			Content extends Json.Object | null,
+		>({
+			key,
+			between,
+			cardinality,
+			default: defaultContent,
+		}: JunctionConfig<ASide, BSide, Content> & {
+			default: Content
+			key: string
+		}): {
+			betweenState: AtomToken<[string, string]>
+			cardinalityState: AtomToken<`1:1` | `1:n` | `n:1` | `n:n`>
+			findRelationsState: AtomFamily<Set<string>, string>
+			findContentsState: Content extends null ? null : AtomFamily<Content>
+		} {
+			const betweenState = betweenFamily(key)
+			const cardinalityState = cardinalityFamily(key)
+			const findRelationsState = createRelationFamily(`${key}:findRelation`)
+			const findContentsState = (
+				defaultContent
+					? createContentsFamily(`${key}:findContents`, defaultContent)
+					: null
+			) as Content extends null ? null : AtomFamily<Content>
+
+			setState(betweenState, between)
+			setState(cardinalityState, cardinality)
+
+			return {
+				betweenState,
+				cardinalityState,
+				findRelationsState,
+				findContentsState,
+			}
+		}
 	})
 })
