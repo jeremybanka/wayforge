@@ -38,7 +38,7 @@
 		"test:once": "vitest run"
 	},
 	"devDependencies": {
-		"concurrently": "8.2.0",
+		"concurrently": "8.2.1",
 		"eslint": "8.47.0",
 		"tsup": "7.2.0",
 		"typescript": "5.1.6",

@@ -133,7 +133,7 @@
 		"@types/mock-fs": "4.13.1",
 		"@types/react": "18.2.20",
 		"@types/tmp": "0.2.3",
-		"concurrently": "8.2.0",
+		"concurrently": "8.2.1",
 		"eslint": "8.47.0",
 		"framer-motion": "10.16.1",
 		"happy-dom": "10.10.4",
