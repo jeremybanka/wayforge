@@ -1,25 +1,26 @@
 import { vitest } from "vitest"
 
 import type { Transceiver, TransceiverMode } from "~/packages/anvl/reactivity"
-import type { JunctionConfig } from "~/packages/rel8/junction/src"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import * as UTIL from "./__util__"
 import { IMPLICIT, Subject } from "../internal/src"
-import type { AtomFamily, AtomToken, Json } from "../src"
+import type { Json } from "../src"
 import {
 	__INTERNAL__,
 	atom,
 	atomFamily,
 	getState,
 	redo,
+	runTransaction,
 	setLogLevel,
 	setState,
 	subscribe,
 	timeline,
+	transaction,
 	undo,
 } from "../src"
-import { tracker } from "../tracker/src"
+import { TransceiverSet, tracker, trackerFamily } from "../tracker/src"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -153,39 +154,6 @@ describe(`hyperefficiency patterns`, () => {
 			}
 			return this
 		}
-		public delete(a?: string, b?: string): this
-		public delete(
-			relation:
-				| Record<ASide | BSide, string>
-				| Record<ASide, string>
-				| Record<BSide, string>,
-			b?: undefined,
-		): this
-		public delete(
-			a?:
-				| Record<ASide | BSide, string>
-				| Record<ASide, string>
-				| Record<BSide, string>
-				| string,
-			b?: string,
-		): this {
-			// @ts-expect-error we deduce that this.b may index a
-			b = typeof b === `string` ? b : (a[this.b] as string | undefined)
-			// @ts-expect-error we deduce that this.a may index a
-			const a0 = typeof a === `string` ? a : (a[this.a] as string | undefined)
-			if (a0 && b) {
-				const setA = this.relations.get(a0)
-				if (!setA?.has(b)) {
-					return this
-				}
-			}
-			super.delete(a0, b)
-			if (this.mode === `record`) {
-				this.subject.next(`del:${a}:${b}`)
-			}
-
-			return this
-		}
 
 		public do(update: JunctionUpdate): this {
 			this.mode = `playback`
@@ -301,13 +269,14 @@ describe(`hyperefficiency patterns`, () => {
 		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
 	})
 
-	test(`use the atomic store instead of a junction`, () => {
+	test.only(`use the atomic store instead of a junction`, () => {
 		const createRelationFamily = (key: string) => {
-			const family = atomFamily<Set<string>, string>({
+			const family = atomFamily<TransceiverSet<string>, string>({
 				key,
-				default: new Set(),
+				default: new TransceiverSet(),
 			})
-			return family
+			const findTracker = trackerFamily(family)
+			return [family, findTracker] as const
 		}
 		const createContentsFamily = <Content extends Json.Object>(
 			key: string,
@@ -319,7 +288,7 @@ describe(`hyperefficiency patterns`, () => {
 			})
 			return family
 		}
-		const cardinalityFamily = atomFamily<`1:1` | `1:n` | `n:1` | `n:n`, string>({
+		const cardinalityFamily = atomFamily<`1:1` | `1:n` | `n:n`, string>({
 			key: `cardinality`,
 			default: `n:n`,
 		})
@@ -328,42 +297,84 @@ describe(`hyperefficiency patterns`, () => {
 			default: [`a`, `b`],
 		})
 
-		function join<
-			ASide extends string,
-			BSide extends string,
-			Content extends Json.Object | null,
-		>({
-			key,
-			between,
-			cardinality,
-			default: defaultContent,
-		}: JunctionConfig<ASide, BSide, Content> & {
-			default: Content
-			key: string
-		}): {
-			betweenState: AtomToken<[string, string]>
-			cardinalityState: AtomToken<`1:1` | `1:n` | `n:1` | `n:n`>
-			findRelationsState: AtomFamily<Set<string>, string>
-			findContentsState: Content extends null ? null : AtomFamily<Content>
-		} {
+		const junction = (
+			key: string,
+			defaults: {
+				between: [string, string]
+				cardinality: `1:1` | `1:n` | `n:n`
+			},
+		) => {
 			const betweenState = betweenFamily(key)
 			const cardinalityState = cardinalityFamily(key)
-			const findRelationsState = createRelationFamily(`${key}:findRelation`)
-			const findContentsState = (
-				defaultContent
-					? createContentsFamily(`${key}:findContents`, defaultContent)
-					: null
-			) as Content extends null ? null : AtomFamily<Content>
+			const [findRelationsState, findRelationTrackerState] =
+				createRelationFamily(`${key}:relations`)
+			// const findContentsState = createContentsFamily(`${key}:contents`)
 
-			setState(betweenState, between)
-			setState(cardinalityState, cardinality)
+			const addRelationTX = transaction<(a: string, b: string) => void>({
+				key: `addRelation`,
+				do: ({ set }, a, b) => {
+					const relationTrackerA = findRelationTrackerState(a)
+					const relationTrackerB = findRelationTrackerState(b)
+					set(relationTrackerA, `add:${b}`)
+					set(relationTrackerB, `add:${a}`)
+				},
+			})
+			const deleteRelationTX = transaction<(a: string, b: string) => void>({
+				key: `deleteRelation`,
+				do: ({ set }, a, b) => {
+					const relationTrackerA = findRelationTrackerState(a)
+					const relationTrackerB = findRelationTrackerState(b)
+					set(relationTrackerA, `del:${b}`)
+					set(relationTrackerB, `del:${a}`)
+				},
+			})
+			const getRelatedKeysTX = transaction<(a: string) => Set<string>>({
+				key: `getRelatedKeys`,
+				do: ({ get }, a) => {
+					const relations = get(findRelationsState(a))
+					return relations
+				},
+			})
+
+			setState(betweenState, defaults.between)
+			setState(cardinalityState, defaults.cardinality)
+
+			const j = new Junction(
+				{
+					between: getState(betweenState),
+					cardinality: getState(cardinalityState),
+				},
+				{
+					externalStore: {
+						addRelation: runTransaction(addRelationTX),
+						deleteRelation: runTransaction(deleteRelationTX),
+						getRelatedKeys: runTransaction(getRelatedKeysTX),
+					},
+				},
+			)
 
 			return {
-				betweenState,
-				cardinalityState,
+				j,
+				// findContentsState,
 				findRelationsState,
-				findContentsState,
+				findRelationTrackerState,
+				addRelationTX,
+				deleteRelationTX,
+				getRelatedKeysTX,
 			}
 		}
+		const myJunction = junction(`myJunction`, {
+			between: [`a`, `b`],
+			cardinality: `n:n`,
+		})
+
+		const eventTL = timeline({
+			key: `eventTL`,
+			atoms: [myJunction.findRelationTrackerState],
+		})
+
+		subscribe(myJunction.findRelationsState(`a`), UTIL.stdout)
+		expect(getState(myJunction.findRelationsState(`a`))).toEqual(new Set())
+		expect(getState(myJunction.findRelationsState(`b`))).toEqual(new Set())
 	})
 })

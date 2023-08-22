@@ -1,5 +1,6 @@
 import * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
+import { parseJson } from "atom.io/json"
 
 import { observeCore, updateCore } from "./tracker-effects"
 import type { Transceiver } from "./tracker-transceiver"
@@ -27,7 +28,10 @@ export const trackerFamily = <
 		],
 	})
 	coreFamily.subject.subscribe((atomToken) => {
-		AtomIO.getState(trackerFamily(atomToken.key as FamilyMemberKey))
+		const signalKey = `${trackerFamilyKey}(${atomToken.family?.subKey ?? ``})`
+		if (!store.atoms.has(signalKey)) {
+			trackerFamily(parseJson(atomToken.family?.subKey ?? ``) as FamilyMemberKey)
+		}
 	})
 
 	return trackerFamily
