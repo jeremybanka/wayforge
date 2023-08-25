@@ -58,5 +58,6 @@
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "rome.rome"
 	},
-	"references.preferredLocation": "peek"
+	"references.preferredLocation": "peek",
+	"typescript.tsdk": "node_modules/typescript/lib"
 }
