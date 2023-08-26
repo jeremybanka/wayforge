@@ -15,9 +15,12 @@ export const attachTransactionIndex = (
 				}),
 			effects: [
 				({ setSelf }) => {
-					store.subject.transactionCreation.subscribe((transactionToken) => {
-						setSelf((state) => [...state, transactionToken])
-					})
+					store.subject.transactionCreation.subscribe(
+						`introspection`,
+						(transactionToken) => {
+							setSelf((state) => [...state, transactionToken])
+						},
+					)
 				},
 			],
 		},

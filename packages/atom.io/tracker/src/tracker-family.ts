@@ -27,7 +27,7 @@ export const trackerFamily = <
 			updateCore(trackerFamilyKey, coreFamily(key), store),
 		],
 	})
-	coreFamily.subject.subscribe((atomToken) => {
+	coreFamily.subject.subscribe(`tracker`, (atomToken) => {
 		const signalKey = `${trackerFamilyKey}(${atomToken.family?.subKey ?? ``})`
 		if (!store.atoms.has(signalKey)) {
 			trackerFamily(parseJson(atomToken.family?.subKey ?? ``) as FamilyMemberKey)

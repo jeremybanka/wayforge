@@ -1,4 +1,4 @@
-import type { AtomFamily, AtomToken, TimelineUpdate } from "atom.io"
+import type { AtomToken, TimelineUpdate } from "atom.io"
 
 import type {
 	Timeline,
@@ -7,10 +7,10 @@ import type {
 } from "./timeline-internal"
 import type { Store } from "../store"
 import { IMPLICIT, withdraw } from "../store"
+import { target } from "../transaction"
 
 export const addAtomToTimeline = (
 	atomToken: AtomToken<any>,
-	atoms: (AtomFamily<any> | AtomToken<any>)[],
 	tl: Timeline,
 	store: Store = IMPLICIT.STORE,
 ): void => {
@@ -20,7 +20,7 @@ export const addAtomToTimeline = (
 			`Cannot subscribe to atom "${atomToken.key}" because it has not been initialized in store "${store.config.name}"`,
 		)
 	}
-	atom.subject.subscribe((update) => {
+	atom.subject.subscribe(`timeline`, (update) => {
 		const currentSelectorKey =
 			store.operation.open && store.operation.token.type === `selector`
 				? store.operation.token.key
@@ -79,29 +79,46 @@ export const addAtomToTimeline = (
 						)
 					}
 					tl.transactionKey = currentTransactionKey
-					const subscription = currentTransaction.subject.subscribe((update) => {
-						subscription.unsubscribe()
-						if (tl.timeTraveling === null && currentTransactionTime) {
-							if (tl.at !== tl.history.length) {
-								tl.history.splice(tl.at)
+					const unsubscribe = currentTransaction.subject.subscribe(
+						`timeline:${tl.key}`,
+						(update) => {
+							unsubscribe()
+							if (tl.timeTraveling === null && currentTransactionTime) {
+								if (tl.at !== tl.history.length) {
+									tl.history.splice(tl.at)
+								}
+
+								const atomUpdates = update.atomUpdates.filter((atomUpdate) => {
+									const core = target(store)
+									const atomOrFamilyKeys = core.timelineAtoms.getRelatedIds(
+										tl.key,
+									)
+									console.log(`❗ atomOrFamilyKeys`, atomOrFamilyKeys)
+
+									return atomOrFamilyKeys.some(
+										(key) =>
+											key === atomUpdate.key || key === atomUpdate.family?.key,
+									)
+								})
+
+								console.log(`❗ atomUpdates original`, update.atomUpdates)
+								console.log(`❗ atomUpdates filtered`, atomUpdates)
+								const timelineTransactionUpdate: TimelineTransactionUpdate = {
+									type: `transaction_update`,
+									timestamp: currentTransactionTime,
+									...update,
+									atomUpdates,
+								}
+								tl.history.push(timelineTransactionUpdate)
+								tl.at = tl.history.length
+								tl.subject.next(timelineTransactionUpdate)
 							}
-							const timelineTransactionUpdate: TimelineTransactionUpdate = {
-								type: `transaction_update`,
-								timestamp: currentTransactionTime,
-								...update,
-								atomUpdates: update.atomUpdates.filter((atomUpdate) =>
-									atoms.some((atom) => atom.key === atomUpdate.key),
-								),
-							}
-							tl.history.push(timelineTransactionUpdate)
-							tl.at = tl.history.length
-							tl.subject.next(timelineTransactionUpdate)
-						}
-						tl.transactionKey = null
-						store.config.logger?.info(
-							`⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`,
-						)
-					})
+							tl.transactionKey = null
+							store.config.logger?.info(
+								`⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`,
+							)
+						},
+					)
 				}
 			} else if (currentSelectorKey && currentSelectorTime) {
 				let latestUpdate: TimelineUpdate | undefined = tl.history.at(-1)
@@ -156,6 +173,9 @@ export const addAtomToTimeline = (
 					key: atom.key,
 					oldValue: update.oldValue,
 					newValue: update.newValue,
+				}
+				if (atom.family) {
+					atomUpdate.family = atom.family
 				}
 				tl.history.push(atomUpdate)
 				tl.subject.next(atomUpdate)

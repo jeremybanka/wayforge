@@ -1,13 +1,16 @@
 import { vitest } from "vitest"
 
 import * as UTIL from "./__util__"
+import { IMPLICIT } from "../internal/src"
 import {
 	__INTERNAL__,
 	atom,
 	atomFamily,
 	getState,
+	runTransaction,
 	setLogLevel,
 	setState,
+	transaction,
 } from "../src"
 import { TransceiverSet, tracker, trackerFamily } from "../tracker/src"
 
@@ -26,7 +29,7 @@ beforeEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = atom<TransceiverSet<number>>({
+		const mutableSetState = atom<TransceiverSet<string>>({
 			key: `mutableSetState`,
 			default: new TransceiverSet(),
 		})
@@ -34,24 +37,65 @@ describe(`tracker`, () => {
 
 		expect(getState(mutableSetState)).toEqual(new TransceiverSet())
 		expect(getState(trackerState)).toEqual(null)
-		setState(trackerState, `add:5`)
-		expect(getState(trackerState)).toEqual(`add:5`)
-		expect(getState(mutableSetState)).toEqual(new TransceiverSet([5]))
-		setState(trackerState, `add:6`)
-		expect(getState(trackerState)).toEqual(`add:6`)
-		expect(getState(mutableSetState)).toEqual(new TransceiverSet([5, 6]))
+		setState(trackerState, `add:x`)
+		expect(getState(trackerState)).toEqual(`add:x`)
+		expect(getState(mutableSetState)).toEqual(new TransceiverSet([`x`]))
+		setState(trackerState, `add:y`)
+		expect(getState(trackerState)).toEqual(`add:y`)
+		expect(getState(mutableSetState)).toEqual(new TransceiverSet([`x`, `y`]))
+	})
+
+	test(`updates its core in a transaction`, () => {
+		const mutableSetState = atom<TransceiverSet<string>>({
+			key: `mutableSetState`,
+			default: new TransceiverSet(),
+		})
+		const trackerState = tracker(mutableSetState)
+		const updateTrackerTX = transaction({
+			key: `updateTrackerTX`,
+			do: ({ set }) => {
+				set(trackerState, `add:x`)
+				set(trackerState, `add:y`)
+			},
+		})
+
+		expect(getState(mutableSetState)).toEqual(new TransceiverSet())
+		expect(getState(trackerState)).toEqual(null)
+		runTransaction(updateTrackerTX)()
+		expect(getState(mutableSetState)).toEqual(new TransceiverSet([`x`, `y`]))
 	})
 })
 
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
-		const findSetState = atomFamily<TransceiverSet<number>, string>({
+		const findSetState = atomFamily<TransceiverSet<string>, string>({
 			key: `findSetState`,
-			default: new TransceiverSet(),
+			default: () => new TransceiverSet(),
 		})
 		const findTrackerState = trackerFamily(findSetState)
 
 		expect(getState(findSetState(`a`))).toEqual(new TransceiverSet())
 		expect(getState(findTrackerState(`a`))).toEqual(null)
+	})
+	test(`updates the core of a new family member in a transaction`, () => {
+		const findSetState = atomFamily<TransceiverSet<string>, string>({
+			key: `findSetState`,
+			default: () => new TransceiverSet(),
+		})
+		const findTrackerState = trackerFamily(findSetState)
+		const updateTrackerTX = transaction<(key: string) => void>({
+			key: `updateTrackerTX`,
+			do: ({ set }, key) => {
+				const trackerState = findTrackerState(key)
+				set(trackerState, `add:x`)
+			},
+		})
+
+		expect(getState(findSetState(`a`))).toEqual(new TransceiverSet())
+		expect(getState(findTrackerState(`a`))).toEqual(null)
+		runTransaction(updateTrackerTX)(`a`)
+
+		expect(getState(findSetState(`a`))).toEqual(new TransceiverSet([`x`]))
+		expect(getState(findSetState(`b`))).toEqual(new TransceiverSet())
 	})
 })

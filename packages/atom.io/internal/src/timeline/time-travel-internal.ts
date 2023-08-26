@@ -66,7 +66,7 @@ export const undo__INTERNAL = (
 		return
 	}
 	timelineData.timeTraveling = `into_past`
-
+	console.log(`timelineData`, timelineData)
 	--timelineData.at
 	const update = timelineData.history[timelineData.at]
 	switch (update.type) {

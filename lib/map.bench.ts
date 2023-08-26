@@ -2,12 +2,12 @@ import HAMT from "hamt_plus"
 import * as v from "vitest"
 
 v.describe(`nest a thousand members`, () => {
-	let obj = {}
+	const obj = {}
 	const map = new Map()
 	let hamt = HAMT.make()
 	v.bench(`create: object`, () => {
 		for (let i = 0; i < 1000; i++) {
-			obj = { ...obj, [i]: i }
+			obj[i] = {}
 		}
 	})
 	v.bench(`create: Map`, () => {

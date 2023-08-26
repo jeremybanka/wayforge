@@ -1,4 +1,5 @@
 import type {
+	FamilyMetadata,
 	StateUpdate,
 	TimelineOptions,
 	TimelineToken,
@@ -17,6 +18,7 @@ export type TimelineAtomUpdate = StateUpdate<unknown> & {
 	key: string
 	type: `atom_update`
 	timestamp: number
+	family?: FamilyMetadata
 }
 export type TimelineSelectorUpdate = {
 	key: string
@@ -31,6 +33,7 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 }
 
 export type Timeline = {
+	type: `timeline`
 	key: string
 	at: number
 	timeTraveling: `into_future` | `into_past` | null
@@ -53,6 +56,7 @@ export function timeline__INTERNAL(
 	data: Timeline | null = null,
 ): TimelineToken {
 	const tl: Timeline = {
+		type: `timeline`,
 		key: options.key,
 		at: 0,
 		timeTraveling: null,
@@ -75,9 +79,11 @@ export function timeline__INTERNAL(
 		}
 		if (tokenOrFamily.type === `atom_family`) {
 			const family = tokenOrFamily
-			family.subject.subscribe((token) =>
-				addAtomToTimeline(token, options.atoms, tl, store),
-			)
+			family.subject.subscribe(`timeline:${options.key}`, (token) => {
+				if (!core.atoms.has(token.key)) {
+					addAtomToTimeline(token, tl, store)
+				}
+			})
 		} else {
 			const token = tokenOrFamily
 			if (`family` in token && token.family) {
@@ -91,7 +97,7 @@ export function timeline__INTERNAL(
 					continue
 				}
 			}
-			addAtomToTimeline(token, options.atoms, tl, store)
+			addAtomToTimeline(token, tl, store)
 		}
 		core.timelineAtoms = core.timelineAtoms.set({
 			atomKey: tokenOrFamily.key,

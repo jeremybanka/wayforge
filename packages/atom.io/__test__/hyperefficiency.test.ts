@@ -5,7 +5,7 @@ import { Junction } from "~/packages/rel8/junction/src"
 
 import * as UTIL from "./__util__"
 import { IMPLICIT, Subject } from "../internal/src"
-import type { Json } from "../src"
+import type { AtomFamily, Json } from "../src"
 import {
 	__INTERNAL__,
 	atom,
@@ -23,7 +23,7 @@ import {
 import { TransceiverSet, tracker, trackerFamily } from "../tracker/src"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
@@ -50,8 +50,9 @@ describe(`hyperefficiency patterns`, () => {
 			effects: [
 				({ onSet }) => {
 					onSet(({ newValue }) => {
-						const { unsubscribe } =
-							IMPLICIT.STORE.subject.operationStatus.subscribe(() => {
+						const unsubscribe = IMPLICIT.STORE.subject.operationStatus.subscribe(
+							`inductor`,
+							() => {
 								unsubscribe()
 								setState(core, (map) => {
 									if (newValue === null) {
@@ -95,7 +96,8 @@ describe(`hyperefficiency patterns`, () => {
 									}
 									return map
 								})
-							})
+							},
+						)
 					})
 				},
 			],
@@ -185,8 +187,11 @@ describe(`hyperefficiency patterns`, () => {
 			return this
 		}
 
-		public observe(fn: (update: JunctionUpdate) => void): () => void {
-			return this.subject.subscribe(fn).unsubscribe
+		public subscribe(
+			key: string,
+			fn: (update: JunctionUpdate) => void,
+		): () => void {
+			return this.subject.subscribe(key, fn)
 		}
 	}
 
@@ -196,7 +201,7 @@ describe(`hyperefficiency patterns`, () => {
 			cardinality: `n:n`,
 		})
 
-		myJunction.observe(UTIL.stdout)
+		myJunction.subscribe(`TEST`, UTIL.stdout)
 
 		expect(myJunction.getRelatedKeys(`a`)).toBeUndefined()
 		expect(myJunction.getRelatedKeys(`1`)).toBeUndefined()
@@ -207,17 +212,13 @@ describe(`hyperefficiency patterns`, () => {
 		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`, `2`]))
 		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
 		expect(myJunction.getRelatedKeys(`2`)).toEqual(new Set([`a`]))
-		myJunction.delete(`a`, `2`)
-		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`]))
-		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
-		expect(myJunction.getRelatedKeys(`2`)).toBeUndefined()
-		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
+
+		expect(UTIL.stdout).toHaveBeenCalledTimes(2)
 
 		myJunction.do(`set:a:1`)
-		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`]))
+		expect(myJunction.getRelatedKeys(`a`)).toEqual(new Set([`1`, `2`]))
 		expect(myJunction.getRelatedKeys(`1`)).toEqual(new Set([`a`]))
-		expect(myJunction.getRelatedKeys(`2`)).toBeUndefined()
-		expect(UTIL.stdout).toHaveBeenCalledTimes(3)
+		expect(UTIL.stdout).toHaveBeenCalledTimes(2)
 		console.log(myJunction)
 	})
 
@@ -269,11 +270,11 @@ describe(`hyperefficiency patterns`, () => {
 		expect(getState(junctionState).getRelatedKeys(`a`)).toEqual(new Set([`1`]))
 	})
 
-	test.only(`use the atomic store instead of a junction`, () => {
+	test.only(`use the atomic store to back your junction`, () => {
 		const createRelationFamily = (key: string) => {
 			const family = atomFamily<TransceiverSet<string>, string>({
 				key,
-				default: new TransceiverSet(),
+				default: () => new TransceiverSet(),
 			})
 			const findTracker = trackerFamily(family)
 			return [family, findTracker] as const
@@ -297,10 +298,10 @@ describe(`hyperefficiency patterns`, () => {
 			default: [`a`, `b`],
 		})
 
-		const junction = (
+		const junction = <ASide extends string, BSide extends string>(
 			key: string,
 			defaults: {
-				between: [string, string]
+				between: [a: ASide, b: BSide]
 				cardinality: `1:1` | `1:n` | `n:n`
 			},
 		) => {
@@ -308,11 +309,16 @@ describe(`hyperefficiency patterns`, () => {
 			const cardinalityState = cardinalityFamily(key)
 			const [findRelationsState, findRelationTrackerState] =
 				createRelationFamily(`${key}:relations`)
+
 			// const findContentsState = createContentsFamily(`${key}:contents`)
 
 			const addRelationTX = transaction<(a: string, b: string) => void>({
 				key: `addRelation`,
 				do: ({ set }, a, b) => {
+					// if (a === `c` || b === `c`) {
+					// 	console.log({ a, b })
+					// 	throw new Error(`c is not allowed`)
+					// }
 					const relationTrackerA = findRelationTrackerState(a)
 					const relationTrackerB = findRelationTrackerState(b)
 					set(relationTrackerA, `add:${b}`)
@@ -328,53 +334,59 @@ describe(`hyperefficiency patterns`, () => {
 					set(relationTrackerB, `del:${a}`)
 				},
 			})
-			const getRelatedKeysTX = transaction<(a: string) => Set<string>>({
-				key: `getRelatedKeys`,
-				do: ({ get }, a) => {
-					const relations = get(findRelationsState(a))
-					return relations
-				},
-			})
 
 			setState(betweenState, defaults.between)
 			setState(cardinalityState, defaults.cardinality)
 
-			const j = new Junction(
+			const j = new Junction<ASide, BSide, null>(
 				{
-					between: getState(betweenState),
+					between: defaults.between,
 					cardinality: getState(cardinalityState),
 				},
 				{
 					externalStore: {
+						has: (a, b) => {
+							const aRelations = getState(findRelationsState(a))
+							return b ? aRelations.has(b) : aRelations.size > 0
+						},
 						addRelation: runTransaction(addRelationTX),
 						deleteRelation: runTransaction(deleteRelationTX),
-						getRelatedKeys: runTransaction(getRelatedKeysTX),
+						getRelatedKeys: (a) => getState(findRelationsState(a)),
 					},
 				},
 			)
 
 			return {
 				j,
-				// findContentsState,
 				findRelationsState,
 				findRelationTrackerState,
 				addRelationTX,
 				deleteRelationTX,
-				getRelatedKeysTX,
 			}
 		}
-		const myJunction = junction(`myJunction`, {
-			between: [`a`, `b`],
-			cardinality: `n:n`,
+		const {
+			j: myJunction,
+			findRelationsState,
+			findRelationTrackerState,
+			addRelationTX,
+			deleteRelationTX,
+		} = junction(`myJunction`, {
+			between: [`room`, `player`],
+			cardinality: `1:n`,
 		})
 
-		const eventTL = timeline({
-			key: `eventTL`,
-			atoms: [myJunction.findRelationTrackerState],
+		const relationsTimeline = timeline({
+			key: `relations`,
+			atoms: [findRelationTrackerState],
 		})
 
-		subscribe(myJunction.findRelationsState(`a`), UTIL.stdout)
-		expect(getState(myJunction.findRelationsState(`a`))).toEqual(new Set())
-		expect(getState(myJunction.findRelationsState(`b`))).toEqual(new Set())
+		myJunction.set({ room: `a`, player: `b` })
+
+		expect(getState(findRelationsState(`a`))).toEqual(new TransceiverSet([`b`]))
+		expect(getState(findRelationsState(`b`))).toEqual(new TransceiverSet([`a`]))
+
+		undo(relationsTimeline)
+
+		expect(getState(findRelationsState(`a`))).toEqual(new TransceiverSet())
 	})
 })

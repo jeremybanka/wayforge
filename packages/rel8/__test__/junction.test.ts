@@ -3,7 +3,7 @@ import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 import { vitest } from "vitest"
 
-import { hasExactProperties, isPlainObject } from "~/packages/anvl/src/object"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 import {
 	isJson,
 	refineJsonType,
