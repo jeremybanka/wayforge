@@ -76,7 +76,7 @@ export const undo__INTERNAL = (
 		}
 		case `selector_update`:
 		case `transaction_update`: {
-			for (const atomUpdate of update.atomUpdates) {
+			for (const atomUpdate of update.atomUpdates.toReversed()) {
 				const { key, oldValue } = atomUpdate
 				setState({ key, type: `atom` }, oldValue, store)
 			}
