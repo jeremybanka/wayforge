@@ -21,7 +21,7 @@ export class TransceiverSet<P extends string>
 
 	public add(value: P): this {
 		if (this.mode === `record`) {
-			this.subject.next(`add:${JSON.stringify(value)}`)
+			this.subject.next(`add:${value}`)
 		}
 		return super.add(value)
 	}
@@ -35,7 +35,7 @@ export class TransceiverSet<P extends string>
 
 	public delete(value: P): boolean {
 		if (this.mode === `record`) {
-			this.subject.next(`del:${JSON.stringify(value)}`)
+			this.subject.next(`del:${value}`)
 		}
 		return super.delete(value)
 	}
@@ -66,10 +66,10 @@ export class TransceiverSet<P extends string>
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
-				this.delete(JSON.parse(value))
+				this.delete(value as P)
 				break
 			case `del`:
-				this.add(JSON.parse(value))
+				this.add(value as P)
 				break
 			case `clear`: {
 				const values = JSON.parse(value) as P[]
