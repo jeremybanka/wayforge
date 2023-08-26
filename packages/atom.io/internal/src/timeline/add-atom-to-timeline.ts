@@ -93,7 +93,6 @@ export const addAtomToTimeline = (
 									const atomOrFamilyKeys = core.timelineAtoms.getRelatedIds(
 										tl.key,
 									)
-									console.log(`❗ atomOrFamilyKeys`, atomOrFamilyKeys)
 
 									return atomOrFamilyKeys.some(
 										(key) =>
@@ -101,8 +100,6 @@ export const addAtomToTimeline = (
 									)
 								})
 
-								console.log(`❗ atomUpdates original`, update.atomUpdates)
-								console.log(`❗ atomUpdates filtered`, atomUpdates)
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {
 									type: `transaction_update`,
 									timestamp: currentTransactionTime,

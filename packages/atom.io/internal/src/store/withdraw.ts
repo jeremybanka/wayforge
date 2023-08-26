@@ -69,11 +69,7 @@ export function withdraw<T>(
 			core.readonlySelectors.get(token.key) ??
 			core.transactions.get(token.key) ??
 			core.timelines.get(token.key)
-		console.log(
-			`❗ transactionStatus.atomUpdates`,
-			store.transactionStatus.atomUpdates,
-		)
-		console.log(`❗ state`, state)
+
 		if (state) {
 			store.config.logger?.info(`🛠️ add ${token.type} "${token.key}"`)
 			switch (state.type) {
@@ -83,8 +79,6 @@ export function withdraw<T>(
 					const stateKey = state.key
 					const familyKey = state.family?.key
 					let timelineKey = core.timelineAtoms.getRelatedId(stateKey)
-					console.log(`❗ stateKey`, stateKey)
-					console.log(`❗ familyKey`, familyKey)
 					if (timelineKey === undefined && typeof familyKey === `string`) {
 						timelineKey = core.timelineAtoms.getRelatedId(familyKey)
 					}
@@ -92,8 +86,7 @@ export function withdraw<T>(
 						typeof timelineKey === `string`
 							? store.timelines.get(timelineKey)
 							: undefined
-					console.log(`❗ core.timelineAtoms`, core.timelineAtoms)
-					console.log(`❗ timeline`, timeline)
+
 					if (timeline) {
 						addAtomToTimeline(state, timeline, store)
 					}
