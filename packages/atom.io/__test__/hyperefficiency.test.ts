@@ -4,8 +4,8 @@ import type { Transceiver, TransceiverMode } from "~/packages/anvl/reactivity"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import * as UTIL from "./__util__"
-import { IMPLICIT, Subject } from "../internal/src"
-import type { AtomFamily, Json } from "../src"
+import { IMPLICIT, Subject, withdraw } from "../internal/src"
+import type { AtomFamily, Json, Write } from "../src"
 import {
 	__INTERNAL__,
 	atom,
@@ -312,27 +312,31 @@ describe(`hyperefficiency patterns`, () => {
 
 			// const findContentsState = createContentsFamily(`${key}:contents`)
 
+			const addRelationWriteOperation: Write<(a: string, b: string) => void> = (
+				{ set },
+				a,
+				b,
+			) => {
+				const relationTrackerA = findRelationTrackerState(a)
+				const relationTrackerB = findRelationTrackerState(b)
+				set(relationTrackerA, `add:${b}`)
+				set(relationTrackerB, `add:${a}`)
+			}
 			const addRelationTX = transaction<(a: string, b: string) => void>({
 				key: `addRelation`,
-				do: ({ set }, a, b) => {
-					// if (a === `c` || b === `c`) {
-					// 	console.log({ a, b })
-					// 	throw new Error(`c is not allowed`)
-					// }
-					const relationTrackerA = findRelationTrackerState(a)
-					const relationTrackerB = findRelationTrackerState(b)
-					set(relationTrackerA, `add:${b}`)
-					set(relationTrackerB, `add:${a}`)
-				},
+				do: addRelationWriteOperation,
 			})
-			const deleteRelationTX = transaction<(a: string, b: string) => void>({
-				key: `deleteRelation`,
-				do: ({ set }, a, b) => {
+
+			const deleteRelationWriteOperation: Write<(a: string, b: string) => void> =
+				({ set }, a, b) => {
 					const relationTrackerA = findRelationTrackerState(a)
 					const relationTrackerB = findRelationTrackerState(b)
 					set(relationTrackerA, `del:${b}`)
 					set(relationTrackerB, `del:${a}`)
-				},
+				}
+			const deleteRelationTX = transaction<(a: string, b: string) => void>({
+				key: `deleteRelation`,
+				do: deleteRelationWriteOperation,
 			})
 
 			setState(betweenState, defaults.between)
@@ -360,16 +364,16 @@ describe(`hyperefficiency patterns`, () => {
 				j,
 				findRelationsState,
 				findRelationTrackerState,
-				addRelationTX,
-				deleteRelationTX,
+				addRelationWriteOperation,
+				deleteRelationWriteOperation,
 			}
 		}
 		const {
 			j: myJunction,
 			findRelationsState,
 			findRelationTrackerState,
-			addRelationTX,
-			deleteRelationTX,
+			addRelationWriteOperation,
+			deleteRelationWriteOperation,
 		} = junction(`myJunction`, {
 			between: [`room`, `player`],
 			cardinality: `1:n`,
@@ -388,5 +392,41 @@ describe(`hyperefficiency patterns`, () => {
 		undo(relationsTimeline)
 
 		expect(getState(findRelationsState(`a`))).toEqual(new TransceiverSet())
+
+		myJunction.set({ room: `room1`, player: `a` })
+		myJunction.set({ room: `room1`, player: `b` })
+		myJunction.set({ room: `room1`, player: `c` })
+
+		expect(getState(findRelationsState(`room1`))).toEqual(
+			new TransceiverSet([`a`, `b`, `c`]),
+		)
+
+		const clearRelationsTX = transaction<(...keysToDelete: string[]) => number>({
+			key: `clearRelations`,
+			do: (transactors, ...keysToDelete) => {
+				let tally = 0
+				for (const key of keysToDelete) {
+					const relatedKeys = getState(findRelationsState(key))
+					for (const relatedKey of relatedKeys) {
+						tally++
+						deleteRelationWriteOperation(transactors, key, relatedKey)
+					}
+				}
+				return tally
+			},
+		})
+		runTransaction(clearRelationsTX)(`a`, `b`)
+
+		expect(getState(findRelationsState(`a`))).toEqual(new TransceiverSet())
+		expect(getState(findRelationsState(`b`))).toEqual(new TransceiverSet())
+		expect(getState(findRelationsState(`c`))).toEqual(
+			new TransceiverSet([`room1`]),
+		)
+
+		undo(relationsTimeline)
+
+		expect(getState(findRelationsState(`room1`))).toEqual(
+			new TransceiverSet([`a`, `b`, `c`]),
+		)
 	})
 })
