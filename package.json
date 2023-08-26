@@ -35,6 +35,6 @@
 		"turbo": "1.10.13",
 		"typescript": "5.2.2",
 		"vite-tsconfig-paths": "4.2.0",
-		"vitest": "0.34.2"
+		"vitest": "0.34.3"
 	}
 }
