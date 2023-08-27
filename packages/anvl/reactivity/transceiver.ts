@@ -1,6 +1,5 @@
 import { Subject } from "./subject"
 import type { Json } from "../src/json"
-import type { primitive } from "../src/primitive"
 
 export type Transceiver<Signal extends Json.Serializable> = {
 	do: (update: Signal) => void

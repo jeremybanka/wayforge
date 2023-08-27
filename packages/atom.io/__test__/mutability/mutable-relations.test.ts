@@ -1,25 +1,20 @@
 import { vitest } from "vitest"
 
-import type { Transceiver, TransceiverMode } from "~/packages/anvl/reactivity"
 import { Junction } from "~/packages/rel8/junction/src"
 
-import { IMPLICIT, Subject } from "../../internal/src"
 import type { Json, Write } from "../../src"
 import {
 	__INTERNAL__,
-	atom,
 	atomFamily,
 	getState,
-	redo,
 	runTransaction,
 	setLogLevel,
 	setState,
-	subscribe,
 	timeline,
 	transaction,
 	undo,
 } from "../../src"
-import { TransceiverSet, tracker, trackerFamily } from "../../tracker/src"
+import { TransceiverSet, trackerFamily } from "../../tracker/src"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
