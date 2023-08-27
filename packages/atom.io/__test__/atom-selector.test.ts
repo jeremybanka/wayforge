@@ -1,6 +1,7 @@
 import { vitest } from "vitest"
 
 import * as UTIL from "./__util__"
+import { IMPLICIT } from "../internal/src"
 import {
 	__INTERNAL__,
 	atom,
@@ -13,7 +14,7 @@ import {
 } from "../src"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 1
+const CHOOSE = 3
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
@@ -121,7 +122,6 @@ describe(`selector`, () => {
 		expect(getState(double)).toBe(20)
 		expect(getState(triple)).toBe(30)
 		expect(getState(doublePlusOne)).toBe(21)
-
 		setState(doublePlusOne, 43)
 		expect(getState(count)).toBe(21)
 	})

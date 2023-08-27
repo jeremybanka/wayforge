@@ -249,7 +249,7 @@ describe(`Junction.prototype.getRelatedIdEntries`, () => {
 			.set({ from: `omori`, to: `kel` }, { trust: 1 })
 			.set({ from: `hero`, to: `kel` }, { brothers: true })
 			.set({ from: `hero`, to: `omori` }, { agreeThat: `mari is very nice` })
-		const heroFriendships = friendships.getRelationEntries(`hero`)
+		const heroFriendships = friendships.getRelationEntries({ from: `hero` })
 		expect(heroFriendships).toEqual([
 			[`kel`, { brothers: true }],
 			[`omori`, { agreeThat: `mari is very nice` }],

@@ -22,7 +22,7 @@ export const updateCore =
 	): AtomIO.AtomEffect<Json.Serializable> =>
 	({ onSet }) => {
 		onSet(({ newValue, oldValue }) => {
-			const timelineId = store.timelineAtoms.getRelatedId(trackerKey)
+			const timelineId = store.timelineAtoms.getRelatedKey(trackerKey)
 			if (timelineId) {
 				const timelineData = store.timelines.get(timelineId)
 				if (timelineData?.timeTraveling) {

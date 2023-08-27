@@ -78,9 +78,9 @@ export function withdraw<T>(
 					store.valueMap.set(token.key, state.default)
 					const stateKey = state.key
 					const familyKey = state.family?.key
-					let timelineKey = core.timelineAtoms.getRelatedId(stateKey)
+					let timelineKey = core.timelineAtoms.getRelatedKey(stateKey)
 					if (timelineKey === undefined && typeof familyKey === `string`) {
-						timelineKey = core.timelineAtoms.getRelatedId(familyKey)
+						timelineKey = core.timelineAtoms.getRelatedKey(familyKey)
 					}
 					const timeline =
 						typeof timelineKey === `string`

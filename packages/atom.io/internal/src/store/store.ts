@@ -7,9 +7,11 @@ import type {
 	TransactionToken,
 	ƒn,
 } from "atom.io"
+import { isString } from "fp-ts/string"
+import { Junction } from "rel8/junction"
 
 import { doNothing } from "~/packages/anvl/src/function"
-import { Join } from "~/packages/anvl/src/join"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import type { Atom } from "../atom"
 import type { OperationProgress } from "../operation"
@@ -38,20 +40,35 @@ export type StoreCore = Pick<
 >
 
 export class Store {
+	public valueMap = new Map<string, any>()
+
 	public atoms = new Map<string, Atom<any>>()
-	public atomsThatAreDefault = new Set<string>()
-	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
-	public selectorAtoms = new Join({ relationType: `n:n` })
-		.from(`selectorKey`)
-		.to(`atomKey`)
-	public selectorGraph = new Join<{ source: string }>({ relationType: `n:n` })
 	public selectors = new Map<string, Selector<any>>()
-	public timelineAtoms = new Join({ relationType: `1:n` })
-		.from(`timelineKey`)
-		.to(`atomKey`)
+	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
+
 	public timelines = new Map<string, Timeline>()
 	public transactions = new Map<string, Transaction<ƒn>>()
-	public valueMap = new Map<string, any>()
+
+	public atomsThatAreDefault = new Set<string>()
+
+	public timelineAtoms = new Junction({
+		between: [`timelineKey`, `atomKey`],
+		cardinality: `1:n`,
+	})
+	public selectorAtoms = new Junction({
+		between: [`selectorKey`, `atomKey`],
+		cardinality: `n:n`,
+	})
+	public selectorGraph = new Junction(
+		{
+			between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
+			cardinality: `n:n`,
+		},
+		{
+			isContent: hasExactProperties({ source: isString }),
+			makeContentKey: (...keys) => keys.sort().join(`:`),
+		},
+	)
 
 	public subject = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
