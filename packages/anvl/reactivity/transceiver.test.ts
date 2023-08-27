@@ -8,7 +8,7 @@ describe(`TransceiverSet`, () => {
 			const fn = vitest.fn()
 			set.subscribe(`TEST`, fn)
 			set.add(`z`)
-			expect(fn).toHaveBeenCalledWith(`add:${JSON.stringify(`z`)}`)
+			expect(fn).toHaveBeenCalledWith(`add:z`)
 		})
 		it(`should return a function that unsubscribes`, () => {
 			const set = new TransceiverSet()
