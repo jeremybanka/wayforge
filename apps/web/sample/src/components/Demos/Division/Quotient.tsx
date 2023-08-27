@@ -1,7 +1,7 @@
 import { useIO } from "atom.io/react"
 import type { FC } from "react"
 
-import { quotientState } from "../../../services/store"
+import { quotientState } from "../../../services/app-store"
 
 export const Quotient: FC = () => {
 	const [quotient, setQuotient] = useIO(quotientState)
