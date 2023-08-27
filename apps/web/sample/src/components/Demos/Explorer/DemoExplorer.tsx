@@ -4,7 +4,7 @@ import { Link, Route, Routes, Outlet } from "react-router-dom"
 
 import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
 
-import { Explorer, useSetTitle } from "../../../services/store"
+import { Explorer, useSetTitle } from "../../../services/app-store"
 import { Colors } from "../Colors"
 import { Division } from "../Division"
 

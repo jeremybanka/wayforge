@@ -1,7 +1,7 @@
 import { useIO } from "atom.io/react"
 import type { FC } from "react"
 
-import { dividendState } from "../../../services/store"
+import { dividendState } from "../../../services/app-store"
 
 export const Dividend: FC = () => {
 	const [dividend, setDividend] = useIO(dividendState)
