@@ -90,14 +90,17 @@ export const addAtomToTimeline = (
 
 								const atomUpdates = update.atomUpdates.filter((atomUpdate) => {
 									const core = target(store)
-									const atomOrFamilyKeys = core.timelineAtoms.getRelatedIds(
+									const atomOrFamilyKeys = core.timelineAtoms.getRelatedKeys(
 										tl.key,
 									)
 
-									return atomOrFamilyKeys.some(
-										(key) =>
-											key === atomUpdate.key || key === atomUpdate.family?.key,
-									)
+									return atomOrFamilyKeys
+										? [...atomOrFamilyKeys].some(
+												(key) =>
+													key === atomUpdate.key ||
+													key === atomUpdate.family?.key,
+										  )
+										: false
 								})
 
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {

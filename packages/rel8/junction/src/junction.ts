@@ -29,6 +29,7 @@ export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = 
 		has: (a: string, b?: string) => boolean
 	}
 	isContent?: Refinement<unknown, Content>
+	makeContentKey?: (a: string, b: string) => string
 }
 
 export type JunctionJSON<
@@ -101,10 +102,14 @@ export class Junction<
 	) {
 		this.a = data.between[0]
 		this.b = data.between[1]
+
 		this.cardinality = data.cardinality
 		this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
 		this.contents = new Map(data.contents)
 		this.isContent = config?.isContent ?? null
+		if (config?.makeContentKey) {
+			this.makeContentKey = config.makeContentKey
+		}
 		if (config?.externalStore) {
 			const externalStore = config.externalStore
 			this.has = (a, b) => externalStore.has(a, b)
@@ -241,13 +246,28 @@ export class Junction<
 		return this.getContentInternal(contentKey)
 	}
 
-	public getRelationEntries(key: string): [string, Content][] {
-		const relations = this.getRelatedKeys(key)
-		if (!relations) return []
-		return [...relations].map((b) => [
-			b,
-			this.getContent(key, b) ?? (null as Content),
-		])
+	public getRelationEntries(
+		input: Record<ASide, string> | Record<BSide, string>,
+	): [string, Content][] {
+		const a: string | undefined = (input as any)[this.a]
+		const b: string | undefined = (input as any)[this.b]
+		if (a !== undefined && b === undefined) {
+			const aRelations = this.getRelatedKeys(a)
+			if (aRelations) {
+				return [...aRelations].map((b) => {
+					return [b, this.getContent(a, b) ?? (null as Content)]
+				})
+			}
+		}
+		if (a === undefined && b !== undefined) {
+			const bRelations = this.getRelatedKeys(b)
+			if (bRelations) {
+				return [...bRelations].map((a) => {
+					return [a, this.getContent(a, b) ?? (null as Content)]
+				})
+			}
+		}
+		return []
 	}
 
 	public has(a: string, b?: string): boolean {

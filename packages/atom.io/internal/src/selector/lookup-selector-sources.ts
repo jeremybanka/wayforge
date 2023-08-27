@@ -15,8 +15,10 @@ export const lookupSelectorSources = (
 	| AtomToken<unknown>
 	| ReadonlySelectorToken<unknown>
 	| SelectorToken<unknown>
-)[] =>
-	target(store)
-		.selectorGraph.getRelations(key)
-		.filter(({ source }) => source !== key)
-		.map(({ source }) => lookup(source, store))
+)[] => {
+	const sources = target(store)
+		.selectorGraph.getRelationEntries({ downstreamSelectorKey: key })
+		.filter(([_, { source }]) => source !== key)
+		.map(([_, { source }]) => lookup(source, store))
+	return sources
+}
