@@ -60,7 +60,7 @@ export const setupRealtimeTestServer = (
 		typeof address === `string` ? 80 : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
 	const server = new SocketIO.Server(httpServer)
-	const silo = AtomIO.silo(`SERVER`, AtomIO.__INTERNAL__.IMPLICIT.STORE)
+	const silo = new AtomIO.Silo(`SERVER`, AtomIO.__INTERNAL__.IMPLICIT.STORE)
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		options.server({ socket, silo })
@@ -84,7 +84,7 @@ export const setupRealtimeTestClient = (
 	port: number,
 ): RealtimeTestClient => {
 	const socket: ClientSocket = io(`http://localhost:${port}/`)
-	const silo = AtomIO.silo(name, AtomIO.__INTERNAL__.IMPLICIT.STORE)
+	const silo = new AtomIO.Silo(name, AtomIO.__INTERNAL__.IMPLICIT.STORE)
 
 	const { document } = new Happy.Window()
 	document.body.innerHTML = `<div id="app"></div>`

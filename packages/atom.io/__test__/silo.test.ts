@@ -1,14 +1,14 @@
 import { IMPLICIT } from "../internal/src"
 import type { AtomOptions } from "../src"
 import { getState } from "../src"
-import { silo } from "../src/silo"
+import { Silo } from "../src/silo"
 
 const hasImplicitStoreBeenCreated = () => IMPLICIT.STORE_INTERNAL !== undefined
 
 describe(`silo`, () => {
 	it(`creates independent stores`, () => {
-		const Uno = silo(`uno`)
-		const Dos = silo(`dos`)
+		const Uno = new Silo(`uno`)
+		const Dos = new Silo(`dos`)
 
 		const DEFAULT_COUNT_CONFIG: AtomOptions<number> = {
 			key: `count`,

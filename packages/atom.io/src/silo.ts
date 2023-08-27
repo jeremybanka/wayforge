@@ -1,8 +1,7 @@
-import type { Store } from "atom.io/internal"
 import {
+	Store,
 	atomFamily__INTERNAL,
 	atom__INTERNAL,
-	createStore,
 	redo__INTERNAL,
 	selectorFamily__INTERNAL,
 	selector__INTERNAL,
@@ -17,38 +16,35 @@ import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
 
-export type Silo = ReturnType<typeof silo>
-
-export const silo = (
-	name: string,
-	fromStore: Store | null = null,
-): {
-	store: Store
-	atom: typeof atom
-	atomFamily: typeof atomFamily
-	selector: typeof selector
-	selectorFamily: typeof selectorFamily
-	transaction: typeof transaction
-	timeline: typeof timeline
-	getState: typeof getState
-	setState: typeof setState
-	subscribe: typeof subscribe
-	undo: typeof undo
-	redo: typeof redo
-} => {
-	const store = createStore(name, fromStore)
-	return {
-		store,
-		atom: (options) => atom__INTERNAL(options, undefined, store),
-		atomFamily: (options) => atomFamily__INTERNAL(options, store),
-		selector: (options) => selector__INTERNAL(options, undefined, store) as any,
-		selectorFamily: (options) => selectorFamily__INTERNAL(options, store) as any,
-		transaction: (options) => transaction__INTERNAL(options, store),
-		timeline: (options) => timeline__INTERNAL(options, store),
-		getState: (token) => getState(token, store),
-		setState: (token, newValue) => setState(token, newValue, store),
-		subscribe: (token, handler, key) => subscribe(token, handler, key, store),
-		undo: (token) => undo__INTERNAL(token, store),
-		redo: (token) => redo__INTERNAL(token, store),
+export class Silo {
+	public store: Store
+	public atom: typeof atom
+	public atomFamily: typeof atomFamily
+	public selector: typeof selector
+	public selectorFamily: typeof selectorFamily
+	public transaction: typeof transaction
+	public timeline: typeof timeline
+	public getState: typeof getState
+	public setState: typeof setState
+	public subscribe: typeof subscribe
+	public undo: typeof undo
+	public redo: typeof redo
+	public constructor(name: string, fromStore: Store | null = null) {
+		const store = new Store(name, fromStore)
+		this.store = store
+		this.atom = (options) => atom__INTERNAL(options, undefined, store)
+		this.atomFamily = (options) => atomFamily__INTERNAL(options, store)
+		this.selector = (options) =>
+			selector__INTERNAL(options, undefined, store) as any
+		this.selectorFamily = (options) =>
+			selectorFamily__INTERNAL(options, store) as any
+		this.transaction = (options) => transaction__INTERNAL(options, store)
+		this.timeline = (options) => timeline__INTERNAL(options, store)
+		this.getState = (token) => getState(token, store)
+		this.setState = (token, newValue) => setState(token, newValue, store)
+		;(this.subscribe = (token, handler, key) =>
+			subscribe(token, handler, key, store)),
+			(this.undo = (token) => undo__INTERNAL(token, store))
+		this.redo = (token) => redo__INTERNAL(token, store)
 	}
 }
