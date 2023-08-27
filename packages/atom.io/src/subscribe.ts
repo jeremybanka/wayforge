@@ -9,15 +9,20 @@ import type {
 	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdate,
+	FamilyMetadata,
 } from "."
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
-export type KeyedStateUpdate<T> = StateUpdate<T> & { key: string }
+export type KeyedStateUpdate<T> = StateUpdate<T> & {
+	key: string
+	family?: FamilyMetadata
+}
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
 export const subscribe = <T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
 	handleUpdate: UpdateHandler<T>,
+	key: string = Math.random().toString(36).slice(2),
 	store: Store = IMPLICIT.STORE,
 ): (() => void) => {
 	const state = withdraw<T>(token, store)
@@ -26,24 +31,24 @@ export const subscribe = <T>(
 			`State "${token.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 		)
 	}
-	const subscription = state.subject.subscribe(handleUpdate)
+	const unsubFunction = state.subject.subscribe(key, handleUpdate)
 	store.config.logger?.info(`👀 subscribe to "${state.key}"`)
-	const dependencySubscriptions =
+	const dependencyUnsubFunctions =
 		state.type !== `atom` ? subscribeToRootAtoms(state, store) : null
 
 	const unsubscribe =
-		dependencySubscriptions === null
+		dependencyUnsubFunctions === null
 			? () => {
 					store.config.logger?.info(`🙈 unsubscribe from "${state.key}"`)
-					subscription.unsubscribe()
+					unsubFunction()
 			  }
 			: () => {
 					store.config.logger?.info(
 						`🙈 unsubscribe from "${state.key}" and its dependencies`,
 					)
-					subscription.unsubscribe()
-					for (const dependencySubscription of dependencySubscriptions) {
-						dependencySubscription.unsubscribe()
+					unsubFunction()
+					for (const unsubFromDependency of dependencyUnsubFunctions) {
+						unsubFromDependency()
 					}
 			  }
 
@@ -57,6 +62,7 @@ export type TransactionUpdateHandler<ƒ extends ƒn> = (
 export const subscribeToTransaction = <ƒ extends ƒn>(
 	token: TransactionToken<ƒ>,
 	handleUpdate: TransactionUpdateHandler<ƒ>,
+	key: string = Math.random().toString(36).slice(2),
 	store = IMPLICIT.STORE,
 ): (() => void) => {
 	const tx = withdraw(token, store)
@@ -66,17 +72,17 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 		)
 	}
 	store.config.logger?.info(`👀 subscribe to transaction "${token.key}"`)
-	const subscription = tx.subject.subscribe(handleUpdate)
-	const unsubscribe = () => {
+	const unsubscribe = tx.subject.subscribe(key, handleUpdate)
+	return () => {
 		store.config.logger?.info(`🙈 unsubscribe from transaction "${token.key}"`)
-		subscription.unsubscribe()
+		unsubscribe()
 	}
-	return unsubscribe
 }
 
 export const subscribeToTimeline = (
 	token: TimelineToken,
 	handleUpdate: (update: TimelineUpdate | `redo` | `undo`) => void,
+	key: string = Math.random().toString(36).slice(2),
 	store = IMPLICIT.STORE,
 ): (() => void) => {
 	const tl = withdraw(token, store)
@@ -86,10 +92,9 @@ export const subscribeToTimeline = (
 		)
 	}
 	store.config.logger?.info(`👀 subscribe to timeline "${token.key}"`)
-	const subscription = tl.subject.subscribe(handleUpdate)
-	const unsubscribe = () => {
+	const unsubscribe = tl.subject.subscribe(key, handleUpdate)
+	return () => {
 		store.config.logger?.info(`🙈 unsubscribe from timeline "${token.key}"`)
-		subscription.unsubscribe()
+		unsubscribe()
 	}
-	return unsubscribe
 }

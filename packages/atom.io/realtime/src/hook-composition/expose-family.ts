@@ -6,13 +6,14 @@ import type { ServerConfig } from ".."
 
 const subscribeToTokenCreation = <T>(
 	family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
+	key: string,
 	handleTokenCreation: (token: AtomIO.StateToken<T>) => void,
 ): (() => void) => {
-	const subscription =
+	const unsubscribe =
 		family.type === `atom_family`
-			? family.subject.subscribe(handleTokenCreation)
-			: family.subject.subscribe(handleTokenCreation)
-	return () => subscription.unsubscribe()
+			? family.subject.subscribe(key, handleTokenCreation)
+			: family.subject.subscribe(key, handleTokenCreation)
+	return unsubscribe
 }
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -53,6 +54,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 
 				const unsubscribeFromTokenCreation = subscribeToTokenCreation(
 					family,
+					`expose-family:${socket.id}`,
 					(token) => {
 						const unsub = AtomIO.subscribe(
 							token,
@@ -63,6 +65,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 									newValue,
 								)
 							},
+							`expose-family:${family.key}:${socket.id}`,
 							store,
 						)
 						unsubFamilyCallbacksByKey.set(token.key, unsub)
@@ -79,6 +82,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 					({ newValue }) => {
 						socket.emit(`serve:${token.key}`, newValue)
 					},
+					`expose-family:${family.key}:${socket.id}`,
 					store,
 				)
 				unsubSingleCallbacksByKey.set(token.key, unsubscribe)

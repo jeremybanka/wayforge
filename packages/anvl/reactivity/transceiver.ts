@@ -1,18 +1,17 @@
 import { Subject } from "./subject"
 import type { Json } from "../src/json"
-import type { primitive } from "../src/primitive"
 
 export type Transceiver<Signal extends Json.Serializable> = {
 	do: (update: Signal) => void
 	undo: (update: Signal) => void
-	observe: (fn: (update: Signal) => void) => () => void
+	subscribe: (key: string, fn: (update: Signal) => void) => () => void
 }
 
 export type TransceiverMode = `playback` | `record`
 
 export type SetUpdate = `add:${string}` | `clear:${string}` | `del:${string}`
 
-export class TransceiverSet<P extends primitive>
+export class TransceiverSet<P extends string>
 	extends Set<P>
 	implements Transceiver<SetUpdate>
 {
@@ -21,7 +20,7 @@ export class TransceiverSet<P extends primitive>
 
 	public add(value: P): this {
 		if (this.mode === `record`) {
-			this.subject.next(`add:${JSON.stringify(value)}`)
+			this.subject.next(`add:${value}`)
 		}
 		return super.add(value)
 	}
@@ -35,13 +34,13 @@ export class TransceiverSet<P extends primitive>
 
 	public delete(value: P): boolean {
 		if (this.mode === `record`) {
-			this.subject.next(`del:${JSON.stringify(value)}`)
+			this.subject.next(`del:${value}`)
 		}
 		return super.delete(value)
 	}
 
-	public observe(fn: (update: SetUpdate) => void): () => void {
-		return this.subject.subscribe(fn).unsubscribe
+	public subscribe(key: string, fn: (update: SetUpdate) => void): () => void {
+		return this.subject.subscribe(key, fn)
 	}
 
 	public do(update: SetUpdate): void {
@@ -49,13 +48,13 @@ export class TransceiverSet<P extends primitive>
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
-				this.add(JSON.parse(value))
+				this.add(value as P)
 				break
 			case `clear`:
 				this.clear()
 				break
 			case `del`:
-				this.delete(JSON.parse(value))
+				this.delete(value as P)
 				break
 		}
 		this.mode = `record`
@@ -66,10 +65,10 @@ export class TransceiverSet<P extends primitive>
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
-				this.delete(JSON.parse(value))
+				this.delete(value as P)
 				break
 			case `del`:
-				this.add(JSON.parse(value))
+				this.add(value as P)
 				break
 			case `clear`: {
 				const values = JSON.parse(value) as P[]

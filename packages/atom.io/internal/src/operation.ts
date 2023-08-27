@@ -32,7 +32,11 @@ export const openOperation = (token: StateToken<any>, store: Store): void => {
 		token,
 	}
 	store.config.logger?.info(
-		`⭕ operation start from "${token.key}" in store "${store.config.name}"`,
+		`⭕ operation start from "${token.key}" in store "${store.config.name}"${
+			store.transactionStatus.phase === `idle`
+				? ``
+				: ` ${store.transactionStatus.phase} "${store.transactionStatus.key}"`
+		}`,
 	)
 }
 export const closeOperation = (store: Store): void => {

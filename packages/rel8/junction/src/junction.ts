@@ -1,29 +1,41 @@
 import type { Cardinality, Json, Refinement } from "rel8"
 
-export interface JunctionData<Content extends Json.Object | null,>
+export interface JunctionEntries<Content extends Json.Object | null,>
 	extends Json.Object {
 	readonly relations: [string, string[]][]
 	readonly contents: [string, Content][]
 }
-export interface JunctionConfigRequired<
-	ASide extends string,
-	BSide extends string,
-> extends Json.Object {
+export interface JunctionSchema<ASide extends string, BSide extends string>
+	extends Json.Object {
 	readonly between: [a: ASide, b: BSide]
 	readonly cardinality: Cardinality
 }
 
-export type JunctionConfig<
-	ASide extends string,
-	BSide extends string,
-	Content extends Json.Object | null,
-> = JunctionConfigRequired<ASide, BSide> & Partial<JunctionData<Content>>
+export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = {
+	externalStore?: (Content extends null
+		? {
+				getContent?: undefined
+				setContent?: undefined
+				deleteContent?: undefined
+		  }
+		: {
+				getContent: (contentKey: string) => Content | undefined
+				setContent: (contentKey: string, content: Content) => void
+				deleteContent: (g) => void
+		  }) & {
+		addRelation: (a: string, b: string) => void
+		deleteRelation: (a: string, b: string) => void
+		getRelatedKeys: (key: string) => Set<string> | undefined
+		has: (a: string, b?: string) => boolean
+	}
+	isContent?: Refinement<unknown, Content>
+}
 
 export type JunctionJSON<
 	ASide extends string,
 	BSide extends string,
 	Content extends Json.Object | null,
-> = JunctionConfigRequired<ASide, BSide> & JunctionData<Content>
+> = JunctionEntries<Content> & JunctionSchema<ASide, BSide>
 
 export class Junction<
 	ASide extends string,
@@ -36,35 +48,15 @@ export class Junction<
 	public readonly relations = new Map<string, Set<string>>()
 	public readonly contents = new Map<string, Content>()
 
-	public makeContentId = (...params: string[]): string => params.sort().join(`:`)
 	public isContent: Refinement<unknown, Content> | null
+	public makeContentKey = (a: string, b: string): string => `${a}:${b}`
 
-	public constructor(
-		input: JunctionConfig<ASide, BSide, Content>,
-		isContent?: Refinement<unknown, Content>,
-	) {
-		this.a = input.between[0]
-		this.b = input.between[1]
-		this.cardinality = input.cardinality
-		this.relations = new Map(input.relations?.map(([a, b]) => [a, new Set(b)]))
-		this.contents = new Map(input.contents)
-		this.isContent = isContent ?? null
+	public getRelatedKeys(key: string): Set<string> | undefined {
+		return this.relations.get(key)
 	}
-	public toJSON(): JunctionJSON<ASide, BSide, Content> {
-		return {
-			between: [this.a, this.b],
-			cardinality: this.cardinality,
-			relations: [...this.relations.entries()].map(([a, b]) => [a, [...b]]),
-			contents: [...this.contents.entries()],
-		}
-	}
-
-	public add(a: string, b: string): this {
+	protected addRelation(a: string, b: string): void {
 		const aRelations = this.relations.get(a)
 		const bRelations = this.relations.get(b)
-		if (aRelations?.has(b)) {
-			return this
-		}
 		if (aRelations) {
 			aRelations.add(b)
 		} else {
@@ -75,8 +67,78 @@ export class Junction<
 		} else {
 			this.relations.set(b, new Set([a]))
 		}
+	}
+	protected deleteRelation(a: string, b: string): void {
+		const aRelations = this.relations.get(a)
+		if (aRelations) {
+			aRelations.delete(b)
+			if (aRelations.size === 0) {
+				this.relations.delete(a)
+			}
+			const bRelations = this.relations.get(b)
+			if (bRelations) {
+				bRelations.delete(a)
+				if (bRelations.size === 0) {
+					this.relations.delete(b)
+				}
+			}
+		}
+	}
 
-		return this
+	protected getContentInternal(contentKey: string): Content | undefined {
+		return this.contents.get(contentKey)
+	}
+	protected setContent(contentKey: string, content: Content): void {
+		this.contents.set(contentKey, content)
+	}
+	protected deleteContent(contentKey: string): void {
+		this.contents.delete(contentKey)
+	}
+
+	public constructor(
+		data: JunctionSchema<ASide, BSide> & Partial<JunctionEntries<Content>>,
+		config?: JunctionAdvancedConfiguration<Content>,
+	) {
+		this.a = data.between[0]
+		this.b = data.between[1]
+		this.cardinality = data.cardinality
+		this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
+		this.contents = new Map(data.contents)
+		this.isContent = config?.isContent ?? null
+		if (config?.externalStore) {
+			const externalStore = config.externalStore
+			this.has = (a, b) => externalStore.has(a, b)
+			this.addRelation = (a, b) => {
+				externalStore.addRelation(a, b)
+				return this
+			}
+			this.deleteRelation = (a, b) => {
+				externalStore.deleteRelation(a, b)
+				return this
+			}
+			this.getRelatedKeys = (key) => externalStore.getRelatedKeys(key)
+			if (externalStore.getContent) {
+				this.getContentInternal = (contentKey) => {
+					return externalStore.getContent(contentKey) as any
+				}
+				this.setContent = (contentKey, content) => {
+					externalStore.setContent(contentKey, content as any)
+					return this
+				}
+				this.deleteContent = (contentKey) => {
+					externalStore.deleteContent(contentKey)
+					return this
+				}
+			}
+		}
+	}
+	public toJSON(): JunctionJSON<ASide, BSide, Content> {
+		return {
+			between: [this.a, this.b],
+			cardinality: this.cardinality,
+			relations: [...this.relations.entries()].map(([a, b]) => [a, [...b]]),
+			contents: [...this.contents.entries()],
+		}
 	}
 
 	public set(
@@ -109,17 +171,15 @@ export class Junction<
 				if (aPrev && aPrev !== a) this.delete(aPrev, b)
 			}
 		}
-		this.add(a, b)
-		if (content) this.setContent(a, b, content)
-		return this
-	}
-	public setContent(keyA: string, keyB: string, content: Content): this {
-		const contentId = this.makeContentId(keyA, keyB)
-		this.contents.set(contentId, content)
+		this.addRelation(a, b)
+		if (content) {
+			const contentKey = this.makeContentKey(a, b)
+			this.setContent(contentKey, content)
+		}
 		return this
 	}
 
-	public delete(a?: string, b?: string): this
+	public delete(a: string, b?: string): this
 	public delete(
 		relation:
 			| Record<ASide | BSide, string>
@@ -128,61 +188,42 @@ export class Junction<
 		b?: undefined,
 	): this
 	public delete(
-		a?:
+		x:
 			| Record<ASide | BSide, string>
 			| Record<ASide, string>
 			| Record<BSide, string>
 			| string,
-		b?: string,
+		b?: string | undefined,
 	): this {
-		// @ts-expect-error we deduce that this.b may index a
-		b = typeof b === `string` ? b : (a[this.b] as string | undefined)
-		// @ts-expect-error we deduce that this.a may index a
-		const a0 = typeof a === `string` ? a : (a[this.a] as string | undefined)
-		if (!a0 && b) {
-			const aRelations = this.relations.get(b)
-			if (aRelations) {
-				aRelations.forEach((a) => this.delete(a, b))
+		// @ts-expect-error we deduce that this.b may index x
+		b = typeof b === `string` ? b : (x[this.b] as string | undefined)
+		// @ts-expect-error we deduce that this.a may index x
+		const a = typeof x === `string` ? x : (x[this.a] as string | undefined)
+
+		if (a === undefined && typeof b === `string`) {
+			const bRelations = this.getRelatedKeys(b)
+			if (bRelations) {
+				bRelations.forEach((a) => this.delete(a, b))
 			}
 		}
-		if (typeof a0 === `string` && !b) {
-			const bRelations = this.relations.get(a0)
-			if (bRelations) {
-				bRelations.forEach((b) => {
-					this.delete(a0, b)
+		if (typeof a === `string` && b === undefined) {
+			const aRelations = this.getRelatedKeys(a)
+			if (aRelations) {
+				aRelations.forEach((b) => {
+					this.delete(a, b)
 				})
 			}
 		}
-		if (typeof a0 === `string` && b) {
-			const aRelations = this.relations.get(a0)
-			if (aRelations) {
-				aRelations.delete(b)
-				if (aRelations.size === 0) {
-					this.relations.delete(a0)
-				}
-				const bRelations = this.relations.get(b)
-				if (bRelations) {
-					bRelations.delete(a0)
-					if (bRelations.size === 0) {
-						this.relations.delete(b)
-					}
-				}
-			}
-			this.deleteContent(a0, b)
+		if (typeof a === `string` && typeof b === `string`) {
+			this.deleteRelation(a, b)
+			const contentKey = this.makeContentKey(a, b)
+			this.deleteContent(contentKey)
 		}
 		return this
 	}
-	public deleteContent(keyA: string, keyB: string): this {
-		const contentId = this.makeContentId(keyA, keyB)
-		this.contents.delete(contentId)
-		return this
-	}
 
-	public getRelatedKeys(key: string): Set<string> | undefined {
-		return this.relations.get(key)
-	}
 	public getRelatedKey(key: string): string | undefined {
-		const relations = this.relations.get(key)
+		const relations = this.getRelatedKeys(key)
 		if (relations) {
 			if (relations.size > 1) {
 				console.warn(
@@ -194,13 +235,14 @@ export class Junction<
 			return [...relations][0]
 		}
 	}
-	public getContent(keyA: string, keyB: string): Content | undefined {
-		const contentId = this.makeContentId(keyA, keyB)
-		return this.contents.get(contentId)
+
+	public getContent(a: string, b: string): Content | undefined {
+		const contentKey = this.makeContentKey(a, b)
+		return this.getContentInternal(contentKey)
 	}
 
 	public getRelationEntries(key: string): [string, Content][] {
-		const relations = this.relations.get(key)
+		const relations = this.getRelatedKeys(key)
 		if (!relations) return []
 		return [...relations].map((b) => [
 			b,
@@ -210,7 +252,7 @@ export class Junction<
 
 	public has(a: string, b?: string): boolean {
 		if (b) {
-			const setA = this.relations.get(a)
+			const setA = this.getRelatedKeys(a)
 			return setA?.has(b) ?? false
 		}
 		return this.relations.has(a)

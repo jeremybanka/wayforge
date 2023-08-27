@@ -1,23 +1,20 @@
 type Subscriber<T> = (value: T) => void
 
 export class Subject<T> {
-	public subscribers: Subscriber<T>[] = []
+	public subscribers: Map<string, Subscriber<T>> = new Map()
 
-	public subscribe(subscriber: Subscriber<T>): { unsubscribe: () => void } {
-		this.subscribers.push(subscriber)
-		const unsubscribe = () => this.unsubscribe(subscriber)
-		return { unsubscribe }
+	public subscribe(key: string, subscriber: Subscriber<T>): () => void {
+		this.subscribers.set(key, subscriber)
+		const unsubscribe = () => this.unsubscribe(key)
+		return unsubscribe
 	}
 
-	private unsubscribe(subscriber: Subscriber<T>) {
-		const subscriberIndex = this.subscribers.indexOf(subscriber)
-		if (subscriberIndex !== -1) {
-			this.subscribers.splice(subscriberIndex, 1)
-		}
+	private unsubscribe(key: string) {
+		this.subscribers.delete(key)
 	}
 
 	public next(value: T): void {
-		for (const subscriber of this.subscribers) {
+		for (const subscriber of this.subscribers.values()) {
 			subscriber(value)
 		}
 	}

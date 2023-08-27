@@ -110,7 +110,7 @@ v.describe(`adding relations with content`, () => {
 	const join = new Join<EmptyObject>()
 	const junction = new Junction(
 		{ between: [`from`, `to`], cardinality: `1:n` },
-		isEmptyObject,
+		{ isContent: isEmptyObject },
 	)
 	v.bench(`join.add [content]`, () => {
 		for (const char of `abcdefghijklmnopqrstuvwxyz`) {

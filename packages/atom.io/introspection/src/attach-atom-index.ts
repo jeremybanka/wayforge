@@ -21,41 +21,44 @@ export const attachAtomIndex = (
 						}, {}),
 				effects: [
 					({ setSelf }) => {
-						store.subject.atomCreation.subscribe((atomToken) => {
-							if (store.operation.open) {
-								return
-							}
-							if (atomToken.key.includes(`👁‍🗨`)) {
-								return
-							}
-							setSelf((state) => {
-								const { key, family } = atomToken
-								if (family) {
-									const { key: familyKey, subKey } = family
-									const current = state[familyKey]
-									if (current === undefined || `familyMembers` in current) {
-										const familyKeyState = current || {
-											key: familyKey,
-											familyMembers: {},
-										}
-										return {
-											...state,
-											[familyKey]: {
-												...familyKeyState,
-												familyMembers: {
-													...familyKeyState.familyMembers,
-													[subKey]: atomToken,
+						store.subject.atomCreation.subscribe(
+							`introspection`,
+							(atomToken) => {
+								if (store.operation.open) {
+									return
+								}
+								if (atomToken.key.includes(`👁‍🗨`)) {
+									return
+								}
+								setSelf((state) => {
+									const { key, family } = atomToken
+									if (family) {
+										const { key: familyKey, subKey } = family
+										const current = state[familyKey]
+										if (current === undefined || `familyMembers` in current) {
+											const familyKeyState = current || {
+												key: familyKey,
+												familyMembers: {},
+											}
+											return {
+												...state,
+												[familyKey]: {
+													...familyKeyState,
+													familyMembers: {
+														...familyKeyState.familyMembers,
+														[subKey]: atomToken,
+													},
 												},
-											},
+											}
 										}
 									}
-								}
-								return {
-									...state,
-									[key]: atomToken,
-								}
-							})
-						})
+									return {
+										...state,
+										[key]: atomToken,
+									}
+								})
+							},
+						)
 					},
 				],
 			},

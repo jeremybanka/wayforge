@@ -66,7 +66,6 @@ export const undo__INTERNAL = (
 		return
 	}
 	timelineData.timeTraveling = `into_past`
-
 	--timelineData.at
 	const update = timelineData.history[timelineData.at]
 	switch (update.type) {
@@ -77,7 +76,7 @@ export const undo__INTERNAL = (
 		}
 		case `selector_update`:
 		case `transaction_update`: {
-			for (const atomUpdate of update.atomUpdates) {
+			for (const atomUpdate of [...update.atomUpdates].reverse()) {
 				const { key, oldValue } = atomUpdate
 				setState({ key, type: `atom` }, oldValue, store)
 			}

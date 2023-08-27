@@ -10,6 +10,7 @@ export function usePush<J extends Json.Serializable>(
 ): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
+	const id = React.useId()
 	React.useEffect(() => {
 		socket.emit(`claim:${token.key}`)
 		AtomIO.subscribe(
@@ -17,6 +18,7 @@ export function usePush<J extends Json.Serializable>(
 			({ newValue }) => {
 				socket.emit(`pub:${token.key}`, newValue)
 			},
+			`use-push:${id}`,
 			store,
 		)
 		return () => {

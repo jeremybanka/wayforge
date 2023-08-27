@@ -18,6 +18,7 @@ export function useServerAction<ƒ extends AtomIO.ƒn>(
 				? AtomIO.subscribeToTransaction(
 						token,
 						(update) => socket.emit(`tx:${token.key}`, update),
+						`use-server-action`,
 						store,
 				  )
 				: () => null

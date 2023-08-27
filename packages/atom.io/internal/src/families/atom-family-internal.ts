@@ -38,8 +38,8 @@ export function atomFamily__INTERNAL<T, K extends Json.Serializable>(
 					individualOptions.effects = options.effects(key)
 				}
 				token = atom__INTERNAL<T>(individualOptions, family, store)
+				subject.next(token)
 			}
-			subject.next(token)
 			return token
 		},
 		{

@@ -14,13 +14,14 @@ export const applyTransaction = <ƒ extends ƒn>(
 		)
 		return
 	}
-	store.config.logger?.info(
-		`🛃 apply transaction "${store.transactionStatus.key}"`,
-	)
+
 	store.transactionStatus.phase = `applying`
 	store.transactionStatus.output = output
 	const { atomUpdates } = store.transactionStatus
-
+	store.config.logger?.info(
+		`🛃 applying transaction "${store.transactionStatus.key}" with ${atomUpdates.length} updates.`,
+	)
+	store.config.logger?.info(`🛃 the updates are:`, atomUpdates)
 	for (const { key, newValue } of atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		if (!store.valueMap.has(token.key)) {
