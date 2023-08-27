@@ -24,8 +24,9 @@ export function useO<T>(
 	token: AtomIO.ReadonlySelectorToken<T> | AtomIO.StateToken<T>,
 ): T {
 	const store = React.useContext(StoreContext)
+	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(observe) => AtomIO.subscribe(token, observe, store),
+		(observe) => AtomIO.subscribe(token, observe, `use-o:${id}`, store),
 		() => AtomIO.getState(token, store),
 	)
 }

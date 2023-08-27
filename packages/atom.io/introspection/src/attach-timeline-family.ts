@@ -14,6 +14,7 @@ export const attachTimelineFamily = (
 			key: `👁‍🗨 Timeline Update Log (Internal)`,
 			default: (key) =>
 				store.timelines.get(key) ?? {
+					type: `timeline`,
 					key: ``,
 					at: 0,
 					timeTraveling: null,
@@ -26,12 +27,13 @@ export const attachTimelineFamily = (
 			effects: (key) => [
 				({ setSelf }) => {
 					const tl = store.timelines.get(key)
-					tl?.subject.subscribe((_) => {
+					tl?.subject.subscribe(`introspection`, (_) => {
 						if (store.operation.open === true) {
-							const subscription = store.subject.operationStatus.subscribe(
+							const unsubscribe = store.subject.operationStatus.subscribe(
+								`introspection`,
 								(operationStatus) => {
 									if (operationStatus.open === false) {
-										subscription.unsubscribe()
+										unsubscribe()
 										setSelf({ ...tl })
 									}
 								},

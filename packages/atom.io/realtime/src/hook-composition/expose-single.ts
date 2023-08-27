@@ -23,6 +23,7 @@ export const useExposeSingle = ({ socket, store }: ServerConfig) => {
 				({ newValue }) => {
 					socket.emit(`serve:${token.key}`, newValue)
 				},
+				`expose-single:${socket.id}`,
 				store,
 			)
 			socket.on(`unsub:${token.key}`, fillUnsubRequest)

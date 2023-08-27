@@ -3,7 +3,7 @@ import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 import { vitest } from "vitest"
 
-import { hasExactProperties, isPlainObject } from "~/packages/anvl/src/object"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 import {
 	isJson,
 	refineJsonType,
@@ -80,7 +80,7 @@ describe(`Junction.prototype.set`, () => {
 				between: [`reagent`, `reaction`],
 				cardinality: `n:n`,
 			},
-			hasExactProperties({ amount: isNumber }),
+			{ isContent: hasExactProperties({ amount: isNumber }) },
 		).set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
 		const amountOfFire = reactionReagents.getContent(
 			fire,
@@ -94,7 +94,7 @@ describe(`Junction.prototype.set`, () => {
 				between: [`reagent`, `reaction`],
 				cardinality: `n:n`,
 			},
-			hasExactProperties({ amount: isNumber }),
+			{ isContent: hasExactProperties({ amount: isNumber }) },
 		)
 		const fire = `03`
 		const fireAndWaterBecomeSteam = `486`
@@ -123,7 +123,6 @@ describe(`Junction.prototype.set1ToMany`, () => {
 		const newMemberships = memberships
 			.set({ group: yellowGroup, user: joey })
 			.set({ group: yellowGroup, user: mary })
-		console.log(newMemberships)
 		expect(newMemberships.getRelatedKeys(`yellow`)).toEqual(
 			new Set([joey, mary]),
 		)
@@ -157,7 +156,7 @@ describe(`Junction.prototype.set1ToMany`, () => {
 				between: [`reagent`, `reaction`],
 				cardinality: `1:n`,
 			},
-			hasExactProperties({ amount: isNumber }),
+			{ isContent: hasExactProperties({ amount: isNumber }) },
 		)
 		const newReagents = reactionReagents
 			.set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
@@ -206,7 +205,7 @@ describe(`Junction.prototype.delete`, () => {
 				between: [`celebrity0`, `celebrity1`],
 				cardinality: `n:n`,
 			},
-			hasExactProperties({ name: isString }),
+			{ isContent: hasExactProperties({ name: isString }) },
 		)
 			.set({ celebrity0: snad, celebrity1: cassilda }, { name: `snassilda` })
 			.delete({ celebrity0: snad, celebrity1: cassilda })
@@ -238,10 +237,12 @@ describe(`Junction.prototype.getRelatedIdEntries`, () => {
 				between: [`from`, `to`],
 				cardinality: `n:n`,
 			},
-			(input): input is Json.Object => {
-				if (!isJson(input)) return false
-				const refined = refineJsonType(input)
-				return refined.type === `object`
+			{
+				isContent: (input): input is Json.Object => {
+					if (!isJson(input)) return false
+					const refined = refineJsonType(input)
+					return refined.type === `object`
+				},
 			},
 		)
 
@@ -263,7 +264,7 @@ describe(`Junction.prototype.toJSON`, () => {
 				between: [`type`, `pokémon`],
 				cardinality: `1:n`,
 			},
-			hasExactProperties({ isDelta: isBoolean }),
+			{ isContent: hasExactProperties({ isDelta: isBoolean }) },
 		)
 			.set({ type: `grass`, pokémon: `bulbasaur` }, { isDelta: true })
 			.set({ type: `grass`, pokémon: `oddish` }, { isDelta: true })
@@ -273,9 +274,9 @@ describe(`Junction.prototype.toJSON`, () => {
 			cardinality: `1:n`,
 			between: [`type`, `pokémon`],
 			contents: [
-				[`bulbasaur:grass`, { isDelta: true }],
+				[`grass:bulbasaur`, { isDelta: true }],
 				[`grass:oddish`, { isDelta: true }],
-				[`bellsprout:grass`, { isDelta: false }],
+				[`grass:bellsprout`, { isDelta: false }],
 			],
 			relations: [
 				[`grass`, [`bulbasaur`, `oddish`, `bellsprout`]],
@@ -284,5 +285,72 @@ describe(`Junction.prototype.toJSON`, () => {
 				[`bellsprout`, [`grass`]],
 			],
 		})
+	})
+})
+
+describe(`Junction with external storage`, () => {
+	it(`accepts external storage methods`, () => {
+		const relationMap = new Map<string, Set<string>>()
+		const contentMap = new Map<string, Json.Object>()
+		const playersInRooms = new Junction(
+			{
+				between: [`room`, `player`],
+				cardinality: `1:n`,
+			},
+			{
+				isContent: hasExactProperties({ joinedAt: isNumber }),
+				externalStore: {
+					getContent: (key: string) => contentMap.get(key),
+					setContent: (key: string, content: { joinedAt: number }) =>
+						contentMap.set(`${key}`, content),
+					deleteContent: (key: string) => contentMap.delete(`${key}`),
+					getRelatedKeys: (key: string) => relationMap.get(key),
+					addRelation: (keyA: string, keyB: string) => {
+						const setA = relationMap.get(keyA) ?? new Set()
+						setA.add(keyB)
+						relationMap.set(keyA, setA)
+						const setB = relationMap.get(keyB) ?? new Set()
+						setB.add(keyA)
+						relationMap.set(keyB, setB)
+					},
+					deleteRelation(a: string, b: string): void {
+						const aRelations = relationMap.get(a)
+						if (aRelations) {
+							aRelations.delete(b)
+							if (aRelations.size === 0) {
+								relationMap.delete(a)
+							}
+							const bRelations = relationMap.get(b)
+							if (bRelations) {
+								bRelations.delete(a)
+								if (bRelations.size === 0) {
+									relationMap.delete(b)
+								}
+							}
+						}
+					},
+					has: (a: string, b?: string) => {
+						if (b) {
+							const aRelations = relationMap.get(a)
+							return aRelations?.has(b) ?? false
+						}
+						return relationMap.has(a)
+					},
+				},
+			},
+		)
+		const room = `Shrine`
+		const player = `Adelaide`
+		const joinedAt = 162
+		playersInRooms.set({ player, room }, { joinedAt })
+		console.log({ relationMap })
+		console.log({ contentMap })
+		console.log(playersInRooms)
+		expect(playersInRooms.has(room)).toBe(true)
+		expect(playersInRooms.getRelatedKeys(player)).toEqual(new Set([room]))
+		expect(playersInRooms.getContent(room, player)).toEqual({ joinedAt })
+		playersInRooms.delete({ player, room })
+		expect(playersInRooms.getRelatedKeys(player)).toBeUndefined()
+		expect(playersInRooms.getContent(player, room)).toBeUndefined()
 	})
 })

@@ -1,6 +1,7 @@
 import { vitest } from "vitest"
 
 import * as UTIL from "./__util__"
+import { withdraw } from "../internal/src"
 import type { AtomToken, TimelineToken } from "../src"
 import {
 	redo,
@@ -118,7 +119,8 @@ describe(`graceful handling of improper usage`, () => {
 			expect(logger.error).toHaveBeenCalledWith(
 				`❌ Failed to add atom "counts("a")" to timeline "a_count_history" because its family "counts" belongs to timeline "counts_history"`,
 			)
-			expect(countTimelineData?.history).toHaveLength(1)
+			console.log(withdraw(aCount, __INTERNAL__.IMPLICIT.STORE))
+			expect(countTimelineData?.history).toHaveLength(0)
 			expect(aCountTimelineData?.history).toHaveLength(0)
 		})
 	})

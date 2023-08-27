@@ -47,7 +47,7 @@ export const silo = (
 		timeline: (options) => timeline__INTERNAL(options, store),
 		getState: (token) => getState(token, store),
 		setState: (token, newValue) => setState(token, newValue, store),
-		subscribe: (token, handler) => subscribe(token, handler, store),
+		subscribe: (token, handler, key) => subscribe(token, handler, key, store),
 		undo: (token) => undo__INTERNAL(token, store),
 		redo: (token) => redo__INTERNAL(token, store),
 	}

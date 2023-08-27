@@ -1,4 +1,4 @@
-import type { StateUpdate } from "atom.io"
+import type { KeyedStateUpdate, StateUpdate } from "atom.io"
 
 import type { Atom } from "../atom"
 import type { Store } from "../store"
@@ -16,6 +16,10 @@ export const stowUpdate = <T>(
 		)
 		return
 	}
-	store.transactionStatus.atomUpdates.push({ key, ...update })
+	const atomUpdate: KeyedStateUpdate<T> = { key, ...update }
+	if (state.family) {
+		atomUpdate.family = state.family
+	}
+	store.transactionStatus.atomUpdates.push(atomUpdate)
 	logger?.info(`📝 ${key} stowed (`, update.oldValue, `->`, update.newValue, `)`)
 }
