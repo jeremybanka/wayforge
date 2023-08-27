@@ -29,7 +29,7 @@ export function atom__INTERNAL<T>(
 	const core = target(store)
 	const existing = core.atoms.get(options.key)
 	if (existing) {
-		store.config.logger?.error?.(
+		store.config.logger?.info?.(
 			`Key "${options.key}" already exists in the store.`,
 		)
 		return deposit(existing)
