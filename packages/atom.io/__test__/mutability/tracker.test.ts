@@ -1,7 +1,5 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./__util__"
-import { IMPLICIT } from "../internal/src"
 import {
 	__INTERNAL__,
 	atom,
@@ -11,8 +9,9 @@ import {
 	setLogLevel,
 	setState,
 	transaction,
-} from "../src"
-import { TransceiverSet, tracker, trackerFamily } from "../tracker/src"
+} from "../../src"
+import { TransceiverSet, tracker, trackerFamily } from "../../tracker/src"
+import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
