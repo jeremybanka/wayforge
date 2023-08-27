@@ -7,7 +7,7 @@ import { useTransition } from "react"
 import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { Luum, setHue, setLum, setSat } from "~/packages/luum/src"
 
-import { useSetTitle } from "../../../services/store"
+import { useSetTitle } from "../../../services/app-store"
 
 const colorAtom = atom<Luum>({
 	key: `color`,

@@ -10,7 +10,7 @@ import {
 	divisionTimeline,
 	resetEquationTX,
 	useSetTitle,
-} from "../../../services/store"
+} from "../../../services/app-store"
 
 export const Division: FC = () => {
 	useSetTitle(`Division`)
