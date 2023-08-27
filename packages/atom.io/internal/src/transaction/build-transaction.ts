@@ -1,3 +1,5 @@
+import { Junction } from "~/packages/rel8/junction/src"
+
 import type { Store } from "../store"
 
 export const buildTransaction = (
@@ -11,14 +13,16 @@ export const buildTransaction = (
 		time: Date.now(),
 		core: {
 			atoms: new Map(store.atoms),
-			atomsThatAreDefault: store.atomsThatAreDefault,
+			atomsThatAreDefault: new Set(store.atomsThatAreDefault),
 			operation: { open: false },
 			readonlySelectors: new Map(store.readonlySelectors),
 			timelines: new Map(store.timelines),
-			timelineAtoms: store.timelineAtoms,
+			timelineAtoms: new Junction(store.timelineAtoms.toJSON()),
 			transactions: new Map(store.transactions),
-			selectorAtoms: store.selectorAtoms,
-			selectorGraph: store.selectorGraph,
+			selectorAtoms: new Junction(store.selectorAtoms.toJSON()),
+			selectorGraph: new Junction(store.selectorGraph.toJSON(), {
+				makeContentKey: (...keys) => keys.sort().join(`:`),
+			}),
 			selectors: new Map(store.selectors),
 			valueMap: new Map(store.valueMap),
 		},
