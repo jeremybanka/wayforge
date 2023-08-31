@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.0.0
         version: 1.0.0
+      '@biomejs/cli-darwin-arm64':
+        specifier: 1.0.0
+        version: 1.0.0
       '@changesets/cli':
         specifier: 2.26.2
         version: 2.26.2
@@ -1213,7 +1216,6 @@ packages:
     os: [darwin]
     requiresBuild: true
     dev: true
-    optional: true
 
   /@biomejs/cli-darwin-x64@1.0.0:
     resolution: {integrity: sha512-uxIMt/X7TQWicjsImkqMvUUEqaFZTOJJrtEhlHl/eIaETWJmK3uAR7ihIWctpGJnN16sUgpLgwczc7FETqu/PQ==}
