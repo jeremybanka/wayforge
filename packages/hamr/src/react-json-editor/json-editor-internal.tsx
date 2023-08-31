@@ -11,9 +11,9 @@ import {
 } from "~/packages/anvl/src/refinement/refine-json"
 
 import { SubEditors } from "."
+import { ElasticInput } from "../react-elastic-input"
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
-import { ElasticInput } from "../react-elastic-input"
 
 export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	data: T

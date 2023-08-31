@@ -7,12 +7,12 @@ import type {
 
 import { become } from "~/packages/anvl/src/function"
 
-import { registerSelector } from "./register-selector"
-import { selector__INTERNAL, type Selector } from "./selector-internal"
 import { cacheValue } from "../caching"
 import { markDone } from "../operation"
 import type { StoreCore } from "../store"
 import { Subject } from "../subject"
+import { registerSelector } from "./register-selector"
+import { type Selector, selector__INTERNAL } from "./selector-internal"
 
 export const createReadWriteSelector = <T>(
 	options: SelectorOptions<T>,

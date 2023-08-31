@@ -1,8 +1,8 @@
 import { pipe } from "fp-ts/function"
 
+import { reduce, slice } from "../array"
 import type { InspectionResult } from "./sprawl"
 import { sprawl } from "./sprawl"
-import { reduce, slice } from "../array"
 
 export const deepMob = <Tree extends Array<unknown> | object>(
 	tree: Tree,

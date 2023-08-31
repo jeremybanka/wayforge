@@ -6,7 +6,7 @@ import { clampInto } from "~/packages/anvl/src/number/clamp"
 import type { HSL, LuumSpec } from "~/packages/luum/src"
 
 import type { LuumApplicator } from "."
-import { specToHex, hexToSpec } from ".."
+import { hexToSpec, specToHex } from ".."
 
 export const resetColor = (color: LuumSpec): LuumSpec =>
 	pipe(color, specToHex, hexToSpec, (hsl: HSL) => ({

@@ -1,7 +1,7 @@
 import type { SerializedStyles } from "@emotion/react"
 import { pipe } from "fp-ts/function"
 import type { FC } from "react"
-import { useState, useId, useRef } from "react"
+import { useId, useRef, useState } from "react"
 
 import { clampInto } from "~/packages/anvl/src/number"
 

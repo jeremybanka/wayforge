@@ -1,7 +1,7 @@
-import { isJsonSchemaRef } from "./refs"
 import { delve, tweak } from "../object"
 import { deepMob } from "../object/deepMob"
 import { sprawl } from "../object/sprawl"
+import { isJsonSchemaRef } from "./refs"
 
 export const dereference = <T extends Array<any> | { [key: keyof any]: any }>(
 	input: T,

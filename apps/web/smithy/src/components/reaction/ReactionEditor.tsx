@@ -18,8 +18,8 @@ import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import {
-	reactionSchemaState,
 	findReactionWithRelationsState,
+	reactionSchemaState,
 	useRemoveReaction,
 } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon"

@@ -1,3 +1,4 @@
+import { Refinery } from "../refinement/refinery"
 import {
 	Differ,
 	diffArray,
@@ -6,7 +7,6 @@ import {
 	diffObject,
 	diffString,
 } from "./differ"
-import { Refinery } from "../refinement/refinery"
 
 const primitiveRefinery = new Refinery({
 	number: (input: unknown): input is number => typeof input === `number`,

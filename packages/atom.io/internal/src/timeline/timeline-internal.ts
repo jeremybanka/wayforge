@@ -8,11 +8,11 @@ import type {
 	ƒn,
 } from "atom.io"
 
-import { addAtomToTimeline } from "./add-atom-to-timeline"
 import type { Store } from "../store"
 import { IMPLICIT } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
+import { addAtomToTimeline } from "./add-atom-to-timeline"
 
 export type TimelineAtomUpdate = StateUpdate<unknown> & {
 	key: string

@@ -1,8 +1,8 @@
-import { render, fireEvent, prettyDOM } from "@testing-library/react"
+import { fireEvent, prettyDOM, render } from "@testing-library/react"
 import type { FC } from "react"
 import { useEffect } from "react"
 import type { RecoilState, RecoilValueReadOnly } from "recoil"
-import { atom, RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
+import { RecoilRoot, atom, useRecoilState, useRecoilValue } from "recoil"
 import { vitest } from "vitest"
 
 import { Combo } from "./Combo"

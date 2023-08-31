@@ -1,9 +1,9 @@
-import { render, fireEvent } from "@testing-library/react"
+import { fireEvent, render } from "@testing-library/react"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
+import { atom, isDefault } from "../src"
 import { Observer } from "./__util__/Observer"
-import { isDefault, atom } from "../src"
 
 export const onChange = [() => undefined, console.log][0]
 

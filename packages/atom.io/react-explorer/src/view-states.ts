@@ -1,4 +1,4 @@
-import type { AtomToken, AtomFamily } from "atom.io"
+import type { AtomFamily, AtomToken } from "atom.io"
 import { atom, atomFamily } from "atom.io"
 import { lazyLocalStorageEffect } from "atom.io/web-effects"
 import type { Location } from "react-router-dom"

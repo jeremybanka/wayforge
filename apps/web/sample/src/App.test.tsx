@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react"
+import { fireEvent, render } from "@testing-library/react"
 import type { StateToken } from "atom.io"
 import { useO } from "atom.io/react"
 import type { FC } from "react"

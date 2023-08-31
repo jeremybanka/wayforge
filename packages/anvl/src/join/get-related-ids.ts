@@ -1,5 +1,5 @@
-import type { RelationData } from "./core-relation-data"
 import type { Json } from "../json"
+import type { RelationData } from "./core-relation-data"
 
 export const getRelatedIds = <
 	CONTENT extends Json.Object | null,

@@ -1,5 +1,5 @@
-import normalizeHex from "./normalizeHex"
 import type { ChannelObject } from ".."
+import normalizeHex from "./normalizeHex"
 
 export default (maybeHex: string): ChannelObject => {
 	const hex = normalizeHex(maybeHex)

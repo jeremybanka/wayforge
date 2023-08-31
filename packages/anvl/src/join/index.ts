@@ -2,6 +2,8 @@ import type { Refinement } from "fp-ts/Refinement"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
+import type { Json, JsonInterface } from "../json"
+import type { NullSafeRest, NullSafeUnion } from "../nullish"
 import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-related-ids"
@@ -10,8 +12,6 @@ import { getContent, getRelations, setRelations } from "./relation-contents"
 import { getRelationEntries, getRelationRecord } from "./relation-record"
 import { removeRelation } from "./remove-relation"
 import { setRelationWithContent } from "./set-relation"
-import type { Json, JsonInterface } from "../json"
-import type { NullSafeRest, NullSafeUnion } from "../nullish"
 
 export class Join<
 	CONTENT extends Json.Object | null = null,

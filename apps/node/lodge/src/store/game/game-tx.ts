@@ -2,6 +2,7 @@ import { nanoid } from "nanoid"
 
 import { transaction } from "~/packages/atom.io/src"
 
+import { playersIndex } from "../rooms"
 import { cardIndex, findCardState } from "./card"
 import type { CardGroup } from "./card-group"
 import {
@@ -16,7 +17,6 @@ import {
 	valuesOfCardsState,
 } from "./card-value"
 import { CARD_VALUES } from "./playing-card-data"
-import { playersIndex } from "../rooms"
 
 export const add52ClassicCardsTX = transaction<() => void>({
 	key: `add52ClassicCards`,

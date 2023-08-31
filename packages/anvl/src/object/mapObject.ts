@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/function"
 
-import { entriesToRecord, recordToEntries } from "./entries"
 import { map } from "../array"
+import { entriesToRecord, recordToEntries } from "./entries"
 
 export const mapObject = <K extends keyof any, I, O>(
 	obj: Record<K, I>,

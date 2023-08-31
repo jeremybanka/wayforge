@@ -1,6 +1,6 @@
 import * as http from "http"
 
-import { prettyDOM, render, type RenderResult } from "@testing-library/react"
+import { type RenderResult, prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-react"

@@ -9,7 +9,7 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { atom__INTERNAL } from "../atom"
-import { IMPLICIT, withdraw, type Store, deposit } from "../store"
+import { IMPLICIT, type Store, deposit, withdraw } from "../store"
 import { Subject } from "../subject"
 
 export function atomFamily__INTERNAL<T, K extends Json.Serializable>(

@@ -1,8 +1,8 @@
 import type { AtomToken, ReadonlySelectorToken, TimelineToken } from "atom.io"
-import { undo, redo } from "atom.io"
+import { redo, undo } from "atom.io"
 import type { Timeline } from "atom.io/internal"
 import { useIO, useO } from "atom.io/react"
-import { Fragment, type FC } from "react"
+import { type FC, Fragment } from "react"
 
 import { findTimelineState, findViewIsOpenState, timelineIndex } from "."
 import { button } from "./Button"

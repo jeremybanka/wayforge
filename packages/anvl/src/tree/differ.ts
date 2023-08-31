@@ -1,5 +1,5 @@
 import { sprawl } from "../object"
-import type { Supported, Refinery } from "../refinement/refinery"
+import type { Refinery, Supported } from "../refinement/refinery"
 import { discoverType } from "../refinement/refinery"
 
 export function diffNumber(a: number, b: number): Delta {

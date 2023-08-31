@@ -6,8 +6,8 @@ import type { FC } from "react"
 import { valuesOfCardsState } from "~/apps/node/lodge/src/store/game"
 import * as PLAYING_CARDS from "~/apps/node/lodge/src/store/game/playing-card-data"
 
-import { article } from "../../containers/<article>"
 import { PlayingCards } from "../../PlayingCards"
+import { article } from "../../containers/<article>"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
 	const value = useO(valuesOfCardsState).getRelatedId(id)
