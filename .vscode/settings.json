@@ -33,7 +33,7 @@
 		"zustand"
 	],
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true
+		"source.organizeImports.biome": true
 	},
 	"[typescript]": {
 		"editor.formatOnSave": true,
