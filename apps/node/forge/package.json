@@ -7,7 +7,7 @@
 		"build": "echo zero-build app powered by tsx",
 		"test": "vitest",
 		"test:once": "cross-env CI=true vitest run",
-		"lint:rome": "rome check .",
+		"lint:rome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint"
 	},

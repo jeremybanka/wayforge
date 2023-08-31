@@ -9,7 +9,7 @@
 		"preview": "vite preview",
 		"test": "vitest",
 		"test:once": "vitest run",
-		"lint:rome": "rome check .",
+		"lint:rome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint"
 	},

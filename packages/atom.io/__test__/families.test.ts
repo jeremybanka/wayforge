@@ -46,7 +46,7 @@ describe(`selector families`, () => {
 					const pointA = get(findPointState(keyA))
 					const pointB = get(findPointState(keyB))
 					return Math.sqrt(
-						Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2),
+						(pointA.x - pointB.x) ** 2 + (pointA.y - pointB.y) ** 2,
 					)
 				},
 		})
