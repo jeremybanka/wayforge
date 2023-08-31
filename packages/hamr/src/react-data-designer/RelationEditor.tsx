@@ -1,8 +1,8 @@
 import type { Join } from "~/packages/anvl/src/join"
 
+import { Id } from "../react-id"
 import type { DataDesigner } from "./DataDesigner"
 import scss from "./RelationEditor.module.scss"
-import { Id } from "../react-id"
 
 export const RelationEditor: DataDesigner<Join, `Tree`> = (props) => {
 	const seen = new Set()

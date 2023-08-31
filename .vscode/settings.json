@@ -2,6 +2,7 @@
 	"editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
 	"cSpell.words": [
 		"anvl",
+		"biomejs",
 		"Cardstock",
 		"Deleters",
 		"Diagon",
@@ -32,15 +33,15 @@
 		"zustand"
 	],
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true
+		"source.organizeImports.biome": true
 	},
 	"[typescript]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "rome.rome"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[typescriptreact]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "rome.rome"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[html]": {
 		"editor.formatOnSave": true,
@@ -56,7 +57,7 @@
 	},
 	"[json]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "rome.rome"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"references.preferredLocation": "peek",
 	"typescript.tsdk": "node_modules/typescript/lib"

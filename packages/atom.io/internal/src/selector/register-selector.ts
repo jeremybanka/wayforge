@@ -1,11 +1,11 @@
 import type { Transactors } from "atom.io"
 
-import { updateSelectorAtoms } from "./update-selector-atoms"
 import { getState__INTERNAL } from "../get-state-internal"
 import { setState__INTERNAL } from "../set-state"
 import type { Store } from "../store"
 import { IMPLICIT, withdraw } from "../store"
 import { target } from "../transaction/transaction-internal"
+import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
 	selectorKey: string,

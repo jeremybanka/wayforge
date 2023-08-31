@@ -14,12 +14,12 @@ import {
 } from "~/apps/node/lodge/src/store/rooms"
 import { Id } from "~/packages/hamr/src/react-id"
 
-import { PlayersInRoom } from "./PlayersInRoom"
-import scss from "./Room.module.scss"
-import { header } from "../../containers/<header>"
 import { h3 } from "../../containers/<hX>"
+import { header } from "../../containers/<header>"
 import { Game } from "../Game/Game"
 import { myRoomState } from "../Game/store/my-room"
+import { PlayersInRoom } from "./PlayersInRoom"
+import scss from "./Room.module.scss"
 
 export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 	const myId = useO(myIdState)

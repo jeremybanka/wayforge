@@ -1,9 +1,9 @@
 import {
-	useRecoilTransaction_UNSTABLE,
+	DefaultValue,
 	atom,
 	atomFamily,
 	selectorFamily,
-	DefaultValue,
+	useRecoilTransaction_UNSTABLE,
 } from "recoil"
 import type z from "zod"
 
@@ -22,9 +22,9 @@ import {
 
 import type { Amount } from "./energy_reaction"
 import {
+	energyFeaturesState,
 	reactionProductsState,
 	reactionReagentsState,
-	energyFeaturesState,
 } from "./energy_reaction"
 import { socket } from "./socket"
 

@@ -8,7 +8,7 @@ import { pipe } from "fp-ts/function"
 import * as React from "react"
 
 import { stringToColor } from "~/packages/anvl/src/string/string-to-color"
-import { contrastMax, hexToSpec, specToHex, offset } from "~/packages/luum/src"
+import { contrastMax, hexToSpec, offset, specToHex } from "~/packages/luum/src"
 
 export const Id: React.FC<{ id: string }> = ({ id }) => {
 	const [isOpen, setIsOpen] = React.useState(false)

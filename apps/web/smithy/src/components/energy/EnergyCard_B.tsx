@@ -6,12 +6,12 @@ import type { RecoilListItemProps } from "~/packages/hamr/src/recoil-tools/Recoi
 import { ListItems } from "~/packages/hamr/src/recoil-tools/RecoilList"
 import { Luum } from "~/packages/luum/src"
 
-import { SVG_EnergyIcon } from "./EnergyIcon"
 import { findEnergyWithRelationsState } from "../../services/energy"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
 import { cssCard } from "../Card"
 import { ReactionIcon_INTERNAL } from "../reaction/ReactionIcon"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 
 type SvgCommandCode = `C` | `L` | `M` | `Q` | `S`
 

@@ -2,8 +2,8 @@ import * as React from "react"
 
 import { Luum } from "~/packages/luum/src"
 
-import scss from "./RadialDemo.module.scss"
 import { useRadial } from "../../../services/radial"
+import scss from "./RadialDemo.module.scss"
 
 export const RadialDemo: React.FC = () => {
 	return (

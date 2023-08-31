@@ -1,4 +1,4 @@
-import { setState, runTransaction } from "atom.io"
+import { runTransaction, setState } from "atom.io"
 import type { StoreHooks } from "atom.io/react"
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"

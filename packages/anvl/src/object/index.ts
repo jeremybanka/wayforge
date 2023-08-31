@@ -1,11 +1,11 @@
-import { pipe } from "fp-ts/function"
 import type { Refinement } from "fp-ts/Refinement"
+import { pipe } from "fp-ts/function"
 
+import { filter, includesAny, reduce } from "../array"
+import { isUndefined } from "../nullish"
 import { deepMob } from "./deepMob"
 import { entriesToRecord, recordToEntries } from "./entries"
 import { isPlainObject } from "./refinement"
-import { includesAny, reduce, filter } from "../array"
-import { isUndefined } from "../nullish"
 
 export * from "./access"
 export * from "./deepMob"

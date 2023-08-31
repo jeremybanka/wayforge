@@ -9,12 +9,12 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { readonlySelectorFamily__INTERNAL } from "./readonly-selector-family-internal"
 import { selector__INTERNAL } from "../selector"
 import type { Store } from "../store"
 import { IMPLICIT, deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
+import { readonlySelectorFamily__INTERNAL } from "./readonly-selector-family-internal"
 
 export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
 	options: SelectorFamilyOptions<T, K>,

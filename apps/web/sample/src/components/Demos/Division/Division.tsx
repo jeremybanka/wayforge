@@ -3,14 +3,14 @@ import type { FC } from "react"
 
 import { redo, runTransaction, undo } from "~/packages/atom.io/src"
 
-import { Dividend } from "./Dividend"
-import { Divisor } from "./Divisor"
-import { Quotient } from "./Quotient"
 import {
 	divisionTimeline,
 	resetEquationTX,
 	useSetTitle,
 } from "../../../services/app-store"
+import { Dividend } from "./Dividend"
+import { Divisor } from "./Divisor"
+import { Quotient } from "./Quotient"
 
 export const Division: FC = () => {
 	useSetTitle(`Division`)

@@ -2,10 +2,10 @@ import { css } from "@emotion/react"
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
-import { ReactComponent as Connected } from "./assets/svg/connected.svg"
-import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
 import { Explorer } from "./Explorer"
 import { Spaces } from "./NavigationSpace"
+import { ReactComponent as Connected } from "./assets/svg/connected.svg"
+import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
 import { connectionState } from "./services/socket"
 
 export const App: FC = () => {

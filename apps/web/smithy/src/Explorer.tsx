@@ -6,9 +6,9 @@ import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil
 
 import {
 	commitMessageState,
-	useCommitAll,
 	git,
 	newBranchNameState,
+	useCommitAll,
 	useMakeNewBranch,
 } from "./services/git"
 

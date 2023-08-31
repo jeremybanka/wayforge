@@ -1,7 +1,7 @@
 import type { SerializedStyles } from "@emotion/react"
 import { pipe } from "fp-ts/function"
 import type { FC } from "react"
-import { useState, useId, useRef } from "react"
+import { useId, useRef, useState } from "react"
 
 import { clampInto } from "~/packages/anvl/src/number"
 
@@ -25,6 +25,7 @@ export const isValidNonNumber = (input: string): input is ValidNonNumber =>
 export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<
 	Record<ValidNonNumber, number | null>
 > = {
+	// rome-ignore lint/complexity/useLiteralKeys: the linter is buggy
 	"": null,
 	"-": 0,
 	".": 0,

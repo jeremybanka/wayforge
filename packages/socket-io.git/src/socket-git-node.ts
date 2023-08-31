@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/function"
 import type { SimpleGit } from "simple-git"
 import { simpleGit } from "simple-git"
-import type { Socket, Server as WebSocketServer } from "socket.io"
+import type { Server as WebSocketServer, Socket } from "socket.io"
 
 import { redact } from "~/packages/anvl/src/object"
 import { recordToEntries } from "~/packages/anvl/src/object/entries"

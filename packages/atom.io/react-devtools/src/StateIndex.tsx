@@ -1,7 +1,7 @@
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
 import { getState, selectorFamily } from "atom.io"
 import type { FamilyNode, StateTokenIndex } from "atom.io/introspection"
-import { useO, useIO } from "atom.io/react"
+import { useIO, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import {

@@ -8,8 +8,8 @@ import { App } from "./App"
 import { SocketStatus } from "./components/SocketStatus"
 import { env } from "./services/env"
 
-import "./scss/index.scss"
 import "./scss/font-face.scss"
+import "./scss/index.scss"
 
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)

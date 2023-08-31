@@ -2,9 +2,7 @@
 	"name": "hamr",
 	"version": "0.4.3",
 	"description": "core react and recoil utilities for wayforge",
-	"files": [
-		"**/*"
-	],
+	"files": ["**/*"],
 	"exports": {
 		"./react-css-vars/package.json": "./react-css-vars/package.json",
 		"./react-css-vars": {
@@ -101,7 +99,7 @@
 	},
 	"scripts": {
 		"build": "./build.sh",
-		"lint:rome": "rome check .",
+		"lint:rome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",

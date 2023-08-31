@@ -9,9 +9,9 @@ import type {
 import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
 
 import type { RequireAtLeastOne } from "."
-import type { Link, Links } from "./document"
 import { ifDefined } from "../nullish"
 import { isJson } from "../refinement/refine-json"
+import type { Link, Links } from "./document"
 
 export type Relationships = Record<
 	string,

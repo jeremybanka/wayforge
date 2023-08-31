@@ -1,15 +1,15 @@
-import type { Socket, Server as WebSocketServer } from "socket.io"
+import type { Server as WebSocketServer, Socket } from "socket.io"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
 import {
-	initIndexer,
-	initResourceReader,
-	initRelationReader,
-	initSchemaReader,
-	initRelationsWriter,
 	initIndexWriter,
-	initResourceWriter,
+	initIndexer,
+	initRelationReader,
+	initRelationsWriter,
+	initResourceReader,
 	initResourceTypeInitializer,
+	initResourceWriter,
+	initSchemaReader,
 } from "~/packages/ingt/src"
 import type { FilestoreOptions } from "~/packages/ingt/src"
 

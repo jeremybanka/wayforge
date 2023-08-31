@@ -5,9 +5,9 @@ import { useRecoilValue } from "recoil"
 
 import { Luum } from "~/packages/luum/src"
 
-import { SVG_EnergyIcon } from "./EnergyIcon"
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_WIDTH, cssCard } from "../Card"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 
 export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
 	const domId = useId()

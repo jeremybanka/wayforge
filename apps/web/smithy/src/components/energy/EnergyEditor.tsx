@@ -10,10 +10,6 @@ import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
 import type { RecoilEditorProps } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
 import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
 
-import { Data_EnergyCard_A } from "./EnergyCard_A"
-import { Data_EnergyCard_B } from "./EnergyCard_B"
-import { ReactionList } from "./EnergyFeatureReactionList"
-import { SVG_EnergyIcon } from "./EnergyIcon"
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {
 	energySchemaState,
@@ -24,6 +20,10 @@ import { git } from "../../services/git"
 import { useAddReactionAsEnergyFeature } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
+import { Data_EnergyCard_A } from "./EnergyCard_A"
+import { Data_EnergyCard_B } from "./EnergyCard_B"
+import { ReactionList } from "./EnergyFeatureReactionList"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 
 export const Slot_PreviewCardSleeve: FC<{
 	children: ReactNode

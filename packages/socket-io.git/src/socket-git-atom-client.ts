@@ -6,8 +6,8 @@ import * as A_IO from "~/packages/atom.io/src"
 
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 import type {
-	GitInterface,
 	GitClientEvents,
+	GitInterface,
 	GitServerEvents,
 	GitSocketError,
 } from "./interface"

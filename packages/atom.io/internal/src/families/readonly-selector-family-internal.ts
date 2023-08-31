@@ -8,7 +8,7 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { selector__INTERNAL } from "../selector"
-import { deposit, type Store } from "../store"
+import { type Store, deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 

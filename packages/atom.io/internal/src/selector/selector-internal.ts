@@ -6,11 +6,11 @@ import type {
 	SelectorToken,
 } from "atom.io"
 
-import { createReadWriteSelector } from "./create-read-write-selector"
-import { createReadonlySelector } from "./create-readonly-selector"
 import { IMPLICIT, type Store } from "../store"
 import type { Subject } from "../subject"
 import { target } from "../transaction"
+import { createReadWriteSelector } from "./create-read-write-selector"
+import { createReadonlySelector } from "./create-readonly-selector"
 
 export type Selector<T> = {
 	key: string

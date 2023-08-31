@@ -57,17 +57,15 @@ export const Radial = ({
 			<div
 				className="react_radial_0123456790"
 				style={setCssVars({
-					[`--action-count`]: `${actions.length}`,
-					[`--x`]: currentPosition.x + `px`,
-					[`--y`]: currentPosition.y + `px`,
-					[`--ring-size`]: ringRatio * size + `px`,
-					[`--option-size`]: (isActive ? size : 20) + `px`,
-					[`--is-active-pointer-events`]: isActive ? `all` : `none`,
-					[`--is-active-opacity`]: isActive ? 1 : 0.1,
-					[`--is-active-background`]: isActive ? `#3337` : `#fff`,
-					[`--is-active-border`]: isActive
-						? `1px solid #fff`
-						: `10px solid #000`,
+					"--action-count": `${actions.length}`,
+					"--x": currentPosition.x + `px`,
+					"--y": currentPosition.y + `px`,
+					"--ring-size": ringRatio * size + `px`,
+					"--option-size": (isActive ? size : 20) + `px`,
+					"--is-active-pointer-events": isActive ? `all` : `none`,
+					"--is-active-opacity": isActive ? 1 : 0.1,
+					"--is-active-background": isActive ? `#3337` : `#fff`,
+					"--is-active-border": isActive ? `1px solid #fff` : `10px solid #000`,
 				})}
 			>
 				{mode === `open` ? (
@@ -87,7 +85,7 @@ export const Radial = ({
 							className={
 								`radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
 							}
-							style={setCssVars({ [`--idx`]: `${idx}` })}
+							style={setCssVars({ "--idx": `${idx}` })}
 							{...makeMouseHandlers({
 								onMouseUpR: () => (
 									opt.do(),
@@ -110,9 +108,9 @@ export const Radial = ({
 			<footer
 				className="react_radial_0123456790__info"
 				style={setCssVars({
-					[`--x`]: currentPosition.x + `px`,
-					[`--y`]: currentPosition.y + `px`,
-					[`--size`]: ringRatio * size + `px`,
+					"--x": currentPosition.x + `px`,
+					"--y": currentPosition.y + `px`,
+					"--size": ringRatio * size + `px`,
 				})}
 			>
 				<AnimatePresence>

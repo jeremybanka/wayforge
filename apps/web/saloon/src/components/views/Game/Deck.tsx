@@ -3,14 +3,14 @@ import { useServerAction } from "atom.io/realtime-react"
 import type { FC } from "react"
 
 import {
-	shuffleDeckTX,
 	groupsOfCardsState,
+	shuffleDeckTX,
 } from "~/apps/node/lodge/src/store/game"
 
-import { CardBack } from "./Card"
-import scss from "./Deck.module.scss"
 import { useRadial } from "../../../services/radial"
 import { div } from "../../containers/<div>"
+import { CardBack } from "./Card"
+import scss from "./Deck.module.scss"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
 	const cardIds = useO(groupsOfCardsState).getRelatedIds(id)

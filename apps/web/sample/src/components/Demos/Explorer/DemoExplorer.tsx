@@ -1,6 +1,6 @@
 import { css } from "@emotion/react"
 import type { FC } from "react"
-import { Link, Route, Routes, Outlet } from "react-router-dom"
+import { Link, Outlet, Route, Routes } from "react-router-dom"
 
 import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
 

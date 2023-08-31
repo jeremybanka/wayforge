@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, renameSync } from "fs"
+import { mkdirSync, renameSync, writeFileSync } from "fs"
 
 import { pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"

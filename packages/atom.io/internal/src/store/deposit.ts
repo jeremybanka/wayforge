@@ -1,10 +1,10 @@
 import type {
-	ƒn,
 	AtomToken,
 	ReadonlySelectorToken,
 	SelectorToken,
 	StateToken,
 	TransactionToken,
+	ƒn,
 } from "atom.io"
 
 import type { Atom } from "../atom"

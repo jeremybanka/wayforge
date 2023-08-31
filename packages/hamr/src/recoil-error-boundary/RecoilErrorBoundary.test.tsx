@@ -1,8 +1,8 @@
 import { prettyDOM, render } from "@testing-library/react"
 import { RecoilRoot } from "recoil"
 
-import { RecoverableErrorBoundary } from "./RecoilErrorBoundary"
 import { ThrowOnRender } from "../react-error-boundary"
+import { RecoverableErrorBoundary } from "./RecoilErrorBoundary"
 
 let expectedErrors = 0
 let actualErrors = 0

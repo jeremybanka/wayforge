@@ -1,8 +1,8 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
 
-import { traceSelectorAtoms } from "./trace-selector-atoms"
 import type { Store } from "../store"
 import { target } from "../transaction"
+import { traceSelectorAtoms } from "./trace-selector-atoms"
 
 export const updateSelectorAtoms = (
 	selectorKey: string,

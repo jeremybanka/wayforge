@@ -4,7 +4,6 @@ import { useRecoilValue } from "recoil"
 
 import { ListItems } from "~/packages/hamr/src/recoil-tools/RecoilList"
 
-import { ReactionListItem } from "./ReactionListItem"
 import {
 	findReactionState,
 	reactionIndex,
@@ -12,6 +11,7 @@ import {
 	useRemoveReaction,
 } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
+import { ReactionListItem } from "./ReactionListItem"
 
 const Wrapper = styled.ul`
 	padding: 20px;
