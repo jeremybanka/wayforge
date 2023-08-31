@@ -5,8 +5,8 @@ import { RecoilRoot } from "recoil"
 
 import { App } from "./App"
 
-import "./index.scss"
 import "./font-face.scss"
+import "./index.scss"
 
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)

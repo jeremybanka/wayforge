@@ -5,12 +5,12 @@ import { lazyLocalStorageEffect } from "atom.io/web-effects"
 import { isPlainObject } from "~/packages/anvl/src/object"
 import { Refinery } from "~/packages/anvl/src/refinement/refinery"
 import {
+	Differ,
 	diffArray,
 	diffBoolean,
 	diffNumber,
 	diffObject,
 	diffString,
-	Differ,
 } from "~/packages/anvl/src/tree/differ"
 
 export * from "./AtomIODevtools"

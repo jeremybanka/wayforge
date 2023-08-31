@@ -1,5 +1,5 @@
-import { pipe } from "fp-ts/function"
 import type { Refinement } from "fp-ts/Refinement"
+import { pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
 
 import { content, each, isArray, join, map } from "~/packages/anvl/src/array"
@@ -8,7 +8,7 @@ import type { Modifier, OneOrMany } from "~/packages/anvl/src/function"
 import { isUndefined } from "~/packages/anvl/src/nullish"
 import { key } from "~/packages/anvl/src/object/access"
 import { specToHex } from "~/packages/luum/src"
-import type { Filter, LuumSpec, FilterPoint } from "~/packages/luum/src"
+import type { Filter, FilterPoint, LuumSpec } from "~/packages/luum/src"
 import { defaultSpec } from "~/packages/luum/src/constants/luum-spec"
 import { shadeBy } from "~/packages/luum/src/mixers/lum"
 

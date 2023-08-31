@@ -5,12 +5,7 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"module": "./dist/index.mjs",
-	"files": [
-		"dist",
-		"junction/package.json",
-		"junction/dist",
-		"junction/src"
-	],
+	"files": ["dist", "junction/package.json", "junction/dist", "junction/src"],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
@@ -32,7 +27,7 @@
 		"build:junction": "cd junction && tsup",
 		"build:types": "cd types && tsup",
 		"lint": "concurrently \"npm:lint:*\"",
-		"lint:rome": "rome check .",
+		"lint:rome": "biome check .",
 		"lint:eslint": "eslint .",
 		"test": "vitest",
 		"test:once": "vitest run"
@@ -46,14 +41,7 @@
 		"vite-tsconfig-paths": "4.2.0",
 		"vitest": "0.34.3"
 	},
-	"keywords": [
-		"relation",
-		"data",
-		"relational",
-		"join",
-		"bridge",
-		"junction"
-	],
+	"keywords": ["relation", "data", "relational", "join", "bridge", "junction"],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git"

@@ -1,5 +1,5 @@
+import type { HKT, Kind, Kind2, URIS, URIS2 } from "fp-ts/HKT"
 import { pipe } from "fp-ts/function"
-import type { Kind, Kind2, URIS, URIS2, HKT } from "fp-ts/HKT"
 import * as D from "io-ts/Decoder"
 import * as S from "io-ts/Schemable"
 

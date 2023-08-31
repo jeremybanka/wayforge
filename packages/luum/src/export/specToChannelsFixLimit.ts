@@ -13,8 +13,8 @@ import { unfiltered } from "../constants/filters"
 import hueToRelativeChannels from "../import/hueToRelativeChannels"
 import {
 	lumFromChannels,
-	specificLumFromHue,
 	maxSatForHueInFilter,
+	specificLumFromHue,
 } from "../solveFor"
 
 const minChannelsForSaturationFromHue = (hue: Degree) => {

@@ -11,12 +11,12 @@ import {
 	valuesOfCardsStateJSON,
 } from "~/apps/node/lodge/src/store/game"
 
+import { h3 } from "../../containers/<hX>"
 import { Controls } from "./Controls"
 import { EnemyDomains } from "./EnemyDomains"
 import scss from "./Game.module.scss"
 import { MyDomain } from "./MyDomain"
 import { Public } from "./Public"
-import { h3 } from "../../containers/<hX>"
 
 export const Game: FC = () => {
 	usePull(ownersOfGroupsStateJSON)

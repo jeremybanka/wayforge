@@ -1,4 +1,4 @@
-import { useO, useIO } from "atom.io/react"
+import { useIO, useO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 

@@ -9,7 +9,7 @@
 		"preview": "vite preview",
 		"test": "echo \"No tests yet.\" && exit 0",
 		"test:once": "echo \"No tests yet.\" && exit 0",
-		"lint:rome": "rome check .",
+		"lint:rome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint"
 	},

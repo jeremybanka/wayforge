@@ -3,7 +3,6 @@ import { vitest } from "vitest"
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
-import * as UTIL from "./__util__"
 import {
 	__INTERNAL__,
 	atom,
@@ -18,6 +17,7 @@ import {
 	subscribeToTransaction,
 	transaction,
 } from "../src"
+import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

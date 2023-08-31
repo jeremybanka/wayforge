@@ -1,7 +1,7 @@
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
 
-import type { Store } from "./store"
 import { target } from "../transaction"
+import type { Store } from "./store"
 
 export function lookup(
 	key: string,

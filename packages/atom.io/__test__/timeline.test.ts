@@ -1,6 +1,5 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./__util__"
 import {
 	__INTERNAL__,
 	atom,
@@ -14,6 +13,7 @@ import {
 	transaction,
 } from "../src"
 import { redo, timeline, undo } from "../src/timeline"
+import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0

@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"dev": "cd example && vite",
-		"lint:rome": "rome check .",
+		"lint:rome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:rome && npm run lint:eslint",
 		"test": "vitest",
@@ -25,12 +25,7 @@
 		"vite-tsconfig-paths": "4.2.0",
 		"vitest": "0.34.3"
 	},
-	"keywords": [
-		"color",
-		"css",
-		"javascript",
-		"library"
-	],
+	"keywords": ["color", "css", "javascript", "library"],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git"

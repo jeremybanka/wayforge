@@ -1,5 +1,5 @@
-import { Subject } from "./subject"
 import type { Json } from "../src/json"
+import { Subject } from "./subject"
 
 export type Transceiver<Signal extends Json.Serializable> = {
 	do: (update: Signal) => void

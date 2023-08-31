@@ -5,7 +5,7 @@ import type {
 	SelectorFamily,
 	Write,
 } from "atom.io"
-import { selectorFamily, selector, transaction, atom } from "atom.io"
+import { atom, selector, selectorFamily, transaction } from "atom.io"
 import { persistAtom } from "atom.io/web-effects"
 
 import { lastOf } from "~/packages/anvl/src/array"
@@ -15,15 +15,15 @@ import type { Entries } from "~/packages/anvl/src/object"
 
 import { addToIndex, removeFromIndex } from "."
 import {
-	makeSpaceLayoutNodeFamily,
 	makeSpaceFamily,
 	makeSpaceIndex,
+	makeSpaceLayoutNodeFamily,
 	makeSpaceLayoutState,
 } from "./space-states"
 import type { View } from "./view-states"
 import {
-	makeViewFocusedFamily,
 	makeViewFamily,
+	makeViewFocusedFamily,
 	makeViewIndex,
 } from "./view-states"
 

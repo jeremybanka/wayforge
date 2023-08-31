@@ -8,12 +8,12 @@ import type {
 	ƒn,
 } from "atom.io"
 
-import type { Store } from "./store"
 import type { Atom } from "../atom"
 import type { ReadonlySelector, Selector } from "../selector"
-import { addAtomToTimeline, type Timeline } from "../timeline"
+import { type Timeline, addAtomToTimeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import { target } from "../transaction"
+import type { Store } from "./store"
 
 export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T> | null
 export function withdraw<T>(

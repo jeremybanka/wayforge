@@ -2,9 +2,9 @@ import type { ReactElement } from "react"
 
 import type { Json } from "~/packages/anvl/src/json"
 
-import { makeElementSetters } from "./utilities/array-elements"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
+import { makeElementSetters } from "./utilities/array-elements"
 
 export const ArrayEditor = <_ extends Json.Array>({
 	path = [],

@@ -2,7 +2,6 @@
 
 import { vitest } from "vitest"
 
-import * as UTIL from "./__util__"
 import {
 	__INTERNAL__,
 	atom,
@@ -13,6 +12,7 @@ import {
 	subscribe,
 	transaction,
 } from "../src"
+import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

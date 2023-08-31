@@ -3,36 +3,36 @@ import { pipe } from "fp-ts/function"
 import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 
+import { isArray } from "../array"
+import { select } from "../object"
+import { modify } from "../object/modify"
+import { doesExtend } from "../object/refinement"
+import { couldBe, isWithin } from "../refinement"
 import { dereference } from "./dereference"
 import { isInteger } from "./integer"
 import type {
-	JsonSchemaRoot,
 	ArraySchema,
 	BooleanSchema,
 	IntegerSchema,
+	JsonSchemaRoot,
 	MixedSchema,
 	NullSchema,
+	NumberSchema,
 	ObjectSchema,
 	StringSchema,
-	NumberSchema,
 } from "./json-schema"
 import {
-	isJsonSchemaRoot,
 	JSON_SCHEMA_TYPE_NAMES,
 	isArraySchema,
 	isBooleanSchema,
 	isIntegerSchema,
+	isJsonSchemaRoot,
 	isMixedSchema,
 	isNullSchema,
 	isNumberSchema,
 	isObjectSchema,
 	isStringSchema,
 } from "./json-schema"
-import { isArray } from "../array"
-import { select } from "../object"
-import { modify } from "../object/modify"
-import { doesExtend } from "../object/refinement"
-import { couldBe, isWithin } from "../refinement"
 
 export type RefinedJsonSchema =
 	| { type: `any`; data: true }

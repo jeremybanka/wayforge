@@ -6,11 +6,11 @@ import type {
 } from "atom.io"
 import { getState, setState } from "atom.io"
 
+import { IMPLICIT, type Store, type StoreCore, deposit } from "../store"
+import { Subject } from "../subject"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
 import { buildTransaction } from "./build-transaction"
-import { IMPLICIT, deposit, type Store, type StoreCore } from "../store"
-import { Subject } from "../subject"
 
 export type Transaction<ƒ extends ƒn> = {
 	key: string

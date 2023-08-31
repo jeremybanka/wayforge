@@ -12,7 +12,7 @@ import { findEnergyState } from "../../services/energy"
 import { findReactionEnergyState } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
-import { Span_VoidIcon, Span_EnergyAmount } from "../energy/EnergyIcon"
+import { Span_EnergyAmount, Span_VoidIcon } from "../energy/EnergyIcon"
 
 const fancyModeListCss = css`
   width: 50%;

@@ -1,9 +1,8 @@
-import { readFileSync, writeFileSync, readFile, writeFile } from "fs"
+import { readFile, readFileSync, writeFile, writeFileSync } from "fs"
 
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import * as UTIL from "./__util__"
 import {
 	__INTERNAL__,
 	atom,
@@ -12,6 +11,7 @@ import {
 	setLogLevel,
 	setState,
 } from "../src"
+import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

@@ -1,8 +1,8 @@
 import { pipe } from "fp-ts/function"
 
-import { entriesToRecord, recordToEntries } from "./entries"
 import { map } from "../array"
 import type { Json } from "../json"
+import { entriesToRecord, recordToEntries } from "./entries"
 
 export const reverseRecord = <A extends keyof any, B extends keyof any>(
 	record: Record<A, B>,

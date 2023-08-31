@@ -2,14 +2,14 @@ import type { Json } from "~/packages/anvl/src/json"
 import type { EmptyObject, PlainObject } from "~/packages/anvl/src/object"
 import { filterProperties } from "~/packages/anvl/src/object"
 
-import type {
-	ResourceFlat,
-	Resource,
-	ResourceObject,
-	Relationships,
-	JsonApiResource,
-} from "./resource"
 import { cannotExist, isWithin } from "../refinement"
+import type {
+	JsonApiResource,
+	Relationships,
+	Resource,
+	ResourceFlat,
+	ResourceObject,
+} from "./resource"
 
 export * from "./resource"
 export * from "./errors"

@@ -8,8 +8,8 @@ import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transacti
 
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 import type {
-	GitInterface,
 	GitClientEvents,
+	GitInterface,
 	GitServerEvents,
 	GitSocketError,
 } from "./interface"

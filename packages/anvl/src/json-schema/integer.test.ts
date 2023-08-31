@@ -1,4 +1,4 @@
-import { Int, Frac } from "./integer"
+import { Frac, Int } from "./integer"
 
 describe(`Int`, () => {
 	it(`parses integers`, () => {

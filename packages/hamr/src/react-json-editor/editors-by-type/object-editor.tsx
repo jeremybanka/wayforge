@@ -8,6 +8,10 @@ import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
 import { isLiteral } from "~/packages/anvl/src/refinement"
 
+import { ElasticInput } from "../../react-elastic-input"
+import type { JsonEditorComponents } from "../default-components"
+import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
+import { JsonEditor_INTERNAL } from "../json-editor-internal"
 import {
 	makePropertyCreationInterface,
 	makePropertyRecasters,
@@ -16,10 +20,6 @@ import {
 	makePropertySetters,
 	makePropertySorter,
 } from "./utilities/object-properties"
-import { ElasticInput } from "../../react-elastic-input"
-import type { JsonEditorComponents } from "../default-components"
-import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
-import { JsonEditor_INTERNAL } from "../json-editor-internal"
 
 export type PropertyAdderProps = {
 	addProperty: () => void

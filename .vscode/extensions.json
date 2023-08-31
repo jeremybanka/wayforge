@@ -2,7 +2,6 @@
 	"recommendations": [
 		"christian-kohler.path-intellisense",
 		"kuscamara.remove-unused-imports",
-		"rome.rome",
 		"streetsidesoftware.code-spell-checker",
 		"timonwong.shellcheck",
 		"tyriar.sort-lines",

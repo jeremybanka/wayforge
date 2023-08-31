@@ -6,12 +6,12 @@ import type {
 } from "atom.io"
 import { setState, subscribe } from "atom.io"
 
-import { markAtomAsDefault } from "./is-default"
 import { cacheValue } from "../caching"
 import type { Store } from "../store"
 import { IMPLICIT, deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
+import { markAtomAsDefault } from "./is-default"
 
 export type Atom<T> = {
 	key: string

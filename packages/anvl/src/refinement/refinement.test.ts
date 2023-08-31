@@ -2,7 +2,7 @@ import { isBoolean } from "fp-ts/boolean"
 import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 
-import { couldBe, mustBe, isIntersection, isUnion } from "."
+import { couldBe, isIntersection, isUnion, mustBe } from "."
 import { doesExtend } from "../object/refinement"
 
 /* type tests */

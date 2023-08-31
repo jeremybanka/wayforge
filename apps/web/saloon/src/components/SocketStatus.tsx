@@ -3,10 +3,10 @@ import { myIdState } from "atom.io/realtime-react"
 import type { FC } from "react"
 import { useState } from "react"
 
-import scss from "./SocketStatus.module.scss"
-import { myRoomState } from "./views/Game/store/my-room"
 import { ReactComponent as Connected } from "../assets/svg/connected.svg"
 import { ReactComponent as Disconnected } from "../assets/svg/disconnected.svg"
+import scss from "./SocketStatus.module.scss"
+import { myRoomState } from "./views/Game/store/my-room"
 
 export const MyRoom: FC = () => {
 	const myRoom = useO(myRoomState)

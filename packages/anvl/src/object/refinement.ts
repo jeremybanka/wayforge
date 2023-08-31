@@ -1,12 +1,12 @@
-import { pipe } from "fp-ts/function"
 import type { Refinement } from "fp-ts/Refinement"
+import { pipe } from "fp-ts/function"
 
-import { access } from "./access"
-import { recordToEntries } from "./entries"
-import { mob } from "./mapObject"
 import { allTrue, every } from "../array"
 import { pass } from "../function"
 import { ifNullish } from "../nullish"
+import { access } from "./access"
+import { recordToEntries } from "./entries"
+import { mob } from "./mapObject"
 
 export type PlainObject = Record<keyof any, unknown>
 export type EmptyObject = Record<keyof any, never>

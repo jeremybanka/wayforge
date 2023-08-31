@@ -1,9 +1,14 @@
+import type { Refinement } from "fp-ts/Refinement"
 import { isBoolean } from "fp-ts/boolean"
 import { pipe } from "fp-ts/function"
 import { isNumber } from "fp-ts/number"
-import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
+import { filter } from "../array"
+import { isNull } from "../nullish"
+import type { Fragment } from "../object/patch"
+import { isPlainObject } from "../object/refinement"
+import { canExist, cannotExist } from "../refinement"
 import type { integer } from "./integer"
 import { isInteger } from "./integer"
 import {
@@ -18,22 +23,17 @@ import {
 	isUnionSchema,
 } from "./json-schema"
 import type {
+	ArraySchema,
 	JsonSchema,
-	JsonSchemaMetaTypeName,
-	JsonSchemaSystem,
-	JsonSchemaTypeName,
 	JsonSchemaLeaf,
 	JsonSchemaLogicMode,
+	JsonSchemaMetaTypeName,
+	JsonSchemaSystem,
 	JsonSchemaTree,
-	ArraySchema,
+	JsonSchemaTypeName,
 	ObjectSchema,
 } from "./json-schema"
 import { isJsonSchemaRef, retrieveRef } from "./refs"
-import { filter } from "../array"
-import { isNull } from "../nullish"
-import type { Fragment } from "../object/patch"
-import { isPlainObject } from "../object/refinement"
-import { canExist, cannotExist } from "../refinement"
 
 /* eslint-disable max-lines */
 

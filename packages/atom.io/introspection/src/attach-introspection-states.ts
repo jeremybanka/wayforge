@@ -9,7 +9,7 @@ import type {
 } from "atom.io"
 import type { Timeline } from "atom.io/internal"
 
-import { attachAtomIndex, type AtomTokenIndex } from "./attach-atom-index"
+import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"
 import type { SelectorTokenIndex } from "./attach-selector-index"
 import { attachSelectorIndex } from "./attach-selector-index"
 import { attachTimelineFamily } from "./attach-timeline-family"

@@ -1,6 +1,6 @@
+import type { HSL } from ".."
 import channelsToSpec from "./channelsToSpec"
 import hexToChannels from "./hexToChannels"
-import type { HSL } from ".."
 
 const hexToSpec = (hex: string): HSL => {
 	const { R, G, B } = hexToChannels(hex)

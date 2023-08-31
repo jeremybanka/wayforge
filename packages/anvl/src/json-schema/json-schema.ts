@@ -1,26 +1,26 @@
+import type { Refinement } from "fp-ts/Refinement"
 import { isBoolean } from "fp-ts/boolean"
 import { isNumber } from "fp-ts/number"
-import type { Refinement } from "fp-ts/Refinement"
 import { isString } from "fp-ts/string"
 
+import { isArray } from "../array"
+import { JSON_TYPE_NAMES } from "../json"
+import { ifDefined } from "../nullish"
+import { doesExtend, isRecord } from "../object/refinement"
+import {
+	couldBe,
+	isIntersection,
+	isLiteral,
+	isUnion,
+	isWithin,
+} from "../refinement"
+import type { Refined } from "../refinement/refined"
 import type { integer } from "./integer"
 import { isInteger } from "./integer"
 import type { JsonSchemaRef } from "./refs"
 import { isJsonSchemaRef } from "./refs"
 import type { JsonSchemaStringFormat } from "./string-formats"
 import { JSON_SCHEMA_STRING_FORMATS } from "./string-formats"
-import { isArray } from "../array"
-import { JSON_TYPE_NAMES } from "../json"
-import { ifDefined } from "../nullish"
-import { doesExtend, isRecord } from "../object/refinement"
-import {
-	isLiteral,
-	isWithin,
-	couldBe,
-	isIntersection,
-	isUnion,
-} from "../refinement"
-import type { Refined } from "../refinement/refined"
 
 /* eslint-disable max-lines */
 

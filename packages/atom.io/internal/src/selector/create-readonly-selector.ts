@@ -4,12 +4,12 @@ import type {
 	ReadonlySelectorToken,
 } from "atom.io"
 
-import { registerSelector } from "./register-selector"
-import type { ReadonlySelector } from "./selector-internal"
-import { selector__INTERNAL } from "./selector-internal"
 import { cacheValue } from "../caching"
 import type { Store, StoreCore } from "../store"
 import { Subject } from "../subject"
+import { registerSelector } from "./register-selector"
+import type { ReadonlySelector } from "./selector-internal"
+import { selector__INTERNAL } from "./selector-internal"
 
 export const createReadonlySelector = <T>(
 	options: ReadonlySelectorOptions<T>,

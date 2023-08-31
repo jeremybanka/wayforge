@@ -1,5 +1,5 @@
-import { pipe } from "fp-ts/function"
 import * as ARNE from "fp-ts/ReadonlyNonEmptyArray"
+import { pipe } from "fp-ts/function"
 import * as S from "fp-ts/string"
 
 // function to hash a string

@@ -1,10 +1,8 @@
 module.exports = {
   extends: [
     `plugin:@typescript-eslint/recommended`,
-    `plugin:import/recommended`,
   ],
   plugins: [
-    `import`,
     `@typescript-eslint`
   ],
   parser: `@typescript-eslint/parser`,
@@ -20,13 +18,7 @@ module.exports = {
     es2021: true,
     mocha: true,
   },
-  settings: {
-    "import/resolver": {
-      node: {
-        extensions: [`.js, .cjs, .ts, .tsx`],
-      },
-    },
-  },
+  settings: {},
   rules: {
     "@typescript-eslint/explicit-member-accessibility": `error`,
     "@typescript-eslint/prefer-enum-initializers": `error`,
@@ -43,49 +35,6 @@ module.exports = {
       {
         fixStyle: `separate-type-imports`,
         prefer: `type-imports`, 
-      },
-    ],
-    "import/extensions": [
-      `error`,
-      {
-        ts: `never`,
-        tsx: `never`,
-        js: `never`,
-        jsx: `never`,
-        css: `always`,
-        scss: `always`,
-        client: `always`,
-        server: `always`,
-        web: `always`,
-        node: `always`,
-        schema: `always`,
-        json: `always`,
-      },
-    ],
-    "import/named": 0,
-    "import/no-unresolved": `off`,
-    "import/prefer-default-export": `off`,
-    "import/order": [
-      `error`,
-      {
-        "groups": [`builtin`, `external`, `internal`],
-        "pathGroups": [
-          {
-            pattern: `~`,
-            group: `internal`,
-            position: `before`,
-          },
-          {
-            pattern: `~/**`,
-            group: `internal`,
-            position: `before`,
-          },
-        ],
-        "newlines-between": `always`,
-        "alphabetize": {
-          order: `asc`,
-          caseInsensitive: true,
-        },
       },
     ],
     "quotes": [`error`, `backtick`],

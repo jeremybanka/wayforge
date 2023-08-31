@@ -1,6 +1,6 @@
-import "./style.css"
 import type { GameObjects, Types } from "phaser"
-import { Scene, Game, WEBGL } from "phaser"
+import { Game, Scene, WEBGL } from "phaser"
+import "./style.css"
 
 const canvas = document.getElementById(`game`) as HTMLCanvasElement
 

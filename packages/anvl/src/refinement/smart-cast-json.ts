@@ -1,6 +1,6 @@
-import { refineJsonType } from "./refine-json"
 import type { Json } from "../json"
 import * as Cast from "../json/cast-json"
+import { refineJsonType } from "./refine-json"
 
 export const castToJson = (
 	input: Json.Serializable,

@@ -2,14 +2,14 @@ import type { Store } from "atom.io/internal"
 import { IMPLICIT, subscribeToRootAtoms, withdraw } from "atom.io/internal"
 
 import type {
-	ƒn,
+	FamilyMetadata,
 	ReadonlySelectorToken,
 	StateToken,
 	TimelineToken,
 	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdate,
-	FamilyMetadata,
+	ƒn,
 } from "."
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }

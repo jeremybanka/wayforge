@@ -1,19 +1,19 @@
 import { vitest } from "vitest"
 
-import * as UTIL from "./__util__"
 import { withdraw } from "../internal/src"
 import type { AtomToken, TimelineToken } from "../src"
 import {
-	redo,
-	undo,
 	__INTERNAL__,
 	atom,
+	atomFamily,
+	redo,
 	selector,
+	setLogLevel,
 	setState,
 	timeline,
-	atomFamily,
-	setLogLevel,
+	undo,
 } from "../src"
+import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

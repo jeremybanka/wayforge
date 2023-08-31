@@ -1,13 +1,13 @@
 import type { AtomToken, TimelineUpdate } from "atom.io"
 
+import type { Store } from "../store"
+import { IMPLICIT, withdraw } from "../store"
+import { target } from "../transaction"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
 	TimelineTransactionUpdate,
 } from "./timeline-internal"
-import type { Store } from "../store"
-import { IMPLICIT, withdraw } from "../store"
-import { target } from "../transaction"
 
 export const addAtomToTimeline = (
 	atomToken: AtomToken<any>,
