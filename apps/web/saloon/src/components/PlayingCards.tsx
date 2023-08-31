@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import type * as React from "react"
 import { ReactComponent as TwoOfSpades } from "../assets/svg/playing-cards/2♠.svg"
 import { ReactComponent as TwoOfClubs } from "../assets/svg/playing-cards/2♣.svg"
@@ -53,7 +52,6 @@ import { ReactComponent as QueenOfClubs } from "../assets/svg/playing-cards/Q♣
 import { ReactComponent as QueenOfHearts } from "../assets/svg/playing-cards/Q♥.svg"
 import { ReactComponent as QueenOfDiamonds } from "../assets/svg/playing-cards/Q♦.svg"
 import { ReactComponent as Back } from "../assets/svg/playing-cards/back.svg"
-/* eslint-enable import/order */
 
 export const PlayingCards: Record<string, React.FC> = {
 	Back,
