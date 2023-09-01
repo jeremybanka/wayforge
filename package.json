@@ -32,7 +32,7 @@
 		"mock-fs": "5.2.0",
 		"@biomejs/biome": "1.0.0",
 		"@biomejs/cli-darwin-arm64": "1.0.0",
-		"tsx": "3.12.7",
+		"tsx": "3.12.8",
 		"turbo": "1.10.13",
 		"typescript": "5.2.2",
 		"vite-tsconfig-paths": "4.2.0",
