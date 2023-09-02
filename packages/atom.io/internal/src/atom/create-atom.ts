@@ -29,8 +29,10 @@ export function createAtom<T>(
 	const core = target(store)
 	const existing = core.atoms.get(options.key)
 	if (existing) {
-		store.config.logger?.info?.(
-			`Key "${options.key}" already exists in the store.`,
+		store.config.logger?.error?.(
+			`Tried to create atom "${options.key}",`,
+			`but it already exists in the store.`,
+			`(Ignore if you are using hot module replacement.)`,
 		)
 		return deposit(existing)
 	}

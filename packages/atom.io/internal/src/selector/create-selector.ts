@@ -46,10 +46,14 @@ export function createSelector<T>(
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
 	const core = target(store)
+	const existingWritable = core.selectors.get(options.key)
+	const existingReadonly = core.readonlySelectors.get(options.key)
 
-	if (core.selectors.has(options.key)) {
-		store.config.logger?.error(
-			`Key "${options.key}" already exists in the store.`,
+	if (existingWritable || existingReadonly) {
+		store.config.logger?.error?.(
+			`Tried to create ${existingReadonly ? `readonly selector` : `selector`}`,
+			`"${options.key}", but it already exists in the store.`,
+			`(Ignore if you are using hot module replacement.)`,
 		)
 	}
 
