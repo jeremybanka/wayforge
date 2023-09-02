@@ -47,13 +47,13 @@ export function atom__INTERNAL<T>(
 	markAtomAsDefault(options.key, store)
 	cacheValue(options.key, initialValue, store)
 	const token = deposit(newAtom)
-	options.effects?.forEach((effect, idx) =>
+	for (const effect of options.effects ?? []) {
 		effect({
 			setSelf: (next) => setState(token, next, store),
 			onSet: (handle: UpdateHandler<T>) =>
-				subscribe(token, handle, `effects[${idx}]`, store),
-		}),
-	)
+				subscribe(token, handle, `effect[${subject.subscribers.size}]`, store),
+		})
+	}
 	store.subject.atomCreation.next(token)
 	return token as AtomToken<T>
 }
