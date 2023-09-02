@@ -9,9 +9,16 @@ export const observeCore =
 		store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
 	): AtomIO.AtomEffect<Json.Serializable> =>
 	({ setSelf }) => {
-		AtomIO.getState(coreState, store).subscribe(`tracker`, (update) =>
-			setSelf(update),
-		)
+		const innerValue = AtomIO.getState(coreState, store)
+		innerValue.subscribe(`tracker`, (update) => {
+			const unsubscribe = store.subject.operationStatus.subscribe(
+				coreState.key,
+				() => {
+					unsubscribe()
+					setSelf(update)
+				},
+			)
+		})
 	}
 
 export const updateCore =
