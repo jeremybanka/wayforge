@@ -57,8 +57,8 @@ export function createSelector<T>(
 		)
 	}
 
-	if (!(`set` in options)) {
-		return createReadonlySelector(options, family, store, core)
+	if (`set` in options) {
+		return createReadWriteSelector(options, family, store, core)
 	}
-	return createReadWriteSelector(options, family, store, core)
+	return createReadonlySelector(options, family, store, core)
 }
