@@ -2,7 +2,7 @@ import * as AtomIO from "atom.io"
 import type { Json, JsonInterface } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 import { tracker } from "atom.io/tracker"
-import { TransceiverSet, type Transceiver } from "atom.io/tracker"
+import type { Transceiver } from "atom.io/tracker"
 
 export interface MutableAtomToken<
 	Core extends Transceiver<Json.Serializable>,
@@ -67,10 +67,3 @@ export const getTrackerToken = <
 		Core extends Transceiver<infer Update> ? Update : never
 	>
 }
-
-const flagsState = mutableAtom({
-	key: `flags::mutable`,
-	default: new TransceiverSet(),
-	toJson: (set) => [...set],
-	fromJson: (array) => new TransceiverSet(array),
-})
