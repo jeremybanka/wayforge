@@ -4,7 +4,7 @@ import { __INTERNAL__ } from "atom.io"
 export const attachTransactionLogs = (
 	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,
 ): ReadonlySelectorFamily<TransactionUpdate<ƒn>[]> => {
-	const findTransactionUpdateLog = __INTERNAL__.atomFamily__INTERNAL<
+	const findTransactionUpdateLog = __INTERNAL__.createAtomFamily<
 		TransactionUpdate<ƒn>[],
 		string
 	>(
@@ -24,7 +24,7 @@ export const attachTransactionLogs = (
 		},
 		store,
 	)
-	const findTransactionUpdateLogState = __INTERNAL__.selectorFamily__INTERNAL<
+	const findTransactionUpdateLogState = __INTERNAL__.createSelectorFamily<
 		TransactionUpdate<ƒn>[],
 		string
 	>(

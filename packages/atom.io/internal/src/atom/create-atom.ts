@@ -21,7 +21,7 @@ export type Atom<T> = {
 	default: T
 }
 
-export function atom__INTERNAL<T>(
+export function createAtom<T>(
 	options: AtomOptions<T>,
 	family?: FamilyMetadata,
 	store: Store = IMPLICIT.STORE,

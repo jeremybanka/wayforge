@@ -1,10 +1,11 @@
 import {
 	Store,
-	atomFamily__INTERNAL,
-	atom__INTERNAL,
+	createAtom,
+	createAtomFamily,
+	createReadonlySelectorFamily,
+	createSelector,
+	createSelectorFamily,
 	redo__INTERNAL,
-	selectorFamily__INTERNAL,
-	selector__INTERNAL,
 	timeline__INTERNAL,
 	transaction__INTERNAL,
 	undo__INTERNAL,
@@ -32,12 +33,11 @@ export class Silo {
 	public constructor(name: string, fromStore: Store | null = null) {
 		const store = new Store(name, fromStore)
 		this.store = store
-		this.atom = (options) => atom__INTERNAL(options, undefined, store)
-		this.atomFamily = (options) => atomFamily__INTERNAL(options, store)
-		this.selector = (options) =>
-			selector__INTERNAL(options, undefined, store) as any
+		this.atom = (options) => createAtom(options, undefined, store)
+		this.atomFamily = (options) => createAtomFamily(options, store)
+		this.selector = (options) => createSelector(options, undefined, store) as any
 		this.selectorFamily = (options) =>
-			selectorFamily__INTERNAL(options, store) as any
+			createSelectorFamily(options, store) as any
 		this.transaction = (options) => transaction__INTERNAL(options, store)
 		this.timeline = (options) => timeline__INTERNAL(options, store)
 		this.getState = (token) => getState(token, store)

@@ -11,7 +11,7 @@ export const attachSelectorIndex = (
 	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,
 ): ReadonlySelectorToken<SelectorTokenIndex> => {
 	const readonlySelectorTokenIndexState__INTERNAL =
-		__INTERNAL__.atom__INTERNAL<SelectorTokenIndex>(
+		__INTERNAL__.createAtom<SelectorTokenIndex>(
 			{
 				key: `👁‍🗨 Selector Token Index (Internal)`,
 				default: () =>
@@ -73,7 +73,7 @@ export const attachSelectorIndex = (
 			undefined,
 			store,
 		)
-	return __INTERNAL__.selector__INTERNAL({
+	return __INTERNAL__.createSelector({
 		key: `👁‍🗨 Selector Token Index`,
 		get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
 	})

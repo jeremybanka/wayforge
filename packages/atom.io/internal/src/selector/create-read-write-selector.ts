@@ -11,8 +11,9 @@ import { cacheValue } from "../caching"
 import { markDone } from "../operation"
 import type { StoreCore } from "../store"
 import { Subject } from "../subject"
+import type { Selector } from "./create-selector"
+import { createSelector } from "./create-selector"
 import { registerSelector } from "./register-selector"
-import { type Selector, selector__INTERNAL } from "./selector-internal"
 
 export const createReadWriteSelector = <T>(
 	options: SelectorOptions<T>,
@@ -49,7 +50,7 @@ export const createReadWriteSelector = <T>(
 	const mySelector: Selector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => selector__INTERNAL(options, family, s),
+		install: (s: Store) => createSelector(options, family, s),
 		get: getSelf,
 		set: setSelf,
 		type: `selector`,

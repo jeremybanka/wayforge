@@ -4,7 +4,7 @@ import { __INTERNAL__ } from "atom.io"
 export const attachTimelineIndex = (
 	store: Store = __INTERNAL__.IMPLICIT.STORE,
 ): ReadonlySelectorToken<TimelineToken[]> => {
-	const timelineTokenIndexState__INTERNAL = __INTERNAL__.atom__INTERNAL<
+	const timelineTokenIndexState__INTERNAL = __INTERNAL__.createAtom<
 		TimelineToken[]
 	>(
 		{
@@ -27,7 +27,7 @@ export const attachTimelineIndex = (
 		undefined,
 		store,
 	)
-	const timelineTokenIndex = __INTERNAL__.selector__INTERNAL(
+	const timelineTokenIndex = __INTERNAL__.createSelector(
 		{
 			key: `👁‍🗨 Timeline Token Index`,
 			get: ({ get }) => get(timelineTokenIndexState__INTERNAL),

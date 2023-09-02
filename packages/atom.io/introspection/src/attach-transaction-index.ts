@@ -4,7 +4,7 @@ import { __INTERNAL__ } from "atom.io"
 export const attachTransactionIndex = (
 	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,
 ): ReadonlySelectorToken<TransactionToken<ƒn>[]> => {
-	const transactionTokenIndexState__INTERNAL = __INTERNAL__.atom__INTERNAL<
+	const transactionTokenIndexState__INTERNAL = __INTERNAL__.createAtom<
 		TransactionToken<ƒn>[]
 	>(
 		{
@@ -27,7 +27,7 @@ export const attachTransactionIndex = (
 		undefined,
 		store,
 	)
-	const transactionTokenIndex = __INTERNAL__.selector__INTERNAL(
+	const transactionTokenIndex = __INTERNAL__.createSelector(
 		{
 			key: `👁‍🗨 Transaction Token Index`,
 			get: ({ get }) => get(transactionTokenIndexState__INTERNAL),

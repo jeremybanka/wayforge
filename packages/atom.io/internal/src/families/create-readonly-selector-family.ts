@@ -7,12 +7,12 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { selector__INTERNAL } from "../selector"
+import { createSelector } from "../selector"
 import { type Store, deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 
-export function readonlySelectorFamily__INTERNAL<T, K extends Json.Serializable>(
+export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store?: Store,
 ): ReadonlySelectorFamily<T, K> {
@@ -27,7 +27,7 @@ export function readonlySelectorFamily__INTERNAL<T, K extends Json.Serializable>
 			if (existing) {
 				return deposit(existing)
 			}
-			return selector__INTERNAL<T>(
+			return createSelector<T>(
 				{
 					key: fullKey,
 					get: options.get(key),

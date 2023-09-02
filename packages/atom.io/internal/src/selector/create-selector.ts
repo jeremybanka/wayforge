@@ -30,17 +30,17 @@ export type ReadonlySelector<T> = {
 	get: () => T
 }
 
-export function selector__INTERNAL<T>(
+export function createSelector<T>(
 	options: SelectorOptions<T>,
 	family?: FamilyMetadata,
 	store?: Store,
 ): SelectorToken<T>
-export function selector__INTERNAL<T>(
+export function createSelector<T>(
 	options: ReadonlySelectorOptions<T>,
 	family?: FamilyMetadata,
 	store?: Store,
 ): ReadonlySelectorToken<T>
-export function selector__INTERNAL<T>(
+export function createSelector<T>(
 	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
 	family?: FamilyMetadata,
 	store: Store = IMPLICIT.STORE,

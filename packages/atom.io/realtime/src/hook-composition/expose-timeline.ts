@@ -15,7 +15,7 @@ export const useExposeTimeline__UNSTABLE = ({
 	socket,
 	store,
 }: ServerConfig): ((tl: AtomIO.TimelineToken) => () => void) => {
-	const timestampsOfTransactionsState = AtomIO.__INTERNAL__.atom__INTERNAL(
+	const timestampsOfTransactionsState = AtomIO.__INTERNAL__.createAtom(
 		{
 			key: `timestampsOfTransactions`,
 			default: new Join<null, `transactionId`, `timestamp`>({

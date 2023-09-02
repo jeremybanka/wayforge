@@ -1,2 +1,2 @@
-export * from "./atom-internal"
+export * from "./create-atom"
 export * from "./is-default"

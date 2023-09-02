@@ -6,7 +6,7 @@ import { Subject } from "atom.io/internal"
 export const attachTimelineFamily = (
 	store: Store = __INTERNAL__.IMPLICIT.STORE,
 ): ReadonlySelectorFamily<Timeline> => {
-	const findTimelineLogState__INTERNAL = __INTERNAL__.atomFamily__INTERNAL<
+	const findTimelineLogState__INTERNAL = __INTERNAL__.createAtomFamily<
 		Timeline,
 		string
 	>(
@@ -47,7 +47,7 @@ export const attachTimelineFamily = (
 		},
 		store,
 	)
-	const findTimelineLogState = __INTERNAL__.selectorFamily__INTERNAL<
+	const findTimelineLogState = __INTERNAL__.createSelectorFamily<
 		Timeline,
 		string
 	>(

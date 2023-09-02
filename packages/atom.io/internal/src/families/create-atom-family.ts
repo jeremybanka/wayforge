@@ -8,11 +8,11 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { atom__INTERNAL } from "../atom"
+import { createAtom } from "../atom"
 import { IMPLICIT, type Store, deposit, withdraw } from "../store"
 import { Subject } from "../subject"
 
-export function atomFamily__INTERNAL<T, K extends Json.Serializable>(
+export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
 	store: Store = IMPLICIT.STORE,
 ): AtomFamily<T, K> {
@@ -37,7 +37,7 @@ export function atomFamily__INTERNAL<T, K extends Json.Serializable>(
 				if (options.effects) {
 					individualOptions.effects = options.effects(key)
 				}
-				token = atom__INTERNAL<T>(individualOptions, family, store)
+				token = createAtom<T>(individualOptions, family, store)
 				subject.next(token)
 			}
 			return token

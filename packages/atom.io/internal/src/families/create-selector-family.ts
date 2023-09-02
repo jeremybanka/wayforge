@@ -9,29 +9,29 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { selector__INTERNAL } from "../selector"
+import { createSelector } from "../selector"
 import type { Store } from "../store"
 import { IMPLICIT, deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
-import { readonlySelectorFamily__INTERNAL } from "./readonly-selector-family-internal"
+import { createReadonlySelectorFamily } from "./create-readonly-selector-family"
 
-export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
+export function createSelectorFamily<T, K extends Json.Serializable>(
 	options: SelectorFamilyOptions<T, K>,
 	store?: Store,
 ): SelectorFamily<T, K>
-export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
+export function createSelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store?: Store,
 ): ReadonlySelectorFamily<T, K>
-export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
+export function createSelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
 	const isReadonly = !(`set` in options)
 
 	if (isReadonly) {
-		return readonlySelectorFamily__INTERNAL(options, store)
+		return createReadonlySelectorFamily(options, store)
 	}
 	const core = target(store)
 	const subject = new Subject<SelectorToken<T>>()
@@ -45,7 +45,7 @@ export function selectorFamily__INTERNAL<T, K extends Json.Serializable>(
 			if (existing) {
 				return deposit(existing)
 			}
-			const token = selector__INTERNAL<T>(
+			const token = createSelector<T>(
 				{
 					key: fullKey,
 					get: options.get(key),

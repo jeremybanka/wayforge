@@ -1,5 +1,5 @@
 import type { Subject } from "atom.io/internal"
-import { atomFamily__INTERNAL, atom__INTERNAL } from "atom.io/internal"
+import { createAtom, createAtomFamily } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { AtomToken } from "."
@@ -18,7 +18,7 @@ export type AtomOptions<T> = {
 }
 
 export function atom<T>(options: AtomOptions<T>): AtomToken<T> {
-	return atom__INTERNAL<T>(options)
+	return createAtom<T>(options)
 }
 
 export type AtomFamilyOptions<T, K extends Json.Serializable> = {
@@ -38,5 +38,5 @@ export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
 export function atomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
 ): AtomFamily<T, K> {
-	return atomFamily__INTERNAL<T, K>(options)
+	return createAtomFamily<T, K>(options)
 }

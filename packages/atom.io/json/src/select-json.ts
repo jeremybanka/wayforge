@@ -7,7 +7,7 @@ export const selectJson = <T, J extends Json.Serializable>(
 	transform: JsonInterface<T, J>,
 	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
 ): AtomIO.SelectorToken<J> =>
-	AtomIO.__INTERNAL__.selector__INTERNAL(
+	AtomIO.__INTERNAL__.createSelector(
 		{
 			key: `${atom.key}:JSON`,
 			get: ({ get }) => transform.toJson(get(atom)),
