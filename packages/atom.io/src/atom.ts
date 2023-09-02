@@ -15,7 +15,6 @@ export type AtomOptions<T> = {
 	key: string
 	default: T | (() => T)
 	effects?: AtomEffect<T>[]
-	mutable?: boolean
 }
 
 export function atom<T>(options: AtomOptions<T>): AtomToken<T> {

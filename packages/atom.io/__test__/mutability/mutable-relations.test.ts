@@ -2,7 +2,8 @@ import { vitest } from "vitest"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
-import type { Json, Write } from "../../src"
+import type { Json } from "../../json/src"
+import type { Write } from "../../src"
 import {
 	__INTERNAL__,
 	atomFamily,

@@ -1,11 +1,8 @@
 import type { TransactionIO } from "atom.io"
-import { atom, atomFamily, selector, selectorFamily, transaction } from "atom.io"
-import { selectJson } from "atom.io/json"
-import { isNumber } from "fp-ts/number"
+import { atom, atomFamily, selector, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
-import { Join } from "~/packages/anvl/src/join"
-import { hasExactProperties } from "~/packages/anvl/src/object"
+import { AtomicJunction } from "./utils/atomic-junction"
 
 export const roomsIndex = atom<Set<string>>({
 	key: `roomsIndex`,
@@ -46,34 +43,40 @@ export const playersIndexJSON = selector<string[]>({
 	set: ({ set }, newValue) => set(playersIndex, new Set(newValue)),
 })
 
-export const PLAYERS_IN_ROOMS = new Join<{ enteredAt: number }>({
-	relationType: `1:n`,
-})
-	.from(`roomId`)
-	.to(`playerId`)
-export const playersInRoomsState = atom<
-	Join<{ enteredAt: number }, `roomId`, `playerId`>
->({
-	key: `playersInRoomsIndex`,
-	default: PLAYERS_IN_ROOMS,
-})
-export const playersInRoomsStateJSON = selectJson(
-	playersInRoomsState,
-	PLAYERS_IN_ROOMS.makeJsonInterface(
-		hasExactProperties({ enteredAt: isNumber }),
-	),
-)
+// export const PLAYERS_IN_ROOMS = new Join<{ enteredAt: number }>({
+// 	relationType: `1:n`,
+// })
+// 	.from(`roomId`)
+// 	.to(`playerId`)
+// export const playersInRoomsState = atom<
+// 	Join<{ enteredAt: number }, `roomId`, `playerId`>
+// >({
+// 	key: `playersInRoomsIndex`,
+// 	default: PLAYERS_IN_ROOMS,
+// })
+// export const playersInRoomsStateJSON = selectJson(
+// 	playersInRoomsState,
+// 	PLAYERS_IN_ROOMS.makeJsonInterface(
+// 		hasExactProperties({ enteredAt: isNumber }),
+// 	),
+// )
+// export const findPlayersInRoomState = selectorFamily<
+// 	{ id: string; enteredAt: number }[],
+// 	string
+// >({
+// 	key: `findPlayersInRoom`,
+// 	get: (roomId) => ({ get }) => get(playersInRoomsState).getRelations(roomId),
+// 	set: (roomId) => ({ set }, newValue) =>
+// 		set(playersInRoomsState, (current) =>
+// 			current.setRelations({ roomId }, newValue),
+// 		),
+// })
 
-export const findPlayersInRoomState = selectorFamily<
-	{ id: string; enteredAt: number }[],
-	string
->({
-	key: `findPlayersInRoom`,
-	get: (roomId) => ({ get }) => get(playersInRoomsState).getRelations(roomId),
-	set: (roomId) => ({ set }, newValue) =>
-		set(playersInRoomsState, (current) =>
-			current.setRelations({ roomId }, newValue),
-		),
+export const playersInRooms = new AtomicJunction({
+	key: `playersInRooms`,
+	between: [`roomId`, `playerId`],
+	cardinality: `1:n`,
+	defaultContent: { enteredAt: 0 },
 })
 
 export const createRoomTX = transaction<(id?: string) => string>({
@@ -89,10 +92,11 @@ export const joinRoomTX = transaction<
 	(options: { roomId: string; playerId: string }) => void
 >({
 	key: `joinRoom`,
-	do: ({ set }, { roomId, playerId }) => {
-		set(playersInRoomsState, (current) =>
-			current.set({ roomId, playerId }, { enteredAt: Date.now() }),
-		)
+	do: (_, { roomId, playerId }) => {
+		// set(playersInRoomsState, (current) =>
+		// 	current.set({ roomId, playerId }, { enteredAt: Date.now() }),
+		// )
+		playersInRooms.set({ roomId, playerId }, { enteredAt: Date.now() })
 	},
 })
 export type JoinRoomIO = TransactionIO<typeof joinRoomTX>
@@ -101,8 +105,9 @@ export const leaveRoomTX = transaction<
 	(options: { roomId: string; playerId: string }) => void
 >({
 	key: `leaveRoom`,
-	do: ({ set }, { roomId, playerId }) => {
-		set(playersInRoomsState, (current) => current.remove({ roomId, playerId }))
+	do: (_, { roomId, playerId }) => {
+		// set(playersInRoomsState, (current) => current.remove({ roomId, playerId }))
+		playersInRooms.delete({ roomId, playerId })
 	},
 })
 export type LeaveRoomIO = TransactionIO<typeof leaveRoomTX>

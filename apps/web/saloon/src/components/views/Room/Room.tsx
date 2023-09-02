@@ -1,14 +1,14 @@
 import { useO } from "atom.io/react"
 import {
 	myIdState,
-	usePullFamilyMember,
+	usePullMutableFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
 import type { FC } from "react"
 import { useParams } from "react-router-dom"
 
 import {
-	findPlayersInRoomState,
+	playersInRooms,
 	joinRoomTX,
 	leaveRoomTX,
 } from "~/apps/node/lodge/src/store/rooms"
@@ -29,7 +29,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	usePullFamilyMember(findPlayersInRoomState, roomId)
+	usePullMutableFamilyMember(playersInRooms.findRelationsState__INTERNAL, roomId)
 
 	return (
 		<article className={scss.class}>

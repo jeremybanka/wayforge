@@ -9,7 +9,7 @@ export const tracker = <Core extends Transceiver<any>>(
 ): AtomIO.AtomToken<
 	(Core extends Transceiver<infer Signal> ? Signal : never) | null
 > => {
-	const trackerKey = `${coreState.key}:signal`
+	const trackerKey = `${coreState.key}:tracker`
 	const trackerState = AtomIO.atom<
 		(Core extends Transceiver<infer Signal> ? Signal : never) | null
 	>({

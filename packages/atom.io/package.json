@@ -9,18 +9,28 @@
 		"dist",
 		"introspection/dist",
 		"introspection/package.json",
+		"introspection/src",
 		"json/dist",
 		"json/package.json",
+		"json/src",
+		"mutable/dist",
+		"mutable/package.json",
+		"mutable/src",
 		"react/dist",
 		"react/package.json",
+		"react/src",
 		"react-devtools/dist",
 		"react-devtools/package.json",
+		"react-devtools/src",
 		"realtime/dist",
 		"realtime/package.json",
+		"realtime/src",
 		"realtime-react/dist",
 		"realtime-react/package.json",
+		"realtime-react/src",
 		"realtime-testing/dist",
 		"realtime-testing/package.json",
+		"realtime-testing/src",
 		"src"
 	],
 	"exports": {
@@ -44,6 +54,13 @@
 			"browser": "./json/dist/index.mjs",
 			"import": "./json/dist/index.mjs",
 			"require": "./json/dist/index.js"
+		},
+		"./mutable/package.json": "./mutable/package.json",
+		"./mutable": {
+			"types": "./mutable/dist/index.d.ts",
+			"browser": "./mutable/dist/index.mjs",
+			"import": "./mutable/dist/index.mjs",
+			"require": "./mutable/dist/index.js"
 		},
 		"./react/package.json": "./react/package.json",
 		"./react": {

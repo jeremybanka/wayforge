@@ -9,7 +9,7 @@ export const selectJson = <T, J extends Json.Serializable>(
 ): AtomIO.SelectorToken<J> =>
 	AtomIO.__INTERNAL__.selector__INTERNAL(
 		{
-			key: `${atom.key}JSON`,
+			key: `${atom.key}:JSON`,
 			get: ({ get }) => transform.toJson(get(atom)),
 			set: ({ set }, newValue) => set(atom, transform.fromJson(newValue)),
 		},

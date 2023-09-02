@@ -1,5 +1,5 @@
-import type { Json } from "anvl/json"
 import * as AtomIO from "atom.io"
+import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from ".."
 

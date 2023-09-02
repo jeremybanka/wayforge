@@ -203,6 +203,9 @@ importers:
         specifier: 3.22.2
         version: 3.22.2
     devDependencies:
+      '@babel/plugin-transform-react-jsx-source':
+        specifier: 7.22.5
+        version: 7.22.5(@babel/core@7.22.10)
       '@preact/preset-vite':
         specifier: 2.5.0
         version: 2.5.0(@babel/core@7.22.10)(preact@10.17.1)(vite@4.4.9)

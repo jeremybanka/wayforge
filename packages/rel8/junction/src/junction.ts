@@ -21,7 +21,7 @@ export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = 
 		: {
 				getContent: (contentKey: string) => Content | undefined
 				setContent: (contentKey: string, content: Content) => void
-				deleteContent: (g) => void
+				deleteContent: (contentKey: string) => void
 		  }) & {
 		addRelation: (a: string, b: string) => void
 		deleteRelation: (a: string, b: string) => void

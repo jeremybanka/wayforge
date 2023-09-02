@@ -6,6 +6,7 @@ import { Server as WebSocketServer } from "socket.io"
 
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
+import { getJsonToken, getTrackerToken } from "~/packages/atom.io/mutable/src"
 
 import { logger } from "./logger"
 import {
@@ -34,10 +35,9 @@ import {
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,
-	findPlayersInRoomState,
 	joinRoomTX,
 	leaveRoomTX,
-	playersInRoomsState,
+	playersInRooms,
 	playersIndex,
 	roomsIndex,
 	roomsIndexJSON,
@@ -68,9 +68,7 @@ pipe(
 					(playersIndex) =>
 						new Set([...playersIndex].filter((id) => id !== socket.id)),
 				)
-				AtomIO.setState(playersInRoomsState, (current) =>
-					current.remove({ playerId: socket.id }),
-				)
+				playersInRooms.delete({ playerId: socket.id })
 			})
 
 			// LOGGING
@@ -91,13 +89,15 @@ pipe(
 			// COMPOSE REALTIME SERVICE HOOKS
 			const exposeSingle = RT.useExposeSingle({ socket })
 			const exposeFamily = RT.useExposeFamily({ socket })
+			const exposeMutableFamily = RT.useExposeMutableFamily({ socket })
 			const receiveTransaction = RT.useReceiveTransaction({ socket })
 
 			// ROOM SERVICES
 			exposeSingle<string[]>(roomsIndexJSON)
-			exposeFamily<
-				{ id: string; enteredAt: number }[]
-			>(findPlayersInRoomState, roomsIndex)
+			exposeMutableFamily(
+				playersInRooms.findRelationsState__INTERNAL,
+				roomsIndex,
+			)
 			socket.on(
 				`tx:createRoom`,
 				(update: AtomIO.TransactionUpdate<() => string>) => {
@@ -114,17 +114,34 @@ pipe(
 					}
 					AtomIO.runTransaction(joinRoomTX)(...update.params)
 					socket.join(roomId)
-					const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
-						findPlayersInRoomState(roomId),
+					const playersInRoomState =
+						playersInRooms.findRelationsState__INTERNAL(roomId)
+					const playersInRoomTrackerToken = getTrackerToken(playersInRoomState)
+					const unsubscribeFromPlayersInRoomTracker = AtomIO.subscribe(
+						playersInRoomTrackerToken,
 						({ newValue }) => {
-							socket.emit(`set:playersInRoom:${roomId}`, [...newValue])
+							socket.emit(
+								`next:${playersInRoomTrackerToken.key}:${roomId}`,
+								newValue,
+							)
 						},
 					)
 					socket.on(`tx:leaveRoom`, () => {
 						AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
 						socket.leave(roomId)
-						unsubscribeFromPlayersInRoom()
+						unsubscribeFromPlayersInRoomTracker()
 					})
+					// const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
+					// 	playersInRooms.findRelationTrackerState__INTERNAL(roomId),
+					// 	({ newValue }) => {
+					// 		socket.emit(`next:playersInRoom::mutable:tracker:${roomId}`, [...newValue])
+					// 	},
+					// )
+					// socket.on(`tx:leaveRoom`, () => {
+					// 	AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
+					// 	socket.leave(roomId)
+					// 	unsubscribeFromPlayersInRoom()
+					// })
 				},
 			)
 
