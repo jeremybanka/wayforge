@@ -32,9 +32,12 @@ export function deposit<T>(
 	| ReadonlySelectorToken<T>
 	| SelectorToken<T>
 	| TransactionToken<T> {
-	return {
+	const token = {
 		key: state.key,
 		type: state.type,
-		...(`family` in state && { family: state.family }),
 	} as any
+	if (`family` in state) {
+		token.family = state.family
+	}
+	return token
 }
