@@ -11,7 +11,7 @@ export const selectJsonFamily = <
 	transform: JsonInterface<T, J>,
 	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
 ): AtomIO.SelectorFamily<J, K> => {
-	const jsonFamily = AtomIO.__INTERNAL__.selectorFamily__INTERNAL(
+	const jsonFamily = AtomIO.__INTERNAL__.selectorFamily__INTERNAL<J, K>(
 		{
 			key: `${atomFamily.key}:JSON`,
 			get: (key) => ({ get }) => transform.toJson(get(atomFamily(key))),
@@ -23,7 +23,7 @@ export const selectJsonFamily = <
 	atomFamily.subject.subscribe(
 		`select-json-family:${store.config.name}`,
 		(token) => {
-			jsonFamily(token.key)
+			jsonFamily(token.key as K)
 		},
 	)
 	return jsonFamily
