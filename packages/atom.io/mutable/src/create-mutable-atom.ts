@@ -3,6 +3,7 @@ import type { Json, JsonInterface } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 import { tracker } from "atom.io/tracker"
 import type { Transceiver } from "atom.io/tracker"
+import { createAtom } from "../../internal/src"
 
 export interface MutableAtomToken<
 	Core extends Transceiver<Json.Serializable>,
@@ -11,12 +12,6 @@ export interface MutableAtomToken<
 	key: `${string}::mutable`
 	__core?: SerializableCore
 	__update?: Core extends Transceiver<infer Update> ? Update : never
-}
-
-export function isAtomTokenMutable(
-	token: AtomIO.AtomToken<any>,
-): token is MutableAtomToken<any, any> {
-	return token.key.endsWith(`::mutable`)
 }
 
 // rome-ignore format: complex intersection
@@ -28,15 +23,16 @@ export type MutableAtomOptions<
 	& Omit<AtomIO.AtomOptions<Core>, `key`>
 	& { key: `${string}::mutable` }
 
-export function mutableAtom<
+export function createMutableAtom<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
 >(
 	options: MutableAtomOptions<Core, SerializableCore>,
+	store?: AtomIO.Store,
 ): MutableAtomToken<Core, SerializableCore> {
-	const coreState = AtomIO.atom<Core>(options)
-	tracker(coreState)
-	selectJson(coreState, options)
+	const coreState = createAtom<Core>(options)
+	tracker(coreState, store)
+	selectJson(coreState, options, store)
 	return coreState as MutableAtomToken<Core, SerializableCore>
 }
 
@@ -46,9 +42,12 @@ export const getJsonToken = <
 >(
 	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
 ): AtomIO.SelectorToken<SerializableCore> => {
+	const key = mutableAtomToken.family
+		? `${mutableAtomToken.family.key}:JSON(${mutableAtomToken.family.subKey})`
+		: `${mutableAtomToken.key}:JSON`
 	return {
 		...mutableAtomToken,
-		key: `${mutableAtomToken.key}:JSON`,
+		key,
 		type: `selector`,
 	} as unknown as AtomIO.SelectorToken<SerializableCore>
 }
@@ -59,9 +58,12 @@ export const getTrackerToken = <
 >(
 	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
 ): AtomIO.AtomToken<Core extends Transceiver<infer Update> ? Update : never> => {
+	const key = mutableAtomToken.family
+		? `${mutableAtomToken.family.key}:tracker(${mutableAtomToken.family.subKey})`
+		: `${mutableAtomToken.key}:tracker`
 	return {
 		...mutableAtomToken,
-		key: `${mutableAtomToken.key}:tracker`,
+		key,
 		type: `atom`,
 	} as unknown as AtomIO.AtomToken<
 		Core extends Transceiver<infer Update> ? Update : never

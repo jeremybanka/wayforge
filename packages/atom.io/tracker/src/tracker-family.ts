@@ -15,7 +15,7 @@ export const trackerFamily = <
 	(Core extends Transceiver<infer Signal> ? Signal : never) | null,
 	FamilyMemberKey
 > => {
-	const trackerFamilyKey = `${coreFamily.key}:signal`
+	const trackerFamilyKey = `${coreFamily.key}:tracker`
 	const trackerFamily = AtomIO.atomFamily<
 		(Core extends Transceiver<infer Signal> ? Signal : never) | null,
 		FamilyMemberKey
@@ -27,12 +27,13 @@ export const trackerFamily = <
 			updateCore(trackerFamilyKey, coreFamily(key), store),
 		],
 	})
-	coreFamily.subject.subscribe(`tracker`, (atomToken) => {
-		const signalKey = `${trackerFamilyKey}(${atomToken.family?.subKey ?? ``})`
-		if (!store.atoms.has(signalKey)) {
-			trackerFamily(parseJson(atomToken.family?.subKey ?? ``) as FamilyMemberKey)
-		}
-	})
-
+	coreFamily.subject.subscribe(
+		`store=${store.config.name}::tracker-atom-family`,
+		(atomToken) => {
+			if (atomToken.family) {
+				trackerFamily(parseJson(atomToken.family.subKey) as FamilyMemberKey)
+			}
+		},
+	)
 	return trackerFamily
 }

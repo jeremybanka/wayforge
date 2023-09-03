@@ -1,6 +1,7 @@
 import * as AtomIO from "atom.io"
 
 import type { Json, JsonInterface } from "."
+import { parseJson } from "."
 
 export const selectJsonFamily = <
 	T,
@@ -21,9 +22,11 @@ export const selectJsonFamily = <
 		store,
 	)
 	atomFamily.subject.subscribe(
-		`select-json-family:${store.config.name}`,
+		`store=${store.config.name}::json-selector-family`,
 		(token) => {
-			jsonFamily(token.key as K)
+			if (token.family) {
+				jsonFamily(parseJson(token.family.subKey) as K)
+			}
 		},
 	)
 	return jsonFamily

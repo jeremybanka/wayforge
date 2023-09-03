@@ -5,7 +5,7 @@ import { selectJsonFamily } from "atom.io/json"
 import type { Transceiver } from "atom.io/tracker"
 import { trackerFamily } from "atom.io/tracker"
 
-import type { MutableAtomToken } from "./mutable"
+import type { MutableAtomToken } from "./create-mutable-atom"
 
 // rome-ignore format: intersection
 export type MutableAtomFamilyOptions<
@@ -30,7 +30,7 @@ export type MutableAtomFamily<
 		subject: Subject<MutableAtomToken<Core, SerializableCore>>
 	}
 
-export function mutableAtomFamily<
+export function createMutableAtomFamily<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
 	Key extends string,

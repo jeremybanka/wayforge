@@ -5,10 +5,8 @@ import { Junction } from "rel8/junction"
 import type { SetUpdate } from "~/packages/anvl/reactivity"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import type { Json } from "~/packages/anvl/src/json"
-import {
-	mutableAtomFamily,
-	type MutableAtomFamily,
-} from "~/packages/atom.io/mutable/src"
+import { createMutableAtomFamily } from "~/packages/atom.io/mutable/src"
+import type { MutableAtomFamily } from "~/packages/atom.io/mutable/src"
 import { trackerFamily } from "~/packages/atom.io/tracker/src"
 
 type AtomicJunctionOptions<
@@ -60,7 +58,11 @@ export class AtomicJunction<
 		cardinality,
 		defaultContent,
 	}: AtomicJunctionOptions<ASide, BSide, Content>) {
-		this.findRelationsState__INTERNAL = mutableAtomFamily({
+		this.findRelationsState__INTERNAL = createMutableAtomFamily<
+			TransceiverSet<string>,
+			string[],
+			string
+		>({
 			key: `${key}:relations::mutable`,
 			default: () => new TransceiverSet(),
 			toJson: (relations) => [...relations],

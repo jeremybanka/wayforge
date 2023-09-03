@@ -1,14 +1,12 @@
 import { vitest } from "vitest"
 
+import { __INTERNAL__, setLogLevel, setState, subscribe } from "atom.io"
 import {
-	__INTERNAL__,
-	getState,
-	setLogLevel,
-	setState,
-	subscribe,
-} from "atom.io"
-import { withdraw } from "atom.io/internal"
-import { getJsonToken, getTrackerToken, mutableAtom } from "atom.io/mutable"
+	createMutableAtom,
+	createMutableAtomFamily,
+	getJsonToken,
+	getTrackerToken,
+} from "atom.io/mutable"
 import { TransceiverSet } from "atom.io/tracker"
 
 import * as UTIL from "../__util__"
@@ -28,7 +26,7 @@ beforeEach(() => {
 
 describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
-		const myMutableState = mutableAtom({
+		const myMutableState = createMutableAtom({
 			key: `my::mutable`,
 			default: () => new TransceiverSet(),
 			toJson: (set) => [...set],
@@ -40,6 +38,43 @@ describe(`mutable atomic state`, () => {
 		subscribe(myJsonState, UTIL.stdout)
 		subscribe(myTrackerState, UTIL.stdout)
 		setState(myMutableState, (set) => set.add(`a`))
+		expect(UTIL.stdout).toHaveBeenCalledWith({
+			newValue: new TransceiverSet([`a`]),
+			oldValue: new TransceiverSet([`a`]),
+		})
+		expect(UTIL.stdout).toHaveBeenCalledWith({
+			newValue: [`a`],
+			oldValue: [],
+		})
+		expect(UTIL.stdout).toHaveBeenCalledWith({
+			newValue: `add:a`,
+			oldValue: null,
+		})
+	})
+
+	it(`has its own family function for ease of use`, () => {
+		const findFlagsStateByUserId = createMutableAtomFamily<
+			TransceiverSet<string>,
+			string[],
+			string
+		>({
+			key: `flagsByUserId::mutable`,
+			default: () => new TransceiverSet(),
+			toJson: (set) => [...set],
+			fromJson: (array) => new TransceiverSet(array),
+		})
+		console.log(findFlagsStateByUserId)
+
+		const myFlagsState = findFlagsStateByUserId(`my-user-id`)
+		const findFlagsByUserIdJSON = getJsonToken(myFlagsState)
+		const findFlagsByUserIdTracker = getTrackerToken(myFlagsState)
+
+		subscribe(myFlagsState, UTIL.stdout)
+		subscribe(findFlagsByUserIdJSON, UTIL.stdout)
+		subscribe(findFlagsByUserIdTracker, UTIL.stdout)
+
+		setState(myFlagsState, (set) => set.add(`a`))
+
 		expect(UTIL.stdout).toHaveBeenCalledWith({
 			newValue: new TransceiverSet([`a`]),
 			oldValue: new TransceiverSet([`a`]),
