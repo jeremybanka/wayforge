@@ -2,7 +2,6 @@ import {
 	Store,
 	createAtom,
 	createAtomFamily,
-	createReadonlySelectorFamily,
 	createSelector,
 	createSelectorFamily,
 	redo__INTERNAL,
@@ -31,20 +30,18 @@ export class Silo {
 	public undo: typeof undo
 	public redo: typeof redo
 	public constructor(name: string, fromStore: Store | null = null) {
-		const store = new Store(name, fromStore)
-		this.store = store
-		this.atom = (options) => createAtom(options, undefined, store)
-		this.atomFamily = (options) => createAtomFamily(options, store)
-		this.selector = (options) => createSelector(options, undefined, store) as any
-		this.selectorFamily = (options) =>
-			createSelectorFamily(options, store) as any
-		this.transaction = (options) => transaction__INTERNAL(options, store)
-		this.timeline = (options) => timeline__INTERNAL(options, store)
-		this.getState = (token) => getState(token, store)
-		this.setState = (token, newValue) => setState(token, newValue, store)
-		;(this.subscribe = (token, handler, key) =>
-			subscribe(token, handler, key, store)),
-			(this.undo = (token) => undo__INTERNAL(token, store))
-		this.redo = (token) => redo__INTERNAL(token, store)
+		const s = new Store(name, fromStore)
+		this.store = s
+		this.atom = (options) => createAtom(options, undefined, s)
+		this.atomFamily = (options) => createAtomFamily(options, s)
+		this.selector = (options) => createSelector(options, undefined, s) as any
+		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
+		this.transaction = (options) => transaction__INTERNAL(options, s)
+		this.timeline = (options) => timeline__INTERNAL(options, s)
+		this.getState = (token) => getState(token, s)
+		this.setState = (token, newValue) => setState(token, newValue, s)
+		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
+		this.undo = (token) => undo__INTERNAL(token, s)
+		this.redo = (token) => redo__INTERNAL(token, s)
 	}
 }
