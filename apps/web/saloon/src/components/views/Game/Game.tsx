@@ -1,14 +1,19 @@
-import { usePull, usePullFamily } from "atom.io/realtime-react"
+import {
+	usePull,
+	usePullFamily,
+	usePullMutable,
+	usePullMutableFamily,
+} from "atom.io/realtime-react"
 import type { FC } from "react"
 
 import {
-	cardGroupIndexJSON,
+	cardGroupIndex,
 	cardIndexJSON,
-	cardValuesIndexJSON,
+	cardValuesIndex,
 	findCardGroupState,
 	groupsOfCardsStateJSON,
 	ownersOfGroupsStateJSON,
-	valuesOfCardsStateJSON,
+	valuesOfCards,
 } from "~/apps/node/lodge/src/store/game"
 
 import { h3 } from "../../containers/<hX>"
@@ -20,11 +25,11 @@ import { Public } from "./Public"
 
 export const Game: FC = () => {
 	usePull(ownersOfGroupsStateJSON)
-	usePull(valuesOfCardsStateJSON)
+	usePullMutableFamily(valuesOfCards.findRelationsState__INTERNAL)
 	usePull(groupsOfCardsStateJSON)
 	usePull(cardIndexJSON)
-	usePull(cardGroupIndexJSON)
-	usePull(cardValuesIndexJSON)
+	usePullMutable(cardGroupIndex)
+	usePullMutable(cardValuesIndex)
 
 	usePullFamily(findCardGroupState)
 

@@ -2,12 +2,10 @@ import type { AtomFamily, ReadonlySelectorFamily } from "atom.io"
 import { atomFamily, getState, selectorFamily, setState } from "atom.io"
 import { Junction } from "rel8/junction"
 
-import type { SetUpdate } from "~/packages/anvl/reactivity"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import type { Json } from "~/packages/anvl/src/json"
 import { createMutableAtomFamily } from "~/packages/atom.io/mutable/src"
 import type { MutableAtomFamily } from "~/packages/atom.io/mutable/src"
-import { trackerFamily } from "~/packages/atom.io/tracker/src"
 
 type AtomicJunctionOptions<
 	ASide extends string,
@@ -30,10 +28,9 @@ export class AtomicJunction<
 	public between: [a: ASide, b: BSide]
 	public cardinality: `1:1` | `1:n` | `n:n`
 	public defaultContent: Content
-	public findRelationsState: ReadonlySelectorFamily<
-		TransceiverSet<string>,
-		string
-	>
+
+	public findRelatedKeysState: ReadonlySelectorFamily<string[], string>
+	public findRelatedKeyState: ReadonlySelectorFamily<string | undefined, string>
 	public findRelationContentState: Content extends Json.Object
 		? ReadonlySelectorFamily<Content, string>
 		: null
@@ -139,10 +136,14 @@ export class AtomicJunction<
 		this.cardinality = cardinality
 		this.defaultContent = defaultContent as Content
 
-		this.findRelationsState = selectorFamily({
+		this.findRelatedKeysState = selectorFamily<string[], string>({
 			key: `${key}:relations:selector`,
 			get: (key: string) => ({ get }) =>
-				get(this.findRelationsState__INTERNAL(key)),
+				[...get(this.findRelationsState__INTERNAL(key))],
+		})
+		this.findRelatedKeyState = selectorFamily<string | undefined, string>({
+			key: `${key}:relation:selector`,
+			get: (key: string) => ({ get }) => get(this.findRelatedKeysState(key))[0],
 		})
 		this.findRelationContentState = (
 			defaultContent
@@ -171,11 +172,9 @@ export class AtomicJunction<
 									`Absurd error: this.findContentsState__INTERNAL is null when getting content for key "${key}".`,
 								)
 							}
-							const relations = get(this.findRelationsState(key))
+							const relations = get(this.findRelatedKeysState(key))
 							const contents = get(this.findRelationContentState__INTERNAL(key))
-							return [...relations].map(
-								(b) => [b, contents?.[b] ?? null] as const,
-							)
+							return relations.map((b) => [b, contents?.[b] ?? null] as const)
 						},
 				  })
 				: null
@@ -184,8 +183,3 @@ export class AtomicJunction<
 			: null
 	}
 }
-const myJunction = new AtomicJunction({
-	key: `myJunction`,
-	between: [`a`, `b`],
-	cardinality: `n:n`,
-})

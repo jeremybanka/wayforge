@@ -1,16 +1,14 @@
-import { css } from "@emotion/react"
 import { useO } from "atom.io/react"
 import { AnimatePresence } from "framer-motion"
 import type { FC } from "react"
 
-import { valuesOfCardsState } from "~/apps/node/lodge/src/store/game"
-import * as PLAYING_CARDS from "~/apps/node/lodge/src/store/game/playing-card-data"
+import { valuesOfCards } from "~/apps/node/lodge/src/store/game"
 
 import { PlayingCards } from "../../PlayingCards"
 import { article } from "../../containers/<article>"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-	const value = useO(valuesOfCardsState).getRelatedId(id)
+	const value = useO(valuesOfCards.findRelatedKeyState(id))
 	const PlayingCard = PlayingCards[value as keyof typeof PlayingCards]
 	return (
 		<AnimatePresence>

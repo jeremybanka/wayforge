@@ -1,9 +1,11 @@
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
 import { selectJson } from "atom.io/json"
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
 import { isWithin } from "~/packages/anvl/src/refinement"
+import { createMutableAtom } from "~/packages/atom.io/mutable/src"
 import { Perspective } from "~/packages/occlusion/src"
 
 export const OWNERS_OF_CARDS = new Join({
@@ -42,9 +44,11 @@ export const findCardState = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = atom<Set<string>>({
-	key: `cardIndex`,
-	default: new Set<string>(),
+export const cardIndex = createMutableAtom<TransceiverSet<string>, string[]>({
+	key: `cardIndex::mutable`,
+	default: new TransceiverSet<string>(),
+	toJson: (set) => [...set],
+	fromJson: (array) => new TransceiverSet<string>(array),
 })
 export const cardIndexJSON = selector<string[]>({
 	key: `cardIndexJSON`,

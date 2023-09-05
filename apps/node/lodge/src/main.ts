@@ -4,21 +4,18 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
+import { MutableAtomToken, getTrackerToken } from "atom.io/mutable"
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
-import { getJsonToken, getTrackerToken } from "~/packages/atom.io/mutable/src"
 
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { logger } from "./logger"
 import {
-	add52ClassicCardsTX,
 	addCardValueTX,
 	addHandTx,
 	cardGroupIndex,
-	cardGroupIndexJSON,
 	cardIndex,
-	cardIndexJSON,
 	cardValuesIndex,
-	cardValuesIndexJSON,
 	dealCardsTX,
 	findCardGroupState,
 	findCardState,
@@ -30,7 +27,6 @@ import {
 	shuffleDeckTX,
 	spawnCardTX,
 	spawnClassicDeckTX,
-	valuesOfCardsStateJSON,
 } from "./store/game"
 import type { JoinRoomIO } from "./store/rooms"
 import {
@@ -88,6 +84,7 @@ pipe(
 
 			// COMPOSE REALTIME SERVICE HOOKS
 			const exposeSingle = RT.useExposeSingle({ socket })
+			const exposeMutable = RT.useExposeMutable({ socket })
 			const exposeFamily = RT.useExposeFamily({ socket })
 			const exposeMutableFamily = RT.useExposeMutableFamily({ socket })
 			const receiveTransaction = RT.useReceiveTransaction({ socket })
@@ -156,24 +153,22 @@ pipe(
 			]
 			gameStateFamilies.forEach(([family, index]) => exposeFamily(family, index))
 
-			const gameIndices: AtomIO.StateToken<string[]>[] = [
-				cardIndexJSON,
-				cardGroupIndexJSON,
-				cardValuesIndexJSON,
+			const gameIndices: MutableAtomToken<TransceiverSet<string>, string[]>[] = [
+				cardIndex,
+				cardGroupIndex,
+				cardValuesIndex,
 			]
-			gameIndices.forEach(exposeSingle)
+			gameIndices.forEach(exposeMutable)
 
 			const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
 				groupsAndZonesOfCardCyclesStateJSON,
 				groupsOfCardsStateJSON,
 				ownersOfCardsStateJSON,
 				ownersOfGroupsStateJSON,
-				valuesOfCardsStateJSON,
 			]
 			gameJoinStates.forEach(exposeSingle)
 
 			const gameTransactions = [
-				add52ClassicCardsTX,
 				addCardValueTX,
 				addHandTx,
 				dealCardsTX,

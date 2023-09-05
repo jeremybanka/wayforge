@@ -2,6 +2,7 @@ import { nanoid } from "nanoid"
 
 import { transaction } from "~/packages/atom.io/src"
 
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { playersIndex } from "../rooms"
 import { cardIndex, findCardState } from "./card"
 import type { CardGroup } from "./card-group"
@@ -11,25 +12,8 @@ import {
 	groupsOfCardsState,
 	ownersOfGroupsState,
 } from "./card-group"
-import {
-	cardValuesIndex,
-	findCardValueState,
-	valuesOfCardsState,
-} from "./card-value"
+import { cardValuesIndex, findCardValueState, valuesOfCards } from "./card-value"
 import { CARD_VALUES } from "./playing-card-data"
-
-export const add52ClassicCardsTX = transaction<() => void>({
-	key: `add52ClassicCards`,
-	do: ({ set }) => {
-		CARD_VALUES.forEach((cardValue) =>
-			set(findCardValueState(cardValue.id), cardValue),
-		)
-		set(
-			cardValuesIndex,
-			(current) => new Set([...current, ...CARD_VALUES.map((v) => v.id)]),
-		)
-	},
-})
 
 export const spawnClassicDeckTX = transaction<
 	(deckId: string, cardIds: string[]) => void
@@ -45,27 +29,24 @@ export const spawnClassicDeckTX = transaction<
 			rotation: 0,
 		}
 		set(findCardGroupState(deckId), cardGroup)
-		cardIds.forEach((cardId) => {
+		let idx = 0
+		for (const cardId of cardIds) {
 			set(findCardState(cardId), { rotation: 0 })
-		})
-		set(valuesOfCardsState, (current) =>
-			cardIds.reduce((acc, cardId, idx) => {
-				const value = CARD_VALUES[idx]
-				return acc.set({ cardId, valueId: value.id })
-			}, current),
-		)
+			valuesOfCards.set({ cardId, valueId: CARD_VALUES[idx].id })
+			idx++
+		}
+
 		set(groupsOfCardsState, (current) =>
 			cardIds.reduce(
 				(acc, cardId) => acc.set({ groupId: deckId, cardId }),
 				current,
 			),
 		)
-		set(cardIndex, (current) => new Set([...current, ...cardIds]))
-		set(
-			cardValuesIndex,
-			(current) => new Set([...current, ...CARD_VALUES.map((v) => v.id)]),
-		)
-		set(cardGroupIndex, (current) => new Set([...current, deckId]))
+		set(cardIndex, (current) => new TransceiverSet([...current, ...cardIds]))
+		for (const { id: cardValueId } of CARD_VALUES) {
+			set(cardValuesIndex, (current) => current.add(cardValueId))
+		}
+		set(cardGroupIndex, (current) => new TransceiverSet([...current, deckId]))
 	},
 })
 
@@ -85,7 +66,7 @@ export const spawnCardTX = transaction<
 				throw new Error(`Card group does not exist`)
 			}
 			set(groupsOfCardsState, (current) => current.set({ groupId, cardId }))
-			set(cardIndex, (current) => new Set([...current, cardId]))
+			set(cardIndex, (current) => new TransceiverSet([...current, cardId]))
 		} else if (`playerId` in target) {
 			const { playerId } = target
 			const playerDoesExist = get(playersIndex).has(playerId)
@@ -98,7 +79,7 @@ export const spawnCardTX = transaction<
 		} else {
 			throw new Error(`Invalid target`)
 		}
-		set(valuesOfCardsState, (current) => current.set({ cardId, valueId }))
+		valuesOfCards.set({ cardId, valueId })
 	},
 })
 
@@ -112,7 +93,7 @@ export const addHandTx = transaction<
 			name: ``,
 			rotation: 0,
 		}
-		set(cardGroupIndex, (current) => new Set([...current, groupId]))
+		set(cardGroupIndex, (current) => new TransceiverSet([...current, groupId]))
 		set(findCardGroupState(groupId), cardGroup)
 		set(ownersOfGroupsState, (current) => current.set({ playerId, groupId }))
 	},
