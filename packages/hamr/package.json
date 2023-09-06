@@ -90,7 +90,7 @@
 		}
 	},
 	"dependencies": {
-		"@floating-ui/react": "0.25.3",
+		"@floating-ui/react": "0.25.4",
 		"@floating-ui/react-dom": "^2.0.1",
 		"ajv": "8.12.0",
 		"corners": "0.1.0",
