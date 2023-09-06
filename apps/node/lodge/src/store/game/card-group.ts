@@ -1,9 +1,10 @@
-import { atom, atomFamily, selector } from "atom.io"
+import { atom, atomFamily } from "atom.io"
 import { selectJson } from "atom.io/json"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 
 import { Join } from "~/packages/anvl/src/join"
 import { createMutableAtom } from "~/packages/atom.io/mutable/src"
+import { AtomicJunction } from "../utils/atomic-junction"
 
 export type CardGroup = {
 	type: `deck` | `hand` | `pile` | null
@@ -28,44 +29,14 @@ export const cardGroupIndex = createMutableAtom<
 	fromJson: (array) => new TransceiverSet<string>(array),
 })
 
-export const CARD_GROUPS_OF_GAMES = new Join({
-	relationType: `1:n`,
-})
-	.from(`gameId`)
-	.to(`cardGroupId`)
-export const cardGroupsOfGamesState = atom({
-	key: `cardGroupsOfGames`,
-	default: CARD_GROUPS_OF_GAMES,
-})
-export const cardGroupsOfGamesStateJSON = selectJson(
-	cardGroupsOfGamesState,
-	CARD_GROUPS_OF_GAMES.makeJsonInterface(),
-)
-
-export const GROUPS_OF_CARDS = new Join({
-	relationType: `1:n`,
-})
-	.from(`groupId`)
-	.to(`cardId`)
-export const groupsOfCardsState = atom({
+export const groupsOfCards = new AtomicJunction({
 	key: `groupsOfCards`,
-	default: GROUPS_OF_CARDS,
+	between: [`groupId`, `cardId`],
+	cardinality: `1:n`,
 })
-export const groupsOfCardsStateJSON = selectJson(
-	groupsOfCardsState,
-	GROUPS_OF_CARDS.makeJsonInterface(),
-)
 
-export const OWNERS_OF_GROUPS = new Join({
-	relationType: `1:n`,
-})
-	.from(`playerId`)
-	.to(`groupId`)
-export const ownersOfGroupsState = atom({
+export const ownersOfGroups = new AtomicJunction({
 	key: `ownersOfGroups`,
-	default: OWNERS_OF_GROUPS,
+	between: [`playerId`, `groupId`],
+	cardinality: `1:n`,
 })
-export const ownersOfGroupsStateJSON = selectJson(
-	ownersOfGroupsState,
-	OWNERS_OF_GROUPS.makeJsonInterface(),
-)

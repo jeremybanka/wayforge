@@ -92,7 +92,10 @@ export class AtomicJunction<
 				setState(relationTrackerA, (current) => (current.delete(b), current))
 				setState(relationTrackerB, (current) => (current.delete(a), current))
 			},
-			getRelatedKeys: (a) => getState(this.findRelationsState__INTERNAL(a)),
+			getRelatedKeys: (a) => {
+				const relatedKeys = getState(this.findRelationsState__INTERNAL(a))
+				return relatedKeys
+			},
 		}
 
 		if (this.findRelationContentState__INTERNAL) {

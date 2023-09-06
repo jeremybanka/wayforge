@@ -1,5 +1,5 @@
-import type { SetUpdate } from "./transceiver"
-import { TransceiverSet } from "./transceiver"
+import type { SetUpdate } from "./transceiver-set"
+import { TransceiverSet } from "./transceiver-set"
 
 describe(`TransceiverSet`, () => {
 	describe(`observe`, () => {
@@ -56,6 +56,23 @@ describe(`TransceiverSet`, () => {
 			expect(set.size).toBe(0)
 			if (lastUpdate) set.undo(lastUpdate)
 			expect(set.size).toBe(2)
+		})
+	})
+	describe(`transaction`, () => {
+		it(`should emit three changes`, () => {
+			const set = new TransceiverSet()
+			const fn = vitest.fn()
+			set.subscribe(`TEST`, fn)
+			set.startTransaction()
+			set.add(`x`)
+			set.clear()
+			set.add(`y`)
+			set.add(`z`)
+			set.delete(`y`)
+			expect(fn).toHaveBeenCalledTimes(0)
+			set.applyTransaction()
+			expect(fn).toHaveBeenCalledTimes(1)
+			expect(fn).toHaveBeenCalledWith(`tx::add:x;clear:["x"];add:y;add:z;del:y`)
 		})
 	})
 })

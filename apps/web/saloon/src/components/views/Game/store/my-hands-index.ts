@@ -3,7 +3,7 @@ import { myIdState } from "atom.io/realtime-react"
 
 import {
 	findCardGroupState,
-	ownersOfGroupsState,
+	ownersOfGroups,
 } from "~/apps/node/lodge/src/store/game"
 
 export const myHandsIndex = AtomIO.selector<string[]>({
@@ -13,8 +13,7 @@ export const myHandsIndex = AtomIO.selector<string[]>({
 		if (!myId) {
 			return []
 		}
-		const ownersOfGroups = get(ownersOfGroupsState)
-		const myGroups = ownersOfGroups.getRelatedIds(myId)
+		const myGroups = get(ownersOfGroups.findRelatedKeysState(myId))
 		const myHands = myGroups.filter(
 			(id) => get(findCardGroupState(id)).type === `hand`,
 		)

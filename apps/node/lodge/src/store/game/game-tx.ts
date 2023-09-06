@@ -2,17 +2,16 @@ import { nanoid } from "nanoid"
 
 import { transaction } from "~/packages/atom.io/src"
 
-import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { playersIndex } from "../rooms"
 import { cardIndex, findCardState } from "./card"
 import type { CardGroup } from "./card-group"
 import {
 	cardGroupIndex,
 	findCardGroupState,
-	groupsOfCardsState,
-	ownersOfGroupsState,
+	groupsOfCards,
+	ownersOfGroups,
 } from "./card-group"
-import { cardValuesIndex, findCardValueState, valuesOfCards } from "./card-value"
+import { cardValuesIndex, valuesOfCards } from "./card-value"
 import { CARD_VALUES } from "./playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
@@ -29,24 +28,45 @@ export const spawnClassicDeckTX = transaction<
 			rotation: 0,
 		}
 		set(findCardGroupState(deckId), cardGroup)
+
 		let idx = 0
 		for (const cardId of cardIds) {
 			set(findCardState(cardId), { rotation: 0 })
 			valuesOfCards.set({ cardId, valueId: CARD_VALUES[idx].id })
 			idx++
 		}
+		set(cardGroupIndex, (current) => current.add(deckId))
+		set(cardIndex, (current) => {
+			current.startTransaction()
+			for (const cardId of cardIds) {
+				current.add(cardId)
+			}
+			current.applyTransaction()
+			return current
+		})
+		set(cardValuesIndex, (current) => {
+			current.startTransaction()
+			for (const { id: cardValueId } of CARD_VALUES) {
+				current.add(cardValueId)
+			}
+			current.applyTransaction()
+			return current
+		})
 
-		set(groupsOfCardsState, (current) =>
-			cardIds.reduce(
-				(acc, cardId) => acc.set({ groupId: deckId, cardId }),
-				current,
-			),
-		)
-		set(cardIndex, (current) => new TransceiverSet([...current, ...cardIds]))
-		for (const { id: cardValueId } of CARD_VALUES) {
-			set(cardValuesIndex, (current) => current.add(cardValueId))
+		const cardsInDeckState = groupsOfCards.findRelationsState__INTERNAL(deckId)
+
+		set(cardsInDeckState, (cardsInDeck) => {
+			cardsInDeck.startTransaction()
+			for (const cardId of cardIds) {
+				cardsInDeck.add(cardId)
+			}
+			cardsInDeck.applyTransaction()
+			return cardsInDeck
+		})
+		for (const cardId of cardIds) {
+			const deckOfCardState = groupsOfCards.findRelationsState__INTERNAL(cardId)
+			set(deckOfCardState, (current) => current.add(deckId))
 		}
-		set(cardGroupIndex, (current) => new TransceiverSet([...current, deckId]))
 	},
 })
 
@@ -65,8 +85,8 @@ export const spawnCardTX = transaction<
 			if (!cardGroupDoesExist) {
 				throw new Error(`Card group does not exist`)
 			}
-			set(groupsOfCardsState, (current) => current.set({ groupId, cardId }))
-			set(cardIndex, (current) => new TransceiverSet([...current, cardId]))
+			groupsOfCards.set({ groupId, cardId })
+			set(cardIndex, (current) => current.add(cardId))
 		} else if (`playerId` in target) {
 			const { playerId } = target
 			const playerDoesExist = get(playersIndex).has(playerId)
@@ -93,9 +113,9 @@ export const addHandTx = transaction<
 			name: ``,
 			rotation: 0,
 		}
-		set(cardGroupIndex, (current) => new TransceiverSet([...current, groupId]))
+		set(cardGroupIndex, (current) => current.add(groupId))
 		set(findCardGroupState(groupId), cardGroup)
-		set(ownersOfGroupsState, (current) => current.set({ playerId, groupId }))
+		ownersOfGroups.set({ playerId, groupId })
 	},
 })
 
@@ -106,14 +126,25 @@ export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>(
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const cardIds = get(groupsOfCardsState).getRelatedIds(deckId)
+		const cardIds = get(groupsOfCards.findRelatedKeysState(deckId))
 		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
-		set(groupsOfCardsState, (current) =>
-			shuffledCardIds.reduce(
-				(acc, cardId) => acc.set({ groupId: deckId, cardId }),
-				current,
-			),
-		)
+		const cardsInDeckState = groupsOfCards.findRelationsState__INTERNAL(deckId)
+		set(cardsInDeckState, (current) => {
+			current.startTransaction()
+			current.clear()
+			for (const cardId of shuffledCardIds) {
+				current.add(cardId)
+			}
+			current.applyTransaction()
+			return current
+		})
+
+		// set(groupsOfCardsState, (current) =>
+		// 	shuffledCardIds.reduce(
+		// 		(acc, cardId) => acc.set({ groupId: deckId, cardId }),
+		// 		current,
+		// 	),
+		// )
 	},
 })
 
@@ -123,7 +154,7 @@ export const dealCardsTX = transaction<
 	}
 >({
 	key: `dealCards`,
-	do: ({ get, set }, { deckId, handId, count }) => {
+	do: ({ get }, { deckId, handId, count }) => {
 		const deckDoesExist = get(cardGroupIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
@@ -132,17 +163,15 @@ export const dealCardsTX = transaction<
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)
 		}
-		const deckCardIds = get(groupsOfCardsState).getRelatedIds(deckId)
+		const deckCardIds = get(groupsOfCards.findRelatedKeysState(deckId))
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
 		}
 		const cardIds = deckCardIds.slice(-count)
-		set(groupsOfCardsState, (current) =>
-			cardIds.reduce(
-				(acc, cardId) => acc.set({ groupId: handId, cardId }),
-				current,
-			),
-		)
+		console.log({ cardIds })
+		for (const cardId of cardIds) {
+			groupsOfCards.set({ groupId: handId, cardId })
+		}
 		return { cardIds }
 	},
 })

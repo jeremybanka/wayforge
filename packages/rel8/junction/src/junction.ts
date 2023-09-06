@@ -230,8 +230,7 @@ export class Junction<
 	public getRelatedKey(key: string): string | undefined {
 		const relations = this.getRelatedKeys(key)
 		if (relations) {
-			const { value, done } = relations.values().next()
-			if (!done) {
+			if (relations.size > 1) {
 				console.warn(
 					`${relations.size} related keys were found for key "${key}": (${[
 						...relations,
@@ -240,7 +239,9 @@ export class Junction<
 						.join(`, `)}). Only one related key was expected.`,
 				)
 			}
-			return value
+			for (const relation of relations) {
+				return relation
+			}
 		}
 	}
 

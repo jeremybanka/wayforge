@@ -8,11 +8,11 @@ import type { FC } from "react"
 
 import {
 	cardGroupIndex,
-	cardIndexJSON,
+	cardIndex,
 	cardValuesIndex,
 	findCardGroupState,
-	groupsOfCardsStateJSON,
-	ownersOfGroupsStateJSON,
+	groupsOfCards,
+	ownersOfGroups,
 	valuesOfCards,
 } from "~/apps/node/lodge/src/store/game"
 
@@ -24,10 +24,10 @@ import { MyDomain } from "./MyDomain"
 import { Public } from "./Public"
 
 export const Game: FC = () => {
-	usePull(ownersOfGroupsStateJSON)
+	usePullMutableFamily(groupsOfCards.findRelationsState__INTERNAL)
 	usePullMutableFamily(valuesOfCards.findRelationsState__INTERNAL)
-	usePull(groupsOfCardsStateJSON)
-	usePull(cardIndexJSON)
+	usePullMutableFamily(ownersOfGroups.findRelationsState__INTERNAL)
+	usePullMutable(cardIndex)
 	usePullMutable(cardGroupIndex)
 	usePullMutable(cardValuesIndex)
 

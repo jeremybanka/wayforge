@@ -37,8 +37,8 @@ export function createMutableAtomFamily<
 >(
 	options: MutableAtomFamilyOptions<Core, SerializableCore, Key>,
 ): MutableAtomFamily<Core, SerializableCore, Key> {
-	const coreState = AtomIO.atomFamily<Core, Key>(options)
-	trackerFamily(coreState)
-	selectJsonFamily(coreState, options)
-	return coreState as MutableAtomFamily<Core, SerializableCore, Key>
+	const coreFamily = AtomIO.atomFamily<Core, Key>(options)
+	selectJsonFamily(coreFamily, options)
+	trackerFamily(coreFamily)
+	return coreFamily as MutableAtomFamily<Core, SerializableCore, Key>
 }

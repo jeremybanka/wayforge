@@ -1,5 +1,6 @@
 import { vitest } from "vitest"
 
+import { TransceiverSet } from "anvl/reactivity"
 import {
 	__INTERNAL__,
 	atom,
@@ -9,8 +10,8 @@ import {
 	setLogLevel,
 	setState,
 	transaction,
-} from "../../src"
-import { TransceiverSet, tracker, trackerFamily } from "../../tracker/src"
+} from "atom.io"
+import { tracker, trackerFamily } from "../../tracker/src"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

@@ -7,8 +7,8 @@ import {
 	getJsonToken,
 	getTrackerToken,
 } from "atom.io/mutable"
-import { TransceiverSet } from "atom.io/tracker"
 
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -88,4 +88,6 @@ describe(`mutable atomic state`, () => {
 			oldValue: null,
 		})
 	})
+
+	it(`can recover from a failed transaction`, () => {})
 })

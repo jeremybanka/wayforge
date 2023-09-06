@@ -21,9 +21,9 @@ import {
 	findCardState,
 	findCardValueState,
 	groupsAndZonesOfCardCyclesStateJSON,
-	groupsOfCardsStateJSON,
+	groupsOfCards,
 	ownersOfCardsStateJSON,
-	ownersOfGroupsStateJSON,
+	ownersOfGroups,
 	shuffleDeckTX,
 	spawnCardTX,
 	spawnClassicDeckTX,
@@ -38,6 +38,7 @@ import {
 	roomsIndex,
 	roomsIndexJSON,
 } from "./store/rooms"
+import { AtomicJunction } from "./store/utils/atomic-junction"
 
 const TIMESTAMP = Date.now()
 
@@ -54,16 +55,14 @@ pipe(
 			// WELCOME
 			logger.info(socket.id, `connected`)
 			io.emit(`connection`, TIMESTAMP)
-			AtomIO.setState(
-				playersIndex,
-				(playersIndex) => new Set([...playersIndex, socket.id]),
+			AtomIO.setState(playersIndex, (playersIndex) =>
+				playersIndex.add(socket.id),
 			)
 			socket.on(`disconnect`, () => {
-				AtomIO.setState(
-					playersIndex,
-					(playersIndex) =>
-						new Set([...playersIndex].filter((id) => id !== socket.id)),
-				)
+				AtomIO.setState(playersIndex, (playersIndex) => {
+					playersIndex.delete(socket.id)
+					return playersIndex
+				})
 				playersInRooms.delete({ playerId: socket.id })
 			})
 
@@ -143,15 +142,6 @@ pipe(
 			)
 
 			// GAME SERVICES
-			const gameStateFamilies: [
-				AtomIO.AtomFamily<Json.Object>,
-				AtomIO.StateToken<Set<string>>,
-			][] = [
-				[findCardState, cardIndex],
-				[findCardGroupState, cardGroupIndex],
-				[findCardValueState, cardValuesIndex],
-			]
-			gameStateFamilies.forEach(([family, index]) => exposeFamily(family, index))
 
 			const gameIndices: MutableAtomToken<TransceiverSet<string>, string[]>[] = [
 				cardIndex,
@@ -162,11 +152,34 @@ pipe(
 
 			const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
 				groupsAndZonesOfCardCyclesStateJSON,
-				groupsOfCardsStateJSON,
 				ownersOfCardsStateJSON,
-				ownersOfGroupsStateJSON,
 			]
 			gameJoinStates.forEach(exposeSingle)
+			const gameRelations: [
+				junction: AtomicJunction<any, any, any>,
+				indexA: MutableAtomToken<TransceiverSet<string>, string[]>,
+				indexB: MutableAtomToken<TransceiverSet<string>, string[]>,
+			][] = [
+				[groupsOfCards, cardGroupIndex, cardIndex],
+				[ownersOfGroups, playersIndex, cardGroupIndex],
+			]
+			gameRelations.forEach(([junction, indexA, indexB]) => {
+				exposeMutableFamily(junction.findRelationsState__INTERNAL, indexA)
+				exposeMutableFamily(junction.findRelationsState__INTERNAL, indexB)
+				if (junction.findRelationContentState__INTERNAL) {
+					// exposeFamily(junction.findRelationContentState__INTERNAL)
+				}
+			})
+
+			const gameStateFamilies: [
+				AtomIO.AtomFamily<Json.Object>,
+				AtomIO.StateToken<Set<string>>,
+			][] = [
+				[findCardState, cardIndex],
+				[findCardGroupState, cardGroupIndex],
+				[findCardValueState, cardValuesIndex],
+			]
+			gameStateFamilies.forEach(([family, index]) => exposeFamily(family, index))
 
 			const gameTransactions = [
 				addCardValueTX,

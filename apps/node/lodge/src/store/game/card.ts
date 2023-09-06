@@ -50,11 +50,6 @@ export const cardIndex = createMutableAtom<TransceiverSet<string>, string[]>({
 	toJson: (set) => [...set],
 	fromJson: (array) => new TransceiverSet<string>(array),
 })
-export const cardIndexJSON = selector<string[]>({
-	key: `cardIndexJSON`,
-	get: ({ get }) => [...get(cardIndex)],
-	set: ({ set }, newValue) => set(cardIndex, new Set(newValue)),
-})
 
 export type CardCycle = {
 	name: string
