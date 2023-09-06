@@ -53,5 +53,5 @@ export const applyTransaction = <ƒ extends ƒn>(
 		params: store.transactionStatus.params as Parameters<ƒ>,
 	})
 	store.transactionStatus = { phase: `idle` }
-	store.config.logger?.info(`🛬`, `transaction done`)
+	store.config.logger?.info(`🛬`, `transaction "${myTransaction.key}" applied`)
 }
