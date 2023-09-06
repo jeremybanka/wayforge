@@ -7,6 +7,7 @@ import { getState__INTERNAL } from "../get-state-internal"
 import { markDone } from "../operation"
 import { IMPLICIT } from "../store"
 import type { Store } from "../store"
+import { copyMutableIfWithinTransaction } from "./copy-mutable-in-transaction"
 import { emitUpdate } from "./emit-update"
 import { evictDownStream } from "./evict-downstream"
 import { stowUpdate } from "./stow-update"
@@ -16,6 +17,7 @@ export const setAtomState = <T>(
 	next: T | ((oldValue: T) => T),
 	store: Store = IMPLICIT.STORE,
 ): void => {
+	copyMutableIfWithinTransaction(atom, store)
 	const oldValue = getState__INTERNAL(atom, store)
 	const newValue = become(next)(oldValue)
 	store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)

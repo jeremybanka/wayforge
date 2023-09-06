@@ -1,6 +1,14 @@
 import { vitest } from "vitest"
 
-import { __INTERNAL__, setLogLevel, setState, subscribe } from "atom.io"
+import {
+	__INTERNAL__,
+	getState,
+	runTransaction,
+	setLogLevel,
+	setState,
+	subscribe,
+	transaction,
+} from "atom.io"
 import {
 	createMutableAtom,
 	createMutableAtomFamily,
@@ -9,6 +17,7 @@ import {
 } from "atom.io/mutable"
 
 import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { withdraw } from "../../internal/src"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -89,5 +98,43 @@ describe(`mutable atomic state`, () => {
 		})
 	})
 
-	it(`can recover from a failed transaction`, () => {})
+	it(`can recover from a failed transaction`, () => {
+		const myMutableState = createMutableAtom({
+			key: `my::mutable`,
+			default: () => new TransceiverSet(),
+			toJson: (set) => [...set],
+			fromJson: (array) => new TransceiverSet(array),
+		})
+
+		const myTransaction = transaction({
+			key: `myTx`,
+			do: ({ set }) => {
+				set(myMutableState, (mySet) => {
+					mySet.startTransaction()
+					mySet.add(`a`)
+					mySet.add(`b`)
+					mySet.applyTransaction()
+					return mySet
+				})
+				throw new Error(`failed transaction`)
+			},
+		})
+
+		const myJsonState = getJsonToken(myMutableState)
+		subscribe(myJsonState, UTIL.stdout)
+
+		let caught: unknown
+		try {
+			runTransaction(myTransaction)()
+		} catch (thrown) {
+			caught = thrown
+		} finally {
+			expect(caught).toBeInstanceOf(Error)
+			expect(UTIL.stdout).not.toHaveBeenCalledWith({
+				oldValue: [],
+				newValue: [`a`, `b`],
+			})
+			expect(getState(myMutableState)).toEqual(new TransceiverSet())
+		}
+	})
 })
