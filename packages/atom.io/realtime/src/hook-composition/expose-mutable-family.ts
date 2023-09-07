@@ -1,11 +1,8 @@
 import * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
-import {
-	getJsonToken,
-	getTrackerToken,
-	type MutableAtomFamily,
-} from "atom.io/mutable"
+import type { MutableAtomFamily } from "atom.io/mutable"
+import { getJsonToken, getTrackerToken } from "atom.io/mutable"
 
 import type { Transceiver } from "~/packages/anvl/reactivity/transceiver"
 
