@@ -5,9 +5,9 @@
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup --entry src/socket-git-node.ts --entry src/socket-git-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
-		"lint:rome": "biome check .",
+		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:rome && npm run lint:eslint",
+		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},
