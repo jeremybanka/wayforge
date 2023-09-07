@@ -2,6 +2,7 @@ import { nanoid } from "nanoid"
 
 import { transaction } from "~/packages/atom.io/src"
 
+import { IMPLICIT } from "~/packages/atom.io/internal/src"
 import { playersIndex } from "../rooms"
 import { cardIndex, findCardState } from "./card"
 import type { CardGroup } from "./card-group"
@@ -36,6 +37,11 @@ export const spawnClassicDeckTX = transaction<
 			idx++
 		}
 		set(cardGroupIndex, (current) => current.add(deckId))
+
+		const TEST_cardGroupIdxStore = IMPLICIT.STORE.atoms.get(`cardGroupIndex`)
+		const TEST_cardGroupIdxCore =
+			IMPLICIT.STORE.transactionStatus?.core.atoms.get(`cardGroupIndex`)
+
 		set(cardIndex, (current) => {
 			current.startTransaction()
 			for (const cardId of cardIds) {
