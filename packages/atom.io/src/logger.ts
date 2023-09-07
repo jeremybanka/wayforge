@@ -21,10 +21,10 @@ export const setLogLevel = (
 		store.config.logger = { ...console }
 		LOG_LEVELS.forEach((logLevel) => {
 			if (LOG_LEVELS.indexOf(logLevel) < LOG_LEVELS.indexOf(preferredLevel)) {
-				// rome-ignore lint/style/noNonNullAssertion: we just set it
+				// biome-ignore lint/style/noNonNullAssertion: we just set it
 				store.config.logger![logLevel] = doNothing
 			} else {
-				// rome-ignore lint/style/noNonNullAssertion: we just set it
+				// biome-ignore lint/style/noNonNullAssertion: we just set it
 				store.config.logger![logLevel] = logger__INTERNAL[logLevel]
 			}
 		})

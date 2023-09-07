@@ -17,7 +17,7 @@ export const traceSelectorAtoms = (
 	const sources = lookupSelectorSources(dependency.key, store)
 	let depth = 0
 	while (sources.length > 0) {
-		// rome-ignore lint/style/noNonNullAssertion: just checked length ^^^
+		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
 		const source = sources.shift()!
 		++depth
 		if (depth > 999) {
