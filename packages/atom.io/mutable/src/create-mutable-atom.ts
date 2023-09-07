@@ -1,4 +1,4 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import type { Json, JsonInterface } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 import { tracker } from "atom.io/tracker"
@@ -14,14 +14,12 @@ export interface MutableAtomToken<
 	__update?: Core extends Transceiver<infer Update> ? Update : never
 }
 
-// rome-ignore format: complex intersection
+// biome-ignore format: complex intersection
 export type MutableAtomOptions<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
-> = 
-	&	JsonInterface<Core, SerializableCore> 
-	& Omit<AtomIO.AtomOptions<Core>, `key`>
-	& { key: `${string}::mutable` }
+> = JsonInterface<Core, SerializableCore> &
+	Omit<AtomIO.AtomOptions<Core>, `key`> & { key: `${string}::mutable` }
 
 export function createMutableAtom<
 	Core extends Transceiver<Json.Serializable>,

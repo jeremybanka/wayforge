@@ -26,9 +26,9 @@ export function withdrawNewFamilyMember<T>(
 	store: Store,
 ): Atom<T> | Selector<T> | null
 export function withdrawNewFamilyMember<T>(
-	token: StateToken<T> | ReadonlySelectorToken<T>,
+	token: ReadonlySelectorToken<T> | StateToken<T>,
 	store: Store,
-): Atom<T> | Selector<T> | ReadonlySelector<T> | null
+): Atom<T> | ReadonlySelector<T> | Selector<T> | null
 export function withdrawNewFamilyMember<T>(
 	token:
 		| AtomToken<T>

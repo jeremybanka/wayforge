@@ -4,11 +4,12 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import { MutableAtomToken, getTrackerToken } from "atom.io/mutable"
+import type { MutableAtomToken } from "atom.io/mutable"
+import { getTrackerToken } from "atom.io/mutable"
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
 
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import type { TransceiverSet } from "~/packages/anvl/reactivity"
 import { logger } from "./logger"
 import {
 	addCardValueTX,
@@ -38,7 +39,7 @@ import {
 	roomsIndex,
 	roomsIndexJSON,
 } from "./store/rooms"
-import { AtomicJunction } from "./store/utils/atomic-junction"
+import type { AtomicJunction } from "./store/utils/atomic-junction"
 
 const TIMESTAMP = Date.now()
 

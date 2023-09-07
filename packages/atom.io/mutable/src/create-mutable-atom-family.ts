@@ -7,28 +7,24 @@ import { trackerFamily } from "atom.io/tracker"
 
 import type { MutableAtomToken } from "./create-mutable-atom"
 
-// rome-ignore format: intersection
+// biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
 	Key extends string,
-> =
-	& JsonInterface<Core, SerializableCore>
-	& Omit<AtomIO.AtomFamilyOptions<Core, Key>, `key`>
-	& { key: `${Key}::mutable` }
+> = JsonInterface<Core, SerializableCore> &
+	Omit<AtomIO.AtomFamilyOptions<Core, Key>, `key`> & { key: `${Key}::mutable` }
 
-// rome-ignore format: intersection
+// biome-ignore format: intersection
 export type MutableAtomFamily<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
 	Key extends Json.Serializable,
-> = 
-	& ((key: Key) => MutableAtomToken<Core, SerializableCore>)
-	& {
-		key: `${string}::mutable`
-		type: `atom_family`
-		subject: Subject<MutableAtomToken<Core, SerializableCore>>
-	}
+> = ((key: Key) => MutableAtomToken<Core, SerializableCore>) & {
+	key: `${string}::mutable`
+	type: `atom_family`
+	subject: Subject<MutableAtomToken<Core, SerializableCore>>
+}
 
 export function createMutableAtomFamily<
 	Core extends Transceiver<Json.Serializable>,

@@ -2,7 +2,7 @@ import type { Json, JsonInterface } from "atom.io/json"
 import { pipe } from "fp-ts/function"
 import { target } from ".."
 import type { Store } from ".."
-import { Atom } from "../atom"
+import type { Atom } from "../atom"
 
 export function copyMutableIfWithinTransaction<T>(
 	atom: Atom<T> | (Atom<T> & JsonInterface<T, Json.Serializable>),
