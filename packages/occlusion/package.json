@@ -7,9 +7,9 @@
 	"files": ["dist"],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
-		"lint:rome": "biome check .",
+		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:rome && npm run lint:eslint",
+		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "vitest run"
 	},

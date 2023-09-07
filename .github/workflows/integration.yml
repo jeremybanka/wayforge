@@ -54,8 +54,8 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
-      - name: Rome
-        run: pnpm lint:rome
+      - name: Biome
+        run: pnpm lint:biome
 
       - name: ESLint
         run: pnpm lint:eslint
