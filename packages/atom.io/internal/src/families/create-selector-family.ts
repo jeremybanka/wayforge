@@ -36,7 +36,7 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 	const core = target(store)
 	const subject = new Subject<SelectorToken<T>>()
 
-	return Object.assign(
+	const selectorFamily = Object.assign(
 		(key: K): SelectorToken<T> => {
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
@@ -62,4 +62,6 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 			type: `selector_family`,
 		} as const,
 	) as SelectorFamily<T, K>
+	core.families.set(options.key, selectorFamily)
+	return selectorFamily
 }

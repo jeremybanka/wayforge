@@ -7,3 +7,9 @@ export type Transceiver<Signal extends Json.Serializable> = {
 }
 
 export type TransceiverMode = `playback` | `record` | `transaction`
+
+export type Signal<Core extends Transceiver<any>> = Core extends Transceiver<
+	infer Update
+>
+	? Update
+	: never

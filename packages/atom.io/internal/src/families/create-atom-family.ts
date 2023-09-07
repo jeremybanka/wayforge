@@ -11,13 +11,14 @@ import { stringifyJson } from "atom.io/json"
 import { createAtom } from "../atom"
 import { IMPLICIT, type Store, deposit, withdraw } from "../store"
 import { Subject } from "../subject"
+import { target } from "../transaction"
 
 export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
 	store: Store = IMPLICIT.STORE,
 ): AtomFamily<T, K> {
 	const subject = new Subject<AtomToken<T>>()
-	return Object.assign(
+	const atomFamily = Object.assign(
 		(key: K): AtomToken<T> => {
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
@@ -48,4 +49,7 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 			subject,
 		} as const,
 	)
+	const core = target(store)
+	core.families.set(options.key, atomFamily)
+	return atomFamily
 }

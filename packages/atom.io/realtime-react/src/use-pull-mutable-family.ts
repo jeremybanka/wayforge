@@ -17,15 +17,8 @@ export function usePullMutableFamily<
 
 	React.useEffect(() => {
 		socket.on(`init:${family.key}`, (key: Json.Serializable, data: J) => {
-			console.log(`init:${family.key}`, key, data)
 			const token = family(key)
 			const jsonToken = getJsonToken(token)
-			console.log(store.valueMap.get(token.key))
-			console.log(store.valueMap.get(jsonToken.key))
-			console.log(store)
-			console.log(token, AtomIO.getState(token, store))
-			console.log({ jsonToken })
-			console.log(jsonToken, AtomIO.getState(jsonToken, store))
 			AtomIO.setState(jsonToken, data, store)
 		})
 		socket.on(

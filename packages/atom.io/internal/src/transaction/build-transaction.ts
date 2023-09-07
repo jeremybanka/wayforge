@@ -14,6 +14,7 @@ export const buildTransaction = (
 		core: {
 			atoms: new Map(store.atoms),
 			atomsThatAreDefault: new Set(store.atomsThatAreDefault),
+			families: new Map(store.families),
 			operation: { open: false },
 			readonlySelectors: new Map(store.readonlySelectors),
 			timelines: new Map(store.timelines),

@@ -7,12 +7,14 @@ import {
 	openOperation,
 	setState__INTERNAL,
 	withdraw,
+	withdrawNewFamilyMember,
 } from "atom.io/internal"
 import * as __INTERNAL__ from "atom.io/internal"
 import type { Store } from "atom.io/internal"
 
 import type { ƒn } from "~/packages/anvl/src/function"
 import { capitalize } from "~/packages/anvl/src/string/capitalize"
+import { atomFamily } from "./atom"
 
 export { ƒn }
 
@@ -57,7 +59,7 @@ export const getState = <T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
 	store: Store = IMPLICIT.STORE,
 ): T => {
-	const state = withdraw<T>(token, store)
+	const state = withdraw(token, store) ?? withdrawNewFamilyMember(token, store)
 	if (state === null) {
 		throw new Error(
 			`${capitalize(token.type)} "${token.key}" not found in store "${
@@ -81,7 +83,7 @@ export const setState = <T, New extends T>(
 		}
 		return
 	}
-	const state = withdraw(token, store)
+	const state = withdraw(token, store) ?? withdrawNewFamilyMember(token, store)
 	if (state === null) {
 		throw new Error(
 			`${capitalize(token.type)} "${token.key}" not found in store "${

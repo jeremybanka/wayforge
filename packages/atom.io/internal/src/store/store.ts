@@ -1,7 +1,10 @@
 import type {
+	AtomFamily,
 	AtomToken,
 	Logger,
+	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
+	SelectorFamily,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
@@ -20,14 +23,11 @@ import { Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionStatus } from "../transaction"
 
-export * from "./deposit"
-export * from "./lookup"
-export * from "./withdraw"
-
 export type StoreCore = Pick<
 	Store,
 	| `atoms`
 	| `atomsThatAreDefault`
+	| `families`
 	| `operation`
 	| `readonlySelectors`
 	| `selectorAtoms`
@@ -45,6 +45,13 @@ export class Store {
 	public atoms = new Map<string, Atom<any>>()
 	public selectors = new Map<string, Selector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
+
+	public families = new Map<
+		string,
+		| AtomFamily<any, any>
+		| ReadonlySelectorFamily<any, any>
+		| SelectorFamily<any, any>
+	>()
 
 	public timelines = new Map<string, Timeline>()
 	public transactions = new Map<string, Transaction<ƒn>>()
