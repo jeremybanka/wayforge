@@ -1,6 +1,5 @@
 import { vitest } from "vitest"
 
-import { TransceiverSet } from "anvl/reactivity"
 import {
 	__INTERNAL__,
 	atom,
@@ -11,6 +10,7 @@ import {
 	setState,
 	transaction,
 } from "atom.io"
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { tracker, trackerFamily } from "../../tracker/src"
 import * as UTIL from "../__util__"
 
