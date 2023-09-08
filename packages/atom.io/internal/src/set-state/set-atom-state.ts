@@ -17,9 +17,9 @@ export const setAtomState = <T>(
 	next: T | ((oldValue: T) => T),
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	copyMutableIfWithinTransaction(atom, store)
 	const oldValue = getState__INTERNAL(atom, store)
-	const newValue = become(next)(oldValue)
+	let newValue = copyMutableIfWithinTransaction(atom, store)
+	newValue = become(next)(newValue)
 	store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)
 	cacheValue(atom.key, newValue, store)
 	if (isAtomDefault(atom.key, store)) {

@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 
-import { transaction } from "~/packages/atom.io/src"
+import { getState, transaction } from "~/packages/atom.io/src"
 
 import { IMPLICIT } from "~/packages/atom.io/internal/src"
 import { playersIndex } from "../rooms"
@@ -36,11 +36,11 @@ export const spawnClassicDeckTX = transaction<
 			valuesOfCards.set({ cardId, valueId: CARD_VALUES[idx].id })
 			idx++
 		}
-		set(cardGroupIndex, (current) => current.add(deckId))
-
-		const TEST_cardGroupIdxStore = IMPLICIT.STORE.atoms.get(`cardGroupIndex`)
-		const TEST_cardGroupIdxCore =
-			IMPLICIT.STORE.transactionStatus?.core.atoms.get(`cardGroupIndex`)
+		set(cardGroupIndex, (current) => {
+			current.add(deckId)
+			console.log({ current })
+			return current
+		})
 
 		set(cardIndex, (current) => {
 			current.startTransaction()
@@ -161,7 +161,11 @@ export const dealCardsTX = transaction<
 >({
 	key: `dealCards`,
 	do: ({ get }, { deckId, handId, count }) => {
-		const deckDoesExist = get(cardGroupIndex).has(deckId)
+		const cardGroupKeys = get(cardGroupIndex)
+		console.log({ cardGroupKeys })
+
+		const deckDoesExist = cardGroupKeys.has(deckId)
+
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
 		}
@@ -178,6 +182,7 @@ export const dealCardsTX = transaction<
 		for (const cardId of cardIds) {
 			groupsOfCards.set({ groupId: handId, cardId })
 		}
+		console.log(getState(groupsOfCards.findRelationsState__INTERNAL(handId)))
 		return { cardIds }
 	},
 })

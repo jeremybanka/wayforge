@@ -2,7 +2,7 @@ import { getState, runTransaction, setLogLevel } from "~/packages/atom.io/src"
 import { findCardGroupState, groupsOfCards } from "./card-group"
 import { addHandTx, dealCardsTX, spawnClassicDeckTX } from "./game-tx"
 
-setLogLevel(`info`)
+// setLogLevel(`info`)
 
 describe(`dealCardsTX`, () => {
 	it(`should deal cards`, () => {
@@ -14,7 +14,27 @@ describe(`dealCardsTX`, () => {
 		runTransaction(dealCardsTX)({
 			deckId: `deckId`,
 			handId: `myHand`,
-			count: 52,
+			count: 1,
 		})
+		console.log(
+			getState(groupsOfCards.findRelationsState__INTERNAL(`myHand`)).size,
+		)
+		console.log(
+			getState(groupsOfCards.findRelationsState__INTERNAL(`deckId`)).size,
+		)
+		runTransaction(dealCardsTX)({
+			deckId: `deckId`,
+			handId: `myHand`,
+			count: 1,
+		})
+		console.log(
+			getState(groupsOfCards.findRelationsState__INTERNAL(`myHand`)).size,
+		)
+		console.log(
+			getState(groupsOfCards.findRelationsState__INTERNAL(`deckId`)).size,
+		)
+		// expect(getState(groupsOfCards.findRelationContentState__INTERNAL)).toEqual({
+
+		// })
 	})
 })

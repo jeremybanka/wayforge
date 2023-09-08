@@ -1,13 +1,13 @@
 import type { Json, JsonInterface } from "atom.io/json"
 import { pipe } from "fp-ts/function"
-import { target } from ".."
+import { getState__INTERNAL, target } from ".."
 import type { Store } from ".."
 import type { Atom } from "../atom"
 
 export function copyMutableIfWithinTransaction<T>(
 	atom: Atom<T> | (Atom<T> & JsonInterface<T, Json.Serializable>),
 	store: Store,
-): Atom<T> {
+): T {
 	if (store.transactionStatus.phase === `building`) {
 		if (`toJson` in atom && `fromJson` in atom) {
 			const core = target(store)
@@ -16,9 +16,9 @@ export function copyMutableIfWithinTransaction<T>(
 			if (savedValue === transientValue) {
 				const copiedValue = pipe(savedValue, atom.toJson, atom.fromJson)
 				core.valueMap.set(atom.key, copiedValue)
-				return atom
+				return copiedValue
 			}
 		}
 	}
-	return atom
+	return getState__INTERNAL(atom, store)
 }
