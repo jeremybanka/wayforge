@@ -45,8 +45,8 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -140,8 +140,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.14)(sass@1.66.1)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -240,8 +240,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0(vite@4.4.9)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)(jsdom@22.1.0)(sass@1.66.1)
@@ -316,8 +316,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0(vite@4.4.9)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)(jsdom@22.1.0)(sass@1.66.1)
@@ -341,8 +341,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.14)(sass@1.66.1)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
 
   apps/web/smithy:
     dependencies:
@@ -426,8 +426,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0(vite@4.4.9)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)(jsdom@22.1.0)(sass@1.66.1)
@@ -555,8 +555,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.14)(sass@1.66.1)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -625,8 +625,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.14)(sass@1.66.1)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -716,8 +716,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3(typescript@5.2.2)(vite@4.4.9)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)(jsdom@22.1.0)(sass@1.66.1)
@@ -750,8 +750,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.15)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -778,8 +778,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.15)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -806,8 +806,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.14)(sass@1.66.1)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -830,8 +830,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.14)(sass@1.66.1)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -873,8 +873,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.15)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -919,8 +919,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9(@types/node@18.17.15)
       vite-tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
+        specifier: 4.2.1
+        version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
         version: 0.34.4(happy-dom@11.0.2)
@@ -8614,8 +8614,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-tsconfig-paths@4.2.0(typescript@5.2.2)(vite@4.4.9):
-    resolution: {integrity: sha512-jGpus0eUy5qbbMVGiTxCL1iB9ZGN6Bd37VGLJU39kTDD6ZfULTTb1bcc5IeTWqWJKiWV5YihCaibeASPiGi8kw==}
+  /vite-tsconfig-paths@4.2.1(typescript@5.2.2)(vite@4.4.9):
+    resolution: {integrity: sha512-GNUI6ZgPqT3oervkvzU+qtys83+75N/OuDaQl7HmOqFTb0pjZsuARrRipsyJhJ3enqV8beI1xhGbToR4o78nSQ==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
