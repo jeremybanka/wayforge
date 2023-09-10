@@ -38,6 +38,10 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 				if (options.effects) {
 					individualOptions.effects = options.effects(key)
 				}
+				// if (`toJson` in options && `fromJson` in options) {
+				// 	individualOptions.toJson = options.toJson
+				// 	individualOptions.fromJson
+				// }
 				token = createAtom<T>(individualOptions, family, store)
 				subject.next(token)
 			}

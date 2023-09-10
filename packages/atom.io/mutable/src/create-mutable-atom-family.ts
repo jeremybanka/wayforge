@@ -12,19 +12,24 @@ export type MutableAtomFamilyOptions<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
 	Key extends string,
-> = JsonInterface<Core, SerializableCore> &
-	Omit<AtomIO.AtomFamilyOptions<Core, Key>, `key`> & { key: `${Key}::mutable` }
+> = 
+	& JsonInterface<Core, SerializableCore>
+	& Omit<AtomIO.AtomFamilyOptions<Core, Key>, `key`>
+	& { key: `${Key}::mutable` }
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
 	Key extends Json.Serializable,
-> = ((key: Key) => MutableAtomToken<Core, SerializableCore>) & {
-	key: `${string}::mutable`
-	type: `atom_family`
-	subject: Subject<MutableAtomToken<Core, SerializableCore>>
-}
+> = 
+	& JsonInterface<Core, SerializableCore>
+	& ((key: Key) => MutableAtomToken<Core, SerializableCore>) 
+	& {
+			key: `${string}::mutable`
+			type: `atom_family`
+			subject: Subject<MutableAtomToken<Core, SerializableCore>>
+		}
 
 export function createMutableAtomFamily<
 	Core extends Transceiver<Json.Serializable>,
@@ -33,8 +38,11 @@ export function createMutableAtomFamily<
 >(
 	options: MutableAtomFamilyOptions<Core, SerializableCore, Key>,
 ): MutableAtomFamily<Core, SerializableCore, Key> {
-	const coreFamily = AtomIO.atomFamily<Core, Key>(options)
+	const coreFamily = Object.assign(
+		AtomIO.atomFamily<Core, Key>(options),
+		options,
+	) as MutableAtomFamily<Core, SerializableCore, Key>
 	selectJsonFamily(coreFamily, options)
 	trackerFamily(coreFamily)
-	return coreFamily as MutableAtomFamily<Core, SerializableCore, Key>
+	return coreFamily
 }

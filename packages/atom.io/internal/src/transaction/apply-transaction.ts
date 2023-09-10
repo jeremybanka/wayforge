@@ -1,5 +1,5 @@
 import type { AtomToken, ƒn } from "atom.io"
-import { setState } from "atom.io"
+import { setState, transaction } from "atom.io"
 
 import { withdraw } from "../store"
 import type { Store } from "../store"
@@ -14,7 +14,6 @@ export const applyTransaction = <ƒ extends ƒn>(
 		)
 		return
 	}
-
 	store.transactionStatus.phase = `applying`
 	store.transactionStatus.output = output
 	const { atomUpdates } = store.transactionStatus
@@ -35,6 +34,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 			store.valueMap.set(newAtom.key, newAtom.default)
 			store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
 		}
+		// if (store.transactionStatus.key === `dealCards`) debugger
 		setState(token, newValue, store)
 	}
 	const myTransaction = withdraw<ƒ>(

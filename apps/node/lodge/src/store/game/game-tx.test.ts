@@ -1,3 +1,4 @@
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { getState, runTransaction, setLogLevel } from "~/packages/atom.io/src"
 import { findCardGroupState, groupsOfCards } from "./card-group"
 import { addHandTx, dealCardsTX, spawnClassicDeckTX } from "./game-tx"
@@ -33,8 +34,11 @@ describe(`dealCardsTX`, () => {
 		console.log(
 			getState(groupsOfCards.findRelationsState__INTERNAL(`deckId`)).size,
 		)
-		// expect(getState(groupsOfCards.findRelationContentState__INTERNAL)).toEqual({
-
-		// })
+		expect(
+			getState(groupsOfCards.findRelationsState__INTERNAL(`myHand`)),
+		).toEqual(new TransceiverSet([`C51`, `C50`]))
+		expect(
+			getState(groupsOfCards.findRelationsState__INTERNAL(`deckId`)),
+		).toEqual(new TransceiverSet(Array.from({ length: 50 }, (_, k) => `C${k}`)))
 	})
 })

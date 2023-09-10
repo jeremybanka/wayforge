@@ -12,6 +12,8 @@ import scss from "./Deck.module.scss"
 export const Deck: FC<{ id: string }> = ({ id }) => {
 	const cardIds = useO(groupsOfCards.findRelatedKeysState(id))
 
+	console.log(`❗❗`, { cardIds })
+
 	const shuffle = useServerAction(shuffleDeckTX)
 
 	const handlers = useRadial([
@@ -24,7 +26,9 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
 	return (
 		<>
 			<div.dropShadowDiagon className={scss.class} {...handlers}>
-				{cardIds.length}
+				<div>
+					{id} ({cardIds.length})
+				</div>
 				<div>
 					{cardIds.map((cardId) => (
 						<CardBack key={cardId} id={cardId} />

@@ -169,7 +169,7 @@ export const dealCardsTX = transaction<
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
 		}
-		const handDoesExist = get(cardGroupIndex).has(handId)
+		const handDoesExist = cardGroupKeys.has(handId)
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)
 		}
@@ -182,7 +182,14 @@ export const dealCardsTX = transaction<
 		for (const cardId of cardIds) {
 			groupsOfCards.set({ groupId: handId, cardId })
 		}
-		console.log(getState(groupsOfCards.findRelationsState__INTERNAL(handId)))
+		console.log(
+			`❗ while running deal cards, the hand contains`,
+			getState(groupsOfCards.findRelationsState__INTERNAL(handId)),
+		)
+		console.log(
+			`❗ while running deal cards, the deck contains`,
+			getState(groupsOfCards.findRelationsState__INTERNAL(deckId)),
+		)
 		return { cardIds }
 	},
 })
