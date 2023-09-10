@@ -91,7 +91,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react": "0.25.4",
-		"@floating-ui/react-dom": "^2.0.1",
+		"@floating-ui/react-dom": "2.0.2",
 		"ajv": "8.12.0",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.1",
@@ -133,7 +133,7 @@
 	"peerDependencies": {
 		"@emotion/react": "^11.11.1",
 		"@floating-ui/react": "^0.25.0",
-		"@floating-ui/react-dom": "^2.0.1",
+		"@floating-ui/react-dom": "^2.0.2",
 		"@vitejs/plugin-react": "^4.0.4",
 		"ajv": "^8.12.0",
 		"corners": "^0.1.0",

@@ -637,7 +637,7 @@ importers:
         specifier: 0.25.4
         version: 0.25.4(react-dom@18.2.0)(react@18.2.0)
       '@floating-ui/react-dom':
-        specifier: ^2.0.1
+        specifier: 2.0.1
         version: 2.0.1(react-dom@18.2.0)(react@18.2.0)
       ajv:
         specifier: 8.12.0
