@@ -580,8 +580,8 @@ importers:
         specifier: 18.2.21
         version: 18.2.21
       '@types/tmp':
-        specifier: 0.2.3
-        version: 0.2.3
+        specifier: 0.2.4
+        version: 0.2.4
       concurrently:
         specifier: 8.2.1
         version: 8.2.1
@@ -846,8 +846,8 @@ importers:
         specifier: 18.17.15
         version: 18.17.15
       '@types/tmp':
-        specifier: 0.2.3
-        version: 0.2.3
+        specifier: 0.2.4
+        version: 0.2.4
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -892,8 +892,8 @@ importers:
         specifier: 18.17.15
         version: 18.17.15
       '@types/tmp':
-        specifier: 0.2.3
-        version: 0.2.3
+        specifier: 0.2.4
+        version: 0.2.4
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -3355,8 +3355,8 @@ packages:
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
 
-  /@types/tmp@0.2.3:
-    resolution: {integrity: sha512-dDZH/tXzwjutnuk4UacGgFRwV+JSLaXL1ikvidfJprkb7L9Nx1njcRHHmi3Dsvt7pgqqTEeucQuOrWHPFgzVHA==}
+  /@types/tmp@0.2.4:
+    resolution: {integrity: sha512-Vq3rwM+2KgiLacq68EjTJD9cuJ/ne5pXntWn8B8Rxj25SLkGAhCgooCZ1lhcIcV5OFveJ+s5Cqpi+XKfFM/xZA==}
     dev: true
 
   /@types/tough-cookie@4.0.2:
