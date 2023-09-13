@@ -19,7 +19,6 @@ export const setAtomState = <T>(
 ): void => {
 	const oldValue = getState__INTERNAL(atom, store)
 
-	// this will be the old value when applying transactions...
 	let newValue = copyMutableIfWithinTransaction(atom, store)
 	newValue = become(next)(newValue)
 	store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)

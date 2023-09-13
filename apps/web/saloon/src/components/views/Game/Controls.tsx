@@ -23,7 +23,7 @@ export const Controls: FC = () => {
 			<button.ff
 				children="Add Deck"
 				onClick={() => {
-					const deckId = nanoid()
+					const deckId = `DECK_ID_TEST` // nanoid()
 					const cardIds = Array.from({ length: 52 }).map(nanoid)
 					spawnClassicDeck(deckId, cardIds)
 				}}

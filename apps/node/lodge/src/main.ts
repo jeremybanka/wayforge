@@ -40,6 +40,9 @@ import {
 	roomsIndexJSON,
 } from "./store/rooms"
 import type { AtomicJunction } from "./store/utils/atomic-junction"
+import { welcome } from "./welcome"
+
+welcome(logger)
 
 const TIMESTAMP = Date.now()
 
@@ -193,36 +196,4 @@ pipe(
 			gameTransactions.forEach(receiveTransaction)
 		})
 	},
-)
-
-logger.info(
-	`   `,
-	`|¯\\_________________________________|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\_|`,
-)
-logger.info(``, ``)
-
-logger.info(
-	`[/]`,
-	`|__________________________/ `,
-	`▓▓   ▓▓   ▓▓`,
-	` \\___________________________|`,
-)
-logger.info(`[/]`, `                             `, `▓▓   ▓▓   ▓▓`)
-logger.info(
-	`[/]`,
-	`  00                         `,
-	`▓▓   ▓▓   ▓▓`,
-	`              WAYFORGE : LODGE`,
-)
-logger.info(`[/]`, `                             `, `▓▓        ▓▓`)
-logger.info(
-	`[/]`,
-	`|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\ `,
-	`▓▓▓▓▓▓▓▓▓▓▓▓`,
-	` /¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|`,
-)
-logger.info(``, ``)
-logger.info(
-	`   `,
-	`|_/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|_________________________________/¯|`,
 )

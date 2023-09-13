@@ -29,7 +29,16 @@ export const subscribeToRootAtoms = <T>(
 								atomChange.newValue,
 								`)`,
 							)
+							if (
+								state.key.includes(
+									`groupsOfCards:relations::mutable:JSON("DECK_ID_TEST")`,
+								)
+							) {
+								debugger
+							}
 							const oldValue = recallState(state, store)
+							// this retrieves a stale cached value when applying a transaction on the server
+							// this indicates that e
 							const newValue = getState__INTERNAL(state, store)
 							store.config.logger?.info(
 								`   <- "${state.key}" went (`,
