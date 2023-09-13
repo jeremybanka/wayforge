@@ -115,8 +115,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       nanoid:
-        specifier: 4.0.2
-        version: 4.0.2
+        specifier: 5.0.1
+        version: 5.0.1
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -179,8 +179,8 @@ importers:
         specifier: 10.16.4
         version: 10.16.4(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       nanoid:
-        specifier: 4.0.2
-        version: 4.0.2
+        specifier: 5.0.1
+        version: 5.0.1
       preact:
         specifier: 10.17.1
         version: 10.17.1
@@ -793,8 +793,8 @@ importers:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
       nanoid:
-        specifier: 4.0.2
-        version: 4.0.2
+        specifier: 5.0.1
+        version: 5.0.1
     devDependencies:
       tsup:
         specifier: 7.2.0
@@ -6731,9 +6731,9 @@ packages:
     hasBin: true
     dev: true
 
-  /nanoid@4.0.2:
-    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
-    engines: {node: ^14 || ^16 || >=18}
+  /nanoid@5.0.1:
+    resolution: {integrity: sha512-vWeVtV5Cw68aML/QaZvqN/3QQXc6fBfIieAlu05m7FZW2Dgb+3f0xc0TTxuJW+7u30t7iSDTV/j3kVI0oJqIfQ==}
+    engines: {node: ^18 || >=20}
     hasBin: true
     dev: false
 
