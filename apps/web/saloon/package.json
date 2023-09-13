@@ -24,7 +24,7 @@
 		"corners": "0.1.0",
 		"fp-ts": "2.16.1",
 		"framer-motion": "10.16.4",
-		"nanoid": "4.0.2",
+		"nanoid": "5.0.1",
 		"preact": "10.17.1",
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat",
