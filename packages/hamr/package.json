@@ -115,7 +115,7 @@
 		"@types/react": "18.2.21",
 		"@vitejs/plugin-react": "4.0.4",
 		"eslint": "8.49.0",
-		"happy-dom": "11.0.3",
+		"happy-dom": "11.0.5",
 		"jsdom": "22.1.0",
 		"preact": "10.17.1",
 		"react": "18.2.0",
