@@ -1,5 +1,11 @@
 # anvl
 
+## 0.2.6
+
+### Patch Changes
+
+- 3654af64: ✨ `TransceiverSet` shows use of the Transceiver pattern.
+
 ## 0.2.5
 
 ### Patch Changes
