@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.6.9
+
+### Patch Changes
+
+- 3654af64: ✨ `atom.io/tracker` is ready for prime time, having demonstrated success working with timelines and transactions.
+- 6927d431: 💥 BREAKING CHANGE: `createStore` has been replaced with class `Store`. The class satisfies the original return type and takes the same parameters.
+- 23eeda27: 🚀 Some optimizations to the way the selector graph is implemented.
+- 3654af64: 🚚 Implement a more effective strategy for submodule isolation, leading to leaner builds that tree-shake more consistently.
+- 6927d431: 💥 BREAKING CHANGE: The `silo` function is now a class called `Silo`. The class satisfies the original return type.
+
 ## 0.6.8
 
 ### Patch Changes
