@@ -17,7 +17,7 @@
 		"fp-ts": "2.16.1"
 	},
 	"devDependencies": {
-		"@types/node": "18.17.15",
+		"@types/node": "18.17.16",
 		"eslint": "8.49.0",
 		"tsup": "7.2.0",
 		"typescript": "5.2.2",
