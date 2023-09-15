@@ -97,9 +97,9 @@ describe(`transaction`, () => {
 				return itemKeys
 			},
 		})
-		const steal = transaction({
+		const stealTX = transaction<(thiefKey: string, victimKey: string) => void>({
 			key: `steal`,
-			do: ({ get, set }, thiefKey: string, victimKey: string) => {
+			do: ({ get, set }, thiefKey, victimKey) => {
 				const victimInventory = get(findBeingInventoryState(victimKey))
 				const itemKey = victimInventory[0]
 				if (itemKey === undefined) throw new Error(`No items to steal!`)
@@ -141,13 +141,14 @@ describe(`transaction`, () => {
 		expect(getState(thiefInvState)).toEqual([])
 		expect(getState(victimInvState)).toEqual([prizeState.key])
 
-		runTransaction(steal)(thiefState.key, victimState.key)
+		const steal = runTransaction(stealTX)
+		steal(thiefState.key, victimState.key)
 		expect(getState(thiefInvState)).toEqual([prizeState.key])
 		expect(getState(victimInvState)).toEqual([])
 		expect(logger.error).not.toHaveBeenCalled()
 
 		try {
-			runTransaction(steal)(thiefState.key, victimState.key)
+			steal(thiefState.key, victimState.key)
 		} catch (thrown) {
 			expect(thrown).toBeInstanceOf(Error)
 			if (thrown instanceof Error) {
