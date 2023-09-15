@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
 
-import type { Transceiver } from "."
+import type { Transceiver } from "./tracker-transceiver"
 
 export const observeCore =
 	<Core extends Transceiver<any>>(

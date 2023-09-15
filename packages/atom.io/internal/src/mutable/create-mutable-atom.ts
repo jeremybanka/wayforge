@@ -2,8 +2,8 @@ import type * as AtomIO from "atom.io"
 import { createAtom } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
-import { tracker } from "atom.io/tracker"
-import type { Transceiver } from "atom.io/tracker"
+import { tracker } from "./tracker"
+import type { Transceiver } from "./tracker-transceiver"
 
 export function createMutableAtom<
 	Core extends Transceiver<Json.Serializable>,

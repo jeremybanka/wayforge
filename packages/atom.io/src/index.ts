@@ -10,12 +10,10 @@ import {
 	withdrawNewFamilyMember,
 } from "atom.io/internal"
 import * as __INTERNAL__ from "atom.io/internal"
-import type { Store } from "atom.io/internal"
-
-import type { Json, JsonInterface } from "atom.io/json"
+import type { Store, Transceiver } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import type { ƒn } from "~/packages/anvl/src/function"
 import { capitalize } from "~/packages/anvl/src/string/capitalize"
-import type { Transceiver } from "../tracker/src"
 
 export { ƒn }
 

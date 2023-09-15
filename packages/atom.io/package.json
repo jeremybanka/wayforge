@@ -114,7 +114,6 @@
 		"build:react-devtools": "cd react-devtools && tsup",
 		"build:realtime": "cd realtime && tsup",
 		"build:realtime-react": "cd realtime-react && tsup",
-		"build:tracker": "cd tracker && tsup",
 		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",

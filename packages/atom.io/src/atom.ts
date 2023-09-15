@@ -1,8 +1,7 @@
-import type { Subject } from "atom.io/internal"
+import type { Subject, Transceiver } from "atom.io/internal"
 import { createAtom, createAtomFamily } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 
-import type { Transceiver } from "atom.io/tracker"
 import type { AtomToken, MutableAtomToken } from "."
 
 export type Effectors<T> = {

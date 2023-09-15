@@ -1,6 +1,6 @@
 import type { AtomToken, MutableAtomToken } from "atom.io"
 import type { Json } from "atom.io/json"
-import type { Signal, Transceiver } from "atom.io/tracker"
+import type { Signal, Transceiver } from "./tracker-transceiver"
 
 export const getTrackerToken = <
 	Core extends Transceiver<Json.Serializable>,

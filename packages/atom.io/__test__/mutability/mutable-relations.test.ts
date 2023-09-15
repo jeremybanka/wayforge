@@ -2,6 +2,7 @@ import { vitest } from "vitest"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
+import { trackerFamily } from "atom.io/internal"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import type { Json } from "../../json/src"
 import type { Write } from "../../src"
@@ -16,7 +17,6 @@ import {
 	transaction,
 	undo,
 } from "../../src"
-import { trackerFamily } from "../../tracker/src"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
