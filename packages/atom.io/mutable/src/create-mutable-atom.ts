@@ -1,9 +1,9 @@
 import type * as AtomIO from "atom.io"
+import { Atom, createAtom } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 import { tracker } from "atom.io/tracker"
 import type { Transceiver } from "atom.io/tracker"
-import { createAtom } from "../../internal/src"
 
 export interface MutableAtomToken<
 	Core extends Transceiver<Json.Serializable>,

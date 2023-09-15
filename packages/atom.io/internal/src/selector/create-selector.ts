@@ -4,9 +4,11 @@ import type {
 	ReadonlySelectorToken,
 	SelectorOptions,
 	SelectorToken,
+	Store,
 } from "atom.io"
 
-import { IMPLICIT, type Store } from "../store"
+import type { StoreCore } from "../store"
+import { IMPLICIT } from "../store"
 import type { Subject } from "../subject"
 import { target } from "../transaction"
 import { createReadWriteSelector } from "./create-read-write-selector"
