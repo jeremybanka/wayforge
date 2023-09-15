@@ -2,10 +2,10 @@ import type { AtomFamily, ReadonlySelectorFamily } from "atom.io"
 import { atomFamily, getState, selectorFamily, setState } from "atom.io"
 import { Junction } from "rel8/junction"
 
+import type { MutableAtomFamily } from "atom.io"
+import { createMutableAtomFamily } from "atom.io/internal"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import type { Json } from "~/packages/anvl/src/json"
-import { createMutableAtomFamily } from "~/packages/atom.io/mutable/src"
-import type { MutableAtomFamily } from "~/packages/atom.io/mutable/src"
 
 type AtomicJunctionOptions<
 	ASide extends string,

@@ -2,8 +2,8 @@ import type { TransactionIO } from "atom.io"
 import { atom, atomFamily, selector, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
+import { createMutableAtom } from "atom.io/internal"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
-import { createMutableAtom } from "~/packages/atom.io/mutable/src"
 import { AtomicJunction } from "./utils/atomic-junction"
 
 export const roomsIndex = atom<Set<string>>({
@@ -37,7 +37,8 @@ export const findPlayerState = atomFamily<Player, string>({
 })
 export const playersIndex = createMutableAtom<TransceiverSet<string>, string[]>({
 	key: `playersIndex::mutable`,
-	default: new TransceiverSet<string>(),
+	mutable: true,
+	default: () => new TransceiverSet<string>(),
 	toJson: (set) => [...set],
 	fromJson: (array) => new TransceiverSet<string>(array),
 })

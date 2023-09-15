@@ -1,9 +1,7 @@
-import { atom, atomFamily } from "atom.io"
-import { selectJson } from "atom.io/json"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { atomFamily } from "atom.io"
+import { createMutableAtom } from "atom.io/internal"
 
-import { Join } from "~/packages/anvl/src/join"
-import { createMutableAtom } from "~/packages/atom.io/mutable/src"
+import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { AtomicJunction } from "../utils/atomic-junction"
 
 export type CardGroup = {
@@ -24,7 +22,8 @@ export const cardGroupIndex = createMutableAtom<
 	string[]
 >({
 	key: `cardGroupsIndex::mutable`,
-	default: new TransceiverSet<string>(),
+	mutable: true,
+	default: () => new TransceiverSet<string>(),
 	toJson: (set) => [...set],
 	fromJson: (array) => new TransceiverSet<string>(array),
 })

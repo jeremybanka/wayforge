@@ -1,17 +1,16 @@
 import * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
-import type { MutableAtomToken } from "atom.io/mutable"
-import { getJsonToken, getTrackerToken } from "atom.io/mutable"
 import { StoreContext } from "atom.io/react"
 import type { Transceiver } from "atom.io/tracker"
 import * as React from "react"
 
+import { getJsonToken, getTrackerToken } from "atom.io/internal"
 import { RealtimeContext } from "./realtime-context"
 
 export function usePullMutable<
 	T extends Transceiver<Json.Serializable>,
 	J extends Json.Serializable,
->(token: MutableAtomToken<T, J>): void {
+>(token: AtomIO.MutableAtomToken<T, J>): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
 	const jsonToken = getJsonToken(token)

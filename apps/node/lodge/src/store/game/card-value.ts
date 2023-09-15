@@ -1,6 +1,6 @@
 import { atomFamily, transaction } from "atom.io"
 
-import { createMutableAtom } from "atom.io/mutable"
+import { createMutableAtom } from "atom.io/internal"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import type { Identified } from "~/packages/anvl/src/id"
 import type { Json } from "~/packages/anvl/src/json"
@@ -15,7 +15,8 @@ export const cardValuesIndex = createMutableAtom<
 	string[]
 >({
 	key: `cardValuesIndex::mutable`,
-	default: new TransceiverSet<string>(),
+	mutable: true,
+	default: () => new TransceiverSet<string>(),
 	toJson: (set) => [...set],
 	fromJson: (array) => new TransceiverSet<string>(array),
 })

@@ -14,7 +14,7 @@ import {
 	createMutableAtomFamily,
 	getJsonToken,
 	getTrackerToken,
-} from "atom.io/mutable"
+} from "atom.io/internal"
 
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import { withdraw } from "../../internal/src"
@@ -37,6 +37,7 @@ describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
 		const myMutableState = createMutableAtom({
 			key: `my::mutable`,
+			mutable: true,
 			default: () => new TransceiverSet(),
 			toJson: (set) => [...set],
 			fromJson: (array) => new TransceiverSet(array),
@@ -101,6 +102,7 @@ describe(`mutable atomic state`, () => {
 	it(`can recover from a failed transaction`, () => {
 		const myMutableState = createMutableAtom({
 			key: `my::mutable`,
+			mutable: true,
 			default: () => new TransceiverSet(),
 			toJson: (set) => [...set],
 			fromJson: (array) => new TransceiverSet(array),

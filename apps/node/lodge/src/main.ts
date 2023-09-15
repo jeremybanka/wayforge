@@ -1,11 +1,10 @@
 import * as AtomIO from "atom.io"
+import { getTrackerToken } from "atom.io/internal"
 import * as RT from "atom.io/realtime"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import type { MutableAtomToken } from "atom.io/mutable"
-import { getTrackerToken } from "atom.io/mutable"
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
 
@@ -147,11 +146,10 @@ pipe(
 
 			// GAME SERVICES
 
-			const gameIndices: MutableAtomToken<TransceiverSet<string>, string[]>[] = [
-				cardIndex,
-				cardGroupIndex,
-				cardValuesIndex,
-			]
+			const gameIndices: AtomIO.MutableAtomToken<
+				TransceiverSet<string>,
+				string[]
+			>[] = [cardIndex, cardGroupIndex, cardValuesIndex]
 			gameIndices.forEach(exposeMutable)
 
 			const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
@@ -161,8 +159,8 @@ pipe(
 			gameJoinStates.forEach(exposeSingle)
 			const gameRelations: [
 				junction: AtomicJunction<any, any, any>,
-				indexA: MutableAtomToken<TransceiverSet<string>, string[]>,
-				indexB: MutableAtomToken<TransceiverSet<string>, string[]>,
+				indexA: AtomIO.MutableAtomToken<TransceiverSet<string>, string[]>,
+				indexB: AtomIO.MutableAtomToken<TransceiverSet<string>, string[]>,
 			][] = [
 				[groupsOfCards, cardGroupIndex, cardIndex],
 				[ownersOfGroups, playersIndex, cardGroupIndex],

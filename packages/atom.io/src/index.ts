@@ -12,9 +12,10 @@ import {
 import * as __INTERNAL__ from "atom.io/internal"
 import type { Store } from "atom.io/internal"
 
+import type { Json, JsonInterface } from "atom.io/json"
 import type { ƒn } from "~/packages/anvl/src/function"
 import { capitalize } from "~/packages/anvl/src/string/capitalize"
-import { atomFamily } from "./atom"
+import type { Transceiver } from "../tracker/src"
 
 export { ƒn }
 
@@ -34,6 +35,13 @@ export type AtomToken<_> = {
 	type: `atom`
 	family?: FamilyMetadata
 	__brand?: _
+}
+export interface MutableAtomToken<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+> extends AtomToken<T> {
+	__asJSON?: J
+	__update?: T extends Transceiver<infer Update> ? Update : never
 }
 export type SelectorToken<_> = {
 	key: string

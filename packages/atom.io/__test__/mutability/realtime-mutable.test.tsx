@@ -1,6 +1,5 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import * as M from "atom.io/mutable"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -10,8 +9,9 @@ import { TransceiverSet } from "~/packages/anvl/reactivity"
 
 AtomIO.setLogLevel(`info`)
 
-const numbersCollectionState = M.createMutableAtom({
+const numbersCollectionState = AtomIO.atom({
 	key: `numbersCollection::mutable`,
+	mutable: true,
 	default: () => new TransceiverSet<`${number}`>([`0`]),
 	toJson: (s) => [...s],
 	fromJson: (a) => new TransceiverSet(a),

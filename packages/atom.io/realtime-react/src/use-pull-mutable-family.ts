@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
+import type { MutableAtomFamily } from "atom.io"
+import { getJsonToken, getTrackerToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { MutableAtomFamily } from "atom.io/mutable"
-import { getJsonToken, getTrackerToken } from "atom.io/mutable"
 import { StoreContext } from "atom.io/react"
 import * as React from "react"
 

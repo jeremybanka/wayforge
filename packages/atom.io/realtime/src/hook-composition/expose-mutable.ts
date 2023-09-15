@@ -1,7 +1,6 @@
 import * as AtomIO from "atom.io"
+import { getJsonToken, getTrackerToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { MutableAtomToken } from "atom.io/mutable"
-import { getJsonToken, getTrackerToken } from "atom.io/mutable"
 
 import type { Transceiver } from "~/packages/anvl/reactivity/transceiver"
 
@@ -12,7 +11,7 @@ export const useExposeMutable = ({ socket, store }: ServerConfig) => {
 	return function exposeMutable<
 		Core extends Transceiver<Json.Serializable>,
 		SerializableCore extends Json.Serializable,
-	>(token: MutableAtomToken<Core, SerializableCore>): () => void {
+	>(token: AtomIO.MutableAtomToken<Core, SerializableCore>): () => void {
 		let unsubscribeFromStateUpdates: (() => void) | null = null
 
 		const jsonToken = getJsonToken(token)
