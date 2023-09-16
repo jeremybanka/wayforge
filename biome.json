@@ -24,6 +24,9 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"complexity": {
+				"noBannedTypes": "off"
+			},
 			"suspicious": {
 				"useValidTypeof": "off",
 				"noAssignInExpressions": "off",
