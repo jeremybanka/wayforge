@@ -25,7 +25,6 @@ export const isValidNonNumber = (input: string): input is ValidNonNumber =>
 export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<
 	Record<ValidNonNumber, number | null>
 > = {
-	// biome-ignore lint/complexity/useLiteralKeys: the linter is buggy
 	"": null,
 	"-": 0,
 	".": 0,
