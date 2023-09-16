@@ -24,15 +24,22 @@ export const applyTransaction = <ƒ extends ƒn>(
 	for (const { key, newValue } of atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		if (!store.valueMap.has(token.key)) {
-			const newAtom = store.transactionStatus.core.atoms.get(token.key)
-			if (!newAtom) {
-				throw new Error(
-					`Absurd Error: Atom "${token.key}" not found while copying updates from transaction "${store.transactionStatus.key}" to store "${store.config.name}"`,
-				)
+			if (token.family) {
+				const family = store.families.get(token.family.key)
+				if (family) {
+					family(token.family.subKey)
+				}
+			} else {
+				const newAtom = store.transactionStatus.core.atoms.get(token.key)
+				if (!newAtom) {
+					throw new Error(
+						`Absurd Error: Atom "${token.key}" not found while copying updates from transaction "${store.transactionStatus.key}" to store "${store.config.name}"`,
+					)
+				}
+				store.atoms.set(newAtom.key, newAtom)
+				store.valueMap.set(newAtom.key, newAtom.default)
+				store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
 			}
-			store.atoms.set(newAtom.key, newAtom)
-			store.valueMap.set(newAtom.key, newAtom.default)
-			store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
 		}
 		// if (store.transactionStatus.key === `dealCards`) debugger
 		setState(token, newValue, store)

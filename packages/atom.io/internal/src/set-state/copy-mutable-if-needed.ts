@@ -1,6 +1,6 @@
 import type { JsonInterface } from "atom.io/json"
 import { pipe } from "fp-ts/function"
-import type { StoreCore } from ".."
+import { type StoreCore, Tracker } from ".."
 import type { Atom } from "../atom"
 
 export function copyMutableIfNeeded<T>(
@@ -14,6 +14,7 @@ export function copyMutableIfNeeded<T>(
 	if (originValue === targetValue) {
 		const copiedValue = pipe(originValue, transform.toJson, transform.fromJson)
 		target.valueMap.set(atom.key, copiedValue)
+		new Tracker(atom)
 		return copiedValue
 	}
 	return targetValue

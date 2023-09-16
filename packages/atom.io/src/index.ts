@@ -11,7 +11,7 @@ import {
 } from "atom.io/internal"
 import * as __INTERNAL__ from "atom.io/internal"
 import type { Store, Transceiver } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Json, Stringified } from "atom.io/json"
 import type { ƒn } from "~/packages/anvl/src/function"
 import { capitalize } from "~/packages/anvl/src/string/capitalize"
 

@@ -1,6 +1,7 @@
 import type {
 	AtomFamily,
 	AtomToken,
+	Json,
 	Logger,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -16,7 +17,9 @@ import { Junction } from "rel8/junction"
 import { doNothing } from "~/packages/anvl/src/function"
 import { hasExactProperties } from "~/packages/anvl/src/object"
 
+import type { Transceiver } from "~/packages/atom.io/tracker/dist"
 import type { Atom } from "../atom"
+import type { Tracker } from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { ReadonlySelector, Selector } from "../selector"
 import { Subject } from "../subject"
@@ -46,6 +49,7 @@ export class Store {
 	public selectors = new Map<string, Selector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
 
+	public trackers = new Map<string, Tracker<Transceiver<any>>>()
 	public families = new Map<
 		string,
 		| AtomFamily<any, any>

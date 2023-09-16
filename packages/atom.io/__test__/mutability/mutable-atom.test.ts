@@ -69,6 +69,7 @@ describe(`mutable atomic state`, () => {
 			string
 		>({
 			key: `flagsByUserId::mutable`,
+			mutable: true,
 			default: () => new TransceiverSet(),
 			toJson: (set) => [...set],
 			fromJson: (array) => new TransceiverSet(array),

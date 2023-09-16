@@ -61,6 +61,7 @@ export class AtomicJunction<
 			string
 		>({
 			key: `${key}:relations::mutable`,
+			mutable: true,
 			default: () => new TransceiverSet(),
 			toJson: (relations) => [...relations],
 			fromJson: (relations) => new TransceiverSet(relations),

@@ -1,7 +1,9 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJsonFamily } from "atom.io/json"
-import { trackerFamily } from "./tracker-family"
+
+import { IMPLICIT, createAtomFamily } from ".."
+import { FamilyTracker } from "./tracker-family"
 import type { Transceiver } from "./tracker-transceiver"
 
 export function createMutableAtomFamily<
@@ -10,12 +12,13 @@ export function createMutableAtomFamily<
 	Key extends string,
 >(
 	options: AtomIO.MutableAtomFamilyOptions<Core, SerializableCore, Key>,
+	store: AtomIO.Store = IMPLICIT.STORE,
 ): AtomIO.MutableAtomFamily<Core, SerializableCore, Key> {
 	const coreFamily = Object.assign(
-		AtomIO.atomFamily<Core, Key>(options),
+		createAtomFamily<Core, Key>(options, store),
 		options,
 	) as AtomIO.MutableAtomFamily<Core, SerializableCore, Key>
 	selectJsonFamily(coreFamily, options)
-	trackerFamily(coreFamily)
+	new FamilyTracker(coreFamily)
 	return coreFamily
 }

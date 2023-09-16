@@ -2,7 +2,7 @@ import { vitest } from "vitest"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
-import { trackerFamily } from "atom.io/internal"
+import { FamilyTracker } from "atom.io/internal"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 import type { Json } from "../../json/src"
 import type { Write } from "../../src"
@@ -39,8 +39,8 @@ describe(`mutability patterns`, () => {
 				key,
 				default: () => new TransceiverSet(),
 			})
-			const findTracker = trackerFamily(family)
-			return [family, findTracker] as const
+			const { findLatestUpdateState } = new FamilyTracker(family)
+			return [family, findLatestUpdateState] as const
 		}
 		const createContentsFamily = <Content extends Json.Object>(
 			key: string,

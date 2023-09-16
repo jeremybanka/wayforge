@@ -2,7 +2,7 @@ import type * as AtomIO from "atom.io"
 import { createAtom } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
-import { tracker } from "./tracker"
+import { Tracker } from "./tracker"
 import type { Transceiver } from "./tracker-transceiver"
 
 export function createMutableAtom<
@@ -12,8 +12,8 @@ export function createMutableAtom<
 	options: AtomIO.MutableAtomOptions<Core, SerializableCore>,
 	store?: AtomIO.Store,
 ): AtomIO.MutableAtomToken<Core, SerializableCore> {
-	const coreState = createAtom<Core>(options)
-	tracker(coreState, store)
+	const coreState = createAtom<Core>(options, undefined, store)
+	new Tracker(coreState, store)
 	selectJson(coreState, options, store)
 	return coreState as AtomIO.MutableAtomToken<Core, SerializableCore>
 }
