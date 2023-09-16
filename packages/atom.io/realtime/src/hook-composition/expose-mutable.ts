@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { getJsonToken, getTrackerToken } from "atom.io/internal"
+import { getJsonToken, getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { Transceiver } from "~/packages/anvl/reactivity/transceiver"
@@ -15,7 +15,7 @@ export const useExposeMutable = ({ socket, store }: ServerConfig) => {
 		let unsubscribeFromStateUpdates: (() => void) | null = null
 
 		const jsonToken = getJsonToken(token)
-		const trackerToken = getTrackerToken(token)
+		const trackerToken = getUpdateToken(token)
 
 		const fillUnsubRequest = () => {
 			socket.off(`unsub:${token.key}`, fillUnsubRequest)

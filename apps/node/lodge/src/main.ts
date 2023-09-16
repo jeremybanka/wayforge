@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { getTrackerToken } from "atom.io/internal"
+import { getUpdateToken } from "atom.io/internal"
 import * as RT from "atom.io/realtime"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
@@ -115,7 +115,7 @@ pipe(
 					socket.join(roomId)
 					const playersInRoomState =
 						playersInRooms.findRelationsState__INTERNAL(roomId)
-					const playersInRoomTrackerToken = getTrackerToken(playersInRoomState)
+					const playersInRoomTrackerToken = getUpdateToken(playersInRoomState)
 					const unsubscribeFromPlayersInRoomTracker = AtomIO.subscribe(
 						playersInRoomTrackerToken,
 						({ newValue }) => {

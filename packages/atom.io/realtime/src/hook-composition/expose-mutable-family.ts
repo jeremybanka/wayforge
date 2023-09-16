@@ -1,6 +1,6 @@
 import * as AtomIO from "atom.io"
 import type { MutableAtomFamily } from "atom.io"
-import { getJsonToken, getTrackerToken } from "atom.io/internal"
+import { getJsonToken, getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
@@ -73,7 +73,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 				const token = family(subKey)
 
 				const jsonToken = getJsonToken(token)
-				const trackerToken = getTrackerToken(token)
+				const trackerToken = getUpdateToken(token)
 				socket.emit(`init:${jsonToken.key}`, AtomIO.getState(jsonToken, store))
 				const unsubscribe = AtomIO.subscribe(
 					trackerToken,

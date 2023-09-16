@@ -30,10 +30,11 @@ export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serial
 			mutable: true
 		}
 
+export function atom<
+	T extends Transceiver<Json.Serializable>,
+	J extends Json.Serializable,
+>(options: MutableAtomOptions<T, J>): MutableAtomToken<T, J>
 export function atom<T>(options: AtomOptions<T>): AtomToken<T>
-export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
-	options: MutableAtomOptions<T, J>,
-): MutableAtomToken<T, J>
 export function atom<T>(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
 ): AtomToken<any> {
@@ -80,14 +81,14 @@ export type MutableAtomFamily<
 			subject: Subject<MutableAtomToken<Core, SerializableCore>>
 		}
 
-export function atomFamily<T, K extends Json.Serializable>(
-	options: AtomFamilyOptions<T, K>,
-): AtomFamily<T, K>
 export function atomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 	K extends Json.Serializable,
 >(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamily<T, J, K>
+export function atomFamily<T, K extends Json.Serializable>(
+	options: AtomFamilyOptions<T, K>,
+): AtomFamily<T, K>
 export function atomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
 ): AtomFamily<T, K> | MutableAtomFamily<any, any, any> {

@@ -2,6 +2,7 @@ import { vitest } from "vitest"
 
 import {
 	__INTERNAL__,
+	atom,
 	getState,
 	runTransaction,
 	setLogLevel,
@@ -13,7 +14,7 @@ import {
 	createMutableAtom,
 	createMutableAtomFamily,
 	getJsonToken,
-	getTrackerToken,
+	getUpdateToken,
 } from "atom.io/internal"
 
 import { TransceiverSet } from "~/packages/anvl/reactivity"
@@ -35,7 +36,7 @@ beforeEach(() => {
 
 describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
-		const myMutableState = createMutableAtom({
+		const myMutableState = atom({
 			key: `my::mutable`,
 			mutable: true,
 			default: () => new TransceiverSet(),
@@ -43,7 +44,7 @@ describe(`mutable atomic state`, () => {
 			fromJson: (array) => new TransceiverSet(array),
 		})
 		const myJsonState = getJsonToken(myMutableState)
-		const myTrackerState = getTrackerToken(myMutableState)
+		const myTrackerState = getUpdateToken(myMutableState)
 		subscribe(myMutableState, UTIL.stdout)
 		subscribe(myJsonState, UTIL.stdout)
 		subscribe(myTrackerState, UTIL.stdout)
@@ -78,7 +79,7 @@ describe(`mutable atomic state`, () => {
 
 		const myFlagsState = findFlagsStateByUserId(`my-user-id`)
 		const findFlagsByUserIdJSON = getJsonToken(myFlagsState)
-		const findFlagsByUserIdTracker = getTrackerToken(myFlagsState)
+		const findFlagsByUserIdTracker = getUpdateToken(myFlagsState)
 
 		subscribe(myFlagsState, UTIL.stdout)
 		subscribe(findFlagsByUserIdJSON, UTIL.stdout)

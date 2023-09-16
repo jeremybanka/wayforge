@@ -4,7 +4,7 @@ import { StoreContext } from "atom.io/react"
 import type { Transceiver } from "atom.io/tracker"
 import * as React from "react"
 
-import { getJsonToken, getTrackerToken } from "atom.io/internal"
+import { getJsonToken, getUpdateToken } from "atom.io/internal"
 import { RealtimeContext } from "./realtime-context"
 
 export function usePullMutable<
@@ -14,7 +14,7 @@ export function usePullMutable<
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
 	const jsonToken = getJsonToken(token)
-	const trackerToken = getTrackerToken(token)
+	const trackerToken = getUpdateToken(token)
 	React.useEffect(() => {
 		socket.on(`init:${token.key}`, (data: J) => {
 			AtomIO.setState(jsonToken, data, store)
