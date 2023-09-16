@@ -21,7 +21,7 @@
 		"fp-ts": "2.16.1"
 	},
 	"devDependencies": {
-		"@types/node": "18.17.16",
+		"@types/node": "18.17.17",
 		"@types/tmp": "0.2.4",
 		"react": "18.2.0",
 		"recoil": "0.7.7",
