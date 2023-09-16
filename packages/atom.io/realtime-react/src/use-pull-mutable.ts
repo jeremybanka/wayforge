@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
+import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { StoreContext } from "atom.io/react"
-import type { Transceiver } from "atom.io/tracker"
 import * as React from "react"
 
 import { getJsonToken, getUpdateToken } from "atom.io/internal"

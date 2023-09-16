@@ -17,7 +17,7 @@ import { Junction } from "rel8/junction"
 import { doNothing } from "~/packages/anvl/src/function"
 import { hasExactProperties } from "~/packages/anvl/src/object"
 
-import type { Transceiver } from "~/packages/atom.io/tracker/dist"
+import type { Transceiver } from "~/packages/atom.io/internal/dist"
 import type { Atom } from "../atom"
 import type { Tracker } from "../mutable"
 import type { OperationProgress } from "../operation"

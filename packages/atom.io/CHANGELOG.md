@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 3654af64: ✨ `atom.io/tracker` is ready for prime time, having demonstrated success working with timelines and transactions.
+- 3654af64: ✨ `atom.io/internal` is ready for prime time, having demonstrated success working with timelines and transactions.
 - 6927d431: 💥 BREAKING CHANGE: `createStore` has been replaced with class `Store`. The class satisfies the original return type and takes the same parameters.
 - 23eeda27: 🚀 Some optimizations to the way the selector graph is implemented.
 - 3654af64: 🚚 Implement a more effective strategy for submodule isolation, leading to leaner builds that tree-shake more consistently.
@@ -15,7 +15,7 @@
 ### Patch Changes
 
 - a8efdaf5: 🏷️ Compatibility with tsconfig's "exactOptionalPropertyTypes" compiler option.
-- a8efdaf5: 🎁 New `atom.io/tracker` submodule introduces a experimental new performance pattern for atom.io!
+- a8efdaf5: 🎁 New `atom.io/internal` submodule introduces a experimental new performance pattern for atom.io!
 
 ## 0.6.7
 
