@@ -13,6 +13,7 @@ export class TransceiverSet<P extends string>
 {
 	protected mode: TransceiverMode = `record`
 	protected readonly subject = new Subject()
+	public id = Math.random().toString(36).slice(2)
 
 	public add(value: P): this {
 		if (this.mode === `record`) {

@@ -14,6 +14,9 @@ export function copyMutableIfWithinTransaction<T>(
 		store.transactionStatus.phase === `applying`
 	) {
 		if (`toJson` in atom && `fromJson` in atom) {
+			store.config.logger?.info(
+				`📄 copyMutableIfWithinTransaction: ${atom.key} is mutable`,
+			)
 			const copiedValue = copyMutableIfNeeded(
 				atom,
 				atom,
@@ -45,7 +48,7 @@ export function copyMutableFamilyMemberWithinTransaction<T>(
 	family:
 		| AtomFamily<T, any>
 		| (AtomFamily<T, any> & JsonInterface<T, Json.Serializable>),
-	origin: StoreCore,
+	origin: Store,
 	target: StoreCore,
 ): T | null {
 	if (`toJson` in family && `fromJson` in family) {

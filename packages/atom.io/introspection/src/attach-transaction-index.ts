@@ -10,7 +10,7 @@ export const attachTransactionIndex = (
 		{
 			key: `👁‍🗨 Transaction Token Index (Internal)`,
 			default: () =>
-				[...store.transactions].map(([key]) => {
+				[...store.transactions].map(([key]): TransactionToken<ƒn> => {
 					return { key, type: `transaction` }
 				}),
 			effects: [

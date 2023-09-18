@@ -2,11 +2,13 @@ import type {
 	AtomOptions,
 	AtomToken,
 	FamilyMetadata,
+	MutableAtomOptions,
 	UpdateHandler,
 } from "atom.io"
 import { setState, subscribe } from "atom.io"
 
 import { cacheValue } from "../caching"
+import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { IMPLICIT, deposit } from "../store"
 import { Subject } from "../subject"
@@ -17,15 +19,19 @@ export type Atom<T> = {
 	key: string
 	type: `atom`
 	family?: FamilyMetadata
+	install: (store: Store) => void
 	subject: Subject<{ newValue: T; oldValue: T }>
 	default: T
 }
 
 export function createAtom<T>(
-	options: AtomOptions<T>,
+	options: AtomOptions<T> | MutableAtomOptions<any, any>,
 	family?: FamilyMetadata,
 	store: Store = IMPLICIT.STORE,
 ): AtomToken<T> {
+	store.config.logger?.info?.(
+		`🔨 creating atom "${options.key}" in store "${store.config.name}"`,
+	)
 	const core = target(store)
 	const existing = core.atoms.get(options.key)
 	if (existing) {
@@ -39,8 +45,16 @@ export function createAtom<T>(
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const newAtom = {
 		...options,
-		subject,
 		type: `atom`,
+		install: (store: Store) => {
+			store.config.logger?.info?.(
+				`🛠️  installing atom "${options.key}" in store "${store.config.name}"`,
+			)
+			return `mutable` in options
+				? createMutableAtom(options, store)
+				: createAtom(options, undefined, store)
+		},
+		subject,
 		...(family && { family }),
 	} as const
 	const initialValue =

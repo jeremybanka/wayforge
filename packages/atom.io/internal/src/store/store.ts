@@ -18,7 +18,12 @@ import { doNothing } from "~/packages/anvl/src/function"
 import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import type { Atom } from "../atom"
-import type { Tracker, Transceiver } from "../mutable"
+import {
+	type MutableAtom,
+	type Tracker,
+	type Transceiver,
+	createMutableAtom,
+} from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { ReadonlySelector, Selector } from "../selector"
 import { Subject } from "../subject"
@@ -37,6 +42,7 @@ export type StoreCore = Pick<
 	| `selectors`
 	| `timelineAtoms`
 	| `timelines`
+	| `trackers`
 	| `transactions`
 	| `valueMap`
 >
@@ -44,7 +50,7 @@ export type StoreCore = Pick<
 export class Store {
 	public valueMap = new Map<string, any>()
 
-	public atoms = new Map<string, Atom<any>>()
+	public atoms = new Map<string, Atom<any> | MutableAtom<any>>()
 	public selectors = new Map<string, Selector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
 
@@ -97,7 +103,7 @@ export class Store {
 		logger: Logger | null
 		logger__INTERNAL: Logger
 	} = {
-		name: `DEFAULT`,
+		name: `IMPLICIT_STORE`,
 		logger: { ...console, info: doNothing },
 		logger__INTERNAL: console,
 	}
@@ -121,8 +127,7 @@ export class Store {
 		}
 
 		store?.atoms.forEach((atom) => {
-			const copiedAtom = { ...atom, subject: new Subject() } satisfies Atom<any>
-			this.atoms.set(atom.key, copiedAtom)
+			atom.install(this)
 		})
 		store?.readonlySelectors.forEach((selector) => {
 			selector.install(this)

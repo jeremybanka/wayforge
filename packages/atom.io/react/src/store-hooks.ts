@@ -26,8 +26,27 @@ export function useO<T>(
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(observe) => AtomIO.subscribe(token, observe, `use-o:${id}`, store),
-		() => AtomIO.getState(token, store),
+		(dispatch) =>
+			AtomIO.subscribe(
+				token,
+				() => {
+					store.config.logger?.info(
+						`⚛️ ${store.config.name} use-o:${id} ${token.key}`,
+						`use-o update`,
+					)
+					dispatch()
+				},
+				`use-o:${id}`,
+				store,
+			),
+		() => {
+			const value = AtomIO.getState(token, store)
+			store.config.logger?.info(
+				`⚛️ ${store.config.name} use-o:${id} ${token.key}`,
+				value,
+			)
+			return value
+		},
 	)
 }
 

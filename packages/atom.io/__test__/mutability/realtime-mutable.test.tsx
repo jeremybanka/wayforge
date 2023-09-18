@@ -6,6 +6,7 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { IMPLICIT } from "../../internal/src"
 
 AtomIO.setLogLevel(`info`)
 
@@ -106,9 +107,10 @@ describe(`running transactions`, () => {
 		teardown()
 	})
 
-	test.only(`client 1 disconnects, makes update, reconnects`, async () => {
+	test(`client 1 disconnects, makes update, reconnects`, async () => {
 		const {
 			clients: { dave, jane },
+			server,
 			teardown,
 		} = scenario()
 		jane.renderResult.getByTestId(`0`)
@@ -116,9 +118,40 @@ describe(`running transactions`, () => {
 		dave.disconnect()
 		act(() => dave.renderResult.getByTestId(`addNumber`).click())
 
-		jane.renderResult.getByTestId(`0`)
+		// jane.a.getByTestId(`0`)
 		dave.reconnect()
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
+		/*
+		.catch((e) => {
+			const OBSERVED_KEY = `numbersCollection::mutable`
+			console.log(`IMPLICIT_STORE:MUTABLE_________________________`)
+			console.log(IMPLICIT.STORE.valueMap.get(OBSERVED_KEY))
+			console.log(IMPLICIT.STORE.atoms.get(OBSERVED_KEY))
+			console.log(`IMPLICIT_STORE:IMMUTABLE_______________________`)
+			console.log(IMPLICIT.STORE.valueMap.get(`*` + OBSERVED_KEY))
+			console.log(IMPLICIT.STORE.atoms.get(`*` + OBSERVED_KEY))
+			console.log(`JANE:MUTABLE_________________________`)
+			console.log(jane.silo.store.valueMap.get(OBSERVED_KEY))
+			console.log(jane.silo.store.atoms.get(OBSERVED_KEY))
+			console.log(`JANE:IMMUTABLE_______________________`)
+			console.log(jane.silo.store.valueMap.get(`*` + OBSERVED_KEY))
+			console.log(jane.silo.store.atoms.get(`*` + OBSERVED_KEY))
+			console.log(`DAVE:MUTABLE_________________________`)
+			console.log(dave.silo.store.valueMap.get(OBSERVED_KEY))
+			console.log(dave.silo.store.atoms.get(OBSERVED_KEY))
+			console.log(`DAVE:IMMUTABLE_______________________`)
+			console.log(dave.silo.store.valueMap.get(`*` + OBSERVED_KEY))
+			console.log(dave.silo.store.atoms.get(`*` + OBSERVED_KEY))
+			console.log(`SERVER:MUTABLE_______________________`)
+			console.log(server.silo.store.valueMap.get(OBSERVED_KEY))
+			console.log(server.silo.store.atoms.get(OBSERVED_KEY))
+			console.log(`SERVER:IMMUTABLE_____________________`)
+			console.log(server.silo.store.valueMap.get(`*` + OBSERVED_KEY))
+			console.log(server.silo.store.atoms.get(`*` + OBSERVED_KEY))
+			console.log(`_____________________________`)
+			throw e
+		})
+		*/
 
 		teardown()
 	})

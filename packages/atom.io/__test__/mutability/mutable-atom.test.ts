@@ -102,7 +102,7 @@ describe(`mutable atomic state`, () => {
 	})
 
 	it(`can recover from a failed transaction`, () => {
-		const myMutableState = createMutableAtom({
+		const myMutableState = atom({
 			key: `my::mutable`,
 			mutable: true,
 			default: () => new TransceiverSet(),

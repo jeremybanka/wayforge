@@ -10,7 +10,7 @@ export * from "./tracker-family"
 export * from "./tracker-transceiver"
 
 export interface MutableAtom<T> extends Atom<T> {
-	isMutable: true
+	mutable: true
 }
 
 export const isAtomMutable = <T>(atom: Atom<T>): atom is MutableAtom<T> =>

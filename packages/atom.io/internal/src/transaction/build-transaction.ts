@@ -19,6 +19,7 @@ export const buildTransaction = (
 			readonlySelectors: new Map(store.readonlySelectors),
 			timelines: new Map(store.timelines),
 			timelineAtoms: new Junction(store.timelineAtoms.toJSON()),
+			trackers: new Map(),
 			transactions: new Map(store.transactions),
 			selectorAtoms: new Junction(store.selectorAtoms.toJSON()),
 			selectorGraph: new Junction(store.selectorGraph.toJSON(), {

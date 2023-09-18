@@ -1,8 +1,7 @@
-import type { Store } from ".."
+import type { StoreCore } from ".."
 import { IMPLICIT, target } from ".."
 
-export function deleteAtom(key: string, store: Store = IMPLICIT.STORE): void {
-	const core = target(store)
+export function deleteAtom(key: string, core: StoreCore = IMPLICIT.STORE): void {
 	core.atoms.delete(key)
 	core.valueMap.delete(key)
 	core.selectorAtoms.delete(key)

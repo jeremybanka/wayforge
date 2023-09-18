@@ -7,7 +7,6 @@ import type {
 	Store,
 } from "atom.io"
 
-import type { StoreCore } from "../store"
 import { IMPLICIT } from "../store"
 import type { Subject } from "../subject"
 import { target } from "../transaction"

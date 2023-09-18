@@ -10,7 +10,7 @@ export const attachTimelineIndex = (
 		{
 			key: `👁‍🗨 Timeline Token Index (Internal)`,
 			default: () =>
-				[...store.timelines].map(([key]) => {
+				[...store.timelines].map(([key]): TimelineToken => {
 					return { key, type: `timeline` }
 				}),
 			effects: [

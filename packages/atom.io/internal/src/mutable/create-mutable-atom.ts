@@ -1,5 +1,5 @@
-import type * as AtomIO from "atom.io"
-import { createAtom } from "atom.io/internal"
+import * as AtomIO from "atom.io"
+import { IMPLICIT, createAtom, target } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 import { Tracker } from "./tracker"
@@ -10,10 +10,36 @@ export function createMutableAtom<
 	SerializableCore extends Json.Serializable,
 >(
 	options: AtomIO.MutableAtomOptions<Core, SerializableCore>,
-	store?: AtomIO.Store,
+	store: AtomIO.Store = IMPLICIT.STORE,
 ): AtomIO.MutableAtomToken<Core, SerializableCore> {
+	store.config.logger?.info(
+		`🔧 creating mutable atom "${options.key}" in store "${store.config.name}"`,
+	)
 	const coreState = createAtom<Core>(options, undefined, store)
 	new Tracker(coreState, store)
-	selectJson(coreState, options, store)
+	const jsonState = selectJson(coreState, options, store)
+	AtomIO.subscribe(
+		jsonState,
+		() => {
+			store.config.logger?.info(
+				`🔍 tracker-initializer:${store?.config.name}:${
+					store.transactionStatus.phase === `idle`
+						? `main`
+						: store.transactionStatus.key
+				}`,
+				`Initializing tracker for ${coreState.key}`,
+			)
+
+			const trackerHasBeenInitialized = target(store).trackers.has(coreState.key)
+			if (!trackerHasBeenInitialized) {
+				new Tracker(coreState, store)
+			}
+		},
+		`tracker-initializer:${store?.config.name}:${
+			store.transactionStatus.phase === `idle`
+				? `main`
+				: store.transactionStatus.key
+		}`,
+	)
 	return coreState as AtomIO.MutableAtomToken<Core, SerializableCore>
 }
