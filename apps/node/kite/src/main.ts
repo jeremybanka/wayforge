@@ -10,7 +10,7 @@ const TIMESTAMP = Date.now()
 
 dotenv.config()
 pipe(
-	new WebSocketServer(3333, {
+	new WebSocketServer(6363, {
 		cors: {
 			origin: `http://localhost:5173`,
 			methods: [`GET`, `POST`],
