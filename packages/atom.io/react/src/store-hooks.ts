@@ -30,10 +30,10 @@ export function useO<T>(
 			AtomIO.subscribe(
 				token,
 				() => {
-					store.config.logger?.info(
-						`⚛️ ${store.config.name} use-o:${id} ${token.key}`,
-						`use-o update`,
-					)
+					// store.config.logger?.info(
+					// 	`⚛️ ${store.config.name} use-o:${id} ${token.key}`,
+					// 	`use-o update`,
+					// )
 					dispatch()
 				},
 				`use-o:${id}`,
@@ -41,10 +41,10 @@ export function useO<T>(
 			),
 		() => {
 			const value = AtomIO.getState(token, store)
-			store.config.logger?.info(
-				`⚛️ ${store.config.name} use-o:${id} ${token.key}`,
-				value,
-			)
+			// store.config.logger?.info(
+			// 	`⚛️ ${store.config.name} use-o:${id} ${token.key}`,
+			// 	value,
+			// )
 			return value
 		},
 	)
