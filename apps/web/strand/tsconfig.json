@@ -2,7 +2,8 @@
 	"extends": "../../../tsconfig.json",
 	"compilerOptions": {
 		"jsxImportSource": "react",
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+		"types": ["vite/client"]
 	},
 	"include": ["./src", "./lasertag.d.ts"]
 }
