@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
+import { selectJsonFamily } from "~/packages/atom.io/json/src"
 import {
 	useExposeMutable,
 	useExposeMutableFamily,
@@ -9,7 +10,11 @@ import {
 	useSyncTransaction,
 } from "~/packages/atom.io/realtime/src"
 import { logger } from "./kite-logger"
-import { addNumberCollectionTX, numberCollectionIndex } from "./kite-store"
+import {
+	addNumberCollectionTX,
+	findNumberCollection,
+	numberCollectionIndex,
+} from "./kite-store"
 
 logger.info(`🚀`, `server starting`)
 
@@ -48,9 +53,11 @@ pipe(
 			const exposeMutable = useExposeMutable({ socket })
 			exposeMutable(numberCollectionIndex)
 
+			const exposeMutableFamily = useExposeMutableFamily({ socket })
+			exposeMutableFamily(findNumberCollection, numberCollectionIndex)
+
 			const sync = useSyncTransaction({ socket })
 			sync(addNumberCollectionTX)
-			// const exposeMutableFamily = useExposeMutableFamily(socket)
 		})
 	},
 )
