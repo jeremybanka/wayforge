@@ -1,0 +1,32 @@
+{
+	"name": "@wayforge/ticker",
+	"description": "testing realtime functionality",
+	"private": true,
+	"scripts": {
+		"dev": "tsx watch src/main.ts",
+		"start": "tsx src/main.ts",
+		"build": "echo zero-build app powered by tsx",
+		"test": "vitest",
+		"test:once": "cross-env CI=true vitest run",
+		"lint:biome": "biome check .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:biome && npm run lint:eslint"
+	},
+	"dependencies": {
+		"dotenv": "16.3.1",
+		"express": "4.18.2",
+		"fp-ts": "2.16.1",
+		"lodash": "4.17.21",
+		"nanoid": "5.0.1",
+		"npmlog": "7.0.1",
+		"socket.io": "4.7.2",
+		"socketio-auth": "0.1.1"
+	},
+	"devDependencies": {
+		"socket.io-client": "4.7.2",
+		"tsx": "3.12.10",
+		"vite": "4.4.9",
+		"vite-tsconfig-paths": "4.2.1",
+		"vitest": "0.34.4"
+	}
+}
