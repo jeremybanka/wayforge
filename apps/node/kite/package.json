@@ -1,12 +1,12 @@
 {
-	"name": "@wayforge/ticker",
+	"name": "@wayforge/kite",
 	"description": "testing realtime functionality",
 	"private": true,
 	"scripts": {
 		"dev": "tsx watch src/kite.ts",
 		"start": "tsx src/kite.ts",
 		"build": "echo zero-build app powered by tsx",
-		"test": "vitest",
+		"test": "echo no tests yet",
 		"test:once": "cross-env CI=true vitest run",
 		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
