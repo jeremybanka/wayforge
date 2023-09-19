@@ -32,7 +32,7 @@ describe(`silo`, () => {
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(
-			`Atom "count" not found in store "DEFAULT".`,
+			`Atom "count" not found in store "IMPLICIT_STORE".`,
 		)
 	})
 })
