@@ -485,10 +485,10 @@ importers:
         version: 11.11.0
       '@emotion/react':
         specifier: 11.11.1
-        version: 11.11.1(@preact/compat@17.1.2)(@types/react@18.2.22)
+        version: 11.11.1(@preact/compat@17.1.2)(@types/react@18.2.21)
       '@emotion/styled':
         specifier: 11.11.0
-        version: 11.11.0(@emotion/react@11.11.1)(@preact/compat@17.1.2)(@types/react@18.2.22)
+        version: 11.11.0(@emotion/react@11.11.1)(@preact/compat@17.1.2)(@types/react@18.2.21)
       '@floating-ui/dom':
         specifier: 1.5.3
         version: 1.5.3
@@ -548,8 +548,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@types/react':
-        specifier: 18.2.22
-        version: 18.2.22
+        specifier: 18.2.21
+        version: 18.2.21
       '@vanilla-extract/vite-plugin':
         specifier: 3.9.0
         version: 3.9.0(sass@1.67.0)(vite@4.4.9)
@@ -1817,27 +1817,6 @@ packages:
       react: /@preact/compat@17.1.2(preact@10.17.1)
     dev: false
 
-  /@emotion/react@11.11.1(@preact/compat@17.1.2)(@types/react@18.2.22):
-    resolution: {integrity: sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==}
-    peerDependencies:
-      '@types/react': '*'
-      react: '>=16.8.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.22.10
-      '@emotion/babel-plugin': 11.11.0
-      '@emotion/cache': 11.11.0
-      '@emotion/serialize': 1.1.2
-      '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(@preact/compat@17.1.2)
-      '@emotion/utils': 1.2.1
-      '@emotion/weak-memoize': 0.3.1
-      '@types/react': 18.2.22
-      hoist-non-react-statics: 3.3.2
-      react: /@preact/compat@17.1.2(preact@10.17.1)
-    dev: false
-
   /@emotion/react@11.11.1(@types/react@18.2.21)(react@18.2.0):
     resolution: {integrity: sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==}
     peerDependencies:
@@ -1888,27 +1867,6 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(@preact/compat@17.1.2)
       '@emotion/utils': 1.2.1
       '@types/react': 18.2.21
-      react: /@preact/compat@17.1.2(preact@10.17.1)
-    dev: false
-
-  /@emotion/styled@11.11.0(@emotion/react@11.11.1)(@preact/compat@17.1.2)(@types/react@18.2.22):
-    resolution: {integrity: sha512-hM5Nnvu9P3midq5aaXj4I+lnSfNi7Pmd4EWk1fOZ3pxookaQTNew6bp4JaCBYM4HVFZF9g7UjJmsUmC2JlxOng==}
-    peerDependencies:
-      '@emotion/react': ^11.0.0-rc.0
-      '@types/react': '*'
-      react: '>=16.8.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.22.10
-      '@emotion/babel-plugin': 11.11.0
-      '@emotion/is-prop-valid': 1.2.1
-      '@emotion/react': 11.11.1(@preact/compat@17.1.2)(@types/react@18.2.22)
-      '@emotion/serialize': 1.1.2
-      '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(@preact/compat@17.1.2)
-      '@emotion/utils': 1.2.1
-      '@types/react': 18.2.22
       react: /@preact/compat@17.1.2(preact@10.17.1)
     dev: false
 
@@ -3839,13 +3797,6 @@ packages:
 
   /@types/react@18.2.21:
     resolution: {integrity: sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==}
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.3
-      csstype: 3.1.2
-
-  /@types/react@18.2.22:
-    resolution: {integrity: sha512-60fLTOLqzarLED2O3UQImc/lsNRgG0jE/a1mPW9KjMemY0LMITWEsbS4VvZ4p6rorEHd5YKxxmMKSDK505GHpA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
