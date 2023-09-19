@@ -1,5 +1,5 @@
 import { RealtimeProvider } from "atom.io/realtime-react"
-import { StrictMode } from "react"
+import { ReactNode, StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { BrowserRouter as Router } from "react-router-dom"
 import { io } from "socket.io-client"
@@ -14,12 +14,14 @@ import "./scss/index.scss"
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)
 root.render(
-	<StrictMode>
-		<RealtimeProvider socket={io(env.VITE_REMOTE_ORIGIN)}>
-			<SocketStatus />
-			<Router>
-				<App />
-			</Router>
-		</RealtimeProvider>
-	</StrictMode>,
+	(
+		<StrictMode>
+			<RealtimeProvider socket={io(env.VITE_REMOTE_ORIGIN)}>
+				<SocketStatus />
+				<Router>
+					<App />
+				</Router>
+			</RealtimeProvider>
+		</StrictMode>
+	) as Parameters<typeof root[`render`]>[0],
 )
