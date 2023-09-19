@@ -7,7 +7,7 @@
 		"start": "tsx src/kite.ts",
 		"build": "echo zero-build app powered by tsx",
 		"test": "echo no tests yet",
-		"test:once": "cross-env CI=true vitest run",
+		"test:once": "echo no tests yet",
 		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint"
