@@ -1,11 +1,12 @@
 import type { KeyedStateUpdate, StateUpdate } from "atom.io"
 
 import type { Atom } from "../atom"
+import { isTransceiver } from "../mutable"
 import type { Store } from "../store"
 
 function shouldUpdateBeStowed(key: string, update: StateUpdate<any>): boolean {
 	// do not stow updates that aren't json, unless they're not equal by reference
-	if (update.oldValue === update.newValue) {
+	if (isTransceiver(update.newValue)) {
 		return false
 	}
 	// do not stow updates where the key contains 👁‍🗨
