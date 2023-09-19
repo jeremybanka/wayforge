@@ -1,3 +1,4 @@
+import type { primitive } from "../src/primitive"
 import { Subject } from "./subject"
 import type { Transceiver, TransceiverMode } from "./transceiver"
 
@@ -7,12 +8,12 @@ export type SetUpdate =
 	| `del:${string}`
 	| `tx::${string}`
 
-export class TransceiverSet<P extends string>
+export class TransceiverSet<P extends primitive>
 	extends Set<P>
 	implements Transceiver<SetUpdate>
 {
 	protected mode: TransceiverMode = `record`
-	protected readonly subject = new Subject()
+	protected readonly subject = new Subject<SetUpdate>()
 	public id = Math.random().toString(36).slice(2)
 
 	public add(value: P): this {
