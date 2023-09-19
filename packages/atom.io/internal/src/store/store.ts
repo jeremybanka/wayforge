@@ -147,7 +147,9 @@ export class Store {
 export const IMPLICIT = {
 	STORE_INTERNAL: undefined as Store | undefined,
 	get STORE(): Store {
-		return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = new Store(`DEFAULT`))
+		return (
+			this.STORE_INTERNAL ?? (this.STORE_INTERNAL = new Store(`IMPLICIT_STORE`))
+		)
 	},
 }
 
