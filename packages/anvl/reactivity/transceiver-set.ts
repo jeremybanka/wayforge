@@ -1,3 +1,5 @@
+import type { Stringified } from "../src/json"
+import { parseJson, stringifyJson } from "../src/json"
 import type { primitive } from "../src/primitive"
 import { Subject } from "./subject"
 import type { Transceiver, TransceiverMode } from "./transceiver"
@@ -18,7 +20,7 @@ export class TransceiverSet<P extends primitive>
 
 	public add(value: P): this {
 		if (this.mode === `record`) {
-			this.subject.next(`add:${value}`)
+			this.subject.next(`add:${stringifyJson<P>(value)}`)
 		}
 		if (this.transactionCore) {
 			this.transactionCore.add(value)
@@ -40,7 +42,7 @@ export class TransceiverSet<P extends primitive>
 
 	public delete(value: P): boolean {
 		if (this.mode === `record`) {
-			this.subject.next(`del:${value}`)
+			this.subject.next(`del:${stringifyJson<P>(value)}`)
 		}
 		if (this.transactionCore) {
 			return this.transactionCore.delete(value)
@@ -93,13 +95,13 @@ export class TransceiverSet<P extends primitive>
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
-				this.add(value as P)
+				this.add(parseJson(value as Stringified<P>))
 				break
 			case `clear`:
 				this.clear()
 				break
 			case `del`:
-				this.delete(value as P)
+				this.delete(parseJson(value as Stringified<P>))
 				break
 		}
 	}
@@ -119,10 +121,10 @@ export class TransceiverSet<P extends primitive>
 		const [type, value] = update.split(`:`)
 		switch (type) {
 			case `add`:
-				this.delete(value as P)
+				this.delete(parseJson(value as Stringified<P>))
 				break
 			case `del`:
-				this.add(value as P)
+				this.add(parseJson(value as Stringified<P>))
 				break
 			case `clear`: {
 				const values = JSON.parse(value) as P[]
