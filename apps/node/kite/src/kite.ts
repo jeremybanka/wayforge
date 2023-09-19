@@ -2,7 +2,14 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import { logger } from "./logger"
+import {
+	useExposeMutable,
+	useExposeMutableFamily,
+	useReceiveTransaction,
+	useSyncTransaction,
+} from "~/packages/atom.io/realtime/src"
+import { logger } from "./kite-logger"
+import { addNumberCollectionTX, numberCollectionIndex } from "./kite-store"
 
 logger.info(`🚀`, `server starting`)
 
@@ -38,6 +45,12 @@ pipe(
 			})
 
 			// REALTIME
+			const exposeMutable = useExposeMutable({ socket })
+			exposeMutable(numberCollectionIndex)
+
+			const sync = useSyncTransaction({ socket })
+			sync(addNumberCollectionTX)
+			// const exposeMutableFamily = useExposeMutableFamily(socket)
 		})
 	},
 )

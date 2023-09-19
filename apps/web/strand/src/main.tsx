@@ -1,7 +1,7 @@
 import { RealtimeProvider } from "atom.io/realtime-react"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { BrowserRouter as Router } from "react-router-dom"
+import { BrowserRouter } from "react-router-dom"
 import { io } from "socket.io-client"
 
 import { App } from "./App"
@@ -17,9 +17,9 @@ const root = createRoot(container as Element)
 root.render(
 	<StrictMode>
 		<RealtimeProvider socket={socket}>
-			<Router>
+			<BrowserRouter>
 				<App />
-			</Router>
+			</BrowserRouter>
 		</RealtimeProvider>
 	</StrictMode>,
 )

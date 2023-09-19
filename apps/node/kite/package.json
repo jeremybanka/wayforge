@@ -3,8 +3,8 @@
 	"description": "testing realtime functionality",
 	"private": true,
 	"scripts": {
-		"dev": "tsx watch src/main.ts",
-		"start": "tsx src/main.ts",
+		"dev": "tsx watch src/kite.ts",
+		"start": "tsx src/kite.ts",
 		"build": "echo zero-build app powered by tsx",
 		"test": "vitest",
 		"test:once": "cross-env CI=true vitest run",

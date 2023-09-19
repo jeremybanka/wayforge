@@ -1,18 +1,34 @@
 import { AtomIODevtools } from "atom.io/react-devtools"
 import type { FC } from "react"
 
-import { setLogLevel } from "~/packages/atom.io/src"
+import { setLogLevel } from "atom.io"
+import { useO } from "atom.io/react"
+import { usePullMutable, useServerAction } from "atom.io/realtime-react"
 import scss from "./App.module.scss"
-import { main } from "./components/containers/<main>"
+
+import {
+	addNumberCollectionTX,
+	numberCollectionIndex,
+} from "../../../node/kite/src/kite-store"
 
 setLogLevel(`info`)
 
-export const App: FC = () => (
-	<main className={scss.class}>
-		<header>Strand</header>
-		<main.auspicious>
-			Hello
+export const App: FC = () => {
+	usePullMutable(numberCollectionIndex)
+	const collectionIds = useO(numberCollectionIndex)
+	const addNumberCollection = useServerAction(addNumberCollectionTX)
+	return (
+		<main className={scss.class}>
+			{[...collectionIds].map((number) => (
+				<div key={number}>{number}</div>
+			))}
+			<button
+				type="button"
+				onClick={() => addNumberCollection(Math.random().toString(36).slice(2))}
+			>
+				Add
+			</button>
 			<AtomIODevtools />
-		</main.auspicious>
-	</main>
-)
+		</main>
+	)
+}
