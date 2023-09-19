@@ -15,13 +15,11 @@ const socket = io(env.VITE_REMOTE_ORIGIN)
 const container = document.getElementById(`root`)
 const root = createRoot(container as Element)
 root.render(
-	(
-		<StrictMode>
-			<RealtimeProvider socket={socket}>
-				<BrowserRouter>
-					<App />
-				</BrowserRouter>
-			</RealtimeProvider>
-		</StrictMode>
-	) as Parameters<typeof root[`render`]>[0],
+	<StrictMode>
+		<RealtimeProvider socket={socket}>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</RealtimeProvider>
+	</StrictMode>,
 )
