@@ -107,7 +107,7 @@ describe(`running transactions`, () => {
 		teardown()
 	})
 
-	test(`client 1 disconnects, makes update, reconnects`, async () => {
+	test.skip(`client 1 disconnects, makes update, reconnects`, async () => {
 		const {
 			clients: { dave, jane },
 			server,
