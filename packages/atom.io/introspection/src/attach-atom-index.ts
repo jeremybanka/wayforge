@@ -2,6 +2,7 @@ import type { AtomToken, ReadonlySelectorToken } from "atom.io"
 import { __INTERNAL__ } from "atom.io"
 
 import type { StateTokenIndex } from "."
+import { target } from "../../internal/src"
 
 export type AtomTokenIndex = StateTokenIndex<AtomToken<unknown>>
 
@@ -11,49 +12,62 @@ export const attachAtomIndex = (
 	const atomTokenIndexState__INTERNAL = __INTERNAL__.createAtom<AtomTokenIndex>(
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
-			default: () =>
-				[...store.atoms]
+			default: () => {
+				console.log(store)
+				const defaultAtomIndex = [...store.atoms]
 					.filter(([key]) => !key.includes(`👁‍🗨`))
 					.reduce<AtomTokenIndex>((acc, [key]) => {
 						acc[key] = { key, type: `atom` }
 						return acc
-					}, {}),
+					}, {})
+				console.log(defaultAtomIndex)
+				return defaultAtomIndex
+			},
 			effects: [
 				({ setSelf }) => {
 					store.subject.atomCreation.subscribe(`introspection`, (atomToken) => {
-						if (store.operation.open) {
-							return
-						}
 						if (atomToken.key.includes(`👁‍🗨`)) {
 							return
 						}
-						setSelf((state) => {
-							const { key, family } = atomToken
-							if (family) {
-								const { key: familyKey, subKey } = family
-								const current = state[familyKey]
-								if (current === undefined || `familyMembers` in current) {
-									const familyKeyState = current || {
-										key: familyKey,
-										familyMembers: {},
-									}
-									return {
-										...state,
-										[familyKey]: {
-											...familyKeyState,
-											familyMembers: {
-												...familyKeyState.familyMembers,
-												[subKey]: atomToken,
+						const set = () =>
+							setSelf((state) => {
+								const { key, family } = atomToken
+								if (family) {
+									const { key: familyKey, subKey } = family
+									const current = state[familyKey]
+									if (current === undefined || `familyMembers` in current) {
+										const familyKeyState = current || {
+											key: familyKey,
+											familyMembers: {},
+										}
+										return {
+											...state,
+											[familyKey]: {
+												...familyKeyState,
+												familyMembers: {
+													...familyKeyState.familyMembers,
+													[subKey]: atomToken,
+												},
 											},
-										},
+										}
 									}
 								}
-							}
-							return {
-								...state,
-								[key]: atomToken,
-							}
-						})
+								return {
+									...state,
+									[key]: atomToken,
+								}
+							})
+						if (target(store).operation.open) {
+							const unsubscribe = store.subject.operationStatus.subscribe(
+								`introspection: waiting to update atom index`,
+								() => {
+									unsubscribe()
+									set()
+								},
+							)
+						} else {
+							set()
+						}
 					})
 				},
 			],
