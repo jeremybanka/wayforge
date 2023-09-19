@@ -5,8 +5,6 @@ import { createAtom, deleteAtom } from "../atom"
 import { target } from "../transaction"
 import type { Transceiver } from "./tracker-transceiver"
 
-console.log({ AtomIO })
-
 /**
  * @internal Give the tracker a transceiver state and a store, and it will
  * subscribe to the transceiver's inner value. When the inner value changes,
