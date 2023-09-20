@@ -11,6 +11,7 @@ import type { TransceiverSet } from "~/packages/anvl/reactivity"
 import {
 	addNumberCollectionTX,
 	findNumberCollection,
+	incrementNumberCollectionTX,
 	numberCollectionIndex,
 } from "../../../node/kite/src/kite-store"
 
@@ -22,16 +23,15 @@ const Numbers: FC<{
 	const setNumbers = useI(state)
 	const numbers = useJSON(state)
 
+	const increment = useServerAction(incrementNumberCollectionTX)
+
 	return (
 		<section>
 			<span>{state.key}</span>
 			{numbers.map((number) => (
 				<div key={number}>{number}</div>
 			))}
-			<button
-				type="button"
-				onClick={() => setNumbers((current) => current.add(numbers.length))}
-			>
+			<button type="button" onClick={() => increment(state.key)}>
 				Add
 			</button>
 		</section>

@@ -28,3 +28,14 @@ export const addNumberCollectionTX = transaction<(id: string) => string>({
 		return id
 	},
 })
+
+export const incrementNumberCollectionTX = transaction<(id: string) => void>({
+	key: `incrementNumberCollectionTX`,
+	do: ({ get, set }, id) => {
+		const collection = get(findNumberCollection(id))
+		set(findNumberCollection(id), (current) => {
+			current.add(collection.size + 1)
+			return current
+		})
+	},
+})
