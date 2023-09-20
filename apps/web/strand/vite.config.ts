@@ -23,7 +23,7 @@ export default defineConfig({
 		},
 	},
 	build: {
-		sourcemap: true,
+		minify: true,
 	},
 	esbuild: {
 		exclude: `../sample`,
