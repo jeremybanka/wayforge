@@ -58,7 +58,7 @@ describe(`mutable atomic state`, () => {
 			oldValue: [],
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith({
-			newValue: `add:a`,
+			newValue: `add:"a"`,
 			oldValue: null,
 		})
 	})
@@ -96,7 +96,7 @@ describe(`mutable atomic state`, () => {
 			oldValue: [],
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith({
-			newValue: `add:a`,
+			newValue: `add:"a"`,
 			oldValue: null,
 		})
 	})
