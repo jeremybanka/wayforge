@@ -1,7 +1,6 @@
 import type {
 	AtomFamily,
 	AtomToken,
-	Json,
 	Logger,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -11,19 +10,12 @@ import type {
 	TransactionToken,
 	ƒn,
 } from "atom.io"
-import { isString } from "fp-ts/string"
 import { Junction } from "rel8/junction"
 
 import { doNothing } from "~/packages/anvl/src/function"
-import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import type { Atom } from "../atom"
-import {
-	type MutableAtom,
-	type Tracker,
-	type Transceiver,
-	createMutableAtom,
-} from "../mutable"
+import { type MutableAtom, type Tracker, type Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { ReadonlySelector, Selector } from "../selector"
 import { Subject } from "../subject"
@@ -75,13 +67,16 @@ export class Store {
 		between: [`selectorKey`, `atomKey`],
 		cardinality: `n:n`,
 	})
-	public selectorGraph = new Junction(
+	public selectorGraph = new Junction<
+		`upstreamSelectorKey`,
+		`downstreamSelectorKey`,
+		{ source: string }
+	>(
 		{
 			between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
 			cardinality: `n:n`,
 		},
 		{
-			isContent: hasExactProperties({ source: isString }),
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)

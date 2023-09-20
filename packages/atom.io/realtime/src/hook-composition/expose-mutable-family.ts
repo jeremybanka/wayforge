@@ -1,5 +1,4 @@
 import * as AtomIO from "atom.io"
-import type { MutableAtomFamily } from "atom.io"
 import { getJsonToken, getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
@@ -13,7 +12,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 		T extends Transceiver<Json.Serializable>,
 		J extends Json.Serializable,
 	>(
-		family: MutableAtomFamily<T, J, Json.Serializable>,
+		family: AtomIO.MutableAtomFamily<T, J, Json.Serializable>,
 		index: AtomIO.StateToken<Set<string>>,
 	): () => void {
 		console.log(`📫  expose family`, family.key)

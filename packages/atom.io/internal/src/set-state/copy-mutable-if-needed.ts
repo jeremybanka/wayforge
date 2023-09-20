@@ -1,5 +1,4 @@
 import type { JsonInterface } from "atom.io/json"
-import { pipe } from "fp-ts/function"
 
 import type { Atom } from "../atom"
 import { Tracker } from "../mutable"
@@ -15,7 +14,7 @@ export function copyMutableIfNeeded<T>(
 	const targetValue = target.valueMap.get(atom.key)
 	if (originValue === targetValue) {
 		origin.config.logger?.info(`📃 copying`, `${atom.key}`)
-		const copiedValue = pipe(originValue, transform.toJson, transform.fromJson)
+		const copiedValue = transform.fromJson(transform.toJson(originValue))
 		target.valueMap.set(atom.key, copiedValue)
 		new Tracker(atom, origin)
 		return copiedValue
