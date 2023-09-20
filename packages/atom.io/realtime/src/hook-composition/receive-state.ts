@@ -1,4 +1,5 @@
-import { StateToken, setState } from "atom.io"
+import { setState } from "atom.io"
+import type { StateToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from ".."
