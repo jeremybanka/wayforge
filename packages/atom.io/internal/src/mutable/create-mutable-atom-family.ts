@@ -19,6 +19,6 @@ export function createMutableAtomFamily<
 		options,
 	) as AtomIO.MutableAtomFamily<Core, SerializableCore, Key>
 	selectJsonFamily(coreFamily, options)
-	new FamilyTracker(coreFamily)
+	new FamilyTracker(coreFamily, store)
 	return coreFamily
 }

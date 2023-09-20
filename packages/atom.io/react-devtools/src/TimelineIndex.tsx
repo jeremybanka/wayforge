@@ -1,7 +1,7 @@
 import type { AtomToken, ReadonlySelectorToken, TimelineToken } from "atom.io"
 import { redo, undo } from "atom.io"
 import type { Timeline } from "atom.io/internal"
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import { type FC, Fragment } from "react"
 
 import { findTimelineState, findViewIsOpenState, timelineIndex } from "."
@@ -18,7 +18,8 @@ export const TimelineLog: FC<{
 	timelineState: ReadonlySelectorToken<Timeline>
 }> = ({ token, isOpenState, timelineState }) => {
 	const timeline = useO(timelineState)
-	const [isOpen, setIsOpen] = useIO(isOpenState)
+	const isOpen = useO(isOpenState)
+	const setIsOpen = useI(isOpenState)
 
 	return (
 		<section className="node timeline_log">

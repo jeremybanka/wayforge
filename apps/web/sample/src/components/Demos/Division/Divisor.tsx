@@ -1,10 +1,11 @@
-import { useIO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import { divisorState } from "../../../services/app-store"
 
 export const Divisor: FC = () => {
-	const [divisor, setDivisor] = useIO(divisorState)
+	const setDivisor = useI(divisorState)
+	const divisor = useO(divisorState)
 	return (
 		<div>
 			<h1 data-testid="divisor">{divisor}</h1>

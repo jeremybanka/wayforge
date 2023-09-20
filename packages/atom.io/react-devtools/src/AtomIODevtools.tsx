@@ -1,4 +1,4 @@
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 
@@ -18,8 +18,10 @@ import "./devtools.scss"
 export const AtomIODevtools = (): JSX.Element => {
 	const constraintsRef = useRef(null)
 
-	const [devtoolsAreOpen, setDevtoolsAreOpen] = useIO(devtoolsAreOpenState)
-	const [devtoolsView, setDevtoolsView] = useIO(devtoolsViewSelectionState)
+	const setDevtoolsAreOpen = useI(devtoolsAreOpenState)
+	const devtoolsAreOpen = useO(devtoolsAreOpenState)
+	const setDevtoolsView = useI(devtoolsViewSelectionState)
+	const devtoolsView = useO(devtoolsViewSelectionState)
 	const devtoolsViewOptions = useO(devtoolsViewOptionsState)
 
 	const mouseHasMoved = useRef(false)

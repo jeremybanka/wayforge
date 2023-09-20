@@ -1,5 +1,5 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import { fallback } from "~/packages/anvl/src/function"
@@ -12,7 +12,8 @@ import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 export const StateEditor: FC<{
 	token: StateToken<unknown>
 }> = ({ token }) => {
-	const [data, set] = useIO(token)
+	const set = useI(token)
+	const data = useO(token)
 	return isJson(data) ? (
 		<JsonEditor data={data} set={set} schema={true} />
 	) : data instanceof Join ? (

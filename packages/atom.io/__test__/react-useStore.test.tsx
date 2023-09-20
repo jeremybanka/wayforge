@@ -14,7 +14,8 @@ describe(`single atom`, () => {
 			default: `A`,
 		})
 		const Letter: FC = () => {
-			const [letter, setLetter] = AR.useIO(letterState)
+			const setLetter = AR.useI(letterState)
+			const letter = AR.useO(letterState)
 			const isDefaultLetter = isDefault(letterState)
 			return (
 				<>
