@@ -23,7 +23,7 @@ describe(`TransceiverSet`, () => {
 		it(`should add a value to the set`, () => {
 			const set = new TransceiverSet()
 			set.do(`add:"foo"`)
-			expect(set.has(`"foo"`)).toBe(true)
+			expect(set.has(`foo`)).toBe(true)
 		})
 		it(`should clear the set`, () => {
 			const set = new TransceiverSet()
@@ -72,7 +72,9 @@ describe(`TransceiverSet`, () => {
 			expect(fn).toHaveBeenCalledTimes(0)
 			set.applyTransaction()
 			expect(fn).toHaveBeenCalledTimes(1)
-			expect(fn).toHaveBeenCalledWith(`tx::add:x;clear:["x"];add:y;add:z;del:y`)
+			expect(fn).toHaveBeenCalledWith(
+				`tx::add:"x";clear:["x"];add:"y";add:"z";del:"y"`,
+			)
 		})
 	})
 })
