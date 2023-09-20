@@ -1,8 +1,14 @@
 import * as React from "react"
 
 import { getState, setState, subscribe } from "atom.io"
-import type { ReadonlySelectorToken, StateToken } from "atom.io"
+import type {
+	Json,
+	MutableAtomToken,
+	ReadonlySelectorToken,
+	StateToken,
+} from "atom.io"
 
+import { getJsonToken } from "../../internal/src"
 import { StoreContext } from "./store-context"
 
 export function useI<T>(
@@ -19,4 +25,11 @@ export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
 		(dispatch) => subscribe(token, dispatch, `use-o:${id}`, store),
 		() => getState(token, store),
 	)
+}
+
+export function useJSON<Serializable extends Json.Serializable,>(
+	token: MutableAtomToken<any, Serializable>,
+): Serializable {
+	const jsonToken = getJsonToken(token)
+	return useO(jsonToken)
 }
