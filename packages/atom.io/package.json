@@ -13,9 +13,6 @@
 		"json/dist",
 		"json/package.json",
 		"json/src",
-		"mutable/dist",
-		"mutable/package.json",
-		"mutable/src",
 		"react/dist",
 		"react/package.json",
 		"react/src",
@@ -55,13 +52,6 @@
 			"import": "./json/dist/index.mjs",
 			"require": "./json/dist/index.js"
 		},
-		"./mutable/package.json": "./mutable/package.json",
-		"./mutable": {
-			"types": "./mutable/dist/index.d.ts",
-			"browser": "./mutable/dist/index.mjs",
-			"import": "./mutable/dist/index.mjs",
-			"require": "./mutable/dist/index.js"
-		},
 		"./react/package.json": "./react/package.json",
 		"./react": {
 			"types": "./react/dist/index.d.ts",
@@ -96,13 +86,6 @@
 			"browser": "./realtime-testing/dist/index.mjs",
 			"import": "./realtime-testing/dist/index.mjs",
 			"require": "./realtime-testing/dist/index.js"
-		},
-		"./tracker/package.json": "./tracker/package.json",
-		"./tracker": {
-			"types": "./tracker/dist/index.d.ts",
-			"browser": "./tracker/dist/index.mjs",
-			"import": "./tracker/dist/index.mjs",
-			"require": "./tracker/dist/index.js"
 		}
 	},
 	"scripts": {
