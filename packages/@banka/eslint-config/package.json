@@ -16,7 +16,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@types/mocha": "10.0.1",
-		"@types/node": "18.17.17",
+		"@types/node": "18.17.18",
 		"@typescript-eslint/eslint-plugin": "6.7.2",
 		"@typescript-eslint/parser": "6.7.2",
 		"eslint-config-prettier": "9.0.0",
