@@ -15,7 +15,7 @@ import { TransceiverSet } from "~/packages/anvl/reactivity"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 1
+const CHOOSE = 3
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
@@ -37,11 +37,11 @@ describe(`tracker`, () => {
 
 		expect(getState(mutableSetState)).toEqual(new TransceiverSet())
 		expect(getState(latestUpdateState)).toEqual(null)
-		setState(latestUpdateState, `add:"x"`)
-		expect(getState(latestUpdateState)).toEqual(`add:"x"`)
+		setState(latestUpdateState, `0=add:"x"`)
+		expect(getState(latestUpdateState)).toEqual(`0=add:"x"`)
 		expect(getState(mutableSetState)).toEqual(new TransceiverSet([`x`]))
-		setState(latestUpdateState, `add:"y"`)
-		expect(getState(latestUpdateState)).toEqual(`add:"y"`)
+		setState(latestUpdateState, `1=add:"y"`)
+		expect(getState(latestUpdateState)).toEqual(`1=add:"y"`)
 		expect(getState(mutableSetState)).toEqual(new TransceiverSet([`x`, `y`]))
 	})
 
@@ -54,8 +54,8 @@ describe(`tracker`, () => {
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
-				set(tracker.latestUpdateState, `add:"x"`)
-				set(tracker.latestUpdateState, `add:"y"`)
+				set(tracker.latestUpdateState, `0=add:"x"`)
+				set(tracker.latestUpdateState, `1=add:"y"`)
 			},
 		})
 
@@ -87,7 +87,7 @@ describe(`trackerFamily`, () => {
 			key: `updateTrackerTX`,
 			do: ({ set }, key) => {
 				const trackerState = findLatestUpdateState(key)
-				set(trackerState, `add:"x"`)
+				set(trackerState, `0=add:"x"`)
 			},
 		})
 

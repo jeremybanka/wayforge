@@ -1,5 +1,6 @@
 import type { Stringified } from "../src/json"
 import { parseJson, stringifyJson } from "../src/json"
+import { a } from "../src/json-schema"
 import type { primitive } from "../src/primitive"
 import { Subject } from "./subject"
 import type { Transceiver, TransceiverMode } from "./transceiver"
@@ -8,91 +9,113 @@ export type SetUpdate =
 	| `add:${string}`
 	| `clear:${string}`
 	| `del:${string}`
-	| `tx::${string}`
+	| `tx:${string}`
+export type NumberedSetUpdate = `${number}=${SetUpdate}`
 
 export class TransceiverSet<P extends primitive>
 	extends Set<P>
-	implements Transceiver<SetUpdate>
+	implements Transceiver<NumberedSetUpdate>
 {
-	protected mode: TransceiverMode = `record`
-	protected readonly subject = new Subject<SetUpdate>()
-	public id = Math.random().toString(36).slice(2)
+	public mode: TransceiverMode = `record`
+	public readonly subject = new Subject<SetUpdate>()
+	public cacheLimit = 0
+	public cache: (NumberedSetUpdate | undefined)[] = []
+	public cacheIdx = -1
+	public cacheUpdateNumber = -1
+
+	public constructor(values?: readonly P[] | null | Set<P>, cacheLimit = 0) {
+		super(values)
+		if (values instanceof TransceiverSet) {
+			this.parent = values
+			this.cacheUpdateNumber = values.cacheUpdateNumber
+		}
+		if (cacheLimit) {
+			this.cacheLimit = cacheLimit
+			this.cache = new Array(cacheLimit)
+			this.subscribe(`auto cache`, (update) => {
+				this.cacheIdx++
+				this.cache[this.cacheIdx] = update
+				this.cacheIdx %= this.cacheLimit
+				console.log(`cache`, update, this.cache)
+			})
+		}
+	}
 
 	public add(value: P): this {
 		if (this.mode === `record`) {
-			this.subject.next(`add:${stringifyJson<P>(value)}`)
-		}
-		if (this.transactionCore) {
-			this.transactionCore.add(value)
-			return this
+			this.cacheUpdateNumber++
+			console.log(`inc`, this.cacheUpdateNumber)
+			this.emit(`add:${stringifyJson<P>(value)}`)
 		}
 		return super.add(value)
 	}
 
 	public clear(): void {
 		if (this.mode === `record`) {
-			this.subject.next(`clear:${JSON.stringify([...this])}`)
-		}
-		if (this.transactionCore) {
-			this.transactionCore.clear()
-			return
+			this.cacheUpdateNumber++
+			this.emit(`clear:${JSON.stringify([...this])}`)
 		}
 		super.clear()
 	}
 
 	public delete(value: P): boolean {
 		if (this.mode === `record`) {
-			this.subject.next(`del:${stringifyJson<P>(value)}`)
-		}
-		if (this.transactionCore) {
-			return this.transactionCore.delete(value)
+			this.cacheUpdateNumber++
+			this.emit(`del:${stringifyJson<P>(value)}`)
 		}
 		return super.delete(value)
 	}
 
 	// TRANSACTIONS
-	protected isTransactionCore = false
-	public transactionCore: TransceiverSet<P> | null = null
+	public readonly parent: TransceiverSet<P> | null
+	public child: TransceiverSet<P> | null = null
 	public transactionUpdates: SetUpdate[] | null = null
-	public startTransaction(): void {
-		if (this.isTransactionCore) {
-			console.error(`Cannot start a transaction on a transaction core`)
-			return
-		}
+	public transaction(run: (child: TransceiverSet<P>) => boolean): void {
 		this.mode = `transaction`
 		this.transactionUpdates = []
-		this.transactionCore = new TransceiverSet(this)
-		this.transactionCore.isTransactionCore = true
-		this.transactionCore.subscribe(`transaction`, (update) => {
+		this.child = new TransceiverSet(this)
+		const unsubscribe = this.child._subscribe(`transaction`, (update) => {
 			this.transactionUpdates?.push(update)
 		})
-	}
-	public applyTransaction(): void {
-		if (this.transactionCore) {
-			this.transactionCore = null
-		} else {
-			this.abortTransaction()
-			return
-		}
-		if (this.transactionUpdates) {
-			this.subject.next(`tx::${this.transactionUpdates.join(`;`)}`)
-			this.doAll(this.transactionUpdates)
+		try {
+			const shouldCommit = run(this.child)
+			if (shouldCommit) {
+				this.cacheUpdateNumber++
+				this.emit(`tx:${this.transactionUpdates.join(`;`)}`)
+				for (const update of this.transactionUpdates) {
+					this.doStep(update)
+				}
+			}
+		} catch (thrown) {
+			console.error(`Failed to apply transaction: ${thrown}`)
+		} finally {
+			unsubscribe()
+			this.child = null
 			this.transactionUpdates = null
+			this.mode = `record`
 		}
-		this.mode = `record`
-	}
-	public abortTransaction(): void {
-		this.transactionCore = null
-		this.transactionUpdates = null
-		this.mode = `record`
 	}
 
-	public subscribe(key: string, fn: (update: SetUpdate) => void): () => void {
+	protected _subscribe(key: string, fn: (update: SetUpdate) => void) {
 		return this.subject.subscribe(key, fn)
+	}
+	public subscribe(
+		key: string,
+		fn: (update: NumberedSetUpdate) => void,
+	): () => void {
+		return this.subject.subscribe(key, (update) =>
+			fn(`${this.cacheUpdateNumber}=${update}`),
+		)
+	}
+
+	public emit(update: SetUpdate): void {
+		this.subject.next(update)
 	}
 
 	private doStep(update: SetUpdate): void {
-		const [type, value] = update.split(`:`)
+		const typeValueBreak = update.indexOf(`:`)
+		const type = update.substring(0, typeValueBreak)
+		const value = update.substring(typeValueBreak + 1)
 		switch (type) {
 			case `add`:
 				this.add(parseJson(value as Stringified<P>))
@@ -103,22 +126,71 @@ export class TransceiverSet<P extends primitive>
 			case `del`:
 				this.delete(parseJson(value as Stringified<P>))
 				break
+			case `tx`:
+				for (const update of value.split(`;`)) {
+					this.doStep(update as SetUpdate)
+				}
 		}
 	}
-	public do(update: SetUpdate): void {
-		this.mode = `playback`
-		this.doStep(update)
-		this.mode = `record`
-	}
-	public doAll(updates: SetUpdate[]): void {
-		this.mode = `playback`
-		updates.forEach((update) => this.doStep(update))
-		this.mode = `record`
+
+	public do(update: NumberedSetUpdate): null | number | `OUT_OF_RANGE` {
+		const breakpoint = update.indexOf(`=`)
+		const updateNumber = Number(update.substring(0, breakpoint))
+		const eventOffset = updateNumber - this.cacheUpdateNumber
+		const isFuture = eventOffset > 0
+		console.log({
+			updateNumber,
+			cacheUpdateNumber: this.cacheUpdateNumber,
+			eventOffset,
+			isFuture,
+		})
+		if (isFuture) {
+			if (eventOffset === 1) {
+				this.mode = `playback`
+				const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+				this.doStep(innerUpdate)
+				this.mode = `record`
+				this.cacheUpdateNumber = updateNumber
+				return null
+			}
+			return this.cacheUpdateNumber + 1
+		} else {
+			if (Math.abs(eventOffset) < this.cacheLimit) {
+				const eventIdx = this.cacheIdx + eventOffset
+				const cachedUpdate = this.cache[eventIdx]
+				if (cachedUpdate === update) {
+					console.log(`no-op`)
+					return null
+				}
+				this.mode = `playback`
+				let done = false
+				console.log({ eventIdx, cachedUpdate, update })
+				while (!done) {
+					this.cacheIdx %= this.cacheLimit
+					const update = this.cache[this.cacheIdx]
+					this.cacheIdx--
+					if (!update) {
+						return `OUT_OF_RANGE`
+					}
+					const undoRes = this.undo(update)
+					done = this.cacheIdx === eventIdx - 1
+					console.log(`-`, { update, done, undoRes })
+				}
+				const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+				this.doStep(innerUpdate)
+				this.mode = `record`
+				this.cacheUpdateNumber = updateNumber
+				return null
+			} else {
+				return `OUT_OF_RANGE`
+			}
+		}
 	}
 
-	public undo(update: SetUpdate): void {
-		this.mode = `playback`
-		const [type, value] = update.split(`:`)
+	public undoStep(update: SetUpdate): void {
+		const breakpoint = update.indexOf(`:`)
+		const type = update.substring(0, breakpoint)
+		const value = update.substring(breakpoint + 1)
 		switch (type) {
 			case `add`:
 				this.delete(parseJson(value as Stringified<P>))
@@ -128,10 +200,29 @@ export class TransceiverSet<P extends primitive>
 				break
 			case `clear`: {
 				const values = JSON.parse(value) as P[]
-				values.forEach((v) => this.add(v))
+				for (const value of values) this.add(value)
 				break
 			}
+			case `tx`: {
+				const updates = value.split(`;`) as SetUpdate[]
+				for (let i = updates.length - 1; i >= 0; i--) {
+					this.undoStep(updates[i])
+				}
+			}
 		}
-		this.mode = `record`
+	}
+
+	public undo(update: NumberedSetUpdate): null | number {
+		const breakpoint = update.indexOf(`=`)
+		const updateNumber = Number(update.substring(0, breakpoint))
+		if (updateNumber === this.cacheUpdateNumber) {
+			this.mode = `playback`
+			const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+			this.undoStep(innerUpdate)
+			this.mode = `record`
+			this.cacheUpdateNumber--
+			return null
+		}
+		return this.cacheUpdateNumber
 	}
 }

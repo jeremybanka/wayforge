@@ -29,7 +29,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	usePullMutableFamilyMember(playersInRooms.findRelationsState__INTERNAL, roomId)
+	usePullMutableFamilyMember(playersInRooms.findRelationsState__INTERNAL(roomId))
 
 	return (
 		<article className={scss.class}>

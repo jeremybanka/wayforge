@@ -43,30 +43,33 @@ export const spawnClassicDeckTX = transaction<
 		})
 
 		set(cardIndex, (current) => {
-			current.startTransaction()
-			for (const cardId of cardIds) {
-				current.add(cardId)
-			}
-			current.applyTransaction()
+			current.transaction((next) => {
+				for (const cardId of cardIds) {
+					next.add(cardId)
+				}
+				return true
+			})
 			return current
 		})
 		set(cardValuesIndex, (current) => {
-			current.startTransaction()
-			for (const { id: cardValueId } of CARD_VALUES) {
-				current.add(cardValueId)
-			}
-			current.applyTransaction()
+			current.transaction((next) => {
+				for (const { id: cardValueId } of CARD_VALUES) {
+					next.add(cardValueId)
+				}
+				return true
+			})
 			return current
 		})
 
 		const cardsInDeckState = groupsOfCards.findRelationsState__INTERNAL(deckId)
 
 		set(cardsInDeckState, (cardsInDeck) => {
-			cardsInDeck.startTransaction()
-			for (const cardId of cardIds) {
-				cardsInDeck.add(cardId)
-			}
-			cardsInDeck.applyTransaction()
+			cardsInDeck.transaction((next) => {
+				for (const cardId of cardIds) {
+					next.add(cardId)
+				}
+				return true
+			})
 			return cardsInDeck
 		})
 		for (const cardId of cardIds) {
@@ -136,12 +139,13 @@ export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>(
 		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
 		const cardsInDeckState = groupsOfCards.findRelationsState__INTERNAL(deckId)
 		set(cardsInDeckState, (current) => {
-			current.startTransaction()
-			current.clear()
-			for (const cardId of shuffledCardIds) {
-				current.add(cardId)
-			}
-			current.applyTransaction()
+			current.transaction((next) => {
+				next.clear()
+				for (const cardId of shuffledCardIds) {
+					next.add(cardId)
+				}
+				return true
+			})
 			return current
 		})
 

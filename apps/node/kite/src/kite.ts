@@ -2,17 +2,16 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import { selectJsonFamily } from "~/packages/atom.io/json/src"
 import {
 	useExposeMutable,
 	useExposeMutableFamily,
-	useReceiveTransaction,
 	useSyncTransaction,
 } from "~/packages/atom.io/realtime/src"
 import { logger } from "./kite-logger"
 import {
 	addNumberCollectionTX,
 	findNumberCollection,
+	incrementNumberCollectionTX,
 	numberCollectionIndex,
 } from "./kite-store"
 
@@ -58,6 +57,7 @@ pipe(
 
 			const sync = useSyncTransaction({ socket })
 			sync(addNumberCollectionTX)
+			sync(incrementNumberCollectionTX)
 		})
 	},
 )

@@ -15,7 +15,7 @@ import { RoomRoute } from "./components/views/Room/Room"
 import { windowMousePositionState } from "./services/mouse-position"
 import { actionsState, radialModeState } from "./services/radial"
 
-setLogLevel(`info`)
+// setLogLevel(`info`)
 
 export const App: FC = () => (
 	<main className={scss.class}>

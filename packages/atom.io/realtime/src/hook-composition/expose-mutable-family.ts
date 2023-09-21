@@ -9,12 +9,20 @@ import type { ServerConfig } from ".."
 
 export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 	return function exposeMutableFamily<
-		T extends Transceiver<Json.Serializable>,
-		J extends Json.Serializable,
-	>(
-		family: AtomIO.MutableAtomFamily<T, J, Json.Serializable>,
-		index: AtomIO.StateToken<Set<string>>,
-	): () => void {
+		Family extends AtomIO.MutableAtomFamily<
+			Transceiver<Json.Serializable>,
+			Json.Serializable,
+			Json.Serializable
+		>,
+	>(family: Family, index: AtomIO.StateToken<Set<string>>): () => void {
+		type FamilyKey = Family extends AtomIO.MutableAtomFamily<
+			Transceiver<any>,
+			any,
+			infer Key
+		>
+			? Key
+			: never
+
 		console.log(`📫  expose family`, family.key)
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
@@ -34,7 +42,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 			}
 		}
 
-		const fillSubRequest = (subKey?: AtomIO.Json.Serializable) => {
+		const fillSubRequest = (subKey?: FamilyKey) => {
 			console.log(`📫📫 sub request received ${family.key} ${subKey}`)
 			if (subKey === undefined) {
 				console.log(`📫📫📫 sub request for all keys ${family.key}`)
@@ -94,10 +102,10 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 				console.log(`📫📫📫 sub request for single key ${family.key} ${subKey}`)
 				const token = family(subKey)
 				const jsonToken = getJsonToken(token)
-				const trackerToken = getUpdateToken(token)
+				const updateToken = getUpdateToken(token)
 				socket.emit(`init:${jsonToken.key}`, AtomIO.getState(jsonToken, store))
 				const unsubscribe = AtomIO.subscribe(
-					trackerToken,
+					updateToken,
 					({ newValue }) => {
 						socket.emit(`next:${token.key}`, newValue)
 					},

@@ -1,21 +1,21 @@
-import { atom, atomFamily, transaction } from "atom.io"
+import { MutableAtomToken, atom, atomFamily, transaction } from "atom.io"
 
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 
 export const numberCollectionIndex = atom<TransceiverSet<string>, string[]>({
 	key: `numberCollectionIndex`,
 	mutable: true,
-	default: () => new TransceiverSet(),
+	default: () => new TransceiverSet(null, 50),
 	toJson: (value) => [...value],
-	fromJson: (value) => new TransceiverSet(value),
+	fromJson: (value) => new TransceiverSet(value, 50),
 })
 
 export const findNumberCollection = atomFamily({
 	key: `numberCollection`,
 	mutable: true,
-	default: () => new TransceiverSet<number>(),
+	default: () => new TransceiverSet<number>(null, 20),
 	toJson: (value) => [...value],
-	fromJson: (value) => new TransceiverSet(value),
+	fromJson: (value) => new TransceiverSet(value, 20),
 })
 
 export const addNumberCollectionTX = transaction<(id: string) => string>({
@@ -29,12 +29,13 @@ export const addNumberCollectionTX = transaction<(id: string) => string>({
 	},
 })
 
-export const incrementNumberCollectionTX = transaction<(id: string) => void>({
+export const incrementNumberCollectionTX = transaction<
+	(state: MutableAtomToken<TransceiverSet<number>, number[]>) => void
+>({
 	key: `incrementNumberCollectionTX`,
-	do: ({ get, set }, id) => {
-		const collection = get(findNumberCollection(id))
-		set(findNumberCollection(id), (current) => {
-			current.add(collection.size + 1)
+	do: ({ set }, state) => {
+		set(state, (current) => {
+			current.add(current.size)
 			return current
 		})
 	},

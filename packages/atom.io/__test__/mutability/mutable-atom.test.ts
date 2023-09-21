@@ -11,14 +11,12 @@ import {
 	transaction,
 } from "atom.io"
 import {
-	createMutableAtom,
 	createMutableAtomFamily,
 	getJsonToken,
 	getUpdateToken,
 } from "atom.io/internal"
 
 import { TransceiverSet } from "~/packages/anvl/reactivity"
-import { withdraw } from "../../internal/src"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -58,7 +56,7 @@ describe(`mutable atomic state`, () => {
 			oldValue: [],
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith({
-			newValue: `add:"a"`,
+			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
 	})
@@ -96,7 +94,7 @@ describe(`mutable atomic state`, () => {
 			oldValue: [],
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith({
-			newValue: `add:"a"`,
+			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
 	})
@@ -114,10 +112,12 @@ describe(`mutable atomic state`, () => {
 			key: `myTx`,
 			do: ({ set }) => {
 				set(myMutableState, (mySet) => {
-					mySet.startTransaction()
-					mySet.add(`a`)
-					mySet.add(`b`)
-					mySet.applyTransaction()
+					mySet.transaction((next) => {
+						next.add(`a`)
+						next.add(`b`)
+						return true
+					})
+
 					return mySet
 				})
 				throw new Error(`failed transaction`)
