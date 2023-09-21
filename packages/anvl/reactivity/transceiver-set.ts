@@ -23,7 +23,7 @@ export class TransceiverSet<P extends primitive>
 	public cacheIdx = -1
 	public cacheUpdateNumber = -1
 
-	public constructor(values?: readonly P[] | null | Set<P>, cacheLimit = 0) {
+	public constructor(values?: Set<P> | readonly P[] | null, cacheLimit = 0) {
 		super(values)
 		if (values instanceof TransceiverSet) {
 			this.parent = values
@@ -96,7 +96,10 @@ export class TransceiverSet<P extends primitive>
 		}
 	}
 
-	protected _subscribe(key: string, fn: (update: SetUpdate) => void) {
+	protected _subscribe(
+		key: string,
+		fn: (update: SetUpdate) => void,
+	): () => void {
 		return this.subject.subscribe(key, fn)
 	}
 	public subscribe(
@@ -133,7 +136,7 @@ export class TransceiverSet<P extends primitive>
 		}
 	}
 
-	public do(update: NumberedSetUpdate): null | number | `OUT_OF_RANGE` {
+	public do(update: NumberedSetUpdate): number | `OUT_OF_RANGE` | null {
 		const breakpoint = update.indexOf(`=`)
 		const updateNumber = Number(update.substring(0, breakpoint))
 		const eventOffset = updateNumber - this.cacheUpdateNumber
@@ -212,7 +215,7 @@ export class TransceiverSet<P extends primitive>
 		}
 	}
 
-	public undo(update: NumberedSetUpdate): null | number {
+	public undo(update: NumberedSetUpdate): number | null {
 		const breakpoint = update.indexOf(`=`)
 		const updateNumber = Number(update.substring(0, breakpoint))
 		if (updateNumber === this.cacheUpdateNumber) {

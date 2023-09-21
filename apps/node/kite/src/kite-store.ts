@@ -1,4 +1,5 @@
-import { MutableAtomToken, atom, atomFamily, transaction } from "atom.io"
+import type { MutableAtomToken } from "atom.io"
+import { atom, atomFamily, transaction } from "atom.io"
 
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 
