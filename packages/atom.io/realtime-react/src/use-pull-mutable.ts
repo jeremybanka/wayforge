@@ -15,17 +15,14 @@ export function usePullMutable<
 	const store = React.useContext(StoreContext)
 	const jsonToken = getJsonToken(token)
 	const trackerToken = getUpdateToken(token)
-	console.log(`💥`, store.config.name, `usePullMutable ran`)
+
 	React.useEffect(() => {
-		console.log(`💥💥`, store.config.name, `usePullMutable ran effect`)
 		socket.on(`init:${token.key}`, (data: J) => {
-			console.log(`💥💥💥`, store.config.name, `init json`)
 			AtomIO.setState(jsonToken, data, store)
 		})
 		socket.on(
 			`next:${token.key}`,
 			(data: T extends Transceiver<infer Update> ? Update : never) => {
-				console.log(`💥💥💥💥`, store.config.name, `next update`)
 				console.log(withdraw(trackerToken, store))
 				AtomIO.setState(trackerToken, data, store)
 			},

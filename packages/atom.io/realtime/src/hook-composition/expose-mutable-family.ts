@@ -23,7 +23,6 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 			? Key
 			: never
 
-		console.log(`📫  expose family`, family.key)
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
 
@@ -43,9 +42,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 		}
 
 		const fillSubRequest = (subKey?: FamilyKey) => {
-			console.log(`📫📫 sub request received ${family.key} ${subKey}`)
 			if (subKey === undefined) {
-				console.log(`📫📫📫 sub request for all keys ${family.key}`)
 				const keys = AtomIO.getState(index, store)
 				keys.forEach((key) => {
 					const token = family(key)
@@ -99,7 +96,6 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 
 				socket.on(`unsub:${family.key}`, fillFamilyUnsubRequest)
 			} else {
-				console.log(`📫📫📫 sub request for single key ${family.key} ${subKey}`)
 				const token = family(subKey)
 				const jsonToken = getJsonToken(token)
 				const updateToken = getUpdateToken(token)

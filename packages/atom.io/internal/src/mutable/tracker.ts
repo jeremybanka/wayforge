@@ -92,7 +92,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		AtomIO.subscribe(
 			latestUpdateState,
 			({ newValue, oldValue }) => {
-				console.log(`💥💥💥💥💥`, store.config.name, `latest update changed`)
 				const timelineId = store.timelineAtoms.getRelatedKey(
 					latestUpdateState.key,
 				)
@@ -125,7 +124,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					latestUpdateState.key,
 					() => {
 						unsubscribe()
-						console.log(`💥💥💥💥💥💥`, store.config.name, `update core`)
 						if (newValue) {
 							AtomIO.setState(
 								mutableState,

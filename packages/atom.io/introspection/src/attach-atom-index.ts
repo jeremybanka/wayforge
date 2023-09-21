@@ -13,14 +13,12 @@ export const attachAtomIndex = (
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {
-				console.log(store)
 				const defaultAtomIndex = [...store.atoms]
 					.filter(([key]) => !key.includes(`👁‍🗨`))
 					.reduce<AtomTokenIndex>((acc, [key]) => {
 						acc[key] = { key, type: `atom` }
 						return acc
 					}, {})
-				console.log(defaultAtomIndex)
 				return defaultAtomIndex
 			},
 			effects: [
