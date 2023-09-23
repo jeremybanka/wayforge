@@ -134,7 +134,7 @@
 		"@types/react": "18.2.21",
 		"@types/tmp": "0.2.4",
 		"concurrently": "8.2.1",
-		"eslint": "8.49.0",
+		"eslint": "8.50.0",
 		"framer-motion": "10.16.4",
 		"happy-dom": "12.1.5",
 		"preact": "10.17.1",
