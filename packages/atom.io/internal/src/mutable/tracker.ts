@@ -19,6 +19,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	): AtomIO.AtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		deleteAtom(latestUpdateStateKey, target(store))
+		const familyMetaData: AtomIO.FamilyMetadata | undefined = mutableState.family
+			? {
+					key: `*${mutableState.family.key}`,
+					subKey: mutableState.family.subKey,
+			  }
+			: undefined
 		const latestUpdateState = createAtom<
 			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
 		>(
@@ -26,7 +32,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				key: latestUpdateStateKey,
 				default: null,
 			},
-			undefined,
+			familyMetaData,
 			store,
 		)
 
