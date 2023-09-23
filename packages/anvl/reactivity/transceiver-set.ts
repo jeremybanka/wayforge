@@ -1,6 +1,5 @@
-import type { Stringified } from "../src/json"
+import type { Json, Stringified } from "../src/json"
 import { parseJson, stringifyJson } from "../src/json"
-import { a } from "../src/json-schema"
 import type { primitive } from "../src/primitive"
 import { Subject } from "./subject"
 import type { Transceiver, TransceiverMode } from "./transceiver"
@@ -12,6 +11,13 @@ export type SetUpdate =
 	| `tx:${string}`
 export type NumberedSetUpdate = `${number}=${SetUpdate}`
 
+export interface TransceiverSetJSON<P extends primitive> extends Json.Object {
+	members: P[]
+	cache: (NumberedSetUpdate | null)[]
+	cacheLimit: number
+	cacheIdx: number
+	cacheUpdateNumber: number
+}
 export class TransceiverSet<P extends primitive>
 	extends Set<P>
 	implements Transceiver<NumberedSetUpdate>
@@ -19,7 +25,7 @@ export class TransceiverSet<P extends primitive>
 	public mode: TransceiverMode = `record`
 	public readonly subject = new Subject<SetUpdate>()
 	public cacheLimit = 0
-	public cache: (NumberedSetUpdate | undefined)[] = []
+	public cache: (NumberedSetUpdate | null)[] = []
 	public cacheIdx = -1
 	public cacheUpdateNumber = -1
 
@@ -34,11 +40,31 @@ export class TransceiverSet<P extends primitive>
 			this.cache = new Array(cacheLimit)
 			this.subscribe(`auto cache`, (update) => {
 				this.cacheIdx++
-				this.cache[this.cacheIdx] = update
 				this.cacheIdx %= this.cacheLimit
+				this.cache[this.cacheIdx] = update
 				console.log(`cache`, update, this.cache)
 			})
 		}
+	}
+
+	public toJSON(): TransceiverSetJSON<P> {
+		return {
+			members: [...this],
+			cache: this.cache,
+			cacheLimit: this.cacheLimit,
+			cacheIdx: this.cacheIdx,
+			cacheUpdateNumber: this.cacheUpdateNumber,
+		}
+	}
+
+	public static fromJSON<P extends primitive>(
+		json: TransceiverSetJSON<P>,
+	): TransceiverSet<P> {
+		const set = new TransceiverSet<P>(json.members, json.cacheLimit)
+		set.cache = json.cache
+		set.cacheIdx = json.cacheIdx
+		set.cacheUpdateNumber = json.cacheUpdateNumber
+		return set
 	}
 
 	public add(value: P): this {
