@@ -19,7 +19,7 @@
 	},
 	"devDependencies": {
 		"@types/mock-fs": "4.13.1",
-		"@types/node": "18.17.18",
+		"@types/node": "18.17.19",
 		"mock-fs": "5.2.0",
 		"tsup": "7.2.0",
 		"typescript": "5.2.2",
