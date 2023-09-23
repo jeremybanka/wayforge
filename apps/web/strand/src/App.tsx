@@ -11,7 +11,10 @@ import {
 } from "atom.io/realtime-react"
 import scss from "./App.module.scss"
 
-import type { TransceiverSet } from "~/packages/anvl/reactivity"
+import type {
+	TransceiverSet,
+	TransceiverSetJSON,
+} from "~/packages/anvl/reactivity"
 import {
 	addNumberCollectionTX,
 	findNumberCollection,
@@ -22,7 +25,7 @@ import {
 // setLogLevel(`info`)
 
 const Numbers: FC<{
-	state: MutableAtomToken<TransceiverSet<number>, number[]>
+	state: MutableAtomToken<TransceiverSet<number>, TransceiverSetJSON<number>>
 }> = ({ state }) => {
 	usePullMutableFamilyMember(state)
 	const setNumbers = useI(state)
@@ -32,32 +35,32 @@ const Numbers: FC<{
 
 	return (
 		<section>
-			<span>{state.key}</span>
-			{numbers.map((number) => (
-				<div key={number}>{number}</div>
-			))}
 			<button type="button" onClick={() => increment(state)}>
 				Add
 			</button>
+			<span>{state.key}</span>
+			{numbers.members.map((number) => (
+				<div key={number}>{number}</div>
+			))}
 		</section>
 	)
 }
 
 export const App: FC = () => {
 	usePullMutable(numberCollectionIndex)
-	const keys = useJSON(numberCollectionIndex)
+	const { members: keys } = useJSON(numberCollectionIndex)
 	const addNumberCollection = useServerAction(addNumberCollectionTX)
 	return (
 		<main className={scss.class}>
-			{keys.map((key) => (
-				<Numbers key={key} state={findNumberCollection(key)} />
-			))}
 			<button
 				type="button"
 				onClick={() => addNumberCollection(Math.random().toString(36).slice(2))}
 			>
 				Add
 			</button>
+			{keys.map((key) => (
+				<Numbers key={key} state={findNumberCollection(key)} />
+			))}
 			<AtomIODevtools />
 		</main>
 	)

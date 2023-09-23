@@ -1,22 +1,26 @@
 import type { MutableAtomToken } from "atom.io"
 import { atom, atomFamily, transaction } from "atom.io"
 
+import type { TransceiverSetJSON } from "~/packages/anvl/reactivity"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
 
-export const numberCollectionIndex = atom<TransceiverSet<string>, string[]>({
+export const numberCollectionIndex = atom<
+	TransceiverSet<string>,
+	TransceiverSetJSON<string>
+>({
 	key: `numberCollectionIndex`,
 	mutable: true,
-	default: () => new TransceiverSet(null, 50),
-	toJson: (value) => [...value],
-	fromJson: (value) => new TransceiverSet(value, 50),
+	default: () => new TransceiverSet(null, 5),
+	toJson: (value) => value.toJSON(),
+	fromJson: (value) => TransceiverSet.fromJSON(value),
 })
 
 export const findNumberCollection = atomFamily({
 	key: `numberCollection`,
 	mutable: true,
-	default: () => new TransceiverSet<number>(null, 20),
-	toJson: (value) => [...value],
-	fromJson: (value) => new TransceiverSet(value, 20),
+	default: () => new TransceiverSet<number>(null, 5),
+	toJson: (value) => value.toJSON(),
+	fromJson: (value) => TransceiverSet.fromJSON(value),
 })
 
 export const addNumberCollectionTX = transaction<(id: string) => string>({
@@ -31,7 +35,9 @@ export const addNumberCollectionTX = transaction<(id: string) => string>({
 })
 
 export const incrementNumberCollectionTX = transaction<
-	(state: MutableAtomToken<TransceiverSet<number>, number[]>) => void
+	(
+		state: MutableAtomToken<TransceiverSet<number>, TransceiverSetJSON<number>>,
+	) => void
 >({
 	key: `incrementNumberCollectionTX`,
 	do: ({ set }, state) => {
