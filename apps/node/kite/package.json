@@ -27,6 +27,6 @@
 		"tsx": "3.12.10",
 		"vite": "4.4.9",
 		"vite-tsconfig-paths": "4.2.1",
-		"vitest": "0.34.4"
+		"vitest": "0.34.5"
 	}
 }
