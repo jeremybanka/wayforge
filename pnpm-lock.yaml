@@ -141,7 +141,7 @@ importers:
         version: 4.2.1(typescript@5.2.2)(vite@4.4.9)
       vitest:
         specifier: 0.34.4
-        version: 0.34.4(happy-dom@12.0.1)(sass@1.67.0)
+        version: 0.34.4(happy-dom@12.1.2)(sass@1.67.0)
 
   apps/node/lodge:
     dependencies:
@@ -3602,7 +3602,7 @@ packages:
       dom-accessibility-api: 0.5.16
       lodash: 4.17.21
       redent: 3.0.0
-      vitest: 0.34.4(happy-dom@12.0.1)(sass@1.67.0)
+      vitest: 0.34.4(happy-dom@12.1.2)(sass@1.67.0)
     dev: true
 
   /@testing-library/jest-dom@6.1.3(vitest@0.34.5):
