@@ -99,7 +99,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 				const token = family(subKey)
 				const jsonToken = getJsonToken(token)
 				const updateToken = getUpdateToken(token)
-				socket.emit(`init:${jsonToken.key}`, AtomIO.getState(jsonToken, store))
+				socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
 				const unsubscribe = AtomIO.subscribe(
 					updateToken,
 					({ newValue }) => {
