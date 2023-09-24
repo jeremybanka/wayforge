@@ -20,7 +20,6 @@ export const isPlainObject = (input: unknown): input is PlainObject =>
 export const isEmptyObject = (input: unknown): input is EmptyObject =>
 	isPlainObject(input) && Object.keys(input).length === 0
 
-/* prettier-ignore */
 export const isRecord =
 	<KEY extends keyof any, VAL>(
 		isKey: Refinement<keyof any, KEY>,
@@ -29,7 +28,6 @@ export const isRecord =
 	(input: unknown): input is Record<KEY, VAL> =>
 		isPlainObject(input) &&
 		Object.entries(input).every(([k, v]) => isKey(k) && isValue(v))
-/* prettier-ignore-end */
 
 export type HasPropertiesOptions = {
 	readonly allowExtraProperties?: boolean
@@ -71,20 +69,16 @@ export const hasProperties = <OBJ extends object>(
 	return _[name]
 }
 
-export const doesExtend =
-	/* alias for hasExactProperties with allowExtraProperties */
-	<OBJ extends object>(
-		isValue: {
-			[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
-		},
-	): Refinement<unknown, OBJ> =>
-		hasProperties(isValue, { allowExtraProperties: true })
+export const ALLOW_EXTENSION = { allowExtraProperties: true }
+export const doesExtend = <OBJ extends object>(
+	isValue: {
+		[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
+	},
+): Refinement<unknown, OBJ> => hasProperties(isValue, ALLOW_EXTENSION)
 
-export const hasExactProperties =
-	/* alias for hasProperties without allowExtraProperties */
-	<OBJ extends object>(
-		isValue: {
-			[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
-		},
-	): Refinement<unknown, OBJ> =>
-		hasProperties(isValue, { allowExtraProperties: false })
+export const DO_NOT_ALLOW_EXTENSION = { allowExtraProperties: false }
+export const hasExactProperties = <OBJ extends object>(
+	isValue: {
+		[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
+	},
+): Refinement<unknown, OBJ> => hasProperties(isValue, DO_NOT_ALLOW_EXTENSION)

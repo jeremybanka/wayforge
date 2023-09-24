@@ -1,6 +1,6 @@
-import { doNothing } from "~/packages/anvl/src/function"
-
 import { __INTERNAL__, setLogLevel, useLogger } from "../src"
+
+const doNothing = () => null
 
 describe(`setLogLevel`, () => {
 	it(`allows logging at the preferred level`, () => {

@@ -5,10 +5,9 @@ import type {
 	Store,
 } from "atom.io"
 
-import { become } from "~/packages/anvl/src/function"
-
 import { cacheValue } from "../caching"
 import { markDone } from "../operation"
+import { become } from "../set-state/become"
 import type { StoreCore } from "../store"
 import { Subject } from "../subject"
 import type { Selector } from "./create-selector"
