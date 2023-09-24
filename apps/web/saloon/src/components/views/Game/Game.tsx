@@ -1,9 +1,4 @@
-import {
-	usePull,
-	usePullFamily,
-	usePullMutable,
-	usePullMutableFamily,
-} from "atom.io/realtime-react"
+import { usePull, usePullMutable } from "atom.io/realtime-react"
 import type { FC } from "react"
 
 import {
@@ -24,14 +19,14 @@ import { MyDomain } from "./MyDomain"
 import { Public } from "./Public"
 
 export const Game: FC = () => {
-	usePullMutableFamily(groupsOfCards.findRelationsState__INTERNAL)
-	usePullMutableFamily(valuesOfCards.findRelationsState__INTERNAL)
-	usePullMutableFamily(ownersOfGroups.findRelationsState__INTERNAL)
+	// usePullMutableFamily(groupsOfCards.findRelationsState__INTERNAL)
+	// usePullMutableFamily(valuesOfCards.findRelationsState__INTERNAL)
+	// usePullMutableFamily(ownersOfGroups.findRelationsState__INTERNAL)
 	usePullMutable(cardIndex)
 	usePullMutable(cardGroupIndex)
 	usePullMutable(cardValuesIndex)
 
-	usePullFamily(findCardGroupState)
+	// usePullFamily(findCardGroupState)
 
 	return (
 		<div className={[`game`, scss.class].join(` `)}>
