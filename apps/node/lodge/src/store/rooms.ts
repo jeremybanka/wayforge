@@ -3,7 +3,7 @@ import { atom, atomFamily, selector, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
 import { createMutableAtom } from "atom.io/internal"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import { AtomicJunction } from "./utils/atomic-junction"
 
 export const roomsIndex = atom<Set<string>>({

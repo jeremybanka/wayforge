@@ -3,7 +3,7 @@ import type { Json } from "atom.io/json"
 
 import { createAtom, deleteAtom } from "../atom"
 import { target } from "../transaction"
-import type { Transceiver } from "./tracker-transceiver"
+import type { Transceiver } from "./transceiver"
 
 /**
  * @internal Give the tracker a transceiver state and a store, and it will

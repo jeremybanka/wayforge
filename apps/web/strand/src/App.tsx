@@ -1,20 +1,18 @@
-import { AtomIODevtools } from "atom.io/react-devtools"
-import type { FC } from "react"
-
 import type { MutableAtomToken } from "atom.io"
 import { setLogLevel } from "atom.io"
 import { useI, useJSON } from "atom.io/react"
+import { AtomIODevtools } from "atom.io/react-devtools"
 import {
 	usePullMutable,
 	usePullMutableFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
-import scss from "./App.module.scss"
-
 import type {
 	TransceiverSet,
 	TransceiverSetJSON,
-} from "~/packages/anvl/reactivity"
+} from "atom.io/transceivers/set-io"
+import type { FC } from "react"
+
 import {
 	addNumberCollectionTX,
 	findNumberCollection,
@@ -22,7 +20,9 @@ import {
 	numberCollectionIndex,
 } from "../../../node/kite/src/kite-store"
 
-// setLogLevel(`info`)
+import scss from "./App.module.scss"
+
+setLogLevel(`warn`)
 
 const Numbers: FC<{
 	state: MutableAtomToken<TransceiverSet<number>, TransceiverSetJSON<number>>

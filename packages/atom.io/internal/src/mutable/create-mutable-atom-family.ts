@@ -4,7 +4,7 @@ import { selectJsonFamily } from "atom.io/json"
 
 import { IMPLICIT, createAtomFamily } from ".."
 import { FamilyTracker } from "./tracker-family"
-import type { Transceiver } from "./tracker-transceiver"
+import type { Transceiver } from "./transceiver"
 
 export function createMutableAtomFamily<
 	Core extends Transceiver<Json.Serializable>,

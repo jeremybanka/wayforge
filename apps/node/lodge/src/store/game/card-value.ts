@@ -1,7 +1,7 @@
 import { atomFamily, transaction } from "atom.io"
 
 import { createMutableAtom } from "atom.io/internal"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import type { Identified } from "~/packages/anvl/src/id"
 import type { Json } from "~/packages/anvl/src/json"
 import { AtomicJunction } from "../utils/atomic-junction"

@@ -11,7 +11,7 @@ import {
 	transaction,
 } from "atom.io"
 import { FamilyTracker, Tracker } from "atom.io/internal"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

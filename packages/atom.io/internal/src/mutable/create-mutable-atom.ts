@@ -3,7 +3,7 @@ import { IMPLICIT, createAtom, target } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 import { Tracker } from "./tracker"
-import type { Transceiver } from "./tracker-transceiver"
+import type { Transceiver } from "./transceiver"
 
 export function createMutableAtom<
 	Core extends Transceiver<Json.Serializable>,

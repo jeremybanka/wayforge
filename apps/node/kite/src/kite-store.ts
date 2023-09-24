@@ -1,8 +1,8 @@
 import type { MutableAtomToken } from "atom.io"
 import { atom, atomFamily, transaction } from "atom.io"
 
-import type { TransceiverSetJSON } from "~/packages/anvl/reactivity"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
+import type { TransceiverSetJSON } from "atom.io/transceivers/set-io"
 
 export const numberCollectionIndex = atom<
 	TransceiverSet<string>,

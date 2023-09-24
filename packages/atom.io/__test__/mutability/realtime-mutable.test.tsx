@@ -4,8 +4,8 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import * as React from "react"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
 
 AtomIO.setLogLevel(`info`)
 

@@ -8,7 +8,7 @@ import { Server as WebSocketServer } from "socket.io"
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
 
-import type { TransceiverSet } from "~/packages/anvl/reactivity"
+import type { TransceiverSet } from "atom.io/transceivers/set-io"
 import { logger } from "./logger"
 import {
 	addCardValueTX,

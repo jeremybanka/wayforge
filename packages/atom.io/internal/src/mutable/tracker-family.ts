@@ -3,7 +3,7 @@ import { type Json, parseJson } from "atom.io/json"
 
 import { createAtomFamily } from "../families"
 import { Tracker } from "./tracker"
-import type { Transceiver } from "./tracker-transceiver"
+import type { Transceiver } from "./transceiver"
 
 export class FamilyTracker<
 	Core extends Transceiver<any>,

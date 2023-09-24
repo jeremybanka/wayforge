@@ -1,9 +1,8 @@
 import * as AtomIO from "atom.io"
+import type { Transceiver } from "atom.io/internal"
 import { getJsonToken, getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
-
-import type { Transceiver } from "~/packages/anvl/reactivity/transceiver"
 
 import type { ServerConfig } from ".."
 

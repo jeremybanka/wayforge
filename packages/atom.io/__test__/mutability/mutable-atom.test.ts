@@ -15,8 +15,8 @@ import {
 	getJsonToken,
 	getUpdateToken,
 } from "atom.io/internal"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 
-import { TransceiverSet } from "~/packages/anvl/reactivity"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

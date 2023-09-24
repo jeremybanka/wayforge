@@ -1,4 +1,4 @@
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import { getState, runTransaction, setLogLevel } from "~/packages/atom.io/src"
 import { findCardGroupState, groupsOfCards } from "./card-group"
 import { addHandTx, dealCardsTX, spawnClassicDeckTX } from "./game-tx"

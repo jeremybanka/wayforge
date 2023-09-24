@@ -1,4 +1,4 @@
-import type { Json } from "../src/json"
+import type { Json } from "atom.io/json"
 
 export interface Transceiver<Signal extends Json.Serializable> {
 	do: (update: Signal) => void
@@ -20,10 +20,10 @@ export function isTransceiver(
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 
-export type Signal<Core extends Transceiver<any>> = Core extends Transceiver<
-	infer Update
+export type Signal<TVR extends Transceiver<any>> = TVR extends Transceiver<
+	infer Signal
 >
-	? Update
+	? Signal
 	: never
 
 /*

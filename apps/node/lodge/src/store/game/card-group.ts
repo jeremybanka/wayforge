@@ -1,7 +1,7 @@
 import { atomFamily } from "atom.io"
 import { createMutableAtom } from "atom.io/internal"
 
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import { AtomicJunction } from "../utils/atomic-junction"
 
 export type CardGroup = {

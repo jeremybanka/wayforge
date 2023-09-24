@@ -1,5 +1,5 @@
-import type { NumberedSetUpdate } from "./transceiver-set"
-import { TransceiverSet } from "./transceiver-set"
+import type { NumberedSetUpdate } from "../../transceivers/set-io/src/transceiver-set"
+import { TransceiverSet } from "../../transceivers/set-io/src/transceiver-set"
 
 describe(`TransceiverSet`, () => {
 	describe(`observe`, () => {

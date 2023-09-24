@@ -4,7 +4,7 @@ import { Junction } from "rel8/junction"
 
 import type { MutableAtomFamily } from "atom.io"
 import { createMutableAtomFamily } from "atom.io/internal"
-import { TransceiverSet } from "~/packages/anvl/reactivity"
+import { TransceiverSet } from "atom.io/transceivers/set-io"
 import type { Json } from "~/packages/anvl/src/json"
 
 type AtomicJunctionOptions<

@@ -1,8 +1,11 @@
-import type { Json, Stringified } from "../src/json"
-import { parseJson, stringifyJson } from "../src/json"
-import type { primitive } from "../src/primitive"
-import { Subject } from "./subject"
-import type { Transceiver, TransceiverMode } from "./transceiver"
+import type { Json, Stringified } from "../../../../anvl/src/json"
+import { parseJson, stringifyJson } from "../../../../anvl/src/json"
+import type { primitive } from "../../../../anvl/src/primitive"
+import { Subject } from "../../../internal/src/mutable/subject"
+import type {
+	Transceiver,
+	TransceiverMode,
+} from "../../../internal/src/mutable/transceiver"
 
 export type SetUpdate =
 	| `add:${string}`
