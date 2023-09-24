@@ -12,5 +12,5 @@ export default defineConfig({
 	clean: true,
 	jsxFactory: `React.createElement`,
 	tsconfig: `../tsconfig.json`,
-	external: [`atom.io`, `fp-ts`, `socket.io-client`, `react`],
+	external: [`atom.io`, `fp-ts`, `socket.io-client`],
 })

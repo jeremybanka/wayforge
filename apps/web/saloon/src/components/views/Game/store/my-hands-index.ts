@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { myIdState } from "atom.io/realtime-react"
+import { myIdState } from "atom.io/realtime-client"
 
 import {
 	findCardGroupState,

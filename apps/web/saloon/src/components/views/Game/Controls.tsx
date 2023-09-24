@@ -1,5 +1,6 @@
 import { useO } from "atom.io/react"
-import { myIdState, useServerAction } from "atom.io/realtime-react"
+import { myIdState } from "atom.io/realtime-client"
+import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 import type { FC } from "react"
 

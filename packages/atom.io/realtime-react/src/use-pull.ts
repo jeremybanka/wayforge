@@ -1,30 +1,15 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
 import { StoreContext } from "atom.io/react"
+import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
-import type { Socket } from "socket.io-client"
 
 import { RealtimeContext } from "./realtime-context"
-
-export function pullState<J extends Json.Serializable>(
-	token: AtomIO.StateToken<J>,
-	socket: Socket,
-	store: AtomIO.Store,
-): () => void {
-	socket.on(`serve:${token.key}`, (data) => {
-		AtomIO.setState(token, data, store)
-	})
-	socket.emit(`sub:${token.key}`)
-	return () => {
-		socket.off(`serve:${token.key}`)
-		socket.emit(`unsub:${token.key}`)
-	}
-}
 
 export function usePull<J extends Json.Serializable>(
 	token: AtomIO.StateToken<J>,
 ): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => pullState(token, socket, store), [token.key])
+	React.useEffect(() => RTC.pullState(token, socket, store), [token.key])
 }

@@ -66,12 +66,12 @@
 			"import": "./react-devtools/dist/index.mjs",
 			"require": "./react-devtools/dist/index.js"
 		},
-		"./realtime-server/package.json": "./realtime-server/package.json",
-		"./realtime-server": {
-			"types": "./realtime-server/dist/index.d.ts",
-			"browser": "./realtime-server/dist/index.mjs",
-			"import": "./realtime-server/dist/index.mjs",
-			"require": "./realtime-server/dist/index.js"
+		"./realtime-client/package.json": "./realtime-client/package.json",
+		"./realtime-client": {
+			"types": "./realtime-client/dist/index.d.ts",
+			"browser": "./realtime-client/dist/index.mjs",
+			"import": "./realtime-client/dist/index.mjs",
+			"require": "./realtime-client/dist/index.js"
 		},
 		"./realtime-react/package.json": "./realtime-react/package.json",
 		"./realtime-react": {
@@ -79,6 +79,13 @@
 			"browser": "./realtime-react/dist/index.mjs",
 			"import": "./realtime-react/dist/index.mjs",
 			"require": "./realtime-react/dist/index.js"
+		},
+		"./realtime-server/package.json": "./realtime-server/package.json",
+		"./realtime-server": {
+			"types": "./realtime-server/dist/index.d.ts",
+			"browser": "./realtime-server/dist/index.mjs",
+			"import": "./realtime-server/dist/index.mjs",
+			"require": "./realtime-server/dist/index.js"
 		},
 		"./realtime-testing/package.json": "./realtime-testing/package.json",
 		"./realtime-testing": {
@@ -95,8 +102,9 @@
 		"build:json": "cd json && tsup",
 		"build:react": "cd react && tsup",
 		"build:react-devtools": "cd react-devtools && tsup",
-		"build:realtime": "cd realtime && tsup",
+		"build:realtime-client": "cd realtime-client && tsup",
 		"build:realtime-react": "cd realtime-react && tsup",
+		"build:realtime-server": "cd realtime-server && tsup",
 		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
