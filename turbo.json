@@ -3,11 +3,24 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*"],
+			"inputs": [
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"**/src/**/*.tsx",
+				"**/src/**/*.ts"
+			]
 		},
 		"test:once": {
 			"dependsOn": ["build"],
-			"inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+			"inputs": [
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"**/src/**/*.tsx",
+				"**/src/**/*.ts",
+				"__test__/**/*.ts",
+				"__test__/**/*.tsx"
+			]
 		},
 		"lint:biome": {
 			"cache": false
