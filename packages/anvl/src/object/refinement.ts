@@ -1,5 +1,5 @@
-import type { Refinement } from "fp-ts/Refinement"
-import { pipe } from "fp-ts/function"
+import { pipe } from "../function"
+import type { Refinement } from "../refinement"
 
 import { allTrue, every } from "../array"
 import { pass } from "../function"

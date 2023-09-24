@@ -1,8 +1,7 @@
-import { pipe } from "fp-ts/function"
-
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { isEmptyObject } from "~/packages/anvl/src/object/refinement"
 
+import { pipe } from "../function"
 import type { Json } from "../json"
 import type { NullSafeRest } from "../nullish"
 import type { RelationData } from "./core-relation-data"

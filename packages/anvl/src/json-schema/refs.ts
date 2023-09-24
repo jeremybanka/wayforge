@@ -1,4 +1,4 @@
-import { isString } from "fp-ts/string"
+import { isString } from "../primitive"
 
 import type { Substitute } from "~/packages/anvl/src/tree/substitute"
 
