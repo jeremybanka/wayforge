@@ -1,4 +1,4 @@
-import { Junction } from "~/packages/rel8/junction"
+import { Junction } from "~/packages/rel8/junction/src"
 
 import type { Store } from "../store"
 

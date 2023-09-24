@@ -11,10 +11,10 @@ import type {
 	ƒn,
 } from "atom.io"
 
-import { Junction } from "~/packages/rel8/junction"
+import { Junction } from "~/packages/rel8/junction/src"
 
 import type { Atom } from "../atom"
-import { type MutableAtom, type Tracker, type Transceiver } from "../mutable"
+import type { MutableAtom, Tracker, Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { ReadonlySelector, Selector } from "../selector"
 import { Subject } from "../subject"
