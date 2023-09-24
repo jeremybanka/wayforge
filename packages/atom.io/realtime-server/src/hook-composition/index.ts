@@ -1,4 +1,4 @@
-import type * as AtomIO from "atom.io"
+import type { Store } from "atom.io/internal"
 import type * as SocketIO from "socket.io"
 
 export * from "./expose-single"
@@ -10,5 +10,5 @@ export * from "./receive-state"
 
 export type ServerConfig = {
 	socket: SocketIO.Socket
-	store?: AtomIO.__INTERNAL__.Store
+	store?: Store
 }

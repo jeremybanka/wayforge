@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import type { Transceiver } from "atom.io/internal"
+import type { Store, Transceiver } from "atom.io/internal"
 import { getJsonToken, getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
@@ -10,7 +10,7 @@ export function pullMutableState<
 >(
 	token: AtomIO.MutableAtomToken<T, J>,
 	socket: Socket,
-	store: AtomIO.Store,
+	store: Store,
 ): () => void {
 	const jsonToken = getJsonToken(token)
 	const updateToken = getUpdateToken(token)

@@ -1,14 +1,9 @@
-import type {
-	FamilyMetadata,
-	SelectorOptions,
-	SelectorToken,
-	Store,
-} from "atom.io"
+import type { FamilyMetadata, SelectorOptions, SelectorToken } from "atom.io"
 
 import { cacheValue } from "../caching"
 import { markDone } from "../operation"
 import { become } from "../set-state/become"
-import type { StoreCore } from "../store"
+import type { Store, StoreCore } from "../store"
 import { Subject } from "../subject"
 import type { Selector } from "./create-selector"
 import { createSelector } from "./create-selector"

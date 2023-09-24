@@ -1,4 +1,6 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
+import type { Store } from "atom.io/internal"
+import { IMPLICIT, createSelectorFamily } from "atom.io/internal"
 
 import type { Json, JsonInterface } from "."
 import { parseJson } from "."
@@ -10,9 +12,9 @@ export const selectJsonFamily = <
 >(
 	atomFamily: AtomIO.AtomFamily<T, K>,
 	transform: JsonInterface<T, J>,
-	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+	store: Store = IMPLICIT.STORE,
 ): AtomIO.SelectorFamily<J, K> => {
-	const jsonFamily = AtomIO.__INTERNAL__.createSelectorFamily<J, K>(
+	const jsonFamily = createSelectorFamily<J, K>(
 		{
 			key: `${atomFamily.key}:JSON`,
 			get: (key) => ({ get }) => transform.toJson(get(atomFamily(key))),

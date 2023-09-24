@@ -40,7 +40,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 			}
 		}
 
-		const fillSubRequest = (subKey?: AtomIO.Json.Serializable) => {
+		const fillSubRequest = (subKey?: Json.Serializable) => {
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
 				keys.forEach((key) => {

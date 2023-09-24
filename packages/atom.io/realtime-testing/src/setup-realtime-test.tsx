@@ -2,6 +2,7 @@ import * as http from "http"
 
 import { type RenderResult, prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
+import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-react"
 import * as Happy from "happy-dom"
@@ -61,7 +62,7 @@ export const setupRealtimeTestServer = (
 		typeof address === `string` ? 80 : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
 	const server = new SocketIO.Server(httpServer)
-	const silo = new AtomIO.Silo(`SERVER`, AtomIO.__INTERNAL__.IMPLICIT.STORE)
+	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		options.server({ socket, silo })
@@ -69,7 +70,7 @@ export const setupRealtimeTestServer = (
 
 	const dispose = () => {
 		server.close()
-		AtomIO.__INTERNAL__.clearStore(silo.store)
+		Internal.clearStore(silo.store)
 	}
 
 	return {
@@ -85,7 +86,7 @@ export const setupRealtimeTestClient = (
 	port: number,
 ): RealtimeTestClient => {
 	const socket: ClientSocket = io(`http://localhost:${port}/`)
-	const silo = new AtomIO.Silo(name, AtomIO.__INTERNAL__.IMPLICIT.STORE)
+	const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
 
 	const { document } = new Happy.Window()
 	document.body.innerHTML = `<div id="app"></div>`
@@ -107,7 +108,7 @@ export const setupRealtimeTestClient = (
 
 	const dispose = () => {
 		socket.disconnect()
-		AtomIO.__INTERNAL__.clearStore(silo.store)
+		Internal.clearStore(silo.store)
 	}
 
 	return {

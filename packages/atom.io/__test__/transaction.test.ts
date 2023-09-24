@@ -4,7 +4,6 @@ import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
 import {
-	__INTERNAL__,
 	atom,
 	atomFamily,
 	getState,
@@ -17,6 +16,7 @@ import {
 	subscribeToTransaction,
 	transaction,
 } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

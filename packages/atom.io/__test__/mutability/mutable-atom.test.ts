@@ -1,7 +1,6 @@
 import { vitest } from "vitest"
 
 import {
-	__INTERNAL__,
 	atom,
 	getState,
 	runTransaction,
@@ -11,6 +10,8 @@ import {
 	transaction,
 } from "atom.io"
 import {
+	IMPLICIT,
+	clearStore,
 	createMutableAtomFamily,
 	getJsonToken,
 	getUpdateToken,
@@ -22,10 +23,10 @@ import * as UTIL from "../__util__"
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
 setLogLevel(LOG_LEVELS[CHOOSE])
-const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
+const logger = IMPLICIT.STORE.config.logger ?? console
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	clearStore()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)

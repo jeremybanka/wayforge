@@ -1,9 +1,8 @@
 import { prettyDOM } from "@testing-library/react"
-import * as AtomIO from "atom.io"
+import type { Store } from "atom.io/internal"
+import { IMPLICIT } from "atom.io/internal"
 
-export const summarize = (
-	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
-): void => {
+export const summarize = (store: Store = IMPLICIT.STORE): void => {
 	console.log(prettyDOM(document), {
 		atoms: [store.atoms.size],
 	})

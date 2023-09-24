@@ -2,13 +2,13 @@ import * as React from "react"
 
 import { getState, setState, subscribe } from "atom.io"
 import type {
-	Json,
 	MutableAtomToken,
 	ReadonlySelectorToken,
 	StateToken,
 } from "atom.io"
 
 import { getJsonToken } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import { StoreContext } from "./store-context"
 
 export function useI<T>(

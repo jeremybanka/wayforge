@@ -1,4 +1,5 @@
-import type { ReadonlySelectorToken, SelectorToken, Store } from "atom.io"
+import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
+import type { Store } from "atom.io/internal"
 import { IMPLICIT, createAtom, createSelector, target } from "atom.io/internal"
 
 import type { StateTokenIndex } from "."

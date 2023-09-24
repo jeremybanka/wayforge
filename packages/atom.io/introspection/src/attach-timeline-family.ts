@@ -1,5 +1,5 @@
-import type { ReadonlySelectorFamily, Store } from "atom.io"
-import type { Timeline } from "atom.io/internal"
+import type { ReadonlySelectorFamily } from "atom.io"
+import type { Store, Timeline } from "atom.io/internal"
 import {
 	IMPLICIT,
 	Subject,

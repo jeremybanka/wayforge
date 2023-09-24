@@ -1,4 +1,3 @@
-import { __INTERNAL__ } from "atom.io"
 import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -7,6 +6,7 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 import type { Timeline } from "atom.io/internal"
 
 import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"

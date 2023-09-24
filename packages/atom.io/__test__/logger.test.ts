@@ -1,4 +1,5 @@
-import { __INTERNAL__, setLogLevel, useLogger } from "atom.io"
+import { setLogLevel, useLogger } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 
 describe(`setLogLevel`, () => {
 	it(`allows logging at the preferred level`, () => {

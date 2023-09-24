@@ -1,7 +1,10 @@
-import * as AtomIO from "atom.io"
-import { type Json, parseJson } from "atom.io/json"
+import type * as AtomIO from "atom.io"
+import type { Json } from "atom.io/json"
+import { parseJson } from "atom.io/json"
 
 import { createAtomFamily } from "../families"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
@@ -21,7 +24,7 @@ export class FamilyTracker<
 
 	public constructor(
 		findMutableState: AtomIO.AtomFamily<Core, FamilyMemberKey>,
-		store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+		store: Store = IMPLICIT.STORE,
 	) {
 		this.findLatestUpdateState = createAtomFamily<
 			typeof this.Update | null,

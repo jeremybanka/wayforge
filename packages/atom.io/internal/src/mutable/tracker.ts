@@ -1,6 +1,8 @@
 import * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
 
+import type { Store } from ".."
+import { IMPLICIT } from ".."
 import { createAtom, deleteAtom } from "../atom"
 import { target } from "../transaction"
 import type { Transceiver } from "./transceiver"
@@ -15,7 +17,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	private initializeState(
 		mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>,
-		store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+		store: Store = IMPLICIT.STORE,
 	): AtomIO.AtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		deleteAtom(latestUpdateStateKey, target(store))
@@ -43,7 +45,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private observeCore(
 		mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>,
 		latestUpdateState: AtomIO.AtomToken<typeof this.Update | null>,
-		store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+		store: Store = IMPLICIT.STORE,
 	): void {
 		const originalInnerValue = AtomIO.getState(mutableState, store)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
@@ -93,7 +95,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private updateCore<Core extends Transceiver<any>>(
 		mutableState: AtomIO.MutableAtomToken<Core, Json.Serializable>,
 		latestUpdateState: AtomIO.AtomToken<typeof this.Update | null>,
-		store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+		store: Store = IMPLICIT.STORE,
 	): void {
 		AtomIO.subscribe(
 			latestUpdateState,
@@ -150,7 +152,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	public constructor(
 		mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>,
-		store: AtomIO.__INTERNAL__.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+		store: Store = IMPLICIT.STORE,
 	) {
 		this.mutableState = mutableState
 		this.latestUpdateState = this.initializeState(mutableState, store)

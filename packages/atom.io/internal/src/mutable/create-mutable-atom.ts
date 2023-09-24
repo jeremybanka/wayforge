@@ -1,7 +1,11 @@
 import * as AtomIO from "atom.io"
-import { IMPLICIT, createAtom, target } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
+
+import { createAtom } from "../atom"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
+import { target } from "../transaction"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
@@ -10,7 +14,7 @@ export function createMutableAtom<
 	SerializableCore extends Json.Serializable,
 >(
 	options: AtomIO.MutableAtomOptions<Core, SerializableCore>,
-	store: AtomIO.Store = IMPLICIT.STORE,
+	store: Store = IMPLICIT.STORE,
 ): AtomIO.MutableAtomToken<Core, SerializableCore> {
 	store.config.logger?.info(
 		`🔧 creating mutable atom "${options.key}" in store "${store.config.name}"`,

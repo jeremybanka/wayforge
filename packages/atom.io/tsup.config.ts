@@ -22,6 +22,7 @@ export const BUNDLE_EXCLUDE_LIST = [
 ]
 
 export default defineConfig({
+	tsconfig: `tsconfig.json`,
 	entry: [`src/index.ts`],
 	dts: true,
 	format: [`esm`, `cjs`],

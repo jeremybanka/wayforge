@@ -1,13 +1,7 @@
 import { vitest } from "vitest"
 
-import {
-	__INTERNAL__,
-	atom,
-	selector,
-	setLogLevel,
-	timeline,
-	transaction,
-} from "atom.io"
+import { atom, selector, setLogLevel, timeline, transaction } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

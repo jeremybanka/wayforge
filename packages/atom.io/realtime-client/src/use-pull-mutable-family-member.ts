@@ -1,6 +1,6 @@
 import * as AtomIO from "atom.io"
 import { getJsonToken, getUpdateToken } from "atom.io/internal"
-import type { Transceiver } from "atom.io/internal"
+import type { Store, Transceiver } from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 import type { Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
@@ -11,7 +11,7 @@ export function pullMutableFamilyMember<
 >(
 	token: AtomIO.MutableAtomToken<T, J>,
 	socket: Socket,
-	store: AtomIO.Store,
+	store: Store,
 ): () => void {
 	if (!(`family` in token)) {
 		console.error(`Token is not a family member:`, token)

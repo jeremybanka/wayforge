@@ -17,13 +17,9 @@ export * from "./atom"
 export * from "./logger"
 export * from "./selector"
 export * from "./silo"
-export { subscribe } from "./subscribe"
 export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
-export { __INTERNAL__ }
-export type { Store } from "atom.io/internal"
-export type { Json } from "atom.io/json"
 
 export type ƒn = (...parameters: any[]) => any
 

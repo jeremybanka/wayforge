@@ -1,7 +1,6 @@
 import { vitest } from "vitest"
 
 import {
-	__INTERNAL__,
 	atom,
 	getState,
 	selector,
@@ -9,7 +8,7 @@ import {
 	setState,
 	subscribe,
 } from "atom.io"
-import { withdraw } from "atom.io/internal"
+import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -41,9 +40,9 @@ describe(`lazy propagation system`, () => {
 		})
 		subscribe(s, UTIL.stdout)
 		subscribe(s0, UTIL.stdout)
-		const myAtom = withdraw(a, __INTERNAL__.IMPLICIT.STORE)
-		const mySelector = withdraw(s, __INTERNAL__.IMPLICIT.STORE)
-		const mySelector0 = withdraw(s0, __INTERNAL__.IMPLICIT.STORE)
+		const myAtom = __INTERNAL__.withdraw(a, __INTERNAL__.IMPLICIT.STORE)
+		const mySelector = __INTERNAL__.withdraw(s, __INTERNAL__.IMPLICIT.STORE)
+		const mySelector0 = __INTERNAL__.withdraw(s0, __INTERNAL__.IMPLICIT.STORE)
 		expect(myAtom?.subject.subscribers.size).toBe(2)
 		expect(mySelector?.subject.subscribers.size).toBe(1)
 		expect(mySelector0?.subject.subscribers.size).toBe(1)
@@ -62,8 +61,8 @@ describe(`lazy propagation system`, () => {
 			get: ({ get }) => get(a) * 10,
 		})
 		const unsubscribe = subscribe(s, UTIL.stdout)
-		const myAtom = withdraw(a, __INTERNAL__.IMPLICIT.STORE)
-		const mySelector = withdraw(s, __INTERNAL__.IMPLICIT.STORE)
+		const myAtom = __INTERNAL__.withdraw(a, __INTERNAL__.IMPLICIT.STORE)
+		const mySelector = __INTERNAL__.withdraw(s, __INTERNAL__.IMPLICIT.STORE)
 		expect(myAtom?.subject.subscribers.size).toBe(1)
 		expect(mySelector?.subject.subscribers.size).toBe(1)
 		unsubscribe()

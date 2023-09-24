@@ -3,9 +3,8 @@ import type {
 	ReadonlySelectorToken,
 	SelectorToken,
 	StateToken,
-	Store,
 } from "atom.io"
-import type { Atom, ReadonlySelector, Selector } from ".."
+import type { Atom, ReadonlySelector, Selector, Store } from ".."
 import { withdraw } from ".."
 import { target } from "../transaction"
 

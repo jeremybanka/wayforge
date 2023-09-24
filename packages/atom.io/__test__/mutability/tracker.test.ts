@@ -1,7 +1,6 @@
 import { vitest } from "vitest"
 
 import {
-	__INTERNAL__,
 	atom,
 	atomFamily,
 	getState,
@@ -10,6 +9,7 @@ import {
 	setState,
 	transaction,
 } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 import { FamilyTracker, Tracker } from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as UTIL from "../__util__"

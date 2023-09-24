@@ -1,4 +1,5 @@
-import type { StateUpdate, Store } from "atom.io"
+import type { StateUpdate } from "atom.io"
+import type { Store } from "atom.io/internal"
 
 import type { Atom } from "../atom"
 import type { ReadonlySelector, Selector } from "../selector"

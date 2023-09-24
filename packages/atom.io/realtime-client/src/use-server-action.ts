@@ -1,11 +1,12 @@
 import * as AtomIO from "atom.io"
+import type { Store } from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
 const TX_SUBS = new Map<string, number>()
 export function synchronizeTransactionResults(
 	token: AtomIO.TransactionToken<any>,
 	socket: Socket,
-	store: AtomIO.Store,
+	store: Store,
 ): () => void {
 	const count = TX_SUBS.get(token.key) ?? 0
 	TX_SUBS.set(token.key, count + 1)

@@ -1,4 +1,6 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
+import type { Store } from "atom.io/internal"
+import { IMPLICIT } from "atom.io/internal"
 
 import { createSelector } from "atom.io/internal"
 import type { Json, JsonInterface } from "."
@@ -6,7 +8,7 @@ import type { Json, JsonInterface } from "."
 export const selectJson = <T, J extends Json.Serializable>(
 	atom: AtomIO.AtomToken<T>,
 	transform: JsonInterface<T, J>,
-	store: AtomIO.Store = AtomIO.__INTERNAL__.IMPLICIT.STORE,
+	store: Store = IMPLICIT.STORE,
 ): AtomIO.SelectorToken<J> => {
 	return createSelector(
 		{
