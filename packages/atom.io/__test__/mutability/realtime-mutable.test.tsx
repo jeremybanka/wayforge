@@ -1,12 +1,11 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
-import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
+import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 import { TransceiverSet } from "~/packages/anvl/reactivity"
-import { IMPLICIT } from "../../internal/src"
 
 AtomIO.setLogLevel(`info`)
 
@@ -32,8 +31,8 @@ describe(`running transactions`, () => {
 				socket.onAnyOutgoing((event, ...args) => {
 					console.log(`🛰  >>`, event, ...args)
 				})
-				const exposeMutable = RT.useExposeMutable({ socket, store })
-				const receiveTransaction = RT.useReceiveTransaction({ socket, store })
+				const exposeMutable = RTS.useExposeMutable({ socket, store })
+				const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
 				exposeMutable(numbersCollectionState)
 				receiveTransaction(addToNumbersCollectionTX)
 			},

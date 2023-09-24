@@ -66,12 +66,12 @@
 			"import": "./react-devtools/dist/index.mjs",
 			"require": "./react-devtools/dist/index.js"
 		},
-		"./realtime/package.json": "./realtime/package.json",
-		"./realtime": {
-			"types": "./realtime/dist/index.d.ts",
-			"browser": "./realtime/dist/index.mjs",
-			"import": "./realtime/dist/index.mjs",
-			"require": "./realtime/dist/index.js"
+		"./realtime-server/package.json": "./realtime-server/package.json",
+		"./realtime-server": {
+			"types": "./realtime-server/dist/index.d.ts",
+			"browser": "./realtime-server/dist/index.mjs",
+			"import": "./realtime-server/dist/index.mjs",
+			"require": "./realtime-server/dist/index.js"
 		},
 		"./realtime-react/package.json": "./realtime-react/package.json",
 		"./realtime-react": {

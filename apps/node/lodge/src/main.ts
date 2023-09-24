@@ -1,6 +1,6 @@
 import * as AtomIO from "atom.io"
 import { getUpdateToken } from "atom.io/internal"
-import * as RT from "atom.io/realtime"
+import * as RTS from "atom.io/realtime-server"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
@@ -85,11 +85,11 @@ pipe(
 			})
 
 			// COMPOSE REALTIME SERVICE HOOKS
-			const exposeSingle = RT.useExposeSingle({ socket })
-			const exposeMutable = RT.useExposeMutable({ socket })
-			const exposeFamily = RT.useExposeFamily({ socket })
-			const exposeMutableFamily = RT.useExposeMutableFamily({ socket })
-			const receiveTransaction = RT.useReceiveTransaction({ socket })
+			const exposeSingle = RTS.useExposeSingle({ socket })
+			const exposeMutable = RTS.useExposeMutable({ socket })
+			const exposeFamily = RTS.useExposeFamily({ socket })
+			const exposeMutableFamily = RTS.useExposeMutableFamily({ socket })
+			const receiveTransaction = RTS.useReceiveTransaction({ socket })
 
 			// ROOM SERVICES
 			exposeSingle<string[]>(roomsIndexJSON)

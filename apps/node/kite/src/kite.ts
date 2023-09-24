@@ -6,7 +6,7 @@ import {
 	useExposeMutable,
 	useExposeMutableFamily,
 	useSyncTransaction,
-} from "~/packages/atom.io/realtime/src"
+} from "atom.io/realtime-server"
 import { logger } from "./kite-logger"
 import {
 	addNumberCollectionTX,
