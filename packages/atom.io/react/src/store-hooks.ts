@@ -8,7 +8,7 @@ import type {
 	StateToken,
 } from "atom.io"
 
-import { getJsonToken } from "../../internal/src"
+import { getJsonToken } from "atom.io/internal"
 import { StoreContext } from "./store-context"
 
 export function useI<T>(
