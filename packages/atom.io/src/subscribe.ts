@@ -19,12 +19,12 @@ export type KeyedStateUpdate<T> = StateUpdate<T> & {
 }
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
-export const subscribe = <T>(
+export function subscribe<T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
 	handleUpdate: UpdateHandler<T>,
 	key: string = Math.random().toString(36).slice(2),
 	store: Store = IMPLICIT.STORE,
-): (() => void) => {
+): () => void {
 	const state = withdraw<T>(token, store)
 	if (state === null) {
 		throw new Error(
