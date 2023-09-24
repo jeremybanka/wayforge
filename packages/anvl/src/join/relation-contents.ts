@@ -1,9 +1,8 @@
-import type { Identified } from "~/packages/anvl/src/id/identified"
-import { isEmptyObject } from "~/packages/anvl/src/object/refinement"
-
 import { pipe } from "../function"
+import type { Identified } from "../id/identified"
 import type { Json } from "../json"
 import type { NullSafeRest } from "../nullish"
+import { isEmptyObject } from "../object/refinement"
 import type { RelationData } from "./core-relation-data"
 import { getRelatedIds } from "./get-related-ids"
 import { getRelationEntries } from "./relation-record"
