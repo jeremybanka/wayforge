@@ -23,14 +23,20 @@
 	},
 	"dependencies": {},
 	"peerDependencies": {
-		"preact": ">=10.0.0",
-		"react": ">=16.8.0",
+		"@testing-library/react": ">=14.0.0",
+		"@floating-ui/react": ">=0.25.0",
+		"@floating-ui/react-dom": ">=2.0.0",
+		"framer-motion": ">=10.0.0",
+		"react": ">=18.0.0",
 		"socket.io": ">=4.0.0",
 		"socket.io-client": ">=4.0.0"
 	},
 	"peerDependenciesMeta": {
-		"preact": { "optional": true },
+		"@testing-library/react": { "optional": true },
 		"react": { "optional": true },
+		"@floating-ui/react": { "optional": true },
+		"@floating-ui/react-dom": { "optional": true },
+		"framer-motion": { "optional": true },
 		"socket.io": { "optional": true },
 		"socket.io-client": { "optional": true }
 	},
@@ -43,7 +49,6 @@
 		"eslint": "8.50.0",
 		"framer-motion": "10.16.4",
 		"happy-dom": "12.1.6",
-		"preact": "10.17.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-router-dom": "6.16.0",

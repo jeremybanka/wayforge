@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup"
+import { BUNDLE_EXCLUDE_LIST } from "~/packages/atom.io/tsup.config"
 
 export default defineConfig({
 	entry: [`./src/index.ts`],
@@ -11,5 +12,5 @@ export default defineConfig({
 	clean: true,
 	jsxFactory: `React.createElement`,
 	tsconfig: `../tsconfig.json`,
-	external: [`atom.io`, `fp-ts`, `socket.io-client`, `react`],
+	external: BUNDLE_EXCLUDE_LIST,
 })

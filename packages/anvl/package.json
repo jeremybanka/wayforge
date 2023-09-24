@@ -14,6 +14,7 @@
 		"nullish",
 		"number",
 		"object",
+		"primitive",
 		"refinement",
 		"string",
 		"tree"

@@ -1,7 +1,5 @@
-import { pipe } from "fp-ts/function"
-
 import type { Modifier } from "~/packages/anvl/src/function"
-import { become } from "~/packages/anvl/src/function"
+import { become, pipe } from "~/packages/anvl/src/function"
 import { wrapInto } from "~/packages/anvl/src/number/wrap"
 
 import type { LuumApplicator } from "."

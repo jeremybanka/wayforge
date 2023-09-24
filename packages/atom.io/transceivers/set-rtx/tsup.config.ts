@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup"
+import { BUNDLE_EXCLUDE_LIST } from "~/packages/atom.io/tsup.config"
 
 export default defineConfig({
 	entry: [`./src/index.ts`],
@@ -10,14 +11,5 @@ export default defineConfig({
 	sourcemap: true,
 	clean: true,
 	tsconfig: `../../tsconfig.json`,
-	external: [
-		`atom.io`,
-		`atom.io/json`,
-		`atom.io/transceivers/set-rtx`,
-		`atom.io/internal`,
-		`framer-motion`,
-		`react`,
-		`recoil`,
-		`rxjs`,
-	],
+	external: BUNDLE_EXCLUDE_LIST,
 })

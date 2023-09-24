@@ -1,0 +1,6 @@
+{
+	"name": "@anvl/primitive",
+	"main": "../dist/primitive/index.js",
+	"types": "../dist/primitive/index.d.ts",
+	"module": "../dist/primitive/index.mjs"
+}

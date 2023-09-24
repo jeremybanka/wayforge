@@ -1,6 +1,6 @@
-import type { Refinement } from "fp-ts/Refinement"
-import { pipe } from "fp-ts/function"
-import { isString } from "fp-ts/string"
+import { pipe } from "~/packages/anvl/function"
+import { isString } from "~/packages/anvl/primitive"
+import type { Refinement } from "~/packages/anvl/refinement"
 
 import { content, each, isArray, join, map } from "~/packages/anvl/src/array"
 import { isModifier } from "~/packages/anvl/src/function"
