@@ -29,6 +29,9 @@ importers:
       hamt_plus:
         specifier: 1.0.2
         version: 1.0.2
+      io-ts:
+        specifier: 2.2.20
+        version: 2.2.20(fp-ts@2.16.1)
       json-schema-to-zod:
         specifier: 1.1.1
         version: 1.1.1
@@ -6529,7 +6532,6 @@ packages:
       fp-ts: ^2.5.0
     dependencies:
       fp-ts: 2.16.1
-    dev: false
 
   /ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
