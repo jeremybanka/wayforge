@@ -1,25 +1,36 @@
 import * as AtomIO from "atom.io"
-import type { Json } from "atom.io/json"
+import { type Json, parseJson } from "atom.io/json"
 import { StoreContext } from "atom.io/react"
 import * as React from "react"
+import type { Socket } from "socket.io-client"
 
 import { RealtimeContext } from "./realtime-context"
 
+export function pullFamilyMember<J extends Json.Serializable>(
+	token: AtomIO.AtomToken<J>,
+	socket: Socket,
+	store: AtomIO.Store,
+): () => void {
+	if (!(`family` in token)) {
+		console.error(`Token is not a family member:`, token)
+		return () => {}
+	}
+	const { key: familyKey, subKey: serializedSubKey } = token.family
+	const subKey = parseJson(serializedSubKey)
+	socket?.on(`serve:${token.key}`, (data: J) => {
+		AtomIO.setState(token, data, store)
+	})
+	socket?.emit(`sub:${familyKey}`, subKey)
+	return () => {
+		socket?.off(`serve:${token.key}`)
+		socket?.emit(`unsub:${token.key}`)
+	}
+}
+
 export function usePullFamilyMember<J extends Json.Serializable>(
-	family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-	subKey: AtomIO.Json.Serializable,
+	token: AtomIO.AtomToken<J>,
 ): void {
-	const token = family(subKey)
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => {
-		socket?.on(`serve:${token.key}`, (data: J) => {
-			AtomIO.setState(family(subKey), data, store)
-		})
-		socket?.emit(`sub:${family.key}`, subKey)
-		return () => {
-			socket?.off(`serve:${token.key}`)
-			socket?.emit(`unsub:${token.key}`)
-		}
-	}, [family.key])
+	React.useEffect(() => pullFamilyMember(token, socket, store), [token.key])
 }
