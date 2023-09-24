@@ -41,7 +41,6 @@ export class SetRTX<P extends primitive>
 				this.cacheIdx++
 				this.cacheIdx %= this.cacheLimit
 				this.cache[this.cacheIdx] = update
-				console.log(`cache`, update, this.cache)
 			})
 		}
 	}
@@ -67,7 +66,6 @@ export class SetRTX<P extends primitive>
 	public add(value: P): this {
 		if (this.mode === `record`) {
 			this.cacheUpdateNumber++
-			console.log(`inc`, this.cacheUpdateNumber)
 			this.emit(`add:${stringifyJson<P>(value)}`)
 		}
 		return super.add(value)
@@ -163,12 +161,6 @@ export class SetRTX<P extends primitive>
 		const updateNumber = Number(update.substring(0, breakpoint))
 		const eventOffset = updateNumber - this.cacheUpdateNumber
 		const isFuture = eventOffset > 0
-		console.log({
-			updateNumber,
-			cacheUpdateNumber: this.cacheUpdateNumber,
-			eventOffset,
-			isFuture,
-		})
 		if (isFuture) {
 			if (eventOffset === 1) {
 				this.mode = `playback`
@@ -184,12 +176,10 @@ export class SetRTX<P extends primitive>
 				const eventIdx = this.cacheIdx + eventOffset
 				const cachedUpdate = this.cache[eventIdx]
 				if (cachedUpdate === update) {
-					console.log(`no-op`)
 					return null
 				}
 				this.mode = `playback`
 				let done = false
-				console.log({ eventIdx, cachedUpdate, update })
 				while (!done) {
 					this.cacheIdx %= this.cacheLimit
 					const update = this.cache[this.cacheIdx]
@@ -199,7 +189,6 @@ export class SetRTX<P extends primitive>
 					}
 					const undoRes = this.undo(update)
 					done = this.cacheIdx === eventIdx - 1
-					console.log(`-`, { update, done, undoRes })
 				}
 				const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
 				this.doStep(innerUpdate)
