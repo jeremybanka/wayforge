@@ -24,6 +24,7 @@ export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
 	return React.useSyncExternalStore<T>(
 		(dispatch) => subscribe(token, dispatch, `use-o:${id}`, store),
 		() => getState(token, store),
+		() => getState(token, store),
 	)
 }
 
