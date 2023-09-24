@@ -1,6 +1,8 @@
 import { IMPLICIT } from "atom.io/internal"
 import type { Store } from "atom.io/internal"
 
+export const NO_OP = (): void => undefined
+
 export type Logger = Pick<Console, `error` | `info` | `warn`>
 export const LOG_LEVELS: ReadonlyArray<keyof Logger> = [
 	`info`,
@@ -20,7 +22,7 @@ export const setLogLevel = (
 		LOG_LEVELS.forEach((logLevel) => {
 			if (LOG_LEVELS.indexOf(logLevel) < LOG_LEVELS.indexOf(preferredLevel)) {
 				// biome-ignore lint/style/noNonNullAssertion: we just set it
-				store.config.logger![logLevel] = () => undefined
+				store.config.logger![logLevel] = NO_OP
 			} else {
 				// biome-ignore lint/style/noNonNullAssertion: we just set it
 				store.config.logger![logLevel] = logger__INTERNAL[logLevel]
@@ -37,7 +39,7 @@ export const useLogger = (
 		store.config.logger === null
 			? null
 			: LOG_LEVELS.find(
-					(logLevel) => store.config.logger?.[logLevel] !== (() => undefined),
+					(logLevel) => store.config.logger?.[logLevel] !== NO_OP,
 			  ) ?? null
 	store.config.logger__INTERNAL = { ...logger }
 	setLogLevel(currentLogLevel, store)

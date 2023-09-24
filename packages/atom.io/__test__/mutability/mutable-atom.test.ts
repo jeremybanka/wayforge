@@ -15,7 +15,7 @@ import {
 	getJsonToken,
 	getUpdateToken,
 } from "atom.io/internal"
-import { TransceiverSet } from "atom.io/transceivers/set-io"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 
 import * as UTIL from "../__util__"
 
@@ -37,9 +37,9 @@ describe(`mutable atomic state`, () => {
 		const myMutableState = atom({
 			key: `my::mutable`,
 			mutable: true,
-			default: () => new TransceiverSet(),
+			default: () => new SetRTX(),
 			toJson: (set) => [...set],
-			fromJson: (array) => new TransceiverSet(array),
+			fromJson: (array) => new SetRTX(array),
 		})
 		const myJsonState = getJsonToken(myMutableState)
 		const myTrackerState = getUpdateToken(myMutableState)
@@ -48,8 +48,8 @@ describe(`mutable atomic state`, () => {
 		subscribe(myTrackerState, UTIL.stdout)
 		setState(myMutableState, (set) => set.add(`a`))
 		expect(UTIL.stdout).toHaveBeenCalledWith({
-			newValue: new TransceiverSet([`a`]),
-			oldValue: new TransceiverSet([`a`]),
+			newValue: new SetRTX([`a`]),
+			oldValue: new SetRTX([`a`]),
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith({
 			newValue: [`a`],
@@ -63,15 +63,15 @@ describe(`mutable atomic state`, () => {
 
 	it(`has its own family function for ease of use`, () => {
 		const findFlagsStateByUserId = createMutableAtomFamily<
-			TransceiverSet<string>,
+			SetRTX<string>,
 			string[],
 			string
 		>({
 			key: `flagsByUserId::mutable`,
 			mutable: true,
-			default: () => new TransceiverSet(),
+			default: () => new SetRTX(),
 			toJson: (set) => [...set],
-			fromJson: (array) => new TransceiverSet(array),
+			fromJson: (array) => new SetRTX(array),
 		})
 		console.log(findFlagsStateByUserId)
 
@@ -86,8 +86,8 @@ describe(`mutable atomic state`, () => {
 		setState(myFlagsState, (set) => set.add(`a`))
 
 		expect(UTIL.stdout).toHaveBeenCalledWith({
-			newValue: new TransceiverSet([`a`]),
-			oldValue: new TransceiverSet([`a`]),
+			newValue: new SetRTX([`a`]),
+			oldValue: new SetRTX([`a`]),
 		})
 		expect(UTIL.stdout).toHaveBeenCalledWith({
 			newValue: [`a`],
@@ -103,9 +103,9 @@ describe(`mutable atomic state`, () => {
 		const myMutableState = atom({
 			key: `my::mutable`,
 			mutable: true,
-			default: () => new TransceiverSet(),
+			default: () => new SetRTX(),
 			toJson: (set) => [...set],
-			fromJson: (array) => new TransceiverSet(array),
+			fromJson: (array) => new SetRTX(array),
 		})
 
 		const myTransaction = transaction({
@@ -138,7 +138,7 @@ describe(`mutable atomic state`, () => {
 				oldValue: [],
 				newValue: [`a`, `b`],
 			})
-			expect(getState(myMutableState)).toEqual(new TransceiverSet())
+			expect(getState(myMutableState)).toEqual(new SetRTX())
 		}
 	})
 })

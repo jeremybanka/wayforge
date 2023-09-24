@@ -7,10 +7,7 @@ import {
 	usePullMutableFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
-import type {
-	TransceiverSet,
-	TransceiverSetJSON,
-} from "atom.io/transceivers/set-io"
+import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
 import type { FC } from "react"
 
 import {
@@ -25,7 +22,7 @@ import scss from "./App.module.scss"
 setLogLevel(`warn`)
 
 const Numbers: FC<{
-	state: MutableAtomToken<TransceiverSet<number>, TransceiverSetJSON<number>>
+	state: MutableAtomToken<SetRTX<number>, SetRTXJson<number>>
 }> = ({ state }) => {
 	usePullMutableFamilyMember(state)
 	const setNumbers = useI(state)

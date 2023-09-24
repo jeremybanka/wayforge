@@ -4,12 +4,13 @@ import { type RenderResult, prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-react"
-import * as RR from "fp-ts/ReadonlyRecord"
 import * as Happy from "happy-dom"
 import * as React from "react"
 import * as SocketIO from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
+
+import { recordToEntries } from "~/packages/anvl/src/object"
 
 export type TestSetupOptions = {
 	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
@@ -140,7 +141,7 @@ export const multiClient = <ClientNames extends string>(
 	options: TestSetupOptions__MultiClient<ClientNames>,
 ): RealtimeTestAPI__MultiClient<ClientNames> => {
 	const server = setupRealtimeTestServer(options)
-	const clients = RR.toEntries(options.clients).reduce(
+	const clients = recordToEntries(options.clients).reduce(
 		(clients, [name, client]) => ({
 			...clients,
 			[name]: setupRealtimeTestClient({ ...options, client }, name, server.port),
@@ -152,7 +153,7 @@ export const multiClient = <ClientNames extends string>(
 		clients,
 		server,
 		teardown: () => {
-			RR.toEntries(clients).forEach(([, client]) => client.dispose())
+			recordToEntries(clients).forEach(([, client]) => client.dispose())
 			server.dispose()
 		},
 	}

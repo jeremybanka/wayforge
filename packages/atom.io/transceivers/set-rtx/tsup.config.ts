@@ -9,7 +9,15 @@ export default defineConfig({
 	treeshake: true,
 	sourcemap: true,
 	clean: true,
-	jsxFactory: `React.createElement`,
-	tsconfig: `../tsconfig.json`,
-	external: [`atom.io`, `fp-ts`, `socket.io-client`, `react`],
+	tsconfig: `../../tsconfig.json`,
+	external: [
+		`atom.io`,
+		`atom.io/json`,
+		`atom.io/transceivers/set-rtx`,
+		`atom.io/internal`,
+		`framer-motion`,
+		`react`,
+		`recoil`,
+		`rxjs`,
+	],
 })

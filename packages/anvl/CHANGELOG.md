@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 3654af64: ✨ `TransceiverSet` shows use of the Transceiver pattern.
+- 3654af64: ✨ `SetRTX` shows use of the Transceiver pattern.
 
 ## 0.2.5
 

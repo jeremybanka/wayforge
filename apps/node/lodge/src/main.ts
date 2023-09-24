@@ -8,7 +8,7 @@ import { Server as WebSocketServer } from "socket.io"
 import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
 
-import type { TransceiverSet } from "atom.io/transceivers/set-io"
+import type { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { logger } from "./logger"
 import {
 	addCardValueTX,
@@ -146,10 +146,11 @@ pipe(
 
 			// GAME SERVICES
 
-			const gameIndices: AtomIO.MutableAtomToken<
-				TransceiverSet<string>,
-				string[]
-			>[] = [cardIndex, cardGroupIndex, cardValuesIndex]
+			const gameIndices: AtomIO.MutableAtomToken<SetRTX<string>, string[]>[] = [
+				cardIndex,
+				cardGroupIndex,
+				cardValuesIndex,
+			]
 			gameIndices.forEach(exposeMutable)
 
 			const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
@@ -159,8 +160,8 @@ pipe(
 			gameJoinStates.forEach(exposeSingle)
 			const gameRelations: [
 				junction: AtomicJunction<any, any, any>,
-				indexA: AtomIO.MutableAtomToken<TransceiverSet<string>, string[]>,
-				indexB: AtomIO.MutableAtomToken<TransceiverSet<string>, string[]>,
+				indexA: AtomIO.MutableAtomToken<SetRTX<string>, string[]>,
+				indexB: AtomIO.MutableAtomToken<SetRTX<string>, string[]>,
 			][] = [
 				[groupsOfCards, cardGroupIndex, cardIndex],
 				[ownersOfGroups, playersIndex, cardGroupIndex],

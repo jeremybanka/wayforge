@@ -1,7 +1,7 @@
 import { atomFamily } from "atom.io"
 import { createMutableAtom } from "atom.io/internal"
 
-import { TransceiverSet } from "atom.io/transceivers/set-io"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { AtomicJunction } from "../utils/atomic-junction"
 
 export type CardGroup = {
@@ -17,15 +17,12 @@ export const findCardGroupState = atomFamily<CardGroup, string>({
 		rotation: 0,
 	}),
 })
-export const cardGroupIndex = createMutableAtom<
-	TransceiverSet<string>,
-	string[]
->({
+export const cardGroupIndex = createMutableAtom<SetRTX<string>, string[]>({
 	key: `cardGroupsIndex::mutable`,
 	mutable: true,
-	default: () => new TransceiverSet<string>(),
+	default: () => new SetRTX<string>(),
 	toJson: (set) => [...set],
-	fromJson: (array) => new TransceiverSet<string>(array),
+	fromJson: (array) => new SetRTX<string>(array),
 })
 
 export const groupsOfCards = new AtomicJunction({

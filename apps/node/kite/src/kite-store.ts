@@ -1,26 +1,23 @@
 import type { MutableAtomToken } from "atom.io"
 import { atom, atomFamily, transaction } from "atom.io"
 
-import { TransceiverSet } from "atom.io/transceivers/set-io"
-import type { TransceiverSetJSON } from "atom.io/transceivers/set-io"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
+import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
 
-export const numberCollectionIndex = atom<
-	TransceiverSet<string>,
-	TransceiverSetJSON<string>
->({
+export const numberCollectionIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `numberCollectionIndex`,
 	mutable: true,
-	default: () => new TransceiverSet(null, 5),
+	default: () => new SetRTX(null, 5),
 	toJson: (value) => value.toJSON(),
-	fromJson: (value) => TransceiverSet.fromJSON(value),
+	fromJson: (value) => SetRTX.fromJSON(value),
 })
 
 export const findNumberCollection = atomFamily({
 	key: `numberCollection`,
 	mutable: true,
-	default: () => new TransceiverSet<number>(null, 5),
+	default: () => new SetRTX<number>(null, 5),
 	toJson: (value) => value.toJSON(),
-	fromJson: (value) => TransceiverSet.fromJSON(value),
+	fromJson: (value) => SetRTX.fromJSON(value),
 })
 
 export const addNumberCollectionTX = transaction<(id: string) => string>({
@@ -35,9 +32,7 @@ export const addNumberCollectionTX = transaction<(id: string) => string>({
 })
 
 export const incrementNumberCollectionTX = transaction<
-	(
-		state: MutableAtomToken<TransceiverSet<number>, TransceiverSetJSON<number>>,
-	) => void
+	(state: MutableAtomToken<SetRTX<number>, SetRTXJson<number>>) => void
 >({
 	key: `incrementNumberCollectionTX`,
 	do: ({ set }, state) => {

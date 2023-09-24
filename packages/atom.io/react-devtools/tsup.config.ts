@@ -8,7 +8,6 @@ export default defineConfig({
 	splitting: true,
 	treeshake: true,
 	sourcemap: true,
-	minify: true,
 	clean: true,
 	loader: {
 		".scss": `css`,

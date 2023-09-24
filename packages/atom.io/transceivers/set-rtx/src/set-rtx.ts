@@ -1,9 +1,7 @@
 import type { Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { Json, Stringified } from "atom.io/json"
+import type { Json, Stringified, primitive } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
-
-import type { primitive } from "~/packages/anvl/src/primitive"
 
 export type SetUpdate =
 	| `add:${string}`
@@ -12,14 +10,14 @@ export type SetUpdate =
 	| `tx:${string}`
 export type NumberedSetUpdate = `${number}=${SetUpdate}`
 
-export interface TransceiverSetJSON<P extends primitive> extends Json.Object {
+export interface SetRTXJson<P extends primitive> extends Json.Object {
 	members: P[]
 	cache: (NumberedSetUpdate | null)[]
 	cacheLimit: number
 	cacheIdx: number
 	cacheUpdateNumber: number
 }
-export class TransceiverSet<P extends primitive>
+export class SetRTX<P extends primitive>
 	extends Set<P>
 	implements Transceiver<NumberedSetUpdate>
 {
@@ -32,7 +30,7 @@ export class TransceiverSet<P extends primitive>
 
 	public constructor(values?: Set<P> | readonly P[] | null, cacheLimit = 0) {
 		super(values)
-		if (values instanceof TransceiverSet) {
+		if (values instanceof SetRTX) {
 			this.parent = values
 			this.cacheUpdateNumber = values.cacheUpdateNumber
 		}
@@ -48,7 +46,7 @@ export class TransceiverSet<P extends primitive>
 		}
 	}
 
-	public toJSON(): TransceiverSetJSON<P> {
+	public toJSON(): SetRTXJson<P> {
 		return {
 			members: [...this],
 			cache: this.cache,
@@ -58,10 +56,8 @@ export class TransceiverSet<P extends primitive>
 		}
 	}
 
-	public static fromJSON<P extends primitive>(
-		json: TransceiverSetJSON<P>,
-	): TransceiverSet<P> {
-		const set = new TransceiverSet<P>(json.members, json.cacheLimit)
+	public static fromJSON<P extends primitive>(json: SetRTXJson<P>): SetRTX<P> {
+		const set = new SetRTX<P>(json.members, json.cacheLimit)
 		set.cache = json.cache
 		set.cacheIdx = json.cacheIdx
 		set.cacheUpdateNumber = json.cacheUpdateNumber
@@ -93,13 +89,13 @@ export class TransceiverSet<P extends primitive>
 		return super.delete(value)
 	}
 
-	public readonly parent: TransceiverSet<P> | null
-	public child: TransceiverSet<P> | null = null
+	public readonly parent: SetRTX<P> | null
+	public child: SetRTX<P> | null = null
 	public transactionUpdates: SetUpdate[] | null = null
-	public transaction(run: (child: TransceiverSet<P>) => boolean): void {
+	public transaction(run: (child: SetRTX<P>) => boolean): void {
 		this.mode = `transaction`
 		this.transactionUpdates = []
-		this.child = new TransceiverSet(this)
+		this.child = new SetRTX(this)
 		const unsubscribe = this.child._subscribe(`transaction`, (update) => {
 			this.transactionUpdates?.push(update)
 		})

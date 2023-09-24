@@ -4,17 +4,17 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import { TransceiverSet } from "atom.io/transceivers/set-io"
 import * as React from "react"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 
 AtomIO.setLogLevel(`info`)
 
 const numbersCollectionState = AtomIO.atom({
 	key: `numbersCollection::mutable`,
 	mutable: true,
-	default: () => new TransceiverSet<`${number}`>([`0`]),
+	default: () => new SetRTX<`${number}`>([`0`]),
 	toJson: (s) => [...s],
-	fromJson: (a) => new TransceiverSet(a),
+	fromJson: (a) => new SetRTX(a),
 })
 const addToNumbersCollectionTX = AtomIO.transaction({
 	key: `addToNumbersCollection`,

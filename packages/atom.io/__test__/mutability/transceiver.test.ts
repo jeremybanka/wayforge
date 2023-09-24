@@ -1,17 +1,17 @@
-import type { NumberedSetUpdate } from "../../transceivers/set-io/src/transceiver-set"
-import { TransceiverSet } from "../../transceivers/set-io/src/transceiver-set"
+import type { NumberedSetUpdate } from "~/packages/atom.io/transceivers/set-rtx/src"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 
-describe(`TransceiverSet`, () => {
+describe(`SetRTX`, () => {
 	describe(`observe`, () => {
 		it(`should call the function when the set is updated`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			const fn = vitest.fn()
 			set.subscribe(`TEST`, fn)
 			set.add(`z`)
 			expect(fn).toHaveBeenCalledWith(`0=add:"z"`)
 		})
 		it(`should return a function that unsubscribes`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			const fn = vitest.fn()
 			const unsubscribe = set.subscribe(`TEST`, fn)
 			unsubscribe()
@@ -21,18 +21,18 @@ describe(`TransceiverSet`, () => {
 	})
 	describe(`do`, () => {
 		it(`should add a value to the set`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			set.do(`0=add:"foo"`)
 			expect(set.has(`foo`)).toBe(true)
 		})
 		it(`should clear the set`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			set.add(`y`)
 			set.do(`1=clear:["y"]`)
 			expect(set.size).toBe(0)
 		})
 		it(`should delete a value from the set`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			set.add(`x`)
 			set.do(`1=del:"x"`)
 			expect(set.has(`"x"`)).toBe(false)
@@ -40,13 +40,13 @@ describe(`TransceiverSet`, () => {
 	})
 	describe(`undo`, () => {
 		it(`should delete a value from the set`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			set.add(`y`)
 			set.undo(`0=add:"y"`)
 			expect(set.has(`"y"`)).toBe(false)
 		})
 		it(`should recover a clear`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			let lastUpdate: NumberedSetUpdate | null = null
 			set.subscribe(`TEST`, (u) => (lastUpdate = u))
 			set.add(`x`)
@@ -66,7 +66,7 @@ describe(`TransceiverSet`, () => {
 	})
 	describe(`transaction`, () => {
 		it(`should emit three changes`, () => {
-			const set = new TransceiverSet()
+			const set = new SetRTX()
 			const fn = vitest.fn()
 			set.subscribe(`TEST`, fn)
 			set.transaction((set) => {
@@ -86,7 +86,7 @@ describe(`TransceiverSet`, () => {
 	})
 	describe(`rollback`, () => {
 		it(`should quickly undo false history`, () => {
-			const set = new TransceiverSet(null, 10)
+			const set = new SetRTX(null, 10)
 			set.add(1)
 			console.log(set.cacheUpdateNumber, set.cache)
 			set.add(2)

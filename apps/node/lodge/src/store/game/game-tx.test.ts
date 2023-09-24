@@ -1,5 +1,5 @@
-import { TransceiverSet } from "atom.io/transceivers/set-io"
 import { getState, runTransaction, setLogLevel } from "~/packages/atom.io/src"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { findCardGroupState, groupsOfCards } from "./card-group"
 import { addHandTx, dealCardsTX, spawnClassicDeckTX } from "./game-tx"
 
@@ -36,9 +36,9 @@ describe(`dealCardsTX`, () => {
 		)
 		expect(
 			getState(groupsOfCards.findRelationsState__INTERNAL(`myHand`)),
-		).toEqual(new TransceiverSet([`C51`, `C50`]))
+		).toEqual(new SetRTX([`C51`, `C50`]))
 		expect(
 			getState(groupsOfCards.findRelationsState__INTERNAL(`deckId`)),
-		).toEqual(new TransceiverSet(Array.from({ length: 50 }, (_, k) => `C${k}`)))
+		).toEqual(new SetRTX(Array.from({ length: 50 }, (_, k) => `C${k}`)))
 	})
 })

@@ -4,8 +4,8 @@ import { Junction } from "rel8/junction"
 
 import type { MutableAtomFamily } from "atom.io"
 import { createMutableAtomFamily } from "atom.io/internal"
-import { TransceiverSet } from "atom.io/transceivers/set-io"
 import type { Json } from "~/packages/anvl/src/json"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 
 type AtomicJunctionOptions<
 	ASide extends string,
@@ -42,7 +42,7 @@ export class AtomicJunction<
 
 	private junction: Junction<ASide, BSide, Content>
 	public findRelationsState__INTERNAL: MutableAtomFamily<
-		TransceiverSet<string>,
+		SetRTX<string>,
 		string[],
 		string
 	>
@@ -56,15 +56,15 @@ export class AtomicJunction<
 		defaultContent,
 	}: AtomicJunctionOptions<ASide, BSide, Content>) {
 		this.findRelationsState__INTERNAL = createMutableAtomFamily<
-			TransceiverSet<string>,
+			SetRTX<string>,
 			string[],
 			string
 		>({
 			key: `${key}:relations::mutable`,
 			mutable: true,
-			default: () => new TransceiverSet(),
+			default: () => new SetRTX(),
 			toJson: (relations) => [...relations],
-			fromJson: (relations) => new TransceiverSet(relations),
+			fromJson: (relations) => new SetRTX(relations),
 		})
 
 		this.findRelationContentState__INTERNAL = (

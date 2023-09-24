@@ -10,7 +10,8 @@ import type {
 	TransactionToken,
 	ƒn,
 } from "atom.io"
-import { Junction } from "rel8/junction"
+
+import { Junction } from "~/packages/rel8/junction"
 
 import type { Atom } from "../atom"
 import { type MutableAtom, type Tracker, type Transceiver } from "../mutable"
