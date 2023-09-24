@@ -2,7 +2,7 @@ import type { ReadonlySelectorToken, StateToken } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { fallback } from "anvl/function"
+import { fallback } from "anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 import { isJson } from "~/packages/anvl/src/refinement/refine-json"
 import { RelationEditor } from "~/packages/hamr/src/react-data-designer"
