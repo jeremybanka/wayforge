@@ -30,10 +30,9 @@ export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serial
 			mutable: true
 		}
 
-export function atom<
-	T extends Transceiver<Json.Serializable>,
-	J extends Json.Serializable,
->(options: MutableAtomOptions<T, J>): MutableAtomToken<T, J>
+export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
+	options: MutableAtomOptions<T, J>,
+): MutableAtomToken<T, J>
 export function atom<T>(options: AtomOptions<T>): AtomToken<T>
 export function atom<T>(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
@@ -69,7 +68,7 @@ export type MutableAtomFamilyOptions<
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
-	Core extends Transceiver<Json.Serializable>,
+	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 	Key extends Json.Serializable,
 > = 

@@ -7,7 +7,7 @@ import { FamilyTracker } from "./tracker-family"
 import type { Transceiver } from "./transceiver"
 
 export function createMutableAtomFamily<
-	Core extends Transceiver<Json.Serializable>,
+	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 	Key extends string,
 >(

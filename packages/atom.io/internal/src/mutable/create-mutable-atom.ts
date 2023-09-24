@@ -6,7 +6,7 @@ import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
 export function createMutableAtom<
-	Core extends Transceiver<Json.Serializable>,
+	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 >(
 	options: AtomIO.MutableAtomOptions<Core, SerializableCore>,
