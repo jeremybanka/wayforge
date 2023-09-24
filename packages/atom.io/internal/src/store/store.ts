@@ -12,8 +12,6 @@ import type {
 } from "atom.io"
 import { Junction } from "rel8/junction"
 
-import { doNothing } from "~/packages/anvl/src/function"
-
 import type { Atom } from "../atom"
 import { type MutableAtom, type Tracker, type Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
@@ -99,7 +97,7 @@ export class Store {
 		logger__INTERNAL: Logger
 	} = {
 		name: `IMPLICIT_STORE`,
-		logger: { ...console, info: doNothing },
+		logger: { ...console, info: () => undefined },
 		logger__INTERNAL: console,
 	}
 
@@ -114,7 +112,7 @@ export class Store {
 				logger__INTERNAL: console,
 				logger: {
 					...console,
-					info: doNothing,
+					info: () => undefined,
 					...store?.config?.logger,
 				},
 				name,

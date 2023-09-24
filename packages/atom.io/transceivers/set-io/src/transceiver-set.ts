@@ -1,11 +1,9 @@
-import type { Json, Stringified } from "../../../../anvl/src/json"
-import { parseJson, stringifyJson } from "../../../../anvl/src/json"
-import type { primitive } from "../../../../anvl/src/primitive"
-import { Subject } from "../../../internal/src/mutable/subject"
-import type {
-	Transceiver,
-	TransceiverMode,
-} from "../../../internal/src/mutable/transceiver"
+import type { Transceiver, TransceiverMode } from "atom.io/internal"
+import { Subject } from "atom.io/internal"
+import type { Json, Stringified } from "atom.io/json"
+import { parseJson, stringifyJson } from "atom.io/json"
+
+import type { primitive } from "~/packages/anvl/src/primitive"
 
 export type SetUpdate =
 	| `add:${string}`
@@ -95,7 +93,6 @@ export class TransceiverSet<P extends primitive>
 		return super.delete(value)
 	}
 
-	// TRANSACTIONS
 	public readonly parent: TransceiverSet<P> | null
 	public child: TransceiverSet<P> | null = null
 	public transactionUpdates: SetUpdate[] | null = null

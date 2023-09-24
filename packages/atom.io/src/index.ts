@@ -12,10 +12,6 @@ import {
 import * as __INTERNAL__ from "atom.io/internal"
 import type { Store, Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ƒn } from "~/packages/anvl/src/function"
-import { capitalize } from "~/packages/anvl/src/string/capitalize"
-
-export { ƒn }
 
 export * from "./atom"
 export * from "./logger"
@@ -28,6 +24,8 @@ export * from "./transaction"
 export { __INTERNAL__ }
 export type { Store } from "atom.io/internal"
 export type { Json } from "atom.io/json"
+
+export type ƒn = (...parameters: any[]) => any
 
 export type AtomToken<_> = {
 	key: string
@@ -61,6 +59,9 @@ export type FamilyMetadata = {
 	key: string
 	subKey: string
 }
+
+export const capitalize = (str: string): string =>
+	str[0].toUpperCase() + str.slice(1)
 
 export const getState = <T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
