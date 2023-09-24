@@ -1,7 +1,6 @@
 import { vitest } from "vitest"
 
-import { withdraw } from "../internal/src"
-import type { AtomToken, TimelineToken } from "../src"
+import type { AtomToken, TimelineToken } from "atom.io"
 import {
 	__INTERNAL__,
 	atom,
@@ -12,7 +11,8 @@ import {
 	setState,
 	timeline,
 	undo,
-} from "../src"
+} from "atom.io"
+import { withdraw } from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

@@ -11,7 +11,7 @@ import {
 	transaction,
 } from "atom.io"
 import { FamilyTracker, Tracker } from "atom.io/internal"
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

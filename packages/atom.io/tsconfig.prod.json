@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"paths": {
+			"~/*": ["./*"],
+			"atom.io": ["./packages/atom.io"],
+			"atom.io/*": ["./packages/atom.io/*"]
+		}
+	},
+	"include": ["./**/src/**/*", "__test__/**/*", "dist", "./**/dist/**/*"]
+}

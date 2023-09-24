@@ -1,6 +1,5 @@
 import { vitest } from "vitest"
 
-import { IMPLICIT } from "../internal/src"
 import {
 	__INTERNAL__,
 	atom,
@@ -10,7 +9,7 @@ import {
 	setLogLevel,
 	setState,
 	subscribe,
-} from "../src"
+} from "atom.io"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

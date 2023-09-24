@@ -7,7 +7,7 @@ import {
 	selectorFamily,
 	setLogLevel,
 	setState,
-} from "../src"
+} from "atom.io"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

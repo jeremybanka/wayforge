@@ -16,7 +16,7 @@ import {
 	subscribe,
 	subscribeToTransaction,
 	transaction,
-} from "../src"
+} from "atom.io"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

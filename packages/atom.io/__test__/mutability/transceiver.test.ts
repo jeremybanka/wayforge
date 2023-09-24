@@ -1,5 +1,5 @@
-import type { NumberedSetUpdate } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
+import type { NumberedSetUpdate } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 describe(`SetRTX`, () => {
 	describe(`observe`, () => {

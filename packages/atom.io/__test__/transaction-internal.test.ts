@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import { vitest } from "vitest"
 
 import {
@@ -11,7 +9,7 @@ import {
 	setLogLevel,
 	subscribe,
 	transaction,
-} from "../src"
+} from "atom.io"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
