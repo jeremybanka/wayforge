@@ -1,6 +1,6 @@
 {
 	"name": "atom.io",
-	"version": "0.6.9",
+	"version": "0.7.0",
 	"description": "Reactive state graph for React, Preact, and vanilla",
 	"scripts": {
 		"build": "concurrently \"npm:build:*\"",
@@ -32,13 +32,27 @@
 		"socket.io-client": ">=4.0.0"
 	},
 	"peerDependenciesMeta": {
-		"@testing-library/react": { "optional": true },
-		"react": { "optional": true },
-		"@floating-ui/react": { "optional": true },
-		"@floating-ui/react-dom": { "optional": true },
-		"framer-motion": { "optional": true },
-		"socket.io": { "optional": true },
-		"socket.io-client": { "optional": true }
+		"@testing-library/react": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		},
+		"@floating-ui/react": {
+			"optional": true
+		},
+		"@floating-ui/react-dom": {
+			"optional": true
+		},
+		"framer-motion": {
+			"optional": true
+		},
+		"socket.io": {
+			"optional": true
+		},
+		"socket.io-client": {
+			"optional": true
+		}
 	},
 	"devDependencies": {
 		"@emotion/react": "11.11.1",

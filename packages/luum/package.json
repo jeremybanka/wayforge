@@ -1,6 +1,6 @@
 {
 	"name": "luum",
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"description": "generate colors dynamically",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -23,7 +23,12 @@
 		"vite-tsconfig-paths": "4.2.1",
 		"vitest": "0.34.5"
 	},
-	"keywords": ["color", "css", "javascript", "library"],
+	"keywords": [
+		"color",
+		"css",
+		"javascript",
+		"library"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git"
