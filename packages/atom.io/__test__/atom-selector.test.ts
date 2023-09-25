@@ -13,7 +13,7 @@ import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 2
 setLogLevel(LOG_LEVELS[CHOOSE])
 const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
 
