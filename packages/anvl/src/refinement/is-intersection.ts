@@ -12,13 +12,7 @@ export function mustSatisfyAllOfTheFollowing<A>(
 	(input: unknown): input is A
 	and: <B>(isTypeB: Refinement<unknown, B>) => ExtendsAll<A, B>
 } {
-	console.log({ isTypeA, refinements })
-	let name = ``
-	try {
-		name = `(${refinements.map((r) => r?.name || `anon`).join(` & `)})`
-	} catch (e) {
-		console.log(e)
-	}
+	const name = `(${refinements.map((r) => r?.name || `anon`).join(` & `)})`
 	const _ = {
 		[name]: (input: unknown): input is A =>
 			refinements.every(
