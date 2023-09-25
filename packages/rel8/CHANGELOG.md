@@ -1,5 +1,12 @@
 # rel8
 
+## 0.0.5
+
+### Patch Changes
+
+- a0f5095b: 🚀 Very minor performance enhancement in getRelatedKey.
+- a0f5095b: 🔈 Improve warning logged when multiple related keys are found, but only one was expected.
+
 ## 0.0.4
 
 ### Patch Changes

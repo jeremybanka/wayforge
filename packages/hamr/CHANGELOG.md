@@ -1,5 +1,11 @@
 # hamr
 
+## 0.4.4
+
+### Patch Changes
+
+- a0f5095b: ➖ Drop dependencies `fp-ts` and `ajv`, bringing dependencies from 6 to 4.
+
 ## 0.4.3
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # anvl
 
+## 0.3.0
+
+### Minor Changes
+
+- a0f5095b: 🔥 Remove `reactivity` subpackage. The `Subject` implementation now lives in `atom.io/internal, and all `Transceiver`implementations will now live in`atom.io/transceivers/\*` subpackages.
+- a0f5095b: 💥 Rename `anvl/refinement` members: `mustBe` ➡️ `mustSatisfyAllOfTheFollowing` and `couldBe` ➡️ `mustSatisfyOneOfTheFollowing`.
+
+### Patch Changes
+
+- a0f5095b: ✨ `anvl/function` now ships a `pipe` implementation.
+- a0f5095b: ➖ Drop dependencies `fp-ts` and `io-ts`, bringing dependencies to 0.
+- a0f5095b: 🎁 New Subpackage `anvl/primitive` provides the `primitive` type and associated refinements.
+
 ## 0.2.6
 
 ### Patch Changes
