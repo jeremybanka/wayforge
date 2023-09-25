@@ -12,6 +12,7 @@ export default defineConfig({
 		`src/nullish/index.ts`,
 		`src/number/index.ts`,
 		`src/object/index.ts`,
+		`src/primitive/index.ts`,
 		`src/reactivity/index.ts`,
 		`src/refinement/index.ts`,
 		`src/string/index.ts`,

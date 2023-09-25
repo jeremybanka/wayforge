@@ -1,5 +1,5 @@
 import { useO } from "atom.io/react"
-import { myIdState } from "atom.io/realtime-react"
+import { myIdState } from "atom.io/realtime-client"
 import type { FC } from "react"
 import { useState } from "react"
 

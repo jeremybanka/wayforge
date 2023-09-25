@@ -1,8 +1,8 @@
-import * as ARNE from "fp-ts/ReadonlyNonEmptyArray"
-import { pipe } from "fp-ts/function"
-import * as S from "fp-ts/string"
+import { pipe } from "anvl/function"
+import { map, reduce } from "./array"
+import { split } from "./string"
 
-// function to hash a string
+// imperative
 export const hashString = (str: string): number => {
 	let hash = 0
 	if (str.length === 0) return hash
@@ -13,15 +13,17 @@ export const hashString = (str: string): number => {
 	}
 	return hash
 }
-// using fp-ts
+// functional
 export const hash = (str: string): number =>
-	pipe(
-		str,
-		S.split(``),
-		ARNE.map((char) => char.charCodeAt(0)),
-		ARNE.reduce(0, (acc, char) => (acc << 5) - acc + char),
-		(hash) => hash & hash,
-	)
+	str === ``
+		? 0
+		: pipe(
+				str,
+				split(``),
+				map((char) => char.charCodeAt(0)),
+				reduce((acc, char) => (acc << 5) - acc + char, 0),
+				(hash) => hash & hash,
+		  )
 
 // a possible flaw in an object hash function is not commutative for properties
 // { a: 1, b: 2 } and { b: 2, a: 1 } will have different hashes

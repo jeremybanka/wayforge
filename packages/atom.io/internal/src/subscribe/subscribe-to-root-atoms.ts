@@ -30,6 +30,7 @@ export const subscribeToRootAtoms = <T>(
 								`)`,
 							)
 							const oldValue = recallState(state, store)
+							// ❗ this retrieves a stale cached value when applying a transaction on the server
 							const newValue = getState__INTERNAL(state, store)
 							store.config.logger?.info(
 								`   <- "${state.key}" went (`,

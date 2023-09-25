@@ -1,10 +1,9 @@
+import type { Modify } from "atom.io/internal"
 import type { FC } from "react"
-
-import type { Modifier } from "~/packages/anvl/src/function"
 
 export const OpenClose: FC<{
 	isOpen: boolean
-	setIsOpen: (next: Modifier<boolean> | boolean) => void
+	setIsOpen: (next: Modify<boolean> | boolean) => void
 	disabled?: boolean
 }> = ({ isOpen, setIsOpen, disabled }) => {
 	return (

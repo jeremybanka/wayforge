@@ -1,9 +1,11 @@
-import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+import { atom, atomFamily, selectorFamily } from "atom.io"
+import { createMutableAtom } from "atom.io/internal"
 import { selectJson } from "atom.io/json"
 
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
 import { isWithin } from "~/packages/anvl/src/refinement"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { Perspective } from "~/packages/occlusion/src"
 
 export const OWNERS_OF_CARDS = new Join({
@@ -42,14 +44,12 @@ export const findCardState = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = atom<Set<string>>({
-	key: `cardIndex`,
-	default: new Set<string>(),
-})
-export const cardIndexJSON = selector<string[]>({
-	key: `cardIndexJSON`,
-	get: ({ get }) => [...get(cardIndex)],
-	set: ({ set }, newValue) => set(cardIndex, new Set(newValue)),
+export const cardIndex = createMutableAtom<SetRTX<string>, string[]>({
+	key: `cardIndex::mutable`,
+	mutable: true,
+	default: () => new SetRTX<string>(),
+	toJson: (set) => [...set],
+	fromJson: (array) => new SetRTX<string>(array),
 })
 
 export type CardCycle = {

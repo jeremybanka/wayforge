@@ -1,5 +1,6 @@
 import { useO } from "atom.io/react"
-import { myIdState, useServerAction } from "atom.io/realtime-react"
+import { myIdState } from "atom.io/realtime-client"
+import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 import type { FC } from "react"
 
@@ -23,7 +24,7 @@ export const Controls: FC = () => {
 			<button.ff
 				children="Add Deck"
 				onClick={() => {
-					const deckId = nanoid()
+					const deckId = `DECK_ID_TEST` // nanoid()
 					const cardIds = Array.from({ length: 52 }).map(nanoid)
 					spawnClassicDeck(deckId, cardIds)
 				}}

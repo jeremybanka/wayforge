@@ -1,9 +1,8 @@
-import type { Refinement } from "fp-ts/Refinement"
-
-import type { Identified } from "~/packages/anvl/src/id/identified"
+import type { Identified } from "../id"
 
 import type { Json, JsonInterface } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
+import type { Refinement } from "../refinement"
 import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 import { EMPTY_RELATION_DATA, isRelationData } from "./core-relation-data"
 import { getRelatedId, getRelatedIds } from "./get-related-ids"

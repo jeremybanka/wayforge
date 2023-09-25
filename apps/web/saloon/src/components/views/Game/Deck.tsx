@@ -2,10 +2,7 @@ import { useO } from "atom.io/react"
 import { useServerAction } from "atom.io/realtime-react"
 import type { FC } from "react"
 
-import {
-	groupsOfCardsState,
-	shuffleDeckTX,
-} from "~/apps/node/lodge/src/store/game"
+import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
 import { useRadial } from "../../../services/radial"
 import { div } from "../../containers/<div>"
@@ -13,7 +10,9 @@ import { CardBack } from "./Card"
 import scss from "./Deck.module.scss"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
-	const cardIds = useO(groupsOfCardsState).getRelatedIds(id)
+	const cardIds = useO(groupsOfCards.findRelatedKeysState(id))
+
+	console.log(`❗❗`, { cardIds })
 
 	const shuffle = useServerAction(shuffleDeckTX)
 
@@ -27,7 +26,9 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
 	return (
 		<>
 			<div.dropShadowDiagon className={scss.class} {...handlers}>
-				{cardIds.length}
+				<div>
+					{id} ({cardIds.length})
+				</div>
 				<div>
 					{cardIds.map((cardId) => (
 						<CardBack key={cardId} id={cardId} />

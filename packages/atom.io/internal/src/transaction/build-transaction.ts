@@ -14,10 +14,12 @@ export const buildTransaction = (
 		core: {
 			atoms: new Map(store.atoms),
 			atomsThatAreDefault: new Set(store.atomsThatAreDefault),
+			families: new Map(store.families),
 			operation: { open: false },
 			readonlySelectors: new Map(store.readonlySelectors),
 			timelines: new Map(store.timelines),
 			timelineAtoms: new Junction(store.timelineAtoms.toJSON()),
+			trackers: new Map(),
 			transactions: new Map(store.transactions),
 			selectorAtoms: new Junction(store.selectorAtoms.toJSON()),
 			selectorGraph: new Junction(store.selectorGraph.toJSON(), {
@@ -32,6 +34,6 @@ export const buildTransaction = (
 	}
 	store.config.logger?.info(
 		`🛫`,
-		`transaction "${key}" started in store "${store.config.name}"`,
+		`transaction "${key}" building in store "${store.config.name}"`,
 	)
 }

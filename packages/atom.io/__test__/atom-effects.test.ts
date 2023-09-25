@@ -3,14 +3,8 @@ import { readFile, readFileSync, writeFile, writeFileSync } from "fs"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import {
-	__INTERNAL__,
-	atom,
-	atomFamily,
-	getState,
-	setLogLevel,
-	setState,
-} from "../src"
+import { atom, atomFamily, getState, setLogLevel, setState } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

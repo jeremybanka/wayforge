@@ -13,9 +13,7 @@
 		"test": "vitest",
 		"test:once": "vitest run"
 	},
-	"dependencies": {
-		"fp-ts": "2.16.1"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@types/node": "18.17.19",
 		"eslint": "8.50.0",

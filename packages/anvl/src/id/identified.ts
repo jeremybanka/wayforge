@@ -1,5 +1,4 @@
-import type { Refinement } from "fp-ts/Refinement"
-
+import type { Refinement } from "~/packages/rel8/types/src"
 import type { Json } from "../json"
 
 export type Identified = { id: string }

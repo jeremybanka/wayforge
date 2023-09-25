@@ -1,5 +1,4 @@
 import type { SerializedStyles } from "@emotion/react"
-import Ajv from "ajv"
 import type { FC, ReactElement } from "react"
 import { useMemo } from "react"
 
@@ -66,12 +65,6 @@ export const JsonEditor = <T extends Json.Serializable>({
 		...DEFAULT_JSON_EDITOR_COMPONENTS,
 		...CustomComponents,
 	}
-
-	const ajv = new Ajv({ allErrors: true, verbose: true })
-	const validate = useMemo(() => {
-		return ajv.compile(schema)
-	}, [schema])
-	const validationResults = validate(data)
 
 	return (
 		<JsonEditor_INTERNAL

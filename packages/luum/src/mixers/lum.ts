@@ -1,7 +1,5 @@
-import { pipe } from "fp-ts/function"
-
 import type { Modifier } from "~/packages/anvl/src/function"
-import { become } from "~/packages/anvl/src/function"
+import { become, pipe } from "~/packages/anvl/src/function"
 import { clampInto } from "~/packages/anvl/src/number/clamp"
 import type { HSL, LuumSpec } from "~/packages/luum/src"
 

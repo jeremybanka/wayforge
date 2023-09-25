@@ -21,7 +21,7 @@ export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = 
 		: {
 				getContent: (contentKey: string) => Content | undefined
 				setContent: (contentKey: string, content: Content) => void
-				deleteContent: (g) => void
+				deleteContent: (contentKey: string) => void
 		  }) & {
 		addRelation: (a: string, b: string) => void
 		deleteRelation: (a: string, b: string) => void
@@ -232,12 +232,16 @@ export class Junction<
 		if (relations) {
 			if (relations.size > 1) {
 				console.warn(
-					`Multiple related keys were found for key "${key}": (${[...relations]
+					`${relations.size} related keys were found for key "${key}": (${[
+						...relations,
+					]
 						.map((k) => `"${k}"`)
 						.join(`, `)}). Only one related key was expected.`,
 				)
 			}
-			return [...relations][0]
+			for (const relation of relations) {
+				return relation
+			}
 		}
 	}
 

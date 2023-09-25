@@ -1,10 +1,10 @@
 import type { SerializedStyles } from "@emotion/react"
-import { pipe } from "fp-ts/function"
 import type { FC } from "react"
 import { useId, useRef, useState } from "react"
 
 import { clampInto } from "~/packages/anvl/src/number"
 
+import { pipe } from "~/packages/anvl/src/function"
 import { ElasticInput } from "."
 
 function round(value: number, decimalPlaces?: number): number {

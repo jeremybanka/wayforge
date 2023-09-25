@@ -1,13 +1,13 @@
 import { vitest } from "vitest"
 
 import {
-	__INTERNAL__,
 	atomFamily,
 	getState,
 	selectorFamily,
 	setLogLevel,
 	setState,
-} from "../src"
+} from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

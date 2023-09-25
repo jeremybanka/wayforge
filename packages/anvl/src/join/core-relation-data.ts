@@ -1,9 +1,7 @@
-import { isString } from "fp-ts/string"
-
-import type { Json } from "~/packages/anvl/src/json"
-
 import { isArray } from "../array"
+import type { Json } from "../json"
 import { hasExactProperties, isRecord } from "../object/refinement"
+import { isString } from "../primitive"
 import { isLiteral } from "../refinement"
 
 export const RELATION_TYPES = [`1:1`, `1:n`, `n:n`] as const

@@ -1,5 +1,7 @@
-import type { Refinement } from "fp-ts/Refinement"
+import type { Refinement } from "../refinement"
+
 export * from "./curry"
+export * from "./pipe"
 
 export type ƒn = (...parameters: any[]) => any
 

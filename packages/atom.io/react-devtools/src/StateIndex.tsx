@@ -1,7 +1,7 @@
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
 import { getState, selectorFamily } from "atom.io"
 import type { FamilyNode, StateTokenIndex } from "atom.io/introspection"
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import {
@@ -36,7 +36,9 @@ export const StateIndexLeafNode: FC<{
 	isOpenState: AtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
-	const [isOpen, setIsOpen] = useIO(isOpenState)
+	const setIsOpen = useI(isOpenState)
+	const isOpen = useO(isOpenState)
+
 	const state = useO(node)
 	const stateType = useO(typeState)
 
@@ -73,7 +75,8 @@ export const StateIndexTreeNode: FC<{
 	>
 	isOpenState: AtomToken<boolean>
 }> = ({ node, isOpenState }) => {
-	const [isOpen, setIsOpen] = useIO(isOpenState)
+	const setIsOpen = useI(isOpenState)
+	const isOpen = useO(isOpenState)
 	Object.entries(node.familyMembers).forEach(([key, childNode]) => {
 		findViewIsOpenState(key)
 		findStateTypeState(childNode)

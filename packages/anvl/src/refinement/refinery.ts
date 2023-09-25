@@ -1,7 +1,7 @@
-import type { Refinement } from "fp-ts/Refinement"
+import type { Refinement } from "../refinement"
 
-import type { ClassSignature } from "."
 import { isPlainObject } from "../object"
+import type { ClassSignature } from "./is-class"
 
 export type RefinementStrategy = ClassSignature | Refinement<unknown, any>
 

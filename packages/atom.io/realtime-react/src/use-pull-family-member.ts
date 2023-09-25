@@ -1,25 +1,15 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
 import { StoreContext } from "atom.io/react"
+import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 
 import { RealtimeContext } from "./realtime-context"
 
 export function usePullFamilyMember<J extends Json.Serializable>(
-	family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-	subKey: AtomIO.Json.Serializable,
+	token: AtomIO.AtomToken<J>,
 ): void {
-	const token = family(subKey)
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => {
-		socket?.on(`serve:${token.key}`, (data: J) => {
-			AtomIO.setState(family(subKey), data, store)
-		})
-		socket?.emit(`sub:${family.key}`, subKey)
-		return () => {
-			socket?.off(`serve:${token.key}`)
-			socket?.emit(`unsub:${token.key}`)
-		}
-	}, [family.key])
+	React.useEffect(() => RTC.pullFamilyMember(token, socket, store), [token.key])
 }

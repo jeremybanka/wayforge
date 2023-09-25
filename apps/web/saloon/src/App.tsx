@@ -1,10 +1,11 @@
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import type { FC } from "react"
 import { Link, Outlet, Route, Routes } from "react-router-dom"
 
 import { Radial } from "~/packages/hamr/src/react-radial/Radial"
 
+import { setLogLevel } from "~/packages/atom.io/src"
 import scss from "./App.module.scss"
 import { main } from "./components/containers/<main>"
 import { Lab } from "./components/views/Lab"
@@ -13,6 +14,8 @@ import { Lobby } from "./components/views/Lobby"
 import { RoomRoute } from "./components/views/Room/Room"
 import { windowMousePositionState } from "./services/mouse-position"
 import { actionsState, radialModeState } from "./services/radial"
+
+// setLogLevel(`info`)
 
 export const App: FC = () => (
 	<main className={scss.class}>
@@ -35,7 +38,7 @@ export const App: FC = () => (
 				</Route>
 			</Routes>
 			<Radial
-				useMode={() => useIO(radialModeState)}
+				useMode={() => [useO(radialModeState), useI(radialModeState)]}
 				useActions={() => useO(actionsState)}
 				useMousePosition={() => useO(windowMousePositionState)}
 			/>
