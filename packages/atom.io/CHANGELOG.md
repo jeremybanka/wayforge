@@ -1,5 +1,19 @@
 # atom.io
 
+## 0.7.0
+
+### Minor Changes
+
+- a0f5095b: 🎁 New Subpackage `atom.io/transceivers/set-rtx` provides a look at the future of mutability in `atom.io`.
+- a0f5095b: 🎁 Separate `atom.io/realtime-client` from `atom.io/realtime-react`.
+
+### Patch Changes
+
+- a0f5095b: ➖ Drop dependency `fp-ts`, bringing dependencies to 0.
+- a0f5095b: 🐛 Fix inability to import library.
+- a0f5095b: 🎁 Expose `atom.io/internal` as a subpackage.
+- a0f5095b: ✨ Mutability stabilizing: `atom` and `atomFamily` now support configurations for mutability state storage.
+
 ## 0.6.9
 
 ### Patch Changes
