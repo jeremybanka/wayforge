@@ -7,5 +7,5 @@
 			"atom.io/*": ["./packages/atom.io/*"]
 		}
 	},
-	"include": ["__test__", "src", "dist", "./**/src", "./**/dist"]
+	"include": ["__test__", "src", "dist", "**/src", "**/dist"]
 }
