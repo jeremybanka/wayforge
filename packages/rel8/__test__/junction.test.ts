@@ -56,7 +56,7 @@ describe(`Junction.prototype.getRelatedKey`, () => {
 		const roomKey = playersInRooms.getRelatedKey(player)
 		expect(roomKey).toEqual(roomA)
 		expect(warn).toHaveBeenCalledWith(
-			`Multiple related keys were found for key "Helena": ("Shrine", "Loft"). Only one related key was expected.`,
+			`2 related keys were found for key "Helena": ("Shrine", "Loft"). Only one related key was expected.`,
 		)
 	})
 })

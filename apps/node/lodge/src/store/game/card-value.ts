@@ -1,37 +1,28 @@
-import { atom, atomFamily, selector, transaction } from "atom.io"
-import { selectJson } from "atom.io/json"
+import { atomFamily, transaction } from "atom.io"
 
+import { createMutableAtom } from "atom.io/internal"
 import type { Identified } from "~/packages/anvl/src/id"
-import { Join } from "~/packages/anvl/src/join"
 import type { Json } from "~/packages/anvl/src/json"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
+import { AtomicJunction } from "../utils/atomic-junction"
 
 export const findCardValueState = atomFamily<Identified & Json.Object, string>({
 	key: `findCardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValuesIndex = atom<Set<string>>({
-	key: `cardValuesIndex`,
-	default: new Set<string>(),
-})
-export const cardValuesIndexJSON = selector({
-	key: `cardValuesIndexJSON`,
-	get: ({ get }) => [...get(cardValuesIndex)],
-	set: ({ set }, newValue) => set(cardValuesIndex, new Set(newValue)),
+export const cardValuesIndex = createMutableAtom<SetRTX<string>, string[]>({
+	key: `cardValuesIndex::mutable`,
+	mutable: true,
+	default: () => new SetRTX<string>(),
+	toJson: (set) => [...set],
+	fromJson: (array) => new SetRTX<string>(array),
 })
 
-export const VALUES_OF_CARDS = new Join({
-	relationType: `1:n`,
-})
-	.from(`valueId`)
-	.to(`cardId`)
-export const valuesOfCardsState = atom({
+export const valuesOfCards = new AtomicJunction({
 	key: `valuesOfCards`,
-	default: VALUES_OF_CARDS,
+	between: [`valueId`, `cardId`],
+	cardinality: `1:n`,
 })
-export const valuesOfCardsStateJSON = selectJson(
-	valuesOfCardsState,
-	VALUES_OF_CARDS.makeJsonInterface(),
-)
 
 export const addCardValueTX = transaction<
 	<IJ extends Identified & Json.Serializable>(value: IJ) => boolean
@@ -43,7 +34,7 @@ export const addCardValueTX = transaction<
 			console.error(`Card value id has already been used`)
 			return false
 		}
-		set(cardValuesIndex, (current) => new Set([...current, value.id]))
+		set(cardValuesIndex, (current) => current.add(value.id))
 		set(findCardValueState(value.id), value)
 		return true
 	},

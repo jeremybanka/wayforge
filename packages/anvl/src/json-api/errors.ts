@@ -1,5 +1,4 @@
-import type { Json } from "~/packages/anvl/src/json"
-
+import type { Json } from "../json"
 import type { Link, Links } from "./document"
 
 export type ErrorObject_Optional<

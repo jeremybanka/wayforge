@@ -1,4 +1,4 @@
-import type { Refinement } from "fp-ts/Refinement"
+import type { Refinement } from "../refinement"
 
 type KeysOfValue<T, V extends T[keyof T]> = {
 	[K in keyof T]-?: V extends T[K] ? K : never

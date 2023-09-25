@@ -1,9 +1,15 @@
-import type { Refinement } from "fp-ts/Refinement"
+import type { Refinement } from "../refinement"
 
 export * from "./refined"
+export * from "./refinery"
+export * from "./refinement"
 
-export const canExist = (_: unknown): _ is unknown => true
-export const cannotExist = (_: unknown): _ is never => false
+export * from "./can-exist"
+export * from "./cannot-exist"
+
+export * from "./is-class"
+export * from "./is-union"
+export * from "./is-intersection"
 
 export const isLiteral =
 	<T extends boolean | number | string>(value: T): Refinement<unknown, T> =>
@@ -32,91 +38,3 @@ export const ensureAgainst =
 		}
 		return input as Exclude<A | B, A>
 	}
-
-export type ExtendsSome<A, B> = Refinement<unknown, A | B> & {
-	or: <C>(isType: Refinement<unknown, C>) => ExtendsSome<unknown, A | B | C>
-}
-export const couldBe = <A>(
-	isTypeA: Refinement<unknown, A>,
-	logging = false,
-	refinements: Refinement<unknown, any>[] = [isTypeA],
-): {
-	(input: unknown): input is A
-	or: <B>(isTypeB: Refinement<unknown, B>) => ExtendsSome<A, B>
-} => {
-	const name = `(${refinements.map((r) => r.name || `anon`).join(` | `)})`
-	const _ = {
-		[name]: (input: unknown): input is A =>
-			refinements.some(
-				(refinement) => (
-					logging &&
-						console.log(
-							refinements.map((r) => r.name || `anon`).join(` | `),
-							`>`,
-							refinement.name ?? `anon`,
-							`:`,
-							refinement(input),
-						),
-					refinement(input)
-				),
-			),
-	}
-	const checkTypes: {
-		(input: unknown): input is A
-		or: <B>(isTypeB: Refinement<unknown, B>) => ExtendsSome<A, B>
-	} = Object.assign(_[name], {
-		or: <B>(isTypeB: Refinement<unknown, B>): ExtendsSome<A, B> =>
-			couldBe(isTypeB, logging, [...refinements, isTypeB]),
-	})
-	return checkTypes
-}
-
-export const isUnion = couldBe(cannotExist)
-
-export type ExtendsAll<A, B> = Refinement<unknown, A & B> & {
-	and: <C>(isType: Refinement<unknown, C>) => ExtendsAll<A & B, C>
-}
-
-export const mustBe = <A>(
-	isTypeA: Refinement<unknown, A>,
-	logging = false,
-	refinements: Refinement<unknown, any>[] = [isTypeA],
-): {
-	(input: unknown): input is A
-	and: <B>(isTypeB: Refinement<unknown, B>) => ExtendsAll<A, B>
-} => {
-	const name = `(${refinements.map((r) => r.name || `anon`).join(` & `)})`
-	const _ = {
-		[name]: (input: unknown): input is A =>
-			refinements.every(
-				(refinement) => (
-					logging &&
-						console.log(
-							refinements.map((r) => r.name || `anon`).join(` & `),
-							`>`,
-							refinement.name || `anon`,
-							`:`,
-							refinement(input),
-						),
-					refinement(input)
-				),
-			),
-	}
-	const checkTypes: {
-		(input: unknown): input is A
-		and: <B>(isTypeB: Refinement<unknown, B>) => ExtendsAll<A, B>
-	} = Object.assign(_[name], {
-		and: <B>(isTypeB: Refinement<unknown, B>): ExtendsAll<A, B> =>
-			mustBe(isTypeB, logging, [...refinements, isTypeB]) as ExtendsAll<A, B>,
-	})
-	return checkTypes
-}
-
-export const isIntersection = mustBe(canExist)
-
-export type ClassSignature = abstract new (...args: any) => any
-
-export const isClass =
-	<CS extends ClassSignature>(signature: CS) =>
-	(input: unknown): input is InstanceType<ClassSignature> =>
-		input instanceof signature

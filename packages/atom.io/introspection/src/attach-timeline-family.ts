@@ -1,15 +1,16 @@
-import type { ReadonlySelectorFamily, Store } from "atom.io"
-import { __INTERNAL__ } from "atom.io"
-import type { Timeline } from "atom.io/internal"
-import { Subject } from "atom.io/internal"
+import type { ReadonlySelectorFamily } from "atom.io"
+import type { Store, Timeline } from "atom.io/internal"
+import {
+	IMPLICIT,
+	Subject,
+	createAtomFamily,
+	createSelectorFamily,
+} from "atom.io/internal"
 
 export const attachTimelineFamily = (
-	store: Store = __INTERNAL__.IMPLICIT.STORE,
+	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorFamily<Timeline> => {
-	const findTimelineLogState__INTERNAL = __INTERNAL__.atomFamily__INTERNAL<
-		Timeline,
-		string
-	>(
+	const findTimelineLogState__INTERNAL = createAtomFamily<Timeline, string>(
 		{
 			key: `👁‍🗨 Timeline Update Log (Internal)`,
 			default: (key) =>
@@ -47,10 +48,7 @@ export const attachTimelineFamily = (
 		},
 		store,
 	)
-	const findTimelineLogState = __INTERNAL__.selectorFamily__INTERNAL<
-		Timeline,
-		string
-	>(
+	const findTimelineLogState = createSelectorFamily<Timeline, string>(
 		{
 			key: `👁‍🗨 Timeline Update Log`,
 			get: (key) => ({ get }) => get(findTimelineLogState__INTERNAL(key)),

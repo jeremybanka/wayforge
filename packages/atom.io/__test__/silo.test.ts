@@ -1,7 +1,6 @@
-import { IMPLICIT } from "../internal/src"
-import type { AtomOptions } from "../src"
-import { getState } from "../src"
-import { Silo } from "../src/silo"
+import type { AtomOptions } from "atom.io"
+import { Silo, getState } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 
 const hasImplicitStoreBeenCreated = () => IMPLICIT.STORE_INTERNAL !== undefined
 
@@ -32,7 +31,7 @@ describe(`silo`, () => {
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(
-			`Atom "count" not found in store "DEFAULT".`,
+			`Atom "count" not found in store "IMPLICIT_STORE".`,
 		)
 	})
 })

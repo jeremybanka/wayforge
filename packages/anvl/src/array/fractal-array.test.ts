@@ -1,5 +1,4 @@
-import { isString } from "fp-ts/string"
-
+import { isString } from "../primitive"
 import { fractalMap, isFractalArray, prune } from "./fractal-array"
 
 describe(`refinement: isFractalArray`, () => {

@@ -24,6 +24,21 @@
 - [ ] resettable atoms
 - [ ] resettable selectors
 
+## mutable
+### transactions
+- [x] make copies on demand
+- [ ] trackers attach to copies
+  - don't copy their values to the tx core
+  - instead, reinstall them on the tx core
+  - the effects are where the observation happens
+  - observation is value-bound, not store-bound
+  - conclusion: using effects is problematic, because they are a lifecycle feature of an atom, and transactions 
+- [ ] mutable copies do not stow updates
+  - 
+### silo/isolation
+- [x] copy all mutable atoms to new valueMap
+- [ ] trackers attach to copies (reinstall, targeting current store core?)
+
 ## documentation
 - [ ] document atom and selector families
 - [ ] document atom and selector

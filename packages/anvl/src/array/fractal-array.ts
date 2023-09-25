@@ -1,6 +1,5 @@
-import type { Refinement } from "fp-ts/Refinement"
-
 import { isArray } from "."
+import type { Refinement } from "../refinement"
 import { canExist, isUnion } from "../refinement"
 
 export type FractalArrayItems<T> = FractalArrayItems<T>[] | T

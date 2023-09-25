@@ -1,10 +1,11 @@
-import { useIO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import { dividendState } from "../../../services/app-store"
 
 export const Dividend: FC = () => {
-	const [dividend, setDividend] = useIO(dividendState)
+	const setDividend = useI(dividendState)
+	const dividend = useO(dividendState)
 	return (
 		<div>
 			<h1 data-testid="dividend">{dividend}</h1>

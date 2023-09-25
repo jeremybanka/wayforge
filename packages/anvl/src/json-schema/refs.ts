@@ -1,6 +1,5 @@
-import { isString } from "fp-ts/string"
-
-import type { Substitute } from "~/packages/anvl/src/tree/substitute"
+import { isString } from "../primitive"
+import type { Substitute } from "../tree/substitute"
 
 import { delve } from "../object"
 import { doesExtend } from "../object/refinement"

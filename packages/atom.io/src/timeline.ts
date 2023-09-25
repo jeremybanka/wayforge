@@ -3,12 +3,12 @@ import type {
 	TimelineSelectorUpdate,
 	TimelineTransactionUpdate,
 } from "atom.io/internal"
-import { IMPLICIT } from "atom.io/internal"
 import {
+	IMPLICIT,
 	redo__INTERNAL,
 	timeline__INTERNAL,
 	undo__INTERNAL,
-} from "atom.io/internal/"
+} from "atom.io/internal"
 
 import type { AtomFamily, AtomToken } from "."
 

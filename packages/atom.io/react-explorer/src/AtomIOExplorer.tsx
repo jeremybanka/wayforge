@@ -1,5 +1,4 @@
 import { runTransaction, setState } from "atom.io"
-import type { StoreHooks } from "atom.io/react"
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
@@ -7,6 +6,7 @@ import { Link, MemoryRouter, useLocation } from "react-router-dom"
 import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
+import { useI, useO } from "../../react/src"
 import { attachExplorerState } from "./explorer-states"
 
 export type ExplorerOptions = {
@@ -15,7 +15,6 @@ export type ExplorerOptions = {
 		SpaceWrapper: WC
 		CloseSpaceButton: FC<{ onClick: () => void }>
 	}
-	storeHooks: StoreHooks
 }
 
 const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
@@ -30,7 +29,6 @@ const DEFAULT_COMPONENTS: ExplorerOptions[`Components`] = {
 export const composeExplorer = ({
 	key,
 	Components,
-	storeHooks: { useO, useIO },
 }: ExplorerOptions): ReturnType<typeof attachExplorerState> & {
 	Explorer: FC<{ children: ReactNode }>
 	useSetTitle: (viewId: string) => void
@@ -63,7 +61,8 @@ export const composeExplorer = ({
 	}> = ({ children, viewId }) => {
 		const location = useLocation()
 		const viewState = findViewState(viewId)
-		const [view, setView] = useIO(viewState)
+		const view = useO(viewState)
+		const setView = useI(viewState)
 		useEffect(() => {
 			setView((view) => ({ ...view, location }))
 		}, [location.key])
@@ -94,9 +93,8 @@ export const composeExplorer = ({
 
 	const Tab: FC<{ viewId: string; spaceId: string }> = ({ viewId, spaceId }) => {
 		const view = useO(findViewState(viewId))
-		const [spaceFocusedView, setSpaceFocusedView] = useIO(
-			findSpaceFocusedViewState(spaceId),
-		)
+		const spaceFocusedView = useO(findSpaceFocusedViewState(spaceId))
+		const setSpaceFocusedView = useI(findSpaceFocusedViewState(spaceId))
 		const handleClick = () => setSpaceFocusedView(viewId)
 		return (
 			<div

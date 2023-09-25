@@ -1,10 +1,6 @@
-import type {
-	AtomToken,
-	ReadonlySelectorToken,
-	SelectorToken,
-	Store,
-} from "atom.io"
+import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
 
+import type { Store } from "../store"
 import { lookup } from "../store"
 import { target } from "../transaction"
 

@@ -10,7 +10,8 @@ import type {
 
 import type { Atom } from "../atom"
 import type { ReadonlySelector, Selector } from "../selector"
-import { type Timeline, addAtomToTimeline } from "../timeline"
+import { addAtomToTimeline } from "../timeline"
+import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import { target } from "../transaction"
 import type { Store } from "./store"

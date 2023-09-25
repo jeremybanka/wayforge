@@ -5,7 +5,7 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import {
@@ -22,7 +22,8 @@ export const TransactionLog: FC<{
 	logState: ReadonlySelectorToken<TransactionUpdate<ƒn>[]>
 }> = ({ token, isOpenState, logState }) => {
 	const log = useO(logState)
-	const [isOpen, setIsOpen] = useIO(isOpenState)
+	const isOpen = useO(isOpenState)
+	const setIsOpen = useI(isOpenState)
 
 	return (
 		<section className="node transaction_log">

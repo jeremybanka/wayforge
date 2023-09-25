@@ -1,8 +1,5 @@
-// import net from "net"
-
-import { isString } from "fp-ts/string"
-
 import { attempt } from "../function"
+import { isString } from "../primitive"
 
 export const JSON_SCHEMA_STRING_FORMATS = [
 	`date-time`,

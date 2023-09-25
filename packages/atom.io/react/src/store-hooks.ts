@@ -1,48 +1,36 @@
-import * as AtomIO from "atom.io"
 import * as React from "react"
 
-import type { Modifier } from "~/packages/anvl/src/function"
+import { getState, setState, subscribe } from "atom.io"
+import type {
+	MutableAtomToken,
+	ReadonlySelectorToken,
+	StateToken,
+} from "atom.io"
 
+import { getJsonToken } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import { StoreContext } from "./store-context"
 
-export type StoreHooks = {
-	useI: <T>(token: AtomIO.StateToken<T>) => (next: Modifier<T> | T) => void
-	useO: <T>(token: AtomIO.ReadonlySelectorToken<T> | AtomIO.StateToken<T>) => T
-	useIO: <T>(token: AtomIO.StateToken<T>) => [T, (next: Modifier<T> | T) => void]
-}
-export const storeHooks: StoreHooks = { useI, useO, useIO }
-
 export function useI<T>(
-	token: AtomIO.StateToken<T>,
-): (next: Modifier<T> | T) => void {
+	token: StateToken<T>,
+): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
-	const update = (next: Modifier<T> | T) => AtomIO.setState(token, next, store)
-	return update
+	return (next) => setState(token, next, store)
 }
 
-export function useO<T>(
-	token: AtomIO.ReadonlySelectorToken<T> | AtomIO.StateToken<T>,
-): T {
+export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(observe) => AtomIO.subscribe(token, observe, `use-o:${id}`, store),
-		() => AtomIO.getState(token, store),
+		(dispatch) => subscribe(token, dispatch, `use-o:${id}`, store),
+		() => getState(token, store),
+		() => getState(token, store),
 	)
 }
 
-export function useIO<T>(
-	token: AtomIO.StateToken<T>,
-): [T, (next: Modifier<T> | T) => void] {
-	return [useO(token), useI(token)]
-}
-
-export function useStore<T>(
-	token: AtomIO.StateToken<T>,
-): [T, (next: Modifier<T> | T) => void]
-export function useStore<T>(token: AtomIO.ReadonlySelectorToken<T>): T
-export function useStore<T>(
-	token: AtomIO.ReadonlySelectorToken<T> | AtomIO.StateToken<T>,
-): T | [T, (next: Modifier<T> | T) => void] {
-	return token.type === `readonly_selector` ? useO(token) : useIO(token)
+export function useJSON<Serializable extends Json.Serializable,>(
+	token: MutableAtomToken<any, Serializable>,
+): Serializable {
+	const jsonToken = getJsonToken(token)
+	return useO(jsonToken)
 }

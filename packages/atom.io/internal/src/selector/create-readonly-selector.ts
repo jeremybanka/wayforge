@@ -7,9 +7,9 @@ import type {
 import { cacheValue } from "../caching"
 import type { Store, StoreCore } from "../store"
 import { Subject } from "../subject"
+import type { ReadonlySelector } from "./create-selector"
+import { createSelector } from "./create-selector"
 import { registerSelector } from "./register-selector"
-import type { ReadonlySelector } from "./selector-internal"
-import { selector__INTERNAL } from "./selector-internal"
 
 export const createReadonlySelector = <T>(
 	options: ReadonlySelectorOptions<T>,
@@ -29,7 +29,7 @@ export const createReadonlySelector = <T>(
 	const readonlySelector: ReadonlySelector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => selector__INTERNAL(options, family, s),
+		install: (s: Store) => createSelector(options, family, s),
 		get: getSelf,
 		type: `readonly_selector`,
 		...(family && { family }),

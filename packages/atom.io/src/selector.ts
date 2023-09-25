@@ -1,5 +1,5 @@
 import type { Subject } from "atom.io/internal"
-import { selectorFamily__INTERNAL, selector__INTERNAL } from "atom.io/internal"
+import { createSelector, createSelectorFamily } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ReadonlySelectorToken, SelectorToken } from "."
@@ -22,7 +22,7 @@ export function selector<T>(
 export function selector<T>(
 	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
-	return selector__INTERNAL(options)
+	return createSelector(options)
 }
 
 export type SelectorFamilyOptions<T, K extends Json.Serializable> = {
@@ -62,5 +62,5 @@ export function selectorFamily<T, K extends Json.Serializable>(
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
-	return selectorFamily__INTERNAL(options)
+	return createSelectorFamily(options)
 }

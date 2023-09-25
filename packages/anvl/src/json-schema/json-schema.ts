@@ -1,18 +1,15 @@
-import type { Refinement } from "fp-ts/Refinement"
-import { isBoolean } from "fp-ts/boolean"
-import { isNumber } from "fp-ts/number"
-import { isString } from "fp-ts/string"
-
 import { isArray } from "../array"
 import { JSON_TYPE_NAMES } from "../json"
 import { ifDefined } from "../nullish"
 import { doesExtend, isRecord } from "../object/refinement"
+import { isBoolean, isNumber, isString } from "../primitive"
+import type { Refinement } from "../refinement"
 import {
-	couldBe,
 	isIntersection,
 	isLiteral,
 	isUnion,
 	isWithin,
+	mustSatisfyOneOfTheFollowing,
 } from "../refinement"
 import type { Refined } from "../refinement/refined"
 import type { integer } from "./integer"
@@ -198,7 +195,9 @@ export type ArraySchema = {
 }
 export const arraySchemaStructure = {
 	type: isLiteral(`array`),
-	items: ifDefined(couldBe(isJsonSchema).or(isArray(isJsonSchema))),
+	items: ifDefined(
+		mustSatisfyOneOfTheFollowing(isJsonSchema).or(isArray(isJsonSchema)),
+	),
 	minItems: ifDefined(isInteger),
 	maxItems: ifDefined(isInteger),
 	uniqueItems: ifDefined(isBoolean),
@@ -365,5 +364,7 @@ export const isJsonSchemaObject = isIntersection
 
 export type JsonSchema = JsonSchemaObject | JsonSchemaRef | boolean
 export function isJsonSchema(input: unknown): input is JsonSchema {
-	return couldBe(isJsonSchemaObject).or(isBoolean).or(isJsonSchemaRef)(input)
+	return mustSatisfyOneOfTheFollowing(isBoolean)
+		.or(isJsonSchemaObject)
+		.or(isJsonSchemaRef)(input)
 }

@@ -1,37 +1,36 @@
-import {
-	IMPLICIT,
-	closeOperation,
-	getState__INTERNAL,
-	isAtomDefault,
-	isSelectorDefault,
-	openOperation,
-	setState__INTERNAL,
-	withdraw,
-} from "atom.io/internal"
-import * as __INTERNAL__ from "atom.io/internal"
-import type { Store } from "atom.io/internal"
-
-import type { ƒn } from "~/packages/anvl/src/function"
-import { capitalize } from "~/packages/anvl/src/string/capitalize"
-
-export { ƒn }
+import * as IO from "atom.io/internal"
+import type { Store, Transceiver } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
 export * from "./atom"
 export * from "./logger"
 export * from "./selector"
 export * from "./silo"
-export * from "./subscribe"
+export {
+	subscribe,
+	subscribeToTimeline,
+	subscribeToTransaction,
+	KeyedStateUpdate,
+	StateUpdate,
+	UpdateHandler,
+} from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
-export { __INTERNAL__ }
-export type { Store } from "atom.io/internal"
-export type { Json } from "atom.io/json"
+
+export type ƒn = (...parameters: any[]) => any
 
 export type AtomToken<_> = {
 	key: string
 	type: `atom`
 	family?: FamilyMetadata
 	__brand?: _
+}
+export interface MutableAtomToken<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+> extends AtomToken<T> {
+	__asJSON?: J
+	__update?: T extends Transceiver<infer Update> ? Update : never
 }
 export type SelectorToken<_> = {
 	key: string
@@ -53,11 +52,15 @@ export type FamilyMetadata = {
 	subKey: string
 }
 
+export const capitalize = (str: string): string =>
+	str[0].toUpperCase() + str.slice(1)
+
 export const getState = <T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
-	store: Store = IMPLICIT.STORE,
+	store: Store = IO.IMPLICIT.STORE,
 ): T => {
-	const state = withdraw<T>(token, store)
+	const state =
+		IO.withdraw(token, store) ?? IO.withdrawNewFamilyMember(token, store)
 	if (state === null) {
 		throw new Error(
 			`${capitalize(token.type)} "${token.key}" not found in store "${
@@ -65,23 +68,24 @@ export const getState = <T>(
 			}".`,
 		)
 	}
-	return getState__INTERNAL(state, store)
+	return IO.getState__INTERNAL(state, store)
 }
 
 export const setState = <T, New extends T>(
 	token: StateToken<T>,
 	value: New | ((oldValue: T) => New),
-	store: Store = IMPLICIT.STORE,
+	store: Store = IO.IMPLICIT.STORE,
 ): void => {
 	try {
-		openOperation(token, store)
+		IO.openOperation(token, store)
 	} catch (thrown) {
 		if (!(typeof thrown === `symbol`)) {
 			throw thrown
 		}
 		return
 	}
-	const state = withdraw(token, store)
+	const state =
+		IO.withdraw(token, store) ?? IO.withdrawNewFamilyMember(token, store)
 	if (state === null) {
 		throw new Error(
 			`${capitalize(token.type)} "${token.key}" not found in store "${
@@ -89,14 +93,14 @@ export const setState = <T, New extends T>(
 			}".`,
 		)
 	}
-	setState__INTERNAL(state, value, store)
-	closeOperation(store)
+	IO.setState__INTERNAL(state, value, store)
+	IO.closeOperation(store)
 }
 
 export const isDefault = (
 	token: ReadonlySelectorToken<unknown> | StateToken<unknown>,
-	store: Store = IMPLICIT.STORE,
+	store: Store = IO.IMPLICIT.STORE,
 ): boolean =>
 	token.type === `atom`
-		? isAtomDefault(token.key, store)
-		: isSelectorDefault(token.key, store)
+		? IO.isAtomDefault(token.key, store)
+		: IO.isSelectorDefault(token.key, store)

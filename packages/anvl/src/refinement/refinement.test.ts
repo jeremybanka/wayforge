@@ -1,20 +1,23 @@
-import { isBoolean } from "fp-ts/boolean"
-import { isNumber } from "fp-ts/number"
-import { isString } from "fp-ts/string"
-
-import { couldBe, isIntersection, isUnion, mustBe } from "."
+import {
+	isIntersection,
+	isUnion,
+	mustSatisfyAllOfTheFollowing,
+	mustSatisfyOneOfTheFollowing,
+} from "."
 import { doesExtend } from "../object/refinement"
+import { isBoolean, isNumber, isString } from "../primitive"
 
 /* type tests */
 const case1 = (i: unknown): void => {
 	let input = i
-	const isBooleanOrNumber = couldBe(isBoolean).or(isNumber)
+	const isBooleanOrNumber = mustSatisfyOneOfTheFollowing(isBoolean).or(isNumber)
 	// @ts-expect-error booleans can't be incremented
 	if (isBooleanOrNumber(input)) input++
 }
 
 describe(`couldBe`, () => {
 	it(`allows union of boolean and number`, () => {
+		console.log({ isBoolean })
 		const isBooleanOrNumber = isUnion.or(isBoolean).or(isNumber)
 		expect(isBooleanOrNumber(true)).toBe(true)
 		expect(isBooleanOrNumber(1)).toBe(true)
@@ -24,7 +27,8 @@ describe(`couldBe`, () => {
 
 describe(`mustBe`, () => {
 	it(`allows intersection of boolean and number, but finds no good cases`, () => {
-		const isBooleanAndNumber = mustBe(isBoolean).and(isNumber)
+		const isBooleanAndNumber =
+			mustSatisfyAllOfTheFollowing(isBoolean).and(isNumber)
 		expect(isBooleanAndNumber(true)).toBe(false)
 		expect(isBooleanAndNumber(1)).toBe(false)
 	})

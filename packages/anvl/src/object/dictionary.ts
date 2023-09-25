@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/function"
+import { pipe } from "../function"
 
 import { map } from "../array"
 import type { Json } from "../json"

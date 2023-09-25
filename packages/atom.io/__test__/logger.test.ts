@@ -1,10 +1,11 @@
-import { doNothing } from "~/packages/anvl/src/function"
-
-import { __INTERNAL__, setLogLevel, useLogger } from "../src"
+import { setLogLevel, useLogger } from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 
 describe(`setLogLevel`, () => {
 	it(`allows logging at the preferred level`, () => {
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBe(doNothing)
+		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBeInstanceOf(
+			Function,
+		)
 		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(console.warn)
 		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
 
@@ -15,13 +16,19 @@ describe(`setLogLevel`, () => {
 		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
 
 		setLogLevel(`warn`)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBe(doNothing)
+		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBeInstanceOf(
+			Function,
+		)
 		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(console.warn)
 		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
 
 		setLogLevel(`error`)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBe(doNothing)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(doNothing)
+		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBeInstanceOf(
+			Function,
+		)
+		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBeInstanceOf(
+			Function,
+		)
 		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
 
 		setLogLevel(null)

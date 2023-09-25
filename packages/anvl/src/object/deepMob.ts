@@ -1,6 +1,5 @@
-import { pipe } from "fp-ts/function"
-
 import { reduce, slice } from "../array"
+import { pipe } from "../function"
 import type { InspectionResult } from "./sprawl"
 import { sprawl } from "./sprawl"
 

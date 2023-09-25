@@ -1,33 +1,31 @@
 import type {
+	AtomFamily,
 	AtomToken,
 	Logger,
+	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
+	SelectorFamily,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
 	ƒn,
 } from "atom.io"
-import { isString } from "fp-ts/string"
-import { Junction } from "rel8/junction"
 
-import { doNothing } from "~/packages/anvl/src/function"
-import { hasExactProperties } from "~/packages/anvl/src/object"
+import { Junction } from "~/packages/rel8/junction/src"
 
 import type { Atom } from "../atom"
+import type { MutableAtom, Tracker, Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { ReadonlySelector, Selector } from "../selector"
 import { Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionStatus } from "../transaction"
 
-export * from "./deposit"
-export * from "./lookup"
-export * from "./withdraw"
-
 export type StoreCore = Pick<
 	Store,
 	| `atoms`
 	| `atomsThatAreDefault`
+	| `families`
 	| `operation`
 	| `readonlySelectors`
 	| `selectorAtoms`
@@ -35,6 +33,7 @@ export type StoreCore = Pick<
 	| `selectors`
 	| `timelineAtoms`
 	| `timelines`
+	| `trackers`
 	| `transactions`
 	| `valueMap`
 >
@@ -42,9 +41,17 @@ export type StoreCore = Pick<
 export class Store {
 	public valueMap = new Map<string, any>()
 
-	public atoms = new Map<string, Atom<any>>()
+	public atoms = new Map<string, Atom<any> | MutableAtom<any>>()
 	public selectors = new Map<string, Selector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
+
+	public trackers = new Map<string, Tracker<Transceiver<any>>>()
+	public families = new Map<
+		string,
+		| AtomFamily<any, any>
+		| ReadonlySelectorFamily<any, any>
+		| SelectorFamily<any, any>
+	>()
 
 	public timelines = new Map<string, Timeline>()
 	public transactions = new Map<string, Transaction<ƒn>>()
@@ -59,13 +66,16 @@ export class Store {
 		between: [`selectorKey`, `atomKey`],
 		cardinality: `n:n`,
 	})
-	public selectorGraph = new Junction(
+	public selectorGraph = new Junction<
+		`upstreamSelectorKey`,
+		`downstreamSelectorKey`,
+		{ source: string }
+	>(
 		{
 			between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
 			cardinality: `n:n`,
 		},
 		{
-			isContent: hasExactProperties({ source: isString }),
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
@@ -87,8 +97,8 @@ export class Store {
 		logger: Logger | null
 		logger__INTERNAL: Logger
 	} = {
-		name: `DEFAULT`,
-		logger: { ...console, info: doNothing },
+		name: `IMPLICIT_STORE`,
+		logger: { ...console, info: () => undefined },
 		logger__INTERNAL: console,
 	}
 
@@ -103,7 +113,7 @@ export class Store {
 				logger__INTERNAL: console,
 				logger: {
 					...console,
-					info: doNothing,
+					info: () => undefined,
 					...store?.config?.logger,
 				},
 				name,
@@ -111,8 +121,7 @@ export class Store {
 		}
 
 		store?.atoms.forEach((atom) => {
-			const copiedAtom = { ...atom, subject: new Subject() } satisfies Atom<any>
-			this.atoms.set(atom.key, copiedAtom)
+			atom.install(this)
 		})
 		store?.readonlySelectors.forEach((selector) => {
 			selector.install(this)
@@ -132,7 +141,9 @@ export class Store {
 export const IMPLICIT = {
 	STORE_INTERNAL: undefined as Store | undefined,
 	get STORE(): Store {
-		return this.STORE_INTERNAL ?? (this.STORE_INTERNAL = new Store(`DEFAULT`))
+		return (
+			this.STORE_INTERNAL ?? (this.STORE_INTERNAL = new Store(`IMPLICIT_STORE`))
+		)
 	},
 }
 

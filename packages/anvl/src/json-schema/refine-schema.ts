@@ -1,13 +1,10 @@
-import { isBoolean } from "fp-ts/boolean"
-import { pipe } from "fp-ts/function"
-import { isNumber } from "fp-ts/number"
-import { isString } from "fp-ts/string"
-
 import { isArray } from "../array"
+import { pipe } from "../function"
 import { select } from "../object"
 import { modify } from "../object/modify"
 import { doesExtend } from "../object/refinement"
-import { couldBe, isWithin } from "../refinement"
+import { isBoolean, isNumber, isString } from "../primitive"
+import { isWithin, mustSatisfyOneOfTheFollowing } from "../refinement"
 import { dereference } from "./dereference"
 import { isInteger } from "./integer"
 import type {
@@ -50,7 +47,11 @@ export const refineJsonSchema = (
 ): (Error | RefinedJsonSchema)[] => {
 	if (input === true) return [{ type: `any`, data: true }]
 	if (input === false) return [{ type: `never`, data: false }]
-	if (doesExtend({ type: couldBe(isString).or(isArray(isString)) })(input)) {
+	if (
+		doesExtend({
+			type: mustSatisfyOneOfTheFollowing(isString).or(isArray(isString)),
+		})(input)
+	) {
 		const result = dereference(input)
 		if (isJsonSchemaRoot(result)) {
 			if (isWithin(JSON_SCHEMA_TYPE_NAMES)(result.type)) {

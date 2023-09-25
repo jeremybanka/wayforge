@@ -1,5 +1,6 @@
-import { __INTERNAL__ } from "atom.io"
 import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
+import type { Store } from "atom.io/internal"
+import { IMPLICIT, createAtom, createSelector, target } from "atom.io/internal"
 
 import type { StateTokenIndex } from "."
 
@@ -8,10 +9,10 @@ export type SelectorTokenIndex = StateTokenIndex<
 >
 
 export const attachSelectorIndex = (
-	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,
+	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<SelectorTokenIndex> => {
 	const readonlySelectorTokenIndexState__INTERNAL =
-		__INTERNAL__.atom__INTERNAL<SelectorTokenIndex>(
+		createAtom<SelectorTokenIndex>(
 			{
 				key: `👁‍🗨 Selector Token Index (Internal)`,
 				default: () =>
@@ -32,39 +33,48 @@ export const attachSelectorIndex = (
 						store.subject.selectorCreation.subscribe(
 							`introspection`,
 							(selectorToken) => {
-								if (store.operation.open) {
-									return
-								}
 								if (selectorToken.key.includes(`👁‍🗨`)) {
 									return
 								}
-								setSelf((state) => {
-									const { key, family } = selectorToken
-									if (family) {
-										const { key: familyKey, subKey } = family
-										const current = state[familyKey]
-										if (current === undefined || `familyMembers` in current) {
-											const familyKeyState = current || {
-												key: familyKey,
-												familyMembers: {},
-											}
-											return {
-												...state,
-												[familyKey]: {
-													...familyKeyState,
-													familyMembers: {
-														...familyKeyState.familyMembers,
-														[subKey]: selectorToken,
+								const set = () =>
+									setSelf((state) => {
+										const { key, family } = selectorToken
+										if (family) {
+											const { key: familyKey, subKey } = family
+											const current = state[familyKey]
+											if (current === undefined || `familyMembers` in current) {
+												const familyKeyState = current || {
+													key: familyKey,
+													familyMembers: {},
+												}
+												return {
+													...state,
+													[familyKey]: {
+														...familyKeyState,
+														familyMembers: {
+															...familyKeyState.familyMembers,
+															[subKey]: selectorToken,
+														},
 													},
-												},
+												}
 											}
 										}
-									}
-									return {
-										...state,
-										[key]: selectorToken,
-									}
-								})
+										return {
+											...state,
+											[key]: selectorToken,
+										}
+									})
+								if (target(store).operation.open) {
+									const unsubscribe = store.subject.operationStatus.subscribe(
+										`introspection: waiting to update selector index`,
+										() => {
+											unsubscribe()
+											set()
+										},
+									)
+								} else {
+									set()
+								}
 							},
 						)
 					},
@@ -73,7 +83,7 @@ export const attachSelectorIndex = (
 			undefined,
 			store,
 		)
-	return __INTERNAL__.selector__INTERNAL({
+	return createSelector({
 		key: `👁‍🗨 Selector Token Index`,
 		get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
 	})

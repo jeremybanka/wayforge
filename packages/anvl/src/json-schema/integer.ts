@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/function"
+import { pipe } from "../function"
 
 export type IntegerBrand = { readonly integer: unique symbol /* virtual */ }
 export type integer = IntegerBrand & number

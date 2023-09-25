@@ -4,7 +4,6 @@ import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
 import {
-	__INTERNAL__,
 	atom,
 	atomFamily,
 	getState,
@@ -16,7 +15,8 @@ import {
 	subscribe,
 	subscribeToTransaction,
 	transaction,
-} from "../src"
+} from "atom.io"
+import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -97,9 +97,9 @@ describe(`transaction`, () => {
 				return itemKeys
 			},
 		})
-		const steal = transaction({
+		const stealTX = transaction<(thiefKey: string, victimKey: string) => void>({
 			key: `steal`,
-			do: ({ get, set }, thiefKey: string, victimKey: string) => {
+			do: ({ get, set }, thiefKey, victimKey) => {
 				const victimInventory = get(findBeingInventoryState(victimKey))
 				const itemKey = victimInventory[0]
 				if (itemKey === undefined) throw new Error(`No items to steal!`)
@@ -141,13 +141,14 @@ describe(`transaction`, () => {
 		expect(getState(thiefInvState)).toEqual([])
 		expect(getState(victimInvState)).toEqual([prizeState.key])
 
-		runTransaction(steal)(thiefState.key, victimState.key)
+		const steal = runTransaction(stealTX)
+		steal(thiefState.key, victimState.key)
 		expect(getState(thiefInvState)).toEqual([prizeState.key])
 		expect(getState(victimInvState)).toEqual([])
 		expect(logger.error).not.toHaveBeenCalled()
 
 		try {
-			runTransaction(steal)(thiefState.key, victimState.key)
+			steal(thiefState.key, victimState.key)
 		} catch (thrown) {
 			expect(thrown).toBeInstanceOf(Error)
 			if (thrown instanceof Error) {

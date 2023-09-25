@@ -2,7 +2,7 @@ import { fireEvent, render } from "@testing-library/react"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
-import { atom, isDefault } from "../src"
+import { atom, isDefault } from "atom.io"
 import { Observer } from "./__util__/Observer"
 
 export const onChange = [() => undefined, console.log][0]
@@ -14,7 +14,8 @@ describe(`single atom`, () => {
 			default: `A`,
 		})
 		const Letter: FC = () => {
-			const [letter, setLetter] = AR.useIO(letterState)
+			const setLetter = AR.useI(letterState)
+			const letter = AR.useO(letterState)
 			const isDefaultLetter = isDefault(letterState)
 			return (
 				<>

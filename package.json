@@ -9,6 +9,7 @@
 	"packageManager": "pnpm@8.7.6",
 	"engines": { "pnpm": "8.7.6" },
 	"scripts": {
+		"dev": "tsc --watch",
 		"lint": "turbo run lint",
 		"lint:biome": "turbo run lint:biome",
 		"lint:eslint": "turbo run lint:eslint",
@@ -28,6 +29,7 @@
 		"cross-env": "7.0.3",
 		"fp-ts": "2.16.1",
 		"hamt_plus": "1.0.2",
+		"io-ts": "2.2.20",
 		"json-schema-to-zod": "1.1.1",
 		"mock-fs": "5.2.0",
 		"@biomejs/biome": "1.2.2",

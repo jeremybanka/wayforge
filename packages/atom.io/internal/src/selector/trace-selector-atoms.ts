@@ -1,10 +1,6 @@
-import type {
-	AtomToken,
-	ReadonlySelectorToken,
-	StateToken,
-	Store,
-} from "atom.io"
+import type { AtomToken, ReadonlySelectorToken, StateToken } from "atom.io"
 
+import type { Store } from ".."
 import { lookupSelectorSources } from "./lookup-selector-sources"
 
 export const traceSelectorAtoms = (

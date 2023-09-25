@@ -1,6 +1,6 @@
 import { css } from "@emotion/react"
 import { atom, selector, selectorFamily } from "atom.io"
-import { useIO, useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 import { useTransition } from "react"
 
@@ -43,9 +43,12 @@ const findAltHueSelector = selectorFamily<Luum, number>({
 export const Colors: FC = () => {
 	useSetTitle(`Colors`)
 
-	const [hue, setHue] = useIO(hueSelector)
-	const [lum, setLum] = useIO(lumSelector)
-	const [sat, setSat] = useIO(satSelector)
+	const setHue = useI(hueSelector)
+	const hue = useO(hueSelector)
+	const setLum = useI(lumSelector)
+	const lum = useO(lumSelector)
+	const setSat = useI(satSelector)
+	const sat = useO(satSelector)
 
 	const [isPending, startTransition] = useTransition()
 

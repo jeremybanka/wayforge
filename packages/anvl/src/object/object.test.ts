@@ -1,11 +1,8 @@
-import { isBoolean } from "fp-ts/boolean"
-import { isNumber } from "fp-ts/number"
-import { isString } from "fp-ts/string"
-
 import { delve, redact, select } from "."
 import type { integer } from "../json-schema/integer"
 import { Int } from "../json-schema/integer"
 import { ifDefined } from "../nullish"
+import { isBoolean, isNumber, isString } from "../primitive"
 import { modify } from "./modify"
 import { hasExactProperties } from "./refinement"
 

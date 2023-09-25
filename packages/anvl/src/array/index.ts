@@ -1,7 +1,7 @@
+import type { Refinement } from "../refinement"
+
 export * from "./match"
 export * from "./venn"
-
-import type { Refinement } from "fp-ts/Refinement"
 
 export const each =
 	<T>(isType: Refinement<unknown, T>) =>

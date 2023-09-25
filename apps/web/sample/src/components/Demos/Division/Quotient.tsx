@@ -1,10 +1,11 @@
-import { useIO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import { quotientState } from "../../../services/app-store"
 
 export const Quotient: FC = () => {
-	const [quotient, setQuotient] = useIO(quotientState)
+	const setQuotient = useI(quotientState)
+	const quotient = useO(quotientState)
 	return (
 		<div>
 			<h1 data-testid="quotient">{quotient}</h1>

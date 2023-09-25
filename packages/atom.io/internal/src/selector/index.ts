@@ -1,5 +1,5 @@
 export * from "./lookup-selector-sources"
 export * from "./register-selector"
-export * from "./selector-internal"
+export * from "./create-selector"
 export * from "./trace-selector-atoms"
 export * from "./update-selector-atoms"

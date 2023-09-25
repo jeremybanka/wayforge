@@ -1,12 +1,8 @@
-import { isBoolean } from "fp-ts/boolean"
-import { isNumber } from "fp-ts/number"
-import { isString } from "fp-ts/string"
-
-import { isPlainObject } from "~/packages/anvl/src/object/refinement"
-
 import { attempt, raiseError } from "../function"
 import { stringifyJson } from "../json"
 import type { Json } from "../json"
+import { isPlainObject } from "../object"
+import { isBoolean, isNumber, isString } from "../primitive"
 
 const JSON_PROTOTYPES = [
 	`Array`,

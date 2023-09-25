@@ -25,8 +25,27 @@
 npm i atom.io
 ```
 ```shell
-pnpm add atom.io
+pnpm i atom.io
+```
+```shell
+bun i atom.io
 ```
 <hr>
 
-Reactive state graph for node and the browser inspired by [Recoil](https://recoiljs.org/).
+Fine-grained reactivity for JavaScript environments.
+
+💙 Inspired by [Recoil](https://recoiljs.org/).
+
+# Usage
+
+```typescript
+import { atom } from 'atom.io'
+
+const countState = atom({
+  key: 'count',
+  default: 0
+}) 
+   // { key: 'count', type: 'atom' }
+
+
+```

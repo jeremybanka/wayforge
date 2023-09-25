@@ -1,6 +1,6 @@
-import type { Json } from "~/packages/anvl/src/json"
-import type { EmptyObject, PlainObject } from "~/packages/anvl/src/object"
-import { filterProperties } from "~/packages/anvl/src/object"
+import type { Json } from "../json"
+import { filterProperties } from "../object"
+import type { EmptyObject, PlainObject } from "../object"
 
 import { cannotExist, isWithin } from "../refinement"
 import type {
