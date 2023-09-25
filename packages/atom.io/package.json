@@ -19,7 +19,7 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "cross-env LIB=dist vitest run"
+		"test:once": "DEBUG=vite-tsconfig-paths cross-env LIB=dist  vitest run"
 	},
 	"dependencies": {},
 	"peerDependencies": {

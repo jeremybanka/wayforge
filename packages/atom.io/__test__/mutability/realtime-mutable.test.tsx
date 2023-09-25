@@ -7,8 +7,6 @@ import * as RTTest from "atom.io/realtime-testing"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
 
-AtomIO.setLogLevel(`info`)
-
 const numbersCollectionState = AtomIO.atom({
 	key: `numbersCollection::mutable`,
 	mutable: true,
