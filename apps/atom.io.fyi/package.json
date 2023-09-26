@@ -7,7 +7,7 @@
 		"dev": "concurrently \"npm:dev:*\"",
 		"dev:next": "next dev",
 		"dev:wrap-exhibits": "tsx scripts/wrap-exhibits.node.ts watch",
-		"build": "next build",
+		"build": "tsx scripts/wrap-exhibits.node all && next build",
 		"start": "next start",
 		"lint": "next lint",
 		"test": "echo no tests (yet)",
