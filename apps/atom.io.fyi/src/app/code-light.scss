@@ -1,53 +1,5 @@
 @media (prefers-color-scheme: light) {
   .codeblock {
-    margin: 1em 0;
-    box-sizing: border-box;
-    border: 1px solid var(--fg-faint);
-    overflow: visible;
-    position: relative;
-    display: flex;
-    flex-flow: column;
-
-    > header {
-      background: var(--fg-faint);
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--fg-soft);
-      padding: 2px 8px;
-    }
-
-    > .prismjs {
-      background-color: var(--bg-shade-1);
-      padding: 1em;
-    }
-
-    code[class*="language-"],
-    pre[class*="language-"] {
-      width: 100%;
-
-      text-align: left;
-      white-space: pre;
-      word-spacing: normal;
-      word-break: normal;
-      word-wrap: normal;
-      color: #eee;
-      background: var(--bg-shade-1);
-      font-family:
-        Roboto Mono,
-        monospace;
-      font-size: 1em;
-      line-height: 1.5em;
-
-      -moz-tab-size: 4;
-      -o-tab-size: 4;
-      tab-size: 4;
-
-      -webkit-hyphens: none;
-      -moz-hyphens: none;
-      -ms-hyphens: none;
-      hyphens: none;
-    }
-
     code[class*="language-"]::-moz-selection,
     pre[class*="language-"]::-moz-selection,
     code[class*="language-"] ::-moz-selection,
@@ -83,6 +35,10 @@
 
     [class*="language-"] .namespace {
       opacity: 0.7;
+    }
+
+    > * > * {
+      text-shadow: -1px 1px white;
     }
 
     .token {
@@ -126,15 +82,15 @@
     }
 
     .token.class-name {
-      color: #f2ff00;
+      color: green;
     }
 
     .token.comment {
-      color: #999;
+      color: #aaa;
     }
 
     .token.constant {
-      color: #c792ea;
+      color: black;
     }
 
     .token.deleted {
@@ -150,7 +106,7 @@
     }
 
     .token.function {
-      color: #e6a;
+      color: #f72;
     }
 
     .token.hexcode {
@@ -167,20 +123,24 @@
       font-weight: bold;
     }
 
+    .token.imports {
+      color: #f72;
+    }
+
     .token.inserted {
       color: #80cbc4;
     }
 
     .token.keyword {
-      color: var(--fg-color);
+      color: #777;
     }
 
     .token.number {
-      color: #fd9170;
+      color: #f72;
     }
 
     .token.operator {
-      color: #89ddff;
+      color: #777;
     }
 
     .token.prolog {
@@ -200,7 +160,7 @@
     }
 
     .token.punctuation {
-      color: #89ddff;
+      color: #777;
     }
 
     .token.regex {
@@ -212,7 +172,7 @@
     }
 
     .token.string {
-      color: #a5e844;
+      color: black;
     }
 
     .token.symbol {
@@ -220,7 +180,7 @@
     }
 
     .token.tag {
-      color: #ff6666;
+      color: green;
     }
 
     .token.unit {
