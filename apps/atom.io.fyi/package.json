@@ -10,8 +10,8 @@
 		"build": "tsx scripts/wrap-exhibits.node all && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"test": "echo no tests (yet)",
-		"test:once": "echo no tests (yet)"
+		"test": "echo no tests yet",
+		"test:once": "echo no tests yet"
 	},
 	"dependencies": {
 		"@emotion/react": "11.11.1",
