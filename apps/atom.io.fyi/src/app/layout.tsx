@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Link from "next/link"
 import "./globals.scss"
+import "./code-dark.scss"
+import "./code-light.scss"
 import scss from "./layout.module.scss"
 
 // eslint-disable-next-line quotes

@@ -94,27 +94,3 @@ a {
 code {
   font-family: Theia, monospace !important;
 }
-.codeblock {
-  margin: 1em 0;
-  box-sizing: border-box;
-  border: 1px solid var(--fg-faint);
-  overflow: visible;
-  position: relative;
-  display: flex;
-  flex-flow: column;
-  > header {
-    background: var(--fg-faint);
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--fg-soft);
-    padding: 2px 8px;
-  }
-  > pre {
-    width: 100%;
-    margin: 0 !important;
-    span {
-      color: var(--fg-color);
-      background: none !important;
-    }
-  }
-}

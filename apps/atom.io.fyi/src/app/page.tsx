@@ -1,3 +1,5 @@
+"use client"
+
 import scss from "./page.module.scss"
 
 const ATOM = `atom`.split(``)
@@ -11,7 +13,7 @@ export default function Home(): JSX.Element {
 				<span>atom</span>
 				<span>.io</span>
 			</h1>
-			<section>Fine-grained reactivity for any ECMAScript runtime.</section>
+			<section>Fine-grained reactivity for any ECMAScript environment.</section>
 		</main>
 	)
 }

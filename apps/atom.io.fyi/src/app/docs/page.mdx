@@ -1,42 +1,46 @@
-import DeclareAnAtom from "../../exhibits-wrapped/declare-an-atom.gen"
-import AnAtomTokenIsAReference from "../../exhibits-wrapped/an-atom-token-is-a-reference.gen"
-import GetAndSetAnAtom from "../../exhibits-wrapped/get-and-set-an-atom.gen"
-import SubscribeToAnAtom from "../../exhibits-wrapped/subscribe-to-an-atom.gen"
-import SubscribePowersIntegrations from "../../exhibits-wrapped/subscribe-powers-integrations.gen"
-
 # atom.io
 
 ## atom
 
-<DeclareAnAtom />
+import DeclareAnAtom from "../../exhibits-wrapped/declare-an-atom.gen"
+import AnAtomTokenIsAReference from "../../exhibits-wrapped/an-atom-token-is-a-reference.gen"
+import GetAndSetAnAtom from "../../exhibits-wrapped/get-and-set-an-atom.gen"
+import SubscribeToAnAtom from "../../exhibits-wrapped/subscribe-to-an-atom.gen"
+import SubscribePowersIntegrations from "../../exhibits-wrapped/subscribe-is-the-foundation-of-reactivity.gen"
 
-Imagine an `atom` as a "reactive variable", given a name, a type, and a starting value.
+<DeclareAnAtom />
+Imagine an `atom` as a "reactive variable", with a name, a type, and a starting value.
 
 <AnAtomTokenIsAReference />
-
 As you can see, what is returned from `atom` does not contain the value itself.
 
-Instead, it is a importable, serializable, and replaceable reference to the value.
+Instead, it returns an importable, serializable, and replaceable reference to the value.
 
 We call this an `AtomToken`. In this case, an `AtomToken<number>`.
 
 <GetAndSetAnAtom />
-
 An atom's value is accessed with `getState` and `setState`.
 
 TypeScript will discourage you from setting the wrong type of value.
 
 <SubscribeToAnAtom />
-
-Unlike a standard variable, you can `subscribe` to an atom. The callback you pass to the subscription will be called whenever the atom is set to a new value.
+Unlike a standard variable, you can `subscribe` to an atom. The callback you pass
+to the subscription will be called whenever the atom is set to a new value.
 
 <SubscribePowersIntegrations />
-
-This is called the **observer pattern**. Following the observer pattern allows atom.io to easily integrate with observer like React. More on this later.
+This is called the **observer pattern**. Following the observer pattern allows atom.io
+to easily integrate with observer like React. More on this later.
 
 ## selector
 
+import DeclareASelector from "../../exhibits-wrapped/declare-a-selector.gen"
+import UseASelector from "../../exhibits-wrapped/use-a-selector.gen"
+
+<DeclareASelector />
+
 A selector is also a reactive variable, but its value is derived from other atoms or selectors.
+
+<UseASelector />
 
 ## families
 

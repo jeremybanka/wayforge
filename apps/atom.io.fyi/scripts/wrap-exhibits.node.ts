@@ -23,32 +23,12 @@ function wrapCode(filename: string, code: string) {
 {/* eslint-disable quotes */}
 import * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-
-const COLOR_SCHEMES = {
-	dark: vscDarkPlus,
-	light: undefined,
-}
 
 const Component: React.FC = () => {
-	const colorScheme = React.useSyncExternalStore<"dark" | "light">(
-		(dispatch) => {
-			const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)")
-			mediaQueryList.addEventListener("change", dispatch)
-			return () => {
-				mediaQueryList.removeEventListener("change", dispatch)
-			}
-		},
-		() =>
-			window.matchMedia("(prefers-color-scheme: dark)").matches
-				? "dark"
-				: "light",
-		() => "dark",
-	)
 	return (
 		<span className="codeblock" >
 			<header>${filename}</header>
-			<SyntaxHighlighter language="tsx" style={COLOR_SCHEMES[colorScheme]}>
+			<SyntaxHighlighter language="tsx" useInlineStyles={false}>
 				{${JSON.stringify(code)}}
 			</SyntaxHighlighter>
 		</span>
