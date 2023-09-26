@@ -4,8 +4,8 @@ import { useRecoilValue } from "recoil"
 
 import { Explorer } from "./Explorer"
 import { Spaces } from "./NavigationSpace"
-import { ReactComponent as Connected } from "./assets/svg/connected.svg"
-import { ReactComponent as Disconnected } from "./assets/svg/disconnected.svg"
+import Connected from "./assets/svg/connected.svg?react"
+import Disconnected from "./assets/svg/disconnected.svg?react"
 import { connectionState } from "./services/socket"
 
 export const App: FC = () => {
