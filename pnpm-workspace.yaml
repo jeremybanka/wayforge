@@ -1,6 +1,7 @@
 packages:
   - "apps/web/*"
   - "apps/node/*"
+  - "apps/atom.io.fyi"
   - "packages/*"
   - "packages/@banka/*"
   - "packages/@banka/eslint-config/react"

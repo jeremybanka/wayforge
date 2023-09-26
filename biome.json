@@ -4,7 +4,15 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["*.js", "dist", "node_modules", "coverage", "projects"]
+		"ignore": [
+			"*.js",
+			"*.gen.tsx",
+			"*.gen.ts",
+			"dist",
+			"node_modules",
+			"coverage",
+			"projects"
+		]
 	},
 	"javascript": {
 		"formatter": {

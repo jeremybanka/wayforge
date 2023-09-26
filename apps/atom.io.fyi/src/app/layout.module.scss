@@ -1,0 +1,27 @@
+body.class {
+  overflow-x: hidden;
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+  height: auto;
+  > * {
+    padding: 1em;
+  }
+  > header {
+    nav {
+      display: flex;
+      flex-flow: row;
+      gap: 1em;
+    }
+  }
+  > main {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    position: relative;
+  }
+  > footer {
+    display: flex;
+    flex-flow: row;
+  }
+}
