@@ -1,6 +1,8 @@
 "use client"
+
 import * as React from "react"
-import * as nav from "./<nav>"
+import * as nav from "./nav"
+
 import scss from "./layout.module.scss"
 
 export default function DocsLayout({

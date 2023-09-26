@@ -1,4 +1,5 @@
 "use client"
+
 import * as React from "react"
 
 const SUBMODULES = [``, `react`]
@@ -32,13 +33,17 @@ export function Contents(): JSX.Element {
 		list: { id: string; content: string | null; level: number }[],
 		level: number,
 	): JSX.Element[] => {
-		const output = []
+		const output: JSX.Element[] = []
 		let currentIndex = 0
 
 		while (currentIndex < list.length) {
 			const heading = list[currentIndex]
 			if (heading.level === level) {
-				const subHeadings = []
+				const subHeadings: {
+					id: string
+					content: string | null
+					level: number
+				}[] = []
 				currentIndex++
 				while (currentIndex < list.length && list[currentIndex].level > level) {
 					subHeadings.push(list[currentIndex])
