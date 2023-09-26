@@ -5,8 +5,12 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*"],
 			"inputs": [
+				"src/**/*.scss",
+				"src/**/*.mdx",
 				"src/**/*.tsx",
 				"src/**/*.ts",
+				"**/src/**/*.scss",
+				"**/src/**/*.mdx",
 				"**/src/**/*.tsx",
 				"**/src/**/*.ts"
 			]
@@ -16,8 +20,12 @@
 			"inputs": [
 				"src/**/*.tsx",
 				"src/**/*.ts",
+				"src/**/*.scss",
+				"src/**/*.mdx",
 				"**/src/**/*.tsx",
 				"**/src/**/*.ts",
+				"**/src/**/*.scss",
+				"**/src/**/*.mdx",
 				"__test__/**/*.ts",
 				"__test__/**/*.tsx"
 			]
