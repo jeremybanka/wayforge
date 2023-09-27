@@ -782,8 +782,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
       '@types/mock-fs':
-        specifier: 4.13.1
-        version: 4.13.1
+        specifier: 4.13.2
+        version: 4.13.2
       '@types/react':
         specifier: 18.2.23
         version: 18.2.23
@@ -937,8 +937,8 @@ importers:
         version: 2.2.20(fp-ts@2.16.1)
     devDependencies:
       '@types/mock-fs':
-        specifier: 4.13.1
-        version: 4.13.1
+        specifier: 4.13.2
+        version: 4.13.2
       '@types/node':
         specifier: 18.18.0
         version: 18.18.0
@@ -3743,8 +3743,8 @@ packages:
     resolution: {integrity: sha512-/fvYntiO1GeICvqbQ3doGDIP97vWmvFt83GKguJ6prmQM2iXZfFcq6YE8KteFyRtX2/h5Hf91BYvPodJKFYv5Q==}
     dev: false
 
-  /@types/mock-fs@4.13.1:
-    resolution: {integrity: sha512-m6nFAJ3lBSnqbvDZioawRvpLXSaPyn52Srf7OfzjubYbYX8MTUdIgDxQl0wEapm4m/pNYSd9TXocpQ0TvZFlYA==}
+  /@types/mock-fs@4.13.2:
+    resolution: {integrity: sha512-mSIMAOjrNTVUFmZgJEigSIm+GlS4hbrk8U5+M8EB45uMrykKdN9TidjjSaOY1yFph2+TD7bsIfB4r+IrMYVyPQ==}
     dependencies:
       '@types/node': 18.18.0
     dev: true
