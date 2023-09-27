@@ -12,37 +12,14 @@ main.class {
     margin-top: 36vh;
     > span {
       font-size: 144px;
-      line-height: 0.7;
+      line-height: 0.69;
       font-weight: 900;
       &:first-of-type {
-        color: var(--fg-soft);
+        color: var(--fg-soft-1);
       }
     }
     @media screen and (max-width: 370px) {
       transform: rotate(-90deg) translateX(30px);
-    }
-  }
-  > figure {
-    width: 100%;
-    display: flex;
-    flex-flow: row wrap;
-    pointer-events: none;
-    > span {
-      font-weight: 900;
-      font-size: 400px;
-      line-height: 0.5;
-      &[data-style="atom"] {
-        color: var(--fg-color);
-      }
-      &[data-style="dot"] {
-        color: var(--fg-faint);
-      }
-      &[data-style="io"] {
-        color: var(--fg-soft);
-      }
-      &[data-style="fyi"] {
-        color: var(--fg-faint);
-      }
     }
   }
 }
