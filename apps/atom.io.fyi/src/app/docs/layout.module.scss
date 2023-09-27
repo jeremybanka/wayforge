@@ -51,17 +51,5 @@ article.class {
     p {
       max-width: 700px;
     }
-    p > code {
-      box-sizing: border-box;
-      color: orange;
-      @media (prefers-color-scheme: light) {
-        color: #f72;
-      }
-      font-weight: 300;
-      background-color: var(--bg-tint-1);
-      box-shadow: 0 0px 3px 0px var(--bg-shade-2);
-      border-radius: 3px;
-      padding: 2px 4px 4px;
-    }
   }
 }
