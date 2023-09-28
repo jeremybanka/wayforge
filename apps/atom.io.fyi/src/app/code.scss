@@ -37,19 +37,19 @@ p > code {
 }
 
 .codeblock {
-  margin: 1em 0;
+  margin-top: 2em;
   box-sizing: border-box;
   overflow: visible;
   position: relative;
   display: flex;
   flex-flow: column;
-  border: var(--fg-faint) solid 1px;
-  box-shadow: 0 0px 12px 0px var(--bg-hard-2);
+  border: var(--bg-soft-3) solid 1px;
+  box-shadow: 0 0px 6px 0px var(--bg-shade-2);
   border-radius: 3px;
 
   > header {
-    background: var(--bg-shade-1);
-    border-bottom: var(--fg-faint) solid 1px;
+    background: var(--bg-soft-2);
+    border-bottom: var(--bg-soft-3) solid 1px;
     font-size: 16px;
     line-height: 20px;
     font-weight: 500;
@@ -58,13 +58,14 @@ p > code {
   }
 
   > .prismjs {
-    background-color: var(--bg-hard-2);
+    background-color: var(--bg-hard-1);
     padding: 1em;
-    overflow: scroll;
+    overflow: auto;
     * {
       font-family: Theia;
       font-weight: 500;
-      font-size: 21px;
+      font-size: 18px;
+      line-height: 20px;
     }
   }
 
