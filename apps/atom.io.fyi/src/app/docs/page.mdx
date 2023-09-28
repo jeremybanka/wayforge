@@ -9,7 +9,7 @@ import SubscribeToAnAtom from "../../exhibits-wrapped/subscribe-to-an-atom.gen"
 import SubscribePowersIntegrations from "../../exhibits-wrapped/subscribe-is-the-foundation-of-reactivity.gen"
 
 <DeclareAnAtom />
-Imagine an `atom` as a "reactive variable", with a name, a type, and a starting value.
+Imagine an `atom` as a "reactive variable," with a key, a type, and a default value.
 
 <AnAtomTokenIsAReference />
 As you can see, what is returned from `atom` does not contain the value itself.
@@ -46,11 +46,40 @@ In this example, we can see that by setting `dividendState` to a new value, the 
 
 ## families
 
+import DeclareAFamily from "../../exhibits-wrapped/declare-a-family.gen"
+import UseAnIndexToTrackFamilyMembers from "../../exhibits-wrapped/use-an-index-to-track-family-members.gen"
+
 Sometimes you need a lot of the same type of atom or selector. The `atomFamily` and `selectorFamily` functions provide a convenient interface for declaring states dynamically.
+
+<DeclareAFamily />
+
+For example, maybe we're making an app with `Point`s laid out in two dimensions.
+
+We might use an `atomFamily` to handle creating state for each node. Or, better yet, we might make two families—for each node's x and y coordinates.
+
+Counterintuitively, it is likely a performance win to take the latter approach, because when nodes move, we only need to replace two primitives in the underlying map, rather than a whole object.
+
+This is an important principle in atom.io: **the smaller the state, the better**.
+
+If you want performance, store primitives in your atoms.
+
+<UseAnIndexToTrackFamilyMembers />
+
+In this example, we use a single `atom<string[]>` to track the members of our family.
+
+It is up to you to decide how to track the members of families you create. `atom.io` does not do this, because different sorts of collections have different performance characteristics. There is no one-size-fits-all solution.
+
+Keen readers may realize that collections generally extend `Object`, and that `Object` is **not** primitive. If you use a lot of collections in your store, or your collections change frequently, you may consider using a `mutable` atom for them. More on this in the advanced section.
 
 ## transaction
 
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
+
+{/* [CreateAnAtomInAFamilyAndAddItToAnIndex/] */}
+
+{/* [IterateThroughAnIndexChangingTheValueOfSomeAtoms/] */}
+
+{/* [SubscribeToATransaction/] */}
 
 ## timeline
 

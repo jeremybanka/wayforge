@@ -5,7 +5,10 @@ body.class {
   min-height: 100vh;
   height: auto;
   > * {
-    padding: 1em;
+    padding: 1em 0.25em;
+    @media screen and (min-width: 720px) {
+      padding: 1em;
+    }
   }
   > header {
     nav {

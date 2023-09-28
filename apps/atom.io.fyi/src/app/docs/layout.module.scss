@@ -6,7 +6,7 @@ article.class {
   height: 100%;
   > nav {
     display: none;
-    @media screen and (min-width: 750px) {
+    @media screen and (min-width: 720px) {
       display: flex;
     }
     left: 1em;
@@ -25,15 +25,18 @@ article.class {
     }
   }
   > main {
-    @media screen and (min-width: 750px) {
-      padding-left: 200px;
+    @media screen and (min-width: 720px) {
+      margin-left: 200px;
+      width: calc(100% - 200px);
     }
     display: flex;
     gap: 1em;
     flex-flow: column;
     align-items: center;
+    align-content: center;
+    justify-content: center;
     width: 100%;
-    max-width: 920px;
+    max-width: 720px;
     min-height: 100%;
     flex-shrink: 1;
     > * {
@@ -49,7 +52,15 @@ article.class {
     h2,
     h3,
     p {
-      max-width: 700px;
+      max-width: calc(100vw - 30px);
+      @media screen and (min-width: 720px) {
+        max-width: 700px;
+      }
+    }
+    p {
+      @media (prefers-color-scheme: light) {
+        font-weight: 500;
+      }
     }
   }
 }

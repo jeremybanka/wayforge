@@ -35,8 +35,8 @@
   padding: 0;
   margin: 0;
   color: var(--fg-color);
-  font-size: 21px;
-  line-height: 30px;
+  font-size: 20px;
+  line-height: 29px;
 }
 h1 {
   font-size: 60px;
@@ -65,12 +65,15 @@ h3 {
   --bg-color: var(--color-dark);
   --bg-tint-1: #171717;
   --bg-tint-2: #1c1c1c;
+  --bg-tint-3: #222;
   --bg-shade-1: #070707;
   --bg-shade-2: #000;
+  --bg-shade-3: #000;
   --bg-hard-1: var(--bg-shade-1);
   --bg-hard-2: var(--bg-shade-2);
   --bg-soft-1: var(--bg-tint-1);
   --bg-soft-2: var(--bg-tint-2);
+  --bg-soft-3: var(--bg-tint-3);
   --hyperlink-color: #09f;
   --hyperlink-hover-color: #0df;
   --hyperlink-visited-color: #99f;
@@ -88,11 +91,14 @@ h3 {
     --bg-tint-1: #fdfdfd;
     --bg-tint-2: #fff;
     --bg-shade-1: #f6f6f6;
-    --bg-shade-2: #f3f3f3;
+    --bg-shade-2: #f0f0f0;
+    --bg-shade-3: #e8e8e8;
     --bg-hard-1: var(--bg-tint-1);
     --bg-hard-2: var(--bg-tint-2);
     --bg-soft-1: var(--bg-shade-1);
     --bg-soft-2: var(--bg-shade-2);
+    --bg-soft-3: var(--bg-shade-3);
+
     --hyperlink-color: #08f;
     --hyperlink-hover-color: #04f;
     --hyperlink-visited-color: #99f;
@@ -103,8 +109,6 @@ h3 {
   }
   background: var(--bg-color);
   min-height: 100vh;
-  font-family: Georgia "serif";
-  font-size: 21px;
 }
 a {
   --fg-color: var(--hyperlink-color);
