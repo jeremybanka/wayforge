@@ -69,17 +69,23 @@ In this example, we use a single `atom<string[]>` to track the members of our fa
 
 It is up to you to decide how to track the members of families you create. `atom.io` does not do this, because different sorts of collections have different performance characteristics. There is no one-size-fits-all solution.
 
-Keen readers may realize that collections generally extend `Object`, and that `Object` is **not** primitive. If you use a lot of collections in your store, or your collections change frequently, you may consider using `mutable` atoms for them. More on this in the advanced section.
+Keen readers may recognize that collections generally extend `Object`, and that `Object` is **not** primitive. If you use a lot of collections in your store, or your collections change frequently, you may consider using `mutable` atoms for them. More on this in the advanced section.
 
 ## transaction
 
+import CallAFamilyInATransaction from "@/exhibits-wrapped/call-a-family-in-a-transaction.gen"
+
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
-{/* [CreateAnAtomInAFamilyAndAddItToAnIndex/] */}
+<CallAFamilyInATransaction />
+
+A common use case is creating some new state using a family function and adding it to an index tracking members of that family.
 
 {/* [IterateThroughAnIndexChangingTheValueOfSomeAtoms/] */}
 
 {/* [SubscribeToATransaction/] */}
+
+{/* [TryCatchAFailedTransaction/] */}
 
 ## timeline
 
