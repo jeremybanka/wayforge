@@ -74,6 +74,7 @@ Keen readers may recognize that collections generally extend `Object`, and that 
 ## transaction
 
 import CallAFamilyInATransaction from "@/exhibits-wrapped/call-a-family-in-a-transaction.gen"
+import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "@/exhibits-wrapped/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
 
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
@@ -81,11 +82,11 @@ Transactions allow you to batch multiple atom changes into a single update. This
 
 A common use case is creating some new state using a family function and adding it to an index tracking members of that family.
 
-{/* [IterateThroughAnIndexChangingTheValueOfSomeAtoms/] */}
+<IterateThroughAnIndexChangingTheValueOfSomeAtoms />
 
-{/* [SubscribeToATransaction/] */}
+{/* <SubscribeToATransaction/> */}
 
-{/* [TryCatchAFailedTransaction/] */}
+{/* <TryCatchAFailedTransaction/> */}
 
 ## timeline
 
@@ -102,3 +103,5 @@ Timelines allow you to track the history of a group of atoms. If these atoms are
 ### mutable
 
 By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation.
+
+### relations
