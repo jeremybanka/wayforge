@@ -6,7 +6,7 @@ import { Link, MemoryRouter, useLocation } from "react-router-dom"
 import { RecoverableErrorBoundary } from "~/packages/hamr/src/react-error-boundary"
 import type { WC } from "~/packages/hamr/src/react-json-editor"
 
-import { useI, useO } from "../../react/src"
+import { useI, useO } from "../../../react/src"
 import { attachExplorerState } from "./explorer-states"
 
 export type ExplorerOptions = {

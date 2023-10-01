@@ -1,7 +1,7 @@
 import type { AtomFamily, AtomToken } from "atom.io"
 import { atom, atomFamily } from "atom.io"
-import { lazyLocalStorageEffect } from "atom.io/web-effects"
 import type { Location } from "react-router-dom"
+import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { persistStringSetAtom } from "./explorer-effects"
 

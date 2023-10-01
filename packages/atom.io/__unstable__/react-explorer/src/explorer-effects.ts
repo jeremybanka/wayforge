@@ -1,5 +1,5 @@
 import { parseJson, stringifyJson } from "atom.io/json"
-import { persistAtom } from "atom.io/web-effects"
+import { persistAtom } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { isArray } from "~/packages/anvl/src/array"
 

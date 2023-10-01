@@ -6,7 +6,7 @@ import type {
 	Write,
 } from "atom.io"
 import { atom, selector, selectorFamily, transaction } from "atom.io"
-import { persistAtom } from "atom.io/web-effects"
+import { persistAtom } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id"
