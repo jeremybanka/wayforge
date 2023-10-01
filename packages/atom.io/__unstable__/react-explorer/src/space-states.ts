@@ -1,7 +1,10 @@
 import { atom, atomFamily, selectorFamily } from "atom.io"
 import type { AtomFamily, AtomToken, ReadonlySelectorFamily } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
-import { lazyLocalStorageEffect, persistAtom } from "atom.io/web-effects"
+import {
+	lazyLocalStorageEffect,
+	persistAtom,
+} from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
