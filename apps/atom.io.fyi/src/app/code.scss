@@ -85,6 +85,11 @@ p > code {
       &.constant {
         color: var(--type-color);
       }
+      &.class-name,
+      &.maybe-class-name,
+      &.builtin {
+        color: var(--type-color);
+      }
       &.imports {
         color: var(--function-color);
       }
