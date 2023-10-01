@@ -6,5 +6,5 @@
 		"types": ["vitest/globals"],
 		"noEmit": true
 	},
-	"include": ["./**/src/**/*", "__tests__/**/*"]
+	"include": ["src", "**/src", "__tests__"]
 }
