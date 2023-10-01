@@ -8,6 +8,6 @@
 			"atom.io/*": ["./packages/atom.io/*"]
 		}
 	},
-	"include": ["__test__", "src", "dist", "**/src", "**/dist"],
-	"exclude": []
+	"include": ["__tests__", "dist", "**/dist"],
+	"exclude": ["src", "**/src"]
 }
