@@ -22,7 +22,7 @@ beforeEach(() => {
 	vitest.spyOn(UTIL, `stdout`)
 	tmpDir = tmp.dirSync({ unsafeCleanup: true })
 	writeFileSync(`${tmpDir.name}/name.txt`, `Mavis`)
-	return () => tmpDir.removeCallback()
+	tmp.setGracefulCleanup()
 })
 
 describe(`atom effects`, () => {

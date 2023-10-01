@@ -2,25 +2,25 @@ import type { AtomToken } from "atom.io"
 import { atomFamily, getState } from "atom.io"
 import { useO } from "atom.io/react"
 
-export const findXCoordinateState = atomFamily<number, string>({
-	key: `findXCoordinate`,
+export const findXState = atomFamily<number, string>({
+	key: `x`,
 	default: 0,
 })
-export const findYCoordinateState = atomFamily<number, string>({
-	key: `findYCoordinate`,
+export const findYState = atomFamily<number, string>({
+	key: `y`,
 	default: 0,
 })
 
-const exampleXCoordinateState = findXCoordinateState(`example`)
+const exampleXState = findXState(`example`)
 
-getState(exampleXCoordinateState) // -> 0
+getState(exampleXState) // -> 0
 
 export function Point(props: {
-	xCoordinateState: AtomToken<number>
-	yCoordinateState: AtomToken<number>
+	xState: AtomToken<number>
+	yState: AtomToken<number>
 }): JSX.Element {
-	const x = useO(props.xCoordinateState)
-	const y = useO(props.yCoordinateState)
+	const x = useO(props.xState)
+	const y = useO(props.yState)
 
 	return <div className="point" style={{ left: x, top: y }} />
 }

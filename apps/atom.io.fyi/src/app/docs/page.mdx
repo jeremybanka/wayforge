@@ -57,11 +57,11 @@ For example, maybe we're making an app with `Point`s laid out in two dimensions.
 
 We might use an `atomFamily` to handle creating state for each node. Or, better yet, we might make two families—for each node's x and y coordinates.
 
-Counterintuitively, it is likely a performance win to take the latter approach, because when nodes move, we only need to replace two primitives in the underlying map, rather than a whole object.
+Counterintuitively, it is likely a performance win in highly interactive applications to take the latter approach, because when nodes move, we only need to replace two primitives in the underlying map, rather than a whole object.
 
-This is an important principle in atom.io: **the smaller the state, the better**.
+This is the key to high-performance interactivity in atom.io: **the smaller the state, the better**.
 
-If you want performance, store primitives in your atoms.
+If you want to update your states frequently, keep state primitive.
 
 <UseAnIndexToTrackFamilyMembers />
 
@@ -69,24 +69,39 @@ In this example, we use a single `atom<string[]>` to track the members of our fa
 
 It is up to you to decide how to track the members of families you create. `atom.io` does not do this, because different sorts of collections have different performance characteristics. There is no one-size-fits-all solution.
 
-Keen readers may realize that collections generally extend `Object`, and that `Object` is **not** primitive. If you use a lot of collections in your store, or your collections change frequently, you may consider using a `mutable` atom for them. More on this in the advanced section.
+Keen readers may recognize that collections generally extend `Object`, and that `Object` is **not** primitive. If you use a lot of collections in your store, or your collections change frequently, you may consider using `mutable` atoms for them. More on this in the advanced section.
 
 ## transaction
 
+import CallAFamilyInATransaction from "@/exhibits-wrapped/call-a-family-in-a-transaction.gen"
+import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "@/exhibits-wrapped/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
+
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
-{/* [CreateAnAtomInAFamilyAndAddItToAnIndex/] */}
+<CallAFamilyInATransaction />
 
-{/* [IterateThroughAnIndexChangingTheValueOfSomeAtoms/] */}
+A common use case is creating some new state using a family function and adding it to an index tracking members of that family.
 
-{/* [SubscribeToATransaction/] */}
+<IterateThroughAnIndexChangingTheValueOfSomeAtoms />
+
+{/* <SubscribeToATransaction/> */}
+
+{/* <TryCatchAFailedTransaction/> */}
 
 ## timeline
 
 Timelines allow you to track the history of a group of atoms. If these atoms are set, or set as a group by a selector or transaction, the timeline will record the changes. A timeline can be used to undo and redo changes.
+
+{/* [CreateATimeline/] */}
+
+{/* [SubscribeToATimeline/] */}
+
+{/* [UndoAndRedoChanges/] */}
 
 ## advanced
 
 ### mutable
 
 By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation.
+
+### relations

@@ -21,7 +21,7 @@ export default function RootLayout({
 					<nav>
 						<Link href="/">atom.io.fyi</Link>
 						<Link href="docs">docs</Link>
-						<Link href="https://github.com/jeremybanka/wayforge/blob/">
+						<Link href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
 							github
 						</Link>
 					</nav>

@@ -24,9 +24,25 @@ function wrapCode(filename: string, code: string) {
 import * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
-const Component: React.FC = () => {
+const Codeblock: React.FC = () => {
+	const myRef = React.useRef<HTMLSpanElement>(null);
+	React.useEffect(() => {
+		const me = myRef.current;
+		if (me === null) {
+			return;
+		}
+		const myElementsWithClassNameStringAndContainingDoubleQuotes = 
+			Array.prototype.filter.call(
+				me.querySelectorAll('.token.string'),
+				(element) => element.textContent.includes('"./')
+			);
+		for (const element of myElementsWithClassNameStringAndContainingDoubleQuotes) {
+			const href = "#" + element.textContent.replace(/["./]/g, '');
+			element.innerHTML = \`<a href="\${href}">\${element.textContent}</a>\`;
+		}
+	}, [myRef.current]);
 	return (
-		<span className="codeblock" >
+		<span className="codeblock" id="${filename.split(`.`)[0]}" ref={myRef}>
 			<header>${filename}</header>
 			<SyntaxHighlighter language="tsx" useInlineStyles={false}>
 				{${JSON.stringify(code)}}
@@ -35,7 +51,7 @@ const Component: React.FC = () => {
 	);
 };
 
-export default Component;
+export default Codeblock;
 `
 }
 

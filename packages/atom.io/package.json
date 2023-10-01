@@ -21,11 +21,10 @@
 		"test": "vitest",
 		"test:once": "cross-env LIB=dist vitest run"
 	},
-	"dependencies": {},
 	"peerDependencies": {
-		"@testing-library/react": ">=14.0.0",
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
+		"@testing-library/react": ">=14.0.0",
 		"framer-motion": ">=10.0.0",
 		"react": ">=18.0.0",
 		"socket.io": ">=4.0.0",
@@ -60,6 +59,7 @@
 		"@types/mock-fs": "4.13.2",
 		"@types/react": "18.2.24",
 		"@types/tmp": "0.2.4",
+		"@vitest/coverage-v8": "0.34.5",
 		"concurrently": "8.2.1",
 		"eslint": "8.50.0",
 		"framer-motion": "10.16.4",
