@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@testing-library/react": "14.0.0",
-		"@types/react": "18.2.23",
+		"@types/react": "18.2.24",
 		"@vitejs/plugin-react": "4.1.0",
 		"cross-env": "7.0.3",
 		"eslint": "8.50.0",
