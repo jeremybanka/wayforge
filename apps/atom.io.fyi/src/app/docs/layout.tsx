@@ -16,8 +16,10 @@ export default function DocsLayout({
 }): JSX.Element {
 	return (
 		<article className={scss.class}>
-			<nav.Contents />
 			<main>{children}</main>
+			<aside>
+				<nav.OnThisPage />
+			</aside>
 		</article>
 	)
 }

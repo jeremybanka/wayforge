@@ -3,27 +3,44 @@
 import * as React from "react"
 
 const SUBMODULES = [``, `react`]
-const INCLUDE_LIST = [`H1`, `H2`, `H3`, `H4`, `H5`, `H6`]
+const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
 
 export type ContentsProps = {
 	observe: React.MutableRefObject<HTMLElement | null>
 }
-export function Contents(): JSX.Element {
+export function OnThisPage(): JSX.Element {
 	const [headings, setHeadings] = React.useState<
 		{ id: string; content: string | null; level: number }[]
 	>([])
+	const [currentId, setCurrentId] = React.useState<string | null>(null)
+	// const articleRef = React.useRef<HTMLElement | null>(null);
 
 	React.useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const entry = entries.find((entry) => entry.isIntersecting)
+				if (entry) {
+					setCurrentId(entry.target.id)
+				}
+			},
+			{
+				root: null,
+				threshold: 0.5,
+			},
+		)
+
 		const gatherHeadings = () => {
 			const allElements = document.querySelectorAll(`[id]`)
-			const headingList = Array.from(allElements)
-				.filter((element) => INCLUDE_LIST.includes(element.tagName))
-				.map((element) => ({
-					id: element.id,
-					content: element.textContent,
-					level: parseInt(element.tagName.slice(1), 10),
-				}))
-			setHeadings(headingList)
+			const headingElements = Array.from(allElements).filter((element) =>
+				INCLUDE_LIST.includes(element.tagName),
+			)
+			headingElements.forEach((element) => observer.observe(element))
+			const headingDescriptors = headingElements.map((element) => ({
+				id: element.id,
+				content: element.textContent,
+				level: parseInt(element.tagName.slice(1), 10),
+			}))
+			setHeadings(headingDescriptors)
 		}
 
 		gatherHeadings()
@@ -51,7 +68,17 @@ export function Contents(): JSX.Element {
 				}
 				output.push(
 					<section key={heading.id}>
-						<a href={`#${heading.id}`}>{heading.content}</a>
+						<a
+							href={`#${heading.id}`}
+							id={`${heading.id}-link`}
+							style={
+								heading.id === currentId
+									? {} // { background: "var(--bg-hard-2)" }
+									: {}
+							}
+						>
+							{heading.content}
+						</a>
 						{subHeadings.length > 0 && renderHeadings(subHeadings, level + 1)}
 					</section>,
 				)
@@ -63,5 +90,53 @@ export function Contents(): JSX.Element {
 		return output
 	}
 
-	return <nav>{renderHeadings(headings, 1)}</nav>
+	return (
+		<>
+			<Spotlight elementId={currentId || ""} />
+			<nav>
+				<header>On this page</header>
+				{renderHeadings(headings, 2)}
+			</nav>
+		</>
+	)
+}
+
+export type SpotlightProps = {
+	elementId: string
+}
+export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
+	const [elementPosition, setElementPosition] = React.useState<
+		Pick<DOMRect, "top" | "left" | "width" | "height">
+	>({
+		top: 0,
+		left: 0,
+		width: 0,
+		height: 0,
+	})
+	React.useEffect(() => {
+		const element = document.getElementById(elementId + "-link")
+		if (element) {
+			setElementPosition(element.getBoundingClientRect())
+		}
+
+		console.log(elementId, element, elementPosition)
+	}, [elementId])
+	return (
+		<div
+			style={{
+				position: "fixed",
+				top: elementPosition.top,
+				left: elementPosition.left,
+				width: elementPosition.width,
+				height: elementPosition.height,
+				background: "var(--bg-hard-2)",
+				borderRadius: 5,
+				border: "1px solid var(--hyperlink-color)",
+				zIndex: -1,
+				transitionProperty: "top, left, width, height",
+				transitionDuration: "200ms",
+				transitionTimingFunction: "ease-out",
+			}}
+		/>
+	)
 }

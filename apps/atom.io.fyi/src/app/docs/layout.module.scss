@@ -4,23 +4,34 @@ article.class {
   flex-flow: row;
   gap: 1em;
   height: 100%;
-  > nav {
+  aside {
+    position: fixed;
     display: none;
     @media screen and (min-width: 720px) {
       display: flex;
     }
-    left: 1em;
-    top: 5em;
-    position: fixed;
-    flex-flow: column;
-    gap: 2em;
-    width: 200px;
-    section {
+    > nav {
+      position: sticky;
       display: flex;
+      gap: 0.2em;
+      left: 1em;
+      top: 5em;
       flex-flow: column;
-      gap: 1em;
-      > section {
-        padding-left: 1em;
+      width: 200px;
+      > header {
+        font-weight: 600;
+      }
+      a {
+        padding: 0.2em 0.4em;
+        user-select: none;
+      }
+      section {
+        display: flex;
+        flex-flow: column;
+        align-items: flex-start;
+        > section {
+          padding-left: 1em;
+        }
       }
     }
   }
