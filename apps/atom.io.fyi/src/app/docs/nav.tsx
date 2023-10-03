@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
 
 const SUBMODULES = [``, `react`]
@@ -138,5 +140,28 @@ export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
 				transitionTimingFunction: "ease-out",
 			}}
 		/>
+	)
+}
+
+export function SiteDirectory() {
+	const currentHref = usePathname()
+	return (
+		<nav>
+			<section>
+				<header>Interface</header>
+				<Link
+					className={currentHref === `docs` ? `active` : undefined}
+					href={"/docs"}
+				>
+					atom.io
+				</Link>
+				<Link
+					className={currentHref === `docs/react` ? `active` : `disabled`}
+					href={"/docs/react"}
+				>
+					<span className="soft">atom.io</span>/react
+				</Link>
+			</section>
+		</nav>
 	)
 }

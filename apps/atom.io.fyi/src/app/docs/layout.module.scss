@@ -6,11 +6,17 @@ article.class {
   flex-flow: row;
   gap: 1em;
   height: 100%;
-  margin-top: 4em;
+  margin-bottom: 3em;
   > main {
+    margin: auto;
+    margin-top: 4em;
     @media screen and (min-width: $viewport-medium-width) {
-      margin-left: 200px;
       width: calc(100% - 200px);
+      margin-left: 200px;
+    }
+    @media screen and (min-width: $viewport-large-width) {
+      margin: auto;
+      margin-top: 4em;
     }
     display: flex;
     gap: 1em;
@@ -26,7 +32,7 @@ article.class {
       width: 100%;
     }
     h2 {
-      margin-top: 2em;
+      margin-top: 2.5em;
     }
     h3 {
       margin-top: 2em;
@@ -46,15 +52,36 @@ article.class {
       }
     }
   }
-  aside {
+  aside:first-of-type {
     position: fixed;
-    display: none;
+    width: 200px;
     top: 5.5em;
+    left: 2em;
+    display: none;
+    flex-flow: column;
     @media screen and (min-width: $viewport-medium-width) {
       display: flex;
     }
+    nav {
+      margin: 0 1em;
+      section {
+        display: flex;
+        flex-flow: column;
+        > header {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  aside:last-of-type {
+    position: fixed;
+    left: calc(50vw + 400px);
+    display: none;
+    top: 5.5em;
+    @media screen and (min-width: $viewport-large-width) {
+      display: flex;
+    }
     > nav {
-      width: 200px;
       display: flex;
       flex-flow: column;
       gap: 0.2em;

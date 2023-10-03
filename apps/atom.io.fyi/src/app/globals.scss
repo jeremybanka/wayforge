@@ -115,10 +115,13 @@ h3 {
       }
     }
   }
-  background: var(--bg-color);
+  background-color: var(--bg-shade-2);
   min-height: 100vh;
-  scroll-padding-top: 5.1em;
+  scroll-padding-top: 4.5em;
   scroll-behavior: smooth;
+  body {
+    background-color: var(--bg-shade-2);
+  }
 }
 a {
   --fg-color: var(--hyperlink-color);
@@ -133,4 +136,11 @@ a {
   &:visited {
     --fg-color: var(--hyperlink-visited-color);
   }
+}
+.gap {
+  flex-grow: 1;
+}
+.soft {
+  font-size: inherit;
+  color: var(--fg-soft-3);
 }

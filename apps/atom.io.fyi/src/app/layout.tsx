@@ -20,11 +20,16 @@ export default function RootLayout({
 			<body className={scss.class}>
 				<header>
 					<nav>
-						<Link href="/">atom.io.fyi</Link>
-						<Link href="docs">docs</Link>
-						<Link href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
-							github
-						</Link>
+						<section>
+							<Link href="/">atom.io.fyi</Link>
+						</section>
+						<span className="gap" />
+						<section>
+							<Link href="docs">docs</Link>
+							<Link href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
+								github
+							</Link>
+						</section>
 					</nav>
 				</header>
 				<main>{children}</main>
