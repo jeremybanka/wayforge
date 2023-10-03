@@ -1,6 +1,7 @@
 @import "./_breakpoints";
 
 body.class {
+  position: relative;
   overflow-x: hidden;
   display: flex;
   flex-flow: column;
@@ -13,6 +14,13 @@ body.class {
     }
   }
   > header {
+    position: fixed;
+    width: 100vw;
+    top: 0;
+    // height: 1100px;
+    z-index: 1;
+    background-color: #99999917;
+    backdrop-filter: blur(3px);
     nav {
       display: flex;
       flex-flow: row;
