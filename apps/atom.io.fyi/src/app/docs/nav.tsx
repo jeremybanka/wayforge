@@ -15,11 +15,17 @@ export function OnThisPage(): JSX.Element {
 		{ id: string; content: string | null; level: number }[]
 	>([])
 	const [currentId, setCurrentId] = React.useState<string | null>(null)
+<<<<<<< HEAD
 	const [userHasToggled, setUserHasToggled] = React.useState(false)
 	const pathname = usePathname()
 
 	React.useEffect(() => {
 		setCurrentId(null)
+=======
+	// const articleRef = React.useRef<HTMLElement | null>(null);
+
+	React.useEffect(() => {
+>>>>>>> d1d0105b (✨ track navigation)
 		const observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries.find((entry) => entry.isIntersecting)
@@ -96,6 +102,7 @@ export function OnThisPage(): JSX.Element {
 
 	return (
 		<>
+<<<<<<< HEAD
 			<Spotlight elementId={currentId + "-link" || ""} />
 			<nav data-user-has-toggled={userHasToggled}>
 				<section>
@@ -108,10 +115,18 @@ export function OnThisPage(): JSX.Element {
 				checked={userHasToggled}
 				onChange={() => setUserHasToggled(!userHasToggled)}
 			/>
+=======
+			<Spotlight elementId={currentId || ""} />
+			<nav>
+				<header>On this page</header>
+				{renderHeadings(headings, 2)}
+			</nav>
+>>>>>>> d1d0105b (✨ track navigation)
 		</>
 	)
 }
 
+<<<<<<< HEAD
 export type ElementPosition = Pick<DOMRect, "top" | "left" | "width" | "height">
 export type SpotlightProps = {
 	elementId: string
@@ -120,10 +135,20 @@ export type SpotlightProps = {
 export function Spotlight({
 	elementId,
 	startingPosition = {
+=======
+export type SpotlightProps = {
+	elementId: string
+}
+export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
+	const [elementPosition, setElementPosition] = React.useState<
+		Pick<DOMRect, "top" | "left" | "width" | "height">
+	>({
+>>>>>>> d1d0105b (✨ track navigation)
 		top: 0,
 		left: 0,
 		width: 0,
 		height: 0,
+<<<<<<< HEAD
 	},
 }: SpotlightProps): JSX.Element {
 	const [position, setPosition] = React.useState(startingPosition)
@@ -140,20 +165,38 @@ export function Spotlight({
 				removeEventListener(`resize`, updatePosition)
 			}
 		}
+=======
+	})
+	React.useEffect(() => {
+		const element = document.getElementById(elementId + "-link")
+		if (element) {
+			setElementPosition(element.getBoundingClientRect())
+		}
+
+		console.log(elementId, element, elementPosition)
+>>>>>>> d1d0105b (✨ track navigation)
 	}, [elementId])
 	return (
 		<div
 			style={{
 				position: "fixed",
+<<<<<<< HEAD
 				opacity: position.width > 0 ? 1 : 0,
 				top: position.top,
 				left: position.left,
 				width: position.width,
 				height: position.height,
+=======
+				top: elementPosition.top,
+				left: elementPosition.left,
+				width: elementPosition.width,
+				height: elementPosition.height,
+>>>>>>> d1d0105b (✨ track navigation)
 				background: "var(--bg-hard-2)",
 				borderRadius: 5,
 				border: "1px solid var(--hyperlink-color)",
 				zIndex: -1,
+<<<<<<< HEAD
 				transition:
 					"width .2s ease-in-out, height .2s ease-in-out, top .2s ease-in-out, left .2s ease-in-out, opacity 1.5s linear",
 			}}
@@ -195,4 +238,12 @@ export function SiteDirectory() {
 			</nav>
 		</>
 	)
+=======
+				transitionProperty: "top, left, width, height",
+				transitionDuration: "200ms",
+				transitionTimingFunction: "ease-out",
+			}}
+		/>
+	)
+>>>>>>> d1d0105b (✨ track navigation)
 }
