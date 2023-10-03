@@ -247,3 +247,26 @@ export function SiteDirectory() {
 	)
 >>>>>>> d1d0105b (✨ track navigation)
 }
+
+export function SiteDirectory() {
+	const currentHref = usePathname()
+	return (
+		<nav>
+			<section>
+				<header>Interface</header>
+				<Link
+					className={currentHref === `docs` ? `active` : undefined}
+					href={"/docs"}
+				>
+					atom.io
+				</Link>
+				<Link
+					className={currentHref === `docs/react` ? `active` : `disabled`}
+					href={"/docs/react"}
+				>
+					<span className="soft">atom.io</span>/react
+				</Link>
+			</section>
+		</nav>
+	)
+}

@@ -16,12 +16,9 @@ export default function DocsLayout({
 }): JSX.Element {
 	return (
 		<article className={scss.class}>
-<<<<<<< HEAD
 			<aside>
 				<nav.SiteDirectory />
 			</aside>
-=======
->>>>>>> d1d0105b (✨ track navigation)
 			<main>{children}</main>
 			<aside>
 				<nav.OnThisPage />
