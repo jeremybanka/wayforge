@@ -1,3 +1,5 @@
+@import "./_breakpoints";
+
 body.class {
   overflow-x: hidden;
   display: flex;
@@ -6,7 +8,7 @@ body.class {
   height: auto;
   > * {
     padding: 1em 0.25em;
-    @media screen and (min-width: 720px) {
+    @media screen and (min-width: $viewport-medium-width) {
       padding: 1em;
     }
   }

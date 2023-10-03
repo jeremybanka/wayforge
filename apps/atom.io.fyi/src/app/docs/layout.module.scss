@@ -1,42 +1,13 @@
+@import "../_breakpoints";
+
 article.class {
   position: relative;
   display: flex;
   flex-flow: row;
   gap: 1em;
   height: 100%;
-  aside {
-    position: fixed;
-    display: none;
-    @media screen and (min-width: 720px) {
-      display: flex;
-    }
-    > nav {
-      position: sticky;
-      display: flex;
-      gap: 0.2em;
-      left: 1em;
-      top: 5em;
-      flex-flow: column;
-      width: 200px;
-      > header {
-        font-weight: 600;
-      }
-      a {
-        padding: 0.2em 0.4em;
-        user-select: none;
-      }
-      section {
-        display: flex;
-        flex-flow: column;
-        align-items: flex-start;
-        > section {
-          padding-left: 1em;
-        }
-      }
-    }
-  }
   > main {
-    @media screen and (min-width: 720px) {
+    @media screen and (min-width: $viewport-medium-width) {
       margin-left: 200px;
       width: calc(100% - 200px);
     }
@@ -64,13 +35,44 @@ article.class {
     h3,
     p {
       max-width: calc(100vw - 30px);
-      @media screen and (min-width: 720px) {
+      @media screen and (min-width: $viewport-medium-width) {
         max-width: 700px;
       }
     }
     p {
       @media (prefers-color-scheme: light) {
         font-weight: 500;
+      }
+    }
+  }
+  aside {
+    position: fixed;
+    display: none;
+    @media screen and (min-width: $viewport-medium-width) {
+      display: flex;
+    }
+    > nav {
+      width: 200px;
+      position: sticky;
+      left: 1em;
+      top: 5em;
+      display: flex;
+      flex-flow: column;
+      gap: 0.2em;
+      > header {
+        font-weight: 600;
+      }
+      a {
+        padding: 0.2em 0.4em;
+        user-select: none;
+      }
+      section {
+        display: flex;
+        flex-flow: column;
+        align-items: flex-start;
+        > section {
+          padding-left: 1em;
+        }
       }
     }
   }
