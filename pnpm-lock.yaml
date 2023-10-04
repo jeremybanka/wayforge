@@ -145,8 +145,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.22.4
+        version: 3.22.4
     devDependencies:
       '@types/npmlog':
         specifier: 4.1.4
@@ -272,7 +272,7 @@ importers:
         version: 0.26.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
         specifier: 0.6.1
-        version: 0.6.1(typescript@5.2.2)(zod@3.22.3)
+        version: 0.6.1(typescript@5.2.2)(zod@3.22.4)
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
@@ -307,8 +307,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.22.4
+        version: 3.22.4
     devDependencies:
       '@babel/plugin-transform-react-jsx-source':
         specifier: 7.22.5
@@ -395,8 +395,8 @@ importers:
         specifier: 6.16.0
         version: 6.16.0(react-dom@18.2.0)(react@18.2.0)
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.22.4
+        version: 3.22.4
     devDependencies:
       '@testing-library/react':
         specifier: 14.0.0
@@ -502,8 +502,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.22.4
+        version: 3.22.4
     devDependencies:
       '@testing-library/jest-dom':
         specifier: 6.1.3
@@ -561,7 +561,7 @@ importers:
         version: 0.26.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
         specifier: 0.6.1
-        version: 0.6.1(typescript@5.2.2)(zod@3.22.3)
+        version: 0.6.1(typescript@5.2.2)(zod@3.22.4)
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
@@ -596,8 +596,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.22.4
+        version: 3.22.4
     devDependencies:
       '@babel/plugin-transform-react-jsx-source':
         specifier: 7.22.5
@@ -3215,14 +3215,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@t3-oss/env-core@0.6.1(typescript@5.2.2)(zod@3.22.3):
+  /@t3-oss/env-core@0.6.1(typescript@5.2.2)(zod@3.22.4):
     resolution: {integrity: sha512-KQD7qEDJtkWIWWmTVjNvk0wnHpkvAQ6CRbUxbWMFNG/fiosBQDQvtRpBNu6USxBscJCoC4z6y7P9MN52/mLOzw==}
     peerDependencies:
       typescript: '>=4.7.2'
       zod: ^3.0.0
     dependencies:
       typescript: 5.2.2
-      zod: 3.22.3
+      zod: 3.22.4
     dev: false
 
   /@testing-library/dom@9.3.3:
@@ -10553,8 +10553,8 @@ packages:
       commander: 9.5.0
     dev: true
 
-  /zod@3.22.3:
-    resolution: {integrity: sha512-EjIevzuJRiRPbVH4mGc8nApb/lVLKVpmUhAaR5R5doKGfAnGJ6Gr3CViAVjP+4FWSxCsybeWQdcgCtbX+7oZug==}
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
 
   /zwitch@2.0.4:
