@@ -1,4 +1,7 @@
+@import "./_responsive";
+
 body.class {
+  position: relative;
   overflow-x: hidden;
   display: flex;
   flex-flow: column;
@@ -6,22 +9,58 @@ body.class {
   height: auto;
   > * {
     padding: 1em 0.25em;
-    @media screen and (min-width: 720px) {
+    @media screen and (min-width: $viewport-medium-width) {
       padding: 1em;
     }
   }
   > header {
+    position: fixed;
+    width: calc(100% - 0.5em);
+    top: 0;
+    z-index: 1;
+    margin: 0.25em;
+    padding: 1em 1.5em;
+    border-radius: 2em;
+    background: #99999922;
+    backdrop-filter: blur(15px);
+    @media screen and (min-width: $viewport-medium-width) {
+      background: none;
+      backdrop-filter: none;
+      width: 100%;
+      margin: none;
+      padding: 1em;
+      > nav > section {
+        padding: 1em 1.5em;
+        border-radius: 2em;
+        background: #99999922;
+        backdrop-filter: blur(15px);
+        @media screen and (min-width: $viewport-large-width) {
+          &:last-of-type {
+            min-width: calc(50vw - 400px);
+          }
+        }
+      }
+    }
     nav {
       display: flex;
       flex-flow: row;
       gap: 1em;
+      > section {
+        display: flex;
+        gap: 1em;
+        &:last-of-type {
+          justify-content: flex-end;
+        }
+      }
     }
   }
   > main {
+    margin-top: 2em;
     flex-grow: 1;
     display: flex;
     flex-flow: column;
     position: relative;
+    background-color: var(--bg-color);
   }
   > footer {
     display: flex;

@@ -1,33 +1,54 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
 
 const SUBMODULES = [``, `react`]
-const INCLUDE_LIST = [`H1`, `H2`, `H3`, `H4`, `H5`, `H6`]
+const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
 
 export type ContentsProps = {
 	observe: React.MutableRefObject<HTMLElement | null>
 }
-export function Contents(): JSX.Element {
+export function OnThisPage(): JSX.Element {
 	const [headings, setHeadings] = React.useState<
 		{ id: string; content: string | null; level: number }[]
 	>([])
+	const [currentId, setCurrentId] = React.useState<string | null>(null)
+	const [userHasToggled, setUserHasToggled] = React.useState(false)
+	const pathname = usePathname()
 
 	React.useEffect(() => {
+		setCurrentId(null)
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const entry = entries.find((entry) => entry.isIntersecting)
+				if (entry) {
+					setCurrentId(entry.target.id)
+				}
+			},
+			{
+				root: null,
+				threshold: 0.5,
+			},
+		)
+
 		const gatherHeadings = () => {
 			const allElements = document.querySelectorAll(`[id]`)
-			const headingList = Array.from(allElements)
-				.filter((element) => INCLUDE_LIST.includes(element.tagName))
-				.map((element) => ({
-					id: element.id,
-					content: element.textContent,
-					level: parseInt(element.tagName.slice(1), 10),
-				}))
-			setHeadings(headingList)
+			const headingElements = Array.from(allElements).filter((element) =>
+				INCLUDE_LIST.includes(element.tagName),
+			)
+			headingElements.forEach((element) => observer.observe(element))
+			const headingDescriptors = headingElements.map((element) => ({
+				id: element.id,
+				content: element.textContent,
+				level: parseInt(element.tagName.slice(1), 10),
+			}))
+			setHeadings(headingDescriptors)
 		}
 
 		gatherHeadings()
-	}, [])
+	}, [pathname])
 
 	const renderHeadings = (
 		list: { id: string; content: string | null; level: number }[],
@@ -51,7 +72,17 @@ export function Contents(): JSX.Element {
 				}
 				output.push(
 					<section key={heading.id}>
-						<a href={`#${heading.id}`}>{heading.content}</a>
+						<a
+							href={`#${heading.id}`}
+							id={`${heading.id}-link`}
+							style={
+								heading.id === currentId
+									? {} // { background: "var(--bg-hard-2)" }
+									: {}
+							}
+						>
+							{heading.content}
+						</a>
 						{subHeadings.length > 0 && renderHeadings(subHeadings, level + 1)}
 					</section>,
 				)
@@ -63,5 +94,105 @@ export function Contents(): JSX.Element {
 		return output
 	}
 
-	return <nav>{renderHeadings(headings, 1)}</nav>
+	return (
+		<>
+			<Spotlight elementId={currentId + "-link" || ""} />
+			<nav data-user-has-toggled={userHasToggled}>
+				<section>
+					<header>On this page</header>
+					<main>{renderHeadings(headings, 2)}</main>
+				</section>
+			</nav>
+			<input
+				type="checkbox"
+				checked={userHasToggled}
+				onChange={() => setUserHasToggled(!userHasToggled)}
+			/>
+		</>
+	)
+}
+
+export type ElementPosition = Pick<DOMRect, "top" | "left" | "width" | "height">
+export type SpotlightProps = {
+	elementId: string
+	startingPosition?: ElementPosition
+}
+export function Spotlight({
+	elementId,
+	startingPosition = {
+		top: 0,
+		left: 0,
+		width: 0,
+		height: 0,
+	},
+}: SpotlightProps): JSX.Element {
+	const [position, setPosition] = React.useState(startingPosition)
+	React.useEffect(() => {
+		const element = document.getElementById(elementId)
+		if (element) {
+			const updatePosition = () => {
+				const boundingRect = element.getBoundingClientRect()
+				setPosition(boundingRect)
+			}
+			updatePosition()
+			addEventListener(`resize`, updatePosition)
+			return () => {
+				removeEventListener(`resize`, updatePosition)
+			}
+		}
+	}, [elementId])
+	return (
+		<div
+			style={{
+				position: "fixed",
+				opacity: position.width > 0 ? 1 : 0,
+				top: position.top,
+				left: position.left,
+				width: position.width,
+				height: position.height,
+				background: "var(--bg-hard-2)",
+				borderRadius: 5,
+				border: "1px solid var(--hyperlink-color)",
+				zIndex: -1,
+				transition:
+					"width .2s ease-in-out, height .2s ease-in-out, top .2s ease-in-out, left .2s ease-in-out, opacity 1.5s linear",
+			}}
+		/>
+	)
+}
+
+export function SiteDirectory() {
+	const pathname = usePathname()
+	const pathname1 = pathname.replaceAll(`/`, `-`) + `-link`
+	console.log(pathname1)
+	return (
+		<>
+			<Spotlight elementId={pathname1} />
+			<nav>
+				<section>
+					<header>Interface</header>
+					<main>
+						<section>
+							<Link
+								id="-docs-link"
+								className={pathname === `/docs` ? `active` : undefined}
+								href={"/docs"}
+							>
+								atom.io
+							</Link>
+						</section>
+						<section>
+							<Link
+								id="-docs-react-link"
+								className={pathname === `/docs/react` ? `active` : `disabled`}
+								href={"/docs/react"}
+							>
+								<span className="soft">atom.io</span>/react
+							</Link>
+						</section>
+					</main>
+				</section>
+			</nav>
+		</>
+	)
 }
