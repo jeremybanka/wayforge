@@ -1,33 +1,21 @@
+@import "../_responsive";
 article.class {
   position: relative;
   display: flex;
   flex-flow: row;
   gap: 1em;
   height: 100%;
-  > nav {
-    display: none;
-    @media screen and (min-width: 720px) {
-      display: flex;
-    }
-    left: 1em;
-    top: 5em;
-    position: fixed;
-    flex-flow: column;
-    gap: 2em;
-    width: 200px;
-    section {
-      display: flex;
-      flex-flow: column;
-      gap: 1em;
-      > section {
-        padding-left: 1em;
-      }
-    }
-  }
+  margin-bottom: 3em;
   > main {
-    @media screen and (min-width: 720px) {
-      margin-left: 200px;
+    margin: auto;
+    margin-top: 4em;
+    @media screen and (min-width: $viewport-medium-width) {
       width: calc(100% - 200px);
+      margin-left: 200px;
+    }
+    @media screen and (min-width: $viewport-large-width) {
+      margin: auto;
+      margin-top: 4em;
     }
     display: flex;
     gap: 1em;
@@ -43,7 +31,7 @@ article.class {
       width: 100%;
     }
     h2 {
-      margin-top: 2em;
+      margin-top: 2.5em;
     }
     h3 {
       margin-top: 2em;
@@ -53,13 +41,74 @@ article.class {
     h3,
     p {
       max-width: calc(100vw - 30px);
-      @media screen and (min-width: 720px) {
+      @media screen and (min-width: $viewport-medium-width) {
         max-width: 700px;
       }
     }
     p {
       @media (prefers-color-scheme: light) {
         font-weight: 500;
+      }
+    }
+  }
+  aside {
+    position: fixed;
+    top: 4.5em;
+    width: 200px;
+    z-index: 10;
+    > nav {
+      display: flex;
+      flex-flow: column;
+      // padding: 1em;
+      border-radius: 1em;
+      // @include lg(background-color, none, #99999944);
+      // @include lg(backdrop-filter, none, blur(15px));
+      > section {
+        display: flex;
+        flex-flow: column;
+        > header {
+          font-weight: 600;
+          margin-bottom: 0.5em;
+        }
+        > main {
+          display: flex;
+          flex-flow: column;
+          gap: 0.2em;
+          section {
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            > section {
+              padding-left: 1em;
+            }
+            > a {
+              padding: 0.2em 0.4em;
+              user-select: none;
+            }
+          }
+        }
+      }
+    }
+    &:first-of-type {
+      @include md(display, flex, none);
+      left: 2em;
+      nav {
+        margin: 0 1em;
+      }
+    }
+    &:last-of-type {
+      @include lg(left, calc(50vw + 400px), none);
+      @include lg(right, none, 2em);
+      nav[data-user-has-toggled="false"] {
+        @include lg(display, flex, none);
+      }
+      input[type="checkbox"] {
+        @include lg(display, none, block);
+        position: absolute;
+        top: -1em;
+        right: 0;
+        z-index: 10;
+        border-radius: 50%;
       }
     }
   }

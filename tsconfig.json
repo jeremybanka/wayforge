@@ -37,5 +37,5 @@
 		"*/**/*.config.ts",
 		"*/**/*.schema.json.ts"
 	],
-	"exclude": ["*/**/dist"]
+	"exclude": ["*/**/dist", "apps/atom.io.fyi"]
 }
