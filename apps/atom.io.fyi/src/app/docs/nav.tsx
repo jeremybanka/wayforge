@@ -15,9 +15,11 @@ export function OnThisPage(): JSX.Element {
 		{ id: string; content: string | null; level: number }[]
 	>([])
 	const [currentId, setCurrentId] = React.useState<string | null>(null)
-	// const articleRef = React.useRef<HTMLElement | null>(null);
+	const [userHasToggled, setUserHasToggled] = React.useState(false)
+	const pathname = usePathname()
 
 	React.useEffect(() => {
+		setCurrentId(null)
 		const observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries.find((entry) => entry.isIntersecting)
@@ -46,7 +48,7 @@ export function OnThisPage(): JSX.Element {
 		}
 
 		gatherHeadings()
-	}, [])
+	}, [pathname])
 
 	const renderHeadings = (
 		list: { id: string; content: string | null; level: number }[],
@@ -94,8 +96,13 @@ export function OnThisPage(): JSX.Element {
 
 	return (
 		<>
-			<Spotlight elementId={currentId || ""} />
-			<nav>
+			<Spotlight elementId={currentId + "-link" || ""} />
+			<nav data-user-has-toggled={userHasToggled}>
+				<input
+					type="checkbox"
+					checked={userHasToggled}
+					onChange={() => setUserHasToggled(!userHasToggled)}
+				/>
 				<header>On this page</header>
 				{renderHeadings(headings, 2)}
 			</nav>
@@ -116,17 +123,19 @@ export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
 		height: 0,
 	})
 	React.useEffect(() => {
-		const element = document.getElementById(elementId + "-link")
+		const element = document.getElementById(elementId)
 		if (element) {
 			setElementPosition(element.getBoundingClientRect())
 		}
-
-		console.log(elementId, element, elementPosition)
+		if (elementId === `-docs-react-link`) {
+			console.log(elementId, element, elementPosition)
+		}
 	}, [elementId])
 	return (
 		<div
 			style={{
 				position: "fixed",
+				opacity: elementId ? 1 : 0,
 				top: elementPosition.top,
 				left: elementPosition.left,
 				width: elementPosition.width,
@@ -135,7 +144,7 @@ export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
 				borderRadius: 5,
 				border: "1px solid var(--hyperlink-color)",
 				zIndex: -1,
-				transitionProperty: "top, left, width, height",
+				transitionProperty: "top, left, width, height, opacity",
 				transitionDuration: "200ms",
 				transitionTimingFunction: "ease-out",
 			}}
@@ -144,24 +153,31 @@ export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
 }
 
 export function SiteDirectory() {
-	const currentHref = usePathname()
+	const pathname = usePathname()
+	const pathname1 = pathname.replaceAll(`/`, `-`) + `-link`
+	console.log(pathname1)
 	return (
-		<nav>
-			<section>
-				<header>Interface</header>
-				<Link
-					className={currentHref === `docs` ? `active` : undefined}
-					href={"/docs"}
-				>
-					atom.io
-				</Link>
-				<Link
-					className={currentHref === `docs/react` ? `active` : `disabled`}
-					href={"/docs/react"}
-				>
-					<span className="soft">atom.io</span>/react
-				</Link>
-			</section>
-		</nav>
+		<>
+			<Spotlight elementId={pathname1} />
+			<nav>
+				<section>
+					<header>Interface</header>
+					<Link
+						id="-docs-link"
+						className={pathname === `/docs` ? `active` : undefined}
+						href={"/docs"}
+					>
+						atom.io
+					</Link>
+					<Link
+						id="-docs-react-link"
+						className={pathname === `/docs/react` ? `active` : `disabled`}
+						href={"/docs/react"}
+					>
+						<span className="soft">atom.io</span>/react
+					</Link>
+				</section>
+			</nav>
+		</>
 	)
 }

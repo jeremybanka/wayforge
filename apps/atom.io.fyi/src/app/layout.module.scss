@@ -1,4 +1,4 @@
-@import "./_breakpoints";
+@import "./_responsive";
 
 body.class {
   position: relative;
@@ -7,7 +7,6 @@ body.class {
   flex-flow: column;
   min-height: 100vh;
   height: auto;
-  background: var(--bg-soft-2);
   > * {
     padding: 1em 0.25em;
     @media screen and (min-width: $viewport-medium-width) {
@@ -56,6 +55,7 @@ body.class {
     }
   }
   > main {
+    margin-top: 2em;
     flex-grow: 1;
     display: flex;
     flex-flow: column;

@@ -1,5 +1,4 @@
-@import "../_breakpoints";
-
+@import "../_responsive";
 article.class {
   position: relative;
   display: flex;
@@ -52,53 +51,57 @@ article.class {
       }
     }
   }
-  aside:first-of-type {
-    position: fixed;
-    width: 200px;
-    top: 5.5em;
-    left: 2em;
-    display: none;
-    flex-flow: column;
-    @media screen and (min-width: $viewport-medium-width) {
-      display: flex;
+  aside {
+    header {
+      font-weight: 600;
+      margin-bottom: 0.5em;
     }
-    nav {
-      margin: 0 1em;
-      section {
+    a {
+      padding: 0.2em 0.4em;
+      user-select: none;
+    }
+    &:first-of-type {
+      @include md(display, flex, none);
+      position: fixed;
+      left: 2em;
+      top: 5.5em;
+      width: 200px;
+      flex-flow: column;
+      > nav {
+        margin: 0 1em;
         display: flex;
         flex-flow: column;
-        > header {
-          font-weight: 600;
+        section {
+          display: flex;
+          gap: 0.2em;
+          flex-flow: column;
+          align-items: flex-start;
         }
       }
     }
-  }
-  aside:last-of-type {
-    position: fixed;
-    left: calc(50vw + 400px);
-    display: none;
-    top: 5.5em;
-    @media screen and (min-width: $viewport-large-width) {
+    &:last-of-type {
+      position: fixed;
+      top: 5.5em;
+      @include lg(left, calc(50vw + 400px), none);
+      @include lg(right, none, 2em);
       display: flex;
-    }
-    > nav {
-      display: flex;
-      flex-flow: column;
-      gap: 0.2em;
-      > header {
-        font-weight: 600;
-        margin-bottom: 0.5em;
-      }
-      a {
-        padding: 0.2em 0.4em;
-        user-select: none;
-      }
-      section {
+      > nav {
         display: flex;
         flex-flow: column;
-        align-items: flex-start;
-        > section {
-          padding-left: 1em;
+        gap: 0.2em;
+        section {
+          display: flex;
+          flex-flow: column;
+          align-items: flex-start;
+          > section {
+            padding-left: 1em;
+          }
+        }
+        &[data-user-has-toggled="false"] {
+          > section,
+          > header {
+            @include lg(display, flex, none);
+          }
         }
       }
     }

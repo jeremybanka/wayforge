@@ -20,7 +20,7 @@ export default function DocsLayout({
 				<nav.SiteDirectory />
 			</aside>
 			<main>{children}</main>
-			<aside data-user-toggle={false}>
+			<aside>
 				<nav.OnThisPage />
 			</aside>
 		</article>
