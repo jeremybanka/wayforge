@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import "./_breakpoints.scss"
 import "./code.scss"
 import "./globals.scss"
 import scss from "./layout.module.scss"

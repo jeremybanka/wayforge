@@ -7,7 +7,6 @@ body.class {
   flex-flow: column;
   min-height: 100vh;
   height: auto;
-  background: var(--bg-soft-2);
   > * {
     padding: 1em 0.25em;
     @media screen and (min-width: $viewport-medium-width) {
