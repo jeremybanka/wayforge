@@ -52,57 +52,63 @@ article.class {
     }
   }
   aside {
-    header {
-      font-weight: 600;
-      margin-bottom: 0.5em;
-    }
-    a {
-      padding: 0.2em 0.4em;
-      user-select: none;
-    }
-    &:first-of-type {
-      @include md(display, flex, none);
-      position: fixed;
-      left: 2em;
-      top: 5.5em;
-      width: 200px;
+    position: fixed;
+    top: 4.5em;
+    width: 200px;
+    z-index: 10;
+    > nav {
+      display: flex;
       flex-flow: column;
-      > nav {
-        margin: 0 1em;
+      // padding: 1em;
+      border-radius: 1em;
+      // @include lg(background-color, none, #99999944);
+      // @include lg(backdrop-filter, none, blur(15px));
+      > section {
         display: flex;
         flex-flow: column;
-        section {
+        > header {
+          font-weight: 600;
+          margin-bottom: 0.5em;
+        }
+        > main {
           display: flex;
-          gap: 0.2em;
           flex-flow: column;
-          align-items: flex-start;
+          gap: 0.2em;
+          section {
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            > section {
+              padding-left: 1em;
+            }
+            > a {
+              padding: 0.2em 0.4em;
+              user-select: none;
+            }
+          }
         }
       }
     }
+    &:first-of-type {
+      @include md(display, flex, none);
+      left: 2em;
+      nav {
+        margin: 0 1em;
+      }
+    }
     &:last-of-type {
-      position: fixed;
-      top: 5.5em;
       @include lg(left, calc(50vw + 400px), none);
       @include lg(right, none, 2em);
-      display: flex;
-      > nav {
-        display: flex;
-        flex-flow: column;
-        gap: 0.2em;
-        section {
-          display: flex;
-          flex-flow: column;
-          align-items: flex-start;
-          > section {
-            padding-left: 1em;
-          }
-        }
-        &[data-user-has-toggled="false"] {
-          > section,
-          > header {
-            @include lg(display, flex, none);
-          }
-        }
+      nav[data-user-has-toggled="false"] {
+        @include lg(display, flex, none);
+      }
+      input[type="checkbox"] {
+        @include lg(display, none, block);
+        position: absolute;
+        top: -1em;
+        right: 0;
+        z-index: 10;
+        border-radius: 50%;
       }
     }
   }

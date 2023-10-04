@@ -98,55 +98,64 @@ export function OnThisPage(): JSX.Element {
 		<>
 			<Spotlight elementId={currentId + "-link" || ""} />
 			<nav data-user-has-toggled={userHasToggled}>
-				<input
-					type="checkbox"
-					checked={userHasToggled}
-					onChange={() => setUserHasToggled(!userHasToggled)}
-				/>
-				<header>On this page</header>
-				{renderHeadings(headings, 2)}
+				<section>
+					<header>On this page</header>
+					<main>{renderHeadings(headings, 2)}</main>
+				</section>
 			</nav>
+			<input
+				type="checkbox"
+				checked={userHasToggled}
+				onChange={() => setUserHasToggled(!userHasToggled)}
+			/>
 		</>
 	)
 }
 
+export type ElementPosition = Pick<DOMRect, "top" | "left" | "width" | "height">
 export type SpotlightProps = {
 	elementId: string
+	startingPosition?: ElementPosition
 }
-export function Spotlight({ elementId }: SpotlightProps): JSX.Element {
-	const [elementPosition, setElementPosition] = React.useState<
-		Pick<DOMRect, "top" | "left" | "width" | "height">
-	>({
+export function Spotlight({
+	elementId,
+	startingPosition = {
 		top: 0,
 		left: 0,
 		width: 0,
 		height: 0,
-	})
+	},
+}: SpotlightProps): JSX.Element {
+	const [position, setPosition] = React.useState(startingPosition)
 	React.useEffect(() => {
 		const element = document.getElementById(elementId)
 		if (element) {
-			setElementPosition(element.getBoundingClientRect())
-		}
-		if (elementId === `-docs-react-link`) {
-			console.log(elementId, element, elementPosition)
+			const updatePosition = () => {
+				const boundingRect = element.getBoundingClientRect()
+				setPosition(boundingRect)
+			}
+			updatePosition()
+			addEventListener(`resize`, updatePosition)
+			return () => {
+				removeEventListener(`resize`, updatePosition)
+			}
 		}
 	}, [elementId])
 	return (
 		<div
 			style={{
 				position: "fixed",
-				opacity: elementId ? 1 : 0,
-				top: elementPosition.top,
-				left: elementPosition.left,
-				width: elementPosition.width,
-				height: elementPosition.height,
+				opacity: position.width > 0 ? 1 : 0,
+				top: position.top,
+				left: position.left,
+				width: position.width,
+				height: position.height,
 				background: "var(--bg-hard-2)",
 				borderRadius: 5,
 				border: "1px solid var(--hyperlink-color)",
 				zIndex: -1,
-				transitionProperty: "top, left, width, height, opacity",
-				transitionDuration: "200ms",
-				transitionTimingFunction: "ease-out",
+				transition:
+					"width .2s ease-in-out, height .2s ease-in-out, top .2s ease-in-out, left .2s ease-in-out, opacity 1.5s linear",
 			}}
 		/>
 	)
@@ -162,20 +171,26 @@ export function SiteDirectory() {
 			<nav>
 				<section>
 					<header>Interface</header>
-					<Link
-						id="-docs-link"
-						className={pathname === `/docs` ? `active` : undefined}
-						href={"/docs"}
-					>
-						atom.io
-					</Link>
-					<Link
-						id="-docs-react-link"
-						className={pathname === `/docs/react` ? `active` : `disabled`}
-						href={"/docs/react"}
-					>
-						<span className="soft">atom.io</span>/react
-					</Link>
+					<main>
+						<section>
+							<Link
+								id="-docs-link"
+								className={pathname === `/docs` ? `active` : undefined}
+								href={"/docs"}
+							>
+								atom.io
+							</Link>
+						</section>
+						<section>
+							<Link
+								id="-docs-react-link"
+								className={pathname === `/docs/react` ? `active` : `disabled`}
+								href={"/docs/react"}
+							>
+								<span className="soft">atom.io</span>/react
+							</Link>
+						</section>
+					</main>
 				</section>
 			</nav>
 		</>
