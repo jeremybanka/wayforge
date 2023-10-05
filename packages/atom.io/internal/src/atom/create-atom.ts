@@ -61,7 +61,7 @@ export function createAtom<T>(
 		options.default instanceof Function ? options.default() : options.default
 	core.atoms.set(newAtom.key, newAtom)
 	markAtomAsDefault(options.key, store)
-	cacheValue(options.key, initialValue, store)
+	cacheValue(options.key, initialValue, subject, store)
 	const token = deposit(newAtom)
 	for (const effect of options.effects ?? []) {
 		effect({

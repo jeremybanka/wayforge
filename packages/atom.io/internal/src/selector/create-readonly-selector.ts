@@ -22,7 +22,7 @@ export const createReadonlySelector = <T>(
 	const { get } = registerSelector(options.key, store)
 	const getSelf = () => {
 		const value = options.get({ get })
-		cacheValue(options.key, value, store)
+		cacheValue(options.key, value, subject, store)
 		return value
 	}
 

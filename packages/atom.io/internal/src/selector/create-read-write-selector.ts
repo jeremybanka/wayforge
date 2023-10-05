@@ -20,7 +20,7 @@ export const createReadWriteSelector = <T>(
 	const { get, set } = registerSelector(options.key, store)
 	const getSelf = () => {
 		const value = options.get({ get })
-		cacheValue(options.key, value, store)
+		cacheValue(options.key, value, subject, store)
 		return value
 	}
 
@@ -34,7 +34,7 @@ export const createReadWriteSelector = <T>(
 			`)`,
 		)
 		const newValue = become(next)(oldValue)
-		cacheValue(options.key, newValue, store)
+		cacheValue(options.key, newValue, subject, store)
 		markDone(options.key, store)
 		if (store.transactionStatus.phase === `idle`) {
 			subject.next({ newValue, oldValue })

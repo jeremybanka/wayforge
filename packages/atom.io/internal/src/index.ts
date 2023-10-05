@@ -1,6 +1,7 @@
 export * from "./atom"
 export * from "./caching"
 export * from "./families"
+export * from "./future"
 export * from "./get-state-internal"
 export * from "./operation"
 export * from "./mutable"
