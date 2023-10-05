@@ -21,7 +21,7 @@ body.class {
     margin: 0.25em;
     padding: 1em 1.5em;
     border-radius: 2em;
-    background: #99999922;
+    background: #9992;
     backdrop-filter: blur(15px);
     @media screen and (min-width: $viewport-medium-width) {
       background: none;
@@ -32,13 +32,8 @@ body.class {
       > nav > section {
         padding: 1em 1.5em;
         border-radius: 2em;
-        background: #99999922;
+        background: #9992;
         backdrop-filter: blur(15px);
-        @media screen and (min-width: $viewport-large-width) {
-          &:last-of-type {
-            min-width: calc(50vw - 400px);
-          }
-        }
       }
     }
     nav {
