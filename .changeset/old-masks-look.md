@@ -2,7 +2,7 @@
 "atom.io": patch
 ---
 
-**`🏷️ Eventual` & `🏷️ Fated`** 
+`atom.io/internal` — **`🏷️ Eventual`** & **`🏷️ Fated`** 
 
 `Eventful<T>` is a shorthand for data that is variously itself (`T`) or a `Promise<T>`.
 
