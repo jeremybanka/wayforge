@@ -96,8 +96,16 @@ export function OnThisPage(): JSX.Element {
 
 	return (
 		<>
-			<Spotlight elementId={currentId + "-link" || ""} />
-			<nav data-user-has-toggled={userHasToggled}>
+			<Spotlight
+				elementId="on-this-page"
+				padding={20}
+				updateSignals={[userHasToggled, pathname]}
+			/>
+			<Spotlight
+				elementId={currentId ? currentId + "-link" : null}
+				updateSignals={[userHasToggled, pathname]}
+			/>
+			<nav id="on-this-page" data-user-has-toggled={userHasToggled}>
 				<section>
 					<header>On this page</header>
 					<main>{renderHeadings(headings, 2)}</main>
@@ -114,8 +122,10 @@ export function OnThisPage(): JSX.Element {
 
 export type ElementPosition = Pick<DOMRect, "top" | "left" | "width" | "height">
 export type SpotlightProps = {
-	elementId: string
+	elementId: string | null
 	startingPosition?: ElementPosition
+	padding?: number
+	updateSignals?: any[]
 }
 export function Spotlight({
 	elementId,
@@ -125,37 +135,44 @@ export function Spotlight({
 		width: 0,
 		height: 0,
 	},
-}: SpotlightProps): JSX.Element {
+	padding = 0,
+	updateSignals = [],
+}: SpotlightProps): JSX.Element | null {
 	const [position, setPosition] = React.useState(startingPosition)
 	React.useEffect(() => {
+		if (!elementId) {
+			setPosition(startingPosition)
+			return
+		}
 		const element = document.getElementById(elementId)
 		if (element) {
 			const updatePosition = () => {
-				const boundingRect = element.getBoundingClientRect()
+				const e = document.getElementById(elementId)
+				if (!e) {
+					return
+				}
+				const boundingRect = e.getBoundingClientRect()
 				setPosition(boundingRect)
 			}
+			element.addEventListener(``, updatePosition)
 			updatePosition()
 			addEventListener(`resize`, updatePosition)
 			return () => {
 				removeEventListener(`resize`, updatePosition)
+				element.removeEventListener(`resize`, updatePosition)
 			}
+		} else {
+			setPosition(startingPosition)
 		}
-	}, [elementId])
-	return (
-		<div
+	}, [elementId, ...updateSignals])
+	return position.width === 0 ? null : (
+		<data
 			style={{
 				position: "fixed",
-				opacity: position.width > 0 ? 1 : 0,
-				top: position.top,
-				left: position.left,
-				width: position.width,
-				height: position.height,
-				background: "var(--bg-hard-2)",
-				borderRadius: 5,
-				border: "1px solid var(--hyperlink-color)",
-				zIndex: -1,
-				transition:
-					"width .2s ease-in-out, height .2s ease-in-out, top .2s ease-in-out, left .2s ease-in-out, opacity 1.5s linear",
+				top: position.top - padding,
+				left: position.left - padding,
+				width: position.width + padding * 2,
+				height: position.height + padding * 2,
 			}}
 		/>
 	)
@@ -163,30 +180,22 @@ export function Spotlight({
 
 export function SiteDirectory() {
 	const pathname = usePathname()
-	const pathname1 = pathname.replaceAll(`/`, `-`) + `-link`
-	console.log(pathname1)
+	const pathnameId = pathname.replaceAll(`/`, `-`) + `-link`
+
 	return (
 		<>
-			<Spotlight elementId={pathname1} />
+			<Spotlight elementId={pathnameId} />
 			<nav>
 				<section>
 					<header>Interface</header>
 					<main>
 						<section>
-							<Link
-								id="-docs-link"
-								className={pathname === `/docs` ? `active` : undefined}
-								href={"/docs"}
-							>
+							<Link id="-docs-link" href={"/docs"}>
 								atom.io
 							</Link>
 						</section>
 						<section>
-							<Link
-								id="-docs-react-link"
-								className={pathname === `/docs/react` ? `active` : `disabled`}
-								href={"/docs/react"}
-							>
+							<Link id="-docs-react-link" href={"/docs/react"}>
 								<span className="soft">atom.io</span>/react
 							</Link>
 						</section>
