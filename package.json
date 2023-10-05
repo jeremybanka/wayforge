@@ -36,7 +36,7 @@
 		"@biomejs/biome": "1.2.2",
 		"@biomejs/cli-darwin-arm64": "1.2.2",
 		"tsx": "3.13.0",
-		"turbo": "1.10.14",
+		"turbo": "1.10.15",
 		"typescript": "5.2.2",
 		"vite-tsconfig-paths": "4.2.1",
 		"vitest": "0.34.6"
