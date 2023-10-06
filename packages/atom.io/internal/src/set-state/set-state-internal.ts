@@ -2,17 +2,16 @@ import type { Atom } from "../atom"
 import type { Selector } from "../selector"
 import type { Store } from "../store"
 import { IMPLICIT } from "../store"
-import { setAtomState } from "./set-atom-state"
-import { setSelectorState } from "./set-selector-state"
+import { setAtom } from "./set-atom"
 
 export const setState__INTERNAL = <T>(
 	state: Atom<T> | Selector<T>,
 	value: T | ((oldValue: T) => T),
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	if (`set` in state) {
-		setSelectorState(state, value, store)
+	if (state.type === `selector`) {
+		state.set(value)
 	} else {
-		setAtomState(state, value, store)
+		setAtom(state, value, store)
 	}
 }

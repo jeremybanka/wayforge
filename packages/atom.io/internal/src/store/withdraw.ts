@@ -16,28 +16,34 @@ import type { Transaction } from "../transaction"
 import { target } from "../transaction"
 import type { Store } from "./store"
 
-export function withdraw<T>(token: AtomToken<T>, store: Store): Atom<T> | null
+export function withdraw<T>(
+	token: AtomToken<T>,
+	store: Store,
+): Atom<T> | undefined
 export function withdraw<T>(
 	token: SelectorToken<T>,
 	store: Store,
-): Selector<T> | null
+): Selector<T> | undefined
 export function withdraw<T>(
 	token: StateToken<T>,
 	store: Store,
-): Atom<T> | Selector<T> | null
+): Atom<T> | Selector<T> | undefined
 export function withdraw<T>(
 	token: ReadonlySelectorToken<T>,
 	store: Store,
-): ReadonlySelector<T> | null
+): ReadonlySelector<T> | undefined
 export function withdraw<T>(
 	token: TransactionToken<T>,
 	store: Store,
-): Transaction<T extends ƒn ? T : never> | null
+): Transaction<T extends ƒn ? T : never> | undefined
 export function withdraw<T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
 	store: Store,
-): Atom<T> | ReadonlySelector<T> | Selector<T> | null
-export function withdraw<T>(token: TimelineToken, store: Store): Timeline | null
+): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined
+export function withdraw<T>(
+	token: TimelineToken,
+	store: Store,
+): Timeline | undefined
 export function withdraw<T>(
 	token:
 		| ReadonlySelectorToken<T>
@@ -51,7 +57,7 @@ export function withdraw<T>(
 	| Selector<T>
 	| Timeline
 	| Transaction<T extends ƒn ? T : never>
-	| null {
+	| undefined {
 	let core = target(store)
 	let state =
 		core.atoms.get(token.key) ??
@@ -109,5 +115,5 @@ export function withdraw<T>(
 			return state
 		}
 	}
-	return null
+	return undefined
 }

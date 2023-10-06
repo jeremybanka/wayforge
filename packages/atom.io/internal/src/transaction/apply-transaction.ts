@@ -48,7 +48,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 		{ key: store.transactionStatus.key, type: `transaction` },
 		store,
 	)
-	if (myTransaction === null) {
+	if (myTransaction === undefined) {
 		throw new Error(
 			`Transaction "${store.transactionStatus.key}" not found. Absurd. How is this running?`,
 		)

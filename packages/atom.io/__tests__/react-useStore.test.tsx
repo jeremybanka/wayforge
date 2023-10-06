@@ -2,7 +2,7 @@ import { fireEvent, render } from "@testing-library/react"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
-import { atom, isDefault } from "atom.io"
+import { atom } from "atom.io"
 import { Observer } from "./__util__/Observer"
 
 export const onChange = [() => undefined, console.log][0]
@@ -16,11 +16,9 @@ describe(`single atom`, () => {
 		const Letter: FC = () => {
 			const setLetter = AR.useI(letterState)
 			const letter = AR.useO(letterState)
-			const isDefaultLetter = isDefault(letterState)
 			return (
 				<>
 					<div data-testid={letter}>{letter}</div>
-					<div data-testid={isDefaultLetter}>{isDefaultLetter}</div>
 					<button
 						type="button"
 						onClick={() => setLetter(`B`)}
@@ -40,11 +38,9 @@ describe(`single atom`, () => {
 
 	it(`accepts user input with externally managed state`, () => {
 		const { getByTestId } = scenario()
-		expect(getByTestId(`true`)).toBeTruthy()
 		const changeStateButton = getByTestId(`changeStateButton`)
 		fireEvent.click(changeStateButton)
 		const option = getByTestId(`B`)
 		expect(option).toBeTruthy()
-		expect(getByTestId(`false`)).toBeTruthy()
 	})
 })

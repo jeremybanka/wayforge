@@ -3,7 +3,6 @@ import { vitest } from "vitest"
 import {
 	atom,
 	getState,
-	isDefault,
 	selector,
 	setLogLevel,
 	setState,
@@ -61,11 +60,9 @@ describe(`atom`, () => {
 			default: () => ({ 0: 0, 1: 0, 2: 0 }),
 		})
 		expect(getState(stats)).toStrictEqual({ 0: 0, 1: 0, 2: 0 })
-		expect(isDefault(stats)).toBe(true)
 
 		setState(stats, { 0: 1, 1: 0, 2: 0 })
 		expect(getState(stats)).toStrictEqual({ 0: 1, 1: 0, 2: 0 })
-		expect(isDefault(stats)).toBe(false)
 	})
 })
 
@@ -184,10 +181,8 @@ describe(`selector`, () => {
 			get: ({ get }) => get(count) * 2,
 		})
 		expect(getState(double)).toBe(0)
-		expect(isDefault(double)).toBe(true)
 
 		setState(count, 1)
 		expect(getState(double)).toBe(2)
-		expect(isDefault(double)).toBe(false)
 	})
 })
