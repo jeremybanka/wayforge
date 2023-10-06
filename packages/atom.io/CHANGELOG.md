@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.8.1
+
+### Patch Changes
+
+- 4439dbb: 💥 Remove unused `isDefault` function.
+- 4439dbb: 🐛 Selectors are no longer computed twice!
+- 4439dbb: 🥅 Automatically catch and log errors from rejected promises set into state.
+- 4439dbb: `atom.io/internal`: withdraw may return undefined now, not null.
+- 4439dbb: `atom.io/internal`: openOperation no longer throws, but may return a string signaling the rejection of the action, due to an operation currently being open.
+
 ## 0.8.0
 
 ### Minor Changes
