@@ -1,4 +1,4 @@
-import type { StateUpdate } from "../../src"
+import type { StateUpdate } from "atom.io"
 import { Future } from "./future"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
