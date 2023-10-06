@@ -18,10 +18,17 @@ export const cacheValue = (
 	if (value instanceof Promise) {
 		const future = new Future(value)
 		target(store).valueMap.set(key, future)
-		future.then((value) => {
-			cacheValue(key, value, subject, store)
-			subject.next({ newValue: value, oldValue: value })
-		})
+		future
+			.then((value) => {
+				cacheValue(key, value, subject, store)
+				subject.next({ newValue: value, oldValue: value })
+			})
+			.catch((error) => {
+				store.config.logger?.error(
+					`Promised value for "${key}" rejected:`,
+					error,
+				)
+			})
 	} else {
 		target(store).valueMap.set(key, value)
 	}
