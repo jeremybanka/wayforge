@@ -46,11 +46,3 @@ export type FamilyMetadata = {
 	key: string
 	subKey: string
 }
-
-export const isDefault = (
-	token: ReadonlySelectorToken<unknown> | StateToken<unknown>,
-	store: Store = IO.IMPLICIT.STORE,
-): boolean =>
-	token.type === `atom`
-		? IO.isAtomDefault(token.key, store)
-		: IO.isSelectorDefault(token.key, store)
