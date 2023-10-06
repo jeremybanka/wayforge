@@ -26,12 +26,8 @@ export const setState = <T, New extends T>(
 	value: New | ((oldValue: T) => New),
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): void => {
-	try {
-		Internal.openOperation(token, store)
-	} catch (thrown) {
-		if (!(typeof thrown === `symbol`)) {
-			throw thrown
-		}
+	const rejection = Internal.openOperation(token, store)
+	if (rejection) {
 		return
 	}
 	const state =

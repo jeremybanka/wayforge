@@ -26,14 +26,14 @@ export const createReadWriteSelector = <T>(
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const oldValue = getSelf()
+		const newValue = become(next)(oldValue)
 		store.config.logger?.info(
 			`   <- "${options.key}" went (`,
 			oldValue,
 			`->`,
-			next,
+			newValue,
 			`)`,
 		)
-		const newValue = become(next)(oldValue)
 		cacheValue(options.key, newValue, subject, store)
 		markDone(options.key, store)
 		if (store.transactionStatus.phase === `idle`) {
