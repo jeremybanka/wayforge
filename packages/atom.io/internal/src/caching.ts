@@ -1,4 +1,4 @@
-import type { StateUpdate } from "../../src"
+import type { StateUpdate } from "atom.io"
 import { Future } from "./future"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
@@ -18,10 +18,17 @@ export const cacheValue = (
 	if (value instanceof Promise) {
 		const future = new Future(value)
 		target(store).valueMap.set(key, future)
-		future.then((value) => {
-			cacheValue(key, value, subject, store)
-			subject.next({ newValue: value, oldValue: value })
-		})
+		future
+			.then((value) => {
+				cacheValue(key, value, subject, store)
+				subject.next({ newValue: value, oldValue: value })
+			})
+			.catch((error) => {
+				store.config.logger?.error(
+					`Promised value for "${key}" rejected:`,
+					error,
+				)
+			})
 	} else {
 		target(store).valueMap.set(key, value)
 	}

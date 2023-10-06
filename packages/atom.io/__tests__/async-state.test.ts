@@ -13,8 +13,7 @@ beforeEach(() => {
 
 describe(`async atom`, async () => {
 	it(`hits the subscriber twice`, async () => {
-		type Loadable<T> = Promise<T> | T
-		const count = AtomIO.atom<Loadable<number>>({
+		const count = AtomIO.atom<Internal.Loadable<number>>({
 			key: `count`,
 			default: 0,
 		})
@@ -29,6 +28,24 @@ describe(`async atom`, async () => {
 		const countValueAwaited = await AtomIO.getState(count)
 		expect(countValueAwaited).toBe(1)
 		expect(Utils.stdout).toHaveBeenCalledTimes(2)
+	})
+	it(`handles a rejected promise`, async () => {
+		const count = AtomIO.atom<Internal.Loadable<number>>({
+			key: `count`,
+			default: 0,
+		})
+		AtomIO.subscribe(count, ({ newValue, oldValue }) => {
+			Utils.stdout(`count`, { newValue, oldValue })
+		})
+		const getNumber = async (): Promise<number> => {
+			throw new Error(`😤`)
+		}
+		AtomIO.setState(count, getNumber())
+		const countValueInitial = AtomIO.getState(count)
+		expect(countValueInitial).toBeInstanceOf(Promise)
+		expect(countValueInitial).toBeInstanceOf(Internal.Future)
+
+		expect(Utils.stdout).toHaveBeenCalledTimes(1)
 	})
 })
 

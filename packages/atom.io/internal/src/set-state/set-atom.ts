@@ -11,7 +11,7 @@ import { emitUpdate } from "./emit-update"
 import { evictDownStream } from "./evict-downstream"
 import { stowUpdate } from "./stow-update"
 
-export const setAtomState = <T>(
+export const setAtom = <T>(
 	atom: Atom<T>,
 	next: T | ((oldValue: T) => T),
 	store: Store = IMPLICIT.STORE,

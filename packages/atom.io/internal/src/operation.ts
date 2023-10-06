@@ -16,13 +16,16 @@ export type OperationProgress =
 			token: StateToken<any>
 	  }
 
-export const openOperation = (token: StateToken<any>, store: Store): void => {
+export const openOperation = (
+	token: StateToken<any>,
+	store: Store,
+): `rejection` | undefined => {
 	const core = target(store)
 	if (core.operation.open) {
 		store.config.logger?.error(
 			`❌ failed to setState to "${token.key}" during a setState for "${core.operation.token.key}"`,
 		)
-		throw Symbol(`violation`)
+		return `rejection`
 	}
 	core.operation = {
 		open: true,

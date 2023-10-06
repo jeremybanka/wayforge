@@ -1,4 +1,5 @@
-import * as AtomIO from "atom.io"
+import type { MutableAtomOptions, MutableAtomToken } from "atom.io"
+import { subscribe } from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
@@ -13,16 +14,16 @@ export function createMutableAtom<
 	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 >(
-	options: AtomIO.MutableAtomOptions<Core, SerializableCore>,
+	options: MutableAtomOptions<Core, SerializableCore>,
 	store: Store = IMPLICIT.STORE,
-): AtomIO.MutableAtomToken<Core, SerializableCore> {
+): MutableAtomToken<Core, SerializableCore> {
 	store.config.logger?.info(
 		`🔧 creating mutable atom "${options.key}" in store "${store.config.name}"`,
 	)
 	const coreState = createAtom<Core>(options, undefined, store)
 	new Tracker(coreState, store)
 	const jsonState = selectJson(coreState, options, store)
-	AtomIO.subscribe(
+	subscribe(
 		jsonState,
 		() => {
 			store.config.logger?.info(
@@ -45,5 +46,5 @@ export function createMutableAtom<
 				: store.transactionStatus.key
 		}`,
 	)
-	return coreState as AtomIO.MutableAtomToken<Core, SerializableCore>
+	return coreState as MutableAtomToken<Core, SerializableCore>
 }

@@ -1,7 +1,5 @@
-import { E } from "vitest/dist/reporters-5f784f42"
-
-export type Eventual<T> = Promise<T> | T
-export type Fated<T, E extends Error = Error> = Eventual<E | T>
+export type Loadable<T> = Promise<T> | T
+export type Fated<T, E extends Error = Error> = Loadable<E | T>
 
 /**
  * A Promise that can be canceled.

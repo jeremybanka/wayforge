@@ -11,23 +11,23 @@ import { target } from "../transaction"
 export function withdrawNewFamilyMember<T>(
 	token: AtomToken<T>,
 	store: Store,
-): Atom<T> | null
+): Atom<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token: SelectorToken<T>,
 	store: Store,
-): Selector<T> | null
+): Selector<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token: ReadonlySelectorToken<T>,
 	store: Store,
-): ReadonlySelector<T> | null
+): ReadonlySelector<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token: StateToken<T>,
 	store: Store,
-): Atom<T> | Selector<T> | null
+): Atom<T> | Selector<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
 	store: Store,
-): Atom<T> | ReadonlySelector<T> | Selector<T> | null
+): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token:
 		| AtomToken<T>
@@ -35,7 +35,7 @@ export function withdrawNewFamilyMember<T>(
 		| SelectorToken<T>
 		| StateToken<T>,
 	store: Store,
-): Atom<T> | ReadonlySelector<T> | Selector<T> | null {
+): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined {
 	store.config.logger?.info(
 		`👪 creating new family member "${token.key}" in store "${store.config.name}"`,
 	)
@@ -49,5 +49,5 @@ export function withdrawNewFamilyMember<T>(
 			return state
 		}
 	}
-	return null
+	return undefined
 }

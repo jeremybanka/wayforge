@@ -1,4 +1,4 @@
-import type * as AtomIO from "atom.io"
+import type { AtomFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
@@ -16,14 +16,14 @@ export class FamilyTracker<
 		? Signal
 		: never
 
-	public readonly findLatestUpdateState: AtomIO.AtomFamily<
+	public readonly findLatestUpdateState: AtomFamily<
 		typeof this.Update | null,
 		FamilyMemberKey
 	>
-	public readonly findMutableState: AtomIO.AtomFamily<Core, FamilyMemberKey>
+	public readonly findMutableState: AtomFamily<Core, FamilyMemberKey>
 
 	public constructor(
-		findMutableState: AtomIO.AtomFamily<Core, FamilyMemberKey>,
+		findMutableState: AtomFamily<Core, FamilyMemberKey>,
 		store: Store = IMPLICIT.STORE,
 	) {
 		this.findLatestUpdateState = createAtomFamily<

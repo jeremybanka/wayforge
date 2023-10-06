@@ -18,7 +18,7 @@ export const registerSelector = (
 			.some(([_, { source }]) => source === dependency.key)
 
 		const dependencyState = withdraw(dependency, store)
-		if (dependencyState === null) {
+		if (dependencyState === undefined) {
 			throw new Error(
 				`State "${dependency.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 			)
@@ -51,7 +51,7 @@ export const registerSelector = (
 	},
 	set: (stateToken, newValue) => {
 		const state = withdraw(stateToken, store)
-		if (state === null) {
+		if (state === undefined) {
 			throw new Error(
 				`State "${stateToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 			)

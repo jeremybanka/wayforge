@@ -14,7 +14,7 @@ export const subscribeToRootAtoms = <T>(
 			? null
 			: traceAllSelectorAtoms(state.key, store).map((atomToken) => {
 					const atom = withdraw(atomToken, store)
-					if (atom === null) {
+					if (atom === undefined) {
 						throw new Error(
 							`Atom "${atomToken.key}", a dependency of selector "${state.key}", not found in store "${store.config.name}".`,
 						)
