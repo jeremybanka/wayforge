@@ -1,9 +1,6 @@
 import * as Internal from "atom.io/internal"
 import type { ReadonlySelectorToken, StateToken } from "."
 
-export const capitalize = (str: string): string =>
-	str[0].toUpperCase() + str.slice(1)
-
 export const getState = <T>(
 	token: ReadonlySelectorToken<T> | StateToken<T>,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
@@ -12,11 +9,7 @@ export const getState = <T>(
 		Internal.withdraw(token, store) ??
 		Internal.withdrawNewFamilyMember(token, store)
 	if (state === undefined) {
-		throw new Error(
-			`${capitalize(token.type)} "${token.key}" not found in store "${
-				store.config.name
-			}".`,
-		)
+		throw new NotFoundError(token, store)
 	}
 	return Internal.getState__INTERNAL(state, store)
 }
@@ -34,12 +27,22 @@ export const setState = <T, New extends T>(
 		Internal.withdraw(token, store) ??
 		Internal.withdrawNewFamilyMember(token, store)
 	if (state === undefined) {
-		throw new Error(
+		throw new NotFoundError(token, store)
+	}
+	Internal.setState__INTERNAL(state, value, store)
+	Internal.closeOperation(store)
+}
+
+const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+export class NotFoundError extends Error {
+	public constructor(
+		token: ReadonlySelectorToken<any> | StateToken<any>,
+		store: Internal.Store,
+	) {
+		super(
 			`${capitalize(token.type)} "${token.key}" not found in store "${
 				store.config.name
 			}".`,
 		)
 	}
-	Internal.setState__INTERNAL(state, value, store)
-	Internal.closeOperation(store)
 }

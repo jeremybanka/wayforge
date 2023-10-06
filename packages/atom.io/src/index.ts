@@ -1,5 +1,4 @@
-import * as IO from "atom.io/internal"
-import type { Store, Transceiver } from "atom.io/internal"
+import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 export * from "./atom"
@@ -7,7 +6,6 @@ export * from "./get-set"
 export * from "./logger"
 export * from "./selector"
 export * from "./silo"
-export { subscribe } from "./subscribe"
 export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
@@ -42,7 +40,4 @@ export type ReadonlySelectorToken<_> = {
 	__brand?: _
 }
 
-export type FamilyMetadata = {
-	key: string
-	subKey: string
-}
+export type FamilyMetadata = { key: string; subKey: string }

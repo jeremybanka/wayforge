@@ -1,4 +1,5 @@
-import * as AtomIO from "atom.io"
+import type { AtomToken, FamilyMetadata, MutableAtomToken } from "atom.io"
+import { getState, setState, subscribe, subscribeToTimeline } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
@@ -16,12 +17,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private Update: Mutable extends Transceiver<infer Signal> ? Signal : never
 
 	private initializeState(
-		mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>,
+		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		store: Store = IMPLICIT.STORE,
-	): AtomIO.AtomToken<typeof this.Update | null> {
+	): AtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		deleteAtom(latestUpdateStateKey, target(store))
-		const familyMetaData: AtomIO.FamilyMetadata | undefined = mutableState.family
+		const familyMetaData: FamilyMetadata | undefined = mutableState.family
 			? {
 					key: `*${mutableState.family.key}`,
 					subKey: mutableState.family.subKey,
@@ -43,11 +44,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	private unsubscribeFromInnerValue: (() => void) | null = null
 	private observeCore(
-		mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>,
-		latestUpdateState: AtomIO.AtomToken<typeof this.Update | null>,
+		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
+		latestUpdateState: AtomToken<typeof this.Update | null>,
 		store: Store = IMPLICIT.STORE,
 	): void {
-		const originalInnerValue = AtomIO.getState(mutableState, store)
+		const originalInnerValue = getState(mutableState, store)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			`tracker:${store.config.name}:${
 				store.transactionStatus.phase === `idle`
@@ -59,12 +60,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					mutableState.key,
 					() => {
 						unsubscribe()
-						AtomIO.setState(latestUpdateState, update, store)
+						setState(latestUpdateState, update, store)
 					},
 				)
 			},
 		)
-		AtomIO.subscribe(
+		subscribe(
 			mutableState,
 			(update) => {
 				if (update.newValue !== update.oldValue) {
@@ -80,7 +81,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 								mutableState.key,
 								() => {
 									unsubscribe()
-									AtomIO.setState(latestUpdateState, update, store)
+									setState(latestUpdateState, update, store)
 								},
 							)
 						},
@@ -93,11 +94,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	}
 
 	private updateCore<Core extends Transceiver<any>>(
-		mutableState: AtomIO.MutableAtomToken<Core, Json.Serializable>,
-		latestUpdateState: AtomIO.AtomToken<typeof this.Update | null>,
+		mutableState: MutableAtomToken<Core, Json.Serializable>,
+		latestUpdateState: AtomToken<typeof this.Update | null>,
 		store: Store = IMPLICIT.STORE,
 	): void {
-		AtomIO.subscribe(
+		subscribe(
 			latestUpdateState,
 			({ newValue, oldValue }) => {
 				const timelineId = store.timelineAtoms.getRelatedKey(
@@ -106,11 +107,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				if (timelineId) {
 					const timelineData = store.timelines.get(timelineId)
 					if (timelineData?.timeTraveling) {
-						const unsubscribe = AtomIO.subscribeToTimeline(
+						const unsubscribe = subscribeToTimeline(
 							{ key: timelineId, type: `timeline` },
 							(update) => {
 								unsubscribe()
-								AtomIO.setState(
+								setState(
 									mutableState,
 									(transceiver) => {
 										if (update === `redo` && newValue) {
@@ -133,7 +134,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					() => {
 						unsubscribe()
 						if (newValue) {
-							AtomIO.setState(
+							setState(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
 								store,
@@ -147,11 +148,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		)
 	}
 
-	public mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>
-	public latestUpdateState: AtomIO.AtomToken<typeof this.Update | null>
+	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
+	public latestUpdateState: AtomToken<typeof this.Update | null>
 
 	public constructor(
-		mutableState: AtomIO.MutableAtomToken<Mutable, Json.Serializable>,
+		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		store: Store = IMPLICIT.STORE,
 	) {
 		this.mutableState = mutableState
