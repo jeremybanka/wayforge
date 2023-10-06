@@ -26,7 +26,7 @@ export function subscribe<T>(
 	store: Store = IMPLICIT.STORE,
 ): () => void {
 	const state = withdraw<T>(token, store)
-	if (state === null) {
+	if (state === undefined) {
 		throw new Error(
 			`State "${token.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 		)
@@ -66,7 +66,7 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 	store = IMPLICIT.STORE,
 ): (() => void) => {
 	const tx = withdraw(token, store)
-	if (tx === null) {
+	if (tx === undefined) {
 		throw new Error(
 			`Cannot subscribe to transaction "${token.key}": transaction not found in store "${store.config.name}".`,
 		)
@@ -86,7 +86,7 @@ export const subscribeToTimeline = (
 	store = IMPLICIT.STORE,
 ): (() => void) => {
 	const tl = withdraw(token, store)
-	if (tl === null) {
+	if (tl === undefined) {
 		throw new Error(
 			`Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`,
 		)

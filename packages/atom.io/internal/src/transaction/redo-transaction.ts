@@ -12,7 +12,7 @@ export const redoTransactionUpdate = <ƒ extends ƒn>(
 	for (const { key, newValue } of update.atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		const state = withdraw(token, store)
-		if (state === null) {
+		if (state === undefined) {
 			throw new Error(
 				`State "${token.key}" not found in this store. This is surprising, because we are navigating the history of the store.`,
 			)

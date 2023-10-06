@@ -15,7 +15,7 @@ export const addAtomToTimeline = (
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const atom = withdraw(atomToken, store)
-	if (atom === null) {
+	if (atom === undefined) {
 		throw new Error(
 			`Cannot subscribe to atom "${atomToken.key}" because it has not been initialized in store "${store.config.name}"`,
 		)
@@ -67,7 +67,7 @@ export const addAtomToTimeline = (
 					{ key: currentTransactionKey, type: `transaction` },
 					store,
 				)
-				if (currentTransaction === null) {
+				if (currentTransaction === undefined) {
 					throw new Error(
 						`Transaction "${currentTransactionKey}" not found in store "${store.config.name}". This is surprising, because we are in the application phase of "${currentTransactionKey}".`,
 					)

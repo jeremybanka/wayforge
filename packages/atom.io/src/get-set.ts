@@ -11,7 +11,7 @@ export const getState = <T>(
 	const state =
 		Internal.withdraw(token, store) ??
 		Internal.withdrawNewFamilyMember(token, store)
-	if (state === null) {
+	if (state === undefined) {
 		throw new Error(
 			`${capitalize(token.type)} "${token.key}" not found in store "${
 				store.config.name
@@ -37,7 +37,7 @@ export const setState = <T, New extends T>(
 	const state =
 		Internal.withdraw(token, store) ??
 		Internal.withdrawNewFamilyMember(token, store)
-	if (state === null) {
+	if (state === undefined) {
 		throw new Error(
 			`${capitalize(token.type)} "${token.key}" not found in store "${
 				store.config.name
