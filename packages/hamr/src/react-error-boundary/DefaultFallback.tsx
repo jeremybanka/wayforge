@@ -6,7 +6,7 @@ export type FallbackProps = {
 }
 
 export const DefaultFallback: FC<FallbackProps> = ({ error, errorInfo }) => {
-	const component = errorInfo?.componentStack.split(` `).filter(Boolean)[2]
+	const component = errorInfo?.componentStack?.split(` `).filter(Boolean)[2]
 	const message =
 		error?.toString() ?? errorInfo?.componentStack ?? `Unknown error`
 	return (
