@@ -57,7 +57,7 @@
 		"@emotion/react": "11.11.1",
 		"@testing-library/react": "14.0.0",
 		"@types/mock-fs": "4.13.2",
-		"@types/react": "18.2.26",
+		"@types/react": "18.2.27",
 		"@types/tmp": "0.2.4",
 		"@vitest/coverage-v8": "0.34.6",
 		"concurrently": "8.2.1",
