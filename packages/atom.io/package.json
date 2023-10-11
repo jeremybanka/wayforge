@@ -19,7 +19,7 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "cross-env LIB=dist vitest run"
+		"test:once": "cross-env IMPORT=dist vitest run"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
@@ -97,9 +97,12 @@
 		"react-devtools/dist",
 		"react-devtools/package.json",
 		"react-devtools/src",
-		"realtime/dist",
-		"realtime/package.json",
-		"realtime/src",
+		"realtime-client/dist",
+		"realtime-client/package.json",
+		"realtime-client/src",
+		"realtime-server/dist",
+		"realtime-server/package.json",
+		"realtime-server/src",
 		"realtime-react/dist",
 		"realtime-react/package.json",
 		"realtime-react/src",
