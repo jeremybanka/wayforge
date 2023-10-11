@@ -1,8 +1,15 @@
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
+import includeOnlyDist from "./__scripts__/include-only-dist.node"
 
-const shouldTestDistFolder = process.env.LIB === `dist`
-const project = shouldTestDistFolder ? `./tsconfig.prod.json` : `./tsconfig.json`
+const DEVELOPMENT_TSCONFIG = `./tsconfig.json`
+const PRODUCTION_TSCONFIG = `./tsconfig.prod.json`
+
+const shouldTestDistFolder = process.env.IMPORT === `dist`
+const project = shouldTestDistFolder ? PRODUCTION_TSCONFIG : DEVELOPMENT_TSCONFIG
+if (shouldTestDistFolder) {
+	includeOnlyDist()
+}
 
 export default defineConfig({
 	plugins: [
