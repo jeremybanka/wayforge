@@ -5,6 +5,7 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*"],
 			"inputs": [
+				"**/package.json",
 				"src/**/*.scss",
 				"src/**/*.mdx",
 				"src/**/*.tsx",
@@ -18,6 +19,7 @@
 		"test:once": {
 			"dependsOn": ["build"],
 			"inputs": [
+				"**/package.json",
 				"src/**/*.tsx",
 				"src/**/*.ts",
 				"src/**/*.scss",
