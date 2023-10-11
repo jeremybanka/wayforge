@@ -51,7 +51,6 @@ export class DatabaseManager {
 	public async setupTriggersAndNotifications(): Promise<void> {
 		const triggersPath = path.join(__dirname, `triggers.sql`)
 		const triggers = await fs.readFile(triggersPath, `utf8`)
-		console.log({ triggers })
 		await this.client.query(triggers)
 	}
 

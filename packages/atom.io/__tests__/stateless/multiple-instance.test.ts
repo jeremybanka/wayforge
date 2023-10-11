@@ -15,7 +15,7 @@ beforeAll(async () => {
 	// await dbManager.createSampleTable()
 	await dbManager.setupTriggersAndNotifications()
 
-	const NUM_SERVERS = 4 // or however many you want
+	const NUM_SERVERS = 3 // or however many you want
 
 	for (let i = 0; i < NUM_SERVERS; i++) {
 		const port = 6260 + i
