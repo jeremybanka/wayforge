@@ -19,7 +19,7 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "cross-env LIB=dist vitest run"
+		"test:once": "cross-env IMPORT=dist vitest run"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
