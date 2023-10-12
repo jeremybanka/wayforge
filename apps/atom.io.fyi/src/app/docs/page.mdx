@@ -2,11 +2,11 @@
 
 ## atom
 
-import DeclareAnAtom from "../../exhibits-wrapped/declare-an-atom.gen"
-import AnAtomTokenIsAReference from "../../exhibits-wrapped/an-atom-token-is-a-reference.gen"
-import GetAndSetAnAtom from "../../exhibits-wrapped/get-and-set-an-atom.gen"
-import SubscribeToAnAtom from "../../exhibits-wrapped/subscribe-to-an-atom.gen"
-import SubscribePowersIntegrations from "../../exhibits-wrapped/subscribe-is-the-foundation-of-reactivity.gen"
+import DeclareAnAtom from "x/core/declare-an-atom.gen"
+import AnAtomTokenIsAReference from "x/core/an-atom-token-is-a-reference.gen"
+import GetAndSetAnAtom from "x/core/get-and-set-an-atom.gen"
+import SubscribeToAnAtom from "x/core/subscribe-to-an-atom.gen"
+import SubscribePowersIntegrations from "x/core/subscribe-is-the-foundation-of-reactivity.gen"
 
 <DeclareAnAtom />
 Imagine an `atom` as a "reactive variable," with a key, a type, and a default value.
@@ -19,7 +19,7 @@ Instead, it returns an importable, serializable, and replaceable reference to th
 We call this an `AtomToken`. In this case, an `AtomToken<number>`.
 
 <GetAndSetAnAtom />
-An atom's value is accessed with `getState` and `setState`.
+An atom's value is accessed by calling `getState` and `setState` with the atom's token.
 
 TypeScript will discourage you from setting the wrong type of value.
 
@@ -33,8 +33,8 @@ atom.io to easily integrate with an observer like React. More on this later.
 
 ## selector
 
-import DeclareASelector from "../../exhibits-wrapped/declare-a-selector.gen"
-import UseASelector from "../../exhibits-wrapped/use-a-selector.gen"
+import DeclareASelector from "x/core/declare-a-selector.gen"
+import UseASelector from "x/core/use-a-selector.gen"
 
 <DeclareASelector />
 
@@ -46,8 +46,8 @@ In this example, we can see that by setting `dividendState` to a new value, the 
 
 ## families
 
-import DeclareAFamily from "../../exhibits-wrapped/declare-a-family.gen"
-import UseAnIndexToTrackFamilyMembers from "../../exhibits-wrapped/use-an-index-to-track-family-members.gen"
+import DeclareAFamily from "x/core/declare-a-family.gen"
+import UseAnIndexToTrackFamilyMembers from "x/core/use-an-index-to-track-family-members.gen"
 
 Sometimes you need a lot of the same type of atom or selector. The `atomFamily` and `selectorFamily` functions provide a convenient interface for declaring states dynamically.
 
