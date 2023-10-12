@@ -82,6 +82,7 @@
 	"module": "dist/index.mjs",
 	"files": [
 		"dist",
+		"src",
 		"internal/dist",
 		"internal/package.json",
 		"internal/src",
@@ -100,16 +101,15 @@
 		"realtime-client/dist",
 		"realtime-client/package.json",
 		"realtime-client/src",
-		"realtime-server/dist",
-		"realtime-server/package.json",
-		"realtime-server/src",
 		"realtime-react/dist",
 		"realtime-react/package.json",
 		"realtime-react/src",
+		"realtime-server/dist",
+		"realtime-server/package.json",
+		"realtime-server/src",
 		"realtime-testing/dist",
 		"realtime-testing/package.json",
 		"realtime-testing/src",
-		"src",
 		"transceivers/set-rtx/dist",
 		"transceivers/set-rtx/package.json",
 		"transceivers/set-rtx/src"
@@ -129,12 +129,12 @@
 			"import": "./internal/dist/index.mjs",
 			"require": "./internal/dist/index.js"
 		},
-		"./introspection/package.json": "./json/package.json",
+		"./introspection/package.json": "./introspection/package.json",
 		"./introspection": {
-			"types": "./json/dist/index.d.ts",
-			"browser": "./json/dist/index.mjs",
-			"import": "./json/dist/index.mjs",
-			"require": "./json/dist/index.js"
+			"types": "./introspection/dist/index.d.ts",
+			"browser": "./introspection/dist/index.mjs",
+			"import": "./introspection/dist/index.mjs",
+			"require": "./introspection/dist/index.js"
 		},
 		"./json/package.json": "./json/package.json",
 		"./json": {
