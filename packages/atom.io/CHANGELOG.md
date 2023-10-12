@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.8.3
+
+### Patch Changes
+
+- 78e2a8e9: 🐛 Fix issue where imports from introspection would be resolved to the json module instead.
+
 ## 0.8.2
 
 ### Patch Changes
