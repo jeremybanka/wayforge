@@ -17,10 +17,9 @@ if (lastArgument == null) {
 const inputDir = `./src/exhibits`
 const outputDir = `./src/exhibits-wrapped`
 
-// Function to wrap the TSX code in a function component
 function wrapCode(filename: string, code: string) {
 	return `'use client'
-{/* eslint-disable quotes */}
+/* eslint-disable quotes */
 import * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
@@ -55,7 +54,6 @@ export default Codeblock;
 `
 }
 
-// Function to handle a file being added or changed
 function handleFile(filePath: string) {
 	const code = fs.readFileSync(filePath, `utf8`)
 	const directory = path.dirname(filePath)
@@ -97,24 +95,27 @@ if (lastArgument === `watch`) {
 	})
 } else {
 	npmlog.info(`build`, inputDir)
-	fs.readdir(inputDir, (err, files) => {
-		if (err) {
-			return console.log(`Unable to scan directory: ` + err)
-		}
+	function buildAll(directory = inputDir) {
+		fs.readdir(directory, (err, files) => {
+			if (err) {
+				return npmlog.error(`reading`, directory, err)
+			}
+			npmlog.info(`files`, files)
 
-		files.forEach((file) => {
-			const filePath = path.join(inputDir, file)
-
-			// Check if the path is a file
-			fs.stat(filePath, (err, stats) => {
-				if (err) {
-					return console.log(`Unable to retrieve file stats: ${err}`)
-				}
-
-				if (stats.isFile()) {
-					handleFile(filePath)
-				}
+			files.forEach((file) => {
+				const filePath = path.join(directory, file)
+				fs.stat(filePath, (err, stats) => {
+					if (err) {
+						npmlog.error(`building`, filePath, err)
+					}
+					if (stats.isFile()) {
+						handleFile(filePath)
+					} else if (stats.isDirectory()) {
+						buildAll(filePath)
+					}
+				})
 			})
 		})
-	})
+	}
+	buildAll()
 }
