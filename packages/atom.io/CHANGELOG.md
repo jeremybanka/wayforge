@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.8.2
+
+### Patch Changes
+
+- b34a39e: 🐛 Fix broken imports from the previous version. Add integration testing script to avoid future breakage of this nature.
+
 ## 0.8.1
 
 ### Patch Changes
