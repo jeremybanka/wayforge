@@ -6,11 +6,8 @@ import npmlog from "npmlog"
 
 const myArgs = process.argv.slice(2)
 const lastArgument = myArgs[myArgs.length - 1]
-if (lastArgument == null) {
-	npmlog.error(
-		`wrap-exhibits`,
-		`No arguments provided: specify 'watch' or 'all'`,
-	)
+if (!lastArgument) {
+	npmlog.error(`usage`, `No arguments provided: specify 'watch' or 'once'`)
 	process.exit(1)
 }
 
@@ -81,41 +78,44 @@ function handleFile(filePath: string) {
 	}
 }
 
-if (lastArgument === `watch`) {
-	npmlog.info(`watch`, inputDir)
-	const watcher = chokidar.watch(inputDir, { persistent: true })
+switch (lastArgument) {
+	case `watch`: {
+		npmlog.info(`watch`, inputDir)
+		const watcher = chokidar.watch(inputDir, { persistent: true })
 
-	watcher.on(`add`, (filePath) => {
-		npmlog.info(`add`, filePath)
-		handleFile(filePath)
-	})
-	watcher.on(`change`, (filePath) => {
-		npmlog.info(`change`, filePath)
-		handleFile(filePath)
-	})
-} else {
-	npmlog.info(`build`, inputDir)
-	function buildAll(directory = inputDir) {
-		fs.readdir(directory, (err, files) => {
-			if (err) {
-				return npmlog.error(`reading`, directory, err)
-			}
-			npmlog.info(`found`, `files`, files)
-
-			files.forEach((file) => {
-				const filePath = path.join(directory, file)
-				fs.stat(filePath, (err, stats) => {
-					if (err) {
-						npmlog.error(`building`, filePath, err)
-					}
-					if (stats.isFile()) {
-						handleFile(filePath)
-					} else if (stats.isDirectory()) {
-						buildAll(filePath)
-					}
-				})
-			})
+		watcher.on(`add`, (filePath) => {
+			npmlog.info(`add`, filePath)
+			handleFile(filePath)
+		})
+		watcher.on(`change`, (filePath) => {
+			npmlog.info(`change`, filePath)
+			handleFile(filePath)
 		})
 	}
-	buildAll()
+	case `once`: {
+		npmlog.info(`build`, inputDir)
+		function buildAll(directory = inputDir) {
+			fs.readdir(directory, (err, files) => {
+				if (err) {
+					return npmlog.error(`reading`, directory, err)
+				}
+				npmlog.info(`found`, `files`, files)
+
+				files.forEach((file) => {
+					const filePath = path.join(directory, file)
+					fs.stat(filePath, (err, stats) => {
+						if (err) {
+							npmlog.error(`building`, filePath, err)
+						}
+						if (stats.isFile()) {
+							handleFile(filePath)
+						} else if (stats.isDirectory()) {
+							buildAll(filePath)
+						}
+					})
+				})
+			})
+		}
+		buildAll()
+	}
 }

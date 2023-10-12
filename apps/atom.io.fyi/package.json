@@ -5,9 +5,11 @@
 	"private": true,
 	"scripts": {
 		"dev": "concurrently \"npm:dev:*\"",
+		"dev:exhibits": "tsx scripts/wrap-exhibits.node watch",
 		"dev:next": "next dev",
-		"dev:wrap-exhibits": "tsx scripts/wrap-exhibits.node.ts watch",
-		"build": "tsx scripts/wrap-exhibits.node all && next build",
+		"build": "pnpm build:exhibits && pnpm build:next",
+		"build:exhibits": "tsx scripts/wrap-exhibits.node once",
+		"build:next": "next build",
 		"start": "next start",
 		"lint": "next lint",
 		"test": "echo no tests yet",

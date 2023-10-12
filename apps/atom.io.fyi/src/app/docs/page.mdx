@@ -2,11 +2,11 @@
 
 ## atom
 
-import DeclareAnAtom from "x/core/declare-an-atom.gen"
-import AnAtomTokenIsAReference from "x/core/an-atom-token-is-a-reference.gen"
-import GetAndSetAnAtom from "x/core/get-and-set-an-atom.gen"
-import SubscribeToAnAtom from "x/core/subscribe-to-an-atom.gen"
-import SubscribePowersIntegrations from "x/core/subscribe-is-the-foundation-of-reactivity.gen"
+import DeclareAnAtom from "x/core/atom/declare-an-atom.gen"
+import AnAtomTokenIsAReference from "x/core/atom/an-atom-token-is-a-reference.gen"
+import GetAndSetAnAtom from "x/core/atom/get-and-set-an-atom.gen"
+import SubscribeToAnAtom from "x/core/atom/subscribe-to-an-atom.gen"
+import SubscribePowersIntegrations from "x/core/atom/subscribe-is-the-foundation-of-reactivity.gen"
 
 <DeclareAnAtom />
 Imagine an `atom` as a "reactive variable," with a key, a type, and a default value.
@@ -33,8 +33,8 @@ atom.io to easily integrate with an observer like React. More on this later.
 
 ## selector
 
-import DeclareASelector from "x/core/declare-a-selector.gen"
-import UseASelector from "x/core/use-a-selector.gen"
+import DeclareASelector from "x/core/selector/declare-a-selector.gen"
+import UseASelector from "x/core/selector/use-a-selector.gen"
 
 <DeclareASelector />
 
@@ -73,8 +73,10 @@ Keen readers may recognize that collections generally extend `Object`, and that 
 
 ## transaction
 
-import CallAFamilyInATransaction from "x/core/call-a-family-in-a-transaction.gen"
-import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "x/core/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
+import CallAFamilyInATransaction from "x/core/transaction/call-a-family-in-a-transaction.gen"
+import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "x/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
+// import SubscribeToATransaction from "x/core/transaction/subscribe-to-a-transaction.gen"
+// import TryCatchAFailedTransaction from "x/core/transaction/try-catch-a-failed-transaction.gen"
 
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
@@ -90,13 +92,17 @@ A common use case is creating some new state using a family function and adding 
 
 ## timeline
 
+import CreateATimeline from "x/core/timeline/create-a-timeline.gen"
+// import SubscribeToATimeline from "x/core/timeline/subscribe-to-a-timeline.gen"
+// import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen"
+
 Timelines allow you to track the history of a group of atoms. If these atoms are set, or set as a group by a selector or transaction, the timeline will record the changes. A timeline can be used to undo and redo changes.
 
-{/* [CreateATimeline/] */}
+<CreateATimeline />
 
-{/* [SubscribeToATimeline/] */}
+{/* <SubscribeToATimeline/> */}
 
-{/* [UndoAndRedoChanges/] */}
+{/* <UndoAndRedoChanges/> */}
 
 ## advanced
 
