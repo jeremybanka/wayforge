@@ -6,21 +6,17 @@ import npmlog from "npmlog"
 
 const myArgs = process.argv.slice(2)
 const lastArgument = myArgs[myArgs.length - 1]
-if (lastArgument == null) {
-	npmlog.error(
-		`wrap-exhibits`,
-		`No arguments provided: specify 'watch' or 'all'`,
-	)
+if (!lastArgument) {
+	npmlog.error(`usage`, `No arguments provided: specify 'watch' or 'once'`)
 	process.exit(1)
 }
 
 const inputDir = `./src/exhibits`
 const outputDir = `./src/exhibits-wrapped`
 
-// Function to wrap the TSX code in a function component
 function wrapCode(filename: string, code: string) {
 	return `'use client'
-{/* eslint-disable quotes */}
+/* eslint-disable quotes */
 import * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
@@ -34,10 +30,11 @@ const Codeblock: React.FC = () => {
 		const myElementsWithClassNameStringAndContainingDoubleQuotes = 
 			Array.prototype.filter.call(
 				me.querySelectorAll('.token.string'),
-				(element) => element.textContent.includes('"./')
+				(element) => element.textContent.includes('./')
 			);
 		for (const element of myElementsWithClassNameStringAndContainingDoubleQuotes) {
-			const href = "#" + element.textContent.replace(/["./]/g, '');
+			// get everything following the final '/'
+			const href = "#" + element.textContent.split('/').pop();
 			element.innerHTML = \`<a href="\${href}">\${element.textContent}</a>\`;
 		}
 	}, [myRef.current]);
@@ -55,50 +52,71 @@ export default Codeblock;
 `
 }
 
-// Function to handle a file being added or changed
 function handleFile(filePath: string) {
-	npmlog.info(`wrap-exhibits`, `Handling file ${filePath}`)
 	const code = fs.readFileSync(filePath, `utf8`)
-	const fileName = path.basename(filePath)
-	const fileNameWithoutExtension = fileName.split(`.`)[0]
-	const outputFilename = `${fileNameWithoutExtension}.gen.tsx`
-	const outputFilePath = path.resolve(outputDir, outputFilename)
-	const wrappedCode = wrapCode(fileName, code)
-	fs.writeFileSync(outputFilePath, wrappedCode)
+	const directory = path.dirname(filePath)
+	const relativeDirectory = path.relative(inputDir, directory)
+	const filename = path.basename(filePath)
+	const filenameWithoutExtension = filename.split(`.`)[0]
+	const outputFilename = `${filenameWithoutExtension}.gen.tsx`
+	const outputFilePath = path.resolve(
+		outputDir,
+		relativeDirectory,
+		outputFilename,
+	)
+	npmlog.info(`write`, path.join(outputDir, relativeDirectory, outputFilename))
+	const wrappedCode = wrapCode(filename, code)
+	try {
+		fs.writeFileSync(outputFilePath, wrappedCode)
+	} catch (thrown) {
+		if (thrown instanceof Error && thrown.message.includes(`ENOENT`)) {
+			npmlog.info(`directory`, `${path.dirname(outputFilePath)}`)
+			fs.mkdirSync(path.dirname(outputFilePath), { recursive: true })
+			fs.writeFileSync(outputFilePath, wrappedCode)
+		} else {
+			throw thrown
+		}
+	}
 }
 
-if (lastArgument === `watch`) {
-	npmlog.info(`wrap-exhibits`, `Watching ${inputDir} for changes...`)
-	const watcher = chokidar.watch(inputDir, { persistent: true })
+switch (lastArgument) {
+	case `watch`: {
+		npmlog.info(`watch`, inputDir)
+		const watcher = chokidar.watch(inputDir, { persistent: true })
 
-	watcher.on(`add`, (filePath) => {
-		npmlog.info(`ADD`, `Handling add event for ${filePath}`)
-		handleFile(filePath)
-	})
-	watcher.on(`change`, (filePath) => {
-		npmlog.info(`CHANGE`, `Handling add event for ${filePath}`)
-		handleFile(filePath)
-	})
-} else {
-	npmlog.info(`wrap-exhibits`, `Processing all files in ${inputDir}...`)
-	fs.readdir(inputDir, (err, files) => {
-		if (err) {
-			return console.log(`Unable to scan directory: ` + err)
-		}
-
-		files.forEach((file) => {
-			const filePath = path.join(inputDir, file)
-
-			// Check if the path is a file
-			fs.stat(filePath, (err, stats) => {
-				if (err) {
-					return console.log(`Unable to retrieve file stats: ${err}`)
-				}
-
-				if (stats.isFile()) {
-					handleFile(filePath)
-				}
-			})
+		watcher.on(`add`, (filePath) => {
+			npmlog.info(`add`, filePath)
+			handleFile(filePath)
 		})
-	})
+		watcher.on(`change`, (filePath) => {
+			npmlog.info(`change`, filePath)
+			handleFile(filePath)
+		})
+	}
+	case `once`: {
+		npmlog.info(`build`, inputDir)
+		function buildAll(directory = inputDir) {
+			fs.readdir(directory, (err, files) => {
+				if (err) {
+					return npmlog.error(`reading`, directory, err)
+				}
+				npmlog.info(`found`, `files`, files)
+
+				files.forEach((file) => {
+					const filePath = path.join(directory, file)
+					fs.stat(filePath, (err, stats) => {
+						if (err) {
+							npmlog.error(`building`, filePath, err)
+						}
+						if (stats.isFile()) {
+							handleFile(filePath)
+						} else if (stats.isDirectory()) {
+							buildAll(filePath)
+						}
+					})
+				})
+			})
+		}
+		buildAll()
+	}
 }

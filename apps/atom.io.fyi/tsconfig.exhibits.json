@@ -1,0 +1,6 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": { "target": "ESNext" },
+	"exclude": [],
+	"include": ["src/exhibits", "../../packages/atom.io"]
+}
