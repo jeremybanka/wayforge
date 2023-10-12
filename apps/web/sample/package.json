@@ -34,7 +34,7 @@
 		"cross-env": "7.0.3",
 		"eslint": "8.51.0",
 		"happy-dom": "12.9.1",
-		"sass": "1.69.2",
+		"sass": "1.69.3",
 		"vite": "4.4.11",
 		"vite-plugin-svgr": "4.1.0",
 		"vite-tsconfig-paths": "4.2.1",
