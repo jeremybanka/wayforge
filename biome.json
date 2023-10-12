@@ -8,7 +8,7 @@
 			"*.js",
 			"*.gen.tsx",
 			"*.gen.ts",
-			"dist",
+			"dist/**/*",
 			"node_modules",
 			"coverage",
 			"projects"
