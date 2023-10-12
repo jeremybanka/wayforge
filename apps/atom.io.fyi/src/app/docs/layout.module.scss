@@ -55,6 +55,35 @@ article.class {
       }
     }
   }
+  table {
+    border-collapse: collapse;
+    tbody {
+      * {
+        border: none;
+        box-sizing: border-box;
+      }
+      tr {
+        border-bottom: 1px solid var(--fg-faint);
+        th {
+          border: none;
+          background: var(--bg-soft-3);
+          padding: 6px 2px;
+          text-align: left;
+        }
+        td {
+          padding: 6px 2px;
+          border-bottom: 1px solid var(--fg-faint);
+        }
+      }
+    }
+  }
+  ol,
+  ul {
+    margin-left: 4em;
+    li {
+      margin-bottom: 0.5em;
+    }
+  }
   aside {
     position: fixed;
     top: 5.5em;

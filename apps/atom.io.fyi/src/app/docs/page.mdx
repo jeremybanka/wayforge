@@ -1,5 +1,107 @@
 # atom.io
 
+## overview
+
+`atom.io` is a data management library for TypeScript with the following goals:
+
+1. Laziness: only recompute values that are being observed, whose dependencies have changed
+2. Testability: write unit tests for your store without mocking
+3. Portability: run your store in the browser, on the server, or in a web worker
+4. Batteries Included: solve common use cases like transactions and time travel
+5. Composability: build your store out of small, reusable pieces. Declare them anywhere, import them where you need them, and organize later
+
+## package contents
+
+<table>
+  <tbody>
+    <tr>
+      <th>Exports</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>
+        <code>atom</code>
+      </td>
+      <td>Declare a reactive variable.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>selector</code>
+      </td>
+      <td>Declare a reactive variable derived from other reactive variables.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>atomFamily</code>
+      </td>
+      <td>
+        Compose a function that can create reactive variables of a single type
+        dynamically.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>selectorFamily</code>
+      </td>
+      <td>
+        Compose a function that can create reactive variables derived from other
+        reactive variables dynamically.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>transaction</code>
+      </td>
+      <td>
+        Declare a function that can batch multiple atom changes into a single
+        update.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>timeline</code>
+      </td>
+      <td>Track the history of a group of reactive variables.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>subscribe</code>
+      </td>
+      <td>
+        Subscribe to a reactive variable, calling a callback whenever it is
+        updated.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>getState</code>
+      </td>
+      <td>
+        Get the value of a reactive variable. If the reactive variable is a
+        selector, the value is derived from other reactive variables.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>setState</code>
+      </td>
+      <td>
+        Set the value of a reactive variable. If the reactive variable is a
+        selector, the value is derived from other reactive variables.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>Silo</code>
+      </td>
+      <td>
+        An isolated store with all of the above functions bound to it. Useful for
+        testing.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ## atom
 
 import DeclareAnAtom from "x/core/atom/declare-an-atom.gen"
@@ -46,8 +148,8 @@ In this example, we can see that by setting `dividendState` to a new value, the 
 
 ## families
 
-import DeclareAFamily from "x/core/declare-a-family.gen"
-import UseAnIndexToTrackFamilyMembers from "x/core/use-an-index-to-track-family-members.gen"
+import DeclareAFamily from "x/core/families/declare-a-family.gen"
+import UseAnIndexToTrackFamilyMembers from "x/core/families/use-an-index-to-track-family-members.gen"
 
 Sometimes you need a lot of the same type of atom or selector. The `atomFamily` and `selectorFamily` functions provide a convenient interface for declaring states dynamically.
 
@@ -75,8 +177,7 @@ Keen readers may recognize that collections generally extend `Object`, and that 
 
 import CallAFamilyInATransaction from "x/core/transaction/call-a-family-in-a-transaction.gen"
 import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "x/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
-// import SubscribeToATransaction from "x/core/transaction/subscribe-to-a-transaction.gen"
-// import TryCatchAFailedTransaction from "x/core/transaction/try-catch-a-failed-transaction.gen"
+import TryCatchAFailedTransaction from "x/core/transaction/try-catch-a-failed-transaction.gen"
 
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
@@ -86,9 +187,11 @@ A common use case is creating some new state using a family function and adding 
 
 <IterateThroughAnIndexChangingTheValueOfSomeAtoms />
 
-{/* <SubscribeToATransaction/> */}
+In this example, we add a minute to all running timers.
 
-{/* <TryCatchAFailedTransaction/> */}
+<TryCatchAFailedTransaction />
+
+If a transaction throws, the state of the store is not changed. However, it is up to you to handle the error.
 
 ## timeline
 
@@ -110,4 +213,6 @@ Timelines allow you to track the history of a group of atoms. If these atoms are
 
 By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation.
 
-### relations
+### async
+
+{/* ### relations */}

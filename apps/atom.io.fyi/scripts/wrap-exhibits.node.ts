@@ -30,10 +30,11 @@ const Codeblock: React.FC = () => {
 		const myElementsWithClassNameStringAndContainingDoubleQuotes = 
 			Array.prototype.filter.call(
 				me.querySelectorAll('.token.string'),
-				(element) => element.textContent.includes('"./')
+				(element) => element.textContent.includes('./')
 			);
 		for (const element of myElementsWithClassNameStringAndContainingDoubleQuotes) {
-			const href = "#" + element.textContent.replace(/["./]/g, '');
+			// get everything following the final '/'
+			const href = "#" + element.textContent.split('/').pop();
 			element.innerHTML = \`<a href="\${href}">\${element.textContent}</a>\`;
 		}
 	}, [myRef.current]);
