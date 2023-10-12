@@ -100,7 +100,7 @@ if (lastArgument === `watch`) {
 			if (err) {
 				return npmlog.error(`reading`, directory, err)
 			}
-			npmlog.info(`files`, files)
+			npmlog.info(`found`, `files`, files)
 
 			files.forEach((file) => {
 				const filePath = path.join(directory, file)
