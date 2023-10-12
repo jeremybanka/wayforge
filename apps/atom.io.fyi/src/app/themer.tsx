@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-export function Theme() {
+export function Theme(): JSX.Element | null {
 	React.useEffect(() => {
 		// const colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
 		// 	? "dark"
@@ -16,14 +16,14 @@ export function Theme() {
 		// }
 		function updateThemeColor() {
 			const themeColor = getComputedStyle(document.documentElement)
-				.getPropertyValue("--bg-shade-2")
+				.getPropertyValue(`--bg-shade-2`)
 				.trim()
-			const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+			const metaThemeColor = document.querySelector(`meta[name="theme-color"]`)
 			if (metaThemeColor) {
-				metaThemeColor.setAttribute("content", themeColor)
+				metaThemeColor.setAttribute(`content`, themeColor)
 			}
 		}
-		const matcher = window.matchMedia("(prefers-color-scheme: dark)")
+		const matcher = window.matchMedia(`(prefers-color-scheme: dark)`)
 
 		matcher.addEventListener(`change`, updateThemeColor)
 

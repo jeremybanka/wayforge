@@ -102,7 +102,7 @@ export function OnThisPage(): JSX.Element {
 				updateSignals={[userHasToggled, pathname]}
 			/>
 			<Spotlight
-				elementId={currentId ? currentId + "-link" : null}
+				elementId={currentId ? currentId + `-link` : null}
 				updateSignals={[userHasToggled, pathname]}
 			/>
 			<nav id="on-this-page" data-user-has-toggled={userHasToggled}>
@@ -120,7 +120,7 @@ export function OnThisPage(): JSX.Element {
 	)
 }
 
-export type ElementPosition = Pick<DOMRect, "top" | "left" | "width" | "height">
+export type ElementPosition = Pick<DOMRect, `height` | `left` | `top` | `width`>
 export type SpotlightProps = {
 	elementId: string | null
 	startingPosition?: ElementPosition
@@ -164,11 +164,12 @@ export function Spotlight({
 		} else {
 			setPosition(startingPosition)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [elementId, ...updateSignals])
 	return position.width === 0 ? null : (
 		<data
 			style={{
-				position: "fixed",
+				position: `fixed`,
 				top: position.top - padding,
 				left: position.left - padding,
 				width: position.width + padding * 2,
@@ -178,7 +179,7 @@ export function Spotlight({
 	)
 }
 
-export function SiteDirectory() {
+export function SiteDirectory(): JSX.Element {
 	const pathname = usePathname()
 	const pathnameId = pathname.replaceAll(`/`, `-`) + `-link`
 
@@ -190,12 +191,12 @@ export function SiteDirectory() {
 					<header>Interface</header>
 					<main>
 						<section>
-							<Link id="-docs-link" href={"/docs"}>
+							<Link id="-docs-link" href={`/docs`}>
 								atom.io
 							</Link>
 						</section>
 						<section>
-							<Link id="-docs-react-link" href={"/docs/react"}>
+							<Link id="-docs-react-link" href={`/docs/react`}>
 								<span className="soft">atom.io</span>/react
 							</Link>
 						</section>
