@@ -57,30 +57,46 @@ export default Codeblock;
 
 // Function to handle a file being added or changed
 function handleFile(filePath: string) {
-	npmlog.info(`wrap-exhibits`, `Handling file ${filePath}`)
 	const code = fs.readFileSync(filePath, `utf8`)
-	const fileName = path.basename(filePath)
-	const fileNameWithoutExtension = fileName.split(`.`)[0]
-	const outputFilename = `${fileNameWithoutExtension}.gen.tsx`
-	const outputFilePath = path.resolve(outputDir, outputFilename)
-	const wrappedCode = wrapCode(fileName, code)
-	fs.writeFileSync(outputFilePath, wrappedCode)
+	const directory = path.dirname(filePath)
+	const relativeDirectory = path.relative(inputDir, directory)
+	const filename = path.basename(filePath)
+	const filenameWithoutExtension = filename.split(`.`)[0]
+	const outputFilename = `${filenameWithoutExtension}.gen.tsx`
+	const outputFilePath = path.resolve(
+		outputDir,
+		relativeDirectory,
+		outputFilename,
+	)
+	npmlog.info(`write`, path.join(outputDir, relativeDirectory, outputFilename))
+	const wrappedCode = wrapCode(filename, code)
+	try {
+		fs.writeFileSync(outputFilePath, wrappedCode)
+	} catch (thrown) {
+		if (thrown instanceof Error && thrown.message.includes(`ENOENT`)) {
+			npmlog.info(`directory`, `${path.dirname(outputFilePath)}`)
+			fs.mkdirSync(path.dirname(outputFilePath), { recursive: true })
+			fs.writeFileSync(outputFilePath, wrappedCode)
+		} else {
+			throw thrown
+		}
+	}
 }
 
 if (lastArgument === `watch`) {
-	npmlog.info(`wrap-exhibits`, `Watching ${inputDir} for changes...`)
+	npmlog.info(`watch`, inputDir)
 	const watcher = chokidar.watch(inputDir, { persistent: true })
 
 	watcher.on(`add`, (filePath) => {
-		npmlog.info(`ADD`, `Handling add event for ${filePath}`)
+		npmlog.info(`add`, filePath)
 		handleFile(filePath)
 	})
 	watcher.on(`change`, (filePath) => {
-		npmlog.info(`CHANGE`, `Handling add event for ${filePath}`)
+		npmlog.info(`change`, filePath)
 		handleFile(filePath)
 	})
 } else {
-	npmlog.info(`wrap-exhibits`, `Processing all files in ${inputDir}...`)
+	npmlog.info(`build`, inputDir)
 	fs.readdir(inputDir, (err, files) => {
 		if (err) {
 			return console.log(`Unable to scan directory: ` + err)
