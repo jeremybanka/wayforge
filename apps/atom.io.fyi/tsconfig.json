@@ -19,7 +19,10 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/app/*"],
+			"x/*": ["./src/exhibits-wrapped/*"],
+			"atom.io": ["../../packages/atom.io"],
+			"atom.io/*": ["../../packages/atom.io/*"]
 		}
 	},
 	"include": [
@@ -29,5 +32,5 @@
 		".next/types/**/*.ts",
 		"dist/types/**/*.ts"
 	],
-	"exclude": ["node_modules", "coverage"]
+	"exclude": ["node_modules"]
 }

@@ -27,13 +27,16 @@ code {
   font-family: Theia, monospace !important;
   font-weight: 500;
 }
-p > code {
-  box-sizing: border-box;
-  color: var(--function-color);
-  background-color: var(--bg-tint-2);
-  box-shadow: 0 0px 4px 0px var(--bg-shade-2);
-  border-radius: 3px;
-  padding: 2px 4px 4px;
+p,
+table {
+  code {
+    box-sizing: border-box;
+    color: var(--function-color);
+    background-color: var(--bg-tint-2);
+    box-shadow: 0 0px 4px 0px var(--bg-shade-2);
+    border-radius: 3px;
+    padding: 2px 4px 4px;
+  }
 }
 
 .codeblock {
