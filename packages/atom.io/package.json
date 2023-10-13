@@ -4,6 +4,7 @@
 	"description": "Reactive state graph for React, Preact, and vanilla",
 	"scripts": {
 		"build": "concurrently \"npm:build:*\"",
+		"build:integrity": "tsx __scripts__/integrity-build.node",
 		"build:main": "tsup",
 		"build:internal": "cd internal && tsup",
 		"build:introspection": "cd introspection && tsup",
@@ -19,7 +20,8 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "cross-env IMPORT=dist vitest run"
+		"test:once": "npm run test:integrity && cross-env IMPORT=dist vitest run",
+		"test:integrity": "tsx __scripts__/integrity-test.node"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
