@@ -2,6 +2,14 @@
 	"name": "atom.io",
 	"version": "0.8.3",
 	"description": "Reactive state graph for React, Preact, and vanilla",
+	"author": "Jeremy Banka",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/atom.io"
+	},
+	"license": "MIT",
+	"sideEffects": false,
 	"scripts": {
 		"build": "concurrently \"npm:build:*\"",
 		"build:integrity": "tsx __scripts__/integrity-build.node",
@@ -23,6 +31,7 @@
 		"test:once": "npm run test:integrity && cross-env IMPORT=dist vitest run",
 		"test:integrity": "tsx __scripts__/integrity-test.node"
 	},
+	"dependencies": {},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
@@ -196,15 +205,5 @@
 			"import": "./transceivers/set-rtx/dist/index.mjs",
 			"require": "./transceivers/set-rtx/dist/index.js"
 		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
-	},
-	"license": "MIT",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
-	"publishConfig": {
-		"access": "public"
 	}
 }
