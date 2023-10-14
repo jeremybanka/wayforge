@@ -4,7 +4,7 @@
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/__assets__/logo-dark-mode.png">
-    <source media="(prefers-color-scheme: light)" srcset="./__assets__/logo-light-mode.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/__assets__/logo-light-mode.png">
     <img alt="Banner text reading 'atom.io'" src="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/__assets__/logo-light-mode.png" style="max-width: 100%;">
   </picture>
 </div>
