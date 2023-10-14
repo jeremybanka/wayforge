@@ -788,6 +788,9 @@ importers:
       '@types/mock-fs':
         specifier: 4.13.2
         version: 4.13.2
+      '@types/npmlog':
+        specifier: 4.1.4
+        version: 4.1.4
       '@types/react':
         specifier: 18.2.28
         version: 18.2.28
@@ -809,6 +812,9 @@ importers:
       happy-dom:
         specifier: 12.9.1
         version: 12.9.1
+      npmlog:
+        specifier: 7.0.1
+        version: 7.0.1
       preact:
         specifier: 10.18.1
         version: 10.18.1
