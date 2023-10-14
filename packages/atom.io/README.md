@@ -1,10 +1,40 @@
-<hr>
+
+
 
 <div align="center">
-  <img alt="corners logo" src="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/assets/logo.png"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/__assets__/logo-dark-mode.png">
+    <source media="(prefers-color-scheme: light)" srcset="./__assets__/logo-light-mode.png">
+    <img alt="Banner text reading 'atom.io'" src="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/__assets__/logo-light-mode.png" style="max-width: 100%;">
+  </picture>
 </div>
 
-<br>
+<h1 align="center">
+  atom.io
+</h1>
+
+<h3 align="center">
+  Composable, high-performance reactivity for ECMAScript inspired by <a href="https://recoiljs.org/">Recoil</a> 💙
+</h3>
+
+
+
+<h3 align="center">
+  <a href="https://atom.io.fyi">📖 Read the docs at atom.io.fyi</a>
+</h3>
+
+
+
+
+```shell
+npm i atom.io
+```
+```shell
+pnpm i atom.io
+```
+```shell
+bun i atom.io
+```
 
 <p align="center">
   <a href="https://bundlephobia.com/result?p=atom.io">
@@ -21,31 +51,6 @@
   </a>
 </p>
 
-```shell
-npm i atom.io
-```
-```shell
-pnpm i atom.io
-```
-```shell
-bun i atom.io
-```
-<hr>
-
-Fine-grained reactivity for JavaScript environments.
-
-💙 Inspired by [Recoil](https://recoiljs.org/).
-
-# Usage
-
-```typescript
-import { atom } from 'atom.io'
-
-const countState = atom({
-  key: 'count',
-  default: 0
-}) 
-   // { key: 'count', type: 'atom' }
 
 
-```
+
