@@ -28,8 +28,9 @@
 				"**/src/**/*.ts",
 				"**/src/**/*.scss",
 				"**/src/**/*.mdx",
-				"__test__/**/*.ts",
-				"__test__/**/*.tsx"
+				"__tests__/**/*.ts",
+				"__tests__/**/*.tsx",
+				"__scripts__/**/*.ts"
 			]
 		},
 		"lint:biome": {

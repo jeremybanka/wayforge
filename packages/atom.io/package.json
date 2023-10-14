@@ -1,8 +1,18 @@
 {
 	"name": "atom.io",
 	"version": "0.8.3",
-	"description": "Reactive state graph for React, Preact, and vanilla",
+	"description": "Composable and testable reactive data library.",
+	"homepage": "https://atom.io.fyi",
+	"sideEffects": false,
+	"license": "MIT",
+	"author": "Jeremy Banka",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/atom.io"
+	},
 	"scripts": {
+		"integrity": "tsx __scripts__/integrity-build.node",
 		"build": "concurrently \"npm:build:*\"",
 		"build:main": "tsup",
 		"build:internal": "cd internal && tsup",
@@ -19,8 +29,10 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "cross-env IMPORT=dist vitest run"
+		"test:once": "npm run test:integrity && cross-env IMPORT=dist vitest run",
+		"test:integrity": "tsx __scripts__/integrity-test.node"
 	},
+	"dependencies": {},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
@@ -57,6 +69,7 @@
 		"@emotion/react": "11.11.1",
 		"@testing-library/react": "14.0.0",
 		"@types/mock-fs": "4.13.2",
+		"@types/npmlog": "4.1.4",
 		"@types/react": "18.2.28",
 		"@types/tmp": "0.2.4",
 		"@vitest/coverage-v8": "0.34.6",
@@ -64,6 +77,7 @@
 		"eslint": "8.51.0",
 		"framer-motion": "10.16.4",
 		"happy-dom": "12.9.1",
+		"npmlog": "7.0.1",
 		"preact": "10.18.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
@@ -192,15 +206,5 @@
 			"import": "./transceivers/set-rtx/dist/index.mjs",
 			"require": "./transceivers/set-rtx/dist/index.js"
 		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
-	},
-	"license": "MIT",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
-	"publishConfig": {
-		"access": "public"
 	}
 }
