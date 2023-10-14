@@ -33,19 +33,24 @@ export default function main(mode: string): void {
 		packageJson.files.every((filepath: unknown) => typeof filepath === `string`)
 			? packageJson.files
 			: []
-	const tsconfigJson = JSON.parse(TSCONFIG_JSON_TEXT)
+	const oldTsconfigJson = JSON.parse(TSCONFIG_JSON_TEXT)
 	if (
-		typeof tsconfigJson === `object` &&
-		tsconfigJson !== null &&
-		`include` in tsconfigJson
+		typeof oldTsconfigJson === `object` &&
+		oldTsconfigJson !== null &&
+		`include` in oldTsconfigJson
 	) {
-		const newTsconfigJson = { ...tsconfigJson }
-		const oldTsconfigJson = JSON.parse(TSCONFIG_JSON_TEXT)
+		const newTsconfigJson = { ...oldTsconfigJson }
 
 		newTsconfigJson.include = [`__tests__`, ...distributionFilepaths]
 
 		const oldText = JSON.stringify(oldTsconfigJson, null, 2)
 		const newText = JSON.stringify(newTsconfigJson, null, 2)
+
+		logger.info(`debug`, `dumping`, {
+			newTsconfigJson,
+			oldTsconfigJson,
+			distributionFilepaths,
+		})
 
 		switch (mode) {
 			case `test`: {
