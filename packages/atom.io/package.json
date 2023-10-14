@@ -12,8 +12,8 @@
 		"directory": "packages/atom.io"
 	},
 	"scripts": {
+		"integrity": "tsx __scripts__/integrity-build.node",
 		"build": "concurrently \"npm:build:*\"",
-		"build:integrity": "tsx __scripts__/integrity-build.node",
 		"build:main": "tsup",
 		"build:internal": "cd internal && tsup",
 		"build:introspection": "cd introspection && tsup",
