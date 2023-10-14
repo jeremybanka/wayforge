@@ -1,15 +1,16 @@
 {
 	"name": "atom.io",
 	"version": "0.8.3",
-	"description": "Reactive state graph for React, Preact, and vanilla",
+	"description": "Composable and testable reactive data library.",
+	"homepage": "https://atom.io.fyi",
+	"sideEffects": false,
+	"license": "MIT",
 	"author": "Jeremy Banka",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/atom.io"
 	},
-	"license": "MIT",
-	"sideEffects": false,
 	"scripts": {
 		"build": "concurrently \"npm:build:*\"",
 		"build:integrity": "tsx __scripts__/integrity-build.node",
