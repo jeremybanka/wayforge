@@ -317,8 +317,8 @@ importers:
         specifier: 7.22.5
         version: 7.22.5(@babel/core@7.23.0)
       '@preact/preset-vite':
-        specifier: 2.5.0
-        version: 2.5.0(@babel/core@7.23.0)(preact@10.18.1)(vite@4.4.11)
+        specifier: 2.6.0
+        version: 2.6.0(@babel/core@7.23.0)(preact@10.18.1)(vite@4.4.11)
       '@testing-library/jest-dom':
         specifier: 6.1.4
         version: 6.1.4(vitest@0.34.6)
@@ -606,8 +606,8 @@ importers:
         specifier: 7.22.5
         version: 7.22.5(@babel/core@7.23.0)
       '@preact/preset-vite':
-        specifier: 2.5.0
-        version: 2.5.0(@babel/core@7.23.0)(preact@10.18.1)(vite@4.4.11)
+        specifier: 2.6.0
+        version: 2.6.0(@babel/core@7.23.0)(preact@10.18.1)(vite@4.4.11)
       '@testing-library/jest-dom':
         specifier: 6.1.4
         version: 6.1.4(vitest@0.34.6)
@@ -2914,8 +2914,8 @@ packages:
     dependencies:
       preact: 10.18.1
 
-  /@preact/preset-vite@2.5.0(@babel/core@7.23.0)(preact@10.18.1)(vite@4.4.11):
-    resolution: {integrity: sha512-BUhfB2xQ6ex0yPkrT1Z3LbfPzjpJecOZwQ/xJrXGFSZD84+ObyS//41RdEoQCMWsM0t7UHGaujUxUBub7WM1Jw==}
+  /@preact/preset-vite@2.6.0(@babel/core@7.23.0)(preact@10.18.1)(vite@4.4.11):
+    resolution: {integrity: sha512-5nztNzXbCpqyVum/K94nB2YQ5PTnvWdz4u7/X0jc8+kLyskSSpkNUxLQJeI90zfGSFIX1Ibj2G2JIS/mySHWYQ==}
     peerDependencies:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x
@@ -2928,7 +2928,7 @@ packages:
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.23.0)
       debug: 4.3.4(supports-color@5.5.0)
       kolorist: 1.8.0
-      resolve: 1.22.6
+      resolve: 1.22.8
       vite: 4.4.11(@types/node@18.18.5)(sass@1.69.3)
     transitivePeerDependencies:
       - preact
@@ -8791,6 +8791,15 @@ packages:
       is-core-module: 2.13.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+
+  /resolve@1.22.8:
+    resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
+    hasBin: true
+    dependencies:
+      is-core-module: 2.13.0
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+    dev: true
 
   /resolve@2.0.0-next.4:
     resolution: {integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ==}
