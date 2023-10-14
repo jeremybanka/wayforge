@@ -46,12 +46,6 @@ export default function main(mode: string): void {
 		const oldText = JSON.stringify(oldTsconfigJson, null, 2)
 		const newText = JSON.stringify(newTsconfigJson, null, 2)
 
-		logger.info(`debug`, `dumping`, {
-			newTsconfigJson,
-			oldTsconfigJson,
-			distributionFilepaths,
-		})
-
 		switch (mode) {
 			case `test`: {
 				if (oldText === newText) {
