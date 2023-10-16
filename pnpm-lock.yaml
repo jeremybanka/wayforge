@@ -274,8 +274,8 @@ importers:
         specifier: 0.26.1
         version: 0.26.1(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
-        specifier: 0.7.0
-        version: 0.7.0(typescript@5.2.2)(zod@3.22.4)
+        specifier: 0.7.1
+        version: 0.7.1(typescript@5.2.2)(zod@3.22.4)
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
@@ -563,8 +563,8 @@ importers:
         specifier: 0.26.1
         version: 0.26.1(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
-        specifier: 0.7.0
-        version: 0.7.0(typescript@5.2.2)(zod@3.22.4)
+        specifier: 0.7.1
+        version: 0.7.1(typescript@5.2.2)(zod@3.22.4)
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
@@ -3237,8 +3237,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@t3-oss/env-core@0.7.0(typescript@5.2.2)(zod@3.22.4):
-    resolution: {integrity: sha512-cgunN82CqgQOOyuMOK/bGtujX5/ooXQTwGMJVWI6mCowq6WE5EgRLOqF/DRcrElI0gSFGA9i9GrxzCnk73HZLQ==}
+  /@t3-oss/env-core@0.7.1(typescript@5.2.2)(zod@3.22.4):
+    resolution: {integrity: sha512-3+SQt39OlmSaRLqYVFv8uRm1BpFepM5TIiMytRqO9cjH+wB77o6BIJdeyM5h5U4qLBMEzOJWCY4MBaU/rLwbYw==}
     peerDependencies:
       typescript: '>=4.7.2'
       zod: ^3.0.0
