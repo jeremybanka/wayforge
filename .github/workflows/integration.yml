@@ -63,12 +63,9 @@ jobs:
           fetch-depth: 2
 
       - name: Set up PostgreSQL
-        uses: harmon758/postgresql-action@v1
+        uses: tj-actions/install-postgresql@v2
         with:
-          postgresql version: "13"
-          postgresql db: your_db_name
-          postgresql user: your_user_name
-          postgresql password: your_password
+          postgresql-version: 16
 
       - name: Install Pnpm
         uses: pnpm/action-setup@v2

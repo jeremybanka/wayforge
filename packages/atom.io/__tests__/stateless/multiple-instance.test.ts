@@ -74,6 +74,11 @@ afterAll(async () => {
 
 describe(`multiple-instance`, () => {
 	it(`runs several instances of the same server`, async () => {
-		await new Promise((resolve) => setTimeout(resolve, 4000))
+		const res = await new Promise<http.IncomingMessage>((resolve) => {
+			http.get(`http://localhost:8000`, (res) => {
+				resolve(res)
+			})
+		})
+		expect(res.statusCode).toBe(200)
 	})
 })
