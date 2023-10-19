@@ -17,7 +17,7 @@ export class DatabaseManager {
 		this.dbName = `test_db_` + Date.now() // Unique DB name for each test run
 		this.config = {
 			user: `postgres`, // Default user; adjust if needed
-			host: `localhost`,
+			host: `postgres`,
 			database: `postgres`, // Default database to execute administrative commands
 			password: `your_password`, // Set your postgres user's password
 			port: 5432,
