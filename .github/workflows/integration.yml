@@ -21,21 +21,23 @@ defaults:
 jobs:
   Lint:
     runs-on: ubuntu-latest
+    container:
+      image: node:lts
+    timeout-minutes: 15
 
     services:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: your_password
-          POSTGRES_DB: postgres
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
         ports:
           - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    container:
-      image: node:lts
-    timeout-minutes: 15
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
