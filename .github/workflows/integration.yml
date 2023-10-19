@@ -75,11 +75,6 @@ jobs:
         with:
           fetch-depth: 2
 
-      # - name: Set up PostgreSQL
-      #   uses: tj-actions/install-postgresql@v2
-      #   with:
-      #     postgresql-version: 16
-
       - name: Install Pnpm
         uses: pnpm/action-setup@v2
         id: pnpm-install
