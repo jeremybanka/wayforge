@@ -55,6 +55,19 @@ beforeAll(async () => {
 			i = (i + 1) % addresses.length // Round-robin
 		})
 		.listen(8000)
+
+	const serversReadyPromises = childProcesses.map((server, index) => {
+		return new Promise((resolve) => {
+			server.stdout?.on(`data`, (data) => {
+				if (data.includes(`Server started on port ${6260 + index}`)) {
+					resolve(true)
+				}
+			})
+		})
+	})
+
+	// Wait for all servers to be ready
+	await Promise.all(serversReadyPromises)
 })
 
 afterEach(async () => {
