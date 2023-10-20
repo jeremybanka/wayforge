@@ -24,7 +24,7 @@
 		"enabled": true,
 		"formatWithErrors": false,
 		"indentStyle": "tab",
-		"indentSize": 2,
+		"indentWidth": 2,
 		"lineWidth": 81,
 		"ignore": []
 	},
@@ -32,13 +32,17 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"correctness": {
+				"useExhaustiveDependencies": "off"
+			},
 			"complexity": {
 				"noBannedTypes": "off"
 			},
 			"suspicious": {
-				"useValidTypeof": "off",
 				"noAssignInExpressions": "off",
-				"noExplicitAny": "off"
+				"noConfusingVoidType": "off",
+				"noExplicitAny": "off",
+				"useValidTypeof": "off"
 			},
 			"style": {
 				"noCommaOperator": "off",
