@@ -26,13 +26,13 @@ export const initIndexWriter = (
 		const toBeDeleted = result.filter((id) => !newIds.includes(id))
 		logger.info(`⚠️`, { newIds, toBeDeleted })
 		const fileNames = readdirSync(`${baseDir}/${type}`)
-		toBeDeleted.forEach((id) => {
+		for (const id of toBeDeleted) {
 			const fileName = fileNames.find((name) => name.includes(id))
 			renameSync(
 				`${baseDir}/${type}/${fileName}`,
 				`${baseDir}/${type}/_trash/${fileName}`,
 			)
-		})
+		}
 	}
 	return writeIndex
 }

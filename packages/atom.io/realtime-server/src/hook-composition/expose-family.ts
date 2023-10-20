@@ -26,7 +26,9 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
 
 		const fillFamilyUnsubRequest = () => {
-			unsubFamilyCallbacksByKey.forEach((unsub) => unsub())
+			for (const [, unsub] of unsubFamilyCallbacksByKey) {
+				unsub()
+			}
 			unsubFamilyCallbacksByKey.clear()
 			socket.off(`unsub:${family.key}`, fillFamilyUnsubRequest)
 		}
@@ -43,14 +45,14 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 		const fillSubRequest = (subKey?: Json.Serializable) => {
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
-				keys.forEach((key) => {
+				for (const key of keys) {
 					const token = family(key)
 					socket.emit(
 						`serve:${family.key}`,
 						parseJson(token.family?.subKey || `null`),
 						AtomIO.getState(token, store),
 					)
-				})
+				}
 
 				const unsubscribeFromTokenCreation = subscribeToTokenCreation(
 					family,
@@ -96,8 +98,12 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 
 		return () => {
 			socket.off(`sub:${family.key}`, fillSubRequest)
-			unsubFamilyCallbacksByKey.forEach((unsub) => unsub())
-			unsubSingleCallbacksByKey.forEach((unsub) => unsub())
+			for (const [, unsub] of unsubFamilyCallbacksByKey) {
+				unsub()
+			}
+			for (const [, unsub] of unsubSingleCallbacksByKey) {
+				unsub()
+			}
 			unsubFamilyCallbacksByKey.clear()
 			unsubSingleCallbacksByKey.clear()
 		}

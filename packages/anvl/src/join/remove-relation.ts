@@ -81,10 +81,10 @@ export const removeRelation = <
 	current: RelationData<CONTENT, A, B>,
 	relation: Partial<Record<A | B, string>>,
 ): RelationData<CONTENT, A, B> => {
-	const idA: string | undefined = (relation as { [key in A | B]: string })[
+	const idA: string | undefined = (relation as { [K in A | B]: string })[
 		current.a
 	]
-	const idB: string | undefined = (relation as { [key in A | B]: string })[
+	const idB: string | undefined = (relation as { [Key in A | B]: string })[
 		current.b
 	]
 	return idB ? removeSpecific(current, idA, idB) : removeAll(current, idA)

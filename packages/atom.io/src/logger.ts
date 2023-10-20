@@ -19,7 +19,7 @@ export const setLogLevel = (
 		store.config.logger = null
 	} else {
 		store.config.logger = { ...console }
-		LOG_LEVELS.forEach((logLevel) => {
+		for (const logLevel of LOG_LEVELS) {
 			if (LOG_LEVELS.indexOf(logLevel) < LOG_LEVELS.indexOf(preferredLevel)) {
 				// biome-ignore lint/style/noNonNullAssertion: we just set it
 				store.config.logger![logLevel] = NO_OP
@@ -27,7 +27,7 @@ export const setLogLevel = (
 				// biome-ignore lint/style/noNonNullAssertion: we just set it
 				store.config.logger![logLevel] = logger__INTERNAL[logLevel]
 			}
-		})
+		}
 	}
 }
 

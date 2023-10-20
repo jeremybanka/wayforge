@@ -38,7 +38,9 @@ export function OnThisPage(): JSX.Element {
 			const headingElements = Array.from(allElements).filter((element) =>
 				INCLUDE_LIST.includes(element.tagName),
 			)
-			headingElements.forEach((element) => observer.observe(element))
+			for (const element of headingElements) {
+				observer.observe(element)
+			}
 			const headingDescriptors = headingElements.map((element) => ({
 				id: element.id,
 				content: element.textContent,

@@ -167,6 +167,7 @@ export class Junction<
 			rest[1] ?? typeof rest[0] === `string` ? undefined : (rest[0] as Content)
 		a = typeof a === `string` ? a : a[this.a]
 		switch (this.cardinality) {
+			// biome-ignore lint/suspicious/noFallthroughSwitchClause: perfect here
 			case `1:1`: {
 				const bPrev = this.getRelatedKey(a)
 				if (bPrev && bPrev !== b) this.delete(bPrev, a)
@@ -208,15 +209,17 @@ export class Junction<
 		if (a === undefined && typeof b === `string`) {
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
-				bRelations.forEach((a) => this.delete(a, b))
+				for (const a of bRelations) {
+					this.delete(a, b)
+				}
 			}
 		}
 		if (typeof a === `string` && b === undefined) {
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
-				aRelations.forEach((b) => {
+				for (const b of aRelations) {
 					this.delete(a, b)
-				})
+				}
 			}
 		}
 		if (typeof a === `string` && typeof b === `string`) {

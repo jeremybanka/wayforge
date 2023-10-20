@@ -16,10 +16,9 @@ export const matchAllPairs = <ARG, RETURN = ARG>(
 	elements1: ARG[],
 	elements2: ARG[],
 ): RETURN[] =>
-	elements1.reduce<RETURN[]>(
-		(acc, element1) => [
-			...acc,
-			...elements2.map((element2) => callback(element1, element2)),
-		],
-		[],
-	)
+	elements1.reduce<RETURN[]>((acc, element1) => {
+		const mappedElements = elements2.map((element2) =>
+			callback(element1, element2),
+		)
+		return acc.concat(mappedElements)
+	}, [])

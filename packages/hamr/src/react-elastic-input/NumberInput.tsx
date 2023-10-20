@@ -32,7 +32,7 @@ export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<
 } as const
 export type DecimalInProgress = `${number | ``}.${number}`
 export const isDecimalInProgress = (input: string): input is DecimalInProgress =>
-	input === `0` || (!isNaN(Number(input)) && input.includes(`.`))
+	input === `0` || (!Number.isNaN(Number(input)) && input.includes(`.`))
 
 const textToValue = (input: string, allowDecimal: boolean): number | null => {
 	if (isValidNonNumber(input)) return VALID_NON_NUMBER_INTERPRETATIONS[input]
@@ -148,7 +148,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 		}
 		setTemporaryEntry(null)
 		const inputIsNumeric =
-			(!isNaN(Number(input)) && !input.includes(` `)) ||
+			(!Number.isNaN(Number(input)) && !input.includes(` `)) ||
 			(allowDecimal && input === `.`) ||
 			(allowDecimal && input === `-.`) ||
 			input === `` ||

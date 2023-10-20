@@ -58,8 +58,8 @@ export class Dictionary<
 			[K in Name]: Name extends NameOfA ? A : B
 		},
 	): Name extends NameOfA
-		? { [K in NameOfB]: B | undefined }
-		: { [K in NameOfA]: A | undefined } {
+		? { [BK in NameOfB]: B | undefined }
+		: { [AK in NameOfA]: A | undefined } {
 		const [name, value] = recordToEntries(item as { [K in Name]: A | B })[0]
 		const otherName = name === this.nameOfA ? this.nameOfB : this.nameOfA
 		const otherValue =
@@ -67,7 +67,7 @@ export class Dictionary<
 		return {
 			[name]: value,
 			[otherName]: otherValue,
-		} as Name extends NameOfA ? { [K in NameOfB]: B } : { [K in NameOfA]: A }
+		} as Name extends NameOfA ? { [BK in NameOfB]: B } : { [AK in NameOfA]: A }
 	}
 
 	public add(

@@ -152,7 +152,7 @@ describe(`async selector`, () => {
 
 				if (typeof quotient === `string`) {
 					const parsed = parseFloat(quotient)
-					if (isNaN(parsed)) return Error(`quotient is NaN`)
+					if (Number.isNaN(parsed)) return Error(`quotient is NaN`)
 					return parsed
 				}
 				return Error(`quotient is not a string`)

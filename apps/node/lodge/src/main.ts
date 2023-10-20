@@ -151,12 +151,14 @@ pipe(
 				cardGroupIndex,
 				cardValuesIndex,
 			]
+			// biome-ignore lint/complexity/noForEach: for readability
 			gameIndices.forEach(exposeMutable)
 
 			const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
 				groupsAndZonesOfCardCyclesStateJSON,
 				ownersOfCardsStateJSON,
 			]
+			// biome-ignore lint/complexity/noForEach: for readability
 			gameJoinStates.forEach(exposeSingle)
 			const gameRelations: [
 				junction: AtomicJunction<any, any, any>,
@@ -166,6 +168,7 @@ pipe(
 				[groupsOfCards, cardGroupIndex, cardIndex],
 				[ownersOfGroups, playersIndex, cardGroupIndex],
 			]
+			// biome-ignore lint/complexity/noForEach: for readability
 			gameRelations.forEach(([junction, indexA, indexB]) => {
 				exposeMutableFamily(junction.findRelationsState__INTERNAL, indexA)
 				exposeMutableFamily(junction.findRelationsState__INTERNAL, indexB)
@@ -182,6 +185,7 @@ pipe(
 				[findCardGroupState, cardGroupIndex],
 				[findCardValueState, cardValuesIndex],
 			]
+			// biome-ignore lint/complexity/noForEach: for readability
 			gameStateFamilies.forEach(([family, index]) => exposeFamily(family, index))
 
 			const gameTransactions = [
@@ -192,6 +196,7 @@ pipe(
 				spawnCardTX,
 				spawnClassicDeckTX,
 			] as const
+			// biome-ignore lint/complexity/noForEach: for readability
 			gameTransactions.forEach(receiveTransaction)
 		})
 	},

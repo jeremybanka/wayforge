@@ -117,6 +117,7 @@ v.describe(`copy itself a thousand times`, () => {
 	})
 	v.bench(`copy: HAMT`, () => {
 		for (let i = 0; i < 1000; i++) {
+			// biome-ignore lint/correctness/noSelfAssign: the point is you don't have to
 			hamt = hamt
 		}
 	})
@@ -133,15 +134,23 @@ v.describe(`reduce a thousand properties`, () => {
 	}
 	v.bench(`reduce: object`, () => {
 		let sum = 0
-		Object.values(obj).forEach((v) => (sum += v))
+		for (const v of Object.values(obj)) {
+			sum += v
+		}
 	})
 	v.bench(`reduce: Map`, () => {
 		let sum = 0
-		map.forEach((v) => v.forEach((v) => (sum += v)))
+		for (const [, innerMap] of map) {
+			for (const [, v] of innerMap) {
+				sum += v
+			}
+		}
 	})
 	v.bench(`reduce: HAMT`, () => {
 		let sum = 0
-		hamt.forEach((v) => (sum += v))
+		for (const v of hamt.values()) {
+			sum += v
+		}
 	})
 })
 

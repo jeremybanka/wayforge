@@ -74,7 +74,7 @@ export type WriteResourceOptions = {
 }
 export type WriteResource = (
 	options: WriteResourceOptions,
-) => Promise<Error | void>
+) => Promise<Error | undefined>
 
 export const initResourceWriter = ({
 	formatResource = (unformatted) => Promise.resolve(unformatted),

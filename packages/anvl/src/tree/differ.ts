@@ -91,15 +91,15 @@ export class Differ<
 > {
 	public leafRefinery: Refinery<Leaf>
 	public treeRefinery: Refinery<Tree>
-	public leafDiffers: { [K in keyof Leaf]: Diff<Supported<Leaf[K]>> }
-	public treeDiffers: { [K in keyof Tree]: DiffTree<Supported<Tree[K]>> }
+	public leafDiffers: { [KL in keyof Leaf]: Diff<Supported<Leaf[KL]>> }
+	public treeDiffers: { [KT in keyof Tree]: DiffTree<Supported<Tree[KT]>> }
 
 	public constructor(
 		leafRefinery: Refinery<Leaf>,
 		treeRefinery: Refinery<Tree>,
 		diffFunctions: {
-			[K in keyof Tree]: DiffTree<Supported<Tree[K]>>
-		} & { [K in keyof Leaf]: Diff<Supported<Leaf[K]>> },
+			[KT in keyof Tree]: DiffTree<Supported<Tree[KT]>>
+		} & { [KL in keyof Leaf]: Diff<Supported<Leaf[KL]>> },
 	) {
 		this.leafRefinery = leafRefinery
 		this.treeRefinery = treeRefinery

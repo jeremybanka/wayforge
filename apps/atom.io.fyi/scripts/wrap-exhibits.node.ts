@@ -80,6 +80,7 @@ function handleFile(filePath: string) {
 }
 
 switch (lastArgument) {
+	// biome-ignore lint/suspicious/noFallthroughSwitchClause: good use case for fallthrough
 	case `watch`: {
 		npmlog.info(`watch`, inputDir)
 		const watcher = chokidar.watch(inputDir, { persistent: true })
@@ -102,7 +103,7 @@ switch (lastArgument) {
 				}
 				npmlog.info(`found`, `files`, files)
 
-				files.forEach((file) => {
+				for (const file of files) {
 					const filePath = path.join(directory, file)
 					fs.stat(filePath, (err, stats) => {
 						if (err) {
@@ -114,7 +115,7 @@ switch (lastArgument) {
 							buildAll(filePath)
 						}
 					})
-				})
+				}
 			})
 		}
 		buildAll()

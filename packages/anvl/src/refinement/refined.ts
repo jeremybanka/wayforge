@@ -21,9 +21,10 @@ export type Refined<
 	Properties = OmitByValue<RefinementTargets, undefined>,
 	// @ts-expect-error awkward
 	PossiblyUndefinedProperties = PickByValue<RefinementTargets, undefined>,
-	RequiredProperties = { [K in keyof Properties]-?: Properties[K] },
+	RequiredProperties = { [PK in keyof Properties]-?: Properties[PK] },
 	OptionalProperties = {
-		[K in keyof PossiblyUndefinedProperties]+?: PossiblyUndefinedProperties[K]
+		[OPK in
+			keyof PossiblyUndefinedProperties]+?: PossiblyUndefinedProperties[OPK]
 	},
 	/* eslint-disable-next-line @typescript-eslint/sort-type-constituents */
 > = RequiredProperties & OptionalProperties
