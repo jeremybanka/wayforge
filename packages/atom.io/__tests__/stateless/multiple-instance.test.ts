@@ -77,9 +77,9 @@ afterEach(async () => {
 
 afterAll(async () => {
 	// Kill all child processes after the test
-	childProcesses.forEach((child) => {
+	for (const child of childProcesses) {
 		child.kill()
-	})
+	}
 
 	// Disconnect the database
 	await dbManager.disconnect()
