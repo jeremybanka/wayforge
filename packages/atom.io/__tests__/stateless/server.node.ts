@@ -10,7 +10,7 @@ const main = async () => {
 	// Database connection and cache invalidation setup
 	const client = new Client({
 		user: `postgres`, // Default user; adjust if needed
-		host: `localhost`,
+		host: process.env.GITHUB_ACTION ? `postgres` : `localhost`,
 		database: `postgres`, // Default database to execute administrative commands
 		password: `your_password`, // Set your postgres user's password
 		port: 5432,

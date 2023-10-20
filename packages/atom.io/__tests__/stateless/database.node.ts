@@ -17,7 +17,7 @@ export class DatabaseManager {
 		this.dbName = `test_db_` + Date.now() // Unique DB name for each test run
 		this.config = {
 			user: `postgres`, // Default user; adjust if needed
-			host: `postgres`,
+			host: process.env.GITHUB_ACTION ? `postgres` : `localhost`,
 			database: `postgres`, // Default database to execute administrative commands
 			password: `your_password`, // Set your postgres user's password
 			port: 5432,
