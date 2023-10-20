@@ -15,8 +15,8 @@
 		"directory": "packages/atom.io"
 	},
 	"scripts": {
+		"manifest": "tsx __scripts__/manifest-build.node",
 		"build": "concurrently \"npm:build:*\"",
-		"build:manifest": "tsx __scripts__/manifest-build.node",
 		"build:main": "tsup",
 		"build:data": "cd data && tsup",
 		"build:internal": "cd internal && tsup",

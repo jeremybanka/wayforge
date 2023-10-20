@@ -53,21 +53,21 @@ export default function main(mode: string): void {
 				} else {
 					logger.error(
 						`testing`,
-						`files and exports in "atom.io/package.json" are missing`,
+						`files and exports in "tsconfig.prod.json" are missing`,
 						newTsconfigJson.include.filter(
 							(filepath) => !oldTsconfigJson.include.includes(filepath),
 						),
 					)
 					logger.error(
 						`testing`,
-						`files and exports in "atom.io/package.json" are extraneous`,
+						`files and exports in "tsconfig.prod.json" are extraneous`,
 						oldTsconfigJson.include.filter(
 							(filepath) => !newTsconfigJson.include.includes(filepath),
 						),
 					)
 					logger.error(
 						`testing`,
-						`run \`build:manifest\` to update tsconfig.prod.json`,
+						`run \`manifest\` script to update tsconfig.prod.json`,
 					)
 					process.exit(1)
 				}
