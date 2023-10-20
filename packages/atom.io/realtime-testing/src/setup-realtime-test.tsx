@@ -143,10 +143,14 @@ export const multiClient = <ClientNames extends string>(
 ): RealtimeTestAPI__MultiClient<ClientNames> => {
 	const server = setupRealtimeTestServer(options)
 	const clients = recordToEntries(options.clients).reduce(
-		(clients, [name, client]) => ({
-			...clients,
-			[name]: setupRealtimeTestClient({ ...options, client }, name, server.port),
-		}),
+		(clients, [name, client]) => {
+			clients[name] = setupRealtimeTestClient(
+				{ ...options, client },
+				name,
+				server.port,
+			)
+			return clients
+		},
 		{} as Record<ClientNames, RealtimeTestClient>,
 	)
 
@@ -154,7 +158,9 @@ export const multiClient = <ClientNames extends string>(
 		clients,
 		server,
 		teardown: () => {
-			recordToEntries(clients).forEach(([, client]) => client.dispose())
+			for (const [, client] of recordToEntries(clients)) {
+				client.dispose()
+			}
 			server.dispose()
 		},
 	}

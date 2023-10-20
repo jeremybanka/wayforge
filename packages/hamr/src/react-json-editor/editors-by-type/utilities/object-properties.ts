@@ -20,7 +20,7 @@ export const makePropertySetters = <T extends Json.Object>(
 export const makePropertyRenamers = <T extends Json.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
-	stableKeyMapRef: MutableRefObject<{ [K in keyof T]: keyof T }>,
+	stableKeyMapRef: MutableRefObject<{ [Key in keyof T]: keyof T }>,
 ): { [K in keyof T]: (newKey: string) => void } =>
 	mapObject<keyof T, any, (newKey: string) => void>(
 		data,
@@ -87,7 +87,9 @@ export const makePropertySorter =
 	() => {
 		const sortedKeys = Object.keys(data).sort(sortFn)
 		const sortedObj = {} as Record<string, unknown>
-		sortedKeys.forEach((key) => (sortedObj[key] = data[key]))
+		for (const key of sortedKeys) {
+			sortedObj[key] = data[key]
+		}
 		set(sortedObj as T)
 	}
 

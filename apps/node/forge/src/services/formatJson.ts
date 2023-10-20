@@ -3,7 +3,9 @@ import prettier from "prettier"
 export const alphabetize = <T extends Record<string, unknown>>(obj: T): T => {
 	const sortedKeys = Object.keys(obj).sort()
 	const sortedObj = {} as Record<string, unknown>
-	sortedKeys.forEach((key) => (sortedObj[key] = obj[key]))
+	for (const key of sortedKeys) {
+		sortedObj[key] = obj[key]
+	}
 	return sortedObj as T
 }
 

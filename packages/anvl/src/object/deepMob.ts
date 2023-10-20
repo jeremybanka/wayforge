@@ -25,7 +25,7 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 	const setNewNode = (
 		path: string[],
 		oldChild: unknown,
-	): InspectionResult | void => {
+	): InspectionResult | undefined => {
 		const key = path[path.length - 1]
 		const newParent = getNewParentNode(path)
 		if (newParent instanceof Error) return

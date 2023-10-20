@@ -4,6 +4,7 @@ import type { FamilyNode, StateTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
+import { recordToEntries } from "~/packages/anvl/src/object"
 import {
 	isJson,
 	refineJsonType,
@@ -77,10 +78,10 @@ export const StateIndexTreeNode: FC<{
 }> = ({ node, isOpenState }) => {
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
-	Object.entries(node.familyMembers).forEach(([key, childNode]) => {
+	for (const [key, childNode] of recordToEntries(node.familyMembers)) {
 		findViewIsOpenState(key)
 		findStateTypeState(childNode)
-	})
+	}
 	return (
 		<>
 			<header>

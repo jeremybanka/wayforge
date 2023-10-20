@@ -70,9 +70,11 @@ export const treeShake =
 	): T extends Record<keyof any, unknown> ? T : Partial<T> => {
 		const newObj = {} as T
 		const entries = Object.entries(obj) as [keyof T, any][]
-		entries.forEach(([key, val]) =>
-			!shouldDiscard(val, key) ? (newObj[key] = val) : null,
-		)
+		for (const [key, val] of entries) {
+			if (!shouldDiscard(val, key)) {
+				newObj[key] = val
+			}
+		}
 		return newObj as T extends Record<keyof any, unknown> ? T : Partial<T>
 	}
 

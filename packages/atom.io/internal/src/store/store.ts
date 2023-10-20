@@ -118,23 +118,22 @@ export class Store {
 				},
 				name,
 			}
+			for (const [, atom] of store.atoms) {
+				atom.install(this)
+			}
+			for (const [, selector] of store.readonlySelectors) {
+				selector.install(this)
+			}
+			for (const [, selector] of store.selectors) {
+				selector.install(this)
+			}
+			for (const [, tx] of store.transactions) {
+				tx.install(this)
+			}
+			for (const [, timeline] of store.timelines) {
+				timeline.install(this)
+			}
 		}
-
-		store?.atoms.forEach((atom) => {
-			atom.install(this)
-		})
-		store?.readonlySelectors.forEach((selector) => {
-			selector.install(this)
-		})
-		store?.selectors.forEach((selector) => {
-			selector.install(this)
-		})
-		store?.transactions.forEach((tx) => {
-			tx.install(this)
-		})
-		store?.timelines.forEach((timeline) => {
-			timeline.install(this)
-		})
 	}
 }
 

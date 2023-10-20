@@ -69,7 +69,7 @@ describe(`transaction implementation specifics`, () => {
 			key: `modifyExpression`,
 			do: ({ set }, newExpression: Noun | Plural) => {
 				const newCount = Number(newExpression.split(` `)[0])
-				if (isNaN(newCount)) {
+				if (Number.isNaN(newCount)) {
 					throw new Error(`Invalid expression: ${newExpression} is not a number`)
 				}
 				set(countState, newCount)

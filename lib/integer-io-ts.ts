@@ -26,7 +26,7 @@ export interface MySchemable2C<S extends URIS2>
 }
 
 export interface MySchema<A> {
-	<S>(S: MySchemable<S>): HKT<S, A>
+	<S>(schemable: MySchemable<S>): HKT<S, A>
 }
 
 export function make<A>(f: MySchema<A>): MySchema<A> {

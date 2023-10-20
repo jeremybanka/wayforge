@@ -18,8 +18,10 @@ Promise.all(
 	schemaEntries.map(
 		async ([, jsonSchema]) => await jsonSchemaToZodDereffed(jsonSchema),
 	),
-).then((zodSchemas) =>
-	zodSchemas.forEach((schema, idx) =>
-		writeFileSync(`${process.cwd()}/gen/${schemaEntries[idx][0]}.ts`, schema),
-	),
-)
+).then((zodSchemas) => {
+	let idx = 0
+	for (const schema of zodSchemas) {
+		writeFileSync(`${process.cwd()}/gen/${schemaEntries[idx][0]}.ts`, schema)
+		idx++
+	}
+})
