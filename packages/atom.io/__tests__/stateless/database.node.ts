@@ -54,10 +54,6 @@ export class DatabaseManager {
 		await this.client.query(triggers)
 	}
 
-	public async resetDatabase(): Promise<void> {
-		// Reset your database state here, e.g., clear tables, reset sequences, etc.
-	}
-
 	public async dropDatabase(): Promise<void> {
 		await this.client.end()
 
@@ -73,5 +69,13 @@ export class DatabaseManager {
 
 	public async disconnect(): Promise<void> {
 		await this.client.end()
+	}
+
+	public async resetDatabase(): Promise<void> {
+		// Reset your database state here, e.g., clear tables, reset sequences, etc.
+		// this.dropDatabase()
+		// this.createDatabase()
+		// this.createSampleTable()
+		// this.setupTriggersAndNotifications()
 	}
 }

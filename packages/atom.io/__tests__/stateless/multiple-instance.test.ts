@@ -12,7 +12,8 @@ const dbManager = new DatabaseManager()
 beforeAll(async () => {
 	// Connect and set up the database
 	await dbManager.connect()
-	// await dbManager.createSampleTable()
+
+	await dbManager.createSampleTable()
 	await dbManager.setupTriggersAndNotifications()
 
 	const NUM_SERVERS = 3 // or however many you want
