@@ -60,7 +60,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: user
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: your_password
           POSTGRES_DB: testdb
         ports:
