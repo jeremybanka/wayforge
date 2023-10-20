@@ -275,7 +275,7 @@ export type LuumScssPseudoClassRule = [
 export const isLuumScssPseudoClassRule = (
 	input: unknown,
 ): input is LuumScssPseudoClassRule =>
-	input instanceof Array &&
+	Array.isArray(input) &&
 	input.length === 2 &&
 	content(isCssPseudoClass)(input[0]) &&
 	content(isLuumCssAttribute)(input[1])
@@ -288,7 +288,7 @@ export type LuumScssNestedRule = [
 export const isLuumScssNestedRule = (
 	input: unknown,
 ): input is LuumScssNestedRule =>
-	input instanceof Array &&
+	Array.isArray(input) &&
 	input.length === 2 &&
 	content(isString)(input[0]) &&
 	content(isLuumCssAttribute)(input[1])

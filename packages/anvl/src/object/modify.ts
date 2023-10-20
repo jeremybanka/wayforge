@@ -11,11 +11,11 @@ export const modify =
 	>(
 		obj: Obj,
 	): {
-		[Key in keyof Obj]: Key extends keyof Mod
-			? Mod[Key] extends (v: any) => any
-				? ReturnType<Mod[Key]>
-				: Mod[Key]
-			: Obj[Key]
+		[K in keyof Obj]: K extends keyof Mod
+			? Mod[K] extends (v: any) => any
+				? ReturnType<Mod[K]>
+				: Mod[K]
+			: Obj[K]
 	} =>
 		Object.entries(modifications).reduce(
 			(acc, [key, mod]) => (

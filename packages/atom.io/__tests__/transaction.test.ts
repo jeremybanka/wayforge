@@ -188,9 +188,9 @@ describe(`transaction`, () => {
 
 		subscribeToTransaction(setAllCounts, (data) => {
 			UTIL.stdout(`Transaction update:`, data)
-			data.atomUpdates.forEach((update) => {
+			for (const update of data.atomUpdates) {
 				UTIL.stdout(`Atom update:`, update)
-			})
+			}
 		})
 		subscribe(count1Plus2State, (data) => {
 			UTIL.stdout(`Selector update:`, data)

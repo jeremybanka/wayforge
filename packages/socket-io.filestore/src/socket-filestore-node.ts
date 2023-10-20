@@ -108,9 +108,9 @@ export const serveFilestore =
 							logger.error(result)
 							socket.emit(`error_filestore`, result.message)
 						} else {
-							recordToEntries(result).forEach(([key, value]) =>
-								socket.emit(`scan_${key}`, value),
-							)
+							for (const [key, value] of recordToEntries(result)) {
+								socket.emit(`scan_${key}`, value)
+							}
 						}
 					},
 				}

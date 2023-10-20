@@ -27,8 +27,8 @@ export const parseStructure = <
 >(
 	input: InputStructure,
 ): {
-	[Key in
-		Extract<keyof DesiredStructure, keyof InputStructure>]: DesiredStructure[Key]
+	[K in
+		Extract<keyof DesiredStructure, keyof InputStructure>]: DesiredStructure[K]
 } => {
 	// actual implementation
 	return input as any
