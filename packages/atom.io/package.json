@@ -15,8 +15,8 @@
 		"directory": "packages/atom.io"
 	},
 	"scripts": {
-		"integrity": "tsx __scripts__/integrity-build.node",
 		"build": "concurrently \"npm:build:*\"",
+		"build:manifest": "tsx __scripts__/manifest-build.node",
 		"build:main": "tsup",
 		"build:data": "cd data && tsup",
 		"build:internal": "cd internal && tsup",
@@ -34,7 +34,7 @@
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
 		"test:once": "npm run test:integrity && cross-env IMPORT=dist vitest run",
-		"test:integrity": "tsx __scripts__/integrity-test.node"
+		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"dependencies": {},
 	"peerDependencies": {
