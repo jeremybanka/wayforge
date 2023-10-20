@@ -67,7 +67,7 @@ export default function main(mode: string): void {
 					)
 					logger.error(
 						`testing`,
-						`run \`build:integrity\` to update tsconfig.prod.json`,
+						`run \`build:manifest\` to update tsconfig.prod.json`,
 					)
 					process.exit(1)
 				}
