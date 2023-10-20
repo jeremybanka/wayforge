@@ -28,7 +28,7 @@
 		"@types/mdx": "2.0.9",
 		"@types/node": "18.18.6",
 		"@types/npmlog": "4.1.5",
-		"@types/react": "18.2.29",
+		"@types/react": "18.2.30",
 		"@types/react-dom": "18.2.14",
 		"@types/react-syntax-highlighter": "15.5.9",
 		"chokidar": "3.5.3",
