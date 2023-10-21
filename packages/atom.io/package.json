@@ -36,7 +36,6 @@
 		"test:once": "npm run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
-	"dependencies": {},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
@@ -86,6 +85,7 @@
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
 		"pg": "8.11.3",
+		"postgres": "3.4.0",
 		"preact": "10.19.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
