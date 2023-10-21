@@ -1,32 +1,30 @@
 import * as http from "http"
-
-import { Client } from "pg"
+import postgres from "postgres"
 
 console.log(`Server starting...`)
 
-const DB_NAME = process.env.DB_NAME
-const DB_HOST = process.env.GITHUB_ACTION ? `postgres` : `localhost`
 const PORT = process.env.PORT || 8080
 const ORIGIN = `http://localhost:${PORT}`
+const DB_HOST = process.env.GITHUB_ACTION ? `postgres` : `localhost`
+const DB_NAME = process.env.DB_NAME
+
+if (DB_NAME === undefined) {
+	throw new Error(`DB_NAME environment variable is not set`)
+}
 
 const main = async () => {
-	// Database connection and cache invalidation setup
-	const client = new Client({
-		user: `postgres`, // Default user; adjust if needed
+	const sql = postgres({
+		user: `postgres`,
 		host: DB_HOST,
-		database: DB_NAME, // Default database to execute administrative commands
-		password: `your_password`, // Set your postgres user's password
+		database: DB_NAME,
+		password: `your_password`,
 		port: 5432,
 	})
-	await client.connect()
-	await client.query(`LISTEN table_update`)
 
-	client.on(`notification`, (message) => {
-		if (message.channel === `table_update` && message.payload) {
-			console.log(`Received notification: ${message.payload}`)
-			const [tableName, id] = message.payload.split(`,`)
-			// Invalidate cache for the given table and ID
-		}
+	sql`LISTEN table_update`
+
+	sql.listen(`notification`, (message) => {
+		console.log(`Received notification: ${message}`)
 	})
 
 	http
@@ -39,7 +37,7 @@ const main = async () => {
 				.on(`end`, async () => {
 					const authHeader = req.headers.authorization
 					try {
-						// if (authHeader !== `Bearer MY_BEARER_TOKEN`) throw 401
+						// if (authHeader !== `Bearer MY_BEARER_TOKEN`) throw 401;
 						if (typeof req.url !== `string`) throw 418
 						const url = new URL(req.url, ORIGIN)
 						console.log({ pathname: url.pathname, method: req.method })
@@ -51,12 +49,7 @@ const main = async () => {
 										res.end(`Hello from server on port ${PORT}!`)
 										break
 									case `/get`: {
-										console.log(`GET /get`)
-										// let's get all rows
-										const { rows } = await client.query(
-											`SELECT * FROM your_table`,
-										)
-										console.log({ rows })
+										const rows = await sql`SELECT * FROM your_table`
 										res.writeHead(200, {
 											"Content-Type": `application/json`,
 										})
@@ -85,4 +78,5 @@ const main = async () => {
 			console.log(`Server started on port ${PORT}`)
 		})
 }
+
 main()
