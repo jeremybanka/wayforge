@@ -3,8 +3,8 @@ import fs from "fs/promises"
 import { Client } from "pg"
 
 export class DatabaseManager {
+	public dbName: string
 	private client: Client
-	private dbName: string
 	private config: {
 		user: string
 		host: string
@@ -25,15 +25,6 @@ export class DatabaseManager {
 		this.client = new Client(this.config)
 	}
 
-	public async createSampleTable(): Promise<void> {
-		await this.client.query(`
-        CREATE TABLE your_table (
-            id SERIAL PRIMARY KEY,
-            data TEXT
-        );
-    `)
-	}
-
 	public async connect(): Promise<void> {
 		await this.client.connect()
 	}
@@ -44,7 +35,7 @@ export class DatabaseManager {
 
 		// Reconnect with the new database
 		this.config.database = this.dbName
-		this.client = new Client(this.config)
+		this.client = new Client({ ...this.config, database: this.dbName })
 		await this.client.connect()
 	}
 
@@ -57,7 +48,6 @@ export class DatabaseManager {
 	public async dropDatabase(): Promise<void> {
 		await this.client.end()
 
-		// Reconnect to the default database to drop the test database
 		const adminClient = new Client({
 			...this.config,
 			database: `postgres`,
@@ -71,11 +61,25 @@ export class DatabaseManager {
 		await this.client.end()
 	}
 
-	public async resetDatabase(): Promise<void> {
-		// Reset your database state here, e.g., clear tables, reset sequences, etc.
-		// this.dropDatabase()
-		// this.createDatabase()
-		// this.createSampleTable()
-		// this.setupTriggersAndNotifications()
+	public async createSampleTable(): Promise<void> {
+		await this.client.query(`
+        CREATE TABLE your_table (
+            id SERIAL PRIMARY KEY,
+            data TEXT
+        );
+    `)
+	}
+
+	public async insertSampleData(): Promise<void> {
+		const res = await this.client.query(`
+				INSERT INTO your_table (data)
+				VALUES ('Hello, world!');
+		`)
+		console.log({ insert: res })
+	}
+
+	public async dropSampleTable(): Promise<void> {
+		const res = await this.client.query(`DROP TABLE your_table`)
+		console.log({ drop: res })
 	}
 }

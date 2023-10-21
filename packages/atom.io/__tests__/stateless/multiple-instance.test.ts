@@ -10,13 +10,10 @@ const childProcesses: ChildProcess[] = []
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
-	// Connect and set up the database
 	await dbManager.connect()
+	await dbManager.createDatabase()
 
-	await dbManager.createSampleTable()
-	await dbManager.setupTriggersAndNotifications()
-
-	const NUM_SERVERS = 3 // or however many you want
+	const NUM_SERVERS = 3
 
 	for (let i = 0; i < NUM_SERVERS; i++) {
 		const port = 6260 + i
@@ -24,7 +21,7 @@ beforeAll(async () => {
 			`pnpm`,
 			[`tsx`, path.join(__dirname, `server.node.ts`)],
 			{
-				env: { ...process.env, PORT: `${port}` },
+				env: { ...process.env, PORT: `${port}`, DB_NAME: `${dbManager.dbName}` },
 			},
 		)
 		childProcesses.push(server)
@@ -67,32 +64,39 @@ beforeAll(async () => {
 		})
 	})
 
-	// Wait for all servers to be ready
 	await Promise.all(serversReadyPromises)
 })
 
+beforeEach(async () => {
+	console.log(`Creating sample table`)
+	await dbManager.createSampleTable()
+	await dbManager.insertSampleData()
+	await dbManager.setupTriggersAndNotifications()
+})
+
 afterEach(async () => {
-	// Reset the database state between tests
-	await dbManager.resetDatabase()
+	console.log(`Dropping sample table`)
+	await dbManager.dropSampleTable()
 })
 
 afterAll(async () => {
-	// Kill all child processes after the test
 	for (const child of childProcesses) {
 		child.kill()
 	}
-
-	// Disconnect the database
-	await dbManager.disconnect()
+	await dbManager.dropDatabase()
 })
 
 describe(`multiple-instance`, () => {
 	it(`runs several instances of the same server`, async () => {
-		const res = await new Promise<http.IncomingMessage>((resolve) => {
-			http.get(`http://localhost:8000`, (res) => {
-				resolve(res)
-			})
-		})
-		expect(res.statusCode).toBe(200)
+		const res = await fetch(`http://localhost:8000`)
+		const text = await res.text()
+		console.log({ text })
+		expect(text).toBe(`Hello from server on port 6260!`)
+	})
+	it(`can get a value from the database`, async () => {
+		const res = await fetch(`http://localhost:8000/get`)
+		const json = await res.json()
+		console.log({ json })
+		expect(json).toEqual([{ id: 1, data: `Hello, world!` }])
 	})
 })
