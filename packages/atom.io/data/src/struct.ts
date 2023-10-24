@@ -5,6 +5,8 @@ import { IMPLICIT } from "atom.io/internal"
 import { createAtom, createSelector } from "atom.io/internal"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+const nameAtom = (topKey: string, subKey: string) =>
+	topKey + capitalize(subKey) + `State`
 
 export function struct<
 	Struct extends { [key: string]: unknown },

@@ -2,6 +2,8 @@ import type * as AtomIO from "atom.io"
 import { createAtomFamily, createSelectorFamily } from "atom.io/internal"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+const nameFamily = (topKey: string, subKey: string) =>
+	`find` + capitalize(topKey) + capitalize(subKey) + `State`
 
 export function structFamily<
 	Struct extends object,
@@ -23,20 +25,19 @@ export function structFamily<
 			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
 				K & string
 			>}State`]: AtomIO.AtomFamily<Struct[K], string>
-	} = Object.keys(options.default).reduce((acc, key) => {
-		const atomFamilyName =
-			`find` + capitalize(options.key) + capitalize(key) + `State`
+	} = Object.keys(options.default).reduce((acc, subKey) => {
+		const atomFamilyName = nameFamily(options.key, subKey)
 		acc[atomFamilyName] = createAtomFamily({
-			key: `${options.key}.${key}`,
-			default: (options.default as any)[key],
+			key: `${options.key}.${subKey}`,
+			default: (options.default as any)[subKey],
 		})
 		return acc
 	}, {} as any)
 	const findStructState = createSelectorFamily({
 		key: options.key,
 		get: (id) => ({ get }) => {
-			return Object.keys(options.default).reduce((acc, key) => {
-				acc[key] = get((atoms as any)[key](id))
+			return Object.keys(options.default).reduce((acc, subKey) => {
+				acc[subKey] = get((atoms as any)[nameFamily(options.key, subKey)](id))
 				return acc
 			}, {} as any)
 		},
