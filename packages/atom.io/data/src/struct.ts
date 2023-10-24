@@ -4,6 +4,8 @@ import { IMPLICIT } from "atom.io/internal"
 
 import { createAtom, createSelector } from "atom.io/internal"
 
+const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+
 export function struct<Struct extends { [key: string]: unknown }>(
 	options: {
 		key: string
@@ -15,7 +17,8 @@ export function struct<Struct extends { [key: string]: unknown }>(
 	AtomIO.ReadonlySelectorToken<Struct>,
 ] {
 	const atoms = Object.keys(options.default).reduce((acc, key) => {
-		acc[key] = createAtom(
+		const atomName = options.key + capitalize(key) + `State`
+		acc[atomName] = createAtom(
 			{
 				key: `${options.key}.${key}`,
 				default: options.default[key],
@@ -30,7 +33,7 @@ export function struct<Struct extends { [key: string]: unknown }>(
 			key: options.key,
 			get: ({ get }) => {
 				return Object.keys(options.default).reduce((acc, key) => {
-					acc[key] = get(atoms[key])
+					acc[key] = get(atoms[options.key + capitalize(key) + `State`])
 					return acc
 				}, {} as any)
 			},

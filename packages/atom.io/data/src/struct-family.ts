@@ -17,9 +17,10 @@ export function structFamily<Struct extends object>(options: {
 		[K in
 			keyof Struct as `find${Capitalize<K & string>}`]: AtomIO.AtomFamily<string>
 	} = Object.keys(options.default).reduce((acc, key) => {
-		const atomKey = `find` + capitalize(`${options.key}.${key}`)
-		acc[key] = createAtomFamily({
-			key: atomKey,
+		const atomFamilyName =
+			`find` + capitalize(options.key) + capitalize(key) + `State`
+		acc[atomFamilyName] = createAtomFamily({
+			key: `${options.key}.${key}`,
 			default: (options.default as any)[key],
 		})
 		return acc
