@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.3
+
+### Patch Changes
+
+- 8925069: 🐛 Fix bug where all selectors created using the `dict` function from `atom.io/data` would be given the same key.
+
 ## 0.9.2
 
 ### Patch Changes
