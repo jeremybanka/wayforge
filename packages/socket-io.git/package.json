@@ -22,7 +22,7 @@
 		"simple-git": "3.20.0"
 	},
 	"devDependencies": {
-		"@types/node": "20.8.7",
+		"@types/node": "20.8.8",
 		"@types/tmp": "0.2.5",
 		"react": "18.2.0",
 		"recoil": "0.7.7",
