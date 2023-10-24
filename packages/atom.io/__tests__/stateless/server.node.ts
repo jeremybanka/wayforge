@@ -1,4 +1,6 @@
 import * as http from "http"
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
+import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
 console.log(`Server starting...`)
@@ -20,6 +22,7 @@ const main = async () => {
 		password: `your_password`,
 		port: 5432,
 	})
+	const db: PostgresJsDatabase = drizzle(sql)
 
 	sql`LISTEN table_update`
 

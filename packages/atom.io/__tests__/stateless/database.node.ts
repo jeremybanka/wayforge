@@ -1,28 +1,27 @@
 import path from "path"
-import fs from "fs/promises"
+import type { PgSchema, pgTable } from "drizzle-orm/pg-core"
+import { pgSchema, serial, varchar } from "drizzle-orm/pg-core"
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
+import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
 export class DatabaseManager {
-	public dbName: string
-	private sql: ReturnType<typeof postgres>
-	private config: {
-		user: string
-		host: string
-		database: string
-		password: string
-		port: number
+	public dbName = `test_db_` + Date.now()
+	private config = {
+		user: `postgres`, // Default user; adjust if needed
+		host: process.env.GITHUB_ACTION ? `postgres` : `localhost`,
+		database: `postgres`, // Default database to execute administrative commands
+		password: `your_password`, // Set your postgres user's password
+		port: 5432,
 	}
-
-	public constructor() {
-		this.dbName = `test_db_` + Date.now() // Unique DB name for each test run
-		this.config = {
-			user: `postgres`, // Default user; adjust if needed
-			host: process.env.GITHUB_ACTION ? `postgres` : `localhost`,
-			database: `postgres`, // Default database to execute administrative commands
-			password: `your_password`, // Set your postgres user's password
-			port: 5432,
-		}
-		this.sql = postgres(this.config)
+	private sql = postgres(this.config)
+	private db = drizzle(this.sql)
+	private schema = pgSchema(`test_schema`)
+	public tables = {
+		sample: this.schema.table(`sample`, {
+			id: serial(`id`).primaryKey(),
+			data: varchar(`data`, { length: 256 }),
+		}),
 	}
 
 	public async connect(): Promise<void> {
@@ -41,7 +40,6 @@ export class DatabaseManager {
 
 	public async setupTriggersAndNotifications(): Promise<void> {
 		const triggersPath = path.join(__dirname, `triggers.sql`)
-		const triggers = await fs.readFile(triggersPath, `utf8`)
 		await this.sql.file(triggersPath) // Use file method to execute SQL file
 	}
 
@@ -61,12 +59,19 @@ export class DatabaseManager {
 	}
 
 	public async createSampleTable(): Promise<void> {
-		await this.sql`
-      CREATE TABLE your_table (
-          id SERIAL PRIMARY KEY,
-          data TEXT
-      );
-    `
+		// await this.sql`
+		//   CREATE TABLE your_table (
+		//       id SERIAL PRIMARY KEY,
+		//       data TEXT
+		//   );
+		// `
+		const sampleTable = this.schema.table(`sample`, {
+			id: serial(`id`).primaryKey(),
+			data: varchar(`data`, { length: 256 }),
+		})
+		this.tables = {
+			sample: sampleTable,
+		}
 	}
 
 	public async insertSampleData(): Promise<void> {
