@@ -15,6 +15,7 @@
 		"integrity": "tsx __scripts__/integrity-build.node",
 		"build": "concurrently \"npm:build:*\"",
 		"build:main": "tsup",
+		"build:data": "cd data && tsup",
 		"build:internal": "cd internal && tsup",
 		"build:introspection": "cd introspection && tsup",
 		"build:json": "cd json && tsup",
@@ -97,6 +98,9 @@
 	"files": [
 		"dist",
 		"src",
+		"data/dist",
+		"data/package.json",
+		"data/src",
 		"internal/dist",
 		"internal/package.json",
 		"internal/src",
@@ -135,6 +139,13 @@
 			"browser": "./dist/index.mjs",
 			"import": "./dist/index.mjs",
 			"require": "./dist/index.js"
+		},
+		"./data/package.json": "./data/package.json",
+		"./data": {
+			"types": "./data/dist/index.d.ts",
+			"browser": "./data/dist/index.mjs",
+			"import": "./data/dist/index.mjs",
+			"require": "./data/dist/index.js"
 		},
 		"./internal/package.json": "./internal/package.json",
 		"./internal": {
