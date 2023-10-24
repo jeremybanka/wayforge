@@ -14,7 +14,7 @@ export function structFamily<
 		[K in
 			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
 				K & string
-			>}State`]: AtomIO.AtomFamily<string>
+			>}State`]: AtomIO.AtomFamily<Struct[K], string>
 	},
 	AtomIO.ReadonlySelectorFamily<Struct>,
 ] {
@@ -22,7 +22,7 @@ export function structFamily<
 		[K in
 			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
 				K & string
-			>}State`]: AtomIO.AtomFamily<string>
+			>}State`]: AtomIO.AtomFamily<Struct[K], string>
 	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomFamilyName =
 			`find` + capitalize(options.key) + capitalize(key) + `State`
