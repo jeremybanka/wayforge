@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.9.2
+
+### Patch Changes
+
+- 7108589: 🐛 Fix incorrect type returned by the `struct` function in `atom.io/data`.
+- 7108589: 🐛 Fix issue with `structFamily` function exported from `atom.io/data`. Previously this function would assume any `AtomFamily` it created held strings. Now it properly infers the type from the default object passed.
+
 ## 0.9.1
 
 ### Patch Changes
