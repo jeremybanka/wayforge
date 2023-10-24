@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.1
+
+### Patch Changes
+
+- f5d6793: 🐛 Fix incorrect type returned by the `struct` function in `atom.io/data`.
+
 ## 0.9.0
 
 ### Minor Changes
