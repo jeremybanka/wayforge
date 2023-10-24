@@ -6,17 +6,30 @@ import { createAtom, createSelector } from "atom.io/internal"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
-export function struct<Struct extends { [key: string]: unknown }>(
+export function struct<
+	Struct extends { [key: string]: unknown },
+	Key extends string,
+>(
 	options: {
-		key: string
+		key: Key
 		default: Struct
 	},
 	store: Store = IMPLICIT.STORE,
 ): [
-	{ [K in keyof Struct]: AtomIO.AtomToken<Struct[K]> },
+	{
+		[K in
+			keyof Struct as `${Key}${Capitalize<K & string>}State`]: AtomIO.AtomToken<
+			Struct[K]
+		>
+	},
 	AtomIO.ReadonlySelectorToken<Struct>,
 ] {
-	const atoms = Object.keys(options.default).reduce((acc, key) => {
+	const atoms: {
+		[K in
+			keyof Struct as `${Key}${Capitalize<K & string>}State`]: AtomIO.AtomToken<
+			Struct[K]
+		>
+	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomName = options.key + capitalize(key) + `State`
 		acc[atomName] = createAtom(
 			{
