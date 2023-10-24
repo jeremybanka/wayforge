@@ -6,6 +6,9 @@
 	"sideEffects": false,
 	"license": "MIT",
 	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
