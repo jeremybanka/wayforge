@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.0
+
+### Minor Changes
+
+- 80f7b4f: 🎁 New Subpackage `atom.io/data` provides some handy utilities for destructuring data.
+
 ## 0.8.3
 
 ### Patch Changes
