@@ -1,3 +1,4 @@
+import { setState } from "atom.io"
 import { struct, structFamily } from "atom.io/data"
 
 describe(`struct`, () => {
@@ -10,6 +11,7 @@ describe(`struct`, () => {
 				armor: 0,
 			},
 		})
+		setState(atoms.inventoryAmmoState, 42)
 		expect(atoms.inventoryAmmoState.key).toEqual(`inventory.ammo`)
 		expect(atoms.inventoryArmorState.key).toEqual(`inventory.armor`)
 		expect(atoms.inventoryHealthState.key).toEqual(`inventory.health`)
@@ -27,6 +29,7 @@ describe(`structFamily`, () => {
 				email: ``,
 			},
 		})
+		setState(atomFamilies.findUserAgeState(`a`), 42)
 		expect(atomFamilies.findUserAgeState.key).toEqual(`user.age`)
 		expect(atomFamilies.findUserEmailState.key).toEqual(`user.email`)
 		expect(atomFamilies.findUserNameState.key).toEqual(`user.name`)
