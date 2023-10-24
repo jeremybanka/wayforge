@@ -9,7 +9,7 @@ describe(`dict`, () => {
 			email: string
 		}
 		const findUserState = atomFamily<User, string>({
-			key: `findUser`,
+			key: `user`,
 			default: {
 				name: ``,
 				age: 0,
@@ -20,14 +20,15 @@ describe(`dict`, () => {
 			key: `userIds`,
 			default: [],
 		})
-		const usersDict = dict(findUserState, userIndex)
+		const userDict = dict(findUserState, userIndex)
 		setState(userIndex, [`1`, `2`, `3`])
 		setState(findUserState(`1`), { name: `Bob`, age: 42, email: `` })
-		const users = getState(usersDict)
+		const users = getState(userDict)
 		expect(users).toEqual({
 			"1": { name: `Bob`, age: 42, email: `` },
 			"2": { name: ``, age: 0, email: `` },
 			"3": { name: ``, age: 0, email: `` },
 		})
+		expect(userDict.key).toEqual(`userDict`)
 	})
 })
