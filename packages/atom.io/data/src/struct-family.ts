@@ -3,19 +3,26 @@ import { createAtomFamily, createSelectorFamily } from "atom.io/internal"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
-export function structFamily<Struct extends object>(options: {
-	key: string
+export function structFamily<
+	Struct extends object,
+	Key extends string,
+>(options: {
+	key: Key
 	default: Struct
 }): [
 	{
 		[K in
-			keyof Struct as `find${Capitalize<K & string>}`]: AtomIO.AtomFamily<string>
+			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
+				K & string
+			>}State`]: AtomIO.AtomFamily<string>
 	},
 	AtomIO.ReadonlySelectorFamily<Struct>,
 ] {
 	const atoms: {
 		[K in
-			keyof Struct as `find${Capitalize<K & string>}`]: AtomIO.AtomFamily<string>
+			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
+				K & string
+			>}State`]: AtomIO.AtomFamily<string>
 	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomFamilyName =
 			`find` + capitalize(options.key) + capitalize(key) + `State`
