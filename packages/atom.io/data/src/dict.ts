@@ -16,7 +16,7 @@ export function dict<State, Key extends Json.Serializable>(
 ): AtomIO.ReadonlySelectorToken<{ [K in Stringified<Key>]: State }> {
 	return createSelector(
 		{
-			key: `dict`,
+			key: `${findState.key}Dict`,
 			get: ({ get }) => {
 				const keys = get(index)
 				return keys.reduce((acc, key) => {
