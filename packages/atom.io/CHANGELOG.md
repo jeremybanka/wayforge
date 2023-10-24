@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.4
+
+### Patch Changes
+
+- e6f4024: 🐛 Fix issue where `structFamily` would fail to retrieve subfamilies of the struct.
+
 ## 0.9.3
 
 ### Patch Changes
