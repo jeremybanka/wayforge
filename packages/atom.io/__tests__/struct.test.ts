@@ -10,11 +10,9 @@ describe(`struct`, () => {
 				armor: 0,
 			},
 		})
-		expect(Object.keys(atoms)).toEqual([
-			`inventoryAmmoState`,
-			`inventoryHealthState`,
-			`inventoryArmorState`,
-		])
+		expect(atoms.inventoryAmmoState.key).toEqual(`inventory.ammo`)
+		expect(atoms.inventoryArmorState.key).toEqual(`inventory.armor`)
+		expect(atoms.inventoryHealthState.key).toEqual(`inventory.health`)
 		expect(selector.key).toEqual(`inventory`)
 	})
 })
@@ -29,11 +27,9 @@ describe(`structFamily`, () => {
 				email: ``,
 			},
 		})
-		expect(Object.keys(atomFamilies)).toEqual([
-			`findUserNameState`,
-			`findUserAgeState`,
-			`findUserEmailState`,
-		])
+		expect(atomFamilies.findUserAgeState.key).toEqual(`user.age`)
+		expect(atomFamilies.findUserEmailState.key).toEqual(`user.email`)
+		expect(atomFamilies.findUserNameState.key).toEqual(`user.name`)
 		expect(selectorFamily.key).toEqual(`user`)
 	})
 })
