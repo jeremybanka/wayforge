@@ -18,7 +18,7 @@ export class DatabaseManager {
 	private db = drizzle(this.sql)
 	private schema = pgSchema(`test_schema`)
 	public tables = {
-		sample: this.schema.table(`sample`, {
+		your_table: this.schema.table(`your_table`, {
 			id: serial(`id`).primaryKey(),
 			data: varchar(`data`, { length: 256 }),
 		}),
@@ -59,19 +59,19 @@ export class DatabaseManager {
 	}
 
 	public async createSampleTable(): Promise<void> {
-		// await this.sql`
-		//   CREATE TABLE your_table (
-		//       id SERIAL PRIMARY KEY,
-		//       data TEXT
-		//   );
-		// `
-		const sampleTable = this.schema.table(`sample`, {
-			id: serial(`id`).primaryKey(),
-			data: varchar(`data`, { length: 256 }),
-		})
-		this.tables = {
-			sample: sampleTable,
-		}
+		await this.sql`
+		  CREATE TABLE your_table (
+		      id SERIAL PRIMARY KEY,
+		      data TEXT
+		  );
+		`
+		// const sampleTable = this.schema.table(`your_table`, {
+		// 	id: serial(`id`).primaryKey(),
+		// 	data: varchar(`data`, { length: 256 }),
+		// })
+		// this.tables = {
+		// 	your_table: sampleTable,
+		// }
 	}
 
 	public async insertSampleData(): Promise<void> {
