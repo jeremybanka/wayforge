@@ -1,0 +1,21 @@
+name: Review
+
+on:
+  pull_request:
+  issue_comment:
+
+jobs:
+  pr_agent_job:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Run pr agent on every pull request, respond to user comments
+    steps:
+      - name: Codium
+        id: codium-pr-agent
+        uses: Codium-ai/pr-agent@v0.7
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
