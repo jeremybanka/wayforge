@@ -51,11 +51,13 @@ export const makeSpaceViewsFamily = (
 ): ReadonlySelectorFamily<string[], string> =>
 	selectorFamily<string[], string>({
 		key: `${key}:space_views`,
-		get: (spaceId) => ({ get }) => {
-			const join = get(viewsPerSpaceState)
-			const viewIds = join.getRelatedIds(spaceId)
-			return viewIds
-		},
+		get:
+			(spaceId) =>
+			({ get }) => {
+				const join = get(viewsPerSpaceState)
+				const viewIds = join.getRelatedIds(spaceId)
+				return viewIds
+			},
 	})
 
 export const makeSpaceFocusedViewFamily = (
@@ -65,26 +67,30 @@ export const makeSpaceFocusedViewFamily = (
 ): SelectorFamily<string | null, string> =>
 	selectorFamily<string | null, string>({
 		key: `${key}:space_focused_view`,
-		get: (spaceKey) => ({ get }) => {
-			const views = get(findSpaceViewsState(spaceKey))
-			const viewsLastFocused = views.map((viewKey): [string, number] => [
-				viewKey,
-				get(findViewFocusedState(viewKey)),
-			])
-			const lastFocused = lastOf(viewsLastFocused.sort((a, b) => b[1] - a[1]))
-			return lastFocused ? lastFocused[0] : null
-		},
-		set: (spaceKey) => ({ get, set }, viewKey) => {
-			if (viewKey === null) {
-				return
-			}
-			const views = get(findSpaceViewsState(spaceKey))
-			if (views.includes(viewKey)) {
-				set(findViewFocusedState(viewKey), Date.now())
-			} else {
-				console.warn(`View ${viewKey} not found in space ${spaceKey}`)
-			}
-		},
+		get:
+			(spaceKey) =>
+			({ get }) => {
+				const views = get(findSpaceViewsState(spaceKey))
+				const viewsLastFocused = views.map((viewKey): [string, number] => [
+					viewKey,
+					get(findViewFocusedState(viewKey)),
+				])
+				const lastFocused = lastOf(viewsLastFocused.sort((a, b) => b[1] - a[1]))
+				return lastFocused ? lastFocused[0] : null
+			},
+		set:
+			(spaceKey) =>
+			({ get, set }, viewKey) => {
+				if (viewKey === null) {
+					return
+				}
+				const views = get(findSpaceViewsState(spaceKey))
+				if (views.includes(viewKey)) {
+					set(findViewFocusedState(viewKey), Date.now())
+				} else {
+					console.warn(`View ${viewKey} not found in space ${spaceKey}`)
+				}
+			},
 	})
 
 type AddViewOptions = { spaceId?: string; path?: string }

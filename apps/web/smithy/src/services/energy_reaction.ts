@@ -72,8 +72,10 @@ export const reactionProductsState = atom<
 
 export const findReactionEnergyState = selectorFamily<Energy, string>({
 	key: `reactionEnergy`,
-	get: (id) => ({ get }) => {
-		const energyId = get(energyFeaturesState).getRelatedId(id)
-		return energyId ? findEnergyState(energyId) : DEFAULT_ENERGY
-	},
+	get:
+		(id) =>
+		({ get }) => {
+			const energyId = get(energyFeaturesState).getRelatedId(id)
+			return energyId ? findEnergyState(energyId) : DEFAULT_ENERGY
+		},
 })
