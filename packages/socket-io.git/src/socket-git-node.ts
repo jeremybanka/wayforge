@@ -46,7 +46,8 @@ export const serveSimpleGit =
 				)
 
 				const makeHandler =
-					(key: keyof GitInterface) => async (...args: any[]) => {
+					(key: keyof GitInterface) =>
+					async (...args: any[]) => {
 						logger.info(socket.id, key, ...args)
 						try {
 							const result = await (git[key] as (...args: any[]) => any)(...args)

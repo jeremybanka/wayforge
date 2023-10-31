@@ -94,19 +94,23 @@ export const findEnergyWithRelationsState = selectorFamily<
 	string
 >({
 	key: `energyWithRelations`,
-	get: (id) => ({ get }) => {
-		const energy = get(findEnergyState(id))
-		const features = get(energyFeaturesState).getRelations(id)
-		return { ...energy, features }
-	},
-	set: (energyId) => ({ set }, newValue) => {
-		if (newValue instanceof DefaultValue) {
-			return console.warn(`cannot set default value for energy`)
-		}
-		const { features, ...energy } = newValue
-		set(findEnergyState(energyId), energy)
-		set(energyFeaturesState, (j) => j.setRelations({ energyId }, features))
-	},
+	get:
+		(id) =>
+		({ get }) => {
+			const energy = get(findEnergyState(id))
+			const features = get(energyFeaturesState).getRelations(id)
+			return { ...energy, features }
+		},
+	set:
+		(energyId) =>
+		({ set }, newValue) => {
+			if (newValue instanceof DefaultValue) {
+				return console.warn(`cannot set default value for energy`)
+			}
+			const { features, ...energy } = newValue
+			set(findEnergyState(energyId), energy)
+			set(energyFeaturesState, (j) => j.setRelations({ energyId }, features))
+		},
 })
 
 export const energySchemaState = atom<JsonSchema>({

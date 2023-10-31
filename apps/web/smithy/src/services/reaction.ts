@@ -82,32 +82,36 @@ export const findReactionWithRelationsState = selectorFamily<
 	string
 >({
 	key: `reactionWithRelations`,
-	get: (id) => ({ get }) => {
-		const reaction = get(findReactionState(id))
-		const reactionReagents = get(reactionReagentsState)
-		const reagents = reactionReagents.getRelations(id)
-		const reactionProducts = get(reactionProductsState)
-		const products = reactionProducts.getRelations(id)
-		const energyFeatures = get(energyFeaturesState)
-		const featureOf = energyFeatures.getRelation(id) ?? null
-		return { ...reaction, reagents, products, featureOf }
-	},
-	set: (reactionId) => ({ set }, newValue) => {
-		if (newValue instanceof DefaultValue) {
-			return console.warn(`cannot set default value for reaction`)
-		}
-		const { products, reagents, featureOf, ...reaction } = newValue
-		set(findReactionState(reactionId), reaction)
-		set(reactionProductsState, (j) => j.setRelations({ reactionId }, products))
-		set(reactionReagentsState, (j) => j.setRelations({ reactionId }, reagents))
-		if (featureOf !== null) {
-			set(energyFeaturesState, (j) =>
-				j.set({ energyId: featureOf.id, reactionId }),
-			)
-		} else {
-			set(energyFeaturesState, (j) => j.remove({ reactionId }))
-		}
-	},
+	get:
+		(id) =>
+		({ get }) => {
+			const reaction = get(findReactionState(id))
+			const reactionReagents = get(reactionReagentsState)
+			const reagents = reactionReagents.getRelations(id)
+			const reactionProducts = get(reactionProductsState)
+			const products = reactionProducts.getRelations(id)
+			const energyFeatures = get(energyFeaturesState)
+			const featureOf = energyFeatures.getRelation(id) ?? null
+			return { ...reaction, reagents, products, featureOf }
+		},
+	set:
+		(reactionId) =>
+		({ set }, newValue) => {
+			if (newValue instanceof DefaultValue) {
+				return console.warn(`cannot set default value for reaction`)
+			}
+			const { products, reagents, featureOf, ...reaction } = newValue
+			set(findReactionState(reactionId), reaction)
+			set(reactionProductsState, (j) => j.setRelations({ reactionId }, products))
+			set(reactionReagentsState, (j) => j.setRelations({ reactionId }, reagents))
+			if (featureOf !== null) {
+				set(energyFeaturesState, (j) =>
+					j.set({ energyId: featureOf.id, reactionId }),
+				)
+			} else {
+				set(energyFeaturesState, (j) => j.remove({ reactionId }))
+			}
+		},
 })
 
 export const reactionSchemaState = atom<JsonSchema>({

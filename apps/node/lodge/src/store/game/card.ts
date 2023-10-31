@@ -24,10 +24,12 @@ export const ownersOfCardsStateJSON = selectJson(
 
 export const findOwnerOfCardState = selectorFamily<string | null, string>({
 	key: `findOwnerOfCard`,
-	get: (cardId) => ({ get }) => {
-		const owner = get(ownersOfCardsState).getRelatedId(cardId)
-		return owner ?? null
-	},
+	get:
+		(cardId) =>
+		({ get }) => {
+			const owner = get(ownersOfCardsState).getRelatedId(cardId)
+			return owner ?? null
+		},
 })
 
 export const findPlayerPerspectiveState = atomFamily<Perspective, string>({

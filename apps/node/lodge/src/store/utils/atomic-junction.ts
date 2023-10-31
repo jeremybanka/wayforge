@@ -142,25 +142,32 @@ export class AtomicJunction<
 
 		this.findRelatedKeysState = selectorFamily<string[], string>({
 			key: `${key}:relations:selector`,
-			get: (key: string) => ({ get }) =>
-				[...get(this.findRelationsState__INTERNAL(key))],
+			get:
+				(key: string) =>
+				({ get }) =>
+					[...get(this.findRelationsState__INTERNAL(key))],
 		})
 		this.findRelatedKeyState = selectorFamily<string | undefined, string>({
 			key: `${key}:relation:selector`,
-			get: (key: string) => ({ get }) => get(this.findRelatedKeysState(key))[0],
+			get:
+				(key: string) =>
+				({ get }) =>
+					get(this.findRelatedKeysState(key))[0],
 		})
 		this.findRelationContentState = (
 			defaultContent
 				? selectorFamily({
 						key: `${key}:contents:selector`,
-						get: (key: string) => ({ get }) => {
-							if (this.findRelationContentState__INTERNAL === null) {
-								throw new Error(
-									`Absurd error: this.findContentsState__INTERNAL is null when getting content for key "${key}".`,
-								)
-							}
-							get(this.findRelationContentState__INTERNAL(key))
-						},
+						get:
+							(key: string) =>
+							({ get }) => {
+								if (this.findRelationContentState__INTERNAL === null) {
+									throw new Error(
+										`Absurd error: this.findContentsState__INTERNAL is null when getting content for key "${key}".`,
+									)
+								}
+								get(this.findRelationContentState__INTERNAL(key))
+							},
 				  })
 				: null
 		) as Content extends Json.Object
@@ -170,16 +177,20 @@ export class AtomicJunction<
 			defaultContent
 				? selectorFamily({
 						key: `${key}:relationEntries:selector`,
-						get: (key: string) => ({ get }) => {
-							if (this.findRelationContentState__INTERNAL === null) {
-								throw new Error(
-									`Absurd error: this.findContentsState__INTERNAL is null when getting content for key "${key}".`,
+						get:
+							(key: string) =>
+							({ get }) => {
+								if (this.findRelationContentState__INTERNAL === null) {
+									throw new Error(
+										`Absurd error: this.findContentsState__INTERNAL is null when getting content for key "${key}".`,
+									)
+								}
+								const relations = get(this.findRelatedKeysState(key))
+								const contents = get(
+									this.findRelationContentState__INTERNAL(key),
 								)
-							}
-							const relations = get(this.findRelatedKeysState(key))
-							const contents = get(this.findRelationContentState__INTERNAL(key))
-							return relations.map((b) => [b, contents?.[b] ?? null] as const)
-						},
+								return relations.map((b) => [b, contents?.[b] ?? null] as const)
+							},
 				  })
 				: null
 		) as Content extends Json.Object

@@ -55,15 +55,17 @@ export const makeSpaceLayoutNodeFamily = (
 ): ReadonlySelectorFamily<{ childSpaceIds: string[]; size: number }, string> =>
 	selectorFamily<{ childSpaceIds: string[]; size: number }, string>({
 		key: `${key}:explorer_space`,
-		get: (me) => ({ get }) => {
-			const join = get(spaceLayoutState)
-			const myFollowers = join.getRelatedIds(`parent:${me}`)
-			const myLeader = join.getRelatedId(me)
-			const { size } = myLeader
-				? join.getContent(myLeader, me) ?? { size: NaN }
-				: { size: NaN }
-			return { childSpaceIds: myFollowers, size }
-		},
+		get:
+			(me) =>
+			({ get }) => {
+				const join = get(spaceLayoutState)
+				const myFollowers = join.getRelatedIds(`parent:${me}`)
+				const myLeader = join.getRelatedId(me)
+				const { size } = myLeader
+					? join.getContent(myLeader, me) ?? { size: NaN }
+					: { size: NaN }
+				return { childSpaceIds: myFollowers, size }
+			},
 	})
 
 export const makeSpaceFamily = (key: string): AtomFamily<number, string> =>

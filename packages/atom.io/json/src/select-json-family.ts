@@ -17,9 +17,14 @@ export const selectJsonFamily = <
 	const jsonFamily = createSelectorFamily<J, K>(
 		{
 			key: `${atomFamily.key}:JSON`,
-			get: (key) => ({ get }) => transform.toJson(get(atomFamily(key))),
-			set: (key) => ({ set }, newValue) =>
-				set(atomFamily(key), transform.fromJson(newValue)),
+			get:
+				(key) =>
+				({ get }) =>
+					transform.toJson(get(atomFamily(key))),
+			set:
+				(key) =>
+				({ set }, newValue) =>
+					set(atomFamily(key), transform.fromJson(newValue)),
 		},
 		store,
 	)
