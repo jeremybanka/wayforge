@@ -11,7 +11,7 @@ jobs:
       issues: write
       pull-requests: write
       contents: write
-    name: Run pr agent on every pull request, respond to user comments
+    name: Explain Code
     steps:
       - name: Codium
         id: codium-pr-agent
