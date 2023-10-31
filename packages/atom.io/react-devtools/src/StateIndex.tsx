@@ -16,17 +16,19 @@ import { StoreEditor } from "./StateEditor"
 
 const findStateTypeState = selectorFamily<string, { key: string }>({
 	key: `👁‍🗨 State Type`,
-	get: (token) => ({ get }) => {
-		let state: unknown
-		try {
-			state = get(token as any)
-		} catch (error) {
-			return `error`
-		}
-		if (state === undefined) return `undefined`
-		if (isJson(state)) return refineJsonType(state).type
-		return Object.getPrototypeOf(state).constructor.name
-	},
+	get:
+		(token) =>
+		({ get }) => {
+			let state: unknown
+			try {
+				state = get(token as any)
+			} catch (error) {
+				return `error`
+			}
+			if (state === undefined) return `undefined`
+			if (isJson(state)) return refineJsonType(state).type
+			return Object.getPrototypeOf(state).constructor.name
+		},
 })
 
 export const StateIndexLeafNode: FC<{

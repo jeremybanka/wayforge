@@ -26,8 +26,10 @@ export const content =
 	(input: unknown): input is T | T[] =>
 		isType(input) || isArray(isType)(input)
 
-export const join = (separator?: string) => (a: string[]): string =>
-	a.join(separator)
+export const join =
+	(separator?: string) =>
+	(a: string[]): string =>
+		a.join(separator)
 
 export const map =
 	<I, O>(f: (value: I, index: number, array: I[]) => O) =>
@@ -39,8 +41,10 @@ export const reduce =
 	(a: I[]): O =>
 		a.reduce(f, initial)
 
-export const slice = (start: number, end?: number) => <I>(a: I[]): I[] =>
-	a.slice(start, end)
+export const slice =
+	(start: number, end?: number) =>
+	<I>(a: I[]): I[] =>
+		a.slice(start, end)
 
 export const using =
 	<I, O>(a: I[]) =>

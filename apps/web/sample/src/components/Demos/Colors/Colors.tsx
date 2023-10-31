@@ -34,10 +34,12 @@ const satSelector = selector<number>({
 
 const findAltHueSelector = selectorFamily<Luum, number>({
 	key: `altHue`,
-	get: (hue) => ({ get }) => {
-		const color = get(colorAtom)
-		return new Luum(setHue(hue + color.hue)(color))
-	},
+	get:
+		(hue) =>
+		({ get }) => {
+			const color = get(colorAtom)
+			return new Luum(setHue(hue + color.hue)(color))
+		},
 })
 
 export const Colors: FC = () => {

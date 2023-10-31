@@ -91,11 +91,13 @@ describe(`transaction`, () => {
 		})
 		const findBeingInventoryState = selectorFamily<string[], string>({
 			key: `BeingInventory`,
-			get: (beingKey) => ({ get }) => {
-				const globalInventory = get(globalInventoryState)
-				const itemKeys = globalInventory.getRelatedIds(beingKey)
-				return itemKeys
-			},
+			get:
+				(beingKey) =>
+				({ get }) => {
+					const globalInventory = get(globalInventoryState)
+					const itemKeys = globalInventory.getRelatedIds(beingKey)
+					return itemKeys
+				},
 		})
 		const stealTX = transaction<(thiefKey: string, victimKey: string) => void>({
 			key: `steal`,
