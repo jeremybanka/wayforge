@@ -1,11 +1,13 @@
 name: Review
 
 on:
+  pull_request:
   issue_comment:
 
 jobs:
   pr_agent_job:
     runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.head_ref, 'renovate/') }}
     permissions:
       issues: write
       pull-requests: write
