@@ -1,7 +1,6 @@
 name: Review
 
 on:
-  pull_request:
   issue_comment:
 
 jobs:
