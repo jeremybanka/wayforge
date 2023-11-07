@@ -648,8 +648,8 @@ importers:
   packages/@banka/eslint-config:
     dependencies:
       '@types/mocha':
-        specifier: 10.0.3
-        version: 10.0.3
+        specifier: 10.0.4
+        version: 10.0.4
       '@types/node':
         specifier: 20.8.10
         version: 20.8.10
@@ -681,8 +681,8 @@ importers:
   packages/@banka/eslint-config/react:
     dependencies:
       '@types/mocha':
-        specifier: 10.0.3
-        version: 10.0.3
+        specifier: 10.0.4
+        version: 10.0.4
       '@types/node':
         specifier: 20.8.10
         version: 20.8.10
@@ -3559,8 +3559,8 @@ packages:
     resolution: {integrity: sha512-Kfe/D3hxHTusnPNRbycJE1N77WHDsdS4AjUYIzlDzhDrS47NrwuL3YW4VITxwR7KCVpzwgy4Rbj829KSSQmwXQ==}
     dev: true
 
-  /@types/mocha@10.0.3:
-    resolution: {integrity: sha512-RsOPImTriV/OE4A9qKjMtk2MnXiuLLbcO3nCXK+kvq4nr0iMfFgpjaX3MPLb6f7+EL1FGSelYvuJMV6REH+ZPQ==}
+  /@types/mocha@10.0.4:
+    resolution: {integrity: sha512-xKU7bUjiFTIttpWaIZ9qvgg+22O1nmbA+HRxdlR+u6TWsGfmFdXrheJoK4fFxrHNVIOBDvDNKZG+LYBpMHpX3w==}
     dev: false
 
   /@types/ms@0.7.33:
