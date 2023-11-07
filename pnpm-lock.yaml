@@ -35,9 +35,6 @@ importers:
       json-schema-to-zod:
         specifier: 1.1.1
         version: 1.1.1
-      mock-fs:
-        specifier: 5.2.0
-        version: 5.2.0
       tsx:
         specifier: 3.14.0
         version: 3.14.0
@@ -785,9 +782,6 @@ importers:
       '@testing-library/react':
         specifier: 14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
-      '@types/mock-fs':
-        specifier: 4.13.3
-        version: 4.13.3
       '@types/npmlog':
         specifier: 4.1.6
         version: 4.1.6
@@ -949,15 +943,9 @@ importers:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
     devDependencies:
-      '@types/mock-fs':
-        specifier: 4.13.3
-        version: 4.13.3
       '@types/node':
         specifier: 20.8.10
         version: 20.8.10
-      mock-fs:
-        specifier: 5.2.0
-        version: 5.2.0
       tsup:
         specifier: 7.2.0
         version: 7.2.0(typescript@5.2.2)
@@ -3574,12 +3562,6 @@ packages:
   /@types/mocha@10.0.3:
     resolution: {integrity: sha512-RsOPImTriV/OE4A9qKjMtk2MnXiuLLbcO3nCXK+kvq4nr0iMfFgpjaX3MPLb6f7+EL1FGSelYvuJMV6REH+ZPQ==}
     dev: false
-
-  /@types/mock-fs@4.13.3:
-    resolution: {integrity: sha512-PeXnRqMVBkVjHNCxu1wzPBi9cv5uWVl6535XD11NXt8pasJXh2MHxWvJs6d7eyt/V6BGgHZ4O3LF71CVMdMasA==}
-    dependencies:
-      '@types/node': 20.8.10
-    dev: true
 
   /@types/ms@0.7.33:
     resolution: {integrity: sha512-AuHIyzR5Hea7ij0P9q7vx7xu4z0C28ucwjAZC0ja7JhINyCnOw8/DnvAPQQ9TfOlCtZAmCERKQX9+o1mgQhuOQ==}
@@ -8084,11 +8066,6 @@ packages:
       pathe: 1.1.1
       pkg-types: 1.0.3
       ufo: 1.3.1
-    dev: true
-
-  /mock-fs@5.2.0:
-    resolution: {integrity: sha512-2dF2R6YMSZbpip1V1WHKGLNjr/k48uQClqMVb5H3MOvwc9qhYis3/IWbj02qIg/Y8MDXKFF4c5v0rxx2o6xTZw==}
-    engines: {node: '>=12.0.0'}
     dev: true
 
   /ms@2.0.0:
