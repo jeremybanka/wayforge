@@ -110,7 +110,7 @@
 		"@emotion/react": "11.11.1",
 		"@emotion/styled": "11.11.0",
 		"@testing-library/jest-dom": "6.1.4",
-		"@testing-library/react": "14.0.0",
+		"@testing-library/react": "14.1.0",
 		"@types/jsdom": "21.1.5",
 		"@types/react": "18.2.37",
 		"@vitejs/plugin-react": "4.1.1",
