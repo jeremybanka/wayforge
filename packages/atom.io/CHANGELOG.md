@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.6
+
+### Patch Changes
+
+- cbeddf1: 🐛 Fix bug where in rare conditions stale async states could still cache their resolved values."
+
 ## 0.9.5
 
 ### Patch Changes
