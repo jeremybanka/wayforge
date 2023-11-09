@@ -11,7 +11,7 @@ export type Fated<T, E extends Error = Error> = Loadable<E | T>
  * Can be constructed like a Promise, or from an existing Promise.
  */
 export class Future<T> extends Promise<T> {
-	private isCanceled = false
+	public isCanceled = false
 
 	public constructor(
 		executor:
