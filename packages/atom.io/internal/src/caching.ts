@@ -20,6 +20,9 @@ export const cacheValue = (
 		target(store).valueMap.set(key, future)
 		future
 			.then((value) => {
+				if (future.isCanceled) {
+					return
+				}
 				cacheValue(key, value, subject, store)
 				subject.next({ newValue: value, oldValue: value })
 			})
