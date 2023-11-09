@@ -47,6 +47,35 @@ describe(`async atom`, async () => {
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(1)
 	})
+	it(`cancels an evicted cached pending Future`, async () => {
+		const countState = AtomIO.atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		let resolveAtAnInconvenientTime: () => void
+		const doubledAsyncState = AtomIO.selector<Internal.Loadable<number>>({
+			key: `doubled`,
+			get: ({ get }) => {
+				const count = get(countState)
+				return new Promise((resolve) => {
+					resolveAtAnInconvenientTime = () => {
+						console.log(`resolving`)
+						resolve(count * 2)
+					}
+				})
+			},
+		})
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
+			Internal.Future,
+		)
+		AtomIO.setState(countState, 1)
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBe(undefined)
+		// biome-ignore lint/style/noNonNullAssertion: it's a test, so
+		resolveAtAnInconvenientTime!()
+		await new Promise((resolve) => setTimeout(resolve, 0))
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBe(undefined)
+		// ❌ fails, +0 !== undefined
+	})
 })
 
 const PORT = 418
