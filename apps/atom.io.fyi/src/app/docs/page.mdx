@@ -196,23 +196,47 @@ If a transaction throws, the state of the store is not changed. However, it is u
 ## timeline
 
 import CreateATimeline from "x/core/timeline/create-a-timeline.gen"
-// import SubscribeToATimeline from "x/core/timeline/subscribe-to-a-timeline.gen"
-// import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen"
+import SubscribeToATimeline from "x/core/timeline/subscribe-to-a-timeline.gen"
+import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen"
 
 Timelines allow you to track the history of a group of atoms. If these atoms are set, or set as a group by a selector or transaction, the timeline will record the changes. A timeline can be used to undo and redo changes.
 
 <CreateATimeline />
 
-{/* <SubscribeToATimeline/> */}
+In this example, we create a timeline that tracks the history of two families of atoms.
 
-{/* <UndoAndRedoChanges/> */}
+<SubscribeToATimeline />
+
+In this example, we subscribe to the timeline. Above are the structures of timeline updates.
+
+<UndoAndRedoChanges />
+
+In this example, we undo and redo changes to the timeline.
 
 ## advanced
 
-### mutable
-
-By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation.
-
 ### async
 
+import AwaitYourState from "x/core/advanced/async/await-your-state.gen"
+import LoadableSelector from "x/core/advanced/async/loadable-selector.gen"
+import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-promises.gen"
+
+Often, state is not immediately available. For example, if you are fetching data from a server, you might use the fetch function `atom.io` offers natural support for `Promise` and `async/await` patterns.
+
+<AwaitYourState />
+
+`Loadable` is a shorthand that means "sometimes this is a `Promise`". This is really useful, because `await` is harmless if the value is not a Promise. When the Promise does resolve, the value is set into the value map, allowing for maximum versatility in Suspenseful environments.
+
+<LoadableSelector />
+
+Here is an example where get a query parameter from the URL, then use it to fetch some data from a server. This is a great pattern, because our selector's value will be cached as long as the URL parameter does not change.
+
+<AvoidRaceBetweenPromises />
+
+In the case that we update an async state more quickly than the promises are resolved, only the last promise's resolved value will be set into the state. All previous results will be discarded.
+
 {/* ### relations */}
+
+{/* ### mutable */}
+
+{/* By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation. */}
