@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.5
+
+### Patch Changes
+
+- d507401: 🐛 Fix a race condition that could, in some cases, cause an async selector to resolve and cache after its value had already been evicted by upstream changes.
+
 ## 0.9.4
 
 ### Patch Changes
