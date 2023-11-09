@@ -311,8 +311,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@babel/plugin-transform-react-jsx-source':
-        specifier: 7.22.5
-        version: 7.22.5(@babel/core@7.23.2)
+        specifier: 7.23.3
+        version: 7.23.3(@babel/core@7.23.2)
       '@preact/preset-vite':
         specifier: 2.6.0
         version: 2.6.0(@babel/core@7.23.2)(preact@10.18.2)(vite@4.5.0)
@@ -600,8 +600,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@babel/plugin-transform-react-jsx-source':
-        specifier: 7.22.5
-        version: 7.22.5(@babel/core@7.23.2)
+        specifier: 7.23.3
+        version: 7.23.3(@babel/core@7.23.2)
       '@preact/preset-vite':
         specifier: 2.6.0
         version: 2.6.0(@babel/core@7.23.2)(preact@10.18.2)(vite@4.5.0)
@@ -1330,8 +1330,8 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
-  /@babel/plugin-transform-react-jsx-source@7.22.5(@babel/core@7.23.2):
-    resolution: {integrity: sha512-yIiRO6yobeEIaI0RTbIr8iAK9FcBHLtZq0S89ZPjDLQXBA4xvghaKqI0etp/tF3htTM0sazJKKLz9oEiGRtu7w==}
+  /@babel/plugin-transform-react-jsx-source@7.23.3(@babel/core@7.23.2):
+    resolution: {integrity: sha512-91RS0MDnAWDNvGC6Wio5XYkyWI39FMFO+JK9+4AlgaTH+yWwVTsw7/sn6LK0lH7c5F+TFkpv/3LfCJ1Ydwof/g==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -3935,7 +3935,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.2
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.23.2)
-      '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.23.2)
+      '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.2)
       '@types/babel__core': 7.20.3
       react-refresh: 0.14.0
       vite: 4.5.0(@types/node@20.9.0)(sass@1.69.5)
