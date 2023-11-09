@@ -1,4 +1,5 @@
 import type { Atom } from "../atom"
+import { evictCachedValue } from "../caching"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
 import { IMPLICIT } from "../store"
@@ -30,9 +31,7 @@ export const evictDownStream = <T>(
 				)
 				return
 			}
-			core.valueMap.delete(key)
-			store.config.logger?.info(`   xx evicted "${key}"`)
-
+			evictCachedValue(key, store)
 			markDone(key, store)
 		}
 	}

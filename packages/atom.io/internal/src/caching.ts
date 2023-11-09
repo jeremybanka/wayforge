@@ -43,3 +43,16 @@ export const isValueCached = (
 	key: string,
 	store: Store = IMPLICIT.STORE,
 ): boolean => target(store).valueMap.has(key)
+
+export const evictCachedValue = (
+	key: string,
+	store: Store = IMPLICIT.STORE,
+): void => {
+	const core = target(store)
+	const currentValue = core.valueMap.get(key)
+	if (currentValue instanceof Future) {
+		currentValue.cancel()
+	}
+	core.valueMap.delete(key)
+	store.config.logger?.info(`   xx evicted "${key}"`)
+}
