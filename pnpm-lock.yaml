@@ -438,8 +438,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       phaser:
-        specifier: 3.60.0
-        version: 3.60.0
+        specifier: 3.70.0
+        version: 3.70.0
       socket.io-client:
         specifier: 4.7.2
         version: 4.7.2
@@ -8446,8 +8446,8 @@ packages:
       is-reference: 3.0.2
     dev: true
 
-  /phaser@3.60.0:
-    resolution: {integrity: sha512-IKUy35EnoEVcl2EmJ8WOyK4X8OoxHYdlhZLgRGpNrvD1fEagYffhVmwHcapE/tGiLgyrnezmXIo5RrH2NcrTHw==}
+  /phaser@3.70.0:
+    resolution: {integrity: sha512-2g+gh+Jp9f/Ho9FOXOYbIJMGf3UZXyMbW2iLScFaLQw11e/LqVyxj/YmaBauWbHabeTnZjiWkPklDnxhesMH0g==}
     dependencies:
       eventemitter3: 5.0.1
     dev: false
