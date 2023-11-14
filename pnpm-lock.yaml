@@ -283,8 +283,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.16.4
-        version: 10.16.4(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 10.16.5
+        version: 10.16.5(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       nanoid:
         specifier: 5.0.3
         version: 5.0.3
@@ -380,8 +380,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.16.4
-        version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.16.5
+        version: 10.16.5(react-dom@18.2.0)(react@18.2.0)
       io-ts:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
@@ -481,8 +481,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.16.4
-        version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.16.5
+        version: 10.16.5(react-dom@18.2.0)(react@18.2.0)
       io-ts:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
@@ -572,8 +572,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       framer-motion:
-        specifier: 10.16.4
-        version: 10.16.4(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 10.16.5
+        version: 10.16.5(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       nanoid:
         specifier: 5.0.3
         version: 5.0.3
@@ -801,8 +801,8 @@ importers:
         specifier: 8.53.0
         version: 8.53.0
       framer-motion:
-        specifier: 10.16.4
-        version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.16.5
+        version: 10.16.5(react-dom@18.2.0)(react@18.2.0)
       happy-dom:
         specifier: 12.10.3
         version: 12.10.3
@@ -861,8 +861,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.2.0)(react@18.2.0)
       framer-motion:
-        specifier: 10.16.4
-        version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.16.5
+        version: 10.16.5(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@emotion/babel-plugin':
         specifier: 11.11.0
@@ -6385,8 +6385,8 @@ packages:
   /fp-ts@2.16.1:
     resolution: {integrity: sha512-by7U5W8dkIzcvDofUcO42yl9JbnHTEDBrzu3pt5fKT+Z4Oy85I21K80EYJYdjQGC2qum4Vo55Ag57iiIK4FYuA==}
 
-  /framer-motion@10.16.4(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-p9V9nGomS3m6/CALXqv6nFGMuFOxbWsmaOrdmhyQimMIlLl3LC7h7l86wge/Js/8cRu5ktutS/zlzgR7eBOtFA==}
+  /framer-motion@10.16.5(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-GEzVjOYP2MIpV9bT/GbhcsBNoImG3/2X3O/xVNWmktkv9MdJ7P/44zELm/7Fjb+O3v39SmKFnoDQB32giThzpg==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -6403,8 +6403,8 @@ packages:
       '@emotion/is-prop-valid': 0.8.8
     dev: false
 
-  /framer-motion@10.16.4(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-p9V9nGomS3m6/CALXqv6nFGMuFOxbWsmaOrdmhyQimMIlLl3LC7h7l86wge/Js/8cRu5ktutS/zlzgR7eBOtFA==}
+  /framer-motion@10.16.5(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-GEzVjOYP2MIpV9bT/GbhcsBNoImG3/2X3O/xVNWmktkv9MdJ7P/44zELm/7Fjb+O3v39SmKFnoDQB32giThzpg==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
