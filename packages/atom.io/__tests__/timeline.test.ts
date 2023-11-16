@@ -245,4 +245,37 @@ describe(`timeline`, () => {
 		undo(countsTL)
 		expect(getState(myCountState)).toBe(0)
 	})
+	it(`may ignore atom updates conditionally`, () => {
+		const count = atom({
+			key: `count`,
+			default: 0,
+		})
+
+		const countTL = timeline({
+			key: `count`,
+			atoms: [count],
+			shouldCapture: (update) => {
+				if (update.type === `atom_update`) {
+					const atomKey = update.key
+					const atomDefault =
+						__INTERNAL__.IMPLICIT.STORE.atoms.get(atomKey)?.default
+					if (atomDefault === update.oldValue) {
+						return false
+					}
+				}
+				return true
+			},
+		})
+		expect(getState(count)).toBe(0)
+		setState(count, 1)
+		expect(getState(count)).toBe(1)
+		undo(countTL)
+		expect(getState(count)).toBe(1)
+		expect(__INTERNAL__.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		setState(count, 2)
+		expect(getState(count)).toBe(2)
+		undo(countTL)
+		expect(getState(count)).toBe(1)
+		expect(__INTERNAL__.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
+	})
 })

@@ -1,4 +1,5 @@
 import type {
+	Timeline,
 	TimelineAtomUpdate,
 	TimelineSelectorUpdate,
 	TimelineTransactionUpdate,
@@ -20,6 +21,7 @@ export type TimelineToken = {
 export type TimelineOptions = {
 	key: string
 	atoms: (AtomFamily<any, any> | AtomToken<any>)[]
+	shouldCapture?: (update: TimelineUpdate, timeline: Timeline) => boolean
 }
 
 export type TimelineUpdate =
