@@ -326,8 +326,8 @@ importers:
         specifier: 18.2.37
         version: 18.2.37
       '@vanilla-extract/vite-plugin':
-        specifier: 3.9.0
-        version: 3.9.0(sass@1.69.5)(vite@4.5.0)
+        specifier: 3.9.1
+        version: 3.9.1(sass@1.69.5)(vite@4.5.0)
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -615,8 +615,8 @@ importers:
         specifier: 18.2.37
         version: 18.2.37
       '@vanilla-extract/vite-plugin':
-        specifier: 3.9.0
-        version: 3.9.0(sass@1.69.5)(vite@4.5.0)
+        specifier: 3.9.1
+        version: 3.9.1(sass@1.69.5)(vite@4.5.0)
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -3916,15 +3916,15 @@ packages:
   /@vanilla-extract/private@1.0.3:
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
 
-  /@vanilla-extract/vite-plugin@3.9.0(sass@1.69.5)(vite@4.5.0):
-    resolution: {integrity: sha512-Q2HYAyEJ93Uy7GHQPPiP8SXwPMHGpd4d0YnrIQqB0YZccYbGJR/WFIln9Dmbzx2pdngQUoOfhwEg6kJF8sQrog==}
+  /@vanilla-extract/vite-plugin@3.9.1(sass@1.69.5)(vite@4.5.0):
+    resolution: {integrity: sha512-FI0Tzga+iuqPqFGms9qjeeb+PbdJdIGuG1Yc8gnzHSsRVy61u05wmfSbN9AN+FKzcvV/O1zAvRrusXCXi1oHYA==}
     peerDependencies:
       vite: ^2.2.3 || ^3.0.0 || ^4.0.3
     dependencies:
       '@vanilla-extract/integration': 6.2.2(sass@1.69.5)
       outdent: 0.8.0
       postcss: 8.4.31
-      postcss-load-config: 3.1.4(postcss@8.4.31)
+      postcss-load-config: 4.0.1(postcss@8.4.31)
       vite: 4.5.0(@types/node@20.9.0)(sass@1.69.5)
     transitivePeerDependencies:
       - '@types/node'
@@ -8530,24 +8530,7 @@ packages:
       pathe: 1.1.1
     dev: true
 
-  /postcss-load-config@3.1.4(postcss@8.4.31):
-    resolution: {integrity: sha512-6DiM4E7v4coTE4uzA8U//WhtPwyhiim3eyjEMFCnUpzbrkK9wJHgKDT2mR+HbtSrd/NubVaYTOpSpjUl8NQeRg==}
-    engines: {node: '>= 10'}
-    peerDependencies:
-      postcss: '>=8.0.9'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
-      ts-node:
-        optional: true
-    dependencies:
-      lilconfig: 2.1.0
-      postcss: 8.4.31
-      yaml: 1.10.2
-    dev: true
-
-  /postcss-load-config@4.0.1:
+  /postcss-load-config@4.0.1(postcss@8.4.31):
     resolution: {integrity: sha512-vEJIc8RdiBRu3oRAI0ymerOn+7rPuMvRXslTvZUKZonDHFIczxztIyJ1urxM1x9JXEikvpWWTUUqal5j/8QgvA==}
     engines: {node: '>= 14'}
     peerDependencies:
@@ -8560,6 +8543,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
+      postcss: 8.4.31
       yaml: 2.3.3
     dev: true
 
@@ -9908,7 +9892,7 @@ packages:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss-load-config: 4.0.1
+      postcss-load-config: 4.0.1(postcss@8.4.31)
       resolve-from: 5.0.0
       rollup: 3.29.4
       source-map: 0.8.0-beta.0
