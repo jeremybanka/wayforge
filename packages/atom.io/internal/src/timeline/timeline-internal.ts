@@ -84,6 +84,11 @@ export function timeline__INTERNAL(
 					addAtomToTimeline(token, tl, store)
 				}
 			})
+			for (const atom of core.atoms.values()) {
+				if (atom.family?.key === family.key) {
+					addAtomToTimeline(atom, tl, store)
+				}
+			}
 		} else {
 			const token = tokenOrFamily
 			if (`family` in token && token.family) {

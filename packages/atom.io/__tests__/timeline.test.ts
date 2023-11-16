@@ -2,6 +2,7 @@ import { vitest } from "vitest"
 
 import {
 	atom,
+	atomFamily,
 	getState,
 	redo,
 	runTransaction,
@@ -227,5 +228,21 @@ describe(`timeline`, () => {
 		expect(getState(nameState)).toBe(`mr. jason gold`)
 		expect(timelineData.at).toBe(1)
 		expect(timelineData.history.length).toBe(1)
+	})
+	it(`adds members of a family already created`, () => {
+		const findCountState = atomFamily<number, string>({
+			key: `find count`,
+			default: 0,
+		})
+		const myCountState = findCountState(`foo`)
+		const countsTL = timeline({
+			key: `counts`,
+			atoms: [findCountState],
+		})
+		expect(getState(myCountState)).toBe(0)
+		setState(myCountState, 1)
+		expect(getState(myCountState)).toBe(1)
+		undo(countsTL)
+		expect(getState(myCountState)).toBe(0)
 	})
 })
