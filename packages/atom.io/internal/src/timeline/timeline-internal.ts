@@ -36,6 +36,7 @@ export type Timeline = {
 	type: `timeline`
 	key: string
 	at: number
+	shouldCapture?: (update: TimelineUpdate, timeline: Timeline) => boolean
 	timeTraveling: `into_future` | `into_past` | null
 	history: TimelineUpdate[]
 	selectorTime: number | null
@@ -67,6 +68,9 @@ export function timeline__INTERNAL(
 		install: (store) => timeline__INTERNAL(options, store, tl),
 		subject: new Subject(),
 	}
+	if (options.shouldCapture) {
+		tl.shouldCapture = options.shouldCapture
+	}
 
 	const core = target(store)
 	for (const tokenOrFamily of options.atoms) {
@@ -80,9 +84,9 @@ export function timeline__INTERNAL(
 		if (tokenOrFamily.type === `atom_family`) {
 			const family = tokenOrFamily
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
-				if (!core.atoms.has(token.key)) {
-					addAtomToTimeline(token, tl, store)
-				}
+				// if (!core.atoms.has(token.key)) {
+				addAtomToTimeline(token, tl, store)
+				// }
 			})
 			for (const atom of core.atoms.values()) {
 				if (atom.family?.key === family.key) {
