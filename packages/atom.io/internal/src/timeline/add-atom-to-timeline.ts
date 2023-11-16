@@ -109,9 +109,13 @@ export const addAtomToTimeline = (
 									...update,
 									atomUpdates,
 								}
-								tl.history.push(timelineTransactionUpdate)
-								tl.at = tl.history.length
-								tl.subject.next(timelineTransactionUpdate)
+								const willCapture =
+									tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
+								if (willCapture) {
+									tl.history.push(timelineTransactionUpdate)
+									tl.at = tl.history.length
+									tl.subject.next(timelineTransactionUpdate)
+								}
 							}
 							tl.transactionKey = null
 							store.config.logger?.info(
@@ -138,6 +142,7 @@ export const addAtomToTimeline = (
 					if (tl.at !== tl.history.length) {
 						tl.history.splice(tl.at)
 					}
+
 					tl.history.push(latestUpdate)
 
 					store.config.logger?.info(
@@ -160,7 +165,16 @@ export const addAtomToTimeline = (
 						)
 					}
 				}
-				if (latestUpdate) tl.subject.next(latestUpdate)
+				if (latestUpdate) {
+					const willCaptureSelectorUpdate =
+						tl.shouldCapture?.(latestUpdate, tl) ?? true
+					if (willCaptureSelectorUpdate) {
+						tl.subject.next(latestUpdate)
+					} else {
+						tl.history.pop()
+						tl.at = tl.history.length
+					}
+				}
 			} else {
 				const timestamp = Date.now()
 				tl.selectorTime = null
@@ -177,12 +191,15 @@ export const addAtomToTimeline = (
 				if (atom.family) {
 					atomUpdate.family = atom.family
 				}
-				tl.history.push(atomUpdate)
-				tl.subject.next(atomUpdate)
+				const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
 				store.config.logger?.info(
 					`⌛ timeline "${tl.key}" got an atom_update to "${atom.key}"`,
 				)
-				tl.at = tl.history.length
+				if (willCapture) {
+					tl.history.push(atomUpdate)
+					tl.at = tl.history.length
+					tl.subject.next(atomUpdate)
+				}
 			}
 		}
 	})
