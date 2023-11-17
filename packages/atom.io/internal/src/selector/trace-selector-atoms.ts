@@ -17,6 +17,11 @@ export const traceSelectorAtoms = (
 		const source = sources.shift()!
 		++depth
 		if (depth > 999) {
+			store.config.logger?.warn(
+				`Maximum selector dependency depth exceeded 999 in selector "${selectorKey}".`,
+			)
+		}
+		if (depth > 99999) {
 			throw new Error(
 				`Maximum selector dependency depth exceeded in selector "${selectorKey}".`,
 			)
