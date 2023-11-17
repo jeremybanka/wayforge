@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.9.9
+
+### Patch Changes
+
+- a3c366d: 🚑 Hotfix - increase dependency depth to 99999
+
 ## 0.9.8
 
 ### Patch Changes
