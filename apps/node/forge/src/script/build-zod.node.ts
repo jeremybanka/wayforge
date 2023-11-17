@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs"
 
 import type { JSONSchema7 } from "json-schema"
-import { jsonSchemaToZodDereffed } from "json-schema-to-zod"
+import jsonSchemaToZod from "json-schema-to-zod"
 
 import { getDirectoryJsonEntries } from "~/packages/ingt/src/utils"
 
@@ -15,9 +15,7 @@ const schemaEntries = getDirectoryJsonEntries({
 })
 
 Promise.all(
-	schemaEntries.map(
-		async ([, jsonSchema]) => await jsonSchemaToZodDereffed(jsonSchema),
-	),
+	schemaEntries.map(async ([, jsonSchema]) => await jsonSchemaToZod(jsonSchema)),
 ).then((zodSchemas) => {
 	let idx = 0
 	for (const schema of zodSchemas) {
