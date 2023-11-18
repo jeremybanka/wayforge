@@ -27,10 +27,12 @@ export const cacheValue = (
 				subject.next({ newValue: value, oldValue: value })
 			})
 			.catch((error) => {
-				store.config.logger?.error(
-					`Promised value for "${key}" rejected:`,
-					error,
-				)
+				if (error !== `canceled`) {
+					store.config.logger?.error(
+						`Promised value for "${key}" rejected:`,
+						error,
+					)
+				}
 			})
 	} else {
 		target(store).valueMap.set(key, value)
