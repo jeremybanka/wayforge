@@ -1,20 +1,20 @@
-import type { AtomToken, ReadonlySelectorToken, StateToken } from "atom.io"
-
 import type { Store } from ".."
-import { lookupSelectorSources } from "./lookup-selector-sources"
+import type { AtomKey, StateKey} from "../keys";
+import { isAtomKey } from "../keys"
+import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
 
 export const traceSelectorAtoms = (
 	selectorKey: string,
-	dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
+	directDependencyKey: StateKey<unknown>,
 	store: Store,
-): AtomToken<unknown>[] => {
-	const roots: AtomToken<unknown>[] = []
+): AtomKey<unknown>[] => {
+	const roots: AtomKey<unknown>[] = []
 
-	const sources = lookupSelectorSources(dependency.key, store)
+	const indirectDependencyKeys = getSelectorDependencyKeys(directDependencyKey, store)
 	let depth = 0
-	while (sources.length > 0) {
+	while (indirectDependencyKeys.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
-		const source = sources.shift()!
+		const indirectDependencyKey = indirectDependencyKeys.shift()!
 		++depth
 		if (depth > 999) {
 			store.config.logger?.warn(
@@ -27,10 +27,10 @@ export const traceSelectorAtoms = (
 			)
 		}
 
-		if (source.type !== `atom`) {
-			sources.push(...lookupSelectorSources(source.key, store))
+		if (!isAtomKey(indirectDependencyKey, store)) {
+			indirectDependencyKeys.push(...getSelectorDependencyKeys(indirectDependencyKey, store))
 		} else {
-			roots.push(source)
+			roots.push(indirectDependencyKey)
 		}
 	}
 
@@ -40,11 +40,11 @@ export const traceSelectorAtoms = (
 export const traceAllSelectorAtoms = (
 	selectorKey: string,
 	store: Store,
-): AtomToken<unknown>[] => {
-	const sources = lookupSelectorSources(selectorKey, store)
-	return sources.flatMap((source) =>
-		source.type === `atom`
-			? source
-			: traceSelectorAtoms(selectorKey, source, store),
+): AtomKey<unknown>[] => {
+	const directDependencyKeys = getSelectorDependencyKeys(selectorKey, store)
+	return directDependencyKeys.flatMap((depKey) =>
+		isAtomKey(depKey, store)
+			? depKey
+			: traceSelectorAtoms(selectorKey, depKey, store),
 	)
 }
