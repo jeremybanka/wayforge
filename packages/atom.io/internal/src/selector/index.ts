@@ -1,4 +1,4 @@
-export * from "./lookup-selector-sources"
+export * from "./get-selector-dependency-keys"
 export * from "./register-selector"
 export * from "./create-selector"
 export * from "./trace-selector-atoms"

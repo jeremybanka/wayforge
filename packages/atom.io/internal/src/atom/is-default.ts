@@ -32,6 +32,6 @@ export const isSelectorDefault = (
 	key: string,
 	store: Store = IMPLICIT.STORE,
 ): boolean => {
-	const roots = traceAllSelectorAtoms(key, store)
-	return roots.every((root) => isAtomDefault(root.key, store))
+	const rootKeys = traceAllSelectorAtoms(key, store)
+	return rootKeys.every((rootKey) => isAtomDefault(rootKey, store))
 }

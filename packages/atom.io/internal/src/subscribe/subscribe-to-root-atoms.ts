@@ -2,7 +2,6 @@ import { getState__INTERNAL } from "../get-state-internal"
 import type { ReadonlySelector, Selector } from "../selector"
 import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
-import { withdraw } from "../store"
 import { recallState } from "./recall-state"
 
 export const subscribeToRootAtoms = <T>(
@@ -12,18 +11,18 @@ export const subscribeToRootAtoms = <T>(
 	const dependencySubscriptions =
 		`default` in state
 			? null
-			: traceAllSelectorAtoms(state.key, store).map((atomToken) => {
-					const atom = withdraw(atomToken, store)
+			: traceAllSelectorAtoms(state.key, store).map((atomKey) => {
+					const atom = store.atoms.get(atomKey)
 					if (atom === undefined) {
 						throw new Error(
-							`Atom "${atomToken.key}", a dependency of selector "${state.key}", not found in store "${store.config.name}".`,
+							`Atom "${atomKey}", a dependency of selector "${state.key}", not found in store "${store.config.name}".`,
 						)
 					}
 					return atom.subject.subscribe(
 						`${state.type}:${state.key}`,
 						(atomChange) => {
 							store.config.logger?.info(
-								`📢 selector "${state.key}" saw root "${atomToken.key}" go (`,
+								`📢 selector "${state.key}" saw root "${atomKey}" go (`,
 								atomChange.oldValue,
 								`->`,
 								atomChange.newValue,
