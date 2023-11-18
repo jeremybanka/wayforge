@@ -1,4 +1,4 @@
-import type { AtomKey, ReadonlySelectorKey, SelectorKey} from "../keys";
+import type { AtomKey, ReadonlySelectorKey, SelectorKey } from "../keys"
 import { isStateKey } from "../keys"
 import type { Store } from "../store"
 import { target } from "../transaction"
