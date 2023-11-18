@@ -1,5 +1,4 @@
 export * from "./deposit"
-export * from "./lookup"
 export * from "./store"
 export * from "./withdraw"
 export * from "./withdraw-new-family-member"
