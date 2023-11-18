@@ -1,7 +1,6 @@
 import { Future, Subject, cacheValue, evictCachedValue } from "atom.io/internal"
 import { vitest } from "vitest"
 
-import { c } from "vitest/dist/reporters-5f784f42"
 import type { StateUpdate } from "../src"
 import * as UTIL from "./__util__"
 
