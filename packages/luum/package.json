@@ -15,7 +15,7 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@types/node": "20.9.1",
+		"@types/node": "20.9.2",
 		"eslint": "8.54.0",
 		"tsup": "7.3.0",
 		"typescript": "5.2.2",
