@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.9.10
+
+### Patch Changes
+
+- efecd2d: 🔇 Remove annoying error message that would notify any time a async selector was canceled.
+- 4b2e8921: 🚀 Improve performance when tracing dependencies of selectors.
+
 ## 0.9.9
 
 ### Patch Changes
