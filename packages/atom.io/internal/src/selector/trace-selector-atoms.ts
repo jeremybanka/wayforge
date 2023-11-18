@@ -1,5 +1,5 @@
 import type { Store } from ".."
-import type { AtomKey, StateKey} from "../keys";
+import type { AtomKey, StateKey } from "../keys"
 import { isAtomKey } from "../keys"
 import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
 
@@ -8,33 +8,33 @@ export const traceSelectorAtoms = (
 	directDependencyKey: StateKey<unknown>,
 	store: Store,
 ): AtomKey<unknown>[] => {
-	const roots: AtomKey<unknown>[] = []
+	const rootKeys: AtomKey<unknown>[] = []
 
-	const indirectDependencyKeys = getSelectorDependencyKeys(directDependencyKey, store)
+	const indirectDependencyKeys = getSelectorDependencyKeys(
+		directDependencyKey,
+		store,
+	)
 	let depth = 0
 	while (indirectDependencyKeys.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
 		const indirectDependencyKey = indirectDependencyKeys.shift()!
 		++depth
-		if (depth > 999) {
-			store.config.logger?.warn(
-				`Maximum selector dependency depth exceeded 999 in selector "${selectorKey}".`,
-			)
-		}
 		if (depth > 99999) {
 			throw new Error(
-				`Maximum selector dependency depth exceeded in selector "${selectorKey}".`,
+				`Maximum selector dependency depth exceeded (> 99999) in selector "${selectorKey}". This is likely due to a circular dependency.`,
 			)
 		}
 
 		if (!isAtomKey(indirectDependencyKey, store)) {
-			indirectDependencyKeys.push(...getSelectorDependencyKeys(indirectDependencyKey, store))
-		} else {
-			roots.push(indirectDependencyKey)
+			indirectDependencyKeys.push(
+				...getSelectorDependencyKeys(indirectDependencyKey, store),
+			)
+		} else if (!rootKeys.includes(indirectDependencyKey)) {
+			rootKeys.push(indirectDependencyKey)
 		}
 	}
 
-	return roots
+	return rootKeys
 }
 
 export const traceAllSelectorAtoms = (
