@@ -8,7 +8,7 @@ export const undoTransactionUpdate = <ƒ extends ƒn>(
 	update: TransactionUpdate<ƒ>,
 	store: Store,
 ): void => {
-	store.config.logger?.info(` ⏮ undo transaction "${update.key}" (undo)`)
+	store.logger.info(` ⏮ undo transaction "${update.key}" (undo)`)
 	for (const { key, oldValue } of update.atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		const state = withdraw(token, store)

@@ -10,8 +10,8 @@ export const recallState = <T>(
 ): T => {
 	const core = target(store)
 	if (!core.operation.open) {
-		store.config.logger?.warn(
-			`recall called outside of an operation. This is probably a bug.`,
+		store.logger.warn(
+			`🐞recall called outside of an operation. This is probably a bug.`,
 		)
 		return core.valueMap.get(state.key)
 	}

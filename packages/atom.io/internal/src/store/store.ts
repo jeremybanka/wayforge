@@ -1,3 +1,4 @@
+import { AtomIOLogger } from "atom.io"
 import type {
 	AtomFamily,
 	AtomToken,
@@ -94,12 +95,33 @@ export class Store {
 
 	public config: {
 		name: string
-		logger: Logger | null
-		logger__INTERNAL: Logger
 	} = {
 		name: `IMPLICIT_STORE`,
-		logger: { ...console, info: () => undefined },
-		logger__INTERNAL: console,
+	}
+
+	public loggers: AtomIOLogger[] = [
+		new AtomIOLogger(
+			{ ...console },
+			`warn`,
+			(message) => !message.includes(`👁‍🗨`),
+		),
+	]
+	public logger: Logger = {
+		error: (message: string) => {
+			for (const logger of this.loggers) {
+				logger.error(message)
+			}
+		},
+		info: (message: string) => {
+			for (const logger of this.loggers) {
+				logger.info(message)
+			}
+		},
+		warn: (message: string) => {
+			for (const logger of this.loggers) {
+				logger.warn(message)
+			}
+		},
 	}
 
 	public constructor(name: string, store: Store | null = null) {
@@ -110,14 +132,9 @@ export class Store {
 			this.transactionStatus = { ...store?.transactionStatus }
 			this.config = {
 				...store?.config,
-				logger__INTERNAL: console,
-				logger: {
-					...console,
-					info: () => undefined,
-					...store?.config?.logger,
-				},
 				name,
 			}
+
 			for (const [, atom] of store.atoms) {
 				atom.install(this)
 			}

@@ -3,14 +3,14 @@ import { readFile, readFileSync, writeFile, writeFileSync } from "fs"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import { atom, atomFamily, getState, setLogLevel, setState } from "atom.io"
+import { atom, atomFamily, getState, setState } from "atom.io"
 import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
-setLogLevel(LOG_LEVELS[CHOOSE])
-const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
+__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+const { logger } = __INTERNAL__.IMPLICIT.STORE
 
 let tmpDir: tmp.DirResult
 

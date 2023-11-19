@@ -32,18 +32,18 @@ export function subscribe<T>(
 		)
 	}
 	const unsubFunction = state.subject.subscribe(key, handleUpdate)
-	store.config.logger?.info(`👀 adding subscription "${key}" to "${state.key}"`)
+	store.logger.info(`👀 adding subscription "${key}" to "${state.key}"`)
 	const dependencyUnsubFunctions =
 		state.type !== `atom` ? subscribeToRootAtoms(state, store) : null
 
 	const unsubscribe =
 		dependencyUnsubFunctions === null
 			? () => {
-					store.config.logger?.info(`🙈 unsubscribe from "${state.key}"`)
+					store.logger.info(`🙈 unsubscribe from "${state.key}"`)
 					unsubFunction()
 			  }
 			: () => {
-					store.config.logger?.info(
+					store.logger.info(
 						`🙈 unsubscribe from "${state.key}" and its dependencies`,
 					)
 					unsubFunction()
@@ -71,10 +71,10 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 			`Cannot subscribe to transaction "${token.key}": transaction not found in store "${store.config.name}".`,
 		)
 	}
-	store.config.logger?.info(`👀 subscribe to transaction "${token.key}"`)
+	store.logger.info(`👀 subscribe to transaction "${token.key}"`)
 	const unsubscribe = tx.subject.subscribe(key, handleUpdate)
 	return () => {
-		store.config.logger?.info(`🙈 unsubscribe from transaction "${token.key}"`)
+		store.logger.info(`🙈 unsubscribe from transaction "${token.key}"`)
 		unsubscribe()
 	}
 }
@@ -91,10 +91,10 @@ export const subscribeToTimeline = (
 			`Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`,
 		)
 	}
-	store.config.logger?.info(`👀 subscribe to timeline "${token.key}"`)
+	store.logger.info(`👀 subscribe to timeline "${token.key}"`)
 	const unsubscribe = tl.subject.subscribe(key, handleUpdate)
 	return () => {
-		store.config.logger?.info(`🙈 unsubscribe from timeline "${token.key}"`)
+		store.logger.info(`🙈 unsubscribe from timeline "${token.key}"`)
 		unsubscribe()
 	}
 }

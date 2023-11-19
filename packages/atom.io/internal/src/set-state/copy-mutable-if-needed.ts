@@ -13,7 +13,7 @@ export function copyMutableIfNeeded<T>(
 	const originValue = origin.valueMap.get(atom.key)
 	const targetValue = target.valueMap.get(atom.key)
 	if (originValue === targetValue) {
-		origin.config.logger?.info(`📃 copying`, `${atom.key}`)
+		origin.logger.info(`📃 copying`, `${atom.key}`)
 		const copiedValue = transform.fromJson(transform.toJson(originValue))
 		target.valueMap.set(atom.key, copiedValue)
 		new Tracker(atom, origin)
