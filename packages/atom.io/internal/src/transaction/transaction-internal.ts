@@ -41,8 +41,8 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 				return output
 			} catch (thrown) {
 				abortTransaction(store)
-				store.config.logger?.error(
-					`Transaction "${options.key}" failed in store "${store.config.name}":`,
+				store.logger.error(
+					`❗ Transaction "${options.key}" failed in store "${store.config.name}":`,
 					thrown,
 				)
 				throw thrown

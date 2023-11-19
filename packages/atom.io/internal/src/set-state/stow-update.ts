@@ -22,10 +22,10 @@ export const stowUpdate = <T>(
 	store: Store,
 ): void => {
 	const { key } = state
-	const { logger } = store.config
+	const { logger } = store
 	if (store.transactionStatus.phase !== `building`) {
-		store.config.logger?.warn(
-			`stowUpdate called outside of a transaction. This is probably a bug.`,
+		store.logger.warn(
+			`🐞 stowUpdate called outside of a transaction. This is probably a bug.`,
 		)
 		return
 	}
@@ -38,5 +38,11 @@ export const stowUpdate = <T>(
 		atomUpdate.family = state.family
 	}
 	store.transactionStatus.atomUpdates.push(atomUpdate)
-	logger?.info(`📝 ${key} stowed (`, update.oldValue, `->`, update.newValue, `)`)
+	store.logger.info(
+		`📁 ${key} stowed (`,
+		update.oldValue,
+		`->`,
+		update.newValue,
+		`)`,
+	)
 }

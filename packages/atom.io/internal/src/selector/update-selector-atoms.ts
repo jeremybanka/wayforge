@@ -15,20 +15,20 @@ export const updateSelectorAtoms = (
 			selectorKey,
 			atomKey: dependency.key,
 		})
-		store.config.logger?.info(
-			`   || adding root for "${selectorKey}": ${dependency.key}`,
+		store.logger.info(
+			`🔍 selector "${selectorKey}" discovers root atom "${dependency.key}"`,
 		)
-		return
-	}
-	const rootKeys = traceSelectorAtoms(selectorKey, dependency.key, store)
-	store.config.logger?.info(
-		`   || adding roots for "${selectorKey}":`,
-		rootKeys.map((r) => r),
-	)
-	for (const atomKey of rootKeys) {
-		core.selectorAtoms = core.selectorAtoms.set({
-			selectorKey,
-			atomKey,
-		})
+	} else {
+		const rootKeys = traceSelectorAtoms(selectorKey, dependency.key, store)
+		store.logger.info(
+			`🔍 selector "${selectorKey}" discovers root atoms:`,
+			rootKeys.map((r) => r),
+		)
+		for (const atomKey of rootKeys) {
+			core.selectorAtoms = core.selectorAtoms.set({
+				selectorKey,
+				atomKey,
+			})
+		}
 	}
 }

@@ -1,48 +1,41 @@
-import { setLogLevel, useLogger } from "atom.io"
+import { AtomIOLogger, atom, timeline, undo } from "atom.io"
 import * as __INTERNAL__ from "atom.io/internal"
+
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 2
+const logger = { ...console }
+__INTERNAL__.IMPLICIT.STORE.loggers = [
+	new AtomIOLogger(logger, LOG_LEVELS[CHOOSE]),
+]
+
+beforeEach(() => {
+	vitest.spyOn(logger, `error`)
+	vitest.spyOn(logger, `warn`)
+	vitest.spyOn(logger, `info`)
+})
 
 describe(`setLogLevel`, () => {
 	it(`allows logging at the preferred level`, () => {
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBeInstanceOf(
-			Function,
-		)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(console.warn)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
-
-		setLogLevel(`info`)
-
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBe(console.info)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(console.warn)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
-
-		setLogLevel(`warn`)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBeInstanceOf(
-			Function,
-		)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(console.warn)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
-
-		setLogLevel(`error`)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBeInstanceOf(
-			Function,
-		)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBeInstanceOf(
-			Function,
-		)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(console.error)
-
-		setLogLevel(null)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger).toBe(null)
-	})
-})
-
-describe(`useLogger`, () => {
-	it(`permits use of a custom logger`, () => {
-		const logger = { info: () => null, warn: () => null, error: () => null }
-		setLogLevel(`info`)
-		useLogger(logger)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.info).toBe(logger.info)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.warn).toBe(logger.warn)
-		expect(__INTERNAL__.IMPLICIT.STORE.config.logger?.error).toBe(logger.error)
+		atom({
+			key: `count`,
+			default: 0,
+		})
+		expect(logger.info).not.toHaveBeenCalled()
+		__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = `info`
+		const countState = atom({
+			key: `count`,
+			default: 0,
+		})
+		expect(logger.error).toHaveBeenCalled()
+		__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = `error`
+		const countTL = timeline({
+			key: `count`,
+			atoms: [countState],
+		})
+		undo(countTL)
+		expect(logger.warn).not.toHaveBeenCalled()
+		__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = `warn`
+		undo(countTL)
+		expect(logger.warn).toHaveBeenCalled()
 	})
 })

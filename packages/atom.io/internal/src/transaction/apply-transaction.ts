@@ -9,18 +9,18 @@ export const applyTransaction = <ƒ extends ƒn>(
 	store: Store,
 ): void => {
 	if (store.transactionStatus.phase !== `building`) {
-		store.config.logger?.warn(
-			`abortTransaction called outside of a transaction. This is probably a bug.`,
+		store.logger.warn(
+			`🐞 applyTransaction called outside of a transaction. This is probably a bug.`,
 		)
 		return
 	}
 	store.transactionStatus.phase = `applying`
 	store.transactionStatus.output = output
 	const { atomUpdates } = store.transactionStatus
-	store.config.logger?.info(
+	store.logger.info(
 		`🛃 applying transaction "${store.transactionStatus.key}" with ${atomUpdates.length} updates.`,
 	)
-	store.config.logger?.info(`🛃 the updates are:`, atomUpdates)
+	store.logger.info(`🛃 the updates are:`, atomUpdates)
 	for (const { key, newValue } of atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		if (!store.valueMap.has(token.key)) {
@@ -38,7 +38,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 				}
 				store.atoms.set(newAtom.key, newAtom)
 				store.valueMap.set(newAtom.key, newAtom.default)
-				store.config.logger?.info(`🔧`, `add atom "${newAtom.key}"`)
+				store.logger.info(`🔧 add atom "${newAtom.key}"`)
 			}
 		}
 		// if (store.transactionStatus.key === `dealCards`) debugger
@@ -60,5 +60,5 @@ export const applyTransaction = <ƒ extends ƒn>(
 		params: store.transactionStatus.params as Parameters<ƒ>,
 	})
 	store.transactionStatus = { phase: `idle` }
-	store.config.logger?.info(`🛬`, `transaction "${myTransaction.key}" applied`)
+	store.logger.info(`🛬 transaction "${myTransaction.key}" applied`)
 }

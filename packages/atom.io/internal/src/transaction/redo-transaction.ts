@@ -8,7 +8,7 @@ export const redoTransactionUpdate = <ƒ extends ƒn>(
 	update: TransactionUpdate<ƒ>,
 	store: Store,
 ): void => {
-	store.config.logger?.info(` ⏭ redo transaction "${update.key}" (redo)`)
+	store.logger.info(` ⏭ redo transaction "${update.key}" (redo)`)
 	for (const { key, newValue } of update.atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		const state = withdraw(token, store)

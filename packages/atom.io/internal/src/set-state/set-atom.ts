@@ -19,15 +19,12 @@ export const setAtom = <T>(
 	const oldValue = getState__INTERNAL(atom, store)
 	let newValue = copyMutableIfWithinTransaction(atom, store)
 	newValue = become(next)(newValue)
-	store.config.logger?.info(`<< setting atom "${atom.key}" to`, newValue)
+	store.logger.info(`📝 setting atom "${atom.key}" to`, newValue)
 	cacheValue(atom.key, newValue, atom.subject, store)
 	if (isAtomDefault(atom.key, store)) {
 		markAtomAsNotDefault(atom.key, store)
 	}
 	markDone(atom.key, store)
-	store.config.logger?.info(
-		`   || evicting caches downstream from "${atom.key}"`,
-	)
 	evictDownStream(atom, store)
 	const update = { oldValue, newValue }
 	if (store.transactionStatus.phase !== `building`) {

@@ -17,7 +17,7 @@ export function createMutableAtom<
 	options: MutableAtomOptions<Core, SerializableCore>,
 	store: Store = IMPLICIT.STORE,
 ): MutableAtomToken<Core, SerializableCore> {
-	store.config.logger?.info(
+	store.logger.info(
 		`🔧 creating mutable atom "${options.key}" in store "${store.config.name}"`,
 	)
 	const coreState = createAtom<Core>(options, undefined, store)
@@ -26,7 +26,7 @@ export function createMutableAtom<
 	subscribe(
 		jsonState,
 		() => {
-			store.config.logger?.info(
+			store.logger.info(
 				`🔍 tracker-initializer:${store?.config.name}:${
 					store.transactionStatus.phase === `idle`
 						? `main`

@@ -5,7 +5,6 @@ import {
 	atomFamily,
 	getState,
 	runTransaction,
-	setLogLevel,
 	setState,
 	transaction,
 } from "atom.io"
@@ -16,8 +15,8 @@ import * as UTIL from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
-setLogLevel(LOG_LEVELS[CHOOSE])
-const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
+__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+const { logger } = __INTERNAL__.IMPLICIT.STORE
 
 beforeEach(() => {
 	__INTERNAL__.clearStore()
