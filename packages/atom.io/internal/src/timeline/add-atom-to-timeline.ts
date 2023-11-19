@@ -38,7 +38,7 @@ export const addAtomToTimeline = (
 				? store.transactionStatus.time
 				: null
 
-		store.config.logger?.info(
+		store.logger.info(
 			`⏳ timeline "${tl.key}" saw atom "${atomToken.key}" go (`,
 			update.oldValue,
 			`->`,
@@ -74,8 +74,8 @@ export const addAtomToTimeline = (
 				}
 				if (tl.transactionKey !== currentTransactionKey) {
 					if (tl.transactionKey) {
-						store.config.logger?.error(
-							`Timeline "${tl.key}" was unable to resolve transaction "${tl.transactionKey}. This is probably a bug.`,
+						store.logger.error(
+							`🐞 Timeline "${tl.key}" was unable to resolve transaction "${tl.transactionKey}. This is probably a bug.`,
 						)
 					}
 					tl.transactionKey = currentTransactionKey
@@ -118,7 +118,7 @@ export const addAtomToTimeline = (
 								}
 							}
 							tl.transactionKey = null
-							store.config.logger?.info(
+							store.logger.info(
 								`⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`,
 							)
 						},
@@ -145,7 +145,7 @@ export const addAtomToTimeline = (
 
 					tl.history.push(latestUpdate)
 
-					store.config.logger?.info(
+					store.logger.info(
 						`⌛ timeline "${tl.key}" got a selector_update "${currentSelectorKey}" with`,
 						latestUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
 					)
@@ -159,8 +159,8 @@ export const addAtomToTimeline = (
 							type: `atom_update`,
 							...update,
 						})
-						store.config.logger?.info(
-							`   ⌛ timeline "${tl.key}" set selector_update "${currentSelectorKey}" to`,
+						store.logger.info(
+							`⌛ timeline "${tl.key}" set selector_update "${currentSelectorKey}" to`,
 							latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key),
 						)
 					}
@@ -192,7 +192,7 @@ export const addAtomToTimeline = (
 					atomUpdate.family = atom.family
 				}
 				const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
-				store.config.logger?.info(
+				store.logger.info(
 					`⌛ timeline "${tl.key}" got an atom_update to "${atom.key}"`,
 				)
 				if (willCapture) {

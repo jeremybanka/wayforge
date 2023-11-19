@@ -51,10 +51,12 @@ export function createSelector<T>(
 	const existingReadonly = core.readonlySelectors.get(options.key)
 
 	if (existingWritable || existingReadonly) {
-		store.config.logger?.error?.(
-			`Tried to create ${existingReadonly ? `readonly selector` : `selector`}`,
+		store.logger.error(
+			`❓ Tried to create ${
+				existingReadonly ? `readonly selector` : `selector`
+			}`,
 			`"${options.key}", but it already exists in the store.`,
-			`(Ignore if you are using hot module replacement.)`,
+			`(Ignore if you are in development using hot module replacement.)`,
 		)
 	}
 

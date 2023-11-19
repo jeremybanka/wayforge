@@ -1,13 +1,13 @@
 import { vitest } from "vitest"
 
-import { atom, selector, setLogLevel, timeline, transaction } from "atom.io"
+import { atom, selector, timeline, transaction } from "atom.io"
 import * as __INTERNAL__ from "atom.io/internal"
 import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
-setLogLevel(LOG_LEVELS[CHOOSE])
-const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
+__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+const { logger } = __INTERNAL__.IMPLICIT.STORE
 
 beforeEach(() => {
 	__INTERNAL__.clearStore()

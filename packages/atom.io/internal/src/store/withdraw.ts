@@ -78,7 +78,7 @@ export function withdraw<T>(
 			core.timelines.get(token.key)
 
 		if (state) {
-			store.config.logger?.info(`🛠️ add ${token.type} "${token.key}"`)
+			store.logger.info(`🛠️ add ${token.type} "${token.key}"`)
 			switch (state.type) {
 				case `atom`: {
 					store.atoms.set(token.key, state)

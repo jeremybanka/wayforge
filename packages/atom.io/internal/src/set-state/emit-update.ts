@@ -10,7 +10,7 @@ export const emitUpdate = <T>(
 	store: Store,
 ): void => {
 	const { key } = state
-	const { logger } = store.config
+	const { logger } = store
 	logger?.info(
 		`📢 ${state.type} "${key}" went (`,
 		update.oldValue,

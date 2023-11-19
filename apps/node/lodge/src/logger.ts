@@ -1,5 +1,6 @@
 import log from "npmlog"
-import { setLogLevel, useLogger } from "~/packages/atom.io/src"
+import { IMPLICIT } from "~/packages/atom.io/internal/src"
+import { AtomIOLogger } from "~/packages/atom.io/src"
 
 export const logger = log
 
@@ -14,5 +15,4 @@ const atomLogger = {
 		console.log(`atom.io`, `💥 `, ...args)
 	},
 }
-useLogger(atomLogger)
-setLogLevel(`info`)
+IMPLICIT.STORE.loggers = [new AtomIOLogger(atomLogger, `info`)]

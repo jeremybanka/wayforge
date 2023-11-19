@@ -76,7 +76,7 @@ export function timeline__INTERNAL(
 	for (const tokenOrFamily of options.atoms) {
 		const timelineKey = core.timelineAtoms.getRelatedKey(tokenOrFamily.key)
 		if (timelineKey) {
-			store.config.logger?.error(
+			store.logger.error(
 				`❌ Failed to add atom "${tokenOrFamily.key}" to timeline "${options.key}" because it belongs to timeline "${timelineKey}"`,
 			)
 			continue
@@ -100,7 +100,7 @@ export function timeline__INTERNAL(
 					token.family.key,
 				)
 				if (familyTimelineKey) {
-					store.config.logger?.error(
+					store.logger.error(
 						`❌ Failed to add atom "${token.key}" to timeline "${options.key}" because its family "${token.family.key}" belongs to timeline "${familyTimelineKey}"`,
 					)
 					continue

@@ -1,12 +1,11 @@
 import { vitest } from "vitest"
 
-import type { AtomToken, TimelineToken } from "atom.io"
+import type { AtomToken, Logger, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	redo,
 	selector,
-	setLogLevel,
 	setState,
 	timeline,
 	undo,
@@ -16,11 +15,12 @@ import * as UTIL from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
-setLogLevel(LOG_LEVELS[CHOOSE])
-const logger = __INTERNAL__.IMPLICIT.STORE.config.logger ?? console
+let logger: Logger
 
 beforeEach(() => {
 	__INTERNAL__.clearStore()
+	__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = __INTERNAL__.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)

@@ -28,10 +28,7 @@ export const cacheValue = (
 			})
 			.catch((error) => {
 				if (error !== `canceled`) {
-					store.config.logger?.error(
-						`Promised value for "${key}" rejected:`,
-						error,
-					)
+					store.logger.error(`🙅‍♂️ Promised value for "${key}" rejected:`, error)
 				}
 			})
 	} else {
@@ -58,6 +55,9 @@ export const evictCachedValue = (
 	if (currentValue instanceof Future) {
 		currentValue.cancel()
 	}
+	if (core.operation.open) {
+		core.operation.prev.set(key, currentValue)
+	}
 	core.valueMap.delete(key)
-	store.config.logger?.info(`   xx evicted "${key}"`)
+	store.logger.info(`🗑 evicted "${key}"`)
 }

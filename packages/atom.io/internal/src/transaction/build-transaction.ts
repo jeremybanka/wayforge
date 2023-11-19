@@ -32,8 +32,7 @@ export const buildTransaction = (
 		params,
 		output: undefined,
 	}
-	store.config.logger?.info(
-		`🛫`,
-		`transaction "${key}" building in store "${store.config.name}"`,
+	store.logger.info(
+		`🛫 transaction "${key}" building in store "${store.config.name}"`,
 	)
 }

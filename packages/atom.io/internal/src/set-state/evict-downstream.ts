@@ -11,23 +11,22 @@ export const evictDownStream = <T>(
 ): void => {
 	const core = target(store)
 	const downstreamKeys = core.selectorAtoms.getRelatedKeys(state.key)
-	store.config.logger?.info(
-		`   || ${downstreamKeys?.size ?? `none`} downstream:`,
+	store.logger.info(
+		`🧹 evicting ${downstreamKeys?.size} states downstream from ${state.type} "${state.key}":`,
 		downstreamKeys,
 	)
 	if (core.operation.open) {
-		store.config.logger?.info(`   ||`, [...core.operation.done], `already done`)
+		store.logger.info(`🧹`, [...core.operation.done], `already done`)
 	}
 	if (downstreamKeys) {
 		for (const key of downstreamKeys) {
 			if (isDone(key, store)) {
-				store.config.logger?.info(`   || ${key} already done`)
 				continue
 			}
 			const state = core.selectors.get(key) ?? core.readonlySelectors.get(key)
 			if (!state) {
-				store.config.logger?.info(
-					`   || ${key} was not found in selectors or readonlySelectors`,
+				store.logger.error(
+					`🐞 "${key}" was not found in selectors or readonlySelectors`,
 				)
 				return
 			}

@@ -1,4 +1,5 @@
-import { atom, selector, setLogLevel, timeline, transaction } from "atom.io"
+import { atom, selector, timeline, transaction } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import { composeExplorer } from "~/packages/atom.io/__unstable__/react-explorer/src"
 
 export const { Explorer, useSetTitle } = composeExplorer({
@@ -6,7 +7,7 @@ export const { Explorer, useSetTitle } = composeExplorer({
 })
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-setLogLevel(LOG_LEVELS[1])
+IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[1]
 
 export const dividendState = atom<number>({
 	key: `dividend`,

@@ -1,9 +1,7 @@
-import { getState, runTransaction, setLogLevel } from "~/packages/atom.io/src"
+import { getState, runTransaction } from "~/packages/atom.io/src"
 import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { findCardGroupState, groupsOfCards } from "./card-group"
+import { groupsOfCards } from "./card-group"
 import { addHandTx, dealCardsTX, spawnClassicDeckTX } from "./game-tx"
-
-// setLogLevel(`info`)
 
 describe(`dealCardsTX`, () => {
 	it(`should deal cards`, () => {

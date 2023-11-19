@@ -25,17 +25,10 @@ export const registerSelector = (
 		}
 		const dependencyValue = getState__INTERNAL(dependencyState, store)
 
-		if (alreadyRegistered) {
-			store.config.logger?.info(
-				`   || ${selectorKey} <- ${dependency.key} =`,
-				dependencyValue,
-			)
-		} else {
-			store.config.logger?.info(
-				`🔌 registerSelector "${selectorKey}" <- ( "${dependency.key}" =`,
-				dependencyValue,
-				`)`,
-			)
+		store.logger.info(
+			`🔌 selector "${selectorKey}" registers dependency ( "${dependency.key}" = ${dependencyValue} )`,
+		)
+		if (!alreadyRegistered) {
 			core.selectorGraph = core.selectorGraph.set(
 				{
 					upstreamSelectorKey: dependency.key,

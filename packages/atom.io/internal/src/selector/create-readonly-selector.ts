@@ -36,7 +36,7 @@ export const createReadonlySelector = <T>(
 	}
 	core.readonlySelectors.set(options.key, readonlySelector)
 	const initialValue = getSelf()
-	store.config.logger?.info(`   ✨ "${options.key}" =`, initialValue)
+	store.logger.info(`✨ "${options.key}" =`, initialValue)
 	const token: ReadonlySelectorToken<T> = {
 		key: options.key,
 		type: `readonly_selector`,

@@ -8,17 +8,17 @@ export const redo__INTERNAL = (
 	token: TimelineToken,
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	store.config.logger?.info(`⏩ redo "${token.key}"`)
+	store.logger.info(`⏩ redo "${token.key}"`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
-		store.config.logger?.error(
-			`Failed to redo on timeline "${token.key}". This timeline has not been initialized.`,
+		store.logger.error(
+			`🐞 Failed to redo on timeline "${token.key}". This timeline has not been initialized.`,
 		)
 		return
 	}
 	if (timelineData.at === timelineData.history.length) {
-		store.config.logger?.warn(
-			`Failed to redo at the end of timeline "${token.key}". There is nothing to redo.`,
+		store.logger.warn(
+			`☝️ Failed to redo at the end of timeline "${token.key}". There is nothing to redo.`,
 		)
 		return
 	}
@@ -42,7 +42,7 @@ export const redo__INTERNAL = (
 	++timelineData.at
 	timelineData.subject.next(`redo`)
 	timelineData.timeTraveling = null
-	store.config.logger?.info(
+	store.logger.info(
 		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
 }
@@ -51,17 +51,17 @@ export const undo__INTERNAL = (
 	token: TimelineToken,
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	store.config.logger?.info(`⏪ undo "${token.key}"`)
+	store.logger.info(`⏪ undo "${token.key}"`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
-		store.config.logger?.error(
-			`Failed to undo on timeline "${token.key}". This timeline has not been initialized.`,
+		store.logger.error(
+			`🐞 Failed to undo on timeline "${token.key}". This timeline has not been initialized.`,
 		)
 		return
 	}
 	if (timelineData.at === 0) {
-		store.config.logger?.warn(
-			`Failed to undo at the beginning of timeline "${token.key}". There is nothing to undo.`,
+		store.logger.warn(
+			`☝️ Failed to undo at the beginning of timeline "${token.key}". There is nothing to undo.`,
 		)
 		return
 	}
@@ -85,7 +85,7 @@ export const undo__INTERNAL = (
 	}
 	timelineData.subject.next(`undo`)
 	timelineData.timeTraveling = null
-	store.config.logger?.info(
+	store.logger.info(
 		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
 }

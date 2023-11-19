@@ -1,5 +1,4 @@
 import type { MutableAtomToken } from "atom.io"
-import { setLogLevel } from "atom.io"
 import { useI, useJSON } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import {
@@ -18,8 +17,6 @@ import {
 } from "../../../node/kite/src/kite-store"
 
 import scss from "./App.module.scss"
-
-setLogLevel(`warn`)
 
 const Numbers: FC<{
 	state: MutableAtomToken<SetRTX<number>, SetRTXJson<number>>
