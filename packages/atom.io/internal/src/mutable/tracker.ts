@@ -21,7 +21,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		store: Store = IMPLICIT.STORE,
 	): AtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
-		deleteAtom(latestUpdateStateKey, target(store))
+		deleteAtom(latestUpdateStateKey, store)
 		const familyMetaData: FamilyMetadata | undefined = mutableState.family
 			? {
 					key: `*${mutableState.family.key}`,
