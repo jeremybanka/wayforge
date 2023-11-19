@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.10.0
+
+### Minor Changes
+
+- 9e700763: 💥 BREAKING CHANGE: Atom.io now supports multiple loggers and custom log filters per logger. `setLogLevel` and `useLogger` are no longer available. Directly setting `Store.loggers` is preferred.
+- a839b9c: ✨ `deleteAtom` allows the complete removal of atoms defined in the store.
+
 ## 0.9.10
 
 ### Patch Changes
