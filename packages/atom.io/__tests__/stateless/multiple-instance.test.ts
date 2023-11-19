@@ -10,7 +10,6 @@ const childProcesses: ChildProcess[] = []
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
-	await dbManager.connect()
 	await dbManager.createDatabase()
 
 	const NUM_SERVERS = 3

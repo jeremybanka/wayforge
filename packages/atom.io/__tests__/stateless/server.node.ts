@@ -1,6 +1,4 @@
 import * as http from "http"
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
-import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
 console.log(`Server starting...`)
@@ -22,7 +20,6 @@ const main = async () => {
 		password: `your_password`,
 		port: 5432,
 	})
-	const db: PostgresJsDatabase = drizzle(sql)
 
 	sql`LISTEN table_update`
 
@@ -38,9 +35,7 @@ const main = async () => {
 					data.push(chunk)
 				})
 				.on(`end`, async () => {
-					const authHeader = req.headers.authorization
 					try {
-						// if (authHeader !== `Bearer MY_BEARER_TOKEN`) throw 401;
 						if (typeof req.url !== `string`) throw 418
 						const url = new URL(req.url, ORIGIN)
 						console.log({ pathname: url.pathname, method: req.method })
