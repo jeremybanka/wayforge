@@ -92,6 +92,7 @@ export const serveSimpleGit =
 					diffSummary: makeHandler(`diffSummary`),
 					exec: makeHandler(`exec`),
 					fetch: makeHandler(`fetch`),
+					firstCommit: makeHandler(`firstCommit`),
 					getConfig: makeHandler(`getConfig`),
 					getRemotes: makeHandler(`getRemotes`),
 					grep: makeHandler(`grep`),
