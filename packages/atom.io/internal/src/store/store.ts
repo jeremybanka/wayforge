@@ -107,19 +107,19 @@ export class Store {
 		),
 	]
 	public logger: Logger = {
-		error: (message: string) => {
+		error: (...messages: unknown[]) => {
 			for (const logger of this.loggers) {
-				logger.error(message)
+				logger.error(...messages)
 			}
 		},
-		info: (message: string) => {
+		info: (...messages: unknown[]) => {
 			for (const logger of this.loggers) {
-				logger.info(message)
+				logger.info(...messages)
 			}
 		},
-		warn: (message: string) => {
+		warn: (...messages: unknown[]) => {
 			for (const logger of this.loggers) {
-				logger.warn(message)
+				logger.warn(...messages)
 			}
 		},
 	}
