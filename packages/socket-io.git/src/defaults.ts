@@ -99,6 +99,7 @@ export const DEFAULT_SIMPLE_GIT_RETURN_VALUES: SimpleGitReturnValues = {
 		updated: [],
 		deleted: [],
 	},
+	firstCommit: FILLER,
 	getConfig: {
 		key: FILLER,
 		value: FILLER,
