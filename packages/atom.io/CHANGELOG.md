@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.10.1
+
+### Patch Changes
+
+- 41bdd9c: 🐛 Fix bug where logs were cut short.
+
 ## 0.10.0
 
 ### Minor Changes
