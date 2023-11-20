@@ -824,6 +824,9 @@ importers:
       postgres:
         specifier: 3.4.3
         version: 3.4.3
+      preact:
+        specifier: 10.19.2
+        version: 10.19.2
       react:
         specifier: 18.2.0
         version: 18.2.0

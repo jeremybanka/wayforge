@@ -3,8 +3,8 @@ import { myIdState } from "atom.io/realtime-client"
 import type { FC } from "react"
 import { useState } from "react"
 
-import Connected from "../assets/svg/connected.svg"
-import Disconnected from "../assets/svg/disconnected.svg"
+import Connected from "../assets/svg/connected.svg?react"
+import Disconnected from "../assets/svg/disconnected.svg?react"
 import scss from "./SocketStatus.module.scss"
 import { myRoomState } from "./views/Game/store/my-room"
 
