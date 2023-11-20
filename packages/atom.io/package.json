@@ -72,7 +72,7 @@
 	"devDependencies": {
 		"@emotion/react": "11.11.1",
 		"@testing-library/react": "14.1.2",
-		"@types/http-proxy": "1.17.12",
+		"@types/http-proxy": "1.17.14",
 		"@types/npmlog": "4.1.6",
 		"@types/react": "18.2.37",
 		"@types/tmp": "0.2.6",

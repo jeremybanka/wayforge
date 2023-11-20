@@ -783,8 +783,8 @@ importers:
         specifier: 14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
       '@types/http-proxy':
-        specifier: 1.17.12
-        version: 1.17.12
+        specifier: 1.17.14
+        version: 1.17.14
       '@types/npmlog':
         specifier: 4.1.6
         version: 4.1.6
@@ -3700,8 +3700,8 @@ packages:
       '@types/unist': 3.0.1
     dev: true
 
-  /@types/http-proxy@1.17.12:
-    resolution: {integrity: sha512-kQtujO08dVtQ2wXAuSFfk9ASy3sug4+ogFR8Kd8UgP8PEuc1/G/8yjYRmp//PcDNJEUKOza/MrQu15bouEUCiw==}
+  /@types/http-proxy@1.17.14:
+    resolution: {integrity: sha512-SSrD0c1OQzlFX7pGu1eXxSEjemej64aaNPRhhVYUGqXh0BtldAAx37MG8btcumvpgKyZp1F5Gn3JkktdxiFv6w==}
     dependencies:
       '@types/node': 20.9.2
     dev: true
