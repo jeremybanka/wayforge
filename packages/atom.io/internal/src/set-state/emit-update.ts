@@ -11,13 +11,13 @@ export const emitUpdate = <T>(
 ): void => {
 	const { key } = state
 	const { logger } = store
-	logger?.info(
+	logger.info(
 		`📢 ${state.type} "${key}" went (`,
 		update.oldValue,
 		`->`,
 		update.newValue,
 		`)`,
 	)
-	logger?.info(`📢 notifying subscribers:`, state.subject.subscribers)
+	logger.info(`📢 notifying subscribers:`, state.subject.subscribers)
 	state.subject.next(update)
 }
