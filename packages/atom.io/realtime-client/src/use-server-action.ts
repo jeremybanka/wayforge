@@ -26,10 +26,16 @@ export function synchronizeTransactionResults(
 								store.logger.error(
 									`❗ Transaction "${token.key}" produced different results on client and server`,
 								)
-								store.logger.error(`❗ Client:`, clientResult)
-								store.logger.error(`❗ Server:`, serverResult)
+								store.logger.error(
+									`❗ Client result for "${token.key}":`,
+									clientResult,
+								)
+								store.logger.error(
+									`❗ Server result for "${token.key}:`,
+									serverResult,
+								)
 							} else {
-								store.logger.info(`✅ Transaction ${token.key} results match`)
+								store.logger.info(`✅ Transaction "${token.key}" results match`)
 							}
 						}
 						socket.on(topic, sync)
