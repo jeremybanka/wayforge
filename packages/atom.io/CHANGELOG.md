@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.10.2
+
+### Patch Changes
+
+- b532e04: 🔊 Report keys of entities more consistently in logs to aid filtering.
+
 ## 0.10.1
 
 ### Patch Changes
