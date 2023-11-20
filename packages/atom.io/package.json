@@ -85,7 +85,7 @@
 		"happy-dom": "12.10.3",
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
-		"postgres": "3.4.0",
+		"postgres": "3.4.3",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-router-dom": "6.19.0",
