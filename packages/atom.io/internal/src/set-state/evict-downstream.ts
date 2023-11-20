@@ -12,13 +12,15 @@ export const evictDownStream = <T>(
 	const core = target(store)
 	const downstreamKeys = core.selectorAtoms.getRelatedKeys(state.key)
 	store.logger.info(
-		`🧹 evicting ${downstreamKeys?.size} states downstream from ${state.type} "${state.key}":`,
+		`🧹 evicting ${downstreamKeys?.size ?? 0} states downstream from ${
+			state.type
+		} "${state.key}":`,
 		downstreamKeys,
 	)
-	if (core.operation.open) {
-		store.logger.info(`🧹`, [...core.operation.done], `already done`)
-	}
-	if (downstreamKeys) {
+	if (downstreamKeys !== undefined) {
+		if (core.operation.open) {
+			store.logger.info(`🧹`, [...core.operation.done], `already done`)
+		}
 		for (const key of downstreamKeys) {
 			if (isDone(key, store)) {
 				continue
