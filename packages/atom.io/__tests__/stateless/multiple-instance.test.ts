@@ -92,7 +92,7 @@ describe(`multiple-instance`, () => {
 		console.log({ text })
 		expect(text).toBe(`Hello from server on port 6260!`)
 	})
-	it(`can get countries from the database`, async () => {
+	it(`gets countries`, async () => {
 		const res = await fetch(`http://localhost:8000/countries`)
 		const json = await res.json()
 		expect(json).toEqual([
@@ -101,7 +101,7 @@ describe(`multiple-instance`, () => {
 			{ id: 3, name: `Mexico` },
 		])
 	})
-	it(`can get cities from the database`, async () => {
+	it(`gets cities`, async () => {
 		const res = await fetch(`http://localhost:8000/cities`)
 		const json = await res.json()
 		expect(json).toEqual([
@@ -114,6 +114,29 @@ describe(`multiple-instance`, () => {
 			{ id: 7, name: `Mexico City`, countryId: 3, popularity: `popular` },
 			{ id: 8, name: `Guadalajara`, countryId: 3, popularity: `known` },
 			{ id: 9, name: `Monterrey`, countryId: 3, popularity: `known` },
+		])
+	})
+	it(`inserts a country`, async () => {
+		const res = await fetch(`http://localhost:8000/countries`, {
+			method: `POST`,
+			headers: { "Content-Type": `application/json` },
+			body: JSON.stringify({ name: `Brazil` }),
+		})
+		const json = await res.json()
+		expect(json).toEqual([{ id: 4, name: `Brazil` }])
+	})
+	it(`inserts a city`, async () => {
+		const res = await fetch(`http://localhost:8000/cities`, {
+			method: `POST`,
+			headers: { "Content-Type": `application/json` },
+			body: JSON.stringify({
+				name: `Portland`,
+				countryId: 1,
+			}),
+		})
+		const json = await res.json()
+		expect(json).toEqual([
+			{ id: 10, name: `Portland`, countryId: 1, popularity: null },
 		])
 	})
 })

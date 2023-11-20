@@ -24,10 +24,7 @@ export class DatabaseManager {
 	}
 
 	public async setupTriggersAndNotifications(): Promise<void> {
-		const countriesPath = path.join(__dirname, `triggers-countries.sql`)
-		const citiesPath = path.join(__dirname, `triggers-cities.sql`)
-		await this.sql.file(countriesPath)
-		await this.sql.file(citiesPath)
+		await this.sql.file(path.join(__dirname, `notify_update.sql`))
 	}
 
 	public async dropDatabase(): Promise<void> {
@@ -43,23 +40,23 @@ export class DatabaseManager {
 	public async createSampleTables(): Promise<void> {
 		await this.sql`
 		  CREATE TABLE countries (
-		      id SERIAL PRIMARY KEY,
-		      name TEXT
+				id SERIAL PRIMARY KEY,
+				name TEXT
 		  );
 		`
 		await this.sql`
 		  CREATE TYPE popularity AS ENUM (
-		      'unknown',
-		      'known',
-		      'popular'
+				'unknown',
+				'known',
+				'popular'
 		  );
 		`
 		await this.sql`
 		  CREATE TABLE cities (
-		      id SERIAL PRIMARY KEY,
-		      name TEXT,
-		      country_id INTEGER REFERENCES countries(id),
-		      popularity popularity
+				id SERIAL PRIMARY KEY,
+				name TEXT,
+				country_id INTEGER REFERENCES countries(id),
+				popularity popularity
 		  );
 		`
 	}
