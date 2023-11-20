@@ -1,5 +1,11 @@
 # socket-io.git
 
+## 0.2.1
+
+### Patch Changes
+
+- e79276f3: ✨ Add `firstCommit` utility interface downstream from (steveukx/simple-git)[https://github.com/steveukx/git-js/commit/709d80e].
+
 ## 0.2.0
 
 ### Minor Changes
