@@ -19,7 +19,9 @@ export const evictDownStream = <T>(
 	)
 	if (downstreamKeys !== undefined) {
 		if (core.operation.open) {
-			store.logger.info(`🧹`, [...core.operation.done], `already done`)
+			store.logger.info(
+				`🧹 [ ${[...core.operation.done].join(`, `)} ] already done`,
+			)
 		}
 		for (const key of downstreamKeys) {
 			if (isDone(key, store)) {

@@ -20,7 +20,10 @@ export const applyTransaction = <ƒ extends ƒn>(
 	store.logger.info(
 		`🛃 applying transaction "${store.transactionStatus.key}" with ${atomUpdates.length} updates.`,
 	)
-	store.logger.info(`🛃 the updates are:`, atomUpdates)
+	store.logger.info(
+		`🛃 the updates from "${store.transactionStatus.key}" are:`,
+		atomUpdates,
+	)
 	for (const { key, newValue } of atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		if (!store.valueMap.has(token.key)) {
@@ -38,7 +41,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 				}
 				store.atoms.set(newAtom.key, newAtom)
 				store.valueMap.set(newAtom.key, newAtom.default)
-				store.logger.info(`🔧 add atom "${newAtom.key}"`)
+				store.logger.info(`🔧 Add atom "${newAtom.key}"`)
 			}
 		}
 		// if (store.transactionStatus.key === `dealCards`) debugger
@@ -60,5 +63,5 @@ export const applyTransaction = <ƒ extends ƒn>(
 		params: store.transactionStatus.params as Parameters<ƒ>,
 	})
 	store.transactionStatus = { phase: `idle` }
-	store.logger.info(`🛬 transaction "${myTransaction.key}" applied`)
+	store.logger.info(`🛬 Successfully applied transaction "${myTransaction.key}"`)
 }
