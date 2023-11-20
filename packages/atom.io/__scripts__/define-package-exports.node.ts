@@ -111,7 +111,7 @@ export default function main(mode: string): void {
 						(filepath) => !(filepath in newPackageJson.exports),
 					),
 				)
-				logger.error(`testing`, `run \`build:integrity\` to update package.json`)
+				logger.error(`testing`, `run \`build:manifest\` to update package.json`)
 				process.exit(1)
 			}
 			break
