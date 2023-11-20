@@ -35,7 +35,9 @@ export const openOperation = (
 		token,
 	}
 	store.logger.info(
-		`⭕ operation start from "${token.key}" in store "${store.config.name}"${
+		`⭕ Operation start from ${token.type} "${token.key}" in store "${
+			store.config.name
+		}"${
 			store.transactionStatus.phase === `idle`
 				? ``
 				: ` ${store.transactionStatus.phase} "${store.transactionStatus.key}"`
@@ -44,8 +46,12 @@ export const openOperation = (
 }
 export const closeOperation = (store: Store): void => {
 	const core = target(store)
+	if (core.operation.open) {
+		store.logger.info(
+			`🔴 Operation done for ${core.operation.token.type} "${core.operation.token.key}" in store ${store.config.name}`,
+		)
+	}
 	core.operation = { open: false }
-	store.logger.info(`🔴 operation done`)
 	store.subject.operationStatus.next(core.operation)
 }
 
@@ -53,7 +59,7 @@ export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
 	const core = target(store)
 	if (!core.operation.open) {
 		store.logger.warn(
-			`isDone called outside of an operation. This is probably a bug.`,
+			`🐞 isDone called outside of an operation. This is probably a bug.`,
 		)
 		return true
 	}

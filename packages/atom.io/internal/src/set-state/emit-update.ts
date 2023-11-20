@@ -18,6 +18,9 @@ export const emitUpdate = <T>(
 		update.newValue,
 		`)`,
 	)
-	logger.info(`📢 notifying subscribers:`, state.subject.subscribers)
+	logger.info(
+		`📢 notifying subscribers to "${state.key}"`,
+		state.subject.subscribers,
+	)
 	state.subject.next(update)
 }

@@ -32,19 +32,21 @@ export function subscribe<T>(
 		)
 	}
 	const unsubFunction = state.subject.subscribe(key, handleUpdate)
-	store.logger.info(`👀 adding subscription "${key}" to "${state.key}"`)
+	store.logger.info(`👀 Adding subscription "${key}" to "${state.key}"`)
 	const dependencyUnsubFunctions =
 		state.type !== `atom` ? subscribeToRootAtoms(state, store) : null
 
 	const unsubscribe =
 		dependencyUnsubFunctions === null
 			? () => {
-					store.logger.info(`🙈 unsubscribe from "${state.key}"`)
+					store.logger.info(
+						`🙈 Removing subscription "${key}" from "${state.key}"`,
+					)
 					unsubFunction()
 			  }
 			: () => {
 					store.logger.info(
-						`🙈 unsubscribe from "${state.key}" and its dependencies`,
+						`🙈 Removing subscription	${key} from "${state.key}" and its dependencies`,
 					)
 					unsubFunction()
 					for (const unsubFromDependency of dependencyUnsubFunctions) {
@@ -71,10 +73,14 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 			`Cannot subscribe to transaction "${token.key}": transaction not found in store "${store.config.name}".`,
 		)
 	}
-	store.logger.info(`👀 subscribe to transaction "${token.key}"`)
+	store.logger.info(
+		`👀 Adding subscription "${key}" to transaction "${token.key}"`,
+	)
 	const unsubscribe = tx.subject.subscribe(key, handleUpdate)
 	return () => {
-		store.logger.info(`🙈 unsubscribe from transaction "${token.key}"`)
+		store.logger.info(
+			`🙈 Removing subscription "${key}" from transaction "${token.key}"`,
+		)
 		unsubscribe()
 	}
 }
@@ -91,10 +97,12 @@ export const subscribeToTimeline = (
 			`Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`,
 		)
 	}
-	store.logger.info(`👀 subscribe to timeline "${token.key}"`)
+	store.logger.info(`👀 Adding subscription "${key}" to timeline "${token.key}"`)
 	const unsubscribe = tl.subject.subscribe(key, handleUpdate)
 	return () => {
-		store.logger.info(`🙈 unsubscribe from timeline "${token.key}"`)
+		store.logger.info(
+			`🙈 Removing subscription "${key}" from timeline "${token.key}"`,
+		)
 		unsubscribe()
 	}
 }

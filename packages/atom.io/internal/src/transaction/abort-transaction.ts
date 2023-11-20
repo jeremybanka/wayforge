@@ -7,6 +7,9 @@ export const abortTransaction = (store: Store): void => {
 		)
 		return
 	}
+	store.logger.info(
+		`🪂`,
+		`Aborting transaction "${store.transactionStatus.key}"`,
+	)
 	store.transactionStatus = { phase: `idle` }
-	store.logger.info(`🪂`, `transaction fail`)
 }
