@@ -22,7 +22,21 @@ export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(dispatch) => subscribe(token, dispatch, `use-o:${id}`, store),
+		(dispatch) =>
+			subscribe(
+				token,
+				() => {
+					const unsub = store.subject.operationStatus.subscribe(
+						`use-o:${id}`,
+						() => {
+							unsub()
+							dispatch()
+						},
+					)
+				},
+				`use-o:${id}`,
+				store,
+			),
 		() => getState(token, store),
 		() => getState(token, store),
 	)
