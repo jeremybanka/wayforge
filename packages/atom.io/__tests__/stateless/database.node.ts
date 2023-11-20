@@ -1,5 +1,7 @@
 import path from "path"
+import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
+import { cities, countries } from "./schema.node"
 
 export class DatabaseManager {
 	public dbName = `test_db_` + Date.now()
@@ -11,17 +13,21 @@ export class DatabaseManager {
 		port: 5432,
 	}
 	private sql = postgres(this.config)
+	private drizzle = drizzle(this.sql)
 
 	public async createDatabase(): Promise<void> {
 		await this.sql`CREATE DATABASE ${this.sql(this.dbName)}`
 		this.sql.end()
 		this.config.database = this.dbName
 		this.sql = postgres(this.config)
+		this.drizzle = drizzle(this.sql)
 	}
 
 	public async setupTriggersAndNotifications(): Promise<void> {
-		const triggersPath = path.join(__dirname, `triggers.sql`)
-		await this.sql.file(triggersPath)
+		const countriesPath = path.join(__dirname, `triggers-countries.sql`)
+		const citiesPath = path.join(__dirname, `triggers-cities.sql`)
+		await this.sql.file(countriesPath)
+		await this.sql.file(citiesPath)
 	}
 
 	public async dropDatabase(): Promise<void> {
@@ -34,24 +40,50 @@ export class DatabaseManager {
 		adminSql.end()
 	}
 
-	public async createSampleTable(): Promise<void> {
+	public async createSampleTables(): Promise<void> {
 		await this.sql`
-		  CREATE TABLE your_table (
+		  CREATE TABLE countries (
 		      id SERIAL PRIMARY KEY,
-		      data TEXT
+		      name TEXT
+		  );
+		`
+		await this.sql`
+		  CREATE TYPE popularity AS ENUM (
+		      'unknown',
+		      'known',
+		      'popular'
+		  );
+		`
+		await this.sql`
+		  CREATE TABLE cities (
+		      id SERIAL PRIMARY KEY,
+		      name TEXT,
+		      country_id INTEGER REFERENCES countries(id),
+		      popularity popularity
 		  );
 		`
 	}
 
 	public async insertSampleData(): Promise<void> {
-		await this.sql`
-      INSERT INTO your_table (data)
-      VALUES ('Hello, world!')
-      RETURNING *;
-    `
+		await this.drizzle
+			.insert(countries)
+			.values([{ name: `USA` }, { name: `Canada` }, { name: `Mexico` }])
+		await this.drizzle.insert(cities).values([
+			{ name: `New York`, countryId: 1, popularity: `popular` },
+			{ name: `Los Angeles`, countryId: 1, popularity: `popular` },
+			{ name: `Chicago`, countryId: 1, popularity: `known` },
+			{ name: `Toronto`, countryId: 2, popularity: `known` },
+			{ name: `Montreal`, countryId: 2, popularity: `known` },
+			{ name: `Vancouver`, countryId: 2, popularity: `known` },
+			{ name: `Mexico City`, countryId: 3, popularity: `popular` },
+			{ name: `Guadalajara`, countryId: 3, popularity: `known` },
+			{ name: `Monterrey`, countryId: 3, popularity: `known` },
+		])
 	}
 
-	public async dropSampleTable(): Promise<void> {
-		await this.sql`DROP TABLE your_table`
+	public async dropSampleTables(): Promise<void> {
+		await this.sql`DROP TABLE cities`
+		await this.sql`DROP TYPE popularity`
+		await this.sql`DROP TABLE countries`
 	}
 }

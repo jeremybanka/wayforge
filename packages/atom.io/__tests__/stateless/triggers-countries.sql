@@ -1,4 +1,4 @@
--- Assuming you have a table named 'your_table'
+-- Assuming you have a table named 'countries'
 CREATE OR REPLACE FUNCTION notify_trigger() RETURNS trigger AS $$
 DECLARE message text;
 BEGIN message := TG_TABLE_NAME || ',' || NEW.id;
@@ -15,6 +15,6 @@ AFTER
 INSERT
     OR
 UPDATE
-    OR DELETE ON your_table FOR EACH ROW EXECUTE FUNCTION notify_trigger();
+    OR DELETE ON countries FOR EACH ROW EXECUTE FUNCTION notify_trigger();
 END IF;
 END $$;

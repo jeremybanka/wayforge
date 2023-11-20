@@ -67,15 +67,15 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-	console.log(`Creating sample table`)
-	await dbManager.createSampleTable()
+	console.log(`Creating sample tables`)
+	await dbManager.createSampleTables()
 	await dbManager.insertSampleData()
 	await dbManager.setupTriggersAndNotifications()
 })
 
 afterEach(async () => {
-	console.log(`Dropping sample table`)
-	await dbManager.dropSampleTable()
+	console.log(`Dropping sample tables`)
+	await dbManager.dropSampleTables()
 })
 
 afterAll(async () => {
@@ -87,15 +87,33 @@ afterAll(async () => {
 
 describe(`multiple-instance`, () => {
 	it(`runs several instances of the same server`, async () => {
-		const res = await fetch(`http://localhost:8000`)
+		const res = await fetch(`http://localhost:8000/hello-world`)
 		const text = await res.text()
 		console.log({ text })
 		expect(text).toBe(`Hello from server on port 6260!`)
 	})
-	it(`can get a value from the database`, async () => {
-		const res = await fetch(`http://localhost:8000/get`)
+	it(`can get countries from the database`, async () => {
+		const res = await fetch(`http://localhost:8000/countries`)
 		const json = await res.json()
-		console.log({ json })
-		expect(json).toEqual([{ id: 1, data: `Hello, world!` }])
+		expect(json).toEqual([
+			{ id: 1, name: `USA` },
+			{ id: 2, name: `Canada` },
+			{ id: 3, name: `Mexico` },
+		])
+	})
+	it(`can get cities from the database`, async () => {
+		const res = await fetch(`http://localhost:8000/cities`)
+		const json = await res.json()
+		expect(json).toEqual([
+			{ id: 1, name: `New York`, countryId: 1, popularity: `popular` },
+			{ id: 2, name: `Los Angeles`, countryId: 1, popularity: `popular` },
+			{ id: 3, name: `Chicago`, countryId: 1, popularity: `known` },
+			{ id: 4, name: `Toronto`, countryId: 2, popularity: `known` },
+			{ id: 5, name: `Montreal`, countryId: 2, popularity: `known` },
+			{ id: 6, name: `Vancouver`, countryId: 2, popularity: `known` },
+			{ id: 7, name: `Mexico City`, countryId: 3, popularity: `popular` },
+			{ id: 8, name: `Guadalajara`, countryId: 3, popularity: `known` },
+			{ id: 9, name: `Monterrey`, countryId: 3, popularity: `known` },
+		])
 	})
 })

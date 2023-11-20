@@ -1,5 +1,7 @@
 import * as http from "http"
+import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
+import { cities, countries } from "./schema.node"
 
 console.log(`Server starting...`)
 
@@ -26,6 +28,7 @@ const main = async () => {
 	sql.listen(`notification`, (message) => {
 		console.log(`Received notification: ${message}`)
 	})
+	const db = drizzle(sql)
 
 	http
 		.createServer((req, res) => {
@@ -42,12 +45,20 @@ const main = async () => {
 						switch (req.method) {
 							case `GET`:
 								switch (url.pathname) {
-									case `/`:
+									case `/hello-world`:
 										res.writeHead(200)
 										res.end(`Hello from server on port ${PORT}!`)
 										break
-									case `/get`: {
-										const rows = await sql`SELECT * FROM your_table`
+									case `/countries`: {
+										const rows = await db.select().from(countries)
+										res.writeHead(200, {
+											"Content-Type": `application/json`,
+										})
+										res.end(JSON.stringify(rows))
+										break
+									}
+									case `/cities`: {
+										const rows = await db.select().from(cities)
 										res.writeHead(200, {
 											"Content-Type": `application/json`,
 										})
