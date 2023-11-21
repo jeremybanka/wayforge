@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.11.0
+
+### Minor Changes
+
+- 72bfbe4: 💥 BREAKING CHANGE: `Loadable` type is now exported from `atom.io/data`, not `atom.io/internal`.
+
+### Patch Changes
+
+- 72bfbe4: ✨ `until` function exported from `atom.io/data` allows straightforward specification of a fallback when using `Loadable` state in a non-async context.
+
 ## 0.10.4
 
 ### Patch Changes
