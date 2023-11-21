@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.10.3
+
+### Patch Changes
+
+- 2a491a31: 🔊 Fix a log where non-primitive data would be coerced to a string, potentially resulting in `[Object object]` in the logs.
+- 313eeb87: 💥 BREAKING CHANGE: Logger now follows a strict format: [icon] [token-type] [token-key] [message] [...rest].
+
 ## 0.10.2
 
 ### Patch Changes
