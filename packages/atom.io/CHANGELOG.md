@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.10.4
+
+### Patch Changes
+
+- bd3f897: 🐛 Fix bug where simpleLog would stringify all of its extra args leading to hard-to-read logs.
+
 ## 0.10.3
 
 ### Patch Changes
