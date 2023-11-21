@@ -33,8 +33,8 @@ importers:
         specifier: 2.2.20
         version: 2.2.20(fp-ts@2.16.1)
       json-schema-to-zod:
-        specifier: 2.0.11
-        version: 2.0.11
+        specifier: 2.0.12
+        version: 2.0.12
       tsx:
         specifier: 4.1.4
         version: 4.1.4
@@ -130,8 +130,8 @@ importers:
         specifier: 0.4.0
         version: 0.4.0
       json-schema-to-zod:
-        specifier: 2.0.11
-        version: 2.0.11
+        specifier: 2.0.12
+        version: 2.0.12
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -7677,8 +7677,8 @@ packages:
   /json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
-  /json-schema-to-zod@2.0.11:
-    resolution: {integrity: sha512-nFANy8ko4MwQhr1Ef7q3gOcly9+h2tFxNccRkS1QUHe6Kx3FeyYvCl0ORMoEDH1FxwldF27zU9wL/GUineH3Zg==}
+  /json-schema-to-zod@2.0.12:
+    resolution: {integrity: sha512-ov/x2usSMryMNuCSWC53vGRWIQ+Ctrzf0qm/E44WpSH+ENPuJHMR5wg9Qf9/i9PY69RqWifVpU/y2lxKrbnyQA==}
     hasBin: true
 
   /json-schema-traverse@0.4.1:
