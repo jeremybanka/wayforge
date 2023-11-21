@@ -1,5 +1,5 @@
 import { atom, atomFamily, runTransaction, transaction } from "atom.io"
-import { Loadable } from "atom.io/internal"
+import { Loadable } from "atom.io/data"
 
 export type GameItems = { coins: number }
 export type Inventory = Partial<Readonly<GameItems>>

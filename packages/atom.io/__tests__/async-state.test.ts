@@ -2,6 +2,7 @@ import * as http from "http"
 import { vitest } from "vitest"
 
 import * as AtomIO from "atom.io"
+import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 import * as Utils from "./__util__"
@@ -13,7 +14,7 @@ beforeEach(() => {
 
 describe(`async atom`, async () => {
 	it(`hits the subscriber twice`, async () => {
-		const count = AtomIO.atom<Internal.Loadable<number>>({
+		const count = AtomIO.atom<Loadable<number>>({
 			key: `count`,
 			default: 0,
 		})
@@ -30,7 +31,7 @@ describe(`async atom`, async () => {
 		expect(Utils.stdout).toHaveBeenCalledTimes(2)
 	})
 	it(`handles a rejected promise`, async () => {
-		const count = AtomIO.atom<Internal.Loadable<number>>({
+		const count = AtomIO.atom<Loadable<number>>({
 			key: `count`,
 			default: 0,
 		})
@@ -53,7 +54,7 @@ describe(`async atom`, async () => {
 			default: 0,
 		})
 		let resolveAtAnInconvenientTime: () => void
-		const doubledAsyncState = AtomIO.selector<Internal.Loadable<number>>({
+		const doubledAsyncState = AtomIO.selector<Loadable<number>>({
 			key: `doubled`,
 			get: ({ get }) => {
 				const count = get(countState)
