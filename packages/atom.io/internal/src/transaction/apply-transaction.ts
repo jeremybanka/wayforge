@@ -10,7 +10,10 @@ export const applyTransaction = <ƒ extends ƒn>(
 ): void => {
 	if (store.transactionStatus.phase !== `building`) {
 		store.logger.warn(
-			`🐞 applyTransaction called outside of a transaction. This is probably a bug.`,
+			`🐞`,
+			`transaction`,
+			`???`,
+			`applyTransaction called outside of a transaction. This is probably a bug in AtomIO.`,
 		)
 		return
 	}
@@ -18,12 +21,13 @@ export const applyTransaction = <ƒ extends ƒn>(
 	store.transactionStatus.output = output
 	const { atomUpdates } = store.transactionStatus
 	store.logger.info(
-		`🛄 applying transaction "${store.transactionStatus.key}" with ${atomUpdates.length} updates.`,
-	)
-	store.logger.info(
-		`🛄 the updates from "${store.transactionStatus.key}" are:`,
+		`🛄`,
+		`transaction`,
+		store.transactionStatus.key,
+		`Applying transaction with ${atomUpdates.length} updates:`,
 		atomUpdates,
 	)
+
 	for (const { key, newValue } of atomUpdates) {
 		const token: AtomToken<unknown> = { key, type: `atom` }
 		if (!store.valueMap.has(token.key)) {
@@ -41,7 +45,12 @@ export const applyTransaction = <ƒ extends ƒn>(
 				}
 				store.atoms.set(newAtom.key, newAtom)
 				store.valueMap.set(newAtom.key, newAtom.default)
-				store.logger.info(`🔨 Add atom "${newAtom.key}"`)
+				store.logger.info(
+					`🔨`,
+					`transaction`,
+					store.transactionStatus.key,
+					`Adding atom "${newAtom.key}"`,
+				)
 			}
 		}
 		// if (store.transactionStatus.key === `dealCards`) debugger
@@ -62,6 +71,11 @@ export const applyTransaction = <ƒ extends ƒn>(
 		output,
 		params: store.transactionStatus.params as Parameters<ƒ>,
 	})
+	store.logger.info(
+		`🛬`,
+		`transaction`,
+		store.transactionStatus.key,
+		`Finished applying transaction.`,
+	)
 	store.transactionStatus = { phase: `idle` }
-	store.logger.info(`🛬 Successfully applied transaction "${myTransaction.key}"`)
 }

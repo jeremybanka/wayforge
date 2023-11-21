@@ -27,7 +27,17 @@ export const createReadWriteSelector = <T>(
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const oldValue = getSelf()
 		const newValue = become(next)(oldValue)
-		store.logger.info(`📝 set "${options.key}" (`, oldValue, `->`, newValue, `)`)
+		// store.logger.info(`📝 set "${options.key}" (`, oldValue, `->`, newValue, `)`)
+		store.logger.info(
+			`📝`,
+			`selector`,
+			options.key,
+			`set (`,
+			oldValue,
+			`->`,
+			newValue,
+			`)`,
+		)
 		cacheValue(options.key, newValue, subject, store)
 		markDone(options.key, store)
 		if (store.transactionStatus.phase === `idle`) {
@@ -46,7 +56,7 @@ export const createReadWriteSelector = <T>(
 	}
 	core.selectors.set(options.key, mySelector)
 	const initialValue = getSelf()
-	store.logger.info(`✨ "${options.key}" =`, initialValue)
+	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: SelectorToken<T> = {
 		key: options.key,
 		type: `selector`,

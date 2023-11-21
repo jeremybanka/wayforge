@@ -9,15 +9,13 @@ export const getState__INTERNAL = <T>(
 	store: Store = IMPLICIT.STORE,
 ): T => {
 	if (isValueCached(state.key, store)) {
-		store.logger.info(`📖 reading "${state.key}"`)
+		store.logger.info(`📖`, state.type, state.key, `reading cached value`)
 		return readCachedValue(state.key, store)
 	}
 	if (state.type !== `atom`) {
-		store.logger.info(`🧮 calculating "${state.key}"`)
+		store.logger.info(`🧮`, state.type, state.key, `calculating value`)
 		return state.get()
 	}
-	store.logger.error(
-		`🐞 Attempted to get atom "${state.key}", which was never initialized in store "${store.config.name}".`,
-	)
+	store.logger.error(`🐞`, `atom`, state.key, `could not find cached value`)
 	return state.default
 }

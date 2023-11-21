@@ -24,7 +24,10 @@ export const stowUpdate = <T>(
 	const { key } = state
 	if (store.transactionStatus.phase !== `building`) {
 		store.logger.error(
-			`🐞 stowUpdate called outside of a transaction. This is probably a bug.`,
+			`🐞`,
+			`atom`,
+			key,
+			`stowUpdate called outside of a transaction. This is probably a bug.`,
 		)
 		return
 	}
@@ -38,7 +41,10 @@ export const stowUpdate = <T>(
 	}
 	store.transactionStatus.atomUpdates.push(atomUpdate)
 	store.logger.info(
-		`📁 ${key} stowed (`,
+		`📁`,
+		`atom`,
+		key,
+		`stowed (`,
 		update.oldValue,
 		`->`,
 		update.newValue,

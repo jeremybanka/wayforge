@@ -148,7 +148,7 @@ describe(`transaction`, () => {
 		steal(thiefState.key, victimState.key)
 		expect(getState(thiefInvState)).toEqual([prizeState.key])
 		expect(getState(victimInvState)).toEqual([])
-		expect(logger.error).not.toHaveBeenCalled()
+		expect(logger.warn).not.toHaveBeenCalled()
 
 		try {
 			steal(thiefState.key, victimState.key)
@@ -158,7 +158,7 @@ describe(`transaction`, () => {
 				expect(thrown.message).toEqual(`No items to steal!`)
 			}
 		}
-		expect(logger.error).toHaveBeenCalledTimes(1)
+		expect(logger.warn).toHaveBeenCalledTimes(1)
 
 		setState(globalInventoryState, (current) =>
 			current.remove({ beingKey: thiefState.key }),

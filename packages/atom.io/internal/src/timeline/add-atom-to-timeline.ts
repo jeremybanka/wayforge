@@ -38,16 +38,32 @@ export const addAtomToTimeline = (
 				? store.transactionStatus.time
 				: null
 
+		// store.logger.info(
+		// 	`⏳ timeline "${tl.key}" saw atom "${atomToken.key}" go (`,
+		// 	update.oldValue,
+		// 	`->`,
+		// 	update.newValue,
+		// 	currentTransactionKey
+		// 		? `) in transaction "${currentTransactionKey}"`
+		// 		: currentSelectorKey
+		// 		? `) in selector "${currentSelectorKey}"`
+		// 		: `)`,
+		// )
 		store.logger.info(
-			`⏳ timeline "${tl.key}" saw atom "${atomToken.key}" go (`,
+			`⏳`,
+			`timeline`,
+			tl.key,
+			`atom`,
+			atomToken.key,
+			`went`,
 			update.oldValue,
 			`->`,
 			update.newValue,
 			currentTransactionKey
-				? `) in transaction "${currentTransactionKey}"`
+				? `in transaction "${currentTransactionKey}"`
 				: currentSelectorKey
-				? `) in selector "${currentSelectorKey}"`
-				: `)`,
+				? `in selector "${currentSelectorKey}"`
+				: ``,
 		)
 
 		if (tl.timeTraveling === null) {
@@ -75,7 +91,10 @@ export const addAtomToTimeline = (
 				if (tl.transactionKey !== currentTransactionKey) {
 					if (tl.transactionKey) {
 						store.logger.error(
-							`🐞 Timeline "${tl.key}" was unable to resolve transaction "${tl.transactionKey}. This is probably a bug.`,
+							`🐞`,
+							`timeline`,
+							tl.key,
+							`unable to resolve transaction "${tl.transactionKey}. This is probably a bug in AtomIO.`,
 						)
 					}
 					tl.transactionKey = currentTransactionKey
@@ -119,7 +138,10 @@ export const addAtomToTimeline = (
 							}
 							tl.transactionKey = null
 							store.logger.info(
-								`⌛ timeline "${tl.key}" got a transaction_update "${update.key}"`,
+								`⌛`,
+								`timeline`,
+								tl.key,
+								`got a transaction_update "${update.key}"`,
 							)
 						},
 					)
@@ -146,7 +168,10 @@ export const addAtomToTimeline = (
 					tl.history.push(latestUpdate)
 
 					store.logger.info(
-						`⌛ timeline "${tl.key}" got a selector_update "${currentSelectorKey}" with`,
+						`⌛`,
+						`timeline`,
+						tl.key,
+						`got a selector_update "${currentSelectorKey}" with`,
 						latestUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
 					)
 
@@ -160,7 +185,10 @@ export const addAtomToTimeline = (
 							...update,
 						})
 						store.logger.info(
-							`⌛ timeline "${tl.key}" set selector_update "${currentSelectorKey}" to`,
+							`⌛`,
+							`timeline`,
+							tl.key,
+							`set selector_update "${currentSelectorKey}" to`,
 							latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key),
 						)
 					}
@@ -193,7 +221,10 @@ export const addAtomToTimeline = (
 				}
 				const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
 				store.logger.info(
-					`⌛ timeline "${tl.key}" got an atom_update to "${atom.key}"`,
+					`⌛`,
+					`timeline`,
+					tl.key,
+					`got an atom_update to "${atom.key}"`,
 				)
 				if (willCapture) {
 					tl.history.push(atomUpdate)

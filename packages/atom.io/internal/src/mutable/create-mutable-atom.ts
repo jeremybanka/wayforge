@@ -18,7 +18,10 @@ export function createMutableAtom<
 	store: Store = IMPLICIT.STORE,
 ): MutableAtomToken<Core, SerializableCore> {
 	store.logger.info(
-		`🔧 creating mutable atom "${options.key}" in store "${store.config.name}"`,
+		`🔧`,
+		`atom`,
+		options.key,
+		`creating in store "${store.config.name}"`,
 	)
 	const coreState = createAtom<Core>(options, undefined, store)
 	new Tracker(coreState, store)

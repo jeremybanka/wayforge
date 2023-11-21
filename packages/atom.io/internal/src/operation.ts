@@ -23,7 +23,10 @@ export const openOperation = (
 	const core = target(store)
 	if (core.operation.open) {
 		store.logger.error(
-			`❌ Failed to setState to "${token.key}" during a setState for "${core.operation.token.key}"`,
+			`❌`,
+			token.type,
+			token.key,
+			`failed to setState during a setState for "${core.operation.token.key}"`,
 		)
 		return `rejection`
 	}
@@ -35,9 +38,10 @@ export const openOperation = (
 		token,
 	}
 	store.logger.info(
-		`⭕ Operation start from ${token.type} "${token.key}" in store "${
-			store.config.name
-		}"${
+		`⭕`,
+		token.type,
+		token.key,
+		`operation start in store "${store.config.name}"${
 			store.transactionStatus.phase === `idle`
 				? ``
 				: ` ${store.transactionStatus.phase} "${store.transactionStatus.key}"`
@@ -48,7 +52,10 @@ export const closeOperation = (store: Store): void => {
 	const core = target(store)
 	if (core.operation.open) {
 		store.logger.info(
-			`🔴 Operation done for ${core.operation.token.type} "${core.operation.token.key}" in store "${store.config.name}"`,
+			`🔴`,
+			core.operation.token.type,
+			core.operation.token.key,
+			`operation done in store "${store.config.name}"`,
 		)
 	}
 	core.operation = { open: false }
@@ -59,7 +66,10 @@ export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
 	const core = target(store)
 	if (!core.operation.open) {
 		store.logger.warn(
-			`🐞 isDone called outside of an operation. This is probably a bug.`,
+			`🐞`,
+			`unknown`,
+			key,
+			`isDone called outside of an operation. This is probably a bug.`,
 		)
 		return true
 	}
@@ -69,7 +79,10 @@ export const markDone = (key: string, store: Store = IMPLICIT.STORE): void => {
 	const core = target(store)
 	if (!core.operation.open) {
 		store.logger.warn(
-			`🐞 markDone called outside of an operation. This is probably a bug.`,
+			`🐞`,
+			`unknown`,
+			key,
+			`markDone called outside of an operation. This is probably a bug.`,
 		)
 		return
 	}

@@ -6,13 +6,13 @@ const LoggerIconDictionary = {
 	"⏮️": `Transaction undo`,
 	"⏳": `Timeline event partially captured`,
 	"⏹️": `Time-travel complete`,
-	"☝️": `Notice`,
-	"♻️": `Realtime transaction synchronized`,
+	"💁": `Notice`,
+	"🔄": `Realtime transaction synchronized`,
 	"✅": `Realtime transaction success`,
 	"✨": `Computation complete`,
-	"❌": `Conflict prevents attempted outcome`,
+	"❌": `Conflict prevents attempted action`,
 	"⭕": `Operation start`,
-	"🐞": `Possible bug in Atom.io`,
+	"🐞": `Possible bug in AtomIO`,
 	"👀": `Subscription added`,
 	"👪": `Family member added`,
 	"📁": `Stow update`,
@@ -27,7 +27,7 @@ const LoggerIconDictionary = {
 	"🔨": `Create immutable atom`,
 	"🔴": `Operation complete`,
 	"🗑": `Evict cached value`,
-	"🙅‍♂️": `Reject promised value`,
+	"💥": `Caught`,
 	"🙈": `Subscription canceled`,
 	"🛄": `Apply transaction`,
 	"🛠️": `Install atom into store`,
@@ -48,8 +48,10 @@ export type LogFn = (
 		| `atom`
 		| `readonly_selector`
 		| `selector`
+		| `state`
 		| `timeline`
-		| `transaction`,
+		| `transaction`
+		| `unknown`,
 	tokenKey: string,
 	message: string,
 	...rest: any[]

@@ -52,11 +52,10 @@ export function createSelector<T>(
 
 	if (existingWritable || existingReadonly) {
 		store.logger.error(
-			`❌ Tried to create ${
-				existingReadonly ? `readonly selector` : `selector`
-			}`,
-			`"${options.key}", but it already exists in the store.`,
-			`(Ignore if you are in development using hot module replacement.)`,
+			`❌`,
+			existingReadonly ? `readonly_selector` : `selector`,
+			options.key,
+			`Tried to create selector, but it already exists in the store. (Ignore if you are in development using hot module replacement.)`,
 		)
 	}
 

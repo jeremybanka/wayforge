@@ -63,7 +63,10 @@ describe(`graceful handling of improper usage`, () => {
 			})
 
 			expect(logger.error).toHaveBeenCalledWith(
-				`❌ failed to setState to "b" during a setState for "a"`,
+				`❌`,
+				`atom`,
+				`b`,
+				`failed to setState during a setState for "a"`,
 			)
 		})
 	})
@@ -88,7 +91,10 @@ describe(`graceful handling of improper usage`, () => {
 				__INTERNAL__.IMPLICIT.STORE.timelines.get(`count_history_too`)
 
 			expect(logger.error).toHaveBeenCalledWith(
-				`❌ Failed to add atom "count" to timeline "count_history_too" because it belongs to timeline "count_history"`,
+				`❌`,
+				`timeline`,
+				`count_history_too`,
+				`Failed to add atom "count" because it already belongs to timeline "count_history"`,
 			)
 			expect(countTimeline0Data?.history).toHaveLength(1)
 			expect(countTimeline1Data?.history).toHaveLength(0)
@@ -116,7 +122,10 @@ describe(`graceful handling of improper usage`, () => {
 				aCountTimeline.key,
 			)
 			expect(logger.error).toHaveBeenCalledWith(
-				`❌ Failed to add atom "counts("a")" to timeline "a_count_history" because its family "counts" belongs to timeline "counts_history"`,
+				`❌`,
+				`timeline`,
+				`a_count_history`,
+				`Failed to add atom "counts("a")" because its family "counts" already belongs to timeline "counts_history"`,
 			)
 			console.log(__INTERNAL__.withdraw(aCount, __INTERNAL__.IMPLICIT.STORE))
 			console.log(countTimelineData?.history)

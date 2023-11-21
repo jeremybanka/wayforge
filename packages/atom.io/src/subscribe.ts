@@ -32,7 +32,7 @@ export function subscribe<T>(
 		)
 	}
 	const unsubFunction = state.subject.subscribe(key, handleUpdate)
-	store.logger.info(`👀 Adding subscription "${key}" to "${state.key}"`)
+	store.logger.info(`👀`, state.type, state.key, `Adding subscription "${key}"`)
 	const dependencyUnsubFunctions =
 		state.type !== `atom` ? subscribeToRootAtoms(state, store) : null
 
@@ -40,13 +40,19 @@ export function subscribe<T>(
 		dependencyUnsubFunctions === null
 			? () => {
 					store.logger.info(
-						`🙈 Removing subscription "${key}" from "${state.key}"`,
+						`🙈`,
+						state.type,
+						state.key,
+						`Removing subscription "${key}"`,
 					)
 					unsubFunction()
 			  }
 			: () => {
 					store.logger.info(
-						`🙈 Removing subscription	${key} from "${state.key}" and its dependencies`,
+						`🙈`,
+						state.type,
+						state.key,
+						`Removing subscription "${key}"`,
 					)
 					unsubFunction()
 					for (const unsubFromDependency of dependencyUnsubFunctions) {
@@ -74,12 +80,18 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 		)
 	}
 	store.logger.info(
-		`👀 Adding subscription "${key}" to transaction "${token.key}"`,
+		`👀`,
+		`transaction`,
+		token.key,
+		`Adding subscription "${key}"`,
 	)
 	const unsubscribe = tx.subject.subscribe(key, handleUpdate)
 	return () => {
 		store.logger.info(
-			`🙈 Removing subscription "${key}" from transaction "${token.key}"`,
+			`🙈`,
+			`transaction`,
+			token.key,
+			`Removing subscription "${key}"`,
 		)
 		unsubscribe()
 	}
@@ -97,11 +109,14 @@ export const subscribeToTimeline = (
 			`Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`,
 		)
 	}
-	store.logger.info(`👀 Adding subscription "${key}" to timeline "${token.key}"`)
+	store.logger.info(`👀`, `timeline`, token.key, `Adding subscription "${key}"`)
 	const unsubscribe = tl.subject.subscribe(key, handleUpdate)
 	return () => {
 		store.logger.info(
-			`🙈 Removing subscription "${key}" from timeline "${token.key}"`,
+			`🙈`,
+			`timeline`,
+			token.key,
+			`Removing subscription "${key}" from timeline`,
 		)
 		unsubscribe()
 	}

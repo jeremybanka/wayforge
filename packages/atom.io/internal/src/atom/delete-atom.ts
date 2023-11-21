@@ -13,5 +13,5 @@ export function deleteAtom(
 	core.selectorAtoms.delete(key)
 	core.atomsThatAreDefault.delete(key)
 	core.timelineAtoms.delete(key)
-	store.logger.info(`🔥 Atom "${key}" deleted`)
+	store.logger.info(`🔥`, `atom`, `${key}`, `deleted`)
 }
