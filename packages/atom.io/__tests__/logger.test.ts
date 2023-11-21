@@ -5,7 +5,7 @@ const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 const logger = { ...console }
 __INTERNAL__.IMPLICIT.STORE.loggers = [
-	new AtomIOLogger(logger, LOG_LEVELS[CHOOSE]),
+	new AtomIOLogger(LOG_LEVELS[CHOOSE], () => true, logger),
 ]
 
 beforeEach(() => {

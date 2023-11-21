@@ -6,33 +6,30 @@ import { IMPLICIT } from "../store"
 import { target } from "../transaction"
 
 export const evictDownStream = <T>(
-	state: Atom<T>,
+	atom: Atom<T>,
 	store: Store = IMPLICIT.STORE,
 ): void => {
 	const core = target(store)
-	const downstreamKeys = core.selectorAtoms.getRelatedKeys(state.key)
+	const downstreamKeys = core.selectorAtoms.getRelatedKeys(atom.key)
 	store.logger.info(
-		`🧹 evicting ${downstreamKeys?.size ?? 0} states downstream from ${
-			state.type
-		} "${state.key}":`,
+		`🧹`,
+		atom.type,
+		atom.key,
+		`evicting ${downstreamKeys?.size ?? 0} states downstream:`,
 		downstreamKeys,
 	)
 	if (downstreamKeys !== undefined) {
 		if (core.operation.open) {
 			store.logger.info(
-				`🧹 [ ${[...core.operation.done].join(`, `)} ] already done`,
+				`🧹`,
+				atom.type,
+				atom.key,
+				`[ ${[...core.operation.done].join(`, `)} ] already done`,
 			)
 		}
 		for (const key of downstreamKeys) {
 			if (isDone(key, store)) {
 				continue
-			}
-			const state = core.selectors.get(key) ?? core.readonlySelectors.get(key)
-			if (!state) {
-				store.logger.error(
-					`🐞 "${key}" was not found in selectors or readonlySelectors`,
-				)
-				return
 			}
 			evictCachedValue(key, store)
 			markDone(key, store)

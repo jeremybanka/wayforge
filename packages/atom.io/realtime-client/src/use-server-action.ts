@@ -19,23 +19,42 @@ export function synchronizeTransactionResults(
 						const clientResult = JSON.stringify(clientUpdate)
 						const topic = `tx:sync:${transactionId}`
 						const sync = (serverUpdate: typeof clientUpdate) => {
-							store.logger.info(`♻️ Transaction "${token.key}" synced`)
+							store.logger.info(
+								`🔄`,
+								`transaction`,
+								token.key,
+								`syncing client and server`,
+							)
 							socket.off(topic, sync)
 							const serverResult = JSON.stringify(serverUpdate)
 							if (clientResult !== serverResult) {
 								store.logger.error(
-									`❗ Transaction "${token.key}" produced different results on client and server`,
+									`❌`,
+									`transaction`,
+									token.key,
+									`results do not match between client and server`,
 								)
 								store.logger.error(
-									`❗ Client result for "${token.key}":`,
+									`❌`,
+									`transaction`,
+									token.key,
+									`client:`,
 									clientResult,
 								)
 								store.logger.error(
-									`❗ Server result for "${token.key}:`,
+									`❌`,
+									`transaction`,
+									token.key,
+									`server:`,
 									serverResult,
 								)
 							} else {
-								store.logger.info(`✅ Transaction "${token.key}" results match`)
+								store.logger.info(
+									`✅`,
+									`transaction`,
+									token.key,
+									`results match between client and server`,
+								)
 							}
 						}
 						socket.on(topic, sync)

@@ -77,7 +77,10 @@ export function timeline__INTERNAL(
 		const timelineKey = core.timelineAtoms.getRelatedKey(tokenOrFamily.key)
 		if (timelineKey) {
 			store.logger.error(
-				`❌ Failed to add atom "${tokenOrFamily.key}" to timeline "${options.key}" because it belongs to timeline "${timelineKey}"`,
+				`❌`,
+				`timeline`,
+				options.key,
+				`Failed to add atom "${tokenOrFamily.key}" because it already belongs to timeline "${timelineKey}"`,
 			)
 			continue
 		}
@@ -101,7 +104,10 @@ export function timeline__INTERNAL(
 				)
 				if (familyTimelineKey) {
 					store.logger.error(
-						`❌ Failed to add atom "${token.key}" to timeline "${options.key}" because its family "${token.family.key}" belongs to timeline "${familyTimelineKey}"`,
+						`❌`,
+						`timeline`,
+						options.key,
+						`Failed to add atom "${token.key}" because its family "${token.family.key}" already belongs to timeline "${familyTimelineKey}"`,
 					)
 					continue
 				}

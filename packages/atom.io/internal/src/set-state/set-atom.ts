@@ -19,7 +19,7 @@ export const setAtom = <T>(
 	const oldValue = getState__INTERNAL(atom, store)
 	let newValue = copyMutableIfWithinTransaction(atom, store)
 	newValue = become(next)(newValue)
-	store.logger.info(`📝 setting atom "${atom.key}" to`, newValue)
+	store.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
 	cacheValue(atom.key, newValue, atom.subject, store)
 	if (isAtomDefault(atom.key, store)) {
 		markAtomAsNotDefault(atom.key, store)

@@ -1,4 +1,4 @@
-import { AtomIOLogger } from "atom.io"
+import { AtomIOLogger, simpleLogger } from "atom.io"
 import type {
 	AtomFamily,
 	AtomToken,
@@ -100,34 +100,23 @@ export class Store {
 	}
 
 	public loggers: AtomIOLogger[] = [
-		new AtomIOLogger(
-			{ ...console },
-			`warn`,
-			(message) => !message.includes(`👁‍🗨`),
-		),
+		new AtomIOLogger(`warn`, (_, __, key) => !key.includes(`👁‍🗨`)),
 	]
 	public logger: Logger = {
-		error: (...messages: unknown[]) => {
-			for (const logger of this.loggers) {
-				logger.error(...messages)
-			}
+		error: (...messages) => {
+			for (const logger of this.loggers) logger.error(...messages)
 		},
-		info: (...messages: unknown[]) => {
-			for (const logger of this.loggers) {
-				logger.info(...messages)
-			}
+		info: (...messages) => {
+			for (const logger of this.loggers) logger.info(...messages)
 		},
-		warn: (...messages: unknown[]) => {
-			for (const logger of this.loggers) {
-				logger.warn(...messages)
-			}
+		warn: (...messages) => {
+			for (const logger of this.loggers) logger.warn(...messages)
 		},
 	}
 
 	public constructor(name: string, store: Store | null = null) {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
-
 			this.operation = { ...store?.operation }
 			this.transactionStatus = { ...store?.transactionStatus }
 			this.config = {
