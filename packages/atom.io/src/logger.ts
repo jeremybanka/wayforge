@@ -54,7 +54,7 @@ export type LogFn = (
 		| `unknown`,
 	tokenKey: string,
 	message: string,
-	...rest: any[]
+	...rest: unknown[]
 ) => void
 export type LogFilter = (...params: Parameters<LogFn>) => boolean
 
@@ -63,10 +63,7 @@ export type Logger = Record<LogLevel, LogFn>
 export const simpleLog =
 	(logLevel: keyof Logger): LogFn =>
 	(icon, tokenType, tokenKey, message, ...rest) => {
-		console[logLevel](
-			`${icon} ${tokenType} "${tokenKey}" ${message}`,
-			...rest.map((arg) => JSON.stringify(arg)),
-		)
+		console[logLevel](`${icon} ${tokenType} "${tokenKey}" ${message}`, ...rest)
 	}
 export const simpleLogger: Logger = {
 	error: simpleLog(`error`),
