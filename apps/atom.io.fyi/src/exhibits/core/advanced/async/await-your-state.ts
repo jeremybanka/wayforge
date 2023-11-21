@@ -1,6 +1,6 @@
 import http from "http"
 import { atom, getState } from "atom.io"
-import { Loadable } from "atom.io/internal"
+import { Loadable } from "atom.io/data"
 
 const server = http.createServer((req, res) =>
 	req.on(`end`, () => {
