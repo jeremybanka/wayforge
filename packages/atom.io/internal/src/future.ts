@@ -1,6 +1,3 @@
-export type Loadable<T> = Promise<T> | T
-export type Fated<T, E extends Error = Error> = Loadable<E | T>
-
 /**
  * A Promise that can be canceled.
  * @internal
