@@ -18,10 +18,10 @@ export const applyTransaction = <ƒ extends ƒn>(
 	store.transactionStatus.output = output
 	const { atomUpdates } = store.transactionStatus
 	store.logger.info(
-		`🛃 applying transaction "${store.transactionStatus.key}" with ${atomUpdates.length} updates.`,
+		`🛄 applying transaction "${store.transactionStatus.key}" with ${atomUpdates.length} updates.`,
 	)
 	store.logger.info(
-		`🛃 the updates from "${store.transactionStatus.key}" are:`,
+		`🛄 the updates from "${store.transactionStatus.key}" are:`,
 		atomUpdates,
 	)
 	for (const { key, newValue } of atomUpdates) {
@@ -41,7 +41,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 				}
 				store.atoms.set(newAtom.key, newAtom)
 				store.valueMap.set(newAtom.key, newAtom.default)
-				store.logger.info(`🔧 Add atom "${newAtom.key}"`)
+				store.logger.info(`🔨 Add atom "${newAtom.key}"`)
 			}
 		}
 		// if (store.transactionStatus.key === `dealCards`) debugger

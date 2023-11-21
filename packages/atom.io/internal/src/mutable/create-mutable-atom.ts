@@ -26,15 +26,6 @@ export function createMutableAtom<
 	subscribe(
 		jsonState,
 		() => {
-			store.logger.info(
-				`🔍 tracker-initializer:${store?.config.name}:${
-					store.transactionStatus.phase === `idle`
-						? `main`
-						: store.transactionStatus.key
-				}`,
-				`Initializing tracker for ${coreState.key}`,
-			)
-
 			const trackerHasBeenInitialized = target(store).trackers.has(coreState.key)
 			if (!trackerHasBeenInitialized) {
 				new Tracker(coreState, store)

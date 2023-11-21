@@ -24,14 +24,14 @@ export function synchronizeTransactionResults(
 							const serverResult = JSON.stringify(serverUpdate)
 							if (clientResult !== serverResult) {
 								store.logger.error(
-									`❗ Transaction "${token.key}" produced different results on client and server`,
+									`❌ Transaction "${token.key}" produced different results on client and server`,
 								)
 								store.logger.error(
-									`❗ Client result for "${token.key}":`,
+									`❌ Client result for "${token.key}":`,
 									clientResult,
 								)
 								store.logger.error(
-									`❗ Server result for "${token.key}:`,
+									`❌ Server result for "${token.key}:`,
 									serverResult,
 								)
 							} else {

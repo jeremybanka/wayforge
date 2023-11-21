@@ -23,7 +23,7 @@ export const openOperation = (
 	const core = target(store)
 	if (core.operation.open) {
 		store.logger.error(
-			`❌ failed to setState to "${token.key}" during a setState for "${core.operation.token.key}"`,
+			`❌ Failed to setState to "${token.key}" during a setState for "${core.operation.token.key}"`,
 		)
 		return `rejection`
 	}

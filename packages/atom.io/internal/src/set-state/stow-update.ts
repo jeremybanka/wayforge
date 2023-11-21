@@ -23,7 +23,7 @@ export const stowUpdate = <T>(
 ): void => {
 	const { key } = state
 	if (store.transactionStatus.phase !== `building`) {
-		store.logger.warn(
+		store.logger.error(
 			`🐞 stowUpdate called outside of a transaction. This is probably a bug.`,
 		)
 		return

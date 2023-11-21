@@ -30,13 +30,13 @@ export function createAtom<T>(
 	store: Store = IMPLICIT.STORE,
 ): AtomToken<T> {
 	store.logger.info(
-		`🔨 creating atom "${options.key}" in store "${store.config.name}"`,
+		`🔨 Creating atom "${options.key}" in store "${store.config.name}"`,
 	)
 	const core = target(store)
 	const existing = core.atoms.get(options.key)
 	if (existing) {
 		store.logger.error(
-			`❓ Tried to create atom "${options.key}",`,
+			`❌ Tried to create atom "${options.key}",`,
 			`but it already exists in the store.`,
 			`(Ignore if you are in development using hot module replacement.)`,
 		)
