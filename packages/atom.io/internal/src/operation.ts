@@ -48,7 +48,7 @@ export const closeOperation = (store: Store): void => {
 	const core = target(store)
 	if (core.operation.open) {
 		store.logger.info(
-			`🔴 Operation done for ${core.operation.token.type} "${core.operation.token.key}" in store ${store.config.name}`,
+			`🔴 Operation done for ${core.operation.token.type} "${core.operation.token.key}" in store "${store.config.name}"`,
 		)
 	}
 	core.operation = { open: false }
