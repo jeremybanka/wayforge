@@ -37,7 +37,10 @@ export function withdrawNewFamilyMember<T>(
 	store: Store,
 ): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined {
 	store.logger.info(
-		`👪 creating new family member "${token.key}" in store "${store.config.name}"`,
+		`👪`,
+		token.type,
+		token.key,
+		`creating new family member in store "${store.config.name}"`,
 	)
 	if (token.family) {
 		const core = target(store)

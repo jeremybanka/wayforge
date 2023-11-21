@@ -8,17 +8,23 @@ export const redo__INTERNAL = (
 	token: TimelineToken,
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	store.logger.info(`⏩ redo "${token.key}"`)
+	store.logger.info(`⏩`, `timeline`, token.key, `redo`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
 		store.logger.error(
-			`🐞 Failed to redo on timeline "${token.key}". This timeline has not been initialized.`,
+			`🐞`,
+			`timeline`,
+			token.key,
+			`Failed to redo. This timeline has not been initialized.`,
 		)
 		return
 	}
 	if (timelineData.at === timelineData.history.length) {
 		store.logger.warn(
-			`☝️ Failed to redo at the end of timeline "${token.key}". There is nothing to redo.`,
+			`💁`,
+			`timeline`,
+			token.key,
+			`Failed to redo at the end of timeline "${token.key}". There is nothing to redo.`,
 		)
 		return
 	}
@@ -43,7 +49,10 @@ export const redo__INTERNAL = (
 	timelineData.subject.next(`redo`)
 	timelineData.timeTraveling = null
 	store.logger.info(
-		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
+		`⏹️`,
+		`timeline`,
+		token.key,
+		`"${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
 }
 
@@ -51,17 +60,23 @@ export const undo__INTERNAL = (
 	token: TimelineToken,
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	store.logger.info(`⏪ undo "${token.key}"`)
+	store.logger.info(`⏪`, `timeline`, token.key, `undo`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
 		store.logger.error(
-			`🐞 Failed to undo on timeline "${token.key}". This timeline has not been initialized.`,
+			`🐞`,
+			`timeline`,
+			token.key,
+			`Failed to undo. This timeline has not been initialized.`,
 		)
 		return
 	}
 	if (timelineData.at === 0) {
 		store.logger.warn(
-			`☝️ Failed to undo at the beginning of timeline "${token.key}". There is nothing to undo.`,
+			`💁`,
+			`timeline`,
+			token.key,
+			`Failed to undo at the beginning of timeline "${token.key}". There is nothing to undo.`,
 		)
 		return
 	}
@@ -86,6 +101,9 @@ export const undo__INTERNAL = (
 	timelineData.subject.next(`undo`)
 	timelineData.timeTraveling = null
 	store.logger.info(
-		`⏹️ "${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
+		`⏹️`,
+		`timeline`,
+		token.key,
+		`"${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
 }

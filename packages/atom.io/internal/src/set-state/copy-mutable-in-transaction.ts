@@ -14,9 +14,6 @@ export function copyMutableIfWithinTransaction<T>(
 		store.transactionStatus.phase === `applying`
 	) {
 		if (`toJson` in atom && `fromJson` in atom) {
-			store.logger.info(
-				`📄 copyMutableIfWithinTransaction: ${atom.key} is mutable`,
-			)
 			const copiedValue = copyMutableIfNeeded(
 				atom,
 				atom,

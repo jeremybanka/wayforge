@@ -22,21 +22,27 @@ export const subscribeToRootAtoms = <T>(
 						`${state.type}:${state.key}`,
 						(atomChange) => {
 							store.logger.info(
-								`📢 selector "${state.key}" saw root "${atomKey}" go (`,
+								`📢`,
+								state.type,
+								state.key,
+								`root`,
+								atomKey,
+								`went`,
 								atomChange.oldValue,
 								`->`,
 								atomChange.newValue,
-								`)`,
 							)
 							const oldValue = recallState(state, store)
-							// ❗ this retrieves a stale cached value when applying a transaction on the server
+							// ❌ this retrieves a stale cached value when applying a transaction on the server
 							const newValue = getState__INTERNAL(state, store)
 							store.logger.info(
-								`✨ "${state.key}" went (`,
+								`✨`,
+								state.type,
+								state.key,
+								`went`,
 								oldValue,
 								`->`,
 								newValue,
-								`)`,
 							)
 							state.subject.next({ newValue, oldValue })
 						},

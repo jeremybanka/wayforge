@@ -26,9 +26,9 @@ export const cacheValue = (
 				cacheValue(key, value, subject, store)
 				subject.next({ newValue: value, oldValue: value })
 			})
-			.catch((error) => {
-				if (error !== `canceled`) {
-					store.logger.error(`🙅‍♂️ Promised value for "${key}" rejected:`, error)
+			.catch((thrown) => {
+				if (thrown !== `canceled`) {
+					store.logger.error(`💥`, `state`, key, `rejected:`, thrown)
 				}
 			})
 	} else {
@@ -59,5 +59,5 @@ export const evictCachedValue = (
 		core.operation.prev.set(key, currentValue)
 	}
 	core.valueMap.delete(key)
-	store.logger.info(`🗑 evicted "${key}"`)
+	store.logger.info(`🗑`, `state`, key, `evicted`)
 }

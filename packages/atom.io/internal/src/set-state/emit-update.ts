@@ -12,14 +12,14 @@ export const emitUpdate = <T>(
 	const { key } = state
 	const { logger } = store
 	logger.info(
-		`📢 ${state.type} "${key}" went (`,
+		`📢`,
+		state.type,
+		state.key,
+		`went (`,
 		update.oldValue,
 		`->`,
 		update.newValue,
-		`)`,
-	)
-	logger.info(
-		`📢 notifying subscribers to "${state.key}"`,
+		`) subscribers:`,
 		state.subject.subscribers,
 	)
 	state.subject.next(update)

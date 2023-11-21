@@ -16,13 +16,20 @@ export const updateSelectorAtoms = (
 			atomKey: dependency.key,
 		})
 		store.logger.info(
-			`🔍 selector "${selectorKey}" discovers root atom "${dependency.key}"`,
+			`🔍`,
+			`selector`,
+			selectorKey,
+			`discovers root atom "${dependency.key}"`,
 		)
 	} else {
 		const rootKeys = traceSelectorAtoms(selectorKey, dependency.key, store)
 		store.logger.info(
-			`🔍 selector "${selectorKey}" discovers root atoms:`,
-			rootKeys.map((r) => r),
+			`🔍`,
+			`selector`,
+			selectorKey,
+			`discovers root atoms: [ ${rootKeys
+				.map((key) => `"${key}"`)
+				.join(`, `)} ]`,
 		)
 		for (const atomKey of rootKeys) {
 			core.selectorAtoms = core.selectorAtoms.set({

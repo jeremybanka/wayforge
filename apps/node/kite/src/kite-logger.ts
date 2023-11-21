@@ -15,4 +15,4 @@ const atomLogger = {
 		console.log(`atom.io`, `💥 `, ...args)
 	},
 }
-IMPLICIT.STORE.loggers = [new AtomIOLogger(atomLogger, `info`)]
+IMPLICIT.STORE.loggers = [new AtomIOLogger(`info`, () => true, atomLogger)]

@@ -30,14 +30,19 @@ export function createAtom<T>(
 	store: Store = IMPLICIT.STORE,
 ): AtomToken<T> {
 	store.logger.info(
-		`🔨 creating atom "${options.key}" in store "${store.config.name}"`,
+		`🔨`,
+		`atom`,
+		options.key,
+		`creating in store "${store.config.name}"`,
 	)
 	const core = target(store)
 	const existing = core.atoms.get(options.key)
 	if (existing) {
 		store.logger.error(
-			`❓ Tried to create atom "${options.key}",`,
-			`but it already exists in the store.`,
+			`❌`,
+			`atom`,
+			options.key,
+			`Tried to create atom, but it already exists in the store.`,
 			`(Ignore if you are in development using hot module replacement.)`,
 		)
 		return deposit(existing)
@@ -47,8 +52,14 @@ export function createAtom<T>(
 		...options,
 		type: `atom`,
 		install: (store: Store) => {
+			// store.logger.info(
+			// 	`🛠️  installing atom "${options.key}" in store "${store.config.name}"`,
+			// )
 			store.logger.info(
-				`🛠️  installing atom "${options.key}" in store "${store.config.name}"`,
+				`🛠️`,
+				`atom`,
+				options.key,
+				`installing in store "${store.config.name}"`,
 			)
 			return `mutable` in options
 				? createMutableAtom(options, store)
