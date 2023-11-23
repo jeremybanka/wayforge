@@ -16,6 +16,6 @@ export const getState__INTERNAL = <T>(
 		store.logger.info(`🧮`, state.type, state.key, `calculating value`)
 		return state.get()
 	}
-	store.logger.error(`🐞`, `atom`, state.key, `could not find cached value`)
-	return state.default
+	store.logger.warn(`💁`, `atom`, state.key, `could not find cached value`)
+	return state.default instanceof Function ? state.default() : state.default
 }
