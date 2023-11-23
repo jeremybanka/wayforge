@@ -82,8 +82,8 @@ importers:
         specifier: 20.9.4
         version: 20.9.4
       '@types/npmlog':
-        specifier: 4.1.6
-        version: 4.1.6
+        specifier: 7.0.0
+        version: 7.0.0
       '@types/react':
         specifier: 18.2.38
         version: 18.2.38
@@ -149,8 +149,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/npmlog':
-        specifier: 4.1.6
-        version: 4.1.6
+        specifier: 7.0.0
+        version: 7.0.0
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -786,8 +786,8 @@ importers:
         specifier: 1.17.14
         version: 1.17.14
       '@types/npmlog':
-        specifier: 4.1.6
-        version: 4.1.6
+        specifier: 7.0.0
+        version: 7.0.0
       '@types/react':
         specifier: 18.2.38
         version: 18.2.38
@@ -3883,8 +3883,8 @@ packages:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
     dev: true
 
-  /@types/npmlog@4.1.6:
-    resolution: {integrity: sha512-0l3z16vnlJGl2Mi/rgJFrdwfLZ4jfNYgE6ZShEpjqhHuGTqdEzNles03NpYHwUMVYZa+Tj46UxKIEpE78lQ3DQ==}
+  /@types/npmlog@7.0.0:
+    resolution: {integrity: sha512-hJWbrKFvxKyWwSUXjZMYTINsSOY6IclhvGOZ97M8ac2tmR9hMwmTnYaMdpGhvju9ctWLTPhCS+eLfQNluiEjQQ==}
     dependencies:
       '@types/node': 20.9.4
     dev: true
