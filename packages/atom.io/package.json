@@ -4,6 +4,7 @@
 	"description": "Composable and testable reactive data library.",
 	"homepage": "https://atom.io.fyi",
 	"sideEffects": false,
+	"type": "module",
 	"license": "MIT",
 	"author": "Jeremy Banka",
 	"publishConfig": {
