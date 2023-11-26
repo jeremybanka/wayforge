@@ -19,9 +19,14 @@ function clearValueMap() {
 	Internal.IMPLICIT.STORE.valueMap = new Map()
 }
 
-async function waitForStateUpdate<T>(atom: AtomToken<T>, newValue: T) {
+async function waitForQueuedUpdate<T>(atom: AtomToken<T>, newValue: T) {
 	setState(atom, newValue)
+	while (!(getState(atom) instanceof Promise)) {
+		console.log(`waiting for promise...`)
+		await new Promise((resolve) => setImmediate(resolve))
+	}
 	while ((await getState(atom)) !== newValue) {
+		console.log(`waiting for state update...`)
 		await new Promise((resolve) => setImmediate(resolve))
 	}
 }
@@ -105,13 +110,13 @@ describe(`stateless data persistence strategies`, () => {
 			expect(await getState(count)).toBe(0)
 			clearValueMap()
 			setState(count, 1)
+			await waitForQueuedUpdate(count, 1)
 			clearValueMap()
-			await waitForStateUpdate(count, 1)
 			expect(await getState(count)).toBe(1)
 			clearValueMap()
 			setState(count, 2)
+			await waitForQueuedUpdate(count, 2)
 			clearValueMap()
-			await waitForStateUpdate(count, 2)
 			expect(await getState(count)).toBe(2)
 		})
 	})
