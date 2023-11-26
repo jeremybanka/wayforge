@@ -801,8 +801,8 @@ importers:
         specifier: 8.2.2
         version: 8.2.2
       drizzle-kit:
-        specifier: 0.20.5
-        version: 0.20.5
+        specifier: 0.20.6
+        version: 0.20.6
       drizzle-orm:
         specifier: 0.29.0
         version: 0.29.0(postgres@3.4.3)
@@ -1706,8 +1706,8 @@ packages:
     dev: true
     optional: true
 
-  /@drizzle-team/studio@0.0.34:
-    resolution: {integrity: sha512-nD0d5bLS49/8n8TnL08RrkCyLjV9Z5n1dGrApZWF0mRksBw88SffQXZyWYsROnP+OtkITvM8sKSm61Go0wSBpw==}
+  /@drizzle-team/studio@0.0.35:
+    resolution: {integrity: sha512-t5LTNOVf+L7Bb/wdssOIPx0ueNvhyaIXdrvKgoHR4wK0GD7SRmILcCTzn6N6Ltr1VnFzQZG/bzn6HMagn17Jtw==}
     dependencies:
       superjson: 2.2.1
     dev: true
@@ -3042,7 +3042,7 @@ packages:
       '@motionone/types': 10.16.3
       '@motionone/utils': 10.16.3
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.6.2
     dev: false
 
   /@motionone/easing@10.16.3:
@@ -5545,11 +5545,11 @@ packages:
       wordwrap: 1.0.0
     dev: true
 
-  /drizzle-kit@0.20.5:
-    resolution: {integrity: sha512-NEa1aZtnNzNhKFjHq6Opt6GGgkSGqzZQqy5XX4OWisB2soX7beEvWBn7S3QoXe+WWAQveoV0Ojv6ltdswuDZfQ==}
+  /drizzle-kit@0.20.6:
+    resolution: {integrity: sha512-+AYQY+tJUnfMJYIeh6aEjI21mpMCekqz0LEu2QdFdc/3zSmjyfEhH5dkXlRFME8v1rtisiHfp7bP+gVVKDPiUg==}
     hasBin: true
     dependencies:
-      '@drizzle-team/studio': 0.0.34
+      '@drizzle-team/studio': 0.0.35
       '@esbuild-kit/esm-loader': 2.6.5
       camelcase: 7.0.1
       chalk: 5.3.0
