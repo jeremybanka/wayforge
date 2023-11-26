@@ -6,7 +6,7 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
+import * as Internal from "atom.io/internal"
 import type { Timeline } from "atom.io/internal"
 
 import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"
@@ -18,7 +18,7 @@ import { attachTransactionIndex } from "./attach-transaction-index"
 import { attachTransactionLogs } from "./attach-transaction-logs"
 
 export const attachIntrospectionStates = (
-	store: __INTERNAL__.Store = __INTERNAL__.IMPLICIT.STORE,
+	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): {
 	atomIndex: ReadonlySelectorToken<AtomTokenIndex>
 	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>

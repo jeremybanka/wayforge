@@ -1,5 +1,7 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { Join } from "."
 import type { Json } from "../json"
 

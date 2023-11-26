@@ -3,6 +3,8 @@ import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { hasExactProperties } from "~/packages/anvl/src/object"
 import {
 	isJson,

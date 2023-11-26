@@ -1,10 +1,10 @@
 import { AtomIOLogger, atom, timeline, undo } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
+import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 const logger = { ...console }
-__INTERNAL__.IMPLICIT.STORE.loggers = [
+Internal.IMPLICIT.STORE.loggers = [
 	new AtomIOLogger(LOG_LEVELS[CHOOSE], () => true, logger),
 ]
 
@@ -21,20 +21,20 @@ describe(`setLogLevel`, () => {
 			default: 0,
 		})
 		expect(logger.info).not.toHaveBeenCalled()
-		__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = `info`
+		Internal.IMPLICIT.STORE.loggers[0].logLevel = `info`
 		const countState = atom({
 			key: `count`,
 			default: 0,
 		})
 		expect(logger.error).toHaveBeenCalled()
-		__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = `error`
+		Internal.IMPLICIT.STORE.loggers[0].logLevel = `error`
 		const countTL = timeline({
 			key: `count`,
 			atoms: [countState],
 		})
 		undo(countTL)
 		expect(logger.warn).not.toHaveBeenCalled()
-		__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = `warn`
+		Internal.IMPLICIT.STORE.loggers[0].logLevel = `warn`
 		undo(countTL)
 		expect(logger.warn).toHaveBeenCalled()
 	})

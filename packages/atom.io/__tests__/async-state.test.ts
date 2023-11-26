@@ -1,6 +1,8 @@
 import * as http from "http"
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import * as AtomIO from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"

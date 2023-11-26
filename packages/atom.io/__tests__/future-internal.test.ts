@@ -8,10 +8,10 @@ import {
 import { vitest } from "vitest"
 
 import type { StateUpdate } from "../src"
-import * as UTIL from "./__util__"
+import * as Utils from "./__util__"
 
 beforeEach(() => {
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`Future`, () => {
@@ -37,22 +37,22 @@ describe(`Future`, () => {
 			)
 			const future = new Future<number>(promise)
 			future.cancel()
-			await future.then(UTIL.stdout)
+			await future.then(Utils.stdout)
 		} catch (thrown) {
 			console.log(thrown)
 		} finally {
-			expect(UTIL.stdout).not.toHaveBeenCalled()
+			expect(Utils.stdout).not.toHaveBeenCalled()
 		}
 	})
 	it(`is used in cacheValue`, async () => {
 		const subject = new Subject<StateUpdate<number>>()
-		subject.subscribe(`example-watcher`, UTIL.stdout)
+		subject.subscribe(`example-watcher`, Utils.stdout)
 		const promise = new Promise<number>((resolve) =>
 			setTimeout(() => resolve(1), 1000),
 		)
 		cacheValue(`a`, promise, subject, IMPLICIT.STORE)
 		evictCachedValue(`a`)
 		await promise
-		expect(UTIL.stdout).not.toHaveBeenCalled()
+		expect(Utils.stdout).not.toHaveBeenCalled()
 	})
 })

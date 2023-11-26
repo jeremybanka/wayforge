@@ -1,5 +1,6 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -14,20 +15,22 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
-import * as UTIL from "./__util__"
+import * as Internal from "atom.io/internal"
+import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
-__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = __INTERNAL__.IMPLICIT.STORE
+
+let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`timeline`, () => {
@@ -122,7 +125,7 @@ describe(`timeline`, () => {
 		undo(tl_abc)
 		expectation0()
 
-		const timelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(tl_abc.key)
+		const timelineData = Internal.IMPLICIT.STORE.timelines.get(tl_abc.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -155,15 +158,15 @@ describe(`timeline`, () => {
 			atoms: [a, b],
 		})
 
-		subscribe(a, UTIL.stdout)
+		subscribe(a, Utils.stdout)
 
 		setState(product_ab, 1)
 		undo(timeline_ab)
 
 		expect(getState(a)).toBe(3)
 
-		expect(UTIL.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
-		expect(UTIL.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
+		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
+		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
 	})
 	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
@@ -197,9 +200,7 @@ describe(`timeline`, () => {
 		setState(nameCapitalizedState, `JON`)
 		runTransaction(setName)(`Sylvia`)
 
-		const timelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
-			nameHistory.key,
-		)
+		const timelineData = Internal.IMPLICIT.STORE.timelines.get(nameHistory.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -256,8 +257,7 @@ describe(`timeline`, () => {
 			shouldCapture: (update) => {
 				if (update.type === `atom_update`) {
 					const atomKey = update.key
-					const atomDefault =
-						__INTERNAL__.IMPLICIT.STORE.atoms.get(atomKey)?.default
+					const atomDefault = Internal.IMPLICIT.STORE.atoms.get(atomKey)?.default
 					if (atomDefault === update.oldValue) {
 						return false
 					}
@@ -270,12 +270,12 @@ describe(`timeline`, () => {
 		expect(getState(count)).toBe(1)
 		undo(countTL)
 		expect(getState(count)).toBe(1)
-		expect(__INTERNAL__.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 		setState(count, 2)
 		expect(getState(count)).toBe(2)
-		expect(__INTERNAL__.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
+		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
 		undo(countTL)
 		expect(getState(count)).toBe(1)
-		expect(__INTERNAL__.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 	})
 })

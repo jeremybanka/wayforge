@@ -4,6 +4,8 @@ import { io } from "socket.io-client"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { serveFilestore } from "../src/socket-filestore-node"
 import type { FilestoreClientSocket } from "../src/socket-filestore-recoil"
 

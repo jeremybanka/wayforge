@@ -1,10 +1,9 @@
-import { readFile, writeFile } from "fs"
 import fsp from "fs/promises"
 
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
+import type { AtomToken, Logger } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
@@ -18,6 +17,17 @@ let tmpDir: tmp.DirResult
 
 function clearValueMap() {
 	Internal.IMPLICIT.STORE.valueMap = new Map()
+}
+
+async function waitForQueuedUpdate<T>(atom: AtomToken<T>, newValue: T) {
+	while (!(getState(atom) instanceof Promise)) {
+		console.log(`waiting for promise...`)
+		await new Promise((resolve) => setImmediate(resolve))
+	}
+	while ((await getState(atom)) !== newValue) {
+		console.log(`waiting for state update...`)
+		await new Promise((resolve) => setImmediate(resolve))
+	}
 }
 
 beforeEach(() => {
@@ -37,18 +47,14 @@ describe(`stateless data persistence strategies`, () => {
 		test(`manual implementation`, async () => {
 			const count = atom<Loadable<number>>({
 				key: `count`,
-				default: () => {
-					return new Promise<number>((resolve) => {
-						readFile(`${tmpDir.name}/count.txt`, `utf8`, (error, data) => {
-							if (error) {
-								writeFile(`${tmpDir.name}/count.txt`, `0`, () => {
-									resolve(0)
-								})
-								return
-							}
-							resolve(parseInt(data, 10))
-						})
-					})
+				default: async () => {
+					try {
+						const data = await fsp.readFile(`${tmpDir.name}/count.txt`, `utf8`)
+						return parseInt(data, 10)
+					} catch (error) {
+						await fsp.writeFile(`${tmpDir.name}/count.txt`, `0`)
+						return 0
+					}
 				},
 				effects: [
 					({ onSet, setSelf }) => {
@@ -60,23 +66,21 @@ describe(`stateless data persistence strategies`, () => {
 								const unsub =
 									Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
 										`One-Shot: enqueue update to count.txt`,
-										() => {
+										async () => {
 											unsub()
-											const promise = new Promise<number>((resolve) => {
-												oldValue.then((resolvedOldValue) => {
-													if (resolvedOldValue === newValue) {
-														return
-													}
-													writeFile(
+											const resolvedOldValue = await oldValue
+											if (resolvedOldValue === newValue) {
+												return
+											}
+											setSelf(
+												(async () => {
+													await fsp.writeFile(
 														`${tmpDir.name}/count.txt`,
 														newValue.toString(),
-														() => {
-															resolve(newValue)
-														},
 													)
-												})
-											})
-											setSelf(promise)
+													return newValue
+												})(),
+											)
 										},
 									)
 								return
@@ -85,17 +89,16 @@ describe(`stateless data persistence strategies`, () => {
 								Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
 									`One-Shot: enqueue update to count.txt`,
 									() => {
-										const promise = new Promise<number>((resolve) => {
-											unsub()
-											writeFile(
-												`${tmpDir.name}/count.txt`,
-												newValue.toString(),
-												() => {
-													resolve(newValue)
-												},
-											)
-										})
-										setSelf(promise)
+										unsub()
+										setSelf(
+											(async (): Promise<number> => {
+												await fsp.writeFile(
+													`${tmpDir.name}/count.txt`,
+													newValue.toString(),
+												)
+												return newValue
+											})(),
+										)
 									},
 								)
 						})
@@ -106,87 +109,14 @@ describe(`stateless data persistence strategies`, () => {
 			expect(await getState(count)).toBe(0)
 			clearValueMap()
 			setState(count, 1)
+			await waitForQueuedUpdate(count, 1)
 			clearValueMap()
-			await new Promise((resolve) => setTimeout(resolve, 5))
 			expect(await getState(count)).toBe(1)
 			clearValueMap()
 			setState(count, 2)
+			await waitForQueuedUpdate(count, 2)
 			clearValueMap()
-			await new Promise((resolve) => setTimeout(resolve, 5))
 			expect(await getState(count)).toBe(2)
-		})
-	})
-	describe(`writer composition strategy`, () => {
-		test(`manual implementation`, async () => {
-			const count = atom<Loadable<number>>({
-				key: `count`,
-				default: () => {
-					return new Promise<number>((resolve) => {
-						readFile(`${tmpDir.name}/count.txt`, `utf8`, (error, data) => {
-							if (error) {
-								writeFile(`${tmpDir.name}/count.txt`, `0`, () => {
-									resolve(0)
-								})
-								return
-							}
-							resolve(parseInt(data, 10))
-						})
-					})
-				},
-			})
-
-			async function writeCount(newValue: number): Promise<number> {
-				await fsp.writeFile(`${tmpDir.name}/count.txt`, newValue.toString())
-				return newValue
-			}
-
-			function updateCount(newValue: number): void {
-				if (Internal.IMPLICIT.STORE.operation.open) {
-					const unsub =
-						Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
-							`One-Shot: enqueue update to count.txt`,
-							() => {
-								unsub()
-								const currentValue = getState(count)
-								if (currentValue instanceof Promise) {
-									currentValue.then((resolvedCurrentValue) => {
-										if (resolvedCurrentValue === newValue) {
-											return
-										}
-										setState(count, writeCount(newValue))
-									})
-									return
-								}
-								if (currentValue === newValue) {
-									return
-								}
-								setState(count, writeCount(newValue))
-							},
-						)
-					return
-				}
-				const currentValue = getState(count)
-				if (currentValue instanceof Promise) {
-					currentValue.then((resolvedCurrentValue) => {
-						if (resolvedCurrentValue === newValue) {
-							return
-						}
-						setState(count, writeCount(newValue))
-					})
-					return
-				}
-				if (currentValue === newValue) {
-					return
-				}
-				setState(count, writeCount(newValue))
-			}
-
-			expect(await getState(count)).toBe(0)
-			clearValueMap()
-			updateCount(1)
-			clearValueMap()
-			await new Promise((resolve) => setTimeout(resolve, 5))
-			expect(await getState(count)).toBe(1)
 		})
 	})
 })

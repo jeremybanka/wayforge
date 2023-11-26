@@ -1,5 +1,6 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
 import {
 	atom,
 	getState,
@@ -8,20 +9,22 @@ import {
 	subscribe,
 	transaction,
 } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
-import * as UTIL from "./__util__"
+import * as Internal from "atom.io/internal"
+import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
-__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = __INTERNAL__.IMPLICIT.STORE
+
+let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`transaction implementation specifics`, () => {
@@ -87,15 +90,15 @@ describe(`transaction implementation specifics`, () => {
 		})
 
 		expect(getState(expressionState)).toEqual(`2 cats`)
-		vitest.spyOn(UTIL, `stdout`)
-		subscribe(expressionState, UTIL.stdout)
+		vitest.spyOn(Utils, `stdout`)
+		subscribe(expressionState, Utils.stdout)
 
 		runTransaction(modifyExpression)(`3 children`)
 		// 2 atoms were set, therefore 2 updates were made to the selector
 		// this is a "playback" strategy, where the entire transaction is
 		// captured, one atom at a time. An all-at-once strategy can be
 		// more performant in some cases, so it may be added in the future.
-		expect(UTIL.stdout).toHaveBeenCalledTimes(2)
+		expect(Utils.stdout).toHaveBeenCalledTimes(2)
 		expect(getState(countState)).toEqual(3)
 		expect(getState(pluralState)).toEqual(`children`)
 		expect(getState(nounState)).toEqual(`child`)
@@ -114,7 +117,7 @@ describe(`transaction implementation specifics`, () => {
 			)
 		}
 		// the transaction failed, so no updates were made
-		expect(UTIL.stdout).toHaveBeenCalledTimes(2)
+		expect(Utils.stdout).toHaveBeenCalledTimes(2)
 		expect(getState(countState)).toEqual(3)
 		expect(getState(pluralState)).toEqual(`children`)
 		expect(getState(nounState)).toEqual(`child`)
@@ -155,6 +158,6 @@ describe(`transaction implementation specifics`, () => {
 			},
 		})
 
-		vitest.spyOn(UTIL, `stdout`)
+		vitest.spyOn(Utils, `stdout`)
 	})
 })
