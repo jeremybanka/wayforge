@@ -1,5 +1,7 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import {
 	atom,
 	getState,
@@ -17,7 +19,7 @@ import {
 } from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import * as UTIL from "../__util__"
+import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
@@ -29,7 +31,7 @@ beforeEach(() => {
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`mutable atomic state`, () => {
@@ -43,19 +45,19 @@ describe(`mutable atomic state`, () => {
 		})
 		const myJsonState = getJsonToken(myMutableState)
 		const myTrackerState = getUpdateToken(myMutableState)
-		subscribe(myMutableState, UTIL.stdout)
-		subscribe(myJsonState, UTIL.stdout)
-		subscribe(myTrackerState, UTIL.stdout)
+		subscribe(myMutableState, Utils.stdout)
+		subscribe(myJsonState, Utils.stdout)
+		subscribe(myTrackerState, Utils.stdout)
 		setState(myMutableState, (set) => set.add(`a`))
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: new SetRTX([`a`]),
 			oldValue: new SetRTX([`a`]),
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: [`a`],
 			oldValue: [],
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
@@ -79,21 +81,21 @@ describe(`mutable atomic state`, () => {
 		const findFlagsByUserIdJSON = getJsonToken(myFlagsState)
 		const findFlagsByUserIdTracker = getUpdateToken(myFlagsState)
 
-		subscribe(myFlagsState, UTIL.stdout)
-		subscribe(findFlagsByUserIdJSON, UTIL.stdout)
-		subscribe(findFlagsByUserIdTracker, UTIL.stdout)
+		subscribe(myFlagsState, Utils.stdout)
+		subscribe(findFlagsByUserIdJSON, Utils.stdout)
+		subscribe(findFlagsByUserIdTracker, Utils.stdout)
 
 		setState(myFlagsState, (set) => set.add(`a`))
 
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: new SetRTX([`a`]),
 			oldValue: new SetRTX([`a`]),
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: [`a`],
 			oldValue: [],
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
@@ -125,7 +127,7 @@ describe(`mutable atomic state`, () => {
 		})
 
 		const myJsonState = getJsonToken(myMutableState)
-		subscribe(myJsonState, UTIL.stdout)
+		subscribe(myJsonState, Utils.stdout)
 
 		let caught: unknown
 		try {
@@ -134,7 +136,7 @@ describe(`mutable atomic state`, () => {
 			caught = thrown
 		} finally {
 			expect(caught).toBeInstanceOf(Error)
-			expect(UTIL.stdout).not.toHaveBeenCalledWith({
+			expect(Utils.stdout).not.toHaveBeenCalledWith({
 				oldValue: [],
 				newValue: [`a`, `b`],
 			})

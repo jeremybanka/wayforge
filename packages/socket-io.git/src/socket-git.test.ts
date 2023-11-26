@@ -7,6 +7,8 @@ import { io } from "socket.io-client"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"
 

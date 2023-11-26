@@ -1,15 +1,19 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { atomFamily, getState, selectorFamily, setState } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
+import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
-__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = __INTERNAL__.IMPLICIT.STORE
+
+let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)

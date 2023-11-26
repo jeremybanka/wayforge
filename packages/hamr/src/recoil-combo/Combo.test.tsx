@@ -5,6 +5,8 @@ import type { RecoilState, RecoilValueReadOnly } from "recoil"
 import { RecoilRoot, atom, useRecoilState, useRecoilValue } from "recoil"
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { Combo } from "./Combo"
 
 export const onChange = vitest.fn()

@@ -3,23 +3,27 @@ import { readFile, readFileSync, writeFile, writeFileSync } from "fs"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { atom, atomFamily, getState, setState } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
-import * as UTIL from "./__util__"
+import * as Internal from "atom.io/internal"
+import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
-__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = __INTERNAL__.IMPLICIT.STORE
+
+let logger: Logger
 
 let tmpDir: tmp.DirResult
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 	tmpDir = tmp.dirSync({ unsafeCleanup: true })
 	writeFileSync(`${tmpDir.name}/name.txt`, `Mavis`)
 	tmp.setGracefulCleanup()
@@ -33,13 +37,13 @@ describe(`atom effects`, () => {
 			effects: (key) => [
 				({ onSet }) => {
 					onSet((newValue) => {
-						UTIL.stdout(`onSet`, key, newValue)
+						Utils.stdout(`onSet`, key, newValue)
 					})
 				},
 			],
 		})
 		setState(findCoordinateState(`a`), { x: 1, y: 1 })
-		expect(UTIL.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
+		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
 			oldValue: { x: 0, y: 0 },
 		})
@@ -75,7 +79,7 @@ describe(`atom effects`, () => {
 						})
 						onSet((change) => {
 							writeFile(`${tmpDir.name}/name.txt`, change.newValue, () =>
-								UTIL.stdout(`done`),
+								Utils.stdout(`done`),
 							)
 						})
 					},
@@ -94,7 +98,7 @@ describe(`atom effects`, () => {
 							if (triesRemaining-- > 0) {
 								if (written === `Mavis2`) {
 									expect(written).toBe(`Mavis2`)
-									expect(UTIL.stdout).toHaveBeenCalledWith(`done`)
+									expect(Utils.stdout).toHaveBeenCalledWith(`done`)
 									pass()
 								}
 							} else {

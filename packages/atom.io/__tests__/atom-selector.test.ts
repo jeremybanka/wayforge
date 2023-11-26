@@ -1,20 +1,24 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import { atom, getState, selector, setState, subscribe } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
-import * as UTIL from "./__util__"
+import * as Internal from "atom.io/internal"
+import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
-__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = __INTERNAL__.IMPLICIT.STORE
+
+let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`atom`, () => {
@@ -33,9 +37,9 @@ describe(`atom`, () => {
 			key: `name`,
 			default: `John`,
 		})
-		subscribe(name, UTIL.stdout)
+		subscribe(name, Utils.stdout)
 		setState(name, `Jane`)
-		expect(UTIL.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: `Jane`,
 			oldValue: `John`,
 		})
@@ -83,9 +87,9 @@ describe(`selector`, () => {
 			key: `double`,
 			get: ({ get }) => get(count) * 2,
 		})
-		subscribe(double, UTIL.stdout)
+		subscribe(double, Utils.stdout)
 		setState(count, 1)
-		expect(UTIL.stdout).toHaveBeenCalledWith({ newValue: 2, oldValue: 0 })
+		expect(Utils.stdout).toHaveBeenCalledWith({ newValue: 2, oldValue: 0 })
 	})
 	it(`can be set, propagating changes to all related atoms`, () => {
 		const count = atom<number>({

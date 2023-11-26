@@ -1,5 +1,7 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
+
 import {
 	atom,
 	atomFamily,
@@ -8,22 +10,24 @@ import {
 	setState,
 	transaction,
 } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
+import * as Internal from "atom.io/internal"
 import { FamilyTracker, Tracker } from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import * as UTIL from "../__util__"
+import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
-__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = __INTERNAL__.IMPLICIT.STORE
+
+let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`tracker`, () => {
