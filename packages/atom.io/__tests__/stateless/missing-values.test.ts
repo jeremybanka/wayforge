@@ -32,7 +32,7 @@ beforeEach(() => {
 })
 
 describe(`atom`, () => {
-	it.only(`can be modified and retrieved`, async () => {
+	it.only(`automatic persistance`, async () => {
 		const count = atom<Loadable<number>>({
 			key: `count`,
 			default: () => {
@@ -79,7 +79,6 @@ describe(`atom`, () => {
 								)
 							return
 						}
-
 						const unsub =
 							Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
 								`One-Shot: enqueue update to count.txt`,
