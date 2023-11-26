@@ -16,21 +16,21 @@ import {
 	subscribeToTransaction,
 	transaction,
 } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
-import * as UTIL from "./__util__"
+import * as Internal from "atom.io/internal"
+import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
 let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
-	__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = __INTERNAL__.IMPLICIT.STORE.logger
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 type CoreStats = {
@@ -190,27 +190,27 @@ describe(`transaction`, () => {
 		})
 
 		subscribeToTransaction(setAllCounts, (data) => {
-			UTIL.stdout(`Transaction update:`, data)
+			Utils.stdout(`Transaction update:`, data)
 			for (const update of data.atomUpdates) {
-				UTIL.stdout(`Atom update:`, update)
+				Utils.stdout(`Atom update:`, update)
 			}
 		})
 		subscribe(count1Plus2State, (data) => {
-			UTIL.stdout(`Selector update:`, data)
+			Utils.stdout(`Selector update:`, data)
 		})
 
 		runTransaction(setAllCounts)(3)
 
 		expect(getState(count1State)).toEqual(3)
-		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector update:`, {
+		expect(Utils.stdout).toHaveBeenCalledWith(`Selector update:`, {
 			oldValue: 4,
 			newValue: 5,
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith(`Selector update:`, {
+		expect(Utils.stdout).toHaveBeenCalledWith(`Selector update:`, {
 			oldValue: 5,
 			newValue: 6,
 		})
-		expect(UTIL.stdout).toHaveBeenCalledWith(`Transaction update:`, {
+		expect(Utils.stdout).toHaveBeenCalledWith(`Transaction update:`, {
 			key: `setAllCounts`,
 			params: [3],
 			output: undefined,

@@ -1,6 +1,7 @@
 import { vitest } from "vitest"
 
-import type { AtomToken, Logger, TimelineToken } from "atom.io"
+import type { Logger } from "atom.io"
+import type { AtomToken, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -10,21 +11,21 @@ import {
 	timeline,
 	undo,
 } from "atom.io"
-import * as __INTERNAL__ from "atom.io/internal"
-import * as UTIL from "./__util__"
+import * as Internal from "atom.io/internal"
+import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
 let logger: Logger
 
 beforeEach(() => {
-	__INTERNAL__.clearStore()
-	__INTERNAL__.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = __INTERNAL__.IMPLICIT.STORE.logger
+	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(UTIL, `stdout`)
+	vitest.spyOn(Utils, `stdout`)
 })
 
 describe(`graceful handling of improper usage`, () => {
@@ -86,9 +87,9 @@ describe(`graceful handling of improper usage`, () => {
 			})
 			setState(countState, 1)
 			const countTimeline0Data =
-				__INTERNAL__.IMPLICIT.STORE.timelines.get(`count_history`)
+				Internal.IMPLICIT.STORE.timelines.get(`count_history`)
 			const countTimeline1Data =
-				__INTERNAL__.IMPLICIT.STORE.timelines.get(`count_history_too`)
+				Internal.IMPLICIT.STORE.timelines.get(`count_history_too`)
 
 			expect(logger.error).toHaveBeenCalledWith(
 				`❌`,
@@ -115,10 +116,10 @@ describe(`graceful handling of improper usage`, () => {
 			})
 			setState(aCount, 1)
 
-			const countTimelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
+			const countTimelineData = Internal.IMPLICIT.STORE.timelines.get(
 				countTimeline.key,
 			)
-			const aCountTimelineData = __INTERNAL__.IMPLICIT.STORE.timelines.get(
+			const aCountTimelineData = Internal.IMPLICIT.STORE.timelines.get(
 				aCountTimeline.key,
 			)
 			expect(logger.error).toHaveBeenCalledWith(
@@ -127,7 +128,7 @@ describe(`graceful handling of improper usage`, () => {
 				`a_count_history`,
 				`Failed to add atom "counts("a")" because its family "counts" already belongs to timeline "counts_history"`,
 			)
-			console.log(__INTERNAL__.withdraw(aCount, __INTERNAL__.IMPLICIT.STORE))
+			console.log(Internal.withdraw(aCount, Internal.IMPLICIT.STORE))
 			console.log(countTimelineData?.history)
 			expect(countTimelineData?.history).toHaveLength(1)
 			expect(aCountTimelineData?.history).toHaveLength(0)
