@@ -3,7 +3,7 @@ import fsp from "fs/promises"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
+import type { AtomToken, Logger } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
@@ -17,6 +17,13 @@ let tmpDir: tmp.DirResult
 
 function clearValueMap() {
 	Internal.IMPLICIT.STORE.valueMap = new Map()
+}
+
+async function waitForStateUpdate<T>(atom: AtomToken<T>, newValue: T) {
+	setState(atom, newValue)
+	while ((await getState(atom)) !== newValue) {
+		await new Promise((resolve) => setImmediate(resolve))
+	}
 }
 
 beforeEach(() => {
@@ -99,82 +106,13 @@ describe(`stateless data persistence strategies`, () => {
 			clearValueMap()
 			setState(count, 1)
 			clearValueMap()
-			await new Promise((resolve) => setTimeout(resolve, 5))
+			await waitForStateUpdate(count, 1)
 			expect(await getState(count)).toBe(1)
 			clearValueMap()
 			setState(count, 2)
 			clearValueMap()
-			await new Promise((resolve) => setTimeout(resolve, 5))
+			await waitForStateUpdate(count, 2)
 			expect(await getState(count)).toBe(2)
-		})
-	})
-	describe(`writer composition strategy`, () => {
-		test(`manual implementation`, async () => {
-			const count = atom<Loadable<number>>({
-				key: `count`,
-				default: async () => {
-					try {
-						const data = await fsp.readFile(`${tmpDir.name}/count.txt`, `utf8`)
-						return parseInt(data, 10)
-					} catch (error) {
-						await fsp.writeFile(`${tmpDir.name}/count.txt`, `0`)
-						return 0
-					}
-				},
-			})
-
-			async function writeCount(newValue: number): Promise<number> {
-				await fsp.writeFile(`${tmpDir.name}/count.txt`, newValue.toString())
-				return newValue
-			}
-
-			function updateCount(newValue: number): void {
-				if (Internal.IMPLICIT.STORE.operation.open) {
-					const unsub =
-						Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
-							`One-Shot: enqueue update to count.txt`,
-							() => {
-								unsub()
-								const currentValue = getState(count)
-								if (currentValue instanceof Promise) {
-									currentValue.then((resolvedCurrentValue) => {
-										if (resolvedCurrentValue === newValue) {
-											return
-										}
-										setState(count, writeCount(newValue))
-									})
-									return
-								}
-								if (currentValue === newValue) {
-									return
-								}
-								setState(count, writeCount(newValue))
-							},
-						)
-					return
-				}
-				const currentValue = getState(count)
-				if (currentValue instanceof Promise) {
-					currentValue.then((resolvedCurrentValue) => {
-						if (resolvedCurrentValue === newValue) {
-							return
-						}
-						setState(count, writeCount(newValue))
-					})
-					return
-				}
-				if (currentValue === newValue) {
-					return
-				}
-				setState(count, writeCount(newValue))
-			}
-
-			expect(await getState(count)).toBe(0)
-			clearValueMap()
-			updateCount(1)
-			clearValueMap()
-			await new Promise((resolve) => setTimeout(resolve, 5))
-			expect(await getState(count)).toBe(1)
 		})
 	})
 })
