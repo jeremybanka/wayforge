@@ -5,34 +5,48 @@ import { IMPLICIT } from "./store"
 import type { Subject } from "./subject"
 import { target } from "./transaction"
 
-export const cacheValue = (
+export function cacheValue<T>(
 	key: string,
-	value: unknown,
+	value: T,
+	subject: Subject<StateUpdate<unknown>>,
+	store: Store,
+): T
+export function cacheValue<T extends Promise<any>>(
+	key: string,
+	value: T,
+	subject: Subject<StateUpdate<unknown>>,
+	store: Store,
+): Future<T>
+export function cacheValue<T>(
+	key: string,
+	value: T,
 	subject: Subject<StateUpdate<unknown>>,
 	store: Store = IMPLICIT.STORE,
-): void => {
+): Future<T> | T {
 	const currentValue = target(store).valueMap.get(key)
 	if (currentValue instanceof Future) {
 		currentValue.cancel()
 	}
 	if (value instanceof Promise) {
-		const future = new Future(value)
+		const future = new Future<T>(value)
 		target(store).valueMap.set(key, future)
 		future
-			.then((value) => {
+			.then((resolved) => {
 				if (future.isCanceled) {
 					return
 				}
-				cacheValue(key, value, subject, store)
-				subject.next({ newValue: value, oldValue: value })
+				cacheValue(key, resolved, subject, store)
+				subject.next({ newValue: resolved, oldValue: future })
 			})
 			.catch((thrown) => {
 				if (thrown !== `canceled`) {
 					store.logger.error(`💥`, `state`, key, `rejected:`, thrown)
 				}
 			})
+		return future
 	} else {
 		target(store).valueMap.set(key, value)
+		return value
 	}
 }
 

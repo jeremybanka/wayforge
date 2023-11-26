@@ -1,4 +1,10 @@
-import { Future, Subject, cacheValue, evictCachedValue } from "atom.io/internal"
+import {
+	Future,
+	IMPLICIT,
+	Subject,
+	cacheValue,
+	evictCachedValue,
+} from "atom.io/internal"
 import { vitest } from "vitest"
 
 import type { StateUpdate } from "../src"
@@ -44,7 +50,7 @@ describe(`Future`, () => {
 		const promise = new Promise<number>((resolve) =>
 			setTimeout(() => resolve(1), 1000),
 		)
-		cacheValue(`a`, promise, subject)
+		cacheValue(`a`, promise, subject, IMPLICIT.STORE)
 		evictCachedValue(`a`)
 		await promise
 		expect(UTIL.stdout).not.toHaveBeenCalled()
