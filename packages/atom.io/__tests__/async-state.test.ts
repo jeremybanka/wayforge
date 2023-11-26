@@ -7,8 +7,12 @@ import * as Internal from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 import * as Utils from "./__util__"
 
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 2
+
 beforeEach(() => {
 	Internal.clearStore()
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	vitest.spyOn(Utils, `stdout`)
 })
 
@@ -18,8 +22,8 @@ describe(`async atom`, async () => {
 			key: `count`,
 			default: 0,
 		})
-		AtomIO.subscribe(count, ({ newValue, oldValue }) => {
-			Utils.stdout(`count`, { newValue, oldValue })
+		AtomIO.subscribe(count, (update) => {
+			Utils.stdout(`count`, update)
 		})
 		const getNumber = async () => 1
 		AtomIO.setState(count, getNumber())

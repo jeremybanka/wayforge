@@ -9,9 +9,7 @@ export const emitUpdate = <T>(
 	update: StateUpdate<T>,
 	store: Store,
 ): void => {
-	const { key } = state
-	const { logger } = store
-	logger.info(
+	store.logger.info(
 		`📢`,
 		state.type,
 		state.key,

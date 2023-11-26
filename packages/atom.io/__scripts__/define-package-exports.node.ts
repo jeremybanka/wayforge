@@ -1,8 +1,12 @@
 import { execSync } from "child_process"
 import fs from "fs"
 import path from "path"
+import url from "url"
 
 import { createLogger } from "./logger.node"
+
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const SCRIPT_NAME = __filename.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
 const ATOM_IO_ROOT = path.resolve(__dirname, `..`)
@@ -59,17 +63,17 @@ export default function main(mode: string): void {
 		"./package.json": `./package.json`,
 		".": {
 			types: `./dist/index.d.ts`,
-			browser: `./dist/index.mjs`,
-			import: `./dist/index.mjs`,
-			require: `./dist/index.js`,
+			browser: `./dist/index.js`,
+			import: `./dist/index.js`,
+			require: `./dist/index.cjs`,
 		},
 		...folders.reduce((acc, folder) => {
 			acc[`./${folder}/package.json`] = `./${folder}/package.json`
 			acc[`./${folder}`] = {
 				types: `./${folder}/dist/index.d.ts`,
-				browser: `./${folder}/dist/index.mjs`,
-				import: `./${folder}/dist/index.mjs`,
-				require: `./${folder}/dist/index.js`,
+				browser: `./${folder}/dist/index.js`,
+				import: `./${folder}/dist/index.js`,
+				require: `./${folder}/dist/index.cjs`,
 			}
 			return acc
 		}, {}),

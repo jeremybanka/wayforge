@@ -52,9 +52,6 @@ export function createAtom<T>(
 		...options,
 		type: `atom`,
 		install: (store: Store) => {
-			// store.logger.info(
-			// 	`🛠️  installing atom "${options.key}" in store "${store.config.name}"`,
-			// )
 			store.logger.info(
 				`🛠️`,
 				`atom`,

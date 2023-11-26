@@ -4,6 +4,7 @@
 	"description": "Composable and testable reactive data library.",
 	"homepage": "https://atom.io.fyi",
 	"sideEffects": false,
+	"type": "module",
 	"license": "MIT",
 	"author": "Jeremy Banka",
 	"publishConfig": {
@@ -142,86 +143,86 @@
 		"./package.json": "./package.json",
 		".": {
 			"types": "./dist/index.d.ts",
-			"browser": "./dist/index.mjs",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
+			"browser": "./dist/index.js",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
 		},
 		"./data/package.json": "./data/package.json",
 		"./data": {
 			"types": "./data/dist/index.d.ts",
-			"browser": "./data/dist/index.mjs",
-			"import": "./data/dist/index.mjs",
-			"require": "./data/dist/index.js"
+			"browser": "./data/dist/index.js",
+			"import": "./data/dist/index.js",
+			"require": "./data/dist/index.cjs"
 		},
 		"./internal/package.json": "./internal/package.json",
 		"./internal": {
 			"types": "./internal/dist/index.d.ts",
-			"browser": "./internal/dist/index.mjs",
-			"import": "./internal/dist/index.mjs",
-			"require": "./internal/dist/index.js"
+			"browser": "./internal/dist/index.js",
+			"import": "./internal/dist/index.js",
+			"require": "./internal/dist/index.cjs"
 		},
 		"./introspection/package.json": "./introspection/package.json",
 		"./introspection": {
 			"types": "./introspection/dist/index.d.ts",
-			"browser": "./introspection/dist/index.mjs",
-			"import": "./introspection/dist/index.mjs",
-			"require": "./introspection/dist/index.js"
+			"browser": "./introspection/dist/index.js",
+			"import": "./introspection/dist/index.js",
+			"require": "./introspection/dist/index.cjs"
 		},
 		"./json/package.json": "./json/package.json",
 		"./json": {
 			"types": "./json/dist/index.d.ts",
-			"browser": "./json/dist/index.mjs",
-			"import": "./json/dist/index.mjs",
-			"require": "./json/dist/index.js"
+			"browser": "./json/dist/index.js",
+			"import": "./json/dist/index.js",
+			"require": "./json/dist/index.cjs"
 		},
 		"./react/package.json": "./react/package.json",
 		"./react": {
 			"types": "./react/dist/index.d.ts",
-			"browser": "./react/dist/index.mjs",
-			"import": "./react/dist/index.mjs",
-			"require": "./react/dist/index.js"
+			"browser": "./react/dist/index.js",
+			"import": "./react/dist/index.js",
+			"require": "./react/dist/index.cjs"
 		},
 		"./react-devtools/package.json": "./react-devtools/package.json",
 		"./react-devtools": {
 			"types": "./react-devtools/dist/index.d.ts",
-			"browser": "./react-devtools/dist/index.mjs",
-			"import": "./react-devtools/dist/index.mjs",
-			"require": "./react-devtools/dist/index.js"
+			"browser": "./react-devtools/dist/index.js",
+			"import": "./react-devtools/dist/index.js",
+			"require": "./react-devtools/dist/index.cjs"
 		},
 		"./realtime-client/package.json": "./realtime-client/package.json",
 		"./realtime-client": {
 			"types": "./realtime-client/dist/index.d.ts",
-			"browser": "./realtime-client/dist/index.mjs",
-			"import": "./realtime-client/dist/index.mjs",
-			"require": "./realtime-client/dist/index.js"
+			"browser": "./realtime-client/dist/index.js",
+			"import": "./realtime-client/dist/index.js",
+			"require": "./realtime-client/dist/index.cjs"
 		},
 		"./realtime-react/package.json": "./realtime-react/package.json",
 		"./realtime-react": {
 			"types": "./realtime-react/dist/index.d.ts",
-			"browser": "./realtime-react/dist/index.mjs",
-			"import": "./realtime-react/dist/index.mjs",
-			"require": "./realtime-react/dist/index.js"
+			"browser": "./realtime-react/dist/index.js",
+			"import": "./realtime-react/dist/index.js",
+			"require": "./realtime-react/dist/index.cjs"
 		},
 		"./realtime-server/package.json": "./realtime-server/package.json",
 		"./realtime-server": {
 			"types": "./realtime-server/dist/index.d.ts",
-			"browser": "./realtime-server/dist/index.mjs",
-			"import": "./realtime-server/dist/index.mjs",
-			"require": "./realtime-server/dist/index.js"
+			"browser": "./realtime-server/dist/index.js",
+			"import": "./realtime-server/dist/index.js",
+			"require": "./realtime-server/dist/index.cjs"
 		},
 		"./realtime-testing/package.json": "./realtime-testing/package.json",
 		"./realtime-testing": {
 			"types": "./realtime-testing/dist/index.d.ts",
-			"browser": "./realtime-testing/dist/index.mjs",
-			"import": "./realtime-testing/dist/index.mjs",
-			"require": "./realtime-testing/dist/index.js"
+			"browser": "./realtime-testing/dist/index.js",
+			"import": "./realtime-testing/dist/index.js",
+			"require": "./realtime-testing/dist/index.cjs"
 		},
 		"./transceivers/set-rtx/package.json": "./transceivers/set-rtx/package.json",
 		"./transceivers/set-rtx": {
 			"types": "./transceivers/set-rtx/dist/index.d.ts",
-			"browser": "./transceivers/set-rtx/dist/index.mjs",
-			"import": "./transceivers/set-rtx/dist/index.mjs",
-			"require": "./transceivers/set-rtx/dist/index.js"
+			"browser": "./transceivers/set-rtx/dist/index.js",
+			"import": "./transceivers/set-rtx/dist/index.js",
+			"require": "./transceivers/set-rtx/dist/index.cjs"
 		}
 	}
 }
