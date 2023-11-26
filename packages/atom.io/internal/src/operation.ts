@@ -22,7 +22,7 @@ export const openOperation = (
 ): `rejection` | undefined => {
 	const core = target(store)
 	if (core.operation.open) {
-		store.logger.error(
+		store.logger.info(
 			`❌`,
 			token.type,
 			token.key,
