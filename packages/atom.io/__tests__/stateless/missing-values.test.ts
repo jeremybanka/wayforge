@@ -20,7 +20,6 @@ function clearValueMap() {
 }
 
 async function waitForQueuedUpdate<T>(atom: AtomToken<T>, newValue: T) {
-	setState(atom, newValue)
 	while (!(getState(atom) instanceof Promise)) {
 		console.log(`waiting for promise...`)
 		await new Promise((resolve) => setImmediate(resolve))
