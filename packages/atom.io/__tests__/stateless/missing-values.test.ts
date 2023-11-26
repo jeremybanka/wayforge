@@ -31,8 +31,8 @@ beforeEach(() => {
 	tmp.setGracefulCleanup()
 })
 
-describe(`atom`, () => {
-	it.only(`automatic persistance`, async () => {
+describe(`stateless data persistence strategies`, () => {
+	test(`automatic strategy`, async () => {
 		const count = atom<Loadable<number>>({
 			key: `count`,
 			default: () => {
