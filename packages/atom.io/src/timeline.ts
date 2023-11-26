@@ -7,7 +7,7 @@ import type {
 import {
 	IMPLICIT,
 	redo__INTERNAL,
-	timeline__INTERNAL,
+	createTimeline,
 	undo__INTERNAL,
 } from "atom.io/internal"
 
@@ -30,7 +30,7 @@ export type TimelineUpdate =
 	| TimelineTransactionUpdate
 
 export const timeline = (options: TimelineOptions): TimelineToken => {
-	return timeline__INTERNAL(options)
+	return createTimeline(options, IMPLICIT.STORE)
 }
 
 export const redo = (token: TimelineToken): void => {

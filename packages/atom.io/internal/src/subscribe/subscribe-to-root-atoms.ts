@@ -1,4 +1,4 @@
-import { getState__INTERNAL } from "../get-state-internal"
+import { readOrComputeCurrentState } from "../read-or-compute-current-state"
 import type { ReadonlySelector, Selector } from "../selector"
 import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
@@ -34,7 +34,7 @@ export const subscribeToRootAtoms = <T>(
 							)
 							const oldValue = recallState(state, store)
 							// ❌ this retrieves a stale cached value when applying a transaction on the server
-							const newValue = getState__INTERNAL(state, store)
+							const newValue = readOrComputeCurrentState(state, store)
 							store.logger.info(
 								`✨`,
 								state.type,

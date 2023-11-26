@@ -1,6 +1,6 @@
 import type { AtomFamily } from "atom.io"
 import type { Json, JsonInterface } from "atom.io/json"
-import { getState__INTERNAL } from ".."
+import { readOrComputeCurrentState } from ".."
 import type { Store, StoreCore } from ".."
 import type { Atom } from "../atom"
 import { copyMutableIfNeeded } from "./copy-mutable-if-needed"
@@ -37,7 +37,7 @@ export function copyMutableIfWithinTransaction<T>(
 			}
 		}
 	}
-	return getState__INTERNAL(atom, store)
+	return readOrComputeCurrentState(atom, store)
 }
 
 export function copyMutableFamilyMemberWithinTransaction<T>(

@@ -1,8 +1,8 @@
 import type { Atom } from "../atom"
 import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
-import { getState__INTERNAL } from "../get-state-internal"
 import { markDone } from "../operation"
+import { readOrComputeCurrentState } from "../read-or-compute-current-state"
 import type { Store } from "../store"
 import { IMPLICIT } from "../store"
 import { become } from "./become"
@@ -16,7 +16,7 @@ export const setAtom = <T>(
 	next: T | ((oldValue: T) => T),
 	store: Store = IMPLICIT.STORE,
 ): void => {
-	const oldValue = getState__INTERNAL(atom, store)
+	const oldValue = readOrComputeCurrentState(atom, store)
 	let newValue = copyMutableIfWithinTransaction(atom, store)
 	newValue = become(next)(newValue)
 	store.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)

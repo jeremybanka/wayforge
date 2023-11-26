@@ -4,7 +4,7 @@ import type { Store } from "../store"
 import { IMPLICIT } from "../store"
 import { setAtom } from "./set-atom"
 
-export const setState__INTERNAL = <T>(
+export const setAtomOrSelector = <T>(
 	state: Atom<T> | Selector<T>,
 	value: T | ((oldValue: T) => T),
 	store: Store = IMPLICIT.STORE,
