@@ -3,13 +3,13 @@ import type { Transactors } from "atom.io"
 import { readOrComputeCurrentState } from "../read-or-compute-current-state"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
-import { IMPLICIT, withdraw } from "../store"
+import { withdraw } from "../store"
 import { target } from "../transaction/transaction-internal"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
 	selectorKey: string,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): Transactors => ({
 	get: (dependency) => {
 		const core = target(store)

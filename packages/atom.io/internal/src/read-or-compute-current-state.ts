@@ -2,11 +2,10 @@ import type { Atom } from "./atom"
 import { isValueCached, readCachedValue } from "./caching"
 import type { ReadonlySelector, Selector } from "./selector"
 import type { Store } from "./store"
-import { IMPLICIT } from "./store"
 
 export const readOrComputeCurrentState = <T>(
 	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): T => {
 	if (isValueCached(state.key, store)) {
 		store.logger.info(`📖`, state.type, state.key, `reading cached value`)

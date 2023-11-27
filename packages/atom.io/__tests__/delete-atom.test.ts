@@ -1,4 +1,5 @@
 import { atom, deleteAtom, getState } from "atom.io"
+import { IMPLICIT } from "../internal/src"
 
 describe(`deleteAtom`, () => {
 	it(`deletes an atom`, () => {
@@ -7,7 +8,7 @@ describe(`deleteAtom`, () => {
 			default: 0,
 		})
 		expect(countState.key).toEqual(`count`)
-		deleteAtom(countState)
+		deleteAtom(countState, IMPLICIT.STORE)
 		expect(countState.key).toEqual(`count`)
 		let caught: Error
 		try {

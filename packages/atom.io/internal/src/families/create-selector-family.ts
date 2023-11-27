@@ -11,7 +11,7 @@ import { stringifyJson } from "atom.io/json"
 
 import { createSelector } from "../selector"
 import type { Store } from "../store"
-import { IMPLICIT, deposit } from "../store"
+import { deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 import { createReadonlySelectorFamily } from "./create-readonly-selector-family"
@@ -26,7 +26,7 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 ): ReadonlySelectorFamily<T, K>
 export function createSelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
 	const isReadonly = !(`set` in options)
 

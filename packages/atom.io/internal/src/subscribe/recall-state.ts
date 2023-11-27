@@ -1,12 +1,11 @@
 import type { Atom } from "../atom"
 import type { ReadonlySelector, Selector } from "../selector"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { target } from "../transaction"
 
 export const recallState = <T>(
 	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): T => {
 	const core = target(store)
 	if (!core.operation.open) {

@@ -3,7 +3,6 @@ import { getState, setState, subscribe, subscribeToTimeline } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
-import { IMPLICIT } from ".."
 import { createAtom, deleteAtom } from "../atom"
 import { target } from "../transaction"
 import type { Transceiver } from "./transceiver"
@@ -18,7 +17,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	private initializeState(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
-		store: Store = IMPLICIT.STORE,
+		store: Store,
 	): AtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		deleteAtom({ type: `atom`, key: latestUpdateStateKey }, store)
@@ -46,7 +45,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private observeCore(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		latestUpdateState: AtomToken<typeof this.Update | null>,
-		store: Store = IMPLICIT.STORE,
+		store: Store,
 	): void {
 		const originalInnerValue = getState(mutableState, store)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
@@ -96,7 +95,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private updateCore<Core extends Transceiver<any>>(
 		mutableState: MutableAtomToken<Core, Json.Serializable>,
 		latestUpdateState: AtomToken<typeof this.Update | null>,
-		store: Store = IMPLICIT.STORE,
+		store: Store,
 	): void {
 		subscribe(
 			latestUpdateState,
@@ -153,7 +152,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	public constructor(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
-		store: Store = IMPLICIT.STORE,
+		store: Store,
 	) {
 		this.mutableState = mutableState
 		this.latestUpdateState = this.initializeState(mutableState, store)

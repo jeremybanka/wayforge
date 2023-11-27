@@ -43,7 +43,7 @@ export type TransactionIO<Token extends TransactionToken<any>> =
 export function transaction<ƒ extends ƒn>(
 	options: TransactionOptions<ƒ>,
 ): TransactionToken<ƒ> {
-	return transaction__INTERNAL(options)
+	return transaction__INTERNAL(options, IMPLICIT.STORE)
 }
 
 export const runTransaction =

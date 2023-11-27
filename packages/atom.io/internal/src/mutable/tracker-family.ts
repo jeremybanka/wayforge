@@ -24,7 +24,7 @@ export class FamilyTracker<
 
 	public constructor(
 		findMutableState: AtomFamily<Core, FamilyMemberKey>,
-		store: Store = IMPLICIT.STORE,
+		store: Store,
 	) {
 		this.findLatestUpdateState = createAtomFamily<
 			typeof this.Update | null,

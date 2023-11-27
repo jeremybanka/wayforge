@@ -6,7 +6,8 @@ import type {
 } from "atom.io"
 import { getState, setState } from "atom.io"
 
-import { IMPLICIT, type Store, type StoreCore, deposit } from "../store"
+import { deposit } from "../store"
+import type { Store, StoreCore } from "../store"
 import { Subject } from "../subject"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
@@ -22,7 +23,7 @@ export type Transaction<ƒ extends ƒn> = {
 
 export function transaction__INTERNAL<ƒ extends ƒn>(
 	options: TransactionOptions<ƒ>,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): TransactionToken<ƒ> {
 	const newTransaction: Transaction<ƒ> = {
 		key: options.key,
@@ -55,7 +56,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 	return token
 }
 
-export const target = (store: Store = IMPLICIT.STORE): StoreCore =>
+export const target = (store: Store): StoreCore =>
 	store.transactionStatus.phase === `building`
 		? store.transactionStatus.core
 		: store

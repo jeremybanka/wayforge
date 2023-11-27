@@ -7,7 +7,7 @@ import {
 	createSelector,
 	createSelectorFamily,
 	redo__INTERNAL,
-	timeline__INTERNAL,
+	createTimeline,
 	transaction__INTERNAL,
 	undo__INTERNAL,
 } from "atom.io/internal"
@@ -49,7 +49,7 @@ export class Silo {
 		this.selector = (options) => createSelector(options, undefined, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => transaction__INTERNAL(options, s)
-		this.timeline = (options) => timeline__INTERNAL(options, s)
+		this.timeline = (options) => createTimeline(options, s)
 		this.getState = (token) => getState(token, s)
 		this.setState = (token, newValue) => setState(token, newValue, s)
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)

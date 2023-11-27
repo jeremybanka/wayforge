@@ -11,7 +11,7 @@ const CHOOSE = 1
 let logger: Logger
 
 beforeEach(() => {
-	Internal.clearStore()
+	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)

@@ -9,7 +9,6 @@ import type {
 } from "atom.io"
 
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 import { addAtomToTimeline } from "./add-atom-to-timeline"

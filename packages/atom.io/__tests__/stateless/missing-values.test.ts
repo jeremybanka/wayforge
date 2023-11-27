@@ -31,7 +31,7 @@ async function waitForQueuedUpdate<T>(atom: AtomToken<T>, newValue: T) {
 }
 
 beforeEach(() => {
-	Internal.clearStore()
+	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)

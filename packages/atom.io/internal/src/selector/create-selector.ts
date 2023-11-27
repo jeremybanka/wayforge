@@ -7,7 +7,6 @@ import type {
 } from "atom.io"
 
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import type { Subject } from "../subject"
 import { target } from "../transaction"
 import { createReadWriteSelector } from "./create-read-write-selector"
@@ -33,18 +32,18 @@ export type ReadonlySelector<T> = {
 
 export function createSelector<T>(
 	options: SelectorOptions<T>,
-	family?: FamilyMetadata,
-	store?: Store,
+	family: FamilyMetadata | undefined,
+	store: Store,
 ): SelectorToken<T>
 export function createSelector<T>(
 	options: ReadonlySelectorOptions<T>,
-	family?: FamilyMetadata,
-	store?: Store,
+	family: FamilyMetadata | undefined,
+	store: Store,
 ): ReadonlySelectorToken<T>
 export function createSelector<T>(
 	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
-	family?: FamilyMetadata,
-	store: Store = IMPLICIT.STORE,
+	family: FamilyMetadata | undefined,
+	store: Store,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
 	const core = target(store)
 	const existingWritable = core.selectors.get(options.key)

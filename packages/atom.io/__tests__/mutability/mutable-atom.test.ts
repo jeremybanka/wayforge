@@ -1,7 +1,5 @@
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
-
 import {
 	atom,
 	getState,
@@ -10,24 +8,18 @@ import {
 	subscribe,
 	transaction,
 } from "atom.io"
-import {
-	IMPLICIT,
-	clearStore,
-	createMutableAtomFamily,
-	getJsonToken,
-	getUpdateToken,
-} from "atom.io/internal"
+import * as Internal from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1
-IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = IMPLICIT.STORE
+Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+const { logger } = Internal.IMPLICIT.STORE
 
 beforeEach(() => {
-	clearStore()
+	Internal.clearStore(Internal.IMPLICIT.STORE)
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -43,8 +35,8 @@ describe(`mutable atomic state`, () => {
 			toJson: (set) => [...set],
 			fromJson: (array) => new SetRTX(array),
 		})
-		const myJsonState = getJsonToken(myMutableState)
-		const myTrackerState = getUpdateToken(myMutableState)
+		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout)
 		subscribe(myJsonState, Utils.stdout)
 		subscribe(myTrackerState, Utils.stdout)
@@ -64,22 +56,25 @@ describe(`mutable atomic state`, () => {
 	})
 
 	it(`has its own family function for ease of use`, () => {
-		const findFlagsStateByUserId = createMutableAtomFamily<
+		const findFlagsStateByUserId = Internal.createMutableAtomFamily<
 			SetRTX<string>,
 			string[],
 			string
-		>({
-			key: `flagsByUserId::mutable`,
-			mutable: true,
-			default: () => new SetRTX(),
-			toJson: (set) => [...set],
-			fromJson: (array) => new SetRTX(array),
-		})
+		>(
+			{
+				key: `flagsByUserId::mutable`,
+				mutable: true,
+				default: () => new SetRTX(),
+				toJson: (set) => [...set],
+				fromJson: (array) => new SetRTX(array),
+			},
+			Internal.IMPLICIT.STORE,
+		)
 		console.log(findFlagsStateByUserId)
 
 		const myFlagsState = findFlagsStateByUserId(`my-user-id`)
-		const findFlagsByUserIdJSON = getJsonToken(myFlagsState)
-		const findFlagsByUserIdTracker = getUpdateToken(myFlagsState)
+		const findFlagsByUserIdJSON = Internal.getJsonToken(myFlagsState)
+		const findFlagsByUserIdTracker = Internal.getUpdateToken(myFlagsState)
 
 		subscribe(myFlagsState, Utils.stdout)
 		subscribe(findFlagsByUserIdJSON, Utils.stdout)
@@ -126,7 +121,7 @@ describe(`mutable atomic state`, () => {
 			},
 		})
 
-		const myJsonState = getJsonToken(myMutableState)
+		const myJsonState = Internal.getJsonToken(myMutableState)
 		subscribe(myJsonState, Utils.stdout)
 
 		let caught: unknown

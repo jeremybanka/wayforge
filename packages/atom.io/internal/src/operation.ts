@@ -1,7 +1,6 @@
 import type { StateToken } from "atom.io"
 
 import type { Store } from "./store"
-import { IMPLICIT } from "./store"
 import { target } from "./transaction"
 
 export type OperationProgress =
@@ -62,7 +61,7 @@ export const closeOperation = (store: Store): void => {
 	store.subject.operationStatus.next(core.operation)
 }
 
-export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
+export const isDone = (key: string, store: Store): boolean => {
 	const core = target(store)
 	if (!core.operation.open) {
 		store.logger.warn(
@@ -75,7 +74,7 @@ export const isDone = (key: string, store: Store = IMPLICIT.STORE): boolean => {
 	}
 	return core.operation.done.has(key)
 }
-export const markDone = (key: string, store: Store = IMPLICIT.STORE): void => {
+export const markDone = (key: string, store: Store): void => {
 	const core = target(store)
 	if (!core.operation.open) {
 		store.logger.warn(

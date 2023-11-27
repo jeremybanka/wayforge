@@ -2,12 +2,8 @@ import type { TimelineToken } from "atom.io"
 import { setState } from "atom.io"
 
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 
-export const redo__INTERNAL = (
-	token: TimelineToken,
-	store: Store = IMPLICIT.STORE,
-): void => {
+export const redo__INTERNAL = (token: TimelineToken, store: Store): void => {
 	store.logger.info(`⏩`, `timeline`, token.key, `redo`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
@@ -56,10 +52,7 @@ export const redo__INTERNAL = (
 	)
 }
 
-export const undo__INTERNAL = (
-	token: TimelineToken,
-	store: Store = IMPLICIT.STORE,
-): void => {
+export const undo__INTERNAL = (token: TimelineToken, store: Store): void => {
 	store.logger.info(`⏪`, `timeline`, token.key, `undo`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {

@@ -4,7 +4,6 @@ import { cacheValue } from "../caching"
 import { markDone } from "../operation"
 import { readOrComputeCurrentState } from "../read-or-compute-current-state"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { become } from "./become"
 import { copyMutableIfWithinTransaction } from "./copy-mutable-in-transaction"
 import { emitUpdate } from "./emit-update"
@@ -14,7 +13,7 @@ import { stowUpdate } from "./stow-update"
 export const setAtom = <T>(
 	atom: Atom<T>,
 	next: T | ((oldValue: T) => T),
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): void => {
 	const oldValue = readOrComputeCurrentState(atom, store)
 	let newValue = copyMutableIfWithinTransaction(atom, store)
