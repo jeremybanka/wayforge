@@ -1,4 +1,5 @@
 import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
+
 import type { Store } from ".."
 import { target } from ".."
 
@@ -18,6 +19,19 @@ export function deleteSelector(
 	}
 	core.valueMap.delete(key)
 	core.selectorAtoms.delete(key)
+	const downstreamTokens = core.selectorGraph
+		.getRelationEntries({ upstreamSelectorKey: key })
+		.filter(([_, { source }]) => source === key)
+		.map(
+			([downstreamSelectorKey]) =>
+				core.selectors.get(downstreamSelectorKey) ??
+				core.readonlySelectors.get(downstreamSelectorKey),
+		)
+	for (const downstreamToken of downstreamTokens) {
+		if (downstreamToken) {
+			deleteSelector(downstreamToken, store)
+		}
+	}
 	core.selectorGraph.delete(key)
-	store.logger.info(`🔥`, `selector`, `${key}`, `deleted`)
+	store.logger.info(`🔥`, selectorToken.type, `${key}`, `deleted`)
 }

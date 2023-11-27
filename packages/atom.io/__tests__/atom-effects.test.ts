@@ -10,7 +10,7 @@ import * as Internal from "atom.io/internal"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 2
 
 let logger: Logger
 let tmpDir: tmp.DirResult
