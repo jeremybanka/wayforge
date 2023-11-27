@@ -219,8 +219,8 @@ export const CSS_COLOR_PROPERTY_KEYS = [
 export type CssVariable = `--${string}`
 
 export type CssColorPropertyKey =
-	| CssVariable
 	| (typeof CSS_COLOR_PROPERTY_KEYS)[number]
+	| CssVariable
 
 export const isCssColorPropertyKey = (
 	input: unknown,
