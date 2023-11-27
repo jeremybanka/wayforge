@@ -23,7 +23,7 @@ export const isGitSocketError = (value: unknown): value is GitSocketError =>
 
 export type GitInterface = Omit<
 	SimpleGit,
-	typeof SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET[number]
+	(typeof SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET)[number]
 >
 
 // server "on" / client "emit"

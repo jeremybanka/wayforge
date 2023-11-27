@@ -19,9 +19,8 @@ export const quoteState = atom<Loadable<string | Error>>({
 		} catch (thrown) {
 			if (thrown instanceof Error) {
 				return thrown
-			} else {
-				throw thrown
 			}
+			throw thrown
 		}
 	},
 })

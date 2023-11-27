@@ -40,7 +40,7 @@ const LoggerIconDictionary = {
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
-export type LogLevel = typeof LOG_LEVELS[number]
+export type LogLevel = (typeof LOG_LEVELS)[number]
 
 export type LogFn = (
 	icon: LoggerIcon,

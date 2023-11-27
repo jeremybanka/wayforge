@@ -55,8 +55,8 @@ export const isResourceIdentifier = Object.assign(
 	{
 		whoseMeta:
 			<META extends Json.Serializable | undefined>(
-				isMeta: Refinement<unknown, META>,
-			): Refinement<unknown, ResourceIdentifierObject<any, META>> =>
+			isMeta: Refinement<unknown, META>,
+		): Refinement<unknown, ResourceIdentifierObject<any, META>> =>
 			(thing: unknown): thing is ResourceIdentifierObject<any, META> =>
 				isResourceIdentifier(thing) && isMeta(thing.meta),
 	},
@@ -85,12 +85,12 @@ export type Linkages<RELATIONSHIPS extends Relationships> = {
 				RELATIONSHIPS[K][`links`]
 		  >[]
 		: RELATIONSHIPS[K][`data`] extends JsonApiResource
-		? Relationship<
-				RELATIONSHIPS[K][`data`],
-				RELATIONSHIPS[K][`meta`],
-				RELATIONSHIPS[K][`links`]
-		  >
-		: never
+		  ? Relationship<
+					RELATIONSHIPS[K][`data`],
+					RELATIONSHIPS[K][`meta`],
+					RELATIONSHIPS[K][`links`]
+			  >
+		  : never
 }
 
 export type JsonApiResource<
@@ -123,8 +123,8 @@ export type RelationshipUpdate<
 	data: DATA extends JsonApiResource[]
 		? ResourceIdentifierObject<DATA[number]>[]
 		: DATA extends JsonApiResource
-		? ResourceIdentifierObject<DATA>
-		: never
+		  ? ResourceIdentifierObject<DATA>
+		  : never
 }
 
 export type ResourceFlat<RESOURCE extends JsonApiResource> = RESOURCE &

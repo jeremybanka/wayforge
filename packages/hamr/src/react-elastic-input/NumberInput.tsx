@@ -19,7 +19,7 @@ function roundAndPad(value: number, decimalPlaces?: number): string {
 }
 
 export const VALID_NON_NUMBERS = [``, `-`, `.`, `-.`] as const
-export type ValidNonNumber = typeof VALID_NON_NUMBERS[number]
+export type ValidNonNumber = (typeof VALID_NON_NUMBERS)[number]
 export const isValidNonNumber = (input: string): input is ValidNonNumber =>
 	VALID_NON_NUMBERS.includes(input as ValidNonNumber)
 export const VALID_NON_NUMBER_INTERPRETATIONS: Readonly<

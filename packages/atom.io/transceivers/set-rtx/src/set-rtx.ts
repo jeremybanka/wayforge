@@ -171,34 +171,32 @@ export class SetRTX<P extends primitive>
 				return null
 			}
 			return this.cacheUpdateNumber + 1
-		} else {
-			if (Math.abs(eventOffset) < this.cacheLimit) {
-				const eventIdx = this.cacheIdx + eventOffset
-				const cachedUpdate = this.cache[eventIdx]
-				if (cachedUpdate === update) {
-					return null
-				}
-				this.mode = `playback`
-				let done = false
-				while (!done) {
-					this.cacheIdx %= this.cacheLimit
-					const update = this.cache[this.cacheIdx]
-					this.cacheIdx--
-					if (!update) {
-						return `OUT_OF_RANGE`
-					}
-					const undoRes = this.undo(update)
-					done = this.cacheIdx === eventIdx - 1
-				}
-				const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
-				this.doStep(innerUpdate)
-				this.mode = `record`
-				this.cacheUpdateNumber = updateNumber
-				return null
-			} else {
-				return `OUT_OF_RANGE`
-			}
 		}
+		if (Math.abs(eventOffset) < this.cacheLimit) {
+			const eventIdx = this.cacheIdx + eventOffset
+			const cachedUpdate = this.cache[eventIdx]
+			if (cachedUpdate === update) {
+				return null
+			}
+			this.mode = `playback`
+			let done = false
+			while (!done) {
+				this.cacheIdx %= this.cacheLimit
+				const update = this.cache[this.cacheIdx]
+				this.cacheIdx--
+				if (!update) {
+					return `OUT_OF_RANGE`
+				}
+				const undoRes = this.undo(update)
+				done = this.cacheIdx === eventIdx - 1
+			}
+			const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+			this.doStep(innerUpdate)
+			this.mode = `record`
+			this.cacheUpdateNumber = updateNumber
+			return null
+		}
+		return `OUT_OF_RANGE`
 	}
 
 	public undoStep(update: SetUpdate): void {

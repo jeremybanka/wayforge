@@ -165,7 +165,7 @@ export const CSS_PSEUDO_CLASSES = [
 	`:visited`,
 ] as const
 
-export type CssPseudoClass = typeof CSS_PSEUDO_CLASSES[number]
+export type CssPseudoClass = (typeof CSS_PSEUDO_CLASSES)[number]
 
 export const isCssPseudoClass = (s: unknown): s is CssPseudoClass =>
 	CSS_PSEUDO_CLASSES.includes(s as CssPseudoClass)
@@ -219,15 +219,15 @@ export const CSS_COLOR_PROPERTY_KEYS = [
 export type CssVariable = `--${string}`
 
 export type CssColorPropertyKey =
+	| (typeof CSS_COLOR_PROPERTY_KEYS)[number]
 	| CssVariable
-	| typeof CSS_COLOR_PROPERTY_KEYS[number]
 
 export const isCssColorPropertyKey = (
 	input: unknown,
 ): input is CssColorPropertyKey =>
 	typeof input === `string` &&
 	(CSS_COLOR_PROPERTY_KEYS.includes(
-		input as typeof CSS_COLOR_PROPERTY_KEYS[number],
+		input as (typeof CSS_COLOR_PROPERTY_KEYS)[number],
 	) ||
 		input.startsWith(`--`))
 
@@ -342,19 +342,22 @@ export const WAYFORGE_CORE_COLOR_NAMES = [
 	`Pink`,
 ] as const
 
-export type WayforgeCoreColorName = typeof WAYFORGE_CORE_COLOR_NAMES[number]
+export type WayforgeCoreColorName = (typeof WAYFORGE_CORE_COLOR_NAMES)[number]
 
 export const WAYFORGE_CORE_COLORS: Readonly<
 	Record<WayforgeCoreColorName, LuumSpec>
-> = WAYFORGE_CORE_COLOR_NAMES.reduce((acc, name, idx) => {
-	acc[name] = {
-		hue: idx * 30,
-		sat: 255,
-		lum: 0.5,
-		prefer: `sat`,
-	}
-	return acc
-}, {} as Record<WayforgeCoreColorName, LuumSpec>)
+> = WAYFORGE_CORE_COLOR_NAMES.reduce(
+	(acc, name, idx) => {
+		acc[name] = {
+			hue: idx * 30,
+			sat: 255,
+			lum: 0.5,
+			prefer: `sat`,
+		}
+		return acc
+	},
+	{} as Record<WayforgeCoreColorName, LuumSpec>,
+)
 
 export const PAINT_MY_WAGON_RED: LuumScssRule = {
 	rootSelectors: [`.wagon`],

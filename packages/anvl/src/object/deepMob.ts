@@ -32,8 +32,8 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 		const newChild = Array.isArray(oldChild)
 			? [...oldChild]
 			: typeof oldChild === `object` && oldChild !== null
-			? { ...oldChild }
-			: oldChild
+			  ? { ...oldChild }
+			  : oldChild
 		const { data, meta } = fn(newChild, path, newParent)
 		newParent[key] = data
 		return meta

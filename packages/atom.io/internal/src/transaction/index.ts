@@ -11,7 +11,7 @@ export * from "./redo-transaction"
 export * from "./undo-transaction"
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
-export type TransactionPhase = typeof TRANSACTION_PHASES[number]
+export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
 export type TransactionUpdateInProgress<ƒ extends ƒn> = TransactionUpdate<ƒ> & {
 	phase: `applying` | `building`
