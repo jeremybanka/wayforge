@@ -3,7 +3,7 @@ import { isValueCached, readCachedValue } from "./caching"
 import type { ReadonlySelector, Selector } from "./selector"
 import type { Store } from "./store"
 
-export const readOrComputeCurrentState = <T>(
+export const readOrComputeValue = <T>(
 	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
 	store: Store,
 ): T => {

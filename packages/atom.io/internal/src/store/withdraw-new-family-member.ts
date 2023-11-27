@@ -36,13 +36,13 @@ export function withdrawNewFamilyMember<T>(
 		| StateToken<T>,
 	store: Store,
 ): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined {
-	store.logger.info(
-		`👪`,
-		token.type,
-		token.key,
-		`creating new family member in store "${store.config.name}"`,
-	)
 	if (token.family) {
+		store.logger.info(
+			`👪`,
+			token.type,
+			token.key,
+			`creating new family member in store "${store.config.name}"`,
+		)
 		const core = target(store)
 		const family = core.families.get(token.family.key)
 		if (family) {

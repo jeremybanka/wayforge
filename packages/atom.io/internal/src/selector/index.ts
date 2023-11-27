@@ -1,5 +1,6 @@
+export * from "./create-selector"
+export * from "./delete-selector"
 export * from "./get-selector-dependency-keys"
 export * from "./register-selector"
-export * from "./create-selector"
 export * from "./trace-selector-atoms"
 export * from "./update-selector-atoms"

@@ -21,7 +21,8 @@ export type Atom<T> = {
 	family?: FamilyMetadata
 	install: (store: Store) => void
 	subject: Subject<{ newValue: T; oldValue: T }>
-	default: T
+	default: T | (() => T)
+	cleanup?: () => void
 }
 
 export function createAtom<T>(
@@ -48,7 +49,7 @@ export function createAtom<T>(
 		return deposit(existing)
 	}
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
-	const newAtom = {
+	const newAtom: Atom<T> = {
 		...options,
 		type: `atom`,
 		install: (store: Store) => {
@@ -65,18 +66,33 @@ export function createAtom<T>(
 		subject,
 		...(family && { family }),
 	} as const
-	const initialValue =
-		options.default instanceof Function ? options.default() : options.default
+	let initialValue = options.default
+	if (options.default instanceof Function) {
+		initialValue = options.default()
+	}
 	core.atoms.set(newAtom.key, newAtom)
 	markAtomAsDefault(options.key, store)
 	cacheValue(options.key, initialValue, subject, store)
 	const token = deposit(newAtom)
-	for (const effect of options.effects ?? []) {
-		effect({
-			setSelf: (next) => setState(token, next, store),
-			onSet: (handle: UpdateHandler<T>) =>
-				subscribe(token, handle, `effect[${subject.subscribers.size}]`, store),
-		})
+	if (options.effects) {
+		let effectIndex = 0
+		const cleanupFunctions: (() => void)[] = []
+		for (const effect of options.effects) {
+			const cleanup = effect({
+				setSelf: (next) => setState(token, next, store),
+				onSet: (handle: UpdateHandler<T>) =>
+					subscribe(token, handle, `effect[${effectIndex}]`, store),
+			})
+			if (cleanup) {
+				cleanupFunctions.push(cleanup)
+			}
+			++effectIndex
+		}
+		newAtom.cleanup = () => {
+			for (const cleanup of cleanupFunctions) {
+				cleanup()
+			}
+		}
 	}
 	store.subject.atomCreation.next(token)
 	return token as AtomToken<T>

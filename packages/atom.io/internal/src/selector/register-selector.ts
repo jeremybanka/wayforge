@@ -1,6 +1,6 @@
 import type { Transactors } from "atom.io"
 
-import { readOrComputeCurrentState } from "../read-or-compute-current-state"
+import { readOrComputeValue } from "../read-or-compute-value"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -23,7 +23,7 @@ export const registerSelector = (
 				`State "${dependency.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 			)
 		}
-		const dependencyValue = readOrComputeCurrentState(dependencyState, store)
+		const dependencyValue = readOrComputeValue(dependencyState, store)
 
 		store.logger.info(
 			`🔌`,

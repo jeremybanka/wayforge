@@ -1,6 +1,6 @@
 import type { AtomFamily } from "atom.io"
 import type { Json, JsonInterface } from "atom.io/json"
-import { readOrComputeCurrentState } from ".."
+import { readOrComputeValue } from ".."
 import type { Store, StoreCore } from ".."
 import type { Atom } from "../atom"
 import { copyMutableIfNeeded } from "./copy-mutable-if-needed"
