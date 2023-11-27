@@ -51,8 +51,8 @@ export const addAtomToTimeline = (
 			currentTransactionKey
 				? `in transaction "${currentTransactionKey}"`
 				: currentSelectorKey
-				? `in selector "${currentSelectorKey}"`
-				: ``,
+				  ? `in selector "${currentSelectorKey}"`
+				  : ``,
 		)
 
 		if (tl.timeTraveling === null) {

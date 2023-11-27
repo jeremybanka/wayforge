@@ -9,8 +9,8 @@ export type Supported<Refine extends RefinementStrategy> =
 	Refine extends Refinement<unknown, infer T>
 		? T
 		: Refine extends ClassSignature
-		? InstanceType<Refine>
-		: never
+		  ? InstanceType<Refine>
+		  : never
 
 export type RefinementSupport = Record<string, RefinementStrategy>
 

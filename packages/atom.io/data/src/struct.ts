@@ -17,18 +17,16 @@ export function struct<
 	store: Store = IMPLICIT.STORE,
 ): [
 	{
-		[K in
-			keyof Struct as `${Key}${Capitalize<K & string>}State`]: AtomIO.AtomToken<
-			Struct[K]
-		>
+		[K in keyof Struct as `${Key}${Capitalize<
+			K & string
+		>}State`]: AtomIO.AtomToken<Struct[K]>
 	},
 	AtomIO.ReadonlySelectorToken<Struct>,
 ] {
 	const atoms: {
-		[K in
-			keyof Struct as `${Key}${Capitalize<K & string>}State`]: AtomIO.AtomToken<
-			Struct[K]
-		>
+		[K in keyof Struct as `${Key}${Capitalize<
+			K & string
+		>}State`]: AtomIO.AtomToken<Struct[K]>
 	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomName = options.key + capitalize(key) + `State`
 		acc[atomName] = createAtom(

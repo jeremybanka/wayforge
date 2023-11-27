@@ -23,8 +23,7 @@ export type Refined<
 	PossiblyUndefinedProperties = PickByValue<RefinementTargets, undefined>,
 	RequiredProperties = { [PK in keyof Properties]-?: Properties[PK] },
 	OptionalProperties = {
-		[OPK in
-			keyof PossiblyUndefinedProperties]+?: PossiblyUndefinedProperties[OPK]
+		[OPK in keyof PossiblyUndefinedProperties]+?: PossiblyUndefinedProperties[OPK]
 	},
 	/* eslint-disable-next-line @typescript-eslint/sort-type-constituents */
 > = RequiredProperties & OptionalProperties

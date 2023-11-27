@@ -40,10 +40,13 @@ export const arrayToBoolean = (arr: Json.Array): boolean =>
 export const arrayToObject = <T extends Json.Serializable>(
 	arr: Json.Array<T>,
 ): Json.Object<`${number}`, T> =>
-	arr.reduce((acc, cur, idx) => {
-		acc[`${idx}`] = cur
-		return acc
-	}, {} as Json.Object<`${number}`, T>)
+	arr.reduce(
+		(acc, cur, idx) => {
+			acc[`${idx}`] = cur
+			return acc
+		},
+		{} as Json.Object<`${number}`, T>,
+	)
 
 export const nullToString = (): string => ``
 export const nullToNumber = (): number => 0

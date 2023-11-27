@@ -23,7 +23,7 @@ export const JSON_TYPE_NAMES = [
 	`string`,
 ] as const
 
-export type JsonTypeName = typeof JSON_TYPE_NAMES[number]
+export type JsonTypeName = (typeof JSON_TYPE_NAMES)[number]
 
 export interface JsonTypes extends Record<JsonTypeName, Json.Serializable> {
 	array: Json.Array

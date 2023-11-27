@@ -56,10 +56,13 @@ export const ObjectEditor = <T extends Json.Object>({
 	const disabled = isReadonly(path)
 
 	const stableKeyMap = useRef<Record<keyof T, keyof T>>(
-		Object.keys(data).reduce((acc, key: keyof T) => {
-			acc[key] = key
-			return acc
-		}, {} as Record<keyof T, keyof T>),
+		Object.keys(data).reduce(
+			(acc, key: keyof T) => {
+				acc[key] = key
+				return acc
+			},
+			{} as Record<keyof T, keyof T>,
+		),
 	)
 
 	const setProperty = makePropertySetters(data, set)
@@ -73,8 +76,8 @@ export const ObjectEditor = <T extends Json.Object>({
 	const schemaKeys: ReadonlyArray<string> | true = isLiteral(true)(subSchema)
 		? true
 		: isObjectSchema(subSchema)
-		? Object.keys(subSchema.properties ?? {})
-		: []
+		  ? Object.keys(subSchema.properties ?? {})
+		  : []
 	const dataKeys: ReadonlyArray<string> = Object.keys(data)
 	const [unofficialKeys, officialKeys] = dataKeys.reduce(
 		([unofficial, official], key) => {

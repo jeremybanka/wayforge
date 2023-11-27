@@ -92,9 +92,8 @@ const main = async () => {
 											console.log({ rows })
 											res.end(JSON.stringify(rows))
 											break
-										} else {
-											throw 400
 										}
+										throw 400
 									}
 									case `/cities`: {
 										if (

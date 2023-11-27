@@ -28,7 +28,7 @@ export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
 	)
 }
 
-export function useJSON<Serializable extends Json.Serializable,>(
+export function useJSON<Serializable extends Json.Serializable>(
 	token: MutableAtomToken<any, Serializable>,
 ): Serializable {
 	const jsonToken = getJsonToken(token)

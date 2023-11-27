@@ -22,14 +22,14 @@ import { JSON_SCHEMA_STRING_FORMATS } from "./string-formats"
 /* eslint-disable max-lines */
 
 export const JSON_SCHEMA_TYPE_NAMES = [...JSON_TYPE_NAMES, `integer`] as const
-export type JsonSchemaTypeName = typeof JSON_SCHEMA_TYPE_NAMES[number]
+export type JsonSchemaTypeName = (typeof JSON_SCHEMA_TYPE_NAMES)[number]
 
 export const JSON_SCHEMA_META_TYPE_NAMES = [
 	...JSON_SCHEMA_TYPE_NAMES,
 	`any`,
 	`never`,
 ] as const
-export type JsonSchemaMetaTypeName = typeof JSON_SCHEMA_META_TYPE_NAMES[number]
+export type JsonSchemaMetaTypeName = (typeof JSON_SCHEMA_META_TYPE_NAMES)[number]
 
 export const JSON_SCHEMA_LOGIC_MODES = [
 	`union`,
@@ -38,7 +38,7 @@ export const JSON_SCHEMA_LOGIC_MODES = [
 	`negation`,
 	`conditional`,
 ] as const
-export type JsonSchemaLogicMode = typeof JSON_SCHEMA_LOGIC_MODES[number]
+export type JsonSchemaLogicMode = (typeof JSON_SCHEMA_LOGIC_MODES)[number]
 
 export interface JsonSchemaSystem
 	extends Record<JsonSchemaLogicMode & JsonSchemaMetaTypeName, any> {

@@ -1,6 +1,6 @@
 import type { Cardinality, Json, Refinement } from "rel8"
 
-export interface JunctionEntries<Content extends Json.Object | null,>
+export interface JunctionEntries<Content extends Json.Object | null>
 	extends Json.Object {
 	readonly relations: [string, string[]][]
 	readonly contents: [string, Content][]

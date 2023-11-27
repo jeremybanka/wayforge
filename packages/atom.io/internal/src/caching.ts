@@ -43,10 +43,9 @@ export function cacheValue<T>(
 				}
 			})
 		return future
-	} else {
-		target(store).valueMap.set(key, value)
-		return value
 	}
+	target(store).valueMap.set(key, value)
+	return value
 }
 
 export const readCachedValue = <T>(key: string, store: Store): T =>

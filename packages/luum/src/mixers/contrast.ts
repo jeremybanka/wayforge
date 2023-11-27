@@ -15,8 +15,8 @@ export const contrastSoft: Modifier<LuumSpec> = (color) =>
 	color.lum > 0.75
 		? { ...color, lum: color.lum / 2 }
 		: color.lum < 0.25
-		? { ...color, lum: color.lum + (1 - color.lum) / 2 }
-		: { ...color, lum: color.lum > 0.666 ? 1 : 0 }
+		  ? { ...color, lum: color.lum + (1 - color.lum) / 2 }
+		  : { ...color, lum: color.lum > 0.666 ? 1 : 0 }
 
 export const offset =
 	(offsetAmount: number): Modifier<HSL> =>

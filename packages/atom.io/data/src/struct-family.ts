@@ -17,18 +17,16 @@ export function structFamily<
 	default: Struct
 }): [
 	{
-		[K in
-			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
-				K & string
-			>}State`]: AtomIO.AtomFamily<Struct[K], string>
+		[K in keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
+			K & string
+		>}State`]: AtomIO.AtomFamily<Struct[K], string>
 	},
 	AtomIO.ReadonlySelectorFamily<Struct>,
 ] {
 	const atoms: {
-		[K in
-			keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
-				K & string
-			>}State`]: AtomIO.AtomFamily<Struct[K], string>
+		[K in keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
+			K & string
+		>}State`]: AtomIO.AtomFamily<Struct[K], string>
 	} = Object.keys(options.default).reduce((acc, subKey) => {
 		const atomFamilyName = nameFamily(options.key, subKey)
 		acc[atomFamilyName] = createAtomFamily(

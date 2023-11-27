@@ -25,10 +25,10 @@ export const StateEditor: FC<{
 					data instanceof Set
 						? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
 						: data instanceof Map
-						? `Map ` + JSON.stringify([...data])
-						: Object.getPrototypeOf(data).constructor.name +
-						  ` ` +
-						  fallback(() => JSON.stringify(data), `?`)
+						  ? `Map ` + JSON.stringify([...data])
+						  : Object.getPrototypeOf(data).constructor.name +
+							  ` ` +
+							  fallback(() => JSON.stringify(data), `?`)
 				}
 				disabled={true}
 			/>
@@ -54,10 +54,10 @@ export const ReadonlySelectorViewer: FC<{
 					data instanceof Set
 						? `Set ` + JSON.stringify([...data])
 						: data instanceof Map
-						? `Map ` + JSON.stringify([...data])
-						: Object.getPrototypeOf(data).constructor.name +
-						  ` ` +
-						  JSON.stringify(data)
+						  ? `Map ` + JSON.stringify([...data])
+						  : Object.getPrototypeOf(data).constructor.name +
+							  ` ` +
+							  JSON.stringify(data)
 				}
 				disabled={true}
 			/>
