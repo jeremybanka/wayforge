@@ -18,7 +18,7 @@ export type Effectors<T> = {
 	onSet: (callback: (options: { newValue: T; oldValue: T }) => void) => void
 }
 
-export type AtomEffect<T> = (tools: Effectors<T>) => void
+export type AtomEffect<T> = (tools: Effectors<T>) => (() => void) | void
 
 export type AtomOptions<T> = {
 	key: string
