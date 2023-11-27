@@ -1,16 +1,13 @@
-import type { AtomOptions, AtomToken, Logger } from "atom.io"
+import type { AtomOptions, AtomToken } from "atom.io"
 import { atom, dispose, getState, selector } from "atom.io"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
-
-let logger: Logger
+const CHOOSE = 2
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
 })
 
 describe(`dispose`, () => {
@@ -125,7 +122,7 @@ describe(`dispose`, () => {
 	})
 })
 
-describe(`auto disposability concept`, () => {
+describe(`auto disposability concept (just for fun)`, () => {
 	function disposable<T extends object>(
 		object: T,
 		dispose: () => void,
@@ -140,12 +137,14 @@ describe(`auto disposability concept`, () => {
 	}
 	it(`automatically disposes of an atom when it is dereferenced`, () => {
 		function doSomeWorkWithAtomIO() {
-			using countState = disposableAtom({
-				key: `count`,
-				default: 0,
-			})
-			console.log(JSON.stringify(countState))
-			expect(getState(countState)).toBe(0)
+			let cycles = 2
+			while (cycles--) {
+				using countState = disposableAtom({
+					key: `count`,
+					default: 0,
+				})
+				expect(getState(countState)).toBe(0)
+			}
 		}
 		doSomeWorkWithAtomIO()
 		let caught: Error
