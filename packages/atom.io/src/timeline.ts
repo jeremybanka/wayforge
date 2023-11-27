@@ -4,12 +4,7 @@ import type {
 	TimelineSelectorUpdate,
 	TimelineTransactionUpdate,
 } from "atom.io/internal"
-import {
-	IMPLICIT,
-	createTimeline,
-	redo__INTERNAL,
-	undo__INTERNAL,
-} from "atom.io/internal"
+import { IMPLICIT, createTimeline, timeTravel } from "atom.io/internal"
 
 import type { AtomFamily, AtomToken } from "."
 
@@ -33,10 +28,10 @@ export const timeline = (options: TimelineOptions): TimelineToken => {
 	return createTimeline(options, IMPLICIT.STORE)
 }
 
-export const redo = (token: TimelineToken): void => {
-	redo__INTERNAL(token, IMPLICIT.STORE)
+export const redo = (timeline: TimelineToken): void => {
+	timeTravel(`forward`, timeline, IMPLICIT.STORE)
 }
 
-export const undo = (token: TimelineToken): void => {
-	undo__INTERNAL(token, IMPLICIT.STORE)
+export const undo = (timeline: TimelineToken): void => {
+	timeTravel(`backward`, timeline, IMPLICIT.STORE)
 }
