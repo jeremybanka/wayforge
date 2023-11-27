@@ -6,8 +6,8 @@ import {
 	createMutableAtomFamily,
 	createSelector,
 	createSelectorFamily,
-	redo__INTERNAL,
 	createTimeline,
+	redo__INTERNAL,
 	transaction__INTERNAL,
 	undo__INTERNAL,
 } from "atom.io/internal"

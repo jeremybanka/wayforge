@@ -6,8 +6,8 @@ import type {
 } from "atom.io/internal"
 import {
 	IMPLICIT,
-	redo__INTERNAL,
 	createTimeline,
+	redo__INTERNAL,
 	undo__INTERNAL,
 } from "atom.io/internal"
 
