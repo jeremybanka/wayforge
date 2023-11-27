@@ -271,7 +271,8 @@ export const validateByLogicMode: {
 								},
 						  ]
 				return { isValid: thenResult.isValid, violations }
-			} else if (!ifResult.isValid && `else` in opts.schema) {
+			}
+			if (!ifResult.isValid && `else` in opts.schema) {
 				const elseResult = validateBy(opts.schema.else)(instance)
 				const violations: InstanceValidationResult[`violations`] =
 					elseResult.isValid

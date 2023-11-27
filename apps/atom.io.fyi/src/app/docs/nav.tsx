@@ -163,9 +163,8 @@ export function Spotlight({
 				removeEventListener(`resize`, updatePosition)
 				element.removeEventListener(`resize`, updatePosition)
 			}
-		} else {
-			setPosition(startingPosition)
 		}
+		setPosition(startingPosition)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [elementId, ...updateSignals])
 	return position.width === 0 ? null : (
