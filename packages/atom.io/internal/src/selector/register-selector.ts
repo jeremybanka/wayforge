@@ -4,7 +4,7 @@ import { readOrComputeCurrentState } from "../read-or-compute-current-state"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import { target } from "../transaction/transaction-internal"
+import { target } from "../transaction/create-transaction"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (

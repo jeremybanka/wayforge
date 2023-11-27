@@ -4,7 +4,6 @@ import { parseJson } from "atom.io/json"
 
 import { createAtomFamily } from "../families"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 

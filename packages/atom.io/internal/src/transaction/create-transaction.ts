@@ -21,7 +21,7 @@ export type Transaction<ƒ extends ƒn> = {
 	run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
 }
 
-export function transaction__INTERNAL<ƒ extends ƒn>(
+export function createTransaction<ƒ extends ƒn>(
 	options: TransactionOptions<ƒ>,
 	store: Store,
 ): TransactionToken<ƒ> {
@@ -46,7 +46,7 @@ export function transaction__INTERNAL<ƒ extends ƒn>(
 				throw thrown
 			}
 		},
-		install: (store) => transaction__INTERNAL(options, store),
+		install: (store) => createTransaction(options, store),
 		subject: new Subject(),
 	}
 	const core = target(store)
