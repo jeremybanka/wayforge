@@ -16,7 +16,11 @@ const mouse$ = Rx.fromEvent(window, `mousemove`).pipe(
 export const windowMousePositionState = AtomIO.atom<Point2d>({
 	key: `windowMousePosition`,
 	default: { x: 0, y: 0 },
-	effects: [({ setSelf }) => mouse$.subscribe((pos) => setSelf(pos))],
+	effects: [
+		({ setSelf }) => {
+			mouse$.subscribe((pos) => setSelf(pos))
+		},
+	],
 })
 
 export const findMousePositionState = AtomIO.atomFamily<Point2d, string>({
