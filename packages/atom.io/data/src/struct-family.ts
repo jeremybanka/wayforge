@@ -40,16 +40,21 @@ export function structFamily<
 		)
 		return acc
 	}, {} as any)
-	const findStructState = createSelectorFamily({
-		key: options.key,
-		get:
-			(id) =>
-			({ get }) => {
-				return Object.keys(options.default).reduce((acc, subKey) => {
-					acc[subKey] = get((atoms as any)[nameFamily(options.key, subKey)](id))
-					return acc
-				}, {} as any)
-			},
-	})
+	const findStructState = createSelectorFamily(
+		{
+			key: options.key,
+			get:
+				(id) =>
+				({ get }) => {
+					return Object.keys(options.default).reduce((acc, subKey) => {
+						acc[subKey] = get(
+							(atoms as any)[nameFamily(options.key, subKey)](id),
+						)
+						return acc
+					}, {} as any)
+				},
+		},
+		IMPLICIT.STORE,
+	)
 	return [atoms, findStructState]
 }

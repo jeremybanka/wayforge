@@ -62,5 +62,5 @@ export function selectorFamily<T, K extends Json.Serializable>(
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
-	return createSelectorFamily(options)
+	return createSelectorFamily(options, IMPLICIT.STORE)
 }
