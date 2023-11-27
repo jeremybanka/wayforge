@@ -16,7 +16,7 @@ export const setAtom = <T>(
 	store: Store,
 ): void => {
 	const oldValue = readOrComputeCurrentState(atom, store)
-	let newValue = copyMutableIfWithinTransaction(atom, store)
+	let newValue = copyMutableIfWithinTransaction(oldValue, atom, store)
 	newValue = become(next)(newValue)
 	store.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
 	newValue = cacheValue(atom.key, newValue, atom.subject, store)

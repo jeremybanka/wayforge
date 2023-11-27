@@ -6,6 +6,7 @@ import type { Atom } from "../atom"
 import { copyMutableIfNeeded } from "./copy-mutable-if-needed"
 
 export function copyMutableIfWithinTransaction<T>(
+	oldValue: T,
 	atom: Atom<T> | (Atom<T> & JsonInterface<T, Json.Serializable>),
 	store: Store,
 ): T {
@@ -37,7 +38,7 @@ export function copyMutableIfWithinTransaction<T>(
 			}
 		}
 	}
-	return readOrComputeCurrentState(atom, store)
+	return oldValue
 }
 
 export function copyMutableFamilyMemberWithinTransaction<T>(
