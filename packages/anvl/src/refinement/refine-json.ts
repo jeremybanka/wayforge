@@ -24,22 +24,22 @@ export const refineJsonType = (data: Json.Serializable): RefinedJson =>
 	data === null
 		? { type: `null`, data: null }
 		: isBoolean(data)
-		? { type: `boolean`, data }
-		: isNumber(data)
-		? { type: `number`, data }
-		: isString(data)
-		? { type: `string`, data }
-		: Array.isArray(data)
-		? { type: `array`, data }
-		: isPlainObject(data)
-		? { type: `object`, data }
-		: raiseError(
-				data === undefined
-					? `undefined passed to refineJsonType. This is not valid JSON.`
-					: `${stringifyJson(data)} with prototype "${
-							Object.getPrototypeOf(data).constructor.name
-					  }" passed to refineJsonType. This is not valid JSON.`,
-		  )
+		  ? { type: `boolean`, data }
+		  : isNumber(data)
+			  ? { type: `number`, data }
+			  : isString(data)
+				  ? { type: `string`, data }
+				  : Array.isArray(data)
+					  ? { type: `array`, data }
+					  : isPlainObject(data)
+						  ? { type: `object`, data }
+						  : raiseError(
+									data === undefined
+										? `undefined passed to refineJsonType. This is not valid JSON.`
+										: `${stringifyJson(data)} with prototype "${
+												Object.getPrototypeOf(data).constructor.name
+										  }" passed to refineJsonType. This is not valid JSON.`,
+							  )
 export const isJson = (input: unknown): input is Json.Serializable => {
 	if (input === null) return true
 	if (input === undefined) return false

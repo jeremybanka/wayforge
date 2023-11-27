@@ -24,9 +24,9 @@ export const DECLARABLE_THINGS = [
 	`module`,
 	`import`,
 ] as const
-export type Declarable = typeof DECLARABLE_THINGS[number]
+export type Declarable = (typeof DECLARABLE_THINGS)[number]
 export const VARIABLE_DECLARATOR = [`const`, `let`, `var`] as const
-export type VariableDeclarator = typeof VARIABLE_DECLARATOR[number]
+export type VariableDeclarator = (typeof VARIABLE_DECLARATOR)[number]
 
 export interface Declaration extends Statement {
 	[IS]: `declaration`
@@ -75,7 +75,7 @@ export const STATEABLE_THINGS = [
 	`declaration`,
 	`conditional`,
 ] as const
-export type Stateable = typeof STATEABLE_THINGS[number]
+export type Stateable = (typeof STATEABLE_THINGS)[number]
 export type Statement = { [IS]: Stateable }
 export const isStatement = (thing: unknown): thing is Statement =>
 	typeof thing === `object` &&

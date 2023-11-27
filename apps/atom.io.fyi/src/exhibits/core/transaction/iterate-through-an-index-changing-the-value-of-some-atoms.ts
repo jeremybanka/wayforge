@@ -28,12 +28,14 @@ export const findTimerLengthState = atomFamily<number, string>({
 })
 const findTimerRemainingState = selectorFamily<number, string>({
 	key: `timerRemaining`,
-	get: (id) => ({ get }) => {
-		const now = get(nowState)
-		const started = get(findTimerStartedState(id))
-		const length = get(findTimerLengthState(id))
-		return Math.max(0, length - (now - started))
-	},
+	get:
+		(id) =>
+		({ get }) => {
+			const now = get(nowState)
+			const started = get(findTimerStartedState(id))
+			const length = get(findTimerLengthState(id))
+			return Math.max(0, length - (now - started))
+		},
 })
 
 export const addOneMinuteToAllRunningTimersTX = transaction({

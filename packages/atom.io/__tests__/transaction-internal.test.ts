@@ -30,13 +30,13 @@ beforeEach(() => {
 describe(`transaction implementation specifics`, () => {
 	it(`does not emit updates until the end of the transaction`, () => {
 		const NOUNS = [`cat`, `child`, `antenna`] as const
-		type Noun = typeof NOUNS[number]
+		type Noun = (typeof NOUNS)[number]
 		const PLURALS = {
 			cat: `cats`,
 			child: `children`,
 			antenna: `antennae`,
 		}
-		type Plural = typeof PLURALS[Noun]
+		type Plural = (typeof PLURALS)[Noun]
 		const countState = atom<number>({
 			key: `count`,
 			default: 2,

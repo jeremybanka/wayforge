@@ -77,7 +77,7 @@ export const TREE_KEYWORDS = [
 export const validateAsType: {
 	[Name in JsonSchemaTypeName]: {
 		[Keyword in keyof Required<JsonSchemaSystem[Name]>]: Keyword extends `type`
-			? (v?: Name) => typeof JSON_SCHEMA_META_REFINERY[Name]
+			? (v?: Name) => (typeof JSON_SCHEMA_META_REFINERY)[Name]
 			: (options: {
 					spec: Required<JsonSchemaSystem[Name]>[Keyword]
 					refMap: Record<string, JsonSchema>

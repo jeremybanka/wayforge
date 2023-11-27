@@ -16,7 +16,7 @@ export const JSON_SCHEMA_STRING_FORMATS = [
 	`uuid`,
 ] as const
 
-export type JsonSchemaStringFormat = typeof JSON_SCHEMA_STRING_FORMATS[number]
+export type JsonSchemaStringFormat = (typeof JSON_SCHEMA_STRING_FORMATS)[number]
 
 export type date_time = string & { readonly date_time: unique symbol }
 export type date = string & { readonly date: unique symbol }

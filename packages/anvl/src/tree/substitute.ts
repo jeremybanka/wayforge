@@ -6,10 +6,10 @@ export type Substitute<Container, Content, Substitution> =
 					: Substitute<Container[K], Content, Substitution>
 		  }
 		: Container extends (infer Item)[]
-		? (Item extends Content
-				? Substitute<Item, Content, Substitution> | Substitution
-				: Substitute<Item, Content, Substitution>)[]
-		: Container
+		  ? (Item extends Content
+					? Substitute<Item, Content, Substitution> | Substitution
+					: Substitute<Item, Content, Substitution>)[]
+		  : Container
 // extends Content
 // ? Substitution
 // : Container
