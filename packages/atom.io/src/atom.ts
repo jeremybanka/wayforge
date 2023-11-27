@@ -5,13 +5,10 @@ import {
 	createAtomFamily,
 	createMutableAtom,
 	createMutableAtomFamily,
-	deleteAtom,
 } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 
 import type { AtomToken, MutableAtomToken } from "."
-
-export { deleteAtom }
 
 export type Effectors<T> = {
 	setSelf: <V extends T>(next: V | ((oldValue: T) => V)) => void

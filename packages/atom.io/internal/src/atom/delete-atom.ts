@@ -1,4 +1,5 @@
-import type { AtomToken } from "~/packages/atom.io/src"
+import type { AtomToken } from "atom.io"
+
 import type { Store } from ".."
 import { target } from ".."
 
