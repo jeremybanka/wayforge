@@ -1,5 +1,5 @@
 import { atom, deleteAtom, getState } from "atom.io"
-import { IMPLICIT } from "../internal/src"
+import { IMPLICIT } from "atom.io/internal"
 
 describe(`deleteAtom`, () => {
 	it(`deletes an atom`, () => {
