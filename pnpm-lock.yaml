@@ -12,8 +12,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@biomejs/cli-darwin-arm64':
-        specifier: 1.3.3
-        version: 1.3.3
+        specifier: 1.4.0
+        version: 1.4.0
       '@changesets/cli':
         specifier: 2.26.2
         version: 2.26.2
@@ -1445,6 +1445,9 @@ packages:
     engines: {node: '>=14.*'}
     cpu: [arm64]
     os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@biomejs/cli-darwin-arm64@1.4.0:
     resolution: {integrity: sha512-nBrtVRwr4IlTtxLOHwBwLv1sWvggf9/DnT5/ALIANJZOpoING6u8jHWipods69wK8kGa8Ld7iwHm3W5BrJJFFQ==}
@@ -1453,7 +1456,6 @@ packages:
     os: [darwin]
     requiresBuild: true
     dev: true
-    optional: true
 
   /@biomejs/cli-darwin-x64@1.3.3:
     resolution: {integrity: sha512-t+7DWTCbSgHOBcPsGKuwS1qh1z9zbXFK8i8ktE18yW7iF/W0zI62k44fYqYeFJKlb0Q08aqUvez3L+AQJFsn+w==}
