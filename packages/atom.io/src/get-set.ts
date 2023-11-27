@@ -11,7 +11,7 @@ export const getState = <T>(
 	if (state === undefined) {
 		throw new NotFoundError(token, store)
 	}
-	return Internal.readOrComputeCurrentState(state, store)
+	return Internal.readOrComputeValue(state, store)
 }
 
 export const setState = <T, New extends T>(
