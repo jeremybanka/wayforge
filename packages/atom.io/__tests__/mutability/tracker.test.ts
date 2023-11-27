@@ -21,7 +21,7 @@ const CHOOSE = 2
 let logger: Logger
 
 beforeEach(() => {
-	Internal.clearStore()
+	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
@@ -36,7 +36,10 @@ describe(`tracker`, () => {
 			key: `mutableSetState`,
 			default: new SetRTX(),
 		})
-		const { latestUpdateState } = new Tracker(mutableSetState)
+		const { latestUpdateState } = new Tracker(
+			mutableSetState,
+			Internal.IMPLICIT.STORE,
+		)
 
 		expect(getState(mutableSetState)).toEqual(new SetRTX())
 		expect(getState(latestUpdateState)).toEqual(null)
@@ -53,7 +56,7 @@ describe(`tracker`, () => {
 			key: `mutableSetState`,
 			default: new SetRTX(),
 		})
-		const tracker = new Tracker(mutableSetState)
+		const tracker = new Tracker(mutableSetState, Internal.IMPLICIT.STORE)
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
@@ -75,7 +78,10 @@ describe(`trackerFamily`, () => {
 			key: `findSetState`,
 			default: () => new SetRTX(),
 		})
-		const { findLatestUpdateState } = new FamilyTracker(findSetState)
+		const { findLatestUpdateState } = new FamilyTracker(
+			findSetState,
+			Internal.IMPLICIT.STORE,
+		)
 
 		expect(getState(findSetState(`a`))).toEqual(new SetRTX())
 		expect(getState(findLatestUpdateState(`a`))).toEqual(null)
@@ -85,7 +91,10 @@ describe(`trackerFamily`, () => {
 			key: `findSetState`,
 			default: () => new SetRTX(),
 		})
-		const { findLatestUpdateState } = new FamilyTracker(findSetState)
+		const { findLatestUpdateState } = new FamilyTracker(
+			findSetState,
+			Internal.IMPLICIT.STORE,
+		)
 		const updateTrackerTX = transaction<(key: string) => void>({
 			key: `updateTrackerTX`,
 			do: ({ set }, key) => {

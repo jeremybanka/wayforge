@@ -83,8 +83,12 @@ export const attachSelectorIndex = (
 			undefined,
 			store,
 		)
-	return createSelector({
-		key: `👁‍🗨 Selector Token Index`,
-		get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
-	})
+	return createSelector(
+		{
+			key: `👁‍🗨 Selector Token Index`,
+			get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
+		},
+		undefined,
+		IMPLICIT.STORE,
+	)
 }

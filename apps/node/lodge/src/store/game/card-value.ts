@@ -1,6 +1,6 @@
 import { atomFamily, transaction } from "atom.io"
 
-import { createMutableAtom } from "atom.io/internal"
+import { IMPLICIT, createMutableAtom } from "atom.io/internal"
 import type { Identified } from "~/packages/anvl/src/id"
 import type { Json } from "~/packages/anvl/src/json"
 import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
@@ -10,13 +10,16 @@ export const findCardValueState = atomFamily<Identified & Json.Object, string>({
 	key: `findCardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValuesIndex = createMutableAtom<SetRTX<string>, string[]>({
-	key: `cardValuesIndex::mutable`,
-	mutable: true,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => [...set],
-	fromJson: (array) => new SetRTX<string>(array),
-})
+export const cardValuesIndex = createMutableAtom<SetRTX<string>, string[]>(
+	{
+		key: `cardValuesIndex::mutable`,
+		mutable: true,
+		default: () => new SetRTX<string>(),
+		toJson: (set) => [...set],
+		fromJson: (array) => new SetRTX<string>(array),
+	},
+	IMPLICIT.STORE,
+)
 
 export const valuesOfCards = new AtomicJunction({
 	key: `valuesOfCards`,

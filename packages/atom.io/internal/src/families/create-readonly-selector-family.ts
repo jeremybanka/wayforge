@@ -14,7 +14,7 @@ import { target } from "../transaction"
 
 export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
-	store?: Store,
+	store: Store,
 ): ReadonlySelectorFamily<T, K> {
 	const core = target(store)
 	const subject = new Subject<ReadonlySelectorToken<T>>()

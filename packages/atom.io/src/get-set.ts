@@ -11,7 +11,7 @@ export const getState = <T>(
 	if (state === undefined) {
 		throw new NotFoundError(token, store)
 	}
-	return Internal.getState__INTERNAL(state, store)
+	return Internal.readOrComputeCurrentState(state, store)
 }
 
 export const setState = <T, New extends T>(
@@ -29,7 +29,7 @@ export const setState = <T, New extends T>(
 	if (state === undefined) {
 		throw new NotFoundError(token, store)
 	}
-	Internal.setState__INTERNAL(state, value, store)
+	Internal.setAtomOrSelector(state, value, store)
 	Internal.closeOperation(store)
 }
 

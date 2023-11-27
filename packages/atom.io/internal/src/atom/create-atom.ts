@@ -10,7 +10,7 @@ import { setState, subscribe } from "atom.io"
 import { cacheValue } from "../caching"
 import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
-import { IMPLICIT, deposit } from "../store"
+import { deposit } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 import { markAtomAsDefault } from "./is-default"
@@ -26,8 +26,8 @@ export type Atom<T> = {
 
 export function createAtom<T>(
 	options: AtomOptions<T> | MutableAtomOptions<any, any>,
-	family?: FamilyMetadata,
-	store: Store = IMPLICIT.STORE,
+	family: FamilyMetadata | undefined,
+	store: Store,
 ): AtomToken<T> {
 	store.logger.info(
 		`🔨`,

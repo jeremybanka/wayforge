@@ -152,7 +152,7 @@ export const IMPLICIT = {
 	},
 }
 
-export const clearStore = (store: Store = IMPLICIT.STORE): void => {
+export const clearStore = (store: Store): void => {
 	const { config } = store
 	Object.assign(store, new Store(config.name))
 	store.config = config

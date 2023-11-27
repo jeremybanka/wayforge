@@ -51,7 +51,7 @@ describe(`Future`, () => {
 			setTimeout(() => resolve(1), 1000),
 		)
 		cacheValue(`a`, promise, subject, IMPLICIT.STORE)
-		evictCachedValue(`a`)
+		evictCachedValue(`a`, IMPLICIT.STORE)
 		await promise
 		expect(Utils.stdout).not.toHaveBeenCalled()
 	})

@@ -6,10 +6,9 @@ import {
 	createMutableAtomFamily,
 	createSelector,
 	createSelectorFamily,
-	redo__INTERNAL,
-	timeline__INTERNAL,
-	transaction__INTERNAL,
-	undo__INTERNAL,
+	createTimeline,
+	createTransaction,
+	timeTravel,
 } from "atom.io/internal"
 
 import type { redo, timeline, undo } from "."
@@ -48,12 +47,12 @@ export class Silo {
 		}
 		this.selector = (options) => createSelector(options, undefined, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
-		this.transaction = (options) => transaction__INTERNAL(options, s)
-		this.timeline = (options) => timeline__INTERNAL(options, s)
+		this.transaction = (options) => createTransaction(options, s)
+		this.timeline = (options) => createTimeline(options, s)
 		this.getState = (token) => getState(token, s)
 		this.setState = (token, newValue) => setState(token, newValue, s)
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
-		this.undo = (token) => undo__INTERNAL(token, s)
-		this.redo = (token) => redo__INTERNAL(token, s)
+		this.undo = (token) => timeTravel(`backward`, token, s)
+		this.redo = (token) => timeTravel(`forward`, token, s)
 	}
 }

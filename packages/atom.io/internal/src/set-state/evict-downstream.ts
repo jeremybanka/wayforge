@@ -2,13 +2,9 @@ import type { Atom } from "../atom"
 import { evictCachedValue } from "../caching"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { target } from "../transaction"
 
-export const evictDownStream = <T>(
-	atom: Atom<T>,
-	store: Store = IMPLICIT.STORE,
-): void => {
+export const evictDownStream = <T>(atom: Atom<T>, store: Store): void => {
 	const core = target(store)
 	const downstreamKeys = core.selectorAtoms.getRelatedKeys(atom.key)
 	store.logger.info(

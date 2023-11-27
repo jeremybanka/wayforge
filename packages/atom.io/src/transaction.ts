@@ -1,5 +1,5 @@
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, transaction__INTERNAL, withdraw } from "atom.io/internal"
+import { IMPLICIT, createTransaction, withdraw } from "atom.io/internal"
 
 import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken, ƒn } from "."
 
@@ -43,7 +43,7 @@ export type TransactionIO<Token extends TransactionToken<any>> =
 export function transaction<ƒ extends ƒn>(
 	options: TransactionOptions<ƒ>,
 ): TransactionToken<ƒ> {
-	return transaction__INTERNAL(options)
+	return createTransaction(options, IMPLICIT.STORE)
 }
 
 export const runTransaction =

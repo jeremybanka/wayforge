@@ -1,2 +1,2 @@
 export * from "./become"
-export * from "./set-state-internal"
+export * from "./set-atom-or-selector"

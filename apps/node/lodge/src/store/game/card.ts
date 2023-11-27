@@ -1,5 +1,5 @@
 import { atom, atomFamily, selectorFamily } from "atom.io"
-import { createMutableAtom } from "atom.io/internal"
+import { IMPLICIT, createMutableAtom } from "atom.io/internal"
 import { selectJson } from "atom.io/json"
 
 import { Join } from "~/packages/anvl/src/join"
@@ -46,13 +46,16 @@ export const findCardState = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = createMutableAtom<SetRTX<string>, string[]>({
-	key: `cardIndex::mutable`,
-	mutable: true,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => [...set],
-	fromJson: (array) => new SetRTX<string>(array),
-})
+export const cardIndex = createMutableAtom<SetRTX<string>, string[]>(
+	{
+		key: `cardIndex::mutable`,
+		mutable: true,
+		default: () => new SetRTX<string>(),
+		toJson: (set) => [...set],
+		fromJson: (array) => new SetRTX<string>(array),
+	},
+	IMPLICIT.STORE,
+)
 
 export type CardCycle = {
 	name: string
