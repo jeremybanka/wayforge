@@ -11,10 +11,12 @@ export const evictDownStream = <T>(atom: Atom<T>, store: Store): void => {
 		`🧹`,
 		atom.type,
 		atom.key,
-		`evicting ${downstreamKeys?.size ?? 0} states downstream:`,
-		downstreamKeys,
+		downstreamKeys
+			? `evicting ${downstreamKeys.size} states downstream:`
+			: `no downstream states`,
+		downstreamKeys ?? `to evict`,
 	)
-	if (downstreamKeys !== undefined) {
+	if (downstreamKeys) {
 		if (core.operation.open) {
 			store.logger.info(
 				`🧹`,

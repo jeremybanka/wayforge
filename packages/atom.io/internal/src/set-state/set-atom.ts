@@ -2,7 +2,7 @@ import type { Atom } from "../atom"
 import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
 import { markDone } from "../operation"
-import { readOrComputeCurrentState } from "../read-or-compute-current-state"
+import { readOrComputeValue } from "../read-or-compute-value"
 import type { Store } from "../store"
 import { become } from "./become"
 import { copyMutableIfWithinTransaction } from "./copy-mutable-in-transaction"
@@ -15,7 +15,7 @@ export const setAtom = <T>(
 	next: T | ((oldValue: T) => T),
 	store: Store,
 ): void => {
-	const oldValue = readOrComputeCurrentState(atom, store)
+	const oldValue = readOrComputeValue(atom, store)
 	let newValue = copyMutableIfWithinTransaction(oldValue, atom, store)
 	newValue = become(next)(newValue)
 	store.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)

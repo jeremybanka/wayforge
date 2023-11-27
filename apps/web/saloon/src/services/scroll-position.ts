@@ -11,7 +11,11 @@ const windowScroll$ = Rx.fromEvent(window, `scroll`).pipe(
 export const windowScrollPositionState = AtomIO.atom<Point2d>({
 	key: `windowScrollPosition`,
 	default: { x: 0, y: 0 },
-	effects: [({ setSelf }) => windowScroll$.subscribe((pos) => setSelf(pos))],
+	effects: [
+		({ setSelf }) => {
+			windowScroll$.subscribe((pos) => setSelf(pos))
+		},
+	],
 })
 
 export const findScrollPositionState = AtomIO.atomFamily<Point2d, string>({

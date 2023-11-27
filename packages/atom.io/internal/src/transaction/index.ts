@@ -2,11 +2,10 @@ import type { TransactionUpdate, ƒn } from "atom.io"
 
 import type { StoreCore } from ".."
 
-export * from "./create-transaction"
-
 export * from "./abort-transaction"
 export * from "./apply-transaction"
 export * from "./build-transaction"
+export * from "./create-transaction"
 export * from "./redo-transaction"
 export * from "./undo-transaction"
 

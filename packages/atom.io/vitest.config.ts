@@ -14,7 +14,7 @@ export default defineConfig({
 		}),
 	],
 	esbuild: {
-		target: `es2019`,
+		target: `es2022`,
 	},
 	test: {
 		globals: true,
