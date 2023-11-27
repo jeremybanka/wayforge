@@ -9,13 +9,14 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { createAtom } from "../atom"
-import { IMPLICIT, type Store, deposit, withdraw } from "../store"
+import { deposit, withdraw } from "../store"
+import type { Store } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 
 export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): AtomFamily<T, K> {
 	const subject = new Subject<AtomToken<T>>()
 	const atomFamily = Object.assign(

@@ -1,7 +1,6 @@
 import type { StateUpdate } from "atom.io"
 import { Future } from "./future"
 import type { Store } from "./store"
-import { IMPLICIT } from "./store"
 import type { Subject } from "./subject"
 import { target } from "./transaction"
 
@@ -21,7 +20,7 @@ export function cacheValue<T>(
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): Future<T> | T {
 	const currentValue = target(store).valueMap.get(key)
 	if (currentValue instanceof Future) {
@@ -50,20 +49,13 @@ export function cacheValue<T>(
 	}
 }
 
-export const readCachedValue = <T>(
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): T => target(store).valueMap.get(key)
+export const readCachedValue = <T>(key: string, store: Store): T =>
+	target(store).valueMap.get(key)
 
-export const isValueCached = (
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): boolean => target(store).valueMap.has(key)
+export const isValueCached = (key: string, store: Store): boolean =>
+	target(store).valueMap.has(key)
 
-export const evictCachedValue = (
-	key: string,
-	store: Store = IMPLICIT.STORE,
-): void => {
+export const evictCachedValue = (key: string, store: Store): void => {
 	const core = target(store)
 	const currentValue = core.valueMap.get(key)
 	if (currentValue instanceof Future) {

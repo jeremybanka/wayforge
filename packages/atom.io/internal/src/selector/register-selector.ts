@@ -1,15 +1,15 @@
 import type { Transactors } from "atom.io"
 
-import { getState__INTERNAL } from "../get-state-internal"
-import { setState__INTERNAL } from "../set-state"
+import { readOrComputeCurrentState } from "../read-or-compute-current-state"
+import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
-import { IMPLICIT, withdraw } from "../store"
-import { target } from "../transaction/transaction-internal"
+import { withdraw } from "../store"
+import { target } from "../transaction/create-transaction"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
 	selectorKey: string,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): Transactors => ({
 	get: (dependency) => {
 		const core = target(store)
@@ -23,7 +23,7 @@ export const registerSelector = (
 				`State "${dependency.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 			)
 		}
-		const dependencyValue = getState__INTERNAL(dependencyState, store)
+		const dependencyValue = readOrComputeCurrentState(dependencyState, store)
 
 		store.logger.info(
 			`🔌`,
@@ -55,6 +55,6 @@ export const registerSelector = (
 				`State "${stateToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 			)
 		}
-		setState__INTERNAL(state, newValue, store)
+		setAtomOrSelector(state, newValue, store)
 	},
 })

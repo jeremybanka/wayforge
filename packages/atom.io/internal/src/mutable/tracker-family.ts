@@ -4,7 +4,6 @@ import { parseJson } from "atom.io/json"
 
 import { createAtomFamily } from "../families"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
@@ -24,7 +23,7 @@ export class FamilyTracker<
 
 	public constructor(
 		findMutableState: AtomFamily<Core, FamilyMemberKey>,
-		store: Store = IMPLICIT.STORE,
+		store: Store,
 	) {
 		this.findLatestUpdateState = createAtomFamily<
 			typeof this.Update | null,

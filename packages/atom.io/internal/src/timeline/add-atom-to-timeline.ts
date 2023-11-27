@@ -1,18 +1,18 @@
 import type { AtomToken, TimelineUpdate } from "atom.io"
 
 import type { Store } from "../store"
-import { IMPLICIT, withdraw } from "../store"
+import { withdraw } from "../store"
 import { target } from "../transaction"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
 	TimelineTransactionUpdate,
-} from "./timeline-internal"
+} from "./create-timeline"
 
 export const addAtomToTimeline = (
 	atomToken: AtomToken<any>,
 	tl: Timeline,
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): void => {
 	const atom = withdraw(atomToken, store)
 	if (atom === undefined) {
@@ -38,17 +38,6 @@ export const addAtomToTimeline = (
 				? store.transactionStatus.time
 				: null
 
-		// store.logger.info(
-		// 	`⏳ timeline "${tl.key}" saw atom "${atomToken.key}" go (`,
-		// 	update.oldValue,
-		// 	`->`,
-		// 	update.newValue,
-		// 	currentTransactionKey
-		// 		? `) in transaction "${currentTransactionKey}"`
-		// 		: currentSelectorKey
-		// 		? `) in selector "${currentSelectorKey}"`
-		// 		: `)`,
-		// )
 		store.logger.info(
 			`⏳`,
 			`timeline`,

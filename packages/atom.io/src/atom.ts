@@ -1,5 +1,6 @@
 import type { Subject, Transceiver } from "atom.io/internal"
 import {
+	IMPLICIT,
 	createAtom,
 	createAtomFamily,
 	createMutableAtom,
@@ -41,9 +42,9 @@ export function atom<T>(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
 ): AtomToken<any> {
 	if (`mutable` in options) {
-		return createMutableAtom(options)
+		return createMutableAtom(options, IMPLICIT.STORE)
 	}
-	return createAtom<T>(options)
+	return createAtom<T>(options, undefined, IMPLICIT.STORE)
 }
 
 export type AtomFamilyOptions<T, K extends Json.Serializable> = {
@@ -95,7 +96,7 @@ export function atomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
 ): AtomFamily<T, K> | MutableAtomFamily<any, any, any> {
 	if (`mutable` in options) {
-		return createMutableAtomFamily(options)
+		return createMutableAtomFamily(options, IMPLICIT.STORE)
 	}
-	return createAtomFamily<T, K>(options)
+	return createAtomFamily<T, K>(options, IMPLICIT.STORE)
 }

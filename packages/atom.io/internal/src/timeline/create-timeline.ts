@@ -9,7 +9,6 @@ import type {
 } from "atom.io"
 
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import { Subject } from "../subject"
 import { target } from "../transaction"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
@@ -51,10 +50,10 @@ export type Timeline = {
 	>
 }
 
-export function timeline__INTERNAL(
+export function createTimeline(
 	options: TimelineOptions,
-	store: Store = IMPLICIT.STORE,
-	data: Timeline | null = null,
+	store: Store,
+	data?: Timeline,
 ): TimelineToken {
 	const tl: Timeline = {
 		type: `timeline`,
@@ -65,7 +64,7 @@ export function timeline__INTERNAL(
 		transactionKey: null,
 		...data,
 		history: data?.history.map((update) => ({ ...update })) ?? [],
-		install: (store) => timeline__INTERNAL(options, store, tl),
+		install: (store) => createTimeline(options, store, tl),
 		subject: new Subject(),
 	}
 	if (options.shouldCapture) {

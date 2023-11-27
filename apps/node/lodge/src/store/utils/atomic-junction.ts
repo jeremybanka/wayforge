@@ -3,7 +3,7 @@ import { atomFamily, getState, selectorFamily, setState } from "atom.io"
 import { Junction } from "rel8/junction"
 
 import type { MutableAtomFamily } from "atom.io"
-import { createMutableAtomFamily } from "atom.io/internal"
+import { IMPLICIT, createMutableAtomFamily } from "atom.io/internal"
 import type { Json } from "~/packages/anvl/src/json"
 import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 
@@ -59,13 +59,16 @@ export class AtomicJunction<
 			SetRTX<string>,
 			string[],
 			string
-		>({
-			key: `${key}:relations::mutable`,
-			mutable: true,
-			default: () => new SetRTX(),
-			toJson: (relations) => [...relations],
-			fromJson: (relations) => new SetRTX(relations),
-		})
+		>(
+			{
+				key: `${key}:relations::mutable`,
+				mutable: true,
+				default: () => new SetRTX(),
+				toJson: (relations) => [...relations],
+				fromJson: (relations) => new SetRTX(relations),
+			},
+			IMPLICIT.STORE,
+		)
 
 		this.findRelationContentState__INTERNAL = (
 			defaultContent
