@@ -1,7 +1,6 @@
 import * as Internal from "atom.io/internal"
 
 import type { StateToken } from "."
-import { NotFoundError } from "../internal/src/not-found-error"
 
 export function setState<T, New extends T>(
 	token: StateToken<T>,
@@ -16,7 +15,7 @@ export function setState<T, New extends T>(
 		Internal.withdraw(token, store) ??
 		Internal.withdrawNewFamilyMember(token, store)
 	if (state === undefined) {
-		throw new NotFoundError(token, store)
+		throw new Internal.NotFoundError(token, store)
 	}
 	Internal.setAtomOrSelector(state, value, store)
 	Internal.closeOperation(store)
