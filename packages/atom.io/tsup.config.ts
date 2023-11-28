@@ -1,7 +1,9 @@
+import type { Options } from "tsup"
 import { defineConfig } from "tsup"
 
 export const BUNDLE_EXCLUDE_LIST = [
 	`atom.io`,
+	`atom.io/data`,
 	`atom.io/internal`,
 	`atom.io/introspection`,
 	`atom.io/json`,
@@ -21,14 +23,20 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`happy-dom`,
 ]
 
-export default defineConfig({
-	tsconfig: `tsconfig.json`,
-	entry: [`src/index.ts`],
+export const BASE_CONFIG_OPTIONS: Options = {
+	clean: true,
 	dts: true,
+	entry: [`src/index.ts`],
+	external: BUNDLE_EXCLUDE_LIST,
 	format: [`esm`, `cjs`],
+	metafile: true,
+	outDir: `./dist`,
+	sourcemap: true,
 	splitting: true,
 	treeshake: true,
-	sourcemap: true,
-	clean: true,
-	external: BUNDLE_EXCLUDE_LIST,
+}
+
+export default defineConfig({
+	...BASE_CONFIG_OPTIONS,
+	tsconfig: `tsconfig.json`,
 })
