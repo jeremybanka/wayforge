@@ -17,14 +17,14 @@ export const ElasticInput = forwardRef<
 	const spanRef = useRef<HTMLSpanElement>(null)
 	const [inputWidth, setInputWidth] = useState(`auto`)
 
-	useImperativeHandle<
-		Partial<HTMLInputElement>,
-		Partial<HTMLInputElement>
-	>(ref, () => ({
-		focus: () => {
-			inputRef.current?.focus()
-		},
-	}))
+	useImperativeHandle<Partial<HTMLInputElement>, Partial<HTMLInputElement>>(
+		ref,
+		() => ({
+			focus: () => {
+				inputRef.current?.focus()
+			},
+		}),
+	)
 
 	const extraWidth = props.type === `number` ? 15 : 0
 
