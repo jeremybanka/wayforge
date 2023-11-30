@@ -147,8 +147,7 @@ export class AtomicJunction<
 			key: `${key}:relations:selector`,
 			get:
 				(key: string) =>
-				({ get }) =>
-					[...get(this.findRelationsState__INTERNAL(key))],
+				({ get }) => [...get(this.findRelationsState__INTERNAL(key))],
 		})
 		this.findRelatedKeyState = selectorFamily<string | undefined, string>({
 			key: `${key}:relation:selector`,
