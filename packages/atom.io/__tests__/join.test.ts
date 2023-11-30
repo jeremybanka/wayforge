@@ -1,11 +1,9 @@
+import { createJoin } from "atom.io/data"
 import { vitest } from "vitest"
-import { createJoin } from "../data/src/join"
-import { IMPLICIT } from "../internal/src"
 
-import { type Logger, getState, setState, subscribe } from "atom.io"
+import { type Logger, subscribe } from "atom.io"
 
 import * as Internal from "atom.io/internal"
-import { SetRTX } from "../transceivers/set-rtx/src"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -31,7 +29,7 @@ test(`join`, () => {
 			cardinality: `1:n`,
 		},
 		undefined,
-		IMPLICIT.STORE,
+		Internal.IMPLICIT.STORE,
 	)
 	const joshuaRoomsState = Internal.getJsonToken(
 		playersInRooms.findRelatedKeysState(`joshua`),
