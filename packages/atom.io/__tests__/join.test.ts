@@ -24,22 +24,24 @@ beforeEach(() => {
 })
 
 test(`join`, () => {
-	const myJoin = createJoin(
+	const playersInRooms = createJoin(
 		{
-			key: `myJoin`,
-			between: [`a`, `b`],
-			cardinality: `n:n`,
+			key: `playersInRooms`,
+			between: [`room`, `player`],
+			cardinality: `1:n`,
 		},
 		undefined,
 		IMPLICIT.STORE,
 	)
-	const jsonTokenA = Internal.getJsonToken(myJoin.findRelatedKeysState(`a`))
-	subscribe(jsonTokenA, Utils.stdout)
+	const joshuaRoomsState = Internal.getJsonToken(
+		playersInRooms.findRelatedKeysState(`joshua`),
+	)
+	subscribe(joshuaRoomsState, Utils.stdout)
 
-	myJoin.junction.set({ a: `a`, b: `b` })
+	playersInRooms.junction.set({ player: `joshua`, room: `lobby` })
 
 	expect(Utils.stdout).toHaveBeenCalledWith({
-		newValue: [],
 		oldValue: [],
+		newValue: [`lobby`],
 	})
 })
