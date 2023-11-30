@@ -117,7 +117,6 @@ export function createJoin<
 	const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 		getRelatedKeys: (key) => getRelatedKeys(TRANSACTORS, key),
 		addRelation: (a, b) => {
-			console.log(`addRelation`, a, b)
 			addRelation(TRANSACTORS, a, b)
 		},
 		deleteRelation: (a, b) => deleteRelation(TRANSACTORS, a, b),
@@ -147,11 +146,9 @@ export function createJoin<
 			{
 				getContent: (contentKey: string) => {
 					const content = getContent(TRANSACTORS, contentKey)
-					console.log(`getContent`, contentKey, content)
 					return content
 				},
 				setContent: (contentKey: string, content: Content) => {
-					console.log(`setContent`, contentKey, content)
 					setContent(TRANSACTORS, contentKey, content)
 				},
 				deleteContent: (contentKey: string) => {
