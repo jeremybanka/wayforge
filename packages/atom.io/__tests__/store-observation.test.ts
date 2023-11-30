@@ -22,9 +22,8 @@ beforeEach(() => {
 
 describe(`store observation`, () => {
 	test(`store.subject.atomCreation fires on minting of each new AtomToken`, () => {
-		Internal.IMPLICIT.STORE.subject.atomCreation.subscribe(
-			`test`,
-			(atomToken) => Utils.stdout(atomToken),
+		Internal.IMPLICIT.STORE.subject.atomCreation.subscribe(`test`, (atomToken) =>
+			Utils.stdout(atomToken),
 		)
 		const a = atom({
 			key: `a`,
