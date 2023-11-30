@@ -1,7 +1,8 @@
 import { createJoin } from "atom.io/data"
 import { vitest } from "vitest"
 
-import { type Logger, subscribe } from "atom.io"
+import { subscribe } from "atom.io"
+import type { Logger } from "atom.io"
 
 import * as Internal from "atom.io/internal"
 import * as Utils from "./__util__"
@@ -21,25 +22,98 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 })
 
-test(`join`, () => {
-	const playersInRooms = createJoin(
-		{
-			key: `playersInRooms`,
-			between: [`room`, `player`],
-			cardinality: `1:n`,
-		},
-		undefined,
-		Internal.IMPLICIT.STORE,
-	)
-	const joshuaRoomsState = Internal.getJsonToken(
-		playersInRooms.findRelatedKeysState(`joshua`),
-	)
-	subscribe(joshuaRoomsState, Utils.stdout)
+describe(`join`, () => {
+	test(`supports 1:1 relations`, () => {
+		const roomPlayers = createJoin(
+			{
+				key: `roomPlayers`,
+				between: [`room`, `player`],
+				cardinality: `1:1`,
+			},
+			{ joinedAt: NaN },
+			Internal.IMPLICIT.STORE,
+		)
+		const lobbyPlayerState = roomPlayers.findState.playerOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.findState.roomOfPlayer(`joshua`)
+		const arenaPlayerState = roomPlayers.findState.playerOfRoom(`arena`)
 
-	playersInRooms.junction.set({ player: `joshua`, room: `lobby` })
+		subscribe(lobbyPlayerState, Utils.stdout)
+		subscribe(joshuaRoomState, Utils.stdout)
+		subscribe(arenaPlayerState, Utils.stdout)
 
-	expect(Utils.stdout).toHaveBeenCalledWith({
-		oldValue: [],
-		newValue: [`lobby`],
+		roomPlayers.relations.set(
+			{ player: `joshua`, room: `lobby` },
+			{ joinedAt: Date.now() },
+		)
+
+		expect(Utils.stdout).toHaveBeenCalledTimes(2)
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: `joshua`,
+		})
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: `lobby`,
+		})
+	})
+	test(`supports 1:n relations`, () => {
+		const roomPlayers = createJoin(
+			{
+				key: `playersInRooms`,
+				between: [`room`, `player`],
+				cardinality: `1:n`,
+			},
+			{ joinedAt: NaN },
+			Internal.IMPLICIT.STORE,
+		)
+		const lobbyPlayersState = roomPlayers.findState.playersOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.findState.roomOfPlayer(`joshua`)
+
+		subscribe(lobbyPlayersState, Utils.stdout)
+		subscribe(joshuaRoomState, Utils.stdout)
+
+		roomPlayers.relations.set(
+			{ player: `joshua`, room: `lobby` },
+			{ joinedAt: Date.now() },
+		)
+
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			oldValue: [],
+			newValue: [`joshua`],
+		})
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: `lobby`,
+		})
+	})
+	test(`supports n:n relations`, () => {
+		const roomPlayers = createJoin(
+			{
+				key: `playersInRooms`,
+				between: [`room`, `player`],
+				cardinality: `n:n`,
+			},
+			{ joinedAt: NaN },
+			Internal.IMPLICIT.STORE,
+		)
+		const lobbyPlayersState = roomPlayers.findState.playersOfRoom(`lobby`)
+		const joshuaRoomsState = roomPlayers.findState.roomsOfPlayer(`joshua`)
+
+		subscribe(lobbyPlayersState, Utils.stdout)
+		subscribe(joshuaRoomsState, Utils.stdout)
+
+		roomPlayers.relations.set(
+			{ player: `joshua`, room: `lobby` },
+			{ joinedAt: Date.now() },
+		)
+
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			oldValue: [],
+			newValue: [`joshua`],
+		})
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			oldValue: [],
+			newValue: [`lobby`],
+		})
 	})
 })

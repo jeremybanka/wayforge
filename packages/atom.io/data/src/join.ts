@@ -1,7 +1,12 @@
-import type { MutableAtomFamily, Read, Transactors, Write } from "atom.io"
+import type { Read, SelectorFamily, Transactors, Write } from "atom.io"
 import { getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { createAtomFamily, createMutableAtomFamily } from "atom.io/internal"
+import {
+	createAtomFamily,
+	createMutableAtomFamily,
+	createSelectorFamily,
+	getJsonFamily,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -13,47 +18,94 @@ import type {
 	JunctionSchema,
 } from "~/packages/rel8/junction/src"
 import { Junction } from "~/packages/rel8/junction/src"
+import type * as Rel8 from "~/packages/rel8/types/src"
 
-export type JoinOptions<ASide extends string, BSide extends string> = {
+function capitalize<S extends string>(string: S): Capitalize<S> {
+	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
+}
+
+export type JoinOptions<
+	ASide extends string,
+	BSide extends string,
+	Cardinality extends Rel8.Cardinality,
+> = {
 	key: string
 	between: [a: ASide, b: BSide]
-	cardinality: `1:1` | `1:n` | `n:n`
+	cardinality: Cardinality
 }
 
 const TRANSACTORS: Transactors = { get: getState, set: setState }
 
-export function createJoin<ASide extends string, BSide extends string>(
-	options: JoinOptions<ASide, BSide>,
+export type JoinProperties<
+	ASide extends string,
+	BSide extends string,
+	Cardinality extends Rel8.Cardinality,
+> = Cardinality extends `1:1`
+	? {
+			readonly [AB in ASide | BSide as AB extends ASide
+				? `${AB}Of${Capitalize<BSide>}`
+				: `${AB}Of${Capitalize<ASide>}`]: SelectorFamily<string, string>
+	  }
+	: Cardinality extends `1:n`
+	  ? {
+				readonly [A in ASide as `${A}Of${Capitalize<BSide>}`]: SelectorFamily<
+					string,
+					string
+				>
+		  } & {
+				readonly [B in BSide as `${B}sOf${Capitalize<ASide>}`]: SelectorFamily<
+					string[],
+					string
+				>
+		  }
+	  : Cardinality extends `n:n`
+		  ? {
+					readonly [AB in ASide | BSide as AB extends ASide
+						? `${AB}sOf${Capitalize<BSide>}`
+						: `${AB}sOf${Capitalize<ASide>}`]: SelectorFamily<string[], string>
+			  }
+		  : never
+
+export function createJoin<
+	const ASide extends string,
+	const BSide extends string,
+	const Cardinality extends Rel8.Cardinality,
+>(
+	options: JoinOptions<ASide, BSide, Cardinality>,
 	defaultContent: undefined,
 	store: Store,
 ): {
-	junction: Junction<ASide, BSide>
-	findRelatedKeysState: MutableAtomFamily<SetRTX<string>, string[], string>
+	relations: Junction<ASide, BSide>
+	findState: JoinProperties<ASide, BSide, Cardinality>
 }
 export function createJoin<
-	ASide extends string,
-	BSide extends string,
-	Content extends Json.Object,
+	const ASide extends string,
+	const Cardinality extends `1:1` | `1:n` | `n:n`,
+	const BSide extends string,
+	const Content extends Json.Object,
 >(
-	options: JoinOptions<ASide, BSide>,
+	options: JoinOptions<ASide, BSide, Cardinality>,
 	defaultContent: Content,
 	store: Store,
 ): {
-	junction: Junction<ASide, BSide, Content>
-	findRelatedKeysState: MutableAtomFamily<SetRTX<string>, string[], string>
+	relations: Junction<ASide, BSide, Content>
+	findState: JoinProperties<ASide, BSide, Cardinality>
 }
 export function createJoin<
 	ASide extends string,
 	BSide extends string,
+	Cardinality extends Rel8.Cardinality,
 	Content extends Json.Object,
 >(
-	options: JoinOptions<ASide, BSide>,
+	options: JoinOptions<ASide, BSide, Cardinality>,
 	defaultContent: Content | undefined,
 	store: Store,
 ): {
-	junction: Junction<ASide, BSide, Content>
-	findRelatedKeysState: MutableAtomFamily<SetRTX<string>, string[], string>
+	relations: Junction<ASide, BSide, Content>
+	findState: JoinProperties<ASide, BSide, Cardinality>
 } {
+	const a: ASide = options.between[0]
+	const b: BSide = options.between[1]
 	const findRelatedKeysState = createMutableAtomFamily<
 		SetRTX<string>,
 		string[],
@@ -163,12 +215,74 @@ export function createJoin<
 		externalStore =
 			baseExternalStoreConfiguration as ExternalStoreConfiguration<Content>
 	}
-	const junction = new Junction<ASide, BSide, Content>(
+	const relations = new Junction<ASide, BSide, Content>(
 		options as JunctionSchema<ASide, BSide> & Partial<JunctionEntries<Content>>,
 		{ externalStore },
 	)
-	return {
-		junction,
-		findRelatedKeysState,
+
+	const createSingleKeyStateFamily = () =>
+		createSelectorFamily<string | undefined, string>(
+			{
+				key: `${options.key}/singleRelatedKey`,
+				get:
+					(key) =>
+					({ get }) => {
+						const relatedKeys = get(findRelatedKeysState(key))
+						for (const relatedKey of relatedKeys) {
+							return relatedKey
+						}
+					},
+			},
+			store,
+		)
+	const getMultipleKeyStateFamily = () =>
+		getJsonFamily(findRelatedKeysState, store)
+
+	switch (options.cardinality) {
+		case `1:1`: {
+			const findSingleRelatedKeyState = createSingleKeyStateFamily()
+			const stateKeyA = `${a}Of${capitalize(b)}` as const
+			const stateKeyB = `${b}Of${capitalize(a)}` as const
+			const findState = {
+				[stateKeyA]: findSingleRelatedKeyState,
+				[stateKeyB]: findSingleRelatedKeyState,
+			} as JoinProperties<ASide, BSide, Cardinality>
+
+			return {
+				relations,
+				findState,
+			}
+		}
+		case `1:n`: {
+			const findSingleRelatedKeyState = createSingleKeyStateFamily()
+			const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
+			const stateKeyA = `${a}Of${capitalize(b)}` as const
+			const stateKeyB = `${b}sOf${capitalize(a)}` as const
+			const findState = {
+				[stateKeyA]: findSingleRelatedKeyState,
+				[stateKeyB]: findMultipleRelatedKeysState,
+			} as JoinProperties<ASide, BSide, Cardinality>
+
+			return {
+				relations,
+				findState,
+			}
+		}
+		case `n:n`: {
+			const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
+			const stateKeyA = `${a}sOf${capitalize(b)}` as const
+			const stateKeyB = `${b}sOf${capitalize(a)}` as const
+			const findState = {
+				[stateKeyA]: findMultipleRelatedKeysState,
+				[stateKeyB]: findMultipleRelatedKeysState,
+			} as JoinProperties<ASide, BSide, Cardinality>
+
+			return {
+				relations,
+				findState,
+			}
+		}
+		default:
+			throw new Error(`Invalid cardinality: ${options.cardinality}`)
 	}
 }
