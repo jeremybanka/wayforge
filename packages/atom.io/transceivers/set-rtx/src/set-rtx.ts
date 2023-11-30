@@ -156,6 +156,11 @@ export class SetRTX<P extends primitive>
 		}
 	}
 
+	public getUpdateNumber(update: NumberedSetUpdate): number {
+		const breakpoint = update.indexOf(`=`)
+		return Number(update.substring(0, breakpoint))
+	}
+
 	public do(update: NumberedSetUpdate): number | `OUT_OF_RANGE` | null {
 		const breakpoint = update.indexOf(`=`)
 		const updateNumber = Number(update.substring(0, breakpoint))

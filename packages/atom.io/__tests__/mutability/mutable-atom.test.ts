@@ -1,5 +1,6 @@
 import { vitest } from "vitest"
 
+import type { Logger } from "atom.io"
 import {
 	atom,
 	getState,
@@ -14,12 +15,14 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 1
-Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-const { logger } = Internal.IMPLICIT.STORE
+const CHOOSE = 3
+
+let logger: Logger
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -48,6 +51,10 @@ describe(`mutable atomic state`, () => {
 		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: [`a`],
 			oldValue: [],
+		})
+		expect(Utils.stdout).not.toHaveBeenCalledWith({
+			newValue: [`a`],
+			oldValue: [`a`],
 		})
 		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: `0=add:"a"`,
