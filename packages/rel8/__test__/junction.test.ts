@@ -292,8 +292,9 @@ describe(`Junction.prototype.toJSON`, () => {
 
 describe(`Junction with external storage`, () => {
 	it(`accepts external storage methods`, () => {
+		type PlayerJoinedRoom = { joinedAt: number }
 		const relationMap = new Map<string, Set<string>>()
-		const contentMap = new Map<string, Json.Object>()
+		const contentMap = new Map<string, PlayerJoinedRoom>()
 		const playersInRooms = new Junction(
 			{
 				between: [`room`, `player`],

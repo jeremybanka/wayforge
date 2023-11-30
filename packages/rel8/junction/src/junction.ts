@@ -11,23 +11,33 @@ export interface JunctionSchema<ASide extends string, BSide extends string>
 	readonly cardinality: Cardinality
 }
 
-export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = {
-	externalStore?: (Content extends null
-		? {
-				getContent?: undefined
-				setContent?: undefined
-				deleteContent?: undefined
-		  }
-		: {
-				getContent: (contentKey: string) => Content | undefined
-				setContent: (contentKey: string, content: Content) => void
-				deleteContent: (contentKey: string) => void
-		  }) & {
-		addRelation: (a: string, b: string) => void
-		deleteRelation: (a: string, b: string) => void
-		getRelatedKeys: (key: string) => Set<string> | undefined
-		has: (a: string, b?: string) => boolean
+export type BaseExternalStoreConfiguration = {
+	addRelation: (a: string, b: string) => void
+	deleteRelation: (a: string, b: string) => void
+	getRelatedKeys: (key: string) => Set<string> | undefined
+	has: (a: string, b?: string) => boolean
+}
+
+export type ExternalStoreWithContentConfiguration<Content extends Json.Object> =
+	{
+		getContent: (contentKey: string) => Content | undefined
+		setContent: (contentKey: string, content: Content) => void
+		deleteContent: (contentKey: string) => void
 	}
+
+export type Empty<Obj extends object> = {
+	[Key in keyof Obj]?: undefined
+}
+
+export type ExternalStoreConfiguration<Content extends Json.Object | null> =
+	Content extends Json.Object
+		? BaseExternalStoreConfiguration &
+				ExternalStoreWithContentConfiguration<Content>
+		: BaseExternalStoreConfiguration &
+				Empty<ExternalStoreWithContentConfiguration<Json.Object>>
+
+export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = {
+	externalStore?: ExternalStoreConfiguration<Content>
 	isContent?: Refinement<unknown, Content>
 	makeContentKey?: (a: string, b: string) => string
 }
@@ -111,6 +121,7 @@ export class Junction<
 			this.makeContentKey = config.makeContentKey
 		}
 		if (config?.externalStore) {
+			console.log(`config?.externalStore`, config?.externalStore)
 			const externalStore = config.externalStore
 			this.has = (a, b) => externalStore.has(a, b)
 			this.addRelation = (a, b) => {
@@ -160,6 +171,7 @@ export class Junction<
 			? [] | [b?: string | undefined]
 			: [b: string, content: Content] | [content: Content]
 	): this {
+		// console.log(`set`, a, rest)
 		const b: string =
 			// @ts-expect-error we deduce hereby that this.b may index a
 			typeof rest[0] === `string` ? rest[0] : (a[this.b] as string)
