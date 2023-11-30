@@ -132,7 +132,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					latestUpdateState.key,
 					() => {
 						unsubscribe()
-						// has already applied update?
 						const mutable = getState(mutableState, store)
 						const updateNumber = mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
