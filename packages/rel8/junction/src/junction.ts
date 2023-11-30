@@ -121,7 +121,6 @@ export class Junction<
 			this.makeContentKey = config.makeContentKey
 		}
 		if (config?.externalStore) {
-			console.log(`config?.externalStore`, config?.externalStore)
 			const externalStore = config.externalStore
 			this.has = (a, b) => externalStore.has(a, b)
 			this.addRelation = (a, b) => {
