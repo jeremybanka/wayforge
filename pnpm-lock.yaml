@@ -36,8 +36,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       tsx:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
       turbo:
         specifier: 1.10.16
         version: 1.10.16
@@ -158,8 +158,8 @@ importers:
         specifier: 8.54.0
         version: 8.54.0
       tsx:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
       vitest:
         specifier: 0.34.6
         version: 0.34.6(happy-dom@12.10.3)
@@ -195,8 +195,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       tsx:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
       vite:
         specifier: 5.0.4
         version: 5.0.4(@types/node@20.10.1)(sass@1.69.5)
@@ -241,8 +241,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       tsx:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
       vite:
         specifier: 5.0.4
         version: 5.0.4(@types/node@20.10.1)(sass@1.69.5)
@@ -10359,8 +10359,8 @@ packages:
       - ts-node
     dev: true
 
-  /tsx@4.6.0:
-    resolution: {integrity: sha512-HLHaDQ78mly4Pd5co6tWQOiNVYoYYAPUcwSSZK4bcs3zSEsg+/67LS/ReHook0E7DKPfe1J5jc0ocIhUrnaR4w==}
+  /tsx@4.6.1:
+    resolution: {integrity: sha512-OQ4TAPHXAPUo/NZAmmIybl0o8LFOTlycQxFepLBAp6EV87U88fOKYGCQI2viGAEOVU9UW/cgQcxcOMnfEKVY3Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
