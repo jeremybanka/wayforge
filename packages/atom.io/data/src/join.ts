@@ -119,7 +119,7 @@ export function join<
 	const Cardinality extends Rel8.Cardinality,
 >(
 	options: JoinOptions<ASide, BSide, Cardinality, null>,
-	defaultContent: undefined,
+	defaultContent?: undefined,
 	store?: Store,
 ): {
 	relations: Junction<ASide, BSide>
@@ -215,9 +215,7 @@ export function join<
 	}
 	const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 		getRelatedKeys: (key) => getRelatedKeys(TRANSACTORS, key),
-		addRelation: (a, b) => {
-			addRelation(TRANSACTORS, a, b)
-		},
+		addRelation: (a, b) => addRelation(TRANSACTORS, a, b),
 		deleteRelation: (a, b) => deleteRelation(TRANSACTORS, a, b),
 		has: (a, b) => has(TRANSACTORS, a, b),
 	}
@@ -263,10 +261,10 @@ export function join<
 		externalStore =
 			baseExternalStoreConfiguration as ExternalStoreConfiguration<Content>
 	}
-	const relations = new Junction<ASide, BSide, Content>(
-		options as JunctionSchema<ASide, BSide> & Partial<JunctionEntries<Content>>,
-		{ externalStore, makeContentKey: (...args) => args.sort().join(`:`) },
-	)
+	const relations = new Junction<ASide, BSide, Content>(options, {
+		externalStore,
+		makeContentKey: (...args) => args.sort().join(`:`),
+	})
 
 	const createSingleKeyStateFamily = () =>
 		createSelectorFamily<string | undefined, string>(
