@@ -33,9 +33,13 @@ describe(`join`, () => {
 			{ joinedAt: NaN },
 			Internal.IMPLICIT.STORE,
 		)
-		const lobbyPlayerState = roomPlayers.findState.playerOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.findState.roomOfPlayer(`joshua`)
-		const arenaPlayerState = roomPlayers.findState.playerOfRoom(`arena`)
+		const lobbyPlayerState = roomPlayers.findState.playerKeyOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+		const arenaPlayerState = roomPlayers.findState.playerKeyOfRoom(`arena`)
+		const lobbyPlayerEntryState =
+			roomPlayers.findState.playerEntryOfRoom(`lobby`)
+		const joshuaRoomEntryState =
+			roomPlayers.findState.roomEntryOfPlayer(`joshua`)
 
 		subscribe(lobbyPlayerState, Utils.stdout)
 		subscribe(joshuaRoomState, Utils.stdout)
@@ -66,8 +70,12 @@ describe(`join`, () => {
 			{ joinedAt: NaN },
 			Internal.IMPLICIT.STORE,
 		)
-		const lobbyPlayersState = roomPlayers.findState.playersOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.findState.roomOfPlayer(`joshua`)
+		const lobbyPlayersState = roomPlayers.findState.playerKeysOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+		const lobbyPlayerEntriesState =
+			roomPlayers.findState.playerEntriesOfRoom(`lobby`)
+		const joshuaRoomEntryState =
+			roomPlayers.findState.roomEntryOfPlayer(`joshua`)
 
 		subscribe(lobbyPlayersState, Utils.stdout)
 		subscribe(joshuaRoomState, Utils.stdout)
@@ -96,8 +104,12 @@ describe(`join`, () => {
 			{ joinedAt: NaN },
 			Internal.IMPLICIT.STORE,
 		)
-		const lobbyPlayersState = roomPlayers.findState.playersOfRoom(`lobby`)
-		const joshuaRoomsState = roomPlayers.findState.roomsOfPlayer(`joshua`)
+		const lobbyPlayersState = roomPlayers.findState.playerKeysOfRoom(`lobby`)
+		const joshuaRoomsState = roomPlayers.findState.roomKeysOfPlayer(`joshua`)
+		const lobbyPlayerEntriesState =
+			roomPlayers.findState.playerEntriesOfRoom(`lobby`)
+		const joshuaRoomsEntriesState =
+			roomPlayers.findState.roomEntriesOfPlayer(`joshua`)
 
 		subscribe(lobbyPlayersState, Utils.stdout)
 		subscribe(joshuaRoomsState, Utils.stdout)

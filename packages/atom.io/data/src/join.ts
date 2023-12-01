@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type { Read, SelectorFamily, Transactors, Write } from "atom.io"
 import { getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
@@ -36,33 +37,73 @@ export type JoinOptions<
 
 const TRANSACTORS: Transactors = { get: getState, set: setState }
 
+type TransactorsWithNothingElse = Transactors & {}
+
+type StrictEquals<A, B> = A extends B ? (B extends A ? true : false) : false
+
+type ProperNonExtension = StrictEquals<Transactors, TransactorsWithNothingElse>
+
 export type JoinProperties<
 	ASide extends string,
 	BSide extends string,
 	Cardinality extends Rel8.Cardinality,
+	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
-	? {
+	? (Content extends Json.Object
+			? {
+					readonly [AB in ASide | BSide as AB extends ASide
+						? `${AB}EntryOf${Capitalize<BSide>}`
+						: `${AB}EntryOf${Capitalize<ASide>}`]: SelectorFamily<
+						[string, Content],
+						string
+					>
+			  }
+			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
-				? `${AB}Of${Capitalize<BSide>}`
-				: `${AB}Of${Capitalize<ASide>}`]: SelectorFamily<string, string>
+				? `${AB}KeyOf${Capitalize<BSide>}`
+				: `${AB}KeyOf${Capitalize<ASide>}`]: SelectorFamily<string, string>
 	  }
 	: Cardinality extends `1:n`
-	  ? {
-				readonly [A in ASide as `${A}Of${Capitalize<BSide>}`]: SelectorFamily<
+	  ? (Content extends Json.Object
+				? {
+						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: SelectorFamily<
+							[string, Content],
+							string
+						>
+				  } & {
+						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: SelectorFamily<
+							[string, Content][],
+							string
+						>
+				  }
+				: {}) & {
+				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: SelectorFamily<
 					string,
 					string
 				>
 		  } & {
-				readonly [B in BSide as `${B}sOf${Capitalize<ASide>}`]: SelectorFamily<
+				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: SelectorFamily<
 					string[],
 					string
 				>
 		  }
 	  : Cardinality extends `n:n`
-		  ? {
+		  ? (Content extends Json.Object
+					? {
+							readonly [AB in ASide | BSide as AB extends ASide
+								? `${AB}EntriesOf${Capitalize<BSide>}`
+								: `${AB}EntriesOf${Capitalize<ASide>}`]: SelectorFamily<
+								[string, Content][],
+								string
+							>
+					  }
+					: {}) & {
 					readonly [AB in ASide | BSide as AB extends ASide
-						? `${AB}sOf${Capitalize<BSide>}`
-						: `${AB}sOf${Capitalize<ASide>}`]: SelectorFamily<string[], string>
+						? `${AB}KeysOf${Capitalize<BSide>}`
+						: `${AB}KeysOf${Capitalize<ASide>}`]: SelectorFamily<
+						string[],
+						string
+					>
 			  }
 		  : never
 
@@ -76,7 +117,7 @@ export function createJoin<
 	store: Store,
 ): {
 	relations: Junction<ASide, BSide>
-	findState: JoinProperties<ASide, BSide, Cardinality>
+	findState: JoinProperties<ASide, BSide, Cardinality, null>
 }
 export function createJoin<
 	const ASide extends string,
@@ -89,7 +130,7 @@ export function createJoin<
 	store: Store,
 ): {
 	relations: Junction<ASide, BSide, Content>
-	findState: JoinProperties<ASide, BSide, Cardinality>
+	findState: JoinProperties<ASide, BSide, Cardinality, Content>
 }
 export function createJoin<
 	ASide extends string,
@@ -102,7 +143,7 @@ export function createJoin<
 	store: Store,
 ): {
 	relations: Junction<ASide, BSide, Content>
-	findState: JoinProperties<ASide, BSide, Cardinality>
+	findState: JoinProperties<ASide, BSide, Cardinality, Content>
 } {
 	const a: ASide = options.between[0]
 	const b: BSide = options.between[1]
