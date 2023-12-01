@@ -188,11 +188,11 @@ export class Junction<
 				if (aPrev && aPrev !== a) this.delete(aPrev, b)
 			}
 		}
-		this.addRelation(a, b)
 		if (content) {
 			const contentKey = this.makeContentKey(a, b)
 			this.setContent(contentKey, content)
 		}
+		this.addRelation(a, b)
 		return this
 	}
 
