@@ -1,7 +1,7 @@
 import { join } from "atom.io/data"
 import { vitest } from "vitest"
 
-import { subscribe } from "atom.io"
+import { getState, subscribe } from "atom.io"
 import type { Logger } from "atom.io"
 
 import * as Internal from "atom.io/internal"
@@ -171,5 +171,22 @@ describe(`some practical use cases`, () => {
 		const measure = performance.getEntriesByName(`test`)[0]
 		console.log(measure)
 	})
-	test(`initializing a join from serialized junction data`, () => {})
+	test(`initializing a join from serialized junction data`, () => {
+		const userGroups = join({
+			key: `userGroups`,
+			between: [`user`, `group`],
+			cardinality: `n:n`,
+			relations: [
+				[`a`, [`1`]],
+				[`b`, [`3`]],
+				[`c`, [`2`]],
+			],
+		})
+		expect(getState(userGroups.findState.groupKeysOfUser(`a`))).toEqual([`1`])
+		expect(getState(userGroups.findState.groupKeysOfUser(`b`))).toEqual([`3`])
+		expect(getState(userGroups.findState.groupKeysOfUser(`c`))).toEqual([`2`])
+		expect(getState(userGroups.findState.userKeysOfGroup(`1`))).toEqual([`a`])
+		expect(getState(userGroups.findState.userKeysOfGroup(`2`))).toEqual([`c`])
+		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([`b`])
+	})
 })
