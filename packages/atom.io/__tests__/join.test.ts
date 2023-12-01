@@ -1,7 +1,7 @@
 import { createJoin } from "atom.io/data"
 import { vitest } from "vitest"
 
-import { subscribe } from "atom.io"
+import { getState, subscribe } from "atom.io"
 import type { Logger } from "atom.io"
 
 import * as Internal from "atom.io/internal"
@@ -20,10 +20,15 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
+	vitest.spyOn(Utils, `stdout0`)
+	vitest.spyOn(Utils, `stdout1`)
+	vitest.spyOn(Utils, `stdout2`)
+	vitest.spyOn(Utils, `stdout3`)
 })
 
 describe(`join`, () => {
 	test(`supports 1:1 relations`, () => {
+		// expect(true).toBe(true)
 		const roomPlayers = createJoin(
 			{
 				key: `roomPlayers`,
@@ -35,29 +40,42 @@ describe(`join`, () => {
 		)
 		const lobbyPlayerState = roomPlayers.findState.playerKeyOfRoom(`lobby`)
 		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+
 		const arenaPlayerState = roomPlayers.findState.playerKeyOfRoom(`arena`)
+
 		const lobbyPlayerEntryState =
 			roomPlayers.findState.playerEntryOfRoom(`lobby`)
 		const joshuaRoomEntryState =
 			roomPlayers.findState.roomEntryOfPlayer(`joshua`)
 
-		subscribe(lobbyPlayerState, Utils.stdout)
-		subscribe(joshuaRoomState, Utils.stdout)
 		subscribe(arenaPlayerState, Utils.stdout)
 
-		roomPlayers.relations.set(
-			{ player: `joshua`, room: `lobby` },
-			{ joinedAt: Date.now() },
-		)
+		subscribe(lobbyPlayerState, Utils.stdout0)
+		subscribe(joshuaRoomState, Utils.stdout1)
 
-		expect(Utils.stdout).toHaveBeenCalledTimes(2)
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		subscribe(lobbyPlayerEntryState, Utils.stdout2)
+		subscribe(joshuaRoomEntryState, Utils.stdout3)
+
+		const joinedAt = Date.now()
+
+		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+
+		expect(Utils.stdout).toHaveBeenCalledTimes(0)
+		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: undefined,
 			newValue: `joshua`,
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: undefined,
 			newValue: `lobby`,
+		})
+		expect(Utils.stdout2).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: [`joshua`, { joinedAt }],
+		})
+		expect(Utils.stdout3).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: [`lobby`, { joinedAt }],
 		})
 	})
 	test(`supports 1:n relations`, () => {
@@ -77,21 +95,30 @@ describe(`join`, () => {
 		const joshuaRoomEntryState =
 			roomPlayers.findState.roomEntryOfPlayer(`joshua`)
 
-		subscribe(lobbyPlayersState, Utils.stdout)
-		subscribe(joshuaRoomState, Utils.stdout)
+		subscribe(lobbyPlayersState, Utils.stdout0)
+		subscribe(joshuaRoomState, Utils.stdout1)
+		subscribe(lobbyPlayerEntriesState, Utils.stdout2)
+		subscribe(joshuaRoomEntryState, Utils.stdout3)
 
-		roomPlayers.relations.set(
-			{ player: `joshua`, room: `lobby` },
-			{ joinedAt: Date.now() },
-		)
+		const joinedAt = Date.now()
 
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+
+		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: [],
 			newValue: [`joshua`],
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: undefined,
 			newValue: `lobby`,
+		})
+		expect(Utils.stdout2).toHaveBeenCalledWith({
+			oldValue: [],
+			newValue: [[`joshua`, { joinedAt }]],
+		})
+		expect(Utils.stdout3).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: [`lobby`, { joinedAt }],
 		})
 	})
 	test(`supports n:n relations`, () => {
@@ -111,21 +138,30 @@ describe(`join`, () => {
 		const joshuaRoomsEntriesState =
 			roomPlayers.findState.roomEntriesOfPlayer(`joshua`)
 
-		subscribe(lobbyPlayersState, Utils.stdout)
-		subscribe(joshuaRoomsState, Utils.stdout)
+		subscribe(lobbyPlayersState, Utils.stdout0)
+		subscribe(joshuaRoomsState, Utils.stdout1)
+		subscribe(lobbyPlayerEntriesState, Utils.stdout2)
+		subscribe(joshuaRoomsEntriesState, Utils.stdout3)
 
-		roomPlayers.relations.set(
-			{ player: `joshua`, room: `lobby` },
-			{ joinedAt: Date.now() },
-		)
+		const joinedAt = Date.now()
 
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+
+		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: [],
 			newValue: [`joshua`],
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: [],
 			newValue: [`lobby`],
+		})
+		expect(Utils.stdout2).toHaveBeenCalledWith({
+			oldValue: [],
+			newValue: [[`joshua`, { joinedAt }]],
+		})
+		expect(Utils.stdout3).toHaveBeenCalledWith({
+			oldValue: [],
+			newValue: [[`lobby`, { joinedAt }]],
 		})
 	})
 })

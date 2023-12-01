@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type { Read, SelectorFamily, Transactors, Write } from "atom.io"
+import type {
+	AtomFamily,
+	Read,
+	SelectorFamily,
+	Transactors,
+	Write,
+} from "atom.io"
 import { getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
@@ -37,12 +43,6 @@ export type JoinOptions<
 
 const TRANSACTORS: Transactors = { get: getState, set: setState }
 
-type TransactorsWithNothingElse = Transactors & {}
-
-type StrictEquals<A, B> = A extends B ? (B extends A ? true : false) : false
-
-type ProperNonExtension = StrictEquals<Transactors, TransactorsWithNothingElse>
-
 export type JoinProperties<
 	ASide extends string,
 	BSide extends string,
@@ -54,20 +54,23 @@ export type JoinProperties<
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}EntryOf${Capitalize<BSide>}`
 						: `${AB}EntryOf${Capitalize<ASide>}`]: SelectorFamily<
-						[string, Content],
+						[string, Content] | undefined,
 						string
 					>
 			  }
 			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
-				: `${AB}KeyOf${Capitalize<ASide>}`]: SelectorFamily<string, string>
+				: `${AB}KeyOf${Capitalize<ASide>}`]: SelectorFamily<
+				string | undefined,
+				string
+			>
 	  }
 	: Cardinality extends `1:n`
 	  ? (Content extends Json.Object
 				? {
 						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: SelectorFamily<
-							[string, Content],
+							[string, Content] | undefined,
 							string
 						>
 				  } & {
@@ -78,7 +81,7 @@ export type JoinProperties<
 				  }
 				: {}) & {
 				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: SelectorFamily<
-					string,
+					string | undefined,
 					string
 				>
 		  } & {
@@ -216,8 +219,9 @@ export function createJoin<
 		has: (a, b) => has(TRANSACTORS, a, b),
 	}
 	let externalStore: ExternalStoreConfiguration<Content>
+	let findContentState: AtomFamily<Content, string>
 	if (defaultContent) {
-		const findContentState = createAtomFamily<Content, string>(
+		findContentState = createAtomFamily<Content, string>(
 			{
 				key: `${options.key}/content`,
 				default: defaultContent,
@@ -258,7 +262,7 @@ export function createJoin<
 	}
 	const relations = new Junction<ASide, BSide, Content>(
 		options as JunctionSchema<ASide, BSide> & Partial<JunctionEntries<Content>>,
-		{ externalStore },
+		{ externalStore, makeContentKey: (...args) => args.sort().join(`:`) },
 	)
 
 	const createSingleKeyStateFamily = () =>
@@ -278,17 +282,61 @@ export function createJoin<
 		)
 	const getMultipleKeyStateFamily = () =>
 		getJsonFamily(findRelatedKeysState, store)
+	const createSingleEntryStateFamily = () =>
+		createSelectorFamily<[string, Content] | undefined, string>(
+			{
+				key: `${options.key}/singleRelatedEntry`,
+				get:
+					(key) =>
+					({ get }) => {
+						const relatedKeys = get(findRelatedKeysState(key))
+						for (const relatedKey of relatedKeys) {
+							const contentKey = relations.makeContentKey(key, relatedKey)
+							return [relatedKey, get(findContentState(contentKey))]
+						}
+					},
+			},
+			store,
+		)
+	const getMultipleEntryStateFamily = () =>
+		createSelectorFamily<[string, Content][], string>(
+			{
+				key: `${options.key}/multipleRelatedEntries`,
+				get:
+					(key) =>
+					({ get }) => {
+						const relatedKeys = get(findRelatedKeysState(key))
+						return [...relatedKeys].map((relatedKey) => {
+							const contentKey = relations.makeContentKey(key, relatedKey)
+							return [relatedKey, get(findContentState(contentKey))]
+						})
+					},
+			},
+			store,
+		)
 
 	switch (options.cardinality) {
 		case `1:1`: {
 			const findSingleRelatedKeyState = createSingleKeyStateFamily()
-			const stateKeyA = `${a}Of${capitalize(b)}` as const
-			const stateKeyB = `${b}Of${capitalize(a)}` as const
-			const findState = {
+			const stateKeyA = `${a}KeyOf${capitalize(b)}` as const
+			const stateKeyB = `${b}KeyOf${capitalize(a)}` as const
+			const findStateBase = {
 				[stateKeyA]: findSingleRelatedKeyState,
 				[stateKeyB]: findSingleRelatedKeyState,
-			} as JoinProperties<ASide, BSide, Cardinality>
-
+			} as JoinProperties<ASide, BSide, Cardinality, Content>
+			let findState: JoinProperties<ASide, BSide, Cardinality, Content>
+			if (defaultContent) {
+				const findSingleRelatedEntryState = createSingleEntryStateFamily()
+				const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
+				const entriesStateKeyB = `${b}EntryOf${capitalize(a)}` as const
+				const findStateWithContent = {
+					[entriesStateKeyA]: findSingleRelatedEntryState,
+					[entriesStateKeyB]: findSingleRelatedEntryState,
+				}
+				findState = Object.assign(findStateBase, findStateWithContent)
+			} else {
+				findState = findStateBase
+			}
 			return {
 				relations,
 				findState,
@@ -297,13 +345,26 @@ export function createJoin<
 		case `1:n`: {
 			const findSingleRelatedKeyState = createSingleKeyStateFamily()
 			const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
-			const stateKeyA = `${a}Of${capitalize(b)}` as const
-			const stateKeyB = `${b}sOf${capitalize(a)}` as const
-			const findState = {
+			const stateKeyA = `${a}KeyOf${capitalize(b)}` as const
+			const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
+			const findStateBase = {
 				[stateKeyA]: findSingleRelatedKeyState,
 				[stateKeyB]: findMultipleRelatedKeysState,
-			} as JoinProperties<ASide, BSide, Cardinality>
-
+			} as JoinProperties<ASide, BSide, Cardinality, Content>
+			let findState: JoinProperties<ASide, BSide, Cardinality, Content>
+			if (defaultContent) {
+				const findSingleRelatedEntryState = createSingleEntryStateFamily()
+				const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
+				const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
+				const entriesStateKeyB = `${b}EntriesOf${capitalize(a)}` as const
+				const findStateWithContent = {
+					[entriesStateKeyA]: findSingleRelatedEntryState,
+					[entriesStateKeyB]: findMultipleRelatedEntriesState,
+				}
+				findState = Object.assign(findStateBase, findStateWithContent)
+			} else {
+				findState = findStateBase
+			}
 			return {
 				relations,
 				findState,
@@ -311,13 +372,25 @@ export function createJoin<
 		}
 		case `n:n`: {
 			const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
-			const stateKeyA = `${a}sOf${capitalize(b)}` as const
-			const stateKeyB = `${b}sOf${capitalize(a)}` as const
-			const findState = {
+			const stateKeyA = `${a}KeysOf${capitalize(b)}` as const
+			const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
+			const findStateBase = {
 				[stateKeyA]: findMultipleRelatedKeysState,
 				[stateKeyB]: findMultipleRelatedKeysState,
-			} as JoinProperties<ASide, BSide, Cardinality>
-
+			} as JoinProperties<ASide, BSide, Cardinality, Content>
+			let findState: JoinProperties<ASide, BSide, Cardinality, Content>
+			if (defaultContent) {
+				const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
+				const entriesStateKeyA = `${a}EntriesOf${capitalize(b)}` as const
+				const entriesStateKeyB = `${b}EntriesOf${capitalize(a)}` as const
+				const findStateWithContent = {
+					[entriesStateKeyA]: findMultipleRelatedEntriesState,
+					[entriesStateKeyB]: findMultipleRelatedEntriesState,
+				}
+				findState = Object.assign(findStateBase, findStateWithContent)
+			} else {
+				findState = findStateBase
+			}
 			return {
 				relations,
 				findState,
