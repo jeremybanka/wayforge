@@ -114,8 +114,10 @@ export class Junction<
 		this.b = data.between[1]
 
 		this.cardinality = data.cardinality
-		this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
-		this.contents = new Map(data.contents)
+		if (!config?.externalStore) {
+			this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
+			this.contents = new Map(data.contents)
+		}
 		this.isContent = config?.isContent ?? null
 		if (config?.makeContentKey) {
 			this.makeContentKey = config.makeContentKey
@@ -144,6 +146,12 @@ export class Junction<
 					externalStore.deleteContent(contentKey)
 					return this
 				}
+			}
+			for (const [a, bs] of data.relations ?? []) {
+				for (const b of bs) this.addRelation(a, b)
+			}
+			for (const [contentKey, content] of data.contents ?? []) {
+				this.setContent(contentKey, content)
 			}
 		}
 	}
