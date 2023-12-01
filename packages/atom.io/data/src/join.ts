@@ -9,6 +9,7 @@ import type {
 import { getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
+	IMPLICIT,
 	createAtomFamily,
 	createMutableAtomFamily,
 	createSelectorFamily,
@@ -27,23 +28,25 @@ import type {
 import { Junction } from "~/packages/rel8/junction/src"
 import type * as Rel8 from "~/packages/rel8/types/src"
 
+const TRANSACTORS: Transactors = { get: getState, set: setState }
+
 function capitalize<S extends string>(string: S): Capitalize<S> {
 	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
 }
 
-export type JoinOptions<
+export interface JoinOptions<
 	ASide extends string,
 	BSide extends string,
 	Cardinality extends Rel8.Cardinality,
-> = {
-	key: string
-	between: [a: ASide, b: BSide]
-	cardinality: Cardinality
+	Content extends Json.Object | null,
+> extends Json.Object,
+		JunctionSchema<ASide, BSide>,
+		Partial<JunctionEntries<Content>> {
+	readonly key: string
+	readonly cardinality: Cardinality
 }
 
-const TRANSACTORS: Transactors = { get: getState, set: setState }
-
-export type JoinProperties<
+export type JoinState<
 	ASide extends string,
 	BSide extends string,
 	Cardinality extends Rel8.Cardinality,
@@ -110,43 +113,43 @@ export type JoinProperties<
 			  }
 		  : never
 
-export function createJoin<
+export function join<
 	const ASide extends string,
 	const BSide extends string,
 	const Cardinality extends Rel8.Cardinality,
 >(
-	options: JoinOptions<ASide, BSide, Cardinality>,
+	options: JoinOptions<ASide, BSide, Cardinality, null>,
 	defaultContent: undefined,
-	store: Store,
+	store?: Store,
 ): {
 	relations: Junction<ASide, BSide>
-	findState: JoinProperties<ASide, BSide, Cardinality, null>
+	findState: JoinState<ASide, BSide, Cardinality, null>
 }
-export function createJoin<
+export function join<
 	const ASide extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const BSide extends string,
 	const Content extends Json.Object,
 >(
-	options: JoinOptions<ASide, BSide, Cardinality>,
+	options: JoinOptions<ASide, BSide, Cardinality, Content>,
 	defaultContent: Content,
-	store: Store,
+	store?: Store,
 ): {
 	relations: Junction<ASide, BSide, Content>
-	findState: JoinProperties<ASide, BSide, Cardinality, Content>
+	findState: JoinState<ASide, BSide, Cardinality, Content>
 }
-export function createJoin<
+export function join<
 	ASide extends string,
 	BSide extends string,
 	Cardinality extends Rel8.Cardinality,
 	Content extends Json.Object,
 >(
-	options: JoinOptions<ASide, BSide, Cardinality>,
+	options: JoinOptions<ASide, BSide, Cardinality, Content>,
 	defaultContent: Content | undefined,
-	store: Store,
+	store: Store = IMPLICIT.STORE,
 ): {
 	relations: Junction<ASide, BSide, Content>
-	findState: JoinProperties<ASide, BSide, Cardinality, Content>
+	findState: JoinState<ASide, BSide, Cardinality, Content>
 } {
 	const a: ASide = options.between[0]
 	const b: BSide = options.between[1]
@@ -323,8 +326,8 @@ export function createJoin<
 			const findStateBase = {
 				[stateKeyA]: findSingleRelatedKeyState,
 				[stateKeyB]: findSingleRelatedKeyState,
-			} as JoinProperties<ASide, BSide, Cardinality, Content>
-			let findState: JoinProperties<ASide, BSide, Cardinality, Content>
+			} as JoinState<ASide, BSide, Cardinality, Content>
+			let findState: JoinState<ASide, BSide, Cardinality, Content>
 			if (defaultContent) {
 				const findSingleRelatedEntryState = createSingleEntryStateFamily()
 				const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
@@ -350,8 +353,8 @@ export function createJoin<
 			const findStateBase = {
 				[stateKeyA]: findSingleRelatedKeyState,
 				[stateKeyB]: findMultipleRelatedKeysState,
-			} as JoinProperties<ASide, BSide, Cardinality, Content>
-			let findState: JoinProperties<ASide, BSide, Cardinality, Content>
+			} as JoinState<ASide, BSide, Cardinality, Content>
+			let findState: JoinState<ASide, BSide, Cardinality, Content>
 			if (defaultContent) {
 				const findSingleRelatedEntryState = createSingleEntryStateFamily()
 				const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
@@ -377,8 +380,8 @@ export function createJoin<
 			const findStateBase = {
 				[stateKeyA]: findMultipleRelatedKeysState,
 				[stateKeyB]: findMultipleRelatedKeysState,
-			} as JoinProperties<ASide, BSide, Cardinality, Content>
-			let findState: JoinProperties<ASide, BSide, Cardinality, Content>
+			} as JoinState<ASide, BSide, Cardinality, Content>
+			let findState: JoinState<ASide, BSide, Cardinality, Content>
 			if (defaultContent) {
 				const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
 				const entriesStateKeyA = `${a}EntriesOf${capitalize(b)}` as const

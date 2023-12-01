@@ -1,7 +1,7 @@
-import { createJoin } from "atom.io/data"
+import { join } from "atom.io/data"
 import { vitest } from "vitest"
 
-import { getState, subscribe } from "atom.io"
+import { subscribe } from "atom.io"
 import type { Logger } from "atom.io"
 
 import * as Internal from "atom.io/internal"
@@ -28,15 +28,13 @@ beforeEach(() => {
 
 describe(`join`, () => {
 	test(`supports 1:1 relations`, () => {
-		// expect(true).toBe(true)
-		const roomPlayers = createJoin(
+		const roomPlayers = join(
 			{
 				key: `roomPlayers`,
 				between: [`room`, `player`],
 				cardinality: `1:1`,
 			},
 			{ joinedAt: NaN },
-			Internal.IMPLICIT.STORE,
 		)
 		const lobbyPlayerState = roomPlayers.findState.playerKeyOfRoom(`lobby`)
 		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
@@ -79,14 +77,13 @@ describe(`join`, () => {
 		})
 	})
 	test(`supports 1:n relations`, () => {
-		const roomPlayers = createJoin(
+		const roomPlayers = join(
 			{
 				key: `playersInRooms`,
 				between: [`room`, `player`],
 				cardinality: `1:n`,
 			},
 			{ joinedAt: NaN },
-			Internal.IMPLICIT.STORE,
 		)
 		const lobbyPlayersState = roomPlayers.findState.playerKeysOfRoom(`lobby`)
 		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
@@ -122,14 +119,13 @@ describe(`join`, () => {
 		})
 	})
 	test(`supports n:n relations`, () => {
-		const roomPlayers = createJoin(
+		const roomPlayers = join(
 			{
 				key: `playersInRooms`,
 				between: [`room`, `player`],
 				cardinality: `n:n`,
 			},
 			{ joinedAt: NaN },
-			Internal.IMPLICIT.STORE,
 		)
 		const lobbyPlayersState = roomPlayers.findState.playerKeysOfRoom(`lobby`)
 		const joshuaRoomsState = roomPlayers.findState.roomKeysOfPlayer(`joshua`)
@@ -164,4 +160,16 @@ describe(`join`, () => {
 			newValue: [[`lobby`, { joinedAt }]],
 		})
 	})
+})
+
+describe(`some practical use cases`, () => {
+	test(`setting many relations at once`, () => {
+		performance.mark(`start`)
+		// ...
+		performance.mark(`end`)
+		performance.measure(`test`, `start`, `end`)
+		const measure = performance.getEntriesByName(`test`)[0]
+		console.log(measure)
+	})
+	test(`initializing a join from serialized junction data`, () => {})
 })
