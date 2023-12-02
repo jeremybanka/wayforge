@@ -1,14 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { Theme } from "./Theme"
 import "./code.scss"
 import "./globals.scss"
 import scss from "./layout.module.scss"
-import { Theme } from "./themer"
 
 export const metadata: Metadata = {
-	title: `Pure Data • atom.io`,
+	title: `Reactive Data • atom.io`,
 	description: `Batteries-included data framework for any ECMAScript environment.`,
-	// themeColor: `#777`,
 }
 
 export default function RootLayout({
