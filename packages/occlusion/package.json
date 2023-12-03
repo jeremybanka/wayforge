@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"fp-ts": "2.16.1",
-		"io-ts": "2.2.20",
+		"io-ts": "2.2.21",
 		"nanoid": "5.0.4"
 	},
 	"devDependencies": {

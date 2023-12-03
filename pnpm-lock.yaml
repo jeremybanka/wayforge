@@ -30,8 +30,8 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       io-ts:
-        specifier: 2.2.20
-        version: 2.2.20(fp-ts@2.16.1)
+        specifier: 2.2.21
+        version: 2.2.21(fp-ts@2.16.1)
       json-schema-to-zod:
         specifier: 2.0.12
         version: 2.0.12
@@ -124,8 +124,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       io-ts:
-        specifier: 2.2.20
-        version: 2.2.20(fp-ts@2.16.1)
+        specifier: 2.2.21
+        version: 2.2.21(fp-ts@2.16.1)
       json-schema:
         specifier: 0.4.0
         version: 0.4.0
@@ -383,8 +383,8 @@ importers:
         specifier: 10.16.12
         version: 10.16.12(react-dom@18.2.0)(react@18.2.0)
       io-ts:
-        specifier: 2.2.20
-        version: 2.2.20(fp-ts@2.16.1)
+        specifier: 2.2.21
+        version: 2.2.21(fp-ts@2.16.1)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -484,8 +484,8 @@ importers:
         specifier: 10.16.12
         version: 10.16.12(react-dom@18.2.0)(react@18.2.0)
       io-ts:
-        specifier: 2.2.20
-        version: 2.2.20(fp-ts@2.16.1)
+        specifier: 2.2.21
+        version: 2.2.21(fp-ts@2.16.1)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -955,8 +955,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       io-ts:
-        specifier: 2.2.20
-        version: 2.2.20(fp-ts@2.16.1)
+        specifier: 2.2.21
+        version: 2.2.21(fp-ts@2.16.1)
     devDependencies:
       '@types/node':
         specifier: 20.10.2
@@ -1007,8 +1007,8 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
       io-ts:
-        specifier: 2.2.20
-        version: 2.2.20(fp-ts@2.16.1)
+        specifier: 2.2.21
+        version: 2.2.21(fp-ts@2.16.1)
       nanoid:
         specifier: 5.0.4
         version: 5.0.4
@@ -7441,8 +7441,8 @@ packages:
       hasown: 2.0.0
       side-channel: 1.0.4
 
-  /io-ts@2.2.20(fp-ts@2.16.1):
-    resolution: {integrity: sha512-Rq2BsYmtwS5vVttie4rqrOCIfHCS9TgpRLFpKQCM1wZBBRY9nWVGmEvm2FnDbSE2un1UE39DvFpTR5UL47YDcA==}
+  /io-ts@2.2.21(fp-ts@2.16.1):
+    resolution: {integrity: sha512-zz2Z69v9ZIC3mMLYWIeoUcwWD6f+O7yP92FMVVaXEOSZH1jnVBmET/urd/uoarD1WGBY4rCj8TAyMPzsGNzMFQ==}
     peerDependencies:
       fp-ts: ^2.5.0
     dependencies:
