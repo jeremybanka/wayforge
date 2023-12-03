@@ -30,7 +30,7 @@
 		"cross-env": "7.0.3",
 		"fp-ts": "2.16.1",
 		"hamt_plus": "1.0.2",
-		"io-ts": "2.2.20",
+		"io-ts": "2.2.21",
 		"json-schema-to-zod": "2.0.12",
 		"@biomejs/biome": "1.4.1",
 		"@biomejs/cli-darwin-arm64": "1.4.1",
