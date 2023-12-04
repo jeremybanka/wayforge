@@ -1,5 +1,14 @@
 # rel8
 
+## 0.0.6
+
+### Patch Changes
+
+- 89f6123: ✨ `Junction` adds the `replaceRelations` method, which allows you to quickly set all the relations for one entry. By default, it does this with a cleanup step, which removes incompatible relations. But optionally, by passing `{ reckless: true }`, you will override the relations for any referenced entries.
+- 89f6123: ♻️ When setting a relation, content is now updated right before the relation is set.
+- 89f6123: 🐛 Load serialized relations into external store correctly.
+- 89f6123: 🏷️ When using the `externalStore` API, `getContent` and `setContent` require type consistency properly.
+
 ## 0.0.5
 
 ### Patch Changes
