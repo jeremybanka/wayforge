@@ -1,4 +1,5 @@
 export * from "./dict"
+export * from "./join"
 export * from "./struct"
 export * from "./struct-family"
 export * from "./until"

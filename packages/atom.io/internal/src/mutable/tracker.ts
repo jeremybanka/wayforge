@@ -132,7 +132,10 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					latestUpdateState.key,
 					() => {
 						unsubscribe()
-						if (newValue) {
+						const mutable = getState(mutableState, store)
+						const updateNumber = mutable.getUpdateNumber(newValue)
+						const eventOffset = updateNumber - mutable.cacheUpdateNumber
+						if (newValue && eventOffset === 1) {
 							setState(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),

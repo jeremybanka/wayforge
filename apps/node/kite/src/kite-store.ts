@@ -7,7 +7,7 @@ import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
 export const numberCollectionIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `numberCollectionIndex`,
 	mutable: true,
-	default: () => new SetRTX(null, 5),
+	default: () => new SetRTX(undefined, 5),
 	toJson: (value) => value.toJSON(),
 	fromJson: (value) => SetRTX.fromJSON(value),
 })
@@ -15,7 +15,7 @@ export const numberCollectionIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 export const findNumberCollection = atomFamily({
 	key: `numberCollection`,
 	mutable: true,
-	default: () => new SetRTX<number>(null, 5),
+	default: () => new SetRTX<number>(undefined, 5),
 	toJson: (value) => value.toJSON(),
 	fromJson: (value) => SetRTX.fromJSON(value),
 })

@@ -1,5 +1,6 @@
 import type { MutableAtomToken, SelectorToken } from "atom.io"
 import type { Json } from "atom.io/json"
+
 import type { Transceiver } from "./transceiver"
 
 export const getJsonToken = <

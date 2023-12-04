@@ -2,6 +2,7 @@ import type { Atom } from "../atom"
 
 export * from "./create-mutable-atom"
 export * from "./create-mutable-atom-family"
+export * from "./get-json-family"
 export * from "./get-json-token"
 export * from "./get-update-token"
 export * from "./is-atom-token-mutable"
