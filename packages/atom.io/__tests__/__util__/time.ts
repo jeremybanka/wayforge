@@ -1,4 +1,4 @@
-import { ƒn } from "atom.io"
+import type { ƒn } from "atom.io"
 
 // wrap a callback in performance.measure
 export function time(key: string, callback: ƒn): PerformanceMeasure {
