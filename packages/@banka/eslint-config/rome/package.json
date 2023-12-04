@@ -12,8 +12,8 @@
 		"directory": "packages/@banka/eslint-config/rome"
 	},
 	"dependencies": {
-		"@typescript-eslint/eslint-plugin": "6.13.1",
-		"@typescript-eslint/parser": "6.13.1",
+		"@typescript-eslint/eslint-plugin": "6.13.2",
+		"@typescript-eslint/parser": "6.13.2",
 		"eslint-plugin-import": "2.29.0"
 	},
 	"peerDependencies": {
