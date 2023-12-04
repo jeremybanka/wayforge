@@ -28,7 +28,7 @@ export class SetRTX<P extends primitive>
 	public cacheIdx = -1
 	public cacheUpdateNumber = -1
 
-	public constructor(values?: Set<P> | readonly P[] | null, cacheLimit = 0) {
+	public constructor(values?: Iterable<P>, cacheLimit = 0) {
 		super(values)
 		if (values instanceof SetRTX) {
 			this.parent = values
