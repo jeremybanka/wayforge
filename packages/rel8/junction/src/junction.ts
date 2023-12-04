@@ -11,23 +11,35 @@ export interface JunctionSchema<ASide extends string, BSide extends string>
 	readonly cardinality: Cardinality
 }
 
-export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = {
-	externalStore?: (Content extends null
-		? {
-				getContent?: undefined
-				setContent?: undefined
-				deleteContent?: undefined
-		  }
-		: {
-				getContent: (contentKey: string) => Content | undefined
-				setContent: (contentKey: string, content: Content) => void
-				deleteContent: (contentKey: string) => void
-		  }) & {
-		addRelation: (a: string, b: string) => void
-		deleteRelation: (a: string, b: string) => void
-		getRelatedKeys: (key: string) => Set<string> | undefined
-		has: (a: string, b?: string) => boolean
+export type BaseExternalStoreConfiguration = {
+	addRelation: (a: string, b: string) => void
+	deleteRelation: (a: string, b: string) => void
+	replaceRelationsSafely: (a: string, bs: string[]) => void
+	replaceRelationsUnsafely: (a: string, bs: string[]) => void
+	getRelatedKeys: (key: string) => Set<string> | undefined
+	has: (a: string, b?: string) => boolean
+}
+
+export type ExternalStoreWithContentConfiguration<Content extends Json.Object> =
+	{
+		getContent: (contentKey: string) => Content | undefined
+		setContent: (contentKey: string, content: Content) => void
+		deleteContent: (contentKey: string) => void
 	}
+
+export type Empty<Obj extends object> = {
+	[Key in keyof Obj]?: undefined
+}
+
+export type ExternalStoreConfiguration<Content extends Json.Object | null> =
+	Content extends Json.Object
+		? BaseExternalStoreConfiguration &
+				ExternalStoreWithContentConfiguration<Content>
+		: BaseExternalStoreConfiguration &
+				Empty<ExternalStoreWithContentConfiguration<Json.Object>>
+
+export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = {
+	externalStore?: ExternalStoreConfiguration<Content>
 	isContent?: Refinement<unknown, Content>
 	makeContentKey?: (a: string, b: string) => string
 }
@@ -39,9 +51,9 @@ export type JunctionJSON<
 > = JunctionEntries<Content> & JunctionSchema<ASide, BSide>
 
 export class Junction<
-	ASide extends string,
-	BSide extends string,
-	Content extends Json.Object | null = null,
+	const ASide extends string,
+	const BSide extends string,
+	const Content extends Json.Object | null = null,
 > {
 	public readonly a: ASide
 	public readonly b: BSide
@@ -56,17 +68,19 @@ export class Junction<
 		return this.relations.get(key)
 	}
 	protected addRelation(a: string, b: string): void {
-		const aRelations = this.relations.get(a)
-		const bRelations = this.relations.get(b)
+		let aRelations = this.relations.get(a)
+		let bRelations = this.relations.get(b)
 		if (aRelations) {
 			aRelations.add(b)
 		} else {
-			this.relations.set(a, new Set([b]))
+			aRelations = new Set([b])
+			this.relations.set(a, aRelations)
 		}
 		if (bRelations) {
 			bRelations.add(a)
 		} else {
-			this.relations.set(b, new Set([a]))
+			bRelations = new Set([a])
+			this.relations.set(b, bRelations)
 		}
 	}
 	protected deleteRelation(a: string, b: string): void {
@@ -82,6 +96,40 @@ export class Junction<
 				if (bRelations.size === 0) {
 					this.relations.delete(b)
 				}
+			}
+		}
+	}
+
+	protected replaceRelationsUnsafely(a: string, bs: string[]): void {
+		this.relations.set(a, new Set(bs))
+		for (const b of bs) {
+			const bRelations = new Set([a])
+			this.relations.set(b, bRelations)
+		}
+	}
+	protected replaceRelationsSafely(a: string, bs: string[]): void {
+		const aRelationsPrev = this.relations.get(a)
+		if (aRelationsPrev) {
+			for (const b of aRelationsPrev) {
+				const bRelations = this.relations.get(b)
+				if (bRelations) {
+					if (bRelations.size === 1) {
+						this.relations.delete(b)
+					} else {
+						bRelations.delete(a)
+					}
+					this.contents.delete(this.makeContentKey(a, b))
+				}
+			}
+		}
+		this.relations.set(a, new Set(bs))
+		for (const b of bs) {
+			let bRelations = this.relations.get(b)
+			if (bRelations) {
+				bRelations.add(a)
+			} else {
+				bRelations = new Set([a])
+				this.relations.set(b, bRelations)
 			}
 		}
 	}
@@ -104,8 +152,10 @@ export class Junction<
 		this.b = data.between[1]
 
 		this.cardinality = data.cardinality
-		this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
-		this.contents = new Map(data.contents)
+		if (!config?.externalStore) {
+			this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]))
+			this.contents = new Map(data.contents)
+		}
 		this.isContent = config?.isContent ?? null
 		if (config?.makeContentKey) {
 			this.makeContentKey = config.makeContentKey
@@ -115,11 +165,15 @@ export class Junction<
 			this.has = (a, b) => externalStore.has(a, b)
 			this.addRelation = (a, b) => {
 				externalStore.addRelation(a, b)
-				return this
 			}
 			this.deleteRelation = (a, b) => {
 				externalStore.deleteRelation(a, b)
-				return this
+			}
+			this.replaceRelationsSafely = (a, bs) => {
+				externalStore.replaceRelationsSafely(a, bs)
+			}
+			this.replaceRelationsUnsafely = (a, bs) => {
+				externalStore.replaceRelationsUnsafely(a, bs)
 			}
 			this.getRelatedKeys = (key) => externalStore.getRelatedKeys(key)
 			if (externalStore.getContent) {
@@ -128,12 +182,16 @@ export class Junction<
 				}
 				this.setContent = (contentKey, content) => {
 					externalStore.setContent(contentKey, content as any)
-					return this
 				}
 				this.deleteContent = (contentKey) => {
 					externalStore.deleteContent(contentKey)
-					return this
 				}
+			}
+			for (const [x, ys] of data.relations ?? []) {
+				for (const y of ys) this.addRelation(x, y)
+			}
+			for (const [contentKey, content] of data.contents ?? []) {
+				this.setContent(contentKey, content)
 			}
 		}
 	}
@@ -161,8 +219,9 @@ export class Junction<
 			: [b: string, content: Content] | [content: Content]
 	): this {
 		const b: string =
-			// @ts-expect-error we deduce hereby that this.b may index a
-			typeof rest[0] === `string` ? rest[0] : (a[this.b] as string)
+			typeof rest[0] === `string`
+				? rest[0]
+				: (a[this.b as keyof typeof a] as string)
 		const content: Content | undefined =
 			rest[1] ?? typeof rest[0] === `string` ? undefined : (rest[0] as Content)
 		a = typeof a === `string` ? a : a[this.a]
@@ -177,11 +236,11 @@ export class Junction<
 				if (aPrev && aPrev !== a) this.delete(aPrev, b)
 			}
 		}
-		this.addRelation(a, b)
 		if (content) {
 			const contentKey = this.makeContentKey(a, b)
 			this.setContent(contentKey, content)
 		}
+		this.addRelation(a, b)
 		return this
 	}
 
@@ -246,6 +305,28 @@ export class Junction<
 				return relation
 			}
 		}
+	}
+
+	public replaceRelations(
+		a: string,
+		relations: Content extends null ? string[] : Record<string, Content>,
+		config?: { reckless: boolean },
+	): this {
+		const hasContent = !Array.isArray(relations)
+		const bs = hasContent ? Object.keys(relations) : relations
+		if (config?.reckless) {
+			this.replaceRelationsUnsafely(a, bs)
+		} else {
+			this.replaceRelationsSafely(a, bs)
+		}
+		if (hasContent) {
+			for (const b of bs) {
+				const contentKey = this.makeContentKey(a, b)
+				const content = relations[b] as Content
+				this.setContent(contentKey, content)
+			}
+		}
+		return this
 	}
 
 	public getContent(a: string, b: string): Content | undefined {

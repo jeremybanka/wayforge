@@ -4,6 +4,8 @@ export interface Transceiver<Signal extends Json.Serializable> {
 	do: (update: Signal) => void
 	undo: (update: Signal) => void
 	subscribe: (key: string, fn: (update: Signal) => void) => () => void
+	cacheUpdateNumber: number
+	getUpdateNumber: (update: Signal) => number
 }
 
 export function isTransceiver(

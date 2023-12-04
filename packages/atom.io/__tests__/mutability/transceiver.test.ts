@@ -2,6 +2,26 @@ import type { NumberedSetUpdate } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 describe(`SetRTX`, () => {
+	describe(`constructor`, () => {
+		it(`accepts nothing`, () => {
+			const set = new SetRTX()
+			expect(set.size).toBe(0)
+		})
+		it(`accepts an array`, () => {
+			const set = new SetRTX([`a`, `b`, `c`])
+			expect(set.size).toBe(3)
+		})
+		it(`accepts a Set`, () => {
+			const set = new SetRTX(new Set([`a`, `b`, `c`]))
+			expect(set.size).toBe(3)
+		})
+		it
+		it(`accepts a SetRTX`, () => {
+			const set = new SetRTX([`a`, `b`, `c`])
+			const set2 = new SetRTX(set)
+			expect(set2.size).toBe(3)
+		})
+	})
 	describe(`observe`, () => {
 		it(`should call the function when the set is updated`, () => {
 			const set = new SetRTX()
@@ -86,7 +106,7 @@ describe(`SetRTX`, () => {
 	})
 	describe(`rollback`, () => {
 		it(`should quickly undo false history`, () => {
-			const set = new SetRTX(null, 10)
+			const set = new SetRTX(undefined, 10)
 			set.add(1)
 			console.log(set.cacheUpdateNumber, set.cache)
 			set.add(2)

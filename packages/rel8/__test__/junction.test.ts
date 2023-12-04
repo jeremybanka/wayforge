@@ -3,8 +3,6 @@ import { isNumber } from "fp-ts/number"
 import { isString } from "fp-ts/string"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
-
 import { hasExactProperties } from "~/packages/anvl/src/object"
 import {
 	isJson,
@@ -17,20 +15,6 @@ import type { Json } from "../types/src"
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)
 
-// pass in an id get all ids related to that id
-// set a relation with 2 ids and some data
-// remove a relation with 2 ids
-
-describe(`Junction`, () => {
-	it(`can be constructed`, () => {
-		const j = new Junction({
-			between: [`a`, `b`],
-			cardinality: `1:n`,
-		})
-		expect(j).toBeDefined()
-	})
-})
-
 describe(`Junction.prototype.getRelatedKeys`, () => {
 	it(`gets all keys related to a given key`, () => {
 		const player = `Adelaide`
@@ -38,10 +22,15 @@ describe(`Junction.prototype.getRelatedKeys`, () => {
 		const playersInRooms = new Junction({
 			between: [`player`, `room`],
 			cardinality: `1:n`,
-			relations: [[player, [room]]],
+			relations: [
+				[player, [room]],
+				[room, [player]],
+			],
 		})
 		const roomKeys = playersInRooms.getRelatedKeys(player)
 		expect(roomKeys).toEqual(new Set([room]))
+		const playerKeys = playersInRooms.getRelatedKeys(room)
+		expect(playerKeys).toEqual(new Set([player]))
 	})
 })
 
@@ -290,10 +279,29 @@ describe(`Junction.prototype.toJSON`, () => {
 	})
 })
 
+describe(`Junction.prototype.replaceRelations`, () => {
+	it(`replaces all relations for a given id`, () => {
+		const pokemonPrimaryTypes = new Junction({
+			between: [`type`, `pokémon`],
+			cardinality: `1:n`,
+		})
+
+			.set({ type: `grass`, pokémon: `bulbasaur` })
+			.set({ type: `grass`, pokémon: `oddish` })
+			.set({ type: `grass`, pokémon: `bellsprout` })
+			.replaceRelations(`grass`, [`bulbasaur`, `oddish`])
+		expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(
+			new Set([`bulbasaur`, `oddish`]),
+		)
+		expect(pokemonPrimaryTypes.getRelatedKey(`bellsprout`)).toBeUndefined()
+	})
+})
+
 describe(`Junction with external storage`, () => {
 	it(`accepts external storage methods`, () => {
+		type PlayerJoinedRoom = { joinedAt: number }
 		const relationMap = new Map<string, Set<string>>()
-		const contentMap = new Map<string, Json.Object>()
+		const contentMap = new Map<string, PlayerJoinedRoom>()
 		const playersInRooms = new Junction(
 			{
 				between: [`room`, `player`],
@@ -329,6 +337,39 @@ describe(`Junction with external storage`, () => {
 									relationMap.delete(b)
 								}
 							}
+						}
+					},
+					replaceRelationsSafely: (a, bs) => {
+						const aRelationsPrev = relationMap.get(a)
+						if (aRelationsPrev) {
+							for (const b of aRelationsPrev) {
+								const bRelations = relationMap.get(b)
+								if (bRelations) {
+									if (bRelations.size === 1) {
+										relationMap.delete(b)
+									} else {
+										bRelations.delete(a)
+									}
+									contentMap.delete(playersInRooms.makeContentKey(a, b))
+								}
+							}
+						}
+						relationMap.set(a, new Set(bs))
+						for (const b of bs) {
+							let bRelations = relationMap.get(b)
+							if (bRelations) {
+								bRelations.add(a)
+							} else {
+								bRelations = new Set([a])
+								relationMap.set(b, bRelations)
+							}
+						}
+					},
+					replaceRelationsUnsafely: (a, bs) => {
+						relationMap.set(a, new Set(bs))
+						for (const b of bs) {
+							const bRelations = new Set([a])
+							relationMap.set(b, bRelations)
 						}
 					},
 					has: (a: string, b?: string) => {
