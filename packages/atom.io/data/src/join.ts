@@ -209,6 +209,49 @@ export function join<
 			}
 		}
 	}
+	const replaceRelationsSafely: Write<(a: string, bs: string[]) => void> = (
+		transactors,
+		a,
+		bs,
+	) => {
+		const aKeys = getRelatedKeys(transactors, a)
+		if (aKeys) {
+			for (const b of aKeys) {
+				const bKeys = getRelatedKeys(transactors, b)
+				if (bKeys) {
+					bKeys.delete(a)
+					if (bKeys.size === 0) {
+						transactors.set(findRelatedKeysState(b), undefined)
+					}
+				}
+			}
+		}
+		transactors.set(findRelatedKeysState(a), new SetRTX(bs))
+		for (const b of bs) {
+			const bKeys = getRelatedKeys(transactors, b)
+			if (bKeys) {
+				bKeys.add(a)
+			} else {
+				transactors.set(findRelatedKeysState(b), new SetRTX([a]))
+			}
+		}
+	}
+	const replaceRelationsUnsafely: Write<(a: string, bs: string[]) => void> = (
+		transactors,
+		a,
+		bs,
+	) => {
+		transactors.set(findRelatedKeysState(a), new SetRTX(bs))
+		for (const b of bs) {
+			let bKeys = getRelatedKeys(transactors, b)
+			if (bKeys) {
+				bKeys.add(a)
+			} else {
+				bKeys = new SetRTX([a])
+				transactors.set(findRelatedKeysState(b), bKeys)
+			}
+		}
+	}
 	const has: Read<(a: string, b?: string) => boolean> = (transactors, a, b) => {
 		const aKeys = getRelatedKeys(transactors, a)
 		return b ? aKeys?.has(b) ?? false : (aKeys?.size ?? 0) > 0 ?? false
@@ -217,6 +260,10 @@ export function join<
 		getRelatedKeys: (key) => getRelatedKeys(TRANSACTORS, key),
 		addRelation: (a, b) => addRelation(TRANSACTORS, a, b),
 		deleteRelation: (a, b) => deleteRelation(TRANSACTORS, a, b),
+		replaceRelationsSafely: (a, bs) =>
+			replaceRelationsSafely(TRANSACTORS, a, bs),
+		replaceRelationsUnsafely: (a, bs) =>
+			replaceRelationsUnsafely(TRANSACTORS, a, bs),
 		has: (a, b) => has(TRANSACTORS, a, b),
 	}
 	let externalStore: ExternalStoreConfiguration<Content>
