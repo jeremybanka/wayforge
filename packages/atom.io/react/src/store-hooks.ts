@@ -15,7 +15,13 @@ export function useI<T>(
 	token: StateToken<T>,
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
-	return (next) => setState(token, next, store)
+	const setter: React.MutableRefObject<
+		(<New extends T>(next: New | ((old: T) => New)) => void) | null
+	> = React.useRef(null)
+	if (setter.current === null) {
+		setter.current = (next) => setState(token, next, store)
+	}
+	return setter.current
 }
 
 export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
