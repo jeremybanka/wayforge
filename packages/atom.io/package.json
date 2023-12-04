@@ -74,7 +74,7 @@
 		"@testing-library/react": "14.1.2",
 		"@types/http-proxy": "1.17.14",
 		"@types/npmlog": "7.0.0",
-		"@types/react": "18.2.41",
+		"@types/react": "18.2.42",
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "1.0.1",
 		"concurrently": "8.2.2",
