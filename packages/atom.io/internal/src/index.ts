@@ -1,5 +1,6 @@
 export * from "./atom"
 export * from "./caching"
+export * from "./scion"
 export * from "./families"
 export * from "./future"
 export * from "./keys"
