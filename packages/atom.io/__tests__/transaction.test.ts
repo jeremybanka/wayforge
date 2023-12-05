@@ -20,7 +20,7 @@ import * as Internal from "atom.io/internal"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 1
+const CHOOSE = 2
 let logger: Logger
 
 beforeEach(() => {
@@ -248,5 +248,32 @@ describe(`transaction`, () => {
 		})
 
 		const point = runTransaction(addPoint)(777, 1, 2)
+	})
+})
+
+describe(`nesting transactions`, () => {
+	test.only(`a transaction can be called from within a transaction`, () => {
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ get, set }) => {
+				const count = get(countState)
+				set(countState, count + 1)
+			},
+		})
+		const incrementTwiceTX = transaction({
+			key: `incrementTwice`,
+			do: ({ get, set }) => {
+				const count = get(countState)
+				set(countState, count + 1)
+				runTransaction(incrementTX)()
+			},
+		})
+
+		runTransaction(incrementTwiceTX)()
+		expect(getState(countState)).toEqual(3)
 	})
 })
