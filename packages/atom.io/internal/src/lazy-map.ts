@@ -12,13 +12,17 @@ export class LazyMap<K, V> extends Map<K, V> {
 		}
 		if (!this.deleted.has(key) && this.source.has(key)) {
 			const value = this.source.get(key)
-			super.set(key, value as V)
 			return value
 		}
 		return undefined
 	}
 
-	public _has(key: K): boolean {
+	public set(key: K, value: V): this {
+		this.deleted.delete(key)
+		return super.set(key, value)
+	}
+
+	public hasOwn(key: K): boolean {
 		return super.has(key)
 	}
 
