@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.12.1
+
+### Patch Changes
+
+- 032b0d7: 🚀 Thanks to the new `atom.io/internal` `LazyMap`, `transaction` should see better performance when working in larger stores. Before this update, initializing (or "building") a transaction would copy the entire valueMap, atoms map, selectors map, etc. all at once, incurring a lot of immediate overhead. Now, the `LazyMap` will only copy the values that are actually modified, when they are modified.
+
 ## 0.12.0
 
 ### Minor Changes
