@@ -1,12 +1,12 @@
 import type { AtomToken } from "atom.io"
 
 import type { Store } from ".."
-import { deleteSelector, target } from ".."
+import { deleteSelector, newest } from ".."
 
 export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
-	const core = target(store)
+	const target = newest(store)
 	const { key } = atomToken
-	const atom = core.atoms.get(key)
+	const atom = target.atoms.get(key)
 	if (!atom) {
 		store.logger.error(
 			`❌`,
@@ -16,21 +16,21 @@ export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		)
 	}
 	atom?.cleanup?.()
-	core.atoms.delete(key)
-	core.valueMap.delete(key)
-	const selectorKeys = core.selectorAtoms.getRelatedKeys(key)
+	target.atoms.delete(key)
+	target.valueMap.delete(key)
+	const selectorKeys = target.selectorAtoms.getRelatedKeys(key)
 	if (selectorKeys) {
 		for (const selectorKey of selectorKeys) {
 			const token =
-				core.selectors.get(selectorKey) ??
-				core.readonlySelectors.get(selectorKey)
+				target.selectors.get(selectorKey) ??
+				target.readonlySelectors.get(selectorKey)
 			if (token) {
 				deleteSelector(token, store)
 			}
 		}
 	}
-	core.selectorAtoms.delete(key)
-	core.atomsThatAreDefault.delete(key)
-	core.timelineAtoms.delete(key)
+	target.selectorAtoms.delete(key)
+	target.atomsThatAreDefault.delete(key)
+	target.timelineAtoms.delete(key)
 	store.logger.info(`🔥`, `atom`, `${key}`, `deleted`)
 }

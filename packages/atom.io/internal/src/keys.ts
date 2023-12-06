@@ -1,5 +1,5 @@
+import { newest } from "./lineage"
 import type { Store } from "./store"
-import { target } from "./transaction"
 
 export type AtomKey<T> = string & { __atomKey?: never; __brand?: T }
 export type SelectorKey<T> = string & { __selectorKey?: never; __brand?: T }
@@ -9,16 +9,16 @@ export type ReadonlySelectorKey<T> = string & {
 }
 
 export const isAtomKey = (key: string, store: Store): key is AtomKey<unknown> =>
-	target(store).atoms.has(key)
+	newest(store).atoms.has(key)
 export const isSelectorKey = (
 	key: string,
 	store: Store,
-): key is SelectorKey<unknown> => target(store).selectors.has(key)
+): key is SelectorKey<unknown> => newest(store).selectors.has(key)
 export const isReadonlySelectorKey = (
 	key: string,
 	store: Store,
 ): key is ReadonlySelectorKey<unknown> =>
-	target(store).readonlySelectors.has(key)
+	newest(store).readonlySelectors.has(key)
 
 export type StateKey<T> = AtomKey<T> | ReadonlySelectorKey<T> | SelectorKey<T>
 export const isStateKey = (

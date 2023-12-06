@@ -5,8 +5,7 @@ import type {
 	StateToken,
 } from "atom.io"
 import type { Atom, ReadonlySelector, Selector, Store } from ".."
-import { withdraw } from ".."
-import { target } from "../transaction"
+import { newest, withdraw } from ".."
 
 export function withdrawNewFamilyMember<T>(
 	token: AtomToken<T>,
@@ -43,8 +42,8 @@ export function withdrawNewFamilyMember<T>(
 			token.key,
 			`creating new family member in store "${store.config.name}"`,
 		)
-		const core = target(store)
-		const family = core.families.get(token.family.key)
+		const target = newest(store)
+		const family = target.families.get(token.family.key)
 		if (family) {
 			const jsonSubKey = JSON.parse(token.family.subKey)
 			family(jsonSubKey)

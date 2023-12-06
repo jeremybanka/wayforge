@@ -77,7 +77,6 @@ describe(`mutable atomic state`, () => {
 			},
 			Internal.IMPLICIT.STORE,
 		)
-		console.log(findFlagsStateByUserId)
 
 		const myFlagsState = findFlagsStateByUserId(`my-user-id`)
 		const findFlagsByUserIdJSON = Internal.getJsonToken(myFlagsState)

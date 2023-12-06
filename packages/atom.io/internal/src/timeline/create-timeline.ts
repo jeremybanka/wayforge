@@ -8,9 +8,9 @@ import type {
 	ƒn,
 } from "atom.io"
 
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { target } from "../transaction"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
 
 export type TimelineAtomUpdate = StateUpdate<unknown> & {
@@ -71,9 +71,9 @@ export function createTimeline(
 		tl.shouldCapture = options.shouldCapture
 	}
 
-	const core = target(store)
+	const target = newest(store)
 	for (const tokenOrFamily of options.atoms) {
-		const timelineKey = core.timelineAtoms.getRelatedKey(tokenOrFamily.key)
+		const timelineKey = target.timelineAtoms.getRelatedKey(tokenOrFamily.key)
 		if (timelineKey) {
 			store.logger.error(
 				`❌`,
@@ -86,11 +86,9 @@ export function createTimeline(
 		if (tokenOrFamily.type === `atom_family`) {
 			const family = tokenOrFamily
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
-				// if (!core.atoms.has(token.key)) {
 				addAtomToTimeline(token, tl, store)
-				// }
 			})
-			for (const atom of core.atoms.values()) {
+			for (const atom of target.atoms.values()) {
 				if (atom.family?.key === family.key) {
 					addAtomToTimeline(atom, tl, store)
 				}
@@ -98,7 +96,7 @@ export function createTimeline(
 		} else {
 			const token = tokenOrFamily
 			if (`family` in token && token.family) {
-				const familyTimelineKey = core.timelineAtoms.getRelatedKey(
+				const familyTimelineKey = target.timelineAtoms.getRelatedKey(
 					token.family.key,
 				)
 				if (familyTimelineKey) {
@@ -113,7 +111,7 @@ export function createTimeline(
 			}
 			addAtomToTimeline(token, tl, store)
 		}
-		core.timelineAtoms = core.timelineAtoms.set({
+		target.timelineAtoms = target.timelineAtoms.set({
 			atomKey: tokenOrFamily.key,
 			timelineKey: options.key,
 		})

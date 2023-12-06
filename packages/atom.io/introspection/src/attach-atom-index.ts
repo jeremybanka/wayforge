@@ -1,6 +1,6 @@
 import type { AtomToken, ReadonlySelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, createAtom, createSelector, target } from "atom.io/internal"
+import { IMPLICIT, createAtom, createSelector, newest } from "atom.io/internal"
 
 import type { StateTokenIndex } from "."
 
@@ -55,7 +55,7 @@ export const attachAtomIndex = (
 									[key]: atomToken,
 								}
 							})
-						if (target(store).operation.open) {
+						if (newest(store).operation.open) {
 							const unsubscribe = store.subject.operationStatus.subscribe(
 								`introspection: waiting to update atom index`,
 								() => {

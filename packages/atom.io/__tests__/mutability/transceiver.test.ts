@@ -119,4 +119,21 @@ describe(`SetRTX`, () => {
 			expect(set.size).toBe(1)
 		})
 	})
+	describe(`serialization`, () => {
+		it(`should return an array`, () => {
+			const set = new SetRTX<string>([`a`, `b`, `c`])
+			set.add(`d`)
+			set.delete(`a`)
+			const json = set.toJSON()
+			expect(json).toEqual({
+				cacheUpdateNumber: 1,
+				members: [`b`, `c`, `d`],
+				cache: [],
+				cacheIdx: -1,
+				cacheLimit: 0,
+			})
+			const set2 = SetRTX.fromJSON(json)
+			expect(set2).toEqual(set)
+		})
+	})
 })

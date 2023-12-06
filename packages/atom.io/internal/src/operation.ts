@@ -1,7 +1,7 @@
 import type { StateToken } from "atom.io"
 
+import { newest } from "./lineage"
 import type { Store } from "./store"
-import { target } from "./transaction"
 
 export type OperationProgress =
 	| {
@@ -19,17 +19,17 @@ export const openOperation = (
 	token: StateToken<any>,
 	store: Store,
 ): `rejection` | undefined => {
-	const core = target(store)
-	if (core.operation.open) {
+	const target = newest(store)
+	if (target.operation.open) {
 		store.logger.error(
 			`❌`,
 			token.type,
 			token.key,
-			`failed to setState during a setState for "${core.operation.token.key}"`,
+			`failed to setState during a setState for "${target.operation.token.key}"`,
 		)
 		return `rejection`
 	}
-	core.operation = {
+	target.operation = {
 		open: true,
 		done: new Set(),
 		prev: new Map(),
@@ -41,29 +41,29 @@ export const openOperation = (
 		token.type,
 		token.key,
 		`operation start in store "${store.config.name}"${
-			store.transactionStatus.phase === `idle`
+			target.transactionMeta === null
 				? ``
-				: ` ${store.transactionStatus.phase} "${store.transactionStatus.key}"`
+				: ` ${target.transactionMeta.phase} "${target.transactionMeta.update.key}"`
 		}`,
 	)
 }
 export const closeOperation = (store: Store): void => {
-	const core = target(store)
-	if (core.operation.open) {
+	const target = newest(store)
+	if (target.operation.open) {
 		store.logger.info(
 			`🔴`,
-			core.operation.token.type,
-			core.operation.token.key,
+			target.operation.token.type,
+			target.operation.token.key,
 			`operation done in store "${store.config.name}"`,
 		)
 	}
-	core.operation = { open: false }
-	store.subject.operationStatus.next(core.operation)
+	target.operation = { open: false }
+	store.subject.operationStatus.next(target.operation)
 }
 
 export const isDone = (key: string, store: Store): boolean => {
-	const core = target(store)
-	if (!core.operation.open) {
+	const target = newest(store)
+	if (!target.operation.open) {
 		store.logger.warn(
 			`🐞`,
 			`unknown`,
@@ -72,11 +72,11 @@ export const isDone = (key: string, store: Store): boolean => {
 		)
 		return true
 	}
-	return core.operation.done.has(key)
+	return target.operation.done.has(key)
 }
 export const markDone = (key: string, store: Store): void => {
-	const core = target(store)
-	if (!core.operation.open) {
+	const target = newest(store)
+	if (!target.operation.open) {
 		store.logger.warn(
 			`🐞`,
 			`unknown`,
@@ -85,5 +85,5 @@ export const markDone = (key: string, store: Store): void => {
 		)
 		return
 	}
-	core.operation.done.add(key)
+	target.operation.done.add(key)
 }

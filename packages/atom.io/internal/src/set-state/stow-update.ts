@@ -1,6 +1,7 @@
 import type { KeyedStateUpdate, StateUpdate } from "atom.io"
 
 import type { Atom } from "../atom"
+import { newest } from "../lineage"
 import { isTransceiver } from "../mutable"
 import type { Store } from "../store"
 
@@ -22,7 +23,11 @@ export const stowUpdate = <T>(
 	store: Store,
 ): void => {
 	const { key } = state
-	if (store.transactionStatus.phase !== `building`) {
+	const target = newest(store)
+	if (
+		target.transactionMeta === null ||
+		target.transactionMeta.phase !== `building`
+	) {
 		store.logger.error(
 			`🐞`,
 			`atom`,
@@ -39,7 +44,7 @@ export const stowUpdate = <T>(
 	if (state.family) {
 		atomUpdate.family = state.family
 	}
-	store.transactionStatus.atomUpdates.push(atomUpdate)
+	target.transactionMeta.update.updates.push(atomUpdate)
 	store.logger.info(
 		`📁`,
 		`atom`,

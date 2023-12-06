@@ -1,4 +1,4 @@
-import type { TimelineToken } from "atom.io"
+import type { KeyedStateUpdate, TimelineToken, TransactionUpdate } from "atom.io"
 import { setState } from "atom.io"
 
 import type { Store } from "../store"
@@ -50,10 +50,25 @@ export const timeTravel = (
 	}
 
 	const update = timelineData.history[timelineData.at]
-	const updateValues = (atomUpdate: any) => {
+	const updateValues = (atomUpdate: KeyedStateUpdate<any>) => {
 		const { key, newValue, oldValue } = atomUpdate
 		const value = direction === `forward` ? newValue : oldValue
 		setState({ key, type: `atom` }, value, store)
+	}
+	const updateValuesFromTransactionUpdate = (
+		transactionUpdate: TransactionUpdate<any>,
+	) => {
+		const updates =
+			direction === `forward`
+				? transactionUpdate.updates
+				: [...transactionUpdate.updates].reverse()
+		for (const updateFromTransaction of updates) {
+			if (`newValue` in updateFromTransaction) {
+				updateValues(updateFromTransaction)
+			} else {
+				updateValuesFromTransactionUpdate(updateFromTransaction)
+			}
+		}
 	}
 
 	switch (update.type) {
@@ -61,8 +76,7 @@ export const timeTravel = (
 			updateValues(update)
 			break
 		}
-		case `selector_update`:
-		case `transaction_update`: {
+		case `selector_update`: {
 			const updates =
 				direction === `forward`
 					? update.atomUpdates
@@ -70,6 +84,10 @@ export const timeTravel = (
 			for (const atomUpdate of updates) {
 				updateValues(atomUpdate)
 			}
+			break
+		}
+		case `transaction_update`: {
+			updateValuesFromTransactionUpdate(update)
 			break
 		}
 	}
