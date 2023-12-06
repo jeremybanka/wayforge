@@ -138,6 +138,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 						const updateNumber = mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
+							// ❗ new:"0=add:\"myHand\"",old:"0=add:\"deckId\""
 							setState(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
@@ -160,10 +161,10 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		store: Store,
 	) {
 		this.mutableState = mutableState
-		this.latestUpdateState = this.initializeState(mutableState, store)
-		this.observeCore(mutableState, this.latestUpdateState, store)
-		this.updateCore(mutableState, this.latestUpdateState, store)
-		const target = newest(store) // ❗ move up?
+		const target = newest(store)
+		this.latestUpdateState = this.initializeState(mutableState, target)
+		this.observeCore(mutableState, this.latestUpdateState, target)
+		this.updateCore(mutableState, this.latestUpdateState, target)
 		target.trackers.set(mutableState.key, this)
 	}
 }
