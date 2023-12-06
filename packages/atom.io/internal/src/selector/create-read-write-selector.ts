@@ -1,9 +1,10 @@
 import type { FamilyMetadata, SelectorOptions, SelectorToken } from "atom.io"
 
 import { cacheValue } from "../caching"
+import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state/become"
-import type { Store, StoreCore } from "../store"
+import type { Store } from "../store"
 import { Subject } from "../subject"
 import type { Selector } from "./create-selector"
 import { createSelector } from "./create-selector"
@@ -13,8 +14,8 @@ export const createReadWriteSelector = <T>(
 	options: SelectorOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
-	core: StoreCore,
 ): SelectorToken<T> => {
+	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 
 	const { get, set } = registerSelector(options.key, store)
@@ -40,7 +41,7 @@ export const createReadWriteSelector = <T>(
 		)
 		cacheValue(options.key, newValue, subject, store)
 		markDone(options.key, store)
-		if (store.transactionStatus.phase === `idle`) {
+		if (target.transactionMeta === null) {
 			subject.next({ newValue, oldValue })
 		}
 		options.set({ get, set }, newValue)
@@ -54,7 +55,7 @@ export const createReadWriteSelector = <T>(
 		type: `selector`,
 		...(family && { family }),
 	}
-	core.selectors.set(options.key, mySelector)
+	target.selectors.set(options.key, mySelector) // ❓
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: SelectorToken<T> = {

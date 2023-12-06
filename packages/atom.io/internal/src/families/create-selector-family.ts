@@ -9,11 +9,11 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import { newest } from "../lineage"
 import { createSelector } from "../selector"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
-import { target } from "../transaction"
 import { createReadonlySelectorFamily } from "./create-readonly-selector-family"
 
 export function createSelectorFamily<T, K extends Json.Serializable>(
@@ -33,7 +33,7 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 	if (isReadonly) {
 		return createReadonlySelectorFamily(options, store)
 	}
-	const core = target(store)
+	const target = newest(store)
 	const subject = new Subject<SelectorToken<T>>()
 
 	const selectorFamily = Object.assign(
@@ -41,7 +41,7 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = core.selectors.get(fullKey)
+			const existing = target.selectors.get(fullKey)
 			if (existing) {
 				return deposit(existing)
 			}
@@ -62,6 +62,6 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 			type: `selector_family`,
 		} as const,
 	) as SelectorFamily<T, K>
-	core.families.set(options.key, selectorFamily)
+	target.families.set(options.key, selectorFamily)
 	return selectorFamily
 }

@@ -20,7 +20,7 @@ import * as Internal from "atom.io/internal"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 1
+const CHOOSE = 3
 let logger: Logger
 
 beforeEach(() => {
@@ -67,6 +67,41 @@ type Item = Parcel<
 >
 
 describe(`transaction`, () => {
+	it(`sets state`, () => {
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ get, set }) => {
+				const count = get(countState)
+				set(countState, count + 1)
+			},
+		})
+		expect(getState(countState)).toEqual(0)
+		runTransaction(incrementTX)()
+		expect(getState(countState)).toEqual(1)
+	})
+	it(`creates atom in a transaction`, () => {
+		const findPointState = atomFamily<{ x: number; y: number }, number>({
+			key: `point`,
+			default: { x: 0, y: 0 },
+		})
+		const addPoint = transaction<
+			(key: number, x: number, y: number) => { x: number; y: number }
+		>({
+			key: `add_point`,
+			do: ({ set }, pointKey: number, x: number, y: number) => {
+				const point = { x, y }
+				set(findPointState(pointKey), point)
+				return point
+			},
+		})
+		const point = runTransaction(addPoint)(777, 1, 2)
+		expect(point).toEqual({ x: 1, y: 2 })
+	})
+
 	it(`gets and sets state`, () => {
 		const findBeingState = atomFamily<$<Being>, string>({
 			key: `Being`,
@@ -143,7 +178,6 @@ describe(`transaction`, () => {
 		const victimInvState = findBeingInventoryState(victimState.key)
 		expect(getState(thiefInvState)).toEqual([])
 		expect(getState(victimInvState)).toEqual([prizeState.key])
-
 		const steal = runTransaction(stealTX)
 		steal(thiefState.key, victimState.key)
 		expect(getState(thiefInvState)).toEqual([prizeState.key])
@@ -191,7 +225,7 @@ describe(`transaction`, () => {
 
 		subscribeToTransaction(setAllCounts, (data) => {
 			Utils.stdout(`Transaction update:`, data)
-			for (const update of data.atomUpdates) {
+			for (const update of data.updates) {
 				Utils.stdout(`Atom update:`, update)
 			}
 		})
@@ -214,7 +248,7 @@ describe(`transaction`, () => {
 			key: `setAllCounts`,
 			params: [3],
 			output: undefined,
-			atomUpdates: [
+			updates: [
 				{
 					key: `count1`,
 					oldValue: 2,
@@ -248,5 +282,32 @@ describe(`transaction`, () => {
 		})
 
 		const point = runTransaction(addPoint)(777, 1, 2)
+	})
+})
+
+describe(`nesting transactions`, () => {
+	test(`a transaction can be called from within a transaction`, () => {
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ get, set }) => {
+				const count = get(countState)
+				set(countState, count + 1)
+			},
+		})
+		const incrementTwiceTX = transaction({
+			key: `incrementTwice`,
+			do: ({ get, set }) => {
+				const count = get(countState)
+				set(countState, count + 1)
+				runTransaction(incrementTX)()
+				set(countState, (count) => count + 1)
+			},
+		})
+		runTransaction(incrementTwiceTX)()
+		expect(getState(countState)).toEqual(3)
 	})
 })

@@ -4,10 +4,11 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
-import { getState, setState } from "atom.io"
+import { getState, runTransaction, setState } from "atom.io"
 
+import { newest } from "../lineage"
 import { deposit } from "../store"
-import type { Store, StoreCore } from "../store"
+import type { Store } from "../store"
 import { Subject } from "../subject"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
@@ -35,6 +36,7 @@ export function createTransaction<ƒ extends ƒn>(
 					{
 						get: (token) => getState(token, store),
 						set: (token, value) => setState(token, value, store),
+						run: (token) => runTransaction(token, store),
 					},
 					...params,
 				)
@@ -49,14 +51,9 @@ export function createTransaction<ƒ extends ƒn>(
 		install: (store) => createTransaction(options, store),
 		subject: new Subject(),
 	}
-	const core = target(store)
-	core.transactions.set(newTransaction.key, newTransaction)
+	const target = newest(store)
+	target.transactions.set(newTransaction.key, newTransaction)
 	const token = deposit(newTransaction)
 	store.subject.transactionCreation.next(token)
 	return token
 }
-
-export const target = (store: Store): StoreCore =>
-	store.transactionStatus.phase === `building`
-		? store.transactionStatus.core
-		: store

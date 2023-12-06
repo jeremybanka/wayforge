@@ -1,4 +1,4 @@
-import type { Transceiver, TransceiverMode } from "atom.io/internal"
+import type { Lineage, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
 import type { Json, Stringified, primitive } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
@@ -19,7 +19,7 @@ export interface SetRTXJson<P extends primitive> extends Json.Object {
 }
 export class SetRTX<P extends primitive>
 	extends Set<P>
-	implements Transceiver<NumberedSetUpdate>
+	implements Transceiver<NumberedSetUpdate>, Lineage
 {
 	public mode: TransceiverMode = `record`
 	public readonly subject = new Subject<SetUpdate>()
@@ -192,7 +192,7 @@ export class SetRTX<P extends primitive>
 				if (!update) {
 					return `OUT_OF_RANGE`
 				}
-				const undoRes = this.undo(update)
+				this.undo(update)
 				done = this.cacheIdx === eventIdx - 1
 			}
 			const innerUpdate = update.substring(breakpoint + 1) as SetUpdate

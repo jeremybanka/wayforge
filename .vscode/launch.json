@@ -7,8 +7,9 @@
 			"name": "Debug Current Test File",
 			"autoAttachChildProcesses": true,
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+			"cwd": "${workspaceRoot}/packages/atom.io",
 			"program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
-			"args": ["run", "${relativeFile}"],
+			"args": ["run", "${fileBasenameNoExtension}"],
 			"smartStep": true,
 			"console": "integratedTerminal"
 		}

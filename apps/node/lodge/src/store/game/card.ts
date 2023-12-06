@@ -5,6 +5,7 @@ import { selectJson } from "atom.io/json"
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
 import { isWithin } from "~/packages/anvl/src/refinement"
+import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { Perspective } from "~/packages/occlusion/src"
 
@@ -46,13 +47,13 @@ export const findCardState = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = createMutableAtom<SetRTX<string>, string[]>(
+export const cardIndex = createMutableAtom<SetRTX<string>, SetRTXJson<string>>(
 	{
 		key: `cardIndex::mutable`,
 		mutable: true,
 		default: () => new SetRTX<string>(),
-		toJson: (set) => [...set],
-		fromJson: (array) => new SetRTX<string>(array),
+		toJson: (set) => set.toJSON(),
+		fromJson: (json) => SetRTX.fromJSON(json),
 	},
 	IMPLICIT.STORE,
 )

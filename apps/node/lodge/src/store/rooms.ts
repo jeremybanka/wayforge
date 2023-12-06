@@ -3,6 +3,7 @@ import { atom, atomFamily, selector, transaction } from "atom.io"
 import { nanoid } from "nanoid"
 
 import { IMPLICIT, createMutableAtom } from "atom.io/internal"
+import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { AtomicJunction } from "./utils/atomic-junction"
 
@@ -35,13 +36,16 @@ export const findPlayerState = atomFamily<Player, string>({
 		name: ``,
 	},
 })
-export const playersIndex = createMutableAtom<SetRTX<string>, string[]>(
+export const playersIndex = createMutableAtom<
+	SetRTX<string>,
+	SetRTXJson<string>
+>(
 	{
 		key: `playersIndex::mutable`,
 		mutable: true,
 		default: () => new SetRTX<string>(),
-		toJson: (set) => [...set],
-		fromJson: (array) => new SetRTX<string>(array),
+		toJson: (set) => set.toJSON(),
+		fromJson: (json) => SetRTX.fromJSON(json),
 	},
 	IMPLICIT.STORE,
 )

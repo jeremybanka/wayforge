@@ -3,8 +3,8 @@ import { getState, setState, subscribe, subscribeToTimeline } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
+import { newest } from ".."
 import { createAtom, deleteAtom } from "../atom"
-import { target } from "../transaction"
 import type { Transceiver } from "./transceiver"
 
 /**
@@ -48,11 +48,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		store: Store,
 	): void {
 		const originalInnerValue = getState(mutableState, store)
+		const target = newest(store)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			`tracker:${store.config.name}:${
-				store.transactionStatus.phase === `idle`
+				target.transactionMeta === null
 					? `main`
-					: store.transactionStatus.key
+					: target.transactionMeta.update.key
 			}`,
 			(update) => {
 				const unsubscribe = store.subject.operationStatus.subscribe(
@@ -69,11 +70,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			(update) => {
 				if (update.newValue !== update.oldValue) {
 					this.unsubscribeFromInnerValue?.()
+					const target = newest(store)
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						`tracker:${store.config.name}:${
-							store.transactionStatus.phase === `idle`
+							target.transactionMeta === null
 								? `main`
-								: store.transactionStatus.key
+								: target.transactionMeta.update.key
 						}`,
 						(update) => {
 							const unsubscribe = store.subject.operationStatus.subscribe(
@@ -136,6 +138,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 						const updateNumber = mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
+							// ❗ new:"0=add:\"myHand\"",old:"0=add:\"deckId\""
 							setState(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
@@ -158,10 +161,10 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		store: Store,
 	) {
 		this.mutableState = mutableState
-		this.latestUpdateState = this.initializeState(mutableState, store)
-		this.observeCore(mutableState, this.latestUpdateState, store)
-		this.updateCore(mutableState, this.latestUpdateState, store)
-		const core = target(store)
-		core.trackers.set(mutableState.key, this)
+		const target = newest(store)
+		this.latestUpdateState = this.initializeState(mutableState, target)
+		this.observeCore(mutableState, this.latestUpdateState, target)
+		this.updateCore(mutableState, this.latestUpdateState, target)
+		target.trackers.set(mutableState.key, this)
 	}
 }

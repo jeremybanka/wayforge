@@ -1,12 +1,12 @@
 import type { Atom } from "../atom"
 import { evictCachedValue } from "../caching"
+import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
-import { target } from "../transaction"
 
 export const evictDownStream = <T>(atom: Atom<T>, store: Store): void => {
-	const core = target(store)
-	const downstreamKeys = core.selectorAtoms.getRelatedKeys(atom.key)
+	const target = newest(store)
+	const downstreamKeys = target.selectorAtoms.getRelatedKeys(atom.key)
 	store.logger.info(
 		`🧹`,
 		atom.type,
@@ -17,12 +17,12 @@ export const evictDownStream = <T>(atom: Atom<T>, store: Store): void => {
 		downstreamKeys ?? `to evict`,
 	)
 	if (downstreamKeys) {
-		if (core.operation.open) {
+		if (target.operation.open) {
 			store.logger.info(
 				`🧹`,
 				atom.type,
 				atom.key,
-				`[ ${[...core.operation.done].join(`, `)} ] already done`,
+				`[ ${[...target.operation.done].join(`, `)} ] already done`,
 			)
 		}
 		for (const key of downstreamKeys) {

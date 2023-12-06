@@ -79,14 +79,20 @@ const TransactionUpdateFC: React.FC<{
 				</section>
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
-					{transactionUpdate.atomUpdates
+					{transactionUpdate.updates
 						.filter((token) => !token.key.startsWith(`👁‍🗨`))
-						.map((atomUpdate, index) => {
-							return (
+						.map((update, index) => {
+							return `newValue` in update ? (
 								<article.AtomUpdate
-									key={`${transactionUpdate.key}:${index}:${atomUpdate.key}`}
+									key={`${transactionUpdate.key}:${index}:${update.key}`}
 									serialNumber={index}
-									atomUpdate={atomUpdate}
+									atomUpdate={update}
+								/>
+							) : (
+								<TransactionUpdateFC
+									key={`${transactionUpdate.key}:${index}:${update.key}`}
+									serialNumber={index}
+									transactionUpdate={update}
 								/>
 							)
 						})}
@@ -109,14 +115,20 @@ export const TimelineUpdateFC: React.FC<{
 			</header>
 			<main>
 				{timelineUpdate.type === `transaction_update` ? (
-					timelineUpdate.atomUpdates
+					timelineUpdate.updates
 						.filter((token) => !token.key.startsWith(`👁‍🗨`))
-						.map((atomUpdate, index) => {
-							return (
+						.map((update, index) => {
+							return `newValue` in update ? (
 								<article.AtomUpdate
-									key={`${timelineUpdate.key}:${index}:${atomUpdate.key}`}
+									key={`${timelineUpdate.key}:${index}:${update.key}`}
 									serialNumber={index}
-									atomUpdate={atomUpdate}
+									atomUpdate={update}
+								/>
+							) : (
+								<TransactionUpdateFC
+									key={`${timelineUpdate.key}:${index}:${update.key}`}
+									serialNumber={index}
+									transactionUpdate={update}
 								/>
 							)
 						})

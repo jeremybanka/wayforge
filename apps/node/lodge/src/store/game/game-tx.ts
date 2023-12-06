@@ -122,7 +122,11 @@ export const addHandTx = transaction<
 			name: ``,
 			rotation: 0,
 		}
-		set(cardGroupIndex, (current) => current.add(groupId))
+		set(cardGroupIndex, (current) => {
+			const next = current.add(groupId)
+			return next
+		})
+		// console.log(IMPLICIT.STORE.child?.valueMap.get(`cardGroupsIndex::mutable`))
 		set(findCardGroupState(groupId), cardGroup)
 		ownersOfGroups.set({ playerId, groupId })
 	},

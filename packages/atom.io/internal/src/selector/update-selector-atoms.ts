@@ -1,7 +1,7 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
 
+import { newest } from "../lineage"
 import type { Store } from "../store"
-import { target } from "../transaction"
 import { traceSelectorAtoms } from "./trace-selector-atoms"
 
 export const updateSelectorAtoms = (
@@ -9,7 +9,7 @@ export const updateSelectorAtoms = (
 	dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
 	store: Store,
 ): void => {
-	const core = target(store)
+	const core = newest(store)
 	if (dependency.type === `atom`) {
 		core.selectorAtoms = core.selectorAtoms.set({
 			selectorKey,

@@ -1,7 +1,7 @@
 import type { AtomFamily } from "atom.io"
 import type { Json, JsonInterface } from "atom.io/json"
-import { readOrComputeValue } from ".."
-import type { Store, StoreCore } from ".."
+import { newest } from ".."
+import type { Store } from ".."
 import type { Atom } from "../atom"
 import { copyMutableIfNeeded } from "./copy-mutable-if-needed"
 
@@ -10,27 +10,21 @@ export function copyMutableIfWithinTransaction<T>(
 	atom: Atom<T> | (Atom<T> & JsonInterface<T, Json.Serializable>),
 	store: Store,
 ): T {
-	if (
-		store.transactionStatus.phase === `building` ||
-		store.transactionStatus.phase === `applying`
-	) {
+	const target = newest(store)
+	const parent = target.parent
+	if (parent !== null) {
 		if (`toJson` in atom && `fromJson` in atom) {
-			const copiedValue = copyMutableIfNeeded(
-				atom,
-				atom,
-				store,
-				store.transactionStatus.core,
-			)
+			const copiedValue = copyMutableIfNeeded(atom, atom, parent, target)
 			return copiedValue
 		}
 		if (`family` in atom) {
-			const family = store.transactionStatus.core.families.get(atom.family.key)
+			const family = parent.families.get(atom.family.key)
 			if (family && family.type === `atom_family`) {
 				const result = copyMutableFamilyMemberWithinTransaction<T>(
 					atom,
 					family,
-					store,
-					store.transactionStatus.core,
+					parent,
+					target,
 				)
 				if (result) {
 					return result
@@ -47,7 +41,7 @@ export function copyMutableFamilyMemberWithinTransaction<T>(
 		| AtomFamily<T, any>
 		| (AtomFamily<T, any> & JsonInterface<T, Json.Serializable>),
 	origin: Store,
-	target: StoreCore,
+	target: Store,
 ): T | null {
 	if (`toJson` in family && `fromJson` in family) {
 		const copyCreated = copyMutableIfNeeded(atom, family, origin, target)
