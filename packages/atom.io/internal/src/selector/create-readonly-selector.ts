@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 
 import { cacheValue } from "../caching"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import type { ReadonlySelector } from "./create-selector"

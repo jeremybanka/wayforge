@@ -1,6 +1,6 @@
 import type { StateUpdate } from "atom.io"
 import { Future } from "./future"
-import { newest } from "./scion"
+import { newest } from "./lineage"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 

@@ -9,7 +9,7 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { createAtom } from "../atom"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"

@@ -1,7 +1,7 @@
 import type { MutableAtomFamily, SelectorFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import type { Transceiver } from "./transceiver"
 

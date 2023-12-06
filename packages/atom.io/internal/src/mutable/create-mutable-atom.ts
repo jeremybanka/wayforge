@@ -4,7 +4,7 @@ import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
 import { createAtom } from "../atom"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"

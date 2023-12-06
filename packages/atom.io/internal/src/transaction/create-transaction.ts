@@ -6,7 +6,7 @@ import type {
 } from "atom.io"
 import { getState, runTransaction, setState } from "atom.io"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import { deposit } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"

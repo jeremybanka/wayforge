@@ -1,6 +1,6 @@
 import type { ReadonlySelectorToken, StateToken } from "atom.io"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import { traceSelectorAtoms } from "./trace-selector-atoms"
 

@@ -1,7 +1,7 @@
 import type { Atom } from "../atom"
 import { evictCachedValue } from "../caching"
+import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
-import { newest } from "../scion"
 import type { Store } from "../store"
 
 export const evictDownStream = <T>(atom: Atom<T>, store: Store): void => {

@@ -1,7 +1,7 @@
 import type { AtomToken, KeyedStateUpdate, TransactionUpdate, ƒn } from "atom.io"
 import { setState } from "atom.io"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import { withdraw } from "../store"
 import type { Store } from "../store"
 

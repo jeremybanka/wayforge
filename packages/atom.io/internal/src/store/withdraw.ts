@@ -9,7 +9,7 @@ import type {
 } from "atom.io"
 
 import type { Atom } from "../atom"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { ReadonlySelector, Selector } from "../selector"
 import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"

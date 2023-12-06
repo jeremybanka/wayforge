@@ -1,7 +1,7 @@
 import type { Transactors } from "atom.io"
 
+import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
-import { newest } from "../scion"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"

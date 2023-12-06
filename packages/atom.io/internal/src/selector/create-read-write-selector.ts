@@ -1,8 +1,8 @@
 import type { FamilyMetadata, SelectorOptions, SelectorToken } from "atom.io"
 
 import { cacheValue } from "../caching"
+import { newest } from "../lineage"
 import { markDone } from "../operation"
-import { newest } from "../scion"
 import { become } from "../set-state/become"
 import type { Store } from "../store"
 import { Subject } from "../subject"

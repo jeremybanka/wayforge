@@ -1,8 +1,8 @@
 import type { KeyedStateUpdate, StateUpdate } from "atom.io"
 
 import type { Atom } from "../atom"
+import { newest } from "../lineage"
 import { isTransceiver } from "../mutable"
-import { newest } from "../scion"
 import type { Store } from "../store"
 
 function shouldUpdateBeStowed(key: string, update: StateUpdate<any>): boolean {

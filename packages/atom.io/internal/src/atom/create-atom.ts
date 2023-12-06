@@ -8,8 +8,8 @@ import type {
 import { setState, subscribe } from "atom.io"
 
 import { cacheValue } from "../caching"
+import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
-import { newest } from "../scion"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"

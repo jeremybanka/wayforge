@@ -1,4 +1,4 @@
-import { newest } from "./scion"
+import { newest } from "./lineage"
 import type { Store } from "./store"
 
 export type AtomKey<T> = string & { __atomKey?: never; __brand?: T }

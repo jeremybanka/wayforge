@@ -1,5 +1,5 @@
 import type { Atom } from "../atom"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { ReadonlySelector, Selector } from "../selector"
 import type { Store } from "../store"
 

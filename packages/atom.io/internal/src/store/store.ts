@@ -15,9 +15,9 @@ import type {
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type { Atom } from "../atom"
+import type { Lineage } from "../lineage"
 import type { MutableAtom, Tracker, Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
-import type { Scion } from "../scion"
 import type { ReadonlySelector, Selector } from "../selector"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
@@ -40,7 +40,7 @@ import type { Transaction, TransactionMeta } from "../transaction"
 // 	| `valueMap`
 // >
 
-export class Store implements Scion {
+export class Store implements Lineage {
 	public parent: Store | null = null
 	public child: Store | null = null
 

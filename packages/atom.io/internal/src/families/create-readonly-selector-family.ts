@@ -7,7 +7,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import { createSelector } from "../selector"
 import { type Store, deposit } from "../store"
 import { Subject } from "../subject"

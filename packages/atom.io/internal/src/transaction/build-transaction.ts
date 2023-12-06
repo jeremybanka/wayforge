@@ -1,7 +1,7 @@
 import { Junction } from "~/packages/rel8/junction/src"
 
 import { LazyMap } from "../lazy-map"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 
 export const buildTransaction = (

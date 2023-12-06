@@ -6,7 +6,7 @@ import type {
 	SelectorToken,
 } from "atom.io"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import type { Subject } from "../subject"
 import { createReadWriteSelector } from "./create-read-write-selector"

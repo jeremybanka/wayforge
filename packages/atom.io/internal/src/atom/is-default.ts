@@ -1,4 +1,4 @@
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
 

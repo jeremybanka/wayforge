@@ -1,6 +1,6 @@
 import type { AtomKey, ReadonlySelectorKey, SelectorKey } from "../keys"
 import { isStateKey } from "../keys"
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 
 export const getSelectorDependencyKeys = (

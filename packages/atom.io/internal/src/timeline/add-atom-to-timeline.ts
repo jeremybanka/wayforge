@@ -1,7 +1,7 @@
 import type { TransactionUpdate, ƒn } from "atom.io"
 import type { AtomToken, TimelineUpdate } from "atom.io"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import type {

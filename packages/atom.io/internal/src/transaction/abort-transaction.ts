@@ -1,4 +1,4 @@
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 
 export const abortTransaction = (store: Store): void => {

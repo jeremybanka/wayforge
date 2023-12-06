@@ -8,7 +8,7 @@ import type {
 	ƒn,
 } from "atom.io"
 
-import { newest } from "../scion"
+import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
