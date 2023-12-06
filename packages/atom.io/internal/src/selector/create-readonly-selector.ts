@@ -5,7 +5,8 @@ import type {
 } from "atom.io"
 
 import { cacheValue } from "../caching"
-import type { Store, StoreCore } from "../store"
+import { newest } from "../scion"
+import type { Store } from "../store"
 import { Subject } from "../subject"
 import type { ReadonlySelector } from "./create-selector"
 import { createSelector } from "./create-selector"
@@ -15,8 +16,8 @@ export const createReadonlySelector = <T>(
 	options: ReadonlySelectorOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
-	core: StoreCore,
 ): ReadonlySelectorToken<T> => {
+	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 
 	const { get } = registerSelector(options.key, store)
@@ -34,7 +35,7 @@ export const createReadonlySelector = <T>(
 		type: `readonly_selector`,
 		...(family && { family }),
 	}
-	core.readonlySelectors.set(options.key, readonlySelector)
+	target.readonlySelectors.set(options.key, readonlySelector)
 	const initialValue = getSelf()
 	store.logger.info(
 		`✨`,

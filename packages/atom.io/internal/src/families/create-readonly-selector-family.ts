@@ -7,23 +7,23 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import { newest } from "../scion"
 import { createSelector } from "../selector"
 import { type Store, deposit } from "../store"
 import { Subject } from "../subject"
-import { target } from "../transaction"
 
 export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K> {
-	const core = target(store)
 	const subject = new Subject<ReadonlySelectorToken<T>>()
 	return Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
+			const target = newest(store)
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = core.readonlySelectors.get(fullKey)
+			const existing = target.readonlySelectors.get(fullKey)
 			if (existing) {
 				return deposit(existing)
 			}

@@ -9,10 +9,10 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { createAtom } from "../atom"
+import { newest } from "../scion"
 import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { target } from "../transaction"
 
 export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
@@ -54,7 +54,7 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 			subject,
 		} as const,
 	)
-	const core = target(store)
-	core.families.set(options.key, atomFamily)
+	const target = newest(store)
+	target.families.set(options.key, atomFamily)
 	return atomFamily
 }

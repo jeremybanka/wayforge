@@ -3,6 +3,7 @@ import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
 import { markDone } from "../operation"
 import { readOrComputeValue } from "../read-or-compute-value"
+import { newest } from "../scion"
 import type { Store } from "../store"
 import { become } from "./become"
 import { copyMutableIfWithinTransaction } from "./copy-mutable-in-transaction"
@@ -15,6 +16,7 @@ export const setAtom = <T>(
 	next: T | ((oldValue: T) => T),
 	store: Store,
 ): void => {
+	const target = newest(store)
 	const oldValue = readOrComputeValue(atom, store)
 	let newValue = copyMutableIfWithinTransaction(oldValue, atom, store)
 	newValue = become(next)(newValue)
@@ -26,7 +28,10 @@ export const setAtom = <T>(
 	markDone(atom.key, store)
 	evictDownStream(atom, store)
 	const update = { oldValue, newValue }
-	if (store.transactionStatus.phase !== `building`) {
+	if (
+		target.transactionMeta === null ||
+		target.transactionMeta.phase === `applying`
+	) {
 		emitUpdate(atom, update, store)
 	} else {
 		stowUpdate(atom, update, store)

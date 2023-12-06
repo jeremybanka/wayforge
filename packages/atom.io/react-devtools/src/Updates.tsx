@@ -79,7 +79,7 @@ const TransactionUpdateFC: React.FC<{
 				</section>
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
-					{transactionUpdate.atomUpdates
+					{transactionUpdate.updates
 						.filter((token) => !token.key.startsWith(`👁‍🗨`))
 						.map((atomUpdate, index) => {
 							return (
@@ -109,7 +109,7 @@ export const TimelineUpdateFC: React.FC<{
 			</header>
 			<main>
 				{timelineUpdate.type === `transaction_update` ? (
-					timelineUpdate.atomUpdates
+					timelineUpdate.updates
 						.filter((token) => !token.key.startsWith(`👁‍🗨`))
 						.map((atomUpdate, index) => {
 							return (

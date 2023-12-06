@@ -1,20 +1,20 @@
+import { newest } from "../scion"
 import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
-import { target } from "../transaction"
 
 export const isAtomDefault = (key: string, store: Store): boolean => {
-	const core = target(store)
+	const core = newest(store)
 	return core.atomsThatAreDefault.has(key)
 }
 
 export const markAtomAsDefault = (key: string, store: Store): void => {
-	const core = target(store)
+	const core = newest(store)
 	core.atomsThatAreDefault = new Set(core.atomsThatAreDefault).add(key)
 }
 
 export const markAtomAsNotDefault = (key: string, store: Store): void => {
-	const core = target(store)
-	core.atomsThatAreDefault = new Set(target(store).atomsThatAreDefault)
+	const core = newest(store)
+	core.atomsThatAreDefault = new Set(newest(store).atomsThatAreDefault)
 	core.atomsThatAreDefault.delete(key)
 }
 

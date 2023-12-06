@@ -6,9 +6,9 @@ import type {
 	SelectorToken,
 } from "atom.io"
 
+import { newest } from "../scion"
 import type { Store } from "../store"
 import type { Subject } from "../subject"
-import { target } from "../transaction"
 import { createReadWriteSelector } from "./create-read-write-selector"
 import { createReadonlySelector } from "./create-readonly-selector"
 
@@ -45,9 +45,9 @@ export function createSelector<T>(
 	family: FamilyMetadata | undefined,
 	store: Store,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
-	const core = target(store)
-	const existingWritable = core.selectors.get(options.key)
-	const existingReadonly = core.readonlySelectors.get(options.key)
+	const target = newest(store)
+	const existingWritable = target.selectors.get(options.key)
+	const existingReadonly = target.readonlySelectors.get(options.key)
 
 	if (existingWritable || existingReadonly) {
 		store.logger.error(
@@ -59,7 +59,7 @@ export function createSelector<T>(
 	}
 
 	if (`set` in options) {
-		return createReadWriteSelector(options, family, store, core)
+		return createReadWriteSelector(options, family, store)
 	}
-	return createReadonlySelector(options, family, store, core)
+	return createReadonlySelector(options, family, store)
 }

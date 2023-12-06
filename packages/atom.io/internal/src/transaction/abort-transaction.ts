@@ -1,7 +1,9 @@
+import { newest } from "../scion"
 import type { Store } from "../store"
 
 export const abortTransaction = (store: Store): void => {
-	if (store.transactionStatus.phase === `idle`) {
+	const target = newest(store)
+	if (target.transactionMeta === null || target.parent === null) {
 		store.logger.warn(
 			`🐞`,
 			`transaction`,
@@ -13,8 +15,8 @@ export const abortTransaction = (store: Store): void => {
 	store.logger.info(
 		`🪂`,
 		`transaction`,
-		store.transactionStatus.key,
+		target.transactionMeta.update.key,
 		`Aborting transaction`,
 	)
-	store.transactionStatus = { phase: `idle` }
+	target.parent.child = null
 }

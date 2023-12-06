@@ -2,13 +2,13 @@ import type { JsonInterface } from "atom.io/json"
 
 import type { Atom } from "../atom"
 import { Tracker } from "../mutable"
-import type { Store, StoreCore } from "../store"
+import type { Store } from "../store"
 
 export function copyMutableIfNeeded<T>(
 	atom: Atom<T>,
 	transform: JsonInterface<T>,
 	origin: Store,
-	target: StoreCore,
+	target: Store,
 ): T {
 	const originValue = origin.valueMap.get(atom.key)
 	const targetValue = target.valueMap.get(atom.key)

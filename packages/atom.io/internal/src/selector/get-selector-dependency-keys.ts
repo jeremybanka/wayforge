@@ -1,7 +1,7 @@
 import type { AtomKey, ReadonlySelectorKey, SelectorKey } from "../keys"
 import { isStateKey } from "../keys"
+import { newest } from "../scion"
 import type { Store } from "../store"
-import { target } from "../transaction"
 
 export const getSelectorDependencyKeys = (
 	key: string,
@@ -11,7 +11,7 @@ export const getSelectorDependencyKeys = (
 	| ReadonlySelectorKey<unknown>
 	| SelectorKey<unknown>
 )[] => {
-	const sources = target(store)
+	const sources = newest(store)
 		.selectorGraph.getRelationEntries({ downstreamSelectorKey: key })
 		.filter(([_, { source }]) => source !== key)
 		.map(([_, { source }]) => source)

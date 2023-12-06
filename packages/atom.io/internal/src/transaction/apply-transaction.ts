@@ -1,14 +1,69 @@
-import type { AtomToken, ƒn } from "atom.io"
-import { setState, transaction } from "atom.io"
+import type { AtomToken, KeyedStateUpdate, TransactionUpdate, ƒn } from "atom.io"
+import { setState } from "atom.io"
 
+import { newest } from "../scion"
 import { withdraw } from "../store"
 import type { Store } from "../store"
+
+function ingestAtomUpdate(
+	update: KeyedStateUpdate<any>,
+	parent: Store,
+	child: Store,
+): void {
+	console.log(`ingestAtomUpdate`, update)
+	const { key, newValue } = update
+	const token: AtomToken<unknown> = { key, type: `atom` }
+	if (!parent.valueMap.has(token.key)) {
+		if (token.family) {
+			const family = parent.families.get(token.family.key)
+			if (family) {
+				family(token.family.subKey)
+			}
+		} else {
+			const newAtom = child.atoms.get(token.key)
+			if (!newAtom) {
+				throw new Error(
+					`Absurd Error: Atom "${token.key}" not found while copying updates from transaction "${child.transactionMeta?.update.key}" to store "${parent.config.name}"`,
+				)
+			}
+			parent.atoms.set(newAtom.key, newAtom)
+			parent.valueMap.set(newAtom.key, newAtom.default)
+			parent.logger.info(
+				`🔨`,
+				`transaction`,
+				child.transactionMeta?.update.key ?? `???`,
+				`Adding atom "${newAtom.key}"`,
+			)
+		}
+	}
+	setState(token, newValue, parent)
+}
+function ingestTransactionUpdate(
+	transactionUpdate: TransactionUpdate<any>,
+	parent: Store,
+	child: Store,
+): void {
+	console.log(`ingestTransactionUpdate`, transactionUpdate)
+	for (const update of transactionUpdate.updates) {
+		if (`newValue` in update) {
+			ingestAtomUpdate(update, parent, child)
+		} else {
+			ingestTransactionUpdate(update, parent, child)
+		}
+	}
+}
 
 export const applyTransaction = <ƒ extends ƒn>(
 	output: ReturnType<ƒ>,
 	store: Store,
 ): void => {
-	if (store.transactionStatus.phase !== `building`) {
+	const child = newest(store)
+	const { parent } = child
+	if (
+		parent === null ||
+		child.transactionMeta === null ||
+		child.transactionMeta?.phase !== `building`
+	) {
 		store.logger.warn(
 			`🐞`,
 			`transaction`,
@@ -17,65 +72,33 @@ export const applyTransaction = <ƒ extends ƒn>(
 		)
 		return
 	}
-	store.transactionStatus.phase = `applying`
-	store.transactionStatus.output = output
-	const { atomUpdates } = store.transactionStatus
+	child.transactionMeta.phase = `applying`
+	child.transactionMeta.update.output = output
+	parent.child = null
+	const { updates } = child.transactionMeta.update
 	store.logger.info(
 		`🛄`,
 		`transaction`,
-		store.transactionStatus.key,
-		`Applying transaction with ${atomUpdates.length} updates:`,
-		atomUpdates,
+		child.transactionMeta.update.key,
+		`Applying transaction with ${updates.length} updates:`,
+		updates,
 	)
 
-	for (const { key, newValue } of atomUpdates) {
-		const token: AtomToken<unknown> = { key, type: `atom` }
-		if (!store.valueMap.has(token.key)) {
-			if (token.family) {
-				const family = store.families.get(token.family.key)
-				if (family) {
-					family(token.family.subKey)
-				}
-			} else {
-				const newAtom = store.transactionStatus.core.atoms.get(token.key)
-				if (!newAtom) {
-					throw new Error(
-						`Absurd Error: Atom "${token.key}" not found while copying updates from transaction "${store.transactionStatus.key}" to store "${store.config.name}"`,
-					)
-				}
-				store.atoms.set(newAtom.key, newAtom)
-				store.valueMap.set(newAtom.key, newAtom.default)
-				store.logger.info(
-					`🔨`,
-					`transaction`,
-					store.transactionStatus.key,
-					`Adding atom "${newAtom.key}"`,
-				)
-			}
-		}
-		// if (store.transactionStatus.key === `dealCards`) debugger
-		setState(token, newValue, store)
-	}
-	const myTransaction = withdraw<ƒ>(
-		{ key: store.transactionStatus.key, type: `transaction` },
-		store,
-	)
-	if (myTransaction === undefined) {
-		throw new Error(
-			`Transaction "${store.transactionStatus.key}" not found. Absurd. How is this running?`,
+	if (parent.transactionMeta === null) {
+		ingestTransactionUpdate(child.transactionMeta.update, parent, child)
+		const myTransaction = withdraw<ƒ>(
+			{ key: child.transactionMeta.update.key, type: `transaction` },
+			store,
 		)
+		myTransaction?.subject.next(child.transactionMeta.update)
+		store.logger.info(
+			`🛬`,
+			`transaction`,
+			child.transactionMeta.update.key,
+			`Finished applying transaction.`,
+		)
+	} else {
+		ingestTransactionUpdate(child.transactionMeta.update, parent, child)
+		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
 	}
-	myTransaction.subject.next({
-		key: store.transactionStatus.key,
-		atomUpdates,
-		output,
-		params: store.transactionStatus.params as Parameters<ƒ>,
-	})
-	store.logger.info(
-		`🛬`,
-		`transaction`,
-		store.transactionStatus.key,
-		`Finished applying transaction.`,
-	)
-	store.transactionStatus = { phase: `idle` }
 }

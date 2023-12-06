@@ -1,4 +1,4 @@
-import { AtomIOLogger, simpleLogger } from "atom.io"
+import { AtomIOLogger } from "atom.io"
 import type {
 	AtomFamily,
 	AtomToken,
@@ -17,29 +17,33 @@ import { Junction } from "~/packages/rel8/junction/src"
 import type { Atom } from "../atom"
 import type { MutableAtom, Tracker, Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
+import type { Scion } from "../scion"
 import type { ReadonlySelector, Selector } from "../selector"
 import { Subject } from "../subject"
 import type { Timeline } from "../timeline"
-import type { Transaction, TransactionStatus } from "../transaction"
+import type { Transaction, TransactionMeta } from "../transaction"
 
-export type StoreCore = Pick<
-	Store,
-	| `atoms`
-	| `atomsThatAreDefault`
-	| `families`
-	| `operation`
-	| `readonlySelectors`
-	| `selectorAtoms`
-	| `selectorGraph`
-	| `selectors`
-	| `timelineAtoms`
-	| `timelines`
-	| `trackers`
-	| `transactions`
-	| `valueMap`
->
+// export type StoreCore = Pick<
+// 	Store,
+// 	| `atoms`
+// 	| `atomsThatAreDefault`
+// 	| `families`
+// 	| `operation`
+// 	| `readonlySelectors`
+// 	| `selectorAtoms`
+// 	| `selectorGraph`
+// 	| `selectors`
+// 	| `timelineAtoms`
+// 	| `timelines`
+// 	| `trackers`
+// 	| `transactions`
+// 	| `valueMap`
+// >
 
-export class Store {
+export class Store implements Scion {
+	public parent: Store | null = null
+	public child: Store | null = null
+
 	public valueMap = new Map<string, any>()
 
 	public atoms = new Map<string, Atom<any> | MutableAtom<any>>()
@@ -91,7 +95,7 @@ export class Store {
 		operationStatus: new Subject<OperationProgress>(),
 	}
 	public operation: OperationProgress = { open: false }
-	public transactionStatus: TransactionStatus<ƒn> = { phase: `idle` }
+	public transactionMeta: TransactionMeta<ƒn> | null = null
 
 	public config: {
 		name: string
@@ -118,7 +122,9 @@ export class Store {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
-			this.transactionStatus = { ...store?.transactionStatus }
+			this.transactionMeta = store?.transactionMeta
+				? { ...store?.transactionMeta }
+				: null
 			this.config = {
 				...store?.config,
 				name,

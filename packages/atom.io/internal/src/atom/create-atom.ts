@@ -9,10 +9,10 @@ import { setState, subscribe } from "atom.io"
 
 import { cacheValue } from "../caching"
 import { createMutableAtom } from "../mutable"
+import { newest } from "../scion"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
-import { target } from "../transaction"
 import { markAtomAsDefault } from "./is-default"
 
 export type Atom<T> = {
@@ -36,8 +36,8 @@ export function createAtom<T>(
 		options.key,
 		`creating in store "${store.config.name}"`,
 	)
-	const core = target(store)
-	const existing = core.atoms.get(options.key)
+	const target = newest(store)
+	const existing = target.atoms.get(options.key)
 	if (existing) {
 		store.logger.error(
 			`❌`,
@@ -70,7 +70,7 @@ export function createAtom<T>(
 	if (options.default instanceof Function) {
 		initialValue = options.default()
 	}
-	core.atoms.set(newAtom.key, newAtom)
+	target.atoms.set(newAtom.key, newAtom)
 	markAtomAsDefault(options.key, store)
 	cacheValue(options.key, initialValue, subject, store)
 	const token = deposit(newAtom)

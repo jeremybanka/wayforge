@@ -11,7 +11,7 @@ export type TransactionToken<_> = {
 
 export type TransactionUpdate<ƒ extends ƒn> = {
 	key: string
-	atomUpdates: KeyedStateUpdate<unknown>[]
+	updates: (KeyedStateUpdate<unknown> | TransactionUpdate<ƒn>)[]
 	params: Parameters<ƒ>
 	output: ReturnType<ƒ>
 }

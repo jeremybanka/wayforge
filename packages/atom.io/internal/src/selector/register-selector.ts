@@ -1,10 +1,10 @@
 import type { Transactors } from "atom.io"
 
 import { readOrComputeValue } from "../read-or-compute-value"
+import { newest } from "../scion"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import { target } from "../transaction/create-transaction"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
@@ -12,8 +12,8 @@ export const registerSelector = (
 	store: Store,
 ): Transactors => ({
 	get: (dependency) => {
-		const core = target(store)
-		const alreadyRegistered = core.selectorGraph
+		const target = newest(store)
+		const alreadyRegistered = target.selectorGraph
 			.getRelationEntries({ downstreamSelectorKey: selectorKey })
 			.some(([_, { source }]) => source === dependency.key)
 
@@ -35,7 +35,7 @@ export const registerSelector = (
 		)
 
 		if (!alreadyRegistered) {
-			core.selectorGraph = core.selectorGraph.set(
+			target.selectorGraph = target.selectorGraph.set(
 				{
 					upstreamSelectorKey: dependency.key,
 					downstreamSelectorKey: selectorKey,

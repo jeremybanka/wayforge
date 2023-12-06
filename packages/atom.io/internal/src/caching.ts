@@ -1,8 +1,8 @@
 import type { StateUpdate } from "atom.io"
 import { Future } from "./future"
+import { newest } from "./scion"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
-import { target } from "./transaction"
 
 export function cacheValue<T>(
 	key: string,
@@ -22,13 +22,14 @@ export function cacheValue<T>(
 	subject: Subject<StateUpdate<unknown>>,
 	store: Store,
 ): Future<T> | T {
-	const currentValue = target(store).valueMap.get(key)
+	const target = newest(store)
+	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		currentValue.cancel()
 	}
 	if (value instanceof Promise) {
 		const future = new Future<T>(value)
-		target(store).valueMap.set(key, future)
+		newest(store).valueMap.set(key, future)
 		future
 			.then((resolved) => {
 				if (future.isCanceled) {
@@ -44,18 +45,19 @@ export function cacheValue<T>(
 			})
 		return future
 	}
-	target(store).valueMap.set(key, value)
+	target.valueMap.set(key, value)
 	return value
 }
 
-export const readCachedValue = <T>(key: string, store: Store): T =>
-	target(store).valueMap.get(key)
-
-export const isValueCached = (key: string, store: Store): boolean =>
-	target(store).valueMap.has(key)
+export const readCachedValue = <T>(key: string, store: Store): T => {
+	return newest(store).valueMap.get(key) as T
+}
+export const isValueCached = (key: string, store: Store): boolean => {
+	return newest(store).valueMap.has(key)
+}
 
 export const evictCachedValue = (key: string, store: Store): void => {
-	const core = target(store)
+	const core = newest(store)
 	const currentValue = core.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		currentValue.cancel()

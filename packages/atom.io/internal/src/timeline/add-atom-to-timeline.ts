@@ -1,8 +1,9 @@
-import type { AtomToken, TimelineUpdate } from "atom.io"
+import type { TransactionUpdate, ƒn } from "atom.io"
+import { type AtomToken, type TimelineUpdate, transaction } from "atom.io"
 
+import { newest } from "../scion"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import { target } from "../transaction"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
@@ -21,6 +22,7 @@ export const addAtomToTimeline = (
 		)
 	}
 	atom.subject.subscribe(`timeline`, (update) => {
+		const target = newest(store)
 		const currentSelectorKey =
 			store.operation.open && store.operation.token.type === `selector`
 				? store.operation.token.key
@@ -30,12 +32,12 @@ export const addAtomToTimeline = (
 				? store.operation.time
 				: null
 		const currentTransactionKey =
-			store.transactionStatus.phase === `applying`
-				? store.transactionStatus.key
+			target.transactionMeta?.phase === `applying`
+				? target.transactionMeta.update.key
 				: null
 		const currentTransactionTime =
-			store.transactionStatus.phase === `applying`
-				? store.transactionStatus.time
+			target.transactionMeta?.phase === `applying`
+				? target.transactionMeta.time
 				: null
 
 		store.logger.info(
@@ -66,7 +68,7 @@ export const addAtomToTimeline = (
 			}
 			if (
 				currentTransactionKey &&
-				store.transactionStatus.phase === `applying`
+				newest(store).transactionMeta?.phase === `applying`
 			) {
 				const currentTransaction = withdraw(
 					{ key: currentTransactionKey, type: `transaction` },
@@ -96,26 +98,42 @@ export const addAtomToTimeline = (
 									tl.history.splice(tl.at)
 								}
 
-								const atomUpdates = update.atomUpdates.filter((atomUpdate) => {
-									const core = target(store)
-									const atomOrFamilyKeys = core.timelineAtoms.getRelatedKeys(
-										tl.key,
-									)
+								const filterUpdates = (
+									updates: TransactionUpdate<ƒn>[`updates`],
+								) =>
+									updates
+										.filter((updateFromTx) => {
+											const target = newest(store)
+											if (`updates` in updateFromTx) {
+												return true
+											}
+											const atomOrFamilyKeys =
+												target.timelineAtoms.getRelatedKeys(tl.key)
 
-									return atomOrFamilyKeys
-										? [...atomOrFamilyKeys].some(
-												(key) =>
-													key === atomUpdate.key ||
-													key === atomUpdate.family?.key,
-										  )
-										: false
-								})
+											return atomOrFamilyKeys
+												? [...atomOrFamilyKeys].some(
+														(key) =>
+															key === updateFromTx.key ||
+															key === updateFromTx.family?.key,
+												  )
+												: false
+										})
+										.map((updateFromTx) => {
+											if (`updates` in updateFromTx) {
+												return {
+													...updateFromTx,
+													updates: filterUpdates(updateFromTx.updates),
+												}
+											}
+										})
+
+								const updates = filterUpdates(update.updates)
 
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {
 									type: `transaction_update`,
 									timestamp: currentTransactionTime,
 									...update,
-									atomUpdates,
+									updates,
 								}
 								const willCapture =
 									tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
