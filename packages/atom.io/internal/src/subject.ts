@@ -19,3 +19,17 @@ export class Subject<T> {
 		}
 	}
 }
+
+export class StatefulSubject<T> extends Subject<T> {
+	public state: T
+
+	public constructor(initialState: T) {
+		super()
+		this.state = initialState
+	}
+
+	public next(value: T): void {
+		this.state = value
+		super.next(value)
+	}
+}

@@ -10,7 +10,6 @@ function ingestAtomUpdate(
 	parent: Store,
 	child: Store,
 ): void {
-	console.log(`ingestAtomUpdate`, update)
 	const { key, newValue } = update
 	const token: AtomToken<unknown> = { key, type: `atom` }
 	if (!parent.valueMap.has(token.key)) {
@@ -43,7 +42,6 @@ function ingestTransactionUpdate(
 	parent: Store,
 	child: Store,
 ): void {
-	console.log(`ingestTransactionUpdate`, transactionUpdate)
 	for (const update of transactionUpdate.updates) {
 		if (`newValue` in update) {
 			ingestAtomUpdate(update, parent, child)
@@ -75,6 +73,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 	child.transactionMeta.phase = `applying`
 	child.transactionMeta.update.output = output
 	parent.child = null
+	parent.subject.transactionApplying.next(child.transactionMeta)
 	const { updates } = child.transactionMeta.update
 	store.logger.info(
 		`🛄`,
@@ -83,7 +82,6 @@ export const applyTransaction = <ƒ extends ƒn>(
 		`Applying transaction with ${updates.length} updates:`,
 		updates,
 	)
-
 	if (parent.transactionMeta === null) {
 		ingestTransactionUpdate(child.transactionMeta.update, parent, child)
 		const myTransaction = withdraw<ƒ>(
@@ -101,4 +99,5 @@ export const applyTransaction = <ƒ extends ƒn>(
 		ingestTransactionUpdate(child.transactionMeta.update, parent, child)
 		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
 	}
+	parent.subject.transactionApplying.next(null)
 }

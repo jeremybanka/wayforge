@@ -86,9 +86,7 @@ export function createTimeline(
 		if (tokenOrFamily.type === `atom_family`) {
 			const family = tokenOrFamily
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
-				// if (!core.atoms.has(token.key)) {
 				addAtomToTimeline(token, tl, store)
-				// }
 			})
 			for (const atom of target.atoms.values()) {
 				if (atom.family?.key === family.key) {

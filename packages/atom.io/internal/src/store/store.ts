@@ -19,7 +19,7 @@ import type { MutableAtom, Tracker, Transceiver } from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { Scion } from "../scion"
 import type { ReadonlySelector, Selector } from "../selector"
-import { Subject } from "../subject"
+import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionMeta } from "../transaction"
 
@@ -92,6 +92,7 @@ export class Store implements Scion {
 		>(),
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
 		timelineCreation: new Subject<TimelineToken>(),
+		transactionApplying: new StatefulSubject<TransactionMeta<ƒn> | null>(null),
 		operationStatus: new Subject<OperationProgress>(),
 	}
 	public operation: OperationProgress = { open: false }

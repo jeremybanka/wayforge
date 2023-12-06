@@ -163,7 +163,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		this.latestUpdateState = this.initializeState(mutableState, store)
 		this.observeCore(mutableState, this.latestUpdateState, store)
 		this.updateCore(mutableState, this.latestUpdateState, store)
-		const target = newest(store) // ❗ move up
+		const target = newest(store) // ❗ move up?
 		target.trackers.set(mutableState.key, this)
 	}
 }

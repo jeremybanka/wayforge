@@ -1,5 +1,5 @@
 import type { TransactionUpdate, ƒn } from "atom.io"
-import { type AtomToken, type TimelineUpdate, transaction } from "atom.io"
+import type { AtomToken, TimelineUpdate } from "atom.io"
 
 import { newest } from "../scion"
 import type { Store } from "../store"
@@ -32,13 +32,8 @@ export const addAtomToTimeline = (
 				? store.operation.time
 				: null
 		const currentTransactionKey =
-			target.transactionMeta?.phase === `applying`
-				? target.transactionMeta.update.key
-				: null
-		const currentTransactionTime =
-			target.transactionMeta?.phase === `applying`
-				? target.transactionMeta.time
-				: null
+			target.subject.transactionApplying.state?.update.key
+		const currentTransactionTime = target.subject.transactionApplying.state?.time
 
 		store.logger.info(
 			`⏳`,
@@ -56,7 +51,6 @@ export const addAtomToTimeline = (
 				  ? `in selector "${currentSelectorKey}"`
 				  : ``,
 		)
-
 		if (tl.timeTraveling === null) {
 			if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
 				const mostRecentUpdate: TimelineUpdate | undefined = tl.history.at(-1)
@@ -66,10 +60,7 @@ export const addAtomToTimeline = (
 					)
 				}
 			}
-			if (
-				currentTransactionKey &&
-				newest(store).transactionMeta?.phase === `applying`
-			) {
+			if (currentTransactionKey) {
 				const currentTransaction = withdraw(
 					{ key: currentTransactionKey, type: `transaction` },
 					store,
@@ -125,6 +116,7 @@ export const addAtomToTimeline = (
 													updates: filterUpdates(updateFromTx.updates),
 												}
 											}
+											return updateFromTx
 										})
 
 								const updates = filterUpdates(update.updates)
