@@ -150,9 +150,9 @@ describe(`timeline`, () => {
 			(state: StateToken<number>, times: number) => void
 		>({
 			key: `increment times`,
-			do: (_, state, times) => {
+			do: ({ run }, state, times) => {
 				for (let i = 0; i < times; ++i) {
-					runTransaction(incrementTX)(state)
+					run(incrementTX)(state)
 				}
 			},
 		})

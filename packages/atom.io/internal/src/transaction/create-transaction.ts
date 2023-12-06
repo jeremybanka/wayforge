@@ -4,7 +4,7 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
-import { getState, setState } from "atom.io"
+import { getState, runTransaction, setState } from "atom.io"
 
 import { newest } from "../scion"
 import { deposit } from "../store"
@@ -36,6 +36,7 @@ export function createTransaction<ƒ extends ƒn>(
 					{
 						get: (token) => getState(token, store),
 						set: (token, value) => setState(token, value, store),
+						run: (token) => runTransaction(token, store),
 					},
 					...params,
 				)

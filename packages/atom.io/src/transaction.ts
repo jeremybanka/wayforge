@@ -32,9 +32,14 @@ export type Write<ƒ extends ƒn> = (
 	...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
+export type Act<ƒ extends ƒn> = (
+	transactors: Transactors & { run: typeof runTransaction },
+	...parameters: Parameters<ƒ>
+) => ReturnType<ƒ>
+
 export type TransactionOptions<ƒ extends ƒn> = {
 	key: string
-	do: Write<ƒ>
+	do: Act<ƒ>
 }
 
 export type TransactionIO<Token extends TransactionToken<any>> =
