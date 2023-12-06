@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
+import type { Logger, StateToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -76,8 +76,6 @@ describe(`timeline`, () => {
 			},
 		})
 
-		subscribeToTimeline(tl_abc, (update) => console.error(update))
-
 		const expectation0 = () => {
 			expect(getState(a)).toBe(5)
 			expect(getState(b)).toBe(0)
@@ -131,6 +129,39 @@ describe(`timeline`, () => {
 
 		expect(timelineData.at).toBe(0)
 		expect(timelineData.history.length).toBe(3)
+	})
+	test(`time traveling with nested transactions`, () => {
+		const a = atom({
+			key: `a`,
+			default: 0,
+		})
+		const incrementTX = transaction<(state: StateToken<number>) => void>({
+			key: `increment`,
+			do: ({ set }, state) => {
+				set(state, (n) => n + 1)
+			},
+		})
+
+		const aTL = timeline({
+			key: `a`,
+			atoms: [a],
+		})
+		const incrementTimesTX = transaction<
+			(state: StateToken<number>, times: number) => void
+		>({
+			key: `increment times`,
+			do: (_, state, times) => {
+				for (let i = 0; i < times; ++i) {
+					runTransaction(incrementTX)(state)
+				}
+			},
+		})
+		runTransaction(incrementTimesTX)(a, 3)
+		expect(getState(a)).toBe(3)
+		undo(aTL)
+		expect(getState(a)).toBe(0)
+		redo(aTL)
+		expect(getState(a)).toBe(3)
 	})
 	test(`subscriptions when time-traveling`, () => {
 		const a = atom({
