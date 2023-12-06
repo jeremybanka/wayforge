@@ -5,6 +5,7 @@ import {
 	atom,
 	atomFamily,
 	getState,
+	redo,
 	runTransaction,
 	selector,
 	setState,
@@ -114,22 +115,22 @@ describe(`timeline`, () => {
 		undo(tl_abc)
 		expectation2()
 
-		// redo(tl_abc)
-		// expectation3()
+		redo(tl_abc)
+		expectation3()
 
-		// undo(tl_abc)
-		// undo(tl_abc)
-		// expectation1()
+		undo(tl_abc)
+		undo(tl_abc)
+		expectation1()
 
-		// undo(tl_abc)
-		// expectation0()
+		undo(tl_abc)
+		expectation0()
 
-		// const timelineData = Internal.IMPLICIT.STORE.timelines.get(tl_abc.key)
+		const timelineData = Internal.IMPLICIT.STORE.timelines.get(tl_abc.key)
 
-		// if (!timelineData) throw new Error(`timeline data not found`)
+		if (!timelineData) throw new Error(`timeline data not found`)
 
-		// expect(timelineData.at).toBe(0)
-		// expect(timelineData.history.length).toBe(3)
+		expect(timelineData.at).toBe(0)
+		expect(timelineData.history.length).toBe(3)
 	})
 	test(`subscriptions when time-traveling`, () => {
 		const a = atom({
