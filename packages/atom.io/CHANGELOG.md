@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.13.0
+
+### Minor Changes
+
+- ed599e9: ✨ `transaction` now includes the `run` function, allowing for nesting other transactions.
+
+### Patch Changes
+
+- ed599e9: ✨ `atom.io/internal` ships the `Lineage<T>` interface. It's a linked list, basically. It's here to power transaction nesting. The "lineage" is the chain of draft stores that have been created in a transaction.
+
 ## 0.12.1
 
 ### Patch Changes
