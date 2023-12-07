@@ -1,5 +1,4 @@
 import { LazyMap } from "atom.io/internal"
-import { e } from "vitest/dist/reporters-LLiOBu3g"
 
 describe(`LazyMap`, () => {
 	test(`get`, () => {
