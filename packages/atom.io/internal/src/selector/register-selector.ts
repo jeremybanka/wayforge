@@ -35,7 +35,7 @@ export const registerSelector = (
 		)
 
 		if (!alreadyRegistered) {
-			target.selectorGraph = target.selectorGraph.set(
+			target.selectorGraph.set(
 				{
 					upstreamSelectorKey: dependency.key,
 					downstreamSelectorKey: selectorKey,

@@ -9,12 +9,6 @@ export const recallState = <T>(
 ): T => {
 	const target = newest(store)
 	if (!target.operation.open) {
-		store.logger.warn(
-			`🐞`,
-			state.type,
-			state.key,
-			`recall called outside of an operation. This is probably a bug.`,
-		)
 		return target.valueMap.get(state.key)
 	}
 	return target.operation.prev.get(state.key)

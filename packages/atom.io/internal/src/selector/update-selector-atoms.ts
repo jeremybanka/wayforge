@@ -9,9 +9,9 @@ export const updateSelectorAtoms = (
 	dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
 	store: Store,
 ): void => {
-	const core = newest(store)
+	const target = newest(store)
 	if (dependency.type === `atom`) {
-		core.selectorAtoms = core.selectorAtoms.set({
+		target.selectorAtoms.set({
 			selectorKey,
 			atomKey: dependency.key,
 		})
@@ -32,7 +32,7 @@ export const updateSelectorAtoms = (
 				.join(`, `)} ]`,
 		)
 		for (const atomKey of rootKeys) {
-			core.selectorAtoms = core.selectorAtoms.set({
+			target.selectorAtoms = target.selectorAtoms.set({
 				selectorKey,
 				atomKey,
 			})

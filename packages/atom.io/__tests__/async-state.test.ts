@@ -1,8 +1,6 @@
 import * as http from "http"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
-
 import * as AtomIO from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
@@ -85,81 +83,77 @@ describe(`async atom`, async () => {
 	})
 })
 
-const PORT = 418
-const ORIGIN = `http://localhost:${PORT}`
-const server = http.createServer((req, res) => {
-	let data: Uint8Array[] = []
-	req
-		.on(`data`, (chunk) => {
-			data.push(chunk)
-		})
-		.on(`end`, () => {
-			const authHeader = req.headers.authorization
-			try {
-				if (authHeader !== `Bearer MY_BEARER_TOKEN`) throw 401
-				if (typeof req.url !== `string`) throw 418
-				const url = new URL(req.url, ORIGIN)
-
-				switch (req.method) {
-					case `POST`: {
-						const body = parseJson(Buffer.concat(data).toString())
-						switch (url.pathname) {
-							case `/divide`:
-								if (
-									typeof body === `object` &&
-									body !== null &&
-									`dividend` in body &&
-									`divisor` in body &&
-									typeof body.dividend === `number` &&
-									typeof body.divisor === `number`
-								) {
-									const { dividend, divisor } = body
-									const quotient =
-										divisor === 0
-											? dividend >= 0
-												? `Infinity`
-												: `-Infinity`
-											: dividend / divisor
-
-									res.writeHead(200, {
-										"Content-Type": `application/json`,
-									})
-									res.end(
-										JSON.stringify({
-											quotient: quotient.toString(),
-										}),
-									)
-								} else {
-									throw 400
-								}
-								break
-							default:
-								throw 404
-						}
-						break
-					}
-
-					default:
-						throw 405
-				}
-			} catch (thrown) {
-				if (typeof thrown === `number`) {
-					res.writeHead(thrown)
-					res.end()
-				} else {
-					throw thrown
-				}
-			} finally {
-				data = []
-			}
-		})
-})
-
-beforeAll(() => {
-	server.listen(PORT)
-})
-
 describe(`async selector`, () => {
+	const PORT = 418
+	const ORIGIN = `http://localhost:${PORT}`
+	const server = http.createServer((req, res) => {
+		let data: Uint8Array[] = []
+		req
+			.on(`data`, (chunk) => {
+				data.push(chunk)
+			})
+			.on(`end`, () => {
+				const authHeader = req.headers.authorization
+				try {
+					if (authHeader !== `Bearer MY_BEARER_TOKEN`) throw 401
+					if (typeof req.url !== `string`) throw 418
+					const url = new URL(req.url, ORIGIN)
+
+					switch (req.method) {
+						case `POST`: {
+							const body = parseJson(Buffer.concat(data).toString())
+							switch (url.pathname) {
+								case `/divide`:
+									if (
+										typeof body === `object` &&
+										body !== null &&
+										`dividend` in body &&
+										`divisor` in body &&
+										typeof body.dividend === `number` &&
+										typeof body.divisor === `number`
+									) {
+										const { dividend, divisor } = body
+										const quotient =
+											divisor === 0
+												? dividend >= 0
+													? `Infinity`
+													: `-Infinity`
+												: dividend / divisor
+
+										res.writeHead(200, {
+											"Content-Type": `application/json`,
+										})
+										res.end(
+											JSON.stringify({
+												quotient: quotient.toString(),
+											}),
+										)
+									} else {
+										throw 400
+									}
+									break
+								default:
+									throw 404
+							}
+							break
+						}
+
+						default:
+							throw 405
+					}
+				} catch (thrown) {
+					if (typeof thrown === `number`) {
+						res.writeHead(thrown)
+						res.end()
+					} else {
+						throw thrown
+					}
+				} finally {
+					data = []
+				}
+			})
+	})
+	server.listen(PORT)
 	test(`selector as a caching mechanism for async data`, async () => {
 		const { atom, selector, getState, store } = new AtomIO.Silo(`math`)
 		// AtomIO.setLogLevel(`info`, store)
