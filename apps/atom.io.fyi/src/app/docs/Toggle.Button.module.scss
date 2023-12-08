@@ -1,0 +1,71 @@
+@import "./_check";
+
+label.class {
+  @include check;
+
+  --grid-area: none;
+  --height: 1em;
+  --width: 1em;
+  grid-area: var(--grid-area);
+  height: var(--height);
+  width: var(--width);
+  position: relative;
+  display: inline-flex;
+
+  > * {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  > input[type="checkbox"] {
+    height: var(--height);
+    width: var(--width);
+    position: absolute;
+    top: 0;
+    left: 0;
+    &.active,
+    &:active,
+    &:checked {
+      ~ div {
+        // fill the box:
+        border-width: calc(var(--height) * 2);
+      }
+    }
+  }
+  > div {
+    height: var(--height);
+    width: var(--width);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--bg-soft-glass-1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 1px 20px 1px var(--bg-shadow-2);
+    border-radius: 50%;
+  }
+  > span {
+    user-select: none;
+    height: var(--height);
+    width: var(--width);
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: calc(var(--height) * 0.5);
+    font-variation-settings: "wght" 200;
+    color: var(--fg-color);
+    padding-bottom: 5px;
+  }
+  &:hover {
+    > div {
+      background: var(--bg-soft-glass-3);
+    }
+  }
+  &:active {
+    > div {
+      background: var(--fg-color);
+    }
+    > span {
+      color: var(--bg-color);
+    }
+  }
+}

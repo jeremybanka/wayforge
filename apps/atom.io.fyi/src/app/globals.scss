@@ -69,11 +69,16 @@ h3 {
   --bg-shade-1: #0a0a0a;
   --bg-shade-2: #070707;
   --bg-shade-3: #000;
+  --bg-shadow-1: #0005;
+  --bg-shadow-2: #0007;
   --bg-hard-1: var(--bg-shade-1);
   --bg-hard-2: var(--bg-shade-2);
   --bg-soft-1: var(--bg-tint-1);
   --bg-soft-2: var(--bg-tint-2);
   --bg-soft-3: var(--bg-tint-3);
+  --bg-soft-glass-1: #333a;
+  --bg-soft-glass-2: #333c;
+  --bg-soft-glass-3: #333e;
   --hyperlink-color: #09f;
   --hyperlink-hover-color: #0df;
   --hyperlink-visited-color: #99f;
@@ -83,9 +88,9 @@ h3 {
     --fg-color: var(--color-dark);
     --fg-hard-1: #222;
     --fg-hard-2: #000;
-    --fg-soft-1: #777;
-    --fg-soft-2: #999;
-    --fg-soft-3: #bbb;
+    --fg-soft-1: #666;
+    --fg-soft-2: #777;
+    --fg-soft-3: #888;
     --fg-faint: #eee;
     --bg-color: var(--color-light);
     --bg-tint-1: #fdfdfd;
@@ -93,11 +98,16 @@ h3 {
     --bg-shade-1: #f6f6f6;
     --bg-shade-2: #f0f0f0;
     --bg-shade-3: #e8e8e8;
+    --bg-shadow-1: #e8e8e8;
+    --bg-shadow-2: #e0e0e0;
     --bg-hard-1: var(--bg-tint-1);
     --bg-hard-2: var(--bg-tint-2);
     --bg-soft-1: var(--bg-shade-1);
     --bg-soft-2: var(--bg-shade-2);
     --bg-soft-3: var(--bg-shade-3);
+    --bg-soft-glass-1: #fff8;
+    --bg-soft-glass-2: #fffa;
+    --bg-soft-glass-3: #fffc;
 
     --hyperlink-color: #08f;
     --hyperlink-hover-color: #04f;
