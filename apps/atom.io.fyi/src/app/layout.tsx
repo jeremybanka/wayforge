@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Theme } from "./Theme"
@@ -18,6 +20,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<Theme />
+
 			<body className={scss.class}>
 				<header>
 					<nav>
@@ -38,6 +41,8 @@ export default function RootLayout({
 				</aside>
 				<main>{children}</main>
 				<footer>♥️ jeremybanka</footer>
+				<Analytics />
+				<SpeedInsights />
 			</body>
 		</html>
 	)
