@@ -123,7 +123,7 @@ article.class {
     > nav {
       transform: var(--transform-value);
       transition-property: all;
-      transition-duration: 3s;
+      transition-duration: 0.1s;
     }
     &:first-of-type {
       @include md(right, none, 3em);
@@ -144,16 +144,17 @@ article.class {
       }
     }
     &:last-of-type {
-      @include lg(right, none, 1em);
+      @include md(--right, 2em, 1em);
+      @include lg(right, none, var(--right));
       @include lg(left, calc(50vw + 400px), none);
       nav[data-user-has-toggled="false"] {
         @include lg(display, flex, none);
       }
       label {
+        @include md(right, -1.5em, -0.5em);
         @include lg(display, none, block);
         position: absolute;
         top: -2em;
-        right: 0.5em;
         z-index: 10;
         border-radius: 50%;
       }

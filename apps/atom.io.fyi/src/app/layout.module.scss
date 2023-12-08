@@ -19,7 +19,6 @@ body.class {
     top: 0;
     z-index: 1;
     margin: 0.25em;
-    margin-top: 0.75em;
     padding: 1em 1.5em;
     border-radius: 2em;
     --nav-background: var(--bg-soft-glass-1);
@@ -28,8 +27,10 @@ body.class {
     background: var(--nav-background);
     backdrop-filter: var(--nav-backdrop-filter);
     box-shadow: var(--nav-box-shadow);
+    @media screen and (max-width: $viewport-medium-width) {
+      margin-top: 0.75em;
+    }
     @media screen and (min-width: $viewport-medium-width) {
-      margin-top: 0.25em;
       background: none;
       backdrop-filter: none;
       box-shadow: none;
