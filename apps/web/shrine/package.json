@@ -16,6 +16,6 @@
 	"devDependencies": {
 		"socket.io": "4.7.2",
 		"vite": "5.0.6",
-		"vite-tsconfig-paths": "4.2.1"
+		"vite-tsconfig-paths": "4.2.2"
 	}
 }
