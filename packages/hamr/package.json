@@ -95,7 +95,7 @@
 		"@floating-ui/react": "0.26.3",
 		"@floating-ui/react-dom": "2.0.4",
 		"corners": "0.1.0",
-		"framer-motion": "10.16.15"
+		"framer-motion": "10.16.16"
 	},
 	"scripts": {
 		"build": "./build.sh",
