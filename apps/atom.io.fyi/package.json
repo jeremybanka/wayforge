@@ -6,11 +6,11 @@
 	"scripts": {
 		"dev": "concurrently \"npm:dev:*\"",
 		"dev:exhibits": "tsx scripts/wrap-exhibits.node watch",
-		"dev:next": "next dev",
+		"dev:next": "next -p 5400",
 		"build": "pnpm build:exhibits && pnpm build:next",
 		"build:exhibits": "tsx scripts/wrap-exhibits.node once",
 		"build:next": "next build",
-		"start": "next start",
+		"start": "next start -p 5454",
 		"lint": "next lint",
 		"test": "echo no tests yet",
 		"test:once": "echo no tests yet"
