@@ -86,7 +86,7 @@
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
 		"postgres": "3.4.3",
-		"preact": "10.19.2",
+		"preact": "10.19.3",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-router-dom": "6.20.1",
