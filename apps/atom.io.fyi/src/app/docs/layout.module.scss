@@ -120,24 +120,40 @@ article.class {
         }
       }
     }
+    > nav {
+      transform: var(--transform-value);
+      transition-property: all;
+      transition-duration: 3s;
+    }
     &:first-of-type {
-      @include md(display, flex, none);
-      left: 2em;
+      @include md(right, none, 3em);
+      @include md(left, 2em, none);
       nav {
+        @include md(
+          --transform-value,
+          none,
+          translateX(-7em) translateY(2em) scale(0.9)
+        );
         margin: 0 1em;
+        &[data-user-has-toggled="false"] {
+          @include md(display, flex, none);
+        }
+      }
+      data:first-of-type {
+        @include md(display, none, block);
       }
     }
     &:last-of-type {
+      @include lg(right, none, 1em);
       @include lg(left, calc(50vw + 400px), none);
-      @include lg(right, none, 2em);
       nav[data-user-has-toggled="false"] {
         @include lg(display, flex, none);
       }
-      input[type="checkbox"] {
+      label {
         @include lg(display, none, block);
         position: absolute;
-        top: -1em;
-        right: 0;
+        top: -2em;
+        right: 0.5em;
         z-index: 10;
         border-radius: 50%;
       }

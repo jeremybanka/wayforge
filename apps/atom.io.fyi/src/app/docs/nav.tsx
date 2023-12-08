@@ -4,18 +4,31 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import * as React from "react"
 
+import { atom } from "atom.io"
+import { useI, useO } from "atom.io/react"
+import { Spotlight } from "./Spotlight"
+import { Toggle } from "./Toggle"
+import scss from "./nav.module.scss"
+
 const SUBMODULES = [``, `react`]
 const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
+
+const menuToggleState = atom<boolean>({
+	key: `menuToggleState`,
+	default: false,
+})
 
 export type ContentsProps = {
 	observe: React.MutableRefObject<HTMLElement | null>
 }
 export function OnThisPage(): JSX.Element {
+	const userHasToggled = useO(menuToggleState)
+	const setUserHasToggled = useI(menuToggleState)
+
 	const [headings, setHeadings] = React.useState<
 		{ id: string; content: string | null; level: number }[]
 	>([])
 	const [currentId, setCurrentId] = React.useState<string | null>(null)
-	const [userHasToggled, setUserHasToggled] = React.useState(false)
 	const pathname = usePathname()
 
 	React.useEffect(() => {
@@ -101,7 +114,7 @@ export function OnThisPage(): JSX.Element {
 			<Spotlight
 				elementId="on-this-page"
 				padding={20}
-				updateSignals={[userHasToggled, pathname]}
+				updateSignals={[userHasToggled, pathname, headings]}
 			/>
 			<Spotlight
 				elementId={currentId ? currentId + `-link` : null}
@@ -113,81 +126,34 @@ export function OnThisPage(): JSX.Element {
 					<main>{renderHeadings(headings, 2)}</main>
 				</section>
 			</nav>
-			<input
-				type="checkbox"
+			<Toggle.Button
 				checked={userHasToggled}
-				onChange={() => setUserHasToggled(!userHasToggled)}
-			/>
+				onChange={() => setUserHasToggled((v) => !v)}
+			>
+				☰
+			</Toggle.Button>
 		</>
 	)
 }
 
-export type ElementPosition = Pick<DOMRect, `height` | `left` | `top` | `width`>
-export type SpotlightProps = {
-	elementId: string | null
-	startingPosition?: ElementPosition
-	padding?: number
-	updateSignals?: any[]
-}
-export function Spotlight({
-	elementId,
-	startingPosition = {
-		top: 0,
-		left: 0,
-		width: 0,
-		height: 0,
-	},
-	padding = 0,
-	updateSignals = [],
-}: SpotlightProps): JSX.Element | null {
-	const [position, setPosition] = React.useState(startingPosition)
-	React.useEffect(() => {
-		if (!elementId) {
-			setPosition(startingPosition)
-			return
-		}
-		const element = document.getElementById(elementId)
-		if (element) {
-			const updatePosition = () => {
-				const e = document.getElementById(elementId)
-				if (!e) {
-					return
-				}
-				const boundingRect = e.getBoundingClientRect()
-				setPosition(boundingRect)
-			}
-			element.addEventListener(``, updatePosition)
-			updatePosition()
-			addEventListener(`resize`, updatePosition)
-			return () => {
-				removeEventListener(`resize`, updatePosition)
-				element.removeEventListener(`resize`, updatePosition)
-			}
-		}
-		setPosition(startingPosition)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [elementId, ...updateSignals])
-	return position.width === 0 ? null : (
-		<data
-			style={{
-				position: `fixed`,
-				top: position.top - padding,
-				left: position.left - padding,
-				width: position.width + padding * 2,
-				height: position.height + padding * 2,
-			}}
-		/>
-	)
-}
-
 export function SiteDirectory(): JSX.Element {
+	const userHasToggled = useO(menuToggleState)
+
 	const pathname = usePathname()
 	const pathnameId = pathname.replaceAll(`/`, `-`) + `-link`
 
 	return (
 		<>
-			<Spotlight elementId={pathnameId} />
-			<nav>
+			<Spotlight
+				elementId="site-directory"
+				padding={20}
+				updateSignals={[userHasToggled, pathname]}
+			/>
+			<Spotlight
+				elementId={pathnameId}
+				updateSignals={[userHasToggled, pathname]}
+			/>
+			<nav id="site-directory" data-user-has-toggled={userHasToggled}>
 				<section>
 					<header>Interface</header>
 					<main>
