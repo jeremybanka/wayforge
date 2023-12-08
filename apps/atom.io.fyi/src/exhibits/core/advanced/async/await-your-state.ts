@@ -2,12 +2,16 @@ import http from "http"
 import { atom, getState } from "atom.io"
 import { Loadable } from "atom.io/data"
 
-const server = http.createServer((req, res) =>
-	req.on(`end`, () => {
-		res.writeHead(200, { "Content-Type": `text/plain` })
-		res.end(`The best way to predict the future is to invent it.`)
-	}),
-)
+const server = http.createServer((req, res) => {
+	let data: Uint8Array[] = []
+	req
+		.on(`data`, (chunk) => data.push(chunk))
+		.on(`end`, () => {
+			res.writeHead(200, { "Content-Type": `text/plain` })
+			res.end(`The best way to predict the future is to invent it.`)
+			data = []
+		})
+})
 server.listen(3000)
 
 export const quoteState = atom<Loadable<string | Error>>({
