@@ -19,24 +19,32 @@ body.class {
     top: 0;
     z-index: 1;
     margin: 0.25em;
+    margin-top: 0.75em;
     padding: 1em 1.5em;
     border-radius: 2em;
-    background: #9992;
-    backdrop-filter: blur(15px);
+    --nav-background: var(--bg-soft-glass-1);
+    --nav-backdrop-filter: blur(15px);
+    --nav-box-shadow: 0 1px 10px 1px var(--bg-shadow-1);
+    background: var(--nav-background);
+    backdrop-filter: var(--nav-backdrop-filter);
+    box-shadow: var(--nav-box-shadow);
     @media screen and (min-width: $viewport-medium-width) {
+      margin-top: 0.25em;
       background: none;
       backdrop-filter: none;
+      box-shadow: none;
       width: 100%;
       margin: none;
       padding: 1em;
       > nav > section {
         padding: 1em 1.5em;
         border-radius: 2em;
-        background: #9992;
-        backdrop-filter: blur(15px);
+        background: var(--nav-background);
+        backdrop-filter: var(--nav-backdrop-filter);
+        box-shadow: var(--nav-box-shadow);
       }
     }
-    nav {
+    > nav {
       display: flex;
       flex-flow: row;
       gap: 1em;
@@ -46,6 +54,37 @@ body.class {
         &:last-of-type {
           justify-content: flex-end;
         }
+      }
+    }
+  }
+  > aside {
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    display: flex;
+    width: calc(100% - 0.5em);
+    justify-content: center;
+    > span {
+      align-items: flex-end;
+      display: flex;
+      background: var(--bg-soft-glass-1);
+      color: var(--fg-soft-3);
+      backdrop-filter: blur(15px);
+      padding: 0px 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 1px 10px 1px var(--bg-shadow-1);
+    }
+    @media screen and (min-width: $viewport-medium-width) {
+      top: -15px;
+      > span {
+        background: none;
+        backdrop-filter: none;
+        box-shadow: none;
       }
     }
   }
