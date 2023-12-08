@@ -1,5 +1,5 @@
 import type { SerializedStyles } from "@emotion/react"
-import type { FC, ReactElement, RefObject } from "react"
+import type { FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
