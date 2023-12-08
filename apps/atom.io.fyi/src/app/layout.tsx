@@ -33,6 +33,9 @@ export default function RootLayout({
 						</section>
 					</nav>
 				</header>
+				<aside>
+					<span>🕊️ Free Palestine 🇵🇸</span>
+				</aside>
 				<main>{children}</main>
 				<footer>♥️ jeremybanka</footer>
 			</body>
