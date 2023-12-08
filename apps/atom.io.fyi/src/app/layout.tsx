@@ -26,13 +26,16 @@ export default function RootLayout({
 						</section>
 						<span className="gap" />
 						<section>
-							<Link href="docs">docs</Link>
+							<Link href="/docs">docs</Link>
 							<Link href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
 								github
 							</Link>
 						</section>
 					</nav>
 				</header>
+				<aside>
+					<span>🕊️ Free Palestine 🇵🇸</span>
+				</aside>
 				<main>{children}</main>
 				<footer>♥️ jeremybanka</footer>
 			</body>

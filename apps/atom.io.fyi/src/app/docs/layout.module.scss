@@ -79,7 +79,8 @@ article.class {
   }
   ol,
   ul {
-    margin-left: 4em;
+    margin-left: 2em;
+    width: calc(100% - 2em);
     li {
       margin-bottom: 0.5em;
     }
@@ -92,10 +93,7 @@ article.class {
     > nav {
       display: flex;
       flex-flow: column;
-      // padding: 1em;
       border-radius: 1em;
-      // @include lg(background-color, none, #99999944);
-      // @include lg(backdrop-filter, none, blur(15px));
       > section {
         display: flex;
         flex-flow: column;
@@ -122,24 +120,40 @@ article.class {
         }
       }
     }
+    > nav {
+      transform: var(--transform-value);
+      transition-property: all;
+      transition-duration: 3s;
+    }
     &:first-of-type {
-      @include md(display, flex, none);
-      left: 2em;
+      @include md(right, none, 3em);
+      @include md(left, 2em, none);
       nav {
+        @include md(
+          --transform-value,
+          none,
+          translateX(-7em) translateY(2em) scale(0.9)
+        );
         margin: 0 1em;
+        &[data-user-has-toggled="false"] {
+          @include md(display, flex, none);
+        }
+      }
+      data:first-of-type {
+        @include md(display, none, block);
       }
     }
     &:last-of-type {
+      @include lg(right, none, 1em);
       @include lg(left, calc(50vw + 400px), none);
-      @include lg(right, none, 2em);
       nav[data-user-has-toggled="false"] {
         @include lg(display, flex, none);
       }
-      input[type="checkbox"] {
+      label {
         @include lg(display, none, block);
         position: absolute;
-        top: -1em;
-        right: 0;
+        top: -2em;
+        right: 0.5em;
         z-index: 10;
         border-radius: 50%;
       }
@@ -149,8 +163,9 @@ article.class {
     }
   }
   data:first-of-type {
-    background: #9994;
+    background: var(--bg-soft-glass-2);
     backdrop-filter: blur(20px);
+    box-shadow: 0 1px 20px 1px var(--bg-shadow-2);
     border-radius: 10px;
     z-index: -1;
     transition:
@@ -158,6 +173,9 @@ article.class {
       height 0.2s ease-in-out,
       top 0.2s ease-in-out,
       left 0.2s ease-in-out;
+    ~ data {
+      background: var(--bg-shade-2);
+    }
   }
   data:last-of-type {
     background: var(--bg-hard-2);
