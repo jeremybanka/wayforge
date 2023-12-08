@@ -1,9 +1,9 @@
 import type { AtomToken, FamilyMetadata, MutableAtomToken } from "atom.io"
-import { getState, setState, subscribe, subscribeToTimeline } from "atom.io"
+import { getState, setState, subscribe } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
-import { newest } from ".."
+import { newest, subscribeToTimeline } from ".."
 import { createAtom, deleteAtom } from "../atom"
 import type { Transceiver } from "./transceiver"
 
@@ -125,6 +125,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 									store,
 								)
 							},
+							`${mutableState.key}: tracker observing timeline`,
+							store,
 						)
 						return
 					}
