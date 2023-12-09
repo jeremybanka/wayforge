@@ -1,5 +1,5 @@
-import * as AtomIO from "atom.io"
-import type { Store } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import * as Internal from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
@@ -7,10 +7,10 @@ export function pushState<J extends Json.Serializable>(
 	token: AtomIO.StateToken<J>,
 	socket: Socket,
 	subscriptionKey: string,
-	store: Store,
+	store: Internal.Store,
 ): () => void {
 	socket.emit(`claim:${token.key}`)
-	AtomIO.subscribe(
+	Internal.subscribeToState(
 		token,
 		({ newValue }) => {
 			socket.emit(`pub:${token.key}`, newValue)

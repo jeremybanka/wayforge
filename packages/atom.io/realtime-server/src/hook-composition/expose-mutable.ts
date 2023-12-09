@@ -1,12 +1,20 @@
 import * as AtomIO from "atom.io"
-import { getJsonToken, getUpdateToken } from "atom.io/internal"
+import {
+	IMPLICIT,
+	getJsonToken,
+	getUpdateToken,
+	subscribeToState,
+} from "atom.io/internal"
 import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from ".."
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const useExposeMutable = ({ socket, store }: ServerConfig) => {
+export const useExposeMutable = ({
+	socket,
+	store = IMPLICIT.STORE,
+}: ServerConfig) => {
 	return function exposeMutable<
 		Core extends Transceiver<Json.Serializable>,
 		SerializableCore extends Json.Serializable,
@@ -24,7 +32,7 @@ export const useExposeMutable = ({ socket, store }: ServerConfig) => {
 
 		const fillSubRequest = () => {
 			socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
-			unsubscribeFromStateUpdates = AtomIO.subscribe(
+			unsubscribeFromStateUpdates = subscribeToState(
 				trackerToken,
 				({ newValue }) => {
 					socket.emit(`next:${token.key}`, newValue)

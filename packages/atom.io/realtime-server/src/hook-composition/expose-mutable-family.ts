@@ -1,12 +1,20 @@
 import * as AtomIO from "atom.io"
 import type { Transceiver } from "atom.io/internal"
-import { getJsonToken, getUpdateToken } from "atom.io/internal"
+import {
+	IMPLICIT,
+	getJsonToken,
+	getUpdateToken,
+	subscribeToState,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
 import type { ServerConfig } from ".."
 
-export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
+export const useExposeMutableFamily = ({
+	socket,
+	store = IMPLICIT.STORE,
+}: ServerConfig) => {
 	return function exposeMutableFamily<
 		Family extends AtomIO.MutableAtomFamily<
 			Transceiver<Json.Serializable>,
@@ -54,7 +62,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 						parseJson(jsonToken.family?.subKey || `null`),
 						AtomIO.getState(jsonToken, store),
 					)
-					const unsubFromUpdates = AtomIO.subscribe(
+					const unsubFromUpdates = subscribeToState(
 						trackerToken,
 						({ newValue }) => {
 							socket.emit(
@@ -78,7 +86,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 							parseJson(jsonToken.family?.subKey || `null`),
 							AtomIO.getState(jsonToken, store),
 						)
-						const unsubFromUpdates = AtomIO.subscribe(
+						const unsubFromUpdates = subscribeToState(
 							trackerToken,
 							({ newValue }) => {
 								socket.emit(
@@ -101,7 +109,7 @@ export const useExposeMutableFamily = ({ socket, store }: ServerConfig) => {
 				const jsonToken = getJsonToken(token)
 				const updateToken = getUpdateToken(token)
 				socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
-				const unsubscribe = AtomIO.subscribe(
+				const unsubscribe = subscribeToState(
 					updateToken,
 					({ newValue }) => {
 						socket.emit(`next:${token.key}`, newValue)

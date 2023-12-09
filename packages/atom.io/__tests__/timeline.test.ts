@@ -10,7 +10,6 @@ import {
 	selector,
 	setState,
 	subscribe,
-	subscribeToTimeline,
 	timeline,
 	transaction,
 	undo,

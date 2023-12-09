@@ -1,18 +1,18 @@
-import * as AtomIO from "atom.io"
-import type { Store } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
 const TX_SUBS = new Map<string, number>()
 export function synchronizeTransactionResults(
 	token: AtomIO.TransactionToken<any>,
 	socket: Socket,
-	store: Store,
+	store: Internal.Store,
 ): () => void {
 	const count = TX_SUBS.get(token.key) ?? 0
 	TX_SUBS.set(token.key, count + 1)
 	const unsubscribe =
 		count === 0
-			? AtomIO.subscribeToTransaction(
+			? Internal.subscribeToTransaction(
 					token,
 					(clientUpdate) => {
 						const transactionId = Math.random().toString(36).slice(2)

@@ -1,11 +1,11 @@
 import type { MutableAtomOptions, MutableAtomToken } from "atom.io"
-import { subscribe } from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
 import { createAtom } from "../atom"
 import { newest } from "../lineage"
 import type { Store } from "../store"
+import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
@@ -26,7 +26,7 @@ export function createMutableAtom<
 	new Tracker(coreState, store)
 	const jsonState = selectJson(coreState, options, store)
 	const target = newest(store)
-	subscribe(
+	subscribeToState(
 		jsonState,
 		() => {
 			const trackerHasBeenInitialized = newest(store).trackers.has(coreState.key)
@@ -39,6 +39,7 @@ export function createMutableAtom<
 				? `main`
 				: `${target.transactionMeta.update.key}`
 		}`,
+		store,
 	)
 	return coreState as MutableAtomToken<Core, SerializableCore>
 }

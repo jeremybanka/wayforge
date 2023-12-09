@@ -13,7 +13,6 @@ import {
 	selectorFamily,
 	setState,
 	subscribe,
-	subscribeToTransaction,
 	transaction,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
@@ -223,7 +222,7 @@ describe(`transaction`, () => {
 			},
 		})
 
-		subscribeToTransaction(setAllCounts, (data) => {
+		subscribe(setAllCounts, (data) => {
 			Utils.stdout(`Transaction update:`, data)
 			for (const update of data.updates) {
 				Utils.stdout(`Atom update:`, update)
