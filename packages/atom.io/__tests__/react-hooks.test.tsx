@@ -1,12 +1,27 @@
-import { fireEvent, render } from "@testing-library/react"
+import { act, fireEvent, render } from "@testing-library/react"
+import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
-import type { ƒn } from "atom.io"
-import { atom } from "atom.io"
-import { Observer } from "./__util__/Observer"
+import type { Logger, ƒn } from "atom.io"
+import { atom, redo, timeline, undo } from "atom.io"
+import * as Utils from "./__util__"
 
-export const onChange = [() => undefined, console.log][0]
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 2
+
+let logger: Logger
+
+beforeEach(() => {
+	Internal.clearStore(Internal.IMPLICIT.STORE)
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
+	vitest.spyOn(logger, `error`)
+	vitest.spyOn(logger, `warn`)
+	vitest.spyOn(logger, `info`)
+	vitest.spyOn(Utils, `stdout`)
+})
+const onChange = [() => undefined, console.log][0]
 
 describe(`single atom`, () => {
 	const setters: ƒn[] = []
@@ -32,7 +47,7 @@ describe(`single atom`, () => {
 		}
 		const utils = render(
 			<AR.StoreProvider>
-				<Observer node={letterState} onChange={onChange} />
+				<Utils.Observer node={letterState} onChange={onChange} />
 				<Letter />
 			</AR.StoreProvider>,
 		)
@@ -47,5 +62,83 @@ describe(`single atom`, () => {
 		expect(option).toBeTruthy()
 		expect(setters.length).toBe(2)
 		expect(setters[0]).toBe(setters[1])
+	})
+})
+describe(`timeline`, () => {
+	const setters: ƒn[] = []
+	const scenario = () => {
+		const letterState = atom<string>({
+			key: `letter`,
+			default: `A`,
+		})
+		const letterTL = timeline({
+			key: `letterTL`,
+			atoms: [letterState],
+		})
+		const Letter: FC = () => {
+			const setLetter = AR.useI(letterState)
+			const letter = AR.useO(letterState)
+			const letterTimeline = AR.useTL(letterTL)
+			setters.push(setLetter)
+			return (
+				<>
+					<div data-testid={letter}>{letter}</div>
+					<div data-testid="timelineAt">{letterTimeline.at}</div>
+					<div data-testid="timelineLength">{letterTimeline.length}</div>
+					<button
+						type="button"
+						onClick={() => setLetter(`B`)}
+						data-testid="changeStateButton"
+					/>
+					<button
+						type="button"
+						onClick={() => letterTimeline.undo()}
+						data-testid="undoButton"
+					/>
+					<button
+						type="button"
+						onClick={() => letterTimeline.redo()}
+						data-testid="redoButton"
+					/>
+				</>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Utils.Observer node={letterState} onChange={onChange} />
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		return { ...utils, letterTL }
+	}
+
+	it(`displays metadata`, () => {
+		const { getByTestId, letterTL } = scenario()
+		const changeStateButton = getByTestId(`changeStateButton`)
+		fireEvent.click(changeStateButton)
+		const option = getByTestId(`B`)
+		expect(option).toBeTruthy()
+		const timelineAt = getByTestId(`timelineAt`)
+		expect(timelineAt.textContent).toEqual(`1`)
+		const timelineLength = getByTestId(`timelineLength`)
+		expect(timelineLength.textContent).toEqual(`1`)
+		act(() => {
+			undo(letterTL)
+		})
+		expect(timelineAt.textContent).toEqual(`0`)
+		expect(timelineLength.textContent).toEqual(`1`)
+		act(() => {
+			redo(letterTL)
+		})
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`1`)
+		const undoButton = getByTestId(`undoButton`)
+		fireEvent.click(undoButton)
+		expect(timelineAt.textContent).toEqual(`0`)
+		expect(timelineLength.textContent).toEqual(`1`)
+		const redoButton = getByTestId(`redoButton`)
+		fireEvent.click(redoButton)
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`1`)
 	})
 })
