@@ -214,9 +214,9 @@ export function join<
 		a,
 		bs,
 	) => {
-		const aKeys = getRelatedKeys(transactors, a)
-		if (aKeys) {
-			for (const b of aKeys) {
+		const aRelations = getRelatedKeys(transactors, a)
+		if (aRelations) {
+			for (const b of aRelations) {
 				const bKeys = getRelatedKeys(transactors, b)
 				if (bKeys) {
 					bKeys.delete(a)

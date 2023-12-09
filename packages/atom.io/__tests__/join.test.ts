@@ -212,6 +212,17 @@ describe(`some practical use cases`, () => {
 
 describe(`advanced performance tests`, () => {
 	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024] as const
+
+	function sigFigs(sigFigs: number, num: number): number {
+		if (num === 0) {
+			return 0
+		}
+
+		const magnitude = Math.floor(Math.log10(Math.abs(num)))
+		const scale = 10 ** (sigFigs - magnitude - 1)
+
+		return Math.round(num * scale) / scale
+	}
 	test(`setting many relations at once with iteration`, () => {
 		function createCardValues() {
 			return join({
@@ -269,46 +280,32 @@ describe(`advanced performance tests`, () => {
 		}
 		const results = ITERATION_COUNTS.map((count) => {
 			reset()
-			const basic = Number(
-				Utils.time(`loopingBasic:` + count, () => {
-					runTransaction(loopingBasicTX)(count)
-				}).duration.toPrecision(3),
-			)
+			let basicTime = Utils.time(`loopingBasic:` + count, () => {
+				runTransaction(loopingBasicTX)(count)
+			}).duration
 			reset()
-			const safe = Number(
-				Utils.time(`loopingBasic:` + count, () => {
-					runTransaction(loopingSafeReplacementTX)(count)
-				}).duration.toPrecision(3),
-			)
+			let safeTime = Utils.time(`loopingBasic:` + count, () => {
+				runTransaction(loopingSafeReplacementTX)(count)
+			}).duration
 			reset()
-			const unsafe = Number(
-				Utils.time(`loopingBasic:` + count, () => {
-					runTransaction(loopingUnsafeReplacementTX)(count)
-				}).duration.toPrecision(3),
-			)
-			return { count, basic, safe, unsafe }
+			let unsafeTime = Utils.time(`loopingBasic:` + count, () => {
+				runTransaction(loopingUnsafeReplacementTX)(count)
+			}).duration
+			const minTime = Math.min(basicTime, safeTime, unsafeTime)
+			const basicRatio = basicTime / minTime
+			const safeRatio = safeTime / minTime
+			const unsafeRatio = safeTime / minTime
+			basicTime -= minTime
+			safeTime -= minTime
+			unsafeTime -= minTime
+			const winner = `✅ (${sigFigs(2, minTime)}ms)`
+			return {
+				count,
+				basic: basicTime === 0 ? winner : `❌ ${sigFigs(1, basicRatio)}`,
+				safe: safeTime === 0 ? winner : `❌ ${sigFigs(1, safeRatio)}`,
+				unsafe: unsafeTime === 0 ? winner : `❌ ${sigFigs(1, unsafeRatio)}`,
+			}
 		})
 		console.table(results)
-		type Iteration = (typeof ITERATION_COUNTS)[number]
-		type IterationStats = Record<Iteration, number>
-		type Data = Record<`basic` | `safe` | `unsafe`, IterationStats>
-		const data = results.reduce<Data>(
-			(data, { count, basic, safe, unsafe }) => {
-				data.basic[count] = basic
-				data.safe[count] = safe
-				data.unsafe[count] = unsafe
-				return data
-			},
-			{
-				basic: {} as IterationStats,
-				safe: {} as IterationStats,
-				unsafe: {} as IterationStats,
-			},
-		)
-		function expectOrder(...numbers: number[]) {
-			for (let i = 0; i < numbers.length - 1; i++) {
-				expect(numbers[i]).toBeLessThan(numbers[i + 1])
-			}
-		}
 	})
 })
