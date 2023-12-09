@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.14.0
+
+### Minor Changes
+
+- 8a62273: 💥 BREAKING CHANGE: `subscribeToTransaction` and `subscribeToTimeline` have been moved to `atom.io/internal`. Prefer `subscribe`, which now supports transactions and timelines with type safety.
+- 8a62273: ✨ `atom.io/react` `useTL` provides a convenient way to use a timeline and observe where you are on it.
+
 ## 0.13.0
 
 ### Minor Changes
