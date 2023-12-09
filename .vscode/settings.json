@@ -34,7 +34,7 @@
 		"zustand"
 	],
 	"editor.codeActionsOnSave": {
-		"source.organizeImports.biome": true
+		"source.organizeImports.biome": "explicit"
 	},
 	"[typescript]": {
 		"editor.formatOnSave": true,
