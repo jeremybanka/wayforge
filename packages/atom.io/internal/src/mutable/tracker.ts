@@ -1,9 +1,9 @@
 import type { AtomToken, FamilyMetadata, MutableAtomToken } from "atom.io"
-import { getState, setState, subscribe, subscribeToTimeline } from "atom.io"
+import { getState, setState } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
-import { newest } from ".."
+import { newest, subscribeToState, subscribeToTimeline } from ".."
 import { createAtom, deleteAtom } from "../atom"
 import type { Transceiver } from "./transceiver"
 
@@ -65,7 +65,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				)
 			},
 		)
-		subscribe(
+		subscribeToState(
 			mutableState,
 			(update) => {
 				if (update.newValue !== update.oldValue) {
@@ -99,7 +99,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		latestUpdateState: AtomToken<typeof this.Update | null>,
 		store: Store,
 	): void {
-		subscribe(
+		subscribeToState(
 			latestUpdateState,
 			({ newValue, oldValue }) => {
 				const timelineId = store.timelineAtoms.getRelatedKey(
@@ -125,6 +125,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 									store,
 								)
 							},
+							`${mutableState.key}: tracker observing timeline`,
+							store,
 						)
 						return
 					}

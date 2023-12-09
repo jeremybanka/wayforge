@@ -1,4 +1,5 @@
 import * as AtomIO from "atom.io"
+import { IMPLICIT, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
@@ -17,7 +18,10 @@ const subscribeToTokenCreation = <T>(
 }
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const useExposeFamily = ({ socket, store }: ServerConfig) => {
+export const useExposeFamily = ({
+	socket,
+	store = IMPLICIT.STORE,
+}: ServerConfig) => {
 	return function exposeFamily<J extends Json.Serializable>(
 		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
 		index: AtomIO.StateToken<Set<string>>,
@@ -58,7 +62,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 					family,
 					`expose-family:${socket.id}`,
 					(token) => {
-						const unsub = AtomIO.subscribe(
+						const unsub = subscribeToState(
 							token,
 							({ newValue }) => {
 								socket.emit(
@@ -79,7 +83,7 @@ export const useExposeFamily = ({ socket, store }: ServerConfig) => {
 			} else {
 				const token = family(subKey)
 				socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
-				const unsubscribe = AtomIO.subscribe(
+				const unsubscribe = subscribeToState(
 					token,
 					({ newValue }) => {
 						socket.emit(`serve:${token.key}`, newValue)
