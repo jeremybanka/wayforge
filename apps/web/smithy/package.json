@@ -34,7 +34,7 @@
 	"devDependencies": {
 		"@testing-library/jest-dom": "6.1.5",
 		"@testing-library/react": "14.1.2",
-		"@types/react": "18.2.42",
+		"@types/react": "18.2.43",
 		"@vitejs/plugin-react": "4.2.1",
 		"cross-env": "7.0.3",
 		"eslint": "8.55.0",
