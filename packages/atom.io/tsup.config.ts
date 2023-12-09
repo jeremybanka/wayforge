@@ -24,16 +24,21 @@ export const BUNDLE_EXCLUDE_LIST = [
 ]
 
 export const BASE_CONFIG_OPTIONS: Options = {
-	clean: true,
+	clean: false,
 	dts: true,
-	entry: [`src/index.ts`],
+	outDir: `.`,
+	// entry: [`src/index.ts`],
 	external: BUNDLE_EXCLUDE_LIST,
 	format: [`esm`, `cjs`],
 	metafile: true,
-	outDir: `./dist`,
 	sourcemap: true,
 	splitting: true,
 	treeshake: true,
+
+	entry: {
+		"dist/index": `src/index.ts`,
+		"react/dist/index": `react/src/index.ts`,
+	},
 }
 
 export default defineConfig({
