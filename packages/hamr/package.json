@@ -128,7 +128,7 @@
 		"typescript": "5.3.3",
 		"vite-tsconfig-paths": "4.2.2",
 		"vite-plugin-dts": "3.6.4",
-		"vitest": "1.0.3"
+		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
 		"@emotion/react": "^11.11.1",
