@@ -26,6 +26,12 @@
       </td>
       <td>Observe the JSON form of a mutable atom.</td>
     </tr>
+    <tr>
+      <td>
+        <code>useTL</code>
+      </td>
+      <td>Control a timeline and observe its state.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -52,3 +58,11 @@ import UseJSON from "x/react/use-json.gen"
 `useJSON` is a React hook that makes working with mutable atoms in your react components more convenient.
 
 <UseJSON />
+
+## useTL
+
+import UseTL from "x/react/use-tl.gen"
+
+`useTL` provides convenient access to the `undo` and `redo` utilities, as well as metadata representing how many events are on the timeline (`length`) and where the timeline is currently positioned (`at`).
+
+<UseTL />
