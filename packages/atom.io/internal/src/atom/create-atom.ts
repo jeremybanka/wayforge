@@ -5,7 +5,7 @@ import type {
 	MutableAtomOptions,
 	UpdateHandler,
 } from "atom.io"
-import { setState, subscribe } from "atom.io"
+import { setState } from "atom.io"
 
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
@@ -13,6 +13,7 @@ import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
+import { subscribeToState } from "../subscribe"
 import { markAtomAsDefault } from "./is-default"
 
 export type Atom<T> = {
@@ -81,7 +82,7 @@ export function createAtom<T>(
 			const cleanup = effect({
 				setSelf: (next) => setState(token, next, store),
 				onSet: (handle: UpdateHandler<T>) =>
-					subscribe(token, handle, `effect[${effectIndex}]`, store),
+					subscribeToState(token, handle, `effect[${effectIndex}]`, store),
 			})
 			if (cleanup) {
 				cleanupFunctions.push(cleanup)

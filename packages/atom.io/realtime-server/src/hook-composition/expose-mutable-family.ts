@@ -86,7 +86,7 @@ export const useExposeMutableFamily = ({
 							parseJson(jsonToken.family?.subKey || `null`),
 							AtomIO.getState(jsonToken, store),
 						)
-						const unsubFromUpdates = AtomIO.subscribe(
+						const unsubFromUpdates = subscribeToState(
 							trackerToken,
 							({ newValue }) => {
 								socket.emit(
@@ -109,7 +109,7 @@ export const useExposeMutableFamily = ({
 				const jsonToken = getJsonToken(token)
 				const updateToken = getUpdateToken(token)
 				socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
-				const unsubscribe = AtomIO.subscribe(
+				const unsubscribe = subscribeToState(
 					updateToken,
 					({ newValue }) => {
 						socket.emit(`next:${token.key}`, newValue)
