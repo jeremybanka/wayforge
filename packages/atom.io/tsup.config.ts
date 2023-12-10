@@ -17,6 +17,7 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`socket.io`,
 	`socket.io-client`,
 	`react`,
+	`@types/react`,
 	`@testing-library/react`,
 	`@floating-ui/react`,
 	`framer-motion`,
@@ -25,19 +26,42 @@ export const BUNDLE_EXCLUDE_LIST = [
 
 export const BASE_CONFIG_OPTIONS: Options = {
 	clean: false,
-	dts: true,
 	outDir: `.`,
-	// entry: [`src/index.ts`],
+	entry: {
+		"dist/index": `src/index.ts`,
+		"data/dist/index": `data/src/index.ts`,
+		"internal/dist/index": `internal/src/index.ts`,
+		"introspection/dist/index": `introspection/src/index.ts`,
+		"json/dist/index": `json/src/index.ts`,
+		"react/dist/index": `react/src/index.ts`,
+		"react-devtools/dist/index": `react-devtools/src/index.ts`,
+		"realtime-client/dist/index": `realtime-client/src/index.ts`,
+		"realtime-react/dist/index": `realtime-react/src/index.ts`,
+		"realtime-server/dist/index": `realtime-server/src/index.ts`,
+		"realtime-testing/dist/index": `realtime-testing/src/index.ts`,
+		"transceivers/set-rtx/dist/index": `transceivers/set-rtx/src/index.ts`,
+	},
+	esbuildOptions: (options) => {
+		options.chunkNames = `dist/[name]-[hash]`
+		options.assetNames = `dist/[name]-[hash]`
+	},
 	external: BUNDLE_EXCLUDE_LIST,
 	format: [`esm`, `cjs`],
 	metafile: true,
 	sourcemap: true,
-	splitting: true,
 	treeshake: true,
+	jsxFactory: `React.createElement`,
+	loader: {
+		".scss": `css`,
+	},
+}
 
-	entry: {
-		"dist/index": `src/index.ts`,
-		"react/dist/index": `react/src/index.ts`,
+export const DECLARATION: Options = {
+	...BASE_CONFIG_OPTIONS,
+	entry: [`src/index.ts`],
+	outDir: `dist`,
+	dts: {
+		only: true,
 	},
 }
 

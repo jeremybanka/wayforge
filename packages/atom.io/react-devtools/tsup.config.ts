@@ -1,11 +1,4 @@
 import { defineConfig } from "tsup"
-import { BASE_CONFIG_OPTIONS } from "~/packages/atom.io/tsup.config"
+import { DECLARATION } from "~/packages/atom.io/tsup.config"
 
-export default defineConfig({
-	...BASE_CONFIG_OPTIONS,
-	jsxFactory: `React.createElement`,
-	tsconfig: `../tsconfig.json`,
-	loader: {
-		".scss": `css`,
-	},
-})
+export default defineConfig(DECLARATION)
