@@ -65,7 +65,11 @@ export const DECLARATION: Options = {
 	},
 }
 
-export default defineConfig({
-	...BASE_CONFIG_OPTIONS,
-	tsconfig: `tsconfig.json`,
-})
+export default defineConfig((options) =>
+	options.dts
+		? DECLARATION
+		: {
+				...BASE_CONFIG_OPTIONS,
+				tsconfig: `tsconfig.json`,
+		  },
+)
