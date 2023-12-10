@@ -1,19 +1,12 @@
 import { execSync } from "child_process"
 import fs from "fs"
-import path from "path"
 import url from "url"
 
+import { PACKAGE_JSON_PATH, TSCONFIG_JSON_PATH } from "./constants"
 import { createLogger } from "./logger.node"
 
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const SCRIPT_NAME = __filename.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
-const ATOM_IO_ROOT = path.resolve(__dirname, `..`)
-const PACKAGE_JSON_PATH = path.join(ATOM_IO_ROOT, `package.json`)
-const PACKAGE_JSON_TEXT = fs.readFileSync(PACKAGE_JSON_PATH, `utf-8`)
-const TSCONFIG_JSON_PATH = path.join(ATOM_IO_ROOT, `tsconfig.prod.json`)
-const TSCONFIG_JSON_TEXT = fs.readFileSync(TSCONFIG_JSON_PATH, `utf-8`)
+const FILENAME = url.fileURLToPath(import.meta.url)
+const SCRIPT_NAME = FILENAME.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
 const ARGS = process.argv.slice(2)
 const SHOULD_RUN = ARGS.includes(`--run`)
 if (SHOULD_RUN) {
@@ -28,7 +21,8 @@ if (SHOULD_RUN) {
 
 export default function main(mode: string): void {
 	const logger = createLogger(SCRIPT_NAME)
-	const packageJson = JSON.parse(PACKAGE_JSON_TEXT)
+	const packageJsonText = fs.readFileSync(PACKAGE_JSON_PATH, `utf-8`)
+	const packageJson = JSON.parse(packageJsonText)
 	const distributionFilepaths: string[] =
 		typeof packageJson === `object` &&
 		packageJson !== null &&
@@ -37,7 +31,8 @@ export default function main(mode: string): void {
 		packageJson.files.every((filepath: unknown) => typeof filepath === `string`)
 			? packageJson.files
 			: []
-	const oldTsconfigJson = JSON.parse(TSCONFIG_JSON_TEXT)
+	const tsconfigJsonText = fs.readFileSync(TSCONFIG_JSON_PATH, `utf-8`)
+	const oldTsconfigJson = JSON.parse(tsconfigJsonText)
 	if (
 		typeof oldTsconfigJson === `object` &&
 		oldTsconfigJson !== null &&
@@ -98,7 +93,7 @@ export default function main(mode: string): void {
 		}
 	} else {
 		throw new Error(
-			`Expected tsconfig.prod.json to have an "include" property, but got ${TSCONFIG_JSON_TEXT}`,
+			`Expected tsconfig.prod.json to have an "include" property, but got ${tsconfigJsonText}`,
 		)
 	}
 }

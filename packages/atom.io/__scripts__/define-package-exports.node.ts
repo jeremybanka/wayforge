@@ -1,18 +1,13 @@
 import { execSync } from "child_process"
 import fs from "fs"
-import path from "path"
 import url from "url"
 
+import { PACKAGE_JSON_PATH } from "./constants"
+import discoverSubmodules from "./discover-submodules.node"
 import { createLogger } from "./logger.node"
 
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const SCRIPT_NAME = __filename.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
-const ATOM_IO_ROOT = path.resolve(__dirname, `..`)
-const EXCLUDE_LIST = [`node_modules`, `src`, `dist`, `coverage`]
-const PACKAGE_JSON_PATH = path.join(ATOM_IO_ROOT, `package.json`)
-const PACKAGE_JSON_TEXT = fs.readFileSync(PACKAGE_JSON_PATH, `utf-8`)
+const FILEPATH = url.fileURLToPath(import.meta.url)
+const SCRIPT_NAME = FILEPATH.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
 const ARGS = process.argv.slice(2)
 const SHOULD_RUN = ARGS.includes(`--run`)
 if (SHOULD_RUN) {
@@ -27,32 +22,16 @@ if (SHOULD_RUN) {
 
 export default function main(mode: string): void {
 	const logger = createLogger(SCRIPT_NAME)
-	const newPackageJson = JSON.parse(PACKAGE_JSON_TEXT)
-	const oldPackageJson = JSON.parse(PACKAGE_JSON_TEXT)
+	const packageJsonText = fs.readFileSync(PACKAGE_JSON_PATH, `utf-8`)
+	const newPackageJson = JSON.parse(packageJsonText)
+	const oldPackageJson = JSON.parse(packageJsonText)
 
-	const folders = fs
-		.readdirSync(ATOM_IO_ROOT, { withFileTypes: true })
-		.filter((dirent) => dirent.isDirectory())
-		.filter((dirent) => !EXCLUDE_LIST.includes(dirent.name))
-		.flatMap((dirent) => {
-			const contents = fs.readdirSync(path.join(ATOM_IO_ROOT, dirent.name))
-			const isLeaf = contents.includes(`src`) && contents.includes(`dist`)
-			return isLeaf
-				? dirent.name
-				: contents.map((content) => path.join(dirent.name, content))
-		})
-		.filter(
-			(folder) =>
-				!EXCLUDE_LIST.includes(folder) &&
-				!folder.startsWith(`__`) &&
-				!folder.endsWith(`__`) &&
-				!folder.startsWith(`.`),
-		)
+	const submodules = discoverSubmodules()
 
 	newPackageJson.files = [
 		`dist`,
 		`src`,
-		...folders.flatMap((folder) => [
+		...submodules.flatMap((folder) => [
 			`${folder}/dist`,
 			`${folder}/package.json`,
 			`${folder}/src`,
@@ -67,7 +46,7 @@ export default function main(mode: string): void {
 			import: `./dist/index.js`,
 			require: `./dist/index.cjs`,
 		},
-		...folders.reduce((acc, folder) => {
+		...submodules.reduce((acc, folder) => {
 			acc[`./${folder}/package.json`] = `./${folder}/package.json`
 			acc[`./${folder}`] = {
 				types: `./${folder}/dist/index.d.ts`,
@@ -132,7 +111,7 @@ export default function main(mode: string): void {
 				execSync(`biome format package.json --write`)
 				logger.info(
 					`done`,
-					`Updated package.json to include ${folders.length} submodules`,
+					`Updated package.json to include ${submodules.length} submodules`,
 				)
 			}
 			break
