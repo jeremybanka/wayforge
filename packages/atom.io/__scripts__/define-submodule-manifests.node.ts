@@ -111,6 +111,9 @@ function defineSubmoduleManifest(submoduleName: string): Json.Object {
 		name: manifestName,
 		type: `module`,
 		private: true,
+		main: `dist/index.cjs`,
+		module: `dist/index.mjs`,
+		types: `dist/index.d.ts`,
 		exports: {
 			".": {
 				import: `./dist/index.js`,
