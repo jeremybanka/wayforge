@@ -1,19 +1,9 @@
 import type { Options } from "tsup"
 import { defineConfig } from "tsup"
+import discoverSubmodules from "./__scripts__/discover-submodules.node"
 
 export const BUNDLE_EXCLUDE_LIST = [
-	`atom.io`,
-	`atom.io/data`,
-	`atom.io/internal`,
-	`atom.io/introspection`,
-	`atom.io/json`,
-	`atom.io/react`,
-	`atom.io/react-devtools`,
-	`atom.io/realtime-client`,
-	`atom.io/realtime-react`,
-	`atom.io/realtime-server`,
-	`atom.io/realtime-testing`,
-	`atom.io/transceivers/set-rtx`,
+	...discoverSubmodules().map((submodule) => `atom.io/${submodule}`),
 	`socket.io`,
 	`socket.io-client`,
 	`react`,
@@ -24,9 +14,23 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`happy-dom`,
 ]
 
-export const BASE_CONFIG_OPTIONS: Options = {
+export const BASE_OPTIONS: Options = {
+	esbuildOptions: (options) => {
+		options.chunkNames = `dist/[name]-[hash]`
+		options.assetNames = `dist/[name]-[hash]`
+	},
+	external: BUNDLE_EXCLUDE_LIST,
+	loader: { ".scss": `css` },
+	metafile: true,
+	sourcemap: true,
+	treeshake: true,
+	jsxFactory: `React.createElement`,
+	tsconfig: `tsconfig.json`,
+}
+
+export const JS_OPTIONS: Options = {
+	...BASE_OPTIONS,
 	clean: false,
-	outDir: `.`,
 	entry: {
 		"dist/index": `src/index.ts`,
 		"data/dist/index": `data/src/index.ts`,
@@ -41,35 +45,17 @@ export const BASE_CONFIG_OPTIONS: Options = {
 		"realtime-testing/dist/index": `realtime-testing/src/index.ts`,
 		"transceivers/set-rtx/dist/index": `transceivers/set-rtx/src/index.ts`,
 	},
-	esbuildOptions: (options) => {
-		options.chunkNames = `dist/[name]-[hash]`
-		options.assetNames = `dist/[name]-[hash]`
-	},
-	external: BUNDLE_EXCLUDE_LIST,
 	format: [`esm`, `cjs`],
-	metafile: true,
-	sourcemap: true,
-	treeshake: true,
-	jsxFactory: `React.createElement`,
-	loader: {
-		".scss": `css`,
-	},
+	outDir: `.`,
 }
 
-export const DECLARATION: Options = {
-	...BASE_CONFIG_OPTIONS,
+export const DTS_OPTIONS: Options = {
+	...BASE_OPTIONS,
 	entry: [`src/index.ts`],
 	outDir: `dist`,
-	dts: {
-		only: true,
-	},
+	dts: { only: true },
 }
 
 export default defineConfig((options) =>
-	options.dts
-		? DECLARATION
-		: {
-				...BASE_CONFIG_OPTIONS,
-				tsconfig: `tsconfig.json`,
-		  },
+	options.dts ? DTS_OPTIONS : JS_OPTIONS,
 )
