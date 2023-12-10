@@ -1,4 +1,8 @@
-import type { DetailedHTMLProps, InputHTMLAttributes } from "react"
+import type {
+	DetailedHTMLProps,
+	ForwardRefExoticComponent,
+	InputHTMLAttributes,
+} from "react"
 import {
 	forwardRef,
 	useImperativeHandle,
@@ -7,12 +11,18 @@ import {
 	useState,
 } from "react"
 
-export const ElasticInput = forwardRef<
-	HTMLInputElement,
+export type ElasticInputProps = DetailedHTMLProps<
+	InputHTMLAttributes<HTMLInputElement>,
+	HTMLInputElement
+> & {
+	widthPadding?: number
+}
+
+export const ElasticInput: ForwardRefExoticComponent<
 	DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
 		widthPadding?: number
 	}
->(function ElasticInputFC(props, ref) {
+> = forwardRef(function ElasticInputFC(props, ref) {
 	const inputRef = useRef<HTMLInputElement>(null)
 	const spanRef = useRef<HTMLSpanElement>(null)
 	const [inputWidth, setInputWidth] = useState(`auto`)
