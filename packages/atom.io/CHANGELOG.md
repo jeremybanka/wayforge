@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.14.3
+
+### Patch Changes
+
+- e01ae8a: 🐛 Fix bad build causing typings to break for the library.
+
 ## 0.14.2
 
 ### Patch Changes
