@@ -20,6 +20,7 @@ export const BASE_OPTIONS: Options = {
 		options.assetNames = `dist/[name]-[hash]`
 	},
 	external: BUNDLE_EXCLUDE_LIST,
+	format: [`esm`, `cjs`],
 	loader: { ".scss": `css` },
 	metafile: true,
 	sourcemap: true,
@@ -45,15 +46,14 @@ export const JS_OPTIONS: Options = {
 		"realtime-testing/dist/index": `realtime-testing/src/index.ts`,
 		"transceivers/set-rtx/dist/index": `transceivers/set-rtx/src/index.ts`,
 	},
-	format: [`esm`, `cjs`],
 	outDir: `.`,
 }
 
 export const DTS_OPTIONS: Options = {
 	...BASE_OPTIONS,
+	dts: { only: true },
 	entry: [`src/index.ts`],
 	outDir: `dist`,
-	dts: { only: true },
 }
 
 export default defineConfig((options) =>
