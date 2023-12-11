@@ -88,7 +88,12 @@ describe(`timeline`, () => {
 					<button
 						type="button"
 						onClick={() => setLetter(`B`)}
-						data-testid="changeStateButton"
+						data-testid="changeStateButtonB"
+					/>
+					<button
+						type="button"
+						onClick={() => setLetter(`C`)}
+						data-testid="changeStateButtonC"
 					/>
 					<button
 						type="button"
@@ -114,31 +119,36 @@ describe(`timeline`, () => {
 
 	it(`displays metadata`, () => {
 		const { getByTestId, letterTL } = scenario()
-		const changeStateButton = getByTestId(`changeStateButton`)
-		fireEvent.click(changeStateButton)
+		const changeStateButtonB = getByTestId(`changeStateButtonB`)
+		const changeStateButtonC = getByTestId(`changeStateButtonC`)
+		fireEvent.click(changeStateButtonB)
 		const option = getByTestId(`B`)
 		expect(option).toBeTruthy()
 		const timelineAt = getByTestId(`timelineAt`)
 		expect(timelineAt.textContent).toEqual(`1`)
 		const timelineLength = getByTestId(`timelineLength`)
 		expect(timelineLength.textContent).toEqual(`1`)
+		fireEvent.click(changeStateButtonC)
+		const option2 = getByTestId(`C`)
+		expect(option2).toBeTruthy()
+		expect(timelineAt.textContent).toEqual(`2`)
 		act(() => {
 			undo(letterTL)
 		})
-		expect(timelineAt.textContent).toEqual(`0`)
-		expect(timelineLength.textContent).toEqual(`1`)
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`2`)
 		act(() => {
 			redo(letterTL)
 		})
-		expect(timelineAt.textContent).toEqual(`1`)
-		expect(timelineLength.textContent).toEqual(`1`)
+		expect(timelineAt.textContent).toEqual(`2`)
+		expect(timelineLength.textContent).toEqual(`2`)
 		const undoButton = getByTestId(`undoButton`)
 		fireEvent.click(undoButton)
-		expect(timelineAt.textContent).toEqual(`0`)
-		expect(timelineLength.textContent).toEqual(`1`)
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`2`)
 		const redoButton = getByTestId(`redoButton`)
 		fireEvent.click(redoButton)
-		expect(timelineAt.textContent).toEqual(`1`)
-		expect(timelineLength.textContent).toEqual(`1`)
+		expect(timelineAt.textContent).toEqual(`2`)
+		expect(timelineLength.textContent).toEqual(`2`)
 	})
 })

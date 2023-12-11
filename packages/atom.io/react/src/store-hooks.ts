@@ -58,31 +58,29 @@ export function useTL(token: TimelineToken): TimelineMeta {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	const timeline = withdraw(token, store)
-	if (timeline === undefined) {
-		store.logger.error(
-			`❌`,
-			`timeline`,
-			token.key,
-			`Failed to use timeline because it does not exist`,
-		)
-		return {
-			at: NaN,
-			length: NaN,
-			undo: () => {},
-			redo: () => {},
-		}
-	}
-	const meta = React.useRef<TimelineMeta>({
-		at: timeline.at,
-		length: timeline.history.length,
+	const base = React.useRef({
 		undo: () => undo(token),
 		redo: () => redo(token),
 	})
+	const rebuildMeta = React.useCallback(() => {
+		return Object.assign(
+			{
+				at: timeline?.at ?? NaN,
+				length: timeline?.history.length ?? NaN,
+			},
+			base.current,
+		)
+	}, [])
+	const meta = React.useRef<TimelineMeta>(rebuildMeta())
 	const retrieve = React.useCallback(() => {
-		meta.current.at = timeline.at
-		meta.current.length = timeline.history.length
+		if (
+			meta.current.at !== timeline?.at ||
+			meta.current.length !== timeline?.history.length
+		) {
+			meta.current = rebuildMeta()
+		}
 		return meta.current
-	}, [meta])
+	}, [])
 	return React.useSyncExternalStore<TimelineMeta>(
 		(dispatch) => subscribeToTimeline(token, dispatch, `use-tl:${id}`, store),
 		retrieve,
