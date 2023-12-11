@@ -137,7 +137,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					() => {
 						unsubscribe()
 						const mutable = getState(mutableState, store)
-						const updateNumber = mutable.getUpdateNumber(newValue)
+						// debugger
+						const updateNumber =
+							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
 							// ❗ new:"0=add:\"myHand\"",old:"0=add:\"deckId\""
