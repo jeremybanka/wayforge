@@ -17,7 +17,8 @@
 	},
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node",
-		"build": "concurrently \"npm:build:*\"",
+		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
+		"build": "npm run clean:build && concurrently \"npm:build:*\"",
 		"build:main": "tsup",
 		"build:types": "tsup --dts",
 		"build:data": "cd data && tsup",
