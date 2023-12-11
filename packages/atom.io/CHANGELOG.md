@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.14.2
+
+### Patch Changes
+
+- 3afd48d: 🐛 Fix issue where mutable atoms would not be affected when using time travel (`undo` and `redo`) when tracking them on a timeline.
+
 ## 0.14.1
 
 ### Patch Changes
