@@ -56,6 +56,7 @@ export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
 	key: string
 	type: `atom_family`
 	subject: Subject<AtomToken<T>>
+	mutable?: boolean
 }
 // biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
@@ -76,9 +77,10 @@ export type MutableAtomFamily<
 	& JsonInterface<Core, SerializableCore>
 	& ((key: Key) => MutableAtomToken<Core, SerializableCore>) 
 	& {
-			key: `${string}::mutable`
+			key: `${string}`
 			type: `atom_family`
 			subject: Subject<MutableAtomToken<Core, SerializableCore>>
+			mutable: true
 		}
 
 export function atomFamily<

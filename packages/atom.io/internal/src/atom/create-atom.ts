@@ -6,10 +6,11 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 import { setState } from "atom.io"
+import { Json } from "atom.io/json"
 
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
-import { createMutableAtom } from "../mutable"
+import { Transceiver, createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
@@ -19,6 +20,7 @@ import { markAtomAsDefault } from "./is-default"
 export type Atom<T> = {
 	key: string
 	type: `atom`
+	mutable?: boolean
 	family?: FamilyMetadata
 	install: (store: Store) => void
 	subject: Subject<{ newValue: T; oldValue: T }>

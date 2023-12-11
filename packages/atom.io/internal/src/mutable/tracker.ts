@@ -20,7 +20,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		store: Store,
 	): AtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
-		deleteAtom({ type: `atom`, key: latestUpdateStateKey }, store)
+		store.atoms.delete(latestUpdateStateKey)
+		store.valueMap.delete(latestUpdateStateKey)
 		const familyMetaData: FamilyMetadata | undefined = mutableState.family
 			? {
 					key: `*${mutableState.family.key}`,
@@ -37,6 +38,10 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			familyMetaData,
 			store,
 		)
+		if (store.parent) {
+			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)
+			store.valueMap.set(latestUpdateStateKey, parentValue)
+		}
 
 		return latestUpdateState
 	}
@@ -137,7 +142,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					() => {
 						unsubscribe()
 						const mutable = getState(mutableState, store)
-						const updateNumber = mutable.getUpdateNumber(newValue)
+						// debugger
+						const updateNumber =
+							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
 							// ❗ new:"0=add:\"myHand\"",old:"0=add:\"deckId\""
