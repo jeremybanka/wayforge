@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.14.4
+
+### Patch Changes
+
+- 429da48: 🐛 Fix bug where useTL would not see updates to the timeline it consumed.
+
 ## 0.14.3
 
 ### Patch Changes
