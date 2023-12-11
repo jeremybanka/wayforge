@@ -9,7 +9,10 @@ import type {
 } from "atom.io"
 
 import { newest } from "../lineage"
-import type { Store } from "../store"
+import { getUpdateToken } from "../mutable"
+import { getUpdateFamily } from "../mutable/get-update-family"
+import { isMutable } from "../mutable/is-mutable"
+import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
 
@@ -70,21 +73,26 @@ export function createTimeline(
 	if (options.shouldCapture) {
 		tl.shouldCapture = options.shouldCapture
 	}
-
+	const timelineKey = options.key
 	const target = newest(store)
 	for (const tokenOrFamily of options.atoms) {
-		const timelineKey = target.timelineAtoms.getRelatedKey(tokenOrFamily.key)
-		if (timelineKey) {
+		let atomKey = tokenOrFamily.key
+		const existingTimelineKey = target.timelineAtoms.getRelatedKey(atomKey)
+		if (existingTimelineKey) {
 			store.logger.error(
 				`❌`,
 				`timeline`,
 				options.key,
-				`Failed to add atom "${tokenOrFamily.key}" because it already belongs to timeline "${timelineKey}"`,
+				`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
 			)
 			continue
 		}
 		if (tokenOrFamily.type === `atom_family`) {
-			const family = tokenOrFamily
+			let family = tokenOrFamily
+			if (isMutable(family)) {
+				family = getUpdateFamily(family, store)
+				atomKey = family.key
+			}
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
 				addAtomToTimeline(token, tl, store)
 			})
@@ -94,32 +102,52 @@ export function createTimeline(
 				}
 			}
 		} else {
-			const token = tokenOrFamily
-			if (`family` in token && token.family) {
+			let atom = withdraw(tokenOrFamily, store)
+			if (atom === undefined) {
+				store.logger.error(
+					`❌`,
+					`timeline`,
+					options.key,
+					`Failed to add atom "${atomKey}" because it does not exist in the store`,
+				)
+				continue
+			}
+			if (isMutable(atom)) {
+				const updateAtom = withdraw(getUpdateToken(atom), store)
+				if (updateAtom === undefined) {
+					store.logger.error(
+						`❌`,
+						`timeline`,
+						options.key,
+						`Failed to add update atom "${atomKey}" because it does not exist in the store`,
+					)
+					continue
+				}
+				atom = updateAtom
+				atomKey = atom.key
+			}
+			if (`family` in atom) {
 				const familyTimelineKey = target.timelineAtoms.getRelatedKey(
-					token.family.key,
+					atom.family.key,
 				)
 				if (familyTimelineKey) {
 					store.logger.error(
 						`❌`,
 						`timeline`,
 						options.key,
-						`Failed to add atom "${token.key}" because its family "${token.family.key}" already belongs to timeline "${familyTimelineKey}"`,
+						`Failed to add atom "${atom.key}" because its family "${atom.family.key}" already belongs to timeline "${familyTimelineKey}"`,
 					)
 					continue
 				}
 			}
-			addAtomToTimeline(token, tl, store)
+			addAtomToTimeline(atom, tl, store)
 		}
-		target.timelineAtoms = target.timelineAtoms.set({
-			atomKey: tokenOrFamily.key,
-			timelineKey: options.key,
-		})
+		target.timelineAtoms.set({ atomKey, timelineKey })
 	}
 
 	store.timelines.set(options.key, tl)
 	const token: TimelineToken = {
-		key: options.key,
+		key: timelineKey,
 		type: `timeline`,
 	}
 	store.subject.timelineCreation.next(token)

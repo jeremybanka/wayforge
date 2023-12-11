@@ -4,10 +4,13 @@ import type { Logger } from "atom.io"
 import {
 	atom,
 	getState,
+	redo,
 	runTransaction,
 	setState,
 	subscribe,
+	timeline,
 	transaction,
+	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -15,7 +18,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 2
 
 let logger: Logger
 
@@ -27,6 +30,9 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
+	vitest.spyOn(Utils, `stdout0`)
+	vitest.spyOn(Utils, `stdout1`)
+	vitest.spyOn(Utils, `stdout2`)
 })
 
 describe(`mutable atomic state`, () => {
@@ -143,5 +149,80 @@ describe(`mutable atomic state`, () => {
 			})
 			expect(getState(myMutableState)).toEqual(new SetRTX())
 		}
+	})
+})
+
+describe(`mutable time traveling`, () => {
+	it(`can travel back and forward in time`, () => {
+		const myMutableState = atom({
+			key: `my::mutable`,
+			mutable: true,
+			default: () => new SetRTX(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+		// debugger
+		const myTL = timeline({
+			key: `my::timeline`,
+			atoms: [myMutableState],
+		})
+		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myTrackerState = Internal.getUpdateToken(myMutableState)
+		subscribe(myMutableState, Utils.stdout0)
+		subscribe(myJsonState, Utils.stdout1)
+		subscribe(myTrackerState, Utils.stdout2)
+
+		expect(getState(myMutableState)).toEqual(new SetRTX())
+		setState(myMutableState, (set) => set.add(`a`))
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
+		setState(myMutableState, (set) => set.add(`b`))
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
+		undo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
+		undo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX())
+		redo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
+		redo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
+	})
+	it(`can travel back and forward in time with a transaction`, () => {
+		const myMutableState = atom({
+			key: `myMutableSet`,
+			mutable: true,
+			default: () => new SetRTX(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+		const myTL = timeline({
+			key: `myTimeline`,
+			atoms: [myMutableState],
+		})
+		const myTX = transaction<(newItem: string) => void>({
+			key: `myTransaction`,
+			do: ({ set }, newItem) => {
+				set(myMutableState, (set) => set.add(newItem))
+			},
+		})
+
+		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myTrackerState = Internal.getUpdateToken(myMutableState)
+		subscribe(myMutableState, Utils.stdout0)
+		subscribe(myJsonState, Utils.stdout1)
+		subscribe(myTrackerState, Utils.stdout2)
+
+		expect(getState(myMutableState)).toEqual(new SetRTX())
+		runTransaction(myTX)(`a`)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
+		runTransaction(myTX)(`b`)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
+		undo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
+		undo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX())
+		redo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
+		redo(myTL)
+		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
 	})
 })

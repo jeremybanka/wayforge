@@ -14,7 +14,8 @@ export class Subject<T> {
 	}
 
 	public next(value: T): void {
-		for (const subscriber of this.subscribers.values()) {
+		const subscribers = this.subscribers.values()
+		for (const subscriber of subscribers) {
 			subscriber(value)
 		}
 	}

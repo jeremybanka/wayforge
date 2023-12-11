@@ -2,6 +2,7 @@ import type { TransactionUpdate, ƒn } from "atom.io"
 import type { AtomToken, TimelineUpdate } from "atom.io"
 
 import { newest } from "../lineage"
+import { getUpdateToken } from "../mutable"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import type {
@@ -15,13 +16,21 @@ export const addAtomToTimeline = (
 	tl: Timeline,
 	store: Store,
 ): void => {
-	const atom = withdraw(atomToken, store)
+	let maybeAtom = withdraw(atomToken, store)
+	if (maybeAtom?.mutable) {
+		console.log(`adding transceiver to timeline`, atomToken.key)
+		const updateToken = getUpdateToken(atomToken)
+		maybeAtom = withdraw(updateToken, store)
+	}
+	const atom = maybeAtom
 	if (atom === undefined) {
 		throw new Error(
 			`Cannot subscribe to atom "${atomToken.key}" because it has not been initialized in store "${store.config.name}"`,
 		)
 	}
+
 	atom.subject.subscribe(`timeline`, (update) => {
+		// debugger
 		const target = newest(store)
 		const currentSelectorKey =
 			store.operation.open && store.operation.token.type === `selector`
