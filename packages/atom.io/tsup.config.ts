@@ -54,7 +54,9 @@ export const JS_OPTIONS: Options = {
 export const DTS_OPTIONS: Options = {
 	...BASE_OPTIONS,
 	dts: { only: true },
+	format: [`esm`],
 	entry: [`src/index.ts`],
+	metafile: false,
 	outDir: `dist`,
 }
 
