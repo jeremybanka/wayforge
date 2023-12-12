@@ -1,4 +1,4 @@
 import { defineConfig } from "tsup"
-import { DTS_OPTIONS } from "~/packages/atom.io/tsup.config"
+import { BASE_CONFIG_OPTIONS } from "~/packages/atom.io/tsup.config"
 
-export default defineConfig(DTS_OPTIONS)
+export default defineConfig(BASE_CONFIG_OPTIONS)
