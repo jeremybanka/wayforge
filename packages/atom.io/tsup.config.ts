@@ -22,17 +22,18 @@ export const BASE_OPTIONS: Options = {
 	},
 	external: BUNDLE_EXCLUDE_LIST,
 	format: [`esm`, `cjs`],
+	jsxFactory: `React.createElement`,
 	loader: { ".scss": `css` },
 	metafile: true,
 	sourcemap: true,
 	treeshake: true,
-	jsxFactory: `React.createElement`,
 	tsconfig: `tsconfig.json`,
 }
 
 export const JS_OPTIONS: Options = {
 	...BASE_OPTIONS,
 	clean: false,
+	dts: false,
 	entry: {
 		"dist/index": `src/index.ts`,
 		"data/dist/index": `data/src/index.ts`,
@@ -57,4 +58,10 @@ export const DTS_OPTIONS: Options = {
 	outDir: `dist`,
 }
 
-export default defineConfig(JS_OPTIONS)
+export default defineConfig((options) => {
+	console.log(options)
+	const using = options.dts ? DTS_OPTIONS : JS_OPTIONS
+	console.log({ using })
+	console.log(`bundle exclude list: ${discoverSubmodules().join(`, `)}`)
+	return using
+})
