@@ -3,6 +3,7 @@ import { defineConfig } from "tsup"
 import discoverSubmodules from "./__scripts__/discover-submodules.node"
 
 export const BUNDLE_EXCLUDE_LIST = [
+	`atom.io`,
 	...discoverSubmodules().map((submodule) => `atom.io/${submodule}`),
 	`socket.io`,
 	`socket.io-client`,
@@ -56,6 +57,4 @@ export const DTS_OPTIONS: Options = {
 	outDir: `dist`,
 }
 
-export default defineConfig((options) =>
-	options.dts ? DTS_OPTIONS : JS_OPTIONS,
-)
+export default defineConfig(JS_OPTIONS)
