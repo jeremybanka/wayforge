@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.14.5
+
+### Patch Changes
+
+- 993c5d8: 🐛 Fix bug causing incompatibilities between the types of `atom.io`'s various subpackages.
+
 ## 0.14.4
 
 ### Patch Changes
