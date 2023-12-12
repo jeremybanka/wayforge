@@ -6,11 +6,10 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 import { setState } from "atom.io"
-import { Json } from "atom.io/json"
 
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
-import { Transceiver, createMutableAtom } from "../mutable"
+import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
