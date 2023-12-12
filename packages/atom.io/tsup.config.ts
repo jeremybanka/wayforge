@@ -26,7 +26,6 @@ export const BASE_OPTIONS: Options = {
 	loader: { ".scss": `css` },
 	metafile: true,
 	sourcemap: true,
-	// splitting: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
 }
