@@ -9,7 +9,7 @@ export default function discoverSubmodules(): string[] {
 		.filter((dirent) => !EXCLUDE_LIST.includes(dirent.name))
 		.flatMap((dirent) => {
 			const contents = fs.readdirSync(path.join(ATOM_IO_ROOT, dirent.name))
-			const isLeaf = contents.includes(`src`) && contents.includes(`dist`)
+			const isLeaf = contents.includes(`src`)
 			return isLeaf
 				? dirent.name
 				: contents.map((content) => path.join(dirent.name, content))
