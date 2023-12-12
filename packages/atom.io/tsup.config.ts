@@ -57,6 +57,4 @@ export const DTS_OPTIONS: Options = {
 	outDir: `dist`,
 }
 
-export default defineConfig((options) =>
-	options.dts ? DTS_OPTIONS : JS_OPTIONS,
-)
+export default defineConfig(JS_OPTIONS)
