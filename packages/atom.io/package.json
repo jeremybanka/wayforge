@@ -1,6 +1,6 @@
 {
 	"name": "atom.io",
-	"version": "0.14.5",
+	"version": "0.14.4",
 	"description": "Composable and testable reactive data library.",
 	"homepage": "https://atom.io.fyi",
 	"sideEffects": false,
@@ -20,6 +20,7 @@
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
 		"build": "npm run clean:build && concurrently \"npm:build:*\"",
 		"build:main": "tsup",
+		"build:types": "tsup --dts",
 		"build:data": "cd data && tsup",
 		"build:internal": "cd internal && tsup",
 		"build:introspection": "cd introspection && tsup",
