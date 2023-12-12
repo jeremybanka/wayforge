@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.14.7
+
+### Patch Changes
+
+- 1dd8b9c: ✨ `atom.io/react` `useTL` can now have the timeline it consumes updated dynamically.
+- 9d1bb23: 🚀 Redundant .d.cts files, which were unreferenced in atom.io's manifests, and identical to their respective .d.ts files, have been removed.
+
 ## 0.14.6
 
 ### Patch Changes
