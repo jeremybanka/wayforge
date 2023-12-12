@@ -62,7 +62,7 @@ export function useTL(token: TimelineToken): TimelineMeta {
 		undo: () => undo(token),
 		redo: () => redo(token),
 	})
-	const rebuildMeta = React.useCallback(() => {
+	const rebuildMeta = () => {
 		return Object.assign(
 			{
 				at: timeline?.at ?? NaN,
@@ -70,9 +70,9 @@ export function useTL(token: TimelineToken): TimelineMeta {
 			},
 			base.current,
 		)
-	}, [])
+	}
 	const meta = React.useRef<TimelineMeta>(rebuildMeta())
-	const retrieve = React.useCallback(() => {
+	const retrieve = () => {
 		if (
 			meta.current.at !== timeline?.at ||
 			meta.current.length !== timeline?.history.length
@@ -80,7 +80,7 @@ export function useTL(token: TimelineToken): TimelineMeta {
 			meta.current = rebuildMeta()
 		}
 		return meta.current
-	}, [])
+	}
 	return React.useSyncExternalStore<TimelineMeta>(
 		(dispatch) => subscribeToTimeline(token, dispatch, `use-tl:${id}`, store),
 		retrieve,
