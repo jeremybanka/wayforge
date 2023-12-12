@@ -3,8 +3,8 @@ import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
-import type { Logger, ƒn } from "atom.io"
-import { atom, redo, timeline, undo } from "atom.io"
+import type { Logger, TimelineToken, ƒn } from "atom.io"
+import { atom, redo, selector, timeline, undo } from "atom.io"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -150,5 +150,116 @@ describe(`timeline`, () => {
 		fireEvent.click(redoButton)
 		expect(timelineAt.textContent).toEqual(`2`)
 		expect(timelineLength.textContent).toEqual(`2`)
+	})
+})
+describe(`timeline (dynamic)`, () => {
+	const scenario = () => {
+		const letterState = atom<string>({
+			key: `letter`,
+			default: `A`,
+		})
+		const numberState = atom<number>({
+			key: `number`,
+			default: 1,
+		})
+		const letterTL = timeline({
+			key: `letterTL`,
+			atoms: [letterState],
+		})
+		const numberTL = timeline({
+			key: `numberTL`,
+			atoms: [numberState],
+		})
+		const whichTimelineState = atom<string>({
+			key: `whichTimeline`,
+			default: `letter`,
+		})
+		const timelineState = selector<TimelineToken>({
+			key: `timeline`,
+			get: ({ get }) => {
+				const whichTimeline = get(whichTimelineState)
+				return whichTimeline === `letter` ? letterTL : numberTL
+			},
+		})
+		const Letter: FC = () => {
+			const setLetter = AR.useI(letterState)
+			const setNumber = AR.useI(numberState)
+			const setWhichTimeline = AR.useI(whichTimelineState)
+			const letter = AR.useO(letterState)
+			const number = AR.useO(numberState)
+			const timeline = AR.useTL(AR.useO(timelineState))
+			return (
+				<>
+					<div data-testid={letter}>{letter}</div>
+					<div data-testid={number}>{number}</div>
+					<div data-testid="timelineAt">{timeline.at}</div>
+					<div data-testid="timelineLength">{timeline.length}</div>
+					<button
+						type="button"
+						onClick={() => setLetter(`B`)}
+						data-testid="changeLetterButtonB"
+					/>
+					<button
+						type="button"
+						onClick={() => setNumber(2)}
+						data-testid="changeNumberButton2"
+					/>
+					<button
+						type="button"
+						onClick={() =>
+							setWhichTimeline((current) =>
+								current === `number` ? `letter` : `number`,
+							)
+						}
+						data-testid="changeTimelineButton"
+					/>
+					<button
+						type="button"
+						onClick={() => timeline.undo()}
+						data-testid="undoButton"
+					/>
+					<button
+						type="button"
+						onClick={() => timeline.redo()}
+						data-testid="redoButton"
+					/>
+				</>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Utils.Observer node={letterState} onChange={onChange} />
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		return { ...utils, letterTL }
+	}
+
+	it(`displays metadata`, () => {
+		const { getByTestId, letterTL } = scenario()
+		const changeLetterButtonB = getByTestId(`changeLetterButtonB`)
+		const changeNumberButton2 = getByTestId(`changeNumberButton2`)
+		const changeTimelineButton = getByTestId(`changeTimelineButton`)
+		const timelineAt = getByTestId(`timelineAt`)
+		const timelineLength = getByTestId(`timelineLength`)
+		fireEvent.click(changeLetterButtonB)
+		const option = getByTestId(`B`)
+		expect(option).toBeTruthy()
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`1`)
+		fireEvent.click(changeTimelineButton)
+		expect(timelineAt.textContent).toEqual(`0`)
+		expect(timelineLength.textContent).toEqual(`0`)
+		fireEvent.click(changeNumberButton2)
+		const option2 = getByTestId(`2`)
+		expect(option2).toBeTruthy()
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`1`)
+		act(() => {
+			undo(letterTL)
+		})
+		fireEvent.click(changeTimelineButton)
+		expect(timelineAt.textContent).toEqual(`0`)
+		expect(timelineLength.textContent).toEqual(`1`)
 	})
 })
