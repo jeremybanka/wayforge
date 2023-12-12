@@ -58,25 +58,23 @@ export function useTL(token: TimelineToken): TimelineMeta {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	const timeline = withdraw(token, store)
-	const base = React.useRef({
-		undo: () => undo(token),
-		redo: () => redo(token),
-	})
+	const tokenRef = React.useRef(token)
 	const rebuildMeta = () => {
-		return Object.assign(
-			{
-				at: timeline?.at ?? NaN,
-				length: timeline?.history.length ?? NaN,
-			},
-			base.current,
-		)
+		return {
+			at: timeline?.at ?? NaN,
+			length: timeline?.history.length ?? NaN,
+			undo: () => undo(token),
+			redo: () => redo(token),
+		}
 	}
 	const meta = React.useRef<TimelineMeta>(rebuildMeta())
 	const retrieve = () => {
 		if (
 			meta.current.at !== timeline?.at ||
-			meta.current.length !== timeline?.history.length
+			meta.current.length !== timeline?.history.length ||
+			tokenRef.current !== token
 		) {
+			tokenRef.current = token
 			meta.current = rebuildMeta()
 		}
 		return meta.current
