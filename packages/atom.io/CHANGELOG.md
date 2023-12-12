@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.14.8
+
+### Patch Changes
+
+- 3fda99f: 🐛 Fix issue with `useTL` where the `undo` and `redo` methods would not fire properly for dynamic use cases.
+
 ## 0.14.7
 
 ### Patch Changes
