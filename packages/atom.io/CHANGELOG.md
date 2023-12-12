@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.14.6
+
+### Patch Changes
+
+- e6e007a: 🐛 Fix issue where the main d.ts was not present in the package.
+
 ## 0.14.5
 
 ### Patch Changes
