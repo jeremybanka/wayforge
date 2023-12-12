@@ -32,6 +32,7 @@ export const BASE_OPTIONS: Options = {
 export const JS_OPTIONS: Options = {
 	...BASE_OPTIONS,
 	clean: false,
+	dts: true,
 	entry: {
 		"dist/index": `src/index.ts`,
 		"data/dist/index": `data/src/index.ts`,
