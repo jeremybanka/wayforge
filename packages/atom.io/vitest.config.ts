@@ -19,5 +19,9 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: `happy-dom`,
+		coverage: {
+			include: [`**/src`],
+			exclude: [`__unstable__`],
+		},
 	},
 })
