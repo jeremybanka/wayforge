@@ -6,7 +6,7 @@ import {
 	createMutableAtom,
 	createMutableAtomFamily,
 } from "atom.io/internal"
-import type { Json, JsonInterface } from "atom.io/json"
+import type { Json, JsonInterface, Stringified } from "atom.io/json"
 
 import type { AtomToken, MutableAtomToken } from "."
 
@@ -31,13 +31,16 @@ export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serial
 			mutable: true
 		}
 
-export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
-	options: MutableAtomOptions<T, J>,
-): MutableAtomToken<T, J>
+export function atom<
+	Value extends Transceiver<any>,
+	JsonValue extends Json.Serializable,
+>(
+	options: MutableAtomOptions<Value, JsonValue>,
+): MutableAtomToken<Value, JsonValue>
 export function atom<T>(options: AtomOptions<T>): AtomToken<T>
-export function atom<T>(
+export function atom<Value>(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
-): AtomToken<any> {
+): AtomToken<Value, (typeof options)[`key`]> {
 	if (`mutable` in options) {
 		return createMutableAtom(options, IMPLICIT.STORE)
 	}
@@ -50,9 +53,11 @@ export type AtomFamilyOptions<T, K extends Json.Serializable> = {
 	effects?: (key: K) => AtomEffect<T>[]
 }
 
-export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
-	key: K,
-) => AtomToken<T>) & {
+export type AtomFamily<
+	Value,
+	SubKey extends Json.Serializable = Json.Serializable,
+	Key extends string = string,
+> = ((key: Key) => AtomToken<Value, `${Key}(${Stringified<SubKey>})`>) & {
 	key: string
 	type: `atom_family`
 	subject: Subject<AtomToken<T>>

@@ -13,18 +13,40 @@ export type TimelineToken = {
 	type: `timeline`
 }
 
-export type TimelineOptions = {
+export type TimelineOptions<
+	TimelineAtom extends AtomFamily<any, any> | AtomToken<any, any>,
+> = {
 	key: string
-	atoms: (AtomFamily<any, any> | AtomToken<any>)[]
-	shouldCapture?: (update: TimelineUpdate, timeline: Timeline) => boolean
+	atoms: TimelineAtom[]
+	shouldCapture?: (
+		update: TimelineUpdate<TimelineAtom>,
+		timeline: Timeline<Atoms>,
+	) => boolean
 }
 
-export type TimelineUpdate =
-	| TimelineAtomUpdate
+export type TimelineUpdate<
+	TimelineAtom extends AtomFamily<any, any> | AtomToken<any, any>,
+> =
+	| TimelineAtomUpdate<
+			TimelineAtom extends AtomToken<infer V>
+				? V
+				: TimelineAtom extends AtomFamily<infer V>
+				  ? V
+				  : never,
+			TimelineAtom extends AtomToken<any, infer K>
+				? K
+				: TimelineAtom extends AtomFamily<any, any>
+				  ? ReturnType<TimelineAtom>[`key`]
+				  : never
+	  >
 	| TimelineSelectorUpdate
 	| TimelineTransactionUpdate
 
-export const timeline = (options: TimelineOptions): TimelineToken => {
+export const timeline = <
+	AtomTokens extends (AtomFamily<any, any> | AtomToken<any, any>)[],
+>(
+	options: TimelineOptions<AtomTokens>,
+): TimelineToken => {
 	return createTimeline(options, IMPLICIT.STORE)
 }
 

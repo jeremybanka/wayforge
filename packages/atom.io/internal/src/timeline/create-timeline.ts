@@ -1,4 +1,6 @@
 import type {
+	AtomFamily,
+	AtomToken,
 	FamilyMetadata,
 	StateUpdate,
 	TimelineOptions,
@@ -16,8 +18,11 @@ import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
 
-export type TimelineAtomUpdate = StateUpdate<unknown> & {
-	key: string
+export type TimelineAtomUpdate<
+	Value,
+	Key extends string = string,
+> = StateUpdate<Value> & {
+	key: Key
 	type: `atom_update`
 	timestamp: number
 	family?: FamilyMetadata
@@ -26,7 +31,7 @@ export type TimelineSelectorUpdate = {
 	key: string
 	type: `selector_update`
 	timestamp: number
-	atomUpdates: Omit<TimelineAtomUpdate, `timestamp`>[]
+	atomUpdates: Omit<TimelineAtomUpdate<unknown, string>, `timestamp`>[]
 }
 export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 	key: string
@@ -34,31 +39,35 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 	timestamp: number
 }
 
-export type Timeline = {
+export type Timeline<
+	TimelineAtom extends AtomFamily<any, any, any> | AtomToken<any, any>,
+> = {
 	type: `timeline`
 	key: string
 	at: number
-	shouldCapture?: (update: TimelineUpdate, timeline: Timeline) => boolean
+	shouldCapture?: (
+		update: TimelineUpdate<TimelineAtom>,
+		timeline: Timeline<TimelineAtom>,
+	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
-	history: TimelineUpdate[]
+	history: TimelineUpdate<TimelineAtom>[]
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: Store) => void
-	subject: Subject<
-		| TimelineAtomUpdate
-		| TimelineSelectorUpdate
-		| TimelineTransactionUpdate
-		| `redo`
-		| `undo`
-	>
+	subject: Subject<TimelineUpdate<TimelineAtom> | `redo` | `undo`>
 }
 
-export function createTimeline(
-	options: TimelineOptions,
+export function createTimeline<
+	TimelineAtoms extends (
+		| AtomFamily<any, any, string>
+		| AtomToken<any, string>
+	)[],
+>(
+	options: TimelineOptions<TimelineAtoms>,
 	store: Store,
-	data?: Timeline,
+	data?: Timeline<TimelineAtom>,
 ): TimelineToken {
-	const tl: Timeline = {
+	const tl: Timeline<TimelineAtom> = {
 		type: `timeline`,
 		key: options.key,
 		at: 0,
