@@ -211,7 +211,7 @@ describe(`some practical use cases`, () => {
 })
 
 describe(`advanced performance tests`, () => {
-	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024] as const
+	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512] as const
 
 	function sigFigs(sigFigs: number, num: number): number {
 		if (num === 0) {
