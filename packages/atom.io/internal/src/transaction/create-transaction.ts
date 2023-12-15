@@ -32,11 +32,12 @@ export function createTransaction<ƒ extends ƒn>(
 		run: (...params: Parameters<ƒ>) => {
 			buildTransaction(options.key, params, store)
 			try {
+				const target = newest(store)
 				const output = options.do(
 					{
-						get: (token) => getState(token, store),
-						set: (token, value) => setState(token, value, store),
-						run: (token) => runTransaction(token, store),
+						get: (token) => getState(token, target),
+						set: (token, value) => setState(token, value, target),
+						run: (token) => runTransaction(token, target),
 					},
 					...params,
 				)

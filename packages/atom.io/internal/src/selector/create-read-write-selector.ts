@@ -28,7 +28,6 @@ export const createReadWriteSelector = <T>(
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const oldValue = getSelf()
 		const newValue = become(next)(oldValue)
-		// store.logger.info(`📝 set "${options.key}" (`, oldValue, `->`, newValue, `)`)
 		store.logger.info(
 			`📝`,
 			`selector`,
@@ -55,7 +54,7 @@ export const createReadWriteSelector = <T>(
 		type: `selector`,
 		...(family && { family }),
 	}
-	target.selectors.set(options.key, mySelector) // ❓
+	target.selectors.set(options.key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: SelectorToken<T> = {

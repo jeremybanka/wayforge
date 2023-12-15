@@ -13,9 +13,6 @@ export const registerSelector = (
 ): Transactors => ({
 	get: (dependency) => {
 		const target = newest(store)
-		const alreadyRegistered = target.selectorGraph
-			.getRelationEntries({ downstreamSelectorKey: selectorKey })
-			.some(([_, { source }]) => source === dependency.key)
 
 		const dependencyState = withdraw(dependency, store)
 		if (dependencyState === undefined) {
@@ -34,17 +31,15 @@ export const registerSelector = (
 			`)`,
 		)
 
-		if (!alreadyRegistered) {
-			target.selectorGraph.set(
-				{
-					upstreamSelectorKey: dependency.key,
-					downstreamSelectorKey: selectorKey,
-				},
-				{
-					source: dependency.key,
-				},
-			)
-		}
+		target.selectorGraph.set(
+			{
+				upstreamSelectorKey: dependency.key,
+				downstreamSelectorKey: selectorKey,
+			},
+			{
+				source: dependency.key,
+			},
+		)
 		updateSelectorAtoms(selectorKey, dependency, store)
 		return dependencyValue
 	},
