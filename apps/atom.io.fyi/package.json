@@ -35,7 +35,7 @@
 		"@types/react-syntax-highlighter": "15.5.11",
 		"chokidar": "3.5.3",
 		"concurrently": "8.2.2",
-		"eslint": "8.55.0",
+		"eslint": "8.56.0",
 		"eslint-config-next": "14.0.4",
 		"npmlog": "7.0.1",
 		"rehype-slug": "6.0.0",
