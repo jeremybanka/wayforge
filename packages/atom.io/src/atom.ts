@@ -1,4 +1,4 @@
-import type { Subject, Transceiver } from "atom.io/internal"
+import type { Store, Subject, Transceiver } from "atom.io/internal"
 import {
 	IMPLICIT,
 	createAtom,
@@ -57,7 +57,9 @@ export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
 	type: `atom_family`
 	subject: Subject<AtomToken<T>>
 	mutable?: boolean
+	install: (store: Store) => void
 }
+
 // biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
 	T extends Transceiver<any>,
@@ -81,6 +83,7 @@ export type MutableAtomFamily<
 			type: `atom_family`
 			subject: Subject<MutableAtomToken<Core, SerializableCore>>
 			mutable: true
+			install: (store: Store) => void
 		}
 
 export function atomFamily<

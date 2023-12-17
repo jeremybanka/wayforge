@@ -40,6 +40,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 			key: options.key,
 			type: `readonly_selector_family`,
 			subject,
+			install: (store: Store) => createReadonlySelectorFamily(options, store),
 		} as const,
 	) as ReadonlySelectorFamily<T, K>
 }

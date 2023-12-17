@@ -79,7 +79,6 @@ describe(`async atom`, async () => {
 		resolveAtAnInconvenientTime!()
 		await new Promise((resolve) => setTimeout(resolve, 0))
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBe(undefined)
-		// ❌ fails, +0 !== undefined
 	})
 })
 

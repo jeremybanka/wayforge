@@ -48,6 +48,7 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 			key: options.key,
 			type: `atom_family`,
 			subject,
+			install: (store: Store) => createAtomFamily(options, store),
 		} as const,
 	)
 	if (`mutable` in options && typeof options.mutable === `boolean`) {
