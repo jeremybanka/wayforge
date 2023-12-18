@@ -80,7 +80,7 @@
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "1.0.4",
 		"concurrently": "8.2.2",
-		"drizzle-kit": "0.20.6",
+		"drizzle-kit": "0.20.7",
 		"drizzle-orm": "0.29.1",
 		"eslint": "8.56.0",
 		"framer-motion": "10.16.16",
