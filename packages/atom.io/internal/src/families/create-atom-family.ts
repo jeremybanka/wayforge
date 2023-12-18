@@ -1,73 +1,33 @@
 import type {
 	AtomFamily,
 	AtomFamilyOptions,
-	AtomOptions,
-	AtomToken,
-	FamilyMetadata,
+	MutableAtomFamily,
 	MutableAtomFamilyOptions,
-	MutableAtomOptions,
 } from "atom.io"
 import type { Json } from "atom.io/json"
-import { stringifyJson } from "atom.io/json"
 
-import { createRegularAtom } from "../atom"
-import { newest } from "../lineage"
-import { createMutableAtom } from "../mutable"
-import { deposit, withdraw } from "../store"
+import { type Transceiver, createMutableAtomFamily } from "../mutable"
 import type { Store } from "../store"
-import { Subject } from "../subject"
+import { createRegularAtomFamily } from "./create-regular-atom-family"
 
-export function createAtomFamily<T, K extends Json.Serializable>(
-	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, K>,
+export function createAtomFamily<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+	K extends Json.Serializable,
+>(
+	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
-): AtomFamily<T, K> {
-	const subject = new Subject<AtomToken<T>>()
-	const atomFamily = Object.assign(
-		(key: K): AtomToken<T> => {
-			const subKey = stringifyJson(key)
-			const family: FamilyMetadata = { key: options.key, subKey }
-			const fullKey = `${options.key}(${subKey})`
-			const existing = withdraw({ key: fullKey, type: `atom` }, store)
-			let token: AtomToken<any>
-			if (existing) {
-				token = deposit(existing)
-			} else {
-				const individualOptions: AtomOptions<any> = {
-					key: fullKey,
-					default:
-						options.default instanceof Function
-							? options.default(key)
-							: options.default,
-				}
-				if (options.effects) {
-					individualOptions.effects = options.effects(key)
-				}
-				if (`mutable` in options) {
-					const mutableOptions = {
-						...individualOptions,
-						mutable: true,
-						toJson: options.toJson,
-						fromJson: options.fromJson,
-					} as const
-					token = createMutableAtom(mutableOptions, family, store)
-				} else {
-					token = createRegularAtom<T>(individualOptions, family, store)
-				}
-				subject.next(token)
-			}
-			return token
-		},
-		{
-			key: options.key,
-			type: `atom_family`,
-			subject,
-			install: (store: Store) => createAtomFamily(options, store),
-		} as const,
-	)
-	if (`mutable` in options && typeof options.mutable === `boolean`) {
-		Object.assign(atomFamily, { mutable: options.mutable })
+): MutableAtomFamily<T, J, K>
+export function createAtomFamily<T, K extends Json.Serializable>(
+	options: AtomFamilyOptions<T, K>,
+	store: Store,
+): AtomFamily<T, K>
+export function createAtomFamily<T, K extends Json.Serializable>(
+	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
+	store: Store,
+): AtomFamily<T, K> | MutableAtomFamily<any, any, any> {
+	if (`mutable` in options) {
+		return createMutableAtomFamily(options, store)
 	}
-	const target = newest(store)
-	target.families.set(options.key, atomFamily)
-	return atomFamily
+	return createRegularAtomFamily<T, K>(options, store)
 }

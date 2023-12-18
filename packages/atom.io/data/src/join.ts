@@ -10,8 +10,8 @@ import { dispose, getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
-	createAtomFamily,
 	createMutableAtomFamily,
+	createRegularAtomFamily,
 	createSelectorFamily,
 	getJsonFamily,
 } from "atom.io/internal"
@@ -244,7 +244,7 @@ export function join<
 	let externalStore: ExternalStoreConfiguration<Content>
 	let findContentState: AtomFamily<Content, string>
 	if (defaultContent) {
-		findContentState = createAtomFamily<Content, string>(
+		findContentState = createRegularAtomFamily<Content, string>(
 			{
 				key: `${options.key}/content`,
 				default: defaultContent,
