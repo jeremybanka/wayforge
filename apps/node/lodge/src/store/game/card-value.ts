@@ -22,6 +22,7 @@ export const cardValuesIndex = createMutableAtom<
 		toJson: (set) => set.toJSON(),
 		fromJson: (json) => SetRTX.fromJSON(json),
 	},
+	undefined,
 	IMPLICIT.STORE,
 )
 

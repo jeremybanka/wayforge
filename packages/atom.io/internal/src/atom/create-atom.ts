@@ -52,12 +52,14 @@ export function createAtom<T>(
 				`installing in store "${store.config.name}"`,
 			)
 			return `mutable` in options
-				? createMutableAtom(options, store)
-				: createAtom(options, undefined, store)
+				? createMutableAtom(options, family, store)
+				: createAtom(options, family, store)
 		},
 		subject,
-		...(family && { family }),
 	} as const
+	if (family) {
+		newAtom.family = family
+	}
 	let initialValue = options.default
 	if (options.default instanceof Function) {
 		initialValue = options.default()

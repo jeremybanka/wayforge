@@ -39,7 +39,7 @@ export function atom<T>(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
 ): AtomToken<any> {
 	if (`mutable` in options) {
-		return createMutableAtom(options, IMPLICIT.STORE)
+		return createMutableAtom(options, undefined, IMPLICIT.STORE)
 	}
 	return createAtom<T>(options, undefined, IMPLICIT.STORE)
 }

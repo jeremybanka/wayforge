@@ -35,7 +35,7 @@ export class Silo {
 		this.store = s
 		this.atom = (options) => {
 			if (`mutable` in options) {
-				return createMutableAtom(options, s)
+				return createMutableAtom(options, undefined, s)
 			}
 			return createAtom(options, undefined, s)
 		}

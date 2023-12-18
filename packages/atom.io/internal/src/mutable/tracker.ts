@@ -38,7 +38,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			familyMetaData,
 			store,
 		)
-		if (store.parent) {
+		if (store.parent?.valueMap.has(latestUpdateStateKey)) {
 			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)
 			store.valueMap.set(latestUpdateStateKey, parentValue)
 		}

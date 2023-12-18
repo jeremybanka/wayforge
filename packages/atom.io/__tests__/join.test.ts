@@ -281,7 +281,7 @@ describe(`some practical use cases`, () => {
 	})
 })
 
-describe(`advanced performance tests`, () => {
+describe.only(`advanced performance tests`, () => {
 	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512] as const
 
 	function sigFigs(sigFigs: number, num: number): number {

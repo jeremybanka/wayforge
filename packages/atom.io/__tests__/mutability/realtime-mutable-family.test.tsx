@@ -104,7 +104,7 @@ describe(`running transactions`, () => {
 						addToNumbersCollectionTX,
 					)
 					const store = React.useContext(AR.StoreContext)
-					AtomIO.setState(storeState, store)
+					AtomIO.setState(storeState, store, store)
 					const { socket } = React.useContext(RTR.RealtimeContext)
 					socket.onAny((event, ...args) => {
 						console.log(`📡  DAVE`, event, ...args)

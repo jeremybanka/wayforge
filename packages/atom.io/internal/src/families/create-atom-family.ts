@@ -4,18 +4,21 @@ import type {
 	AtomOptions,
 	AtomToken,
 	FamilyMetadata,
+	MutableAtomFamilyOptions,
+	MutableAtomOptions,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { createAtom } from "../atom"
 import { newest } from "../lineage"
+import { createMutableAtom } from "../mutable"
 import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createAtomFamily<T, K extends Json.Serializable>(
-	options: AtomFamilyOptions<T, K>,
+	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, K>,
 	store: Store,
 ): AtomFamily<T, K> {
 	const subject = new Subject<AtomToken<T>>()
@@ -39,7 +42,17 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 				if (options.effects) {
 					individualOptions.effects = options.effects(key)
 				}
-				token = createAtom<T>(individualOptions, family, store)
+				if (`mutable` in options) {
+					const mutableOptions = {
+						...individualOptions,
+						mutable: true,
+						toJson: options.toJson,
+						fromJson: options.fromJson,
+					} as const
+					token = createMutableAtom(mutableOptions, family, store)
+				} else {
+					token = createAtom<T>(individualOptions, family, store)
+				}
 				subject.next(token)
 			}
 			return token

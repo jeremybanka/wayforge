@@ -1,4 +1,8 @@
-import type { MutableAtomOptions, MutableAtomToken } from "atom.io"
+import type {
+	FamilyMetadata,
+	MutableAtomOptions,
+	MutableAtomToken,
+} from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
@@ -14,6 +18,7 @@ export function createMutableAtom<
 	SerializableCore extends Json.Serializable,
 >(
 	options: MutableAtomOptions<Core, SerializableCore>,
+	family: FamilyMetadata | undefined,
 	store: Store,
 ): MutableAtomToken<Core, SerializableCore> {
 	store.logger.info(
@@ -22,7 +27,7 @@ export function createMutableAtom<
 		options.key,
 		`creating in store "${store.config.name}"`,
 	)
-	const coreState = createAtom<Core>(options, undefined, store)
+	const coreState = createAtom<Core>(options, family, store)
 	new Tracker(coreState, store)
 	const jsonState = selectJson(coreState, options, store)
 	const target = newest(store)
