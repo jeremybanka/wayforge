@@ -61,5 +61,6 @@
 		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"references.preferredLocation": "peek",
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"coverage-gutters.coverageBaseDir": "**/coverage/"
 }
