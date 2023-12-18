@@ -3,7 +3,6 @@ import {
 	IMPLICIT,
 	createAtom,
 	createAtomFamily,
-	createMutableAtom,
 	createMutableAtomFamily,
 } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
@@ -35,13 +34,10 @@ export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
 	options: MutableAtomOptions<T, J>,
 ): MutableAtomToken<T, J>
 export function atom<T>(options: AtomOptions<T>): AtomToken<T>
-export function atom<T>(
+export function atom(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
 ): AtomToken<any> {
-	if (`mutable` in options) {
-		return createMutableAtom(options, undefined, IMPLICIT.STORE)
-	}
-	return createAtom<T>(options, undefined, IMPLICIT.STORE)
+	return createAtom(options, undefined, IMPLICIT.STORE)
 }
 
 export type AtomFamilyOptions<T, K extends Json.Serializable> = {

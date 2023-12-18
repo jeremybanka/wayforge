@@ -3,6 +3,7 @@ import type { Store } from "../store"
 import type { Subject } from "../subject"
 
 export * from "./create-atom"
+export * from "./create-regular-atom"
 export * from "./delete-atom"
 export * from "./is-default"
 

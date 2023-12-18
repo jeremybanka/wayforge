@@ -4,6 +4,7 @@ import {
 	createAtomFamily,
 	createMutableAtom,
 	createMutableAtomFamily,
+	createRegularAtom,
 	createSelector,
 	createSelectorFamily,
 	createTimeline,
@@ -33,12 +34,7 @@ export class Silo {
 	public constructor(name: string, fromStore: Store | null = null) {
 		const s = new Store(name, fromStore)
 		this.store = s
-		this.atom = (options) => {
-			if (`mutable` in options) {
-				return createMutableAtom(options, undefined, s)
-			}
-			return createAtom(options, undefined, s)
-		}
+		this.atom = (options) => createAtom(options, undefined, s)
 		this.atomFamily = (options) => {
 			if (`mutable` in options) {
 				return createMutableAtomFamily(options, s) as any

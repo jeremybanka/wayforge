@@ -10,7 +10,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { createAtom } from "../atom"
+import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
 import { deposit, withdraw } from "../store"
@@ -51,7 +51,7 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 					} as const
 					token = createMutableAtom(mutableOptions, family, store)
 				} else {
-					token = createAtom<T>(individualOptions, family, store)
+					token = createRegularAtom<T>(individualOptions, family, store)
 				}
 				subject.next(token)
 			}

@@ -6,7 +6,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
-import { createAtom } from "../atom"
+import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { subscribeToState } from "../subscribe"
@@ -27,7 +27,7 @@ export function createMutableAtom<
 		options.key,
 		`creating in store "${store.config.name}"`,
 	)
-	const coreState = createAtom<Core>(options, family, store)
+	const coreState = createRegularAtom<Core>(options, family, store)
 	new Tracker(coreState, store)
 	const jsonState = selectJson(coreState, options, store)
 	const target = newest(store)
