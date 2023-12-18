@@ -82,8 +82,15 @@ export const applyTransaction = <ƒ extends ƒn>(
 		`Applying transaction with ${updates.length} updates:`,
 		updates,
 	)
+	for (const tracker of child.trackers.values()) {
+		const mutableKey = tracker.mutableState.key
+		if (!parent.atoms.has(mutableKey)) {
+			const atom = child.atoms.get(mutableKey)
+			atom?.install(parent)
+		}
+	}
+	ingestTransactionUpdate(child.transactionMeta.update, parent, child)
 	if (parent.transactionMeta === null) {
-		ingestTransactionUpdate(child.transactionMeta.update, parent, child)
 		const myTransaction = withdraw<ƒ>(
 			{ key: child.transactionMeta.update.key, type: `transaction` },
 			store,
@@ -96,7 +103,6 @@ export const applyTransaction = <ƒ extends ƒn>(
 			`Finished applying transaction.`,
 		)
 	} else {
-		ingestTransactionUpdate(child.transactionMeta.update, parent, child)
 		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
 	}
 	parent.subject.transactionApplying.next(null)

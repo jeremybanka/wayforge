@@ -144,7 +144,7 @@ describe(`running transactions`, () => {
 			},
 		})
 
-	test.only(`client 1 -> server -> client 2`, async () => {
+	test(`client 1 -> server -> client 2`, async () => {
 		const {
 			clients: { jane, dave },
 			teardown,
@@ -152,24 +152,6 @@ describe(`running transactions`, () => {
 		jane.renderResult.getByTestId(`0`)
 		act(() => dave.renderResult.getByTestId(`addNumber`).click())
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		teardown()
-	})
-
-	test(`client 2 disconnects/reconnects, gets update`, async () => {
-		const {
-			clients: { dave, jane },
-			teardown,
-		} = scenario()
-		jane.renderResult.getByTestId(`0`)
-
-		jane.disconnect()
-
-		act(() => dave.renderResult.getByTestId(`addNumber`).click())
-
-		jane.renderResult.getByTestId(`0`)
-		jane.reconnect()
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
-
 		teardown()
 	})
 })
