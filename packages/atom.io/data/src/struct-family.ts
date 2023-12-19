@@ -1,7 +1,7 @@
 import type * as AtomIO from "atom.io"
 import {
 	IMPLICIT,
-	createAtomFamily,
+	createRegularAtomFamily,
 	createSelectorFamily,
 } from "atom.io/internal"
 
@@ -29,7 +29,7 @@ export function structFamily<
 		>}State`]: AtomIO.AtomFamily<Struct[K], string>
 	} = Object.keys(options.default).reduce((acc, subKey) => {
 		const atomFamilyName = nameFamily(options.key, subKey)
-		acc[atomFamilyName] = createAtomFamily(
+		acc[atomFamilyName] = createRegularAtomFamily(
 			{
 				key: `${options.key}.${subKey}`,
 				default: (options.default as any)[subKey],

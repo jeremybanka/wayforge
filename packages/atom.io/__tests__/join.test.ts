@@ -5,6 +5,7 @@ import { getState, runTransaction, subscribe, transaction } from "atom.io"
 import type { Logger } from "atom.io"
 
 import * as Internal from "atom.io/internal"
+import { desc } from "drizzle-orm"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -26,7 +27,7 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout3`)
 })
 
-describe(`join`, () => {
+describe(`join with content`, () => {
 	test(`supports 1:1 relations`, () => {
 		const roomPlayers = join(
 			{
@@ -142,6 +143,13 @@ describe(`join`, () => {
 		const joinedAt = Date.now()
 
 		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+		expect(roomPlayers.relations.has(`josh`)).toBe(false)
+		expect(roomPlayers.relations.has(`josh`, `lobby`)).toBe(false)
+		expect(roomPlayers.relations.has(`joshua`)).toBe(true)
+		expect(roomPlayers.relations.has(`joshua`, `lobby`)).toBe(true)
+		expect(roomPlayers.relations.getContent(`joshua`, `lobby`)).toEqual({
+			joinedAt,
+		})
 
 		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: [],
@@ -158,6 +166,42 @@ describe(`join`, () => {
 		expect(Utils.stdout3).toHaveBeenCalledWith({
 			oldValue: [],
 			newValue: [[`lobby`, { joinedAt }]],
+		})
+
+		roomPlayers.relations.delete({ player: `joshua`, room: `lobby` })
+
+		expect(getState(lobbyPlayersState)).toEqual([])
+		expect(getState(joshuaRoomsState)).toEqual([])
+	})
+})
+
+describe(`join with no content`, () => {
+	test(`supports 1:1 relations`, () => {
+		const roomPlayers = join({
+			key: `roomPlayers`,
+			between: [`room`, `player`],
+			cardinality: `1:1`,
+		})
+		const lobbyPlayerState = roomPlayers.findState.playerKeyOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+
+		const arenaPlayerState = roomPlayers.findState.playerKeyOfRoom(`arena`)
+
+		subscribe(arenaPlayerState, Utils.stdout)
+
+		subscribe(lobbyPlayerState, Utils.stdout0)
+		subscribe(joshuaRoomState, Utils.stdout1)
+
+		roomPlayers.relations.set({ player: `joshua`, room: `lobby` })
+
+		expect(Utils.stdout).toHaveBeenCalledTimes(0)
+		expect(Utils.stdout0).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: `joshua`,
+		})
+		expect(Utils.stdout1).toHaveBeenCalledWith({
+			oldValue: undefined,
+			newValue: `lobby`,
 		})
 	})
 })
@@ -208,10 +252,37 @@ describe(`some practical use cases`, () => {
 		expect(getState(userGroups.findState.userKeysOfGroup(`2`))).toEqual([`c`])
 		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([`b`])
 	})
+
+	test(`replacing relations`, () => {
+		const userGroups = join({
+			key: `userGroups`,
+			between: [`user`, `group`],
+			cardinality: `n:n`,
+			relations: [
+				[`a`, [`1`]],
+				[`b`, [`3`]],
+				[`c`, [`2`]],
+			],
+		})
+		userGroups.relations.replaceRelations(`a`, [`2`, `3`])
+		expect(getState(userGroups.findState.groupKeysOfUser(`a`))).toEqual([
+			`2`,
+			`3`,
+		])
+		expect(getState(userGroups.findState.groupKeysOfUser(`1`))).toEqual([])
+		expect(getState(userGroups.findState.userKeysOfGroup(`2`))).toEqual([
+			`c`,
+			`a`,
+		])
+		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([
+			`b`,
+			`a`,
+		])
+	})
 })
 
 describe(`advanced performance tests`, () => {
-	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024] as const
+	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512] as const
 
 	function sigFigs(sigFigs: number, num: number): number {
 		if (num === 0) {

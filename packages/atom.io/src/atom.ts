@@ -1,11 +1,5 @@
-import type { Subject, Transceiver } from "atom.io/internal"
-import {
-	IMPLICIT,
-	createAtom,
-	createAtomFamily,
-	createMutableAtom,
-	createMutableAtomFamily,
-} from "atom.io/internal"
+import type { Store, Subject, Transceiver } from "atom.io/internal"
+import { IMPLICIT, createAtom, createAtomFamily } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 
 import type { AtomToken, MutableAtomToken } from "."
@@ -35,13 +29,10 @@ export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
 	options: MutableAtomOptions<T, J>,
 ): MutableAtomToken<T, J>
 export function atom<T>(options: AtomOptions<T>): AtomToken<T>
-export function atom<T>(
+export function atom(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
 ): AtomToken<any> {
-	if (`mutable` in options) {
-		return createMutableAtom(options, IMPLICIT.STORE)
-	}
-	return createAtom<T>(options, undefined, IMPLICIT.STORE)
+	return createAtom(options, undefined, IMPLICIT.STORE)
 }
 
 export type AtomFamilyOptions<T, K extends Json.Serializable> = {
@@ -57,7 +48,9 @@ export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
 	type: `atom_family`
 	subject: Subject<AtomToken<T>>
 	mutable?: boolean
+	install: (store: Store) => void
 }
+
 // biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
 	T extends Transceiver<any>,
@@ -81,6 +74,7 @@ export type MutableAtomFamily<
 			type: `atom_family`
 			subject: Subject<MutableAtomToken<Core, SerializableCore>>
 			mutable: true
+			install: (store: Store) => void
 		}
 
 export function atomFamily<
@@ -94,8 +88,5 @@ export function atomFamily<T, K extends Json.Serializable>(
 export function atomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
 ): AtomFamily<T, K> | MutableAtomFamily<any, any, any> {
-	if (`mutable` in options) {
-		return createMutableAtomFamily(options, IMPLICIT.STORE)
-	}
-	return createAtomFamily<T, K>(options, IMPLICIT.STORE)
+	return createAtomFamily(options, IMPLICIT.STORE)
 }

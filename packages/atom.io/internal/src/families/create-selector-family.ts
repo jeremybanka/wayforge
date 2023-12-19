@@ -60,6 +60,8 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 		{
 			key: options.key,
 			type: `selector_family`,
+			subject,
+			install: (store: Store) => createSelectorFamily(options, store),
 		} as const,
 	) as SelectorFamily<T, K>
 	target.families.set(options.key, selectorFamily)

@@ -1,3 +1,4 @@
+import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
 import type { ReadonlySelector, Selector } from "../selector"
 import { traceAllSelectorAtoms } from "../selector"
@@ -8,11 +9,12 @@ export const subscribeToRootAtoms = <T>(
 	state: ReadonlySelector<T> | Selector<T>,
 	store: Store,
 ): (() => void)[] | null => {
+	const target = newest(store)
 	const dependencySubscriptions =
 		`default` in state
 			? null
 			: traceAllSelectorAtoms(state.key, store).map((atomKey) => {
-					const atom = store.atoms.get(atomKey)
+					const atom = target.atoms.get(atomKey)
 					if (atom === undefined) {
 						throw new Error(
 							`Atom "${atomKey}", a dependency of selector "${state.key}", not found in store "${store.config.name}".`,
@@ -32,9 +34,9 @@ export const subscribeToRootAtoms = <T>(
 								`->`,
 								atomChange.newValue,
 							)
-							const oldValue = recallState(state, store)
+							const oldValue = recallState(state, target)
 							// ❌ this retrieves a stale cached value when applying a transaction on the server
-							const newValue = readOrComputeValue(state, store)
+							const newValue = readOrComputeValue(state, target)
 							store.logger.info(
 								`✨`,
 								state.type,

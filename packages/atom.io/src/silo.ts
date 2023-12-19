@@ -2,8 +2,6 @@ import {
 	Store,
 	createAtom,
 	createAtomFamily,
-	createMutableAtom,
-	createMutableAtomFamily,
 	createSelector,
 	createSelectorFamily,
 	createTimeline,
@@ -33,18 +31,8 @@ export class Silo {
 	public constructor(name: string, fromStore: Store | null = null) {
 		const s = new Store(name, fromStore)
 		this.store = s
-		this.atom = (options) => {
-			if (`mutable` in options) {
-				return createMutableAtom(options, s)
-			}
-			return createAtom(options, undefined, s)
-		}
-		this.atomFamily = (options) => {
-			if (`mutable` in options) {
-				return createMutableAtomFamily(options, s) as any
-			}
-			return createAtomFamily(options, s)
-		}
+		this.atom = (options) => createAtom(options, undefined, s)
+		this.atomFamily = (options) => createAtomFamily(options, s)
 		this.selector = (options) => createSelector(options, undefined, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)

@@ -28,6 +28,20 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 })
 
+describe(`not found`, () => {
+	test(`Internal.NotFoundError is thrown`, () => {
+		let caught: Error | undefined
+		try {
+			setState({ key: `a`, type: `atom` }, 1)
+		} catch (thrown) {
+			if (thrown instanceof Error) {
+				caught = thrown
+			}
+		}
+		expect(caught).toBeInstanceOf(Internal.NotFoundError)
+	})
+})
+
 describe(`graceful handling of improper usage`, () => {
 	describe(`a nested call to setState is a violation`, () => {
 		test(`the inner call results in a no-op and a logger(error)`, () => {

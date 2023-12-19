@@ -23,23 +23,6 @@ import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionMeta } from "../transaction"
 
-// export type StoreCore = Pick<
-// 	Store,
-// 	| `atoms`
-// 	| `atomsThatAreDefault`
-// 	| `families`
-// 	| `operation`
-// 	| `readonlySelectors`
-// 	| `selectorAtoms`
-// 	| `selectorGraph`
-// 	| `selectors`
-// 	| `timelineAtoms`
-// 	| `timelines`
-// 	| `trackers`
-// 	| `transactions`
-// 	| `valueMap`
-// >
-
 export class Store implements Lineage {
 	public parent: Store | null = null
 	public child: Store | null = null
@@ -130,7 +113,9 @@ export class Store implements Lineage {
 				...store?.config,
 				name,
 			}
-
+			for (const [, family] of store.families) {
+				family.install(this)
+			}
 			for (const [, atom] of store.atoms) {
 				atom.install(this)
 			}

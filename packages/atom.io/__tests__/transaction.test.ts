@@ -100,6 +100,9 @@ describe(`transaction`, () => {
 		const point = runTransaction(addPoint)(777, 1, 2)
 		expect(point).toEqual({ x: 1, y: 2 })
 	})
+	test(`run transaction throws if the transaction doesn't exist`, () => {
+		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()
+	})
 
 	it(`gets and sets state`, () => {
 		const findBeingState = atomFamily<$<Being>, string>({

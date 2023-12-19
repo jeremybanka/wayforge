@@ -18,6 +18,7 @@
 		},
 		"test:once": {
 			"dependsOn": ["build"],
+			"outputs": ["coverage/**", "**/coverage/*", "**/coverage/**/*"],
 			"inputs": [
 				"**/package.json",
 				"src/**/*.tsx",
