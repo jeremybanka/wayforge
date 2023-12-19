@@ -139,7 +139,6 @@ export const attachExplorerState = (key: string) => {
 		id,
 	) => {
 		removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
-		transactors.set(findSpaceState(id), null)
 	}
 
 	const writeOperationAddView: Write<(options?: AddViewOptions) => void> = (
@@ -177,7 +176,6 @@ export const attachExplorerState = (key: string) => {
 		const { set } = transactors
 		removeFromIndex(transactors, { indexAtom: viewIndexState, id: viewId })
 		set(viewsPerSpaceState, (current) => current.remove({ viewId }))
-		set(findViewState(viewId), null)
 	}
 
 	const addView = transaction<(options?: AddViewOptions) => void>({

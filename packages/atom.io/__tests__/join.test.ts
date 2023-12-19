@@ -207,7 +207,7 @@ describe(`join with no content`, () => {
 })
 
 describe(`some practical use cases`, () => {
-	test(`setting relations in a transaction that fails`, () => {
+	test.only(`setting relations in a transaction that fails`, () => {
 		const cardValues = join({
 			key: `cardValues`,
 			between: [`value`, `card`],

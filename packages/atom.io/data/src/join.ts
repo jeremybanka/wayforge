@@ -167,7 +167,7 @@ export function join<
 		},
 		store,
 	)
-	const getRelatedKeys: Read<(key: string) => Set<string>> = ({ get }, key) =>
+	const getRelatedKeys: Read<(key: string) => SetRTX<string>> = ({ get }, key) =>
 		get(findRelatedKeysState(key))
 	const addRelation: Write<(a: string, b: string) => void> = (
 		transactors,
