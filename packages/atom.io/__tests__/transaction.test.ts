@@ -3,7 +3,7 @@ import { vitest } from "vitest"
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
-import type { Logger } from "atom.io"
+import type { Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -82,7 +82,7 @@ describe(`transaction`, () => {
 		runTransaction(incrementTX)()
 		expect(getState(countState)).toEqual(1)
 	})
-	it(`creates atom in a transaction`, () => {
+	it(`creates anatom in a transaction`, () => {
 		const findPointState = atomFamily<{ x: number; y: number }, number>({
 			key: `point`,
 			default: { x: 0, y: 0 },
@@ -99,6 +99,33 @@ describe(`transaction`, () => {
 		})
 		const point = runTransaction(addPoint)(777, 1, 2)
 		expect(point).toEqual({ x: 1, y: 2 })
+	})
+	it(`creates a selector in a transaction`, () => {
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const findCountPlusSomeValueState = selectorFamily<number, number>({
+			key: `countPlusSomeValue`,
+			get:
+				(someValue) =>
+				({ get }) =>
+					get(countState) + someValue,
+			set:
+				(someValue) =>
+				({ set }, newCount) => {
+					set(countState, newCount - someValue)
+				},
+		})
+		const addCountPlusSomeValue = transaction<(someValue: number) => void>({
+			key: `add_count_plus_some_value`,
+			do: ({ get, set }, someValue: number) => {
+				const countPlusSomeValue = get(findCountPlusSomeValueState(someValue))
+				set(findCountPlusSomeValueState(someValue), countPlusSomeValue + 1)
+			},
+		})
+		runTransaction(addCountPlusSomeValue)(777)
+		expect(getState(findCountPlusSomeValueState(777))).toEqual(778)
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
 		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()
@@ -265,26 +292,6 @@ describe(`transaction`, () => {
 			],
 		})
 	})
-
-	it(`can create an atom in a transaction`, () => {
-		const findPointState = atomFamily<{ x: number; y: number }, number>({
-			key: `point`,
-			default: { x: 0, y: 0 },
-		})
-
-		const addPoint = transaction<
-			(key: number, x: number, y: number) => { x: number; y: number }
-		>({
-			key: `add_point`,
-			do: ({ set }, pointKey: number, x: number, y: number) => {
-				const point = { x, y }
-				set(findPointState(pointKey), point)
-				return point
-			},
-		})
-
-		const point = runTransaction(addPoint)(777, 1, 2)
-	})
 })
 
 describe(`nesting transactions`, () => {
@@ -320,15 +327,29 @@ describe(`precise scope of transactions`, () => {
 			key: `count`,
 			default: 0,
 		})
+		const favoriteWordState = atom<string>({
+			key: `favoriteWord`,
+			default: ``,
+		})
 		const incrementTX = transaction({
 			key: `increment`,
 			do: ({ get, set }) => {
 				const count = get(countState)
 				set(countState, count + 1)
-				setState(countState, count + 1)
+				setState(favoriteWordState, `cheese`)
 			},
 		})
+		const validate = {
+			update: (update: TransactionUpdate<any>) => {
+				expect(update.updates).toHaveLength(1)
+				expect(update.updates[0].key).toEqual(`count`)
+			},
+		}
+		vitest.spyOn(validate, `update`)
+		subscribe(incrementTX, validate.update)
 		runTransaction(incrementTX)()
+		expect(validate.update).toHaveBeenCalledTimes(1)
 		expect(getState(countState)).toEqual(1)
+		expect(getState(favoriteWordState)).toEqual(`cheese`)
 	})
 })

@@ -82,6 +82,18 @@ export const applyTransaction = <ƒ extends ƒn>(
 		`Applying transaction with ${updates.length} updates:`,
 		updates,
 	)
+	for (const atom of child.atoms.values()) {
+		if (!parent.atoms.has(atom.key)) {
+			parent.atoms.set(atom.key, atom)
+			parent.valueMap.set(atom.key, atom.default)
+			parent.logger.info(
+				`🔨`,
+				`transaction`,
+				child.transactionMeta.update.key,
+				`Adding atom "${atom.key}"`,
+			)
+		}
+	}
 	for (const tracker of child.trackers.values()) {
 		const mutableKey = tracker.mutableState.key
 		if (!parent.atoms.has(mutableKey)) {
