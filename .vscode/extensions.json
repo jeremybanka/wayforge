@@ -10,6 +10,7 @@
 		"yoavbls.pretty-ts-errors",
 		"arcanis.vscode-zipfs",
 		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"ryanluker.vscode-coverage-gutters"
 	]
 }

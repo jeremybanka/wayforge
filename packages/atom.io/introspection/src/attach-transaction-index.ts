@@ -1,11 +1,11 @@
 import type { ReadonlySelectorToken, TransactionToken, ƒn } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, createAtom, createSelector } from "atom.io/internal"
+import { IMPLICIT, createRegularAtom, createSelector } from "atom.io/internal"
 
 export const attachTransactionIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<TransactionToken<ƒn>[]> => {
-	const transactionTokenIndexState__INTERNAL = createAtom<
+	const transactionTokenIndexState__INTERNAL = createRegularAtom<
 		TransactionToken<ƒn>[]
 	>(
 		{

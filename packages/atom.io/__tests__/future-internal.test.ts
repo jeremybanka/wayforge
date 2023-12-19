@@ -17,7 +17,7 @@ beforeEach(() => {
 describe(`Future`, () => {
 	it(`is a cancellable promise`, async () => {
 		const future = new Future<number>((resolve) =>
-			setTimeout(() => resolve(1), 100),
+			setTimeout(() => resolve(1), 50),
 		)
 		future.cancel()
 		let reason: unknown = null
@@ -33,7 +33,7 @@ describe(`Future`, () => {
 	it(`does not call "then" if canceled`, async () => {
 		try {
 			const promise = new Promise<number>((resolve) =>
-				setTimeout(() => resolve(1), 100),
+				setTimeout(() => resolve(1), 50),
 			)
 			const future = new Future<number>(promise)
 			future.cancel()
@@ -48,7 +48,7 @@ describe(`Future`, () => {
 		const subject = new Subject<StateUpdate<number>>()
 		subject.subscribe(`example-watcher`, Utils.stdout)
 		const promise = new Promise<number>((resolve) =>
-			setTimeout(() => resolve(1), 1000),
+			setTimeout(() => resolve(1), 50),
 		)
 		cacheValue(`a`, promise, subject, IMPLICIT.STORE)
 		evictCachedValue(`a`, IMPLICIT.STORE)

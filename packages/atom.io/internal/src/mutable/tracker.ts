@@ -4,7 +4,7 @@ import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
 import { newest, subscribeToState, subscribeToTimeline } from ".."
-import { createAtom, deleteAtom } from "../atom"
+import { createRegularAtom, deleteAtom } from "../atom"
 import type { Transceiver } from "./transceiver"
 
 /**
@@ -28,7 +28,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					subKey: mutableState.family.subKey,
 			  }
 			: undefined
-		const latestUpdateState = createAtom<
+		const latestUpdateState = createRegularAtom<
 			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
 		>(
 			{
@@ -38,7 +38,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			familyMetaData,
 			store,
 		)
-		if (store.parent) {
+		if (store.parent?.valueMap.has(latestUpdateStateKey)) {
 			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)
 			store.valueMap.set(latestUpdateStateKey, parentValue)
 		}

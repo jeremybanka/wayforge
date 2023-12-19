@@ -3,7 +3,7 @@ import type { Json } from "atom.io/json"
 import { selectJsonFamily } from "atom.io/json"
 
 import type { Store } from ".."
-import { createAtomFamily } from ".."
+import { createRegularAtomFamily } from ".."
 import { FamilyTracker } from "./tracker-family"
 import type { Transceiver } from "./transceiver"
 
@@ -16,7 +16,7 @@ export function createMutableAtomFamily<
 	store: Store,
 ): MutableAtomFamily<Core, SerializableCore, Key> {
 	const coreFamily = Object.assign(
-		createAtomFamily<Core, Key>(options, store),
+		createRegularAtomFamily<Core, Key>(options, store),
 		options,
 	) as MutableAtomFamily<Core, SerializableCore, Key>
 	selectJsonFamily(coreFamily, options)

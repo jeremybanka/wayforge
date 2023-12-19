@@ -30,6 +30,7 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
+	vitest.spyOn(Utils, `stdout0`)
 })
 
 describe(`timeline`, () => {
@@ -74,6 +75,8 @@ describe(`timeline`, () => {
 				set(c, (n) => n + add)
 			},
 		})
+
+		subscribe(tl_abc, Utils.stdout0)
 
 		const expectation0 = () => {
 			expect(getState(a)).toBe(5)
@@ -128,6 +131,7 @@ describe(`timeline`, () => {
 
 		expect(timelineData.at).toBe(0)
 		expect(timelineData.history.length).toBe(3)
+		expect(Utils.stdout0).toHaveBeenCalledTimes(8)
 	})
 	test(`time traveling with nested transactions`, () => {
 		const a = atom({

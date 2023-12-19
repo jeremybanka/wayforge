@@ -107,7 +107,8 @@ export class SetRTX<P extends primitive>
 				}
 			}
 		} catch (thrown) {
-			console.error(`Failed to apply transaction: ${thrown}`)
+			console.error(`Failed to apply transaction to SetRTX: ${thrown}`)
+			throw thrown
 		} finally {
 			unsubscribe()
 			this.child = null

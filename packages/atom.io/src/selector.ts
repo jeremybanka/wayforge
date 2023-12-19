@@ -1,4 +1,4 @@
-import type { Subject } from "atom.io/internal"
+import type { Store, Subject } from "atom.io/internal"
 import { IMPLICIT, createSelector, createSelectorFamily } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
@@ -42,6 +42,7 @@ export type SelectorFamily<
 	key: string
 	type: `selector_family`
 	subject: Subject<SelectorToken<T>>
+	install: (store: Store) => void
 }
 
 export type ReadonlySelectorFamily<
@@ -51,6 +52,7 @@ export type ReadonlySelectorFamily<
 	key: string
 	type: `readonly_selector_family`
 	subject: Subject<ReadonlySelectorToken<T>>
+	install: (store: Store) => void
 }
 
 export function selectorFamily<T, K extends Json.Serializable>(

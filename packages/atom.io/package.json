@@ -36,7 +36,7 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "npm run test:manifest && cross-env IMPORT=dist vitest run",
+		"test:once": "npm run test:manifest && cross-env IMPORT=dist vitest run --coverage",
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"peerDependencies": {
@@ -79,6 +79,7 @@
 		"@types/react": "18.2.45",
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "1.0.4",
+		"@vitest/ui": "1.0.4",
 		"concurrently": "8.2.2",
 		"drizzle-kit": "0.20.7",
 		"drizzle-orm": "0.29.1",

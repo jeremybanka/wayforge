@@ -19,5 +19,10 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: `happy-dom`,
+		coverage: {
+			reporter: [`text`, `lcov`],
+			include: [`**/src`],
+			exclude: [`__unstable__`],
+		},
 	},
 })

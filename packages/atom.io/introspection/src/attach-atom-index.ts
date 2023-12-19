@@ -1,6 +1,11 @@
 import type { AtomToken, ReadonlySelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, createAtom, createSelector, newest } from "atom.io/internal"
+import {
+	IMPLICIT,
+	createRegularAtom,
+	createSelector,
+	newest,
+} from "atom.io/internal"
 
 import type { StateTokenIndex } from "."
 
@@ -9,7 +14,7 @@ export type AtomTokenIndex = StateTokenIndex<AtomToken<unknown>>
 export const attachAtomIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<AtomTokenIndex> => {
-	const atomTokenIndexState__INTERNAL = createAtom<AtomTokenIndex>(
+	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {

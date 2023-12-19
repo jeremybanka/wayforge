@@ -1,4 +1,4 @@
-import type { AtomFamily, MutableAtomFamily, SelectorFamily } from "atom.io"
+import type { AtomFamily, MutableAtomFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import { newest } from "../lineage"

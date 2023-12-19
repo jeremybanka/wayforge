@@ -2,7 +2,7 @@ import type { AtomFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import { createAtomFamily } from "../families"
+import { createRegularAtomFamily } from "../families"
 import type { Store } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
@@ -25,7 +25,7 @@ export class FamilyTracker<
 		findMutableState: AtomFamily<Core, FamilyMemberKey>,
 		store: Store,
 	) {
-		this.findLatestUpdateState = createAtomFamily<
+		this.findLatestUpdateState = createRegularAtomFamily<
 			typeof this.Update | null,
 			FamilyMemberKey
 		>(

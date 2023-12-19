@@ -6,12 +6,12 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import { getState, setState } from "atom.io"
+import { dispose, getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
-	createAtomFamily,
 	createMutableAtomFamily,
+	createRegularAtomFamily,
 	createSelectorFamily,
 	getJsonFamily,
 } from "atom.io/internal"
@@ -167,10 +167,8 @@ export function join<
 		},
 		store,
 	)
-	const getRelatedKeys: Read<(key: string) => Set<string> | undefined> = (
-		{ get },
-		key,
-	) => get(findRelatedKeysState(key))
+	const getRelatedKeys: Read<(key: string) => Set<string>> = ({ get }, key) =>
+		get(findRelatedKeysState(key))
 	const addRelation: Write<(a: string, b: string) => void> = (
 		transactors,
 		a,
@@ -178,16 +176,8 @@ export function join<
 	) => {
 		const aKeys = getRelatedKeys(transactors, a)
 		const bKeys = getRelatedKeys(transactors, b)
-		if (aKeys) {
-			transactors.set(findRelatedKeysState(a), aKeys.add(b))
-		} else {
-			transactors.set(findRelatedKeysState(a), new SetRTX([b]))
-		}
-		if (bKeys) {
-			transactors.set(findRelatedKeysState(b), bKeys.add(a))
-		} else {
-			transactors.set(findRelatedKeysState(b), new SetRTX([a]))
-		}
+		transactors.set(findRelatedKeysState(a), aKeys.add(b))
+		transactors.set(findRelatedKeysState(b), bKeys.add(a))
 	}
 	const deleteRelation: Write<(a: string, b: string) => void> = (
 		transactors,
@@ -195,18 +185,14 @@ export function join<
 		b,
 	) => {
 		const aKeys = getRelatedKeys(transactors, a)
-		if (aKeys) {
-			aKeys.delete(b)
-			if (aKeys.size === 0) {
-				transactors.set(findRelatedKeysState(a), undefined)
-			}
-			const bKeys = getRelatedKeys(transactors, b)
-			if (bKeys) {
-				bKeys.delete(a)
-				if (bKeys.size === 0) {
-					transactors.set(findRelatedKeysState(b), undefined)
-				}
-			}
+		aKeys.delete(b)
+		if (aKeys.size === 0) {
+			dispose(findRelatedKeysState(a))
+		}
+		const bKeys = getRelatedKeys(transactors, b)
+		bKeys.delete(a)
+		if (bKeys.size === 0) {
+			dispose(findRelatedKeysState(b))
 		}
 	}
 	const replaceRelationsSafely: Write<(a: string, bs: string[]) => void> = (
@@ -215,25 +201,19 @@ export function join<
 		bs,
 	) => {
 		const aRelations = getRelatedKeys(transactors, a)
-		if (aRelations) {
-			for (const b of aRelations) {
-				const bKeys = getRelatedKeys(transactors, b)
-				if (bKeys) {
-					bKeys.delete(a)
-					if (bKeys.size === 0) {
-						transactors.set(findRelatedKeysState(b), undefined)
-					}
+		for (const b of aRelations) {
+			const bKeys = getRelatedKeys(transactors, b)
+			if (bKeys) {
+				bKeys.delete(a)
+				if (bKeys.size === 0) {
+					dispose(findRelatedKeysState(b))
 				}
 			}
 		}
 		transactors.set(findRelatedKeysState(a), new SetRTX(bs))
 		for (const b of bs) {
 			const bKeys = getRelatedKeys(transactors, b)
-			if (bKeys) {
-				bKeys.add(a)
-			} else {
-				transactors.set(findRelatedKeysState(b), new SetRTX([a]))
-			}
+			bKeys.add(a)
 		}
 	}
 	const replaceRelationsUnsafely: Write<(a: string, bs: string[]) => void> = (
@@ -243,18 +223,13 @@ export function join<
 	) => {
 		transactors.set(findRelatedKeysState(a), new SetRTX(bs))
 		for (const b of bs) {
-			let bKeys = getRelatedKeys(transactors, b)
-			if (bKeys) {
-				bKeys.add(a)
-			} else {
-				bKeys = new SetRTX([a])
-				transactors.set(findRelatedKeysState(b), bKeys)
-			}
+			const bKeys = getRelatedKeys(transactors, b)
+			bKeys.add(a)
 		}
 	}
 	const has: Read<(a: string, b?: string) => boolean> = (transactors, a, b) => {
 		const aKeys = getRelatedKeys(transactors, a)
-		return b ? aKeys?.has(b) ?? false : (aKeys?.size ?? 0) > 0 ?? false
+		return b ? aKeys.has(b) : aKeys.size > 0
 	}
 	const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 		getRelatedKeys: (key) => getRelatedKeys(TRANSACTORS, key),
@@ -269,7 +244,7 @@ export function join<
 	let externalStore: ExternalStoreConfiguration<Content>
 	let findContentState: AtomFamily<Content, string>
 	if (defaultContent) {
-		findContentState = createAtomFamily<Content, string>(
+		findContentState = createRegularAtomFamily<Content, string>(
 			{
 				key: `${options.key}/content`,
 				default: defaultContent,
@@ -285,8 +260,8 @@ export function join<
 			key,
 			content,
 		) => transactors.set(findContentState(key), content)
-		const deleteContent: Write<(key: string) => void> = (transactors, key) =>
-			transactors.set(findContentState(key), undefined)
+		const deleteContent: Write<(key: string) => void> = (_, key) =>
+			dispose(findContentState(key))
 		const externalStoreWithContentConfiguration: ExternalStoreWithContentConfiguration<Content> =
 			{
 				getContent: (contentKey: string) => {
@@ -418,7 +393,7 @@ export function join<
 				findState,
 			}
 		}
-		case `n:n`: {
+		default: {
 			const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
 			const stateKeyA = `${a}KeysOf${capitalize(b)}` as const
 			const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
@@ -444,7 +419,5 @@ export function join<
 				findState,
 			}
 		}
-		default:
-			throw new Error(`Invalid cardinality: ${options.cardinality}`)
 	}
 }
