@@ -100,4 +100,4 @@ jobs:
       - name: Coverage
         uses: coverallsapp/github-action@v2.2.3
         with:
-          files: ./packages/atom.io/coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
