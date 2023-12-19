@@ -16,7 +16,13 @@ import { Junction } from "~/packages/rel8/junction/src"
 
 import type { Atom } from "../atom"
 import type { Lineage } from "../lineage"
-import type { MutableAtom, Tracker, Transceiver } from "../mutable"
+import {
+	type MutableAtom,
+	type Tracker,
+	type Transceiver,
+	getJsonToken,
+	getUpdateToken,
+} from "../mutable"
 import type { OperationProgress } from "../operation"
 import type { ReadonlySelector, Selector } from "../selector"
 import { StatefulSubject, Subject } from "../subject"
@@ -116,13 +122,26 @@ export class Store implements Lineage {
 			for (const [, family] of store.families) {
 				family.install(this)
 			}
+			const mutableHelpers = new Set<string>()
 			for (const [, atom] of store.atoms) {
+				if (mutableHelpers.has(atom.key)) {
+					continue
+				}
 				atom.install(this)
+				if (`mutable` in atom) {
+					const originalJsonToken = getJsonToken(atom)
+					const originalUpdateToken = getUpdateToken(atom)
+					mutableHelpers.add(originalJsonToken.key)
+					mutableHelpers.add(originalUpdateToken.key)
+				}
 			}
 			for (const [, selector] of store.readonlySelectors) {
 				selector.install(this)
 			}
 			for (const [, selector] of store.selectors) {
+				if (mutableHelpers.has(selector.key)) {
+					continue
+				}
 				selector.install(this)
 			}
 			for (const [, tx] of store.transactions) {
