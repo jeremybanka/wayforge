@@ -1,4 +1,4 @@
-name: Integration
+name: Coverage
 
 on:
   push:
@@ -19,38 +19,8 @@ defaults:
     shell: bash
 
 jobs:
-  Lint:
-    runs-on: ubuntu-latest
-    container:
-      image: node:lts
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Install Pnpm
-        uses: pnpm/action-setup@v2
-        id: pnpm-install
-        with:
-          version: 8.11.0
-          run_install: false
-
-      - name: Install Dependencies
-        run: pnpm i
-
-      - name: Biome
-        run: pnpm lint:biome
-
-      - name: ESLint
-        run: pnpm lint:eslint
-
-      - name: Type Check
-        run: pnpm tsc
-
-  Test:
-    name: Build & Test
+  Coverage:
+    name: Coveralls
     runs-on: ubuntu-latest
     container:
       image: node:lts
@@ -91,8 +61,10 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
 
-      - name: Build
-        run: pnpm build
-
       - name: Test
-        run: pnpm test
+        run: pnpm test:coverage
+
+      - name: Coverage
+        uses: coverallsapp/github-action@v2.2.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

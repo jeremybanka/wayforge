@@ -13,6 +13,7 @@
 		"start": "next start -p 5454",
 		"lint": "next lint",
 		"test": "echo no tests yet",
+		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet"
 	},
 	"dependencies": {

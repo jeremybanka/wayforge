@@ -36,7 +36,8 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
-		"test:once": "npm run test:manifest && cross-env IMPORT=dist vitest run --coverage",
+		"test:coverage": "vitest run --coverage",
+		"test:once": "npm run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"peerDependencies": {
