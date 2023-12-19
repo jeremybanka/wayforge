@@ -22,7 +22,7 @@
 		"typescript": "5.3.3",
 		"vite": "5.0.10",
 		"vite-tsconfig-paths": "4.2.2",
-		"vitest": "1.0.4"
+		"vitest": "1.1.0"
 	},
 	"keywords": ["color", "css", "javascript", "library"],
 	"repository": {
