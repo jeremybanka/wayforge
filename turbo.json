@@ -34,7 +34,6 @@
 			]
 		},
 		"test:coverage": {
-			"dependsOn": ["build"],
 			"outputs": ["coverage/**", "**/coverage/*", "**/coverage/**/*"],
 			"inputs": [
 				"**/package.json",
