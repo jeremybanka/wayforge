@@ -41,10 +41,10 @@ export function createTransaction<ƒ extends ƒn>(
 					},
 					...params,
 				)
-				applyTransaction(output, store)
+				applyTransaction(output, target)
 				return output
 			} catch (thrown) {
-				abortTransaction(store)
+				abortTransaction(target)
 				store.logger.warn(`💥`, `transaction`, options.key, `caught:`, thrown)
 				throw thrown
 			}
