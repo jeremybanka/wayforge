@@ -25,6 +25,7 @@
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",
+		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run"
 	},
 	"dependencies": {},
