@@ -1,13 +1,19 @@
-import type { AtomOptions, AtomToken } from "atom.io"
+import type { AtomOptions, AtomToken, Logger } from "atom.io"
 import { atom, dispose, getState, selector } from "atom.io"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
+let logger: Logger
+
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
+	vitest.spyOn(logger, `error`)
+	vitest.spyOn(logger, `warn`)
+	vitest.spyOn(logger, `info`)
 })
 
 describe(`dispose`, () => {
@@ -57,6 +63,21 @@ describe(`dispose`, () => {
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught.message).toEqual(
 			`Readonly Selector "doubled" not found in store "IMPLICIT_STORE".`,
+		)
+	})
+	it(`logs an error if the atom is not in the store`, () => {
+		const countState = atom({
+			key: `count`,
+			default: 0,
+		})
+		dispose(countState, Internal.IMPLICIT.STORE)
+		dispose(countState, Internal.IMPLICIT.STORE)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+		expect(logger.error).toHaveBeenCalledWith(
+			`❌`,
+			`atom`,
+			`count`,
+			`Tried to delete atom, but it does not exist in the store.`,
 		)
 	})
 
