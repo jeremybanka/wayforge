@@ -313,3 +313,22 @@ describe(`nesting transactions`, () => {
 		expect(getState(countState)).toEqual(3)
 	})
 })
+
+describe(`precise scope of transactions`, () => {
+	test(`using setState during a transaction does not add to the transaction's updates`, () => {
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ get, set }) => {
+				const count = get(countState)
+				set(countState, count + 1)
+				setState(countState, count + 1)
+			},
+		})
+		runTransaction(incrementTX)()
+		expect(getState(countState)).toEqual(1)
+	})
+})

@@ -19,17 +19,16 @@ export const openOperation = (
 	token: StateToken<any>,
 	store: Store,
 ): `rejection` | undefined => {
-	const target = newest(store)
-	if (target.operation.open) {
+	if (store.operation.open) {
 		store.logger.error(
 			`❌`,
 			token.type,
 			token.key,
-			`failed to setState during a setState for "${target.operation.token.key}"`,
+			`failed to setState during a setState for "${store.operation.token.key}"`,
 		)
 		return `rejection`
 	}
-	target.operation = {
+	store.operation = {
 		open: true,
 		done: new Set(),
 		prev: new Map(),
@@ -41,29 +40,27 @@ export const openOperation = (
 		token.type,
 		token.key,
 		`operation start in store "${store.config.name}"${
-			target.transactionMeta === null
+			store.transactionMeta === null
 				? ``
-				: ` ${target.transactionMeta.phase} "${target.transactionMeta.update.key}"`
+				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.key}"`
 		}`,
 	)
 }
 export const closeOperation = (store: Store): void => {
-	const target = newest(store)
-	if (target.operation.open) {
+	if (store.operation.open) {
 		store.logger.info(
 			`🔴`,
-			target.operation.token.type,
-			target.operation.token.key,
+			store.operation.token.type,
+			store.operation.token.key,
 			`operation done in store "${store.config.name}"`,
 		)
 	}
-	target.operation = { open: false }
-	store.subject.operationStatus.next(target.operation)
+	store.operation = { open: false }
+	store.subject.operationStatus.next(store.operation)
 }
 
 export const isDone = (key: string, store: Store): boolean => {
-	const target = newest(store)
-	if (!target.operation.open) {
+	if (!store.operation.open) {
 		store.logger.warn(
 			`🐞`,
 			`unknown`,
@@ -72,11 +69,10 @@ export const isDone = (key: string, store: Store): boolean => {
 		)
 		return true
 	}
-	return target.operation.done.has(key)
+	return store.operation.done.has(key)
 }
 export const markDone = (key: string, store: Store): void => {
-	const target = newest(store)
-	if (!target.operation.open) {
+	if (!store.operation.open) {
 		store.logger.warn(
 			`🐞`,
 			`unknown`,
@@ -85,5 +81,5 @@ export const markDone = (key: string, store: Store): void => {
 		)
 		return
 	}
-	target.operation.done.add(key)
+	store.operation.done.add(key)
 }
