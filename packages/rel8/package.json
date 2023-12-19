@@ -30,7 +30,7 @@
 		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",
 		"test": "vitest",
-		"test:coverage": "vitest run --coverage",
+		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run"
 	},
 	"devDependencies": {
