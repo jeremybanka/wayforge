@@ -7,6 +7,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"test:once": "vitest run",
 		"lint:biome": "biome check .",
 		"lint:eslint": "eslint .",

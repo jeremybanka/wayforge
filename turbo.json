@@ -18,6 +18,23 @@
 		},
 		"test:once": {
 			"dependsOn": ["build"],
+			"inputs": [
+				"**/package.json",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.scss",
+				"src/**/*.mdx",
+				"**/src/**/*.tsx",
+				"**/src/**/*.ts",
+				"**/src/**/*.scss",
+				"**/src/**/*.mdx",
+				"__tests__/**/*.ts",
+				"__tests__/**/*.tsx",
+				"__scripts__/**/*.ts"
+			]
+		},
+		"test:coverage": {
+			"dependsOn": ["build"],
 			"outputs": ["coverage/**", "**/coverage/*", "**/coverage/**/*"],
 			"inputs": [
 				"**/package.json",
