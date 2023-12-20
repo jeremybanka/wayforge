@@ -33,7 +33,7 @@ export const valuesOfCards = new AtomicJunction({
 })
 
 export const addCardValueTX = transaction<
-	<IJ extends Identified & Json.Serializable>(value: IJ) => boolean
+	<IJ extends Identified & Json.Object>(value: IJ) => boolean
 >({
 	key: `addCardValue`,
 	do: ({ get, set }, value) => {

@@ -1,7 +1,6 @@
 import type { Atom } from "../atom"
 import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
-import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { readOrComputeValue } from "../read-or-compute-value"
 import type { Store } from "../store"
@@ -14,26 +13,24 @@ import { stowUpdate } from "./stow-update"
 export const setAtom = <T>(
 	atom: Atom<T>,
 	next: T | ((oldValue: T) => T),
-	store: Store,
+	target: Store,
 ): void => {
-	const target = newest(store)
-	const oldValue = readOrComputeValue(atom, store)
-	let newValue = copyMutableIfWithinTransaction(oldValue, atom, store)
+	const oldValue = readOrComputeValue(atom, target)
+	let newValue = copyMutableIfWithinTransaction(oldValue, atom, target)
 	newValue = become(next)(newValue)
-	store.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
-	newValue = cacheValue(atom.key, newValue, atom.subject, store)
-	if (isAtomDefault(atom.key, store)) {
-		markAtomAsNotDefault(atom.key, store)
+	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
+	newValue = cacheValue(atom.key, newValue, atom.subject, target)
+	if (isAtomDefault(atom.key, target)) {
+		markAtomAsNotDefault(atom.key, target)
 	}
-	markDone(atom.key, store)
-	evictDownStream(atom, store)
+	markDone(atom.key, target)
+	evictDownStream(atom, target)
 	const update = { oldValue, newValue }
-	if (
-		target.transactionMeta === null ||
-		target.transactionMeta.phase === `applying`
-	) {
-		emitUpdate(atom, update, store)
+	if (target.transactionMeta === null) {
+		emitUpdate(atom, update, target)
+	} else if (target.transactionMeta.phase === `applying` && target.parent) {
+		emitUpdate(atom, update, target.parent)
 	} else {
-		stowUpdate(atom, update, store)
+		stowUpdate(atom, update, target)
 	}
 }

@@ -16,10 +16,21 @@ export type TransactionUpdate<ƒ extends ƒn> = {
 	output: ReturnType<ƒ>
 }
 
-export type Transactors = {
+export type Transactors = Readonly<{
 	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
-	set: <S>(state: StateToken<S>, newValue: S | ((oldValue: S) => S)) => void
-}
+	set: <S, New extends S>(
+		state: StateToken<S>,
+		newValue: New | ((oldValue: S) => New),
+	) => void
+}>
+export type TransactorsWithRun = Readonly<{
+	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+	set: <S, New extends S>(
+		state: StateToken<S>,
+		newValue: New | ((oldValue: S) => New),
+	) => void
+	run: typeof runTransaction
+}>
 export type ReadonlyTransactors = Pick<Transactors, `get`>
 
 export type Read<ƒ extends ƒn> = (
@@ -32,14 +43,14 @@ export type Write<ƒ extends ƒn> = (
 	...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
-export type Act<ƒ extends ƒn> = (
-	transactors: Transactors & { run: typeof runTransaction },
+export type Transact<ƒ extends ƒn> = (
+	transactors: TransactorsWithRun,
 	...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
 export type TransactionOptions<ƒ extends ƒn> = {
 	key: string
-	do: Act<ƒ>
+	do: Transact<ƒ>
 }
 
 export type TransactionIO<Token extends TransactionToken<any>> =

@@ -21,14 +21,13 @@ export const createReadWriteSelector = <T>(
 	const { get, set } = registerSelector(options.key, store)
 	const getSelf = () => {
 		const value = options.get({ get })
-		cacheValue(options.key, value, subject, store)
+		cacheValue(options.key, value, subject, newest(store))
 		return value
 	}
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const oldValue = getSelf()
 		const newValue = become(next)(oldValue)
-		// store.logger.info(`📝 set "${options.key}" (`, oldValue, `->`, newValue, `)`)
 		store.logger.info(
 			`📝`,
 			`selector`,
@@ -55,7 +54,7 @@ export const createReadWriteSelector = <T>(
 		type: `selector`,
 		...(family && { family }),
 	}
-	target.selectors.set(options.key, mySelector) // ❓
+	target.selectors.set(options.key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: SelectorToken<T> = {

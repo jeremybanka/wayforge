@@ -61,11 +61,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					: target.transactionMeta.update.key
 			}`,
 			(update) => {
-				const unsubscribe = store.subject.operationStatus.subscribe(
+				const unsubscribe = target.subject.operationStatus.subscribe(
 					mutableState.key,
 					() => {
 						unsubscribe()
-						setState(latestUpdateState, update, store)
+						setState(latestUpdateState, update, target)
 					},
 				)
 			},

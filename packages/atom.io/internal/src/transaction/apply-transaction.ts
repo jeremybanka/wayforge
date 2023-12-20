@@ -89,6 +89,18 @@ export const applyTransaction = <ƒ extends ƒn>(
 			atom?.install(parent)
 		}
 	}
+	for (const atom of child.atoms.values()) {
+		if (!parent.atoms.has(atom.key)) {
+			parent.atoms.set(atom.key, atom)
+			parent.valueMap.set(atom.key, atom.default)
+			parent.logger.info(
+				`🔨`,
+				`transaction`,
+				child.transactionMeta.update.key,
+				`Adding atom "${atom.key}"`,
+			)
+		}
+	}
 	ingestTransactionUpdate(child.transactionMeta.update, parent, child)
 	if (parent.transactionMeta === null) {
 		const myTransaction = withdraw<ƒ>(

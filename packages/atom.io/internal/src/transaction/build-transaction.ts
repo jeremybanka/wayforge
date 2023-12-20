@@ -1,5 +1,6 @@
 import { Junction } from "~/packages/rel8/junction/src"
 
+import { getState, runTransaction, setState } from "~/packages/atom.io/src"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -10,23 +11,14 @@ export const buildTransaction = (
 	store: Store,
 ): void => {
 	const parent = newest(store)
-	parent.child = {
+	const child: Store = {
 		parent,
 		child: null,
 		subject: parent.subject,
 		loggers: parent.loggers,
 		logger: parent.logger,
 		config: parent.config,
-		transactionMeta: {
-			phase: `building`,
-			time: Date.now(),
-			update: {
-				key,
-				updates: [],
-				params,
-				output: undefined,
-			},
-		},
+		transactionMeta: null,
 		atoms: new LazyMap(parent.atoms),
 		atomsThatAreDefault: new Set(parent.atomsThatAreDefault),
 		families: new LazyMap(parent.families),
@@ -43,6 +35,22 @@ export const buildTransaction = (
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
 	}
+	child.transactionMeta = {
+		phase: `building`,
+		time: Date.now(),
+		update: {
+			key,
+			updates: [],
+			params,
+			output: undefined,
+		},
+		transactors: {
+			get: (token) => getState(token, child),
+			set: (token, value) => setState(token, value, child),
+			run: (token) => runTransaction(token, child),
+		},
+	}
+	parent.child = child
 	store.logger.info(
 		`🛫`,
 		`transaction`,

@@ -4,7 +4,6 @@ import type {
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
-import { getState, runTransaction, setState } from "atom.io"
 
 import { newest } from "../lineage"
 import { deposit } from "../store"
@@ -32,18 +31,14 @@ export function createTransaction<ƒ extends ƒn>(
 		run: (...params: Parameters<ƒ>) => {
 			buildTransaction(options.key, params, store)
 			try {
-				const output = options.do(
-					{
-						get: (token) => getState(token, store),
-						set: (token, value) => setState(token, value, store),
-						run: (token) => runTransaction(token, store),
-					},
-					...params,
-				)
-				applyTransaction(output, store)
+				const target = newest(store)
+				// biome-ignore lint/style/noNonNullAssertion: this happens right above
+				const { transactors } = target.transactionMeta!
+				const output = options.do(transactors, ...params)
+				applyTransaction(output, target)
 				return output
 			} catch (thrown) {
-				abortTransaction(store)
+				abortTransaction(target)
 				store.logger.warn(`💥`, `transaction`, options.key, `caught:`, thrown)
 				throw thrown
 			}
