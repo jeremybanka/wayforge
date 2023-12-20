@@ -1,5 +1,39 @@
 # atom.io
 
+## 0.15.0
+
+### Minor Changes
+
+- a7e72ea: 💥 BREAKING CHANGE: The behavior of transactions has changed. The `get` and `set` available in the scope of a transaction previously acted just like `getState` and `setState`. Both were bound to the child store for the transaction and could be used interchangeably.
+
+  Now, `getState` and `setState` remain bound to the parent store, while `get` and `set` are bound to the child store. This means that only `set` will add updates to the transaction.
+
+### Patch Changes
+
+- a7e72ea: ✨ `atom.io/data` `join` now offers an API for compatibility with the new transactor policy introduced in this version. To update relations in a transaction, use the `.transact` method on the relation:
+
+  ```ts
+  const userGroups = join({
+    key: `userGroups`,
+    between: [`user`, `group`],
+    cardinality: `n:n`,
+  });
+  const addUsersToGroupTX = transaction<
+    (groupKey: string, userKeys: string[]) => void
+  >({
+    key: `addUsersToGroup`,
+    do: (transactors, groupKey, userKeys) => {
+      userGroups.transact(transactors, ({ relations }) => {
+        for (const userKey of userKeys) {
+          relations.add(groupKey, userKey);
+        }
+      });
+    },
+  });
+  ```
+
+- a7e72ea: 🐛 The `set` transactor now enforces the type of your state properly, which could lead to type errors in existing `transactor` and `selector` code.
+
 ## 0.14.8
 
 ### Patch Changes
