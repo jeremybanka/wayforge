@@ -207,7 +207,7 @@ describe(`join with no content`, () => {
 })
 
 describe(`some practical use cases`, () => {
-	test.only(`setting relations in a transaction that fails`, () => {
+	test(`setting relations in a transaction that fails`, () => {
 		const cardValues = join({
 			key: `cardValues`,
 			between: [`value`, `card`],
@@ -215,13 +215,15 @@ describe(`some practical use cases`, () => {
 		})
 		const failingTX = transaction<() => void>({
 			key: `laborious`,
-			do: () => {
-				for (let i = 0; i < 100; i++) {
-					cardValues.relations.set({ value: `a`, card: `${i}` })
-					if (i === 99) {
-						throw new Error(`whoops!`)
+			do: (transactors) => {
+				cardValues.transaction(transactors, ({ relations }) => {
+					for (let i = 0; i < 100; i++) {
+						relations.set({ value: `a`, card: `${i}` })
+						if (i === 99) {
+							throw new Error(`whoops!`)
+						}
 					}
-				}
+				})
 			},
 		})
 		let caught: Error | undefined
@@ -230,8 +232,9 @@ describe(`some practical use cases`, () => {
 		} catch (thrown) {
 			if (thrown instanceof Error) caught = thrown
 		}
+		console.log(`relations:`, Internal.IMPLICIT.STORE.valueMap)
 		expect(caught).toBeInstanceOf(Error)
-		expect(getState(cardValues.findState.cardKeysOfValue(`a`))).toEqual([])
+		expect(Internal.IMPLICIT.STORE.valueMap.size).toBe(0)
 	})
 
 	test(`initializing a join from serialized junction data`, () => {

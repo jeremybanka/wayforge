@@ -65,7 +65,7 @@ export function createRegularAtom<T>(
 	}
 	target.atoms.set(newAtom.key, newAtom)
 	markAtomAsDefault(options.key, store)
-	cacheValue(options.key, initialValue, subject, store)
+	cacheValue(options.key, initialValue, subject, target)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0

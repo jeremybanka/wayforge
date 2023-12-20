@@ -21,7 +21,7 @@ export const createReadWriteSelector = <T>(
 	const { get, set } = registerSelector(options.key, store)
 	const getSelf = () => {
 		const value = options.get({ get })
-		cacheValue(options.key, value, subject, store)
+		cacheValue(options.key, value, subject, newest(store))
 		return value
 	}
 

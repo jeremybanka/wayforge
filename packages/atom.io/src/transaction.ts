@@ -23,11 +23,14 @@ export type Transactors = Readonly<{
 		newValue: New | ((oldValue: S) => New),
 	) => void
 }>
-export type TransactorsWithRun = Readonly<
-	Transactors & {
-		run: typeof runTransaction
-	}
->
+export type TransactorsWithRun = Readonly<{
+	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+	set: <S, New extends S>(
+		state: StateToken<S>,
+		newValue: New | ((oldValue: S) => New),
+	) => void
+	run: typeof runTransaction
+}>
 export type ReadonlyTransactors = Pick<Transactors, `get`>
 
 export type Read<ƒ extends ƒn> = (
