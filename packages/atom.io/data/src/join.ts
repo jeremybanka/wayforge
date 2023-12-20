@@ -114,14 +114,17 @@ export type JoinState<
 
 export class Join<
 	const ASide extends string,
-	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const BSide extends string,
+	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object | null = null,
 > {
 	private transactors: Transactors = TRANSACTORS
 	public relations: Junction<ASide, BSide, Content>
 	public findState: JoinState<ASide, BSide, Cardinality, Content>
-	public transaction(transactors: Transactors, run: (join: this) => void): void {
+	public transact(
+		transactors: Transactors,
+		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
+	): void {
 		this.transactors = transactors
 		run(this)
 		this.transactors = TRANSACTORS
@@ -411,7 +414,14 @@ export function join<
 	options: JoinOptions<ASide, BSide, Cardinality, null>,
 	defaultContent?: undefined,
 	store?: Store,
-): Join<ASide, Cardinality, BSide>
+): {
+	relations: Junction<ASide, BSide, null>
+	findState: JoinState<ASide, BSide, Cardinality, null>
+	transact: (
+		transactors: Transactors,
+		run: (join: Join<ASide, BSide, Cardinality, null>) => void,
+	) => void
+}
 export function join<
 	const ASide extends string,
 	const BSide extends string,
@@ -421,7 +431,14 @@ export function join<
 	options: JoinOptions<ASide, BSide, Cardinality, Content>,
 	defaultContent: Content,
 	store?: Store,
-): Join<ASide, Cardinality, BSide, Content>
+): {
+	readonly relations: Junction<ASide, BSide, Content>
+	readonly findState: JoinState<ASide, BSide, Cardinality, Content>
+	readonly transact: (
+		transactors: Transactors,
+		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
+	) => void
+}
 export function join<
 	ASide extends string,
 	BSide extends string,
@@ -431,7 +448,6 @@ export function join<
 	options: JoinOptions<ASide, BSide, Cardinality, Content>,
 	defaultContent: Content | undefined,
 	store: Store = IMPLICIT.STORE,
-): Join<ASide, Cardinality, BSide, Content> {
-	const join = new Join(options, defaultContent, store)
-	return join
+): Join<ASide, BSide, Cardinality, Content> {
+	return new Join(options, defaultContent, store)
 }

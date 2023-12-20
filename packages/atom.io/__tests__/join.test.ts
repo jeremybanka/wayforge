@@ -214,9 +214,9 @@ describe(`some practical use cases`, () => {
 			cardinality: `1:n`,
 		})
 		const failingTX = transaction<() => void>({
-			key: `laborious`,
+			key: `I ALWAYS FAIL`,
 			do: (transactors) => {
-				cardValues.transaction(transactors, ({ relations }) => {
+				cardValues.transact(transactors, ({ relations }) => {
 					for (let i = 0; i < 100; i++) {
 						relations.set({ value: `a`, card: `${i}` })
 						if (i === 99) {
@@ -232,7 +232,6 @@ describe(`some practical use cases`, () => {
 		} catch (thrown) {
 			if (thrown instanceof Error) caught = thrown
 		}
-		console.log(`relations:`, Internal.IMPLICIT.STORE.valueMap)
 		expect(caught).toBeInstanceOf(Error)
 		expect(Internal.IMPLICIT.STORE.valueMap.size).toBe(0)
 	})
