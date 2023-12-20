@@ -20,27 +20,26 @@ export function cacheValue<T>(
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-	store: Store,
+	target: Store,
 ): Future<T> | T {
-	const target = newest(store)
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		currentValue.cancel()
 	}
 	if (value instanceof Promise) {
 		const future = new Future<T>(value)
-		newest(store).valueMap.set(key, future)
+		target.valueMap.set(key, future)
 		future
 			.then((resolved) => {
 				if (future.isCanceled) {
 					return
 				}
-				cacheValue(key, resolved, subject, store)
+				cacheValue(key, resolved, subject, target)
 				subject.next({ newValue: resolved, oldValue: future })
 			})
 			.catch((thrown) => {
 				if (thrown !== `canceled`) {
-					store.logger.error(`💥`, `state`, key, `rejected:`, thrown)
+					target.logger.error(`💥`, `state`, key, `rejected:`, thrown)
 				}
 			})
 		return future
@@ -49,22 +48,21 @@ export function cacheValue<T>(
 	return value
 }
 
-export const readCachedValue = <T>(key: string, store: Store): T => {
-	return newest(store).valueMap.get(key) as T
+export const readCachedValue = <T>(key: string, target: Store): T => {
+	return target.valueMap.get(key) as T
 }
-export const isValueCached = (key: string, store: Store): boolean => {
-	return newest(store).valueMap.has(key)
+export const isValueCached = (key: string, target: Store): boolean => {
+	return target.valueMap.has(key)
 }
 
-export const evictCachedValue = (key: string, store: Store): void => {
-	const core = newest(store)
-	const currentValue = core.valueMap.get(key)
+export const evictCachedValue = (key: string, target: Store): void => {
+	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		currentValue.cancel()
 	}
-	if (core.operation.open) {
-		core.operation.prev.set(key, currentValue)
+	if (target.operation.open) {
+		target.operation.prev.set(key, currentValue)
 	}
-	core.valueMap.delete(key)
-	store.logger.info(`🗑`, `state`, key, `evicted`)
+	target.valueMap.delete(key)
+	target.logger.info(`🗑`, `state`, key, `evicted`)
 }

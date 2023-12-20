@@ -17,8 +17,3 @@ export const markAtomAsNotDefault = (key: string, store: Store): void => {
 	core.atomsThatAreDefault = new Set(newest(store).atomsThatAreDefault)
 	core.atomsThatAreDefault.delete(key)
 }
-
-export const isSelectorDefault = (key: string, store: Store): boolean => {
-	const rootKeys = traceAllSelectorAtoms(key, store)
-	return rootKeys.every((rootKey) => isAtomDefault(rootKey, store))
-}

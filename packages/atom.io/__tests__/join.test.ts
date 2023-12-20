@@ -214,14 +214,16 @@ describe(`some practical use cases`, () => {
 			cardinality: `1:n`,
 		})
 		const failingTX = transaction<() => void>({
-			key: `laborious`,
-			do: () => {
-				for (let i = 0; i < 100; i++) {
-					cardValues.relations.set({ value: `a`, card: `${i}` })
-					if (i === 99) {
-						throw new Error(`whoops!`)
+			key: `I ALWAYS FAIL`,
+			do: (transactors) => {
+				cardValues.transact(transactors, ({ relations }) => {
+					for (let i = 0; i < 100; i++) {
+						relations.set({ value: `a`, card: `${i}` })
+						if (i === 99) {
+							throw new Error(`whoops!`)
+						}
 					}
-				}
+				})
 			},
 		})
 		let caught: Error | undefined
@@ -231,7 +233,7 @@ describe(`some practical use cases`, () => {
 			if (thrown instanceof Error) caught = thrown
 		}
 		expect(caught).toBeInstanceOf(Error)
-		expect(getState(cardValues.findState.cardKeysOfValue(`a`))).toEqual([])
+		expect(Internal.IMPLICIT.STORE.valueMap.size).toBe(0)
 	})
 
 	test(`initializing a join from serialized junction data`, () => {

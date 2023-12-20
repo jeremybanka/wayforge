@@ -54,7 +54,7 @@ export function createSelector<T>(
 			`❌`,
 			existingReadonly ? `readonly_selector` : `selector`,
 			options.key,
-			`Tried to create selector, but it already exists in the store. (Ignore if you are in development using hot module replacement.)`,
+			`Tried to create selector, but it already exists in the store.`,
 		)
 	}
 

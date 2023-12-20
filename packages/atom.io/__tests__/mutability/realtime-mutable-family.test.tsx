@@ -85,6 +85,7 @@ describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
+				store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
 					console.log(`🛰 `, event, ...args)
 				})
