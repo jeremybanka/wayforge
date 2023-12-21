@@ -678,8 +678,8 @@ importers:
         specifier: 10.2.0
         version: 10.2.0(eslint@8.55.0)
       eslint-plugin-prettier:
-        specifier: 5.1.0
-        version: 5.1.0(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1)
+        specifier: 5.1.1
+        version: 5.1.1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1)
       prettier:
         specifier: ^3.0.0
         version: 3.1.1
@@ -720,8 +720,8 @@ importers:
         specifier: 10.2.0
         version: 10.2.0(eslint@8.55.0)
       eslint-plugin-prettier:
-        specifier: 5.1.0
-        version: 5.1.0(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1)
+        specifier: 5.1.1
+        version: 5.1.1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1)
       eslint-plugin-react:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.55.0)
@@ -6622,8 +6622,8 @@ packages:
       rambda: 7.5.0
     dev: false
 
-  /eslint-plugin-prettier@5.1.0(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1):
-    resolution: {integrity: sha512-hQc+2zbnMeXcIkg+pKZtVa+3Yqx4WY7SMkn1PLZ4VbBEU7jJIpVn9347P8BBhTbz6ne85aXvQf30kvexcqBeWw==}
+  /eslint-plugin-prettier@5.1.1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1):
+    resolution: {integrity: sha512-WQpV3mSmIobb77s4qiCZu3dBrZZ0rj8ckSfBtRrgNK9Wnh2s3eiaxNTWloz1LJ1WtvqZES/PAI7PLvsrGt/CEA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       '@types/eslint': '>=8.0.0'
