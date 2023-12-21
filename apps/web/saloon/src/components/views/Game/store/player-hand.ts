@@ -6,5 +6,5 @@ export const findHandsOfPlayer = selectorFamily<string[], string>({
 	get:
 		(playerId) =>
 		({ get }) =>
-			get(ownersOfGroups.findRelatedKeysState(playerId)),
+			get(ownersOfGroups.findState.groupKeysOfPlayer(playerId)),
 })

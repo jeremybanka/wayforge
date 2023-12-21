@@ -7,6 +7,8 @@ export const myRoomState = AtomIO.selector<string | null>({
 	key: `myRoom`,
 	get: ({ get }) => {
 		const myId = get(myIdState)
-		return myId ? get(playersInRooms.findRelatedKeyState(myId)) ?? null : null
+		return myId
+			? get(playersInRooms.findState.roomKeyOfPlayer(myId)) ?? null
+			: null
 	},
 })

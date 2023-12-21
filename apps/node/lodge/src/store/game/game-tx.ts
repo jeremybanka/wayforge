@@ -2,7 +2,6 @@ import { nanoid } from "nanoid"
 
 import { getState, transaction } from "~/packages/atom.io/src"
 
-import { IMPLICIT } from "~/packages/atom.io/internal/src"
 import { playersIndex } from "../rooms"
 import { cardIndex, findCardState } from "./card"
 import type { CardGroup } from "./card-group"
@@ -19,10 +18,11 @@ export const spawnClassicDeckTX = transaction<
 	(deckId: string, cardIds: string[]) => void
 >({
 	key: `spawnClassicDeck`,
-	do: ({ set }, deckId, cardIds) => {
+	do: (transactors, deckId, cardIds) => {
 		if (cardIds.length !== 52) {
 			throw new Error(`${cardIds.length} cards were provided. 52 were expected`)
 		}
+		const { set } = transactors
 		const cardGroup: CardGroup = {
 			type: `deck`,
 			name: `Classic French 52-Card Deck`,
@@ -31,11 +31,13 @@ export const spawnClassicDeckTX = transaction<
 		set(findCardGroupState(deckId), cardGroup)
 
 		let idx = 0
-		for (const cardId of cardIds) {
-			set(findCardState(cardId), { rotation: 0 })
-			valuesOfCards.set({ cardId, valueId: CARD_VALUES[idx].id })
-			idx++
-		}
+		valuesOfCards.transact(transactors, ({ relations }) => {
+			for (const cardId of cardIds) {
+				set(findCardState(cardId), { rotation: 0 })
+				relations.set({ card: cardId, value: CARD_VALUES[idx].id })
+				idx++
+			}
+		})
 		set(cardGroupIndex, (current) => {
 			current.add(deckId)
 			console.log({ current })
@@ -61,21 +63,7 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		const cardsInDeckState = groupsOfCards.findRelationsState__INTERNAL(deckId)
-
-		set(cardsInDeckState, (cardsInDeck) => {
-			cardsInDeck.transaction((next) => {
-				for (const cardId of cardIds) {
-					next.add(cardId)
-				}
-				return true
-			})
-			return cardsInDeck
-		})
-		for (const cardId of cardIds) {
-			const deckOfCardState = groupsOfCards.findRelationsState__INTERNAL(cardId)
-			set(deckOfCardState, (current) => current.add(deckId))
-		}
+		groupsOfCards.relations.replaceRelations(deckId, cardIds, { reckless: true })
 	},
 })
 
@@ -86,7 +74,8 @@ export const spawnCardTX = transaction<
 	}) => void
 >({
 	key: `spawnCard`,
-	do: ({ get, set }, { valueId, target }) => {
+	do: (transactors, { valueId, target }) => {
+		const { get, set } = transactors
 		const cardId = nanoid()
 		if (`groupId` in target) {
 			const { groupId } = target
@@ -94,7 +83,9 @@ export const spawnCardTX = transaction<
 			if (!cardGroupDoesExist) {
 				throw new Error(`Card group does not exist`)
 			}
-			groupsOfCards.set({ groupId, cardId })
+			groupsOfCards.transact(transactors, ({ relations }) => {
+				relations.set({ card: cardId, group: groupId })
+			})
 			set(cardIndex, (current) => current.add(cardId))
 		} else if (`playerId` in target) {
 			const { playerId } = target
@@ -108,7 +99,9 @@ export const spawnCardTX = transaction<
 		} else {
 			throw new Error(`Invalid target`)
 		}
-		valuesOfCards.set({ cardId, valueId })
+		valuesOfCards.transact(transactors, ({ relations }) => {
+			relations.set({ card: cardId, value: valueId })
+		})
 	},
 })
 
@@ -116,7 +109,8 @@ export const addHandTx = transaction<
 	(options: { playerId: string; groupId: string }) => void
 >({
 	key: `addHand`,
-	do: ({ set }, { playerId, groupId }) => {
+	do: (transactors, { playerId, groupId }) => {
+		const { get, set } = transactors
 		const cardGroup: CardGroup = {
 			type: `hand`,
 			name: ``,
@@ -128,37 +122,25 @@ export const addHandTx = transaction<
 		})
 		// console.log(IMPLICIT.STORE.child?.valueMap.get(`cardGroupsIndex::mutable`))
 		set(findCardGroupState(groupId), cardGroup)
-		ownersOfGroups.set({ playerId, groupId })
+		ownersOfGroups.transact(transactors, ({ relations }) => {
+			relations.set({ player: playerId, group: groupId })
+		})
 	},
 })
 
 export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>({
 	key: `shuffleDeck`,
-	do: ({ get, set }, { deckId }) => {
+	do: (transactors, { deckId }) => {
+		const { get } = transactors
 		const deckDoesExist = get(cardGroupIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const cardIds = get(groupsOfCards.findRelatedKeysState(deckId))
+		const cardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
 		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
-		const cardsInDeckState = groupsOfCards.findRelationsState__INTERNAL(deckId)
-		set(cardsInDeckState, (current) => {
-			current.transaction((next) => {
-				next.clear()
-				for (const cardId of shuffledCardIds) {
-					next.add(cardId)
-				}
-				return true
-			})
-			return current
+		groupsOfCards.transact(transactors, ({ relations }) => {
+			relations.replaceRelations(deckId, shuffledCardIds, { reckless: true })
 		})
-
-		// set(groupsOfCardsState, (current) =>
-		// 	shuffledCardIds.reduce(
-		// 		(acc, cardId) => acc.set({ groupId: deckId, cardId }),
-		// 		current,
-		// 	),
-		// )
 	},
 })
 
@@ -168,7 +150,8 @@ export const dealCardsTX = transaction<
 	}
 >({
 	key: `dealCards`,
-	do: ({ get }, { deckId, handId, count }) => {
+	do: (transactors, { deckId, handId, count }) => {
+		const { get, set } = transactors
 		const cardGroupKeys = get(cardGroupIndex)
 		console.log({ cardGroupKeys })
 
@@ -181,22 +164,25 @@ export const dealCardsTX = transaction<
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)
 		}
-		const deckCardIds = get(groupsOfCards.findRelatedKeysState(deckId))
+		const deckCardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
 		}
 		const cardIds = deckCardIds.slice(-count)
 		console.log({ cardIds })
-		for (const cardId of cardIds) {
-			groupsOfCards.set({ groupId: handId, cardId })
-		}
+
+		groupsOfCards.transact(transactors, ({ relations }) => {
+			for (const cardId of cardIds) {
+				relations.set({ card: cardId, group: handId })
+			}
+		})
 		console.log(
 			`❗ while running deal cards, the hand contains`,
-			getState(groupsOfCards.findRelationsState__INTERNAL(handId)),
+			getState(groupsOfCards.findState.cardKeysOfGroup(handId)),
 		)
 		console.log(
 			`❗ while running deal cards, the deck contains`,
-			getState(groupsOfCards.findRelationsState__INTERNAL(deckId)),
+			getState(groupsOfCards.findState.cardKeysOfGroup(deckId)),
 		)
 		return { cardIds }
 	},

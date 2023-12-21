@@ -13,7 +13,7 @@ export const myHandsIndex = AtomIO.selector<string[]>({
 		if (!myId) {
 			return []
 		}
-		const myGroups = get(ownersOfGroups.findRelatedKeysState(myId))
+		const myGroups = get(ownersOfGroups.findState.groupKeysOfPlayer(myId))
 		const myHands = myGroups.filter(
 			(id) => get(findCardGroupState(id)).type === `hand`,
 		)
