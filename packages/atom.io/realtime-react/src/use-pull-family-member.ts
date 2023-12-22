@@ -11,5 +11,9 @@ export function usePullFamilyMember<J extends Json.Serializable>(
 ): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => RTC.pullFamilyMember(token, socket, store), [token.key])
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pullFamilyMember(token, socket, store)
+		}
+	}, [token.key, socket])
 }

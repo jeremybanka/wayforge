@@ -8,6 +8,9 @@ export function synchronizeTransactionResults(
 	socket: Socket,
 	store: Internal.Store,
 ): () => void {
+	if (!socket) {
+		return () => null
+	}
 	const count = TX_SUBS.get(token.key) ?? 0
 	TX_SUBS.set(token.key, count + 1)
 	const unsubscribe =

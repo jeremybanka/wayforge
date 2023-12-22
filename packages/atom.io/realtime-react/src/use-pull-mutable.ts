@@ -13,5 +13,9 @@ export function usePullMutable<
 >(token: AtomIO.MutableAtomToken<T, J>): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => RTC.pullMutableState(token, socket, store), [token.key])
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pullMutableState(token, socket, store)
+		}
+	}, [token.key, socket])
 }

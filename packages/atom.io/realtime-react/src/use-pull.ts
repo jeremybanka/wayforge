@@ -11,5 +11,9 @@ export function usePull<J extends Json.Serializable>(
 ): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => RTC.pullState(token, socket, store), [token.key])
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pullState(token, socket, store)
+		}
+	}, [token.key, socket])
 }
