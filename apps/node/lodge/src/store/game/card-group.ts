@@ -1,9 +1,7 @@
-import { atomFamily } from "atom.io"
-import { IMPLICIT, createMutableAtom } from "atom.io/internal"
-
-import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { AtomicJunction } from "../utils/atomic-junction"
+import { atom, atomFamily } from "atom.io"
+import { join } from "atom.io/data"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 export type CardGroup = {
 	type: `deck` | `hand` | `pile` | null
@@ -18,29 +16,22 @@ export const findCardGroupState = atomFamily<CardGroup, string>({
 		rotation: 0,
 	}),
 })
-export const cardGroupIndex = createMutableAtom<
-	SetRTX<string>,
-	SetRTXJson<string>
->(
-	{
-		key: `cardGroupsIndex::mutable`,
-		mutable: true,
-		default: () => new SetRTX<string>(),
-		toJson: (set) => set.toJSON(),
-		fromJson: (json) => SetRTX.fromJSON(json),
-	},
-	undefined,
-	IMPLICIT.STORE,
-)
+export const cardGroupIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+	key: `cardGroupsIndex::mutable`,
+	mutable: true,
+	default: () => new SetRTX<string>(),
+	toJson: (set) => set.toJSON(),
+	fromJson: (json) => SetRTX.fromJSON(json),
+})
 
-export const groupsOfCards = new AtomicJunction({
+export const groupsOfCards = join({
 	key: `groupsOfCards`,
-	between: [`groupId`, `cardId`],
+	between: [`group`, `card`],
 	cardinality: `1:n`,
 })
 
-export const ownersOfGroups = new AtomicJunction({
+export const ownersOfGroups = join({
 	key: `ownersOfGroups`,
-	between: [`playerId`, `groupId`],
+	between: [`player`, `group`],
 	cardinality: `1:n`,
 })

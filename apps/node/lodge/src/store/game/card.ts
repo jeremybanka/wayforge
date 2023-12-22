@@ -1,36 +1,15 @@
-import { atom, atomFamily, selectorFamily } from "atom.io"
+import { atomFamily } from "atom.io"
+import { join } from "atom.io/data"
 import { IMPLICIT, createMutableAtom } from "atom.io/internal"
-import { selectJson } from "atom.io/json"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 
-import { Join } from "~/packages/anvl/src/join"
-import { hasExactProperties } from "~/packages/anvl/src/object"
-import { isWithin } from "~/packages/anvl/src/refinement"
-import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import { Perspective } from "~/packages/occlusion/src"
 
-export const OWNERS_OF_CARDS = new Join({
-	relationType: `1:n`,
-})
-	.from(`playerId`)
-	.to(`cardId`)
-export const ownersOfCardsState = atom({
+export const cardOwners = join({
 	key: `ownersOfCards`,
-	default: OWNERS_OF_CARDS,
-})
-export const ownersOfCardsStateJSON = selectJson(
-	ownersOfCardsState,
-	OWNERS_OF_CARDS.makeJsonInterface(),
-)
-
-export const findOwnerOfCardState = selectorFamily<string | null, string>({
-	key: `findOwnerOfCard`,
-	get:
-		(cardId) =>
-		({ get }) => {
-			const owner = get(ownersOfCardsState).getRelatedId(cardId)
-			return owner ?? null
-		},
+	between: [`owner`, `card`],
+	cardinality: `1:n`,
 })
 
 export const findPlayerPerspectiveState = atomFamily<Perspective, string>({
@@ -69,22 +48,8 @@ export const findCardCycleState = atomFamily<CardCycle, string>({
 	}),
 })
 
-export const GROUPS_AND_ZONES_OF_CARD_CYCLES = new Join<{
-	type: `group` | `zone`
-}>({
-	relationType: `1:n`,
-})
-	.from(`cardCycleId`)
-	.to(`groupOrZoneId`)
-export const groupsAndZonesOfCardCyclesState = atom({
+export const cardCycleGroupsAndZones = join({
 	key: `groupsAndZonesOfCardCycles`,
-	default: GROUPS_AND_ZONES_OF_CARD_CYCLES,
+	between: [`cardCycle`, `groupOrZone`],
+	cardinality: `1:n`,
 })
-export const groupsAndZonesOfCardCyclesStateJSON = selectJson(
-	groupsAndZonesOfCardCyclesState,
-	GROUPS_AND_ZONES_OF_CARD_CYCLES.makeJsonInterface(
-		hasExactProperties({
-			type: isWithin([`group`, `zone`] as const),
-		}),
-	),
-)

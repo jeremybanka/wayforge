@@ -2,10 +2,9 @@ import { useI } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 import type { Socket } from "socket.io-client"
-import { io } from "socket.io-client"
 
-export const RealtimeContext = React.createContext<{ socket: Socket }>({
-	socket: io(),
+export const RealtimeContext = React.createContext<{ socket: Socket | null }>({
+	socket: null,
 })
 
 export const RealtimeProvider: React.FC<{

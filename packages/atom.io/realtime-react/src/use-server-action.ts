@@ -10,9 +10,10 @@ export function useServerAction<ƒ extends AtomIO.ƒn>(
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
 	const { socket } = React.useContext(RealtimeContext)
-	React.useEffect(
-		() => RTC.synchronizeTransactionResults(token, socket, store),
-		[token.key],
-	)
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.synchronizeTransactionResults(token, socket, store)
+		}
+	}, [token.key, socket])
 	return AtomIO.runTransaction(token, store)
 }

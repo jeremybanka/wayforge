@@ -15,7 +15,7 @@ import { publicDeckIndex } from "./store/public-deck-index"
 
 export const Hand: FC<{ id: string }> = ({ id }) => {
 	const isMyHand = useO(myHandsIndex).includes(id)
-	const cardIds = useO(groupsOfCards.findRelatedKeysState(id))
+	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
 	const publicDeckIds = useO(publicDeckIndex)
 
 	const dealCards = useServerAction(dealCardsTX)
@@ -27,14 +27,14 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 				// debugger
 				const deckId = publicDeckIds[0]
 				dealCards({ deckId, handId: id, count: 1 })
-				console.log(
-					`❗ after running deal cards, the hand contains`,
-					getState(groupsOfCards.findRelationsState__INTERNAL(id)),
-				)
-				console.log(
-					`❗ after running deal cards, the deck contains`,
-					getState(groupsOfCards.findRelationsState__INTERNAL(deckId)),
-				)
+				// console.log(
+				// 	`❗ after running deal cards, the hand contains`,
+				// 	getState(groupsOfCards.findRelationsState__INTERNAL(id)),
+				// )
+				// console.log(
+				// 	`❗ after running deal cards, the deck contains`,
+				// 	getState(groupsOfCards.findRelationsState__INTERNAL(deckId)),
+				// )
 			},
 		},
 	])

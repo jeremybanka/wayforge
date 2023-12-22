@@ -40,10 +40,10 @@ describe(`running transactions`, () => {
 						addToNumbersCollectionTX,
 					)
 					const { socket } = React.useContext(RTR.RealtimeContext)
-					socket.onAny((event, ...args) => {
+					socket?.onAny((event, ...args) => {
 						console.log(`📡  DAVE`, event, ...args)
 					})
-					socket.onAnyOutgoing((event, ...args) => {
+					socket?.onAnyOutgoing((event, ...args) => {
 						console.log(`📡  DAVE >>`, event, ...args)
 					})
 					return (
@@ -58,10 +58,10 @@ describe(`running transactions`, () => {
 					RTR.usePullMutable(numbersCollectionState)
 					const numbers = AR.useO(numbersCollectionState)
 					const { socket } = React.useContext(RTR.RealtimeContext)
-					socket.onAny((event, ...args) => {
+					socket?.onAny((event, ...args) => {
 						console.log(`📡 JANE`, event, ...args)
 					})
-					socket.onAnyOutgoing((event, ...args) => {
+					socket?.onAnyOutgoing((event, ...args) => {
 						console.log(`📡 JANE >>`, event, ...args)
 					})
 					return (

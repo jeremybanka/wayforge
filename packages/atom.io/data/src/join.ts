@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
 	AtomFamily,
+	MutableAtomFamily,
 	Read,
 	SelectorFamily,
 	Transactors,
@@ -16,6 +17,7 @@ import {
 	getJsonFamily,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type {
@@ -56,7 +58,7 @@ export type JoinState<
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}EntryOf${Capitalize<BSide>}`
 						: `${AB}EntryOf${Capitalize<ASide>}`]: SelectorFamily<
-						[string, Content] | undefined,
+						[string, Content] | null,
 						string
 					>
 			  }
@@ -64,7 +66,7 @@ export type JoinState<
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
 				: `${AB}KeyOf${Capitalize<ASide>}`]: SelectorFamily<
-				string | undefined,
+				string | null,
 				string
 			>
 	  }
@@ -72,7 +74,7 @@ export type JoinState<
 	  ? (Content extends Json.Object
 				? {
 						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: SelectorFamily<
-							[string, Content] | undefined,
+							[string, Content] | null,
 							string
 						>
 				  } & {
@@ -83,7 +85,7 @@ export type JoinState<
 				  }
 				: {}) & {
 				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: SelectorFamily<
-					string | undefined,
+					string | null,
 					string
 				>
 		  } & {
@@ -121,6 +123,13 @@ export class Join<
 	private transactors: Transactors = TRANSACTORS
 	public relations: Junction<ASide, BSide, Content>
 	public findState: JoinState<ASide, BSide, Cardinality, Content>
+	public core: {
+		findRelatedKeysState: MutableAtomFamily<
+			SetRTX<string>,
+			SetRTXJson<string>,
+			string
+		>
+	}
 	public transact(
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
@@ -138,18 +147,19 @@ export class Join<
 		const b: BSide = options.between[1]
 		const findRelatedKeysState = createMutableAtomFamily<
 			SetRTX<string>,
-			string[],
+			SetRTXJson<string>,
 			string
 		>(
 			{
 				key: `${options.key}/relatedKeys`,
 				default: () => new SetRTX(),
 				mutable: true,
-				fromJson: (json) => new SetRTX(json),
-				toJson: (set) => [...set],
+				fromJson: (json) => SetRTX.fromJSON(json),
+				toJson: (set) => set.toJSON(),
 			},
 			store,
 		)
+		this.core = { findRelatedKeysState }
 		const getRelatedKeys: Read<(key: string) => SetRTX<string>> = (
 			{ get },
 			key,
@@ -240,10 +250,8 @@ export class Join<
 				},
 				store,
 			)
-			const getContent: Read<(key: string) => Content | undefined> = (
-				{ get },
-				key,
-			) => get(findContentState(key))
+			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
+				get(findContentState(key))
 			const setContent: Write<(key: string, content: Content) => void> = (
 				transactors,
 				key,
@@ -277,7 +285,7 @@ export class Join<
 		})
 
 		const createSingleKeyStateFamily = () =>
-			createSelectorFamily<string | undefined, string>(
+			createSelectorFamily<string | null, string>(
 				{
 					key: `${options.key}/singleRelatedKey`,
 					get:
@@ -287,14 +295,28 @@ export class Join<
 							for (const relatedKey of relatedKeys) {
 								return relatedKey
 							}
+							return null
 						},
 				},
 				store,
 			)
-		const getMultipleKeyStateFamily = () =>
-			getJsonFamily(findRelatedKeysState, store)
+		const getMultipleKeyStateFamily = () => {
+			return createSelectorFamily<string[], string>(
+				{
+					key: `${options.key}/multipleRelatedKeys`,
+					get:
+						(key) =>
+						({ get }) => {
+							const jsonFamily = getJsonFamily(findRelatedKeysState, store)
+							const json = get(jsonFamily(key))
+							return json.members
+						},
+				},
+				store,
+			)
+		}
 		const createSingleEntryStateFamily = () =>
-			createSelectorFamily<[string, Content] | undefined, string>(
+			createSelectorFamily<[string, Content] | null, string>(
 				{
 					key: `${options.key}/singleRelatedEntry`,
 					get:
@@ -305,6 +327,7 @@ export class Join<
 								const contentKey = relations.makeContentKey(key, relatedKey)
 								return [relatedKey, get(findContentState(contentKey))]
 							}
+							return null
 						},
 				},
 				store,
@@ -316,8 +339,9 @@ export class Join<
 					get:
 						(key) =>
 						({ get }) => {
-							const relatedKeys = get(findRelatedKeysState(key))
-							return [...relatedKeys].map((relatedKey) => {
+							const jsonFamily = getJsonFamily(findRelatedKeysState, store)
+							const json = get(jsonFamily(key))
+							return json.members.map((relatedKey) => {
 								const contentKey = relations.makeContentKey(key, relatedKey)
 								return [relatedKey, get(findContentState(contentKey))]
 							})
@@ -415,12 +439,19 @@ export function join<
 	defaultContent?: undefined,
 	store?: Store,
 ): {
-	relations: Junction<ASide, BSide, null>
-	findState: JoinState<ASide, BSide, Cardinality, null>
-	transact: (
+	readonly relations: Junction<ASide, BSide, null>
+	readonly findState: JoinState<ASide, BSide, Cardinality, null>
+	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, null>) => void,
 	) => void
+	readonly core: {
+		readonly findRelatedKeysState: MutableAtomFamily<
+			SetRTX<string>,
+			SetRTXJson<string>,
+			string
+		>
+	}
 }
 export function join<
 	const ASide extends string,
@@ -438,6 +469,13 @@ export function join<
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
 	) => void
+	readonly core: {
+		readonly findRelatedKeysState: MutableAtomFamily<
+			SetRTX<string>,
+			SetRTXJson<string>,
+			string
+		>
+	}
 }
 export function join<
 	ASide extends string,

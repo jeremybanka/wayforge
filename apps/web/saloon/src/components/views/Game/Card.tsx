@@ -8,7 +8,7 @@ import { PlayingCards } from "../../PlayingCards"
 import { article } from "../../containers/<article>"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-	const value = useO(valuesOfCards.findRelatedKeyState(id))
+	const value = useO(valuesOfCards.findState.valueKeyOfCard(id))
 	const PlayingCard = PlayingCards[value as keyof typeof PlayingCards]
 	return (
 		<AnimatePresence>

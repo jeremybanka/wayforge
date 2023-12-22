@@ -17,7 +17,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	store: Store,
 ): ReadonlySelectorFamily<T, K> {
 	const subject = new Subject<ReadonlySelectorToken<T>>()
-	return Object.assign(
+	const readonlySelectorFamily = Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
 			const target = newest(store)
 			const subKey = stringifyJson(key)
@@ -43,4 +43,6 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 			install: (store: Store) => createReadonlySelectorFamily(options, store),
 		} as const,
 	) as ReadonlySelectorFamily<T, K>
+	store.families.set(options.key, readonlySelectorFamily)
+	return readonlySelectorFamily
 }

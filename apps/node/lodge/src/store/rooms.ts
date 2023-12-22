@@ -1,11 +1,10 @@
 import type { TransactionIO } from "atom.io"
 import { atom, atomFamily, selector, transaction } from "atom.io"
-import { nanoid } from "nanoid"
-
+import { join } from "atom.io/data"
 import { IMPLICIT, createMutableAtom } from "atom.io/internal"
-import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
-import { AtomicJunction } from "./utils/atomic-junction"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { nanoid } from "nanoid"
 
 export const roomsIndex = atom<Set<string>>({
 	key: `roomsIndex`,
@@ -51,12 +50,19 @@ export const playersIndex = createMutableAtom<
 	IMPLICIT.STORE,
 )
 
-export const playersInRooms = new AtomicJunction({
-	key: `playersInRooms`,
-	between: [`roomId`, `playerId`],
-	cardinality: `1:n`,
-	defaultContent: { enteredAt: 0 },
-})
+export const DEFAULT_PLAYER_ROOM_CONTENT: {
+	enteredAt: number
+} = {
+	enteredAt: 0,
+}
+export const playersInRooms = join(
+	{
+		key: `playersInRooms`,
+		between: [`room`, `player`],
+		cardinality: `1:n`,
+	},
+	DEFAULT_PLAYER_ROOM_CONTENT,
+)
 
 export const createRoomTX = transaction<(id?: string) => string>({
 	key: `createRoom`,
@@ -72,10 +78,10 @@ export const joinRoomTX = transaction<
 >({
 	key: `joinRoom`,
 	do: (_, { roomId, playerId }) => {
-		// set(playersInRoomsState, (current) =>
-		// 	current.set({ roomId, playerId }, { enteredAt: Date.now() }),
-		// )
-		playersInRooms.set({ roomId, playerId }, { enteredAt: Date.now() })
+		playersInRooms.relations.set(
+			{ room: roomId, player: playerId },
+			{ enteredAt: Date.now() },
+		)
 	},
 })
 export type JoinRoomIO = TransactionIO<typeof joinRoomTX>
@@ -84,9 +90,10 @@ export const leaveRoomTX = transaction<
 	(options: { roomId: string; playerId: string }) => void
 >({
 	key: `leaveRoom`,
-	do: (_, { roomId, playerId }) => {
-		// set(playersInRoomsState, (current) => current.remove({ roomId, playerId }))
-		playersInRooms.delete({ roomId, playerId })
+	do: (transactors, { roomId, playerId }) => {
+		playersInRooms.transact(transactors, ({ relations }) => {
+			relations.delete({ room: roomId, player: playerId })
+		})
 	},
 })
 export type LeaveRoomIO = TransactionIO<typeof leaveRoomTX>

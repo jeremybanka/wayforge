@@ -1,0 +1,26 @@
+$viewport-medium-width: 960px;
+$viewport-large-width: 1280px;
+
+@mixin min-width($min-width, $property, $default, $modified) {
+  #{$property}: $default;
+
+  @media screen and (min-width: $min-width) {
+    #{$property}: $modified;
+  }
+}
+
+@mixin max-width($max-width, $property, $default, $modified) {
+  #{$property}: $default;
+
+  @media screen and (max-width: $max-width) {
+    #{$property}: $modified;
+  }
+}
+
+@mixin md($property, $modified, $default) {
+  @include min-width($viewport-medium-width, $property, $default, $modified);
+}
+
+@mixin lg($property, $modified, $default) {
+  @include min-width($viewport-large-width, $property, $default, $modified);
+}

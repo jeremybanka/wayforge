@@ -5,7 +5,7 @@ import type { Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
 export function pullMutableState<
-	T extends Transceiver<Json.Serializable>,
+	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(
 	token: AtomIO.MutableAtomToken<T, J>,

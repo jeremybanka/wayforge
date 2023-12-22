@@ -13,8 +13,9 @@ export function usePullMutableFamilyMember<
 >(token: AtomIO.MutableAtomToken<T, J>): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(
-		() => RTC.pullMutableFamilyMember(token, socket, store),
-		[token.key],
-	)
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pullMutableFamilyMember(token, socket, store)
+		}
+	}, [token.key, socket])
 }

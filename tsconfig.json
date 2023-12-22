@@ -32,5 +32,5 @@
 		"skipLibCheck": true
 	},
 	"include": ["**/*.ts", "**/*.tsx", "**/*.config.ts", "**/*.schema.json.ts"],
-	"exclude": ["*/**/dist", "apps/atom.io.fyi"]
+	"exclude": ["*/**/dist", "apps/atom.io.fyi", "apps/tempest.games"]
 }

@@ -8,10 +8,14 @@ import * as React from "react"
 import { RealtimeContext } from "./realtime-context"
 
 export function usePullMutable<
-	T extends Transceiver<Json.Serializable>,
+	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(token: AtomIO.MutableAtomToken<T, J>): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => RTC.pullMutableState(token, socket, store), [token.key])
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pullMutableState(token, socket, store)
+		}
+	}, [token.key, socket])
 }
