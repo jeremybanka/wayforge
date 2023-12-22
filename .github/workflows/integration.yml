@@ -93,6 +93,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
 
       - name: Test
         run: pnpm test
