@@ -5,10 +5,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "concurrently \"npm:dev:*\"",
-		"dev:exhibits": "tsx scripts/wrap-exhibits.node watch",
 		"dev:next": "next dev -p 5400",
-		"build": "pnpm build:exhibits && pnpm build:next",
-		"build:exhibits": "tsx scripts/wrap-exhibits.node once",
+		"build": "pnpm build:next",
 		"build:next": "next build",
 		"start": "next start -p 5454",
 		"lint": "next lint",
