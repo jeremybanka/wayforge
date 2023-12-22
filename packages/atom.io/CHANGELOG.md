@@ -1,5 +1,19 @@
 # atom.io
 
+## 0.15.1
+
+### Patch Changes
+
+- dc72bfc: 🐛 Fix bug where when a readonly selector family (a family of selectors with no `set` method) was created, it would not be added to the store's family registry. This would result in runtime errors when attempting to implicitly initialize a readonly selector from its family function. Now the family is properly registered and the selector can be implicitly initialized.
+- dc72bfc: 🏷️ `atom.io/realtime-client` and `atom.io/realtime-react`: Fix types accepted by `pullMutable` and `pullMutableFamilyMember`, which would reject usage for arbitrary reasons.
+- dc72bfc: ✨ `atom.io/data` `join`: Expose `core.getRelatedKeys`. This is a mutable atom family that serves as the actual source of truth for the relations a join stores. This can be used in other atom.io modules such as `/realtime` to synchronize the relations of a join across multiple instances.
+
+  As a part of exposing this family, its JSON interface has been updated to use the `toJSON` and `fromJSON` methods on the `SetRTX` transceiver.
+
+- dc72bfc: 🐛 `atom.io/realtime-react`: Fix bug with `RealtimeContext` where a `socket.io` instance would be preemptively initialized and would remain complaining that it could not connect after being replaced.
+- dc72bfc: 🏷️ `atom.io/realtime-client` and `atom.io/realtime-react`: broaden types accepted by the `pullFamilyMember` and `usePullFamilyMember` functions. Instead of just accepting `AtomToken`, they now accept `StateToken`, allowing for `SelectorToken` and `AtomToken` to be used interchangeably.
+- dc72bfc: ♻️ `atom.io/data` `join` States for singular keys or entries now return `null` instead of `undefined` for ease of use in contexts where serialization is necessary.
+
 ## 0.15.0
 
 ### Minor Changes
