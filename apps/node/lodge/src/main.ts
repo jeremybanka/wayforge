@@ -5,7 +5,6 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import type { RelationData } from "~/packages/anvl/src/join/core-relation-data"
 import type { Json } from "~/packages/anvl/src/json"
 
 import type {
@@ -16,7 +15,6 @@ import { logger } from "./logger"
 import {
 	addCardValueTX,
 	addHandTx,
-	cardCycleGroupsAndZones,
 	cardGroupIndex,
 	cardIndex,
 	cardValuesIndex,
@@ -25,11 +23,9 @@ import {
 	findCardState,
 	findCardValueState,
 	groupsOfCards,
-	ownersOfGroups,
 	shuffleDeckTX,
 	spawnCardTX,
 	spawnClassicDeckTX,
-	valuesOfCards,
 } from "./store/game"
 import type { JoinRoomIO } from "./store/rooms"
 import {
@@ -51,7 +47,7 @@ dotenv.config()
 pipe(
 	new WebSocketServer(3333, {
 		cors: {
-			origin: `http://localhost:5173`,
+			origin: `http://localhost:5400`,
 			methods: [`GET`, `POST`],
 		},
 	}),
