@@ -12,8 +12,9 @@ export function usePush<J extends Json.Serializable>(
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
-	React.useEffect(
-		() => RTC.pushState(token, socket, `use-push:${id}`, store),
-		[token.key],
-	)
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pushState(token, socket, `use-push:${id}`, store)
+		}
+	}, [token.key, socket])
 }

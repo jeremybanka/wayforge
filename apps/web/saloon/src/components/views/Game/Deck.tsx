@@ -10,7 +10,7 @@ import { CardBack } from "./Card"
 import scss from "./Deck.module.scss"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
-	const cardIds = useO(groupsOfCards.findRelatedKeysState(id))
+	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
 
 	console.log(`❗❗`, { cardIds })
 

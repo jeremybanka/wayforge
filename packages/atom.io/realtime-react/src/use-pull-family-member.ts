@@ -7,9 +7,13 @@ import * as React from "react"
 import { RealtimeContext } from "./realtime-context"
 
 export function usePullFamilyMember<J extends Json.Serializable>(
-	token: AtomIO.AtomToken<J>,
+	token: AtomIO.StateToken<J>,
 ): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => RTC.pullFamilyMember(token, socket, store), [token.key])
+	React.useEffect(() => {
+		if (socket) {
+			return RTC.pullFamilyMember(token, socket, store)
+		}
+	}, [token.key, socket])
 }

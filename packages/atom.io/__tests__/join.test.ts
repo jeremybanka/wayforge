@@ -5,7 +5,6 @@ import { getState, runTransaction, subscribe, transaction } from "atom.io"
 import type { Logger } from "atom.io"
 
 import * as Internal from "atom.io/internal"
-import { desc } from "drizzle-orm"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -61,19 +60,19 @@ describe(`join with content`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(0)
 		expect(Utils.stdout0).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: `joshua`,
 		})
 		expect(Utils.stdout1).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: `lobby`,
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: [`joshua`, { joinedAt }],
 		})
 		expect(Utils.stdout3).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: [`lobby`, { joinedAt }],
 		})
 	})
@@ -107,7 +106,7 @@ describe(`join with content`, () => {
 			newValue: [`joshua`],
 		})
 		expect(Utils.stdout1).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: `lobby`,
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
@@ -115,7 +114,7 @@ describe(`join with content`, () => {
 			newValue: [[`joshua`, { joinedAt }]],
 		})
 		expect(Utils.stdout3).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: [`lobby`, { joinedAt }],
 		})
 	})
@@ -196,11 +195,11 @@ describe(`join with no content`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(0)
 		expect(Utils.stdout0).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: `joshua`,
 		})
 		expect(Utils.stdout1).toHaveBeenCalledWith({
-			oldValue: undefined,
+			oldValue: null,
 			newValue: `lobby`,
 		})
 	})

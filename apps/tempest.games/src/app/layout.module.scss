@@ -1,0 +1,61 @@
+@import "./_responsive";
+
+body.class {
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+  height: auto;
+  > * {
+    padding: 1em 0.25em;
+    @media screen and (min-width: $viewport-medium-width) {
+      padding: 1em;
+    }
+  }
+  > header {
+    position: fixed;
+    width: calc(100% - 0.5em);
+    top: 0;
+    z-index: 1;
+    margin: 0.25em;
+    padding: 1em 1.5em;
+    border-radius: 2em;
+    --nav-background: var(--bg-soft-glass-1);
+    --nav-backdrop-filter: blur(15px);
+    --nav-box-shadow: 0 1px 10px 1px var(--bg-shadow-1);
+    background: var(--nav-background);
+    backdrop-filter: var(--nav-backdrop-filter);
+    box-shadow: var(--nav-box-shadow);
+    @media screen and (max-width: $viewport-medium-width) {
+      margin-top: 0.75em;
+    }
+    @media screen and (min-width: $viewport-medium-width) {
+      background: none;
+      backdrop-filter: none;
+      box-shadow: none;
+      width: 100%;
+      margin: none;
+      padding: 1em;
+      > nav > section {
+        padding: 1em 1.5em;
+        border-radius: 2em;
+        background: var(--nav-background);
+        backdrop-filter: var(--nav-backdrop-filter);
+        box-shadow: var(--nav-box-shadow);
+      }
+    }
+  }
+  > main {
+    margin-top: 2em;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    background-color: var(--bg-color);
+  }
+  > footer {
+    display: flex;
+    flex-flow: row;
+  }
+}
