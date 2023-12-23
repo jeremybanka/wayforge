@@ -169,10 +169,10 @@ export class Join<
 			a,
 			b,
 		) => {
-			const aKeys = getRelatedKeys(transactors, a)
-			const bKeys = getRelatedKeys(transactors, b)
-			transactors.set(findRelatedKeysState(a), aKeys.add(b))
-			transactors.set(findRelatedKeysState(b), bKeys.add(a))
+			const aKeysState = findRelatedKeysState(a)
+			const bKeysState = findRelatedKeysState(b)
+			transactors.set(aKeysState, (aKeys) => aKeys.add(b))
+			transactors.set(bKeysState, (bKeys) => bKeys.add(a))
 		}
 		const deleteRelation: Write<(a: string, b: string) => void> = (
 			transactors,
