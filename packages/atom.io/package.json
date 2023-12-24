@@ -73,7 +73,7 @@
 		}
 	},
 	"devDependencies": {
-		"@emotion/react": "11.11.1",
+		"@emotion/react": "11.11.3",
 		"@testing-library/react": "14.1.2",
 		"@types/http-proxy": "1.17.14",
 		"@types/npmlog": "7.0.0",

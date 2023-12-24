@@ -106,7 +106,7 @@
 	},
 	"devDependencies": {
 		"@emotion/babel-plugin": "11.11.0",
-		"@emotion/react": "11.11.1",
+		"@emotion/react": "11.11.3",
 		"@emotion/styled": "11.11.0",
 		"@testing-library/jest-dom": "6.1.5",
 		"@testing-library/react": "14.1.2",
