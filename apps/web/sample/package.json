@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@emotion/babel-plugin": "11.11.0",
-		"@emotion/react": "11.11.1",
+		"@emotion/react": "11.11.3",
 		"@emotion/styled": "11.11.0",
 		"@floating-ui/dom": "1.5.3",
 		"@floating-ui/react": "0.26.4",
