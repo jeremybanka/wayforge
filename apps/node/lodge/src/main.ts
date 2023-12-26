@@ -35,7 +35,6 @@ import {
 	playersInRooms,
 	playersIndex,
 	roomsIndex,
-	roomsIndexJSON,
 } from "./store/rooms"
 import { welcome } from "./welcome"
 
@@ -90,7 +89,7 @@ pipe(
 			const receiveTransaction = RTS.useReceiveTransaction({ socket })
 
 			// ROOM SERVICES
-			exposeSingle<string[]>(roomsIndexJSON)
+			exposeMutable(roomsIndex)
 			exposeFamily(playersInRooms.findState.playerEntriesOfRoom, roomsIndex)
 			socket.on(
 				`tx:createRoom`,

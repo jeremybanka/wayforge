@@ -1,11 +1,8 @@
+"use client"
+
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
-import {
-	usePullMutableFamilyMember,
-	useServerAction,
-} from "atom.io/realtime-react"
-import type { FC } from "react"
-import { useParams } from "react-router-dom"
+import { usePullFamilyMember, useServerAction } from "atom.io/realtime-react"
 
 import {
 	joinRoomTX,
@@ -14,14 +11,15 @@ import {
 } from "~/apps/node/lodge/src/store/rooms"
 import { Id } from "~/packages/hamr/src/react-id"
 
-import { h3 } from "../../containers/<hX>"
-import { header } from "../../containers/<header>"
-import { Game } from "../Game/Game"
-import { myRoomState } from "../Game/store/my-room"
+import { header } from "src/components/<header>"
+import { myRoomState } from "src/services/store/my-room"
+import { Game } from "./Game"
 import { PlayersInRoom } from "./PlayersInRoom"
 import scss from "./Room.module.scss"
 
-export const Room: FC<{ roomId: string }> = ({ roomId }) => {
+export default function Room({
+	params: { roomId },
+}: { params: { roomId: string } }): JSX.Element {
 	const myId = useO(myIdState)
 	const myRoom = useO(myRoomState)
 
@@ -29,7 +27,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	usePullMutableFamilyMember(playersInRooms.core.findRelatedKeysState(roomId))
+	usePullFamilyMember(playersInRooms.findState.playerEntriesOfRoom(roomId))
 
 	return (
 		<article className={scss.class}>
@@ -37,7 +35,10 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 				<span>
 					<button
 						type="button"
-						onClick={() => joinRoom({ roomId, playerId: myId ?? `` })}
+						onClick={() => {
+							debugger
+							joinRoom({ roomId, playerId: myId ?? `` })
+						}}
 						disabled={iAmInRoom}
 					>
 						+
@@ -57,9 +58,4 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 			{iAmInRoom ? <Game /> : null}
 		</article>
 	)
-}
-
-export const RoomRoute: FC = () => {
-	const { roomId } = useParams<{ roomId: string }>()
-	return roomId ? <Room roomId={roomId} /> : <h3.wedge>Room not found</h3.wedge>
 }

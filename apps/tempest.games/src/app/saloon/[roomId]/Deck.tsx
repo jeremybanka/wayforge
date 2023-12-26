@@ -5,7 +5,7 @@ import type { FC } from "react"
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
 import { useRadial } from "~/apps/web/saloon/src/services/radial"
-import { div } from "../../components/<div>"
+import { div } from "../../../components/<div>"
 import { CardBack } from "./Card"
 import scss from "./Deck.module.scss"
 
