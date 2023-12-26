@@ -1,6 +1,7 @@
 #!/bin/bash
 
 packages=(
+  react-click-handlers
   react-css-vars
   react-elastic-input
   react-error-boundary
