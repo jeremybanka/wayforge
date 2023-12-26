@@ -2,7 +2,10 @@
 
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
-import { usePullFamilyMember, useServerAction } from "atom.io/realtime-react"
+import {
+	usePullMutableFamilyMember,
+	useServerAction,
+} from "atom.io/realtime-react"
 
 import {
 	joinRoomTX,
@@ -27,7 +30,8 @@ export default function Room({
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	usePullFamilyMember(playersInRooms.findState.playerEntriesOfRoom(roomId))
+	const playersInRoomState = playersInRooms.core.findRelatedKeysState(roomId)
+	usePullMutableFamilyMember(playersInRoomState)
 
 	return (
 		<article className={scss.class}>
@@ -36,7 +40,6 @@ export default function Room({
 					<button
 						type="button"
 						onClick={() => {
-							debugger
 							joinRoom({ roomId, playerId: myId ?? `` })
 						}}
 						disabled={iAmInRoom}
@@ -45,7 +48,9 @@ export default function Room({
 					</button>
 					<button
 						type="button"
-						onClick={() => leaveRoom({ roomId, playerId: myId ?? `` })}
+						onClick={() => {
+							leaveRoom({ roomId, playerId: myId ?? `` })
+						}}
 						disabled={!iAmInRoom}
 					>
 						{`<-`}

@@ -8,7 +8,7 @@ import * as React from "react"
 import { RealtimeContext } from "./realtime-context"
 
 export function usePullMutableFamilyMember<
-	T extends Transceiver<Json.Serializable>,
+	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(token: AtomIO.MutableAtomToken<T, J>): void {
 	const { socket } = React.useContext(RealtimeContext)
