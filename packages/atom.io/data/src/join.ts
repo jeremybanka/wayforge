@@ -3,7 +3,7 @@ import type {
 	AtomFamily,
 	MutableAtomFamily,
 	Read,
-	SelectorFamily,
+	ReadonlySelectorFamily,
 	Transactors,
 	Write,
 } from "atom.io"
@@ -57,7 +57,7 @@ export type JoinState<
 			? {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}EntryOf${Capitalize<BSide>}`
-						: `${AB}EntryOf${Capitalize<ASide>}`]: SelectorFamily<
+						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 						[string, Content] | null,
 						string
 					>
@@ -65,7 +65,7 @@ export type JoinState<
 			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
-				: `${AB}KeyOf${Capitalize<ASide>}`]: SelectorFamily<
+				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 				string | null,
 				string
 			>
@@ -73,23 +73,23 @@ export type JoinState<
 	: Cardinality extends `1:n`
 	  ? (Content extends Json.Object
 				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: SelectorFamily<
+						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamily<
 							[string, Content] | null,
 							string
 						>
 				  } & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: SelectorFamily<
+						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 							[string, Content][],
 							string
 						>
 				  }
 				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: SelectorFamily<
+				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamily<
 					string | null,
 					string
 				>
 		  } & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: SelectorFamily<
+				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 					string[],
 					string
 				>
@@ -99,7 +99,7 @@ export type JoinState<
 					? {
 							readonly [AB in ASide | BSide as AB extends ASide
 								? `${AB}EntriesOf${Capitalize<BSide>}`
-								: `${AB}EntriesOf${Capitalize<ASide>}`]: SelectorFamily<
+								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 								[string, Content][],
 								string
 							>
@@ -107,7 +107,7 @@ export type JoinState<
 					: {}) & {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}KeysOf${Capitalize<BSide>}`
-						: `${AB}KeysOf${Capitalize<ASide>}`]: SelectorFamily<
+						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 						string[],
 						string
 					>
