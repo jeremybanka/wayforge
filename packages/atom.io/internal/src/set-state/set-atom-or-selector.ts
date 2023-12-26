@@ -8,9 +8,12 @@ export const setAtomOrSelector = <T>(
 	value: T | ((oldValue: T) => T),
 	store: Store,
 ): void => {
-	if (state.type === `selector`) {
-		state.set(value)
-	} else {
-		setAtom(state, value, store)
+	switch (state.type) {
+		case `atom`:
+			setAtom(state, value, store)
+			break
+		case `selector`:
+			state.set(value)
+			break
 	}
 }
