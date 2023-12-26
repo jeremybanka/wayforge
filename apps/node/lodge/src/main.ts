@@ -90,7 +90,7 @@ pipe(
 
 			// ROOM SERVICES
 			exposeMutable(roomsIndex)
-			exposeFamily(playersInRooms.findState.playerEntriesOfRoom, roomsIndex)
+			exposeMutableFamily(playersInRooms.core.findRelatedKeysState, roomsIndex)
 			socket.on(
 				`tx:createRoom`,
 				(update: AtomIO.TransactionUpdate<() => string>) => {
