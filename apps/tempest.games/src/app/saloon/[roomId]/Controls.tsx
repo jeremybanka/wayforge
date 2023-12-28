@@ -8,6 +8,8 @@ import { addHandTx, spawnClassicDeckTX } from "~/apps/node/lodge/src/store/game"
 
 import { button } from "src/components/<button>"
 
+import comic from "src/components/comic.module.scss"
+
 export const Controls: FC = () => {
 	const myId = useO(myIdState)
 	const addHand = useServerAction(addHandTx)
@@ -16,21 +18,24 @@ export const Controls: FC = () => {
 		<span>
 			<h1>Controls</h1>
 			{myId ? (
-				<button.ff
+				<button.curledLeft
+					className={comic.class}
 					onClick={() => addHand({ playerId: myId, groupId: nanoid() })}
 				>
 					Add Hand
-				</button.ff>
+				</button.curledLeft>
 			) : null}
-			<button.ff
+			<button.curledLeft
+				className={comic.class}
 				onClick={() => {
 					const deckId = `DECK_ID_TEST` // nanoid()
 					const cardIds = Array.from({ length: 52 }).map(() => nanoid())
+					// debugger
 					spawnClassicDeck(deckId, cardIds)
 				}}
 			>
 				Add Deck
-			</button.ff>
+			</button.curledLeft>
 		</span>
 	)
 }

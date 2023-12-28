@@ -3,8 +3,18 @@
   > div {
     display: flex;
     flex-flow: column-reverse nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
     > * ~ * {
-      margin-bottom: -119.5px;
+      margin-bottom: -174.5px;
+      flex-grow: 0;
+    }
+    article {
+      img {
+        display: block;
+        margin: 0;
+        position: relative;
+      }
     }
   }
 }
