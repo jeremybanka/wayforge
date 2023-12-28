@@ -189,6 +189,10 @@ export class Join<
 		> = (transactors, a, newRelationsOfA) => {
 			const currentRelationsOfA = getRelatedKeys(transactors, a)
 			for (const currentRelationB of currentRelationsOfA) {
+				const remainsRelated = newRelationsOfA.includes(currentRelationB)
+				if (remainsRelated) {
+					continue
+				}
 				const relationsOfB = getRelatedKeys(transactors, currentRelationB)
 				relationsOfB.delete(a)
 			}
