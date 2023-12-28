@@ -88,6 +88,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 			const atom = child.atoms.get(mutableKey)
 			atom?.install(parent)
 		}
+		tracker.dispose()
 	}
 	for (const atom of child.atoms.values()) {
 		if (!parent.atoms.has(atom.key)) {

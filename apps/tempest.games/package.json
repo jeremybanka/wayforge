@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@t3-oss/env-nextjs": "0.7.1",
 		"@vercel/analytics": "1.1.1",
+		"corners": "0.1.0",
 		"framer-motion": "10.16.16",
 		"nanoid": "5.0.4",
 		"next": "14.0.4",
@@ -26,6 +27,7 @@
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
+		"@svgr/webpack": "8.1.0",
 		"@types/node": "20.10.5",
 		"@types/react": "18.2.45",
 		"@types/react-dom": "18.2.18",

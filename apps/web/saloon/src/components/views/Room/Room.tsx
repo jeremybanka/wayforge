@@ -1,7 +1,6 @@
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
 import {
-	usePullFamilyMember,
 	usePullMutableFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
@@ -30,7 +29,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	usePullFamilyMember(playersInRooms.findState.playerEntriesOfRoom(roomId))
+	usePullMutableFamilyMember(playersInRooms.core.findRelatedKeysState(roomId))
 
 	return (
 		<article className={scss.class}>

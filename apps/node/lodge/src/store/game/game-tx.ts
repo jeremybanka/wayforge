@@ -40,7 +40,6 @@ export const spawnClassicDeckTX = transaction<
 		})
 		set(cardGroupIndex, (current) => {
 			current.add(deckId)
-			console.log({ current })
 			return current
 		})
 
@@ -63,7 +62,11 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		groupsOfCards.relations.replaceRelations(deckId, cardIds, { reckless: true })
+		groupsOfCards.transact(transactors, ({ relations }) => {
+			for (const cardId of cardIds) {
+				relations.set({ card: cardId, group: deckId })
+			}
+		})
 	},
 })
 
@@ -93,9 +96,9 @@ export const spawnCardTX = transaction<
 			if (!playerDoesExist) {
 				throw new Error(`Player does not exist`)
 			}
-			console.log({ playerId, cardId }, `not implemented`)
+			console.error({ playerId, cardId }, `not implemented`)
 		} else if (`zoneId` in target) {
-			console.log({ target }, `not implemented`)
+			console.error({ target }, `not implemented`)
 		} else {
 			throw new Error(`Invalid target`)
 		}
@@ -120,7 +123,6 @@ export const addHandTx = transaction<
 			const next = current.add(groupId)
 			return next
 		})
-		// console.log(IMPLICIT.STORE.child?.valueMap.get(`cardGroupsIndex::mutable`))
 		set(findCardGroupState(groupId), cardGroup)
 		ownersOfGroups.transact(transactors, ({ relations }) => {
 			relations.set({ player: playerId, group: groupId })
@@ -151,12 +153,9 @@ export const dealCardsTX = transaction<
 >({
 	key: `dealCards`,
 	do: (transactors, { deckId, handId, count }) => {
-		const { get, set } = transactors
+		const { get } = transactors
 		const cardGroupKeys = get(cardGroupIndex)
-		console.log({ cardGroupKeys })
-
 		const deckDoesExist = cardGroupKeys.has(deckId)
-
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
 		}
@@ -164,26 +163,19 @@ export const dealCardsTX = transaction<
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)
 		}
+
 		const deckCardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
 		}
 		const cardIds = deckCardIds.slice(-count)
-		console.log({ cardIds })
 
 		groupsOfCards.transact(transactors, ({ relations }) => {
 			for (const cardId of cardIds) {
 				relations.set({ card: cardId, group: handId })
 			}
 		})
-		console.log(
-			`❗ while running deal cards, the hand contains`,
-			getState(groupsOfCards.findState.cardKeysOfGroup(handId)),
-		)
-		console.log(
-			`❗ while running deal cards, the deck contains`,
-			getState(groupsOfCards.findState.cardKeysOfGroup(deckId)),
-		)
+
 		return { cardIds }
 	},
 })
