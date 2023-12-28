@@ -13,8 +13,7 @@ export const publicDeckIndex = AtomIO.selector<string[]>({
 
 		const unownedCardGroupIds = [...cardGroupIds].filter(
 			(cardGroupId) =>
-				get(ownersOfGroups.findState.playerKeyOfGroup(cardGroupId)) ===
-					undefined && // ❗
+				get(ownersOfGroups.findState.playerKeyOfGroup(cardGroupId)) === null && // ❗
 				get(findCardGroupState(cardGroupId)).type === `deck`,
 		)
 		return unownedCardGroupIds

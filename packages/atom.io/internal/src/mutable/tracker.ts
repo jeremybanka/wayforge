@@ -46,7 +46,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		return latestUpdateState
 	}
 
-	private unsubscribeFromInnerValue: (() => void) | null = null
+	private unsubscribeFromInnerValue: () => void
+	private unsubscribeFromState: () => void
 	private observeCore(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		latestUpdateState: AtomToken<typeof this.Update | null>,
@@ -61,20 +62,25 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					: target.transactionMeta.update.key
 			}`,
 			(update) => {
-				const unsubscribe = target.subject.operationStatus.subscribe(
-					mutableState.key,
-					() => {
-						unsubscribe()
-						setState(latestUpdateState, update, target)
-					},
-				)
+				if (target.operation.open) {
+					const unsubscribe = target.subject.operationStatus.subscribe(
+						mutableState.key,
+						() => {
+							unsubscribe()
+							setState(latestUpdateState, update, target)
+						},
+					)
+				} else {
+					setState(mutableState, (current) => current, target)
+					setState(latestUpdateState, update, target)
+				}
 			},
 		)
-		subscribeToState(
+		this.unsubscribeFromState = subscribeToState(
 			mutableState,
 			(update) => {
 				if (update.newValue !== update.oldValue) {
-					this.unsubscribeFromInnerValue?.()
+					this.unsubscribeFromInnerValue()
 					const target = newest(store)
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						`tracker:${store.config.name}:${
@@ -83,13 +89,18 @@ export class Tracker<Mutable extends Transceiver<any>> {
 								: target.transactionMeta.update.key
 						}`,
 						(update) => {
-							const unsubscribe = store.subject.operationStatus.subscribe(
-								mutableState.key,
-								() => {
-									unsubscribe()
-									setState(latestUpdateState, update, store)
-								},
-							)
+							if (target.operation.open) {
+								const unsubscribe = target.subject.operationStatus.subscribe(
+									mutableState.key,
+									() => {
+										unsubscribe()
+										setState(latestUpdateState, update, target)
+									},
+								)
+							} else {
+								setState(mutableState, (current) => current, target)
+								setState(latestUpdateState, update, target)
+							}
 						},
 					)
 				}
@@ -165,6 +176,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
 	public latestUpdateState: AtomToken<typeof this.Update | null>
 
+	public dispose: () => void
+
 	public constructor(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		store: Store,
@@ -175,5 +188,10 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		this.observeCore(mutableState, this.latestUpdateState, target)
 		this.updateCore(mutableState, this.latestUpdateState, target)
 		target.trackers.set(mutableState.key, this)
+		this.dispose = () => {
+			this.unsubscribeFromInnerValue()
+			this.unsubscribeFromState()
+			target.trackers.delete(mutableState.key)
+		}
 	}
 }

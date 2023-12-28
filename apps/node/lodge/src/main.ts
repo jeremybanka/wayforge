@@ -15,6 +15,7 @@ import { logger } from "./logger"
 import {
 	addCardValueTX,
 	addHandTx,
+	cardCycleGroupsAndZones,
 	cardGroupIndex,
 	cardIndex,
 	cardValuesIndex,
@@ -23,9 +24,11 @@ import {
 	findCardState,
 	findCardValueState,
 	groupsOfCards,
+	ownersOfGroups,
 	shuffleDeckTX,
 	spawnCardTX,
 	spawnClassicDeckTX,
+	valuesOfCards,
 } from "./store/game"
 import type { JoinRoomIO } from "./store/rooms"
 import {
@@ -35,7 +38,6 @@ import {
 	playersInRooms,
 	playersIndex,
 	roomsIndex,
-	roomsIndexJSON,
 } from "./store/rooms"
 import { welcome } from "./welcome"
 
@@ -90,8 +92,8 @@ pipe(
 			const receiveTransaction = RTS.useReceiveTransaction({ socket })
 
 			// ROOM SERVICES
-			exposeSingle<string[]>(roomsIndexJSON)
-			exposeFamily(playersInRooms.findState.playerEntriesOfRoom, roomsIndex)
+			exposeMutable(roomsIndex)
+			exposeMutableFamily(playersInRooms.core.findRelatedKeysState, roomsIndex)
 			socket.on(
 				`tx:createRoom`,
 				(update: AtomIO.TransactionUpdate<() => string>) => {
@@ -148,45 +150,28 @@ pipe(
 			// biome-ignore lint/complexity/noForEach: for readability
 			gameIndices.forEach(exposeMutable)
 
-			// const gameJoinStates: AtomIO.StateToken<RelationData<any, any, any>>[] = [
-			// 	cardCycleGroupsAndZones.findState.cardCycleKeyOfGroupOrZone,
-			// 	cardCycleGroupsAndZones.findState.groupOrZoneKeyOfCardCycle,
-			// ]
-			// // biome-ignore lint/complexity/noForEach: for readability
-			// gameJoinStates.forEach(exposeSingle)
-			// const gameRelations: [
-			// 	junction: AtomicJunctionRe<any, any, any>,
-			// 	indexA: AtomIO.MutableAtomToken<SetRTX<string>, SetRTXJson<string>>,
-			// 	indexB: AtomIO.MutableAtomToken<SetRTX<string>, SetRTXJson<string>>,
-			// ][] = [
-			// 	[groupsOfCards, cardGroupIndex, cardIndex],
-			// 	[ownersOfGroups, playersIndex, cardGroupIndex],
-			// ]
-			// // biome-ignore lint/complexity/noForEach: for readability
-			// gameRelations.forEach(([junction, indexA, indexB]) => {
-			// 	exposeMutableFamily(junction.findRelationsState__INTERNAL, indexA)
-			// 	exposeMutableFamily(junction.findRelationsState__INTERNAL, indexB)
-			// 	if (junction.findRelationContentState__INTERNAL) {
-			// 		// exposeFamily(junction.findRelationContentState__INTERNAL)
-			// 	}
-			// })
-
-			// const gameRelations = [
-			// 	[valuesOfCards.findState.cardKeysOfValue, cardIndex, cardValuesIndex],
-			// 	[groupsOfCards.findState.cardKeysOfGroup, cardGroupIndex, cardIndex],
-			// 	[ownersOfGroups.findState.groupKeysOfPlayer, playersIndex, cardGroupIndex],
-			// ]
-			// for (const [junction, indexA, indexB] of gameRelations) {
-			// 	exposeMutableFamily(junction., indexA)
-			// 	exposeMutableFamily(junction.findRelationsState__INTERNAL, indexB)
-			// 	if (junction.findRelationContentState__INTERNAL) {
-			// 		exposeFamily(junction.findRelationContentState__INTERNAL, indexA)
-			// 		exposeFamily(junction.findRelationContentState__INTERNAL, indexB)
-			// 	}
-			// }
 			exposeMutableFamily(
 				groupsOfCards.core.findRelatedKeysState,
 				cardGroupIndex,
+			)
+			exposeMutableFamily(groupsOfCards.core.findRelatedKeysState, cardIndex)
+			exposeMutableFamily(ownersOfGroups.core.findRelatedKeysState, playersIndex)
+			exposeMutableFamily(
+				ownersOfGroups.core.findRelatedKeysState,
+				cardGroupIndex,
+			)
+			exposeMutableFamily(valuesOfCards.core.findRelatedKeysState, cardIndex)
+			exposeMutableFamily(
+				valuesOfCards.core.findRelatedKeysState,
+				cardValuesIndex,
+			)
+			exposeMutableFamily(
+				cardCycleGroupsAndZones.core.findRelatedKeysState,
+				cardGroupIndex,
+			)
+			exposeMutableFamily(
+				cardCycleGroupsAndZones.core.findRelatedKeysState,
+				cardIndex,
 			)
 
 			const gameStateFamilies: [

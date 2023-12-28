@@ -4,6 +4,13 @@
 	"description": "core react and recoil utilities for wayforge",
 	"files": ["**/*"],
 	"exports": {
+		"./react-click-handlers/package.json": "./react-click-handlers/package.json",
+		"./react-click-handlers": {
+			"types": "./react-click-handlers/dist/index.d.ts",
+			"browser": "./react-click-handlers/dist/index.mjs",
+			"import": "./react-click-handlers/dist/index.mjs",
+			"require": "./react-click-handlers/dist/index.js"
+		},
 		"./react-css-vars/package.json": "./react-css-vars/package.json",
 		"./react-css-vars": {
 			"types": "./react-css-vars/dist/index.d.ts",

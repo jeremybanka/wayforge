@@ -4,15 +4,14 @@ import type { FC } from "react"
 
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
-import { useRadial } from "~/apps/web/saloon/src/services/radial"
-import { div } from "../../components/<div>"
+import { div } from "src/components/<div>"
+import { useRadial } from "src/services/peripherals/radial"
 import { CardBack } from "./Card"
+
 import scss from "./Deck.module.scss"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
 	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
-
-	console.log(`❗❗`, { cardIds })
 
 	const shuffle = useServerAction(shuffleDeckTX)
 

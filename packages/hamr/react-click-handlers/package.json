@@ -1,0 +1,6 @@
+{
+	"name": "@hamr/react-click-handlers",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs"
+}

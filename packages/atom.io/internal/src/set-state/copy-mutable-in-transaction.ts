@@ -13,10 +13,6 @@ export function copyMutableIfWithinTransaction<T>(
 	const target = newest(store)
 	const parent = target.parent
 	if (parent !== null) {
-		if (`toJson` in atom && `fromJson` in atom) {
-			const copiedValue = copyMutableIfNeeded(atom, atom, parent, target)
-			return copiedValue
-		}
 		if (`family` in atom) {
 			const family = parent.families.get(atom.family.key)
 			if (family && family.type === `atom_family`) {
@@ -30,6 +26,10 @@ export function copyMutableIfWithinTransaction<T>(
 					return result
 				}
 			}
+		}
+		if (`toJson` in atom && `fromJson` in atom) {
+			const copiedValue = copyMutableIfNeeded(atom, atom, parent, target)
+			return copiedValue
 		}
 	}
 	return oldValue

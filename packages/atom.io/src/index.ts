@@ -33,7 +33,12 @@ export type SelectorToken<_> = {
 	family?: FamilyMetadata
 	__brand?: _
 }
+/**
+ * @deprecated Prefer `WritableToken`.
+ */
 export type StateToken<T> = AtomToken<T> | SelectorToken<T>
+export type WritableToken<T> = AtomToken<T> | SelectorToken<T>
+export type ReadableToken<T> = ReadonlySelectorToken<T> | WritableToken<T>
 
 export type ReadonlySelectorToken<_> = {
 	key: string

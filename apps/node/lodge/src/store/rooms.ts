@@ -6,15 +6,14 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { nanoid } from "nanoid"
 
-export const roomsIndex = atom<Set<string>>({
+export const roomsIndex = atom({
 	key: `roomsIndex`,
-	default: new Set<string>(),
+	default: () => new SetRTX<string>(),
+	mutable: true,
+	toJson: (set) => set.toJSON(),
+	fromJson: (json) => SetRTX.fromJSON(json),
 })
-export const roomsIndexJSON = selector<string[]>({
-	key: `roomsIndexJSON`,
-	get: ({ get }) => [...get(roomsIndex)],
-	set: ({ set }, newValue) => set(roomsIndex, new Set(newValue)),
-})
+
 export type Room = {
 	id: string
 	name: string
@@ -67,7 +66,7 @@ export const playersInRooms = join(
 export const createRoomTX = transaction<(id?: string) => string>({
 	key: `createRoom`,
 	do: ({ set }, roomId = nanoid()) => {
-		set(roomsIndex, (ids) => new Set([...ids, roomId].sort()))
+		set(roomsIndex, (ids) => ids.add(roomId))
 		return roomId
 	},
 })
@@ -77,11 +76,13 @@ export const joinRoomTX = transaction<
 	(options: { roomId: string; playerId: string }) => void
 >({
 	key: `joinRoom`,
-	do: (_, { roomId, playerId }) => {
-		playersInRooms.relations.set(
-			{ room: roomId, player: playerId },
-			{ enteredAt: Date.now() },
-		)
+	do: (transactors, { roomId, playerId }) => {
+		playersInRooms.transact(transactors, ({ relations }) => {
+			relations.set(
+				{ room: roomId, player: playerId },
+				{ enteredAt: Date.now() },
+			)
+		})
 	},
 })
 export type JoinRoomIO = TransactionIO<typeof joinRoomTX>

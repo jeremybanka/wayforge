@@ -5,7 +5,6 @@ import type { FC } from "react"
 
 import { dealCardsTX, groupsOfCards } from "~/apps/node/lodge/src/store/game"
 
-import { getState } from "~/packages/atom.io/src"
 import { useRadial } from "../../../services/radial"
 import { div } from "../../containers/<div>"
 import { CardBack, CardFace } from "./Card"
@@ -27,14 +26,6 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 				// debugger
 				const deckId = publicDeckIds[0]
 				dealCards({ deckId, handId: id, count: 1 })
-				// console.log(
-				// 	`❗ after running deal cards, the hand contains`,
-				// 	getState(groupsOfCards.findRelationsState__INTERNAL(id)),
-				// )
-				// console.log(
-				// 	`❗ after running deal cards, the deck contains`,
-				// 	getState(groupsOfCards.findRelationsState__INTERNAL(deckId)),
-				// )
 			},
 		},
 	])

@@ -1,5 +1,6 @@
 "use client"
 
+import { AtomIODevtools } from "atom.io/react-devtools"
 import { RealtimeProvider } from "atom.io/realtime-react"
 import { io } from "socket.io-client"
 
@@ -16,6 +17,7 @@ export default function GameLayout({
 		<RealtimeProvider socket={io(env.NEXT_PUBLIC_REMOTE_ORIGIN)}>
 			{/* <SocketStatus /> */}
 			{children}
+			{/* <AtomIODevtools /> */}
 		</RealtimeProvider>
 	)
 }
