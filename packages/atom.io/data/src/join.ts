@@ -181,14 +181,8 @@ export class Join<
 		) => {
 			const aKeys = getRelatedKeys(transactors, a)
 			aKeys.delete(b)
-			if (aKeys.size === 0) {
-				dispose(findRelatedKeysState(a))
-			}
 			const bKeys = getRelatedKeys(transactors, b)
 			bKeys.delete(a)
-			if (bKeys.size === 0) {
-				dispose(findRelatedKeysState(b))
-			}
 		}
 		const replaceRelationsSafely: Write<(a: string, bs: string[]) => void> = (
 			transactors,
