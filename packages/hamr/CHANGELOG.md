@@ -1,5 +1,11 @@
 # hamr
 
+## 0.4.5
+
+### Patch Changes
+
+- 0e4254b: ✨ `react-click-handlers` is a new module for making writing complicated click handlers a little more declarative.
+
 ## 0.4.4
 
 ### Patch Changes

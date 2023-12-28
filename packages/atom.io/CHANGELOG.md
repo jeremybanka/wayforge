@@ -1,5 +1,57 @@
 # atom.io
 
+## 0.15.2
+
+### Patch Changes
+
+- 0e4254b: 🏷️ `atom.io/data` `join` state families are now properly identified as readonly.
+- 0e4254b: 🐛 Fix bug where a token belonging to a family might be passed to setState without that family member having been initialized previously, leading to a NotFoundError.
+- 0e4254b: 🏷️ `atom.io/realtime-react`: Apply type fix from #1108 to `usePullMutableFamilyMember` also.
+- 0e4254b: 🐛 `atom.io/data` `join` will not, for the time being, dispose of states that are empty until disposal is easily reversible.
+- 0e4254b: 🐛 Trackers are now properly disposed of following a transaction.
+- 0e4254b: ✨ Mutating the value of a mutable atom now dispatches an update to the store, even outside of a `setState` callback. Keep in mind that this is a somewhat reckless pattern, as the dispatch is only bound to the layer of the store that the atom's value was gotten from.
+
+  For example, if you have the following code
+
+  ```ts
+  const playerIndex = atom({
+    key: 'playerIndex',
+    default: new SetRTX()
+    mutable: true,
+    toJson: (set) => set.toJSON(),
+    fromJson: (json) => new SetRTX(json),
+  })
+
+  const playerIds = getState(playerIndex)
+
+  const addPlayerTX = transaction<(id: string) => void>({
+    key: 'addPlayer',
+    do: (_, id) => {
+      playerIds.add(id)
+    }
+  }
+  ```
+
+  The above transaction, when run, will not include any updates. However, the base store _will_ be updated as the transaction runs.
+
+  ```ts
+  const addPlayerTX = transaction<(id: string) => void>({
+    key: 'addPlayer',
+    do: ({ get }, id) => {
+      const playerIds = get(playerIndex)
+      playerIds.add(id)
+    }
+  }
+  ```
+
+  The `get` call will produce a copy of the atom's value that is bound to the transaction's scope. If the transaction fails, the store will not be updated. If the transaction succeeds, the store will be updated with the new value.
+
+- 0e4254b: 🐛 `atom.io/transceivers/set-rtx`: Updates are now emitted after mutating the transceivers inner state. Emitting before led to bugs when trying to capture state."
+- 0e4254b: 🏷️ `WritableToken` utility type refers to Atom and Selector token (the previous name, `StateToken`, has been deprecated). `ReadableToken` includes readonly Selector tokens as well.
+- 0e4254b: 🐛 When copying mutable state in a transaction, the state would be created without attaching its family metadata. Now, family metadata is properly attached.
+- 0e4254b: 🥅 Improve safety when `setState` is misused on a readonly selector. Previously, this would cause things to break badly. Now, it does nothing.
+- 0e4254b: 🐛 When `get` called on a mutable atom during a transaction, a copy is now properly created.
+
 ## 0.15.1
 
 ### Patch Changes
