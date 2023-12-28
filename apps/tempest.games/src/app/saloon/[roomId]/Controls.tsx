@@ -20,7 +20,10 @@ export const Controls: FC = () => {
 			{myId ? (
 				<button.curledLeft
 					className={comic.class}
-					onClick={() => addHand({ playerId: myId, groupId: nanoid() })}
+					onClick={() => {
+						const groupId = nanoid()
+						addHand(myId, groupId)
+					}}
 				>
 					Add Hand
 				</button.curledLeft>
@@ -28,9 +31,8 @@ export const Controls: FC = () => {
 			<button.curledLeft
 				className={comic.class}
 				onClick={() => {
-					const deckId = `DECK_ID_TEST` // nanoid()
+					const deckId = nanoid()
 					const cardIds = Array.from({ length: 52 }).map(() => nanoid())
-					// debugger
 					spawnClassicDeck(deckId, cardIds)
 				}}
 			>
