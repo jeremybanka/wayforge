@@ -1,8 +1,10 @@
 {
 	"name": "hamr",
-	"version": "0.4.4",
+	"version": "0.4.5",
 	"description": "core react and recoil utilities for wayforge",
-	"files": ["**/*"],
+	"files": [
+		"**/*"
+	],
 	"exports": {
 		"./react-click-handlers/package.json": "./react-click-handlers/package.json",
 		"./react-click-handlers": {
