@@ -64,27 +64,30 @@ export class SetRTX<P extends primitive>
 	}
 
 	public add(value: P): this {
+		const result = super.add(value)
 		if (this.mode === `record`) {
 			this.cacheUpdateNumber++
 			this.emit(`add:${stringifyJson<P>(value)}`)
 		}
-		return super.add(value)
+		return result
 	}
 
 	public clear(): void {
-		if (this.mode === `record`) {
-			this.cacheUpdateNumber++
-			this.emit(`clear:${JSON.stringify([...this])}`)
-		}
+		const capturedContents = this.mode === `record` ? [...this] : null
 		super.clear()
+		if (capturedContents) {
+			this.cacheUpdateNumber++
+			this.emit(`clear:${JSON.stringify(capturedContents)}`)
+		}
 	}
 
 	public delete(value: P): boolean {
+		const result = super.delete(value)
 		if (this.mode === `record`) {
 			this.cacheUpdateNumber++
 			this.emit(`del:${stringifyJson<P>(value)}`)
 		}
-		return super.delete(value)
+		return result
 	}
 
 	public readonly parent: SetRTX<P> | null
