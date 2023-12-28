@@ -112,18 +112,6 @@ h3 {
     --hyperlink-color: #08f;
     --hyperlink-hover-color: #04f;
     --hyperlink-visited-color: #99f;
-
-    button {
-      background-color: var(--bg-tint-1);
-      &:hover,
-      &:focus {
-        background-color: var(--bg-tint-2);
-      }
-      &:active {
-        background-color: var(--bg-shade-1);
-        color: var(--fg-hard-2);
-      }
-    }
   }
   background-color: var(--bg-shade-2);
   min-height: 100vh;
