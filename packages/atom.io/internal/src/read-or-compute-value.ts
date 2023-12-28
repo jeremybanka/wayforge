@@ -1,23 +1,19 @@
-import type { Atom } from "./atom"
-import { isValueCached, readCachedValue } from "./caching"
-import type { ReadonlySelector, Selector } from "./selector"
+import type { StateNode } from "."
+import { readCachedValue } from "./caching"
 import type { Store } from "./store"
 
-export const readOrComputeValue = <T>(
-	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
-	store: Store,
-): T => {
-	if (isValueCached(state.key, store)) {
-		store.logger.info(`📖`, state.type, state.key, `reading cached value`)
-		return readCachedValue(state.key, store)
+export const readOrComputeValue = <T>(state: StateNode<T>, target: Store): T => {
+	if (target.valueMap.has(state.key)) {
+		target.logger.info(`📖`, state.type, state.key, `reading cached value`)
+		return readCachedValue(state, target)
 	}
 	if (state.type !== `atom`) {
-		store.logger.info(`🧮`, state.type, state.key, `computing value`)
+		target.logger.info(`🧮`, state.type, state.key, `computing value`)
 		return state.get()
 	}
 	const fallback =
 		state.default instanceof Function ? state.default() : state.default
-	store.logger.info(
+	target.logger.info(
 		`💁`,
 		`atom`,
 		state.key,
