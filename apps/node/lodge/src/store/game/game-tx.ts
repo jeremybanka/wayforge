@@ -62,7 +62,11 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		groupsOfCards.relations.replaceRelations(deckId, cardIds, { reckless: true })
+		groupsOfCards.transact(transactors, ({ relations }) => {
+			for (const cardId of cardIds) {
+				relations.set({ card: cardId, group: deckId })
+			}
+		})
 	},
 })
 
@@ -149,10 +153,9 @@ export const dealCardsTX = transaction<
 >({
 	key: `dealCards`,
 	do: (transactors, { deckId, handId, count }) => {
-		const { get, set } = transactors
+		const { get } = transactors
 		const cardGroupKeys = get(cardGroupIndex)
 		const deckDoesExist = cardGroupKeys.has(deckId)
-
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
 		}
@@ -160,6 +163,7 @@ export const dealCardsTX = transaction<
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)
 		}
+
 		const deckCardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
