@@ -11,7 +11,9 @@ export function setState<T, New extends T>(
 	if (rejection) {
 		return
 	}
-	const state = Internal.withdraw(token, store)
+	const state =
+		Internal.withdraw(token, store) ??
+		Internal.withdrawNewFamilyMember(token, store)
 	if (state === undefined) {
 		throw new Internal.NotFoundError(token, store)
 	}
