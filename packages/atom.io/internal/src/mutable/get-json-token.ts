@@ -4,7 +4,7 @@ import type { Json } from "atom.io/json"
 import type { Transceiver } from "./transceiver"
 
 export const getJsonToken = <
-	Core extends Transceiver<Json.Serializable>,
+	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 >(
 	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,

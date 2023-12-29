@@ -1,5 +1,8 @@
 import { useO } from "atom.io/react"
-import { useServerAction } from "atom.io/realtime-react"
+import {
+	usePullMutableFamilyMember,
+	useServerAction,
+} from "atom.io/realtime-react"
 import { AnimatePresence } from "framer-motion"
 import type { FC } from "react"
 
@@ -16,6 +19,8 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 	const isMyHand = useO(myHandsIndex).includes(id)
 	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
 	const publicDeckIds = useO(publicDeckIndex)
+
+	usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
 
 	const dealCards = useServerAction(dealCardsTX)
 

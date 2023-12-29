@@ -5,27 +5,28 @@ import type { FC } from "react"
 
 import { valuesOfCards } from "~/apps/node/lodge/src/store/game"
 
+import { usePullMutableFamilyMember } from "atom.io/realtime-react"
 import { article } from "src/components/<article>"
 import { PlayingCards } from "src/components/PlayingCards"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-	const valueKey = useO(valuesOfCards.findState.valueKeyOfCard(id))
-	const PlayingCard = PlayingCards[valueKey as keyof typeof PlayingCards]
-	console.log(`❗ PlayingCard`, PlayingCard)
+	usePullMutableFamilyMember(valuesOfCards.core.findRelatedKeysState(id))
+	const valueKey = useO(valuesOfCards.findState.valueKeyOfCard(id)) ?? `Back`
+	const PlayingCard = PlayingCards[valueKey]
 	return (
 		<AnimatePresence>
-			<article.roundedWhite layoutId={id}>
+			<article.whiteCard layoutId={id}>
 				<Image src={PlayingCard.src} alt="card" height={175} width={125} />
-			</article.roundedWhite>
+			</article.whiteCard>
 		</AnimatePresence>
 	)
 }
 export const CardBack: FC<{ id: string }> = ({ id }) => {
 	return (
 		<AnimatePresence>
-			<article.roundedWhite layoutId={id}>
+			<article.redCard layoutId={id}>
 				<Image src={PlayingCards.Back.src} alt="card" height={175} width={125} />
-			</article.roundedWhite>
+			</article.redCard>
 		</AnimatePresence>
 	)
 }

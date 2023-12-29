@@ -1,5 +1,8 @@
 import { useO } from "atom.io/react"
-import { useServerAction } from "atom.io/realtime-react"
+import {
+	usePullMutableFamilyMember,
+	useServerAction,
+} from "atom.io/realtime-react"
 import type { FC } from "react"
 
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
@@ -12,6 +15,8 @@ import scss from "./Deck.module.scss"
 
 export const Deck: FC<{ id: string }> = ({ id }) => {
 	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
+
+	usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
 
 	const shuffle = useServerAction(shuffleDeckTX)
 

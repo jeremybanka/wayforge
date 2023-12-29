@@ -184,37 +184,38 @@ export class Join<
 			const bKeys = getRelatedKeys(transactors, b)
 			bKeys.delete(a)
 		}
-		const replaceRelationsSafely: Write<(a: string, bs: string[]) => void> = (
-			transactors,
-			a,
-			bs,
-		) => {
-			const aRelations = getRelatedKeys(transactors, a)
-			for (const b of aRelations) {
-				const bKeys = getRelatedKeys(transactors, b)
-				if (bKeys) {
-					bKeys.delete(a)
-					if (bKeys.size === 0) {
-						dispose(findRelatedKeysState(b))
-					}
+		const replaceRelationsSafely: Write<
+			(a: string, newRelationsOfA: string[]) => void
+		> = (transactors, a, newRelationsOfA) => {
+			const currentRelationsOfA = getRelatedKeys(transactors, a)
+			for (const currentRelationB of currentRelationsOfA) {
+				const remainsRelated = newRelationsOfA.includes(currentRelationB)
+				if (remainsRelated) {
+					continue
 				}
+				const relationsOfB = getRelatedKeys(transactors, currentRelationB)
+				relationsOfB.delete(a)
 			}
-			transactors.set(findRelatedKeysState(a), new SetRTX(bs))
-			for (const b of bs) {
-				const bKeys = getRelatedKeys(transactors, b)
-				bKeys.add(a)
-			}
+			currentRelationsOfA.transaction((nextRelationsOfA) => {
+				nextRelationsOfA.clear()
+				for (const newRelationB of newRelationsOfA) {
+					const relationsOfB = getRelatedKeys(transactors, newRelationB)
+					relationsOfB.add(a)
+					nextRelationsOfA.add(newRelationB)
+				}
+				return true
+			})
 		}
-		const replaceRelationsUnsafely: Write<(a: string, bs: string[]) => void> = (
-			transactors,
-			a,
-			bs,
-		) => {
-			transactors.set(findRelatedKeysState(a), new SetRTX(bs))
-			for (const b of bs) {
-				const bKeys = getRelatedKeys(transactors, b)
-				bKeys.add(a)
+		const replaceRelationsUnsafely: Write<
+			(a: string, newRelationsOfA: string[]) => void
+		> = (transactors, a, newRelationsOfA) => {
+			const relationsOfA = getRelatedKeys(transactors, a)
+			for (const newRelationB of newRelationsOfA) {
+				const relationsOfB = getRelatedKeys(transactors, newRelationB)
+				relationsOfA.add(newRelationB)
+				relationsOfB.add(a)
 			}
+			return true
 		}
 		const has: Read<(a: string, b?: string) => boolean> = (
 			transactors,

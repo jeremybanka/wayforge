@@ -6,7 +6,7 @@ import { isTransceiver } from "../mutable"
 import type { Store } from "../store"
 
 function shouldUpdateBeStowed(key: string, update: StateUpdate<any>): boolean {
-	// do not stow updates that aren't json, unless they're not equal by reference
+	// do not stow updates that aren't json
 	if (isTransceiver(update.newValue)) {
 		return false
 	}

@@ -22,6 +22,7 @@ import { myRoomState } from "src/services/store/my-room"
 import { Game } from "./Game"
 import { PlayersInRoom } from "./PlayersInRoom"
 
+import Link from "next/link"
 import scss from "./Room.module.scss"
 
 export default function Room({
@@ -40,6 +41,7 @@ export default function Room({
 	return (
 		<>
 			<article className={scss.class}>
+				<Link href="/saloon">Lobby</Link>
 				<header.auspicious0>
 					<span>
 						<button
