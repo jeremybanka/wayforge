@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.15.3
+
+### Patch Changes
+
+- 75d7ef1: 🐛 `atom.io/data` `join` Fix bug with `Join.relations.replaceRelations` which would fail to replace all relations.
+- 75d7ef1: 🐛 `atom.io/realtime-react`: Fix issue where context provider would fail to initialize your Id in contexts where a socket is not immediately available.
+
 ## 0.15.2
 
 ### Patch Changes
