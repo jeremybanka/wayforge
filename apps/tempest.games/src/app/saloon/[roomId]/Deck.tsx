@@ -3,17 +3,18 @@ import {
 	usePullMutableFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
-import type { FC } from "react"
+import { motion } from "framer-motion"
 
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
 import { div } from "src/components/<div>"
+import { memoize } from "src/components/memoize"
 import { useRadial } from "src/services/peripherals/radial"
 import { CardBack } from "./Card"
 
 import scss from "./Deck.module.scss"
 
-export const Deck: FC<{ id: string }> = ({ id }) => {
+export const Deck = memoize<{ id: string }>(`Deck`, ({ id }) => {
 	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
 
 	usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
@@ -29,7 +30,7 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
 
 	return (
 		<>
-			<div.dropShadowDiagon className={scss.class} {...handlers}>
+			<motion.span className={scss.class} {...handlers}>
 				<div>
 					{id} ({cardIds.length})
 				</div>
@@ -38,7 +39,7 @@ export const Deck: FC<{ id: string }> = ({ id }) => {
 						<CardBack key={cardId} id={cardId} />
 					))}
 				</div>
-			</div.dropShadowDiagon>
+			</motion.span>
 		</>
 	)
-}
+})
