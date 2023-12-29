@@ -16,10 +16,7 @@ export const Controls: FC = () => {
 		<controls>
 			<h>Controls</h>
 			{myId ? (
-				<button.ff
-					children="Add Hand"
-					onClick={() => addHand({ playerId: myId, groupId: nanoid() })}
-				/>
+				<button.ff children="Add Hand" onClick={() => addHand(myId, nanoid())} />
 			) : null}
 			<button.ff
 				children="Add Deck"
