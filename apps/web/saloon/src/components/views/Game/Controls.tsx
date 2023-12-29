@@ -16,19 +16,17 @@ export const Controls: FC = () => {
 		<controls>
 			<h>Controls</h>
 			{myId ? (
-				<button.ff
-					children="Add Hand"
-					onClick={() => addHand({ playerId: myId, groupId: nanoid() })}
-				/>
+				<button.ff onClick={() => addHand(myId, nanoid())}>Add Hand</button.ff>
 			) : null}
 			<button.ff
-				children="Add Deck"
 				onClick={() => {
 					const deckId = `DECK_ID_TEST` // nanoid()
 					const cardIds = Array.from({ length: 52 }).map(nanoid)
 					spawnClassicDeck(deckId, cardIds)
 				}}
-			/>
+			>
+				Add Deck
+			</button.ff>
 		</controls>
 	)
 }

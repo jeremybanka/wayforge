@@ -147,32 +147,22 @@ pipe(
 				SetRTX<string>,
 				SetRTXJson<string>
 			>[] = [cardIndex, cardGroupIndex, cardValuesIndex]
-			// biome-ignore lint/complexity/noForEach: for readability
-			gameIndices.forEach(exposeMutable)
+			for (const index of gameIndices) {
+				exposeMutable(index)
+			}
 
-			exposeMutableFamily(
-				groupsOfCards.core.findRelatedKeysState,
-				cardGroupIndex,
-			)
-			exposeMutableFamily(groupsOfCards.core.findRelatedKeysState, cardIndex)
-			exposeMutableFamily(ownersOfGroups.core.findRelatedKeysState, playersIndex)
-			exposeMutableFamily(
-				ownersOfGroups.core.findRelatedKeysState,
-				cardGroupIndex,
-			)
-			exposeMutableFamily(valuesOfCards.core.findRelatedKeysState, cardIndex)
-			exposeMutableFamily(
-				valuesOfCards.core.findRelatedKeysState,
-				cardValuesIndex,
-			)
-			exposeMutableFamily(
-				cardCycleGroupsAndZones.core.findRelatedKeysState,
-				cardGroupIndex,
-			)
-			exposeMutableFamily(
-				cardCycleGroupsAndZones.core.findRelatedKeysState,
-				cardIndex,
-			)
+			const groupsOfCardsFamily = groupsOfCards.core.findRelatedKeysState
+			const ownersOfGroupsFamily = ownersOfGroups.core.findRelatedKeysState
+			const valuesOfCardsFamily = valuesOfCards.core.findRelatedKeysState
+			const cardCycleGZFamily = cardCycleGroupsAndZones.core.findRelatedKeysState
+			exposeMutableFamily(groupsOfCardsFamily, cardGroupIndex)
+			exposeMutableFamily(groupsOfCardsFamily, cardIndex)
+			exposeMutableFamily(ownersOfGroupsFamily, cardGroupIndex)
+			exposeMutableFamily(ownersOfGroupsFamily, cardIndex)
+			exposeMutableFamily(valuesOfCardsFamily, cardValuesIndex)
+			exposeMutableFamily(valuesOfCardsFamily, cardIndex)
+			exposeMutableFamily(cardCycleGZFamily, cardGroupIndex)
+			exposeMutableFamily(cardCycleGZFamily, cardIndex)
 
 			const gameStateFamilies: [
 				AtomIO.AtomFamily<Json.Object>,

@@ -9,14 +9,17 @@ export const RealtimeContext = React.createContext<{ socket: Socket | null }>({
 
 export const RealtimeProvider: React.FC<{
 	children: React.ReactNode
-	socket: Socket
+	socket: Socket | null
 }> = ({ children, socket }) => {
 	const setMyId = useI(RTC.myIdState__INTERNAL)
 	React.useEffect(() => {
-		socket.on(`connect`, () => {
+		if (socket) {
+			setMyId(socket.id)
+		}
+		socket?.on(`connect`, () => {
 			setMyId(socket.id)
 		})
-		socket.on(`disconnect`, () => {
+		socket?.on(`disconnect`, () => {
 			setMyId(null)
 		})
 	}, [socket, setMyId])

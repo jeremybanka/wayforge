@@ -63,9 +63,7 @@ export const spawnClassicDeckTX = transaction<
 		})
 
 		groupsOfCards.transact(transactors, ({ relations }) => {
-			for (const cardId of cardIds) {
-				relations.set({ card: cardId, group: deckId })
-			}
+			relations.replaceRelations(deckId, cardIds, { reckless: true })
 		})
 	},
 })
@@ -109,10 +107,10 @@ export const spawnCardTX = transaction<
 })
 
 export const addHandTx = transaction<
-	(options: { playerId: string; groupId: string }) => void
+	(playerId: string, groupId: string) => void
 >({
 	key: `addHand`,
-	do: (transactors, { playerId, groupId }) => {
+	do: (transactors, playerId, groupId) => {
 		const { get, set } = transactors
 		const cardGroup: CardGroup = {
 			type: `hand`,
@@ -141,7 +139,7 @@ export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>(
 		const cardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
 		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
 		groupsOfCards.transact(transactors, ({ relations }) => {
-			relations.replaceRelations(deckId, shuffledCardIds, { reckless: true })
+			relations.replaceRelations(deckId, shuffledCardIds)
 		})
 	},
 })
