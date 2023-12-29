@@ -1,20 +1,23 @@
 "use client"
 
-import { AtomIODevtools } from "atom.io/react-devtools"
+import { useO } from "atom.io/react"
+import { myIdState } from "atom.io/realtime-client"
 import { RealtimeProvider } from "atom.io/realtime-react"
-import { io } from "socket.io-client"
+import { Id } from "hamr/react-id"
 
 // import { SocketStatus } from "~/apps/web/saloon/src/components/SocketStatus"
 
-import { env } from "src/services/env"
+import { SOCKET } from "src/services/socket"
 
 export default function GameLayout({
 	children,
 }: {
 	children: React.ReactNode
 }): JSX.Element {
+	const id = useO(myIdState)
 	return (
-		<RealtimeProvider socket={io(env.NEXT_PUBLIC_REMOTE_ORIGIN)}>
+		<RealtimeProvider socket={SOCKET}>
+			<Id id={id ?? `null`} key={id} />
 			{/* <SocketStatus /> */}
 			{children}
 			{/* <AtomIODevtools /> */}

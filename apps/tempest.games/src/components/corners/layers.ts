@@ -26,7 +26,7 @@ export const LAYER: Readonly<Record<string, Fragment<Layer>>> = {
 	},
 	SMALL_SHADOW: {
 		className: `small-shadow`,
-		color: `#0005`,
+		color: `#00000010`,
 		blur: 2,
 		offset: { x: 0, y: -2 },
 	},
