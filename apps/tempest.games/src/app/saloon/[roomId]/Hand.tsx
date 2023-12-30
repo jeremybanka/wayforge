@@ -9,12 +9,11 @@ import * as React from "react"
 import { dealCardsTX, groupsOfCards } from "~/apps/node/lodge/src/store/game"
 
 import { setCssVars } from "hamr/react-css-vars"
-import { div } from "src/components/<div>"
 import { memoize } from "src/components/memoize"
 import { useRadial } from "src/services/peripherals/radial"
 import { myHandsIndex } from "src/services/store/my-hands-index"
 import { publicDeckIndex } from "src/services/store/public-deck-index"
-import { CardBack, CardFace } from "./Card"
+import { CardBack, CardFace, CardSlot } from "./Card"
 import scss from "./Hand.module.scss"
 
 export const Hand = memoize<{ id: string }>(`Deck`, ({ id }) => {
@@ -60,28 +59,28 @@ export const Hand = memoize<{ id: string }>(`Deck`, ({ id }) => {
 
 	return (
 		<AnimatePresence>
-			<motion.span
-				className={scss.class}
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				exit={{ opacity: 0 }}
-				{...handlers}
-			>
-				<div>
-					{id} ({cardIds.length})
-				</div>
-				<article
+			<span className={scss.class} {...handlers}>
+				<div>Hand ({cardIds.length})</div>
+				<motion.article
 					ref={ref}
+					layoutId={id}
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
 					style={setCssVars({
 						"--child-len": `${height * (5 / 7)}px`,
 						"--child-count": cardIds.length,
 					})}
 				>
-					{isMyHand
-						? cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
-						: cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)}
-				</article>
-			</motion.span>
+					{cardIds.length === 0 ? (
+						<CardSlot />
+					) : isMyHand ? (
+						cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
+					) : (
+						cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)
+					)}
+				</motion.article>
+			</span>
 		</AnimatePresence>
 	)
 })

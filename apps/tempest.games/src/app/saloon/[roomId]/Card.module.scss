@@ -1,10 +1,9 @@
 span.class {
-  flex-shrink: 1;
-  width: min(var(--allowed-space), var(--child-len));
+  flex: 1 0 0;
+  min-width: 0;
   article {
-    width: var(--child-len);
-    display: flex;
     justify-content: center;
     align-items: center;
+    width: var(--child-len);
   }
 }

@@ -19,23 +19,33 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
 	const valueKey = useO(valuesOfCards.findState.valueKeyOfCard(id)) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]
 	return (
-		<AnimatePresence>
-			<span className={scss.class}>
+		<span className={scss.class}>
+			<AnimatePresence>
 				<article.whiteCard layoutId={id}>
 					<Image src={PlayingCard.src} alt="card" height={175} width={125} />
 				</article.whiteCard>
-			</span>
-		</AnimatePresence>
+			</AnimatePresence>
+		</span>
 	)
 }
 export const CardBack: FC<{ id: string }> = ({ id }) => {
 	return (
-		<AnimatePresence>
-			<span className={scss.class}>
+		<span className={scss.class}>
+			<AnimatePresence>
 				<article.redCard layoutId={id}>
 					<Image src={Back.src} alt="card" height={175} width={125} />
 				</article.redCard>
-			</span>
-		</AnimatePresence>
+			</AnimatePresence>
+		</span>
+	)
+}
+
+export const CardSlot: FC<{ onClick?: () => void }> = ({ onClick }) => {
+	return (
+		<span className={scss.class}>
+			<AnimatePresence>
+				<article.greyCardSlot onClick={onClick} />
+			</AnimatePresence>
+		</span>
 	)
 }
