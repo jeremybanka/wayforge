@@ -1,8 +1,18 @@
-.class {
+div.class {
+  position: relative;
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  > * ~ * {
-    margin-left: 10px;
+  gap: 10px;
+  > div {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    flex: 1 0 0;
+    min-width: 0;
+    > div {
+      position: relative;
+      width: 100%;
+    }
   }
 }

@@ -7,8 +7,8 @@ import { Hand } from "./Hand"
 export const MyDomain: React.FC = () => {
 	const myHands = useO(myHandsIndex)
 	return (
-		<div className="my-domain">
-			<div className="my-hands">
+		<div data-id="my-domain">
+			<div data-id="my-hands">
 				{myHands.map((id) => (
 					<Hand key={id} id={id} />
 				))}
