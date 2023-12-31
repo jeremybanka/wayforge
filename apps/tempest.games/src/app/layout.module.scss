@@ -17,16 +17,16 @@ body.class {
     position: fixed;
     width: calc(100% - 0.5em);
     top: 0;
-    z-index: 1;
+    // z-index: 1;
     margin: 0.25em;
     padding: 1em 1.5em;
     border-radius: 2em;
     --nav-background: var(--bg-soft-glass-1);
     --nav-backdrop-filter: blur(15px);
     --nav-box-shadow: 0 1px 10px 1px var(--bg-shadow-1);
-    background: var(--nav-background);
-    backdrop-filter: var(--nav-backdrop-filter);
-    box-shadow: var(--nav-box-shadow);
+    // background: var(--nav-background);
+    // backdrop-filter: var(--nav-backdrop-filter);
+    // box-shadow: var(--nav-box-shadow);
     @media screen and (max-width: $viewport-medium-width) {
       margin-top: 0.75em;
     }

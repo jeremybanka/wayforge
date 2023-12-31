@@ -16,7 +16,6 @@ export const Controls: FC = () => {
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	return (
 		<span>
-			<h1>Controls</h1>
 			{myId ? (
 				<button.curledLeft
 					className={comic.class}

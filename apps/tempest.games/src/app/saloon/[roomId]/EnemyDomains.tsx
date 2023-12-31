@@ -4,6 +4,7 @@ import * as React from "react"
 import { ownersOfGroups } from "~/apps/node/lodge/src/store/game"
 
 import { usePullMutableFamilyMember } from "atom.io/realtime-react"
+import { span } from "src/components/<span>"
 import { otherPlayersIndex } from "src/services/store/enemy-hands-index"
 import { findHandsOfPlayer } from "src/services/store/player-hand"
 import { Hand } from "./Hand"
@@ -29,11 +30,14 @@ export const EnemyDomains: React.FC = () => {
 	console.log({ enemyIds })
 	return (
 		<div className={scss.class}>
-			{enemyIds.map((id) => (
-				<div key={id} className="enemy">
-					<TheirHands playerId={id} />
-				</div>
-			))}
+			<main>
+				{enemyIds.map((id) => (
+					<div key={id} className="enemy">
+						<TheirHands playerId={id} />
+					</div>
+				))}
+			</main>
+			<span.chamferedTop />
 		</div>
 	)
 }

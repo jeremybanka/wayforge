@@ -39,10 +39,20 @@ export const Auspicious4 = corners(null, null, auspice, null).size(200)
 export const Auspicious5 = corners(null, auspice, null, null).size(200)
 export const Auspicious6 = corners(null, null, null, auspice).size(200)
 
-export const wedge: DrawCorner = (p1, p2, idx) => {
+export const wedge0: DrawCorner = (p1, p2, idx) => {
 	if (idx === 0) {
 		return [writePathPoint(p1.x - (p2.x - p1.x), p1.y, `M`)]
 	}
 	return straight(p1, p2, idx)
 }
-export const Wedged = corners(wedge, null, null, null).size(2000)
+export const wedge3: DrawCorner = (p1, p2, idx) => {
+	if (idx === 3) {
+		console.log({ p1, p2 })
+		return [writePathPoint((p1.x + (p2.x - p1.x)) * 2, p2.y, `L`)]
+	}
+	return straight(p1, p2, idx)
+}
+export const Wedged0 = corners(wedge0, null, null, null).size(2000)
+export const Trapezoid0 = corners(wedge0, null, null, wedge3).size(2000)
+
+export const ChamferedTop = corners(chamfer, null, null, chamfer).size(40)

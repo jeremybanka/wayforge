@@ -1,6 +1,5 @@
 import { useO } from "atom.io/react"
 import { AnimatePresence } from "framer-motion"
-import { motion } from "framer-motion"
 import Image from "next/image"
 import type { FC } from "react"
 
@@ -22,7 +21,7 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
 		<span className={scss.class}>
 			<AnimatePresence>
 				<article.whiteCard layoutId={id}>
-					<Image src={PlayingCard.src} alt="card" height={175} width={125} />
+					<Image src={PlayingCard.src} alt="card" fill />
 				</article.whiteCard>
 			</AnimatePresence>
 		</span>
@@ -33,7 +32,7 @@ export const CardBack: FC<{ id: string }> = ({ id }) => {
 		<span className={scss.class}>
 			<AnimatePresence>
 				<article.redCard layoutId={id}>
-					<Image src={Back.src} alt="card" height={175} width={125} />
+					<Image src={Back.src} alt="card" fill />
 				</article.redCard>
 			</AnimatePresence>
 		</span>

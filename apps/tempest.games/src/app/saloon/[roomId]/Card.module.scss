@@ -1,9 +1,11 @@
 span.class {
   flex: 1 0 0;
   min-width: 0;
+  max-width: calc(var(--child-len) * 0.95);
   article {
     justify-content: center;
     align-items: center;
     width: var(--child-len);
+    height: 100%;
   }
 }

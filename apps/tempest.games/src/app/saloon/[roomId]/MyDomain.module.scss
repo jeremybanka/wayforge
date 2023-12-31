@@ -1,0 +1,10 @@
+div.class {
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  > [data-css="my-hands"] {
+    width: 100%;
+    display: flex;
+  }
+}

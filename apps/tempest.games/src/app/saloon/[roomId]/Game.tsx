@@ -1,10 +1,7 @@
 "use client"
 
-import {
-	usePullFamilyMember,
-	usePullMutable,
-	usePullMutableFamilyMember,
-} from "atom.io/realtime-react"
+import { useJSON } from "atom.io/react"
+import { usePullFamilyMember, usePullMutable } from "atom.io/realtime-react"
 
 import {
 	cardGroupIndex,
@@ -19,7 +16,6 @@ import { EnemyDomains } from "./EnemyDomains"
 import { MyDomain } from "./MyDomain"
 import { Public } from "./Public"
 
-import { useJSON } from "atom.io/react"
 import scss from "./Game.module.scss"
 
 function CardGroupSync(props: { id: string }): null {
@@ -43,13 +39,19 @@ export function Game(): JSX.Element {
 	usePullMutable(cardValuesIndex)
 
 	return (
-		<div className={[`game`, scss.class].join(` `)}>
+		<>
 			<CoreSync />
-			<h3.wedge>Game</h3.wedge>
-			<Controls />
-			<EnemyDomains />
-			<Public />
-			<MyDomain />
-		</div>
+			<div className={scss.class}>
+				<section data-css="enemies">
+					<EnemyDomains />
+				</section>
+				<section data-css="public">
+					<Public />
+				</section>
+				<section data-css="me">
+					<MyDomain />
+				</section>
+			</div>
+		</>
 	)
 }
