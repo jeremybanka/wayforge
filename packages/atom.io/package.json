@@ -79,8 +79,8 @@
 		"@types/npmlog": "7.0.0",
 		"@types/react": "18.2.46",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "1.1.0",
-		"@vitest/ui": "1.1.0",
+		"@vitest/coverage-v8": "1.1.1",
+		"@vitest/ui": "1.1.1",
 		"concurrently": "8.2.2",
 		"drizzle-kit": "0.20.9",
 		"drizzle-orm": "0.29.2",
@@ -101,7 +101,7 @@
 		"typescript": "5.3.3",
 		"vite": "5.0.10",
 		"vite-tsconfig-paths": "4.2.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
