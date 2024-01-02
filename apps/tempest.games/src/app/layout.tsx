@@ -10,6 +10,11 @@ import scss from "./layout.module.scss"
 export const metadata: Metadata = {
 	title: `Reactive Data • atom.io`,
 	description: `Batteries-included data framework for any ECMAScript environment.`,
+	appleWebApp: {
+		capable: true,
+		title: `Cards`,
+		statusBarStyle: `black-translucent`,
+	},
 }
 
 export default function RootLayout({

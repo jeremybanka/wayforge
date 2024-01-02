@@ -71,7 +71,6 @@ h3 {
   --bg-shade-3: #000;
   --bg-shadow-1: #0005;
   --bg-shadow-2: #0007;
-  --bg-darkest: #000;
   --bg-hard-1: var(--bg-shade-1);
   --bg-hard-2: var(--bg-shade-2);
   --bg-soft-1: var(--bg-tint-1);
@@ -102,7 +101,6 @@ h3 {
     --bg-shade-3: #d6d6d6;
     --bg-shadow-1: #e8e8e8;
     --bg-shadow-2: #e0e0e0;
-    --bg-darkest: #777;
     --bg-hard-1: var(--bg-tint-1);
     --bg-hard-2: var(--bg-tint-2);
     --bg-soft-1: var(--bg-shade-1);
@@ -117,10 +115,12 @@ h3 {
     --hyperlink-visited-color: #99f;
   }
   // game
+  --bg-darkest: var(--bg-shade-2);
   --table-far: #171717;
   --table-middle: #222;
   --table-close: #333;
   @media (prefers-color-scheme: light) {
+    --bg-darkest: #777;
     --table-color: #ccc;
     --table-dark: #bbb;
   }
