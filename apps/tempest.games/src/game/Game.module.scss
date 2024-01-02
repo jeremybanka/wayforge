@@ -16,13 +16,13 @@
     flex: 1 0 0;
     min-height: 0;
     &[data-css="enemy-domains"] {
-      flex-grow: 2;
+      flex-grow: 4;
     }
     &[data-css="public"] {
-      flex-grow: 5;
+      flex-grow: 10;
     }
     &[data-css="my-domain"] {
-      flex-grow: 2;
+      flex-grow: 5;
     }
   }
 }

@@ -16,14 +16,14 @@ import {
 } from "~/apps/node/lodge/src/store/rooms"
 
 import { header } from "src/components/<header>"
+import { Game } from "src/game/Game"
 import { windowMousePositionState } from "src/services/peripherals/mouse-position"
 import { actionsState, radialModeState } from "src/services/peripherals/radial"
 import { myRoomState } from "src/services/store/my-room"
-import { Game } from "./Game"
 import { PlayersInRoom } from "./PlayersInRoom"
 
 import Link from "next/link"
-import scss from "./Room.module.scss"
+import scss from "./page.module.scss"
 
 export default function Room({
 	params: { roomId },

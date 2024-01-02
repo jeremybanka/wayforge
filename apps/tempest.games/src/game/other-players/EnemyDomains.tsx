@@ -7,7 +7,7 @@ import { usePullMutableFamilyMember } from "atom.io/realtime-react"
 import { span } from "src/components/<span>"
 import { otherPlayersIndex } from "src/services/store/enemy-hands-index"
 import { findHandsOfPlayer } from "src/services/store/player-hand"
-import { Hand } from "./Hand"
+import { Hand } from "../game-pieces/Hand"
 
 import { Id } from "hamr/react-id"
 import scss from "./EnemyDomains.module.scss"

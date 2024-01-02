@@ -3,8 +3,8 @@ import * as React from "react"
 
 import { span } from "src/components/<span>"
 import { myHandsIndex } from "src/services/store/my-hands-index"
-import { Hand } from "./Hand"
-import { Me } from "./Me"
+import { Hand } from "../game-pieces/Hand"
+import { Me } from "../my-domain/Me"
 
 import scss from "./MyDomain.module.scss"
 

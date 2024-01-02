@@ -10,10 +10,10 @@ import {
 	findCardGroupState,
 } from "~/apps/node/lodge/src/store/game"
 
-import { Controls } from "./Controls"
-import { EnemyDomains } from "./EnemyDomains"
-import { MyDomain } from "./MyDomain"
-import { Public } from "./Public"
+import { Controls } from "./__devtools__/Controls"
+import { MyDomain } from "./my-domain/MyDomain"
+import { EnemyDomains } from "./other-players/EnemyDomains"
+import { Public } from "./public/Public"
 
 import scss from "./Game.module.scss"
 
@@ -41,7 +41,7 @@ export function Game(): JSX.Element {
 		<>
 			<CoreSync />
 			<div className={scss.class}>
-				<Controls />
+				{/* <Controls /> */}
 				<section data-css="enemy-domains">
 					<EnemyDomains />
 				</section>
