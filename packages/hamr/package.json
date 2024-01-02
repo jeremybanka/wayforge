@@ -131,7 +131,7 @@
 		"react-router-dom": "6.21.1",
 		"recoil": "0.7.7",
 		"rxjs": "7.8.1",
-		"sass": "1.69.6",
+		"sass": "1.69.7",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
 		"vite-tsconfig-paths": "4.2.3",
