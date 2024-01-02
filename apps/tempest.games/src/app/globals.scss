@@ -97,7 +97,7 @@ h3 {
     --bg-tint-2: #f8f8f8;
     --bg-tint-3: #fff;
     --bg-shade-1: #e6e6e6;
-    --bg-shade-2: #e0e0e0;
+    --bg-shade-2: #aaa;
     --bg-shade-3: #d6d6d6;
     --bg-shadow-1: #e8e8e8;
     --bg-shadow-2: #e0e0e0;
@@ -120,7 +120,6 @@ h3 {
   --table-middle: #222;
   --table-close: #333;
   @media (prefers-color-scheme: light) {
-    --bg-darkest: #aaa;
     --table-far: #ccc;
     --table-middle: #bbb;
     --table-close: #ddd;

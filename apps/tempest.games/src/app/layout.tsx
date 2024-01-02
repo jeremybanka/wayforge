@@ -9,13 +9,14 @@ import "./globals.scss"
 import scss from "./layout.module.scss"
 
 export const metadata: Metadata = {
-	title: `Reactive Data • atom.io`,
-	description: `Batteries-included data framework for any ECMAScript environment.`,
+	title: `Cards`,
+	description: `Tempest Games Prototype.`,
 	appleWebApp: {
 		capable: true,
 		title: `Cards`,
 		statusBarStyle: `black-translucent`,
 	},
+	manifest: `./manifest.json`,
 }
 
 export default function RootLayout({
