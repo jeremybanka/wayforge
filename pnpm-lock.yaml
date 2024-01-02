@@ -378,8 +378,8 @@ importers:
         specifier: 7.23.3
         version: 7.23.3(@babel/core@7.23.6)
       '@preact/preset-vite':
-        specifier: 2.7.0
-        version: 2.7.0(@babel/core@7.23.6)(preact@10.19.3)(vite@5.0.10)
+        specifier: 2.8.1
+        version: 2.8.1(@babel/core@7.23.6)(preact@10.19.3)(vite@5.0.10)
       '@testing-library/jest-dom':
         specifier: 6.1.6
         version: 6.1.6(vitest@1.1.1)
@@ -667,8 +667,8 @@ importers:
         specifier: 7.23.3
         version: 7.23.3(@babel/core@7.23.6)
       '@preact/preset-vite':
-        specifier: 2.7.0
-        version: 2.7.0(@babel/core@7.23.6)(preact@10.19.3)(vite@5.0.10)
+        specifier: 2.8.1
+        version: 2.8.1(@babel/core@7.23.6)(preact@10.19.3)(vite@5.0.10)
       '@testing-library/jest-dom':
         specifier: 6.1.6
         version: 6.1.6(vitest@1.1.1)
@@ -4483,8 +4483,8 @@ packages:
     dependencies:
       preact: 10.19.3
 
-  /@preact/preset-vite@2.7.0(@babel/core@7.23.6)(preact@10.19.3)(vite@5.0.10):
-    resolution: {integrity: sha512-m5N0FVtxbCCDxNk55NGhsRpKJChYcupcuQHzMJc/Bll07IKZKn8amwYciyKFS9haU6AgzDAJ/ewvApr6Qg1DHw==}
+  /@preact/preset-vite@2.8.1(@babel/core@7.23.6)(preact@10.19.3)(vite@5.0.10):
+    resolution: {integrity: sha512-a9KV4opdj17X2gOFuGup0aE+sXYABX/tJi/QDptOrleX4FlnoZgDWvz45tHOdVfrZX+3uvVsIYPHxRsTerkDNA==}
     peerDependencies:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x || 5.x
@@ -4497,6 +4497,8 @@ packages:
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.23.6)
       debug: 4.3.4(supports-color@5.5.0)
       kolorist: 1.8.0
+      magic-string: 0.30.5
+      node-html-parser: 6.1.12
       resolve: 1.22.8
       vite: 5.0.10(sass@1.69.6)
     transitivePeerDependencies:
@@ -10250,6 +10252,13 @@ packages:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.6.2
+    dev: true
+
+  /node-html-parser@6.1.12:
+    resolution: {integrity: sha512-/bT/Ncmv+fbMGX96XG9g05vFt43m/+SYKIs9oAemQVYyVcZmDAI2Xq/SbNcpOA35eF0Zk2av3Ksf+Xk8Vt8abA==}
+    dependencies:
+      css-select: 5.1.0
+      he: 1.2.0
     dev: true
 
   /node-releases@2.0.14:
