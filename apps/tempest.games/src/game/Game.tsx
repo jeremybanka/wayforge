@@ -41,7 +41,7 @@ export function Game(): JSX.Element {
 		<>
 			<CoreSync />
 			<div className={scss.class}>
-				{/* <Controls /> */}
+				<Controls />
 				<section data-css="enemy-domains">
 					<EnemyDomains />
 				</section>

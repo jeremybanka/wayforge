@@ -9,13 +9,14 @@ import { addHandTx, spawnClassicDeckTX } from "~/apps/node/lodge/src/store/game"
 import { button } from "src/components/<button>"
 
 import comic from "src/components/comic.module.scss"
+import scss from "./Controls.module.scss"
 
 export const Controls: FC = () => {
 	const myId = useO(myIdState)
 	const addHand = useServerAction(addHandTx)
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	return (
-		<span>
+		<span className={scss.class}>
 			{myId ? (
 				<button.curledLeft
 					className={comic.class}
