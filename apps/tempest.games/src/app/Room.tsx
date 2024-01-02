@@ -20,17 +20,16 @@ import { Game } from "src/game/Game"
 import { windowMousePositionState } from "src/services/peripherals/mouse-position"
 import { actionsState, radialModeState } from "src/services/peripherals/radial"
 import { myRoomState } from "src/services/store/my-room"
+import { roomViewState } from "src/services/store/room-view-state"
 import { PlayersInRoom } from "./PlayersInRoom"
 
-import Link from "next/link"
 import scss from "./page.module.scss"
 
-export default function Room({
-	params: { roomId },
-}: { params: { roomId: string } }): JSX.Element {
+export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const myId = useO(myIdState)
 	const myRoom = useO(myRoomState)
-
+	const setRoomState = useI(roomViewState)
+	console.log({ roomId, myRoom })
 	const iAmInRoom = myRoom === roomId
 
 	const joinRoom = useServerAction(joinRoomTX)
@@ -41,7 +40,15 @@ export default function Room({
 	return (
 		<>
 			<article className={scss.class}>
-				<Link href="/saloon">Lobby</Link>
+				<button
+					key={roomId}
+					type="button"
+					onClick={() => {
+						setRoomState(null)
+					}}
+				>
+					Lobby
+				</button>
 				<header.auspicious0>
 					<span>
 						<button

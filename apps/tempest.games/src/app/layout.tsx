@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 
 import { Theme } from "./Theme"
 
+import Realtime from "./Realtime"
 import "./code.scss"
 import "./globals.scss"
 import scss from "./layout.module.scss"
@@ -27,7 +28,9 @@ export default function RootLayout({
 			<Theme />
 			<body className={scss.class}>
 				<header />
-				<main>{children}</main>
+				<main>
+					<Realtime>{children}</Realtime>
+				</main>
 				<footer />
 				<Analytics />
 			</body>

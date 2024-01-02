@@ -5,11 +5,9 @@ import { myIdState } from "atom.io/realtime-client"
 import { RealtimeProvider } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 
-// import { SocketStatus } from "~/apps/web/saloon/src/components/SocketStatus"
-
 import { SOCKET } from "src/services/socket"
 
-export default function GameLayout({
+export default function Realtime({
 	children,
 }: {
 	children: React.ReactNode
@@ -18,9 +16,7 @@ export default function GameLayout({
 	return (
 		<RealtimeProvider socket={SOCKET}>
 			<Id id={id ?? `null`} key={id} />
-			{/* <SocketStatus /> */}
 			{children}
-			{/* <AtomIODevtools /> */}
 		</RealtimeProvider>
 	)
 }

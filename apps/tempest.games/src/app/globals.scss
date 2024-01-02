@@ -120,9 +120,10 @@ h3 {
   --table-middle: #222;
   --table-close: #333;
   @media (prefers-color-scheme: light) {
-    --bg-darkest: #777;
-    --table-color: #ccc;
-    --table-dark: #bbb;
+    --bg-darkest: #aaa;
+    --table-far: #ccc;
+    --table-middle: #bbb;
+    --table-close: #ddd;
   }
   background-color: var(--bg-shade-2);
   min-height: 100dvh;
