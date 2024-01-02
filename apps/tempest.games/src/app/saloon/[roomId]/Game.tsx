@@ -42,13 +42,13 @@ export function Game(): JSX.Element {
 			<CoreSync />
 			<div className={scss.class}>
 				<Controls />
-				<section data-css="enemies">
+				<section data-css="enemy-domains">
 					<EnemyDomains />
 				</section>
 				<section data-css="public">
 					<Public />
 				</section>
-				<section data-css="me">
+				<section data-css="my-domain">
 					<MyDomain />
 				</section>
 			</div>

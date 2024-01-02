@@ -1,4 +1,5 @@
 import { motion } from "framer-motion"
+
 import { BackwardDiagonal10, ChamferedTop } from "./corners/factories"
 
 export const span = {

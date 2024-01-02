@@ -15,13 +15,13 @@
     flex-flow: column nowrap;
     flex: 1 0 0;
     min-height: 0;
-    &[data-css="enemies"] {
+    &[data-css="enemy-domains"] {
       flex-grow: 2;
     }
     &[data-css="public"] {
       flex-grow: 5;
     }
-    &[data-css="me"] {
+    &[data-css="my-domain"] {
       flex-grow: 2;
     }
   }
