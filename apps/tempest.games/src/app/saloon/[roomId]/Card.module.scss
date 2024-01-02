@@ -1,11 +1,14 @@
 span.class {
   flex: 1 0 0;
   min-width: 0;
-  max-width: calc(var(--child-len) * 0.95);
+  max-width: var(--child-width-max);
+  min-height: 0;
+  max-height: var(--child-height-max);
+  display: flex;
+  align-items: flex-start;
   article {
-    justify-content: center;
-    align-items: center;
-    width: var(--child-len);
-    height: 100%;
+    flex-shrink: 0;
+    width: var(--child-width);
+    height: var(--child-height);
   }
 }

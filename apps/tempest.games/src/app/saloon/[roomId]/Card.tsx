@@ -29,7 +29,7 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
 }
 export const CardBack: FC<{ id: string }> = ({ id }) => {
 	return (
-		<span className={scss.class}>
+		<span className={scss.class} data-css="card">
 			<AnimatePresence>
 				<article.redCard layoutId={id}>
 					<Image src={Back.src} alt="card" fill />

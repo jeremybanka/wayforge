@@ -1,4 +1,13 @@
 span.class {
+  --child-len: -1px;
+  --child-count: -1;
+  --safe-space: calc(100% - var(--child-len));
+  --allowed-space: calc(var(--safe-space) / max(1, (var(--child-count) - 1)));
+  --right-padding: calc(var(--child-len) - var(--allowed-space));
+  --child-width: var(--child-len);
+  --child-width-max: calc(var(--child-len) * 0.95);
+  --child-height: 100%;
+  --child-height-max: none;
   display: flex;
   position: relative;
   flex: 1 0 0;
@@ -6,11 +15,6 @@ span.class {
   width: 100%;
   height: 100%;
   > article {
-    --child-len: -1px;
-    --child-count: -1;
-    --safe-space: calc(100% - var(--child-len));
-    --allowed-space: calc(var(--safe-space) / max(1, (var(--child-count) - 1)));
-    --right-padding: calc(var(--child-len) - var(--allowed-space));
     padding-right: var(--right-padding);
     display: flex;
     flex-flow: row;
