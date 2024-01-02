@@ -17,11 +17,12 @@ import { publicDeckIndex } from "src/services/store/public-deck-index"
 import { CardBack, CardFace, CardSlot } from "./Card"
 
 import { useDOMRect } from "src/services/use-dimensions"
+import { Count } from "./Count"
 import scss from "./Hand.module.scss"
 
-export const Hand = memoize<{ id: string; showMeta?: string }>(
+export const Hand = memoize<{ id: string; detailed?: boolean }>(
 	`Hand`,
-	({ id, showMeta }) => {
+	({ id, detailed }) => {
 		const isMyHand = useO(myHandsIndex).includes(id)
 		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
 		const publicDeckIds = useO(publicDeckIndex)
@@ -53,7 +54,7 @@ export const Hand = memoize<{ id: string; showMeta?: string }>(
 					})}
 					{...handlers}
 				>
-					{showMeta ? (
+					{detailed ? (
 						<>
 							<div>Hand ({cardIds.length})</div>
 							<Id id={id} />
@@ -73,6 +74,7 @@ export const Hand = memoize<{ id: string; showMeta?: string }>(
 						) : (
 							cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)
 						)}
+						{detailed ? null : <Count amount={cardIds.length} />}
 					</motion.article>
 				</span>
 			</AnimatePresence>

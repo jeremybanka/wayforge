@@ -14,11 +14,12 @@ import { useRadial } from "src/services/peripherals/radial"
 import { useDOMRect } from "src/services/use-dimensions"
 import { CardBack } from "./Card"
 
+import { Count } from "./Count"
 import scss from "./Deck.module.scss"
 
-export const Deck = memoize<{ id: string; showMeta?: string }>(
+export const Deck = memoize<{ id: string; detailed?: string }>(
 	`Deck`,
-	({ id, showMeta }) => {
+	({ id, detailed }) => {
 		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
 
 		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
@@ -45,7 +46,7 @@ export const Deck = memoize<{ id: string; showMeta?: string }>(
 					})}
 					{...handlers}
 				>
-					{showMeta ? (
+					{detailed ? (
 						<>
 							<div>Hand ({cardIds.length})</div>
 							<Id id={id} />
@@ -62,6 +63,7 @@ export const Deck = memoize<{ id: string; showMeta?: string }>(
 							<CardBack key={cardId} id={cardId} />
 						))}
 					</motion.article>
+					{detailed ? null : <Count amount={cardIds.length} />}
 				</span>
 			</AnimatePresence>
 		)

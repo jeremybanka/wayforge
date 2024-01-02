@@ -8,7 +8,7 @@ span.class {
   --child-width-max: calc(var(--child-len) * 0.95);
   --child-height: 100%;
   --child-height-max: none;
-  display: flex;
+  display: inline-flex;
   position: relative;
   flex: 1 0 0;
   min-width: 0;
@@ -17,8 +17,10 @@ span.class {
   justify-content: center;
   > article {
     padding-right: var(--right-padding);
-    display: flex;
+    display: inline-flex;
+    position: relative;
     flex-flow: row;
+    min-width: 0;
     max-width: 100%;
   }
 }

@@ -6,6 +6,6 @@ div.class {
   padding: 10px;
   > [data-css="my-hands"] {
     width: 100%;
-    display: flex;
+    display: inline-flex;
   }
 }

@@ -1,7 +1,8 @@
 import type { DrawCorner } from "corners"
 import corners, { chamfer, interpolate, straight, writePathPoint } from "corners"
 
-export const ForwardDiagonal = corners(chamfer, null).size(5)
+export const ForwardDiagonal5 = corners(chamfer, null).size(5)
+export const BackwardDiagonal10 = corners(null, chamfer).size(10)
 export const CurledLeft = corners(null, null, chamfer, null).size(5)
 
 export const auspice: DrawCorner = (p1, p2, idx) => {

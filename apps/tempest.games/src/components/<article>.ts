@@ -5,33 +5,19 @@ export const article = {
 	whiteCard: rounded(motion.article, {
 		useClipPath: false,
 		cornerSize: 10,
-		below: [
-			// LAYER.SMALL_SHADOW,
-			{
-				color: `#fff`,
-				stroke: { width: 2, color: `#000` },
-			},
-		],
+		above: [{ stroke: { width: 2, color: `#000` } }],
+		below: [{ color: `#fff` }],
 	}),
 	redCard: rounded(motion.article, {
 		useClipPath: false,
 		cornerSize: 10,
-		below: [
-			// LAYER.SMALL_SHADOW,
-			{
-				color: `#e10`,
-				stroke: { width: 2, color: `#000` },
-			},
-		],
+		above: [{ stroke: { width: 2, color: `#000` } }],
+		below: [{ color: `#e10` }],
 	}),
 	greyCardSlot: rounded(motion.article, {
 		useClipPath: false,
 		cornerSize: 10,
-		below: [
-			{
-				color: `var(--bg-shade-2)`,
-				stroke: { width: 2, color: `var(--bg-shade-2)` },
-			},
-		],
+		above: [{ stroke: { width: 2, color: `#000` } }],
+		below: [{ color: `var(--bg-shade-2)` }],
 	}),
 }

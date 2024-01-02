@@ -7,7 +7,7 @@ span.class {
   width: var(--child-width);
   min-height: 100px;
   max-height: 300px;
-  display: flex;
+  display: inline-flex;
   position: relative;
   > article {
     width: var(--child-width);
