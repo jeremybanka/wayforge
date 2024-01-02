@@ -3,6 +3,7 @@ div.class {
   width: 100%;
   flex-grow: 1;
   display: flex;
+  padding: 10px;
   > [data-css="my-hands"] {
     width: 100%;
     display: flex;

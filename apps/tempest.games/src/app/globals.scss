@@ -116,6 +116,14 @@ h3 {
     --hyperlink-hover-color: #04f;
     --hyperlink-visited-color: #99f;
   }
+  // game
+  --table-far: #171717;
+  --table-middle: #222;
+  --table-close: #333;
+  @media (prefers-color-scheme: light) {
+    --table-color: #ccc;
+    --table-dark: #bbb;
+  }
   background-color: var(--bg-shade-2);
   min-height: 100vh;
   scroll-padding-top: 4.5em;

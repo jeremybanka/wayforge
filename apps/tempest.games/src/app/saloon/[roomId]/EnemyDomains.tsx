@@ -9,6 +9,7 @@ import { otherPlayersIndex } from "src/services/store/enemy-hands-index"
 import { findHandsOfPlayer } from "src/services/store/player-hand"
 import { Hand } from "./Hand"
 
+import { Id } from "hamr/react-id"
 import scss from "./EnemyDomains.module.scss"
 
 export const TheirHands: React.FC<{ playerId: string }> = ({ playerId }) => {
@@ -17,7 +18,7 @@ export const TheirHands: React.FC<{ playerId: string }> = ({ playerId }) => {
 
 	console.log({ theirHands })
 	return (
-		<div className="their-hands">
+		<div data-css="their-hands">
 			{theirHands.map((id) => (
 				<Hand key={id} id={id} />
 			))}
@@ -32,12 +33,15 @@ export const EnemyDomains: React.FC = () => {
 		<div className={scss.class}>
 			<main>
 				{enemyIds.map((id) => (
-					<div key={id} className="enemy">
+					<div key={id} data-css="enemy">
+						<span data-css="their-pfp">
+							<Id id={id} />
+						</span>
 						<TheirHands playerId={id} />
 					</div>
 				))}
 			</main>
-			<span.chamferedTop />
+			<span.chamferedTop data-css="tabletop" />
 		</div>
 	)
 }
