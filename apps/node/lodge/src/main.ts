@@ -49,7 +49,7 @@ dotenv.config()
 pipe(
 	new WebSocketServer(3333, {
 		cors: {
-			origin: `http://localhost:5400`,
+			origin: `http://eris.local:5400`,
 			methods: [`GET`, `POST`],
 		},
 	}),
