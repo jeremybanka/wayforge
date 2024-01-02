@@ -17,7 +17,7 @@ export const article = {
 	greyCardSlot: rounded(motion.article, {
 		useClipPath: false,
 		cornerSize: 10,
-		above: [{ stroke: { width: 2, color: `#000` } }],
-		below: [{ color: `var(--bg-shade-2)` }],
+		above: [{ stroke: { width: 1, color: `var(--fg-faint)` } }],
+		below: [{ color: `var(--bg-shadow-2)` }],
 	}),
 }

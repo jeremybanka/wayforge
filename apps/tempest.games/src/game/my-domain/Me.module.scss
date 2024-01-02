@@ -1,11 +1,19 @@
 span.class {
+  --background-color: var(--table-close);
   min-width: 100px;
-  padding: 0 18px;
+  padding: 0px 12px;
   height: 36px;
-  background-color: var(--table-close);
   display: flex;
+  align-items: center;
+  gap: 5px;
   margin-bottom: -15px;
-  h3 {
+  > [data-css="profile-picture"] {
+    margin-left: -15px;
+    margin-top: -6px;
+    margin-right: 22px;
+    height: 32px;
+  }
+  > h3 {
     margin: auto;
     font-size: 16px;
     line-height: 16px;

@@ -20,12 +20,12 @@ div.class {
     z-index: 2;
   }
   > [data-css="tabletop"] {
+    --background-color: var(--table-close);
     position: absolute !important;
     z-index: 1 !important;
     bottom: 0;
     left: 0;
     height: 50%;
     width: 100%;
-    background: var(--table-close);
   }
 }

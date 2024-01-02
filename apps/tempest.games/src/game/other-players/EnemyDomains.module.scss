@@ -23,12 +23,13 @@ div.class {
       flex: 1 0 0;
       min-width: 0;
       > [data-css="their-pfp"] {
+        position: relative;
         width: 100%;
         display: flex;
         flex-grow: 1;
         justify-content: center;
         align-items: flex-start;
-        > span {
+        > [data-css="profile-picture"] {
           height: 120%;
         }
       }
@@ -41,12 +42,12 @@ div.class {
     }
   }
   > [data-css="tabletop"] {
+    --background-color: var(--table-far);
     position: absolute !important;
     z-index: -1 !important;
     bottom: 0;
     left: 0;
     height: 50%;
     width: 100%;
-    background: var(--table-far);
   }
 }

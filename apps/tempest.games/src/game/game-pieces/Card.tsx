@@ -18,7 +18,7 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
 	const valueKey = useO(valuesOfCards.findState.valueKeyOfCard(id)) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]
 	return (
-		<span className={scss.class}>
+		<span className={scss.class} data-css="card">
 			<AnimatePresence>
 				<article.whiteCard layoutId={id}>
 					<Image src={PlayingCard.src} alt="card" fill />

@@ -3,13 +3,15 @@ import { myIdState } from "atom.io/realtime-client"
 
 import { span } from "src/components/<span>"
 
+import { ProfilePicture } from "../players/ProfilePicture"
 import scss from "./Me.module.scss"
 
 export const Me: React.FC = () => {
 	const myId = useO(myIdState)
 	return (
 		<span.chamferedTop className={scss.class}>
-			<h3>{myId}</h3>
+			<ProfilePicture id={myId ?? ``} detailed />
+			<h3>username</h3>
 		</span.chamferedTop>
 	)
 }

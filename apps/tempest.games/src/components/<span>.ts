@@ -4,7 +4,8 @@ import { BackwardDiagonal10, ChamferedTop } from "./corners/factories"
 
 export const span = {
 	chamferedTop: ChamferedTop(`span`, {
-		useClipPath: true,
+		useClipPath: false,
+		below: [{ color: `var(--background-color)` }],
 	}),
 	diagon: BackwardDiagonal10(motion.span, {
 		useClipPath: true,
