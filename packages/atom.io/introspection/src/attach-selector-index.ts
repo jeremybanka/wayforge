@@ -70,7 +70,7 @@ export const attachSelectorIndex = (
 										}
 									})
 								if (newest(store).operation.open) {
-									const unsubscribe = store.on.operationClosed.subscribe(
+									const unsubscribe = store.on.operationClose.subscribe(
 										`introspection: waiting to update selector index`,
 										() => {
 											unsubscribe()

@@ -61,7 +61,7 @@ export const attachAtomIndex = (
 								}
 							})
 						if (newest(store).operation.open) {
-							const unsubscribe = store.on.operationClosed.subscribe(
+							const unsubscribe = store.on.operationClose.subscribe(
 								`introspection: waiting to update atom index`,
 								() => {
 									unsubscribe()

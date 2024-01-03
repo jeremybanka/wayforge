@@ -82,7 +82,7 @@ export class Store implements Lineage {
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
 		timelineCreation: new Subject<TimelineToken>(),
 		transactionApplying: new StatefulSubject<TransactionMeta<ƒn> | null>(null),
-		operationClosed: new Subject<OperationProgress>(),
+		operationClose: new Subject<OperationProgress>(),
 	}
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionMeta<ƒn> | null = null

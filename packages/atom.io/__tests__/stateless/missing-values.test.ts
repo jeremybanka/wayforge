@@ -64,7 +64,7 @@ describe(`stateless data persistence strategies`, () => {
 							}
 							if (oldValue instanceof Promise) {
 								const unsub =
-									Internal.IMPLICIT.STORE.on.operationClosed.subscribe(
+									Internal.IMPLICIT.STORE.on.operationClose.subscribe(
 										`One-Shot: enqueue update to count.txt`,
 										async () => {
 											unsub()
@@ -85,7 +85,7 @@ describe(`stateless data persistence strategies`, () => {
 									)
 								return
 							}
-							const unsub = Internal.IMPLICIT.STORE.on.operationClosed.subscribe(
+							const unsub = Internal.IMPLICIT.STORE.on.operationClose.subscribe(
 								`One-Shot: enqueue update to count.txt`,
 								() => {
 									unsub()
