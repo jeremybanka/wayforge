@@ -2,9 +2,9 @@ import { useId } from "react"
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
-import { Luum } from "~/packages/luum/src"
+import { setCssVars } from "hamr/react-css-vars"
+import { Luum } from "luum"
 
-import { setCssVars } from "~/packages/hamr/react-css-vars/dist"
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_PADDING, CARD_WIDTH } from "../Card"
 import { SVG_EnergyIcon } from "./EnergyIcon"

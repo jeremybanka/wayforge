@@ -3,9 +3,9 @@ import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 import { useTransition } from "react"
 
-import { setCssVars } from "~/packages/hamr/react-css-vars"
-import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
-import { Luum, setHue, setLum, setSat } from "~/packages/luum/src"
+import { setCssVars } from "hamr/react-css-vars"
+import { ElasticInput } from "hamr/react-elastic-input"
+import { Luum, setHue, setLum, setSat } from "luum"
 
 import { useSetTitle } from "../../../services/app-store"
 
