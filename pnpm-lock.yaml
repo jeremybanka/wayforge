@@ -24,14 +24,14 @@ importers:
         specifier: 7.0.3
         version: 7.0.3
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       hamt_plus:
         specifier: 1.0.2
         version: 1.0.2
       io-ts:
         specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.1)
+        version: 2.2.21(fp-ts@2.16.2)
       json-schema-to-zod:
         specifier: 2.0.13
         version: 2.0.13
@@ -127,11 +127,11 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       io-ts:
         specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.1)
+        version: 2.2.21(fp-ts@2.16.2)
       json-schema:
         specifier: 0.4.0
         version: 0.4.0
@@ -179,8 +179,8 @@ importers:
         specifier: 4.18.2
         version: 4.18.2
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -222,8 +222,8 @@ importers:
         specifier: 4.18.2
         version: 4.18.2
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -338,8 +338,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       framer-motion:
         specifier: 10.17.0
         version: 10.17.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
@@ -429,14 +429,14 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.2.0)(react@18.2.0)
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       framer-motion:
         specifier: 10.17.0
         version: 10.17.0(react-dom@18.2.0)(react@18.2.0)
       io-ts:
         specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.1)
+        version: 2.2.21(fp-ts@2.16.2)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -487,8 +487,8 @@ importers:
   apps/web/shrine:
     dependencies:
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       phaser:
         specifier: 3.70.0
         version: 3.70.0
@@ -524,14 +524,14 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.2.0)(react@18.2.0)
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       framer-motion:
         specifier: 10.17.0
         version: 10.17.0(react-dom@18.2.0)(react@18.2.0)
       io-ts:
         specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.1)
+        version: 2.2.21(fp-ts@2.16.2)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -609,8 +609,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       framer-motion:
         specifier: 10.17.0
         version: 10.17.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
@@ -986,11 +986,11 @@ importers:
   packages/ingt:
     dependencies:
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       io-ts:
         specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.1)
+        version: 2.2.21(fp-ts@2.16.2)
     devDependencies:
       '@types/node':
         specifier: 20.10.6
@@ -1038,11 +1038,11 @@ importers:
   packages/occlusion:
     dependencies:
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       io-ts:
         specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.1)
+        version: 2.2.21(fp-ts@2.16.2)
       nanoid:
         specifier: 5.0.4
         version: 5.0.4
@@ -1090,8 +1090,8 @@ importers:
   packages/socket-io.filestore:
     dependencies:
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
     devDependencies:
       '@types/node':
         specifier: 20.10.6
@@ -1133,8 +1133,8 @@ importers:
   packages/socket-io.git:
     dependencies:
       fp-ts:
-        specifier: 2.16.1
-        version: 2.16.1
+        specifier: 2.16.2
+        version: 2.16.2
       simple-git:
         specifier: 3.22.0
         version: 3.22.0
@@ -8332,8 +8332,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /fp-ts@2.16.1:
-    resolution: {integrity: sha512-by7U5W8dkIzcvDofUcO42yl9JbnHTEDBrzu3pt5fKT+Z4Oy85I21K80EYJYdjQGC2qum4Vo55Ag57iiIK4FYuA==}
+  /fp-ts@2.16.2:
+    resolution: {integrity: sha512-CkqAjnIKFqvo3sCyoBTqgJvF+bHrSik584S9nhTjtBESLx26cbtVMR/T9a6ApChOcSDAaM3JydDmWDUn4EEXng==}
 
   /framer-motion@10.17.0(@preact/compat@17.1.2)(@preact/compat@17.1.2):
     resolution: {integrity: sha512-92brXaYasyEwaPV7tnHnc6MKxdN84CxWE1aZ80q/mlS+wQo0rxp/pmjGt5hdAEK5RCKJsWToI+MyIcGoA91Msg==}
@@ -8907,12 +8907,12 @@ packages:
       hasown: 2.0.0
       side-channel: 1.0.4
 
-  /io-ts@2.2.21(fp-ts@2.16.1):
+  /io-ts@2.2.21(fp-ts@2.16.2):
     resolution: {integrity: sha512-zz2Z69v9ZIC3mMLYWIeoUcwWD6f+O7yP92FMVVaXEOSZH1jnVBmET/urd/uoarD1WGBY4rCj8TAyMPzsGNzMFQ==}
     peerDependencies:
       fp-ts: ^2.5.0
     dependencies:
-      fp-ts: 2.16.1
+      fp-ts: 2.16.2
 
   /ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}

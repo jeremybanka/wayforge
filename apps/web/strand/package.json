@@ -20,7 +20,7 @@
 		"@t3-oss/env-core": "0.7.1",
 		"@vanilla-extract/css": "1.14.0",
 		"corners": "0.1.0",
-		"fp-ts": "2.16.1",
+		"fp-ts": "2.16.2",
 		"framer-motion": "10.17.0",
 		"nanoid": "5.0.4",
 		"preact": "10.19.3",

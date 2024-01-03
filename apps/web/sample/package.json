@@ -18,7 +18,7 @@
 		"@floating-ui/dom": "1.5.3",
 		"@floating-ui/react": "0.26.4",
 		"corners": "0.1.0",
-		"fp-ts": "2.16.1",
+		"fp-ts": "2.16.2",
 		"framer-motion": "10.17.0",
 		"io-ts": "2.2.21",
 		"react": "18.2.0",

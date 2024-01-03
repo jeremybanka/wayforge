@@ -19,7 +19,7 @@
 		"socket.io-client": "^4.6.0"
 	},
 	"dependencies": {
-		"fp-ts": "2.16.1",
+		"fp-ts": "2.16.2",
 		"simple-git": "3.22.0"
 	},
 	"devDependencies": {

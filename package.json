@@ -33,7 +33,7 @@
 		"@changesets/cli": "2.27.1",
 		"c8": "8.0.1",
 		"cross-env": "7.0.3",
-		"fp-ts": "2.16.1",
+		"fp-ts": "2.16.2",
 		"hamt_plus": "1.0.2",
 		"io-ts": "2.2.21",
 		"json-schema-to-zod": "2.0.13",
