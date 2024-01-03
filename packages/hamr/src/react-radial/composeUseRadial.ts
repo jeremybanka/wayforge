@@ -8,6 +8,7 @@ export const composeUseRadial =
 		setActions: (newActions: RadialAction[]) => void,
 		getRadialMode: () => RadialMode,
 		setRadialMode: (newMode: RadialMode) => void,
+		setMousePosition?: (newPosition: { x: number; y: number }) => void,
 	) =>
 	(
 		actions: RadialAction[],
@@ -39,6 +40,30 @@ export const composeUseRadial =
 					}
 				},
 			}),
+			onTouchStart: (event) => {
+				const mousePosition = {
+					x: event.touches[0].clientX,
+					y: event.touches[0].clientY,
+				}
+				setMousePosition?.({
+					x: event.touches[0].clientX,
+					y: event.touches[0].clientY,
+				})
+				setRadialMode(`held`)
+				setActions(actions)
+				console.log(`touch start`, mousePosition)
+			},
+			onTouchEnd: (event) => {
+				const mousePosition = {
+					x: event.changedTouches[0].clientX,
+					y: event.changedTouches[0].clientY,
+				}
+				setMousePosition?.({
+					x: event.changedTouches[0].clientX,
+					y: event.changedTouches[0].clientY,
+				})
+				setRadialMode(`open`)
+			},
 		}
 		return handlers
 	}

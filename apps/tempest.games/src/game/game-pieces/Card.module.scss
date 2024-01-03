@@ -10,5 +10,8 @@ span.class {
     flex-shrink: 0;
     width: var(--child-width);
     height: var(--child-height);
+    img {
+      pointer-events: none;
+    }
   }
 }
