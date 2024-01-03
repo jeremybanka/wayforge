@@ -1,19 +1,18 @@
-import * as AtomIO from "atom.io"
+import { atom, getState, setState } from "atom.io"
+import type { RadialAction, RadialMode } from "hamr/react-radial"
+import { composeUseRadial } from "hamr/react-radial"
 
-import type { RadialAction, RadialMode } from "~/packages/hamr/src/react-radial"
-import { composeUseRadial } from "~/packages/hamr/src/react-radial"
-
-export const actionsState = AtomIO.atom<RadialAction[]>({
+export const actionsState = atom<RadialAction[]>({
 	key: `actions`,
 	default: [],
 })
-export const radialModeState = AtomIO.atom<RadialMode>({
+export const radialModeState = atom<RadialMode>({
 	key: `radialMode`,
 	default: `idle`,
 })
 
 export const useRadial = composeUseRadial(
-	(v) => AtomIO.setState(actionsState, v),
-	() => AtomIO.getState(radialModeState),
-	(v) => AtomIO.setState(radialModeState, v),
+	(v) => setState(actionsState, v),
+	() => getState(radialModeState),
+	(v) => setState(radialModeState, v),
 )

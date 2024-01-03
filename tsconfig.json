@@ -8,7 +8,6 @@
 		"moduleResolution": "node",
 		"baseUrl": "./",
 		"paths": {
-			"~/*": ["./*"],
 			"anvl/*": ["./packages/anvl/src/*"],
 			"hamr/*": ["./packages/hamr/src/*"],
 			"luum": ["packages/luum/src"],
@@ -17,7 +16,8 @@
 			"socket-io.git/*": ["./packages/socket-io.git/src/*"],
 			"socket-io.filestore/*": ["./packages/socket-io.filestore/src/*"],
 			"atom.io": ["./packages/atom.io/src"],
-			"atom.io/*": ["./packages/atom.io/*/src"]
+			"atom.io/*": ["./packages/atom.io/*/src"],
+			"~/*": ["./*"]
 		},
 		"types": ["vitest/globals"],
 		"resolveJsonModule": true,
