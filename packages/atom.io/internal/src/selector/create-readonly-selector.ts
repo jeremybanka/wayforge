@@ -51,6 +51,6 @@ export const createReadonlySelector = <T>(
 	if (family) {
 		token.family = family
 	}
-	store.subject.selectorCreation.next(token)
+	store.on.selectorCreation.next(token)
 	return token
 }

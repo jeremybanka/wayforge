@@ -73,7 +73,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 	child.transactionMeta.phase = `applying`
 	child.transactionMeta.update.output = output
 	parent.child = null
-	parent.subject.transactionApplying.next(child.transactionMeta)
+	parent.on.transactionApplying.next(child.transactionMeta)
 	const { updates } = child.transactionMeta.update
 	store.logger.info(
 		`🛄`,
@@ -118,5 +118,5 @@ export const applyTransaction = <ƒ extends ƒn>(
 	} else {
 		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
 	}
-	parent.subject.transactionApplying.next(null)
+	parent.on.transactionApplying.next(null)
 }

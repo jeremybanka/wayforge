@@ -35,7 +35,7 @@ export const attachSelectorIndex = (
 					),
 				effects: [
 					({ setSelf }) => {
-						store.subject.selectorCreation.subscribe(
+						store.on.selectorCreation.subscribe(
 							`introspection`,
 							(selectorToken) => {
 								if (selectorToken.key.includes(`👁‍🗨`)) {
@@ -70,7 +70,7 @@ export const attachSelectorIndex = (
 										}
 									})
 								if (newest(store).operation.open) {
-									const unsubscribe = store.subject.operationStatus.subscribe(
+									const unsubscribe = store.on.operationClosed.subscribe(
 										`introspection: waiting to update selector index`,
 										() => {
 											unsubscribe()

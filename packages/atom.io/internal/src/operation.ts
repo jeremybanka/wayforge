@@ -56,7 +56,7 @@ export const closeOperation = (store: Store): void => {
 		)
 	}
 	store.operation = { open: false }
-	store.subject.operationStatus.next(store.operation)
+	store.on.operationClosed.next(store.operation)
 }
 
 export const isDone = (key: string, store: Store): boolean => {

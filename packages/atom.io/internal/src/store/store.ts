@@ -74,7 +74,7 @@ export class Store implements Lineage {
 		},
 	)
 
-	public subject = {
+	public on = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
 		selectorCreation: new Subject<
 			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
@@ -82,7 +82,7 @@ export class Store implements Lineage {
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
 		timelineCreation: new Subject<TimelineToken>(),
 		transactionApplying: new StatefulSubject<TransactionMeta<ƒn> | null>(null),
-		operationStatus: new Subject<OperationProgress>(),
+		operationClosed: new Subject<OperationProgress>(),
 	}
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionMeta<ƒn> | null = null

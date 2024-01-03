@@ -28,7 +28,7 @@ export const attachAtomIndex = (
 			},
 			effects: [
 				({ setSelf }) => {
-					store.subject.atomCreation.subscribe(`introspection`, (atomToken) => {
+					store.on.atomCreation.subscribe(`introspection`, (atomToken) => {
 						if (atomToken.key.includes(`👁‍🗨`)) {
 							return
 						}
@@ -61,7 +61,7 @@ export const attachAtomIndex = (
 								}
 							})
 						if (newest(store).operation.open) {
-							const unsubscribe = store.subject.operationStatus.subscribe(
+							const unsubscribe = store.on.operationClosed.subscribe(
 								`introspection: waiting to update atom index`,
 								() => {
 									unsubscribe()
