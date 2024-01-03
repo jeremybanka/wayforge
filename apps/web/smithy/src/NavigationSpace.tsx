@@ -1,4 +1,3 @@
-import type { SerializedStyles } from "@emotion/react"
 import type { FC } from "react"
 import { useEffect } from "react"
 import {
@@ -97,7 +96,6 @@ const DEFAULT_COMPONENTS: SpacesComponents = {
 }
 
 export type SpacesProps = {
-	customCss?: SerializedStyles
 	Components?: Partial<SpacesComponents>
 }
 
