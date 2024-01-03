@@ -3,8 +3,8 @@ import { pipe } from "fp-ts/function"
 import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 
-import { serveFilestore } from "~/packages/socket-io.filestore/src/socket-filestore-node"
-import { serveSimpleGit } from "~/packages/socket-io.git/src/socket-git-node"
+import { serveFilestore } from "socket-io.filestore/socket-filestore-node"
+import { serveSimpleGit } from "socket-io.git/socket-git-node"
 
 import { logger } from "./logger"
 import { formatJson } from "./services/formatJson"

@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
@@ -19,11 +18,7 @@ export const EnergyHome: FC = () => {
 	useSetTitle(`Energy`)
 
 	return (
-		<div
-			css={css`
-        border: 2px solid #333;
-      `}
-		>
+		<div style={{ border: `2px solid #333` }}>
 			<ListItems
 				labels={[...ids].map((id) => ({ id }))}
 				findState={findEnergyState}

@@ -1,6 +1,4 @@
-import { css } from "@emotion/react"
-
-export const skeletalJsonEditorCss = css`
+.json_editor {
   input {
     font-size: 20px;
     font-family: theia;
@@ -67,4 +65,4 @@ export const skeletalJsonEditorCss = css`
       }
     }
   }
-`
+}

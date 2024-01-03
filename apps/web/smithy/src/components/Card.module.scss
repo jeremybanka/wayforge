@@ -1,0 +1,14 @@
+.class {
+  --background-color: #000000;
+  --background-color-shade-5: #000000;
+  --text-color: #000000;
+  background: var(--background-color);
+  font-family: "Uruz";
+  font-size: 10.8px;
+  --card-width: 0px;
+  --card-height: 0px;
+  --card-padding: 0px;
+  width: calc(var(--card-width) + var(--card-padding) * 2);
+  height: calc(var(--card-height) + var(--card-padding) * 2);
+  position: relative;
+}

@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import type { FC } from "react"
 import { useId } from "react"
 import { useNavigate } from "react-router-dom"
@@ -32,13 +31,13 @@ export const EnergyIcon_INTERNAL: FC<{
 
 	return (
 		<svg
-			css={css`
-        width: ${size}px;
-        height: ${size}px;
-        paint-order: stroke fill;
-        display: inline;
-        cursor: pointer;
-      `}
+			style={{
+				width: size,
+				height: size,
+				paintOrder: `stroke fill`,
+				display: `inline`,
+				cursor: `pointer`,
+			}}
 			onClick={handleClick}
 			onKeyDown={handleClick}
 		>
@@ -51,11 +50,11 @@ export const EnergyIcon_INTERNAL: FC<{
 				x={middle}
 				y={middle + size * 0.25}
 				clipPath={`url(#${domId}-clip)`}
-				css={css`
-          font-family: "Uruz";
-          font-size: ${size}px;
-          fill: ${colorB.hex};
-        `}
+				style={{
+					fontFamily: `"Uruz"`,
+					fontSize: size,
+					fill: colorB.hex,
+				}}
 			>
 				<SvgTSpan_Spacer />
 				{` MT `}
@@ -66,11 +65,11 @@ export const EnergyIcon_INTERNAL: FC<{
 				x={middle}
 				y={middle + size * 0.25}
 				clipPath={`url(#${domId}-clip)`}
-				css={css`
-          font-family: "Uruz";
-          font-size: ${size}px;
-          fill: ${colorA.hex};
-        `}
+				style={{
+					fontFamily: `"Uruz"`,
+					fontSize: size,
+					fill: colorA.hex,
+				}}
 			>
 				<SvgTSpan_Spacer />
 				{` ${energy.icon} `}
@@ -123,10 +122,10 @@ export const Span_VoidIcon: FC<{
 	colorB: Luum
 }> = ({ size, colorA, colorB }) => (
 	<span
-		css={css`
-      display: inline-flex;
-      align-items: center;
-    `}
+		style={{
+			display: `inline-flex`,
+			alignItems: `center`,
+		}}
 	>
 		<SVG_VoidIcon size={size} colorA={colorA} colorB={colorB} />
 	</span>
@@ -141,29 +140,29 @@ export const EnergyAmountTag: FC<{
 	const small = size * 0.6
 	return (
 		<span
-			css={css`
-        display: inline-flex;
-        align-items: bottom;
-        justify-content: baseline;
-      `}
+			style={{
+				display: `inline-flex`,
+				alignItems: `center`,
+				justifyContent: `baseline`,
+			}}
 		>
 			<SVG_EnergyIcon energyId={energyId} size={size} clickable={clickable} />
 			<span
-				css={css`
-          background-color: black;
-          color: white;
-          border: 0px solid white;
-          padding: 1px;
-          font-weight: 600;
-          min-width: ${small}px;
-          font-size: ${small}px;
-          line-height: ${small * 0.8}px;
-          height: ${small}px;
-          text-align: center;
-          align-items: center;
-          justify-content: center;
-          margin-left: ${small * -0.2}px;
-        `}
+				style={{
+					backgroundColor: `black`,
+					color: `white`,
+					border: `0px solid white`,
+					padding: `1px`,
+					fontWeight: 600,
+					minWidth: `${small}px`,
+					fontSize: `${small}px`,
+					lineHeight: `${small * 0.8}px`,
+					height: `${small}px`,
+					textAlign: `center`,
+					alignItems: `center`,
+					justifyContent: `center`,
+					marginLeft: `${small * -0.2}px`,
+				}}
 			>
 				{amount}
 			</span>
@@ -179,12 +178,12 @@ export const Span_EnergyAmount: FC<
 	const domId = useId()
 	return (
 		<span
-			css={css`
-        display: inline-flex;
-        align-items: center;
-        flex-shrink: 0;
-        gap: 1px;
-      `}
+			style={{
+				display: `inline-flex`,
+				alignItems: `center`,
+				flexShrink: 0,
+				gap: `1px`,
+			}}
 		>
 			{amount <= 3 ? (
 				Array(amount)

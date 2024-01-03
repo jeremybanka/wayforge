@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import type { FC } from "react"
 import { Link, Outlet, Route, Routes } from "react-router-dom"
 
@@ -7,6 +6,8 @@ import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
 import { Explorer, useSetTitle } from "../../../services/app-store"
 import { Colors } from "../Colors"
 import { Division } from "../Division"
+
+import scss from "./DemoExplorer.module.scss"
 
 const Home: FC = () => {
 	useSetTitle(`Home`)
@@ -84,46 +85,7 @@ const Fractal: FC<{ items: FractalArray<number>; indices?: number[] }> = ({
 
 export const DemoExplorer: FC = () => {
 	return (
-		<div
-			css={css`
-        display: flex;
-        gap: 10px;
-        /* border: 1px solid var(--fg-color); */
-        @media (orientation: portrait) {
-          flex-direction: column;
-        }
-        .spaces,
-        .space {
-          display: flex;
-          gap: 5px;
-          padding: 5px;
-          border: 1px solid var(--fg-color);
-        }
-        .view {
-          border: 1px solid var(--fg-color);
-          display: flex;
-          flex-flow: column;
-          header {
-            background-color: var(--fg-color);
-            color: var(--bg-color);
-            display: flex;
-            justify-content: space-between;
-            padding: 2px;
-            h1 {
-              font-size: inherit;
-              margin: 0;
-            }
-          }
-          > main {
-            border: 1px solid var(--fg-color);
-            flex-grow: 1;
-          }
-          > footer {
-            flex-grow: 0;
-          }
-        }
-      `}
-		>
+		<div className={scss.class}>
 			<Explorer>
 				<Routes>
 					<Route path="/" element={<Outlet />}>

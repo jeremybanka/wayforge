@@ -1,4 +1,3 @@
-import type { SerializedStyles } from "@emotion/react"
 import type { FC } from "react"
 import { useId, useRef, useState } from "react"
 
@@ -85,7 +84,6 @@ const valueToText = (numericValue: number | null): string => {
 
 type NumberInputProps = Partial<NumberConstraints> & {
 	autoSize?: boolean
-	customCss?: SerializedStyles
 	disabled?: boolean
 	id?: string
 	label?: string
@@ -100,7 +98,6 @@ type NumberInputProps = Partial<NumberConstraints> & {
 
 export const NumberInput: FC<NumberInputProps> = ({
 	autoSize = false,
-	customCss,
 	decimalPlaces,
 	disabled = false,
 	label,
@@ -164,7 +161,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 		temporaryEntry ?? valueToText(value ? refine(value) : value)
 
 	return (
-		<span css={customCss}>
+		<span>
 			{label && <label htmlFor={id}>{label}</label>}
 			{autoSize ? (
 				<ElasticInput

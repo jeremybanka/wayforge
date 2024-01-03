@@ -1,0 +1,31 @@
+.class {
+  --sleeve-background: #0f0;
+  background: #0f0;
+  width: 276px;
+  height: 384px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  &:hover {
+    .sleeve-bg {
+      border-color: transparent;
+    }
+  }
+  data {
+    position: absolute;
+    top: -0px;
+    left: -0px;
+  }
+  .sleeve-bg {
+    height: 100%;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    border: 12px solid var(--sleeve-background);
+    opacity: 0.95;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+  }
+}

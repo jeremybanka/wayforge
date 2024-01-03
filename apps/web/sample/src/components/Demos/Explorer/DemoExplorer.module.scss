@@ -1,0 +1,38 @@
+.class {
+  display: flex;
+  gap: 10px;
+  /* border: 1px solid var(--fg-color); */
+  @media (orientation: portrait) {
+    flex-direction: column;
+  }
+  .spaces,
+  .space {
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    border: 1px solid var(--fg-color);
+  }
+  .view {
+    border: 1px solid var(--fg-color);
+    display: flex;
+    flex-flow: column;
+    header {
+      background-color: var(--fg-color);
+      color: var(--bg-color);
+      display: flex;
+      justify-content: space-between;
+      padding: 2px;
+      h1 {
+        font-size: inherit;
+        margin: 0;
+      }
+    }
+    > main {
+      border: 1px solid var(--fg-color);
+      flex-grow: 1;
+    }
+    > footer {
+      flex-grow: 0;
+    }
+  }
+}

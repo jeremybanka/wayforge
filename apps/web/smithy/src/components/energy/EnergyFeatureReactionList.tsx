@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import type { FC } from "react"
 
@@ -21,7 +20,7 @@ export const ReactionList: FC<{
 		useCreate={useCreate}
 		useRemove={useRemoveReaction}
 		Components={{
-			Wrapper: styled.ul(css`
+			Wrapper: styled.ul`
         list-style-type: none;
         padding: 0;
         li ~ li {
@@ -31,11 +30,11 @@ export const ReactionList: FC<{
           list-style-type: none;
           padding: 0;
         }
-      `),
-			ListItemWrapper: styled.li(css`
+      `,
+			ListItemWrapper: styled.li`
         border: 2px solid #333;
         padding: 20px;
-      `),
+      `,
 			ListItem: ReactionEditorListItem,
 			ItemCreator: ({ useCreate }) => {
 				const create = useCreate()
