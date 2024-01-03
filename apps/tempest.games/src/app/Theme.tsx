@@ -2,31 +2,39 @@
 
 import * as React from "react"
 
-export function Theme(): JSX.Element | null {
+function updateThemeColor() {
+	const themeColor = getComputedStyle(document.documentElement)
+		.getPropertyValue(`--bg-darkest`)
+		.trim()
+	const metaThemeColor = document.querySelector(`meta[name="theme-color"]`)
+	if (metaThemeColor) {
+		metaThemeColor.setAttribute(`content`, themeColor)
+	} else {
+		console.warn(`No meta[name="theme-color"]`)
+		const meta = document.createElement(`meta`)
+		meta.setAttribute(`name`, `theme-color`)
+		meta.setAttribute(`content`, themeColor)
+		document.head.appendChild(meta)
+	}
+	const metaBackgroundColor = document.querySelector(
+		`meta[name="background-color"]`,
+	)
+	if (metaBackgroundColor) {
+		metaBackgroundColor.setAttribute(`content`, themeColor)
+	} else {
+		console.warn(`No meta[name="background-color"]`)
+		const meta = document.createElement(`meta`)
+		meta.setAttribute(`name`, `background-color`)
+		meta.setAttribute(`content`, themeColor)
+		document.head.appendChild(meta)
+	}
+}
+
+export function Theme(): null {
 	React.useEffect(() => {
-		// const colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-		// 	? "dark"
-		// 	: "light"
-		// const metaThemeColor = document.querySelector('meta[name="theme-color"]')
-
-		// if (colorScheme === "dark") {
-		// 	metaThemeColor?.setAttribute("content", "black")
-		// } else {
-		// 	metaThemeColor?.setAttribute("content", "white")
-		// }
-		function updateThemeColor() {
-			const themeColor = getComputedStyle(document.documentElement)
-				.getPropertyValue(`--bg-shade-2`)
-				.trim()
-			const metaThemeColor = document.querySelector(`meta[name="theme-color"]`)
-			if (metaThemeColor) {
-				metaThemeColor.setAttribute(`content`, themeColor)
-			}
-		}
+		updateThemeColor()
 		const matcher = window.matchMedia(`(prefers-color-scheme: dark)`)
-
 		matcher.addEventListener(`change`, updateThemeColor)
-
 		return () => matcher.removeEventListener(`change`, updateThemeColor)
 	}, [])
 	return null

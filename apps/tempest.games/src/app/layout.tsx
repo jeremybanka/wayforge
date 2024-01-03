@@ -9,14 +9,13 @@ import "./globals.scss"
 import scss from "./layout.module.scss"
 
 export const metadata: Metadata = {
-	title: `Cards`,
+	title: `Wayfarer`,
 	description: `Tempest Games Prototype.`,
 	appleWebApp: {
 		capable: true,
 		title: `Cards`,
 		statusBarStyle: `black-translucent`,
 	},
-	manifest: `./manifest.json`,
 }
 
 export default function RootLayout({
