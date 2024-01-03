@@ -1,11 +1,17 @@
+"use client"
+
+import { useO } from "atom.io/react"
+import { roomViewState } from "src/services/store/room-view-state"
+import Lobby from "./Lobby"
+import Room from "./Room"
+
 import scss from "./page.module.scss"
 
-export default function Home(): JSX.Element {
+export default function SPA(): JSX.Element {
+	const roomView = useO(roomViewState)
 	return (
 		<main className={scss.class}>
-			<h1>
-				<span>tempest games</span>
-			</h1>
+			{roomView === null ? <Lobby /> : <Room roomId={roomView} />}
 		</main>
 	)
 }
