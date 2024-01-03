@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import type { FC } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
@@ -12,6 +11,8 @@ import {
 	useMakeNewBranch,
 } from "./services/git"
 
+import scss from "./Explorer.module.scss"
+
 export const Explorer: FC = () => {
 	const gitStatus = useRecoilValue(git.status.state)
 	// const gitLog = useRecoilValue(git.log.state)
@@ -21,14 +22,7 @@ export const Explorer: FC = () => {
 	const [commitMessage, setCommitMessage] = useRecoilState(commitMessageState)
 	const [newBranchName, setNewBranchName] = useRecoilState(newBranchNameState)
 	return (
-		<div
-			css={css`
-        display: flex;
-        flex-flow: column;
-        height: 100%;
-        width: 400px;
-      `}
-		>
+		<div className={scss.class}>
 			Explorer -{` `}
 			{isGitSocketError(gitBranch) ? gitBranch.title : gitBranch.current}
 			<div>
@@ -41,11 +35,7 @@ export const Explorer: FC = () => {
 								<li key={filename}>{filename}</li>
 							))}
 						</ul>
-						<ul
-							css={css`
-                color: green;
-              `}
-						>
+						<ul data-css="staged">
 							{gitStatus.staged.map((filename) => (
 								<li key={filename}>{filename}</li>
 							))}

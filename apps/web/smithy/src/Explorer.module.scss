@@ -1,0 +1,9 @@
+.class {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  width: 400px;
+  [data-css="staged"] {
+    color: green;
+  }
+}

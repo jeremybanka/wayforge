@@ -1,0 +1,10 @@
+.class {
+  display: flex;
+  flex-flow: row wrap;
+  > div {
+    --background-color: #000;
+    background-color: var(--background-color);
+    width: 100px;
+    height: 25px;
+  }
+}

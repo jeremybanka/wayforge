@@ -4,6 +4,7 @@ import {
 	usePullMutableFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
+import { Id } from "hamr/react-id"
 import type { FC } from "react"
 import { useParams } from "react-router-dom"
 
@@ -12,7 +13,6 @@ import {
 	leaveRoomTX,
 	playersInRooms,
 } from "~/apps/node/lodge/src/store/rooms"
-import { Id } from "~/packages/hamr/src/react-id"
 
 import { h3 } from "../../containers/<hX>"
 import { header } from "../../containers/<header>"

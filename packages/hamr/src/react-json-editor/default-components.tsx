@@ -1,5 +1,4 @@
-import type { SerializedStyles } from "@emotion/react"
-import type { FC, ReactNode } from "react"
+import type { CSSProperties, FC, ReactNode } from "react"
 
 import { ErrorBoundary } from "../react-error-boundary"
 
@@ -26,7 +25,7 @@ export type JsonEditorComponents = {
 		Wrapper: WC
 	}>
 	EditorWrapper: WC<{
-		customCss?: SerializedStyles | undefined
+		style?: CSSProperties | undefined
 		className?: string | undefined
 	}>
 
@@ -57,10 +56,8 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 			{children}
 		</button>
 	),
-	EditorWrapper: ({ children, customCss, className }) => (
-		<div className={`json_editor` + ` ` + className ?? ``} css={customCss}>
-			{children}
-		</div>
+	EditorWrapper: ({ children, className }) => (
+		<div className={`json_editor` + ` ` + className ?? ``}>{children}</div>
 	),
 	EditorLayout: ({
 		DeleteButton,

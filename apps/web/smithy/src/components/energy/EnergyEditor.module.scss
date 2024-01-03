@@ -1,0 +1,10 @@
+.class {
+  border: 2px solid #333;
+  padding: 20px;
+  > article {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 30px;
+  }
+}

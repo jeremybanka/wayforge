@@ -1,13 +1,15 @@
-import { css } from "@emotion/react"
 import { atom, selector, selectorFamily } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 import { useTransition } from "react"
 
-import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
-import { Luum, setHue, setLum, setSat } from "~/packages/luum/src"
+import { setCssVars } from "hamr/react-css-vars"
+import { ElasticInput } from "hamr/react-elastic-input"
+import { Luum, setHue, setLum, setSat } from "luum"
 
 import { useSetTitle } from "../../../services/app-store"
+
+import scss from "./Colors.module.scss"
 
 const colorAtom = atom<Luum>({
 	key: `color`,
@@ -75,25 +77,11 @@ export const Colors: FC = () => {
 				onChange={(e) => setSat(Number(e.target.value))}
 				type="number"
 			/>
-			<div
-				css={css`
-          display: flex;
-          flex-flow: row wrap;
-          > div {
-            width: 100px;
-            height: 25px;
-          }
-        `}
-			>
+			<div className={scss.class}>
 				{tints.map((tint) => {
 					const hex = tint.toHex()
 					return (
-						<div
-							key={hex}
-							css={css`
-              background-color: ${hex};
-            `}
-						>
+						<div key={hex} style={setCssVars({ "--background-color": hex })}>
 							{hex}
 						</div>
 					)

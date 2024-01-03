@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import type { FC } from "react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
@@ -23,7 +22,8 @@ import {
 	useRemoveReaction,
 } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon"
-import { skeletalJsonEditorCss } from "../styles/skeletalJsonEditorCss"
+
+import "../styles/json-editor-skeletal.scss"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
 	key: `energyCatalog`,
@@ -137,7 +137,6 @@ export const ReactionEditor: FC<
 					`featureOf`,
 					`energy`,
 				])}
-				customCss={skeletalJsonEditorCss}
 			/>
 			{reaction.reagents.map(({ id: reagentId }) => (
 				<span key={reagentId}>
@@ -150,10 +149,7 @@ export const ReactionEditor: FC<
 							}))
 						}
 						remove={() => remove.reagent(reagentId)}
-						customCss={css`
-              display: inline;
-              ${skeletalJsonEditorCss}
-            `}
+						style={{ display: `inline` }}
 					/>
 					<SVG_EnergyIcon energyId={reagentId} size={40} />
 				</span>
@@ -183,10 +179,7 @@ export const ReactionEditor: FC<
 							}))
 						}
 						remove={() => remove.product(productId)}
-						customCss={css`
-              display: inline;
-              ${skeletalJsonEditorCss}
-            `}
+						style={{ display: `inline` }}
 					/>
 					<SVG_EnergyIcon energyId={productId} size={40} />
 				</span>
