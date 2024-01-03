@@ -63,7 +63,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			}`,
 			(update) => {
 				if (target.operation.open) {
-					const unsubscribe = target.subject.operationStatus.subscribe(
+					const unsubscribe = target.on.operationClose.subscribe(
 						mutableState.key,
 						() => {
 							unsubscribe()
@@ -90,7 +90,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 						}`,
 						(update) => {
 							if (target.operation.open) {
-								const unsubscribe = target.subject.operationStatus.subscribe(
+								const unsubscribe = target.on.operationClose.subscribe(
 									mutableState.key,
 									() => {
 										unsubscribe()
@@ -148,7 +148,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					}
 				}
 
-				const unsubscribe = store.subject.operationStatus.subscribe(
+				const unsubscribe = store.on.operationClose.subscribe(
 					latestUpdateState.key,
 					() => {
 						unsubscribe()

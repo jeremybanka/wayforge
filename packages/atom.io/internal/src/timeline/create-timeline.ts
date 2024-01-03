@@ -150,6 +150,6 @@ export function createTimeline(
 		key: timelineKey,
 		type: `timeline`,
 	}
-	store.subject.timelineCreation.next(token)
+	store.on.timelineCreation.next(token)
 	return token
 }

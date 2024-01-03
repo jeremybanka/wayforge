@@ -49,6 +49,6 @@ export function createTransaction<ƒ extends ƒn>(
 	const target = newest(store)
 	target.transactions.set(newTransaction.key, newTransaction)
 	const token = deposit(newTransaction)
-	store.subject.transactionCreation.next(token)
+	store.on.transactionCreation.next(token)
 	return token
 }

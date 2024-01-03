@@ -14,7 +14,7 @@ export const buildTransaction = (
 	const child: Store = {
 		parent,
 		child: null,
-		subject: parent.subject,
+		on: parent.on,
 		loggers: parent.loggers,
 		logger: parent.logger,
 		config: parent.config,

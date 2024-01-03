@@ -14,7 +14,7 @@ export const attachTimelineIndex = (
 				}),
 			effects: [
 				({ setSelf }) => {
-					store.subject.timelineCreation.subscribe(
+					store.on.timelineCreation.subscribe(
 						`introspection`,
 						(timelineToken) => {
 							setSelf((state) => [...state, timelineToken])

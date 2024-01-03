@@ -40,9 +40,8 @@ export const addAtomToTimeline = (
 			store.operation.open && store.operation.token.type === `selector`
 				? store.operation.time
 				: null
-		const currentTransactionKey =
-			target.subject.transactionApplying.state?.update.key
-		const currentTransactionTime = target.subject.transactionApplying.state?.time
+		const currentTransactionKey = target.on.transactionApplying.state?.update.key
+		const currentTransactionTime = target.on.transactionApplying.state?.time
 
 		store.logger.info(
 			`⏳`,
