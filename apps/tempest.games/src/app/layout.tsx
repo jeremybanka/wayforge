@@ -3,13 +3,19 @@ import type { Metadata } from "next"
 
 import { Theme } from "./Theme"
 
+import Realtime from "./Realtime"
 import "./code.scss"
 import "./globals.scss"
 import scss from "./layout.module.scss"
 
 export const metadata: Metadata = {
-	title: `Reactive Data • atom.io`,
-	description: `Batteries-included data framework for any ECMAScript environment.`,
+	title: `Wayfarer`,
+	description: `Tempest Games Prototype.`,
+	appleWebApp: {
+		capable: true,
+		title: `Cards`,
+		statusBarStyle: `black-translucent`,
+	},
 }
 
 export default function RootLayout({
@@ -22,7 +28,9 @@ export default function RootLayout({
 			<Theme />
 			<body className={scss.class}>
 				<header />
-				<main>{children}</main>
+				<main>
+					<Realtime>{children}</Realtime>
+				</main>
 				<footer />
 				<Analytics />
 			</body>

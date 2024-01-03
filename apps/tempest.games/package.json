@@ -5,10 +5,10 @@
 	"private": true,
 	"scripts": {
 		"dev": "concurrently \"npm:dev:*\"",
-		"dev:next": "next dev -p 5400",
+		"dev:next": "next dev -p 4500",
 		"build": "pnpm build:next",
 		"build:next": "next build",
-		"start": "next start -p 5454",
+		"start": "next start -p 4545",
 		"lint": "next lint",
 		"test": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",

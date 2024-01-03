@@ -1,0 +1,23 @@
+span.class {
+  --child-len: -1px;
+  --child-count: -1;
+  --child-width: calc(var(--child-len) * 5 / 7);
+  --child-height: var(--child-len);
+  height: var(--child-height);
+  width: var(--child-width);
+  min-height: 100px;
+  max-height: 300px;
+  display: inline-flex;
+  position: relative;
+  > article {
+    width: var(--child-width);
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  [data-css="card"] {
+    align-items: flex-end;
+    max-height: calc(0.01 * var(--child-len));
+  }
+}
