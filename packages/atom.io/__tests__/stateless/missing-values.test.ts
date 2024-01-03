@@ -64,7 +64,7 @@ describe(`stateless data persistence strategies`, () => {
 							}
 							if (oldValue instanceof Promise) {
 								const unsub =
-									Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
+									Internal.IMPLICIT.STORE.on.operationClose.subscribe(
 										`One-Shot: enqueue update to count.txt`,
 										async () => {
 											unsub()
@@ -85,22 +85,21 @@ describe(`stateless data persistence strategies`, () => {
 									)
 								return
 							}
-							const unsub =
-								Internal.IMPLICIT.STORE.subject.operationStatus.subscribe(
-									`One-Shot: enqueue update to count.txt`,
-									() => {
-										unsub()
-										setSelf(
-											(async (): Promise<number> => {
-												await fsp.writeFile(
-													`${tmpDir.name}/count.txt`,
-													newValue.toString(),
-												)
-												return newValue
-											})(),
-										)
-									},
-								)
+							const unsub = Internal.IMPLICIT.STORE.on.operationClose.subscribe(
+								`One-Shot: enqueue update to count.txt`,
+								() => {
+									unsub()
+									setSelf(
+										(async (): Promise<number> => {
+											await fsp.writeFile(
+												`${tmpDir.name}/count.txt`,
+												newValue.toString(),
+											)
+											return newValue
+										})(),
+									)
+								},
+							)
 						})
 					},
 				],

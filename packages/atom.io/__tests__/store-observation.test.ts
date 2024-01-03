@@ -21,8 +21,8 @@ beforeEach(() => {
 })
 
 describe(`store observation`, () => {
-	test(`store.subject.atomCreation fires on minting of each new AtomToken`, () => {
-		Internal.IMPLICIT.STORE.subject.atomCreation.subscribe(`test`, (atomToken) =>
+	test(`store.on.atomCreation fires on minting of each new AtomToken`, () => {
+		Internal.IMPLICIT.STORE.on.atomCreation.subscribe(`test`, (atomToken) =>
 			Utils.stdout(atomToken),
 		)
 		const a = atom({
@@ -36,8 +36,8 @@ describe(`store observation`, () => {
 		expect(Utils.stdout).toHaveBeenCalledWith(a)
 		expect(Utils.stdout).toHaveBeenCalledWith(b)
 	})
-	test(`store.subject.selectorCreation fires on minting of each new SelectorToken`, () => {
-		Internal.IMPLICIT.STORE.subject.selectorCreation.subscribe(
+	test(`store.on.selectorCreation fires on minting of each new SelectorToken`, () => {
+		Internal.IMPLICIT.STORE.on.selectorCreation.subscribe(
 			`test`,
 			(selectorToken) => Utils.stdout(selectorToken),
 		)
@@ -53,8 +53,8 @@ describe(`store observation`, () => {
 		expect(Utils.stdout).toHaveBeenCalledWith(c)
 		expect(Utils.stdout).toHaveBeenCalledWith(d)
 	})
-	test(`store.subject.transactionCreation fires on minting of each new TransactionToken`, () => {
-		Internal.IMPLICIT.STORE.subject.transactionCreation.subscribe(
+	test(`store.on.transactionCreation fires on minting of each new TransactionToken`, () => {
+		Internal.IMPLICIT.STORE.on.transactionCreation.subscribe(
 			`test`,
 			(transactionToken) => Utils.stdout(transactionToken),
 		)
@@ -64,8 +64,8 @@ describe(`store observation`, () => {
 		})
 		expect(Utils.stdout).toHaveBeenCalledWith(tx)
 	})
-	test(`store.subject.timelineCreation fires on minting of each new TimelineToken`, () => {
-		Internal.IMPLICIT.STORE.subject.timelineCreation.subscribe(
+	test(`store.on.timelineCreation fires on minting of each new TimelineToken`, () => {
+		Internal.IMPLICIT.STORE.on.timelineCreation.subscribe(
 			`test`,
 			(timelineToken) => Utils.stdout(timelineToken),
 		)

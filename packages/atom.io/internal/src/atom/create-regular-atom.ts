@@ -87,6 +87,6 @@ export function createRegularAtom<T>(
 			}
 		}
 	}
-	store.subject.atomCreation.next(token)
+	store.on.atomCreation.next(token)
 	return token as AtomToken<T>
 }
