@@ -3,7 +3,7 @@
 		"target": "es2017",
 		"lib": ["DOM", "es2023", "ES2023.Array"],
 		"jsx": "react-jsx",
-		"jsxImportSource": "@emotion/react",
+		"jsxImportSource": "react",
 		"module": "ESNext",
 		"moduleResolution": "node",
 		"baseUrl": "./",

@@ -1,4 +1,3 @@
-import type { SerializedStyles } from "@emotion/react"
 import type { FC } from "react"
 
 import { ElasticInput } from "."
@@ -8,7 +7,6 @@ export type TextInputProps = {
 	set?: ((value: string) => void) | undefined
 	label?: string
 	placeholder?: string
-	customCss?: SerializedStyles
 	autoSize?: boolean
 	readOnly?: boolean
 }
@@ -18,11 +16,10 @@ export const TextInput: FC<TextInputProps> = ({
 	set,
 	label,
 	placeholder,
-	customCss,
 	autoSize = false,
 }) => {
 	return (
-		<span css={customCss}>
+		<span>
 			<label>{label}</label>
 			{autoSize ? (
 				<ElasticInput

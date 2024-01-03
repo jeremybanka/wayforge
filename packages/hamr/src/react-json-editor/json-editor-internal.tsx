@@ -1,5 +1,4 @@
-import type { SerializedStyles } from "@emotion/react"
-import type { FC, ReactElement } from "react"
+import type { CSSProperties, FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
@@ -27,7 +26,7 @@ export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
 	className?: string | undefined
-	customCss?: SerializedStyles | undefined
+	style?: CSSProperties | undefined
 	Header?: FC<{ data: T; schema?: JsonSchema | undefined }> | undefined
 	Components: JsonEditorComponents
 }
@@ -44,7 +43,7 @@ export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 	isReadonly = () => false,
 	isHidden = () => false,
 	className,
-	customCss,
+	style,
 	Header: HeaderDisplay,
 	Components,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
@@ -56,7 +55,7 @@ export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 
 	return isHidden(path) ? null : (
 		<Components.ErrorBoundary>
-			<Components.EditorWrapper className={className} customCss={customCss}>
+			<Components.EditorWrapper className={className} style={style}>
 				{remove && (
 					<Components.Button
 						onClick={disabled ? doNothing : remove}

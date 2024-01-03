@@ -1,6 +1,4 @@
-import type { SerializedStyles } from "@emotion/react"
-import type { FC, ReactElement } from "react"
-import { useMemo } from "react"
+import type { CSSProperties, FC, ReactElement } from "react"
 
 import type { Json, JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
@@ -41,7 +39,7 @@ export type JsonEditorProps<T extends Json.Serializable> = {
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
 	className?: string
-	customCss?: SerializedStyles
+	style?: CSSProperties
 	Header?: FC<{ data: T; schema?: JsonSchema }>
 	Components?: Partial<JsonEditorComponents>
 }
@@ -57,8 +55,8 @@ export const JsonEditor = <T extends Json.Serializable>({
 	isHidden = () => false,
 	// isIllegal = () => false,
 	className,
-	customCss,
 	Header,
+	style,
 	Components: CustomComponents = {},
 }: JsonEditorProps<T>): ReactElement => {
 	const Components = {
@@ -78,8 +76,8 @@ export const JsonEditor = <T extends Json.Serializable>({
 			isReadonly={isReadonly}
 			isHidden={isHidden}
 			className={className}
-			customCss={customCss}
 			Header={Header}
+			style={style}
 			Components={Components}
 		/>
 	)

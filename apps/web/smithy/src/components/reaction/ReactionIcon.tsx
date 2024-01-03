@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import corners, { chamfer, writePathPoint } from "corners"
 import { pipe } from "fp-ts/function"
 import type { FC } from "react"
@@ -14,21 +13,19 @@ import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
 import { Span_EnergyAmount, Span_VoidIcon } from "../energy/EnergyIcon"
 
-const fancyModeListCss = css`
-  width: 50%;
-`
+import scss from "./ReactionIcon.module.scss"
 
 const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (
 	<svg
 		width="18"
 		height="18"
 		viewBox="0 0 12 12"
-		css={css`
-      margin-right: -9px;
-      margin-left: -9px;
-      z-index: 1;
-      cursor: pointer;
-    `}
+		style={{
+			marginRight: `-9px`,
+			marginLeft: `-9px`,
+			zIndex: 1,
+			cursor: `pointer`,
+		}}
 	>
 		<title>Arrow</title>
 		<path
@@ -75,20 +72,8 @@ export const ReactionIcon_INTERNAL: FC<{
 		<div
 			onClick={handleClick}
 			onKeyUp={handleClick}
-			css={css`
-        display: flex;
-        align-items: center;
-        > span {
-          ${mode === `fancy` ? fancyModeListCss : ``}
-          flex-grow: 1;
-          height: 100%;
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          padding: 10px;
-          gap: 1px;
-        }
-      `}
+			style={mode === `fancy` ? { width: `100%` } : undefined}
+			className={scss.class}
 		>
 			<ListItems
 				findState={findEnergyState}
