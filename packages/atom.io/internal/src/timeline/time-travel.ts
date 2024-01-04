@@ -2,20 +2,19 @@ import type { KeyedStateUpdate, TimelineToken, TransactionUpdate } from "atom.io
 import { setState } from "atom.io"
 
 import type { Store } from "../store"
+import type { TimelineSelectorUpdate } from "./create-timeline"
 
 export const timeTravel = (
-	direction: `backward` | `forward`,
+	action: `redo` | `undo`,
 	token: TimelineToken<any>,
 	store: Store,
 ): void => {
-	const action = direction === `forward` ? `redo` : `undo`
 	store.logger.info(
-		direction === `forward` ? `⏩` : `⏪`,
+		action === `redo` ? `⏩` : `⏪`,
 		`timeline`,
 		token.key,
 		action,
 	)
-
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
 		store.logger.error(
@@ -26,73 +25,45 @@ export const timeTravel = (
 		)
 		return
 	}
-
 	if (
-		(direction === `forward` &&
-			timelineData.at === timelineData.history.length) ||
-		(direction === `backward` && timelineData.at === 0)
+		(action === `redo` && timelineData.at === timelineData.history.length) ||
+		(action === `undo` && timelineData.at === 0)
 	) {
 		store.logger.warn(
 			`💁`,
 			`timeline`,
 			token.key,
 			`Failed to ${action} at the ${
-				direction === `forward` ? `end` : `beginning`
+				action === `redo` ? `end` : `beginning`
 			} of timeline "${token.key}". There is nothing to ${action}.`,
 		)
 		return
 	}
 
-	timelineData.timeTraveling =
-		direction === `forward` ? `into_future` : `into_past`
-	if (direction === `backward`) {
+	timelineData.timeTraveling = action === `redo` ? `into_future` : `into_past`
+	if (action === `undo`) {
 		--timelineData.at
 	}
 
 	const update = timelineData.history[timelineData.at]
-	const updateValues = (atomUpdate: KeyedStateUpdate<any>) => {
-		const { key, newValue, oldValue } = atomUpdate
-		const value = direction === `forward` ? newValue : oldValue
-		setState({ key, type: `atom` }, value, store)
-	}
-	const updateValuesFromTransactionUpdate = (
-		transactionUpdate: TransactionUpdate<any>,
-	) => {
-		const updates =
-			direction === `forward`
-				? transactionUpdate.updates
-				: [...transactionUpdate.updates].reverse()
-		for (const updateFromTransaction of updates) {
-			if (`newValue` in updateFromTransaction) {
-				updateValues(updateFromTransaction)
-			} else {
-				updateValuesFromTransactionUpdate(updateFromTransaction)
-			}
-		}
-	}
+	const applying = action === `redo` ? `newValue` : `oldValue`
 
 	switch (update.type) {
 		case `atom_update`: {
-			updateValues(update)
+			applyAtomUpdate(applying, update, store)
 			break
 		}
 		case `selector_update`: {
-			const updates =
-				direction === `forward`
-					? update.atomUpdates
-					: [...update.atomUpdates].reverse()
-			for (const atomUpdate of updates) {
-				updateValues(atomUpdate)
-			}
+			applySelectorUpdate(applying, update, store)
 			break
 		}
 		case `transaction_update`: {
-			updateValuesFromTransactionUpdate(update)
+			applyTransactionUpdate(applying, update, store)
 			break
 		}
 	}
 
-	if (direction === `forward`) {
+	if (action === `redo`) {
 		++timelineData.at
 	}
 
@@ -104,4 +75,44 @@ export const timeTravel = (
 		token.key,
 		`"${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
+}
+
+function applyAtomUpdate(
+	applying: `newValue` | `oldValue`,
+	atomUpdate: KeyedStateUpdate<any>,
+	store: Store,
+) {
+	const { key, newValue, oldValue } = atomUpdate
+	const value = applying === `newValue` ? newValue : oldValue
+	setState({ key, type: `atom` }, value, store)
+}
+function applySelectorUpdate(
+	applying: `newValue` | `oldValue`,
+	selectorUpdate: TimelineSelectorUpdate<any>,
+	store: Store,
+) {
+	const updates =
+		applying === `newValue`
+			? selectorUpdate.atomUpdates
+			: [...selectorUpdate.atomUpdates].reverse()
+	for (const atomUpdate of updates) {
+		applyAtomUpdate(applying, atomUpdate, store)
+	}
+}
+function applyTransactionUpdate(
+	applying: `newValue` | `oldValue`,
+	transactionUpdate: TransactionUpdate<any>,
+	store: Store,
+) {
+	const updates =
+		applying === `newValue`
+			? transactionUpdate.updates
+			: [...transactionUpdate.updates].reverse()
+	for (const updateFromTransaction of updates) {
+		if (`newValue` in updateFromTransaction) {
+			applyAtomUpdate(applying, updateFromTransaction, store)
+		} else {
+			applyTransactionUpdate(applying, updateFromTransaction, store)
+		}
+	}
 }
