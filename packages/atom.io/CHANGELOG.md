@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.15.4
+
+### Patch Changes
+
+- 90bb2e3: ✨ `isToken` and `belongsTo` can help you check the types of unidentified tokens.
+
 ## 0.15.3
 
 ### Patch Changes
