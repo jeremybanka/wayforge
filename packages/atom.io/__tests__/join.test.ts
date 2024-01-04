@@ -254,15 +254,15 @@ describe(`some practical use cases`, () => {
 		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([`b`])
 	})
 
-	test(`replacing relations`, () => {
+	test(`replacing relations (many to many)`, () => {
 		const userGroups = join({
 			key: `userGroups`,
 			between: [`user`, `group`],
 			cardinality: `n:n`,
 			relations: [
 				[`a`, [`1`]],
-				[`b`, [`3`]],
-				[`c`, [`2`]],
+				[`b`, [`2`]],
+				[`c`, [`3`]],
 			],
 		})
 		userGroups.relations.replaceRelations(`a`, [`2`, `3`])
@@ -270,16 +270,41 @@ describe(`some practical use cases`, () => {
 			`2`,
 			`3`,
 		])
+		expect(getState(userGroups.findState.groupKeysOfUser(`b`))).toEqual([`2`])
+		expect(getState(userGroups.findState.groupKeysOfUser(`c`))).toEqual([`3`])
 		expect(getState(userGroups.findState.groupKeysOfUser(`1`))).toEqual([])
 		expect(getState(userGroups.findState.userKeysOfGroup(`2`))).toEqual([
-			`c`,
-			`a`,
-		])
-		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([
 			`b`,
 			`a`,
 		])
+		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([
+			`c`,
+			`a`,
+		])
 	})
+})
+test(`replacing relations (one to many)`, () => {
+	const cardValues = join({
+		key: `cardValues`,
+		between: [`value`, `card`],
+		cardinality: `1:n`,
+		relations: [
+			[`a`, [`1`]],
+			[`b`, [`2`]],
+			[`c`, [`3`]],
+		],
+	})
+	cardValues.relations.replaceRelations(`a`, [`1`, `2`, `3`])
+	expect(getState(cardValues.findState.valueKeyOfCard(`1`))).toEqual(`a`)
+	expect(getState(cardValues.findState.valueKeyOfCard(`2`))).toEqual(`a`)
+	expect(getState(cardValues.findState.valueKeyOfCard(`3`))).toEqual(`a`)
+	expect(getState(cardValues.findState.cardKeysOfValue(`a`))).toEqual([
+		`1`,
+		`2`,
+		`3`,
+	])
+	expect(getState(cardValues.findState.cardKeysOfValue(`b`))).toEqual([])
+	expect(getState(cardValues.findState.cardKeysOfValue(`c`))).toEqual([])
 })
 
 describe(`advanced performance tests`, () => {
