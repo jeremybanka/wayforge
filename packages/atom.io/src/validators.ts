@@ -70,6 +70,5 @@ export function belongsTo<Family extends ReadableFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is ReadableToken<TokenType<Family>> {
-	console.log({ family, unknownToken })
 	return family.key === unknownToken.family?.key
 }
