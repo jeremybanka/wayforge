@@ -200,6 +200,15 @@ export class Join<
 				nextRelationsOfA.clear()
 				for (const newRelationB of newRelationsOfA) {
 					const relationsOfB = getRelatedKeys(transactors, newRelationB)
+					if (this.relations.cardinality === `1:n`) {
+						for (const a of relationsOfB) {
+							const relationsOfA = getRelatedKeys(transactors, a)
+							relationsOfA.delete(newRelationB)
+						}
+						if (relationsOfB.size > 0) {
+							relationsOfB.clear()
+						}
+					}
 					relationsOfB.add(a)
 					nextRelationsOfA.add(newRelationB)
 				}
