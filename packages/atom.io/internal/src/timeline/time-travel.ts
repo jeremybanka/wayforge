@@ -5,7 +5,7 @@ import type { Store } from "../store"
 
 export const timeTravel = (
 	direction: `backward` | `forward`,
-	token: TimelineToken,
+	token: TimelineToken<any>,
 	store: Store,
 ): void => {
 	const action = direction === `forward` ? `redo` : `undo`

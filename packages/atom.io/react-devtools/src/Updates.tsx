@@ -103,7 +103,7 @@ const TransactionUpdateFC: React.FC<{
 }
 
 export const TimelineUpdateFC: React.FC<{
-	timelineUpdate: TimelineUpdate
+	timelineUpdate: TimelineUpdate<any>
 }> = ({ timelineUpdate }) => {
 	return (
 		<article className="node timeline_update">

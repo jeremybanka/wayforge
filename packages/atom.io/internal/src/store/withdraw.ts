@@ -1,8 +1,10 @@
 import type {
 	AtomToken,
+	ReadableToken,
 	ReadonlySelectorToken,
 	SelectorToken,
 	StateToken,
+	TimelineManageable,
 	TimelineToken,
 	TransactionToken,
 	ƒn,
@@ -18,7 +20,7 @@ type Withdrawable<T> =
 	| Atom<T>
 	| ReadonlySelector<T>
 	| Selector<T>
-	| Timeline
+	| Timeline<T extends TimelineManageable ? T : never>
 	| Transaction<T extends ƒn ? T : never>
 
 export function withdraw<T>(
@@ -42,19 +44,15 @@ export function withdraw<T>(
 	store: Store,
 ): Transaction<T extends ƒn ? T : never> | undefined
 export function withdraw<T>(
-	token: ReadonlySelectorToken<T> | StateToken<T>,
+	token: ReadableToken<T>,
 	store: Store,
 ): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined
 export function withdraw<T>(
-	token: TimelineToken,
+	token: TimelineToken<T>,
 	store: Store,
-): Timeline | undefined
+): Timeline<T extends TimelineManageable ? T : never> | undefined
 export function withdraw<T>(
-	token:
-		| ReadonlySelectorToken<T>
-		| StateToken<T>
-		| TimelineToken
-		| TransactionToken<T>,
+	token: ReadableToken<T> | TimelineToken<T> | TransactionToken<T>,
 	store: Store,
 ): Withdrawable<T> | undefined {
 	let withdrawn: Withdrawable<T> | undefined
