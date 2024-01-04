@@ -1,8 +1,11 @@
-import type { KeyedStateUpdate, TimelineToken, TransactionUpdate } from "atom.io"
-import { setState } from "atom.io"
+import type { TimelineToken } from "atom.io"
 
+import {
+	ingestAtomUpdate,
+	ingestSelectorUpdate,
+	ingestTransactionUpdate,
+} from "../ingest-updates"
 import type { Store } from "../store"
-import type { TimelineSelectorUpdate } from "./create-timeline"
 
 export const timeTravel = (
 	action: `redo` | `undo`,
@@ -50,15 +53,15 @@ export const timeTravel = (
 
 	switch (update.type) {
 		case `atom_update`: {
-			applyAtomUpdate(applying, update, store)
+			ingestAtomUpdate(applying, update, store)
 			break
 		}
 		case `selector_update`: {
-			applySelectorUpdate(applying, update, store)
+			ingestSelectorUpdate(applying, update, store)
 			break
 		}
 		case `transaction_update`: {
-			applyTransactionUpdate(applying, update, store)
+			ingestTransactionUpdate(applying, update, store)
 			break
 		}
 	}
@@ -75,44 +78,4 @@ export const timeTravel = (
 		token.key,
 		`"${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
 	)
-}
-
-function applyAtomUpdate(
-	applying: `newValue` | `oldValue`,
-	atomUpdate: KeyedStateUpdate<any>,
-	store: Store,
-) {
-	const { key, newValue, oldValue } = atomUpdate
-	const value = applying === `newValue` ? newValue : oldValue
-	setState({ key, type: `atom` }, value, store)
-}
-function applySelectorUpdate(
-	applying: `newValue` | `oldValue`,
-	selectorUpdate: TimelineSelectorUpdate<any>,
-	store: Store,
-) {
-	const updates =
-		applying === `newValue`
-			? selectorUpdate.atomUpdates
-			: [...selectorUpdate.atomUpdates].reverse()
-	for (const atomUpdate of updates) {
-		applyAtomUpdate(applying, atomUpdate, store)
-	}
-}
-function applyTransactionUpdate(
-	applying: `newValue` | `oldValue`,
-	transactionUpdate: TransactionUpdate<any>,
-	store: Store,
-) {
-	const updates =
-		applying === `newValue`
-			? transactionUpdate.updates
-			: [...transactionUpdate.updates].reverse()
-	for (const updateFromTransaction of updates) {
-		if (`newValue` in updateFromTransaction) {
-			applyAtomUpdate(applying, updateFromTransaction, store)
-		} else {
-			applyTransactionUpdate(applying, updateFromTransaction, store)
-		}
-	}
 }

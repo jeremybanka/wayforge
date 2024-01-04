@@ -1,9 +1,9 @@
 import type { ƒn } from "atom.io"
 
+import { ingestTransactionUpdate } from "../ingest-updates"
 import { newest } from "../lineage"
 import { withdraw } from "../store"
 import type { Store } from "../store"
-import { ingestTransactionUpdate } from "./ingest-transaction-update"
 
 export const applyTransaction = <ƒ extends ƒn>(
 	output: ReturnType<ƒ>,
@@ -56,7 +56,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 			)
 		}
 	}
-	ingestTransactionUpdate(child.transactionMeta.update, parent, child)
+	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
 	if (parent.transactionMeta === null) {
 		const myTransaction = withdraw<ƒ>(
 			{ key: child.transactionMeta.update.key, type: `transaction` },
