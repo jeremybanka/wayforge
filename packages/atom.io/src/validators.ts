@@ -46,29 +46,30 @@ export function isToken<KnownToken extends ReadableToken<any>>(
 	return knownToken.key === unknownToken.key
 }
 
-export function belongsToFamily<Family extends AtomFamily<any, any>>(
+export function belongsTo<Family extends AtomFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is AtomToken<TokenType<Family>>
-export function belongsToFamily<Family extends SelectorFamily<any, any>>(
+export function belongsTo<Family extends SelectorFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is SelectorToken<TokenType<Family>>
-export function belongsToFamily<Family extends ReadonlySelectorFamily<any, any>>(
+export function belongsTo<Family extends ReadonlySelectorFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is ReadonlySelectorToken<TokenType<Family>>
-export function belongsToFamily<Family extends WritableFamily<any, any>>(
+export function belongsTo<Family extends WritableFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is WritableToken<TokenType<Family>>
-export function belongsToFamily<Family extends ReadableFamily<any, any>>(
+export function belongsTo<Family extends ReadableFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is ReadableToken<TokenType<Family>>
-export function belongsToFamily<Family extends ReadableFamily<any, any>>(
+export function belongsTo<Family extends ReadableFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is ReadableToken<TokenType<Family>> {
+	console.log({ family, unknownToken })
 	return family.key === unknownToken.family?.key
 }

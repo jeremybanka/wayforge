@@ -13,7 +13,7 @@ export * from "./silo"
 export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
-export * from "./validation"
+export * from "./validators"
 
 export type ƒn = (...parameters: any[]) => any
 
