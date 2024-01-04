@@ -22,13 +22,13 @@ export function synchronizeTransactionResults(
 						const clientResult = JSON.stringify(clientUpdate)
 						const topic = `tx:sync:${transactionId}`
 						const sync = (serverUpdate: typeof clientUpdate) => {
+							socket.off(topic, sync)
 							store.logger.info(
 								`🔄`,
 								`transaction`,
 								token.key,
 								`syncing client and server`,
 							)
-							socket.off(topic, sync)
 							const serverResult = JSON.stringify(serverUpdate)
 							if (clientResult !== serverResult) {
 								store.logger.error(
