@@ -159,7 +159,7 @@ describe(`recipes`, () => {
 			})
 			const ftl = (
 				key: string,
-			): [state: AtomToken<number>, timeline: TimelineToken] => {
+			): [state: AtomToken<number>, timeline: TimelineToken<any>] => {
 				const stateToken = f(key)
 				const timelineToken = timeline({
 					key: `timeline for ${stateToken.key}`,

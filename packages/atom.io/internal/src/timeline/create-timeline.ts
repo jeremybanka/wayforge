@@ -1,9 +1,13 @@
 import type {
+	AtomFamily,
+	AtomToken,
 	FamilyMetadata,
 	StateUpdate,
+	TimelineManageable,
 	TimelineOptions,
 	TimelineToken,
 	TimelineUpdate,
+	TokenType,
 	TransactionUpdate,
 	ƒn,
 } from "atom.io"
@@ -16,17 +20,18 @@ import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
 
-export type TimelineAtomUpdate = StateUpdate<unknown> & {
-	key: string
-	type: `atom_update`
-	timestamp: number
-	family?: FamilyMetadata
-}
-export type TimelineSelectorUpdate = {
+export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> =
+	StateUpdate<TokenType<ManagedAtom>> & {
+		key: string
+		type: `atom_update`
+		timestamp: number
+		family?: FamilyMetadata
+	}
+export type TimelineSelectorUpdate<ManagedAtom extends TimelineManageable> = {
 	key: string
 	type: `selector_update`
 	timestamp: number
-	atomUpdates: Omit<TimelineAtomUpdate, `timestamp`>[]
+	atomUpdates: Omit<TimelineAtomUpdate<ManagedAtom>, `timestamp`>[]
 }
 export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 	key: string
@@ -34,31 +39,34 @@ export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
 	timestamp: number
 }
 
-export type Timeline = {
+export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`
 	key: string
 	at: number
-	shouldCapture?: (update: TimelineUpdate, timeline: Timeline) => boolean
+	shouldCapture?: (
+		update: TimelineUpdate<TimelineManageable>,
+		timeline: Timeline<ManagedAtom>,
+	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
-	history: TimelineUpdate[]
+	history: TimelineUpdate<ManagedAtom>[]
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: Store) => void
 	subject: Subject<
-		| TimelineAtomUpdate
-		| TimelineSelectorUpdate
+		| TimelineAtomUpdate<ManagedAtom>
+		| TimelineSelectorUpdate<ManagedAtom>
 		| TimelineTransactionUpdate
 		| `redo`
 		| `undo`
 	>
 }
 
-export function createTimeline(
-	options: TimelineOptions,
+export function createTimeline<ManagedAtom extends TimelineManageable>(
+	options: TimelineOptions<ManagedAtom>,
 	store: Store,
-	data?: Timeline,
-): TimelineToken {
-	const tl: Timeline = {
+	data?: Timeline<ManagedAtom>,
+): TimelineToken<ManagedAtom> {
+	const tl: Timeline<ManagedAtom> = {
 		type: `timeline`,
 		key: options.key,
 		at: 0,
@@ -88,7 +96,7 @@ export function createTimeline(
 			continue
 		}
 		if (tokenOrFamily.type === `atom_family`) {
-			let family = tokenOrFamily
+			let family: AtomFamily<any> = tokenOrFamily
 			if (isMutable(family)) {
 				family = getUpdateFamily(family, store)
 				atomKey = family.key
@@ -146,7 +154,7 @@ export function createTimeline(
 	}
 
 	store.timelines.set(options.key, tl)
-	const token: TimelineToken = {
+	const token: TimelineToken<ManagedAtom> = {
 		key: timelineKey,
 		type: `timeline`,
 	}

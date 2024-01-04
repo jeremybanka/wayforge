@@ -24,8 +24,8 @@ export const attachIntrospectionStates = (
 	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
 	transactionIndex: ReadonlySelectorToken<TransactionToken<ƒn>[]>
 	findTransactionLogState: ReadonlySelectorFamily<TransactionUpdate<ƒn>[]>
-	timelineIndex: ReadonlySelectorToken<TimelineToken[]>
-	findTimelineState: ReadonlySelectorFamily<Timeline>
+	timelineIndex: ReadonlySelectorToken<TimelineToken<any>[]>
+	findTimelineState: ReadonlySelectorFamily<Timeline<any>>
 } => {
 	return {
 		atomIndex: attachAtomIndex(store),

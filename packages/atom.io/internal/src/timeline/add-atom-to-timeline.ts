@@ -13,7 +13,7 @@ import type {
 
 export const addAtomToTimeline = (
 	atomToken: AtomToken<any>,
-	tl: Timeline,
+	tl: Timeline<any>,
 	store: Store,
 ): void => {
 	let maybeAtom = withdraw(atomToken, store)
@@ -61,7 +61,8 @@ export const addAtomToTimeline = (
 		)
 		if (tl.timeTraveling === null) {
 			if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
-				const mostRecentUpdate: TimelineUpdate | undefined = tl.history.at(-1)
+				const mostRecentUpdate: TimelineUpdate<any> | undefined =
+					tl.history.at(-1)
 				if (mostRecentUpdate === undefined) {
 					throw new Error(
 						`Timeline "${tl.key}" has a selectorTime, but no history. This is most likely a bug in AtomIO.`,
@@ -154,7 +155,7 @@ export const addAtomToTimeline = (
 					)
 				}
 			} else if (currentSelectorKey && currentSelectorTime) {
-				let latestUpdate: TimelineUpdate | undefined = tl.history.at(-1)
+				let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
 
 				if (currentSelectorTime !== tl.selectorTime) {
 					latestUpdate = {
@@ -216,7 +217,7 @@ export const addAtomToTimeline = (
 				if (tl.at !== tl.history.length) {
 					tl.history.splice(tl.at)
 				}
-				const atomUpdate: TimelineAtomUpdate = {
+				const atomUpdate: TimelineAtomUpdate<any> = {
 					type: `atom_update`,
 					timestamp,
 					key: atom.key,

@@ -174,7 +174,7 @@ describe(`timeline (dynamic)`, () => {
 			key: `whichTimeline`,
 			default: `letter`,
 		})
-		const timelineState = selector<TimelineToken>({
+		const timelineState = selector<TimelineToken<unknown>>({
 			key: `timeline`,
 			get: ({ get }) => {
 				const whichTimeline = get(whichTimelineState)
