@@ -165,7 +165,7 @@ pipe(
 
 			const gameStateFamilies: [
 				AtomIO.AtomFamily<Json.Object>,
-				AtomIO.StateToken<Set<string>>,
+				AtomIO.WritableToken<Set<string>>,
 			][] = [
 				[findCardState, cardIndex],
 				[findCardGroupState, cardGroupIndex],

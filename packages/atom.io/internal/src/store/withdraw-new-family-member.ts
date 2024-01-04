@@ -1,10 +1,11 @@
 import type {
 	AtomToken,
+	ReadableToken,
 	ReadonlySelectorToken,
 	SelectorToken,
-	StateToken,
+	WritableToken,
 } from "atom.io"
-import type { Atom, ReadonlySelector, Selector, Store } from ".."
+import type { Atom, ReadonlySelector, Selector, StateNode, Store } from ".."
 import { newest, withdraw } from ".."
 
 export function withdrawNewFamilyMember<T>(
@@ -20,21 +21,17 @@ export function withdrawNewFamilyMember<T>(
 	store: Store,
 ): ReadonlySelector<T> | undefined
 export function withdrawNewFamilyMember<T>(
-	token: StateToken<T>,
+	token: WritableToken<T>,
 	store: Store,
 ): Atom<T> | Selector<T> | undefined
 export function withdrawNewFamilyMember<T>(
-	token: ReadonlySelectorToken<T> | StateToken<T>,
+	token: ReadableToken<T>,
 	store: Store,
-): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined
+): StateNode<T> | undefined
 export function withdrawNewFamilyMember<T>(
-	token:
-		| AtomToken<T>
-		| ReadonlySelectorToken<T>
-		| SelectorToken<T>
-		| StateToken<T>,
+	token: ReadableToken<T>,
 	store: Store,
-): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined {
+): StateNode<T> | undefined {
 	if (token.family) {
 		store.logger.info(
 			`👪`,

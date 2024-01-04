@@ -60,7 +60,7 @@
   The `get` call will produce a copy of the atom's value that is bound to the transaction's scope. If the transaction fails, the store will not be updated. If the transaction succeeds, the store will be updated with the new value.
 
 - 0e4254b: 🐛 `atom.io/transceivers/set-rtx`: Updates are now emitted after mutating the transceivers inner state. Emitting before led to bugs when trying to capture state."
-- 0e4254b: 🏷️ `WritableToken` utility type refers to Atom and Selector token (the previous name, `StateToken`, has been deprecated). `ReadableToken` includes readonly Selector tokens as well.
+- 0e4254b: 🏷️ `WritableToken` utility type refers to Atom and Selector token (the previous name, `WritableToken`, has been deprecated). `ReadableToken` includes readonly Selector tokens as well.
 - 0e4254b: 🐛 When copying mutable state in a transaction, the state would be created without attaching its family metadata. Now, family metadata is properly attached.
 - 0e4254b: 🥅 Improve safety when `setState` is misused on a readonly selector. Previously, this would cause things to break badly. Now, it does nothing.
 - 0e4254b: 🐛 When `get` called on a mutable atom during a transaction, a copy is now properly created.
@@ -76,7 +76,7 @@
   As a part of exposing this family, its JSON interface has been updated to use the `toJSON` and `fromJSON` methods on the `SetRTX` transceiver.
 
 - dc72bfc: 🐛 `atom.io/realtime-react`: Fix bug with `RealtimeContext` where a `socket.io` instance would be preemptively initialized and would remain complaining that it could not connect after being replaced.
-- dc72bfc: 🏷️ `atom.io/realtime-client` and `atom.io/realtime-react`: broaden types accepted by the `pullFamilyMember` and `usePullFamilyMember` functions. Instead of just accepting `AtomToken`, they now accept `StateToken`, allowing for `SelectorToken` and `AtomToken` to be used interchangeably.
+- dc72bfc: 🏷️ `atom.io/realtime-client` and `atom.io/realtime-react`: broaden types accepted by the `pullFamilyMember` and `usePullFamilyMember` functions. Instead of just accepting `AtomToken`, they now accept `WritableToken`, allowing for `SelectorToken` and `AtomToken` to be used interchangeably.
 - dc72bfc: ♻️ `atom.io/data` `join` States for singular keys or entries now return `null` instead of `undefined` for ease of use in contexts where serialization is necessary.
 
 ## 0.15.0

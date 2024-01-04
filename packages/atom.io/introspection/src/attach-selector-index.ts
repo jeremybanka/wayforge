@@ -7,9 +7,9 @@ import {
 	newest,
 } from "atom.io/internal"
 
-import type { StateTokenIndex } from "."
+import type { WritableTokenIndex } from "."
 
-export type SelectorTokenIndex = StateTokenIndex<
+export type SelectorTokenIndex = WritableTokenIndex<
 	ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 >
 

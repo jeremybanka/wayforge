@@ -1,7 +1,12 @@
 import type { Store } from "atom.io/internal"
 import { IMPLICIT, createTransaction, withdraw } from "atom.io/internal"
 
-import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken, ƒn } from "."
+import type {
+	KeyedStateUpdate,
+	ReadonlySelectorToken,
+	WritableToken,
+	ƒn,
+} from "."
 
 export type TransactionToken<_> = {
 	key: string
@@ -17,16 +22,16 @@ export type TransactionUpdate<ƒ extends ƒn> = {
 }
 
 export type Transactors = Readonly<{
-	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
 	set: <S, New extends S>(
-		state: StateToken<S>,
+		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
 }>
 export type TransactorsWithRun = Readonly<{
-	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
 	set: <S, New extends S>(
-		state: StateToken<S>,
+		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
 	run: typeof runTransaction

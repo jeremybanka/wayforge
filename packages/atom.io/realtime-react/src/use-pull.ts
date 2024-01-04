@@ -7,7 +7,7 @@ import * as React from "react"
 import { RealtimeContext } from "./realtime-context"
 
 export function usePull<J extends Json.Serializable>(
-	token: AtomIO.StateToken<J>,
+	token: AtomIO.WritableToken<J>,
 ): void {
 	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
