@@ -8,8 +8,8 @@ import {
 
 import type {
 	FamilyMetadata,
-	ReadonlySelectorToken,
-	StateToken,
+	ReadableToken,
+	TimelineManageable,
 	TimelineToken,
 	TimelineUpdate,
 	TransactionToken,
@@ -29,7 +29,7 @@ export type TransactionUpdateHandler<ƒ extends ƒn> = (
 ) => void
 
 export function subscribe<T>(
-	token: ReadonlySelectorToken<T> | StateToken<T>,
+	token: ReadableToken<T>,
 	handleUpdate: UpdateHandler<T>,
 	key?: string,
 	store?: Store,
@@ -40,18 +40,14 @@ export function subscribe<ƒ extends ƒn>(
 	key?: string,
 	store?: Store,
 ): () => void
-export function subscribe(
-	token: TimelineToken,
-	handleUpdate: (update: TimelineUpdate | `redo` | `undo`) => void,
+export function subscribe<M extends TimelineManageable>(
+	token: TimelineToken<M>,
+	handleUpdate: (update: TimelineUpdate<M> | `redo` | `undo`) => void,
 	key?: string,
 	store?: Store,
 ): () => void
 export function subscribe(
-	token:
-		| ReadonlySelectorToken<any>
-		| StateToken<any>
-		| TimelineToken
-		| TransactionToken<any>,
+	token: ReadableToken<any> | TimelineToken<any> | TransactionToken<any>,
 	handleUpdate: (update: any) => void,
 	key: string = Math.random().toString(36).slice(2),
 	store = IMPLICIT.STORE,

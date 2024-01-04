@@ -13,9 +13,9 @@ export const YouAreHere: FC = () => {
 }
 
 export const TimelineLog: FC<{
-	token: TimelineToken
+	token: TimelineToken<any>
 	isOpenState: AtomToken<boolean>
-	timelineState: ReadonlySelectorToken<Timeline>
+	timelineState: ReadonlySelectorToken<Timeline<any>>
 }> = ({ token, isOpenState, timelineState }) => {
 	const timeline = useO(timelineState)
 	const isOpen = useO(isOpenState)

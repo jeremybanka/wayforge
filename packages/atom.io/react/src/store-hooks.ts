@@ -54,7 +54,7 @@ export type TimelineMeta = {
 	redo: () => void
 }
 
-export function useTL(token: TimelineToken): TimelineMeta {
+export function useTL(token: TimelineToken<any>): TimelineMeta {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	const timeline = withdraw(token, store)

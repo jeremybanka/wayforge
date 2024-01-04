@@ -47,7 +47,7 @@ export class Store implements Lineage {
 		| SelectorFamily<any, any>
 	>()
 
-	public timelines = new Map<string, Timeline>()
+	public timelines = new Map<string, Timeline<any>>()
 	public transactions = new Map<string, Transaction<ƒn>>()
 
 	public atomsThatAreDefault = new Set<string>()
@@ -80,7 +80,7 @@ export class Store implements Lineage {
 			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 		>(),
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
-		timelineCreation: new Subject<TimelineToken>(),
+		timelineCreation: new Subject<TimelineToken<unknown>>(),
 		transactionApplying: new StatefulSubject<TransactionMeta<ƒn> | null>(null),
 		operationClose: new Subject<OperationProgress>(),
 	}
