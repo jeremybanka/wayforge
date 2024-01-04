@@ -1,6 +1,7 @@
 import { Junction } from "~/packages/rel8/junction/src"
 
 import { getState, runTransaction, setState } from "~/packages/atom.io/src"
+import { getEnvironmentData } from "../get-environment-data"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -48,6 +49,7 @@ export const buildTransaction = (
 			get: (token) => getState(token, child),
 			set: (token, value) => setState(token, value, child),
 			run: (token) => runTransaction(token, child),
+			env: () => getEnvironmentData(child),
 		},
 	}
 	parent.child = child

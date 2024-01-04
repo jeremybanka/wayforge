@@ -1,4 +1,4 @@
-import type { TransactionUpdate, TransactorsWithRun, ƒn } from "atom.io"
+import type { TransactionUpdate, TransactorsWithRunAndEnv, ƒn } from "atom.io"
 
 export * from "./abort-transaction"
 export * from "./apply-transaction"
@@ -12,5 +12,5 @@ export type TransactionMeta<ƒ extends ƒn> = {
 	phase: `applying` | `building`
 	time: number
 	update: TransactionUpdate<ƒ>
-	transactors: TransactorsWithRun
+	transactors: TransactorsWithRunAndEnv
 }
