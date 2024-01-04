@@ -14,10 +14,10 @@ export const RealtimeProvider: React.FC<{
 	const setMyId = useI(RTC.myIdState__INTERNAL)
 	React.useEffect(() => {
 		if (socket) {
-			setMyId(socket.id)
+			setMyId(socket.id ?? null)
 		}
 		socket?.on(`connect`, () => {
-			setMyId(socket.id)
+			setMyId(socket.id ?? null)
 		})
 		socket?.on(`disconnect`, () => {
 			setMyId(null)
