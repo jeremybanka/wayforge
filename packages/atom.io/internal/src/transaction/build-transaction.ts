@@ -10,6 +10,7 @@ export const buildTransaction = (
 	key: string,
 	params: any[],
 	store: Store,
+	id?: string,
 ): void => {
 	const parent = newest(store)
 	const child: Store = {
@@ -41,6 +42,7 @@ export const buildTransaction = (
 		time: Date.now(),
 		update: {
 			key,
+			id: id ?? Math.random().toString(36).slice(2),
 			updates: [],
 			params,
 			output: undefined,

@@ -16,6 +16,7 @@ export type TransactionToken<_> = {
 
 export type TransactionUpdate<ƒ extends ƒn> = {
 	key: string
+	id: string
 	updates: (KeyedStateUpdate<unknown> | TransactionUpdate<ƒn>)[]
 	params: Parameters<ƒ>
 	output: ReturnType<ƒ>
@@ -69,11 +70,15 @@ export function transaction<ƒ extends ƒn>(
 }
 
 export const runTransaction =
-	<ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
+	<ƒ extends ƒn>(
+		token: TransactionToken<ƒ>,
+		store: Store = IMPLICIT.STORE,
+		id?: string,
+	) =>
 	(...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
 		const tx = withdraw(token, store)
 		if (tx) {
-			return tx.run(...parameters)
+			return tx.run(parameters, id)
 		}
 		throw new Error(
 			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,
