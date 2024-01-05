@@ -10,24 +10,27 @@ export function useSyncTransaction({
 	return function syncTransaction<ƒ extends AtomIO.ƒn>(
 		tx: AtomIO.TransactionToken<ƒ>,
 	): () => void {
-		const fillTransactionRequest = (
-			update: AtomIO.TransactionUpdate<ƒ>,
-			transactionId: string,
-		) => {
+		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {
+			AtomIO.runTransaction<ƒ>(tx, store, update.id)(...update.params)
+		}
+		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
+
+		const fillTransactionSubscriptionRequest = () => {
 			const unsubscribe = Internal.subscribeToTransaction(
 				tx,
 				(update) => {
 					unsubscribe()
-					socket.emit(`tx:sync:${transactionId}`, update)
+					socket.emit(`tx-new:${tx.key}`, update)
 				},
-				`sync:${transactionId}`,
+				`tx-sub:${tx.key}:${socket.id}`,
 				store,
 			)
-			AtomIO.runTransaction<ƒ>(tx, store)(...update.params)
+			socket.on(`tx-unsub:${tx.key}`, unsubscribe)
 		}
+		socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 
-		socket.on(`tx:${tx.key}`, fillTransactionRequest)
-
-		return () => socket.off(`tx:${tx.key}`, fillTransactionRequest)
+		return () => {
+			socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
+		}
 	}
 }
