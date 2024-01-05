@@ -29,7 +29,13 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
 				const syncTransaction = RTS.useSyncTransaction({ socket, store })
-				syncTransaction(incrementTX)
+				syncTransaction(incrementTX, (updates) =>
+					updates.filter((u) => {
+						if (u.key === `count`) {
+							return true
+						}
+					}),
+				)
 			},
 			clients: {
 				dave: () => {

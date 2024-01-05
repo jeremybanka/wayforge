@@ -62,8 +62,10 @@ export const setupRealtimeTestServer = (
 		typeof address === `string` ? 80 : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
 	const server = new SocketIO.Server(httpServer)
-	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
 
+	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
+	console.log(Internal.IMPLICIT.STORE.families)
+	console.log(silo.store.families)
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		options.server({ socket, silo })
 	})

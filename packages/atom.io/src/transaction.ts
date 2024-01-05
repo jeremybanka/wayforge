@@ -14,10 +14,14 @@ export type TransactionToken<_> = {
 	__brand?: _
 }
 
+export type TransactionUpdateContent =
+	| KeyedStateUpdate<unknown>
+	| TransactionUpdate<ƒn>
+
 export type TransactionUpdate<ƒ extends ƒn> = {
 	key: string
 	id: string
-	updates: (KeyedStateUpdate<unknown> | TransactionUpdate<ƒn>)[]
+	updates: TransactionUpdateContent[]
 	params: Parameters<ƒ>
 	output: ReturnType<ƒ>
 }
