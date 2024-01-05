@@ -1,10 +1,12 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
+import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
+AtomIO.getState(RTC.myIdState)
 const countState = AtomIO.atom({ key: `count`, default: 0 })
 const userActionCountServerState = AtomIO.atom<number>({
 	key: `server:userActionCount`,

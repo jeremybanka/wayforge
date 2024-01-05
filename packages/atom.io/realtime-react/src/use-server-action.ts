@@ -1,28 +1,23 @@
 import * as AtomIO from "atom.io"
-import { StoreContext, useI, useO } from "atom.io/react"
+import { StoreContext, useO } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 
+import { getFamily, useFamily } from "../../__tests__/__util__/use-family"
 import { RealtimeContext } from "./realtime-context"
+import { useRealtimeService } from "./use-realtime-service"
 
 export function useServerAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
-	const { socket } = React.useContext(RealtimeContext)
-	const consumerId = React.useId()
-	const syncOwnerId = useO(RTC.findSyncOwnerId(token))
-	const updateQueue = useO(RTC.findTransactionUpdateQueueState(token))
+	const context = React.useContext(RealtimeContext)
+	const findQueueState = useFamily(RTC.findTransactionUpdateQueueState)
+	const updateQueue = useO(findQueueState(token))
 
-	React.useEffect(() => {
-		if (socket) {
-			const context = {
-				consumerId,
-				syncOwnerId,
-				updateQueue,
-			}
-			return RTC.synchronizeTransactionResults(token, socket, context, store)
-		}
-	}, [token.key, socket, syncOwnerId])
+	useRealtimeService(`tx:${token.key}`, () => {
+		const { socket } = context
+		return RTC.synchronizeTransactionResults(token, socket, updateQueue, store)
+	})
 	return AtomIO.runTransaction(token, store)
 }

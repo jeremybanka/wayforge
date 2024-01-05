@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { getUpdateToken } from "atom.io/internal"
+import { IMPLICIT, getUpdateToken } from "atom.io/internal"
 import * as RTS from "atom.io/realtime-server"
 import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
@@ -42,6 +42,7 @@ import {
 import { welcome } from "./welcome"
 
 welcome(logger)
+const store = IMPLICIT.STORE
 
 const TIMESTAMP = Date.now()
 
@@ -88,19 +89,19 @@ pipe(
 			const exposeMutable = RTS.useExposeMutable({ socket })
 			const exposeFamily = RTS.useExposeFamily({ socket })
 			const exposeMutableFamily = RTS.useExposeMutableFamily({ socket })
-			const receiveTransaction = RTS.useReceiveTransaction({ socket })
+			const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
 
 			// ROOM SERVICES
 			exposeMutable(roomsIndex)
 			exposeMutableFamily(playersInRooms.core.findRelatedKeysState, roomsIndex)
 			socket.on(
-				`tx:createRoom`,
+				`tx-run:createRoom`,
 				(update: AtomIO.TransactionUpdate<() => string>) => {
 					AtomIO.runTransaction(createRoomTX)(update.output)
 				},
 			)
 			socket.on(
-				`tx:joinRoom`,
+				`tx-run:joinRoom`,
 				(update: AtomIO.TransactionUpdate<JoinRoomIO>) => {
 					const { roomId, playerId } = update.params[0]
 					if (playerId !== socket.id) {

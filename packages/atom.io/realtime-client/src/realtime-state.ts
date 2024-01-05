@@ -9,14 +9,6 @@ export const myIdState = AtomIO.selector<string | undefined>({
 	get: ({ get }) => get(myIdState__INTERNAL),
 })
 
-export const findSyncOwnerId = AtomIO.atomFamily<
-	string | null,
-	AtomIO.TransactionToken<any>
->({
-	key: `consumerIndex`,
-	default: null,
-})
-
 export const findTransactionUpdateQueueState = AtomIO.atomFamily<
 	AtomIO.TransactionUpdate<any>[],
 	AtomIO.TransactionToken<any>

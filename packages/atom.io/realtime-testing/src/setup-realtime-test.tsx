@@ -4,7 +4,7 @@ import { type RenderResult, prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
-import * as RTC from "atom.io/realtime-react"
+import * as RTR from "atom.io/realtime-react"
 import * as Happy from "happy-dom"
 import * as React from "react"
 import * as SocketIO from "socket.io"
@@ -92,9 +92,9 @@ export const setupRealtimeTestClient = (
 	document.body.innerHTML = `<div id="app"></div>`
 	const renderResult = render(
 		<AR.StoreProvider store={silo.store}>
-			<RTC.RealtimeProvider socket={socket}>
+			<RTR.RealtimeProvider socket={socket}>
 				<options.client />
-			</RTC.RealtimeProvider>
+			</RTR.RealtimeProvider>
 		</AR.StoreProvider>,
 		{
 			container: document.querySelector(`#app`) as unknown as HTMLElement,

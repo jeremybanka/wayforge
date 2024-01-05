@@ -1,29 +1,18 @@
 import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
-import {
-	findSyncOwnerId,
-	findTransactionUpdateQueueState,
-} from "./realtime-state"
-
-export type TransactionSyncContext = {
-	consumerId: string
-	syncOwnerId: string | null
-	updateQueue: AtomIO.TransactionUpdate<any>[]
-}
+import { findTransactionUpdateQueueState } from "./realtime-state"
 
 export function synchronizeTransactionResults<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
-	socket: Socket,
-	context: TransactionSyncContext,
+	socket: Socket | null,
+	updateQueue: AtomIO.TransactionUpdate<any>[],
 	store: Internal.Store,
 ): () => void {
-	if (!socket || context.syncOwnerId !== null) {
+	if (!socket) {
 		return () => null
 	}
-	AtomIO.setState(findSyncOwnerId(token), context.consumerId)
-	socket.emit(`tx-sub:${token.key}`)
-	const syncOwnerIdState = findSyncOwnerId(token)
+
 	const updateQueueState = findTransactionUpdateQueueState(token)
 
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
@@ -40,7 +29,7 @@ export function synchronizeTransactionResults<ƒ extends AtomIO.ƒn>(
 	)
 
 	const applyIncomingUpdate = (serverUpdate: AtomIO.TransactionUpdate<ƒ>) => {
-		const clientUpdate = context.updateQueue[0]
+		const clientUpdate = updateQueue[0]
 		if (clientUpdate) {
 			if (clientUpdate.id !== serverUpdate.id) {
 				store.logger.error(
@@ -48,7 +37,7 @@ export function synchronizeTransactionResults<ƒ extends AtomIO.ƒn>(
 					`transaction`,
 					serverUpdate.key,
 					`did not match position 0 in queue of updates awaiting sync:`,
-					context.updateQueue,
+					updateQueue,
 				)
 			}
 			const clientResult = JSON.stringify(clientUpdate)
@@ -84,7 +73,6 @@ export function synchronizeTransactionResults<ƒ extends AtomIO.ƒn>(
 		socket.emit(`tx-unsub:${token.key}`)
 	}
 	return () => {
-		AtomIO.setState(syncOwnerIdState, null)
 		unsubscribeFromLocalUpdates()
 		unsubscribeFromIncomingUpdates()
 	}
