@@ -1,10 +1,12 @@
 import type { EnvironmentData, Store } from "atom.io/internal"
 import { IMPLICIT, createTransaction, withdraw } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
 import type {
 	KeyedStateUpdate,
 	ReadonlySelectorToken,
 	WritableToken,
+	findState,
 	ƒn,
 } from "."
 
@@ -32,6 +34,7 @@ export type Transactors = Readonly<{
 		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
+	find: typeof findState
 }>
 export type TransactorsWithRunAndEnv = Readonly<{
 	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
@@ -39,10 +42,11 @@ export type TransactorsWithRunAndEnv = Readonly<{
 		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
+	find: typeof findState
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>
-export type ReadonlyTransactors = Pick<Transactors, `get`>
+export type ReadonlyTransactors = Pick<Transactors, `find` | `get`>
 
 export type Read<ƒ extends ƒn> = (
 	transactors: ReadonlyTransactors,

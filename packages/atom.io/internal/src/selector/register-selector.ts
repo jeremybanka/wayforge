@@ -1,4 +1,5 @@
-import type { Transactors } from "atom.io"
+import type { Transactors, findState } from "atom.io"
+import { findInStore } from "atom.io"
 
 import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
@@ -52,4 +53,5 @@ export const registerSelector = (
 		}
 		setAtomOrSelector(state, newValue, store)
 	},
+	find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 })

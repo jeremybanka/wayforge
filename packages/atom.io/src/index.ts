@@ -10,6 +10,7 @@ import type {
 
 export * from "./atom"
 export * from "./dispose"
+export * from "./find-state"
 export * from "./get-state"
 export * from "./logger"
 export * from "./selector"

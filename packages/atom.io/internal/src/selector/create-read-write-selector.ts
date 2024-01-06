@@ -17,10 +17,12 @@ export const createReadWriteSelector = <T>(
 ): SelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
+	const transactors = registerSelector(options.key, store)
+	const { find, get } = transactors
+	const readonlyTransactors = { find, get }
 
-	const { get, set } = registerSelector(options.key, store)
 	const getSelf = () => {
-		const value = options.get({ get })
+		const value = options.get(readonlyTransactors)
 		cacheValue(options.key, value, subject, newest(store))
 		return value
 	}
@@ -43,7 +45,7 @@ export const createReadWriteSelector = <T>(
 		if (target.transactionMeta === null) {
 			subject.next({ newValue, oldValue })
 		}
-		options.set({ get, set }, newValue)
+		options.set(transactors, newValue)
 	}
 	const mySelector: Selector<T> = {
 		...options,
