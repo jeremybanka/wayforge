@@ -3,15 +3,15 @@ import * as Internal from "atom.io/internal"
 
 import type { ServerConfig } from "."
 
-const findUpdateToFilterState = AtomIO.atomFamily<
+const completeUpdateAtoms = AtomIO.atomFamily<
 	AtomIO.TransactionUpdate<any> | null,
 	string
 >({
-	key: `updateToFilter`,
+	key: `completeUpdate`,
 	default: null,
 })
 
-const findUpdateFilterFunctionState = AtomIO.atomFamily<
+const transactionRedactorAtoms = AtomIO.atomFamily<
 	{
 		filter: (
 			updates: AtomIO.TransactionUpdateContent[],
@@ -19,26 +19,23 @@ const findUpdateFilterFunctionState = AtomIO.atomFamily<
 	},
 	string
 >({
-	key: `updateFilterFunction`,
+	key: `transactionRedactor`,
 	default: { filter: (updates) => updates },
 })
 
-const findFilteredUpdate = AtomIO.selectorFamily<
+const redactedUpdateSelectors = AtomIO.selectorFamily<
 	AtomIO.TransactionUpdate<any> | null,
 	[transactionKey: string, updateId: string]
 >({
-	key: `filteredUpdate`,
+	key: `redactedUpdate`,
 	get:
 		([transactionKey, updateId]) =>
 		({ get, find }) => {
-			const update = get(find(findUpdateToFilterState, updateId))
-			const { filter } = get(find(findUpdateFilterFunctionState, transactionKey))
+			const update = get(find(completeUpdateAtoms, updateId))
+			const { filter } = get(find(transactionRedactorAtoms, transactionKey))
 
 			if (update && filter) {
-				return {
-					...update,
-					updates: filter(update.updates),
-				}
+				return { ...update, updates: filter(update.updates) }
 			}
 			return null
 		},
@@ -56,10 +53,8 @@ export function useSyncTransaction({
 	): () => void {
 		if (filter) {
 			AtomIO.setState(
-				AtomIO.findState(findUpdateFilterFunctionState, tx.key),
-				{
-					filter,
-				},
+				AtomIO.findState(transactionRedactorAtoms, tx.key),
+				{ filter },
 				store,
 			)
 		}
@@ -73,14 +68,11 @@ export function useSyncTransaction({
 				tx,
 				(update) => {
 					unsubscribe()
-					const updateState = AtomIO.findState(
-						findUpdateToFilterState,
-						update.id,
-					)
+					const updateState = AtomIO.findState(completeUpdateAtoms, update.id)
 					AtomIO.setState(updateState, update, store)
 					const toEmit = filter
 						? AtomIO.getState(
-								AtomIO.findState(findFilteredUpdate, [tx.key, update.id]),
+								AtomIO.findState(redactedUpdateSelectors, [tx.key, update.id]),
 								store,
 						  )
 						: update
