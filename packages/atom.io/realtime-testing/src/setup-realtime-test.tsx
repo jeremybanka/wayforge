@@ -64,8 +64,7 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer)
 
 	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
-	console.log(Internal.IMPLICIT.STORE.families)
-	console.log(silo.store.families)
+
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		options.server({ socket, silo })
 	})
