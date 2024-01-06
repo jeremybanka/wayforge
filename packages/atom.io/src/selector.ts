@@ -43,6 +43,14 @@ export type SelectorFamily<
 	type: `selector_family`
 	subject: Subject<SelectorToken<T>>
 	install: (store: Store) => void
+	__T?: T
+	__K?: K
+}
+export type SelectorFamilyToken<T, K extends Json.Serializable> = {
+	key: string
+	type: `selector_family`
+	__T?: T
+	__K?: K
 }
 
 export type ReadonlySelectorFamily<
@@ -53,6 +61,14 @@ export type ReadonlySelectorFamily<
 	type: `readonly_selector_family`
 	subject: Subject<ReadonlySelectorToken<T>>
 	install: (store: Store) => void
+	__T?: T
+	__K?: K
+}
+export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
+	key: string
+	type: `readonly_selector_family`
+	__T?: T
+	__K?: K
 }
 
 export function selectorFamily<T, K extends Json.Serializable>(
