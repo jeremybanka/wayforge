@@ -9,10 +9,10 @@ export const myIdState = AtomIO.selector<string | undefined>({
 	get: ({ get }) => get(myIdState__INTERNAL),
 })
 
-export const findTransactionUpdateQueueState = AtomIO.atomFamily<
+export const updateQueueAtoms = AtomIO.atomFamily<
 	AtomIO.TransactionUpdate<any>[],
 	AtomIO.TransactionToken<any>
 >({
-	key: `transactionUpdateQueue`,
+	key: `updateQueue`,
 	default: [],
 })

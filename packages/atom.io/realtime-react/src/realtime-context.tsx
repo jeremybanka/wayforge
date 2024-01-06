@@ -5,7 +5,10 @@ import type { Socket } from "socket.io-client"
 
 export type RealtimeReactStore = {
 	socket: Socket | null
-	services: Map<string, [consumerCount: number, dispose: () => void]> | null
+	services: Map<
+		string,
+		[consumerCount: number, dispose: (() => void) | undefined]
+	> | null
 }
 
 export const RealtimeContext = React.createContext<RealtimeReactStore>({

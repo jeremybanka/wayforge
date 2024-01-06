@@ -1,19 +1,15 @@
 import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
-import { findTransactionUpdateQueueState } from "./realtime-state"
+import { updateQueueAtoms } from "./realtime-state"
 
 export function synchronizeTransactionResults<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
-	socket: Socket | null,
+	socket: Socket,
 	updateQueue: AtomIO.TransactionUpdate<any>[],
 	store: Internal.Store,
 ): () => void {
-	if (!socket) {
-		return () => null
-	}
-
-	const updateQueueState = findTransactionUpdateQueueState(token)
+	const updateQueueState = AtomIO.findState(updateQueueAtoms, token)
 
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
