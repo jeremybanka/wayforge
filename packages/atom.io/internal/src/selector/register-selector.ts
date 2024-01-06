@@ -1,4 +1,5 @@
-import type { Transactors } from "atom.io"
+import type { Transactors, findState } from "atom.io"
+import { findInStore } from "atom.io"
 
 import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
@@ -43,13 +44,14 @@ export const registerSelector = (
 		updateSelectorAtoms(selectorKey, dependency, store)
 		return dependencyValue
 	},
-	set: (stateToken, newValue) => {
-		const state = withdraw(stateToken, store)
+	set: (WritableToken, newValue) => {
+		const state = withdraw(WritableToken, store)
 		if (state === undefined) {
 			throw new Error(
-				`State "${stateToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
+				`State "${WritableToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
 			)
 		}
 		setAtomOrSelector(state, newValue, store)
 	},
+	find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 })

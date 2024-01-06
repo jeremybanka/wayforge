@@ -49,6 +49,14 @@ export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> = ((
 	subject: Subject<AtomToken<T>>
 	mutable?: boolean
 	install: (store: Store) => void
+	__T?: T
+	__K?: K
+}
+export type AtomFamilyToken<T, K extends Json.Serializable> = {
+	key: string
+	type: `atom_family`
+	__T?: T
+	__K?: K
 }
 
 // biome-ignore format: intersection
@@ -63,19 +71,34 @@ export type MutableAtomFamilyOptions<
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
-	Core extends Transceiver<any>,
-	SerializableCore extends Json.Serializable,
-	Key extends Json.Serializable,
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+	K extends Json.Serializable,
 > = 
-	& JsonInterface<Core, SerializableCore>
-	& ((key: Key) => MutableAtomToken<Core, SerializableCore>) 
+	& JsonInterface<T, J>
+	& ((key: K) => MutableAtomToken<T, J>) 
 	& {
-			key: `${string}`
+			key: string
 			type: `atom_family`
-			subject: Subject<MutableAtomToken<Core, SerializableCore>>
+			subject: Subject<MutableAtomToken<T, J>>
 			mutable: true
 			install: (store: Store) => void
+			__T?: T
+			__J?: J
+			__K?: K
 		}
+export type MutableAtomFamilyToken<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+	K extends Json.Serializable,
+> = {
+	key: string
+	type: `atom_family`
+	mutable: true
+	__T?: T
+	__J?: J
+	__K?: K
+}
 
 export function atomFamily<
 	T extends Transceiver<any>,

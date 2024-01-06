@@ -29,7 +29,9 @@ beforeEach(() => {
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-	vitest.spyOn(Utils, `stdout`)
+	vitest.spyOn(Utils, `stdout0`)
+	vitest.spyOn(Utils, `stdout1`)
+	vitest.spyOn(Utils, `stdout2`)
 })
 
 type CoreStats = {
@@ -252,28 +254,28 @@ describe(`transaction`, () => {
 			},
 		})
 
-		subscribe(setAllCounts, (data) => {
-			Utils.stdout(`Transaction update:`, data)
+		subscribe(setAllCounts, ({ id, ...data }) => {
+			Utils.stdout0(`Transaction update:`, data)
 			for (const update of data.updates) {
-				Utils.stdout(`Atom update:`, update)
+				Utils.stdout1(`Atom update:`, update)
 			}
 		})
 		subscribe(count1Plus2State, (data) => {
-			Utils.stdout(`Selector update:`, data)
+			Utils.stdout2(`Selector update:`, data)
 		})
 
 		runTransaction(setAllCounts)(3)
 
 		expect(getState(count1State)).toEqual(3)
-		expect(Utils.stdout).toHaveBeenCalledWith(`Selector update:`, {
+		expect(Utils.stdout2).toHaveBeenCalledWith(`Selector update:`, {
 			oldValue: 4,
 			newValue: 5,
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith(`Selector update:`, {
+		expect(Utils.stdout2).toHaveBeenCalledWith(`Selector update:`, {
 			oldValue: 5,
 			newValue: 6,
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith(`Transaction update:`, {
+		expect(Utils.stdout0).toHaveBeenCalledWith(`Transaction update:`, {
 			key: `setAllCounts`,
 			params: [3],
 			output: undefined,

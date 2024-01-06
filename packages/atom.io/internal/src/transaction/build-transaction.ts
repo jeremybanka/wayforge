@@ -1,6 +1,9 @@
+import { findInStore, getState, runTransaction, setState } from "atom.io"
+import type { findState } from "atom.io"
+
 import { Junction } from "~/packages/rel8/junction/src"
 
-import { getState, runTransaction, setState } from "~/packages/atom.io/src"
+import { getEnvironmentData } from "../get-environment-data"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -9,6 +12,7 @@ export const buildTransaction = (
 	key: string,
 	params: any[],
 	store: Store,
+	id?: string,
 ): void => {
 	const parent = newest(store)
 	const child: Store = {
@@ -40,6 +44,7 @@ export const buildTransaction = (
 		time: Date.now(),
 		update: {
 			key,
+			id: id ?? Math.random().toString(36).slice(2),
 			updates: [],
 			params,
 			output: undefined,
@@ -48,6 +53,8 @@ export const buildTransaction = (
 			get: (token) => getState(token, child),
 			set: (token, value) => setState(token, value, child),
 			run: (token) => runTransaction(token, child),
+			find: ((token, key) => findInStore(token, key, child)) as typeof findState,
+			env: () => getEnvironmentData(child),
 		},
 	}
 	parent.child = child

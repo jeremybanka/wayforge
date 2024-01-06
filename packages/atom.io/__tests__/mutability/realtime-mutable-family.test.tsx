@@ -8,44 +8,7 @@ import * as RTTest from "atom.io/realtime-testing"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
-
-function getFamily(
-	family: AtomIO.MutableAtomFamily<any, any, any>,
-	store: Store,
-): AtomIO.MutableAtomFamily<any, any, any>
-function getFamily(
-	family: AtomIO.AtomFamily<any, any>,
-	store: Store,
-): AtomIO.AtomFamily<any, any>
-function getFamily(
-	family: AtomIO.SelectorFamily<any, any>,
-	store: Store,
-): AtomIO.SelectorFamily<any, any>
-function getFamily(
-	family: AtomIO.ReadonlySelectorFamily<any, any>,
-	store: Store,
-): AtomIO.ReadonlySelectorFamily<any, any>
-function getFamily(family: any, store: Store): any {
-	const storeFamily = store.families.get(family.key)
-	return storeFamily
-}
-function useFamily(
-	family: AtomIO.MutableAtomFamily<any, any, any>,
-): AtomIO.MutableAtomFamily<any, any, any>
-function useFamily(
-	family: AtomIO.AtomFamily<any, any>,
-): AtomIO.AtomFamily<any, any>
-function useFamily(
-	family: AtomIO.SelectorFamily<any, any>,
-): AtomIO.SelectorFamily<any, any>
-function useFamily(
-	family: AtomIO.ReadonlySelectorFamily<any, any>,
-): AtomIO.ReadonlySelectorFamily<any, any>
-function useFamily(family: any): any {
-	const store = React.useContext(AR.StoreContext)
-	const storeFamily = getFamily(family, store)
-	return storeFamily
-}
+import { getFamily, useFamily } from "../__util__/use-family"
 
 const storeState = AtomIO.atom<Store>({
 	key: `store`,

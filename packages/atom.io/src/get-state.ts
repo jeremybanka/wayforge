@@ -1,9 +1,9 @@
 import * as Internal from "atom.io/internal"
 
-import type { ReadonlySelectorToken, StateToken } from "."
+import type { ReadableToken } from "."
 
 export function getState<T>(
-	token: ReadonlySelectorToken<T> | StateToken<T>,
+	token: ReadableToken<T>,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): T {
 	const state =

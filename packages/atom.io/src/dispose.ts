@@ -1,9 +1,9 @@
 import * as Internal from "atom.io/internal"
 
-import type { ReadonlySelectorToken, StateToken } from "."
+import type { ReadableToken } from "."
 
 export function dispose(
-	token: ReadonlySelectorToken<any> | StateToken<any>,
+	token: ReadableToken<any>,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): void {
 	switch (token.type) {

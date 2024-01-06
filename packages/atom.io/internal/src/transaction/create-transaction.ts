@@ -18,7 +18,7 @@ export type Transaction<ƒ extends ƒn> = {
 	type: `transaction`
 	install: (store: Store) => void
 	subject: Subject<TransactionUpdate<ƒ>>
-	run: (...parameters: Parameters<ƒ>) => ReturnType<ƒ>
+	run: (parameters: Parameters<ƒ>, id?: string) => ReturnType<ƒ>
 }
 
 export function createTransaction<ƒ extends ƒn>(
@@ -28,8 +28,8 @@ export function createTransaction<ƒ extends ƒn>(
 	const newTransaction: Transaction<ƒ> = {
 		key: options.key,
 		type: `transaction`,
-		run: (...params: Parameters<ƒ>) => {
-			buildTransaction(options.key, params, store)
+		run: (params: Parameters<ƒ>, id?: string) => {
+			buildTransaction(options.key, params, store, id)
 			try {
 				const target = newest(store)
 				// biome-ignore lint/style/noNonNullAssertion: this happens right above

@@ -10,7 +10,7 @@ export const useExposeSingle = ({
 	store = Internal.IMPLICIT.STORE,
 }: ServerConfig) => {
 	return function exposeSingle<J extends Json.Serializable>(
-		token: AtomIO.StateToken<J>,
+		token: AtomIO.WritableToken<J>,
 	): () => void {
 		let unsubscribeFromStateUpdates: (() => void) | null = null
 

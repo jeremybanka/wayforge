@@ -1,10 +1,10 @@
-import type { ReadonlySelectorToken, StateToken, UpdateHandler } from "atom.io"
+import type { ReadableToken, UpdateHandler } from "atom.io"
 import type { Store } from "../store"
 import { withdraw, withdrawNewFamilyMember } from "../store"
 import { subscribeToRootAtoms } from "./subscribe-to-root-atoms"
 
 export function subscribeToState<T>(
-	token: ReadonlySelectorToken<T> | StateToken<T>,
+	token: ReadableToken<T>,
 	handleUpdate: UpdateHandler<T>,
 	key: string,
 	store: Store,

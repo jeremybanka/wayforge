@@ -16,4 +16,6 @@ const atomLogger: Logger = {
 		console.log(`atom.io`, `ℹ️ `, icon, tokenType, `"${tokenKey}"`, ...args)
 	},
 }
-// IMPLICIT.STORE.loggers = [new AtomIOLogger(`info`, () => true, atomLogger)]
+IMPLICIT.STORE.loggers = [
+	new AtomIOLogger(`info`, (icon) => icon === `🚀`, atomLogger),
+]

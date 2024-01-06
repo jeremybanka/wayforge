@@ -12,7 +12,7 @@ export type FamilyNode<
 	familyMembers: Record<string, Token>
 }
 
-export type StateTokenIndex<
+export type WritableTokenIndex<
 	Token extends
 		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>

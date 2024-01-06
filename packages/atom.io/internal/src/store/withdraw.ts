@@ -3,13 +3,14 @@ import type {
 	ReadableToken,
 	ReadonlySelectorToken,
 	SelectorToken,
-	StateToken,
 	TimelineManageable,
 	TimelineToken,
 	TransactionToken,
+	WritableToken,
 	ƒn,
 } from "atom.io"
 
+import type { StateNode } from ".."
 import type { Atom } from "../atom"
 import type { ReadonlySelector, Selector } from "../selector"
 import type { Timeline } from "../timeline"
@@ -32,7 +33,7 @@ export function withdraw<T>(
 	store: Store,
 ): Selector<T> | undefined
 export function withdraw<T>(
-	token: StateToken<T>,
+	token: WritableToken<T>,
 	store: Store,
 ): Atom<T> | Selector<T> | undefined
 export function withdraw<T>(
@@ -46,7 +47,7 @@ export function withdraw<T>(
 export function withdraw<T>(
 	token: ReadableToken<T>,
 	store: Store,
-): Atom<T> | ReadonlySelector<T> | Selector<T> | undefined
+): StateNode<T> | undefined
 export function withdraw<T>(
 	token: TimelineToken<T>,
 	store: Store,

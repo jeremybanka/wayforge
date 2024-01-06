@@ -1,4 +1,4 @@
-import type { ReadonlySelectorToken, StateToken } from "atom.io"
+import type { ReadonlySelectorToken, WritableToken } from "atom.io"
 
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -6,7 +6,7 @@ import { traceSelectorAtoms } from "./trace-selector-atoms"
 
 export const updateSelectorAtoms = (
 	selectorKey: string,
-	dependency: ReadonlySelectorToken<unknown> | StateToken<unknown>,
+	dependency: ReadonlySelectorToken<unknown> | WritableToken<unknown>,
 	store: Store,
 ): void => {
 	const target = newest(store)

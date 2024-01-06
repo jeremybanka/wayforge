@@ -36,6 +36,7 @@ const LoggerIconDictionary = {
 	"🧮": `Computing selector`,
 	"🧹": `Prepare to evict`,
 	"🪂": `Abort transaction`,
+	"🚀": `Performance measure`,
 } as const
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 

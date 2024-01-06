@@ -8,7 +8,7 @@ import type { ServerConfig } from ".."
 const subscribeToTokenCreation = <T>(
 	family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
 	key: string,
-	handleTokenCreation: (token: AtomIO.StateToken<T>) => void,
+	handleTokenCreation: (token: AtomIO.WritableToken<T>) => void,
 ): (() => void) => {
 	const unsubscribe =
 		family.type === `atom_family`
@@ -24,7 +24,7 @@ export const useExposeFamily = ({
 }: ServerConfig) => {
 	return function exposeFamily<J extends Json.Serializable>(
 		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-		index: AtomIO.StateToken<Set<string>>,
+		index: AtomIO.WritableToken<Set<string>>,
 	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()

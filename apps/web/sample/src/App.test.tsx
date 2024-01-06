@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/react"
-import type { StateToken } from "atom.io"
+import type { WritableToken } from "atom.io"
 import { useO } from "atom.io/react"
 import type { FC } from "react"
 import { useEffect } from "react"
@@ -10,7 +10,7 @@ import { Division } from "./components/Demos/Division"
 export const onChange = [() => undefined, console.log][0]
 
 export type ObserverProps = {
-	node: StateToken<any>
+	node: WritableToken<any>
 	onChange: (value: any) => void
 }
 export const Observer: FC<ObserverProps> = ({ node, onChange }) => {

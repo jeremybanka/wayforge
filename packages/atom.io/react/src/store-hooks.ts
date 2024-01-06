@@ -3,9 +3,9 @@ import * as React from "react"
 import { getState, redo, setState, undo } from "atom.io"
 import type {
 	MutableAtomToken,
-	ReadonlySelectorToken,
-	StateToken,
+	ReadableToken,
 	TimelineToken,
+	WritableToken,
 } from "atom.io"
 
 import {
@@ -18,7 +18,7 @@ import type { Json } from "atom.io/json"
 import { StoreContext } from "./store-context"
 
 export function useI<T>(
-	token: StateToken<T>,
+	token: WritableToken<T>,
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
 	const setter: React.MutableRefObject<
@@ -30,7 +30,7 @@ export function useI<T>(
 	return setter.current
 }
 
-export function useO<T>(token: ReadonlySelectorToken<T> | StateToken<T>): T {
+export function useO<T>(token: ReadableToken<T>): T {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(

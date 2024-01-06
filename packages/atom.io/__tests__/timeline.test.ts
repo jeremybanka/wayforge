@@ -1,6 +1,6 @@
 import { vitest } from "vitest"
 
-import type { Logger, StateToken } from "atom.io"
+import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -138,7 +138,7 @@ describe(`timeline`, () => {
 			key: `a`,
 			default: 0,
 		})
-		const incrementTX = transaction<(state: StateToken<number>) => void>({
+		const incrementTX = transaction<(state: WritableToken<number>) => void>({
 			key: `increment`,
 			do: ({ set }, state) => {
 				set(state, (n) => n + 1)
@@ -150,7 +150,7 @@ describe(`timeline`, () => {
 			atoms: [a],
 		})
 		const incrementTimesTX = transaction<
-			(state: StateToken<number>, times: number) => void
+			(state: WritableToken<number>, times: number) => void
 		>({
 			key: `increment times`,
 			do: ({ run }, state, times) => {
