@@ -2,4 +2,4 @@
 "atom.io": patch
 ---
 
-🐛 `atom.io/realtime-react` won't create redundant copies of the same service.
+✨ `TransactionUpdate` now has bears an "id" property used for tracking it across network boundaries.
