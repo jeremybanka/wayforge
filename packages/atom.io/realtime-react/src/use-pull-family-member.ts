@@ -4,16 +4,13 @@ import { StoreContext } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 
-import { RealtimeContext } from "./realtime-context"
+import { useRealtimeService } from "./use-realtime-service"
 
 export function usePullFamilyMember<J extends Json.Serializable>(
 	token: AtomIO.WritableToken<J>,
 ): void {
-	const { socket } = React.useContext(RealtimeContext)
 	const store = React.useContext(StoreContext)
-	React.useEffect(() => {
-		if (socket) {
-			return RTC.pullFamilyMember(token, socket, store)
-		}
-	}, [token.key, socket])
+	useRealtimeService(`pull:${token.key}`, (socket) =>
+		RTC.pullFamilyMember(token, socket, store),
+	)
 }

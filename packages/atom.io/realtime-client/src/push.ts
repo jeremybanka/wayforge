@@ -6,7 +6,6 @@ import type { Socket } from "socket.io-client"
 export function pushState<J extends Json.Serializable>(
 	token: AtomIO.WritableToken<J>,
 	socket: Socket,
-	subscriptionKey: string,
 	store: Internal.Store,
 ): () => void {
 	socket.emit(`claim:${token.key}`)
@@ -15,7 +14,7 @@ export function pushState<J extends Json.Serializable>(
 		({ newValue }) => {
 			socket.emit(`pub:${token.key}`, newValue)
 		},
-		subscriptionKey,
+		`push`,
 		store,
 	)
 	return () => {
