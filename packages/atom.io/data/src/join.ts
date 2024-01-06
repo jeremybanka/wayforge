@@ -7,7 +7,7 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import { dispose, getState, setState } from "atom.io"
+import { dispose, findState, getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
@@ -29,7 +29,11 @@ import type {
 import { Junction } from "~/packages/rel8/junction/src"
 import type * as Rel8 from "~/packages/rel8/types/src"
 
-const TRANSACTORS: Transactors = { get: getState, set: setState }
+const TRANSACTORS: Transactors = {
+	get: getState,
+	set: setState,
+	find: findState,
+}
 
 function capitalize<S extends string>(string: S): Capitalize<S> {
 	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>

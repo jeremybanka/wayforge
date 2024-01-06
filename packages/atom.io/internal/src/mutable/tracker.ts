@@ -4,7 +4,7 @@ import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
 import { newest, subscribeToState, subscribeToTimeline } from ".."
-import { createRegularAtom, deleteAtom } from "../atom"
+import { createRegularAtom } from "../atom"
 import type { Transceiver } from "./transceiver"
 
 /**

@@ -1,7 +1,14 @@
-import type { Store } from "atom.io/internal"
+import type { EnvironmentData, Store } from "atom.io/internal"
 import { IMPLICIT, createTransaction, withdraw } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
-import type { KeyedStateUpdate, ReadonlySelectorToken, StateToken, ƒn } from "."
+import type {
+	KeyedStateUpdate,
+	ReadonlySelectorToken,
+	WritableToken,
+	findState,
+	ƒn,
+} from "."
 
 export type TransactionToken<_> = {
 	key: string
@@ -9,29 +16,37 @@ export type TransactionToken<_> = {
 	__brand?: _
 }
 
+export type TransactionUpdateContent =
+	| KeyedStateUpdate<unknown>
+	| TransactionUpdate<ƒn>
+
 export type TransactionUpdate<ƒ extends ƒn> = {
 	key: string
-	updates: (KeyedStateUpdate<unknown> | TransactionUpdate<ƒn>)[]
+	id: string
+	updates: TransactionUpdateContent[]
 	params: Parameters<ƒ>
 	output: ReturnType<ƒ>
 }
 
 export type Transactors = Readonly<{
-	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
 	set: <S, New extends S>(
-		state: StateToken<S>,
+		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
+	find: typeof findState
 }>
-export type TransactorsWithRun = Readonly<{
-	get: <S>(state: ReadonlySelectorToken<S> | StateToken<S>) => S
+export type TransactorsWithRunAndEnv = Readonly<{
+	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
 	set: <S, New extends S>(
-		state: StateToken<S>,
+		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
+	find: typeof findState
 	run: typeof runTransaction
+	env: () => EnvironmentData
 }>
-export type ReadonlyTransactors = Pick<Transactors, `get`>
+export type ReadonlyTransactors = Pick<Transactors, `find` | `get`>
 
 export type Read<ƒ extends ƒn> = (
 	transactors: ReadonlyTransactors,
@@ -44,7 +59,7 @@ export type Write<ƒ extends ƒn> = (
 ) => ReturnType<ƒ>
 
 export type Transact<ƒ extends ƒn> = (
-	transactors: TransactorsWithRun,
+	transactors: TransactorsWithRunAndEnv,
 	...parameters: Parameters<ƒ>
 ) => ReturnType<ƒ>
 
@@ -63,11 +78,15 @@ export function transaction<ƒ extends ƒn>(
 }
 
 export const runTransaction =
-	<ƒ extends ƒn>(token: TransactionToken<ƒ>, store: Store = IMPLICIT.STORE) =>
+	<ƒ extends ƒn>(
+		token: TransactionToken<ƒ>,
+		store: Store = IMPLICIT.STORE,
+		id?: string,
+	) =>
 	(...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
 		const tx = withdraw(token, store)
 		if (tx) {
-			return tx.run(...parameters)
+			return tx.run(parameters, id)
 		}
 		throw new Error(
 			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,

@@ -1,9 +1,9 @@
 import * as Internal from "atom.io/internal"
 
-import type { StateToken } from "."
+import type { WritableToken } from "."
 
 export function setState<T, New extends T>(
-	token: StateToken<T>,
+	token: WritableToken<T>,
 	value: New | ((oldValue: T) => New),
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): void {

@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 
-import { getState, transaction } from "~/packages/atom.io/src"
+import { transaction } from "~/packages/atom.io/src"
 
 import { playersIndex } from "../rooms"
 import { cardIndex, findCardState } from "./card"
@@ -131,7 +131,7 @@ export const addHandTx = transaction<
 export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>({
 	key: `shuffleDeck`,
 	do: (transactors, { deckId }) => {
-		const { get } = transactors
+		const { get, env } = transactors
 		const deckDoesExist = get(cardGroupIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
@@ -141,6 +141,9 @@ export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>(
 		groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
+		if (env().runtime === `node`) {
+			console.log(`Shuffled deck "${deckId}"`)
+		}
 	},
 })
 

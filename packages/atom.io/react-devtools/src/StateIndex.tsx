@@ -1,6 +1,6 @@
 import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
 import { getState, selectorFamily } from "atom.io"
-import type { FamilyNode, StateTokenIndex } from "atom.io/introspection"
+import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
@@ -108,7 +108,7 @@ export const StateIndexTreeNode: FC<{
 }
 
 export const StateIndexNode: FC<{
-	node: StateTokenIndex<
+	node: WritableTokenIndex<
 		AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown>
 	>[string]
 	isOpenState: AtomToken<boolean>
@@ -134,7 +134,7 @@ export const StateIndexNode: FC<{
 
 export const StateIndex: FC<{
 	tokenIndex: ReadonlySelectorToken<
-		StateTokenIndex<
+		WritableTokenIndex<
 			| AtomToken<unknown>
 			| ReadonlySelectorToken<unknown>
 			| SelectorToken<unknown>

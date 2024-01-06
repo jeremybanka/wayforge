@@ -3,7 +3,7 @@ import * as ReactIO from "atom.io/react"
 import * as React from "react"
 
 export type ObserverProps = {
-	node: AtomIO.StateToken<any>
+	node: AtomIO.WritableToken<any>
 	onChange: (value: any) => void
 }
 export const Observer: React.FC<ObserverProps> = ({ node, onChange }) => {

@@ -1,4 +1,4 @@
-import type { ReadonlySelectorToken, StateToken } from "atom.io"
+import type { ReadonlySelectorToken, WritableToken } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
@@ -10,7 +10,7 @@ import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
 import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
 
 export const StateEditor: FC<{
-	token: StateToken<unknown>
+	token: WritableToken<unknown>
 }> = ({ token }) => {
 	const set = useI(token)
 	const data = useO(token)
@@ -66,7 +66,7 @@ export const ReadonlySelectorViewer: FC<{
 }
 
 export const StoreEditor: FC<{
-	token: ReadonlySelectorToken<unknown> | StateToken<unknown>
+	token: ReadonlySelectorToken<unknown> | WritableToken<unknown>
 }> = ({ token }) => {
 	if (token.type === `readonly_selector`) {
 		return <ReadonlySelectorViewer token={token} />

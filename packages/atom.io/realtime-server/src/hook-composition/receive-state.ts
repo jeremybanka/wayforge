@@ -1,5 +1,5 @@
 import { setState } from "atom.io"
-import type { StateToken } from "atom.io"
+import type { WritableToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from ".."
@@ -7,7 +7,7 @@ import type { ServerConfig } from ".."
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const useReceiveState = ({ socket, store }: ServerConfig) => {
 	return function receiveState<J extends Json.Serializable>(
-		token: StateToken<J>,
+		token: WritableToken<J>,
 	): () => void {
 		const publish = (newValue: J) => setState(token, newValue, store)
 

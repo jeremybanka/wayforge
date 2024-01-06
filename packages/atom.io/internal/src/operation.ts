@@ -1,4 +1,4 @@
-import type { StateToken } from "atom.io"
+import type { WritableToken } from "atom.io"
 
 import { newest } from "./lineage"
 import type { Store } from "./store"
@@ -12,11 +12,11 @@ export type OperationProgress =
 			done: Set<string>
 			prev: Map<string, any>
 			time: number
-			token: StateToken<any>
+			token: WritableToken<any>
 	  }
 
 export const openOperation = (
-	token: StateToken<any>,
+	token: WritableToken<any>,
 	store: Store,
 ): `rejection` | undefined => {
 	if (store.operation.open) {
