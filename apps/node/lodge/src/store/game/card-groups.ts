@@ -15,6 +15,12 @@ export const ownersOfGroups = join({
 	cardinality: `1:n`,
 })
 
+export const trickContributions = join({
+	key: `trickContributions`,
+	between: [`player`, `card`],
+	cardinality: `1:n`,
+})
+
 export type CardGroup = {
 	type: `deck` | `hand` | `pile` | `trick`
 	name: string
