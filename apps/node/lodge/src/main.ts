@@ -143,14 +143,17 @@ pipe(
 
 			// GAME SERVICES
 
-			const gameIndices: AtomIO.MutableAtomToken<
-				SetRTX<string>,
-				SetRTXJson<string>
-			>[] = [cardIndex, cardGroupIndex, cardValuesIndex]
-			for (const index of gameIndices) {
-				exposeMutable(index)
-			}
+			// Indices
+			exposeMutable(cardIndex)
+			exposeMutable(cardGroupIndex)
+			exposeMutable(cardValuesIndex)
 
+			// Families
+			exposeFamily(findCardState, cardIndex)
+			exposeFamily(findCardGroupState, cardGroupIndex)
+			exposeFamily(findCardValueState, cardValuesIndex)
+
+			// Relations
 			const groupsOfCardsFamily = groupsOfCards.core.findRelatedKeysState
 			const ownersOfGroupsFamily = ownersOfGroups.core.findRelatedKeysState
 			const valuesOfCardsFamily = valuesOfCards.core.findRelatedKeysState
@@ -164,27 +167,13 @@ pipe(
 			exposeMutableFamily(cardCycleGZFamily, cardGroupIndex)
 			exposeMutableFamily(cardCycleGZFamily, cardIndex)
 
-			const gameStateFamilies: [
-				AtomIO.AtomFamily<Json.Object>,
-				AtomIO.WritableToken<Set<string>>,
-			][] = [
-				[findCardState, cardIndex],
-				[findCardGroupState, cardGroupIndex],
-				[findCardValueState, cardValuesIndex],
-			]
-			// biome-ignore lint/complexity/noForEach: for readability
-			gameStateFamilies.forEach(([family, index]) => exposeFamily(family, index))
-
-			const gameTransactions = [
-				addCardValueTX,
-				addHandTx,
-				dealCardsTX,
-				shuffleDeckTX,
-				spawnCardTX,
-				spawnClassicDeckTX,
-			] as const
-			// biome-ignore lint/complexity/noForEach: for readability
-			gameTransactions.forEach(receiveTransaction)
+			// Transactions
+			receiveTransaction(addCardValueTX)
+			receiveTransaction(addHandTx)
+			receiveTransaction(dealCardsTX)
+			receiveTransaction(shuffleDeckTX)
+			receiveTransaction(spawnCardTX)
+			receiveTransaction(spawnClassicDeckTX)
 		})
 	},
 )
