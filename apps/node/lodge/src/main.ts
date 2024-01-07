@@ -16,7 +16,6 @@ import {
 	findCardState,
 	findCardValueState,
 	shuffleDeckTX,
-	spawnCardTX,
 	spawnClassicDeckTX,
 	valuesOfCards,
 } from "./store/game"
@@ -159,7 +158,6 @@ pipe(
 					receiveTransaction(addHandTX)
 					receiveTransaction(dealCardsTX)
 					receiveTransaction(shuffleDeckTX)
-					receiveTransaction(spawnCardTX)
 					receiveTransaction(spawnClassicDeckTX)
 
 					socket.on(`tx:leaveRoom`, () => {
