@@ -126,11 +126,13 @@ export const addHandTX = transaction<
 	},
 })
 
-export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>({
+export const shuffleDeckTX = transaction<
+	(gameId: string, deckId: string) => void
+>({
 	key: `shuffleDeck`,
-	do: (transactors, { deckId }) => {
+	do: (transactors, gameId, deckId) => {
 		const { get, find, env } = transactors
-		const deckIndex = find(CardGroups.deckIndices, deckId)
+		const deckIndex = find(CardGroups.deckIndices, gameId)
 		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)

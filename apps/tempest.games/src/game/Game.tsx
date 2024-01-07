@@ -59,12 +59,12 @@ export function Game({ roomId }: GameProps): JSX.Element {
 		<>
 			<CoreSync roomId={roomId} />
 			<div className={scss.class}>
-				<Controls />
+				{/* <Controls /> */}
 				<section data-css="enemy-domains">
 					<EnemyDomains />
 				</section>
 				<section data-css="public">
-					<Public />
+					<Public roomId={roomId} />
 				</section>
 				<section data-css="my-domain">
 					<MyDomain />

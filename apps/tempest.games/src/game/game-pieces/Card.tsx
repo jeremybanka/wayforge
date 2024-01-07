@@ -11,8 +11,6 @@ import { PlayingCards } from "src/components/PlayingCards"
 
 import scss from "./Card.module.scss"
 
-const { Back } = PlayingCards
-
 export const CardFace: FC<{ id: string }> = ({ id }) => {
 	usePullMutableFamilyMember(valuesOfCards.core.findRelatedKeysState(id))
 	const valueKey = useO(valuesOfCards.findState.valueKeyOfCard(id)) ?? `Back`
@@ -31,9 +29,7 @@ export const CardBack: FC<{ id: string }> = ({ id }) => {
 	return (
 		<span className={scss.class} data-css="card">
 			<AnimatePresence>
-				<article.redCard layoutId={id}>
-					<Image src={Back.src} alt="card" fill />
-				</article.redCard>
+				<article.redCard layoutId={id} />
 			</AnimatePresence>
 		</span>
 	)

@@ -14,22 +14,30 @@ import { useRadial } from "src/services/peripherals/radial"
 import { useDOMRect } from "src/services/use-dimensions"
 import { CardBack } from "./Card"
 
+import { myRoomState } from "src/services/store/my-room"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 
 export const Deck = memoize<{ id: string; detailed?: string }>(
 	`Deck`,
-	({ id, detailed }) => {
-		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
+	({ id: deckId, detailed }) => {
+		const myRoomId = useO(myRoomState)
+		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(deckId))
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
+		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(deckId))
 
 		const shuffle = useServerAction(shuffleDeckTX)
 
 		const handlers = useRadial([
 			{
 				label: `Shuffle`,
-				do: () => shuffle({ deckId: id }),
+				do: () => {
+					if (myRoomId) {
+						shuffle(myRoomId, deckId)
+					} else {
+						console.error(`Tried to shuffle a deck without being in a room`)
+					}
+				},
 			},
 		])
 
@@ -49,12 +57,12 @@ export const Deck = memoize<{ id: string; detailed?: string }>(
 					{detailed ? (
 						<>
 							<div>Hand ({cardIds.length})</div>
-							<Id id={id} />
+							<Id id={deckId} />
 						</>
 					) : null}
 					<motion.article
 						ref={ref}
-						layoutId={id}
+						layoutId={deckId}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
