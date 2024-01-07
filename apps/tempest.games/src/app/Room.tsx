@@ -29,7 +29,6 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const myId = useO(myIdState)
 	const myRoom = useO(myRoomState)
 	const setRoomState = useI(roomViewState)
-	console.log({ roomId, myRoom })
 	const iAmInRoom = myRoom === roomId
 
 	const joinRoom = useServerAction(joinRoomTX)

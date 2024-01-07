@@ -18,7 +18,6 @@ export const addAtomToTimeline = (
 ): void => {
 	let maybeAtom = withdraw(atomToken, store)
 	if (maybeAtom?.mutable) {
-		console.log(`adding transceiver to timeline`, atomToken.key)
 		const updateToken = getUpdateToken(atomToken)
 		maybeAtom = withdraw(updateToken, store)
 	}

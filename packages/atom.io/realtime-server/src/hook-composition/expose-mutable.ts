@@ -31,12 +31,10 @@ export const useExposeMutable = ({
 		}
 
 		const fillSubRequest = () => {
-			console.log(`subscribing to mutable ${token.key}`)
 			socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
 			unsubscribeFromStateUpdates = subscribeToState(
 				trackerToken,
 				({ newValue }) => {
-					console.log(`saw update to ${token.key}`, newValue)
 					socket.emit(`next:${token.key}`, newValue)
 				},
 				`expose-single:${socket.id}`,
