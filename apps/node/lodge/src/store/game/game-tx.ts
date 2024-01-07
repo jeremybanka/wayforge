@@ -2,45 +2,37 @@ import { nanoid } from "nanoid"
 
 import { transaction } from "~/packages/atom.io/src"
 
-import { playersIndex } from "../rooms"
-import { cardIndex, findCardState } from "./card"
-import type { CardGroup } from "./card-group"
-import {
-	cardGroupIndex,
-	findCardGroupState,
-	groupsOfCards,
-	ownersOfGroups,
-} from "./card-group"
-import { cardValuesIndex, valuesOfCards } from "./card-value"
+import { playersInRooms, playersIndex } from "../rooms"
+import * as CardGroups from "./card-groups"
+import { cardValuesIndex, valuesOfCards } from "./card-values"
+import { cardIndex, findCardState } from "./cards"
 import { CARD_VALUES } from "./playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
-	(deckId: string, cardIds: string[]) => void
+	(gameId: string, deckId: string, cardIds: string[]) => void
 >({
 	key: `spawnClassicDeck`,
-	do: (transactors, deckId, cardIds) => {
+	do: (transactors, gameId, deckId, cardIds) => {
 		if (cardIds.length !== 52) {
 			throw new Error(`${cardIds.length} cards were provided. 52 were expected`)
 		}
-		const { set } = transactors
-		const cardGroup: CardGroup = {
-			type: `deck`,
-			name: `Classic French 52-Card Deck`,
-			rotation: 0,
-		}
-		set(findCardGroupState(deckId), cardGroup)
+		const { set, find } = transactors
+		const state = find(CardGroups.deckStates, deckId)
+		set(state, { type: `deck`, name: `Classic 52-Card Deck` })
 
-		let idx = 0
+		const deckIndex = find(CardGroups.deckIndices, gameId)
+		set(deckIndex, (current) => {
+			current.add(deckId)
+			return current
+		})
+
 		valuesOfCards.transact(transactors, ({ relations }) => {
+			let idx = 0
 			for (const cardId of cardIds) {
 				set(findCardState(cardId), { rotation: 0 })
 				relations.set({ card: cardId, value: CARD_VALUES[idx].id })
 				idx++
 			}
-		})
-		set(cardGroupIndex, (current) => {
-			current.add(deckId)
-			return current
 		})
 
 		set(cardIndex, (current) => {
@@ -62,7 +54,7 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		groupsOfCards.transact(transactors, ({ relations }) => {
+		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, cardIds, { reckless: true })
 		})
 	},
@@ -70,21 +62,23 @@ export const spawnClassicDeckTX = transaction<
 
 export const spawnCardTX = transaction<
 	(options: {
+		gameId: string
 		valueId: string
 		target: { groupId: string } | { playerId: string } | { zoneId: string }
 	}) => void
 >({
 	key: `spawnCard`,
 	do: (transactors, { valueId, target }) => {
-		const { get, set } = transactors
+		const { get, set, find } = transactors
 		const cardId = nanoid()
 		if (`groupId` in target) {
 			const { groupId } = target
-			const cardGroupDoesExist = get(cardGroupIndex).has(groupId)
+			const cardGroupIndex = find(CardGroups.indices, groupId)
+			const cardGroupDoesExist = get(cardGroupIndex).includes(groupId)
 			if (!cardGroupDoesExist) {
 				throw new Error(`Card group does not exist`)
 			}
-			groupsOfCards.transact(transactors, ({ relations }) => {
+			CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
 				relations.set({ card: cardId, group: groupId })
 			})
 			set(cardIndex, (current) => current.add(cardId))
@@ -106,24 +100,28 @@ export const spawnCardTX = transaction<
 	},
 })
 
-export const addHandTx = transaction<
+export const addHandTX = transaction<
 	(playerId: string, groupId: string) => void
 >({
 	key: `addHand`,
-	do: (transactors, playerId, groupId) => {
-		const { get, set } = transactors
-		const cardGroup: CardGroup = {
+	do: (transactors, playerId, handId) => {
+		const { get, set, find } = transactors
+		const gameId = get(find(playersInRooms.findState.roomKeyOfPlayer, playerId))
+		if (gameId === null) {
+			console.error({ playerId }, `Player is not in a game`)
+			return
+		}
+		set(CardGroups.handStates(handId), {
 			type: `hand`,
 			name: ``,
-			rotation: 0,
-		}
-		set(cardGroupIndex, (current) => {
-			const next = current.add(groupId)
+		})
+		const handIndex = find(CardGroups.handIndices, gameId)
+		set(handIndex, (current) => {
+			const next = current.add(handId)
 			return next
 		})
-		set(findCardGroupState(groupId), cardGroup)
-		ownersOfGroups.transact(transactors, ({ relations }) => {
-			relations.set({ player: playerId, group: groupId })
+		CardGroups.ownersOfGroups.transact(transactors, ({ relations }) => {
+			relations.set({ player: playerId, group: handId })
 		})
 	},
 })
@@ -131,14 +129,17 @@ export const addHandTx = transaction<
 export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>({
 	key: `shuffleDeck`,
 	do: (transactors, { deckId }) => {
-		const { get, env } = transactors
-		const deckDoesExist = get(cardGroupIndex).has(deckId)
+		const { get, find, env } = transactors
+		const deckIndex = find(CardGroups.deckIndices, deckId)
+		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const cardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
+		const cardIds = get(
+			CardGroups.groupsOfCards.findState.cardKeysOfGroup(deckId),
+		)
 		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
-		groupsOfCards.transact(transactors, ({ relations }) => {
+		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
 		if (env().runtime === `node`) {
@@ -148,30 +149,38 @@ export const shuffleDeckTX = transaction<(options: { deckId: string }) => void>(
 })
 
 export const dealCardsTX = transaction<
-	(options: { deckId: string; handId: string; count: number }) => {
-		cardIds: string[]
-	}
+	(
+		gameId: string,
+		deckId: string,
+		handId: string,
+		count: number,
+	) => { cardIds: string[] }
 >({
 	key: `dealCards`,
-	do: (transactors, { deckId, handId, count }) => {
-		const { get } = transactors
-		const cardGroupKeys = get(cardGroupIndex)
-		const deckDoesExist = cardGroupKeys.has(deckId)
+	do: (transactors, gameId, deckId, handId, count) => {
+		const { get, find } = transactors
+		const deckIndex = find(CardGroups.deckIndices, gameId)
+		const deckIds = get(deckIndex)
+		const deckDoesExist = deckIds.has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
 		}
-		const handDoesExist = cardGroupKeys.has(handId)
+		const handIndex = find(CardGroups.handIndices, gameId)
+		const handIds = get(handIndex)
+		const handDoesExist = handIds.has(handId)
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)
 		}
 
-		const deckCardIds = get(groupsOfCards.findState.cardKeysOfGroup(deckId))
+		const deckCardIds = get(
+			find(CardGroups.groupsOfCards.findState.cardKeysOfGroup, deckId),
+		)
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
 		}
 		const cardIds = deckCardIds.slice(-count)
 
-		groupsOfCards.transact(transactors, ({ relations }) => {
+		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
 			for (const cardId of cardIds) {
 				relations.set({ card: cardId, group: handId })
 			}

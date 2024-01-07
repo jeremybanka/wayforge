@@ -34,26 +34,27 @@ export function findState<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 	K extends Json.Serializable,
->(token: MutableAtomFamilyToken<T, J, K>, key: K): MutableAtomToken<T, J>
-export function findState<T, K extends Json.Serializable>(
+	Key extends K,
+>(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
+export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: AtomFamilyToken<T, K>,
-	key: K,
+	key: Key,
 ): AtomToken<T>
-export function findState<T, K extends Json.Serializable>(
+export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: SelectorFamilyToken<T, K>,
-	key: K,
+	key: Key,
 ): SelectorToken<T>
-export function findState<T, K extends Json.Serializable>(
+export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
-	key: K,
+	key: Key,
 ): ReadonlySelectorToken<T>
-export function findState<T, K extends Json.Serializable>(
+export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: WritableFamilyToken<T, K>,
-	key: K,
+	key: Key,
 ): WritableToken<T>
-export function findState<T, K extends Json.Serializable>(
+export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
-	key: K,
+	key: Key,
 ): ReadableToken<T>
 export function findState(
 	token: ReadableFamilyToken<any, any>,

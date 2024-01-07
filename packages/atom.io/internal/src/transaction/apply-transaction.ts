@@ -29,6 +29,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 	parent.child = null
 	parent.on.transactionApplying.next(child.transactionMeta)
 	const { updates } = child.transactionMeta.update
+	console.log(`updates`, updates)
 	store.logger.info(
 		`🛄`,
 		`transaction`,

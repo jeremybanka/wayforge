@@ -74,7 +74,7 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 					<PlayersInRoom roomId={roomId} />
 				</header.auspicious0>
 
-				{iAmInRoom ? <Game /> : null}
+				{iAmInRoom ? <Game roomId={roomId} /> : null}
 			</article>
 			<Radial
 				/* eslint-disable react-hooks/rules-of-hooks */

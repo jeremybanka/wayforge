@@ -21,7 +21,7 @@ export const useExposeMutableFamily = ({
 			Json.Serializable,
 			Json.Serializable
 		>,
-	>(family: Family, index: AtomIO.WritableToken<Set<string>>): () => void {
+	>(family: Family, index: AtomIO.ReadableToken<Iterable<string>>): () => void {
 		type FamilyKey = Family extends AtomIO.MutableAtomFamily<
 			Transceiver<any>,
 			any,

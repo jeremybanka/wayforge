@@ -10,6 +10,7 @@ export const useReceiveTransaction = ({ socket, store }: ServerConfig) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
+			console.log(`running transaction`, tx.key, update.id)
 			performance.mark(performanceKeyStart)
 			AtomIO.runTransaction<ƒ>(tx, store)(...update.params)
 			performance.mark(performanceKeyEnd)

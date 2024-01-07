@@ -10,11 +10,13 @@ import { div } from "../../containers/<div>"
 import { CardBack, CardFace } from "./Card"
 import scss from "./Hand.module.scss"
 import { myHandsIndex } from "./store/my-hands-index"
+import { myRoomState } from "./store/my-room"
 import { publicDeckIndex } from "./store/public-deck-index"
 
-export const Hand: FC<{ id: string }> = ({ id }) => {
-	const isMyHand = useO(myHandsIndex).includes(id)
-	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
+export const Hand: FC<{ id: string }> = ({ id: handId }) => {
+	const myRoomId = useO(myRoomState)
+	const isMyHand = useO(myHandsIndex).includes(handId)
+	const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(handId))
 	const publicDeckIds = useO(publicDeckIndex)
 
 	const dealCards = useServerAction(dealCardsTX)
@@ -23,9 +25,12 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 		{
 			label: `Deal`,
 			do: () => {
-				// debugger
 				const deckId = publicDeckIds[0]
-				dealCards({ deckId, handId: id, count: 1 })
+				if (!myRoomId) {
+					console.error(`Tried to deal cards without being in a room.`)
+					return
+				}
+				dealCards(myRoomId, deckId, handId, 1)
 			},
 		},
 	])
@@ -39,7 +44,7 @@ export const Hand: FC<{ id: string }> = ({ id }) => {
 				{...handlers}
 			>
 				<div>
-					{id} ({cardIds.length})
+					{handId} ({cardIds.length})
 				</div>
 				<div className={scss.class}>
 					{isMyHand

@@ -54,7 +54,7 @@ export const Room: FC<{ roomId: string }> = ({ roomId }) => {
 				<PlayersInRoom roomId={roomId} />
 			</header.auspicious0>
 
-			{iAmInRoom ? <Game /> : null}
+			{iAmInRoom ? <Game roomId={roomId} /> : null}
 		</article>
 	)
 }

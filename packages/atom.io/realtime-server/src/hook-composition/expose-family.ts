@@ -24,7 +24,7 @@ export const useExposeFamily = ({
 }: ServerConfig) => {
 	return function exposeFamily<J extends Json.Serializable>(
 		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
-		index: AtomIO.WritableToken<Set<string>>,
+		index: AtomIO.ReadableToken<Iterable<string>>,
 	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
