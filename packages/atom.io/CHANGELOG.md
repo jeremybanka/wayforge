@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.15.6
+
+### Patch Changes
+
+- 0009fc2: 🐛 Fix bug where, when nesting transactions, mutable atoms modified in the child would not be carried up to the parent, meaning subsequent reads in the parent or other children would retrieve a stale value. The value will now be carried up correctly.
+
 ## 0.15.5
 
 ### Patch Changes
