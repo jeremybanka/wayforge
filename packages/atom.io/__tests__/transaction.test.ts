@@ -16,6 +16,8 @@ import {
 	transaction,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import type { SetRTXJson } from "../transceivers/set-rtx/src/set-rtx"
+import { SetRTX } from "../transceivers/set-rtx/src/set-rtx"
 import * as Utils from "./__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -84,7 +86,7 @@ describe(`transaction`, () => {
 		runTransaction(incrementTX)()
 		expect(getState(countState)).toEqual(1)
 	})
-	it(`creates anatom in a transaction`, () => {
+	it(`creates an atom in a transaction`, () => {
 		const findPointState = atomFamily<{ x: number; y: number }, number>({
 			key: `point`,
 			default: { x: 0, y: 0 },
@@ -320,6 +322,50 @@ describe(`nesting transactions`, () => {
 		})
 		runTransaction(incrementTwiceTX)()
 		expect(getState(countState)).toEqual(3)
+	})
+	test(`mutable atoms can be modified in a lower transaction`, () => {
+		const coffeeQuantityState = atom<number>({
+			key: `coffeeQuantity`,
+			default: 0,
+		})
+		const shoppingListState = atom<SetRTX<string>, SetRTXJson<string>>({
+			key: `shoppingList`,
+			default: () => new SetRTX<string>(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+			mutable: true,
+		})
+		const addItemToShoppingListTX = transaction<(item: string) => void>({
+			key: `addItemToShoppingList`,
+			do: ({ set }, item) => {
+				set(shoppingListState, (current) => current.add(item))
+			},
+		})
+		const addCoffeeCreamerIfNeededTX = transaction<() => void>({
+			key: `addCoffeeCreamerIfNeeded`,
+			do: ({ get, set }) => {
+				const shoppingList = get(shoppingListState)
+				if (shoppingList.has(`coffee`)) {
+					set(shoppingListState, (current) => current.add(`coffee creamer`))
+				}
+			},
+		})
+		const refreshShoppingListTX = transaction<() => void>({
+			key: `refreshShoppingList`,
+			do: ({ get, set }) => {
+				const coffeeQuantity = get(coffeeQuantityState)
+				if (coffeeQuantity < 1) {
+					set(coffeeQuantityState, 1)
+					runTransaction(addItemToShoppingListTX)(`coffee`)
+				}
+				runTransaction(addCoffeeCreamerIfNeededTX)()
+			},
+		})
+		expect(getState(shoppingListState)).toEqual(new SetRTX<string>())
+		runTransaction(refreshShoppingListTX)()
+		expect(getState(shoppingListState)).toEqual(
+			new SetRTX<string>([`coffee`, `coffee creamer`]),
+		)
 	})
 })
 
