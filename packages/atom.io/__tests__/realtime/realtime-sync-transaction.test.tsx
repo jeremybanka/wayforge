@@ -39,7 +39,7 @@ describe(`running transactions`, () => {
 			},
 			clients: {
 				dave: () => {
-					const increment = RTR.useServerAction(incrementTX)
+					const increment = RTR.useSyncServerAction(incrementTX)
 					return (
 						<button
 							type="button"
@@ -49,7 +49,7 @@ describe(`running transactions`, () => {
 					)
 				},
 				jane: () => {
-					const increment = RTR.useServerAction(incrementTX)
+					const increment = RTR.useSyncServerAction(incrementTX)
 					const count = AR.useO(countState)
 					return <i data-testid={count} />
 				},
