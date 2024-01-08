@@ -1,4 +1,4 @@
-import { atomFamily, transaction } from "atom.io"
+import { atomFamily } from "atom.io"
 import { join } from "atom.io/data"
 import { IMPLICIT, createMutableAtom } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -16,7 +16,7 @@ export const cardValuesIndex = createMutableAtom<
 	SetRTXJson<string>
 >(
 	{
-		key: `cardValuesIndex::mutable`,
+		key: `cardValuesIndex`,
 		mutable: true,
 		default: () => new SetRTX<string>(),
 		toJson: (set) => set.toJSON(),
@@ -30,20 +30,4 @@ export const valuesOfCards = join({
 	key: `valuesOfCards`,
 	between: [`value`, `card`],
 	cardinality: `1:n`,
-})
-
-export const addCardValueTX = transaction<
-	<IJ extends Identified & Json.Object>(value: IJ) => boolean
->({
-	key: `addCardValue`,
-	do: ({ get, set }, value) => {
-		const idHasBeenUsed = get(cardValuesIndex).has(value.id)
-		if (idHasBeenUsed) {
-			console.error(`Card value id has already been used`)
-			return false
-		}
-		set(cardValuesIndex, (current) => current.add(value.id))
-		set(findCardValueState(value.id), value)
-		return true
-	},
 })

@@ -3,10 +3,10 @@ import { transaction } from "atom.io"
 import { playersInRooms } from "../../rooms"
 import * as CardGroups from "../card-groups"
 
-export const addHandTX = transaction<
-	(playerId: string, groupId: string) => void
+export const spawnHandTX = transaction<
+	(playerId: string, handId: string) => void
 >({
-	key: `addHand`,
+	key: `spawnHand`,
 	do: (transactors, playerId, handId) => {
 		const { get, set, find } = transactors
 		const gameId = get(find(playersInRooms.findState.roomKeyOfPlayer, playerId))

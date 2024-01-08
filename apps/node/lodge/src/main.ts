@@ -7,8 +7,6 @@ import { Server as WebSocketServer } from "socket.io"
 
 import { logger } from "./logger"
 import {
-	addCardValueTX,
-	addHandTX,
 	cardCycleGroupsAndZones,
 	cardIndex,
 	cardValuesIndex,
@@ -17,10 +15,11 @@ import {
 	findCardValueState,
 	shuffleDeckTX,
 	spawnClassicDeckTX,
+	spawnHandTX,
+	spawnTrickTX,
 	valuesOfCards,
 } from "./store/game"
 import * as CardGroups from "./store/game/card-groups"
-import { createTrickTX } from "./store/game/transactions/create-trick"
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,
@@ -155,12 +154,11 @@ pipe(
 					exposeMutableFamily(cardCycleGZFamily, cardIndex)
 
 					// Transactions
-					receiveTransaction(addCardValueTX)
-					receiveTransaction(addHandTX)
+					receiveTransaction(spawnHandTX)
 					receiveTransaction(dealCardsTX)
 					receiveTransaction(shuffleDeckTX)
 					receiveTransaction(spawnClassicDeckTX)
-					receiveTransaction(createTrickTX)
+					receiveTransaction(spawnTrickTX)
 
 					socket.on(`tx:leaveRoom`, () => {
 						AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
