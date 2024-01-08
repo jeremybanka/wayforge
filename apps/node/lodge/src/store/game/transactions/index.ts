@@ -1,4 +1,5 @@
 export * from "./add-hand"
+export * from "./create-trick"
 export * from "./deal-cards"
 export * from "./shuffle-deck"
 export * from "./spawn-classic-deck"

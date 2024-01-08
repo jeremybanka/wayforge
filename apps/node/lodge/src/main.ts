@@ -20,6 +20,7 @@ import {
 	valuesOfCards,
 } from "./store/game"
 import * as CardGroups from "./store/game/card-groups"
+import { createTrickTX } from "./store/game/transactions/create-trick"
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,
@@ -159,6 +160,7 @@ pipe(
 					receiveTransaction(dealCardsTX)
 					receiveTransaction(shuffleDeckTX)
 					receiveTransaction(spawnClassicDeckTX)
+					receiveTransaction(createTrickTX)
 
 					socket.on(`tx:leaveRoom`, () => {
 						AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })

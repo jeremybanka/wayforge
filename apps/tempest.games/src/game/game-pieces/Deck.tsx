@@ -18,7 +18,7 @@ import { myRoomState } from "src/services/store/my-room"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 
-export const Deck = memoize<{ id: string; detailed?: string }>(
+export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	`Deck`,
 	({ id: deckId, detailed }) => {
 		const myRoomId = useO(myRoomState)
@@ -52,26 +52,31 @@ export const Deck = memoize<{ id: string; detailed?: string }>(
 						"--child-len": `${height}px`,
 						"--child-count": `${cardIds.length}`,
 					})}
-					{...handlers}
 				>
 					{detailed ? (
-						<>
-							<div>Hand ({cardIds.length})</div>
-							<Id id={deckId} />
-						</>
+						<span
+							style={{
+								paddingBottom: 0.0067 * height * cardIds.length + 5,
+							}}
+						>
+							<div>Deck</div>
+							<Count amount={cardIds.length} />
+						</span>
 					) : null}
-					<motion.article
-						ref={ref}
-						layoutId={deckId}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-					>
-						{cardIds.map((cardId) => (
-							<CardBack key={cardId} id={cardId} />
-						))}
-					</motion.article>
-					{detailed ? null : <Count amount={cardIds.length} />}
+					<div {...handlers}>
+						<motion.article
+							ref={ref}
+							layoutId={deckId}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+						>
+							{cardIds.map((cardId) => (
+								<CardBack key={cardId} id={cardId} />
+							))}
+						</motion.article>
+						{detailed ? null : <Count amount={cardIds.length} />}
+					</div>
 				</span>
 			</AnimatePresence>
 		)

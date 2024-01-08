@@ -37,7 +37,7 @@ export const CardBack: FC<{ id: string }> = ({ id }) => {
 
 export const CardSlot: FC<{ onClick?: () => void }> = ({ onClick }) => {
 	return (
-		<span className={scss.class}>
+		<span className={scss.class} data-css="card">
 			<AnimatePresence>
 				<article.greyCardSlot onClick={onClick} />
 			</AnimatePresence>

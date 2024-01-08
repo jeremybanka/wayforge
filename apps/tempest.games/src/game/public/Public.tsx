@@ -2,7 +2,11 @@ import { useO } from "atom.io/react"
 import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
-import { addHandTX, spawnClassicDeckTX } from "~/apps/node/lodge/src/store/game"
+import {
+	addHandTX,
+	createTrickTX,
+	spawnClassicDeckTX,
+} from "~/apps/node/lodge/src/store/game"
 
 import { h3 } from "src/components/<hX>"
 import { useRadial } from "src/services/peripherals/radial"
@@ -12,12 +16,15 @@ import type { GameProps } from "../Game"
 import { Deck } from "../game-pieces/Deck"
 
 import { myIdState } from "atom.io/realtime-client"
+import { Trick } from "../game-pieces/Trick"
+import { Hearts } from "./Hearts"
 import scss from "./Public.module.scss"
 
 export function Public({ roomId }: GameProps): JSX.Element {
 	const myId = useO(myIdState)
 	const addHand = useServerAction(addHandTX)
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
+	const createTrick = useServerAction(createTrickTX)
 	const handlers = useRadial([
 		{
 			label: `Create Deck`,
@@ -38,34 +45,20 @@ export function Public({ roomId }: GameProps): JSX.Element {
 				addHand(myId, groupId)
 			},
 		},
+		{
+			label: `Create Trick`,
+			do: () => {
+				const trickId = nanoid()
+				createTrick(roomId, trickId)
+			},
+		},
 	])
 	return (
 		<div className={scss.class}>
 			<h3.Trapezoid {...handlers}>Game</h3.Trapezoid>
 			<main>
-				<Decks roomId={roomId} />
-				<Tricks roomId={roomId} />
+				<Hearts roomId={roomId} />
 			</main>
 		</div>
-	)
-}
-function Decks({ roomId }: GameProps): JSX.Element {
-	const publicDeckIds = useO(publicDeckIndex)
-	return (
-		<>
-			{publicDeckIds.map((id) => (
-				<Deck key={id} id={id} />
-			))}
-		</>
-	)
-}
-function Tricks({ roomId }: GameProps): JSX.Element {
-	const publicTrickIds = useO(publicTrickIndex)
-	return (
-		<>
-			{publicTrickIds.map((id) => (
-				<Deck key={id} id={id} />
-			))}
-		</>
 	)
 }
