@@ -1,6 +1,8 @@
+import { setState } from "atom.io"
 import type { Atom } from "../atom"
 import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
+import type { Transceiver } from "../mutable"
 import { markDone } from "../operation"
 import { readOrComputeValue } from "../read-or-compute-value"
 import type { Store } from "../store"
@@ -28,9 +30,12 @@ export const setAtom = <T>(
 	const update = { oldValue, newValue }
 	if (target.transactionMeta === null) {
 		emitUpdate(atom, update, target)
-	} else if (target.transactionMeta.phase === `applying` && target.parent) {
-		emitUpdate(atom, update, target.parent)
-	} else {
+	} else if (target.on.transactionApplying && target.parent) {
 		stowUpdate(atom, update, target)
+		if (atom.key.startsWith(`*`)) {
+			const mutableKey = atom.key.slice(1)
+			const mutable: Transceiver<any> = target.valueMap.get(mutableKey)
+			mutable.do(update.newValue)
+		}
 	}
 }
