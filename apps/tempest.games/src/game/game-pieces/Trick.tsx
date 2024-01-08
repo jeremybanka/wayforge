@@ -15,19 +15,15 @@ import { myHandsIndex } from "src/services/store/my-hands-index"
 import { CardFace, CardSlot } from "./Card"
 
 import { findState } from "atom.io"
-import { myRoomState } from "src/services/store/my-room"
 import { useDOMRect } from "src/services/use-dimensions"
 import { Count } from "../labels/Count"
 import scss from "./Trick.module.scss"
 
-export const Trick = memoize<{ id: string; detailed?: boolean }>(
+export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>(
 	`Trick`,
-	({ id: trickId, detailed }) => {
-		const myRoomId = useO(myRoomState)
+	({ id: trickId, gameId, detailed }) => {
 		const isMyTrick = useO(myHandsIndex).includes(trickId)
-		const trickContent = useO(
-			findState(trickContentsStates, [myRoomId ?? ``, trickId]),
-		)
+		const trickContent = useO(findState(trickContentsStates, [gameId, trickId]))
 
 		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(trickId))
 

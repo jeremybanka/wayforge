@@ -15,7 +15,7 @@ export const trickContentsStates = selectorFamily<
 			const playerIndex = find(playersInRooms.states.playerKeysOfRoom, gameId)
 			const playerIdsInGame = get(playerIndex)
 			const cardIdsInTrick = get(
-				find(CardGroups.groupsOfCards.states.dKeysOfGroup, trickId),
+				find(CardGroups.groupsOfCards.states.cardKeysOfGroup, trickId),
 			)
 			const trickContents = playerIdsInGame.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(

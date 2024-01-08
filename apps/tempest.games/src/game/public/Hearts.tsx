@@ -26,5 +26,5 @@ function GameDeck({ roomId }: GameProps): JSX.Element | null {
 }
 function CurrentTrick({ roomId }: GameProps): JSX.Element | null {
 	const trickId = useO(publicTrickIndex)[0]
-	return trickId ? <Trick id={trickId} /> : null
+	return trickId ? <Trick id={trickId} gameId={roomId} /> : null
 }

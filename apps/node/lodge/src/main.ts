@@ -20,6 +20,7 @@ import {
 	valuesOfCards,
 } from "./store/game"
 import * as CardGroups from "./store/game/card-groups"
+import { startGameTX } from "./store/game/transactions/hearts"
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,
@@ -80,6 +81,7 @@ pipe(
 			const exposeFamily = RTS.useExposeFamily({ socket })
 			const exposeMutableFamily = RTS.useExposeMutableFamily({ socket })
 			const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
+			const syncTransaction = RTS.useSyncTransaction({ socket, store })
 
 			// ROOM SERVICES
 			exposeMutable(roomsIndex)
@@ -159,6 +161,7 @@ pipe(
 					receiveTransaction(shuffleDeckTX)
 					receiveTransaction(spawnClassicDeckTX)
 					receiveTransaction(spawnTrickTX)
+					syncTransaction(startGameTX)
 
 					socket.on(`tx:leaveRoom`, () => {
 						AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
