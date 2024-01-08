@@ -26,7 +26,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 	({ id: handId, detailed }) => {
 		const myRoomId = useO(myRoomState)
 		const isMyHand = useO(myHandsIndex).includes(handId)
-		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(handId))
+		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
 		const publicDeckIds = useO(publicDeckIndex)
 
 		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(handId))

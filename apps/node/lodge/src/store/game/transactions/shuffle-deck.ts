@@ -13,9 +13,7 @@ export const shuffleDeckTX = transaction<
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const cardIds = get(
-			CardGroups.groupsOfCards.findState.cardKeysOfGroup(deckId),
-		)
+		const cardIds = get(CardGroups.groupsOfCards.states.cardKeysOfGroup(deckId))
 		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
 		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, shuffledCardIds)

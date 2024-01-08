@@ -12,7 +12,7 @@ export const myHandsIndex = AtomIO.selector<string[]>({
 		if (!myId || !myRoomId) {
 			return []
 		}
-		const { groupKeysOfPlayer } = ownersOfGroups.findState
+		const { groupKeysOfPlayer } = ownersOfGroups.states
 		const myCardGroupIds = get(find(groupKeysOfPlayer, myId))
 		const allHandIds = get(find(handIndices, myRoomId))
 		const myHandIds = myCardGroupIds.filter((handId) => allHandIds.has(handId))

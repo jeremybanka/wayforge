@@ -22,7 +22,7 @@ export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	`Deck`,
 	({ id: deckId, detailed }) => {
 		const myRoomId = useO(myRoomState)
-		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(deckId))
+		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(deckId))
 
 		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(deckId))
 

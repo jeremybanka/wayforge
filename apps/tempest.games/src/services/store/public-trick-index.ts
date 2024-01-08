@@ -13,7 +13,7 @@ export const publicTrickIndex = AtomIO.selector<string[]>({
 		const trickIndex = find(CardGroups.trickIndices, myRoomId)
 		const trickIds = get(trickIndex)
 		const unownedTrickIds = [...trickIds].filter((trickId) => {
-			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.findState
+			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.states
 			const ownerOfTrick = get(find(playerKeyOfGroup, trickId))
 			const trickIsNotOwned = ownerOfTrick === null
 			return trickIsNotOwned

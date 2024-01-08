@@ -9,7 +9,7 @@ export const spawnHandTX = transaction<
 	key: `spawnHand`,
 	do: (transactors, playerId, handId) => {
 		const { get, set, find } = transactors
-		const gameId = get(find(playersInRooms.findState.roomKeyOfPlayer, playerId))
+		const gameId = get(find(playersInRooms.states.roomKeyOfPlayer, playerId))
 		if (gameId === null) {
 			console.error({ playerId }, `Player is not in a game`)
 			return

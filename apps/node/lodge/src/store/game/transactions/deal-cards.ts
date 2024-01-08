@@ -27,7 +27,7 @@ export const dealCardsTX = transaction<
 		}
 
 		const deckCardIds = get(
-			find(CardGroups.groupsOfCards.findState.cardKeysOfGroup, deckId),
+			find(CardGroups.groupsOfCards.states.cardKeysOfGroup, deckId),
 		)
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)

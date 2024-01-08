@@ -12,17 +12,14 @@ export const trickContentsStates = selectorFamily<
 	get:
 		([gameId, trickId]) =>
 		({ get, find }) => {
-			const playerIndex = find(playersInRooms.findState.playerKeysOfRoom, gameId)
+			const playerIndex = find(playersInRooms.states.playerKeysOfRoom, gameId)
 			const playerIdsInGame = get(playerIndex)
 			const cardIdsInTrick = get(
-				find(CardGroups.groupsOfCards.findState.cardKeysOfGroup, trickId),
+				find(CardGroups.groupsOfCards.states.dKeysOfGroup, trickId),
 			)
 			const trickContents = playerIdsInGame.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(
-					find(
-						CardGroups.trickContributions.findState.cardKeysOfPlayer,
-						playerId,
-					),
+					find(CardGroups.trickContributions.states.cardKeysOfPlayer, playerId),
 				)
 				const cardId = cardsThisPlayerHasInTricks.find((cardId) =>
 					cardIdsInTrick.includes(cardId),

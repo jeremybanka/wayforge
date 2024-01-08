@@ -13,7 +13,7 @@ export const publicDeckIndex = AtomIO.selector<string[]>({
 		const deckIndex = find(CardGroups.deckIndices, myRoomId)
 		const deckIds = get(deckIndex)
 		const unownedDeckIds = [...deckIds].filter((deckId) => {
-			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.findState
+			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.states
 			const ownerOfDeck = get(find(playerKeyOfGroup, deckId))
 			const deckIsNotOwned = ownerOfDeck === null
 			return deckIsNotOwned
