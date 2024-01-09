@@ -22,10 +22,10 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
-	const isReadonly = !(`set` in options)
+	const isWritable = `set` in options
 
-	if (isReadonly) {
-		return createReadonlySelectorFamily(options, store)
+	if (isWritable) {
+		return createWritableSelectorFamily(options, store)
 	}
-	return createWritableSelectorFamily(options, store)
+	return createReadonlySelectorFamily(options, store)
 }

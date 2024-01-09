@@ -10,7 +10,7 @@ import type { Selector } from "./create-selector"
 import { createSelector } from "./create-selector"
 import { registerSelector } from "./register-selector"
 
-export const createReadWriteSelector = <T>(
+export const createWritableSelector = <T>(
 	options: SelectorOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
