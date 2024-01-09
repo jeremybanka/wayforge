@@ -8,14 +8,13 @@ import {
 import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import type { ServerConfig } from ".."
+import type { ServerConfig } from "."
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const useExposeMutable = ({
+export function realtimeMutableProvider({
 	socket,
 	store = IMPLICIT.STORE,
-}: ServerConfig) => {
-	return function exposeMutable<
+}: ServerConfig) {
+	return function mutableProvider<
 		Core extends Transceiver<Json.Serializable>,
 		SerializableCore extends Json.Serializable,
 	>(token: AtomIO.MutableAtomToken<Core, SerializableCore>): () => void {

@@ -1,51 +1,18 @@
 import * as AtomIO from "atom.io"
-import * as Internal from "atom.io/internal"
+import { IMPLICIT, subscribeToTransaction } from "atom.io/internal"
 
 import type { ServerConfig } from "."
+import {
+	completeUpdateAtoms,
+	redactedUpdateSelectors,
+	transactionRedactorAtoms,
+} from "./realtime-server-store"
 
-const completeUpdateAtoms = AtomIO.atomFamily<
-	AtomIO.TransactionUpdate<any> | null,
-	string
->({
-	key: `completeUpdate`,
-	default: null,
-})
-
-const transactionRedactorAtoms = AtomIO.atomFamily<
-	{
-		filter: (
-			updates: AtomIO.TransactionUpdateContent[],
-		) => AtomIO.TransactionUpdateContent[]
-	},
-	string
->({
-	key: `transactionRedactor`,
-	default: { filter: (updates) => updates },
-})
-
-const redactedUpdateSelectors = AtomIO.selectorFamily<
-	AtomIO.TransactionUpdate<any> | null,
-	[transactionKey: string, updateId: string]
->({
-	key: `redactedUpdate`,
-	get:
-		([transactionKey, updateId]) =>
-		({ get, find }) => {
-			const update = get(find(completeUpdateAtoms, updateId))
-			const { filter } = get(find(transactionRedactorAtoms, transactionKey))
-
-			if (update && filter) {
-				return { ...update, updates: filter(update.updates) }
-			}
-			return null
-		},
-})
-
-export function useSyncTransaction({
+export function realtimeActionSynchronizer({
 	socket,
-	store = Internal.IMPLICIT.STORE,
+	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function syncTransaction<ƒ extends AtomIO.ƒn>(
+	return function actionSynchronizer<ƒ extends AtomIO.ƒn>(
 		tx: AtomIO.TransactionToken<ƒ>,
 		filter?: (
 			update: AtomIO.TransactionUpdateContent[],
@@ -64,7 +31,7 @@ export function useSyncTransaction({
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
 		const fillTransactionSubscriptionRequest = () => {
-			const unsubscribe = Internal.subscribeToTransaction(
+			const unsubscribe = subscribeToTransaction(
 				tx,
 				(update) => {
 					unsubscribe()

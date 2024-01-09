@@ -1,4 +1,4 @@
-export * from "./realtime-store"
+export * from "./realtime-client-store"
 export * from "./pull-state"
 export * from "./pull-family-member"
 export * from "./pull-mutable"

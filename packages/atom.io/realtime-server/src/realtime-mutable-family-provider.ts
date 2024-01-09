@@ -9,13 +9,13 @@ import {
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import type { ServerConfig } from ".."
+import type { ServerConfig } from "."
 
-export const useExposeMutableFamily = ({
+export const realtimeMutableFamilyProvider = ({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) => {
-	return function exposeMutableFamily<
+	return function mutableFamilyProvider<
 		Family extends AtomIO.MutableAtomFamily<
 			Transceiver<Json.Serializable>,
 			Json.Serializable,

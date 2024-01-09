@@ -28,8 +28,8 @@ describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				const syncTransaction = RTS.useSyncTransaction({ socket, store })
-				syncTransaction(incrementTX, (updates) =>
+				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
+				syncTX(incrementTX, (updates) =>
 					updates.filter((u) => {
 						if (u.key === `count`) {
 							return true

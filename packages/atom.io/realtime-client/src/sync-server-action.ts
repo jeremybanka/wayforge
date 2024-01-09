@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
-import { updateQueueAtoms } from "./realtime-store"
+import { updateQueueAtoms } from "./realtime-client-store"
 
 export function syncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,

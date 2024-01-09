@@ -1,15 +1,14 @@
 import * as AtomIO from "atom.io"
-import * as Internal from "atom.io/internal"
+import { IMPLICIT, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import type { ServerConfig } from ".."
+import type { ServerConfig } from "."
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const useExposeSingle = ({
+export function realtimeStateProvider({
 	socket,
-	store = Internal.IMPLICIT.STORE,
-}: ServerConfig) => {
-	return function exposeSingle<J extends Json.Serializable>(
+	store = IMPLICIT.STORE,
+}: ServerConfig) {
+	return function stateProvider<J extends Json.Serializable>(
 		token: AtomIO.WritableToken<J>,
 	): () => void {
 		let unsubscribeFromStateUpdates: (() => void) | null = null
@@ -22,7 +21,7 @@ export const useExposeSingle = ({
 
 		const fillSubRequest = () => {
 			socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
-			unsubscribeFromStateUpdates = Internal.subscribeToState(
+			unsubscribeFromStateUpdates = subscribeToState(
 				token,
 				({ newValue }) => {
 					socket.emit(`serve:${token.key}`, newValue)

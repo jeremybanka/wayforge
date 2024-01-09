@@ -76,12 +76,12 @@ pipe(
 			})
 
 			// COMPOSE REALTIME SERVICE HOOKS
-			const exposeSingle = RTS.useExposeSingle({ socket })
-			const exposeMutable = RTS.useExposeMutable({ socket })
-			const exposeFamily = RTS.useExposeFamily({ socket })
-			const exposeMutableFamily = RTS.useExposeMutableFamily({ socket })
-			const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
-			const syncTransaction = RTS.useSyncTransaction({ socket, store })
+			const exposeSingle = RTS.realtimeStateProvider({ socket })
+			const exposeMutable = RTS.realtimeMutableProvider({ socket })
+			const exposeFamily = RTS.realtimeFamilyProvider({ socket })
+			const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({ socket })
+			const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
+			const syncTransaction = RTS.realtimeActionSynchronizer({ socket, store })
 
 			// ROOM SERVICES
 			exposeMutable(roomsIndex)

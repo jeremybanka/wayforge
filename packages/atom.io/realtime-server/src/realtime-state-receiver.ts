@@ -1,12 +1,15 @@
 import { setState } from "atom.io"
 import type { WritableToken } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import type { ServerConfig } from ".."
+import type { ServerConfig } from "."
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const useReceiveState = ({ socket, store }: ServerConfig) => {
-	return function receiveState<J extends Json.Serializable>(
+export function realtimeStateReceiver({
+	socket,
+	store = IMPLICIT.STORE,
+}: ServerConfig) {
+	return function stateReceiver<J extends Json.Serializable>(
 		token: WritableToken<J>,
 	): () => void {
 		const publish = (newValue: J) => setState(token, newValue, store)

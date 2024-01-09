@@ -1,9 +1,13 @@
 import * as AtomIO from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 
 import type { ServerConfig } from "."
 
-export const useReceiveTransaction = ({ socket, store }: ServerConfig) => {
-	return function receiveTransaction<ƒ extends AtomIO.ƒn>(
+export const realtimeActionReceiver = ({
+	socket,
+	store = IMPLICIT.STORE,
+}: ServerConfig) => {
+	return function actionReceiver<ƒ extends AtomIO.ƒn>(
 		tx: AtomIO.TransactionToken<ƒ>,
 	): () => void {
 		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {

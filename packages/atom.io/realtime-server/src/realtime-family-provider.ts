@@ -3,27 +3,14 @@ import { IMPLICIT, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import type { ServerConfig } from ".."
+import type { ServerConfig } from "."
 
-const subscribeToTokenCreation = <T>(
-	family: AtomIO.AtomFamily<T> | AtomIO.SelectorFamily<T>,
-	key: string,
-	handleTokenCreation: (token: AtomIO.WritableToken<T>) => void,
-): (() => void) => {
-	const unsubscribe =
-		family.type === `atom_family`
-			? family.subject.subscribe(key, handleTokenCreation)
-			: family.subject.subscribe(key, handleTokenCreation)
-	return unsubscribe
-}
-
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const useExposeFamily = ({
+export function realtimeFamilyProvider({
 	socket,
 	store = IMPLICIT.STORE,
-}: ServerConfig) => {
-	return function exposeFamily<J extends Json.Serializable>(
-		family: AtomIO.AtomFamily<J> | AtomIO.SelectorFamily<J>,
+}: ServerConfig) {
+	return function familyProvider<J extends Json.Serializable>(
+		family: AtomIO.WritableFamily<J, Json.Serializable>,
 		index: AtomIO.ReadableToken<Iterable<string>>,
 	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
@@ -58,10 +45,9 @@ export const useExposeFamily = ({
 					)
 				}
 
-				const unsubscribeFromTokenCreation = subscribeToTokenCreation(
-					family,
+				const unsubscribeFromTokenCreation = family.subject.subscribe(
 					`expose-family:${socket.id}`,
-					(token) => {
+					(token: AtomIO.WritableToken<J>) => {
 						const unsub = subscribeToState(
 							token,
 							({ newValue }) => {
