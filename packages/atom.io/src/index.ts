@@ -4,8 +4,8 @@ import type { AtomFamily, AtomFamilyToken } from "./atom"
 import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
-	SelectorFamily,
-	SelectorFamilyToken,
+	WritableSelectorFamily,
+	WritableSelectorFamilyToken,
 } from "./selector"
 
 export * from "./atom"
@@ -51,14 +51,14 @@ export type ReadableToken<T> = ReadonlySelectorToken<T> | WritableToken<T>
 
 export type WritableFamily<T, K extends Json.Serializable> =
 	| AtomFamily<T, K>
-	| SelectorFamily<T, K>
+	| WritableSelectorFamily<T, K>
 export type ReadableFamily<T, K extends Json.Serializable> =
 	| ReadonlySelectorFamily<T, K>
 	| WritableFamily<T, K>
 
 export type WritableFamilyToken<T, K extends Json.Serializable> =
 	| AtomFamilyToken<T, K>
-	| SelectorFamilyToken<T, K>
+	| WritableSelectorFamilyToken<T, K>
 export type ReadableFamilyToken<T, K extends Json.Serializable> =
 	| ReadonlySelectorFamilyToken<T, K>
 	| WritableFamilyToken<T, K>

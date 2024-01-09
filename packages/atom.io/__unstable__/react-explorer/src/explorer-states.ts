@@ -2,7 +2,7 @@ import type {
 	AtomFamily,
 	AtomToken,
 	ReadonlySelectorFamily,
-	SelectorFamily,
+	WritableSelectorFamily,
 	Write,
 } from "atom.io"
 import { atom, selector, selectorFamily, transaction } from "atom.io"
@@ -64,7 +64,7 @@ export const makeSpaceFocusedViewFamily = (
 	key: string,
 	findSpaceViewsState: ReadonlySelectorFamily<string[], string>,
 	findViewFocusedState: AtomFamily<number, string>,
-): SelectorFamily<string | null, string> =>
+): WritableSelectorFamily<string | null, string> =>
 	selectorFamily<string | null, string>({
 		key: `${key}:space_focused_view`,
 		get:

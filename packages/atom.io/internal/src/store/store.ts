@@ -5,9 +5,9 @@ import type {
 	Logger,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
-	SelectorFamily,
 	TimelineToken,
 	TransactionToken,
+	WritableSelectorFamily,
 	WritableSelectorToken,
 	ƒn,
 } from "atom.io"
@@ -44,7 +44,7 @@ export class Store implements Lineage {
 		string,
 		| AtomFamily<any, any>
 		| ReadonlySelectorFamily<any, any>
-		| SelectorFamily<any, any>
+		| WritableSelectorFamily<any, any>
 	>()
 
 	public timelines = new Map<string, Timeline<any>>()

@@ -41,7 +41,7 @@ export type ReadonlySelectorFamilyOptions<T, K extends Json.Serializable> = {
 	get: (key: K) => Read<() => T>
 }
 
-export type SelectorFamily<
+export type WritableSelectorFamily<
 	T,
 	K extends Json.Serializable = Json.Serializable,
 > = ((key: K) => WritableSelectorToken<T>) & {
@@ -52,7 +52,7 @@ export type SelectorFamily<
 	__T?: T
 	__K?: K
 }
-export type SelectorFamilyToken<T, K extends Json.Serializable> = {
+export type WritableSelectorFamilyToken<T, K extends Json.Serializable> = {
 	key: string
 	type: `selector_family`
 	__T?: T
@@ -79,7 +79,7 @@ export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
 
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: WritableSelectorFamilyOptions<T, K>,
-): SelectorFamily<T, K>
+): WritableSelectorFamily<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K>
@@ -87,6 +87,6 @@ export function selectorFamily<T, K extends Json.Serializable>(
 	options:
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,
-): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
+): ReadonlySelectorFamily<T, K> | WritableSelectorFamily<T, K> {
 	return createSelectorFamily(options, IMPLICIT.STORE)
 }

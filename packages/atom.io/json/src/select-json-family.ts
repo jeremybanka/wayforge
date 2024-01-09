@@ -13,7 +13,7 @@ export const selectJsonFamily = <
 	atomFamily: AtomIO.AtomFamily<T, K>,
 	transform: JsonInterface<T, J>,
 	store: Store = IMPLICIT.STORE,
-): AtomIO.SelectorFamily<J, K> => {
+): AtomIO.WritableSelectorFamily<J, K> => {
 	const jsonFamily = createSelectorFamily<J, K>(
 		{
 			key: `${atomFamily.key}:JSON`,

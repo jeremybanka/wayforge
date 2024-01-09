@@ -7,8 +7,8 @@ import type {
 	ReadableToken,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
-	SelectorFamilyToken,
 	WritableFamilyToken,
+	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
@@ -41,7 +41,7 @@ export function findState<T, K extends Json.Serializable, Key extends K>(
 	key: Key,
 ): AtomToken<T>
 export function findState<T, K extends Json.Serializable, Key extends K>(
-	token: SelectorFamilyToken<T, K>,
+	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
 ): WritableSelectorToken<T>
 export function findState<T, K extends Json.Serializable, Key extends K>(

@@ -5,8 +5,8 @@ import type {
 	ReadableToken,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
-	SelectorFamily,
 	WritableFamily,
+	WritableSelectorFamily,
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
@@ -50,7 +50,7 @@ export function belongsTo<Family extends AtomFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is AtomToken<TokenType<Family>>
-export function belongsTo<Family extends SelectorFamily<any, any>>(
+export function belongsTo<Family extends WritableSelectorFamily<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<unknown>,
 ): unknownToken is WritableSelectorToken<TokenType<Family>>

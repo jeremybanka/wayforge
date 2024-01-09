@@ -10,10 +10,9 @@ export function getFamily<Family extends AtomIO.AtomFamily<any, any>>(
 	family: Family,
 	store: Store,
 ): Family
-export function getFamily<Family extends AtomIO.SelectorFamily<any, any>>(
-	family: Family,
-	store: Store,
-): Family
+export function getFamily<
+	Family extends AtomIO.WritableSelectorFamily<any, any>,
+>(family: Family, store: Store): Family
 export function getFamily<
 	Family extends AtomIO.ReadonlySelectorFamily<any, any>,
 >(family: Family, store: Store): Family
@@ -38,9 +37,9 @@ export function useFamily<
 export function useFamily<Family extends AtomIO.AtomFamily<any, any>>(
 	family: Family,
 ): Family
-export function useFamily<Family extends AtomIO.SelectorFamily<any, any>>(
-	family: Family,
-): Family
+export function useFamily<
+	Family extends AtomIO.WritableSelectorFamily<any, any>,
+>(family: Family): Family
 export function useFamily<
 	Family extends AtomIO.ReadonlySelectorFamily<any, any>,
 >(family: Family): Family

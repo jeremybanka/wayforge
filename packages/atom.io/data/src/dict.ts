@@ -7,7 +7,7 @@ export function dict<State, Key extends Json.Serializable>(
 	findState:
 		| AtomIO.AtomFamily<State, Key>
 		| AtomIO.ReadonlySelectorFamily<State, Key>
-		| AtomIO.SelectorFamily<State, Key>,
+		| AtomIO.WritableSelectorFamily<State, Key>,
 	index:
 		| AtomIO.AtomToken<Key[]>
 		| AtomIO.ReadonlySelectorToken<Key[]>
