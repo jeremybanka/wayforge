@@ -1,9 +1,10 @@
-import { span } from "src/components/<span>"
+import { span } from "tempest.games/components/<span>"
 
 import scss from "./Count.module.scss"
 
 export type CountProps = {
 	amount: number
+	minimal?: boolean
 }
 export function Count({ amount }: CountProps): JSX.Element {
 	return (

@@ -17,7 +17,7 @@ export const otherPlayersIndex = AtomIO.selector<string[]>({
 			return []
 		}
 		const playerIdsInMyRoom = get(
-			playersInRooms.findState.playerKeysOfRoom(myRoomId),
+			playersInRooms.states.playerKeysOfRoom(myRoomId),
 		)
 		const everyoneButMe = playerIdsInMyRoom.filter((id) => id !== myId)
 		return everyoneButMe

@@ -126,7 +126,7 @@ export class Join<
 > {
 	private transactors: Transactors = TRANSACTORS
 	public relations: Junction<ASide, BSide, Content>
-	public findState: JoinState<ASide, BSide, Cardinality, Content>
+	public states: JoinState<ASide, BSide, Cardinality, Content>
 	public core: {
 		findRelatedKeysState: MutableAtomFamily<
 			SetRTX<string>,
@@ -363,25 +363,25 @@ export class Join<
 				const findSingleRelatedKeyState = createSingleKeyStateFamily()
 				const stateKeyA = `${a}KeyOf${capitalize(b)}` as const
 				const stateKeyB = `${b}KeyOf${capitalize(a)}` as const
-				const findStateBase = {
+				const baseStates = {
 					[stateKeyA]: findSingleRelatedKeyState,
 					[stateKeyB]: findSingleRelatedKeyState,
 				} as JoinState<ASide, BSide, Cardinality, Content>
-				let findState: JoinState<ASide, BSide, Cardinality, Content>
+				let states: JoinState<ASide, BSide, Cardinality, Content>
 				if (defaultContent) {
 					const findSingleRelatedEntryState = createSingleEntryStateFamily()
 					const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
 					const entriesStateKeyB = `${b}EntryOf${capitalize(a)}` as const
-					const findStateWithContent = {
+					const contentStates = {
 						[entriesStateKeyA]: findSingleRelatedEntryState,
 						[entriesStateKeyB]: findSingleRelatedEntryState,
 					}
-					findState = Object.assign(findStateBase, findStateWithContent)
+					states = Object.assign(baseStates, contentStates)
 				} else {
-					findState = findStateBase
+					states = baseStates
 				}
 				this.relations = relations
-				this.findState = findState
+				this.states = states
 				break
 			}
 			case `1:n`: {
@@ -389,51 +389,51 @@ export class Join<
 				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
 				const stateKeyA = `${a}KeyOf${capitalize(b)}` as const
 				const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
-				const findStateBase = {
+				const baseStates = {
 					[stateKeyA]: findSingleRelatedKeyState,
 					[stateKeyB]: findMultipleRelatedKeysState,
 				} as JoinState<ASide, BSide, Cardinality, Content>
-				let findState: JoinState<ASide, BSide, Cardinality, Content>
+				let states: JoinState<ASide, BSide, Cardinality, Content>
 				if (defaultContent) {
 					const findSingleRelatedEntryState = createSingleEntryStateFamily()
 					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
 					const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
 					const entriesStateKeyB = `${b}EntriesOf${capitalize(a)}` as const
-					const findStateWithContent = {
+					const contentStates = {
 						[entriesStateKeyA]: findSingleRelatedEntryState,
 						[entriesStateKeyB]: findMultipleRelatedEntriesState,
 					}
-					findState = Object.assign(findStateBase, findStateWithContent)
+					states = Object.assign(baseStates, contentStates)
 				} else {
-					findState = findStateBase
+					states = baseStates
 				}
 				this.relations = relations
-				this.findState = findState
+				this.states = states
 				break
 			}
 			default: {
 				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
 				const stateKeyA = `${a}KeysOf${capitalize(b)}` as const
 				const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
-				const findStateBase = {
+				const baseStates = {
 					[stateKeyA]: findMultipleRelatedKeysState,
 					[stateKeyB]: findMultipleRelatedKeysState,
 				} as JoinState<ASide, BSide, Cardinality, Content>
-				let findState: JoinState<ASide, BSide, Cardinality, Content>
+				let states: JoinState<ASide, BSide, Cardinality, Content>
 				if (defaultContent) {
 					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
 					const entriesStateKeyA = `${a}EntriesOf${capitalize(b)}` as const
 					const entriesStateKeyB = `${b}EntriesOf${capitalize(a)}` as const
-					const findStateWithContent = {
+					const contentStates = {
 						[entriesStateKeyA]: findMultipleRelatedEntriesState,
 						[entriesStateKeyB]: findMultipleRelatedEntriesState,
 					}
-					findState = Object.assign(findStateBase, findStateWithContent)
+					states = Object.assign(baseStates, contentStates)
 				} else {
-					findState = findStateBase
+					states = baseStates
 				}
 				this.relations = relations
-				this.findState = findState
+				this.states = states
 			}
 		}
 	}
@@ -448,7 +448,7 @@ export function join<
 	store?: Store,
 ): {
 	readonly relations: Junction<ASide, BSide, null>
-	readonly findState: JoinState<ASide, BSide, Cardinality, null>
+	readonly states: JoinState<ASide, BSide, Cardinality, null>
 	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, null>) => void,
@@ -472,7 +472,7 @@ export function join<
 	store?: Store,
 ): {
 	readonly relations: Junction<ASide, BSide, Content>
-	readonly findState: JoinState<ASide, BSide, Cardinality, Content>
+	readonly states: JoinState<ASide, BSide, Cardinality, Content>
 	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,

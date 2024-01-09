@@ -4,6 +4,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
+		"tsc": "tsc --watch",
 		"dev": "concurrently \"npm:dev:*\"",
 		"dev:next": "next dev -p 4500",
 		"build": "pnpm build:next",

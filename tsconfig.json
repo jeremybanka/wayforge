@@ -17,6 +17,7 @@
 			"socket-io.filestore/*": ["./packages/socket-io.filestore/src/*"],
 			"atom.io": ["./packages/atom.io/src"],
 			"atom.io/*": ["./packages/atom.io/*/src"],
+			"tempest.games/*": ["./apps/tempest.games/src/*"],
 			"~/*": ["./*"]
 		},
 		"types": ["vitest/globals"],
@@ -32,5 +33,5 @@
 		"skipLibCheck": true
 	},
 	"include": ["**/*.ts", "**/*.tsx", "**/*.config.ts", "**/*.schema.json.ts"],
-	"exclude": ["*/**/dist", "apps/atom.io.fyi", "apps/tempest.games"]
+	"exclude": ["*/**/node_modules", "*/**/dist"]
 }

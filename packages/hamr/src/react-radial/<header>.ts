@@ -6,7 +6,12 @@ export const header = {
 		useClipPath: false,
 		below: [
 			{
-				color: `var(--fg-color)`,
+				color: `var(--bg-color)`,
+			},
+			{
+				color: `#0002`,
+				spread: 1,
+				blur: 1,
 			},
 		],
 	}),

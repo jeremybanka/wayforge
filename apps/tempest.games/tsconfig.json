@@ -1,4 +1,5 @@
 {
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"target": "ES2017",
 		"lib": ["dom", "dom.iterable", "esnext"],
@@ -13,26 +14,12 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"paths": {
-			"src/*": ["./src/*"],
-			"@/*": ["./src/app/*"],
-			"atom.io": ["../../packages/atom.io/src"],
-			"atom.io/*": ["../../packages/atom.io/*/src"],
-			"hamr/*": ["../../packages/hamr/src/*"],
-			"~/*": ["../../*"]
-		}
+		"plugins": [{ "name": "next" }],
 	},
 	"include": [
 		"next-env.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"dist/types/**/*.ts"
 	],
-	"exclude": ["node_modules"]
 }

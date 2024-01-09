@@ -7,9 +7,7 @@ import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
 import scss from "./PlayersInRoom.module.scss"
 
 export const PlayersInRoom: FC<{ roomId: string }> = ({ roomId }) => {
-	const playersInRoom = useO(
-		playersInRooms.findState.playerEntriesOfRoom(roomId),
-	)
+	const playersInRoom = useO(playersInRooms.states.playerEntriesOfRoom(roomId))
 	return (
 		<div className={scss.class}>
 			{playersInRoom.map(([id]) => (

@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { StoreContext, useO } from "atom.io/react"
+import { StoreContext } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 
@@ -9,11 +9,9 @@ export function useServerAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
-	const updateQueueState = AtomIO.findState(RTC.updateQueueAtoms, token)
-	const updateQueue = useO(updateQueueState)
 
 	useRealtimeService(`tx:${token.key}`, (socket) =>
-		RTC.synchronizeTransactionResults(token, socket, updateQueue, store),
+		RTC.serverAction(token, socket, store),
 	)
 	return AtomIO.runTransaction(token, store)
 }

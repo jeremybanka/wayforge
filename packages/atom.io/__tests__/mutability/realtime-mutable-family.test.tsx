@@ -56,8 +56,11 @@ describe(`running transactions`, () => {
 					console.log(`🛰  >>`, event, ...args)
 				})
 				AtomIO.setState(storeState, store, store)
-				const exposeMutableFamily = RTS.useExposeMutableFamily({ socket, store })
-				const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
+				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
+					socket,
+					store,
+				})
+				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
 				const findNCState = getFamily(findNumbersCollectionState, store)
 				exposeMutableFamily(findNCState, numbersCollectionIndex)
 				receiveTransaction(addToNumbersCollectionTX)

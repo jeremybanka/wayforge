@@ -20,7 +20,7 @@ describe(`pull atom, observe selector`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
 			server: ({ socket, silo: { store } }) => {
-				const exposeSingle = RTS.useExposeSingle({ socket, store })
+				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
 			},
 			client: () => {
@@ -50,7 +50,7 @@ describe(`pull selector, observe atom`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
 			server: ({ socket, silo: { store } }) => {
-				const exposeSingle = RTS.useExposeSingle({ socket, store })
+				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countHundredfoldState)
 			},
 			client: () => {

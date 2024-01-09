@@ -3,21 +3,41 @@ span.class {
   --child-count: -1;
   --child-width: calc(var(--child-len) * 5 / 7);
   --child-height: var(--child-len);
-  height: var(--child-height);
-  width: var(--child-width);
-  min-height: 100px;
-  max-height: 300px;
-  display: inline-flex;
-  position: relative;
-  > article {
-    width: var(--child-width);
+  width: 100%;
+  height: 100%;
+  min-width: 50px;
+  flex: 1 1 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  > span {
     display: flex;
-    flex-flow: column-reverse nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
+    width: var(--child-width);
+    > div {
+      position: relative;
+      font-weight: 600;
+    }
+    > [data-css="count"] {
+      display: inline;
+      position: relative !important;
+    }
   }
-  [data-css="card"] {
-    align-items: flex-end;
-    max-height: calc(0.01 * var(--child-len));
+  > div {
+    height: 100%;
+    min-height: 100px;
+    max-height: 150px;
+    display: flex;
+    position: relative;
+    > article {
+      display: flex;
+      flex-flow: column-reverse nowrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      > [data-css="card"] {
+        align-items: flex-end;
+        max-height: calc(0.0067 * var(--child-len));
+      }
+    }
   }
 }

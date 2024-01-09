@@ -28,8 +28,8 @@ describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				const syncTransaction = RTS.useSyncTransaction({ socket, store })
-				syncTransaction(incrementTX, (updates) =>
+				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
+				syncTX(incrementTX, (updates) =>
 					updates.filter((u) => {
 						if (u.key === `count`) {
 							return true
@@ -39,7 +39,7 @@ describe(`running transactions`, () => {
 			},
 			clients: {
 				dave: () => {
-					const increment = RTR.useServerAction(incrementTX)
+					const increment = RTR.useSyncAction(incrementTX)
 					return (
 						<button
 							type="button"
@@ -49,7 +49,7 @@ describe(`running transactions`, () => {
 					)
 				},
 				jane: () => {
-					const increment = RTR.useServerAction(incrementTX)
+					const increment = RTR.useSyncAction(incrementTX)
 					const count = AR.useO(countState)
 					return <i data-testid={count} />
 				},

@@ -15,8 +15,8 @@ describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				const exposeSingle = RTS.useExposeSingle({ socket, store })
-				const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
+				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
+				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
 				exposeSingle(countState)
 				receiveTransaction(incrementTX)
 			},

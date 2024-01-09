@@ -1,4 +1,3 @@
-import { setState } from "atom.io"
 import type { Atom } from "../atom"
 import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"

@@ -11,7 +11,7 @@ describe(`undo/redo`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
 			server: ({ socket, silo: { store } }) => {
-				const exposeSingle = RTS.useExposeSingle({ socket, store })
+				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
 			},
 			client: () => {

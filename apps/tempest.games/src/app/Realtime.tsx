@@ -5,7 +5,7 @@ import { myIdState } from "atom.io/realtime-client"
 import { RealtimeProvider } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 
-import { SOCKET } from "src/services/socket"
+import { SOCKET } from "tempest.games/services/socket"
 
 export default function Realtime({
 	children,

@@ -36,15 +36,13 @@ describe(`join with content`, () => {
 			},
 			{ joinedAt: NaN },
 		)
-		const lobbyPlayerState = roomPlayers.findState.playerKeyOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+		const lobbyPlayerState = roomPlayers.states.playerKeyOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.states.roomKeyOfPlayer(`joshua`)
 
-		const arenaPlayerState = roomPlayers.findState.playerKeyOfRoom(`arena`)
+		const arenaPlayerState = roomPlayers.states.playerKeyOfRoom(`arena`)
 
-		const lobbyPlayerEntryState =
-			roomPlayers.findState.playerEntryOfRoom(`lobby`)
-		const joshuaRoomEntryState =
-			roomPlayers.findState.roomEntryOfPlayer(`joshua`)
+		const lobbyPlayerEntryState = roomPlayers.states.playerEntryOfRoom(`lobby`)
+		const joshuaRoomEntryState = roomPlayers.states.roomEntryOfPlayer(`joshua`)
 
 		subscribe(arenaPlayerState, Utils.stdout)
 
@@ -85,12 +83,11 @@ describe(`join with content`, () => {
 			},
 			{ joinedAt: NaN },
 		)
-		const lobbyPlayersState = roomPlayers.findState.playerKeysOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+		const lobbyPlayersState = roomPlayers.states.playerKeysOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.states.roomKeyOfPlayer(`joshua`)
 		const lobbyPlayerEntriesState =
-			roomPlayers.findState.playerEntriesOfRoom(`lobby`)
-		const joshuaRoomEntryState =
-			roomPlayers.findState.roomEntryOfPlayer(`joshua`)
+			roomPlayers.states.playerEntriesOfRoom(`lobby`)
+		const joshuaRoomEntryState = roomPlayers.states.roomEntryOfPlayer(`joshua`)
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
@@ -127,12 +124,12 @@ describe(`join with content`, () => {
 			},
 			{ joinedAt: NaN },
 		)
-		const lobbyPlayersState = roomPlayers.findState.playerKeysOfRoom(`lobby`)
-		const joshuaRoomsState = roomPlayers.findState.roomKeysOfPlayer(`joshua`)
+		const lobbyPlayersState = roomPlayers.states.playerKeysOfRoom(`lobby`)
+		const joshuaRoomsState = roomPlayers.states.roomKeysOfPlayer(`joshua`)
 		const lobbyPlayerEntriesState =
-			roomPlayers.findState.playerEntriesOfRoom(`lobby`)
+			roomPlayers.states.playerEntriesOfRoom(`lobby`)
 		const joshuaRoomsEntriesState =
-			roomPlayers.findState.roomEntriesOfPlayer(`joshua`)
+			roomPlayers.states.roomEntriesOfPlayer(`joshua`)
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomsState, Utils.stdout1)
@@ -181,10 +178,10 @@ describe(`join with no content`, () => {
 			between: [`room`, `player`],
 			cardinality: `1:1`,
 		})
-		const lobbyPlayerState = roomPlayers.findState.playerKeyOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.findState.roomKeyOfPlayer(`joshua`)
+		const lobbyPlayerState = roomPlayers.states.playerKeyOfRoom(`lobby`)
+		const joshuaRoomState = roomPlayers.states.roomKeyOfPlayer(`joshua`)
 
-		const arenaPlayerState = roomPlayers.findState.playerKeyOfRoom(`arena`)
+		const arenaPlayerState = roomPlayers.states.playerKeyOfRoom(`arena`)
 
 		subscribe(arenaPlayerState, Utils.stdout)
 
@@ -246,12 +243,12 @@ describe(`some practical use cases`, () => {
 				[`c`, [`2`]],
 			],
 		})
-		expect(getState(userGroups.findState.groupKeysOfUser(`a`))).toEqual([`1`])
-		expect(getState(userGroups.findState.groupKeysOfUser(`b`))).toEqual([`3`])
-		expect(getState(userGroups.findState.groupKeysOfUser(`c`))).toEqual([`2`])
-		expect(getState(userGroups.findState.userKeysOfGroup(`1`))).toEqual([`a`])
-		expect(getState(userGroups.findState.userKeysOfGroup(`2`))).toEqual([`c`])
-		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([`b`])
+		expect(getState(userGroups.states.groupKeysOfUser(`a`))).toEqual([`1`])
+		expect(getState(userGroups.states.groupKeysOfUser(`b`))).toEqual([`3`])
+		expect(getState(userGroups.states.groupKeysOfUser(`c`))).toEqual([`2`])
+		expect(getState(userGroups.states.userKeysOfGroup(`1`))).toEqual([`a`])
+		expect(getState(userGroups.states.userKeysOfGroup(`2`))).toEqual([`c`])
+		expect(getState(userGroups.states.userKeysOfGroup(`3`))).toEqual([`b`])
 	})
 
 	test(`replacing relations (many to many)`, () => {
@@ -266,21 +263,12 @@ describe(`some practical use cases`, () => {
 			],
 		})
 		userGroups.relations.replaceRelations(`a`, [`2`, `3`])
-		expect(getState(userGroups.findState.groupKeysOfUser(`a`))).toEqual([
-			`2`,
-			`3`,
-		])
-		expect(getState(userGroups.findState.groupKeysOfUser(`b`))).toEqual([`2`])
-		expect(getState(userGroups.findState.groupKeysOfUser(`c`))).toEqual([`3`])
-		expect(getState(userGroups.findState.groupKeysOfUser(`1`))).toEqual([])
-		expect(getState(userGroups.findState.userKeysOfGroup(`2`))).toEqual([
-			`b`,
-			`a`,
-		])
-		expect(getState(userGroups.findState.userKeysOfGroup(`3`))).toEqual([
-			`c`,
-			`a`,
-		])
+		expect(getState(userGroups.states.groupKeysOfUser(`a`))).toEqual([`2`, `3`])
+		expect(getState(userGroups.states.groupKeysOfUser(`b`))).toEqual([`2`])
+		expect(getState(userGroups.states.groupKeysOfUser(`c`))).toEqual([`3`])
+		expect(getState(userGroups.states.groupKeysOfUser(`1`))).toEqual([])
+		expect(getState(userGroups.states.userKeysOfGroup(`2`))).toEqual([`b`, `a`])
+		expect(getState(userGroups.states.userKeysOfGroup(`3`))).toEqual([`c`, `a`])
 	})
 })
 test(`replacing relations (one to many)`, () => {
@@ -295,16 +283,16 @@ test(`replacing relations (one to many)`, () => {
 		],
 	})
 	cardValues.relations.replaceRelations(`a`, [`1`, `2`, `3`])
-	expect(getState(cardValues.findState.valueKeyOfCard(`1`))).toEqual(`a`)
-	expect(getState(cardValues.findState.valueKeyOfCard(`2`))).toEqual(`a`)
-	expect(getState(cardValues.findState.valueKeyOfCard(`3`))).toEqual(`a`)
-	expect(getState(cardValues.findState.cardKeysOfValue(`a`))).toEqual([
+	expect(getState(cardValues.states.valueKeyOfCard(`1`))).toEqual(`a`)
+	expect(getState(cardValues.states.valueKeyOfCard(`2`))).toEqual(`a`)
+	expect(getState(cardValues.states.valueKeyOfCard(`3`))).toEqual(`a`)
+	expect(getState(cardValues.states.cardKeysOfValue(`a`))).toEqual([
 		`1`,
 		`2`,
 		`3`,
 	])
-	expect(getState(cardValues.findState.cardKeysOfValue(`b`))).toEqual([])
-	expect(getState(cardValues.findState.cardKeysOfValue(`c`))).toEqual([])
+	expect(getState(cardValues.states.cardKeysOfValue(`b`))).toEqual([])
+	expect(getState(cardValues.states.cardKeysOfValue(`c`))).toEqual([])
 })
 
 describe(`advanced performance tests`, () => {

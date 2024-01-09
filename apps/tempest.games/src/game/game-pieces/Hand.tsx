@@ -10,24 +10,26 @@ import * as React from "react"
 
 import { dealCardsTX, groupsOfCards } from "~/apps/node/lodge/src/store/game"
 
-import { memoize } from "src/components/memoize"
-import { useRadial } from "src/services/peripherals/radial"
-import { myHandsIndex } from "src/services/store/my-hands-index"
-import { publicDeckIndex } from "src/services/store/public-deck-index"
+import { memoize } from "tempest.games/components/memoize"
+import { useRadial } from "tempest.games/services/peripherals/radial"
+import { myHandsIndex } from "tempest.games/services/store/my-hands-index"
+import { publicDeckIndex } from "tempest.games/services/store/public-deck-index"
 import { CardBack, CardFace, CardSlot } from "./Card"
 
-import { useDOMRect } from "src/services/use-dimensions"
+import { myRoomState } from "tempest.games/services/store/my-room"
+import { useDOMRect } from "tempest.games/services/use-dimensions"
 import { Count } from "../labels/Count"
 import scss from "./Hand.module.scss"
 
 export const Hand = memoize<{ id: string; detailed?: boolean }>(
 	`Hand`,
-	({ id, detailed }) => {
-		const isMyHand = useO(myHandsIndex).includes(id)
-		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
+	({ id: handId, detailed }) => {
+		const myRoomId = useO(myRoomState)
+		const isMyHand = useO(myHandsIndex).includes(handId)
+		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
 		const publicDeckIds = useO(publicDeckIndex)
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
+		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(handId))
 
 		const dealCards = useServerAction(dealCardsTX)
 
@@ -36,7 +38,11 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 				label: `Deal`,
 				do: () => {
 					const deckId = publicDeckIds[0]
-					dealCards({ deckId, handId: id, count: 1 })
+					if (!myRoomId) {
+						console.error(`Tried to deal cards without being in a room.`)
+						return
+					}
+					dealCards(myRoomId, deckId, handId, 1)
 				},
 			},
 		])
@@ -57,12 +63,11 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 					{detailed ? (
 						<>
 							<div>Hand ({cardIds.length})</div>
-							<Id id={id} />
 						</>
 					) : null}
 					<motion.article
 						ref={ref}
-						layoutId={id}
+						layoutId={handId}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}

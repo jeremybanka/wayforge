@@ -29,8 +29,8 @@ describe(`running transactions`, () => {
 				socket.onAnyOutgoing((event, ...args) => {
 					console.log(`🛰  >>`, event, ...args)
 				})
-				const exposeMutable = RTS.useExposeMutable({ socket, store })
-				const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
+				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
+				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
 				exposeMutable(numbersCollectionState)
 				receiveTransaction(addToNumbersCollectionTX)
 			},
