@@ -18,6 +18,6 @@ export const article = {
 		useClipPath: false,
 		cornerSize: 10,
 		above: [{ stroke: { width: 1, color: `var(--fg-faint)` } }],
-		below: [{ color: `var(--bg-shadow-2)` }],
+		below: [{ color: `var(--table-close)` }],
 	}),
 }

@@ -5,31 +5,22 @@ import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
-import type { Json } from "~/packages/anvl/src/json"
-
-import type {
-	SetRTX,
-	SetRTXJson,
-} from "~/packages/atom.io/transceivers/set-rtx/src"
 import { logger } from "./logger"
 import {
-	addCardValueTX,
-	addHandTx,
 	cardCycleGroupsAndZones,
-	cardGroupIndex,
 	cardIndex,
 	cardValuesIndex,
 	dealCardsTX,
-	findCardGroupState,
 	findCardState,
 	findCardValueState,
-	groupsOfCards,
-	ownersOfGroups,
 	shuffleDeckTX,
-	spawnCardTX,
 	spawnClassicDeckTX,
+	spawnHandTX,
+	spawnTrickTX,
 	valuesOfCards,
 } from "./store/game"
+import * as CardGroups from "./store/game/card-groups"
+import { startGameTX } from "./store/game/transactions/hearts"
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,
@@ -85,11 +76,12 @@ pipe(
 			})
 
 			// COMPOSE REALTIME SERVICE HOOKS
-			const exposeSingle = RTS.useExposeSingle({ socket })
-			const exposeMutable = RTS.useExposeMutable({ socket })
-			const exposeFamily = RTS.useExposeFamily({ socket })
-			const exposeMutableFamily = RTS.useExposeMutableFamily({ socket })
-			const receiveTransaction = RTS.useReceiveTransaction({ socket, store })
+			const exposeSingle = RTS.realtimeStateProvider({ socket })
+			const exposeMutable = RTS.realtimeMutableProvider({ socket })
+			const exposeFamily = RTS.realtimeFamilyProvider({ socket })
+			const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({ socket })
+			const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
+			const syncTransaction = RTS.realtimeActionSynchronizer({ socket, store })
 
 			// ROOM SERVICES
 			exposeMutable(roomsIndex)
@@ -122,58 +114,62 @@ pipe(
 							)
 						},
 					)
+
+					// GAME SERVICES
+
+					// Indices
+					exposeMutable(cardIndex)
+					exposeMutable(cardValuesIndex)
+					const deckIndex = AtomIO.findState(CardGroups.deckIndices, roomId)
+					const handIndex = AtomIO.findState(CardGroups.handIndices, roomId)
+					const pileIndex = AtomIO.findState(CardGroups.pileIndices, roomId)
+					const trickIndex = AtomIO.findState(CardGroups.trickIndices, roomId)
+					const cardGroupIndex = AtomIO.findState(CardGroups.indices, roomId)
+					exposeMutable(deckIndex)
+					exposeMutable(handIndex)
+					exposeMutable(pileIndex)
+					exposeMutable(trickIndex)
+
+					// Families
+					exposeFamily(findCardState, cardIndex)
+					exposeFamily(CardGroups.deckStates, deckIndex)
+					exposeFamily(CardGroups.handStates, handIndex)
+					exposeFamily(CardGroups.pileStates, pileIndex)
+					exposeFamily(CardGroups.trickStates, trickIndex)
+					exposeFamily(findCardValueState, cardValuesIndex)
+
+					// Relations
+					const groupsOfCardsFamily =
+						CardGroups.groupsOfCards.core.findRelatedKeysState
+					const ownersOfGroupsFamily =
+						CardGroups.ownersOfGroups.core.findRelatedKeysState
+					const valuesOfCardsFamily = valuesOfCards.core.findRelatedKeysState
+					const cardCycleGZFamily =
+						cardCycleGroupsAndZones.core.findRelatedKeysState
+					exposeMutableFamily(groupsOfCardsFamily, cardGroupIndex)
+					exposeMutableFamily(groupsOfCardsFamily, cardIndex)
+					exposeMutableFamily(ownersOfGroupsFamily, cardGroupIndex)
+					exposeMutableFamily(ownersOfGroupsFamily, cardIndex)
+					exposeMutableFamily(valuesOfCardsFamily, cardValuesIndex)
+					exposeMutableFamily(valuesOfCardsFamily, cardIndex)
+					exposeMutableFamily(cardCycleGZFamily, cardGroupIndex)
+					exposeMutableFamily(cardCycleGZFamily, cardIndex)
+
+					// Transactions
+					receiveTransaction(spawnHandTX)
+					receiveTransaction(dealCardsTX)
+					receiveTransaction(shuffleDeckTX)
+					receiveTransaction(spawnClassicDeckTX)
+					receiveTransaction(spawnTrickTX)
+					syncTransaction(startGameTX)
+
 					socket.on(`tx:leaveRoom`, () => {
 						AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
 						socket.leave(roomId)
 						unsubscribeFromPlayersInRoomTracker()
 					})
-					// const unsubscribeFromPlayersInRoom = AtomIO.subscribe(
-					// 	playersInRooms.findRelationTrackerState__INTERNAL(roomId),
-					// 	({ newValue }) => {
-					// 		socket.emit(`next:playersInRoom::mutable:tracker:${roomId}`, [...newValue])
-					// 	},
-					// )
-					// socket.on(`tx:leaveRoom`, () => {
-					// 	AtomIO.runTransaction(leaveRoomTX)({ roomId, playerId: socket.id })
-					// 	socket.leave(roomId)
-					// 	unsubscribeFromPlayersInRoom()
-					// })
 				},
 			)
-
-			// GAME SERVICES
-
-			// Indices
-			exposeMutable(cardIndex)
-			exposeMutable(cardGroupIndex)
-			exposeMutable(cardValuesIndex)
-
-			// Families
-			exposeFamily(findCardState, cardIndex)
-			exposeFamily(findCardGroupState, cardGroupIndex)
-			exposeFamily(findCardValueState, cardValuesIndex)
-
-			// Relations
-			const groupsOfCardsFamily = groupsOfCards.core.findRelatedKeysState
-			const ownersOfGroupsFamily = ownersOfGroups.core.findRelatedKeysState
-			const valuesOfCardsFamily = valuesOfCards.core.findRelatedKeysState
-			const cardCycleGZFamily = cardCycleGroupsAndZones.core.findRelatedKeysState
-			exposeMutableFamily(groupsOfCardsFamily, cardGroupIndex)
-			exposeMutableFamily(groupsOfCardsFamily, cardIndex)
-			exposeMutableFamily(ownersOfGroupsFamily, cardGroupIndex)
-			exposeMutableFamily(ownersOfGroupsFamily, cardIndex)
-			exposeMutableFamily(valuesOfCardsFamily, cardValuesIndex)
-			exposeMutableFamily(valuesOfCardsFamily, cardIndex)
-			exposeMutableFamily(cardCycleGZFamily, cardGroupIndex)
-			exposeMutableFamily(cardCycleGZFamily, cardIndex)
-
-			// Transactions
-			receiveTransaction(addCardValueTX)
-			receiveTransaction(addHandTx)
-			receiveTransaction(dealCardsTX)
-			receiveTransaction(shuffleDeckTX)
-			receiveTransaction(spawnCardTX)
-			receiveTransaction(spawnClassicDeckTX)
 		})
 	},
 )

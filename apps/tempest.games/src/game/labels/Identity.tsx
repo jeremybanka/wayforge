@@ -1,4 +1,4 @@
-import { span } from "src/components/<span>"
+import { span } from "tempest.games/components/<span>"
 
 import scss from "./Identity.module.scss"
 

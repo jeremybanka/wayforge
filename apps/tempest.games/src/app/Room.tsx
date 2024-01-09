@@ -15,12 +15,15 @@ import {
 	playersInRooms,
 } from "~/apps/node/lodge/src/store/rooms"
 
-import { header } from "src/components/<header>"
-import { Game } from "src/game/Game"
-import { windowMousePositionState } from "src/services/peripherals/mouse-position"
-import { actionsState, radialModeState } from "src/services/peripherals/radial"
-import { myRoomState } from "src/services/store/my-room"
-import { roomViewState } from "src/services/store/room-view-state"
+import { header } from "tempest.games/components/<header>"
+import { Game } from "tempest.games/game/Game"
+import { windowMousePositionState } from "tempest.games/services/peripherals/mouse-position"
+import {
+	actionsState,
+	radialModeState,
+} from "tempest.games/services/peripherals/radial"
+import { myRoomState } from "tempest.games/services/store/my-room"
+import { roomViewState } from "tempest.games/services/store/room-view-state"
 import { PlayersInRoom } from "./PlayersInRoom"
 
 import scss from "./page.module.scss"
@@ -29,7 +32,6 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const myId = useO(myIdState)
 	const myRoom = useO(myRoomState)
 	const setRoomState = useI(roomViewState)
-	console.log({ roomId, myRoom })
 	const iAmInRoom = myRoom === roomId
 
 	const joinRoom = useServerAction(joinRoomTX)
@@ -74,7 +76,7 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 					<PlayersInRoom roomId={roomId} />
 				</header.auspicious0>
 
-				{iAmInRoom ? <Game /> : null}
+				{iAmInRoom ? <Game roomId={roomId} /> : null}
 			</article>
 			<Radial
 				/* eslint-disable react-hooks/rules-of-hooks */

@@ -1,6 +1,7 @@
 span.class {
   --child-len: -1px;
   --child-count: -1;
+  //
   --safe-space: calc(100% - var(--child-len));
   --allowed-space: calc(var(--safe-space) / max(1, (var(--child-count) - 1)));
   --right-padding: calc(var(--child-len) - var(--allowed-space));

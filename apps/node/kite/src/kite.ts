@@ -3,9 +3,10 @@ import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
 import {
-	useExposeMutable,
-	useExposeMutableFamily,
-	useSyncTransaction,
+	realtimeActionSynchronizer,
+	realtimeMutableFamilyProvider,
+	realtimeMutableProvider,
+	realtimeStateProvider,
 } from "atom.io/realtime-server"
 import { logger } from "./kite-logger"
 import {
@@ -49,13 +50,13 @@ pipe(
 			})
 
 			// REALTIME
-			const exposeMutable = useExposeMutable({ socket })
-			exposeMutable(numberCollectionIndex)
+			const provideMutable = realtimeMutableProvider({ socket })
+			provideMutable(numberCollectionIndex)
 
-			const exposeMutableFamily = useExposeMutableFamily({ socket })
-			exposeMutableFamily(findNumberCollection, numberCollectionIndex)
+			const provideMutableFamily = realtimeMutableFamilyProvider({ socket })
+			provideMutableFamily(findNumberCollection, numberCollectionIndex)
 
-			const sync = useSyncTransaction({ socket })
+			const sync = realtimeActionSynchronizer({ socket })
 			sync(addNumberCollectionTX)
 			sync(incrementNumberCollectionTX)
 		})

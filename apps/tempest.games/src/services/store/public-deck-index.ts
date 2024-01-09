@@ -1,23 +1,24 @@
 import * as AtomIO from "atom.io"
-import { getJsonToken } from "atom.io/internal"
 
-import {
-	cardGroupIndex,
-	findCardGroupState,
-	ownersOfGroups,
-} from "~/apps/node/lodge/src/store/game"
+import * as CardGroups from "~/apps/node/lodge/src/store/game/card-groups"
+import { myRoomState } from "./my-room"
 
 export const publicDeckIndex = AtomIO.selector<string[]>({
 	key: `publicDeckIndex`,
-	get: ({ get }) => {
-		const cardGroupIds = get(getJsonToken(cardGroupIndex))
-		console.log(`cardGroupIds`, cardGroupIds)
-		const unownedCardGroupIds = cardGroupIds.members.filter(
-			(cardGroupId) =>
-				get(ownersOfGroups.findState.playerKeyOfGroup(cardGroupId)) === null && // ❗
-				get(findCardGroupState(cardGroupId)).type === `deck`,
-		)
-		console.log(`unownedCardGroupIds`, unownedCardGroupIds)
-		return unownedCardGroupIds
+	get: ({ get, find }) => {
+		const myRoomId = get(myRoomState)
+		if (!myRoomId) {
+			return []
+		}
+		const deckIndex = find(CardGroups.deckIndices, myRoomId)
+		const deckIds = get(deckIndex)
+		const unownedDeckIds = [...deckIds].filter((deckId) => {
+			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.states
+			const ownerOfDeck = get(find(playerKeyOfGroup, deckId))
+			const deckIsNotOwned = ownerOfDeck === null
+			return deckIsNotOwned
+		})
+		console.log({ deckIds, unownedDeckIds })
+		return unownedDeckIds
 	},
 })

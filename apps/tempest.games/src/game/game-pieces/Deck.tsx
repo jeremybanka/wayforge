@@ -9,27 +9,35 @@ import { Id } from "hamr/react-id"
 
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
-import { memoize } from "src/components/memoize"
-import { useRadial } from "src/services/peripherals/radial"
-import { useDOMRect } from "src/services/use-dimensions"
+import { memoize } from "tempest.games/components/memoize"
+import { useRadial } from "tempest.games/services/peripherals/radial"
+import { useDOMRect } from "tempest.games/services/use-dimensions"
 import { CardBack } from "./Card"
 
+import { myRoomState } from "tempest.games/services/store/my-room"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 
-export const Deck = memoize<{ id: string; detailed?: string }>(
+export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	`Deck`,
-	({ id, detailed }) => {
-		const cardIds = useO(groupsOfCards.findState.cardKeysOfGroup(id))
+	({ id: deckId, detailed }) => {
+		const myRoomId = useO(myRoomState)
+		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(deckId))
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(id))
+		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(deckId))
 
 		const shuffle = useServerAction(shuffleDeckTX)
 
 		const handlers = useRadial([
 			{
 				label: `Shuffle`,
-				do: () => shuffle({ deckId: id }),
+				do: () => {
+					if (myRoomId) {
+						shuffle(myRoomId, deckId)
+					} else {
+						console.error(`Tried to shuffle a deck without being in a room`)
+					}
+				},
 			},
 		])
 
@@ -44,26 +52,31 @@ export const Deck = memoize<{ id: string; detailed?: string }>(
 						"--child-len": `${height}px`,
 						"--child-count": `${cardIds.length}`,
 					})}
-					{...handlers}
 				>
 					{detailed ? (
-						<>
-							<div>Hand ({cardIds.length})</div>
-							<Id id={id} />
-						</>
+						<span
+							style={{
+								paddingBottom: 0.0067 * height * cardIds.length + 5,
+							}}
+						>
+							<div>Deck</div>
+							<Count amount={cardIds.length} />
+						</span>
 					) : null}
-					<motion.article
-						ref={ref}
-						layoutId={id}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-					>
-						{cardIds.map((cardId) => (
-							<CardBack key={cardId} id={cardId} />
-						))}
-					</motion.article>
-					{detailed ? null : <Count amount={cardIds.length} />}
+					<div {...handlers}>
+						<motion.article
+							ref={ref}
+							layoutId={deckId}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+						>
+							{cardIds.map((cardId) => (
+								<CardBack key={cardId} id={cardId} />
+							))}
+						</motion.article>
+						{detailed ? null : <Count amount={cardIds.length} />}
+					</div>
 				</span>
 			</AnimatePresence>
 		)
