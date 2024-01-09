@@ -19,14 +19,14 @@ export function struct<
 	{
 		[K in keyof Struct as `${Key}${Capitalize<
 			K & string
-		>}State`]: AtomIO.AtomToken<Struct[K]>
+		>}State`]: AtomIO.RegularAtomToken<Struct[K]>
 	},
 	AtomIO.ReadonlySelectorToken<Struct>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `${Key}${Capitalize<
 			K & string
-		>}State`]: AtomIO.AtomToken<Struct[K]>
+		>}State`]: AtomIO.RegularAtomToken<Struct[K]>
 	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomName = options.key + capitalize(key) + `State`
 		acc[atomName] = createRegularAtom(

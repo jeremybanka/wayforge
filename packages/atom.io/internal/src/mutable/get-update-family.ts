@@ -1,4 +1,4 @@
-import type { AtomFamily, MutableAtomFamily } from "atom.io"
+import type { MutableAtomFamily, RegularAtomFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import { newest } from "../lineage"
@@ -12,10 +12,10 @@ export const getUpdateFamily = <
 >(
 	mutableAtomFamily: MutableAtomFamily<Core, SerializableCore, Key>,
 	store: Store,
-): AtomFamily<Signal<Core> | null, Key> => {
+): RegularAtomFamily<Signal<Core> | null, Key> => {
 	const target = newest(store)
 	const key = `*${mutableAtomFamily.key}`
-	const updateFamily = target.families.get(key) as AtomFamily<
+	const updateFamily = target.families.get(key) as RegularAtomFamily<
 		Signal<Core> | null,
 		Key
 	>

@@ -13,6 +13,7 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../__util__"
@@ -38,31 +39,39 @@ beforeEach(() => {
 describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
 		const myMutableState = atom({
-			key: `my::mutable`,
+			key: `letters`,
 			mutable: true,
-			default: () => new SetRTX(),
-			toJson: (set) => [...set],
-			fromJson: (array) => new SetRTX(array),
+			default: () => new SetRTX<string>(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
 		})
 		const myJsonState = Internal.getJsonToken(myMutableState)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
-		subscribe(myMutableState, Utils.stdout)
-		subscribe(myJsonState, Utils.stdout)
-		subscribe(myTrackerState, Utils.stdout)
+		subscribe(myMutableState, Utils.stdout0)
+		subscribe(myJsonState, Utils.stdout1)
+		subscribe(myTrackerState, Utils.stdout2)
 		setState(myMutableState, (set) => set.add(`a`))
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout0).toHaveBeenCalledWith({
 			newValue: new SetRTX([`a`]),
 			oldValue: new SetRTX([`a`]),
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
-			newValue: [`a`],
-			oldValue: [],
+		expect(Utils.stdout1).toHaveBeenCalledWith({
+			newValue: {
+				members: [`a`],
+				cache: [],
+				cacheLimit: 0,
+				cacheUpdateNumber: 0,
+				cacheIdx: -1,
+			},
+			oldValue: {
+				members: [],
+				cache: [],
+				cacheLimit: 0,
+				cacheUpdateNumber: -1,
+				cacheIdx: -1,
+			},
 		})
-		expect(Utils.stdout).not.toHaveBeenCalledWith({
-			newValue: [`a`],
-			oldValue: [`a`],
-		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout2).toHaveBeenCalledWith({
 			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
@@ -71,15 +80,15 @@ describe(`mutable atomic state`, () => {
 	it(`has its own family function for ease of use`, () => {
 		const findFlagsStateByUserId = Internal.createMutableAtomFamily<
 			SetRTX<string>,
-			string[],
+			SetRTXJson<string>,
 			string
 		>(
 			{
 				key: `flagsByUserId::mutable`,
 				mutable: true,
 				default: () => new SetRTX(),
-				toJson: (set) => [...set],
-				fromJson: (array) => new SetRTX(array),
+				toJson: (set) => set.toJSON(),
+				fromJson: (array) => SetRTX.fromJSON(array),
 			},
 			Internal.IMPLICIT.STORE,
 		)
@@ -88,21 +97,33 @@ describe(`mutable atomic state`, () => {
 		const findFlagsByUserIdJSON = Internal.getJsonToken(myFlagsState)
 		const findFlagsByUserIdTracker = Internal.getUpdateToken(myFlagsState)
 
-		subscribe(myFlagsState, Utils.stdout)
-		subscribe(findFlagsByUserIdJSON, Utils.stdout)
-		subscribe(findFlagsByUserIdTracker, Utils.stdout)
+		subscribe(myFlagsState, Utils.stdout0)
+		subscribe(findFlagsByUserIdJSON, Utils.stdout1)
+		subscribe(findFlagsByUserIdTracker, Utils.stdout2)
 
 		setState(myFlagsState, (set) => set.add(`a`))
 
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout0).toHaveBeenCalledWith({
 			newValue: new SetRTX([`a`]),
 			oldValue: new SetRTX([`a`]),
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
-			newValue: [`a`],
-			oldValue: [],
+		expect(Utils.stdout1).toHaveBeenCalledWith({
+			newValue: {
+				members: [`a`],
+				cache: [],
+				cacheLimit: 0,
+				cacheUpdateNumber: 0,
+				cacheIdx: -1,
+			},
+			oldValue: {
+				members: [],
+				cache: [],
+				cacheLimit: 0,
+				cacheUpdateNumber: -1,
+				cacheIdx: -1,
+			},
 		})
-		expect(Utils.stdout).toHaveBeenCalledWith({
+		expect(Utils.stdout2).toHaveBeenCalledWith({
 			newValue: `0=add:"a"`,
 			oldValue: null,
 		})

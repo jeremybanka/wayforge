@@ -1,8 +1,8 @@
 import type {
-	AtomFamily,
 	AtomFamilyOptions,
 	MutableAtomFamily,
 	MutableAtomFamilyOptions,
+	RegularAtomFamily,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 
@@ -21,11 +21,11 @@ export function createAtomFamily<
 export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K>,
 	store: Store,
-): AtomFamily<T, K>
+): RegularAtomFamily<T, K>
 export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
 	store: Store,
-): AtomFamily<T, K> | MutableAtomFamily<any, any, any> {
+): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
 	const isMutable = `mutable` in options
 
 	if (isMutable) {

@@ -4,11 +4,11 @@ import type {
 	ReadonlySelectorToken,
 } from "atom.io"
 
+import type { ReadonlySelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import type { ReadonlySelector } from "./create-standalone-selector"
 import { registerSelector } from "./register-selector"
 
 export const createReadonlySelector = <T>(

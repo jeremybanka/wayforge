@@ -1,5 +1,5 @@
-import type { ReadableToken, StateUpdate } from "atom.io"
-import type { StateNode } from "."
+import type { StateUpdate } from "atom.io"
+import type { ReadableState } from "."
 import { Future } from "./future"
 import { copyMutableIfWithinTransaction } from "./set-state/copy-mutable-in-transaction"
 import type { Store } from "./store"
@@ -49,7 +49,10 @@ export function cacheValue<T>(
 	return value
 }
 
-export const readCachedValue = <T>(token: StateNode<any>, target: Store): T => {
+export const readCachedValue = <T>(
+	token: ReadableState<any>,
+	target: Store,
+): T => {
 	let value = target.valueMap.get(token.key) as T
 	if (token.type === `atom`) {
 		value = copyMutableIfWithinTransaction(value, token, target)

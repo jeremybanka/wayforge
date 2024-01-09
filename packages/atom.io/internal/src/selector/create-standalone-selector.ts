@@ -11,24 +11,6 @@ import type { Subject } from "../subject"
 import { createReadonlySelector } from "./create-readonly-selector"
 import { createWritableSelector } from "./create-writable-selector"
 
-export type WritableSelector<T> = {
-	key: string
-	type: `selector`
-	family?: FamilyMetadata
-	install: (store: Store) => void
-	subject: Subject<{ newValue: T; oldValue: T }>
-	get: () => T
-	set: (newValue: T | ((oldValue: T) => T)) => void
-}
-export type ReadonlySelector<T> = {
-	key: string
-	type: `readonly_selector`
-	family?: FamilyMetadata
-	install: (store: Store) => void
-	subject: Subject<{ newValue: T; oldValue: T }>
-	get: () => T
-}
-
 export function createStandaloneSelector<T>(
 	options: WritableSelectorOptions<T>,
 	store: Store,

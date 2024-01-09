@@ -1,7 +1,7 @@
 import type {
-	AtomFamily,
-	AtomToken,
 	ReadonlySelectorFamily,
+	RegularAtomFamily,
+	RegularAtomToken,
 	WritableSelectorFamily,
 	Write,
 } from "atom.io"
@@ -29,7 +29,7 @@ import {
 
 export const makeViewsPerSpaceState = (
 	key: string,
-): AtomToken<Join<null, `viewId`, `spaceId`>> =>
+): RegularAtomToken<Join<null, `viewId`, `spaceId`>> =>
 	atom<Join<null, `viewId`, `spaceId`>>({
 		key: `${key}:views_per_space`,
 		default: new Join({ relationType: `1:n` }).from(`viewId`).to(`spaceId`),
@@ -47,7 +47,7 @@ export const makeViewsPerSpaceState = (
 
 export const makeSpaceViewsFamily = (
 	key: string,
-	viewsPerSpaceState: AtomToken<Join<null, `viewId`, `spaceId`>>,
+	viewsPerSpaceState: RegularAtomToken<Join<null, `viewId`, `spaceId`>>,
 ): ReadonlySelectorFamily<string[], string> =>
 	selectorFamily<string[], string>({
 		key: `${key}:space_views`,
@@ -63,7 +63,7 @@ export const makeSpaceViewsFamily = (
 export const makeSpaceFocusedViewFamily = (
 	key: string,
 	findSpaceViewsState: ReadonlySelectorFamily<string[], string>,
-	findViewFocusedState: AtomFamily<number, string>,
+	findViewFocusedState: RegularAtomFamily<number, string>,
 ): WritableSelectorFamily<string | null, string> =>
 	selectorFamily<string | null, string>({
 		key: `${key}:space_focused_view`,

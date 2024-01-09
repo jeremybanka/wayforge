@@ -5,12 +5,12 @@ import type { Json, Stringified } from "atom.io/json"
 
 export function dict<State, Key extends Json.Serializable>(
 	findState:
-		| AtomIO.AtomFamily<State, Key>
 		| AtomIO.ReadonlySelectorFamily<State, Key>
+		| AtomIO.RegularAtomFamily<State, Key>
 		| AtomIO.WritableSelectorFamily<State, Key>,
 	index:
-		| AtomIO.AtomToken<Key[]>
 		| AtomIO.ReadonlySelectorToken<Key[]>
+		| AtomIO.RegularAtomToken<Key[]>
 		| AtomIO.WritableSelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.ReadonlySelectorToken<{ [K in Stringified<Key>]: State }> {

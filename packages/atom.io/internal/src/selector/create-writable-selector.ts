@@ -4,13 +4,13 @@ import type {
 	WritableSelectorToken,
 } from "atom.io"
 
+import type { WritableSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state/become"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import type { WritableSelector } from "./create-standalone-selector"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(

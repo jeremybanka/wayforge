@@ -1,16 +1,15 @@
 import type {
-	AtomOptions,
-	AtomToken,
 	FamilyMetadata,
 	MutableAtomOptions,
+	RegularAtomOptions,
+	RegularAtomToken,
 	UpdateHandler,
 } from "atom.io"
 import { setState } from "atom.io"
 
-import type { Atom } from "."
+import type { RegularAtom } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
-import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
@@ -18,10 +17,10 @@ import { subscribeToState } from "../subscribe"
 import { markAtomAsDefault } from "./is-default"
 
 export function createRegularAtom<T>(
-	options: AtomOptions<T> | MutableAtomOptions<any, any>,
+	options: MutableAtomOptions<any, any> | RegularAtomOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
-): AtomToken<T> {
+): RegularAtomToken<T> {
 	store.logger.info(
 		`🔨`,
 		`atom`,
@@ -30,7 +29,7 @@ export function createRegularAtom<T>(
 	)
 	const target = newest(store)
 	const existing = target.atoms.get(options.key)
-	if (existing) {
+	if (existing && existing.type === `atom`) {
 		store.logger.error(
 			`❌`,
 			`atom`,
@@ -40,7 +39,7 @@ export function createRegularAtom<T>(
 		return deposit(existing)
 	}
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
-	const newAtom: Atom<T> = {
+	const newAtom: RegularAtom<T> = {
 		...options,
 		type: `atom`,
 		install: (store: Store) => {
@@ -50,9 +49,7 @@ export function createRegularAtom<T>(
 				options.key,
 				`installing in store "${store.config.name}"`,
 			)
-			return `mutable` in options
-				? createMutableAtom(options, family, store)
-				: createRegularAtom(options, family, store)
+			return createRegularAtom(options, family, store)
 		},
 		subject,
 	} as const
@@ -88,5 +85,5 @@ export function createRegularAtom<T>(
 		}
 	}
 	store.on.atomCreation.next(token)
-	return token as AtomToken<T>
+	return token
 }

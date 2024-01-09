@@ -1,12 +1,12 @@
 import type {
-	AtomFamilyToken,
-	AtomToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
+	RegularAtomFamilyToken,
+	RegularAtomToken,
 	WritableFamilyToken,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -37,9 +37,9 @@ export function findState<
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
 export function findState<T, K extends Json.Serializable, Key extends K>(
-	token: AtomFamilyToken<T, K>,
+	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): AtomToken<T>
+): RegularAtomToken<T>
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,

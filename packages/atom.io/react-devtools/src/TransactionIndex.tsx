@@ -1,6 +1,6 @@
 import type {
-	AtomToken,
 	ReadonlySelectorToken,
+	RegularAtomToken,
 	TransactionToken,
 	TransactionUpdate,
 	ƒn,
@@ -18,7 +18,7 @@ import { article } from "./Updates"
 
 export const TransactionLog: FC<{
 	token: TransactionToken<ƒn>
-	isOpenState: AtomToken<boolean>
+	isOpenState: RegularAtomToken<boolean>
 	logState: ReadonlySelectorToken<TransactionUpdate<ƒn>[]>
 }> = ({ token, isOpenState, logState }) => {
 	const log = useO(logState)

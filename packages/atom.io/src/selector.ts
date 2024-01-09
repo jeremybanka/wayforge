@@ -77,6 +77,13 @@ export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
 	__K?: K
 }
 
+export type SelectorFamily<T, K extends Json.Serializable> =
+	| ReadonlySelectorFamily<T, K>
+	| WritableSelectorFamily<T, K>
+export type SelectorFamilyToken<T, K extends Json.Serializable> =
+	| ReadonlySelectorFamilyToken<T, K>
+	| WritableSelectorFamilyToken<T, K>
+
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: WritableSelectorFamilyOptions<T, K>,
 ): WritableSelectorFamily<T, K>

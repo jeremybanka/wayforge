@@ -1,9 +1,12 @@
-import type { AtomToken } from "atom.io"
+import type { RegularAtomToken } from "atom.io"
 
 import type { Store } from ".."
 import { deleteSelector, newest } from ".."
 
-export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
+export function deleteAtom(
+	atomToken: RegularAtomToken<unknown>,
+	store: Store,
+): void {
 	const target = newest(store)
 	const { key } = atomToken
 	const atom = target.atoms.get(key)

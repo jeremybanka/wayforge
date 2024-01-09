@@ -1,4 +1,4 @@
-import type { Atom } from "../atom"
+import type { Atom } from ".."
 import { evictCachedValue } from "../caching"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"

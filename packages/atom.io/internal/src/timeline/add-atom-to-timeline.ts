@@ -1,5 +1,5 @@
-import type { TransactionUpdate, ƒn } from "atom.io"
-import type { AtomToken, TimelineUpdate } from "atom.io"
+import type { AtomToken, TransactionUpdate, ƒn } from "atom.io"
+import type { TimelineUpdate } from "atom.io"
 
 import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
@@ -17,8 +17,8 @@ export const addAtomToTimeline = (
 	store: Store,
 ): void => {
 	let maybeAtom = withdraw(atomToken, store)
-	if (maybeAtom?.mutable) {
-		const updateToken = getUpdateToken(atomToken)
+	if (maybeAtom?.type === `mutable_atom`) {
+		const updateToken = getUpdateToken(maybeAtom)
 		maybeAtom = withdraw(updateToken, store)
 	}
 	const atom = maybeAtom

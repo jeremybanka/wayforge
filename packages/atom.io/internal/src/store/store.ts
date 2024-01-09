@@ -1,10 +1,12 @@
 import { AtomIOLogger } from "atom.io"
 import type {
-	AtomFamily,
 	AtomToken,
 	Logger,
+	MutableAtomFamily,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
+	RegularAtomFamily,
+	RegularAtomToken,
 	TimelineToken,
 	TransactionToken,
 	WritableSelectorFamily,
@@ -14,17 +16,16 @@ import type {
 
 import { Junction } from "~/packages/rel8/junction/src"
 
-import type { Atom } from "../atom"
+import type {
+	Atom,
+	ReadonlySelector,
+	Tracker,
+	Transceiver,
+	WritableSelector,
+} from ".."
 import type { Lineage } from "../lineage"
-import {
-	type MutableAtom,
-	type Tracker,
-	type Transceiver,
-	getJsonToken,
-	getUpdateToken,
-} from "../mutable"
+import { getJsonToken, getUpdateToken } from "../mutable"
 import type { OperationProgress } from "../operation"
-import type { ReadonlySelector, WritableSelector } from "../selector"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionMeta } from "../transaction"
@@ -35,15 +36,16 @@ export class Store implements Lineage {
 
 	public valueMap = new Map<string, any>()
 
-	public atoms = new Map<string, Atom<any> | MutableAtom<any>>()
+	public atoms = new Map<string, Atom<any>>()
 	public selectors = new Map<string, WritableSelector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
 
 	public trackers = new Map<string, Tracker<Transceiver<any>>>()
 	public families = new Map<
 		string,
-		| AtomFamily<any, any>
+		| MutableAtomFamily<any, any, any>
 		| ReadonlySelectorFamily<any, any>
+		| RegularAtomFamily<any, any>
 		| WritableSelectorFamily<any, any>
 	>()
 
@@ -128,7 +130,7 @@ export class Store implements Lineage {
 					continue
 				}
 				atom.install(this)
-				if (`mutable` in atom) {
+				if (atom.type === `mutable_atom`) {
 					const originalJsonToken = getJsonToken(atom)
 					const originalUpdateToken = getUpdateToken(atom)
 					mutableHelpers.add(originalJsonToken.key)

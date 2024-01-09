@@ -1,7 +1,8 @@
 import type {
 	AtomFamily,
-	AtomToken,
 	FamilyMetadata,
+	RegularAtomFamily,
+	RegularAtomToken,
 	StateUpdate,
 	TimelineManageable,
 	TimelineOptions,
@@ -95,12 +96,15 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			)
 			continue
 		}
-		if (tokenOrFamily.type === `atom_family`) {
-			let family: AtomFamily<any> = tokenOrFamily
-			if (isMutable(family)) {
-				family = getUpdateFamily(family, store)
-				atomKey = family.key
-			}
+		if (
+			tokenOrFamily.type === `atom_family` ||
+			tokenOrFamily.type === `mutable_atom_family`
+		) {
+			const family: RegularAtomFamily<any> =
+				tokenOrFamily.type === `atom_family`
+					? tokenOrFamily
+					: getUpdateFamily(tokenOrFamily, store)
+			atomKey = family.key
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
 				addAtomToTimeline(token, tl, store)
 			})

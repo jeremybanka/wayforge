@@ -1,4 +1,4 @@
-import type { AtomToken, FamilyMetadata, MutableAtomToken } from "atom.io"
+import type { FamilyMetadata, MutableAtomToken, RegularAtomToken } from "atom.io"
 import { getState, setState } from "atom.io"
 import type { Json } from "atom.io/json"
 
@@ -18,7 +18,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private initializeState(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		store: Store,
-	): AtomToken<typeof this.Update | null> {
+	): RegularAtomToken<typeof this.Update | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		store.atoms.delete(latestUpdateStateKey)
 		store.valueMap.delete(latestUpdateStateKey)
@@ -49,8 +49,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private unsubscribeFromInnerValue: () => void
 	private unsubscribeFromState: () => void
 	private observeCore(
-		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
-		latestUpdateState: AtomToken<typeof this.Update | null>,
+		mutableState: MutableAtomToken<Mutable, any>,
+		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
 		store: Store,
 	): void {
 		const originalInnerValue = getState(mutableState, store)
@@ -112,7 +112,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	private updateCore<Core extends Transceiver<any>>(
 		mutableState: MutableAtomToken<Core, Json.Serializable>,
-		latestUpdateState: AtomToken<typeof this.Update | null>,
+		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
 		store: Store,
 	): void {
 		subscribeToState(
@@ -174,7 +174,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	}
 
 	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
-	public latestUpdateState: AtomToken<typeof this.Update | null>
+	public latestUpdateState: RegularAtomToken<typeof this.Update | null>
 
 	public dispose: () => void
 

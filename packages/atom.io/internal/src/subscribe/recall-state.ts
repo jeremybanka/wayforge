@@ -1,12 +1,8 @@
-import type { Atom } from "../atom"
+import type { ReadableState } from ".."
 import { newest } from "../lineage"
-import type { ReadonlySelector, WritableSelector } from "../selector"
 import type { Store } from "../store"
 
-export const recallState = <T>(
-	state: Atom<T> | ReadonlySelector<T> | WritableSelector<T>,
-	store: Store,
-): T => {
+export const recallState = <T>(state: ReadableState<T>, store: Store): T => {
 	const target = newest(store)
 	if (!target.operation.open) {
 		return target.valueMap.get(state.key)
