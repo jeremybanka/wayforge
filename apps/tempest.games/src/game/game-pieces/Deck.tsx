@@ -9,12 +9,12 @@ import { Id } from "hamr/react-id"
 
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
-import { memoize } from "src/components/memoize"
-import { useRadial } from "src/services/peripherals/radial"
-import { useDOMRect } from "src/services/use-dimensions"
+import { memoize } from "tempest.games/components/memoize"
+import { useRadial } from "tempest.games/services/peripherals/radial"
+import { useDOMRect } from "tempest.games/services/use-dimensions"
 import { CardBack } from "./Card"
 
-import { myRoomState } from "src/services/store/my-room"
+import { myRoomState } from "tempest.games/services/store/my-room"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 

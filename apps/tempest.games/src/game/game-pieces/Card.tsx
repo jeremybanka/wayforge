@@ -6,8 +6,8 @@ import type { FC } from "react"
 import { valuesOfCards } from "~/apps/node/lodge/src/store/game"
 
 import { usePullMutableFamilyMember } from "atom.io/realtime-react"
-import { article } from "src/components/<article>"
-import { PlayingCards } from "src/components/PlayingCards"
+import { article } from "tempest.games/components/<article>"
+import { PlayingCards } from "tempest.games/components/PlayingCards"
 
 import scss from "./Card.module.scss"
 

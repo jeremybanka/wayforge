@@ -5,7 +5,7 @@ import * as React from "react"
 
 import { useRealtimeService } from "./use-realtime-service"
 
-export function useSyncServerAction<ƒ extends AtomIO.ƒn>(
+export function useSyncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
@@ -13,7 +13,7 @@ export function useSyncServerAction<ƒ extends AtomIO.ƒn>(
 	const updateQueue = useO(updateQueueState)
 
 	useRealtimeService(`tx:${token.key}`, (socket) =>
-		RTC.syncServerAction(token, socket, updateQueue, store),
+		RTC.syncAction(token, socket, updateQueue, store),
 	)
 	return AtomIO.runTransaction(token, store)
 }

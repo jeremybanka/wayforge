@@ -1,8 +1,8 @@
 import { useO } from "atom.io/react"
 import * as React from "react"
 
-import { span } from "src/components/<span>"
-import { otherPlayersIndex } from "src/services/store/other-players-index"
+import { span } from "tempest.games/components/<span>"
+import { otherPlayersIndex } from "tempest.games/services/store/other-players-index"
 
 import { Id } from "hamr/react-id"
 import { Identity } from "../labels/Identity"

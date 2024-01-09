@@ -1,9 +1,9 @@
-import { setState, subscribeToTimeline } from "atom.io"
+import { setState, subscribe } from "atom.io"
 
 import { findXState } from "../families/declare-a-family"
 import { coordinatesTL } from "./create-a-timeline"
 
-subscribeToTimeline(coordinatesTL, (value) => {
+subscribe(coordinatesTL, (value) => {
 	console.log(value)
 })
 

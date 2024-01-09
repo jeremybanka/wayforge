@@ -9,13 +9,13 @@ import {
 	trickContentsStates,
 } from "~/apps/node/lodge/src/store/game"
 
-import { memoize } from "src/components/memoize"
-import { useRadial } from "src/services/peripherals/radial"
-import { myHandsIndex } from "src/services/store/my-hands-index"
+import { memoize } from "tempest.games/components/memoize"
+import { useRadial } from "tempest.games/services/peripherals/radial"
+import { myHandsIndex } from "tempest.games/services/store/my-hands-index"
 import { CardFace, CardSlot } from "./Card"
 
 import { findState } from "atom.io"
-import { useDOMRect } from "src/services/use-dimensions"
+import { useDOMRect } from "tempest.games/services/use-dimensions"
 import { Count } from "../labels/Count"
 import scss from "./Trick.module.scss"
 

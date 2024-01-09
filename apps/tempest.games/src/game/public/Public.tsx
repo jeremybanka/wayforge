@@ -1,6 +1,6 @@
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
-import { useServerAction, useSyncServerAction } from "atom.io/realtime-react"
+import { useServerAction, useSyncAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
 import {
@@ -11,8 +11,8 @@ import {
 import { startGameTX } from "~/apps/node/lodge/src/store/game/transactions/hearts"
 import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
 
-import { h3 } from "src/components/<hX>"
-import { useRadial } from "src/services/peripherals/radial"
+import { h3 } from "tempest.games/components/<hX>"
+import { useRadial } from "tempest.games/services/peripherals/radial"
 import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"
 import scss from "./Public.module.scss"
@@ -23,7 +23,7 @@ export function Public({ roomId }: GameProps): JSX.Element {
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	const createTrick = useServerAction(spawnTrickTX)
 	const playerIds = useO(playersInRooms.states.playerKeysOfRoom(roomId))
-	const startGame = useSyncServerAction(startGameTX)
+	const startGame = useSyncAction(startGameTX)
 	const handlers = useRadial([
 		{
 			label: `Create Deck`,

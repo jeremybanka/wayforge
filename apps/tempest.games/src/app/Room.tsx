@@ -15,12 +15,15 @@ import {
 	playersInRooms,
 } from "~/apps/node/lodge/src/store/rooms"
 
-import { header } from "src/components/<header>"
-import { Game } from "src/game/Game"
-import { windowMousePositionState } from "src/services/peripherals/mouse-position"
-import { actionsState, radialModeState } from "src/services/peripherals/radial"
-import { myRoomState } from "src/services/store/my-room"
-import { roomViewState } from "src/services/store/room-view-state"
+import { header } from "tempest.games/components/<header>"
+import { Game } from "tempest.games/game/Game"
+import { windowMousePositionState } from "tempest.games/services/peripherals/mouse-position"
+import {
+	actionsState,
+	radialModeState,
+} from "tempest.games/services/peripherals/radial"
+import { myRoomState } from "tempest.games/services/store/my-room"
+import { roomViewState } from "tempest.games/services/store/room-view-state"
 import { PlayersInRoom } from "./PlayersInRoom"
 
 import scss from "./page.module.scss"

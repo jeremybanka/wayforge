@@ -1,9 +1,9 @@
 import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
-import { updateQueueAtoms } from "./realtime-state"
+import { updateQueueAtoms } from "./realtime-store"
 
-export function syncServerAction<ƒ extends AtomIO.ƒn>(
+export function syncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 	socket: Socket,
 	updateQueue: AtomIO.TransactionUpdate<any>[],
