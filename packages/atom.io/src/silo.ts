@@ -1,8 +1,8 @@
 import {
 	Store,
-	createAtom,
 	createAtomFamily,
 	createSelectorFamily,
+	createStandaloneAtom,
 	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
@@ -31,7 +31,7 @@ export class Silo {
 	public constructor(name: string, fromStore: Store | null = null) {
 		const s = new Store(name, fromStore)
 		this.store = s
-		this.atom = (options) => createAtom(options, undefined, s)
+		this.atom = (options) => createStandaloneAtom(options, s)
 		this.atomFamily = (options) => createAtomFamily(options, s)
 		this.selector = (options) => createStandaloneSelector(options, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any

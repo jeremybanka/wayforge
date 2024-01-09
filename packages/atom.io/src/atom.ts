@@ -1,5 +1,9 @@
 import type { Store, Subject, Transceiver } from "atom.io/internal"
-import { IMPLICIT, createAtom, createAtomFamily } from "atom.io/internal"
+import {
+	IMPLICIT,
+	createAtomFamily,
+	createStandaloneAtom,
+} from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 
 import type { AtomToken, MutableAtomToken } from "."
@@ -32,7 +36,7 @@ export function atom<T>(options: AtomOptions<T>): AtomToken<T>
 export function atom(
 	options: AtomOptions<any> | MutableAtomOptions<any, any>,
 ): AtomToken<any> {
-	return createAtom(options, undefined, IMPLICIT.STORE)
+	return createStandaloneAtom(options, IMPLICIT.STORE)
 }
 
 export type AtomFamilyOptions<T, K extends Json.Serializable> = {
