@@ -26,7 +26,9 @@ export function createAtomFamily<T, K extends Json.Serializable>(
 	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
 	store: Store,
 ): AtomFamily<T, K> | MutableAtomFamily<any, any, any> {
-	if (`mutable` in options) {
+	const isMutable = `mutable` in options
+
+	if (isMutable) {
 		return createMutableAtomFamily(options, store)
 	}
 	return createRegularAtomFamily<T, K>(options, store)
