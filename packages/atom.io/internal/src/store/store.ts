@@ -24,7 +24,7 @@ import {
 	getUpdateToken,
 } from "../mutable"
 import type { OperationProgress } from "../operation"
-import type { ReadonlySelector, Selector } from "../selector"
+import type { ReadonlySelector, WritableSelector } from "../selector"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionMeta } from "../transaction"
@@ -36,7 +36,7 @@ export class Store implements Lineage {
 	public valueMap = new Map<string, any>()
 
 	public atoms = new Map<string, Atom<any> | MutableAtom<any>>()
-	public selectors = new Map<string, Selector<any>>()
+	public selectors = new Map<string, WritableSelector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
 
 	public trackers = new Map<string, Tracker<Transceiver<any>>>()

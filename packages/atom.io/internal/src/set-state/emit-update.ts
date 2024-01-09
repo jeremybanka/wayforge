@@ -2,10 +2,10 @@ import type { StateUpdate } from "atom.io"
 import type { Store } from "atom.io/internal"
 
 import type { Atom } from "../atom"
-import type { ReadonlySelector, Selector } from "../selector"
+import type { ReadonlySelector, WritableSelector } from "../selector"
 
 export const emitUpdate = <T>(
-	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+	state: Atom<T> | ReadonlySelector<T> | WritableSelector<T>,
 	update: StateUpdate<T>,
 	store: Store,
 ): void => {

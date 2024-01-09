@@ -1,12 +1,12 @@
 import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
-import type { ReadonlySelector, Selector } from "../selector"
+import type { ReadonlySelector, WritableSelector } from "../selector"
 import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
 import { recallState } from "./recall-state"
 
 export const subscribeToRootAtoms = <T>(
-	state: ReadonlySelector<T> | Selector<T>,
+	state: ReadonlySelector<T> | WritableSelector<T>,
 	store: Store,
 ): (() => void)[] | null => {
 	const target = newest(store)

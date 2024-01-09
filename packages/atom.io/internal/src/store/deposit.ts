@@ -10,12 +10,14 @@ import type {
 
 import type { StateNode } from ".."
 import type { Atom } from "../atom"
-import type { ReadonlySelector, Selector } from "../selector"
+import type { ReadonlySelector, WritableSelector } from "../selector"
 import type { Transaction } from "../transaction"
 
 export function deposit<T>(state: Atom<T>): AtomToken<T>
-export function deposit<T>(state: Selector<T>): WritableSelectorToken<T>
-export function deposit<T>(state: Atom<T> | Selector<T>): WritableToken<T>
+export function deposit<T>(state: WritableSelector<T>): WritableSelectorToken<T>
+export function deposit<T>(
+	state: Atom<T> | WritableSelector<T>,
+): WritableToken<T>
 export function deposit<T>(state: ReadonlySelector<T>): ReadonlySelectorToken<T>
 export function deposit<T>(
 	state: Transaction<T extends ƒn ? T : never>,
@@ -25,8 +27,8 @@ export function deposit<T>(
 	state:
 		| Atom<T>
 		| ReadonlySelector<T>
-		| Selector<T>
-		| Transaction<T extends ƒn ? T : never>,
+		| Transaction<T extends ƒn ? T : never>
+		| WritableSelector<T>,
 ):
 	| AtomToken<T>
 	| ReadonlySelectorToken<T>

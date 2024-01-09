@@ -12,7 +12,7 @@ import type {
 
 import type { StateNode } from ".."
 import type { Atom } from "../atom"
-import type { ReadonlySelector, Selector } from "../selector"
+import type { ReadonlySelector, WritableSelector } from "../selector"
 import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import type { Store } from "./store"
@@ -20,9 +20,9 @@ import type { Store } from "./store"
 type Withdrawable<T> =
 	| Atom<T>
 	| ReadonlySelector<T>
-	| Selector<T>
 	| Timeline<T extends TimelineManageable ? T : never>
 	| Transaction<T extends ƒn ? T : never>
+	| WritableSelector<T>
 
 export function withdraw<T>(
 	token: AtomToken<T>,
@@ -31,11 +31,11 @@ export function withdraw<T>(
 export function withdraw<T>(
 	token: WritableSelectorToken<T>,
 	store: Store,
-): Selector<T> | undefined
+): WritableSelector<T> | undefined
 export function withdraw<T>(
 	token: WritableToken<T>,
 	store: Store,
-): Atom<T> | Selector<T> | undefined
+): Atom<T> | WritableSelector<T> | undefined
 export function withdraw<T>(
 	token: ReadonlySelectorToken<T>,
 	store: Store,

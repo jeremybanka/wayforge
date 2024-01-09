@@ -1,10 +1,10 @@
 import type { Atom } from "../atom"
 import { newest } from "../lineage"
-import type { ReadonlySelector, Selector } from "../selector"
+import type { ReadonlySelector, WritableSelector } from "../selector"
 import type { Store } from "../store"
 
 export const recallState = <T>(
-	state: Atom<T> | ReadonlySelector<T> | Selector<T>,
+	state: Atom<T> | ReadonlySelector<T> | WritableSelector<T>,
 	store: Store,
 ): T => {
 	const target = newest(store)

@@ -1,5 +1,5 @@
 import type { Atom } from "./atom"
-import type { ReadonlySelector, Selector } from "./selector"
+import type { ReadonlySelector, WritableSelector } from "./selector"
 
 export * from "./atom"
 export * from "./caching"
@@ -22,4 +22,4 @@ export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
 
-export type StateNode<T> = Atom<T> | ReadonlySelector<T> | Selector<T>
+export type StateNode<T> = Atom<T> | ReadonlySelector<T> | WritableSelector<T>

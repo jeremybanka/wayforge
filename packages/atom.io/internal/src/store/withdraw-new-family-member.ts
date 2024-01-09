@@ -5,7 +5,13 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Atom, ReadonlySelector, Selector, StateNode, Store } from ".."
+import type {
+	Atom,
+	ReadonlySelector,
+	StateNode,
+	Store,
+	WritableSelector,
+} from ".."
 import { newest, withdraw } from ".."
 
 export function withdrawNewFamilyMember<T>(
@@ -15,7 +21,7 @@ export function withdrawNewFamilyMember<T>(
 export function withdrawNewFamilyMember<T>(
 	token: WritableSelectorToken<T>,
 	store: Store,
-): Selector<T> | undefined
+): WritableSelector<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token: ReadonlySelectorToken<T>,
 	store: Store,
@@ -23,7 +29,7 @@ export function withdrawNewFamilyMember<T>(
 export function withdrawNewFamilyMember<T>(
 	token: WritableToken<T>,
 	store: Store,
-): Atom<T> | Selector<T> | undefined
+): Atom<T> | WritableSelector<T> | undefined
 export function withdrawNewFamilyMember<T>(
 	token: ReadableToken<T>,
 	store: Store,

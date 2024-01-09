@@ -11,7 +11,7 @@ import type { Subject } from "../subject"
 import { createReadonlySelector } from "./create-readonly-selector"
 import { createWritableSelector } from "./create-writable-selector"
 
-export type Selector<T> = {
+export type WritableSelector<T> = {
 	key: string
 	type: `selector`
 	family?: FamilyMetadata
