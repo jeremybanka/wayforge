@@ -2,7 +2,7 @@ import type {
 	AtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
-	SelectorToken,
+	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Atom, ReadonlySelector, Selector, StateNode, Store } from ".."
@@ -13,7 +13,7 @@ export function withdrawNewFamilyMember<T>(
 	store: Store,
 ): Atom<T> | undefined
 export function withdrawNewFamilyMember<T>(
-	token: SelectorToken<T>,
+	token: WritableSelectorToken<T>,
 	store: Store,
 ): Selector<T> | undefined
 export function withdrawNewFamilyMember<T>(

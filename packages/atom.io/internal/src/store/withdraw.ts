@@ -2,10 +2,10 @@ import type {
 	AtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
-	SelectorToken,
 	TimelineManageable,
 	TimelineToken,
 	TransactionToken,
+	WritableSelectorToken,
 	WritableToken,
 	ƒn,
 } from "atom.io"
@@ -29,7 +29,7 @@ export function withdraw<T>(
 	store: Store,
 ): Atom<T> | undefined
 export function withdraw<T>(
-	token: SelectorToken<T>,
+	token: WritableSelectorToken<T>,
 	store: Store,
 ): Selector<T> | undefined
 export function withdraw<T>(

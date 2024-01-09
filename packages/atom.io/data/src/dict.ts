@@ -11,7 +11,7 @@ export function dict<State, Key extends Json.Serializable>(
 	index:
 		| AtomIO.AtomToken<Key[]>
 		| AtomIO.ReadonlySelectorToken<Key[]>
-		| AtomIO.SelectorToken<Key[]>,
+		| AtomIO.WritableSelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.ReadonlySelectorToken<{ [K in Stringified<Key>]: State }> {
 	return createStandaloneSelector(

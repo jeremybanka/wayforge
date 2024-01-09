@@ -6,9 +6,9 @@ import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
 	SelectorFamily,
-	SelectorToken,
 	TimelineToken,
 	TransactionToken,
+	WritableSelectorToken,
 	ƒn,
 } from "atom.io"
 
@@ -77,7 +77,7 @@ export class Store implements Lineage {
 	public on = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
 		selectorCreation: new Subject<
-			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
+			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
 		>(),
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
 		timelineCreation: new Subject<TimelineToken<unknown>>(),

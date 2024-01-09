@@ -6,7 +6,7 @@ import {
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import type { ReadonlySelectorToken, SelectorToken } from "."
+import type { ReadonlySelectorToken, WritableSelectorToken } from "."
 import type { Read, Write } from "./transaction"
 
 export type SelectorOptions<T> = {
@@ -19,13 +19,15 @@ export type ReadonlySelectorOptions<T> = {
 	get: Read<() => T>
 }
 
-export function selector<T>(options: SelectorOptions<T>): SelectorToken<T>
+export function selector<T>(
+	options: SelectorOptions<T>,
+): WritableSelectorToken<T>
 export function selector<T>(
 	options: ReadonlySelectorOptions<T>,
 ): ReadonlySelectorToken<T>
 export function selector<T>(
 	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
-): ReadonlySelectorToken<T> | SelectorToken<T> {
+): ReadonlySelectorToken<T> | WritableSelectorToken<T> {
 	return createStandaloneSelector(options, IMPLICIT.STORE)
 }
 
@@ -42,10 +44,10 @@ export type ReadonlySelectorFamilyOptions<T, K extends Json.Serializable> = {
 export type SelectorFamily<
 	T,
 	K extends Json.Serializable = Json.Serializable,
-> = ((key: K) => SelectorToken<T>) & {
+> = ((key: K) => WritableSelectorToken<T>) & {
 	key: string
 	type: `selector_family`
-	subject: Subject<SelectorToken<T>>
+	subject: Subject<WritableSelectorToken<T>>
 	install: (store: Store) => void
 	__T?: T
 	__K?: K

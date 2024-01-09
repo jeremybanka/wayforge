@@ -36,7 +36,7 @@ export interface MutableAtomToken<
 	__asJSON?: J
 	__update?: T extends Transceiver<infer Update> ? Update : never
 }
-export type SelectorToken<_> = {
+export type WritableSelectorToken<_> = {
 	key: string
 	type: `selector`
 	family?: FamilyMetadata
@@ -45,8 +45,8 @@ export type SelectorToken<_> = {
 /**
  * @deprecated Prefer `WritableToken`.
  */
-export type StateToken<T> = AtomToken<T> | SelectorToken<T>
-export type WritableToken<T> = AtomToken<T> | SelectorToken<T>
+export type StateToken<T> = AtomToken<T> | WritableSelectorToken<T>
+export type WritableToken<T> = AtomToken<T> | WritableSelectorToken<T>
 export type ReadableToken<T> = ReadonlySelectorToken<T> | WritableToken<T>
 
 export type WritableFamily<T, K extends Json.Serializable> =

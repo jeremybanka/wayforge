@@ -2,8 +2,8 @@ import type {
 	AtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
-	SelectorToken,
 	TransactionToken,
+	WritableSelectorToken,
 	WritableToken,
 	ƒn,
 } from "atom.io"
@@ -14,7 +14,7 @@ import type { ReadonlySelector, Selector } from "../selector"
 import type { Transaction } from "../transaction"
 
 export function deposit<T>(state: Atom<T>): AtomToken<T>
-export function deposit<T>(state: Selector<T>): SelectorToken<T>
+export function deposit<T>(state: Selector<T>): WritableSelectorToken<T>
 export function deposit<T>(state: Atom<T> | Selector<T>): WritableToken<T>
 export function deposit<T>(state: ReadonlySelector<T>): ReadonlySelectorToken<T>
 export function deposit<T>(
@@ -30,8 +30,8 @@ export function deposit<T>(
 ):
 	| AtomToken<T>
 	| ReadonlySelectorToken<T>
-	| SelectorToken<T>
-	| TransactionToken<T> {
+	| TransactionToken<T>
+	| WritableSelectorToken<T> {
 	const token = {
 		key: state.key,
 		type: state.type,
