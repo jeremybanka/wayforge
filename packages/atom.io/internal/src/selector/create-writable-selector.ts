@@ -1,6 +1,6 @@
 import type {
 	FamilyMetadata,
-	SelectorOptions,
+	WritableSelectorOptions,
 	WritableSelectorToken,
 } from "atom.io"
 
@@ -14,7 +14,7 @@ import type { Selector } from "./create-standalone-selector"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
-	options: SelectorOptions<T>,
+	options: WritableSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
 ): WritableSelectorToken<T> => {

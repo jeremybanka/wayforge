@@ -2,7 +2,7 @@ import type {
 	FamilyMetadata,
 	ReadonlySelectorOptions,
 	ReadonlySelectorToken,
-	SelectorOptions,
+	WritableSelectorOptions,
 	WritableSelectorToken,
 } from "atom.io"
 
@@ -30,7 +30,7 @@ export type ReadonlySelector<T> = {
 }
 
 export function createStandaloneSelector<T>(
-	options: SelectorOptions<T>,
+	options: WritableSelectorOptions<T>,
 	store: Store,
 ): WritableSelectorToken<T>
 export function createStandaloneSelector<T>(
@@ -38,7 +38,7 @@ export function createStandaloneSelector<T>(
 	store: Store,
 ): ReadonlySelectorToken<T>
 export function createStandaloneSelector<T>(
-	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
+	options: ReadonlySelectorOptions<T> | WritableSelectorOptions<T>,
 	store: Store,
 ): ReadonlySelectorToken<T> | WritableSelectorToken<T> {
 	const isWritable = `set` in options

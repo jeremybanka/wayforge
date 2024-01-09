@@ -9,7 +9,7 @@ import type { Json } from "atom.io/json"
 import type { ReadonlySelectorToken, WritableSelectorToken } from "."
 import type { Read, Write } from "./transaction"
 
-export type SelectorOptions<T> = {
+export type WritableSelectorOptions<T> = {
 	key: string
 	get: Read<() => T>
 	set: Write<(newValue: T) => void>
@@ -20,13 +20,13 @@ export type ReadonlySelectorOptions<T> = {
 }
 
 export function selector<T>(
-	options: SelectorOptions<T>,
+	options: WritableSelectorOptions<T>,
 ): WritableSelectorToken<T>
 export function selector<T>(
 	options: ReadonlySelectorOptions<T>,
 ): ReadonlySelectorToken<T>
 export function selector<T>(
-	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
+	options: ReadonlySelectorOptions<T> | WritableSelectorOptions<T>,
 ): ReadonlySelectorToken<T> | WritableSelectorToken<T> {
 	return createStandaloneSelector(options, IMPLICIT.STORE)
 }
