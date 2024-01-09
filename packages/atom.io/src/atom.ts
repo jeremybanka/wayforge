@@ -39,7 +39,7 @@ export function atom(
 	return createStandaloneAtom(options, IMPLICIT.STORE)
 }
 
-export type AtomFamilyOptions<T, K extends Json.Serializable> = {
+export type RegularAtomFamilyOptions<T, K extends Json.Serializable> = {
 	key: string
 	default: T | ((key: K) => T)
 	effects?: (key: K) => AtomEffect<T>[]
@@ -119,10 +119,12 @@ export function atomFamily<
 	K extends Json.Serializable,
 >(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamily<T, J, K>
 export function atomFamily<T, K extends Json.Serializable>(
-	options: AtomFamilyOptions<T, K>,
+	options: RegularAtomFamilyOptions<T, K>,
 ): RegularAtomFamily<T, K>
 export function atomFamily<T, K extends Json.Serializable>(
-	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
+	options:
+		| MutableAtomFamilyOptions<any, any, any>
+		| RegularAtomFamilyOptions<T, K>,
 ): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
 	return createAtomFamily(options, IMPLICIT.STORE)
 }

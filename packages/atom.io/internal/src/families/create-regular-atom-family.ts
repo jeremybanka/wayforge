@@ -1,8 +1,7 @@
 import type {
-	AtomFamilyOptions,
 	FamilyMetadata,
-	MutableAtomFamilyOptions,
 	RegularAtomFamily,
+	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
 } from "atom.io"
@@ -16,7 +15,7 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createRegularAtomFamily<T, K extends Json.Serializable>(
-	options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, K>,
+	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
 ): RegularAtomFamily<T, K> {
 	const subject = new Subject<RegularAtomToken<T>>()

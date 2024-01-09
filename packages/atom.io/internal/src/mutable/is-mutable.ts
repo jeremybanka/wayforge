@@ -9,8 +9,8 @@ export function isMutable(
 export function isMutable(
 	atomOrTokenOrFamily: Atom<any> | AtomFamily<any, any>,
 ): boolean {
-	if (`mutable` in atomOrTokenOrFamily) {
-		return atomOrTokenOrFamily.mutable
-	}
-	return false
+	return (
+		atomOrTokenOrFamily.type === `mutable_atom` ||
+		atomOrTokenOrFamily.type === `mutable_atom_family`
+	)
 }

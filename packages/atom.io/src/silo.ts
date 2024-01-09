@@ -12,13 +12,13 @@ import {
 import type { Json } from "atom.io/json"
 
 import type {
-	AtomFamilyOptions,
 	AtomToken,
 	MutableAtomFamily,
 	MutableAtomFamilyOptions,
 	MutableAtomOptions,
 	MutableAtomToken,
 	RegularAtomFamily,
+	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
 	redo,
@@ -60,10 +60,12 @@ export class Silo {
 			K extends Json.Serializable,
 		>(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamily<T, J, K>
 		function _atomFamily<T, K extends Json.Serializable>(
-			options: AtomFamilyOptions<T, K>,
+			options: RegularAtomFamilyOptions<T, K>,
 		): RegularAtomFamily<T, K>
 		function _atomFamily<T, K extends Json.Serializable>(
-			options: AtomFamilyOptions<T, K> | MutableAtomFamilyOptions<any, any, any>,
+			options:
+				| RegularAtomFamilyOptions<T, K>
+				| MutableAtomFamilyOptions<any, any, any>,
 		): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
 			return createAtomFamily(options, s)
 		}
