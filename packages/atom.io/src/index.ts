@@ -23,29 +23,36 @@ export * from "./validators"
 
 export type ƒn = (...parameters: any[]) => any
 
-export type AtomToken<_> = {
+export type AtomToken<T> = {
 	key: string
 	type: `atom`
 	family?: FamilyMetadata
-	__brand?: _
+	__T?: T
 }
 export interface MutableAtomToken<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 > extends AtomToken<T> {
-	__asJSON?: J
-	__update?: T extends Transceiver<infer Update> ? Update : never
+	__J?: J
+	__U?: T extends Transceiver<infer Update> ? Update : never
 }
-export type WritableSelectorToken<_> = {
+
+export type WritableSelectorToken<T> = {
 	key: string
 	type: `selector`
 	family?: FamilyMetadata
-	__brand?: _
+	__T?: T
 }
-/**
- * @deprecated Prefer `WritableToken`.
- */
-export type StateToken<T> = AtomToken<T> | WritableSelectorToken<T>
+export type ReadonlySelectorToken<T> = {
+	key: string
+	type: `readonly_selector`
+	family?: FamilyMetadata
+	__T?: T
+}
+export type SelectorToken<T> =
+	| ReadonlySelectorToken<T>
+	| WritableSelectorToken<T>
+
 export type WritableToken<T> = AtomToken<T> | WritableSelectorToken<T>
 export type ReadableToken<T> = ReadonlySelectorToken<T> | WritableToken<T>
 
@@ -62,12 +69,5 @@ export type WritableFamilyToken<T, K extends Json.Serializable> =
 export type ReadableFamilyToken<T, K extends Json.Serializable> =
 	| ReadonlySelectorFamilyToken<T, K>
 	| WritableFamilyToken<T, K>
-
-export type ReadonlySelectorToken<_> = {
-	key: string
-	type: `readonly_selector`
-	family?: FamilyMetadata
-	__brand?: _
-}
 
 export type FamilyMetadata = { key: string; subKey: string }
