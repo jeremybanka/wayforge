@@ -2,16 +2,31 @@
 "atom.io": minor
 ---
 
-✨ `atom.io/realtime` backfills a client-side "fire-and-forget" API for sending transactions to the server. This incurs lower overhead than using the synchronization API.
+💥 BREAKING CHANGE: `atom.io/realtime` has renamed most core functions to organize the design around three core APIs:
+- Isolated
+- Shared
+- Adversarial
 
-### Fire-and-forget
-- `/realtime-client`: `serverAction` (and `pullState`)
-- `/realtime-react`: `useServerAction` (and `usePull`)
-- `/realtime-server`: `receiveTransaction` (and `useExposeSingle`)
+### Isolated ()
+Used for data that is controlled by a single user. This data can safely be persisted to the server and relayed to other users without any additional synchronization logic.
+|            | Get                                                                                                        | Set                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| **React**  | `usePull` `usePullMutable` `usePullFamilyMember` `usePullFamilyMember`                                     | `usePush` (variants coming soon) |
+| **Client** | `pullState` `pullMutable` `pullFamilyMember` `pullMutableFamilyMember`                                     | `pushState`                      |
+| **Server** | `realtimeStateProvider` `realtimeMutableProvider` `realtimeFamilyProvider` `realtimeMutableFamilyProvider` | `realtimeStateReceiver`          |
 
-### Synchronization
-- `/realtime-client`: `syncServerAction` (and upcoming initializers)
-- `/realtime-react`: `useSyncServerAction` (and upcoming initializers)
-- `/realtime-server`: `syncTransaction` (and upcoming initializers)
+### Shared
+Used for low-complexity data that is shared between multiple users. Updated on the server via transactions, and updated on the client via state subscriptions.
+|            | Get                                                                                                        | Set                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------- | ------------------------ |
+| **React**  | `usePull` `usePullMutable` `usePullFamilyMember` `usePullFamilyMember`                                     | `useServerAction`        |
+| **Client** | `pullState` `pullMutable` `pullFamilyMember` `pullMutableFamilyMember`                                     | `serverAction`           |
+| **Server** | `realtimeStateProvider` `realtimeMutableProvider` `realtimeFamilyProvider` `realtimeMutableFamilyProvider` | `realtimeActionReceiver` |
 
-When using the synchronization API, the server will send back a response to the client. This response is not sent when using the fire-and-forget API. Instead, the client is responsible for maintaining streams to all relevant data via `usePull`.
+### Adversarial
+Best for situations where speed and the ability to rollback is necessary. Updated on the server via transactions, reconciled on the client.
+|            | Get                                       | Set                          |
+| ---------- | ----------------------------------------- | ---------------------------- |
+| **React**  | `useSyncState` (coming soon)              | `useSyncAction`              |
+| **Client** | `syncState` (coming soon)                 | `syncAction`                 |
+| **Server** | `realtimeStateSynchronizer` (coming soon) | `realtimeActionSynchronizer` |
