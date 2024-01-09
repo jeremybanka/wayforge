@@ -1,6 +1,6 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, createSelector } from "atom.io/internal"
+import { IMPLICIT, createStandaloneSelector } from "atom.io/internal"
 import type { Json, Stringified } from "atom.io/json"
 
 export function dict<State, Key extends Json.Serializable>(
@@ -14,7 +14,7 @@ export function dict<State, Key extends Json.Serializable>(
 		| AtomIO.SelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.ReadonlySelectorToken<{ [K in Stringified<Key>]: State }> {
-	return createSelector(
+	return createStandaloneSelector(
 		{
 			key: `${findState.key}Dict`,
 			get: ({ get }) => {
@@ -25,7 +25,6 @@ export function dict<State, Key extends Json.Serializable>(
 				}, {} as any)
 			},
 		},
-		undefined,
 		store,
 	)
 }

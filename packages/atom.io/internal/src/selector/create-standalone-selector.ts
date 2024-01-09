@@ -29,25 +29,22 @@ export type ReadonlySelector<T> = {
 	get: () => T
 }
 
-export function createSelector<T>(
+export function createStandaloneSelector<T>(
 	options: SelectorOptions<T>,
-	family: FamilyMetadata | undefined,
 	store: Store,
 ): SelectorToken<T>
-export function createSelector<T>(
+export function createStandaloneSelector<T>(
 	options: ReadonlySelectorOptions<T>,
-	family: FamilyMetadata | undefined,
 	store: Store,
 ): ReadonlySelectorToken<T>
-export function createSelector<T>(
+export function createStandaloneSelector<T>(
 	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
-	family: FamilyMetadata | undefined,
 	store: Store,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
 	const isWritable = `set` in options
 
 	if (isWritable) {
-		return createWritableSelector(options, family, store)
+		return createWritableSelector(options, undefined, store)
 	}
-	return createReadonlySelector(options, family, store)
+	return createReadonlySelector(options, undefined, store)
 }

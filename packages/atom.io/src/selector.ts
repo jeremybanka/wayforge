@@ -1,5 +1,9 @@
 import type { Store, Subject } from "atom.io/internal"
-import { IMPLICIT, createSelector, createSelectorFamily } from "atom.io/internal"
+import {
+	IMPLICIT,
+	createSelectorFamily,
+	createStandaloneSelector,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ReadonlySelectorToken, SelectorToken } from "."
@@ -22,7 +26,7 @@ export function selector<T>(
 export function selector<T>(
 	options: ReadonlySelectorOptions<T> | SelectorOptions<T>,
 ): ReadonlySelectorToken<T> | SelectorToken<T> {
-	return createSelector(options, undefined, IMPLICIT.STORE)
+	return createStandaloneSelector(options, IMPLICIT.STORE)
 }
 
 export type SelectorFamilyOptions<T, K extends Json.Serializable> = {

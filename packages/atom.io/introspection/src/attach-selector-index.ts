@@ -3,7 +3,7 @@ import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
 	createRegularAtom,
-	createSelector,
+	createStandaloneSelector,
 	newest,
 } from "atom.io/internal"
 
@@ -88,12 +88,11 @@ export const attachSelectorIndex = (
 			undefined,
 			store,
 		)
-	return createSelector(
+	return createStandaloneSelector(
 		{
 			key: `👁‍🗨 Selector Token Index`,
 			get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
 		},
-		undefined,
 		IMPLICIT.STORE,
 	)
 }

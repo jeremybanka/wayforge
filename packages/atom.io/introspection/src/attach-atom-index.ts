@@ -3,7 +3,7 @@ import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
 	createRegularAtom,
-	createSelector,
+	createStandaloneSelector,
 	newest,
 } from "atom.io/internal"
 
@@ -78,12 +78,11 @@ export const attachAtomIndex = (
 		undefined,
 		store,
 	)
-	return createSelector(
+	return createStandaloneSelector(
 		{
 			key: `👁‍🗨 Atom Token Index`,
 			get: ({ get }) => get(atomTokenIndexState__INTERNAL),
 		},
-		undefined,
 		store,
 	)
 }

@@ -2,8 +2,8 @@ import {
 	Store,
 	createAtom,
 	createAtomFamily,
-	createSelector,
 	createSelectorFamily,
+	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
 	timeTravel,
@@ -33,7 +33,7 @@ export class Silo {
 		this.store = s
 		this.atom = (options) => createAtom(options, undefined, s)
 		this.atomFamily = (options) => createAtomFamily(options, s)
-		this.selector = (options) => createSelector(options, undefined, s) as any
+		this.selector = (options) => createStandaloneSelector(options, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)

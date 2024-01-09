@@ -6,8 +6,7 @@ import { markDone } from "../operation"
 import { become } from "../set-state/become"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import type { Selector } from "./create-selector"
-import { createSelector } from "./create-selector"
+import type { Selector } from "./create-standalone-selector"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
@@ -50,7 +49,7 @@ export const createWritableSelector = <T>(
 	const mySelector: Selector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => createSelector(options, family, s),
+		install: (s: Store) => createWritableSelector(options, family, s),
 		get: getSelf,
 		set: setSelf,
 		type: `selector`,
