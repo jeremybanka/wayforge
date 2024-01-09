@@ -31,7 +31,7 @@ export function selector<T>(
 	return createStandaloneSelector(options, IMPLICIT.STORE)
 }
 
-export type SelectorFamilyOptions<T, K extends Json.Serializable> = {
+export type WritableSelectorFamilyOptions<T, K extends Json.Serializable> = {
 	key: string
 	get: (key: K) => Read<() => T>
 	set: (key: K) => Write<(newValue: T) => void>
@@ -78,13 +78,15 @@ export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
 }
 
 export function selectorFamily<T, K extends Json.Serializable>(
-	options: SelectorFamilyOptions<T, K>,
+	options: WritableSelectorFamilyOptions<T, K>,
 ): SelectorFamily<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
-	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
+	options:
+		| ReadonlySelectorFamilyOptions<T, K>
+		| WritableSelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
 	return createSelectorFamily(options, IMPLICIT.STORE)
 }

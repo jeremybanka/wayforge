@@ -1,7 +1,7 @@
 import type {
 	FamilyMetadata,
 	SelectorFamily,
-	SelectorFamilyOptions,
+	WritableSelectorFamilyOptions,
 	WritableSelectorToken,
 } from "atom.io"
 import type { Json } from "atom.io/json"
@@ -13,7 +13,7 @@ import { deposit } from "../store"
 import { Subject } from "../subject"
 
 export function createWritableSelectorFamily<T, K extends Json.Serializable>(
-	options: SelectorFamilyOptions<T, K>,
+	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 ): SelectorFamily<T, K> {
 	const subject = new Subject<WritableSelectorToken<T>>()

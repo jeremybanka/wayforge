@@ -2,7 +2,7 @@ import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyOptions,
 	SelectorFamily,
-	SelectorFamilyOptions,
+	WritableSelectorFamilyOptions,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 
@@ -11,7 +11,7 @@ import { createReadonlySelectorFamily } from "./create-readonly-selector-family"
 import { createWritableSelectorFamily } from "./create-writable-selector-family"
 
 export function createSelectorFamily<T, K extends Json.Serializable>(
-	options: SelectorFamilyOptions<T, K>,
+	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 ): SelectorFamily<T, K>
 export function createSelectorFamily<T, K extends Json.Serializable>(
@@ -19,7 +19,9 @@ export function createSelectorFamily<T, K extends Json.Serializable>(
 	store: Store,
 ): ReadonlySelectorFamily<T, K>
 export function createSelectorFamily<T, K extends Json.Serializable>(
-	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
+	options:
+		| ReadonlySelectorFamilyOptions<T, K>
+		| WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
 	const isWritable = `set` in options
