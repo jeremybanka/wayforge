@@ -55,8 +55,8 @@ export const isResourceIdentifier = Object.assign(
 	{
 		whoseMeta:
 			<META extends Json.Serializable | undefined>(
-			isMeta: Refinement<unknown, META>,
-		): Refinement<unknown, ResourceIdentifierObject<any, META>> =>
+				isMeta: Refinement<unknown, META>,
+			): Refinement<unknown, ResourceIdentifierObject<any, META>> =>
 			(thing: unknown): thing is ResourceIdentifierObject<any, META> =>
 				isResourceIdentifier(thing) && isMeta(thing.meta),
 	},

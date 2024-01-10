@@ -34,7 +34,6 @@ export const Id: React.FC<{ id: string }> = ({ id }) => {
 	return (
 		<>
 			<span
-				role="content"
 				ref={refs.setReference}
 				{...getReferenceProps()}
 				style={{
@@ -51,7 +50,6 @@ export const Id: React.FC<{ id: string }> = ({ id }) => {
 			{isOpen && (
 				<FloatingPortal>
 					<span
-						role="popup"
 						ref={refs.setFloating}
 						{...getFloatingProps()}
 						style={{
