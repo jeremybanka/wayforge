@@ -5,7 +5,7 @@
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
-		"lint:biome": "biome check .",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",

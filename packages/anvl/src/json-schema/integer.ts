@@ -111,7 +111,9 @@ export function asNumber<
 		keyof any,
 		Fraction | Fraction[] | integer | integer[] | number[] | number
 	>,
->(input: R): {
+>(
+	input: R,
+): {
 	[K in keyof R]: R[K] extends Fraction | integer | number ? number : number[]
 }
 export function asNumber(input: unknown): unknown {

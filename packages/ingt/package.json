@@ -7,7 +7,7 @@
 	"files": ["dist"],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
-		"lint:biome": "biome check .",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"test": "vitest",

@@ -83,7 +83,7 @@ describe(`SetRTX`, () => {
 			console.log(set.cacheUpdateNumber, set.cache)
 			expect(set.size).toBe(0)
 			console.log(set, lastUpdate)
-			let res
+			let res: number | null = null
 			if (lastUpdate) res = set.undo(lastUpdate)
 			console.log(res)
 			expect(set.size).toBe(2)

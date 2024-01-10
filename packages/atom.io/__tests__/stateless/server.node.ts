@@ -69,60 +69,61 @@ const main = async () => {
 										throw 404
 								}
 								break
-							case `POST`: {
-								const text = Buffer.concat(data).toString()
-								const json: Json.Serializable = JSON.parse(text)
-								console.log({ json })
-								switch (url.pathname) {
-									case `/countries`: {
-										if (
-											typeof json === `object` &&
-											json !== null &&
-											`name` in json &&
-											typeof json.name === `string`
-										) {
-											const { name } = json
-											const rows = await db
-												.insert(countries)
-												.values({ name })
-												.returning()
-											res.writeHead(200, {
-												"Content-Type": `application/json`,
-											})
-											console.log({ rows })
-											res.end(JSON.stringify(rows))
+							case `POST`:
+								{
+									const text = Buffer.concat(data).toString()
+									const json: Json.Serializable = JSON.parse(text)
+									console.log({ json })
+									switch (url.pathname) {
+										case `/countries`: {
+											if (
+												typeof json === `object` &&
+												json !== null &&
+												`name` in json &&
+												typeof json.name === `string`
+											) {
+												const { name } = json
+												const rows = await db
+													.insert(countries)
+													.values({ name })
+													.returning()
+												res.writeHead(200, {
+													"Content-Type": `application/json`,
+												})
+												console.log({ rows })
+												res.end(JSON.stringify(rows))
+												break
+											}
+											throw 400
+										}
+										case `/cities`: {
+											if (
+												typeof json === `object` &&
+												json !== null &&
+												`name` in json &&
+												typeof json.name === `string` &&
+												`countryId` in json &&
+												typeof json.countryId === `number`
+											) {
+												const { name, countryId } = json
+												const rows = await db
+													.insert(cities)
+													.values({ name, countryId })
+													.returning()
+												res.writeHead(200, {
+													"Content-Type": `application/json`,
+												})
+												console.log({ rows })
+												res.end(JSON.stringify(rows))
+												break
+											}
 											break
 										}
-										throw 400
+										default:
+											throw 404
 									}
-									case `/cities`: {
-										if (
-											typeof json === `object` &&
-											json !== null &&
-											`name` in json &&
-											typeof json.name === `string` &&
-											`countryId` in json &&
-											typeof json.countryId === `number`
-										) {
-											const { name, countryId } = json
-											const rows = await db
-												.insert(cities)
-												.values({ name, countryId })
-												.returning()
-											res.writeHead(200, {
-												"Content-Type": `application/json`,
-											})
-											console.log({ rows })
-											res.end(JSON.stringify(rows))
-											break
-										}
-										break
-									}
-									default:
-										throw 404
 								}
-							}
-							break
+								break
 							default:
 								throw 405
 						}
