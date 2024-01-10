@@ -11,8 +11,8 @@ import {
 import { startGameTX } from "~/apps/node/lodge/src/store/game/transactions/hearts"
 import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
 
-import { h3 } from "tempest.games/components/<hX>"
-import { useRadial } from "tempest.games/services/peripherals/radial"
+import { h3 } from "wayfarer.quest/components/<hX>"
+import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"
 import scss from "./Public.module.scss"

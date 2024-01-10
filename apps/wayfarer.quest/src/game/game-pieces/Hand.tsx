@@ -10,14 +10,14 @@ import * as React from "react"
 
 import { dealCardsTX, groupsOfCards } from "~/apps/node/lodge/src/store/game"
 
-import { memoize } from "tempest.games/components/memoize"
-import { useRadial } from "tempest.games/services/peripherals/radial"
-import { myHandsIndex } from "tempest.games/services/store/my-hands-index"
-import { publicDeckIndex } from "tempest.games/services/store/public-deck-index"
+import { memoize } from "wayfarer.quest/components/memoize"
+import { useRadial } from "wayfarer.quest/services/peripherals/radial"
+import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
+import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index"
 import { CardBack, CardFace, CardSlot } from "./Card"
 
-import { myRoomState } from "tempest.games/services/store/my-room"
-import { useDOMRect } from "tempest.games/services/use-dimensions"
+import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { Count } from "../labels/Count"
 import scss from "./Hand.module.scss"
 

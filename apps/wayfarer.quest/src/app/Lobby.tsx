@@ -6,7 +6,7 @@ import { usePullMutable, useServerAction } from "atom.io/realtime-react"
 
 import { createRoomTX, roomsIndex } from "~/apps/node/lodge/src/store/rooms"
 
-import { roomViewState } from "tempest.games/services/store/room-view-state"
+import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
 export default function Lobby(): JSX.Element {
 	const roomKeys = useJSON(roomsIndex)

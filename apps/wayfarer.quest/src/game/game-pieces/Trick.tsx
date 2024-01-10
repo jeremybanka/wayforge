@@ -9,13 +9,13 @@ import {
 	trickContentsStates,
 } from "~/apps/node/lodge/src/store/game"
 
-import { memoize } from "tempest.games/components/memoize"
-import { useRadial } from "tempest.games/services/peripherals/radial"
-import { myHandsIndex } from "tempest.games/services/store/my-hands-index"
+import { memoize } from "wayfarer.quest/components/memoize"
+import { useRadial } from "wayfarer.quest/services/peripherals/radial"
+import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
 import { CardFace, CardSlot } from "./Card"
 
 import { findState } from "atom.io"
-import { useDOMRect } from "tempest.games/services/use-dimensions"
+import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { Count } from "../labels/Count"
 import scss from "./Trick.module.scss"
 
