@@ -10,6 +10,7 @@
 			"*.gen.tsx",
 			"*.gen.ts",
 			"dist/**/*",
+			"**/metafile-*",
 			"node_modules",
 			"coverage",
 			"projects"
