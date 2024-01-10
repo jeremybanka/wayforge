@@ -6,14 +6,13 @@ import * as React from "react"
 export function getFamily<
 	Family extends AtomIO.MutableAtomFamily<any, any, any>,
 >(family: Family, store: Store): Family
-export function getFamily<Family extends AtomIO.AtomFamily<any, any>>(
+export function getFamily<Family extends AtomIO.RegularAtomFamily<any, any>>(
 	family: Family,
 	store: Store,
 ): Family
-export function getFamily<Family extends AtomIO.SelectorFamily<any, any>>(
-	family: Family,
-	store: Store,
-): Family
+export function getFamily<
+	Family extends AtomIO.WritableSelectorFamily<any, any>,
+>(family: Family, store: Store): Family
 export function getFamily<
 	Family extends AtomIO.ReadonlySelectorFamily<any, any>,
 >(family: Family, store: Store): Family
@@ -35,12 +34,12 @@ export function getFamily(
 export function useFamily<
 	Family extends AtomIO.MutableAtomFamily<any, any, any>,
 >(family: Family): Family
-export function useFamily<Family extends AtomIO.AtomFamily<any, any>>(
+export function useFamily<Family extends AtomIO.RegularAtomFamily<any, any>>(
 	family: Family,
 ): Family
-export function useFamily<Family extends AtomIO.SelectorFamily<any, any>>(
-	family: Family,
-): Family
+export function useFamily<
+	Family extends AtomIO.WritableSelectorFamily<any, any>,
+>(family: Family): Family
 export function useFamily<
 	Family extends AtomIO.ReadonlySelectorFamily<any, any>,
 >(family: Family): Family

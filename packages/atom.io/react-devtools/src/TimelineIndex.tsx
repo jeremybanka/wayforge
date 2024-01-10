@@ -1,4 +1,8 @@
-import type { AtomToken, ReadonlySelectorToken, TimelineToken } from "atom.io"
+import type {
+	ReadonlySelectorToken,
+	RegularAtomToken,
+	TimelineToken,
+} from "atom.io"
 import { redo, undo } from "atom.io"
 import type { Timeline } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
@@ -14,7 +18,7 @@ export const YouAreHere: FC = () => {
 
 export const TimelineLog: FC<{
 	token: TimelineToken<any>
-	isOpenState: AtomToken<boolean>
+	isOpenState: RegularAtomToken<boolean>
 	timelineState: ReadonlySelectorToken<Timeline<any>>
 }> = ({ token, isOpenState, timelineState }) => {
 	const timeline = useO(timelineState)

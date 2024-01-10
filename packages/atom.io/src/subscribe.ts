@@ -54,6 +54,7 @@ export function subscribe(
 ): () => void {
 	switch (token.type) {
 		case `atom`:
+		case `mutable_atom`:
 		case `readonly_selector`:
 		case `selector`:
 			return subscribeToState(token, handleUpdate, key, store)

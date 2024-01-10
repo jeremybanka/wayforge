@@ -1,4 +1,4 @@
-import type { AtomToken, MutableAtomToken } from "atom.io"
+import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import type { Json } from "atom.io/json"
 import type { Signal, Transceiver } from "./transceiver"
 
@@ -7,9 +7,9 @@ export const getUpdateToken = <
 	SerializableCore extends Json.Serializable,
 >(
 	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
-): AtomToken<Signal<Core>> => {
+): RegularAtomToken<Signal<Core>> => {
 	const key = `*${mutableAtomToken.key}`
-	const updateToken: AtomToken<Signal<Core>> = { type: `atom`, key }
+	const updateToken: RegularAtomToken<Signal<Core>> = { type: `atom`, key }
 	if (mutableAtomToken.family) {
 		updateToken.family = {
 			key: `*${mutableAtomToken.family.key}`,

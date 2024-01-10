@@ -1,9 +1,9 @@
-import type { AtomToken, Write } from "atom.io"
+import type { RegularAtomToken, Write } from "atom.io"
 
 export * from "./AtomIOExplorer"
 
 export type AtomicIndexOptions = {
-	indexAtom: AtomToken<Set<string>>
+	indexAtom: RegularAtomToken<Set<string>>
 	id: string
 }
 

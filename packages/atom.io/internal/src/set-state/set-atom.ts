@@ -1,4 +1,4 @@
-import type { Atom } from "../atom"
+import type { Atom } from ".."
 import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
 import type { Transceiver } from "../mutable"

@@ -19,7 +19,9 @@ export function subscribeToState<T>(
 	const unsubFunction = state.subject.subscribe(key, handleUpdate)
 	store.logger.info(`👀`, state.type, state.key, `Adding subscription "${key}"`)
 	const dependencyUnsubFunctions =
-		state.type !== `atom` ? subscribeToRootAtoms(state, store) : null
+		state.type !== `atom` && state.type !== `mutable_atom`
+			? subscribeToRootAtoms(state, store)
+			: null
 
 	const unsubscribe =
 		dependencyUnsubFunctions === null

@@ -3,7 +3,7 @@ import fsp from "fs/promises"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
-import type { AtomToken, Logger } from "atom.io"
+import type { Logger, RegularAtomToken } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
@@ -19,7 +19,7 @@ function clearValueMap() {
 	Internal.IMPLICIT.STORE.valueMap = new Map()
 }
 
-async function waitForQueuedUpdate<T>(atom: AtomToken<T>, newValue: T) {
+async function waitForQueuedUpdate<T>(atom: RegularAtomToken<T>, newValue: T) {
 	while (!(getState(atom) instanceof Promise)) {
 		console.log(`waiting for promise...`)
 		await new Promise((resolve) => setImmediate(resolve))

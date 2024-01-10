@@ -1,30 +1,31 @@
 import { AtomIOLogger } from "atom.io"
 import type {
-	AtomFamily,
 	AtomToken,
 	Logger,
+	MutableAtomFamily,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
-	SelectorFamily,
-	SelectorToken,
+	RegularAtomFamily,
+	RegularAtomToken,
 	TimelineToken,
 	TransactionToken,
+	WritableSelectorFamily,
+	WritableSelectorToken,
 	ƒn,
 } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
-import type { Atom } from "../atom"
+import type {
+	Atom,
+	ReadonlySelector,
+	Tracker,
+	Transceiver,
+	WritableSelector,
+} from ".."
 import type { Lineage } from "../lineage"
-import {
-	type MutableAtom,
-	type Tracker,
-	type Transceiver,
-	getJsonToken,
-	getUpdateToken,
-} from "../mutable"
+import { getJsonToken, getUpdateToken } from "../mutable"
 import type { OperationProgress } from "../operation"
-import type { ReadonlySelector, Selector } from "../selector"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type { Transaction, TransactionMeta } from "../transaction"
@@ -35,16 +36,17 @@ export class Store implements Lineage {
 
 	public valueMap = new Map<string, any>()
 
-	public atoms = new Map<string, Atom<any> | MutableAtom<any>>()
-	public selectors = new Map<string, Selector<any>>()
+	public atoms = new Map<string, Atom<any>>()
+	public selectors = new Map<string, WritableSelector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
 
 	public trackers = new Map<string, Tracker<Transceiver<any>>>()
 	public families = new Map<
 		string,
-		| AtomFamily<any, any>
+		| MutableAtomFamily<any, any, any>
 		| ReadonlySelectorFamily<any, any>
-		| SelectorFamily<any, any>
+		| RegularAtomFamily<any, any>
+		| WritableSelectorFamily<any, any>
 	>()
 
 	public timelines = new Map<string, Timeline<any>>()
@@ -77,7 +79,7 @@ export class Store implements Lineage {
 	public on = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
 		selectorCreation: new Subject<
-			ReadonlySelectorToken<unknown> | SelectorToken<unknown>
+			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
 		>(),
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
 		timelineCreation: new Subject<TimelineToken<unknown>>(),
@@ -112,9 +114,7 @@ export class Store implements Lineage {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
-			this.transactionMeta = store?.transactionMeta
-				? { ...store?.transactionMeta }
-				: null
+			this.transactionMeta = null
 			this.config = {
 				...store?.config,
 				name,
@@ -128,7 +128,7 @@ export class Store implements Lineage {
 					continue
 				}
 				atom.install(this)
-				if (`mutable` in atom) {
+				if (atom.type === `mutable_atom`) {
 					const originalJsonToken = getJsonToken(atom)
 					const originalUpdateToken = getUpdateToken(atom)
 					mutableHelpers.add(originalJsonToken.key)

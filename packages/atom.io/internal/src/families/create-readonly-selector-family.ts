@@ -8,8 +8,9 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
-import { createSelector } from "../selector"
-import { type Store, deposit } from "../store"
+import { createReadonlySelector } from "../selector"
+import type { Store } from "../store"
+import { deposit } from "../store"
 import { Subject } from "../subject"
 
 export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
@@ -27,7 +28,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 			if (existing) {
 				return deposit(existing)
 			}
-			return createSelector<T>(
+			return createReadonlySelector(
 				{
 					key: fullKey,
 					get: options.get(key),

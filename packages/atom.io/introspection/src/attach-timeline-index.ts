@@ -1,6 +1,10 @@
 import type { ReadonlySelectorToken, TimelineToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, createRegularAtom, createSelector } from "atom.io/internal"
+import {
+	IMPLICIT,
+	createRegularAtom,
+	createStandaloneSelector,
+} from "atom.io/internal"
 
 export const attachTimelineIndex = (
 	store: Store = IMPLICIT.STORE,
@@ -28,12 +32,11 @@ export const attachTimelineIndex = (
 		undefined,
 		store,
 	)
-	const timelineTokenIndex = createSelector(
+	const timelineTokenIndex = createStandaloneSelector(
 		{
 			key: `👁‍🗨 Timeline Token Index`,
 			get: ({ get }) => get(timelineTokenIndexState__INTERNAL),
 		},
-		undefined,
 		store,
 	)
 	return timelineTokenIndex

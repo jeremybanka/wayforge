@@ -1,7 +1,7 @@
 import { vitest } from "vitest"
 
 import type { Logger } from "atom.io"
-import type { AtomToken, TimelineToken } from "atom.io"
+import type { RegularAtomToken, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -159,7 +159,7 @@ describe(`recipes`, () => {
 			})
 			const ftl = (
 				key: string,
-			): [state: AtomToken<number>, timeline: TimelineToken<any>] => {
+			): [state: RegularAtomToken<number>, timeline: TimelineToken<any>] => {
 				const WritableToken = f(key)
 				const timelineToken = timeline({
 					key: `timeline for ${WritableToken.key}`,

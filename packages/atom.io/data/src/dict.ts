@@ -1,20 +1,20 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT, createSelector } from "atom.io/internal"
+import { IMPLICIT, createStandaloneSelector } from "atom.io/internal"
 import type { Json, Stringified } from "atom.io/json"
 
 export function dict<State, Key extends Json.Serializable>(
 	findState:
-		| AtomIO.AtomFamily<State, Key>
 		| AtomIO.ReadonlySelectorFamily<State, Key>
-		| AtomIO.SelectorFamily<State, Key>,
+		| AtomIO.RegularAtomFamily<State, Key>
+		| AtomIO.WritableSelectorFamily<State, Key>,
 	index:
-		| AtomIO.AtomToken<Key[]>
 		| AtomIO.ReadonlySelectorToken<Key[]>
-		| AtomIO.SelectorToken<Key[]>,
+		| AtomIO.RegularAtomToken<Key[]>
+		| AtomIO.WritableSelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.ReadonlySelectorToken<{ [K in Stringified<Key>]: State }> {
-	return createSelector(
+	return createStandaloneSelector(
 		{
 			key: `${findState.key}Dict`,
 			get: ({ get }) => {
@@ -25,7 +25,6 @@ export function dict<State, Key extends Json.Serializable>(
 				}, {} as any)
 			},
 		},
-		undefined,
 		store,
 	)
 }

@@ -1,4 +1,8 @@
-import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
+import type {
+	ReadonlySelectorToken,
+	RegularAtomToken,
+	WritableSelectorToken,
+} from "atom.io"
 import { getState, selectorFamily } from "atom.io"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
@@ -33,10 +37,10 @@ const findStateTypeState = selectorFamily<string, { key: string }>({
 
 export const StateIndexLeafNode: FC<{
 	node:
-		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| SelectorToken<unknown>
-	isOpenState: AtomToken<boolean>
+		| RegularAtomToken<unknown>
+		| WritableSelectorToken<unknown>
+	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
 	const setIsOpen = useI(isOpenState)
@@ -74,9 +78,11 @@ export const StateIndexLeafNode: FC<{
 }
 export const StateIndexTreeNode: FC<{
 	node: FamilyNode<
-		AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown>
+		| ReadonlySelectorToken<unknown>
+		| RegularAtomToken<unknown>
+		| WritableSelectorToken<unknown>
 	>
-	isOpenState: AtomToken<boolean>
+	isOpenState: RegularAtomToken<boolean>
 }> = ({ node, isOpenState }) => {
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
@@ -109,9 +115,11 @@ export const StateIndexTreeNode: FC<{
 
 export const StateIndexNode: FC<{
 	node: WritableTokenIndex<
-		AtomToken<unknown> | ReadonlySelectorToken<unknown> | SelectorToken<unknown>
+		| ReadonlySelectorToken<unknown>
+		| RegularAtomToken<unknown>
+		| WritableSelectorToken<unknown>
 	>[string]
-	isOpenState: AtomToken<boolean>
+	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
 	if (node.key.startsWith(`👁‍🗨`)) {
@@ -135,9 +143,9 @@ export const StateIndexNode: FC<{
 export const StateIndex: FC<{
 	tokenIndex: ReadonlySelectorToken<
 		WritableTokenIndex<
-			| AtomToken<unknown>
 			| ReadonlySelectorToken<unknown>
-			| SelectorToken<unknown>
+			| RegularAtomToken<unknown>
+			| WritableSelectorToken<unknown>
 		>
 	>
 }> = ({ tokenIndex }) => {

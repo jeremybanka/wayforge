@@ -1,20 +1,23 @@
-import type { FamilyMetadata, SelectorOptions, SelectorToken } from "atom.io"
+import type {
+	FamilyMetadata,
+	WritableSelectorOptions,
+	WritableSelectorToken,
+} from "atom.io"
 
+import type { WritableSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state/become"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import type { Selector } from "./create-selector"
-import { createSelector } from "./create-selector"
 import { registerSelector } from "./register-selector"
 
-export const createReadWriteSelector = <T>(
-	options: SelectorOptions<T>,
+export const createWritableSelector = <T>(
+	options: WritableSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
-): SelectorToken<T> => {
+): WritableSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const transactors = registerSelector(options.key, store)
@@ -47,10 +50,10 @@ export const createReadWriteSelector = <T>(
 		}
 		options.set(transactors, newValue)
 	}
-	const mySelector: Selector<T> = {
+	const mySelector: WritableSelector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => createSelector(options, family, s),
+		install: (s: Store) => createWritableSelector(options, family, s),
 		get: getSelf,
 		set: setSelf,
 		type: `selector`,
@@ -59,7 +62,7 @@ export const createReadWriteSelector = <T>(
 	target.selectors.set(options.key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
-	const token: SelectorToken<T> = {
+	const token: WritableSelectorToken<T> = {
 		key: options.key,
 		type: `selector`,
 	}

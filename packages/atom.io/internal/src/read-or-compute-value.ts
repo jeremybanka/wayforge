@@ -1,13 +1,16 @@
-import type { StateNode } from "."
+import type { ReadableState } from "."
 import { readCachedValue } from "./caching"
 import type { Store } from "./store"
 
-export const readOrComputeValue = <T>(state: StateNode<T>, target: Store): T => {
+export const readOrComputeValue = <T>(
+	state: ReadableState<T>,
+	target: Store,
+): T => {
 	if (target.valueMap.has(state.key)) {
 		target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 		return readCachedValue(state, target)
 	}
-	if (state.type !== `atom`) {
+	if (state.type !== `atom` && state.type !== `mutable_atom`) {
 		target.logger.info(`🧮`, state.type, state.key, `computing value`)
 		return state.get()
 	}
