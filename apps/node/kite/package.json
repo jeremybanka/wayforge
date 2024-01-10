@@ -9,7 +9,7 @@
 		"test": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet",
-		"lint:biome": "biome check .",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint"
 	},
