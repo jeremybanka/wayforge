@@ -1,10 +1,10 @@
-import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
+import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
 
 import { newest } from ".."
 import type { Store } from ".."
 
 export function deleteSelector(
-	selectorToken: ReadonlySelectorToken<unknown> | SelectorToken<unknown>,
+	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,
 	store: Store,
 ): void {
 	const target = newest(store)

@@ -1,10 +1,10 @@
-import type { AtomToken, ReadableToken } from "atom.io"
+import type { ReadableToken, RegularAtomToken } from "atom.io"
 import { atom, atomFamily, belongsTo, isToken, setState } from "atom.io"
 
 describe(`validators`, () => {
 	describe(`isToken`, () => {
 		it(`returns true for a match, and infers the type`, () => {
-			const knownToken: AtomToken<number> = atom({
+			const knownToken: RegularAtomToken<number> = atom({
 				key: `count`,
 				default: 0,
 			})
@@ -17,7 +17,7 @@ describe(`validators`, () => {
 		})
 
 		it(`returns false for a mismatch`, () => {
-			const knownToken: AtomToken<number> = { type: `atom`, key: `count` }
+			const knownToken: RegularAtomToken<number> = { type: `atom`, key: `count` }
 			const unknownToken: ReadableToken<number> = {
 				type: `readonly_selector`,
 				key: `count2`,

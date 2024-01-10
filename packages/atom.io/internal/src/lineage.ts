@@ -9,10 +9,3 @@ export function newest<T extends Lineage>(scion: T): T {
 	}
 	return scion
 }
-
-export function eldest<T extends Lineage>(scion: T): T {
-	while (scion.parent !== null) {
-		scion = scion.parent
-	}
-	return scion
-}

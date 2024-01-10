@@ -1,4 +1,4 @@
-import type { AtomOptions } from "atom.io"
+import type { RegularAtomOptions } from "atom.io"
 import { Silo, getState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
@@ -9,7 +9,7 @@ describe(`silo`, () => {
 		const Uno = new Silo(`uno`)
 		const Dos = new Silo(`dos`)
 
-		const DEFAULT_COUNT_CONFIG: AtomOptions<number> = {
+		const DEFAULT_COUNT_CONFIG: RegularAtomOptions<number> = {
 			key: `count`,
 			default: 0,
 		}

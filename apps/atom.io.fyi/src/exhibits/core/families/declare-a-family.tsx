@@ -1,4 +1,4 @@
-import type { AtomToken } from "atom.io"
+import type { RegularAtomToken } from "atom.io"
 import { atomFamily, getState } from "atom.io"
 import { useO } from "atom.io/react"
 
@@ -16,8 +16,8 @@ const exampleXState = findXState(`example`)
 getState(exampleXState) // -> 0
 
 export function Point(props: {
-	xState: AtomToken<number>
-	yState: AtomToken<number>
+	xState: RegularAtomToken<number>
+	yState: RegularAtomToken<number>
 }): JSX.Element {
 	const x = useO(props.xState)
 	const y = useO(props.yState)

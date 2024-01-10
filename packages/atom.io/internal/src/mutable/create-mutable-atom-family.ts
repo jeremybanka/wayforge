@@ -1,25 +1,71 @@
-import type { MutableAtomFamily, MutableAtomFamilyOptions } from "atom.io"
+import type {
+	MutableAtomFamily,
+	MutableAtomFamilyOptions,
+	MutableAtomOptions,
+	MutableAtomToken,
+} from "atom.io"
+import type { FamilyMetadata } from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJsonFamily } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
-import type { Store } from ".."
-import { createRegularAtomFamily } from ".."
+import { newest } from "../lineage"
+import { createMutableAtom } from "../mutable"
+import { deposit, withdraw } from "../store"
+import type { Store } from "../store"
+import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
 import type { Transceiver } from "./transceiver"
 
 export function createMutableAtomFamily<
-	Core extends Transceiver<any>,
-	SerializableCore extends Json.Serializable,
-	Key extends string,
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+	K extends string,
 >(
-	options: MutableAtomFamilyOptions<Core, SerializableCore, Key>,
+	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
-): MutableAtomFamily<Core, SerializableCore, Key> {
-	const coreFamily = Object.assign(
-		createRegularAtomFamily<Core, Key>(options, store),
-		options,
-	) as MutableAtomFamily<Core, SerializableCore, Key>
-	selectJsonFamily(coreFamily, options)
-	new FamilyTracker(coreFamily, store)
-	return coreFamily
+): MutableAtomFamily<T, J, K> {
+	const subject = new Subject<MutableAtomToken<T, J>>()
+	const atomFamily: MutableAtomFamily<T, J, K> = Object.assign(
+		(key: K): MutableAtomToken<T, J> => {
+			const subKey = stringifyJson(key)
+			const family: FamilyMetadata = { key: options.key, subKey }
+			const fullKey = `${options.key}(${subKey})`
+			const existing = withdraw({ key: fullKey, type: `mutable_atom` }, store)
+			let token: MutableAtomToken<T, J>
+			if (existing) {
+				token = deposit(existing)
+			} else {
+				const individualOptions: MutableAtomOptions<T, J> = {
+					key: fullKey,
+					default: () => options.default(key),
+					toJson: options.toJson,
+					fromJson: options.fromJson,
+					mutable: true,
+				}
+				if (options.effects) {
+					individualOptions.effects = options.effects(key)
+				}
+
+				token = createMutableAtom(individualOptions, family, store)
+
+				subject.next(token)
+			}
+			return token
+		},
+		{
+			key: options.key,
+			type: `mutable_atom_family`,
+			subject,
+			install: (store: Store) => createMutableAtomFamily(options, store),
+			toJson: options.toJson,
+			fromJson: options.fromJson,
+		} as const,
+	)
+
+	const target = newest(store)
+	target.families.set(options.key, atomFamily)
+	selectJsonFamily(atomFamily, options, store)
+	new FamilyTracker(atomFamily, store)
+	return atomFamily
 }

@@ -1,15 +1,15 @@
 import type {
-	AtomFamilyToken,
-	AtomToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
-	SelectorFamilyToken,
-	SelectorToken,
+	RegularAtomFamilyToken,
+	RegularAtomToken,
 	WritableFamilyToken,
+	WritableSelectorFamilyToken,
+	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
@@ -37,13 +37,13 @@ export function findState<
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
 export function findState<T, K extends Json.Serializable, Key extends K>(
-	token: AtomFamilyToken<T, K>,
+	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): AtomToken<T>
+): RegularAtomToken<T>
 export function findState<T, K extends Json.Serializable, Key extends K>(
-	token: SelectorFamilyToken<T, K>,
+	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): SelectorToken<T>
+): WritableSelectorToken<T>
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,

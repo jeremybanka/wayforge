@@ -1,4 +1,4 @@
-import type { MutableAtomFamily, SelectorFamily } from "atom.io"
+import type { MutableAtomFamily, WritableSelectorFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import { newest } from "../lineage"
@@ -12,11 +12,10 @@ export const getJsonFamily = <
 >(
 	mutableAtomFamily: MutableAtomFamily<Core, SerializableCore, Key>,
 	store: Store,
-): SelectorFamily<SerializableCore, Key> => {
+): WritableSelectorFamily<SerializableCore, Key> => {
 	const target = newest(store)
 	const key = `${mutableAtomFamily.key}:JSON`
-	const jsonFamily: SelectorFamily<SerializableCore, Key> = target.families.get(
-		key,
-	) as SelectorFamily<SerializableCore, Key>
+	const jsonFamily: WritableSelectorFamily<SerializableCore, Key> =
+		target.families.get(key) as WritableSelectorFamily<SerializableCore, Key>
 	return jsonFamily
 }

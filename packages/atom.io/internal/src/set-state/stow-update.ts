@@ -1,6 +1,6 @@
 import type { KeyedStateUpdate, StateUpdate } from "atom.io"
 
-import type { Atom } from "../atom"
+import type { Atom } from ".."
 import { newest } from "../lineage"
 import { isTransceiver } from "../mutable"
 import type { Store } from "../store"

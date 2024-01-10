@@ -1,5 +1,4 @@
 import { newest } from "../lineage"
-import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
 
 export const isAtomDefault = (key: string, store: Store): boolean => {

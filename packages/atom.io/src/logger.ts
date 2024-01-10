@@ -47,6 +47,7 @@ export type LogFn = (
 	icon: LoggerIcon,
 	tokenType:
 		| `atom`
+		| `mutable_atom`
 		| `readonly_selector`
 		| `selector`
 		| `state`

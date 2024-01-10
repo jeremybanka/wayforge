@@ -10,7 +10,7 @@ export function realtimeFamilyProvider({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function familyProvider<J extends Json.Serializable>(
-		family: AtomIO.WritableFamily<J, Json.Serializable>,
+		family: AtomIO.RegularAtomFamily<J, Json.Serializable>,
 		index: AtomIO.ReadableToken<Iterable<string>>,
 	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
@@ -37,7 +37,7 @@ export function realtimeFamilyProvider({
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
 				for (const key of keys) {
-					const token = family(key)
+					const token = AtomIO.findInStore(family, key, store)
 					socket.emit(
 						`serve:${family.key}`,
 						parseJson(token.family?.subKey || `null`),

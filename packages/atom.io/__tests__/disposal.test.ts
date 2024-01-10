@@ -1,4 +1,4 @@
-import type { AtomOptions, AtomToken, Logger } from "atom.io"
+import type { Logger, RegularAtomOptions, RegularAtomToken } from "atom.io"
 import { atom, dispose, getState, selector } from "atom.io"
 import * as Internal from "atom.io/internal"
 
@@ -151,8 +151,8 @@ describe(`auto disposability concept (just for fun)`, () => {
 		return Object.assign(object, { [Symbol.dispose]: dispose })
 	}
 	function disposableAtom<T>(
-		options: AtomOptions<T>,
-	): AtomToken<T> & Disposable {
+		options: RegularAtomOptions<T>,
+	): Disposable & RegularAtomToken<T> {
 		const atomToken = atom(options)
 		return disposable(atomToken, () => dispose(atomToken))
 	}

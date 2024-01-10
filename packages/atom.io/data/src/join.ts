@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
-	AtomFamily,
 	MutableAtomFamily,
 	Read,
 	ReadonlySelectorFamily,
+	RegularAtomFamily,
 	Transactors,
 	Write,
 } from "atom.io"
@@ -249,7 +249,7 @@ export class Join<
 			has: (a, b) => has(this.transactors, a, b),
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
-		let findContentState: AtomFamily<Content, string>
+		let findContentState: RegularAtomFamily<Content, string>
 		if (defaultContent) {
 			findContentState = createRegularAtomFamily<Content, string>(
 				{

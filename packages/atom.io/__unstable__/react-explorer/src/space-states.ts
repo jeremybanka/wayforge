@@ -1,5 +1,9 @@
 import { atom, atomFamily, selectorFamily } from "atom.io"
-import type { AtomFamily, AtomToken, ReadonlySelectorFamily } from "atom.io"
+import type {
+	ReadonlySelectorFamily,
+	RegularAtomFamily,
+	RegularAtomToken,
+} from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
 import {
 	lazyLocalStorageEffect,
@@ -11,7 +15,7 @@ import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import { persistStringSetAtom } from "./explorer-effects"
 
-export const makeSpaceIndex = (key: string): AtomToken<Set<string>> =>
+export const makeSpaceIndex = (key: string): RegularAtomToken<Set<string>> =>
 	atom<Set<string>>({
 		key: `${key}:space_index`,
 		default: new Set([`root`]),
@@ -20,7 +24,7 @@ export const makeSpaceIndex = (key: string): AtomToken<Set<string>> =>
 
 export const makeSpaceLayoutState = (
 	key: string,
-): AtomToken<Join<{ size: number }, `parent`, `child`>> =>
+): RegularAtomToken<Join<{ size: number }, `parent`, `child`>> =>
 	atom({
 		key: `${key}:space_layout`,
 		default: new Join<{ size: number }>({ relationType: `1:n` })
@@ -51,7 +55,7 @@ export const makeSpaceLayoutState = (
 
 export const makeSpaceLayoutNodeFamily = (
 	key: string,
-	spaceLayoutState: AtomToken<Join<{ size: number }, `parent`, `child`>>,
+	spaceLayoutState: RegularAtomToken<Join<{ size: number }, `parent`, `child`>>,
 ): ReadonlySelectorFamily<{ childSpaceIds: string[]; size: number }, string> =>
 	selectorFamily<{ childSpaceIds: string[]; size: number }, string>({
 		key: `${key}:explorer_space`,
@@ -68,7 +72,9 @@ export const makeSpaceLayoutNodeFamily = (
 			},
 	})
 
-export const makeSpaceFamily = (key: string): AtomFamily<number, string> =>
+export const makeSpaceFamily = (
+	key: string,
+): RegularAtomFamily<number, string> =>
 	atomFamily<number, string>({
 		key: `${key}:space`,
 		default: 1,

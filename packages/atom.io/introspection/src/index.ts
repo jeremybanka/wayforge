@@ -1,12 +1,16 @@
-import type { AtomToken, ReadonlySelectorToken, SelectorToken } from "atom.io"
+import type {
+	ReadonlySelectorToken,
+	RegularAtomToken,
+	WritableSelectorToken,
+} from "atom.io"
 
 export * from "./attach-introspection-states"
 
 export type FamilyNode<
 	Token extends
-		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| SelectorToken<unknown>,
+		| RegularAtomToken<unknown>
+		| WritableSelectorToken<unknown>,
 > = {
 	key: string
 	familyMembers: Record<string, Token>
@@ -14,7 +18,7 @@ export type FamilyNode<
 
 export type WritableTokenIndex<
 	Token extends
-		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| SelectorToken<unknown>,
+		| RegularAtomToken<unknown>
+		| WritableSelectorToken<unknown>,
 > = Record<string, FamilyNode<Token> | Token>

@@ -10,7 +10,7 @@ export const updateSelectorAtoms = (
 	store: Store,
 ): void => {
 	const target = newest(store)
-	if (dependency.type === `atom`) {
+	if (dependency.type === `atom` || dependency.type === `mutable_atom`) {
 		target.selectorAtoms.set({
 			selectorKey,
 			atomKey: dependency.key,

@@ -1,12 +1,11 @@
 import type { JsonInterface } from "atom.io/json"
 
-import type { Atom } from "../atom"
+import type { MutableAtom, Transceiver } from ".."
 import { Tracker } from "../mutable"
 import type { Store } from "../store"
 
-export function copyMutableIfNeeded<T>(
-	atom: Atom<T>,
-	transform: JsonInterface<T>,
+export function copyMutableIfNeeded<T extends Transceiver<any>>(
+	atom: MutableAtom<T, any>,
 	origin: Store,
 	target: Store,
 ): T {
@@ -14,8 +13,8 @@ export function copyMutableIfNeeded<T>(
 	const targetValue = target.valueMap.get(atom.key)
 	if (originValue === targetValue) {
 		origin.logger.info(`📃`, `atom`, `${atom.key}`, `copying`)
-		const jsonValue = transform.toJson(originValue)
-		const copiedValue = transform.fromJson(jsonValue)
+		const jsonValue = atom.toJson(originValue)
+		const copiedValue = atom.fromJson(jsonValue)
 		target.valueMap.set(atom.key, copiedValue)
 		new Tracker(atom, origin)
 		return copiedValue

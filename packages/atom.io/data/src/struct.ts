@@ -2,7 +2,7 @@ import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
 import { IMPLICIT } from "atom.io/internal"
 
-import { createRegularAtom, createSelector } from "atom.io/internal"
+import { createRegularAtom, createStandaloneSelector } from "atom.io/internal"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
@@ -19,14 +19,14 @@ export function struct<
 	{
 		[K in keyof Struct as `${Key}${Capitalize<
 			K & string
-		>}State`]: AtomIO.AtomToken<Struct[K]>
+		>}State`]: AtomIO.RegularAtomToken<Struct[K]>
 	},
 	AtomIO.ReadonlySelectorToken<Struct>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `${Key}${Capitalize<
 			K & string
-		>}State`]: AtomIO.AtomToken<Struct[K]>
+		>}State`]: AtomIO.RegularAtomToken<Struct[K]>
 	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomName = options.key + capitalize(key) + `State`
 		acc[atomName] = createRegularAtom(
@@ -39,7 +39,7 @@ export function struct<
 		)
 		return acc
 	}, {} as any)
-	const structState = createSelector(
+	const structState = createStandaloneSelector(
 		{
 			key: options.key,
 			get: ({ get }) => {
@@ -49,7 +49,6 @@ export function struct<
 				}, {} as any)
 			},
 		},
-		undefined,
 		store,
 	)
 	return [atoms, structState]

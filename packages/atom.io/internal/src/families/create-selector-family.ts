@@ -1,69 +1,33 @@
 import type {
-	FamilyMetadata,
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyOptions,
-	SelectorFamily,
-	SelectorFamilyOptions,
-	SelectorToken,
+	WritableSelectorFamily,
+	WritableSelectorFamilyOptions,
 } from "atom.io"
 import type { Json } from "atom.io/json"
-import { stringifyJson } from "atom.io/json"
 
-import { newest } from "../lineage"
-import { createSelector } from "../selector"
 import type { Store } from "../store"
-import { deposit } from "../store"
-import { Subject } from "../subject"
 import { createReadonlySelectorFamily } from "./create-readonly-selector-family"
+import { createWritableSelectorFamily } from "./create-writable-selector-family"
 
 export function createSelectorFamily<T, K extends Json.Serializable>(
-	options: SelectorFamilyOptions<T, K>,
+	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
-): SelectorFamily<T, K>
+): WritableSelectorFamily<T, K>
 export function createSelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K>
 export function createSelectorFamily<T, K extends Json.Serializable>(
-	options: ReadonlySelectorFamilyOptions<T, K> | SelectorFamilyOptions<T, K>,
+	options:
+		| ReadonlySelectorFamilyOptions<T, K>
+		| WritableSelectorFamilyOptions<T, K>,
 	store: Store,
-): ReadonlySelectorFamily<T, K> | SelectorFamily<T, K> {
-	const isReadonly = !(`set` in options)
+): ReadonlySelectorFamily<T, K> | WritableSelectorFamily<T, K> {
+	const isWritable = `set` in options
 
-	if (isReadonly) {
-		return createReadonlySelectorFamily(options, store)
+	if (isWritable) {
+		return createWritableSelectorFamily(options, store)
 	}
-	const target = newest(store)
-	const subject = new Subject<SelectorToken<T>>()
-
-	const selectorFamily = Object.assign(
-		(key: K): SelectorToken<T> => {
-			const subKey = stringifyJson(key)
-			const family: FamilyMetadata = { key: options.key, subKey }
-			const fullKey = `${options.key}(${subKey})`
-			const existing = target.selectors.get(fullKey)
-			if (existing) {
-				return deposit(existing)
-			}
-			const token = createSelector<T>(
-				{
-					key: fullKey,
-					get: options.get(key),
-					set: options.set(key),
-				},
-				family,
-				store,
-			)
-			subject.next(token)
-			return token
-		},
-		{
-			key: options.key,
-			type: `selector_family`,
-			subject,
-			install: (store: Store) => createSelectorFamily(options, store),
-		} as const,
-	) as SelectorFamily<T, K>
-	target.families.set(options.key, selectorFamily)
-	return selectorFamily
+	return createReadonlySelectorFamily(options, store)
 }

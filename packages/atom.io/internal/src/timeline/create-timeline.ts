@@ -1,6 +1,5 @@
 import type {
 	AtomFamily,
-	AtomToken,
 	FamilyMetadata,
 	StateUpdate,
 	TimelineManageable,
@@ -13,9 +12,7 @@ import type {
 } from "atom.io"
 
 import { newest } from "../lineage"
-import { getUpdateToken } from "../mutable"
-import { getUpdateFamily } from "../mutable/get-update-family"
-import { isMutable } from "../mutable/is-mutable"
+import { getUpdateToken, isMutable } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
@@ -85,27 +82,18 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 	const target = newest(store)
 	for (const tokenOrFamily of options.atoms) {
 		let atomKey = tokenOrFamily.key
-		const existingTimelineKey = target.timelineAtoms.getRelatedKey(atomKey)
-		if (existingTimelineKey) {
-			store.logger.error(
-				`❌`,
-				`timeline`,
-				options.key,
-				`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
-			)
-			continue
-		}
-		if (tokenOrFamily.type === `atom_family`) {
-			let family: AtomFamily<any> = tokenOrFamily
-			if (isMutable(family)) {
-				family = getUpdateFamily(family, store)
-				atomKey = family.key
-			}
+		if (
+			tokenOrFamily.type === `atom_family` ||
+			tokenOrFamily.type === `mutable_atom_family`
+		) {
+			const family: AtomFamily<any> = tokenOrFamily
+			const familyKey = family.key
+			target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
 				addAtomToTimeline(token, tl, store)
 			})
 			for (const atom of target.atoms.values()) {
-				if (atom.family?.key === family.key) {
+				if (atom.family?.key === familyKey) {
 					addAtomToTimeline(atom, tl, store)
 				}
 			}
@@ -148,9 +136,18 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 					continue
 				}
 			}
+			const existingTimelineKey = target.timelineAtoms.getRelatedKey(atomKey)
+			if (existingTimelineKey) {
+				store.logger.error(
+					`❌`,
+					`timeline`,
+					options.key,
+					`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
+				)
+				continue
+			}
 			addAtomToTimeline(atom, tl, store)
 		}
-		target.timelineAtoms.set({ atomKey, timelineKey })
 	}
 
 	store.timelines.set(options.key, tl)

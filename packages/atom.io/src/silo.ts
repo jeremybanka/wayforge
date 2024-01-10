@@ -1,15 +1,30 @@
+import type { Transceiver } from "atom.io/internal"
 import {
 	Store,
-	createAtom,
 	createAtomFamily,
-	createSelector,
 	createSelectorFamily,
+	createStandaloneAtom,
+	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
 	timeTravel,
 } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
-import type { redo, timeline, undo } from "."
+import type {
+	AtomToken,
+	MutableAtomFamily,
+	MutableAtomFamilyOptions,
+	MutableAtomOptions,
+	MutableAtomToken,
+	RegularAtomFamily,
+	RegularAtomFamilyOptions,
+	RegularAtomOptions,
+	RegularAtomToken,
+	redo,
+	timeline,
+	undo,
+} from "."
 import { getState, setState, subscribe } from "."
 import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
@@ -30,10 +45,34 @@ export class Silo {
 	public redo: typeof redo
 	public constructor(name: string, fromStore: Store | null = null) {
 		const s = new Store(name, fromStore)
+		function _atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
+		function _atom<T extends Transceiver<any>, J extends Json.Serializable>(
+			options: MutableAtomOptions<T, J>,
+		): MutableAtomToken<T, J>
+		function _atom<T>(
+			options: MutableAtomOptions<any, any> | RegularAtomOptions<T>,
+		): AtomToken<T> {
+			return createStandaloneAtom(options, s)
+		}
+		function _atomFamily<
+			T extends Transceiver<any>,
+			J extends Json.Serializable,
+			K extends Json.Serializable,
+		>(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamily<T, J, K>
+		function _atomFamily<T, K extends Json.Serializable>(
+			options: RegularAtomFamilyOptions<T, K>,
+		): RegularAtomFamily<T, K>
+		function _atomFamily<T, K extends Json.Serializable>(
+			options:
+				| MutableAtomFamilyOptions<any, any, any>
+				| RegularAtomFamilyOptions<T, K>,
+		): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
+			return createAtomFamily(options, s)
+		}
 		this.store = s
-		this.atom = (options) => createAtom(options, undefined, s)
-		this.atomFamily = (options) => createAtomFamily(options, s)
-		this.selector = (options) => createSelector(options, undefined, s) as any
+		this.atom = _atom
+		this.atomFamily = _atomFamily
+		this.selector = (options) => createStandaloneSelector(options, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
