@@ -1,4 +1,4 @@
-import { ToggleProps } from "./Toggle"
+import type { ToggleProps } from "./Toggle"
 import label from "./Toggle.Button.module.scss"
 
 export const setCssVars = (
@@ -14,8 +14,8 @@ export function Button({
 		<label
 			className={label.class}
 			style={setCssVars({
-				"--width": "40px",
-				"--height": "40px",
+				"--width": `40px`,
+				"--height": `40px`,
 			})}
 		>
 			<input type="checkbox" checked={checked} onChange={onChange} />
