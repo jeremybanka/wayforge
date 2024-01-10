@@ -64,8 +64,8 @@ export class Silo {
 		): RegularAtomFamily<T, K>
 		function _atomFamily<T, K extends Json.Serializable>(
 			options:
-				| RegularAtomFamilyOptions<T, K>
-				| MutableAtomFamilyOptions<any, any, any>,
+				| MutableAtomFamilyOptions<any, any, any>
+				| RegularAtomFamilyOptions<T, K>,
 		): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
 			return createAtomFamily(options, s)
 		}

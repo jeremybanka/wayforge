@@ -7,7 +7,7 @@
 - Shared
 - Adversarial
 
-### Isolated ()
+### Isolated 
 Used for data that is controlled by a single user. This data can safely be persisted to the server and relayed to other users without any additional synchronization logic.
 |            | Get                                                                                                        | Set                              |
 | ---------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------- |
