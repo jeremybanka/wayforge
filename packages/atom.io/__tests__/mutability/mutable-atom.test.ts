@@ -3,6 +3,7 @@ import { vitest } from "vitest"
 import type { Logger } from "atom.io"
 import {
 	atom,
+	atomFamily,
 	getState,
 	redo,
 	runTransaction,
@@ -175,17 +176,18 @@ describe(`mutable atomic state`, () => {
 
 describe(`mutable time traveling`, () => {
 	it(`can travel back and forward in time`, () => {
-		const myMutableState = atom({
-			key: `my::mutable`,
+		const myMutableStates = atomFamily({
+			key: `myMutable`,
 			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
+		const myMutableState = myMutableStates(`example`)
 		// debugger
 		const myTL = timeline({
-			key: `my::timeline`,
-			atoms: [myMutableState],
+			key: `myTimeline`,
+			atoms: [myMutableStates],
 		})
 		const myJsonState = Internal.getJsonToken(myMutableState)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)

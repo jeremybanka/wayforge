@@ -27,6 +27,7 @@ export const addAtomToTimeline = (
 			`Cannot subscribe to atom "${atomToken.key}" because it has not been initialized in store "${store.config.name}"`,
 		)
 	}
+	store.timelineAtoms.set({ atomKey: atom.key, timelineKey: tl.key })
 
 	atom.subject.subscribe(`timeline`, (update) => {
 		// debugger

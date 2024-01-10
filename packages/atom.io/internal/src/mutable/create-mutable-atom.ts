@@ -87,22 +87,7 @@ export function createMutableAtom<
 	}
 
 	new Tracker(token, store)
-	const jsonState = selectJson(token, options, store)
-	// subscribeToState(
-	// 	jsonState,
-	// 	() => {
-	// 		const trackerHasBeenInitialized = newest(store).trackers.has(newAtom.key)
-	// 		if (!trackerHasBeenInitialized) {
-	// 			new Tracker(newAtom, store)
-	// 		}
-	// 	},
-	// 	`tracker-initializer:${store?.config.name}:${
-	// 		target.transactionMeta === null
-	// 			? `main`
-	// 			: `${target.transactionMeta.update.key}`
-	// 	}`,
-	// 	store,
-	// )
+	selectJson(token, options, store)
 
 	store.on.atomCreation.next(token)
 
