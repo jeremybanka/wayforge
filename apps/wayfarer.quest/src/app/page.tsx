@@ -1,7 +1,7 @@
 "use client"
 
 import { useO } from "atom.io/react"
-import { roomViewState } from "tempest.games/services/store/room-view-state"
+import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 import Lobby from "./Lobby"
 import Room from "./Room"
 

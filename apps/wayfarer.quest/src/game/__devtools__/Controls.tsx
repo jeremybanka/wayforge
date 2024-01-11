@@ -9,10 +9,10 @@ import {
 	spawnHandTX,
 } from "~/apps/node/lodge/src/store/game"
 
-import { button } from "tempest.games/components/<button>"
-import { myRoomState } from "tempest.games/services/store/my-room"
+import { button } from "wayfarer.quest/components/<button>"
+import { myRoomState } from "wayfarer.quest/services/store/my-room"
 
-import comic from "tempest.games/components/comic.module.scss"
+import comic from "wayfarer.quest/components/comic.module.scss"
 import scss from "./Controls.module.scss"
 
 export const Controls: FC = () => {

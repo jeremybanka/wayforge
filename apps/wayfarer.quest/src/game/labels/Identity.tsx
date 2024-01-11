@@ -1,4 +1,4 @@
-import { span } from "tempest.games/components/<span>"
+import { span } from "wayfarer.quest/components/<span>"
 
 import scss from "./Identity.module.scss"
 

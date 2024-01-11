@@ -1,8 +1,8 @@
 import { useO } from "atom.io/react"
 import * as React from "react"
 
-import { span } from "tempest.games/components/<span>"
-import { myHandsIndex } from "tempest.games/services/store/my-hands-index"
+import { span } from "wayfarer.quest/components/<span>"
+import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
 import { Hand } from "../game-pieces/Hand"
 import { Me } from "../my-domain/Me"
 

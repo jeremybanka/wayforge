@@ -4,7 +4,7 @@ import * as React from "react"
 import { ownersOfGroups } from "~/apps/node/lodge/src/store/game"
 
 import { usePullMutableFamilyMember } from "atom.io/realtime-react"
-import { findHandsOfPlayer } from "tempest.games/services/store/player-hand"
+import { findHandsOfPlayer } from "wayfarer.quest/services/store/player-hand"
 import { Hand } from "../game-pieces/Hand"
 
 import scss from "./TheirHands.module.scss"

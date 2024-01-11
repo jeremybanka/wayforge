@@ -17,7 +17,7 @@
 			"socket-io.filestore/*": ["./packages/socket-io.filestore/src/*"],
 			"atom.io": ["./packages/atom.io/src"],
 			"atom.io/*": ["./packages/atom.io/*/src"],
-			"tempest.games/*": ["./apps/tempest.games/src/*"],
+			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
 		},
 		"types": ["vitest/globals"],

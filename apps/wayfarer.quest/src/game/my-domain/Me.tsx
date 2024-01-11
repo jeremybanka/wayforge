@@ -1,7 +1,7 @@
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
 
-import { span } from "tempest.games/components/<span>"
+import { span } from "wayfarer.quest/components/<span>"
 
 import { ProfilePicture } from "../players/ProfilePicture"
 import scss from "./Me.module.scss"
