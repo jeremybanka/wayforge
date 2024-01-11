@@ -15,15 +15,15 @@ import {
 	playersInRooms,
 } from "~/apps/node/lodge/src/store/rooms"
 
-import { header } from "tempest.games/components/<header>"
-import { Game } from "tempest.games/game/Game"
-import { windowMousePositionState } from "tempest.games/services/peripherals/mouse-position"
+import { header } from "wayfarer.quest/components/<header>"
+import { Game } from "wayfarer.quest/game/Game"
+import { windowMousePositionState } from "wayfarer.quest/services/peripherals/mouse-position"
 import {
 	actionsState,
 	radialModeState,
-} from "tempest.games/services/peripherals/radial"
-import { myRoomState } from "tempest.games/services/store/my-room"
-import { roomViewState } from "tempest.games/services/store/room-view-state"
+} from "wayfarer.quest/services/peripherals/radial"
+import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 import { PlayersInRoom } from "./PlayersInRoom"
 
 import scss from "./page.module.scss"
