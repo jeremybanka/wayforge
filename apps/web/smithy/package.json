@@ -37,7 +37,7 @@
 		"@vitejs/plugin-react": "4.2.1",
 		"cross-env": "7.0.3",
 		"eslint": "8.56.0",
-		"happy-dom": "13.0.1",
+		"happy-dom": "13.0.2",
 		"sass": "1.69.7",
 		"vite": "5.0.11",
 		"vite-plugin-svgr": "4.2.0",
