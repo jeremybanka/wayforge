@@ -40,7 +40,7 @@
 		"@vanilla-extract/vite-plugin": "3.9.3",
 		"cross-env": "7.0.3",
 		"eslint": "8.56.0",
-		"happy-dom": "13.0.0",
+		"happy-dom": "13.0.1",
 		"sass": "1.69.7",
 		"typescript": "5.3.3",
 		"vite": "5.0.11",
