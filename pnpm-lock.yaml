@@ -503,8 +503,8 @@ importers:
         specifier: 0.26.5
         version: 0.26.5(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
-        specifier: 0.7.1
-        version: 0.7.1(typescript@5.3.3)(zod@3.22.4)
+        specifier: 0.7.3
+        version: 0.7.3(typescript@5.3.3)(zod@3.22.4)
       '@vanilla-extract/css':
         specifier: 1.14.0
         version: 1.14.0
@@ -4543,19 +4543,6 @@ packages:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
     dependencies:
       tslib: 2.6.2
-    dev: false
-
-  /@t3-oss/env-core@0.7.1(typescript@5.3.3)(zod@3.22.4):
-    resolution: {integrity: sha512-3+SQt39OlmSaRLqYVFv8uRm1BpFepM5TIiMytRqO9cjH+wB77o6BIJdeyM5h5U4qLBMEzOJWCY4MBaU/rLwbYw==}
-    peerDependencies:
-      typescript: '>=4.7.2'
-      zod: ^3.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      typescript: 5.3.3
-      zod: 3.22.4
     dev: false
 
   /@t3-oss/env-core@0.7.3(typescript@5.3.3)(zod@3.22.4):
