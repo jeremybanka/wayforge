@@ -142,8 +142,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       prettier:
-        specifier: 3.1.1
-        version: 3.1.1
+        specifier: 3.2.0
+        version: 3.2.0
       simple-git:
         specifier: 3.22.0
         version: 3.22.0
@@ -9981,6 +9981,12 @@ packages:
 
   /prettier@3.1.1:
     resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: false
+
+  /prettier@3.2.0:
+    resolution: {integrity: sha512-/vBUecTGaPlRVwyZVROVC58bYIScqaoEJzZmzQXXrZOzqn0TwWz0EnOozOlFO/YAImRnb7XsKpTCd3m1SjS2Ww==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
