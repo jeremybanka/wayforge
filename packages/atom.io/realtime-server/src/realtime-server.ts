@@ -1,8 +1,5 @@
-import type { WritableToken } from "atom.io"
-import { type AtomFamily, type AtomToken, atom, atomFamily } from "atom.io"
-import type { WritableState } from "atom.io/internal"
+import { type AtomFamily, type AtomToken } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 
 import type {
 	ActionReceiver,
@@ -45,20 +42,20 @@ export class RealtimeServer {
 	}
 
 	public provideStates(...atoms: AtomToken<any>[]): () => void {
-		const unsubscribeFunctions: (() => void)[] = []
+		const retractFunctions: (() => void)[] = []
 		for (const atom of atoms) {
 			const unsubscribe =
 				atom.type === `atom`
 					? this.stateProvider(atom)
 					: this.mutableProvider(atom)
-			unsubscribeFunctions.push(unsubscribe)
+			retractFunctions.push(unsubscribe)
 		}
-		const unsubscribe = () => {
-			for (const unsubscribeFunction of unsubscribeFunctions) {
-				unsubscribeFunction()
+		const retract = () => {
+			for (const retractFunction of retractFunctions) {
+				retractFunction()
 			}
 		}
-		return unsubscribe
+		return retract
 	}
 
 	public provide(...atoms: AtomToken<any>[]): {
@@ -86,16 +83,15 @@ export class RealtimeServer {
 	} {
 		const subscribeFunctions: (() => () => void)[] = []
 		const subscribe = () => {
-			const unsubscribeFunctions: (() => void)[] = []
-			const unsubscribe = () => {
-				for (const unsubscribeFunction of unsubscribeFunctions) {
-					unsubscribeFunction()
+			const retractFunctions = subscribeFunctions.map((subscribeFunction) =>
+				subscribeFunction(),
+			)
+			const retract = () => {
+				for (const retractFunction of retractFunctions) {
+					retractFunction()
 				}
 			}
-			for (const subscribeFunction of subscribeFunctions) {
-				unsubscribeFunctions.push(subscribeFunction())
-			}
-			return unsubscribe
+			return retract
 		}
 		const provide = <
 			F extends AtomFamily<any>,
@@ -109,17 +105,17 @@ export class RealtimeServer {
 			if (args[0].type === `atom` || args[0].type === `mutable_atom`) {
 				const atoms = args as AtomToken<any>[]
 				subscribeFunctions.push(() => {
-					const unsubscribe = this.provideStates(...atoms)
-					return unsubscribe
+					const retract = this.provideStates(...atoms)
+					return retract
 				})
 			} else {
 				const [family, index] = args
 				subscribeFunctions.push(() => {
-					const unsubscribe =
+					const retract =
 						family.type === `atom_family`
 							? this.familyProvider(family, index)
 							: this.mutableFamilyProvider(family, index)
-					return unsubscribe
+					return retract
 				})
 			}
 			return { provide, subscribe }
@@ -148,7 +144,7 @@ export class RealtimeServer {
 // })
 
 // server.socket.on(`init`, (subKey, value) => {
-// 	const unsubscribe = server
+// 	const retract = server
 // 		.provide(counterStates, counterIndex)
 // 		.provide(nameStates, nameIndex)
 // 		.provide(nameIndex, counterIndex)
