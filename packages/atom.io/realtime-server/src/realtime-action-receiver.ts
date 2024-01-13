@@ -3,10 +3,11 @@ import { IMPLICIT } from "atom.io/internal"
 
 import type { ServerConfig } from "."
 
-export const realtimeActionReceiver = ({
+export type ActionReceiver = ReturnType<typeof realtimeActionReceiver>
+export function realtimeActionReceiver({
 	socket,
 	store = IMPLICIT.STORE,
-}: ServerConfig) => {
+}: ServerConfig) {
 	return function actionReceiver<ƒ extends AtomIO.ƒn>(
 		tx: AtomIO.TransactionToken<ƒ>,
 	): () => void {

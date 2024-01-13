@@ -8,6 +8,7 @@ import {
 	transactionRedactorAtoms,
 } from "./realtime-server-store"
 
+export type ActionSynchronizer = ReturnType<typeof realtimeActionSynchronizer>
 export function realtimeActionSynchronizer({
 	socket,
 	store = IMPLICIT.STORE,

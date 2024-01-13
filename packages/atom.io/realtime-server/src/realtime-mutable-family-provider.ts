@@ -11,25 +11,21 @@ import { parseJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
 
-export const realtimeMutableFamilyProvider = ({
+export type MutableFamilyProvider = ReturnType<
+	typeof realtimeMutableFamilyProvider
+>
+export function realtimeMutableFamilyProvider({
 	socket,
 	store = IMPLICIT.STORE,
-}: ServerConfig) => {
+}: ServerConfig) {
 	return function mutableFamilyProvider<
-		Family extends AtomIO.MutableAtomFamily<
-			Transceiver<Json.Serializable>,
-			Json.Serializable,
-			Json.Serializable
-		>,
-	>(family: Family, index: AtomIO.ReadableToken<Iterable<string>>): () => void {
-		type FamilyKey = Family extends AtomIO.MutableAtomFamily<
-			Transceiver<any>,
-			any,
-			infer Key
-		>
-			? Key
-			: never
-
+		T extends Transceiver<any>,
+		J extends Json.Serializable,
+		K extends Json.Serializable,
+	>(
+		family: AtomIO.MutableAtomFamily<T, J, K>,
+		index: AtomIO.ReadableToken<Iterable<K>>,
+	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
 
@@ -50,7 +46,7 @@ export const realtimeMutableFamilyProvider = ({
 			}
 		}
 
-		const fillSubRequest = (subKey?: FamilyKey) => {
+		const fillSubRequest = (subKey?: K) => {
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
 				for (const key of keys) {
