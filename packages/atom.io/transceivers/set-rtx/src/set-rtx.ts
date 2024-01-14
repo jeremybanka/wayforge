@@ -103,11 +103,11 @@ export class SetRTX<P extends primitive>
 		try {
 			const shouldCommit = run(this.child)
 			if (shouldCommit) {
-				this.cacheUpdateNumber++
-				this.emit(`tx:${this.transactionUpdates.join(`;`)}`)
 				for (const update of this.transactionUpdates) {
 					this.doStep(update)
 				}
+				this.cacheUpdateNumber++
+				this.emit(`tx:${this.transactionUpdates.join(`;`)}`)
 			}
 		} catch (thrown) {
 			console.error(`Failed to apply transaction to SetRTX: ${thrown}`)

@@ -191,7 +191,9 @@ export class Join<
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (transactors, a, newRelationsOfA) => {
-			const currentRelationsOfA = getRelatedKeys(transactors, a)
+			const { find, get, set } = transactors
+			const relationsOfAState = find(findRelatedKeysState, a)
+			const currentRelationsOfA = get(relationsOfAState)
 			for (const currentRelationB of currentRelationsOfA) {
 				const remainsRelated = newRelationsOfA.includes(currentRelationB)
 				if (remainsRelated) {
@@ -200,23 +202,35 @@ export class Join<
 				const relationsOfB = getRelatedKeys(transactors, currentRelationB)
 				relationsOfB.delete(a)
 			}
-			currentRelationsOfA.transaction((nextRelationsOfA) => {
-				nextRelationsOfA.clear()
-				for (const newRelationB of newRelationsOfA) {
-					const relationsOfB = getRelatedKeys(transactors, newRelationB)
-					if (this.relations.cardinality === `1:n`) {
-						for (const a of relationsOfB) {
-							const relationsOfA = getRelatedKeys(transactors, a)
-							relationsOfA.delete(newRelationB)
+			set(relationsOfAState, (relationsOfA) => {
+				relationsOfA.transaction((nextRelationsOfA) => {
+					nextRelationsOfA.clear()
+					for (const newRelationB of newRelationsOfA) {
+						const relationsOfB = getRelatedKeys(transactors, newRelationB)
+						const newRelationBIsAlreadyRelated = relationsOfB.has(a)
+						if (this.relations.cardinality === `1:n`) {
+							for (const previousOwner of relationsOfB) {
+								if (previousOwner === a) {
+									continue
+								}
+								const previousOwnerRelations = getRelatedKeys(
+									transactors,
+									previousOwner,
+								)
+								previousOwnerRelations.delete(newRelationB)
+							}
+							if (!newRelationBIsAlreadyRelated && relationsOfB.size > 0) {
+								relationsOfB.clear()
+							}
 						}
-						if (relationsOfB.size > 0) {
-							relationsOfB.clear()
+						if (!newRelationBIsAlreadyRelated) {
+							relationsOfB.add(a)
 						}
+						nextRelationsOfA.add(newRelationB)
 					}
-					relationsOfB.add(a)
-					nextRelationsOfA.add(newRelationB)
-				}
-				return true
+					return true
+				})
+				return relationsOfA
 			})
 		}
 		const replaceRelationsUnsafely: Write<
