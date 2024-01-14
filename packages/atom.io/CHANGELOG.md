@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.16.1
+
+### Patch Changes
+
+- db948c0: 🐛 `atom.io/data` `join` fix bug where, when using `.replaceRelations` during a transaction, the result would be leaked to the store the transaction was running in. This method is now properly encapsulated, and its performance should be somewhat better for cases where relations are sorted into a new order.
+
 ## 0.16.0
 
 ### Minor Changes
