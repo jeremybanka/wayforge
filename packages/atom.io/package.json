@@ -85,7 +85,7 @@
 		"drizzle-orm": "0.29.3",
 		"eslint": "8.56.0",
 		"framer-motion": "10.18.0",
-		"happy-dom": "13.0.6",
+		"happy-dom": "13.1.0",
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
 		"postgres": "3.4.3",
