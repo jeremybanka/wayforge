@@ -27,7 +27,7 @@ export function realtimeActionSynchronizer({
 			)
 		}
 		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {
-			AtomIO.runTransaction<ƒ>(tx, store, update.id)(...update.params)
+			AtomIO.runTransaction<ƒ>(tx, update.id, store)(...update.params)
 		}
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
