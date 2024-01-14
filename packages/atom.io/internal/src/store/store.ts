@@ -6,7 +6,6 @@ import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
 	RegularAtomFamily,
-	RegularAtomToken,
 	TimelineToken,
 	TransactionToken,
 	WritableSelectorFamily,
