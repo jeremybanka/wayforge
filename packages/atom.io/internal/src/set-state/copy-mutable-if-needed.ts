@@ -1,5 +1,3 @@
-import type { JsonInterface } from "atom.io/json"
-
 import type { MutableAtom, Transceiver } from ".."
 import { Tracker } from "../mutable"
 import type { Store } from "../store"
