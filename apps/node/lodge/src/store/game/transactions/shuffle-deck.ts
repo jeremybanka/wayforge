@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
 
-import * as CardGroups from "../card-groups"
+import { deckIndices, groupsOfCards } from "../card-groups"
 
 export const shuffleDeckTX = transaction<
 	(gameId: string, deckId: string) => void
@@ -8,14 +8,15 @@ export const shuffleDeckTX = transaction<
 	key: `shuffleDeck`,
 	do: (transactors, gameId, deckId) => {
 		const { get, find, env } = transactors
-		const deckIndex = find(CardGroups.deckIndices, gameId)
+		const deckIndex = find(deckIndices, gameId)
 		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const cardIds = get(CardGroups.groupsOfCards.states.cardKeysOfGroup(deckId))
-		const shuffledCardIds = cardIds.sort(() => Math.random() - 0.5)
-		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
+		const deckCardIndex = find(groupsOfCards.states.cardKeysOfGroup, deckId)
+		const cardIds = get(deckCardIndex)
+		const shuffledCardIds = cardIds.toSorted(() => Math.random() - 0.5)
+		groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
 		if (env().runtime === `node`) {
