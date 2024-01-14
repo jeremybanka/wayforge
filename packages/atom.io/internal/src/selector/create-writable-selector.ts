@@ -20,7 +20,7 @@ export const createWritableSelector = <T>(
 ): WritableSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
-	const transactors = registerSelector(options.key, store)
+	const transactors = registerSelector(options.key, target)
 	const { find, get } = transactors
 	const readonlyTransactors = { find, get }
 
