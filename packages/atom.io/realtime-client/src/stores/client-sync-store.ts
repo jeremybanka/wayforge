@@ -1,8 +1,7 @@
 import * as AtomIO from "atom.io"
 
-export const updateQueueAtoms = AtomIO.atomFamily<
-	AtomIO.TransactionUpdate<any>[],
-	AtomIO.TransactionToken<any>
+export const optimisticUpdateQueueState = AtomIO.atom<
+	AtomIO.TransactionUpdate<any>[]
 >({
 	key: `updateQueue`,
 	default: [],

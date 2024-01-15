@@ -2,7 +2,7 @@ import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
-import { updateQueueAtoms } from "./stores"
+import { optimisticUpdateQueueState } from "./stores"
 
 export function syncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
@@ -10,12 +10,10 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	updateQueue: AtomIO.TransactionUpdate<any>[],
 	store: Internal.Store,
 ): () => void {
-	const updateQueueState = AtomIO.findState(updateQueueAtoms, token)
-
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
 		(clientUpdate) => {
-			AtomIO.setState(updateQueueState, (queue) => {
+			AtomIO.setState(optimisticUpdateQueueState, (queue) => {
 				queue.push(clientUpdate)
 				return queue
 			})
@@ -56,7 +54,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					`results match between client and server`,
 				)
 			}
-			AtomIO.setState(updateQueueState, (queue) => {
+			AtomIO.setState(optimisticUpdateQueueState, (queue) => {
 				queue.shift()
 				return queue
 			})
