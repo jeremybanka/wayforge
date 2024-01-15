@@ -10,7 +10,7 @@ import type {
 	ServerConfig,
 	StateProvider,
 	StateReceiver,
-} from "."
+} from "atom.io/realtime-server"
 import {
 	realtimeActionReceiver,
 	realtimeActionSynchronizer,
@@ -19,7 +19,7 @@ import {
 	realtimeMutableProvider,
 	realtimeStateProvider,
 	realtimeStateReceiver,
-} from "."
+} from "atom.io/realtime-server"
 
 export class RealtimeServer {
 	protected stateProvider: StateProvider
