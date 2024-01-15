@@ -21,14 +21,14 @@ export type Card = {
 	rotation: number
 }
 export const findCardState = atomFamily<Card, string>({
-	key: `findCard`,
+	key: `card`,
 	default: () => ({
 		rotation: 0,
 	}),
 })
 export const cardIndex = createMutableAtom<SetRTX<string>, SetRTXJson<string>>(
 	{
-		key: `cardIndex::mutable`,
+		key: `cardIndex`,
 		mutable: true,
 		default: () => new SetRTX<string>(),
 		toJson: (set) => set.toJSON(),
@@ -42,7 +42,7 @@ export type CardCycle = {
 	name: string
 }
 export const findCardCycleState = atomFamily<CardCycle, string>({
-	key: `findCardCycle`,
+	key: `cardCycle`,
 	default: () => ({
 		name: ``,
 	}),

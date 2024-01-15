@@ -52,7 +52,7 @@ export const buildTransaction = (
 		transactors: {
 			get: (token) => getState(token, child),
 			set: (token, value) => setState(token, value, child),
-			run: (token) => runTransaction(token, child),
+			run: (token, id) => runTransaction(token, id, child),
 			find: ((token, key) => findInStore(token, key, child)) as typeof findState,
 			env: () => getEnvironmentData(child),
 		},

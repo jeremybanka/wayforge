@@ -59,6 +59,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				queue.shift()
 				return queue
 			})
+			return
 		}
 		Internal.ingestTransactionUpdate(`newValue`, serverUpdate, store)
 	}

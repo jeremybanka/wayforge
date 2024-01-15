@@ -15,5 +15,5 @@ export function useSyncAction<ƒ extends AtomIO.ƒn>(
 	useRealtimeService(`tx:${token.key}`, (socket) =>
 		RTC.syncAction(token, socket, updateQueue, store),
 	)
-	return AtomIO.runTransaction(token, store)
+	return AtomIO.runTransaction(token, undefined, store)
 }

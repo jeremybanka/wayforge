@@ -13,5 +13,5 @@ export function useServerAction<ƒ extends AtomIO.ƒn>(
 	useRealtimeService(`tx:${token.key}`, (socket) =>
 		RTC.serverAction(token, socket, store),
 	)
-	return AtomIO.runTransaction(token, store)
+	return AtomIO.runTransaction(token, undefined, store)
 }
