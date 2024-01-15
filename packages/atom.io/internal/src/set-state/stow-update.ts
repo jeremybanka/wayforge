@@ -4,6 +4,7 @@ import type { Atom } from ".."
 import { newest } from "../lineage"
 import { isTransceiver } from "../mutable"
 import type { Store } from "../store"
+import { isChildStore } from "../transaction/is-root-store"
 
 function shouldUpdateBeStowed(key: string, update: StateUpdate<any>): boolean {
 	// do not stow updates that aren't json
@@ -24,10 +25,7 @@ export const stowUpdate = <T>(
 ): void => {
 	const { key } = state
 	const target = newest(store)
-	if (
-		target.transactionMeta === null ||
-		target.transactionMeta.phase !== `building`
-	) {
+	if (!isChildStore(target) || target.transactionMeta.phase !== `building`) {
 		store.logger.error(
 			`🐞`,
 			`atom`,

@@ -5,6 +5,7 @@ import type { Transceiver } from "../mutable"
 import { markDone } from "../operation"
 import { readOrComputeValue } from "../read-or-compute-value"
 import type { Store } from "../store"
+import { isRootStore } from "../transaction/is-root-store"
 import { become } from "./become"
 import { copyMutableIfWithinTransaction } from "./copy-mutable-in-transaction"
 import { emitUpdate } from "./emit-update"
@@ -27,7 +28,7 @@ export const setAtom = <T>(
 	markDone(atom.key, target)
 	evictDownStream(atom, target)
 	const update = { oldValue, newValue }
-	if (target.transactionMeta === null) {
+	if (isRootStore(target)) {
 		emitUpdate(atom, update, target)
 	} else if (target.parent) {
 		if (target.on.transactionApplying.state === null) {

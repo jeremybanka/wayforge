@@ -6,7 +6,7 @@ import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
 	transactionRedactorAtoms,
-} from "./realtime-synchronization-store"
+} from "./realtime-server-stores/server-sync-store"
 
 export type ActionSynchronizer = ReturnType<typeof realtimeActionSynchronizer>
 export function realtimeActionSynchronizer({
@@ -42,11 +42,11 @@ export function realtimeActionSynchronizer({
 		}
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
+		let unsubscribeFromTransaction: (() => void) | undefined
 		const fillTransactionSubscriptionRequest = () => {
-			const unsubscribe = subscribeToTransaction(
+			unsubscribeFromTransaction = subscribeToTransaction(
 				tx,
 				(update) => {
-					unsubscribe()
 					const updateState = AtomIO.findState(completeUpdateAtoms, update.id)
 					AtomIO.setState(updateState, update, store)
 					const toEmit = filter
@@ -60,12 +60,17 @@ export function realtimeActionSynchronizer({
 				`tx-sub:${tx.key}:${socket.id}`,
 				store,
 			)
-			socket.on(`tx-unsub:${tx.key}`, unsubscribe)
+			socket.on(`tx-unsub:${tx.key}`, unsubscribeFromTransaction)
 		}
 		socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 
 		return () => {
+			if (unsubscribeFromTransaction) {
+				unsubscribeFromTransaction()
+				unsubscribeFromTransaction = undefined
+			}
 			socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
+			socket.off(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 		}
 	}
 }
