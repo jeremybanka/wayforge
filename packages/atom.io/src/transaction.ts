@@ -23,6 +23,7 @@ export type TransactionUpdateContent =
 export type TransactionUpdate<ƒ extends ƒn> = {
 	key: string
 	id: string
+	epoch: number
 	updates: TransactionUpdateContent[]
 	params: Parameters<ƒ>
 	output: ReturnType<ƒ>

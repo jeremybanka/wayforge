@@ -29,11 +29,10 @@ export function createTransaction<ƒ extends ƒn>(
 		key: options.key,
 		type: `transaction`,
 		run: (params: Parameters<ƒ>, id?: string) => {
-			buildTransaction(options.key, params, store, id)
+			const childStore = buildTransaction(options.key, params, store, id)
 			try {
 				const target = newest(store)
-				// biome-ignore lint/style/noNonNullAssertion: this happens right above
-				const { transactors } = target.transactionMeta!
+				const { transactors } = childStore.transactionMeta
 				const output = options.do(transactors, ...params)
 				applyTransaction(output, target)
 				return output

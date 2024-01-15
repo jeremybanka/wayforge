@@ -8,9 +8,10 @@ export * from "./create-transaction"
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
-export type TransactionMeta<ƒ extends ƒn> = {
+export type TransactionProgress<ƒ extends ƒn> = {
 	phase: `applying` | `building`
-	time: number
 	update: TransactionUpdate<ƒ>
 	transactors: TransactorsWithRunAndEnv
 }
+
+export type TransactionEpoch = { epoch: number }

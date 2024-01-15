@@ -2,7 +2,10 @@ import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
-import { optimisticUpdateQueueState } from "./stores"
+import {
+	optimisticUpdateQueueState,
+	serverConfirmedUpdateQueueState,
+} from "./realtime-client-stores"
 
 export function syncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
@@ -25,6 +28,10 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 
 	const applyIncomingUpdate = (serverUpdate: AtomIO.TransactionUpdate<ƒ>) => {
 		const clientUpdate = updateQueue[0]
+		// AtomIO.setState(serverConfirmedUpdateQueueState, (queue) => {
+		// 	queue.push(serverUpdate.)
+		// 	return queue
+		// })
 		if (clientUpdate) {
 			if (clientUpdate.id !== serverUpdate.id) {
 				store.logger.error(
@@ -35,8 +42,8 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					updateQueue,
 				)
 			}
-			const clientResult = JSON.stringify(clientUpdate)
-			const serverResult = JSON.stringify(serverUpdate)
+			const clientResult = JSON.stringify(clientUpdate.updates)
+			const serverResult = JSON.stringify(serverUpdate.updates)
 			if (clientResult !== serverResult) {
 				store.logger.error(
 					`❌`,
@@ -46,6 +53,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					{ clientResult, serverResult },
 				)
 				Internal.ingestTransactionUpdate(`oldValue`, clientUpdate, store)
+				Internal.ingestTransactionUpdate(`newValue`, serverUpdate, store)
 			} else {
 				store.logger.info(
 					`✅`,
@@ -58,9 +66,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				queue.shift()
 				return queue
 			})
-			return
 		}
-		Internal.ingestTransactionUpdate(`newValue`, serverUpdate, store)
 	}
 	socket.on(`tx-new:${token.key}`, applyIncomingUpdate)
 	socket.emit(`tx-sub:${token.key}`)
