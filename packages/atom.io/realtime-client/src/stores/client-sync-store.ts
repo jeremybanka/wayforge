@@ -6,3 +6,10 @@ export const optimisticUpdateQueueState = AtomIO.atom<
 	key: `updateQueue`,
 	default: [],
 })
+
+export const serverConfirmedUpdateQueueState = AtomIO.atom<
+	AtomIO.TransactionUpdate<any>[]
+>({
+	key: `serverConfirmedUpdateQueue`,
+	default: [],
+})
