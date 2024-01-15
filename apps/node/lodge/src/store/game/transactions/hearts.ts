@@ -12,25 +12,31 @@ export type StartGameInput = {
 	trickId: string
 	deckId: string
 	cardIds: string[]
+	txId: string
+	shuffle: number
 }
 export const startGameTX = transaction<(input: StartGameInput) => void>({
 	key: `startGame`,
-	do: (transactors, { gameId, handIds, trickId, deckId, cardIds }) => {
+	do: (
+		transactors,
+		{ gameId, handIds, trickId, deckId, cardIds, txId, shuffle },
+	) => {
 		const { find, get, run } = transactors
-		run(spawnClassicDeckTX)(gameId, deckId, cardIds)
+		run(spawnClassicDeckTX, `${txId}:spawnDeck`)(gameId, deckId, cardIds)
 		const playerIds = get(find(playersInRooms.states.playerKeysOfRoom, gameId))
 		let i = 0
 		for (const playerId of playerIds) {
-			run(spawnHandTX)(playerId, handIds[i])
+			run(spawnHandTX, `${txId}:spawnHand:${playerId}`)(playerId, handIds[i])
 			i++
 		}
-		run(spawnTrickTX)(gameId, trickId)
-		run(shuffleDeckTX)(gameId, deckId)
+		run(spawnTrickTX, `${txId}:spawnTrick`)(gameId, trickId)
+		run(shuffleDeckTX, `${txId}:shuffle`)(gameId, deckId, shuffle)
 		i = 52
-		while (i > playerIds.length) {
+		const remainingCardCount = 52 % playerIds.length
+		while (i > remainingCardCount) {
 			const handIdx = i % playerIds.length
 			const handId = handIds[handIdx]
-			run(dealCardsTX)(gameId, deckId, handId, 1)
+			run(dealCardsTX, `${txId}:deal:${i}`)(gameId, deckId, handId, 1)
 			i--
 		}
 	},
