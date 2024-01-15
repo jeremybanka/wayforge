@@ -53,6 +53,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
 		store: Store,
 	): void {
+		const subscriptionKey = `tracker:${store.config.name}:${
+			store.transactionMeta === null ? `main` : store.transactionMeta.update.key
+		}:${mutableState.key}`
 		const originalInnerValue = getState(mutableState, store)
 		const target = newest(store)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
@@ -64,7 +67,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			(update) => {
 				if (target.operation.open) {
 					const unsubscribe = target.on.operationClose.subscribe(
-						mutableState.key,
+						subscriptionKey,
 						() => {
 							unsubscribe()
 							setState(latestUpdateState, update, target)
@@ -83,15 +86,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					this.unsubscribeFromInnerValue()
 					const target = newest(store)
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
-						`tracker:${store.config.name}:${
-							target.transactionMeta === null
-								? `main`
-								: target.transactionMeta.update.key
-						}`,
+						subscriptionKey,
 						(update) => {
 							if (target.operation.open) {
 								const unsubscribe = target.on.operationClose.subscribe(
-									mutableState.key,
+									subscriptionKey,
 									() => {
 										unsubscribe()
 										setState(latestUpdateState, update, target)
@@ -105,7 +104,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					)
 				}
 			},
-			`${store.config.name}: tracker observing inner value`,
+			subscriptionKey,
 			store,
 		)
 	}
@@ -115,6 +114,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
 		store: Store,
 	): void {
+		const subscriptionKey = `tracker:${store.config.name}:${
+			store.transactionMeta === null ? `main` : store.transactionMeta.update.key
+		}:${mutableState.key}`
 		subscribeToState(
 			latestUpdateState,
 			({ newValue, oldValue }) => {
@@ -141,7 +143,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 									store,
 								)
 							},
-							`${mutableState.key}: tracker observing timeline`,
+							subscriptionKey,
 							store,
 						)
 						return
@@ -149,7 +151,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				}
 
 				const unsubscribe = store.on.operationClose.subscribe(
-					latestUpdateState.key,
+					subscriptionKey,
 					() => {
 						unsubscribe()
 						const mutable = getState(mutableState, store)
@@ -168,7 +170,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					},
 				)
 			},
-			`${store.config.name}: tracker observing latest update`,
+			subscriptionKey,
 			store,
 		)
 	}

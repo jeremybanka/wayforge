@@ -5,6 +5,7 @@ import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
 
+export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({
 	socket,
 	store = IMPLICIT.STORE,

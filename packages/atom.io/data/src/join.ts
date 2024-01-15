@@ -173,20 +173,22 @@ export class Join<
 			a,
 			b,
 		) => {
-			const aKeysState = findRelatedKeysState(a)
-			const bKeysState = findRelatedKeysState(b)
-			transactors.set(aKeysState, (aKeys) => aKeys.add(b))
-			transactors.set(bKeysState, (bKeys) => bKeys.add(a))
+			const { set, find } = transactors
+			const aKeysState = find(findRelatedKeysState, a)
+			const bKeysState = find(findRelatedKeysState, b)
+			set(aKeysState, (aKeys) => aKeys.add(b))
+			set(bKeysState, (bKeys) => bKeys.add(a))
 		}
 		const deleteRelation: Write<(a: string, b: string) => void> = (
 			transactors,
 			a,
 			b,
 		) => {
-			const aKeys = getRelatedKeys(transactors, a)
-			aKeys.delete(b)
-			const bKeys = getRelatedKeys(transactors, b)
-			bKeys.delete(a)
+			const { find, set } = transactors
+			const aKeysState = find(findRelatedKeysState, a)
+			const bKeysState = find(findRelatedKeysState, b)
+			set(aKeysState, (aKeys) => (aKeys.delete(b), aKeys))
+			set(bKeysState, (bKeys) => (bKeys.delete(a), bKeys))
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
@@ -199,8 +201,11 @@ export class Join<
 				if (remainsRelated) {
 					continue
 				}
-				const relationsOfB = getRelatedKeys(transactors, currentRelationB)
-				relationsOfB.delete(a)
+				const relationsOfBState = find(findRelatedKeysState, currentRelationB)
+				set(relationsOfBState, (relationsOfB) => {
+					relationsOfB.delete(a)
+					return relationsOfB
+				})
 			}
 			set(relationsOfAState, (relationsOfA) => {
 				relationsOfA.transaction((nextRelationsOfA) => {
@@ -236,11 +241,23 @@ export class Join<
 		const replaceRelationsUnsafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (transactors, a, newRelationsOfA) => {
-			const relationsOfA = getRelatedKeys(transactors, a)
+			const { find, set } = transactors
+			const relationsOfAState = find(findRelatedKeysState, a)
+			set(relationsOfAState, (relationsOfA) => {
+				relationsOfA.transaction((nextRelationsOfA) => {
+					for (const newRelationB of newRelationsOfA) {
+						nextRelationsOfA.add(newRelationB)
+					}
+					return true
+				})
+				return relationsOfA
+			})
 			for (const newRelationB of newRelationsOfA) {
-				const relationsOfB = getRelatedKeys(transactors, newRelationB)
-				relationsOfA.add(newRelationB)
-				relationsOfB.add(a)
+				const newRelationsBState = find(findRelatedKeysState, newRelationB)
+				set(newRelationsBState, (newRelationsB) => {
+					newRelationsB.add(a)
+					return newRelationsB
+				})
 			}
 			return true
 		}

@@ -29,11 +29,14 @@ export const setAtom = <T>(
 	const update = { oldValue, newValue }
 	if (target.transactionMeta === null) {
 		emitUpdate(atom, update, target)
-	} else if (target.on.transactionApplying && target.parent) {
-		stowUpdate(atom, update, target)
-		if (atom.key.startsWith(`*`)) {
+	} else if (target.parent) {
+		if (target.on.transactionApplying.state === null) {
+			stowUpdate(atom, update, target)
+		} else if (atom.key.startsWith(`*`)) {
 			const mutableKey = atom.key.slice(1)
-			const mutable: Transceiver<any> = target.valueMap.get(mutableKey)
+			const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
+			let mutable: Transceiver<any> = target.valueMap.get(mutableKey)
+			mutable = copyMutableIfWithinTransaction(mutable, mutableAtom, target)
 			mutable.do(update.newValue)
 		}
 	}

@@ -3,10 +3,11 @@ import { IMPLICIT } from "atom.io/internal"
 
 import type { ServerConfig } from "."
 
-export const realtimeActionReceiver = ({
+export type ActionReceiver = ReturnType<typeof realtimeActionReceiver>
+export function realtimeActionReceiver({
 	socket,
 	store = IMPLICIT.STORE,
-}: ServerConfig) => {
+}: ServerConfig) {
 	return function actionReceiver<ƒ extends AtomIO.ƒn>(
 		tx: AtomIO.TransactionToken<ƒ>,
 	): () => void {
@@ -15,7 +16,7 @@ export const realtimeActionReceiver = ({
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			AtomIO.runTransaction<ƒ>(tx, store)(...update.params)
+			AtomIO.runTransaction<ƒ>(tx, update.id, store)(...update.params)
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,

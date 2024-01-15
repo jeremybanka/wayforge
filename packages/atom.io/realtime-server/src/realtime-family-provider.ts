@@ -5,13 +5,17 @@ import { parseJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
 
+export type FamilyProvider = ReturnType<typeof realtimeFamilyProvider>
 export function realtimeFamilyProvider({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function familyProvider<J extends Json.Serializable>(
-		family: AtomIO.RegularAtomFamily<J, Json.Serializable>,
-		index: AtomIO.ReadableToken<Iterable<string>>,
+	return function familyProvider<
+		J extends Json.Serializable,
+		K extends Json.Serializable,
+	>(
+		family: AtomIO.RegularAtomFamily<J, K>,
+		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
@@ -33,7 +37,7 @@ export function realtimeFamilyProvider({
 			}
 		}
 
-		const fillSubRequest = (subKey?: Json.Serializable) => {
+		const fillSubRequest = (subKey?: K) => {
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
 				for (const key of keys) {

@@ -80,8 +80,8 @@ export function transaction<ƒ extends ƒn>(
 export const runTransaction =
 	<ƒ extends ƒn>(
 		token: TransactionToken<ƒ>,
-		store: Store = IMPLICIT.STORE,
 		id?: string,
+		store: Store = IMPLICIT.STORE,
 	) =>
 	(...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
 		const tx = withdraw(token, store)

@@ -8,7 +8,7 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import type { Identified } from "~/packages/anvl/src/id"
 
 export const findCardValueState = atomFamily<Identified & Json.Object, string>({
-	key: `findCardValue`,
+	key: `cardValue`,
 	default: () => ({ id: `` }),
 })
 export const cardValuesIndex = createMutableAtom<

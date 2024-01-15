@@ -39,21 +39,22 @@ const LoggerIconDictionary = {
 	"🚀": `Performance measure`,
 } as const
 export type LoggerIcon = keyof typeof LoggerIconDictionary
+export type TokenDenomination =
+	| `atom`
+	| `mutable_atom`
+	| `readonly_selector`
+	| `selector`
+	| `state`
+	| `timeline`
+	| `transaction`
+	| `unknown`
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
 export type LogLevel = (typeof LOG_LEVELS)[number]
 
 export type LogFn = (
 	icon: LoggerIcon,
-	tokenType:
-		| `atom`
-		| `mutable_atom`
-		| `readonly_selector`
-		| `selector`
-		| `state`
-		| `timeline`
-		| `transaction`
-		| `unknown`,
+	denomination: TokenDenomination,
 	tokenKey: string,
 	message: string,
 	...rest: unknown[]
@@ -64,8 +65,11 @@ export type Logger = Record<LogLevel, LogFn>
 
 export const simpleLog =
 	(logLevel: keyof Logger): LogFn =>
-	(icon, tokenType, tokenKey, message, ...rest) => {
-		console[logLevel](`${icon} ${tokenType} "${tokenKey}" ${message}`, ...rest)
+	(icon, denomination, tokenKey, message, ...rest) => {
+		console[logLevel](
+			`${icon} ${denomination} "${tokenKey}" ${message}`,
+			...rest,
+		)
 	}
 export const simpleLogger: Logger = {
 	error: simpleLog(`error`),

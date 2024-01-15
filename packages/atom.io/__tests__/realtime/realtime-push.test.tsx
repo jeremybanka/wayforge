@@ -11,9 +11,9 @@ describe(`pushing state`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
+				const provideState = RTS.realtimeStateProvider({ socket, store })
 				const receiveState = RTS.realtimeStateReceiver({ socket, store })
-				exposeSingle(countState)
+				provideState(countState)
 				receiveState(countState)
 			},
 			clients: {

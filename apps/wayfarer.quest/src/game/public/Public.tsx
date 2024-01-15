@@ -59,7 +59,9 @@ export function Public({ roomId }: GameProps): JSX.Element {
 					handIds: playerIds.map(() => nanoid()),
 					trickId: nanoid(),
 					cardIds: Array.from({ length: 52 }).map(() => nanoid()),
-					deckId: nanoid(),
+					deckId: `DECK_ID`,
+					txId: nanoid(),
+					shuffle: Math.random(),
 				})
 			},
 		},

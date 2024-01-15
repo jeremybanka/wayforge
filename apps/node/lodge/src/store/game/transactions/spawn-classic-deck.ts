@@ -52,7 +52,7 @@ export const spawnClassicDeckTX = transaction<
 		})
 
 		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
-			relations.replaceRelations(deckId, cardIds, { reckless: true })
+			relations.replaceRelations(deckId, cardIds)
 		})
 	},
 })

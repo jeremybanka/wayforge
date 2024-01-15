@@ -10,6 +10,7 @@ import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
 
+export type MutableProvider = ReturnType<typeof realtimeMutableProvider>
 export function realtimeMutableProvider({
 	socket,
 	store = IMPLICIT.STORE,

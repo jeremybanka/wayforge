@@ -18,7 +18,6 @@ export const publicDeckIndex = AtomIO.selector<string[]>({
 			const deckIsNotOwned = ownerOfDeck === null
 			return deckIsNotOwned
 		})
-		console.log({ deckIds, unownedDeckIds })
 		return unownedDeckIds
 	},
 })

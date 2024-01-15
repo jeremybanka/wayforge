@@ -33,7 +33,7 @@ export const Deck = memoize<{ id: string; detailed?: boolean }>(
 				label: `Shuffle`,
 				do: () => {
 					if (myRoomId) {
-						shuffle(myRoomId, deckId)
+						shuffle(myRoomId, deckId, Math.random())
 					} else {
 						console.error(`Tried to shuffle a deck without being in a room`)
 					}
