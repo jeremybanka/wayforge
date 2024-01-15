@@ -1,6 +1,5 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -29,6 +28,7 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
 				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
+				const syncState = RTS.realtimeStateSynchronizer({ socket, store })
 				syncTX(incrementTX, (updates) =>
 					updates.filter((u) => {
 						if (u.key === `count`) {
@@ -36,6 +36,7 @@ describe(`running transactions`, () => {
 						}
 					}),
 				)
+				syncState(countState)
 			},
 			clients: {
 				dave: () => {
@@ -50,7 +51,7 @@ describe(`running transactions`, () => {
 				},
 				jane: () => {
 					const increment = RTR.useSyncAction(incrementTX)
-					const count = AR.useO(countState)
+					const count = RTR.useSync(countState)
 					return <i data-testid={count} />
 				},
 			},
