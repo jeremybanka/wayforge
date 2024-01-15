@@ -1,6 +1,6 @@
 "use client"
 
-import type { LoggerIcon } from "atom.io"
+import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { useJSON } from "atom.io/react"
@@ -17,11 +17,17 @@ import scss from "./Game.module.scss"
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
-	(icon, tokenType, tokenKey, message, ...args) => {
+	(icon, tokenType, tokenKey, message) => {
 		const allowedIcons: LoggerIcon[] = [`🛄`]
+		const ignoredTokenTypes: TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
+		const ignoredMessageContents: string[] = []
 		if (!allowedIcons.includes(icon)) return false
+		if (ignoredTokenTypes.includes(tokenType)) return false
 		if (ignoredTokens.includes(tokenKey)) return false
+		for (const ignoredMessageContent of ignoredMessageContents) {
+			if (message.includes(ignoredMessageContent)) return false
+		}
 		return true
 	},
 )
