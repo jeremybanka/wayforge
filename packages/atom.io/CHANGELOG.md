@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.16.2
+
+### Patch Changes
+
+- 67e6199: 🐛 Fix bug where, when applying a nested transaction, updates to mutable atoms would leak into the store before the outer transaction was applied.
+- 67e6199: 🐛 Fix bug where, when setting relations on a join in a nested transaction, adding and deleting relations could cause leaks to the outer store. Now these methods are properly encapsulated.
+
 ## 0.16.1
 
 ### Patch Changes
