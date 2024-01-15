@@ -114,6 +114,10 @@ pipe(
 							)
 						},
 					)
+					exposeMutableFamily(
+						playersInRooms.core.findRelatedKeysState,
+						playersInRoomState,
+					)
 
 					// GAME SERVICES
 
