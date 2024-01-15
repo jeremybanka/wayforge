@@ -6,7 +6,7 @@ import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
 	transactionRedactorAtoms,
-} from "./realtime-server-store"
+} from "./realtime-synchronization-store"
 
 export type ActionSynchronizer = ReturnType<typeof realtimeActionSynchronizer>
 export function realtimeActionSynchronizer({

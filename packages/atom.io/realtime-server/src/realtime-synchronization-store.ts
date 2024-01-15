@@ -37,3 +37,16 @@ export const redactedUpdateSelectors = AtomIO.selectorFamily<
 			return null
 		},
 })
+
+export const clientLastUpdatedAtoms = AtomIO.atomFamily<number | null, string>({
+	key: `clientLastUpdated`,
+	default: null,
+})
+
+export const unconfirmedUpdatesState = AtomIO.atomFamily<
+	AtomIO.TransactionUpdate<any>[],
+	string
+>({
+	key: `unconfirmedUpdates`,
+	default: [],
+})
