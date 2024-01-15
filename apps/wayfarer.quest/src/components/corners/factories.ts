@@ -48,7 +48,6 @@ export const wedge0: DrawCorner = (p1, p2, idx) => {
 }
 export const wedge3: DrawCorner = (p1, p2, idx) => {
 	if (idx === 3) {
-		console.log({ p1, p2 })
 		return [writePathPoint((p1.x + (p2.x - p1.x)) * 2, p2.y, `L`)]
 	}
 	return straight(p1, p2, idx)

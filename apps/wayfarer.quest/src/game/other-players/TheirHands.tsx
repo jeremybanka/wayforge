@@ -13,7 +13,6 @@ export const TheirHands: React.FC<{ playerId: string }> = ({ playerId }) => {
 	const theirHands = useO(findHandsOfPlayer(playerId))
 	usePullMutableFamilyMember(ownersOfGroups.core.findRelatedKeysState(playerId))
 
-	console.log({ theirHands })
 	return (
 		<div className={scss.class}>
 			{theirHands.map((id) => (
