@@ -27,7 +27,18 @@ export function realtimeActionSynchronizer({
 			)
 		}
 		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {
+			const performanceKey = `tx-run:${tx.key}:${update.id}`
+			const performanceKeyStart = `${performanceKey}:start`
+			const performanceKeyEnd = `${performanceKey}:end`
+			performance.mark(performanceKeyStart)
 			AtomIO.runTransaction<ƒ>(tx, update.id, store)(...update.params)
+			performance.mark(performanceKeyEnd)
+			const metric = performance.measure(
+				performanceKey,
+				performanceKeyStart,
+				performanceKeyEnd,
+			)
+			store?.logger.info(`🚀`, `transaction`, tx.key, update.id, metric.duration)
 		}
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
