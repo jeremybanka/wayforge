@@ -12,7 +12,7 @@ export function useSyncAction<ƒ extends AtomIO.ƒn>(
 	const updateQueueState = AtomIO.findState(RTC.updateQueueAtoms, token)
 	const updateQueue = useO(updateQueueState)
 
-	useRealtimeService(`tx:${token.key}`, (socket) =>
+	useRealtimeService(`tx-sync:${token.key}`, (socket) =>
 		RTC.syncAction(token, socket, updateQueue, store),
 	)
 	return AtomIO.runTransaction(token, undefined, store)
