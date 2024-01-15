@@ -1,18 +1,30 @@
 "use client"
 
+import type { LoggerIcon } from "atom.io"
+import { AtomIOLogger, findState } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import { useJSON } from "atom.io/react"
 import { usePullFamilyMember, usePullMutable } from "atom.io/realtime-react"
 
 import { cardIndex, cardValuesIndex } from "~/apps/node/lodge/src/store/game"
 import * as CardGroups from "~/apps/node/lodge/src/store/game/card-groups"
 
-import { Controls } from "./__devtools__/Controls"
 import { MyDomain } from "./my-domain/MyDomain"
 import { EnemyDomains } from "./other-players/EnemyDomains"
 import { Public } from "./public/Public"
 
-import { findState } from "atom.io"
 import scss from "./Game.module.scss"
+
+IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
+	`info`,
+	(icon, tokenType, tokenKey, message, ...args) => {
+		const allowedIcons: LoggerIcon[] = [`🛄`]
+		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
+		if (!allowedIcons.includes(icon)) return false
+		if (ignoredTokens.includes(tokenKey)) return false
+		return true
+	},
+)
 
 function DeckSync(props: { id: string }): null {
 	usePullFamilyMember(findState(CardGroups.deckStates, props.id))
