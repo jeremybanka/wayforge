@@ -123,6 +123,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				const timelineId = store.timelineAtoms.getRelatedKey(
 					latestUpdateState.key,
 				)
+
 				if (timelineId) {
 					const timelineData = store.timelines.get(timelineId)
 					if (timelineData?.timeTraveling) {
@@ -155,16 +156,23 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					() => {
 						unsubscribe()
 						const mutable = getState(mutableState, store)
-						// debugger
 						const updateNumber =
 							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
-							// ❗ new:"0=add:\"myHand\"",old:"0=add:\"deckId\""
 							setState(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
 								store,
+							)
+						} else {
+							store.logger.error(
+								`❌`,
+								`mutable_atom`,
+								mutableState.key,
+								`could not be updated. Expected update number ${
+									mutable.cacheUpdateNumber + 1
+								}, but got ${updateNumber}`,
 							)
 						}
 					},
