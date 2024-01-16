@@ -76,13 +76,12 @@ describe(`running transactions`, () => {
 		})
 
 	test(`client 1 -> server -> client 2`, async () => {
-		const {
-			clients: { jane, dave },
-			teardown,
-		} = scenario()
-		// jane.renderResult.getByTestId(`0`)
+		const { clients, teardown } = scenario()
+
+		const jane = clients.jane.init()
+		const dave = clients.dave.init()
+
 		act(() => dave.renderResult.getByTestId(`addNumber`).click())
-		// await new Promise((r) => setTimeout(r, 2000))
 		await waitFor(() => {
 			console.log(`retrieving...`)
 			jane.renderResult.getByTestId(`1`)
