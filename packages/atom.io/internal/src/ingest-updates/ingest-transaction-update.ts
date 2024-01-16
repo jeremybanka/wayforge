@@ -1,6 +1,7 @@
 import type { TransactionUpdate } from "atom.io"
 
 import type { Store } from "../store"
+import { isRootStore } from "../transaction/is-root-store"
 import { ingestAtomUpdate } from "./ingest-atom-update"
 
 export function ingestTransactionUpdate(
