@@ -2,6 +2,7 @@ import * as AtomIO from "atom.io"
 import type { Transceiver } from "atom.io/internal"
 import {
 	IMPLICIT,
+	findInStore,
 	getJsonToken,
 	getUpdateToken,
 	subscribeToState,
@@ -50,7 +51,7 @@ export function realtimeMutableFamilyProvider({
 			if (subKey === undefined) {
 				const keys = AtomIO.getState(index, store)
 				for (const key of keys) {
-					const token = family(key)
+					const token = findInStore(family, key, store)
 					const jsonToken = getJsonToken(token)
 					const trackerToken = getUpdateToken(token)
 					socket.emit(

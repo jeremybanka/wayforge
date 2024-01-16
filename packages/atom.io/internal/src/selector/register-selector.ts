@@ -1,6 +1,6 @@
 import type { Transactors, findState } from "atom.io"
-import { findInStore } from "atom.io"
 
+import { findInStore } from "../families"
 import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
 import { setAtomOrSelector } from "../set-state"

@@ -1,9 +1,10 @@
-import { findInStore, getState, runTransaction, setState } from "atom.io"
+import { getState, runTransaction, setState } from "atom.io"
 import type { findState, ƒn } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type { TransactionProgress } from "."
+import { findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
