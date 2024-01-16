@@ -2,6 +2,7 @@
 	"name": "socket-io.filestore",
 	"version": "0.0.0",
 	"description": "save json to the filesystem over socket.io",
+	"type": "module",
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",

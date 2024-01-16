@@ -2,6 +2,7 @@
 	"name": "luum",
 	"version": "0.0.14",
 	"description": "generate colors dynamically",
+	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
