@@ -2,6 +2,7 @@
 	"name": "ingt",
 	"version": "0.0.0",
 	"description": "json filestore",
+	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": ["dist"],
@@ -23,7 +24,7 @@
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
 		"vite": "5.0.11",
-		"vite-tsconfig-paths": "4.2.3",
+		"vite-tsconfig-paths": "4.3.0",
 		"vitest": "1.2.0"
 	},
 	"peerDependencies": {
