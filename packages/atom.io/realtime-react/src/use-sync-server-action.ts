@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { StoreContext, useO } from "atom.io/react"
+import { StoreContext } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 
@@ -9,17 +9,9 @@ export function useSyncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
-	const optimisticUpdateQueue = useO(RTC.optimisticUpdateQueueState)
-	const confirmedUpdateQueue = useO(RTC.serverConfirmedUpdateQueueState)
 
 	useRealtimeService(`tx-sync:${token.key}`, (socket) =>
-		RTC.syncAction(
-			token,
-			socket,
-			optimisticUpdateQueue,
-			confirmedUpdateQueue,
-			store,
-		),
+		RTC.syncAction(token, socket, store),
 	)
 	return AtomIO.runTransaction(token, undefined, store)
 }

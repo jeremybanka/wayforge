@@ -4,17 +4,18 @@ import type { Socket } from "socket.io-client"
 
 import { isRootStore } from "../../internal/src/transaction/is-root-store"
 import {
+	confirmedUpdateQueueState,
 	optimisticUpdateQueueState,
-	serverConfirmedUpdateQueueState,
 } from "./realtime-client-stores"
 
 export function syncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 	socket: Socket,
-	optimisticQueue: AtomIO.TransactionUpdate<any>[],
-	confirmedQueue: AtomIO.TransactionUpdate<any>[],
 	store: Internal.Store,
 ): () => void {
+	const optimisticQueue = AtomIO.getState(optimisticUpdateQueueState)
+	const confirmedQueue = AtomIO.getState(confirmedUpdateQueueState)
+
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
 		(clientUpdate) => {
@@ -93,10 +94,10 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	const registerAndAttemptConfirmedUpdate = (
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
-		const optimisticUpdate = optimisticQueue[0]
-		if (optimisticUpdate) {
-			if (optimisticUpdate.epoch === confirmedUpdate.epoch) {
-				reconcileUpdates(optimisticUpdate, confirmedUpdate)
+		const zerothOptimisticUpdate = optimisticQueue[0]
+		if (zerothOptimisticUpdate) {
+			if (zerothOptimisticUpdate.epoch === confirmedUpdate.epoch) {
+				reconcileUpdates(zerothOptimisticUpdate, confirmedUpdate)
 				for (const nextConfirmed of confirmedQueue) {
 					const nextOptimistic = optimisticQueue[0]
 					if (nextConfirmed.epoch === nextOptimistic.epoch) {
@@ -107,7 +108,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				}
 			} else {
 				// epoch mismatch
-				AtomIO.setState(serverConfirmedUpdateQueueState, (queue) => {
+				AtomIO.setState(confirmedUpdateQueueState, (queue) => {
 					queue.push(confirmedUpdate)
 					queue.sort((a, b) => a.epoch - b.epoch)
 					return queue
