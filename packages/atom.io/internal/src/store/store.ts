@@ -121,7 +121,7 @@ export class Store implements Lineage {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
-			this.transactionMeta = store?.transactionMeta
+			this.transactionMeta = { ...store?.transactionMeta }
 
 			this.config = {
 				...store?.config,

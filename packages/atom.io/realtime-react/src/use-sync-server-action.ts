@@ -9,9 +9,8 @@ export function useSyncAction<ƒ extends AtomIO.ƒn>(
 	token: AtomIO.TransactionToken<ƒ>,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
-
-	useRealtimeService(`tx-sync:${token.key}`, (socket) =>
-		RTC.syncAction(token, socket, store),
-	)
+	useRealtimeService(`tx-sync:${token.key}`, (socket) => {
+		return RTC.syncAction(token, socket, store)
+	})
 	return AtomIO.runTransaction(token, undefined, store)
 }

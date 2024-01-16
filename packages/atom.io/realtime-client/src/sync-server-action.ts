@@ -13,8 +13,8 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	socket: Socket,
 	store: Internal.Store,
 ): () => void {
-	const optimisticQueue = AtomIO.getState(optimisticUpdateQueueState)
-	const confirmedQueue = AtomIO.getState(confirmedUpdateQueueState)
+	const optimisticQueue = AtomIO.getState(optimisticUpdateQueueState, store)
+	const confirmedQueue = AtomIO.getState(confirmedUpdateQueueState, store)
 
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
@@ -23,17 +23,25 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				(update) => update.id === clientUpdate.id,
 			)
 			if (optimisticUpdateQueueIndex === -1) {
-				AtomIO.setState(optimisticUpdateQueueState, (queue) => {
-					queue.push(clientUpdate)
-					queue.sort((a, b) => a.epoch - b.epoch)
-					return queue
-				})
+				AtomIO.setState(
+					optimisticUpdateQueueState,
+					(queue) => {
+						queue.push(clientUpdate)
+						queue.sort((a, b) => a.epoch - b.epoch)
+						return queue
+					},
+					store,
+				)
 				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			} else {
-				AtomIO.setState(optimisticUpdateQueueState, (queue) => {
-					queue[optimisticUpdateQueueIndex] = clientUpdate
-					return queue
-				})
+				AtomIO.setState(
+					optimisticUpdateQueueState,
+					(queue) => {
+						queue[optimisticUpdateQueueIndex] = clientUpdate
+						return queue
+					},
+					store,
+				)
 				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			}
 		},
@@ -44,10 +52,14 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 		optimisticUpdate: AtomIO.TransactionUpdate<ƒ>,
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
-		AtomIO.setState(optimisticUpdateQueueState, (queue) => {
-			queue.shift()
-			return queue
-		})
+		AtomIO.setState(
+			optimisticUpdateQueueState,
+			(queue) => {
+				queue.shift()
+				return queue
+			},
+			store,
+		)
 		if (optimisticUpdate.id === confirmedUpdate.id) {
 			const clientResult = JSON.stringify(optimisticUpdate.updates)
 			const serverResult = JSON.stringify(confirmedUpdate.updates)
@@ -108,11 +120,15 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				}
 			} else {
 				// epoch mismatch
-				AtomIO.setState(confirmedUpdateQueueState, (queue) => {
-					queue.push(confirmedUpdate)
-					queue.sort((a, b) => a.epoch - b.epoch)
-					return queue
-				})
+				AtomIO.setState(
+					confirmedUpdateQueueState,
+					(queue) => {
+						queue.push(confirmedUpdate)
+						queue.sort((a, b) => a.epoch - b.epoch)
+						return queue
+					},
+					store,
+				)
 			}
 		} else {
 			if (

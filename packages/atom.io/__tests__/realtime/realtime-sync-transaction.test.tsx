@@ -1,9 +1,11 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
+import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
+import * as React from "react"
 
 AtomIO.getState(RTC.myIdState)
 const countState = AtomIO.atom({ key: `count`, default: 0 })
@@ -23,10 +25,17 @@ const incrementTX = AtomIO.transaction({
 	},
 })
 
-describe(`running transactions`, () => {
+describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
+				// store.loggers[0].logLevel = `info`
+				// socket.onAny((event, ...args) => {
+				// 	console.log(`🛰 `, event, ...args)
+				// })
+				// socket.onAnyOutgoing((event, ...args) => {
+				// 	console.log(`🛰  >>`, event, ...args)
+				// })
 				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
 				const syncState = RTS.realtimeStateSynchronizer({ socket, store })
 				syncTX(incrementTX, (updates) =>
@@ -41,6 +50,14 @@ describe(`running transactions`, () => {
 			clients: {
 				dave: () => {
 					const increment = RTR.useSyncAction(incrementTX)
+					// const store = React.useContext(AR.StoreContext)
+					// const { socket } = React.useContext(RTR.RealtimeContext)
+					// socket?.onAny((event, ...args) => {
+					// 	console.log(`📡 DAVE`, event, ...args)
+					// })
+					// socket?.onAnyOutgoing((event, ...args) => {
+					// 	console.log(`📡 DAVE >>`, event, ...args)
+					// })
 					return (
 						<button
 							type="button"
@@ -50,18 +67,29 @@ describe(`running transactions`, () => {
 					)
 				},
 				jane: () => {
-					const increment = RTR.useSyncAction(incrementTX)
 					const count = RTR.useSync(countState)
+					const increment = RTR.useSyncAction(incrementTX)
+					// const store = React.useContext(AR.StoreContext)
+					// store.loggers[0].logLevel = `info`
+					// const { socket } = React.useContext(RTR.RealtimeContext)
+					// console.log(`📡 JANE`, socket?.listeners)
+					// socket?.onAny((event, ...args) => {
+					// 	console.log(`📡 JANE`, event, ...args)
+					// })
+					// socket?.onAnyOutgoing((event, ...args) => {
+					// 	console.log(`📡 JANE >>`, event, ...args)
+					// })
 					return <i data-testid={count} />
 				},
 			},
 		})
 
 	test(`client 1 -> server -> client 2`, async () => {
-		const {
-			clients: { jane, dave },
-			teardown,
-		} = scenario()
+		const { clients, teardown } = scenario()
+
+		const jane = clients.jane.init()
+		const dave = clients.dave.init()
+
 		jane.renderResult.getByTestId(`0`)
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 		await waitFor(() => jane.renderResult.getByTestId(`1`))

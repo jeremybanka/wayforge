@@ -29,15 +29,19 @@ export type TestSetupOptions__MultiClient<ClientNames extends string> =
 export type RealtimeTestTools = {
 	name: string
 	silo: AtomIO.Silo
-	dispose: () => void
 }
 export type RealtimeTestClient = RealtimeTestTools & {
 	renderResult: RenderResult
 	prettyPrint: () => void
-	reconnect: () => void
-	disconnect: () => void
+	socket: ClientSocket
 }
+export type RealtimeTestClientBuilder = {
+	dispose: () => void
+	init: () => RealtimeTestClient
+}
+
 export type RealtimeTestServer = RealtimeTestTools & {
+	dispose: () => void
 	port: number
 }
 
@@ -46,11 +50,11 @@ export type RealtimeTestAPI = {
 	teardown: () => void
 }
 export type RealtimeTestAPI__SingleClient = RealtimeTestAPI & {
-	client: RealtimeTestClient
+	client: RealtimeTestClientBuilder
 }
 export type RealtimeTestAPI__MultiClient<ClientNames extends string> =
 	RealtimeTestAPI & {
-		clients: Record<ClientNames, RealtimeTestClient>
+		clients: Record<ClientNames, RealtimeTestClientBuilder>
 	}
 
 export const setupRealtimeTestServer = (
@@ -85,42 +89,47 @@ export const setupRealtimeTestClient = (
 	options: TestSetupOptions__SingleClient,
 	name: string,
 	port: number,
-): RealtimeTestClient => {
-	const socket: ClientSocket = io(`http://localhost:${port}/`)
-	const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
+): RealtimeTestClientBuilder => {
+	const testClient = { dispose: () => {} }
+	const init = () => {
+		const socket: ClientSocket = io(`http://localhost:${port}/`)
+		const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
+		for (const [key, value] of silo.store.valueMap.entries()) {
+			if (Array.isArray(value)) {
+				silo.store.valueMap.set(key, [...value])
+			}
+		}
 
-	const { document } = new Happy.Window()
-	document.body.innerHTML = `<div id="app"></div>`
-	const renderResult = render(
-		<AR.StoreProvider store={silo.store}>
-			<RTR.RealtimeProvider socket={socket}>
-				<options.client />
-			</RTR.RealtimeProvider>
-		</AR.StoreProvider>,
-		{
-			container: document.querySelector(`#app`) as unknown as HTMLElement,
-		},
-	)
+		const { document } = new Happy.Window()
+		document.body.innerHTML = `<div id="app"></div>`
+		const renderResult = render(
+			<AR.StoreProvider store={silo.store}>
+				<RTR.RealtimeProvider socket={socket}>
+					<options.client />
+				</RTR.RealtimeProvider>
+			</AR.StoreProvider>,
+			{
+				container: document.querySelector(`#app`) as unknown as HTMLElement,
+			},
+		)
 
-	const prettyPrint = () => console.log(prettyDOM(renderResult.container))
+		const prettyPrint = () => console.log(prettyDOM(renderResult.container))
 
-	const disconnect = () => socket.disconnect()
-	const reconnect = () => socket.connect()
+		const dispose = () => {
+			socket.disconnect()
+			Internal.clearStore(silo.store)
+		}
+		testClient.dispose = dispose
 
-	const dispose = () => {
-		socket.disconnect()
-		Internal.clearStore(silo.store)
+		return {
+			name,
+			silo,
+			socket,
+			renderResult,
+			prettyPrint,
+		}
 	}
-
-	return {
-		name,
-		silo,
-		renderResult,
-		prettyPrint,
-		disconnect,
-		reconnect,
-		dispose,
-	}
+	return Object.assign(testClient, { init })
 }
 
 export const singleClient = (
@@ -152,7 +161,7 @@ export const multiClient = <ClientNames extends string>(
 			)
 			return clients
 		},
-		{} as Record<ClientNames, RealtimeTestClient>,
+		{} as Record<ClientNames, RealtimeTestClientBuilder>,
 	)
 
 	return {
