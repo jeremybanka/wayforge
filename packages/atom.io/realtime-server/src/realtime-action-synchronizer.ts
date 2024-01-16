@@ -40,6 +40,7 @@ export function realtimeActionSynchronizer({
 			)
 			store?.logger.info(`🚀`, `transaction`, tx.key, update.id, metric.duration)
 		}
+		socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
 		let unsubscribeFromTransaction: (() => void) | undefined
@@ -62,6 +63,7 @@ export function realtimeActionSynchronizer({
 			)
 			socket.on(`tx-unsub:${tx.key}`, unsubscribeFromTransaction)
 		}
+		socket.off(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 		socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 
 		return () => {

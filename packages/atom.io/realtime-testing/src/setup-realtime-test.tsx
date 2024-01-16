@@ -12,6 +12,7 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
+import { usernameAtoms } from "../../realtime-server/src/realtime-server-stores/server-players-store"
 
 export type TestSetupOptions = {
 	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
@@ -60,14 +61,27 @@ export type RealtimeTestAPI__MultiClient<ClientNames extends string> =
 export const setupRealtimeTestServer = (
 	options: TestSetupOptions,
 ): RealtimeTestServer => {
+	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
+
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen().address()
 	const port =
 		typeof address === `string` ? 80 : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
-	const server = new SocketIO.Server(httpServer)
-
-	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
+	const server = new SocketIO.Server(httpServer).use((socket, next) => {
+		const { token, username } = socket.handshake.auth
+		if (token === `test` && socket.id) {
+			const usernameState = Internal.findInStore(
+				usernameAtoms,
+				socket.id,
+				silo.store,
+			)
+			AtomIO.setState(usernameState, username)
+			next()
+		} else {
+			next(new Error(`Authentication error`))
+		}
+	})
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		options.server({ socket, silo })
@@ -92,7 +106,9 @@ export const setupRealtimeTestClient = (
 ): RealtimeTestClientBuilder => {
 	const testClient = { dispose: () => {} }
 	const init = () => {
-		const socket: ClientSocket = io(`http://localhost:${port}/`)
+		const socket: ClientSocket = io(`http://localhost:${port}/`, {
+			auth: { token: `test`, username: name },
+		})
 		const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
 		for (const [key, value] of silo.store.valueMap.entries()) {
 			if (Array.isArray(value)) {

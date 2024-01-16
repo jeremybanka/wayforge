@@ -1,4 +1,4 @@
-import { atom } from "atom.io"
+import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -31,3 +31,8 @@ export const clientsInRooms = join(
 	},
 	DEFAULT_CLIENT_ROOM_CONTENT,
 )
+
+export const usernameAtoms = atomFamily<string, string>({
+	key: `usernames`,
+	default: ``,
+})
