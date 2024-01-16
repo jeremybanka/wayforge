@@ -10,9 +10,16 @@ export function useSyncAction<ƒ extends AtomIO.ƒn>(
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	const store = React.useContext(StoreContext)
 	const optimisticUpdateQueue = useO(RTC.optimisticUpdateQueueState)
+	const confirmedUpdateQueue = useO(RTC.serverConfirmedUpdateQueueState)
 
 	useRealtimeService(`tx-sync:${token.key}`, (socket) =>
-		RTC.syncAction(token, socket, optimisticUpdateQueue, store),
+		RTC.syncAction(
+			token,
+			socket,
+			optimisticUpdateQueue,
+			confirmedUpdateQueue,
+			store,
+		),
 	)
 	return AtomIO.runTransaction(token, undefined, store)
 }

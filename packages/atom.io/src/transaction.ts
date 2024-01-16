@@ -1,6 +1,5 @@
 import type { EnvironmentData, Store } from "atom.io/internal"
 import { IMPLICIT, createTransaction, withdraw } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 
 import type {
 	KeyedStateUpdate,
@@ -10,10 +9,10 @@ import type {
 	ƒn,
 } from "."
 
-export type TransactionToken<_> = {
+export type TransactionToken<F> = {
 	key: string
 	type: `transaction`
-	__brand?: _
+	__F?: F
 }
 
 export type TransactionUpdateContent =
