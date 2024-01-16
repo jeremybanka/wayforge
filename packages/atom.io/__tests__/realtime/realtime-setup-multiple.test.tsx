@@ -29,11 +29,11 @@ describe(`multi-client scenario`, () => {
 		})
 
 	test(`both clients respond to changes on the server`, async () => {
-		const {
-			clients: { jim, lee },
-			server,
-			teardown,
-		} = scenario()
+		const { clients, server, teardown } = scenario()
+
+		const jim = clients.jim.init()
+		const lee = clients.lee.init()
+
 		jim.renderResult.getByTestId(`0`)
 		lee.renderResult.getByTestId(`0`)
 		act(() => server.silo.setState(countState, 1))
