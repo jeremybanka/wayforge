@@ -2,7 +2,6 @@
 	"name": "luum",
 	"version": "0.0.14",
 	"description": "generate colors dynamically",
-	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -22,7 +21,7 @@
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
 		"vite": "5.0.11",
-		"vite-tsconfig-paths": "4.3.0",
+		"vite-tsconfig-paths": "4.2.3",
 		"vitest": "1.2.0"
 	},
 	"keywords": ["color", "css", "javascript", "library"],
