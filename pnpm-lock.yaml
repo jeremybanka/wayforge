@@ -253,8 +253,8 @@ importers:
         specifier: 5.0.11
         version: 5.0.11(@types/node@20.11.4)
       vite-tsconfig-paths:
-        specifier: 4.3.1
-        version: 4.3.1(typescript@5.3.3)(vite@5.0.11)
+        specifier: 4.3.0
+        version: 4.3.0(typescript@5.3.3)(vite@5.0.11)
       vitest:
         specifier: 1.2.0
         version: 1.2.0(@vitest/ui@1.2.0)(happy-dom@13.1.4)
@@ -11925,6 +11925,23 @@ packages:
       vite: 5.0.11(sass@1.69.7)
     transitivePeerDependencies:
       - rollup
+      - supports-color
+      - typescript
+    dev: true
+
+  /vite-tsconfig-paths@4.3.0(typescript@5.3.3)(vite@5.0.11):
+    resolution: {integrity: sha512-isTU7WydwdRBsQ/TIJek5kovKBHFn71ZoUK+ik/PeWWh1BGsjC3aCTP7REKFCHpRs6gqTEJgsQB7HafthCGLiQ==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+    dependencies:
+      debug: 4.3.4(supports-color@5.5.0)
+      globrex: 0.1.2
+      tsconfck: 3.0.1(typescript@5.3.3)
+      vite: 5.0.11(@types/node@20.11.4)
+    transitivePeerDependencies:
       - supports-color
       - typescript
     dev: true
