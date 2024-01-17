@@ -2,7 +2,6 @@
 	"name": "socket-io.git",
 	"version": "0.2.1",
 	"description": "remote control a simple-git instance over a socket.io connection",
-	"type": "module",
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup --entry src/socket-git-node.ts --entry src/socket-git-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
@@ -34,7 +33,7 @@
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
 		"vite": "5.0.11",
-		"vite-tsconfig-paths": "4.3.1",
+		"vite-tsconfig-paths": "4.2.3",
 		"vitest": "1.2.0"
 	},
 	"repository": {
