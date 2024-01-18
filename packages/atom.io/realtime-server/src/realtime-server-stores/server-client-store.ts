@@ -32,7 +32,8 @@ export const clientsInRooms = join(
 	DEFAULT_CLIENT_ROOM_CONTENT,
 )
 
-export const usernameAtoms = atomFamily<string, string>({
-	key: `usernames`,
-	default: ``,
+export const socketsOfClients = join({
+	key: `socketsOfClients`,
+	between: [`client`, `socket`],
+	cardinality: `1:1`,
 })

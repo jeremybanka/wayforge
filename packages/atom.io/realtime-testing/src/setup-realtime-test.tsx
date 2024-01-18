@@ -12,7 +12,7 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
-import { usernameAtoms } from "../../realtime-server/src/realtime-server-stores/server-players-store"
+import { socketsOfClients } from "../../realtime-server/src/realtime-server-stores"
 
 export type TestSetupOptions = {
 	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
@@ -71,12 +71,27 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const usernameState = Internal.findInStore(
-				usernameAtoms,
+			const socketRelatedKeysState = Internal.findInStore(
+				socketsOfClients.core.findRelatedKeysState,
 				socket.id,
 				silo.store,
 			)
-			AtomIO.setState(usernameState, username)
+			const clientRelatedKeysState = Internal.findInStore(
+				socketsOfClients.core.findRelatedKeysState,
+				username,
+				silo.store,
+			)
+			AtomIO.setState(
+				socketRelatedKeysState,
+				(keys) => (keys.clear(), keys.add(username)),
+				silo.store,
+			)
+			AtomIO.setState(
+				clientRelatedKeysState,
+				(keys) => (keys.clear(), keys.add(socket.id)),
+				silo.store,
+			)
+			console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {
 			next(new Error(`Authentication error`))

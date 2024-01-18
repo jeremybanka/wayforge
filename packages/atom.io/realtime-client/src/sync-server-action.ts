@@ -70,12 +70,13 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 			const clientResult = JSON.stringify(optimisticUpdate.updates)
 			const serverResult = JSON.stringify(confirmedUpdate.updates)
 			if (clientResult === serverResult) {
-				store.logger.info(
+				console.log(
 					`✅`,
 					`transaction`,
 					token.key,
 					`results for ${optimisticUpdate.id} match between client and server`,
 				)
+				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 				return
 			}
 			store.logger.warn(
@@ -103,6 +104,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 		Internal.ingestTransactionUpdate(`oldValue`, optimisticUpdate, store)
 		console.log(`❗ ingesting confirmed update ${confirmedUpdate.id}`)
 		Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
+		socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 		for (const subsequentOptimistic of optimisticQueue) {
 			console.log(`❗ retrying optimistic update ${subsequentOptimistic.id}`)
 			const token = Object.assign(
@@ -117,7 +119,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	const registerAndAttemptConfirmedUpdate = (
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
-		console.log(optimisticQueue)
 		console.log(`❗❗❗ received update in store ${store.config.name}`)
 		const zerothOptimisticUpdate = optimisticQueue[0]
 		if (zerothOptimisticUpdate) {
@@ -138,18 +139,20 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				console.log(
 					`❗ epoch mismatch: ${zerothOptimisticUpdate.epoch} !== ${confirmedUpdate.epoch}`,
 				)
-				console.log(zerothOptimisticUpdate, confirmedUpdate)
-				console.log(store.valueMap)
-				console.log(store.transactionMeta)
-				AtomIO.setState(
-					confirmedUpdateQueueState,
-					(queue) => {
-						queue.push(confirmedUpdate)
-						queue.sort((a, b) => a.epoch - b.epoch)
-						return queue
-					},
-					store,
+				const hasEnqueuedOptimisticUpdate = optimisticQueue.some(
+					(update) => update.epoch === confirmedUpdate.epoch,
 				)
+				if (hasEnqueuedOptimisticUpdate) {
+					AtomIO.setState(
+						confirmedUpdateQueueState,
+						(queue) => {
+							queue.push(confirmedUpdate)
+							queue.sort((a, b) => a.epoch - b.epoch)
+							return queue
+						},
+						store,
+					)
+				}
 			}
 		} else {
 			console.log(`❗ no optimistic update exists`)
@@ -159,6 +162,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 			) {
 				console.log(`❗ epoch match; ingesting update`)
 				Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
+				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 				store.transactionMeta.epoch = confirmedUpdate.epoch
 			} else if (isRootStore(store)) {
 				store.logger.warn(

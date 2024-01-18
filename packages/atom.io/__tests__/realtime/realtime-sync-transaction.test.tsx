@@ -30,7 +30,7 @@ describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				store.loggers[0].logLevel = `info`
+				// store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
 					console.log(`🛰 `, event, ...args)
 				})
@@ -39,14 +39,18 @@ describe(`synchronizing transactions`, () => {
 				})
 				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
 				const syncState = RTS.realtimeStateSynchronizer({ socket, store })
-				syncTX(incrementTX, (updates) =>
+				const unSyncTX = syncTX(incrementTX, (updates) =>
 					updates.filter((u) => {
 						if (u.key === `count`) {
 							return true
 						}
 					}),
 				)
-				syncState(countState)
+				const unSyncState = syncState(countState)
+				socket.on(`disconnect`, () => {
+					unSyncTX()
+					unSyncState()
+				})
 			},
 			clients: {
 				dave: () => {
@@ -75,9 +79,8 @@ describe(`synchronizing transactions`, () => {
 					const count = RTR.useSync(countState)
 					const increment = RTR.useSyncAction(incrementTX)
 					const store = React.useContext(AR.StoreContext)
-					store.loggers[0].logLevel = `info`
+					// store.loggers[0].logLevel = `info`
 					const { socket } = React.useContext(RTR.RealtimeContext)
-					console.log(`📡 JANE`, socket?.listeners)
 					socket?.onAny((event, ...args) => {
 						console.log(`📡 JANE`, event, ...args)
 					})
@@ -125,7 +128,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`))
 		teardown()
 	})
-	test(`rollback`, async () => {
+	test.only(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
@@ -144,7 +147,7 @@ describe(`synchronizing transactions`, () => {
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		await waitFor(() => dave.renderResult.getByTestId(`1`))
+		await waitFor(() => dave.renderResult.getByTestId(`2`))
 
 		act(() => jane.socket.connect())
 		await waitFor(() => throwUntil(jane.socket.connected))

@@ -40,7 +40,7 @@ export const setAtom = <T>(
 			mutable = copyMutableIfWithinTransaction(mutable, mutableAtom, target)
 			const output = mutable.do(update.newValue)
 			if (output !== null) {
-				target.logger.error(
+				target.logger.warn(
 					`❌`,
 					`mutable_atom`,
 					mutableKey,
