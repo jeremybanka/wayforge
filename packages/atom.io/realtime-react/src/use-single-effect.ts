@@ -5,7 +5,7 @@ const IN_DEV = NODE_ENV === `development` || NODE_ENV === `test`
 
 function noop() {}
 
-export function useStableEffect(
+export function useSingleEffect(
 	effect: () => (() => void) | undefined,
 	deps: unknown[],
 ): void {

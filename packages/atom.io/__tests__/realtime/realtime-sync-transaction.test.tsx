@@ -1,5 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
+import { findInStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
@@ -30,12 +31,18 @@ describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
+				const clientIdState = findInStore(
+					RTS.socketsOfClients.states.clientKeyOfSocket,
+					socket.id,
+					store,
+				)
+				const clientId = AtomIO.getState(clientIdState, store)
 				// store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
-					console.log(`🛰 `, event, ...args)
+					console.log(`🛰 `, clientId, event, ...args)
 				})
 				socket.onAnyOutgoing((event, ...args) => {
-					console.log(`🛰  >>`, event, ...args)
+					console.log(`🛰  >>`, clientId, event, ...args)
 				})
 				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
 				const syncState = RTS.realtimeStateSynchronizer({ socket, store })
@@ -48,7 +55,7 @@ describe(`synchronizing transactions`, () => {
 				)
 				const unSyncState = syncState(countState)
 				socket.on(`disconnect`, () => {
-					unSyncTX()
+					// unSyncTX()
 					unSyncState()
 				})
 			},
@@ -128,7 +135,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`))
 		teardown()
 	})
-	test.only(`recovery`, async () => {
+	test(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()

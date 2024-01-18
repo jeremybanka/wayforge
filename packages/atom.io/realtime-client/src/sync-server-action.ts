@@ -19,9 +19,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
 		(clientUpdate) => {
-			console.log(
-				`❓❓❓ sending update in store ${store.config.name} for token ${token.key}`,
-			)
 			const optimisticUpdateQueueIndex = optimisticQueue.findIndex(
 				(update) => update.id === clientUpdate.id,
 			)
@@ -29,7 +26,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				AtomIO.setState(
 					optimisticUpdateQueueState,
 					(queue) => {
-						console.log(`❓ queue`, queue)
 						queue.push(clientUpdate)
 						queue.sort((a, b) => a.epoch - b.epoch)
 						return queue
@@ -56,7 +52,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 		optimisticUpdate: AtomIO.TransactionUpdate<ƒ>,
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
-		console.log(`❗ reconciling updates in store ${store.config.name}`)
 		AtomIO.setState(
 			optimisticUpdateQueueState,
 			(queue) => {
@@ -66,11 +61,10 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 			store,
 		)
 		if (optimisticUpdate.id === confirmedUpdate.id) {
-			console.log(`❗ id match`)
 			const clientResult = JSON.stringify(optimisticUpdate.updates)
 			const serverResult = JSON.stringify(confirmedUpdate.updates)
 			if (clientResult === serverResult) {
-				console.log(
+				store.logger.info(
 					`✅`,
 					`transaction`,
 					token.key,
@@ -79,34 +73,22 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 				return
 			}
-			store.logger.warn(
-				`❌`,
-				`transaction`,
-				token.key,
-				`results do not match between client and server:`,
-				{ clientResult, serverResult },
-			)
 		} else {
 			// id mismatch
-			console.log(`❗ id mismatch`)
-			store.logger.warn(
+			store.logger.info(
 				`❌`,
 				`transaction`,
 				token.key,
-				`we thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
+				`${store.config.name} thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
 			)
 		}
 		for (const subsequentOptimistic of optimisticQueue.toReversed()) {
-			console.log(`❗ undoing optimistic update ${subsequentOptimistic.id}`)
 			Internal.ingestTransactionUpdate(`oldValue`, subsequentOptimistic, store)
 		}
-		console.log(`❗ reversing optimistic update ${optimisticUpdate.id}`)
 		Internal.ingestTransactionUpdate(`oldValue`, optimisticUpdate, store)
-		console.log(`❗ ingesting confirmed update ${confirmedUpdate.id}`)
 		Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 		socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 		for (const subsequentOptimistic of optimisticQueue) {
-			console.log(`❗ retrying optimistic update ${subsequentOptimistic.id}`)
 			const token = Object.assign(
 				{ type: `transaction` } as const,
 				subsequentOptimistic,
@@ -119,12 +101,9 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	const registerAndAttemptConfirmedUpdate = (
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
-		console.log(`❗❗❗ received update in store ${store.config.name}`)
 		const zerothOptimisticUpdate = optimisticQueue[0]
 		if (zerothOptimisticUpdate) {
-			console.log(`❗ optimistic update exists`)
 			if (zerothOptimisticUpdate.epoch === confirmedUpdate.epoch) {
-				console.log(`❗ epoch match`)
 				reconcileUpdates(zerothOptimisticUpdate, confirmedUpdate)
 				for (const nextConfirmed of confirmedQueue) {
 					const nextOptimistic = optimisticQueue[0]
@@ -136,9 +115,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				}
 			} else {
 				// epoch mismatch
-				console.log(
-					`❗ epoch mismatch: ${zerothOptimisticUpdate.epoch} !== ${confirmedUpdate.epoch}`,
-				)
+
 				const hasEnqueuedOptimisticUpdate = optimisticQueue.some(
 					(update) => update.epoch === confirmedUpdate.epoch,
 				)
@@ -155,17 +132,15 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				}
 			}
 		} else {
-			console.log(`❗ no optimistic update exists`)
 			if (
 				isRootStore(store) &&
 				store.transactionMeta.epoch === confirmedUpdate.epoch - 1
 			) {
-				console.log(`❗ epoch match; ingesting update`)
 				Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 				store.transactionMeta.epoch = confirmedUpdate.epoch
 			} else if (isRootStore(store)) {
-				store.logger.warn(
+				store.logger.info(
 					`❌`,
 					`transaction`,
 					token.key,
@@ -186,7 +161,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 		socket.emit(`tx-unsub:${token.key}`)
 	}
 	return () => {
-		console.log(`${store.config.name} unsubscribing from syncAction`)
 		unsubscribeFromLocalUpdates()
 		unsubscribeFromIncomingUpdates()
 	}

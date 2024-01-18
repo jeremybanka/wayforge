@@ -97,20 +97,22 @@ export function realtimeActionSynchronizer({
 		}
 		socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 
-		let i = 0
+		let i = 1
+		let next = 1
 		const retry = setInterval(() => {
 			const toEmit = socketUnacknowledgedUpdates[0]
 			console.log(clientId, socketUnacknowledgedUpdates)
-			if (toEmit) {
+			if (toEmit && i === next) {
 				socket.emit(`tx-new:${tx.key}`, toEmit)
-				console.log(`🔁`, `retried`, clientId, i, toEmit)
+				next *= 2
 			}
 
 			i++
 		}, 250)
 
 		const trackClientAcknowledgement = (epoch: number) => {
-			console.log(`👍`, `acknowledgement`, tx.key, epoch)
+			i = 1
+			next = 1
 			const socketEpochState = findInStore(
 				socketEpochSelectors,
 				socket.id,
@@ -119,7 +121,6 @@ export function realtimeActionSynchronizer({
 
 			AtomIO.setState(socketEpochState, epoch, store)
 			if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
-				console.log(`👍`, `acknowledgement`, tx.key, epoch, `shift`)
 				AtomIO.setState(
 					socketUnacknowledgedUpdatesState,
 					(updates) => {
