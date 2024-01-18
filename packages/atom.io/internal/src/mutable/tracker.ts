@@ -161,7 +161,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 								target,
 							)
 						} else {
-							target.logger.error(
+							target.logger.info(
 								`❌`,
 								`mutable_atom`,
 								mutableState.key,
