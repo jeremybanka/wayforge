@@ -124,8 +124,8 @@ importers:
   apps/node/forge:
     dependencies:
       dotenv:
-        specifier: 16.3.1
-        version: 16.3.1
+        specifier: 16.3.2
+        version: 16.3.2
       fp-ts:
         specifier: 2.16.2
         version: 2.16.2
@@ -173,8 +173,8 @@ importers:
   apps/node/kite:
     dependencies:
       dotenv:
-        specifier: 16.3.1
-        version: 16.3.1
+        specifier: 16.3.2
+        version: 16.3.2
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -216,8 +216,8 @@ importers:
   apps/node/lodge:
     dependencies:
       dotenv:
-        specifier: 16.3.1
-        version: 16.3.1
+        specifier: 16.3.2
+        version: 16.3.2
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -5131,6 +5131,7 @@ packages:
 
   /@vue/compiler-core@3.4.15:
     resolution: {integrity: sha512-XcJQVOaxTKCnth1vCxEChteGuwG6wqnUHxAm1DO3gCz0+uXKaJNx8/digSz4dLALCy8n2lKq24jSUs8segoqIw==}
+    requiresBuild: true
     dependencies:
       '@babel/parser': 7.23.6
       '@vue/shared': 3.4.15
@@ -6571,8 +6572,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /dotenv@16.3.1:
-    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+  /dotenv@16.3.2:
+    resolution: {integrity: sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ==}
     engines: {node: '>=12'}
     dev: false
 
