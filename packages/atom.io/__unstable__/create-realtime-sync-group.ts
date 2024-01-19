@@ -1,21 +1,41 @@
-import type { AtomFamilyToken, AtomToken, TransactionToken } from "atom.io"
-import type { Json } from "atom.io/json"
+import type {
+	AtomFamilyToken,
+	AtomToken,
+	ReadableFamilyToken,
+	TransactionToken,
+} from "atom.io"
 
-export type FamilyPerspective<K extends Json.Serializable> = (
-	clientId: string,
-) => AtomToken<Iterable<K>>
-export type FamilySyncConfig<
+export type AtomFamilyPerspective<
 	F extends AtomFamilyToken<any>,
 	K extends F extends AtomFamilyToken<any, infer K> ? K : never,
 > = {
-	atomFamily: F
-	getRevealedKeysState: (clientId: string) => AtomToken<Iterable<K>>
+	resourceAtoms: F
+	perspectiveAtoms: ReadableFamilyToken<Iterable<K>, string>
 }
 
-export class SyncGroup {
-	public globals: AtomToken<any>[] = []
-	public actions: TransactionToken<any>[] = []
-	public families: FamilySyncConfig<any, any>[] = []
+export type SyncGroupToken = {
+	readonly type: `realtime_sync_group`
+	readonly globals: AtomToken<any>[]
+	readonly actions: TransactionToken<any>[]
+	readonly perspectives: AtomFamilyPerspective<any, any>[]
+}
+
+export class SyncGroup implements SyncGroupToken {
+	public type = `realtime_sync_group` as const
+
+	public globals: AtomToken<any>[]
+	public actions: TransactionToken<any>[]
+	public perspectives: AtomFamilyPerspective<any, any>[]
+
+	private constructor() {}
+
+	public static create(
+		builder: (group: SyncGroup) => SyncGroupToken,
+	): SyncGroupToken {
+		const group = new SyncGroup()
+		const { type, globals, actions, perspectives } = builder(group)
+		return { type, globals, actions, perspectives }
+	}
 
 	public add(...atoms: AtomToken<any>[]): SyncGroup
 	public add(...args: TransactionToken<any>[]): SyncGroup
@@ -24,13 +44,13 @@ export class SyncGroup {
 		K extends F extends AtomFamilyToken<any, infer K> ? K : never,
 	>(
 		family: AtomFamilyToken<any, K>,
-		index: (clientId: string) => AtomToken<any>,
+		index: ReadableFamilyToken<Iterable<K>, string>,
 	): SyncGroup
 	public add(
 		...args:
 			| readonly AtomToken<any>[]
 			| readonly TransactionToken<any>[]
-			| [AtomFamilyToken<any, any>, FamilyPerspective<any>]
+			| [AtomFamilyToken<any, any>, ReadableFamilyToken<Iterable<any>, string>]
 	): SyncGroup {
 		const zeroth = args[0]
 		if (zeroth.type === `atom` || zeroth.type === `mutable_atom`) {
@@ -42,9 +62,9 @@ export class SyncGroup {
 		} else {
 			const [family, index] = args as [
 				AtomFamilyToken<any, any>,
-				FamilyPerspective<any>,
+				ReadableFamilyToken<Iterable<any>, string>,
 			]
-			this.families.push({ atomFamily: family, getRevealedKeysState: index })
+			this.perspectives.push({ resourceAtoms: family, perspectiveAtoms: index })
 		}
 		return this
 	}
@@ -54,7 +74,7 @@ export class SyncGroup {
 // 	key: `counter`,
 // 	default: 0,
 // })
-// const counterIndex = atom<{ c: string }[]>({
+// const counterIndices = atomFamily<{ c: string }[], string>({
 // 	key: `counterIndex`,
 // 	default: [],
 // })
@@ -62,12 +82,11 @@ export class SyncGroup {
 // 	key: `name`,
 // 	default: 0,
 // })
-// const nameIndex = atom<{ n: string }[]>({
+// const nameIndices = atomFamily<{ n: string }[], string>({
 // 	key: `nameIndex`,
 // 	default: [],
 // })
 
-// const group = new SyncGroup()
-// 	.add(counterStates, () => counterIndex)
-// 	.add(nameStates, () => nameIndex)
-// 	.add(counterIndex)
+// const group = SyncGroup.create((syncGroup) =>
+// 	syncGroup.add(counterStates, counterIndices).add(nameStates, nameIndices),
+// )
