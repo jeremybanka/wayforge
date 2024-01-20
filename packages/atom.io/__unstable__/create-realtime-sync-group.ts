@@ -4,20 +4,36 @@ import type {
 	ReadableFamilyToken,
 	TransactionToken,
 } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 
-export type AtomFamilyPerspective<
+export class InvariantMap<K, V> extends Map<K, V> {
+	public set(key: K, value: V): this {
+		if (this.has(key)) {
+			throw new Error(`Cannot set a key that already exists in an InvariantMap`)
+		}
+		return super.set(key, value)
+	}
+
+	public clear(): void {
+		throw new Error(`Cannot clear an InvariantMap`)
+	}
+}
+
+export type PerspectiveToken<
 	F extends AtomFamilyToken<any>,
 	K extends F extends AtomFamilyToken<any, infer K> ? K : never,
 > = {
+	type: `realtime_perspective`
 	resourceAtoms: F
 	perspectiveAtoms: ReadableFamilyToken<Iterable<K>, string>
 }
 
 export type SyncGroupToken = {
 	readonly type: `realtime_sync_group`
+	readonly key: string
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<any>[]
-	readonly perspectives: AtomFamilyPerspective<any, any>[]
+	readonly perspectives: PerspectiveToken<any, any>[]
 }
 
 export class SyncGroup implements SyncGroupToken {
@@ -25,16 +41,21 @@ export class SyncGroup implements SyncGroupToken {
 
 	public globals: AtomToken<any>[]
 	public actions: TransactionToken<any>[]
-	public perspectives: AtomFamilyPerspective<any, any>[]
+	public perspectives: PerspectiveToken<any, any>[]
 
-	private constructor() {}
+	private constructor(public readonly key: string) {}
 
+	public static existing: InvariantMap<string, SyncGroupToken> =
+		new InvariantMap()
 	public static create(
+		key: string,
 		builder: (group: SyncGroup) => SyncGroupToken,
 	): SyncGroupToken {
-		const group = new SyncGroup()
+		const group = new SyncGroup(key)
 		const { type, globals, actions, perspectives } = builder(group)
-		return { type, globals, actions, perspectives }
+		const token = { type, key, globals, actions, perspectives }
+		SyncGroup.existing.set(key, token)
+		return token
 	}
 
 	public add(...atoms: AtomToken<any>[]): SyncGroup
@@ -64,7 +85,11 @@ export class SyncGroup implements SyncGroupToken {
 				AtomFamilyToken<any, any>,
 				ReadableFamilyToken<Iterable<any>, string>,
 			]
-			this.perspectives.push({ resourceAtoms: family, perspectiveAtoms: index })
+			this.perspectives.push({
+				type: `realtime_perspective`,
+				resourceAtoms: family,
+				perspectiveAtoms: index,
+			})
 		}
 		return this
 	}

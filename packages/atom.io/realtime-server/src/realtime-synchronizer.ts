@@ -6,10 +6,9 @@ import type { SyncGroupToken } from "../../__unstable__/create-realtime-sync-gro
 import { socketsOfClients } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
-	redactedUpdateSelectors,
+	redactedPerspectiveUpdateSelectors,
 	socketEpochSelectors,
 	socketUnacknowledgedUpdatesSelectors,
-	transactionRedactorAtoms,
 } from "./realtime-server-stores/server-sync-store"
 
 export type RealtimeSynchronizer = ReturnType<typeof realtimeSynchronizer>
@@ -29,47 +28,8 @@ export function realtimeSynchronizer({
 				`Tried to create a synchronizer for a socket that is not connected to a client.`,
 			)
 		}
-		const clientPerspectiveTokens = syncGroup.perspectives.map((perspective) => {
-			const { perspectiveAtoms } = perspective
-			const perspectiveToken = findInStore(perspectiveAtoms, clientId, store)
-			return perspectiveToken
-		})
 
 		const tx = syncGroup.actions[0]
-		const filterTransactionUpdates = (
-			visible: string[],
-			transactionUpdate: AtomIO.TransactionUpdate<any>,
-		) => {
-			return transactionUpdate.updates
-				.filter((update) => {
-					if (`newValue` in update) {
-						return visible.includes(update.key)
-					}
-					return true
-				})
-				.map((update) => {
-					if (`updates` in update) {
-						return {
-							...update,
-							updates: filterTransactionUpdates(visible, update),
-						}
-					}
-				})
-		}
-		const filter: (
-			updates: AtomIO.TransactionUpdate<any>,
-		) => AtomIO.TransactionUpdate<any> = (update) => {
-			const clientPerspectives = clientPerspectiveTokens.flatMap(
-				(perspectiveToken) => {
-					const perspective = AtomIO.getState(perspectiveToken, store)
-					const visibleTokens = [...perspective]
-					return visibleTokens
-				},
-			)
-			const visibleKeys = syncGroup.globals.map((atomToken) => atomToken.key)
-			visibleKeys.push(...clientPerspectives)
-			return filterTransactionUpdates(visibleKeys, update)
-		}
 
 		const socketUnacknowledgedUpdatesState = findInStore(
 			socketUnacknowledgedUpdatesSelectors,
@@ -105,13 +65,23 @@ export function realtimeSynchronizer({
 				(update) => {
 					const updateState = findInStore(completeUpdateAtoms, update.id, store)
 					AtomIO.setState(updateState, update, store)
-					const toEmit = filter(update)
+					const redactedUpdateKey = {
+						socketId: socket.id,
+						syncGroupKey: syncGroup.key,
+						updateId: update.id,
+					}
+					const redactedUpdateState = findInStore(
+						redactedPerspectiveUpdateSelectors,
+						redactedUpdateKey,
+						store,
+					)
+					const redactedUpdate = AtomIO.getState(redactedUpdateState, store)
 
 					AtomIO.setState(
 						socketUnacknowledgedUpdatesState,
 						(updates) => {
-							if (toEmit) {
-								updates.push(toEmit)
+							if (redactedUpdate) {
+								updates.push(redactedUpdate)
 								updates.sort((a, b) => a.epoch - b.epoch)
 							}
 							return updates
@@ -119,7 +89,7 @@ export function realtimeSynchronizer({
 						store,
 					)
 
-					socket.emit(`tx-new:${tx.key}`, toEmit)
+					socket.emit(`tx-new:${tx.key}`, redactedUpdate)
 				},
 				`tx-sub:${tx.key}:${socket.id}`,
 				store,
