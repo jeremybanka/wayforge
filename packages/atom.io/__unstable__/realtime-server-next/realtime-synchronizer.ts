@@ -1,15 +1,15 @@
 import * as AtomIO from "atom.io"
 import { IMPLICIT, findInStore, subscribeToTransaction } from "atom.io/internal"
 
-import type { ServerConfig } from "."
-import type { SyncGroupToken } from "../../__unstable__/create-realtime-sync-group"
-import { usersOfSockets } from "./realtime-server-stores"
+import type { ServerConfig } from "../../realtime-server/src"
+import { usersOfSockets } from "../../realtime-server/src"
 import {
 	completeUpdateAtoms,
-	redactedPerspectiveUpdateSelectors,
 	socketEpochSelectors,
 	socketUnacknowledgedUpdatesSelectors,
-} from "./realtime-server-stores/server-sync-store"
+} from "../../realtime-server/src/realtime-server-stores/server-sync-store"
+import type { SyncGroupToken } from "./create-realtime-sync-group"
+import { redactedPerspectiveUpdateSelectors } from "./realtime-sync-group-store"
 
 export type RealtimeSynchronizer = ReturnType<typeof realtimeSynchronizer>
 export function realtimeSynchronizer({

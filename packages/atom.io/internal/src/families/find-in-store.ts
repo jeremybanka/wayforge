@@ -15,6 +15,7 @@ import type {
 	WritableToken,
 } from "atom.io"
 import type { Transceiver } from "../mutable"
+import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 
 export function findInStore<
@@ -66,7 +67,7 @@ export function findInStore(
 	const familyKey = token.key
 	const family = store.families.get(familyKey)
 	if (family === undefined) {
-		throw new Error(`Family ${familyKey} not found`)
+		throw new NotFoundError(token, store)
 	}
 	const state = family(key)
 	return state
