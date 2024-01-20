@@ -5,6 +5,7 @@ import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
+import * as RTS from "atom.io/realtime-server"
 import * as Happy from "happy-dom"
 import * as React from "react"
 import * as SocketIO from "socket.io"
@@ -12,7 +13,6 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
-import { socketsOfClients } from "../../realtime-server/src/realtime-server-stores"
 
 export type TestSetupOptions = {
 	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
@@ -72,12 +72,12 @@ export const setupRealtimeTestServer = (
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
 			const socketRelatedKeysState = Internal.findInStore(
-				socketsOfClients.core.findRelatedKeysState,
+				RTS.usersOfSockets.core.findRelatedKeysState,
 				socket.id,
 				silo.store,
 			)
 			const clientRelatedKeysState = Internal.findInStore(
-				socketsOfClients.core.findRelatedKeysState,
+				RTS.usersOfSockets.core.findRelatedKeysState,
 				username,
 				silo.store,
 			)

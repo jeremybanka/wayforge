@@ -3,7 +3,7 @@ import { IMPLICIT, findInStore, subscribeToTransaction } from "atom.io/internal"
 
 import type { ServerConfig } from "."
 import type { SyncGroupToken } from "../../__unstable__/create-realtime-sync-group"
-import { socketsOfClients } from "./realtime-server-stores"
+import { usersOfSockets } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	redactedPerspectiveUpdateSelectors,
@@ -17,16 +17,20 @@ export function realtimeSynchronizer({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function synchronizer(syncGroup: SyncGroupToken): void {
-		const clientIdState = findInStore(
-			socketsOfClients.states.clientKeyOfSocket,
+		const userKeyState = findInStore(
+			usersOfSockets.states.userKeyOfSocket,
 			socket.id,
 			store,
 		)
-		const clientId = AtomIO.getState(clientIdState, store)
-		if (!clientId) {
-			throw new Error(
-				`Tried to create a synchronizer for a socket that is not connected to a client.`,
+		const userKey = AtomIO.getState(userKeyState, store)
+		if (!userKey) {
+			store.logger.error(
+				`❌`,
+				syncGroup.type,
+				syncGroup.key,
+				`Tried to create a synchronizer for a socket that is not connected to a user.`,
 			)
+			return
 		}
 
 		for (const tx of syncGroup.actions) {
@@ -111,7 +115,7 @@ export function realtimeSynchronizer({
 			let next = 1
 			const retry = setInterval(() => {
 				const toEmit = socketUnacknowledgedUpdates[0]
-				console.log(clientId, socketUnacknowledgedUpdates)
+				console.log(userKey, socketUnacknowledgedUpdates)
 				if (toEmit && i === next) {
 					socket.emit(`tx-new:${tx.key}`, toEmit)
 					next *= 2

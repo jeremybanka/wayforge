@@ -2,7 +2,7 @@ import * as AtomIO from "atom.io"
 import { IMPLICIT, findInStore, subscribeToTransaction } from "atom.io/internal"
 
 import type { ServerConfig } from "."
-import { socketsOfClients } from "./realtime-server-stores"
+import { usersOfSockets } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
@@ -22,12 +22,12 @@ export function realtimeActionSynchronizer({
 			update: AtomIO.TransactionUpdateContent[],
 		) => AtomIO.TransactionUpdateContent[],
 	): () => void {
-		const clientIdState = findInStore(
-			socketsOfClients.states.clientKeyOfSocket,
+		const userKeyState = findInStore(
+			usersOfSockets.states.userKeyOfSocket,
 			socket.id,
 			store,
 		)
-		const clientId = AtomIO.getState(clientIdState, store)
+		const userKey = AtomIO.getState(userKeyState, store)
 		const socketUnacknowledgedUpdatesState = findInStore(
 			socketUnacknowledgedUpdatesSelectors,
 			socket.id,
@@ -101,7 +101,7 @@ export function realtimeActionSynchronizer({
 		let next = 1
 		const retry = setInterval(() => {
 			const toEmit = socketUnacknowledgedUpdates[0]
-			console.log(clientId, socketUnacknowledgedUpdates)
+			console.log(userKey, socketUnacknowledgedUpdates)
 			if (toEmit && i === next) {
 				socket.emit(`tx-new:${tx.key}`, toEmit)
 				next *= 2

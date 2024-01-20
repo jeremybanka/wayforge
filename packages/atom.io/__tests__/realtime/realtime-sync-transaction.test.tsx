@@ -31,18 +31,18 @@ describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				const clientIdState = findInStore(
-					RTS.socketsOfClients.states.clientKeyOfSocket,
+				const userKeyState = findInStore(
+					RTS.usersOfSockets.states.userKeyOfSocket,
 					socket.id,
 					store,
 				)
-				const clientId = AtomIO.getState(clientIdState, store)
+				const userKey = AtomIO.getState(userKeyState, store)
 				// store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
-					console.log(`🛰 `, clientId, event, ...args)
+					console.log(`🛰 `, userKey, event, ...args)
 				})
 				socket.onAnyOutgoing((event, ...args) => {
-					console.log(`🛰  >>`, clientId, event, ...args)
+					console.log(`🛰  >>`, userKey, event, ...args)
 				})
 				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
 				const syncState = RTS.realtimeStateSynchronizer({ socket, store })

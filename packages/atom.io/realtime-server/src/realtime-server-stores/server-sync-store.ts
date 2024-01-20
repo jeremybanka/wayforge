@@ -1,7 +1,7 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
 import { SyncGroup } from "~/packages/atom.io/__unstable__/create-realtime-sync-group"
-import { socketsOfClients } from "./server-client-store"
+import { usersOfSockets } from "./server-user-store"
 
 export const completeUpdateAtoms = atomFamily<
 	TransactionUpdate<any> | null,
@@ -46,12 +46,9 @@ export const redactorAtoms = selectorFamily<
 	get:
 		({ socketId, syncGroupKey }) =>
 		({ get, find }) => {
-			const clientIdState = find(
-				socketsOfClients.states.clientKeyOfSocket,
-				socketId,
-			)
-			const clientId = get(clientIdState)
-			if (!clientId) {
+			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+			const userKey = get(userKeyState)
+			if (!userKey) {
 				throw new Error(
 					`Tried to create a synchronizer for a socket that is not connected to a client.`,
 				)
@@ -64,14 +61,12 @@ export const redactorAtoms = selectorFamily<
 				)
 			}
 
-			const clientPerspectiveTokens = syncGroup.perspectives.map(
-				(perspective) => {
-					const { perspectiveAtoms } = perspective
-					const perspectiveToken = find(perspectiveAtoms, clientId)
-					return perspectiveToken
-				},
-			)
-			const clientPerspectives = clientPerspectiveTokens.flatMap(
+			const userPerspectiveTokens = syncGroup.perspectives.map((perspective) => {
+				const { perspectiveAtoms } = perspective
+				const perspectiveToken = find(perspectiveAtoms, userKey)
+				return perspectiveToken
+			})
+			const userPerspectives = userPerspectiveTokens.flatMap(
 				(perspectiveToken) => {
 					const perspective = get(perspectiveToken)
 					const visibleTokens = [...perspective]
@@ -102,7 +97,7 @@ export const redactorAtoms = selectorFamily<
 			const filter: (updates: TransactionUpdate<any>) => TransactionUpdate<any> =
 				(update) => {
 					const visibleKeys = syncGroup.globals.map((atomToken) => atomToken.key)
-					visibleKeys.push(...clientPerspectives)
+					visibleKeys.push(...userPerspectives)
 					return filterTransactionUpdates(visibleKeys, update)
 				}
 			return filter
@@ -128,7 +123,7 @@ export const redactedPerspectiveUpdateSelectors = selectorFamily<
 		},
 })
 
-export const clientUnacknowledgedUpdatesState = atomFamily<
+export const userUnacknowledgedUpdatesAtoms = atomFamily<
 	TransactionUpdate<any>[],
 	string
 >({
@@ -144,17 +139,14 @@ export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
 	get:
 		(socketId) =>
 		({ get, find }) => {
-			const clientKeyState = find(
-				socketsOfClients.states.clientKeyOfSocket,
-				socketId,
-			)
-			const clientKey = get(clientKeyState)
-			if (!clientKey) {
+			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+			const userKey = get(userKeyState)
+			if (!userKey) {
 				return []
 			}
 			const unacknowledgedUpdatesState = find(
-				clientUnacknowledgedUpdatesState,
-				clientKey,
+				userUnacknowledgedUpdatesAtoms,
+				userKey,
 			)
 			const unacknowledgedUpdates = get(unacknowledgedUpdatesState)
 			return unacknowledgedUpdates
@@ -162,23 +154,20 @@ export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
 	set:
 		(socketId) =>
 		({ set, get, find }, newUpdates) => {
-			const clientKeyState = find(
-				socketsOfClients.states.clientKeyOfSocket,
-				socketId,
-			)
-			const clientKey = get(clientKeyState)
-			if (!clientKey) {
+			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+			const userKey = get(userKeyState)
+			if (!userKey) {
 				return
 			}
 			const unacknowledgedUpdatesState = find(
-				clientUnacknowledgedUpdatesState,
-				clientKey,
+				userUnacknowledgedUpdatesAtoms,
+				userKey,
 			)
 			set(unacknowledgedUpdatesState, newUpdates)
 		},
 })
 
-export const clientEpochAtoms = atomFamily<number | null, string>({
+export const userEpochAtoms = atomFamily<number | null, string>({
 	key: `clientEpoch`,
 	default: null,
 })
@@ -188,30 +177,24 @@ export const socketEpochSelectors = selectorFamily<number | null, string>({
 	get:
 		(socketId) =>
 		({ get, find }) => {
-			const clientKeyState = find(
-				socketsOfClients.states.clientKeyOfSocket,
-				socketId,
-			)
-			const clientKey = get(clientKeyState)
-			if (!clientKey) {
+			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+			const userKey = get(userKeyState)
+			if (!userKey) {
 				return null
 			}
-			const clientEpochState = find(clientEpochAtoms, clientKey)
-			const clientEpoch = get(clientEpochState)
-			return clientEpoch
+			const userEpochState = find(userEpochAtoms, userKey)
+			const userEpoch = get(userEpochState)
+			return userEpoch
 		},
 	set:
 		(socketId) =>
 		({ set, get, find }, newEpoch) => {
-			const clientKeyState = find(
-				socketsOfClients.states.clientKeyOfSocket,
-				socketId,
-			)
-			const clientKey = get(clientKeyState)
-			if (!clientKey) {
+			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+			const userKey = get(userKeyState)
+			if (!userKey) {
 				return
 			}
-			const clientEpochState = find(clientEpochAtoms, clientKey)
-			set(clientEpochState, newEpoch)
+			const userEpochState = find(userEpochAtoms, userKey)
+			set(userEpochState, newEpoch)
 		},
 })
