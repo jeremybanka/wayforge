@@ -13,8 +13,11 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	socket: Socket,
 	store: Internal.Store,
 ): () => void {
-	const optimisticQueue = AtomIO.getState(optimisticUpdateQueueState, store)
-	const confirmedQueue = AtomIO.getState(confirmedUpdateQueueState, store)
+	const optimisticQueue = Internal.getFromStore(
+		optimisticUpdateQueueState,
+		store,
+	)
+	const confirmedQueue = Internal.getFromStore(confirmedUpdateQueueState, store)
 
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
@@ -23,7 +26,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				(update) => update.id === clientUpdate.id,
 			)
 			if (optimisticUpdateQueueIndex === -1) {
-				AtomIO.setState(
+				Internal.setIntoStore(
 					optimisticUpdateQueueState,
 					(queue) => {
 						queue.push(clientUpdate)
@@ -34,7 +37,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				)
 				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			} else {
-				AtomIO.setState(
+				Internal.setIntoStore(
 					optimisticUpdateQueueState,
 					(queue) => {
 						queue[optimisticUpdateQueueIndex] = clientUpdate
@@ -52,7 +55,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 		optimisticUpdate: AtomIO.TransactionUpdate<ƒ>,
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
-		AtomIO.setState(
+		Internal.setIntoStore(
 			optimisticUpdateQueueState,
 			(queue) => {
 				queue.shift()
@@ -120,7 +123,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					(update) => update.epoch === confirmedUpdate.epoch,
 				)
 				if (hasEnqueuedOptimisticUpdate) {
-					AtomIO.setState(
+					Internal.setIntoStore(
 						confirmedUpdateQueueState,
 						(queue) => {
 							queue.push(confirmedUpdate)

@@ -1,5 +1,10 @@
-import * as AtomIO from "atom.io"
-import { IMPLICIT, findInStore, subscribeToState } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import {
+	IMPLICIT,
+	findInStore,
+	getFromStore,
+	subscribeToState,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
@@ -39,13 +44,13 @@ export function realtimeFamilyProvider({
 
 		const fillSubRequest = (subKey?: K) => {
 			if (subKey === undefined) {
-				const keys = AtomIO.getState(index, store)
+				const keys = getFromStore(index, store)
 				for (const key of keys) {
 					const token = findInStore(family, key, store)
 					socket.emit(
 						`serve:${family.key}`,
 						parseJson(token.family?.subKey || `null`),
-						AtomIO.getState(token, store),
+						getFromStore(token, store),
 					)
 				}
 
@@ -72,7 +77,7 @@ export function realtimeFamilyProvider({
 				socket.on(`unsub:${family.key}`, fillFamilyUnsubRequest)
 			} else {
 				const token = family(subKey)
-				socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
+				socket.emit(`serve:${token.key}`, getFromStore(token, store))
 				const unsubscribe = subscribeToState(
 					token,
 					({ newValue }) => {

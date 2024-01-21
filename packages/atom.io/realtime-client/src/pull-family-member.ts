@@ -1,5 +1,5 @@
-import * as AtomIO from "atom.io"
-import type { Store } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import { type Store, setIntoStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
@@ -16,7 +16,7 @@ export function pullFamilyMember<J extends Json.Serializable>(
 	const { key: familyKey, subKey: serializedSubKey } = token.family
 	const subKey = parseJson(serializedSubKey)
 	socket?.on(`serve:${token.key}`, (data: J) => {
-		AtomIO.setState(token, data, store)
+		setIntoStore(token, data, store)
 	})
 	socket?.emit(`sub:${familyKey}`, subKey)
 	return () => {

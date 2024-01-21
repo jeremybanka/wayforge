@@ -1,5 +1,5 @@
-import * as AtomIO from "atom.io"
-import { getJsonToken, getUpdateToken } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import { getJsonToken, getUpdateToken, setIntoStore } from "atom.io/internal"
 import type { Store, Transceiver } from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 import type { Json } from "atom.io/json"
@@ -21,13 +21,13 @@ export function pullMutableFamilyMember<
 	const subKey = parseJson(serializedSubKey)
 	socket?.on(`init:${token.key}`, (data: J) => {
 		const jsonToken = getJsonToken(token)
-		AtomIO.setState(jsonToken, data, store)
+		setIntoStore(jsonToken, data, store)
 	})
 	socket?.on(
 		`next:${token.key}`,
 		(data: T extends Transceiver<infer Signal> ? Signal : never) => {
 			const trackerToken = getUpdateToken(token)
-			AtomIO.setState(trackerToken, data, store)
+			setIntoStore(trackerToken, data, store)
 		},
 	)
 	socket?.emit(`sub:${familyKey}`, subKey)

@@ -1,5 +1,5 @@
-import * as AtomIO from "atom.io"
-import { IMPLICIT, subscribeToState } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import { IMPLICIT, getFromStore, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
@@ -15,7 +15,7 @@ export function realtimeStateProvider({
 		let unsubscribeFromStateUpdates: (() => void) | undefined
 
 		const fillSubRequest = () => {
-			socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
+			socket.emit(`serve:${token.key}`, getFromStore(token, store))
 
 			unsubscribeFromStateUpdates = subscribeToState(
 				token,

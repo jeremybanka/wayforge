@@ -1,11 +1,16 @@
 import type { FamilyMetadata, MutableAtomToken, RegularAtomToken } from "atom.io"
-import { getState, setState } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
-import { newest, subscribeToState, subscribeToTimeline } from ".."
+import {
+	getFromStore,
+	newest,
+	setIntoStore,
+	subscribeToState,
+	subscribeToTimeline,
+} from ".."
 import { createRegularAtom } from "../atom"
-import { isChildStore, isRootStore } from "../transaction/is-root-store"
+import { isChildStore } from "../transaction/is-root-store"
 import type { Transceiver } from "./transceiver"
 
 /**
@@ -57,7 +62,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		const subscriptionKey = `tracker:${target.config.name}:${
 			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
-		const originalInnerValue = getState(mutableState, target)
+		const originalInnerValue = getFromStore(mutableState, target)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
 			(update) => {
@@ -66,12 +71,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 						subscriptionKey,
 						() => {
 							unsubscribe()
-							setState(latestUpdateState, update, target)
+							setIntoStore(latestUpdateState, update, target)
 						},
 					)
 				} else {
-					setState(mutableState, (current) => current, target)
-					setState(latestUpdateState, update, target)
+					setIntoStore(mutableState, (current) => current, target)
+					setIntoStore(latestUpdateState, update, target)
 				}
 			},
 		)
@@ -88,12 +93,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 									subscriptionKey,
 									() => {
 										unsubscribe()
-										setState(latestUpdateState, update, target)
+										setIntoStore(latestUpdateState, update, target)
 									},
 								)
 							} else {
-								setState(mutableState, (current) => current, target)
-								setState(latestUpdateState, update, target)
+								setIntoStore(mutableState, (current) => current, target)
+								setIntoStore(latestUpdateState, update, target)
 							}
 						},
 					)
@@ -126,7 +131,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 							{ key: timelineId, type: `timeline` },
 							(update) => {
 								unsubscribe()
-								setState(
+								setIntoStore(
 									mutableState,
 									(transceiver) => {
 										if (update === `redo` && newValue) {
@@ -150,12 +155,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					subscriptionKey,
 					() => {
 						unsubscribe()
-						const mutable = getState(mutableState, target)
+						const mutable = getFromStore(mutableState, target)
 						const updateNumber =
 							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
-							setState(
+							setIntoStore(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
 								target,

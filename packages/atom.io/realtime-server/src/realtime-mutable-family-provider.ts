@@ -1,8 +1,9 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import type { Transceiver } from "atom.io/internal"
 import {
 	IMPLICIT,
 	findInStore,
+	getFromStore,
 	getJsonToken,
 	getUpdateToken,
 	subscribeToState,
@@ -49,7 +50,7 @@ export function realtimeMutableFamilyProvider({
 
 		const fillSubRequest = (subKey?: K) => {
 			if (subKey === undefined) {
-				const keys = AtomIO.getState(index, store)
+				const keys = getFromStore(index, store)
 				for (const key of keys) {
 					const token = findInStore(family, key, store)
 					const jsonToken = getJsonToken(token)
@@ -57,7 +58,7 @@ export function realtimeMutableFamilyProvider({
 					socket.emit(
 						`init:${family.key}`,
 						parseJson(jsonToken.family?.subKey || `null`),
-						AtomIO.getState(jsonToken, store),
+						getFromStore(jsonToken, store),
 					)
 					const unsubFromUpdates = subscribeToState(
 						trackerToken,
@@ -81,7 +82,7 @@ export function realtimeMutableFamilyProvider({
 						socket.emit(
 							`init:${family.key}`,
 							parseJson(jsonToken.family?.subKey || `null`),
-							AtomIO.getState(jsonToken, store),
+							getFromStore(jsonToken, store),
 						)
 						const unsubFromUpdates = subscribeToState(
 							trackerToken,
@@ -105,7 +106,7 @@ export function realtimeMutableFamilyProvider({
 				const token = family(subKey)
 				const jsonToken = getJsonToken(token)
 				const updateToken = getUpdateToken(token)
-				socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
+				socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))
 				const unsubscribe = subscribeToState(
 					updateToken,
 					({ newValue }) => {

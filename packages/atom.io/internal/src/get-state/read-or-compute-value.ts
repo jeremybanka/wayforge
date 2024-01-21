@@ -1,6 +1,6 @@
-import type { ReadableState } from "."
-import { readCachedValue } from "./caching"
-import type { Store } from "./store"
+import type { ReadableState } from ".."
+import { readCachedValue } from "../caching"
+import type { Store } from "../store"
 
 export const readOrComputeValue = <T>(
 	state: ReadableState<T>,

@@ -1,6 +1,5 @@
-import { setState } from "atom.io"
 import type { ReadableToken, WritableFamilyToken, WritableToken } from "atom.io"
-import { findInStore } from "atom.io/internal"
+import { findInStore, setIntoStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as React from "react"
 
@@ -30,7 +29,7 @@ export function useI<T, K extends Json.Serializable>(
 		(<New extends T>(next: New | ((old: T) => New)) => void) | null
 	> = React.useRef(null)
 	if (setter.current === null) {
-		setter.current = (next) => setState(stateToken, next, store)
+		setter.current = (next) => setIntoStore(stateToken, next, store)
 	}
 	return setter.current
 }
