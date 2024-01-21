@@ -184,7 +184,6 @@ describe(`mutable time traveling`, () => {
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
 		const myMutableState = myMutableStates(`example`)
-		// debugger
 		const myTL = timeline({
 			key: `myTimeline`,
 			atoms: [myMutableStates],

@@ -1,9 +1,10 @@
 import { newest } from "../lineage"
 import type { Store } from "../store"
+import { isChildStore } from "./is-root-store"
 
 export const abortTransaction = (store: Store): void => {
 	const target = newest(store)
-	if (target.transactionMeta === null || target.parent === null) {
+	if (!isChildStore(target)) {
 		store.logger.warn(
 			`🐞`,
 			`transaction`,

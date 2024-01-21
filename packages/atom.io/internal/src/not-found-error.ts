@@ -1,10 +1,21 @@
-import type { ReadableToken } from "atom.io"
+import type {
+	ReadableFamilyToken,
+	ReadableToken,
+	TimelineToken,
+	TransactionToken,
+} from "atom.io"
 
 import type { Store } from "./store"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
-function prettyPrintTokenType(token: ReadableToken<any>) {
+type AtomIOToken =
+	| ReadableFamilyToken<any, any>
+	| ReadableToken<any>
+	| TimelineToken<any>
+	| TransactionToken<any>
+
+function prettyPrintTokenType(token: AtomIOToken) {
 	if (token.type === `readonly_selector`) {
 		return `Readonly Selector`
 	}
@@ -12,7 +23,7 @@ function prettyPrintTokenType(token: ReadableToken<any>) {
 }
 
 export class NotFoundError extends Error {
-	public constructor(token: ReadableToken<any>, store: Store) {
+	public constructor(token: AtomIOToken, store: Store) {
 		super(
 			`${prettyPrintTokenType(token)} "${token.key}" not found in store "${
 				store.config.name

@@ -11,6 +11,7 @@ import { markDone } from "../operation"
 import { become } from "../set-state/become"
 import type { Store } from "../store"
 import { Subject } from "../subject"
+import { isRootStore } from "../transaction/is-root-store"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
@@ -45,7 +46,7 @@ export const createWritableSelector = <T>(
 		)
 		cacheValue(options.key, newValue, subject, store)
 		markDone(options.key, store)
-		if (target.transactionMeta === null) {
+		if (isRootStore(target)) {
 			subject.next({ newValue, oldValue })
 		}
 		options.set(transactors, newValue)

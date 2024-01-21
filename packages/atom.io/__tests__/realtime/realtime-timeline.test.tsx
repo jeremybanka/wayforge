@@ -23,13 +23,14 @@ describe(`undo/redo`, () => {
 
 	test(`server update; server undo; server redo`, async () => {
 		const { client, server, teardown } = scenario()
-		client.renderResult.getByTestId(`count:0`)
+		const app = client.init()
+		app.renderResult.getByTestId(`count:0`)
 		act(() => server.silo.setState(countState, 1))
-		await waitFor(() => client.renderResult.getByTestId(`count:1`))
+		await waitFor(() => app.renderResult.getByTestId(`count:1`))
 		act(() => server.silo.undo(countTL))
-		await waitFor(() => client.renderResult.getByTestId(`count:0`))
+		await waitFor(() => app.renderResult.getByTestId(`count:0`))
 		act(() => server.silo.redo(countTL))
-		await waitFor(() => client.renderResult.getByTestId(`count:1`))
+		await waitFor(() => app.renderResult.getByTestId(`count:1`))
 		teardown()
 	})
 })

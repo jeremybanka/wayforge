@@ -30,7 +30,6 @@ export const addAtomToTimeline = (
 	store.timelineAtoms.set({ atomKey: atom.key, timelineKey: tl.key })
 
 	atom.subject.subscribe(`timeline`, (update) => {
-		// debugger
 		const target = newest(store)
 		const currentSelectorKey =
 			store.operation.open && store.operation.token.type === `selector`
@@ -40,8 +39,9 @@ export const addAtomToTimeline = (
 			store.operation.open && store.operation.token.type === `selector`
 				? store.operation.time
 				: null
-		const currentTransactionKey = target.on.transactionApplying.state?.update.key
-		const currentTransactionTime = target.on.transactionApplying.state?.time
+		const { transactionApplying } = target.on
+		const currentTransactionKey = transactionApplying.state?.update.key
+		const currentTransactionInstanceId = transactionApplying.state?.update.id
 
 		store.logger.info(
 			`⏳`,
@@ -93,7 +93,7 @@ export const addAtomToTimeline = (
 						`timeline:${tl.key}`,
 						(update) => {
 							unsubscribe()
-							if (tl.timeTraveling === null && currentTransactionTime) {
+							if (tl.timeTraveling === null && currentTransactionInstanceId) {
 								if (tl.at !== tl.history.length) {
 									tl.history.splice(tl.at)
 								}
@@ -132,7 +132,7 @@ export const addAtomToTimeline = (
 
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {
 									type: `transaction_update`,
-									timestamp: currentTransactionTime,
+									timestamp: Date.now(),
 									...update,
 									updates,
 								}

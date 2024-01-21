@@ -43,6 +43,7 @@ export type TokenDenomination =
 	| `atom`
 	| `mutable_atom`
 	| `readonly_selector`
+	| `realtime_sync_group`
 	| `selector`
 	| `state`
 	| `timeline`
