@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.17.0
+
+### Minor Changes
+
+- fd5b715: 💥 BREAKING CHANGE: `getState` and `setState` no longer support accessing a particular store besides the implicit store. If you are looking for this functionality, use the methods returned by the silo class when creating your store.
+
 ## 0.16.3
 
 ### Patch Changes
