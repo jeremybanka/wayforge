@@ -160,6 +160,7 @@ export const setupRealtimeTestClient = (
 		const prettyPrint = () => console.log(prettyDOM(renderResult.container))
 
 		const dispose = () => {
+			renderResult.unmount()
 			socket.disconnect()
 			Internal.clearStore(silo.store)
 		}
