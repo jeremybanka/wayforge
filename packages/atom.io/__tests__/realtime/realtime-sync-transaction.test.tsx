@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { findInStore } from "atom.io/internal"
+import { findInStore, getFromStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
@@ -36,7 +36,7 @@ describe(`synchronizing transactions`, () => {
 					socket.id,
 					store,
 				)
-				const userKey = AtomIO.getState(userKeyState, store)
+				const userKey = getFromStore(userKeyState, store)
 				// store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
 					console.log(`🛰 `, userKey, event, ...args)

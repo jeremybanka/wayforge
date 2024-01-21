@@ -5,18 +5,6 @@ import type { WritableToken } from "."
 export function setState<T, New extends T>(
 	token: WritableToken<T>,
 	value: New | ((oldValue: T) => New),
-	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): void {
-	const rejection = Internal.openOperation(token, store)
-	if (rejection) {
-		return
-	}
-	const state =
-		Internal.withdraw(token, store) ??
-		Internal.withdrawNewFamilyMember(token, store)
-	if (state === undefined) {
-		throw new Internal.NotFoundError(token, store)
-	}
-	Internal.setAtomOrSelector(state, value, store)
-	Internal.closeOperation(store)
+	Internal.setIntoStore(token, value, Internal.IMPLICIT.STORE)
 }

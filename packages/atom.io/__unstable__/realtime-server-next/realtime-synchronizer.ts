@@ -1,5 +1,11 @@
 import * as AtomIO from "atom.io"
-import { IMPLICIT, findInStore, subscribeToTransaction } from "atom.io/internal"
+import {
+	IMPLICIT,
+	findInStore,
+	getFromStore,
+	setIntoStore,
+	subscribeToTransaction,
+} from "atom.io/internal"
 
 import type { ServerConfig } from "../../realtime-server/src"
 import { usersOfSockets } from "../../realtime-server/src"
@@ -22,7 +28,7 @@ export function realtimeSynchronizer({
 			socket.id,
 			store,
 		)
-		const userKey = AtomIO.getState(userKeyState, store)
+		const userKey = getFromStore(userKeyState, store)
 		if (!userKey) {
 			store.logger.error(
 				`❌`,
@@ -39,7 +45,7 @@ export function realtimeSynchronizer({
 				socket.id,
 				store,
 			)
-			const socketUnacknowledgedUpdates = AtomIO.getState(
+			const socketUnacknowledgedUpdates = getFromStore(
 				socketUnacknowledgedUpdatesState,
 				store,
 			)
@@ -77,7 +83,7 @@ export function realtimeSynchronizer({
 							update.id,
 							store,
 						)
-						AtomIO.setState(updateState, update, store)
+						setIntoStore(updateState, update, store)
 						const redactedUpdateKey = {
 							socketId: socket.id,
 							syncGroupKey: syncGroup.key,
@@ -88,9 +94,9 @@ export function realtimeSynchronizer({
 							redactedUpdateKey,
 							store,
 						)
-						const redactedUpdate = AtomIO.getState(redactedUpdateState, store)
+						const redactedUpdate = getFromStore(redactedUpdateState, store)
 
-						AtomIO.setState(
+						setIntoStore(
 							socketUnacknowledgedUpdatesState,
 							(updates) => {
 								if (redactedUpdate) {
@@ -133,9 +139,9 @@ export function realtimeSynchronizer({
 					store,
 				)
 
-				AtomIO.setState(socketEpochState, epoch, store)
+				setIntoStore(socketEpochState, epoch, store)
 				if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
-					AtomIO.setState(
+					setIntoStore(
 						socketUnacknowledgedUpdatesState,
 						(updates) => {
 							updates.shift()

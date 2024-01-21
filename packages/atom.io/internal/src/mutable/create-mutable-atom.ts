@@ -4,12 +4,11 @@ import type {
 	MutableAtomOptions,
 	MutableAtomToken,
 } from "atom.io"
-import { setState } from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
-import { type MutableAtom, cacheValue } from ".."
-import { createRegularAtom, markAtomAsDefault } from "../atom"
+import { type MutableAtom, cacheValue, setIntoStore } from ".."
+import { markAtomAsDefault } from "../atom"
 import { newest } from "../lineage"
 import { type Store, deposit } from "../store"
 import { Subject } from "../subject"
@@ -70,7 +69,7 @@ export function createMutableAtom<
 		const cleanupFunctions: (() => void)[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
-				setSelf: (next) => setState(token, next, store),
+				setSelf: (next) => setIntoStore(token, next, store),
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(token, handle, `effect[${effectIndex}]`, store),
 			})

@@ -1,6 +1,6 @@
 import type { Selector } from ".."
+import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
-import { readOrComputeValue } from "../read-or-compute-value"
 import { traceAllSelectorAtoms } from "../selector"
 import type { Store } from "../store"
 import { recallState } from "./recall-state"

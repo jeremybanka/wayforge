@@ -5,9 +5,8 @@ import type {
 	RegularAtomToken,
 	UpdateHandler,
 } from "atom.io"
-import { setState } from "atom.io"
 
-import type { RegularAtom } from ".."
+import { type RegularAtom, setIntoStore } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -69,7 +68,7 @@ export function createRegularAtom<T>(
 		const cleanupFunctions: (() => void)[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
-				setSelf: (next) => setState(token, next, store),
+				setSelf: (next) => setIntoStore(token, next, store),
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(token, handle, `effect[${effectIndex}]`, store),
 			})

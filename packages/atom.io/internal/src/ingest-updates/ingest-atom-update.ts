@@ -1,6 +1,6 @@
 import type { KeyedStateUpdate } from "atom.io"
-import { setState } from "atom.io"
 
+import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 
 export function ingestAtomUpdate(
@@ -10,5 +10,5 @@ export function ingestAtomUpdate(
 ): void {
 	const { key, newValue, oldValue } = atomUpdate
 	const value = applying === `newValue` ? newValue : oldValue
-	setState({ key, type: `atom` }, value, store)
+	setIntoStore({ key, type: `atom` }, value, store)
 }
