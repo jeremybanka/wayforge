@@ -1,6 +1,5 @@
-import { getState } from "atom.io"
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
-import { findInStore, subscribeToState } from "atom.io/internal"
+import { findInStore, getFromStore, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as React from "react"
 
@@ -28,7 +27,7 @@ export function useO<T, K extends Json.Serializable>(
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
 		(dispatch) => subscribeToState(stateToken, dispatch, `use-o:${id}`, store),
-		() => getState(stateToken, store),
-		() => getState(stateToken, store),
+		() => getFromStore(stateToken, store),
+		() => getFromStore(stateToken, store),
 	)
 }

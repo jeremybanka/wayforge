@@ -1,6 +1,6 @@
 import { setState } from "atom.io"
 import type { WritableToken } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
+import { IMPLICIT, setIntoStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
@@ -13,7 +13,7 @@ export function realtimeStateReceiver({
 	return function stateReceiver<J extends Json.Serializable>(
 		token: WritableToken<J>,
 	): () => void {
-		const publish = (newValue: J) => setState(token, newValue, store)
+		const publish = (newValue: J) => setIntoStore(token, newValue, store)
 
 		const fillPubUnclaim = () => {
 			socket.off(`pub:${token.key}`, publish)

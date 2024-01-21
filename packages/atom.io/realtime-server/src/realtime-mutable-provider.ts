@@ -1,6 +1,7 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import {
 	IMPLICIT,
+	getFromStore,
 	getJsonToken,
 	getUpdateToken,
 	subscribeToState,
@@ -31,7 +32,7 @@ export function realtimeMutableProvider({
 		}
 
 		const fillSubRequest = () => {
-			socket.emit(`init:${token.key}`, AtomIO.getState(jsonToken, store))
+			socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))
 			unsubscribeFromStateUpdates = subscribeToState(
 				trackerToken,
 				({ newValue }) => {

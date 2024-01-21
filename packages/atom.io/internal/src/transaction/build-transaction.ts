@@ -1,4 +1,4 @@
-import { getState, runTransaction, setState } from "atom.io"
+import { runTransaction } from "atom.io"
 import type { findState, ƒn } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
@@ -6,8 +6,10 @@ import { Junction } from "~/packages/rel8/junction/src"
 import type { TransactionProgress } from "."
 import { findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
+import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
+import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import type { ChildStore, RootStore } from "./is-root-store"
 import { isRootStore } from "./is-root-store"
@@ -53,8 +55,8 @@ export const buildTransaction = (
 			output: undefined,
 		},
 		transactors: {
-			get: (token) => getState(token, child),
-			set: (token, value) => setState(token, value, child),
+			get: (token) => getFromStore(token, child),
+			set: (token, value) => setIntoStore(token, value, child),
 			run: (token, id) => runTransaction(token, id, child),
 			find: ((token, key) => findInStore(token, key, child)) as typeof findState,
 			env: () => getEnvironmentData(child),

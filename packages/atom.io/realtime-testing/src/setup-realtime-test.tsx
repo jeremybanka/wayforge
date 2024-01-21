@@ -81,12 +81,12 @@ export const setupRealtimeTestServer = (
 				username,
 				silo.store,
 			)
-			AtomIO.setState(
+			Internal.setIntoStore(
 				socketRelatedKeysState,
 				(keys) => (keys.clear(), keys.add(username)),
 				silo.store,
 			)
-			AtomIO.setState(
+			Internal.setIntoStore(
 				clientRelatedKeysState,
 				(keys) => (keys.clear(), keys.add(socket.id)),
 				silo.store,

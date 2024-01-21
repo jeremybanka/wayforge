@@ -7,6 +7,8 @@ import {
 	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
+	getFromStore,
+	setIntoStore,
 	timeTravel,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -21,11 +23,13 @@ import type {
 	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
+	getState,
 	redo,
+	setState,
 	timeline,
 	undo,
 } from "."
-import { getState, setState, subscribe } from "."
+import { subscribe } from "."
 import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
@@ -76,8 +80,8 @@ export class Silo {
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
-		this.getState = (token) => getState(token, s)
-		this.setState = (token, newValue) => setState(token, newValue, s)
+		this.getState = (token) => getFromStore(token, s)
+		this.setState = (token, newValue) => setIntoStore(token, newValue, s)
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
 		this.undo = (token) => timeTravel(`undo`, token, s)
 		this.redo = (token) => timeTravel(`redo`, token, s)

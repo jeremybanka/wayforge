@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { IMPLICIT, type Store } from "atom.io/internal"
+import { IMPLICIT, type Store, setIntoStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -48,7 +48,7 @@ describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				AtomIO.setState(storeState, store, store)
+				setIntoStore(storeState, store, store)
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,
 					store,
@@ -64,7 +64,7 @@ describe(`running transactions`, () => {
 						addToNumbersCollectionTX,
 					)
 					const store = React.useContext(AR.StoreContext)
-					AtomIO.setState(storeState, store, store)
+					setIntoStore(storeState, store, store)
 
 					return (
 						<button

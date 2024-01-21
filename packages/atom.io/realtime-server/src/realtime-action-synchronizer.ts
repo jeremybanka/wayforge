@@ -1,5 +1,11 @@
 import * as AtomIO from "atom.io"
-import { IMPLICIT, findInStore, subscribeToTransaction } from "atom.io/internal"
+import {
+	IMPLICIT,
+	findInStore,
+	getFromStore,
+	setIntoStore,
+	subscribeToTransaction,
+} from "atom.io/internal"
 
 import type { ServerConfig } from "."
 import { usersOfSockets } from "./realtime-server-stores"
@@ -27,19 +33,19 @@ export function realtimeActionSynchronizer({
 			socket.id,
 			store,
 		)
-		const userKey = AtomIO.getState(userKeyState, store)
+		const userKey = getFromStore(userKeyState, store)
 		const socketUnacknowledgedUpdatesState = findInStore(
 			socketUnacknowledgedUpdatesSelectors,
 			socket.id,
 			store,
 		)
-		const socketUnacknowledgedUpdates = AtomIO.getState(
+		const socketUnacknowledgedUpdates = getFromStore(
 			socketUnacknowledgedUpdatesState,
 			store,
 		)
 		if (filter) {
 			const redactorState = findInStore(transactionRedactorAtoms, tx.key, store)
-			AtomIO.setState(redactorState, { filter }, store)
+			setIntoStore(redactorState, { filter }, store)
 		}
 		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
@@ -64,9 +70,9 @@ export function realtimeActionSynchronizer({
 				tx,
 				(update) => {
 					const updateState = findInStore(completeUpdateAtoms, update.id, store)
-					AtomIO.setState(updateState, update, store)
+					setIntoStore(updateState, update, store)
 					const toEmit = filter
-						? AtomIO.getState(
+						? getFromStore(
 								findInStore(redactedUpdateSelectors, [tx.key, update.id], store),
 								store,
 						  )
@@ -76,7 +82,7 @@ export function realtimeActionSynchronizer({
 					// updates be set in the queue for that socket's client.
 					//
 					// we need a client session that can persist between disconnects
-					AtomIO.setState(
+					setIntoStore(
 						socketUnacknowledgedUpdatesState,
 						(updates) => {
 							if (toEmit) {
@@ -119,9 +125,9 @@ export function realtimeActionSynchronizer({
 				store,
 			)
 
-			AtomIO.setState(socketEpochState, epoch, store)
+			setIntoStore(socketEpochState, epoch, store)
 			if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
-				AtomIO.setState(
+				setIntoStore(
 					socketUnacknowledgedUpdatesState,
 					(updates) => {
 						updates.shift()
