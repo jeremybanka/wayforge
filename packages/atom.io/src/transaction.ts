@@ -77,13 +77,12 @@ export function transaction<ƒ extends ƒn>(
 	return createTransaction(options, IMPLICIT.STORE)
 }
 
-export const runTransaction =
-	<ƒ extends ƒn>(
-		token: TransactionToken<ƒ>,
-		id?: string,
-		store: Store = IMPLICIT.STORE,
-	) =>
-	(...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
+export function actUponStore<ƒ extends ƒn>(
+	token: TransactionToken<ƒ>,
+	id: string,
+	store: Store,
+) {
+	return (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
 		const tx = withdraw(token, store)
 		if (tx) {
 			return tx.run(parameters, id)
@@ -92,3 +91,20 @@ export const runTransaction =
 			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,
 		)
 	}
+}
+
+export function runTransaction<ƒ extends ƒn>(
+	token: TransactionToken<ƒ>,
+	id?: string,
+	store: Store = IMPLICIT.STORE,
+) {
+	return (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
+		const tx = withdraw(token, store)
+		if (tx) {
+			return tx.run(parameters, id)
+		}
+		throw new Error(
+			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,
+		)
+	}
+}

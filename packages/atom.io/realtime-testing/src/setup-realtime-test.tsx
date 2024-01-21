@@ -68,6 +68,7 @@ export const setupRealtimeTestServer = (
 	const port =
 		typeof address === `string` ? 80 : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
+
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
@@ -104,6 +105,18 @@ export const setupRealtimeTestServer = (
 
 	const dispose = () => {
 		server.close()
+		const roomKeys = Internal.getFromStore(RTS.roomIndex, silo.store)
+		for (const roomKey of roomKeys) {
+			const roomState = Internal.findInStore(
+				RTS.roomSelectors,
+				roomKey,
+				silo.store,
+			)
+			const room = Internal.getFromStore(roomState, silo.store)
+			if (room && !(room instanceof Promise)) {
+				room.kill()
+			}
+		}
 		Internal.clearStore(silo.store)
 	}
 

@@ -1,6 +1,7 @@
 import type { Store } from "atom.io/internal"
 import type * as SocketIO from "socket.io"
 
+export * from "./realtime-server-stores/server-room-store"
 export * from "./realtime-server-stores"
 export * from "./realtime-state-provider"
 export * from "./realtime-state-synchronizer"
