@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.16.3
+
+### Patch Changes
+
+- f89cb88: ✨ `atom.io/react` `useI` and `useO` now support the usage `(FamilyToken<T, K>, K): Setter<T>` and `(FamilyToken<T, K>, K): T` respectively.
+- f89cb88: ♻️ `atom.io/realtime-testing` clients now must be deliberately initialized.
+
 ## 0.16.2
 
 ### Patch Changes
