@@ -46,15 +46,15 @@ describe(`multiple-instance`, () => {
 						store,
 					)(roomId, `pnpm`, [`tsx`, path.join(__dirname, `game.node.ts`)])
 					room.stdout.on(`data`, (data) => {
-						console.log(`[Server ${roomId}] ${data}`)
+						console.log(`[${roomId}]`, data)
 					})
 
 					room.stderr.on(`data`, (data) => {
-						console.error(`[Server ${roomId} Error] ${data}`)
+						console.error(`[${roomId}]`, data)
 					})
 
 					room.on(`close`, (code) => {
-						console.log(`Server ${roomId} exited with code ${code}`)
+						console.log(`${roomId} exited with code ${code}`)
 					})
 				})
 			},
@@ -102,8 +102,8 @@ describe(`multiple-instance`, () => {
 		const button = app.renderResult.getByRole(`button`)
 		act(() => button.click())
 		await waitFor(() => app.renderResult.getByTestId(`room-1`))
-		// wait 3 seconds
-		await new Promise((resolve) => setTimeout(resolve, 3000))
+
+		await new Promise((resolve) => setTimeout(resolve, 500))
 		teardown()
 	})
 })

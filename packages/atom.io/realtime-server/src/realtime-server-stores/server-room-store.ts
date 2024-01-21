@@ -57,13 +57,13 @@ export const roomSelectors = AtomIO.selectorFamily<
 					},
 				})
 				room.stdout.on(`data`, (data) => {
-					console.log(`[Server ${roomId}] ${data}`)
 					if (data.toString() === `✨`) {
+						console.log(`[${roomId}]`, data.toString())
 						resolve(room)
 					}
 				})
 				room.stderr.on(`data`, (data) => {
-					console.error(`[Server ${roomId} Error] ${data}`)
+					console.error(`[${roomId}]`, data)
 				})
 			})
 		},
