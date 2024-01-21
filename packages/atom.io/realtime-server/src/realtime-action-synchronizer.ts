@@ -1,12 +1,15 @@
 import * as AtomIO from "atom.io"
-import { IMPLICIT, subscribeToTransaction } from "atom.io/internal"
+import { IMPLICIT, findInStore, subscribeToTransaction } from "atom.io/internal"
 
 import type { ServerConfig } from "."
+import { usersOfSockets } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
+	socketEpochSelectors,
+	socketUnacknowledgedUpdatesSelectors,
 	transactionRedactorAtoms,
-} from "./realtime-server-store"
+} from "./realtime-server-stores/server-sync-store"
 
 export type ActionSynchronizer = ReturnType<typeof realtimeActionSynchronizer>
 export function realtimeActionSynchronizer({
@@ -19,12 +22,24 @@ export function realtimeActionSynchronizer({
 			update: AtomIO.TransactionUpdateContent[],
 		) => AtomIO.TransactionUpdateContent[],
 	): () => void {
+		const userKeyState = findInStore(
+			usersOfSockets.states.userKeyOfSocket,
+			socket.id,
+			store,
+		)
+		const userKey = AtomIO.getState(userKeyState, store)
+		const socketUnacknowledgedUpdatesState = findInStore(
+			socketUnacknowledgedUpdatesSelectors,
+			socket.id,
+			store,
+		)
+		const socketUnacknowledgedUpdates = AtomIO.getState(
+			socketUnacknowledgedUpdatesState,
+			store,
+		)
 		if (filter) {
-			AtomIO.setState(
-				AtomIO.findState(transactionRedactorAtoms, tx.key),
-				{ filter },
-				store,
-			)
+			const redactorState = findInStore(transactionRedactorAtoms, tx.key, store)
+			AtomIO.setState(redactorState, { filter }, store)
 		}
 		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
@@ -40,32 +55,92 @@ export function realtimeActionSynchronizer({
 			)
 			store?.logger.info(`🚀`, `transaction`, tx.key, update.id, metric.duration)
 		}
+		socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
+		let unsubscribeFromTransaction: (() => void) | undefined
 		const fillTransactionSubscriptionRequest = () => {
-			const unsubscribe = subscribeToTransaction(
+			unsubscribeFromTransaction = subscribeToTransaction(
 				tx,
 				(update) => {
-					unsubscribe()
-					const updateState = AtomIO.findState(completeUpdateAtoms, update.id)
+					const updateState = findInStore(completeUpdateAtoms, update.id, store)
 					AtomIO.setState(updateState, update, store)
 					const toEmit = filter
 						? AtomIO.getState(
-								AtomIO.findState(redactedUpdateSelectors, [tx.key, update.id]),
+								findInStore(redactedUpdateSelectors, [tx.key, update.id], store),
 								store,
 						  )
 						: update
+
+					// the problem is that only while a socket is connected can
+					// updates be set in the queue for that socket's client.
+					//
+					// we need a client session that can persist between disconnects
+					AtomIO.setState(
+						socketUnacknowledgedUpdatesState,
+						(updates) => {
+							if (toEmit) {
+								updates.push(toEmit)
+								updates.sort((a, b) => a.epoch - b.epoch)
+							}
+							return updates
+						},
+						store,
+					)
+
 					socket.emit(`tx-new:${tx.key}`, toEmit)
 				},
 				`tx-sub:${tx.key}:${socket.id}`,
 				store,
 			)
-			socket.on(`tx-unsub:${tx.key}`, unsubscribe)
+			socket.on(`tx-unsub:${tx.key}`, unsubscribeFromTransaction)
 		}
 		socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 
+		let i = 1
+		let next = 1
+		const retry = setInterval(() => {
+			const toEmit = socketUnacknowledgedUpdates[0]
+			console.log(userKey, socketUnacknowledgedUpdates)
+			if (toEmit && i === next) {
+				socket.emit(`tx-new:${tx.key}`, toEmit)
+				next *= 2
+			}
+
+			i++
+		}, 250)
+
+		const trackClientAcknowledgement = (epoch: number) => {
+			i = 1
+			next = 1
+			const socketEpochState = findInStore(
+				socketEpochSelectors,
+				socket.id,
+				store,
+			)
+
+			AtomIO.setState(socketEpochState, epoch, store)
+			if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
+				AtomIO.setState(
+					socketUnacknowledgedUpdatesState,
+					(updates) => {
+						updates.shift()
+						return updates
+					},
+					store,
+				)
+			}
+		}
+		socket.on(`tx-ack:${tx.key}`, trackClientAcknowledgement)
+
 		return () => {
+			if (unsubscribeFromTransaction) {
+				unsubscribeFromTransaction()
+				unsubscribeFromTransaction = undefined
+			}
+			clearInterval(retry)
 			socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
+			socket.off(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
 		}
 	}
 }

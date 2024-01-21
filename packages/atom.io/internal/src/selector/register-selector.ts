@@ -1,11 +1,11 @@
 import type { Transactors, findState } from "atom.io"
-import { findInStore } from "atom.io"
 
+import { findInStore } from "../families"
 import { newest } from "../lineage"
 import { readOrComputeValue } from "../read-or-compute-value"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
-import { withdraw } from "../store"
+import { withdraw, withdrawNewFamilyMember } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
@@ -15,10 +15,11 @@ export const registerSelector = (
 	get: (dependency) => {
 		const target = newest(store)
 
-		const dependencyState = withdraw(dependency, store)
+		const dependencyState =
+			withdraw(dependency, store) ?? withdrawNewFamilyMember(dependency, store)
 		if (dependencyState === undefined) {
 			throw new Error(
-				`State "${dependency.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
+				`State "${dependency.key}" not found in store "${store.config.name}".`,
 			)
 		}
 		const dependencyValue = readOrComputeValue(dependencyState, store)

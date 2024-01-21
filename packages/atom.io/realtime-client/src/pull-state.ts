@@ -8,12 +8,13 @@ export function pullState<J extends Json.Serializable>(
 	socket: Socket,
 	store: Store,
 ): () => void {
-	socket.on(`serve:${token.key}`, (data) => {
+	const setServedValue = (data: J) => {
 		AtomIO.setState(token, data, store)
-	})
+	}
+	socket.on(`serve:${token.key}`, setServedValue)
 	socket.emit(`sub:${token.key}`)
 	return () => {
-		socket.off(`serve:${token.key}`)
+		socket.off(`serve:${token.key}`, setServedValue)
 		socket.emit(`unsub:${token.key}`)
 	}
 }

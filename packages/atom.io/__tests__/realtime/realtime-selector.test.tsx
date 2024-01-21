@@ -37,7 +37,8 @@ describe(`pull atom, observe selector`, () => {
 		})
 
 	test(`receive atomic update; derive selector update`, async () => {
-		const { client, server, teardown } = scenario()
+		const { client: uninitializedClient, server, teardown } = scenario()
+		const client = uninitializedClient.init()
 		client.renderResult.getByTestId(`plusTen:10`)
 		act(() => server.silo.setState(countState, 1))
 		await waitFor(() => client.renderResult.getByTestId(`plusTen:11`))
@@ -67,7 +68,8 @@ describe(`pull selector, observe atom`, () => {
 		})
 
 	test(`receive selector update; derive atomic update`, async () => {
-		const { client, server, teardown } = scenario()
+		const { client: uninitializedClient, server, teardown } = scenario()
+		const client = uninitializedClient.init()
 		client.renderResult.getByTestId(`count:0`)
 		act(() => server.silo.setState(countHundredfoldState, 2000))
 		await waitFor(() => client.renderResult.getByTestId(`count:20`))

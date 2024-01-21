@@ -37,10 +37,11 @@ describe(`pushing state`, () => {
 		})
 
 	test(`client 1 -> server -> client 2`, async () => {
-		const {
-			clients: { jane, dave },
-			teardown,
-		} = scenario()
+		const { clients, teardown } = scenario()
+
+		const jane = clients.jane.init()
+		const dave = clients.dave.init()
+
 		jane.renderResult.getByTestId(`0`)
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 		await waitFor(() => jane.renderResult.getByTestId(`1`))

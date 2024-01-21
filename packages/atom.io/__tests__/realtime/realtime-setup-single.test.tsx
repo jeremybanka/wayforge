@@ -26,9 +26,10 @@ describe(`single-client scenario`, () => {
 
 	it(`responds to changes on the server`, async () => {
 		const { client, server, teardown } = scenario()
-		client.renderResult.getByTestId(`0`)
+		const app = client.init()
+		app.renderResult.getByTestId(`0`)
 		act(() => server.silo.setState(countState, 1))
-		await waitFor(() => client.renderResult.getByTestId(`1`))
+		await waitFor(() => app.renderResult.getByTestId(`1`))
 		teardown()
 	})
 })

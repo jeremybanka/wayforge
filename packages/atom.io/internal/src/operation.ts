@@ -2,6 +2,7 @@ import type { WritableToken } from "atom.io"
 
 import { newest } from "./lineage"
 import type { Store } from "./store"
+import { isChildStore } from "./transaction/is-root-store"
 
 export type OperationProgress =
 	| {
@@ -40,7 +41,7 @@ export const openOperation = (
 		token.type,
 		token.key,
 		`operation start in store "${store.config.name}"${
-			store.transactionMeta === null
+			!isChildStore(store)
 				? ``
 				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.key}"`
 		}`,

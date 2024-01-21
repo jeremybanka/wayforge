@@ -5,6 +5,7 @@ import type { Json } from "atom.io/json"
 import type { Store } from ".."
 import { newest, subscribeToState, subscribeToTimeline } from ".."
 import { createRegularAtom } from "../atom"
+import { isChildStore, isRootStore } from "../transaction/is-root-store"
 import type { Transceiver } from "./transceiver"
 
 /**
@@ -51,19 +52,14 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private observeCore(
 		mutableState: MutableAtomToken<Mutable, any>,
 		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
-		store: Store,
+		target: Store,
 	): void {
-		const subscriptionKey = `tracker:${store.config.name}:${
-			store.transactionMeta === null ? `main` : store.transactionMeta.update.key
+		const subscriptionKey = `tracker:${target.config.name}:${
+			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
-		const originalInnerValue = getState(mutableState, store)
-		const target = newest(store)
+		const originalInnerValue = getState(mutableState, target)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
-			`tracker:${store.config.name}:${
-				target.transactionMeta === null
-					? `main`
-					: target.transactionMeta.update.key
-			}`,
+			subscriptionKey,
 			(update) => {
 				if (target.operation.open) {
 					const unsubscribe = target.on.operationClose.subscribe(
@@ -84,7 +80,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			(update) => {
 				if (update.newValue !== update.oldValue) {
 					this.unsubscribeFromInnerValue()
-					const target = newest(store)
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						subscriptionKey,
 						(update) => {
@@ -105,26 +100,27 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				}
 			},
 			subscriptionKey,
-			store,
+			target,
 		)
 	}
 
 	private updateCore<Core extends Transceiver<any>>(
 		mutableState: MutableAtomToken<Core, Json.Serializable>,
 		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
-		store: Store,
+		target: Store,
 	): void {
-		const subscriptionKey = `tracker:${store.config.name}:${
-			store.transactionMeta === null ? `main` : store.transactionMeta.update.key
+		const subscriptionKey = `tracker:${target.config.name}:${
+			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
 		subscribeToState(
 			latestUpdateState,
 			({ newValue, oldValue }) => {
-				const timelineId = store.timelineAtoms.getRelatedKey(
+				const timelineId = target.timelineAtoms.getRelatedKey(
 					latestUpdateState.key,
 				)
+
 				if (timelineId) {
-					const timelineData = store.timelines.get(timelineId)
+					const timelineData = target.timelines.get(timelineId)
 					if (timelineData?.timeTraveling) {
 						const unsubscribe = subscribeToTimeline(
 							{ key: timelineId, type: `timeline` },
@@ -140,38 +136,45 @@ export class Tracker<Mutable extends Transceiver<any>> {
 										}
 										return transceiver
 									},
-									store,
+									target,
 								)
 							},
 							subscriptionKey,
-							store,
+							target,
 						)
 						return
 					}
 				}
 
-				const unsubscribe = store.on.operationClose.subscribe(
+				const unsubscribe = target.on.operationClose.subscribe(
 					subscriptionKey,
 					() => {
 						unsubscribe()
-						const mutable = getState(mutableState, store)
-						// debugger
+						const mutable = getState(mutableState, target)
 						const updateNumber =
 							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
-							// ❗ new:"0=add:\"myHand\"",old:"0=add:\"deckId\""
 							setState(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
-								store,
+								target,
+							)
+						} else {
+							target.logger.info(
+								`❌`,
+								`mutable_atom`,
+								mutableState.key,
+								`could not be updated. Expected update number ${
+									mutable.cacheUpdateNumber + 1
+								}, but got ${updateNumber}`,
 							)
 						}
 					},
 				)
 			},
 			subscriptionKey,
-			store,
+			target,
 		)
 	}
 

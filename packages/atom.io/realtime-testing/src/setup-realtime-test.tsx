@@ -5,6 +5,7 @@ import * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
+import * as RTS from "atom.io/realtime-server"
 import * as Happy from "happy-dom"
 import * as React from "react"
 import * as SocketIO from "socket.io"
@@ -29,15 +30,19 @@ export type TestSetupOptions__MultiClient<ClientNames extends string> =
 export type RealtimeTestTools = {
 	name: string
 	silo: AtomIO.Silo
-	dispose: () => void
 }
 export type RealtimeTestClient = RealtimeTestTools & {
 	renderResult: RenderResult
 	prettyPrint: () => void
-	reconnect: () => void
-	disconnect: () => void
+	socket: ClientSocket
 }
+export type RealtimeTestClientBuilder = {
+	dispose: () => void
+	init: () => RealtimeTestClient
+}
+
 export type RealtimeTestServer = RealtimeTestTools & {
+	dispose: () => void
 	port: number
 }
 
@@ -46,24 +51,52 @@ export type RealtimeTestAPI = {
 	teardown: () => void
 }
 export type RealtimeTestAPI__SingleClient = RealtimeTestAPI & {
-	client: RealtimeTestClient
+	client: RealtimeTestClientBuilder
 }
 export type RealtimeTestAPI__MultiClient<ClientNames extends string> =
 	RealtimeTestAPI & {
-		clients: Record<ClientNames, RealtimeTestClient>
+		clients: Record<ClientNames, RealtimeTestClientBuilder>
 	}
 
 export const setupRealtimeTestServer = (
 	options: TestSetupOptions,
 ): RealtimeTestServer => {
+	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
+
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen().address()
 	const port =
 		typeof address === `string` ? 80 : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
-	const server = new SocketIO.Server(httpServer)
-
-	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
+	const server = new SocketIO.Server(httpServer).use((socket, next) => {
+		const { token, username } = socket.handshake.auth
+		if (token === `test` && socket.id) {
+			const socketRelatedKeysState = Internal.findInStore(
+				RTS.usersOfSockets.core.findRelatedKeysState,
+				socket.id,
+				silo.store,
+			)
+			const clientRelatedKeysState = Internal.findInStore(
+				RTS.usersOfSockets.core.findRelatedKeysState,
+				username,
+				silo.store,
+			)
+			AtomIO.setState(
+				socketRelatedKeysState,
+				(keys) => (keys.clear(), keys.add(username)),
+				silo.store,
+			)
+			AtomIO.setState(
+				clientRelatedKeysState,
+				(keys) => (keys.clear(), keys.add(socket.id)),
+				silo.store,
+			)
+			console.log(`${username} connected on ${socket.id}`)
+			next()
+		} else {
+			next(new Error(`Authentication error`))
+		}
+	})
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		options.server({ socket, silo })
@@ -85,42 +118,49 @@ export const setupRealtimeTestClient = (
 	options: TestSetupOptions__SingleClient,
 	name: string,
 	port: number,
-): RealtimeTestClient => {
-	const socket: ClientSocket = io(`http://localhost:${port}/`)
-	const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
+): RealtimeTestClientBuilder => {
+	const testClient = { dispose: () => {} }
+	const init = () => {
+		const socket: ClientSocket = io(`http://localhost:${port}/`, {
+			auth: { token: `test`, username: name },
+		})
+		const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
+		for (const [key, value] of silo.store.valueMap.entries()) {
+			if (Array.isArray(value)) {
+				silo.store.valueMap.set(key, [...value])
+			}
+		}
 
-	const { document } = new Happy.Window()
-	document.body.innerHTML = `<div id="app"></div>`
-	const renderResult = render(
-		<AR.StoreProvider store={silo.store}>
-			<RTR.RealtimeProvider socket={socket}>
-				<options.client />
-			</RTR.RealtimeProvider>
-		</AR.StoreProvider>,
-		{
-			container: document.querySelector(`#app`) as unknown as HTMLElement,
-		},
-	)
+		const { document } = new Happy.Window()
+		document.body.innerHTML = `<div id="app"></div>`
+		const renderResult = render(
+			<AR.StoreProvider store={silo.store}>
+				<RTR.RealtimeProvider socket={socket}>
+					<options.client />
+				</RTR.RealtimeProvider>
+			</AR.StoreProvider>,
+			{
+				container: document.querySelector(`#app`) as unknown as HTMLElement,
+			},
+		)
 
-	const prettyPrint = () => console.log(prettyDOM(renderResult.container))
+		const prettyPrint = () => console.log(prettyDOM(renderResult.container))
 
-	const disconnect = () => socket.disconnect()
-	const reconnect = () => socket.connect()
+		const dispose = () => {
+			socket.disconnect()
+			Internal.clearStore(silo.store)
+		}
+		testClient.dispose = dispose
 
-	const dispose = () => {
-		socket.disconnect()
-		Internal.clearStore(silo.store)
+		return {
+			name,
+			silo,
+			socket,
+			renderResult,
+			prettyPrint,
+		}
 	}
-
-	return {
-		name,
-		silo,
-		renderResult,
-		prettyPrint,
-		disconnect,
-		reconnect,
-		dispose,
-	}
+	return Object.assign(testClient, { init })
 }
 
 export const singleClient = (
@@ -152,7 +192,7 @@ export const multiClient = <ClientNames extends string>(
 			)
 			return clients
 		},
-		{} as Record<ClientNames, RealtimeTestClient>,
+		{} as Record<ClientNames, RealtimeTestClientBuilder>,
 	)
 
 	return {

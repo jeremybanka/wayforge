@@ -27,7 +27,11 @@ import { getJsonToken, getUpdateToken } from "../mutable"
 import type { OperationProgress } from "../operation"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
-import type { Transaction, TransactionMeta } from "../transaction"
+import type {
+	Transaction,
+	TransactionEpoch,
+	TransactionProgress,
+} from "../transaction"
 
 export class Store implements Lineage {
 	public parent: Store | null = null
@@ -82,11 +86,15 @@ export class Store implements Lineage {
 		>(),
 		transactionCreation: new Subject<TransactionToken<ƒn>>(),
 		timelineCreation: new Subject<TimelineToken<unknown>>(),
-		transactionApplying: new StatefulSubject<TransactionMeta<ƒn> | null>(null),
+		transactionApplying: new StatefulSubject<TransactionProgress<ƒn> | null>(
+			null,
+		),
 		operationClose: new Subject<OperationProgress>(),
 	}
 	public operation: OperationProgress = { open: false }
-	public transactionMeta: TransactionMeta<ƒn> | null = null
+	public transactionMeta: TransactionEpoch | TransactionProgress<ƒn> = {
+		epoch: -1,
+	}
 
 	public config: {
 		name: string
@@ -113,7 +121,8 @@ export class Store implements Lineage {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
-			this.transactionMeta = null
+			this.transactionMeta = { ...store?.transactionMeta }
+
 			this.config = {
 				...store?.config,
 				name,

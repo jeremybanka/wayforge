@@ -40,10 +40,11 @@ describe(`running transactions`, () => {
 		})
 
 	test(`client 1 -> server -> client 2`, async () => {
-		const {
-			clients: { jane, dave },
-			teardown,
-		} = scenario()
+		const { clients, teardown } = scenario()
+
+		const jane = clients.jane.init()
+		const dave = clients.dave.init()
+
 		jane.renderResult.getByTestId(`0`)
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
@@ -51,35 +52,35 @@ describe(`running transactions`, () => {
 	})
 
 	test(`client 2 disconnects/reconnects, gets update`, async () => {
-		const {
-			clients: { dave, jane },
-			teardown,
-		} = scenario()
-		jane.renderResult.getByTestId(`0`)
+		const { clients, teardown } = scenario()
 
-		jane.disconnect()
+		const jane = clients.jane.init()
+		const dave = clients.dave.init()
+
+		jane.renderResult.getByTestId(`0`)
+		jane.socket.disconnect()
 
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 
 		jane.renderResult.getByTestId(`0`)
-		jane.reconnect()
+		jane.socket.connect()
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 
 		teardown()
 	})
 
 	test(`client 1 disconnects, makes update, reconnects`, async () => {
-		const {
-			clients: { dave, jane },
-			teardown,
-		} = scenario()
-		jane.renderResult.getByTestId(`0`)
+		const { clients, teardown } = scenario()
 
-		dave.disconnect()
+		const jane = clients.jane.init()
+		const dave = clients.dave.init()
+
+		jane.renderResult.getByTestId(`0`)
+		dave.socket.disconnect()
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 
 		jane.renderResult.getByTestId(`0`)
-		dave.reconnect()
+		dave.socket.connect()
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 
 		teardown()

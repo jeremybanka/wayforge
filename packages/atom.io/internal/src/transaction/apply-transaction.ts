@@ -4,6 +4,7 @@ import { ingestTransactionUpdate } from "../ingest-updates"
 import { newest } from "../lineage"
 import { withdraw } from "../store"
 import type { Store } from "../store"
+import { isChildStore, isRootStore } from "./is-root-store"
 
 export const applyTransaction = <ƒ extends ƒn>(
 	output: ReturnType<ƒ>,
@@ -13,7 +14,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 	const { parent } = child
 	if (
 		parent === null ||
-		child.transactionMeta === null ||
+		!isChildStore(child) ||
 		child.transactionMeta?.phase !== `building`
 	) {
 		store.logger.warn(
@@ -57,7 +58,8 @@ export const applyTransaction = <ƒ extends ƒn>(
 		}
 	}
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
-	if (parent.transactionMeta === null) {
+	if (isRootStore(parent)) {
+		parent.transactionMeta.epoch = child.transactionMeta.update.epoch
 		const myTransaction = withdraw<ƒ>(
 			{ key: child.transactionMeta.update.key, type: `transaction` },
 			store,
@@ -69,7 +71,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 			child.transactionMeta.update.key,
 			`Finished applying transaction.`,
 		)
-	} else {
+	} else if (isChildStore(parent)) {
 		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
 	}
 	parent.on.transactionApplying.next(null)

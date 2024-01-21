@@ -12,16 +12,11 @@ export function realtimeStateProvider({
 	return function stateProvider<J extends Json.Serializable>(
 		token: AtomIO.WritableToken<J>,
 	): () => void {
-		let unsubscribeFromStateUpdates: (() => void) | null = null
-
-		const fillUnsubRequest = () => {
-			socket.off(`unsub:${token.key}`, fillUnsubRequest)
-			unsubscribeFromStateUpdates?.()
-			unsubscribeFromStateUpdates = null
-		}
+		let unsubscribeFromStateUpdates: (() => void) | undefined
 
 		const fillSubRequest = () => {
 			socket.emit(`serve:${token.key}`, AtomIO.getState(token, store))
+
 			unsubscribeFromStateUpdates = subscribeToState(
 				token,
 				({ newValue }) => {
@@ -30,6 +25,15 @@ export function realtimeStateProvider({
 				`expose-single:${socket.id}`,
 				store,
 			)
+
+			const fillUnsubRequest = () => {
+				socket.off(`unsub:${token.key}`, fillUnsubRequest)
+				if (unsubscribeFromStateUpdates) {
+					unsubscribeFromStateUpdates()
+					unsubscribeFromStateUpdates = undefined
+				}
+			}
+
 			socket.on(`unsub:${token.key}`, fillUnsubRequest)
 		}
 
@@ -37,7 +41,10 @@ export function realtimeStateProvider({
 
 		return () => {
 			socket.off(`sub:${token.key}`, fillSubRequest)
-			unsubscribeFromStateUpdates?.()
+			if (unsubscribeFromStateUpdates) {
+				unsubscribeFromStateUpdates()
+				unsubscribeFromStateUpdates = undefined
+			}
 		}
 	}
 }
