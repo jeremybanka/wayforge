@@ -14,7 +14,10 @@ import {
 	createMutableAtomFamily,
 	createRegularAtomFamily,
 	createSelectorFamily,
+	findInStore,
+	getFromStore,
 	getJsonFamily,
+	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -124,7 +127,9 @@ export class Join<
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object | null = null,
 > {
-	private transactors: Transactors = TRANSACTORS
+	private options: JoinOptions<ASide, BSide, Cardinality, Content>
+	private defaultContent: Content | undefined
+	private transactors: Transactors
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinState<ASide, BSide, Cardinality, Content>
 	public core: {
@@ -138,15 +143,39 @@ export class Join<
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
 	): void {
+		const originalTransactors = this.transactors
 		this.transactors = transactors
 		run(this)
-		this.transactors = TRANSACTORS
+		this.transactors = originalTransactors
 	}
+
+	public alternates: Map<string, Join<ASide, BSide, Cardinality, Content>>
+	public in(store: Store): Join<ASide, BSide, Cardinality, Content> {
+		const key = store.config.name
+		const alternate = this.alternates.get(key)
+		if (alternate) {
+			return alternate
+		}
+		const join = new Join(this.options, this.defaultContent, store)
+		this.alternates.set(key, join)
+		join.alternates = this.alternates
+		return join
+	}
+
 	public constructor(
 		options: JoinOptions<ASide, BSide, Cardinality, Content>,
 		defaultContent: Content | undefined,
 		store: Store = IMPLICIT.STORE,
 	) {
+		this.options = options
+		this.defaultContent = defaultContent
+		this.alternates = new Map()
+		this.alternates.set(store.config.name, this)
+		this.transactors = {
+			get: (token) => getFromStore(token, store),
+			set: (token, value) => setIntoStore(token, value, store),
+			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
+		}
 		const a: ASide = options.between[0]
 		const b: BSide = options.between[1]
 		const findRelatedKeysState = createMutableAtomFamily<
@@ -469,6 +498,7 @@ export class Join<
 		}
 	}
 }
+
 export function join<
 	const ASide extends string,
 	const BSide extends string,
@@ -480,6 +510,7 @@ export function join<
 ): {
 	readonly relations: Junction<ASide, BSide, null>
 	readonly states: JoinState<ASide, BSide, Cardinality, null>
+	readonly in: (store: Store) => Join<ASide, BSide, Cardinality>
 	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, null>) => void,
@@ -504,6 +535,7 @@ export function join<
 ): {
 	readonly relations: Junction<ASide, BSide, Content>
 	readonly states: JoinState<ASide, BSide, Cardinality, Content>
+	readonly in: (store: Store) => Join<ASide, BSide, Cardinality, Content>
 	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,

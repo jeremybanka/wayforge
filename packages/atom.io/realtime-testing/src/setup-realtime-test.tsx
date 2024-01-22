@@ -1,8 +1,15 @@
 import * as http from "http"
 
-import { type RenderResult, prettyDOM, render } from "@testing-library/react"
+import { prettyDOM, render } from "@testing-library/react"
+import type { RenderResult } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import * as Internal from "atom.io/internal"
+import {
+	IMPLICIT,
+	clearStore,
+	findInStore,
+	getFromStore,
+	setIntoStore,
+} from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -61,7 +68,7 @@ export type RealtimeTestAPI__MultiClient<ClientNames extends string> =
 export const setupRealtimeTestServer = (
 	options: TestSetupOptions,
 ): RealtimeTestServer => {
-	const silo = new AtomIO.Silo(`SERVER`, Internal.IMPLICIT.STORE)
+	const silo = new AtomIO.Silo(`SERVER`, IMPLICIT.STORE)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen().address()
@@ -72,31 +79,8 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const socketRelatedKeysState = Internal.findInStore(
-				RTS.usersOfSockets.core.findRelatedKeysState,
-				socket.id,
-				silo.store,
-			)
-			const clientRelatedKeysState = Internal.findInStore(
-				RTS.usersOfSockets.core.findRelatedKeysState,
-				username,
-				silo.store,
-			)
-			Internal.setIntoStore(
-				socketRelatedKeysState,
-				(keys) => (keys.clear(), keys.add(username)),
-				silo.store,
-			)
-			Internal.setIntoStore(
-				clientRelatedKeysState,
-				(keys) => (keys.clear(), keys.add(socket.id)),
-				silo.store,
-			)
-			Internal.setIntoStore(
-				RTS.userIndex,
-				(index) => index.add(username),
-				silo.store,
-			)
+			RTS.usersOfSockets.in(silo.store).relations.set(socket.id, username)
+			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)
 			console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {
@@ -110,19 +94,15 @@ export const setupRealtimeTestServer = (
 
 	const dispose = () => {
 		server.close()
-		const roomKeys = Internal.getFromStore(RTS.roomIndex, silo.store)
+		const roomKeys = getFromStore(RTS.roomIndex, silo.store)
 		for (const roomKey of roomKeys) {
-			const roomState = Internal.findInStore(
-				RTS.roomSelectors,
-				roomKey,
-				silo.store,
-			)
-			const room = Internal.getFromStore(roomState, silo.store)
+			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
+			const room = getFromStore(roomState, silo.store)
 			if (room && !(room instanceof Promise)) {
 				room.kill()
 			}
 		}
-		Internal.clearStore(silo.store)
+		clearStore(silo.store)
 	}
 
 	return {
@@ -142,7 +122,7 @@ export const setupRealtimeTestClient = (
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
 			auth: { token: `test`, username: name },
 		})
-		const silo = new AtomIO.Silo(name, Internal.IMPLICIT.STORE)
+		const silo = new AtomIO.Silo(name, IMPLICIT.STORE)
 		for (const [key, value] of silo.store.valueMap.entries()) {
 			if (Array.isArray(value)) {
 				silo.store.valueMap.set(key, [...value])
@@ -167,7 +147,7 @@ export const setupRealtimeTestClient = (
 		const dispose = () => {
 			renderResult.unmount()
 			socket.disconnect()
-			Internal.clearStore(silo.store)
+			clearStore(silo.store)
 		}
 		testClient.dispose = dispose
 
