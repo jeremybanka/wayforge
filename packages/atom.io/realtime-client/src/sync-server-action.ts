@@ -1,4 +1,4 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
@@ -97,7 +97,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				subsequentOptimistic,
 			)
 			const { id, params } = subsequentOptimistic
-			AtomIO.actUponStore(token, id, store)(...params)
+			Internal.actUponStore(token, id, store)(...params)
 		}
 	}
 

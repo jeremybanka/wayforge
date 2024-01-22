@@ -1,7 +1,6 @@
 import path from "path"
 import { act } from "@testing-library/react"
-import { actUponStore } from "atom.io"
-import { findInStore, getFromStore } from "atom.io/internal"
+import { actUponStore, findInStore, getFromStore } from "atom.io/internal"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { BrowserGame } from "./BrowserGame"

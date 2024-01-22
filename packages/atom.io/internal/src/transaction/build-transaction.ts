@@ -1,9 +1,9 @@
-import { actUponStore, runTransaction } from "atom.io"
 import type { findState, ƒn } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type { TransactionProgress } from "."
+import { actUponStore } from "."
 import { arbitrary } from "../arbitrary"
 import { findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"

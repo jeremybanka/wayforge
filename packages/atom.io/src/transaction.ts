@@ -1,9 +1,9 @@
-import type { EnvironmentData, Store } from "atom.io/internal"
+import type { EnvironmentData } from "atom.io/internal"
 import {
 	IMPLICIT,
+	actUponStore,
 	arbitrary,
 	createTransaction,
-	withdraw,
 } from "atom.io/internal"
 
 import type {
@@ -80,22 +80,6 @@ export function transaction<ƒ extends ƒn>(
 	options: TransactionOptions<ƒ>,
 ): TransactionToken<ƒ> {
 	return createTransaction(options, IMPLICIT.STORE)
-}
-
-export function actUponStore<ƒ extends ƒn>(
-	token: TransactionToken<ƒ>,
-	id: string,
-	store: Store,
-): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
-	return (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
-		const tx = withdraw(token, store)
-		if (tx) {
-			return tx.run(parameters, id)
-		}
-		throw new Error(
-			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,
-		)
-	}
 }
 
 export function runTransaction<ƒ extends ƒn>(

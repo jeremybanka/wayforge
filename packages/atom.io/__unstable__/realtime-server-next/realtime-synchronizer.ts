@@ -1,6 +1,7 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import {
 	IMPLICIT,
+	actUponStore,
 	findInStore,
 	getFromStore,
 	setIntoStore,
@@ -55,7 +56,7 @@ export function realtimeSynchronizer({
 				const performanceKeyStart = `${performanceKey}:start`
 				const performanceKeyEnd = `${performanceKey}:end`
 				performance.mark(performanceKeyStart)
-				AtomIO.actUponStore(tx, update.id, store)(...update.params)
+				actUponStore(tx, update.id, store)(...update.params)
 				performance.mark(performanceKeyEnd)
 				const metric = performance.measure(
 					performanceKey,

@@ -1,5 +1,5 @@
-import * as AtomIO from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
+import type * as AtomIO from "atom.io"
+import { IMPLICIT, actUponStore } from "atom.io/internal"
 
 import type { ServerConfig } from "."
 
@@ -16,7 +16,7 @@ export function realtimeActionReceiver({
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			AtomIO.actUponStore<ƒ>(tx, update.id, store)(...update.params)
+			actUponStore<ƒ>(tx, update.id, store)(...update.params)
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,
