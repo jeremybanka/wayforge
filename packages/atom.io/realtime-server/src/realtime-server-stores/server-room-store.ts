@@ -48,25 +48,16 @@ export const roomSelectors = AtomIO.selectorFamily<
 		({ get, find }) => {
 			const argumentsState = find(roomArgumentsAtoms, roomId)
 			const args = get(argumentsState)
-			console.log(`[${roomId}]`, args)
 			const [script, options] = args
 			return new Promise((resolve) => {
-				const room = spawn(script, options, {
-					env: {
-						...process.env,
-						PORT: `${6260}`,
-					},
-				})
-				room.stdout.on(`data`, (data) => {
-					console.log(`[${roomId}]`, data.toString())
+				const room = spawn(script, options, { env: process.env })
+				const resolver = (data: Buffer) => {
 					if (data.toString() === `✨`) {
+						room.stdout.off(`data`, resolver)
 						resolve(room)
 					}
-				})
-				room.stderr.on(`data`, (data) => {
-					const message = data.toString()
-					console.error(`[${roomId}]`, message)
-				})
+				}
+				room.stdout.on(`data`, resolver)
 			})
 		},
 })
@@ -90,3 +81,17 @@ export const createRoomTX = AtomIO.transaction<
 	},
 })
 export type CreateRoomIO = AtomIO.TransactionIO<typeof createRoomTX>
+
+export const joinRoomTX = AtomIO.transaction<
+	(roomId: string, userId: string, enteredAtEpoch: number) => UserInRoomMeta
+>({
+	key: `joinRoom`,
+	do: (transactors, roomId, userId, enteredAtEpoch) => {
+		const meta = { enteredAtEpoch }
+		usersInRooms.transact(transactors, ({ relations }) => {
+			relations.set(roomId, userId, meta)
+		})
+		return meta
+	},
+})
+export type JoinRoomIO = AtomIO.TransactionIO<typeof joinRoomTX>

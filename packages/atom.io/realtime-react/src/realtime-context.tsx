@@ -25,7 +25,6 @@ export const RealtimeProvider: React.FC<{
 	React.useEffect(() => {
 		setMyId(socket?.id)
 		socket?.on(`connect`, () => {
-			console.log(`connected`)
 			setMyId(socket.id)
 		})
 		socket?.on(`disconnect`, () => {

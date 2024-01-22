@@ -92,6 +92,11 @@ export const setupRealtimeTestServer = (
 				(keys) => (keys.clear(), keys.add(socket.id)),
 				silo.store,
 			)
+			Internal.setIntoStore(
+				RTS.userIndex,
+				(index) => index.add(username),
+				silo.store,
+			)
 			console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {

@@ -7,13 +7,13 @@ import * as React from "react"
 import { letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
-	console.log(`rendering room ${roomId}`)
+	console.log(`rendering [${roomId}]`)
 	const store = React.useContext(AR.StoreContext)
 	const letter0State = findInStore(letterAtoms, 0, store)
 	RTR.usePull(letterAtoms(0))
 	const letter0 = AR.useO(letter0State)
 	return (
-		<main>
+		<main data-testid={roomId}>
 			<h1>{roomId}</h1>
 			<p>{letter0}</p>
 		</main>
@@ -21,6 +21,7 @@ function Room({ roomId }: { roomId: string }): JSX.Element {
 }
 
 function Lobby(): JSX.Element {
+	console.log(`rendering lobby`)
 	const { socket } = React.useContext(RTR.RealtimeContext)
 	RTR.usePullMutable(RTS.roomIndex)
 	const roomKeys = AR.useJSON(RTS.roomIndex)
@@ -28,8 +29,18 @@ function Lobby(): JSX.Element {
 		<main>
 			<ul>
 				{roomKeys.members.map((roomKey) => (
-					<li key={roomKey} data-testid={roomKey}>
-						{roomKey}
+					<li key={roomKey}>
+						<button
+							type="button"
+							data-testid={`join-${roomKey}`}
+							onClick={() => {
+								if (socket) {
+									socket.emit(`join-room`, roomKey)
+								} else {
+									console.log(`socket is null`)
+								}
+							}}
+						/>
 					</li>
 				))}
 			</ul>
@@ -50,37 +61,41 @@ function Lobby(): JSX.Element {
 	)
 }
 
-function App(props: { socketId: string }): JSX.Element {
+function B(props: { myUserKey: string }): JSX.Element {
 	const store = React.useContext(AR.StoreContext)
-	const { socket } = React.useContext(RTR.RealtimeContext)
-
-	const myRelatedUserState = findInStore(
-		RTS.usersOfSockets.core.findRelatedKeysState,
-		props.socketId,
-		store,
-	)
-	RTR.usePullMutableFamilyMember(myRelatedUserState)
-	const myUserKey = AR.useO(
-		RTS.usersOfSockets.states.userKeyOfSocket,
-		props.socketId,
-	)
 
 	const myRelatedRoomKeysState = findInStore(
 		RTS.usersInRooms.core.findRelatedKeysState,
-		myUserKey ?? ``,
+		props.myUserKey,
 		store,
 	)
 	RTR.usePullMutableFamilyMember(myRelatedRoomKeysState)
-	socket?.onAny((event, ...args) => {
-		console.log(event, args)
-	})
 
-	const myRoomKey = AR.useO(RTS.usersInRooms.states.roomKeyOfUser, myUserKey)
+	const myRoomKey = AR.useO(
+		RTS.usersInRooms.states.roomKeyOfUser,
+		props.myUserKey,
+	)
 
 	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
 }
 
+export function A(props: { mySocketKey: string }): JSX.Element | null {
+	const store = React.useContext(AR.StoreContext)
+
+	const myRelatedUserState = findInStore(
+		RTS.usersOfSockets.core.findRelatedKeysState,
+		props.mySocketKey,
+		store,
+	)
+	RTR.usePullMutable(myRelatedUserState)
+	const myUserKey = AR.useO(
+		RTS.usersOfSockets.states.userKeyOfSocket,
+		props.mySocketKey,
+	)
+	return myUserKey ? <B myUserKey={myUserKey} /> : null
+}
+
 export function BrowserGame(): JSX.Element | null {
-	const mySocketId = AR.useO(myIdState)
-	return mySocketId ? <App socketId={mySocketId} /> : null
+	const mySocketKey = AR.useO(myIdState)
+	return mySocketKey ? <A mySocketKey={mySocketKey} /> : null
 }
