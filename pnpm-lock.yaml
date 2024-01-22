@@ -12,8 +12,8 @@ importers:
         specifier: 1.5.2
         version: 1.5.2
       '@biomejs/cli-darwin-arm64':
-        specifier: 1.5.2
-        version: 1.5.2
+        specifier: 1.5.3
+        version: 1.5.3
       '@changesets/cli':
         specifier: 2.27.1
         version: 2.27.1
@@ -2412,6 +2412,15 @@ packages:
     engines: {node: '>=14.*'}
     cpu: [arm64]
     os: [darwin]
+    requiresBuild: true
+    optional: true
+
+  /@biomejs/cli-darwin-arm64@1.5.3:
+    resolution: {integrity: sha512-ImU7mh1HghEDyqNmxEZBoMPr8SxekkZuYcs+gynKlNW+TALQs7swkERiBLkG9NR0K1B3/2uVzlvYowXrmlW8hw==}
+    engines: {node: '>=14.*'}
+    cpu: [arm64]
+    os: [darwin]
+    dev: true
 
   /@biomejs/cli-darwin-x64@1.5.2:
     resolution: {integrity: sha512-QAPW9rZb/AgucUx+ogMg+9eJNipQDqvabktC5Tx4Aqb/mFzS6eDqNP7O0SbGz3DtC5Y2LATEj6o6zKIQ4ZT+3w==}
@@ -8280,6 +8289,7 @@ packages:
 
   /is-reference@3.0.2:
     resolution: {integrity: sha512-v3rht/LgVcsdZa3O2Nqs+NMowLOxeOm7Ay9+/ARQ2F+qEoANRcqrjAZKGN0v8ymUetZGgkp26LTnGT7H0Qo9Pg==}
+    requiresBuild: true
     dependencies:
       '@types/estree': 1.0.5
     dev: true
