@@ -1,9 +1,9 @@
-import { IMPLICIT, findInStore } from "atom.io/internal"
+import { findInStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
+import { myIdState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as React from "react"
-import { myIdState } from "../../realtime-client/src/realtime-client-stores"
 import { letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
