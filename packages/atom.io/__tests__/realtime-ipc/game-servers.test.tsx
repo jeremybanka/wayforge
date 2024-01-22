@@ -1,6 +1,11 @@
 import path from "path"
 import { act } from "@testing-library/react"
-import { actUponStore, findInStore, getFromStore } from "atom.io/internal"
+import {
+	actUponStore,
+	arbitrary,
+	findInStore,
+	getFromStore,
+} from "atom.io/internal"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { BrowserGame } from "./BrowserGame"
@@ -55,29 +60,23 @@ describe(`multi-process realtime server`, () => {
 					RTS.userIndex,
 				)
 				socket.on(`create-room`, async (roomId) => {
-					actUponStore(
-						RTS.createRoomTX,
-						Math.random().toString(36).slice(2),
-						store,
-					)(roomId, `bun`, [path.join(__dirname, `game-instance.bun.ts`)])
+					actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
+						path.join(__dirname, `game-instance.bun.ts`),
+					])
 				})
 
 				let forwardToRoom:
 					| ((event: string, ...args: unknown[]) => void)
 					| undefined
-				const eventsForRoom = new Map<string, unknown[]>()
+				const queuedEventsForRoom = new Map<string, unknown[]>()
 				socket.on(`join-room`, async (roomId) => {
 					if (!userKey) {
 						throw new Error(`User not found`)
 					}
 					forwardToRoom = (event: string, ...args: unknown[]) => {
-						eventsForRoom.set(event, args)
+						queuedEventsForRoom.set(event, args)
 					}
-					actUponStore(
-						RTS.joinRoomTX,
-						Math.random().toString(36).slice(2),
-						store,
-					)(roomId, userKey, 0)
+					actUponStore(RTS.joinRoomTX, arbitrary(), store)(roomId, userKey, 0)
 
 					const roomState = findInStore(RTS.roomSelectors, roomId, store)
 					const room = await getFromStore(roomState, store)
@@ -85,9 +84,10 @@ describe(`multi-process realtime server`, () => {
 					forwardToRoom = (event: string, ...args: unknown[]) => {
 						room?.stdin.write([event, ...args].join(` `) + `\n`)
 					}
-					for (const [event, args] of eventsForRoom.entries()) {
+					for (const [event, args] of queuedEventsForRoom.entries()) {
 						forwardToRoom(event, ...args)
 					}
+					queuedEventsForRoom.clear()
 
 					room.stdout.on(`data`, (buf) => {
 						const log = buf.toString()
