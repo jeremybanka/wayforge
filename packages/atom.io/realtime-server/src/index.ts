@@ -1,6 +1,6 @@
 import type { Store } from "atom.io/internal"
-import type * as SocketIO from "socket.io"
 
+export * from "./ipc-socket"
 export * from "./realtime-server-stores/server-room-store"
 export * from "./realtime-server-stores"
 export * from "./realtime-state-provider"
@@ -12,7 +12,13 @@ export * from "./realtime-state-receiver"
 export * from "./realtime-action-receiver"
 export * from "./realtime-action-synchronizer"
 
+export type Socket = {
+	id: string
+	on: (event: string, listener: (...args: any[]) => void) => void
+	off: (event: string, listener: (...args: any[]) => void) => void
+	emit: (event: string, ...args: any[]) => void
+}
 export type ServerConfig = {
-	socket: SocketIO.Socket
+	socket: Socket
 	store?: Store
 }

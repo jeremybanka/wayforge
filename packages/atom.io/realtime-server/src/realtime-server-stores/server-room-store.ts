@@ -48,6 +48,7 @@ export const roomSelectors = AtomIO.selectorFamily<
 		({ get, find }) => {
 			const argumentsState = find(roomArgumentsAtoms, roomId)
 			const args = get(argumentsState)
+			console.log(`[${roomId}]`, args)
 			const [script, options] = args
 			return new Promise((resolve) => {
 				const room = spawn(script, options, {
@@ -57,13 +58,14 @@ export const roomSelectors = AtomIO.selectorFamily<
 					},
 				})
 				room.stdout.on(`data`, (data) => {
+					console.log(`[${roomId}]`, data.toString())
 					if (data.toString() === `✨`) {
-						console.log(`[${roomId}]`, data.toString())
 						resolve(room)
 					}
 				})
 				room.stderr.on(`data`, (data) => {
-					console.error(`[${roomId}]`, data)
+					const message = data.toString()
+					console.error(`[${roomId}]`, message)
 				})
 			})
 		},
