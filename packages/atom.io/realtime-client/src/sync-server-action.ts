@@ -97,7 +97,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				subsequentOptimistic,
 			)
 			const { id, params } = subsequentOptimistic
-			AtomIO.runTransaction(token, id, store)(...params)
+			AtomIO.actUponStore(token, id, store)(...params)
 		}
 	}
 

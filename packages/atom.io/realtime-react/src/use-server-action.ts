@@ -1,4 +1,5 @@
 import * as AtomIO from "atom.io"
+import { arbitrary } from "atom.io/internal"
 import { StoreContext } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
@@ -13,5 +14,5 @@ export function useServerAction<ƒ extends AtomIO.ƒn>(
 	useRealtimeService(`tx:${token.key}`, (socket) =>
 		RTC.serverAction(token, socket, store),
 	)
-	return AtomIO.runTransaction(token, undefined, store)
+	return AtomIO.actUponStore(token, arbitrary(), store)
 }

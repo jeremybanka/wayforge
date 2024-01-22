@@ -1,9 +1,10 @@
-import { runTransaction } from "atom.io"
+import { actUponStore, runTransaction } from "atom.io"
 import type { findState, ƒn } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type { TransactionProgress } from "."
+import { arbitrary } from "../arbitrary"
 import { findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
@@ -18,7 +19,7 @@ export const buildTransaction = (
 	key: string,
 	params: any[],
 	store: Store,
-	id?: string,
+	id: string,
 ): ChildStore => {
 	const parent = newest(store) as ChildStore | RootStore
 	const childBase: Omit<ChildStore, `transactionMeta`> = {
@@ -48,7 +49,7 @@ export const buildTransaction = (
 		phase: `building` as const,
 		update: {
 			key,
-			id: id ?? Math.random().toString(36).slice(2),
+			id,
 			epoch: isRootStore(parent) ? parent.transactionMeta.epoch + 1 : NaN,
 			updates: [],
 			params,
@@ -57,7 +58,7 @@ export const buildTransaction = (
 		transactors: {
 			get: (token) => getFromStore(token, child),
 			set: (token, value) => setIntoStore(token, value, child),
-			run: (token, id) => runTransaction(token, id, child),
+			run: (token, id = arbitrary()) => actUponStore(token, id, child),
 			find: ((token, key) => findInStore(token, key, child)) as typeof findState,
 			env: () => getEnvironmentData(child),
 		},

@@ -6,6 +6,7 @@ import type { Store } from "./store"
 import type { Subject } from "./subject"
 
 export * from "./atom"
+export * from "./arbitrary"
 export * from "./caching"
 export * from "./lineage"
 export * from "./families"

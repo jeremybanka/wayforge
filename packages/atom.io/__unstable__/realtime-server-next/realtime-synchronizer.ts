@@ -55,7 +55,7 @@ export function realtimeSynchronizer({
 				const performanceKeyStart = `${performanceKey}:start`
 				const performanceKeyEnd = `${performanceKey}:end`
 				performance.mark(performanceKeyStart)
-				AtomIO.runTransaction(tx, update.id, store)(...update.params)
+				AtomIO.actUponStore(tx, update.id, store)(...update.params)
 				performance.mark(performanceKeyEnd)
 				const metric = performance.measure(
 					performanceKey,
