@@ -45,16 +45,15 @@ describe(`multi-process realtime server`, () => {
 
 				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
 				exposeMutable(RTS.roomIndex)
-				const userKeyRelState = findInStore(
-					RTS.usersOfSockets.core.findRelatedKeysState,
-					socket.id,
-					store,
-				)
-				exposeMutable(userKeyRelState)
+
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,
 					store,
 				})
+				exposeMutableFamily(
+					RTS.usersOfSockets.core.findRelatedKeysState,
+					RTS.userIndex,
+				)
 				exposeMutableFamily(
 					RTS.usersInRooms.core.findRelatedKeysState,
 					RTS.userIndex,

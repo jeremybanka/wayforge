@@ -25,7 +25,7 @@ export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>
 		const isMyTrick = useO(myHandsIndex).includes(trickId)
 		const trickContent = useO(findState(trickContentsStates, [gameId, trickId]))
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(trickId))
+		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState, trickId)
 
 		const handlers = useRadial([])
 

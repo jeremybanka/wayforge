@@ -1,4 +1,8 @@
-import type { MutableAtomToken } from "atom.io"
+import {
+	type MutableAtomFamilyToken,
+	type MutableAtomToken,
+	findState,
+} from "atom.io"
 import { useI, useJSON } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import {
@@ -19,20 +23,22 @@ import {
 import scss from "./App.module.scss"
 
 const Numbers: FC<{
-	state: MutableAtomToken<SetRTX<number>, SetRTXJson<number>>
-}> = ({ state }) => {
-	usePullMutableFamilyMember(state)
-	const setNumbers = useI(state)
-	const numbers = useJSON(state)
+	subKey: string
+	family: MutableAtomFamilyToken<SetRTX<number>, SetRTXJson<number>, string>
+}> = ({ subKey, family }) => {
+	const token = findState(family, subKey)
+	usePullMutableFamilyMember(family, subKey)
+	const setNumbers = useI(family, subKey)
+	const numbers = useJSON(family, subKey)
 
 	const increment = useServerAction(incrementNumberCollectionTX)
 
 	return (
 		<section>
-			<button type="button" onClick={() => increment(state)}>
+			<button type="button" onClick={() => increment(token)}>
 				Add
 			</button>
-			<span>{state.key}</span>
+			<span>{token.key}</span>
 			{numbers.members.map((number) => (
 				<div key={number}>{number}</div>
 			))}
@@ -53,7 +59,7 @@ export const App: FC = () => {
 				Add
 			</button>
 			{keys.map((key) => (
-				<Numbers key={key} state={findNumberCollection(key)} />
+				<Numbers key={key} subKey={key} family={findNumberCollection} />
 			))}
 			<AtomIODevtools />
 		</main>

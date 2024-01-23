@@ -13,7 +13,11 @@ export const numberCollectionIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	fromJson: (value) => SetRTX.fromJSON(value),
 })
 
-export const findNumberCollection = atomFamily({
+export const findNumberCollection = atomFamily<
+	SetRTX<number>,
+	SetRTXJson<number>,
+	string
+>({
 	key: `numberCollection`,
 	mutable: true,
 	default: () => new SetRTX<number>(undefined, 5),

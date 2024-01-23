@@ -12,8 +12,7 @@ export const ProfilePicture: React.FC<{ id: string; detailed?: boolean }> = ({
 	id,
 	detailed,
 }) => {
-	const roomsOfPlayerState = playersInRooms.core.findRelatedKeysState(id)
-	usePullMutableFamilyMember(roomsOfPlayerState)
+	usePullMutableFamilyMember(playersInRooms.core.findRelatedKeysState, id)
 	const bgColor = stringToColor(id)
 	return (
 		<span

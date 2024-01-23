@@ -36,8 +36,7 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	const playersInRoomState = playersInRooms.core.findRelatedKeysState(roomId)
-	usePullMutableFamilyMember(playersInRoomState)
+	usePullMutableFamilyMember(playersInRooms.core.findRelatedKeysState, roomId)
 
 	return (
 		<>

@@ -29,7 +29,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
 		const publicDeckIds = useO(publicDeckIndex)
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(handId))
+		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState, handId)
 
 		const dealCards = useServerAction(dealCardsTX)
 

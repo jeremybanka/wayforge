@@ -62,14 +62,10 @@ function Lobby(): JSX.Element {
 }
 
 function B(props: { myUserKey: string }): JSX.Element {
-	const store = React.useContext(AR.StoreContext)
-
-	const myRelatedRoomKeysState = findInStore(
+	RTR.usePullMutableFamilyMember(
 		RTS.usersInRooms.core.findRelatedKeysState,
 		props.myUserKey,
-		store,
 	)
-	RTR.usePullMutableFamilyMember(myRelatedRoomKeysState)
 
 	const myRoomKey = AR.useO(
 		RTS.usersInRooms.states.roomKeyOfUser,
@@ -80,14 +76,10 @@ function B(props: { myUserKey: string }): JSX.Element {
 }
 
 export function A(props: { mySocketKey: string }): JSX.Element | null {
-	const store = React.useContext(AR.StoreContext)
-
-	const myRelatedUserState = findInStore(
+	RTR.usePullMutableFamilyMember(
 		RTS.usersOfSockets.core.findRelatedKeysState,
 		props.mySocketKey,
-		store,
 	)
-	RTR.usePullMutable(myRelatedUserState)
 	const myUserKey = AR.useO(
 		RTS.usersOfSockets.states.userKeyOfSocket,
 		props.mySocketKey,

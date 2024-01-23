@@ -12,7 +12,7 @@ import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
 import scss from "./Card.module.scss"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-	usePullMutableFamilyMember(valuesOfCards.core.findRelatedKeysState(id))
+	usePullMutableFamilyMember(valuesOfCards.core.findRelatedKeysState, id)
 	const valueKey = useO(valuesOfCards.states.valueKeyOfCard(id)) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]
 	return (
