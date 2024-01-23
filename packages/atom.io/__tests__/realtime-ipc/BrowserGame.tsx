@@ -15,7 +15,7 @@ function Room({ roomId }: { roomId: string }): JSX.Element {
 	return (
 		<main data-testid={roomId}>
 			<h1>{roomId}</h1>
-			<p>{letter0}</p>
+			<p data-testid={letter0}>{letter0}</p>
 		</main>
 	)
 }

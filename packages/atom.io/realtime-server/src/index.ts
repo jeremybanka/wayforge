@@ -1,4 +1,5 @@
 import type { Store } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
 export * from "./ipc-socket"
 export * from "./realtime-server-stores/server-room-store"
@@ -14,9 +15,9 @@ export * from "./realtime-action-synchronizer"
 
 export type Socket = {
 	id: string
-	on: (event: string, listener: (...args: any[]) => void) => void
-	off: (event: string, listener: (...args: any[]) => void) => void
-	emit: (event: string, ...args: any[]) => void
+	on: (event: string, listener: (...args: Json.Array) => void) => void
+	off: (event: string, listener: (...args: Json.Array) => void) => void
+	emit: (event: string, ...args: Json.Array) => void
 }
 export type ServerConfig = {
 	socket: Socket

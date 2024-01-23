@@ -6,6 +6,7 @@ import {
 	findInStore,
 	getFromStore,
 } from "atom.io/internal"
+import { type Json, parseJson, stringifyJson } from "atom.io/json"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { BrowserGame } from "./BrowserGame"
@@ -80,8 +81,8 @@ describe(`multi-process realtime server`, () => {
 					const roomState = findInStore(RTS.roomSelectors, roomId, store)
 					const room = await getFromStore(roomState, store)
 
-					forwardToRoom = (event: string, ...args: unknown[]) => {
-						room?.stdin.write([event, ...args].join(` `) + `\n`)
+					forwardToRoom = (event: string, ...args: Json.Array) => {
+						room?.stdin.write(stringifyJson([event, ...args]) + `\n`)
 					}
 					for (const [event, args] of queuedEventsForRoom.entries()) {
 						forwardToRoom(event, ...args)
@@ -92,13 +93,14 @@ describe(`multi-process realtime server`, () => {
 						const log = buf.toString()
 						console.log(`[${roomId}] >>`, log)
 						if (log.startsWith(`[`)) {
-							console.log(`received data`, JSON.parse(log))
+							const data = parseJson(log)
+							socket.emit(...data)
 						}
 					})
 
 					room.stderr.on(`data`, (buf) => {
 						const err = buf.toString()
-						console.error(`[${roomId}] xx`, err)
+						console.error(`❌ [${roomId}]\n${err}`)
 					})
 
 					room.on(`close`, (code) => {
@@ -129,9 +131,9 @@ describe(`multi-process realtime server`, () => {
 		act(() => createRoomButton.click())
 		const joinRoomButton = await app.renderResult.findByTestId(`join-room-1`)
 		act(() => joinRoomButton.click())
-		const room = await app.renderResult.findByTestId(`room-1`)
+		await app.renderResult.findByTestId(`room-1`)
+		await app.renderResult.findByTestId(`A`)
 
-		await new Promise((resolve) => setTimeout(resolve, 500))
 		console.log(`tearing down`)
 		teardown()
 	})
