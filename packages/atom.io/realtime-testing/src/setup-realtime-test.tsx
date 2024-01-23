@@ -79,7 +79,8 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			RTS.usersOfSockets.in(silo.store).relations.set(socket.id, username)
+			const usersOfSockets = RTS.usersOfSockets.in(silo.store)
+			usersOfSockets.relations.set(socket.id, username)
 			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)
 			console.log(`${username} connected on ${socket.id}`)
 			next()
@@ -102,7 +103,7 @@ export const setupRealtimeTestServer = (
 				room.kill()
 			}
 		}
-		clearStore(silo.store)
+		silo.store.valueMap.clear()
 	}
 
 	return {

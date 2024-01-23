@@ -108,7 +108,6 @@ export function realtimeActionSynchronizer({
 		let next = 1
 		const retry = setInterval(() => {
 			const toEmit = socketUnacknowledgedUpdates[0]
-			console.log(userKey, socketUnacknowledgedUpdates)
 			if (toEmit && i === next) {
 				socket.emit(`tx-new:${tx.key}`, toEmit)
 				next *= 2

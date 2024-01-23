@@ -35,7 +35,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					},
 					store,
 				)
-				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			} else {
 				Internal.setIntoStore(
 					optimisticUpdateQueueState,
@@ -45,8 +44,8 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					},
 					store,
 				)
-				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			}
+			socket.emit(`tx-run:${token.key}`, clientUpdate)
 		},
 		`tx-run:${token.key}`,
 		store,
