@@ -15,9 +15,9 @@ export * from "./realtime-action-synchronizer"
 
 export type Socket = {
 	id: string
-	on: (event: string, listener: (...args: Json.Array) => void) => void
-	off: (event: string, listener: (...args: Json.Array) => void) => void
-	emit: (event: string, ...args: Json.Array) => void
+	on: (event: string, listener: (...args: Json.Serializable[]) => void) => void
+	off: (event: string, listener: (...args: Json.Serializable[]) => void) => void
+	emit: (event: string, ...args: Json.Serializable[]) => void
 }
 export type ServerConfig = {
 	socket: Socket

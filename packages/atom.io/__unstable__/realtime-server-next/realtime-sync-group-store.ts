@@ -1,5 +1,6 @@
 import { selectorFamily } from "atom.io"
 import type { TransactionUpdate } from "atom.io"
+import type { JsonIO } from "atom.io/json"
 import { completeUpdateAtoms, usersOfSockets } from "atom.io/realtime-server"
 import { SyncGroup } from "./create-realtime-sync-group"
 
@@ -69,7 +70,10 @@ export const redactorAtoms = selectorFamily<
 		},
 })
 export const redactedPerspectiveUpdateSelectors = selectorFamily<
-	TransactionUpdate<any> | null,
+	Pick<
+		TransactionUpdate<JsonIO>,
+		`epoch` | `id` | `key` | `output` | `updates`
+	> | null,
 	{ socketId: string; syncGroupKey: string; updateId: string }
 >({
 	key: `redactedPerspectiveUpdate`,

@@ -8,6 +8,7 @@ import {
 	subscribeToTransaction,
 } from "atom.io/internal"
 
+import type { Json, JsonIO } from "atom.io/json"
 import type { ServerConfig } from "../../realtime-server/src"
 import { usersOfSockets } from "../../realtime-server/src"
 import {
@@ -51,7 +52,9 @@ export function realtimeSynchronizer({
 				store,
 			)
 
-			const fillTransactionRequest = (update: AtomIO.TransactionUpdate<any>) => {
+			const fillTransactionRequest = (
+				update: Pick<AtomIO.TransactionUpdate<JsonIO>, `id` | `params`>,
+			) => {
 				const performanceKey = `tx-run:${tx.key}:${update.id}`
 				const performanceKeyStart = `${performanceKey}:start`
 				const performanceKeyEnd = `${performanceKey}:end`
@@ -109,7 +112,7 @@ export function realtimeSynchronizer({
 							store,
 						)
 
-						socket.emit(`tx-new:${tx.key}`, redactedUpdate)
+						socket.emit(`tx-new:${tx.key}`, redactedUpdate as Json.Serializable)
 					},
 					`tx-sub:${tx.key}:${socket.id}`,
 					store,
@@ -124,7 +127,7 @@ export function realtimeSynchronizer({
 				const toEmit = socketUnacknowledgedUpdates[0]
 				console.log(userKey, socketUnacknowledgedUpdates)
 				if (toEmit && i === next) {
-					socket.emit(`tx-new:${tx.key}`, toEmit)
+					socket.emit(`tx-new:${tx.key}`, toEmit as Json.Serializable)
 					next *= 2
 				}
 
