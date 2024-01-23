@@ -5,13 +5,12 @@ import {
 	getFromStore,
 	subscribeToState,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
-import { parseJson } from "atom.io/json"
+import { type Json, stringifyJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
 
-export type FamilyProvider = ReturnType<typeof realtimeFamilyProvider>
-export function realtimeFamilyProvider({
+export type FamilyProvider = ReturnType<typeof realtimeAtomFamilyProvider>
+export function realtimeAtomFamilyProvider({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
@@ -19,19 +18,11 @@ export function realtimeFamilyProvider({
 		J extends Json.Serializable,
 		K extends Json.Serializable,
 	>(
-		family: AtomIO.RegularAtomFamily<J, K>,
+		family: AtomIO.RegularAtomFamilyToken<J, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
 		const unsubSingleCallbacksByKey = new Map<string, () => void>()
 		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
-
-		const fillFamilyUnsubRequest = () => {
-			for (const [, unsub] of unsubFamilyCallbacksByKey) {
-				unsub()
-			}
-			unsubFamilyCallbacksByKey.clear()
-			socket.off(`unsub:${family.key}`, fillFamilyUnsubRequest)
-		}
 
 		const fillSingleUnsubRequest = (key: string) => {
 			socket.off(`unsub:${key}`, fillSingleUnsubRequest)
@@ -42,54 +33,26 @@ export function realtimeFamilyProvider({
 			}
 		}
 
-		const fillSubRequest = (subKey?: K) => {
-			if (subKey === undefined) {
-				const keys = getFromStore(index, store)
-				for (const key of keys) {
-					const token = findInStore(family, key, store)
-					socket.emit(
-						`serve:${family.key}`,
-						parseJson(token.family?.subKey || `null`),
-						getFromStore(token, store),
+		const fillSubRequest = (subKey: K) => {
+			const exposedSubKeys = getFromStore(index, store)
+			for (const exposedSubKey of exposedSubKeys) {
+				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
+					const token = findInStore(family, subKey, store)
+					socket.emit(`serve:${token.key}`, getFromStore(token, store))
+					const unsubscribe = subscribeToState(
+						token,
+						({ newValue }) => {
+							socket.emit(`serve:${token.key}`, newValue)
+						},
+						`expose-family:${family.key}:${socket.id}`,
+						store,
 					)
+					unsubSingleCallbacksByKey.set(token.key, unsubscribe)
+					socket.on(`unsub:${token.key}`, () => {
+						fillSingleUnsubRequest(token.key)
+					})
+					break
 				}
-
-				const unsubscribeFromTokenCreation = family.subject.subscribe(
-					`expose-family:${socket.id}`,
-					(token: AtomIO.WritableToken<J>) => {
-						const unsub = subscribeToState(
-							token,
-							({ newValue }) => {
-								socket.emit(
-									`serve:${family.key}`,
-									parseJson(token.family?.subKey || `null`),
-									newValue,
-								)
-							},
-							`expose-family:${family.key}:${socket.id}`,
-							store,
-						)
-						unsubFamilyCallbacksByKey.set(token.key, unsub)
-					},
-				)
-				unsubFamilyCallbacksByKey.set(family.key, unsubscribeFromTokenCreation)
-
-				socket.on(`unsub:${family.key}`, fillFamilyUnsubRequest)
-			} else {
-				const token = family(subKey)
-				socket.emit(`serve:${token.key}`, getFromStore(token, store))
-				const unsubscribe = subscribeToState(
-					token,
-					({ newValue }) => {
-						socket.emit(`serve:${token.key}`, newValue)
-					},
-					`expose-family:${family.key}:${socket.id}`,
-					store,
-				)
-				unsubSingleCallbacksByKey.set(token.key, unsubscribe)
-				socket.on(`unsub:${token.key}`, () => {
-					fillSingleUnsubRequest(token.key)
-				})
 			}
 		}
 

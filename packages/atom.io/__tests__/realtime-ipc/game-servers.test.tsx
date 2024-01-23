@@ -53,7 +53,7 @@ describe(`multi-process realtime server`, () => {
 				})
 				exposeMutableFamily(
 					RTS.usersOfSockets.core.findRelatedKeysState,
-					RTS.userIndex,
+					RTS.socketIndex,
 				)
 				exposeMutableFamily(
 					RTS.usersInRooms.core.findRelatedKeysState,

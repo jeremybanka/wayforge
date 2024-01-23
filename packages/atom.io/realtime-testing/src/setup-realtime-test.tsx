@@ -82,6 +82,7 @@ export const setupRealtimeTestServer = (
 			const usersOfSockets = RTS.usersOfSockets.in(silo.store)
 			usersOfSockets.relations.set(socket.id, username)
 			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)
+			setIntoStore(RTS.socketIndex, (index) => index.add(socket.id), silo.store)
 			console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {

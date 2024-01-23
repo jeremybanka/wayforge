@@ -39,7 +39,7 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
 				setIntoStore(storeState, store, store)
-				const exposeFamily = RTS.realtimeFamilyProvider({
+				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
 					store,
 				})
