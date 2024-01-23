@@ -1,12 +1,10 @@
 import { useO } from "atom.io/react"
 import {
-	usePullMutableFamilyMember,
+	usePullMutableAtomFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "hamr/react-css-vars"
-import { Id } from "hamr/react-id"
-import * as React from "react"
 
 import { dealCardsTX, groupsOfCards } from "~/apps/node/lodge/src/store/game"
 
@@ -29,7 +27,10 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
 		const publicDeckIds = useO(publicDeckIndex)
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState, handId)
+		usePullMutableAtomFamilyMember(
+			groupsOfCards.core.findRelatedKeysState,
+			handId,
+		)
 
 		const dealCards = useServerAction(dealCardsTX)
 

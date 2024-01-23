@@ -78,7 +78,7 @@ describe(`running transactions`, () => {
 				},
 				jane: () => {
 					const findNCState = useFamily(findNumbersCollectionState)
-					RTR.usePullMutableFamilyMember(findNCState, `foo`)
+					RTR.usePullMutableAtomFamilyMember(findNCState, `foo`)
 					const numbers = AR.useJSON(findNCState(`foo`))
 					return (
 						<>

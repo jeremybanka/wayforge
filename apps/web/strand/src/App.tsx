@@ -1,13 +1,10 @@
-import {
-	type MutableAtomFamilyToken,
-	type MutableAtomToken,
-	findState,
-} from "atom.io"
+import type { MutableAtomFamilyToken } from "atom.io"
+import { findState } from "atom.io"
 import { useI, useJSON } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import {
 	usePullMutable,
-	usePullMutableFamilyMember,
+	usePullMutableAtomFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
 import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -27,7 +24,7 @@ const Numbers: FC<{
 	family: MutableAtomFamilyToken<SetRTX<number>, SetRTXJson<number>, string>
 }> = ({ subKey, family }) => {
 	const token = findState(family, subKey)
-	usePullMutableFamilyMember(family, subKey)
+	usePullMutableAtomFamilyMember(family, subKey)
 	const setNumbers = useI(family, subKey)
 	const numbers = useJSON(family, subKey)
 

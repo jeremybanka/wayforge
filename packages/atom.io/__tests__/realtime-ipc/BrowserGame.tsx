@@ -10,7 +10,7 @@ function Room({ roomId }: { roomId: string }): JSX.Element {
 	console.log(`rendering [${roomId}]`)
 	const store = React.useContext(AR.StoreContext)
 	const letter0State = findInStore(letterAtoms, 0, store)
-	RTR.usePull(letterAtoms(0))
+	RTR.usePullAtom(letterAtoms(0))
 	const letter0 = AR.useO(letter0State)
 	return (
 		<main data-testid={roomId}>

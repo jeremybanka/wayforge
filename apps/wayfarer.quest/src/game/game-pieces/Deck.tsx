@@ -1,11 +1,10 @@
 import { useO } from "atom.io/react"
 import {
-	usePullMutableFamilyMember,
+	usePullMutableAtomFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "hamr/react-css-vars"
-import { Id } from "hamr/react-id"
 
 import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
 
@@ -24,7 +23,10 @@ export const Deck = memoize<{ id: string; detailed?: boolean }>(
 		const myRoomId = useO(myRoomState)
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup, deckId)
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState, deckId)
+		usePullMutableAtomFamilyMember(
+			groupsOfCards.core.findRelatedKeysState,
+			deckId,
+		)
 
 		const shuffle = useServerAction(shuffleDeckTX)
 

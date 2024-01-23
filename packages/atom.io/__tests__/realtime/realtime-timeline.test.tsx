@@ -15,7 +15,7 @@ describe(`undo/redo`, () => {
 				exposeSingle(countState)
 			},
 			client: () => {
-				RTR.usePull(countState)
+				RTR.usePullAtom(countState)
 				const count = AR.useO(countState)
 				return <i data-testid={`count:${count}`} />
 			},
