@@ -6,7 +6,7 @@ import {
 	findInStore,
 	getFromStore,
 } from "atom.io/internal"
-import { type Json, parseJson, stringifyJson } from "atom.io/json"
+import type { Json } from "atom.io/json"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { BrowserGame } from "./BrowserGame"
@@ -80,23 +80,17 @@ describe(`multi-process realtime server`, () => {
 
 					const roomState = findInStore(RTS.roomSelectors, roomId, store)
 					const room = await getFromStore(roomState, store)
+					const roomSocket = new RTS.ChildSocket(room)
 
 					forwardToRoom = (event: string, ...args: Json.Array) => {
-						room?.stdin.write(stringifyJson([event, ...args]) + `\n`)
+						roomSocket.emit(event, ...args)
 					}
 					for (const [event, args] of queuedEventsForRoom.entries()) {
 						forwardToRoom(event, ...args)
 					}
 					queuedEventsForRoom.clear()
 
-					room.stdout.on(`data`, (buf) => {
-						const log = buf.toString()
-						console.log(`[${roomId}] >>`, log)
-						if (log.startsWith(`[`)) {
-							const data = parseJson(log)
-							socket.emit(...data)
-						}
-					})
+					roomSocket.onAny((...data) => socket.emit(...data))
 
 					room.stderr.on(`data`, (buf) => {
 						const err = buf.toString()
@@ -109,7 +103,6 @@ describe(`multi-process realtime server`, () => {
 					})
 				})
 
-				// store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
 					console.log(`🛰 `, userKey, event, ...args)
 					forwardToRoom?.(event, ...args)
@@ -134,7 +127,6 @@ describe(`multi-process realtime server`, () => {
 		await app.renderResult.findByTestId(`room-1`)
 		await app.renderResult.findByTestId(`A`)
 
-		console.log(`tearing down`)
 		teardown()
 	})
 })

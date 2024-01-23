@@ -7,7 +7,6 @@ import * as React from "react"
 import { letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
-	console.log(`rendering [${roomId}]`)
 	const store = React.useContext(AR.StoreContext)
 	const letter0State = findInStore(letterAtoms, 0, store)
 	RTR.usePullAtom(letterAtoms(0))
@@ -21,7 +20,6 @@ function Room({ roomId }: { roomId: string }): JSX.Element {
 }
 
 function Lobby(): JSX.Element {
-	console.log(`rendering lobby`)
 	const { socket } = React.useContext(RTR.RealtimeContext)
 	RTR.usePullMutable(RTS.roomIndex)
 	const roomKeys = AR.useJSON(RTS.roomIndex)
