@@ -62,12 +62,7 @@ function Lobby(): JSX.Element {
 }
 
 function B(props: { myUserKey: string }): JSX.Element {
-	RTR.usePullMutableFamilyMember(
-		RTS.usersInRooms.core.findRelatedKeysState,
-		props.myUserKey,
-	)
-
-	const myRoomKey = AR.useO(
+	const myRoomKey = RTR.usePullSelectorFamilyMember(
 		RTS.usersInRooms.states.roomKeyOfUser,
 		props.myUserKey,
 	)
@@ -76,11 +71,7 @@ function B(props: { myUserKey: string }): JSX.Element {
 }
 
 export function A(props: { mySocketKey: string }): JSX.Element | null {
-	RTR.usePullMutableFamilyMember(
-		RTS.usersOfSockets.core.findRelatedKeysState,
-		props.mySocketKey,
-	)
-	const myUserKey = AR.useO(
+	const myUserKey = RTR.usePullSelectorFamilyMember(
 		RTS.usersOfSockets.states.userKeyOfSocket,
 		props.mySocketKey,
 	)
