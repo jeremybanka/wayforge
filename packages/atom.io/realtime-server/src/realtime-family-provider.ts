@@ -21,15 +21,14 @@ export function realtimeAtomFamilyProvider({
 		family: AtomIO.RegularAtomFamilyToken<J, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
-		const unsubSingleCallbacksByKey = new Map<string, () => void>()
-		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
+		const unsubCallbacksByKey = new Map<string, () => void>()
 
-		const fillSingleUnsubRequest = (key: string) => {
-			socket.off(`unsub:${key}`, fillSingleUnsubRequest)
-			const unsub = unsubSingleCallbacksByKey.get(key)
+		const fillUnsubRequest = (key: string) => {
+			socket.off(`unsub:${key}`, fillUnsubRequest)
+			const unsub = unsubCallbacksByKey.get(key)
 			if (unsub) {
 				unsub()
-				unsubSingleCallbacksByKey.delete(key)
+				unsubCallbacksByKey.delete(key)
 			}
 		}
 
@@ -47,9 +46,9 @@ export function realtimeAtomFamilyProvider({
 						`expose-family:${family.key}:${socket.id}`,
 						store,
 					)
-					unsubSingleCallbacksByKey.set(token.key, unsubscribe)
+					unsubCallbacksByKey.set(token.key, unsubscribe)
 					socket.on(`unsub:${token.key}`, () => {
-						fillSingleUnsubRequest(token.key)
+						fillUnsubRequest(token.key)
 					})
 					break
 				}
@@ -60,14 +59,11 @@ export function realtimeAtomFamilyProvider({
 
 		return () => {
 			socket.off(`sub:${family.key}`, fillSubRequest)
-			for (const [, unsub] of unsubFamilyCallbacksByKey) {
+
+			for (const [, unsub] of unsubCallbacksByKey) {
 				unsub()
 			}
-			for (const [, unsub] of unsubSingleCallbacksByKey) {
-				unsub()
-			}
-			unsubFamilyCallbacksByKey.clear()
-			unsubSingleCallbacksByKey.clear()
+			unsubCallbacksByKey.clear()
 		}
 	}
 }
