@@ -10,10 +10,10 @@ import type { AtomFamily, AtomToken } from "."
 
 export type TimelineManageable = AtomFamily<any, any> | AtomToken<any>
 
-export type TimelineToken<_> = {
+export type TimelineToken<M> = {
 	key: string
 	type: `timeline`
-	__brand?: _
+	__M?: M
 }
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
