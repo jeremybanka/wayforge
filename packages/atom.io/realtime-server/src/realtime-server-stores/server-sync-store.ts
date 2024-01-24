@@ -1,6 +1,5 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
-import { SyncGroup } from "~/packages/atom.io/__unstable__/realtime-server-next/create-realtime-sync-group"
 import { usersOfSockets } from "./server-user-store"
 
 export const completeUpdateAtoms = atomFamily<

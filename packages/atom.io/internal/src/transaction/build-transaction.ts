@@ -3,7 +3,7 @@ import type { findState, ƒn } from "atom.io"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type { TransactionProgress } from "."
-import { actUponStore } from "."
+import { actUponStore, getEpochNumber } from "."
 import { arbitrary } from "../arbitrary"
 import { findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
@@ -13,7 +13,6 @@ import { newest } from "../lineage"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import type { ChildStore, RootStore } from "./is-root-store"
-import { isRootStore } from "./is-root-store"
 
 export const buildTransaction = (
 	key: string,
@@ -45,12 +44,13 @@ export const buildTransaction = (
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
 	}
+	const epoch = getEpochNumber(key, store)
 	const transactionMeta: TransactionProgress<ƒn> = {
 		phase: `building` as const,
 		update: {
 			key,
 			id,
-			epoch: isRootStore(parent) ? parent.transactionMeta.epoch + 1 : NaN,
+			epoch: epoch ? epoch + 1 : NaN,
 			updates: [],
 			params,
 			output: undefined,

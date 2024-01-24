@@ -2,6 +2,7 @@ import type * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
+import { assignTransactionToContinuity } from "../../internal/src/transaction/assign-transaction-to-continuity"
 import { isRootStore } from "../../internal/src/transaction/is-root-store"
 import {
 	confirmedUpdateQueueState,
@@ -13,6 +14,8 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	socket: Socket,
 	store: Internal.Store,
 ): () => void {
+	assignTransactionToContinuity(`default`, token.key, store)
+
 	const optimisticQueue = Internal.getFromStore(
 		optimisticUpdateQueueState,
 		store,
@@ -134,13 +137,11 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				}
 			}
 		} else {
-			if (
-				isRootStore(store) &&
-				store.transactionMeta.epoch === confirmedUpdate.epoch - 1
-			) {
+			const continuityEpoch = Internal.getEpochNumber(token.key, store)
+			if (isRootStore(store) && continuityEpoch === confirmedUpdate.epoch - 1) {
 				Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
-				store.transactionMeta.epoch = confirmedUpdate.epoch
+				Internal.setEpochNumber(token.key, confirmedUpdate.epoch, store)
 			} else if (isRootStore(store)) {
 				store.logger.info(
 					`❌`,

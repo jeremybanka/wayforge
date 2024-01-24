@@ -5,7 +5,6 @@ import {
 	findInStore,
 	getFromStore,
 	setIntoStore,
-	subscribeToTimeline,
 	subscribeToTransaction,
 } from "atom.io/internal"
 
@@ -17,16 +16,15 @@ import {
 	socketEpochSelectors,
 	socketUnacknowledgedUpdatesSelectors,
 } from "../../realtime-server/src/realtime-server-stores/server-sync-store"
-import type { SyncGroupToken } from "./create-realtime-sync-group"
-import { redactedPerspectiveUpdateSelectors } from "./realtime-sync-group-store"
+import type { ContinuityToken } from "./create-continuity"
+import { redactedPerspectiveUpdateSelectors } from "./realtime-continuity-store"
 
-export function realtimeContinuitySynchronizer({
+export type RealtimeSynchronizer = ReturnType<typeof realtimeSynchronizer>
+export function realtimeSynchronizer({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function synchronizer(
-		timeline: AtomIO.TimelineToken<AtomIO.TimelineManageable>,
-	): void {
+	return function synchronizer(continuity: ContinuityToken): void {
 		const userKeyState = findInStore(
 			usersOfSockets.states.userKeyOfSocket,
 			socket.id,
@@ -36,62 +34,128 @@ export function realtimeContinuitySynchronizer({
 		if (!userKey) {
 			store.logger.error(
 				`❌`,
-				timeline.type,
-				timeline.key,
+				continuity.type,
+				continuity.key,
 				`Tried to create a synchronizer for a socket that is not connected to a user.`,
 			)
 			return
 		}
 
-		const unsubscribeFromTimeline = subscribeToTimeline(
-			timeline,
-			(timelineUpdate) => {
-				if (timelineUpdate === `redo` || timelineUpdate === `undo`) {
-					return
+		for (const tx of continuity.actions) {
+			const socketUnacknowledgedUpdatesState = findInStore(
+				socketUnacknowledgedUpdatesSelectors,
+				socket.id,
+				store,
+			)
+			const socketUnacknowledgedUpdates = getFromStore(
+				socketUnacknowledgedUpdatesState,
+				store,
+			)
+
+			const fillTransactionRequest = (
+				update: Pick<AtomIO.TransactionUpdate<JsonIO>, `id` | `params`>,
+			) => {
+				const performanceKey = `tx-run:${tx.key}:${update.id}`
+				const performanceKeyStart = `${performanceKey}:start`
+				const performanceKeyEnd = `${performanceKey}:end`
+				performance.mark(performanceKeyStart)
+				actUponStore(tx, update.id, store)(...update.params)
+				performance.mark(performanceKeyEnd)
+				const metric = performance.measure(
+					performanceKey,
+					performanceKeyStart,
+					performanceKeyEnd,
+				)
+				store?.logger.info(
+					`🚀`,
+					`transaction`,
+					tx.key,
+					update.id,
+					metric.duration,
+				)
+			}
+			socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
+			socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
+
+			let unsubscribeFromTransaction: (() => void) | undefined
+			const fillTransactionSubscriptionRequest = () => {
+				unsubscribeFromTransaction = subscribeToTransaction(
+					tx,
+					(update) => {
+						const updateState = findInStore(
+							completeUpdateAtoms,
+							update.id,
+							store,
+						)
+						setIntoStore(updateState, update, store)
+						const redactedUpdateKey = {
+							socketId: socket.id,
+							syncGroupKey: continuity.key,
+							updateId: update.id,
+						}
+						const redactedUpdateState = findInStore(
+							redactedPerspectiveUpdateSelectors,
+							redactedUpdateKey,
+							store,
+						)
+						const redactedUpdate = getFromStore(redactedUpdateState, store)
+
+						setIntoStore(
+							socketUnacknowledgedUpdatesState,
+							(updates) => {
+								if (redactedUpdate) {
+									updates.push(redactedUpdate)
+									updates.sort((a, b) => a.epoch - b.epoch)
+								}
+								return updates
+							},
+							store,
+						)
+
+						socket.emit(`tx-new:${tx.key}`, redactedUpdate as Json.Serializable)
+					},
+					`tx-sub:${tx.key}:${socket.id}`,
+					store,
+				)
+				socket.on(`tx-unsub:${tx.key}`, unsubscribeFromTransaction)
+			}
+			socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
+
+			let i = 1
+			let next = 1
+			const retry = setInterval(() => {
+				const toEmit = socketUnacknowledgedUpdates[0]
+				console.log(userKey, socketUnacknowledgedUpdates)
+				if (toEmit && i === next) {
+					socket.emit(`tx-new:${tx.key}`, toEmit as Json.Serializable)
+					next *= 2
 				}
-				if (timelineUpdate.type !== `transaction_update`) {
-					return
+
+				i++
+			}, 250)
+
+			const trackClientAcknowledgement = (epoch: number) => {
+				i = 1
+				next = 1
+				const socketEpochState = findInStore(
+					socketEpochSelectors,
+					socket.id,
+					store,
+				)
+
+				setIntoStore(socketEpochState, epoch, store)
+				if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
+					setIntoStore(
+						socketUnacknowledgedUpdatesState,
+						(updates) => {
+							updates.shift()
+							return updates
+						},
+						store,
+					)
 				}
-			},
-			`realtime-continuity-synchronizer`,
-			store,
-		)
+			}
+			socket.on(`tx-ack:${tx.key}`, trackClientAcknowledgement)
+		}
 	}
 }
-
-// continuities
-//
-// let's say I'm running a server in IPC mode
-//
-// I have 1 "operator" server responsible for
-// - user authentication
-// - creation and destruction of rooms
-// - user assignment to rooms
-// and I have X "room" servers responsible for
-// - taking action parameters as input, and applying them to the room state
-// - outputting the results of actions tagged by the id of the action
-// and I have Y "user" clients responsible for
-// - sending action params to the operator server
-// - receiving action results from the operator server
-// - reconciling the action results with the local state
-//
-// thing is, there is an asymmetry between the server-side and client-side
-// - server-side, there are two stores
-// - client-side, there is only one store
-// action synchronization relies on the EPOCH NUMBER
-// - a global set on the store
-// - represents the number of actions that have been applied to the store
-//
-// so where
-// A is the operator epoch,
-// and B is a room's epoch,
-// and C is the epoch of a user of that room
-// C = A + B
-//
-// without a notion of separate continuities, this is a fundamental impasse
-// the client will receive action results tagged with an epoch number that is not correct to its store
-//
-// to fix this
-// - epoch store implementation must change from `number` to `Record<string, number>`
-// - epoch transport does not change, remains `number`
-// - any given action must be assignable to a continuity

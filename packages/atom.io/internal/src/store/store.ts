@@ -32,6 +32,7 @@ import type {
 	TransactionEpoch,
 	TransactionProgress,
 } from "../transaction"
+import { isRootStore } from "../transaction/is-root-store"
 
 export class Store implements Lineage {
 	public parent: Store | null = null
@@ -93,7 +94,11 @@ export class Store implements Lineage {
 	}
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionEpoch | TransactionProgress<ƒn> = {
-		epoch: -1,
+		epoch: new Map<string, number>(),
+		epochActions: new Junction({
+			between: [`epoch`, `action`],
+			cardinality: `1:n`,
+		}),
 	}
 
 	public config: {
@@ -121,7 +126,14 @@ export class Store implements Lineage {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
-			this.transactionMeta = { ...store?.transactionMeta }
+			if (isRootStore(store)) {
+				this.transactionMeta = {
+					epoch: new Map(store?.transactionMeta.epoch),
+					epochActions: new Junction(
+						store?.transactionMeta.epochActions.toJSON(),
+					),
+				}
+			}
 
 			this.config = {
 				...store?.config,

@@ -10,6 +10,7 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 
 import type { ServerConfig } from "."
+import { assignTransactionToContinuity } from "../../internal/src/transaction/assign-transaction-to-continuity"
 import { usersOfSockets } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
@@ -30,6 +31,8 @@ export function realtimeActionSynchronizer({
 			update: AtomIO.TransactionUpdateContent[],
 		) => AtomIO.TransactionUpdateContent[],
 	): () => void {
+		assignTransactionToContinuity(`default`, tx.key, store)
+
 		const userKeyState = findInStore(
 			usersOfSockets.states.userKeyOfSocket,
 			socket.id,

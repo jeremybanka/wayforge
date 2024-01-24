@@ -4,12 +4,16 @@ import type {
 	ReadableFamilyToken,
 	TransactionToken,
 } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
+import { IMPLICIT, assignTransactionToContinuity } from "atom.io/internal"
 
 export class InvariantMap<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {
 		if (this.has(key)) {
-			throw new Error(`Cannot set a key that already exists in an InvariantMap`)
+			console.warn(`Tried to set a key that already exists in an InvariantMap`, {
+				key,
+				value,
+			})
+			return this
 		}
 		return super.set(key, value)
 	}
@@ -28,16 +32,16 @@ export type PerspectiveToken<
 	perspectiveAtoms: ReadableFamilyToken<Iterable<K>, string>
 }
 
-export type SyncGroupToken = {
-	readonly type: `realtime_sync_group`
+export type ContinuityToken = {
+	readonly type: `continuity`
 	readonly key: string
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<any>[]
 	readonly perspectives: PerspectiveToken<any, any>[]
 }
 
-export class SyncGroup implements SyncGroupToken {
-	public type = `realtime_sync_group` as const
+export class SyncGroup implements ContinuityToken {
+	public type = `continuity` as const
 
 	public globals: AtomToken<any>[]
 	public actions: TransactionToken<any>[]
@@ -45,12 +49,12 @@ export class SyncGroup implements SyncGroupToken {
 
 	private constructor(public readonly key: string) {}
 
-	public static existing: InvariantMap<string, SyncGroupToken> =
+	public static existing: InvariantMap<string, ContinuityToken> =
 		new InvariantMap()
 	public static create(
 		key: string,
-		builder: (group: SyncGroup) => SyncGroupToken,
-	): SyncGroupToken {
+		builder: (group: SyncGroup) => ContinuityToken,
+	): ContinuityToken {
 		const group = new SyncGroup(key)
 		const { type, globals, actions, perspectives } = builder(group)
 		const token = { type, key, globals, actions, perspectives }
@@ -95,6 +99,21 @@ export class SyncGroup implements SyncGroupToken {
 	}
 }
 
+export type ContinuityOptions = {
+	key: string
+	config: (syncGroup: SyncGroup) => ContinuityToken
+}
+
+export function continuity(options: ContinuityOptions): ContinuityToken {
+	const { key, config } = options
+	const token = SyncGroup.create(key, config)
+	const { actions } = token
+	for (const action of actions) {
+		assignTransactionToContinuity(key, action.key, IMPLICIT.STORE)
+	}
+	return token
+}
+
 // const counterStates = atomFamily<number, { c: string }>({
 // 	key: `counter`,
 // 	default: 0,
@@ -112,6 +131,12 @@ export class SyncGroup implements SyncGroupToken {
 // 	default: [],
 // })
 
-// const group = SyncGroup.create((syncGroup) =>
-// 	syncGroup.add(counterStates, counterIndices).add(nameStates, nameIndices),
-// )
+// const counterContinuity = continuity({
+// 	key: `counter`,
+// 	config: (group) =>
+// 		group
+// 			.add(counterStates, counterIndices)
+// 			.add(nameStates, nameIndices)
+// 			.add(nameStates, nameIndices)
+// 			.add(nameStates, nameIndices),
+// })

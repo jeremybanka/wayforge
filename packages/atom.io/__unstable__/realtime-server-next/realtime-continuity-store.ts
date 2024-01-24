@@ -2,7 +2,7 @@ import { selectorFamily } from "atom.io"
 import type { TransactionUpdate } from "atom.io"
 import type { JsonIO } from "atom.io/json"
 import { completeUpdateAtoms, usersOfSockets } from "atom.io/realtime-server"
-import { SyncGroup } from "./create-realtime-sync-group"
+import { SyncGroup } from "./create-continuity"
 
 export const redactorAtoms = selectorFamily<
 	(update: TransactionUpdate<any>) => TransactionUpdate<any>,

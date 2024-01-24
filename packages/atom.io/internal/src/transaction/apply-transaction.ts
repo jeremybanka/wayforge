@@ -59,7 +59,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 	}
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
 	if (isRootStore(parent)) {
-		parent.transactionMeta.epoch = child.transactionMeta.update.epoch
+		// parent.transactionMeta.epoch = child.transactionMeta.update.epoch
 		const myTransaction = withdraw<ƒ>(
 			{ key: child.transactionMeta.update.key, type: `transaction` },
 			store,

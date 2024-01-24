@@ -41,9 +41,9 @@ const LoggerIconDictionary = {
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 export type TokenDenomination =
 	| `atom`
+	| `continuity`
 	| `mutable_atom`
 	| `readonly_selector`
-	| `realtime_sync_group`
 	| `selector`
 	| `state`
 	| `timeline`
