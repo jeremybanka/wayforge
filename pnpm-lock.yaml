@@ -455,8 +455,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@testing-library/jest-dom':
-        specifier: 6.2.1
-        version: 6.2.1(vitest@1.2.1)
+        specifier: 6.3.0
+        version: 6.3.0(vitest@1.2.1)
       '@testing-library/react':
         specifier: 14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
@@ -549,8 +549,8 @@ importers:
         specifier: 2.8.1
         version: 2.8.1(@babel/core@7.23.7)(preact@10.19.3)(vite@5.0.12)
       '@testing-library/jest-dom':
-        specifier: 6.2.1
-        version: 6.2.1(vitest@1.2.1)
+        specifier: 6.3.0
+        version: 6.3.0(vitest@1.2.1)
       '@testing-library/react':
         specifier: 14.1.2
         version: 14.1.2(@preact/compat@17.1.2)(@preact/compat@17.1.2)
@@ -826,8 +826,8 @@ importers:
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.48)(react@18.2.0)
       '@testing-library/jest-dom':
-        specifier: 6.2.1
-        version: 6.2.1(vitest@1.2.1)
+        specifier: 6.3.0
+        version: 6.3.0(vitest@1.2.1)
       '@testing-library/react':
         specifier: 14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
@@ -4771,8 +4771,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/jest-dom@6.2.1(vitest@1.2.1):
-    resolution: {integrity: sha512-Nuy/uFFDe9h/2jwoUuMKgoxvgkUv4S9jI9bARj6dGUKJ3euRhg8JFi5sciYbrayoxkadEOZednRT9+vo6LvvxQ==}
+  /@testing-library/jest-dom@6.3.0(vitest@1.2.1):
+    resolution: {integrity: sha512-hJVIrkFizEQxoWsGBlycTcQhrpoCH4DhXfrnHFFXgkx3Xdm15zycsq5Ep+vpw4W8S0NJa8cxDHcuJib+1tEbhg==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
     peerDependencies:
       '@jest/globals': '>= 28'
