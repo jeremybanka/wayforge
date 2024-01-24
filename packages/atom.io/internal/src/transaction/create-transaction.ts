@@ -28,7 +28,7 @@ export function createTransaction<ƒ extends ƒn>(
 	const newTransaction: Transaction<ƒ> = {
 		key: options.key,
 		type: `transaction`,
-		run: (params: Parameters<ƒ>, id?: string) => {
+		run: (params: Parameters<ƒ>, id: string) => {
 			const childStore = buildTransaction(options.key, params, store, id)
 			try {
 				const target = newest(store)

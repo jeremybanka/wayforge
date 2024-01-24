@@ -1,5 +1,10 @@
-import type { EnvironmentData, Store } from "atom.io/internal"
-import { IMPLICIT, createTransaction, withdraw } from "atom.io/internal"
+import type { EnvironmentData } from "atom.io/internal"
+import {
+	IMPLICIT,
+	actUponStore,
+	arbitrary,
+	createTransaction,
+} from "atom.io/internal"
 
 import type {
 	KeyedStateUpdate,
@@ -77,18 +82,9 @@ export function transaction<ƒ extends ƒn>(
 	return createTransaction(options, IMPLICIT.STORE)
 }
 
-export const runTransaction =
-	<ƒ extends ƒn>(
-		token: TransactionToken<ƒ>,
-		id?: string,
-		store: Store = IMPLICIT.STORE,
-	) =>
-	(...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
-		const tx = withdraw(token, store)
-		if (tx) {
-			return tx.run(parameters, id)
-		}
-		throw new Error(
-			`Cannot run transaction "${token.key}": transaction not found in store "${store.config.name}".`,
-		)
-	}
+export function runTransaction<ƒ extends ƒn>(
+	token: TransactionToken<ƒ>,
+	id = arbitrary(),
+): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
+	return actUponStore(token, id, IMPLICIT.STORE)
+}

@@ -1,6 +1,8 @@
 import type { Json } from "atom.io/json"
 
 import type {
+	AtomFamilyToken,
+	AtomToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -9,6 +11,8 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
+	SelectorFamilyToken,
+	SelectorToken,
 	WritableFamilyToken,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -36,6 +40,12 @@ export function findInStore<T, K extends Json.Serializable, Key extends K>(
 ): RegularAtomToken<T>
 
 export function findInStore<T, K extends Json.Serializable, Key extends K>(
+	token: AtomFamilyToken<T, K>,
+	key: Key,
+	store: Store,
+): AtomToken<T>
+
+export function findInStore<T, K extends Json.Serializable, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
 	store: Store,
@@ -46,6 +56,12 @@ export function findInStore<T, K extends Json.Serializable, Key extends K>(
 	key: Key,
 	store: Store,
 ): ReadonlySelectorToken<T>
+
+export function findInStore<T, K extends Json.Serializable, Key extends K>(
+	token: SelectorFamilyToken<T, K>,
+	key: Key,
+	store: Store,
+): SelectorToken<T>
 
 export function findInStore<T, K extends Json.Serializable, Key extends K>(
 	token: WritableFamilyToken<T, K>,

@@ -78,7 +78,7 @@ pipe(
 			// COMPOSE REALTIME SERVICE HOOKS
 			const exposeSingle = RTS.realtimeStateProvider({ socket })
 			const exposeMutable = RTS.realtimeMutableProvider({ socket })
-			const exposeFamily = RTS.realtimeFamilyProvider({ socket })
+			const exposeFamily = RTS.realtimeAtomFamilyProvider({ socket })
 			const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({ socket })
 			const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
 			const syncTransaction = RTS.realtimeActionSynchronizer({ socket, store })

@@ -4,8 +4,8 @@ import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
-export function pullFamilyMember<J extends Json.Serializable>(
-	token: AtomIO.WritableToken<J>,
+export function pullAtomFamilyMember<J extends Json.Serializable>(
+	token: AtomIO.RegularAtomToken<J>,
 	socket: Socket,
 	store: Store,
 ): () => void {

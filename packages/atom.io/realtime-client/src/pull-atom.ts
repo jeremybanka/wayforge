@@ -3,8 +3,8 @@ import { type Store, setIntoStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
-export function pullState<J extends Json.Serializable>(
-	token: AtomIO.WritableToken<J>,
+export function pullAtom<J extends Json.Serializable>(
+	token: AtomIO.RegularAtomToken<J>,
 	socket: Socket,
 	store: Store,
 ): () => void {

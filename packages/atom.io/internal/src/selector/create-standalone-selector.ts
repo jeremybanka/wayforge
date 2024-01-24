@@ -1,5 +1,4 @@
 import type {
-	FamilyMetadata,
 	ReadonlySelectorOptions,
 	ReadonlySelectorToken,
 	WritableSelectorOptions,
@@ -7,7 +6,6 @@ import type {
 } from "atom.io"
 
 import type { Store } from "../store"
-import type { Subject } from "../subject"
 import { createReadonlySelector } from "./create-readonly-selector"
 import { createWritableSelector } from "./create-writable-selector"
 

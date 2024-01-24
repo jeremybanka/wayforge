@@ -38,20 +38,7 @@ export const setAtom = <T>(
 			const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
 			let mutable: Transceiver<any> = target.valueMap.get(mutableKey)
 			mutable = copyMutableIfWithinTransaction(mutable, mutableAtom, target)
-			const output = mutable.do(update.newValue)
-			if (output !== null) {
-				target.logger.warn(
-					`❌`,
-					`mutable_atom`,
-					mutableKey,
-					`could not be updated.`,
-					typeof output === `number`
-						? `Expected update number ${
-								mutable.cacheUpdateNumber + 1
-						  }, but got ${output}`
-						: output,
-				)
-			}
+			mutable.do(update.newValue)
 		}
 	}
 }

@@ -4,7 +4,7 @@ import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { useJSON } from "atom.io/react"
-import { usePullFamilyMember, usePullMutable } from "atom.io/realtime-react"
+import { usePullAtomFamilyMember, usePullMutable } from "atom.io/realtime-react"
 
 import { cardIndex, cardValuesIndex } from "~/apps/node/lodge/src/store/game"
 import * as CardGroups from "~/apps/node/lodge/src/store/game/card-groups"
@@ -33,15 +33,15 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 )
 
 function DeckSync(props: { id: string }): null {
-	usePullFamilyMember(findState(CardGroups.deckStates, props.id))
+	usePullAtomFamilyMember(CardGroups.deckStates, props.id)
 	return null
 }
 function HandSync(props: { id: string }): null {
-	usePullFamilyMember(findState(CardGroups.handStates, props.id))
+	usePullAtomFamilyMember(CardGroups.handStates, props.id)
 	return null
 }
 function TrickSync(props: { id: string }): null {
-	usePullFamilyMember(findState(CardGroups.trickStates, props.id))
+	usePullAtomFamilyMember(CardGroups.trickStates, props.id)
 	return null
 }
 function CoreSync({ roomId }: GameProps): JSX.Element {

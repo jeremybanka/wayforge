@@ -39,7 +39,7 @@ export const redactedUpdateSelectors = selectorFamily<
 })
 
 export const userUnacknowledgedUpdatesAtoms = atomFamily<
-	TransactionUpdate<any>[],
+	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
 	string
 >({
 	key: `unacknowledgedUpdates`,
@@ -47,7 +47,7 @@ export const userUnacknowledgedUpdatesAtoms = atomFamily<
 })
 
 export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
-	TransactionUpdate<any>[],
+	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
 	string
 >({
 	key: `socketUnacknowledgedUpdates`,

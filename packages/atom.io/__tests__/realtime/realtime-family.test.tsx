@@ -39,7 +39,7 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
 				setIntoStore(storeState, store, store)
-				const exposeFamily = RTS.realtimeFamilyProvider({
+				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
 					store,
 				})
@@ -68,7 +68,7 @@ describe(`running transactions`, () => {
 				},
 				jane: () => {
 					const findNCState = useFamily(findNumbersCollectionState)
-					RTR.usePullFamilyMember(findNCState(`foo`))
+					RTR.usePullAtomFamilyMember(findNCState, `foo`)
 					const numbers = AR.useO(findNCState, `foo`)
 					return (
 						<>

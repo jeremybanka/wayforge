@@ -16,7 +16,7 @@ export function useJSON<Serializable extends Json.Serializable>(
 
 export function useJSON<
 	Serializable extends Json.Serializable,
-	Key extends Serializable,
+	Key extends Json.Serializable,
 >(token: MutableAtomFamilyToken<any, Serializable, Key>, key: Key): Serializable
 
 export function useJSON<

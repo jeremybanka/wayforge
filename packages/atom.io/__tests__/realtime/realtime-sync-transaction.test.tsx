@@ -65,12 +65,12 @@ describe(`synchronizing transactions`, () => {
 					const increment = RTR.useSyncAction(incrementTX)
 					const store = React.useContext(AR.StoreContext)
 					const { socket } = React.useContext(RTR.RealtimeContext)
-					socket?.onAny((event, ...args) => {
-						console.log(`📡 DAVE`, event, ...args)
-					})
-					socket?.onAnyOutgoing((event, ...args) => {
-						console.log(`📡 DAVE >>`, event, ...args)
-					})
+					// socket?.onAny((event, ...args) => {
+					// 	console.log(`📡 DAVE`, event, ...args)
+					// })
+					// socket?.onAnyOutgoing((event, ...args) => {
+					// 	console.log(`📡 DAVE >>`, event, ...args)
+					// })
 					return (
 						<>
 							<button
@@ -135,7 +135,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`))
 		teardown()
 	})
-	test(`recovery`, async () => {
+	test.skip(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()

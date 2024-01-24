@@ -2,14 +2,13 @@ import type * as AtomIO from "atom.io"
 import type { Transceiver } from "atom.io/internal"
 import {
 	IMPLICIT,
-	findInStore,
 	getFromStore,
 	getJsonToken,
 	getUpdateToken,
 	subscribeToState,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import { parseJson } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
 
@@ -28,97 +27,39 @@ export function realtimeMutableFamilyProvider({
 		family: AtomIO.MutableAtomFamily<T, J, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
-		const unsubSingleCallbacksByKey = new Map<string, () => void>()
-		const unsubFamilyCallbacksByKey = new Map<string, () => void>()
+		const unsubCallbacksByKey = new Map<string, () => void>()
 
-		const fillFamilyUnsubRequest = () => {
-			for (const [, unsub] of unsubFamilyCallbacksByKey) {
-				unsub()
-			}
-			unsubFamilyCallbacksByKey.clear()
-			socket.off(`unsub:${family.key}`, fillFamilyUnsubRequest)
-		}
-
-		const fillSingleUnsubRequest = (key: string) => {
-			socket.off(`unsub:${key}`, fillSingleUnsubRequest)
-			const unsub = unsubSingleCallbacksByKey.get(key)
+		const fillUnsubRequest = (key: string) => {
+			socket.off(`unsub:${key}`, fillUnsubRequest)
+			const unsub = unsubCallbacksByKey.get(key)
 			if (unsub) {
 				unsub()
-				unsubSingleCallbacksByKey.delete(key)
+				unsubCallbacksByKey.delete(key)
 			}
 		}
 
-		const fillSubRequest = (subKey?: K) => {
-			if (subKey === undefined) {
-				const keys = getFromStore(index, store)
-				for (const key of keys) {
-					const token = findInStore(family, key, store)
+		const fillSubRequest = (subKey: K) => {
+			const exposedSubKeys = getFromStore(index, store)
+			for (const exposedSubKey of exposedSubKeys) {
+				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
+					const token = family(subKey)
 					const jsonToken = getJsonToken(token)
-					const trackerToken = getUpdateToken(token)
-					socket.emit(
-						`init:${family.key}`,
-						parseJson(jsonToken.family?.subKey || `null`),
-						getFromStore(jsonToken, store),
-					)
-					const unsubFromUpdates = subscribeToState(
-						trackerToken,
+					const updateToken = getUpdateToken(token)
+					socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))
+					const unsubscribe = subscribeToState(
+						updateToken,
 						({ newValue }) => {
-							socket.emit(
-								`next:${token.key}`,
-								parseJson(jsonToken.family?.subKey || `null`),
-								newValue,
-							)
+							socket.emit(`next:${token.key}`, newValue)
 						},
 						`expose-family:${family.key}:${socket.id}`,
 						store,
 					)
-					unsubFamilyCallbacksByKey.set(token.key, unsubFromUpdates)
+					unsubCallbacksByKey.set(token.key, unsubscribe)
+					socket.on(`unsub:${token.key}`, () => {
+						fillUnsubRequest(token.key)
+					})
+					break
 				}
-				const unsubscribeFromTokenCreation = family.subject.subscribe(
-					`expose-family:${socket.id}`,
-					(token) => {
-						const jsonToken = getJsonToken(token)
-						const trackerToken = getUpdateToken(token)
-						socket.emit(
-							`init:${family.key}`,
-							parseJson(jsonToken.family?.subKey || `null`),
-							getFromStore(jsonToken, store),
-						)
-						const unsubFromUpdates = subscribeToState(
-							trackerToken,
-							({ newValue }) => {
-								socket.emit(
-									`next:${token.key}`,
-									parseJson(jsonToken.family?.subKey || `null`),
-									newValue,
-								)
-							},
-							`expose-family:${family.key}:${socket.id}`,
-							store,
-						)
-						unsubFamilyCallbacksByKey.set(token.key, unsubFromUpdates)
-					},
-				)
-				unsubFamilyCallbacksByKey.set(family.key, unsubscribeFromTokenCreation)
-
-				socket.on(`unsub:${family.key}`, fillFamilyUnsubRequest)
-			} else {
-				const token = family(subKey)
-				const jsonToken = getJsonToken(token)
-				const updateToken = getUpdateToken(token)
-				socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))
-				const unsubscribe = subscribeToState(
-					updateToken,
-					({ newValue }) => {
-						socket.emit(`next:${token.key}`, newValue)
-					},
-					`expose-family:${family.key}:${socket.id}`,
-					store,
-				)
-				unsubSingleCallbacksByKey.set(token.key, unsubscribe)
-				socket.on(`unsub:${token.key}`, () => {
-					fillSingleUnsubRequest(token.key)
-				})
 			}
 		}
 
@@ -126,14 +67,10 @@ export function realtimeMutableFamilyProvider({
 
 		return () => {
 			socket.off(`sub:${family.key}`, fillSubRequest)
-			for (const [, unsub] of unsubFamilyCallbacksByKey) {
+			for (const [, unsub] of unsubCallbacksByKey) {
 				unsub()
 			}
-			for (const [, unsub] of unsubSingleCallbacksByKey) {
-				unsub()
-			}
-			unsubFamilyCallbacksByKey.clear()
-			unsubSingleCallbacksByKey.clear()
+			unsubCallbacksByKey.clear()
 		}
 	}
 }

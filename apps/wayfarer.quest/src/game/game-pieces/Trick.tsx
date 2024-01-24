@@ -1,5 +1,5 @@
 import { useO } from "atom.io/react"
-import { usePullMutableFamilyMember } from "atom.io/realtime-react"
+import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "hamr/react-css-vars"
 import { Id } from "hamr/react-id"
@@ -25,7 +25,10 @@ export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>
 		const isMyTrick = useO(myHandsIndex).includes(trickId)
 		const trickContent = useO(findState(trickContentsStates, [gameId, trickId]))
 
-		usePullMutableFamilyMember(groupsOfCards.core.findRelatedKeysState(trickId))
+		usePullMutableAtomFamilyMember(
+			groupsOfCards.core.findRelatedKeysState,
+			trickId,
+		)
 
 		const handlers = useRadial([])
 

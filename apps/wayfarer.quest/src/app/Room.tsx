@@ -3,7 +3,7 @@
 import { useI, useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
 import {
-	usePullMutableFamilyMember,
+	usePullMutableAtomFamilyMember,
 	useServerAction,
 } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
@@ -36,8 +36,10 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 
 	const joinRoom = useServerAction(joinRoomTX)
 	const leaveRoom = useServerAction(leaveRoomTX)
-	const playersInRoomState = playersInRooms.core.findRelatedKeysState(roomId)
-	usePullMutableFamilyMember(playersInRoomState)
+	usePullMutableAtomFamilyMember(
+		playersInRooms.core.findRelatedKeysState,
+		roomId,
+	)
 
 	return (
 		<>

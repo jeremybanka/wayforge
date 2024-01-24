@@ -14,7 +14,10 @@ import {
 	createMutableAtomFamily,
 	createRegularAtomFamily,
 	createSelectorFamily,
+	findInStore,
+	getFromStore,
 	getJsonFamily,
+	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -124,7 +127,9 @@ export class Join<
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object | null = null,
 > {
-	private transactors: Transactors = TRANSACTORS
+	private options: JoinOptions<ASide, BSide, Cardinality, Content>
+	private defaultContent: Content | undefined
+	private transactors: Transactors
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinState<ASide, BSide, Cardinality, Content>
 	public core: {
@@ -138,18 +143,42 @@ export class Join<
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
 	): void {
+		const originalTransactors = this.transactors
 		this.transactors = transactors
 		run(this)
-		this.transactors = TRANSACTORS
+		this.transactors = originalTransactors
 	}
+
+	public alternates: Map<string, Join<ASide, BSide, Cardinality, Content>>
+	public in(store: Store): Join<ASide, BSide, Cardinality, Content> {
+		const key = store.config.name
+		const alternate = this.alternates.get(key)
+		if (alternate) {
+			return alternate
+		}
+		const join = new Join(this.options, this.defaultContent, store)
+		this.alternates.set(key, join)
+		join.alternates = this.alternates
+		return join
+	}
+
 	public constructor(
 		options: JoinOptions<ASide, BSide, Cardinality, Content>,
 		defaultContent: Content | undefined,
 		store: Store = IMPLICIT.STORE,
 	) {
+		this.options = options
+		this.defaultContent = defaultContent
+		this.alternates = new Map()
+		this.alternates.set(store.config.name, this)
+		this.transactors = {
+			get: (token) => getFromStore(token, store),
+			set: (token, value) => setIntoStore(token, value, store),
+			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
+		}
 		const a: ASide = options.between[0]
 		const b: BSide = options.between[1]
-		const findRelatedKeysState = createMutableAtomFamily<
+		const relatedKeysAtoms = createMutableAtomFamily<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
@@ -163,19 +192,19 @@ export class Join<
 			},
 			store,
 		)
-		this.core = { findRelatedKeysState }
+		this.core = { findRelatedKeysState: relatedKeysAtoms }
 		const getRelatedKeys: Read<(key: string) => SetRTX<string>> = (
-			{ get },
+			{ find, get },
 			key,
-		) => get(findRelatedKeysState(key))
+		) => get(find(relatedKeysAtoms, key))
 		const addRelation: Write<(a: string, b: string) => void> = (
 			transactors,
 			a,
 			b,
 		) => {
 			const { set, find } = transactors
-			const aKeysState = find(findRelatedKeysState, a)
-			const bKeysState = find(findRelatedKeysState, b)
+			const aKeysState = find(relatedKeysAtoms, a)
+			const bKeysState = find(relatedKeysAtoms, b)
 			set(aKeysState, (aKeys) => aKeys.add(b))
 			set(bKeysState, (bKeys) => bKeys.add(a))
 		}
@@ -185,8 +214,8 @@ export class Join<
 			b,
 		) => {
 			const { find, set } = transactors
-			const aKeysState = find(findRelatedKeysState, a)
-			const bKeysState = find(findRelatedKeysState, b)
+			const aKeysState = find(relatedKeysAtoms, a)
+			const bKeysState = find(relatedKeysAtoms, b)
 			set(aKeysState, (aKeys) => (aKeys.delete(b), aKeys))
 			set(bKeysState, (bKeys) => (bKeys.delete(a), bKeys))
 		}
@@ -194,14 +223,14 @@ export class Join<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (transactors, a, newRelationsOfA) => {
 			const { find, get, set } = transactors
-			const relationsOfAState = find(findRelatedKeysState, a)
+			const relationsOfAState = find(relatedKeysAtoms, a)
 			const currentRelationsOfA = get(relationsOfAState)
 			for (const currentRelationB of currentRelationsOfA) {
 				const remainsRelated = newRelationsOfA.includes(currentRelationB)
 				if (remainsRelated) {
 					continue
 				}
-				const relationsOfBState = find(findRelatedKeysState, currentRelationB)
+				const relationsOfBState = find(relatedKeysAtoms, currentRelationB)
 				set(relationsOfBState, (relationsOfB) => {
 					relationsOfB.delete(a)
 					return relationsOfB
@@ -242,7 +271,7 @@ export class Join<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (transactors, a, newRelationsOfA) => {
 			const { find, set } = transactors
-			const relationsOfAState = find(findRelatedKeysState, a)
+			const relationsOfAState = find(relatedKeysAtoms, a)
 			set(relationsOfAState, (relationsOfA) => {
 				relationsOfA.transaction((nextRelationsOfA) => {
 					for (const newRelationB of newRelationsOfA) {
@@ -253,7 +282,7 @@ export class Join<
 				return relationsOfA
 			})
 			for (const newRelationB of newRelationsOfA) {
-				const newRelationsBState = find(findRelatedKeysState, newRelationB)
+				const newRelationsBState = find(relatedKeysAtoms, newRelationB)
 				set(newRelationsBState, (newRelationsB) => {
 					newRelationsB.add(a)
 					return newRelationsB
@@ -280,24 +309,26 @@ export class Join<
 			has: (a, b) => has(this.transactors, a, b),
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
-		let findContentState: RegularAtomFamily<Content, string>
+		let contentAtoms: RegularAtomFamily<Content, string>
 		if (defaultContent) {
-			findContentState = createRegularAtomFamily<Content, string>(
+			contentAtoms = createRegularAtomFamily<Content, string>(
 				{
 					key: `${options.key}/content`,
 					default: defaultContent,
 				},
 				store,
 			)
-			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
-				get(findContentState(key))
+			const getContent: Read<(key: string) => Content | null> = (
+				{ find, get },
+				key,
+			) => get(find(contentAtoms, key))
 			const setContent: Write<(key: string, content: Content) => void> = (
-				transactors,
+				{ find, set },
 				key,
 				content,
-			) => transactors.set(findContentState(key), content)
-			const deleteContent: Write<(key: string) => void> = (_, key) =>
-				dispose(findContentState(key))
+			) => set(find(contentAtoms, key), content)
+			const deleteContent: Write<(key: string) => void> = ({ find }, key) =>
+				dispose(find(contentAtoms, key))
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {
 					const content = getContent(this.transactors, contentKey)
@@ -329,8 +360,9 @@ export class Join<
 					key: `${options.key}/singleRelatedKey`,
 					get:
 						(key) =>
-						({ get }) => {
-							const relatedKeys = get(findRelatedKeysState(key))
+						({ find, get }) => {
+							const relatedKeysState = find(relatedKeysAtoms, key)
+							const relatedKeys = get(relatedKeysState)
 							for (const relatedKey of relatedKeys) {
 								return relatedKey
 							}
@@ -345,9 +377,10 @@ export class Join<
 					key: `${options.key}/multipleRelatedKeys`,
 					get:
 						(key) =>
-						({ get }) => {
-							const jsonFamily = getJsonFamily(findRelatedKeysState, store)
-							const json = get(jsonFamily(key))
+						({ find, get }) => {
+							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
+							const jsonState = find(jsonFamily, key)
+							const json = get(jsonState)
 							return json.members
 						},
 				},
@@ -360,11 +393,14 @@ export class Join<
 					key: `${options.key}/singleRelatedEntry`,
 					get:
 						(key) =>
-						({ get }) => {
-							const relatedKeys = get(findRelatedKeysState(key))
+						({ find, get }) => {
+							const relatedKeysState = find(relatedKeysAtoms, key)
+							const relatedKeys = get(relatedKeysState)
 							for (const relatedKey of relatedKeys) {
 								const contentKey = relations.makeContentKey(key, relatedKey)
-								return [relatedKey, get(findContentState(contentKey))]
+								const contentState = find(contentAtoms, contentKey)
+								const content = get(contentState)
+								return [relatedKey, content]
 							}
 							return null
 						},
@@ -377,12 +413,14 @@ export class Join<
 					key: `${options.key}/multipleRelatedEntries`,
 					get:
 						(key) =>
-						({ get }) => {
-							const jsonFamily = getJsonFamily(findRelatedKeysState, store)
+						({ find, get }) => {
+							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
 							const json = get(jsonFamily(key))
 							return json.members.map((relatedKey) => {
 								const contentKey = relations.makeContentKey(key, relatedKey)
-								return [relatedKey, get(findContentState(contentKey))]
+								const contentState = find(contentAtoms, contentKey)
+								const content = get(contentState)
+								return [relatedKey, content]
 							})
 						},
 				},
@@ -469,6 +507,7 @@ export class Join<
 		}
 	}
 }
+
 export function join<
 	const ASide extends string,
 	const BSide extends string,
@@ -480,6 +519,7 @@ export function join<
 ): {
 	readonly relations: Junction<ASide, BSide, null>
 	readonly states: JoinState<ASide, BSide, Cardinality, null>
+	readonly in: (store: Store) => Join<ASide, BSide, Cardinality>
 	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, null>) => void,
@@ -504,6 +544,7 @@ export function join<
 ): {
 	readonly relations: Junction<ASide, BSide, Content>
 	readonly states: JoinState<ASide, BSide, Cardinality, Content>
+	readonly in: (store: Store) => Join<ASide, BSide, Cardinality, Content>
 	readonly transact: (
 		transactors: Transactors,
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
