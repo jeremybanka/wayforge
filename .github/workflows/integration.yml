@@ -93,6 +93,11 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.0.25
+
       - name: Build
         run: pnpm build
 

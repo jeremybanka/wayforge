@@ -1,11 +1,13 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import {
 	IMPLICIT,
+	actUponStore,
 	findInStore,
 	getFromStore,
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
+import type { Json, JsonIO } from "atom.io/json"
 
 import type { ServerConfig } from "."
 import { usersOfSockets } from "./realtime-server-stores"
@@ -22,7 +24,7 @@ export function realtimeActionSynchronizer({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function actionSynchronizer<ƒ extends AtomIO.ƒn>(
+	return function actionSynchronizer<ƒ extends JsonIO>(
 		tx: AtomIO.TransactionToken<ƒ>,
 		filter?: (
 			update: AtomIO.TransactionUpdateContent[],
@@ -47,12 +49,15 @@ export function realtimeActionSynchronizer({
 			const redactorState = findInStore(transactionRedactorAtoms, tx.key, store)
 			setIntoStore(redactorState, { filter }, store)
 		}
-		const fillTransactionRequest = (update: AtomIO.TransactionUpdate<ƒ>) => {
+
+		const fillTransactionRequest = (
+			update: Pick<AtomIO.TransactionUpdate<ƒ>, `id` | `params`>,
+		) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			AtomIO.runTransaction<ƒ>(tx, update.id, store)(...update.params)
+			actUponStore<ƒ>(tx, update.id, store)(...update.params)
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,
@@ -71,7 +76,10 @@ export function realtimeActionSynchronizer({
 				(update) => {
 					const updateState = findInStore(completeUpdateAtoms, update.id, store)
 					setIntoStore(updateState, update, store)
-					const toEmit = filter
+					const toEmit: Pick<
+						AtomIO.TransactionUpdate<ƒ>,
+						`epoch` | `id` | `key` | `output` | `updates`
+					> | null = filter
 						? getFromStore(
 								findInStore(redactedUpdateSelectors, [tx.key, update.id], store),
 								store,
@@ -94,7 +102,7 @@ export function realtimeActionSynchronizer({
 						store,
 					)
 
-					socket.emit(`tx-new:${tx.key}`, toEmit)
+					socket.emit(`tx-new:${tx.key}`, toEmit as Json.Serializable)
 				},
 				`tx-sub:${tx.key}:${socket.id}`,
 				store,
@@ -107,9 +115,8 @@ export function realtimeActionSynchronizer({
 		let next = 1
 		const retry = setInterval(() => {
 			const toEmit = socketUnacknowledgedUpdates[0]
-			console.log(userKey, socketUnacknowledgedUpdates)
 			if (toEmit && i === next) {
-				socket.emit(`tx-new:${tx.key}`, toEmit)
+				socket.emit(`tx-new:${tx.key}`, toEmit as Json.Serializable)
 				next *= 2
 			}
 

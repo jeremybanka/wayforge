@@ -14,7 +14,7 @@ import type {
 import {
 	realtimeActionReceiver,
 	realtimeActionSynchronizer,
-	realtimeFamilyProvider,
+	realtimeAtomFamilyProvider,
 	realtimeMutableFamilyProvider,
 	realtimeMutableProvider,
 	realtimeStateProvider,
@@ -34,7 +34,7 @@ export class RealtimeServer {
 		const { socket, store = IMPLICIT.STORE } = config
 		this.stateProvider = realtimeStateProvider({ socket })
 		this.mutableProvider = realtimeMutableProvider({ socket })
-		this.familyProvider = realtimeFamilyProvider({ socket })
+		this.familyProvider = realtimeAtomFamilyProvider({ socket })
 		this.mutableFamilyProvider = realtimeMutableFamilyProvider({ socket })
 		this.stateReceiver = realtimeStateReceiver({ socket, store })
 		this.actionReceiver = realtimeActionReceiver({ socket, store })

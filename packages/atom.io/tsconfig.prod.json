@@ -4,7 +4,7 @@
 		"allowJs": true,
 		"paths": {
 			"~/*": ["./*"],
-			"atom.io": ["./packages/atom.io"],
+			"atom.io": ["./packages/atom.io/dist"],
 			"atom.io/*": ["./packages/atom.io/*"]
 		}
 	},

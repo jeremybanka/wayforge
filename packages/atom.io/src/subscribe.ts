@@ -1,6 +1,7 @@
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
+	arbitrary,
 	subscribeToState,
 	subscribeToTimeline,
 	subscribeToTransaction,
@@ -49,7 +50,7 @@ export function subscribe<M extends TimelineManageable>(
 export function subscribe(
 	token: ReadableToken<any> | TimelineToken<any> | TransactionToken<any>,
 	handleUpdate: (update: any) => void,
-	key: string = Math.random().toString(36).slice(2),
+	key: string = arbitrary(),
 	store = IMPLICIT.STORE,
 ): () => void {
 	switch (token.type) {

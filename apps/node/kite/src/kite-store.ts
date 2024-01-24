@@ -1,5 +1,6 @@
 import type { MutableAtomToken } from "atom.io"
 import { atom, atomFamily, transaction } from "atom.io"
+import { arbitrary } from "atom.io/internal"
 
 import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
@@ -12,7 +13,11 @@ export const numberCollectionIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	fromJson: (value) => SetRTX.fromJSON(value),
 })
 
-export const findNumberCollection = atomFamily({
+export const findNumberCollection = atomFamily<
+	SetRTX<number>,
+	SetRTXJson<number>,
+	string
+>({
 	key: `numberCollection`,
 	mutable: true,
 	default: () => new SetRTX<number>(undefined, 5),
@@ -22,7 +27,7 @@ export const findNumberCollection = atomFamily({
 
 export const addNumberCollectionTX = transaction<(id: string) => string>({
 	key: `addNumberCollectionTX`,
-	do: ({ set }, id = Math.random().toString(36).slice(2)) => {
+	do: ({ set }, id = arbitrary()) => {
 		set(numberCollectionIndex, (current) => {
 			current.add(id)
 			return current

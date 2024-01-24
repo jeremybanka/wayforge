@@ -1,4 +1,4 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
@@ -35,7 +35,6 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					},
 					store,
 				)
-				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			} else {
 				Internal.setIntoStore(
 					optimisticUpdateQueueState,
@@ -45,8 +44,8 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 					},
 					store,
 				)
-				socket.emit(`tx-run:${token.key}`, clientUpdate)
 			}
+			socket.emit(`tx-run:${token.key}`, clientUpdate)
 		},
 		`tx-run:${token.key}`,
 		store,
@@ -97,7 +96,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				subsequentOptimistic,
 			)
 			const { id, params } = subsequentOptimistic
-			AtomIO.runTransaction(token, id, store)(...params)
+			Internal.actUponStore(token, id, store)(...params)
 		}
 	}
 

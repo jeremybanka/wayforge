@@ -6,6 +6,7 @@ import type { Store } from "./store"
 import type { Subject } from "./subject"
 
 export * from "./atom"
+export * from "./arbitrary"
 export * from "./caching"
 export * from "./lineage"
 export * from "./families"
@@ -26,14 +27,14 @@ export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
 
-export type BaseStateData = {
+export type AtomIOState = {
 	key: string
 	family?: FamilyMetadata
 	install: (store: Store) => void
 	subject: Subject<{ newValue: any; oldValue: any }>
 }
 
-export type RegularAtom<T> = BaseStateData & {
+export type RegularAtom<T> = AtomIOState & {
 	type: `atom`
 	default: T | (() => T)
 	cleanup?: () => void
@@ -41,7 +42,7 @@ export type RegularAtom<T> = BaseStateData & {
 export type MutableAtom<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-> = BaseStateData &
+> = AtomIOState &
 	JsonInterface<T, J> & {
 		type: `mutable_atom`
 		default: T | (() => T)
@@ -51,12 +52,12 @@ export type Atom<T> =
 	| RegularAtom<T>
 	| (T extends Transceiver<any> ? MutableAtom<T, any> : never)
 
-export type WritableSelector<T> = BaseStateData & {
+export type WritableSelector<T> = AtomIOState & {
 	type: `selector`
 	get: () => T
 	set: (newValue: T | ((oldValue: T) => T)) => void
 }
-export type ReadonlySelector<T> = BaseStateData & {
+export type ReadonlySelector<T> = AtomIOState & {
 	type: `readonly_selector`
 	get: () => T
 }

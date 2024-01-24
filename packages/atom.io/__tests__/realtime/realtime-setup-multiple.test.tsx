@@ -16,12 +16,12 @@ describe(`multi-client scenario`, () => {
 			},
 			clients: {
 				jim: () => {
-					RTR.usePull(countState)
+					RTR.usePullAtom(countState)
 					const count = AR.useO(countState)
 					return <i data-testid={count} />
 				},
 				lee: () => {
-					RTR.usePull(countState)
+					RTR.usePullAtom(countState)
 					const count = AR.useO(countState)
 					return <i data-testid={count} />
 				},

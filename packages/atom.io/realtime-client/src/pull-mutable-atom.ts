@@ -4,7 +4,7 @@ import { getJsonToken, getUpdateToken, setIntoStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
-export function pullMutableState<
+export function pullMutableAtom<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(

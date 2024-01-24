@@ -1,6 +1,7 @@
 import type { TransactionUpdate, TransactorsWithRunAndEnv, ƒn } from "atom.io"
 
 export * from "./abort-transaction"
+export * from "./act-upon-store"
 export * from "./apply-transaction"
 export * from "./build-transaction"
 export * from "./create-transaction"
