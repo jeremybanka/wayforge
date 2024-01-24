@@ -35,7 +35,7 @@ export const shuffleDeckTX = transaction<
 		groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
-		if (env().runtime === `node`) {
+		if (env().global) {
 			console.log(`Shuffled deck "${deckId}"`)
 		}
 	},

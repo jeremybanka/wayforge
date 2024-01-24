@@ -1,18 +1,15 @@
 import type { Store } from "./store"
 
 export type EnvironmentData = {
-	runtime: `browser` | `node` | `unknown`
+	window: typeof window | undefined
+	global: typeof global | undefined
 	store: Store
 }
 
 export function getEnvironmentData(store: Store): EnvironmentData {
 	return {
-		runtime:
-			typeof window === `undefined`
-				? typeof global === `object`
-					? `node`
-					: `unknown`
-				: `browser`,
+		window: typeof window === `undefined` ? undefined : window,
+		global: typeof global === `undefined` ? undefined : global,
 		store,
 	}
 }
