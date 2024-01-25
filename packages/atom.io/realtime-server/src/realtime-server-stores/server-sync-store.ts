@@ -37,7 +37,7 @@ export const redactedUpdateSelectors = selectorFamily<
 		},
 })
 
-export const userUnacknowledgedUpdatesAtoms = atomFamily<
+export const userUnacknowledgedQueues = atomFamily<
 	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
 	string
 >({
@@ -45,7 +45,7 @@ export const userUnacknowledgedUpdatesAtoms = atomFamily<
 	default: () => [],
 })
 
-export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
+export const socketUnacknowledgedQueues = selectorFamily<
 	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
 	string
 >({
@@ -58,10 +58,7 @@ export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
 			if (!userKey) {
 				return []
 			}
-			const unacknowledgedUpdatesState = find(
-				userUnacknowledgedUpdatesAtoms,
-				userKey,
-			)
+			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
 			const unacknowledgedUpdates = get(unacknowledgedUpdatesState)
 			return unacknowledgedUpdates
 		},
@@ -73,10 +70,7 @@ export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
 			if (!userKey) {
 				return
 			}
-			const unacknowledgedUpdatesState = find(
-				userUnacknowledgedUpdatesAtoms,
-				userKey,
-			)
+			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
 			set(unacknowledgedUpdatesState, newUpdates)
 		},
 })

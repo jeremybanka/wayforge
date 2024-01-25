@@ -1,7 +1,18 @@
 import type { Store } from "../store"
 import { isRootStore } from "./is-root-store"
 
-export function setEpochNumber(
+export function setEpochNumberOfContinuity(
+	continuityKey: string,
+	newEpoch: number,
+	store: Store,
+): void {
+	const isRoot = isRootStore(store)
+	if (isRoot && continuityKey) {
+		store.transactionMeta.epoch.set(continuityKey, newEpoch)
+	}
+}
+
+export function setEpochNumberOfAction(
 	transactionKey: string,
 	newEpoch: number,
 	store: Store,
@@ -10,11 +21,11 @@ export function setEpochNumber(
 	if (!isRoot) {
 		return
 	}
-	const continuity = isRoot
-		? store.transactionMeta.epochActions.getRelatedKey(transactionKey)
+	const continuityKey = isRoot
+		? store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
 		: undefined
 
-	if (isRoot && continuity) {
-		store.transactionMeta.epoch.set(continuity, newEpoch)
+	if (isRoot && continuityKey) {
+		store.transactionMeta.epoch.set(continuityKey, newEpoch)
 	}
 }

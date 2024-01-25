@@ -95,8 +95,8 @@ export class Store implements Lineage {
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionEpoch | TransactionProgress<ƒn> = {
 		epoch: new Map<string, number>(),
-		epochActions: new Junction({
-			between: [`epoch`, `action`],
+		actionContinuities: new Junction({
+			between: [`continuity`, `action`],
 			cardinality: `1:n`,
 		}),
 	}
@@ -129,8 +129,8 @@ export class Store implements Lineage {
 			if (isRootStore(store)) {
 				this.transactionMeta = {
 					epoch: new Map(store?.transactionMeta.epoch),
-					epochActions: new Junction(
-						store?.transactionMeta.epochActions.toJSON(),
+					actionContinuities: new Junction(
+						store?.transactionMeta.actionContinuities.toJSON(),
 					),
 				}
 			}

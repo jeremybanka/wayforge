@@ -10,8 +10,8 @@ export function assignTransactionToContinuity(
 	if (!isRoot) {
 		return
 	}
-	const { epoch, epochActions } = store.transactionMeta
-	epochActions.set(continuityKey, transactionKey)
+	const { epoch, actionContinuities } = store.transactionMeta
+	actionContinuities.set(continuityKey, transactionKey)
 	if (!epoch.has(continuityKey)) {
 		epoch.set(continuityKey, -1)
 	}

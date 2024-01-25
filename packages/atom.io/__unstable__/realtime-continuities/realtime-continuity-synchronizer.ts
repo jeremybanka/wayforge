@@ -9,22 +9,26 @@ import {
 } from "atom.io/internal"
 
 import type { Json, JsonIO } from "atom.io/json"
+import { isRootStore } from "../../internal/src/transaction/is-root-store"
 import type { ServerConfig } from "../../realtime-server/src"
 import { usersOfSockets } from "../../realtime-server/src"
 import {
 	completeUpdateAtoms,
 	socketEpochSelectors,
-	socketUnacknowledgedUpdatesSelectors,
+	socketUnacknowledgedQueues,
 } from "../../realtime-server/src/realtime-server-stores/server-sync-store"
 import type { ContinuityToken } from "./realtime-continuity"
 import { redactedPerspectiveUpdateSelectors } from "./realtime-continuity-store"
 
-export type RealtimeSynchronizer = ReturnType<typeof realtimeSynchronizer>
-export function realtimeSynchronizer({
+export type RealtimeContinuitySynchronizer = ReturnType<
+	typeof realtimeContinuitySynchronizer
+>
+export function realtimeContinuitySynchronizer({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function synchronizer(continuity: ContinuityToken): void {
+	return function synchronizer(continuity: ContinuityToken): () => void {
+		const continuityKey = continuity.key
 		const userKeyState = findInStore(
 			usersOfSockets.states.userKeyOfSocket,
 			socket.id,
@@ -35,16 +39,27 @@ export function realtimeSynchronizer({
 			store.logger.error(
 				`❌`,
 				continuity.type,
-				continuity.key,
+				continuityKey,
 				`Tried to create a synchronizer for a socket that is not connected to a user.`,
 			)
-			return
+			return () => {}
 		}
+
+		const socketUnacknowledgedQueue = findInStore(
+			socketUnacknowledgedQueues,
+			socket.id,
+			store,
+		)
+		const socketUnacknowledgedUpdates = getFromStore(
+			socketUnacknowledgedQueue,
+			store,
+		)
+		const unsubscribeFunctions: (() => void)[] = []
 
 		const sendInitialPayload = () => {
 			const initialPayload: Json.Serializable[] = []
 			for (const atom of continuity.globals) {
-				initialPayload.push(atom, getFromStore(atom, store))
+				initialPayload.push(atom.key, getFromStore(atom, store))
 			}
 			for (const {
 				perspectiveAtoms,
@@ -57,49 +72,14 @@ export function realtimeSynchronizer({
 					initialPayload.push(key, getFromStore(resourceState, store))
 				}
 			}
-		}
-		socket.on(`get:${continuity.key}`, sendInitialPayload)
+			const epoch = isRootStore(store)
+				? store.transactionMeta.epoch.get(continuityKey) ?? null
+				: null
+			socket.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
 
-		for (const tx of continuity.actions) {
-			const socketUnacknowledgedUpdatesState = findInStore(
-				socketUnacknowledgedUpdatesSelectors,
-				socket.id,
-				store,
-			)
-			const socketUnacknowledgedUpdates = getFromStore(
-				socketUnacknowledgedUpdatesState,
-				store,
-			)
-
-			const fillTransactionRequest = (
-				update: Pick<AtomIO.TransactionUpdate<JsonIO>, `id` | `params`>,
-			) => {
-				const performanceKey = `tx-run:${tx.key}:${update.id}`
-				const performanceKeyStart = `${performanceKey}:start`
-				const performanceKeyEnd = `${performanceKey}:end`
-				performance.mark(performanceKeyStart)
-				actUponStore(tx, update.id, store)(...update.params)
-				performance.mark(performanceKeyEnd)
-				const metric = performance.measure(
-					performanceKey,
-					performanceKeyStart,
-					performanceKeyEnd,
-				)
-				store?.logger.info(
-					`🚀`,
-					`transaction`,
-					tx.key,
-					update.id,
-					metric.duration,
-				)
-			}
-			socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
-			socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
-
-			let unsubscribeFromTransaction: (() => void) | undefined
-			const fillTransactionSubscriptionRequest = () => {
-				unsubscribeFromTransaction = subscribeToTransaction(
-					tx,
+			for (const transaction of continuity.actions) {
+				const unsubscribeFromTransaction = subscribeToTransaction(
+					transaction,
 					(update) => {
 						const updateState = findInStore(
 							completeUpdateAtoms,
@@ -109,7 +89,7 @@ export function realtimeSynchronizer({
 						setIntoStore(updateState, update, store)
 						const redactedUpdateKey = {
 							socketId: socket.id,
-							syncGroupKey: continuity.key,
+							syncGroupKey: continuityKey,
 							updateId: update.id,
 						}
 						const redactedUpdateState = findInStore(
@@ -120,7 +100,7 @@ export function realtimeSynchronizer({
 						const redactedUpdate = getFromStore(redactedUpdateState, store)
 
 						setIntoStore(
-							socketUnacknowledgedUpdatesState,
+							socketUnacknowledgedQueue,
 							(updates) => {
 								if (redactedUpdate) {
 									updates.push(redactedUpdate)
@@ -131,50 +111,92 @@ export function realtimeSynchronizer({
 							store,
 						)
 
-						socket.emit(`tx-new:${tx.key}`, redactedUpdate as Json.Serializable)
+						socket.emit(
+							`tx-new:${continuityKey}`,
+							redactedUpdate as Json.Serializable,
+						)
 					},
-					`tx-sub:${tx.key}:${socket.id}`,
+					`tx-sub:${transaction.key}:${socket.id}`,
 					store,
 				)
-				socket.on(`tx-unsub:${tx.key}`, unsubscribeFromTransaction)
+				unsubscribeFunctions.push(unsubscribeFromTransaction)
 			}
-			socket.on(`tx-sub:${tx.key}`, fillTransactionSubscriptionRequest)
+		}
+		socket.off(`get:${continuityKey}`, sendInitialPayload)
+		socket.on(`get:${continuityKey}`, sendInitialPayload)
 
-			let i = 1
-			let next = 1
-			const retry = setInterval(() => {
-				const toEmit = socketUnacknowledgedUpdates[0]
-				console.log(userKey, socketUnacknowledgedUpdates)
-				if (toEmit && i === next) {
-					socket.emit(`tx-new:${tx.key}`, toEmit as Json.Serializable)
-					next *= 2
-				}
+		const fillTransactionRequest = (
+			update: Pick<AtomIO.TransactionUpdate<JsonIO>, `id` | `key` | `params`>,
+		) => {
+			const transactionKey = update.key
+			const updateId = update.id
+			const performanceKey = `tx-run:${transactionKey}:${updateId}`
+			const performanceKeyStart = `${performanceKey}:start`
+			const performanceKeyEnd = `${performanceKey}:end`
+			performance.mark(performanceKeyStart)
+			actUponStore(
+				{ type: `transaction`, key: transactionKey },
+				updateId,
+				store,
+			)(...update.params)
+			performance.mark(performanceKeyEnd)
+			const metric = performance.measure(
+				performanceKey,
+				performanceKeyStart,
+				performanceKeyEnd,
+			)
+			store?.logger.info(
+				`🚀`,
+				`transaction`,
+				transactionKey,
+				updateId,
+				metric.duration,
+			)
+		}
+		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
+		socket.on(`tx-run:${continuityKey}`, fillTransactionRequest)
 
-				i++
-			}, 250)
+		let i = 1
+		let next = 1
+		const retry = setInterval(() => {
+			const toEmit = socketUnacknowledgedUpdates[0]
+			console.log(userKey, socketUnacknowledgedUpdates)
+			if (toEmit && i === next) {
+				socket.emit(`tx-new:${continuityKey}`, toEmit as Json.Serializable)
+				next *= 2
+			}
 
-			const trackClientAcknowledgement = (epoch: number) => {
-				i = 1
-				next = 1
-				const socketEpochState = findInStore(
-					socketEpochSelectors,
-					socket.id,
+			i++
+		}, 250)
+		const trackClientAcknowledgement = (epoch: number) => {
+			i = 1
+			next = 1
+			const socketEpochState = findInStore(
+				socketEpochSelectors,
+				socket.id,
+				store,
+			)
+
+			setIntoStore(socketEpochState, epoch, store)
+			if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
+				setIntoStore(
+					socketUnacknowledgedQueue,
+					(updates) => {
+						updates.shift()
+						return updates
+					},
 					store,
 				)
-
-				setIntoStore(socketEpochState, epoch, store)
-				if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
-					setIntoStore(
-						socketUnacknowledgedUpdatesState,
-						(updates) => {
-							updates.shift()
-							return updates
-						},
-						store,
-					)
-				}
 			}
-			socket.on(`tx-ack:${tx.key}`, trackClientAcknowledgement)
+		}
+		socket.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+		socket.on(`ack:${continuityKey}`, trackClientAcknowledgement)
+		return () => {
+			clearInterval(retry)
+			for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+			socket.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+			socket.off(`get:${continuityKey}`, sendInitialPayload)
+			socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
 		}
 	}
 }

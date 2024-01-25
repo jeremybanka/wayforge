@@ -2,11 +2,10 @@ import type * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
-import { assignTransactionToContinuity } from "../../internal/src/transaction/assign-transaction-to-continuity"
 import { isRootStore } from "../../internal/src/transaction/is-root-store"
 import {
-	confirmedUpdateQueueState,
-	optimisticUpdateQueueState,
+	confirmedUpdateQueue,
+	optimisticUpdateQueue,
 } from "./realtime-client-stores"
 
 export function syncAction<ƒ extends AtomIO.ƒn>(
@@ -14,13 +13,10 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 	socket: Socket,
 	store: Internal.Store,
 ): () => void {
-	assignTransactionToContinuity(`default`, token.key, store)
+	Internal.assignTransactionToContinuity(`default`, token.key, store)
 
-	const optimisticQueue = Internal.getFromStore(
-		optimisticUpdateQueueState,
-		store,
-	)
-	const confirmedQueue = Internal.getFromStore(confirmedUpdateQueueState, store)
+	const optimisticQueue = Internal.getFromStore(optimisticUpdateQueue, store)
+	const confirmedQueue = Internal.getFromStore(confirmedUpdateQueue, store)
 
 	const unsubscribeFromLocalUpdates = Internal.subscribeToTransaction(
 		token,
@@ -30,7 +26,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 			)
 			if (optimisticUpdateQueueIndex === -1) {
 				Internal.setIntoStore(
-					optimisticUpdateQueueState,
+					optimisticUpdateQueue,
 					(queue) => {
 						queue.push(clientUpdate)
 						queue.sort((a, b) => a.epoch - b.epoch)
@@ -40,7 +36,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				)
 			} else {
 				Internal.setIntoStore(
-					optimisticUpdateQueueState,
+					optimisticUpdateQueue,
 					(queue) => {
 						queue[optimisticUpdateQueueIndex] = clientUpdate
 						return queue
@@ -58,7 +54,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
 	) => {
 		Internal.setIntoStore(
-			optimisticUpdateQueueState,
+			optimisticUpdateQueue,
 			(queue) => {
 				queue.shift()
 				return queue
@@ -126,7 +122,7 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				)
 				if (hasEnqueuedOptimisticUpdate) {
 					Internal.setIntoStore(
-						confirmedUpdateQueueState,
+						confirmedUpdateQueue,
 						(queue) => {
 							queue.push(confirmedUpdate)
 							queue.sort((a, b) => a.epoch - b.epoch)
@@ -137,11 +133,11 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 				}
 			}
 		} else {
-			const continuityEpoch = Internal.getEpochNumber(token.key, store)
+			const continuityEpoch = Internal.getEpochNumberOfAction(token.key, store)
 			if (isRootStore(store) && continuityEpoch === confirmedUpdate.epoch - 1) {
 				Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
-				Internal.setEpochNumber(token.key, confirmedUpdate.epoch, store)
+				Internal.setEpochNumberOfAction(token.key, confirmedUpdate.epoch, store)
 			} else if (isRootStore(store)) {
 				store.logger.info(
 					`❌`,
