@@ -2,6 +2,7 @@ import type {
 	AtomFamilyToken,
 	AtomToken,
 	ReadableFamilyToken,
+	RegularAtomToken,
 	TransactionToken,
 } from "atom.io"
 import { IMPLICIT, assignTransactionToContinuity } from "atom.io/internal"
@@ -70,10 +71,10 @@ export class SyncGroup {
 	public add(...args: TransactionToken<any>[]): SyncGroup
 	public add<
 		F extends AtomFamilyToken<any>,
-		K extends F extends AtomFamilyToken<any, infer K> ? K : never,
+		T extends F extends AtomFamilyToken<infer T> ? T : never,
 	>(
-		family: AtomFamilyToken<any, K>,
-		index: ReadableFamilyToken<Iterable<K>, string>,
+		family: AtomFamilyToken<T, any>,
+		index: ReadableFamilyToken<Iterable<AtomToken<T>>, string>,
 	): SyncGroup
 	public add(
 		...args:
