@@ -16,7 +16,7 @@ import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
 	socketEpochSelectors,
-	socketUnacknowledgedUpdatesSelectors,
+	socketUnacknowledgedQueues,
 	transactionRedactorAtoms,
 } from "./realtime-server-stores/server-sync-store"
 
@@ -40,7 +40,7 @@ export function realtimeActionSynchronizer({
 		)
 		const userKey = getFromStore(userKeyState, store)
 		const socketUnacknowledgedUpdatesState = findInStore(
-			socketUnacknowledgedUpdatesSelectors,
+			socketUnacknowledgedQueues,
 			socket.id,
 			store,
 		)

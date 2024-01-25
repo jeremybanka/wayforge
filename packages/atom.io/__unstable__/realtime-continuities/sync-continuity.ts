@@ -2,15 +2,14 @@ import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	actUponStore,
-	getEpochNumberOfAction,
 	getEpochNumberOfContinuity,
 	getFromStore,
 	ingestTransactionUpdate,
-	setEpochNumberOfAction,
 	setEpochNumberOfContinuity,
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import {
 	confirmedUpdateQueue,
 	optimisticUpdateQueue,
@@ -130,11 +129,19 @@ function integrateConfirmedUpdate(
 		}
 	} else {
 		const continuityEpoch = getEpochNumberOfContinuity(continuityKey, store)
-		if (isRootStore(store) && continuityEpoch === confirmedUpdate.epoch - 1) {
+		const isRoot = isRootStore(store)
+
+		if (isRoot && continuityEpoch === confirmedUpdate.epoch - 1) {
+			store.logger.info(
+				`✅`,
+				`continuity`,
+				continuityKey,
+				`integrating update #${confirmedUpdate.epoch} ${confirmedUpdate.key} ${confirmedUpdate.id}`,
+			)
 			ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 			socket.emit(`ack:${continuityKey}`, confirmedUpdate.epoch)
 			setEpochNumberOfContinuity(continuityKey, confirmedUpdate.epoch, store)
-		} else if (isRootStore(store)) {
+		} else if (isRoot) {
 			store.logger.info(
 				`❌`,
 				`continuity`,
@@ -158,7 +165,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 	const optimisticUpdates = getFromStore(optimisticUpdateQueue, store)
 	const confirmedUpdates = getFromStore(confirmedUpdateQueue, store)
 
-	const initializeContinuity = (epoch, payload) => {
+	const initializeContinuity = (epoch: number, payload: Json.Array) => {
 		let i = 0
 		let k: any = ``
 		let v: any = null
@@ -219,7 +226,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 						store,
 					)
 				}
-				socket.emit(`tx-run:${transaction.key}`, clientUpdate)
+				socket.emit(`tx-run:${continuityKey}`, clientUpdate)
 			},
 			`tx-run:${continuityKey}`,
 			store,

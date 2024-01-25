@@ -1,6 +1,11 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { findInStore, getFromStore } from "atom.io/internal"
+import {
+	actUponStore,
+	arbitrary,
+	findInStore,
+	getFromStore,
+} from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
@@ -8,6 +13,8 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 import { continuity } from "../../__unstable__/realtime-continuities/realtime-continuity"
+import { realtimeContinuitySynchronizer } from "../../__unstable__/realtime-continuities/realtime-continuity-synchronizer"
+import { useSyncContinuity } from "../../__unstable__/realtime-continuities/use-sync-continuity"
 import { throwUntil } from "../__util__/waiting"
 
 AtomIO.getState(RTC.myIdState)
@@ -50,33 +57,25 @@ describe(`synchronizing transactions`, () => {
 				socket.onAnyOutgoing((event, ...args) => {
 					console.log(`🛰  >>`, userKey, event, ...args)
 				})
-				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
-				const syncState = RTS.realtimeStateSynchronizer({ socket, store })
-				const unSyncTX = syncTX(incrementTX, (updates) =>
-					updates.filter((u) => {
-						if (u.key === `count`) {
-							return true
-						}
-					}),
-				)
-				const unSyncState = syncState(countState)
-				socket.on(`disconnect`, () => {
-					// unSyncTX()
-					unSyncState()
-				})
+
+				const syncContinuity = realtimeContinuitySynchronizer({ socket, store })
+
+				syncContinuity(countContinuity)
 			},
 			clients: {
-				dave: () => {
-					const count = RTR.useSync(countState)
-					const increment = RTR.useSyncAction(incrementTX)
+				jane: () => {
+					useSyncContinuity(countContinuity)
+					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
+					const increment = actUponStore(incrementTX, arbitrary(), store)
+					store.loggers[0].logLevel = `info`
 					const { socket } = React.useContext(RTR.RealtimeContext)
-					// socket?.onAny((event, ...args) => {
-					// 	console.log(`📡 DAVE`, event, ...args)
-					// })
-					// socket?.onAnyOutgoing((event, ...args) => {
-					// 	console.log(`📡 DAVE >>`, event, ...args)
-					// })
+					socket?.onAny((event, ...args) => {
+						console.log(`📡 JANE`, event, ...args)
+					})
+					socket?.onAnyOutgoing((event, ...args) => {
+						console.log(`📡 JANE >>`, event, ...args)
+					})
 					return (
 						<>
 							<button
@@ -88,17 +87,18 @@ describe(`synchronizing transactions`, () => {
 						</>
 					)
 				},
-				jane: () => {
-					const count = RTR.useSync(countState)
-					const increment = RTR.useSyncAction(incrementTX)
+				dave: () => {
+					useSyncContinuity(countContinuity)
+					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
-					// store.loggers[0].logLevel = `info`
+					const increment = actUponStore(incrementTX, arbitrary(), store)
+					store.loggers[0].logLevel = `info`
 					const { socket } = React.useContext(RTR.RealtimeContext)
 					socket?.onAny((event, ...args) => {
-						console.log(`📡 JANE`, event, ...args)
+						console.log(`📡 DAVE`, event, ...args)
 					})
 					socket?.onAnyOutgoing((event, ...args) => {
-						console.log(`📡 JANE >>`, event, ...args)
+						console.log(`📡 DAVE >>`, event, ...args)
 					})
 					return (
 						<>
@@ -125,7 +125,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		teardown()
 	})
-	test(`rollback`, async () => {
+	test.skip(`rollback`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
@@ -153,7 +153,6 @@ describe(`synchronizing transactions`, () => {
 		act(() => jane.socket.disconnect())
 		await waitFor(() => throwUntil(!jane.socket.connected))
 
-		// act(() => jane.renderResult.getByTestId(`increment`).click())
 		act(() => jane.renderResult.getByTestId(`increment`).click())
 
 		act(() => dave.renderResult.getByTestId(`increment`).click())

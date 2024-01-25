@@ -5,6 +5,7 @@ import {
 	findInStore,
 	getFromStore,
 	setIntoStore,
+	subscribeToState,
 	subscribeToTransaction,
 } from "atom.io/internal"
 
@@ -38,9 +39,9 @@ export function realtimeContinuitySynchronizer({
 		if (!userKey) {
 			store.logger.error(
 				`❌`,
-				continuity.type,
+				`continuity`,
 				continuityKey,
-				`Tried to create a synchronizer for a socket that is not connected to a user.`,
+				`Tried to create a synchronizer for a socket (${socket.id}) that is not connected to a user.`,
 			)
 			return () => {}
 		}
@@ -59,7 +60,7 @@ export function realtimeContinuitySynchronizer({
 		const sendInitialPayload = () => {
 			const initialPayload: Json.Serializable[] = []
 			for (const atom of continuity.globals) {
-				initialPayload.push(atom.key, getFromStore(atom, store))
+				initialPayload.push(atom, getFromStore(atom, store))
 			}
 			for (const {
 				perspectiveAtoms,
@@ -68,8 +69,9 @@ export function realtimeContinuitySynchronizer({
 				const perspectiveState = findInStore(perspectiveAtoms, userKey, store)
 				const perspectiveKeys = getFromStore(perspectiveState, store)
 				for (const key of perspectiveKeys) {
-					const resourceState = findInStore(resourceAtoms, key, store)
-					initialPayload.push(key, getFromStore(resourceState, store))
+					const resourceAtom = findInStore(resourceAtoms, key, store)
+					const resource = getFromStore(resourceAtom, store)
+					initialPayload.push(resourceAtom, resource)
 				}
 			}
 			const epoch = isRootStore(store)
@@ -160,7 +162,6 @@ export function realtimeContinuitySynchronizer({
 		let next = 1
 		const retry = setInterval(() => {
 			const toEmit = socketUnacknowledgedUpdates[0]
-			console.log(userKey, socketUnacknowledgedUpdates)
 			if (toEmit && i === next) {
 				socket.emit(`tx-new:${continuityKey}`, toEmit as Json.Serializable)
 				next *= 2

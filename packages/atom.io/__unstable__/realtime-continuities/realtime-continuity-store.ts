@@ -40,11 +40,11 @@ export const redactorAtoms = selectorFamily<
 				},
 			)
 
-			const filterTransactionUpdates = (
+			const filterTransactionUpdate = (
 				visible: string[],
 				transactionUpdate: TransactionUpdate<any>,
-			) => {
-				return transactionUpdate.updates
+			): TransactionUpdate<any> => {
+				const updates = transactionUpdate.updates
 					.filter((update) => {
 						if (`newValue` in update) {
 							return visible.includes(update.key)
@@ -53,12 +53,15 @@ export const redactorAtoms = selectorFamily<
 					})
 					.map((update) => {
 						if (`updates` in update) {
-							return {
-								...update,
-								updates: filterTransactionUpdates(visible, update),
-							}
+							return filterTransactionUpdate(visible, update)
 						}
+						return update
 					})
+				const filtered: TransactionUpdate<any> = {
+					...transactionUpdate,
+					updates,
+				}
+				return filtered
 			}
 			const filter: (updates: TransactionUpdate<any>) => TransactionUpdate<any> =
 				(update) => {
@@ -66,7 +69,7 @@ export const redactorAtoms = selectorFamily<
 						(atomToken) => atomToken.key,
 					)
 					visibleKeys.push(...userPerspectiveTokens)
-					return filterTransactionUpdates(visibleKeys, update)
+					return filterTransactionUpdate(visibleKeys, update)
 				}
 			return filter
 		},
