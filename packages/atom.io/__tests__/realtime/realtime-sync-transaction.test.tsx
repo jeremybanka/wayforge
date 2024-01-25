@@ -7,6 +7,7 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
+import { continuity } from "../../__unstable__/realtime-continuities/realtime-continuity"
 import { throwUntil } from "../__util__/waiting"
 
 AtomIO.getState(RTC.myIdState)
@@ -25,6 +26,11 @@ const incrementTX = AtomIO.transaction({
 		}
 		set(countState, (c) => c + 1)
 	},
+})
+
+const countContinuity = continuity({
+	key: `count`,
+	config: (group) => group.add(countState).add(incrementTX),
 })
 
 describe(`synchronizing transactions`, () => {

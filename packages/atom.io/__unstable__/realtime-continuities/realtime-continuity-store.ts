@@ -1,8 +1,8 @@
 import { selectorFamily } from "atom.io"
 import type { TransactionUpdate } from "atom.io"
-import type { JsonIO } from "atom.io/json"
+import type { Json, JsonIO } from "atom.io/json"
 import { completeUpdateAtoms, usersOfSockets } from "atom.io/realtime-server"
-import { SyncGroup } from "./create-continuity"
+import { SyncGroup } from "./realtime-continuity"
 
 export const redactorAtoms = selectorFamily<
 	(update: TransactionUpdate<any>) => TransactionUpdate<any>,
@@ -27,15 +27,15 @@ export const redactorAtoms = selectorFamily<
 				)
 			}
 
-			const userPerspectiveTokens = syncGroup.perspectives.map((perspective) => {
-				const { perspectiveAtoms } = perspective
-				const perspectiveToken = find(perspectiveAtoms, userKey)
-				return perspectiveToken
-			})
-			const userPerspectives = userPerspectiveTokens.flatMap(
-				(perspectiveToken) => {
-					const perspective = get(perspectiveToken)
-					const visibleTokens = [...perspective]
+			const userPerspectiveTokens = syncGroup.perspectives.flatMap(
+				({ perspectiveAtoms, resourceAtoms }) => {
+					const userPerspectiveToken = find(perspectiveAtoms, userKey)
+					const userPerspective = get(userPerspectiveToken)
+					const visibleTokens = [...userPerspective].map((subKey) => {
+						const resourceToken = find(resourceAtoms, subKey)
+						return resourceToken.key
+					})
+
 					return visibleTokens
 				},
 			)
@@ -62,8 +62,10 @@ export const redactorAtoms = selectorFamily<
 			}
 			const filter: (updates: TransactionUpdate<any>) => TransactionUpdate<any> =
 				(update) => {
-					const visibleKeys = syncGroup.globals.map((atomToken) => atomToken.key)
-					visibleKeys.push(...userPerspectives)
+					const visibleKeys: string[] = syncGroup.globals.map(
+						(atomToken) => atomToken.key,
+					)
+					visibleKeys.push(...userPerspectiveTokens)
 					return filterTransactionUpdates(visibleKeys, update)
 				}
 			return filter

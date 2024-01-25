@@ -16,7 +16,7 @@ import {
 	socketEpochSelectors,
 	socketUnacknowledgedUpdatesSelectors,
 } from "../../realtime-server/src/realtime-server-stores/server-sync-store"
-import type { ContinuityToken } from "./create-continuity"
+import type { ContinuityToken } from "./realtime-continuity"
 import { redactedPerspectiveUpdateSelectors } from "./realtime-continuity-store"
 
 export type RealtimeSynchronizer = ReturnType<typeof realtimeSynchronizer>
@@ -40,6 +40,25 @@ export function realtimeSynchronizer({
 			)
 			return
 		}
+
+		const sendInitialPayload = () => {
+			const initialPayload: Json.Serializable[] = []
+			for (const atom of continuity.globals) {
+				initialPayload.push(atom, getFromStore(atom, store))
+			}
+			for (const {
+				perspectiveAtoms,
+				resourceAtoms,
+			} of continuity.perspectives) {
+				const perspectiveState = findInStore(perspectiveAtoms, userKey, store)
+				const perspectiveKeys = getFromStore(perspectiveState, store)
+				for (const key of perspectiveKeys) {
+					const resourceState = findInStore(resourceAtoms, key, store)
+					initialPayload.push(key, getFromStore(resourceState, store))
+				}
+			}
+		}
+		socket.on(`get:${continuity.key}`, sendInitialPayload)
 
 		for (const tx of continuity.actions) {
 			const socketUnacknowledgedUpdatesState = findInStore(

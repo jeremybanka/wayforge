@@ -5,6 +5,7 @@ import type {
 	TransactionToken,
 } from "atom.io"
 import { IMPLICIT, assignTransactionToContinuity } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
 export class InvariantMap<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {
@@ -37,23 +38,26 @@ export type ContinuityToken = {
 	readonly key: string
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<any>[]
-	readonly perspectives: PerspectiveToken<any, any>[]
+	readonly perspectives: PerspectiveToken<
+		AtomFamilyToken<any, Json.Serializable>,
+		Json.Serializable
+	>[]
 }
 
-export class SyncGroup implements ContinuityToken {
-	public type = `continuity` as const
+export class SyncGroup {
+	protected type = `continuity` as const
 
-	public globals: AtomToken<any>[]
-	public actions: TransactionToken<any>[]
-	public perspectives: PerspectiveToken<any, any>[]
+	protected globals: AtomToken<any>[] = []
+	protected actions: TransactionToken<any>[] = []
+	protected perspectives: PerspectiveToken<any, any>[] = []
 
-	private constructor(public readonly key: string) {}
+	protected constructor(protected readonly key: string) {}
 
 	public static existing: InvariantMap<string, ContinuityToken> =
 		new InvariantMap()
 	public static create(
 		key: string,
-		builder: (group: SyncGroup) => ContinuityToken,
+		builder: (group: SyncGroup) => SyncGroup,
 	): ContinuityToken {
 		const group = new SyncGroup(key)
 		const { type, globals, actions, perspectives } = builder(group)
@@ -101,7 +105,7 @@ export class SyncGroup implements ContinuityToken {
 
 export type ContinuityOptions = {
 	key: string
-	config: (syncGroup: SyncGroup) => ContinuityToken
+	config: (group: SyncGroup) => SyncGroup
 }
 
 export function continuity(options: ContinuityOptions): ContinuityToken {
