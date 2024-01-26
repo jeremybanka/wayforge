@@ -27,9 +27,6 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 		event: string,
 		...args: I[Event]
 	): void {
-		process.stderr.write(`👩 handling ${event} ${JSON.stringify(args)}\n`)
-		//listeners
-		process.stderr.write(`👩 ${JSON.stringify(this.listeners.entries())}\n`)
 		for (const listener of this.globalListeners) {
 			listener(event, ...args)
 		}
@@ -135,7 +132,6 @@ export class SubjectSocket<
 
 	public constructor(id: string) {
 		super((...args) => {
-			process.stderr.write(`👩 relay emitting ${JSON.stringify(args)}\n`)
 			this.out.next(args as any)
 			return this
 		})
@@ -143,7 +139,6 @@ export class SubjectSocket<
 		this.in = new Subject()
 		this.out = new Subject()
 		this.in.subscribe(`socket`, (event) => {
-			process.stderr.write(`👷 ${JSON.stringify(event)}\n`)
 			this.handleEvent(...(event as [string, ...I[keyof I]]))
 		})
 	}
@@ -187,17 +182,16 @@ export class ParentSocket<
 			<Event extends keyof I>(chunk: EventBuffer<string, I[Event]>) => {
 				const buffer = chunk.toString()
 				this.queue.push(...buffer.split(`\n`))
-				this.process.stderr.write(`📥 buffer ${buffer}\n`)
-				this.process.stderr.write(`📥 queue ${JSON.stringify(this.queue)}\n`)
+
 				while (this.queue.length > 0) {
 					try {
 						const event = this.queue.shift() as StringifiedEvent<any, any>
 						if (event === ``) continue
-						this.process.stderr.write(`📥 ${event}\n`)
 						const parsedEvent = parseJson(event)
 						this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 					} catch (error) {
 						this.process.stderr.write(`❌ ${error}\n`)
+						break
 					}
 				}
 			},
@@ -210,18 +204,15 @@ export class ParentSocket<
 		}
 
 		this.on(`setup-relay`, (id: string) => {
-			process.stderr.write(`✨ setup-relay ${id}\n`)
 			const relay = new SubjectSocket(`relay:${id}`)
 			this.relays.set(id, relay)
 			for (const attachServices of this.relayServices) {
 				attachServices(relay)
 			}
 			this.on(`relay:${id}`, (...data) => {
-				this.process.stderr.write(`🚀 relay.in:${id} ${data[0]}\n`)
 				relay.in.next(data)
 			})
 			relay.out.subscribe(`socket`, (data) => {
-				this.process.stderr.write(`🚀 relay.out ${data[0]}\n`)
 				this.emit(...(data as [string, ...O[keyof O]]))
 			})
 		})
