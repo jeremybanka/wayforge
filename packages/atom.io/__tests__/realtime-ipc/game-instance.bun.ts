@@ -1,7 +1,7 @@
 import { findState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"
 
-import { realtimeContinuitySynchronizer } from "../../__unstable__/realtime-continuities/realtime-continuity-synchronizer"
+import { realtimeContinuitySynchronizer } from "../../realtime-server/src/realtime-continuity-synchronizer"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 process.stdout.write(`✨`)

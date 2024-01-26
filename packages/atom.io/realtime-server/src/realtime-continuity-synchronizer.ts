@@ -10,16 +10,16 @@ import {
 } from "atom.io/internal"
 
 import type { Json, JsonIO } from "atom.io/json"
+import type { ServerConfig } from "."
+import { usersOfSockets } from "."
 import { isRootStore } from "../../internal/src/transaction/is-root-store"
-import type { ServerConfig } from "../../realtime-server/src"
-import { usersOfSockets } from "../../realtime-server/src"
+import type { ContinuityToken } from "../../realtime/src/realtime-continuity"
+import { redactedPerspectiveUpdateSelectors } from "./realtime-server-stores/realtime-continuity-store"
 import {
 	completeUpdateAtoms,
 	socketEpochSelectors,
 	socketUnacknowledgedQueues,
-} from "../../realtime-server/src/realtime-server-stores/server-sync-store"
-import type { ContinuityToken } from "./realtime-continuity"
-import { redactedPerspectiveUpdateSelectors } from "./realtime-continuity-store"
+} from "./realtime-server-stores/server-sync-store"
 
 export type RealtimeContinuitySynchronizer = ReturnType<
 	typeof realtimeContinuitySynchronizer

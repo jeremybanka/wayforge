@@ -18,7 +18,7 @@ import type { Socket } from "socket.io-client"
 
 import { assignTransactionToContinuity } from "../../internal/src/transaction/assign-transaction-to-continuity"
 import { isRootStore } from "../../internal/src/transaction/is-root-store"
-import type { ContinuityToken } from "./realtime-continuity"
+import type { ContinuityToken } from "../../realtime/src/realtime-continuity"
 
 // RECONCILE_UPDATES
 function reconcileUpdates(

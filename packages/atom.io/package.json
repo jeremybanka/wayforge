@@ -27,6 +27,7 @@
 		"build:json": "cd json && tsup",
 		"build:react": "cd react && tsup",
 		"build:react-devtools": "cd react-devtools && tsup",
+		"build:realtime": "cd realtime && tsup",
 		"build:realtime-client": "cd realtime-client && tsup",
 		"build:realtime-react": "cd realtime-react && tsup",
 		"build:realtime-server": "cd realtime-server && tsup",
@@ -126,6 +127,9 @@
 		"react-devtools/dist",
 		"react-devtools/package.json",
 		"react-devtools/src",
+		"realtime/dist",
+		"realtime/package.json",
+		"realtime/src",
 		"realtime-client/dist",
 		"realtime-client/package.json",
 		"realtime-client/src",
@@ -191,6 +195,13 @@
 			"browser": "./react-devtools/dist/index.js",
 			"import": "./react-devtools/dist/index.js",
 			"require": "./react-devtools/dist/index.cjs"
+		},
+		"./realtime/package.json": "./realtime/package.json",
+		"./realtime": {
+			"types": "./realtime/dist/index.d.ts",
+			"browser": "./realtime/dist/index.js",
+			"import": "./realtime/dist/index.js",
+			"require": "./realtime/dist/index.cjs"
 		},
 		"./realtime-client/package.json": "./realtime-client/package.json",
 		"./realtime-client": {

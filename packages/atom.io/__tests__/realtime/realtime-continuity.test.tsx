@@ -12,9 +12,9 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
-import { continuity } from "../../__unstable__/realtime-continuities/realtime-continuity"
-import { realtimeContinuitySynchronizer } from "../../__unstable__/realtime-continuities/realtime-continuity-synchronizer"
-import { useSyncContinuity } from "../../__unstable__/realtime-continuities/use-sync-continuity"
+import { realtimeContinuitySynchronizer } from "../../realtime-server/src/realtime-continuity-synchronizer"
+import { continuity } from "../../realtime/src/realtime-continuity"
+
 import { throwUntil } from "../__util__/waiting"
 
 AtomIO.getState(RTC.myIdState)
@@ -64,7 +64,7 @@ describe(`synchronizing transactions`, () => {
 			},
 			clients: {
 				jane: () => {
-					useSyncContinuity(countContinuity)
+					RTR.useSyncContinuity(countContinuity)
 					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
 					const increment = actUponStore(incrementTX, arbitrary(), store)
@@ -88,7 +88,7 @@ describe(`synchronizing transactions`, () => {
 					)
 				},
 				dave: () => {
-					useSyncContinuity(countContinuity)
+					RTR.useSyncContinuity(countContinuity)
 					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
 					const increment = actUponStore(incrementTX, arbitrary(), store)
