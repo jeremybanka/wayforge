@@ -81,12 +81,13 @@ describe(`multi-process realtime server`, () => {
 					const roomState = findInStore(RTS.roomSelectors, roomId, store)
 					const room = await getFromStore(roomState, store)
 					const roomSocket = new RTS.ChildSocket(room)
+					roomSocket.emit(`setup-relay`, userKey)
 
 					forwardToRoom = (event: string, ...args: Json.Array) => {
 						roomSocket.emit(event, ...args)
 					}
 					for (const [event, args] of queuedEventsForRoom.entries()) {
-						forwardToRoom(event, ...args)
+						forwardToRoom(`relay:${userKey}`, event, ...args)
 					}
 					queuedEventsForRoom.clear()
 
@@ -94,7 +95,7 @@ describe(`multi-process realtime server`, () => {
 
 					room.stderr.on(`data`, (buf) => {
 						const err = buf.toString()
-						console.error(`❌ [${roomId}]\n${err}`)
+						console.error(`❌ ${roomId} [${room.pid}]\n${err}`)
 					})
 
 					room.on(`close`, (code) => {

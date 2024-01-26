@@ -62,18 +62,19 @@ export function realtimeContinuitySynchronizer({
 			for (const atom of continuity.globals) {
 				initialPayload.push(atom, getFromStore(atom, store))
 			}
-			for (const {
-				perspectiveAtoms,
-				resourceAtoms,
-			} of continuity.perspectives) {
-				const perspectiveState = findInStore(perspectiveAtoms, userKey, store)
-				const perspectiveKeys = getFromStore(perspectiveState, store)
-				for (const key of perspectiveKeys) {
-					const resourceAtom = findInStore(resourceAtoms, key, store)
-					const resource = getFromStore(resourceAtom, store)
-					initialPayload.push(resourceAtom, resource)
+			for (const { perspectiveAtoms } of continuity.perspectives) {
+				const perspectiveTokensState = findInStore(
+					perspectiveAtoms,
+					userKey,
+					store,
+				)
+				const perspectiveTokens = getFromStore(perspectiveTokensState, store)
+				for (const perspectiveToken of perspectiveTokens) {
+					const resource = getFromStore(perspectiveToken, store)
+					initialPayload.push(perspectiveToken, resource)
 				}
 			}
+
 			const epoch = isRootStore(store)
 				? store.transactionMeta.epoch.get(continuityKey) ?? null
 				: null

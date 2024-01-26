@@ -2,10 +2,15 @@ import type {
 	AtomFamilyToken,
 	AtomToken,
 	ReadableFamilyToken,
+	ReadableToken,
 	RegularAtomToken,
 	TransactionToken,
 } from "atom.io"
-import { IMPLICIT, assignTransactionToContinuity } from "atom.io/internal"
+import {
+	IMPLICIT,
+	assignTransactionToContinuity,
+	setEpochNumberOfContinuity,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 export class InvariantMap<K, V> extends Map<K, V> {
@@ -27,11 +32,11 @@ export class InvariantMap<K, V> extends Map<K, V> {
 
 export type PerspectiveToken<
 	F extends AtomFamilyToken<any>,
-	K extends F extends AtomFamilyToken<any, infer K> ? K : never,
+	T extends F extends AtomFamilyToken<infer T, any> ? T : never,
 > = {
 	type: `realtime_perspective`
 	resourceAtoms: F
-	perspectiveAtoms: ReadableFamilyToken<Iterable<K>, string>
+	perspectiveAtoms: ReadableFamilyToken<Iterable<ReadableToken<T>>, string>
 }
 
 export type ContinuityToken = {
@@ -116,6 +121,7 @@ export function continuity(options: ContinuityOptions): ContinuityToken {
 	for (const action of actions) {
 		assignTransactionToContinuity(key, action.key, IMPLICIT.STORE)
 	}
+	setEpochNumberOfContinuity(key, -1, IMPLICIT.STORE)
 	return token
 }
 

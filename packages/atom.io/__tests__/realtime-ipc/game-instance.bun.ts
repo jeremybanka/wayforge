@@ -1,16 +1,22 @@
-import { findState, setState } from "atom.io"
+import { findState, getState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"
 
-import { letterAtoms } from "./game-store"
+import { realtimeContinuitySynchronizer } from "../../__unstable__/realtime-continuities/realtime-continuity-synchronizer"
+import { gameContinuity, letterAtoms } from "./game-store"
 
 process.stdout.write(`✨`)
 
 const socket = new RTS.ParentSocket()
 
-const provideAtom = RTS.realtimeStateProvider({ socket })
-
 const letter0State = findState(letterAtoms, 0)
 
 setState(letter0State, `A`)
 
-provideAtom(letter0State)
+socket.relay((userSocket) => {
+	process.stderr.write(`L0:${getState(letter0State)}`)
+	RTS.usersOfSockets.relations.set(userSocket.id, `relay:${userSocket.id}`)
+	const continuitySynchronizer = realtimeContinuitySynchronizer({
+		socket: userSocket,
+	})
+	continuitySynchronizer(gameContinuity)
+})

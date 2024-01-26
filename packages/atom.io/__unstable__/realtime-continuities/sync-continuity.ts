@@ -166,6 +166,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 	const confirmedUpdates = getFromStore(confirmedUpdateQueue, store)
 
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
+		console.log(`initializeContinuity`, { epoch, payload })
 		let i = 0
 		let k: any = ``
 		let v: any = null
