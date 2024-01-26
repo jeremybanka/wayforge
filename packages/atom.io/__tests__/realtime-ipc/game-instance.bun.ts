@@ -1,7 +1,6 @@
 import { findState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"
 
-import { realtimeContinuitySynchronizer } from "../../realtime-server/src/realtime-continuity-synchronizer"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 process.stdout.write(`✨`)
@@ -14,7 +13,7 @@ setState(letter0State, `A`)
 
 socket.relay((userSocket) => {
 	RTS.usersOfSockets.relations.set(userSocket.id, `relay:${userSocket.id}`)
-	const continuitySynchronizer = realtimeContinuitySynchronizer({
+	const continuitySynchronizer = RTS.realtimeContinuitySynchronizer({
 		socket: userSocket,
 	})
 	continuitySynchronizer(gameContinuity)

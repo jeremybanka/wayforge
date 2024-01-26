@@ -7,13 +7,12 @@ import {
 	getFromStore,
 } from "atom.io/internal"
 import * as AR from "atom.io/react"
+import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
-import { realtimeContinuitySynchronizer } from "../../realtime-server/src/realtime-continuity-synchronizer"
-import { continuity } from "../../realtime/src/realtime-continuity"
 
 import { throwUntil } from "../__util__/waiting"
 
@@ -35,7 +34,7 @@ const incrementTX = AtomIO.transaction({
 	},
 })
 
-const countContinuity = continuity({
+const countContinuity = RT.continuity({
 	key: `count`,
 	config: (group) => group.add(countState).add(incrementTX),
 })
@@ -58,7 +57,10 @@ describe(`synchronizing transactions`, () => {
 					console.log(`🛰  >>`, userKey, event, ...args)
 				})
 
-				const syncContinuity = realtimeContinuitySynchronizer({ socket, store })
+				const syncContinuity = RTS.realtimeContinuitySynchronizer({
+					socket,
+					store,
+				})
 
 				syncContinuity(countContinuity)
 			},

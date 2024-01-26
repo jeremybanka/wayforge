@@ -2,12 +2,12 @@ import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import { findInStore, getFromStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
+import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
-import { continuity } from "../../realtime/src/realtime-continuity"
 import { throwUntil } from "../__util__/waiting"
 
 AtomIO.getState(RTC.myIdState)
@@ -28,7 +28,7 @@ const incrementTX = AtomIO.transaction({
 	},
 })
 
-const countContinuity = continuity({
+const countContinuity = RT.continuity({
 	key: `count`,
 	config: (group) => group.add(countState).add(incrementTX),
 })

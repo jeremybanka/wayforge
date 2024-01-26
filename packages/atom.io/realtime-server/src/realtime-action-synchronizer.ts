@@ -2,6 +2,7 @@ import type * as AtomIO from "atom.io"
 import {
 	IMPLICIT,
 	actUponStore,
+	assignTransactionToContinuity,
 	findInStore,
 	getFromStore,
 	setIntoStore,
@@ -10,15 +11,14 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 
 import type { ServerConfig } from "."
-import { assignTransactionToContinuity } from "../../internal/src/transaction/assign-transaction-to-continuity"
-import { usersOfSockets } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
 	socketEpochSelectors,
 	socketUnacknowledgedQueues,
 	transactionRedactorAtoms,
-} from "./realtime-server-stores/server-sync-store"
+	usersOfSockets,
+} from "./realtime-server-stores"
 
 export type ActionSynchronizer = ReturnType<typeof realtimeActionSynchronizer>
 export function realtimeActionSynchronizer({

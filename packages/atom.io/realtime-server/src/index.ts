@@ -3,6 +3,7 @@ import type { Json } from "atom.io/json"
 import { off } from "npmlog"
 
 export * from "./ipc-socket"
+export * from "./realtime-continuity-synchronizer"
 export * from "./realtime-server-stores/server-room-store"
 export * from "./realtime-server-stores"
 export * from "./realtime-state-provider"

@@ -1,6 +1,6 @@
 import type { RegularAtomToken } from "atom.io"
-import { atom, atomFamily } from "atom.io"
-import { continuity } from "../../realtime/src/realtime-continuity"
+import { atomFamily } from "atom.io"
+import { continuity } from "atom.io/realtime"
 
 export const letterAtoms = atomFamily<string | null, number>({
 	key: `letter`,

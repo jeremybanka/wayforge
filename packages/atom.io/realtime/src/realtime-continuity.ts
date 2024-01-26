@@ -3,7 +3,6 @@ import type {
 	AtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	RegularAtomToken,
 	TransactionToken,
 } from "atom.io"
 import {
