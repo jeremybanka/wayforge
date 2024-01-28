@@ -18,7 +18,7 @@
 		"@floating-ui/dom": "1.6.0",
 		"@floating-ui/react": "0.26.7",
 		"@t3-oss/env-core": "0.8.0",
-		"@vanilla-extract/css": "1.14.0",
+		"@vanilla-extract/css": "1.14.1",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.2",
 		"framer-motion": "11.0.3",
