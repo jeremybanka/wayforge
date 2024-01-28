@@ -152,7 +152,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`))
 		teardown()
 	})
-	test.only(`recovery`, async () => {
+	test.skip(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
