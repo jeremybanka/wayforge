@@ -326,8 +326,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1
       '@floating-ui/react':
-        specifier: 0.26.7
-        version: 0.26.7(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.26.8
+        version: 0.26.8(react-dom@18.2.0)(react@18.2.0)
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -421,8 +421,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1
       '@floating-ui/react':
-        specifier: 0.26.7
-        version: 0.26.7(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.26.8
+        version: 0.26.8(react-dom@18.2.0)(react@18.2.0)
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -500,8 +500,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1
       '@floating-ui/react':
-        specifier: 0.26.7
-        version: 0.26.7(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 0.26.8
+        version: 0.26.8(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
         specifier: 0.8.0
         version: 0.8.0(typescript@5.3.3)(zod@3.22.4)
@@ -807,8 +807,8 @@ importers:
   packages/hamr:
     dependencies:
       '@floating-ui/react':
-        specifier: 0.26.7
-        version: 0.26.7(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.26.8
+        version: 0.26.8(react-dom@18.2.0)(react@18.2.0)
       '@floating-ui/react-dom':
         specifier: 2.0.7
         version: 2.0.7(react-dom@18.2.0)(react@18.2.0)
@@ -3838,8 +3838,19 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@floating-ui/react-dom@2.0.7(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+  /@floating-ui/react-dom@2.0.7(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-B5GJxKUyPcGsvE1vua+Abvw0t6zVMyTbtG+Jk7BoI4hfc5Ahv50dstRIAn0nS0274kR9gnKwxIXyGA8EzBZJrA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@floating-ui/dom': 1.6.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@floating-ui/react-dom@2.0.8(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -3849,8 +3860,8 @@ packages:
       react-dom: /@preact/compat@17.1.2(preact@10.19.3)
     dev: false
 
-  /@floating-ui/react-dom@2.0.7(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-B5GJxKUyPcGsvE1vua+Abvw0t6zVMyTbtG+Jk7BoI4hfc5Ahv50dstRIAn0nS0274kR9gnKwxIXyGA8EzBZJrA==}
+  /@floating-ui/react-dom@2.0.8(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -3873,26 +3884,26 @@ packages:
       tabbable: 6.2.0
     dev: false
 
-  /@floating-ui/react@0.26.7(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-0uMI9IBJBPPt8N+8uRg4gazJvQReWTu/fVUHHLfAOuy1WB6f242jtjWm52hLJG8nzuZVuU+2crW4lJbJQoqeIA==}
+  /@floating-ui/react@0.26.8(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-fOZb8BnJBrVohGPZ8RthDM5cHD9SnBKgY/U7LFXHhuwafSZD7TVmCX67+ezkkwxFbWpQGTEbgcjuHUDRonGy1g==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@floating-ui/react-dom': 2.0.7(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+      '@floating-ui/react-dom': 2.0.8(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@floating-ui/utils': 0.2.1
       react: /@preact/compat@17.1.2(preact@10.19.3)
       react-dom: /@preact/compat@17.1.2(preact@10.19.3)
       tabbable: 6.2.0
     dev: false
 
-  /@floating-ui/react@0.26.7(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-0uMI9IBJBPPt8N+8uRg4gazJvQReWTu/fVUHHLfAOuy1WB6f242jtjWm52hLJG8nzuZVuU+2crW4lJbJQoqeIA==}
+  /@floating-ui/react@0.26.8(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-fOZb8BnJBrVohGPZ8RthDM5cHD9SnBKgY/U7LFXHhuwafSZD7TVmCX67+ezkkwxFbWpQGTEbgcjuHUDRonGy1g==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@floating-ui/react-dom': 2.0.7(react-dom@18.2.0)(react@18.2.0)
+      '@floating-ui/react-dom': 2.0.8(react-dom@18.2.0)(react@18.2.0)
       '@floating-ui/utils': 0.2.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
