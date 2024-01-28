@@ -21,11 +21,11 @@ export function setEpochNumberOfAction(
 	if (!isRoot) {
 		return
 	}
-	const continuityKey = isRoot
-		? store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
-		: undefined
+	const continuityKey =
+		store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
 
-	if (isRoot && continuityKey) {
+	if (continuityKey !== undefined) {
 		store.transactionMeta.epoch.set(continuityKey, newEpoch)
+		console.log(`epoch is now`, newEpoch)
 	}
 }

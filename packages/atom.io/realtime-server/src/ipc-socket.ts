@@ -197,7 +197,7 @@ export class ParentSocket<
 			},
 		)
 
-		process.stdin.on(`end`, () => process.exit(0))
+		// process.stdin.on(`end`, () => process.exit(0))
 		process.on(`SIGINT`, () => process.exit(0))
 		if (process.pid) {
 			this.id = process.pid?.toString()

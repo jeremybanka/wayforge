@@ -3,6 +3,7 @@ import type { Refinement } from "../refinement"
 export * from "./refined"
 export * from "./refinery"
 export * from "./refinement"
+export * from "./refine-json"
 
 export * from "./can-exist"
 export * from "./cannot-exist"

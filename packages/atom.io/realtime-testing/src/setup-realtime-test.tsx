@@ -79,6 +79,8 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
+			const socketState = findInStore(RTS.socketAtoms, socket.id, silo.store)
+			setIntoStore(socketState, socket, silo.store)
 			const usersOfSockets = RTS.usersOfSockets.in(silo.store)
 			usersOfSockets.relations.set(socket.id, username)
 			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)

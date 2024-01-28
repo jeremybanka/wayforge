@@ -10,25 +10,26 @@ import {
 } from "atom.io/internal"
 
 import type { Json, JsonIO } from "atom.io/json"
-import type { ServerConfig } from "."
-import { usersOfSockets } from "."
+import type { ServerConfig, Socket } from "."
+import { socketAtoms, usersOfSockets } from "."
 import { isRootStore } from "../../internal/src/transaction/is-root-store"
 import type { ContinuityToken } from "../../realtime/src/realtime-continuity"
 import { redactedPerspectiveUpdateSelectors } from "./realtime-server-stores/realtime-continuity-store"
 import {
 	completeUpdateAtoms,
-	socketEpochSelectors,
-	socketUnacknowledgedQueues,
+	userUnacknowledgedQueues,
 } from "./realtime-server-stores/server-sync-store"
 
 export type RealtimeContinuitySynchronizer = ReturnType<
 	typeof realtimeContinuitySynchronizer
 >
 export function realtimeContinuitySynchronizer({
-	socket,
+	socket: initialSocket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function synchronizer(continuity: ContinuityToken): () => void {
+		let socket: Socket | null = initialSocket
+
 		const continuityKey = continuity.key
 		const userKeyState = findInStore(
 			usersOfSockets.states.userKeyOfSocket,
@@ -45,14 +46,41 @@ export function realtimeContinuitySynchronizer({
 			)
 			return () => {}
 		}
-
-		const socketUnacknowledgedQueue = findInStore(
-			socketUnacknowledgedQueues,
-			socket.id,
+		const socketKeyState = findInStore(
+			usersOfSockets.states.socketKeyOfUser,
+			userKey,
 			store,
 		)
-		const socketUnacknowledgedUpdates = getFromStore(
-			socketUnacknowledgedQueue,
+		subscribeToState(
+			socketKeyState,
+			({ newValue: newSocketKey }) => {
+				console.log(
+					`>>>>> seeing ${userKey} on new socket ${newSocketKey} <<<<<`,
+				)
+				if (newSocketKey === null) {
+					store.logger.error(
+						`❌`,
+						`continuity`,
+						continuityKey,
+						`Tried to create a synchronizer for a user (${userKey}) that is not connected to a socket.`,
+					)
+					return
+				}
+				const newSocketState = findInStore(socketAtoms, newSocketKey, store)
+				const newSocket = getFromStore(newSocketState, store)
+				socket = newSocket
+			},
+			`sync-continuity:${continuityKey}:${userKey}`,
+			store,
+		)
+
+		const userUnacknowledgedQueue = findInStore(
+			userUnacknowledgedQueues,
+			userKey,
+			store,
+		)
+		const userUnacknowledgedUpdates = getFromStore(
+			userUnacknowledgedQueue,
 			store,
 		)
 		const unsubscribeFunctions: (() => void)[] = []
@@ -78,48 +106,59 @@ export function realtimeContinuitySynchronizer({
 			const epoch = isRootStore(store)
 				? store.transactionMeta.epoch.get(continuityKey) ?? null
 				: null
-			socket.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
+			socket?.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
 
 			for (const transaction of continuity.actions) {
 				const unsubscribeFromTransaction = subscribeToTransaction(
 					transaction,
 					(update) => {
+						// store.logger.info(`<<<<< userId`, userKey)
 						const updateState = findInStore(
 							completeUpdateAtoms,
 							update.id,
 							store,
 						)
+						console.log(`<<<<< ${userKey} updateState`, updateState)
 						setIntoStore(updateState, update, store)
+						console.log(`<<<<< setIntoStore`, userKey)
 						const redactedUpdateKey = {
-							socketId: socket.id,
+							userId: userKey,
 							syncGroupKey: continuityKey,
 							updateId: update.id,
 						}
+						console.log(`<<<<< ${userKey} redactedUpdateKey`, redactedUpdateKey)
+						// if (userKey === `jane`) debugger
 						const redactedUpdateState = findInStore(
 							redactedPerspectiveUpdateSelectors,
 							redactedUpdateKey,
 							store,
 						)
+						console.log(
+							`<<<<< ${userKey} redactedUpdateState`,
+							redactedUpdateState,
+						)
 						const redactedUpdate = getFromStore(redactedUpdateState, store)
+						console.log(`<<<<< ${userKey} redactedUpdate`, redactedUpdate)
 
 						setIntoStore(
-							socketUnacknowledgedQueue,
+							userUnacknowledgedQueue,
 							(updates) => {
 								if (redactedUpdate) {
 									updates.push(redactedUpdate)
 									updates.sort((a, b) => a.epoch - b.epoch)
 								}
+								console.log(`<<<<< ${userKey} unacknowledgedUpdates`, updates)
 								return updates
 							},
 							store,
 						)
 
-						socket.emit(
+						socket?.emit(
 							`tx-new:${continuityKey}`,
 							redactedUpdate as Json.Serializable,
 						)
 					},
-					`tx-sub:${transaction.key}:${socket.id}`,
+					`sync-continuity:${continuityKey}:${userKey}`,
 					store,
 				)
 				unsubscribeFunctions.push(unsubscribeFromTransaction)
@@ -162,27 +201,40 @@ export function realtimeContinuitySynchronizer({
 		let i = 1
 		let next = 1
 		const retry = setInterval(() => {
-			const toEmit = socketUnacknowledgedUpdates[0]
+			const toEmit = userUnacknowledgedUpdates[0]
+			console.log(
+				`<<<<< ${store.config.name} retrying ${userKey} (${i}/${next})`,
+				socket?.id,
+				userUnacknowledgedUpdates,
+			)
 			if (toEmit && i === next) {
-				socket.emit(`tx-new:${continuityKey}`, toEmit as Json.Serializable)
+				socket?.emit(`tx-new:${continuityKey}`, toEmit as Json.Serializable)
 				next *= 2
 			}
 
 			i++
 		}, 250)
 		const trackClientAcknowledgement = (epoch: number) => {
+			console.log(`<<<<< ${store.config.name} ack ${userKey}`, epoch)
+			store.logger.info(
+				`👍`,
+				`continuity`,
+				continuityKey,
+				`${userKey} acknowledged epoch ${epoch}`,
+			)
 			i = 1
 			next = 1
-			const socketEpochState = findInStore(
-				socketEpochSelectors,
-				socket.id,
-				store,
+			const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
+			console.log(
+				`<<<<< ${store.config.name} isUnacknowledged`,
+				isUnacknowledged,
+				userUnacknowledgedUpdates[0]?.epoch,
+				epoch,
 			)
-
-			setIntoStore(socketEpochState, epoch, store)
-			if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
+			if (isUnacknowledged) {
+				console.log(`<<<<< ${store.config.name} acknowledged ${userKey}`, epoch)
 				setIntoStore(
-					socketUnacknowledgedQueue,
+					userUnacknowledgedQueue,
 					(updates) => {
 						updates.shift()
 						return updates
@@ -193,12 +245,13 @@ export function realtimeContinuitySynchronizer({
 		}
 		socket.off(`ack:${continuityKey}`, trackClientAcknowledgement)
 		socket.on(`ack:${continuityKey}`, trackClientAcknowledgement)
+
 		return () => {
 			clearInterval(retry)
 			for (const unsubscribe of unsubscribeFunctions) unsubscribe()
-			socket.off(`ack:${continuityKey}`, trackClientAcknowledgement)
-			socket.off(`get:${continuityKey}`, sendInitialPayload)
-			socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
+			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+			socket?.off(`get:${continuityKey}`, sendInitialPayload)
+			socket?.off(`tx-run:${continuityKey}`, fillTransactionRequest)
 		}
 	}
 }

@@ -1,6 +1,5 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import type { Store } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -16,14 +15,6 @@ import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 
 import { throwUntil } from "../__util__/waiting"
-
-function prefixLogger(store: Store, prefix: string) {
-	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
-		info: (...args) => console.info(prefix, ...args),
-		warn: (...args) => console.warn(prefix, ...args),
-		error: (...args) => console.error(prefix, ...args),
-	})
-}
 
 AtomIO.getState(RTC.myIdState)
 const countState = AtomIO.atom({ key: `count`, default: 0 })
@@ -58,7 +49,7 @@ describe(`synchronizing transactions`, () => {
 					store,
 				)
 				const userKey = getFromStore(userKeyState, store)
-				prefixLogger(store, `server`)
+				// store.loggers[0].logLevel = `info`
 				socket.onAny((event, ...args) => {
 					console.log(`🛰 `, userKey, event, ...args)
 				})
@@ -79,7 +70,7 @@ describe(`synchronizing transactions`, () => {
 					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
 					const increment = actUponStore(incrementTX, arbitrary(), store)
-					prefixLogger(store, `jane`)
+					store.loggers[0].logLevel = `info`
 					const { socket } = React.useContext(RTR.RealtimeContext)
 					socket?.onAny((event, ...args) => {
 						console.log(`📡 JANE`, event, ...args)
@@ -103,7 +94,7 @@ describe(`synchronizing transactions`, () => {
 					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
 					const increment = actUponStore(incrementTX, arbitrary(), store)
-					prefixLogger(store, `dave`)
+					store.loggers[0].logLevel = `info`
 					const { socket } = React.useContext(RTR.RealtimeContext)
 					socket?.onAny((event, ...args) => {
 						console.log(`📡 DAVE`, event, ...args)
@@ -136,7 +127,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		teardown()
 	})
-	test(`rollback`, async () => {
+	test.skip(`rollback`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
@@ -175,8 +166,8 @@ describe(`synchronizing transactions`, () => {
 		act(() => jane.socket.connect())
 		await waitFor(() => throwUntil(jane.socket.connected))
 
-		await waitFor(() => dave.renderResult.getByTestId(`3`))
 		await waitFor(() => jane.renderResult.getByTestId(`3`))
+		await waitFor(() => dave.renderResult.getByTestId(`3`))
 		teardown()
-	}, 3000)
+	})
 })

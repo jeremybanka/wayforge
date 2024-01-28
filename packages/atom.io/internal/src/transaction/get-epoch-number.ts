@@ -33,7 +33,7 @@ export function getEpochNumberOfAction(
 		? store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
 		: undefined
 	const epoch =
-		isRoot && continuity
+		isRoot && continuity !== undefined
 			? store.transactionMeta.epoch.get(continuity)
 			: undefined
 	return epoch

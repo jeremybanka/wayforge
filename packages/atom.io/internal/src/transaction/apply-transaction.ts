@@ -5,6 +5,7 @@ import { newest } from "../lineage"
 import { withdraw } from "../store"
 import type { Store } from "../store"
 import { isChildStore, isRootStore } from "./is-root-store"
+import { setEpochNumberOfAction } from "./set-epoch-number"
 
 export const applyTransaction = <ƒ extends ƒn>(
 	output: ReturnType<ƒ>,
@@ -59,7 +60,12 @@ export const applyTransaction = <ƒ extends ƒn>(
 	}
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
 	if (isRootStore(parent)) {
-		// parent.transactionMeta.epoch = child.transactionMeta.update.epoch
+		console.log(child.transactionMeta.update)
+		setEpochNumberOfAction(
+			child.transactionMeta.update.key,
+			child.transactionMeta.update.epoch,
+			parent,
+		)
 		const myTransaction = withdraw<ƒ>(
 			{ key: child.transactionMeta.update.key, type: `transaction` },
 			store,

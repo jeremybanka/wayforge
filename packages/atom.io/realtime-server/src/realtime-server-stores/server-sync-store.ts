@@ -45,64 +45,32 @@ export const userUnacknowledgedQueues = atomFamily<
 	default: () => [],
 })
 
-export const socketUnacknowledgedQueues = selectorFamily<
-	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
-	string
->({
-	key: `socketUnacknowledgedUpdates`,
-	get:
-		(socketId) =>
-		({ get, find }) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return []
-			}
-			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
-			const unacknowledgedUpdates = get(unacknowledgedUpdatesState)
-			return unacknowledgedUpdates
-		},
-	set:
-		(socketId) =>
-		({ set, get, find }, newUpdates) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return
-			}
-			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
-			set(unacknowledgedUpdatesState, newUpdates)
-		},
-})
-
-export const userEpochAtoms = atomFamily<number | null, string>({
-	key: `clientEpoch`,
-	default: null,
-})
-
-export const socketEpochSelectors = selectorFamily<number | null, string>({
-	key: `socketEpoch`,
-	get:
-		(socketId) =>
-		({ get, find }) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return null
-			}
-			const userEpochState = find(userEpochAtoms, userKey)
-			const userEpoch = get(userEpochState)
-			return userEpoch
-		},
-	set:
-		(socketId) =>
-		({ set, get, find }, newEpoch) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return
-			}
-			const userEpochState = find(userEpochAtoms, userKey)
-			set(userEpochState, newEpoch)
-		},
-})
+// export const socketUnacknowledgedQueues = selectorFamily<
+// 	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
+// 	string
+// >({
+// 	key: `socketUnacknowledgedUpdates`,
+// 	get:
+// 		(socketId) =>
+// 		({ get, find }) => {
+// 			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+// 			const userKey = get(userKeyState)
+// 			if (!userKey) {
+// 				return []
+// 			}
+// 			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
+// 			const unacknowledgedUpdates = get(unacknowledgedUpdatesState)
+// 			return unacknowledgedUpdates
+// 		},
+// 	set:
+// 		(socketId) =>
+// 		({ set, get, find }, newUpdates) => {
+// 			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
+// 			const userKey = get(userKeyState)
+// 			if (!userKey) {
+// 				return
+// 			}
+// 			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
+// 			set(unacknowledgedUpdatesState, newUpdates)
+// 		},
+// })

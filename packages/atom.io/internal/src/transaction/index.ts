@@ -8,6 +8,7 @@ export * from "./assign-transaction-to-continuity"
 export * from "./build-transaction"
 export * from "./create-transaction"
 export * from "./get-epoch-number"
+export * from "./is-root-store"
 export * from "./set-epoch-number"
 
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
