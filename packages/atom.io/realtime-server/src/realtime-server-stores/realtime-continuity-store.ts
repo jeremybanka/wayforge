@@ -1,8 +1,8 @@
 import { selectorFamily } from "atom.io"
 import type { TransactionUpdate } from "atom.io"
 import type { JsonIO } from "atom.io/json"
-import { completeUpdateAtoms, usersOfSockets } from "atom.io/realtime-server"
-import { SyncGroup } from "../../../realtime/src/realtime-continuity"
+import { SyncGroup } from "atom.io/realtime"
+import { completeUpdateAtoms } from "atom.io/realtime-server"
 
 const redactorAtoms = selectorFamily<
 	(update: TransactionUpdate<any>) => TransactionUpdate<any>,
@@ -12,14 +12,6 @@ const redactorAtoms = selectorFamily<
 	get:
 		({ userId, syncGroupKey }) =>
 		({ get, find }) => {
-			// const userKeyState = find(usersOfSockets.states.userKeyOfSocket, userId)
-			// const userKey = get(userKeyState)
-			// if (!userKey) {
-			// 	throw new Error(
-			// 		`Tried to create a synchronizer for a socket that is not connected to a client.`,
-			// 	)
-			// }
-
 			const syncGroup = SyncGroup.existing.get(syncGroupKey)
 			if (!syncGroup) {
 				throw new Error(

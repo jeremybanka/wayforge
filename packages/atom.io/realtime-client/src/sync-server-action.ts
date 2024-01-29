@@ -2,7 +2,6 @@ import type * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
-import { isRootStore } from "../../internal/src/transaction/is-root-store"
 import {
 	confirmedUpdateQueue,
 	optimisticUpdateQueue,
@@ -134,11 +133,14 @@ export function syncAction<ƒ extends AtomIO.ƒn>(
 			}
 		} else {
 			const continuityEpoch = Internal.getEpochNumberOfAction(token.key, store)
-			if (isRootStore(store) && continuityEpoch === confirmedUpdate.epoch - 1) {
+			if (
+				Internal.isRootStore(store) &&
+				continuityEpoch === confirmedUpdate.epoch - 1
+			) {
 				Internal.ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 				socket.emit(`tx-ack:${token.key}`, confirmedUpdate.epoch)
 				Internal.setEpochNumberOfAction(token.key, confirmedUpdate.epoch, store)
-			} else if (isRootStore(store)) {
+			} else if (Internal.isRootStore(store)) {
 				store.logger.info(
 					`❌`,
 					`transaction`,

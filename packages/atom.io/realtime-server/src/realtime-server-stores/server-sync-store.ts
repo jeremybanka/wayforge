@@ -1,6 +1,5 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
-import { usersOfSockets } from "./server-user-store"
 
 export const completeUpdateAtoms = atomFamily<
 	TransactionUpdate<any> | null,
@@ -44,33 +43,3 @@ export const userUnacknowledgedQueues = atomFamily<
 	key: `unacknowledgedUpdates`,
 	default: () => [],
 })
-
-// export const socketUnacknowledgedQueues = selectorFamily<
-// 	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
-// 	string
-// >({
-// 	key: `socketUnacknowledgedUpdates`,
-// 	get:
-// 		(socketId) =>
-// 		({ get, find }) => {
-// 			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-// 			const userKey = get(userKeyState)
-// 			if (!userKey) {
-// 				return []
-// 			}
-// 			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
-// 			const unacknowledgedUpdates = get(unacknowledgedUpdatesState)
-// 			return unacknowledgedUpdates
-// 		},
-// 	set:
-// 		(socketId) =>
-// 		({ set, get, find }, newUpdates) => {
-// 			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-// 			const userKey = get(userKeyState)
-// 			if (!userKey) {
-// 				return
-// 			}
-// 			const unacknowledgedUpdatesState = find(userUnacknowledgedQueues, userKey)
-// 			set(unacknowledgedUpdatesState, newUpdates)
-// 		},
-// })

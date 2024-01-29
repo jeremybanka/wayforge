@@ -1,6 +1,7 @@
 import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+
 import type { Socket } from ".."
 
 export const socketAtoms = atomFamily<Socket | null, string>({
