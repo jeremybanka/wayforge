@@ -21,6 +21,8 @@ import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
 
+let testNumber = 0
+
 export type TestSetupOptions = {
 	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
 }
@@ -68,7 +70,8 @@ export type RealtimeTestAPI__MultiClient<ClientNames extends string> =
 export const setupRealtimeTestServer = (
 	options: TestSetupOptions,
 ): RealtimeTestServer => {
-	const silo = new AtomIO.Silo(`SERVER`, IMPLICIT.STORE)
+	++testNumber
+	const silo = new AtomIO.Silo(`SERVER-${testNumber}`, IMPLICIT.STORE)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen().address()
@@ -125,7 +128,7 @@ export const setupRealtimeTestClient = (
 	const testClient = { dispose: () => {} }
 	const init = () => {
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
-			auth: { token: `test`, username: name },
+			auth: { token: `test`, username: `${name}-${testNumber}` },
 		})
 		const silo = new AtomIO.Silo(name, IMPLICIT.STORE)
 		for (const [key, value] of silo.store.valueMap.entries()) {
@@ -171,7 +174,11 @@ export const singleClient = (
 	options: TestSetupOptions__SingleClient,
 ): RealtimeTestAPI__SingleClient => {
 	const server = setupRealtimeTestServer(options)
-	const client = setupRealtimeTestClient(options, `CLIENT`, server.port)
+	const client = setupRealtimeTestClient(
+		options,
+		`CLIENT-${testNumber}`,
+		server.port,
+	)
 
 	return {
 		client,
