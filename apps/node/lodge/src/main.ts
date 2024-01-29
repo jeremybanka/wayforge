@@ -1,10 +1,10 @@
 import * as AtomIO from "atom.io"
 import { IMPLICIT, getUpdateToken } from "atom.io/internal"
 import * as RTS from "atom.io/realtime-server"
-import dotenv from "dotenv"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
+import { env } from "./env"
 import { logger } from "./logger"
 import {
 	cardCycleGroupsAndZones,
@@ -37,11 +37,10 @@ const store = IMPLICIT.STORE
 
 const TIMESTAMP = Date.now()
 
-dotenv.config()
 pipe(
 	new WebSocketServer(3333, {
 		cors: {
-			origin: [`http://eris.local:4500`, `http://localhost:4500`],
+			origin: env.CLIENT_ORIGINS,
 		},
 	}),
 	(io) => {
