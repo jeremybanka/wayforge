@@ -1,4 +1,4 @@
-import { ParentSocket } from "../../realtime-server/src/ipc-socket"
+import { ParentSocket } from "atom.io/realtime-server"
 
 it(`ParentSocket`, () => {
 	expect(new ParentSocket()).toThrow
