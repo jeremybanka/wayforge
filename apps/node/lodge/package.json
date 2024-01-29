@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "bun --watch src/main.ts",
 		"start": "bun src/main.ts",
-		"build": "echo zero-build app powered by tsx",
+		"build": "bun i --no-save",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
