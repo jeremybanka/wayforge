@@ -2,7 +2,13 @@ import { vitest } from "vitest"
 
 import type { Logger } from "atom.io"
 
-import { atomFamily, getState, selectorFamily, setState } from "atom.io"
+import {
+	atomFamily,
+	findState,
+	getState,
+	selectorFamily,
+	setState,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -32,27 +38,31 @@ describe(`atom families`, () => {
 
 describe(`selector families`, () => {
 	it(`can be modified and retrieved`, () => {
-		const findPointState = atomFamily<{ x: number; y: number }, string>({
+		const pointAtoms = atomFamily<{ x: number; y: number }, string>({
 			key: `point`,
 			default: { x: 0, y: 0 },
 		})
-		const findDistanceState = selectorFamily<number, [string, string]>({
+		const distanceSelectors = selectorFamily<number, [string, string]>({
 			key: `distance`,
 			get:
 				([keyA, keyB]) =>
-				({ get }) => {
-					const pointA = get(findPointState(keyA))
-					const pointB = get(findPointState(keyB))
+				({ find, get }) => {
+					const pointA = get(find(pointAtoms, keyA))
+					const pointB = get(find(pointAtoms, keyB))
 					return Math.sqrt(
 						(pointA.x - pointB.x) ** 2 + (pointA.y - pointB.y) ** 2,
 					)
 				},
 		})
-		setState(findPointState(`a`), { x: 1, y: 1 })
-		setState(findPointState(`b`), { x: 2, y: 2 })
-		expect(getState(findDistanceState([`a`, `b`]))).toBe(1.4142135623730951)
+		setState(findState(pointAtoms, `a`), { x: 1, y: 1 })
+		setState(findState(pointAtoms, `b`), { x: 2, y: 2 })
+		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(
+			1.4142135623730951,
+		)
 
-		setState(findPointState(`b`), { x: 11, y: 11 })
-		expect(getState(findDistanceState([`a`, `b`]))).toBe(14.142135623730951)
+		setState(findState(pointAtoms, `b`), { x: 11, y: 11 })
+		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(
+			14.142135623730951,
+		)
 	})
 })
