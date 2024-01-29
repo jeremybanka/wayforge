@@ -4,21 +4,21 @@ import {
 	actUponStore,
 	findInStore,
 	getFromStore,
+	isRootStore,
 	setIntoStore,
 	subscribeToState,
 	subscribeToTransaction,
 } from "atom.io/internal"
-
 import type { Json, JsonIO } from "atom.io/json"
+import type { ContinuityToken } from "atom.io/realtime"
+
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
-import { isRootStore } from "../../internal/src/transaction/is-root-store"
-import type { ContinuityToken } from "../../realtime/src/realtime-continuity"
-import { redactedPerspectiveUpdateSelectors } from "./realtime-server-stores/realtime-continuity-store"
+import { redactedPerspectiveUpdateSelectors } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	userUnacknowledgedQueues,
-} from "./realtime-server-stores/server-sync-store"
+} from "./realtime-server-stores"
 
 export type RealtimeContinuitySynchronizer = ReturnType<
 	typeof realtimeContinuitySynchronizer
