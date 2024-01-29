@@ -6,20 +6,23 @@ const LoggerIconDictionary = {
 	"⏮️": `Transaction undo`,
 	"⏳": `Timeline event partially captured`,
 	"⏹️": `Time-travel complete`,
-	"💁": `Notice`,
-	"🔄": `Realtime transaction synchronized`,
 	"✅": `Realtime transaction success`,
 	"✨": `Computation complete`,
 	"❌": `Conflict prevents attempted action`,
 	"⭕": `Operation start`,
 	"🐞": `Possible bug in AtomIO`,
 	"👀": `Subscription added`,
+	"👋": `Greeting`,
+	"👍": `Realtime acknowledgment`,
 	"👪": `Family member added`,
+	"💁": `Notice`,
+	"💥": `Caught`,
 	"📁": `Stow update`,
 	"📃": `Copy mutable`,
 	"📖": `Read state`,
 	"📝": `Write state`,
 	"📢": `Notify subscribers`,
+	"🔄": `Realtime transaction synchronized`,
 	"🔌": `Register dependency`,
 	"🔍": `Discover root`,
 	"🔥": `Delete state`,
@@ -27,8 +30,8 @@ const LoggerIconDictionary = {
 	"🔨": `Create immutable atom`,
 	"🔴": `Operation complete`,
 	"🗑": `Evict cached value`,
-	"💥": `Caught`,
 	"🙈": `Subscription canceled`,
+	"🚀": `Performance measure`,
 	"🛄": `Apply transaction`,
 	"🛠️": `Install atom into store`,
 	"🛫": `Begin transaction`,
@@ -36,14 +39,16 @@ const LoggerIconDictionary = {
 	"🧮": `Computing selector`,
 	"🧹": `Prepare to evict`,
 	"🪂": `Abort transaction`,
-	"🚀": `Performance measure`,
+	"🤞": `Realtime optimistic update enqueued`,
+	"👈": `Realtime confirmed update enqueued`,
+	"⚖️": `Realtime update beginning reconciliation`,
 } as const
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 export type TokenDenomination =
 	| `atom`
+	| `continuity`
 	| `mutable_atom`
 	| `readonly_selector`
-	| `realtime_sync_group`
 	| `selector`
 	| `state`
 	| `timeline`

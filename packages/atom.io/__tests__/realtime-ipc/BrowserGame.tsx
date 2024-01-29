@@ -1,16 +1,14 @@
-import { findInStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
-import { myIdState } from "atom.io/realtime-client"
+import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as React from "react"
-import { letterAtoms } from "./game-store"
+
+import { gameContinuity, letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
-	const store = React.useContext(AR.StoreContext)
-	const letter0State = findInStore(letterAtoms, 0, store)
-	RTR.usePullAtom(letterAtoms(0))
-	const letter0 = AR.useO(letter0State)
+	RTR.useSyncContinuity(gameContinuity)
+	const letter0 = AR.useO(letterAtoms, 0)
 	return (
 		<main data-testid={roomId}>
 			<h1>{roomId}</h1>
@@ -77,6 +75,6 @@ export function A(props: { mySocketKey: string }): JSX.Element | null {
 }
 
 export function BrowserGame(): JSX.Element | null {
-	const mySocketKey = AR.useO(myIdState)
+	const mySocketKey = AR.useO(RTC.myIdState)
 	return mySocketKey ? <A mySocketKey={mySocketKey} /> : null
 }

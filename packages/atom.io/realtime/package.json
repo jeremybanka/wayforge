@@ -1,0 +1,16 @@
+{
+	"name": "atom.io-realtime",
+	"type": "module",
+	"private": true,
+	"main": "dist/index.cjs",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"browser": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
