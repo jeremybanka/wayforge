@@ -1,10 +1,11 @@
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
+import type { AtomFamily, AtomFamilyToken, Logger } from "atom.io"
 import type { RegularAtomToken, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	findState,
 	redo,
 	selector,
 	setState,
@@ -175,5 +176,19 @@ describe(`recipes`, () => {
 			redo(atl)
 			redo(atl)
 		})
+	})
+})
+
+describe(`findState`, () => {
+	it(`throws an error if the family is not found`, () => {
+		const token: AtomFamilyToken<any, any> = {
+			key: `does not exist`,
+			type: `atom_family`,
+		}
+		expect(() =>
+			findState(token, `whatever`),
+		).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Atom_family "does not exist" not found in store "IMPLICIT_STORE".]`,
+		)
 	})
 })
