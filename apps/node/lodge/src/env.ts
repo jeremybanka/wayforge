@@ -1,5 +1,5 @@
 import { createEnv } from "@t3-oss/env-core"
-import { parseJson } from "anvl/json"
+import { parseJson } from "atom.io/json"
 import { z } from "zod"
 
 export const env = createEnv({
@@ -11,7 +11,7 @@ export const env = createEnv({
 			// transform to array
 			.transform((s) => parseJson(s))
 			// make sure transform worked
-			.pipe(z.array(z.string().url())),
+			.pipe(z.array(z.string())),
 	},
 
 	/**
