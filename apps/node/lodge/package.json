@@ -3,8 +3,8 @@
 	"description": "cards and dice server",
 	"private": true,
 	"scripts": {
-		"dev": "tsx watch src/main.ts",
-		"start": "tsx src/main.ts",
+		"dev": "bun --watch src/main.ts",
+		"start": "bun src/main.ts",
 		"build": "echo zero-build app powered by tsx",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
@@ -21,7 +21,6 @@
 		"lodash": "4.17.21",
 		"nanoid": "5.0.4",
 		"npmlog": "7.0.1",
-		"rxjs": "7.8.1",
 		"socket.io": "4.7.4",
 		"socketio-auth": "0.1.1",
 		"zod": "3.22.4"
