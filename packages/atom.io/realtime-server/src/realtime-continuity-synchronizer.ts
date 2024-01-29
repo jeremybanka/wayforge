@@ -28,6 +28,10 @@ export function realtimeContinuitySynchronizer({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function synchronizer(continuity: ContinuityToken): () => void {
+		console.log(
+			`<<<<< ${store.config.name} synchronizing (${initialSocket.id}) to`,
+			continuity,
+		)
 		let socket: Socket | null = initialSocket
 
 		const continuityKey = continuity.key
@@ -38,6 +42,12 @@ export function realtimeContinuitySynchronizer({
 		)
 		const userKey = getFromStore(userKeyState, store)
 		if (!userKey) {
+			console.log(
+				`<<<<< ${store.config.name} no userKey`,
+				userKey,
+				socket.id,
+				store.valueMap,
+			)
 			store.logger.error(
 				`❌`,
 				`continuity`,
