@@ -53,7 +53,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			optimisticUpdate: AtomIO.TransactionUpdate<any>,
 			confirmedUpdate: AtomIO.TransactionUpdate<any>,
 		): void {
-			console.log(`>>>>> ${store.config.name} reconciling updates`)
+			store.logger.info(`⚖️`, `continuity`, continuityKey, `reconciling updates`)
 			setIntoStore(
 				optimisticUpdateQueue,
 				(queue) => {
@@ -81,60 +81,77 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 					`❌`,
 					`continuity`,
 					continuityKey,
-					`${store.config.name} thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
+					`thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
 				)
 			}
-			for (const subsequentOptimistic of optimisticUpdates.toReversed()) {
+			const reversedOptimisticUpdates = optimisticUpdates.toReversed()
+			for (const subsequentOptimistic of reversedOptimisticUpdates) {
 				ingestTransactionUpdate(`oldValue`, subsequentOptimistic, store)
 			}
-			console.log(
-				`>>>>> ${store.config.name} undid optimistic updates`,
-				optimisticUpdates.toReversed(),
+			store.logger.info(
+				`⏪`,
+				`continuity`,
+				continuityKey,
+				`undid optimistic updates:`,
+				reversedOptimisticUpdates,
 			)
 			ingestTransactionUpdate(`oldValue`, optimisticUpdate, store)
-			console.log(
-				`>>>>> ${store.config.name} undid zeroth optimistic update`,
+			store.logger.info(
+				`⏪`,
+				`continuity`,
+				continuityKey,
+				`undid zeroth optimistic update`,
 				optimisticUpdate,
 			)
 			ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
-			console.log(
-				`>>>>> ${store.config.name} applied confirmed update`,
+			store.logger.info(
+				`⏩`,
+				`continuity`,
+				continuityKey,
+				`applied confirmed update`,
 				confirmedUpdate,
 			)
-
-			console.log(
-				`>>>>> ${store.config.name} reapplying subsequent optimistic updates:`,
-				optimisticUpdates,
-			)
-
 			socket.emit(`ack:${continuityKey}`, confirmedUpdate.epoch)
+
 			for (const subsequentOptimistic of optimisticUpdates) {
-				const token = Object.assign(
-					{ type: `transaction` } as const,
-					subsequentOptimistic,
-				)
+				const token = {
+					type: `transaction`,
+					key: subsequentOptimistic.key,
+				} as const
 				const { id, params } = subsequentOptimistic
 				actUponStore(token, id, store)(...params)
 			}
+			store.logger.info(
+				`⏩`,
+				`continuity`,
+				continuityKey,
+				`reapplied subsequent optimistic updates:`,
+				optimisticUpdates,
+			)
 		}
 
-		console.log(`>>>>> ${store.config.name} integrating confirmed update`)
-		console.log(
-			`>>>>> ${store.config.name} optimisticUpdates`,
-			optimisticUpdates,
+		store.logger.info(
+			`⚖️`,
+			`continuity`,
+			continuityKey,
+			`integrating confirmed update`,
+			{ confirmedUpdate, confirmedUpdates, optimisticUpdates },
 		)
-		console.log(`>>>>> ${store.config.name} confirmedUpdate`, confirmedUpdate)
 		const zerothOptimisticUpdate = optimisticUpdates[0]
-		console.log(
-			`>>>>> ${store.config.name} zerothOptimisticUpdate`,
-			zerothOptimisticUpdate,
-		)
 		if (zerothOptimisticUpdate) {
-			console.log(
-				`>>>>> ${store.config.name} has optimistic updates to deal with`,
+			store.logger.info(
+				`⚖️`,
+				`continuity`,
+				continuityKey,
+				`has optimistic updates to reconcile`,
 			)
-			if (zerothOptimisticUpdate.epoch === confirmedUpdate.epoch) {
-				console.log(`>>>>> ${store.config.name} epochs match`)
+			if (confirmedUpdate.epoch === zerothOptimisticUpdate.epoch) {
+				store.logger.info(
+					`⚖️`,
+					`continuity`,
+					continuityKey,
+					`epoch of confirmed update #${confirmedUpdate.epoch} matches zeroth optimistic update`,
+				)
 				reconcileEpoch(zerothOptimisticUpdate, confirmedUpdate)
 				for (const nextConfirmed of confirmedUpdates) {
 					const nextOptimistic = optimisticUpdates[0]
@@ -146,17 +163,21 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				}
 			} else {
 				// epoch mismatch
-				console.log(
-					`>>>>> ${store.config.name} last applied update ${zerothOptimisticUpdate.epoch} does not match confirmed update ${confirmedUpdate.epoch}`,
+				store.logger.info(
+					`⚖️`,
+					`continuity`,
+					continuityKey,
+					`epoch of confirmed update #${confirmedUpdate.epoch} does not match zeroth optimistic update #${zerothOptimisticUpdate.epoch}`,
 				)
 				const confirmedUpdateIsAlreadyEnqueued = confirmedUpdates.some(
 					(update) => update.epoch === confirmedUpdate.epoch,
 				)
 				if (!confirmedUpdateIsAlreadyEnqueued) {
-					console.log(
-						`>>>>> ${store.config.name} pushing confirmed update to queue`,
-						confirmedUpdates,
-						`<-`,
+					store.logger.info(
+						`👈`,
+						`continuity`,
+						continuityKey,
+						`pushing confirmed update to queue`,
 						confirmedUpdate,
 					)
 					setIntoStore(
@@ -171,8 +192,11 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				}
 			}
 		} else {
-			console.log(
-				`>>>>> ${store.config.name} has no optimistic updates to deal with`,
+			store.logger.info(
+				`⚖️`,
+				`continuity`,
+				continuityKey,
+				`has no optimistic updates to deal with`,
 			)
 			const continuityEpoch = getEpochNumberOfContinuity(continuityKey, store)
 			const isRoot = isRootStore(store)
@@ -182,17 +206,19 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 					`✅`,
 					`continuity`,
 					continuityKey,
-					`integrating update #${confirmedUpdate.epoch} ${confirmedUpdate.key} ${confirmedUpdate.id}`,
+					`integrating update #${confirmedUpdate.epoch} (${confirmedUpdate.key} ${confirmedUpdate.id})`,
 				)
 				ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
 				socket.emit(`ack:${continuityKey}`, confirmedUpdate.epoch)
 				setEpochNumberOfContinuity(continuityKey, confirmedUpdate.epoch, store)
-			} else if (isRoot) {
+			} else if (isRoot && continuityEpoch !== undefined) {
 				store.logger.info(
-					`❌`,
+					`⚖️`,
 					`continuity`,
 					continuityKey,
-					`received out-of-order update from server`,
+					`received update #${
+						confirmedUpdate.epoch
+					} but still waiting for update #${continuityEpoch + 1}`,
 					{
 						clientEpoch: continuityEpoch,
 						serverEpoch: confirmedUpdate.epoch,
@@ -202,15 +228,18 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 					(update) => update.epoch === confirmedUpdate.epoch,
 				)
 				if (confirmedUpdateIsAlreadyEnqueued) {
-					console.log(
-						`>>>>> ${store.config.name} confirmed update is already enqueued`,
+					store.logger.info(
+						`👍`,
+						`continuity`,
+						continuityKey,
+						`confirmed update #${confirmedUpdate.epoch} is already enqueued`,
 					)
 				} else {
-					console.log(
-						`>>>>> pushing confirmed update to queue`,
-						confirmedUpdate,
-						`->`,
-						confirmedUpdates,
+					store.logger.info(
+						`👈`,
+						`continuity`,
+						continuityKey,
+						`pushing confirmed update #${confirmedUpdate.epoch} to queue`,
 					)
 					setIntoStore(
 						confirmedUpdateQueue,
@@ -233,12 +262,22 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		const unsubscribeFromTransactionUpdates = subscribeToTransaction(
 			transaction,
 			(clientUpdate) => {
-				console.log(`${store.config.name} enqueuing optimistic update`)
+				store.logger.info(
+					`🤞`,
+					`continuity`,
+					continuityKey,
+					`enqueuing optimistic update`,
+				)
 				const optimisticUpdateIndex = optimisticUpdates.findIndex(
 					(update) => update.id === clientUpdate.id,
 				)
 				if (optimisticUpdateIndex === -1) {
-					console.log(`${store.config.name} enqueuing new optimistic update`)
+					store.logger.info(
+						`🤞`,
+						`continuity`,
+						continuityKey,
+						`enqueuing new optimistic update`,
+					)
 					setIntoStore(
 						optimisticUpdateQueue,
 						(queue) => {
@@ -249,8 +288,11 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 						store,
 					)
 				} else {
-					console.log(
-						`${store.config.name} replacing existing optimistic update`,
+					store.logger.info(
+						`🤞`,
+						`continuity`,
+						continuityKey,
+						`replacing existing optimistic update at index ${optimisticUpdateIndex}`,
 					)
 					setIntoStore(
 						optimisticUpdateQueue,
@@ -261,7 +303,6 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 						store,
 					)
 				}
-				console.log(``)
 				socket.emit(`tx-run:${continuityKey}`, clientUpdate)
 			},
 			`tx-run:${continuityKey}`,

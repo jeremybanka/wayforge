@@ -28,10 +28,6 @@ export function realtimeContinuitySynchronizer({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function synchronizer(continuity: ContinuityToken): () => void {
-		console.log(
-			`<<<<< ${store.config.name} synchronizing (${initialSocket.id}) to`,
-			continuity,
-		)
 		let socket: Socket | null = initialSocket
 
 		const continuityKey = continuity.key
@@ -42,12 +38,6 @@ export function realtimeContinuitySynchronizer({
 		)
 		const userKey = getFromStore(userKeyState, store)
 		if (!userKey) {
-			console.log(
-				`<<<<< ${store.config.name} no userKey`,
-				userKey,
-				socket.id,
-				store.valueMap,
-			)
 			store.logger.error(
 				`❌`,
 				`continuity`,
@@ -64,8 +54,11 @@ export function realtimeContinuitySynchronizer({
 		subscribeToState(
 			socketKeyState,
 			({ newValue: newSocketKey }) => {
-				console.log(
-					`>>>>> seeing ${userKey} on new socket ${newSocketKey} <<<<<`,
+				store.logger.info(
+					`👋`,
+					`continuity`,
+					continuityKey,
+					`seeing ${userKey} on new socket ${newSocketKey}`,
 				)
 				if (newSocketKey === null) {
 					store.logger.error(
@@ -122,33 +115,25 @@ export function realtimeContinuitySynchronizer({
 				const unsubscribeFromTransaction = subscribeToTransaction(
 					transaction,
 					(update) => {
-						// store.logger.info(`<<<<< userId`, userKey)
+						// store.logger.info(`userId`, userKey)
 						const updateState = findInStore(
 							completeUpdateAtoms,
 							update.id,
 							store,
 						)
-						console.log(`<<<<< ${userKey} updateState`, updateState)
 						setIntoStore(updateState, update, store)
-						console.log(`<<<<< setIntoStore`, userKey)
 						const redactedUpdateKey = {
 							userId: userKey,
 							syncGroupKey: continuityKey,
 							updateId: update.id,
 						}
-						console.log(`<<<<< ${userKey} redactedUpdateKey`, redactedUpdateKey)
-						// if (userKey === `jane`) debugger
 						const redactedUpdateState = findInStore(
 							redactedPerspectiveUpdateSelectors,
 							redactedUpdateKey,
 							store,
 						)
-						console.log(
-							`<<<<< ${userKey} redactedUpdateState`,
-							redactedUpdateState,
-						)
+
 						const redactedUpdate = getFromStore(redactedUpdateState, store)
-						console.log(`<<<<< ${userKey} redactedUpdate`, redactedUpdate)
 
 						setIntoStore(
 							userUnacknowledgedQueue,
@@ -157,7 +142,6 @@ export function realtimeContinuitySynchronizer({
 									updates.push(redactedUpdate)
 									updates.sort((a, b) => a.epoch - b.epoch)
 								}
-								console.log(`<<<<< ${userKey} unacknowledgedUpdates`, updates)
 								return updates
 							},
 							store,
@@ -212,8 +196,11 @@ export function realtimeContinuitySynchronizer({
 		let next = 1
 		const retry = setInterval(() => {
 			const toEmit = userUnacknowledgedUpdates[0]
-			console.log(
-				`<<<<< ${store.config.name} retrying ${userKey} (${i}/${next})`,
+			store.logger.info(
+				`🔄`,
+				`continuity`,
+				continuityKey,
+				`${store.config.name} retrying ${userKey} (${i}/${next})`,
 				socket?.id,
 				userUnacknowledgedUpdates,
 			)
@@ -225,7 +212,6 @@ export function realtimeContinuitySynchronizer({
 			i++
 		}, 250)
 		const trackClientAcknowledgement = (epoch: number) => {
-			console.log(`<<<<< ${store.config.name} ack ${userKey}`, epoch)
 			store.logger.info(
 				`👍`,
 				`continuity`,
@@ -235,14 +221,8 @@ export function realtimeContinuitySynchronizer({
 			i = 1
 			next = 1
 			const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
-			console.log(
-				`<<<<< ${store.config.name} isUnacknowledged`,
-				isUnacknowledged,
-				userUnacknowledgedUpdates[0]?.epoch,
-				epoch,
-			)
+
 			if (isUnacknowledged) {
-				console.log(`<<<<< ${store.config.name} acknowledged ${userKey}`, epoch)
 				setIntoStore(
 					userUnacknowledgedQueue,
 					(updates) => {

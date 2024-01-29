@@ -12,7 +12,8 @@ const LoggerIconDictionary = {
 	"⭕": `Operation start`,
 	"🐞": `Possible bug in AtomIO`,
 	"👀": `Subscription added`,
-	"👍": `Signal acknowledgment`,
+	"👋": `Greeting`,
+	"👍": `Realtime acknowledgment`,
 	"👪": `Family member added`,
 	"💁": `Notice`,
 	"💥": `Caught`,
@@ -38,6 +39,9 @@ const LoggerIconDictionary = {
 	"🧮": `Computing selector`,
 	"🧹": `Prepare to evict`,
 	"🪂": `Abort transaction`,
+	"🤞": `Realtime optimistic update enqueued`,
+	"👈": `Realtime confirmed update enqueued`,
+	"⚖️": `Realtime update beginning reconciliation`,
 } as const
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 export type TokenDenomination =
