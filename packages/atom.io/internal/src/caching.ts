@@ -55,6 +55,7 @@ export const readCachedValue = <T>(
 ): T => {
 	let value = target.valueMap.get(token.key) as T
 	if (token.type === `atom`) {
+		// THIS DOES NOT MAKE SENSE
 		value = copyMutableIfWithinTransaction(value, token, target)
 	}
 	return value
