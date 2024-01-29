@@ -1,6 +1,7 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { findInStore, getFromStore } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
+import { actUponStore, arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
@@ -8,7 +9,16 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
+
 import { throwUntil } from "../__util__/waiting"
+
+function prefixLogger(store: Store, prefix: string) {
+	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
+		info: (...args) => console.info(prefix, ...args),
+		warn: (...args) => console.warn(prefix, ...args),
+		error: (...args) => console.error(prefix, ...args),
+	})
+}
 
 AtomIO.getState(RTC.myIdState)
 const countState = AtomIO.atom({ key: `count`, default: 0 })
@@ -37,45 +47,40 @@ describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
-				const userKeyState = findInStore(
-					RTS.usersOfSockets.states.userKeyOfSocket,
-					socket.id,
+				// const userKeyState = findInStore(
+				// 	RTS.usersOfSockets.states.userKeyOfSocket,
+				// 	socket.id,
+				// 	store,
+				// )
+				// const userKey = getFromStore(userKeyState, store)
+				// prefixLogger(store, `server`)
+				// socket.onAny((event, ...args) => {
+				// 	console.log(`🛰 `, userKey, event, ...args)
+				// })
+				// socket.onAnyOutgoing((event, ...args) => {
+				// 	console.log(`🛰  >>`, userKey, event, ...args)
+				// })
+
+				const syncContinuity = RTS.realtimeContinuitySynchronizer({
+					socket,
 					store,
-				)
-				const userKey = getFromStore(userKeyState, store)
-				// store.loggers[0].logLevel = `info`
-				socket.onAny((event, ...args) => {
-					console.log(`🛰 `, userKey, event, ...args)
 				})
-				socket.onAnyOutgoing((event, ...args) => {
-					console.log(`🛰  >>`, userKey, event, ...args)
-				})
-				const syncTX = RTS.realtimeActionSynchronizer({ socket, store })
-				const syncState = RTS.realtimeStateSynchronizer({ socket, store })
-				const unSyncTX = syncTX(incrementTX, (updates) =>
-					updates.filter((u) => {
-						if (u.key === `count`) {
-							return true
-						}
-					}),
-				)
-				const unSyncState = syncState(countState)
-				socket.on(`disconnect`, () => {
-					// unSyncTX()
-					unSyncState()
-				})
+
+				syncContinuity(countContinuity)
 			},
 			clients: {
-				dave: () => {
-					const count = RTR.useSync(countState)
-					const increment = RTR.useSyncAction(incrementTX)
+				jane: () => {
+					RTR.useSyncContinuity(countContinuity)
+					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
-					const { socket } = React.useContext(RTR.RealtimeContext)
+					const increment = actUponStore(incrementTX, arbitrary(), store)
+					// prefixLogger(store, `jane`)
+					// const { socket } = React.useContext(RTR.RealtimeContext)
 					// socket?.onAny((event, ...args) => {
-					// 	console.log(`📡 DAVE`, event, ...args)
+					// 	console.log(`📡 JANE`, event, ...args)
 					// })
 					// socket?.onAnyOutgoing((event, ...args) => {
-					// 	console.log(`📡 DAVE >>`, event, ...args)
+					// 	console.log(`📡 JANE >>`, event, ...args)
 					// })
 					return (
 						<>
@@ -88,18 +93,19 @@ describe(`synchronizing transactions`, () => {
 						</>
 					)
 				},
-				jane: () => {
-					const count = RTR.useSync(countState)
-					const increment = RTR.useSyncAction(incrementTX)
+				dave: () => {
+					RTR.useSyncContinuity(countContinuity)
+					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
-					// store.loggers[0].logLevel = `info`
-					const { socket } = React.useContext(RTR.RealtimeContext)
-					socket?.onAny((event, ...args) => {
-						console.log(`📡 JANE`, event, ...args)
-					})
-					socket?.onAnyOutgoing((event, ...args) => {
-						console.log(`📡 JANE >>`, event, ...args)
-					})
+					const increment = actUponStore(incrementTX, arbitrary(), store)
+					// prefixLogger(store, `dave`)
+					// const { socket } = React.useContext(RTR.RealtimeContext)
+					// socket?.onAny((event, ...args) => {
+					// 	console.log(`📡 DAVE`, event, ...args)
+					// })
+					// socket?.onAnyOutgoing((event, ...args) => {
+					// 	console.log(`📡 DAVE >>`, event, ...args)
+					// })
 					return (
 						<>
 							<button
@@ -141,7 +147,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`))
 		teardown()
 	})
-	test.skip(`recovery`, async () => {
+	test(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
@@ -153,7 +159,6 @@ describe(`synchronizing transactions`, () => {
 		act(() => jane.socket.disconnect())
 		await waitFor(() => throwUntil(!jane.socket.connected))
 
-		// act(() => jane.renderResult.getByTestId(`increment`).click())
 		act(() => jane.renderResult.getByTestId(`increment`).click())
 
 		act(() => dave.renderResult.getByTestId(`increment`).click())
@@ -165,8 +170,8 @@ describe(`synchronizing transactions`, () => {
 		act(() => jane.socket.connect())
 		await waitFor(() => throwUntil(jane.socket.connected))
 
-		await waitFor(() => jane.renderResult.getByTestId(`3`))
 		await waitFor(() => dave.renderResult.getByTestId(`3`))
+		await waitFor(() => jane.renderResult.getByTestId(`3`))
 		teardown()
-	})
+	}, 3000)
 })

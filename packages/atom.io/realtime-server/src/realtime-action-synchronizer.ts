@@ -2,6 +2,7 @@ import type * as AtomIO from "atom.io"
 import {
 	IMPLICIT,
 	actUponStore,
+	assignTransactionToContinuity,
 	findInStore,
 	getFromStore,
 	setIntoStore,
@@ -10,14 +11,13 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 
 import type { ServerConfig } from "."
-import { usersOfSockets } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	redactedUpdateSelectors,
-	socketEpochSelectors,
-	socketUnacknowledgedUpdatesSelectors,
 	transactionRedactorAtoms,
-} from "./realtime-server-stores/server-sync-store"
+	userUnacknowledgedQueues,
+	usersOfSockets,
+} from "./realtime-server-stores"
 
 export type ActionSynchronizer = ReturnType<typeof realtimeActionSynchronizer>
 export function realtimeActionSynchronizer({
@@ -30,19 +30,30 @@ export function realtimeActionSynchronizer({
 			update: AtomIO.TransactionUpdateContent[],
 		) => AtomIO.TransactionUpdateContent[],
 	): () => void {
+		assignTransactionToContinuity(`default`, tx.key, store)
+
 		const userKeyState = findInStore(
 			usersOfSockets.states.userKeyOfSocket,
 			socket.id,
 			store,
 		)
 		const userKey = getFromStore(userKeyState, store)
-		const socketUnacknowledgedUpdatesState = findInStore(
-			socketUnacknowledgedUpdatesSelectors,
-			socket.id,
+		if (!userKey) {
+			store.logger.error(
+				`❌`,
+				`transaction`,
+				tx.key,
+				`Tried to create a synchronizer for a socket (${socket.id}) that is not connected to a user.`,
+			)
+			return () => {}
+		}
+		const userUnacknowledgedQueue = findInStore(
+			userUnacknowledgedQueues,
+			userKey,
 			store,
 		)
-		const socketUnacknowledgedUpdates = getFromStore(
-			socketUnacknowledgedUpdatesState,
+		const userUnacknowledgedUpdates = getFromStore(
+			userUnacknowledgedQueue,
 			store,
 		)
 		if (filter) {
@@ -91,7 +102,7 @@ export function realtimeActionSynchronizer({
 					//
 					// we need a client session that can persist between disconnects
 					setIntoStore(
-						socketUnacknowledgedUpdatesState,
+						userUnacknowledgedQueue,
 						(updates) => {
 							if (toEmit) {
 								updates.push(toEmit)
@@ -114,7 +125,7 @@ export function realtimeActionSynchronizer({
 		let i = 1
 		let next = 1
 		const retry = setInterval(() => {
-			const toEmit = socketUnacknowledgedUpdates[0]
+			const toEmit = userUnacknowledgedUpdates[0]
 			if (toEmit && i === next) {
 				socket.emit(`tx-new:${tx.key}`, toEmit as Json.Serializable)
 				next *= 2
@@ -126,16 +137,10 @@ export function realtimeActionSynchronizer({
 		const trackClientAcknowledgement = (epoch: number) => {
 			i = 1
 			next = 1
-			const socketEpochState = findInStore(
-				socketEpochSelectors,
-				socket.id,
-				store,
-			)
-
-			setIntoStore(socketEpochState, epoch, store)
-			if (socketUnacknowledgedUpdates[0]?.epoch === epoch) {
+			8
+			if (userUnacknowledgedUpdates[0]?.epoch === epoch) {
 				setIntoStore(
-					socketUnacknowledgedUpdatesState,
+					userUnacknowledgedQueue,
 					(updates) => {
 						updates.shift()
 						return updates

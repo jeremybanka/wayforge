@@ -1,7 +1,5 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
-import { SyncGroup } from "~/packages/atom.io/__unstable__/realtime-server-next/create-realtime-sync-group"
-import { usersOfSockets } from "./server-user-store"
 
 export const completeUpdateAtoms = atomFamily<
 	TransactionUpdate<any> | null,
@@ -38,78 +36,10 @@ export const redactedUpdateSelectors = selectorFamily<
 		},
 })
 
-export const userUnacknowledgedUpdatesAtoms = atomFamily<
+export const userUnacknowledgedQueues = atomFamily<
 	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
 	string
 >({
 	key: `unacknowledgedUpdates`,
 	default: () => [],
-})
-
-export const socketUnacknowledgedUpdatesSelectors = selectorFamily<
-	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
-	string
->({
-	key: `socketUnacknowledgedUpdates`,
-	get:
-		(socketId) =>
-		({ get, find }) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return []
-			}
-			const unacknowledgedUpdatesState = find(
-				userUnacknowledgedUpdatesAtoms,
-				userKey,
-			)
-			const unacknowledgedUpdates = get(unacknowledgedUpdatesState)
-			return unacknowledgedUpdates
-		},
-	set:
-		(socketId) =>
-		({ set, get, find }, newUpdates) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return
-			}
-			const unacknowledgedUpdatesState = find(
-				userUnacknowledgedUpdatesAtoms,
-				userKey,
-			)
-			set(unacknowledgedUpdatesState, newUpdates)
-		},
-})
-
-export const userEpochAtoms = atomFamily<number | null, string>({
-	key: `clientEpoch`,
-	default: null,
-})
-
-export const socketEpochSelectors = selectorFamily<number | null, string>({
-	key: `socketEpoch`,
-	get:
-		(socketId) =>
-		({ get, find }) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return null
-			}
-			const userEpochState = find(userEpochAtoms, userKey)
-			const userEpoch = get(userEpochState)
-			return userEpoch
-		},
-	set:
-		(socketId) =>
-		({ set, get, find }, newEpoch) => {
-			const userKeyState = find(usersOfSockets.states.userKeyOfSocket, socketId)
-			const userKey = get(userKeyState)
-			if (!userKey) {
-				return
-			}
-			const userEpochState = find(userEpochAtoms, userKey)
-			set(userEpochState, newEpoch)
-		},
 })

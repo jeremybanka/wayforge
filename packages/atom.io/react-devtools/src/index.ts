@@ -1,6 +1,5 @@
 import { atom, atomFamily } from "atom.io"
 import { attachIntrospectionStates } from "atom.io/introspection"
-import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { isPlainObject } from "~/packages/anvl/src/object"
 import { Refinery } from "~/packages/anvl/src/refinement/refinery"
@@ -12,6 +11,7 @@ import {
 	diffObject,
 	diffString,
 } from "~/packages/anvl/src/tree/differ"
+import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 export * from "./AtomIODevtools"
 

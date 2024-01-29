@@ -5,9 +5,9 @@ import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import type { Transceiver } from "../mutable"
 import { markDone } from "../operation"
 import type { Store } from "../store"
-import { isRootStore } from "../transaction/is-root-store"
+import { isChildStore, isRootStore } from "../transaction/is-root-store"
 import { become } from "./become"
-import { copyMutableIfWithinTransaction } from "./copy-mutable-in-transaction"
+import { copyMutableIfNeeded } from "./copy-mutable-if-needed"
 import { emitUpdate } from "./emit-update"
 import { evictDownStream } from "./evict-downstream"
 import { stowUpdate } from "./stow-update"
@@ -18,7 +18,12 @@ export const setAtom = <T>(
 	target: Store,
 ): void => {
 	const oldValue = readOrComputeValue(atom, target)
-	let newValue = copyMutableIfWithinTransaction(oldValue, atom, target)
+	let newValue = oldValue
+	if (atom.type === `mutable_atom` && isChildStore(target)) {
+		const { parent } = target
+		const copiedValue = copyMutableIfNeeded(atom, parent, target)
+		newValue = copiedValue
+	}
 	newValue = become(next)(newValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
 	newValue = cacheValue(atom.key, newValue, atom.subject, target)
@@ -36,9 +41,13 @@ export const setAtom = <T>(
 		} else if (atom.key.startsWith(`*`)) {
 			const mutableKey = atom.key.slice(1)
 			const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
-			let mutable: Transceiver<any> = target.valueMap.get(mutableKey)
-			mutable = copyMutableIfWithinTransaction(mutable, mutableAtom, target)
-			mutable.do(update.newValue)
+			let transceiver: Transceiver<any> = target.valueMap.get(mutableKey)
+			if (atom.type === `mutable_atom` && isChildStore(target)) {
+				const { parent } = target
+				const copiedValue = copyMutableIfNeeded(atom, parent, target)
+				transceiver = copiedValue
+			}
+			transceiver.do(update.newValue)
 		}
 	}
 }

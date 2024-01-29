@@ -1,4 +1,3 @@
-import { setState } from "atom.io"
 import type { WritableToken } from "atom.io"
 import { IMPLICIT, setIntoStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
