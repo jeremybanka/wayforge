@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "bun --watch src/main.ts",
-		"start": "bun src/main.ts",
-		"build": "bun i --no-save",
+		"build": "tsup src/main.ts --format esm --minify --clean --sourcemap --legacy-output --outDir dist",
+		"start": "bun ./dist/esm/main.js",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
@@ -27,7 +27,7 @@
 	},
 	"devDependencies": {
 		"socket.io-client": "4.7.4",
-		"tsx": "4.7.0",
+		"tsup": "8.0.1",
 		"vite": "5.0.12",
 		"vite-tsconfig-paths": "4.3.1",
 		"vitest": "1.2.2"
