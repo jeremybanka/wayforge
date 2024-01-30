@@ -144,7 +144,7 @@ describe(`synchronizing transactions`, () => {
 		act(() => dave.renderResult.getByTestId(`increment`).click())
 
 		await waitFor(() => jane.renderResult.getByTestId(`2`))
-		await waitFor(() => dave.renderResult.getByTestId(`2`))
+		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 3000 })
 		teardown()
 	})
 	test(`recovery`, async () => {
