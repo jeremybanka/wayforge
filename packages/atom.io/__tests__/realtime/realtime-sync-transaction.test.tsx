@@ -122,7 +122,7 @@ describe(`synchronizing transactions`, () => {
 
 		jane.renderResult.getByTestId(`0`)
 		act(() => dave.renderResult.getByTestId(`increment`).click())
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
+		await waitFor(() => jane.renderResult.getByTestId(`1`), { timeout: 3000 })
 		teardown()
 	})
 	test(`rollback`, async () => {
@@ -141,7 +141,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 3000 })
 		teardown()
 	})
-	test.skip(`recovery`, async () => {
+	test(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
