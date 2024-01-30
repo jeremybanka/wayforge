@@ -38,10 +38,8 @@ const store = IMPLICIT.STORE
 const TIMESTAMP = Date.now()
 
 pipe(
-	new WebSocketServer(3333, {
-		cors: {
-			origin: env.CLIENT_ORIGINS,
-		},
+	new WebSocketServer(env.PORT, {
+		cors: { origin: env.CLIENT_ORIGINS },
 	}),
 	(io) => {
 		io.on(`connection`, (socket) => {
