@@ -11,7 +11,7 @@ function gen() {
 	)
 	fs.writeFileSync(
 		`./src/scripts.gen.ts`,
-		`export const htmxMinJS = ${JSON.stringify(
+		`/* eslint-disable */\nexport const htmxMinJS = ${JSON.stringify(
 			JSON.stringify(htmxMinJS),
 		)};\nexport const hyperScriptMinJS = ${JSON.stringify(
 			JSON.stringify(hyperScriptMinJS),

@@ -1,10 +1,17 @@
 {
+	"name": "tempest.games",
 	"scripts": {
 		"dev": "fastly compute serve --watch",
 		"gen": "bun ./bun/gen-scripts.bun.ts",
 		"bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
 		"prebuild": "bun gen && bun bundle",
 		"build": "js-compute-runtime bin/index.js bin/main.wasm",
+		"test": "vitest",
+		"test:coverage": "echo no test coverage yet",
+		"test:once": "cross-env CI=true vitest run",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:biome && npm run lint:eslint",
 		"deploy": "fastly compute publish"
 	},
 	"devDependencies": {

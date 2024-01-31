@@ -2,7 +2,7 @@ packages:
   - "apps/web/*"
   - "apps/node/*"
   - "apps/atom.io.fyi"
-  # - "apps/tempest.games"
+  - "apps/tempest.games"
   - "apps/wayfarer.quest"
   - "packages/*"
   - "packages/@banka/*"
