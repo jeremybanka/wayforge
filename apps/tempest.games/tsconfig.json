@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["typed-htmx", "bun"],
+    "types": ["typed-htmx", "node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "resolveJsonModule": true,
