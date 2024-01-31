@@ -10,7 +10,7 @@
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
 		"lint:biome": "biome check --diagnostic-level=warn -- .",
-		"lint:eslint": "eslint .",
+		"lint:eslint": "npm run gen && eslint .",
 		"lint": "npm run lint:biome && npm run lint:eslint",
 		"deploy": "fastly compute publish"
 	},
