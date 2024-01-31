@@ -262,6 +262,31 @@ importers:
         specifier: 1.2.2
         version: 1.2.2(@vitest/ui@1.2.2)(happy-dom@13.3.8)
 
+  apps/node/sanctum:
+    dependencies:
+      '@t3-oss/env-core':
+        specifier: 0.8.0
+        version: 0.8.0(typescript@5.3.3)(zod@3.22.4)
+      npmlog:
+        specifier: 7.0.1
+        version: 7.0.1
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    devDependencies:
+      tsup:
+        specifier: 8.0.1
+        version: 8.0.1(typescript@5.3.3)
+      vite:
+        specifier: 5.0.12
+        version: 5.0.12(@types/node@20.11.14)
+      vite-tsconfig-paths:
+        specifier: 4.3.1
+        version: 4.3.1(typescript@5.3.3)(vite@5.0.12)
+      vitest:
+        specifier: 1.2.2
+        version: 1.2.2(@vitest/ui@1.2.2)(happy-dom@13.3.8)
+
   apps/wayfarer.quest:
     dependencies:
       '@t3-oss/env-nextjs':
