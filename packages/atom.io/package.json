@@ -74,7 +74,7 @@
 		}
 	},
 	"devDependencies": {
-		"@testing-library/react": "14.1.2",
+		"@testing-library/react": "14.2.0",
 		"@types/http-proxy": "1.17.14",
 		"@types/npmlog": "7.0.0",
 		"@types/react": "18.2.48",

@@ -357,8 +357,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@testing-library/react':
-        specifier: 14.1.2
-        version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.2.0
+        version: 14.2.0(react-dom@18.2.0)(react@18.2.0)
       '@types/react':
         specifier: 18.2.48
         version: 18.2.48
@@ -461,8 +461,8 @@ importers:
         specifier: 6.4.0
         version: 6.4.0(vitest@1.2.2)
       '@testing-library/react':
-        specifier: 14.1.2
-        version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.2.0
+        version: 14.2.0(react-dom@18.2.0)(react@18.2.0)
       '@types/react':
         specifier: 18.2.48
         version: 18.2.48
@@ -555,8 +555,8 @@ importers:
         specifier: 6.4.0
         version: 6.4.0(vitest@1.2.2)
       '@testing-library/react':
-        specifier: 14.1.2
-        version: 14.1.2(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 14.2.0
+        version: 14.2.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@types/react':
         specifier: 18.2.48
         version: 18.2.48
@@ -723,8 +723,8 @@ importers:
         version: 2.0.6(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@testing-library/react':
-        specifier: 14.1.2
-        version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.2.0
+        version: 14.2.0(react-dom@18.2.0)(react@18.2.0)
       '@types/http-proxy':
         specifier: 1.17.14
         version: 1.17.14
@@ -832,8 +832,8 @@ importers:
         specifier: 6.4.0
         version: 6.4.0(vitest@1.2.2)
       '@testing-library/react':
-        specifier: 14.1.2
-        version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.2.0
+        version: 14.2.0(react-dom@18.2.0)(react@18.2.0)
       '@types/jsdom':
         specifier: 21.1.6
         version: 21.1.6
@@ -4826,8 +4826,8 @@ packages:
       vitest: 1.2.2(happy-dom@13.3.5)(jsdom@24.0.0)(sass@1.70.0)
     dev: true
 
-  /@testing-library/react@14.1.2(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-z4p7DVBTPjKM5qDZ0t5ZjzkpSNb+fZy1u6bzO7kk8oeGagpPCAtgh4cx1syrfp7a+QWkM021jGqjJaxJJnXAZg==}
+  /@testing-library/react@14.2.0(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-7uBnPHyOG6nDGCzv8SLeJbSa33ZoYw7swYpSLIgJvBALdq7l9zPNk33om4USrxy1lKTxXaVfufzLmq83WNfWIw==}
     engines: {node: '>=14'}
     peerDependencies:
       react: ^18.0.0
@@ -4840,8 +4840,8 @@ packages:
       react-dom: /@preact/compat@17.1.2(preact@10.19.3)
     dev: true
 
-  /@testing-library/react@14.1.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-z4p7DVBTPjKM5qDZ0t5ZjzkpSNb+fZy1u6bzO7kk8oeGagpPCAtgh4cx1syrfp7a+QWkM021jGqjJaxJJnXAZg==}
+  /@testing-library/react@14.2.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-7uBnPHyOG6nDGCzv8SLeJbSa33ZoYw7swYpSLIgJvBALdq7l9zPNk33om4USrxy1lKTxXaVfufzLmq83WNfWIw==}
     engines: {node: '>=14'}
     peerDependencies:
       react: ^18.0.0
