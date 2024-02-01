@@ -30,7 +30,7 @@
     "typed-htmx": "0.2.1"
   },
   "dependencies": {
-    "@fastly/js-compute": "3.7.0",
+    "@fastly/js-compute": "3.8.2",
     "atom.io": "0.17.0",
     "hono": "3.12.9",
     "zod": "3.22.4"
