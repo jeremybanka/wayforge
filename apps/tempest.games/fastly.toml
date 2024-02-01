@@ -10,3 +10,5 @@ service_id = ""
 
 [scripts]
   build = "bun build ./src/index.tsx --outdir ./bin --external fastly:* && js-compute-runtime bin/index.js bin/main.wasm"
+  # post_build = "echo 'Build complete!'"
+  # post_init = "echo 'Post init complete!'"

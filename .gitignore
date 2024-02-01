@@ -12,4 +12,4 @@ projects
 metafile-*
 bin
 pkg
-scripts.gen.ts
+**/tempest.games/**/*.gen.ts

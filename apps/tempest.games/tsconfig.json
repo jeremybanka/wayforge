@@ -1,10 +1,11 @@
 {
-  "compilerOptions": {
-    "types": ["typed-htmx", "node"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "resolveJsonModule": true,
-    "lib": ["ESNext"],
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"types": ["typed-htmx", "bun"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx",
+		"resolveJsonModule": true,
+		"lib": ["ESNext"],
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleDetection": "force",
@@ -22,6 +23,7 @@
 
 		"useUnknownInCatchVariables": true,
 		"noPropertyAccessFromIndexSignature": true
-  },
-  "include": ["src", "bun"],
+	},
+	"include": ["./src", "./bun"],
+	"exclude": []
 }
