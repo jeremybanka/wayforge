@@ -1,0 +1,38 @@
+{
+  "name": "tempest.games",
+  "scripts": {
+    "dev": "concurrently --kill-others --raw \"npm run dev:*\"",
+    "dev:scss": "bun ./bun/gen-styles.bun.ts watch",
+    "dev:fastly": "fastly compute serve --watch-dir=./src --watch",
+    "css": "bun ./bun/gen-styles.bun.ts",
+    "gen": "bun ./bun/gen-scripts.bun.ts",
+    "bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
+    "build": "bun gen && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
+    "test": "hurl ./__tests__/*",
+    "test:coverage": "echo no test coverage yet",
+    "test:once": "echo no tests yet",
+    "lint:biome": "biome check --diagnostic-level=warn -- .",
+    "lint:eslint": "bun run gen && eslint .",
+    "lint": "bun run lint:biome && bun run lint:eslint",
+    "deploy": "fastly compute publish"
+  },
+  "devDependencies": {
+    "@types/bun": "1.0.4",
+    "@types/npmlog": "7.0.0",
+    "browserslist": "4.22.3",
+    "chokidar": "3.5.3",
+    "concurrently": "8.2.2",
+    "htmx.org": "1.9.10",
+    "hyperscript.org": "0.9.12",
+    "lightningcss": "1.23.0",
+    "npmlog": "7.0.1",
+    "parent-module": "3.1.0",
+    "typed-htmx": "0.2.1"
+  },
+  "dependencies": {
+    "@fastly/js-compute": "3.7.0",
+    "atom.io": "0.17.0",
+    "hono": "3.12.8",
+    "zod": "3.22.4"
+  }
+}

@@ -40,6 +40,11 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.0.25
+
       - name: Biome
         run: pnpm lint:biome
 
