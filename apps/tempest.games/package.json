@@ -32,7 +32,7 @@
   "dependencies": {
     "@fastly/js-compute": "3.7.0",
     "atom.io": "0.17.0",
-    "hono": "3.12.8",
+    "hono": "3.12.9",
     "zod": "3.22.4"
   }
 }
