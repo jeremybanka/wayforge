@@ -265,8 +265,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@fastly/js-compute':
-        specifier: 3.7.0
-        version: 3.7.0
+        specifier: 3.8.2
+        version: 3.8.2
       atom.io:
         specifier: 0.17.0
         version: link:../../packages/atom.io
@@ -3828,8 +3828,8 @@ packages:
       - '@babel/core'
     dev: false
 
-  /@fastly/js-compute@3.7.0:
-    resolution: {integrity: sha512-36aCipSW5kWNUmJ3aTWLWayzfPKwtRQZRVBImURdfR8+7wlmkq5VQlBpy7W72b6WaC7wnkfqVjUOMrsAtaVpIg==}
+  /@fastly/js-compute@3.8.2:
+    resolution: {integrity: sha512-KvVVXVEAYJseprmh9AFuCHCgVC0gf9O/Nl1uA4VY4Tbn3PtWJlerze6Cvm6uE8uilp8ng9Y9LNBkZsxutb9mWQ==}
     engines: {node: 16 - 20, npm: ^8 || ^9}
     hasBin: true
     dependencies:
