@@ -82,7 +82,7 @@
 		"@vitest/coverage-v8": "1.2.2",
 		"@vitest/ui": "1.2.2",
 		"concurrently": "8.2.2",
-		"drizzle-kit": "0.20.13",
+		"drizzle-kit": "0.20.14",
 		"drizzle-orm": "0.29.3",
 		"eslint": "8.56.0",
 		"framer-motion": "11.0.3",
