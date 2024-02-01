@@ -185,8 +185,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -231,8 +231,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -323,8 +323,8 @@ importers:
         specifier: 11.0.3
         version: 11.0.3(react-dom@18.2.0)(react@18.2.0)
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
       next:
         specifier: 14.1.0
         version: 14.1.0(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
@@ -567,8 +567,8 @@ importers:
         specifier: 11.0.3
         version: 11.0.3(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
       preact:
         specifier: 10.19.3
         version: 10.19.3
@@ -996,8 +996,8 @@ importers:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.2)
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
     devDependencies:
       tsup:
         specifier: 8.0.1
@@ -9933,8 +9933,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  /nanoid@5.0.4:
-    resolution: {integrity: sha512-vAjmBf13gsmhXSgBrtIclinISzFFy22WwCYoyilZlsrRXNIHSwgFQ1bEdjRwMT3aoadeIF6HMuDRlOxzfXV8ig==}
+  /nanoid@5.0.5:
+    resolution: {integrity: sha512-/Veqm+QKsyMY3kqi4faWplnY1u+VuKO3dD2binyPIybP31DRO29bPF+1mszgLnrR2KqSLceFLBNw0zmvDzN1QQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
     dev: false
