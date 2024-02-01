@@ -267,9 +267,6 @@ importers:
       '@fastly/js-compute':
         specifier: 3.8.2
         version: 3.8.2
-      atom.io:
-        specifier: 0.17.0
-        version: link:../../packages/atom.io
       hono:
         specifier: 3.12.9
         version: 3.12.9
