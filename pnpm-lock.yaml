@@ -607,8 +607,8 @@ importers:
         specifier: 18.2.51
         version: 18.2.51
       '@vanilla-extract/vite-plugin':
-        specifier: 4.0.1
-        version: 4.0.1(sass@1.70.0)(vite@5.0.12)
+        specifier: 4.0.2
+        version: 4.0.2(sass@1.70.0)(vite@5.0.12)
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -5224,8 +5224,8 @@ packages:
       modern-ahocorasick: 1.0.1
       outdent: 0.8.0
 
-  /@vanilla-extract/integration@6.4.0(sass@1.70.0):
-    resolution: {integrity: sha512-yl2iKArGUCsIxtfOeOu3ki+YyIZ6c+uKy/AJv3e+oqmZatzSNv0EPVLk6lUUZcHKJyZNdcPXV3GDYWd/3OE7xg==}
+  /@vanilla-extract/integration@6.5.0(sass@1.70.0):
+    resolution: {integrity: sha512-E2YcfO8vA+vs+ua+gpvy1HRqvgWbI+MTlUpxA8FvatOvybuNcWAY0CKwQ/Gpj7rswYKtC6C7+xw33emM6/ImdQ==}
     dependencies:
       '@babel/core': 7.23.9
       '@babel/plugin-syntax-typescript': 7.23.3(@babel/core@7.23.9)
@@ -5254,12 +5254,12 @@ packages:
   /@vanilla-extract/private@1.0.3:
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
 
-  /@vanilla-extract/vite-plugin@4.0.1(sass@1.70.0)(vite@5.0.12):
-    resolution: {integrity: sha512-od3qQ2+QRqVSee1NpSxzV6PwSNmcBL4Xi5TjSMe1kG6/OjsjMssyo23qvd5+4REiD9JK3fjmUY59WGIatjZg3w==}
+  /@vanilla-extract/vite-plugin@4.0.2(sass@1.70.0)(vite@5.0.12):
+    resolution: {integrity: sha512-VMwFnbkMZhWVD3Ei2HqCtZGZWyYX0i2sfKjOQThMZwEF65fNYXexquBS0U7YjqdIuuJEmTciFWJ/0xLtqt119g==}
     peerDependencies:
       vite: ^4.0.3 || ^5.0.0
     dependencies:
-      '@vanilla-extract/integration': 6.4.0(sass@1.70.0)
+      '@vanilla-extract/integration': 6.5.0(sass@1.70.0)
       vite: 5.0.12(sass@1.70.0)
     transitivePeerDependencies:
       - '@types/node'
