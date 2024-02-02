@@ -19,8 +19,8 @@ import {
 	spawnTrickTX,
 	valuesOfCards,
 } from "./store/game"
-import { startGameTX } from "./store/game/card-game-actions/hearts"
 import * as CardGroups from "./store/game/card-game-stores/card-groups-store"
+import { startGameTX } from "./store/game/hearts"
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,
@@ -143,22 +143,17 @@ pipe(
 					// Indices
 					exposeMutable(cardIndex)
 					exposeMutable(cardValuesIndex)
-					const deckIndex = AtomIO.findState(CardGroups.deckIndices, roomId)
-					const handIndex = AtomIO.findState(CardGroups.handIndices, roomId)
-					const pileIndex = AtomIO.findState(CardGroups.pileIndices, roomId)
-					const trickIndex = AtomIO.findState(CardGroups.trickIndices, roomId)
-					const cardGroupIndex = AtomIO.findState(CardGroups.indices, roomId)
-					exposeMutable(deckIndex)
-					exposeMutable(handIndex)
-					exposeMutable(pileIndex)
-					exposeMutable(trickIndex)
+					exposeMutable(CardGroups.deckIndex)
+					exposeMutable(CardGroups.handIndex)
+					exposeMutable(CardGroups.pileIndex)
+					exposeMutable(CardGroups.trickIndex)
 
 					// Families
 					exposeFamily(findCardState, cardIndex)
-					exposeFamily(CardGroups.deckStates, deckIndex)
-					exposeFamily(CardGroups.handStates, handIndex)
-					exposeFamily(CardGroups.pileStates, pileIndex)
-					exposeFamily(CardGroups.trickStates, trickIndex)
+					exposeFamily(CardGroups.deckStates, CardGroups.deckIndex)
+					exposeFamily(CardGroups.handStates, CardGroups.handIndex)
+					exposeFamily(CardGroups.pileStates, CardGroups.pileIndex)
+					exposeFamily(CardGroups.trickStates, CardGroups.trickIndex)
 					exposeFamily(findCardValueState, cardValuesIndex)
 
 					// Relations
@@ -169,13 +164,13 @@ pipe(
 					const valuesOfCardsFamily = valuesOfCards.core.findRelatedKeysState
 					const cardCycleGZFamily =
 						cardCycleGroupsAndZones.core.findRelatedKeysState
-					exposeMutableFamily(groupsOfCardsFamily, cardGroupIndex)
+					exposeMutableFamily(groupsOfCardsFamily, CardGroups.cardGroupIndex)
 					exposeMutableFamily(groupsOfCardsFamily, cardIndex)
-					exposeMutableFamily(ownersOfGroupsFamily, cardGroupIndex)
+					exposeMutableFamily(ownersOfGroupsFamily, CardGroups.cardGroupIndex)
 					exposeMutableFamily(ownersOfGroupsFamily, cardIndex)
 					exposeMutableFamily(valuesOfCardsFamily, cardValuesIndex)
 					exposeMutableFamily(valuesOfCardsFamily, cardIndex)
-					exposeMutableFamily(cardCycleGZFamily, cardGroupIndex)
+					exposeMutableFamily(cardCycleGZFamily, CardGroups.cardGroupIndex)
 					exposeMutableFamily(cardCycleGZFamily, cardIndex)
 
 					// Transactions

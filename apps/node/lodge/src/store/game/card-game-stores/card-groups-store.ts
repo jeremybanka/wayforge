@@ -96,7 +96,7 @@ export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const indices = selector<string[]>({
+export const cardGroupIndex = selector<string[]>({
 	key: `cardGroupIndex`,
 	get: ({ get }) => {
 		const deckIds = get(deckIndex)

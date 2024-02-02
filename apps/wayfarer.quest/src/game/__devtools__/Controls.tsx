@@ -39,7 +39,7 @@ export const Controls: FC = () => {
 					if (myRoomId) {
 						const deckId = nanoid()
 						const cardIds = Array.from({ length: 52 }).map(() => nanoid())
-						spawnClassicDeck(myRoomId, deckId, cardIds)
+						spawnClassicDeck(deckId, cardIds)
 					} else {
 						console.error(`Tried to spawn a deck without being in a room.`)
 					}

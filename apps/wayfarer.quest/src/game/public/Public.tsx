@@ -8,7 +8,7 @@ import {
 	spawnHandTX,
 	spawnTrickTX,
 } from "~/apps/node/lodge/src/store/game"
-import { startGameTX } from "~/apps/node/lodge/src/store/game/card-game-actions/hearts"
+import { startGameTX } from "~/apps/node/lodge/src/store/game/hearts"
 import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
 
 import { h3 } from "wayfarer.quest/components/<hX>"
@@ -30,7 +30,7 @@ export function Public({ roomId }: GameProps): JSX.Element {
 			do: () => {
 				const deckId = nanoid()
 				const cardIds = Array.from({ length: 52 }).map(() => nanoid())
-				spawnClassicDeck(roomId, deckId, cardIds)
+				spawnClassicDeck(deckId, cardIds)
 			},
 		},
 		{
@@ -48,14 +48,13 @@ export function Public({ roomId }: GameProps): JSX.Element {
 			label: `Create Trick`,
 			do: () => {
 				const trickId = nanoid()
-				createTrick(roomId, trickId)
+				createTrick(trickId)
 			},
 		},
 		{
 			label: `Start Game`,
 			do: () => {
 				startGame({
-					gameId: roomId,
 					handIds: playerIds.map(() => nanoid()),
 					trickId: nanoid(),
 					cardIds: Array.from({ length: 52 }).map(() => nanoid()),

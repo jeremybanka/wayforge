@@ -6,8 +6,16 @@ import { IMPLICIT } from "atom.io/internal"
 import { useJSON } from "atom.io/react"
 import { usePullAtomFamilyMember, usePullMutable } from "atom.io/realtime-react"
 
-import { cardIndex, cardValuesIndex } from "~/apps/node/lodge/src/store/game"
-import * as CardGroups from "~/apps/node/lodge/src/store/game/card-game-stores/card-groups-store"
+import {
+	cardIndex,
+	cardValuesIndex,
+	deckIndex,
+	deckStates,
+	handIndex,
+	handStates,
+	trickIndex,
+	trickStates,
+} from "~/apps/node/lodge/src/store/game"
 
 import { MyDomain } from "./my-domain/MyDomain"
 import { EnemyDomains } from "./other-players/EnemyDomains"
@@ -33,21 +41,21 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 )
 
 function DeckSync(props: { id: string }): null {
-	usePullAtomFamilyMember(CardGroups.deckStates, props.id)
+	usePullAtomFamilyMember(deckStates, props.id)
 	return null
 }
 function HandSync(props: { id: string }): null {
-	usePullAtomFamilyMember(CardGroups.handStates, props.id)
+	usePullAtomFamilyMember(handStates, props.id)
 	return null
 }
 function TrickSync(props: { id: string }): null {
-	usePullAtomFamilyMember(CardGroups.trickStates, props.id)
+	usePullAtomFamilyMember(trickStates, props.id)
 	return null
 }
-function CoreSync({ roomId }: GameProps): JSX.Element {
-	const deckIds = useJSON(findState(CardGroups.deckIndices, roomId))
-	const handIds = useJSON(findState(CardGroups.handIndices, roomId))
-	const trickIds = useJSON(findState(CardGroups.trickIndices, roomId))
+function CoreSync(): JSX.Element {
+	const deckIds = useJSON(deckIndex)
+	const handIds = useJSON(handIndex)
+	const trickIds = useJSON(trickIndex)
 	return (
 		<>
 			{deckIds.members.map((id) => (
@@ -68,14 +76,14 @@ export type GameProps = {
 }
 export function Game({ roomId }: GameProps): JSX.Element {
 	usePullMutable(cardIndex)
-	usePullMutable(findState(CardGroups.deckIndices, roomId))
-	usePullMutable(findState(CardGroups.handIndices, roomId))
-	usePullMutable(findState(CardGroups.trickIndices, roomId))
+	usePullMutable(deckIndex)
+	usePullMutable(handIndex)
+	usePullMutable(trickIndex)
 	usePullMutable(cardValuesIndex)
 
 	return (
 		<>
-			<CoreSync roomId={roomId} />
+			<CoreSync />
 			<div className={scss.class}>
 				{/* <Controls /> */}
 				<section data-css="enemy-domains">

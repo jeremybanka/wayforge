@@ -43,7 +43,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 						console.error(`Tried to deal cards without being in a room.`)
 						return
 					}
-					dealCards(myRoomId, deckId, handId, 1)
+					dealCards(deckId, handId, 1)
 				},
 			},
 		])

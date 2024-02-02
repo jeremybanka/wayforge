@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
 import { myIdState } from "atom.io/realtime-client"
 
-import { handIndices, ownersOfGroups } from "~/apps/node/lodge/src/store/game"
+import { handIndex, ownersOfGroups } from "~/apps/node/lodge/src/store/game"
 import { myRoomState } from "./my-room"
 
 export const myHandsIndex = AtomIO.selector<string[]>({
@@ -14,7 +14,7 @@ export const myHandsIndex = AtomIO.selector<string[]>({
 		}
 		const { groupKeysOfPlayer } = ownersOfGroups.states
 		const myCardGroupIds = get(find(groupKeysOfPlayer, myId))
-		const allHandIds = get(find(handIndices, myRoomId))
+		const allHandIds = get(handIndex)
 		const myHandIds = myCardGroupIds.filter((handId) => allHandIds.has(handId))
 		return myHandIds
 	},
