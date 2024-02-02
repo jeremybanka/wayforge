@@ -1,5 +1,6 @@
 import { transaction } from "atom.io"
 import { playersInRooms } from "../../rooms"
+import type { CardId } from "../playing-card-data"
 import { dealCardsTX } from "./deal-cards"
 import { shuffleDeckTX } from "./shuffle-deck"
 import { spawnClassicDeckTX } from "./spawn-classic-deck"
@@ -41,3 +42,45 @@ export const startGameTX = transaction<(input: StartGameInput) => void>({
 		}
 	},
 })
+
+export type HeartsPublicGameState<P extends string> = {
+	leftoverCardCount: number
+	heartsHasBeenBroken: boolean
+	playerOrder: P[]
+	trickContributionsPerPlayer: Record<P, CardId[]>
+	pointsPerPlayer: Record<P, number>
+	trickCountPerPlayer: Record<P, number>
+}
+
+export type HeartsPublicLastTurnOutcome<P extends string> = {
+	winner: P
+	trick: CardId[]
+}
+
+export type HeartsPrivateGameState = {
+	cardsInMyHand: CardId[]
+}
+
+export type HeartsPrivateStrategy = {
+	iDecidedToShootTheMoon: boolean
+	myThoughtsOnTheGame: string
+}
+
+export type HeartsPublicAdvancedStrategy = {
+	cardsNotYetPlayed: CardId[]
+}
+
+export type HeartsGameSummary = {
+	situationalOverview: string
+	myHandSummary: string
+	trickSummary: string
+	opponentSummaries: string[]
+	thoughtsOnTheGameLastTurn: string
+	lastTurnOutcome: string
+}
+
+export type HeartsGameResponse = {
+	briefThoughtsOnTheGame: string
+	chosenCard: CardId
+	iAmDecidingToShootTheMoonThisTurn?: true
+}
