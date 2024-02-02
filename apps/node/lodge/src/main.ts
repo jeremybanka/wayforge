@@ -19,8 +19,8 @@ import {
 	spawnTrickTX,
 	valuesOfCards,
 } from "./store/game"
-import * as CardGroups from "./store/game/card-groups"
-import { startGameTX } from "./store/game/transactions/hearts"
+import { startGameTX } from "./store/game/card-game-actions/hearts"
+import * as CardGroups from "./store/game/card-game-stores/card-groups-store"
 import type { JoinRoomIO } from "./store/rooms"
 import {
 	createRoomTX,

@@ -1,7 +1,7 @@
 import { selectorFamily } from "atom.io"
 
-import { playersInRooms } from "../rooms"
-import * as CardGroups from "./card-groups"
+import { playersInRooms } from "../../rooms"
+import { groupsOfCards, trickContributions } from "./card-groups-store"
 
 export type TrickContent = [playerId: string, cardId: string | undefined]
 export const trickContentsStates = selectorFamily<
@@ -15,11 +15,11 @@ export const trickContentsStates = selectorFamily<
 			const playerIndex = find(playersInRooms.states.playerKeysOfRoom, gameId)
 			const playerIdsInGame = get(playerIndex)
 			const cardIdsInTrick = get(
-				find(CardGroups.groupsOfCards.states.cardKeysOfGroup, trickId),
+				find(groupsOfCards.states.cardKeysOfGroup, trickId),
 			)
 			const trickContents = playerIdsInGame.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(
-					find(CardGroups.trickContributions.states.cardKeysOfPlayer, playerId),
+					find(trickContributions.states.cardKeysOfPlayer, playerId),
 				)
 				const cardId = cardsThisPlayerHasInTricks.find((cardId) =>
 					cardIdsInTrick.includes(cardId),

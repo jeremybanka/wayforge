@@ -1,26 +1,19 @@
 import { transaction } from "atom.io"
 
-import * as CardGroups from "../card-groups"
+import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const dealCardsTX = transaction<
-	(
-		gameId: string,
-		deckId: string,
-		handId: string,
-		count: number,
-	) => { cardIds: string[] }
+	(deckId: string, handId: string, count: number) => { cardIds: string[] }
 >({
 	key: `dealCards`,
-	do: (transactors, gameId, deckId, handId, count) => {
+	do: (transactors, deckId, handId, count) => {
 		const { get, find } = transactors
-		const deckIndex = find(CardGroups.deckIndices, gameId)
-		const deckIds = get(deckIndex)
+		const deckIds = get(CardGroups.deckIndex)
 		const deckDoesExist = deckIds.has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck "${deckId}" does not exist`)
 		}
-		const handIndex = find(CardGroups.handIndices, gameId)
-		const handIds = get(handIndex)
+		const handIds = get(CardGroups.handIndex)
 		const handDoesExist = handIds.has(handId)
 		if (!handDoesExist) {
 			throw new Error(`Hand "${handId}" does not exist`)

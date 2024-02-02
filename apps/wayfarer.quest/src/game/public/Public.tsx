@@ -8,7 +8,7 @@ import {
 	spawnHandTX,
 	spawnTrickTX,
 } from "~/apps/node/lodge/src/store/game"
-import { startGameTX } from "~/apps/node/lodge/src/store/game/transactions/hearts"
+import { startGameTX } from "~/apps/node/lodge/src/store/game/card-game-actions/hearts"
 import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
 
 import { h3 } from "wayfarer.quest/components/<hX>"

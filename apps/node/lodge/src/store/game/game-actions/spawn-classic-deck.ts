@@ -1,23 +1,28 @@
 import { transaction } from "atom.io"
 
-import * as CardGroups from "../card-groups"
-import { cardValuesIndex, valuesOfCards } from "../card-values"
-import { cardIndex, findCardState } from "../cards"
+import {
+	cardIndex,
+	cardValuesIndex,
+	deckIndex,
+	deckStates,
+	findCardState,
+	groupsOfCards,
+	valuesOfCards,
+} from "../card-game-stores"
 import { CARD_VALUES } from "../playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
-	(gameId: string, deckId: string, cardIds: string[]) => void
+	(deckId: string, cardIds: string[]) => void
 >({
 	key: `spawnClassicDeck`,
-	do: (transactors, gameId, deckId, cardIds) => {
+	do: (transactors, deckId, cardIds) => {
 		if (cardIds.length !== 52) {
 			throw new Error(`${cardIds.length} cards were provided. 52 were expected`)
 		}
 		const { set, find } = transactors
-		const state = find(CardGroups.deckStates, deckId)
-		set(state, { type: `deck`, name: `Classic 52-Card Deck` })
+		const deckState = find(deckStates, deckId)
+		set(deckState, { type: `deck`, name: `Classic 52-Card Deck` })
 
-		const deckIndex = find(CardGroups.deckIndices, gameId)
 		set(deckIndex, (current) => {
 			current.add(deckId)
 			return current
@@ -51,7 +56,7 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
+		groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, cardIds)
 		})
 	},

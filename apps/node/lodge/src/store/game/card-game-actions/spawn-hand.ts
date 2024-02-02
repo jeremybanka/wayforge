@@ -1,7 +1,7 @@
 import { transaction } from "atom.io"
 
 import { playersInRooms } from "../../rooms"
-import * as CardGroups from "../card-groups"
+import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const spawnHandTX = transaction<
 	(playerId: string, handId: string) => void
@@ -14,12 +14,12 @@ export const spawnHandTX = transaction<
 			console.error({ playerId }, `Player is not in a game`)
 			return
 		}
-		set(CardGroups.handStates(handId), {
+		const handState = find(CardGroups.handStates, handId)
+		set(handState, {
 			type: `hand`,
 			name: ``,
 		})
-		const handIndex = find(CardGroups.handIndices, gameId)
-		set(handIndex, (current) => {
+		set(CardGroups.handIndex, (current) => {
 			const next = current.add(handId)
 			return next
 		})

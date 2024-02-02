@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
 
-import { deckIndices, groupsOfCards } from "../card-groups"
+import { deckIndex, groupsOfCards } from "../card-game-stores/card-groups-store"
 
 function LCG(seed: number) {
 	// LCG parameters
@@ -17,13 +17,12 @@ function LCG(seed: number) {
 }
 
 export const shuffleDeckTX = transaction<
-	(gameId: string, deckId: string, shuffleSeed: number) => void
+	(deckId: string, shuffleSeed: number) => void
 >({
 	key: `shuffleDeck`,
-	do: (transactors, gameId, deckId, shuffleSeed) => {
+	do: (transactors, deckId, shuffleSeed) => {
 		const { get, find, env } = transactors
 		const rng = new LCG(shuffleSeed)
-		const deckIndex = find(deckIndices, gameId)
 		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)

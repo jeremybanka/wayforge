@@ -7,7 +7,7 @@ import { useJSON } from "atom.io/react"
 import { usePullAtomFamilyMember, usePullMutable } from "atom.io/realtime-react"
 
 import { cardIndex, cardValuesIndex } from "~/apps/node/lodge/src/store/game"
-import * as CardGroups from "~/apps/node/lodge/src/store/game/card-groups"
+import * as CardGroups from "~/apps/node/lodge/src/store/game/card-game-stores/card-groups-store"
 
 import { MyDomain } from "./my-domain/MyDomain"
 import { EnemyDomains } from "./other-players/EnemyDomains"

@@ -1,4 +1,4 @@
-import { atomFamily, selectorFamily } from "atom.io"
+import { atom, atomFamily, selector } from "atom.io"
 import { join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -46,11 +46,7 @@ export const deckStates = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndices = atomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const deckIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `deckIndex`,
 	mutable: true,
 	default: () => new SetRTX<string>(),
@@ -64,11 +60,7 @@ export const handStates = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndices = atomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const handIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `handIndex`,
 	mutable: true,
 	default: () => new SetRTX<string>(),
@@ -82,11 +74,7 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndices = atomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const pileIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `pileIndex`,
 	mutable: true,
 	default: () => new SetRTX<string>(),
@@ -100,11 +88,7 @@ export const trickStates = atomFamily<Trick, string>({
 		name: ``,
 	},
 })
-export const trickIndices = atomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `trickIndex`,
 	mutable: true,
 	default: () => new SetRTX<string>(),
@@ -112,15 +96,13 @@ export const trickIndices = atomFamily<
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const indices = selectorFamily<string[], string>({
+export const indices = selector<string[]>({
 	key: `cardGroupIndex`,
-	get:
-		(roomId) =>
-		({ get, find }) => {
-			const deckIds = get(find(deckIndices, roomId))
-			const handIds = get(find(handIndices, roomId))
-			const pileIds = get(find(pileIndices, roomId))
-			const trickIds = get(find(trickIndices, roomId))
-			return [...deckIds, ...handIds, ...pileIds, ...trickIds]
-		},
+	get: ({ get }) => {
+		const deckIds = get(deckIndex)
+		const handIds = get(handIndex)
+		const pileIds = get(pileIndex)
+		const trickIds = get(trickIndex)
+		return [...deckIds, ...handIds, ...pileIds, ...trickIds]
+	},
 })
