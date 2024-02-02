@@ -1,8 +1,7 @@
 import * as AtomIO from "atom.io"
 import { myIdState } from "atom.io/realtime-client"
 
-import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
-
+import { gamePlayerIndex } from "~/apps/node/lodge/src/store/game"
 import { myRoomState } from "./my-room"
 
 export const otherPlayersIndex = AtomIO.selector<string[]>({
@@ -16,9 +15,7 @@ export const otherPlayersIndex = AtomIO.selector<string[]>({
 		if (myRoomId === null) {
 			return []
 		}
-		const playerIdsInMyRoom = get(
-			playersInRooms.states.playerKeysOfRoom(myRoomId),
-		)
+		const playerIdsInMyRoom = get(gamePlayerIndex)
 		const everyoneButMe = playerIdsInMyRoom.filter((id) => id !== myId)
 		return everyoneButMe
 	},

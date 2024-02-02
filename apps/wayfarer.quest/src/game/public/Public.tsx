@@ -4,12 +4,12 @@ import { useServerAction, useSyncAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
 import {
+	gamePlayerIndex,
 	spawnClassicDeckTX,
 	spawnHandTX,
 	spawnTrickTX,
 } from "~/apps/node/lodge/src/store/game"
 import { startGameTX } from "~/apps/node/lodge/src/store/game/hearts"
-import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
 
 import { h3 } from "wayfarer.quest/components/<hX>"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
@@ -22,7 +22,7 @@ export function Public({ roomId }: GameProps): JSX.Element {
 	const addHand = useServerAction(spawnHandTX)
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	const createTrick = useServerAction(spawnTrickTX)
-	const playerIds = useO(playersInRooms.states.playerKeysOfRoom(roomId))
+	const playerIds = useO(gamePlayerIndex)
 	const startGame = useSyncAction(startGameTX)
 	const handlers = useRadial([
 		{

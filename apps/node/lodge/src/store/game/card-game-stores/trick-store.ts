@@ -1,19 +1,15 @@
 import { selectorFamily } from "atom.io"
 
-import { playersInRooms } from "../../rooms"
 import { groupsOfCards, trickContributions } from "./card-groups-store"
+import { gamePlayerIndex } from "./game-players-store"
 
 export type TrickContent = [playerId: string, cardId: string | undefined]
-export const trickContentsStates = selectorFamily<
-	TrickContent[],
-	[gameId: string, trickId: string]
->({
+export const trickContentsStates = selectorFamily<TrickContent[], string>({
 	key: `trickContents`,
 	get:
-		([gameId, trickId]) =>
+		(trickId) =>
 		({ get, find }) => {
-			const playerIndex = find(playersInRooms.states.playerKeysOfRoom, gameId)
-			const playerIdsInGame = get(playerIndex)
+			const playerIdsInGame = get(gamePlayerIndex)
 			const cardIdsInTrick = get(
 				find(groupsOfCards.states.cardKeysOfGroup, trickId),
 			)

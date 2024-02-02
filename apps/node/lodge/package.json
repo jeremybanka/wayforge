@@ -3,9 +3,9 @@
 	"description": "cards and dice server",
 	"private": true,
 	"scripts": {
-		"dev": "bun --watch src/main.ts",
-		"build": "tsup src/main.ts --format esm --minify --clean --sourcemap --legacy-output --outDir dist",
-		"start": "bun ./dist/esm/main.js",
+		"dev": "bun --watch src/system.server.ts",
+		"build": "tsup src/system.server.ts --format esm --minify --clean --sourcemap --legacy-output --outDir dist",
+		"start": "bun ./dist/esm/system.server.js",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",

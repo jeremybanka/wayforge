@@ -21,9 +21,9 @@ import scss from "./Trick.module.scss"
 
 export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>(
 	`Trick`,
-	({ id: trickId, gameId, detailed }) => {
+	({ id: trickId, detailed }) => {
 		const isMyTrick = useO(myHandsIndex).includes(trickId)
-		const trickContent = useO(findState(trickContentsStates, [gameId, trickId]))
+		const trickContent = useO(trickContentsStates, trickId)
 
 		usePullMutableAtomFamilyMember(
 			groupsOfCards.core.findRelatedKeysState,

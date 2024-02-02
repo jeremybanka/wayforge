@@ -95,3 +95,15 @@ export const joinRoomTX = AtomIO.transaction<
 	},
 })
 export type JoinRoomIO = AtomIO.TransactionIO<typeof joinRoomTX>
+
+export const leaveRoomTX = AtomIO.transaction<
+	(roomId: string, userId: string) => void
+>({
+	key: `leaveRoom`,
+	do: (transactors, roomId, userId) => {
+		usersInRooms.transact(transactors, ({ relations }) => {
+			relations.delete({ room: roomId, user: userId })
+		})
+	},
+})
+export type LeaveRoomIO = AtomIO.TransactionIO<typeof leaveRoomTX>
