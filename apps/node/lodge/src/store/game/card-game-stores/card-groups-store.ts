@@ -1,4 +1,5 @@
-import { atom, atomFamily, selector } from "atom.io"
+import type { AtomToken } from "atom.io"
+import { atom, atomFamily, selector, selectorFamily } from "atom.io"
 import { join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -53,6 +54,10 @@ export const deckIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
+export const visibleDeckIndices = atomFamily<AtomToken<Deck>[], string>({
+	key: `visibleDeckIndices`,
+	default: [],
+})
 export const handStates = atomFamily<Hand, string>({
 	key: `hand`,
 	default: {
@@ -66,6 +71,10 @@ export const handIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
+})
+export const visibleHandIndices = atomFamily<AtomToken<Hand>[], string>({
+	key: `visibleHandIndices`,
+	default: [],
 })
 export const pileStates = atomFamily<Pile, string>({
 	key: `pile`,
@@ -81,6 +90,10 @@ export const pileIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
+export const visiblePileIndices = atomFamily<AtomToken<Pile>[], string>({
+	key: `visiblePileIndices`,
+	default: [],
+})
 export const trickStates = atomFamily<Trick, string>({
 	key: `trick`,
 	default: {
@@ -95,6 +108,10 @@ export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
+export const visibleTrickIndices = atomFamily<AtomToken<Trick>[], string>({
+	key: `visibleTrickIndices`,
+	default: [],
+})
 
 export const cardGroupIndex = selector<string[]>({
 	key: `cardGroupIndex`,
@@ -104,5 +121,15 @@ export const cardGroupIndex = selector<string[]>({
 		const pileIds = get(pileIndex)
 		const trickIds = get(trickIndex)
 		return [...deckIds, ...handIds, ...pileIds, ...trickIds]
+	},
+})
+
+export const visibleCardGroupIndices = selectorFamily<
+	AtomToken<SetRTX<string>>[],
+	string
+>({
+	key: `visibleCardGroupIndices`,
+	get: () => () => {
+		return []
 	},
 })

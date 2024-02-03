@@ -1,6 +1,6 @@
-import { atomFamily } from "atom.io"
+import type { AtomToken } from "atom.io"
+import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
-import { IMPLICIT, createMutableAtom } from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 
@@ -26,17 +26,17 @@ export const findCardState = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = createMutableAtom<SetRTX<string>, SetRTXJson<string>>(
-	{
-		key: `cardIndex`,
-		mutable: true,
-		default: () => new SetRTX<string>(),
-		toJson: (set) => set.toJSON(),
-		fromJson: (json) => SetRTX.fromJSON(json),
-	},
-	undefined,
-	IMPLICIT.STORE,
-)
+export const cardIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+	key: `cardIndex`,
+	mutable: true,
+	default: () => new SetRTX<string>(),
+	toJson: (set) => set.toJSON(),
+	fromJson: (json) => SetRTX.fromJSON(json),
+})
+export const visibleCardIndices = atomFamily<AtomToken<Card>[], string>({
+	key: `visibleCardIndices`,
+	default: [],
+})
 
 export type CardCycle = {
 	name: string
