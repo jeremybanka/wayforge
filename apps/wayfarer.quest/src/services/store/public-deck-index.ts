@@ -1,12 +1,12 @@
 import * as AtomIO from "atom.io"
 
 import { deckIndex, ownersOfGroups } from "~/apps/node/lodge/src/store/game"
-import { myRoomState } from "./my-room"
+import { myRoomKeyState } from "./my-room"
 
 export const publicDeckIndex = AtomIO.selector<string[]>({
 	key: `publicDeckIndex`,
 	get: ({ get, find }) => {
-		const myRoomId = get(myRoomState)
+		const myRoomId = get(myRoomKeyState)
 		if (!myRoomId) {
 			return []
 		}

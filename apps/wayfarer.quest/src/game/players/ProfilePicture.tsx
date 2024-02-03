@@ -1,4 +1,4 @@
-import { usersInRooms } from "atom.io/realtime-server"
+import { usersInRooms } from "atom.io/realtime"
 import { setCssVars } from "hamr/react-css-vars"
 import * as React from "react"
 

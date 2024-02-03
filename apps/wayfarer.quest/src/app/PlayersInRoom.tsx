@@ -1,5 +1,5 @@
 import { useO } from "atom.io/react"
-import { usersInRooms } from "atom.io/realtime-server"
+import { usersInRooms } from "atom.io/realtime"
 import { Id } from "hamr/react-id"
 import type { FC } from "react"
 

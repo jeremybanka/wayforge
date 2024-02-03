@@ -2,9 +2,9 @@
 
 import { useJSON } from "atom.io/react"
 import { useI } from "atom.io/react"
+import { roomIndex } from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import { usePullMutable } from "atom.io/realtime-react"
-import { roomIndex } from "atom.io/realtime-server"
 import * as React from "react"
 
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"

@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
 
-import { usersInRooms } from "atom.io/realtime-server"
+import { usersInRooms } from "atom.io/realtime"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const spawnHandTX = transaction<

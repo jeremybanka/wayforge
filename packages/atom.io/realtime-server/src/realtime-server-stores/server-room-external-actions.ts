@@ -3,35 +3,12 @@ import { spawn } from "child_process"
 
 import * as AtomIO from "atom.io"
 import type { Loadable } from "atom.io/data"
-import { join } from "atom.io/data"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import type { UserInRoomMeta } from "atom.io/realtime"
+import { roomIndex, usersInRooms } from "atom.io/realtime"
 
 export type RoomArguments =
 	| [script: string, options: string[]]
 	| [script: string]
-
-export const roomIndex = AtomIO.atom({
-	key: `roomIndex`,
-	default: () => new SetRTX<string>(),
-	mutable: true,
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
-})
-
-export type UserInRoomMeta = {
-	enteredAtEpoch: number
-}
-export const DEFAULT_USER_IN_ROOM_META: UserInRoomMeta = {
-	enteredAtEpoch: 0,
-}
-export const usersInRooms = join(
-	{
-		key: `usersInRooms`,
-		between: [`room`, `user`],
-		cardinality: `1:n`,
-	},
-	DEFAULT_USER_IN_ROOM_META,
-)
 
 export const roomArgumentsAtoms = AtomIO.atomFamily<RoomArguments, string>({
 	key: `roomArguments`,

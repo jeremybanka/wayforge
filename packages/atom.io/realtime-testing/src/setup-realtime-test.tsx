@@ -11,6 +11,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import * as AR from "atom.io/react"
+import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as Happy from "happy-dom"
@@ -101,7 +102,7 @@ export const setupRealtimeTestServer = (
 
 	const dispose = () => {
 		server.close()
-		const roomKeys = getFromStore(RTS.roomIndex, silo.store)
+		const roomKeys = getFromStore(RT.roomIndex, silo.store)
 		for (const roomKey of roomKeys) {
 			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
 			const room = getFromStore(roomState, silo.store)

@@ -3,14 +3,10 @@
 import { useI, useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
-import {
-	usePullMutableAtomFamilyMember,
-	useServerAction,
-} from "atom.io/realtime-react"
+import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"
 import * as React from "react"
-import { joinRoomTX, leaveRoomTX } from "~/apps/node/lodge/src/store/rooms"
 
 import { header } from "wayfarer.quest/components/<header>"
 import { Game } from "wayfarer.quest/game/Game"
@@ -19,10 +15,10 @@ import {
 	actionsState,
 	radialModeState,
 } from "wayfarer.quest/services/peripherals/radial"
-import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
-import { usersInRooms } from "atom.io/realtime-server"
+import { usersInRooms } from "atom.io/realtime"
 import { UsersInRoom } from "./PlayersInRoom"
 import scss from "./page.module.scss"
 
@@ -30,12 +26,10 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 
 	const myId = useO(myIdState)
-	const myRoom = useO(myRoomState)
+	const myRoomKey = useO(myRoomKeyState)
 	const setRoomState = useI(roomViewState)
-	const iAmInRoom = myRoom === roomId
+	const iAmInRoom = myRoomKey === roomId
 
-	const joinRoom = useServerAction(joinRoomTX)
-	const leaveRoom = useServerAction(leaveRoomTX)
 	usePullMutableAtomFamilyMember(usersInRooms.core.findRelatedKeysState, roomId)
 
 	return (

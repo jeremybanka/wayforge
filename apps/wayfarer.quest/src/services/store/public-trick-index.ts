@@ -1,12 +1,12 @@
 import * as AtomIO from "atom.io"
 
 import { ownersOfGroups, trickIndex } from "~/apps/node/lodge/src/store/game"
-import { myRoomState } from "./my-room"
+import { myRoomKeyState } from "./my-room"
 
 export const publicTrickIndex = AtomIO.selector<string[]>({
 	key: `publicTrickIndex`,
 	get: ({ get, find }) => {
-		const myRoomId = get(myRoomState)
+		const myRoomId = get(myRoomKeyState)
 		if (!myRoomId) {
 			return []
 		}

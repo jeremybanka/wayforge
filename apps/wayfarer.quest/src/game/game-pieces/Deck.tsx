@@ -13,14 +13,14 @@ import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { CardBack } from "./Card"
 
-import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 
 export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	`Deck`,
 	({ id: deckId, detailed }) => {
-		const myRoomId = useO(myRoomState)
+		const myRoomId = useO(myRoomKeyState)
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup, deckId)
 
 		usePullMutableAtomFamilyMember(

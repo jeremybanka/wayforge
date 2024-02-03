@@ -7,6 +7,7 @@ import {
 	getFromStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import type * as SocketIO from "socket.io"
 
@@ -22,7 +23,7 @@ export const SystemServer = ({
 	const userKey = getFromStore(userKeyState, store)
 
 	const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
-	exposeMutable(RTS.roomIndex)
+	exposeMutable(RT.roomIndex)
 
 	const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 		socket,
@@ -32,7 +33,7 @@ export const SystemServer = ({
 		RTS.usersOfSockets.core.findRelatedKeysState,
 		RTS.socketIndex,
 	)
-	exposeMutableFamily(RTS.usersInRooms.core.findRelatedKeysState, RTS.userIndex)
+	exposeMutableFamily(RT.usersInRooms.core.findRelatedKeysState, RTS.userIndex)
 	socket.on(`create-room`, async (roomId) => {
 		actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
 			path.join(__dirname, `game-instance.bun.ts`),

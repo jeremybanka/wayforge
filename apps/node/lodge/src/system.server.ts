@@ -1,6 +1,7 @@
 import path from "path"
 import * as AtomIO from "atom.io"
 import type { Json } from "atom.io/json"
+import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import { pipe } from "fp-ts/function"
 // import { arbitrary } from "atom.io/internal"
@@ -49,17 +50,18 @@ pipe(
 			)
 			const userKey = AtomIO.getState(userKeyState)
 
-			exposeMutable(RTS.roomIndex)
+			exposeMutable(RT.roomIndex)
 
 			exposeMutableFamily(
 				RTS.usersOfSockets.core.findRelatedKeysState,
 				RTS.socketIndex,
 			)
 			exposeMutableFamily(
-				RTS.usersInRooms.core.findRelatedKeysState,
-				RTS.userIndex,
+				RT.usersInRooms.core.findRelatedKeysState,
+				RT.roomIndex,
 			)
 			socket.on(`create-room`, async (roomId) => {
+				console.log(`🏠`, userKey, `create-room`, roomId)
 				AtomIO.runTransaction(RTS.createRoomTX, nanoid())(roomId, `bun`, [
 					path.join(import.meta.dir, `room.server.ts`),
 				])

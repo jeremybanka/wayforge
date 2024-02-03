@@ -1,4 +1,5 @@
 import * as AR from "atom.io/react"
+import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -19,8 +20,8 @@ function Room({ roomId }: { roomId: string }): JSX.Element {
 
 function Lobby(): JSX.Element {
 	const { socket } = React.useContext(RTR.RealtimeContext)
-	RTR.usePullMutable(RTS.roomIndex)
-	const roomKeys = AR.useJSON(RTS.roomIndex)
+	RTR.usePullMutable(RT.roomIndex)
+	const roomKeys = AR.useJSON(RT.roomIndex)
 	return (
 		<main>
 			<ul>
@@ -59,7 +60,7 @@ function Lobby(): JSX.Element {
 
 function B(props: { myUserKey: string }): JSX.Element {
 	const myRoomKey = RTR.usePullSelectorFamilyMember(
-		RTS.usersInRooms.states.roomKeyOfUser,
+		RT.usersInRooms.states.roomKeyOfUser,
 		props.myUserKey,
 	)
 

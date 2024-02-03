@@ -1,4 +1,5 @@
 import * as AtomIO from "atom.io"
+import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 
 import {
@@ -33,9 +34,9 @@ const parentSocket = new RTS.ParentSocket()
 const TIMESTAMP = Date.now()
 
 parentSocket.relay((socket) => {
-	AtomIO.setState(RTS.usersInThisRoomIndex, (set) =>
-		set.add(socket.id.split(`:`)[1]),
-	)
+	const userId = socket.id.split(`:`)[1]
+	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(userId))
+	RTS.usersOfSockets.relations.set(userId, socket.id)
 
 	// COMPOSE REALTIME SERVICE HOOKS
 	const exposeSingle = RTS.realtimeStateProvider({ socket })
@@ -46,7 +47,7 @@ parentSocket.relay((socket) => {
 	const syncTransaction = RTS.realtimeActionSynchronizer({ socket })
 
 	// ROOM SERVICES
-	exposeMutable(RTS.usersInThisRoomIndex)
+	exposeMutable(RT.usersInThisRoomIndex)
 
 	// GAME SERVICES
 	exposeSingle(gamePlayerIndex)
