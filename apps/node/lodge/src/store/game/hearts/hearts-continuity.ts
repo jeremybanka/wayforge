@@ -1,26 +1,30 @@
 import { continuity, usersInThisRoomIndex } from "atom.io/realtime"
 import {
+	cardAtoms,
 	cardIndex,
-	cardValuesIndex,
+	cardValueAtoms,
+	cardValueIndex,
+	cardValueView,
+	cardView,
+	deckAtoms,
 	deckIndex,
-	deckStates,
-	findCardState,
-	findCardValueState,
+	deckView,
 	gamePlayerIndex,
 	groupsOfCards,
+	groupsOfCardsView,
+	handAtoms,
 	handIndex,
-	handStates,
+	handView,
+	ownersOfGroups,
+	ownersOfGroupsView,
 	pileIndex,
 	pileStates,
+	pileView,
 	trickIndex,
 	trickStates,
-	visibleCardGroupIndices,
-	visibleCardIndices,
-	visibleCardValueIndices,
-	visibleDeckIndices,
-	visibleHandIndices,
-	visiblePileIndices,
-	visibleTrickIndices,
+	trickView,
+	valuesOfCards,
+	valuesOfCardsView,
 } from "../card-game-stores"
 import { startGameTX } from "./hearts-actions"
 
@@ -31,7 +35,7 @@ export const heartsContinuity = continuity({
 			.add(startGameTX)
 			.add(
 				cardIndex,
-				cardValuesIndex,
+				cardValueIndex,
 				deckIndex,
 				handIndex,
 				pileIndex,
@@ -39,13 +43,15 @@ export const heartsContinuity = continuity({
 				gamePlayerIndex,
 				usersInThisRoomIndex,
 			)
-			.add(findCardState, visibleCardIndices)
-			.add(findCardValueState, visibleCardValueIndices)
-			.add(deckStates, visibleDeckIndices)
-			.add(handStates, visibleHandIndices)
-			.add(pileStates, visiblePileIndices)
-			.add(trickStates, visibleTrickIndices)
+			.add(cardAtoms, cardView)
+			.add(cardValueAtoms, cardValueView)
+			.add(deckAtoms, deckView)
+			.add(handAtoms, handView)
+			.add(pileStates, pileView)
+			.add(trickStates, trickView)
 
-			.add(groupsOfCards.core.findRelatedKeysState, visibleCardGroupIndices)
+			.add(valuesOfCards.core.findRelatedKeysState, valuesOfCardsView)
+			.add(groupsOfCards.core.findRelatedKeysState, groupsOfCardsView)
+			.add(ownersOfGroups.core.findRelatedKeysState, ownersOfGroupsView)
 	},
 })

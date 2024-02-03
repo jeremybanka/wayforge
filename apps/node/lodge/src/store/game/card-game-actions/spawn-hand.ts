@@ -15,7 +15,7 @@ export const spawnHandTX = transaction<
 			console.error({ playerId }, `Player is not in a game`)
 			return
 		}
-		const handState = find(CardGroups.handStates, handId)
+		const handState = find(CardGroups.handAtoms, handId)
 		set(handState, {
 			type: `hand`,
 			name: ``,

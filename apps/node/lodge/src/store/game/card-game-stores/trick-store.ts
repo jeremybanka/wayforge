@@ -1,7 +1,25 @@
-import { selectorFamily } from "atom.io"
+import { selector, selectorFamily } from "atom.io"
+import { join } from "atom.io/data"
 
-import { groupsOfCards, trickContributions } from "./card-groups-store"
+import { getJsonToken } from "atom.io/internal"
+import {
+	Trick,
+	groupsOfCards,
+	trickIndex,
+	trickStates,
+} from "./card-groups-store"
 import { gamePlayerIndex } from "./game-players-store"
+
+export const trickContributions = join({
+	key: `trickContributions`,
+	between: [`player`, `card`],
+	cardinality: `1:n`,
+})
+export const trickWinners = join({
+	key: `trickWinners`,
+	between: [`player`, `trick`],
+	cardinality: `1:n`,
+})
 
 export type TrickContent = [playerId: string, cardId: string | undefined]
 export const trickContentsStates = selectorFamily<TrickContent[], string>({
@@ -24,4 +42,41 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 			})
 			return trickContents
 		},
+})
+
+export const trickIsCompleteState = selectorFamily<boolean, string>({
+	key: `trickIsComplete`,
+	get:
+		(trickId) =>
+		({ get }) => {
+			const trickContents = get(trickContentsStates(trickId))
+			return trickContents.every(([, cardId]) => cardId !== undefined)
+		},
+})
+
+export const completeTrickIndex = selector<string[]>({
+	key: `completeTrickIndex`,
+	get: ({ get }) => {
+		const trickIdJson = getJsonToken(trickIndex)
+		const trickIds = get(trickIdJson)
+		const completeTrickIds = trickIds.members.filter((trickId) =>
+			get(trickIsCompleteState(trickId)),
+		)
+		return completeTrickIds
+	},
+})
+
+export const currentTrickIdState = selector<string | null>({
+	key: `currentTrick`,
+	get: ({ get }) => {
+		const completeTrickIds = get(completeTrickIndex)
+		const trickIdJson = getJsonToken(trickIndex)
+		const trickIds = get(trickIdJson)
+
+		const currentTrickId = trickIds.members.at(-1)
+		if (!currentTrickId || completeTrickIds.includes(currentTrickId)) {
+			return null
+		}
+		return currentTrickId
+	},
 })

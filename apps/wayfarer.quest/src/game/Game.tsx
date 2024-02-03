@@ -9,10 +9,10 @@ import { usePullAtomFamilyMember, usePullMutable } from "atom.io/realtime-react"
 import {
 	cardIndex,
 	cardValuesIndex,
+	deckAtoms,
 	deckIndex,
-	deckStates,
+	handAtoms,
 	handIndex,
-	handStates,
 	trickIndex,
 	trickStates,
 } from "~/apps/node/lodge/src/store/game"
@@ -41,11 +41,11 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 )
 
 function DeckSync(props: { id: string }): null {
-	usePullAtomFamilyMember(deckStates, props.id)
+	usePullAtomFamilyMember(deckAtoms, props.id)
 	return null
 }
 function HandSync(props: { id: string }): null {
-	usePullAtomFamilyMember(handStates, props.id)
+	usePullAtomFamilyMember(handAtoms, props.id)
 	return null
 }
 function TrickSync(props: { id: string }): null {

@@ -8,14 +8,14 @@ import {
 	cardIndex,
 	cardValuesIndex,
 	dealCardsTX,
+	deckAtoms,
 	deckIndex,
-	deckStates,
 	findCardState,
 	findCardValueState,
 	gamePlayerIndex,
 	groupsOfCards,
+	handAtoms,
 	handIndex,
-	handStates,
 	ownersOfGroups,
 	pileIndex,
 	pileStates,
@@ -62,8 +62,8 @@ parentSocket.relay((socket) => {
 
 	// Families
 	exposeFamily(findCardState, cardIndex)
-	exposeFamily(deckStates, deckIndex)
-	exposeFamily(handStates, handIndex)
+	exposeFamily(deckAtoms, deckIndex)
+	exposeFamily(handAtoms, handIndex)
 	exposeFamily(pileStates, pileIndex)
 	exposeFamily(trickStates, trickIndex)
 	exposeFamily(findCardValueState, cardValuesIndex)

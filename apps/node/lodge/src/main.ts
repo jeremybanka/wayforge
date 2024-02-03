@@ -150,8 +150,8 @@ pipe(
 
 					// Families
 					exposeFamily(findCardState, cardIndex)
-					exposeFamily(CardGroups.deckStates, CardGroups.deckIndex)
-					exposeFamily(CardGroups.handStates, CardGroups.handIndex)
+					exposeFamily(CardGroups.deckAtoms, CardGroups.deckIndex)
+					exposeFamily(CardGroups.handAtoms, CardGroups.handIndex)
 					exposeFamily(CardGroups.pileStates, CardGroups.pileIndex)
 					exposeFamily(CardGroups.trickStates, CardGroups.trickIndex)
 					exposeFamily(findCardValueState, cardValuesIndex)

@@ -17,7 +17,7 @@ export const spawnClassicDeckTX = transaction<
 			throw new Error(`${cardIds.length} cards were provided. 52 were expected`)
 		}
 		const { set, find } = transactors
-		const deckState = find(CardGroups.deckStates, deckId)
+		const deckState = find(CardGroups.deckAtoms, deckId)
 		set(deckState, { type: `deck`, name: `Classic 52-Card Deck` })
 
 		set(CardGroups.deckIndex, (current) => {
