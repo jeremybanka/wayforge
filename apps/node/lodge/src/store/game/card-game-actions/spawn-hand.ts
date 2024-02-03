@@ -1,6 +1,7 @@
 import { transaction } from "atom.io"
 
 import { usersInRooms } from "atom.io/realtime"
+import { gamePlayerIndex } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const spawnHandTX = transaction<
@@ -9,8 +10,8 @@ export const spawnHandTX = transaction<
 	key: `spawnHand`,
 	do: (transactors, playerId, handId) => {
 		const { get, set, find } = transactors
-		const gameId = get(find(usersInRooms.states.roomKeyOfUser, playerId))
-		if (gameId === null) {
+		const playerIds = get(gamePlayerIndex)
+		if (!playerIds.includes(playerId)) {
 			console.error({ playerId }, `Player is not in a game`)
 			return
 		}
@@ -24,6 +25,7 @@ export const spawnHandTX = transaction<
 			return next
 		})
 		CardGroups.ownersOfGroups.transact(transactors, ({ relations }) => {
+			console.error({ playerId, handId }, `Spawning hand`)
 			relations.set({ player: playerId, group: handId })
 		})
 	},

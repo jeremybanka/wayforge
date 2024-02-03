@@ -98,6 +98,8 @@ export class ChildSocket<
 	},
 > extends CustomSocket<I, O> {
 	protected process: ChildProcessWithoutNullStreams
+	protected incompleteData = ``
+	protected unprocessedEvents: string[] = []
 
 	public id = `no_id_retrieved`
 
@@ -112,8 +114,35 @@ export class ChildSocket<
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
 				const stringifiedEvent = buffer.toString()
-				const parsedEvent = parseJson(stringifiedEvent)
-				this.handleEvent(...parsedEvent)
+				this.unprocessedEvents.push(...stringifiedEvent.split(`\x03`))
+				const newInput = this.unprocessedEvents.shift()
+				this.incompleteData += newInput || ``
+				try {
+					console.log(
+						`🤓`,
+						newInput?.length,
+						`/`,
+						this.incompleteData.length,
+						newInput,
+					)
+					const parsedEvent = parseJson(this.incompleteData)
+					console.log(`🤓`, `parsed!`)
+					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+					while (this.unprocessedEvents.length > 0) {
+						const event = this.unprocessedEvents.shift()
+						if (event) {
+							if (this.unprocessedEvents.length === 0) {
+								this.incompleteData = event
+							}
+							const parsedEvent = parseJson(event)
+							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+						}
+					}
+					this.incompleteData = ``
+				} catch (error) {
+					console.warn(`⚠️----------------⚠️`)
+					console.error(error)
+				}
 			},
 		)
 		if (process.pid) {
@@ -168,7 +197,7 @@ export class ParentSocket<
 	public constructor() {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args])
-			this.process.stdout.write(stringifiedEvent)
+			this.process.stdout.write(stringifiedEvent + `\x03`)
 			return this
 		})
 		this.process = process

@@ -1,6 +1,10 @@
-import { useO } from "atom.io/react"
+import { useJSON, useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
-import { useServerAction, useSyncAction } from "atom.io/realtime-react"
+import {
+	usePullAtom,
+	useServerAction,
+	useSyncAction,
+} from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
 import {
@@ -11,6 +15,7 @@ import {
 } from "~/apps/node/lodge/src/store/game"
 import { startGameTX } from "~/apps/node/lodge/src/store/game/hearts"
 
+import { usersInRooms } from "atom.io/realtime"
 import { h3 } from "wayfarer.quest/components/<hX>"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import type { GameProps } from "../Game"
@@ -22,7 +27,7 @@ export function Public({ roomId }: GameProps): JSX.Element {
 	const addHand = useServerAction(spawnHandTX)
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	const createTrick = useServerAction(spawnTrickTX)
-	const playerIds = useO(gamePlayerIndex)
+	const cohorts = useO(usersInRooms.states.userKeysOfRoom, roomId)
 	const startGame = useSyncAction(startGameTX)
 	const handlers = useRadial([
 		{
@@ -55,11 +60,11 @@ export function Public({ roomId }: GameProps): JSX.Element {
 			label: `Start Game`,
 			do: () => {
 				startGame({
-					handIds: playerIds.map(() => nanoid()),
-					trickId: nanoid(),
-					cardIds: Array.from({ length: 52 }).map(() => nanoid()),
+					handIds: cohorts.map(() => nanoid(5)),
+					trickId: nanoid(5),
+					cardIds: Array.from({ length: 52 }).map(() => nanoid(5)),
 					deckId: `DECK_ID`,
-					txId: nanoid(),
+					txId: nanoid(5),
 					shuffle: Math.random(),
 				})
 			},

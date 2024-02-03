@@ -11,12 +11,14 @@ export const publicDeckIndex = AtomIO.selector<string[]>({
 			return []
 		}
 		const deckIds = get(deckIndex)
+		console.error({ deckIds }, `Deck ids`)
 		const unownedDeckIds = [...deckIds].filter((deckId) => {
 			const { playerKeyOfGroup } = ownersOfGroups.states
 			const ownerOfDeck = get(find(playerKeyOfGroup, deckId))
 			const deckIsNotOwned = ownerOfDeck === null
 			return deckIsNotOwned
 		})
+		console.error({ unownedDeckIds }, `Unowned deck ids`)
 		return unownedDeckIds
 	},
 })

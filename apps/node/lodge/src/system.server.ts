@@ -61,7 +61,6 @@ pipe(
 				RT.roomIndex,
 			)
 			socket.on(`create-room`, async (roomId) => {
-				console.log(`🏠`, userKey, `create-room`, roomId)
 				AtomIO.runTransaction(RTS.createRoomTX, nanoid())(roomId, `bun`, [
 					path.join(import.meta.dir, `room.server.ts`),
 				])

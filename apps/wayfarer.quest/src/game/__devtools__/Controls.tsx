@@ -26,7 +26,7 @@ export const Controls: FC = () => {
 				<button.curledLeft
 					className={comic.class}
 					onClick={() => {
-						const groupId = nanoid()
+						const groupId = nanoid(5)
 						spawnHand(myId, groupId)
 					}}
 				>
@@ -37,8 +37,8 @@ export const Controls: FC = () => {
 				className={comic.class}
 				onClick={() => {
 					if (myRoomId) {
-						const deckId = nanoid()
-						const cardIds = Array.from({ length: 52 }).map(() => nanoid())
+						const deckId = nanoid(5)
+						const cardIds = Array.from({ length: 52 }).map(() => nanoid(5))
 						spawnClassicDeck(deckId, cardIds)
 					} else {
 						console.error(`Tried to spawn a deck without being in a room.`)
