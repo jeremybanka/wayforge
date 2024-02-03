@@ -1,13 +1,10 @@
-import { selector, selectorFamily } from "atom.io"
+import { atom, selector, selectorFamily } from "atom.io"
 import { join } from "atom.io/data"
-
 import { getJsonToken } from "atom.io/internal"
-import {
-	Trick,
-	groupsOfCards,
-	trickIndex,
-	trickStates,
-} from "./card-groups-store"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
+
+import { groupsOfCards } from "./card-groups-store"
 import { gamePlayerIndex } from "./game-players-store"
 
 export const trickContributions = join({
@@ -19,6 +16,14 @@ export const trickWinners = join({
 	key: `trickWinners`,
 	between: [`player`, `trick`],
 	cardinality: `1:n`,
+})
+
+export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+	key: `trickIndex`,
+	mutable: true,
+	default: () => new SetRTX<string>(),
+	toJson: (set) => set.toJSON(),
+	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
 export type TrickContent = [playerId: string, cardId: string | undefined]

@@ -6,6 +6,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import { cardIndex } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
+import { trickIndex } from "./trick-store"
 
 export type CardGroup = {
 	type: `deck` | `hand` | `pile` | `trick`
@@ -134,13 +135,7 @@ export const trickStates = atomFamily<Trick, string>({
 		name: ``,
 	},
 })
-export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
-	key: `trickIndex`,
-	mutable: true,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
-})
+
 export const trickGlobalView = selector<RegularAtomToken<Trick>[]>({
 	key: `trickGlobalView`,
 	get: ({ get, find }) => {

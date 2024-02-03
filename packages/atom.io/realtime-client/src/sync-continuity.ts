@@ -5,6 +5,7 @@ import {
 	assignTransactionToContinuity,
 	getEpochNumberOfContinuity,
 	getFromStore,
+	getJsonToken,
 	ingestTransactionUpdate,
 	isRootStore,
 	setEpochNumberOfContinuity,
@@ -29,6 +30,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 	const confirmedUpdates = getFromStore(confirmedUpdateQueue, store)
 
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
+		socket.off(`continuity-init:${continuityKey}`, initializeContinuity)
 		let i = 0
 		let k: any = ``
 		let v: any = null
@@ -37,6 +39,10 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				k = x
 			} else {
 				v = x
+				console.log(`❗❗❗❗❗`, k, v)
+				if (`type` in k && k.type === `mutable_atom`) {
+					k = getJsonToken(k)
+				}
 				setIntoStore(k, v, store)
 			}
 			i++
@@ -303,7 +309,11 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 						store,
 					)
 				}
-				socket.emit(`tx-run:${continuityKey}`, clientUpdate)
+				socket.emit(`tx-run:${continuityKey}`, {
+					id: clientUpdate.id,
+					key: transaction.key,
+					params: clientUpdate.params,
+				})
 			},
 			`tx-run:${continuityKey}`,
 			store,

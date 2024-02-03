@@ -2,10 +2,10 @@ import { transaction } from "atom.io"
 
 import * as CardGroups from "../card-game-stores/card-groups-store"
 import {
-	cardValuesIndex,
+	cardValueIndex,
 	valuesOfCards,
 } from "../card-game-stores/card-values-store"
-import { cardIndex, findCardState } from "../card-game-stores/cards-store"
+import { cardAtoms, cardIndex } from "../card-game-stores/cards-store"
 import { CARD_VALUES } from "../playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
@@ -28,7 +28,8 @@ export const spawnClassicDeckTX = transaction<
 		valuesOfCards.transact(transactors, ({ relations }) => {
 			let idx = 0
 			for (const cardId of cardIds) {
-				set(findCardState(cardId), { rotation: 0 })
+				const cardAtom = find(cardAtoms, cardId)
+				set(cardAtom, { rotation: 0 })
 				relations.set({ card: cardId, value: CARD_VALUES[idx].id })
 				idx++
 			}
@@ -43,7 +44,7 @@ export const spawnClassicDeckTX = transaction<
 			})
 			return current
 		})
-		set(cardValuesIndex, (current) => {
+		set(cardValueIndex, (current) => {
 			current.transaction((next) => {
 				for (const { id: cardValueId } of CARD_VALUES) {
 					next.add(cardValueId)

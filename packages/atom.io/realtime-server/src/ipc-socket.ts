@@ -213,13 +213,14 @@ export class ParentSocket<
 				this.queue.push(...buffer.split(`\n`))
 
 				while (this.queue.length > 0) {
+					let event = ``
 					try {
-						const event = this.queue.shift() as StringifiedEvent<any, any>
+						event = this.queue.shift() as StringifiedEvent<any, any>
 						if (event === ``) continue
 						const parsedEvent = parseJson(event)
 						this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 					} catch (error) {
-						this.process.stderr.write(`❌ ${error}\n`)
+						this.process.stderr.write(`❌ ${error}\n❌ ${event}\n`)
 						break
 					}
 				}
