@@ -19,7 +19,7 @@
 		"json-schema": "0.4.0",
 		"json-schema-to-zod": "2.0.14",
 		"npmlog": "7.0.1",
-		"prettier": "3.2.4",
+		"prettier": "3.2.5",
 		"simple-git": "3.22.0",
 		"socket.io": "4.7.4",
 		"zod": "3.22.4"
