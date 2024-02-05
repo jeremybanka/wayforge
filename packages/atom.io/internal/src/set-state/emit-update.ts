@@ -8,16 +8,30 @@ export const emitUpdate = <T>(
 	update: StateUpdate<T>,
 	store: Store,
 ): void => {
-	store.logger.info(
-		`📢`,
-		state.type,
-		state.key,
-		`went (`,
-		update.oldValue,
-		`->`,
-		update.newValue,
-		`) subscribers:`,
-		state.subject.subscribers,
-	)
+	switch (state.type) {
+		case `mutable_atom`:
+			store.logger.info(
+				`📢`,
+				state.type,
+				state.key,
+				`is now (`,
+				update.newValue,
+				`) subscribers:`,
+				state.subject.subscribers,
+			)
+			break
+		default:
+			store.logger.info(
+				`📢`,
+				state.type,
+				state.key,
+				`went (`,
+				update.oldValue,
+				`->`,
+				update.newValue,
+				`) subscribers:`,
+				state.subject.subscribers,
+			)
+	}
 	state.subject.next(update)
 }
