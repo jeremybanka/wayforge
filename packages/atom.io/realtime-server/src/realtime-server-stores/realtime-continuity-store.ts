@@ -84,14 +84,14 @@ const redactorAtoms = selectorFamily<
 			return filter
 		},
 })
-export const redactedPerspectiveUpdateSelectors = selectorFamily<
+export const occludedUpdateSelectors = selectorFamily<
 	Pick<
 		TransactionUpdate<JsonIO>,
 		`epoch` | `id` | `key` | `output` | `updates`
 	> | null,
 	{ userId: string; syncGroupKey: string; updateId: string }
 >({
-	key: `redactedPerspectiveUpdate`,
+	key: `occludedUpdate`,
 	get:
 		({ userId, syncGroupKey, updateId }) =>
 		({ get, find }) => {
@@ -101,7 +101,8 @@ export const redactedPerspectiveUpdateSelectors = selectorFamily<
 			const redactorState = find(redactorAtoms, redactorKey)
 			const redact = get(redactorState)
 			if (update) {
-				return redact(update)
+				// return redact(update)
+				return update
 			}
 			return null
 		},

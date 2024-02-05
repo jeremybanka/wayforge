@@ -41,7 +41,7 @@ const LoggerIconDictionary = {
 	"🪂": `Abort transaction`,
 	"🤞": `Realtime optimistic update enqueued`,
 	"👈": `Realtime confirmed update enqueued`,
-	"⚖️": `Realtime update beginning reconciliation`,
+	"🧑‍⚖️": `Realtime update beginning reconciliation`,
 	"🛎️": `Realtime transaction received`,
 	"🔭": `Determining realtime perspective`,
 	"🖌": `Redacting realtime update`,

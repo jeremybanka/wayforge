@@ -1,7 +1,7 @@
 import { runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
-import { myIdState } from "atom.io/realtime-client"
+import { myUsernameState } from "atom.io/realtime-client"
 import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
@@ -19,7 +19,7 @@ import { Hearts } from "./Hearts"
 import scss from "./Public.module.scss"
 
 export function Public({ roomId }: GameProps): JSX.Element {
-	const myId = useO(myIdState)
+	const myUsername = useO(myUsernameState)
 	const addHand = useServerAction(spawnHandTX)
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	const createTrick = useServerAction(spawnTrickTX)
@@ -37,12 +37,12 @@ export function Public({ roomId }: GameProps): JSX.Element {
 		{
 			label: `Join Game`,
 			do: () => {
-				if (!myId) {
+				if (!myUsername) {
 					console.error(`Tried to join a game without being in a room.`)
 					return
 				}
 				const groupId = nanoid()
-				addHand(myId, groupId)
+				addHand(myUsername, groupId)
 			},
 		},
 		{

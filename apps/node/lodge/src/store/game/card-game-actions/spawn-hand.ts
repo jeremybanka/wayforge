@@ -25,7 +25,6 @@ export const spawnHandTX = transaction<
 			return next
 		})
 		CardGroups.ownersOfGroups.transact(transactors, ({ relations }) => {
-			console.error({ playerId, handId }, `Spawning hand`)
 			relations.set({ player: playerId, group: handId })
 		})
 	},

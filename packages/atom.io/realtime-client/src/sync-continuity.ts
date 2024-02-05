@@ -39,7 +39,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				k = x
 			} else {
 				v = x
-				console.log(`❗❗❗❗❗`, k, v)
+				// console.log(`❗❗❗❗❗`, k, v)
 				if (`type` in k && k.type === `mutable_atom`) {
 					k = getJsonToken(k)
 				}
@@ -59,7 +59,12 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			optimisticUpdate: AtomIO.TransactionUpdate<any>,
 			confirmedUpdate: AtomIO.TransactionUpdate<any>,
 		): void {
-			store.logger.info(`⚖️`, `continuity`, continuityKey, `reconciling updates`)
+			store.logger.info(
+				`🧑‍⚖️`,
+				`continuity`,
+				continuityKey,
+				`reconciling updates`,
+			)
 			setIntoStore(
 				optimisticUpdateQueue,
 				(queue) => {
@@ -90,6 +95,14 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 					`thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
 				)
 			}
+			store.logger.info(
+				`🧑‍⚖️`,
+				`continuity`,
+				continuityKey,
+				`updates do not match`,
+				optimisticUpdate,
+				confirmedUpdate,
+			)
 			const reversedOptimisticUpdates = optimisticUpdates.toReversed()
 			for (const subsequentOptimistic of reversedOptimisticUpdates) {
 				ingestTransactionUpdate(`oldValue`, subsequentOptimistic, store)
@@ -137,7 +150,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		}
 
 		store.logger.info(
-			`⚖️`,
+			`🧑‍⚖️`,
 			`continuity`,
 			continuityKey,
 			`integrating confirmed update`,
@@ -146,14 +159,14 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		const zerothOptimisticUpdate = optimisticUpdates[0]
 		if (zerothOptimisticUpdate) {
 			store.logger.info(
-				`⚖️`,
+				`🧑‍⚖️`,
 				`continuity`,
 				continuityKey,
 				`has optimistic updates to reconcile`,
 			)
 			if (confirmedUpdate.epoch === zerothOptimisticUpdate.epoch) {
 				store.logger.info(
-					`⚖️`,
+					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
 					`epoch of confirmed update #${confirmedUpdate.epoch} matches zeroth optimistic update`,
@@ -170,7 +183,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			} else {
 				// epoch mismatch
 				store.logger.info(
-					`⚖️`,
+					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
 					`epoch of confirmed update #${confirmedUpdate.epoch} does not match zeroth optimistic update #${zerothOptimisticUpdate.epoch}`,
@@ -199,7 +212,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			}
 		} else {
 			store.logger.info(
-				`⚖️`,
+				`🧑‍⚖️`,
 				`continuity`,
 				continuityKey,
 				`has no optimistic updates to deal with`,
@@ -219,7 +232,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				setEpochNumberOfContinuity(continuityKey, confirmedUpdate.epoch, store)
 			} else if (isRoot && continuityEpoch !== undefined) {
 				store.logger.info(
-					`⚖️`,
+					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
 					`received update #${

@@ -1,0 +1,278 @@
+
+1707126655779 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707126655779 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707126655780 [INFO] 📝 atom usersInRoomIndex set to {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707126655780 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707126655780 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707126655780 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707126655780 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707126655780 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707126655780 [INFO] 📝 atom *usersInRoomIndex set to 0=add:"jeremy"
+
+1707126655780 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707126655780 [INFO] 📢 atom *usersInRoomIndex went ( null -> 0=add:"jeremy" ) subscribers: {}
+
+1707126655780 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707126655780 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 1, but got 0
+
+1707126655780 [INFO] 🔨 atom usersOfSockets/relatedKeys("jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 🔨 atom *usersOfSockets/relatedKeys("jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707126655780 [INFO] 👀 atom *usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 🔌 selector usersOfSockets/relatedKeys("jeremy"):JSON registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707126655780 [INFO] 🔍 selector usersOfSockets/relatedKeys("jeremy"):JSON discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707126655780 [INFO] ✨ selector usersOfSockets/relatedKeys("jeremy"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("jeremy") registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707126655780 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("jeremy") discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707126655780 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("jeremy") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707126655780 [INFO] 🔨 atom *usersOfSockets/relatedKeys("jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707126655780 [INFO] 👀 atom *usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 🔨 atom usersOfSockets/relatedKeys("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655780 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655780 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655780 [INFO] 🔌 selector usersOfSockets/relatedKeys("relay:jeremy"):JSON registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707126655780 [INFO] 🔍 selector usersOfSockets/relatedKeys("relay:jeremy"):JSON discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655780 [INFO] ✨ selector usersOfSockets/relatedKeys("relay:jeremy"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655780 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("relay:jeremy") registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707126655780 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("relay:jeremy") discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655780 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("relay:jeremy") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707126655780 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655780 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655780 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655780 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("jeremy") operation start in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 📝 atom usersOfSockets/relatedKeys("jeremy") set to {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707126655780 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("jeremy") evicting 2 states downstream: {}
+
+1707126655780 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("jeremy") [ usersOfSockets/relatedKeys("jeremy") ] already done
+
+1707126655780 [INFO] 🗑 state usersOfSockets/relatedKeys("jeremy"):JSON evicted
+
+1707126655780 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("jeremy") evicted
+
+1707126655780 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("jeremy") is now ( {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707126655780 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("jeremy") operation done in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] ⭕ atom *usersOfSockets/relatedKeys("jeremy") operation start in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 atom *usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] 📝 atom *usersOfSockets/relatedKeys("jeremy") set to 0=add:"relay:jeremy"
+
+1707126655780 [INFO] 🧹 atom *usersOfSockets/relatedKeys("jeremy") no downstream states to evict
+
+1707126655780 [INFO] 📢 atom *usersOfSockets/relatedKeys("jeremy") went ( null -> 0=add:"relay:jeremy" ) subscribers: {}
+
+1707126655780 [INFO] 🔴 atom *usersOfSockets/relatedKeys("jeremy") operation done in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655780 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("jeremy") could not be updated. Expected update number 1, but got 0
+
+1707126655780 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:jeremy") operation start in store "IMPLICIT_STORE"
+
+1707126655780 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655780 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:jeremy") set to {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707126655780 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") evicting 2 states downstream: {}
+
+1707126655781 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") [ usersOfSockets/relatedKeys("relay:jeremy") ] already done
+
+1707126655781 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:jeremy"):JSON evicted
+
+1707126655781 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:jeremy") evicted
+
+1707126655781 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") is now ( {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707126655781 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") operation done in store "IMPLICIT_STORE"
+
+1707126655781 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:jeremy") operation start in store "IMPLICIT_STORE"
+
+1707126655781 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655781 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:jeremy") set to 0=add:"jeremy"
+
+1707126655781 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:jeremy") no downstream states to evict
+
+1707126655781 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:jeremy") went ( null -> 0=add:"jeremy" ) subscribers: {}
+
+1707126655781 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:jeremy") operation done in store "IMPLICIT_STORE"
+
+1707126655781 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655781 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:jeremy") could not be updated. Expected update number 1, but got 0
+
+1707126655781 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707126655781 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:jeremy") registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707126655781 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:jeremy") discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707126655781 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("relay:jeremy") = jeremy
+
+1707126655781 [INFO] 📖 readonly_selector usersOfSockets/singleRelatedKey("relay:jeremy") reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707126655781 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("jeremy") registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707126655781 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("jeremy") discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707126655781 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("jeremy") = relay:jeremy
+
+1707126655781 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("jeremy") Adding subscription "sync-continuity:hearts:jeremy"
+
+1707126655781 [INFO] 🔨 atom unacknowledgedUpdates("jeremy") creating in store "IMPLICIT_STORE"
+
+1707126655781 [INFO] 📖 atom unacknowledgedUpdates("jeremy") reading cached value
+
+1707126655781 [INFO] 👀 atom unacknowledgedUpdates("jeremy") Adding subscription "sync-continuity:hearts:jeremy"
+
+1707126655781 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707126655781 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707126655781 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707126655781 [INFO] 📖 readonly_selector globalCardView reading cached value
+
+1707126655781 [INFO] 🔌 selector cardView("jeremy") registers dependency ( "globalCardView" = [] )
+
+1707126655781 [INFO] 🔍 selector cardView("jeremy") discovers root atoms: [ "cardIndex" ]
+
+1707126655781 [INFO] ✨ readonly_selector cardView("jeremy") = []
+
+1707126655781 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707126655781 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707126655781 [INFO] 📖 readonly_selector cardValueGlobalView reading cached value
+
+1707126655781 [INFO] 🔌 selector cardValueView("jeremy") registers dependency ( "cardValueGlobalView" = [] )
+
+1707126655781 [INFO] 🔍 selector cardValueView("jeremy") discovers root atoms: [ "cardValuesIndex" ]
+
+1707126655781 [INFO] ✨ readonly_selector cardValueView("jeremy") = []
+
+1707126655781 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707126655781 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707126655781 [INFO] 📖 readonly_selector deckGlobalView reading cached value
+
+1707126655781 [INFO] 🔌 selector deckView("jeremy") registers dependency ( "deckGlobalView" = [] )
+
+1707126655781 [INFO] 🔍 selector deckView("jeremy") discovers root atoms: [ "deckIndex" ]
+
+1707126655781 [INFO] ✨ readonly_selector deckView("jeremy") = []
+
+1707126655781 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707126655781 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707126655781 [INFO] 📖 readonly_selector handGlobalView reading cached value
+
+1707126655781 [INFO] 🔌 selector handView("jeremy") registers dependency ( "handGlobalView" = [] )
+
+1707126655781 [INFO] 🔍 selector handView("jeremy") discovers root atoms: [ "handIndex" ]
+
+1707126655781 [INFO] ✨ readonly_selector handView("jeremy") = []
+
+1707126655781 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707126655781 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707126655781 [INFO] 📖 readonly_selector pileGlobalView reading cached value
+
+1707126655781 [INFO] 🔌 selector pileView("jeremy") registers dependency ( "pileGlobalView" = [] )
+
+1707126655781 [INFO] 🔍 selector pileView("jeremy") discovers root atoms: [ "pileIndex" ]
+
+1707126655781 [INFO] ✨ readonly_selector pileView("jeremy") = []
+
+1707126655781 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707126655781 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707126655781 [INFO] 📖 readonly_selector trickGlobalView reading cached value
+
+1707126655781 [INFO] 🔌 selector trickView("jeremy") registers dependency ( "trickGlobalView" = [] )

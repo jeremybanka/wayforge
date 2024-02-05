@@ -11,6 +11,7 @@ export function setIntoStore<T, New extends T>(
 	value: New | ((oldValue: T) => New),
 	store: Store,
 ): void {
+	// if (token.key === `*`)
 	const rejection = openOperation(token, store)
 	if (rejection) {
 		return

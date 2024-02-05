@@ -15,12 +15,21 @@ import scss from "./Game.module.scss"
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
-	(_, tokenType, tokenKey, message) => {
-		const allowedIcons: LoggerIcon[] = [`🛄`]
+	(icon, tokenType, tokenKey, message) => {
+		const allowedIcons: LoggerIcon[] = [
+			`🛄`,
+			`🧮`,
+			`🛎️`,
+			`🧑‍⚖️`,
+			`👀`,
+			`🙈`,
+			`📖`,
+			`🗑`,
+		]
 		const ignoredTokenTypes: TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
-		// if (!allowedIcons.includes(icon)) return false
+		if (!allowedIcons.includes(icon)) return false
 		if (ignoredTokenTypes.includes(tokenType)) return false
 		if (ignoredTokens.includes(tokenKey)) return false
 		for (const ignoredMessageContent of ignoredMessageContents) {

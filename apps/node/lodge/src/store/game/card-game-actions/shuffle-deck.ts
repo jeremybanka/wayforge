@@ -1,9 +1,11 @@
 import { transaction } from "atom.io"
 
+import { IMPLICIT } from "atom.io/internal"
 import { deckIndex, groupsOfCards } from "../card-game-stores/card-groups-store"
 
+const rngOut: number[] = []
+
 function LCG(seed: number) {
-	// LCG parameters
 	const a = 1664525
 	const c = 1013904223
 	const m = 2 ** 32
@@ -12,8 +14,18 @@ function LCG(seed: number) {
 
 	this.next = (): number => {
 		state = (a * state + c) % m
-		return state / m
+		const n = state / m
+		rngOut.push(n)
+		return n
 	}
+}
+
+function fisherYatesShuffle<T>(array: T[], rng: () => number): T[] {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(rng() * (i + 1))
+		;[array[i], array[j]] = [array[j], array[i]]
+	}
+	return array
 }
 
 export const shuffleDeckTX = transaction<
@@ -29,13 +41,25 @@ export const shuffleDeckTX = transaction<
 		}
 		const deckCardIndex = find(groupsOfCards.states.cardKeysOfGroup, deckId)
 		const cardIds = get(deckCardIndex)
-		const i = 0
-		const shuffledCardIds = cardIds.toSorted(() => rng.next() - 0.5)
+		const shuffledCardIds = fisherYatesShuffle([...cardIds], rng.next)
 		groupsOfCards.transact(transactors, ({ relations }) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
+		// IMPLICIT.STORE.logger.info(
+		// 	`🎲`,
+		// 	`transaction`,
+		// 	`shuffleDeck`,
+		// 	deckId,
+		// 	`seed:`,
+		// 	shuffleSeed,
+		// 	cardIds.join(` `),
+		// 	`->`,
+		// 	shuffledCardIds.join(` `),
+		// 	rngOut.join(` `),
+		// )
 		if (env().global) {
-			console.error(`Shuffled deck "${deckId}"`)
+			// process.stderr.write(`Shuffled deck "${deckId}"`)
+			// process.stderr.write(`🎲 ${rngOut.join(` `)}`)
 		}
 	},
 })

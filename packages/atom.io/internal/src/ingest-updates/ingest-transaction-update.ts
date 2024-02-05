@@ -8,6 +8,8 @@ export function ingestTransactionUpdate(
 	transactionUpdate: TransactionUpdate<any>,
 	store: Store,
 ): void {
+	// if (transactionUpdate.key === `startGame`) debugger
+	// if (transactionUpdate.key === `spawnHand`) debugger
 	const updates =
 		applying === `newValue`
 			? transactionUpdate.updates

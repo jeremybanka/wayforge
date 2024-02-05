@@ -1,7 +1,6 @@
 "use client"
 
 import { useI, useO } from "atom.io/react"
-import { myIdState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"
@@ -24,7 +23,6 @@ import scss from "./page.module.scss"
 export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 
-	const myId = useO(myIdState)
 	const myRoomKey = useO(myRoomKeyState)
 	const setRoomState = useI(roomViewState)
 	const iAmInRoom = myRoomKey === roomId

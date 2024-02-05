@@ -14,7 +14,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
-import { redactedPerspectiveUpdateSelectors } from "./realtime-server-stores"
+import { occludedUpdateSelectors } from "./realtime-server-stores"
 import {
 	completeUpdateAtoms,
 	userUnacknowledgedQueues,
@@ -93,13 +93,21 @@ export function realtimeContinuitySynchronizer({
 			for (const atom of continuity.globals) {
 				initialPayload.push(atom, getFromStore(atom, store))
 			}
-			for (const { perspectiveAtoms } of continuity.perspectives) {
+			for (const perspective of continuity.perspectives) {
+				const { perspectiveAtoms, resourceAtoms } = perspective
 				const perspectiveTokensState = findInStore(
 					perspectiveAtoms,
 					userKey,
 					store,
 				)
 				const perspectiveTokens = getFromStore(perspectiveTokensState, store)
+				store.logger.info(
+					`🕊️`,
+					`perspective`,
+					resourceAtoms.key,
+					`${userKey} can see`,
+					{ perspectiveAtoms, perspectiveTokensState, perspectiveTokens },
+				)
 				for (const perspectiveToken of perspectiveTokens) {
 					const resource = getFromStore(perspectiveToken, store)
 					initialPayload.push(perspectiveToken, resource)
@@ -122,14 +130,14 @@ export function realtimeContinuitySynchronizer({
 							store,
 						)
 						setIntoStore(updateState, update, store)
-						const redactedUpdateKey = {
+						const occludedUpdateKey = {
 							userId: userKey,
 							syncGroupKey: continuityKey,
 							updateId: update.id,
 						}
 						const redactedUpdateState = findInStore(
-							redactedPerspectiveUpdateSelectors,
-							redactedUpdateKey,
+							occludedUpdateSelectors,
+							occludedUpdateKey,
 							store,
 						)
 

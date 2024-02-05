@@ -1,6 +1,7 @@
 import * as AtomIO from "atom.io"
 import { usersInRooms } from "atom.io/realtime"
 import { myUsernameState } from "atom.io/realtime-client"
+
 import { roomViewState } from "./room-view-state"
 
 export const myRoomKeyState = AtomIO.selector<string | null>({
