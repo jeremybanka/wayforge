@@ -42,6 +42,9 @@ const LoggerIconDictionary = {
 	"🤞": `Realtime optimistic update enqueued`,
 	"👈": `Realtime confirmed update enqueued`,
 	"⚖️": `Realtime update beginning reconciliation`,
+	"🛎️": `Realtime transaction received`,
+	"🔭": `Determining realtime perspective`,
+	"🖌": `Redacting realtime update`,
 } as const
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 export type TokenDenomination =
