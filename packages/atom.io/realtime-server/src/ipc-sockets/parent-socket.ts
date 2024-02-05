@@ -39,7 +39,8 @@ export class ParentSocket<
 		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
 	},
 > extends CustomSocket<I, O> {
-	protected queue: string[]
+	protected incompleteData = ``
+	protected unprocessedEvents: string[] = []
 	protected relays: Map<string, SubjectSocket<any, any>>
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
@@ -56,27 +57,33 @@ export class ParentSocket<
 		})
 		this.process = process
 		this.process.stdin.resume()
-		this.queue = []
 		this.relays = new Map()
 		this.relayServices = []
 
 		this.process.stdin.on(
 			`data`,
-			<Event extends keyof I>(chunk: EventBuffer<string, I[Event]>) => {
-				const buffer = chunk.toString()
-				this.queue.push(...buffer.split(`\n`))
+			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
+				const chunk = buffer.toString()
+				this.unprocessedEvents.push(...chunk.split(`\x03`))
+				const newInput = this.unprocessedEvents.shift()
+				this.incompleteData += newInput || ``
 
-				while (this.queue.length > 0) {
-					let event = ``
-					try {
-						event = this.queue.shift() as StringifiedEvent<any, any>
-						if (event === ``) continue
-						const parsedEvent = parseJson(event)
-						this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
-					} catch (error) {
-						this.process.stderr.write(`❌ ${error}\n❌ ${event}\n`)
-						break
+				try {
+					const parsedEvent = parseJson(this.incompleteData)
+					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+					while (this.unprocessedEvents.length > 0) {
+						const event = this.unprocessedEvents.shift()
+						if (event) {
+							if (this.unprocessedEvents.length === 0) {
+								this.incompleteData = event
+							}
+							const parsedEvent = parseJson(event)
+							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+						}
 					}
+					this.incompleteData = ``
+				} catch (error) {
+					this.process.stderr.write(`❌ ${error}\n❌ ${newInput}\n`)
 				}
 			},
 		)

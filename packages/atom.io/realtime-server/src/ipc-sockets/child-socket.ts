@@ -21,7 +21,7 @@ export class ChildSocket<
 
 	public constructor(process: ChildProcessWithoutNullStreams) {
 		super((event, ...args) => {
-			const stringifiedEvent = JSON.stringify([event, ...args]) + `\n`
+			const stringifiedEvent = JSON.stringify([event, ...args]) + `\x03`
 			this.process.stdin.write(stringifiedEvent)
 			return this
 		})
@@ -29,8 +29,8 @@ export class ChildSocket<
 		this.process.stdout.on(
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
-				const stringifiedEvent = buffer.toString()
-				this.unprocessedEvents.push(...stringifiedEvent.split(`\x03`))
+				const chunk = buffer.toString()
+				this.unprocessedEvents.push(...chunk.split(`\x03`))
 				const newInput = this.unprocessedEvents.shift()
 				this.incompleteData += newInput || ``
 				try {
