@@ -1,21 +1,17 @@
-import { useJSON, useO } from "atom.io/react"
+import { runTransaction } from "atom.io"
+import { useO } from "atom.io/react"
+import { usersInRooms } from "atom.io/realtime"
 import { myIdState } from "atom.io/realtime-client"
-import {
-	usePullAtom,
-	useServerAction,
-	useSyncAction,
-} from "atom.io/realtime-react"
+import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 
 import {
-	gamePlayerIndex,
 	spawnClassicDeckTX,
 	spawnHandTX,
 	spawnTrickTX,
 } from "~/apps/node/lodge/src/store/game"
 import { startGameTX } from "~/apps/node/lodge/src/store/game/hearts"
 
-import { usersInRooms } from "atom.io/realtime"
 import { h3 } from "wayfarer.quest/components/<hX>"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import type { GameProps } from "../Game"
@@ -28,7 +24,7 @@ export function Public({ roomId }: GameProps): JSX.Element {
 	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
 	const createTrick = useServerAction(spawnTrickTX)
 	const cohorts = useO(usersInRooms.states.userKeysOfRoom, roomId)
-	const startGame = useSyncAction(startGameTX)
+	const startGame = runTransaction(startGameTX)
 	const handlers = useRadial([
 		{
 			label: `Create Deck`,
