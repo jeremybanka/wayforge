@@ -164,6 +164,7 @@ export function realtimeContinuitySynchronizer({
 		const fillTransactionRequest = (
 			update: Pick<AtomIO.TransactionUpdate<JsonIO>, `id` | `key` | `params`>,
 		) => {
+			store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, update)
 			const transactionKey = update.key
 			const updateId = update.id
 			const performanceKey = `tx-run:${transactionKey}:${updateId}`
@@ -192,25 +193,9 @@ export function realtimeContinuitySynchronizer({
 		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
 		socket.on(`tx-run:${continuityKey}`, fillTransactionRequest)
 
-		let i = 1
-		let next = 1
-		const retry = setInterval(() => {
-			const toEmit = userUnacknowledgedUpdates[0]
-			store.logger.info(
-				`🔄`,
-				`continuity`,
-				continuityKey,
-				`${store.config.name} retrying ${userKey} (${i}/${next})`,
-				socket?.id,
-				userUnacknowledgedUpdates,
-			)
-			if (toEmit && i === next) {
-				socket?.emit(`tx-new:${continuityKey}`, toEmit as Json.Serializable)
-				next *= 2
-			}
-
-			i++
-		}, 250)
+		let i = 0
+		let n = 1
+		let retryTimeout: NodeJS.Timeout | undefined
 		const trackClientAcknowledgement = (epoch: number) => {
 			store.logger.info(
 				`👍`,
@@ -218,10 +203,7 @@ export function realtimeContinuitySynchronizer({
 				continuityKey,
 				`${userKey} acknowledged epoch ${epoch}`,
 			)
-			i = 1
-			next = 1
 			const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
-
 			if (isUnacknowledged) {
 				setIntoStore(
 					userUnacknowledgedQueue,
@@ -233,11 +215,49 @@ export function realtimeContinuitySynchronizer({
 				)
 			}
 		}
-		socket.off(`ack:${continuityKey}`, trackClientAcknowledgement)
-		socket.on(`ack:${continuityKey}`, trackClientAcknowledgement)
+		subscribeToState(
+			userUnacknowledgedQueue,
+			({ newValue }) => {
+				if (newValue.length === 0) {
+					clearInterval(retryTimeout)
+					socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+					retryTimeout = undefined
+				}
+				if (newValue.length > 0) {
+					if (retryTimeout) {
+						return
+					}
+
+					socket?.on(`ack:${continuityKey}`, trackClientAcknowledgement)
+
+					retryTimeout = setInterval(() => {
+						i++
+						if (i === n) {
+							n += i
+							const toEmit = newValue[0]
+							if (!toEmit) return
+							store.logger.info(
+								`🔄`,
+								`continuity`,
+								continuityKey,
+								`${store.config.name} retrying ${userKey}`,
+								socket?.id,
+								newValue,
+							)
+							socket?.emit(
+								`tx-new:${continuityKey}`,
+								toEmit as Json.Serializable,
+							)
+						}
+					}, 250)
+				}
+			},
+			`sync-continuity:${continuityKey}:${userKey}`,
+			store,
+		)
 
 		return () => {
-			clearInterval(retry)
+			clearInterval(retryTimeout)
 			for (const unsubscribe of unsubscribeFunctions) unsubscribe()
 			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
 			socket?.off(`get:${continuityKey}`, sendInitialPayload)

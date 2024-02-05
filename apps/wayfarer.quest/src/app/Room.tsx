@@ -3,7 +3,6 @@
 import { useI, useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
-import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"
 import * as React from "react"
@@ -30,7 +29,10 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const setRoomState = useI(roomViewState)
 	const iAmInRoom = myRoomKey === roomId
 
-	usePullMutableAtomFamilyMember(usersInRooms.core.findRelatedKeysState, roomId)
+	RTR.usePullMutableAtomFamilyMember(
+		usersInRooms.core.findRelatedKeysState,
+		roomId,
+	)
 
 	return (
 		<>
