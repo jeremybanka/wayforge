@@ -36,6 +36,7 @@ export const SystemServer = ({
 	exposeMutableFamily(RT.usersInRooms.core.findRelatedKeysState, RTS.userIndex)
 	socket.on(`create-room`, async (roomId) => {
 		actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
+			`--inspect=localhost:6499`,
 			path.join(__dirname, `game-instance.bun.ts`),
 		])
 	})
