@@ -67,9 +67,9 @@ export const SystemServer = ({
 
 		roomSocket.onAny((...payload) => socket.emit(...payload))
 
-		room.stderr.on(`data`, (buf) => {
+		room.process.stderr.on(`data`, (buf) => {
 			const err = buf.toString()
-			console.error(`❌ ${roomId} [${room.pid}]\n${err}`)
+			console.error(`❌ ${roomId} [${room.process.pid}]\n${err}`)
 		})
 
 		room.on(`close`, (code) => {

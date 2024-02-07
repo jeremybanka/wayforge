@@ -37,6 +37,6 @@ export const roomSelectors = selectorFamily<
 					room.stdout.on(`data`, resolver)
 				},
 			)
-			return new ChildSocket(child)
+			return new ChildSocket(child, roomId)
 		},
 })

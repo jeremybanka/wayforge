@@ -1,9 +1,9 @@
-import type { ChildProcessWithoutNullStreams } from "child_process"
-
 import * as AtomIO from "atom.io"
 import type { Loadable } from "atom.io/data"
 import type { UserInRoomMeta } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
+
+import type { ChildSocket } from "../ipc-sockets"
 import type { RoomArguments } from "./server-room-external-store"
 import { roomArgumentsAtoms, roomSelectors } from "./server-room-external-store"
 
@@ -12,7 +12,7 @@ export const createRoomTX = AtomIO.transaction<
 		roomId: string,
 		script: string,
 		options?: string[],
-	) => Loadable<ChildProcessWithoutNullStreams>
+	) => Loadable<ChildSocket<any, any>>
 >({
 	key: `createRoom`,
 	do: ({ get, set, find }, roomId, script, options) => {

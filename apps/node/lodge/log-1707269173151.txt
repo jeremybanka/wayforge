@@ -1,0 +1,296 @@
+
+1707269173152 [INFO] 🖥️ parent ["setup-relay","isi"]
+
+1707269173209 [INFO] 👤 user isi connected
+
+1707269173209 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707269173209 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707269173209 [INFO] 📝 atom usersInRoomIndex set to {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707269173209 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707269173209 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707269173209 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707269173210 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707269173210 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707269173210 [INFO] 📝 atom *usersInRoomIndex set to 0=add:"isi"
+
+1707269173210 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707269173210 [INFO] 📢 atom *usersInRoomIndex went ( null -> 0=add:"isi" ) subscribers: {}
+
+1707269173210 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707269173210 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 1, but got 0
+
+1707269173210 [INFO] 🔨 atom usersOfSockets/relatedKeys("isi") creating in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 🔨 atom *usersOfSockets/relatedKeys("isi") creating in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707269173210 [INFO] 👀 atom *usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 🔌 selector usersOfSockets/relatedKeys("isi"):JSON registers dependency ( "usersOfSockets/relatedKeys("isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707269173210 [INFO] 🔍 selector usersOfSockets/relatedKeys("isi"):JSON discovers root atom "usersOfSockets/relatedKeys("isi")"
+
+1707269173210 [INFO] ✨ selector usersOfSockets/relatedKeys("isi"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("isi") registers dependency ( "usersOfSockets/relatedKeys("isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707269173210 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("isi") discovers root atom "usersOfSockets/relatedKeys("isi")"
+
+1707269173210 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("isi") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707269173210 [INFO] 🔨 atom *usersOfSockets/relatedKeys("isi") creating in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707269173210 [INFO] 👀 atom *usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 🔨 atom usersOfSockets/relatedKeys("relay:isi") creating in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:isi") creating in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173210 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] 🔌 selector usersOfSockets/relatedKeys("relay:isi"):JSON registers dependency ( "usersOfSockets/relatedKeys("relay:isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707269173210 [INFO] 🔍 selector usersOfSockets/relatedKeys("relay:isi"):JSON discovers root atom "usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173210 [INFO] ✨ selector usersOfSockets/relatedKeys("relay:isi"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("relay:isi") registers dependency ( "usersOfSockets/relatedKeys("relay:isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707269173210 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("relay:isi") discovers root atom "usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173210 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("relay:isi") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707269173210 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:isi") creating in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173210 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("isi") operation start in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 📝 atom usersOfSockets/relatedKeys("isi") set to {"members":["relay:isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707269173210 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("isi") evicting 2 states downstream: {}
+
+1707269173210 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("isi") [ usersOfSockets/relatedKeys("isi") ] already done
+
+1707269173210 [INFO] 🗑 state usersOfSockets/relatedKeys("isi"):JSON evicted
+
+1707269173210 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("isi") evicted
+
+1707269173210 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("isi") is now ( {"members":["relay:isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707269173210 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("isi") operation done in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] ⭕ atom *usersOfSockets/relatedKeys("isi") operation start in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 atom *usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] 📝 atom *usersOfSockets/relatedKeys("isi") set to 0=add:"relay:isi"
+
+1707269173210 [INFO] 🧹 atom *usersOfSockets/relatedKeys("isi") no downstream states to evict
+
+1707269173210 [INFO] 📢 atom *usersOfSockets/relatedKeys("isi") went ( null -> 0=add:"relay:isi" ) subscribers: {}
+
+1707269173210 [INFO] 🔴 atom *usersOfSockets/relatedKeys("isi") operation done in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173210 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("isi") could not be updated. Expected update number 1, but got 0
+
+1707269173210 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:isi") operation start in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:isi") set to {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707269173210 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:isi") evicting 2 states downstream: {}
+
+1707269173210 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:isi") [ usersOfSockets/relatedKeys("relay:isi") ] already done
+
+1707269173210 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:isi"):JSON evicted
+
+1707269173210 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:isi") evicted
+
+1707269173210 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:isi") is now ( {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707269173210 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:isi") operation done in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:isi") operation start in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:isi") set to 0=add:"isi"
+
+1707269173210 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:isi") no downstream states to evict
+
+1707269173210 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:isi") went ( null -> 0=add:"isi" ) subscribers: {}
+
+1707269173210 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:isi") operation done in store "IMPLICIT_STORE"
+
+1707269173210 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173210 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:isi") could not be updated. Expected update number 1, but got 0
+
+1707269173211 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707269173211 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:isi") registers dependency ( "usersOfSockets/relatedKeys("relay:isi")" = {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707269173211 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:isi") discovers root atom "usersOfSockets/relatedKeys("relay:isi")"
+
+1707269173211 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("relay:isi") = isi
+
+1707269173211 [INFO] 📖 readonly_selector usersOfSockets/singleRelatedKey("relay:isi") reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707269173211 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("isi") registers dependency ( "usersOfSockets/relatedKeys("isi")" = {"members":["relay:isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707269173211 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("isi") discovers root atom "usersOfSockets/relatedKeys("isi")"
+
+1707269173211 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("isi") = relay:isi
+
+1707269173211 [INFO] 🏗️ continuity hearts creating synchronizer for isi on socket relay:isi
+
+1707269173211 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("isi") Adding subscription "sync-continuity:hearts:isi"
+
+1707269173211 [INFO] 🔨 atom unacknowledgedUpdates("isi") creating in store "IMPLICIT_STORE"
+
+1707269173211 [INFO] 📖 atom unacknowledgedUpdates("isi") reading cached value
+
+1707269173211 [INFO] 👀 atom unacknowledgedUpdates("isi") Adding subscription "sync-continuity:hearts:isi"
+
+1707269173211 [INFO] 🖥️ relay:isi sub:usersInRooms/relatedKeys mBAqXSQE7hlyYa_7AAAH
+
+1707269173211 [INFO] 🖥️ relay:isi {}
+
+1707269173211 [INFO] 🖥️ relay:isi {}
+
+1707269173211 [INFO] 🖥️ relay:isi get:hearts
+
+1707269173211 [INFO] 🖥️ relay:isi {}
+
+1707269173211 [INFO] 🖥️ relay:isi {}
+
+1707269173211 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707269173211 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707269173211 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707269173211 [INFO] 📖 readonly_selector globalCardView reading cached value
+
+1707269173211 [INFO] 🔌 selector cardView("isi") registers dependency ( "globalCardView" = [] )
+
+1707269173211 [INFO] 🔍 selector cardView("isi") discovers root atoms: [ "cardIndex" ]
+
+1707269173211 [INFO] ✨ readonly_selector cardView("isi") = []
+
+1707269173211 [INFO] 📖 readonly_selector cardView("isi") reading cached value
+
+1707269173211 [INFO] 🕊️ perspective card isi can see {"perspectiveTokensState":{"key":"cardView(\"isi\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707269173211 [INFO] 📖 readonly_selector cardValueGlobalView reading cached value
+
+1707269173211 [INFO] 🔌 selector cardValueView("isi") registers dependency ( "cardValueGlobalView" = [] )
+
+1707269173211 [INFO] 🔍 selector cardValueView("isi") discovers root atoms: [ "cardValuesIndex" ]
+
+1707269173211 [INFO] ✨ readonly_selector cardValueView("isi") = []
+
+1707269173212 [INFO] 📖 readonly_selector cardValueView("isi") reading cached value
+
+1707269173212 [INFO] 🕊️ perspective cardValue isi can see {"perspectiveTokensState":{"key":"cardValueView(\"isi\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707269173212 [INFO] 📖 readonly_selector deckGlobalView reading cached value
+
+1707269173212 [INFO] 🔌 selector deckView("isi") registers dependency ( "deckGlobalView" = [] )
+
+1707269173212 [INFO] 🔍 selector deckView("isi") discovers root atoms: [ "deckIndex" ]
+
+1707269173212 [INFO] ✨ readonly_selector deckView("isi") = []
+
+1707269173212 [INFO] 📖 readonly_selector deckView("isi") reading cached value
+
+1707269173212 [INFO] 🕊️ perspective deck isi can see {"perspectiveTokensState":{"key":"deckView(\"isi\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707269173212 [INFO] 📖 readonly_selector handGlobalView reading cached value
+
+1707269173212 [INFO] 🔌 selector handView("isi") registers dependency ( "handGlobalView" = [] )
+
+1707269173212 [INFO] 🔍 selector handView("isi") discovers root atoms: [ "handIndex" ]
+
+1707269173212 [INFO] ✨ readonly_selector handView("isi") = []
+
+1707269173212 [INFO] 📖 readonly_selector handView("isi") reading cached value
+
+1707269173212 [INFO] 🕊️ perspective hand isi can see {"perspectiveTokensState":{"key":"handView(\"isi\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707269173212 [INFO] 📖 readonly_selector pileGlobalView reading cached value
+
+1707269173212 [INFO] 🔌 selector pileView("isi") registers dependency ( "pileGlobalView" = [] )
+
+1707269173212 [INFO] 🔍 selector pileView("isi") discovers root atoms: [ "pileIndex" ]
+
+1707269173212 [INFO] ✨ readonly_selector pileView("isi") = []
+
+1707269173212 [INFO] 📖 readonly_selector pileView("isi") reading cached value
+
+1707269173212 [INFO] 🕊️ perspective pile isi can see {"perspectiveTokensState":{"key":"pileView(\"isi\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707269173212 [INFO] 📖 readonly_selector trickGlobalView reading cached value
+
+1707269173212 [INFO] 🔌 selector trickView("isi") registers dependency ( "trickGlobalView" = [] )

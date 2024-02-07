@@ -1,0 +1,874 @@
+
+1707272467605 [INFO] 🖥️ parent ["setup-relay","isi"]
+
+1707272467659 [INFO] 👤 user isi connected
+
+1707272467659 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707272467659 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272467659 [INFO] 📝 atom usersInRoomIndex set to {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707272467659 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707272467659 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707272467659 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707272467659 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707272467659 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707272467659 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707272467659 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707272467659 [INFO] 📝 atom *usersInRoomIndex set to 0=add:"isi"
+
+1707272467659 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707272467659 [INFO] 📢 atom *usersInRoomIndex went ( null -> 0=add:"isi" ) subscribers: {}
+
+1707272467660 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272467660 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 1, but got 0
+
+1707272467660 [INFO] 🔨 atom usersOfSockets/relatedKeys("isi") creating in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 🔨 atom *usersOfSockets/relatedKeys("isi") creating in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707272467660 [INFO] 👀 atom *usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 🔌 selector usersOfSockets/relatedKeys("isi"):JSON registers dependency ( "usersOfSockets/relatedKeys("isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272467660 [INFO] 🔍 selector usersOfSockets/relatedKeys("isi"):JSON discovers root atom "usersOfSockets/relatedKeys("isi")"
+
+1707272467660 [INFO] ✨ selector usersOfSockets/relatedKeys("isi"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("isi") registers dependency ( "usersOfSockets/relatedKeys("isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272467660 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("isi") discovers root atom "usersOfSockets/relatedKeys("isi")"
+
+1707272467660 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("isi") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272467660 [INFO] 🔨 atom *usersOfSockets/relatedKeys("isi") creating in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707272467660 [INFO] 👀 atom *usersOfSockets/relatedKeys("isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("isi")"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 🔨 atom usersOfSockets/relatedKeys("relay:isi") creating in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:isi") creating in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467660 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] 🔌 selector usersOfSockets/relatedKeys("relay:isi"):JSON registers dependency ( "usersOfSockets/relatedKeys("relay:isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272467660 [INFO] 🔍 selector usersOfSockets/relatedKeys("relay:isi"):JSON discovers root atom "usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467660 [INFO] ✨ selector usersOfSockets/relatedKeys("relay:isi"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("relay:isi") registers dependency ( "usersOfSockets/relatedKeys("relay:isi")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272467660 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("relay:isi") discovers root atom "usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467660 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("relay:isi") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272467660 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:isi") creating in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467660 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:isi") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("isi") operation start in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 📝 atom usersOfSockets/relatedKeys("isi") set to {"members":["relay:isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707272467660 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("isi") evicting 2 states downstream: {}
+
+1707272467660 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("isi") [ usersOfSockets/relatedKeys("isi") ] already done
+
+1707272467660 [INFO] 🗑 state usersOfSockets/relatedKeys("isi"):JSON evicted
+
+1707272467660 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("isi") evicted
+
+1707272467660 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("isi") is now ( {"members":["relay:isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707272467660 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("isi") operation done in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] ⭕ atom *usersOfSockets/relatedKeys("isi") operation start in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 atom *usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] 📝 atom *usersOfSockets/relatedKeys("isi") set to 0=add:"relay:isi"
+
+1707272467660 [INFO] 🧹 atom *usersOfSockets/relatedKeys("isi") no downstream states to evict
+
+1707272467660 [INFO] 📢 atom *usersOfSockets/relatedKeys("isi") went ( null -> 0=add:"relay:isi" ) subscribers: {}
+
+1707272467660 [INFO] 🔴 atom *usersOfSockets/relatedKeys("isi") operation done in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467660 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("isi") could not be updated. Expected update number 1, but got 0
+
+1707272467660 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:isi") operation start in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:isi") set to {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707272467660 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:isi") evicting 2 states downstream: {}
+
+1707272467660 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:isi") [ usersOfSockets/relatedKeys("relay:isi") ] already done
+
+1707272467660 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:isi"):JSON evicted
+
+1707272467660 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:isi") evicted
+
+1707272467660 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:isi") is now ( {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707272467660 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:isi") operation done in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:isi") operation start in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:isi") set to 0=add:"isi"
+
+1707272467660 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:isi") no downstream states to evict
+
+1707272467660 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:isi") went ( null -> 0=add:"isi" ) subscribers: {}
+
+1707272467660 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:isi") operation done in store "IMPLICIT_STORE"
+
+1707272467660 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467660 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:isi") could not be updated. Expected update number 1, but got 0
+
+1707272467661 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:isi") reading cached value
+
+1707272467661 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:isi") registers dependency ( "usersOfSockets/relatedKeys("relay:isi")" = {"members":["isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707272467661 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:isi") discovers root atom "usersOfSockets/relatedKeys("relay:isi")"
+
+1707272467661 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("relay:isi") = isi
+
+1707272467661 [INFO] 📖 readonly_selector usersOfSockets/singleRelatedKey("relay:isi") reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("isi") reading cached value
+
+1707272467661 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("isi") registers dependency ( "usersOfSockets/relatedKeys("isi")" = {"members":["relay:isi"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707272467661 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("isi") discovers root atom "usersOfSockets/relatedKeys("isi")"
+
+1707272467661 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("isi") = relay:isi
+
+1707272467661 [INFO] 🏗️ continuity hearts creating synchronizer for isi on socket relay:isi
+
+1707272467661 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("isi") Adding subscription "sync-continuity:hearts:isi"
+
+1707272467661 [INFO] 🔨 atom unacknowledgedUpdates("isi") creating in store "IMPLICIT_STORE"
+
+1707272467661 [INFO] 📖 atom unacknowledgedUpdates("isi") reading cached value
+
+1707272467661 [INFO] 👀 atom unacknowledgedUpdates("isi") Adding subscription "sync-continuity:hearts:isi"
+
+1707272467661 [INFO] 🖥️ relay:isi sub:usersInRooms/relatedKeys rBkJDXfsC20qaBa3AAAF
+
+1707272467661 [INFO] 🖥️ relay:isi {}
+
+1707272467661 [INFO] 🖥️ relay:isi {}
+
+1707272467661 [INFO] 🖥️ relay:isi get:hearts
+
+1707272467661 [INFO] 🖥️ relay:isi {}
+
+1707272467661 [INFO] 🖥️ relay:isi {}
+
+1707272467661 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707272467661 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707272467661 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272467661 [INFO] 📖 readonly_selector globalCardView reading cached value
+
+1707272467661 [INFO] 🔌 selector cardView("isi") registers dependency ( "globalCardView" = [] )
+
+1707272467661 [INFO] 🔍 selector cardView("isi") discovers root atoms: [ "cardIndex" ]
+
+1707272467661 [INFO] ✨ readonly_selector cardView("isi") = []
+
+1707272467661 [INFO] 📖 readonly_selector cardView("isi") reading cached value
+
+1707272467661 [INFO] 🕊️ perspective card isi can see {"perspectiveTokensState":{"key":"cardView(\"isi\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467661 [INFO] 📖 readonly_selector cardValueGlobalView reading cached value
+
+1707272467661 [INFO] 🔌 selector cardValueView("isi") registers dependency ( "cardValueGlobalView" = [] )
+
+1707272467661 [INFO] 🔍 selector cardValueView("isi") discovers root atoms: [ "cardValuesIndex" ]
+
+1707272467661 [INFO] ✨ readonly_selector cardValueView("isi") = []
+
+1707272467661 [INFO] 📖 readonly_selector cardValueView("isi") reading cached value
+
+1707272467661 [INFO] 🕊️ perspective cardValue isi can see {"perspectiveTokensState":{"key":"cardValueView(\"isi\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467661 [INFO] 📖 readonly_selector deckGlobalView reading cached value
+
+1707272467661 [INFO] 🔌 selector deckView("isi") registers dependency ( "deckGlobalView" = [] )
+
+1707272467661 [INFO] 🔍 selector deckView("isi") discovers root atoms: [ "deckIndex" ]
+
+1707272467661 [INFO] ✨ readonly_selector deckView("isi") = []
+
+1707272467661 [INFO] 📖 readonly_selector deckView("isi") reading cached value
+
+1707272467661 [INFO] 🕊️ perspective deck isi can see {"perspectiveTokensState":{"key":"deckView(\"isi\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467661 [INFO] 📖 readonly_selector handGlobalView reading cached value
+
+1707272467661 [INFO] 🔌 selector handView("isi") registers dependency ( "handGlobalView" = [] )
+
+1707272467661 [INFO] 🔍 selector handView("isi") discovers root atoms: [ "handIndex" ]
+
+1707272467661 [INFO] ✨ readonly_selector handView("isi") = []
+
+1707272467661 [INFO] 📖 readonly_selector handView("isi") reading cached value
+
+1707272467661 [INFO] 🕊️ perspective hand isi can see {"perspectiveTokensState":{"key":"handView(\"isi\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467662 [INFO] 📖 readonly_selector pileGlobalView reading cached value
+
+1707272467662 [INFO] 🔌 selector pileView("isi") registers dependency ( "pileGlobalView" = [] )
+
+1707272467662 [INFO] 🔍 selector pileView("isi") discovers root atoms: [ "pileIndex" ]
+
+1707272467662 [INFO] ✨ readonly_selector pileView("isi") = []
+
+1707272467662 [INFO] 📖 readonly_selector pileView("isi") reading cached value
+
+1707272467662 [INFO] 🕊️ perspective pile isi can see {"perspectiveTokensState":{"key":"pileView(\"isi\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467662 [INFO] 📖 readonly_selector trickGlobalView reading cached value
+
+1707272467662 [INFO] 🔌 selector trickView("isi") registers dependency ( "trickGlobalView" = [] )
+
+1707272467662 [INFO] 🔍 selector trickView("isi") discovers root atoms: [ "trickIndex" ]
+
+1707272467662 [INFO] ✨ readonly_selector trickView("isi") = []
+
+1707272467662 [INFO] 📖 readonly_selector trickView("isi") reading cached value
+
+1707272467662 [INFO] 🕊️ perspective trick isi can see {"perspectiveTokensState":{"key":"trickView(\"isi\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467662 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707272467662 [INFO] 🔌 selector visibleCardIndices("isi") registers dependency ( "pileIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272467662 [INFO] 🔍 selector visibleCardIndices("isi") discovers root atom "pileIndex"
+
+1707272467662 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707272467662 [INFO] 🔌 selector visibleCardIndices("isi") registers dependency ( "handIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272467662 [INFO] 🔍 selector visibleCardIndices("isi") discovers root atom "handIndex"
+
+1707272467662 [INFO] 📖 readonly_selector currentTrick reading cached value
+
+1707272467662 [INFO] 🔌 selector visibleCardIndices("isi") registers dependency ( "currentTrick" = null )
+
+1707272467662 [INFO] 🔍 selector visibleCardIndices("isi") discovers root atoms: [ "trickIndex" ]
+
+1707272467662 [INFO] ✨ readonly_selector visibleCardIndices("isi") = []
+
+1707272467662 [INFO] 📖 readonly_selector visibleCardIndices("isi") reading cached value
+
+1707272467662 [INFO] 🔌 selector valuesOfCardsView("isi") registers dependency ( "visibleCardIndices("isi")" = [] )
+
+1707272467662 [INFO] 🔍 selector valuesOfCardsView("isi") discovers root atoms: [ "pileIndex", "handIndex", "trickIndex" ]
+
+1707272467662 [INFO] ✨ readonly_selector valuesOfCardsView("isi") = []
+
+1707272467662 [INFO] 📖 readonly_selector valuesOfCardsView("isi") reading cached value
+
+1707272467662 [INFO] 🕊️ perspective valuesOfCards/relatedKeys isi can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"isi\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467662 [INFO] 📖 readonly_selector groupsOfCardsGlobalView reading cached value
+
+1707272467662 [INFO] 🔌 selector groupsOfCardsView("isi") registers dependency ( "groupsOfCardsGlobalView" = [] )
+
+1707272467662 [INFO] 🔍 selector groupsOfCardsView("isi") discovers root atoms: [ "cardIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707272467662 [INFO] ✨ readonly_selector groupsOfCardsView("isi") = []
+
+1707272467662 [INFO] 📖 readonly_selector groupsOfCardsView("isi") reading cached value
+
+1707272467662 [INFO] 🕊️ perspective groupsOfCards/relatedKeys isi can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"isi\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467662 [INFO] 📖 readonly_selector ownersOfGroupsGlobalView reading cached value
+
+1707272467662 [INFO] 🔌 selector ownersOfGroupsView("isi") registers dependency ( "ownersOfGroupsGlobalView" = [] )
+
+1707272467662 [INFO] 🔍 selector ownersOfGroupsView("isi") discovers root atoms: [ "gamePlayerIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707272467662 [INFO] ✨ readonly_selector ownersOfGroupsView("isi") = []
+
+1707272467662 [INFO] 📖 readonly_selector ownersOfGroupsView("isi") reading cached value
+
+1707272467662 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys isi can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"isi\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467662 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:isi"
+
+1707272467663 [INFO] 👀 transaction spawnTrick Adding subscription "sync-continuity:hearts:isi"
+
+1707272467663 [INFO] 🖥️ relay:isi unsub:usersInRooms/relatedKeys("rBkJDXfsC20qaBa3AAAF")
+
+1707272467663 [INFO] 🖥️ relay:isi {}
+
+1707272467663 [INFO] 🖥️ relay:isi {}
+
+1707272467663 [INFO] 🖥️ relay:isi sub:usersInRooms/relatedKeys rBkJDXfsC20qaBa3AAAF
+
+1707272467663 [INFO] 🖥️ relay:isi {}
+
+1707272467663 [INFO] 🖥️ relay:isi {}
+
+1707272467663 [INFO] 🖥️ relay:isi get:hearts
+
+1707272467663 [INFO] 🖥️ relay:isi {}
+
+1707272467663 [INFO] 🖥️ relay:isi {}
+
+1707272467663 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707272467663 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707272467663 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707272467663 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707272467663 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707272467663 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707272467663 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707272467663 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272467663 [INFO] 📖 readonly_selector cardView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective card isi can see {"perspectiveTokensState":{"key":"cardView(\"isi\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector cardValueView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective cardValue isi can see {"perspectiveTokensState":{"key":"cardValueView(\"isi\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector deckView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective deck isi can see {"perspectiveTokensState":{"key":"deckView(\"isi\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector handView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective hand isi can see {"perspectiveTokensState":{"key":"handView(\"isi\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector pileView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective pile isi can see {"perspectiveTokensState":{"key":"pileView(\"isi\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector trickView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective trick isi can see {"perspectiveTokensState":{"key":"trickView(\"isi\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector valuesOfCardsView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective valuesOfCards/relatedKeys isi can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"isi\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector groupsOfCardsView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective groupsOfCards/relatedKeys isi can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"isi\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 📖 readonly_selector ownersOfGroupsView("isi") reading cached value
+
+1707272467663 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys isi can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"isi\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"isi\""}},"perspectiveTokens":[]}
+
+1707272467663 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:isi"
+
+1707272467663 [INFO] 👀 transaction spawnTrick Adding subscription "sync-continuity:hearts:isi"
+
+1707272500289 [INFO] 🖥️ parent ["setup-relay","nezl"]
+
+1707272500358 [INFO] 👤 user nezl connected
+
+1707272500358 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707272500358 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272500358 [INFO] 📝 atom usersInRoomIndex set to {"members":["isi","nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1}
+
+1707272500358 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707272500358 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707272500358 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707272500358 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["isi","nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} ) subscribers: {}
+
+1707272500358 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707272500358 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707272500358 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707272500358 [INFO] 📝 atom *usersInRoomIndex set to 1=add:"nezl"
+
+1707272500358 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707272500358 [INFO] 📢 atom *usersInRoomIndex went ( 0=add:"isi" -> 1=add:"nezl" ) subscribers: {}
+
+1707272500358 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707272500358 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272500358 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 2, but got 1
+
+1707272500358 [INFO] 🔨 atom usersOfSockets/relatedKeys("nezl") creating in store "IMPLICIT_STORE"
+
+1707272500358 [INFO] 🔨 atom *usersOfSockets/relatedKeys("nezl") creating in store "IMPLICIT_STORE"
+
+1707272500358 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500358 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707272500358 [INFO] 👀 atom *usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707272500358 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500358 [INFO] 🔌 selector usersOfSockets/relatedKeys("nezl"):JSON registers dependency ( "usersOfSockets/relatedKeys("nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272500359 [INFO] 🔍 selector usersOfSockets/relatedKeys("nezl"):JSON discovers root atom "usersOfSockets/relatedKeys("nezl")"
+
+1707272500359 [INFO] ✨ selector usersOfSockets/relatedKeys("nezl"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("nezl") registers dependency ( "usersOfSockets/relatedKeys("nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272500359 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("nezl") discovers root atom "usersOfSockets/relatedKeys("nezl")"
+
+1707272500359 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("nezl") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272500359 [INFO] 🔨 atom *usersOfSockets/relatedKeys("nezl") creating in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707272500359 [INFO] 👀 atom *usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] 🔨 atom usersOfSockets/relatedKeys("relay:nezl") creating in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:nezl") creating in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 🔌 selector usersOfSockets/relatedKeys("relay:nezl"):JSON registers dependency ( "usersOfSockets/relatedKeys("relay:nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272500359 [INFO] 🔍 selector usersOfSockets/relatedKeys("relay:nezl"):JSON discovers root atom "usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] ✨ selector usersOfSockets/relatedKeys("relay:nezl"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("relay:nezl") registers dependency ( "usersOfSockets/relatedKeys("relay:nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272500359 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("relay:nezl") discovers root atom "usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("relay:nezl") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707272500359 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:nezl") creating in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("nezl") operation start in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] 📝 atom usersOfSockets/relatedKeys("nezl") set to {"members":["relay:nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707272500359 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("nezl") evicting 2 states downstream: {}
+
+1707272500359 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("nezl") [ usersOfSockets/relatedKeys("nezl") ] already done
+
+1707272500359 [INFO] 🗑 state usersOfSockets/relatedKeys("nezl"):JSON evicted
+
+1707272500359 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("nezl") evicted
+
+1707272500359 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("nezl") is now ( {"members":["relay:nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707272500359 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("nezl") operation done in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] ⭕ atom *usersOfSockets/relatedKeys("nezl") operation start in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 atom *usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] 📝 atom *usersOfSockets/relatedKeys("nezl") set to 0=add:"relay:nezl"
+
+1707272500359 [INFO] 🧹 atom *usersOfSockets/relatedKeys("nezl") no downstream states to evict
+
+1707272500359 [INFO] 📢 atom *usersOfSockets/relatedKeys("nezl") went ( null -> 0=add:"relay:nezl" ) subscribers: {}
+
+1707272500359 [INFO] 🔴 atom *usersOfSockets/relatedKeys("nezl") operation done in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("nezl") could not be updated. Expected update number 1, but got 0
+
+1707272500359 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:nezl") operation start in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:nezl") set to {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707272500359 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:nezl") evicting 2 states downstream: {}
+
+1707272500359 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:nezl") [ usersOfSockets/relatedKeys("relay:nezl") ] already done
+
+1707272500359 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:nezl"):JSON evicted
+
+1707272500359 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:nezl") evicted
+
+1707272500359 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:nezl") is now ( {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707272500359 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:nezl") operation done in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:nezl") operation start in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:nezl") set to 0=add:"nezl"
+
+1707272500359 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:nezl") no downstream states to evict
+
+1707272500359 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:nezl") went ( null -> 0=add:"nezl" ) subscribers: {}
+
+1707272500359 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:nezl") operation done in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:nezl") could not be updated. Expected update number 1, but got 0
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707272500359 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:nezl") registers dependency ( "usersOfSockets/relatedKeys("relay:nezl")" = {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707272500359 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:nezl") discovers root atom "usersOfSockets/relatedKeys("relay:nezl")"
+
+1707272500359 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("relay:nezl") = nezl
+
+1707272500359 [INFO] 📖 readonly_selector usersOfSockets/singleRelatedKey("relay:nezl") reading cached value
+
+1707272500359 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707272500359 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("nezl") registers dependency ( "usersOfSockets/relatedKeys("nezl")" = {"members":["relay:nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707272500359 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("nezl") discovers root atom "usersOfSockets/relatedKeys("nezl")"
+
+1707272500359 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("nezl") = relay:nezl
+
+1707272500359 [INFO] 🏗️ continuity hearts creating synchronizer for nezl on socket relay:nezl
+
+1707272500359 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("nezl") Adding subscription "sync-continuity:hearts:nezl"
+
+1707272500359 [INFO] 🔨 atom unacknowledgedUpdates("nezl") creating in store "IMPLICIT_STORE"
+
+1707272500359 [INFO] 📖 atom unacknowledgedUpdates("nezl") reading cached value
+
+1707272500359 [INFO] 👀 atom unacknowledgedUpdates("nezl") Adding subscription "sync-continuity:hearts:nezl"
+
+1707272500360 [INFO] 🖥️ parent ["relay:nezl","sub:usersInRooms/relatedKeys","MLnyQDTWvPxl434PAAAH"]
+
+1707272500360 [INFO] 🖥️ relay:nezl sub:usersInRooms/relatedKeys MLnyQDTWvPxl434PAAAH
+
+1707272500360 [INFO] 🖥️ relay:nezl {}
+
+1707272500360 [INFO] 🖥️ relay:nezl {}
+
+1707272500360 [INFO] 🖥️ relay:nezl get:hearts
+
+1707272500360 [INFO] 🖥️ relay:nezl {}
+
+1707272500360 [INFO] 🖥️ relay:nezl {}
+
+1707272500360 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707272500360 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707272500360 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707272500360 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707272500360 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707272500360 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707272500360 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707272500360 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272500360 [INFO] 📖 readonly_selector globalCardView reading cached value
+
+1707272500360 [INFO] 🔌 selector cardView("nezl") registers dependency ( "globalCardView" = [] )
+
+1707272500360 [INFO] 🔍 selector cardView("nezl") discovers root atoms: [ "cardIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector cardView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector cardView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective card nezl can see {"perspectiveTokensState":{"key":"cardView(\"nezl\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector cardValueGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector cardValueView("nezl") registers dependency ( "cardValueGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector cardValueView("nezl") discovers root atoms: [ "cardValuesIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector cardValueView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector cardValueView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective cardValue nezl can see {"perspectiveTokensState":{"key":"cardValueView(\"nezl\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector deckGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector deckView("nezl") registers dependency ( "deckGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector deckView("nezl") discovers root atoms: [ "deckIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector deckView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector deckView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective deck nezl can see {"perspectiveTokensState":{"key":"deckView(\"nezl\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector handGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector handView("nezl") registers dependency ( "handGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector handView("nezl") discovers root atoms: [ "handIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector handView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector handView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective hand nezl can see {"perspectiveTokensState":{"key":"handView(\"nezl\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector pileGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector pileView("nezl") registers dependency ( "pileGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector pileView("nezl") discovers root atoms: [ "pileIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector pileView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector pileView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective pile nezl can see {"perspectiveTokensState":{"key":"pileView(\"nezl\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector trickGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector trickView("nezl") registers dependency ( "trickGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector trickView("nezl") discovers root atoms: [ "trickIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector trickView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector trickView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective trick nezl can see {"perspectiveTokensState":{"key":"trickView(\"nezl\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707272500360 [INFO] 🔌 selector visibleCardIndices("nezl") registers dependency ( "pileIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272500360 [INFO] 🔍 selector visibleCardIndices("nezl") discovers root atom "pileIndex"
+
+1707272500360 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707272500360 [INFO] 🔌 selector visibleCardIndices("nezl") registers dependency ( "handIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707272500360 [INFO] 🔍 selector visibleCardIndices("nezl") discovers root atom "handIndex"
+
+1707272500360 [INFO] 📖 readonly_selector currentTrick reading cached value
+
+1707272500360 [INFO] 🔌 selector visibleCardIndices("nezl") registers dependency ( "currentTrick" = null )
+
+1707272500360 [INFO] 🔍 selector visibleCardIndices("nezl") discovers root atoms: [ "trickIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector visibleCardIndices("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector visibleCardIndices("nezl") reading cached value
+
+1707272500360 [INFO] 🔌 selector valuesOfCardsView("nezl") registers dependency ( "visibleCardIndices("nezl")" = [] )
+
+1707272500360 [INFO] 🔍 selector valuesOfCardsView("nezl") discovers root atoms: [ "pileIndex", "handIndex", "trickIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector valuesOfCardsView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector valuesOfCardsView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective valuesOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector groupsOfCardsGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector groupsOfCardsView("nezl") registers dependency ( "groupsOfCardsGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector groupsOfCardsView("nezl") discovers root atoms: [ "cardIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector groupsOfCardsView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector groupsOfCardsView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective groupsOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 📖 readonly_selector ownersOfGroupsGlobalView reading cached value
+
+1707272500360 [INFO] 🔌 selector ownersOfGroupsView("nezl") registers dependency ( "ownersOfGroupsGlobalView" = [] )
+
+1707272500360 [INFO] 🔍 selector ownersOfGroupsView("nezl") discovers root atoms: [ "gamePlayerIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707272500360 [INFO] ✨ readonly_selector ownersOfGroupsView("nezl") = []
+
+1707272500360 [INFO] 📖 readonly_selector ownersOfGroupsView("nezl") reading cached value
+
+1707272500360 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys nezl can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"nezl\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500360 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:nezl"
+
+1707272500360 [INFO] 👀 transaction spawnTrick Adding subscription "sync-continuity:hearts:nezl"
+
+1707272500361 [INFO] 🖥️ relay:nezl unsub:usersInRooms/relatedKeys("MLnyQDTWvPxl434PAAAH")
+
+1707272500361 [INFO] 🖥️ relay:nezl {}
+
+1707272500361 [INFO] 🖥️ relay:nezl {}
+
+1707272500361 [INFO] 🖥️ relay:nezl sub:usersInRooms/relatedKeys MLnyQDTWvPxl434PAAAH
+
+1707272500361 [INFO] 🖥️ relay:nezl {}
+
+1707272500361 [INFO] 🖥️ relay:nezl {}
+
+1707272500361 [INFO] 🖥️ relay:nezl get:hearts
+
+1707272500361 [INFO] 🖥️ relay:nezl {}
+
+1707272500361 [INFO] 🖥️ relay:nezl {}
+
+1707272500361 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707272500361 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707272500361 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707272500361 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707272500361 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707272500361 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707272500361 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707272500361 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707272500361 [INFO] 📖 readonly_selector cardView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective card nezl can see {"perspectiveTokensState":{"key":"cardView(\"nezl\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector cardValueView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective cardValue nezl can see {"perspectiveTokensState":{"key":"cardValueView(\"nezl\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector deckView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective deck nezl can see {"perspectiveTokensState":{"key":"deckView(\"nezl\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector handView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective hand nezl can see {"perspectiveTokensState":{"key":"handView(\"nezl\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector pileView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective pile nezl can see {"perspectiveTokensState":{"key":"pileView(\"nezl\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector trickView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective trick nezl can see {"perspectiveTokensState":{"key":"trickView(\"nezl\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector valuesOfCardsView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective valuesOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector groupsOfCardsView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective groupsOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707272500361 [INFO] 📖 readonly_selector ownersOfGroupsView("nezl") reading cached value
+
+1707272500361 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys nezl can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"nezl\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}

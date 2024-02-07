@@ -63,6 +63,7 @@ pipe(
 			socket.on(`create-room`, async (roomId) => {
 				runTransaction(RTS.createRoomTX)(roomId, `bun`, [
 					`--smol`,
+					`--watch`,
 					path.join(import.meta.dir, `room.server.ts`),
 				])
 			})
@@ -92,23 +93,18 @@ pipe(
 
 				const roomSocketState = findState(RTS.roomSelectors, roomId)
 				const roomSocket = await getState(roomSocketState)
+
 				roomSocket.emit(`setup-relay`, userKey)
 
 				toRoom = (payload) => {
 					roomSocket.emit(`relay:${userKey}`, ...payload)
 				}
-
 				while (roomQueue.length > 0) {
 					const payload = roomQueue.shift()
 					if (payload) toRoom(payload)
 				}
 
 				roomSocket.onAny((...payload) => socket.emit(...payload))
-
-				roomSocket.process.stderr.on(`data`, (buf) => {
-					const err = buf.toString()
-					console.error(`❌ ${roomId} [${roomSocket.process.pid}]\n${err}`)
-				})
 
 				roomSocket.process.on(`close`, (code) => {
 					console.log(`${roomId} exited with code ${code}`)
@@ -134,12 +130,11 @@ pipe(
 				)
 				const roomKey = getState(roomKeyState)
 				if (!roomKey) {
-					console.error(`Room not found`)
 					return
 				}
 				const roomSocketState = findState(RTS.roomSelectors, roomKey)
 				const roomSocket = await getState(roomSocketState)
-				roomSocket?.emit(`close-relay`, userKey)
+				roomSocket?.emit(`leave-room`, userKey)
 				runTransaction(RTS.leaveRoomTX)(`*`, userKey)
 				logger.info(`[${socket.id}]:${userKey}`, `disconnected`)
 			})

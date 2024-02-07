@@ -8,7 +8,6 @@ import { IMPLICIT } from "atom.io/internal"
 
 import { heartsContinuity } from "./store/game/hearts"
 
-process.stdout.write(`✨`)
 const parentSocket = new RTS.ParentSocket()
 const TIMESTAMP = Date.now()
 const LOG_FILEPATH = `./log-${TIMESTAMP}.txt`
@@ -16,19 +15,10 @@ const LOG_FILEPATH = `./log-${TIMESTAMP}.txt`
 const LOG_FILE = Bun.file(LOG_FILEPATH)
 const writer = LOG_FILE.writer()
 
-const txt = (arg: unknown) =>
-	typeof arg === `string` ? arg : JSON.stringify(arg)
-
-const stderrLog = {
-	info: (...args) => {
-		process.stderr.write(`\n${Date.now()} [INFO] ${args.map(txt).join(` `)}\n`)
-	},
-	warn: (...args) => {
-		process.stderr.write(`\n${Date.now()} [WARN] ${args.map(txt).join(` `)}\n`)
-	},
-	error: (...args) => {
-		process.stderr.write(`\n${Date.now()} [ERROR] ${args.map(txt).join(` `)}\n`)
-	},
+const ipcLog = {
+	info: (...args) => parentSocket.logger.info(...args),
+	warn: (...args) => parentSocket.logger.warn(...args),
+	error: (...args) => parentSocket.logger.error(...args),
 }
 
 const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
@@ -46,8 +36,12 @@ const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
 		}
 		return true
 	},
-	stderrLog,
+	ipcLog,
 )
+
+function txt(arg: unknown) {
+	return typeof arg === `string` ? arg : JSON.stringify(arg)
+}
 const atomIOFileLogger = new AtomIO.AtomIOLogger(`info`, () => true, {
 	error: (...args) => {
 		writer.write(`\n${Date.now()} [ERROR] ${args.map(txt).join(` `)}\n`)

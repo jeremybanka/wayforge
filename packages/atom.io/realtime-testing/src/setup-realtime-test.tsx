@@ -107,7 +107,7 @@ export const setupRealtimeTestServer = (
 			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
 			const room = getFromStore(roomState, silo.store)
 			if (room && !(room instanceof Promise)) {
-				room.kill()
+				room.process.kill()
 			}
 		}
 		silo.store.valueMap.clear()

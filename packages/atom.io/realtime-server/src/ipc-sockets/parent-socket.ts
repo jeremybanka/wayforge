@@ -1,5 +1,5 @@
 import { IMPLICIT, Subject } from "atom.io/internal"
-import { parseJson } from "atom.io/json"
+import { parseJson, stringifyJson } from "atom.io/json"
 import type { Json } from "atom.io/json"
 
 import { CustomSocket } from "./custom-socket"
@@ -40,7 +40,7 @@ export class ParentSocket<
 	} & {
 		/* eslint-disable quotes */
 		"setup-relay": [string]
-		"close-relay": [string]
+		"leave-room": [string]
 		/* eslint-enable quotes */
 	},
 	O extends Events & {
@@ -56,6 +56,15 @@ export class ParentSocket<
 	protected process: NodeJS.Process
 
 	public id = `no_id_retrieved`
+
+	protected log(...args: any[]): void {
+		this.process.stderr.write(stringifyJson(args) + `\x03`)
+	}
+	public logger = {
+		info: (...args: any[]): void => this.log(`i`, ...args),
+		warn: (...args: any[]): void => this.log(`w`, ...args),
+		error: (...args: any[]): void => this.log(`e`, ...args),
+	}
 
 	public constructor() {
 		super((event, ...args) => {
@@ -138,7 +147,7 @@ export class ParentSocket<
 			})
 		})
 
-		this.on(`close-relay`, (id: string) => {
+		this.on(`leave-room`, (id: string) => {
 			const relay = this.relays.get(id)
 			this.off(`relay:${id}`)
 			if (relay) {
@@ -146,6 +155,7 @@ export class ParentSocket<
 				this.relays.delete(id)
 			}
 		})
+		process.stdout.write(`✨`)
 	}
 
 	public relay(
