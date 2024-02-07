@@ -20,7 +20,7 @@
 		"@types/bun": "1.0.4",
 		"@types/npmlog": "7.0.0",
 		"browserslist": "4.22.3",
-		"chokidar": "3.5.3",
+		"chokidar": "3.6.0",
 		"concurrently": "8.2.2",
 		"htmx.org": "1.9.10",
 		"hyperscript.org": "0.9.12",
