@@ -23,12 +23,12 @@ const ipcLog = {
 
 const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
 	`info`,
-	(icon, tokenType, tokenKey, message) => {
-		const allowedIcons: AtomIO.LoggerIcon[] = [`🛄`, `🕊️`, `🏗️`, `🖥️`]
+	(_, tokenType, tokenKey, message) => {
+		const allowedIcons: AtomIO.LoggerIcon[] = [`🛄`]
 		const ignoredTokenTypes: AtomIO.TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
-		if (!allowedIcons.includes(icon)) return false
+		// if (!allowedIcons.includes(icon)) return false
 		if (ignoredTokenTypes.includes(tokenType)) return false
 		if (ignoredTokens.includes(tokenKey)) return false
 		for (const ignoredMessageContent of ignoredMessageContents) {
@@ -57,24 +57,24 @@ const atomIOFileLogger = new AtomIO.AtomIOLogger(`info`, () => true, {
 IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 IMPLICIT.STORE.loggers[1] = atomIOFileLogger
 
+const logger = IMPLICIT.STORE.logger
+
 parentSocket.relay((socket) => {
 	const snapshot = generateHeapSnapshot()
 	Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
-	socket.onAny((...args) => {
-		IMPLICIT.STORE.logger.info(`🖥️`, socket.id, ...args)
-		IMPLICIT.STORE.logger.info(`🖥️`, socket.id, socket.globalListeners.keys())
-		IMPLICIT.STORE.logger.info(`🖥️`, socket.id, socket.listeners.keys())
+	socket.onAny((event, ...args) => {
+		parentSocket.logger.info(`🛰 `, event, ...args)
 	})
-	const userId = socket.id.split(`:`)[1]
-	IMPLICIT.STORE.logger.info(`👤`, `user`, userId, `connected`)
-	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(userId))
+	const username = socket.id.split(`:`)[1]
+	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(username))
 	socket.on(`leave-room`, () => {
-		IMPLICIT.STORE.logger.info(`👤`, `user`, userId, `left`)
-		AtomIO.setState(RT.usersInThisRoomIndex, (set) => (set.delete(userId), set))
+		AtomIO.setState(
+			RT.usersInThisRoomIndex,
+			(set) => (set.delete(username), set),
+		)
 	})
-	RTS.usersOfSockets.relations.set(userId, socket.id)
+	RTS.usersOfSockets.relations.set(username, socket.id)
 
-	// COMPOSE REALTIME SERVICE HOOKS
 	const syncContinuity = RTS.realtimeContinuitySynchronizer({ socket })
 	const exposeMutable = RTS.realtimeMutableProvider({ socket })
 

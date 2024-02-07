@@ -36,11 +36,11 @@ export class SubjectSocket<
 
 export class ParentSocket<
 	I extends Events & {
-		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
+		[id in string as `user:${id}`]: [string, ...Json.Serializable[]]
 	} & {
 		/* eslint-disable quotes */
-		"setup-relay": [string]
-		"leave-room": [string]
+		"user-joins": [string]
+		"user-leaves": [string]
 		/* eslint-enable quotes */
 	},
 	O extends Events & {
@@ -55,7 +55,7 @@ export class ParentSocket<
 	) => (() => void) | void)[]
 	protected process: NodeJS.Process
 
-	public id = `no_id_retrieved`
+	public id = `#####`
 
 	protected log(...args: any[]): void {
 		this.process.stderr.write(stringifyJson(args) + `\x03`)
@@ -87,7 +87,7 @@ export class ParentSocket<
 
 				try {
 					const parsedEvent = parseJson(this.incompleteData)
-					IMPLICIT.STORE.logger.info(`🖥️`, `parent`, parsedEvent)
+					this.logger.info(`🎰`, `received`, parsedEvent)
 					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 					while (this.unprocessedEvents.length > 0) {
 						const event = this.unprocessedEvents.shift()
@@ -100,8 +100,10 @@ export class ParentSocket<
 						}
 					}
 					this.incompleteData = ``
-				} catch (error) {
-					this.process.stderr.write(`❌ ${error}\n❌ ${newInput}\n`)
+				} catch (thrown) {
+					if (thrown instanceof Error) {
+						this.logger.error(`❗`, thrown.message, thrown.cause, thrown.stack)
+					}
 				}
 			},
 		)
@@ -110,19 +112,19 @@ export class ParentSocket<
 			process.exit(0)
 		})
 		process.on(`exit`, () => {
-			this.process.stderr.write(`❌ ${this.id} exited\n`)
+			this.logger.info(`🔥`, this.id, `exited`)
 			process.exit(0)
 		})
 		process.on(`end`, () => {
-			this.process.stderr.write(`❌ ${this.id} ended\n`)
+			this.logger.info(`🔥`, this.id, `ended`)
 			process.exit(0)
 		})
 		process.on(`SIGTERM`, () => {
-			this.process.stderr.write(`❌ ${this.id} terminated\n`)
+			this.logger.error(`🔥`, this.id, `terminated`)
 			process.exit(0)
 		})
 		process.on(`SIGINT`, () => {
-			this.process.stderr.write(`❌ ${this.id} interrupted\n`)
+			this.logger.error(`🔥`, this.id, `interrupted`)
 			process.exit(0)
 		})
 
@@ -130,16 +132,22 @@ export class ParentSocket<
 			this.id = process.pid?.toString()
 		}
 
-		this.on(`setup-relay`, (id: string) => {
-			const relay = new SubjectSocket(`relay:${id}`)
-			this.relays.set(id, relay)
+		this.on(`user-joins`, (username) => {
+			this.logger.info(`👤`, `user`, username, `joined`)
+			const relay = new SubjectSocket(`user:${username}`)
+			this.relays.set(username, relay)
+			this.logger.info(
+				`🔗`,
+				`attaching services:`,
+				`[${[...this.relayServices.keys()].join(`, `)}]`,
+			)
 			for (const attachServices of this.relayServices) {
 				const cleanup = attachServices(relay)
 				if (cleanup) {
 					relay.disposalFunctions.push(cleanup)
 				}
 			}
-			this.on(`relay:${id}`, (...data) => {
+			this.on(`user:${username}`, (...data) => {
 				relay.in.next(data)
 			})
 			relay.out.subscribe(`socket`, (data) => {
@@ -147,28 +155,22 @@ export class ParentSocket<
 			})
 		})
 
-		this.on(`leave-room`, (id: string) => {
-			const relay = this.relays.get(id)
-			this.off(`relay:${id}`)
+		this.on(`user-leaves`, (username) => {
+			const relay = this.relays.get(username)
+			this.off(`relay:${username}`)
 			if (relay) {
 				relay.dispose()
-				this.relays.delete(id)
+				this.relays.delete(username)
 			}
 		})
+
 		process.stdout.write(`✨`)
 	}
 
 	public relay(
 		attachServices: (socket: SubjectSocket<any, any>) => (() => void) | void,
 	): void {
+		this.logger.info(`🔗`, `running relay method`)
 		this.relayServices.push(attachServices)
-		const relays = this.relays.values()
-		for (const relay of relays) {
-			const cleanup = attachServices(relay)
-			if (cleanup) {
-				relay.disposalFunctions.push(cleanup)
-			}
-			relay.disposalFunctions.push
-		}
 	}
 }

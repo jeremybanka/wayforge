@@ -19,7 +19,7 @@ export class ChildSocket<
 	protected incompleteLog = ``
 	protected unprocessedLogs: string[] = []
 
-	public id = `no_id_retrieved`
+	public id = `#####`
 
 	protected handleLog(arg: Json.Serializable): void {
 		if (Array.isArray(arg)) {
@@ -66,6 +66,9 @@ export class ChildSocket<
 				const newInput = this.unprocessedEvents.shift()
 				this.incompleteData += newInput || ``
 				try {
+					if (this.incompleteData.startsWith(`error`)) {
+						console.log(`❗`, this.incompleteData)
+					}
 					const parsedEvent = parseJson(this.incompleteData)
 					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 					while (this.unprocessedEvents.length > 0) {

@@ -38,16 +38,17 @@ pipe(
 	},
 	(server) => {
 		server.on(`connection`, (socket) => {
+			const { username } = socket.handshake.auth
 			const exposeMutable = RTS.realtimeMutableProvider({ socket })
 			const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 				socket,
 			})
-
-			const userKeyState = findState(
-				RTS.usersOfSockets.states.userKeyOfSocket,
-				socket.id,
-			)
-			const userKey = getState(userKeyState)
+			socket.onAny((...payload: [string, ...Json.Array]) => {
+				logger.info(`🛰 `, username, ...payload)
+			})
+			socket.onAnyOutgoing((event, ...args) => {
+				logger.info(`🛰  >>`, username, event, ...args)
+			})
 
 			exposeMutable(RT.roomIndex)
 
@@ -71,62 +72,56 @@ pipe(
 			socket.on(`delete-room`, async (roomId) => {
 				const roomState = findState(RTS.roomSelectors, roomId)
 				const roomSocket = await getState(roomState)
-				roomSocket.emit(`exit`, userKey)
+				roomSocket.emit(`exit`, username)
 				setState(RT.roomIndex, (index) => (index.delete(roomId), index))
 			})
 
 			socket.on(`join-room`, async (roomId) => {
-				if (!userKey) throw new Error(`User not found`)
+				logger.info(`[${socket.id}]:${username}`, `joining room "${roomId}"`)
 				const roomQueue: [string, ...Json.Array][] = []
-				let toRoom = (payload: [string, ...Json.Array]): void => {
+				const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
 					roomQueue.push(payload)
 				}
-				socket.onAny((...payload: [string, ...Json.Array]) => {
-					console.log(`🛰 `, userKey, ...payload)
-					toRoom(payload)
-				})
-				socket.onAnyOutgoing((event, ...args) => {
-					console.log(`🛰  >>`, userKey, event, ...args)
-				})
+				let toRoom = pushToRoomQueue
+				const forward = (...payload: [string, ...Json.Array]) => toRoom(payload)
+				socket.onAny(forward)
 
-				runTransaction(RTS.joinRoomTX, nanoid())(roomId, userKey, 0)
+				runTransaction(RTS.joinRoomTX, nanoid())(roomId, username, 0)
 
 				const roomSocketState = findState(RTS.roomSelectors, roomId)
 				const roomSocket = await getState(roomSocketState)
-
-				roomSocket.emit(`setup-relay`, userKey)
+				roomSocket.onAny((...payload) => socket.emit(...payload))
+				roomSocket.emit(`user-joins`, username)
 
 				toRoom = (payload) => {
-					roomSocket.emit(`relay:${userKey}`, ...payload)
+					roomSocket.emit(`user:${username}`, ...payload)
 				}
 				while (roomQueue.length > 0) {
 					const payload = roomQueue.shift()
 					if (payload) toRoom(payload)
 				}
 
-				roomSocket.onAny((...payload) => socket.emit(...payload))
-
 				roomSocket.process.on(`close`, (code) => {
-					console.log(`${roomId} exited with code ${code}`)
+					logger.info(`[${socket.id}]:${username}`, `room "${roomId}" closed`)
 					socket.emit(`room-close`, roomId, code)
 				})
+				const leaveRoom = () => {
+					socket.off(`user-leaves`, leaveRoom)
+					socket.offAny(forward)
+					// roomSocket.dispose() IMPLEMENT ❗
+					toRoom([`user-leaves`])
+					runTransaction(RTS.leaveRoomTX)(roomId, username)
+				}
+
+				socket.on(`leave-room`, leaveRoom)
+				socket.on(`disconnect`, leaveRoom)
 			})
 
-			socket.on(`leave-room`, async (roomId) => {
-				if (!userKey) {
-					console.error(`User not found`)
-					return
-				}
-				runTransaction(RTS.leaveRoomTX)(roomId, userKey)
-			})
-			socket.on(`disconnect`, async () => {
-				if (!userKey) {
-					console.error(`User not found`)
-					return
-				}
+			const handleDisconnect = async () => {
+				socket.off(`disconnect`, handleDisconnect)
 				const roomKeyState = findState(
 					RT.usersInRooms.states.roomKeyOfUser,
-					userKey,
+					username,
 				)
 				const roomKey = getState(roomKeyState)
 				if (!roomKey) {
@@ -134,10 +129,11 @@ pipe(
 				}
 				const roomSocketState = findState(RTS.roomSelectors, roomKey)
 				const roomSocket = await getState(roomSocketState)
-				roomSocket?.emit(`leave-room`, userKey)
-				runTransaction(RTS.leaveRoomTX)(`*`, userKey)
-				logger.info(`[${socket.id}]:${userKey}`, `disconnected`)
-			})
+				roomSocket?.emit(`leave-room`, username)
+				runTransaction(RTS.leaveRoomTX)(`*`, username)
+				logger.info(`[${socket.id}]:${username}`, `disconnected`)
+			}
+			socket.on(`disconnect`, handleDisconnect)
 		})
 	},
 )

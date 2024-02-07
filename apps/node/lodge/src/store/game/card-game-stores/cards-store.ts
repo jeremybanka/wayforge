@@ -94,10 +94,7 @@ export const globalCardView = selector<RegularAtomToken<Card>[]>({
 			const cardState = find(cardAtoms, cardId)
 			cardTokens.push(cardState)
 		}
-		IMPLICIT.STORE.logger.info(`🏗️`, `selector`, `globalCardView`, `found`, {
-			cardIds,
-			cardTokens,
-		})
+
 		return cardTokens
 	},
 })

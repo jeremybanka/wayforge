@@ -51,9 +51,8 @@ export const SystemServer = ({
 
 		actUponStore(RTS.joinRoomTX, arbitrary(), store)(roomId, userKey, 0)
 
-		const roomState = findInStore(RTS.roomSelectors, roomId, store)
-		const room = await getFromStore(roomState, store)
-		const roomSocket = new RTS.ChildSocket(room)
+		const roomSocketState = findInStore(RTS.roomSelectors, roomId, store)
+		const roomSocket = await getFromStore(roomSocketState, store)
 		roomSocket.emit(`setup-relay`, userKey)
 
 		toRoom = (payload) => {
@@ -67,12 +66,12 @@ export const SystemServer = ({
 
 		roomSocket.onAny((...payload) => socket.emit(...payload))
 
-		room.process.stderr.on(`data`, (buf) => {
+		roomSocket.process.stderr.on(`data`, (buf) => {
 			const err = buf.toString()
-			console.error(`❌ ${roomId} [${room.process.pid}]\n${err}`)
+			console.error(`❌ ${roomId} [${roomSocket.process.pid}]\n${err}`)
 		})
 
-		room.on(`close`, (code) => {
+		roomSocket.on(`close`, (code) => {
 			console.log(`${roomId} exited with code ${code}`)
 			socket.emit(`room-close`, roomId, code)
 		})
