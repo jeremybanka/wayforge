@@ -1,10 +1,9 @@
 import path from "path"
-import * as AtomIO from "atom.io"
+import { findState, getState, runTransaction, setState } from "atom.io"
 import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import { pipe } from "fp-ts/function"
-// import { arbitrary } from "atom.io/internal"
 import { nanoid } from "nanoid"
 import * as SocketIO from "socket.io"
 
@@ -23,11 +22,11 @@ pipe(
 			const { token, username } = socket.handshake.auth
 			const shortId = socket.id.slice(0, 3)
 			if (token === `test` && socket.id) {
-				const socketState = AtomIO.findState(RTS.socketAtoms, socket.id)
-				AtomIO.setState(socketState, socket)
+				const socketState = findState(RTS.socketAtoms, socket.id)
+				setState(socketState, socket)
 				RTS.usersOfSockets.relations.set(socket.id, username)
-				AtomIO.setState(RTS.userIndex, (index) => index.add(username))
-				AtomIO.setState(RTS.socketIndex, (index) => index.add(socket.id))
+				setState(RTS.userIndex, (index) => index.add(username))
+				setState(RTS.socketIndex, (index) => index.add(socket.id))
 				logger.info(`[${shortId}]:${username}`, `connected`)
 				next()
 			} else {
@@ -44,11 +43,11 @@ pipe(
 				socket,
 			})
 
-			const userKeyState = AtomIO.findState(
+			const userKeyState = findState(
 				RTS.usersOfSockets.states.userKeyOfSocket,
 				socket.id,
 			)
-			const userKey = AtomIO.getState(userKeyState)
+			const userKey = getState(userKeyState)
 
 			exposeMutable(RT.roomIndex)
 
@@ -60,25 +59,39 @@ pipe(
 				RT.usersInRooms.core.findRelatedKeysState,
 				RT.roomIndex,
 			)
+
 			socket.on(`create-room`, async (roomId) => {
-				AtomIO.runTransaction(RTS.createRoomTX, nanoid())(roomId, `bun`, [
+				runTransaction(RTS.createRoomTX)(roomId, `bun`, [
+					`--smol`,
 					path.join(import.meta.dir, `room.server.ts`),
 				])
 			})
 
-			const roomQueue: [string, ...Json.Array][] = []
-			let toRoom = (payload: [string, ...Json.Array]): void => {
-				roomQueue.push(payload)
-			}
+			socket.on(`delete-room`, async (roomId) => {
+				const roomState = findState(RTS.roomSelectors, roomId)
+				const roomSocket = await getState(roomState)
+				roomSocket.emit(`exit`, userKey)
+				setState(RT.roomIndex, (index) => (index.delete(roomId), index))
+			})
 
 			socket.on(`join-room`, async (roomId) => {
 				if (!userKey) throw new Error(`User not found`)
+				const roomQueue: [string, ...Json.Array][] = []
+				let toRoom = (payload: [string, ...Json.Array]): void => {
+					roomQueue.push(payload)
+				}
+				socket.onAny((...payload: [string, ...Json.Array]) => {
+					console.log(`🛰 `, userKey, ...payload)
+					toRoom(payload)
+				})
+				socket.onAnyOutgoing((event, ...args) => {
+					console.log(`🛰  >>`, userKey, event, ...args)
+				})
 
-				AtomIO.runTransaction(RTS.joinRoomTX, nanoid())(roomId, userKey, 0)
+				runTransaction(RTS.joinRoomTX, nanoid())(roomId, userKey, 0)
 
-				const roomState = AtomIO.findState(RTS.roomSelectors, roomId)
-				const room = await AtomIO.getState(roomState)
-				const roomSocket = new RTS.ChildSocket(room)
+				const roomSocketState = findState(RTS.roomSelectors, roomId)
+				const roomSocket = await getState(roomSocketState)
 				roomSocket.emit(`setup-relay`, userKey)
 
 				toRoom = (payload) => {
@@ -92,23 +105,43 @@ pipe(
 
 				roomSocket.onAny((...payload) => socket.emit(...payload))
 
-				room.stderr.on(`data`, (buf) => {
+				roomSocket.process.stderr.on(`data`, (buf) => {
 					const err = buf.toString()
-					console.error(`❌ ${roomId} [${room.pid}]\n${err}`)
+					console.error(`❌ ${roomId} [${roomSocket.process.pid}]\n${err}`)
 				})
 
-				room.on(`close`, (code) => {
+				roomSocket.process.on(`close`, (code) => {
 					console.log(`${roomId} exited with code ${code}`)
 					socket.emit(`room-close`, roomId, code)
 				})
 			})
 
-			socket.onAny((...payload: [string, ...Json.Array]) => {
-				console.log(`🛰 `, userKey, ...payload)
-				toRoom(payload)
+			socket.on(`leave-room`, async (roomId) => {
+				if (!userKey) {
+					console.error(`User not found`)
+					return
+				}
+				runTransaction(RTS.leaveRoomTX)(roomId, userKey)
 			})
-			socket.onAnyOutgoing((event, ...args) => {
-				console.log(`🛰  >>`, userKey, event, ...args)
+			socket.on(`disconnect`, async () => {
+				if (!userKey) {
+					console.error(`User not found`)
+					return
+				}
+				const roomKeyState = findState(
+					RT.usersInRooms.states.roomKeyOfUser,
+					userKey,
+				)
+				const roomKey = getState(roomKeyState)
+				if (!roomKey) {
+					console.error(`Room not found`)
+					return
+				}
+				const roomSocketState = findState(RTS.roomSelectors, roomKey)
+				const roomSocket = await getState(roomSocketState)
+				roomSocket?.emit(`close-relay`, userKey)
+				runTransaction(RTS.leaveRoomTX)(`*`, userKey)
+				logger.info(`[${socket.id}]:${userKey}`, `disconnected`)
 			})
 		})
 	},

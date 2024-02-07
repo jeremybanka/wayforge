@@ -20,15 +20,29 @@ export default function Lobby(): JSX.Element {
 		<div>
 			<h2>Lobby</h2>
 			{roomKeys.members.map((roomId) => (
-				<button
-					key={roomId}
-					type="button"
-					onClick={() => {
-						setRoomState(roomId)
-					}}
-				>
-					{roomId}
-				</button>
+				<>
+					<button
+						key={roomId}
+						type="button"
+						onClick={() => {
+							setRoomState(roomId)
+						}}
+					>
+						{roomId}
+					</button>
+					<button
+						type="button"
+						onClick={() => {
+							if (socket) {
+								socket.emit(`delete-room`, `room-1`)
+							} else {
+								console.log(`socket is null`)
+							}
+						}}
+					>
+						x
+					</button>
+				</>
 			))}
 			<button
 				type="button"

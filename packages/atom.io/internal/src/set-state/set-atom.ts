@@ -41,7 +41,6 @@ export const setAtom = <T>(
 		} else if (atom.key.startsWith(`*`)) {
 			const mutableKey = atom.key.slice(1)
 			const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
-			if (mutableAtom.key === `ownersOfGroups/relatedKeys("jeremy")`) debugger
 			let transceiver: Transceiver<any> = target.valueMap.get(mutableKey)
 			if (mutableAtom.type === `mutable_atom` && isChildStore(target)) {
 				const { parent } = target

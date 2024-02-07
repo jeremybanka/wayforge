@@ -1,0 +1,1464 @@
+
+1707262773144 [INFO] 🖥️ parent ["setup-relay","jeremy"]
+
+1707262773194 [INFO] 👤 user jeremy connected
+
+1707262773194 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707262773194 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707262773194 [INFO] 📝 atom usersInRoomIndex set to {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707262773194 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707262773194 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707262773194 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707262773194 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707262773194 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707262773194 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707262773194 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707262773194 [INFO] 📝 atom *usersInRoomIndex set to 0=add:"jeremy"
+
+1707262773194 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707262773194 [INFO] 📢 atom *usersInRoomIndex went ( null -> 0=add:"jeremy" ) subscribers: {}
+
+1707262773194 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707262773194 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707262773194 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 1, but got 0
+
+1707262773194 [INFO] 🔨 atom usersOfSockets/relatedKeys("jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773194 [INFO] 🔨 atom *usersOfSockets/relatedKeys("jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773194 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773194 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707262773194 [INFO] 👀 atom *usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707262773194 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773194 [INFO] 🔌 selector usersOfSockets/relatedKeys("jeremy"):JSON registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707262773195 [INFO] 🔍 selector usersOfSockets/relatedKeys("jeremy"):JSON discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707262773195 [INFO] ✨ selector usersOfSockets/relatedKeys("jeremy"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("jeremy") registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707262773195 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("jeremy") discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707262773195 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("jeremy") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707262773195 [INFO] 🔨 atom *usersOfSockets/relatedKeys("jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707262773195 [INFO] 👀 atom *usersOfSockets/relatedKeys("jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("jeremy")"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] 🔨 atom usersOfSockets/relatedKeys("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 🔌 selector usersOfSockets/relatedKeys("relay:jeremy"):JSON registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707262773195 [INFO] 🔍 selector usersOfSockets/relatedKeys("relay:jeremy"):JSON discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] ✨ selector usersOfSockets/relatedKeys("relay:jeremy"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("relay:jeremy") registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707262773195 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("relay:jeremy") discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("relay:jeremy") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707262773195 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:jeremy") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("jeremy") operation start in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] 📝 atom usersOfSockets/relatedKeys("jeremy") set to {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707262773195 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("jeremy") evicting 2 states downstream: {}
+
+1707262773195 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("jeremy") [ usersOfSockets/relatedKeys("jeremy") ] already done
+
+1707262773195 [INFO] 🗑 state usersOfSockets/relatedKeys("jeremy"):JSON evicted
+
+1707262773195 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("jeremy") evicted
+
+1707262773195 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("jeremy") is now ( {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707262773195 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("jeremy") operation done in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] ⭕ atom *usersOfSockets/relatedKeys("jeremy") operation start in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 atom *usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] 📝 atom *usersOfSockets/relatedKeys("jeremy") set to 0=add:"relay:jeremy"
+
+1707262773195 [INFO] 🧹 atom *usersOfSockets/relatedKeys("jeremy") no downstream states to evict
+
+1707262773195 [INFO] 📢 atom *usersOfSockets/relatedKeys("jeremy") went ( null -> 0=add:"relay:jeremy" ) subscribers: {}
+
+1707262773195 [INFO] 🔴 atom *usersOfSockets/relatedKeys("jeremy") operation done in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("jeremy") could not be updated. Expected update number 1, but got 0
+
+1707262773195 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:jeremy") operation start in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:jeremy") set to {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707262773195 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") evicting 2 states downstream: {}
+
+1707262773195 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") [ usersOfSockets/relatedKeys("relay:jeremy") ] already done
+
+1707262773195 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:jeremy"):JSON evicted
+
+1707262773195 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:jeremy") evicted
+
+1707262773195 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") is now ( {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707262773195 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") operation done in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:jeremy") operation start in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:jeremy") set to 0=add:"jeremy"
+
+1707262773195 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:jeremy") no downstream states to evict
+
+1707262773195 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:jeremy") went ( null -> 0=add:"jeremy" ) subscribers: {}
+
+1707262773195 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:jeremy") operation done in store "IMPLICIT_STORE"
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:jeremy") could not be updated. Expected update number 1, but got 0
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:jeremy") registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707262773195 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:jeremy") discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707262773195 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("relay:jeremy") = jeremy
+
+1707262773195 [INFO] 📖 readonly_selector usersOfSockets/singleRelatedKey("relay:jeremy") reading cached value
+
+1707262773195 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707262773195 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("jeremy") registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707262773195 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("jeremy") discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707262773195 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("jeremy") = relay:jeremy
+
+1707262773195 [INFO] 🏗️ continuity hearts creating synchronizer for jeremy on socket relay:jeremy
+
+1707262773195 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("jeremy") Adding subscription "sync-continuity:hearts:jeremy"
+
+1707262773196 [INFO] 🔨 atom unacknowledgedUpdates("jeremy") creating in store "IMPLICIT_STORE"
+
+1707262773196 [INFO] 📖 atom unacknowledgedUpdates("jeremy") reading cached value
+
+1707262773196 [INFO] 👀 atom unacknowledgedUpdates("jeremy") Adding subscription "sync-continuity:hearts:jeremy"
+
+1707262773196 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707262773196 [INFO] 🖥️ relay:jeremy {}
+
+1707262773196 [INFO] 🖥️ relay:jeremy {}
+
+1707262773196 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707262773196 [INFO] 🖥️ relay:jeremy {}
+
+1707262773196 [INFO] 🖥️ relay:jeremy {}
+
+1707262773196 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707262773196 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707262773196 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707262773196 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707262773196 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707262773196 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707262773196 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707262773196 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707262773196 [INFO] 📖 readonly_selector globalCardView reading cached value
+
+1707262773196 [INFO] 🔌 selector cardView("jeremy") registers dependency ( "globalCardView" = [] )
+
+1707262773196 [INFO] 🔍 selector cardView("jeremy") discovers root atoms: [ "cardIndex" ]
+
+1707262773196 [INFO] ✨ readonly_selector cardView("jeremy") = []
+
+1707262773196 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707262773196 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773196 [INFO] 📖 readonly_selector cardValueGlobalView reading cached value
+
+1707262773196 [INFO] 🔌 selector cardValueView("jeremy") registers dependency ( "cardValueGlobalView" = [] )
+
+1707262773196 [INFO] 🔍 selector cardValueView("jeremy") discovers root atoms: [ "cardValuesIndex" ]
+
+1707262773196 [INFO] ✨ readonly_selector cardValueView("jeremy") = []
+
+1707262773196 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707262773196 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773196 [INFO] 📖 readonly_selector deckGlobalView reading cached value
+
+1707262773196 [INFO] 🔌 selector deckView("jeremy") registers dependency ( "deckGlobalView" = [] )
+
+1707262773196 [INFO] 🔍 selector deckView("jeremy") discovers root atoms: [ "deckIndex" ]
+
+1707262773196 [INFO] ✨ readonly_selector deckView("jeremy") = []
+
+1707262773196 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707262773196 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773196 [INFO] 📖 readonly_selector handGlobalView reading cached value
+
+1707262773196 [INFO] 🔌 selector handView("jeremy") registers dependency ( "handGlobalView" = [] )
+
+1707262773196 [INFO] 🔍 selector handView("jeremy") discovers root atoms: [ "handIndex" ]
+
+1707262773196 [INFO] ✨ readonly_selector handView("jeremy") = []
+
+1707262773196 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707262773196 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773196 [INFO] 📖 readonly_selector pileGlobalView reading cached value
+
+1707262773196 [INFO] 🔌 selector pileView("jeremy") registers dependency ( "pileGlobalView" = [] )
+
+1707262773196 [INFO] 🔍 selector pileView("jeremy") discovers root atoms: [ "pileIndex" ]
+
+1707262773196 [INFO] ✨ readonly_selector pileView("jeremy") = []
+
+1707262773196 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707262773196 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773196 [INFO] 📖 readonly_selector trickGlobalView reading cached value
+
+1707262773196 [INFO] 🔌 selector trickView("jeremy") registers dependency ( "trickGlobalView" = [] )
+
+1707262773196 [INFO] 🔍 selector trickView("jeremy") discovers root atoms: [ "trickIndex" ]
+
+1707262773196 [INFO] ✨ readonly_selector trickView("jeremy") = []
+
+1707262773196 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707262773196 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707262773197 [INFO] 🔌 selector visibleCardIndices("jeremy") registers dependency ( "pileIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707262773197 [INFO] 🔍 selector visibleCardIndices("jeremy") discovers root atom "pileIndex"
+
+1707262773197 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707262773197 [INFO] 🔌 selector visibleCardIndices("jeremy") registers dependency ( "handIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707262773197 [INFO] 🔍 selector visibleCardIndices("jeremy") discovers root atom "handIndex"
+
+1707262773197 [INFO] 📖 readonly_selector currentTrick reading cached value
+
+1707262773197 [INFO] 🔌 selector visibleCardIndices("jeremy") registers dependency ( "currentTrick" = null )
+
+1707262773197 [INFO] 🔍 selector visibleCardIndices("jeremy") discovers root atoms: [ "trickIndex" ]
+
+1707262773197 [INFO] ✨ readonly_selector visibleCardIndices("jeremy") = []
+
+1707262773197 [INFO] 📖 readonly_selector visibleCardIndices("jeremy") reading cached value
+
+1707262773197 [INFO] 🔌 selector valuesOfCardsView("jeremy") registers dependency ( "visibleCardIndices("jeremy")" = [] )
+
+1707262773197 [INFO] 🔍 selector valuesOfCardsView("jeremy") discovers root atoms: [ "pileIndex", "handIndex", "trickIndex" ]
+
+1707262773197 [INFO] ✨ readonly_selector valuesOfCardsView("jeremy") = []
+
+1707262773197 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector groupsOfCardsGlobalView reading cached value
+
+1707262773197 [INFO] 🔌 selector groupsOfCardsView("jeremy") registers dependency ( "groupsOfCardsGlobalView" = [] )
+
+1707262773197 [INFO] 🔍 selector groupsOfCardsView("jeremy") discovers root atoms: [ "cardIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707262773197 [INFO] ✨ readonly_selector groupsOfCardsView("jeremy") = []
+
+1707262773197 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector ownersOfGroupsGlobalView reading cached value
+
+1707262773197 [INFO] 🔌 selector ownersOfGroupsView("jeremy") registers dependency ( "ownersOfGroupsGlobalView" = [] )
+
+1707262773197 [INFO] 🔍 selector ownersOfGroupsView("jeremy") discovers root atoms: [ "gamePlayerIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707262773197 [INFO] ✨ readonly_selector ownersOfGroupsView("jeremy") = []
+
+1707262773197 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707262773197 [INFO] 🖥️ relay:jeremy unsub:usersInRooms/relatedKeys("KRDdvvfHyUowdFZLAAAF")
+
+1707262773197 [INFO] 🖥️ relay:jeremy {}
+
+1707262773197 [INFO] 🖥️ relay:jeremy {}
+
+1707262773197 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707262773197 [INFO] 🖥️ relay:jeremy {}
+
+1707262773197 [INFO] 🖥️ relay:jeremy {}
+
+1707262773197 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707262773197 [INFO] 🖥️ relay:jeremy {}
+
+1707262773197 [INFO] 🖥️ relay:jeremy {}
+
+1707262773197 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707262773197 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707262773197 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707262773197 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707262773197 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707262773197 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707262773197 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707262773197 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707262773197 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773197 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707262773197 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773198 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707262773198 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773198 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707262773198 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773198 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707262773198 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707262773198 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707262774827 [INFO] 🖥️ parent ["relay:jeremy","leave-room","room-1"]
+
+1707262774827 [INFO] 🖥️ relay:jeremy leave-room room-1
+
+1707262774827 [INFO] 🖥️ relay:jeremy {}
+
+1707262774827 [INFO] 🖥️ relay:jeremy {}
+
+1707262774827 [INFO] 👤 user jeremy left
+
+1707262774828 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707262774828 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707262774828 [INFO] 📝 atom usersInRoomIndex set to {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1}
+
+1707262774828 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707262774828 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707262774828 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707262774828 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} ) subscribers: {}
+
+1707262774828 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707262774828 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707262774828 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707262774828 [INFO] 📝 atom *usersInRoomIndex set to 1=del:"jeremy"
+
+1707262774828 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707262774828 [INFO] 📢 atom *usersInRoomIndex went ( 0=add:"jeremy" -> 1=del:"jeremy" ) subscribers: {}
+
+1707262774828 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707262774828 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707262774828 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 2, but got 1
+
+1707262774843 [INFO] 🖥️ parent ["relay:jeremy","unsub:usersInRooms/relatedKeys(\"KRDdvvfHyUowdFZLAAAF\")"]
+
+1707262774843 [INFO] 🖥️ relay:jeremy unsub:usersInRooms/relatedKeys("KRDdvvfHyUowdFZLAAAF")
+
+1707262774843 [INFO] 🖥️ relay:jeremy {}
+
+1707262774843 [INFO] 🖥️ relay:jeremy {}
+
+1707263408226 [INFO] 🖥️ parent ["setup-relay","nezl"]
+
+1707263408294 [INFO] 👤 user nezl connected
+
+1707263408294 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263408294 [INFO] 📝 atom usersInRoomIndex set to {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":2}
+
+1707263408294 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707263408294 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707263408294 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707263408294 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":2} ) subscribers: {}
+
+1707263408294 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707263408294 [INFO] 📝 atom *usersInRoomIndex set to 2=add:"nezl"
+
+1707263408294 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707263408294 [INFO] 📢 atom *usersInRoomIndex went ( 1=del:"jeremy" -> 2=add:"nezl" ) subscribers: {}
+
+1707263408294 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263408294 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 3, but got 2
+
+1707263408294 [INFO] 🔨 atom usersOfSockets/relatedKeys("nezl") creating in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] 🔨 atom *usersOfSockets/relatedKeys("nezl") creating in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408294 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707263408294 [INFO] 👀 atom *usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707263408294 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408294 [INFO] 🔌 selector usersOfSockets/relatedKeys("nezl"):JSON registers dependency ( "usersOfSockets/relatedKeys("nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707263408294 [INFO] 🔍 selector usersOfSockets/relatedKeys("nezl"):JSON discovers root atom "usersOfSockets/relatedKeys("nezl")"
+
+1707263408294 [INFO] ✨ selector usersOfSockets/relatedKeys("nezl"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707263408294 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408294 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("nezl") registers dependency ( "usersOfSockets/relatedKeys("nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707263408294 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("nezl") discovers root atom "usersOfSockets/relatedKeys("nezl")"
+
+1707263408294 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("nezl") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707263408294 [INFO] 🔨 atom *usersOfSockets/relatedKeys("nezl") creating in store "IMPLICIT_STORE"
+
+1707263408294 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408294 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707263408295 [INFO] 👀 atom *usersOfSockets/relatedKeys("nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("nezl")"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408295 [INFO] 🔨 atom usersOfSockets/relatedKeys("relay:nezl") creating in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:nezl") creating in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 🔌 selector usersOfSockets/relatedKeys("relay:nezl"):JSON registers dependency ( "usersOfSockets/relatedKeys("relay:nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707263408295 [INFO] 🔍 selector usersOfSockets/relatedKeys("relay:nezl"):JSON discovers root atom "usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] ✨ selector usersOfSockets/relatedKeys("relay:nezl"):JSON = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 🔌 selector usersOfSockets/relatedKeys:JSON("relay:nezl") registers dependency ( "usersOfSockets/relatedKeys("relay:nezl")" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707263408295 [INFO] 🔍 selector usersOfSockets/relatedKeys:JSON("relay:nezl") discovers root atom "usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] ✨ selector usersOfSockets/relatedKeys:JSON("relay:nezl") = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1}
+
+1707263408295 [INFO] 🔨 atom *usersOfSockets/relatedKeys("relay:nezl") creating in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 👀 mutable_atom usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] 👀 atom *usersOfSockets/relatedKeys("relay:nezl") Adding subscription "tracker:IMPLICIT_STORE:main:usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("nezl") operation start in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408295 [INFO] 📝 atom usersOfSockets/relatedKeys("nezl") set to {"members":["relay:nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707263408295 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("nezl") evicting 2 states downstream: {}
+
+1707263408295 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("nezl") [ usersOfSockets/relatedKeys("nezl") ] already done
+
+1707263408295 [INFO] 🗑 state usersOfSockets/relatedKeys("nezl"):JSON evicted
+
+1707263408295 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("nezl") evicted
+
+1707263408295 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("nezl") is now ( {"members":["relay:nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707263408295 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("nezl") operation done in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] ⭕ atom *usersOfSockets/relatedKeys("nezl") operation start in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 atom *usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408295 [INFO] 📝 atom *usersOfSockets/relatedKeys("nezl") set to 0=add:"relay:nezl"
+
+1707263408295 [INFO] 🧹 atom *usersOfSockets/relatedKeys("nezl") no downstream states to evict
+
+1707263408295 [INFO] 📢 atom *usersOfSockets/relatedKeys("nezl") went ( null -> 0=add:"relay:nezl" ) subscribers: {}
+
+1707263408295 [INFO] 🔴 atom *usersOfSockets/relatedKeys("nezl") operation done in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408295 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("nezl") could not be updated. Expected update number 1, but got 0
+
+1707263408295 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:nezl") operation start in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:nezl") set to {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0}
+
+1707263408295 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:nezl") evicting 2 states downstream: {}
+
+1707263408295 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:nezl") [ usersOfSockets/relatedKeys("relay:nezl") ] already done
+
+1707263408295 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:nezl"):JSON evicted
+
+1707263408295 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:nezl") evicted
+
+1707263408295 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:nezl") is now ( {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} ) subscribers: {}
+
+1707263408295 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:nezl") operation done in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:nezl") operation start in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:nezl") set to 0=add:"nezl"
+
+1707263408295 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:nezl") no downstream states to evict
+
+1707263408295 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:nezl") went ( null -> 0=add:"nezl" ) subscribers: {}
+
+1707263408295 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:nezl") operation done in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:nezl") could not be updated. Expected update number 1, but got 0
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:nezl") reading cached value
+
+1707263408295 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:nezl") registers dependency ( "usersOfSockets/relatedKeys("relay:nezl")" = {"members":["nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707263408295 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:nezl") discovers root atom "usersOfSockets/relatedKeys("relay:nezl")"
+
+1707263408295 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("relay:nezl") = nezl
+
+1707263408295 [INFO] 📖 readonly_selector usersOfSockets/singleRelatedKey("relay:nezl") reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("nezl") reading cached value
+
+1707263408295 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("nezl") registers dependency ( "usersOfSockets/relatedKeys("nezl")" = {"members":["relay:nezl"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":0} )
+
+1707263408295 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("nezl") discovers root atom "usersOfSockets/relatedKeys("nezl")"
+
+1707263408295 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("nezl") = relay:nezl
+
+1707263408295 [INFO] 🏗️ continuity hearts creating synchronizer for nezl on socket relay:nezl
+
+1707263408295 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("nezl") Adding subscription "sync-continuity:hearts:nezl"
+
+1707263408295 [INFO] 🔨 atom unacknowledgedUpdates("nezl") creating in store "IMPLICIT_STORE"
+
+1707263408295 [INFO] 📖 atom unacknowledgedUpdates("nezl") reading cached value
+
+1707263408295 [INFO] 👀 atom unacknowledgedUpdates("nezl") Adding subscription "sync-continuity:hearts:nezl"
+
+1707263408295 [INFO] 🖥️ parent ["relay:nezl","sub:usersInRooms/relatedKeys","1vvgo2vs0N_Fbut3AAAD"]
+
+1707263408295 [INFO] 🖥️ relay:nezl sub:usersInRooms/relatedKeys 1vvgo2vs0N_Fbut3AAAD
+
+1707263408295 [INFO] 🖥️ relay:nezl {}
+
+1707263408295 [INFO] 🖥️ relay:nezl {}
+
+1707263408295 [INFO] 🖥️ relay:nezl get:hearts
+
+1707263408295 [INFO] 🖥️ relay:nezl {}
+
+1707263408295 [INFO] 🖥️ relay:nezl {}
+
+1707263408295 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263408295 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263408295 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263408295 [INFO] 📖 readonly_selector globalCardView reading cached value
+
+1707263408295 [INFO] 🔌 selector cardView("nezl") registers dependency ( "globalCardView" = [] )
+
+1707263408296 [INFO] 🔍 selector cardView("nezl") discovers root atoms: [ "cardIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector cardView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector cardView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective card nezl can see {"perspectiveTokensState":{"key":"cardView(\"nezl\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector cardValueGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector cardValueView("nezl") registers dependency ( "cardValueGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector cardValueView("nezl") discovers root atoms: [ "cardValuesIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector cardValueView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector cardValueView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective cardValue nezl can see {"perspectiveTokensState":{"key":"cardValueView(\"nezl\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector deckGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector deckView("nezl") registers dependency ( "deckGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector deckView("nezl") discovers root atoms: [ "deckIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector deckView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector deckView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective deck nezl can see {"perspectiveTokensState":{"key":"deckView(\"nezl\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector handGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector handView("nezl") registers dependency ( "handGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector handView("nezl") discovers root atoms: [ "handIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector handView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector handView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective hand nezl can see {"perspectiveTokensState":{"key":"handView(\"nezl\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector pileGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector pileView("nezl") registers dependency ( "pileGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector pileView("nezl") discovers root atoms: [ "pileIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector pileView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector pileView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective pile nezl can see {"perspectiveTokensState":{"key":"pileView(\"nezl\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector trickGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector trickView("nezl") registers dependency ( "trickGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector trickView("nezl") discovers root atoms: [ "trickIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector trickView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector trickView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective trick nezl can see {"perspectiveTokensState":{"key":"trickView(\"nezl\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263408296 [INFO] 🔌 selector visibleCardIndices("nezl") registers dependency ( "pileIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707263408296 [INFO] 🔍 selector visibleCardIndices("nezl") discovers root atom "pileIndex"
+
+1707263408296 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263408296 [INFO] 🔌 selector visibleCardIndices("nezl") registers dependency ( "handIndex" = {"members":[],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":-1} )
+
+1707263408296 [INFO] 🔍 selector visibleCardIndices("nezl") discovers root atom "handIndex"
+
+1707263408296 [INFO] 📖 readonly_selector currentTrick reading cached value
+
+1707263408296 [INFO] 🔌 selector visibleCardIndices("nezl") registers dependency ( "currentTrick" = null )
+
+1707263408296 [INFO] 🔍 selector visibleCardIndices("nezl") discovers root atoms: [ "trickIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector visibleCardIndices("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector visibleCardIndices("nezl") reading cached value
+
+1707263408296 [INFO] 🔌 selector valuesOfCardsView("nezl") registers dependency ( "visibleCardIndices("nezl")" = [] )
+
+1707263408296 [INFO] 🔍 selector valuesOfCardsView("nezl") discovers root atoms: [ "pileIndex", "handIndex", "trickIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector valuesOfCardsView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector valuesOfCardsView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective valuesOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector groupsOfCardsGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector groupsOfCardsView("nezl") registers dependency ( "groupsOfCardsGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector groupsOfCardsView("nezl") discovers root atoms: [ "cardIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector groupsOfCardsView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector groupsOfCardsView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective groupsOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector ownersOfGroupsGlobalView reading cached value
+
+1707263408296 [INFO] 🔌 selector ownersOfGroupsView("nezl") registers dependency ( "ownersOfGroupsGlobalView" = [] )
+
+1707263408296 [INFO] 🔍 selector ownersOfGroupsView("nezl") discovers root atoms: [ "gamePlayerIndex", "deckIndex", "handIndex", "pileIndex", "trickIndex" ]
+
+1707263408296 [INFO] ✨ readonly_selector ownersOfGroupsView("nezl") = []
+
+1707263408296 [INFO] 📖 readonly_selector ownersOfGroupsView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys nezl can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"nezl\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:nezl"
+
+1707263408296 [INFO] 🖥️ relay:nezl unsub:usersInRooms/relatedKeys("1vvgo2vs0N_Fbut3AAAD")
+
+1707263408296 [INFO] 🖥️ relay:nezl {}
+
+1707263408296 [INFO] 🖥️ relay:nezl {}
+
+1707263408296 [INFO] 🖥️ relay:nezl sub:usersInRooms/relatedKeys 1vvgo2vs0N_Fbut3AAAD
+
+1707263408296 [INFO] 🖥️ relay:nezl {}
+
+1707263408296 [INFO] 🖥️ relay:nezl {}
+
+1707263408296 [INFO] 🖥️ relay:nezl get:hearts
+
+1707263408296 [INFO] 🖥️ relay:nezl {}
+
+1707263408296 [INFO] 🖥️ relay:nezl {}
+
+1707263408296 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263408296 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263408296 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263408296 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263408296 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263408296 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263408296 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263408296 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263408296 [INFO] 📖 readonly_selector cardView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective card nezl can see {"perspectiveTokensState":{"key":"cardView(\"nezl\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector cardValueView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective cardValue nezl can see {"perspectiveTokensState":{"key":"cardValueView(\"nezl\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector deckView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective deck nezl can see {"perspectiveTokensState":{"key":"deckView(\"nezl\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector handView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective hand nezl can see {"perspectiveTokensState":{"key":"handView(\"nezl\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector pileView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective pile nezl can see {"perspectiveTokensState":{"key":"pileView(\"nezl\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408296 [INFO] 📖 readonly_selector trickView("nezl") reading cached value
+
+1707263408296 [INFO] 🕊️ perspective trick nezl can see {"perspectiveTokensState":{"key":"trickView(\"nezl\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408297 [INFO] 📖 readonly_selector valuesOfCardsView("nezl") reading cached value
+
+1707263408297 [INFO] 🕊️ perspective valuesOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408297 [INFO] 📖 readonly_selector groupsOfCardsView("nezl") reading cached value
+
+1707263408297 [INFO] 🕊️ perspective groupsOfCards/relatedKeys nezl can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"nezl\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408297 [INFO] 📖 readonly_selector ownersOfGroupsView("nezl") reading cached value
+
+1707263408297 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys nezl can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"nezl\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"nezl\""}},"perspectiveTokens":[]}
+
+1707263408297 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:nezl"
+
+1707263410604 [INFO] 🖥️ parent ["relay:jeremy","join-room","room-1"]
+
+1707263410604 [INFO] 🖥️ relay:jeremy join-room room-1
+
+1707263410604 [INFO] 🖥️ relay:jeremy {}
+
+1707263410604 [INFO] 🖥️ relay:jeremy {}
+
+1707263410617 [INFO] 🖥️ parent ["setup-relay","jeremy"]
+
+1707263410683 [INFO] 👤 user jeremy connected
+
+1707263410683 [INFO] ⭕ mutable_atom usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410683 [INFO] 📝 atom usersInRoomIndex set to {"members":["nezl","jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":3}
+
+1707263410683 [INFO] 🧹 mutable_atom usersInRoomIndex evicting 1 states downstream: {}
+
+1707263410683 [INFO] 🧹 mutable_atom usersInRoomIndex [ usersInRoomIndex ] already done
+
+1707263410683 [INFO] 🗑 state usersInRoomIndex:JSON evicted
+
+1707263410683 [INFO] 📢 mutable_atom usersInRoomIndex is now ( {"members":["nezl","jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":3} ) subscribers: {}
+
+1707263410683 [INFO] 🔴 mutable_atom usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] ⭕ atom *usersInRoomIndex operation start in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 atom *usersInRoomIndex reading cached value
+
+1707263410683 [INFO] 📝 atom *usersInRoomIndex set to 3=add:"jeremy"
+
+1707263410683 [INFO] 🧹 atom *usersInRoomIndex no downstream states to evict
+
+1707263410683 [INFO] 📢 atom *usersInRoomIndex went ( 2=add:"nezl" -> 3=add:"jeremy" ) subscribers: {}
+
+1707263410683 [INFO] 🔴 atom *usersInRoomIndex operation done in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410683 [INFO] ❌ mutable_atom usersInRoomIndex could not be updated. Expected update number 4, but got 3
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707263410683 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("jeremy") operation start in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707263410683 [INFO] 📝 atom usersOfSockets/relatedKeys("jeremy") set to {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1}
+
+1707263410683 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("jeremy") evicting 3 states downstream: {}
+
+1707263410683 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("jeremy") [ usersOfSockets/relatedKeys("jeremy") ] already done
+
+1707263410683 [INFO] 🗑 state usersOfSockets/relatedKeys("jeremy"):JSON evicted
+
+1707263410683 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("jeremy") evicted
+
+1707263410683 [INFO] 🗑 state usersOfSockets/singleRelatedKey("jeremy") evicted
+
+1707263410683 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("jeremy") is now ( {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} ) subscribers: {}
+
+1707263410683 [INFO] 📢 readonly_selector usersOfSockets/singleRelatedKey("jeremy") root usersOfSockets/relatedKeys("jeremy") went {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} -> {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1}
+
+1707263410683 [INFO] 🧮 readonly_selector usersOfSockets/singleRelatedKey("jeremy") computing value
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707263410683 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("jeremy") registers dependency ( "usersOfSockets/relatedKeys("jeremy")" = {"members":["relay:jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} )
+
+1707263410683 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("jeremy") discovers root atom "usersOfSockets/relatedKeys("jeremy")"
+
+1707263410683 [INFO] ✨ readonly_selector usersOfSockets/singleRelatedKey("jeremy") went relay:jeremy -> relay:jeremy
+
+1707263410683 [INFO] 👋 continuity hearts seeing jeremy on new socket relay:jeremy
+
+1707263410683 [INFO] 🔨 atom sockets("relay:jeremy") creating in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 atom sockets("relay:jeremy") reading cached value
+
+1707263410683 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("jeremy") operation done in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] ⭕ atom *usersOfSockets/relatedKeys("jeremy") operation start in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 atom *usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707263410683 [INFO] 📝 atom *usersOfSockets/relatedKeys("jeremy") set to 1=add:"relay:jeremy"
+
+1707263410683 [INFO] 🧹 atom *usersOfSockets/relatedKeys("jeremy") no downstream states to evict
+
+1707263410683 [INFO] 📢 atom *usersOfSockets/relatedKeys("jeremy") went ( 0=add:"relay:jeremy" -> 1=add:"relay:jeremy" ) subscribers: {}
+
+1707263410683 [INFO] 🔴 atom *usersOfSockets/relatedKeys("jeremy") operation done in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("jeremy") reading cached value
+
+1707263410683 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("jeremy") could not be updated. Expected update number 2, but got 1
+
+1707263410683 [INFO] ⭕ mutable_atom usersOfSockets/relatedKeys("relay:jeremy") operation start in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707263410683 [INFO] 📝 atom usersOfSockets/relatedKeys("relay:jeremy") set to {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1}
+
+1707263410683 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") evicting 3 states downstream: {}
+
+1707263410683 [INFO] 🧹 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") [ usersOfSockets/relatedKeys("relay:jeremy") ] already done
+
+1707263410683 [INFO] 🗑 state usersOfSockets/relatedKeys("relay:jeremy"):JSON evicted
+
+1707263410683 [INFO] 🗑 state usersOfSockets/relatedKeys:JSON("relay:jeremy") evicted
+
+1707263410683 [INFO] 🗑 state usersOfSockets/singleRelatedKey("relay:jeremy") evicted
+
+1707263410683 [INFO] 📢 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") is now ( {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} ) subscribers: {}
+
+1707263410683 [INFO] 🔴 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") operation done in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] ⭕ atom *usersOfSockets/relatedKeys("relay:jeremy") operation start in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 atom *usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707263410683 [INFO] 📝 atom *usersOfSockets/relatedKeys("relay:jeremy") set to 1=add:"jeremy"
+
+1707263410683 [INFO] 🧹 atom *usersOfSockets/relatedKeys("relay:jeremy") no downstream states to evict
+
+1707263410683 [INFO] 📢 atom *usersOfSockets/relatedKeys("relay:jeremy") went ( 0=add:"jeremy" -> 1=add:"jeremy" ) subscribers: {}
+
+1707263410683 [INFO] 🔴 atom *usersOfSockets/relatedKeys("relay:jeremy") operation done in store "IMPLICIT_STORE"
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707263410683 [INFO] ❌ mutable_atom usersOfSockets/relatedKeys("relay:jeremy") could not be updated. Expected update number 2, but got 1
+
+1707263410683 [INFO] 🧮 readonly_selector usersOfSockets/singleRelatedKey("relay:jeremy") computing value
+
+1707263410683 [INFO] 📖 mutable_atom usersOfSockets/relatedKeys("relay:jeremy") reading cached value
+
+1707263410683 [INFO] 🔌 selector usersOfSockets/singleRelatedKey("relay:jeremy") registers dependency ( "usersOfSockets/relatedKeys("relay:jeremy")" = {"members":["jeremy"],"cache":[],"cacheLimit":0,"cacheIdx":-1,"cacheUpdateNumber":1} )
+
+1707263410683 [INFO] 🔍 selector usersOfSockets/singleRelatedKey("relay:jeremy") discovers root atom "usersOfSockets/relatedKeys("relay:jeremy")"
+
+1707263410683 [INFO] 🏗️ continuity hearts creating synchronizer for jeremy on socket relay:jeremy
+
+1707263410683 [INFO] 👀 readonly_selector usersOfSockets/singleRelatedKey("jeremy") Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410683 [INFO] 📖 atom unacknowledgedUpdates("jeremy") reading cached value
+
+1707263410683 [INFO] 👀 atom unacknowledgedUpdates("jeremy") Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410684 [INFO] 🖥️ parent ["relay:jeremy","sub:usersInRooms/relatedKeys","KRDdvvfHyUowdFZLAAAF"]
+
+1707263410684 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263410684 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410684 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410684 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 🖥️ relay:jeremy {}
+
+1707263410684 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263410684 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263410684 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410684 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707263410684 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410684 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410685 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263410685 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410685 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410685 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263410685 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410685 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410685 [INFO] 🖥️ relay:jeremy unsub:usersInRooms/relatedKeys("KRDdvvfHyUowdFZLAAAF")
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy unsub:usersInRooms/relatedKeys("KRDdvvfHyUowdFZLAAAF")
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy unsub:usersInRooms/relatedKeys("KRDdvvfHyUowdFZLAAAF")
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy unsub:usersInRooms/relatedKeys("KRDdvvfHyUowdFZLAAAF")
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy sub:usersInRooms/relatedKeys KRDdvvfHyUowdFZLAAAF
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom pileIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom trickIndex reading cached value
+
+1707263410685 [INFO] 📖 atom gamePlayerIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom usersInRoomIndex reading cached value
+
+1707263410685 [INFO] 📖 readonly_selector cardView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective card jeremy can see {"perspectiveTokensState":{"key":"cardView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector cardValueView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective cardValue jeremy can see {"perspectiveTokensState":{"key":"cardValueView(\"jeremy\")","type":"readonly_selector","family":{"key":"cardValueView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector deckView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective deck jeremy can see {"perspectiveTokensState":{"key":"deckView(\"jeremy\")","type":"readonly_selector","family":{"key":"deckView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector handView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective hand jeremy can see {"perspectiveTokensState":{"key":"handView(\"jeremy\")","type":"readonly_selector","family":{"key":"handView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector pileView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective pile jeremy can see {"perspectiveTokensState":{"key":"pileView(\"jeremy\")","type":"readonly_selector","family":{"key":"pileView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector trickView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective trick jeremy can see {"perspectiveTokensState":{"key":"trickView(\"jeremy\")","type":"readonly_selector","family":{"key":"trickView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector valuesOfCardsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective valuesOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"valuesOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"valuesOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector groupsOfCardsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective groupsOfCards/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"groupsOfCardsView(\"jeremy\")","type":"readonly_selector","family":{"key":"groupsOfCardsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 📖 readonly_selector ownersOfGroupsView("jeremy") reading cached value
+
+1707263410685 [INFO] 🕊️ perspective ownersOfGroups/relatedKeys jeremy can see {"perspectiveTokensState":{"key":"ownersOfGroupsView(\"jeremy\")","type":"readonly_selector","family":{"key":"ownersOfGroupsView","subKey":"\"jeremy\""}},"perspectiveTokens":[]}
+
+1707263410685 [INFO] 👀 transaction startGame Adding subscription "sync-continuity:hearts:jeremy"
+
+1707263410685 [INFO] 🖥️ relay:jeremy get:hearts
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 🖥️ relay:jeremy {}
+
+1707263410685 [INFO] 📖 mutable_atom cardIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom cardValuesIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom deckIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom handIndex reading cached value
+
+1707263410685 [INFO] 📖 mutable_atom pileIndex reading cached value

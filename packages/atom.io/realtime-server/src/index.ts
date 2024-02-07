@@ -11,7 +11,7 @@ export * from "./realtime-mutable-provider"
 export * from "./realtime-mutable-family-provider"
 export * from "./realtime-state-receiver"
 export * from "./realtime-action-receiver"
-export * from "./realtime-action-synchronizer"
+// export * from "./realtime-action-synchronizer.txt"
 
 export type Socket = {
 	id: string

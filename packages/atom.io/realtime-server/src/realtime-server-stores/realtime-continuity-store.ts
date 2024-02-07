@@ -3,7 +3,7 @@ import type { TransactionUpdate } from "atom.io"
 import { IMPLICIT, getJsonToken, getUpdateToken } from "atom.io/internal"
 import type { JsonIO } from "atom.io/json"
 import { SyncGroup } from "atom.io/realtime"
-import { completeUpdateAtoms } from "atom.io/realtime-server"
+// import { completeUpdateAtoms } from "atom.io/realtime-server"
 
 const redactorAtoms = selectorFamily<
 	(update: TransactionUpdate<any>) => TransactionUpdate<any>,
@@ -84,26 +84,26 @@ const redactorAtoms = selectorFamily<
 			return filter
 		},
 })
-export const occludedUpdateSelectors = selectorFamily<
-	Pick<
-		TransactionUpdate<JsonIO>,
-		`epoch` | `id` | `key` | `output` | `updates`
-	> | null,
-	{ userId: string; syncGroupKey: string; updateId: string }
->({
-	key: `occludedUpdate`,
-	get:
-		({ userId, syncGroupKey, updateId }) =>
-		({ get, find }) => {
-			const updateState = find(completeUpdateAtoms, updateId)
-			const update = get(updateState)
-			const redactorKey = { userId, syncGroupKey }
-			const redactorState = find(redactorAtoms, redactorKey)
-			const redact = get(redactorState)
-			if (update) {
-				// return redact(update)
-				return update
-			}
-			return null
-		},
-})
+// export const occludedUpdateSelectors = selectorFamily<
+// 	Pick<
+// 		TransactionUpdate<JsonIO>,
+// 		`epoch` | `id` | `key` | `output` | `updates`
+// 	> | null,
+// 	{ userId: string; syncGroupKey: string; updateId: string }
+// >({
+// 	key: `occludedUpdate`,
+// 	get:
+// 		({ userId, syncGroupKey, updateId }) =>
+// 		({ get, find }) => {
+// 			const updateState = find(completeUpdateAtoms, updateId)
+// 			const update = get(updateState)
+// 			const redactorKey = { userId, syncGroupKey }
+// 			const redactorState = find(redactorAtoms, redactorKey)
+// 			const redact = get(redactorState)
+// 			if (update) {
+// 				// return redact(update)
+// 				return update
+// 			}
+// 			return null
+// 		},
+// })

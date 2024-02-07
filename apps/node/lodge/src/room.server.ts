@@ -1,36 +1,12 @@
+import { generateHeapSnapshot } from "bun"
+
 import * as AtomIO from "atom.io"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 
 import { IMPLICIT } from "atom.io/internal"
-// debugger
-// import {
-// 	cardAtoms,
-// 	cardCycleGroupsAndZones,
-// 	cardGroupIndex,
-// 	cardIndex,
-// 	cardValueAtoms,
-// 	cardValueIndex,
-// 	dealCardsTX,
-// 	deckAtoms,
-// 	deckIndex,
-// 	gamePlayerIndex,
-// 	groupsOfCards,
-// 	handAtoms,
-// 	handIndex,
-// 	ownersOfGroups,
-// 	pileIndex,
-// 	pileStates,
-// 	shuffleDeckTX,
-// 	spawnClassicDeckTX,
-// 	spawnHandTX,
-// 	spawnTrickTX,
-// 	trickIndex,
-// 	trickStates,
-// 	valuesOfCards,
-// } from "./store/game"
+
 import { heartsContinuity } from "./store/game/hearts"
-// import { startGameTX } from "./store/game/hearts"
 
 process.stdout.write(`✨`)
 const parentSocket = new RTS.ParentSocket()
@@ -58,7 +34,7 @@ const stderrLog = {
 const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
 	`info`,
 	(icon, tokenType, tokenKey, message) => {
-		const allowedIcons: AtomIO.LoggerIcon[] = [`🛄`]
+		const allowedIcons: AtomIO.LoggerIcon[] = [`🛄`, `🕊️`, `🏗️`, `🖥️`]
 		const ignoredTokenTypes: AtomIO.TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
@@ -88,63 +64,31 @@ IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 IMPLICIT.STORE.loggers[1] = atomIOFileLogger
 
 parentSocket.relay((socket) => {
+	const snapshot = generateHeapSnapshot()
+	Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
+	socket.onAny((...args) => {
+		IMPLICIT.STORE.logger.info(`🖥️`, socket.id, ...args)
+		IMPLICIT.STORE.logger.info(`🖥️`, socket.id, socket.globalListeners.keys())
+		IMPLICIT.STORE.logger.info(`🖥️`, socket.id, socket.listeners.keys())
+	})
 	const userId = socket.id.split(`:`)[1]
+	IMPLICIT.STORE.logger.info(`👤`, `user`, userId, `connected`)
 	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(userId))
+	socket.on(`leave-room`, () => {
+		IMPLICIT.STORE.logger.info(`👤`, `user`, userId, `left`)
+		AtomIO.setState(RT.usersInThisRoomIndex, (set) => (set.delete(userId), set))
+	})
 	RTS.usersOfSockets.relations.set(userId, socket.id)
 
 	// COMPOSE REALTIME SERVICE HOOKS
 	const syncContinuity = RTS.realtimeContinuitySynchronizer({ socket })
-	// const exposeSingle = RTS.realtimeStateProvider({ socket })
 	const exposeMutable = RTS.realtimeMutableProvider({ socket })
-	// const exposeFamily = RTS.realtimeAtomFamilyProvider({ socket })
-	// const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({ socket })
-	// const receiveTransaction = RTS.realtimeActionReceiver({ socket })
-	// const syncTransaction = RTS.realtimeActionSynchronizer({ socket })
 
-	// CONTINUITY SERVICES
-	syncContinuity(heartsContinuity)
-
-	// ROOM SERVICES
-	exposeMutable(RT.usersInThisRoomIndex)
-
-	// // GAME SERVICES
-	// exposeSingle(gamePlayerIndex)
-
-	// // Indices
-	// exposeMutable(cardIndex)
-	// exposeMutable(cardValueIndex)
-	// exposeMutable(deckIndex)
-	// exposeMutable(handIndex)
-	// exposeMutable(pileIndex)
-	// exposeMutable(trickIndex)
-
-	// // Families
-	// exposeFamily(cardAtoms, cardIndex)
-	// exposeFamily(deckAtoms, deckIndex)
-	// exposeFamily(handAtoms, handIndex)
-	// exposeFamily(pileStates, pileIndex)
-	// exposeFamily(trickStates, trickIndex)
-	// exposeFamily(cardValueAtoms, cardValueIndex)
-
-	// // Relations
-	// const groupsOfCardsFamily = groupsOfCards.core.findRelatedKeysState
-	// const ownersOfGroupsFamily = ownersOfGroups.core.findRelatedKeysState
-	// const valuesOfCardsFamily = valuesOfCards.core.findRelatedKeysState
-	// const cardCycleGZFamily = cardCycleGroupsAndZones.core.findRelatedKeysState
-	// exposeMutableFamily(groupsOfCardsFamily, cardGroupIndex)
-	// exposeMutableFamily(groupsOfCardsFamily, cardIndex)
-	// exposeMutableFamily(ownersOfGroupsFamily, cardGroupIndex)
-	// exposeMutableFamily(ownersOfGroupsFamily, cardIndex)
-	// exposeMutableFamily(valuesOfCardsFamily, cardValueIndex)
-	// exposeMutableFamily(valuesOfCardsFamily, cardIndex)
-	// exposeMutableFamily(cardCycleGZFamily, cardGroupIndex)
-	// exposeMutableFamily(cardCycleGZFamily, cardIndex)
-
-	// // Transactions
-	// receiveTransaction(spawnHandTX)
-	// receiveTransaction(dealCardsTX)
-	// receiveTransaction(shuffleDeckTX)
-	// receiveTransaction(spawnClassicDeckTX)
-	// receiveTransaction(spawnTrickTX)
-	// syncTransaction(startGameTX)
+	const disposalFunctions = [
+		syncContinuity(heartsContinuity),
+		exposeMutable(RT.usersInThisRoomIndex),
+	]
+	return () => {
+		for (const dispose of disposalFunctions) dispose()
+	}
 })

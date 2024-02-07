@@ -68,11 +68,15 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 
 	public off<Event extends keyof I>(
 		event: Event,
-		listener: (...args: I[Event]) => void,
+		listener?: (...args: I[Event]) => void,
 	): CustomSocket<I, O> {
 		const listeners = this.listeners.get(event)
 		if (listeners) {
-			listeners.delete(listener)
+			if (listener) {
+				listeners.delete(listener)
+			} else {
+				this.listeners.delete(event)
+			}
 		}
 		return this
 	}

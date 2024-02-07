@@ -339,6 +339,6 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		socket.off(`continuity-init:${continuityKey}`)
 		socket.off(`tx-new:${continuityKey}`)
 		for (const unsubscribe of unsubscribeFunctions) unsubscribe()
-		socket.emit(`unsub:${continuityKey}`)
+		// socket.emit(`unsub:${continuityKey}`)
 	}
 }

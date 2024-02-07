@@ -3,7 +3,7 @@
 	"description": "cards and dice server",
 	"private": true,
 	"scripts": {
-		"dev": "clear && bun --watch src/system.server.ts",
+		"dev": "clear && bun src/system.server.ts",
 		"build": "tsup src/system.server.ts --format esm --minify --clean --sourcemap --legacy-output --outDir dist",
 		"start": "bun ./dist/esm/system.server.js",
 		"test": "vitest",

@@ -4,6 +4,7 @@ import { join } from "atom.io/data"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 
+import { IMPLICIT } from "atom.io/internal"
 import { Perspective } from "~/packages/occlusion/src"
 import {
 	groupsOfCards,
@@ -93,6 +94,10 @@ export const globalCardView = selector<RegularAtomToken<Card>[]>({
 			const cardState = find(cardAtoms, cardId)
 			cardTokens.push(cardState)
 		}
+		IMPLICIT.STORE.logger.info(`🏗️`, `selector`, `globalCardView`, `found`, {
+			cardIds,
+			cardTokens,
+		})
 		return cardTokens
 	},
 })

@@ -13,7 +13,7 @@ export class ChildSocket<
 		/* eslint-enable quotes */
 	},
 > extends CustomSocket<I, O> {
-	protected process: ChildProcessWithoutNullStreams
+	public process: ChildProcessWithoutNullStreams
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
 

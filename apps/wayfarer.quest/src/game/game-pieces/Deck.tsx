@@ -1,8 +1,5 @@
 import { useO } from "atom.io/react"
-import {
-	usePullMutableAtomFamilyMember,
-	useServerAction,
-} from "atom.io/realtime-react"
+import { useServerAction } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
@@ -22,11 +19,6 @@ export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	({ id: deckId, detailed }) => {
 		const myRoomId = useO(myRoomKeyState)
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup, deckId)
-
-		usePullMutableAtomFamilyMember(
-			groupsOfCards.core.findRelatedKeysState,
-			deckId,
-		)
 
 		const shuffle = useServerAction(shuffleDeckTX)
 

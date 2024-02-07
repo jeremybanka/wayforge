@@ -14,9 +14,10 @@ import type { ContinuityToken } from "atom.io/realtime"
 
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
-import { occludedUpdateSelectors } from "./realtime-server-stores"
+
 import {
-	completeUpdateAtoms,
+	actionOcclusionAtoms,
+	redactTransactionUpdateContent,
 	userUnacknowledgedQueues,
 } from "./realtime-server-stores"
 
@@ -50,6 +51,12 @@ export function realtimeContinuitySynchronizer({
 			usersOfSockets.states.socketKeyOfUser,
 			userKey,
 			store,
+		)
+		store.logger.info(
+			`🏗️`,
+			`continuity`,
+			continuityKey,
+			`creating synchronizer for ${userKey} on socket ${socket.id}`,
 		)
 		subscribeToState(
 			socketKeyState,
@@ -123,26 +130,31 @@ export function realtimeContinuitySynchronizer({
 				const unsubscribeFromTransaction = subscribeToTransaction(
 					transaction,
 					(update) => {
-						// store.logger.info(`userId`, userKey)
-						const updateState = findInStore(
-							completeUpdateAtoms,
-							update.id,
-							store,
+						const visibleKeys = continuity.globals
+							.map((atom) => atom.key)
+							.concat(
+								continuity.perspectives.flatMap((perspective) => {
+									const { perspectiveAtoms } = perspective
+									const userPerspectiveTokenState = findInStore(
+										perspectiveAtoms,
+										userKey,
+										store,
+									)
+									const visibleTokens = getFromStore(
+										userPerspectiveTokenState,
+										store,
+									)
+									return visibleTokens.map((token) => token.key)
+								}),
+							)
+						const redactedUpdates = redactTransactionUpdateContent(
+							visibleKeys,
+							update.updates,
 						)
-						setIntoStore(updateState, update, store)
-						const occludedUpdateKey = {
-							userId: userKey,
-							syncGroupKey: continuityKey,
-							updateId: update.id,
+						const redactedUpdate = {
+							...update,
+							updates: redactedUpdates,
 						}
-						const redactedUpdateState = findInStore(
-							occludedUpdateSelectors,
-							occludedUpdateKey,
-							store,
-						)
-
-						const redactedUpdate = getFromStore(redactedUpdateState, store)
-
 						setIntoStore(
 							userUnacknowledgedQueue,
 							(updates) => {

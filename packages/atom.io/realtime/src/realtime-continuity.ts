@@ -35,7 +35,7 @@ export type PerspectiveToken<
 > = {
 	type: `realtime_perspective`
 	resourceAtoms: F
-	perspectiveAtoms: ReadableFamilyToken<Iterable<ReadableToken<T>>, string>
+	perspectiveAtoms: ReadableFamilyToken<ReadableToken<T>[], string>
 }
 
 export type ContinuityToken = {
@@ -96,7 +96,7 @@ export class SyncGroup {
 		} else {
 			const [family, index] = args as [
 				AtomFamilyToken<any, any>,
-				ReadableFamilyToken<Iterable<any>, string>,
+				ReadableFamilyToken<ReadableToken<any>[], string>,
 			]
 			this.perspectives.push({
 				type: `realtime_perspective`,

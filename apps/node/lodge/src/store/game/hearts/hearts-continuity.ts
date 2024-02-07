@@ -1,4 +1,5 @@
 import { continuity, usersInThisRoomIndex } from "atom.io/realtime"
+import { spawnTrickTX } from "../card-game-actions"
 import {
 	cardAtoms,
 	cardIndex,
@@ -32,7 +33,7 @@ export const heartsContinuity = continuity({
 	key: `hearts`,
 	config: (group) => {
 		return group
-			.add(startGameTX)
+			.add(startGameTX, spawnTrickTX)
 			.add(
 				cardIndex,
 				cardValueIndex,
