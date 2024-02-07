@@ -10,7 +10,7 @@ import { heartsContinuity } from "./store/game/hearts"
 
 const parentSocket = new RTS.ParentSocket()
 const TIMESTAMP = Date.now()
-const LOG_FILEPATH = `./log-${TIMESTAMP}.txt`
+const LOG_FILEPATH = `./logs/${TIMESTAMP}.txt`
 
 const LOG_FILE = Bun.file(LOG_FILEPATH)
 const writer = LOG_FILE.writer()

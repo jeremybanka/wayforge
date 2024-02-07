@@ -13,3 +13,4 @@ metafile-*
 bin
 pkg
 **/tempest.games/**/*.gen.ts
+**/lodge/logs/*.txt
