@@ -268,8 +268,8 @@ importers:
         specifier: 3.8.2
         version: 3.8.2
       hono:
-        specifier: 3.12.11
-        version: 3.12.11
+        specifier: 3.12.12
+        version: 3.12.12
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -8516,8 +8516,8 @@ packages:
     dependencies:
       react-is: 16.13.1
 
-  /hono@3.12.11:
-    resolution: {integrity: sha512-LSpxVgIMR3UzyFiXZaPvqBUGqyOKG0LMZqgMn2RXz9f+YAdkHSfFQQX0dtU72fPm5GnEMh5AYXs0ek5NYgMOmA==}
+  /hono@3.12.12:
+    resolution: {integrity: sha512-5IAMJOXfpA5nT+K0MNjClchzz0IhBHs2Szl7WFAhrFOsbtQsYmNynFyJRg/a3IPsmCfxcrf8txUGiNShXpK5Rg==}
     engines: {node: '>=16.0.0'}
     dev: false
 
