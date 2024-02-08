@@ -14,7 +14,7 @@ export const spawnClassicDeckTX = transaction<
 	key: `spawnClassicDeck`,
 	do: (transactors, deckId, cardIds) => {
 		if (cardIds.length !== 52) {
-			throw new Error(`${cardIds.length} cards were provided. 52 were expected`)
+			throw new Error(`${cardIds.length} cards were provided. 3 were expected`)
 		}
 		const { set, find } = transactors
 		const deckState = find(CardGroups.deckAtoms, deckId)
@@ -28,8 +28,8 @@ export const spawnClassicDeckTX = transaction<
 		valuesOfCards.transact(transactors, ({ relations }) => {
 			let idx = 0
 			for (const cardId of cardIds) {
-				const cardAtom = find(cardAtoms, cardId)
-				set(cardAtom, { rotation: 0 })
+				// const cardAtom = find(cardAtoms, cardId)
+				// set(cardAtom, { rotation: 0 })
 				relations.set({ card: cardId, value: CARD_VALUES[idx].id })
 				idx++
 			}

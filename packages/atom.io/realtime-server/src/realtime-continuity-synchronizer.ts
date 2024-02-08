@@ -122,47 +122,59 @@ export function realtimeContinuitySynchronizer({
 				const unsubscribeFromTransaction = subscribeToTransaction(
 					transaction,
 					(update) => {
-						const visibleKeys = continuity.globals
-							.map((atom) => atom.key)
-							.concat(
-								continuity.perspectives.flatMap((perspective) => {
-									const { perspectiveAtoms } = perspective
-									const userPerspectiveTokenState = findInStore(
-										perspectiveAtoms,
-										userKey,
-										store,
-									)
-									const visibleTokens = getFromStore(
-										userPerspectiveTokenState,
-										store,
-									)
-									return visibleTokens.map((token) => token.key)
-								}),
+						try {
+							const visibleKeys = continuity.globals
+								.map((atom) => atom.key)
+								.concat(
+									continuity.perspectives.flatMap((perspective) => {
+										const { perspectiveAtoms } = perspective
+										const userPerspectiveTokenState = findInStore(
+											perspectiveAtoms,
+											userKey,
+											store,
+										)
+										const visibleTokens = getFromStore(
+											userPerspectiveTokenState,
+											store,
+										)
+										return visibleTokens.map((token) => token.key)
+									}),
+								)
+							const redactedUpdates = redactTransactionUpdateContent(
+								visibleKeys,
+								update.updates,
 							)
-						const redactedUpdates = redactTransactionUpdateContent(
-							visibleKeys,
-							update.updates,
-						)
-						const redactedUpdate = {
-							...update,
-							updates: redactedUpdates,
-						}
-						setIntoStore(
-							userUnacknowledgedQueue,
-							(updates) => {
-								if (redactedUpdate) {
-									updates.push(redactedUpdate)
-									updates.sort((a, b) => a.epoch - b.epoch)
-								}
-								return updates
-							},
-							store,
-						)
+							const redactedUpdate = {
+								...update,
+								updates: redactedUpdates,
+							}
+							// setIntoStore(
+							// 	userUnacknowledgedQueue,
+							// 	(updates) => {
+							// 		if (redactedUpdate) {
+							// 			updates.push(redactedUpdate)
+							// 			updates.sort((a, b) => a.epoch - b.epoch)
+							// 		}
+							// 		return updates
+							// 	},
+							// 	store,
+							// )
 
-						socket?.emit(
-							`tx-new:${continuityKey}`,
-							redactedUpdate as Json.Serializable,
-						)
+							socket?.emit(
+								`tx-new:${continuityKey}`,
+								redactedUpdate as Json.Serializable,
+							)
+						} catch (thrown) {
+							if (thrown instanceof Error) {
+								store.logger.error(
+									`❌`,
+									`continuity`,
+									continuityKey,
+									`failed to send update from transaction ${transaction.key} to ${userKey}`,
+									thrown.message,
+								)
+							}
+						}
 					},
 					`sync-continuity:${continuityKey}:${userKey}`,
 					store,
@@ -183,11 +195,23 @@ export function realtimeContinuitySynchronizer({
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			actUponStore(
-				{ type: `transaction`, key: transactionKey },
-				updateId,
-				store,
-			)(...update.params)
+			try {
+				actUponStore(
+					{ type: `transaction`, key: transactionKey },
+					updateId,
+					store,
+				)(...update.params)
+			} catch (thrown) {
+				if (thrown instanceof Error) {
+					store.logger.error(
+						`❌`,
+						`continuity`,
+						continuityKey,
+						`failed to run transaction ${transactionKey} with update ${updateId}`,
+						thrown.message,
+					)
+				}
+			}
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,

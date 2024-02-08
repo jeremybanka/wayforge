@@ -63,6 +63,9 @@ export class ChildSocket<
 					return
 				}
 				this.unprocessedEvents.push(...chunk.split(`\x03`))
+				console.log(`🤓`, chunk.length)
+				console.log(`🤓`, this.unprocessedEvents.length)
+				console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
 				const newInput = this.unprocessedEvents.shift()
 				this.incompleteData += newInput || ``
 				try {
@@ -84,6 +87,8 @@ export class ChildSocket<
 					this.incompleteData = ``
 				} catch (error) {
 					console.warn(`⚠️----------------⚠️`)
+					console.warn(this.incompleteData)
+					console.warn(`⚠️----------------⚠️`)
 					console.error(error)
 				}
 			},
@@ -91,25 +96,27 @@ export class ChildSocket<
 		this.process.stderr.on(`data`, (buf) => {
 			const chunk = buf.toString()
 			this.unprocessedLogs.push(...chunk.split(`\x03`))
+			console.log(`🤫`, chunk.length)
+			console.log(`🤫`, this.unprocessedLogs.length)
+			console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
 			const newInput = this.unprocessedLogs.shift()
 			this.incompleteLog += newInput || ``
 			try {
 				const parsedLog = parseJson(this.incompleteLog)
+				console.log(`🤫`, parsedLog)
 				this.handleLog(parsedLog)
 				while (this.unprocessedLogs.length > 0) {
-					const error = this.unprocessedLogs.shift()
-					if (error) {
-						if (this.unprocessedLogs.length === 0) {
-							this.incompleteLog = error
-						}
-						const parsedError = parseJson(error)
-						this.handleLog(parsedError)
+					this.incompleteLog = this.unprocessedLogs.shift() ?? ``
+					if (this.incompleteLog) {
+						const parsedLog = parseJson(this.incompleteLog)
+						this.handleLog(parsedLog)
 					}
 				}
-				this.incompleteLog = ``
 			} catch (error) {
-				console.warn(`⚠️----------------⚠️`)
+				console.error(`❌❌❌`)
+				console.error(this.incompleteLog)
 				console.error(error)
+				console.error(`❌❌❌️`)
 			}
 		})
 		if (process.pid) {

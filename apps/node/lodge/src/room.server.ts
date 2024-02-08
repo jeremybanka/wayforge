@@ -55,17 +55,17 @@ const atomIOFileLogger = new AtomIO.AtomIOLogger(`info`, () => true, {
 })
 
 IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
-IMPLICIT.STORE.loggers[1] = atomIOFileLogger
+// IMPLICIT.STORE.loggers[1] = atomIOFileLogger
 
 const logger = IMPLICIT.STORE.logger
 
 parentSocket.relay((socket) => {
 	const snapshot = generateHeapSnapshot()
 	Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
-	socket.onAny((event, ...args) => {
-		parentSocket.logger.info(`🛰 `, event, ...args)
-	})
 	const username = socket.id.split(`:`)[1]
+	socket.onAny((event, ...args) => {
+		parentSocket.logger.info(username, `<< 🛰 `, event, ...args)
+	})
 	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(username))
 	socket.on(`leave-room`, () => {
 		AtomIO.setState(

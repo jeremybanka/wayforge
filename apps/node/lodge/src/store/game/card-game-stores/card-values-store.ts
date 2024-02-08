@@ -7,6 +7,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Identified } from "~/packages/anvl/src/id"
 
+import { IMPLICIT } from "atom.io/internal"
 import { visibleCardIndices } from "./cards-store"
 
 export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
@@ -60,8 +61,9 @@ export const valuesOfCardsView = selectorFamily<
 		({ find, get }) => {
 			const visibleCardIndex = find(visibleCardIndices, username)
 			const visibleCardIds = get(visibleCardIndex)
-			return visibleCardIds.map((cardId) => {
+			const tokens = visibleCardIds.map((cardId) => {
 				return find(valuesOfCards.core.findRelatedKeysState, cardId)
 			})
+			return tokens
 		},
 })

@@ -2,6 +2,7 @@ import { IMPLICIT, Subject } from "atom.io/internal"
 import { parseJson, stringifyJson } from "atom.io/json"
 import type { Json } from "atom.io/json"
 
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { CustomSocket } from "./custom-socket"
 import type { EventBuffer, Events } from "./custom-socket"
 
@@ -58,7 +59,15 @@ export class ParentSocket<
 	public id = `#####`
 
 	protected log(...args: any[]): void {
-		this.process.stderr.write(stringifyJson(args) + `\x03`)
+		this.process.stderr.write(
+			stringifyJson(
+				args.map((arg) =>
+					arg instanceof SetRTX
+						? `{ ${arg.toJSON().members.join(` | `)} }`
+						: arg,
+				),
+			) + `\x03`,
+		)
 	}
 	public logger = {
 		info: (...args: any[]): void => this.log(`i`, ...args),

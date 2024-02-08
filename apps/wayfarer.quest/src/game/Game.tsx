@@ -70,15 +70,18 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 // 	)
 // }
 
+function CoreSync(): null {
+	useSyncContinuity(heartsContinuity)
+	return null
+}
+
 export type GameProps = {
 	roomId: string
 }
 export function Game({ roomId }: GameProps): JSX.Element {
-	useSyncContinuity(heartsContinuity)
-
 	return (
 		<>
-			{/* <CoreSync /> */}
+			<CoreSync />
 			<div className={scss.class}>
 				{/* <Controls /> */}
 				<section data-css="enemy-domains">

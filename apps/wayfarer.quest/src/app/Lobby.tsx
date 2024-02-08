@@ -20,9 +20,8 @@ export default function Lobby(): JSX.Element {
 		<div>
 			<h2>Lobby</h2>
 			{roomKeys.members.map((roomId) => (
-				<>
+				<React.Fragment key={roomId}>
 					<button
-						key={roomId}
 						type="button"
 						onClick={() => {
 							setRoomState(roomId)
@@ -42,7 +41,7 @@ export default function Lobby(): JSX.Element {
 					>
 						x
 					</button>
-				</>
+				</React.Fragment>
 			))}
 			<button
 				type="button"

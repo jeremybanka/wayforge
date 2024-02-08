@@ -38,6 +38,7 @@ pipe(
 	},
 	(server) => {
 		server.on(`connection`, (socket) => {
+			const shortId = socket.id.slice(0, 3)
 			const { username } = socket.handshake.auth
 			const exposeMutable = RTS.realtimeMutableProvider({ socket })
 			const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
@@ -63,7 +64,7 @@ pipe(
 
 			socket.on(`create-room`, async (roomId) => {
 				runTransaction(RTS.createRoomTX)(roomId, `bun`, [
-					`--smol`,
+					// `--smol`,
 					`--watch`,
 					path.join(import.meta.dir, `room.server.ts`),
 				])
@@ -72,12 +73,13 @@ pipe(
 			socket.on(`delete-room`, async (roomId) => {
 				const roomState = findState(RTS.roomSelectors, roomId)
 				const roomSocket = await getState(roomState)
+				logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
 				roomSocket.emit(`exit`, username)
 				setState(RT.roomIndex, (index) => (index.delete(roomId), index))
 			})
 
 			socket.on(`join-room`, async (roomId) => {
-				logger.info(`[${socket.id}]:${username}`, `joining room "${roomId}"`)
+				logger.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
 				const roomQueue: [string, ...Json.Array][] = []
 				const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
 					roomQueue.push(payload)
@@ -102,8 +104,9 @@ pipe(
 				}
 
 				roomSocket.process.on(`close`, (code) => {
-					logger.info(`[${socket.id}]:${username}`, `room "${roomId}" closed`)
+					logger.info(`[${shortId}]:${username}`, `room "${roomId}" closing`)
 					socket.emit(`room-close`, roomId, code)
+					runTransaction(RTS.destroyRoomTX)(roomId)
 				})
 				const leaveRoom = () => {
 					socket.off(`user-leaves`, leaveRoom)
@@ -131,7 +134,7 @@ pipe(
 				const roomSocket = await getState(roomSocketState)
 				roomSocket?.emit(`leave-room`, username)
 				runTransaction(RTS.leaveRoomTX)(`*`, username)
-				logger.info(`[${socket.id}]:${username}`, `disconnected`)
+				logger.info(`[${shortId}]:${username}`, `disconnected`)
 			}
 			socket.on(`disconnect`, handleDisconnect)
 		})

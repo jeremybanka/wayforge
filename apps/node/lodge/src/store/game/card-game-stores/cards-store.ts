@@ -56,30 +56,33 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 				)
 				const handOwnerId = get(handOwnerIdState)
 				if (handOwnerId === username) {
-					const cardIndex = find(groupsOfCards.states.cardKeysOfGroup, pileId)
-					const cardIds = get(cardIndex)
-					for (const cardId of cardIds) {
-						cardIds.push(cardId)
+					const pileCardIndex = find(
+						groupsOfCards.states.cardKeysOfGroup,
+						pileId,
+					)
+					const pileCardIds = get(pileCardIndex)
+					for (const pileCardId of pileCardIds) {
+						cardIds.push(pileCardId)
 					}
 				}
 			}
 			const handIds = get(handIndex)
 			for (const handId of handIds) {
-				const cardIndex = find(groupsOfCards.states.cardKeysOfGroup, handId)
-				const cardIds = get(cardIndex)
-				for (const cardId of cardIds) {
-					cardIds.push(cardId)
+				const handCardIndex = find(groupsOfCards.states.cardKeysOfGroup, handId)
+				const handCardIds = get(handCardIndex)
+				for (const handCardId of handCardIds) {
+					cardIds.push(handCardId)
 				}
 			}
 			const currentTrickId = get(currentTrickIdState)
 			if (currentTrickId) {
-				const cardIndex = find(
+				const trickCardIndex = find(
 					groupsOfCards.states.cardKeysOfGroup,
 					currentTrickId,
 				)
-				const cardIds = get(cardIndex)
-				for (const cardId of cardIds) {
-					cardIds.push(cardId)
+				const trickCardIds = get(trickCardIndex)
+				for (const trickCardId of trickCardIds) {
+					cardIds.push(trickCardId)
 				}
 			}
 			return cardIds

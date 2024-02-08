@@ -8,6 +8,7 @@ import type {
 import {
 	IMPLICIT,
 	assignTransactionToContinuity,
+	getUpdateToken,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -89,7 +90,16 @@ export class SyncGroup {
 		const zeroth = args[0]
 		if (zeroth.type === `atom` || zeroth.type === `mutable_atom`) {
 			const globals = args as AtomToken<any>[]
-			this.globals.push(...globals)
+			for (const global of globals) {
+				switch (global.type) {
+					case `atom`:
+						this.globals.push(global)
+						break
+					case `mutable_atom`:
+						this.globals.push(getUpdateToken(global))
+						break
+				}
+			}
 		} else if (zeroth.type === `transaction`) {
 			const actions = args as TransactionToken<any>[]
 			this.actions.push(...actions)

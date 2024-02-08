@@ -37,7 +37,7 @@ export const SystemServer = ({
 	socket.on(`create-room`, async (roomId) => {
 		actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
 			`--inspect=localhost:6499`,
-			path.join(__dirname, `game-instance.bun.ts`),
+			path.join(import.meta.dir, `game-instance.bun.ts`),
 		])
 	})
 

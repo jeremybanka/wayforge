@@ -9,6 +9,7 @@ export function useRealtimeService(
 ): void {
 	const { socket, services } = React.useContext(RealtimeContext)
 	onMount(() => {
+		console.log(`🚀🚀🚀🚀🚀`, `useRealtimeService`, key, socket, services)
 		let service = services?.get(key)
 		if (service) {
 			service[0]++
