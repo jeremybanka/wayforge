@@ -24,6 +24,6 @@
 		"useUnknownInCatchVariables": true,
 		"noPropertyAccessFromIndexSignature": true
 	},
-	"include": ["./src", "./bun"],
+	"include": ["./apps/tempest.games/src", "./apps/tempest.games/bun"],
 	"exclude": []
 }
