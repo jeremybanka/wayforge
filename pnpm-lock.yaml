@@ -275,8 +275,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/bun':
-        specifier: 1.0.4
-        version: 1.0.4
+        specifier: 1.0.5
+        version: 1.0.5
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -4899,10 +4899,10 @@ packages:
       '@babel/types': 7.23.9
     dev: true
 
-  /@types/bun@1.0.4:
-    resolution: {integrity: sha512-2DO7sqwtpko3d3XP2kLpJsOkV12sSRt8cFR955JVB60m1DiXE56T+gJq+DcCczQ5khxgCDQKkyBRlgg5VH33Dw==}
+  /@types/bun@1.0.5:
+    resolution: {integrity: sha512-c14fs5QLLanldcZpX/GjIEKeo++NDzOlixUZ7IUWzN7AoBTisYyWxaxdXNhpAP5I1mPcd92Zagq8sdgTnUXWjg==}
     dependencies:
-      bun-types: 1.0.25
+      bun-types: 1.0.26
     dev: true
 
   /@types/cookie@0.4.1:
@@ -6010,12 +6010,11 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /bun-types@1.0.25:
-    resolution: {integrity: sha512-9lxeUR/OJsvlZH4GOWteiAdx7ikrSxCUX7Rr0JJux+DrR3LejouVLxIZnTeQ3UPAZovvSgKivWeHPJ2wlo7/Kg==}
+  /bun-types@1.0.26:
+    resolution: {integrity: sha512-VcSj+SCaWIcMb0uSGIAtr8P92zq9q+unavcQmx27fk6HulCthXHBVrdGuXxAZbFtv7bHVjizRzR2mk9r/U8Nkg==}
     dependencies:
       '@types/node': 20.11.17
       '@types/ws': 8.5.10
-      undici-types: 5.28.3
     dev: true
 
   /bundle-require@4.0.2(esbuild@0.19.12):
@@ -12091,10 +12090,6 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-
-  /undici-types@5.28.3:
-    resolution: {integrity: sha512-VJD0un4i6M1/lFOJPhacHdq6FadtlkdhKBed2W6yBqmrAr/W58oqENaOIX031stDVFwz9AemOLkIj/2AXAMLCg==}
-    dev: true
 
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
