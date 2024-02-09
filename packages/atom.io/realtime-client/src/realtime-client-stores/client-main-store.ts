@@ -9,8 +9,11 @@ export const myIdState = AtomIO.selector<string | undefined>({
 	key: `mySocketId`,
 	get: ({ get }) => get(myIdState__INTERNAL),
 })
+
+const usernameEffects =
+	typeof window === `undefined` ? [] : [lazyLocalStorageEffect(`myUsername`)]
 export const myUsernameState = AtomIO.atom<string | null>({
 	key: `myUsername`,
 	default: null,
-	effects: [lazyLocalStorageEffect(`myUsername`)],
+	effects: usernameEffects,
 })

@@ -5,7 +5,7 @@ import { io } from "socket.io-client"
 import { env } from "./env"
 
 export const SOCKET =
-	typeof window === `undefined` || getState(myUsernameState) === null
+	getState(myUsernameState) === null
 		? null
 		: io(env.NEXT_PUBLIC_REMOTE_ORIGIN, {
 				auth: {
