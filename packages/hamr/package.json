@@ -2,15 +2,16 @@
 	"name": "hamr",
 	"version": "0.4.5",
 	"description": "core react and recoil utilities for wayforge",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
-	},
+	"type": "module",
 	"license": "MIT",
 	"sideEffects": false,
 	"author": "Jeremy Banka",
 	"publishConfig": {
 		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
 	},
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node",

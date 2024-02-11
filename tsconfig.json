@@ -22,7 +22,7 @@
 		},
 		"types": ["vitest/globals"],
 		"resolveJsonModule": true,
-		"allowJs": false,
+		"allowJs": true,
 		"noEmit": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
@@ -32,6 +32,12 @@
 		"noUnusedParameters": true,
 		"skipLibCheck": true
 	},
-	"include": ["**/*.ts", "**/*.tsx", "**/*.config.ts", "**/*.schema.json.ts"],
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"**/*.config.ts",
+		"**/*.schema.json.ts",
+		"**/*.js"
+	],
 	"exclude": ["*/**/node_modules", "*/**/dist", "apps/tempest.games"]
 }

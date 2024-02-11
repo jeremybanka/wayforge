@@ -6,7 +6,7 @@ import type {
 } from "atom.io"
 import * as React from "react"
 
-import { discoverType } from "~/packages/anvl/src/refinement/refinery"
+import { discoverType } from "anvl/refinement/refinery"
 
 import { prettyJson } from "."
 
