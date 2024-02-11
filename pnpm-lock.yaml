@@ -386,6 +386,9 @@ importers:
       framer-motion:
         specifier: 11.0.3
         version: 11.0.3(react-dom@18.2.0)(react@18.2.0)
+      hamr:
+        specifier: workspace:*
+        version: link:../../../packages/hamr
       io-ts:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.2)
@@ -889,6 +892,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: 4.2.1
         version: 4.2.1(vite@5.1.0)
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
       eslint:
         specifier: 8.56.0
         version: 8.56.0
@@ -898,6 +904,9 @@ importers:
       jsdom:
         specifier: 24.0.0
         version: 24.0.0
+      npmlog:
+        specifier: 7.0.1
+        version: 7.0.1
       preact:
         specifier: 10.19.4
         version: 10.19.4

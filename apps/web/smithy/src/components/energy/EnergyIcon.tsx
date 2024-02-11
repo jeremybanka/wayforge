@@ -3,7 +3,7 @@ import { useId } from "react"
 import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/packages/hamr/src/recoil-tools/RecoilList"
+import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
 import { Luum } from "~/packages/luum/src"
 
 import type { Energy } from "../../services/energy"

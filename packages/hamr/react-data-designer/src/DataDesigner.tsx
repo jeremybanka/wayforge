@@ -1,9 +1,6 @@
+import { JsonEditor } from "hamr/react-json-editor"
+
 import * as React from "react"
-
-import type { Join } from "~/packages/anvl/src/join"
-
-import { Id } from "../react-id"
-import { JsonEditor, type JsonEditorComponents } from "../react-json-editor"
 
 export type Next<X> = X | ((oldValue: X) => X)
 

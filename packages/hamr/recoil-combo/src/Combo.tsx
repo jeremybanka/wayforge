@@ -122,7 +122,7 @@ const Combo_INTERNAL = <State,>({
 	}
 
 	return (
-		<combo is="div" aria-label="Multiple Choice">
+		<div aria-label="Multiple Choice">
 			{label && <label htmlFor={domId}>{label}</label>}
 			<div>
 				<span>
@@ -179,7 +179,7 @@ const Combo_INTERNAL = <State,>({
 					</li>
 				))}
 			</ul>
-		</combo>
+		</div>
 	)
 }
 
