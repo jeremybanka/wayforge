@@ -4,7 +4,7 @@ import type { Join } from "~/packages/anvl/src/join"
 
 import type { DataDesigner } from "./DataDesigner"
 
-import scss from "./RelationEditor.module.scss"
+import "./relation-editor-styles.scss"
 
 export const RelationEditor: DataDesigner<Join, `Tree`> = (props) => {
 	const seen = new Set()
@@ -20,7 +20,7 @@ export const RelationEditor: DataDesigner<Join, `Tree`> = (props) => {
 		})
 
 	return (
-		<article className={scss.class}>
+		<article className="relation-editor-0123456789">
 			{/* <span>{props.data.relationType}</span> */}
 			{data.map(([head, tail]) => (
 				<section>

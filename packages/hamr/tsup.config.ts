@@ -17,6 +17,7 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`@floating-ui/react`,
 	`framer-motion`,
 	`happy-dom`,
+	`fp-ts`,
 ]
 
 export const BASE_OPTIONS: Options = {
@@ -34,6 +35,15 @@ export const BASE_OPTIONS: Options = {
 	tsconfig: `tsconfig.json`,
 }
 
+export const DTS_OPTIONS: Options = {
+	...BASE_OPTIONS,
+	dts: { only: true },
+	format: [`esm`],
+	entry: [`src/index.ts`],
+	metafile: false,
+	outDir: `dist`,
+}
+
 export const JS_OPTIONS: Options = {
 	...BASE_OPTIONS,
 	clean: false,
@@ -41,8 +51,8 @@ export const JS_OPTIONS: Options = {
 	entry: {
 		...entriesToRecord(
 			SUBMODULE_NAMES.map((submodule) => [
-				`hamr/${submodule}/dist/index`,
-				`hamr/${submodule}/src/index.ts`,
+				`${submodule}/dist/index`,
+				`${submodule}/src/index.ts`,
 			]),
 		),
 	},

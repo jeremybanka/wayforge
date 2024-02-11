@@ -889,6 +889,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: 4.2.1
         version: 4.2.1(vite@5.1.0)
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
       eslint:
         specifier: 8.56.0
         version: 8.56.0
@@ -12349,7 +12352,7 @@ packages:
       debug: 4.3.4(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.2(typescript@5.3.3)
-      vite: 5.1.0(@types/node@20.11.17)
+      vite: 5.1.0(sass@1.70.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
