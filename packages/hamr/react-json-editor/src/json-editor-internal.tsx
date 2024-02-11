@@ -1,3 +1,5 @@
+import { ElasticInput } from "hamr/react-elastic-input"
+
 import type { CSSProperties, FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"
 
@@ -10,7 +12,6 @@ import {
 } from "~/packages/anvl/src/refinement/refine-json"
 
 import { SubEditors } from "."
-import { ElasticInput } from "../react-elastic-input"
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 

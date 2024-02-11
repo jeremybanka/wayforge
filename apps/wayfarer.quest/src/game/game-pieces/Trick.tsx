@@ -1,8 +1,8 @@
 import { useO } from "atom.io/react"
 import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { setCssVars } from "hamr/react-css-vars"
 import { Id } from "hamr/react-id"
+import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import {
 	groupsOfCards,

@@ -1,6 +1,6 @@
-import type { CSSProperties, FC, ReactNode } from "react"
+import { ErrorBoundary } from "hamr/react-error-boundary"
 
-import { ErrorBoundary } from "../react-error-boundary"
+import type { CSSProperties, FC, ReactNode } from "react"
 
 export type Dict<T> = Record<string, T>
 

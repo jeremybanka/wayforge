@@ -7,7 +7,7 @@ import {
 	useServerAction,
 } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
-import { Radial } from "hamr/react-radial"
+import { Radial } from "~/packages/hamr/react-radial/src"
 
 import {
 	joinRoomTX,

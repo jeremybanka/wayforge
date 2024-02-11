@@ -1,8 +1,9 @@
+import type { WC } from "hamr/react-json-editor"
+
 import type { FC, ReactElement } from "react"
 import type { RecoilState } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
-import type { WC } from "~/packages/hamr/src/react-json-editor"
 
 /* eslint-disable @typescript-eslint/ban-types */
 

@@ -1,10 +1,10 @@
 import { pipe } from "fp-ts/function"
 import type { SimpleGit } from "simple-git"
 import { simpleGit } from "simple-git"
-import type { Server as WebSocketServer, Socket } from "socket.io"
+import type { Server, Socket } from "socket.io"
 
-import { redact } from "~/packages/anvl/src/object"
-import { recordToEntries } from "~/packages/anvl/src/object/entries"
+import { redact } from "anvl/object"
+import { recordToEntries } from "anvl/object"
 
 import type {
 	GitClientEvents,
@@ -16,7 +16,13 @@ import { SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET } from "./interface"
 
 export * from "./interface"
 
-type GitSocketServer = WebSocketServer<
+export type WebSocketServer<
+	ClientEvents extends Record<string, any>,
+	ServerEvents extends Record<string, any>,
+	ServerSideEvents extends Record<string, any>,
+> = Server<ClientEvents, ServerEvents, ServerSideEvents>
+
+export type GitSocketServer = WebSocketServer<
 	GitClientEvents,
 	GitServerEvents,
 	GitServerSideEvents
@@ -29,7 +35,7 @@ export type ServeGitOptions = {
 
 export const serveSimpleGit =
 	(options: ServeGitOptions) =>
-	<YourServer extends WebSocketServer>(
+	<YourServer extends WebSocketServer<any, any, any>>(
 		server: YourServer,
 	): GitSocketServer & YourServer => (
 		options.logger.info(`init`, `git-io`),

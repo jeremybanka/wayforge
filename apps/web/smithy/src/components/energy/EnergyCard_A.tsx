@@ -2,8 +2,8 @@ import { useId } from "react"
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
-import { setCssVars } from "hamr/react-css-vars"
 import { Luum } from "luum"
+import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_PADDING, CARD_WIDTH } from "../Card"

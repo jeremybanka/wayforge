@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { setCssVars } from "hamr/react-css-vars"
 import { stringToColor } from "~/packages/anvl/src/string/string-to-color"
+import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"

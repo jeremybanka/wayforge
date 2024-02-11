@@ -2,137 +2,48 @@
 	"name": "hamr",
 	"version": "0.4.5",
 	"description": "core react and recoil utilities for wayforge",
-	"files": ["**/*"],
-	"exports": {
-		"./react-click-handlers/package.json": "./react-click-handlers/package.json",
-		"./react-click-handlers": {
-			"types": "./react-click-handlers/dist/index.d.ts",
-			"browser": "./react-click-handlers/dist/index.mjs",
-			"import": "./react-click-handlers/dist/index.mjs",
-			"require": "./react-click-handlers/dist/index.js"
-		},
-		"./react-css-vars/package.json": "./react-css-vars/package.json",
-		"./react-css-vars": {
-			"types": "./react-css-vars/dist/index.d.ts",
-			"browser": "./react-css-vars/dist/index.mjs",
-			"import": "./react-css-vars/dist/index.mjs",
-			"require": "./react-css-vars/dist/index.js"
-		},
-		"./react-data-designer/package.json": "./react-data-designer/package.json",
-		"./react-data-designer": {
-			"types": "./react-data-designer/dist/index.d.ts",
-			"browser": "./react-data-designer/dist/index.mjs",
-			"import": "./react-data-designer/dist/index.mjs",
-			"require": "./react-data-designer/dist/index.js"
-		},
-		"./react-elastic-input/package.json": "./react-elastic-input/package.json",
-		"./react-elastic-input": {
-			"types": "./react-elastic-input/dist/index.d.ts",
-			"browser": "./react-elastic-input/dist/index.mjs",
-			"import": "./react-elastic-input/dist/index.mjs",
-			"require": "./react-elastic-input/dist/index.js"
-		},
-		"./react-error-boundary/package.json": "./react-error-boundary/package.json",
-		"./react-error-boundary": {
-			"types": "./react-error-boundary/dist/index.d.ts",
-			"browser": "./react-error-boundary/dist/index.mjs",
-			"import": "./react-error-boundary/dist/index.mjs",
-			"require": "./react-error-boundary/dist/index.js"
-		},
-		"./react-id/package.json": "./react-id/package.json",
-		"./react-id": {
-			"types": "./react-id/dist/index.d.ts",
-			"browser": "./react-id/dist/index.mjs",
-			"import": "./react-id/dist/index.mjs",
-			"require": "./react-id/dist/index.js"
-		},
-		"./react-json-editor/package.json": "./react-json-editor/package.json",
-		"./react-json-editor": {
-			"types": "./react-json-editor/dist/index.d.ts",
-			"browser": "./react-json-editor/dist/index.mjs",
-			"import": "./react-json-editor/dist/index.mjs",
-			"require": "./react-json-editor/dist/index.js"
-		},
-		"./react-radial/package.json": "./react-radial/package.json",
-		"./react-radial": {
-			"types": "./react-radial/dist/index.d.ts",
-			"browser": "./react-radial/dist/index.mjs",
-			"import": "./react-radial/dist/index.mjs",
-			"require": "./react-radial/dist/index.js"
-		},
-		"./react-rx/package.json": "./react-rx/package.json",
-		"./react-rx": {
-			"types": "./react-rx/dist/index.d.ts",
-			"browser": "./react-rx/dist/index.mjs",
-			"import": "./react-rx/dist/index.mjs",
-			"require": "./react-rx/dist/index.js"
-		},
-		"./recoil-combo/package.json": "./recoil-combo/package.json",
-		"./recoil-combo": {
-			"types": "./recoil-combo/dist/index.d.ts",
-			"browser": "./recoil-combo/dist/index.mjs",
-			"import": "./recoil-combo/dist/index.mjs",
-			"require": "./recoil-combo/dist/index.js"
-		},
-		"./recoil-error-boundary/package.json": "./recoil-error-boundary/package.json",
-		"./recoil-error-boundary": {
-			"types": "./recoil-error-boundary/dist/index.d.ts",
-			"browser": "./recoil-error-boundary/dist/index.mjs",
-			"import": "./recoil-error-boundary/dist/index.mjs",
-			"require": "./recoil-error-boundary/dist/index.js"
-		},
-		"./recoil-effect-storage/package.json": "./recoil-effect-storage/package.json",
-		"./recoil-effect-storage": {
-			"types": "./recoil-effect-storage/dist/index.d.ts",
-			"browser": "./recoil-effect-storage/dist/index.mjs",
-			"import": "./recoil-effect-storage/dist/index.mjs",
-			"require": "./recoil-effect-storage/dist/index.js"
-		},
-		"./recoil-tools/package.json": "./recoil-tools/package.json",
-		"./recoil-tools": {
-			"types": "./recoil-tools/dist/index.d.ts",
-			"browser": "./recoil-tools/dist/index.mjs",
-			"import": "./recoil-tools/dist/index.mjs",
-			"require": "./recoil-tools/dist/index.js"
-		}
+	"type": "module",
+	"license": "MIT",
+	"sideEffects": false,
+	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"scripts": {
+		"manifest": "tsx __scripts__/manifest-build.node",
+		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
+		"build": "npm run clean:build && concurrently \"npm:build:*\"",
+		"build:main": "tsup",
+		"build:react-click-handlers": "cd react-click-handlers && tsup",
+		"build:react-css-vars": "cd react-css-vars && tsup",
+		"build:react-data-designer": "cd react-data-designer && tsup",
+		"build:react-elastic-input": "cd react-elastic-input && tsup",
+		"build:react-error-boundary": "cd react-error-boundary && tsup",
+		"build:react-id": "cd react-id && tsup",
+		"build:react-json-editor": "cd react-json-editor && tsup",
+		"build:react-radial": "cd react-radial && tsup",
+		"build:react-rx": "cd react-rx && tsup",
+		"build:recoil-combo": "cd recoil-combo && tsup",
+		"build:recoil-effect-storage": "cd recoil-effect-storage && tsup",
+		"build:recoil-error-boundary": "cd recoil-error-boundary && tsup",
+		"build:recoil-tools": "cd recoil-tools && tsup",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:biome && npm run lint:eslint",
+		"test": "vitest",
+		"test:coverage": "echo no test coverage yet",
+		"test:once": "vitest run",
+		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"dependencies": {
 		"@floating-ui/react": "0.26.9",
 		"@floating-ui/react-dom": "2.0.8",
 		"corners": "0.1.0",
 		"framer-motion": "11.0.3"
-	},
-	"scripts": {
-		"build": "./build.sh",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
-		"lint:eslint": "eslint .",
-		"lint": "npm run lint:biome && npm run lint:eslint",
-		"test": "vitest",
-		"test:coverage": "echo no test coverage yet",
-		"test:once": "vitest run"
-	},
-	"devDependencies": {
-		"@emotion/styled": "11.11.0",
-		"@testing-library/jest-dom": "6.4.2",
-		"@testing-library/react": "14.2.1",
-		"@types/jsdom": "21.1.6",
-		"@types/react": "18.2.55",
-		"@vitejs/plugin-react": "4.2.1",
-		"eslint": "8.56.0",
-		"happy-dom": "13.3.8",
-		"jsdom": "24.0.0",
-		"preact": "10.19.4",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"react-router-dom": "6.22.0",
-		"recoil": "0.7.7",
-		"rxjs": "7.8.1",
-		"sass": "1.70.0",
-		"tsup": "8.0.1",
-		"typescript": "5.3.3",
-		"vite-tsconfig-paths": "4.3.1",
-		"vite-plugin-dts": "3.7.2",
-		"vitest": "1.2.2"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": "^0.25.0 || ^0.26.0",
@@ -151,14 +62,164 @@
 			"optional": true
 		}
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	"devDependencies": {
+		"@emotion/styled": "11.11.0",
+		"@testing-library/jest-dom": "6.4.2",
+		"@testing-library/react": "14.2.1",
+		"@types/jsdom": "21.1.6",
+		"@types/react": "18.2.55",
+		"@vitejs/plugin-react": "4.2.1",
+		"concurrently": "8.2.2",
+		"eslint": "8.56.0",
+		"happy-dom": "13.3.8",
+		"jsdom": "24.0.0",
+		"npmlog": "7.0.1",
+		"preact": "10.19.4",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-router-dom": "6.22.0",
+		"recoil": "0.7.7",
+		"rxjs": "7.8.1",
+		"sass": "1.70.0",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vite-plugin-dts": "3.7.2",
+		"vite-tsconfig-paths": "4.3.1",
+		"vitest": "1.2.2"
 	},
-	"license": "MIT",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
-	"publishConfig": {
-		"access": "public"
+	"files": [
+		"react-click-handlers/dist",
+		"react-click-handlers/package.json",
+		"react-click-handlers/src",
+		"react-css-vars/dist",
+		"react-css-vars/package.json",
+		"react-css-vars/src",
+		"react-data-designer/dist",
+		"react-data-designer/package.json",
+		"react-data-designer/src",
+		"react-elastic-input/dist",
+		"react-elastic-input/package.json",
+		"react-elastic-input/src",
+		"react-error-boundary/dist",
+		"react-error-boundary/package.json",
+		"react-error-boundary/src",
+		"react-id/dist",
+		"react-id/package.json",
+		"react-id/src",
+		"react-json-editor/dist",
+		"react-json-editor/package.json",
+		"react-json-editor/src",
+		"react-radial/dist",
+		"react-radial/package.json",
+		"react-radial/src",
+		"react-rx/dist",
+		"react-rx/package.json",
+		"react-rx/src",
+		"recoil-combo/dist",
+		"recoil-combo/package.json",
+		"recoil-combo/src",
+		"recoil-effect-storage/dist",
+		"recoil-effect-storage/package.json",
+		"recoil-effect-storage/src",
+		"recoil-error-boundary/dist",
+		"recoil-error-boundary/package.json",
+		"recoil-error-boundary/src",
+		"recoil-tools/dist",
+		"recoil-tools/package.json",
+		"recoil-tools/src"
+	],
+	"exports": {
+		"./package.json": null,
+		"./react-click-handlers/package.json": "./react-click-handlers/package.json",
+		"./react-click-handlers": {
+			"types": "./react-click-handlers/dist/index.d.ts",
+			"browser": "./react-click-handlers/dist/index.js",
+			"import": "./react-click-handlers/dist/index.js",
+			"require": "./react-click-handlers/dist/index.cjs"
+		},
+		"./react-css-vars/package.json": "./react-css-vars/package.json",
+		"./react-css-vars": {
+			"types": "./react-css-vars/dist/index.d.ts",
+			"browser": "./react-css-vars/dist/index.js",
+			"import": "./react-css-vars/dist/index.js",
+			"require": "./react-css-vars/dist/index.cjs"
+		},
+		"./react-data-designer/package.json": "./react-data-designer/package.json",
+		"./react-data-designer": {
+			"types": "./react-data-designer/dist/index.d.ts",
+			"browser": "./react-data-designer/dist/index.js",
+			"import": "./react-data-designer/dist/index.js",
+			"require": "./react-data-designer/dist/index.cjs"
+		},
+		"./react-elastic-input/package.json": "./react-elastic-input/package.json",
+		"./react-elastic-input": {
+			"types": "./react-elastic-input/dist/index.d.ts",
+			"browser": "./react-elastic-input/dist/index.js",
+			"import": "./react-elastic-input/dist/index.js",
+			"require": "./react-elastic-input/dist/index.cjs"
+		},
+		"./react-error-boundary/package.json": "./react-error-boundary/package.json",
+		"./react-error-boundary": {
+			"types": "./react-error-boundary/dist/index.d.ts",
+			"browser": "./react-error-boundary/dist/index.js",
+			"import": "./react-error-boundary/dist/index.js",
+			"require": "./react-error-boundary/dist/index.cjs"
+		},
+		"./react-id/package.json": "./react-id/package.json",
+		"./react-id": {
+			"types": "./react-id/dist/index.d.ts",
+			"browser": "./react-id/dist/index.js",
+			"import": "./react-id/dist/index.js",
+			"require": "./react-id/dist/index.cjs"
+		},
+		"./react-json-editor/package.json": "./react-json-editor/package.json",
+		"./react-json-editor": {
+			"types": "./react-json-editor/dist/index.d.ts",
+			"browser": "./react-json-editor/dist/index.js",
+			"import": "./react-json-editor/dist/index.js",
+			"require": "./react-json-editor/dist/index.cjs"
+		},
+		"./react-radial/package.json": "./react-radial/package.json",
+		"./react-radial": {
+			"types": "./react-radial/dist/index.d.ts",
+			"browser": "./react-radial/dist/index.js",
+			"import": "./react-radial/dist/index.js",
+			"require": "./react-radial/dist/index.cjs"
+		},
+		"./react-rx/package.json": "./react-rx/package.json",
+		"./react-rx": {
+			"types": "./react-rx/dist/index.d.ts",
+			"browser": "./react-rx/dist/index.js",
+			"import": "./react-rx/dist/index.js",
+			"require": "./react-rx/dist/index.cjs"
+		},
+		"./recoil-combo/package.json": "./recoil-combo/package.json",
+		"./recoil-combo": {
+			"types": "./recoil-combo/dist/index.d.ts",
+			"browser": "./recoil-combo/dist/index.js",
+			"import": "./recoil-combo/dist/index.js",
+			"require": "./recoil-combo/dist/index.cjs"
+		},
+		"./recoil-effect-storage/package.json": "./recoil-effect-storage/package.json",
+		"./recoil-effect-storage": {
+			"types": "./recoil-effect-storage/dist/index.d.ts",
+			"browser": "./recoil-effect-storage/dist/index.js",
+			"import": "./recoil-effect-storage/dist/index.js",
+			"require": "./recoil-effect-storage/dist/index.cjs"
+		},
+		"./recoil-error-boundary/package.json": "./recoil-error-boundary/package.json",
+		"./recoil-error-boundary": {
+			"types": "./recoil-error-boundary/dist/index.d.ts",
+			"browser": "./recoil-error-boundary/dist/index.js",
+			"import": "./recoil-error-boundary/dist/index.js",
+			"require": "./recoil-error-boundary/dist/index.cjs"
+		},
+		"./recoil-tools/package.json": "./recoil-tools/package.json",
+		"./recoil-tools": {
+			"types": "./recoil-tools/dist/index.d.ts",
+			"browser": "./recoil-tools/dist/index.js",
+			"import": "./recoil-tools/dist/index.js",
+			"require": "./recoil-tools/dist/index.cjs"
+		}
 	}
 }

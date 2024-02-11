@@ -4,7 +4,7 @@ import {
 	useServerAction,
 } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { setCssVars } from "hamr/react-css-vars"
+import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { dealCardsTX, groupsOfCards } from "~/apps/node/lodge/src/store/game"
 

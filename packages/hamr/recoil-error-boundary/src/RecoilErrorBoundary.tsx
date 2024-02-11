@@ -5,8 +5,8 @@ import { atomFamily, useRecoilState, useResetRecoilState } from "recoil"
 import type {
 	ErrorBoundaryProps,
 	ErrorBoundaryState,
-} from "../react-error-boundary"
-import { RecoverableErrorBoundary as ReactErrorBoundary } from "../react-error-boundary"
+} from "hamr/react-error-boundary"
+import { RecoverableErrorBoundary as ReactErrorBoundary } from "hamr/react-error-boundary"
 
 export const findErrorBoundaryState = atomFamily<ErrorBoundaryState, string>({
 	key: `errorBoundary`,
