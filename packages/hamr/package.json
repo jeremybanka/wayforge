@@ -2,6 +2,73 @@
 	"name": "hamr",
 	"version": "0.4.5",
 	"description": "core react and recoil utilities for wayforge",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"license": "MIT",
+	"sideEffects": false,
+	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"manifest": "tsx __scripts__/manifest-build.node",
+		"build": "./build.sh",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:eslint": "eslint .",
+		"lint": "npm run lint:biome && npm run lint:eslint",
+		"test": "vitest",
+		"test:coverage": "echo no test coverage yet",
+		"test:once": "vitest run"
+	},
+	"dependencies": {
+		"@floating-ui/react": "0.26.9",
+		"@floating-ui/react-dom": "2.0.8",
+		"corners": "0.1.0",
+		"framer-motion": "11.0.3"
+	},
+	"peerDependencies": {
+		"@floating-ui/react": "^0.25.0 || ^0.26.0",
+		"@floating-ui/react-dom": "^2.0.2",
+		"@vitejs/plugin-react": "^4.0.4",
+		"ajv": "^8.12.0",
+		"corners": "^0.1.0",
+		"framer-motion": "^10.15.1 || ^11.0.0",
+		"react": "^18.2.0",
+		"react-router-dom": "^6.8.1",
+		"recoil": "^0.7.6",
+		"rxjs": "^7.8.0"
+	},
+	"peerDependenciesMeta": {
+		"rxjs": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@emotion/styled": "11.11.0",
+		"@testing-library/jest-dom": "6.4.2",
+		"@testing-library/react": "14.2.1",
+		"@types/jsdom": "21.1.6",
+		"@types/react": "18.2.55",
+		"@vitejs/plugin-react": "4.2.1",
+		"eslint": "8.56.0",
+		"happy-dom": "13.3.8",
+		"jsdom": "24.0.0",
+		"npmlog": "7.0.1",
+		"preact": "10.19.4",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-router-dom": "6.22.0",
+		"recoil": "0.7.7",
+		"rxjs": "7.8.1",
+		"sass": "1.70.0",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vite-tsconfig-paths": "4.3.1",
+		"vite-plugin-dts": "3.7.2",
+		"vitest": "1.2.2"
+	},
 	"files": ["**/*"],
 	"exports": {
 		"./react-click-handlers/package.json": "./react-click-handlers/package.json",
@@ -95,71 +162,5 @@
 			"import": "./recoil-tools/dist/index.mjs",
 			"require": "./recoil-tools/dist/index.js"
 		}
-	},
-	"dependencies": {
-		"@floating-ui/react": "0.26.9",
-		"@floating-ui/react-dom": "2.0.8",
-		"corners": "0.1.0",
-		"framer-motion": "11.0.3"
-	},
-	"scripts": {
-		"build": "./build.sh",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
-		"lint:eslint": "eslint .",
-		"lint": "npm run lint:biome && npm run lint:eslint",
-		"test": "vitest",
-		"test:coverage": "echo no test coverage yet",
-		"test:once": "vitest run"
-	},
-	"devDependencies": {
-		"@emotion/styled": "11.11.0",
-		"@testing-library/jest-dom": "6.4.2",
-		"@testing-library/react": "14.2.1",
-		"@types/jsdom": "21.1.6",
-		"@types/react": "18.2.55",
-		"@vitejs/plugin-react": "4.2.1",
-		"eslint": "8.56.0",
-		"happy-dom": "13.3.8",
-		"jsdom": "24.0.0",
-		"npmlog": "7.0.1",
-		"preact": "10.19.4",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"react-router-dom": "6.22.0",
-		"recoil": "0.7.7",
-		"rxjs": "7.8.1",
-		"sass": "1.70.0",
-		"tsup": "8.0.1",
-		"typescript": "5.3.3",
-		"vite-tsconfig-paths": "4.3.1",
-		"vite-plugin-dts": "3.7.2",
-		"vitest": "1.2.2"
-	},
-	"peerDependencies": {
-		"@floating-ui/react": "^0.25.0 || ^0.26.0",
-		"@floating-ui/react-dom": "^2.0.2",
-		"@vitejs/plugin-react": "^4.0.4",
-		"ajv": "^8.12.0",
-		"corners": "^0.1.0",
-		"framer-motion": "^10.15.1 || ^11.0.0",
-		"react": "^18.2.0",
-		"react-router-dom": "^6.8.1",
-		"recoil": "^0.7.6",
-		"rxjs": "^7.8.0"
-	},
-	"peerDependenciesMeta": {
-		"rxjs": {
-			"optional": true
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
-	},
-	"license": "MIT",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
-	"publishConfig": {
-		"access": "public"
 	}
 }

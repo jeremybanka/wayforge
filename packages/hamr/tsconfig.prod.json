@@ -1,0 +1,53 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"paths": {
+			"~/*": ["./*"],
+			"atom.io": ["./packages/atom.io/dist"],
+			"atom.io/*": ["./packages/atom.io/*"]
+		}
+	},
+	"include": [
+		"__tests__",
+		"dist",
+		"src",
+		"data/dist",
+		"data/package.json",
+		"data/src",
+		"internal/dist",
+		"internal/package.json",
+		"internal/src",
+		"introspection/dist",
+		"introspection/package.json",
+		"introspection/src",
+		"json/dist",
+		"json/package.json",
+		"json/src",
+		"react/dist",
+		"react/package.json",
+		"react/src",
+		"react-devtools/dist",
+		"react-devtools/package.json",
+		"react-devtools/src",
+		"realtime/dist",
+		"realtime/package.json",
+		"realtime/src",
+		"realtime-client/dist",
+		"realtime-client/package.json",
+		"realtime-client/src",
+		"realtime-react/dist",
+		"realtime-react/package.json",
+		"realtime-react/src",
+		"realtime-server/dist",
+		"realtime-server/package.json",
+		"realtime-server/src",
+		"realtime-testing/dist",
+		"realtime-testing/package.json",
+		"realtime-testing/src",
+		"transceivers/set-rtx/dist",
+		"transceivers/set-rtx/package.json",
+		"transceivers/set-rtx/src"
+	],
+	"exclude": ["src", "**/src"]
+}
