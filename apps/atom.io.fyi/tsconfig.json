@@ -38,7 +38,13 @@
       ],
       "atom.io/*": [
         "./packages/atom.io/*/src"
-      ]
+      ],
+      "anvl/*": [
+        "./packages/anvl/src/*"
+      ],
+      "hamr/*": [
+        "./packages/hamr/*/src"
+      ],
     }
   },
   "include": [
