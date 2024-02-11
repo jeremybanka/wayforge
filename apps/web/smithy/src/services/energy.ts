@@ -15,8 +15,8 @@ import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import {
 	addToIndex,
 	removeFromIndex,
-} from "~/packages/hamr/src/recoil-tools/recoil-index"
-import type { Transact } from "~/packages/hamr/src/recoil-tools/recoil-transaction-tools"
+} from "~/packages/hamr/recoil-tools/src/recoil-index"
+import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
 import {
 	socketIndex,
 	socketSchema,

@@ -898,6 +898,9 @@ importers:
       jsdom:
         specifier: 24.0.0
         version: 24.0.0
+      npmlog:
+        specifier: 7.0.1
+        version: 7.0.1
       preact:
         specifier: 10.19.4
         version: 10.19.4

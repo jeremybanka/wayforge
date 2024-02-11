@@ -1,7 +1,9 @@
+import { Id } from "hamr/react-id"
+
 import type { Join } from "~/packages/anvl/src/join"
 
-import { Id } from "../react-id"
 import type { DataDesigner } from "./DataDesigner"
+
 import scss from "./RelationEditor.module.scss"
 
 export const RelationEditor: DataDesigner<Join, `Tree`> = (props) => {

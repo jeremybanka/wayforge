@@ -5,13 +5,13 @@ import { selector, useRecoilState, useRecoilValue } from "recoil"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
 import type { Json } from "~/packages/anvl/src/json"
-import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
-import { RecoverableErrorBoundary } from "~/packages/hamr/src/recoil-error-boundary"
+import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
+import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
 import type {
 	FromListItemProps,
 	RecoilEditorProps,
-} from "~/packages/hamr/src/recoil-tools/RecoilEditor"
-import { RecoilEditor } from "~/packages/hamr/src/recoil-tools/RecoilEditor"
+} from "~/packages/hamr/recoil-tools/src"
+import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
 
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"

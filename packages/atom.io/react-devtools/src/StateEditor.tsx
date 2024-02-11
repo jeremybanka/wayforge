@@ -5,9 +5,9 @@ import type { FC } from "react"
 import { fallback } from "~/packages/anvl/src/function"
 import { Join } from "~/packages/anvl/src/join"
 import { isJson } from "~/packages/anvl/src/refinement/refine-json"
-import { RelationEditor } from "~/packages/hamr/src/react-data-designer"
-import { ElasticInput } from "~/packages/hamr/src/react-elastic-input"
-import { JsonEditor } from "~/packages/hamr/src/react-json-editor"
+import { RelationEditor } from "~/packages/hamr/react-data-designer"
+import { ElasticInput } from "~/packages/hamr/react-elastic-input"
+import { JsonEditor } from "~/packages/hamr/react-json-editor"
 
 export const StateEditor: FC<{
 	token: WritableToken<unknown>

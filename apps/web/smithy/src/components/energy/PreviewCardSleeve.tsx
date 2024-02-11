@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from "react"
 
-import { setCssVars } from "~/packages/hamr/src/react-css-vars"
+import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import scss from "./PreviewCardSleeve.module.scss"
 

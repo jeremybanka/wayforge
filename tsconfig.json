@@ -9,7 +9,7 @@
 		"baseUrl": "./",
 		"paths": {
 			"anvl/*": ["./packages/anvl/src/*"],
-			"hamr/*": ["./packages/hamr/src/*"],
+			"hamr/*": ["./packages/hamr/*/src"],
 			"luum": ["packages/luum/src"],
 			"rel8": ["packages/rel8/types/src"],
 			"rel8/*": ["packages/rel8/*/src"],
