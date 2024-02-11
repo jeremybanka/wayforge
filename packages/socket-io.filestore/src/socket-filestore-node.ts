@@ -1,4 +1,4 @@
-import type { Server as WebSocketServer, Socket } from "socket.io"
+import type { Server, Socket } from "socket.io"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
 import {
@@ -21,6 +21,12 @@ import type {
 
 export * from "./interface"
 
+export type WebSocketServer<
+	ClientEvents extends Record<string, any>,
+	ServerEvents extends Record<string, any>,
+	ServerSideEvents extends Record<string, any>,
+> = Server<ClientEvents, ServerEvents, ServerSideEvents>
+
 export type FilestoreSocketServer = WebSocketServer<
 	FilestoreClientEvents,
 	FilestoreServerEvents,
@@ -29,7 +35,7 @@ export type FilestoreSocketServer = WebSocketServer<
 
 export const serveFilestore =
 	(options: FilestoreOptions) =>
-	<YourServer extends WebSocketServer>(
+	<YourServer extends WebSocketServer<any, any, any>>(
 		server: YourServer,
 	): FilestoreSocketServer & YourServer => (
 		options.logger.info(`init`, `filestore server`),
