@@ -8,10 +8,10 @@ import type {
 import { atom, selector, selectorFamily, transaction } from "atom.io"
 import { persistAtom } from "~/packages/atom.io/__unstable__/web-effects/src"
 
-import { lastOf } from "~/packages/anvl/src/array"
-import { now } from "~/packages/anvl/src/id"
-import { Join } from "~/packages/anvl/src/join"
-import type { Entries } from "~/packages/anvl/src/object"
+import { lastOf } from "anvl/array"
+import { now } from "anvl/id"
+import { Join } from "anvl/join"
+import type { Entries } from "anvl/object"
 
 import { addToIndex, removeFromIndex } from "."
 import {
