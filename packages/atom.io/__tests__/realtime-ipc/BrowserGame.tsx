@@ -1,9 +1,9 @@
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
+import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as React from "react"
 
-import { myIdState } from "../../realtime-client/src/realtime-client-stores"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
@@ -65,7 +65,7 @@ function View(): JSX.Element {
 }
 
 export function BrowserGame(): JSX.Element | null {
-	const socketId = AR.useO(myIdState)
+	const socketId = AR.useO(RTC.myIdState)
 
 	return socketId ? <View /> : null
 }
