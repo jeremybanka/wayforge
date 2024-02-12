@@ -1,5 +1,6 @@
 import * as AtomIO from "atom.io"
-import { lazyLocalStorageEffect } from "atom.io/__unstable__/web-effects"
+
+import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src/storage"
 
 export const myIdState__INTERNAL = AtomIO.atom<string | undefined>({
 	key: `mySocketId__INTERNAL`,
