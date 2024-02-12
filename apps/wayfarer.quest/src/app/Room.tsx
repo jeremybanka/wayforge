@@ -1,6 +1,7 @@
 "use client"
 
 import { useI, useO } from "atom.io/react"
+import { usersInRooms } from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"
@@ -16,7 +17,6 @@ import {
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
-import { usersInRooms } from "atom.io/realtime"
 import { UsersInRoom } from "./PlayersInRoom"
 import scss from "./page.module.scss"
 
