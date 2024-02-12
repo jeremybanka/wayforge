@@ -372,8 +372,8 @@ importers:
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.55)(react@18.2.0)
       '@floating-ui/dom':
-        specifier: 1.6.2
-        version: 1.6.2
+        specifier: 1.6.3
+        version: 1.6.3
       '@floating-ui/react':
         specifier: 0.26.9
         version: 0.26.9(react-dom@18.2.0)(react@18.2.0)
@@ -470,8 +470,8 @@ importers:
         specifier: 0.1.7
         version: 0.1.7(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)(recoil@0.7.7)
       '@floating-ui/dom':
-        specifier: 1.6.2
-        version: 1.6.2
+        specifier: 1.6.3
+        version: 1.6.3
       '@floating-ui/react':
         specifier: 0.26.9
         version: 0.26.9(react-dom@18.2.0)(react@18.2.0)
@@ -549,8 +549,8 @@ importers:
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3)(@preact/compat@17.1.2)(@types/react@18.2.55)
       '@floating-ui/dom':
-        specifier: 1.6.2
-        version: 1.6.2
+        specifier: 1.6.3
+        version: 1.6.3
       '@floating-ui/react':
         specifier: 0.26.9
         version: 0.26.9(@preact/compat@17.1.2)(@preact/compat@17.1.2)
@@ -3854,8 +3854,8 @@ packages:
       '@floating-ui/utils': 0.2.1
     dev: false
 
-  /@floating-ui/dom@1.6.2:
-    resolution: {integrity: sha512-xymkSSowKdGqo0SRr2Mp4czH5A8o2Pum35PAD0ftb3gCcPacWzwhvtUeUqmVXm9EVtm2hThD/lRrFNcahMOaSQ==}
+  /@floating-ui/dom@1.6.3:
+    resolution: {integrity: sha512-RnDthu3mzPlQ31Ss/BTwQ1zjzIhr3lk1gZB1OC56h/1vEtaXkESrOqL5fQVMfXpwGtRwX+YsZBdyHtJMQnkArw==}
     dependencies:
       '@floating-ui/core': 1.6.0
       '@floating-ui/utils': 0.2.1
@@ -3867,7 +3867,7 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@floating-ui/dom': 1.6.2
+      '@floating-ui/dom': 1.6.3
       react: /@preact/compat@17.1.2(preact@10.19.4)
       react-dom: /@preact/compat@17.1.2(preact@10.19.4)
     dev: false
@@ -3878,7 +3878,7 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@floating-ui/dom': 1.6.2
+      '@floating-ui/dom': 1.6.3
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
