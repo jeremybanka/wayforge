@@ -63,9 +63,9 @@ export class ChildSocket<
 					return
 				}
 				this.unprocessedEvents.push(...chunk.split(`\x03`))
-				console.log(`🤓`, chunk.length)
-				console.log(`🤓`, this.unprocessedEvents.length)
-				console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
+				// console.log(`🤓`, chunk.length)
+				// console.log(`🤓`, this.unprocessedEvents.length)
+				// console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
 				const newInput = this.unprocessedEvents.shift()
 				this.incompleteData += newInput || ``
 				try {
@@ -96,14 +96,14 @@ export class ChildSocket<
 		this.process.stderr.on(`data`, (buf) => {
 			const chunk = buf.toString()
 			this.unprocessedLogs.push(...chunk.split(`\x03`))
-			console.log(`🤫`, chunk.length)
-			console.log(`🤫`, this.unprocessedLogs.length)
-			console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
+			// console.log(`🤫`, chunk.length)
+			// console.log(`🤫`, this.unprocessedLogs.length)
+			// console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
 			const newInput = this.unprocessedLogs.shift()
 			this.incompleteLog += newInput || ``
 			try {
 				const parsedLog = parseJson(this.incompleteLog)
-				console.log(`🤫`, parsedLog)
+				// console.log(`🤫`, parsedLog)
 				this.handleLog(parsedLog)
 				while (this.unprocessedLogs.length > 0) {
 					this.incompleteLog = this.unprocessedLogs.shift() ?? ``
