@@ -157,6 +157,12 @@ export function withdraw<T>(
 			case `readonly_selector`:
 				withdrawn = target.readonlySelectors.get(token.key)
 				break
+			case `atom_family`:
+			case `mutable_atom_family`:
+			case `selector_family`:
+			case `readonly_selector_family`:
+				withdrawn = target.families.get(token.key)
+				break
 			case `timeline`:
 				withdrawn = target.timelines.get(token.key)
 				break
