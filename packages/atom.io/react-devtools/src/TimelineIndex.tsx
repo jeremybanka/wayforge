@@ -3,7 +3,7 @@ import type {
 	RegularAtomToken,
 	TimelineToken,
 } from "atom.io"
-import { redo, undo } from "atom.io"
+import { findState, redo, undo } from "atom.io"
 import type { Timeline } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
 import { type FC, Fragment } from "react"
@@ -82,8 +82,8 @@ export const TimelineIndex: FC = () => {
 						<TimelineLog
 							key={token.key}
 							token={token}
-							isOpenState={findViewIsOpenState(token.key)}
-							timelineState={findTimelineState(token.key)}
+							isOpenState={findState(findViewIsOpenState, token.key)}
+							timelineState={findState(findTimelineState, token.key)}
 						/>
 					)
 				})}

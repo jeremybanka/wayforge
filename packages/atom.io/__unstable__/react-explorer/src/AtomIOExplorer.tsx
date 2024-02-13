@@ -1,4 +1,4 @@
-import { runTransaction, setState } from "atom.io"
+import { findState, runTransaction, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
@@ -60,7 +60,7 @@ export const composeExplorer = ({
 		viewId: string
 	}> = ({ children, viewId }) => {
 		const location = useLocation()
-		const viewState = findViewState(viewId)
+		const viewState = findState(findViewState, viewId)
 		const view = useO(viewState)
 		const setView = useI(viewState)
 		useEffect(() => {
@@ -92,9 +92,9 @@ export const composeExplorer = ({
 	}
 
 	const Tab: FC<{ viewId: string; spaceId: string }> = ({ viewId, spaceId }) => {
-		const view = useO(findViewState(viewId))
-		const spaceFocusedView = useO(findSpaceFocusedViewState(spaceId))
-		const setSpaceFocusedView = useI(findSpaceFocusedViewState(spaceId))
+		const view = useO(findViewState, viewId)
+		const spaceFocusedView = useO(findSpaceFocusedViewState, spaceId)
+		const setSpaceFocusedView = useI(findSpaceFocusedViewState, spaceId)
 		const handleClick = () => setSpaceFocusedView(viewId)
 		return (
 			<div
@@ -126,7 +126,7 @@ export const composeExplorer = ({
 		spaceId: string
 		viewIds: string[]
 	}> = ({ children, focusedViewId, spaceId, viewIds }) => {
-		const view = useO(findViewState(focusedViewId))
+		const view = useO(findViewState, focusedViewId)
 		return (
 			<div className="space">
 				<RecoverableErrorBoundary>
@@ -145,9 +145,9 @@ export const composeExplorer = ({
 		children,
 		spaceId = `root`,
 	}) => {
-		const spaceLayout = useO(findSpaceLayoutNode(spaceId))
-		const viewIds = useO(findSpaceViewsState(spaceId))
-		const focusedViewId = useO(findSpaceFocusedViewState(spaceId))
+		const spaceLayout = useO(findSpaceLayoutNode, spaceId)
+		const viewIds = useO(findSpaceViewsState, spaceId)
+		const focusedViewId = useO(findSpaceFocusedViewState, spaceId)
 		return (
 			<div className="spaces">
 				{spaceLayout.childSpaceIds.length === 0 ? (
@@ -206,7 +206,8 @@ export const composeExplorer = ({
 		const viewId = locationView?.[0] ?? null
 		useEffect(() => {
 			if (viewId) {
-				setState(findViewState(viewId), (v) => ({ ...v, title }))
+				const viewState = findState(findViewState, viewId)
+				setState(viewState, (v) => ({ ...v, title }))
 			}
 		}, [viewId])
 	}

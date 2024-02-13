@@ -1,4 +1,7 @@
-import type { ReadonlySelectorFamily } from "atom.io"
+import type {
+	ReadonlySelectorFamily,
+	ReadonlySelectorFamilyToken,
+} from "atom.io"
 import type { Store, Timeline } from "atom.io/internal"
 import {
 	IMPLICIT,
@@ -9,7 +12,7 @@ import {
 
 export const attachTimelineFamily = (
 	store: Store = IMPLICIT.STORE,
-): ReadonlySelectorFamily<Timeline<any>> => {
+): ReadonlySelectorFamilyToken<Timeline<any>, string> => {
 	const findTimelineLogState__INTERNAL = createRegularAtomFamily<
 		Timeline<any>,
 		string

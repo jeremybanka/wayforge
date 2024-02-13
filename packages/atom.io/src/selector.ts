@@ -41,41 +41,58 @@ export type ReadonlySelectorFamilyOptions<T, K extends Json.Serializable> = {
 	get: (key: K) => Read<() => T>
 }
 
-export type WritableSelectorFamily<
-	T,
-	K extends Json.Serializable = Json.Serializable,
-> = ((key: K) => WritableSelectorToken<T>) & {
-	key: string
-	type: `selector_family`
-	subject: Subject<WritableSelectorToken<T>>
-	install: (store: Store) => void
-	__T?: T
-	__K?: K
-}
 export type WritableSelectorFamilyToken<T, K extends Json.Serializable> = {
 	key: string
 	type: `selector_family`
 	__T?: T
 	__K?: K
 }
-
-export type ReadonlySelectorFamily<
+// biome-ignore format: intersection
+export type WritableSelectorFamilyTokenWithCall<
 	T,
-	K extends Json.Serializable = Json.Serializable,
-> = ((key: K) => ReadonlySelectorToken<T>) & {
-	key: string
-	type: `readonly_selector_family`
-	subject: Subject<ReadonlySelectorToken<T>>
-	install: (store: Store) => void
-	__T?: T
-	__K?: K
-}
+	K extends Json.Serializable,
+> = 
+	& WritableSelectorFamilyToken<T, K>
+	& {
+		/** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
+		(key: K): WritableSelectorToken<T>
+	}
+// biome-ignore format: intersection
+export type WritableSelectorFamily<T, K extends Json.Serializable> = 
+	& WritableSelectorFamilyToken<T, K> 
+	& {
+		(key: K): WritableSelectorToken<T>
+		subject: Subject<WritableSelectorToken<T>>
+		install: (store: Store) => void
+	}
+
 export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
 	key: string
 	type: `readonly_selector_family`
 	__T?: T
 	__K?: K
 }
+// biome-ignore format: intersection
+export type ReadonlySelectorFamilyTokenWithCall<
+	T,
+	K extends Json.Serializable,
+> = 
+	& ReadonlySelectorFamilyToken<T, K>
+	& {
+		/** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
+		(key: K): ReadonlySelectorToken<T>
+	}
+// biome-ignore format: intersection
+export type ReadonlySelectorFamily<T, K extends Json.Serializable> = 
+	& ((key: K) => ReadonlySelectorToken<T>)
+	& {
+		key: string
+		type: `readonly_selector_family`
+		subject: Subject<ReadonlySelectorToken<T>>
+		install: (store: Store) => void
+		__T?: T
+		__K?: K
+	}
 
 export type SelectorFamily<T, K extends Json.Serializable> =
 	| ReadonlySelectorFamily<T, K>
@@ -86,14 +103,16 @@ export type SelectorFamilyToken<T, K extends Json.Serializable> =
 
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: WritableSelectorFamilyOptions<T, K>,
-): WritableSelectorFamily<T, K>
+): WritableSelectorFamilyTokenWithCall<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
-): ReadonlySelectorFamily<T, K>
+): ReadonlySelectorFamilyTokenWithCall<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
 	options:
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,
-): ReadonlySelectorFamily<T, K> | WritableSelectorFamily<T, K> {
+):
+	| ReadonlySelectorFamilyTokenWithCall<T, K>
+	| WritableSelectorFamilyTokenWithCall<T, K> {
 	return createSelectorFamily(options, IMPLICIT.STORE)
 }

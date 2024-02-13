@@ -1,9 +1,10 @@
-import type {
-	ReadonlySelectorToken,
-	RegularAtomToken,
-	TransactionToken,
-	TransactionUpdate,
-	ƒn,
+import {
+	type ReadonlySelectorToken,
+	type RegularAtomToken,
+	type TransactionToken,
+	type TransactionUpdate,
+	findState,
+	type ƒn,
 } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
@@ -60,8 +61,8 @@ export const TransactionIndex: FC = () => {
 						<TransactionLog
 							key={token.key}
 							token={token}
-							isOpenState={findViewIsOpenState(token.key)}
-							logState={findTransactionLogState(token.key)}
+							isOpenState={findState(findViewIsOpenState, token.key)}
+							logState={findState(findTransactionLogState, token.key)}
 						/>
 					)
 				})}

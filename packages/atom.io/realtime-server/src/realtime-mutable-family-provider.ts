@@ -2,6 +2,7 @@ import type * as AtomIO from "atom.io"
 import type { Transceiver } from "atom.io/internal"
 import {
 	IMPLICIT,
+	findInStore,
 	getFromStore,
 	getJsonToken,
 	getUpdateToken,
@@ -24,7 +25,7 @@ export function realtimeMutableFamilyProvider({
 		J extends Json.Serializable,
 		K extends Json.Serializable,
 	>(
-		family: AtomIO.MutableAtomFamily<T, J, K>,
+		family: AtomIO.MutableAtomFamilyToken<T, J, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
 		const unsubCallbacksByKey = new Map<string, () => void>()
@@ -42,7 +43,7 @@ export function realtimeMutableFamilyProvider({
 			const exposedSubKeys = getFromStore(index, store)
 			for (const exposedSubKey of exposedSubKeys) {
 				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
-					const token = family(subKey)
+					const token = findInStore(family, subKey, store)
 					const jsonToken = getJsonToken(token)
 					const updateToken = getUpdateToken(token)
 					socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))

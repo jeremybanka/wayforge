@@ -1,4 +1,4 @@
-import { getState, setState } from "atom.io"
+import { findState, getState, setState } from "atom.io"
 import { struct, structFamily } from "atom.io/data"
 
 describe(`struct`, () => {
@@ -26,7 +26,7 @@ describe(`struct`, () => {
 
 describe(`structFamily`, () => {
 	it(`breaks a flat object structure into separate atoms (family-style)`, () => {
-		const [atomFamilies, selectorFamily] = structFamily({
+		const [piecemealStates, clusterStates] = structFamily({
 			key: `user`,
 			default: {
 				name: ``,
@@ -34,12 +34,13 @@ describe(`structFamily`, () => {
 				email: ``,
 			},
 		})
-		setState(atomFamilies.findUserAgeState(`a`), 42)
-		expect(atomFamilies.findUserAgeState.key).toEqual(`user.age`)
-		expect(atomFamilies.findUserEmailState.key).toEqual(`user.email`)
-		expect(atomFamilies.findUserNameState.key).toEqual(`user.name`)
-		expect(selectorFamily.key).toEqual(`user`)
-		expect(getState(selectorFamily(`a`))).toEqual({
+		setState(piecemealStates.findUserAgeState(`a`), 42)
+		expect(piecemealStates.findUserAgeState.key).toEqual(`user.age`)
+		expect(piecemealStates.findUserEmailState.key).toEqual(`user.email`)
+		expect(piecemealStates.findUserNameState.key).toEqual(`user.name`)
+		expect(clusterStates.key).toEqual(`user`)
+		const aClusterState = findState(clusterStates, `a`)
+		expect(getState(aClusterState)).toEqual({
 			name: ``,
 			age: 42,
 			email: ``,
