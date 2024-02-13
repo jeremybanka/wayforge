@@ -6,9 +6,9 @@ import type {
 } from "atom.io/internal"
 import { IMPLICIT, createTimeline, timeTravel } from "atom.io/internal"
 
-import type { AtomFamily, AtomToken } from "."
+import type { AtomFamilyToken, AtomToken } from "."
 
-export type TimelineManageable = AtomFamily<any, any> | AtomToken<any>
+export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
 
 export type TimelineToken<M> = {
 	key: string

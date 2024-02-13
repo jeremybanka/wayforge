@@ -82,13 +82,15 @@ describe(`tracker`, () => {
 
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
-		const findSetState = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
+		const setAtoms = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
 			key: `findSetState`,
 			default: () => new SetRTX(),
 			mutable: true,
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
+		const findSetState = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
+		if (!findSetState) throw 0
 		const { findLatestUpdateState } = new FamilyTracker(
 			findSetState,
 			Internal.IMPLICIT.STORE,
@@ -98,13 +100,15 @@ describe(`trackerFamily`, () => {
 		expect(getState(findLatestUpdateState(`a`))).toEqual(null)
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
-		const findSetState = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
+		const setAtoms = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
 			key: `findSetState`,
 			default: () => new SetRTX(),
 			mutable: true,
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
+		const findSetState = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
+		if (!findSetState) throw 0
 		const { findLatestUpdateState } = new FamilyTracker(
 			findSetState,
 			Internal.IMPLICIT.STORE,

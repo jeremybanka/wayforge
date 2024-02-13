@@ -1,5 +1,6 @@
 import type {
 	ReadonlySelectorFamily,
+	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
 	TimelineToken,
 	TransactionToken,
@@ -23,9 +24,12 @@ export const attachIntrospectionStates = (
 	atomIndex: ReadonlySelectorToken<AtomTokenIndex>
 	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
 	transactionIndex: ReadonlySelectorToken<TransactionToken<ƒn>[]>
-	findTransactionLogState: ReadonlySelectorFamily<TransactionUpdate<ƒn>[]>
+	findTransactionLogState: ReadonlySelectorFamilyToken<
+		TransactionUpdate<ƒn>[],
+		string
+	>
 	timelineIndex: ReadonlySelectorToken<TimelineToken<any>[]>
-	findTimelineState: ReadonlySelectorFamily<Timeline<any>>
+	findTimelineState: ReadonlySelectorFamilyToken<Timeline<any>, string>
 } => {
 	return {
 		atomIndex: attachAtomIndex(store),
