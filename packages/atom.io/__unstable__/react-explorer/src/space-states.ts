@@ -1,7 +1,9 @@
 import { atom, atomFamily, selectorFamily } from "atom.io"
 import type {
 	ReadonlySelectorFamily,
+	ReadonlySelectorFamilyToken,
 	RegularAtomFamily,
+	RegularAtomFamilyToken,
 	RegularAtomToken,
 } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
@@ -56,7 +58,10 @@ export const makeSpaceLayoutState = (
 export const makeSpaceLayoutNodeFamily = (
 	key: string,
 	spaceLayoutState: RegularAtomToken<Join<{ size: number }, `parent`, `child`>>,
-): ReadonlySelectorFamily<{ childSpaceIds: string[]; size: number }, string> =>
+): ReadonlySelectorFamilyToken<
+	{ childSpaceIds: string[]; size: number },
+	string
+> =>
 	selectorFamily<{ childSpaceIds: string[]; size: number }, string>({
 		key: `${key}:explorer_space`,
 		get:
@@ -74,7 +79,7 @@ export const makeSpaceLayoutNodeFamily = (
 
 export const makeSpaceFamily = (
 	key: string,
-): RegularAtomFamily<number, string> =>
+): RegularAtomFamilyToken<number, string> =>
 	atomFamily<number, string>({
 		key: `${key}:space`,
 		default: 1,

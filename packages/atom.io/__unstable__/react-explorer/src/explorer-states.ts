@@ -1,8 +1,8 @@
 import type {
-	ReadonlySelectorFamily,
-	RegularAtomFamily,
+	ReadonlySelectorFamilyToken,
+	RegularAtomFamilyToken,
 	RegularAtomToken,
-	WritableSelectorFamily,
+	WritableSelectorFamilyToken,
 	Write,
 } from "atom.io"
 import { atom, selector, selectorFamily, transaction } from "atom.io"
@@ -48,7 +48,7 @@ export const makeViewsPerSpaceState = (
 export const makeSpaceViewsFamily = (
 	key: string,
 	viewsPerSpaceState: RegularAtomToken<Join<null, `viewId`, `spaceId`>>,
-): ReadonlySelectorFamily<string[], string> =>
+): ReadonlySelectorFamilyToken<string[], string> =>
 	selectorFamily<string[], string>({
 		key: `${key}:space_views`,
 		get:
@@ -62,31 +62,34 @@ export const makeSpaceViewsFamily = (
 
 export const makeSpaceFocusedViewFamily = (
 	key: string,
-	findSpaceViewsState: ReadonlySelectorFamily<string[], string>,
-	findViewFocusedState: RegularAtomFamily<number, string>,
-): WritableSelectorFamily<string | null, string> =>
+	findSpaceViewsState: ReadonlySelectorFamilyToken<string[], string>,
+	findViewFocusedState: RegularAtomFamilyToken<number, string>,
+): WritableSelectorFamilyToken<string | null, string> =>
 	selectorFamily<string | null, string>({
 		key: `${key}:space_focused_view`,
 		get:
 			(spaceKey) =>
-			({ get }) => {
-				const views = get(findSpaceViewsState(spaceKey))
-				const viewsLastFocused = views.map((viewKey): [string, number] => [
-					viewKey,
-					get(findViewFocusedState(viewKey)),
-				])
+			({ find, get }) => {
+				const spaceViewsState = find(findSpaceViewsState, spaceKey)
+				const views = get(spaceViewsState)
+				const viewsLastFocused = views.map((viewKey): [string, number] => {
+					const viewsLastFocusedState = find(findViewFocusedState, viewKey)
+					return [viewKey, get(viewsLastFocusedState)]
+				})
 				const lastFocused = lastOf(viewsLastFocused.sort((a, b) => b[1] - a[1]))
 				return lastFocused ? lastFocused[0] : null
 			},
 		set:
 			(spaceKey) =>
-			({ get, set }, viewKey) => {
+			({ find, get, set }, viewKey) => {
 				if (viewKey === null) {
 					return
 				}
-				const views = get(findSpaceViewsState(spaceKey))
+				const spaceViewsState = find(findSpaceViewsState, spaceKey)
+				const views = get(spaceViewsState)
 				if (views.includes(viewKey)) {
-					set(findViewFocusedState(viewKey), Date.now())
+					const viewFocusedState = find(findViewFocusedState, viewKey)
+					set(viewFocusedState, Date.now())
 				} else {
 					console.warn(`View ${viewKey} not found in space ${spaceKey}`)
 				}
@@ -116,21 +119,22 @@ export const attachExplorerState = (key: string) => {
 
 	const allViewsState = selector<Entries<string, View>>({
 		key: `${key}:all_views`,
-		get: ({ get }) => {
+		get: ({ find, get }) => {
 			const viewIndex = get(viewIndexState)
-			return [...viewIndex].map((id) => [id, get(findViewState(id))])
+			return [...viewIndex].map((id) => [id, get(find(findViewState, id))])
 		},
 	})
 
 	const writeOperationAddSpace: Write<(options?: SplitSpaceOptions) => string> =
 		(transactors, { parentId = `root` } = {}) => {
-			const { set } = transactors
+			const { find, set } = transactors
 			const key = `s-${now()}`
 			addToIndex(transactors, { indexAtom: spaceIndexState, id: key })
 			set(spaceLayoutState, (current) =>
 				current.set({ parent: `parent:${parentId}`, child: key }, { size: 1 }),
 			)
-			set(findSpaceState(key), 1)
+			const spaceState = find(findSpaceState, key)
+			set(spaceState, 1)
 			return key
 		}
 
@@ -145,12 +149,13 @@ export const attachExplorerState = (key: string) => {
 		transactors,
 		{ spaceId: maybeSpaceId, path } = {},
 	) => {
-		const { get, set } = transactors
+		const { find, get, set } = transactors
 		const id = `v-${now()}`
 
 		addToIndex(transactors, { indexAtom: viewIndexState, id })
+		const viewState = find(findViewState, id)
 		set(
-			findViewState(id),
+			viewState,
 			(current): View => ({
 				...current,
 				location: {
@@ -163,10 +168,10 @@ export const attachExplorerState = (key: string) => {
 			maybeSpaceId ??
 			lastOf([...get(spaceIndexState)]) ??
 			writeOperationAddSpace(transactors)
-		set(findViewFocusedState(id), Date.now())
-
+		const viewFocusedState = find(findViewFocusedState, id)
+		set(viewFocusedState, Date.now())
 		set(viewsPerSpaceState, (current) => current.set({ spaceId, viewId: id }))
-		set(findViewFocusedState(id), Date.now())
+		set(viewFocusedState, Date.now())
 	}
 
 	const writeOperationRemoveView: Write<(viewId: string) => void> = (

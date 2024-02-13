@@ -1,18 +1,31 @@
 import type {
+	AtomFamily,
+	AtomFamilyToken,
 	AtomToken,
+	MutableAtomFamily,
+	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableToken,
+	ReadonlySelectorFamily,
+	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
+	RegularAtomFamily,
+	RegularAtomFamilyToken,
 	RegularAtomToken,
+	SelectorFamily,
+	SelectorFamilyToken,
 	SelectorToken,
 	TimelineManageable,
 	TimelineToken,
 	TransactionToken,
+	WritableSelectorFamily,
+	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 	WritableToken,
 	ƒn,
 } from "atom.io"
 
+import type { Json } from "atom.io/json"
 import type {
 	Atom,
 	MutableAtom,
@@ -28,7 +41,24 @@ import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import type { Store } from "./store"
 
-export type Withdrawable = ReadableState<any> | Timeline<any> | Transaction<any>
+export type Withdrawable =
+	| Atom<any>
+	| AtomFamily<any, any>
+	| MutableAtom<any, any>
+	| MutableAtomFamily<any, any, any>
+	| ReadableState<any>
+	| ReadableState<any>
+	| ReadonlySelector<any>
+	| ReadonlySelectorFamily<any, any>
+	| RegularAtom<any>
+	| RegularAtomFamily<any, any>
+	| Selector<any>
+	| SelectorFamily<any, any>
+	| Timeline<any>
+	| Transaction<any>
+	| WritableSelector<any>
+	| WritableSelectorFamily<any, any>
+	| WritableState<any>
 
 export function withdraw<T>(
 	token: RegularAtomToken<T>,
@@ -62,6 +92,36 @@ export function withdraw<T>(
 	token: ReadableToken<T>,
 	store: Store,
 ): ReadableState<T> | undefined
+
+export function withdraw<T, K extends Json.Serializable>(
+	token: RegularAtomFamilyToken<T, K>,
+	store: Store,
+): RegularAtomFamily<T, K> | undefined
+export function withdraw<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+	K extends Json.Serializable,
+>(
+	token: MutableAtomFamilyToken<T, J, K>,
+	store: Store,
+): MutableAtomFamily<T, J, K> | undefined
+export function withdraw<T, K extends Json.Serializable>(
+	token: AtomFamilyToken<T>,
+	store: Store,
+): AtomFamily<T, any> | undefined
+export function withdraw<T, K extends Json.Serializable>(
+	token: ReadonlySelectorFamilyToken<T, K>,
+	store: Store,
+): ReadonlySelectorFamily<T, any> | undefined
+export function withdraw<T, K extends Json.Serializable>(
+	token: WritableSelectorFamilyToken<T, K>,
+	store: Store,
+): WritableSelectorFamily<T, any> | undefined
+export function withdraw<T, K extends Json.Serializable>(
+	token: SelectorFamilyToken<T, K>,
+	store: Store,
+): SelectorFamily<T, any> | undefined
+
 export function withdraw<T>(
 	token: TransactionToken<T>,
 	store: Store,
@@ -72,11 +132,15 @@ export function withdraw<T>(
 ): Timeline<T extends TimelineManageable ? T : never> | undefined
 export function withdraw<T>(
 	token:
+		| RegularAtomFamilyToken<T, any>
 		| RegularAtomToken<T>
+		| SelectorFamilyToken<T, any>
 		| SelectorToken<T>
 		| TimelineToken<T>
 		| TransactionToken<T>
-		| (T extends Transceiver<any> ? MutableAtomToken<T, any> : never),
+		| (T extends Transceiver<any>
+				? MutableAtomFamilyToken<T, any, any> | MutableAtomToken<T, any>
+				: never),
 	store: Store,
 ): Withdrawable | undefined {
 	let withdrawn: Withdrawable | undefined

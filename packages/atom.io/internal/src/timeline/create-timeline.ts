@@ -1,5 +1,6 @@
 import type {
 	AtomFamily,
+	AtomFamilyToken,
 	FamilyMetadata,
 	StateUpdate,
 	TimelineManageable,
@@ -86,7 +87,17 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			tokenOrFamily.type === `atom_family` ||
 			tokenOrFamily.type === `mutable_atom_family`
 		) {
-			const family: AtomFamily<any> = tokenOrFamily
+			const familyToken: AtomFamilyToken<any> = tokenOrFamily
+			const family = withdraw(familyToken, store)
+			if (family === undefined) {
+				store.logger.error(
+					`❌`,
+					`timeline`,
+					options.key,
+					`Failed to add family "${familyToken.key}" because it does not exist in the store`,
+				)
+				continue
+			}
 			const familyKey = family.key
 			target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
