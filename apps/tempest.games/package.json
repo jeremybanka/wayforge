@@ -1,5 +1,6 @@
 {
 	"name": "tempest.games",
+	"private": "true",
 	"scripts": {
 		"dev": "concurrently --kill-others --raw \"npm run dev:*\"",
 		"dev:scss": "bun ./bun/gen-styles.bun.ts watch",
