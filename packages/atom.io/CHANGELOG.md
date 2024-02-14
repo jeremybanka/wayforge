@@ -1,5 +1,36 @@
 # atom.io
 
+## 0.18.0
+
+### Minor Changes
+
+- d73205e: 🎁 New Subpackage! `atom.io/realtime` introduces the new end-to-end `continuity` API.
+
+  `continuity` Is an out-of-the-box solution for efficient rollback netcode with adversarial perspectives. It tracks a group of global states, actions, and "perspectives". Assuming the global and perspective-bound states are only updated via the listed actions, `continuity` allows clients to optimistically predict the global state from their perspective, and roll back to the correct state when the server disagrees.
+
+  - ✨ `realtime-server` `continuitySynchronizer`
+  - ✨ `realtime-client` `syncContinuity`
+  - ✨ `realtime-react` `useSyncContinuity`
+
+### Patch Changes
+
+- 0cf62c4: ✨ `atom.io/data` `join` adds the `in(Store)` method. Use this method when you want to update relations in another store.
+- d73205e: ✨ `atom.io/realtime-server` introduces some experimental tools for breaking your monolithic server into multiple processes, in the `ParentSocket` and `ChildSocket` classes.
+- 56a29e8: 🗑️ Formally deprecate the family-as-function style of usage.
+
+  ```ts
+  const countAtoms = atomFamily<number, string>({
+    key: `count`,
+    default: 0,
+  });
+
+  // Deprecated
+  const countState = countAtoms("find-me");
+
+  // Use this instead
+  const countState = findState(countAtoms, "find-me");
+  ```
+
 ## 0.17.0
 
 ### Minor Changes
