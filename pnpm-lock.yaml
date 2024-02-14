@@ -774,6 +774,9 @@ importers:
       '@testing-library/react':
         specifier: 14.2.1
         version: 14.2.1(react-dom@18.2.0)(react@18.2.0)
+      '@types/bun':
+        specifier: 1.0.5
+        version: 1.0.5
       '@types/http-proxy':
         specifier: 1.17.14
         version: 1.17.14

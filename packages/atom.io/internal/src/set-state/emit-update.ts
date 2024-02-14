@@ -1,7 +1,6 @@
 import type { StateUpdate } from "atom.io"
-import type { Store } from "atom.io/internal"
 
-import type { Atom, Selector } from ".."
+import type { Atom, Selector, Store } from ".."
 
 export const emitUpdate = <T>(
 	state: Atom<T> | Selector<T>,
