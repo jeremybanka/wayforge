@@ -1,6 +1,6 @@
 import type { TransactionToken, TransactionUpdateHandler, ƒn } from "atom.io"
-import type { Store } from "atom.io/internal"
-import { withdraw } from "atom.io/internal"
+import type { Store } from ".."
+import { withdraw } from ".."
 
 export const subscribeToTransaction = <ƒ extends ƒn>(
 	token: TransactionToken<ƒ>,
