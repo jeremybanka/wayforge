@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"types": ["typed-htmx", "bun"],
 		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx",
+		"jsxImportSource": "preact",
 		"resolveJsonModule": true,
 		"lib": ["ESNext"],
 		"target": "ESNext",

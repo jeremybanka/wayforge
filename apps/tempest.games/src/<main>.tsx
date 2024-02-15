@@ -1,6 +1,7 @@
+import type { VNode } from "preact"
 import * as svg from "./<svg>"
 
-export function layout(props: { children: any }): JSX.Element {
+export function layout(props: { children: any }): VNode {
 	return (
 		<>
 			<header>
@@ -8,7 +9,7 @@ export function layout(props: { children: any }): JSX.Element {
 			</header>
 			<main>{props.children}</main>
 			<footer>
-				<p>© 2024</p>
+				<p>&copy; 2024</p>
 			</footer>
 		</>
 	)
