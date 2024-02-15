@@ -1,116 +1,89 @@
-import { hasExactProperties } from "anvl/object"
-import { isString } from "atom.io/json"
-import { jwt, sign } from "hono/jwt"
-import { Hono } from "hono/quick"
-import { validator } from "hono/validator"
+import render from "preact-render-to-string"
+
+import * as form from "./<form>"
 import * as html from "./<html>"
 import * as main from "./<main>"
+import { apologize } from "./apologize"
+import { users } from "./demo-users"
 import { hashSHA256 } from "./hash"
 
-const app = new Hono()
-app.use(`/protected/*`, jwt({ secret: `YOUR_SECRET_KEY` }))
-
-app.get(`/`, (c) => {
-	return c.html(
-		<html.body>
-			<main.layout>
-				<form>
-					<button type="submit" class="primary" id="sign-up">
-						Sign Up
-					</button>
-					<button
-						type="submit"
-						class="secondary"
-						id="login"
-						hx-get="/login"
-						hx-select="#login"
-						hx-swap="outerHTML"
-					>
-						Log In
-					</button>
-				</form>
-			</main.layout>
-		</html.body>,
-	)
-})
-
-app.get(`/login`, (c) => {
-	return c.html(
-		<html.body>
-			<main.layout>
-				<form id="login" hx-post="/login" hx-swap="outerHTML">
-					<label for="username">Username</label>
-					<input
-						type="text"
-						id="username"
-						name="username"
-						autocomplete="username"
-					/>
-					<label for="password">Password</label>
-					<input
-						type="password"
-						id="password"
-						name="password"
-						autocomplete="current-password"
-					/>
-					<button type="submit" class="primary">
-						Log In
-					</button>
-				</form>
-			</main.layout>
-		</html.body>,
-	)
-})
-
-const users = {
-	admin: {
-		name: `Jeremy Banka`,
-		username: `admin`,
-		role: `admin`,
-		hash: `40ad2a71bf6bed79078820bbb17d3c99a4876aa9c7911e2f40454c18f17cfcaa`,
-		salt: 0.7755874590188496,
-	},
-}
-
-const loginAttemptRequestBodyIsValid = hasExactProperties({
-	password: isString,
-	username: isString,
-})
-
-// Login route
-app.post(
-	`/login`,
-	// validator(`form`, (value, c) => {
-	// 	console.log(value)
-	// 	if (!loginAttemptRequestBodyIsValid(value)) {
-	// 		return c.text(`Invalid request`, 400)
-	// 	}
-	// 	return value
-	// }),
-	async (c) => {
-		// console.log(c.req)
-		const body = await c.req.parseBody()
-		console.log(c.req.parseBody())
-		if (!loginAttemptRequestBodyIsValid(body)) {
-			return c.text(`json`, 400)
+addEventListener(`fetch`, (event) => {
+	const request = event.request
+	const url = new URL(request.url)
+	const path = url.pathname.split(`/`).filter(Boolean)
+	let response: Promise<Response> | Response
+	try {
+		switch (request.method) {
+			case `GET`:
+				switch (path[0]) {
+					case undefined: {
+						const text = render(
+							<html.body>
+								<main.layout>
+									<form.welcome />
+								</main.layout>
+							</html.body>,
+						)
+						response = new Response(text, {
+							status: 200,
+							headers: { "Content-Type": `text/html` },
+						})
+						break
+					}
+					case `login`: {
+						response = new Response(
+							render(
+								<html.body>
+									<main.layout>
+										<form.login />
+									</main.layout>
+								</html.body>,
+							),
+							{
+								status: 200,
+								headers: { "Content-Type": `text/html` },
+							},
+						)
+						break
+					}
+					default:
+						throw 404
+				}
+				break
+			case `POST`:
+				switch (path[0]) {
+					case `login`: {
+						// formData() seems broken between htmx-fastly so use text() instead
+						response = request.text().then(async (text) => {
+							try {
+								const params = new URLSearchParams(text)
+								const username = params.get(`username`)
+								const password = params.get(`password`)
+								if (username === null || password === null) throw 400
+								if (!(username in users)) throw 401
+								const user = users[username]
+								const hash = await hashSHA256(password + user.salt)
+								if (user.hash !== hash) throw 401
+								return new Response(null, {
+									status: 204,
+									headers: { "Set-Cookie": `username=${username}` },
+								})
+							} catch (thrown) {
+								return apologize(thrown)
+							}
+						})
+						break
+					}
+					default:
+						throw 404
+				}
+				break
+			default:
+				throw 405
 		}
-		const { username, password } = body
-		const user = users[username as keyof typeof users]
-		if (!user) {
-			return c.text(`Authentication failed`, 401)
-		}
-		const hash = await hashSHA256(password + user.salt)
-		if (hash === user.hash) {
-			const token = sign(
-				{ username: user.username, role: user.role },
-				`YOUR_SECRET_KEY`,
-				`HS256`,
-			)
-			return c.json({ token })
-		}
-
-		return c.text(`Authentication failed`, 401)
-	},
-)
-
-app.fire()
+		event.respondWith(response)
+	} catch (thrown) {
+		response = apologize(thrown)
+		event.respondWith(response)
+	}
+})

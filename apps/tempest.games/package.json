@@ -20,19 +20,21 @@
 	"devDependencies": {
 		"@types/bun": "1.0.5",
 		"@types/npmlog": "7.0.0",
+		"@typescript-eslint/eslint-plugin": "7.0.1",
+		"@typescript-eslint/parser": "7.0.1",
 		"browserslist": "4.23.0",
 		"chokidar": "3.6.0",
 		"concurrently": "8.2.2",
 		"htmx.org": "1.9.10",
-		"hyperscript.org": "0.9.12",
 		"lightningcss": "1.23.0",
 		"npmlog": "7.0.1",
 		"parent-module": "3.1.0",
+		"preact": "10.19.4",
 		"typed-htmx": "0.2.1"
 	},
 	"dependencies": {
 		"@fastly/js-compute": "3.8.2",
-		"hono": "4.0.1",
+		"preact-render-to-string": "6.3.1",
 		"zod": "3.22.4"
 	}
 }
