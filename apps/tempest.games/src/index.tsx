@@ -1,11 +1,12 @@
 import render from "preact-render-to-string"
+import { KVStore } from "fastly:kv-store"
 
 import * as form from "./<form>"
 import * as html from "./<html>"
 import * as main from "./<main>"
 import { apologize } from "./apologize"
-import { users } from "./demo-users"
 import { hashSHA256 } from "./hash"
+import { userSchema } from "./schema"
 
 addEventListener(`fetch`, (event) => {
 	const request = event.request
@@ -54,14 +55,18 @@ addEventListener(`fetch`, (event) => {
 				switch (path[0]) {
 					case `login`: {
 						// formData() seems broken between htmx-fastly so use text() instead
-						response = request.text().then(async (text) => {
+						response = request.text().then(async (requestText) => {
 							try {
-								const params = new URLSearchParams(text)
+								const params = new URLSearchParams(requestText)
 								const username = params.get(`username`)
 								const password = params.get(`password`)
 								if (username === null || password === null) throw 400
-								if (!(username in users)) throw 401
-								const user = users[username]
+								const kvStore = new KVStore(`tempest_users`)
+								const entry = await kvStore.get(username)
+								if (entry === null) throw 401
+								const entryText = await entry.text()
+								const jsonBlob = JSON.parse(entryText)
+								const user = userSchema.parse(jsonBlob)
 								const hash = await hashSHA256(password + user.salt)
 								if (user.hash !== hash) throw 401
 								return new Response(null, {

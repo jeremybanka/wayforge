@@ -1,10 +1,11 @@
 {
 	"name": "tempest.games",
+	"type": "module",
 	"private": "true",
 	"scripts": {
 		"dev": "concurrently --kill-others --raw \"npm run dev:*\"",
 		"dev:scss": "bun ./bun/gen-styles.bun.ts watch",
-		"dev:fastly": "fastly compute serve --watch-dir=./src --watch",
+		"dev:fastly": "fastly compute serve --watch-dir=./src --addr=\"0.0.0.0:7676\" --watch",
 		"css": "bun ./bun/gen-styles.bun.ts",
 		"gen": "bun ./bun/gen-scripts.bun.ts",
 		"bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
