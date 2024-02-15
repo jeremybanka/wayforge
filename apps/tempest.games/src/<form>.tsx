@@ -1,4 +1,6 @@
-export function welcome() {
+import type { VNode } from "preact"
+
+export function welcome(): VNode {
 	return (
 		<form id="welcome">
 			<button type="submit" class="primary" id="sign-up">
@@ -18,7 +20,7 @@ export function welcome() {
 	)
 }
 
-export function login() {
+export function login(): VNode {
 	return (
 		<form id="login" hx-post="/login" hx-swap="outerHTML">
 			<label for="username">Username</label>

@@ -11,7 +11,7 @@ addEventListener(`fetch`, (event) => {
 	const request = event.request
 	const url = new URL(request.url)
 	const path = url.pathname.split(`/`).filter(Boolean)
-	let response: Response | Promise<Response>
+	let response: Promise<Response> | Response
 	try {
 		switch (request.method) {
 			case `GET`:
@@ -57,8 +57,8 @@ addEventListener(`fetch`, (event) => {
 						response = request.text().then(async (text) => {
 							try {
 								const params = new URLSearchParams(text)
-								const username = params.get("username")
-								const password = params.get("password")
+								const username = params.get(`username`)
+								const password = params.get(`password`)
 								if (username === null || password === null) throw 400
 								if (!(username in users)) throw 401
 								const user = users[username]
