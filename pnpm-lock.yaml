@@ -267,9 +267,9 @@ importers:
       '@fastly/js-compute':
         specifier: 3.8.2
         version: 3.8.2
-      hono:
-        specifier: 4.0.1
-        version: 4.0.1
+      preact-render-to-string:
+        specifier: 6.3.1
+        version: 6.3.1(preact@10.19.4)
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -292,9 +292,6 @@ importers:
       htmx.org:
         specifier: 1.9.10
         version: 1.9.10
-      hyperscript.org:
-        specifier: 0.9.12
-        version: 0.9.12
       lightningcss:
         specifier: 1.23.0
         version: 1.23.0
@@ -304,6 +301,9 @@ importers:
       parent-module:
         specifier: 3.1.0
         version: 3.1.0
+      preact:
+        specifier: 10.19.4
+        version: 10.19.4
       typed-htmx:
         specifier: 0.2.1
         version: 0.2.1
@@ -8546,11 +8546,6 @@ packages:
     dependencies:
       react-is: 16.13.1
 
-  /hono@4.0.1:
-    resolution: {integrity: sha512-S9cREGPJIAK437RhroOf1PGlJPIlt5itl69OmQ6onPLo5pdCbSHGL8v4uAKxrdHjcTyuoyvKPqWm5jv0dGkdFA==}
-    engines: {node: '>=16.0.0'}
-    dev: false
-
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
     dev: true
@@ -8624,14 +8619,6 @@ packages:
   /human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
-    dev: true
-
-  /hyperscript.org@0.9.12:
-    resolution: {integrity: sha512-fLtS+FVayzLUdgC4w00oozg0uickzUyJIbyKg0fB7vSGkUfsY2itGl/XsTcVFahufp41oN5OFFmRXMxoIZ97Og==}
-    hasBin: true
-    dependencies:
-      markdown-it-deflist: 2.1.0
-      terser: 5.27.0
     dev: true
 
   /iconv-lite@0.4.24:
@@ -9495,10 +9482,6 @@ packages:
   /markdown-extensions@2.0.0:
     resolution: {integrity: sha512-o5vL7aDWatOTX8LzaS1WMoaoxIiLRQJuIKKe2wAw6IeULDHaqbiqiggmx+pKvZDb1Sj+pE46Sn1T7lCqfFtg1Q==}
     engines: {node: '>=16'}
-    dev: true
-
-  /markdown-it-deflist@2.1.0:
-    resolution: {integrity: sha512-3OuqoRUlSxJiuQYu0cWTLHNhhq2xtoSFqsZK8plANg91+RJQU1ziQ6lA2LzmFAEes18uPBsHZpcX6We5l76Nzg==}
     dev: true
 
   /mdast-util-from-markdown@2.0.0:
@@ -10577,6 +10560,15 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /preact-render-to-string@6.3.1(preact@10.19.4):
+    resolution: {integrity: sha512-NQ28WrjLtWY6lKDlTxnFpKHZdpjfF+oE6V4tZ0rTrunHrtZp6Dm0oFrcJalt/5PNeqJz4j1DuZDS0Y6rCBoqDA==}
+    peerDependencies:
+      preact: '>=10'
+    dependencies:
+      preact: 10.19.4
+      pretty-format: 3.8.0
+    dev: false
+
   /preact@10.19.4:
     resolution: {integrity: sha512-dwaX5jAh0Ga8uENBX1hSOujmKWgx9RtL80KaKUFLc6jb4vCEAc3EeZ0rnQO/FO4VgjfPMfoLFWnNG8bHuZ9VLw==}
 
@@ -10630,6 +10622,10 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
+
+  /pretty-format@3.8.0:
+    resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
+    dev: false
 
   /prismjs@1.27.0:
     resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}
