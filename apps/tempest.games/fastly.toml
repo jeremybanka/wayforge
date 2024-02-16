@@ -1,14 +1,17 @@
-# This file describes a Fastly Compute@Edge package. To learn more visit:
+# This file describes a Fastly Compute package. To learn more visit:
 # https://developer.fastly.com/reference/fastly-toml/
 
-name = "Tempest"
 authors = [""]
 description = ""
 language = "javascript"
 manifest_version = 2
-service_id = ""
+name = "Tempest"
+service_id = "2KH9ZoBw8bSsuC97tMBRO6"
+
+[local_server.kv_stores]
+[[local_server.kv_stores.tempest_users]]
+key = "admin"
+file = "admin.json"
 
 [scripts]
   build = "bun build ./src/index.tsx --outdir ./bin --external fastly:* && js-compute-runtime bin/index.js bin/main.wasm"
-  # post_build = "echo 'Build complete!'"
-  # post_init = "echo 'Post init complete!'"
