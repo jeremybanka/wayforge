@@ -30,7 +30,7 @@
 		"lightningcss": "1.23.0",
 		"npmlog": "7.0.1",
 		"parent-module": "3.1.0",
-		"preact": "10.19.4",
+		"preact": "10.19.5",
 		"typed-htmx": "0.2.1"
 	},
 	"dependencies": {
