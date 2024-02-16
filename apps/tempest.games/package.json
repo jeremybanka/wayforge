@@ -1,14 +1,15 @@
 {
 	"name": "tempest.games",
+	"type": "module",
 	"private": "true",
 	"scripts": {
 		"dev": "concurrently --kill-others --raw \"npm run dev:*\"",
 		"dev:scss": "bun ./bun/gen-styles.bun.ts watch",
-		"dev:fastly": "fastly compute serve --watch-dir=./src --watch",
-		"css": "bun ./bun/gen-styles.bun.ts",
+		"dev:fastly": "fastly compute serve --watch-dir=./src --addr=\"0.0.0.0:7676\" --watch",
+		"css": "bun ./bun/gen-styles.bun.ts once",
 		"gen": "bun ./bun/gen-scripts.bun.ts",
 		"bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
-		"build": "bun gen && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
+		"build": "bun gen && bun css && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
 		"test": "hurl ./__tests__/*",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet",

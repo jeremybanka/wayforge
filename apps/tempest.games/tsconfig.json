@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"types": ["typed-htmx", "bun"],
+		"types": ["typed-htmx", "bun", "@fastly/js-compute"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
 		"resolveJsonModule": true,
