@@ -275,8 +275,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/bun':
-        specifier: 1.0.5
-        version: 1.0.5
+        specifier: 1.0.6
+        version: 1.0.6
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -4914,10 +4914,10 @@ packages:
       '@babel/types': 7.23.9
     dev: true
 
-  /@types/bun@1.0.5:
-    resolution: {integrity: sha512-c14fs5QLLanldcZpX/GjIEKeo++NDzOlixUZ7IUWzN7AoBTisYyWxaxdXNhpAP5I1mPcd92Zagq8sdgTnUXWjg==}
+  /@types/bun@1.0.6:
+    resolution: {integrity: sha512-RtBfd9vxT4LmgKtENsJeM5j0Kwy+CyIEY8Z99oPdh5SZWjZAIEsNdSCeAO3q3GBiNWXjJ5IIJPjDQdwSeKiRFA==}
     dependencies:
-      bun-types: 1.0.26
+      bun-types: 1.0.27
     dev: true
 
   /@types/cookie@0.4.1:
@@ -6096,8 +6096,8 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /bun-types@1.0.26:
-    resolution: {integrity: sha512-VcSj+SCaWIcMb0uSGIAtr8P92zq9q+unavcQmx27fk6HulCthXHBVrdGuXxAZbFtv7bHVjizRzR2mk9r/U8Nkg==}
+  /bun-types@1.0.27:
+    resolution: {integrity: sha512-fwaJ3Ey6InD4nAkUd+AwzHDmxGdWWRy/SWh0QQEw7QF/ABnoqSv+iQrA5tIK4TyUyR/V9446G+w53+sOmJOJyA==}
     dependencies:
       '@types/node': 20.11.19
       '@types/ws': 8.5.10
