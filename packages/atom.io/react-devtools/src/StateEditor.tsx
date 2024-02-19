@@ -2,12 +2,12 @@ import type { ReadonlySelectorToken, WritableToken } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { fallback } from "anvl/function"
-import { Join } from "anvl/join"
-import { isJson } from "anvl/refinement"
-import { RelationEditor } from "~/packages/hamr/react-data-designer"
-import { ElasticInput } from "~/packages/hamr/react-elastic-input"
-import { JsonEditor } from "~/packages/hamr/react-json-editor"
+import { fallback } from "~/packages/anvl/src/function"
+import { Join } from "~/packages/anvl/src/join"
+import { isJson } from "~/packages/anvl/src/refinement"
+import { RelationEditor } from "~/packages/hamr/react-data-designer/src"
+import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
+import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 
 export const StateEditor: FC<{
 	token: WritableToken<unknown>

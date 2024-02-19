@@ -17,14 +17,20 @@ export default defineConfig({
 	],
 	resolve: {
 		alias: [
-			`hamr/react-json-editor`,
-			`hamr/react-id`,
-			`hamr/react-elastic-input`,
-			`hamr/react-error-boundary`,
-		].map((find) => ({
-			find,
-			replacement: resolve(__dirname, `./src`),
-		})),
+			{
+				find: `~`,
+				replacement: resolve(__dirname, `../..`),
+			},
+			...[
+				`hamr/react-json-editor`,
+				`hamr/react-id`,
+				`hamr/react-elastic-input`,
+				`hamr/react-error-boundary`,
+			].map((find) => ({
+				find,
+				replacement: resolve(__dirname, `./src`),
+			})),
+		],
 	},
 	esbuild: {
 		target: `es2022`,
