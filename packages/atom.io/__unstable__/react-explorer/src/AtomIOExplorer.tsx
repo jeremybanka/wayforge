@@ -4,8 +4,8 @@ import type { FC, ReactNode } from "react"
 import { useEffect } from "react"
 import { Link, MemoryRouter, useLocation } from "react-router-dom"
 
-import { RecoverableErrorBoundary } from "hamr/react-error-boundary"
-import type { WC } from "hamr/react-json-editor"
+import { RecoverableErrorBoundary } from "~/packages/hamr/react-error-boundary"
+import type { WC } from "~/packages/hamr/react-json-editor"
 
 import { attachExplorerState } from "./explorer-states"
 
