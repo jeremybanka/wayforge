@@ -94,7 +94,7 @@ export const SystemServer = ({
 		}
 
 		socket.on(`leave-room`, leaveRoom)
-		socket.on(`disconnect`, leaveRoom)
+		// socket.on(`disconnect`, leaveRoom)
 	})
 
 	const handleDisconnect = async () => {

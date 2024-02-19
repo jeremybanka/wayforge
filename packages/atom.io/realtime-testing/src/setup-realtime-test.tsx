@@ -25,6 +25,7 @@ import { recordToEntries } from "~/packages/anvl/src/object"
 let testNumber = 0
 
 export type TestSetupOptions = {
+	port: number
 	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
 }
 export type TestSetupOptions__SingleClient = TestSetupOptions & {
@@ -75,9 +76,9 @@ export const setupRealtimeTestServer = (
 	const silo = new AtomIO.Silo(`SERVER-${testNumber}`, IMPLICIT.STORE)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
-	const address = httpServer.listen().address()
+	const address = httpServer.listen(options.port).address()
 	const port =
-		typeof address === `string` ? 80 : address === null ? null : address.port
+		typeof address === `string` ? null : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
 
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
@@ -184,8 +185,8 @@ export const singleClient = (
 		client,
 		server,
 		teardown: () => {
-			client.dispose()
 			server.dispose()
+			client.dispose()
 		},
 	}
 }
@@ -210,10 +211,10 @@ export const multiClient = <ClientNames extends string>(
 		clients,
 		server,
 		teardown: () => {
+			server.dispose()
 			for (const [, client] of recordToEntries(clients)) {
 				client.dispose()
 			}
-			server.dispose()
 		},
 	}
 }
