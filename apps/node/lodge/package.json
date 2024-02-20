@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "bun --watch src/main.ts",
-		"build": "tsup src/main.ts --format esm --minify --clean --sourcemap --legacy-output --outDir dist",
-		"start": "bun ./dist/esm/main.js",
+		"build": "bun build src/main.ts --outdir=dist --sourcemap=external --target=bun",
+		"start": "bun ./dist/main.js",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
