@@ -1,6 +1,6 @@
 import * as AtomIO from "atom.io"
 
-import * as CardGroups from "~/apps/node/lodge/src/store/game/card-groups"
+import * as CardGroups from "~/apps/core.wayfarer.quest/src/store/game/card-groups"
 import { myRoomState } from "./my-room"
 
 export const publicDeckIndex = AtomIO.selector<string[]>({

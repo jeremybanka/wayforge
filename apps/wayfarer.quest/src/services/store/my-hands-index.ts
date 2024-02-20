@@ -1,7 +1,10 @@
 import * as AtomIO from "atom.io"
 import { myIdState } from "atom.io/realtime-client"
 
-import { handIndices, ownersOfGroups } from "~/apps/node/lodge/src/store/game"
+import {
+	handIndices,
+	ownersOfGroups,
+} from "~/apps/core.wayfarer.quest/src/store/game"
 import { myRoomState } from "./my-room"
 
 export const myHandsIndex = AtomIO.selector<string[]>({

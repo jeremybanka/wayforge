@@ -4,7 +4,7 @@ import { stringToColor } from "~/packages/anvl/src/string/string-to-color"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
-import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
+import { playersInRooms } from "~/apps/core.wayfarer.quest/src/store/rooms"
 import { Identity } from "../labels/Identity"
 import scss from "./ProfilePicture.module.scss"
 

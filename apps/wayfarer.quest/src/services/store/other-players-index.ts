@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
 import { myIdState } from "atom.io/realtime-client"
 
-import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
+import { playersInRooms } from "~/apps/core.wayfarer.quest/src/store/rooms"
 
 import { myRoomState } from "./my-room"
 

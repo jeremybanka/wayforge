@@ -12,6 +12,7 @@
 		"apps/node/*",
 		"apps/web/*",
 		"apps/atom.io.fyi",
+		"apps/core.wayfarer.quest",
 		"apps/tempest.games",
 		"apps/wayfarer.quest",
 		"packages/*",

@@ -6,8 +6,11 @@ import { IMPLICIT } from "atom.io/internal"
 import { useJSON } from "atom.io/react"
 import { usePullAtomFamilyMember, usePullMutable } from "atom.io/realtime-react"
 
-import { cardIndex, cardValuesIndex } from "~/apps/node/lodge/src/store/game"
-import * as CardGroups from "~/apps/node/lodge/src/store/game/card-groups"
+import {
+	cardIndex,
+	cardValuesIndex,
+} from "~/apps/core.wayfarer.quest/src/store/game"
+import * as CardGroups from "~/apps/core.wayfarer.quest/src/store/game/card-groups"
 
 import { MyDomain } from "./my-domain/MyDomain"
 import { EnemyDomains } from "./other-players/EnemyDomains"

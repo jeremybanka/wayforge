@@ -7,7 +7,7 @@ import type { FC } from "react"
 import {
 	spawnClassicDeckTX,
 	spawnHandTX,
-} from "~/apps/node/lodge/src/store/game"
+} from "~/apps/core.wayfarer.quest/src/store/game"
 
 import { button } from "wayfarer.quest/components/<button>"
 import { myRoomState } from "wayfarer.quest/services/store/my-room"
