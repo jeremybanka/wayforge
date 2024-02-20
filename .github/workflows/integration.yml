@@ -43,7 +43,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.0.27
+          bun-version: 1.0.28
 
       - name: Biome
         run: pnpm lint:biome
@@ -101,7 +101,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.0.27
+          bun-version: 1.0.28
 
       - name: Build
         run: pnpm build
