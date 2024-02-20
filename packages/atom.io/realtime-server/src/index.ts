@@ -1,10 +1,8 @@
 import type { Store } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import { off } from "npmlog"
 
-export * from "./ipc-socket"
+export * from "./ipc-sockets"
 export * from "./realtime-continuity-synchronizer"
-export * from "./realtime-server-stores/server-room-store"
 export * from "./realtime-server-stores"
 export * from "./realtime-state-provider"
 export * from "./realtime-state-synchronizer"
@@ -13,7 +11,7 @@ export * from "./realtime-mutable-provider"
 export * from "./realtime-mutable-family-provider"
 export * from "./realtime-state-receiver"
 export * from "./realtime-action-receiver"
-export * from "./realtime-action-synchronizer"
+// export * from "./realtime-action-synchronizer.txt"
 
 export type Socket = {
 	id: string

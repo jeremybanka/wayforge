@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 
 import {
-	realtimeActionSynchronizer,
+	// realtimeActionSynchronizer,
 	realtimeMutableFamilyProvider,
 	realtimeMutableProvider,
 	realtimeStateProvider,
@@ -56,9 +56,9 @@ pipe(
 			const provideMutableFamily = realtimeMutableFamilyProvider({ socket })
 			provideMutableFamily(findNumberCollection, numberCollectionIndex)
 
-			const sync = realtimeActionSynchronizer({ socket })
-			sync(addNumberCollectionTX)
-			sync(incrementNumberCollectionTX)
+			// const sync = realtimeActionSynchronizer({ socket })
+			// sync(addNumberCollectionTX)
+			// sync(incrementNumberCollectionTX)
 		})
 	},
 )

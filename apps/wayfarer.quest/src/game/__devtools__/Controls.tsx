@@ -1,6 +1,5 @@
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
-import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 import type { FC } from "react"
 
@@ -10,23 +9,24 @@ import {
 } from "~/apps/core.wayfarer.quest/src/store/game"
 
 import { button } from "wayfarer.quest/components/<button>"
-import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 
+import { runTransaction } from "atom.io"
 import comic from "wayfarer.quest/components/comic.module.scss"
 import scss from "./Controls.module.scss"
 
 export const Controls: FC = () => {
 	const myId = useO(myIdState)
-	const myRoomId = useO(myRoomState)
-	const spawnHand = useServerAction(spawnHandTX)
-	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
+	const myRoomId = useO(myRoomKeyState)
+	const spawnHand = runTransaction(spawnHandTX)
+	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
 	return (
 		<span className={scss.class}>
 			{myId ? (
 				<button.curledLeft
 					className={comic.class}
 					onClick={() => {
-						const groupId = nanoid()
+						const groupId = nanoid(5)
 						spawnHand(myId, groupId)
 					}}
 				>
@@ -37,9 +37,9 @@ export const Controls: FC = () => {
 				className={comic.class}
 				onClick={() => {
 					if (myRoomId) {
-						const deckId = nanoid()
-						const cardIds = Array.from({ length: 52 }).map(() => nanoid())
-						spawnClassicDeck(myRoomId, deckId, cardIds)
+						const deckId = nanoid(5)
+						const cardIds = Array.from({ length: 52 }).map(() => nanoid(5))
+						spawnClassicDeck(deckId, cardIds)
 					} else {
 						console.error(`Tried to spawn a deck without being in a room.`)
 					}

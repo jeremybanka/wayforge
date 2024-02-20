@@ -1,16 +1,11 @@
 "use client"
 
 import type { LoggerIcon, TokenDenomination } from "atom.io"
-import { AtomIOLogger, findState } from "atom.io"
+import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import { useJSON } from "atom.io/react"
-import { usePullAtomFamilyMember, usePullMutable } from "atom.io/realtime-react"
+import { useSyncContinuity } from "atom.io/realtime-react"
 
-import {
-	cardIndex,
-	cardValuesIndex,
-} from "~/apps/core.wayfarer.quest/src/store/game"
-import * as CardGroups from "~/apps/core.wayfarer.quest/src/store/game/card-groups"
+import { heartsContinuity } from "~/apps/core.wayfarer.quest/src/store/game/hearts"
 
 import { MyDomain } from "./my-domain/MyDomain"
 import { EnemyDomains } from "./other-players/EnemyDomains"
@@ -21,7 +16,16 @@ import scss from "./Game.module.scss"
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
 	(icon, tokenType, tokenKey, message) => {
-		const allowedIcons: LoggerIcon[] = [`🛄`]
+		const allowedIcons: LoggerIcon[] = [
+			`🛄`,
+			`🧮`,
+			`🛎️`,
+			`🧑‍⚖️`,
+			`👀`,
+			`🙈`,
+			`📖`,
+			`🗑`,
+		]
 		const ignoredTokenTypes: TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
@@ -35,50 +39,49 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	},
 )
 
-function DeckSync(props: { id: string }): null {
-	usePullAtomFamilyMember(CardGroups.deckStates, props.id)
+// function DeckSync(props: { id: string }): null {
+// 	usePullAtomFamilyMember(deckAtoms, props.id)
+// 	return null
+// }
+// function HandSync(props: { id: string }): null {
+// 	usePullAtomFamilyMember(handAtoms, props.id)
+// 	return null
+// }
+// function TrickSync(props: { id: string }): null {
+// 	usePullAtomFamilyMember(trickStates, props.id)
+// 	return null
+// }
+// function CoreSync(): JSX.Element {
+// 	const deckIds = useJSON(deckIndex)
+// 	const handIds = useJSON(handIndex)
+// 	const trickIds = useJSON(trickIndex)
+// 	return (
+// 		<>
+// 			{deckIds.members.map((id) => (
+// 				<DeckSync key={id} id={id} />
+// 			))}
+// 			{handIds.members.map((id) => (
+// 				<HandSync key={id} id={id} />
+// 			))}
+// 			{trickIds.members.map((id) => (
+// 				<TrickSync key={id} id={id} />
+// 			))}
+// 		</>
+// 	)
+// }
+
+function CoreSync(): null {
+	useSyncContinuity(heartsContinuity)
 	return null
-}
-function HandSync(props: { id: string }): null {
-	usePullAtomFamilyMember(CardGroups.handStates, props.id)
-	return null
-}
-function TrickSync(props: { id: string }): null {
-	usePullAtomFamilyMember(CardGroups.trickStates, props.id)
-	return null
-}
-function CoreSync({ roomId }: GameProps): JSX.Element {
-	const deckIds = useJSON(findState(CardGroups.deckIndices, roomId))
-	const handIds = useJSON(findState(CardGroups.handIndices, roomId))
-	const trickIds = useJSON(findState(CardGroups.trickIndices, roomId))
-	return (
-		<>
-			{deckIds.members.map((id) => (
-				<DeckSync key={id} id={id} />
-			))}
-			{handIds.members.map((id) => (
-				<HandSync key={id} id={id} />
-			))}
-			{trickIds.members.map((id) => (
-				<TrickSync key={id} id={id} />
-			))}
-		</>
-	)
 }
 
 export type GameProps = {
 	roomId: string
 }
 export function Game({ roomId }: GameProps): JSX.Element {
-	usePullMutable(cardIndex)
-	usePullMutable(findState(CardGroups.deckIndices, roomId))
-	usePullMutable(findState(CardGroups.handIndices, roomId))
-	usePullMutable(findState(CardGroups.trickIndices, roomId))
-	usePullMutable(cardValuesIndex)
-
 	return (
 		<>
-			<CoreSync roomId={roomId} />
+			<CoreSync />
 			<div className={scss.class}>
 				{/* <Controls /> */}
 				<section data-css="enemy-domains">

@@ -1,12 +1,20 @@
 import * as AtomIO from "atom.io"
-import { myIdState } from "atom.io/realtime-client"
+import { usersInRooms } from "atom.io/realtime"
+import { myUsernameState } from "atom.io/realtime-client"
 
-import { playersInRooms } from "~/apps/core.wayfarer.quest/src/store/rooms"
+import { roomViewState } from "./room-view-state"
 
-export const myRoomState = AtomIO.selector<string | null>({
-	key: `myRoom`,
+export const myRoomKeyState = AtomIO.selector<string | null>({
+	key: `myRoomKey`,
 	get: ({ get }) => {
-		const myId = get(myIdState)
-		return myId ? get(playersInRooms.states.roomKeyOfPlayer(myId)) ?? null : null
+		const roomView = get(roomViewState)
+		const myUsername = get(myUsernameState)
+		const myRoom =
+			roomView && myUsername
+				? get(usersInRooms.states.userKeysOfRoom(roomView))?.includes(myUsername)
+					? roomView
+					: null ?? null
+				: null
+		return myRoom
 	},
 })

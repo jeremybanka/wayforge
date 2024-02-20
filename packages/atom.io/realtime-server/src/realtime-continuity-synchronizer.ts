@@ -4,6 +4,7 @@ import {
 	actUponStore,
 	findInStore,
 	getFromStore,
+	getJsonToken,
 	isRootStore,
 	setIntoStore,
 	subscribeToState,
@@ -14,9 +15,9 @@ import type { ContinuityToken } from "atom.io/realtime"
 
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
-import { redactedPerspectiveUpdateSelectors } from "./realtime-server-stores"
+
 import {
-	completeUpdateAtoms,
+	redactTransactionUpdateContent,
 	userUnacknowledgedQueues,
 } from "./realtime-server-stores"
 
@@ -88,69 +89,148 @@ export function realtimeContinuitySynchronizer({
 		)
 		const unsubscribeFunctions: (() => void)[] = []
 
+		const revealPerspectives = (): (() => void) => {
+			const unsubscribeFunctions: (() => void)[] = []
+			for (const perspective of continuity.perspectives) {
+				const { viewAtoms } = perspective
+				const userViewState = findInStore(viewAtoms, userKey, store)
+				const unsubscribe = subscribeToState(
+					userViewState,
+					({ oldValue, newValue }) => {
+						const oldKeys = oldValue.map((token) => token.key)
+						const newKeys = newValue.map((token) => token.key)
+						const concealed = oldValue.filter(
+							(token) => !newKeys.includes(token.key),
+						)
+						const revealed = newValue
+							.filter((token) => !oldKeys.includes(token.key))
+							.flatMap((token) => {
+								const resourceToken =
+									token.type === `mutable_atom` ? getJsonToken(token) : token
+								const resource = getFromStore(resourceToken, store)
+								return [resourceToken, resource]
+							})
+						store.logger.info(
+							`👁`,
+							`atom`,
+							perspective.resourceAtoms.key,
+							`${userKey} has a new perspective`,
+							{ oldKeys, newKeys, revealed, concealed },
+						)
+						if (revealed.length > 0) {
+							socket?.emit(`reveal:${continuityKey}`, revealed)
+						}
+						if (concealed.length > 0) {
+							socket?.emit(`conceal:${continuityKey}`, concealed)
+						}
+					},
+					`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.resourceAtoms.key}`,
+					store,
+				)
+				unsubscribeFunctions.push(unsubscribe)
+			}
+			return () => {
+				for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+			}
+		}
+		const unsubscribeFromPerspectives = revealPerspectives()
+
 		const sendInitialPayload = () => {
 			const initialPayload: Json.Serializable[] = []
 			for (const atom of continuity.globals) {
-				initialPayload.push(atom, getFromStore(atom, store))
+				const resourceToken =
+					atom.type === `mutable_atom` ? getJsonToken(atom) : atom
+				initialPayload.push(resourceToken, getFromStore(atom, store))
 			}
-			for (const { perspectiveAtoms } of continuity.perspectives) {
-				const perspectiveTokensState = findInStore(
-					perspectiveAtoms,
-					userKey,
-					store,
-				)
-				const perspectiveTokens = getFromStore(perspectiveTokensState, store)
-				for (const perspectiveToken of perspectiveTokens) {
-					const resource = getFromStore(perspectiveToken, store)
-					initialPayload.push(perspectiveToken, resource)
+			for (const perspective of continuity.perspectives) {
+				const { viewAtoms, resourceAtoms } = perspective
+				const userViewState = findInStore(viewAtoms, userKey, store)
+				const userView = getFromStore(userViewState, store)
+				store.logger.info(`👁`, `atom`, resourceAtoms.key, `${userKey} can see`, {
+					viewAtoms,
+					resourceAtoms,
+					userView,
+				})
+				for (const visibleToken of userView) {
+					const resourceToken =
+						visibleToken.type === `mutable_atom`
+							? getJsonToken(visibleToken)
+							: visibleToken
+					const resource = getFromStore(resourceToken, store)
+
+					initialPayload.push(resourceToken, resource)
 				}
 			}
 
 			const epoch = isRootStore(store)
 				? store.transactionMeta.epoch.get(continuityKey) ?? null
 				: null
+
 			socket?.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
 
 			for (const transaction of continuity.actions) {
 				const unsubscribeFromTransaction = subscribeToTransaction(
 					transaction,
 					(update) => {
-						// store.logger.info(`userId`, userKey)
-						const updateState = findInStore(
-							completeUpdateAtoms,
-							update.id,
-							store,
-						)
-						setIntoStore(updateState, update, store)
-						const redactedUpdateKey = {
-							userId: userKey,
-							syncGroupKey: continuityKey,
-							updateId: update.id,
+						try {
+							const visibleKeys = continuity.globals
+								.map((atom) => atom.key)
+								.concat(
+									continuity.perspectives.flatMap((perspective) => {
+										const { viewAtoms } = perspective
+										const userPerspectiveTokenState = findInStore(
+											viewAtoms,
+											userKey,
+											store,
+										)
+										const visibleTokens = getFromStore(
+											userPerspectiveTokenState,
+											store,
+										)
+										return visibleTokens.map((token) => {
+											const key =
+												token.type === `mutable_atom`
+													? `*` + token.key
+													: token.key
+											return key
+										})
+									}),
+								)
+							const redactedUpdates = redactTransactionUpdateContent(
+								visibleKeys,
+								update.updates,
+							)
+							const redactedUpdate = {
+								...update,
+								updates: redactedUpdates,
+							}
+							// setIntoStore(
+							// 	userUnacknowledgedQueue,
+							// 	(updates) => {
+							// 		if (redactedUpdate) {
+							// 			updates.push(redactedUpdate)
+							// 			updates.sort((a, b) => a.epoch - b.epoch)
+							// 		}
+							// 		return updates
+							// 	},
+							// 	store,
+							// )
+
+							socket?.emit(
+								`tx-new:${continuityKey}`,
+								redactedUpdate as Json.Serializable,
+							)
+						} catch (thrown) {
+							if (thrown instanceof Error) {
+								store.logger.error(
+									`❌`,
+									`continuity`,
+									continuityKey,
+									`failed to send update from transaction ${transaction.key} to ${userKey}`,
+									thrown.message,
+								)
+							}
 						}
-						const redactedUpdateState = findInStore(
-							redactedPerspectiveUpdateSelectors,
-							redactedUpdateKey,
-							store,
-						)
-
-						const redactedUpdate = getFromStore(redactedUpdateState, store)
-
-						setIntoStore(
-							userUnacknowledgedQueue,
-							(updates) => {
-								if (redactedUpdate) {
-									updates.push(redactedUpdate)
-									updates.sort((a, b) => a.epoch - b.epoch)
-								}
-								return updates
-							},
-							store,
-						)
-
-						socket?.emit(
-							`tx-new:${continuityKey}`,
-							redactedUpdate as Json.Serializable,
-						)
 					},
 					`sync-continuity:${continuityKey}:${userKey}`,
 					store,
@@ -164,17 +244,30 @@ export function realtimeContinuitySynchronizer({
 		const fillTransactionRequest = (
 			update: Pick<AtomIO.TransactionUpdate<JsonIO>, `id` | `key` | `params`>,
 		) => {
+			store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, update)
 			const transactionKey = update.key
 			const updateId = update.id
 			const performanceKey = `tx-run:${transactionKey}:${updateId}`
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			actUponStore(
-				{ type: `transaction`, key: transactionKey },
-				updateId,
-				store,
-			)(...update.params)
+			try {
+				actUponStore(
+					{ type: `transaction`, key: transactionKey },
+					updateId,
+					store,
+				)(...update.params)
+			} catch (thrown) {
+				if (thrown instanceof Error) {
+					store.logger.error(
+						`❌`,
+						`continuity`,
+						continuityKey,
+						`failed to run transaction ${transactionKey} with update ${updateId}`,
+						thrown.message,
+					)
+				}
+			}
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,
@@ -192,54 +285,74 @@ export function realtimeContinuitySynchronizer({
 		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
 		socket.on(`tx-run:${continuityKey}`, fillTransactionRequest)
 
-		let i = 1
-		let next = 1
-		const retry = setInterval(() => {
-			const toEmit = userUnacknowledgedUpdates[0]
-			store.logger.info(
-				`🔄`,
-				`continuity`,
-				continuityKey,
-				`${store.config.name} retrying ${userKey} (${i}/${next})`,
-				socket?.id,
-				userUnacknowledgedUpdates,
-			)
-			if (toEmit && i === next) {
-				socket?.emit(`tx-new:${continuityKey}`, toEmit as Json.Serializable)
-				next *= 2
-			}
+		// let i = 0
+		// let n = 1
+		// let retryTimeout: NodeJS.Timeout | undefined
+		// const trackClientAcknowledgement = (epoch: number) => {
+		// 	store.logger.info(
+		// 		`👍`,
+		// 		`continuity`,
+		// 		continuityKey,
+		// 		`${userKey} acknowledged epoch ${epoch}`,
+		// 	)
+		// 	const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
+		// 	if (isUnacknowledged) {
+		// 		setIntoStore(
+		// 			userUnacknowledgedQueue,
+		// 			(updates) => {
+		// 				updates.shift()
+		// 				return updates
+		// 			},
+		// 			store,
+		// 		)
+		// 	}
+		// }
+		// subscribeToState(
+		// 	userUnacknowledgedQueue,
+		// 	({ newValue }) => {
+		// 		if (newValue.length === 0) {
+		// 			clearInterval(retryTimeout)
+		// 			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+		// 			retryTimeout = undefined
+		// 		}
+		// 		if (newValue.length > 0) {
+		// 			if (retryTimeout) {
+		// 				return
+		// 			}
 
-			i++
-		}, 250)
-		const trackClientAcknowledgement = (epoch: number) => {
-			store.logger.info(
-				`👍`,
-				`continuity`,
-				continuityKey,
-				`${userKey} acknowledged epoch ${epoch}`,
-			)
-			i = 1
-			next = 1
-			const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
+		// 			socket?.on(`ack:${continuityKey}`, trackClientAcknowledgement)
 
-			if (isUnacknowledged) {
-				setIntoStore(
-					userUnacknowledgedQueue,
-					(updates) => {
-						updates.shift()
-						return updates
-					},
-					store,
-				)
-			}
-		}
-		socket.off(`ack:${continuityKey}`, trackClientAcknowledgement)
-		socket.on(`ack:${continuityKey}`, trackClientAcknowledgement)
+		// 			retryTimeout = setInterval(() => {
+		// 				i++
+		// 				if (i === n) {
+		// 					n += i
+		// 					const toEmit = newValue[0]
+		// 					if (!toEmit) return
+		// 					store.logger.info(
+		// 						`🔄`,
+		// 						`continuity`,
+		// 						continuityKey,
+		// 						`${store.config.name} retrying ${userKey}`,
+		// 						socket?.id,
+		// 						newValue,
+		// 					)
+		// 					socket?.emit(
+		// 						`tx-new:${continuityKey}`,
+		// 						toEmit as Json.Serializable,
+		// 					)
+		// 				}
+		// 			}, 250)
+		// 		}
+		// 	},
+		// 	`sync-continuity:${continuityKey}:${userKey}`,
+		// 	store,
+		// )
 
 		return () => {
-			clearInterval(retry)
+			// clearInterval(retryTimeout)
 			for (const unsubscribe of unsubscribeFunctions) unsubscribe()
-			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+			// socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+			unsubscribeFromPerspectives()
 			socket?.off(`get:${continuityKey}`, sendInitialPayload)
 			socket?.off(`tx-run:${continuityKey}`, fillTransactionRequest)
 		}

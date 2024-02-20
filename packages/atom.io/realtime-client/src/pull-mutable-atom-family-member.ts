@@ -19,20 +19,20 @@ export function pullMutableAtomFamilyMember<
 	}
 	const { key: familyKey, subKey: serializedSubKey } = token.family
 	const subKey = parseJson(serializedSubKey)
-	socket?.on(`init:${token.key}`, (data: J) => {
+	socket.on(`init:${token.key}`, (data: J) => {
 		const jsonToken = getJsonToken(token)
 		setIntoStore(jsonToken, data, store)
 	})
-	socket?.on(
+	socket.on(
 		`next:${token.key}`,
 		(data: T extends Transceiver<infer Signal> ? Signal : never) => {
 			const trackerToken = getUpdateToken(token)
 			setIntoStore(trackerToken, data, store)
 		},
 	)
-	socket?.emit(`sub:${familyKey}`, subKey)
+	socket.emit(`sub:${familyKey}`, subKey)
 	return () => {
-		socket?.off(`serve:${token.key}`)
-		socket?.emit(`unsub:${token.key}`)
+		socket.off(`serve:${token.key}`)
+		socket.emit(`unsub:${token.key}`)
 	}
 }
