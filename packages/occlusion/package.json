@@ -17,7 +17,7 @@
 	"dependencies": {
 		"fp-ts": "2.16.2",
 		"io-ts": "2.2.21",
-		"nanoid": "5.0.5"
+		"nanoid": "5.0.6"
 	},
 	"devDependencies": {
 		"tsup": "8.0.2",
