@@ -1,2 +1,11 @@
 [phases.setup]
-nixPkgs = ['nodejs_20', 'bun']
+nixPkgs = ['bun']
+
+[phases.install]
+cmds = ['bun i']
+
+[phases.build]
+cmds = ['cd apps/node/lodge', 'bun run build']
+
+[start]
+cmds = ['cd apps/node/lodge', 'bun run start']
