@@ -1,6 +1,5 @@
 import { transaction } from "atom.io"
 
-import { usersInRooms } from "atom.io/realtime"
 import { gamePlayerIndex } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
@@ -12,7 +11,6 @@ export const spawnHandTX = transaction<
 		const { get, set, find } = transactors
 		const playerIds = get(gamePlayerIndex)
 		if (!playerIds.includes(playerId)) {
-			console.error({ playerId }, `Player is not in a game`)
 			return
 		}
 		const handState = find(CardGroups.handAtoms, handId)
