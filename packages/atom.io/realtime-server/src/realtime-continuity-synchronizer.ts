@@ -137,7 +137,13 @@ export function realtimeContinuitySynchronizer({
 											userPerspectiveTokenState,
 											store,
 										)
-										return visibleTokens.map((token) => token.key)
+										return visibleTokens.map((token) => {
+											const key =
+												token.type === `mutable_atom`
+													? `*` + token.key
+													: token.key
+											return key
+										})
 									}),
 								)
 							const redactedUpdates = redactTransactionUpdateContent(
