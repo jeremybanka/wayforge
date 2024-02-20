@@ -131,4 +131,3 @@ export const serveFilestore =
 			},
 		) as FilestoreSocketServer & YourServer
 	)
-// return server as FilestoreSocketServer & YourServer

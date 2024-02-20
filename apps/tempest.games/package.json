@@ -3,7 +3,7 @@
 	"type": "module",
 	"private": "true",
 	"scripts": {
-		"dev": "concurrently --kill-others --raw \"npm run dev:*\"",
+		"dev": "concurrently --kill-others --raw \"bun run dev:*\"",
 		"dev:scss": "bun ./bun/gen-styles.bun.ts watch",
 		"dev:fastly": "fastly compute serve --watch-dir=./src --addr=\"0.0.0.0:7676\" --watch",
 		"css": "bun ./bun/gen-styles.bun.ts once",

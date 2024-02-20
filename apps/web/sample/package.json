@@ -12,7 +12,7 @@
 		"test:once": "vitest run",
 		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:biome && npm run lint:eslint"
+		"lint": "bun run lint:biome && bun run lint:eslint"
 	},
 	"dependencies": {
 		"@emotion/styled": "11.11.0",

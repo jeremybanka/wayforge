@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs"
 
-import type { JSONSchema7 } from "json-schema"
 import jsonSchemaToZod from "json-schema-to-zod"
+import type { JsonSchemaObject } from "json-schema-to-zod"
 
 import { getDirectoryJsonEntries } from "~/packages/ingt/src/utils"
 
@@ -11,7 +11,7 @@ import { getDirectoryJsonEntries } from "~/packages/ingt/src/utils"
 
 const schemaEntries = getDirectoryJsonEntries({
 	dir: `${process.cwd()}/projects/wayfarer/_schemas`,
-	coerce: (input) => input as JSONSchema7,
+	coerce: (input) => input as JsonSchemaObject,
 })
 
 Promise.all(

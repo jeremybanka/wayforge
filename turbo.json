@@ -61,7 +61,7 @@
 			"dependsOn": ["build", "test:once", "lint"]
 		},
 		"globalDependencies": {
-			"inputs": ["pnpm-lock.yaml"]
+			"inputs": ["bun.lockb"]
 		}
 	}
 }

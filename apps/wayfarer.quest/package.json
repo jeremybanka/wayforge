@@ -7,7 +7,7 @@
 		"tsc": "tsc --watch",
 		"dev": "concurrently \"npm:dev:*\"",
 		"dev:next": "next dev -p 4500",
-		"build": "pnpm build:next",
+		"build": "bun build:next",
 		"build:next": "next build",
 		"start": "next start -p 4545",
 		"lint": "next lint",
