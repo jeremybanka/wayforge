@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import type { FC } from "react"
 
-import { valuesOfCards } from "~/apps/node/lodge/src/store/game"
+import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
 
 import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { article } from "wayfarer.quest/components/<article>"

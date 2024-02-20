@@ -1,5 +1,5 @@
 {
-	"name": "@wayforge/lodge",
+	"name": "core.wayfarer.quest",
 	"description": "cards and dice server",
 	"private": true,
 	"scripts": {

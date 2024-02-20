@@ -16,7 +16,7 @@ export function welcome(logger: Pick<Console, `info`>): void {
 		`[/]`,
 		`  00                         `,
 		`▓▓   ▓▓   ▓▓`,
-		`              WAYFORGE : LODGE`,
+		`              WAYFORGE : QUEST`,
 	)
 	logger.info(`[/]`, `                             `, `▓▓        ▓▓`)
 	logger.info(

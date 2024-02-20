@@ -13,7 +13,7 @@ import {
 	joinRoomTX,
 	leaveRoomTX,
 	playersInRooms,
-} from "~/apps/node/lodge/src/store/rooms"
+} from "~/apps/core.wayfarer.quest/src/store/rooms"
 
 import { header } from "wayfarer.quest/components/<header>"
 import { Game } from "wayfarer.quest/game/Game"

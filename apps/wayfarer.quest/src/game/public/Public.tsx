@@ -7,9 +7,9 @@ import {
 	spawnClassicDeckTX,
 	spawnHandTX,
 	spawnTrickTX,
-} from "~/apps/node/lodge/src/store/game"
-import { startGameTX } from "~/apps/node/lodge/src/store/game/transactions/hearts"
-import { playersInRooms } from "~/apps/node/lodge/src/store/rooms"
+} from "~/apps/core.wayfarer.quest/src/store/game"
+import { startGameTX } from "~/apps/core.wayfarer.quest/src/store/game/transactions/hearts"
+import { playersInRooms } from "~/apps/core.wayfarer.quest/src/store/rooms"
 
 import { h3 } from "wayfarer.quest/components/<hX>"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
