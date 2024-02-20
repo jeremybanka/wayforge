@@ -6,6 +6,7 @@
 		"jsxImportSource": "react",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
 		"baseUrl": "./",
 		"paths": {
 			"anvl/*": ["./packages/anvl/src/*"],

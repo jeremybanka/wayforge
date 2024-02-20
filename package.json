@@ -6,10 +6,19 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "pnpm@8.15.2",
-	"engines": {
-		"pnpm": "8.15.2"
-	},
+	"packageManager": "bun@1.0.28",
+	"engines": { "bun": "1.0.28" },
+	"workspaces": [
+		"apps/node/*",
+		"apps/web/*",
+		"apps/atom.io.fyi",
+		"apps/tempest.games",
+		"apps/wayfarer.quest",
+		"packages/*",
+		"packages/@banka/*",
+		"packages/@banka/eslint-config/react",
+		"packages/@banka/eslint-config/rome"
+	],
 	"scripts": {
 		"dev": "tsc --watch",
 		"lint": "turbo run lint",
@@ -23,9 +32,9 @@
 		"bench": "cd lib && vitest bench",
 		"test": "cross-env CI=true turbo run test:once",
 		"test:coverage": "cross-env CI=true turbo run test:coverage",
-		"release": "pnpm build && changeset publish",
+		"release": "bun run build && changeset publish",
 		"notes": "changeset",
-		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml"
+		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm bun.lockb"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.5.3",

@@ -18,7 +18,7 @@
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node",
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "npm run clean:build && concurrently \"npm:build:*\"",
+		"build": "bun run clean:build && concurrently \"npm:build:*\"",
 		"build:main": "tsup",
 		"build:types": "tsup --dts",
 		"build:data": "cd data && tsup",
@@ -35,10 +35,10 @@
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
 		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:biome && npm run lint:eslint",
+		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"test:once": "npm run test:manifest && cross-env IMPORT=dist vitest run",
+		"test:once": "bun run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"peerDependencies": {

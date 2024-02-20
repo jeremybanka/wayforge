@@ -30,29 +30,23 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Install Pnpm
-        uses: pnpm/action-setup@v2
-        id: pnpm-install
-        with:
-          version: 8.15.2
-          run_install: false
-
-      - name: Install Dependencies
-        run: pnpm i
-
-      - name: Set up Bun
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v1
+        id: bun-setup
         with:
           bun-version: 1.0.28
 
+      - name: Install Dependencies
+        run: bun i
+
       - name: Biome
-        run: pnpm lint:biome
+        run: bun lint:biome
 
       - name: ESLint
-        run: pnpm lint:eslint
+        run: bun lint:eslint
 
       - name: Type Check
-        run: pnpm tsc
+        run: bun tsc
 
   Test:
     name: Build & Test
@@ -82,15 +76,14 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Install Pnpm
-        uses: pnpm/action-setup@v2
-        id: pnpm-install
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        id: bun-setup
         with:
-          version: 8.15.2
-          run_install: false
+          bun-version: 1.0.28
 
       - name: Install Dependencies
-        run: pnpm i
+        run: bun i
 
       - name: Set up Git
         run: |
@@ -98,13 +91,8 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.0.28
-
       - name: Build
-        run: pnpm build
+        run: bun run build
 
       - name: Test
-        run: pnpm test
+        run: bun run test

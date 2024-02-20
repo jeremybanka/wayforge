@@ -45,15 +45,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Install Pnpm
-        uses: pnpm/action-setup@v2
-        id: pnpm-install
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          version: 8.15.2
-          run_install: false
+          bun-version: 1.0.28
 
       - name: Install Dependencies
-        run: pnpm i
+        run: bun i
 
       - name: Set up Git
         run: |
@@ -61,13 +59,8 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.0.28
-
       - name: Test
-        run: pnpm test:coverage
+        run: bun test:coverage
 
       - name: Coverage
         uses: coverallsapp/github-action@v2.2.3
