@@ -167,7 +167,6 @@ export class Junction<
 				externalStore.addRelation(a, b)
 			}
 			this.deleteRelation = (a, b) => {
-				console.log(`deleteRelation`, a, b)
 				externalStore.deleteRelation(a, b)
 			}
 			this.replaceRelationsSafely = (a, bs) => {
