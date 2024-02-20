@@ -4,7 +4,10 @@ import { useJSON } from "atom.io/react"
 import { useI } from "atom.io/react"
 import { usePullMutable, useServerAction } from "atom.io/realtime-react"
 
-import { createRoomTX, roomsIndex } from "~/apps/node/lodge/src/store/rooms"
+import {
+	createRoomTX,
+	roomsIndex,
+} from "~/apps/core.wayfarer.quest/src/store/rooms"
 
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 

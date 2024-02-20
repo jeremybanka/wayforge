@@ -1,7 +1,7 @@
 import { useO } from "atom.io/react"
 import * as React from "react"
 
-import { ownersOfGroups } from "~/apps/node/lodge/src/store/game"
+import { ownersOfGroups } from "~/apps/core.wayfarer.quest/src/store/game"
 
 import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { findHandsOfPlayer } from "wayfarer.quest/services/store/player-hand"

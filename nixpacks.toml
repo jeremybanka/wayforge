@@ -5,7 +5,7 @@ nixPkgs = ['bun']
 cmds = ['bun i']
 
 [phases.build]
-cmds = ['cd apps/node/lodge', 'bun run build']
+cmds = ['cd apps/core.wayfarer.quest', 'bun run build']
 
 [start]
-cmds = ['cd apps/node/lodge', 'bun run start']
+cmds = ['cd apps/core.wayfarer.quest', 'bun run start']

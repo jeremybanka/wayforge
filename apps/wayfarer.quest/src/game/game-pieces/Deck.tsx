@@ -6,7 +6,10 @@ import {
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
-import { groupsOfCards, shuffleDeckTX } from "~/apps/node/lodge/src/store/game"
+import {
+	groupsOfCards,
+	shuffleDeckTX,
+} from "~/apps/core.wayfarer.quest/src/store/game"
 
 import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
