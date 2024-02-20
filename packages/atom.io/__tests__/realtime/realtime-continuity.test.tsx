@@ -46,6 +46,7 @@ const countContinuity = RT.continuity({
 describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
+			port: 5465,
 			server: ({ socket, silo: { store } }) => {
 				// const userKeyState = findInStore(
 				// 	RTS.usersOfSockets.states.userKeyOfSocket,

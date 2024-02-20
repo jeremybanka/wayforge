@@ -22,6 +22,7 @@ const countHundredfoldState = AtomIO.selector({
 describe(`pull atom, observe selector`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
+			port: 5775,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
@@ -53,6 +54,7 @@ describe(`pull atom, observe selector`, () => {
 describe(`pull selector, observe atom`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
+			port: 5725,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
