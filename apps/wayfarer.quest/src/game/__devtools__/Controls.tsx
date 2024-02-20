@@ -1,6 +1,5 @@
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
-import { useServerAction } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
 import type { FC } from "react"
 
@@ -12,14 +11,15 @@ import {
 import { button } from "wayfarer.quest/components/<button>"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 
+import { runTransaction } from "atom.io"
 import comic from "wayfarer.quest/components/comic.module.scss"
 import scss from "./Controls.module.scss"
 
 export const Controls: FC = () => {
 	const myId = useO(myIdState)
 	const myRoomId = useO(myRoomKeyState)
-	const spawnHand = useServerAction(spawnHandTX)
-	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
+	const spawnHand = runTransaction(spawnHandTX)
+	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
 	return (
 		<span className={scss.class}>
 			{myId ? (

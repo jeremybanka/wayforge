@@ -1,8 +1,4 @@
 import { useO } from "atom.io/react"
-import {
-	usePullMutableAtomFamilyMember,
-	useServerAction,
-} from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
@@ -14,6 +10,7 @@ import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
 import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index"
 import { CardBack, CardFace, CardSlot } from "./Card"
 
+import { runTransaction } from "atom.io"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { Count } from "../labels/Count"
@@ -27,7 +24,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
 		const publicDeckIds = useO(publicDeckIndex)
 
-		const dealCards = useServerAction(dealCardsTX)
+		const dealCards = runTransaction(dealCardsTX)
 
 		const handlers = useRadial([
 			{
