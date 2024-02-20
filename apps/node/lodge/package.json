@@ -11,7 +11,7 @@
 		"test:once": "cross-env CI=true vitest run",
 		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:biome && npm run lint:eslint"
+		"lint": "bun run lint:biome && bun run lint:eslint"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.9.2",

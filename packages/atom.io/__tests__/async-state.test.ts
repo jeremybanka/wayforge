@@ -1,5 +1,4 @@
 import * as http from "http"
-import { vitest } from "vitest"
 
 import * as AtomIO from "atom.io"
 import type { Loadable } from "atom.io/data"

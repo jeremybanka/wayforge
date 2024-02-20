@@ -33,7 +33,7 @@
 		"build:recoil-tools": "cd recoil-tools && tsup",
 		"lint:biome": "biome check --diagnostic-level=warn -- .",
 		"lint:eslint": "eslint .",
-		"lint": "npm run lint:biome && npm run lint:eslint",
+		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",

@@ -32,19 +32,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
 
-      - name: Install Pnpm
-        uses: pnpm/action-setup@v2
-        id: pnpm-install
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          version: 8.15.2
-          run_install: false
+          bun-version: 1.0.28
 
       - name: Install Dependencies
-        run: pnpm i
+        run: bun i
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: pnpm release
+          publish: bun release
