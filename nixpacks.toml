@@ -1,8 +1,9 @@
 [phases.setup]
 nixPkgs = ['bun']
+aptPkgs = ['unzip']
 
 [phases.install]
-cmds = ['bun i']
+cmds = ['bun upgrade', 'bun i']
 
 [phases.build]
 cmds = ['cd apps/core.wayfarer.quest && bun run build']
