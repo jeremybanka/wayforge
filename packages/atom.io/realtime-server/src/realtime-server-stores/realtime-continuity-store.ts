@@ -21,8 +21,8 @@ const redactorAtoms = selectorFamily<
 			}
 
 			const userPerspectiveTokens = syncGroup.perspectives.flatMap(
-				({ perspectiveAtoms }) => {
-					const userPerspectiveToken = find(perspectiveAtoms, userId)
+				({ viewAtoms }) => {
+					const userPerspectiveToken = find(viewAtoms, userId)
 					const userPerspective = get(userPerspectiveToken)
 					const visibleTokens = [...userPerspective].map((token) => {
 						return token.type === `mutable_atom`
@@ -33,7 +33,7 @@ const redactorAtoms = selectorFamily<
 						`🔭`,
 						`continuity`,
 						syncGroupKey,
-						`${userId} can see ${visibleTokens.length} tokens in ${perspectiveAtoms.key}`,
+						`${userId} can see ${visibleTokens.length} tokens in ${viewAtoms.key}`,
 						visibleTokens,
 					)
 					return visibleTokens
