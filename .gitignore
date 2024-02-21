@@ -13,5 +13,5 @@ metafile-*
 bin
 pkg
 **/tempest.games/**/*.gen.ts
-**/lodge/logs/*.txt
+**/core.wayfarer.quest/logs/*.txt
 heap.json
