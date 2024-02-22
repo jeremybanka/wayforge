@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Configure Git to recognize the repository as a safe directory
+git config --global --add safe.directory /__w/wayforge/wayforge
+
 # Verify we're on a renovate/* branch
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [[ ! $current_branch == renovate/* ]]; then
