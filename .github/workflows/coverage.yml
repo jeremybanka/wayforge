@@ -53,6 +53,9 @@ jobs:
       - name: Install Dependencies
         run: bun i
 
+      - name: Update Lockfile
+        run: ./lib/update-lockfile.sh
+
       - name: Set up Git
         run: |
           git config --global init.defaultBranch main
