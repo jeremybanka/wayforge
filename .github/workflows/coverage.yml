@@ -56,7 +56,28 @@ jobs:
       - name: Update Lockfile
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./lib/update-lockfile.sh
+        run: |
+          git config --global --add safe.directory "$(pwd)"
+
+          echo "Current branch: $GITHUB_HEAD_REF"
+
+          if [[ ! $GITHUB_HEAD_REF == renovate/* ]]; then
+              echo "Not on a 'renovate/' branch. Exiting..."
+              exit 0
+          fi
+
+          if git diff --exit-code --name-only -- bun.lockb; then
+              echo "bun.lockb is unchanged."
+          else
+              echo "bun.lockb has changed, committing changes..."
+              git config --global user.email "action@github.com"
+              git config --global user.name "GitHub Action"
+              git add bun.lockb
+              git commit -m "📦"
+              git push origin HEAD:refs/heads/"$GITHUB_HEAD_REF"
+              gh workflow run integration.yml --ref "$GITHUB_HEAD_REF"
+              gh workflow run coverage.yml --ref "$GITHUB_HEAD_REF"
+          fi
 
       - name: Set up Git
         run: |
