@@ -1,11 +1,20 @@
 #!/bin/bash
 
 # Configure Git to recognize the repository as a safe directory
-git config --global --add safe.directory /__w/wayforge/wayforge
+git config --global --add safe.directory "$(pwd)"
+
+# Extract the branch name from the GITHUB_REF env variable or fallback to git command
+# This assumes the script is run in a GitHub Actions environment
+branch_name="${GITHUB_REF##*/}"
+if [ -z "$branch_name" ]; then
+    branch_name=$(git rev-parse --abbrev-ref HEAD)
+fi
+
+# Log the current branch name
+echo "Current branch: $branch_name"
 
 # Verify we're on a renovate/* branch
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [[ ! $current_branch == renovate/* ]]; then
+if [[ ! $branch_name =~ ^renovate/ ]]; then
     echo "Not on a 'renovate/' branch. Exiting..."
     exit 0
 fi
