@@ -8,7 +8,7 @@ console.log(`Server starting...`)
 
 const PORT = process.env.PORT || 8080
 const ORIGIN = `http://localhost:${PORT}`
-const DB_HOST = process.env.GITHUB_ACTION ? `postgres` : `localhost`
+const DB_HOST = `localhost`
 const DB_NAME = process.env.DB_NAME
 
 if (DB_NAME === undefined) {
