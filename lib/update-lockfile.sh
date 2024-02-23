@@ -23,4 +23,5 @@ else
     git commit -m "📦"
     git push origin HEAD:refs/heads/"$GITHUB_HEAD_REF"
     gh workflow run integration.yml --ref "$GITHUB_HEAD_REF"
+    gh workflow run coverage.yml --ref "$GITHUB_HEAD_REF"
 fi
