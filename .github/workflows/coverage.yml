@@ -64,7 +64,7 @@ jobs:
           git config --global user.name "Jeremy Banka"
 
       - name: Commit Lockfile?
-        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
           commit_message: 📦 update lockfile
 
