@@ -21,5 +21,5 @@ else
     git config --global user.name "GitHub Action"
     git add bun.lockb
     git commit -m "📦"
-    git push origin "$GITHUB_HEAD_REF"
+    git push origin HEAD:refs/heads/"$GITHUB_HEAD_REF"
 fi
