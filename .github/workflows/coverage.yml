@@ -62,9 +62,12 @@ jobs:
         run: |
           git config --global user.name 'Your Name'
           git config --global user.email 'your.email@example.com'
+          git status
           git add bun.lockb
+          git status
           git commit -m 'Update lock file' || echo "no change to lockfile" && exit 0
-          git push origin HEAD:${{ github.head_ref }}
+          git status
+          git push origin HEAD:refs/heads/${{ github.head_ref }}
 
       - name: Set up Git
         run: |
