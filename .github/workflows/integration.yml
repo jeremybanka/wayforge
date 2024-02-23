@@ -28,9 +28,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup Bun
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v1
-        id: bun-setup
         with:
           bun-version: 1.0.28
 
@@ -72,9 +76,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup Bun
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v1
-        id: bun-setup
         with:
           bun-version: 1.0.28
 
