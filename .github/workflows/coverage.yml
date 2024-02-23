@@ -58,10 +58,10 @@ jobs:
 
       - name: Update Lockfile
         env:
-          GITHUB_TOKEN: ${{ secrets.RENOVATE_HELPER_GITHUB_PAT }}
+          GITHUB_PAT: ${{ secrets.RENOVATE_HELPER_GITHUB_PAT }}
         run: |
-          git config --global user.name 'Your Name'
-          git config --global user.email 'your.email@example.com'
+          git config --global user.name 'Jeremy Banka'
+          git config --global user.email 'hello@jeremybanka.com'
           git status
           git add bun.lockb
           git status
@@ -71,7 +71,7 @@ jobs:
           else
             echo "Changes detected, updating lockfile."
             git commit -m 'Update lock file'
-            git push origin HEAD:refs/heads/${{ github.head_ref }}
+            git -c http.extraHeader="AUTHORIZATION: bearer ${GITHUB_PAT}" push origin HEAD:refs/heads/${{ github.head_ref }}
           fi
 
       - name: Set up Git
