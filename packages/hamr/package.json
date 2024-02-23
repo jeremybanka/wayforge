@@ -26,7 +26,6 @@
 		"build:react-id": "cd react-id && tsup",
 		"build:react-json-editor": "cd react-json-editor && tsup",
 		"build:react-radial": "cd react-radial && tsup",
-		"build:react-rx": "cd react-rx && tsup",
 		"build:recoil-combo": "cd recoil-combo && tsup",
 		"build:recoil-effect-storage": "cd recoil-effect-storage && tsup",
 		"build:recoil-error-boundary": "cd recoil-error-boundary && tsup",
@@ -54,13 +53,7 @@
 		"framer-motion": "^10.15.1 || ^11.0.0",
 		"react": "^18.2.0",
 		"react-router-dom": "^6.8.1",
-		"recoil": "^0.7.6",
-		"rxjs": "^7.8.0"
-	},
-	"peerDependenciesMeta": {
-		"rxjs": {
-			"optional": true
-		}
+		"recoil": "^0.7.6"
 	},
 	"devDependencies": {
 		"@emotion/styled": "11.11.0",
@@ -79,7 +72,6 @@
 		"react-dom": "18.2.0",
 		"react-router-dom": "6.22.1",
 		"recoil": "0.7.7",
-		"rxjs": "7.8.1",
 		"sass": "1.71.1",
 		"tsup": "8.0.2",
 		"typescript": "5.3.3",
@@ -112,9 +104,6 @@
 		"react-radial/dist",
 		"react-radial/package.json",
 		"react-radial/src",
-		"react-rx/dist",
-		"react-rx/package.json",
-		"react-rx/src",
 		"recoil-combo/dist",
 		"recoil-combo/package.json",
 		"recoil-combo/src",
@@ -185,13 +174,6 @@
 			"browser": "./react-radial/dist/index.js",
 			"import": "./react-radial/dist/index.js",
 			"require": "./react-radial/dist/index.cjs"
-		},
-		"./react-rx/package.json": "./react-rx/package.json",
-		"./react-rx": {
-			"types": "./react-rx/dist/index.d.ts",
-			"browser": "./react-rx/dist/index.js",
-			"import": "./react-rx/dist/index.js",
-			"require": "./react-rx/dist/index.cjs"
 		},
 		"./recoil-combo/package.json": "./recoil-combo/package.json",
 		"./recoil-combo": {
