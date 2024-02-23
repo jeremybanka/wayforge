@@ -82,7 +82,7 @@ describe(`async atom`, async () => {
 })
 
 describe(`async selector`, () => {
-	const PORT = 418
+	const PORT = 3443
 	const ORIGIN = `http://localhost:${PORT}`
 	const server = http.createServer((req, res) => {
 		let data: Uint8Array[] = []
