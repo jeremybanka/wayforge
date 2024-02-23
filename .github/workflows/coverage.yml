@@ -43,6 +43,11 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1
         with:
@@ -57,9 +62,12 @@ jobs:
         run: |
           git config --global user.name 'Your Name'
           git config --global user.email 'your.email@example.com'
+          git status
           git add bun.lockb
+          git status
           git commit -m 'Update lock file' || echo "no change to lockfile" && exit 0
-          git push origin HEAD:${{ github.head_ref }}
+          git status
+          git push origin HEAD:refs/heads/${{ github.head_ref }}
 
       - name: Set up Git
         run: |
