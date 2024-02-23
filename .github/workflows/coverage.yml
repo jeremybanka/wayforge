@@ -65,9 +65,14 @@ jobs:
           git status
           git add bun.lockb
           git status
-          git commit -m 'Update lock file' || echo "no change to lockfile" && exit 0
-          git status
-          git push origin HEAD:refs/heads/${{ github.head_ref }}
+          if git diff --staged --quiet; then
+            echo "No changes to lockfile."
+            exit 0
+          else
+            echo "Changes detected, updating lockfile."
+            git commit -m 'Update lock file'
+            git push origin HEAD:refs/heads/${{ github.head_ref }}
+          fi
 
       - name: Set up Git
         run: |

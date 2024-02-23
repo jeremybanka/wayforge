@@ -7,7 +7,7 @@ export class DatabaseManager {
 	public dbName = `test_db_` + Date.now()
 	private config = {
 		user: `postgres`,
-		host: process.env.GITHUB_ACTION ? `postgres` : `localhost`,
+		host: `localhost`,
 		database: `postgres`,
 		password: `your_password`,
 		port: 5432,
