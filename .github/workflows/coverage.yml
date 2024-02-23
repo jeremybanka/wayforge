@@ -44,7 +44,7 @@ jobs:
           fetch-depth: 2
           token: ${{ secrets.RENOVATE_HELPER_GITHUB_PAT }}
 
-      - name: Set up Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20.11.1
@@ -64,7 +64,7 @@ jobs:
           git config --global user.name "Jeremy Banka"
 
       - name: Commit Lockfile?
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v4.1.1
         with:
           commit_message: 📦 update lockfile
 
