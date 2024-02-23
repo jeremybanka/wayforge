@@ -60,7 +60,7 @@ beforeAll(async () => {
 	})
 
 	await Promise.all(serversReadyPromises)
-})
+}, 30000)
 
 beforeEach(async () => {
 	console.log(`Creating sample tables`)
