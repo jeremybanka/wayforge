@@ -84,7 +84,7 @@
 		"concurrently": "8.2.2",
 		"drizzle-kit": "0.20.14",
 		"drizzle-orm": "0.29.4",
-		"eslint": "8.56.0",
+		"eslint": "8.57.0",
 		"framer-motion": "11.0.6",
 		"happy-dom": "13.5.0",
 		"http-proxy": "1.18.1",
