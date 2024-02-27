@@ -4,9 +4,6 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import * as React from "react"
-import { findInStore } from "../../internal/src/families"
-import { getFromStore } from "../../internal/src/get-state"
 
 const countState = AtomIO.atom({ key: `count`, default: 0 })
 const countPlusTenState = AtomIO.selector({
