@@ -42,52 +42,6 @@ export const cardIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const visibleCardIndices = selectorFamily<string[], string>({
-	key: `visibleCardIndices`,
-	get:
-		(username) =>
-		({ find, get }) => {
-			const cardIds: string[] = []
-			const pileIds = get(pileIndex)
-			for (const pileId of pileIds) {
-				const handOwnerIdState = find(
-					ownersOfGroups.states.playerKeyOfGroup,
-					pileId,
-				)
-				const handOwnerId = get(handOwnerIdState)
-				if (handOwnerId === username) {
-					const pileCardIndex = find(
-						groupsOfCards.states.cardKeysOfGroup,
-						pileId,
-					)
-					const pileCardIds = get(pileCardIndex)
-					for (const pileCardId of pileCardIds) {
-						cardIds.push(pileCardId)
-					}
-				}
-			}
-			const handIds = get(handIndex)
-			for (const handId of handIds) {
-				const handCardIndex = find(groupsOfCards.states.cardKeysOfGroup, handId)
-				const handCardIds = get(handCardIndex)
-				for (const handCardId of handCardIds) {
-					cardIds.push(handCardId)
-				}
-			}
-			const currentTrickId = get(currentTrickIdState)
-			if (currentTrickId) {
-				const trickCardIndex = find(
-					groupsOfCards.states.cardKeysOfGroup,
-					currentTrickId,
-				)
-				const trickCardIds = get(trickCardIndex)
-				for (const trickCardId of trickCardIds) {
-					cardIds.push(trickCardId)
-				}
-			}
-			return cardIds
-		},
-})
 export const globalCardView = selector<RegularAtomToken<Card>[]>({
 	key: `globalCardView`,
 	get: ({ find, get }) => {

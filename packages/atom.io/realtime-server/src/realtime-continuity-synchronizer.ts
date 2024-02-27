@@ -6,7 +6,6 @@ import {
 	getFromStore,
 	getJsonToken,
 	isRootStore,
-	setIntoStore,
 	subscribeToState,
 	subscribeToTransaction,
 } from "atom.io/internal"
@@ -280,6 +279,23 @@ export function realtimeContinuitySynchronizer({
 				transactionKey,
 				updateId,
 				metric.duration,
+			)
+
+			const valuesOfCardsViewKey = `valuesOfCardsView("${userKey}")`
+			const rootsOfCardValueView =
+				store.selectorAtoms.getRelatedKeys(valuesOfCardsViewKey)
+			const myCardValueView = store.valueMap.get(valuesOfCardsViewKey)
+
+			store.logger.info(
+				`👁`,
+				`continuity`,
+				continuityKey,
+				`seeing ${userKey} card values`,
+				{
+					valuesOfCardsViewKey,
+					rootsOfCardValueView,
+					myCardValueView,
+				},
 			)
 		}
 		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)

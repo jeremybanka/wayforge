@@ -7,8 +7,13 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Identified } from "~/packages/anvl/src/id"
 
-import { IMPLICIT } from "atom.io/internal"
-import { visibleCardIndices } from "./cards-store"
+import {
+	currentTrickIdState,
+	groupsOfCards,
+	handIndex,
+	ownersOfGroups,
+	pileIndex,
+} from "."
 
 export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,
@@ -50,6 +55,55 @@ export const valuesOfCards = join({
 	key: `valuesOfCards`,
 	between: [`value`, `card`],
 	cardinality: `1:n`,
+})
+
+export const visibleCardIndices = selectorFamily<string[], string>({
+	key: `visibleCardIndices`,
+	get:
+		(username) =>
+		({ find, get }) => {
+			const cardIds: string[] = []
+			const pileIds = get(pileIndex)
+			for (const pileId of pileIds) {
+				const pileCardIndex = find(groupsOfCards.states.cardKeysOfGroup, pileId)
+				const pileCardIds = get(pileCardIndex)
+				for (const pileCardId of pileCardIds) {
+					cardIds.push(pileCardId)
+				}
+			}
+
+			const currentTrickId = get(currentTrickIdState)
+			if (currentTrickId) {
+				const trickCardIndex = find(
+					groupsOfCards.states.cardKeysOfGroup,
+					currentTrickId,
+				)
+				const trickCardIds = get(trickCardIndex)
+				for (const trickCardId of trickCardIds) {
+					cardIds.push(trickCardId)
+				}
+			}
+			const handIds = get(handIndex)
+			for (const handId of handIds) {
+				const handOwnerIdState = find(
+					ownersOfGroups.states.playerKeyOfGroup,
+					handId,
+				)
+				const handOwnerId = get(handOwnerIdState)
+				if (handOwnerId === username) {
+					const handCardIndex = find(
+						groupsOfCards.states.cardKeysOfGroup,
+						handId,
+					)
+					const handCardIds = get(handCardIndex)
+					for (const handCardId of handCardIds) {
+						cardIds.push(handCardId)
+					}
+				}
+			}
+
+			return cardIds
+		},
 })
 export const valuesOfCardsView = selectorFamily<
 	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
