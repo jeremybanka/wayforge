@@ -19,7 +19,7 @@
 		"deploy": "fastly compute publish"
 	},
 	"devDependencies": {
-		"@types/bun": "1.0.7",
+		"@types/bun": "1.0.8",
 		"@types/npmlog": "7.0.0",
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
