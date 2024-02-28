@@ -23,8 +23,10 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
+			const target = newest(store)
+			const atomAlreadyCreated = target.atoms.has(fullKey)
 			let token: RegularAtomToken<any>
-			if (store.atoms.has(fullKey)) {
+			if (atomAlreadyCreated) {
 				token = { type: `atom`, key: fullKey, family }
 			} else {
 				const individualOptions: RegularAtomOptions<any> = {

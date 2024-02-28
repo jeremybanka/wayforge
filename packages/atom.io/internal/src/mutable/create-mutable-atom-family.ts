@@ -30,8 +30,10 @@ export function createMutableAtomFamily<
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
+			const target = newest(store)
+			const atomAlreadyCreated = target.atoms.has(fullKey)
 			let token: MutableAtomToken<T, J>
-			if (store.atoms.has(fullKey)) {
+			if (atomAlreadyCreated) {
 				token = { type: `mutable_atom`, key: fullKey, family }
 			} else {
 				const individualOptions: MutableAtomOptions<T, J> = {
