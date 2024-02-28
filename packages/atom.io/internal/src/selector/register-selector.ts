@@ -5,7 +5,7 @@ import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
-import { withdraw, withdrawNewFamilyMember } from "../store"
+import { withdrawOrCreate } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
@@ -15,13 +15,7 @@ export const registerSelector = (
 	get: (dependency) => {
 		const target = newest(store)
 
-		const dependencyState =
-			withdraw(dependency, store) ?? withdrawNewFamilyMember(dependency, store)
-		if (dependencyState === undefined) {
-			throw new Error(
-				`State "${dependency.key}" not found in store "${store.config.name}".`,
-			)
-		}
+		const dependencyState = withdrawOrCreate(dependency, store)
 		const dependencyValue = readOrComputeValue(dependencyState, store)
 
 		store.logger.info(
@@ -46,12 +40,7 @@ export const registerSelector = (
 		return dependencyValue
 	},
 	set: (WritableToken, newValue) => {
-		const state = withdraw(WritableToken, store)
-		if (state === undefined) {
-			throw new Error(
-				`State "${WritableToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
-			)
-		}
+		const state = withdrawOrCreate(WritableToken, store)
 		setAtomOrSelector(state, newValue, store)
 	},
 	find: ((token, key) => findInStore(token, key, store)) as typeof findState,

@@ -1,6 +1,6 @@
 import type { ReadableToken, UpdateHandler } from "atom.io"
 import type { Store } from "../store"
-import { withdraw, withdrawNewFamilyMember } from "../store"
+import { withdrawOrCreate } from "../store"
 import { subscribeToRootAtoms } from "./subscribe-to-root-atoms"
 
 export function subscribeToState<T>(
@@ -9,8 +9,7 @@ export function subscribeToState<T>(
 	key: string,
 	store: Store,
 ): () => void {
-	const state =
-		withdraw<T>(token, store) ?? withdrawNewFamilyMember(token, store)
+	const state = withdrawOrCreate(token, store)
 	if (state === undefined) {
 		throw new Error(
 			`State "${token.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,

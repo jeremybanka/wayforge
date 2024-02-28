@@ -90,7 +90,6 @@ describe(`trackerFamily`, () => {
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
 		const findSetState = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
-		if (!findSetState) throw 0
 		const { findLatestUpdateState } = new FamilyTracker(
 			findSetState,
 			Internal.IMPLICIT.STORE,
@@ -108,7 +107,6 @@ describe(`trackerFamily`, () => {
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
 		const findSetState = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
-		if (!findSetState) throw 0
 		const { findLatestUpdateState } = new FamilyTracker(
 			findSetState,
 			Internal.IMPLICIT.STORE,

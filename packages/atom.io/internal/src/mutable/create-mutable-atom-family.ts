@@ -11,7 +11,6 @@ import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
-import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
@@ -31,10 +30,11 @@ export function createMutableAtomFamily<
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = withdraw({ key: fullKey, type: `mutable_atom` }, store)
+			const target = newest(store)
+			const atomAlreadyCreated = target.atoms.has(fullKey)
 			let token: MutableAtomToken<T, J>
-			if (existing) {
-				token = deposit(existing)
+			if (atomAlreadyCreated) {
+				token = { type: `mutable_atom`, key: fullKey, family }
 			} else {
 				const individualOptions: MutableAtomOptions<T, J> = {
 					key: fullKey,

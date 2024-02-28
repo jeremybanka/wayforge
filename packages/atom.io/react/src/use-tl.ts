@@ -19,8 +19,8 @@ export function useTL(token: TimelineToken<any>): TimelineMeta {
 	const tokenRef = React.useRef(token)
 	const rebuildMeta = () => {
 		return {
-			at: timeline?.at ?? NaN,
-			length: timeline?.history.length ?? NaN,
+			at: timeline.at,
+			length: timeline.history.length,
 			undo: () => undo(token),
 			redo: () => redo(token),
 		}
