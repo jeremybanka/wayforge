@@ -20,7 +20,7 @@ export const registerSelector = (
 		if (dependencyState === undefined) {
 			throw new Error(
 				`State "${dependency.key}" not found in store "${store.config.name}".`,
-			)
+			) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
 		}
 		const dependencyValue = readOrComputeValue(dependencyState, store)
 
@@ -46,7 +46,7 @@ export const registerSelector = (
 		return dependencyValue
 	},
 	set: (WritableToken, newValue) => {
-		const state = withdraw(WritableToken, store)
+		const state = withdraw(WritableToken, store) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
 		if (state === undefined) {
 			throw new Error(
 				`State "${WritableToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,

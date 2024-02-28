@@ -36,9 +36,9 @@ describe(`lazy propagation system`, () => {
 		})
 		subscribe(s, Utils.stdout)
 		subscribe(s0, Utils.stdout)
-		const myAtom = Internal.withdraw(a, Internal.IMPLICIT.STORE)
-		const mySelector = Internal.withdraw(s, Internal.IMPLICIT.STORE)
-		const mySelector0 = Internal.withdraw(s0, Internal.IMPLICIT.STORE)
+		const myAtom = Internal.withdraw(a, Internal.IMPLICIT.STORE) // WITHDRAW_ANALYSIS 😈 PASS ALONG
+		const mySelector = Internal.withdraw(s, Internal.IMPLICIT.STORE) // WITHDRAW_ANALYSIS 😈 PASS ALONG
+		const mySelector0 = Internal.withdraw(s0, Internal.IMPLICIT.STORE) // WITHDRAW_ANALYSIS 😈 PASS ALONG
 		expect(myAtom?.subject.subscribers.size).toBe(2)
 		expect(mySelector?.subject.subscribers.size).toBe(1)
 		expect(mySelector0?.subject.subscribers.size).toBe(1)
@@ -57,8 +57,8 @@ describe(`lazy propagation system`, () => {
 			get: ({ get }) => get(a) * 10,
 		})
 		const unsubscribe = subscribe(s, Utils.stdout)
-		const myAtom = Internal.withdraw(a, Internal.IMPLICIT.STORE)
-		const mySelector = Internal.withdraw(s, Internal.IMPLICIT.STORE)
+		const myAtom = Internal.withdraw(a, Internal.IMPLICIT.STORE) // WITHDRAW_ANALYSIS 😈 PASS ALONG
+		const mySelector = Internal.withdraw(s, Internal.IMPLICIT.STORE) // WITHDRAW_ANALYSIS 😈 PASS ALONG
 		expect(myAtom?.subject.subscribers.size).toBe(1)
 		expect(mySelector?.subject.subscribers.size).toBe(1)
 		unsubscribe()

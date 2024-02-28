@@ -15,7 +15,7 @@ export type TimelineMeta = {
 export function useTL(token: TimelineToken<any>): TimelineMeta {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
-	const timeline = withdraw(token, store)
+	const timeline = withdraw(token, store) // WITHDRAW_ANALYSIS 🤢 WEIRD BEHAVIOR
 	const tokenRef = React.useRef(token)
 	const rebuildMeta = () => {
 		return {

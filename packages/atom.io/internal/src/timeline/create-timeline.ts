@@ -88,7 +88,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			tokenOrFamily.type === `mutable_atom_family`
 		) {
 			const familyToken: AtomFamilyToken<any> = tokenOrFamily
-			const family = withdraw(familyToken, store)
+			const family = withdraw(familyToken, store) // WITHDRAW_ANALYSIS 🤓 REPORT AND PROCEED
 			if (family === undefined) {
 				store.logger.error(
 					`❌`,
@@ -109,7 +109,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				}
 			}
 		} else {
-			let atom = withdraw(tokenOrFamily, store)
+			let atom = withdraw(tokenOrFamily, store) // WITHDRAW_ANALYSIS 🤓 REPORT AND PROCEED
 			if (atom === undefined) {
 				store.logger.error(
 					`❌`,
@@ -120,7 +120,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				continue
 			}
 			if (isMutable(atom)) {
-				const updateAtom = withdraw(getUpdateToken(atom), store)
+				const updateAtom = withdraw(getUpdateToken(atom), store) // WITHDRAW_ANALYSIS 🤓 REPORT AND PROCEED
 				if (updateAtom === undefined) {
 					store.logger.error(
 						`❌`,

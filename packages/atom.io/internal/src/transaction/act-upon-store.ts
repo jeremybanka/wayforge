@@ -10,7 +10,7 @@ export function actUponStore<ƒ extends ƒn>(
 	store: Store,
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	return (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
-		const tx = withdraw(token, store)
+		const tx = withdraw(token, store) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
 		if (tx) {
 			return tx.run(parameters, id)
 		}
