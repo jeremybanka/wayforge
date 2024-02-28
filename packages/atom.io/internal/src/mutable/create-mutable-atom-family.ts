@@ -31,10 +31,9 @@ export function createMutableAtomFamily<
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = withdraw({ key: fullKey, type: `mutable_atom` }, store)
 			let token: MutableAtomToken<T, J>
-			if (existing) {
-				token = deposit(existing)
+			if (store.atoms.has(fullKey)) {
+				token = { type: `mutable_atom`, key: fullKey, family }
 			} else {
 				const individualOptions: MutableAtomOptions<T, J> = {
 					key: fullKey,
