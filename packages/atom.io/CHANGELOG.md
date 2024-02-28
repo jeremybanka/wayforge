@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.18.1
+
+### Patch Changes
+
+- 3bbbb23: 🐛 When retrieving a value from the cache during a transaction, it was possible to get the version of that value belonging to the underlying store, which could be problematic for mutable atoms. Now, when retrieving a mutable atom in this situation, the value will always be a fresh copy.
+- 3bbbb23: 🐛 Mutable atoms now properly evict downstream states when they are updated via a tracker update during the process of applying a transaction.
+- 3bbbb23: 🔊 Improve logging for changes to mutable atoms. Now they just report the ( `value` ), since the general form `( oldValue -> newValue )` was redundant, always showing the same value twice.
+- 3bbbb23: 🐛 When creating new family members during a transaction, a NotFoundError would occur when applying the transaction to the store. Now they are properly recreated in the target store during the application phase.
+- 3bbbb23: 🐛 `dispose` was previously unable to handle mutable atoms. Now it can do so.
+
 ## 0.18.0
 
 ### Minor Changes
