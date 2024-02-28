@@ -1,4 +1,4 @@
-import type { AtomToken, TransactionUpdate, ƒn } from "atom.io"
+import type { AtomToken, TransactionToken, TransactionUpdate, ƒn } from "atom.io"
 import type { TimelineUpdate } from "atom.io"
 
 import { newest } from "../lineage"
@@ -17,16 +17,11 @@ export const addAtomToTimeline = (
 	store: Store,
 ): void => {
 	let maybeAtom = withdraw(atomToken, store)
-	if (maybeAtom?.type === `mutable_atom`) {
+	if (maybeAtom.type === `mutable_atom`) {
 		const updateToken = getUpdateToken(maybeAtom)
 		maybeAtom = withdraw(updateToken, store)
 	}
 	const atom = maybeAtom
-	if (atom === undefined) {
-		throw new Error(
-			`Cannot subscribe to atom "${atomToken.key}" because it has not been initialized in store "${store.config.name}"`,
-		)
-	}
 	store.timelineAtoms.set({ atomKey: atom.key, timelineKey: tl.key })
 
 	atom.subject.subscribe(`timeline`, (update) => {
@@ -70,15 +65,11 @@ export const addAtomToTimeline = (
 				}
 			}
 			if (currentTransactionKey) {
-				const currentTransaction = withdraw(
-					{ key: currentTransactionKey, type: `transaction` },
-					store,
-				)
-				if (currentTransaction === undefined) {
-					throw new Error(
-						`Transaction "${currentTransactionKey}" not found in store "${store.config.name}". This is surprising, because we are in the application phase of "${currentTransactionKey}".`,
-					)
+				const txToken: TransactionToken<any> = {
+					key: currentTransactionKey,
+					type: `transaction`,
 				}
+				const currentTransaction = withdraw(txToken, store)
 				if (tl.transactionKey !== currentTransactionKey) {
 					if (tl.transactionKey) {
 						store.logger.error(

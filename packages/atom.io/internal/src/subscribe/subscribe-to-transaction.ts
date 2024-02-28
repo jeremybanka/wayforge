@@ -9,11 +9,6 @@ export const subscribeToTransaction = <ƒ extends ƒn>(
 	store: Store,
 ): (() => void) => {
 	const tx = withdraw(token, store)
-	if (tx === undefined) {
-		throw new Error(
-			`Cannot subscribe to transaction "${token.key}": transaction not found in store "${store.config.name}".`,
-		)
-	}
 	store.logger.info(
 		`👀`,
 		`transaction`,

@@ -10,7 +10,6 @@ import { stringifyJson } from "atom.io/json"
 
 import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
-import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
@@ -24,10 +23,11 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = withdraw({ key: fullKey, type: `atom` }, store)
+			const target = newest(store)
+			const atomAlreadyCreated = target.atoms.has(fullKey)
 			let token: RegularAtomToken<any>
-			if (existing) {
-				token = deposit(existing)
+			if (atomAlreadyCreated) {
+				token = { type: `atom`, key: fullKey, family }
 			} else {
 				const individualOptions: RegularAtomOptions<any> = {
 					key: fullKey,
