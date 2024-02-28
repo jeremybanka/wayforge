@@ -3,7 +3,7 @@ import { IMPLICIT } from "atom.io/internal"
 
 import type {
 	ActionReceiver,
-	ActionSynchronizer,
+	// ActionSynchronizer,
 	FamilyProvider,
 	MutableFamilyProvider,
 	MutableProvider,
@@ -13,7 +13,7 @@ import type {
 } from "atom.io/realtime-server"
 import {
 	realtimeActionReceiver,
-	realtimeActionSynchronizer,
+	// realtimeActionSynchronizer,
 	realtimeAtomFamilyProvider,
 	realtimeMutableFamilyProvider,
 	realtimeMutableProvider,
@@ -28,7 +28,7 @@ export class RealtimeServer {
 	protected mutableFamilyProvider: MutableFamilyProvider
 	protected stateReceiver: StateReceiver
 	protected actionReceiver: ActionReceiver
-	protected actionSynchronizer: ActionSynchronizer
+	// protected actionSynchronizer: ActionSynchronizer
 
 	public constructor(config: ServerConfig) {
 		const { socket, store = IMPLICIT.STORE } = config
@@ -38,7 +38,7 @@ export class RealtimeServer {
 		this.mutableFamilyProvider = realtimeMutableFamilyProvider({ socket })
 		this.stateReceiver = realtimeStateReceiver({ socket, store })
 		this.actionReceiver = realtimeActionReceiver({ socket, store })
-		this.actionSynchronizer = realtimeActionSynchronizer({ socket, store })
+		// this.actionSynchronizer = realtimeActionSynchronizer({ socket, store })
 	}
 
 	public provideStates(...atoms: AtomToken<any>[]): () => void {

@@ -26,6 +26,5 @@ export function setEpochNumberOfAction(
 
 	if (continuityKey !== undefined) {
 		store.transactionMeta.epoch.set(continuityKey, newEpoch)
-		console.log(`epoch is now`, newEpoch)
 	}
 }

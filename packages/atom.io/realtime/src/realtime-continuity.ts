@@ -8,6 +8,7 @@ import type {
 import {
 	IMPLICIT,
 	assignTransactionToContinuity,
+	getUpdateToken,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -35,7 +36,7 @@ export type PerspectiveToken<
 > = {
 	type: `realtime_perspective`
 	resourceAtoms: F
-	perspectiveAtoms: ReadableFamilyToken<Iterable<ReadableToken<T>>, string>
+	viewAtoms: ReadableFamilyToken<ReadableToken<T>[], string>
 }
 
 export type ContinuityToken = {
@@ -89,19 +90,28 @@ export class SyncGroup {
 		const zeroth = args[0]
 		if (zeroth.type === `atom` || zeroth.type === `mutable_atom`) {
 			const globals = args as AtomToken<any>[]
-			this.globals.push(...globals)
+			for (const global of globals) {
+				switch (global.type) {
+					case `atom`:
+						this.globals.push(global)
+						break
+					case `mutable_atom`:
+						this.globals.push(getUpdateToken(global))
+						break
+				}
+			}
 		} else if (zeroth.type === `transaction`) {
 			const actions = args as TransactionToken<any>[]
 			this.actions.push(...actions)
 		} else {
 			const [family, index] = args as [
 				AtomFamilyToken<any, any>,
-				ReadableFamilyToken<Iterable<any>, string>,
+				ReadableFamilyToken<ReadableToken<any>[], string>,
 			]
 			this.perspectives.push({
 				type: `realtime_perspective`,
 				resourceAtoms: family,
-				perspectiveAtoms: index,
+				viewAtoms: index,
 			})
 		}
 		return this

@@ -5,14 +5,12 @@ import type { FC } from "react"
 
 import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
 
-import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { article } from "wayfarer.quest/components/<article>"
 import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
 
 import scss from "./Card.module.scss"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-	usePullMutableAtomFamilyMember(valuesOfCards.core.findRelatedKeysState, id)
 	const valueKey = useO(valuesOfCards.states.valueKeyOfCard(id)) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]
 	return (

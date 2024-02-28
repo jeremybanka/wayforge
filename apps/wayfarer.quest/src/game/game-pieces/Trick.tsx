@@ -1,35 +1,22 @@
 import { useO } from "atom.io/react"
-import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Id } from "hamr/react-id"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
-import {
-	groupsOfCards,
-	trickContentsStates,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { trickContentsStates } from "~/apps/core.wayfarer.quest/src/store/game"
 
 import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
-import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
-import { CardFace, CardSlot } from "./Card"
-
-import { findState } from "atom.io"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { Count } from "../labels/Count"
+import { CardFace, CardSlot } from "./Card"
+
 import scss from "./Trick.module.scss"
 
 export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>(
 	`Trick`,
-	({ id: trickId, gameId, detailed }) => {
-		const isMyTrick = useO(myHandsIndex).includes(trickId)
-		const trickContent = useO(findState(trickContentsStates, [gameId, trickId]))
-
-		usePullMutableAtomFamilyMember(
-			groupsOfCards.core.findRelatedKeysState,
-			trickId,
-		)
-
+	({ id: trickId, detailed }) => {
+		const trickContent = useO(trickContentsStates, trickId)
 		const handlers = useRadial([])
 
 		const [ref, rect] = useDOMRect()

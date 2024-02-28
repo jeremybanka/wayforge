@@ -4,9 +4,6 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import * as React from "react"
-import { findInStore } from "../../internal/src/families"
-import { getFromStore } from "../../internal/src/get-state"
 
 const countState = AtomIO.atom({ key: `count`, default: 0 })
 const countPlusTenState = AtomIO.selector({
@@ -22,6 +19,7 @@ const countHundredfoldState = AtomIO.selector({
 describe(`pull atom, observe selector`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
+			port: 5775,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
@@ -53,6 +51,7 @@ describe(`pull atom, observe selector`, () => {
 describe(`pull selector, observe atom`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
+			port: 5725,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
