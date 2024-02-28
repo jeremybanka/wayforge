@@ -16,11 +16,6 @@ export const registerSelector = (
 		const target = newest(store)
 
 		const dependencyState = withdrawOrCreate(dependency, store)
-		if (dependencyState === undefined) {
-			throw new Error(
-				`State "${dependency.key}" not found in store "${store.config.name}".`,
-			) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
-		}
 		const dependencyValue = readOrComputeValue(dependencyState, store)
 
 		store.logger.info(
@@ -45,12 +40,7 @@ export const registerSelector = (
 		return dependencyValue
 	},
 	set: (WritableToken, newValue) => {
-		const state = withdrawOrCreate(WritableToken, store) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
-		if (state === undefined) {
-			throw new Error(
-				`State "${WritableToken.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
-			)
-		}
+		const state = withdrawOrCreate(WritableToken, store)
 		setAtomOrSelector(state, newValue, store)
 	},
 	find: ((token, key) => findInStore(token, key, store)) as typeof findState,

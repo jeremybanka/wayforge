@@ -10,7 +10,6 @@ import { stringifyJson } from "atom.io/json"
 
 import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
-import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 

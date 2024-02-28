@@ -143,7 +143,7 @@ describe(`graceful handling of improper usage`, () => {
 				`a_count_history`,
 				`Failed to add atom "counts("a")" because its family "counts" already belongs to timeline "counts_history"`,
 			)
-			console.log(Internal.withdraw(aCount, Internal.IMPLICIT.STORE)) // WITHDRAW_ANALYSIS 😈 PASS ALONG
+			console.log(Internal.withdraw(aCount, Internal.IMPLICIT.STORE))
 			console.log(countTimelineData?.history)
 			expect(countTimelineData?.history).toHaveLength(1)
 			expect(aCountTimelineData?.history).toHaveLength(0)

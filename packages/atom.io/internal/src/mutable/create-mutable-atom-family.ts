@@ -11,7 +11,6 @@ import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
-import { deposit, withdraw } from "../store"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"

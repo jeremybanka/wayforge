@@ -88,16 +88,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			tokenOrFamily.type === `mutable_atom_family`
 		) {
 			const familyToken: AtomFamilyToken<any> = tokenOrFamily
-			const family = withdraw(familyToken, store) // WITHDRAW_ANALYSIS 🤓 REPORT AND PROCEED
-			if (family === undefined) {
-				store.logger.error(
-					`❌`,
-					`timeline`,
-					options.key,
-					`Failed to add family "${familyToken.key}" because it does not exist in the store`,
-				)
-				continue
-			}
+			const family = withdraw(familyToken, store)
 			const familyKey = family.key
 			target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
 			family.subject.subscribe(`timeline:${options.key}`, (token) => {
@@ -109,27 +100,9 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				}
 			}
 		} else {
-			let atom = withdraw(tokenOrFamily, store) // WITHDRAW_ANALYSIS 🤓 REPORT AND PROCEED
-			if (atom === undefined) {
-				store.logger.error(
-					`❌`,
-					`timeline`,
-					options.key,
-					`Failed to add atom "${atomKey}" because it does not exist in the store`,
-				)
-				continue
-			}
+			let atom = withdraw(tokenOrFamily, store)
 			if (isMutable(atom)) {
-				const updateAtom = withdraw(getUpdateToken(atom), store) // WITHDRAW_ANALYSIS 🤓 REPORT AND PROCEED
-				if (updateAtom === undefined) {
-					store.logger.error(
-						`❌`,
-						`timeline`,
-						options.key,
-						`Failed to add update atom "${atomKey}" because it does not exist in the store`,
-					)
-					continue
-				}
+				const updateAtom = withdraw(getUpdateToken(atom), store)
 				atom = updateAtom
 				atomKey = atom.key
 			}

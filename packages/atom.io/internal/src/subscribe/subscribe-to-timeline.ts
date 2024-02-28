@@ -8,12 +8,7 @@ export const subscribeToTimeline = <ManagedAtom extends TimelineManageable>(
 	key: string,
 	store: Store,
 ): (() => void) => {
-	const tl = withdraw(token, store) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
-	if (tl === undefined) {
-		throw new Error(
-			`Cannot subscribe to timeline "${token.key}": timeline not found in store "${store.config.name}".`,
-		)
-	}
+	const tl = withdraw(token, store)
 	store.logger.info(`👀`, `timeline`, token.key, `Adding subscription "${key}"`)
 	const unsubscribe = tl.subject.subscribe(key, handleUpdate)
 	return () => {

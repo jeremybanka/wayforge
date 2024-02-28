@@ -15,10 +15,7 @@ export function setIntoStore<T, New extends T>(
 	if (rejection) {
 		return
 	}
-	const state = withdrawOrCreate(token, store) // WITHDRAW_ANALYSIS 😡 THROWN ERROR
-	if (state === undefined) {
-		throw new NotFoundError(token, store)
-	}
+	const state = withdrawOrCreate(token, store)
 	setAtomOrSelector(state, value, store)
 	closeOperation(store)
 }
