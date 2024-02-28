@@ -1,68 +1,89 @@
+import { runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
-import { myIdState } from "atom.io/realtime-client"
-import { useServerAction, useSyncAction } from "atom.io/realtime-react"
+import { usersInRooms } from "atom.io/realtime"
+import { myUsernameState } from "atom.io/realtime-client"
+import { RealtimeContext } from "atom.io/realtime-react"
 import { nanoid } from "nanoid"
+import { useContext } from "react"
 
 import {
 	spawnClassicDeckTX,
 	spawnHandTX,
 	spawnTrickTX,
 } from "~/apps/core.wayfarer.quest/src/store/game"
-import { startGameTX } from "~/apps/core.wayfarer.quest/src/store/game/transactions/hearts"
-import { playersInRooms } from "~/apps/core.wayfarer.quest/src/store/rooms"
+import { startGameTX } from "~/apps/core.wayfarer.quest/src/store/game/hearts"
 
 import { h3 } from "wayfarer.quest/components/<hX>"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"
+
+import { addPlayerToGameTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/add-player-to-game"
 import scss from "./Public.module.scss"
 
 export function Public({ roomId }: GameProps): JSX.Element {
-	const myId = useO(myIdState)
-	const addHand = useServerAction(spawnHandTX)
-	const spawnClassicDeck = useServerAction(spawnClassicDeckTX)
-	const createTrick = useServerAction(spawnTrickTX)
-	const playerIds = useO(playersInRooms.states.playerKeysOfRoom(roomId))
-	const startGame = useSyncAction(startGameTX)
+	const { socket } = useContext(RealtimeContext)
+	const myUsername = useO(myUsernameState)
+	const addPlayerToGame = runTransaction(addPlayerToGameTX)
+	const spawnHand = runTransaction(spawnHandTX)
+	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
+	const createTrick = runTransaction(spawnTrickTX)
+	const cohorts = useO(usersInRooms.states.userKeysOfRoom, roomId)
+	const startGame = runTransaction(startGameTX)
 	const handlers = useRadial([
 		{
 			label: `Create Deck`,
 			do: () => {
 				const deckId = nanoid()
 				const cardIds = Array.from({ length: 52 }).map(() => nanoid())
-				spawnClassicDeck(roomId, deckId, cardIds)
+				spawnClassicDeck(deckId, cardIds)
 			},
 		},
 		{
 			label: `Join Game`,
 			do: () => {
-				if (!myId) {
+				if (!myUsername) {
+					console.error(`Tried to join a game without being in a room.`)
+					return
+				}
+				addPlayerToGame(myUsername)
+			},
+		},
+		{
+			label: `Spawn Hand`,
+			do: () => {
+				if (!myUsername) {
 					console.error(`Tried to join a game without being in a room.`)
 					return
 				}
 				const groupId = nanoid()
-				addHand(myId, groupId)
+				spawnHand(myUsername, groupId)
 			},
 		},
 		{
 			label: `Create Trick`,
 			do: () => {
 				const trickId = nanoid()
-				createTrick(roomId, trickId)
+				createTrick(trickId)
 			},
 		},
 		{
 			label: `Start Game`,
 			do: () => {
 				startGame({
-					gameId: roomId,
-					handIds: playerIds.map(() => nanoid()),
-					trickId: nanoid(),
-					cardIds: Array.from({ length: 52 }).map(() => nanoid()),
+					handIds: cohorts.map(() => nanoid(5)),
+					trickId: nanoid(5),
+					cardIds: Array.from({ length: 52 }).map(() => nanoid(5)),
 					deckId: `DECK_ID`,
-					txId: nanoid(),
+					txId: nanoid(5),
 					shuffle: Math.random(),
 				})
+			},
+		},
+		{
+			label: `Leave Game`,
+			do: () => {
+				socket?.emit(`leave-room`, roomId)
 			},
 		},
 	])

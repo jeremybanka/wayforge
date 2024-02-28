@@ -3,9 +3,9 @@
 	"description": "cards and dice server",
 	"private": true,
 	"scripts": {
-		"dev": "bun --watch src/main.ts",
-		"build": "bun build src/main.ts --outdir=dist --sourcemap=external --target=bun",
-		"start": "bun ./dist/main.js",
+		"dev": "bun --watch src/system.server.ts",
+		"build": "bun build src/system.server.ts src/room.server.ts --outdir=dist --sourcemap=external --target=bun",
+		"start": "bun ./dist/system.server.js",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",

@@ -15,7 +15,9 @@ const schemaEntries = getDirectoryJsonEntries({
 })
 
 Promise.all(
-	schemaEntries.map(async ([, jsonSchema]) => await jsonSchemaToZod(jsonSchema)),
+	schemaEntries.map(
+		async ([, jsonSchema]) => await jsonSchemaToZod(jsonSchema as any),
+	),
 ).then((zodSchemas) => {
 	let idx = 0
 	for (const schema of zodSchemas) {

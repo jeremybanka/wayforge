@@ -60,7 +60,6 @@ export const applyTransaction = <ƒ extends ƒn>(
 	}
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
 	if (isRootStore(parent)) {
-		console.log(child.transactionMeta.update)
 		setEpochNumberOfAction(
 			child.transactionMeta.update.key,
 			child.transactionMeta.update.epoch,

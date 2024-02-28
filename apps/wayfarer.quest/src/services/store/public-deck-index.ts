@@ -1,19 +1,21 @@
 import * as AtomIO from "atom.io"
 
-import * as CardGroups from "~/apps/core.wayfarer.quest/src/store/game/card-groups"
-import { myRoomState } from "./my-room"
+import {
+	deckIndex,
+	ownersOfGroups,
+} from "~/apps/core.wayfarer.quest/src/store/game"
+import { myRoomKeyState } from "./my-room"
 
 export const publicDeckIndex = AtomIO.selector<string[]>({
 	key: `publicDeckIndex`,
 	get: ({ get, find }) => {
-		const myRoomId = get(myRoomState)
+		const myRoomId = get(myRoomKeyState)
 		if (!myRoomId) {
 			return []
 		}
-		const deckIndex = find(CardGroups.deckIndices, myRoomId)
 		const deckIds = get(deckIndex)
 		const unownedDeckIds = [...deckIds].filter((deckId) => {
-			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.states
+			const { playerKeyOfGroup } = ownersOfGroups.states
 			const ownerOfDeck = get(find(playerKeyOfGroup, deckId))
 			const deckIsNotOwned = ownerOfDeck === null
 			return deckIsNotOwned

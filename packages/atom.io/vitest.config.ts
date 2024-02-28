@@ -1,3 +1,5 @@
+import { resolve } from "path"
+
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
@@ -13,6 +15,23 @@ export default defineConfig({
 			projects: [project],
 		}),
 	],
+	resolve: {
+		alias: [
+			{
+				find: `~`,
+				replacement: resolve(__dirname, `../..`),
+			},
+			...[
+				`hamr/react-json-editor`,
+				`hamr/react-id`,
+				`hamr/react-elastic-input`,
+				`hamr/react-error-boundary`,
+			].map((find) => ({
+				find,
+				replacement: resolve(__dirname, `./src`),
+			})),
+		],
+	},
 	esbuild: {
 		target: `es2022`,
 	},

@@ -1,19 +1,21 @@
 import * as AtomIO from "atom.io"
 
-import * as CardGroups from "~/apps/core.wayfarer.quest/src/store/game/card-groups"
-import { myRoomState } from "./my-room"
+import {
+	ownersOfGroups,
+	trickIndex,
+} from "~/apps/core.wayfarer.quest/src/store/game"
+import { myRoomKeyState } from "./my-room"
 
 export const publicTrickIndex = AtomIO.selector<string[]>({
 	key: `publicTrickIndex`,
 	get: ({ get, find }) => {
-		const myRoomId = get(myRoomState)
+		const myRoomId = get(myRoomKeyState)
 		if (!myRoomId) {
 			return []
 		}
-		const trickIndex = find(CardGroups.trickIndices, myRoomId)
 		const trickIds = get(trickIndex)
 		const unownedTrickIds = [...trickIds].filter((trickId) => {
-			const { playerKeyOfGroup } = CardGroups.ownersOfGroups.states
+			const { playerKeyOfGroup } = ownersOfGroups.states
 			const ownerOfTrick = get(find(playerKeyOfGroup, trickId))
 			const trickIsNotOwned = ownerOfTrick === null
 			return trickIsNotOwned

@@ -8,8 +8,8 @@ import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { recordToEntries } from "anvl/object"
-import { isJson, refineJsonType } from "anvl/refinement"
+import { recordToEntries } from "~/packages/anvl/src/object"
+import { isJson, refineJsonType } from "~/packages/anvl/src/refinement"
 
 import { findViewIsOpenState, primitiveRefinery } from "."
 import { button } from "./Button"

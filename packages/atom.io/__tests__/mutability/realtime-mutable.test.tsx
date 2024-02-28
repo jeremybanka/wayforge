@@ -22,6 +22,7 @@ const addToNumbersCollectionTX = AtomIO.transaction({
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
+			port: 5445,
 			server: ({ socket, silo: { store } }) => {
 				socket.onAny((event, ...args) => {
 					console.log(`🛰 `, event, ...args)

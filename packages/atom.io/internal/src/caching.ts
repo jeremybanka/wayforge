@@ -53,12 +53,12 @@ export const readCachedValue = <T>(
 	token: ReadableState<any>,
 	target: Store,
 ): T => {
-	const value = target.valueMap.get(token.key) as T
-	// if (token.type === `mutable_atom` && isChildStore(target)) {
-	// 	const { parent } = target
-	// 	const copiedValue = copyMutableIfNeeded(token, parent, target)
-	// 	value = copiedValue
-	// }
+	let value = target.valueMap.get(token.key) as T
+	if (token.type === `mutable_atom` && isChildStore(target)) {
+		const { parent } = target
+		const copiedValue = copyMutableIfNeeded(token, parent, target)
+		value = copiedValue
+	}
 	return value
 }
 

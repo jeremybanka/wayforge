@@ -28,6 +28,7 @@ afterAll(async () => {
 describe(`multi-process realtime server`, () => {
 	const scenario = () => {
 		const { server, client, teardown } = RTTest.singleClient({
+			port: 5678,
 			server: SystemServer,
 			client: BrowserGame,
 		})

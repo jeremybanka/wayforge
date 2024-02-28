@@ -1,24 +1,25 @@
 import * as AtomIO from "atom.io"
-import { myIdState } from "atom.io/realtime-client"
+import { IMPLICIT } from "atom.io/internal"
+import { myUsernameState } from "atom.io/realtime-client"
 
 import {
-	handIndices,
+	handIndex,
 	ownersOfGroups,
 } from "~/apps/core.wayfarer.quest/src/store/game"
-import { myRoomState } from "./my-room"
 
 export const myHandsIndex = AtomIO.selector<string[]>({
 	key: `myHands`,
 	get: ({ get, find }) => {
-		const myId = get(myIdState)
-		const myRoomId = get(myRoomState)
-		if (!myId || !myRoomId) {
+		const myUsername = get(myUsernameState)
+		if (!myUsername) {
 			return []
 		}
+		console.log(`❗❗❗❗❗`, IMPLICIT.STORE)
 		const { groupKeysOfPlayer } = ownersOfGroups.states
-		const myCardGroupIds = get(find(groupKeysOfPlayer, myId))
-		const allHandIds = get(find(handIndices, myRoomId))
+		const myCardGroupIds = get(find(groupKeysOfPlayer, myUsername))
+		const allHandIds = get(handIndex)
 		const myHandIds = myCardGroupIds.filter((handId) => allHandIds.has(handId))
+		console.log(`❗❗❗❗❗`, { myHandIds, myCardGroupIds, allHandIds })
 		return myHandIds
 	},
 })

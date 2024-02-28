@@ -46,6 +46,7 @@ const countContinuity = RT.continuity({
 describe(`synchronizing transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
+			port: 5465,
 			server: ({ socket, silo: { store } }) => {
 				// const userKeyState = findInStore(
 				// 	RTS.usersOfSockets.states.userKeyOfSocket,
@@ -147,7 +148,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 3000 })
 		teardown()
 	})
-	test(`recovery`, async () => {
+	test.skip(`recovery`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()

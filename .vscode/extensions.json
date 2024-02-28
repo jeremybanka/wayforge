@@ -11,6 +11,7 @@
 		"arcanis.vscode-zipfs",
 		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
-		"ryanluker.vscode-coverage-gutters"
+		"ryanluker.vscode-coverage-gutters",
+		"oven.bun-vscode"
 	]
 }

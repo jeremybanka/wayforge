@@ -1,8 +1,4 @@
 import { useO } from "atom.io/react"
-import {
-	usePullMutableAtomFamilyMember,
-	useServerAction,
-} from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
@@ -16,32 +12,22 @@ import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { CardBack } from "./Card"
 
-import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { runTransaction } from "atom.io"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 
 export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	`Deck`,
 	({ id: deckId, detailed }) => {
-		const myRoomId = useO(myRoomState)
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup, deckId)
 
-		usePullMutableAtomFamilyMember(
-			groupsOfCards.core.findRelatedKeysState,
-			deckId,
-		)
-
-		const shuffle = useServerAction(shuffleDeckTX)
+		const shuffle = runTransaction(shuffleDeckTX)
 
 		const handlers = useRadial([
 			{
 				label: `Shuffle`,
 				do: () => {
-					if (myRoomId) {
-						shuffle(myRoomId, deckId, Math.random())
-					} else {
-						console.error(`Tried to shuffle a deck without being in a room`)
-					}
+					shuffle(deckId, Math.random())
 				},
 			},
 		])

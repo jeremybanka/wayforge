@@ -1,8 +1,4 @@
 import { useO } from "atom.io/react"
-import {
-	usePullMutableAtomFamilyMember,
-	useServerAction,
-} from "atom.io/realtime-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
@@ -17,7 +13,8 @@ import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
 import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index"
 import { CardBack, CardFace, CardSlot } from "./Card"
 
-import { myRoomState } from "wayfarer.quest/services/store/my-room"
+import { runTransaction } from "atom.io"
+import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { Count } from "../labels/Count"
 import scss from "./Hand.module.scss"
@@ -25,17 +22,12 @@ import scss from "./Hand.module.scss"
 export const Hand = memoize<{ id: string; detailed?: boolean }>(
 	`Hand`,
 	({ id: handId, detailed }) => {
-		const myRoomId = useO(myRoomState)
+		const myRoomId = useO(myRoomKeyState)
 		const isMyHand = useO(myHandsIndex).includes(handId)
 		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
 		const publicDeckIds = useO(publicDeckIndex)
 
-		usePullMutableAtomFamilyMember(
-			groupsOfCards.core.findRelatedKeysState,
-			handId,
-		)
-
-		const dealCards = useServerAction(dealCardsTX)
+		const dealCards = runTransaction(dealCardsTX)
 
 		const handlers = useRadial([
 			{
@@ -46,7 +38,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 						console.error(`Tried to deal cards without being in a room.`)
 						return
 					}
-					dealCards(myRoomId, deckId, handId, 1)
+					dealCards(deckId, handId, 1)
 				},
 			},
 		])

@@ -12,8 +12,8 @@ import {
 	persistAtom,
 } from "~/packages/atom.io/__unstable__/web-effects/src"
 
-import { Join } from "anvl/join"
-import { hasExactProperties } from "anvl/object"
+import { Join } from "~/packages/anvl/src/join"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import { persistStringSetAtom } from "./explorer-effects"
 

@@ -1,10 +1,12 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
+import { deleteAtom } from "atom.io/internal"
 import {
 	actUponStore,
 	assignTransactionToContinuity,
 	getEpochNumberOfContinuity,
 	getFromStore,
+	getJsonToken,
 	ingestTransactionUpdate,
 	isRootStore,
 	setEpochNumberOfContinuity,
@@ -29,6 +31,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 	const confirmedUpdates = getFromStore(confirmedUpdateQueue, store)
 
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
+		socket.off(`continuity-init:${continuityKey}`, initializeContinuity)
 		let i = 0
 		let k: any = ``
 		let v: any = null
@@ -37,6 +40,10 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				k = x
 			} else {
 				v = x
+				// console.log(`❗❗❗❗❗`, k, v)
+				if (`type` in k && k.type === `mutable_atom`) {
+					k = getJsonToken(k)
+				}
 				setIntoStore(k, v, store)
 			}
 			i++
@@ -53,7 +60,12 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			optimisticUpdate: AtomIO.TransactionUpdate<any>,
 			confirmedUpdate: AtomIO.TransactionUpdate<any>,
 		): void {
-			store.logger.info(`⚖️`, `continuity`, continuityKey, `reconciling updates`)
+			store.logger.info(
+				`🧑‍⚖️`,
+				`continuity`,
+				continuityKey,
+				`reconciling updates`,
+			)
 			setIntoStore(
 				optimisticUpdateQueue,
 				(queue) => {
@@ -84,6 +96,14 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 					`thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
 				)
 			}
+			store.logger.info(
+				`🧑‍⚖️`,
+				`continuity`,
+				continuityKey,
+				`updates do not match`,
+				optimisticUpdate,
+				confirmedUpdate,
+			)
 			const reversedOptimisticUpdates = optimisticUpdates.toReversed()
 			for (const subsequentOptimistic of reversedOptimisticUpdates) {
 				ingestTransactionUpdate(`oldValue`, subsequentOptimistic, store)
@@ -131,7 +151,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		}
 
 		store.logger.info(
-			`⚖️`,
+			`🧑‍⚖️`,
 			`continuity`,
 			continuityKey,
 			`integrating confirmed update`,
@@ -140,14 +160,14 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		const zerothOptimisticUpdate = optimisticUpdates[0]
 		if (zerothOptimisticUpdate) {
 			store.logger.info(
-				`⚖️`,
+				`🧑‍⚖️`,
 				`continuity`,
 				continuityKey,
 				`has optimistic updates to reconcile`,
 			)
 			if (confirmedUpdate.epoch === zerothOptimisticUpdate.epoch) {
 				store.logger.info(
-					`⚖️`,
+					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
 					`epoch of confirmed update #${confirmedUpdate.epoch} matches zeroth optimistic update`,
@@ -164,7 +184,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			} else {
 				// epoch mismatch
 				store.logger.info(
-					`⚖️`,
+					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
 					`epoch of confirmed update #${confirmedUpdate.epoch} does not match zeroth optimistic update #${zerothOptimisticUpdate.epoch}`,
@@ -193,7 +213,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			}
 		} else {
 			store.logger.info(
-				`⚖️`,
+				`🧑‍⚖️`,
 				`continuity`,
 				continuityKey,
 				`has no optimistic updates to deal with`,
@@ -213,7 +233,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				setEpochNumberOfContinuity(continuityKey, confirmedUpdate.epoch, store)
 			} else if (isRoot && continuityEpoch !== undefined) {
 				store.logger.info(
-					`⚖️`,
+					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
 					`received update #${
@@ -303,7 +323,11 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 						store,
 					)
 				}
-				socket.emit(`tx-run:${continuityKey}`, clientUpdate)
+				socket.emit(`tx-run:${continuityKey}`, {
+					id: clientUpdate.id,
+					key: transaction.key,
+					params: clientUpdate.params,
+				})
 			},
 			`tx-run:${continuityKey}`,
 			store,
@@ -311,11 +335,34 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 		return unsubscribeFromTransactionUpdates
 	})
 
+	socket.on(`reveal:${continuityKey}`, (revealed: Json.Array) => {
+		let i = 0
+		let k: any = ``
+		let v: any = null
+		for (const x of revealed) {
+			if (i % 2 === 0) {
+				k = x
+			} else {
+				v = x
+				setIntoStore(k, v, store)
+			}
+			i++
+		}
+	})
+	socket.on(
+		`conceal:${continuityKey}`,
+		(concealed: AtomIO.AtomToken<unknown>[]) => {
+			for (const token of concealed) {
+				deleteAtom(token, store)
+			}
+		},
+	)
+
 	socket.emit(`get:${continuityKey}`)
 	return () => {
 		socket.off(`continuity-init:${continuityKey}`)
 		socket.off(`tx-new:${continuityKey}`)
 		for (const unsubscribe of unsubscribeFunctions) unsubscribe()
-		socket.emit(`unsub:${continuityKey}`)
+		// socket.emit(`unsub:${continuityKey}`)
 	}
 }

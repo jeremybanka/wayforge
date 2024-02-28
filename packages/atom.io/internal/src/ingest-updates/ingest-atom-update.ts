@@ -1,4 +1,4 @@
-import type { KeyedStateUpdate } from "atom.io"
+import type { KeyedStateUpdate, RegularAtomToken } from "atom.io"
 
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
@@ -10,5 +10,9 @@ export function ingestAtomUpdate(
 ): void {
 	const { key, newValue, oldValue } = atomUpdate
 	const value = applying === `newValue` ? newValue : oldValue
-	setIntoStore({ key, type: `atom` }, value, store)
+	const token: RegularAtomToken<unknown> = { key, type: `atom` }
+	if (atomUpdate.family) {
+		Object.assign(token, { family: atomUpdate.family })
+	}
+	setIntoStore(token, value, store)
 }

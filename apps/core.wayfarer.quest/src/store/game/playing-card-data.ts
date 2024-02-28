@@ -14,6 +14,10 @@ export const CARD_RANKS = [
 	`A`,
 ] as const
 export const CARD_SUITS = [`♠`, `♥`, `♦`, `♣`] as const
-export const CARD_VALUES = CARD_RANKS.flatMap((value) =>
-	CARD_SUITS.map((suit) => ({ value, suit, id: value + suit })),
+export const CARD_VALUES = CARD_RANKS.flatMap((rank) =>
+	CARD_SUITS.map((suit): CardValue => ({ rank, suit, id: `${rank}${suit}` })),
 )
+export type CardRank = (typeof CARD_RANKS)[number]
+export type CardSuit = (typeof CARD_SUITS)[number]
+export type CardId = `${CardRank}${CardSuit}`
+export type CardValue = { rank: CardRank; suit: CardSuit; id: CardId }

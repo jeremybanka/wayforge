@@ -10,6 +10,7 @@ const countState = AtomIO.atom({ key: `count`, default: 0 })
 describe(`pushing state`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
+			port: 3385,
 			server: ({ socket, silo: { store } }) => {
 				const provideState = RTS.realtimeStateProvider({ socket, store })
 				const receiveState = RTS.realtimeStateReceiver({ socket, store })
