@@ -1,3 +1,4 @@
+import { arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
@@ -7,12 +8,20 @@ import * as React from "react"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
+	const { socket } = React.useContext(RTR.RealtimeContext)
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
 	return (
 		<main data-testid={roomId}>
 			<h1>{roomId}</h1>
 			<p data-testid={letter0}>{letter0}</p>
+			<button
+				type="button"
+				data-testid="leave-room"
+				onClick={() => {
+					socket?.emit(`leave-room`)
+				}}
+			/>
 		</main>
 	)
 }
@@ -23,6 +32,9 @@ function Lobby(): JSX.Element {
 	const roomKeys = AR.useJSON(RT.roomIndex)
 	return (
 		<main>
+			{roomKeys.members.length === 0 ? (
+				<p data-testid="no-rooms">No rooms</p>
+			) : null}
 			<ul>
 				{roomKeys.members.map((roomKey) => (
 					<li key={roomKey}>
@@ -30,11 +42,15 @@ function Lobby(): JSX.Element {
 							type="button"
 							data-testid={`join-${roomKey}`}
 							onClick={() => {
-								if (socket) {
-									socket.emit(`join-room`, roomKey)
-								} else {
-									console.log(`socket is null`)
-								}
+								console.log(`🥋 JOIN ROOM CLICKED`, socket)
+								socket?.emit(`join-room`, roomKey)
+							}}
+						/>
+						<button
+							type="button"
+							data-testid={`delete-${roomKey}`}
+							onClick={() => {
+								socket?.emit(`delete-room`, roomKey)
 							}}
 						/>
 					</li>
@@ -44,11 +60,7 @@ function Lobby(): JSX.Element {
 				type="button"
 				data-testid="create-room"
 				onClick={() => {
-					if (socket) {
-						socket.emit(`create-room`, `room-1`)
-					} else {
-						console.log(`socket is null`)
-					}
+					socket?.emit(`create-room`, `room-1`)
 				}}
 			>
 				Click me!
@@ -57,15 +69,16 @@ function Lobby(): JSX.Element {
 	)
 }
 
-function View(): JSX.Element {
+function View({ myUsername }: { myUsername: string }): JSX.Element {
 	const myRoomKey = RTR.usePullSelector(
-		RT.usersInRooms.states.roomKeyOfUser(`CLIENT-1-1`),
+		RT.usersInRooms.states.roomKeyOfUser(myUsername),
 	)
 	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
 }
 
 export function BrowserGame(): JSX.Element | null {
 	const socketId = AR.useO(RTC.myIdState)
+	const myUsername = AR.useO(RTC.myUsernameState)
 
-	return socketId ? <View /> : null
+	return socketId && myUsername ? <View myUsername={myUsername} /> : null
 }

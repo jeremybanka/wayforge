@@ -1,5 +1,12 @@
 import { act } from "@testing-library/react"
 import * as RTTest from "atom.io/realtime-testing"
+import { findInStore } from "../../internal/src/families"
+import { getFromStore } from "../../internal/src/get-state"
+import {
+	roomArgumentsAtoms,
+	roomSelectors,
+} from "../../realtime-server/src/realtime-server-stores"
+import { roomIndex } from "../../realtime/src/shared-room-store"
 import { BrowserGame } from "./BrowserGame"
 import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
@@ -26,9 +33,9 @@ afterAll(async () => {
 })
 
 describe(`multi-process realtime server`, () => {
-	const scenario = () => {
+	const scenario = (port: number) => {
 		const { server, client, teardown } = RTTest.singleClient({
-			port: 5678,
+			port,
 			server: SystemServer,
 			client: BrowserGame,
 		})
@@ -36,8 +43,37 @@ describe(`multi-process realtime server`, () => {
 		return { client, server, teardown }
 	}
 
-	it(`runs several instances of the same server`, async () => {
-		const { client, teardown } = scenario()
+	it(`cleans up rooms that were left open on teardown`, async () => {
+		const { client, server, teardown } = scenario(6360)
+		const app = client.init()
+		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+		act(() => createRoomButton.click())
+		await app.renderResult.findByTestId(`join-room-1`)
+
+		const roomSocketState = findInStore(
+			roomSelectors,
+			`room-1`,
+			server.silo.store,
+		)
+		const roomSocket = await getFromStore(roomSocketState, server.silo.store)
+
+		teardown()
+
+		expect(roomSocket.process.killed).toBe(true)
+	})
+	it(`permits manual creation and deletion of rooms`, async () => {
+		const { client, teardown } = scenario(6361)
+		const app = client.init()
+		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+		act(() => createRoomButton.click())
+		const deleteRoomButton = await app.renderResult.findByTestId(`delete-room-1`)
+		act(() => deleteRoomButton.click())
+		await app.renderResult.findByTestId(`no-rooms`)
+
+		teardown()
+	})
+	it(`permits join and leave`, async () => {
+		const { client, teardown } = scenario(6362)
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => createRoomButton.click())
@@ -45,6 +81,9 @@ describe(`multi-process realtime server`, () => {
 		act(() => joinRoomButton.click())
 		await app.renderResult.findByTestId(`room-1`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
+		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
+		act(() => leaveRoomButton.click())
+		await app.renderResult.findByTestId(`create-room`)
 
 		teardown()
 	})

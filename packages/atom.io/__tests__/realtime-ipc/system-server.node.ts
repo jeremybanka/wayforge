@@ -86,7 +86,8 @@ export const SystemServer = ({
 			actUponStore(RTS.destroyRoomTX, arbitrary(), store)(roomId)
 		})
 		const leaveRoom = () => {
-			socket.off(`user-leaves`, leaveRoom)
+			console.log(`🥋 LEAVE ROOM RECEIVED`)
+			socket.off(`leave-room`, leaveRoom)
 			socket.offAny(forward)
 			// roomSocket.dispose() IMPLEMENT ❗
 			toRoom([`user-leaves`])
@@ -94,10 +95,10 @@ export const SystemServer = ({
 		}
 
 		socket.on(`leave-room`, leaveRoom)
-		// socket.on(`disconnect`, leaveRoom)
 	})
 
 	const handleDisconnect = async () => {
+		console.log(`🥋 DISCONNECT RECEIVED`)
 		socket.off(`disconnect`, handleDisconnect)
 		const roomKeyState = findInStore(
 			RT.usersInRooms.states.roomKeyOfUser,

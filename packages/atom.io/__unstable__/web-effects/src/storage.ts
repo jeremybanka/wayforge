@@ -12,7 +12,6 @@ export const persistAtom =
 	(key: string): AtomEffect<T> =>
 	({ setSelf, onSet }) => {
 		const savedValue = storage.getItem(key)
-
 		if (savedValue != null) setSelf(parse(savedValue))
 
 		onSet(({ newValue }) => {
@@ -26,4 +25,4 @@ export const persistAtom =
 
 export const lazyLocalStorageEffect: <J extends Json.Serializable>(
 	key: string,
-) => AtomEffect<J> = persistAtom(localStorage)(JSON)
+) => AtomEffect<J> = persistAtom(window.localStorage)(JSON)
