@@ -47,6 +47,7 @@ describe(`multi-process realtime server`, () => {
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
 		act(() => leaveRoomButton.click())
+		await app.renderResult.findByTestId(`create-room`)
 
 		teardown()
 	})
@@ -55,6 +56,7 @@ describe(`multi-process realtime server`, () => {
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => createRoomButton.click())
+		await app.renderResult.findByTestId(`join-room-1`)
 
 		teardown()
 	})
