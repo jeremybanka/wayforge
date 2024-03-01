@@ -36,7 +36,7 @@ describe(`multi-process realtime server`, () => {
 		return { client, server, teardown }
 	}
 
-	it(`runs several instances of the same server`, async () => {
+	it(`dynamically spawns a game server process that players can join and leave`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
@@ -45,7 +45,16 @@ describe(`multi-process realtime server`, () => {
 		act(() => joinRoomButton.click())
 		await app.renderResult.findByTestId(`room-1`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
-		act(() => app.renderResult.getByTestId(`leave-room`).click())
+		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
+		act(() => leaveRoomButton.click())
+
+		teardown()
+	})
+	it(`cleans up rooms that were left open on teardown`, async () => {
+		const { client, teardown } = scenario()
+		const app = client.init()
+		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+		act(() => createRoomButton.click())
 
 		teardown()
 	})
