@@ -118,11 +118,11 @@ export class ParentSocket<
 		)
 
 		this.on(`exit`, () => {
+			this.logger.info(`🔥`, this.id, `received "exit"`)
 			process.exit(0)
 		})
-		process.on(`exit`, () => {
-			this.logger.info(`🔥`, this.id, `exited`)
-			process.exit(0)
+		process.on(`exit`, (code) => {
+			this.logger.info(`🔥`, this.id, `exited with code ${code}`)
 		})
 		process.on(`end`, () => {
 			this.logger.info(`🔥`, this.id, `ended`)
