@@ -85,6 +85,7 @@ export class ParentSocket<
 		this.process.stdin.resume()
 		this.relays = new Map()
 		this.relayServices = []
+		// this.logger.info(`🔗`, `uplink`, process.pid)
 
 		this.process.stdin.on(
 			`data`,

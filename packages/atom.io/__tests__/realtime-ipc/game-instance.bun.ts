@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "async_hooks"
 import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"
@@ -34,6 +35,10 @@ IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 const letter0State = findState(letterAtoms, 0)
 
 setState(letter0State, `A`)
+
+setInterval(() => {
+	ipcLog.info(`letterAtoms`, letterAtoms)
+}, 1000)
 
 parentSocket.relay((userSocket) => {
 	RTS.usersOfSockets.relations.set(userSocket.id, `relay:${userSocket.id}`)

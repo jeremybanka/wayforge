@@ -1,3 +1,4 @@
+import { arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
@@ -31,6 +32,9 @@ function Lobby(): JSX.Element {
 	const roomKeys = AR.useJSON(RT.roomIndex)
 	return (
 		<main>
+			{roomKeys.members.length === 0 ? (
+				<p data-testid="no-rooms">No rooms</p>
+			) : null}
 			<ul>
 				{roomKeys.members.map((roomKey) => (
 					<li key={roomKey}>
@@ -38,6 +42,7 @@ function Lobby(): JSX.Element {
 							type="button"
 							data-testid={`join-${roomKey}`}
 							onClick={() => {
+								console.log(`🥋 JOIN ROOM CLICKED`, socket)
 								socket?.emit(`join-room`, roomKey)
 							}}
 						/>
@@ -64,15 +69,16 @@ function Lobby(): JSX.Element {
 	)
 }
 
-function View(): JSX.Element {
+function View({ myUsername }: { myUsername: string }): JSX.Element {
 	const myRoomKey = RTR.usePullSelector(
-		RT.usersInRooms.states.roomKeyOfUser(`CLIENT-1-1`),
+		RT.usersInRooms.states.roomKeyOfUser(myUsername),
 	)
 	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
 }
 
 export function BrowserGame(): JSX.Element | null {
 	const socketId = AR.useO(RTC.myIdState)
+	const myUsername = AR.useO(RTC.myUsernameState)
 
-	return socketId ? <View /> : null
+	return socketId && myUsername ? <View myUsername={myUsername} /> : null
 }

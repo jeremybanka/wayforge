@@ -21,6 +21,7 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
+import { myUsernameState } from "../../realtime-client/src/realtime-client-stores"
 
 let testNumber = 0
 
@@ -137,6 +138,7 @@ export const setupRealtimeTestClient = (
 				silo.store.valueMap.set(key, [...value])
 			}
 		}
+		silo.setState(myUsernameState, `${name}-${testNumber}`)
 
 		const { document } = new Happy.Window()
 		document.body.innerHTML = `<div id="app"></div>`
@@ -175,11 +177,7 @@ export const singleClient = (
 	options: TestSetupOptions__SingleClient,
 ): RealtimeTestAPI__SingleClient => {
 	const server = setupRealtimeTestServer(options)
-	const client = setupRealtimeTestClient(
-		options,
-		`CLIENT-${testNumber}`,
-		server.port,
-	)
+	const client = setupRealtimeTestClient(options, `CLIENT`, server.port)
 
 	return {
 		client,
