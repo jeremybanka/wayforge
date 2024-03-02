@@ -1,10 +1,12 @@
 {
 	"name": "break-check",
+	"type": "module",
 	"version": "0.0.0",
 	"author": {
 		"name": "Jeremy Banka",
 		"email": "hello@jeremybanka.com"
 	},
+	"files": ["bin", "dist", "src"],
 	"dependencies": {
 		"glob": "10.3.10",
 		"npmlog": "7.0.1",
@@ -13,10 +15,17 @@
 	"bin": {
 		"break-check": "./bin/break-check.x.js"
 	},
+	"main": "dist/break-check.js",
 	"scripts": {
-		"test": "bun test --watch --clear -- **/*.test.ts"
+		"build": "concurrently --kill-others \"npm:build:*\"",
+		"build:lib": "bun build --outdir dist --target bun -- src/break-check.ts",
+		"build:bin": "bun build --outdir bin --target node --external break-check glob npmlog simple-git -- src/break-check.x.ts",
+		"build:dts": "tsc --emitDeclarationOnly --declaration --outDir dist -- src/break-check.ts",
+		"test": "bun test --watch -- **/*.test.ts"
 	},
 	"devDependencies": {
-		"@types/npmlog": "7.0.0"
+		"@types/npmlog": "7.0.0",
+		"concurrently": "8.2.2",
+		"typescript": "5.3.3"
 	}
 }

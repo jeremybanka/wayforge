@@ -18,6 +18,7 @@
 			"socket-io.filestore/*": ["./packages/socket-io.filestore/src/*"],
 			"atom.io": ["./packages/atom.io/src"],
 			"atom.io/*": ["./packages/atom.io/*/src"],
+			"break-check": ["./packages/break-check/src"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
 		},

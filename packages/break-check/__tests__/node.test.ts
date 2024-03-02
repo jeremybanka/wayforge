@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import git from "simple-git"
 import tmp from "tmp"
 
-import { breakCheck } from "../src/lib"
+import { breakCheck } from "../src/break-check"
 import { bunCopyFile } from "./utilities"
 
 let tempDir: tmp.DirResult
@@ -37,11 +37,11 @@ describe(`break-check`, () => {
 			.add(`.`)
 			.commit(`initial commit`)
 			.addAnnotatedTag(`my-library@1.0.0`, `initial release`)
-		await breakCheck(
-			`my-library`,
-			`*__public.test.js`,
-			`bun test *__public.test.js`,
-			tempDir.name,
-		)
+		await breakCheck({
+			tagPattern: `my-library`,
+			testPattern: `*__public.test.js`,
+			testCommand: `bun test *__public.test.js`,
+			baseDirname: tempDir.name,
+		})
 	})
 })

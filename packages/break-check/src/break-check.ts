@@ -1,68 +1,60 @@
+import { exec } from "child_process"
+import { glob } from "glob"
 import logger from "npmlog"
-import { breakCheck } from "./lib"
+import git from "simple-git"
 
-// Example usage
-// node bin/break-check.js --pattern="*__public.test.ts" --testCommand="npm run test" --tagPattern="my-lib-v.*"
+import { getLatestTag } from "./get-latest-tag"
 
-type Arg = {
-	shorthand: string
-	required: boolean
-	description: string
-	example: string
+export type BreakCheckOptions = {
+	tagPattern: string
+	testPattern: string
+	testCommand: string
+	baseDirname?: string
 }
 
-const ARGS = {
-	testPattern: {
-		shorthand: `t`,
-		required: true,
-		description: `The pattern to match test files that test the public API of the library.`,
-		example: `--pattern=\"*__public.test.ts\"`,
-	},
-	testCommand: {
-		shorthand: `c`,
-		required: true,
-		description: `Complete bash command that runs the tests for the library's public API.`,
-		example: `--testCommand=\"npm run test\"`,
-	},
-	tagPattern: {
-		shorthand: `p`,
-		required: true,
-		description: `String which, if found in a git tag, will be considered a release tag for your library.`,
-		example: `--tagPattern=\"my-lib-v.*\"`,
-	},
-} satisfies Record<string, Arg>
+export async function breakCheck({
+	tagPattern,
+	testPattern,
+	testCommand,
+	baseDirname = process.cwd(),
+}: BreakCheckOptions): Promise<void> {
+	const baseGitInstance = git(baseDirname)
+	const remotes = await baseGitInstance.getRemotes(true)
+	// const repoUrl = remotes[0].refs.fetch
+	const productionTagname = await getLatestTag(baseGitInstance, tagPattern)
+	const productionRef = `tags/${productionTagname}`
+	const candidateRef = await baseGitInstance.revparse([`HEAD`])
 
-function cli<T extends Record<string, Arg>, A extends keyof T>(args: T) {
-	return {
-		parse: (
-			passed: string[] = process.argv,
-		): {
-			[K in A]: T[K] extends { required: true } ? string : string | null
-		} => {
-			return Object.fromEntries(
-				Object.entries(args).map(
-					([key, { shorthand, required, description, example }]) => {
-						const valueStringified = passed.find(
-							(arg) =>
-								arg.startsWith(`--${key}=`) || arg.startsWith(`-${shorthand}=`),
-						)
-						if (!valueStringified) {
-							if (required) {
-								logger.error(
-									`parsing`,
-									key,
-									`\n\t[Required]: ${description}\n\tExample usage: ${key}="${example}"`,
-								)
-							}
-							return [key, null]
-						}
-						return [key, valueStringified.split(`=`)[1]]
-					},
-				),
-			) as { [K in A]: T[K] extends { required: true } ? string : string | null }
-		},
-	}
+	// const tempDir = tmp.dirSync({ unsafeCleanup: true })
+	// const tempGitInstance = git(tempDir.name)
+	// await tempGitInstance.clone(repoUrl, tempDir.name)
+
+	await baseGitInstance.checkout(productionRef)
+	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
+	await baseGitInstance.checkout(candidateRef)
+	baseGitInstance.checkout([candidateRef, `--`, ...productionTestFiles])
+
+	return new Promise((resolve, reject) => {
+		const result = exec(
+			testCommand,
+			{ cwd: baseDirname },
+			(err, stdout, stderr) => {
+				try {
+					if (err) {
+						throw err
+					}
+					if (result.exitCode !== 0) {
+						throw new Error(stderr)
+					}
+					logger.info(`passed`, `no	breaking changes detected`, stdout)
+					resolve()
+				} catch (thrown) {
+					logger.error(`failed`, `breaking changes detected`, thrown)
+					reject(thrown)
+				} finally {
+					logger.info(`completed`, `break-check`, `cleaning up`)
+				}
+			},
+		)
+	})
 }
-
-const { testPattern, testCommand, tagPattern } = cli(ARGS).parse(process.argv)
-breakCheck(tagPattern, testPattern, testCommand)
