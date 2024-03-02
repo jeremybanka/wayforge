@@ -19,15 +19,15 @@ export async function breakCheck({
 	baseDirname = process.cwd(),
 }: BreakCheckOptions): Promise<void> {
 	const baseGitInstance = git(baseDirname)
-	const remotes = await baseGitInstance.getRemotes(true)
-	// const repoUrl = remotes[0].refs.fetch
+	const isGitClean =
+		(await baseGitInstance.checkIsRepo()) &&
+		(await baseGitInstance.status()).isClean
+	if (!isGitClean) {
+		throw new Error(`The git repository must be clean to run this command.`)
+	}
 	const productionTagname = await getLatestTag(baseGitInstance, tagPattern)
 	const productionRef = `tags/${productionTagname}`
 	const candidateRef = await baseGitInstance.revparse([`HEAD`])
-
-	// const tempDir = tmp.dirSync({ unsafeCleanup: true })
-	// const tempGitInstance = git(tempDir.name)
-	// await tempGitInstance.clone(repoUrl, tempDir.name)
 
 	await baseGitInstance.checkout(productionRef)
 	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
