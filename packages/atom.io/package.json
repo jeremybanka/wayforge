@@ -85,7 +85,7 @@
 		"drizzle-kit": "0.20.14",
 		"drizzle-orm": "0.29.4",
 		"eslint": "8.57.0",
-		"framer-motion": "11.0.6",
+		"framer-motion": "11.0.8",
 		"happy-dom": "13.6.2",
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
