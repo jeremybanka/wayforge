@@ -1,5 +1,6 @@
 *.js
 *.js.map
+*.wasm
 !.eslintrc.js
 .DS_STORE
 .env
@@ -10,10 +11,9 @@ node_modules
 package-lock.json
 projects
 metafile-*
-bin
 pkg
 **/tempest.games/**/*.gen.ts
 **/core.wayfarer.quest/logs/*.txt
 heap.json
-!**/break-check/bin/x.js
+!**/*.x.js
 !**/break-check/__tests__/fixtures/**/*.js

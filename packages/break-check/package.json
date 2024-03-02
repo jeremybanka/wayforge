@@ -11,7 +11,7 @@
 		"simple-git": "3.22.0"
 	},
 	"bin": {
-		"break-check": "./bin/break-check.js"
+		"break-check": "./bin/break-check.x.js"
 	},
 	"scripts": {
 		"test": "bun test --watch --clear -- **/*.test.ts"
