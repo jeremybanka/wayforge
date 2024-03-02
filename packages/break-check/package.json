@@ -18,14 +18,15 @@
 	"main": "dist/break-check.js",
 	"scripts": {
 		"build": "concurrently --kill-others \"npm:build:*\"",
-		"build:lib": "bun build --outdir dist --target bun -- src/break-check.ts",
-		"build:bin": "bun build --outdir bin --target node --external break-check glob npmlog simple-git -- src/break-check.x.ts",
-		"build:dts": "tsc --emitDeclarationOnly --declaration --outDir dist -- src/break-check.ts",
+		"build:lib": "bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
+		"build:bin": "bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
+		"build:dts": "tsup",
 		"test": "bun test --watch -- **/*.test.ts"
 	},
 	"devDependencies": {
 		"@types/npmlog": "7.0.0",
 		"concurrently": "8.2.2",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3"
 	}
 }

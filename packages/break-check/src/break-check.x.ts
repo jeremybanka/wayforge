@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
+import { breakCheck } from "break-check"
 import logger from "npmlog"
 
-import { breakCheck } from "./break-check"
 import { type CommandLineArg, cli } from "./cli"
 
 // Example usage

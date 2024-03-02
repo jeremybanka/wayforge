@@ -8,15 +8,15 @@ export type CommandLineArg = {
 export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>(
 	args: T,
 	logger = {
-		error: (...args: unknown[]) => console.error(...args),
+		error: (...args: any[]) => console.error(...args),
 	},
-) {
+): {
+	parse: (passed: string[]) => {
+		[K in A]: T[K] extends { required: true } ? string : string | null
+	}
+} {
 	return {
-		parse: (
-			passed: string[] = process.argv,
-		): {
-			[K in A]: T[K] extends { required: true } ? string : string | null
-		} => {
+		parse: (passed = process.argv) => {
 			return Object.fromEntries(
 				Object.entries(args).map(
 					([key, { shorthand, required, description, example }]) => {
