@@ -7,23 +7,27 @@ import { breakCheck } from "../src/break-check"
 import { bunCopyFile } from "./utilities"
 
 let tempDir: tmp.DirResult
+const testDirname = import.meta.dir
 
 beforeEach(async () => {
 	tempDir = tmp.dirSync({ unsafeCleanup: true })
-	await bunCopyFile(`./__tests__/fixtures/node/src.js`, `${tempDir.name}/src.js`)
 	await bunCopyFile(
-		`./__tests__/fixtures/node/public-method__public.test.js`,
+		`${testDirname}/fixtures/bun/src.js`,
+		`${tempDir.name}/src.js`,
+	)
+	await bunCopyFile(
+		`${testDirname}/fixtures/bun/public-method__public.test.js`,
 		`${tempDir.name}/public-method__public.test.js`,
 	)
 	bunCopyFile(
-		`./__tests__/fixtures/node/private-method.test.js`,
+		`${testDirname}/fixtures/bun/private-method.test.js`,
 		`${tempDir.name}/private-method.test.js`,
 	)
 	expect(
 		await Bun.file(`${tempDir.name}/public-method__public.test.js`).text(),
 	).toEqual(
 		await Bun.file(
-			`__tests__/fixtures/node/public-method__public.test.js`,
+			`${testDirname}/fixtures/bun/public-method__public.test.js`,
 		).text(),
 	)
 })
