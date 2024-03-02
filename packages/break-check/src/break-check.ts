@@ -1,5 +1,5 @@
 import logger from "npmlog"
-import main from "./lib"
+import { breakCheck } from "./lib"
 
 // Example usage
 // node bin/break-check.js --pattern="*__public.test.ts" --testCommand="npm run test" --tagPattern="my-lib-v.*"
@@ -65,4 +65,4 @@ function cli<T extends Record<string, Arg>, A extends keyof T>(args: T) {
 }
 
 const { testPattern, testCommand, tagPattern } = cli(ARGS).parse(process.argv)
-main(testPattern, testCommand, tagPattern)
+breakCheck(tagPattern, testPattern, testCommand)

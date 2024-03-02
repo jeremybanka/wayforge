@@ -15,3 +15,5 @@ pkg
 **/tempest.games/**/*.gen.ts
 **/core.wayfarer.quest/logs/*.txt
 heap.json
+!**/break-check/bin/x.js
+!**/break-check/__tests__/fixtures/**/*.js

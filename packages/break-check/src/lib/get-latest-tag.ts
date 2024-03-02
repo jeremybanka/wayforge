@@ -2,7 +2,7 @@ import type { SimpleGit } from "simple-git"
 
 export class TagRetrievalError extends Error {
 	public constructor(public tagPattern: string) {
-		super(`No tags found matching this pattern.`)
+		super(`No tags found matching this pattern: ${tagPattern}`)
 	}
 }
 
