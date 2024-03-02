@@ -8,13 +8,14 @@ export class TagRetrievalError extends Error {
 
 export async function getLatestTag(
 	git: SimpleGit,
-	tagPattern: string,
+	tagPattern?: string,
 ): Promise<string> {
 	const tags = await git.tags()
-	const match = tags.all
-		.filter((tag) => tag.match(tagPattern))
-		.sort()
-		.reverse()[0]
+	const tagsNewest = tags.all.toReversed()
+	if (!tagPattern) {
+		return tagsNewest[0]
+	}
+	const match = tagsNewest.find((tag) => tag.match(tagPattern))
 	if (!match) {
 		throw new TagRetrievalError(tagPattern)
 	}

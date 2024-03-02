@@ -6,7 +6,7 @@ import git from "simple-git"
 import { getLatestTag } from "./get-latest-tag"
 
 export type BreakCheckOptions = {
-	tagPattern: string
+	tagPattern: string | undefined
 	testPattern: string
 	testCommand: string
 	baseDirname?: string

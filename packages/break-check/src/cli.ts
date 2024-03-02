@@ -12,7 +12,7 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 	},
 ): {
 	parse: (passed: string[]) => {
-		[K in A]: T[K] extends { required: true } ? string : string | null
+		[K in A]: T[K] extends { required: true } ? string : string | undefined
 	}
 } {
 	return {
@@ -37,7 +37,9 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 						return [key, valueStringified.split(`=`)[1]]
 					},
 				),
-			) as { [K in A]: T[K] extends { required: true } ? string : string | null }
+			) as {
+				[K in A]: T[K] extends { required: true } ? string : string | undefined
+			}
 		},
 	}
 }

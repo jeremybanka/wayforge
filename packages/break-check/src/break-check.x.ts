@@ -5,15 +5,12 @@ import logger from "npmlog"
 
 import { type CommandLineArg, cli } from "./cli"
 
-// Example usage
-// node bin/break-check.js --tagPattern="my-library" --testPattern="*__public.test.ts" --testCommand="npm run test"
-
 const ARGS = {
 	tagPattern: {
 		shorthand: `p`,
-		required: true,
+		required: false,
 		description: `String which, if found in a git tag, will be considered a release tag for your library.`,
-		example: `--tagPattern=\"my-lib-v.*\"`,
+		example: `--tagPattern=\"my-library\"`,
 	},
 	testPattern: {
 		shorthand: `t`,
