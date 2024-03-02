@@ -93,7 +93,7 @@
 		"preact": "10.19.6",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-router-dom": "6.22.1",
+		"react-router-dom": "6.22.2",
 		"socket.io": "4.7.4",
 		"socket.io-client": "4.7.4",
 		"tmp": "0.2.3",
