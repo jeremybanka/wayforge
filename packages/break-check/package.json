@@ -1,0 +1,22 @@
+{
+  "name": "break-check",
+  "version": "0.0.0",
+  "author": {
+    "name": "Jeremy Banka",
+    "email": "hello@jeremybanka.com"
+  },
+  "dependencies": {
+    "glob": "10.3.10",
+    "npmlog": "7.0.1",
+    "simple-git": "3.22.0"
+  },
+  "bin": {
+    "break-check": "./bin/break-check.js"
+  },
+  "scripts": {
+    "test": "bun test -- **/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/npmlog": "7.0.0"
+  }
+}
