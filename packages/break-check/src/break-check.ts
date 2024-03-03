@@ -21,8 +21,11 @@ export async function breakCheck({
 	if (!isGitClean) {
 		throw new Error(`The git repository must be clean to run this command.`)
 	}
-
-	await git.fetch([`--depth=1`, `origin`, `+refs/tags/*:refs/tags/*`])
+	try {
+		await git.fetch([`--depth=1`, `origin`, `+refs/tags/*:refs/tags/*`])
+	} catch (thrown) {
+		logger.warn(`failed`, `fetching tags`, thrown)
+	}
 	const tags = (await git.tags()).all.toReversed()
 	const latestReleaseTag = tagPattern
 		? tags.find((tag) => tag.match(tagPattern))
