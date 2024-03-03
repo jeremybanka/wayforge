@@ -17,7 +17,8 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 } {
 	return {
 		parse: (passed = process.argv) => {
-			return Object.fromEntries(
+			let failedValidation = false
+			const parsedArgs = Object.fromEntries(
 				Object.entries(args).map(
 					([key, { shorthand, required, description, example }]) => {
 						const valueStringified = passed.find(
@@ -31,6 +32,7 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 									key,
 									`\n\t[Required]: ${description}\n\tExample usage: ${key}="${example}"`,
 								)
+								failedValidation = true
 							}
 							return [key, null]
 						}
@@ -40,6 +42,10 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 			) as {
 				[K in A]: T[K] extends { required: true } ? string : string | undefined
 			}
+			if (failedValidation) {
+				process.exit(100)
+			}
+			return parsedArgs
 		},
 	}
 }
