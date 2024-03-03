@@ -6,6 +6,9 @@
 		"name": "Jeremy Banka",
 		"email": "hello@jeremybanka.com"
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"type": "module",
 	"files": [
 		"bin",
