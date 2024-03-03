@@ -61,13 +61,22 @@ jobs:
           set +e
           bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
-            --testPattern="packages/atom.io/__tests__/public/**/*.test.ts" \
-            --testCommand="cd packages/atom.io && git status && bun test:once:public"
-          if [ $? -eq 0 ]; then
-            echo "atom.io=✅ No public tests from the last release broke." >> $GITHUB_OUTPUT
-          else
-            echo "atom.io=⚠️ Public tests from the last release are breaking." >> $GITHUB_OUTPUT
-          fi
+            --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
+            --testCommand="cd packages/atom.io && bun run build && bun run test:once:public"
+          case $? in
+            0)
+              echo "atom.io=✅ No public tests from the last release broke." >> $GITHUB_OUTPUT
+              ;;
+            1)
+              echo "atom.io=⚠️ Public tests from the last release are breaking." >> $GITHUB_OUTPUT
+              ;;
+            2)
+              echo "atom.io=❌ No tests were found matching the pattern." >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "Error: The command failed with an unexpected exit code: $exit_code."
+              ;;
+          esac
           set -e
 
       - name: Find Comment

@@ -73,6 +73,6 @@ describe(`break-check`, () => {
 			caught = thrown
 			console.log(thrown)
 		}
-		expect(caught).toBeInstanceOf(Error)
+		expect(caught).toBeString()
 	})
 })

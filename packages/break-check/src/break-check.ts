@@ -21,8 +21,11 @@ export async function breakCheck({
 	if (!isGitClean) {
 		throw new Error(`The git repository must be clean to run this command.`)
 	}
-
-	await git.fetch([`--depth=1`, `origin`, `+refs/tags/*:refs/tags/*`])
+	try {
+		await git.fetch([`--depth=1`, `origin`, `+refs/tags/*:refs/tags/*`])
+	} catch (thrown) {
+		logger.warn(`failed`, `fetching tags`, thrown)
+	}
 	const tags = (await git.tags()).all.toReversed()
 	const latestReleaseTag = tagPattern
 		? tags.find((tag) => tag.match(tagPattern))
@@ -30,18 +33,17 @@ export async function breakCheck({
 	if (!latestReleaseTag) {
 		throw new Error(`No tags found matching this pattern: ${tagPattern}`)
 	}
-
-	const candidateRef = await git.revparse([`HEAD`])
+	const candidateBranchName = (await git.branch()).current
 
 	await git.checkout(latestReleaseTag)
 	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
-	await git.checkout(candidateRef)
+	await git.checkout(candidateBranchName)
 	if (productionTestFiles.length === 0) {
 		logger.warn(
 			`no breaking changes can be detected`,
 			`because no tests were found matching the pattern "${testPattern}"`,
 		)
-		return
+		process.exit(2)
 	}
 	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
 
