@@ -37,9 +37,22 @@ jobs:
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
 
+    outputs:
+      atom.io: ${{ steps.break-check.outputs.atom.io }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.0.29
 
       - name: Break Check
         id: break-check
@@ -49,9 +62,9 @@ jobs:
             --testPattern="packages/atom.io/__tests__/**/*__public.test.ts" \
             --testCommand="cd packages/atom.io && bun run test:once:public"; \
           if [ $? -eq 0 ]; then \
-            echo "::set-output name=atom.io::'✅ No public tests from the last release broke.'"; \
+            echo "atom.io='✅ No public tests from the last release broke.'" >> $GITHUB_OUTPUT; \
           else \
-            echo "::set-output name=atom.io::'⚠️ Public tests from the last release are breaking."; \
+            echo "atom.io='⚠️ Public tests from the last release are breaking.'" >> $GITHUB_OUTPUT; \
           fi; \ set -e
 
 
