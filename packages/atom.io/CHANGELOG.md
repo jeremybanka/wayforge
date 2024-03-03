@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.18.3
+
+### Patch Changes
+
+- ee6cc64: 🐛 The sourcemap that was being shipped to npm was deficient, and would indicate lines incorrectly in the debugger. The sourcemap is being removed for now. The built, but non-minified js will appear in the debugger instead.
+
 ## 0.18.2
 
 ### Patch Changes
