@@ -39,6 +39,7 @@
 		"test": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"test:once": "bun run test:manifest && cross-env IMPORT=dist vitest run",
+		"test:once:public": "bun run test:manifest && cross-env IMPORT=dist vitest run __public.test.ts",
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"peerDependencies": {
