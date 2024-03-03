@@ -62,7 +62,7 @@ jobs:
           result=$(bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
             --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
-            --testCommand="bun run test:public -- filter=atom.io"
+            --testCommand="bun run test:public --filter=atom.io"
             --certifyCommand="grep -q -F '"atom.io": major' .changeset/*.md"
           )
           case $? in
