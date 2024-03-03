@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.18.2
+
+### Patch Changes
+
+- 82305d4: ✨ Add experimental testing layer for breaking changes. Once it's seen some use, 1.0.0 arrives.
+- 449f81c: 🚀 Very marginal core bundle size reduction and performance when using families.
+
 ## 0.18.1
 
 ### Patch Changes
