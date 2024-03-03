@@ -25,7 +25,7 @@ export const BASE_OPTIONS: Options = {
 	jsxFactory: `React.createElement`,
 	loader: { ".scss": `css` },
 	metafile: true,
-	sourcemap: true,
+	sourcemap: false,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
 }
