@@ -26,7 +26,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:16.2-alpine3.19
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: your_password
