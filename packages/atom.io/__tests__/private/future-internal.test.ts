@@ -7,8 +7,8 @@ import {
 } from "atom.io/internal"
 import { vitest } from "vitest"
 
-import type { StateUpdate } from "../src"
-import * as Utils from "./__util__"
+import type { StateUpdate } from "../../src"
+import * as Utils from "../__util__"
 
 beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)

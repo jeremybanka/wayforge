@@ -7,7 +7,7 @@ import type { Logger, RegularAtomToken } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
-import * as Utils from "../__util__"
+import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
