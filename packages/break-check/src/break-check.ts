@@ -43,12 +43,12 @@ export async function breakCheck({
 			{ cwd: baseDirname },
 			async (_, stdout, stderr) => {
 				await git.stash()
-				if (result.exitCode !== 0) {
-					logger.error(`failed`, `breaking changes detected`)
-					reject(new Error(stderr))
-				} else {
+				if (result.exitCode === 0) {
 					logger.info(`passed`, `no breaking changes detected`, stdout)
 					resolve()
+				} else {
+					logger.error(`failed`, `breaking changes detected`)
+					reject(new Error(stderr))
 				}
 			},
 		)
