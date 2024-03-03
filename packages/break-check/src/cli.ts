@@ -34,7 +34,7 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 								)
 								failedValidation = true
 							}
-							return [key, null]
+							return [key, undefined]
 						}
 						return [key, valueStringified.split(`=`)[1]]
 					},
