@@ -1,11 +1,9 @@
-const { describe, it } = require('node:test');
-
-const assert = require('assert').strict;
-const MyClass = require('./src.mjs');
+import { describe, it, expect } from "bun:test";
+import MyClass from "./src.js";
 
 describe('MyClass Private API Test', function() {
   it('should test privateMethod', function() {
     const obj = new MyClass();
-    assert.strictEqual(obj.privateMethod(), "private");
+    expect(obj.privateMethod()).toBe("private");
   });
 });

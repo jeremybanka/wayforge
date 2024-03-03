@@ -1,11 +1,5 @@
-// const { describe, it } = require('node:test');
-
-// const assert = require('assert').strict;
-// const MyClass = require('./src.js');
-
-import {describe,it, expect} from "bun:test"
-import MyClass from "./src.js"
-
+import { describe, it, expect } from "bun:test";
+import MyClass from "./src.js";
 
 describe('MyClass Public API Test', function() {
   it('should test publicMethod', function() {
