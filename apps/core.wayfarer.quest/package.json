@@ -9,6 +9,7 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
+		"test:once:public": "echo no public tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint"

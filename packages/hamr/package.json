@@ -36,6 +36,7 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",
+		"test:once:public": "echo no public tests yet",
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"dependencies": {

@@ -30,6 +30,7 @@
 		"build": "turbo run build",
 		"bench": "cd lib && vitest bench",
 		"test": "cross-env CI=true turbo run test:once",
+		"test:public": "cross-env CI=true turbo run test:once:public",
 		"test:coverage": "cross-env CI=true turbo run test:coverage",
 		"release": "bun run build && changeset publish",
 		"notes": "changeset",

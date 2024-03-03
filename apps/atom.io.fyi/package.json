@@ -14,7 +14,8 @@
 		"lint": "next lint",
 		"test": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",
-		"test:once": "echo no tests yet"
+		"test:once": "echo no tests yet",
+		"test:once:public": "echo no tests yet"
 	},
 	"dependencies": {
 		"@vercel/analytics": "1.2.2",

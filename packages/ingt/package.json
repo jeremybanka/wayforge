@@ -12,7 +12,8 @@
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
-		"test:once": "vitest run"
+		"test:once": "vitest run",
+		"test:once:public": "echo no public tests yet"
 	},
 	"dependencies": {
 		"fp-ts": "2.16.2",
