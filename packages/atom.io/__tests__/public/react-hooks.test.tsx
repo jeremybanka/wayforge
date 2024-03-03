@@ -5,7 +5,7 @@ import type { FC } from "react"
 
 import type { Logger, TimelineToken, ƒn } from "atom.io"
 import { atom, redo, selector, timeline, undo } from "atom.io"
-import * as Utils from "./__util__"
+import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2

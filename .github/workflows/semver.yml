@@ -63,7 +63,7 @@ jobs:
           set +e
           bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
-            --testPattern="packages/atom.io/__tests__/**/*__public.test.ts" \
+            --testPattern="packages/atom.io/__tests__/public/**/*.test.ts" \
             --testCommand="cd packages/atom.io && git status && bun test:once:public"
           if [ $? -eq 0 ]; then
             echo "atom.io=✅ No public tests from the last release broke." >> $GITHUB_OUTPUT

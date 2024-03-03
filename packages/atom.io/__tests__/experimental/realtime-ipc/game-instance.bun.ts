@@ -3,7 +3,7 @@ import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"
 
-import { IMPLICIT } from "../../internal/src/store"
+import { IMPLICIT } from "../../../internal/src/store"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 const parentSocket = new RTS.ParentSocket()
