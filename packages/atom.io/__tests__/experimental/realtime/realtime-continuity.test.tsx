@@ -10,7 +10,7 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 
-import { throwUntil } from "../__util__/waiting"
+import { throwUntil } from "../../__util__/waiting"
 
 function prefixLogger(store: Store, prefix: string) {
 	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {

@@ -6,7 +6,7 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
-import { getFamily, useFamily } from "../__util__/use-family"
+import { getFamily, useFamily } from "../../__util__/use-family"
 
 const storeState = AtomIO.atom<Store>({
 	key: `store`,
