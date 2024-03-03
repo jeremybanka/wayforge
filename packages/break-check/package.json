@@ -1,0 +1,38 @@
+{
+	"name": "break-check",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"type": "module",
+	"files": ["bin", "dist", "src"],
+	"main": "dist/break-check.js",
+	"types": "dist/break-check.d.ts",
+	"bin": {
+		"break-check": "./bin/break-check.x.js"
+	},
+	"dependencies": {
+		"glob": "10.3.10",
+		"npmlog": "7.0.1",
+		"simple-git": "3.22.0"
+	},
+	"scripts": {
+		"build": "concurrently \"bun:build:*\"",
+		"build:lib": "bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
+		"build:bin": "bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
+		"build:dts": "tsup",
+		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:eslint": "eslint .",
+		"lint": "bun run lint:biome && bun run lint:eslint",
+		"test": "bun test --watch -- **/*.test.ts",
+		"test:once": "bun test -- **/*.test.ts",
+		"test:coverage": "echo no test coverage yet"
+	},
+	"devDependencies": {
+		"@types/npmlog": "7.0.0",
+		"concurrently": "8.2.2",
+		"tsup": "8.0.2"
+	}
+}
