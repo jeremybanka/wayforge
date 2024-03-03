@@ -38,9 +38,8 @@ export async function breakCheck({
 	await git.checkout(candidateRef)
 	if (productionTestFiles.length === 0) {
 		logger.warn(
-			`passed`,
 			`no breaking changes can be detected`,
-			`because there are no tests to run`,
+			`because no tests were found matching the pattern "${testPattern}"`,
 		)
 		return
 	}
