@@ -35,7 +35,12 @@ export async function breakCheck({
 
 	await git.checkout(latestReleaseTag)
 	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
-	console.log({ baseDirname, testPattern, productionTestFiles })
+	console.log({
+		latestReleaseTag,
+		baseDirname,
+		testPattern,
+		productionTestFiles,
+	})
 	await git.checkout(candidateRef)
 	if (productionTestFiles.length === 0) {
 		logger.warn(
