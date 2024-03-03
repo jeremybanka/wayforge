@@ -22,6 +22,7 @@ export async function breakCheck({
 		throw new Error(`The git repository must be clean to run this command.`)
 	}
 
+	await git.fetch([`--depth=1`, `origin`, `+refs/tags/*:refs/tags/*`])
 	const tags = (await git.tags()).all.toReversed()
 	const latestReleaseTag = tagPattern
 		? tags.find((tag) => tag.match(tagPattern))
@@ -35,6 +36,14 @@ export async function breakCheck({
 	await git.checkout(latestReleaseTag)
 	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
 	await git.checkout(candidateRef)
+	if (productionTestFiles.length === 0) {
+		logger.warn(
+			`passed`,
+			`no breaking changes can be detected`,
+			`because there are no tests to run`,
+		)
+		return
+	}
 	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
 
 	return new Promise((resolve, reject) => {
@@ -42,13 +51,14 @@ export async function breakCheck({
 			testCommand,
 			{ cwd: baseDirname },
 			async (_, stdout, stderr) => {
+				logger.info(`completed`, `test`, stdout)
 				await git.stash()
 				if (result.exitCode === 0) {
-					logger.info(`passed`, `no breaking changes detected`, stdout)
+					logger.info(`passed`, `no breaking changes detected`)
 					resolve()
 				} else {
 					logger.error(`failed`, `breaking changes detected`)
-					reject(new Error(stderr))
+					reject(stderr)
 				}
 			},
 		)
