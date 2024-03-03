@@ -33,8 +33,7 @@ export async function breakCheck({
 	if (!latestReleaseTag) {
 		throw new Error(`No tags found matching this pattern: ${tagPattern}`)
 	}
-
-	const candidateRef = await git.revparse([`HEAD`])
+	const candidateBranchName = (await git.branch()).current
 
 	await git.checkout(latestReleaseTag)
 	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
@@ -44,7 +43,7 @@ export async function breakCheck({
 		testPattern,
 		productionTestFiles,
 	})
-	await git.checkout(candidateRef)
+	await git.checkout(candidateBranchName)
 	if (productionTestFiles.length === 0) {
 		logger.warn(
 			`no breaking changes can be detected`,
