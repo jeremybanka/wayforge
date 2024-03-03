@@ -47,7 +47,7 @@ export async function breakCheck({
 			`no breaking changes can be detected`,
 			`because no tests were found matching the pattern "${testPattern}"`,
 		)
-		return
+		process.exit(2)
 	}
 	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
 
