@@ -54,6 +54,9 @@ jobs:
         with:
           bun-version: 1.0.29
 
+      - name: Install Dependencies
+        run: bun i
+
       - name: Break Check
         id: break-check
         run: |
