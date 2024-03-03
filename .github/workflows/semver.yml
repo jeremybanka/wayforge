@@ -61,7 +61,7 @@ jobs:
           set +e
           bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
-            --testPattern="./packages/atom.io/__tests__/public/**/*.test.(ts|tsx)" \
+            --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
             --testCommand="cd packages/atom.io && git status && bun test:once:public"
           case $? in
             0)
