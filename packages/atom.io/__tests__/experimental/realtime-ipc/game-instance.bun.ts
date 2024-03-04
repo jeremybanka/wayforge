@@ -3,6 +3,7 @@ import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"
 
+import { editRelations } from "atom.io/data"
 import { IMPLICIT } from "../../../internal/src/store"
 import { gameContinuity, letterAtoms } from "./game-store"
 
@@ -41,7 +42,9 @@ setInterval(() => {
 }, 1000)
 
 parentSocket.relay((userSocket) => {
-	RTS.usersOfSockets.relations.set(userSocket.id, `relay:${userSocket.id}`)
+	editRelations(RTS.usersOfSockets, (relations) => {
+		relations.set(userSocket.id, `relay:${userSocket.id}`)
+	})
 	const continuitySynchronizer = RTS.realtimeContinuitySynchronizer({
 		socket: userSocket,
 	})

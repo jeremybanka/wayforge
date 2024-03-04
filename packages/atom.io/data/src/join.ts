@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
 	MutableAtomFamily,
+	MutableAtomFamilyToken,
+	MutableAtomToken,
 	Read,
 	ReadonlySelectorFamily,
+	ReadonlySelectorToken,
 	RegularAtomFamily,
 	Transactors,
 	Write,
 } from "atom.io"
 import { dispose, findState, getState, setState } from "atom.io"
-import type { ReadonlySelector, Store } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
 	createMutableAtomFamily,
@@ -575,6 +578,29 @@ export function getJoinMap(
 	store.joins = joins
 	return joins
 }
+export function getJoin<
+	ASide extends string,
+	BSide extends string,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
+	Content extends Json.Object | null,
+>(
+	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	store: Store,
+): Join<ASide, BSide, Cardinality, Content> {
+	const joinMap = getJoinMap(store)
+	let join = joinMap.get(token.key)
+	if (join === undefined) {
+		const rootJoinMap = getJoinMap(IMPLICIT.STORE)
+		join = rootJoinMap.get(token.key)?.in(store)
+		if (join === undefined) {
+			throw new Error(
+				`Join "${token.key}" not found in store "${store.config.name}"`,
+			)
+		}
+		joinMap.set(token.key, join)
+	}
+	return join
+}
 
 export type JoinStates<
 	ASide extends string,
@@ -586,32 +612,32 @@ export type JoinStates<
 			? {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}EntryOf${Capitalize<BSide>}`
-						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelector<
+						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 						[string, Content] | null
 					>
 			  }
 			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
-				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelector<string | null>
+				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorToken<string | null>
 	  }
 	: Cardinality extends `1:n`
 	  ? (Content extends Json.Object
 				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelector<
+						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
 							[string, Content] | null
 						>
 				  } & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelector<
+						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 							[string, Content][]
 						>
 				  }
 				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelector<
+				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
 					string | null
 				>
 		  } & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelector<
+				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 					string[]
 				>
 		  }
@@ -620,14 +646,14 @@ export type JoinStates<
 					? {
 							readonly [AB in ASide | BSide as AB extends ASide
 								? `${AB}EntriesOf${Capitalize<BSide>}`
-								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelector<
+								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 								[string, Content][]
 							>
 					  }
 					: {}) & {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}KeysOf${Capitalize<BSide>}`
-						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelector<string[]>
+						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<string[]>
 			  }
 		  : never
 
@@ -641,12 +667,7 @@ export function findRelationsInStore<
 	key: string,
 	store: Store,
 ): JoinStates<ASide, BSide, Cardinality, Content> {
-	const join = getJoinMap(store).get(token.key)
-	if (!join) {
-		throw new Error(
-			`Join "${token.key}" not found in store "${store.config.name}"`,
-		)
-	}
+	const join = getJoin(token, store)
 	let relations: JoinStates<ASide, BSide, Cardinality, Content>
 	switch (token.cardinality satisfies `1:1` | `1:n` | `n:n`) {
 		case `1:1`: {
@@ -773,12 +794,7 @@ export function editRelationsInStore<
 	change: (relations: Junction<ASide, BSide, Content>) => void,
 	store: Store,
 ): void {
-	const join = getJoinMap(store).get(token.key)
-	if (!join) {
-		throw new Error(
-			`Join "${token.key}" not found in store "${store.config.name}"`,
-		)
-	}
+	const join = getJoin(token, store)
 	const target = newest(store)
 	if (isChildStore(target)) {
 		const { transactors } = target.transactionMeta
@@ -800,4 +816,24 @@ export function editRelations<
 	change: (relations: Junction<ASide, BSide, Content>) => void,
 ): void {
 	editRelationsInStore(token, change, IMPLICIT.STORE)
+}
+
+export function getInternalRelationsFromStore(
+	token: JoinToken<any, any, any, any>,
+	store: Store,
+): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
+	const join = getJoin(token, store)
+	const family = join.core.findRelatedKeysState
+	return family
+}
+
+export function getInternalRelations<
+	ASide extends string,
+	BSide extends string,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
+	Content extends Json.Object | null,
+>(
+	token: JoinToken<ASide, BSide, Cardinality, Content>,
+): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
+	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }

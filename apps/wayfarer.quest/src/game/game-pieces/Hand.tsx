@@ -14,6 +14,7 @@ import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index
 import { CardBack, CardFace, CardSlot } from "./Card"
 
 import { runTransaction } from "atom.io"
+import { findRelations } from "atom.io/data"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { Count } from "../labels/Count"
@@ -24,7 +25,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 	({ id: handId, detailed }) => {
 		const myRoomId = useO(myRoomKeyState)
 		const isMyHand = useO(myHandsIndex).includes(handId)
-		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup(handId))
+		const cardIds = useO(findRelations(groupsOfCards, handId).cardKeysOfGroup)
 		const publicDeckIds = useO(publicDeckIndex)
 
 		const dealCards = runTransaction(dealCardsTX)

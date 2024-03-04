@@ -5,6 +5,7 @@ import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as React from "react"
 
+import { findRelations, findRelationsInStore } from "atom.io/data"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {
@@ -70,9 +71,13 @@ function Lobby(): JSX.Element {
 }
 
 function View({ myUsername }: { myUsername: string }): JSX.Element {
-	const myRoomKey = RTR.usePullSelector(
-		RT.usersInRooms.states.roomKeyOfUser(myUsername),
-	)
+	const store = React.useContext(AR.StoreContext)
+	const myRoomKeyState = findRelationsInStore(
+		RT.usersInRooms,
+		myUsername,
+		store,
+	).roomKeyOfUser
+	const myRoomKey = RTR.usePullSelector(myRoomKeyState)
 	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
 }
 

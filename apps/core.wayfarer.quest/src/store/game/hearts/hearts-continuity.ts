@@ -1,3 +1,4 @@
+import { getInternalRelations } from "atom.io/data"
 import { continuity, usersInThisRoomIndex } from "atom.io/realtime"
 import {
 	dealCardsTX,
@@ -66,8 +67,8 @@ export const heartsContinuity = continuity({
 			.add(pileStates, pileView)
 			.add(trickStates, trickView)
 
-			.add(valuesOfCards.core.findRelatedKeysState, valuesOfCardsView)
-			.add(groupsOfCards.core.findRelatedKeysState, groupsOfCardsView)
-			.add(ownersOfGroups.core.findRelatedKeysState, ownersOfGroupsView)
+			.add(getInternalRelations(valuesOfCards), valuesOfCardsView)
+			.add(getInternalRelations(groupsOfCards), groupsOfCardsView)
+			.add(getInternalRelations(ownersOfGroups), ownersOfGroupsView)
 	},
 })

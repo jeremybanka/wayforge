@@ -7,6 +7,7 @@ import { pipe } from "fp-ts/function"
 import { nanoid } from "nanoid"
 import * as SocketIO from "socket.io"
 
+import { editRelations, findRelations, getInternalRelations } from "atom.io/data"
 import { env } from "./env"
 import { logger } from "./logger"
 import { welcome } from "./welcome"
@@ -24,7 +25,9 @@ pipe(
 			if (token === `test` && socket.id) {
 				const socketState = findState(RTS.socketAtoms, socket.id)
 				setState(socketState, socket)
-				RTS.usersOfSockets.relations.set(socket.id, username)
+				editRelations(RTS.usersOfSockets, (relations) => {
+					relations.set(socket.id, username)
+				})
 				setState(RTS.userIndex, (index) => index.add(username))
 				setState(RTS.socketIndex, (index) => index.add(socket.id))
 				logger.info(`[${shortId}]:${username}`, `connected`)
@@ -53,14 +56,10 @@ pipe(
 
 			exposeMutable(RT.roomIndex)
 
-			exposeMutableFamily(
-				RTS.usersOfSockets.core.findRelatedKeysState,
-				RTS.socketIndex,
-			)
-			exposeMutableFamily(
-				RT.usersInRooms.core.findRelatedKeysState,
-				RT.roomIndex,
-			)
+			const usersOfSocketsAtoms = getInternalRelations(RTS.usersOfSockets)
+			exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
+			const usersInRoomsAtoms = getInternalRelations(RT.usersInRooms)
+			exposeMutableFamily(usersInRoomsAtoms, RT.roomIndex)
 
 			socket.on(`create-room`, async (roomId) => {
 				runTransaction(RTS.createRoomTX)(roomId, `bun`, [
@@ -122,10 +121,10 @@ pipe(
 
 			const handleDisconnect = async () => {
 				socket.off(`disconnect`, handleDisconnect)
-				const roomKeyState = findState(
-					RT.usersInRooms.states.roomKeyOfUser,
+				const roomKeyState = findRelations(
+					RT.usersInRooms,
 					username,
-				)
+				).roomKeyOfUser
 				const roomKey = getState(roomKeyState)
 				if (!roomKey) {
 					return

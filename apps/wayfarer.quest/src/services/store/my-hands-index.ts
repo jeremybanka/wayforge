@@ -1,4 +1,5 @@
 import * as AtomIO from "atom.io"
+import { findRelations } from "atom.io/data"
 import { IMPLICIT } from "atom.io/internal"
 import { myUsernameState } from "atom.io/realtime-client"
 
@@ -9,14 +10,15 @@ import {
 
 export const myHandsIndex = AtomIO.selector<string[]>({
 	key: `myHands`,
-	get: ({ get, find }) => {
+	get: ({ get }) => {
 		const myUsername = get(myUsernameState)
 		if (!myUsername) {
 			return []
 		}
 		console.log(`❗❗❗❗❗`, IMPLICIT.STORE)
-		const { groupKeysOfPlayer } = ownersOfGroups.states
-		const myCardGroupIds = get(find(groupKeysOfPlayer, myUsername))
+		const myCardGroupIds = get(
+			findRelations(ownersOfGroups, myUsername).groupKeysOfPlayer,
+		)
 		const allHandIds = get(handIndex)
 		const myHandIds = myCardGroupIds.filter((handId) => allHandIds.has(handId))
 		console.log(`❗❗❗❗❗`, { myHandIds, myCardGroupIds, allHandIds })

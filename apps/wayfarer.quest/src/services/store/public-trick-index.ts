@@ -1,5 +1,6 @@
 import * as AtomIO from "atom.io"
 
+import { findRelations } from "atom.io/data"
 import {
 	ownersOfGroups,
 	trickIndex,
@@ -8,15 +9,15 @@ import { myRoomKeyState } from "./my-room"
 
 export const publicTrickIndex = AtomIO.selector<string[]>({
 	key: `publicTrickIndex`,
-	get: ({ get, find }) => {
+	get: ({ get }) => {
 		const myRoomId = get(myRoomKeyState)
 		if (!myRoomId) {
 			return []
 		}
 		const trickIds = get(trickIndex)
 		const unownedTrickIds = [...trickIds].filter((trickId) => {
-			const { playerKeyOfGroup } = ownersOfGroups.states
-			const ownerOfTrick = get(find(playerKeyOfGroup, trickId))
+			const { playerKeyOfGroup } = findRelations(ownersOfGroups, trickId)
+			const ownerOfTrick = get(playerKeyOfGroup)
 			const trickIsNotOwned = ownerOfTrick === null
 			return trickIsNotOwned
 		})
