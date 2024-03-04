@@ -59,34 +59,13 @@ jobs:
         id: break-check
         run: |
           set +e
-          result=$(bun ./packages/break-check/src/break-check.x.ts \
+          output = $(bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
             --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
-            --testCommand="bun run test:public"
+            --testCommand="bun run test:public" \
             --certifyCommand="grep -q -F '"atom.io": major' .changeset/*.md"
           )
-          case $? in
-            0)
-              # if result includes "breaking-changes-certified"
-              if [[ $result == *"breaking-changes-certified"* ]]; then
-                echo "atom.io=⚠️ Public tests from the last release broke, and a new major version has been certified." >> $GITHUB_OUTPUT
-              else 
-                echo "atom.io=✅ No public tests from the last release broke." >> $GITHUB_OUTPUT
-              fi
-              ;;
-            1)
-              echo "atom.io=❌ Public tests from the last release are breaking." >> $GITHUB_OUTPUT
-              echo "failed=true" >> $GITHUB_OUTPUT
-              ;;
-            2)
-              echo "atom.io=❌ No tests were found matching the `--testPattern` provided." >> $GITHUB_OUTPUT
-              echo "failed=true" >> $GITHUB_OUTPUT
-              ;;
-            *)
-              echo "Error: The command failed with an unexpected exit code: $exit_code."
-              echo "failed=true" >> $GITHUB_OUTPUT
-              ;;
-          esac
+          echo "atom.io=$output" >> $GITHUB_OUTPUT
           set -e
 
       - name: Find Comment
@@ -104,7 +83,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ## break-check
-            ${{ steps.break-check.outputs['atom.io'] }}
+            atom.io: ${{ steps.break-check.outputs['atom.io'] }}
           edit-mode: replace
 
       - name: Pass/Fail
