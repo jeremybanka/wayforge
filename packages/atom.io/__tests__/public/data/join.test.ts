@@ -1,4 +1,4 @@
-import { join } from "atom.io/data"
+import { editRelations, findRelations, join } from "atom.io/data"
 import { vitest } from "vitest"
 
 import { getState, runTransaction, subscribe, transaction } from "atom.io"
@@ -36,13 +36,19 @@ describe(`join with content`, () => {
 			},
 			{ joinedAt: NaN },
 		)
-		const lobbyPlayerState = roomPlayers.states.playerKeyOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.states.roomKeyOfPlayer(`joshua`)
+		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
+		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
 
-		const arenaPlayerState = roomPlayers.states.playerKeyOfRoom(`arena`)
+		const arenaPlayerState = findRelations(roomPlayers, `arena`).playerKeyOfRoom
 
-		const lobbyPlayerEntryState = roomPlayers.states.playerEntryOfRoom(`lobby`)
-		const joshuaRoomEntryState = roomPlayers.states.roomEntryOfPlayer(`joshua`)
+		const lobbyPlayerEntryState = findRelations(
+			roomPlayers,
+			`lobby`,
+		).playerEntryOfRoom
+		const joshuaRoomEntryState = findRelations(
+			roomPlayers,
+			`joshua`,
+		).roomEntryOfPlayer
 
 		subscribe(arenaPlayerState, Utils.stdout)
 
@@ -54,7 +60,9 @@ describe(`join with content`, () => {
 
 		const joinedAt = Date.now()
 
-		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+		editRelations(roomPlayers, (relations) => {
+			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+		})
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(0)
 		expect(Utils.stdout0).toHaveBeenCalledWith({
@@ -83,11 +91,19 @@ describe(`join with content`, () => {
 			},
 			{ joinedAt: NaN },
 		)
-		const lobbyPlayersState = roomPlayers.states.playerKeysOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.states.roomKeyOfPlayer(`joshua`)
-		const lobbyPlayerEntriesState =
-			roomPlayers.states.playerEntriesOfRoom(`lobby`)
-		const joshuaRoomEntryState = roomPlayers.states.roomEntryOfPlayer(`joshua`)
+		const lobbyPlayersState = findRelations(
+			roomPlayers,
+			`lobby`,
+		).playerKeysOfRoom
+		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
+		const lobbyPlayerEntriesState = findRelations(
+			roomPlayers,
+			`lobby`,
+		).playerEntriesOfRoom
+		const joshuaRoomEntryState = findRelations(
+			roomPlayers,
+			`joshua`,
+		).roomEntryOfPlayer
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
@@ -96,7 +112,9 @@ describe(`join with content`, () => {
 
 		const joinedAt = Date.now()
 
-		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+		editRelations(roomPlayers, (relations) => {
+			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+		})
 
 		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: [],
@@ -124,12 +142,23 @@ describe(`join with content`, () => {
 			},
 			{ joinedAt: NaN },
 		)
-		const lobbyPlayersState = roomPlayers.states.playerKeysOfRoom(`lobby`)
-		const joshuaRoomsState = roomPlayers.states.roomKeysOfPlayer(`joshua`)
-		const lobbyPlayerEntriesState =
-			roomPlayers.states.playerEntriesOfRoom(`lobby`)
-		const joshuaRoomsEntriesState =
-			roomPlayers.states.roomEntriesOfPlayer(`joshua`)
+
+		const lobbyPlayersState = findRelations(
+			roomPlayers,
+			`lobby`,
+		).playerKeysOfRoom
+		const joshuaRoomsState = findRelations(
+			roomPlayers,
+			`joshua`,
+		).roomKeysOfPlayer
+		const lobbyPlayerEntriesState = findRelations(
+			roomPlayers,
+			`lobby`,
+		).playerEntriesOfRoom
+		const joshuaRoomsEntriesState = findRelations(
+			roomPlayers,
+			`joshua`,
+		).roomEntriesOfPlayer
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomsState, Utils.stdout1)
@@ -138,13 +167,15 @@ describe(`join with content`, () => {
 
 		const joinedAt = Date.now()
 
-		roomPlayers.relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
-		expect(roomPlayers.relations.has(`josh`)).toBe(false)
-		expect(roomPlayers.relations.has(`josh`, `lobby`)).toBe(false)
-		expect(roomPlayers.relations.has(`joshua`)).toBe(true)
-		expect(roomPlayers.relations.has(`joshua`, `lobby`)).toBe(true)
-		expect(roomPlayers.relations.getContent(`joshua`, `lobby`)).toEqual({
-			joinedAt,
+		editRelations(roomPlayers, (relations) => {
+			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+			expect(relations.has(`josh`)).toBe(false)
+			expect(relations.has(`josh`, `lobby`)).toBe(false)
+			expect(relations.has(`joshua`)).toBe(true)
+			expect(relations.has(`joshua`, `lobby`)).toBe(true)
+			expect(relations.getContent(`joshua`, `lobby`)).toEqual({
+				joinedAt,
+			})
 		})
 
 		expect(Utils.stdout0).toHaveBeenCalledWith({
@@ -164,7 +195,9 @@ describe(`join with content`, () => {
 			newValue: [[`lobby`, { joinedAt }]],
 		})
 
-		roomPlayers.relations.delete({ player: `joshua`, room: `lobby` })
+		editRelations(roomPlayers, (relations) => {
+			relations.delete({ player: `joshua`, room: `lobby` })
+		})
 
 		expect(getState(lobbyPlayersState)).toEqual([])
 		expect(getState(joshuaRoomsState)).toEqual([])
@@ -178,18 +211,19 @@ describe(`join with no content`, () => {
 			between: [`room`, `player`],
 			cardinality: `1:1`,
 		})
-		const lobbyPlayerState = roomPlayers.states.playerKeyOfRoom(`lobby`)
-		const joshuaRoomState = roomPlayers.states.roomKeyOfPlayer(`joshua`)
+		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
+		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
 
-		const arenaPlayerState = roomPlayers.states.playerKeyOfRoom(`arena`)
+		const arenaPlayerState = findRelations(roomPlayers, `arena`).playerKeyOfRoom
 
 		subscribe(arenaPlayerState, Utils.stdout)
 
 		subscribe(lobbyPlayerState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
 
-		roomPlayers.relations.set({ player: `joshua`, room: `lobby` })
-
+		editRelations(roomPlayers, (relations) => {
+			relations.set({ player: `joshua`, room: `lobby` })
+		})
 		expect(Utils.stdout).toHaveBeenCalledTimes(0)
 		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: null,
@@ -211,8 +245,8 @@ describe(`some practical use cases`, () => {
 		})
 		const failingTX = transaction<() => void>({
 			key: `I ALWAYS FAIL`,
-			do: (transactors) => {
-				cardValues.transact(transactors, ({ relations }) => {
+			do: () => {
+				editRelations(cardValues, (relations) => {
 					for (let i = 0; i < 100; i++) {
 						relations.set({ value: `a`, card: `${i}` })
 						if (i === 99) {
@@ -243,12 +277,24 @@ describe(`some practical use cases`, () => {
 				[`c`, [`2`]],
 			],
 		})
-		expect(getState(userGroups.states.groupKeysOfUser(`a`))).toEqual([`1`])
-		expect(getState(userGroups.states.groupKeysOfUser(`b`))).toEqual([`3`])
-		expect(getState(userGroups.states.groupKeysOfUser(`c`))).toEqual([`2`])
-		expect(getState(userGroups.states.userKeysOfGroup(`1`))).toEqual([`a`])
-		expect(getState(userGroups.states.userKeysOfGroup(`2`))).toEqual([`c`])
-		expect(getState(userGroups.states.userKeysOfGroup(`3`))).toEqual([`b`])
+		expect(getState(findRelations(userGroups, `a`).groupKeysOfUser)).toEqual([
+			`1`,
+		])
+		expect(getState(findRelations(userGroups, `b`).groupKeysOfUser)).toEqual([
+			`3`,
+		])
+		expect(getState(findRelations(userGroups, `c`).groupKeysOfUser)).toEqual([
+			`2`,
+		])
+		expect(getState(findRelations(userGroups, `a`).groupKeysOfUser)).toEqual([
+			`1`,
+		])
+		expect(getState(findRelations(userGroups, `b`).groupKeysOfUser)).toEqual([
+			`3`,
+		])
+		expect(getState(findRelations(userGroups, `c`).groupKeysOfUser)).toEqual([
+			`2`,
+		])
 	})
 
 	test(`replacing relations (many to many)`, () => {
@@ -262,13 +308,28 @@ describe(`some practical use cases`, () => {
 				[`c`, [`3`]],
 			],
 		})
-		userGroups.relations.replaceRelations(`a`, [`2`, `3`])
-		expect(getState(userGroups.states.groupKeysOfUser(`a`))).toEqual([`2`, `3`])
-		expect(getState(userGroups.states.groupKeysOfUser(`b`))).toEqual([`2`])
-		expect(getState(userGroups.states.groupKeysOfUser(`c`))).toEqual([`3`])
-		expect(getState(userGroups.states.groupKeysOfUser(`1`))).toEqual([])
-		expect(getState(userGroups.states.userKeysOfGroup(`2`))).toEqual([`b`, `a`])
-		expect(getState(userGroups.states.userKeysOfGroup(`3`))).toEqual([`c`, `a`])
+		editRelations(userGroups, (relations) => {
+			relations.replaceRelations(`a`, [`2`, `3`])
+		})
+		expect(getState(findRelations(userGroups, `a`).groupKeysOfUser)).toEqual([
+			`2`,
+			`3`,
+		])
+		expect(getState(findRelations(userGroups, `b`).groupKeysOfUser)).toEqual([
+			`2`,
+		])
+		expect(getState(findRelations(userGroups, `c`).groupKeysOfUser)).toEqual([
+			`3`,
+		])
+		expect(getState(findRelations(userGroups, `1`).groupKeysOfUser)).toEqual([])
+		expect(getState(findRelations(userGroups, `2`).userKeysOfGroup)).toEqual([
+			`b`,
+			`a`,
+		])
+		expect(getState(findRelations(userGroups, `3`).userKeysOfGroup)).toEqual([
+			`c`,
+			`a`,
+		])
 	})
 })
 test(`replacing relations (one to many)`, () => {
@@ -282,17 +343,19 @@ test(`replacing relations (one to many)`, () => {
 			[`c`, [`3`]],
 		],
 	})
-	cardValues.relations.replaceRelations(`a`, [`1`, `2`, `3`])
-	expect(getState(cardValues.states.valueKeyOfCard(`1`))).toEqual(`a`)
-	expect(getState(cardValues.states.valueKeyOfCard(`2`))).toEqual(`a`)
-	expect(getState(cardValues.states.valueKeyOfCard(`3`))).toEqual(`a`)
-	expect(getState(cardValues.states.cardKeysOfValue(`a`))).toEqual([
+	editRelations(cardValues, (relations) => {
+		relations.replaceRelations(`a`, [`1`, `2`, `3`])
+	})
+	expect(getState(findRelations(cardValues, `1`).valueKeyOfCard)).toEqual(`a`)
+	expect(getState(findRelations(cardValues, `2`).valueKeyOfCard)).toEqual(`a`)
+	expect(getState(findRelations(cardValues, `3`).valueKeyOfCard)).toEqual(`a`)
+	expect(getState(findRelations(cardValues, `a`).cardKeysOfValue)).toEqual([
 		`1`,
 		`2`,
 		`3`,
 	])
-	expect(getState(cardValues.states.cardKeysOfValue(`b`))).toEqual([])
-	expect(getState(cardValues.states.cardKeysOfValue(`c`))).toEqual([])
+	expect(getState(findRelations(cardValues, `b`).cardKeysOfValue)).toEqual([])
+	expect(getState(findRelations(cardValues, `c`).cardKeysOfValue)).toEqual([])
 })
 
 describe(`advanced performance tests`, () => {
@@ -321,7 +384,10 @@ describe(`advanced performance tests`, () => {
 				key: `loopingBasic`,
 				do: (_, count) => {
 					for (let i = 0; i < count; i++) {
-						cardValues.relations.set({ value: `a`, card: `${i}` })
+						// cardValues.relations.set({ value: `a`, card: `${i}` })
+						editRelations(cardValues, (relations) => {
+							relations.set({ value: `a`, card: `${i}` })
+						})
 					}
 				},
 			})
@@ -330,11 +396,13 @@ describe(`advanced performance tests`, () => {
 			return transaction<(count: number) => void>({
 				key: `loopingSafeReplacement`,
 				do: (_, count) => {
-					const relations: string[] = []
+					const newRelationsOfA: string[] = []
 					for (let i = 0; i < count; i++) {
-						relations.push(String(i))
+						newRelationsOfA.push(String(i))
 					}
-					cardValues.relations.replaceRelations(`a`, relations)
+					editRelations(cardValues, (relations) => {
+						relations.replaceRelations(`a`, newRelationsOfA)
+					})
 				},
 			})
 		}
@@ -342,12 +410,14 @@ describe(`advanced performance tests`, () => {
 			return transaction<(count: number) => void>({
 				key: `loopingUnsafeReplacement`,
 				do: (_, count) => {
-					const relations: string[] = []
+					const newRelationsOfA: string[] = []
 					for (let i = 0; i < count; i++) {
-						relations.push(String(i))
+						newRelationsOfA.push(String(i))
 					}
-					cardValues.relations.replaceRelations(`a`, relations, {
-						reckless: true,
+					editRelations(cardValues, (relations) => {
+						relations.replaceRelations(`a`, newRelationsOfA, {
+							reckless: true,
+						})
 					})
 				},
 			})
