@@ -1,5 +1,16 @@
 # break-check
 
+## 0.2.0
+
+### Minor Changes
+
+- a96a798: ✨ Break check will now return an exit code 2 if no tests can be found matching your supplied testPattern.
+
+### Patch Changes
+
+- a96a798: 🐛 break-check will now return you to your working branch after completing its run, rather than a detached HEAD at that ref.
+- a96a798: 🐛 The break-check cli will now exit 100 if required arguments are missing.
+
 ## 0.1.0
 
 ### Minor Changes
