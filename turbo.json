@@ -33,8 +33,7 @@
 				"__scripts__/**/*.ts"
 			]
 		},
-		"test:once:public": {
-			"dependsOn": ["build"],
+		"test:public": {
 			"inputs": [
 				"**/package.json",
 				"src/**/*.tsx",

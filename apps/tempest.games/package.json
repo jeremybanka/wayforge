@@ -13,7 +13,7 @@
 		"test": "hurl ./__tests__/*",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet",
-		"test:once:public": "echo no public tests yet",
+		"test:public": "echo no public tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "bun run gen && eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",

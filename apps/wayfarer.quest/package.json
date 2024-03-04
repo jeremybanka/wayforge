@@ -14,7 +14,7 @@
 		"test": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet",
-		"test:once:public": "echo no public tests yet"
+		"test:public": "echo no public tests yet"
 	},
 	"dependencies": {
 		"@t3-oss/env-nextjs": "0.9.2",

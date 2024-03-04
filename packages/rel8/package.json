@@ -32,7 +32,7 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",
-		"test:once:public": "echo no public tests yet"
+		"test:public": "echo no public tests yet"
 	},
 	"devDependencies": {
 		"concurrently": "8.2.2",
