@@ -65,6 +65,8 @@ jobs:
             --testCommand="bun run test:public" \
             --certifyCommand="grep -q -F '"atom.io": major' .changeset/*.md"
           )
+          echo "begin output"
+          echo $output
           echo "atom.io=$output" >> $GITHUB_OUTPUT
           set -e
 
