@@ -59,7 +59,7 @@ jobs:
         id: break-check
         run: |
           set +e
-          output = $(bun ./packages/break-check/src/break-check.x.ts \
+          output = bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
             --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
             --testCommand="bun run test:public" \
@@ -83,7 +83,10 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ## break-check
-            atom.io: ${{ steps.break-check.outputs['atom.io'] }}
+            ### atom.io
+            ```
+            ${{ steps.break-check.outputs['atom.io'] }}
+            ```
           edit-mode: replace
 
       - name: Pass/Fail
