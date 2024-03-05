@@ -1,7 +1,7 @@
 import * as React from "react"
 
 const { NODE_ENV } = process.env
-const IN_DEV = NODE_ENV === `development` || NODE_ENV === `test`
+const IN_DEV = NODE_ENV === `development`
 
 function noop() {}
 
