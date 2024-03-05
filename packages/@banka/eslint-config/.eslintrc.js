@@ -95,7 +95,7 @@ module.exports = {
     "max-classes-per-file": `off`,
     "max-len": [
       `error`,
-      {
+      { 
         code: 81,
         ignoreRegExpLiterals: true,
         ignoreTemplateLiterals: true,

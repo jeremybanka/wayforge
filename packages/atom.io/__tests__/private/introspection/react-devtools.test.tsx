@@ -68,5 +68,13 @@ describe(`single atom`, () => {
 		expect(option).toBeTruthy()
 		expect(setters.length).toBe(2)
 		expect(setters[0]).toBe(setters[1])
+
+		expect(getByTestId(`view-atoms`)).toBeTruthy()
+		expect(getByTestId(`view-selectors`)).toBeTruthy()
+		expect(getByTestId(`view-transactions`)).toBeTruthy()
+		expect(getByTestId(`view-timelines`)).toBeTruthy()
+
+		expect(getByTestId(`state-index`)).toBeTruthy()
+		expect(getByTestId(`state-letter`)).toBeTruthy()
 	})
 })

@@ -3,7 +3,7 @@ import type {
 	RegularAtomToken,
 	WritableSelectorToken,
 } from "atom.io"
-import { getState, selectorFamily } from "atom.io"
+import { findState, getState, selectorFamily } from "atom.io"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
@@ -84,8 +84,8 @@ export const StateIndexTreeNode: FC<{
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 	for (const [key, childNode] of recordToEntries(node.familyMembers)) {
-		findViewIsOpenState(key)
-		findStateTypeState(childNode)
+		findState(findViewIsOpenState, key)
+		findState(findStateTypeState, childNode)
 	}
 	return (
 		<>
@@ -101,8 +101,8 @@ export const StateIndexTreeNode: FC<{
 						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findViewIsOpenState(childNode.key)}
-							typeState={findStateTypeState(childNode)}
+							isOpenState={findState(findViewIsOpenState, childNode.key)}
+							typeState={findState(findStateTypeState, childNode)}
 						/>
 				  ))
 				: null}
@@ -123,7 +123,7 @@ export const StateIndexNode: FC<{
 		return null
 	}
 	return (
-		<section className="node state">
+		<section className="node state" data-testid={`state-${node.key}`}>
 			{`type` in node ? (
 				<StateIndexLeafNode
 					node={node}
@@ -148,7 +148,7 @@ export const StateIndex: FC<{
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 	return (
-		<article className="index state_index">
+		<article className="index state_index" data-testid="state-index">
 			{Object.entries(tokenIds)
 				.filter(([key]) => !key.startsWith(`👁‍🗨`))
 				.sort()
@@ -157,8 +157,8 @@ export const StateIndex: FC<{
 						<StateIndexNode
 							key={key}
 							node={node}
-							isOpenState={findViewIsOpenState(node.key)}
-							typeState={findStateTypeState(node)}
+							isOpenState={findState(findViewIsOpenState, node.key)}
+							typeState={findState(findStateTypeState, node)}
 						/>
 					)
 				})}
