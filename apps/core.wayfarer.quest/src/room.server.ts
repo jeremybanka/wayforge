@@ -6,6 +6,7 @@ import * as RTS from "atom.io/realtime-server"
 
 import { IMPLICIT } from "atom.io/internal"
 
+import { editRelations } from "atom.io/data"
 import { heartsContinuity } from "./store/game/hearts"
 
 const parentSocket = new RTS.ParentSocket()
@@ -73,7 +74,9 @@ parentSocket.relay((socket) => {
 			(set) => (set.delete(username), set),
 		)
 	})
-	RTS.usersOfSockets.relations.set(username, socket.id)
+	editRelations(RTS.usersOfSockets, (relations) => {
+		relations.set(username, socket.id)
+	})
 
 	const syncContinuity = RTS.realtimeContinuitySynchronizer({ socket })
 	const exposeMutable = RTS.realtimeMutableProvider({ socket })

@@ -17,6 +17,7 @@ import {
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
+import { findRelations, getInternalRelations } from "atom.io/data"
 import { UsersInRoom } from "./PlayersInRoom"
 import scss from "./page.module.scss"
 
@@ -27,10 +28,8 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const setRoomState = useI(roomViewState)
 	const iAmInRoom = myRoomKey === roomId
 
-	RTR.usePullMutableAtomFamilyMember(
-		usersInRooms.core.findRelatedKeysState,
-		roomId,
-	)
+	const usersInThisRoomState = getInternalRelations(usersInRooms)
+	RTR.usePullMutableAtomFamilyMember(usersInThisRoomState, roomId)
 
 	return (
 		<>

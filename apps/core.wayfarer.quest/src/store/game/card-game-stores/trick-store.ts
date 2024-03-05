@@ -1,5 +1,5 @@
 import { atom, selector, selectorFamily } from "atom.io"
-import { join } from "atom.io/data"
+import { findRelations, join } from "atom.io/data"
 import { IMPLICIT, getJsonToken } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -31,14 +31,14 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 	key: `trickContents`,
 	get:
 		(trickId) =>
-		({ get, find }) => {
+		({ get }) => {
 			const playerIdsInGame = get(gamePlayerIndex)
 			const cardIdsInTrick = get(
-				find(groupsOfCards.states.cardKeysOfGroup, trickId),
+				findRelations(groupsOfCards, trickId).cardKeysOfGroup,
 			)
 			const trickContents = playerIdsInGame.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(
-					find(trickContributions.states.cardKeysOfPlayer, playerId),
+					findRelations(trickContributions, playerId).cardKeysOfPlayer,
 				)
 				const cardId = cardsThisPlayerHasInTricks.find((cardId) =>
 					cardIdsInTrick.includes(cardId),

@@ -1,4 +1,5 @@
 import { selectorFamily } from "atom.io"
+import { findRelations } from "atom.io/data"
 
 import { ownersOfGroups } from "~/apps/core.wayfarer.quest/src/store/game"
 
@@ -7,5 +8,5 @@ export const findHandsOfPlayer = selectorFamily<string[], string>({
 	get:
 		(playerId) =>
 		({ get }) =>
-			get(ownersOfGroups.states.groupKeysOfPlayer(playerId)),
+			get(findRelations(ownersOfGroups, playerId).groupKeysOfPlayer),
 })

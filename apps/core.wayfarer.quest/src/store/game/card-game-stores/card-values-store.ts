@@ -1,6 +1,6 @@
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
-import { join } from "atom.io/data"
+import { findRelations, getInternalRelations, join } from "atom.io/data"
 import type { Json } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -61,11 +61,14 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 	key: `visibleCardIndices`,
 	get:
 		(username) =>
-		({ find, get }) => {
+		({ get }) => {
 			const cardIds: string[] = []
 			const pileIds = get(pileIndex)
 			for (const pileId of pileIds) {
-				const pileCardIndex = find(groupsOfCards.states.cardKeysOfGroup, pileId)
+				const pileCardIndex = findRelations(
+					groupsOfCards,
+					pileId,
+				).cardKeysOfGroup
 				const pileCardIds = get(pileCardIndex)
 				for (const pileCardId of pileCardIds) {
 					cardIds.push(pileCardId)
@@ -74,10 +77,10 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 
 			const currentTrickId = get(currentTrickIdState)
 			if (currentTrickId) {
-				const trickCardIndex = find(
-					groupsOfCards.states.cardKeysOfGroup,
+				const trickCardIndex = findRelations(
+					groupsOfCards,
 					currentTrickId,
-				)
+				).cardKeysOfGroup
 				const trickCardIds = get(trickCardIndex)
 				for (const trickCardId of trickCardIds) {
 					cardIds.push(trickCardId)
@@ -85,16 +88,16 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 			}
 			const handIds = get(handIndex)
 			for (const handId of handIds) {
-				const handOwnerIdState = find(
-					ownersOfGroups.states.playerKeyOfGroup,
+				const handOwnerIdState = findRelations(
+					ownersOfGroups,
 					handId,
-				)
+				).playerKeyOfGroup
 				const handOwnerId = get(handOwnerIdState)
 				if (handOwnerId === username) {
-					const handCardIndex = find(
-						groupsOfCards.states.cardKeysOfGroup,
+					const handCardIndex = findRelations(
+						groupsOfCards,
 						handId,
-					)
+					).cardKeysOfGroup
 					const handCardIds = get(handCardIndex)
 					for (const handCardId of handCardIds) {
 						cardIds.push(handCardId)
@@ -116,7 +119,7 @@ export const valuesOfCardsView = selectorFamily<
 			const visibleCardIndex = find(visibleCardIndices, username)
 			const visibleCardIds = get(visibleCardIndex)
 			const tokens = visibleCardIds.map((cardId) => {
-				return find(valuesOfCards.core.findRelatedKeysState, cardId)
+				return find(getInternalRelations(valuesOfCards), cardId)
 			})
 			return tokens
 		},

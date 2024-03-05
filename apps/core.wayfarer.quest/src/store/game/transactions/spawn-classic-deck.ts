@@ -1,11 +1,12 @@
 import { transaction } from "atom.io"
 
+import { editRelations } from "atom.io/data"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 import {
 	cardValueIndex,
 	valuesOfCards,
 } from "../card-game-stores/card-values-store"
-import { cardAtoms, cardIndex } from "../card-game-stores/cards-store"
+import { cardIndex } from "../card-game-stores/cards-store"
 import { CARD_VALUES } from "../playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
@@ -25,11 +26,9 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		valuesOfCards.transact(transactors, ({ relations }) => {
+		editRelations(valuesOfCards, (relations) => {
 			let idx = 0
 			for (const cardId of cardIds) {
-				// const cardAtom = find(cardAtoms, cardId)
-				// set(cardAtom, { rotation: 0 })
 				relations.set({ card: cardId, value: CARD_VALUES[idx].id })
 				idx++
 			}
@@ -54,7 +53,7 @@ export const spawnClassicDeckTX = transaction<
 			return current
 		})
 
-		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
+		editRelations(CardGroups.groupsOfCards, (relations) => {
 			relations.replaceRelations(deckId, cardIds)
 		})
 	},

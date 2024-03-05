@@ -21,6 +21,7 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
+import { editRelationsInStore } from "../../data/src/join"
 import { myUsernameState } from "../../realtime-client/src/realtime-client-stores"
 
 let testNumber = 0
@@ -87,8 +88,13 @@ export const setupRealtimeTestServer = (
 		if (token === `test` && socket.id) {
 			const socketState = findInStore(RTS.socketAtoms, socket.id, silo.store)
 			setIntoStore(socketState, socket, silo.store)
-			const usersOfSockets = RTS.usersOfSockets.in(silo.store)
-			usersOfSockets.relations.set(socket.id, username)
+			editRelationsInStore(
+				RTS.usersOfSockets,
+				(relations) => {
+					relations.set(socket.id, username)
+				},
+				silo.store,
+			)
 			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)
 			setIntoStore(RTS.socketIndex, (index) => index.add(socket.id), silo.store)
 			console.log(`${username} connected on ${socket.id}`)

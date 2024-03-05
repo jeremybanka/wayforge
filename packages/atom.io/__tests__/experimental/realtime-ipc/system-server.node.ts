@@ -1,6 +1,10 @@
 import path from "path"
 import type { Silo } from "atom.io"
 import {
+	findRelationsInStore,
+	getInternalRelationsFromStore,
+} from "atom.io/data"
+import {
 	actUponStore,
 	arbitrary,
 	findInStore,
@@ -34,11 +38,13 @@ export const SystemServer = ({
 
 	exposeMutable(RT.roomIndex)
 
-	exposeMutableFamily(
-		RTS.usersOfSockets.core.findRelatedKeysState,
-		RTS.socketIndex,
+	const usersOfSocketsAtoms = getInternalRelationsFromStore(
+		RTS.usersOfSockets,
+		store,
 	)
-	exposeMutable(RT.usersInRooms.core.findRelatedKeysState(username))
+	const usersInRoomsAtoms = getInternalRelationsFromStore(RT.usersInRooms, store)
+	exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
+	exposeMutable(findInStore(usersInRoomsAtoms, username, store))
 
 	socket.on(`create-room`, async (roomId) => {
 		actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
@@ -100,11 +106,11 @@ export const SystemServer = ({
 	const handleDisconnect = async () => {
 		console.log(`🥋 DISCONNECT RECEIVED`)
 		socket.off(`disconnect`, handleDisconnect)
-		const roomKeyState = findInStore(
-			RT.usersInRooms.states.roomKeyOfUser,
+		const roomKeyState = findRelationsInStore(
+			RT.usersInRooms,
 			username,
 			store,
-		)
+		).roomKeyOfUser
 		const roomKey = getFromStore(roomKeyState, store)
 		if (!roomKey) {
 			return

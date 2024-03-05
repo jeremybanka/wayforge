@@ -18,6 +18,7 @@ import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"
 
+import { findRelations } from "atom.io/data"
 import { addPlayerToGameTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/add-player-to-game"
 import scss from "./Public.module.scss"
 
@@ -28,7 +29,7 @@ export function Public({ roomId }: GameProps): JSX.Element {
 	const spawnHand = runTransaction(spawnHandTX)
 	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
 	const createTrick = runTransaction(spawnTrickTX)
-	const cohorts = useO(usersInRooms.states.userKeysOfRoom, roomId)
+	const cohorts = useO(findRelations(usersInRooms, roomId).userKeysOfRoom)
 	const startGame = runTransaction(startGameTX)
 	const handlers = useRadial([
 		{

@@ -13,13 +13,14 @@ import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 import { CardBack } from "./Card"
 
 import { runTransaction } from "atom.io"
+import { findRelations } from "atom.io/data"
 import { Count } from "../labels/Count"
 import scss from "./Deck.module.scss"
 
 export const Deck = memoize<{ id: string; detailed?: boolean }>(
 	`Deck`,
 	({ id: deckId, detailed }) => {
-		const cardIds = useO(groupsOfCards.states.cardKeysOfGroup, deckId)
+		const cardIds = useO(findRelations(groupsOfCards, deckId).cardKeysOfGroup)
 
 		const shuffle = runTransaction(shuffleDeckTX)
 

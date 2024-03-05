@@ -1,5 +1,6 @@
 import { transaction } from "atom.io"
 
+import { editRelations, findRelations } from "atom.io/data"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const dealCardsTX = transaction<
@@ -7,7 +8,7 @@ export const dealCardsTX = transaction<
 >({
 	key: `dealCards`,
 	do: (transactors, deckId, handId, count) => {
-		const { get, find } = transactors
+		const { get } = transactors
 		const deckIds = get(CardGroups.deckIndex)
 		const deckDoesExist = deckIds.has(deckId)
 		if (!deckDoesExist) {
@@ -20,14 +21,14 @@ export const dealCardsTX = transaction<
 		}
 
 		const deckCardIds = get(
-			find(CardGroups.groupsOfCards.states.cardKeysOfGroup, deckId),
+			findRelations(CardGroups.groupsOfCards, deckId).cardKeysOfGroup,
 		)
 		if (deckCardIds.length < count) {
 			throw new Error(`Not enough cards in deck "${deckId}" to deal ${count}`)
 		}
 		const cardIds = deckCardIds.slice(-count)
 
-		CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
+		editRelations(CardGroups.groupsOfCards, (relations) => {
 			for (const cardId of cardIds) {
 				relations.set({ card: cardId, group: handId })
 			}

@@ -1,5 +1,5 @@
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
-import { join } from "atom.io/data"
+import { getInternalRelations, join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -180,12 +180,12 @@ export const groupsOfCardsGlobalView = selector<
 		const tokens: MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[] = []
 		const groupIds = get(cardGroupIndex)
 		for (const groupId of groupIds) {
-			const token = find(groupsOfCards.core.findRelatedKeysState, groupId)
+			const token = find(getInternalRelations(groupsOfCards), groupId)
 			tokens.push(token)
 		}
 		const cardIds = get(cardIndex)
 		for (const cardId of cardIds) {
-			const token = find(groupsOfCards.core.findRelatedKeysState, cardId)
+			const token = find(getInternalRelations(groupsOfCards), cardId)
 			tokens.push(token)
 		}
 		return tokens
@@ -215,12 +215,12 @@ export const ownersOfGroupsGlobalView = selector<
 		const tokens: MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[] = []
 		const groupIds = get(cardGroupIndex)
 		for (const groupId of groupIds) {
-			const token = find(ownersOfGroups.core.findRelatedKeysState, groupId)
+			const token = find(getInternalRelations(ownersOfGroups), groupId)
 			tokens.push(token)
 		}
 		const playerIds = get(gamePlayerIndex)
 		for (const playerId of playerIds) {
-			const token = find(ownersOfGroups.core.findRelatedKeysState, playerId)
+			const token = find(getInternalRelations(ownersOfGroups), playerId)
 			tokens.push(token)
 		}
 		return tokens

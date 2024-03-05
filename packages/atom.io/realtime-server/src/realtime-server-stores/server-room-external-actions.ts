@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import type { Loadable } from "atom.io/data"
+import { type Loadable, editRelations, editRelationsInStore } from "atom.io/data"
 import type { UserInRoomMeta } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
 
@@ -33,9 +33,13 @@ export const joinRoomTX = AtomIO.transaction<
 	key: `joinRoom`,
 	do: (transactors, roomId, userId, enteredAtEpoch) => {
 		const meta = { enteredAtEpoch }
-		usersInRooms.transact(transactors, ({ relations }) => {
-			relations.set(roomId, userId, meta)
-		})
+		editRelationsInStore(
+			usersInRooms,
+			(relations) => {
+				relations.set({ room: roomId, user: userId }, meta)
+			},
+			transactors.env().store,
+		)
 		return meta
 	},
 })
@@ -46,9 +50,13 @@ export const leaveRoomTX = AtomIO.transaction<
 >({
 	key: `leaveRoom`,
 	do: (transactors, roomId, userId) => {
-		usersInRooms.transact(transactors, ({ relations }) => {
-			relations.delete({ room: roomId, user: userId })
-		})
+		editRelationsInStore(
+			usersInRooms,
+			(relations) => {
+				relations.delete({ room: roomId, user: userId })
+			},
+			transactors.env().store,
+		)
 	},
 })
 export type LeaveRoomIO = AtomIO.TransactionIO<typeof leaveRoomTX>
@@ -56,9 +64,13 @@ export type LeaveRoomIO = AtomIO.TransactionIO<typeof leaveRoomTX>
 export const destroyRoomTX = AtomIO.transaction<(roomId: string) => void>({
 	key: `destroyRoom`,
 	do: (transactors, roomId) => {
-		usersInRooms.transact(transactors, ({ relations }) => {
-			relations.delete({ room: roomId })
-		})
+		editRelationsInStore(
+			usersInRooms,
+			(relations) => {
+				relations.delete({ room: roomId })
+			},
+			transactors.env().store,
+		)
 		transactors.set(roomIndex, (s) => (s.delete(roomId), s))
 	},
 })
