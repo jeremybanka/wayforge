@@ -1,5 +1,6 @@
 import { transaction } from "atom.io"
 
+import { editRelations, findRelations } from "atom.io/data"
 import { deckIndices, groupsOfCards } from "../card-groups"
 
 function LCG(seed: number) {
@@ -28,11 +29,11 @@ export const shuffleDeckTX = transaction<
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const deckCardIndex = find(groupsOfCards.states.cardKeysOfGroup, deckId)
+		// const deckCardIndex = find(groupsOfCards.states.cardKeysOfGroup, deckId)
+		const deckCardIndex = findRelations(groupsOfCards, deckId).cardKeysOfGroup
 		const cardIds = get(deckCardIndex)
-		const i = 0
 		const shuffledCardIds = cardIds.toSorted(() => rng.next() - 0.5)
-		groupsOfCards.transact(transactors, ({ relations }) => {
+		editRelations(groupsOfCards, (relations) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
 		if (env().global) {

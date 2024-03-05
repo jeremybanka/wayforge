@@ -1,6 +1,6 @@
 import type { MutableAtomToken } from "atom.io"
 import { atom, selectorFamily } from "atom.io"
-import { join } from "atom.io/data"
+import { getInternalRelations, join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -41,8 +41,10 @@ export const usersInMyRoomView = selectorFamily<
 >({
 	key: `usersInMyRoomView`,
 	get:
-		(username) =>
+		(myUsername) =>
 		({ find }) => {
-			return [find(usersInRooms.core.findRelatedKeysState, username)]
+			const usersInRoomsAtoms = getInternalRelations(usersInRooms)
+			const myRoomIndex = find(usersInRoomsAtoms, myUsername)
+			return [myRoomIndex]
 		},
 })

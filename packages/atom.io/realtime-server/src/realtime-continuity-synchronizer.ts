@@ -15,6 +15,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
 
+import { findRelationsInStore } from "../../data/src/join"
 import {
 	redactTransactionUpdateContent,
 	userUnacknowledgedQueues,
@@ -31,11 +32,11 @@ export function realtimeContinuitySynchronizer({
 		let socket: Socket | null = initialSocket
 
 		const continuityKey = continuity.key
-		const userKeyState = findInStore(
-			usersOfSockets.states.userKeyOfSocket,
+		const userKeyState = findRelationsInStore(
+			usersOfSockets,
 			socket.id,
 			store,
-		)
+		).userKeyOfSocket
 		const userKey = getFromStore(userKeyState, store)
 		if (!userKey) {
 			store.logger.error(
@@ -46,11 +47,12 @@ export function realtimeContinuitySynchronizer({
 			)
 			return () => {}
 		}
-		const socketKeyState = findInStore(
-			usersOfSockets.states.socketKeyOfUser,
+
+		const socketKeyState = findRelationsInStore(
+			usersOfSockets,
 			userKey,
 			store,
-		)
+		).socketKeyOfUser
 		subscribeToState(
 			socketKeyState,
 			({ newValue: newSocketKey }) => {

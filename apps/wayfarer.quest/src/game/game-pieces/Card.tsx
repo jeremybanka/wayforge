@@ -8,10 +8,12 @@ import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
 import { article } from "wayfarer.quest/components/<article>"
 import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
 
+import { findRelations } from "atom.io/data"
 import scss from "./Card.module.scss"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {
-	const valueKey = useO(valuesOfCards.states.valueKeyOfCard(id)) ?? `Back`
+	const valueKey =
+		useO(findRelations(valuesOfCards, id).valueKeyOfCard) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]
 	return (
 		<span className={scss.class} data-css="card">
