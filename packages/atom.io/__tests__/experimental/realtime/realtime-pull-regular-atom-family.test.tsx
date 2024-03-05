@@ -25,19 +25,32 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 	(collectionKey: string) => void
 >({
 	key: `addToNumbersCollection`,
-	do: ({ get, set }, collectionKey) => {
+	do: ({ find, get, set }, collectionKey) => {
 		const store = get(storeState)
 		const collectionFamily = getFamily(findNumbersCollectionState, store)
-		set(collectionFamily(collectionKey), (ns) => {
+		set(find(collectionFamily, collectionKey), (ns) => {
 			return [...ns, ns.length]
 		})
 	},
 })
 
+function RealtimeDisplay(): JSX.Element {
+	const findNCState = useFamily(findNumbersCollectionState)
+	RTR.usePullAtomFamilyMember(findNCState, `foo`)
+	const numbers = AR.useO(findNCState, `foo`)
+	return (
+		<>
+			{numbers.map((n) => (
+				<i data-testid={n} key={n} />
+			))}
+		</>
+	)
+}
+
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			port: 4925,
+			port: 4915,
 			server: ({ socket, silo: { store } }) => {
 				setIntoStore(storeState, store, store)
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
@@ -68,14 +81,24 @@ describe(`running transactions`, () => {
 					)
 				},
 				jane: () => {
-					const findNCState = useFamily(findNumbersCollectionState)
-					RTR.usePullAtomFamilyMember(findNCState, `foo`)
-					const numbers = AR.useO(findNCState, `foo`)
+					const [isShowingRealtimeDisplay, setShowingRealtimeDisplay] =
+						React.useState(false)
 					return (
 						<>
-							{numbers.map((n) => (
-								<i data-testid={n} key={n} />
-							))}
+							<button
+								type="button"
+								onClick={() => {
+									setShowingRealtimeDisplay(!isShowingRealtimeDisplay)
+								}}
+								data-testid={`toggleRealtimeDisplay`}
+							>
+								Toggle Realtime Display
+							</button>
+							{isShowingRealtimeDisplay ? (
+								<RealtimeDisplay />
+							) : (
+								<span data-testid={`noRealtimeDisplay`} />
+							)}
 						</>
 					)
 				},
@@ -88,9 +111,12 @@ describe(`running transactions`, () => {
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
 
+		act(() => jane.renderResult.getByTestId(`toggleRealtimeDisplay`).click())
 		jane.renderResult.getByTestId(`0`)
 		act(() => dave.renderResult.getByTestId(`addNumber`).click())
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
+		act(() => jane.renderResult.getByTestId(`toggleRealtimeDisplay`).click())
+		await waitFor(() => jane.renderResult.getByTestId(`noRealtimeDisplay`))
 		teardown()
 	})
 })
