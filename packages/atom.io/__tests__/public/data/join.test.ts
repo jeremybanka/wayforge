@@ -1,4 +1,9 @@
-import { editRelations, findRelations, join } from "atom.io/data"
+import {
+	editRelations,
+	findRelations,
+	getInternalRelations,
+	join,
+} from "atom.io/data"
 import { vitest } from "vitest"
 
 import { getState, runTransaction, subscribe, transaction } from "atom.io"
@@ -331,31 +336,41 @@ describe(`some practical use cases`, () => {
 			`a`,
 		])
 	})
-})
-test(`replacing relations (one to many)`, () => {
-	const cardValues = join({
-		key: `cardValues`,
-		between: [`value`, `card`],
-		cardinality: `1:n`,
-		relations: [
-			[`a`, [`1`]],
-			[`b`, [`2`]],
-			[`c`, [`3`]],
-		],
+	test(`replacing relations (one to many)`, () => {
+		const cardValues = join({
+			key: `cardValues`,
+			between: [`value`, `card`],
+			cardinality: `1:n`,
+			relations: [
+				[`a`, [`1`]],
+				[`b`, [`2`]],
+				[`c`, [`3`]],
+			],
+		})
+		editRelations(cardValues, (relations) => {
+			relations.replaceRelations(`a`, [`1`, `2`, `3`])
+		})
+		expect(getState(findRelations(cardValues, `1`).valueKeyOfCard)).toEqual(`a`)
+		expect(getState(findRelations(cardValues, `2`).valueKeyOfCard)).toEqual(`a`)
+		expect(getState(findRelations(cardValues, `3`).valueKeyOfCard)).toEqual(`a`)
+		expect(getState(findRelations(cardValues, `a`).cardKeysOfValue)).toEqual([
+			`1`,
+			`2`,
+			`3`,
+		])
+		expect(getState(findRelations(cardValues, `b`).cardKeysOfValue)).toEqual([])
+		expect(getState(findRelations(cardValues, `c`).cardKeysOfValue)).toEqual([])
 	})
-	editRelations(cardValues, (relations) => {
-		relations.replaceRelations(`a`, [`1`, `2`, `3`])
+	test(`accessing the internal mutable atom family`, () => {
+		const membersOfGroups = join({
+			key: `membersOfGroups`,
+			between: [`group`, `user`],
+			cardinality: `1:n`,
+		})
+		const membersOfGroupsAtoms = getInternalRelations(membersOfGroups)
+		expect(membersOfGroupsAtoms.key).toEqual(`membersOfGroups/relatedKeys`)
+		expect(membersOfGroupsAtoms.type).toEqual(`mutable_atom_family`)
 	})
-	expect(getState(findRelations(cardValues, `1`).valueKeyOfCard)).toEqual(`a`)
-	expect(getState(findRelations(cardValues, `2`).valueKeyOfCard)).toEqual(`a`)
-	expect(getState(findRelations(cardValues, `3`).valueKeyOfCard)).toEqual(`a`)
-	expect(getState(findRelations(cardValues, `a`).cardKeysOfValue)).toEqual([
-		`1`,
-		`2`,
-		`3`,
-	])
-	expect(getState(findRelations(cardValues, `b`).cardKeysOfValue)).toEqual([])
-	expect(getState(findRelations(cardValues, `c`).cardKeysOfValue)).toEqual([])
 })
 
 describe(`advanced performance tests`, () => {

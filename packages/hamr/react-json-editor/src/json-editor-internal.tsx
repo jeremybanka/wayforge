@@ -1,4 +1,4 @@
-import { ElasticInput } from "hamr/react-elastic-input"
+import { ElasticInput } from "../../react-elastic-input/src"
 
 import type { CSSProperties, FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"

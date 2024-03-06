@@ -1,4 +1,4 @@
-import type { ReadonlySelectorToken, RegularAtomToken } from "atom.io"
+import type { AtomToken, ReadonlySelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
@@ -9,19 +9,20 @@ import {
 
 import type { WritableTokenIndex } from "."
 
-export type AtomTokenIndex = WritableTokenIndex<RegularAtomToken<unknown>>
+export type AtomTokenIndex = WritableTokenIndex<AtomToken<unknown>>
 
 export const attachAtomIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<AtomTokenIndex> => {
+	console.log(store.config)
 	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {
 				const defaultAtomIndex = [...store.atoms]
 					.filter(([key]) => !key.includes(`👁‍🗨`))
-					.reduce<AtomTokenIndex>((acc, [key]) => {
-						acc[key] = { key, type: `atom` }
+					.reduce<AtomTokenIndex>((acc, [key, atom]) => {
+						acc[key] = { key, type: atom.type }
 						return acc
 					}, {})
 				return defaultAtomIndex
