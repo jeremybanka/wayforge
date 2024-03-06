@@ -1,4 +1,5 @@
 import type {
+	AtomToken,
 	ReadonlySelectorToken,
 	RegularAtomToken,
 	WritableSelectorToken,
@@ -34,8 +35,8 @@ const findStateTypeState = selectorFamily<string, { key: string }>({
 
 export const StateIndexLeafNode: FC<{
 	node:
+		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| RegularAtomToken<unknown>
 		| WritableSelectorToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
@@ -53,6 +54,7 @@ export const StateIndexLeafNode: FC<{
 			<header>
 				<button.OpenClose
 					isOpen={isOpen && !isPrimitive}
+					testid={`open-close-state-${node.key}`}
 					setIsOpen={setIsOpen}
 					disabled={isPrimitive}
 				/>
@@ -63,7 +65,7 @@ export const StateIndexLeafNode: FC<{
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</label>
-				{isPrimitive ? <StoreEditor token={node} /> : null}
+				<StoreEditor token={node} />
 			</header>
 			{isOpen && !isPrimitive ? (
 				<main>
@@ -75,8 +77,8 @@ export const StateIndexLeafNode: FC<{
 }
 export const StateIndexTreeNode: FC<{
 	node: FamilyNode<
+		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| RegularAtomToken<unknown>
 		| WritableSelectorToken<unknown>
 	>
 	isOpenState: RegularAtomToken<boolean>
@@ -90,7 +92,11 @@ export const StateIndexTreeNode: FC<{
 	return (
 		<>
 			<header>
-				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
+				<button.OpenClose
+					isOpen={isOpen}
+					testid={`open-close-state-family-${node.key}`}
+					setIsOpen={setIsOpen}
+				/>
 				<label>
 					<h2>{node.key}</h2>
 					<span className="type detail"> (family)</span>
@@ -112,16 +118,13 @@ export const StateIndexTreeNode: FC<{
 
 export const StateIndexNode: FC<{
 	node: WritableTokenIndex<
+		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| RegularAtomToken<unknown>
 		| WritableSelectorToken<unknown>
 	>[string]
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
-	if (node.key.startsWith(`👁‍🗨`)) {
-		return null
-	}
 	return (
 		<section className="node state" data-testid={`state-${node.key}`}>
 			{`type` in node ? (
@@ -140,8 +143,8 @@ export const StateIndexNode: FC<{
 export const StateIndex: FC<{
 	tokenIndex: ReadonlySelectorToken<
 		WritableTokenIndex<
+			| AtomToken<unknown>
 			| ReadonlySelectorToken<unknown>
-			| RegularAtomToken<unknown>
 			| WritableSelectorToken<unknown>
 		>
 	>

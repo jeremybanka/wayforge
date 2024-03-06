@@ -1,4 +1,4 @@
-import { NumberInput, TextInput } from "hamr/react-elastic-input"
+import { NumberInput, TextInput } from "../../../react-elastic-input"
 
 import type { ReactElement } from "react"
 

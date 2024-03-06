@@ -26,9 +26,13 @@ export const TimelineLog: FC<{
 	const setIsOpen = useI(isOpenState)
 
 	return (
-		<section className="node timeline_log">
+		<section className="node timeline_log" data-testid={`timeline-${token.key}`}>
 			<header>
-				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
+				<button.OpenClose
+					isOpen={isOpen}
+					testid={`open-close-timeline-${token.key}`}
+					setIsOpen={setIsOpen}
+				/>
 				<label>
 					<h2>{token.key}</h2>
 					<span className="detail length">
@@ -74,7 +78,7 @@ export const TimelineLog: FC<{
 export const TimelineIndex: FC = () => {
 	const tokenIds = useO(timelineIndex)
 	return (
-		<article className="index timeline_index">
+		<article className="index timeline_index" data-testid="timeline-index">
 			{tokenIds
 				.filter((token) => !token.key.startsWith(`👁‍🗨`))
 				.map((token) => {

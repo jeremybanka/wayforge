@@ -5,10 +5,12 @@ export const OpenClose: FC<{
 	isOpen: boolean
 	setIsOpen: (next: Modify<boolean> | boolean) => void
 	disabled?: boolean
-}> = ({ isOpen, setIsOpen, disabled }) => {
+	testid: string
+}> = ({ isOpen, setIsOpen, disabled, testid }) => {
 	return (
 		<button
 			type="button"
+			data-testid={testid}
 			className={`carat ${isOpen ? `open` : `closed`}`}
 			onClick={() => setIsOpen((isOpen) => !isOpen)}
 			disabled={disabled}
