@@ -39,7 +39,6 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.5.3",
-		"@biomejs/cli-darwin-arm64": "1.5.3",
 		"@changesets/cli": "2.27.1",
 		"c8": "9.1.0",
 		"cross-env": "7.0.3",
