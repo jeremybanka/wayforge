@@ -36,7 +36,10 @@ const TransactionUpdateFC: React.FC<{
 	transactionUpdate: TransactionUpdate<ƒn>
 }> = ({ serialNumber, transactionUpdate }) => {
 	return (
-		<article className="node transaction_update">
+		<article
+			className="node transaction_update"
+			data-testid={`transaction-update-${transactionUpdate.key}-${serialNumber}`}
+		>
 			<header>
 				<h4>{serialNumber}</h4>
 			</header>
@@ -104,9 +107,13 @@ const TransactionUpdateFC: React.FC<{
 
 export const TimelineUpdateFC: React.FC<{
 	timelineUpdate: TimelineUpdate<any>
-}> = ({ timelineUpdate }) => {
+	serialNumber: number
+}> = ({ timelineUpdate, serialNumber }) => {
 	return (
-		<article className="node timeline_update">
+		<article
+			className="node timeline_update"
+			data-testid={`timeline-update-${timelineUpdate.key}-${serialNumber}`}
+		>
 			<header>
 				<h4>
 					{timelineUpdate.timestamp}: {timelineUpdate.type} ({timelineUpdate.key}

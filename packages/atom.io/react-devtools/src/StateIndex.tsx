@@ -1,9 +1,10 @@
 import type {
+	AtomToken,
 	ReadonlySelectorToken,
 	RegularAtomToken,
 	WritableSelectorToken,
 } from "atom.io"
-import { getState, selectorFamily } from "atom.io"
+import { findState, getState, selectorFamily } from "atom.io"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
@@ -34,8 +35,8 @@ const findStateTypeState = selectorFamily<string, { key: string }>({
 
 export const StateIndexLeafNode: FC<{
 	node:
+		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| RegularAtomToken<unknown>
 		| WritableSelectorToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
@@ -53,6 +54,7 @@ export const StateIndexLeafNode: FC<{
 			<header>
 				<button.OpenClose
 					isOpen={isOpen && !isPrimitive}
+					testid={`open-close-state-${node.key}`}
 					setIsOpen={setIsOpen}
 					disabled={isPrimitive}
 				/>
@@ -63,7 +65,7 @@ export const StateIndexLeafNode: FC<{
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</label>
-				{isPrimitive ? <StoreEditor token={node} /> : null}
+				<StoreEditor token={node} />
 			</header>
 			{isOpen && !isPrimitive ? (
 				<main>
@@ -75,8 +77,8 @@ export const StateIndexLeafNode: FC<{
 }
 export const StateIndexTreeNode: FC<{
 	node: FamilyNode<
+		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| RegularAtomToken<unknown>
 		| WritableSelectorToken<unknown>
 	>
 	isOpenState: RegularAtomToken<boolean>
@@ -84,13 +86,17 @@ export const StateIndexTreeNode: FC<{
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 	for (const [key, childNode] of recordToEntries(node.familyMembers)) {
-		findViewIsOpenState(key)
-		findStateTypeState(childNode)
+		findState(findViewIsOpenState, key)
+		findState(findStateTypeState, childNode)
 	}
 	return (
 		<>
 			<header>
-				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
+				<button.OpenClose
+					isOpen={isOpen}
+					testid={`open-close-state-family-${node.key}`}
+					setIsOpen={setIsOpen}
+				/>
 				<label>
 					<h2>{node.key}</h2>
 					<span className="type detail"> (family)</span>
@@ -101,8 +107,8 @@ export const StateIndexTreeNode: FC<{
 						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findViewIsOpenState(childNode.key)}
-							typeState={findStateTypeState(childNode)}
+							isOpenState={findState(findViewIsOpenState, childNode.key)}
+							typeState={findState(findStateTypeState, childNode)}
 						/>
 				  ))
 				: null}
@@ -112,18 +118,15 @@ export const StateIndexTreeNode: FC<{
 
 export const StateIndexNode: FC<{
 	node: WritableTokenIndex<
+		| AtomToken<unknown>
 		| ReadonlySelectorToken<unknown>
-		| RegularAtomToken<unknown>
 		| WritableSelectorToken<unknown>
 	>[string]
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
-	if (node.key.startsWith(`👁‍🗨`)) {
-		return null
-	}
 	return (
-		<section className="node state">
+		<section className="node state" data-testid={`state-${node.key}`}>
 			{`type` in node ? (
 				<StateIndexLeafNode
 					node={node}
@@ -140,15 +143,15 @@ export const StateIndexNode: FC<{
 export const StateIndex: FC<{
 	tokenIndex: ReadonlySelectorToken<
 		WritableTokenIndex<
+			| AtomToken<unknown>
 			| ReadonlySelectorToken<unknown>
-			| RegularAtomToken<unknown>
 			| WritableSelectorToken<unknown>
 		>
 	>
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 	return (
-		<article className="index state_index">
+		<article className="index state_index" data-testid="state-index">
 			{Object.entries(tokenIds)
 				.filter(([key]) => !key.startsWith(`👁‍🗨`))
 				.sort()
@@ -157,8 +160,8 @@ export const StateIndex: FC<{
 						<StateIndexNode
 							key={key}
 							node={node}
-							isOpenState={findViewIsOpenState(node.key)}
-							typeState={findStateTypeState(node)}
+							isOpenState={findState(findViewIsOpenState, node.key)}
+							typeState={findState(findStateTypeState, node)}
 						/>
 					)
 				})}

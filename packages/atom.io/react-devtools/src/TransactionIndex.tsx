@@ -27,9 +27,16 @@ export const TransactionLog: FC<{
 	const setIsOpen = useI(isOpenState)
 
 	return (
-		<section className="node transaction_log">
+		<section
+			className="node transaction_log"
+			data-testid={`transaction-${token.key}`}
+		>
 			<header>
-				<button.OpenClose isOpen={isOpen} setIsOpen={setIsOpen} />
+				<button.OpenClose
+					isOpen={isOpen}
+					testid={`open-close-transaction-${token.key}`}
+					setIsOpen={setIsOpen}
+				/>
 				<label>
 					<h2>{token.key}</h2>
 					<span className="detail length">({log.length})</span>
@@ -53,7 +60,7 @@ export const TransactionLog: FC<{
 export const TransactionIndex: FC = () => {
 	const tokenIds = useO(transactionIndex)
 	return (
-		<article className="index transaction_index">
+		<article className="index transaction_index" data-testid="transaction-index">
 			{tokenIds
 				.filter((token) => !token.key.startsWith(`👁‍🗨`))
 				.map((token) => {
