@@ -1,6 +1,13 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react"
 import type { Logger, ƒn } from "atom.io"
-import { atom, atomFamily, selector, timeline, transaction } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	runTransaction,
+	selector,
+	timeline,
+	transaction,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
@@ -93,10 +100,10 @@ describe(`react-devtools`, () => {
 				<AtomIODevtools />
 			</AR.StoreProvider>,
 		)
-		return { ...utils }
+		return { setLetterTX, ...utils }
 	}
 	it(`shows states`, async () => {
-		const { getByTestId } = scenario()
+		const { setLetterTX, getByTestId } = scenario()
 		const changeStateButton = getByTestId(`changeStateButton`)
 		fireEvent.click(changeStateButton)
 		const option = getByTestId(`B`)
@@ -109,8 +116,6 @@ describe(`react-devtools`, () => {
 		getByTestId(`view-timelines`)
 
 		getByTestId(`state-index`)
-		console.log(Internal.IMPLICIT.STORE.valueMap)
-		console.log(Internal.IMPLICIT.STORE.config)
 
 		await waitFor(() => getByTestId(`state-letter`))
 		await waitFor(() => getByTestId(`state-selections`))
@@ -119,8 +124,13 @@ describe(`react-devtools`, () => {
 		await waitFor(() => getByTestId(`state-doubleLetter`))
 		await waitFor(() => getByTestId(`state-selectionsWithoutGreen`))
 		act(() => getByTestId(`view-transactions`).click())
+		runTransaction(setLetterTX)(`C`)
 		await waitFor(() => getByTestId(`transaction-setLetter`))
+		act(() => getByTestId(`open-close-transaction-setLetter`).click())
+		await waitFor(() => getByTestId(`transaction-update-setLetter-0`))
 		act(() => getByTestId(`view-timelines`).click())
 		await waitFor(() => getByTestId(`timeline-letterTL`))
+		act(() => getByTestId(`open-close-timeline-letterTL`).click())
+		await waitFor(() => getByTestId(`timeline-update-letter-0`))
 	})
 })
