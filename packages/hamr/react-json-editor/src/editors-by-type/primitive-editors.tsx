@@ -1,4 +1,4 @@
-import { NumberInput, TextInput } from "../../../react-elastic-input"
+import { NumberInput, TextInput } from "../../../react-elastic-input/src"
 
 import type { ReactElement } from "react"
 
