@@ -11,13 +11,17 @@ export type BreakCheckOptions = {
 	baseDirname?: string
 }
 
+export type BreakCheckOutcome =
+	| `breaking-changes-certified`
+	| `no-breaking-changes`
+
 export async function breakCheck({
 	tagPattern,
 	testPattern,
 	testCommand,
 	certifyCommand,
 	baseDirname = process.cwd(),
-}: BreakCheckOptions): Promise<void> {
+}: BreakCheckOptions): Promise<BreakCheckOutcome> {
 	const git = simpleGit(baseDirname)
 	const isGitClean = (await git.checkIsRepo()) && (await git.status()).isClean
 	if (!isGitClean) {
@@ -41,7 +45,7 @@ export async function breakCheck({
 	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
 	await git.checkout(candidateBranchName)
 	if (productionTestFiles.length === 0) {
-		logger.warn(
+		logger.error(
 			`no breaking changes can be detected`,
 			`because no tests were found matching the pattern "${testPattern}"`,
 		)
@@ -50,37 +54,43 @@ export async function breakCheck({
 	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
 
 	try {
-		await new Promise<void>((resolve, reject) => {
-			const result = exec(
-				testCommand,
-				{ cwd: baseDirname },
-				async (_, stdout, stderr) => {
-					logger.info(`completed`, `test`, stdout)
-					await git.stash()
-					if (result.exitCode === 0) {
-						logger.info(`passed`, `no breaking changes detected`)
-						resolve()
-					} else {
-						logger.error(`failed`, `breaking changes detected`)
-						reject(stderr)
-					}
-				},
-			)
-		})
+		const noBreakingChangesDetected = await new Promise<BreakCheckOutcome>(
+			(resolve, reject) => {
+				const result = exec(
+					testCommand,
+					{ cwd: baseDirname },
+					async (_, stdout, stderr) => {
+						logger.info(`completed`, `test`, stdout)
+						await git.stash()
+						if (result.exitCode === 0) {
+							logger.info(`passed`, `no breaking changes detected`)
+							resolve(`no-breaking-changes`)
+						} else {
+							logger.warn(
+								`failed previous test suite`,
+								`breaking changes detected`,
+							)
+							reject(stderr)
+						}
+					},
+				)
+			},
+		)
+		return noBreakingChangesDetected
 	} catch (thrown) {
-		logger.info(`failed`, `certifying`, thrown)
-		await new Promise<void>((resolve, reject) => {
+		logger.info(`breaking changes detected`, thrown)
+		return new Promise<BreakCheckOutcome>((resolve, reject) => {
 			const result = exec(
 				certifyCommand,
 				{ cwd: baseDirname },
 				async (_, stdout, stderr) => {
-					logger.info(`completed`, `certify`, stdout)
+					logger.info(`completed`, `certify`, result.exitCode, stdout)
 					await git.stash()
 					if (result.exitCode === 0) {
-						logger.info(`passed`, `no breaking changes detected`)
-						resolve()
+						logger.info(`passed`, `breaking changes were certified`)
+						resolve(`breaking-changes-certified`)
 					} else {
-						logger.error(`failed`, `breaking changes detected`)
+						logger.error(`failed`, `breaking changes detected and uncertified`)
 						reject(stderr)
 					}
 				},
