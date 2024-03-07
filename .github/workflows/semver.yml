@@ -59,26 +59,35 @@ jobs:
         id: break-check
         run: |
           set +e
-          bun ./packages/break-check/src/break-check.x.ts \
+          result=$(bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
             --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
             --testCommand="cd packages/atom.io && bun run build && bun run test:once:public" \
             --certifyCommand="grep -q '"atom.io": major' $(find ${DIR_PATH}/.changesets -type f) && exit 0 || exit 1"
+          )
+          set -e
           case $? in
             0)
-              echo "atom.io=✅ No public tests from the last release broke." >> $GITHUB_OUTPUT
+              # if result includes "breaking-changes-certified"
+              if [[ $result == *"breaking-changes-certified"* ]]; then
+                echo "atom.io=⚠️ Public tests from the last release broke, and a new major version has been certified." >> $GITHUB_OUTPUT
+              else 
+                echo "atom.io=✅ No public tests from the last release broke." >> $GITHUB_OUTPUT
+              fi
               ;;
             1)
-              echo "atom.io=⚠️ Public tests from the last release are breaking." >> $GITHUB_OUTPUT
+              echo "atom.io=❌ Public tests from the last release are breaking." >> $GITHUB_OUTPUT
+              exit 1
               ;;
             2)
-              echo "atom.io=❌ No tests were found matching the pattern." >> $GITHUB_OUTPUT
+              echo "atom.io=❌ No tests were found matching the `--testPattern` provided." >> $GITHUB_OUTPUT
+              exit 2
               ;;
             *)
               echo "Error: The command failed with an unexpected exit code: $exit_code."
+              exit 101
               ;;
           esac
-          set -e
 
       - name: Find Comment
         uses: peter-evans/find-comment@v3.0.0
