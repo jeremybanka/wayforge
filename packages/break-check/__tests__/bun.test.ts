@@ -20,9 +20,17 @@ beforeEach(async () => {
 		`${testDirname}/fixtures/bun/public-method__public.test.js`,
 		`${tempDir.name}/public-method__public.test.js`,
 	)
-	bunCopyFile(
+	await bunCopyFile(
 		`${testDirname}/fixtures/bun/private-method.test.js`,
 		`${tempDir.name}/private-method.test.js`,
+	)
+	await bunCopyFile(
+		`${testDirname}/fixtures/bun/certify-major-version.ts`,
+		`${tempDir.name}/certify-major-version.ts`,
+	)
+	await bunCopyFile(
+		`${testDirname}/fixtures/bun/.changesets/decent-files-exemplify.md`,
+		`${tempDir.name}/.changesets/decent-files-exemplify.md`,
 	)
 	expect(
 		await Bun.file(`${tempDir.name}/public-method__public.test.js`).text(),
@@ -62,17 +70,20 @@ describe(`break-check`, () => {
 		await git.add(`.`)
 		await git.commit(`breaking change`)
 		let caught: unknown
+		let stdout: string | undefined
 		try {
-			await breakCheck({
+			stdout = await breakCheck({
 				tagPattern: `my-library`,
 				testPattern: `*__public.test.js`,
 				testCommand: `bun test *__public.test.js`,
+				certifyCommand: `bun ./certify-major-version.ts`,
 				baseDirname: tempDir.name,
 			})
 		} catch (thrown) {
 			caught = thrown
 			console.log(thrown)
 		}
-		expect(caught).toBeString()
+		expect(caught).toBeUndefined()
+		expect(stdout).toBe(`breaking-changes-certified`)
 	})
 })
