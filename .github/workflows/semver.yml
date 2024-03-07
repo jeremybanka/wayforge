@@ -62,7 +62,7 @@ jobs:
           result=$(bun ./packages/break-check/src/break-check.x.ts \
             --tagPattern="atom.io" \
             --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
-            --testCommand="cd packages/atom.io && bun run build && bun run test:once:public" \
+            --testCommand="(cd packages/atom.io && bun run build && bun run test:once:public)" \
             --certifyCommand="grep -q '"atom.io": major' $(find ${DIR_PATH}/.changesets -type f) && exit 0 || exit 1"
           )
           set -e
