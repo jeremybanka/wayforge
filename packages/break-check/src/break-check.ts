@@ -7,6 +7,7 @@ export type BreakCheckOptions = {
 	tagPattern: string | undefined
 	testPattern: string
 	testCommand: string
+	certifyCommand: string
 	baseDirname?: string
 }
 
@@ -14,6 +15,7 @@ export async function breakCheck({
 	tagPattern,
 	testPattern,
 	testCommand,
+	certifyCommand,
 	baseDirname = process.cwd(),
 }: BreakCheckOptions): Promise<void> {
 	const git = simpleGit(baseDirname)
@@ -47,21 +49,42 @@ export async function breakCheck({
 	}
 	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
 
-	return new Promise((resolve, reject) => {
-		const result = exec(
-			testCommand,
-			{ cwd: baseDirname },
-			async (_, stdout, stderr) => {
-				logger.info(`completed`, `test`, stdout)
-				await git.stash()
-				if (result.exitCode === 0) {
-					logger.info(`passed`, `no breaking changes detected`)
-					resolve()
-				} else {
-					logger.error(`failed`, `breaking changes detected`)
-					reject(stderr)
-				}
-			},
-		)
-	})
+	try {
+		await new Promise<void>((resolve, reject) => {
+			const result = exec(
+				testCommand,
+				{ cwd: baseDirname },
+				async (_, stdout, stderr) => {
+					logger.info(`completed`, `test`, stdout)
+					await git.stash()
+					if (result.exitCode === 0) {
+						logger.info(`passed`, `no breaking changes detected`)
+						resolve()
+					} else {
+						logger.error(`failed`, `breaking changes detected`)
+						reject(stderr)
+					}
+				},
+			)
+		})
+	} catch (thrown) {
+		logger.info(`failed`, `certifying`, thrown)
+		await new Promise<void>((resolve, reject) => {
+			const result = exec(
+				certifyCommand,
+				{ cwd: baseDirname },
+				async (_, stdout, stderr) => {
+					logger.info(`completed`, `certify`, stdout)
+					await git.stash()
+					if (result.exitCode === 0) {
+						logger.info(`passed`, `no breaking changes detected`)
+						resolve()
+					} else {
+						logger.error(`failed`, `breaking changes detected`)
+						reject(stderr)
+					}
+				},
+			)
+		})
+	}
 }
