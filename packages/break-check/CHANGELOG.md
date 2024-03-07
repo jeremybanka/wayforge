@@ -1,5 +1,11 @@
 # break-check
 
+## 0.3.0
+
+### Minor Changes
+
+- fe4a79c: 💥 BREAKING CHANGE: break-check now requires a "--certifyCommand" option to be passed. This is a shell command which, when run, determines whether breaking changes have been accounted for.
+
 ## 0.2.0
 
 ### Minor Changes
