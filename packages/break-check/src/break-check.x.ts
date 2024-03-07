@@ -33,4 +33,4 @@ const ARGS = {
 } satisfies Record<string, CommandLineArg>
 
 const suppliedArgs = cli(ARGS, logger).parse(process.argv)
-breakCheck(suppliedArgs)
+await breakCheck(suppliedArgs)

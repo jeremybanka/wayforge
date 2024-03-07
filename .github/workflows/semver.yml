@@ -63,9 +63,8 @@ jobs:
             --tagPattern="atom.io" \
             --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
             --testCommand="(cd packages/atom.io && bun run build && bun run test:once:public)" \
-            --certifyCommand="grep -q '"atom.io": major' $(find ${DIR_PATH}/.changesets -type f) && exit 0 || exit 1"
+            --certifyCommand="grep -q -F '"atom.io": major' .changeset/*.md"
           )
-          set -e
           case $? in
             0)
               # if result includes "breaking-changes-certified"
@@ -77,17 +76,18 @@ jobs:
               ;;
             1)
               echo "atom.io=❌ Public tests from the last release are breaking." >> $GITHUB_OUTPUT
-              exit 1
+              echo "failed=true" >> $GITHUB_OUTPUT
               ;;
             2)
               echo "atom.io=❌ No tests were found matching the `--testPattern` provided." >> $GITHUB_OUTPUT
-              exit 2
+              echo "failed=true" >> $GITHUB_OUTPUT
               ;;
             *)
               echo "Error: The command failed with an unexpected exit code: $exit_code."
-              exit 101
+              echo "failed=true" >> $GITHUB_OUTPUT
               ;;
           esac
+          set -e
 
       - name: Find Comment
         uses: peter-evans/find-comment@v3.0.0
@@ -106,3 +106,9 @@ jobs:
             ## break-check
             ${{ steps.break-check.outputs['atom.io'] }}
           edit-mode: replace
+
+      - name: Pass/Fail
+        if: ${{ steps.break-check.outputs.failed == 'true' }}
+        run: |
+          echo "Breaking changes were detected. Please fix them before merging."
+          exit 1
