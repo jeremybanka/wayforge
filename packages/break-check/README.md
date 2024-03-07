@@ -81,5 +81,18 @@ if the tests fail, break-check will exit with a non-zero status code, indicating
     <td>Command to run to run the public tests.</td>
     <td><code>--testCommand="npm run test"</code></td>
   </tr>
+  <tr>
+    <td><code>--certifyCommand</code></td>
+    <td><code>-C</code></td>
+    <td></td>
+    <td>Command to run to certify that breaking changes have been detected.</td>
+    <td><code>--certifyCommand="grep -q '"my-library": major' $(find ${DIR_PATH}/.changesets -type f) && exit 0 || exit 1"</code></td>
+  </tr>
+  <tr>
+    <td><code>--baseDirname</code></td>
+    <td><code>-b</code></td>
+    <td></td>
+    <td>Directory in which to run the tests and certify the breaking changes.</td>
+    <td><code>--baseDirname="."</code></td>
 </table>
 <!--gen-->
