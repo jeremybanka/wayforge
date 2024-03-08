@@ -45,12 +45,15 @@
 				"noAssignInExpressions": "off",
 				"noConfusingVoidType": "off",
 				"noExplicitAny": "off",
+				"noThenProperty": "off",
 				"useValidTypeof": "off"
 			},
 			"style": {
 				"noCommaOperator": "off",
 				"noParameterAssign": "off",
 				"noUnusedTemplateLiteral": "off",
+				"useImportType": "off",
+				"useShorthandFunctionType": "off",
 				"useTemplate": "off"
 			}
 		}
