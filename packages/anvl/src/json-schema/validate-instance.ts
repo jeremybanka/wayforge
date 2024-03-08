@@ -88,21 +88,27 @@ export const validateAsType: {
 	integer: {
 		type: () => JSON_SCHEMA_META_REFINERY.integer,
 		enum: (opts) => (instance) => opts.spec?.includes(instance) ?? false,
-		minimum: (opts) => (instance) => instance >= (opts.spec ?? -Infinity),
-		maximum: (opts) => (instance) => instance <= (opts.spec ?? Infinity),
+		minimum: (opts) => (instance) =>
+			instance >= (opts.spec ?? Number.NEGATIVE_INFINITY),
+		maximum: (opts) => (instance) =>
+			instance <= (opts.spec ?? Number.POSITIVE_INFINITY),
 		exclusiveMinimum: (opts) => (instance) =>
-			instance > (opts.spec ?? -Infinity),
-		exclusiveMaximum: (opts) => (instance) => instance < (opts.spec ?? Infinity),
+			instance > (opts.spec ?? Number.NEGATIVE_INFINITY),
+		exclusiveMaximum: (opts) => (instance) =>
+			instance < (opts.spec ?? Number.POSITIVE_INFINITY),
 		multipleOf: (opts) => (instance) => instance % (opts.spec ?? 1) === 0,
 	},
 	number: {
 		type: () => JSON_SCHEMA_META_REFINERY.number,
 		enum: (opts) => (instance) => opts.spec?.includes(instance) ?? false,
-		minimum: (opts) => (instance) => instance >= (opts.spec ?? -Infinity),
-		maximum: (opts) => (instance) => instance <= (opts.spec ?? Infinity),
+		minimum: (opts) => (instance) =>
+			instance >= (opts.spec ?? Number.NEGATIVE_INFINITY),
+		maximum: (opts) => (instance) =>
+			instance <= (opts.spec ?? Number.POSITIVE_INFINITY),
 		exclusiveMinimum: (opts) => (instance) =>
-			instance > (opts.spec ?? -Infinity),
-		exclusiveMaximum: (opts) => (instance) => instance < (opts.spec ?? Infinity),
+			instance > (opts.spec ?? Number.NEGATIVE_INFINITY),
+		exclusiveMaximum: (opts) => (instance) =>
+			instance < (opts.spec ?? Number.POSITIVE_INFINITY),
 		multipleOf: (opts) => (instance) => instance % (opts.spec ?? 1) === 0,
 	},
 	string: {

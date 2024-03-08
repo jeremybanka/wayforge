@@ -2,10 +2,10 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"types": ["bun"],
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
+		"noEmit": true
 	},
 	"include": ["src/**/*.ts"]
 }

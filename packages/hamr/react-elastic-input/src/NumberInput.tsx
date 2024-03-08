@@ -35,7 +35,9 @@ export const isDecimalInProgress = (input: string): input is DecimalInProgress =
 
 const textToValue = (input: string, allowDecimal: boolean): number | null => {
 	if (isValidNonNumber(input)) return VALID_NON_NUMBER_INTERPRETATIONS[input]
-	return allowDecimal ? parseFloat(input) : Math.round(parseFloat(input))
+	return allowDecimal
+		? Number.parseFloat(input)
+		: Math.round(Number.parseFloat(input))
 }
 
 export type NumberConstraints = {
@@ -45,8 +47,8 @@ export type NumberConstraints = {
 	nullable: boolean
 }
 export const DEFAULT_NUMBER_CONSTRAINTS: NumberConstraints = {
-	max: Infinity,
-	min: -Infinity,
+	max: Number.POSITIVE_INFINITY,
+	min: Number.NEGATIVE_INFINITY,
 	decimalPlaces: 100,
 	nullable: true,
 }

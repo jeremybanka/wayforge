@@ -1,6 +1,6 @@
-import { execSync } from "child_process"
-import fs from "fs"
-import url from "url"
+import { execSync } from "node:child_process"
+import fs from "node:fs"
+import url from "node:url"
 
 import { PACKAGE_JSON_PATH, TSCONFIG_JSON_PATH } from "./constants"
 import { createLogger } from "./logger.node"

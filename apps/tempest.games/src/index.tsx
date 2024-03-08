@@ -1,5 +1,5 @@
-import render from "preact-render-to-string"
 import { KVStore } from "fastly:kv-store"
+import render from "preact-render-to-string"
 
 import * as form from "./<form>"
 import * as html from "./<html>"

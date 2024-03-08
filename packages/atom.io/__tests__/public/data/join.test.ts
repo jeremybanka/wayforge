@@ -39,7 +39,7 @@ describe(`join with content`, () => {
 				between: [`room`, `player`],
 				cardinality: `1:1`,
 			},
-			{ joinedAt: NaN },
+			{ joinedAt: Number.NaN },
 		)
 		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
 		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
@@ -94,7 +94,7 @@ describe(`join with content`, () => {
 				between: [`room`, `player`],
 				cardinality: `1:n`,
 			},
-			{ joinedAt: NaN },
+			{ joinedAt: Number.NaN },
 		)
 		const lobbyPlayersState = findRelations(
 			roomPlayers,
@@ -145,7 +145,7 @@ describe(`join with content`, () => {
 				between: [`room`, `player`],
 				cardinality: `n:n`,
 			},
-			{ joinedAt: NaN },
+			{ joinedAt: Number.NaN },
 		)
 
 		const lobbyPlayersState = findRelations(

@@ -1,5 +1,5 @@
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 import { ATOM_IO_ROOT, EXCLUDE_LIST } from "./constants"
 
 export default function discoverSubmodules(): string[] {

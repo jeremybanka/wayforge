@@ -1,5 +1,5 @@
-import type { ChildProcessWithoutNullStreams } from "child_process"
-import { spawn } from "child_process"
+import type { ChildProcessWithoutNullStreams } from "node:child_process"
+import { spawn } from "node:child_process"
 
 import { atomFamily, selectorFamily } from "atom.io"
 import type { Loadable } from "atom.io/data"

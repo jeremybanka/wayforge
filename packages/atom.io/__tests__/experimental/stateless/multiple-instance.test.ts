@@ -1,7 +1,7 @@
-import type { ChildProcess } from "child_process"
-import { spawn } from "child_process"
-import http from "http"
-import path from "path"
+import type { ChildProcess } from "node:child_process"
+import { spawn } from "node:child_process"
+import http from "node:http"
+import path from "node:path"
 
 import httpProxy from "http-proxy"
 import { DatabaseManager } from "./database.node"

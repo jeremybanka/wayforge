@@ -57,7 +57,7 @@ export function OnThisPage(): JSX.Element {
 			const headingDescriptors = headingElements.map((element) => ({
 				id: element.id,
 				content: element.textContent,
-				level: parseInt(element.tagName.slice(1), 10),
+				level: Number.parseInt(element.tagName.slice(1), 10),
 			}))
 			setHeadings(headingDescriptors)
 		}

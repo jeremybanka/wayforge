@@ -1,4 +1,4 @@
-import { readFile, readFileSync, writeFile, writeFileSync } from "fs"
+import { readFile, readFileSync, writeFile, writeFileSync } from "node:fs"
 
 import tmp from "tmp"
 import { vitest } from "vitest"

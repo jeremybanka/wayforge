@@ -1,4 +1,4 @@
-import { exec } from "child_process"
+import { exec } from "node:child_process"
 import { glob } from "glob"
 import logger from "npmlog"
 import simpleGit from "simple-git"

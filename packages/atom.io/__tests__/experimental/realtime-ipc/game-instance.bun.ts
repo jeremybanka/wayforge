@@ -1,4 +1,4 @@
-import { AsyncLocalStorage } from "async_hooks"
+import { AsyncLocalStorage } from "node:async_hooks"
 import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState, setState } from "atom.io"
 import * as RTS from "atom.io/realtime-server"

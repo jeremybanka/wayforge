@@ -10,11 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"bin",
-		"dist",
-		"src"
-	],
+	"files": ["bin", "dist", "src"],
 	"main": "dist/break-check.js",
 	"types": "dist/break-check.d.ts",
 	"bin": {

@@ -1,4 +1,4 @@
-import { readdirSync, renameSync } from "fs"
+import { readdirSync, renameSync } from "node:fs"
 
 import type { Json } from "~/packages/anvl/src/json"
 

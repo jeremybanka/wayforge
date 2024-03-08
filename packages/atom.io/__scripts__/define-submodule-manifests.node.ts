@@ -1,5 +1,5 @@
-import fs from "fs"
-import url from "url"
+import fs from "node:fs"
+import url from "node:url"
 
 import type { Json } from "atom.io/json"
 

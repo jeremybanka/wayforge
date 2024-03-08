@@ -50,7 +50,7 @@ export const buildTransaction = (
 		update: {
 			key,
 			id,
-			epoch: epoch === undefined ? NaN : epoch + 1,
+			epoch: epoch === undefined ? Number.NaN : epoch + 1,
 			updates: [],
 			params,
 			output: undefined,

@@ -1,4 +1,4 @@
-import * as fs from "fs"
+import * as fs from "node:fs"
 
 const changesetFiles = fs.readdirSync(`${import.meta.dir}/.changesets`)
 console.log({ changesetFiles })

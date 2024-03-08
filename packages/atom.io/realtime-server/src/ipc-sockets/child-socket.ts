@@ -1,4 +1,4 @@
-import type { ChildProcessWithoutNullStreams } from "child_process"
+import type { ChildProcessWithoutNullStreams } from "node:child_process"
 
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"

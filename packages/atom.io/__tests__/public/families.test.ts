@@ -56,9 +56,7 @@ describe(`selector families`, () => {
 		})
 		setState(findState(pointAtoms, `a`), { x: 1, y: 1 })
 		setState(findState(pointAtoms, `b`), { x: 2, y: 2 })
-		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(
-			1.4142135623730951,
-		)
+		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(Math.SQRT2)
 
 		setState(findState(pointAtoms, `b`), { x: 11, y: 11 })
 		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(

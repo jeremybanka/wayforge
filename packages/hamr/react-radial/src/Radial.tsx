@@ -81,7 +81,6 @@ export const Radial = ({
 				{actions.map((opt, idx): React.ReactElement => {
 					return (
 						<div
-							// biome-ignore lint/suspicious/noArrayIndexKey: in this case, this is correct
 							key={idx}
 							className={
 								`radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
