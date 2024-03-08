@@ -1,5 +1,5 @@
 import { isString } from "fp-ts/string"
-import type { Server as WebSocketServer, Socket } from "socket.io"
+import type { Socket, Server as WebSocketServer } from "socket.io"
 
 import type { ErrorObject } from "anvl/json-api"
 import { hasExactProperties } from "anvl/object/refinement"

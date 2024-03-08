@@ -1,4 +1,4 @@
-import * as http from "http"
+import * as http from "node:http"
 
 import { prettyDOM, render } from "@testing-library/react"
 import type { RenderResult } from "@testing-library/react"

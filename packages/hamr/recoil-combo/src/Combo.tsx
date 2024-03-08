@@ -49,7 +49,7 @@ const Combo_INTERNAL = <State,>({
 	label,
 	nullified,
 	disabled,
-	maxItems = Infinity,
+	maxItems = Number.POSITIVE_INFINITY,
 	minItems = 0,
 	placeholder,
 }: ComboProps_INTERNAL<State>): ReactElement => {

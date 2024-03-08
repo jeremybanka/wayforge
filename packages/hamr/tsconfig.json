@@ -4,7 +4,7 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"types": ["vitest/globals"],
-		"noEmit": true,
+		"noEmit": true
 	},
 	"include": ["**/src", "__scripts__", "__experimental__", "**/*.config.ts"]
 }

@@ -1,4 +1,4 @@
-import * as http from "http"
+import * as http from "node:http"
 
 import * as AtomIO from "atom.io"
 import type { Loadable } from "atom.io/data"
@@ -179,7 +179,7 @@ describe(`async selector`, () => {
 				const { quotient } = json
 
 				if (typeof quotient === `string`) {
-					const parsed = parseFloat(quotient)
+					const parsed = Number.parseFloat(quotient)
 					if (Number.isNaN(parsed)) return Error(`quotient is NaN`)
 					return parsed
 				}
@@ -192,9 +192,9 @@ describe(`async selector`, () => {
 
 		const quotient1 = await getState(quotientState)
 
-		expect(quotient1).toBe(Infinity)
+		expect(quotient1).toBe(Number.POSITIVE_INFINITY)
 
 		const quotient2 = getState(quotientState)
-		expect(quotient2).toBe(Infinity)
+		expect(quotient2).toBe(Number.POSITIVE_INFINITY)
 	})
 })

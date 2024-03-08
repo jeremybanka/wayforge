@@ -58,7 +58,7 @@ export type IntegerParseResult =
 
 export const Int = Object.assign((input: unknown) => parseInteger(input), {
 	from: (input: unknown): IntegerParseResult =>
-		pipe(input, String, parseFloat, (num) =>
+		pipe(input, String, Number.parseFloat, (num) =>
 			isInteger(num)
 				? {
 						value: num,

@@ -1,5 +1,5 @@
-import type { PathLike } from "fs"
-import { readdirSync } from "fs"
+import type { PathLike } from "node:fs"
+import { readdirSync } from "node:fs"
 
 import type { Json } from "~/packages/anvl/src/json"
 

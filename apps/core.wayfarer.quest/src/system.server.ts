@@ -1,4 +1,4 @@
-import path from "path"
+import path from "node:path"
 import { findState, getState, runTransaction, setState } from "atom.io"
 import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"

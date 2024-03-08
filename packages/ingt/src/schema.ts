@@ -1,4 +1,4 @@
-import { readFileSync } from "fs"
+import { readFileSync } from "node:fs"
 
 import type { Json } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"

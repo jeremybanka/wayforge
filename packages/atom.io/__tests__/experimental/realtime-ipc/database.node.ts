@@ -1,4 +1,4 @@
-import path from "path"
+import path from "node:path"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import { cities, countries } from "./schema.node"

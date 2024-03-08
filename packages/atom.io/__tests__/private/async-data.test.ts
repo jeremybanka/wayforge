@@ -1,4 +1,4 @@
-import * as http from "http"
+import * as http from "node:http"
 import { vitest } from "vitest"
 
 import * as AtomIO from "atom.io"

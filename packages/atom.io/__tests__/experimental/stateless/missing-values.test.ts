@@ -1,4 +1,4 @@
-import fsp from "fs/promises"
+import fsp from "node:fs/promises"
 
 import tmp from "tmp"
 import { vitest } from "vitest"
@@ -50,7 +50,7 @@ describe(`stateless data persistence strategies`, () => {
 				default: async () => {
 					try {
 						const data = await fsp.readFile(`${tmpDir.name}/count.txt`, `utf8`)
-						return parseInt(data, 10)
+						return Number.parseInt(data, 10)
 					} catch (error) {
 						await fsp.writeFile(`${tmpDir.name}/count.txt`, `0`)
 						return 0
