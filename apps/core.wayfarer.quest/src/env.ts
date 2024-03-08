@@ -6,7 +6,7 @@ export const env = createEnv({
 	isServer: typeof window === `undefined`,
 
 	server: {
-		PORT: z.string().transform((s) => parseInt(s, 10)),
+		PORT: z.string().transform((s) => Number.parseInt(s, 10)),
 		CLIENT_ORIGINS: z
 			.string()
 			// transform to array

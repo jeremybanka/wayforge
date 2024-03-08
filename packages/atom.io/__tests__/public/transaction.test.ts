@@ -279,7 +279,7 @@ describe(`transaction`, () => {
 		})
 		expect(Utils.stdout0).toHaveBeenCalledWith(`Transaction update:`, {
 			key: `setAllCounts`,
-			epoch: NaN,
+			epoch: Number.NaN,
 			params: [3],
 			output: undefined,
 			updates: [

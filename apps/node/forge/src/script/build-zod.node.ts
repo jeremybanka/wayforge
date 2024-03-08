@@ -1,4 +1,4 @@
-import { writeFileSync } from "fs"
+import { writeFileSync } from "node:fs"
 
 import jsonSchemaToZod from "json-schema-to-zod"
 import type { JsonSchemaObject } from "json-schema-to-zod"

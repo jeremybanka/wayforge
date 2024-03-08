@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+	"$schema": "https://biomejs.dev/schemas/1.6.0/schema.json",
 	"organizeImports": {
 		"enabled": true
 	},
@@ -45,12 +45,15 @@
 				"noAssignInExpressions": "off",
 				"noConfusingVoidType": "off",
 				"noExplicitAny": "off",
+				"noThenProperty": "off",
 				"useValidTypeof": "off"
 			},
 			"style": {
 				"noCommaOperator": "off",
 				"noParameterAssign": "off",
 				"noUnusedTemplateLiteral": "off",
+				"useImportType": "off",
+				"useShorthandFunctionType": "off",
 				"useTemplate": "off"
 			}
 		}

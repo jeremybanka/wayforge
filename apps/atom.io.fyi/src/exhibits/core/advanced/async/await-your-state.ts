@@ -1,4 +1,4 @@
-import http from "http"
+import http from "node:http"
 import { atom, getState } from "atom.io"
 import { Loadable } from "atom.io/data"
 
