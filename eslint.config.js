@@ -16,7 +16,7 @@ const config = {
 		parserOptions,
 	},
 	files: [`**/*.ts{,x}`, `eslint.config.js`],
-	ignores: [`**/dist/**/*`],
+	ignores: [`**/dist/**/*`, `**/gen/**/*`, `apps/node/forge/projects/**/*`],
 	plugins: { "@typescript-eslint": plugin },
 	rules: {
 		"@typescript-eslint/consistent-type-imports": [
