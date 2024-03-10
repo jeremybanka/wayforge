@@ -1,7 +1,7 @@
 // @ts-check
-import eslint from 'eslint';
-import parser from '@typescript-eslint/parser';
-import plugin from '@typescript-eslint/eslint-plugin';
+import eslint from "eslint"
+import parser from "@typescript-eslint/parser"
+import plugin from "@typescript-eslint/eslint-plugin"
 
 /** @type {import("@typescript-eslint/parser").ParserOptions} */
 const parserOptions = {
