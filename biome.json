@@ -10,8 +10,8 @@
 			"*.gen.ts",
 			"bin/**/*",
 			"dist/**/*",
+			"node_modules/**/*",
 			"**/metafile-*",
-			"node_modules",
 			"coverage",
 			"projects"
 		]

@@ -1,15 +1,15 @@
 class MyClass {
-  constructor() {
-    this.privateVar = "private";
-  }
+	constructor() {
+		this.privateVar = "private"
+	}
 
-  publicMethod() {
-    return "publicMethodOutput";
-  }
+	publicMethod() {
+		return "publicMethodOutput"
+	}
 
-  privateMethod() {
-    return this.privateVar;
-  }
+	privateMethod() {
+		return this.privateVar
+	}
 }
 
-module.exports = MyClass;
+module.exports = MyClass
