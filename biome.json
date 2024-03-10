@@ -6,7 +6,6 @@
 	"files": {
 		"ignoreUnknown": true,
 		"ignore": [
-			"*.js",
 			"*.gen.tsx",
 			"*.gen.ts",
 			"dist/**/*",
@@ -38,7 +37,8 @@
 				"useExhaustiveDependencies": "off"
 			},
 			"complexity": {
-				"noBannedTypes": "off"
+				"noBannedTypes": "off",
+				"useLiteralKeys": "off"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "off",
