@@ -8,6 +8,7 @@
 		"ignore": [
 			"*.gen.tsx",
 			"*.gen.ts",
+			"bin/**/*",
 			"dist/**/*",
 			"**/metafile-*",
 			"node_modules",
