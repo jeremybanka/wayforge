@@ -8,7 +8,7 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint"
 	},
@@ -27,7 +27,6 @@
 	"devDependencies": {
 		"@types/npmlog": "7.0.0",
 		"cross-env": "7.0.3",
-		"eslint": "8.57.0",
 		"tsx": "4.7.1",
 		"vitest": "1.3.1"
 	}

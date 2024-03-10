@@ -27,7 +27,7 @@
 		"build:junction": "cd junction && tsup",
 		"build:types": "cd types && tsup",
 		"lint": "concurrently \"npm:lint:*\"",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
@@ -35,7 +35,6 @@
 	},
 	"devDependencies": {
 		"concurrently": "8.2.2",
-		"eslint": "8.57.0",
 		"tsup": "8.0.2",
 		"typescript": "5.4.2",
 		"vite": "5.1.5",

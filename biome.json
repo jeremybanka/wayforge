@@ -6,12 +6,12 @@
 	"files": {
 		"ignoreUnknown": true,
 		"ignore": [
-			"*.js",
 			"*.gen.tsx",
 			"*.gen.ts",
+			"bin/**/*",
 			"dist/**/*",
+			"node_modules/**/*",
 			"**/metafile-*",
-			"node_modules",
 			"coverage",
 			"projects"
 		]
@@ -38,7 +38,8 @@
 				"useExhaustiveDependencies": "off"
 			},
 			"complexity": {
-				"noBannedTypes": "off"
+				"noBannedTypes": "off",
+				"useLiteralKeys": "off"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "off",

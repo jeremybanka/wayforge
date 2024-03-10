@@ -6,7 +6,7 @@
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",
