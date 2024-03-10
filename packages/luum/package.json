@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"dev": "cd example && vite",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",
@@ -17,7 +17,6 @@
 	"dependencies": {},
 	"devDependencies": {
 		"@types/node": "20.11.25",
-		"eslint": "8.57.0",
 		"tsup": "8.0.2",
 		"typescript": "5.4.2",
 		"vite": "5.1.5",

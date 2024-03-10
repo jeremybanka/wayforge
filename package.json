@@ -2,6 +2,7 @@
 	"name": "@wayforge/monorepo",
 	"version": "0.0.0",
 	"description": "choose your path",
+	"type": "module",
 	"repository": "https://github.com/jeremybanka/wayforge",
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
@@ -15,10 +16,7 @@
 		"apps/core.wayfarer.quest",
 		"apps/tempest.games",
 		"apps/wayfarer.quest",
-		"packages/*",
-		"packages/@banka/*",
-		"packages/@banka/eslint-config/react",
-		"packages/@banka/eslint-config/rome"
+		"packages/*"
 	],
 	"scripts": {
 		"dev": "tsc --watch",
@@ -40,8 +38,11 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.6.0",
 		"@changesets/cli": "2.27.1",
+		"@typescript-eslint/eslint-plugin": "7.1.1",
+		"@typescript-eslint/parser": "7.1.1",
 		"c8": "9.1.0",
 		"cross-env": "7.0.3",
+		"eslint": "8.57.0",
 		"fp-ts": "2.16.2",
 		"hamt_plus": "1.0.2",
 		"io-ts": "2.2.21",

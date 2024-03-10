@@ -26,7 +26,7 @@
 		"build:lib": "bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
 		"build:bin": "bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
 		"build:dts": "tsup",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "bun test --watch -- **/*.test.ts",

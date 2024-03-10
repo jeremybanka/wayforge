@@ -1,5 +1,0 @@
-**/dist/**
-*.js
-node_modules
-*.schema.ts
-*.schema.json.ts
