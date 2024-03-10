@@ -27,7 +27,7 @@
 		"build:junction": "cd junction && tsup",
 		"build:types": "cd types && tsup",
 		"lint": "concurrently \"npm:lint:*\"",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",

@@ -30,7 +30,7 @@
 		"build:recoil-effect-storage": "cd recoil-effect-storage && tsup",
 		"build:recoil-error-boundary": "cd recoil-error-boundary && tsup",
 		"build:recoil-tools": "cd recoil-tools && tsup",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",

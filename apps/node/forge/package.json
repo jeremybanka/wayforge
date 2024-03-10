@@ -8,7 +8,7 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint"
 	},

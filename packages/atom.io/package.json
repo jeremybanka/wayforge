@@ -33,7 +33,7 @@
 		"build:realtime-server": "cd realtime-server && tsup",
 		"build:realtime-testing": "cd realtime-testing && tsup",
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
-		"lint:biome": "biome check --diagnostic-level=warn -- .",
+		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "vitest",
