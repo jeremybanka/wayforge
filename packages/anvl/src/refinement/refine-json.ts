@@ -44,8 +44,8 @@ export const isJson = (input: unknown): input is Json.Serializable => {
 	if (input === null) return true
 	if (input === undefined) return false
 	const prototype = Object.getPrototypeOf(input)?.constructor.name
-	const isJson = JSON_PROTOTYPES.includes(prototype)
-	return isJson
+	const confirmed = JSON_PROTOTYPES.includes(prototype)
+	return confirmed
 }
 
 export const isPlainJson = (input: unknown): input is Json.Serializable =>

@@ -312,8 +312,8 @@ describe(`Junction with external storage`, () => {
 				externalStore: {
 					getContent: (key: string) => contentMap.get(key),
 					setContent: (key: string, content: { joinedAt: number }) =>
-						contentMap.set(`${key}`, content),
-					deleteContent: (key: string) => contentMap.delete(`${key}`),
+						contentMap.set(key, content),
+					deleteContent: (key: string) => contentMap.delete(key),
 					getRelatedKeys: (key: string) => relationMap.get(key),
 					addRelation: (keyA: string, keyB: string) => {
 						const setA = relationMap.get(keyA) ?? new Set()
@@ -373,7 +373,7 @@ describe(`Junction with external storage`, () => {
 						}
 					},
 					has: (a: string, b?: string) => {
-						if (b) {
+						if (b !== undefined) {
 							const aRelations = relationMap.get(a)
 							return aRelations?.has(b) ?? false
 						}

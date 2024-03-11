@@ -73,23 +73,29 @@ export const serveFilestore =
 					relationsRead: ({ id, type }) => {
 						logger.info(socket.id, `relationsRead`, type, id)
 						const result = readRelations({ id, type })
-						return result instanceof Error
-							? console.error(result)
-							: socket.emit(`relationsRead_${type}_${id}`, result)
+						if (result instanceof Error) {
+							console.error(result)
+							return
+						}
+						socket.emit(`relationsRead_${type}_${id}`, result)
 					},
 					indexRead: ({ type }) => {
 						logger.info(socket.id, `indexRead`, type)
 						const result = readIndex({ type })
-						return result instanceof Error
-							? logger.error(result)
-							: socket.emit(`indexRead_${type}`, result)
+						if (result instanceof Error) {
+							logger.error(result)
+							return
+						}
+						socket.emit(`indexRead_${type}`, result)
 					},
 					schemaRead: ({ type }) => {
 						logger.info(socket.id, `schemaRead`, type)
 						const result = readSchema({ type })
-						return result instanceof Error
-							? logger.error(result)
-							: socket.emit(`schemaRead_${type}`, result)
+						if (result instanceof Error) {
+							logger.error(result)
+							return
+						}
+						socket.emit(`schemaRead_${type}`, result)
 					},
 					write: async ({ id, type, value }) => {
 						logger.info(socket.id, `write`, id, value)

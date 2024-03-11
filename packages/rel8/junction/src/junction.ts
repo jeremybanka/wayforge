@@ -223,17 +223,18 @@ export class Junction<
 				? rest[0]
 				: (a[this.b as keyof typeof a] as string)
 		const content: Content | undefined =
+			// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 			rest[1] ?? typeof rest[0] === `string` ? undefined : (rest[0] as Content)
 		a = typeof a === `string` ? a : a[this.a]
 		switch (this.cardinality) {
 			// biome-ignore lint/suspicious/noFallthroughSwitchClause: perfect here
 			case `1:1`: {
 				const bPrev = this.getRelatedKey(a)
-				if (bPrev && bPrev !== b) this.delete(bPrev, a)
+				if (bPrev !== undefined && bPrev !== b) this.delete(bPrev, a)
 			}
 			case `1:n`: {
 				const aPrev = this.getRelatedKey(b)
-				if (aPrev && aPrev !== a) this.delete(aPrev, b)
+				if (aPrev !== undefined && aPrev !== a) this.delete(aPrev, b)
 			}
 		}
 		if (content) {
@@ -268,16 +269,16 @@ export class Junction<
 		if (a === undefined && typeof b === `string`) {
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
-				for (const a of bRelations) {
-					this.delete(a, b)
+				for (const bRel of bRelations) {
+					this.delete(bRel, b)
 				}
 			}
 		}
 		if (typeof a === `string` && b === undefined) {
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
-				for (const b of aRelations) {
-					this.delete(a, b)
+				for (const aRel of aRelations) {
+					this.delete(a, aRel)
 				}
 			}
 		}
@@ -314,7 +315,7 @@ export class Junction<
 	): this {
 		const hasContent = !Array.isArray(relations)
 		const bs = hasContent ? Object.keys(relations) : relations
-		if (config?.reckless) {
+		if (config?.reckless !== undefined) {
 			this.replaceRelationsUnsafely(a, bs)
 		} else {
 			this.replaceRelationsSafely(a, bs)
@@ -342,16 +343,16 @@ export class Junction<
 		if (a !== undefined && b === undefined) {
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
-				return [...aRelations].map((b) => {
-					return [b, this.getContent(a, b) ?? (null as Content)]
+				return [...aRelations].map((aRel) => {
+					return [aRel, this.getContent(a, aRel) ?? (null as Content)]
 				})
 			}
 		}
 		if (a === undefined && b !== undefined) {
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
-				return [...bRelations].map((a) => {
-					return [a, this.getContent(a, b) ?? (null as Content)]
+				return [...bRelations].map((bRel) => {
+					return [bRel, this.getContent(bRel, b) ?? (null as Content)]
 				})
 			}
 		}
@@ -359,7 +360,7 @@ export class Junction<
 	}
 
 	public has(a: string, b?: string): boolean {
-		if (b) {
+		if (b !== undefined) {
 			const setA = this.getRelatedKeys(a)
 			return setA?.has(b) ?? false
 		}

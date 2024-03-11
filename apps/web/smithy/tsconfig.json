@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"jsxImportSource": "react",
 		"jsx": "react-jsx",
-		"types": ["vite/client"]
+		"types": ["vite/client", "vitest/globals"]
 	},
-	"include": ["./src", "./lasertag.d.ts", "./vite.config.ts"]
+	"include": ["src", "./lasertag.d.ts", "vite.config.ts"]
 }

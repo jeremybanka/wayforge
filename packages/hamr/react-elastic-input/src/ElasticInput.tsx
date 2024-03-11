@@ -46,7 +46,9 @@ export const ElasticInput: ForwardRefExoticComponent<
 					setInputWidth(`${spanRef.current.offsetWidth + extraWidth}px`)
 				}
 			}, 1000)
-			return () => clearInterval(interval)
+			return () => {
+				clearInterval(interval)
+			}
 		}
 	}, [inputRef.current?.value, props.value])
 
@@ -73,8 +75,8 @@ export const ElasticInput: ForwardRefExoticComponent<
 					visibility: `hidden`,
 					// color: `red`,
 					whiteSpace: `pre`,
-					fontFamily: props.style?.fontFamily || `inherit`,
-					fontSize: props.style?.fontSize || `inherit`,
+					fontFamily: props.style?.fontFamily ?? `inherit`,
+					fontSize: props.style?.fontSize ?? `inherit`,
 				}}
 			>
 				{props.value}

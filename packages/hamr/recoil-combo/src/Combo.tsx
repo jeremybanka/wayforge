@@ -40,7 +40,7 @@ export type ComboProps_INTERNAL<T> = ComboPropsCore<T> &
 	ComboSelections<T> & { getName: (value: T) => string }
 /* eslint-enable @typescript-eslint/sort-type-constituents */
 
-const Combo_INTERNAL = <State,>({
+const ComboInternal = <State,>({
 	onSetSelections,
 	options,
 	selections,
@@ -68,10 +68,10 @@ const Combo_INTERNAL = <State,>({
 
 	const inputRef = useRef<HTMLInputElement>(null)
 
-	const enabled = !nullified && !disabled
+	const enabled = nullified !== true && disabled !== true
 
 	useEffect(() => {
-		if (nullified) {
+		if (nullified === true) {
 			setEntry(``)
 			setSelections([])
 		}
@@ -100,15 +100,16 @@ const Combo_INTERNAL = <State,>({
 	const onKeydown: KeyboardEventHandler = (e) => {
 		if (e.key === `Enter` && entry) {
 			e.preventDefault()
+			// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 			if (selected) add(selected)
 		}
-		if (e.key === `ArrowDown` && entry && filteredOptions) {
+		if (e.key === `ArrowDown` && entry) {
 			e.preventDefault()
 			setSelectedIdx((current) =>
 				current + 1 === filteredOptions.length ? 0 : current + 1,
 			)
 		}
-		if (e.key === `ArrowUp` && entry && filteredOptions) {
+		if (e.key === `ArrowUp` && entry) {
 			e.preventDefault()
 			setSelectedIdx((current) =>
 				current === 0 ? filteredOptions.length - 1 : current - 1,
@@ -123,14 +124,16 @@ const Combo_INTERNAL = <State,>({
 
 	return (
 		<div aria-label="Multiple Choice">
-			{label && <label htmlFor={domId}>{label}</label>}
+			{typeof label === `string` && <label htmlFor={domId}>{label}</label>}
 			<div>
 				<span>
 					<input
 						id={domId}
 						ref={inputRef}
 						value={entry}
-						onChange={(e) => setEntry(e.target.value)}
+						onChange={(e) => {
+							setEntry(e.target.value)
+						}}
 						onKeyDown={onKeydown}
 						disabled={!enabled}
 						placeholder={placeholder}
@@ -143,7 +146,9 @@ const Combo_INTERNAL = <State,>({
 									<button
 										type="button"
 										aria-label="Choose"
-										onClick={() => add(v)}
+										onClick={() => {
+											add(v)
+										}}
 										className={idx === selectedIdx ? `selected` : undefined}
 										disabled={!enabled}
 									>
@@ -157,7 +162,9 @@ const Combo_INTERNAL = <State,>({
 				<button
 					type="button"
 					aria-label="Add"
-					onClick={() => (entry ? add(selected) : undefined)}
+					onClick={() => {
+						entry ? add(selected) : undefined
+					}}
 					tabIndex={-1}
 					disabled={!enabled}
 				>
@@ -171,7 +178,9 @@ const Combo_INTERNAL = <State,>({
 						<button
 							type="button"
 							aria-label="Remove"
-							onClick={() => remove(v)}
+							onClick={() => {
+								remove(v)
+							}}
 							tabIndex={0}
 						>
 							x
@@ -186,8 +195,9 @@ const Combo_INTERNAL = <State,>({
 export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
 	let options: State[] = []
 	let selections: State[] = []
-	let setSelections: (value: State[]) => void = () =>
+	let setSelections: (value: State[]) => void = () => {
 		console.warn(`no setSelections`)
+	}
 	let getName: (value: State) => string = (v) => v as unknown as string
 	if (`getName` in props) {
 		getName = props.getName
@@ -206,7 +216,7 @@ export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
 	}
 
 	return (
-		<Combo_INTERNAL
+		<ComboInternal
 			{...props}
 			options={options}
 			selections={selections}

@@ -43,7 +43,7 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 					if (input instanceof refiner) {
 						return { type: key, data: input } as any
 					}
-				} catch (e) {}
+				} catch (err) {}
 			}
 		}
 		return null

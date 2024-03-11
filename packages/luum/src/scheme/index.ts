@@ -397,7 +397,7 @@ export const luumToCss = (rule: LuumCssRule): string => {
 			return pipe(
 				oneOrManyKeys,
 				each(isCssColorPropertyKey),
-				map((key) => `${key}: ${hex}`),
+				map((k) => `${k}: ${hex}`),
 				join(`; ` + LF),
 			)
 		}),

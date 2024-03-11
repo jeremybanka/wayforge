@@ -8,7 +8,9 @@ export type CommandLineArg = {
 export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>(
 	args: T,
 	logger = {
-		error: (...args: any[]) => console.error(...args),
+		error: (...args0: any[]) => {
+			console.error(...args0)
+		},
 	},
 ): {
 	parse: (passed: string[]) => {
@@ -25,7 +27,7 @@ export function cli<T extends Record<string, CommandLineArg>, A extends keyof T>
 							(arg) =>
 								arg.startsWith(`--${key}=`) || arg.startsWith(`-${shorthand}=`),
 						)
-						if (!valueStringified) {
+						if (valueStringified === undefined) {
 							if (required) {
 								logger.error(
 									`parsing`,

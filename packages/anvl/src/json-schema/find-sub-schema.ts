@@ -17,7 +17,7 @@ export const findSubSchema = (
 		if (typeof schema === `boolean`) {
 			return new TypeError(`The schema is not a JsonSchema`)
 		}
-		const { node, refMap } = pathIntoSchema.reduce(
+		const { node: n, refMap: rm } = pathIntoSchema.reduce(
 			({ node, refMap = undefined }, key) => (
 				console.log({ node, key }),
 				isJsonSchemaRef(node)
@@ -26,12 +26,16 @@ export const findSubSchema = (
 			),
 			{ node: schema, refMap: undefined },
 		)
-		if (node instanceof Error) throw node
+		if (n instanceof Error) throw n
 
-		let subSchema = node
+		let subSchema = n
 		while (isJsonSchemaRef(subSchema)) {
 			console.log({ subSchema })
-			subSchema = retrieveRef({ refNode: subSchema, root: schema, refMap }).node
+			subSchema = retrieveRef({
+				refNode: subSchema,
+				root: schema,
+				refMap: rm,
+			}).node
 		}
 		console.log({ subSchema })
 

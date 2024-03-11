@@ -63,7 +63,7 @@ export const DTS_OPTIONS: Options = {
 
 export default defineConfig((options) => {
 	console.log(options)
-	const using = options.dts ? DTS_OPTIONS : JS_OPTIONS
+	const using = options.dts === false ? JS_OPTIONS : DTS_OPTIONS
 	console.log({ using })
 	console.log(`bundle exclude list: ${discoverSubmodules().join(`, `)}`)
 	return using

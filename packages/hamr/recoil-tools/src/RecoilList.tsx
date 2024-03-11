@@ -43,9 +43,10 @@ export const ListItems = <DATA, META = {}>({
 	},
 }: RecoilListProps<DATA, META>): ReactElement => {
 	const remove =
-		useRemove?.() ||
-		((id) =>
-			console.warn(`tried to remove ${id}, but no useRemove was provided`))
+		useRemove?.() ??
+		((id) => {
+			console.warn(`tried to remove ${id}, but no useRemove was provided`)
+		})
 	return (
 		<Wrapper>
 			{labels.length > 0 || NoItems === undefined ? (
@@ -54,7 +55,9 @@ export const ListItems = <DATA, META = {}>({
 						<ListItem
 							label={label}
 							findState={findState}
-							removeMe={() => remove(label.id)}
+							removeMe={() => {
+								remove(label.id)
+							}}
 						/>
 					</ListItemWrapper>
 				))

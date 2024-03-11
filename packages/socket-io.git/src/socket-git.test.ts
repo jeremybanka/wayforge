@@ -51,7 +51,11 @@ describe(`git-io usage`, () => {
 							expect(console.info).toHaveBeenCalledWith(client.id, `status`)
 							expect(isGitSocketError(result))
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -80,7 +84,11 @@ describe(`git-io usage`, () => {
 								path: tmpDir.name,
 							})
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -113,7 +121,11 @@ describe(`git-io usage`, () => {
 								staged: [],
 							})
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -153,7 +165,11 @@ describe(`git-io usage`, () => {
 								staged: [],
 							})
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -178,7 +194,11 @@ describe(`git-io usage`, () => {
 								pipe(result, ensureAgainst(isGitSocketError)),
 							).toStrictEqual(``)
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -216,7 +236,11 @@ describe(`git-io usage`, () => {
 								},
 							})
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -235,7 +259,11 @@ describe(`git-io usage`, () => {
 							expect(console.info).toHaveBeenCalledWith(client.id, `diff`)
 							expect(result).toStrictEqual(``)
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})

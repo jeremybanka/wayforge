@@ -11,7 +11,7 @@ const ARGS = process.argv.slice(2)
 const SHOULD_RUN = ARGS.includes(`--run`)
 if (SHOULD_RUN) {
 	const mode = ARGS.at(-1)
-	if (!mode) {
+	if (mode === undefined) {
 		throw new Error(
 			`No mode specified. Specify 'test' or 'make' as the last argument`,
 		)
@@ -23,12 +23,13 @@ export default function main(mode: string): void {
 	const logger = createLogger(SCRIPT_NAME)
 	const packageJsonText = fs.readFileSync(PACKAGE_JSON_PATH, `utf-8`)
 	const packageJson = JSON.parse(packageJsonText)
+	const packageJsonFiles = packageJson.files
 	const distributionFilepaths: string[] =
 		typeof packageJson === `object` &&
 		packageJson !== null &&
 		`files` in packageJson &&
-		Array.isArray(packageJson.files) &&
-		packageJson.files.every((filepath: unknown) => typeof filepath === `string`)
+		Array.isArray(packageJsonFiles) &&
+		packageJsonFiles.every((filepath: unknown) => typeof filepath === `string`)
 			? packageJson.files
 			: []
 	const tsconfigJsonText = fs.readFileSync(TSCONFIG_JSON_PATH, `utf-8`)
@@ -54,14 +55,14 @@ export default function main(mode: string): void {
 						`testing`,
 						`files and exports in "tsconfig.prod.json" are missing`,
 						newTsconfigJson.include.filter(
-							(filepath) => !oldTsconfigJson.include.includes(filepath),
+							(filepath) => oldTsconfigJson.include.includes(filepath) === false,
 						),
 					)
 					logger.error(
 						`testing`,
 						`files and exports in "tsconfig.prod.json" are extraneous`,
 						oldTsconfigJson.include.filter(
-							(filepath) => !newTsconfigJson.include.includes(filepath),
+							(filepath) => newTsconfigJson.include.includes(filepath) === false,
 						),
 					)
 					logger.error(

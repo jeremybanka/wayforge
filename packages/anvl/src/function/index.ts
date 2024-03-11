@@ -26,7 +26,7 @@ export const isModifier =
 	(sample: T): Refinement<unknown, Modifier<T>> => {
 		const sampleIsValid = validate(sample)
 		if (!sampleIsValid) {
-			throw new Error(`Invalid test case: JSON.stringify(${sample})`)
+			throw new Error(`Invalid test case: ${JSON.stringify(sample)}`)
 		}
 		return (input: unknown): input is Modifier<T> => {
 			if (typeof input !== `function`) return false

@@ -2,8 +2,8 @@
 	"compilerOptions": {
 		"target": "es2017",
 		"lib": ["DOM", "es2023", "ES2023.Array"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "react",
+		"jsx": "preserve",
+		"jsxImportSource": "",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
@@ -34,12 +34,24 @@
 		"noUnusedParameters": true,
 		"skipLibCheck": true
 	},
-	"include": [
-		"**/*.ts",
-		"**/*.tsx",
-		"**/*.config.ts",
-		"**/*.schema.json.ts",
-		"**/*.js"
+	"references": [
+		{ "path": "./apps/node/forge" },
+		{ "path": "./apps/node/kite" },
+		{ "path": "./apps/web/sample" },
+		{ "path": "./apps/web/shrine" },
+		{ "path": "./apps/web/smithy" },
+		{ "path": "./apps/web/strand" },
+		{ "path": "./packages/anvl" },
+		{ "path": "./packages/atom.io" },
+		{ "path": "./packages/break-check" },
+		{ "path": "./packages/hamr" },
+		{ "path": "./packages/ingt" },
+		{ "path": "./packages/luum" },
+		{ "path": "./packages/occlusion" },
+		{ "path": "./packages/rel8" },
+		{ "path": "./packages/socket-io.filestore" },
+		{ "path": "./packages/socket-io.git" }
 	],
-	"exclude": ["*/**/node_modules", "*/**/dist", "apps/tempest.games"]
+	"include": [],
+	"exclude": ["*/**/node_modules", "*/**/dist"]
 }

@@ -1,10 +1,19 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"composite": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"types": ["vitest/globals"],
-		"noEmit": true
+		"noEmit": true,
+		"rootDir": "../.."
 	},
-	"include": ["**/src", "__scripts__", "__experimental__", "**/*.config.ts"]
+	"include": [
+		"**/src",
+		"__scripts__",
+		"__experimental__",
+		"**/*.config.ts",
+		"../anvl/src",
+		"../luum/src"
+	]
 }

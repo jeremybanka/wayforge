@@ -12,7 +12,7 @@ const ARGS = process.argv.slice(2)
 const SHOULD_RUN = ARGS.includes(`--run`)
 if (SHOULD_RUN) {
 	const mode = ARGS.at(-1)
-	if (!mode) {
+	if (mode === undefined) {
 		throw new Error(
 			`No mode specified. Specify 'test' or 'make' as the last argument`,
 		)
@@ -62,14 +62,14 @@ export default function main(mode: string): void {
 					`testing`,
 					`files in "hamr/package.json" are missing`,
 					newPackageJson.files.filter(
-						(filepath) => !oldPackageJson.files.includes(filepath),
+						(filepath) => oldPackageJson.files.includes(filepath) === false,
 					),
 				)
 				logger.error(
 					`testing`,
 					`files in "hamr/package.json" are extraneous`,
 					oldPackageJson.files.filter(
-						(filepath) => !newPackageJson.files.includes(filepath),
+						(filepath) => newPackageJson.files.includes(filepath) === false,
 					),
 				)
 				logger.error(

@@ -98,7 +98,8 @@ export const findReactionWithRelationsState = selectorFamily<
 		(reactionId) =>
 		({ set }, newValue) => {
 			if (newValue instanceof DefaultValue) {
-				return console.warn(`cannot set default value for reaction`)
+				console.warn(`cannot set default value for reaction`)
+				return
 			}
 			const { products, reagents, featureOf, ...reaction } = newValue
 			set(findReactionState(reactionId), reaction)
@@ -144,9 +145,9 @@ export const addReactionAsEnergyFeature: Transact<(id: string) => void> = (
 	set(energyFeaturesState, energyFeatures.set({ energyId, reactionId }))
 }
 export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
-	useRecoilTransaction_UNSTABLE(
-		(transactors) => () => addReactionAsEnergyFeature(transactors, energyId),
-	)
+	useRecoilTransaction_UNSTABLE((transactors) => () => {
+		addReactionAsEnergyFeature(transactors, energyId)
+	})
 
 export const removeReaction: Transact<(id: string) => void> = (
 	transactors,
@@ -162,6 +163,6 @@ export const removeReaction: Transact<(id: string) => void> = (
 	removeFromIndex(transactors, { id: reactionId, indexAtom: reactionIndex })
 }
 export const useRemoveReaction = (): ((id: string) => void) =>
-	useRecoilTransaction_UNSTABLE(
-		(transactors) => (id) => removeReaction(transactors, id),
-	)
+	useRecoilTransaction_UNSTABLE((transactors) => (id) => {
+		removeReaction(transactors, id)
+	})

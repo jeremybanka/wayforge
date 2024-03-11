@@ -53,7 +53,7 @@ export class Perspective extends Dictionary<
 	): TrueIdentifier<T> {
 		const trueId = this.get(virtualIdentifier.id)
 		if (isUndefined(trueId)) {
-			throw new Error(`Could not find trueId for ${virtualIdentifier}`)
+			throw new Error(`Could not find trueId for ${virtualIdentifier.id}`)
 		}
 		return {
 			id: trueId,

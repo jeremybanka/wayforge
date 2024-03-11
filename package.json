@@ -19,7 +19,7 @@
 		"packages/*"
 	],
 	"scripts": {
-		"dev": "tsc --watch",
+		"dev": "tsc -b -w",
 		"lint": "turbo run lint",
 		"lint:biome": "turbo run lint:biome",
 		"lint:eslint": "turbo run lint:eslint",

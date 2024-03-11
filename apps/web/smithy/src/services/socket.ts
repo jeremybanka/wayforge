@@ -16,18 +16,18 @@ export type ClienteleUser = Socket<
 >
 
 export const initConnectionState = (
-	socket: ClienteleUser,
+	userSocket: ClienteleUser,
 ): RecoilValueReadOnly<
 	ClienteleError | `Connected` | `Disconnected` | `Searching`
 > => {
-	const connectionState_INTERNAL = atom<
+	const connectionStateInternal = atom<
 		ClienteleError | `Connected` | `Disconnected` | `Searching`
 	>({
 		key: `connection_INTERNAL`,
 		default: `Searching`,
 		effects: [
 			({ setSelf }) => {
-				socket.on(`connection`, () => {
+				userSocket.on(`connection`, () => {
 					console.log(`Connected`)
 					setSelf(`Connected`)
 				})
@@ -36,7 +36,7 @@ export const initConnectionState = (
 	})
 	return selector({
 		key: `connection`,
-		get: ({ get }) => get(connectionState_INTERNAL),
+		get: ({ get }) => get(connectionStateInternal),
 	})
 }
 

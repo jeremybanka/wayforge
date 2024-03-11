@@ -13,14 +13,18 @@ export const Quotient: FC = () => {
 				<button
 					type="button"
 					data-testid="quotientButton+"
-					onClick={() => setQuotient((q) => q + 1)}
+					onClick={() => {
+						setQuotient((q) => q + 1)
+					}}
 				>
 					+
 				</button>
 				<button
 					type="button"
 					data-testid="quotientButton-"
-					onClick={() => setQuotient((q) => q - 1)}
+					onClick={() => {
+						setQuotient((q) => q - 1)
+					}}
 				>
 					-
 				</button>

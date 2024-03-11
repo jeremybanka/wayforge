@@ -53,9 +53,14 @@
 		"lint:biome": {
 			"cache": false
 		},
-		"lint:eslint": {},
+		"lint:eslint": {
+			"inputs": ["**/*.ts", "**/*.tsx", "eslint.config.js"]
+		},
+		"lint:typescript": {
+			"inputs": ["**/*.ts", "**/*.tsx", "**/tsconfig.json"]
+		},
 		"lint": {
-			"dependsOn": ["lint:biome", "lint:eslint"]
+			"dependsOn": ["lint:biome", "lint:eslint", "lint:typescript"]
 		},
 		"deploy": {
 			"dependsOn": ["build", "test:once", "lint"]

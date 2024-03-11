@@ -5,7 +5,6 @@ import type { EmptyObject, PlainObject } from "../object"
 import { cannotExist, isWithin } from "../refinement"
 import type {
 	JsonApiResource,
-	Relationships,
 	Resource,
 	ResourceFlat,
 	ResourceObject,
@@ -34,15 +33,12 @@ export type DeleteKeysFrom<T, K extends number | string | symbol> = T & {
 export const flattenResourceObject = <RESOURCE extends JsonApiResource>(
 	resource: ResourceObject<RESOURCE>,
 ): ResourceFlat<RESOURCE> => {
-	if (resource.attributes) {
-		return {
-			...resource.attributes,
-			...resource.relationships,
-			id: resource.id,
-			type: resource.type,
-		} as ResourceFlat<RESOURCE>
-	}
-	throw new Error(`Resource ${resource.id} has no attributes`)
+	return {
+		...resource.attributes,
+		...resource.relationships,
+		id: resource.id,
+		type: resource.type,
+	} as ResourceFlat<RESOURCE>
 }
 export const serializeResource = <ATTRIBUTES extends Json.Object & PlainObject>(
 	obj: ATTRIBUTES,

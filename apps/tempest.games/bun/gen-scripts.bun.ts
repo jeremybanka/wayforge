@@ -5,7 +5,7 @@ async function gen() {
 	// const hyperScriptMinJS = await Bun.file(
 	// 	`./node_modules/hyperscript.org/dist/_hyperscript.min.js`,
 	// ).text()
-	Bun.write(
+	await Bun.write(
 		`./src/scripts.gen.ts`,
 		`/* eslint-disable */\nexport const htmxMinJS = ${JSON.stringify(
 			JSON.stringify(htmxMinJS),
@@ -16,4 +16,4 @@ async function gen() {
 	)
 }
 
-gen()
+void gen()

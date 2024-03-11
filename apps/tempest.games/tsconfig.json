@@ -24,6 +24,6 @@
 		"useUnknownInCatchVariables": true,
 		"noPropertyAccessFromIndexSignature": true
 	},
-	"include": ["./*.ts", "./*.tsx", "./**/*.ts", "./**/*.tsx"],
+	"include": ["src", "bun"],
 	"exclude": []
 }

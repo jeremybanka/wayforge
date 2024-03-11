@@ -8,30 +8,31 @@ export type InspectionResult = Partial<{
 export type InspectNode = (
 	path: string[],
 	node: unknown,
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 ) => InspectionResult | void
 
 export const sprawl = (
 	tree: Array<unknown> | object,
 	inspector: InspectNode,
 ): void => {
-	const walk = (path: string[], node: unknown): InspectionResult => {
+	const walk = (p: string[], n: unknown): InspectionResult => {
 		const inspect = (path: string[], node: unknown): InspectionResult | null => {
 			// console.log(parent)
 			const result = inspector(path, node)
 			if (result) return result
 			return null
 		}
-		const result = inspect(path, node)
-		if (result?.jobComplete || result?.pathComplete) {
+		const result = inspect(p, n)
+		if (result?.jobComplete ?? result?.pathComplete) {
 			return result
 		}
-		const childEntries = Array.isArray(node)
-			? node.map((v, i) => [i, v])
-			: isPlainObject(node)
-			  ? Object.entries(node)
+		const childEntries = Array.isArray(n)
+			? n.map((v, i) => [i, v])
+			: isPlainObject(n)
+			  ? Object.entries(n)
 			  : []
 		for (const [k, v] of childEntries) {
-			const subResult = walk([...path, k], v)
+			const subResult = walk([...p, k], v)
 			if (subResult?.jobComplete) {
 				return subResult
 			}

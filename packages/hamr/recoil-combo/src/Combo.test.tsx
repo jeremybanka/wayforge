@@ -5,8 +5,6 @@ import type { RecoilState, RecoilValueReadOnly } from "recoil"
 import { RecoilRoot, atom, useRecoilState, useRecoilValue } from "recoil"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
-
 import { Combo } from "./Combo"
 
 export const onChange = vitest.fn()
@@ -15,9 +13,14 @@ export type RecoilObserverProps = {
 	node: RecoilState<any> | RecoilValueReadOnly<any>
 	onChange: (value: any) => void
 }
-export const RecoilObserver: FC<RecoilObserverProps> = ({ node, onChange }) => {
+export const RecoilObserver: FC<RecoilObserverProps> = ({
+	node,
+	onChange: handler,
+}) => {
 	const value = useRecoilValue(node)
-	useEffect(() => onChange(value), [onChange, value])
+	useEffect(() => {
+		handler(value)
+	}, [handler, value])
 	return null
 }
 
@@ -26,13 +29,13 @@ const lettersState = atom<string[]>({
 	default: [],
 })
 
-const scenarioA_Managed = () => {
+const externallyManagedScenario = () => {
 	const Managed: FC = () => {
 		const [letters, setLetters] = useRecoilState(lettersState)
 		return (
-			<manager is="div">
+			<main>
 				<Combo options={[`a`]} selections={letters} setSelections={setLetters} />
-			</manager>
+			</main>
 		)
 	}
 	const utils = render(
@@ -51,7 +54,7 @@ const scenarioA_Managed = () => {
 }
 
 it(`accepts user input with externally managed state`, () => {
-	const { inputSearch, getByLabelText } = scenarioA_Managed()
+	const { inputSearch, getByLabelText } = externallyManagedScenario()
 	fireEvent.change(inputSearch, { target: { value: `a` } })
 	expect(inputSearch.value).toBe(`a`)
 	expect(inputSearch.getElementsByTagName)
@@ -61,7 +64,7 @@ it(`accepts user input with externally managed state`, () => {
 	expect(onChange).toHaveBeenCalledWith([`a`])
 })
 
-const scenarioB_SelfManaged = () => {
+const selfManagedScenario = () => {
 	const SelfManaged: FC = () => (
 		<Combo options={[`a`]} selectionsState={lettersState} />
 	)
@@ -81,7 +84,7 @@ const scenarioB_SelfManaged = () => {
 }
 
 it(`accepts user input with internally managed state`, () => {
-	const { inputSearch } = scenarioB_SelfManaged()
+	const { inputSearch } = selfManagedScenario()
 	fireEvent.change(inputSearch, { target: { value: `a` } })
 	expect(inputSearch.value).toBe(`a`)
 	expect(inputSearch.getElementsByTagName)

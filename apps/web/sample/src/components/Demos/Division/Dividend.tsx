@@ -13,14 +13,18 @@ export const Dividend: FC = () => {
 				<button
 					type="button"
 					data-testid="dividendButton+"
-					onClick={() => setDividend((dividend) => dividend + 1)}
+					onClick={() => {
+						setDividend((prevDividend) => prevDividend + 1)
+					}}
 				>
 					+
 				</button>
 				<button
 					type="button"
 					data-testid="dividendButton-"
-					onClick={() => setDividend((dividend) => dividend - 1)}
+					onClick={() => {
+						setDividend((prevDividend) => prevDividend - 1)
+					}}
 				>
 					-
 				</button>

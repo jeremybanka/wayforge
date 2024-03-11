@@ -160,11 +160,12 @@ export const NumberInput: FC<NumberInputProps> = ({
 	}
 
 	const displayValue =
-		temporaryEntry ?? valueToText(value ? refine(value) : value)
+		temporaryEntry ??
+		valueToText(typeof value === `number` ? refine(value) : value)
 
 	return (
 		<span>
-			{label && <label htmlFor={id}>{label}</label>}
+			{typeof label === `string` && <label htmlFor={id}>{label}</label>}
 			{autoSize ? (
 				<ElasticInput
 					type="text"

@@ -7,12 +7,12 @@ import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_PADDING, CARD_WIDTH } from "../Card"
-import { SVG_EnergyIcon } from "./EnergyIcon"
+import { EnergyIconSVG } from "./EnergyIcon"
 
 import scss from "../Card.module.scss"
 import scssA from "./EnergyCard_A.module.scss"
 
-export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
+export const EnergyCardDataA: FC<{ energyId: string }> = ({ energyId }) => {
 	const domId = useId()
 	const energy = useRecoilValue(findEnergyState(energyId))
 
@@ -33,7 +33,7 @@ export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
 		>
 			<article className={scssA.class}>
 				<header>
-					<SVG_EnergyIcon energyId={energyId} size={36} />
+					<EnergyIconSVG energyId={energyId} size={36} />
 				</header>
 				<main>
 					{Array(30)

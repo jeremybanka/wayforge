@@ -3,8 +3,10 @@ import type { Json } from "~/packages/anvl/src/json"
 
 import type { FilestoreOptions } from "./options"
 import { getDirectoryJsonArr } from "./utils"
-export { initRelationReader, ReadRelations } from "./relations"
-export { initResourceReader, ReadResource } from "./resources"
+export type { ReadRelations } from "./relations"
+export { initRelationReader } from "./relations"
+export type { ReadResource } from "./resources"
+export { initResourceReader } from "./resources"
 
 export type ReadIndexOptions = { type: string }
 export type ReadIndex = (options: ReadIndexOptions) => Error | Json.Array<string>

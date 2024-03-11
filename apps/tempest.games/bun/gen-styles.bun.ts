@@ -17,7 +17,7 @@ async function gen() {
 	const scss = await Bun.file(INPUT_FILE).arrayBuffer()
 	const { code } = transform({ filename: INPUT_FILE, code: Buffer.from(scss) })
 	npmlog.info(`writing`, OUTPUT_FILE)
-	Bun.write(
+	await Bun.write(
 		OUTPUT_FILE,
 		`/* eslint-disable */\nexport const main = ${JSON.stringify(
 			code.toString(),
@@ -27,16 +27,16 @@ async function gen() {
 
 switch (lastArgument) {
 	case `watch`:
-		gen()
+		await gen()
 		npmlog.info(`watch`, INPUT_FILE)
 		chokidar.watch(INPUT_FILE).on(`change`, () => {
 			npmlog.info(`changed`, INPUT_FILE)
-			gen()
+			void gen()
 		})
 		break
 	case `once`:
 		npmlog.info(`once`, INPUT_FILE)
-		gen()
+		void gen()
 		break
 	default:
 		npmlog.error(`usage`, `Invalid argument: specify 'watch' or 'once'`)

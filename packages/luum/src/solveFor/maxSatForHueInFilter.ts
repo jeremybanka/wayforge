@@ -14,13 +14,13 @@ export default (hue: Degree, filter: Filter): number => {
 		const hueA = a > b ? wrapInto(-180, 180)(tuningPointA.hue) : tuningPointA.hue
 		const hueB = tuningPointB.hue
 		if (
-			(hueDoubleWrapped || hueWrapped) >= hueA &&
-			(hueDoubleWrapped || hueWrapped) < hueB
+			(hueDoubleWrapped ?? hueWrapped) >= hueA &&
+			(hueDoubleWrapped ?? hueWrapped) < hueB
 		) {
 			// console.log(
 			//   '||| hue', hue, 'between', tuningPointA.hue, 'and', tuningPointB.hue
 			// )
-			let $ = hueDoubleWrapped || hueWrapped // 70
+			let $ = hueDoubleWrapped ?? hueWrapped // 70
 			$ -= hueA // 70 - 50 = 20 //
 			$ /= hueB - hueA // 20 / (120 - 50) = 2/7
 			$ *= tuningPointB.sat - tuningPointA.sat // -128 * 2 / 7 = -256 / 7 ~= -37

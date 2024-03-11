@@ -13,7 +13,9 @@ export const BooleanEditor = ({
 		<input
 			type="checkbox"
 			checked={data}
-			onChange={(event) => set(event.target.checked)}
+			onChange={(event) => {
+				set(event.target.checked)
+			}}
 		/>
 	</Components.BooleanWrapper>
 )
@@ -34,7 +36,13 @@ export const NumberEditor = ({
 	<Components.NumberWrapper>
 		<NumberInput
 			value={data}
-			set={isReadonly(path) ? undefined : (newValue) => set(Number(newValue))}
+			set={
+				isReadonly(path)
+					? undefined
+					: (newValue) => {
+							set(Number(newValue))
+					  }
+			}
 			autoSize={true}
 		/>
 	</Components.NumberWrapper>

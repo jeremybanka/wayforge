@@ -12,7 +12,7 @@ const ARGS = process.argv.slice(2)
 const SHOULD_RUN = ARGS.includes(`--run`)
 if (SHOULD_RUN) {
 	const mode = ARGS.at(-1)
-	if (!mode) {
+	if (mode === undefined) {
 		throw new Error(
 			`No mode specified. Specify 'test' or 'make' as the last argument`,
 		)
@@ -50,9 +50,7 @@ export default function main(mode: string): void {
 				newManifest,
 				oldManifest,
 			] of submoduleManifestEntries) {
-				const oldText = fs.statSync(modulePath)
-					? fs.readFileSync(modulePath, `utf-8`)
-					: undefined
+				const oldText = fs.readFileSync(modulePath, `utf-8`)
 				const newText = JSON.stringify(newManifest, null, `\t`) + `\n`
 				if (oldText === newText) {
 					logger.info(
@@ -81,9 +79,7 @@ export default function main(mode: string): void {
 				modulePath,
 				newManifest,
 			] of submoduleManifestEntries) {
-				const oldText = fs.statSync(modulePath)
-					? fs.readFileSync(modulePath, `utf-8`)
-					: undefined
+				const oldText = fs.readFileSync(modulePath, `utf-8`)
 				const newText = JSON.stringify(newManifest, null, `\t`) + `\n`
 				if (oldText === newText) {
 					logger.info(
@@ -91,7 +87,7 @@ export default function main(mode: string): void {
 						`manifest for "hamr/${moduleName}" is already up to date`,
 					)
 				} else {
-					logger.info(`updating`, `${modulePath}`)
+					logger.info(`updating`, modulePath)
 					fs.writeFileSync(modulePath, newText)
 					logger.info(`done`, `updated manifest for "hamr/${moduleName}"`)
 				}

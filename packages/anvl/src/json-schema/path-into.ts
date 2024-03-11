@@ -16,7 +16,9 @@ export const expandPathForSchema = (
 					)
 				default:
 					throw new TypeError(
-						`The key ${key} is not a valid JSON key; expected string or number, got ${typeof key}`,
+						`The key ${JSON.stringify(
+							key,
+						)} is not a valid JSON key; expected string or number, got ${typeof key}`,
 					)
 			}
 		})

@@ -49,7 +49,11 @@ describe(`filestore socket api`, () => {
 							)
 							expect(result).toContain(`ENOENT: no such file or directory`)
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -74,7 +78,11 @@ describe(`filestore socket api`, () => {
 							)
 							expect(result).toContain(`ENOENT: no such file or directory`)
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					})
@@ -97,7 +105,11 @@ describe(`filestore socket api`, () => {
 							)
 							expect(result).toEqual([`user`])
 						} catch (caught) {
-							fail(caught)
+							if (caught instanceof Error) {
+								fail(caught)
+							} else {
+								throw caught
+							}
 						}
 						pass()
 					}),
@@ -108,7 +120,11 @@ describe(`filestore socket api`, () => {
 							try {
 								expect(result).toEqual([`.gitkeep`])
 							} catch (caught) {
-								fail(caught)
+								if (caught instanceof Error) {
+									fail(caught)
+								} else {
+									throw caught
+								}
 							}
 							pass()
 						})

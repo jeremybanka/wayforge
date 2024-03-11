@@ -13,9 +13,11 @@ export type ObserverProps = {
 	node: WritableToken<any>
 	onChange: (value: any) => void
 }
-export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
+export const Observer: FC<ObserverProps> = ({ node, onChange: handler }) => {
 	const value = useO(node)
-	useEffect(() => onChange(value), [onChange, value])
+	useEffect(() => {
+		handler(value)
+	}, [handler, value])
 	return null
 }
 

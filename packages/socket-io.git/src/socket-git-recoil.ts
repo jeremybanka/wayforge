@@ -38,7 +38,7 @@ export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
 	const completeInterface = {} as GitClientTools
 
 	const makeClientInterface = (key: keyof GitInterface) => {
-		const state_INTERNAL = atom<GitSocketError | any>({
+		const internalState = atom<GitSocketError>({
 			key: `git${capitalize(key)}_INTERNAL`,
 			default: DEFAULT_SIMPLE_GIT_RETURN_VALUES[key],
 			effects: [
@@ -49,15 +49,14 @@ export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
 				},
 			],
 		})
-		const getInternalState: Transact<() => any> = ({ get }) =>
-			get(state_INTERNAL)
+		const getInternalState: Transact<() => any> = ({ get }) => get(internalState)
 		const clientInterface = Object.assign(
 			(...args: Parameters<GitInterface[keyof GitInterface]>) =>
 				socket.emit(key, ...args),
 			{
 				state: selector({
 					key: `git${capitalize(key)}`,
-					get: ({ get }) => get(state_INTERNAL),
+					get: ({ get }) => get(internalState),
 				}),
 				getCurrentState: getInternalState,
 			},
