@@ -36,7 +36,7 @@ export const initGitAtomicTools = (socket: GitClientSocket): GitClientTools => {
 	const completeInterface = {} as GitClientTools
 
 	const makeClientInterface = (key: keyof GitInterface) => {
-		const state_INTERNAL = A_IO.atom<GitSocketError | any>({
+		const internalState = A_IO.atom<GitSocketError>({
 			key: `git${capitalize(key)}_INTERNAL`,
 			default: DEFAULT_SIMPLE_GIT_RETURN_VALUES[key],
 			effects: [
@@ -48,14 +48,14 @@ export const initGitAtomicTools = (socket: GitClientSocket): GitClientTools => {
 			],
 		})
 		const getInternalState: A_IO.Read<() => any> = ({ get }) =>
-			get(state_INTERNAL)
+			get(internalState)
 		const clientInterface = Object.assign(
 			(...args: Parameters<GitInterface[keyof GitInterface]>) =>
 				socket.emit(key, ...args),
 			{
 				state: A_IO.selector({
 					key: `git${capitalize(key)}`,
-					get: ({ get }) => get(state_INTERNAL),
+					get: ({ get }) => get(internalState),
 				}),
 				getCurrentState: getInternalState,
 			},

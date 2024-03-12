@@ -44,8 +44,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			familyMetaData,
 			store,
 		)
-		if (store.parent?.valueMap.has(latestUpdateStateKey)) {
-			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)
+		if (store.parent?.valueMap.has(latestUpdateStateKey) ?? false) {
+			const parentValue = store.parent?.valueMap.get(latestUpdateStateKey)
 			store.valueMap.set(latestUpdateStateKey, parentValue)
 		}
 
@@ -87,18 +87,18 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					this.unsubscribeFromInnerValue()
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						subscriptionKey,
-						(update) => {
+						(innerUpdate) => {
 							if (target.operation.open) {
 								const unsubscribe = target.on.operationClose.subscribe(
 									subscriptionKey,
 									() => {
 										unsubscribe()
-										setIntoStore(latestUpdateState, update, target)
+										setIntoStore(latestUpdateState, innerUpdate, target)
 									},
 								)
 							} else {
 								setIntoStore(mutableState, (current) => current, target)
-								setIntoStore(latestUpdateState, update, target)
+								setIntoStore(latestUpdateState, innerUpdate, target)
 							}
 						},
 					)
@@ -124,7 +124,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					latestUpdateState.key,
 				)
 
-				if (timelineId) {
+				if (timelineId !== undefined) {
 					const timelineData = target.timelines.get(timelineId)
 					if (timelineData?.timeTraveling) {
 						const unsubscribe = subscribeToTimeline(
@@ -134,9 +134,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 								setIntoStore(
 									mutableState,
 									(transceiver) => {
-										if (update === `redo` && newValue) {
+										if (update === `redo` && newValue !== null) {
 											transceiver.do(newValue)
-										} else if (update === `undo` && oldValue) {
+										} else if (update === `undo` && oldValue !== null) {
 											transceiver.undo(oldValue)
 										}
 										return transceiver
@@ -159,7 +159,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 						const updateNumber =
 							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
-						if (newValue && eventOffset === 1) {
+						if (newValue !== null && eventOffset === 1) {
 							setIntoStore(
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),

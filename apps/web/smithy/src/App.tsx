@@ -13,7 +13,9 @@ export const App: FC = () => {
 	const connection = useRecoilValue(connectionState)
 	return (
 		<main className={scss.class}>
-			<div>{connection ? <Connected /> : <Disconnected />}</div>
+			<div>
+				{connection !== `Disconnected` ? <Connected /> : <Disconnected />}
+			</div>
 			<Explorer />
 			<Spaces />
 		</main>

@@ -10,11 +10,11 @@ import type { Energy } from "../../services/energy"
 import { findEnergyState } from "../../services/energy"
 import type { Amount } from "../../services/energy_reaction"
 
-export const SvgTSpan_Spacer: FC = () => (
+export const SvgTSpanSpacer: FC = () => (
 	<tspan fill="none" stroke="none" style={{ userSelect: `none` }}>{`-`}</tspan>
 )
 
-export const EnergyIcon_INTERNAL: FC<{
+export const EnergyIconInternal: FC<{
 	energy: Energy
 	size: number
 	clickable?: boolean
@@ -26,7 +26,9 @@ export const EnergyIcon_INTERNAL: FC<{
 	const navigate = useNavigate()
 
 	const handleClick = clickable
-		? () => navigate(`/energy/${energy.id}`)
+		? () => {
+				navigate(`/energy/${energy.id}`)
+		  }
 		: undefined
 
 	return (
@@ -56,9 +58,9 @@ export const EnergyIcon_INTERNAL: FC<{
 					fill: colorB.hex,
 				}}
 			>
-				<SvgTSpan_Spacer />
+				<SvgTSpanSpacer />
 				{` MT `}
-				<SvgTSpan_Spacer />
+				<SvgTSpanSpacer />
 			</text>
 			<text
 				textAnchor="middle"
@@ -71,23 +73,21 @@ export const EnergyIcon_INTERNAL: FC<{
 					fill: colorA.hex,
 				}}
 			>
-				<SvgTSpan_Spacer />
+				<SvgTSpanSpacer />
 				{` ${energy.icon} `}
-				<SvgTSpan_Spacer />
+				<SvgTSpanSpacer />
 			</text>
 		</svg>
 	)
 }
 
-export const SVG_EnergyIcon: FC<{
+export const EnergyIconSVG: FC<{
 	energyId: string
 	size: number
 	clickable?: boolean
 }> = ({ energyId, size, clickable = true }) => {
 	const energy = useRecoilValue(findEnergyState(energyId))
-	return (
-		<EnergyIcon_INTERNAL energy={energy} size={size} clickable={clickable} />
-	)
+	return <EnergyIconInternal energy={energy} size={size} clickable={clickable} />
 }
 
 export const VOID: Energy = {
@@ -108,15 +108,15 @@ export const VOID: Energy = {
 	},
 }
 
-export const SVG_VoidIcon: FC<{
+export const VoidIconSVG: FC<{
 	size: number
 	colorA: Luum
 	colorB: Luum
 }> = ({ size, colorA, colorB }) => (
-	<EnergyIcon_INTERNAL energy={{ ...VOID, colorA, colorB }} size={size} />
+	<EnergyIconInternal energy={{ ...VOID, colorA, colorB }} size={size} />
 )
 
-export const Span_VoidIcon: FC<{
+export const VoidIconSpan: FC<{
 	size: number
 	colorA: Luum
 	colorB: Luum
@@ -127,7 +127,7 @@ export const Span_VoidIcon: FC<{
 			alignItems: `center`,
 		}}
 	>
-		<SVG_VoidIcon size={size} colorA={colorA} colorB={colorB} />
+		<VoidIconSVG size={size} colorA={colorA} colorB={colorB} />
 	</span>
 )
 
@@ -146,7 +146,7 @@ export const EnergyAmountTag: FC<{
 				justifyContent: `baseline`,
 			}}
 		>
-			<SVG_EnergyIcon energyId={energyId} size={size} clickable={clickable} />
+			<EnergyIconSVG energyId={energyId} size={size} clickable={clickable} />
 			<span
 				style={{
 					backgroundColor: `black`,
@@ -170,7 +170,7 @@ export const EnergyAmountTag: FC<{
 	)
 }
 
-export const Span_EnergyAmount: FC<
+export const EnergyAmountSpan: FC<
 	RecoilListItemProps<Energy, Amount> & { size: number; clickable?: boolean }
 > = ({ label, findState, size, clickable = true }) => {
 	const { id, amount } = label
@@ -189,7 +189,7 @@ export const Span_EnergyAmount: FC<
 				Array(amount)
 					.fill(null)
 					.map((_, i) => (
-						<SVG_EnergyIcon
+						<EnergyIconSVG
 							key={`${domId}-icon-${i}`}
 							energyId={id}
 							size={size}

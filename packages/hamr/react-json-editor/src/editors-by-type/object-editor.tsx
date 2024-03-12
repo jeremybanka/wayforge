@@ -12,7 +12,7 @@ import { isLiteral } from "~/packages/anvl/src/refinement"
 
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
-import { JsonEditor_INTERNAL } from "../json-editor-internal"
+import { JsonEditorInternal } from "../json-editor-internal"
 import {
 	makePropertyCreationInterface,
 	makePropertyRecasters,
@@ -39,7 +39,12 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 		<ElasticInput disabled defaultValue={propertyKey} />
 		{` `}
 		<ElasticInput disabled defaultValue="is missing" />
-		<Components.Button onClick={() => addProperty()} disabled={disabled}>
+		<Components.Button
+			onClick={() => {
+				addProperty()
+			}}
+			disabled={disabled}
+		>
 			+
 		</Components.Button>
 	</Components.MissingPropertyWrapper>
@@ -96,7 +101,12 @@ export const ObjectEditor = <T extends Json.Object>({
 
 	return (
 		<>
-			<Components.Button onClick={() => sortProperties()} disabled={disabled}>
+			<Components.Button
+				onClick={() => {
+					sortProperties()
+				}}
+				disabled={disabled}
+			>
 				Sort
 			</Components.Button>
 			<Components.ObjectWrapper>
@@ -117,7 +127,7 @@ export const ObjectEditor = <T extends Json.Object>({
 								Components={Components}
 							/>
 						) : (
-							<JsonEditor_INTERNAL
+							<JsonEditorInternal
 								key={originalPath.join(`.`)}
 								schema={schema}
 								path={newPath}
@@ -141,7 +151,9 @@ export const ObjectEditor = <T extends Json.Object>({
 					onClick={
 						disabled
 							? doNothing
-							: () => makePropertyAdder(`new_property`, `string`)()
+							: () => {
+									makePropertyAdder(`new_property`, `string`)()
+							  }
 					}
 					disabled={disabled}
 				>

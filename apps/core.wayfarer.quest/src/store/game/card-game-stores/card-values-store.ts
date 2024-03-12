@@ -76,7 +76,7 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 			}
 
 			const currentTrickId = get(currentTrickIdState)
-			if (currentTrickId) {
+			if (currentTrickId !== null) {
 				const trickCardIndex = findRelations(
 					groupsOfCards,
 					currentTrickId,

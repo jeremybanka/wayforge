@@ -32,7 +32,7 @@ export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	Components: JsonEditorComponents
 }
 
-export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
+export const JsonEditorInternal = <T extends Json.Serializable>({
 	data,
 	set,
 	schema,
@@ -70,7 +70,13 @@ export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 					<Components.KeyWrapper>
 						<ElasticInput
 							value={name}
-							onChange={disabled ? doNothing : (e) => rename(e.target.value)}
+							onChange={
+								disabled
+									? doNothing
+									: (e) => {
+											rename(e.target.value)
+									  }
+							}
 							disabled={disabled}
 						/>
 					</Components.KeyWrapper>
@@ -91,7 +97,9 @@ export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 						onChange={
 							disabled
 								? doNothing
-								: (e) => recast(e.target.value as keyof JsonTypes)
+								: (e) => {
+										recast(e.target.value as keyof JsonTypes)
+								  }
 						}
 						value={refined.type}
 						disabled={disabled}

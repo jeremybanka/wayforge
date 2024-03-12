@@ -24,7 +24,7 @@ export async function breakCheck({
 }: BreakCheckOptions): Promise<BreakCheckOutcome> {
 	const git = simpleGit(baseDirname)
 	const isGitClean = (await git.checkIsRepo()) && (await git.status()).isClean
-	if (!isGitClean) {
+	if (isGitClean === false) {
 		throw new Error(`The git repository must be clean to run this command.`)
 	}
 	try {
@@ -33,10 +33,11 @@ export async function breakCheck({
 		logger.warn(`failed`, `fetching tags`, thrown)
 	}
 	const tags = (await git.tags()).all.toReversed()
-	const latestReleaseTag = tagPattern
-		? tags.find((tag) => tag.match(tagPattern))
-		: tags[0]
-	if (!latestReleaseTag) {
+	const latestReleaseTag =
+		tagPattern === undefined
+			? tags[0]
+			: tags.find((tag) => tag.match(tagPattern))
+	if (latestReleaseTag === undefined) {
 		throw new Error(`No tags found matching this pattern: ${tagPattern}`)
 	}
 	const candidateBranchName = (await git.branch()).current
@@ -59,7 +60,7 @@ export async function breakCheck({
 				const result = exec(
 					testCommand,
 					{ cwd: baseDirname },
-					async (_, stdout, stderr) => {
+					async (error, stdout) => {
 						logger.info(`completed`, `test`, stdout)
 						await git.stash()
 						if (result.exitCode === 0) {
@@ -70,7 +71,9 @@ export async function breakCheck({
 								`failed previous test suite`,
 								`breaking changes detected`,
 							)
-							reject(stderr)
+							if (error) {
+								reject(error)
+							}
 						}
 					},
 				)
@@ -83,7 +86,7 @@ export async function breakCheck({
 			const result = exec(
 				certifyCommand,
 				{ cwd: baseDirname },
-				async (_, stdout, stderr) => {
+				async (error, stdout) => {
 					logger.info(`completed`, `certify`, result.exitCode, stdout)
 					await git.stash()
 					if (result.exitCode === 0) {
@@ -91,7 +94,9 @@ export async function breakCheck({
 						resolve(`breaking-changes-certified`)
 					} else {
 						logger.error(`failed`, `breaking changes detected and uncertified`)
-						reject(stderr)
+						if (error) {
+							reject(error)
+						}
 					}
 				},
 			)

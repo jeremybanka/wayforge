@@ -43,14 +43,15 @@ export function selectJsonFamily<
 					transform.toJson(get(atomFamily(key))),
 			set:
 				(key) =>
-				({ set }, newValue) =>
-					set(atomFamily(key), transform.fromJson(newValue)),
+				({ set }, newValue) => {
+					set(atomFamily(key), transform.fromJson(newValue))
+				},
 		},
 		store,
 	)
 	atomFamily.subject.subscribe(
 		`store=${store.config.name}::json-selector-family`,
-		(token) => {
+		(token: AtomIO.AtomToken<T>) => {
 			if (token.family) {
 				jsonFamily(parseJson(token.family.subKey) as K)
 			}

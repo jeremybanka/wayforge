@@ -1,4 +1,4 @@
-import type { Refinement } from "~/packages/rel8/types/src"
+import type { Refinement } from "anvl/refinement"
 import type { Json } from "../json"
 
 export type Identified = { id: string }
@@ -20,5 +20,5 @@ export const hasId: Refinement<unknown, Identified> = (
 
 export const identify = (input: unknown): { id: string } => {
 	if (hasId(input)) return input
-	throw new Error(`${input} could not be identified`)
+	throw new Error(`${JSON.stringify(input)} could not be identified`)
 }

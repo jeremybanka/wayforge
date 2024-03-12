@@ -23,9 +23,9 @@ export function isTransceiver(
 export type TransceiverMode = `playback` | `record` | `transaction`
 
 export type Signal<TVR extends Transceiver<any>> = TVR extends Transceiver<
-	infer Signal
+	infer S
 >
-	? Signal
+	? S
 	: never
 
 /*

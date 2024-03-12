@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import { type Store } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as React from "react"
 

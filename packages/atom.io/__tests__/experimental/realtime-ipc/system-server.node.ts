@@ -47,7 +47,7 @@ export const SystemServer = ({
 	exposeMutable(findInStore(usersInRoomsAtoms, username, store))
 
 	socket.on(`create-room`, async (roomId) => {
-		actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
+		await actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
 			// `--smol`,
 			path.join(__dirname, `game-instance.bun.ts`),
 		])
@@ -68,7 +68,9 @@ export const SystemServer = ({
 			roomQueue.push(payload)
 		}
 		let toRoom = pushToRoomQueue
-		const forward = (...payload: [string, ...Json.Array]) => toRoom(payload)
+		const forward = (...payload: [string, ...Json.Array]) => {
+			toRoom(payload)
+		}
 		socket.onAny(forward)
 
 		actUponStore(RTS.joinRoomTX, arbitrary(), store)(roomId, username, 0)
@@ -112,7 +114,7 @@ export const SystemServer = ({
 			store,
 		).roomKeyOfUser
 		const roomKey = getFromStore(roomKeyState, store)
-		if (!roomKey) {
+		if (roomKey === null) {
 			return
 		}
 		const roomSocketState = findInStore(RTS.roomSelectors, roomKey, store)

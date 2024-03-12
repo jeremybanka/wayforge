@@ -15,7 +15,7 @@ export const attachAtomIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<AtomTokenIndex> => {
 	console.log(store.config)
-	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
+	const atomTokenIndexStateInternal = createRegularAtom<AtomTokenIndex>(
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {
@@ -40,7 +40,7 @@ export const attachAtomIndex = (
 									const { key: familyKey, subKey } = family
 									const current = state[familyKey]
 									if (current === undefined || `familyMembers` in current) {
-										const familyKeyState = current || {
+										const familyKeyState = current ?? {
 											key: familyKey,
 											familyMembers: {},
 										}
@@ -82,7 +82,7 @@ export const attachAtomIndex = (
 	return createStandaloneSelector(
 		{
 			key: `👁‍🗨 Atom Token Index`,
-			get: ({ get }) => get(atomTokenIndexState__INTERNAL),
+			get: ({ get }) => get(atomTokenIndexStateInternal),
 		},
 		store,
 	)

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-throw-literal */
 import * as http from "node:http"
 
 import * as AtomIO from "atom.io"
@@ -15,7 +16,7 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 })
 
-describe(`async atom`, async () => {
+describe(`async atom`, () => {
 	it(`hits the subscriber twice`, async () => {
 		const count = AtomIO.atom<Loadable<number>>({
 			key: `count`,
@@ -24,6 +25,7 @@ describe(`async atom`, async () => {
 		AtomIO.subscribe(count, (update) => {
 			Utils.stdout(`count`, update)
 		})
+		// eslint-disable-next-line @typescript-eslint/require-await
 		const getNumber = async () => 1
 		AtomIO.setState(count, getNumber())
 		const countValueInitial = AtomIO.getState(count)
@@ -33,7 +35,7 @@ describe(`async atom`, async () => {
 		expect(countValueAwaited).toBe(1)
 		expect(Utils.stdout).toHaveBeenCalledTimes(2)
 	})
-	it(`handles a rejected promise`, async () => {
+	it(`handles a rejected promise`, () => {
 		const count = AtomIO.atom<Loadable<number>>({
 			key: `count`,
 			default: 0,
@@ -41,6 +43,7 @@ describe(`async atom`, async () => {
 		AtomIO.subscribe(count, ({ newValue, oldValue }) => {
 			Utils.stdout(`count`, { newValue, oldValue })
 		})
+		// eslint-disable-next-line @typescript-eslint/require-await
 		const getNumber = async (): Promise<number> => {
 			throw new Error(`😤`)
 		}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-throw-literal */
 import * as http from "node:http"
 import { vitest } from "vitest"
 

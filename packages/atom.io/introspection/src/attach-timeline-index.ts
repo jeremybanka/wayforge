@@ -9,7 +9,7 @@ import {
 export const attachTimelineIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<TimelineToken<any>[]> => {
-	const timelineTokenIndexState__INTERNAL = createRegularAtom<
+	const timelineTokenIndexStateInternal = createRegularAtom<
 		TimelineToken<any>[]
 	>(
 		{
@@ -35,7 +35,7 @@ export const attachTimelineIndex = (
 	const timelineTokenIndex = createStandaloneSelector(
 		{
 			key: `👁‍🗨 Timeline Token Index`,
-			get: ({ get }) => get(timelineTokenIndexState__INTERNAL),
+			get: ({ get }) => get(timelineTokenIndexStateInternal),
 		},
 		store,
 	)

@@ -31,13 +31,28 @@ export const Division: FC = () => {
 				</span>
 			</main>
 			<footer>
-				<button type="button" onClick={() => resetEquation()}>
+				<button
+					type="button"
+					onClick={() => {
+						resetEquation()
+					}}
+				>
 					Reset
 				</button>
-				<button type="button" onClick={() => undo(divisionTimeline)}>
+				<button
+					type="button"
+					onClick={() => {
+						undo(divisionTimeline)
+					}}
+				>
 					Undo
 				</button>
-				<button type="button" onClick={() => redo(divisionTimeline)}>
+				<button
+					type="button"
+					onClick={() => {
+						redo(divisionTimeline)
+					}}
+				>
 					Redo
 				</button>
 			</footer>

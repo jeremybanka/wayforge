@@ -32,7 +32,12 @@ const Numbers: FC<{
 
 	return (
 		<section>
-			<button type="button" onClick={() => increment(token)}>
+			<button
+				type="button"
+				onClick={() => {
+					increment(token)
+				}}
+			>
 				Add
 			</button>
 			<span>{token.key}</span>

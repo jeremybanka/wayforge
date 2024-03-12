@@ -17,9 +17,15 @@ const LOG_FILE = Bun.file(LOG_FILEPATH)
 const writer = LOG_FILE.writer()
 
 const ipcLog = {
-	info: (...args) => parentSocket.logger.info(...args),
-	warn: (...args) => parentSocket.logger.warn(...args),
-	error: (...args) => parentSocket.logger.error(...args),
+	info: (...args) => {
+		parentSocket.logger.info(...args)
+	},
+	warn: (...args) => {
+		parentSocket.logger.warn(...args)
+	},
+	error: (...args) => {
+		parentSocket.logger.error(...args)
+	},
 }
 
 const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
@@ -62,7 +68,7 @@ const logger = IMPLICIT.STORE.logger
 
 parentSocket.relay((socket) => {
 	const snapshot = generateHeapSnapshot()
-	Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
+	void Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
 	const username = socket.id.split(`:`)[1]
 	socket.onAny((event, ...args) => {
 		parentSocket.logger.info(username, `<< 🛰 `, event, ...args)

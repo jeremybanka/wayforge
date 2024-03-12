@@ -6,11 +6,11 @@ import { Luum } from "~/packages/luum/src"
 
 import { findEnergyWithRelationsState } from "../../services/energy"
 import { findReactionWithRelationsState } from "../../services/reaction"
-import { SVG_EnergyIcon } from "./EnergyIcon"
+import { EnergyIconSVG } from "./EnergyIcon"
 
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 import scss from "../Card.module.scss"
-import { Div_EnergyCardFeature } from "./EnergyCardFeature"
+import { EnergyCardFeatureDiv } from "./EnergyCardFeature"
 import scssB from "./EnergyCard_B.module.scss"
 
 type SvgCommandCode = `C` | `L` | `M` | `Q` | `S`
@@ -23,7 +23,7 @@ export function writePathPoint(
 	return command ? `${command} ${x},${y}` : `  ${x},${y}`
 }
 
-export const Data_EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
+export const EnergyCardDataB: FC<{ energyId: string }> = ({ energyId }) => {
 	const energy = useRecoilValue(findEnergyWithRelationsState(energyId))
 	const colorB = Luum.fromJSON(energy.colorB)
 
@@ -34,12 +34,12 @@ export const Data_EnergyCard_B: FC<{ energyId: string }> = ({ energyId }) => {
 		>
 			<article className={scssB.class}>
 				<header>
-					<SVG_EnergyIcon energyId={energyId} size={36} />
+					<EnergyIconSVG energyId={energyId} size={36} />
 					<h1>{energy.name}</h1>
 				</header>
 				<main>
 					<ListItems
-						Components={{ ListItem: Div_EnergyCardFeature }}
+						Components={{ ListItem: EnergyCardFeatureDiv }}
 						labels={energy.features}
 						findState={findReactionWithRelationsState}
 					/>

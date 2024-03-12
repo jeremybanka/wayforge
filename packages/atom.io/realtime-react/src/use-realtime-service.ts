@@ -18,12 +18,10 @@ export function useRealtimeService(
 			services?.set(key, service)
 		}
 		return () => {
-			if (service) {
-				service[0]--
-				if (service[0] === 0) {
-					service[1]?.()
-					services?.delete(key)
-				}
+			service[0]--
+			if (service[0] === 0) {
+				service[1]?.()
+				services?.delete(key)
 			}
 		}
 	})

@@ -11,7 +11,7 @@ import { findEnergyState } from "../../services/energy"
 import { findReactionEnergyState } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
-import { Span_EnergyAmount, Span_VoidIcon } from "../energy/EnergyIcon"
+import { EnergyAmountSpan, VoidIconSpan } from "../energy/EnergyIcon"
 
 import scss from "./ReactionIcon.module.scss"
 
@@ -45,7 +45,7 @@ const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (
 	</svg>
 )
 
-export const ReactionIcon_INTERNAL: FC<{
+export const ReactionIconInternal: FC<{
 	reaction: Reaction & ReactionRelations
 	size: number
 	mode?: `basic` | `fancy`
@@ -65,7 +65,9 @@ export const ReactionIcon_INTERNAL: FC<{
 	const navigate = useNavigate()
 
 	const handleClick = clickable
-		? () => navigate(`/reaction/${reaction.id}`)
+		? () => {
+				navigate(`/reaction/${reaction.id}`)
+		  }
 		: undefined
 
 	return (
@@ -94,7 +96,7 @@ export const ReactionIcon_INTERNAL: FC<{
 						}),
 					),
 					ListItem: ({ label, findState }) => (
-						<Span_EnergyAmount
+						<EnergyAmountSpan
 							label={label}
 							findState={findState}
 							removeMe={() => null}
@@ -103,7 +105,7 @@ export const ReactionIcon_INTERNAL: FC<{
 						/>
 					),
 					NoItems: () => (
-						<Span_VoidIcon size={15} colorA={colorB.tint(20)} colorB={colorB} />
+						<VoidIconSpan size={15} colorA={colorB.tint(20)} colorB={colorB} />
 					),
 				}}
 			/>
@@ -126,7 +128,7 @@ export const ReactionIcon_INTERNAL: FC<{
 						}),
 					),
 					ListItem: ({ label, findState }) => (
-						<Span_EnergyAmount
+						<EnergyAmountSpan
 							label={label}
 							findState={findState}
 							removeMe={() => null}
@@ -135,11 +137,7 @@ export const ReactionIcon_INTERNAL: FC<{
 						/>
 					),
 					NoItems: () => (
-						<Span_VoidIcon
-							size={size}
-							colorA={colorB.tint(20)}
-							colorB={colorB}
-						/>
+						<VoidIconSpan size={size} colorA={colorB.tint(20)} colorB={colorB} />
 					),
 				}}
 			/>
@@ -147,10 +145,10 @@ export const ReactionIcon_INTERNAL: FC<{
 	)
 }
 
-export const Div_ReactionIcon: FC<{ reactionId: string; size: number }> = ({
+export const ReactionIconDiv: FC<{ reactionId: string; size: number }> = ({
 	reactionId,
 	size,
 }) => {
 	const reaction = useRecoilValue(findReactionWithRelationsState(reactionId))
-	return <ReactionIcon_INTERNAL reaction={reaction} size={size} />
+	return <ReactionIconInternal reaction={reaction} size={size} />
 }

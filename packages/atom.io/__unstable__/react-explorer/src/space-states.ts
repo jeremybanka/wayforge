@@ -70,9 +70,10 @@ export const makeSpaceLayoutNodeFamily = (
 				const join = get(spaceLayoutState)
 				const myFollowers = join.getRelatedIds(`parent:${me}`)
 				const myLeader = join.getRelatedId(me)
-				const { size } = myLeader
-					? join.getContent(myLeader, me) ?? { size: Number.NaN }
-					: { size: Number.NaN }
+				const { size } =
+					myLeader === undefined
+						? { size: Number.NaN }
+						: join.getContent(myLeader, me) ?? { size: Number.NaN }
 				return { childSpaceIds: myFollowers, size }
 			},
 	})

@@ -19,7 +19,7 @@ export interface SetRTXJson<P extends primitive> extends Json.Object {
 }
 export class SetRTX<P extends primitive>
 	extends Set<P>
-	implements Transceiver<NumberedSetUpdate>, Lineage
+	implements Transceiver<NumberedSetUpdate>, Lineage<SetRTX<P>>
 {
 	public mode: TransceiverMode = `record`
 	public readonly subject = new Subject<SetUpdate>()
@@ -110,7 +110,7 @@ export class SetRTX<P extends primitive>
 				this.emit(`tx:${this.transactionUpdates.join(`;`)}`)
 			}
 		} catch (thrown) {
-			console.error(`Failed to apply transaction to SetRTX: ${thrown}`)
+			console.error(`Failed to apply transaction to SetRTX:`, thrown)
 			throw thrown
 		} finally {
 			unsubscribe()
@@ -130,9 +130,9 @@ export class SetRTX<P extends primitive>
 		key: string,
 		fn: (update: NumberedSetUpdate) => void,
 	): () => void {
-		return this.subject.subscribe(key, (update) =>
-			fn(`${this.cacheUpdateNumber}=${update}`),
-		)
+		return this.subject.subscribe(key, (update) => {
+			fn(`${this.cacheUpdateNumber}=${update}`)
+		})
 	}
 
 	public emit(update: SetUpdate): void {
@@ -154,8 +154,8 @@ export class SetRTX<P extends primitive>
 				this.delete(parseJson(value as Stringified<P>))
 				break
 			case `tx`:
-				for (const update of value.split(`;`)) {
-					this.doStep(update as SetUpdate)
+				for (const u of value.split(`;`)) {
+					this.doStep(u as SetUpdate)
 				}
 		}
 	}
@@ -191,9 +191,9 @@ export class SetRTX<P extends primitive>
 			let done = false
 			while (!done) {
 				this.cacheIdx %= this.cacheLimit
-				const update = this.cache[this.cacheIdx]
+				const u = this.cache[this.cacheIdx]
 				this.cacheIdx--
-				if (!update) {
+				if (u === null) {
 					return `OUT_OF_RANGE`
 				}
 				this.undo(update)
@@ -221,7 +221,7 @@ export class SetRTX<P extends primitive>
 				break
 			case `clear`: {
 				const values = JSON.parse(value) as P[]
-				for (const value of values) this.add(value)
+				for (const v of values) this.add(v)
 				break
 			}
 			case `tx`: {

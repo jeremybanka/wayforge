@@ -5,8 +5,10 @@ import type { Json } from "~/packages/anvl/src/json"
 import type { FilestoreOptions } from "./options"
 import type { ReadIndex } from "./read"
 
-export { initResourceWriter, WriteResource } from "./resources"
-export { initRelationsWriter, WriteRelations } from "./relations"
+export type { WriteResource } from "./resources"
+export { initResourceWriter } from "./resources"
+export type { WriteRelations } from "./relations"
+export { initRelationsWriter } from "./relations"
 
 export type WriteIndexOptions = {
 	type: string

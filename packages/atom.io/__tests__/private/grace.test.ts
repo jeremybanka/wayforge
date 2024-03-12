@@ -69,7 +69,7 @@ describe(`graceful handling of improper usage`, () => {
 					set(c, `bye`)
 				},
 			})
-			const tl_ab = timeline({
+			const tlAB = timeline({
 				key: `a & b`,
 				atoms: [a, b],
 			})

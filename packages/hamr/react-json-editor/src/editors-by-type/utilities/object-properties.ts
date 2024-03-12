@@ -13,8 +13,9 @@ export const makePropertySetters = <T extends Json.Object>(
 ): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
 	mapObject<keyof T, any, SetterOrUpdater<any>>(
 		data,
-		(value, key) => (newValue) =>
-			set({ ...data, [key]: become(newValue)(value[key]) }),
+		(value, key) => (newValue) => {
+			set({ ...data, [key]: become(newValue)(value[key]) })
+		},
 	)
 
 export const makePropertyRenamers = <T extends Json.Object>(
@@ -24,34 +25,33 @@ export const makePropertyRenamers = <T extends Json.Object>(
 ): { [K in keyof T]: (newKey: string) => void } =>
 	mapObject<keyof T, any, (newKey: string) => void>(
 		data,
-		(value, key) => (newKey) =>
-			Object.hasOwn(data, newKey)
-				? null
-				: set(() => {
-						const entries = Object.entries(data)
-						const index = entries.findIndex(([k]) => k === key)
-						entries[index] = [newKey, value]
-						const stableKeyMap = stableKeyMapRef.current
-						stableKeyMapRef.current = {
-							...stableKeyMap,
-							[newKey]: stableKeyMap[key],
-						}
-						return Object.fromEntries(entries) as T
-				  }),
+		(value, key) => (newKey) => {
+			if (Object.hasOwn(data, newKey)) {
+				set(() => {
+					const entries = Object.entries(data)
+					const index = entries.findIndex(([k]) => k === key)
+					entries[index] = [newKey, value]
+					const stableKeyMap = stableKeyMapRef.current
+					stableKeyMapRef.current = {
+						...stableKeyMap,
+						[newKey]: stableKeyMap[key],
+					}
+					return Object.fromEntries(entries) as T
+				})
+			}
+		},
 	)
 
 export const makePropertyRemovers = <T extends Json.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: () => void } =>
-	mapObject<keyof T, any, () => void>(
-		data,
-		(_, key) => () =>
-			set(() => {
-				const { [key]: _, ...rest } = data
-				return rest as T
-			}),
-	)
+	mapObject<keyof T, any, () => void>(data, (_, key) => () => {
+		set(() => {
+			const { [key]: __, ...rest } = data
+			return rest as T
+		})
+	})
 
 export const makePropertyRecasters = <T extends Json.Object>(
 	data: T,
@@ -59,11 +59,12 @@ export const makePropertyRecasters = <T extends Json.Object>(
 ): { [K in keyof T]: (newType: JsonTypeName) => void } =>
 	mapObject<keyof T, any, (newType: JsonTypeName) => void>(
 		data,
-		(value, key) => (newType) =>
+		(value, key) => (newType) => {
 			set(() => ({
 				...data,
 				[key]: castToJson(value).to[newType](),
-			})),
+			}))
+		},
 	)
 
 export const makePropertyCreationInterface =
@@ -75,8 +76,9 @@ export const makePropertyCreationInterface =
 		type: JsonTypeName,
 	) => (value?: Json.Serializable) => void) =>
 	(key, type) =>
-	(value) =>
+	(value) => {
 		set({ ...data, [key]: value ?? JSON_DEFAULTS[type] })
+	}
 
 export const makePropertySorter =
 	<T extends Json.Object>(

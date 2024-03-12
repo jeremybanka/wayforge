@@ -3,7 +3,7 @@ import type { ReactElement } from "react"
 import type { Json } from "~/packages/anvl/src/json"
 
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
-import { JsonEditor_INTERNAL } from "../json-editor-internal"
+import { JsonEditorInternal } from "../json-editor-internal"
 import { makeElementSetters } from "./utilities/array-elements"
 
 export const ArrayEditor = <_ extends Json.Array>({
@@ -20,7 +20,7 @@ export const ArrayEditor = <_ extends Json.Array>({
 			{data.map((element, index) => {
 				const newPath = [...path, index]
 				return (
-					<JsonEditor_INTERNAL
+					<JsonEditorInternal
 						key={newPath.join(``)}
 						path={newPath}
 						isReadonly={isReadonly}

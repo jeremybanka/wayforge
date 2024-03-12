@@ -38,7 +38,7 @@ export function realtimeContinuitySynchronizer({
 			store,
 		).userKeyOfSocket
 		const userKey = getFromStore(userKeyState, store)
-		if (!userKey) {
+		if (userKey === null) {
 			store.logger.error(
 				`❌`,
 				`continuity`,
@@ -91,7 +91,7 @@ export function realtimeContinuitySynchronizer({
 		const unsubscribeFunctions: (() => void)[] = []
 
 		const revealPerspectives = (): (() => void) => {
-			const unsubscribeFunctions: (() => void)[] = []
+			const unsubFunctions: (() => void)[] = []
 			for (const perspective of continuity.perspectives) {
 				const { viewAtoms } = perspective
 				const userViewState = findInStore(viewAtoms, userKey, store)
@@ -128,10 +128,10 @@ export function realtimeContinuitySynchronizer({
 					`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.resourceAtoms.key}`,
 					store,
 				)
-				unsubscribeFunctions.push(unsubscribe)
+				unsubFunctions.push(unsubscribe)
 			}
 			return () => {
-				for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+				for (const unsubscribe of unsubFunctions) unsubscribe()
 			}
 		}
 		const unsubscribeFromPerspectives = revealPerspectives()

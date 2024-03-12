@@ -40,8 +40,8 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 				const cardsThisPlayerHasInTricks = get(
 					findRelations(trickContributions, playerId).cardKeysOfPlayer,
 				)
-				const cardId = cardsThisPlayerHasInTricks.find((cardId) =>
-					cardIdsInTrick.includes(cardId),
+				const cardId = cardsThisPlayerHasInTricks.find((id) =>
+					cardIdsInTrick.includes(id),
 				)
 				return [playerId, cardId]
 			})
@@ -79,7 +79,10 @@ export const currentTrickIdState = selector<string | null>({
 		const trickIds = get(trickIdJson)
 
 		const currentTrickId = trickIds.members.at(-1)
-		if (!currentTrickId || completeTrickIds.includes(currentTrickId)) {
+		if (
+			currentTrickId === undefined ||
+			completeTrickIds.includes(currentTrickId)
+		) {
 			return null
 		}
 		return currentTrickId

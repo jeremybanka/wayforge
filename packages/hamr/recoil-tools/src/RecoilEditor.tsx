@@ -22,7 +22,7 @@ export const IdFromRoute = <T,>({
 	useRemove,
 }: IdFromRouteProps<T>): ReactElement => {
 	const { id } = useParams<{ id: string }>()
-	if (!id) {
+	if (id === undefined) {
 		throw new Error(`RouterAdaptor must be used with a route that has an id`)
 	}
 	return <Editor id={id} findState={findState} useRemove={useRemove} />

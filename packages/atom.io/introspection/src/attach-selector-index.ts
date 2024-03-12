@@ -16,7 +16,7 @@ export type SelectorTokenIndex = WritableTokenIndex<
 export const attachSelectorIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<SelectorTokenIndex> => {
-	const readonlySelectorTokenIndexState__INTERNAL =
+	const readonlySelectorTokenIndexStateInternal =
 		createRegularAtom<SelectorTokenIndex>(
 			{
 				key: `👁‍🗨 Selector Token Index (Internal)`,
@@ -48,7 +48,7 @@ export const attachSelectorIndex = (
 											const { key: familyKey, subKey } = family
 											const current = state[familyKey]
 											if (current === undefined || `familyMembers` in current) {
-												const familyKeyState = current || {
+												const familyKeyState = current ?? {
 													key: familyKey,
 													familyMembers: {},
 												}
@@ -91,7 +91,7 @@ export const attachSelectorIndex = (
 	return createStandaloneSelector(
 		{
 			key: `👁‍🗨 Selector Token Index`,
-			get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
+			get: ({ get }) => get(readonlySelectorTokenIndexStateInternal),
 		},
 		IMPLICIT.STORE,
 	)

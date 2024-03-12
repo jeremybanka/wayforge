@@ -318,7 +318,7 @@ describe(`nesting transactions`, () => {
 				const count = get(countState)
 				set(countState, count + 1)
 				runTransaction(incrementTX)()
-				set(countState, (count) => count + 1)
+				set(countState, (c) => c + 1)
 			},
 		})
 		runTransaction(incrementTwiceTX)()

@@ -17,7 +17,9 @@ beforeEach(() => {
 describe(`Future`, () => {
 	it(`is a cancellable promise`, async () => {
 		const future = new Future<number>((resolve) =>
-			setImmediate(() => resolve(1)),
+			setImmediate(() => {
+				resolve(1)
+			}),
 		)
 		future.cancel()
 		let reason: unknown = null
@@ -34,7 +36,9 @@ describe(`Future`, () => {
 		let caught: unknown = null
 		try {
 			const promise = new Promise<number>((resolve) =>
-				setImmediate(() => resolve(1)),
+				setImmediate(() => {
+					resolve(1)
+				}),
 			)
 			const future = new Future<number>(promise)
 			future.cancel()
@@ -51,9 +55,11 @@ describe(`Future`, () => {
 		const subject = new Subject<StateUpdate<number>>()
 		subject.subscribe(`example-watcher`, Utils.stdout)
 		const promise = new Promise<number>((resolve) =>
-			setImmediate(() => resolve(1)),
+			setImmediate(() => {
+				resolve(1)
+			}),
 		)
-		cacheValue(`a`, promise, subject, IMPLICIT.STORE)
+		await cacheValue(`a`, promise, subject, IMPLICIT.STORE)
 		evictCachedValue(`a`, IMPLICIT.STORE)
 		await promise
 		expect(Utils.stdout).not.toHaveBeenCalled()
@@ -73,7 +79,8 @@ test(`when a future is cancelled during promise resolution, future still rejects
 	future = new Future<number>(promise)
 	let reason: unknown = null
 	try {
-		const number = await future.then((value) => Utils.stdout(value))
+		const number = await future
+		Utils.stdout(number)
 		console.log(number)
 	} catch (thrown) {
 		reason = thrown
@@ -85,7 +92,9 @@ test(`when a future is cancelled during promise resolution, future still rejects
 test(`when a future is created with a resolved promise, it can still be cancelled`, async () => {
 	try {
 		const promise = new Promise<number>((resolve) =>
-			setImmediate(() => resolve(1)),
+			setImmediate(() => {
+				resolve(1)
+			}),
 		)
 		await promise
 		const future = new Future<number>(promise)

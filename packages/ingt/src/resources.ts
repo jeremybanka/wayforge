@@ -91,9 +91,9 @@ export const initResourceWriter = ({
 		if (allFileNames instanceof Error) {
 			return allFileNames
 		}
-		const prevFileName = allFileNames.find((name) => name.includes(id))
+		const prevFileName = allFileNames.find((n) => n.includes(id))
 		const prevFilePath = `${baseDir}/${type}/${prevFileName}`
-		if (prevFileName && prevFilePath !== nextFilepath) {
+		if (prevFileName !== undefined && prevFilePath !== nextFilepath) {
 			renameSync(prevFilePath, nextFilepath)
 		}
 		writeFileSync(nextFilepath, formatted)

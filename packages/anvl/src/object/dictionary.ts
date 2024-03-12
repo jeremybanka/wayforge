@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { pipe } from "../function"
 
 import { map } from "../array"
@@ -74,7 +75,7 @@ export class Dictionary<
 		pair: {
 			[N in NameOfA | NameOfB]: N extends NameOfA ? A : B
 		},
-	): Dictionary<A, B, NameOfA, NameOfB> {
+	): this {
 		const a = pair[this.nameOfA] as A
 		const b = pair[this.nameOfB] as B
 		if (a in this.aSide) delete this.aSide[a]
@@ -88,7 +89,7 @@ export class Dictionary<
 		item: {
 			[K in Name]: Name extends NameOfA ? A : B
 		},
-	): Dictionary<A, B, NameOfA, NameOfB> {
+	): this {
 		const [name, value] = recordToEntries(item as { [K in Name]: A | B })[0]
 		if (name === this.nameOfA) {
 			const b = this.aSide[value as A]

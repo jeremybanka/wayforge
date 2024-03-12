@@ -70,9 +70,15 @@ export class ParentSocket<
 		)
 	}
 	public logger = {
-		info: (...args: any[]): void => this.log(`i`, ...args),
-		warn: (...args: any[]): void => this.log(`w`, ...args),
-		error: (...args: any[]): void => this.log(`e`, ...args),
+		info: (...args: any[]): void => {
+			this.log(`i`, ...args)
+		},
+		warn: (...args: any[]): void => {
+			this.log(`w`, ...args)
+		},
+		error: (...args: any[]): void => {
+			this.log(`e`, ...args)
+		},
 	}
 
 	public constructor() {
@@ -93,19 +99,19 @@ export class ParentSocket<
 				const chunk = buffer.toString()
 				this.unprocessedEvents.push(...chunk.split(`\x03`))
 				const newInput = this.unprocessedEvents.shift()
-				this.incompleteData += newInput || ``
+				this.incompleteData += newInput ?? ``
 
 				try {
-					const parsedEvent = parseJson(this.incompleteData)
+					let parsedEvent = parseJson(this.incompleteData)
 					this.logger.info(`🎰`, `received`, parsedEvent)
 					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 					while (this.unprocessedEvents.length > 0) {
 						const event = this.unprocessedEvents.shift()
-						if (event) {
+						if (event !== undefined) {
 							if (this.unprocessedEvents.length === 0) {
 								this.incompleteData = event
 							}
-							const parsedEvent = parseJson(event)
+							parsedEvent = parseJson(event)
 							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 						}
 					}

@@ -4,10 +4,10 @@ import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/
 import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
 
 import type { Energy } from "../../services/energy"
-import { SVG_EnergyIcon } from "./EnergyIcon"
+import { EnergyIconSVG } from "./EnergyIcon"
 
 export const EnergyListItem: FC<RecoilListItemProps<Energy>> = ({ label }) => (
 	<RecoverableErrorBoundary>
-		<SVG_EnergyIcon energyId={label.id} size={30} />
+		<EnergyIconSVG energyId={label.id} size={30} />
 	</RecoverableErrorBoundary>
 )

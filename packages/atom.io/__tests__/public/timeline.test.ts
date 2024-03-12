@@ -48,19 +48,19 @@ describe(`timeline`, () => {
 			default: 0,
 		})
 
-		const product_abc = selector({
+		const productABC = selector({
 			key: `product of a, b, & c`,
 			get: ({ get }) => {
 				return get(a) * get(b) * get(c)
 			},
 		})
 
-		const tl_abc = timeline({
+		const tlABC = timeline({
 			key: `a, b, & c`,
 			atoms: [a, b, c],
 		})
 
-		const tx_ab = transaction<() => void>({
+		const txAB = transaction<() => void>({
 			key: `increment a & b`,
 			do: ({ set }) => {
 				set(a, (n) => n + 1)
@@ -68,7 +68,7 @@ describe(`timeline`, () => {
 			},
 		})
 
-		const tx_bc = transaction<(plus: number) => void>({
+		const txBC = transaction<(plus: number) => void>({
 			key: `increment b & c`,
 			do: ({ set }, add = 1) => {
 				set(b, (n) => n + add)
@@ -76,13 +76,13 @@ describe(`timeline`, () => {
 			},
 		})
 
-		subscribe(tl_abc, Utils.stdout0)
+		subscribe(tlABC, Utils.stdout0)
 
 		const expectation0 = () => {
 			expect(getState(a)).toBe(5)
 			expect(getState(b)).toBe(0)
 			expect(getState(c)).toBe(0)
-			expect(getState(product_abc)).toBe(0)
+			expect(getState(productABC)).toBe(0)
 		}
 		expectation0()
 
@@ -91,20 +91,20 @@ describe(`timeline`, () => {
 			expect(getState(a)).toBe(1)
 			expect(getState(b)).toBe(0)
 			expect(getState(c)).toBe(0)
-			expect(getState(product_abc)).toBe(0)
+			expect(getState(productABC)).toBe(0)
 		}
 		expectation1()
 
-		runTransaction(tx_ab)()
+		runTransaction(txAB)()
 		const expectation2 = () => {
 			expect(getState(a)).toBe(2)
 			expect(getState(b)).toBe(1)
 			expect(getState(c)).toBe(0)
-			expect(getState(product_abc)).toBe(0)
+			expect(getState(productABC)).toBe(0)
 		}
 		expectation2()
 
-		runTransaction(tx_bc)(2)
+		runTransaction(txBC)(2)
 		const expectation3 = () => {
 			expect(getState(a)).toBe(2)
 			expect(getState(b)).toBe(3)
@@ -112,20 +112,20 @@ describe(`timeline`, () => {
 		}
 		expectation3()
 
-		undo(tl_abc)
+		undo(tlABC)
 		expectation2()
 
-		redo(tl_abc)
+		redo(tlABC)
 		expectation3()
 
-		undo(tl_abc)
-		undo(tl_abc)
+		undo(tlABC)
+		undo(tlABC)
 		expectation1()
 
-		undo(tl_abc)
+		undo(tlABC)
 		expectation0()
 
-		const timelineData = Internal.IMPLICIT.STORE.timelines.get(tl_abc.key)
+		const timelineData = Internal.IMPLICIT.STORE.timelines.get(tlABC.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -176,7 +176,7 @@ describe(`timeline`, () => {
 			default: 6,
 		})
 
-		const product_ab = selector({
+		const productAB = selector({
 			key: `product of a & b`,
 			get: ({ get }) => {
 				return get(a) * get(b)
@@ -187,15 +187,15 @@ describe(`timeline`, () => {
 			},
 		})
 
-		const timeline_ab = timeline({
+		const timelineAB = timeline({
 			key: `a & b`,
 			atoms: [a, b],
 		})
 
 		subscribe(a, Utils.stdout)
 
-		setState(product_ab, 1)
-		undo(timeline_ab)
+		setState(productAB, 1)
+		undo(timelineAB)
 
 		expect(getState(a)).toBe(3)
 

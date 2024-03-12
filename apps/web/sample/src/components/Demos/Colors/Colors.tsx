@@ -19,19 +19,25 @@ const colorAtom = atom<Luum>({
 const hueSelector = selector<number>({
 	key: `hue`,
 	get: ({ get }) => get(colorAtom).hue,
-	set: ({ set }, hue) => set(colorAtom, (color) => new Luum(setHue(hue)(color))),
+	set: ({ set }, hue) => {
+		set(colorAtom, (color) => new Luum(setHue(hue)(color)))
+	},
 })
 
 const lumSelector = selector<number>({
 	key: `lum`,
 	get: ({ get }) => get(colorAtom).lum,
-	set: ({ set }, lum) => set(colorAtom, (color) => new Luum(setLum(lum)(color))),
+	set: ({ set }, lum) => {
+		set(colorAtom, (color) => new Luum(setLum(lum)(color)))
+	},
 })
 
 const satSelector = selector<number>({
 	key: `sat`,
 	get: ({ get }) => get(colorAtom).sat,
-	set: ({ set }, sat) => set(colorAtom, (color) => new Luum(setSat(sat)(color))),
+	set: ({ set }, sat) => {
+		set(colorAtom, (color) => new Luum(setSat(sat)(color)))
+	},
 })
 
 const findAltHueSelector = selectorFamily<Luum, number>({
@@ -47,11 +53,11 @@ const findAltHueSelector = selectorFamily<Luum, number>({
 export const Colors: FC = () => {
 	useSetTitle(`Colors`)
 
-	const setHue = useI(hueSelector)
+	const setH = useI(hueSelector)
 	const hue = useO(hueSelector)
-	const setLum = useI(lumSelector)
+	const setL = useI(lumSelector)
 	const lum = useO(lumSelector)
-	const setSat = useI(satSelector)
+	const setS = useI(satSelector)
 	const sat = useO(satSelector)
 
 	const [isPending, startTransition] = useTransition()
@@ -63,18 +69,26 @@ export const Colors: FC = () => {
 		<>
 			<ElasticInput
 				value={hue}
-				onChange={(e) => startTransition(() => setHue(Number(e.target.value)))}
+				onChange={(e) => {
+					startTransition(() => {
+						setH(Number(e.target.value))
+					})
+				}}
 				type="number"
 			/>
 			<ElasticInput
 				value={lum}
-				onChange={(e) => setLum(Number(e.target.value))}
+				onChange={(e) => {
+					setL(Number(e.target.value))
+				}}
 				step={0.01}
 				type="number"
 			/>
 			<ElasticInput
 				value={sat}
-				onChange={(e) => setSat(Number(e.target.value))}
+				onChange={(e) => {
+					setS(Number(e.target.value))
+				}}
 				type="number"
 			/>
 			<div className={scss.class}>

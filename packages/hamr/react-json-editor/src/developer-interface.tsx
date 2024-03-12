@@ -14,7 +14,7 @@ import {
 	StringEditor,
 } from "./editors-by-type/primitive-editors"
 import type { JsonEditorProps_INTERNAL } from "./json-editor-internal"
-import { JsonEditor_INTERNAL } from "./json-editor-internal"
+import { JsonEditorInternal } from "./json-editor-internal"
 
 export const SubEditors: Record<
 	keyof JsonTypes,
@@ -65,7 +65,7 @@ export const JsonEditor = <T extends Json.Serializable>({
 	}
 
 	return (
-		<JsonEditor_INTERNAL
+		<JsonEditorInternal
 			data={data}
 			set={set}
 			name={name}

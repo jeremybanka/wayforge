@@ -36,8 +36,8 @@ export const ReactionList: FC<{
         padding: 20px;
       `,
 			ListItem: ReactionEditorListItem,
-			ItemCreator: ({ useCreate }) => {
-				const create = useCreate()
+			ItemCreator: ({ useCreate: createHook }) => {
+				const create = createHook()
 				return (
 					<button type="button" onClick={create}>
 						Add

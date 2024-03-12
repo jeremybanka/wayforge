@@ -9,7 +9,7 @@ import {
 export const attachTransactionIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<TransactionToken<ƒn>[]> => {
-	const transactionTokenIndexState__INTERNAL = createRegularAtom<
+	const transactionTokenIndexStateInternal = createRegularAtom<
 		TransactionToken<ƒn>[]
 	>(
 		{
@@ -35,7 +35,7 @@ export const attachTransactionIndex = (
 	const transactionTokenIndex = createStandaloneSelector(
 		{
 			key: `👁‍🗨 Transaction Token Index`,
-			get: ({ get }) => get(transactionTokenIndexState__INTERNAL),
+			get: ({ get }) => get(transactionTokenIndexStateInternal),
 		},
 		store,
 	)

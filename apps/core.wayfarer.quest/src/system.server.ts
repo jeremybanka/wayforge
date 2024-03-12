@@ -62,7 +62,7 @@ pipe(
 			exposeMutableFamily(usersInRoomsAtoms, RT.roomIndex)
 
 			socket.on(`create-room`, async (roomId) => {
-				runTransaction(RTS.createRoomTX)(roomId, `bun`, [
+				await runTransaction(RTS.createRoomTX)(roomId, `bun`, [
 					// `--smol`,
 					`--watch`,
 					path.join(import.meta.dir, `room.server.ts`),
@@ -84,7 +84,9 @@ pipe(
 					roomQueue.push(payload)
 				}
 				let toRoom = pushToRoomQueue
-				const forward = (...payload: [string, ...Json.Array]) => toRoom(payload)
+				const forward = (...payload: [string, ...Json.Array]) => {
+					toRoom(payload)
+				}
 				socket.onAny(forward)
 
 				runTransaction(RTS.joinRoomTX, nanoid())(roomId, username, 0)
@@ -126,7 +128,7 @@ pipe(
 					username,
 				).roomKeyOfUser
 				const roomKey = getState(roomKeyState)
-				if (!roomKey) {
+				if (roomKey === null) {
 					return
 				}
 				const roomSocketState = findState(RTS.roomSelectors, roomKey)

@@ -18,7 +18,9 @@ export const localStorageSerializationEffect: <T>(
 		onSet((newValue, _, isReset) => {
 			isReset
 				? localStorage.removeItem(key)
-				: pipe(newValue, serialize, (s) => localStorage.setItem(key, s))
+				: pipe(newValue, serialize, (s) => {
+						localStorage.setItem(key, s)
+				  })
 		})
 	}
 

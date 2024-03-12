@@ -114,7 +114,7 @@ export const setupRealtimeTestServer = (
 		for (const roomKey of roomKeys) {
 			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
 			const room = getFromStore(roomState, silo.store)
-			if (room && !(room instanceof Promise)) {
+			if (!(room instanceof Promise)) {
 				room.process.kill()
 			}
 		}
@@ -159,7 +159,9 @@ export const setupRealtimeTestClient = (
 			},
 		)
 
-		const prettyPrint = () => console.log(prettyDOM(renderResult.container))
+		const prettyPrint = () => {
+			console.log(prettyDOM(renderResult.container))
+		}
 
 		const dispose = () => {
 			renderResult.unmount()
@@ -200,13 +202,13 @@ export const multiClient = <ClientNames extends string>(
 ): RealtimeTestAPI__MultiClient<ClientNames> => {
 	const server = setupRealtimeTestServer(options)
 	const clients = recordToEntries(options.clients).reduce(
-		(clients, [name, client]) => {
-			clients[name] = setupRealtimeTestClient(
+		(clientsAccumulator, [name, client]) => {
+			clientsAccumulator[name] = setupRealtimeTestClient(
 				{ ...options, client },
 				name,
 				server.port,
 			)
-			return clients
+			return clientsAccumulator
 		},
 		{} as Record<ClientNames, RealtimeTestClientBuilder>,
 	)

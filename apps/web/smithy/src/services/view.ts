@@ -57,8 +57,9 @@ export const addSpace: Transact<() => string> = (transactors) => {
 	return id
 }
 
-export const removeSpace: Transact<(id: string) => void> = (transactors, id) =>
+export const removeSpace: Transact<(id: string) => void> = (transactors, id) => {
 	removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
+}
 
 export const viewsPerSpaceState = atom<Join<null, `viewId`, `spaceId`>>({
 	key: `viewsPerSpace`,
@@ -134,7 +135,7 @@ export const useSetTitle = (title: string): void => {
 
 type AddViewOptions = { spaceId?: string; path?: string }
 
-const OP_addView: Transact<(options?: AddViewOptions) => void> = (
+const opAddView: Transact<(options?: AddViewOptions) => void> = (
 	transactors,
 	{ spaceId: maybeSpaceId, path } = {},
 ) => {
@@ -163,14 +164,14 @@ const OP_addView: Transact<(options?: AddViewOptions) => void> = (
 export const useOperation = <Options>(
 	operation: Transact<(options: Options) => void>,
 ): ((param: Options) => void) =>
-	useRecoilTransaction(
-		(transactors) => (options) => operation(transactors, options),
-	)
+	useRecoilTransaction((transactors) => (options) => {
+		operation(transactors, options)
+	})
 
 export const useAddView = (): ((options?: AddViewOptions) => void) =>
-	useRecoilTransaction(
-		(transactors) => (options) => OP_addView(transactors, options),
-	)
+	useRecoilTransaction((transactors) => (options) => {
+		opAddView(transactors, options)
+	})
 
 const removeView: Transact<(viewId: string) => void> = (transactors, viewId) => {
 	const { set } = transactors
@@ -179,4 +180,6 @@ const removeView: Transact<(viewId: string) => void> = (transactors, viewId) => 
 }
 
 export const useRemoveView = (): ((id: string) => void) =>
-	useRecoilTransaction((transactors) => (id) => removeView(transactors, id))
+	useRecoilTransaction((transactors) => (id) => {
+		removeView(transactors, id)
+	})

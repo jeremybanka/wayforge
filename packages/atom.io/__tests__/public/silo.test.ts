@@ -14,23 +14,23 @@ describe(`silo`, () => {
 			default: 0,
 		}
 
-		const countState__Uno = Uno.atom(DEFAULT_COUNT_CONFIG)
-		const countState__Dos = Dos.atom(DEFAULT_COUNT_CONFIG)
+		const countStateUno = Uno.atom(DEFAULT_COUNT_CONFIG)
+		const countStateDos = Dos.atom(DEFAULT_COUNT_CONFIG)
 
-		const UnoCountValue = Uno.getState(countState__Uno)
-		const DosCountValue = Dos.getState(countState__Dos)
+		const UnoCountValue = Uno.getState(countStateUno)
+		const DosCountValue = Dos.getState(countStateDos)
 
 		expect(UnoCountValue).toBe(0)
 		expect(DosCountValue).toBe(0)
 
-		Uno.setState(countState__Uno, 1)
-		Dos.setState(countState__Dos, 2)
+		Uno.setState(countStateUno, 1)
+		Dos.setState(countStateDos, 2)
 
-		expect(Uno.getState(countState__Uno)).toBe(1)
-		expect(Dos.getState(countState__Dos)).toBe(2)
+		expect(Uno.getState(countStateUno)).toBe(1)
+		expect(Dos.getState(countStateDos)).toBe(2)
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
-		expect(() => getState(countState__Uno)).toThrowError(
+		expect(() => getState(countStateUno)).toThrowError(
 			`Atom "count" not found in store "IMPLICIT_STORE".`,
 		)
 	})

@@ -4,7 +4,7 @@ import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import scss from "./PreviewCardSleeve.module.scss"
 
-export const Slot_PreviewCardSleeve: FC<{
+export const PreviewCardSleeveSlot: FC<{
 	children: ReactNode
 	hex: string
 }> = ({ children, hex }) => (

@@ -17,7 +17,7 @@ export class DatabaseManager {
 
 	public async createDatabase(): Promise<void> {
 		await this.sql`CREATE DATABASE ${this.sql(this.dbName)}`
-		this.sql.end()
+		await this.sql.end()
 		this.config.database = this.dbName
 		this.sql = postgres(this.config)
 		this.drizzle = drizzle(this.sql)
@@ -28,13 +28,13 @@ export class DatabaseManager {
 	}
 
 	public async dropDatabase(): Promise<void> {
-		this.sql.end()
+		await this.sql.end()
 		const adminSql = postgres({
 			...this.config,
 			database: `postgres`,
 		})
 		await adminSql`DROP DATABASE ${this.sql(this.dbName)}`
-		adminSql.end()
+		await adminSql.end()
 	}
 
 	public async createSampleTables(): Promise<void> {

@@ -26,16 +26,20 @@ export const ensure =
 	<T>(isType: Refinement<unknown, T>) =>
 	(input: unknown): T => {
 		if (!isType(input)) {
-			throw new TypeError(`Expected ${input} to be of type ${isType.name}`)
+			throw new TypeError(
+				`Expected ${JSON.stringify(input)} to be of type ${isType.name}`,
+			)
 		}
-		return input as T
+		return input
 	}
 
 export const ensureAgainst =
 	<A, B>(isType: Refinement<unknown, A>) =>
 	(input: A | B): Exclude<A | B, A> => {
 		if (isType(input)) {
-			throw new TypeError(`Expected ${input} to not be of type ${isType.name}`)
+			throw new TypeError(
+				`Expected ${JSON.stringify(input)} to not be of type ${isType.name}`,
+			)
 		}
 		return input as Exclude<A | B, A>
 	}

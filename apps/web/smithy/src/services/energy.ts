@@ -57,8 +57,8 @@ export const DEFAULT_ENERGY: Energy = {
 
 const stringSetJsonInterface = {
 	toJson: (s: Set<string>) => Array.from(s),
-	fromJson: (a: Json.Serializable): Set<string> =>
-		pipe(a, z.array(string()).parse, (a) => new Set(a)),
+	fromJson: (arr: Json.Serializable): Set<string> =>
+		pipe(arr, z.array(string()).parse, (a) => new Set(a)),
 }
 
 export const energyIndex = atom<Set<string>>({
@@ -105,7 +105,8 @@ export const findEnergyWithRelationsState = selectorFamily<
 		(energyId) =>
 		({ set }, newValue) => {
 			if (newValue instanceof DefaultValue) {
-				return console.warn(`cannot set default value for energy`)
+				console.warn(`cannot set default value for energy`)
+				return
 			}
 			const { features, ...energy } = newValue
 			set(findEnergyState(energyId), energy)
@@ -130,13 +131,16 @@ const addEnergy: Transact = (transactors) => {
 	}))
 }
 
-const removeEnergy: Transact<(id: string) => void> = (transactors, id) =>
+const removeEnergy: Transact<(id: string) => void> = (transactors, id) => {
 	removeFromIndex(transactors, { id, indexAtom: energyIndex })
+}
 
 export const useAddEnergy = (): (() => void) =>
-	useRecoilTransaction_UNSTABLE((transactors) => () => addEnergy(transactors))
+	useRecoilTransaction_UNSTABLE((transactors) => () => {
+		addEnergy(transactors)
+	})
 
 export const useRemoveEnergy = (): ((id: string) => void) =>
-	useRecoilTransaction_UNSTABLE(
-		(transactors) => (id) => removeEnergy(transactors, id),
-	)
+	useRecoilTransaction_UNSTABLE((transactors) => (id) => {
+		removeEnergy(transactors, id)
+	})

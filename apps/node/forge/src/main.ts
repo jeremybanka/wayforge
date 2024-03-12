@@ -20,7 +20,7 @@ pipe(
 	serveFilestore({
 		logger,
 		formatResource: formatJson,
-		baseDir: process.env.BASE_DIR || `json`,
+		baseDir: process.env.BASE_DIR ?? `json`,
 	}),
 	serveSimpleGit({
 		logger,

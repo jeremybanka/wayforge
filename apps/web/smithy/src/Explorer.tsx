@@ -42,29 +42,53 @@ export const Explorer: FC = () => {
 						</ul>
 					</>
 				)}
-				<button type="button" onClick={() => git.status()}>
+				<button
+					type="button"
+					onClick={() => {
+						git.status()
+					}}
+				>
 					Refresh
 				</button>
 				{/* <button onClick={() => git.add(`.`)}>Add All</button> */}
 				<div>
 					<input
 						value={newBranchName}
-						onChange={(e) => setNewBranchName(e.target.value)}
+						onChange={(e) => {
+							setNewBranchName(e.target.value)
+						}}
 					/>
-					<button type="button" onClick={() => makeNewBranch()}>
+					<button
+						type="button"
+						onClick={() => {
+							makeNewBranch()
+						}}
+					>
 						New Branch
 					</button>
 				</div>
 				<div>
 					<input
 						value={commitMessage}
-						onChange={(e) => setCommitMessage(e.target.value)}
+						onChange={(e) => {
+							setCommitMessage(e.target.value)
+						}}
 					/>
-					<button type="button" onClick={() => commitAll()}>
+					<button
+						type="button"
+						onClick={() => {
+							commitAll()
+						}}
+					>
 						Commit
 					</button>
 				</div>
-				<button type="button" onClick={() => git.reset([`--soft`, `HEAD^`])}>
+				<button
+					type="button"
+					onClick={() => {
+						git.reset([`--soft`, `HEAD^`])
+					}}
+				>
 					Reset All
 				</button>
 				{/* <Combo
