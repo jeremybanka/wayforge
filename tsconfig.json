@@ -52,6 +52,6 @@
 		{ "path": "./packages/socket-io.filestore" },
 		{ "path": "./packages/socket-io.git" }
 	],
-	"include": [],
+	"files": [],
 	"exclude": ["*/**/node_modules", "*/**/dist"]
 }

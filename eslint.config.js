@@ -5,7 +5,12 @@ import plugin from "@typescript-eslint/eslint-plugin"
 
 /** @type {import("@typescript-eslint/parser").ParserOptions} */
 const parserOptions = {
-  project: [`./tsconfig.json`, `./apps/web/smithy/tsconfig.json`, `./packages/atom.io/tsconfig.json`],
+  project: [
+    `./tsconfig.json`, 
+    `./tsconfig.config.json`, 
+    `./apps/web/smithy/tsconfig.json`, 
+    `./packages/atom.io/tsconfig.json`
+  ],
   sourceType: `module`
 }
 
