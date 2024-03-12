@@ -376,13 +376,13 @@ describe(`some practical use cases`, () => {
 describe(`advanced performance tests`, () => {
 	const ITERATION_COUNTS = [2, 4, 8, 16, 32, 64, 128, 256, 512] as const
 
-	function sigFigs(sigFigs: number, num: number): number {
+	function sigFigs(digitCount: number, num: number): number {
 		if (num === 0) {
 			return 0
 		}
 
 		const magnitude = Math.floor(Math.log10(Math.abs(num)))
-		const scale = 10 ** (sigFigs - magnitude - 1)
+		const scale = 10 ** (digitCount - magnitude - 1)
 
 		return Math.round(num * scale) / scale
 	}

@@ -12,7 +12,9 @@ export const OpenClose: FC<{
 			type="button"
 			data-testid={testid}
 			className={`carat ${isOpen ? `open` : `closed`}`}
-			onClick={() => setIsOpen((isOpen) => !isOpen)}
+			onClick={() => {
+				setIsOpen((wasOpen) => !wasOpen)
+			}}
 			disabled={disabled}
 		>
 			▶

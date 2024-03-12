@@ -29,7 +29,7 @@ export function useI<T, K extends Json.Serializable>(
 		(<New extends T>(next: New | ((old: T) => New)) => void) | null
 	> = React.useRef(null)
 	if (setter.current === null) {
-		setter.current = (next) => setIntoStore(stateToken, next, store)
+		setter.current = (next) => { setIntoStore(stateToken, next, store); }
 	}
 	return setter.current
 }

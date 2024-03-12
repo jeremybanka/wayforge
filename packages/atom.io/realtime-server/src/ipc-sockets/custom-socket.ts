@@ -49,7 +49,7 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 	public on<Event extends keyof I>(
 		event: Event,
 		listener: (...args: I[Event]) => void,
-	): CustomSocket<I, O> {
+	): this {
 		const listeners = this.listeners.get(event)
 		if (listeners) {
 			listeners.add(listener)
@@ -61,7 +61,7 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 
 	public onAny(
 		listener: (event: string, ...args: Json.Array) => void,
-	): CustomSocket<I, O> {
+	): this {
 		this.globalListeners.add(listener)
 		return this
 	}
@@ -69,7 +69,7 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 	public off<Event extends keyof I>(
 		event: Event,
 		listener?: (...args: I[Event]) => void,
-	): CustomSocket<I, O> {
+	): this {
 		const listeners = this.listeners.get(event)
 		if (listeners) {
 			if (listener) {
@@ -83,7 +83,7 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 
 	public offAny(
 		listener: (event: string, ...args: Json.Array) => void,
-	): CustomSocket<I, O> {
+	): this {
 		this.globalListeners.delete(listener)
 		return this
 	}

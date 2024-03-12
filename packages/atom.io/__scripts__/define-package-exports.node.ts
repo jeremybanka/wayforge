@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { execSync } from "node:child_process"
 import fs from "node:fs"
 import url from "node:url"
@@ -12,7 +13,7 @@ const ARGS = process.argv.slice(2)
 const SHOULD_RUN = ARGS.includes(`--run`)
 if (SHOULD_RUN) {
 	const mode = ARGS.at(-1)
-	if (!mode) {
+	if (mode === undefined) {
 		throw new Error(
 			`No mode specified. Specify 'test' or 'make' as the last argument`,
 		)

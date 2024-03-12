@@ -17,9 +17,9 @@ export class Future<T> extends Promise<T> {
 	) {
 		super((resolve, reject) => {
 			const pass = (value: T) =>
-				this.isCanceled ? reject(`canceled`) : resolve(value)
+				{ this.isCanceled ? reject(`canceled`) : resolve(value); }
 			const fail = (reason: any) =>
-				this.isCanceled ? reject(`canceled`) : reject(reason)
+				{ this.isCanceled ? reject(`canceled`) : reject(reason); }
 			if (typeof executor === `function`) {
 				executor(pass, fail)
 			} else {

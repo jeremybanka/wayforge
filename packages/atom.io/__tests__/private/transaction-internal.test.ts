@@ -35,7 +35,7 @@ describe(`transaction implementation specifics`, () => {
 			cat: `cats`,
 			child: `children`,
 			antenna: `antennae`,
-		}
+		} as const
 		type Plural = (typeof PLURALS)[Noun]
 		const countState = atom<number>({
 			key: `count`,
@@ -53,38 +53,38 @@ describe(`transaction implementation specifics`, () => {
 			},
 			set: ({ set }, newValue) => {
 				const noun = Object.keys(PLURALS).find(
-					(noun) => PLURALS[noun as Noun] === newValue,
+					(n) => PLURALS[n as Noun] === newValue,
 				) as Noun
 				set(nounState, noun)
 			},
 		})
-		const expressionState = selector<Noun | Plural>({
+		const expressionState = selector<`${number} ${Noun | Plural}`>({
 			key: `expression`,
 			get: ({ get }) => {
 				const count = get(countState)
 				const nounPhrase = count === 1 ? get(nounState) : get(pluralState)
-				return get(countState) + ` ` + nounPhrase
+				return `${count} ${nounPhrase}`
 			},
 		})
 
 		const modifyExpression = transaction({
 			key: `modifyExpression`,
-			do: ({ set }, newExpression: Noun | Plural) => {
+			do: ({ set }, newExpression: `${number} ${Noun | Plural}`) => {
 				const newCount = Number(newExpression.split(` `)[0])
 				if (Number.isNaN(newCount)) {
 					throw new Error(`Invalid expression: ${newExpression} is not a number`)
 				}
 				set(countState, newCount)
-				const newNoun = newExpression.split(` `)[1] as Noun
+				const newNoun = newExpression.split(` `)[1] as Noun | Plural
 				if (
-					!NOUNS.includes(newNoun) &&
-					!Object.values(PLURALS).includes(newNoun)
+					!NOUNS.includes(newNoun as Noun) &&
+					!Object.values(PLURALS).includes(newNoun as Plural)
 				) {
 					throw new Error(
 						`Invalid expression: ${newNoun} is not a recognized noun`,
 					)
 				}
-				set(pluralState, newExpression.split(` `)[1])
+				set(pluralState, newExpression.split(` `)[1] as Plural)
 				return true
 			},
 		})
@@ -130,22 +130,30 @@ describe(`transaction implementation specifics`, () => {
 		const doubleState = selector<number>({
 			key: `double`,
 			get: ({ get }) => get(countState) * 2,
-			set: ({ set }, newValue) => set(countState, newValue / 2),
+			set: ({ set }, newValue) => {
+				set(countState, newValue / 2)
+			},
 		})
 		const doublePlusOneState = selector<number>({
 			key: `doublePlusOne`,
 			get: ({ get }) => get(doubleState) + 1,
-			set: ({ set }, newValue) => set(doubleState, newValue - 1),
+			set: ({ set }, newValue) => {
+				set(doubleState, newValue - 1)
+			},
 		})
 		const tripleState = selector<number>({
 			key: `triple`,
 			get: ({ get }) => get(countState) * 3,
-			set: ({ set }, newValue) => set(countState, newValue / 3),
+			set: ({ set }, newValue) => {
+				set(countState, newValue / 3)
+			},
 		})
 		const triplePlusOneState = selector<number>({
 			key: `triplePlusOne`,
 			get: ({ get }) => get(tripleState) + 1,
-			set: ({ set }, newValue) => set(tripleState, newValue - 1),
+			set: ({ set }, newValue) => {
+				set(tripleState, newValue - 1)
+			},
 		})
 		const doublePlusOnePlusTriplePlusOneState = selector<number>({
 			key: `doublePlusOnePlusTriplePlusOne`,

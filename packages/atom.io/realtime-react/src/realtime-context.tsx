@@ -21,7 +21,7 @@ export const RealtimeProvider: React.FC<{
 	socket: Socket | null
 }> = ({ children, socket }) => {
 	const services = React.useRef(new Map<string, [number, () => void]>()).current
-	const setMyId = useI(RTC.myIdState__INTERNAL)
+	const setMyId = useI(RTC.myIdStateInternal)
 	React.useEffect(() => {
 		setMyId(socket?.id)
 		socket?.on(`connect`, () => {

@@ -57,7 +57,7 @@ export function createMutableAtomFamily<
 			key: options.key,
 			type: `mutable_atom_family`,
 			subject,
-			install: (store: Store) => createMutableAtomFamily(options, store),
+			install: (s: Store) => createMutableAtomFamily(options, s),
 			toJson: options.toJson,
 			fromJson: options.fromJson,
 		} as const,

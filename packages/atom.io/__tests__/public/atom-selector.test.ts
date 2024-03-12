@@ -99,7 +99,7 @@ describe(`selector`, () => {
 		const double = selector<number>({
 			key: `double`,
 			get: ({ get }) => get(count) * 2,
-			set: ({ set }, newValue) => set(count, newValue / 2),
+			set: ({ set }, newValue) => { set(count, newValue / 2); },
 		})
 		const triple = selector<number>({
 			key: `triple`,
@@ -108,7 +108,7 @@ describe(`selector`, () => {
 		const doublePlusOne = selector<number>({
 			key: `doublePlusOne`,
 			get: ({ get }) => get(double) + 1,
-			set: ({ set }, newValue) => set(double, newValue - 1),
+			set: ({ set }, newValue) => { set(double, newValue - 1); },
 		})
 		setState(double, 20)
 		expect(getState(count)).toBe(10)

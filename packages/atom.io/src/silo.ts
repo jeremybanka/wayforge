@@ -81,9 +81,9 @@ export class Silo {
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
 		this.getState = (token) => getFromStore(token, s)
-		this.setState = (token, newValue) => setIntoStore(token, newValue, s)
+		this.setState = (token, newValue) => { setIntoStore(token, newValue, s); }
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
-		this.undo = (token) => timeTravel(`undo`, token, s)
-		this.redo = (token) => timeTravel(`redo`, token, s)
+		this.undo = (token) => { timeTravel(`undo`, token, s); }
+		this.redo = (token) => { timeTravel(`redo`, token, s); }
 	}
 }

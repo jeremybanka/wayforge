@@ -34,7 +34,7 @@ import type {
 } from "../transaction"
 import { isRootStore } from "../transaction/is-root-store"
 
-export class Store implements Lineage {
+export class Store implements Lineage<Store> {
 	public parent: Store | null = null
 	public child: Store | null = null
 

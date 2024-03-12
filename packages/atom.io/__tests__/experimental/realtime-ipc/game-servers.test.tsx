@@ -47,7 +47,7 @@ describe(`multi-process realtime server`, () => {
 		const { client, server, teardown } = scenario(6360)
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => createRoomButton.click())
+		act(() => { createRoomButton.click(); })
 		await app.renderResult.findByTestId(`join-room-1`)
 
 		const roomSocketState = findInStore(
@@ -65,9 +65,9 @@ describe(`multi-process realtime server`, () => {
 		const { client, teardown } = scenario(6361)
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => createRoomButton.click())
+		act(() => { createRoomButton.click(); })
 		const deleteRoomButton = await app.renderResult.findByTestId(`delete-room-1`)
-		act(() => deleteRoomButton.click())
+		act(() => { deleteRoomButton.click(); })
 		await app.renderResult.findByTestId(`no-rooms`)
 
 		teardown()
@@ -76,13 +76,13 @@ describe(`multi-process realtime server`, () => {
 		const { client, teardown } = scenario(6362)
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => createRoomButton.click())
+		act(() => { createRoomButton.click(); })
 		const joinRoomButton = await app.renderResult.findByTestId(`join-room-1`)
-		act(() => joinRoomButton.click())
+		act(() => { joinRoomButton.click(); })
 		await app.renderResult.findByTestId(`room-1`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
-		act(() => leaveRoomButton.click())
+		act(() => { leaveRoomButton.click(); })
 		await app.renderResult.findByTestId(`create-room`)
 
 		teardown()

@@ -1,9 +1,14 @@
-export interface Lineage {
-	parent: typeof this | null
-	child: typeof this | null
+export interface Lineage<L extends Lineage<any>> {
+	parent: L | null
+	child: L | null
 }
 
-export function newest<T extends Lineage>(scion: T): T {
+export class Lin implements Lineage<Lin> {
+	public parent: Lin | null = null
+	public child: Lin | null = null
+}
+
+export function newest<T extends Lineage<any>>(scion: T): T {
 	while (scion.child !== null) {
 		scion = scion.child
 	}

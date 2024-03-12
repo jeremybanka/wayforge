@@ -48,14 +48,14 @@ export const addAtomToTimeline = (
 			update.oldValue,
 			`->`,
 			update.newValue,
-			currentTransactionKey
-				? `in transaction "${currentTransactionKey}"`
-				: currentSelectorKey
-				  ? `in selector "${currentSelectorKey}"`
-				  : ``,
+			currentTransactionKey === undefined
+				? currentSelectorKey === undefined
+					? ``
+					: `in selector "${currentSelectorKey}"`
+				: `in transaction "${currentTransactionKey}"`,
 		)
 		if (tl.timeTraveling === null) {
-			if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
+			if (tl.selectorTime !== null && tl.selectorTime !== currentSelectorTime) {
 				const mostRecentUpdate: TimelineUpdate<any> | undefined =
 					tl.history.at(-1)
 				if (mostRecentUpdate === undefined) {
@@ -64,14 +64,14 @@ export const addAtomToTimeline = (
 					)
 				}
 			}
-			if (currentTransactionKey) {
+			if (currentTransactionKey !== undefined) {
 				const txToken: TransactionToken<any> = {
 					key: currentTransactionKey,
 					type: `transaction`,
 				}
 				const currentTransaction = withdraw(txToken, store)
 				if (tl.transactionKey !== currentTransactionKey) {
-					if (tl.transactionKey) {
+					if (tl.transactionKey !== undefined) {
 						store.logger.error(
 							`🐞`,
 							`timeline`,
@@ -82,9 +82,12 @@ export const addAtomToTimeline = (
 					tl.transactionKey = currentTransactionKey
 					const unsubscribe = currentTransaction.subject.subscribe(
 						`timeline:${tl.key}`,
-						(update) => {
+						(completeUpdate) => {
 							unsubscribe()
-							if (tl.timeTraveling === null && currentTransactionInstanceId) {
+							if (
+								tl.timeTraveling === null &&
+								currentTransactionInstanceId !== undefined
+							) {
 								if (tl.at !== tl.history.length) {
 									tl.history.splice(tl.at)
 								}
@@ -94,12 +97,12 @@ export const addAtomToTimeline = (
 								) =>
 									updates
 										.filter((updateFromTx) => {
-											const target = newest(store)
+											const newTarget = newest(store)
 											if (`updates` in updateFromTx) {
 												return true
 											}
 											const atomOrFamilyKeys =
-												target.timelineAtoms.getRelatedKeys(tl.key)
+												newTarget.timelineAtoms.getRelatedKeys(tl.key)
 
 											return atomOrFamilyKeys
 												? [...atomOrFamilyKeys].some(
@@ -119,12 +122,12 @@ export const addAtomToTimeline = (
 											return updateFromTx
 										})
 
-								const updates = filterUpdates(update.updates)
+								const updates = filterUpdates(completeUpdate.updates)
 
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {
 									type: `transaction_update`,
 									timestamp: Date.now(),
-									...update,
+									...completeUpdate,
 									updates,
 								}
 								const willCapture =
@@ -140,12 +143,12 @@ export const addAtomToTimeline = (
 								`⌛`,
 								`timeline`,
 								tl.key,
-								`got a transaction_update "${update.key}"`,
+								`got a transaction_update "${completeUpdate.key}"`,
 							)
 						},
 					)
 				}
-			} else if (currentSelectorKey && currentSelectorTime) {
+			} else if (currentSelectorKey !== null && currentSelectorTime !== null) {
 				let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
 
 				if (currentSelectorTime !== tl.selectorTime) {

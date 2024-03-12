@@ -14,9 +14,15 @@ import { throwUntil } from "../../__util__/waiting"
 
 function prefixLogger(store: Store, prefix: string) {
 	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
-		info: (...args) => console.info(prefix, ...args),
-		warn: (...args) => console.warn(prefix, ...args),
-		error: (...args) => console.error(prefix, ...args),
+		info: (...args) => {
+			console.info(prefix, ...args)
+		},
+		warn: (...args) => {
+			console.warn(prefix, ...args)
+		},
+		error: (...args) => {
+			console.error(prefix, ...args)
+		},
 	})
 }
 
@@ -128,7 +134,9 @@ describe(`synchronizing transactions`, () => {
 		const dave = clients.dave.init()
 
 		jane.renderResult.getByTestId(`0`)
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => {
+			dave.renderResult.getByTestId(`increment`).click()
+		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		teardown()
 	})
@@ -138,11 +146,19 @@ describe(`synchronizing transactions`, () => {
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
 
-		await waitFor(() => throwUntil(jane.socket.connected))
-		await waitFor(() => throwUntil(dave.socket.connected))
+		await waitFor(() => {
+			throwUntil(jane.socket.connected)
+		})
+		await waitFor(() => {
+			throwUntil(dave.socket.connected)
+		})
 
-		act(() => jane.renderResult.getByTestId(`increment`).click())
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => {
+			jane.renderResult.getByTestId(`increment`).click()
+		})
+		act(() => {
+			dave.renderResult.getByTestId(`increment`).click()
+		})
 
 		await waitFor(() => jane.renderResult.getByTestId(`2`))
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 3000 })
@@ -154,22 +170,36 @@ describe(`synchronizing transactions`, () => {
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
 
-		await waitFor(() => throwUntil(jane.socket.connected))
-		await waitFor(() => throwUntil(dave.socket.connected))
+		await waitFor(() => {
+			throwUntil(jane.socket.connected)
+		})
+		await waitFor(() => {
+			throwUntil(dave.socket.connected)
+		})
 
-		act(() => jane.socket.disconnect())
-		await waitFor(() => throwUntil(!jane.socket.connected))
+		void act(() => jane.socket.disconnect())
+		await waitFor(() => {
+			throwUntil(!jane.socket.connected)
+		})
 
-		act(() => jane.renderResult.getByTestId(`increment`).click())
+		act(() => {
+			jane.renderResult.getByTestId(`increment`).click()
+		})
 
-		act(() => dave.renderResult.getByTestId(`increment`).click())
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => {
+			dave.renderResult.getByTestId(`increment`).click()
+		})
+		act(() => {
+			dave.renderResult.getByTestId(`increment`).click()
+		})
 
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		await waitFor(() => dave.renderResult.getByTestId(`2`))
 
-		act(() => jane.socket.connect())
-		await waitFor(() => throwUntil(jane.socket.connected))
+		void act(() => jane.socket.connect())
+		await waitFor(() => {
+			throwUntil(jane.socket.connected)
+		})
 
 		await waitFor(() => dave.renderResult.getByTestId(`3`))
 		await waitFor(() => jane.renderResult.getByTestId(`3`))

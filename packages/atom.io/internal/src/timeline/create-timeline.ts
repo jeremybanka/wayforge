@@ -73,7 +73,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		transactionKey: null,
 		...data,
 		history: data?.history.map((update) => ({ ...update })) ?? [],
-		install: (store) => createTimeline(options, store, tl),
+		install: (s) => createTimeline(options, s, tl),
 		subject: new Subject(),
 	}
 	if (options.shouldCapture) {
@@ -110,7 +110,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				const familyTimelineKey = target.timelineAtoms.getRelatedKey(
 					atom.family.key,
 				)
-				if (familyTimelineKey) {
+				if (familyTimelineKey !== undefined) {
 					store.logger.error(
 						`❌`,
 						`timeline`,
@@ -121,7 +121,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				}
 			}
 			const existingTimelineKey = target.timelineAtoms.getRelatedKey(atomKey)
-			if (existingTimelineKey) {
+			if (existingTimelineKey !== undefined) {
 				store.logger.error(
 					`❌`,
 					`timeline`,

@@ -12,7 +12,7 @@ export function realtimeStateReceiver({
 	return function stateReceiver<J extends Json.Serializable>(
 		token: WritableToken<J>,
 	): () => void {
-		const publish = (newValue: J) => setIntoStore(token, newValue, store)
+		const publish = (newValue: J) => { setIntoStore(token, newValue, store); }
 
 		const fillPubUnclaim = () => {
 			socket.off(`pub:${token.key}`, publish)

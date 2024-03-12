@@ -43,7 +43,7 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 			key: options.key,
 			type: `selector_family`,
 			subject,
-			install: (store: Store) => createWritableSelectorFamily(options, store),
+			install: (s: Store) => createWritableSelectorFamily(options, s),
 		} as const,
 	) as WritableSelectorFamily<T, K>
 	store.families.set(options.key, selectorFamily)

@@ -13,7 +13,7 @@ import {
 export const attachTimelineFamily = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorFamilyToken<Timeline<any>, string> => {
-	const findTimelineLogState__INTERNAL = createRegularAtomFamily<
+	const findTimelineLogStateInternal = createRegularAtomFamily<
 		Timeline<any>,
 		string
 	>(
@@ -60,7 +60,7 @@ export const attachTimelineFamily = (
 			get:
 				(key) =>
 				({ get }) =>
-					get(findTimelineLogState__INTERNAL(key)),
+					get(findTimelineLogStateInternal(key)),
 		},
 		store,
 	)

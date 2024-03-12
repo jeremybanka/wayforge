@@ -64,7 +64,7 @@ export const composeExplorer = ({
 		const view = useO(viewState)
 		const setView = useI(viewState)
 		useEffect(() => {
-			setView((view) => ({ ...view, location }))
+			setView((v) => ({ ...v, location }))
 		}, [location.key])
 		return (
 			<div className="view">
@@ -95,7 +95,9 @@ export const composeExplorer = ({
 		const view = useO(findViewState, viewId)
 		const spaceFocusedView = useO(findSpaceFocusedViewState, spaceId)
 		const setSpaceFocusedView = useI(findSpaceFocusedViewState, spaceId)
-		const handleClick = () => setSpaceFocusedView(viewId)
+		const handleClick = () => {
+			setSpaceFocusedView(viewId)
+		}
 		return (
 			<div
 				className={`tab ${spaceFocusedView === viewId ? `focused` : ``}`}
@@ -130,9 +132,7 @@ export const composeExplorer = ({
 		return (
 			<div className="space">
 				<RecoverableErrorBoundary>
-					<MemoryRouter
-						initialEntries={view.location ? [view.location.pathname] : []}
-					>
+					<MemoryRouter initialEntries={[view.location.pathname]}>
 						<TabBar spaceId={spaceId} viewIds={viewIds} />
 						<View viewId={focusedViewId}>{children}</View>
 					</MemoryRouter>
@@ -151,7 +151,7 @@ export const composeExplorer = ({
 		return (
 			<div className="spaces">
 				{spaceLayout.childSpaceIds.length === 0 ? (
-					focusedViewId ? (
+					focusedViewId !== null ? (
 						<Space
 							focusedViewId={focusedViewId}
 							spaceId={spaceId}
@@ -171,7 +171,9 @@ export const composeExplorer = ({
 				)}
 				<button
 					type="button"
-					onClick={() => runTransaction(addView)({ spaceId })}
+					onClick={() => {
+						runTransaction(addView)({ spaceId })
+					}}
 				>
 					+ View
 				</button>
@@ -205,7 +207,7 @@ export const composeExplorer = ({
 		)
 		const viewId = locationView?.[0] ?? null
 		useEffect(() => {
-			if (viewId) {
+			if (viewId !== null) {
 				const viewState = findState(findViewState, viewId)
 				setState(viewState, (v) => ({ ...v, title }))
 			}

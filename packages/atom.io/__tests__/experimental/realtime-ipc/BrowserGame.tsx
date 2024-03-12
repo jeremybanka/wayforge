@@ -78,12 +78,14 @@ function View({ myUsername }: { myUsername: string }): JSX.Element {
 		store,
 	).roomKeyOfUser
 	const myRoomKey = RTR.usePullSelector(myRoomKeyState)
-	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
+	return myRoomKey !== null ? <Room roomId={myRoomKey} /> : <Lobby />
 }
 
 export function BrowserGame(): JSX.Element | null {
 	const socketId = AR.useO(RTC.myIdState)
 	const myUsername = AR.useO(RTC.myUsernameState)
 
-	return socketId && myUsername ? <View myUsername={myUsername} /> : null
+	return socketId !== null && myUsername !== null ? (
+		<View myUsername={myUsername} />
+	) : null
 }

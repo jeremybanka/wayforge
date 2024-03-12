@@ -8,7 +8,7 @@ import * as RTTest from "atom.io/realtime-testing"
 const countState = AtomIO.atom({ key: `count`, default: 0 })
 const incrementTX = AtomIO.transaction({
 	key: `increment`,
-	do: ({ set }) => set(countState, (c) => c + 1),
+	do: ({ set }) => { set(countState, (c) => c + 1); },
 })
 
 describe(`running transactions`, () => {
@@ -47,7 +47,7 @@ describe(`running transactions`, () => {
 		const dave = clients.dave.init()
 
 		jane.renderResult.getByTestId(`0`)
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => { dave.renderResult.getByTestId(`increment`).click(); })
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		teardown()
 	})
@@ -61,7 +61,7 @@ describe(`running transactions`, () => {
 		jane.renderResult.getByTestId(`0`)
 		jane.socket.disconnect()
 
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => { dave.renderResult.getByTestId(`increment`).click(); })
 
 		jane.renderResult.getByTestId(`0`)
 		jane.socket.connect()
@@ -78,7 +78,7 @@ describe(`running transactions`, () => {
 
 		jane.renderResult.getByTestId(`0`)
 		dave.socket.disconnect()
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => { dave.renderResult.getByTestId(`increment`).click(); })
 
 		jane.renderResult.getByTestId(`0`)
 		dave.socket.connect()

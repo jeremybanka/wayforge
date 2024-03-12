@@ -25,7 +25,7 @@ describe(`dispose`, () => {
 		expect(countState.key).toEqual(`count`)
 		dispose(countState, Internal.IMPLICIT.STORE)
 		expect(countState.key).toEqual(`count`)
-		let caught: Error
+		let caught: Error | undefined
 		try {
 			getState(countState)
 		} catch (thrown) {
@@ -33,8 +33,7 @@ describe(`dispose`, () => {
 				caught = thrown
 			}
 		}
-		// biome-ignore lint/style/noNonNullAssertion: this is a test
-		if (!caught!) throw new Error(`Expected an error to be thrown`)
+		if (caught === undefined) throw new Error(`Expected an error to be thrown`)
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught.message).toEqual(
 			`Atom "count" not found in store "IMPLICIT_STORE".`,
@@ -50,7 +49,7 @@ describe(`dispose`, () => {
 			get: ({ get }) => get(countState) * 2,
 		})
 		dispose(countState, Internal.IMPLICIT.STORE)
-		let caught: Error
+		let caught: Error | undefined
 		try {
 			getState(doubledState)
 		} catch (thrown) {
@@ -58,8 +57,7 @@ describe(`dispose`, () => {
 				caught = thrown
 			}
 		}
-		// biome-ignore lint/style/noNonNullAssertion: this is a test
-		if (!caught!) throw new Error(`Expected an error to be thrown`)
+		if (caught === undefined) throw new Error(`Expected an error to be thrown`)
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught.message).toEqual(
 			`Readonly Selector "doubled" not found in store "IMPLICIT_STORE".`,
@@ -91,7 +89,7 @@ describe(`dispose`, () => {
 			get: ({ get }) => get(countState),
 		})
 		dispose(doubledState, Internal.IMPLICIT.STORE)
-		let caught: Error
+		let caught: Error | undefined
 		try {
 			getState(doubledState)
 		} catch (thrown) {
@@ -99,8 +97,7 @@ describe(`dispose`, () => {
 				caught = thrown
 			}
 		}
-		// biome-ignore lint/style/noNonNullAssertion: this is a test
-		if (!caught!) throw new Error(`Expected an error to be thrown`)
+		if (caught === undefined) throw new Error(`Expected an error to be thrown`)
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught.message).toEqual(
 			`Readonly Selector "doubled" not found in store "IMPLICIT_STORE".`,
@@ -126,7 +123,7 @@ describe(`dispose`, () => {
 		})
 		dispose(countPlusTwoState, Internal.IMPLICIT.STORE)
 		expect(getState(countPlusOneState)).toEqual(1)
-		let caught: Error
+		let caught: Error | undefined
 		try {
 			getState(countPlusThreeState)
 		} catch (thrown) {
@@ -134,8 +131,7 @@ describe(`dispose`, () => {
 				caught = thrown
 			}
 		}
-		// biome-ignore lint/style/noNonNullAssertion: this is a test
-		if (!caught!) throw new Error(`Expected an error to be thrown`)
+		if (caught === undefined) throw new Error(`Expected an error to be thrown`)
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught.message).toEqual(
 			`Readonly Selector "countPlusThree" not found in store "IMPLICIT_STORE".`,
@@ -146,15 +142,17 @@ describe(`dispose`, () => {
 describe(`auto disposability concept (just for fun)`, () => {
 	function disposable<T extends object>(
 		object: T,
-		dispose: () => void,
+		disposalFn: () => void,
 	): Disposable & T {
-		return Object.assign(object, { [Symbol.dispose]: dispose })
+		return Object.assign(object, { [Symbol.dispose]: disposalFn })
 	}
 	function disposableAtom<T>(
 		options: RegularAtomOptions<T>,
 	): Disposable & RegularAtomToken<T> {
 		const atomToken = atom(options)
-		return disposable(atomToken, () => dispose(atomToken))
+		return disposable(atomToken, () => {
+			dispose(atomToken)
+		})
 	}
 	it(`automatically disposes of an atom when it is dereferenced`, () => {
 		function doSomeWorkWithAtomIO() {
@@ -168,7 +166,7 @@ describe(`auto disposability concept (just for fun)`, () => {
 			}
 		}
 		doSomeWorkWithAtomIO()
-		let caught: Error
+		let caught: Error | undefined
 		try {
 			getState({ key: `count`, type: `atom` })
 		} catch (thrown) {
@@ -176,8 +174,7 @@ describe(`auto disposability concept (just for fun)`, () => {
 				caught = thrown
 			}
 		}
-		// biome-ignore lint/style/noNonNullAssertion: this is a test
-		if (!caught!) throw new Error(`Expected an error to be thrown`)
+		if (caught === undefined) throw new Error(`Expected an error to be thrown`)
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught.message).toEqual(
 			`Atom "count" not found in store "IMPLICIT_STORE".`,

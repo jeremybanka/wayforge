@@ -11,9 +11,6 @@ export function actUponStore<ƒ extends ƒn>(
 ): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
 	return (...parameters: Parameters<ƒ>): ReturnType<ƒ> => {
 		const tx = withdraw(token, store)
-		if (tx) {
-			return tx.run(parameters, id)
-		}
-		throw new NotFoundError(token, store)
+		return tx.run(parameters, id)
 	}
 }
