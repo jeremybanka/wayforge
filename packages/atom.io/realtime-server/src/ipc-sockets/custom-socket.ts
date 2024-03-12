@@ -59,9 +59,7 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 		return this
 	}
 
-	public onAny(
-		listener: (event: string, ...args: Json.Array) => void,
-	): this {
+	public onAny(listener: (event: string, ...args: Json.Array) => void): this {
 		this.globalListeners.add(listener)
 		return this
 	}
@@ -81,9 +79,7 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 		return this
 	}
 
-	public offAny(
-		listener: (event: string, ...args: Json.Array) => void,
-	): this {
+	public offAny(listener: (event: string, ...args: Json.Array) => void): this {
 		this.globalListeners.delete(listener)
 		return this
 	}

@@ -5,7 +5,9 @@ export class Subject<T> {
 
 	public subscribe(key: string, subscriber: this[`Subscriber`]): () => void {
 		this.subscribers.set(key, subscriber)
-		const unsubscribe = () => { this.unsubscribe(key); }
+		const unsubscribe = () => {
+			this.unsubscribe(key)
+		}
 		return unsubscribe
 	}
 

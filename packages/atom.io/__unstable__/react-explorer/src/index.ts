@@ -10,14 +10,17 @@ export type AtomicIndexOptions = {
 export const addToIndex: Write<(options: AtomicIndexOptions) => void> = (
 	{ set },
 	{ indexAtom, id },
-): void => { set(indexAtom, (currentSet) => new Set(currentSet).add(id)); }
+): void => {
+	set(indexAtom, (currentSet) => new Set(currentSet).add(id))
+}
 
 export const removeFromIndex: Write<(options: AtomicIndexOptions) => void> = (
 	{ set },
 	{ indexAtom, id },
-): void =>
-	{ set(indexAtom, (currentSet) => {
+): void => {
+	set(indexAtom, (currentSet) => {
 		const newSet = new Set(currentSet)
 		newSet.delete(id)
 		return newSet
-	}); }
+	})
+}

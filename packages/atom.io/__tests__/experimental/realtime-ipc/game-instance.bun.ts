@@ -9,9 +9,15 @@ import { gameContinuity, letterAtoms } from "./game-store"
 
 const parentSocket = new RTS.ParentSocket()
 const ipcLog = {
-	info: (...args) => { parentSocket.logger.info(...args); },
-	warn: (...args) => { parentSocket.logger.warn(...args); },
-	error: (...args) => { parentSocket.logger.error(...args); },
+	info: (...args) => {
+		parentSocket.logger.info(...args)
+	},
+	warn: (...args) => {
+		parentSocket.logger.warn(...args)
+	},
+	error: (...args) => {
+		parentSocket.logger.error(...args)
+	},
 }
 
 const atomIOSubprocessLogger = new AtomIOLogger(

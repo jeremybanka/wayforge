@@ -26,11 +26,17 @@ describe(`undo/redo`, () => {
 		const { client, server, teardown } = scenario()
 		const app = client.init()
 		app.renderResult.getByTestId(`count:0`)
-		act(() => { server.silo.setState(countState, 1); })
+		act(() => {
+			server.silo.setState(countState, 1)
+		})
 		await waitFor(() => app.renderResult.getByTestId(`count:1`))
-		act(() => { server.silo.undo(countTL); })
+		act(() => {
+			server.silo.undo(countTL)
+		})
 		await waitFor(() => app.renderResult.getByTestId(`count:0`))
-		act(() => { server.silo.redo(countTL); })
+		act(() => {
+			server.silo.redo(countTL)
+		})
 		await waitFor(() => app.renderResult.getByTestId(`count:1`))
 		teardown()
 	})

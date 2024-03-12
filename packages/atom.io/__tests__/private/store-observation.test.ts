@@ -22,9 +22,9 @@ beforeEach(() => {
 
 describe(`store observation`, () => {
 	test(`store.on.atomCreation fires on minting of each new AtomToken`, () => {
-		Internal.IMPLICIT.STORE.on.atomCreation.subscribe(`test`, (atomToken) =>
-			{ Utils.stdout(atomToken); },
-		)
+		Internal.IMPLICIT.STORE.on.atomCreation.subscribe(`test`, (atomToken) => {
+			Utils.stdout(atomToken)
+		})
 		const a = atom({
 			key: `a`,
 			default: null,
@@ -39,7 +39,9 @@ describe(`store observation`, () => {
 	test(`store.on.selectorCreation fires on minting of each new SelectorToken`, () => {
 		Internal.IMPLICIT.STORE.on.selectorCreation.subscribe(
 			`test`,
-			(selectorToken) => { Utils.stdout(selectorToken); },
+			(selectorToken) => {
+				Utils.stdout(selectorToken)
+			},
 		)
 		const c = selector({
 			key: `c`,
@@ -56,7 +58,9 @@ describe(`store observation`, () => {
 	test(`store.on.transactionCreation fires on minting of each new TransactionToken`, () => {
 		Internal.IMPLICIT.STORE.on.transactionCreation.subscribe(
 			`test`,
-			(transactionToken) => { Utils.stdout(transactionToken); },
+			(transactionToken) => {
+				Utils.stdout(transactionToken)
+			},
 		)
 		const tx = transaction({
 			key: `tx`,
@@ -67,7 +71,9 @@ describe(`store observation`, () => {
 	test(`store.on.timelineCreation fires on minting of each new TimelineToken`, () => {
 		Internal.IMPLICIT.STORE.on.timelineCreation.subscribe(
 			`test`,
-			(timelineToken) => { Utils.stdout(timelineToken); },
+			(timelineToken) => {
+				Utils.stdout(timelineToken)
+			},
 		)
 		const tl = timeline({
 			key: `tl`,
