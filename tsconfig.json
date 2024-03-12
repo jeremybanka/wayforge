@@ -3,7 +3,6 @@
 		"target": "es2017",
 		"lib": ["DOM", "es2023", "ES2023.Array"],
 		"jsx": "preserve",
-		"jsxImportSource": "",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
@@ -35,6 +34,11 @@
 		"skipLibCheck": true
 	},
 	"references": [
+		{ "path": "./tsconfig.config.json" },
+		{ "path": "./apps/atom.io.fyi" },
+		{ "path": "./apps/tempest.games" },
+		{ "path": "./apps/core.wayfarer.quest" },
+		{ "path": "./apps/wayfarer.quest" },
 		{ "path": "./apps/node/forge" },
 		{ "path": "./apps/node/kite" },
 		{ "path": "./apps/web/sample" },
@@ -51,7 +55,5 @@
 		{ "path": "./packages/rel8" },
 		{ "path": "./packages/socket-io.filestore" },
 		{ "path": "./packages/socket-io.git" }
-	],
-	"files": [],
-	"exclude": ["*/**/node_modules", "*/**/dist"]
+	]
 }

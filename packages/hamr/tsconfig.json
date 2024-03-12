@@ -5,15 +5,8 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"types": ["vitest/globals"],
-		"noEmit": true,
-		"rootDir": "../.."
+		"declaration": true,
+		"declarationMap": true
 	},
-	"include": [
-		"**/src",
-		"__scripts__",
-		"__experimental__",
-		"**/*.config.ts",
-		"../anvl/src",
-		"../luum/src"
-	]
+	"include": ["**/src", "__scripts__", "__experimental__"]
 }

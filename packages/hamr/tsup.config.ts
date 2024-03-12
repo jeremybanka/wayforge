@@ -1,3 +1,4 @@
+import path from "node:path"
 import type { Options } from "tsup"
 import { defineConfig } from "tsup"
 import discoverSubmodules from "./__scripts__/discover-submodules.node"
@@ -32,7 +33,7 @@ export const BASE_OPTIONS: Options = {
 	metafile: true,
 	sourcemap: true,
 	treeshake: true,
-	tsconfig: `tsconfig.json`,
+	// tsconfig: path.join(__dirname, `tsconfig.json`),
 }
 
 export const DTS_OPTIONS: Options = {
