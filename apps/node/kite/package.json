@@ -20,11 +20,11 @@
 		"lodash": "4.17.21",
 		"nanoid": "5.0.6",
 		"npmlog": "7.0.1",
-		"socket.io": "4.7.4",
+		"socket.io": "4.7.5",
 		"socketio-auth": "0.1.1"
 	},
 	"devDependencies": {
-		"socket.io-client": "4.7.4",
+		"socket.io-client": "4.7.5",
 		"tsx": "4.7.1",
 		"vite": "5.1.6",
 		"vite-tsconfig-paths": "4.3.2",
