@@ -16,7 +16,7 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@types/node": "20.11.27",
+		"@types/node": "20.11.28",
 		"tsup": "8.0.2",
 		"typescript": "5.4.2",
 		"vite": "5.1.6",
