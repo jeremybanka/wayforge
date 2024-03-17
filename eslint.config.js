@@ -42,8 +42,7 @@ const config = {
 		"@typescript-eslint/unified-signatures": `error`,
 
 		"no-mixed-spaces-and-tabs": `off`,
-		"quotes": [`error`, `backtick`],
-		"quote-props": [`error`, `consistent`, { unnecessary: false }],
+		quotes: [`error`, `backtick`],
 	},
 }
 export default [config]
