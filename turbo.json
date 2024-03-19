@@ -53,7 +53,9 @@
 		"lint:biome": {
 			"cache": false
 		},
-		"lint:eslint": {},
+		"lint:eslint": {
+			"inputs": ["**/*.ts", "**/*.tsx", "../../eslint.config.js"]
+		},
 		"lint": {
 			"dependsOn": ["lint:biome", "lint:eslint"]
 		},
