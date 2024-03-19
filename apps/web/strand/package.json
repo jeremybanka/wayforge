@@ -31,7 +31,7 @@
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
-		"@babel/plugin-transform-react-jsx-source": "7.23.3",
+		"@babel/plugin-transform-react-jsx-source": "7.24.1",
 		"@preact/preset-vite": "2.8.2",
 		"@testing-library/jest-dom": "6.4.2",
 		"@testing-library/react": "14.2.1",
