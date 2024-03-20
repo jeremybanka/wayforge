@@ -7,8 +7,8 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "bun@1.0.32",
-	"engines": { "bun": "1.0.32" },
+	"packageManager": "bun@1.0.33",
+	"engines": { "bun": "1.0.33" },
 	"workspaces": [
 		"apps/node/*",
 		"apps/web/*",
