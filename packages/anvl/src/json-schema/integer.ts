@@ -67,7 +67,7 @@ export const Int = Object.assign((input: unknown) => parseInteger(input), {
 						upper: null,
 						lower: null,
 						ratio: null,
-				  }
+					}
 				: {
 						value: null,
 						error: new IntegerParseError(input),
@@ -75,7 +75,7 @@ export const Int = Object.assign((input: unknown) => parseInteger(input), {
 						upper: Math.ceil(num) as integer,
 						lower: Math.floor(num) as integer,
 						ratio: null,
-				  },
+					},
 		),
 
 	formula: <

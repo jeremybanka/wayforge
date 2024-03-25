@@ -37,7 +37,7 @@ export const makePropertyRenamers = <T extends Json.Object>(
 							[newKey]: stableKeyMap[key],
 						}
 						return Object.fromEntries(entries) as T
-				  }),
+					}),
 	)
 
 export const makePropertyRemovers = <T extends Json.Object>(

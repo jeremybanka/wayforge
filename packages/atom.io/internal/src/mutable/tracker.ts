@@ -32,7 +32,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			? {
 					key: `*${mutableState.family.key}`,
 					subKey: mutableState.family.subKey,
-			  }
+				}
 			: undefined
 		const latestUpdateState = createRegularAtom<
 			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null

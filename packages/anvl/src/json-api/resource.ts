@@ -83,14 +83,14 @@ export type Linkages<RELATIONSHIPS extends Relationships> = {
 				RELATIONSHIPS[K][`data`][number],
 				RELATIONSHIPS[K][`meta`],
 				RELATIONSHIPS[K][`links`]
-		  >[]
+			>[]
 		: RELATIONSHIPS[K][`data`] extends JsonApiResource
-		  ? Relationship<
+			? Relationship<
 					RELATIONSHIPS[K][`data`],
 					RELATIONSHIPS[K][`meta`],
 					RELATIONSHIPS[K][`links`]
-			  >
-		  : never
+				>
+			: never
 }
 
 export type JsonApiResource<
@@ -123,8 +123,8 @@ export type RelationshipUpdate<
 	data: DATA extends JsonApiResource[]
 		? ResourceIdentifierObject<DATA[number]>[]
 		: DATA extends JsonApiResource
-		  ? ResourceIdentifierObject<DATA>
-		  : never
+			? ResourceIdentifierObject<DATA>
+			: never
 }
 
 export type ResourceFlat<RESOURCE extends JsonApiResource> = RESOURCE &
