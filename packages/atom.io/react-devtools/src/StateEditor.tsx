@@ -24,10 +24,10 @@ export const StateEditor: FC<{
 					typeof data.toJson === `function`
 						? JSON.stringify(data.toJson())
 						: data instanceof Set
-						  ? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
-						  : Object.getPrototypeOf(data).constructor.name +
-							  ` ` +
-							  fallback(() => JSON.stringify(data), `?`)
+							? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
+							: Object.getPrototypeOf(data).constructor.name +
+								` ` +
+								fallback(() => JSON.stringify(data), `?`)
 				}
 				disabled={true}
 			/>
@@ -53,8 +53,8 @@ export const ReadonlySelectorViewer: FC<{
 					data instanceof Set
 						? `Set ` + JSON.stringify([...data])
 						: Object.getPrototypeOf(data).constructor.name +
-						  ` ` +
-						  JSON.stringify(data)
+							` ` +
+							JSON.stringify(data)
 				}
 				disabled={true}
 			/>

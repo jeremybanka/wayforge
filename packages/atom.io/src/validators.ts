@@ -24,8 +24,8 @@ export type TokenType<
 > = Comparison extends ReadableToken<infer RepresentedValue>
 	? RepresentedValue
 	: Comparison extends ReadableFamilyToken<infer RepresentedValue, any>
-	  ? RepresentedValue
-	  : never
+		? RepresentedValue
+		: never
 
 export function isToken<KnownToken extends RegularAtomToken<any>>(
 	knownToken: KnownToken,

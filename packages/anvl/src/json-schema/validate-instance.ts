@@ -82,7 +82,7 @@ export const validateAsType: {
 					spec: Required<JsonSchemaSystem[Name]>[Keyword]
 					refMap: Record<string, JsonSchema>
 					root: JsonSchema
-			  }) => (instance: JsonSchemaMetaTypes[Name]) => boolean
+				}) => (instance: JsonSchemaMetaTypes[Name]) => boolean
 	}
 } = {
 	integer: {
@@ -153,7 +153,7 @@ export const validateAsType: {
 							propertySchema,
 							opts.refMap,
 							opts.root,
-					  )(instance[propertyName]).isValid
+						)(instance[propertyName]).isValid
 					: true
 			})
 		},
@@ -192,7 +192,7 @@ export const validateByLogicMode: {
 							),
 						},
 					},
-			  ]
+				]
 
 		return { isValid, violations }
 	},
@@ -213,7 +213,7 @@ export const validateByLogicMode: {
 								validResults.length === 0
 									? validationResults.flatMap((result) =>
 											result.violations.map(({ schema }) => schema),
-									  )
+										)
 									: (opts.schema.oneOf as ReadonlyArray<JsonSchema>),
 						},
 						problem: `${
@@ -222,7 +222,7 @@ export const validateByLogicMode: {
 							opts.schema.oneOf.length
 						} schemas were able to validate the instance`,
 					},
-			  ]
+				]
 		return { isValid, violations }
 	},
 	intersection: (opts) => (instance) => {
@@ -241,7 +241,7 @@ export const validateByLogicMode: {
 							),
 						},
 					},
-			  ]
+				]
 		return { isValid, violations }
 	},
 	negation: (opts) => (instance) => {
@@ -256,7 +256,7 @@ export const validateByLogicMode: {
 							not: opts.schema.not,
 						},
 					},
-			  ]
+				]
 		return { isValid, violations }
 	},
 	conditional: (opts) => (instance) => {
@@ -275,7 +275,7 @@ export const validateByLogicMode: {
 										then: thenResult.violations[0].schema,
 									},
 								},
-						  ]
+							]
 				return { isValid: thenResult.isValid, violations }
 			}
 			if (!ifResult.isValid && `else` in opts.schema) {
@@ -291,7 +291,7 @@ export const validateByLogicMode: {
 										else: elseResult.violations[0].schema,
 									},
 								},
-						  ]
+							]
 				return { isValid: elseResult.isValid, violations }
 			}
 		}
@@ -370,7 +370,7 @@ export const validateLeaf =
 						},
 					),
 					Object.fromEntries,
-			  )
+				)
 			: { type }
 		return {
 			isValid: false,

@@ -14,7 +14,7 @@ export const myRoomKeyState = AtomIO.selector<string | null>({
 			roomView && myUsername
 				? get(findRelations(usersInRooms, myUsername).roomKeyOfUser)?.includes(
 						myUsername,
-				  )
+					)
 					? roomView
 					: null ?? null
 				: null

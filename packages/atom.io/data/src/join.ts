@@ -73,7 +73,7 @@ export type JoinStateFamilies<
 						[string, Content] | null,
 						string
 					>
-			  }
+				}
 			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
@@ -81,33 +81,33 @@ export type JoinStateFamilies<
 				string | null,
 				string
 			>
-	  }
+		}
 	: Cardinality extends `1:n`
-	  ? (Content extends Json.Object
+		? (Content extends Json.Object
 				? {
 						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamily<
 							[string, Content] | null,
 							string
 						>
-				  } & {
+					} & {
 						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 							[string, Content][],
 							string
 						>
-				  }
+					}
 				: {}) & {
 				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamily<
 					string | null,
 					string
 				>
-		  } & {
+			} & {
 				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
 					string[],
 					string
 				>
-		  }
-	  : Cardinality extends `n:n`
-		  ? (Content extends Json.Object
+			}
+		: Cardinality extends `n:n`
+			? (Content extends Json.Object
 					? {
 							readonly [AB in ASide | BSide as AB extends ASide
 								? `${AB}EntriesOf${Capitalize<BSide>}`
@@ -115,7 +115,7 @@ export type JoinStateFamilies<
 								[string, Content][],
 								string
 							>
-					  }
+						}
 					: {}) & {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}KeysOf${Capitalize<BSide>}`
@@ -123,8 +123,8 @@ export type JoinStateFamilies<
 						string[],
 						string
 					>
-			  }
-		  : never
+				}
+			: never
 
 export class Join<
 	const ASide extends string,
@@ -615,47 +615,47 @@ export type JoinStates<
 						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 						[string, Content] | null
 					>
-			  }
+				}
 			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
 				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorToken<string | null>
-	  }
+		}
 	: Cardinality extends `1:n`
-	  ? (Content extends Json.Object
+		? (Content extends Json.Object
 				? {
 						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
 							[string, Content] | null
 						>
-				  } & {
+					} & {
 						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 							[string, Content][]
 						>
-				  }
+					}
 				: {}) & {
 				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
 					string | null
 				>
-		  } & {
+			} & {
 				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 					string[]
 				>
-		  }
-	  : Cardinality extends `n:n`
-		  ? (Content extends Json.Object
+			}
+		: Cardinality extends `n:n`
+			? (Content extends Json.Object
 					? {
 							readonly [AB in ASide | BSide as AB extends ASide
 								? `${AB}EntriesOf${Capitalize<BSide>}`
 								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
 								[string, Content][]
 							>
-					  }
+						}
 					: {}) & {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}KeysOf${Capitalize<BSide>}`
 						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<string[]>
-			  }
-		  : never
+				}
+			: never
 
 export function findRelationsInStore<
 	ASide extends string,

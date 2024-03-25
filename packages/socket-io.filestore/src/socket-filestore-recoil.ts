@@ -61,10 +61,10 @@ export type SocketRelationsOptions<CONTENT extends Json.Object | null = null> =
 	(CONTENT extends null
 		? {
 				refineContent: null
-		  }
+			}
 		: {
 				refineContent: Refinement<unknown, CONTENT>
-		  }) & {
+			}) & {
 		id: string
 		type: string
 		socket: Socket<FilestoreServerEvents, FilestoreClientEvents>

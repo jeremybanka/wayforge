@@ -27,7 +27,7 @@ export type ErrorObject<
 > = (REQUIRED extends ErrorKey
 	? {
 			[KEY in REQUIRED]-?: Pick<ErrorObject_Optional<META>, KEY>[KEY]
-	  }
+		}
 	: ErrorObject_Optional<META>) & {
 	type: `error`
 }

@@ -36,12 +36,12 @@ export const redactDeep =
 			includesAny(args)(path)
 				? {
 						meta: { pathComplete: true },
-				  }
+					}
 				: {
 						data: isPlainObject(node)
 							? redact(...args)(node as Record<keyof any, any>)
 							: node,
-				  },
+					},
 		)
 
 export const select =
@@ -53,7 +53,7 @@ export const select =
 		[K in keyof Pick<Obj, Key>]: any extends Pick<Obj, Key>[K]
 			? undefined
 			: // @ts-expect-error fuk u
-			  Pick<Obj, Key>[K]
+				Pick<Obj, Key>[K]
 	} =>
 		// @ts-expect-error fuk u ts
 		reduce<Key, Pick<Obj, Key>>(

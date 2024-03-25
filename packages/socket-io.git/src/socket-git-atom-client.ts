@@ -28,7 +28,7 @@ export type GitClientTools = {
 				getCurrentState: A_IO.Read<
 					() => Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
 				>
-		  }
+			}
 		: never
 }
 

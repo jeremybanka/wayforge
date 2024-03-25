@@ -39,7 +39,7 @@ export type GitServerEvents = {
 	) => any
 		? (
 				result: Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError,
-		  ) => void
+			) => void
 		: never
 }
 

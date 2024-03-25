@@ -67,7 +67,7 @@ export const serveFilestore =
 						const result = readResource({ id, type })
 						return result instanceof Error
 							? (logger.error(result),
-							  socket.emit(`error_filestore`, result.message))
+								socket.emit(`error_filestore`, result.message))
 							: socket.emit(`read_${id}`, result)
 					},
 					relationsRead: ({ id, type }) => {

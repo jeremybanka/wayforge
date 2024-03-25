@@ -32,7 +32,7 @@ export function subscribeToState<T>(
 						`Removing subscription "${key}"`,
 					)
 					unsubFunction()
-			  }
+				}
 			: () => {
 					store.logger.info(
 						`🙈`,
@@ -44,7 +44,7 @@ export function subscribeToState<T>(
 					for (const unsubFromDependency of dependencyUnsubFunctions) {
 						unsubFromDependency()
 					}
-			  }
+				}
 
 	return unsubscribe
 }

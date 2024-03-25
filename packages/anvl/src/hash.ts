@@ -23,7 +23,7 @@ export const hash = (str: string): number =>
 				map((char) => char.charCodeAt(0)),
 				reduce((acc, char) => (acc << 5) - acc + char, 0),
 				(hash) => hash & hash,
-		  )
+			)
 
 // a possible flaw in an object hash function is not commutative for properties
 // { a: 1, b: 2 } and { b: 2, a: 1 } will have different hashes

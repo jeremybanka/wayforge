@@ -6,5 +6,5 @@ export const become =
 		nextVersionOfThing instanceof Function
 			? nextVersionOfThing(
 					originalThing instanceof Function ? originalThing() : originalThing,
-			  )
+				)
 			: nextVersionOfThing

@@ -51,8 +51,8 @@ export const addAtomToTimeline = (
 			currentTransactionKey
 				? `in transaction "${currentTransactionKey}"`
 				: currentSelectorKey
-				  ? `in selector "${currentSelectorKey}"`
-				  : ``,
+					? `in selector "${currentSelectorKey}"`
+					: ``,
 		)
 		if (tl.timeTraveling === null) {
 			if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
@@ -106,7 +106,7 @@ export const addAtomToTimeline = (
 														(key) =>
 															key === updateFromTx.key ||
 															key === updateFromTx.family?.key,
-												  )
+													)
 												: false
 										})
 										.map((updateFromTx) => {

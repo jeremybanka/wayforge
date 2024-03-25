@@ -77,8 +77,8 @@ export const ObjectEditor = <T extends Json.Object>({
 	const schemaKeys: ReadonlyArray<string> | true = isLiteral(true)(subSchema)
 		? true
 		: isObjectSchema(subSchema)
-		  ? Object.keys(subSchema.properties ?? {})
-		  : []
+			? Object.keys(subSchema.properties ?? {})
+			: []
 	const dataKeys: ReadonlyArray<string> = Object.keys(data)
 	const [unofficialKeys, officialKeys] = dataKeys.reduce(
 		([unofficial, official], key) => {
