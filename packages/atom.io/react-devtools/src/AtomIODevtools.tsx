@@ -53,7 +53,7 @@ export const AtomIODevtools = (): JSX.Element => {
 								borderColor: `#0000`,
 								maxHeight: 28,
 								maxWidth: 33,
-						  }
+							}
 				}
 			>
 				{devtoolsAreOpen ? (

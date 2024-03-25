@@ -12,4 +12,4 @@ export const SOCKET =
 					token: `test`,
 					username: getState(myUsernameState),
 				},
-		  })
+			})

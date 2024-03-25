@@ -31,7 +31,7 @@ export type ComboOptions<T> = {
 export type ComboProps<T> = ComboPropsCore<T> &
 	(T extends string
 		? /* eslint-disable-next-line @typescript-eslint/ban-types */
-		  {}
+			{}
 		: { getName: (value: T) => string }) &
 	(ComboOptions<T> | ComboOptionsRecoil<T>) &
 	(ComboSelections<T> | ComboSelectionsRecoil<T>)

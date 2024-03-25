@@ -110,7 +110,7 @@ export const StateIndexTreeNode: FC<{
 							isOpenState={findState(findViewIsOpenState, childNode.key)}
 							typeState={findState(findStateTypeState, childNode)}
 						/>
-				  ))
+					))
 				: null}
 		</>
 	)

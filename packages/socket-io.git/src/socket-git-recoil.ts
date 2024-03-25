@@ -30,7 +30,7 @@ export type GitClientTools = {
 				getCurrentState: Transact<
 					() => Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
 				>
-		  }
+			}
 		: never
 }
 

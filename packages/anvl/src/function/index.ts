@@ -13,7 +13,7 @@ export const become =
 		nextVersionOfThing instanceof Function
 			? nextVersionOfThing(
 					originalThing instanceof Function ? originalThing() : originalThing,
-			  )
+				)
 			: nextVersionOfThing
 
 export type Applicator<X, Y> = (next: Modifier<X> | X) => Modifier<Y>
