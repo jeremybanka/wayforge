@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"dotenv": "16.4.5",
-		"express": "4.19.1",
+		"express": "4.19.2",
 		"fp-ts": "2.16.4",
 		"lodash": "4.17.21",
 		"nanoid": "5.0.6",
