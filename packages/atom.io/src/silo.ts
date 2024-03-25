@@ -7,6 +7,7 @@ import {
 	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
+	findInStore,
 	getFromStore,
 	setIntoStore,
 	timeTravel,
@@ -23,6 +24,7 @@ import type {
 	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
+	findState,
 	getState,
 	redo,
 	setState,
@@ -42,6 +44,7 @@ export class Silo {
 	public selectorFamily: typeof selectorFamily
 	public transaction: typeof transaction
 	public timeline: typeof timeline
+	public findState: typeof findState
 	public getState: typeof getState
 	public setState: typeof setState
 	public subscribe: typeof subscribe
@@ -80,6 +83,7 @@ export class Silo {
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
+		this.findState = (token, key) => findInStore(token, key, s) as any
 		this.getState = (token) => getFromStore(token, s)
 		this.setState = (token, newValue) => setIntoStore(token, newValue, s)
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
