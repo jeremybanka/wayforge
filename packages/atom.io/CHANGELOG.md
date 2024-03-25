@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.19.1
+
+### Patch Changes
+
+- eaeb8f6: ✨ Silo now includes a findState function scoped to its store.
+
 ## 0.19.0
 
 ### Minor Changes
