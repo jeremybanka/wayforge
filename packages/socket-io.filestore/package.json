@@ -19,7 +19,7 @@
 		"socket.io-client": "^4.6.0"
 	},
 	"dependencies": {
-		"fp-ts": "2.16.4"
+		"fp-ts": "2.16.5"
 	},
 	"devDependencies": {
 		"@types/node": "20.11.30",
