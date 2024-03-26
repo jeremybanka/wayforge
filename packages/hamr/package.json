@@ -39,7 +39,7 @@
 		"test:manifest": "tsx __scripts__/manifest-test.node"
 	},
 	"dependencies": {
-		"@floating-ui/react": "0.26.9",
+		"@floating-ui/react": "0.26.10",
 		"@floating-ui/react-dom": "2.0.8",
 		"corners": "0.1.0",
 		"framer-motion": "11.0.22"
