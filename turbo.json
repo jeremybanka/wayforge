@@ -33,6 +33,22 @@
 				"__scripts__/**/*.ts"
 			]
 		},
+		"test:public": {
+			"inputs": [
+				"**/package.json",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.scss",
+				"src/**/*.mdx",
+				"**/src/**/*.tsx",
+				"**/src/**/*.ts",
+				"**/src/**/*.scss",
+				"**/src/**/*.mdx",
+				"__tests__/public/**/*.ts",
+				"__tests__/public/**/*.tsx",
+				"__scripts__/**/*.ts"
+			]
+		},
 		"test:coverage": {
 			"outputs": ["coverage/**", "**/coverage/*", "**/coverage/**/*"],
 			"inputs": [
