@@ -19,7 +19,7 @@
 	"dependencies": {
 		"glob": "10.3.12",
 		"npmlog": "7.0.1",
-		"simple-git": "3.23.0"
+		"simple-git": "3.24.0"
 	},
 	"scripts": {
 		"build": "concurrently \"bun:build:*\"",
