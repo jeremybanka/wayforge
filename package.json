@@ -35,7 +35,12 @@
 		"notes": "changeset",
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm bun.lockb"
 	},
-	"trustedDependencies": ["@biomejs/biome"],
+	"trustedDependencies": [
+		"@biomejs/biome",
+		"@vercel/speed-insights",
+		"es5-ext",
+		"esbuild"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "1.6.4",
 		"@changesets/cli": "2.27.1",
