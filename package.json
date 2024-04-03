@@ -26,7 +26,7 @@
 		"lint:fix:biome": "biome check --apply *",
 		"lint:fix:eslint": "eslint --fix .",
 		"fmt": "biome format .",
-		"fmt:fix": "biome format --write ",
+		"fmt:fix": "biome format --write .",
 		"build": "turbo run build",
 		"bench": "cd lib && vitest bench",
 		"test": "cross-env CI=true turbo run test:once",
