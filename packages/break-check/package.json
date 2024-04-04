@@ -10,7 +10,11 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["bin", "dist", "src"],
+	"files": [
+		"bin",
+		"dist",
+		"src"
+	],
 	"main": "dist/break-check.js",
 	"types": "dist/break-check.d.ts",
 	"bin": {
@@ -34,8 +38,10 @@
 		"test:coverage": "echo no test coverage yet"
 	},
 	"devDependencies": {
+		"@types/bun": "1.0.12",
 		"@types/npmlog": "7.0.0",
 		"concurrently": "8.2.2",
+		"tmp": "0.2.3",
 		"tsup": "8.0.2"
 	}
 }
