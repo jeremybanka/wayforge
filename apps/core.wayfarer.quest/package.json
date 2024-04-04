@@ -18,7 +18,8 @@
 		"fp-ts": "2.16.5",
 		"nanoid": "5.0.6",
 		"npmlog": "7.0.1",
-		"socket.io": "4.7.5"
+		"socket.io": "4.7.5",
+		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"vite": "5.2.7",
