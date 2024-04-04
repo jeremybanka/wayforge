@@ -47,15 +47,20 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: 20.11.1
+          node-version: 20.12.1
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1.2.0
         with:
           bun-version: 1.1.0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3.0.0
+        with:
+          version: 8.15.6
+
       - name: Install Dependencies
-        run: bun i
+        run: pnpm i
 
       - name: Set up Git
         run: |
@@ -63,10 +68,10 @@ jobs:
           git config --global user.email "hello@jeremybanka.com"
           git config --global user.name "Jeremy Banka"
 
-      - name: Commit Lockfile?
-        uses: stefanzweifel/git-auto-commit-action@v5.0.0
-        with:
-          commit_message: 📦 update lockfile
+      # - name: Commit Lockfile?
+      #   uses: stefanzweifel/git-auto-commit-action@v5.0.0
+      #   with:
+      #     commit_message: 📦 update lockfile
 
       - name: Test
         run: bun test:coverage

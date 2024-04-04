@@ -7,8 +7,12 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "bun@1.1.0",
-	"engines": { "bun": "1.1.0" },
+	"packageManager": "pnpm@8.15.6",
+	"engines": {
+		"bun": "1.1.0",
+		"node": "20.12.1",
+		"pnpm": "8.15.6"
+	},
 	"workspaces": [
 		"apps/node/*",
 		"apps/web/*",
@@ -33,7 +37,7 @@
 		"test:coverage": "cross-env CI=true turbo run test:coverage",
 		"release": "bun run build && changeset publish",
 		"notes": "changeset",
-		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm bun.lockb"
+		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml"
 	},
 	"trustedDependencies": ["@biomejs/biome"],
 	"devDependencies": {
