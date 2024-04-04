@@ -1,12 +1,8 @@
 import { act } from "@testing-library/react"
+import { findInStore, getFromStore } from "atom.io/internal"
+import { roomSelectors } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import { findInStore } from "../../../internal/src/families"
-import { getFromStore } from "../../../internal/src/get-state"
-import {
-	roomArgumentsAtoms,
-	roomSelectors,
-} from "../../../realtime-server/src/realtime-server-stores"
-import { roomIndex } from "../../../realtime/src/shared-room-store"
+
 import { BrowserGame } from "./BrowserGame"
 import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"

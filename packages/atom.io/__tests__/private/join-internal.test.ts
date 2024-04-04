@@ -1,5 +1,5 @@
-import { getJoin, join } from "atom.io/data"
-import { IMPLICIT } from "../../internal/src/store"
+import { getJoin } from "atom.io/data"
+import { IMPLICIT } from "atom.io/internal"
 
 describe(`join.internal`, () => {
 	it(`throws if the join does not exist`, () => {

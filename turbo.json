@@ -63,7 +63,7 @@
 			"dependsOn": ["build", "test:once", "lint"]
 		},
 		"globalDependencies": {
-			"inputs": ["bun.lockb", "tsconfig.json"]
+			"inputs": ["pnpm.lockb", "tsconfig.json"]
 		}
 	}
 }
