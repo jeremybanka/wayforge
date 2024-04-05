@@ -25,13 +25,13 @@ export type CliSetup<Arguments extends Record<string, Serializable>> = {
 
 function retrieveArgValue(argument: string, flag?: string): string {
 	const isSwitch = argument.startsWith(`--`)
-	const [f, v] = argument.split(`=`)
-	let retrievedValue = v
+	const [key, value] = argument.split(`=`)
+	let retrievedValue = value
 	if (retrievedValue === undefined) {
 		if (isSwitch) {
 			retrievedValue = ``
 		} else if (flag) {
-			retrievedValue = f
+			retrievedValue = key
 				.split(``)
 				.filter((s) => s === flag)
 				.map(() => `,`)
@@ -72,7 +72,8 @@ export function cli<Arguments extends Record<string, Serializable>>(
 						arg.startsWith(`--${key}`) ||
 						(arg.startsWith(`-`) &&
 							!arg.startsWith(`--`) &&
-							arg.includes(`${flag}`)),
+							flag &&
+							arg.split(`=`)[0].includes(flag)),
 				)
 				switch (argumentInstances.length) {
 					case 0:
