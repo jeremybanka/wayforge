@@ -247,8 +247,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@fastly/js-compute':
-        specifier: 3.12.0
-        version: 3.12.0
+        specifier: 3.12.1
+        version: 3.12.1
       preact-render-to-string:
         specifier: 6.4.1
         version: 6.4.1(preact@10.20.1)
@@ -3749,9 +3749,9 @@ packages:
       - '@babel/core'
     dev: false
 
-  /@fastly/js-compute@3.12.0:
-    resolution: {integrity: sha512-+0h3mLwIS8AjUQpbUPS/vjnSwtGtT/sfdcceIO52y5FOjD9IVSctKKqEnA2jEr/QcI0W08V7jdA+RHZpiIZbgQ==}
-    engines: {node: 16 - 20, npm: ^8 || ^9}
+  /@fastly/js-compute@3.12.1:
+    resolution: {integrity: sha512-rh2Df8JrVhNFLX9k8HigCt701xbJpQJYe2UV0zUs+4Hb1JdCpglR4l2IZRr7cAc2K240rGiR6egBFhd72MLxsw==}
+    engines: {node: 16 - 20, npm: ^8 || ^9 || ^10}
     hasBin: true
     dependencies:
       '@bytecodealliance/jco': 0.10.3
