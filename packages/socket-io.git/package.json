@@ -32,7 +32,7 @@
 		"socket.io-client": "4.7.5",
 		"tmp": "0.2.3",
 		"tsup": "8.0.2",
-		"typescript": "5.4.3",
+		"typescript": "5.4.4",
 		"vite": "5.2.7",
 		"vite-tsconfig-paths": "4.3.2",
 		"vitest": "1.4.0"
