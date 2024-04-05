@@ -770,7 +770,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.0.2
-        version: 8.0.2(typescript@5.4.3)
+        version: 8.0.2(typescript@5.4.4)
 
   packages/hamr:
     dependencies:
