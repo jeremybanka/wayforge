@@ -42,18 +42,18 @@ function retrieveArgValue(argument: string, flag?: string): string {
 	return retrievedValue
 }
 
-export function cli<Arguments extends Record<string, Serializable>>(
-	options: CliSetup<Arguments>,
+export function cli<Config extends Record<string, Serializable>>(
+	options: CliSetup<Config>,
 	logger = {
 		error: (...args: any[]) => console.error(...args),
 	},
 ): (args: string[]) => {
-	arguments: Arguments
+	config: Config
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {
 		let failedValidation = false
-		let configFromFile: Arguments | undefined
+		let configFromFile: Config | undefined
 		if (options.discoverConfigPath) {
 			const configPath = options.discoverConfigPath()
 			if (configPath) {
@@ -64,7 +64,7 @@ export function cli<Arguments extends Record<string, Serializable>>(
 		}
 		const argumentEntries = Object.entries(options.arguments)
 		const configFromCommandLineEntries = argumentEntries
-			.map((entry: [string & keyof Arguments, ArgConfig<any>]) => {
+			.map((entry: [string & keyof Config, ArgConfig<any>]) => {
 				const [key, config] = entry
 				const { flag, parse, required, description, example } = config
 				const argumentInstances = passed.filter(
@@ -108,7 +108,7 @@ export function cli<Arguments extends Record<string, Serializable>>(
 			Object.fromEntries(configFromCommandLineEntries),
 		)
 		return {
-			arguments: Object.assign(configFromFile ?? {}, configFromCommandLine),
+			config: Object.assign(configFromFile ?? {}, configFromCommandLine),
 			writeJsonSchema: (path) => {
 				const jsonSchema = zodToJsonSchema(options.argSchema)
 				fs.writeFileSync(path, JSON.stringify(jsonSchema, null, `\t`))
