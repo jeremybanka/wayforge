@@ -22,7 +22,7 @@
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
-		"vite": "5.2.7",
+		"vite": "5.2.8",
 		"vite-tsconfig-paths": "4.3.2",
 		"vitest": "1.4.0"
 	}
