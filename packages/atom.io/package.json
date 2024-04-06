@@ -86,7 +86,7 @@
 		"drizzle-kit": "0.20.14",
 		"drizzle-orm": "0.30.7",
 		"framer-motion": "11.0.25",
-		"happy-dom": "14.6.1",
+		"happy-dom": "14.6.2",
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
 		"postgres": "3.4.4",
