@@ -5,6 +5,11 @@ export function parseBooleanArg(arg: string): boolean {
 }
 
 export function parseNumberArg(arg: string): number {
-	if (/^,+$/.test(arg)) return arg.length
+	if (arg === ``) return 1
+	if (/^,+$/.test(arg)) return arg.length + 1
 	return Number.parseFloat(arg)
+}
+
+export function parseStringArg(arg: string): string {
+	return arg
 }

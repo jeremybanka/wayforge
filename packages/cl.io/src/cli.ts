@@ -1,6 +1,7 @@
 import * as fs from "node:fs"
 import type { ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
+import type { Flag } from "./flag"
 
 export type Serializable =
 	| Readonly<{ [key: string]: Serializable }>
@@ -8,19 +9,41 @@ export type Serializable =
 	| boolean
 	| number
 	| string
+	| undefined
 
-export type ArgConfig<T extends Serializable> = {
-	flag?: string
+export type Tree = Readonly<{ [key: string]: Tree | null }>
+
+export type TreePath<T extends Tree> = {
+	[K in keyof T]: T[K] extends Tree ? [K, ...TreePath<T[K]>] : [K]
+}[keyof T]
+
+const myTree = {
+	a: {
+		b: null,
+		c: {
+			d: null,
+		},
+	},
+} as const
+
+const myTreePath0: TreePath<typeof myTree> = [`a`, `c`, `d`]
+
+export type CliOption<T extends Serializable> = {
+	flag?: Flag
 	parse: (arg: string) => T
 	required: T extends undefined ? false : true
 	description: string
 	example: string
 }
 
-export type CliSetup<Arguments extends Record<string, Serializable>> = {
-	discoverConfigPath?: () => string
-	arguments: { [K in keyof Arguments]: ArgConfig<Arguments[K]> }
-	argSchema: ZodSchema<Arguments>
+export type CommandLineInterface<
+	Args extends Tree,
+	Options extends Record<string, Serializable>,
+> = {
+	discoverConfigPath?: (positionalArgs: string[]) => string | undefined
+	positionalArgTree?: Args
+	options: { [K in keyof Options]: CliOption<Options[K]> }
+	optionsSchema: ZodSchema<Options>
 }
 
 function retrieveArgValue(argument: string, flag?: string): string {
@@ -42,29 +65,33 @@ function retrieveArgValue(argument: string, flag?: string): string {
 	return retrievedValue
 }
 
-export function cli<Config extends Record<string, Serializable>>(
-	options: CliSetup<Config>,
+export function cli<
+	Args extends Tree,
+	Config extends Record<string, Serializable>,
+>(
+	{ options, optionsSchema, discoverConfigPath }: CommandLineInterface<Config>,
 	logger = {
 		error: (...args: any[]) => console.error(...args),
 	},
 ): (args: string[]) => {
+	positionalArgs: TreePath<Args, ``, ``, ``, ``, ``, ``, ``, ``, ``>
 	config: Config
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {
 		let failedValidation = false
 		let configFromFile: Config | undefined
-		if (options.discoverConfigPath) {
-			const configPath = options.discoverConfigPath()
+		if (discoverConfigPath) {
+			const configPath = discoverConfigPath()
 			if (configPath) {
 				const configText = fs.readFileSync(configPath, `utf-8`)
 				const configFromFileJson = JSON.parse(configText)
-				configFromFile = options.argSchema.parse(configFromFileJson)
+				configFromFile = optionsSchema.parse(configFromFileJson)
 			}
 		}
-		const argumentEntries = Object.entries(options.arguments)
+		const argumentEntries = Object.entries(options)
 		const configFromCommandLineEntries = argumentEntries
-			.map((entry: [string & keyof Config, ArgConfig<any>]) => {
+			.map((entry: [string & keyof Config, CliOption<any>]) => {
 				const [key, config] = entry
 				const { flag, parse, required, description, example } = config
 				const argumentInstances = passed.filter(
@@ -104,13 +131,13 @@ export function cli<Config extends Record<string, Serializable>>(
 				`Some required arguments were not provided. See above for details.`,
 			)
 		}
-		const configFromCommandLine = options.argSchema.parse(
+		const configFromCommandLine = optionsSchema.parse(
 			Object.fromEntries(configFromCommandLineEntries),
 		)
 		return {
 			config: Object.assign(configFromFile ?? {}, configFromCommandLine),
 			writeJsonSchema: (path) => {
-				const jsonSchema = zodToJsonSchema(options.argSchema)
+				const jsonSchema = zodToJsonSchema(optionsSchema)
 				fs.writeFileSync(path, JSON.stringify(jsonSchema, null, `\t`))
 			},
 		}
