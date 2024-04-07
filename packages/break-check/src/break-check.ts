@@ -54,7 +54,8 @@ export async function breakCheck({
 	baseDirname = process.cwd(),
 }: BreakCheckOptions): Promise<BreakCheckOutcome & { summary: string }> {
 	const git = simpleGit(baseDirname)
-	const isGitClean = (await git.checkIsRepo()) && (await git.status()).isClean
+	const isGitClean = (await git.checkIsRepo()) && (await git.status()).isClean()
+	console.log({ isGitClean })
 	if (!isGitClean) {
 		return {
 			summary: `The git repository must be clean to run this command.`,

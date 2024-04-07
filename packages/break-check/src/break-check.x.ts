@@ -61,7 +61,7 @@ if (positionalArgs.length === 0) {
 		console: true,
 		stdout: true,
 	})
-	process.stdout.write(returnValue.summary)
+	process.stdout.write(JSON.stringify(returnValue))
 
 	if (`breakingChangesFound` in returnValue) {
 		if (returnValue.breakingChangesFound) {
@@ -74,17 +74,7 @@ if (positionalArgs.length === 0) {
 			process.exit(0)
 		}
 	} else {
-		let exitCode = 2
-		if (returnValue.gitWasClean) {
-			exitCode++
-			if (returnValue.gitFetchedReleaseTags) {
-				exitCode++
-				if (returnValue.lastReleaseFound) {
-					exitCode++
-				}
-			}
-		}
-		process.exit(exitCode)
+		process.exit(2)
 	}
 } else if (positionalArgs[0] === `schema`) {
 	writeJsonSchema(`break-check.schema.json`)
