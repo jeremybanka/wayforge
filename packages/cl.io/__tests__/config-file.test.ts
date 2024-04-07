@@ -76,6 +76,16 @@ describe(`creating a config schema`, () => {
 		const jsonSchemaContents = JSON.parse(
 			fs.readFileSync(`${tempDir.name}/schema.json`, `utf-8`),
 		)
-		console.log({ jsonSchemaContents })
+		expect(jsonSchemaContents).toEqual({
+			$schema: `http://json-schema.org/draft-07/schema#`,
+			type: `object`,
+			properties: {
+				foo: {
+					type: `string`,
+				},
+			},
+			required: [`foo`],
+			additionalProperties: false,
+		})
 	})
 })

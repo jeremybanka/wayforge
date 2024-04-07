@@ -61,3 +61,31 @@ describe(`options from cli`, () => {
 		expect(() => testCli([`--foo=hello`, `--bar=hello`])).toThrow()
 	})
 })
+
+describe(`complex options`, () => {
+	const testCli = cli({
+		positionalArgTree: [`optional`, {}],
+		optionsSchema: z.object({
+			rules: z.object({
+				rule0: z.tuple([z.string(), z.string()]),
+			}),
+		}),
+		options: {
+			rules: {
+				description: `rules`,
+				example: `--rules='{"rule0": ["a", "b"]}'`,
+				flag: `r`,
+				parse: JSON.parse,
+				required: true,
+			},
+		},
+	})
+	test(`happy: all options`, () => {
+		const { config } = testCli([`--rules={"rule0": ["a", "b"]}`])
+		expect(config).toEqual({
+			rules: {
+				rule0: [`a`, `b`],
+			},
+		})
+	})
+})
