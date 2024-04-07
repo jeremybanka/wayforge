@@ -14,18 +14,21 @@ export type BreakCheckOptions = {
 export type BreakCheckOutcome =
 	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
 	| { gitWasClean: false }
-	| { gitWasClean: true; gitFetchedReleaseTags: false }
-	| { gitWasClean: true; gitFetchedReleaseTags: true; lastReleaseFound: false }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: true
+			gitFetchedReleaseTags: boolean
+			lastReleaseFound: false
+	  }
+	| {
+			gitWasClean: true
+			gitFetchedReleaseTags: boolean
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: false
 	  }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: true
+			gitFetchedReleaseTags: boolean
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: true
@@ -34,7 +37,7 @@ export type BreakCheckOutcome =
 	  }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: true
+			gitFetchedReleaseTags: boolean
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: true
@@ -62,15 +65,11 @@ export async function breakCheck({
 			gitWasClean: false,
 		}
 	}
+	let gitFetchedReleaseTags = false
 	try {
 		await git.fetch([`--depth=1`, `origin`, `+refs/tags/*:refs/tags/*`])
-	} catch (thrown) {
-		return {
-			summary: `Failed to fetch tags from the remote git repository.`,
-			gitWasClean: true,
-			gitFetchedReleaseTags: false,
-		}
-	}
+		gitFetchedReleaseTags = true
+	} catch (_) {}
 	const tags = (await git.tags()).all.toReversed()
 	const latestReleaseTag = tagPattern
 		? tags.find((tag) => tag.match(tagPattern))
@@ -79,7 +78,7 @@ export async function breakCheck({
 		return {
 			summary: `No tags found matching the pattern "${tagPattern}".`,
 			gitWasClean: true,
-			gitFetchedReleaseTags: true,
+			gitFetchedReleaseTags,
 			lastReleaseFound: false,
 		}
 	}

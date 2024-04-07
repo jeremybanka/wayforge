@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 
+import type { BreakCheckOutcome } from "break-check"
 import { breakCheck } from "break-check"
 
 import simpleGit from "simple-git"
@@ -70,9 +71,9 @@ describe(`break-check`, () => {
 		await git.add(`.`)
 		await git.commit(`breaking change`)
 		let caught: unknown
-		let stdout: string | undefined
+		let returnValue: (BreakCheckOutcome & { summary: string }) | undefined
 		try {
-			stdout = await breakCheck({
+			returnValue = await breakCheck({
 				tagPattern: `my-library`,
 				testPattern: `*__public.test.js`,
 				testCommand: `bun test *__public.test.js`,
@@ -84,6 +85,8 @@ describe(`break-check`, () => {
 			console.log(thrown)
 		}
 		expect(caught).toBeUndefined()
-		expect(stdout).toBe(`breaking-changes-certified`)
+		expect(returnValue?.summary).toBe(
+			`Breaking changes were found and certified.`,
+		)
 	})
 })
