@@ -6,30 +6,17 @@
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*"],
 			"inputs": [
 				"**/package.json",
-				"src/**/*.scss",
-				"src/**/*.mdx",
-				"src/**/*.tsx",
-				"src/**/*.ts",
-				"**/src/**/*.scss",
-				"**/src/**/*.mdx",
-				"**/src/**/*.tsx",
-				"**/src/**/*.ts"
+				"src/**/*.{ts,tsx,scss,mdx}",
+				"**/src/**/*.{ts,tsx,scss,mdx}"
 			]
 		},
 		"test:once": {
 			"dependsOn": ["build"],
 			"inputs": [
 				"**/package.json",
-				"src/**/*.tsx",
-				"src/**/*.ts",
-				"src/**/*.scss",
-				"src/**/*.mdx",
-				"**/src/**/*.tsx",
-				"**/src/**/*.ts",
-				"**/src/**/*.scss",
-				"**/src/**/*.mdx",
-				"__tests__/**/*.ts",
-				"__tests__/**/*.tsx",
+				"src/**/*.{ts,tsx,scss,mdx}",
+				"**/src/**/*.{ts,tsx,scss,mdx}",
+				"__tests__/**/*.{ts?x}",
 				"__scripts__/**/*.ts"
 			]
 		},
@@ -37,16 +24,19 @@
 			"outputs": ["coverage/**", "**/coverage/*", "**/coverage/**/*"],
 			"inputs": [
 				"**/package.json",
-				"src/**/*.tsx",
-				"src/**/*.ts",
-				"src/**/*.scss",
-				"src/**/*.mdx",
-				"**/src/**/*.tsx",
-				"**/src/**/*.ts",
-				"**/src/**/*.scss",
-				"**/src/**/*.mdx",
-				"__tests__/**/*.ts",
-				"__tests__/**/*.tsx",
+				"src/**/*.{ts,tsx,scss,mdx}",
+				"**/src/**/*.{ts,tsx,scss,mdx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.ts"
+			]
+		},
+		"test:semver": {
+			"inputs": [
+				"break-check.config.json",
+				"**/package.json",
+				"src/**/*.{ts,tsx,scss,mdx}",
+				"**/src/**/*.{ts,tsx,scss,mdx}",
+				"__tests__/public/**/*.test.{ts,tsx}",
 				"__scripts__/**/*.ts"
 			]
 		},
