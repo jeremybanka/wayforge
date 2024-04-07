@@ -4,7 +4,7 @@ import { z } from "zod"
 import * as fs from "node:fs"
 
 import { cli } from "../../src/cli"
-import { parseStringArg } from "../../src/lib-public"
+import { parseStringOption } from "../../src/option-parsers"
 
 const parser = cli({
 	positionalArgTree: [`optional`, {}],
@@ -16,7 +16,7 @@ const parser = cli({
 			description: `file`,
 			example: `--file="./example-file.md"`,
 			flag: `f`,
-			parse: parseStringArg,
+			parse: parseStringOption,
 			required: true,
 		},
 	},

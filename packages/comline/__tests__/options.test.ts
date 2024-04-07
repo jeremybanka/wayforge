@@ -2,10 +2,10 @@ import { z } from "zod"
 
 import { cli } from "../src/cli"
 import {
-	parseBooleanArg,
-	parseNumberArg,
-	parseStringArg,
-} from "../src/lib-public"
+	parseBooleanOption,
+	parseNumberOption,
+	parseStringOption,
+} from "../src/option-parsers"
 
 describe(`options from cli`, () => {
 	const testCli = cli({
@@ -20,21 +20,21 @@ describe(`options from cli`, () => {
 				description: `foo`,
 				example: `--foo=hello`,
 				flag: `f`,
-				parse: parseStringArg,
+				parse: parseStringOption,
 				required: true,
 			},
 			bar: {
 				description: `bar`,
 				example: `--bar=1`,
 				flag: `b`,
-				parse: parseNumberArg,
+				parse: parseNumberOption,
 				required: false,
 			},
 			baz: {
 				description: `baz`,
 				example: `--baz`,
 				flag: `z`,
-				parse: parseBooleanArg,
+				parse: parseBooleanOption,
 				required: false,
 			},
 		},

@@ -1,19 +1,24 @@
 import * as fs from "node:fs"
 import type { ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
+
 import type { Flag } from "./flag"
 import type { Tree, TreePath } from "./tree"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
 
-export type Serializable =
-	| Readonly<{ [key: string]: Serializable }>
-	| ReadonlyArray<Serializable>
+export * from "./option-parsers"
+export * from "./tree"
+export * from "./flag"
+
+export type CliOptionValue =
+	| Readonly<{ [key: string]: CliOptionValue }>
+	| ReadonlyArray<CliOptionValue>
 	| boolean
 	| number
 	| string
 	| undefined
 
-export type CliOption<T extends Serializable> = {
+export type CliOption<T extends CliOptionValue> = {
 	flag?: Flag
 	parse: (arg: string) => T
 	required: T extends undefined ? false : true
@@ -23,7 +28,7 @@ export type CliOption<T extends Serializable> = {
 
 export type CommandLineInterface<
 	PositionalArgTree extends Tree,
-	Options extends Record<string, Serializable>,
+	Options extends Record<string, CliOptionValue>,
 > = {
 	discoverConfigPath?: (
 		positionalArgs: TreePath<PositionalArgTree>,
@@ -54,7 +59,7 @@ function retrieveArgValue(argument: string, flag?: string): string {
 
 export function cli<
 	PositionalArgs extends Tree,
-	Options extends Record<string, Serializable>,
+	Options extends Record<string, CliOptionValue>,
 >(
 	{
 		positionalArgTree,
