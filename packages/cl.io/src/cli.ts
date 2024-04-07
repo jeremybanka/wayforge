@@ -2,6 +2,8 @@ import * as fs from "node:fs"
 import type { ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 import type { Flag } from "./flag"
+import type { Tree, TreePath } from "./tree"
+import { retrievePositionalArgs } from "./retrieve-positional-args"
 
 export type Serializable =
 	| Readonly<{ [key: string]: Serializable }>
@@ -10,23 +12,6 @@ export type Serializable =
 	| number
 	| string
 	| undefined
-
-export type Tree = Readonly<{ [key: string]: Tree | null }>
-
-export type TreePath<T extends Tree> = {
-	[K in keyof T]: T[K] extends Tree ? [K, ...TreePath<T[K]>] : [K]
-}[keyof T]
-
-const myTree = {
-	a: {
-		b: null,
-		c: {
-			d: null,
-		},
-	},
-} as const
-
-const myTreePath0: TreePath<typeof myTree> = [`a`, `c`, `d`]
 
 export type CliOption<T extends Serializable> = {
 	flag?: Flag
@@ -37,11 +22,13 @@ export type CliOption<T extends Serializable> = {
 }
 
 export type CommandLineInterface<
-	Args extends Tree,
+	PositionalArgTree extends Tree,
 	Options extends Record<string, Serializable>,
 > = {
-	discoverConfigPath?: (positionalArgs: string[]) => string | undefined
-	positionalArgTree?: Args
+	discoverConfigPath?: (
+		positionalArgs: TreePath<PositionalArgTree>,
+	) => string | undefined
+	positionalArgTree: PositionalArgTree
 	options: { [K in keyof Options]: CliOption<Options[K]> }
 	optionsSchema: ZodSchema<Options>
 }
@@ -66,23 +53,33 @@ function retrieveArgValue(argument: string, flag?: string): string {
 }
 
 export function cli<
-	Args extends Tree,
+	PositionalArgs extends Tree,
 	Config extends Record<string, Serializable>,
 >(
-	{ options, optionsSchema, discoverConfigPath }: CommandLineInterface<Config>,
+	{
+		positionalArgTree,
+		options,
+		optionsSchema,
+		discoverConfigPath,
+	}: CommandLineInterface<PositionalArgs, Config>,
 	logger = {
 		error: (...args: any[]) => console.error(...args),
 	},
 ): (args: string[]) => {
-	positionalArgs: TreePath<Args, ``, ``, ``, ``, ``, ``, ``, ``, ``>
+	positionalArgs: TreePath<PositionalArgs>
 	config: Config
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {
 		let failedValidation = false
 		let configFromFile: Config | undefined
+		const positionalArgs = retrievePositionalArgs(
+			`my-cli`,
+			positionalArgTree,
+			passed,
+		)
 		if (discoverConfigPath) {
-			const configPath = discoverConfigPath()
+			const configPath = discoverConfigPath(positionalArgs)
 			if (configPath) {
 				const configText = fs.readFileSync(configPath, `utf-8`)
 				const configFromFileJson = JSON.parse(configText)
@@ -135,6 +132,7 @@ export function cli<
 			Object.fromEntries(configFromCommandLineEntries),
 		)
 		return {
+			positionalArgs,
 			config: Object.assign(configFromFile ?? {}, configFromCommandLine),
 			writeJsonSchema: (path) => {
 				const jsonSchema = zodToJsonSchema(optionsSchema)

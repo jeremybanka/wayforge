@@ -1,3 +1,6 @@
+export const REQUIRED = `required` as const
+export const OPTIONAL = `optional` as const
+
 export function parseBooleanArg(arg: string): boolean {
 	if (arg === `false`) return false
 	if (arg === `0`) return false
