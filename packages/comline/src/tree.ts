@@ -1,5 +1,9 @@
-export const REQUIRED = `required` as const
-export const OPTIONAL = `optional` as const
+export function required<T>(arg: T): [`required`, T] {
+	return [`required`, arg]
+}
+export function optional<T>(arg: T): [`optional`, T] {
+	return [`optional`, arg]
+}
 
 export type TreeContents = Readonly<{ [key: string]: Tree | null }>
 export type OptionalTree = [`optional`, TreeContents]
