@@ -86,30 +86,19 @@ this will print `Hello, jeremybanka!`
 - [x] positional arguments (`my-cli -- positional`)
   - validated as a "route" into the tree of positional arguments
   ```typescript
-  import { Tree, TreePath, OPTIONAL, REQUIRED } from "comline"
+  import type { Tree, TreePath } from "comline"
+  import { optional, required } from "comline"
 
-  const myTree = [
-    REQUIRED,
-    {
-      hello: [
-        OPTIONAL,
-        {
-          world: null,
-          $name: [
-            OPTIONAL,
-            {
-              good: [
-                REQUIRED,
-                { 
-                  morning: null 
-                }
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ] satisfies Tree
+  const myTree = required({
+	  hello: optional({
+		  world: null,
+		  $name: optional({
+			  good: required({
+				  morning: null,
+			  }),
+		  }),
+  	}),
+  }) satisfies Tree
 
   const validPaths: TreePath<typeof myTree>[] = [
     [`hello`],
