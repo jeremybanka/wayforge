@@ -4,10 +4,10 @@ import { z } from "zod"
 import * as fs from "node:fs"
 
 import { cli } from "../../src/cli"
-import { parseStringArg } from "../../src/lib-public"
+import { parseStringOption } from "../../src/option-parsers"
 
 const parser = cli({
-	positionalArgTree: [`optional`, {}],
+	cliName: `read-file-length`,
 	optionsSchema: z.object({
 		file: z.string(),
 	}),
@@ -16,7 +16,7 @@ const parser = cli({
 			description: `file`,
 			example: `--file="./example-file.md"`,
 			flag: `f`,
-			parse: parseStringArg,
+			parse: parseStringOption,
 			required: true,
 		},
 	},
