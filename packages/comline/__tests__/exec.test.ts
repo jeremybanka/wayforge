@@ -1,6 +1,5 @@
 import { execSync } from "node:child_process"
 
-// console.log(x)
 describe(`exec`, () => {
 	it(`should run a command`, () => {
 		const script = `${import.meta.dirname}/fixtures/file-length.x.ts`

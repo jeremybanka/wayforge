@@ -3,7 +3,8 @@ import * as tmp from "tmp"
 import { z } from "zod"
 
 import { cli } from "../src/cli"
-import { OPTIONAL, parseStringArg } from "../src/lib-public"
+import { OPTIONAL } from "../src/tree"
+import { parseStringOption } from "../src/option-parsers"
 
 let tempDir: tmp.DirResult
 
@@ -16,6 +17,7 @@ afterEach(() => {
 
 describe(`options from file`, () => {
 	const testCli = cli({
+		cliName: `my-cli`,
 		positionalArgTree: [OPTIONAL, { $config: null }],
 		optionsSchema: z.object({ foo: z.string() }),
 		options: {
@@ -23,7 +25,7 @@ describe(`options from file`, () => {
 				description: `foo`,
 				example: `--foo=hello`,
 				flag: `f`,
-				parse: parseStringArg,
+				parse: parseStringOption,
 				required: true,
 			},
 		},
@@ -58,14 +60,14 @@ describe(`options from file`, () => {
 
 describe(`creating a config schema`, () => {
 	const testCli = cli({
-		positionalArgTree: [OPTIONAL, {}],
+		cliName: `my-cli`,
 		optionsSchema: z.object({ foo: z.string() }),
 		options: {
 			foo: {
 				description: `foo`,
 				example: `--foo=hello`,
 				flag: `f`,
-				parse: parseStringArg,
+				parse: parseStringOption,
 				required: true,
 			},
 		},

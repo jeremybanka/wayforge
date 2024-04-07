@@ -1,10 +1,12 @@
 import { z } from "zod"
 
 import { cli } from "../src/cli"
-import { OPTIONAL, parseStringArg, REQUIRED } from "../src/lib-public"
+import { parseStringOption } from "../src/option-parsers"
+import { OPTIONAL, REQUIRED } from "../src/tree"
 
 describe(`positional args from cli`, () => {
 	const testCli = cli({
+		cliName: `my-cli`,
 		positionalArgTree: [
 			REQUIRED,
 			{
@@ -48,6 +50,7 @@ describe(`positional args from cli`, () => {
 
 describe(`options and positional args from cli`, () => {
 	const testCli = cli({
+		cliName: `my-cli`,
 		positionalArgTree: [OPTIONAL, { yo: null }],
 		optionsSchema: z.object({ foo: z.string().optional() }),
 		options: {
@@ -55,7 +58,7 @@ describe(`options and positional args from cli`, () => {
 				description: `foo`,
 				example: `--foo=hello`,
 				flag: `f`,
-				parse: parseStringArg,
+				parse: parseStringOption,
 				required: false,
 			},
 		},
