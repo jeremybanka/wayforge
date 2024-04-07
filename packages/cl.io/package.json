@@ -1,0 +1,37 @@
+{
+	"name": "cl.io",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": ["dist", "src"],
+	"main": "dist/cli.js",
+	"types": "dist/cli.d.ts",
+	"dependencies": {
+		"zod": "3.22.4",
+		"zod-to-json-schema": "3.22.5"
+	},
+	"scripts": {
+		"build": "bun build --outdir dist --target node --external zod --external zod-to-json-schema -- src/cli.ts",
+		"build:dts": "tsup",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint .",
+		"lint": "bun run lint:biome && bun run lint:eslint",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"test:coverage": "echo no test coverage yet"
+	},
+	"devDependencies": {
+		"@types/bun": "1.0.12",
+		"concurrently": "8.2.2",
+		"tmp": "0.2.3",
+		"tsup": "8.0.2",
+		"vitest": "1.4.0"
+	}
+}
