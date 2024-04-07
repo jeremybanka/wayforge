@@ -1,5 +1,5 @@
+import { minimatch } from "minimatch"
 import { exec } from "node:child_process"
-import { glob } from "glob"
 import logger from "npmlog"
 import simpleGit from "simple-git"
 
@@ -82,11 +82,28 @@ export async function breakCheck({
 			lastReleaseFound: false,
 		}
 	}
-	const candidateBranchName = (await git.branch()).current
 
-	await git.checkout(latestReleaseTag)
-	const productionTestFiles = glob.sync(testPattern, { cwd: baseDirname })
-	await git.checkout(candidateBranchName)
+	const productionFiles = await new Promise<string[]>((resolve, reject) => {
+		const treeResult = exec(
+			`git ls-tree -r --name-only ${latestReleaseTag}`,
+			{ cwd: baseDirname },
+			async (_, stdout, stderr) => {
+				logger.info(`completed`, `test`, stdout)
+				await git.stash()
+				if (treeResult.exitCode === 0) {
+					logger.info(`passed`, `no breaking changes detected`)
+					resolve(stdout.split(`\n`))
+				} else {
+					logger.warn(`failed previous test suite`, `breaking changes detected`)
+					reject(stderr)
+				}
+			},
+		)
+	})
+	const productionTestFiles = productionFiles.filter((file) =>
+		minimatch(file, testPattern),
+	)
+
 	if (productionTestFiles.length === 0) {
 		return {
 			summary: `No tests were found matching the pattern "${testPattern}".`,
