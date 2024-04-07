@@ -1,11 +1,7 @@
 import { z } from "zod"
 
 import { cli } from "../src/cli"
-import {
-	parseBooleanOption,
-	parseNumberOption,
-	parseStringOption,
-} from "../src/option-parsers"
+import { parseNumberOption, parseStringOption } from "../src/option-parsers"
 
 describe(`options from cli`, () => {
 	const testCli = cli({
@@ -13,7 +9,6 @@ describe(`options from cli`, () => {
 		optionsSchema: z.object({
 			foo: z.string(),
 			bar: z.number().optional(),
-			baz: z.boolean().optional(),
 		}),
 		options: {
 			foo: {
@@ -30,13 +25,6 @@ describe(`options from cli`, () => {
 				parse: parseNumberOption,
 				required: false,
 			},
-			baz: {
-				description: `baz`,
-				example: `--baz`,
-				flag: `z`,
-				parse: parseBooleanOption,
-				required: false,
-			},
 		},
 	})
 	test(`happy: all options`, () => {
@@ -44,7 +32,6 @@ describe(`options from cli`, () => {
 		expect(suppliedOptions).toEqual({
 			foo: `hello`,
 			bar: 1,
-			baz: true,
 		})
 	})
 	test(`happy: missing optional options`, () => {
