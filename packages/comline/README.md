@@ -30,6 +30,7 @@ import { cli, parseNumberArg, parseStringArg } from "comline"
 import { z } from "zod"
 
 const greetCli = cli({
+  cliName: "greet",
   discoverConfigPath: (positionalArgs) => path.join(process.cwd(), `.greet-config.json`),
   optionsSchema: z.object({
     name: z.string(),
