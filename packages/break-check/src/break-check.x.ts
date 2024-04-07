@@ -2,14 +2,14 @@
 
 import * as path from "node:path"
 import { breakCheck } from "break-check"
-import { cli, OPTIONAL } from "comline"
+import { cli, optional } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
 
 const parse = cli(
 	{
 		cliName: `break-check`,
-		positionalArgTree: [OPTIONAL, { schema: null, $configPath: null }],
+		positionalArgTree: optional({ schema: null, $configPath: null }),
 		discoverConfigPath: (args) => {
 			if (args[0] === `schema`) {
 				return
