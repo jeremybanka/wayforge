@@ -17,6 +17,7 @@ afterEach(() => {
 
 describe(`options from file`, () => {
 	const testCli = cli({
+		cliName: `my-cli`,
 		positionalArgTree: [OPTIONAL, { $config: null }],
 		optionsSchema: z.object({ foo: z.string() }),
 		options: {
@@ -59,7 +60,7 @@ describe(`options from file`, () => {
 
 describe(`creating a config schema`, () => {
 	const testCli = cli({
-		positionalArgTree: [OPTIONAL, {}],
+		cliName: `my-cli`,
 		optionsSchema: z.object({ foo: z.string() }),
 		options: {
 			foo: {

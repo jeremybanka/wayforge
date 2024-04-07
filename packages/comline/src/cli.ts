@@ -3,7 +3,7 @@ import type { ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
 import type { Flag } from "./flag"
-import type { Tree, TreePath } from "./tree"
+import { OPTIONAL, type Tree, type TreePath } from "./tree"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
 
 export * from "./option-parsers"
@@ -30,10 +30,11 @@ export type CommandLineInterface<
 	PositionalArgTree extends Tree,
 	Options extends Record<string, CliOptionValue>,
 > = {
+	cliName: string
 	discoverConfigPath?: (
 		positionalArgs: TreePath<PositionalArgTree>,
 	) => string | undefined
-	positionalArgTree: PositionalArgTree
+	positionalArgTree?: PositionalArgTree
 	options: { [K in keyof Options]: CliOption<Options[K]> }
 	optionsSchema: ZodSchema<Options>
 }
@@ -62,6 +63,7 @@ export function cli<
 	Options extends Record<string, CliOptionValue>,
 >(
 	{
+		cliName,
 		positionalArgTree,
 		options,
 		optionsSchema,
@@ -78,11 +80,9 @@ export function cli<
 	return (passed = process.argv) => {
 		let failedValidation = false
 		let optionsFromConfig: Options | undefined
-		const positionalArgs = retrievePositionalArgs(
-			`my-cli`,
-			positionalArgTree,
-			passed,
-		)
+		const positionalArgs = positionalArgTree
+			? retrievePositionalArgs(cliName, positionalArgTree, passed)
+			: ([] as any)
 		if (discoverConfigPath) {
 			const configFilePath = discoverConfigPath(positionalArgs)
 			if (configFilePath) {

@@ -9,7 +9,7 @@ import {
 
 describe(`options from cli`, () => {
 	const testCli = cli({
-		positionalArgTree: [`optional`, {}],
+		cliName: `my-cli`,
 		optionsSchema: z.object({
 			foo: z.string(),
 			bar: z.number().optional(),
@@ -64,7 +64,7 @@ describe(`options from cli`, () => {
 
 describe(`complex options`, () => {
 	const testCli = cli({
-		positionalArgTree: [`optional`, {}],
+		cliName: `my-cli`,
 		optionsSchema: z.object({
 			rules: z.object({
 				rule0: z.tuple([z.string(), z.string()]),

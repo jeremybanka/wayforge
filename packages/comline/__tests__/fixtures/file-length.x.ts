@@ -7,7 +7,7 @@ import { cli } from "../../src/cli"
 import { parseStringOption } from "../../src/option-parsers"
 
 const parser = cli({
-	positionalArgTree: [`optional`, {}],
+	cliName: `read-file-length`,
 	optionsSchema: z.object({
 		file: z.string(),
 	}),

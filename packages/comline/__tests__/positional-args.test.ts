@@ -6,6 +6,7 @@ import { OPTIONAL, REQUIRED } from "../src/tree"
 
 describe(`positional args from cli`, () => {
 	const testCli = cli({
+		cliName: `my-cli`,
 		positionalArgTree: [
 			REQUIRED,
 			{
@@ -49,6 +50,7 @@ describe(`positional args from cli`, () => {
 
 describe(`options and positional args from cli`, () => {
 	const testCli = cli({
+		cliName: `my-cli`,
 		positionalArgTree: [OPTIONAL, { yo: null }],
 		optionsSchema: z.object({ foo: z.string().optional() }),
 		options: {
