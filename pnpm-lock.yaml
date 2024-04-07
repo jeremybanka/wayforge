@@ -750,6 +750,31 @@ importers:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.4.4)
 
+  packages/cl.io:
+    dependencies:
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+      zod-to-json-schema:
+        specifier: 3.22.5
+        version: 3.22.5(zod@3.22.4)
+    devDependencies:
+      '@types/bun':
+        specifier: 1.0.12
+        version: 1.0.12
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
+      tmp:
+        specifier: 0.2.3
+        version: 0.2.3
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(typescript@5.4.4)
+      vitest:
+        specifier: 1.4.0
+        version: 1.4.0(@vitest/ui@1.4.0)(happy-dom@14.7.0)
+
   packages/hamr:
     dependencies:
       '@floating-ui/react':
@@ -13361,6 +13386,14 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
+
+  /zod-to-json-schema@3.22.5(zod@3.22.4):
+    resolution: {integrity: sha512-+akaPo6a0zpVCCseDed504KBJUQpEW5QZw7RMneNmKw+fGaML1Z9tUNLnHHAC8x6dzVRO1eB2oEMyZRnuBZg7Q==}
+    peerDependencies:
+      zod: ^3.22.4
+    dependencies:
+      zod: 3.22.4
+    dev: false
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
