@@ -2,23 +2,17 @@ import { z } from "zod"
 
 import { cli } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
-import { OPTIONAL, REQUIRED } from "../src/tree"
+import { optional, required } from "../src/tree"
 
 describe(`positional args from cli`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
-		positionalArgTree: [
-			REQUIRED,
-			{
-				hello: [
-					OPTIONAL,
-					{
-						world: null,
-						$name: [OPTIONAL, { good: [REQUIRED, { morning: null }] }],
-					},
-				],
-			},
-		],
+		positionalArgTree: required({
+			hello: optional({
+				world: null,
+				$name: optional({ good: required({ morning: null }) }),
+			}),
+		}),
 		optionsSchema: z.object({}),
 		options: {},
 	})
@@ -51,7 +45,7 @@ describe(`positional args from cli`, () => {
 describe(`options and positional args from cli`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
-		positionalArgTree: [OPTIONAL, { yo: null }],
+		positionalArgTree: optional({ yo: null }),
 		optionsSchema: z.object({ foo: z.string().optional() }),
 		options: {
 			foo: {
