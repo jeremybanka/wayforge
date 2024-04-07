@@ -1,6 +1,6 @@
 {
 	"name": "break-check",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"license": "MIT",
 	"author": {
 		"name": "Jeremy Banka",
@@ -10,7 +10,12 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["bin", "dist", "src", "break-check.schema.json"],
+	"files": [
+		"bin",
+		"dist",
+		"src",
+		"break-check.schema.json"
+	],
 	"main": "dist/break-check.js",
 	"types": "dist/break-check.d.ts",
 	"bin": {

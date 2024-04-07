@@ -1,5 +1,13 @@
 # break-check
 
+## 0.5.0
+
+### Minor Changes
+
+- 05736f1: 💥 BREAKING CHANGE: break-check now outputs a result in json format. This is the only data released to stdout in the executable.
+- 05736f1: 🐛 Fix bug where break check would not exit gracefully when the repo was dirty.
+- b30015e: ✨ break-check no longer runs a global checkout, making it possible to run multiple jobs simultaneously.
+
 ## 0.4.0
 
 ### Minor Changes
