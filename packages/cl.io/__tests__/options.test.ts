@@ -40,16 +40,16 @@ describe(`options from cli`, () => {
 		},
 	})
 	test(`happy: all options`, () => {
-		const { config } = testCli([`--foo=hello`, `--bar=1`, `--baz`])
-		expect(config).toEqual({
+		const { suppliedOptions } = testCli([`--foo=hello`, `--bar=1`, `--baz`])
+		expect(suppliedOptions).toEqual({
 			foo: `hello`,
 			bar: 1,
 			baz: true,
 		})
 	})
 	test(`happy: missing optional options`, () => {
-		const { config } = testCli([`--foo=hello`, `-bb`])
-		expect(config).toEqual({
+		const { suppliedOptions } = testCli([`--foo=hello`, `-bb`])
+		expect(suppliedOptions).toEqual({
 			foo: `hello`,
 			bar: 2,
 		})
@@ -81,8 +81,8 @@ describe(`complex options`, () => {
 		},
 	})
 	test(`happy: all options`, () => {
-		const { config } = testCli([`--rules={"rule0": ["a", "b"]}`])
-		expect(config).toEqual({
+		const { suppliedOptions } = testCli([`--rules={"rule0": ["a", "b"]}`])
+		expect(suppliedOptions).toEqual({
 			rules: {
 				rule0: [`a`, `b`],
 			},

@@ -61,18 +61,22 @@ describe(`options and positional args from cli`, () => {
 		},
 	})
 	test(`happy: all options and positional args`, () => {
-		const { config, positionalArgs } = testCli([`--foo=hello`, `--`, `yo`])
-		expect(config).toEqual({ foo: `hello` })
+		const { suppliedOptions, positionalArgs } = testCli([
+			`--foo=hello`,
+			`--`,
+			`yo`,
+		])
+		expect(suppliedOptions).toEqual({ foo: `hello` })
 		expect(positionalArgs).toEqual([`yo`])
 	})
 	test(`happy: including optional options and missing optional positional args`, () => {
-		const { config, positionalArgs } = testCli([`--foo=hello`, `--`])
-		expect(config).toEqual({ foo: `hello` })
+		const { suppliedOptions, positionalArgs } = testCli([`--foo=hello`, `--`])
+		expect(suppliedOptions).toEqual({ foo: `hello` })
 		expect(positionalArgs).toEqual([])
 	})
 	test(`happy: missing optional options and including optional positional args`, () => {
-		const { config, positionalArgs } = testCli([`--`, `yo`])
-		expect(config).toEqual({})
+		const { suppliedOptions, positionalArgs } = testCli([`--`, `yo`])
+		expect(suppliedOptions).toEqual({})
 		expect(positionalArgs).toEqual([`yo`])
 	})
 })

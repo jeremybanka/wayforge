@@ -23,14 +23,15 @@
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",
-		"test": "bun test --watch -- **/*.test.ts",
-		"test:once": "bun test -- **/*.test.ts",
+		"test": "vitest",
+		"test:once": "vitest run",
 		"test:coverage": "echo no test coverage yet"
 	},
 	"devDependencies": {
 		"@types/bun": "1.0.12",
 		"concurrently": "8.2.2",
 		"tmp": "0.2.3",
-		"tsup": "8.0.2"
+		"tsup": "8.0.2",
+		"vitest": "1.4.0"
 	}
 }

@@ -36,8 +36,8 @@ describe(`options from file`, () => {
 	})
 	test(`happy: all options`, () => {
 		fs.writeFileSync(`${tempDir.name}/config.json`, `{"foo":"hello"}`)
-		const { config, positionalArgs } = testCli([`--`, `config.json`])
-		expect(config).toEqual({ foo: `hello` })
+		const { suppliedOptions, positionalArgs } = testCli([`--`, `config.json`])
+		expect(suppliedOptions).toEqual({ foo: `hello` })
 		expect(positionalArgs).toEqual([`config.json`])
 	})
 	test(`error: missing required options in file`, () => {
@@ -46,12 +46,12 @@ describe(`options from file`, () => {
 	})
 	test(`happy: override options from file with cli options`, () => {
 		fs.writeFileSync(`${tempDir.name}/config.json`, `{"foo":"hello"}`)
-		const { config, positionalArgs } = testCli([
+		const { suppliedOptions, positionalArgs } = testCli([
 			`--foo=goodbye`,
 			`--`,
 			`config.json`,
 		])
-		expect(config).toEqual({ foo: `goodbye` })
+		expect(suppliedOptions).toEqual({ foo: `goodbye` })
 		expect(positionalArgs).toEqual([`config.json`])
 	})
 })

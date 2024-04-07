@@ -54,41 +54,41 @@ function retrieveArgValue(argument: string, flag?: string): string {
 
 export function cli<
 	PositionalArgs extends Tree,
-	Config extends Record<string, Serializable>,
+	Options extends Record<string, Serializable>,
 >(
 	{
 		positionalArgTree,
 		options,
 		optionsSchema,
 		discoverConfigPath,
-	}: CommandLineInterface<PositionalArgs, Config>,
+	}: CommandLineInterface<PositionalArgs, Options>,
 	logger = {
 		error: (...args: any[]) => console.error(...args),
 	},
 ): (args: string[]) => {
 	positionalArgs: TreePath<PositionalArgs>
-	config: Config
+	suppliedOptions: Options
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {
 		let failedValidation = false
-		let configFromFile: Config | undefined
+		let optionsFromConfig: Options | undefined
 		const positionalArgs = retrievePositionalArgs(
 			`my-cli`,
 			positionalArgTree,
 			passed,
 		)
 		if (discoverConfigPath) {
-			const configPath = discoverConfigPath(positionalArgs)
-			if (configPath) {
-				const configText = fs.readFileSync(configPath, `utf-8`)
-				const configFromFileJson = JSON.parse(configText)
-				configFromFile = optionsSchema.parse(configFromFileJson)
+			const configFilePath = discoverConfigPath(positionalArgs)
+			if (configFilePath) {
+				const configText = fs.readFileSync(configFilePath, `utf-8`)
+				const optionsFromConfigJson = JSON.parse(configText)
+				optionsFromConfig = optionsSchema.parse(optionsFromConfigJson)
 			}
 		}
 		const argumentEntries = Object.entries(options)
-		const configFromCommandLineEntries = argumentEntries
-			.map((entry: [string & keyof Config, CliOption<any>]) => {
+		const optionsFromCommandLineEntries = argumentEntries
+			.map((entry: [string & keyof Options, CliOption<any>]) => {
 				const [key, config] = entry
 				const { flag, parse, required, description, example } = config
 				const argumentInstances = passed.filter(
@@ -101,7 +101,7 @@ export function cli<
 				)
 				switch (argumentInstances.length) {
 					case 0:
-						if (required && !configFromFile) {
+						if (required && !optionsFromConfig) {
 							logger.error(
 								`parsing`,
 								key,
@@ -128,17 +128,17 @@ export function cli<
 				`Some required arguments were not provided. See above for details.`,
 			)
 		}
-		const configFromCommandLine = Object.fromEntries(
-			configFromCommandLineEntries,
+		const optionsFromCommandLine = Object.fromEntries(
+			optionsFromCommandLineEntries,
 		)
-		const configUnparsed = Object.assign(
-			configFromFile ?? {},
-			configFromCommandLine,
+		const suppliedOptionsUnparsed = Object.assign(
+			optionsFromConfig ?? {},
+			optionsFromCommandLine,
 		)
-		const config = optionsSchema.parse(configUnparsed)
+		const suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed)
 		return {
 			positionalArgs,
-			config,
+			suppliedOptions,
 			writeJsonSchema: (path) => {
 				const jsonSchema = zodToJsonSchema(optionsSchema)
 				fs.writeFileSync(path, JSON.stringify(jsonSchema, null, `\t`))

@@ -771,6 +771,9 @@ importers:
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.4.4)
+      vitest:
+        specifier: 1.4.0
+        version: 1.4.0(@vitest/ui@1.4.0)(happy-dom@14.7.0)
 
   packages/hamr:
     dependencies:
