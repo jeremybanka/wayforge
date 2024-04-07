@@ -64,12 +64,7 @@ jobs:
         id: break-check
         run: |
           set +e
-          result=$(bun ./packages/break-check/src/break-check.x.ts \
-            --tagPattern="atom.io" \
-            --testPattern="packages/atom.io/__tests__/public/**/*.test.{ts,tsx}" \
-            --testCommand="(cd packages/atom.io && bun run build && bun run test:once:public)" \
-            --certifyCommand="grep -q -F '"atom.io": major' .changeset/*.md"
-          )
+          result=$(pnpm run test:semver)
           case $? in
             0)
               # if result includes "breaking-changes-certified"

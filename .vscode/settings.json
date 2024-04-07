@@ -4,6 +4,7 @@
 		"anvl",
 		"biomejs",
 		"Cardstock",
+		"comline",
 		"Deleters",
 		"Diagon",
 		"esbuild",
@@ -33,6 +34,12 @@
 		"unsub",
 		"wayforge",
 		"zustand"
+	],
+	"json.schemas": [
+		{
+			"fileMatch": ["**/break-check.config.json"],
+			"url": "./packages/break-check/break-check.schema.json"
+		}
 	],
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "biomejs.biome",
