@@ -4,7 +4,7 @@ import logger from "npmlog"
 import simpleGit from "simple-git"
 
 export type BreakCheckOptions = {
-	tagPattern: string | undefined
+	tagPattern?: string | undefined
 	testPattern: string
 	testCommand: string
 	certifyCommand: string
