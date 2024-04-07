@@ -57,8 +57,12 @@ const parse = cli(
 const { positionalArgs, suppliedOptions, writeJsonSchema } = parse(process.argv)
 
 if (positionalArgs.length === 0) {
-	const { returnValue } = await encapsulate(() => breakCheck(suppliedOptions))
+	const { returnValue } = await encapsulate(() => breakCheck(suppliedOptions), {
+		console: true,
+		stdout: true,
+	})
 	process.stdout.write(returnValue.summary)
+
 	if (`breakingChangesFound` in returnValue) {
 		if (returnValue.breakingChangesFound) {
 			if (returnValue.breakingChangesCertified) {
