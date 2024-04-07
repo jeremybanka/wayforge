@@ -128,12 +128,17 @@ export function cli<
 				`Some required arguments were not provided. See above for details.`,
 			)
 		}
-		const configFromCommandLine = optionsSchema.parse(
-			Object.fromEntries(configFromCommandLineEntries),
+		const configFromCommandLine = Object.fromEntries(
+			configFromCommandLineEntries,
 		)
+		const configUnparsed = Object.assign(
+			configFromFile ?? {},
+			configFromCommandLine,
+		)
+		const config = optionsSchema.parse(configUnparsed)
 		return {
 			positionalArgs,
-			config: Object.assign(configFromFile ?? {}, configFromCommandLine),
+			config,
 			writeJsonSchema: (path) => {
 				const jsonSchema = zodToJsonSchema(optionsSchema)
 				fs.writeFileSync(path, JSON.stringify(jsonSchema, null, `\t`))

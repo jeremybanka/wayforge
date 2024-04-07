@@ -14,7 +14,6 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	const validPositionalArgs: string[] = []
 	let treePointer: Object = positionalArgTree
 	let argumentIndex = -1
-	console.log({ endOfOptionsDelimiterIndex, positionalArgs })
 	if (positionalArgs === undefined || positionalArgs.length === 0) {
 		if (treePointer[0] === `required`) {
 			const currentPath = []
