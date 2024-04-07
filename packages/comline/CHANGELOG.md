@@ -1,5 +1,11 @@
 # comline
 
+## 0.0.2
+
+### Patch Changes
+
+- bbb8d2e: ✨ The `required` and `optional` utility functions improve the readability of positional argument trees."
+
 ## 0.0.1
 
 ### Patch Changes
