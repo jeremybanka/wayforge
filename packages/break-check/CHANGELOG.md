@@ -1,5 +1,11 @@
 # break-check
 
+## 0.4.0
+
+### Minor Changes
+
+- 88d556c: ✨ Run break-check with a `break-check.config.json` file.
+
 ## 0.3.0
 
 ### Minor Changes
