@@ -10,11 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"bin",
-		"dist",
-		"src"
-	],
+	"files": ["bin", "dist", "src", "break-check.schema.json"],
 	"main": "dist/break-check.js",
 	"types": "dist/break-check.d.ts",
 	"bin": {
@@ -31,6 +27,7 @@
 		"build:lib": "bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
 		"build:bin": "bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
 		"build:dts": "tsup",
+		"build:schema": "bun src/break-check.x.ts --testPattern --testCommand --certifyCommand -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint": "bun run lint:biome && bun run lint:eslint",

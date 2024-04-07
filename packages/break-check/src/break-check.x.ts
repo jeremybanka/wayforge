@@ -9,8 +9,12 @@ import { z } from "zod"
 const parse = cli(
 	{
 		cliName: `break-check`,
-		positionalArgTree: [OPTIONAL, { $configPath: null }],
-		discoverConfigPath: ([configPath = process.cwd()]) => {
+		positionalArgTree: [OPTIONAL, { schema: null, $configPath: null }],
+		discoverConfigPath: (args) => {
+			if (args[0] === undefined || args[0] === `schema`) {
+				return
+			}
+			const configPath = args[0] ?? process.cwd()
 			return path.join(configPath, `break-check.json`)
 		},
 		optionsSchema: z.object({
@@ -48,5 +52,10 @@ const parse = cli(
 	},
 	logger,
 )
-const { suppliedOptions } = parse(process.argv)
-await breakCheck(suppliedOptions)
+const { positionalArgs, suppliedOptions, writeJsonSchema } = parse(process.argv)
+
+if (positionalArgs.length === 0) {
+	await breakCheck(suppliedOptions)
+} else if (positionalArgs[0] === `schema`) {
+	writeJsonSchema(`break-check.schema.json`)
+}
