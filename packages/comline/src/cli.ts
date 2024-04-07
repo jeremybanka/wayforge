@@ -1,9 +1,10 @@
 import * as fs from "node:fs"
+import * as path from "node:path"
 import type { ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
 import type { Flag } from "./flag"
-import { OPTIONAL, type Tree, type TreePath } from "./tree"
+import type { Tree, TreePath } from "./tree"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
 import { parseStringOption } from "./option-parsers"
 
@@ -73,7 +74,8 @@ export function cli<
 		positionalArgTree,
 		options,
 		optionsSchema,
-		discoverConfigPath,
+		discoverConfigPath = () =>
+			path.join(process.cwd(), `${cliName}.config.json`),
 	}: CommandLineInterface<PositionalArgs, Options>,
 	logger = {
 		error: (...args: any[]) => console.error(...args),
@@ -92,9 +94,11 @@ export function cli<
 		if (discoverConfigPath) {
 			const configFilePath = discoverConfigPath(positionalArgs)
 			if (configFilePath) {
-				const configText = fs.readFileSync(configFilePath, `utf-8`)
-				const optionsFromConfigJson = JSON.parse(configText)
-				optionsFromConfig = optionsSchema.parse(optionsFromConfigJson)
+				if (fs.existsSync(configFilePath)) {
+					const configText = fs.readFileSync(configFilePath, `utf-8`)
+					const optionsFromConfigJson = JSON.parse(configText)
+					optionsFromConfig = optionsSchema.parse(optionsFromConfigJson)
+				}
 			}
 		}
 		const argumentEntries = Object.entries(options)

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import path from "node:path"
+import * as path from "node:path"
 import { breakCheck } from "break-check"
 import { cli, OPTIONAL } from "comline"
 import logger from "npmlog"
@@ -11,11 +11,12 @@ const parse = cli(
 		cliName: `break-check`,
 		positionalArgTree: [OPTIONAL, { schema: null, $configPath: null }],
 		discoverConfigPath: (args) => {
-			if (args[0] === undefined || args[0] === `schema`) {
+			if (args[0] === `schema`) {
 				return
 			}
-			const configPath = args[0] ?? process.cwd()
-			return path.join(configPath, `break-check.json`)
+			const configPath =
+				args[0] ?? path.join(process.cwd(), `break-check.config.json`)
+			return configPath
 		},
 		optionsSchema: z.object({
 			tagPattern: z.string().optional(),
