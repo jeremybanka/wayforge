@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 
+import path from "node:path"
 import { breakCheck } from "break-check"
-import { cli } from "comline"
+import { cli, OPTIONAL } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
 
 const parse = cli(
 	{
 		cliName: `break-check`,
+		positionalArgTree: [OPTIONAL, { $configPath: null }],
+		discoverConfigPath: ([configPath = process.cwd()]) => {
+			return path.join(configPath, `break-check.json`)
+		},
 		optionsSchema: z.object({
 			tagPattern: z.string().optional(),
 			testPattern: z.string(),
