@@ -33,6 +33,7 @@
 		"test:semver": {
 			"dependsOn": ["build"],
 			"inputs": [
+				"break-check.config.json",
 				"**/package.json",
 				"src/**/*.{ts,tsx,scss,mdx}",
 				"**/src/**/*.{ts,tsx,scss,mdx}",
