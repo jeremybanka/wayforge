@@ -2,5 +2,5 @@
 	"tagPattern": "atom.io",
 	"testPattern": "__tests__/public/**/*.test.{ts,tsx}",
 	"testCommand": "bun run build && bun run test:once:public",
-	"certifyCommand": "grep -q -F '\"atom.io\": major' .changeset/*.md"
+	"certifyCommand": "grep -q -F '\"atom.io\": major' ../../.changeset/*.md"
 }
