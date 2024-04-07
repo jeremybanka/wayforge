@@ -40,7 +40,8 @@
 		"test:coverage": "vitest run --coverage",
 		"test:once": "bun run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:once:public": "cross-env IMPORT=dist vitest run public",
-		"test:manifest": "tsx __scripts__/manifest-test.node"
+		"test:manifest": "tsx __scripts__/manifest-test.node",
+		"test:semver": "tsx ../break-check/src/break-check.x.ts -- ./break-check.config.json"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
