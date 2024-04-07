@@ -5,6 +5,7 @@ import { breakCheck } from "break-check"
 import { cli, optional } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
+import { encapsulate } from "~/packages/comline/src/encapsulate"
 
 const parse = cli(
 	{
@@ -56,7 +57,25 @@ const parse = cli(
 const { positionalArgs, suppliedOptions, writeJsonSchema } = parse(process.argv)
 
 if (positionalArgs.length === 0) {
-	await breakCheck(suppliedOptions)
+	const { returnValue } = await encapsulate(() => breakCheck(suppliedOptions), {
+		console: true,
+		stdout: true,
+	})
+	process.stdout.write(JSON.stringify(returnValue))
+
+	if (`breakingChangesFound` in returnValue) {
+		if (returnValue.breakingChangesFound) {
+			if (returnValue.breakingChangesCertified) {
+				process.exit(0)
+			} else {
+				process.exit(1)
+			}
+		} else {
+			process.exit(0)
+		}
+	} else {
+		process.exit(2)
+	}
 } else if (positionalArgs[0] === `schema`) {
 	writeJsonSchema(`break-check.schema.json`)
 }
