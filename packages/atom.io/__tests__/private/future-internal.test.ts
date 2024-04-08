@@ -59,7 +59,7 @@ describe(`Future`, () => {
 				resolve(1)
 			}),
 		)
-		await cacheValue(`a`, promise, subject, IMPLICIT.STORE)
+		void cacheValue(`a`, promise, subject, IMPLICIT.STORE)
 		evictCachedValue(`a`, IMPLICIT.STORE)
 		await promise
 		expect(Utils.stdout).not.toHaveBeenCalled()
