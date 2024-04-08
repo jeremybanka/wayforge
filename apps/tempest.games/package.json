@@ -10,7 +10,7 @@
 		"gen:scripts": "bun ./bun/gen-scripts.bun.ts",
 		"gen": "bun run gen:css && bun run gen:scripts",
 		"bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
-		"build": "bun gen && bun css && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
+		"build": "bun gen && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
 		"test": "hurl ./__tests__/*",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet",
