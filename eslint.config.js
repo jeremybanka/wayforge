@@ -79,7 +79,7 @@ const commonRules = {
 	"@typescript-eslint/no-implied-eval": ERROR,
 	"@typescript-eslint/no-import-type-side-effects": ERROR,
 	"@typescript-eslint/no-inferrable-types": ERROR,
-	"@typescript-eslint/no-invalid-void-type": ERROR,
+	"@typescript-eslint/no-invalid-void-type": 0, // void is good in unions sometimes?
 	"@typescript-eslint/no-loop-func": 0,
 	"@typescript-eslint/no-loss-of-precision": ERROR,
 	"@typescript-eslint/no-magic-numbers": 0,
@@ -90,7 +90,7 @@ const commonRules = {
 	"@typescript-eslint/no-namespace": ERROR,
 	"@typescript-eslint/no-non-null-asserted-nullish-coalescing": ERROR,
 	"@typescript-eslint/no-non-null-asserted-optional-chain": ERROR,
-	"@typescript-eslint/no-non-null-assertion": ERROR,
+	"@typescript-eslint/no-non-null-assertion": 0,
 	"@typescript-eslint/no-redundant-type-constituents": ERROR,
 	"@typescript-eslint/no-require-imports": ERROR,
 	"@typescript-eslint/no-restricted-imports": 0,
