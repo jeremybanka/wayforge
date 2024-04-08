@@ -44,16 +44,31 @@
 			"cache": false
 		},
 		"lint:eslint": {
-			"inputs": ["**/*.ts", "**/*.tsx", "../../eslint.config.js"]
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**/*.{ts,tsx}",
+				"**/src/**/*.{ts,tsx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.{ts?x}",
+				"../../eslint.config.js"
+			]
+		},
+		"lint:types": {
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**/*.{ts,tsx}",
+				"**/src/**/*.{ts,tsx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.{ts?x}"
+			]
 		},
 		"lint": {
-			"dependsOn": ["lint:biome", "lint:eslint"]
-		},
-		"deploy": {
-			"dependsOn": ["build", "test:once", "lint"]
+			"dependsOn": ["lint:biome", "lint:eslint", "lint:types"]
 		},
 		"globalDependencies": {
-			"inputs": ["pnpm.lockb", "tsconfig.json"]
+			"inputs": ["pnpm-lock.yaml", "tsconfig.json", ".nvmrc"]
 		}
 	}
 }

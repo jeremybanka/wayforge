@@ -12,7 +12,8 @@
 		"test:once": "vitest run",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
-		"lint": "bun run lint:biome && bun run lint:eslint"
+		"lint:types": "tsc --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
 		"@emotion/styled": "11.11.5",

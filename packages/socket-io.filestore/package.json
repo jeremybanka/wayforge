@@ -7,7 +7,8 @@
 		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
-		"lint": "bun run lint:biome && bun run lint:eslint",
+		"lint:types": "tsc --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run"

@@ -15,7 +15,8 @@
 		"test:once": "echo no tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "bun run gen && eslint .",
-		"lint": "bun run lint:biome && bun run lint:eslint",
+		"lint:types": "tsc --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"deploy": "fastly compute publish"
 	},
 	"devDependencies": {
