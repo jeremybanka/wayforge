@@ -14,8 +14,14 @@ export const radialModeState = atom<RadialMode>({
 })
 
 export const useRadial = composeUseRadial(
-	(v) => setState(actionsState, v),
+	(v) => {
+		setState(actionsState, v)
+	},
 	() => getState(radialModeState),
-	(v) => setState(radialModeState, v),
-	(v) => setState(windowMousePositionState, v),
+	(v) => {
+		setState(radialModeState, v)
+	},
+	(v) => {
+		setState(windowMousePositionState, v)
+	},
 )

@@ -11,7 +11,9 @@
 		"build:exhibits": "tsx scripts/wrap-exhibits.node once",
 		"build:next": "next build",
 		"start": "next start -p 5454",
-		"lint": "next lint",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint .",
+		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet"

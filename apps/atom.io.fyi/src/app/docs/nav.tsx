@@ -35,7 +35,7 @@ export function OnThisPage(): JSX.Element {
 		setCurrentId(null)
 		const observer = new IntersectionObserver(
 			(entries) => {
-				const entry = entries.find((entry) => entry.isIntersecting)
+				const entry = entries.find((e) => e.isIntersecting)
 				if (entry) {
 					setCurrentId(entry.target.id)
 				}
@@ -128,7 +128,9 @@ export function OnThisPage(): JSX.Element {
 			</nav>
 			<Toggle.Button
 				checked={userHasToggled}
-				onChange={() => setUserHasToggled((v) => !v)}
+				onChange={() => {
+					setUserHasToggled((v) => !v)
+				}}
 			>
 				☰
 			</Toggle.Button>

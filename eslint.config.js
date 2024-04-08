@@ -6,6 +6,14 @@ import path from "node:path"
 import { FlatCompat } from "@eslint/eslintrc"
 import { fileURLToPath } from "node:url"
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+/** @type {import("@eslint/eslintrc").FlatCompat} */
+const compat = new FlatCompat({
+	baseDirectory: __dirname,
+})
+
 const ERROR = 2
 
 /** @type {import("@typescript-eslint/parser").ParserOptions} */
@@ -174,15 +182,26 @@ const configs = [
 		rules: commonRules,
 	},
 	{
-		files: [`apps/atom.io.fyi/**/*.ts{,x}`, `apps/wayfarer.quest/**/*.ts{,x}`],
-		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: {
-			"@next/next": nextPlugin,
-		},
+		files: [`apps/atom.io.fyi/**/*.ts{,x}`],
+		ignores: [`**/*.gen.tsx`, `**/dist/**`, `**/node_modules/**`],
+		plugins: { "@next/next": nextPlugin },
 		rules: {
 			...nextPlugin.configs.recommended.rules,
 			...nextPlugin.configs[`core-web-vitals`].rules,
+			"@next/next/no-duplicate-head": 0,
 		},
+		settings: { next: { rootDir: `apps/atom.io.fyi/` } },
+	},
+	{
+		files: [`apps/wayfarer.quest/**/*.ts{,x}`],
+		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
+		plugins: { "@next/next": nextPlugin },
+		rules: {
+			...nextPlugin.configs.recommended.rules,
+			...nextPlugin.configs[`core-web-vitals`].rules,
+			"@next/next/no-duplicate-head": 0,
+		},
+		settings: { next: { rootDir: `apps/wayfarer.quest/` } },
 	},
 	{
 		languageOptions: {
@@ -197,9 +216,7 @@ const configs = [
 		},
 		files: [`apps/tempest.games/**/*.ts{,x}`],
 		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: {
-			"@typescript-eslint": plugin,
-		},
+		plugins: { "@typescript-eslint": plugin },
 		rules: commonRules,
 	},
 ]
