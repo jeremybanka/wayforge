@@ -5,10 +5,9 @@
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": false,
 		"skipLibCheck": true,
-		"strict": true,
 		"noEmit": true,
 		"esModuleInterop": true,
-		"module": "esnext",
+		"module": "preserve",
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
@@ -26,7 +25,9 @@
 			"atom.io": ["./packages/atom.io/src"],
 			"atom.io/*": ["./packages/atom.io/*/src"],
 			"anvl/*": ["./packages/anvl/src/*"],
-			"hamr/*": ["./packages/hamr/*/src"]
+			"hamr/*": ["./packages/hamr/*/src"],
+			"rel8": ["./packages/rel8/types/src"],
+			"rel8/*": ["./packages/rel8/*/src"]
 		}
 	},
 	"include": [

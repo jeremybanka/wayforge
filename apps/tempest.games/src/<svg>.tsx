@@ -1,4 +1,6 @@
-export function tempest(): JSX.Element {
+import type { VNode } from "preact"
+
+export function tempest(): VNode {
 	return (
 		<svg
 			alt="Tempest Games Logo"
