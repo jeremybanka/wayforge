@@ -24,6 +24,7 @@
 	],
 	"scripts": {
 		"dev": "tsc --watch",
+		"gen": "turbo run gen",
 		"lint": "turbo run lint",
 		"lint:biome": "turbo run lint:biome",
 		"lint:eslint": "turbo run lint:eslint",

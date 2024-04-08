@@ -55,6 +55,7 @@
 			]
 		},
 		"lint:types": {
+			"dependsOn": ["gen"],
 			"inputs": [
 				"**/package.json",
 				"tsconfig.json",
@@ -66,6 +67,17 @@
 		},
 		"lint": {
 			"dependsOn": ["lint:biome", "lint:eslint", "lint:types"]
+		},
+		"gen": {
+			"outputs": ["**/*.gen.ts", "**/*.gen.tsx"],
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**/*.{ts,tsx}",
+				"**/src/**/*.{ts,tsx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.{ts?x}"
+			]
 		},
 		"globalDependencies": {
 			"inputs": ["pnpm-lock.yaml", "tsconfig.json", ".nvmrc"]

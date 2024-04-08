@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "tsx watch src/main.ts",
-		"gen": "tsx ./src/script/build-zod.node.ts",
+		"gen:zod": "tsx ./src/script/build-zod.node.ts",
 		"build": "echo zero-build app powered by tsx",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
