@@ -1,4 +1,3 @@
-// @ts-check
 import parser from "@typescript-eslint/parser"
 import plugin from "@typescript-eslint/eslint-plugin"
 import nextPlugin from "@next/eslint-plugin-next"
@@ -155,7 +154,7 @@ const commonRules = {
 	quotes: [ERROR, `backtick`],
 }
 
-/** @type {(import(`eslint`).Linter.FlatConfig)[]} */
+/** @type {(import("eslint").Linter.FlatConfig)[]} */
 const configs = [
 	{
 		languageOptions: {

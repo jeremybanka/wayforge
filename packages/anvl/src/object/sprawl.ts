@@ -8,7 +8,7 @@ export type InspectionResult = Partial<{
 export type InspectNode = (
 	path: string[],
 	node: unknown,
-) => InspectionResult | null
+) => InspectionResult | void
 
 export const sprawl = (
 	tree: Array<unknown> | object,

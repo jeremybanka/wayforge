@@ -53,7 +53,7 @@ export class ParentSocket<
 	protected relays: Map<string, SubjectSocket<any, any>>
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
-	) => (() => void) | undefined)[]
+	) => (() => void) | void)[]
 	protected process: NodeJS.Process
 
 	public id = `#####`
@@ -184,9 +184,7 @@ export class ParentSocket<
 	}
 
 	public relay(
-		attachServices: (
-			socket: SubjectSocket<any, any>,
-		) => (() => void) | undefined,
+		attachServices: (socket: SubjectSocket<any, any>) => (() => void) | void,
 	): void {
 		this.logger.info(`🔗`, `running relay method`)
 		this.relayServices.push(attachServices)
