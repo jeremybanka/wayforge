@@ -106,8 +106,6 @@ export class Join<
 		return new Join(setRelationWithContent(this, relation, ...rest))
 	}
 	public remove(relation: Partial<Record<A | B, string>>): Join<CONTENT, A, B> {
-		return new Join(
-			removeRelation(this, relation as Partial<Record<A | B, string>>),
-		)
+		return new Join(removeRelation(this, relation))
 	}
 }

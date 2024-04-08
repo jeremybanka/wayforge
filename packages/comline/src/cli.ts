@@ -78,7 +78,9 @@ export function cli<
 			path.join(process.cwd(), `${cliName}.config.json`),
 	}: CommandLineInterface<PositionalArgs, Options>,
 	logger = {
-		error: (...args: any[]) => console.error(...args),
+		error: (...args: any[]) => {
+			console.error(...args)
+		},
 	},
 ): (args: string[]) => {
 	positionalArgs: TreePath<PositionalArgs>
@@ -155,9 +157,9 @@ export function cli<
 		return {
 			positionalArgs,
 			suppliedOptions,
-			writeJsonSchema: (path) => {
+			writeJsonSchema: (filepath) => {
 				const jsonSchema = zodToJsonSchema(optionsSchema)
-				fs.writeFileSync(path, JSON.stringify(jsonSchema, null, `\t`))
+				fs.writeFileSync(filepath, JSON.stringify(jsonSchema, null, `\t`))
 			},
 		}
 	}

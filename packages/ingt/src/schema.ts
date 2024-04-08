@@ -4,8 +4,10 @@ import type { Json } from "~/packages/anvl/src/json"
 import { parseJson } from "~/packages/anvl/src/json"
 
 import type { FilestoreOptions } from "./options"
-export { initRelationReader, ReadRelations } from "./relations"
-export { initResourceReader, ReadResource } from "./resources"
+export type { ReadRelations } from "./relations"
+export { initRelationReader } from "./relations"
+export type { ReadResource } from "./resources"
+export { initResourceReader } from "./resources"
 
 export type ReadSchemaOptions = { type: string }
 export type ReadSchema = (

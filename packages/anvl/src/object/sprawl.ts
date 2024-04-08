@@ -8,21 +8,21 @@ export type InspectionResult = Partial<{
 export type InspectNode = (
 	path: string[],
 	node: unknown,
-) => InspectionResult | void
+) => InspectionResult | null
 
 export const sprawl = (
 	tree: Array<unknown> | object,
 	inspector: InspectNode,
 ): void => {
 	const walk = (path: string[], node: unknown): InspectionResult => {
-		const inspect = (path: string[], node: unknown): InspectionResult | null => {
+		const inspect = (p: string[], n: unknown): InspectionResult | null => {
 			// console.log(parent)
-			const result = inspector(path, node)
+			const result = inspector(p, n)
 			if (result) return result
 			return null
 		}
 		const result = inspect(path, node)
-		if (result?.jobComplete || result?.pathComplete) {
+		if (result?.jobComplete ?? result?.pathComplete) {
 			return result
 		}
 		const childEntries = Array.isArray(node)

@@ -36,5 +36,7 @@ export const makeMouseHandlers: MakeMouseHandlers = ({
 	onClick: (e) => [onClickL, onClickM, onClickR][e.button]?.(e),
 	onMouseDown: (e) => [onMouseDownL, onMouseDownM, onMouseDownR][e.button]?.(e),
 	onMouseUp: (e) => [onMouseUpL, onMouseUpM, onMouseUpR][e.button]?.(e),
-	onContextMenu: (e) => e.preventDefault(),
+	onContextMenu: (e) => {
+		e.preventDefault()
+	},
 })

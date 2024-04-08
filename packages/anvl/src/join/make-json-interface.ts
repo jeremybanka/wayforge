@@ -18,7 +18,7 @@ export const makeJsonInterface = <
 		isContent,
 	}
 	return {
-		toJson: (join) => join.toJSON(),
+		toJson: (j) => j.toJSON(),
 		fromJson: (json) => Join.fromJSON(json, options),
 	}
 }

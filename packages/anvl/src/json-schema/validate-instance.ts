@@ -32,8 +32,6 @@ import type {
 } from "./json-schema"
 import { isJsonSchemaRef, retrieveRef } from "./refs"
 
-/* eslint-disable max-lines */
-
 export interface JsonSchemaMetaTypes
 	extends Record<JsonSchemaMetaTypeName, any> {
 	integer: integer
@@ -117,7 +115,7 @@ export const validateAsType: {
 		minLength: (opts) => (instance) => instance.length >= opts.spec,
 		maxLength: (opts) => (instance) => instance.length <= opts.spec,
 		pattern: (opts) => (instance) => new RegExp(opts.spec).test(instance),
-		format: (_) => (_) => true,
+		format: (_) => (__) => true,
 	},
 	boolean: {
 		type: () => JSON_SCHEMA_META_REFINERY.boolean,
@@ -128,7 +126,7 @@ export const validateAsType: {
 	},
 	array: {
 		type: () => JSON_SCHEMA_META_REFINERY.array,
-		items: (_) => (_) => true, // TODO
+		items: (_) => (__) => true, // TODO
 		minItems: (opts) => (instance) => instance.length >= opts.spec,
 		maxItems: (opts) => (instance) => instance.length <= opts.spec,
 		uniqueItems: (opts) => (instance) =>
@@ -158,14 +156,14 @@ export const validateAsType: {
 			})
 		},
 		required: (opts) => (instance) => opts.spec.every((key) => key in instance),
-		propertyNames: (_) => (_) => true, // TODO
-		patternProperties: (_) => (_) => true, // TODO
+		propertyNames: (_) => (__) => true, // TODO
+		patternProperties: (_) => (__) => true, // TODO
 		minProperties: (opts) => (instance) =>
 			Object.keys(instance).length >= opts.spec,
 		maxProperties: (opts) => (instance) =>
 			Object.keys(instance).length <= opts.spec,
-		additionalProperties: (_) => (_) => true, // TODO
-		dependentSchemas: (_) => (_) => true, // TODO
+		additionalProperties: (_) => (__) => true, // TODO
+		dependentSchemas: (_) => (__) => true, // TODO
 	},
 }
 

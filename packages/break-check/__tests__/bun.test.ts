@@ -41,7 +41,9 @@ beforeEach(async () => {
 		).text(),
 	)
 })
-afterEach(() => tempDir.removeCallback())
+afterEach(() => {
+	tempDir.removeCallback()
+})
 
 describe(`break-check`, () => {
 	it(`determines whether breaking changes were made`, async () => {

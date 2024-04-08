@@ -45,9 +45,9 @@ export const getRelations = <
 	B extends string,
 >(
 	relationMap: RelationData<CONTENT, A, B>,
-	id: string,
+	identifier: string,
 ): (CONTENT extends null ? Identified : CONTENT & Identified)[] =>
-	getRelationEntries(relationMap, id).map(
+	getRelationEntries(relationMap, identifier).map(
 		([id, content]) =>
 			({
 				id,

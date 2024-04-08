@@ -19,8 +19,6 @@ import { isJsonSchemaRef } from "./refs"
 import type { JsonSchemaStringFormat } from "./string-formats"
 import { JSON_SCHEMA_STRING_FORMATS } from "./string-formats"
 
-/* eslint-disable max-lines */
-
 export const JSON_SCHEMA_TYPE_NAMES = [...JSON_TYPE_NAMES, `integer`] as const
 export type JsonSchemaTypeName = (typeof JSON_SCHEMA_TYPE_NAMES)[number]
 

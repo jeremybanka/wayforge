@@ -26,7 +26,9 @@ export const EnergyIcon_INTERNAL: FC<{
 	const navigate = useNavigate()
 
 	const handleClick = clickable
-		? () => navigate(`/energy/${energy.id}`)
+		? () => {
+				navigate(`/energy/${energy.id}`)
+			}
 		: undefined
 
 	return (

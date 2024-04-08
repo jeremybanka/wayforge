@@ -33,7 +33,7 @@ export const InnerView: FC<{ viewId: string; close: () => void }> = ({
 	const [view, setView] = useRecoilState(findViewState(viewId))
 	useEffect(() => {
 		// console.log(location)
-		setView((view) => ({ ...view, location }))
+		setView((v) => ({ ...v, location }))
 	}, [location, setView])
 	return (
 		<>
@@ -116,10 +116,21 @@ export const Spaces: FC<SpacesProps> = ({ Components: CustomComponents }) => {
 	return (
 		<Components.SpacesWrapper>
 			{[...viewIds].map((viewId) => (
-				<View key={viewId} viewId={viewId} close={() => removeView(viewId)} />
+				<View
+					key={viewId}
+					viewId={viewId}
+					close={() => {
+						removeView(viewId)
+					}}
+				/>
 			))}
 			<br />
-			<button type="button" onClick={() => addView()}>
+			<button
+				type="button"
+				onClick={() => {
+					addView()
+				}}
+			>
 				Add Space
 			</button>
 		</Components.SpacesWrapper>
