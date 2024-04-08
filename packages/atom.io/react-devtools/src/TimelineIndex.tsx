@@ -42,14 +42,18 @@ export const TimelineLog: FC<{
 					<nav>
 						<button
 							type="button"
-							onClick={() => { undo(token); }}
+							onClick={() => {
+								undo(token)
+							}}
 							disabled={timeline.at === 0}
 						>
 							undo
 						</button>
 						<button
 							type="button"
-							onClick={() => { redo(token); }}
+							onClick={() => {
+								redo(token)
+							}}
 							disabled={timeline.at === timeline.history.length}
 						>
 							redo

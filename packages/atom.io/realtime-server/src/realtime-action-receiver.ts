@@ -30,6 +30,8 @@ export function realtimeActionReceiver({
 		}
 		socket.on(`tx-run:${tx.key}`, fillTransactionRequest)
 
-		return () => { socket.off(`tx-run:${tx.key}`, fillTransactionRequest); }
+		return () => {
+			socket.off(`tx-run:${tx.key}`, fillTransactionRequest)
+		}
 	}
 }

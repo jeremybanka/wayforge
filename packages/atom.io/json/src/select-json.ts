@@ -14,7 +14,9 @@ export const selectJson = <T, J extends Json.Serializable>(
 		{
 			key: `${atom.key}:JSON`,
 			get: ({ get }) => transform.toJson(get(atom)),
-			set: ({ set }, newValue) => { set(atom, transform.fromJson(newValue)); },
+			set: ({ set }, newValue) => {
+				set(atom, transform.fromJson(newValue))
+			},
 		},
 		store,
 	)

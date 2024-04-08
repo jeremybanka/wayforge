@@ -16,7 +16,9 @@ const numbersCollectionState = AtomIO.atom({
 })
 const addToNumbersCollectionTX = AtomIO.transaction({
 	key: `addToNumbersCollection`,
-	do: ({ set }) => { set(numbersCollectionState, (ns) => ns.add(ns.size)); },
+	do: ({ set }) => {
+		set(numbersCollectionState, (ns) => ns.add(ns.size))
+	},
 })
 
 describe(`running transactions`, () => {
@@ -82,7 +84,9 @@ describe(`running transactions`, () => {
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
 
-		act(() => { dave.renderResult.getByTestId(`addNumber`).click(); })
+		act(() => {
+			dave.renderResult.getByTestId(`addNumber`).click()
+		})
 		await waitFor(() => {
 			console.log(`retrieving...`)
 			jane.renderResult.getByTestId(`1`)

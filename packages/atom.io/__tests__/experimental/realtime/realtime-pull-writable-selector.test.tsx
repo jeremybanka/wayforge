@@ -13,7 +13,9 @@ const countPlusTenState = AtomIO.selector({
 const countHundredfoldState = AtomIO.selector({
 	key: `hundredfold`,
 	get: ({ get }) => get(countState) * 100,
-	set: ({ set }, value) => { set(countState, value / 100); },
+	set: ({ set }, value) => {
+		set(countState, value / 100)
+	},
 })
 
 describe(`pull atom, observe selector`, () => {
@@ -41,7 +43,9 @@ describe(`pull atom, observe selector`, () => {
 		const { client: uninitializedClient, server, teardown } = scenario()
 		const client = uninitializedClient.init()
 		client.renderResult.getByTestId(`plusTen:10`)
-		act(() => { server.silo.setState(countState, 1); })
+		act(() => {
+			server.silo.setState(countState, 1)
+		})
 		await waitFor(() => client.renderResult.getByTestId(`plusTen:11`))
 		await waitFor(() => client.renderResult.getByTestId(`hundredfold:100`))
 		teardown()
@@ -73,7 +77,9 @@ describe(`pull selector, observe atom`, () => {
 		const { client: uninitializedClient, server, teardown } = scenario()
 		const client = uninitializedClient.init()
 		client.renderResult.getByTestId(`count:0`)
-		act(() => { server.silo.setState(countHundredfoldState, 2000); })
+		act(() => {
+			server.silo.setState(countHundredfoldState, 2000)
+		})
 		await waitFor(() => client.renderResult.getByTestId(`count:20`))
 		await waitFor(() => client.renderResult.getByTestId(`countPlusTen:30`))
 		teardown()

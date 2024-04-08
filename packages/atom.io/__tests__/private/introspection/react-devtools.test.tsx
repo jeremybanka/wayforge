@@ -52,7 +52,9 @@ describe(`react-devtools`, () => {
 		})
 		const setLetterTX = transaction<(newLetter: string) => void>({
 			key: `setLetter`,
-			do: ({ set }, newLetter) => { set(letterState, newLetter); },
+			do: ({ set }, newLetter) => {
+				set(letterState, newLetter)
+			},
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
@@ -88,7 +90,9 @@ describe(`react-devtools`, () => {
 					<div data-testid={letter}>{letter}</div>
 					<button
 						type="button"
-						onClick={() => { setLetter(`B`); }}
+						onClick={() => {
+							setLetter(`B`)
+						}}
 						data-testid="changeStateButton"
 					/>
 				</>
@@ -119,18 +123,30 @@ describe(`react-devtools`, () => {
 
 		await waitFor(() => getByTestId(`state-letter`))
 		await waitFor(() => getByTestId(`state-selections`))
-		act(() => { getByTestId(`open-close-state-letter`).click(); })
-		act(() => { getByTestId(`view-selectors`).click(); })
+		act(() => {
+			getByTestId(`open-close-state-letter`).click()
+		})
+		act(() => {
+			getByTestId(`view-selectors`).click()
+		})
 		await waitFor(() => getByTestId(`state-doubleLetter`))
 		await waitFor(() => getByTestId(`state-selectionsWithoutGreen`))
-		act(() => { getByTestId(`view-transactions`).click(); })
+		act(() => {
+			getByTestId(`view-transactions`).click()
+		})
 		runTransaction(setLetterTX)(`C`)
 		await waitFor(() => getByTestId(`transaction-setLetter`))
-		act(() => { getByTestId(`open-close-transaction-setLetter`).click(); })
+		act(() => {
+			getByTestId(`open-close-transaction-setLetter`).click()
+		})
 		await waitFor(() => getByTestId(`transaction-update-setLetter-0`))
-		act(() => { getByTestId(`view-timelines`).click(); })
+		act(() => {
+			getByTestId(`view-timelines`).click()
+		})
 		await waitFor(() => getByTestId(`timeline-letterTL`))
-		act(() => { getByTestId(`open-close-timeline-letterTL`).click(); })
+		act(() => {
+			getByTestId(`open-close-timeline-letterTL`).click()
+		})
 		await waitFor(() => getByTestId(`timeline-update-letter-0`))
 	})
 })
