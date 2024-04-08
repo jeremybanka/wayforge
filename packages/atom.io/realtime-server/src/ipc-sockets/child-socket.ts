@@ -76,12 +76,12 @@ export class ChildSocket<
 				// console.log(`🤓`, this.unprocessedEvents.length)
 				// console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
 				const newInput = this.unprocessedEvents.shift()
-				this.incompleteData += newInput || ``
+				this.incompleteData += newInput ?? ``
 				try {
 					if (this.incompleteData.startsWith(`error`)) {
 						console.log(`❗`, this.incompleteData)
 					}
-					const parsedEvent = parseJson(this.incompleteData)
+					let parsedEvent = parseJson(this.incompleteData)
 					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 					while (this.unprocessedEvents.length > 0) {
 						const event = this.unprocessedEvents.shift()
@@ -89,7 +89,7 @@ export class ChildSocket<
 							if (this.unprocessedEvents.length === 0) {
 								this.incompleteData = event
 							}
-							const parsedEvent = parseJson(event)
+							parsedEvent = parseJson(event)
 							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
 						}
 					}
@@ -109,15 +109,15 @@ export class ChildSocket<
 			// console.log(`🤫`, this.unprocessedLogs.length)
 			// console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
 			const newInput = this.unprocessedLogs.shift()
-			this.incompleteLog += newInput || ``
+			this.incompleteLog += newInput ?? ``
 			try {
-				const parsedLog = parseJson(this.incompleteLog)
+				let parsedLog = parseJson(this.incompleteLog)
 				// console.log(`🤫`, parsedLog)
 				this.handleLog(parsedLog)
 				while (this.unprocessedLogs.length > 0) {
 					this.incompleteLog = this.unprocessedLogs.shift() ?? ``
 					if (this.incompleteLog) {
-						const parsedLog = parseJson(this.incompleteLog)
+						parsedLog = parseJson(this.incompleteLog)
 						this.handleLog(parsedLog)
 					}
 				}

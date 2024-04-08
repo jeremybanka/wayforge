@@ -44,7 +44,7 @@ export function selectJsonFamily<
 			set:
 				(key) =>
 				({ set }, newValue) =>
-					set(atomFamily(key), transform.fromJson(newValue)),
+					{ set(atomFamily(key), transform.fromJson(newValue)); },
 		},
 		store,
 	)

@@ -15,7 +15,7 @@ export function copyMutableIfNeeded<T extends Transceiver<any>>(
 			return typeof atom.default === `function` ? atom.default() : atom.default
 		}
 
-		origin.logger.info(`📃`, `atom`, `${atom.key}`, `copying`)
+		origin.logger.info(`📃`, `atom`, atom.key, `copying`)
 		const jsonValue = atom.toJson(originValue)
 		const copiedValue = atom.fromJson(jsonValue)
 		target.valueMap.set(atom.key, copiedValue)

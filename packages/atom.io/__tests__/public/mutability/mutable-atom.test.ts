@@ -223,7 +223,7 @@ describe(`mutable time traveling`, () => {
 		const myTX = transaction<(newItem: string) => void>({
 			key: `myTransaction`,
 			do: ({ set }, newItem) => {
-				set(myMutableState, (set) => set.add(newItem))
+				set(myMutableState, (s) => s.add(newItem))
 			},
 		})
 

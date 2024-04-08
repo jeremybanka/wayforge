@@ -6,4 +6,6 @@ export * from "./select-json-family"
 
 import type { Json } from "~/packages/anvl/src/json"
 
-export type JsonIO = (...params: Json.Serializable[]) => Json.Serializable | void
+export type JsonIO = (
+	...params: Json.Serializable[]
+) => Json.Serializable | undefined

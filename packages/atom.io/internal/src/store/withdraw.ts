@@ -49,7 +49,7 @@ export type Withdrawable =
 	| MutableAtom<any, any>
 	| MutableAtomFamily<any, any, any>
 	| ReadableState<any>
-	| ReadableState<any>
+	 
 	| ReadonlySelector<any>
 	| ReadonlySelectorFamily<any, any>
 	| RegularAtom<any>

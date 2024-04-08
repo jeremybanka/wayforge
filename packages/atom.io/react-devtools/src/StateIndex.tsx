@@ -59,8 +59,8 @@ export const StateIndexLeafNode: FC<{
 					disabled={isPrimitive}
 				/>
 				<label
-					onClick={() => console.log(node, getState(node))}
-					onKeyUp={() => console.log(node, getState(node))}
+					onClick={() => { console.log(node, getState(node)); }}
+					onKeyUp={() => { console.log(node, getState(node)); }}
 				>
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>

@@ -67,7 +67,7 @@ export const AtomIODevtools = (): JSX.Element => {
 										type="button"
 										data-testid={`view-${viewOption}`}
 										className={viewOption === devtoolsView ? `active` : ``}
-										onClick={() => setDevtoolsView(viewOption)}
+										onClick={() => { setDevtoolsView(viewOption); }}
 										disabled={viewOption === devtoolsView}
 									>
 										{viewOption}

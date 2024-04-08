@@ -24,7 +24,7 @@ describe(`pushing state`, () => {
 					return (
 						<button
 							type="button"
-							onClick={() => setCount((c) => c + 1)}
+							onClick={() => { setCount((c) => c + 1); }}
 							data-testid={`increment`}
 						/>
 					)
@@ -44,7 +44,7 @@ describe(`pushing state`, () => {
 		const dave = clients.dave.init()
 
 		jane.renderResult.getByTestId(`0`)
-		act(() => dave.renderResult.getByTestId(`increment`).click())
+		act(() => { dave.renderResult.getByTestId(`increment`).click(); })
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		teardown()
 	})

@@ -8,6 +8,6 @@ export type ObserverProps = {
 }
 export const Observer: React.FC<ObserverProps> = ({ node, onChange }) => {
 	const value = ReactIO.useO(node)
-	React.useEffect(() => onChange(value), [onChange, value])
+	React.useEffect(() => { onChange(value); }, [onChange, value])
 	return null
 }

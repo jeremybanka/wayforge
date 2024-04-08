@@ -48,7 +48,7 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			key: options.key,
 			type: `atom_family`,
 			subject,
-			install: (store: Store) => createRegularAtomFamily(options, store),
+			install: (s: Store) => createRegularAtomFamily(options, s),
 		} as const,
 	)
 	const target = newest(store)

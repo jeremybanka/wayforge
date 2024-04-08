@@ -1,5 +1,4 @@
 import type {
-	AtomFamily,
 	AtomFamilyToken,
 	FamilyMetadata,
 	StateUpdate,
@@ -73,7 +72,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		transactionKey: null,
 		...data,
 		history: data?.history.map((update) => ({ ...update })) ?? [],
-		install: (store) => createTimeline(options, store, tl),
+		install: (s) => createTimeline(options, s, tl),
 		subject: new Subject(),
 	}
 	if (options.shouldCapture) {

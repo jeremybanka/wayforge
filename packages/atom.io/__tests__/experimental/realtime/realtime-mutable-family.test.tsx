@@ -99,7 +99,7 @@ describe(`running transactions`, () => {
 		const dave = clients.dave.init()
 
 		jane.renderResult.getByTestId(`0`)
-		act(() => dave.renderResult.getByTestId(`addNumber`).click())
+		act(() => { dave.renderResult.getByTestId(`addNumber`).click(); })
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		teardown()
 	})

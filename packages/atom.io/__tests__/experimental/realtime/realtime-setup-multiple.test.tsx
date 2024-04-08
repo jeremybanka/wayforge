@@ -37,7 +37,7 @@ describe(`multi-client scenario`, () => {
 
 		jim.renderResult.getByTestId(`0`)
 		lee.renderResult.getByTestId(`0`)
-		act(() => server.silo.setState(countState, 1))
+		act(() => { server.silo.setState(countState, 1); })
 		await waitFor(() => jim.renderResult.getByTestId(`1`))
 		await waitFor(() => lee.renderResult.getByTestId(`1`))
 		teardown()
