@@ -13,14 +13,18 @@ export const Divisor: FC = () => {
 				<button
 					type="button"
 					data-testid="divisorButton+"
-					onClick={() => setDivisor((divisor) => divisor + 1)}
+					onClick={() => {
+						setDivisor((prev) => prev + 1)
+					}}
 				>
 					+
 				</button>
 				<button
 					type="button"
 					data-testid="divisorButton-"
-					onClick={() => setDivisor((divisor) => divisor - 1)}
+					onClick={() => {
+						setDivisor((prev) => prev - 1)
+					}}
 				>
 					-
 				</button>

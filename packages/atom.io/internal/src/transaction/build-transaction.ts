@@ -46,7 +46,7 @@ export const buildTransaction = (
 	}
 	const epoch = getEpochNumberOfAction(key, store)
 	const transactionMeta: TransactionProgress<ƒn> = {
-		phase: `building` as const,
+		phase: `building`,
 		update: {
 			key,
 			id,
@@ -57,9 +57,12 @@ export const buildTransaction = (
 		},
 		transactors: {
 			get: (token) => getFromStore(token, child),
-			set: (token, value) => setIntoStore(token, value, child),
-			run: (token, id = arbitrary()) => actUponStore(token, id, child),
-			find: ((token, key) => findInStore(token, key, child)) as typeof findState,
+			set: (token, value) => {
+				setIntoStore(token, value, child)
+			},
+			run: (token, identifier = arbitrary()) =>
+				actUponStore(token, identifier, child),
+			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
 			env: () => getEnvironmentData(child),
 		},
 	}

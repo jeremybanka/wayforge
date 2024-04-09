@@ -44,16 +44,43 @@
 			"cache": false
 		},
 		"lint:eslint": {
-			"inputs": ["**/*.ts", "**/*.tsx", "../../eslint.config.js"]
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**/*.{ts,tsx}",
+				"**/src/**/*.{ts,tsx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.{ts?x}",
+				"../../eslint.config.js"
+			]
+		},
+		"lint:types": {
+			"dependsOn": ["gen"],
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**/*.{ts,tsx}",
+				"**/src/**/*.{ts,tsx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.{ts?x}"
+			]
 		},
 		"lint": {
-			"dependsOn": ["lint:biome", "lint:eslint"]
+			"dependsOn": ["lint:biome", "lint:eslint", "lint:types"]
 		},
-		"deploy": {
-			"dependsOn": ["build", "test:once", "lint"]
+		"gen": {
+			"outputs": ["**/*.gen.ts", "**/*.gen.tsx"],
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**/*.{ts,tsx}",
+				"**/src/**/*.{ts,tsx}",
+				"__tests__/**/*.{ts?x}",
+				"__scripts__/**/*.{ts?x}"
+			]
 		},
 		"globalDependencies": {
-			"inputs": ["pnpm.lockb", "tsconfig.json"]
+			"inputs": ["pnpm-lock.yaml", "tsconfig.json", ".nvmrc"]
 		}
 	}
 }

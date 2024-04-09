@@ -6,7 +6,7 @@ import { cities, countries } from "./schema.node"
 
 console.log(`Server starting...`)
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
 const DB_HOST = `localhost`
 const DB_NAME = process.env.DB_NAME
@@ -143,4 +143,4 @@ const main = async () => {
 		})
 }
 
-main()
+void main()

@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom"
 
 import { Division } from "./components/Demos/Division"
 
-export const onChange = [() => undefined, console.log][0]
+export const handleChange = [() => undefined, console.log][0]
 
 export type ObserverProps = {
 	node: WritableToken<any>
@@ -15,7 +15,9 @@ export type ObserverProps = {
 }
 export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
 	const value = useO(node)
-	useEffect(() => onChange(value), [onChange, value])
+	useEffect(() => {
+		onChange(value)
+	}, [onChange, value])
 	return null
 }
 

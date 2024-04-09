@@ -65,7 +65,9 @@ export const ReactionIcon_INTERNAL: FC<{
 	const navigate = useNavigate()
 
 	const handleClick = clickable
-		? () => navigate(`/reaction/${reaction.id}`)
+		? () => {
+				navigate(`/reaction/${reaction.id}`)
+			}
 		: undefined
 
 	return (

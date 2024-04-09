@@ -91,7 +91,7 @@ export default function main(mode: string): void {
 						`manifest for "hamr/${moduleName}" is already up to date`,
 					)
 				} else {
-					logger.info(`updating`, `${modulePath}`)
+					logger.info(`updating`, modulePath)
 					fs.writeFileSync(modulePath, newText)
 					logger.info(`done`, `updated manifest for "hamr/${moduleName}"`)
 				}

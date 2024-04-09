@@ -8,7 +8,9 @@ export const nowState = atom({
 			const interval = setInterval(() => {
 				setSelf(Date.now())
 			}, 1000)
-			return () => clearInterval(interval)
+			return () => {
+				clearInterval(interval)
+			}
 		},
 	],
 })

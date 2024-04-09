@@ -1,4 +1,4 @@
-import { type AtomFamily, type AtomToken } from "atom.io"
+import type { AtomFamily, AtomToken } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
 import type {
@@ -64,7 +64,7 @@ export class RealtimeServer {
 	}
 	public provide<
 		F extends AtomFamily<any>,
-		K extends F extends AtomFamily<any, infer K> ? K : never,
+		K extends F extends AtomFamily<any, infer Key> ? Key : never,
 	>(
 		family: AtomFamily<any, K>,
 		index: AtomToken<Iterable<K>>,
@@ -74,7 +74,7 @@ export class RealtimeServer {
 	}
 	public provide<
 		F extends AtomFamily<any>,
-		K extends F extends AtomFamily<any, infer K> ? K : never,
+		K extends F extends AtomFamily<any, infer Key> ? Key : never,
 	>(
 		...args: AtomToken<any>[] | [AtomFamily<any, K>, AtomToken<Iterable<K>>]
 	): {
@@ -94,22 +94,24 @@ export class RealtimeServer {
 			return retract
 		}
 		const provide = <
-			F extends AtomFamily<any>,
-			K extends F extends AtomFamily<any, infer K> ? K : never,
+			Family extends AtomFamily<any>,
+			FamilyKey extends Family extends AtomFamily<any, infer Key> ? Key : never,
 		>(
-			...args: AtomToken<any>[] | [AtomFamily<any, K>, AtomToken<Iterable<K>>]
+			...params:
+				| AtomToken<any>[]
+				| [AtomFamily<any, FamilyKey>, AtomToken<Iterable<FamilyKey>>]
 		): {
 			provide: RealtimeServer[`provide`]
 			subscribe: () => () => void
 		} => {
-			if (args[0].type === `atom` || args[0].type === `mutable_atom`) {
-				const atoms = args as AtomToken<any>[]
+			if (params[0].type === `atom` || params[0].type === `mutable_atom`) {
+				const atoms = params as AtomToken<any>[]
 				subscribeFunctions.push(() => {
 					const retract = this.provideStates(...atoms)
 					return retract
 				})
 			} else {
-				const [family, index] = args
+				const [family, index] = params
 				subscribeFunctions.push(() => {
 					const retract =
 						family.type === `atom_family`

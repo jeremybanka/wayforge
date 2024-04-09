@@ -19,6 +19,7 @@ export * from "./sprawl"
 export const redact =
 	<K extends keyof any>(...args: K[]) =>
 	<O extends Record<K, any>>(obj: O): Omit<O, K> =>
+		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
 
 export type Redacted<Holder, RedactProp extends keyof any> = Omit<
@@ -81,8 +82,6 @@ export const treeShake =
 export type KeysExtending<T, V> = keyof {
 	[K in keyof T]: T[K] extends V ? K : never
 }
-
-const a: never | null = null
 
 export const filterProperties =
 	<DiscardVal, DiscardKey extends keyof any>(

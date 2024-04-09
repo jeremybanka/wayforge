@@ -40,8 +40,8 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 				const cardsThisPlayerHasInTricks = get(
 					findRelations(trickContributions, playerId).cardKeysOfPlayer,
 				)
-				const cardId = cardsThisPlayerHasInTricks.find((cardId) =>
-					cardIdsInTrick.includes(cardId),
+				const cardId = cardsThisPlayerHasInTricks.find((id) =>
+					cardIdsInTrick.includes(id),
 				)
 				return [playerId, cardId]
 			})

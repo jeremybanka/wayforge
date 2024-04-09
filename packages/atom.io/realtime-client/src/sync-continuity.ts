@@ -54,7 +54,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 	socket.on(`continuity-init:${continuityKey}`, initializeContinuity)
 
 	const registerAndAttemptConfirmedUpdate = (
-		confirmedUpdate: AtomIO.TransactionUpdate<ƒ>,
+		confirmed: AtomIO.TransactionUpdate<ƒ>,
 	) => {
 		function reconcileEpoch(
 			optimisticUpdate: AtomIO.TransactionUpdate<any>,
@@ -155,7 +155,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			`continuity`,
 			continuityKey,
 			`integrating confirmed update`,
-			{ confirmedUpdate, confirmedUpdates, optimisticUpdates },
+			{ confirmedUpdate: confirmed, confirmedUpdates, optimisticUpdates },
 		)
 		const zerothOptimisticUpdate = optimisticUpdates[0]
 		if (zerothOptimisticUpdate) {
@@ -165,14 +165,14 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 				continuityKey,
 				`has optimistic updates to reconcile`,
 			)
-			if (confirmedUpdate.epoch === zerothOptimisticUpdate.epoch) {
+			if (confirmed.epoch === zerothOptimisticUpdate.epoch) {
 				store.logger.info(
 					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
-					`epoch of confirmed update #${confirmedUpdate.epoch} matches zeroth optimistic update`,
+					`epoch of confirmed update #${confirmed.epoch} matches zeroth optimistic update`,
 				)
-				reconcileEpoch(zerothOptimisticUpdate, confirmedUpdate)
+				reconcileEpoch(zerothOptimisticUpdate, confirmed)
 				for (const nextConfirmed of confirmedUpdates) {
 					const nextOptimistic = optimisticUpdates[0]
 					if (nextConfirmed.epoch === nextOptimistic?.epoch) {
@@ -187,10 +187,10 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
-					`epoch of confirmed update #${confirmedUpdate.epoch} does not match zeroth optimistic update #${zerothOptimisticUpdate.epoch}`,
+					`epoch of confirmed update #${confirmed.epoch} does not match zeroth optimistic update #${zerothOptimisticUpdate.epoch}`,
 				)
 				const confirmedUpdateIsAlreadyEnqueued = confirmedUpdates.some(
-					(update) => update.epoch === confirmedUpdate.epoch,
+					(update) => update.epoch === confirmed.epoch,
 				)
 				if (!confirmedUpdateIsAlreadyEnqueued) {
 					store.logger.info(
@@ -198,12 +198,12 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 						`continuity`,
 						continuityKey,
 						`pushing confirmed update to queue`,
-						confirmedUpdate,
+						confirmed,
 					)
 					setIntoStore(
 						confirmedUpdateQueue,
 						(queue) => {
-							queue.push(confirmedUpdate)
+							queue.push(confirmed)
 							queue.sort((a, b) => a.epoch - b.epoch)
 							return queue
 						},
@@ -221,50 +221,50 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 			const continuityEpoch = getEpochNumberOfContinuity(continuityKey, store)
 			const isRoot = isRootStore(store)
 
-			if (isRoot && continuityEpoch === confirmedUpdate.epoch - 1) {
+			if (isRoot && continuityEpoch === confirmed.epoch - 1) {
 				store.logger.info(
 					`✅`,
 					`continuity`,
 					continuityKey,
-					`integrating update #${confirmedUpdate.epoch} (${confirmedUpdate.key} ${confirmedUpdate.id})`,
+					`integrating update #${confirmed.epoch} (${confirmed.key} ${confirmed.id})`,
 				)
-				ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
-				socket.emit(`ack:${continuityKey}`, confirmedUpdate.epoch)
-				setEpochNumberOfContinuity(continuityKey, confirmedUpdate.epoch, store)
+				ingestTransactionUpdate(`newValue`, confirmed, store)
+				socket.emit(`ack:${continuityKey}`, confirmed.epoch)
+				setEpochNumberOfContinuity(continuityKey, confirmed.epoch, store)
 			} else if (isRoot && continuityEpoch !== undefined) {
 				store.logger.info(
 					`🧑‍⚖️`,
 					`continuity`,
 					continuityKey,
-					`received update #${
-						confirmedUpdate.epoch
-					} but still waiting for update #${continuityEpoch + 1}`,
+					`received update #${confirmed.epoch} but still waiting for update #${
+						continuityEpoch + 1
+					}`,
 					{
 						clientEpoch: continuityEpoch,
-						serverEpoch: confirmedUpdate.epoch,
+						serverEpoch: confirmed.epoch,
 					},
 				)
 				const confirmedUpdateIsAlreadyEnqueued = confirmedUpdates.some(
-					(update) => update.epoch === confirmedUpdate.epoch,
+					(update) => update.epoch === confirmed.epoch,
 				)
 				if (confirmedUpdateIsAlreadyEnqueued) {
 					store.logger.info(
 						`👍`,
 						`continuity`,
 						continuityKey,
-						`confirmed update #${confirmedUpdate.epoch} is already enqueued`,
+						`confirmed update #${confirmed.epoch} is already enqueued`,
 					)
 				} else {
 					store.logger.info(
 						`👈`,
 						`continuity`,
 						continuityKey,
-						`pushing confirmed update #${confirmedUpdate.epoch} to queue`,
+						`pushing confirmed update #${confirmed.epoch} to queue`,
 					)
 					setIntoStore(
 						confirmedUpdateQueue,
 						(queue) => {
-							queue.push(confirmedUpdate)
+							queue.push(confirmed)
 							queue.sort((a, b) => a.epoch - b.epoch)
 							return queue
 						},

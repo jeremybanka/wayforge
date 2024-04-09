@@ -10,7 +10,10 @@
 		"build": "bun build:next",
 		"build:next": "next build",
 		"start": "next start -p 4545",
-		"lint": "next lint",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint .",
+		"lint:types": "tsc --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet"

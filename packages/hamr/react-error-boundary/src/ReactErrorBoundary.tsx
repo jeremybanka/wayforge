@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<
 		return errorInfo ? (
 			<Fallback error={error} errorInfo={errorInfo} />
 		) : (
-			(children as ReactNode)
+			children
 		)
 	}
 }
@@ -64,7 +64,9 @@ export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	const [{ error }, setError] = useErrorState()
 	const resetError = useResetErrorState
 		? useResetErrorState()
-		: () => setError({})
+		: () => {
+				setError({})
+			}
 	const hasError = Boolean(error)
 
 	return hasError ? (
@@ -77,9 +79,9 @@ export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	) : (
 		<ErrorBoundary
 			Fallback={Fallback}
-			onError={(newError, newErrorInfo) =>
+			onError={(newError, newErrorInfo) => {
 				setError({ error: newError, errorInfo: newErrorInfo })
-			}
+			}}
 		>
 			{children}
 		</ErrorBoundary>

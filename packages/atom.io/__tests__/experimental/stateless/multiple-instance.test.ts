@@ -17,7 +17,7 @@ beforeAll(async () => {
 	for (let i = 0; i < NUM_SERVERS; i++) {
 		const port = 6260 + i
 		const server = spawn(`bun`, [path.join(__dirname, `server.node.ts`)], {
-			env: { ...process.env, PORT: `${port}`, DB_NAME: `${dbManager.dbName}` },
+			env: { ...process.env, PORT: `${port}`, DB_NAME: dbManager.dbName },
 		})
 		childProcesses.push(server)
 

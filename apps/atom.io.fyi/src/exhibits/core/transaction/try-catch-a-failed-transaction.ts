@@ -1,5 +1,5 @@
 import { atom, atomFamily, runTransaction, transaction } from "atom.io"
-import { Loadable } from "atom.io/data"
+import type { Loadable } from "atom.io/data"
 
 export type GameItems = { coins: number }
 export type Inventory = Partial<Readonly<GameItems>>
@@ -35,7 +35,7 @@ export const giveCoinsTX = transaction<
 		}
 		const theirInventoryState = findPlayerInventoryState(playerId)
 		const theirInventory = get(theirInventoryState)
-		const theirCoins = theirInventory.coins || 0
+		const theirCoins = theirInventory.coins ?? 0
 		set(findPlayerInventoryState(myId), { coins: myCoins - amount })
 	},
 })

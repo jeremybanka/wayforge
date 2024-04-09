@@ -24,7 +24,7 @@ export const modify =
 						typeof mod === `function` ? mod?.(obj[key]) : mod),
 				acc
 			),
-			{ ...obj } as Obj,
+			{ ...obj },
 		) as any
 // const a = modify({ a: (v: string) => v.length })({ a: `hello` })
 // const b = modify({ a: `hello` })({ a: `hello` })

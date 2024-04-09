@@ -9,7 +9,8 @@
 		"dev": "cd example && vite",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
-		"lint": "bun run lint:biome && bun run lint:eslint",
+		"lint:types": "tsc --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run"

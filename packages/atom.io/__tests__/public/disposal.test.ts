@@ -146,15 +146,17 @@ describe(`dispose`, () => {
 describe(`auto disposability concept (just for fun)`, () => {
 	function disposable<T extends object>(
 		object: T,
-		dispose: () => void,
+		disposeFn: () => void,
 	): Disposable & T {
-		return Object.assign(object, { [Symbol.dispose]: dispose })
+		return Object.assign(object, { [Symbol.dispose]: disposeFn })
 	}
 	function disposableAtom<T>(
 		options: RegularAtomOptions<T>,
 	): Disposable & RegularAtomToken<T> {
 		const atomToken = atom(options)
-		return disposable(atomToken, () => dispose(atomToken))
+		return disposable(atomToken, () => {
+			dispose(atomToken)
+		})
 	}
 	it(`automatically disposes of an atom when it is dereferenced`, () => {
 		function doSomeWorkWithAtomIO() {

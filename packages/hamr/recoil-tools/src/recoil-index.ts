@@ -10,14 +10,17 @@ export type RecoilIndexOptions = {
 export const addToIndex: Transact<(options: RecoilIndexOptions) => void> = (
 	{ set },
 	{ indexAtom, id },
-): void => set(indexAtom, (currentSet) => new Set(currentSet).add(id))
+): void => {
+	set(indexAtom, (currentSet) => new Set(currentSet).add(id))
+}
 
 export const removeFromIndex: Transact<(options: RecoilIndexOptions) => void> = (
 	{ set },
 	{ indexAtom, id },
-): void =>
+): void => {
 	set(indexAtom, (currentSet) => {
 		const newSet = new Set(currentSet)
 		newSet.delete(id)
 		return newSet
 	})
+}

@@ -82,7 +82,7 @@ export const addAtomToTimeline = (
 					tl.transactionKey = currentTransactionKey
 					const unsubscribe = currentTransaction.subject.subscribe(
 						`timeline:${tl.key}`,
-						(update) => {
+						(transactionUpdate) => {
 							unsubscribe()
 							if (tl.timeTraveling === null && currentTransactionInstanceId) {
 								if (tl.at !== tl.history.length) {
@@ -94,12 +94,12 @@ export const addAtomToTimeline = (
 								) =>
 									updates
 										.filter((updateFromTx) => {
-											const target = newest(store)
+											const newestStore = newest(store)
 											if (`updates` in updateFromTx) {
 												return true
 											}
 											const atomOrFamilyKeys =
-												target.timelineAtoms.getRelatedKeys(tl.key)
+												newestStore.timelineAtoms.getRelatedKeys(tl.key)
 
 											return atomOrFamilyKeys
 												? [...atomOrFamilyKeys].some(
@@ -119,12 +119,12 @@ export const addAtomToTimeline = (
 											return updateFromTx
 										})
 
-								const updates = filterUpdates(update.updates)
+								const updates = filterUpdates(transactionUpdate.updates)
 
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {
 									type: `transaction_update`,
 									timestamp: Date.now(),
-									...update,
+									...transactionUpdate,
 									updates,
 								}
 								const willCapture =
@@ -140,7 +140,7 @@ export const addAtomToTimeline = (
 								`⌛`,
 								`timeline`,
 								tl.key,
-								`got a transaction_update "${update.key}"`,
+								`got a transaction_update "${transactionUpdate.key}"`,
 							)
 						},
 					)

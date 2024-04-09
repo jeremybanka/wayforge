@@ -35,7 +35,7 @@ export const getDirectoryJsonEntries = <T>({
 			let json: Json.Serializable | undefined = undefined
 			let content: T | undefined = undefined
 			try {
-				json = parseJson(fileContents) as Json.Serializable
+				json = parseJson(fileContents)
 			} catch (error) {
 				if (!suppressWarnings) {
 					console.warn(

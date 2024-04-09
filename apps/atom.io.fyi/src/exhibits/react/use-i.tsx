@@ -13,7 +13,9 @@ export const UrlDisplay: React.FC = () => {
 		<input
 			type="checkbox"
 			checked={toggle}
-			onChange={() => setToggle((t) => !t)}
+			onChange={() => {
+				setToggle((t) => !t)
+			}}
 		/>
 	)
 }
