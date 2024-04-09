@@ -9,7 +9,7 @@ import type { Logger } from "atom.io"
 
 import { Combo } from "./Combo"
 
-export const onChange = vitest.fn()
+export const handleChange = vitest.fn()
 
 export type RecoilObserverProps = {
 	node: RecoilState<any> | RecoilValueReadOnly<any>
@@ -17,7 +17,9 @@ export type RecoilObserverProps = {
 }
 export const RecoilObserver: FC<RecoilObserverProps> = ({ node, onChange }) => {
 	const value = useRecoilValue(node)
-	useEffect(() => onChange(value), [onChange, value])
+	useEffect(() => {
+		onChange(value)
+	}, [onChange, value])
 	return null
 }
 
@@ -30,14 +32,14 @@ const scenarioA_Managed = () => {
 	const Managed: FC = () => {
 		const [letters, setLetters] = useRecoilState(lettersState)
 		return (
-			<manager is="div">
+			<main>
 				<Combo options={[`a`]} selections={letters} setSelections={setLetters} />
-			</manager>
+			</main>
 		)
 	}
 	const utils = render(
 		<RecoilRoot>
-			<RecoilObserver node={lettersState} onChange={onChange} />
+			<RecoilObserver node={lettersState} onChange={handleChange} />
 			<Managed />
 		</RecoilRoot>,
 	)
@@ -58,7 +60,7 @@ it(`accepts user input with externally managed state`, () => {
 
 	const option = getByLabelText(`Choose`) as HTMLButtonElement
 	fireEvent.click(option)
-	expect(onChange).toHaveBeenCalledWith([`a`])
+	expect(handleChange).toHaveBeenCalledWith([`a`])
 })
 
 const scenarioB_SelfManaged = () => {
@@ -67,7 +69,7 @@ const scenarioB_SelfManaged = () => {
 	)
 	const utils = render(
 		<RecoilRoot>
-			<RecoilObserver node={lettersState} onChange={onChange} />
+			<RecoilObserver node={lettersState} onChange={handleChange} />
 			<SelfManaged />
 		</RecoilRoot>,
 	)
@@ -87,7 +89,7 @@ it(`accepts user input with internally managed state`, () => {
 	expect(inputSearch.getElementsByTagName)
 
 	fireEvent.keyDown(inputSearch, { key: `Enter`, code: `Enter` })
-	expect(onChange).toHaveBeenCalledWith([`a`])
+	expect(handleChange).toHaveBeenCalledWith([`a`])
 
 	console.log(prettyDOM(document))
 })

@@ -35,7 +35,9 @@ export function Theme(): null {
 		updateThemeColor()
 		const matcher = window.matchMedia(`(prefers-color-scheme: dark)`)
 		matcher.addEventListener(`change`, updateThemeColor)
-		return () => matcher.removeEventListener(`change`, updateThemeColor)
+		return () => {
+			matcher.removeEventListener(`change`, updateThemeColor)
+		}
 	}, [])
 	return null
 }

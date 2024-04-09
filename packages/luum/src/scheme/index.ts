@@ -10,8 +10,6 @@ import type { Filter, FilterPoint, LuumSpec } from "~/packages/luum/src"
 import { defaultSpec } from "~/packages/luum/src/constants/luum-spec"
 import { shadeBy } from "~/packages/luum/src/mixers/lum"
 
-/* eslint-disable max-lines */
-
 // export type InteractiveStates = `active` | `base` | `disabled` | `hover`
 
 // export const HTML_ELEMENT_NAMES = [
@@ -397,7 +395,7 @@ export const luumToCss = (rule: LuumCssRule): string => {
 			return pipe(
 				oneOrManyKeys,
 				each(isCssColorPropertyKey),
-				map((key) => `${key}: ${hex}`),
+				map((k) => `${k}: ${hex}`),
 				join(`; ` + LF),
 			)
 		}),

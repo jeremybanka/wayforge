@@ -45,14 +45,14 @@ export function createMutableAtom<
 	const newAtom: MutableAtom<T, J> = {
 		...options,
 		type: `mutable_atom`,
-		install: (store: Store) => {
-			store.logger.info(
+		install: (s: Store) => {
+			s.logger.info(
 				`🛠️`,
 				`atom`,
 				options.key,
-				`installing in store "${store.config.name}"`,
+				`installing in store "${s.config.name}"`,
 			)
-			return createMutableAtom(options, family, store)
+			return createMutableAtom(options, family, s)
 		},
 		subject,
 	} as const
@@ -69,7 +69,9 @@ export function createMutableAtom<
 		const cleanupFunctions: (() => void)[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
-				setSelf: (next) => setIntoStore(token, next, store),
+				setSelf: (next) => {
+					setIntoStore(token, next, store)
+				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(token, handle, `effect[${effectIndex}]`, store),
 			})

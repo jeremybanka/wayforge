@@ -1,5 +1,5 @@
 import { atom, selector } from "atom.io"
-import { Loadable } from "atom.io/data"
+import type { Loadable } from "atom.io/data"
 
 function discoverCoinId() {
 	const urlParams = new URLSearchParams(window.location.search)

@@ -71,9 +71,15 @@ export const Radial = ({
 				{mode === `open` ? (
 					<div
 						className={`radial-option back`}
-						onMouseUp={() => setMode(`idle`)}
-						onTouchStartCapture={() => setMode(`idle`)}
-						onContextMenu={(e) => e.preventDefault()}
+						onMouseUp={() => {
+							setMode(`idle`)
+						}}
+						onTouchStartCapture={() => {
+							setMode(`idle`)
+						}}
+						onContextMenu={(e) => {
+							e.preventDefault()
+						}}
 					>
 						x
 					</div>

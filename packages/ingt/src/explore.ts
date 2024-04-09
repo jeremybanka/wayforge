@@ -1,5 +1,6 @@
 import type { PathLike } from "node:fs"
 import { readdirSync } from "node:fs"
+import { join } from "node:path"
 
 import type { Json } from "~/packages/anvl/src/json"
 
@@ -16,13 +17,13 @@ export const readDirectory = (dir: PathLike): Error | Json.Array<string> => {
 }
 
 export type ScanResult = Record<`/${string}`, Json.Array<string>>
-export type Scan = (...paths: PathLike[]) => Error | ScanResult
+export type Scan = (...paths: string[]) => Error | ScanResult
 
 export const initScanner = ({ baseDir }: FilestoreOptions): Scan => {
-	const scan: Scan = (...paths: PathLike[]): Error | ScanResult => {
+	const scan: Scan = (...paths: string[]): Error | ScanResult => {
 		try {
 			return paths.reduce<ScanResult>((acc, path) => {
-				const files = readDirectory(baseDir + path)
+				const files = readDirectory(join(baseDir, path))
 				if (files instanceof Error) throw files
 				acc[String(path)] = files
 				return acc

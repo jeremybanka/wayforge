@@ -13,7 +13,7 @@ export const windowScrollPositionState = AtomIO.atom<Point2d>({
 			if (typeof window !== `undefined`) {
 				const scrollListener = () => {
 					const now = performance.now()
-					const lastEmitTime = emitTimes.get(`$window`) || 0
+					const lastEmitTime = emitTimes.get(`$window`) ?? 0
 					if (now - lastEmitTime > throttleTime) {
 						emitTimes.set(`$window`, now)
 						setSelf({ x: window.scrollX, y: window.scrollY })
@@ -45,7 +45,7 @@ export const useScrollPosition = <T extends HTMLElement>(
 			const scrollListener = () => {
 				if (!capturedRef.current) return
 				const now = performance.now()
-				const lastEmitTime = emitTimes.get(key) || 0
+				const lastEmitTime = emitTimes.get(key) ?? 0
 				if (now - lastEmitTime > throttleTime) {
 					emitTimes.set(key, now)
 					const { scrollLeft, scrollTop } = capturedRef.current

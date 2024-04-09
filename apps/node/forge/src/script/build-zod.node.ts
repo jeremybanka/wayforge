@@ -14,9 +14,10 @@ const schemaEntries = getDirectoryJsonEntries({
 	coerce: (input) => input as JsonSchemaObject,
 })
 
-Promise.all(
-	schemaEntries.map(
-		async ([, jsonSchema]) => await jsonSchemaToZod(jsonSchema as any),
+void Promise.all(
+	// eslint-disable-next-line @typescript-eslint/require-await
+	schemaEntries.map(async ([, jsonSchema]) =>
+		jsonSchemaToZod(jsonSchema as any),
 	),
 ).then((zodSchemas) => {
 	let idx = 0

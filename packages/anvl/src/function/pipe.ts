@@ -1,6 +1,5 @@
 /* ❤️ fp-ts */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable prefer-rest-params */
+
 /* eslint-disable @typescript-eslint/ban-types */
 
 export function pipe<A>(a: A): A

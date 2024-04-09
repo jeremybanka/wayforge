@@ -12,7 +12,7 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 			: passed.slice(endOfOptionsDelimiterIndex + 1)
 
 	const validPositionalArgs: string[] = []
-	let treePointer: Object = positionalArgTree
+	let treePointer: object = positionalArgTree
 	let argumentIndex = -1
 	if (positionalArgs === undefined || positionalArgs.length === 0) {
 		if (treePointer[0] === `required`) {

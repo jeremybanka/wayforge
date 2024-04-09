@@ -268,16 +268,16 @@ export class Junction<
 		if (a === undefined && typeof b === `string`) {
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
-				for (const a of bRelations) {
-					this.delete(a, b)
+				for (const bRelation of bRelations) {
+					this.delete(bRelation, b)
 				}
 			}
 		}
 		if (typeof a === `string` && b === undefined) {
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
-				for (const b of aRelations) {
-					this.delete(a, b)
+				for (const aRelation of aRelations) {
+					this.delete(a, aRelation)
 				}
 			}
 		}
@@ -342,16 +342,16 @@ export class Junction<
 		if (a !== undefined && b === undefined) {
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
-				return [...aRelations].map((b) => {
-					return [b, this.getContent(a, b) ?? (null as Content)]
+				return [...aRelations].map((aRelation) => {
+					return [aRelation, this.getContent(a, aRelation) ?? (null as Content)]
 				})
 			}
 		}
 		if (a === undefined && b !== undefined) {
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
-				return [...bRelations].map((a) => {
-					return [a, this.getContent(a, b) ?? (null as Content)]
+				return [...bRelations].map((bRelation) => {
+					return [bRelation, this.getContent(bRelation, b) ?? (null as Content)]
 				})
 			}
 		}

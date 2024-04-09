@@ -8,6 +8,7 @@ import { parseStringOption } from "../src/option-parsers"
 
 let tempDir: tmp.DirResult
 
+// eslint-disable-next-line @typescript-eslint/require-await
 beforeEach(async () => {
 	tempDir = tmp.dirSync({ unsafeCleanup: true })
 })

@@ -152,10 +152,10 @@ export function encapsulate<T>(
 		restoreOutputs,
 	} = withCapturedOutput(fn, options)
 	if (returnValue instanceof Promise) {
-		const promise = returnValue.then((returnValue) => {
+		const promise = returnValue.then((awaited) => {
 			restoreOutputs()
 			return {
-				returnValue,
+				returnValue: awaited,
 				capturedStdout,
 				capturedStderr,
 				mockConsoleCalls,

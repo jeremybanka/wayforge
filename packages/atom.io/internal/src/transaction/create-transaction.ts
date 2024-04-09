@@ -42,7 +42,7 @@ export function createTransaction<ƒ extends ƒn>(
 				throw thrown
 			}
 		},
-		install: (store) => createTransaction(options, store),
+		install: (s) => createTransaction(options, s),
 		subject: new Subject(),
 	}
 	const target = newest(store)

@@ -12,10 +12,18 @@ export type EnergyColorPickerProps = {
 export const EnergyColorPicker: FC<EnergyColorPickerProps> = ({ state }) => {
 	const [color, setColor] = useRecoilState(state)
 	const set = {
-		hue: (hue: number) => setColor((c) => ({ ...c, hue })),
-		sat: (sat: number) => setColor((c) => ({ ...c, sat })),
-		lum: (lum: number) => setColor((c) => ({ ...c, lum })),
-		prefer: (prefer: `lum` | `sat`) => setColor((c) => ({ ...c, prefer })),
+		hue: (hue: number) => {
+			setColor((c) => ({ ...c, hue }))
+		},
+		sat: (sat: number) => {
+			setColor((c) => ({ ...c, sat }))
+		},
+		lum: (lum: number) => {
+			setColor((c) => ({ ...c, lum }))
+		},
+		prefer: (prefer: `lum` | `sat`) => {
+			setColor((c) => ({ ...c, prefer }))
+		},
 	}
 	return (
 		<>
@@ -25,7 +33,9 @@ export const EnergyColorPicker: FC<EnergyColorPickerProps> = ({ state }) => {
 			<input
 				type="checkbox"
 				checked={color.prefer === `lum`}
-				onChange={() => set.prefer(color.prefer === `lum` ? `sat` : `lum`)}
+				onChange={() => {
+					set.prefer(color.prefer === `lum` ? `sat` : `lum`)
+				}}
 			/>
 		</>
 	)

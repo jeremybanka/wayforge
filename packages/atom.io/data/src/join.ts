@@ -178,11 +178,13 @@ export class Join<
 		this.alternates.set(store.config.name, this)
 		this.transactors = {
 			get: (token) => getFromStore(token, store),
-			set: (token, value) => setIntoStore(token, value, store),
+			set: (token, value) => {
+				setIntoStore(token, value, store)
+			},
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 		}
-		const a: ASide = options.between[0]
-		const b: BSide = options.between[1]
+		const aSide: ASide = options.between[0]
+		const bSide: BSide = options.between[1]
 		const relatedKeysAtoms = createMutableAtomFamily<
 			SetRTX<string>,
 			SetRTXJson<string>,
@@ -305,12 +307,18 @@ export class Join<
 		}
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) => getRelatedKeys(this.transactors, key),
-			addRelation: (a, b) => addRelation(this.transactors, a, b),
-			deleteRelation: (a, b) => deleteRelation(this.transactors, a, b),
-			replaceRelationsSafely: (a, bs) =>
-				replaceRelationsSafely(this.transactors, a, bs),
-			replaceRelationsUnsafely: (a, bs) =>
-				replaceRelationsUnsafely(this.transactors, a, bs),
+			addRelation: (a, b) => {
+				addRelation(this.transactors, a, b)
+			},
+			deleteRelation: (a, b) => {
+				deleteRelation(this.transactors, a, b)
+			},
+			replaceRelationsSafely: (a, bs) => {
+				replaceRelationsSafely(this.transactors, a, bs)
+			},
+			replaceRelationsUnsafely: (a, bs) => {
+				replaceRelationsUnsafely(this.transactors, a, bs)
+			},
 			has: (a, b) => has(this.transactors, a, b),
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
@@ -331,9 +339,12 @@ export class Join<
 				{ find, set },
 				key,
 				content,
-			) => set(find(contentAtoms, key), content)
-			const deleteContent: Write<(key: string) => void> = ({ find }, key) =>
+			) => {
+				set(find(contentAtoms, key), content)
+			}
+			const deleteContent: Write<(key: string) => void> = ({ find }, key) => {
 				dispose(find(contentAtoms, key))
+			}
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {
 					const content = getContent(this.transactors, contentKey)
@@ -435,8 +446,8 @@ export class Join<
 		switch (options.cardinality) {
 			case `1:1`: {
 				const findSingleRelatedKeyState = createSingleKeyStateFamily()
-				const stateKeyA = `${a}KeyOf${capitalize(b)}` as const
-				const stateKeyB = `${b}KeyOf${capitalize(a)}` as const
+				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
+				const stateKeyB = `${bSide}KeyOf${capitalize(aSide)}` as const
 				const baseStates = {
 					[stateKeyA]: findSingleRelatedKeyState,
 					[stateKeyB]: findSingleRelatedKeyState,
@@ -444,8 +455,8 @@ export class Join<
 				let states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
 				if (defaultContent) {
 					const findSingleRelatedEntryState = createSingleEntryStateFamily()
-					const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
-					const entriesStateKeyB = `${b}EntryOf${capitalize(a)}` as const
+					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
+					const entriesStateKeyB = `${bSide}EntryOf${capitalize(aSide)}` as const
 					const contentStates = {
 						[entriesStateKeyA]: findSingleRelatedEntryState,
 						[entriesStateKeyB]: findSingleRelatedEntryState,
@@ -461,8 +472,8 @@ export class Join<
 			case `1:n`: {
 				const findSingleRelatedKeyState = createSingleKeyStateFamily()
 				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
-				const stateKeyA = `${a}KeyOf${capitalize(b)}` as const
-				const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
+				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
+				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
 				const baseStates = {
 					[stateKeyA]: findSingleRelatedKeyState,
 					[stateKeyB]: findMultipleRelatedKeysState,
@@ -471,8 +482,10 @@ export class Join<
 				if (defaultContent) {
 					const findSingleRelatedEntryState = createSingleEntryStateFamily()
 					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
-					const entriesStateKeyA = `${a}EntryOf${capitalize(b)}` as const
-					const entriesStateKeyB = `${b}EntriesOf${capitalize(a)}` as const
+					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
+					const entriesStateKeyB = `${bSide}EntriesOf${capitalize(
+						aSide,
+					)}` as const
 					const contentStates = {
 						[entriesStateKeyA]: findSingleRelatedEntryState,
 						[entriesStateKeyB]: findMultipleRelatedEntriesState,
@@ -487,8 +500,8 @@ export class Join<
 			}
 			default: {
 				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
-				const stateKeyA = `${a}KeysOf${capitalize(b)}` as const
-				const stateKeyB = `${b}KeysOf${capitalize(a)}` as const
+				const stateKeyA = `${aSide}KeysOf${capitalize(bSide)}` as const
+				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
 				const baseStates = {
 					[stateKeyA]: findMultipleRelatedKeysState,
 					[stateKeyB]: findMultipleRelatedKeysState,
@@ -496,8 +509,12 @@ export class Join<
 				let states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
 				if (defaultContent) {
 					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
-					const entriesStateKeyA = `${a}EntriesOf${capitalize(b)}` as const
-					const entriesStateKeyB = `${b}EntriesOf${capitalize(a)}` as const
+					const entriesStateKeyA = `${aSide}EntriesOf${capitalize(
+						bSide,
+					)}` as const
+					const entriesStateKeyB = `${bSide}EntriesOf${capitalize(
+						aSide,
+					)}` as const
 					const contentStates = {
 						[entriesStateKeyA]: findMultipleRelatedEntriesState,
 						[entriesStateKeyB]: findMultipleRelatedEntriesState,
@@ -588,18 +605,18 @@ export function getJoin<
 	store: Store,
 ): Join<ASide, BSide, Cardinality, Content> {
 	const joinMap = getJoinMap(store)
-	let join = joinMap.get(token.key)
-	if (join === undefined) {
+	let myJoin = joinMap.get(token.key)
+	if (myJoin === undefined) {
 		const rootJoinMap = getJoinMap(IMPLICIT.STORE)
-		join = rootJoinMap.get(token.key)?.in(store)
-		if (join === undefined) {
+		myJoin = rootJoinMap.get(token.key)?.in(store)
+		if (myJoin === undefined) {
 			throw new Error(
 				`Join "${token.key}" not found in store "${store.config.name}"`,
 			)
 		}
-		joinMap.set(token.key, join)
+		joinMap.set(token.key, myJoin)
 	}
-	return join
+	return myJoin
 }
 
 export type JoinStates<
@@ -667,7 +684,7 @@ export function findRelationsInStore<
 	key: string,
 	store: Store,
 ): JoinStates<ASide, BSide, Cardinality, Content> {
-	const join = getJoin(token, store)
+	const myJoin = getJoin(token, store)
 	let relations: JoinStates<ASide, BSide, Cardinality, Content>
 	switch (token.cardinality satisfies `1:1` | `1:n` | `n:n`) {
 		case `1:1`: {
@@ -675,27 +692,27 @@ export function findRelationsInStore<
 			const keyBA = `${token.b}KeyOf${capitalize(token.a)}`
 			relations = {
 				get [keyAB]() {
-					const familyAB = join.states[keyAB as any]
+					const familyAB = myJoin.states[keyAB as any]
 					const state = findInStore(familyAB, key, store)
 					return state
 				},
 				get [keyBA]() {
-					const familyBA = join.states[keyBA as any]
+					const familyBA = myJoin.states[keyBA as any]
 					const state = findInStore(familyBA, key, store)
 					return state
 				},
 			} as JoinStates<ASide, BSide, Cardinality, Content>
 			const entryAB = `${token.a}EntryOf${capitalize(token.b)}`
-			if (entryAB in join.states) {
+			if (entryAB in myJoin.states) {
 				const entryBA = `${token.b}EntryOf${capitalize(token.a)}`
 				Object.assign(relations, {
 					get [entryAB]() {
-						const familyAB = join.states[entryAB as any]
+						const familyAB = myJoin.states[entryAB as any]
 						const state = findInStore(familyAB, key, store)
 						return state
 					},
 					get [entryBA]() {
-						const familyBA = join.states[entryBA as any]
+						const familyBA = myJoin.states[entryBA as any]
 						const state = findInStore(familyBA, key, store)
 						return state
 					},
@@ -708,27 +725,27 @@ export function findRelationsInStore<
 			const keysBA = `${token.b}KeysOf${capitalize(token.a)}`
 			relations = {
 				get [keyAB]() {
-					const familyAB = join.states[keyAB as any]
+					const familyAB = myJoin.states[keyAB as any]
 					const state = findInStore(familyAB, key, store)
 					return state
 				},
 				get [keysBA]() {
-					const familyBA = join.states[keysBA as any]
+					const familyBA = myJoin.states[keysBA as any]
 					const state = findInStore(familyBA, key, store)
 					return state
 				},
 			} as JoinStates<ASide, BSide, Cardinality, Content>
 			const entryAB = `${token.a}EntryOf${capitalize(token.b)}`
-			if (entryAB in join.states) {
+			if (entryAB in myJoin.states) {
 				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
 				Object.assign(relations, {
 					get [entryAB]() {
-						const familyAB = join.states[entryAB as any]
+						const familyAB = myJoin.states[entryAB as any]
 						const state = findInStore(familyAB, key, store)
 						return state
 					},
 					get [entriesBA]() {
-						const familyBA = join.states[entriesBA as any]
+						const familyBA = myJoin.states[entriesBA as any]
 						const state = findInStore(familyBA, key, store)
 						return state
 					},
@@ -741,27 +758,27 @@ export function findRelationsInStore<
 			const keysBA = `${token.b}KeysOf${capitalize(token.a)}`
 			relations = {
 				get [keysAB]() {
-					const familyAB = join.states[keysAB as any]
+					const familyAB = myJoin.states[keysAB as any]
 					const state = findInStore(familyAB, key, store)
 					return state
 				},
 				get [keysBA]() {
-					const familyBA = join.states[keysBA as any]
+					const familyBA = myJoin.states[keysBA as any]
 					const state = findInStore(familyBA, key, store)
 					return state
 				},
 			} as JoinStates<ASide, BSide, Cardinality, Content>
 			const entriesAB = `${token.a}EntriesOf${capitalize(token.b)}`
-			if (entriesAB in join.states) {
+			if (entriesAB in myJoin.states) {
 				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
 				Object.assign(relations, {
 					get [entriesAB]() {
-						const familyAB = join.states[entriesAB as any]
+						const familyAB = myJoin.states[entriesAB as any]
 						const state = findInStore(familyAB, key, store)
 						return state
 					},
 					get [entriesBA]() {
-						const familyBA = join.states[entriesBA as any]
+						const familyBA = myJoin.states[entriesBA as any]
 						const state = findInStore(familyBA, key, store)
 						return state
 					},
@@ -794,15 +811,15 @@ export function editRelationsInStore<
 	change: (relations: Junction<ASide, BSide, Content>) => void,
 	store: Store,
 ): void {
-	const join = getJoin(token, store)
+	const myJoin = getJoin(token, store)
 	const target = newest(store)
 	if (isChildStore(target)) {
 		const { transactors } = target.transactionMeta
-		join.transact(transactors, ({ relations }) => {
+		myJoin.transact(transactors, ({ relations }) => {
 			change(relations)
 		})
 	} else {
-		change(join.relations)
+		change(myJoin.relations)
 	}
 }
 
@@ -822,8 +839,8 @@ export function getInternalRelationsFromStore(
 	token: JoinToken<any, any, any, any>,
 	store: Store,
 ): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
-	const join = getJoin(token, store)
-	const family = join.core.findRelatedKeysState
+	const myJoin = getJoin(token, store)
+	const family = myJoin.core.findRelatedKeysState
 	return family
 }
 

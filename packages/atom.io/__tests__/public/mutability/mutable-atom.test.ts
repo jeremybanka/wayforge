@@ -4,6 +4,7 @@ import type { Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	dispose,
 	getState,
 	redo,
 	runTransaction,
@@ -223,7 +224,7 @@ describe(`mutable time traveling`, () => {
 		const myTX = transaction<(newItem: string) => void>({
 			key: `myTransaction`,
 			do: ({ set }, newItem) => {
-				set(myMutableState, (set) => set.add(newItem))
+				set(myMutableState, (s) => s.add(newItem))
 			},
 		})
 
@@ -246,5 +247,87 @@ describe(`mutable time traveling`, () => {
 		expect(getState(myMutableState)).toEqual(new SetRTX([`a`]))
 		redo(myTL)
 		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
+	})
+})
+
+describe(`mutable atom effects`, () => {
+	it(`runs a callback when the atom is set`, () => {
+		let setSize = 0
+		const myMutableAtoms = atomFamily({
+			key: `myMutableAtoms`,
+			default: () => new SetRTX(),
+			mutable: true,
+			toJson: (s) => s.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+			effects: () => [
+				({ onSet }) => {
+					onSet(({ newValue }) => {
+						setSize += newValue.size
+					})
+					return () => {
+						setSize = 0
+					}
+				},
+			],
+		})
+		const myMutableState = myMutableAtoms(`myMutableState`)
+
+		setState(myMutableState, (prev) => prev.add(`a`))
+		expect(setSize).toBe(1)
+		dispose(myMutableState)
+		expect(setSize).toBe(0)
+	})
+	it(`can set a mutable atom in response to an external event`, () => {
+		const letterSubject = new Internal.StatefulSubject<{ letter: string }>({
+			letter: `A`,
+		})
+		const myMutableState = atom({
+			key: `myMutableState`,
+			default: () => new SetRTX([letterSubject.state.letter]),
+			mutable: true,
+			toJson: (s) => s.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+			effects: [
+				({ setSelf }) => {
+					const unsubscribe = letterSubject.subscribe(
+						`mutable atom effect`,
+						({ letter }) => {
+							setSelf((s) => s.add(letter))
+						},
+					)
+					return unsubscribe
+				},
+			],
+		})
+
+		letterSubject.next({ letter: `B` })
+		expect(getState(myMutableState)).toEqual(new SetRTX([`A`, `B`]))
+		dispose(myMutableState)
+	})
+})
+
+describe(`graceful handling of hmr/duplicate atom keys`, () => {
+	it(`logs an error if an atom is created with the same key as an existing atom`, () => {
+		atom({
+			key: `myMutableState`,
+			default: () => new SetRTX(),
+			mutable: true,
+			toJson: (s) => s.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+		atom({
+			key: `myMutableState`,
+			default: () => new SetRTX(),
+			mutable: true,
+			toJson: (s) => s.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+		expect(logger.error).toHaveBeenCalledTimes(1)
+		expect(logger.error).toHaveBeenCalledWith(
+			`❌`,
+			`atom`,
+			`myMutableState`,
+			`Tried to create atom, but it already exists in the store.`,
+		)
 	})
 })

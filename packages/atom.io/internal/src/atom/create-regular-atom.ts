@@ -41,14 +41,14 @@ export function createRegularAtom<T>(
 	const newAtom: RegularAtom<T> = {
 		...options,
 		type: `atom`,
-		install: (store: Store) => {
-			store.logger.info(
+		install: (s: Store) => {
+			s.logger.info(
 				`🛠️`,
 				`atom`,
 				options.key,
-				`installing in store "${store.config.name}"`,
+				`installing in store "${s.config.name}"`,
 			)
-			return createRegularAtom(options, family, store)
+			return createRegularAtom(options, family, s)
 		},
 		subject,
 	} as const
@@ -68,7 +68,9 @@ export function createRegularAtom<T>(
 		const cleanupFunctions: (() => void)[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
-				setSelf: (next) => setIntoStore(token, next, store),
+				setSelf: (next) => {
+					setIntoStore(token, next, store)
+				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(token, handle, `effect[${effectIndex}]`, store),
 			})

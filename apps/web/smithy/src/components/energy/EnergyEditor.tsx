@@ -37,7 +37,9 @@ export const EnergyEditor_INTERNAL: FC<
 	const energyState = findState(id)
 	const [energy, setEnergy] = useRecoilState(energyState)
 	const set = {
-		name: (name: string) => setEnergy((e) => ({ ...e, name })),
+		name: (name: string) => {
+			setEnergy((e) => ({ ...e, name }))
+		},
 	}
 	const remove = useRemove()
 	useSetTitle(energy.name)
@@ -63,7 +65,9 @@ export const EnergyEditor_INTERNAL: FC<
 				set={setEnergy}
 				name={energy.name}
 				rename={set.name}
-				remove={() => remove(id)}
+				remove={() => {
+					remove(id)
+				}}
 				isHidden={includesAny([`features`, `id`, `name`])}
 				isReadonly={() =>
 					isGitSocketError(gitBranch) || gitBranch.current === `main`

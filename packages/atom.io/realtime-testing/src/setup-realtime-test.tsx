@@ -159,7 +159,9 @@ export const setupRealtimeTestClient = (
 			},
 		)
 
-		const prettyPrint = () => console.log(prettyDOM(renderResult.container))
+		const prettyPrint = () => {
+			console.log(prettyDOM(renderResult.container))
+		}
 
 		const dispose = () => {
 			renderResult.unmount()
@@ -200,13 +202,13 @@ export const multiClient = <ClientNames extends string>(
 ): RealtimeTestAPI__MultiClient<ClientNames> => {
 	const server = setupRealtimeTestServer(options)
 	const clients = recordToEntries(options.clients).reduce(
-		(clients, [name, client]) => {
-			clients[name] = setupRealtimeTestClient(
+		(clientRecord, [name, client]) => {
+			clientRecord[name] = setupRealtimeTestClient(
 				{ ...options, client },
 				name,
 				server.port,
 			)
-			return clients
+			return clientRecord
 		},
 		{} as Record<ClientNames, RealtimeTestClientBuilder>,
 	)

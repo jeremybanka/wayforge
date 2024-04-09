@@ -30,6 +30,7 @@
 		"build:schema": "bun src/break-check.x.ts --testPattern --testCommand --certifyCommand -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
+		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "bun test --watch -- **/*.test.ts",
 		"test:once": "bun test -- **/*.test.ts",

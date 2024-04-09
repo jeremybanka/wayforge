@@ -24,7 +24,7 @@ export const setManyToMany = <
 			[idB]: addTo(map.relations[idB] ?? [])(idA),
 		},
 	}
-	const content = rest[0] as CONTENT | undefined
+	const content = rest[0]
 	return content ? setContent(next, idA, idB, content) : next
 }
 
@@ -56,7 +56,7 @@ export const set1ToMany = <
 			[leaderId]: addTo(relations[leaderId] ?? [])(followerId),
 		}),
 	}
-	const content = rest[0] as CONTENT | undefined
+	const content = rest[0]
 	return content ? setContent(next, leaderId, followerId, content) : next
 }
 
@@ -83,7 +83,7 @@ export const set1To1 = <
 		}),
 	}
 
-	const content = rest[0] as CONTENT | undefined
+	const content = rest[0]
 	return content ? setContent(next, wifeId, husbandId, content) : next
 }
 

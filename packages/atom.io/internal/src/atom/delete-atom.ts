@@ -11,7 +11,7 @@ export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		store.logger.error(
 			`❌`,
 			`atom`,
-			`${key}`,
+			key,
 			`Tried to delete atom, but it does not exist in the store.`,
 		)
 	}
@@ -36,5 +36,5 @@ export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		const updateToken = getUpdateToken(atomToken)
 		deleteAtom(updateToken, store)
 	}
-	store.logger.info(`🔥`, `atom`, `${key}`, `deleted`)
+	store.logger.info(`🔥`, `atom`, key, `deleted`)
 }

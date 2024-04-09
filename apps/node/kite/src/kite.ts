@@ -36,7 +36,7 @@ pipe(
 
 			// LOGGING
 			socket.onAny((event, ...args) => {
-				logger.info(`${socket.id}`, event, ...args)
+				logger.info(socket.id, event, ...args)
 			})
 			socket.onAnyOutgoing((event, ...args) => {
 				if (JSON.stringify(args).length > 1000) {

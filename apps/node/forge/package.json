@@ -3,14 +3,15 @@
 	"private": true,
 	"scripts": {
 		"dev": "tsx watch src/main.ts",
-		"gen": "tsx ./src/script/build-zod.node.ts",
+		"gen:zod": "tsx ./src/script/build-zod.node.ts",
 		"build": "echo zero-build app powered by tsx",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "cross-env CI=true vitest run",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
-		"lint": "bun run lint:biome && bun run lint:eslint"
+		"lint:types": "tsc --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
 		"dotenv": "16.4.5",

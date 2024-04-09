@@ -91,7 +91,7 @@ export function realtimeContinuitySynchronizer({
 		const unsubscribeFunctions: (() => void)[] = []
 
 		const revealPerspectives = (): (() => void) => {
-			const unsubscribeFunctions: (() => void)[] = []
+			const unsubFns: (() => void)[] = []
 			for (const perspective of continuity.perspectives) {
 				const { viewAtoms } = perspective
 				const userViewState = findInStore(viewAtoms, userKey, store)
@@ -128,10 +128,10 @@ export function realtimeContinuitySynchronizer({
 					`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.resourceAtoms.key}`,
 					store,
 				)
-				unsubscribeFunctions.push(unsubscribe)
+				unsubFns.push(unsubscribe)
 			}
 			return () => {
-				for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+				for (const unsubscribe of unsubFns) unsubscribe()
 			}
 		}
 		const unsubscribeFromPerspectives = revealPerspectives()

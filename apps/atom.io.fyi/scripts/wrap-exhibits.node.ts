@@ -70,7 +70,7 @@ function handleFile(filePath: string) {
 		fs.writeFileSync(outputFilePath, wrappedCode)
 	} catch (thrown) {
 		if (thrown instanceof Error && thrown.message.includes(`ENOENT`)) {
-			npmlog.info(`directory`, `${path.dirname(outputFilePath)}`)
+			npmlog.info(`directory`, path.dirname(outputFilePath))
 			fs.mkdirSync(path.dirname(outputFilePath), { recursive: true })
 			fs.writeFileSync(outputFilePath, wrappedCode)
 		} else {
@@ -99,15 +99,16 @@ switch (lastArgument) {
 		function buildAll(directory = inputDir) {
 			fs.readdir(directory, (err, files) => {
 				if (err) {
-					return npmlog.error(`reading`, directory, err)
+					npmlog.error(`reading`, directory, err)
+					return
 				}
 				npmlog.info(`found`, `files`, files)
 
 				for (const file of files) {
 					const filePath = path.join(directory, file)
-					fs.stat(filePath, (err, stats) => {
-						if (err) {
-							npmlog.error(`building`, filePath, err)
+					fs.stat(filePath, (error, stats) => {
+						if (error) {
+							npmlog.error(`building`, filePath, error)
 						}
 						if (stats.isFile()) {
 							handleFile(filePath)

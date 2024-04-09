@@ -79,11 +79,9 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 				{iAmInRoom ? <Game roomId={roomId} /> : null}
 			</article>
 			<Radial
-				/* eslint-disable react-hooks/rules-of-hooks */
 				useMode={() => [useO(radialModeState), useI(radialModeState)]}
 				useActions={() => useO(actionsState)}
 				useMousePosition={() => useO(windowMousePositionState)}
-				/* eslint-enable react-hooks/rules-of-hooks */
 			/>
 		</>
 	)

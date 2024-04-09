@@ -39,7 +39,9 @@ describe(`single atom`, () => {
 					<div data-testid={letter}>{letter}</div>
 					<button
 						type="button"
-						onClick={() => setLetter(`B`)}
+						onClick={() => {
+							setLetter(`B`)
+						}}
 						data-testid="changeStateButton"
 					/>
 				</>
@@ -87,22 +89,30 @@ describe(`timeline`, () => {
 					<div data-testid="timelineLength">{letterTimeline.length}</div>
 					<button
 						type="button"
-						onClick={() => setLetter(`B`)}
+						onClick={() => {
+							setLetter(`B`)
+						}}
 						data-testid="changeStateButtonB"
 					/>
 					<button
 						type="button"
-						onClick={() => setLetter(`C`)}
+						onClick={() => {
+							setLetter(`C`)
+						}}
 						data-testid="changeStateButtonC"
 					/>
 					<button
 						type="button"
-						onClick={() => letterTimeline.undo()}
+						onClick={() => {
+							letterTimeline.undo()
+						}}
 						data-testid="undoButton"
 					/>
 					<button
 						type="button"
-						onClick={() => letterTimeline.redo()}
+						onClick={() => {
+							letterTimeline.redo()
+						}}
 						data-testid="redoButton"
 					/>
 				</>
@@ -187,40 +197,48 @@ describe(`timeline (dynamic)`, () => {
 			const setWhichTimeline = AR.useI(whichTimelineState)
 			const letter = AR.useO(letterState)
 			const number = AR.useO(numberState)
-			const timeline = AR.useTL(AR.useO(timelineState))
+			const tl = AR.useTL(AR.useO(timelineState))
 			return (
 				<>
 					<div data-testid={letter}>{letter}</div>
 					<div data-testid={number}>{number}</div>
-					<div data-testid="timelineAt">{timeline.at}</div>
-					<div data-testid="timelineLength">{timeline.length}</div>
+					<div data-testid="timelineAt">{tl.at}</div>
+					<div data-testid="timelineLength">{tl.length}</div>
 					<button
 						type="button"
-						onClick={() => setLetter(`B`)}
+						onClick={() => {
+							setLetter(`B`)
+						}}
 						data-testid="changeLetterButtonB"
 					/>
 					<button
 						type="button"
-						onClick={() => setNumber(2)}
+						onClick={() => {
+							setNumber(2)
+						}}
 						data-testid="changeNumberButton2"
 					/>
 					<button
 						type="button"
-						onClick={() =>
+						onClick={() => {
 							setWhichTimeline((current) =>
 								current === `number` ? `letter` : `number`,
 							)
-						}
+						}}
 						data-testid="changeTimelineButton"
 					/>
 					<button
 						type="button"
-						onClick={() => timeline.undo()}
+						onClick={() => {
+							tl.undo()
+						}}
 						data-testid="undoButton"
 					/>
 					<button
 						type="button"
-						onClick={() => timeline.redo()}
+						onClick={() => {
+							tl.redo()
+						}}
 						data-testid="redoButton"
 					/>
 				</>

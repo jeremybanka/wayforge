@@ -8,6 +8,7 @@ export function dispose(
 ): void {
 	switch (token.type) {
 		case `atom`:
+		case `mutable_atom`:
 			Internal.deleteAtom(token, store)
 			break
 		case `selector`:

@@ -20,5 +20,5 @@ export const hasId: Refinement<unknown, Identified> = (
 
 export const identify = (input: unknown): { id: string } => {
 	if (hasId(input)) return input
-	throw new Error(`${input} could not be identified`)
+	throw new Error(`${JSON.stringify(input)} could not be identified`)
 }

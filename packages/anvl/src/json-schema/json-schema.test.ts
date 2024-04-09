@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import schema07 from "./07.schema.json"
 import { dereference } from "./dereference"
 import { refineJsonSchema } from "./refine-schema"

@@ -27,7 +27,9 @@ export function Theme(): JSX.Element | null {
 
 		matcher.addEventListener(`change`, updateThemeColor)
 
-		return () => matcher.removeEventListener(`change`, updateThemeColor)
+		return () => {
+			matcher.removeEventListener(`change`, updateThemeColor)
+		}
 	}, [])
 	return null
 }

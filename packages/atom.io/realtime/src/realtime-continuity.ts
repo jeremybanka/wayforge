@@ -32,7 +32,7 @@ export class InvariantMap<K, V> extends Map<K, V> {
 
 export type PerspectiveToken<
 	F extends AtomFamilyToken<any>,
-	T extends F extends AtomFamilyToken<infer T, any> ? T : never,
+	T extends F extends AtomFamilyToken<infer U, any> ? U : never,
 > = {
 	type: `realtime_perspective`
 	resourceAtoms: F
@@ -51,6 +51,7 @@ export type ContinuityToken = {
 }
 
 export class SyncGroup {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 	protected type = `continuity` as const
 
 	protected globals: AtomToken<any>[] = []
@@ -76,7 +77,7 @@ export class SyncGroup {
 	public add(...args: TransactionToken<any>[]): SyncGroup
 	public add<
 		F extends AtomFamilyToken<any>,
-		T extends F extends AtomFamilyToken<infer T> ? T : never,
+		T extends F extends AtomFamilyToken<infer U> ? U : never,
 	>(
 		family: AtomFamilyToken<T, any>,
 		index: ReadableFamilyToken<Iterable<AtomToken<T>>, string>,
@@ -86,7 +87,7 @@ export class SyncGroup {
 			| readonly AtomToken<any>[]
 			| readonly TransactionToken<any>[]
 			| [AtomFamilyToken<any, any>, ReadableFamilyToken<Iterable<any>, string>]
-	): SyncGroup {
+	): this {
 		const zeroth = args[0]
 		if (zeroth.type === `atom` || zeroth.type === `mutable_atom`) {
 			const globals = args as AtomToken<any>[]

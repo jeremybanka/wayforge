@@ -18,6 +18,10 @@ export type Transact<FN extends (...ps: any[]) => any = () => void> = (
 
 export const readonlyTransactors = (get: GetRecoilValue): Transactors => ({
 	get,
-	set: () => console.warn(`readonlyOperation: set() is not supported`),
-	reset: () => console.warn(`readonlyOperation: reset() is not supported`),
+	set: () => {
+		console.warn(`readonlyOperation: set() is not supported`)
+	},
+	reset: () => {
+		console.warn(`readonlyOperation: reset() is not supported`)
+	},
 })

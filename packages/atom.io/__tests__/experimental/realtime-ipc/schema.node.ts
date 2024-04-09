@@ -19,9 +19,9 @@ export const countries = pgTable(
 		id: serial(`id`).primaryKey(),
 		name: varchar(`name`, { length: 256 }),
 	},
-	(countries) => {
+	(col) => {
 		return {
-			nameIndex: uniqueIndex(`name_idx`).on(countries.name),
+			nameIndex: uniqueIndex(`name_idx`).on(col.name),
 		}
 	},
 )

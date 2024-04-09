@@ -23,9 +23,9 @@ export const transactCommitAll: Transact = (transactors) => {
 	git.commit(message)
 }
 export const useCommitAll = (): (() => void) =>
-	useRecoilTransaction_UNSTABLE(
-		(transactors) => () => transactCommitAll(transactors),
-	)
+	useRecoilTransaction_UNSTABLE((transactors) => () => {
+		transactCommitAll(transactors)
+	})
 
 export const newBranchNameState = atom<string>({
 	key: `newBranchName`,
@@ -38,6 +38,6 @@ const transactMakeNewBranch: Transact = (transactors) => {
 	git.branch()
 }
 export const useMakeNewBranch = (): (() => void) =>
-	useRecoilTransaction_UNSTABLE(
-		(transactors) => () => transactMakeNewBranch(transactors),
-	)
+	useRecoilTransaction_UNSTABLE((transactors) => () => {
+		transactMakeNewBranch(transactors)
+	})

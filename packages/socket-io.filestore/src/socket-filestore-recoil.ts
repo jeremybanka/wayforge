@@ -36,7 +36,9 @@ export const smartSocketSync = <T>(
 	const { id, type, socket, toJson, fromJson } = options
 	return ({ setSelf, onSet }) => {
 		socket.emit(`read`, { id, type })
-		socket.on(`read_${id}`, (json) => setSelf(fromJson(json)))
+		socket.on(`read_${id}`, (json) => {
+			setSelf(fromJson(json))
+		})
 		onSet((v) => socket.emit(`write`, { id, type, value: toJson(v) }))
 	}
 }
@@ -53,7 +55,9 @@ export const socketIndex: <IDS extends Iterable<string>>(
 	({ type, socket, jsonInterface: { toJson, fromJson } }) =>
 	({ setSelf, onSet }) => {
 		socket.emit(`indexRead`, { type })
-		socket.on(`indexRead_${type}`, (json) => setSelf(fromJson(json)))
+		socket.on(`indexRead_${type}`, (json) => {
+			setSelf(fromJson(json))
+		})
 		onSet((v) => socket.emit(`indexWrite`, { type, value: toJson(v) }))
 	}
 
@@ -83,15 +87,15 @@ export const socketRelations =
 	}: SocketRelationsOptions<CONTENT>): AtomEffect<Join<CONTENT, A, B>> =>
 	({ setSelf, onSet }) => {
 		socket.emit(`relationsRead`, { type, id })
-		socket.on(`relationsRead_${type}_${id}`, (json) =>
+		socket.on(`relationsRead_${type}_${id}`, (json) => {
 			setSelf(
 				Join.fromJSON<CONTENT, A, B>(json, {
 					isContent: refineContent as Refinement<unknown, CONTENT>,
 					from: a as A,
 					to: b as B,
 				}),
-			),
-		)
+			)
+		})
 		onSet((v: Join<CONTENT, A, B>) =>
 			socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }),
 		)
@@ -108,8 +112,12 @@ export const socketSchema: (
 	({ type, socket }) =>
 	({ setSelf, onSet }) => {
 		socket.emit(`schemaRead`, { type })
-		socket.on(`schemaRead_${type}`, (json) =>
-			isJsonSchema(json) ? setSelf(json) : null,
-		)
-		onSet((_) => console.warn(`editing schema not yet supported`))
+		socket.on(`schemaRead_${type}`, (json) => {
+			if (isJsonSchema(json)) {
+				setSelf(json)
+			}
+		})
+		onSet((_) => {
+			console.warn(`editing schema not yet supported`)
+		})
 	}

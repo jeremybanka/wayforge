@@ -18,8 +18,12 @@ const AtomUpdateFC: React.FC<{
 		<article
 			key={atomUpdate.key}
 			className="node atom_update"
-			onClick={() => console.log(atomUpdate)}
-			onKeyUp={() => console.log(atomUpdate)}
+			onClick={() => {
+				console.log(atomUpdate)
+			}}
+			onKeyUp={() => {
+				console.log(atomUpdate)
+			}}
 		>
 			<span className="detail">{atomUpdate.key}: </span>
 			<span>
@@ -51,8 +55,12 @@ const TransactionUpdateFC: React.FC<{
 							<article
 								key={`param` + index}
 								className="node transaction_param"
-								onClick={() => console.log(transactionUpdate)}
-								onKeyUp={() => console.log(transactionUpdate)}
+								onClick={() => {
+									console.log(transactionUpdate)
+								}}
+								onKeyUp={() => {
+									console.log(transactionUpdate)
+								}}
 							>
 								<span className="detail">{discoverType(param)}: </span>
 								<span className="summary">

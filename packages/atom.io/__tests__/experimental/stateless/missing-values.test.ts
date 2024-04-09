@@ -19,12 +19,12 @@ function clearValueMap() {
 	Internal.IMPLICIT.STORE.valueMap = new Map()
 }
 
-async function waitForQueuedUpdate<T>(atom: RegularAtomToken<T>, newValue: T) {
-	while (!(getState(atom) instanceof Promise)) {
+async function waitForQueuedUpdate<T>(token: RegularAtomToken<T>, newValue: T) {
+	while (!(getState(token) instanceof Promise)) {
 		console.log(`waiting for promise...`)
 		await new Promise((resolve) => setImmediate(resolve))
 	}
-	while ((await getState(atom)) !== newValue) {
+	while ((await getState(token)) !== newValue) {
 		console.log(`waiting for state update...`)
 		await new Promise((resolve) => setImmediate(resolve))
 	}

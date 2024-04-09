@@ -53,7 +53,7 @@ jobs:
         run: bun lint:eslint
 
       - name: Type Check
-        run: bun tsc
+        run: bun lint:types
 
   Test:
     name: Build & Test

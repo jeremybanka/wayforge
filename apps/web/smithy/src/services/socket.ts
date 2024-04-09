@@ -16,7 +16,7 @@ export type ClienteleUser = Socket<
 >
 
 export const initConnectionState = (
-	socket: ClienteleUser,
+	s: ClienteleUser,
 ): RecoilValueReadOnly<
 	ClienteleError | `Connected` | `Disconnected` | `Searching`
 > => {
@@ -27,7 +27,7 @@ export const initConnectionState = (
 		default: `Searching`,
 		effects: [
 			({ setSelf }) => {
-				socket.on(`connection`, () => {
+				s.on(`connection`, () => {
 					console.log(`Connected`)
 					setSelf(`Connected`)
 				})

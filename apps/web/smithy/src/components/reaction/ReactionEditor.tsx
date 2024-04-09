@@ -43,8 +43,8 @@ export const isFn = (x: unknown): x is CallableFunction =>
 
 export const ReactionEditor: FC<
 	RecoilEditorProps<Reaction & ReactionRelations>
-> = ({ id, findState, useRemove }) => {
-	const reactionState = findState(id)
+> = ({ id: reactionId, findState, useRemove }) => {
+	const reactionState = findState(reactionId)
 	const [reaction, setReaction] = useRecoilState(reactionState)
 
 	const set: {
@@ -52,70 +52,86 @@ export const ReactionEditor: FC<
 			(Reaction & ReactionRelations)[K]
 		>
 	} = {
-		name: (name) =>
+		name: (name) => {
 			setReaction((current) => ({
 				...current,
 				name: become(name)(current.name),
-			})),
-		time: (time) =>
+			}))
+		},
+		time: (time) => {
 			setReaction((current) => ({
 				...current,
 				time: become(time)(current.time),
-			})),
-		timeUnit: (timeUnit) =>
+			}))
+		},
+		timeUnit: (timeUnit) => {
 			setReaction((current) => ({
 				...current,
 				timeUnit: become(timeUnit)(current.timeUnit),
-			})),
-		reagents: (reagents) =>
+			}))
+		},
+		reagents: (reagents) => {
 			setReaction((current) => ({
 				...current,
 				reagents: become(reagents)(current.reagents),
-			})),
-		products: (products) =>
+			}))
+		},
+		products: (products) => {
 			setReaction((current) => ({
 				...current,
 				products: become(products)(current.products),
-			})),
-		featureOf: (featureOf) =>
+			}))
+		},
+		featureOf: (featureOf) => {
 			setReaction((current) => ({
 				...current,
 				featureOf: become(featureOf)(current.featureOf),
-			})),
+			}))
+		},
 	}
 	const add = {
-		reagent: (id: string) =>
-			set.reagents([...reaction.reagents, { id, amount: 1 }]),
-		product: (id: string) =>
-			set.products([...reaction.products, { id, amount: 1 }]),
+		reagent: (id: string) => {
+			set.reagents([...reaction.reagents, { id, amount: 1 }])
+		},
+		product: (id: string) => {
+			set.products([...reaction.products, { id, amount: 1 }])
+		},
 	}
 	const remove = Object.assign(useRemove(), {
-		reagent: (id: string) =>
-			set.reagents(reaction.reagents.filter((r) => r.id !== id)),
-		product: (id: string) =>
-			set.products(reaction.products.filter((p) => p.id !== id)),
-		featureOf: () => set.featureOf(null),
+		reagent: (id: string) => {
+			set.reagents(reaction.reagents.filter((r) => r.id !== id))
+		},
+		product: (id: string) => {
+			set.products(reaction.products.filter((p) => p.id !== id))
+		},
+		featureOf: () => {
+			set.featureOf(null)
+		},
 	})
 	const find = {
 		reagent: (reagentId: string): Settable<Reagent> => ({
 			...(reaction.reagents.find((r) => r.id === reagentId) ??
 				raiseError(`wtf`)),
-			set: (reagent) =>
+			set: (reagent) => {
 				set.reagents((current) =>
 					current.map((r) => (r.id === reagentId ? become(reagent)(r) : r)),
-				),
+				)
+			},
 		}),
 		product: (productId: string): Settable<Product> => ({
 			...(reaction.products.find((p) => p.id === productId) ??
 				raiseError(`wtf`)),
-			set: (product) =>
+			set: (product) => {
 				set.products((current) =>
 					current.map((p) => (p.id === productId ? become(product)(p) : p)),
-				),
+				)
+			},
 		}),
 	}
 
-	const removeMe = () => remove(id)
+	const removeMe = () => {
+		remove(reactionId)
+	}
 
 	const reactionSchema = useRecoilValue(reactionSchemaState)
 
@@ -128,7 +144,10 @@ export const ReactionEditor: FC<
 				set={setReaction}
 				name={reaction.name}
 				rename={set.name}
-				remove={() => (console.log(`remove reaction ${id}`), removeMe())}
+				remove={() => {
+					console.log(`remove reaction ${reactionId}`)
+					removeMe()
+				}}
 				isHidden={includesAny([
 					`id`,
 					`name`,
@@ -142,26 +161,35 @@ export const ReactionEditor: FC<
 				<span key={reagentId}>
 					<JsonEditor
 						data={find.reagent(reagentId).amount}
-						set={(amount) =>
+						set={(amount) => {
 							find.reagent(reagentId).set((current) => ({
 								...current,
 								amount: become(amount)(current.amount),
 							}))
-						}
-						remove={() => remove.reagent(reagentId)}
+						}}
+						remove={() => {
+							remove.reagent(reagentId)
+						}}
 						style={{ display: `inline` }}
 					/>
 					<SVG_EnergyIcon energyId={reagentId} size={40} />
 				</span>
 			))}
-			<select onChange={(e) => add.reagent(e.target.value)}>
+			<select
+				onChange={(e) => {
+					add.reagent(e.target.value)
+				}}
+			>
 				{[null, ...energySelectables].map((option) =>
 					option === null ? (
-						<option key={id + `reagent_add`} value={``}>
+						<option key={reactionId + `reagent_add`} value={``}>
 							+
 						</option>
 					) : (
-						<option key={option.value + id + `reagent`} value={option.value}>
+						<option
+							key={option.value + reactionId + `reagent`}
+							value={option.value}
+						>
 							{option.text}
 						</option>
 					),
@@ -172,29 +200,38 @@ export const ReactionEditor: FC<
 				<span key={productId}>
 					<JsonEditor
 						data={find.product(productId).amount}
-						set={(amount) =>
+						set={(amount) => {
 							find.product(productId).set((current) => ({
 								...current,
 								amount: become(amount)(current.amount),
 							}))
-						}
-						remove={() => remove.product(productId)}
+						}}
+						remove={() => {
+							remove.product(productId)
+						}}
 						style={{ display: `inline` }}
 					/>
 					<SVG_EnergyIcon energyId={productId} size={40} />
 				</span>
 			))}
 			<select
-				onChange={({ target: { value } }) => value && add.product(value)}
+				onChange={({ target: { value } }) => {
+					if (value) {
+						add.product(value)
+					}
+				}}
 				value={``}
 			>
 				{[null, ...energySelectables].map((option) =>
 					option === null ? (
-						<option key={id + `product_add`} value={``}>
+						<option key={reactionId + `product_add`} value={``}>
 							+
 						</option>
 					) : (
-						<option key={option.value + id + `product`} value={option.value}>
+						<option
+							key={option.value + reactionId + `product`}
+							value={option.value}
+						>
 							{option.text}
 						</option>
 					),
@@ -204,25 +241,32 @@ export const ReactionEditor: FC<
 				{reaction.featureOf ? (
 					<span>
 						<SVG_EnergyIcon energyId={reaction.featureOf.id} size={40} />
-						<button type="button" onClick={() => set.featureOf(null)}>
+						<button
+							type="button"
+							onClick={() => {
+								set.featureOf(null)
+							}}
+						>
 							remove
 						</button>
 					</span>
 				) : (
 					<select
-						onChange={({ target: { value } }) =>
-							value && set.featureOf({ id: value })
-						}
+						onChange={({ target: { value } }) => {
+							if (value) {
+								set.featureOf({ id: value })
+							}
+						}}
 						value={``}
 					>
 						{[null, ...energySelectables].map((option) =>
 							option === null ? (
-								<option key={id + `featureOf_add`} value={``}>
+								<option key={reactionId + `featureOf_add`} value={``}>
 									+
 								</option>
 							) : (
 								<option
-									key={option.value + id + `featureOf`}
+									key={option.value + reactionId + `featureOf`}
 									value={option.value}
 								>
 									{option.text}

@@ -24,7 +24,9 @@ export class Luum implements LuumSpec {
 	public static fromJSON(json: unknown): Luum {
 		const isValid = isLuumSpec(json)
 		if (isValid) return new Luum(json)
-		throw new Error(`Saved JSON for this Luum is invalid: ${json}`)
+		throw new Error(
+			`Saved JSON for this Luum is invalid: ${JSON.stringify(json)}`,
+		)
 	}
 
 	public toHex(): string {

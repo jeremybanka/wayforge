@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 export interface Lineage {
 	parent: typeof this | null
 	child: typeof this | null

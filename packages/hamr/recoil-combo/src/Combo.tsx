@@ -130,7 +130,9 @@ const Combo_INTERNAL = <State,>({
 						id={domId}
 						ref={inputRef}
 						value={entry}
-						onChange={(e) => setEntry(e.target.value)}
+						onChange={(e) => {
+							setEntry(e.target.value)
+						}}
 						onKeyDown={onKeydown}
 						disabled={!enabled}
 						placeholder={placeholder}
@@ -143,7 +145,9 @@ const Combo_INTERNAL = <State,>({
 									<button
 										type="button"
 										aria-label="Choose"
-										onClick={() => add(v)}
+										onClick={() => {
+											add(v)
+										}}
 										className={idx === selectedIdx ? `selected` : undefined}
 										disabled={!enabled}
 									>
@@ -157,7 +161,9 @@ const Combo_INTERNAL = <State,>({
 				<button
 					type="button"
 					aria-label="Add"
-					onClick={() => (entry ? add(selected) : undefined)}
+					onClick={() => {
+						entry ? add(selected) : undefined
+					}}
 					tabIndex={-1}
 					disabled={!enabled}
 				>
@@ -171,7 +177,9 @@ const Combo_INTERNAL = <State,>({
 						<button
 							type="button"
 							aria-label="Remove"
-							onClick={() => remove(v)}
+							onClick={() => {
+								remove(v)
+							}}
 							tabIndex={0}
 						>
 							x
@@ -186,8 +194,9 @@ const Combo_INTERNAL = <State,>({
 export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
 	let options: State[] = []
 	let selections: State[] = []
-	let setSelections: (value: State[]) => void = () =>
+	let setSelections: (value: State[]) => void = () => {
 		console.warn(`no setSelections`)
+	}
 	let getName: (value: State) => string = (v) => v as unknown as string
 	if (`getName` in props) {
 		getName = props.getName

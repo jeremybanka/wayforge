@@ -64,7 +64,7 @@ export const composeExplorer = ({
 		const view = useO(viewState)
 		const setView = useI(viewState)
 		useEffect(() => {
-			setView((view) => ({ ...view, location }))
+			setView((prev) => ({ ...prev, location }))
 		}, [location.key])
 		return (
 			<div className="view">
@@ -95,7 +95,9 @@ export const composeExplorer = ({
 		const view = useO(findViewState, viewId)
 		const spaceFocusedView = useO(findSpaceFocusedViewState, spaceId)
 		const setSpaceFocusedView = useI(findSpaceFocusedViewState, spaceId)
-		const handleClick = () => setSpaceFocusedView(viewId)
+		const handleClick = () => {
+			setSpaceFocusedView(viewId)
+		}
 		return (
 			<div
 				className={`tab ${spaceFocusedView === viewId ? `focused` : ``}`}
@@ -171,7 +173,9 @@ export const composeExplorer = ({
 				)}
 				<button
 					type="button"
-					onClick={() => runTransaction(addView)({ spaceId })}
+					onClick={() => {
+						runTransaction(addView)({ spaceId })
+					}}
 				>
 					+ View
 				</button>
