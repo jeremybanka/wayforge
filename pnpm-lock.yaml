@@ -263,7 +263,7 @@ importers:
         version: 3.12.1
       preact-render-to-string:
         specifier: 6.4.1
-        version: 6.4.1(preact@10.20.1)
+        version: 6.4.1(preact@10.20.2)
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -293,8 +293,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       preact:
-        specifier: 10.20.1
-        version: 10.20.1
+        specifier: 10.20.2
+        version: 10.20.2
       typed-htmx:
         specifier: 0.2.1
         version: 0.2.1
@@ -561,14 +561,14 @@ importers:
         specifier: 5.0.7
         version: 5.0.7
       preact:
-        specifier: 10.20.1
-        version: 10.20.1
+        specifier: 10.20.2
+        version: 10.20.2
       react:
         specifier: npm:@preact/compat
-        version: /@preact/compat@17.1.2(preact@10.20.1)
+        version: /@preact/compat@17.1.2(preact@10.20.2)
       react-dom:
         specifier: npm:@preact/compat
-        version: /@preact/compat@17.1.2(preact@10.20.1)
+        version: /@preact/compat@17.1.2(preact@10.20.2)
       react-router-dom:
         specifier: 6.22.3
         version: 6.22.3(@preact/compat@17.1.2)(@preact/compat@17.1.2)
@@ -584,7 +584,7 @@ importers:
         version: 7.24.1(@babel/core@7.24.4)
       '@preact/preset-vite':
         specifier: 2.8.2
-        version: 2.8.2(@babel/core@7.24.4)(preact@10.20.1)(vite@5.2.8)
+        version: 2.8.2(@babel/core@7.24.4)(preact@10.20.2)(vite@5.2.8)
       '@testing-library/jest-dom':
         specifier: 6.4.2
         version: 6.4.2(vitest@1.4.0)
@@ -698,8 +698,8 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       preact:
-        specifier: 10.20.1
-        version: 10.20.1
+        specifier: 10.20.2
+        version: 10.20.2
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -842,8 +842,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       preact:
-        specifier: 10.20.1
-        version: 10.20.1
+        specifier: 10.20.2
+        version: 10.20.2
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -2800,7 +2800,7 @@ packages:
       '@emotion/weak-memoize': 0.3.1
       '@types/react': 18.2.75
       hoist-non-react-statics: 3.3.2
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@emotion/react@11.11.4(@types/react@18.2.75)(react@18.2.0):
@@ -2853,7 +2853,7 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(@preact/compat@17.1.2)
       '@emotion/utils': 1.2.1
       '@types/react': 18.2.75
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@emotion/styled@11.11.5(@emotion/react@11.11.4)(@types/react@18.2.75)(react@18.2.0):
@@ -2892,7 +2892,7 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
     dependencies:
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@emotion/use-insertion-effect-with-fallbacks@1.0.1(react@18.2.0):
@@ -3855,8 +3855,8 @@ packages:
       react-dom: '>=16.8.0'
     dependencies:
       '@floating-ui/dom': 1.6.3
-      react: /@preact/compat@17.1.2(preact@10.20.1)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@floating-ui/react-dom@2.0.8(react-dom@18.2.0)(react@18.2.0):
@@ -3891,8 +3891,8 @@ packages:
     dependencies:
       '@floating-ui/react-dom': 2.0.8(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@floating-ui/utils': 0.2.1
-      react: /@preact/compat@17.1.2(preact@10.20.1)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
       tabbable: 6.2.0
     dev: false
 
@@ -4308,14 +4308,14 @@ packages:
     resolution: {integrity: sha512-j7P6Rgr3mmtdkeDGTe0E/aYyWEWVtc5yFXtHCRHs28/jptDEWfaVOc5T7cblqy1XKPPfCxJc/8DwQ5YgLOZOVQ==}
     dev: true
 
-  /@preact/compat@17.1.2(preact@10.20.1):
+  /@preact/compat@17.1.2(preact@10.20.2):
     resolution: {integrity: sha512-7pOZN9lMDDRQ+6aWvjwTp483KR8/zOpfS83wmOo3zfuLKdngS8/5RLbsFWzFZMGdYlotAhX980hJ75bjOHTwWg==}
     peerDependencies:
       preact: '*'
     dependencies:
-      preact: 10.20.1
+      preact: 10.20.2
 
-  /@preact/preset-vite@2.8.2(@babel/core@7.24.4)(preact@10.20.1)(vite@5.2.8):
+  /@preact/preset-vite@2.8.2(@babel/core@7.24.4)(preact@10.20.2)(vite@5.2.8):
     resolution: {integrity: sha512-m3tl+M8IO8jgiHnk+7LSTFl8axdPXloewi7iGVLdmCwf34XOzEUur0bZVewW4DUbUipFjTS2CXu27+5f/oexBA==}
     peerDependencies:
       '@babel/core': 7.x
@@ -4324,7 +4324,7 @@ packages:
       '@babel/core': 7.24.4
       '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.24.4)
       '@babel/plugin-transform-react-jsx-development': 7.22.5(@babel/core@7.24.4)
-      '@prefresh/vite': 2.4.5(preact@10.20.1)(vite@5.2.8)
+      '@prefresh/vite': 2.4.5(preact@10.20.2)(vite@5.2.8)
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.24.4)
       debug: 4.3.4(supports-color@5.5.0)
@@ -4344,19 +4344,19 @@ packages:
     resolution: {integrity: sha512-uG3jGEAysxWoyG3XkYfjYHgaySFrSsaEb4GagLzYaxlydbuREtaX+FTxuIidp241RaLl85XoHg9Ej6E4+V1pcg==}
     dev: true
 
-  /@prefresh/core@1.5.2(preact@10.20.1):
+  /@prefresh/core@1.5.2(preact@10.20.2):
     resolution: {integrity: sha512-A/08vkaM1FogrCII5PZKCrygxSsc11obExBScm3JF1CryK2uDS3ZXeni7FeKCx1nYdUkj4UcJxzPzc1WliMzZA==}
     peerDependencies:
       preact: ^10.0.0
     dependencies:
-      preact: 10.20.1
+      preact: 10.20.2
     dev: true
 
   /@prefresh/utils@1.2.0:
     resolution: {integrity: sha512-KtC/fZw+oqtwOLUFM9UtiitB0JsVX0zLKNyRTA332sqREqSALIIQQxdUCS1P3xR/jT1e2e8/5rwH6gdcMLEmsQ==}
     dev: true
 
-  /@prefresh/vite@2.4.5(preact@10.20.1)(vite@5.2.8):
+  /@prefresh/vite@2.4.5(preact@10.20.2)(vite@5.2.8):
     resolution: {integrity: sha512-iForDVJ2M8gQYnm5pHumvTEJjGGc7YNYC0GVKnHFL+GvFfKHfH9Rpq67nUAzNbjuLEpqEOUuQVQajMazWu2ZNQ==}
     peerDependencies:
       preact: ^10.4.0
@@ -4364,10 +4364,10 @@ packages:
     dependencies:
       '@babel/core': 7.24.4
       '@prefresh/babel-plugin': 0.5.1
-      '@prefresh/core': 1.5.2(preact@10.20.1)
+      '@prefresh/core': 1.5.2(preact@10.20.2)
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
-      preact: 10.20.1
+      preact: 10.20.2
       vite: 5.2.8(sass@1.74.1)
     transitivePeerDependencies:
       - supports-color
@@ -4378,7 +4378,7 @@ packages:
     peerDependencies:
       react: '>=16.8'
     dependencies:
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@react-hook/latest@1.0.3(react@18.2.0):
@@ -4394,7 +4394,7 @@ packages:
     peerDependencies:
       react: '>=16.8'
     dependencies:
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@react-hook/passive-layout-effect@1.2.1(react@18.2.0):
@@ -4413,7 +4413,7 @@ packages:
       '@juggle/resize-observer': 3.4.0
       '@react-hook/latest': 1.0.3(@preact/compat@17.1.2)
       '@react-hook/passive-layout-effect': 1.2.1(@preact/compat@17.1.2)
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@react-hook/resize-observer@1.2.6(react@18.2.0):
@@ -4875,8 +4875,8 @@ packages:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 9.3.4
       '@types/react-dom': 18.2.24
-      react: /@preact/compat@17.1.2(preact@10.20.1)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
     dev: true
 
   /@testing-library/react@14.3.0(react-dom@18.2.0)(react@18.2.0):
@@ -6555,8 +6555,8 @@ packages:
       react-dom: '>=18.0.0'
     dependencies:
       '@react-hook/resize-observer': 1.2.6(@preact/compat@17.1.2)
-      react: /@preact/compat@17.1.2(preact@10.20.1)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /corners@0.1.0(react-dom@18.2.0)(react@18.2.0):
@@ -8284,8 +8284,8 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      react: /@preact/compat@17.1.2(preact@10.20.1)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
       tslib: 2.6.2
     dev: false
 
@@ -10826,17 +10826,17 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /preact-render-to-string@6.4.1(preact@10.20.1):
+  /preact-render-to-string@6.4.1(preact@10.20.2):
     resolution: {integrity: sha512-oHKIFIv+/N0i3fNRF4ANMr2I93maycuXK78ERJ0vUW+nz6MXXMO6mTOFxp3itvSVBS/GXtLAy2jio3ZPeD8lZQ==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.20.1
+      preact: 10.20.2
       pretty-format: 3.8.0
     dev: false
 
-  /preact@10.20.1:
-    resolution: {integrity: sha512-JIFjgFg9B2qnOoGiYMVBtrcFxHqn+dNXbq76bVmcaHYJFYR4lW67AOcXgAYQQTDYXDOg/kTZrKPNCdRgJ2UJmw==}
+  /preact@10.20.2:
+    resolution: {integrity: sha512-S1d1ernz3KQ+Y2awUxKakpfOg2CEmJmwOP+6igPx6dgr6pgDvenqYviyokWso2rhHvGtTlWWnJDa7RaPbQerTg==}
 
   /preferred-pm@3.1.3:
     resolution: {integrity: sha512-MkXsENfftWSRpzCzImcp4FRsCc3y1opwB73CfCNWyzMqArju2CrlMHlqB7VexKiPEOjGMbttv1r9fSCn5S610w==}
@@ -11026,8 +11026,8 @@ packages:
       react-dom: '>=16.8'
     dependencies:
       '@remix-run/router': 1.15.3
-      react: /@preact/compat@17.1.2(preact@10.20.1)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
       react-router: 6.22.3(@preact/compat@17.1.2)
     dev: false
 
@@ -11050,7 +11050,7 @@ packages:
       react: '>=16.8'
     dependencies:
       '@remix-run/router': 1.15.3
-      react: /@preact/compat@17.1.2(preact@10.20.1)
+      react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /react-router@6.22.3(react@18.2.0):
