@@ -24,7 +24,7 @@
 		"fp-ts": "2.16.5",
 		"framer-motion": "11.0.25",
 		"nanoid": "5.0.7",
-		"preact": "10.20.1",
+		"preact": "10.20.2",
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat",
 		"react-router-dom": "6.22.3",
