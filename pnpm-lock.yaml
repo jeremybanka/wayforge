@@ -262,8 +262,8 @@ importers:
         specifier: 3.12.1
         version: 3.12.1
       preact-render-to-string:
-        specifier: 6.4.1
-        version: 6.4.1(preact@10.20.2)
+        specifier: 6.4.2
+        version: 6.4.2(preact@10.20.2)
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -10826,8 +10826,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /preact-render-to-string@6.4.1(preact@10.20.2):
-    resolution: {integrity: sha512-oHKIFIv+/N0i3fNRF4ANMr2I93maycuXK78ERJ0vUW+nz6MXXMO6mTOFxp3itvSVBS/GXtLAy2jio3ZPeD8lZQ==}
+  /preact-render-to-string@6.4.2(preact@10.20.2):
+    resolution: {integrity: sha512-Sio5SvlyZSAXHuvnMgYzVQd67lNIuQe4uSjJ+2gfpJNC6L8zoHQR5xV7B/EjIqrAYWVyJ2eACkTCxVrIzZi6Vw==}
     peerDependencies:
       preact: '>=10'
     dependencies:
