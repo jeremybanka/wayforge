@@ -43,19 +43,16 @@ export type BreakCheckOutcome =
 	| { gitWasClean: false }
 	| {
 			gitWasClean: true
-			tags: string[]
 			lastReleaseFound: false
 	  }
 	| {
 			gitWasClean: true
-			tags: string[]
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: false
 	  }
 	| {
 			gitWasClean: true
-			tags: string[]
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: true
@@ -64,7 +61,6 @@ export type BreakCheckOutcome =
 	  }
 	| {
 			gitWasClean: true
-			tags: string[]
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: true
@@ -124,7 +120,6 @@ export async function breakCheck({
 		return {
 			summary: `No tags found matching the pattern "${tagPattern}".`,
 			gitWasClean: true,
-			tags,
 			lastReleaseFound: false,
 		}
 	}
@@ -152,7 +147,6 @@ export async function breakCheck({
 		return {
 			summary: `Failed to list production files.`,
 			gitWasClean: true,
-			tags,
 			lastReleaseFound: true,
 			lastReleaseTag: latestReleaseTag,
 			testsWereFound: false,
@@ -168,7 +162,6 @@ export async function breakCheck({
 		return {
 			summary: `No tests were found matching the pattern "${testPattern}".`,
 			gitWasClean: true,
-			tags,
 			lastReleaseFound: true,
 			lastReleaseTag: latestReleaseTag,
 			testsWereFound: false,
@@ -186,7 +179,6 @@ export async function breakCheck({
 					resolve({
 						summary: `No breaking changes were detected.`,
 						gitWasClean: true,
-						tags,
 						lastReleaseFound: true,
 						lastReleaseTag: latestReleaseTag,
 						testsWereFound: true,
@@ -216,7 +208,6 @@ export async function breakCheck({
 								? `Breaking changes were found and certified.`
 								: `Breaking changes were found, but not certified.`,
 							gitWasClean: true,
-							tags,
 							lastReleaseFound: true,
 							lastReleaseTag: latestReleaseTag,
 							testsWereFound: true,
