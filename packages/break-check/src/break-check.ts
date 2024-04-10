@@ -126,6 +126,8 @@ export async function breakCheck({
 	await git.fetch([`origin`, latestReleaseTag, `--no-tags`])
 	mark?.(`fetched latest release tag`)
 
+	logger.info(`tags`, await git.tags())
+
 	let productionFiles: string[]
 	try {
 		productionFiles = await new Promise<string[]>((resolve, reject) => {
