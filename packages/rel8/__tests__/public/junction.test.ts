@@ -9,8 +9,8 @@ import {
 	refineJsonType,
 } from "~/packages/anvl/src/refinement/refine-json"
 
-import { Junction } from "../junction/src"
-import type { Json } from "../types/src"
+import { Junction } from "../../junction/src"
+import type { Json } from "../../types/src"
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)
