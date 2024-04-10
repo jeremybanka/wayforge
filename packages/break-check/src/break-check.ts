@@ -106,7 +106,7 @@ export async function breakCheck({
 		? allTagsRaw.filter((tag) => tag.match(tagPattern))
 		: allTagsRaw
 	const tags = tagsRawFiltered
-		.map((tag) => tag.split(`\t`)[1].split(`^`)[0].split(`/`)[2])
+		.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
 		.toSorted((a, b) => {
 			const aVersion = a.split(`@`)[1]
 			const bVersion = b.split(`@`)[1]
@@ -123,7 +123,7 @@ export async function breakCheck({
 			lastReleaseFound: false,
 		}
 	}
-	await git.fetch([`origin`, latestReleaseTag, `--no-tags`])
+	await git.fetch([`origin`, `${latestReleaseTag}:${latestReleaseTag}`])
 	mark?.(`fetched latest release tag`)
 
 	logger.info(`tags`, await git.tags())
