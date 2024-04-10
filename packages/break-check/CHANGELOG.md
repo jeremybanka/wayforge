@@ -1,5 +1,12 @@
 # break-check
 
+## 0.6.1
+
+### Patch Changes
+
+- bb734ff: ✨ When break check completes, only changes beneath the base directory will be stashed.
+- bb734ff: 🐛 Fix bug where break check would hang in the event that breaking changes were found but not certified.
+
 ## 0.6.0
 
 ### Minor Changes
