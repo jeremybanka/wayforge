@@ -10,7 +10,7 @@ import type {
 	TransactionToken,
 	WritableSelectorFamily,
 	WritableSelectorToken,
-	ƒn,
+	Func,
 } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
@@ -54,7 +54,7 @@ export class Store implements Lineage {
 	>()
 
 	public timelines = new Map<string, Timeline<any>>()
-	public transactions = new Map<string, Transaction<ƒn>>()
+	public transactions = new Map<string, Transaction<Func>>()
 
 	public atomsThatAreDefault = new Set<string>()
 
@@ -85,15 +85,15 @@ export class Store implements Lineage {
 		selectorCreation: new Subject<
 			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
 		>(),
-		transactionCreation: new Subject<TransactionToken<ƒn>>(),
+		transactionCreation: new Subject<TransactionToken<Func>>(),
 		timelineCreation: new Subject<TimelineToken<unknown>>(),
-		transactionApplying: new StatefulSubject<TransactionProgress<ƒn> | null>(
+		transactionApplying: new StatefulSubject<TransactionProgress<Func> | null>(
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
 	}
 	public operation: OperationProgress = { open: false }
-	public transactionMeta: TransactionEpoch | TransactionProgress<ƒn> = {
+	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
 		epoch: new Map<string, number>(),
 		actionContinuities: new Junction({
 			between: [`continuity`, `action`],

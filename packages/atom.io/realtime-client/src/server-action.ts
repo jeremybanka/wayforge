@@ -2,8 +2,8 @@ import type * as AtomIO from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
-export function serverAction<ƒ extends AtomIO.ƒn>(
-	token: AtomIO.TransactionToken<ƒ>,
+export function serverAction<F extends AtomIO.Func>(
+	token: AtomIO.TransactionToken<F>,
 	socket: Socket,
 	store: Internal.Store,
 ): () => void {

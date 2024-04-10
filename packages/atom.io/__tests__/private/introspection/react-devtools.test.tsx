@@ -1,5 +1,5 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react"
-import type { Logger, ƒn } from "atom.io"
+import type { Logger, Func } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -40,7 +40,7 @@ beforeEach(() => {
 const onChange = [() => undefined, console.log][0]
 
 describe(`react-devtools`, () => {
-	const setters: ƒn[] = []
+	const setters: Func[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,

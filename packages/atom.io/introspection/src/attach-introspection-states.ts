@@ -5,7 +5,7 @@ import type {
 	TimelineToken,
 	TransactionToken,
 	TransactionUpdate,
-	ƒn,
+	Func,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 import type { Timeline } from "atom.io/internal"
@@ -23,9 +23,9 @@ export const attachIntrospectionStates = (
 ): {
 	atomIndex: ReadonlySelectorToken<AtomTokenIndex>
 	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
-	transactionIndex: ReadonlySelectorToken<TransactionToken<ƒn>[]>
+	transactionIndex: ReadonlySelectorToken<TransactionToken<Func>[]>
 	findTransactionLogState: ReadonlySelectorFamilyToken<
-		TransactionUpdate<ƒn>[],
+		TransactionUpdate<Func>[],
 		string
 	>
 	timelineIndex: ReadonlySelectorToken<TimelineToken<any>[]>

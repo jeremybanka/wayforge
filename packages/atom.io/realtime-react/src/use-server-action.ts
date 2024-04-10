@@ -6,9 +6,9 @@ import * as React from "react"
 
 import { useRealtimeService } from "./use-realtime-service"
 
-export function useServerAction<ƒ extends AtomIO.ƒn>(
-	token: AtomIO.TransactionToken<ƒ>,
-): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
+export function useServerAction<F extends AtomIO.Func>(
+	token: AtomIO.TransactionToken<F>,
+): (...parameters: Parameters<F>) => ReturnType<F> {
 	const store = React.useContext(StoreContext)
 
 	useRealtimeService(`tx:${token.key}`, (socket) =>

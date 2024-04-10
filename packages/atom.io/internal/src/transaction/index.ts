@@ -1,4 +1,4 @@
-import type { TransactionUpdate, TransactorsWithRunAndEnv, ƒn } from "atom.io"
+import type { TransactionUpdate, TransactorsWithRunAndEnv, Func } from "atom.io"
 import type { Junction } from "rel8/junction"
 
 export * from "./abort-transaction"
@@ -14,9 +14,9 @@ export * from "./set-epoch-number"
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
-export type TransactionProgress<ƒ extends ƒn> = {
+export type TransactionProgress<F extends Func> = {
 	phase: `applying` | `building`
-	update: TransactionUpdate<ƒ>
+	update: TransactionUpdate<F>
 	transactors: TransactorsWithRunAndEnv
 }
 

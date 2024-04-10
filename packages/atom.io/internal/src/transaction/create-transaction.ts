@@ -2,7 +2,7 @@ import type {
 	TransactionOptions,
 	TransactionToken,
 	TransactionUpdate,
-	ƒn,
+	Func,
 } from "atom.io"
 
 import { newest } from "../lineage"
@@ -13,22 +13,22 @@ import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
 import { buildTransaction } from "./build-transaction"
 
-export type Transaction<ƒ extends ƒn> = {
+export type Transaction<F extends Func> = {
 	key: string
 	type: `transaction`
 	install: (store: Store) => void
-	subject: Subject<TransactionUpdate<ƒ>>
-	run: (parameters: Parameters<ƒ>, id?: string) => ReturnType<ƒ>
+	subject: Subject<TransactionUpdate<F>>
+	run: (parameters: Parameters<F>, id?: string) => ReturnType<F>
 }
 
-export function createTransaction<ƒ extends ƒn>(
-	options: TransactionOptions<ƒ>,
+export function createTransaction<F extends Func>(
+	options: TransactionOptions<F>,
 	store: Store,
-): TransactionToken<ƒ> {
-	const newTransaction: Transaction<ƒ> = {
+): TransactionToken<F> {
+	const newTransaction: Transaction<F> = {
 		key: options.key,
 		type: `transaction`,
-		run: (params: Parameters<ƒ>, id: string) => {
+		run: (params: Parameters<F>, id: string) => {
 			const childStore = buildTransaction(options.key, params, store, id)
 			try {
 				const target = newest(store)

@@ -3,7 +3,7 @@ import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
-import type { Logger, TimelineToken, ƒn } from "atom.io"
+import type { Logger, TimelineToken, Func } from "atom.io"
 import { atom, redo, selector, timeline, undo } from "atom.io"
 import * as Utils from "../__util__"
 
@@ -24,7 +24,7 @@ beforeEach(() => {
 const onChange = [() => undefined, console.log][0]
 
 describe(`single atom`, () => {
-	const setters: ƒn[] = []
+	const setters: Func[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,
@@ -67,7 +67,7 @@ describe(`single atom`, () => {
 	})
 })
 describe(`timeline`, () => {
-	const setters: ƒn[] = []
+	const setters: Func[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,

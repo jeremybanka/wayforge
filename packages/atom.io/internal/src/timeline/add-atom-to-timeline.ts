@@ -1,4 +1,9 @@
-import type { AtomToken, TransactionToken, TransactionUpdate, ƒn } from "atom.io"
+import type {
+	AtomToken,
+	TransactionToken,
+	TransactionUpdate,
+	Func,
+} from "atom.io"
 import type { TimelineUpdate } from "atom.io"
 
 import { newest } from "../lineage"
@@ -90,7 +95,7 @@ export const addAtomToTimeline = (
 								}
 
 								const filterUpdates = (
-									updates: TransactionUpdate<ƒn>[`updates`],
+									updates: TransactionUpdate<Func>[`updates`],
 								) =>
 									updates
 										.filter((updateFromTx) => {

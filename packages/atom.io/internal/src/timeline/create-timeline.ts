@@ -8,7 +8,7 @@ import type {
 	TimelineUpdate,
 	TokenType,
 	TransactionUpdate,
-	ƒn,
+	Func,
 } from "atom.io"
 
 import { newest } from "../lineage"
@@ -30,7 +30,7 @@ export type TimelineSelectorUpdate<ManagedAtom extends TimelineManageable> = {
 	timestamp: number
 	atomUpdates: Omit<TimelineAtomUpdate<ManagedAtom>, `timestamp`>[]
 }
-export type TimelineTransactionUpdate = TransactionUpdate<ƒn> & {
+export type TimelineTransactionUpdate = TransactionUpdate<Func> & {
 	key: string
 	type: `transaction_update`
 	timestamp: number
