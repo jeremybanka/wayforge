@@ -3,27 +3,30 @@ import { exec } from "node:child_process"
 import logger from "npmlog"
 import simpleGit from "simple-git"
 
-export const PERFORMANCE_MARKERS: PerformanceMark[] = []
-function mark(text: string) {
-	PERFORMANCE_MARKERS.push(performance.mark(text))
-}
-export function logMarks(): void {
-	for (let i = 0, j = 1; j < PERFORMANCE_MARKERS.length; i++, j++) {
-		const start = PERFORMANCE_MARKERS[i]
-		const end = PERFORMANCE_MARKERS[j]
-		const metric = performance.measure(
-			`${start.name} -> ${end.name}`,
-			start.name,
-			end.name,
-		)
-		logger.info(end.name, metric.duration)
+function useMarks() {
+	const markers: PerformanceMark[] = []
+	function mark(text: string) {
+		markers.push(performance.mark(text))
 	}
-	const overall = performance.measure(
-		`overall`,
-		PERFORMANCE_MARKERS[0].name,
-		PERFORMANCE_MARKERS[PERFORMANCE_MARKERS.length - 1].name,
-	)
-	logger.info(`TOTAL TIME`, overall.duration)
+	function logMarks(): void {
+		for (let i = 0, j = 1; j < markers.length; i++, j++) {
+			const start = markers[i]
+			const end = markers[j]
+			const metric = performance.measure(
+				`${start.name} -> ${end.name}`,
+				start.name,
+				end.name,
+			)
+			logger.info(end.name, metric.duration)
+		}
+		const overall = performance.measure(
+			`overall`,
+			markers[0].name,
+			markers[markers.length - 1].name,
+		)
+		logger.info(`TOTAL TIME`, overall.duration)
+	}
+	return { mark, logMarks }
 }
 
 export type BreakCheckOptions = {
@@ -32,6 +35,7 @@ export type BreakCheckOptions = {
 	testCommand: string
 	certifyCommand: string
 	baseDirname?: string
+	verbose?: boolean | undefined
 }
 
 export type BreakCheckOutcome =
@@ -78,12 +82,20 @@ export async function breakCheck({
 	testCommand,
 	certifyCommand,
 	baseDirname = process.cwd(),
+	verbose = false,
 }: BreakCheckOptions): Promise<BreakCheckOutcome & { summary: string }> {
-	mark(`breakCheck`)
+	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
+	let logMarks: ReturnType<typeof useMarks>[`logMarks`]
+	if (verbose) {
+		const { mark: mark_, logMarks: logMarks_ } = useMarks()
+		mark = mark_
+		logMarks = logMarks_
+	}
+	mark?.(`breakCheck`)
 	const git = simpleGit(baseDirname)
-	mark(`spawn git`)
+	mark?.(`spawn git`)
 	const isGitClean = (await git.checkIsRepo()) && (await git.status()).isClean()
-	mark(`is git clean`)
+	mark?.(`is git clean`)
 	if (!isGitClean) {
 		return {
 			summary: `The git repository must be clean to run this command.`,
@@ -93,14 +105,14 @@ export async function breakCheck({
 	let gitFetchedReleaseTags = false
 	const tagsOut = await git.listRemote([`--tags`, `origin`])
 
-	mark(`list remote tags`)
+	mark?.(`list remote tags`)
 	gitFetchedReleaseTags = true
 	const tags = tagsOut.split(`\n`).toReversed()
 	const latestReleaseTagRaw = tagPattern
 		? tags.find((tag) => tag.match(tagPattern))
 		: tags[0]
 	const latestReleaseTag = latestReleaseTagRaw?.split(`\t`)[1].split(`^`)[0]
-	mark(`found latest release tag`)
+	mark?.(`found latest release tag`)
 	if (!latestReleaseTag) {
 		return {
 			summary: `No tags found matching the pattern "${tagPattern}".`,
@@ -110,7 +122,7 @@ export async function breakCheck({
 		}
 	}
 	await git.fetch([`origin`, latestReleaseTag, `--no-tags`])
-	mark(`fetched latest release tag`)
+	mark?.(`fetched latest release tag`)
 
 	const productionFiles = await new Promise<string[]>((resolve, reject) => {
 		const treeResult = exec(
@@ -126,11 +138,11 @@ export async function breakCheck({
 			},
 		)
 	})
-	mark(`listed all files checked into git`)
+	mark?.(`listed all files checked into git`)
 	const productionTestFiles = productionFiles.filter((file) =>
 		minimatch(file, testPattern),
 	)
-	mark(`filtered to public test files`)
+	mark?.(`filtered to public test files`)
 
 	if (productionTestFiles.length === 0) {
 		return {
@@ -143,7 +155,7 @@ export async function breakCheck({
 		}
 	}
 	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
-	mark(`checked out public tests from latest release tag`)
+	mark?.(`checked out public tests from latest release tag`)
 
 	try {
 		const noBreakingChangesDetected = await new Promise<

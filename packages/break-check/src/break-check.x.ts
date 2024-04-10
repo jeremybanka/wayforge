@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
 import * as path from "node:path"
-import { breakCheck, logMarks } from "break-check"
+import { breakCheck } from "break-check"
 import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
-import {} from "~/packages/comline/src/encapsulate"
 
 const parse = cli(
 	{
@@ -69,9 +68,6 @@ if (positionalArgs.length === 0) {
 		console: true,
 		stdout: true,
 	})
-	if (suppliedOptions.verbose) {
-		logMarks()
-	}
 	process.stdout.write(JSON.stringify(returnValue))
 	if (`breakingChangesFound` in returnValue) {
 		if (returnValue.breakingChangesFound) {
