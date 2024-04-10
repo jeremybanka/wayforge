@@ -9,6 +9,7 @@ import { retrievePositionalArgs } from "./retrieve-positional-args"
 import { parseStringOption } from "./option-parsers"
 
 export * from "./option-parsers"
+export * from "./encapsulate"
 export * from "./tree"
 export * from "./flag"
 
@@ -24,9 +25,13 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 	? {
 			parse?: (arg: string) => T
 		}
-	: {
-			parse: (arg: string) => T
-		}) & {
+	: T extends boolean
+		? {
+				parse: (arg: string) => boolean
+			}
+		: {
+				parse: (arg: string) => T
+			}) & {
 	flag?: Flag
 	required: T extends undefined ? false : true
 	description: string
