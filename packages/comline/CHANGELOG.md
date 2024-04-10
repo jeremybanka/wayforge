@@ -1,5 +1,12 @@
 # comline
 
+## 0.0.4
+
+### Patch Changes
+
+- 3e64647: 🐛 Fixed missing export fro the 'encapsulate` function.
+- 3e64647: 🐛 Support parsing boolean arguments.
+
 ## 0.0.3
 
 ### Patch Changes
