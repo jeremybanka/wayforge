@@ -36,7 +36,7 @@
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint:types": "tsc --noEmit",
-		"lint": "bun run lint:biome && bun run lint:eslint",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"test:once": "bun run test:manifest && cross-env IMPORT=dist vitest run",
