@@ -144,8 +144,14 @@ export async function breakCheck({
 		})
 	} catch (thrown) {
 		mark?.(`failed to list production files`)
+		const message =
+			thrown instanceof Error
+				? thrown.message
+				: typeof thrown === `string`
+					? thrown
+					: undefined
 		const summary = `Failed to list production files${
-			thrown instanceof Error ? `: ${thrown.message}` : `.`
+			message ? `: ${message}` : `.`
 		}`
 		return {
 			summary,
