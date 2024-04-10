@@ -123,7 +123,11 @@ export async function breakCheck({
 			lastReleaseFound: false,
 		}
 	}
-	await git.fetch([`origin`, `${latestReleaseTag}:${latestReleaseTag}`])
+	await git.fetch([
+		`origin`,
+		`${latestReleaseTag}:${latestReleaseTag}`,
+		`--no-tags`,
+	])
 	mark?.(`fetched latest release tag`)
 
 	logger.info(`tags`, await git.tags())
