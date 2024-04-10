@@ -9,17 +9,17 @@ export function realtimeActionReceiver({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function actionReceiver<ƒ extends JsonIO>(
-		tx: AtomIO.TransactionToken<ƒ>,
+	return function actionReceiver<F extends JsonIO>(
+		tx: AtomIO.TransactionToken<F>,
 	): () => void {
 		const fillTransactionRequest = (
-			update: Pick<AtomIO.TransactionUpdate<ƒ>, `id` | `params`>,
+			update: Pick<AtomIO.TransactionUpdate<F>, `id` | `params`>,
 		) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			actUponStore<ƒ>(tx, update.id, store)(...update.params)
+			actUponStore<F>(tx, update.id, store)(...update.params)
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,

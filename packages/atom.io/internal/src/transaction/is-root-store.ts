@@ -1,4 +1,4 @@
-import type { ƒn } from "atom.io"
+import type { Func } from "atom.io"
 
 import type { TransactionEpoch, TransactionProgress } from "."
 import type { Store } from "../store"
@@ -9,7 +9,7 @@ export interface RootStore extends Store {
 	child: ChildStore | null
 }
 export interface ChildStore extends Store {
-	transactionMeta: TransactionProgress<ƒn>
+	transactionMeta: TransactionProgress<Func>
 	parent: ChildStore | RootStore
 	child: ChildStore | null
 }

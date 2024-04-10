@@ -1,4 +1,8 @@
-import type { ReadonlySelectorFamilyToken, TransactionUpdate, ƒn } from "atom.io"
+import type {
+	ReadonlySelectorFamilyToken,
+	TransactionUpdate,
+	Func,
+} from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
@@ -8,9 +12,9 @@ import {
 
 export const attachTransactionLogs = (
 	store: Store = IMPLICIT.STORE,
-): ReadonlySelectorFamilyToken<TransactionUpdate<ƒn>[], string> => {
+): ReadonlySelectorFamilyToken<TransactionUpdate<Func>[], string> => {
 	const findTransactionUpdateLog = createRegularAtomFamily<
-		TransactionUpdate<ƒn>[],
+		TransactionUpdate<Func>[],
 		string
 	>(
 		{
@@ -30,7 +34,7 @@ export const attachTransactionLogs = (
 		store,
 	)
 	const findTransactionUpdateLogState = createSelectorFamily<
-		TransactionUpdate<ƒn>[],
+		TransactionUpdate<Func>[],
 		string
 	>(
 		{

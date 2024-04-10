@@ -1,4 +1,4 @@
-import type { ƒn } from "atom.io"
+import type { Func } from "atom.io"
 
 import { ingestTransactionUpdate } from "../ingest-updates"
 import { newest } from "../lineage"
@@ -7,8 +7,8 @@ import type { Store } from "../store"
 import { isChildStore, isRootStore } from "./is-root-store"
 import { setEpochNumberOfAction } from "./set-epoch-number"
 
-export const applyTransaction = <ƒ extends ƒn>(
-	output: ReturnType<ƒ>,
+export const applyTransaction = <F extends Func>(
+	output: ReturnType<F>,
 	store: Store,
 ): void => {
 	const child = newest(store)
@@ -65,7 +65,7 @@ export const applyTransaction = <ƒ extends ƒn>(
 			child.transactionMeta.update.epoch,
 			parent,
 		)
-		const myTransaction = withdraw<ƒ>(
+		const myTransaction = withdraw<F>(
 			{ key: child.transactionMeta.update.key, type: `transaction` },
 			store,
 		)

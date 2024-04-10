@@ -1,4 +1,4 @@
-import type { findState, ƒn } from "atom.io"
+import type { findState, Func } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
@@ -45,7 +45,7 @@ export const buildTransaction = (
 		valueMap: new LazyMap(parent.valueMap),
 	}
 	const epoch = getEpochNumberOfAction(key, store)
-	const transactionMeta: TransactionProgress<ƒn> = {
+	const transactionMeta: TransactionProgress<Func> = {
 		phase: `building`,
 		update: {
 			key,

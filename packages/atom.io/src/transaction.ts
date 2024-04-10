@@ -11,10 +11,10 @@ import type {
 	ReadonlySelectorToken,
 	WritableToken,
 	findState,
-	ƒn,
+	Func,
 } from "."
 
-export type TransactionToken<F> = {
+export type TransactionToken<F extends Func> = {
 	key: string
 	type: `transaction`
 	__F?: F
@@ -22,15 +22,15 @@ export type TransactionToken<F> = {
 
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
-	| TransactionUpdate<ƒn>
+	| TransactionUpdate<Func>
 
-export type TransactionUpdate<ƒ extends ƒn> = {
+export type TransactionUpdate<F extends Func> = {
 	key: string
 	id: string
 	epoch: number
 	updates: TransactionUpdateContent[]
-	params: Parameters<ƒ>
-	output: ReturnType<ƒ>
+	params: Parameters<F>
+	output: ReturnType<F>
 }
 
 export type Transactors = Readonly<{
@@ -53,38 +53,38 @@ export type TransactorsWithRunAndEnv = Readonly<{
 }>
 export type ReadonlyTransactors = Pick<Transactors, `find` | `get`>
 
-export type Read<ƒ extends ƒn> = (
+export type Read<F extends Func> = (
 	transactors: ReadonlyTransactors,
-	...parameters: Parameters<ƒ>
-) => ReturnType<ƒ>
+	...parameters: Parameters<F>
+) => ReturnType<F>
 
-export type Write<ƒ extends ƒn> = (
+export type Write<F extends Func> = (
 	transactors: Transactors,
-	...parameters: Parameters<ƒ>
-) => ReturnType<ƒ>
+	...parameters: Parameters<F>
+) => ReturnType<F>
 
-export type Transact<ƒ extends ƒn> = (
+export type Transact<F extends Func> = (
 	transactors: TransactorsWithRunAndEnv,
-	...parameters: Parameters<ƒ>
-) => ReturnType<ƒ>
+	...parameters: Parameters<F>
+) => ReturnType<F>
 
-export type TransactionOptions<ƒ extends ƒn> = {
+export type TransactionOptions<F extends Func> = {
 	key: string
-	do: Transact<ƒ>
+	do: Transact<F>
 }
 
 export type TransactionIO<Token extends TransactionToken<any>> =
-	Token extends TransactionToken<infer ƒ> ? ƒ : never
+	Token extends TransactionToken<infer F> ? F : never
 
-export function transaction<ƒ extends ƒn>(
-	options: TransactionOptions<ƒ>,
-): TransactionToken<ƒ> {
+export function transaction<F extends Func>(
+	options: TransactionOptions<F>,
+): TransactionToken<F> {
 	return createTransaction(options, IMPLICIT.STORE)
 }
 
-export function runTransaction<ƒ extends ƒn>(
-	token: TransactionToken<ƒ>,
+export function runTransaction<F extends Func>(
+	token: TransactionToken<F>,
 	id = arbitrary(),
-): (...parameters: Parameters<ƒ>) => ReturnType<ƒ> {
+): (...parameters: Parameters<F>) => ReturnType<F> {
 	return actUponStore(token, id, IMPLICIT.STORE)
 }
