@@ -131,20 +131,33 @@ export async function breakCheck({
 	await git.fetch([`origin`, latestReleaseTag, `--no-tags`])
 	mark?.(`fetched latest release tag`)
 
-	const productionFiles = await new Promise<string[]>((resolve, reject) => {
-		const treeResult = exec(
-			`git ls-tree -r --name-only ${latestReleaseTag}`,
-			{ cwd: baseDirname },
-			async (_, stdout, stderr) => {
-				await git.stash()
-				if (treeResult.exitCode === 0) {
-					resolve(stdout.split(`\n`))
-				} else {
-					reject(stderr)
-				}
-			},
-		)
-	})
+	let productionFiles: string[]
+	try {
+		productionFiles = await new Promise<string[]>((resolve, reject) => {
+			const treeResult = exec(
+				`git ls-tree -r --name-only ${latestReleaseTag}`,
+				{ cwd: baseDirname },
+				async (_, stdout, stderr) => {
+					await git.stash()
+					if (treeResult.exitCode === 0) {
+						resolve(stdout.split(`\n`))
+					} else {
+						reject(stderr)
+					}
+				},
+			)
+		})
+	} catch (thrown) {
+		mark?.(`failed to list production files`)
+		return {
+			summary: `Failed to list production files.`,
+			gitWasClean: true,
+			tags,
+			lastReleaseFound: true,
+			lastReleaseTag: latestReleaseTag,
+			testsWereFound: false,
+		}
+	}
 	mark?.(`listed all files checked into git`)
 	const productionTestFiles = productionFiles.filter((file) =>
 		minimatch(file, testPattern),
