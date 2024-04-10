@@ -24,9 +24,13 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 	? {
 			parse?: (arg: string) => T
 		}
-	: {
-			parse: (arg: string) => T
-		}) & {
+	: T extends boolean
+		? {
+				parse: (arg: string) => boolean
+			}
+		: {
+				parse: (arg: string) => T
+			}) & {
 	flag?: Flag
 	required: T extends undefined ? false : true
 	description: string
