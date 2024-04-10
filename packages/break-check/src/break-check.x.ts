@@ -2,10 +2,10 @@
 
 import * as path from "node:path"
 import { breakCheck, logMarks } from "break-check"
-import { cli, optional, parseBooleanOption } from "comline"
+import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
-import { encapsulate } from "~/packages/comline/src/encapsulate"
+import {} from "~/packages/comline/src/encapsulate"
 
 const parse = cli(
 	{

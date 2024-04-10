@@ -9,6 +9,7 @@ import { retrievePositionalArgs } from "./retrieve-positional-args"
 import { parseStringOption } from "./option-parsers"
 
 export * from "./option-parsers"
+export * from "./encapsulate"
 export * from "./tree"
 export * from "./flag"
 
