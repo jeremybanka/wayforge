@@ -2,7 +2,7 @@ import type {
 	KeyedStateUpdate,
 	TimelineUpdate,
 	TransactionUpdate,
-	ƒn,
+	Func,
 } from "atom.io"
 import * as React from "react"
 
@@ -37,7 +37,7 @@ const AtomUpdateFC: React.FC<{
 
 const TransactionUpdateFC: React.FC<{
 	serialNumber: number
-	transactionUpdate: TransactionUpdate<ƒn>
+	transactionUpdate: TransactionUpdate<Func>
 }> = ({ serialNumber, transactionUpdate }) => {
 	return (
 		<article

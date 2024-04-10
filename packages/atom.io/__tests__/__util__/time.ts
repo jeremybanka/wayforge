@@ -1,7 +1,7 @@
-import type { ƒn } from "atom.io"
+import type { Func } from "atom.io"
 
 // wrap a callback in performance.measure
-export function time(key: string, callback: ƒn): PerformanceMeasure {
+export function time(key: string, callback: Func): PerformanceMeasure {
 	performance.mark(`${key}-start`)
 	callback()
 	performance.mark(`${key}-end`)

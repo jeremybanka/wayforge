@@ -22,7 +22,7 @@ import type {
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 	WritableToken,
-	ƒn,
+	Func,
 } from "atom.io"
 
 import type { Json } from "atom.io/json"
@@ -117,10 +117,10 @@ export function withdraw<T, K extends Json.Serializable>(
 	store: Store,
 ): SelectorFamily<T, any>
 
-export function withdraw<T>(
+export function withdraw<T extends Func>(
 	token: TransactionToken<T>,
 	store: Store,
-): Transaction<T extends ƒn ? T : never>
+): Transaction<T extends Func ? T : never>
 export function withdraw<T>(
 	token: TimelineToken<T>,
 	store: Store,
@@ -132,7 +132,7 @@ export function withdraw<T>(
 		| SelectorFamilyToken<T, any>
 		| SelectorToken<T>
 		| TimelineToken<T>
-		| TransactionToken<T>
+		| TransactionToken<T extends Func ? T : never>
 		| (T extends Transceiver<any>
 				? MutableAtomFamilyToken<T, any, any> | MutableAtomToken<T, any>
 				: never),

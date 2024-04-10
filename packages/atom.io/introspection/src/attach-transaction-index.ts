@@ -1,4 +1,4 @@
-import type { ReadonlySelectorToken, TransactionToken, ƒn } from "atom.io"
+import type { ReadonlySelectorToken, TransactionToken, Func } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	IMPLICIT,
@@ -8,14 +8,14 @@ import {
 
 export const attachTransactionIndex = (
 	store: Store = IMPLICIT.STORE,
-): ReadonlySelectorToken<TransactionToken<ƒn>[]> => {
+): ReadonlySelectorToken<TransactionToken<Func>[]> => {
 	const transactionTokenIndexState__INTERNAL = createRegularAtom<
-		TransactionToken<ƒn>[]
+		TransactionToken<Func>[]
 	>(
 		{
 			key: `👁‍🗨 Transaction Token Index (Internal)`,
 			default: () =>
-				[...store.transactions].map(([key]): TransactionToken<ƒn> => {
+				[...store.transactions].map(([key]): TransactionToken<Func> => {
 					return { key, type: `transaction` }
 				}),
 			effects: [

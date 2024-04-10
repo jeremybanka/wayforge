@@ -1,14 +1,7 @@
 import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { AtomFamily, AtomFamilyToken } from "./atom"
 import type {
-	AtomFamily,
-	AtomFamilyToken,
-	RegularAtomFamily,
-	RegularAtomFamilyToken,
-} from "./atom"
-import type {
-	ReadonlySelectorFamily,
-	ReadonlySelectorFamilyToken,
 	SelectorFamily,
 	SelectorFamilyToken,
 	WritableSelectorFamily,
@@ -28,7 +21,7 @@ export * from "./timeline"
 export * from "./transaction"
 export * from "./validators"
 
-export type ƒn = (...parameters: any[]) => any
+export type Func = (...parameters: any[]) => any
 
 export type RegularAtomToken<T> = {
 	key: string

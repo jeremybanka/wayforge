@@ -21,7 +21,7 @@ import {
 } from "atom.io/realtime-client"
 import type { Socket } from "socket.io-client"
 
-export function syncContinuity<ƒ extends AtomIO.ƒn>(
+export function syncContinuity<F extends AtomIO.Func>(
 	continuity: ContinuityToken,
 	socket: Socket,
 	store: Store,
@@ -54,7 +54,7 @@ export function syncContinuity<ƒ extends AtomIO.ƒn>(
 	socket.on(`continuity-init:${continuityKey}`, initializeContinuity)
 
 	const registerAndAttemptConfirmedUpdate = (
-		confirmed: AtomIO.TransactionUpdate<ƒ>,
+		confirmed: AtomIO.TransactionUpdate<F>,
 	) => {
 		function reconcileEpoch(
 			optimisticUpdate: AtomIO.TransactionUpdate<any>,

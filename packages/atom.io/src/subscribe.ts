@@ -15,7 +15,7 @@ import type {
 	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdate,
-	ƒn,
+	Func,
 } from "."
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
@@ -25,8 +25,8 @@ export type KeyedStateUpdate<T> = StateUpdate<T> & {
 }
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
-export type TransactionUpdateHandler<ƒ extends ƒn> = (
-	data: TransactionUpdate<ƒ>,
+export type TransactionUpdateHandler<F extends Func> = (
+	data: TransactionUpdate<F>,
 ) => void
 
 export function subscribe<T>(
@@ -35,9 +35,9 @@ export function subscribe<T>(
 	key?: string,
 	store?: Store,
 ): () => void
-export function subscribe<ƒ extends ƒn>(
-	token: TransactionToken<ƒ>,
-	handleUpdate: TransactionUpdateHandler<ƒ>,
+export function subscribe<F extends Func>(
+	token: TransactionToken<F>,
+	handleUpdate: TransactionUpdateHandler<F>,
 	key?: string,
 	store?: Store,
 ): () => void
