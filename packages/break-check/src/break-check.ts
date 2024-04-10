@@ -6,19 +6,19 @@ import simpleGit from "simple-git"
 function useMarks() {
 	const markers: PerformanceMark[] = []
 	function mark(text: string) {
-		markers.push(performance.mark(text))
+		const prev = markers.at(-1)
+		const next = performance.mark(text)
+		if (prev) {
+			const metric = performance.measure(
+				`${prev.name} -> ${next.name}`,
+				prev.name,
+				next.name,
+			)
+			logger.info(next.name, metric.duration)
+		}
+		markers.push(next)
 	}
 	function logMarks(): void {
-		for (let i = 0, j = 1; j < markers.length; i++, j++) {
-			const start = markers[i]
-			const end = markers[j]
-			const metric = performance.measure(
-				`${start.name} -> ${end.name}`,
-				start.name,
-				end.name,
-			)
-			logger.info(end.name, metric.duration)
-		}
 		const overall = performance.measure(
 			`overall`,
 			markers[0].name,
