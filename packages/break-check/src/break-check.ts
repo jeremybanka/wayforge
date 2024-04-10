@@ -215,30 +215,28 @@ export async function breakCheck({
 				{ cwd: baseDirname },
 				(_, stdout, stderr) => {
 					const wereCertified = result.exitCode === 0
-					if (wereCertified) {
-						resolve({
-							summary: wereCertified
-								? `Breaking changes were found and certified.`
-								: `Breaking changes were found, but not certified.`,
-							gitWasClean: true,
-							lastReleaseFound: true,
-							lastReleaseTag: latestReleaseTag,
-							testsWereFound: true,
-							testsFound: productionTestFiles,
-							breakingChangesFound: true,
-							testResult: thrown as string,
-							breakingChangesCertified: wereCertified,
-							certificationStdout: stdout,
-							certificationStderr: stderr,
-						})
-					}
+					mark?.(`${wereCertified ? `passed` : `failed`} certification`)
+					resolve({
+						summary: wereCertified
+							? `Breaking changes were found and certified.`
+							: `Breaking changes were found, but not certified.`,
+						gitWasClean: true,
+						lastReleaseFound: true,
+						lastReleaseTag: latestReleaseTag,
+						testsWereFound: true,
+						testsFound: productionTestFiles,
+						breakingChangesFound: true,
+						testResult: thrown as string,
+						breakingChangesCertified: wereCertified,
+						certificationStdout: stdout,
+						certificationStderr: stderr,
+					})
 				},
 			)
 		})
-		mark?.(`passed certification`)
 		return breakingChangesCertified
 	} finally {
-		await git.stash()
+		await git.stash([`push`, `-u`, `-m="break-check ${tagPattern}"`, `--`, `./`])
 		mark?.(`stashed`)
 		logMarks?.()
 	}
