@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.19.2
+
+### Patch Changes
+
+- 262135d: 🏷️ The type `ƒn`, a convenience type for generics meaning `(...parameters: any[]) => any` has been renamed `Func`.
+- 262135d: 🏷️ The type `TransactionToken<F>` now insists that `F extends Func`. This is true to the nature of the `transaction`, which must always encapsulate a function.
+- 262135d: ✨ Permit proper disposal of mutable atoms.
+
 ## 0.19.1
 
 ### Patch Changes
