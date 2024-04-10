@@ -2,10 +2,9 @@
 
 import * as path from "node:path"
 import { breakCheck } from "break-check"
-import { cli, optional } from "comline"
+import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
-import { encapsulate } from "~/packages/comline/src/encapsulate"
 
 const parse = cli(
 	{
@@ -24,6 +23,7 @@ const parse = cli(
 			testPattern: z.string(),
 			testCommand: z.string(),
 			certifyCommand: z.string(),
+			verbose: z.boolean().optional(),
 		}),
 		options: {
 			tagPattern: {
@@ -50,6 +50,13 @@ const parse = cli(
 				description: `Complete bash command that determines whether a major version bump for your package is indicated in the workspace. Exit code 0 indicates that a major version bump is indicated, and exit code 1 indicates that no major version bump is indicated.`,
 				example: `--certifyCommand=\tsx scripts/certify-major-version-bump.node`,
 			},
+			verbose: {
+				flag: `v`,
+				required: false,
+				description: `Prints out more information about the process.`,
+				example: `--verbose`,
+				parse: parseBooleanOption,
+			},
 		},
 	},
 	logger,
@@ -62,7 +69,6 @@ if (positionalArgs.length === 0) {
 		stdout: true,
 	})
 	process.stdout.write(JSON.stringify(returnValue))
-
 	if (`breakingChangesFound` in returnValue) {
 		if (returnValue.breakingChangesFound) {
 			if (returnValue.breakingChangesCertified) {
