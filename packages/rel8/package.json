@@ -32,7 +32,8 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
-		"test:once": "vitest run"
+		"test:once": "vitest run",
+		"test:semver": "bun ../break-check/src/break-check.x.ts"
 	},
 	"devDependencies": {
 		"concurrently": "8.2.2",
