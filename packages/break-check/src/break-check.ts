@@ -236,7 +236,7 @@ export async function breakCheck({
 		})
 		return breakingChangesCertified
 	} finally {
-		await git.stash()
+		await git.stash([`push`, `-u`, `-m="break-check ${tagPattern}"`, `--`, `./`])
 		mark?.(`stashed`)
 		logMarks?.()
 	}
