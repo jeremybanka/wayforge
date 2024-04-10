@@ -103,11 +103,11 @@ export async function breakCheck({
 		}
 	}
 	let gitFetchedReleaseTags = false
-	const tagsOut = await git.listRemote([`--tags`, `origin`])
+	const tagsRemote = await git.listRemote([`--tags`, `origin`])
 
 	mark?.(`list remote tags`)
 	gitFetchedReleaseTags = true
-	const tags = tagsOut.split(`\n`).toReversed()
+	const tags = tagsRemote.split(`\n`).toReversed()
 	const latestReleaseTagRaw = tagPattern
 		? tags.find((tag) => tag.match(tagPattern))
 		: tags[0]
