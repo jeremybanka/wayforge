@@ -9,6 +9,7 @@ import tmp from "tmp"
 import { bunCopyFile } from "./utilities"
 
 let tempDir: tmp.DirResult
+let remoteRepoDir: tmp.DirResult
 const testDirname = import.meta.dir
 
 beforeEach(async () => {
@@ -40,19 +41,35 @@ beforeEach(async () => {
 			`${testDirname}/fixtures/bun/public-method__public.test.js`,
 		).text(),
 	)
+	remoteRepoDir = tmp.dirSync({ unsafeCleanup: true })
+
+	// Initialize the bare repository
+	const remoteGit = simpleGit()
+	await remoteGit
+		.init([`--bare`, `--initial-branch=main`])
+		.cwd(remoteRepoDir.name)
+
+	// Initialize simple-git for the test repository
+	const git = simpleGit(tempDir.name)
+
+	// Initialize the repository, add files, and make the initial commit
+	await git
+		.init()
+		.add(`.`)
+		.commit(`Initial commit`)
+		.addAnnotatedTag(`my-library@1.0.0`, `initial release`)
+
+	// Add the bare repository as a remote and push
+	await git.addRemote(`origin`, remoteRepoDir.name)
+	await git.push([`--tags`, `origin`, `main`])
 })
 afterEach(() => {
 	tempDir.removeCallback()
+	remoteRepoDir.removeCallback()
 })
 
 describe(`break-check`, () => {
 	it(`determines whether breaking changes were made`, async () => {
-		const git = simpleGit(tempDir.name)
-		await git
-			.init()
-			.add(`.`)
-			.commit(`initial commit`)
-			.addAnnotatedTag(`my-library@1.0.0`, `initial release`)
 		const srcContent = await Bun.file(`${tempDir.name}/src.js`).text()
 		const modifiedSrcContent = srcContent.replace(
 			`"publicMethodOutput"`,
