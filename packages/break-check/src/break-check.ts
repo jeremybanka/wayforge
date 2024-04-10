@@ -43,19 +43,19 @@ export type BreakCheckOutcome =
 	| { gitWasClean: false }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: boolean
+			tags: string[]
 			lastReleaseFound: false
 	  }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: boolean
+			tags: string[]
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: false
 	  }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: boolean
+			tags: string[]
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: true
@@ -64,7 +64,7 @@ export type BreakCheckOutcome =
 	  }
 	| {
 			gitWasClean: true
-			gitFetchedReleaseTags: boolean
+			tags: string[]
 			lastReleaseFound: true
 			lastReleaseTag: string
 			testsWereFound: true
@@ -85,7 +85,7 @@ export async function breakCheck({
 	verbose = false,
 }: BreakCheckOptions): Promise<BreakCheckOutcome & { summary: string }> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
-	let logMarks: ReturnType<typeof useMarks>[`logMarks`]
+	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (verbose) {
 		const { mark: mark_, logMarks: logMarks_ } = useMarks()
 		mark = mark_
@@ -102,22 +102,29 @@ export async function breakCheck({
 			gitWasClean: false,
 		}
 	}
-	let gitFetchedReleaseTags = false
 	const tagsRemote = await git.listRemote([`--tags`, `origin`])
 
 	mark?.(`list remote tags`)
-	gitFetchedReleaseTags = true
-	const tags = tagsRemote.split(`\n`).toReversed()
-	const latestReleaseTagRaw = tagPattern
-		? tags.find((tag) => tag.match(tagPattern))
-		: tags[0]
-	const latestReleaseTag = latestReleaseTagRaw?.split(`\t`)[1].split(`^`)[0]
+	const allTagsRaw = tagsRemote.split(`\n`)
+	const tagsRawFiltered = tagPattern
+		? allTagsRaw.filter((tag) => tag.match(tagPattern))
+		: allTagsRaw
+	const tags = tagsRawFiltered
+		.map((tag) => tag.split(`\t`)[1].split(`^`)[0])
+		.toSorted((a, b) => {
+			const aVersion = a.split(`@`)[1]
+			const bVersion = b.split(`@`)[1]
+			const [aMajor, aMinor, aPatch] = aVersion.split(`.`).map((n) => Number(n))
+			const [bMajor, bMinor, bPatch] = bVersion.split(`.`).map((n) => Number(n))
+			return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch
+		})
+	const latestReleaseTag = tags[0]
 	mark?.(`found latest release tag`)
 	if (!latestReleaseTag) {
 		return {
 			summary: `No tags found matching the pattern "${tagPattern}".`,
 			gitWasClean: true,
-			gitFetchedReleaseTags,
+			tags,
 			lastReleaseFound: false,
 		}
 	}
@@ -148,7 +155,7 @@ export async function breakCheck({
 		return {
 			summary: `No tests were found matching the pattern "${testPattern}".`,
 			gitWasClean: true,
-			gitFetchedReleaseTags: true,
+			tags,
 			lastReleaseFound: true,
 			lastReleaseTag: latestReleaseTag,
 			testsWereFound: false,
@@ -161,51 +168,49 @@ export async function breakCheck({
 		const noBreakingChangesDetected = await new Promise<
 			BreakCheckOutcome & { summary: string }
 		>((resolve, reject) => {
-			const result = exec(
-				testCommand,
-				{ cwd: baseDirname },
-				async (_, __, stderr) => {
-					await git.stash()
-					if (result.exitCode === 0) {
-						resolve({
-							summary: `No breaking changes were detected.`,
-							gitWasClean: true,
-							gitFetchedReleaseTags: true,
-							lastReleaseFound: true,
-							lastReleaseTag: latestReleaseTag,
-							testsWereFound: true,
-							testsFound: productionTestFiles,
-							breakingChangesFound: false,
-						})
-					} else {
-						reject(stderr)
-					}
-				},
-			)
+			const result = exec(testCommand, { cwd: baseDirname }, (_, __, stderr) => {
+				if (result.exitCode === 0) {
+					resolve({
+						summary: `No breaking changes were detected.`,
+						gitWasClean: true,
+						tags,
+						lastReleaseFound: true,
+						lastReleaseTag: latestReleaseTag,
+						testsWereFound: true,
+						testsFound: productionTestFiles,
+						breakingChangesFound: false,
+					})
+				} else {
+					reject(stderr)
+				}
+			})
 		})
+		mark?.(`passed tests`)
 		return noBreakingChangesDetected
 	} catch (thrown) {
-		return new Promise<BreakCheckOutcome & { summary: string }>((resolve) => {
+		mark?.(`failed tests`)
+		const breakingChangesCertified = await new Promise<
+			BreakCheckOutcome & { summary: string }
+		>((resolve) => {
 			const result = exec(
 				certifyCommand,
 				{ cwd: baseDirname },
-				async (_, stdout, stderr) => {
-					await git.stash()
-					const breakingChangesCertified = result.exitCode === 0
-					if (breakingChangesCertified) {
+				(_, stdout, stderr) => {
+					const wereCertified = result.exitCode === 0
+					if (wereCertified) {
 						resolve({
-							summary: breakingChangesCertified
+							summary: wereCertified
 								? `Breaking changes were found and certified.`
 								: `Breaking changes were found, but not certified.`,
 							gitWasClean: true,
-							gitFetchedReleaseTags: true,
+							tags,
 							lastReleaseFound: true,
 							lastReleaseTag: latestReleaseTag,
 							testsWereFound: true,
 							testsFound: productionTestFiles,
 							breakingChangesFound: true,
 							testResult: thrown as string,
-							breakingChangesCertified,
+							breakingChangesCertified: wereCertified,
 							certificationStdout: stdout,
 							certificationStderr: stderr,
 						})
@@ -213,5 +218,11 @@ export async function breakCheck({
 				},
 			)
 		})
+		mark?.(`passed certification`)
+		return breakingChangesCertified
+	} finally {
+		await git.stash()
+		mark?.(`stashed`)
+		logMarks?.()
 	}
 }
