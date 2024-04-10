@@ -1,5 +1,12 @@
 # break-check
 
+## 0.6.0
+
+### Minor Changes
+
+- 3e64647: 🚀 Break check no longer fetches all tags, leading to major speed improvements for repos with many releases.
+- 3e64647: ✨ The `--verbose` flag will print statistical information about performance.
+
 ## 0.5.0
 
 ### Minor Changes
