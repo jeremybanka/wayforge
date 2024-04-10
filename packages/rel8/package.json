@@ -33,7 +33,8 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",
-		"test:semver": "echo soon"
+		"test:once:public": "vitest run public",
+		"test:semver": "bun ../break-check/src/break-check.x.ts --verbose"
 	},
 	"devDependencies": {
 		"concurrently": "8.2.2",
