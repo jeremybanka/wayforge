@@ -144,8 +144,11 @@ export async function breakCheck({
 		})
 	} catch (thrown) {
 		mark?.(`failed to list production files`)
+		const summary = `Failed to list production files${
+			thrown instanceof Error ? `: ${thrown.message}` : `.`
+		}`
 		return {
-			summary: `Failed to list production files.`,
+			summary,
 			gitWasClean: true,
 			lastReleaseFound: true,
 			lastReleaseTag: latestReleaseTag,
