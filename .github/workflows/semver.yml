@@ -20,7 +20,7 @@ jobs:
   break-check:
     name: Break Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 7
 
     services:
       postgres:

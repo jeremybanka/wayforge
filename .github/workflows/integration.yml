@@ -21,7 +21,7 @@ defaults:
 jobs:
   Lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 7
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -58,7 +58,7 @@ jobs:
   Test:
     name: Build & Test
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 7
     env:
       NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
 
