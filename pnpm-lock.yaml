@@ -92,7 +92,7 @@ importers:
         version: 3.0.1(webpack@5.91.0)
       '@mdx-js/react':
         specifier: 3.0.1
-        version: 3.0.1(@types/react@18.2.75)(react@18.2.0)
+        version: 3.0.1(@types/react@18.2.76)(react@18.2.0)
       '@next/mdx':
         specifier: 14.1.4
         version: 14.1.4(@mdx-js/loader@3.0.1)(@mdx-js/react@3.0.1)
@@ -106,11 +106,11 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@types/react-dom':
-        specifier: 18.2.24
-        version: 18.2.24
+        specifier: 18.2.25
+        version: 18.2.25
       '@types/react-syntax-highlighter':
         specifier: 15.5.11
         version: 15.5.11
@@ -339,11 +339,11 @@ importers:
         specifier: 20.12.7
         version: 20.12.7
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@types/react-dom':
-        specifier: 18.2.24
-        version: 18.2.24
+        specifier: 18.2.25
+        version: 18.2.25
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
@@ -358,7 +358,7 @@ importers:
     dependencies:
       '@emotion/styled':
         specifier: 11.11.5
-        version: 11.11.5(@emotion/react@11.11.4)(@types/react@18.2.75)(react@18.2.0)
+        version: 11.11.5(@emotion/react@11.11.4)(@types/react@18.2.76)(react@18.2.0)
       '@floating-ui/dom':
         specifier: 1.6.3
         version: 1.6.3
@@ -397,8 +397,8 @@ importers:
         specifier: 15.0.1
         version: 15.0.1(react-dom@18.2.0)(react@18.2.0)
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@vitejs/plugin-react':
         specifier: 4.2.1
         version: 4.2.1(vite@5.2.8)
@@ -453,7 +453,7 @@ importers:
     dependencies:
       '@emotion/styled':
         specifier: 11.11.5
-        version: 11.11.5(@emotion/react@11.11.4)(@types/react@18.2.75)(react@18.2.0)
+        version: 11.11.5(@emotion/react@11.11.4)(@types/react@18.2.76)(react@18.2.0)
       '@eyecuelab/recoil-devtools':
         specifier: 0.1.7
         version: 0.1.7(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)(recoil@0.7.7)
@@ -501,8 +501,8 @@ importers:
         specifier: 15.0.1
         version: 15.0.1(react-dom@18.2.0)(react@18.2.0)
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@vitejs/plugin-react':
         specifier: 4.2.1
         version: 4.2.1(vite@5.2.8)
@@ -535,7 +535,7 @@ importers:
     dependencies:
       '@emotion/styled':
         specifier: 11.11.5
-        version: 11.11.5(@emotion/react@11.11.4)(@preact/compat@17.1.2)(@types/react@18.2.75)
+        version: 11.11.5(@emotion/react@11.11.4)(@preact/compat@17.1.2)(@types/react@18.2.76)
       '@floating-ui/dom':
         specifier: 1.6.3
         version: 1.6.3
@@ -592,8 +592,8 @@ importers:
         specifier: 15.0.1
         version: 15.0.1(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@vanilla-extract/vite-plugin':
         specifier: 4.0.7
         version: 4.0.7(sass@1.74.1)(vite@5.2.8)
@@ -662,8 +662,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
@@ -681,7 +681,7 @@ importers:
         version: 0.20.14
       drizzle-orm:
         specifier: 0.30.8
-        version: 0.30.8(@types/react@18.2.75)(postgres@3.4.4)(react@18.2.0)
+        version: 0.30.8(@types/react@18.2.76)(postgres@3.4.4)(react@18.2.0)
       framer-motion:
         specifier: 11.0.28
         version: 11.0.28(react-dom@18.2.0)(react@18.2.0)
@@ -810,7 +810,7 @@ importers:
     devDependencies:
       '@emotion/styled':
         specifier: 11.11.5
-        version: 11.11.5(@emotion/react@11.11.4)(@types/react@18.2.75)(react@18.2.0)
+        version: 11.11.5(@emotion/react@11.11.4)(@types/react@18.2.76)(react@18.2.0)
       '@testing-library/jest-dom':
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
@@ -821,8 +821,8 @@ importers:
         specifier: 21.1.6
         version: 21.1.6
       '@types/react':
-        specifier: 18.2.75
-        version: 18.2.75
+        specifier: 18.2.76
+        version: 18.2.76
       '@vitejs/plugin-react':
         specifier: 4.2.1
         version: 4.2.1(vite@5.2.8)
@@ -2782,7 +2782,7 @@ packages:
   /@emotion/memoize@0.8.1:
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
 
-  /@emotion/react@11.11.4(@preact/compat@17.1.2)(@types/react@18.2.75):
+  /@emotion/react@11.11.4(@preact/compat@17.1.2)(@types/react@18.2.76):
     resolution: {integrity: sha512-t8AjMlF0gHpvvxk5mAtCqR4vmxiGHCeJBaQO6gncUSdklELOgtwjerNY2yuJNfwnc6vi16U/+uMF+afIawJ9iw==}
     peerDependencies:
       '@types/react': '*'
@@ -2798,12 +2798,12 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(@preact/compat@17.1.2)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
       hoist-non-react-statics: 3.3.2
       react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
-  /@emotion/react@11.11.4(@types/react@18.2.75)(react@18.2.0):
+  /@emotion/react@11.11.4(@types/react@18.2.76)(react@18.2.0):
     resolution: {integrity: sha512-t8AjMlF0gHpvvxk5mAtCqR4vmxiGHCeJBaQO6gncUSdklELOgtwjerNY2yuJNfwnc6vi16U/+uMF+afIawJ9iw==}
     peerDependencies:
       '@types/react': '*'
@@ -2819,7 +2819,7 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
 
@@ -2835,7 +2835,7 @@ packages:
   /@emotion/sheet@1.2.2:
     resolution: {integrity: sha512-0QBtGvaqtWi+nx6doRwDdBIzhNdZrXUppvTM4dtZZWEGTXL/XE/yJxLMGlDT1Gt+UHH5IX1n+jkXyytE/av7OA==}
 
-  /@emotion/styled@11.11.5(@emotion/react@11.11.4)(@preact/compat@17.1.2)(@types/react@18.2.75):
+  /@emotion/styled@11.11.5(@emotion/react@11.11.4)(@preact/compat@17.1.2)(@types/react@18.2.76):
     resolution: {integrity: sha512-/ZjjnaNKvuMPxcIiUkf/9SHoG4Q196DRl1w82hQ3WCsjo1IUR8uaGWrC6a87CrYAW0Kb/pK7hk8BnLgLRi9KoQ==}
     peerDependencies:
       '@emotion/react': ^11.0.0-rc.0
@@ -2848,15 +2848,15 @@ packages:
       '@babel/runtime': 7.24.4
       '@emotion/babel-plugin': 11.11.0
       '@emotion/is-prop-valid': 1.2.2
-      '@emotion/react': 11.11.4(@preact/compat@17.1.2)(@types/react@18.2.75)
+      '@emotion/react': 11.11.4(@preact/compat@17.1.2)(@types/react@18.2.76)
       '@emotion/serialize': 1.1.4
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(@preact/compat@17.1.2)
       '@emotion/utils': 1.2.1
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
       react: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
-  /@emotion/styled@11.11.5(@emotion/react@11.11.4)(@types/react@18.2.75)(react@18.2.0):
+  /@emotion/styled@11.11.5(@emotion/react@11.11.4)(@types/react@18.2.76)(react@18.2.0):
     resolution: {integrity: sha512-/ZjjnaNKvuMPxcIiUkf/9SHoG4Q196DRl1w82hQ3WCsjo1IUR8uaGWrC6a87CrYAW0Kb/pK7hk8BnLgLRi9KoQ==}
     peerDependencies:
       '@emotion/react': ^11.0.0-rc.0
@@ -2869,11 +2869,11 @@ packages:
       '@babel/runtime': 7.24.4
       '@emotion/babel-plugin': 11.11.0
       '@emotion/is-prop-valid': 1.2.2
-      '@emotion/react': 11.11.4(@types/react@18.2.75)(react@18.2.0)
+      '@emotion/react': 11.11.4(@types/react@18.2.76)(react@18.2.0)
       '@emotion/serialize': 1.1.4
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
       react: 18.2.0
 
   /@emotion/stylis@0.8.5:
@@ -4077,14 +4077,14 @@ packages:
       - supports-color
     dev: true
 
-  /@mdx-js/react@3.0.1(@types/react@18.2.75)(react@18.2.0):
+  /@mdx-js/react@3.0.1(@types/react@18.2.76)(react@18.2.0):
     resolution: {integrity: sha512-9ZrPIU4MGf6et1m1ov3zKf+q9+deetI51zprKB1D/z3NOb+rUxxtEl3mCjW5wTGh6VhRdwPueh1oRzi6ezkA8A==}
     peerDependencies:
       '@types/react': '>=16'
       react: '>=16'
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
       react: 18.2.0
     dev: true
 
@@ -4200,7 +4200,7 @@ packages:
         optional: true
     dependencies:
       '@mdx-js/loader': 3.0.1(webpack@5.91.0)
-      '@mdx-js/react': 3.0.1(@types/react@18.2.75)(react@18.2.0)
+      '@mdx-js/react': 3.0.1(@types/react@18.2.76)(react@18.2.0)
       source-map: 0.7.4
     dev: true
 
@@ -4874,7 +4874,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
-      '@types/react-dom': 18.2.24
+      '@types/react-dom': 18.2.25
       react: /@preact/compat@17.1.2(preact@10.20.2)
       react-dom: /@preact/compat@17.1.2(preact@10.20.2)
     dev: true
@@ -4888,7 +4888,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
-      '@types/react-dom': 18.2.24
+      '@types/react-dom': 18.2.25
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
@@ -5072,20 +5072,20 @@ packages:
   /@types/prop-types@15.7.12:
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
-  /@types/react-dom@18.2.24:
-    resolution: {integrity: sha512-cN6upcKd8zkGy4HU9F1+/s98Hrp6D4MOcippK4PoE8OZRngohHZpbJn1GsaDLz87MqvHNoT13nHvNqM9ocRHZg==}
+  /@types/react-dom@18.2.25:
+    resolution: {integrity: sha512-o/V48vf4MQh7juIKZU2QGDfli6p1+OOi5oXx36Hffpc9adsHeXjVp8rHuPkjd8VT8sOJ2Zp05HR7CdpGTIUFUA==}
     dependencies:
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
     dev: true
 
   /@types/react-syntax-highlighter@15.5.11:
     resolution: {integrity: sha512-ZqIJl+Pg8kD+47kxUjvrlElrraSUrYa4h0dauY/U/FTUuprSCqvUj+9PNQNQzVc6AJgIWUUxn87/gqsMHNbRjw==}
     dependencies:
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
     dev: true
 
-  /@types/react@18.2.75:
-    resolution: {integrity: sha512-+DNnF7yc5y0bHkBTiLKqXFe+L4B3nvOphiMY3tuA5X10esmjqk7smyBZzbGTy2vsiy/Bnzj8yFIBL8xhRacoOg==}
+  /@types/react@18.2.76:
+    resolution: {integrity: sha512-T6z/v7YxpswDM61Vq5KoSPTJqCkroJfsDIsvXCr4+qOY6gik5Ju4w0jf67cpC5z7ydOnp/E0V0W08pDRy8u9Xw==}
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
@@ -7012,7 +7012,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.30.8(@types/react@18.2.75)(postgres@3.4.4)(react@18.2.0):
+  /drizzle-orm@0.30.8(@types/react@18.2.76)(postgres@3.4.4)(react@18.2.0):
     resolution: {integrity: sha512-9pBJA0IjnpPpzZ6s9jlS1CQAbKoBmbn2GJesPhXaVblAA/joOJ4AWWevYcqvLGj9SvThBAl7WscN8Zwgg5mnTw==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -7092,7 +7092,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      '@types/react': 18.2.75
+      '@types/react': 18.2.76
       postgres: 3.4.4
       react: 18.2.0
     dev: true
