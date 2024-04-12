@@ -159,7 +159,7 @@ importers:
         version: 1.0.12
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -248,7 +248,7 @@ importers:
         version: 4.7.2
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -444,7 +444,7 @@ importers:
         version: 4.7.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -635,7 +635,7 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -726,7 +726,7 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -944,7 +944,7 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -965,7 +965,7 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(@types/node@20.12.7)
+        version: 5.2.8(sass@1.75.0)
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.8)
@@ -1031,6 +1031,9 @@ importers:
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
+      eslint:
+        specifier: 9.0.0
+        version: 9.0.0
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -12906,8 +12909,8 @@ packages:
       strip-literal: 2.1.0
       tinybench: 2.6.0
       tinypool: 0.8.3
-      vite: 5.2.8(@types/node@20.12.7)
-      vite-node: 1.5.0(@types/node@20.12.7)
+      vite: 5.2.8(sass@1.75.0)
+      vite-node: 1.5.0(sass@1.75.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

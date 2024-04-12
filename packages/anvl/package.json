@@ -22,7 +22,7 @@
 	"scripts": {
 		"build": "tsup",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint .",
+		"lint:eslint": "eslint . --ignore-pattern=**/dist/**",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
