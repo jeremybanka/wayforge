@@ -117,6 +117,9 @@
 		"data/dist",
 		"data/package.json",
 		"data/src",
+		"eslint-plugin/dist",
+		"eslint-plugin/package.json",
+		"eslint-plugin/src",
 		"internal/dist",
 		"internal/package.json",
 		"internal/src",
@@ -165,6 +168,13 @@
 			"browser": "./data/dist/index.js",
 			"import": "./data/dist/index.js",
 			"require": "./data/dist/index.cjs"
+		},
+		"./eslint-plugin/package.json": "./eslint-plugin/package.json",
+		"./eslint-plugin": {
+			"types": "./eslint-plugin/dist/index.d.ts",
+			"browser": "./eslint-plugin/dist/index.js",
+			"import": "./eslint-plugin/dist/index.js",
+			"require": "./eslint-plugin/dist/index.cjs"
 		},
 		"./internal/package.json": "./internal/package.json",
 		"./internal": {
