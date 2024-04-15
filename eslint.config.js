@@ -213,7 +213,10 @@ const configs = [
 		},
 		files: [`apps/tempest.games/**/*.ts{,x}`],
 		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@typescript-eslint": TypeScriptPlugin },
+		plugins: {
+			"@typescript-eslint": TypeScriptPlugin,
+			"atom.io": AtomIOPlugin,
+		},
 		rules: commonRules,
 	},
 ]
