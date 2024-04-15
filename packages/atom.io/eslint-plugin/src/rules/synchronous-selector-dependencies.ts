@@ -12,11 +12,6 @@ function walk(
 	}
 
 	switch (node.type) {
-		case `Program`:
-			for (const child of node.body) {
-				walk(child, callback)
-			}
-			break
 		case `FunctionDeclaration`:
 		case `FunctionExpression`:
 		case `ArrowFunctionExpression`:
