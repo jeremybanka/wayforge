@@ -1,25 +1,7 @@
 import { fireEvent, render } from "@testing-library/react"
-import type { WritableToken } from "atom.io"
-import { useO } from "atom.io/react"
-import type { FC } from "react"
-import { useEffect } from "react"
 import { BrowserRouter } from "react-router-dom"
 
 import { Division } from "./components/Demos/Division"
-
-export const handleChange = [() => undefined, console.log][0]
-
-export type ObserverProps = {
-	node: WritableToken<any>
-	onChange: (value: any) => void
-}
-export const Observer: FC<ObserverProps> = ({ node, onChange }) => {
-	const value = useO(node)
-	useEffect(() => {
-		onChange(value)
-	}, [onChange, value])
-	return null
-}
 
 describe(`App`, () => {
 	it(`Shows a basic state graph in operation`, () => {
