@@ -44,7 +44,11 @@
 		"lint:biome": {
 			"cache": false
 		},
+		"lint:eslint:build": {
+			"inputs": ["eslint-plugin/src/**/*.ts"]
+		},
 		"lint:eslint": {
+			"dependsOn": ["lint:eslint:build"],
 			"inputs": [
 				"**/package.json",
 				"tsconfig.json",

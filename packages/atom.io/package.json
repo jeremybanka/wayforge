@@ -35,6 +35,7 @@
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint . --ignore-pattern={**/dist/**,**/coverage/**}",
+		"lint:eslint:build": "bun run build:main",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
