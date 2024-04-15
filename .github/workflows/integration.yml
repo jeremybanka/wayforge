@@ -50,7 +50,7 @@ jobs:
         run: bun lint:biome
 
       - name: ESLint
-        run: bun lint:eslint
+        run: bun lint:eslint:build && bun lint:eslint
 
       - name: Type Check
         run: bun lint:types
