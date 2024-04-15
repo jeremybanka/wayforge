@@ -45,7 +45,7 @@
 			"cache": false
 		},
 		"lint:eslint:build": {
-			"outputs": ["eslint-plugin/dist/**/*"],
+			"outputs": ["eslint-plugin/dist/**/*", "dist/**/*"],
 			"inputs": ["eslint-plugin/src/**/*.ts"]
 		},
 		"lint:eslint": {
