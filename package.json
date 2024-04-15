@@ -28,6 +28,7 @@
 		"lint": "turbo run lint",
 		"lint:biome": "turbo run lint:biome",
 		"lint:eslint": "turbo run lint:eslint",
+		"lint:eslint:build": "turbo run lint:eslint:build",
 		"lint:types": "turbo run lint:types",
 		"lint:fix:biome": "biome check --apply *",
 		"lint:fix:eslint": "eslint --fix .",

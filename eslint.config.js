@@ -1,6 +1,7 @@
 import parser from "@typescript-eslint/parser"
-import plugin from "@typescript-eslint/eslint-plugin"
-import nextPlugin from "@next/eslint-plugin-next"
+import TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
+import NextPlugin from "@next/eslint-plugin-next"
+import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
 
 import path from "node:path"
 import { FlatCompat } from "@eslint/eslintrc"
@@ -18,13 +19,7 @@ const ERROR = 2
 
 /** @type {import("@typescript-eslint/parser").ParserOptions} */
 const parserOptions = {
-	project: [
-		`./tsconfig.json`,
-		// `./apps/atom.io.fyi/tsconfig.json`,
-		// `./apps/wayfarer.quest/tsconfig.json`,
-		// `./packages/anvl/tsconfig.json`,
-		// `./packages/anvl/tsconfig.json`,
-	],
+	project: [`./tsconfig.json`],
 	sourceType: `module`,
 }
 
@@ -158,6 +153,8 @@ const commonRules = {
 	"@typescript-eslint/unbound-method": 0,
 	"@typescript-eslint/unified-signatures": ERROR,
 
+	"atom.io/synchronous-selector-dependencies": ERROR,
+
 	"no-mixed-spaces-and-tabs": 0,
 	quotes: [ERROR, `backtick`],
 }
@@ -165,10 +162,7 @@ const commonRules = {
 /** @type {(import("eslint").Linter.FlatConfig)[]} */
 const configs = [
 	{
-		languageOptions: {
-			parser,
-			parserOptions,
-		},
+		languageOptions: { parser, parserOptions },
 		files: [`**/*.ts{,x}`, `eslint.config.js`],
 		ignores: [
 			`**/_shared/**`,
@@ -178,16 +172,19 @@ const configs = [
 			`**/node_modules/**`,
 			`apps/tempest.games/**`,
 		],
-		plugins: { "@typescript-eslint": plugin },
+		plugins: {
+			"@typescript-eslint": TypeScriptPlugin,
+			"atom.io": AtomIOPlugin,
+		},
 		rules: commonRules,
 	},
 	{
 		files: [`apps/atom.io.fyi/**/*.ts{,x}`],
 		ignores: [`**/*.gen.tsx`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@next/next": nextPlugin },
+		plugins: { "@next/next": NextPlugin },
 		rules: {
-			...nextPlugin.configs.recommended.rules,
-			...nextPlugin.configs[`core-web-vitals`].rules,
+			...NextPlugin.configs.recommended.rules,
+			...NextPlugin.configs[`core-web-vitals`].rules,
 			"@next/next/no-duplicate-head": 0,
 		},
 		settings: { next: { rootDir: `apps/atom.io.fyi/` } },
@@ -195,10 +192,10 @@ const configs = [
 	{
 		files: [`apps/wayfarer.quest/**/*.ts{,x}`],
 		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@next/next": nextPlugin },
+		plugins: { "@next/next": NextPlugin },
 		rules: {
-			...nextPlugin.configs.recommended.rules,
-			...nextPlugin.configs[`core-web-vitals`].rules,
+			...NextPlugin.configs.recommended.rules,
+			...NextPlugin.configs[`core-web-vitals`].rules,
 			"@next/next/no-duplicate-head": 0,
 		},
 		settings: { next: { rootDir: `apps/wayfarer.quest/` } },
@@ -216,7 +213,10 @@ const configs = [
 		},
 		files: [`apps/tempest.games/**/*.ts{,x}`],
 		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@typescript-eslint": plugin },
+		plugins: {
+			"@typescript-eslint": TypeScriptPlugin,
+			"atom.io": AtomIOPlugin,
+		},
 		rules: commonRules,
 	},
 ]

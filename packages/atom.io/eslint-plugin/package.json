@@ -1,5 +1,5 @@
 {
-	"name": "atom.io-realtime-server",
+	"name": "atom.io-eslint-plugin",
 	"type": "module",
 	"private": true,
 	"main": "dist/index.cjs",

@@ -119,7 +119,3 @@ export function asNumber<
 export function asNumber(input: unknown): unknown {
 	return input as any
 }
-
-export const a = asNumber(new Fraction(1, 2))
-export const b = asNumber([new Fraction(1, 2)])
-export const c = asNumber({ a: new Fraction(1, 2) })

@@ -655,6 +655,12 @@ importers:
       '@testing-library/react':
         specifier: 15.0.2
         version: 15.0.2(react-dom@18.2.0)(react@18.2.0)
+      '@types/eslint':
+        specifier: 8.56.9
+        version: 8.56.9
+      '@types/estree':
+        specifier: 1.0.5
+        version: 1.0.5
       '@types/http-proxy':
         specifier: 1.17.14
         version: 1.17.14
@@ -682,6 +688,9 @@ importers:
       drizzle-orm:
         specifier: 0.30.8
         version: 0.30.8(@types/react@18.2.78)(postgres@3.4.4)(react@18.2.0)
+      eslint:
+        specifier: 9.0.0
+        version: 9.0.0
       framer-motion:
         specifier: 11.0.28
         version: 11.0.28(react-dom@18.2.0)(react@18.2.0)
@@ -4971,12 +4980,12 @@ packages:
   /@types/eslint-scope@3.7.7:
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
     dependencies:
-      '@types/eslint': 8.56.7
+      '@types/eslint': 8.56.9
       '@types/estree': 1.0.5
     dev: true
 
-  /@types/eslint@8.56.7:
-    resolution: {integrity: sha512-SjDvI/x3zsZnOkYZ3lCt9lOZWZLB2jIlNKz+LBgCtDurK0JZcwucxYHn1w2BJkD34dgX9Tjnak0txtq4WTggEA==}
+  /@types/eslint@8.56.9:
+    resolution: {integrity: sha512-W4W3KcqzjJ0sHg2vAq9vfml6OhsJ53TcUjUqfzzZf/EChUtwspszj/S0pzMxnfRcO55/iGq47dscXw71Fxc4Zg==}
     dependencies:
       '@types/estree': 1.0.5
       '@types/json-schema': 7.0.15
