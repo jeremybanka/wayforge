@@ -83,7 +83,6 @@ export const synchronousSelectorDependencies = {
 			CallExpression(node) {
 				let selectorComputation: ESTree.Node | undefined
 				if (`name` in node.callee && node.callee.name === `selectorFamily`) {
-					console.log(`🐛`, node.arguments[0].type)
 					if (node.arguments[0].type === `ObjectExpression`) {
 						const selectorLookupProperty = node.arguments[0].properties.find(
 							(prop): prop is ESTree.Property => {
@@ -93,7 +92,6 @@ export const synchronousSelectorDependencies = {
 							},
 						)
 						const selectorLookup = selectorLookupProperty?.value
-						console.log(`🐛`, selectorLookup?.type)
 						if (
 							selectorLookup?.type === `FunctionExpression` ||
 							selectorLookup?.type === `ArrowFunctionExpression`
