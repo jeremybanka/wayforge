@@ -56,5 +56,22 @@ ruleTester.run(`synchronous-selector-dependencies`, rule, {
       `,
 			errors: 1,
 		},
+		{
+			code: `
+        selector({
+          get: async ({ get }) => {
+            const response = await fetch("https://api.github.com/users/jeremybanka")
+            const json = await response.json()
+            switch (json.type) {
+              case "user":
+                return get(myRecordState)[json.key]
+              default:
+                return null
+            }
+          },
+        })
+      `,
+			errors: 1,
+		},
 	],
 })

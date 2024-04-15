@@ -3,13 +3,10 @@ import type * as ESTree from "estree"
 
 function walk(
 	node: ESTree.Node,
-	callback: (node: ESTree.Node, depth: number) => boolean | void,
+	callback: (node: ESTree.Node, depth: number) => void,
 	depth = 0,
 ) {
-	const done = callback(node, depth)
-	if (done) {
-		return
-	}
+	callback(node, depth)
 
 	switch (node.type) {
 		case `FunctionDeclaration`:
