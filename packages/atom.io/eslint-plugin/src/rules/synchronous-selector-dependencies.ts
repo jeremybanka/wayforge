@@ -82,16 +82,7 @@ export const synchronousSelectorDependencies = {
 		return {
 			CallExpression(node) {
 				if (`name` in node.callee && node.callee.name === `selector`) {
-					let paramName: string | null = null
-					const foundAwait = false
 					if (node.arguments[0].type === `ObjectExpression`) {
-						const destructuredGet = node.arguments[0].properties.find(
-							(prop): prop is ESTree.AssignmentProperty =>
-								`key` in prop && `name` in prop.key && prop.key.name === `get`,
-						)
-						if (destructuredGet && `name` in destructuredGet.key) {
-							paramName = destructuredGet.key.name
-						}
 						const selectorComputationProperty =
 							node.arguments[0].properties.find(
 								(prop): prop is ESTree.Property => {
@@ -107,9 +98,14 @@ export const synchronousSelectorDependencies = {
 							selectorComputation?.type === `FunctionExpression` ||
 							selectorComputation?.type === `ArrowFunctionExpression`
 						) {
+							const nonDestructuredTransactorsName =
+								`name` in selectorComputation.params[0]
+									? selectorComputation.params[0].name
+									: undefined
 							let awaited: number | undefined
 							let awaitNode: ESTree.AwaitExpression | undefined
 							walk(selectorComputation, (n, depth) => {
+								// console.log(`${`\t`.repeat(depth)}${n.type}`)
 								if (typeof awaited === `number`) {
 									if (awaited > depth) {
 										awaited = undefined
@@ -122,17 +118,33 @@ export const synchronousSelectorDependencies = {
 										awaitNode = n
 										break
 									case `CallExpression`:
-										if (
-											`name` in n.callee &&
-											n.callee.name === `get` &&
-											awaitNode
-										) {
-											context.report({
-												node: awaitNode,
-												message: `Using await before calling the 'get' transactor is not allowed.`,
-											})
+										if (awaitNode) {
+											let willReport = false
+											switch (n.callee.type) {
+												case `MemberExpression`:
+													if (
+														n.callee.object.type === `Identifier` &&
+														n.callee.object.name ===
+															nonDestructuredTransactorsName &&
+														n.callee.property.type === `Identifier` &&
+														n.callee.property.name === `get`
+													) {
+														willReport = true
+													}
+													break
+												case `Identifier`:
+													if (n.callee.name === `get`) {
+														willReport = true
+													}
+													break
+											}
+											if (willReport) {
+												context.report({
+													node: awaitNode,
+													message: `Using await before calling the 'get' transactor is not allowed.`,
+												})
+											}
 										}
-										break
 								}
 							})
 						}

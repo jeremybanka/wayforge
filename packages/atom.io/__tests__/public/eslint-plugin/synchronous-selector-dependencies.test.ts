@@ -1,14 +1,16 @@
 import { RuleTester } from "eslint"
+import parser from "@typescript-eslint/parser"
 
 import { Rules } from "atom.io/eslint-plugin"
 
-const ruleTester = new RuleTester()
+const ruleTester = new RuleTester({ languageOptions: { parser } })
 Object.assign(ruleTester, { describe, it })
 const rule = Rules.synchronousSelectorDependencies
 
-ruleTester.run(`synchronous-selector-dependencies`, rule, {
+ruleTester.run(`synchronous-selector-dependencies (selector)`, rule, {
 	valid: [
 		{
+			name: `arrow function without body as getter`,
 			code: `
         const doubleState = selector({
           key: "double",
@@ -17,6 +19,7 @@ ruleTester.run(`synchronous-selector-dependencies`, rule, {
       `,
 		},
 		{
+			name: `arrow function with body as getter`,
 			code: `
         const doubleState = selector({
           key: "double",
@@ -29,6 +32,7 @@ ruleTester.run(`synchronous-selector-dependencies`, rule, {
       `,
 		},
 		{
+			name: `classic function expression as getter`,
 			code: `
         const doubleState = selector({
           key: "double",
@@ -38,9 +42,82 @@ ruleTester.run(`synchronous-selector-dependencies`, rule, {
         })
       `,
 		},
+		{
+			name: `async arrow function expression without body as getter`,
+			code: `
+        const clientNameState = selector<Loadable<string | null>>({
+          key: "clientName",
+          get: async ({ get }) => pipe(
+            get(clientQueryState),
+            (query) => until(query, null),
+            async (query) => await (query?.json() ?? query),
+            (json) => json.name,
+          )
+        })
+      `,
+		},
+		{
+			name: `async arrow function expression with body as getter`,
+			code: `
+        const clientNameState = selector<Loadable<string | null>>({
+          key: "clientName",
+          get: async ({ get }) => {
+            const query = get(clientQueryState)
+            const json = await query.json()
+            return json.name
+          }
+        })
+      `,
+		},
+		{
+			name: `async classic function expression as getter`,
+			code: `
+        const clientNameState = selector<Loadable<string | null>>({
+          key: "clientName",
+          get: async function ({ get }) {
+            const query = get(clientQueryState)
+            const json = await query.json()
+            return json.name
+          }
+        })
+      `,
+		},
 	],
 	invalid: [
 		{
+			name: `straightforward violation`,
+			code: `
+        const clientNameState = selector<Loadable<string | null>>({
+          key: "clientName",
+          get: async ({ find, get }) => {
+            const query = await fetch("https://api.github.com/users/jeremybanka")
+            const json = await query.json()
+            const clientState = find(clientAtoms, json.key)
+            const client = get(clientState)
+            return client?.name
+          }
+        })
+      `,
+			errors: 1,
+		},
+		{
+			name: `straightforward violation (non-destructured)`,
+			code: `
+        const clientNameState = selector<Loadable<string | null>>({
+          key: "clientName",
+          get: async (transactors) => {
+            const query = await fetch("https://api.github.com/users/jeremybanka")
+            const json = await query.json()
+            const clientState = transactors.find(clientAtoms, json.key)
+            const client = transactors.get(clientState)
+            return client?.name
+          }
+        })
+      `,
+			errors: 1,
+		},
+		{
+			name: `"if" conditional await-get in arrow function with body`,
 			code: `
         selector({
           get: async ({ get }) => {
@@ -57,6 +134,7 @@ ruleTester.run(`synchronous-selector-dependencies`, rule, {
 			errors: 1,
 		},
 		{
+			name: `"switch" conditional await-get in classic function expression`,
 			code: `
         selector({
           get: async ({ get }) => {
