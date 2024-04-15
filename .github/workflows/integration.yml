@@ -49,8 +49,11 @@ jobs:
       - name: Biome
         run: bun lint:biome
 
+      - name: ESLint (Build Original Plugins)
+        run: bun lint:eslint:build
+
       - name: ESLint
-        run: bun lint:eslint:build && bun lint:eslint
+        run: bun lint:eslint
 
       - name: Type Check
         run: bun lint:types
