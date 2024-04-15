@@ -134,6 +134,7 @@ export const synchronousSelectorDependencies = {
 					selectorComputation?.type === `ArrowFunctionExpression`
 				) {
 					const nonDestructuredTransactorsName =
+						selectorComputation.params[0] &&
 						`name` in selectorComputation.params[0]
 							? selectorComputation.params[0].name
 							: undefined
