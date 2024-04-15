@@ -180,20 +180,23 @@ export const ReactionEditor: FC<
 					add.reagent(e.target.value)
 				}}
 			>
-				{[null, ...energySelectables].map((option) =>
-					option === null ? (
-						<option key={reactionId + `reagent_add`} value={``}>
-							+
-						</option>
-					) : (
+				{[null, ...energySelectables].map((option) => {
+					if (option === null) {
+						return (
+							<option key={reactionId + `reagent_add`} value={``}>
+								+
+							</option>
+						)
+					}
+					return (
 						<option
 							key={option.value + reactionId + `reagent`}
 							value={option.value}
 						>
 							{option.text}
 						</option>
-					),
-				)}
+					)
+				})}
 			</select>
 			{`->`}
 			{reaction.products.map(({ id: productId }) => (
@@ -222,20 +225,23 @@ export const ReactionEditor: FC<
 				}}
 				value={``}
 			>
-				{[null, ...energySelectables].map((option) =>
-					option === null ? (
-						<option key={reactionId + `product_add`} value={``}>
-							+
-						</option>
-					) : (
+				{[null, ...energySelectables].map((option) => {
+					if (option === null) {
+						return (
+							<option key={reactionId + `product_add`} value={``}>
+								+
+							</option>
+						)
+					}
+					return (
 						<option
 							key={option.value + reactionId + `product`}
 							value={option.value}
 						>
 							{option.text}
 						</option>
-					),
-				)}
+					)
+				})}
 			</select>
 			<div>
 				{reaction.featureOf ? (
@@ -259,20 +265,23 @@ export const ReactionEditor: FC<
 						}}
 						value={``}
 					>
-						{[null, ...energySelectables].map((option) =>
-							option === null ? (
-								<option key={reactionId + `featureOf_add`} value={``}>
-									+
-								</option>
-							) : (
+						{[null, ...energySelectables].map((option) => {
+							if (option === null) {
+								return (
+									<option key={reactionId + `featureOf_add`} value={``}>
+										+
+									</option>
+								)
+							}
+							return (
 								<option
 									key={option.value + reactionId + `featureOf`}
 									value={option.value}
 								>
 									{option.text}
 								</option>
-							),
-						)}
+							)
+						})}
 					</select>
 				)}
 			</div>

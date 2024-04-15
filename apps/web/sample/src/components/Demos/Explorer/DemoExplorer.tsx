@@ -77,7 +77,13 @@ const Fractal: FC<{ items: FractalArray<number>; indices?: number[] }> = ({
 						</div>
 					)
 				}
-				return <Fractal items={item} indices={[...indices, idx]} />
+				return (
+					<Fractal
+						key={item.join(`-`)}
+						items={item}
+						indices={[...indices, idx]}
+					/>
+				)
 			})}
 		</div>
 	)

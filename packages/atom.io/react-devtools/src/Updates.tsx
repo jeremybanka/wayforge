@@ -93,13 +93,16 @@ const TransactionUpdateFC: React.FC<{
 					{transactionUpdate.updates
 						.filter((token) => !token.key.startsWith(`👁‍🗨`))
 						.map((update, index) => {
-							return `newValue` in update ? (
-								<article.AtomUpdate
-									key={`${transactionUpdate.key}:${index}:${update.key}`}
-									serialNumber={index}
-									atomUpdate={update}
-								/>
-							) : (
+							if (`newValue` in update) {
+								return (
+									<article.AtomUpdate
+										key={`${transactionUpdate.key}:${index}:${update.key}`}
+										serialNumber={index}
+										atomUpdate={update}
+									/>
+								)
+							}
+							return (
 								<TransactionUpdateFC
 									key={`${transactionUpdate.key}:${index}:${update.key}`}
 									serialNumber={index}
