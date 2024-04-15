@@ -5,17 +5,15 @@ import type { RecoilState, RecoilValueReadOnly } from "recoil"
 import { RecoilRoot, atom, useRecoilState, useRecoilValue } from "recoil"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
-
 import { Combo } from "./Combo"
 
-export const handleChange = vitest.fn()
+const handleChange = vitest.fn()
 
-export type RecoilObserverProps = {
+type RecoilObserverProps = {
 	node: RecoilState<any> | RecoilValueReadOnly<any>
 	onChange: (value: any) => void
 }
-export const RecoilObserver: FC<RecoilObserverProps> = ({ node, onChange }) => {
+const RecoilObserver: FC<RecoilObserverProps> = ({ node, onChange }) => {
 	const value = useRecoilValue(node)
 	useEffect(() => {
 		onChange(value)

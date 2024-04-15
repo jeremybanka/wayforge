@@ -23,14 +23,14 @@ export const RelationEditor: DataDesigner<Join, `Tree`> = (props) => {
 		<article className="relation-editor-0123456789">
 			{/* <span>{props.data.relationType}</span> */}
 			{data.map(([head, tail]) => (
-				<section>
+				<section key={head}>
 					<span>
 						<Id id={head} />
 					</span>
 					:
 					<span>
 						{tail.map((child) => (
-							<Id id={child} />
+							<Id key={`${head}-${child}`} id={child} />
 						))}
 					</span>
 				</section>

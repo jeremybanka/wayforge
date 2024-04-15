@@ -118,15 +118,18 @@ export const ObjectEditor = <T extends Json.Object>({
 						const isOfficial = schemaKeys === true || schemaKeys.includes(key)
 						const isMissing = missingKeys.includes(key)
 
-						return isMissing ? (
-							<PropertyAdder
-								key={key + `IsMissing`}
-								propertyKey={key}
-								addProperty={makePropertyAdder(key, `string`)}
-								disabled={disabled}
-								Components={Components}
-							/>
-						) : (
+						if (isMissing) {
+							return (
+								<PropertyAdder
+									key={key + `IsMissing`}
+									propertyKey={key}
+									addProperty={makePropertyAdder(key, `string`)}
+									disabled={disabled}
+									Components={Components}
+								/>
+							)
+						}
+						return (
 							<JsonEditor_INTERNAL
 								key={originalPath.join(`.`)}
 								schema={schema}

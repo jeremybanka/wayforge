@@ -40,16 +40,19 @@ export const InnerView: FC<{ viewId: string; close: () => void }> = ({
 			<div>
 				{view.title}
 				{`: `}
-				{location.pathname.split(`/`).map((pathPiece, idx, array) =>
-					pathPiece === `` && idx === 1 ? null : (
+				{location.pathname.split(`/`).map((pathPiece, idx, array) => {
+					if (pathPiece === `` && idx === 1) {
+						return null
+					}
+					return (
 						<Link
 							to={array.slice(0, idx + 1).join(`/`)}
 							key={`${pathPiece}_${viewId}`}
 						>
 							{idx === 0 ? `home` : pathPiece}/
 						</Link>
-					),
-				)}
+					)
+				})}
 				<button type="button" onClick={close}>
 					close
 				</button>
