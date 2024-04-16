@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint . --ignore-pattern=**/dist/**",
+		"lint:eslint": "eslint .",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
