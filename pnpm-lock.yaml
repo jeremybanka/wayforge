@@ -155,8 +155,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/bun':
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.1.0
+        version: 1.1.0
       vite:
         specifier: 5.2.8
         version: 5.2.8(@types/node@20.12.7)
@@ -269,8 +269,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/bun':
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.1.0
+        version: 1.1.0
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -762,8 +762,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/bun':
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.1.0
+        version: 1.1.0
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -787,8 +787,8 @@ importers:
         version: 3.22.5(zod@3.22.4)
     devDependencies:
       '@types/bun':
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.1.0
+        version: 1.1.0
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
@@ -4960,10 +4960,10 @@ packages:
       '@babel/types': 7.24.0
     dev: true
 
-  /@types/bun@1.0.12:
-    resolution: {integrity: sha512-qPb5FcygbpSS1NDBjWyQCWeI9kKXwSYSR1Enu7yb+gMXgFwGMhlyOvgV/7FGrdvAjlSXWRY6IDepos7k8WzAtQ==}
+  /@types/bun@1.1.0:
+    resolution: {integrity: sha512-QGK0yU4jh0OK1A7DyhPkQuKjHQCC5jSJa3dpWIEhHv/rPfb6zLfdArc4/uUUZBMTcjilsafRXnPWO+1owb572Q==}
     dependencies:
-      bun-types: 1.0.36
+      bun-types: 1.1.0
     dev: true
 
   /@types/cookie@0.4.1:
@@ -6196,8 +6196,8 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /bun-types@1.0.36:
-    resolution: {integrity: sha512-gaIb1SyhB0JZfIEg73/kSFhqolUqJXC68peguhXGwqr27HuvI8nkD0LTIHp/1DY4cNadfXHYgYrZIWX7oEoXlg==}
+  /bun-types@1.1.0:
+    resolution: {integrity: sha512-GhMDD7TosdJzQPGUOcQD5PZshvXVxDfwGAZs2dq+eSaPsRn3iUCzvpFlsg7Q51bXVzLAUs+FWHlnmpgZ5UggIg==}
     dependencies:
       '@types/node': 20.11.30
       '@types/ws': 8.5.10
