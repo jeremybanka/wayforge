@@ -162,16 +162,19 @@ const commonRules = {
 /** @type {(import("eslint").Linter.FlatConfig)[]} */
 const configs = [
 	{
-		languageOptions: { parser, parserOptions },
-		files: [`**/*.ts{,x}`, `eslint.config.js`],
 		ignores: [
 			`**/_shared/**`,
 			`**/build/**`,
+			`**/coverage/**`,
 			`**/dist/**`,
 			`**/gen/**`,
 			`**/node_modules/**`,
-			`apps/tempest.games/**`,
 		],
+	},
+	{
+		languageOptions: { parser, parserOptions },
+		ignores: [`apps/tempest.games/**`],
+		files: [`**/*.ts{,x}`, `eslint.config.js`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin,
@@ -212,7 +215,7 @@ const configs = [
 			},
 		},
 		files: [`apps/tempest.games/**/*.ts{,x}`],
-		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
+		ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin,
