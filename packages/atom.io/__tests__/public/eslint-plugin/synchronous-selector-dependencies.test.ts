@@ -1,4 +1,4 @@
-import { RuleTester } from "eslint"
+import { RuleTester } from "eslint-v9"
 import parser from "@typescript-eslint/parser"
 
 import { Rules } from "atom.io/eslint-plugin"

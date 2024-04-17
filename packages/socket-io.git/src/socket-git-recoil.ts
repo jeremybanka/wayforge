@@ -54,7 +54,7 @@ export const initGitClientTools = (socket: GitClientSocket): GitClientTools => {
 			(...args: Parameters<GitInterface[keyof GitInterface]>) =>
 				socket.emit(key, ...args),
 			{
-				state: selector({
+				state: selector<any>({
 					key: `git${capitalize(key)}`,
 					get: ({ get }) => get(internalState),
 				}),

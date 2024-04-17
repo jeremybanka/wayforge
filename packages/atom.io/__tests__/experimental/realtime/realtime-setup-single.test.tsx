@@ -5,7 +5,7 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
-const countState = AtomIO.atom({ key: `count`, default: 0 })
+const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 
 describe(`single-client scenario`, () => {
 	const scenario = () => {

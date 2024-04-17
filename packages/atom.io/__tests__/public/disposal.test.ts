@@ -18,7 +18,7 @@ beforeEach(() => {
 
 describe(`dispose`, () => {
 	it(`deletes an atom`, () => {
-		const countState = atom({
+		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
@@ -41,11 +41,11 @@ describe(`dispose`, () => {
 		)
 	})
 	it(`deletes downstream selectors from atom`, () => {
-		const countState = atom({
+		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const doubledState = selector({
+		const doubledState = selector<number>({
 			key: `doubled`,
 			get: ({ get }) => get(countState) * 2,
 		})
@@ -66,7 +66,7 @@ describe(`dispose`, () => {
 		)
 	})
 	it(`logs an error if the atom is not in the store`, () => {
-		const countState = atom({
+		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
@@ -82,11 +82,11 @@ describe(`dispose`, () => {
 	})
 
 	it(`deletes a selector`, () => {
-		const countState = atom({
+		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const doubledState = selector({
+		const doubledState = selector<number>({
 			key: `doubled`,
 			get: ({ get }) => get(countState),
 		})
@@ -108,19 +108,19 @@ describe(`dispose`, () => {
 	})
 
 	it(`deletes downstream, but not upstream, selectors from selector`, () => {
-		const countState = atom({
+		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const countPlusOneState = selector({
+		const countPlusOneState = selector<number>({
 			key: `countPlusOne`,
 			get: ({ get }) => get(countState) + 1,
 		})
-		const countPlusTwoState = selector({
+		const countPlusTwoState = selector<number>({
 			key: `countPlusTwo`,
 			get: ({ get }) => get(countPlusOneState) + 1,
 		})
-		const countPlusThreeState = selector({
+		const countPlusThreeState = selector<number>({
 			key: `countPlusThree`,
 			get: ({ get }) => get(countPlusTwoState) + 1,
 		})
@@ -153,7 +153,7 @@ describe(`auto disposability concept (just for fun)`, () => {
 	function disposableAtom<T>(
 		options: RegularAtomOptions<T>,
 	): Disposable & RegularAtomToken<T> {
-		const atomToken = atom(options)
+		const atomToken = atom<T>(options)
 		return disposable(atomToken, () => {
 			dispose(atomToken)
 		})

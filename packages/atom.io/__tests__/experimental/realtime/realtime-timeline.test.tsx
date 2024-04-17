@@ -6,7 +6,7 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
 describe(`undo/redo`, () => {
-	const countState = AtomIO.atom({ key: `count`, default: 0 })
+	const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 	const countTL = AtomIO.timeline({ key: `countTL`, atoms: [countState] })
 	const scenario = () =>
 		RTTest.singleClient({

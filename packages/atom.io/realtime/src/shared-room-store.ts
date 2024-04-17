@@ -12,7 +12,7 @@ export const usersInThisRoomIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const roomIndex = atom({
+export const roomIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `roomIndex`,
 	default: () => new SetRTX<string>(),
 	mutable: true,

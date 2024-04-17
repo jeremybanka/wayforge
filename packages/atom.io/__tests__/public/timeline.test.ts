@@ -35,20 +35,20 @@ beforeEach(() => {
 
 describe(`timeline`, () => {
 	it(`tracks the state of a group of atoms`, () => {
-		const a = atom({
+		const a = atom<number>({
 			key: `a`,
 			default: 5,
 		})
-		const b = atom({
+		const b = atom<number>({
 			key: `b`,
 			default: 0,
 		})
-		const c = atom({
+		const c = atom<number>({
 			key: `c`,
 			default: 0,
 		})
 
-		const product_abc = selector({
+		const product_abc = selector<number>({
 			key: `product of a, b, & c`,
 			get: ({ get }) => {
 				return get(a) * get(b) * get(c)
@@ -134,7 +134,7 @@ describe(`timeline`, () => {
 		expect(Utils.stdout0).toHaveBeenCalledTimes(8)
 	})
 	test(`time traveling with nested transactions`, () => {
-		const a = atom({
+		const a = atom<number>({
 			key: `a`,
 			default: 0,
 		})
@@ -167,16 +167,16 @@ describe(`timeline`, () => {
 		expect(getState(a)).toBe(3)
 	})
 	test(`subscriptions when time-traveling`, () => {
-		const a = atom({
+		const a = atom<number>({
 			key: `a`,
 			default: 3,
 		})
-		const b = atom({
+		const b = atom<number>({
 			key: `b`,
 			default: 6,
 		})
 
-		const product_ab = selector({
+		const product_ab = selector<number>({
 			key: `product of a & b`,
 			get: ({ get }) => {
 				return get(a) * get(b)
@@ -280,7 +280,7 @@ describe(`timeline`, () => {
 		expect(getState(myCountState)).toBe(0)
 	})
 	it(`may ignore atom updates conditionally`, () => {
-		const count = atom({
+		const count = atom<number>({
 			key: `count`,
 			default: 0,
 		})

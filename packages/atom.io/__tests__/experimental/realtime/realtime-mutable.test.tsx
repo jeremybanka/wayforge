@@ -4,10 +4,11 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
 
-const numbersCollectionState = AtomIO.atom({
+const numbersCollectionState = AtomIO.atom<SetRTX<number>, SetRTXJson<number>>({
 	key: `numbersCollection`,
 	mutable: true,
 	default: () => new SetRTX<number>([0]),

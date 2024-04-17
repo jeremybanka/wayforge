@@ -1,11 +1,11 @@
 import { atom, selector, snapshot_UNSTABLE } from "recoil"
 
-const myAtom = atom({
+const myAtom = atom<number>({
 	key: `myAtom`,
 	default: 37,
 })
 
-const mySelector = selector({
+const mySelector = selector<number>({
 	key: `mySelector`,
 	get: ({ get }) => get(myAtom) * 2,
 })

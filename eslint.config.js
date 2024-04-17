@@ -153,6 +153,7 @@ const commonRules = {
 	"@typescript-eslint/unbound-method": 0,
 	"@typescript-eslint/unified-signatures": ERROR,
 
+	"atom.io/explicit-state-types": ERROR,
 	"atom.io/synchronous-selector-dependencies": ERROR,
 
 	"no-mixed-spaces-and-tabs": 0,

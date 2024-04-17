@@ -1,6 +1,6 @@
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 
-export const nowState = atom({
+export const nowState = atom<number>({
 	key: `now`,
 	default: Date.now(),
 	effects: [
