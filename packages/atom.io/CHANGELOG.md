@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.19.4
+
+### Patch Changes
+
+- 56ac53d: ✨ `atom.io/eslint-plugin` adds a new rule, `explicit-state-types`. This rule enforces passing type arguments to your state declarations up-front. A best practice for making your store less amorphous.
+
 ## 0.19.3
 
 ### Patch Changes
