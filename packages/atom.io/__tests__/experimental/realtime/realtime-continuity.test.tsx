@@ -27,7 +27,7 @@ function prefixLogger(store: Store, prefix: string) {
 }
 
 AtomIO.getState(RTC.myIdState)
-const countState = AtomIO.atom({ key: `count`, default: 0 })
+const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 const userActionCountServerState = AtomIO.atom<number>({
 	key: `server:userActionCount`,
 	default: 0,

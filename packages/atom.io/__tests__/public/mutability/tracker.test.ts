@@ -33,7 +33,7 @@ beforeEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = atom({
+		const mutableSetState = atom<SetRTX<string>, string[]>({
 			key: `mutableSetState`,
 			default: () => new SetRTX(),
 			mutable: true,
@@ -56,7 +56,7 @@ describe(`tracker`, () => {
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = atom({
+		const mutableSetState = atom<SetRTX<string>, string[]>({
 			key: `mutableSetState`,
 			default: () => new SetRTX(),
 			mutable: true,

@@ -4,7 +4,7 @@ import { atom, atomFamily, belongsTo, isToken, setState } from "atom.io"
 describe(`validators`, () => {
 	describe(`isToken`, () => {
 		it(`returns true for a match, and infers the type`, () => {
-			const knownToken: RegularAtomToken<number> = atom({
+			const knownToken: RegularAtomToken<number> = atom<number>({
 				key: `count`,
 				default: 0,
 			})
@@ -28,7 +28,7 @@ describe(`validators`, () => {
 
 	describe(`belongsTo`, () => {
 		it(`returns true for a match, and infers the type`, () => {
-			const family = atomFamily({
+			const family = atomFamily<number, string>({
 				key: `count`,
 				default: 0,
 			})
@@ -44,7 +44,7 @@ describe(`validators`, () => {
 			}
 		})
 		it(`returns false for a mismatch`, () => {
-			const family = atomFamily({
+			const family = atomFamily<number, string>({
 				key: `count`,
 				default: 0,
 			})

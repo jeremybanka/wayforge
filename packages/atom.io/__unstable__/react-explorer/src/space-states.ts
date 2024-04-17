@@ -27,7 +27,7 @@ export const makeSpaceIndex = (key: string): RegularAtomToken<Set<string>> =>
 export const makeSpaceLayoutState = (
 	key: string,
 ): RegularAtomToken<Join<{ size: number }, `parent`, `child`>> =>
-	atom({
+	atom<Join<{ size: number }, `parent`, `child`>>({
 		key: `${key}:space_layout`,
 		default: new Join<{ size: number }>({ relationType: `1:n` })
 			.from(`parent`)

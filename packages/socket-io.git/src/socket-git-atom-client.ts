@@ -53,7 +53,7 @@ export const initGitAtomicTools = (socket: GitClientSocket): GitClientTools => {
 			(...args: Parameters<GitInterface[keyof GitInterface]>) =>
 				socket.emit(key, ...args),
 			{
-				state: A_IO.selector({
+				state: A_IO.selector<any>({
 					key: `git${capitalize(key)}`,
 					get: ({ get }) => get(internalState),
 				}),
