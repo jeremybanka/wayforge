@@ -284,8 +284,8 @@ importers:
         specifier: 8.2.2
         version: 8.2.2
       htmx.org:
-        specifier: 1.9.11
-        version: 1.9.11
+        specifier: 1.9.12
+        version: 1.9.12
       lightningcss:
         specifier: 1.24.1
         version: 1.24.1
@@ -8739,8 +8739,8 @@ packages:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
     dev: true
 
-  /htmx.org@1.9.11:
-    resolution: {integrity: sha512-WlVuICn8dfNOOgYmdYzYG8zSnP3++AdHkMHooQAzGZObWpVXYathpz/I37ycF4zikR6YduzfCvEcxk20JkIUsw==}
+  /htmx.org@1.9.12:
+    resolution: {integrity: sha512-VZAohXyF7xPGS52IM8d1T1283y+X4D+Owf3qY1NZ9RuBypyu9l8cGsxUMAG5fEAb/DhT7rDoJ9Hpu5/HxFD3cw==}
     dev: true
 
   /http-errors@2.0.0:
