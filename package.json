@@ -7,11 +7,11 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "pnpm@8.15.6",
+	"packageManager": "pnpm@8.15.7",
 	"engines": {
 		"bun": "1.1.4",
 		"node": "20.12.2",
-		"pnpm": "8.15.6"
+		"pnpm": "8.15.7"
 	},
 	"workspaces": [
 		"apps/node/*",
