@@ -656,8 +656,11 @@ importers:
         specifier: 15.0.2
         version: 15.0.2(react-dom@18.2.0)(react@18.2.0)
       '@types/eslint':
-        specifier: 8.56.9
+        specifier: npm:@types/eslint@8.56.9
         version: 8.56.9
+      '@types/eslint-9':
+        specifier: npm:@types/eslint@8.56.9
+        version: /@types/eslint@8.56.9
       '@types/estree':
         specifier: 1.0.5
         version: 1.0.5
@@ -695,8 +698,11 @@ importers:
         specifier: 0.30.8
         version: 0.30.8(@types/react@18.2.79)(postgres@3.4.4)(react@18.2.0)
       eslint:
-        specifier: 8.57.0
+        specifier: npm:eslint@8.57.0
         version: 8.57.0
+      eslint-v9:
+        specifier: npm:eslint@9.0.0
+        version: /eslint@9.0.0
       framer-motion:
         specifier: 11.1.1
         version: 11.1.1(react-dom@18.2.0)(react@18.2.0)
