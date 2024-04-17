@@ -46,7 +46,7 @@
 		},
 		"lint:eslint:build": {
 			"outputs": ["eslint-plugin/dist/**/*", "dist/**/*"],
-			"inputs": ["eslint-plugin/src/**/*.ts"]
+			"inputs": ["eslint-plugin/src/**/*.ts", "tsup.config.ts"]
 		},
 		"lint:eslint": {
 			"dependsOn": ["lint:eslint:build"],
