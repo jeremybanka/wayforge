@@ -18,8 +18,8 @@ describe(`silo`, () => {
 			default: 0,
 		}
 
-		const countState__Uno = Uno.atom(DEFAULT_COUNT_CONFIG)
-		const countState__Dos = Dos.atom(DEFAULT_COUNT_CONFIG)
+		const countState__Uno = Uno.atom<number>(DEFAULT_COUNT_CONFIG)
+		const countState__Dos = Dos.atom<number>(DEFAULT_COUNT_CONFIG)
 
 		const UnoCountValue = Uno.getState(countState__Uno)
 		const DosCountValue = Dos.getState(countState__Dos)
@@ -48,8 +48,12 @@ describe(`silo`, () => {
 				default: 0,
 			}
 
-		const countAtoms__Uno = Uno.atomFamily(DEFAULT_COUNT_ATOMS_CONFIG)
-		const countAtoms__Dos = Dos.atomFamily(DEFAULT_COUNT_ATOMS_CONFIG)
+		const countAtoms__Uno = Uno.atomFamily<number, string>(
+			DEFAULT_COUNT_ATOMS_CONFIG,
+		)
+		const countAtoms__Dos = Dos.atomFamily<number, string>(
+			DEFAULT_COUNT_ATOMS_CONFIG,
+		)
 
 		const countState__Uno = Uno.findState(countAtoms__Uno, `a`)
 		const countState__Dos = Dos.findState(countAtoms__Dos, `b`)

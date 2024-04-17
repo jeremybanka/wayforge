@@ -22,15 +22,15 @@ beforeEach(() => {
 
 describe(`lazy propagation system`, () => {
 	test(`on subscribe, selectors in turn subscribe to their root atoms`, () => {
-		const a = atom({
+		const a = atom<number>({
 			key: `a`,
 			default: 0,
 		})
-		const s = selector({
+		const s = selector<number>({
 			key: `s`,
 			get: ({ get }) => get(a) * 10,
 		})
-		const s0 = selector({
+		const s0 = selector<number>({
 			key: `s0`,
 			get: ({ get }) => get(s) * 10,
 		})
@@ -48,11 +48,11 @@ describe(`lazy propagation system`, () => {
 		expect(Utils.stdout).toHaveBeenCalledWith({ newValue: 100, oldValue: 0 })
 	})
 	test(`subscriptions are cleaned up in a domino effect`, () => {
-		const a = atom({
+		const a = atom<number>({
 			key: `a`,
 			default: 0,
 		})
-		const s = selector({
+		const s = selector<number>({
 			key: `s`,
 			get: ({ get }) => get(a) * 10,
 		})
@@ -66,18 +66,18 @@ describe(`lazy propagation system`, () => {
 		expect(mySelector.subject.subscribers.size).toBe(0)
 	})
 	test(`selectors are not eagerly evaluated, unless they have a subscription`, () => {
-		const a = atom({
+		const a = atom<number>({
 			key: `a`,
 			default: 0,
 		})
-		const selector0 = selector({
+		const selector0 = selector<number>({
 			key: `selector0`,
 			get: ({ get }) => {
 				Utils.stdout(`selector0 evaluated`)
 				return get(a) * 10
 			},
 		})
-		const selector1 = selector({
+		const selector1 = selector<number>({
 			key: `selector1`,
 			get: ({ get }) => {
 				Utils.stdout(`selector1 evaluated`)

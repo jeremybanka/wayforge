@@ -46,19 +46,19 @@ describe(`not found`, () => {
 describe(`graceful handling of improper usage`, () => {
 	describe(`a nested call to setState is a violation`, () => {
 		test(`the inner call results in a no-op and a logger(error)`, () => {
-			const a = atom({
+			const a = atom<number>({
 				key: `a`,
 				default: 0,
 			})
-			const b = atom({
+			const b = atom<boolean>({
 				key: `b`,
 				default: false,
 			})
-			const c = atom({
+			const c = atom<string>({
 				key: `c`,
 				default: `hi`,
 			})
-			const s = selector({
+			const s = selector<number>({
 				key: `s`,
 				get: ({ get }) => {
 					return get(b) ? get(a) + 1 : 0
@@ -88,7 +88,7 @@ describe(`graceful handling of improper usage`, () => {
 	})
 	describe(`giving an atom to multiple timelines is a violation`, () => {
 		test(`the second timeline does not track the atom, and a logger(error) is given`, () => {
-			const countState = atom({
+			const countState = atom<number>({
 				key: `count`,
 				default: 0,
 			})
@@ -116,7 +116,7 @@ describe(`graceful handling of improper usage`, () => {
 			expect(countTimeline1Data?.history).toHaveLength(0)
 		})
 		test(`if a family is tracked by a timeline, a member of that family cannot be tracked by another timeline`, () => {
-			const findCountState = atomFamily({
+			const findCountState = atomFamily<number, string>({
 				key: `counts`,
 				default: 0,
 			})
@@ -154,7 +154,7 @@ describe(`graceful handling of improper usage`, () => {
 describe(`recipes`, () => {
 	describe(`timeline family recipe`, () => {
 		it(`creates a timeline for each atom in the family`, () => {
-			const f = atomFamily({
+			const f = atomFamily<number, string>({
 				key: `f`,
 				default: 0,
 			})

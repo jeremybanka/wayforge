@@ -28,7 +28,7 @@ export function selectJsonFamily<
 	J extends Json.Serializable,
 	K extends Json.Serializable,
 >(
-	atomFamily:
+	family:
 		| AtomIO.MutableAtomFamily<T extends Transceiver<any> ? T : never, J, K>
 		| AtomIO.RegularAtomFamily<T, K>,
 	transform: JsonInterface<T, J>,
@@ -36,20 +36,20 @@ export function selectJsonFamily<
 ): AtomIO.WritableSelectorFamily<J, K> {
 	const jsonFamily = createSelectorFamily<J, K>(
 		{
-			key: `${atomFamily.key}:JSON`,
+			key: `${family.key}:JSON`,
 			get:
 				(key) =>
 				({ get }) =>
-					transform.toJson(get(atomFamily(key))),
+					transform.toJson(get(family(key))),
 			set:
 				(key) =>
 				({ set }, newValue) => {
-					set(atomFamily(key), transform.fromJson(newValue))
+					set(family(key), transform.fromJson(newValue))
 				},
 		},
 		store,
 	)
-	atomFamily.subject.subscribe(
+	family.subject.subscribe(
 		`store=${store.config.name}::json-selector-family`,
 		(token) => {
 			if (token.family) {

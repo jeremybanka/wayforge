@@ -25,11 +25,11 @@ describe(`store observation`, () => {
 		Internal.IMPLICIT.STORE.on.atomCreation.subscribe(`test`, (atomToken) => {
 			Utils.stdout(atomToken)
 		})
-		const a = atom({
+		const a = atom<null>({
 			key: `a`,
 			default: null,
 		})
-		const b = atom({
+		const b = atom<null>({
 			key: `b`,
 			default: null,
 		})
@@ -43,11 +43,11 @@ describe(`store observation`, () => {
 				Utils.stdout(selectorToken)
 			},
 		)
-		const c = selector({
+		const c = selector<null>({
 			key: `c`,
 			get: () => null,
 		})
-		const d = selector({
+		const d = selector<null>({
 			key: `d`,
 			get: () => null,
 			set: () => null,

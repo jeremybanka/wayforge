@@ -5,12 +5,12 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
-const countState = AtomIO.atom({ key: `count`, default: 0 })
-const countPlusTenState = AtomIO.selector({
+const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
+const countPlusTenState = AtomIO.selector<number>({
 	key: `plusTen`,
 	get: ({ get }) => get(countState) + 10,
 })
-const countHundredfoldState = AtomIO.selector({
+const countHundredfoldState = AtomIO.selector<number>({
 	key: `hundredfold`,
 	get: ({ get }) => get(countState) * 100,
 	set: ({ set }, value) => {

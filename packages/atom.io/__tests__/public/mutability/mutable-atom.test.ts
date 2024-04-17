@@ -40,7 +40,7 @@ beforeEach(() => {
 
 describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
-		const myMutableState = atom({
+		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `letters`,
 			mutable: true,
 			default: () => new SetRTX<string>(),
@@ -132,7 +132,7 @@ describe(`mutable atomic state`, () => {
 	})
 
 	it(`can recover from a failed transaction`, () => {
-		const myMutableState = atom({
+		const myMutableState = atom<SetRTX<string>, string[]>({
 			key: `my::mutable`,
 			mutable: true,
 			default: () => new SetRTX(),
@@ -177,7 +177,11 @@ describe(`mutable atomic state`, () => {
 
 describe(`mutable time traveling`, () => {
 	it(`can travel back and forward in time`, () => {
-		const myMutableStates = atomFamily({
+		const myMutableStates = atomFamily<
+			SetRTX<string>,
+			SetRTXJson<string>,
+			string
+		>({
 			key: `myMutable`,
 			mutable: true,
 			default: () => new SetRTX(),
@@ -210,7 +214,7 @@ describe(`mutable time traveling`, () => {
 		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
 	})
 	it(`can travel back and forward in time with a transaction`, () => {
-		const myMutableState = atom({
+		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableSet`,
 			mutable: true,
 			default: () => new SetRTX(),
@@ -253,7 +257,11 @@ describe(`mutable time traveling`, () => {
 describe(`mutable atom effects`, () => {
 	it(`runs a callback when the atom is set`, () => {
 		let setSize = 0
-		const myMutableAtoms = atomFamily({
+		const myMutableAtoms = atomFamily<
+			SetRTX<string>,
+			SetRTXJson<string>,
+			string
+		>({
 			key: `myMutableAtoms`,
 			default: () => new SetRTX(),
 			mutable: true,
@@ -281,7 +289,7 @@ describe(`mutable atom effects`, () => {
 		const letterSubject = new Internal.StatefulSubject<{ letter: string }>({
 			letter: `A`,
 		})
-		const myMutableState = atom({
+		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX([letterSubject.state.letter]),
 			mutable: true,
@@ -308,14 +316,14 @@ describe(`mutable atom effects`, () => {
 
 describe(`graceful handling of hmr/duplicate atom keys`, () => {
 	it(`logs an error if an atom is created with the same key as an existing atom`, () => {
-		atom({
+		atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX(),
 			mutable: true,
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		atom({
+		atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX(),
 			mutable: true,

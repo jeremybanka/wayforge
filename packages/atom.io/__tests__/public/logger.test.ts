@@ -16,13 +16,13 @@ beforeEach(() => {
 
 describe(`setLogLevel`, () => {
 	it(`allows logging at the preferred level`, () => {
-		atom({
+		atom<number>({
 			key: `count`,
 			default: 0,
 		})
 		expect(logger.info).not.toHaveBeenCalled()
 		Internal.IMPLICIT.STORE.loggers[0].logLevel = `info`
-		const countState = atom({
+		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
