@@ -9,6 +9,7 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`socket.io-client`,
 	`react`,
 	`@types/react`,
+	`@typescript-eslint/utils`,
 	`@testing-library/react`,
 	`@floating-ui/react`,
 	`framer-motion`,
