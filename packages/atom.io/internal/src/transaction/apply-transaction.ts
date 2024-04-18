@@ -2,8 +2,8 @@ import type { Func } from "atom.io"
 
 import { ingestTransactionUpdate } from "../ingest-updates"
 import { newest } from "../lineage"
-import { withdraw } from "../store"
 import type { Store } from "../store"
+import { withdraw } from "../store"
 import { isChildStore, isRootStore } from "./is-root-store"
 import { setEpochNumberOfAction } from "./set-epoch-number"
 

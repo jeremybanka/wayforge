@@ -1,16 +1,14 @@
 import type { Refinement } from "../refinement"
 
-export * from "./refined"
-export * from "./refinery"
-export * from "./refinement"
-export * from "./refine-json"
-
 export * from "./can-exist"
 export * from "./cannot-exist"
-
 export * from "./is-class"
-export * from "./is-union"
 export * from "./is-intersection"
+export * from "./is-union"
+export * from "./refine-json"
+export * from "./refined"
+export * from "./refinement"
+export * from "./refinery"
 
 export const isLiteral =
 	<T extends boolean | number | string>(value: T): Refinement<unknown, T> =>

@@ -1,5 +1,6 @@
 import type { StateUpdate } from "atom.io"
-import { type ReadableState, isChildStore } from "."
+
+import { isChildStore, type ReadableState } from "."
 import { Future } from "./future"
 import { copyMutableIfNeeded } from "./set-state/copy-mutable-if-needed"
 import type { Store } from "./store"

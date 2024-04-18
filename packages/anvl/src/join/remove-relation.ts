@@ -1,11 +1,10 @@
-import { isString } from "../primitive"
-
 import { isEmptyArray, isOneOf, map } from "../array"
 import { comprises } from "../array/venn"
 import { pipe } from "../function"
 import type { Json } from "../json"
 import { treeShake as removeProperties } from "../object"
 import { entriesToRecord, recordToEntries } from "../object/entries"
+import { isString } from "../primitive"
 import { split } from "../string/split"
 import type { RelationData } from "./core-relation-data"
 

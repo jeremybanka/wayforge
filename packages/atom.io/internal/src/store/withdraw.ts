@@ -2,6 +2,7 @@ import type {
 	AtomFamily,
 	AtomFamilyToken,
 	AtomToken,
+	Func,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -22,10 +23,9 @@ import type {
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 	WritableToken,
-	Func,
 } from "atom.io"
-
 import type { Json } from "atom.io/json"
+
 import type {
 	Atom,
 	MutableAtom,
@@ -38,7 +38,6 @@ import type {
 	WritableState,
 } from ".."
 import { NotFoundError } from ".."
-
 import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import type { Store } from "./store"

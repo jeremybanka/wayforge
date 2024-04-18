@@ -1,17 +1,17 @@
 import type { EnvironmentData } from "atom.io/internal"
 import {
-	IMPLICIT,
 	actUponStore,
 	arbitrary,
 	createTransaction,
+	IMPLICIT,
 } from "atom.io/internal"
 
 import type {
+	findState,
+	Func,
 	KeyedStateUpdate,
 	ReadonlySelectorToken,
 	WritableToken,
-	findState,
-	Func,
 } from "."
 
 export type TransactionToken<F extends Func> = {

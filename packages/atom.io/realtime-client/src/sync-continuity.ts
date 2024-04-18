@@ -1,9 +1,9 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
-import { deleteAtom } from "atom.io/internal"
 import {
 	actUponStore,
 	assignTransactionToContinuity,
+	deleteAtom,
 	getEpochNumberOfContinuity,
 	getFromStore,
 	getJsonToken,

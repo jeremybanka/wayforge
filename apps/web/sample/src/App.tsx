@@ -1,9 +1,8 @@
 import { AtomIODevtools } from "atom.io/react-devtools"
 import type { FC } from "react"
 
-import { DemoExplorer } from "./components/Demos"
-
 import scss from "./App.module.scss"
+import { DemoExplorer } from "./components/Demos"
 
 export const App: FC = () => {
 	return (

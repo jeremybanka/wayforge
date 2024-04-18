@@ -1,5 +1,3 @@
-import { vitest } from "vitest"
-
 import type { Logger } from "atom.io"
 import {
 	atom,
@@ -17,6 +15,7 @@ import {
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { vitest } from "vitest"
 
 import * as Utils from "../../__util__"
 

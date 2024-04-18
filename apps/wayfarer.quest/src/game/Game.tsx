@@ -7,11 +7,10 @@ import { useSyncContinuity } from "atom.io/realtime-react"
 
 import { heartsContinuity } from "~/apps/core.wayfarer.quest/src/store/game/hearts"
 
+import scss from "./Game.module.scss"
 import { MyDomain } from "./my-domain/MyDomain"
 import { EnemyDomains } from "./other-players/EnemyDomains"
 import { Public } from "./public/Public"
-
-import scss from "./Game.module.scss"
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,

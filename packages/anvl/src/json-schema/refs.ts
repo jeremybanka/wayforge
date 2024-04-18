@@ -1,8 +1,7 @@
-import { isString } from "../primitive"
-import type { Substitute } from "../tree/substitute"
-
 import { delve } from "../object"
 import { doesExtend } from "../object/refinement"
+import { isString } from "../primitive"
+import type { Substitute } from "../tree/substitute"
 import { Int } from "./integer"
 import type { JsonSchema } from "./json-schema"
 import { isJsonSchema } from "./json-schema"

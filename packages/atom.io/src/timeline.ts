@@ -4,7 +4,7 @@ import type {
 	TimelineSelectorUpdate,
 	TimelineTransactionUpdate,
 } from "atom.io/internal"
-import { IMPLICIT, createTimeline, timeTravel } from "atom.io/internal"
+import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 
 import type { AtomFamilyToken, AtomToken } from "."
 

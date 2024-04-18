@@ -1,8 +1,3 @@
-import { vitest } from "vitest"
-
-import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
-import { Join } from "~/packages/anvl/src/join"
-
 import type { Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
@@ -18,6 +13,11 @@ import {
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { vitest } from "vitest"
+
+import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
+import { Join } from "~/packages/anvl/src/join"
+
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { pipe } from "../function"
-
 import { map } from "../array"
+import { pipe } from "../function"
 import type { Json } from "../json"
 import { entriesToRecord, recordToEntries } from "./entries"
 

@@ -5,8 +5,8 @@ import {
 	useInteractions,
 } from "@floating-ui/react"
 import * as React from "react"
-import { pipe } from "~/packages/anvl/src/function"
 
+import { pipe } from "~/packages/anvl/src/function"
 import { stringToColor } from "~/packages/anvl/src/string/string-to-color"
 import { contrastMax, hexToSpec, offset, specToHex } from "~/packages/luum/src"
 

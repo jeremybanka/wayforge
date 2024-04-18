@@ -1,7 +1,6 @@
 import { readdirSync } from "node:fs"
 
 // import mock from "mock-fs"
-
 import { DEFAULT_FILESTORE_OPTIONS } from "../src/options"
 import { initIndexer, initResourceReader } from "../src/read"
 import { initResourceWriter } from "../src/write"

@@ -5,6 +5,7 @@ import type {
 } from "atom.io"
 import { atom, atomFamily } from "atom.io"
 import type { Location } from "react-router-dom"
+
 import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { persistStringSetAtom } from "./explorer-effects"

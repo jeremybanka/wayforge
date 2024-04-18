@@ -1,7 +1,7 @@
 import type { Func } from "atom.io"
 
-import type { TransactionEpoch, TransactionProgress } from "."
 import type { Store } from "../store"
+import type { TransactionEpoch, TransactionProgress } from "."
 
 export interface RootStore extends Store {
 	transactionMeta: TransactionEpoch

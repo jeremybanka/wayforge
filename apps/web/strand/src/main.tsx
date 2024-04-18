@@ -1,3 +1,6 @@
+import "./scss/font-face.scss"
+import "./scss/index.scss"
+
 import { RealtimeProvider } from "atom.io/realtime-react"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
@@ -6,9 +9,6 @@ import { io } from "socket.io-client"
 
 import { App } from "./App"
 import { env } from "./services/env"
-
-import "./scss/font-face.scss"
-import "./scss/index.scss"
 
 const socket = io(env.VITE_REMOTE_ORIGIN)
 

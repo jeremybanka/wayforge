@@ -2,8 +2,8 @@ import type { Modifier } from "~/packages/anvl/src/function"
 import { become, pipe } from "~/packages/anvl/src/function"
 import { wrapInto } from "~/packages/anvl/src/number/wrap"
 
-import type { LuumApplicator } from "."
 import type { LuumSpec } from ".."
+import type { LuumApplicator } from "."
 
 export const setHue: LuumApplicator<number> = (newHue) => (currentColor) => {
 	const newColor = {

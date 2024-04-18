@@ -6,7 +6,6 @@ import type { FractalArray } from "~/packages/anvl/src/array/fractal-array"
 import { Explorer, useSetTitle } from "../../../services/app-store"
 import { Colors } from "../Colors"
 import { Division } from "../Division"
-
 import scss from "./DemoExplorer.module.scss"
 
 const Home: FC = () => {

@@ -1,9 +1,7 @@
-import { pipe } from "../function"
-import type { Refinement } from "../refinement"
-
 import { allTrue, every } from "../array"
-import { pass } from "../function"
+import { pass, pipe } from "../function"
 import { ifNullish } from "../nullish"
+import type { Refinement } from "../refinement"
 import { access } from "./access"
 import { recordToEntries } from "./entries"
 import { mob } from "./mapObject"

@@ -8,10 +8,9 @@ import {
 	useSetTitle,
 } from "../../../services/app-store"
 import { Dividend } from "./Dividend"
+import scss from "./Division.module.scss"
 import { Divisor } from "./Divisor"
 import { Quotient } from "./Quotient"
-
-import scss from "./Division.module.scss"
 
 export const Division: FC = () => {
 	useSetTitle(`Division`)

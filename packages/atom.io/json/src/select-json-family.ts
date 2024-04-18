@@ -1,6 +1,6 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { IMPLICIT, createSelectorFamily } from "atom.io/internal"
+import { createSelectorFamily, IMPLICIT } from "atom.io/internal"
 
 import type { Json, JsonInterface } from "."
 import { parseJson } from "."

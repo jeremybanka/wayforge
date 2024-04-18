@@ -1,6 +1,6 @@
 import type { Lineage, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { Json, Stringified, primitive } from "atom.io/json"
+import type { Json, primitive, Stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
 export type SetUpdate =

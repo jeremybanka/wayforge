@@ -1,9 +1,9 @@
 import type { AtomToken, ReadonlySelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createRegularAtom,
 	createStandaloneSelector,
+	IMPLICIT,
 	newest,
 } from "atom.io/internal"
 

@@ -1,11 +1,14 @@
-import parser from "@typescript-eslint/parser"
-import TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
-import NextPlugin from "@next/eslint-plugin-next"
-import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
-
 import path from "node:path"
-import { FlatCompat } from "@eslint/eslintrc"
 import { fileURLToPath } from "node:url"
+
+import { FlatCompat } from "@eslint/eslintrc"
+import NextPlugin from "@next/eslint-plugin-next"
+import TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
+import parser from "@typescript-eslint/parser"
+import ImportPlugin from "eslint-plugin-import"
+import SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
+
+import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -156,6 +159,11 @@ const commonRules = {
 	"atom.io/explicit-state-types": ERROR,
 	"atom.io/synchronous-selector-dependencies": ERROR,
 
+	"import/no-duplicates": ERROR,
+
+	"simple-import-sort/imports": ERROR,
+	"simple-import-sort/exports": ERROR,
+
 	"no-mixed-spaces-and-tabs": 0,
 	quotes: [ERROR, `backtick`],
 }
@@ -179,6 +187,8 @@ const configs = [
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin,
+			import: ImportPlugin,
+			"simple-import-sort": SimpleImportSortPlugin,
 		},
 		rules: commonRules,
 	},
@@ -220,6 +230,8 @@ const configs = [
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin,
+			import: ImportPlugin,
+			"simple-import-sort": SimpleImportSortPlugin,
 		},
 		rules: commonRules,
 	},

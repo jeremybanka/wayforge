@@ -1,10 +1,10 @@
+import "./relation-editor-styles.scss"
+
 import { Id } from "hamr/react-id"
 
 import type { Join } from "~/packages/anvl/src/join"
 
 import type { DataDesigner } from "./DataDesigner"
-
-import "./relation-editor-styles.scss"
 
 export const RelationEditor: DataDesigner<Join, `Tree`> = (props) => {
 	const seen = new Set()

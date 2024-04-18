@@ -1,5 +1,6 @@
 import type { Options } from "tsup"
 import { defineConfig } from "tsup"
+
 import discoverSubmodules from "./__scripts__/discover-submodules.node"
 
 export const BUNDLE_EXCLUDE_LIST = [

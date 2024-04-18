@@ -1,5 +1,4 @@
 import type { Identified } from "../id"
-
 import type { Json, JsonInterface } from "../json"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
 import type { Refinement } from "../refinement"

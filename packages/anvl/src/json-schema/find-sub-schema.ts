@@ -1,7 +1,7 @@
 import { isJsonSchema } from "./json-schema"
 import { expandPathForSchema } from "./path-into"
-import { isJsonSchemaRef, retrieveRef } from "./refs"
 import type { ReffedJsonSchema } from "./refs"
+import { isJsonSchemaRef, retrieveRef } from "./refs"
 
 export const findSubSchema = (
 	schema: ReffedJsonSchema,

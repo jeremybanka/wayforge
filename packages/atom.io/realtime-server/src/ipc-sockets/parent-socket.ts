@@ -1,10 +1,10 @@
 import { IMPLICIT, Subject } from "atom.io/internal"
-import { parseJson, stringifyJson } from "atom.io/json"
 import type { Json } from "atom.io/json"
-
+import { parseJson, stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import { CustomSocket } from "./custom-socket"
+
 import type { EventBuffer, Events } from "./custom-socket"
+import { CustomSocket } from "./custom-socket"
 
 export class SubjectSocket<
 	I extends Events,

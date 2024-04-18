@@ -1,3 +1,5 @@
+import "../styles/json-editor-skeletal.scss"
+
 import type { FC } from "react"
 import { useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
@@ -5,8 +7,8 @@ import { useRecoilState, useRecoilValue } from "recoil"
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
 import type { RecoilEditorProps } from "~/packages/hamr/recoil-tools/src"
+import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
 import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
 
 import type { Energy, EnergyRelations } from "../../services/energy"
@@ -20,12 +22,10 @@ import { useAddReactionAsEnergyFeature } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { Data_EnergyCard_A } from "./EnergyCard_A"
 import { Data_EnergyCard_B } from "./EnergyCard_B"
+import scss from "./EnergyEditor.module.scss"
 import { ReactionList } from "./EnergyFeatureReactionList"
 import { SVG_EnergyIcon } from "./EnergyIcon"
 import { Slot_PreviewCardSleeve } from "./PreviewCardSleeve"
-
-import "../styles/json-editor-skeletal.scss"
-import scss from "./EnergyEditor.module.scss"
 
 export const EnergyEditor_INTERNAL: FC<
 	RecoilEditorProps<Energy & EnergyRelations>

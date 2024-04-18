@@ -54,6 +54,8 @@
 		"@typescript-eslint/parser": "7.7.0",
 		"c8": "9.1.0",
 		"cross-env": "7.0.3",
+		"eslint-plugin-simple-import-sort": "12.1.0",
+		"eslint-plugin-import": "2.29.1",
 		"fp-ts": "2.16.5",
 		"hamt_plus": "1.0.2",
 		"io-ts": "2.2.21",

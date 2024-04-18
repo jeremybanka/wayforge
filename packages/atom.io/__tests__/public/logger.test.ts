@@ -1,4 +1,4 @@
-import { AtomIOLogger, atom, timeline, undo } from "atom.io"
+import { atom, AtomIOLogger, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

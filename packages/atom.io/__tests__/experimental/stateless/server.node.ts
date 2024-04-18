@@ -1,7 +1,9 @@
 import * as http from "node:http"
+
 import type { Json } from "atom.io/json"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
+
 import { cities, countries } from "./schema.node"
 
 console.log(`Server starting...`)

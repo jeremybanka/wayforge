@@ -38,6 +38,7 @@ import AceOfSpades from "wayfarer.quest/graphics/svg/playing-cards/A♠.svg?url"
 import AceOfClubs from "wayfarer.quest/graphics/svg/playing-cards/A♣.svg?url"
 import AceOfHearts from "wayfarer.quest/graphics/svg/playing-cards/A♥.svg?url"
 import AceOfDiamonds from "wayfarer.quest/graphics/svg/playing-cards/A♦.svg?url"
+import Back from "wayfarer.quest/graphics/svg/playing-cards/back.svg?url"
 import JackOfSpades from "wayfarer.quest/graphics/svg/playing-cards/J♠.svg?url"
 import JackOfClubs from "wayfarer.quest/graphics/svg/playing-cards/J♣.svg?url"
 import JackOfHearts from "wayfarer.quest/graphics/svg/playing-cards/J♥.svg?url"
@@ -50,7 +51,6 @@ import QueenOfSpades from "wayfarer.quest/graphics/svg/playing-cards/Q♠.svg?ur
 import QueenOfClubs from "wayfarer.quest/graphics/svg/playing-cards/Q♣.svg?url"
 import QueenOfHearts from "wayfarer.quest/graphics/svg/playing-cards/Q♥.svg?url"
 import QueenOfDiamonds from "wayfarer.quest/graphics/svg/playing-cards/Q♦.svg?url"
-import Back from "wayfarer.quest/graphics/svg/playing-cards/back.svg?url"
 
 export const PlayingCards: Record<string, SvgUrlData> = {
 	Back,

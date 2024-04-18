@@ -1,13 +1,12 @@
 import type {
+	FamilyMetadata,
 	MutableAtomFamily,
 	MutableAtomFamilyOptions,
 	MutableAtomOptions,
 	MutableAtomToken,
 } from "atom.io"
-import type { FamilyMetadata } from "atom.io"
 import type { Json } from "atom.io/json"
-import { selectJsonFamily } from "atom.io/json"
-import { stringifyJson } from "atom.io/json"
+import { selectJsonFamily, stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"

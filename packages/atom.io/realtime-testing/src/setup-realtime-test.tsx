@@ -1,13 +1,13 @@
 import * as http from "node:http"
 
-import { prettyDOM, render } from "@testing-library/react"
 import type { RenderResult } from "@testing-library/react"
+import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import {
-	IMPLICIT,
 	clearStore,
 	findInStore,
 	getFromStore,
+	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
 import * as AR from "atom.io/react"
@@ -21,6 +21,7 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
+
 import { editRelationsInStore } from "../../data/src/join"
 import { myUsernameState } from "../../realtime-client/src/realtime-client-stores"
 

@@ -16,7 +16,6 @@ import {
 	incrementNumberCollectionTX,
 	numberCollectionIndex,
 } from "../../../node/kite/src/kite-store"
-
 import scss from "./App.module.scss"
 
 const Numbers: FC<{

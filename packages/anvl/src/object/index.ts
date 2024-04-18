@@ -1,8 +1,7 @@
-import { pipe } from "../function"
-import type { Refinement } from "../refinement"
-
 import { filter, includesAny, reduce } from "../array"
+import { pipe } from "../function"
 import { isUndefined } from "../nullish"
+import type { Refinement } from "../refinement"
 import { deepMob } from "./deepMob"
 import { entriesToRecord, recordToEntries } from "./entries"
 import { isPlainObject } from "./refinement"

@@ -12,7 +12,6 @@ import { findReactionEnergyState } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { findReactionWithRelationsState } from "../../services/reaction"
 import { Span_EnergyAmount, Span_VoidIcon } from "../energy/EnergyIcon"
-
 import scss from "./ReactionIcon.module.scss"
 
 const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (

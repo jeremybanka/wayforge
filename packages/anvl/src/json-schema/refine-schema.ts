@@ -19,7 +19,6 @@ import type {
 	StringSchema,
 } from "./json-schema"
 import {
-	JSON_SCHEMA_TYPE_NAMES,
 	isArraySchema,
 	isBooleanSchema,
 	isIntegerSchema,
@@ -29,6 +28,7 @@ import {
 	isNumberSchema,
 	isObjectSchema,
 	isStringSchema,
+	JSON_SCHEMA_TYPE_NAMES,
 } from "./json-schema"
 
 export type RefinedJsonSchema =

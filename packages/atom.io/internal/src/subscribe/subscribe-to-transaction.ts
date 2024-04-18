@@ -1,4 +1,5 @@
-import type { TransactionToken, TransactionUpdateHandler, Func } from "atom.io"
+import type { Func, TransactionToken, TransactionUpdateHandler } from "atom.io"
+
 import type { Store } from ".."
 import { withdraw } from ".."
 
