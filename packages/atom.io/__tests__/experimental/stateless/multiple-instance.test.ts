@@ -4,6 +4,7 @@ import http from "node:http"
 import path from "node:path"
 
 import httpProxy from "http-proxy"
+
 import { DatabaseManager } from "./database.node"
 
 const childProcesses: ChildProcess[] = []

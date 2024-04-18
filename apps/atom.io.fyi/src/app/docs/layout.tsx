@@ -1,8 +1,8 @@
-import * as React from "react"
-import * as nav from "./nav"
-
 import type { Metadata } from "next"
+import * as React from "react"
+
 import scss from "./layout.module.scss"
+import * as nav from "./nav"
 
 export const metadata: Metadata = {
 	title: `Docs • atom.io`,

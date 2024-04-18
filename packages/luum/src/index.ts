@@ -5,11 +5,11 @@ export * from "./export"
 export * from "./identify"
 export * from "./import"
 export * from "./luum"
+export * from "./luum"
 export * from "./mixers"
 export * from "./scheme"
 export * from "./solveFor"
 export * from "./utils"
-export * from "./luum"
 
 export type Degree = number
 export type OutOf255 = number

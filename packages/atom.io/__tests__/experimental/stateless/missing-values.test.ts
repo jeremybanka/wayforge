@@ -1,12 +1,12 @@
 import fsp from "node:fs/promises"
 
-import tmp from "tmp"
-import { vitest } from "vitest"
-
 import type { Logger, RegularAtomToken } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
+import tmp from "tmp"
+import { vitest } from "vitest"
+
 import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

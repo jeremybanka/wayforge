@@ -13,9 +13,9 @@ import { useRecoilState, useRecoilValue } from "recoil"
 import type { WC } from "~/packages/hamr/react-json-editor/src"
 import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
 
-import { Home } from "./components/Home"
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
+import { Home } from "./components/Home"
 import { ReactionEditorFromRoute } from "./components/reaction/ReactionEditor"
 import { ReactionHome } from "./components/reaction/ReactionHome"
 import {

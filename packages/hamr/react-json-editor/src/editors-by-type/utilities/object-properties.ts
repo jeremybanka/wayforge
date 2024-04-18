@@ -2,8 +2,8 @@ import type { MutableRefObject } from "react"
 import type { SetterOrUpdater } from "recoil"
 
 import { become } from "~/packages/anvl/src/function"
-import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
 import type { Json, JsonTypeName } from "~/packages/anvl/src/json"
+import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
 import { mapObject } from "~/packages/anvl/src/object"
 import { castToJson } from "~/packages/anvl/src/refinement/smart-cast-json"
 

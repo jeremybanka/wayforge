@@ -1,7 +1,7 @@
 import { transaction } from "atom.io"
-
 import { editRelations, findRelations } from "atom.io/data"
 import { IMPLICIT } from "atom.io/internal"
+
 import { deckIndex, groupsOfCards } from "../card-game-stores/card-groups-store"
 
 const rngOut: number[] = []

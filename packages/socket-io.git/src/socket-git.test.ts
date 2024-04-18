@@ -1,13 +1,12 @@
 import * as fs from "node:fs"
 
+import type { Logger } from "atom.io"
 import { pipe } from "fp-ts/function"
 import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
 import tmp from "tmp"
 import { vitest } from "vitest"
-
-import type { Logger } from "atom.io"
 
 import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"

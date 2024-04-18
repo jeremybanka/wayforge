@@ -1,7 +1,4 @@
-import { vitest } from "vitest"
-
 import type { Logger } from "atom.io"
-
 import {
 	atom,
 	atomFamily,
@@ -14,6 +11,8 @@ import * as Internal from "atom.io/internal"
 import { FamilyTracker, Tracker } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { vitest } from "vitest"
+
 import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

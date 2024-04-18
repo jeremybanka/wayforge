@@ -1,7 +1,6 @@
 import type { Json } from "../json"
-import { filterProperties } from "../object"
 import type { EmptyObject, PlainObject } from "../object"
-
+import { filterProperties } from "../object"
 import { cannotExist, isWithin } from "../refinement"
 import type {
 	JsonApiResource,
@@ -11,9 +10,9 @@ import type {
 	ResourceObject,
 } from "./resource"
 
-export * from "./resource"
-export * from "./errors"
 export * from "./document"
+export * from "./errors"
+export * from "./resource"
 
 const filterOutIdentifier = filterProperties(
 	cannotExist,

@@ -1,11 +1,12 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { IMPLICIT, type Store, setIntoStore } from "atom.io/internal"
+import { IMPLICIT, setIntoStore, type Store } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
+
 import { getFamily, useFamily } from "../../__util__/use-family"
 
 const storeState = AtomIO.atom<Store>({

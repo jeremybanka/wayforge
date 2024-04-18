@@ -4,9 +4,9 @@ import { attachIntrospectionStates } from "atom.io/introspection"
 import { isPlainObject } from "~/packages/anvl/src/object"
 import { Refinery } from "~/packages/anvl/src/refinement"
 import {
-	Differ,
 	diffArray,
 	diffBoolean,
+	Differ,
 	diffNumber,
 	diffObject,
 	diffString,

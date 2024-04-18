@@ -1,6 +1,5 @@
-import type { Refinement } from "../refinement"
-
 import { isPlainObject } from "../object"
+import type { Refinement } from "../refinement"
 import type { ClassSignature } from "./is-class"
 
 export type RefinementStrategy = ClassSignature | Refinement<unknown, any>

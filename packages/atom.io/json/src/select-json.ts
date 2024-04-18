@@ -1,8 +1,7 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
-import { IMPLICIT } from "atom.io/internal"
+import { createStandaloneSelector, IMPLICIT } from "atom.io/internal"
 
-import { createStandaloneSelector } from "atom.io/internal"
 import type { Json, JsonInterface } from "."
 
 export const selectJson = <T, J extends Json.Serializable>(

@@ -1,5 +1,6 @@
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import type { Json } from "atom.io/json"
+
 import type { Signal, Transceiver } from "./transceiver"
 
 export const getUpdateToken = <

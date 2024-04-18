@@ -1,5 +1,5 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react"
-import type { Logger, Func } from "atom.io"
+import type { Func, Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -11,10 +11,10 @@ import {
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
-import type { FC } from "react"
-
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+import type { FC } from "react"
+
 import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

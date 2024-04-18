@@ -4,10 +4,10 @@ import type {
 } from "atom.io"
 import type { Store, Timeline } from "atom.io/internal"
 import {
-	IMPLICIT,
-	Subject,
 	createRegularAtomFamily,
 	createSelectorFamily,
+	IMPLICIT,
+	Subject,
 } from "atom.io/internal"
 
 export const attachTimelineFamily = (

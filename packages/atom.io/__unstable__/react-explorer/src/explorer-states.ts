@@ -6,12 +6,12 @@ import type {
 	Write,
 } from "atom.io"
 import { atom, selector, selectorFamily, transaction } from "atom.io"
-import { persistAtom } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
+import { persistAtom } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { addToIndex, removeFromIndex } from "."
 import {

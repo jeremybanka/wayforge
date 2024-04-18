@@ -1,10 +1,11 @@
 import * as fs from "node:fs"
+
 import * as tmp from "tmp"
 import { z } from "zod"
 
 import { cli } from "../src/cli"
-import { optional } from "../src/tree"
 import { parseStringOption } from "../src/option-parsers"
+import { optional } from "../src/tree"
 
 let tempDir: tmp.DirResult
 

@@ -1,5 +1,5 @@
-import { Join } from "."
 import type { Json, JsonInterface } from "../json"
+import { Join } from "."
 import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 
 export const makeJsonInterface = <

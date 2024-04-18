@@ -1,10 +1,11 @@
 import * as AtomIO from "atom.io"
-
 import { findRelations } from "atom.io/data"
+
 import {
 	ownersOfGroups,
 	trickIndex,
 } from "~/apps/core.wayfarer.quest/src/store/game"
+
 import { myRoomKeyState } from "./my-room"
 
 export const publicTrickIndex = AtomIO.selector<string[]>({

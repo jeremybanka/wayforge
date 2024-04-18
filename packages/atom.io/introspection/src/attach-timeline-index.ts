@@ -1,9 +1,9 @@
 import type { ReadonlySelectorToken, TimelineToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createRegularAtom,
 	createStandaloneSelector,
+	IMPLICIT,
 } from "atom.io/internal"
 
 export const attachTimelineIndex = (

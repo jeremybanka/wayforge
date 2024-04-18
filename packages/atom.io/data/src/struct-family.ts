@@ -1,8 +1,8 @@
 import type * as AtomIO from "atom.io"
 import {
-	IMPLICIT,
 	createRegularAtomFamily,
 	createSelectorFamily,
+	IMPLICIT,
 } from "atom.io/internal"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)

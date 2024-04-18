@@ -1,16 +1,15 @@
 import { useO } from "atom.io/react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Id } from "hamr/react-id"
-import { setCssVars } from "~/packages/hamr/react-css-vars/src"
-
-import { trickContentsStates } from "~/apps/core.wayfarer.quest/src/store/game"
-
 import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
+
+import { trickContentsStates } from "~/apps/core.wayfarer.quest/src/store/game"
+import { setCssVars } from "~/packages/hamr/react-css-vars/src"
+
 import { Count } from "../labels/Count"
 import { CardFace, CardSlot } from "./Card"
-
 import scss from "./Trick.module.scss"
 
 export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>(

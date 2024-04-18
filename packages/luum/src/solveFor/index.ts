@@ -5,9 +5,9 @@ import satFromChannels from "./satFromChannels"
 import specificLumFromHue from "./specificLumFromHue"
 
 export {
-	maxSatForHueInFilter,
 	hueFromChannels,
-	satFromChannels,
 	lumFromChannels,
+	maxSatForHueInFilter,
+	satFromChannels,
 	specificLumFromHue,
 }

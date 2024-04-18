@@ -1,5 +1,5 @@
-import { redo, undo } from "atom.io"
 import type { TimelineToken } from "atom.io"
+import { redo, undo } from "atom.io"
 import { subscribeToTimeline, withdraw } from "atom.io/internal"
 import * as React from "react"
 

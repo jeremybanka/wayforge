@@ -1,14 +1,14 @@
 import type {
+	Func,
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
 	TimelineToken,
 	TransactionToken,
 	TransactionUpdate,
-	Func,
 } from "atom.io"
-import * as Internal from "atom.io/internal"
 import type { Timeline } from "atom.io/internal"
+import * as Internal from "atom.io/internal"
 
 import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"
 import type { SelectorTokenIndex } from "./attach-selector-index"

@@ -1,5 +1,6 @@
 import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+
 import type { AtomFamily, AtomFamilyToken } from "./atom"
 import type {
 	SelectorFamily,

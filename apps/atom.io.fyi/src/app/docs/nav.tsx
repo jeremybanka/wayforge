@@ -1,14 +1,14 @@
 "use client"
 
+import { atom } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import * as React from "react"
 
-import { atom } from "atom.io"
-import { useI, useO } from "atom.io/react"
+import scss from "./nav.module.scss"
 import { Spotlight } from "./Spotlight"
 import { Toggle } from "./Toggle"
-import scss from "./nav.module.scss"
 
 const SUBMODULES = [``, `react`]
 const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]

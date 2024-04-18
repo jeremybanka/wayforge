@@ -1,9 +1,9 @@
 import {
+	cacheValue,
+	evictCachedValue,
 	Future,
 	IMPLICIT,
 	Subject,
-	cacheValue,
-	evictCachedValue,
 } from "atom.io/internal"
 import { vitest } from "vitest"
 

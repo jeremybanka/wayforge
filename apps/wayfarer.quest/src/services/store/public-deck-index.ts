@@ -1,10 +1,11 @@
 import * as AtomIO from "atom.io"
-
 import { findRelations } from "atom.io/data"
+
 import {
 	deckIndex,
 	ownersOfGroups,
 } from "~/apps/core.wayfarer.quest/src/store/game"
+
 import { myRoomKeyState } from "./my-room"
 
 export const publicDeckIndex = AtomIO.selector<string[]>({

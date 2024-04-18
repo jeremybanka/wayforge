@@ -1,5 +1,5 @@
-import type { HKT, Kind, Kind2, URIS, URIS2 } from "fp-ts/HKT"
 import { pipe } from "fp-ts/function"
+import type { HKT, Kind, Kind2, URIS, URIS2 } from "fp-ts/HKT"
 import * as D from "io-ts/Decoder"
 import * as S from "io-ts/Schemable"
 
@@ -25,9 +25,7 @@ export interface MySchemable2C<S extends URIS2>
 	readonly Int: Kind2<S, unknown, Int>
 }
 
-export interface MySchema<A> {
-	<S>(schemable: MySchemable<S>): HKT<S, A>
-}
+export type MySchema<A> = <S>(schemable: MySchemable<S>) => HKT<S, A>
 
 export function make<A>(f: MySchema<A>): MySchema<A> {
 	return S.memoize(f)

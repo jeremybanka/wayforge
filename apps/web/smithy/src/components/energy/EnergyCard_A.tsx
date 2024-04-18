@@ -1,16 +1,15 @@
-import { useId } from "react"
+import { Luum } from "luum"
 import type { FC } from "react"
+import { useId } from "react"
 import { useRecoilValue } from "recoil"
 
-import { Luum } from "luum"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_PADDING, CARD_WIDTH } from "../Card"
-import { SVG_EnergyIcon } from "./EnergyIcon"
-
 import scss from "../Card.module.scss"
 import scssA from "./EnergyCard_A.module.scss"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 
 export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
 	const domId = useId()

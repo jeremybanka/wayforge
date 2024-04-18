@@ -2,8 +2,8 @@ import type { Modifier } from "~/packages/anvl/src/function"
 import { become, pipe } from "~/packages/anvl/src/function"
 import { clampInto } from "~/packages/anvl/src/number/clamp"
 
-import type { LuumApplicator } from "."
 import type { LuumSpec } from ".."
+import type { LuumApplicator } from "."
 
 export const setSat: LuumApplicator<number> = (newSat) => (currentColor) => {
 	const newColor = {

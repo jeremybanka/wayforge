@@ -1,11 +1,11 @@
+import { getInternalRelations } from "atom.io/data"
 import { usersInRooms } from "atom.io/realtime"
+import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { setCssVars } from "hamr/react-css-vars"
 import * as React from "react"
 
 import { stringToColor } from "~/packages/anvl/src/string/string-to-color"
 
-import { getInternalRelations } from "atom.io/data"
-import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { Identity } from "../labels/Identity"
 import scss from "./ProfilePicture.module.scss"
 

@@ -1,6 +1,5 @@
 import type { AtomFamily, AtomToken } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-
 import type {
 	ActionReceiver,
 	// ActionSynchronizer,

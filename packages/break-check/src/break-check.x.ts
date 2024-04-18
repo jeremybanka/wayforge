@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import * as path from "node:path"
+
 import { breakCheck } from "break-check"
 import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"

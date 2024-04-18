@@ -1,7 +1,7 @@
 import type { Store } from "atom.io/internal"
 import {
-	IMPLICIT,
 	arbitrary,
+	IMPLICIT,
 	subscribeToState,
 	subscribeToTimeline,
 	subscribeToTransaction,
@@ -9,13 +9,13 @@ import {
 
 import type {
 	FamilyMetadata,
+	Func,
 	ReadableToken,
 	TimelineManageable,
 	TimelineToken,
 	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdate,
-	Func,
 } from "."
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }

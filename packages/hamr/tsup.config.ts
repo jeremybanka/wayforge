@@ -1,8 +1,8 @@
+import { entriesToRecord } from "anvl/object"
 import type { Options } from "tsup"
 import { defineConfig } from "tsup"
-import discoverSubmodules from "./__scripts__/discover-submodules.node"
 
-import { entriesToRecord } from "anvl/object"
+import discoverSubmodules from "./__scripts__/discover-submodules.node"
 
 const SUBMODULE_NAMES = discoverSubmodules()
 

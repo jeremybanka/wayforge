@@ -1,6 +1,6 @@
-import { AtomIOLogger } from "atom.io"
 import type {
 	AtomToken,
+	Func,
 	Logger,
 	MutableAtomFamily,
 	ReadonlySelectorFamily,
@@ -10,8 +10,8 @@ import type {
 	TransactionToken,
 	WritableSelectorFamily,
 	WritableSelectorToken,
-	Func,
 } from "atom.io"
+import { AtomIOLogger } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 

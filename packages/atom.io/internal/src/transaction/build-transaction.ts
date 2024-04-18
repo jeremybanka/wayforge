@@ -2,8 +2,6 @@ import type { findState, Func } from "atom.io"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
-import type { TransactionProgress } from "."
-import { actUponStore, getEpochNumberOfAction } from "."
 import { arbitrary } from "../arbitrary"
 import { findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
@@ -12,6 +10,8 @@ import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
+import type { TransactionProgress } from "."
+import { actUponStore, getEpochNumberOfAction } from "."
 import type { ChildStore, RootStore } from "./is-root-store"
 
 export const buildTransaction = (

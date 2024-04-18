@@ -1,16 +1,16 @@
-import type { UpdateHandler } from "atom.io"
 import type {
 	FamilyMetadata,
 	MutableAtomOptions,
 	MutableAtomToken,
+	UpdateHandler,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
-import { type MutableAtom, cacheValue, setIntoStore } from ".."
+import { cacheValue, type MutableAtom, setIntoStore } from ".."
 import { markAtomAsDefault } from "../atom"
 import { newest } from "../lineage"
-import { type Store, deposit } from "../store"
+import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"

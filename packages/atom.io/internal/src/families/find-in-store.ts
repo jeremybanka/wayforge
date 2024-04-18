@@ -1,5 +1,3 @@
-import type { Json } from "atom.io/json"
-
 import type {
 	AtomFamilyToken,
 	AtomToken,
@@ -18,6 +16,8 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
+import type { Json } from "atom.io/json"
+
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"

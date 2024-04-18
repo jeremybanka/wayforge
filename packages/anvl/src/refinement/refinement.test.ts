@@ -1,11 +1,11 @@
+import { doesExtend } from "../object/refinement"
+import { isBoolean, isNumber, isString } from "../primitive"
 import {
 	isIntersection,
 	isUnion,
 	mustSatisfyAllOfTheFollowing,
 	mustSatisfyOneOfTheFollowing,
 } from "."
-import { doesExtend } from "../object/refinement"
-import { isBoolean, isNumber, isString } from "../primitive"
 
 /* type tests */
 const case1 = (i: unknown): void => {

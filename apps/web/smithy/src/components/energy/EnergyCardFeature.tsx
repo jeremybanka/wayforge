@@ -5,7 +5,6 @@ import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/Recoi
 
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { ReactionIcon_INTERNAL } from "../reaction/ReactionIcon"
-
 import scss from "./EnergyCardFeature.module.scss"
 
 export const Div_EnergyCardFeature: FC<

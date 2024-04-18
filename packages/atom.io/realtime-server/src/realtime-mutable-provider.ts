@@ -1,12 +1,12 @@
 import type * as AtomIO from "atom.io"
+import type { Transceiver } from "atom.io/internal"
 import {
-	IMPLICIT,
 	getFromStore,
 	getJsonToken,
 	getUpdateToken,
+	IMPLICIT,
 	subscribeToState,
 } from "atom.io/internal"
-import type { Transceiver } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."

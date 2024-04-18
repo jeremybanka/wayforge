@@ -1,2 +1,2 @@
-export * from "./split"
 export * from "./capitalize"
+export * from "./split"

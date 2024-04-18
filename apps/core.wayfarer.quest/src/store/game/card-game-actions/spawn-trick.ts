@@ -1,4 +1,5 @@
 import { transaction } from "atom.io"
+
 import { trickIndex, trickStates } from "../card-game-stores"
 
 export const spawnTrickTX = transaction<(trickId: string) => void>({

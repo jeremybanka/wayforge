@@ -1,9 +1,10 @@
 import { AsyncLocalStorage } from "node:async_hooks"
+
 import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, findState, setState } from "atom.io"
+import { editRelations } from "atom.io/data"
 import * as RTS from "atom.io/realtime-server"
 
-import { editRelations } from "atom.io/data"
 import { IMPLICIT } from "../../../internal/src/store"
 import { gameContinuity, letterAtoms } from "./game-store"
 

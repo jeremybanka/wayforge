@@ -1,9 +1,9 @@
-import type { ReadonlySelectorToken, TransactionToken, Func } from "atom.io"
+import type { Func, ReadonlySelectorToken, TransactionToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createRegularAtom,
 	createStandaloneSelector,
+	IMPLICIT,
 } from "atom.io/internal"
 
 export const attachTransactionIndex = (

@@ -1,3 +1,5 @@
+import "../styles/json-editor-skeletal.scss"
+
 import type { FC } from "react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
@@ -22,8 +24,6 @@ import {
 	useRemoveReaction,
 } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon"
-
-import "../styles/json-editor-skeletal.scss"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
 	key: `energyCatalog`,

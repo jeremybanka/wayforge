@@ -1,5 +1,3 @@
-import { ElasticInput } from "../../react-elastic-input/src"
-
 import type { CSSProperties, FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"
 
@@ -11,6 +9,7 @@ import {
 	refineJsonType,
 } from "~/packages/anvl/src/refinement/refine-json"
 
+import { ElasticInput } from "../../react-elastic-input/src"
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"

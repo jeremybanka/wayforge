@@ -1,12 +1,12 @@
 "use client"
 
+import { findRelations, getInternalRelations } from "atom.io/data"
 import { useI, useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"
 import * as React from "react"
-
 import { header } from "wayfarer.quest/components/<header>"
 import { Game } from "wayfarer.quest/game/Game"
 import { windowMousePositionState } from "wayfarer.quest/services/peripherals/mouse-position"
@@ -17,9 +17,8 @@ import {
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
-import { findRelations, getInternalRelations } from "atom.io/data"
-import { UsersInRoom } from "./PlayersInRoom"
 import scss from "./page.module.scss"
+import { UsersInRoom } from "./PlayersInRoom"
 
 export default function Room({ roomId }: { roomId: string }): JSX.Element {
 	const { socket } = React.useContext(RTR.RealtimeContext)

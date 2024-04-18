@@ -11,6 +11,7 @@ type Point3dWithNothingElse = Point3d & {}
 type ProperNonExtension = StrictEquals<Point3d, Point3dWithNothingElse>
 
 // How to add a member to a union of types optionally
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type Point3dWithNoOtherOption = Point3d | never
 
 type ProperNonAddition = StrictEquals<Point3d, Point3dWithNoOtherOption>

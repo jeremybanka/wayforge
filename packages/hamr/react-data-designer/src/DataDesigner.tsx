@@ -1,5 +1,4 @@
 import { JsonEditor } from "hamr/react-json-editor"
-
 import * as React from "react"
 
 export type Next<X> = X | ((oldValue: X) => X)

@@ -1,9 +1,8 @@
+import type { Logger } from "atom.io"
 import { vitest } from "vitest"
 
-import type { Logger } from "atom.io"
-
-import { Join } from "."
 import type { Json } from "../json"
+import { Join } from "."
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)

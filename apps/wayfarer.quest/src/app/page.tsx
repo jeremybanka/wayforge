@@ -2,12 +2,11 @@
 
 import { useO } from "atom.io/react"
 import dynamic from "next/dynamic"
-
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
-import Lobby from "./Lobby"
-import Room from "./Room"
 
+import Lobby from "./Lobby"
 import scss from "./page.module.scss"
+import Room from "./Room"
 
 // This function checks if the component should be loaded
 const shouldLoadComponent = () => {

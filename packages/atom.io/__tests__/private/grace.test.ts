@@ -1,7 +1,10 @@
-import { vitest } from "vitest"
-
-import type { AtomFamily, AtomFamilyToken, Logger } from "atom.io"
-import type { RegularAtomToken, TimelineToken } from "atom.io"
+import type {
+	AtomFamily,
+	AtomFamilyToken,
+	Logger,
+	RegularAtomToken,
+	TimelineToken,
+} from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -13,6 +16,8 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import { vitest } from "vitest"
+
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

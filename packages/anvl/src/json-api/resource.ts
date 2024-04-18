@@ -1,14 +1,12 @@
-import type { RequireAtLeastOne } from "."
-import type { Link, Links } from "./document"
-
 import type { Json } from "../json"
 import { ifDefined } from "../nullish"
 import type { EmptyObject, PlainObject } from "../object"
 import { hasExactProperties } from "../object"
 import { isString } from "../primitive"
 import type { Refinement } from "../refinement"
-
 import { isJson } from "../refinement/refine-json"
+import type { RequireAtLeastOne } from "."
+import type { Link, Links } from "./document"
 
 export type Relationships = Record<
 	string,

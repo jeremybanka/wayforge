@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
-
 import { editRelations } from "atom.io/data"
+
 import { gamePlayerIndex } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 

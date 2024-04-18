@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
-
 import { editRelations, findRelations } from "atom.io/data"
+
 import { deckIndices, groupsOfCards } from "../card-groups"
 
 function LCG(seed: number) {

@@ -4,7 +4,6 @@ import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
 import { RealtimeProvider } from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
-
 import { SOCKET } from "wayfarer.quest/services/socket"
 
 export default function Realtime({

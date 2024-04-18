@@ -1,13 +1,13 @@
 import type {
+	Func,
 	TransactionOptions,
 	TransactionToken,
 	TransactionUpdate,
-	Func,
 } from "atom.io"
 
 import { newest } from "../lineage"
-import { deposit } from "../store"
 import type { Store } from "../store"
+import { deposit } from "../store"
 import { Subject } from "../subject"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"

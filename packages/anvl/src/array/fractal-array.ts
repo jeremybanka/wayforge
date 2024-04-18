@@ -1,6 +1,6 @@
-import { isArray } from "."
 import type { Refinement } from "../refinement"
 import { canExist, isUnion } from "../refinement"
+import { isArray } from "."
 
 export type FractalArrayItems<T> = FractalArrayItems<T>[] | T
 export type FractalArray<T> = FractalArrayItems<T>[]

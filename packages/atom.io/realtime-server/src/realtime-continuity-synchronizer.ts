@@ -1,10 +1,10 @@
 import type * as AtomIO from "atom.io"
 import {
-	IMPLICIT,
 	actUponStore,
 	findInStore,
 	getFromStore,
 	getJsonToken,
+	IMPLICIT,
 	isRootStore,
 	subscribeToState,
 	subscribeToTransaction,
@@ -12,10 +12,9 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
+import { findRelationsInStore } from "../../data/src/join"
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
-
-import { findRelationsInStore } from "../../data/src/join"
 import {
 	redactTransactionUpdateContent,
 	userUnacknowledgedQueues,

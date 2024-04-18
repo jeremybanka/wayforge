@@ -14,7 +14,7 @@ import type {
 	WritableSelector,
 	WritableState,
 } from ".."
-import { NotFoundError, newest, withdraw } from ".."
+import { newest, NotFoundError, withdraw } from ".."
 
 export function withdrawOrCreate<T>(
 	token: RegularAtomToken<T>,

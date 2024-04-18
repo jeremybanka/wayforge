@@ -1,11 +1,10 @@
 import { useO } from "atom.io/react"
 import * as React from "react"
-
 import { span } from "wayfarer.quest/components/<span>"
 import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
+
 import { Hand } from "../game-pieces/Hand"
 import { Me } from "../my-domain/Me"
-
 import scss from "./MyDomain.module.scss"
 
 export const MyDomain: React.FC = () => {

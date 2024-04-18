@@ -1,3 +1,5 @@
+import "./devtools.scss"
+
 import { useI, useO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
@@ -12,8 +14,6 @@ import {
 import { StateIndex } from "./StateIndex"
 import { TimelineIndex } from "./TimelineIndex"
 import { TransactionIndex } from "./TransactionIndex"
-
-import "./devtools.scss"
 
 export const AtomIODevtools = (): JSX.Element => {
 	const constraintsRef = useRef(null)

@@ -1,5 +1,4 @@
 import { RuleTester } from "@typescript-eslint/rule-tester"
-
 import { Rules } from "atom.io/eslint-plugin"
 
 const ruleTester = new RuleTester({ parser: `@typescript-eslint/parser` })

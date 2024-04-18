@@ -1,3 +1,5 @@
+import "./react-radial-styles.scss"
+
 import { AnimatePresence } from "framer-motion"
 import { makeMouseHandlers } from "hamr/react-click-handlers"
 import { setCssVars } from "hamr/react-css-vars"
@@ -5,8 +7,6 @@ import * as React from "react"
 
 import type { RadialAction, RadialMode } from "."
 import { header } from "./<header>"
-
-import "./react-radial-styles.scss"
 
 export type RadialProps = {
 	mouseActivationMethod?: string

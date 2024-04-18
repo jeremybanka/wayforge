@@ -1,5 +1,6 @@
 import { atom, selector, timeline, transaction } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
+
 import { composeExplorer } from "~/packages/atom.io/__unstable__/react-explorer/src"
 
 export const { Explorer, useSetTitle } = composeExplorer({

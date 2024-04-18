@@ -1,10 +1,10 @@
 import { act, fireEvent, render } from "@testing-library/react"
+import type { Func, Logger, TimelineToken } from "atom.io"
+import { atom, redo, selector, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
 
-import type { Logger, TimelineToken, Func } from "atom.io"
-import { atom, redo, selector, timeline, undo } from "atom.io"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

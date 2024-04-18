@@ -5,5 +5,5 @@ export type RadialAction = {
 	do: () => void
 }
 
-export * from "./Radial"
 export * from "./composeUseRadial"
+export * from "./Radial"

@@ -1,5 +1,7 @@
 import path from "node:path"
+
 import { findState, getState, runTransaction, setState } from "atom.io"
+import { editRelations, findRelations, getInternalRelations } from "atom.io/data"
 import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
@@ -7,7 +9,6 @@ import { pipe } from "fp-ts/function"
 import { nanoid } from "nanoid"
 import * as SocketIO from "socket.io"
 
-import { editRelations, findRelations, getInternalRelations } from "atom.io/data"
 import { env } from "./env"
 import { logger } from "./logger"
 import { welcome } from "./welcome"

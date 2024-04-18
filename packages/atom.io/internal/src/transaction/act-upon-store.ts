@@ -1,4 +1,4 @@
-import type { TransactionToken, Func } from "atom.io"
+import type { Func, TransactionToken } from "atom.io"
 
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"

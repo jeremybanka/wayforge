@@ -1,4 +1,5 @@
 import type { VNode } from "preact"
+
 import * as svg from "./<svg>"
 
 export function layout(props: { children: any }): VNode {

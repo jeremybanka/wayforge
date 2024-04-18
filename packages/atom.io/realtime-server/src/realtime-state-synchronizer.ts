@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import { IMPLICIT, getFromStore } from "atom.io/internal"
+import { getFromStore, IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."

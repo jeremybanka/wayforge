@@ -1,10 +1,9 @@
 import { useO } from "atom.io/react"
+import { Id } from "hamr/react-id"
 import * as React from "react"
-
 import { span } from "wayfarer.quest/components/<span>"
 import { otherPlayersIndex } from "wayfarer.quest/services/store/other-players-index"
 
-import { Id } from "hamr/react-id"
 import { Identity } from "../labels/Identity"
 import { ProfilePicture } from "../players/ProfilePicture"
 import scss from "./EnemyDomains.module.scss"

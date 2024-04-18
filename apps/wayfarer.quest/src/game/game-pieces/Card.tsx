@@ -1,14 +1,13 @@
+import { findRelations } from "atom.io/data"
 import { useO } from "atom.io/react"
 import { AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import type { FC } from "react"
-
-import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
-
 import { article } from "wayfarer.quest/components/<article>"
 import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
 
-import { findRelations } from "atom.io/data"
+import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
+
 import scss from "./Card.module.scss"
 
 export const CardFace: FC<{ id: string }> = ({ id }) => {

@@ -1,13 +1,13 @@
 import type {
+	Func,
 	ReadonlySelectorFamilyToken,
 	TransactionUpdate,
-	Func,
 } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createRegularAtomFamily,
 	createSelectorFamily,
+	IMPLICIT,
 } from "atom.io/internal"
 
 export const attachTransactionLogs = (

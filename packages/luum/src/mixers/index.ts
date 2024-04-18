@@ -4,7 +4,7 @@ import type { LuumSpec } from ".."
 
 export type LuumApplicator<X> = Applicator<X, LuumSpec>
 
-export * from "./hue"
-export * from "./sat"
-export * from "./lum"
 export * from "./contrast"
+export * from "./hue"
+export * from "./lum"
+export * from "./sat"

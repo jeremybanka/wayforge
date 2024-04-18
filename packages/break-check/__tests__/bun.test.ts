@@ -1,9 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import { mkdir } from "node:fs/promises"
 
 import type { BreakCheckOutcome } from "break-check"
 import { breakCheck } from "break-check"
-
+import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import simpleGit from "simple-git"
 import tmp from "tmp"
 

@@ -1,10 +1,10 @@
 import type {
 	AtomToken,
+	Func,
+	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdate,
-	Func,
 } from "atom.io"
-import type { TimelineUpdate } from "atom.io"
 
 import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"

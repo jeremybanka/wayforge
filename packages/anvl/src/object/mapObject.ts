@@ -1,6 +1,5 @@
-import { pipe } from "../function"
-
 import { map } from "../array"
+import { pipe } from "../function"
 import { entriesToRecord, recordToEntries } from "./entries"
 
 export const mapObject = <K extends keyof any, I, O>(

@@ -1,4 +1,5 @@
 import type { VNode } from "preact"
+
 import * as Script from "./scripts.gen"
 import * as Style from "./styles.gen"
 

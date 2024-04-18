@@ -1,9 +1,9 @@
 import type { FC } from "react"
 import { useId, useRef, useState } from "react"
 
+import { pipe } from "~/packages/anvl/src/function"
 import { clampInto } from "~/packages/anvl/src/number"
 
-import { pipe } from "~/packages/anvl/src/function"
 import { ElasticInput } from "."
 
 function round(value: number, decimalPlaces?: number): number {

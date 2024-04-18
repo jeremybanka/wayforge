@@ -1,4 +1,4 @@
-import type { Transactors, findState } from "atom.io"
+import type { findState, Transactors } from "atom.io"
 
 import { findInStore } from "../families"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"

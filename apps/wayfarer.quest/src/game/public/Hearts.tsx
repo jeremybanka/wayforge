@@ -1,11 +1,10 @@
 import { useO } from "atom.io/react"
-
 import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index"
 import { publicTrickIndex } from "wayfarer.quest/services/store/public-trick-index"
+
 import type { GameProps } from "../Game"
 import { Deck } from "../game-pieces/Deck"
 import { Trick } from "../game-pieces/Trick"
-
 import scss from "./Hearts.module.scss"
 
 export function Hearts({ roomId }: GameProps): JSX.Element {

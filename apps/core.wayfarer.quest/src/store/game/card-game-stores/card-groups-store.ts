@@ -1,9 +1,9 @@
+import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
 import { getInternalRelations, join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import { cardIndex } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
 import { trickIndex } from "./trick-store"

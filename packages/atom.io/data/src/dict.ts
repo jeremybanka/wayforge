@@ -1,9 +1,9 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createStandaloneSelector,
 	findInStore,
+	IMPLICIT,
 } from "atom.io/internal"
 import type { Json, Stringified } from "atom.io/json"
 

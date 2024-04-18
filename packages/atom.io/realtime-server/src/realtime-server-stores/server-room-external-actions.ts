@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { type Loadable, editRelations, editRelationsInStore } from "atom.io/data"
+import { editRelations, editRelationsInStore, type Loadable } from "atom.io/data"
 import type { UserInRoomMeta } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
 

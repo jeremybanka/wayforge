@@ -6,7 +6,7 @@ import type {
 } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import { type Transceiver, createMutableAtomFamily } from "../mutable"
+import { createMutableAtomFamily, type Transceiver } from "../mutable"
 import type { Store } from "../store"
 import { createRegularAtomFamily } from "./create-regular-atom-family"
 

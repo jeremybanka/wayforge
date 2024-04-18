@@ -1,4 +1,5 @@
 import type { ReadableToken, UpdateHandler } from "atom.io"
+
 import type { Store } from "../store"
 import { withdrawOrCreate } from "../store"
 import { subscribeToRootAtoms } from "./subscribe-to-root-atoms"

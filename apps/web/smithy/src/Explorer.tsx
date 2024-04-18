@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil"
 
 import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
 
+import scss from "./Explorer.module.scss"
 import {
 	commitMessageState,
 	git,
@@ -10,8 +11,6 @@ import {
 	useCommitAll,
 	useMakeNewBranch,
 } from "./services/git"
-
-import scss from "./Explorer.module.scss"
 
 export const Explorer: FC = () => {
 	const gitStatus = useRecoilValue(git.status.state)

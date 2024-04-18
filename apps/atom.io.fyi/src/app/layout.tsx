@@ -1,11 +1,13 @@
+import "./code.scss"
+import "./globals.scss"
+
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Theme } from "./Theme"
-import "./code.scss"
-import "./globals.scss"
+
 import scss from "./layout.module.scss"
+import { Theme } from "./Theme"
 
 export const metadata: Metadata = {
 	title: `Reactive Data • atom.io`,

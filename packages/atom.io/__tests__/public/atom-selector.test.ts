@@ -1,9 +1,8 @@
-import { vitest } from "vitest"
-
 import type { Logger } from "atom.io"
-
 import { atom, getState, selector, setState, subscribe } from "atom.io"
 import * as Internal from "atom.io/internal"
+import { vitest } from "vitest"
+
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

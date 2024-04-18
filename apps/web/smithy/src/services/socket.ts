@@ -1,7 +1,7 @@
-import { atom, selector } from "recoil"
 import type { RecoilValueReadOnly } from "recoil"
-import { io } from "socket.io-client"
+import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
+import { io } from "socket.io-client"
 
 import type {
 	Clientele,

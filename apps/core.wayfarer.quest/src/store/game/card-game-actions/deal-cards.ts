@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
-
 import { editRelations, findRelations } from "atom.io/data"
+
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const dealCardsTX = transaction<
