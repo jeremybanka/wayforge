@@ -79,7 +79,7 @@
 	},
 	"devDependencies": {
 		"@testing-library/react": "15.0.2",
-		"@types/eslint": "npm:@types/eslint@8.56.9",
+		"@types/eslint": "npm:@types/eslint@8.56.10",
 		"@types/eslint-9": "npm:@types/eslint@8.56.9",
 		"@types/estree": "1.0.5",
 		"@types/http-proxy": "1.17.14",
