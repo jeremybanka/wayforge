@@ -1,5 +1,4 @@
 import type { WC } from "hamr/react-json-editor"
-
 import type { FC, ReactElement } from "react"
 import type { RecoilState } from "recoil"
 

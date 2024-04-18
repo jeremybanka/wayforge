@@ -1,6 +1,5 @@
 import { useO } from "atom.io/react"
 import { myIdState, myUsernameState } from "atom.io/realtime-client"
-
 import { span } from "wayfarer.quest/components/<span>"
 
 import { ProfilePicture } from "../players/ProfilePicture"

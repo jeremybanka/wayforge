@@ -1,13 +1,12 @@
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
-import { Explorer } from "./Explorer"
-import { Spaces } from "./NavigationSpace"
+import scss from "./App.module.scss"
 import Connected from "./assets/svg/connected.svg?react"
 import Disconnected from "./assets/svg/disconnected.svg?react"
+import { Explorer } from "./Explorer"
+import { Spaces } from "./NavigationSpace"
 import { connectionState } from "./services/socket"
-
-import scss from "./App.module.scss"
 
 export const App: FC = () => {
 	const connection = useRecoilValue(connectionState)

@@ -1,9 +1,10 @@
 import * as http from "node:http"
-import { vitest } from "vitest"
 
 import * as AtomIO from "atom.io"
-import { type Loadable, dict } from "atom.io/data"
+import { dict, type Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
+import { vitest } from "vitest"
+
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

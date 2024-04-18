@@ -1,12 +1,12 @@
+import "./code.scss"
+import "./globals.scss"
+
 import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 
-import { Theme } from "./Theme"
-
-import Realtime from "./Realtime"
-import "./code.scss"
-import "./globals.scss"
 import scss from "./layout.module.scss"
+import Realtime from "./Realtime"
+import { Theme } from "./Theme"
 
 export const metadata: Metadata = {
 	title: `Wayfarer`,

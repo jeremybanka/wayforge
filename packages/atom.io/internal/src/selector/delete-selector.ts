@@ -1,7 +1,7 @@
 import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
 
-import { newest } from ".."
 import type { Store } from ".."
+import { newest } from ".."
 
 export function deleteSelector(
 	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,

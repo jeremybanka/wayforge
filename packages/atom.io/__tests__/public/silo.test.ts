@@ -1,5 +1,5 @@
 import type { RegularAtomFamilyOptions, RegularAtomOptions } from "atom.io"
-import { Silo, getState } from "atom.io"
+import { getState, Silo } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
 const hasImplicitStoreBeenCreated = () => IMPLICIT.STORE_INTERNAL !== undefined

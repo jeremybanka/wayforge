@@ -1,6 +1,6 @@
-import { selectorFamily } from "atom.io"
 import type { TransactionUpdate } from "atom.io"
-import { IMPLICIT, getJsonToken, getUpdateToken } from "atom.io/internal"
+import { selectorFamily } from "atom.io"
+import { getJsonToken, getUpdateToken, IMPLICIT } from "atom.io/internal"
 import type { JsonIO } from "atom.io/json"
 import { SyncGroup } from "atom.io/realtime"
 // import { completeUpdateAtoms } from "atom.io/realtime-server"

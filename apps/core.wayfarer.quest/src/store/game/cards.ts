@@ -1,8 +1,8 @@
 import { atomFamily } from "atom.io"
 import { join } from "atom.io/data"
-import { IMPLICIT, createMutableAtom } from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { createMutableAtom,IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { Perspective } from "~/packages/occlusion/src"
 

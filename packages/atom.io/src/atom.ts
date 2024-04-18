@@ -1,8 +1,8 @@
 import type { Store, Subject, Transceiver } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createAtomFamily,
 	createStandaloneAtom,
+	IMPLICIT,
 } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 

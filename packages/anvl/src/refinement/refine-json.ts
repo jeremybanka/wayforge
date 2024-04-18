@@ -1,6 +1,6 @@
 import { attempt, raiseError } from "../function"
-import { stringifyJson } from "../json"
 import type { Json } from "../json"
+import { stringifyJson } from "../json"
 import { isPlainObject } from "../object"
 import { isBoolean, isNumber, isString } from "../primitive"
 

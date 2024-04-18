@@ -1,5 +1,5 @@
 export * from "./create-atom-family"
-export * from "./create-regular-atom-family"
 export * from "./create-readonly-selector-family"
+export * from "./create-regular-atom-family"
 export * from "./create-selector-family"
 export * from "./find-in-store"

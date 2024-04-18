@@ -1,10 +1,8 @@
+import { recordToEntries,redact  } from "anvl/object"
 import { pipe } from "fp-ts/function"
 import type { SimpleGit } from "simple-git"
 import { simpleGit } from "simple-git"
 import type { Server, Socket } from "socket.io"
-
-import { redact } from "anvl/object"
-import { recordToEntries } from "anvl/object"
 
 import type {
 	GitClientEvents,

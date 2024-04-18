@@ -1,8 +1,8 @@
 import type { Store, Subject } from "atom.io/internal"
 import {
-	IMPLICIT,
 	createSelectorFamily,
 	createStandaloneSelector,
+	IMPLICIT,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 

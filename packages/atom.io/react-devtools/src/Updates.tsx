@@ -1,8 +1,8 @@
 import type {
+	Func,
 	KeyedStateUpdate,
 	TimelineUpdate,
 	TransactionUpdate,
-	Func,
 } from "atom.io"
 import * as React from "react"
 

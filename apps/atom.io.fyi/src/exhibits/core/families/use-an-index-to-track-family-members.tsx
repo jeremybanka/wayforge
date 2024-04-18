@@ -1,6 +1,7 @@
 import { atom } from "atom.io"
 import { useO } from "atom.io/react"
-import { Point, findXState, findYState } from "./declare-a-family"
+
+import { findXState, findYState,Point } from "./declare-a-family"
 
 export const pointIndex = atom<string[]>({
 	key: `pointIndex`,

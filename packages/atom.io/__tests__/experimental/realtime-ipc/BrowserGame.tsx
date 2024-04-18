@@ -1,3 +1,4 @@
+import { findRelations, findRelationsInStore } from "atom.io/data"
 import { arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
@@ -5,7 +6,6 @@ import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as React from "react"
 
-import { findRelations, findRelationsInStore } from "atom.io/data"
 import { gameContinuity, letterAtoms } from "./game-store"
 
 function Room({ roomId }: { roomId: string }): JSX.Element {

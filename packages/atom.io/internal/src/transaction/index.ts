@@ -1,4 +1,4 @@
-import type { TransactionUpdate, TransactorsWithRunAndEnv, Func } from "atom.io"
+import type { Func, TransactionUpdate, TransactorsWithRunAndEnv } from "atom.io"
 import type { Junction } from "rel8/junction"
 
 export * from "./abort-transaction"

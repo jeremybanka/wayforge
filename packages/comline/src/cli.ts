@@ -1,17 +1,18 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
+
 import type { ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
 import type { Flag } from "./flag"
-import type { Tree, TreePath } from "./tree"
-import { retrievePositionalArgs } from "./retrieve-positional-args"
 import { parseStringOption } from "./option-parsers"
+import { retrievePositionalArgs } from "./retrieve-positional-args"
+import type { Tree, TreePath } from "./tree"
 
-export * from "./option-parsers"
 export * from "./encapsulate"
-export * from "./tree"
 export * from "./flag"
+export * from "./option-parsers"
+export * from "./tree"
 
 export type CliOptionValue =
 	| Readonly<{ [key: string]: CliOptionValue }>

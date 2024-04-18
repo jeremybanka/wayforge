@@ -1,7 +1,6 @@
 import { ElasticInput } from "hamr/react-elastic-input"
-
-import { useRef } from "react"
 import type { FC, ReactElement } from "react"
+import { useRef } from "react"
 
 import { doNothing } from "~/packages/anvl/src/function"
 import type { Json } from "~/packages/anvl/src/json"

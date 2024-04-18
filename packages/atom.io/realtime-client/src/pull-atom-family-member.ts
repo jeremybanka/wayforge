@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import { type Store, setIntoStore } from "atom.io/internal"
+import { setIntoStore, type Store } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"

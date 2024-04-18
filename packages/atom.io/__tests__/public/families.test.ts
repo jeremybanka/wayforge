@@ -1,7 +1,4 @@
-import { vitest } from "vitest"
-
 import type { Logger } from "atom.io"
-
 import {
 	atomFamily,
 	findState,
@@ -10,6 +7,7 @@ import {
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import { vitest } from "vitest"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 1

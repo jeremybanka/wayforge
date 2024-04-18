@@ -6,9 +6,9 @@ import type {
 	TransactionToken,
 } from "atom.io"
 import {
-	IMPLICIT,
 	assignTransactionToContinuity,
 	getUpdateToken,
+	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"

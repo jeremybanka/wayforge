@@ -1,12 +1,10 @@
-import { generateHeapSnapshot } from "bun"
-
 import * as AtomIO from "atom.io"
+import { editRelations } from "atom.io/data"
+import { IMPLICIT } from "atom.io/internal"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
+import { generateHeapSnapshot } from "bun"
 
-import { IMPLICIT } from "atom.io/internal"
-
-import { editRelations } from "atom.io/data"
 import { heartsContinuity } from "./store/game/hearts"
 
 const parentSocket = new RTS.ParentSocket()

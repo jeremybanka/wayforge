@@ -1,7 +1,7 @@
 import type { KeyboardEventHandler, ReactElement } from "react"
 import { useEffect, useId, useRef, useState } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
 import type { RecoilState, RecoilValueReadOnly, SetterOrUpdater } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 
 export type ComboPropsCore<T> = {
 	onSetSelections?: (change: { added: T } | { removed: T }) => void

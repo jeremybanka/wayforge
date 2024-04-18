@@ -1,8 +1,8 @@
 import { Refinery } from "../refinement/refinery"
 import {
-	Differ,
 	diffArray,
 	diffBoolean,
+	Differ,
 	diffNumber,
 	diffObject,
 	diffString,

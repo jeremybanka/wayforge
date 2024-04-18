@@ -1,6 +1,6 @@
 import { atom, selector, selectorFamily } from "atom.io"
 import { findRelations, join } from "atom.io/data"
-import { IMPLICIT, getJsonToken } from "atom.io/internal"
+import { getJsonToken,IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 

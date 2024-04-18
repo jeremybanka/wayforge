@@ -1,11 +1,12 @@
 import type { RegularAtomToken } from "atom.io"
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
 import { join } from "atom.io/data"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
-
 import { IMPLICIT } from "atom.io/internal"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
+
 import { Perspective } from "~/packages/occlusion/src"
+
 import {
 	groupsOfCards,
 	handIndex,

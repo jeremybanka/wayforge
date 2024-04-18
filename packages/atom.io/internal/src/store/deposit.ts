@@ -1,4 +1,5 @@
 import type {
+	Func,
 	MutableAtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
@@ -7,7 +8,6 @@ import type {
 	TransactionToken,
 	WritableSelectorToken,
 	WritableToken,
-	Func,
 } from "atom.io"
 
 import type {

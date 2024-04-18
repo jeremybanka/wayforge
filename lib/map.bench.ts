@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import HAMT from "hamt_plus"
 import * as v from "vitest"
 

@@ -8,17 +8,6 @@ import type { Refinement } from "../refinement"
 import { canExist, cannotExist } from "../refinement"
 import type { integer } from "./integer"
 import { isInteger } from "./integer"
-import {
-	isArraySchema,
-	isConditionalSchema,
-	isExclusiveSchema,
-	isIntersectionSchema,
-	isJsonSchemaLeaf,
-	isJsonSchemaTree,
-	isNegationSchema,
-	isObjectSchema,
-	isUnionSchema,
-} from "./json-schema"
 import type {
 	ArraySchema,
 	JsonSchema,
@@ -29,6 +18,17 @@ import type {
 	JsonSchemaTree,
 	JsonSchemaTypeName,
 	ObjectSchema,
+} from "./json-schema"
+import {
+	isArraySchema,
+	isConditionalSchema,
+	isExclusiveSchema,
+	isIntersectionSchema,
+	isJsonSchemaLeaf,
+	isJsonSchemaTree,
+	isNegationSchema,
+	isObjectSchema,
+	isUnionSchema,
 } from "./json-schema"
 import { isJsonSchemaRef, retrieveRef } from "./refs"
 

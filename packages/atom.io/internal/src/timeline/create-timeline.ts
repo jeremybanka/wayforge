@@ -1,6 +1,7 @@
 import type {
 	AtomFamilyToken,
 	FamilyMetadata,
+	Func,
 	StateUpdate,
 	TimelineManageable,
 	TimelineOptions,
@@ -8,7 +9,6 @@ import type {
 	TimelineUpdate,
 	TokenType,
 	TransactionUpdate,
-	Func,
 } from "atom.io"
 
 import { newest } from "../lineage"

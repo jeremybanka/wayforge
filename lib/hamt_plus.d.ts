@@ -37,7 +37,7 @@ declare module "hamt_plus" {
 		setTree: (newRoot: any, sizeValue: number) => Hamt<T, K>
 
 		set: (key: K, value: T) => Hamt<T, K>
-		setHash: <T>(hash: number, key: K, value: T) => Hamt<T, K>
+		setHash: (hash: number, key: K, value: T) => Hamt<T, K>
 		remove: (key: K) => Hamt<T, K>
 		delete: (key: K) => Hamt<T, K>
 		removeHash: (hash: number, key: K) => Hamt<T, K>

@@ -2,8 +2,8 @@ import type { MutableAtomToken } from "atom.io"
 import { atom, atomFamily, transaction } from "atom.io"
 import { arbitrary } from "atom.io/internal"
 
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 import type { SetRTXJson } from "~/packages/atom.io/transceivers/set-rtx/src"
+import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
 
 export const numberCollectionIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `numberCollectionIndex`,

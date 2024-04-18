@@ -1,4 +1,3 @@
-import { atom, atomFamily, selectorFamily } from "atom.io"
 import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
@@ -6,14 +5,15 @@ import type {
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 } from "atom.io"
+import { atom, atomFamily, selectorFamily } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
+
+import { Join } from "~/packages/anvl/src/join"
+import { hasExactProperties } from "~/packages/anvl/src/object"
 import {
 	lazyLocalStorageEffect,
 	persistAtom,
 } from "~/packages/atom.io/__unstable__/web-effects/src"
-
-import { Join } from "~/packages/anvl/src/join"
-import { hasExactProperties } from "~/packages/anvl/src/object"
 
 import { persistStringSetAtom } from "./explorer-effects"
 
