@@ -1,6 +1,6 @@
 "use client"
 
-import { useI,useJSON  } from "atom.io/react"
+import { useI, useJSON } from "atom.io/react"
 import { roomIndex } from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import { usePullMutable } from "atom.io/realtime-react"

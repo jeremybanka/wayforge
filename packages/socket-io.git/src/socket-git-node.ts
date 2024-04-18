@@ -1,4 +1,4 @@
-import { recordToEntries,redact  } from "anvl/object"
+import { recordToEntries, redact } from "anvl/object"
 import { pipe } from "fp-ts/function"
 import type { SimpleGit } from "simple-git"
 import { simpleGit } from "simple-git"
