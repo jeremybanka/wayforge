@@ -49,13 +49,16 @@ article.class {
         max-width: 700px;
       }
     }
-    p {
+    p,
+    li,
+    table {
       @media (prefers-color-scheme: light) {
         font-weight: 500;
       }
     }
   }
   table {
+    margin-top: 1em;
     border-collapse: collapse;
     tbody {
       * {
