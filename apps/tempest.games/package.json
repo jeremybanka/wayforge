@@ -30,7 +30,7 @@
 		"lightningcss": "1.24.1",
 		"npmlog": "7.0.1",
 		"preact": "10.20.2",
-		"typed-htmx": "0.2.1"
+		"typed-htmx": "0.2.2"
 	},
 	"dependencies": {
 		"@fastly/js-compute": "3.13.1",
