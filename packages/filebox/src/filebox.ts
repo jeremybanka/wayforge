@@ -47,7 +47,7 @@ export class Filebox {
 		return output
 	}
 
-	public wrap<I extends Json.Array, O extends Json.Serializable>({
+	public add<I extends Json.Array, O extends Json.Serializable>({
 		key,
 		get,
 	}: { key: string; get: (...args: I) => Promise<O> }): {

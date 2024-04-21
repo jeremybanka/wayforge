@@ -36,7 +36,7 @@ afterEach(() => {
 describe(`Filebox`, () => {
 	test(`mode:off`, async () => {
 		const filebox = new Filebox(`off`, tempDir.name)
-		const responses = filebox.wrap({
+		const responses = filebox.add({
 			key: `responses`,
 			get: async (url: string) => {
 				return fetch(url).then((response) => response.text())
@@ -48,7 +48,7 @@ describe(`Filebox`, () => {
 	})
 	test(`mode:read`, async () => {
 		const filebox = new Filebox(`read`, tempDir.name)
-		const { get } = filebox.wrap({
+		const { get } = filebox.add({
 			key: `hello`,
 			get: async (url: string) => {
 				return fetch(url).then((response) => response.text())
