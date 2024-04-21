@@ -804,6 +804,12 @@ importers:
       '@types/bun':
         specifier: 1.1.0
         version: 1.1.0
+      '@types/node':
+        specifier: 20.12.7
+        version: 20.12.7
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
@@ -815,7 +821,28 @@ importers:
         version: 8.0.2(typescript@5.4.5)
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
+        version: 1.5.0(@types/node@20.12.7)
+
+  packages/filebox:
+    devDependencies:
+      '@types/node':
+        specifier: 20.12.7
+        version: 20.12.7
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
+      tmp:
+        specifier: 0.2.3
+        version: 0.2.3
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(typescript@5.4.5)
+      vitest:
+        specifier: 1.5.0
+        version: 1.5.0(@types/node@20.12.7)
 
   packages/hamr:
     dependencies:

@@ -1,6 +1,6 @@
 {
-	"name": "comline",
-	"version": "0.0.4",
+	"name": "filebox",
+	"version": "0.0.0",
 	"license": "MIT",
 	"author": {
 		"name": "Jeremy Banka",
@@ -9,16 +9,13 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/index.mjs",
 	"files": ["dist", "src"],
-	"main": "dist/cli.js",
-	"types": "dist/cli.d.ts",
-	"dependencies": {
-		"zod": "3.23.0",
-		"zod-to-json-schema": "3.22.5"
-	},
+	"dependencies": {},
 	"scripts": {
-		"build:js": "bun build --outdir dist --target node --external zod --external zod-to-json-schema -- src/cli.ts",
+		"build:js": "bun build --outdir dist --target node -- src/cli.ts",
 		"build:dts": "tsup",
 		"build": "concurrently \"bun:build:*\"",
 		"lint:biome": "biome check -- .",
@@ -30,7 +27,6 @@
 		"test:coverage": "echo no test coverage yet"
 	},
 	"devDependencies": {
-		"@types/bun": "1.1.0",
 		"@types/node": "20.12.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
