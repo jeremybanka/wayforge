@@ -1,5 +1,6 @@
 {
 	"name": "filebox",
+	"type": "module",
 	"version": "0.0.0",
 	"license": "MIT",
 	"author": {
@@ -13,7 +14,6 @@
 	"types": "dist/index.d.ts",
 	"module": "dist/index.mjs",
 	"files": ["dist", "src"],
-	"dependencies": {},
 	"scripts": {
 		"build:js": "bun build --outdir dist --target node -- src/cli.ts",
 		"build:dts": "tsup",
@@ -30,8 +30,10 @@
 		"@types/node": "20.12.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
+		"openai": "4.38.2",
 		"tmp": "0.2.3",
 		"tsup": "8.0.2",
+		"vite": "5.2.10",
 		"vitest": "1.5.0"
 	}
 }

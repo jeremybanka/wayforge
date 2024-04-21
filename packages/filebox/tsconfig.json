@@ -2,6 +2,6 @@
 	"extends": "../../tsconfig.json",
 	"include": ["src", "__tests__", "**/*.config.ts"],
 	"compilerOptions": {
-		"types": ["vitest/globals"]
+		"types": ["vite/client", "vitest/globals"]
 	}
 }
