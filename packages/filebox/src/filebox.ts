@@ -20,10 +20,10 @@ export class Filebox {
 			throw new Error(`Filebox: input file for key "${key}" does not exist`)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
-		const inputStringified = JSON.stringify(args)
+		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (inputStringified !== inputFileContents) {
 			throw new Error(
-				`Filebox: the input for "key" contained in the filebox does not match the input provided.`,
+				`Filebox: the input for "key" contained in the filebox does not match the input provided.\n\nInput:\n${inputStringified}\n\nFilebox:\n${inputFileContents}`,
 			)
 		}
 		const pathToOutputFile = path.join(
@@ -47,13 +47,13 @@ export class Filebox {
 			this.baseDir,
 			`${key}.${subKey}.output.json`,
 		)
-		const inputStringified = JSON.stringify(args)
+		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (!fs.existsSync(this.baseDir)) {
 			fs.mkdirSync(this.baseDir)
 		}
 		fs.writeFileSync(pathToInputFile, inputStringified)
 		const output = await get(...args)
-		fs.writeFileSync(pathToOutputFile, JSON.stringify(output))
+		fs.writeFileSync(pathToOutputFile, JSON.stringify(output, null, `\t`))
 		return output
 	}
 

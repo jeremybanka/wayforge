@@ -73,7 +73,7 @@ describe(`Filebox`, () => {
 		}
 		fs.writeFileSync(
 			path.join(tempDir.name, `hello.home.input.json`),
-			`["http://localhost:12500"]`,
+			`[\n\t"http://localhost:12500"\n]`,
 		)
 		fs.writeFileSync(
 			path.join(tempDir.name, `hello.home.output.json`),
@@ -85,14 +85,14 @@ describe(`Filebox`, () => {
 		expect(utils.put).toHaveBeenCalledTimes(0)
 	})
 	test(`mode:read-write`, async () => {
-		const filebox = new Filebox(`read-write`, tempDir.name)
+		const filebox = new Filebox(`read-write`)
 		const completions = filebox.add({
 			key: `openai`,
 			get: openAiClient.chat.completions.create.bind(
 				openAiClient.chat.completions,
 			),
 		})
-		const result = await completions.get(`french-capital`, {
+		const completion = await completions.get(`french-capital`, {
 			model: `gpt-3.5-turbo`,
 			messages: [
 				{
@@ -105,5 +105,8 @@ describe(`Filebox`, () => {
 				},
 			],
 		})
+		expect(completion.choices[0].message.content).toBe(
+			`The capital of France is Paris.`,
+		)
 	})
 })
