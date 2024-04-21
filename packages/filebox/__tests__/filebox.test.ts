@@ -3,6 +3,11 @@ import * as http from "node:http"
 import path from "node:path"
 
 import { OpenAI } from "openai"
+import type * as OpenAICore from "openai/core"
+import type {
+	ChatCompletion,
+	ChatCompletionCreateParamsNonStreaming,
+} from "openai/resources/index"
 import * as tmp from "tmp"
 
 import { Filebox } from "../src"
@@ -11,6 +16,18 @@ const openAiClient = new OpenAI({
 	apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 	dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
 })
+function aiComplete(
+	body: ChatCompletionCreateParamsNonStreaming,
+	options?: OpenAICore.RequestOptions,
+): OpenAICore.APIPromise<ChatCompletion> {
+	return openAiClient.chat.completions.create(
+		{
+			...body,
+			stream: false,
+		},
+		options,
+	)
+}
 
 let server: http.Server
 let tempDir: tmp.DirResult
@@ -42,11 +59,8 @@ afterEach(() => {
 describe(`Filebox`, () => {
 	test(`mode:off`, async () => {
 		const filebox = new Filebox(`off`, tempDir.name)
-		const responses = filebox.add({
-			key: `responses`,
-			get: async (url: string) => {
-				return fetch(url).then((response) => response.text())
-			},
+		const responses = filebox.add(`responses`, async (url: string) => {
+			return fetch(url).then((response) => response.text())
 		})
 		const result = await responses.get(`home`, `http://localhost:12500`)
 		expect(result).toBe(`The best way to predict the future is to invent it.`)
@@ -54,11 +68,8 @@ describe(`Filebox`, () => {
 	})
 	test(`mode:read`, async () => {
 		const filebox = new Filebox(`read`, tempDir.name)
-		const { get } = filebox.add({
-			key: `hello`,
-			get: async (url: string) => {
-				return fetch(url).then((response) => response.text())
-			},
+		const { get } = filebox.add(`hello`, async (url: string) => {
+			return fetch(url).then((response) => response.text())
 		})
 		let caught: Error | undefined
 		try {
@@ -86,12 +97,7 @@ describe(`Filebox`, () => {
 	})
 	test(`mode:read-write`, async () => {
 		const filebox = new Filebox(`read-write`)
-		const completions = filebox.add({
-			key: `openai`,
-			get: openAiClient.chat.completions.create.bind(
-				openAiClient.chat.completions,
-			),
-		})
+		const completions = filebox.add(`openai`, aiComplete)
 		const completion = await completions.get(`french-capital`, {
 			model: `gpt-3.5-turbo`,
 			messages: [

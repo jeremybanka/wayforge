@@ -57,12 +57,19 @@ export class Filebox {
 		return output
 	}
 
-	public add<I extends any[], O>({
-		key,
-		get,
-	}: { key: string; get: (...args: I) => Promise<O> }): {
+	public add<I extends any[], O>(
+		key: string,
+		get: (...args: I) => Promise<O>,
+	): {
 		get: (key: string, ...args: I) => Promise<O>
 	} {
+		// public add<I extends any[], O, K extends keyof any>(
+		// 	key: string,
+		//   obj: { [key in K]: (...args: I) => Promise<O> },
+		// 	get: K
+		// ): {
+		// 	get: (key: string, ...args: I) => Promise<O>
+		// }
 		return {
 			get: async (subKey: string, ...args: I): Promise<O> => {
 				switch (this.mode) {
