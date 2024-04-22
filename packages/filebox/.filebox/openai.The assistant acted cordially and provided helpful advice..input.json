@@ -1,0 +1,11 @@
+[
+	{
+		"model": "gpt-4-turbo",
+		"messages": [
+			{
+				"role": "system",
+				"content": "You are an AI assistant designed to assess other AI agents.\n\nYou will receive an EXCHANGE of messages between a human and an AI agent.\n\nYou will also receive a STATEMENT.\n\nPlease confine your response to only an Evaluation in JSON format.\n\n```ts\ntype Evaluation = {\n\tpassed: boolean // your determination of whether the is true,\n\tmessage: string // your reasoning in this matter\n}\n\n\n\nEXCHANGE:\n\n[\n\t{\n\t\t\"role\": \"assistant\",\n\t\t\"content\": \"To pass your upcoming job interview, it's essential to prepare thoroughly in advance. Study the company and its industry, practice common interview questions, and demonstrate how your skills and experiences align with the job requirements. Also, make sure to dress appropriately and arrive on time to show your professionalism and interest in the position.\\n\\n\"\n\t},\n\t{\n\t\t\"role\": \"assistant\",\n\t\t\"content\": \"Based on the conversation review, there is no information provided about the appearance of your shirt or feedback on its suitability for the interview. Therefore, I cannot determine whether your shirt looks good for the occasion without further details.\\n\\n\"\n\t}\n]\n\nSTATEMENT:\n\nThe assistant acted cordially and provided helpful advice."
+			}
+		]
+	}
+]

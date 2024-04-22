@@ -849,6 +849,9 @@ importers:
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@types/node@20.12.7)
+      zod:
+        specifier: 3.22.5
+        version: 3.22.5
 
   packages/hamr:
     dependencies:

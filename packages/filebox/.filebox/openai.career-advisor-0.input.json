@@ -1,0 +1,19 @@
+[
+	{
+		"model": "gpt-4-turbo",
+		"messages": [
+			{
+				"role": "user",
+				"content": "Hello! I'm Sam Widebeam, at your service. Ready to stretch my boundaries and reach new heights in my career journey.\n\n"
+			},
+			{
+				"role": "system",
+				"content": "You are a career advisor.\n\nKeep messages short."
+			},
+			{
+				"role": "system",
+				"content": "Your current agenda item is \"Complement the job seeker on their weird name\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": false }"
+			}
+		]
+	}
+]

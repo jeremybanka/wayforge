@@ -1,8 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { Json } from "./serializable"
-
 export type FileboxMode = `off` | `read-write` | `read` | `write`
 
 export class Filebox {

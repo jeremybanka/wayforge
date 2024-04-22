@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9GhiA0YoQKY4c87yDR2G9VxCon5UA",
+	"object": "chat.completion",
+	"created": 1713768302,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Here are some key tips to help you ace your interview:\n\n1. **Research the Company:** Understand their products, services, culture, and the industry they operate in. This will let you tailor your answers and show that you’re a good fit.\n\n2. **Practice Common Interview Questions:** Be prepared to discuss your background, experiences, and skills confidently. Practice answering typical interview questions to build your confidence.\n\n3. **Be Prepared to Discuss Your Resume:** Know the highlights of your professional history and be ready to discuss how your experiences align with the job requirements.\n\n4. **Ask Questions:** Prepare intelligent questions to ask at the end of the interview. This shows your interest in the role and company.\n\n5. **Dress Appropriately:** Ensure your appearance is neat and professional, suitable for the company's culture.\n\n6. **Follow Up:** Send a thank-you email after the interview to express your appreciation for the opportunity and reaffirm your interest in the position.\n\nPreparing well can make a significant difference in your performance. Good luck, Sam!\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": null }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 261,
+		"completion_tokens": 228,
+		"total_tokens": 489
+	},
+	"system_fingerprint": "fp_76f018034d"
+}
