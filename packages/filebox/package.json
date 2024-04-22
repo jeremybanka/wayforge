@@ -15,7 +15,7 @@
 	"module": "dist/index.mjs",
 	"files": ["dist", "src"],
 	"scripts": {
-		"build:js": "bun build --outdir dist --target node -- src/cli.ts",
+		"build:js": "bun build --outdir dist --target node -- src/index.ts",
 		"build:dts": "tsup",
 		"build": "concurrently \"bun:build:*\"",
 		"lint:biome": "biome check -- .",
