@@ -1,12 +1,12 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-export type FileboxMode = `off` | `read-write` | `read` | `write`
+export type SquirrelMode = `off` | `read-write` | `read` | `write`
 
-export class Filebox {
+export class Squirrel {
 	public constructor(
-		public mode: FileboxMode = `off`,
-		public baseDir: string = path.join(process.cwd(), `.filebox`),
+		public mode: SquirrelMode = `off`,
+		public baseDir: string = path.join(process.cwd(), `.varmint`),
 	) {}
 
 	private read<I extends any[], O>(key: string, subKey: string, args: I): O {
@@ -15,13 +15,13 @@ export class Filebox {
 			`${key}.${subKey}.input.json`,
 		)
 		if (!fs.existsSync(pathToInputFile)) {
-			throw new Error(`Filebox: input file for key "${key}" does not exist`)
+			throw new Error(`Squirrel: input file for key "${key}" does not exist`)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
 		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (inputStringified !== inputFileContents) {
 			throw new Error(
-				`Filebox: the input for "key" contained in the filebox does not match the input provided.\n\nInput:\n${inputStringified}\n\nFilebox:\n${inputFileContents}`,
+				`Squirrel: the content of the cached input file ${pathToInputFile} does not match the input provided.\n\nProvided:\n${inputStringified}\n\nCached:\n${inputFileContents}`,
 			)
 		}
 		const pathToOutputFile = path.join(
@@ -61,13 +61,6 @@ export class Filebox {
 	): {
 		get: (key: string, ...args: I) => Promise<O>
 	} {
-		// public add<I extends any[], O, K extends keyof any>(
-		// 	key: string,
-		//   obj: { [key in K]: (...args: I) => Promise<O> },
-		// 	get: K
-		// ): {
-		// 	get: (key: string, ...args: I) => Promise<O>
-		// }
 		return {
 			get: async (subKey: string, ...args: I): Promise<O> => {
 				switch (this.mode) {

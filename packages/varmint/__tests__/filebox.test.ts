@@ -4,7 +4,7 @@ import path from "node:path"
 
 import * as tmp from "tmp"
 
-import { Filebox } from "../src"
+import { Squirrel } from "../src"
 
 let server: http.Server
 let tempDir: tmp.DirResult
@@ -35,8 +35,8 @@ afterEach(() => {
 
 describe(`Filebox`, () => {
 	test(`mode:off`, async () => {
-		const filebox = new Filebox(`off`, tempDir.name)
-		const responses = filebox.add(`responses`, async (url: string) => {
+		const squirrel = new Squirrel(`off`, tempDir.name)
+		const responses = squirrel.add(`responses`, async (url: string) => {
 			return fetch(url).then((response) => response.text())
 		})
 		const result = await responses.get(`home`, `http://localhost:12500`)
@@ -44,8 +44,8 @@ describe(`Filebox`, () => {
 		expect(utils.put).toHaveBeenCalledTimes(1)
 	})
 	test(`mode:read`, async () => {
-		const filebox = new Filebox(`read`, tempDir.name)
-		const { get } = filebox.add(`hello`, async (url: string) => {
+		const squirrel = new Squirrel(`read`, tempDir.name)
+		const { get } = squirrel.add(`hello`, async (url: string) => {
 			return fetch(url).then((response) => response.text())
 		})
 		let caught: Error | undefined

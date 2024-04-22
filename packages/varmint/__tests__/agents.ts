@@ -13,7 +13,7 @@ import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
 import { set, z } from "zod"
 
-import { Filebox } from "../src"
+import { Squirrel } from "../src"
 
 export type Agenda = {
 	[key: string]: boolean | string | null
@@ -155,14 +155,14 @@ function aiComplete(
 		options,
 	)
 }
-const filebox = new Filebox(
+const squirrel = new Squirrel(
 	process.env.CI
 		? `read`
 		: process.env.NODE_ENV === `production`
 			? `off`
 			: `read-write`,
 )
-const completions = filebox.add(`openai`, aiComplete)
+const completions = squirrel.add(`openai`, aiComplete)
 
 export type AssistantMessage = {
 	role: `assistant`
