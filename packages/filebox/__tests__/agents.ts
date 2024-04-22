@@ -169,6 +169,11 @@ export type SystemMessage = {
 }
 export type Message = AssistantMessage | UserMessage
 
+export type AgentCompletion<Update> = {
+	message: AssistantMessage
+	update: Update
+}
+
 export type Agent<State = null, Update = null> = {
 	conversation: Loadable<(AssistantMessage | SystemMessage | UserMessage)[]>
 	state: Loadable<State>
@@ -219,10 +224,7 @@ export class Grunt<State extends Agenda>
 		return stateLoadable as State
 	}
 
-	public async callAssistant(): Promise<{
-		message: AssistantMessage
-		update: Partial<State>
-	}> {
+	public async callAssistant(): Promise<AgentCompletion<Partial<State>>> {
 		const messageId = `${this.id}-${crypto.randomUUID()}`
 		const messageAtom = findState(chatMessageAtoms, messageId)
 		const messageIndex = findState(messageIndices, this.id)

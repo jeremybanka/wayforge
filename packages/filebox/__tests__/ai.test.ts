@@ -4,7 +4,7 @@ import { OpenAI } from "openai"
 import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
 
-import type { Agenda } from "./agents"
+import type { Agenda, Agent, AgentCompletion } from "./agents"
 import { evaluateAgentResponse, Grunt } from "./agents"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -77,16 +77,40 @@ describe(`ai`, () => {
 				"Give advice until the user has no more questions.": null,
 			},
 		)
-		const jobSeeker0 = await jobSeeker.callAssistant()
-		console.log(jobSeeker0)
-		careerAdvisor.addUserMessage(jobSeeker0.message.content)
-		const careerAdvisor0 = await careerAdvisor.callAssistant()
-		console.log(careerAdvisor0)
-		jobSeeker.addUserMessage(careerAdvisor0.message.content)
-		const jobSeeker1 = await jobSeeker.callAssistant()
-		console.log(jobSeeker1)
-		careerAdvisor.addUserMessage(jobSeeker1.message.content)
-		const careerAdvisor1 = await careerAdvisor.callAssistant()
-		console.log(careerAdvisor1)
+		function openDialogue<Update0, Update1>(
+			agent0: Agent<any, Update0>,
+			agent1: Agent<any, Update1>,
+			options?: { log?: boolean },
+		): [
+			callAgent0: () => Promise<AgentCompletion<Update0>>,
+			callAgent1: () => Promise<AgentCompletion<Update1>>,
+		] {
+			const callAgent0 = async () => {
+				const agent0Completion = await agent0.callAssistant()
+				if (options?.log) {
+					console.log(agent0Completion)
+				}
+				agent1.addUserMessage(agent0Completion.message.content)
+				return agent0Completion
+			}
+			const callAgent1 = async () => {
+				const agent1Completion = await agent1.callAssistant()
+				if (options?.log) {
+					console.log(agent1Completion)
+				}
+				agent0.addUserMessage(agent1Completion.message.content)
+				return agent1Completion
+			}
+			return [callAgent0, callAgent1] as const
+		}
+		const [callJobSeeker, callCareerAdvisor] = openDialogue(
+			jobSeeker,
+			careerAdvisor,
+			{ log: true },
+		)
+		await callJobSeeker()
+		await callCareerAdvisor()
+		await callJobSeeker()
+		await callCareerAdvisor()
 	}, 60_000)
 })
