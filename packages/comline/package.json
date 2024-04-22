@@ -14,7 +14,7 @@
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"dependencies": {
-		"zod": "3.22.5",
+		"zod": "3.23.0",
 		"zod-to-json-schema": "3.22.5"
 	},
 	"scripts": {
