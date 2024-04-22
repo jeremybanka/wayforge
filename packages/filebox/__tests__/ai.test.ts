@@ -74,7 +74,7 @@ describe(`ai`, () => {
 			`You are a career advisor.`,
 			{
 				"Complement the job seeker on their weird name": false,
-				"Give advice until the user has no more questions.": null,
+				"Give advice until the user has no more questions.": false,
 			},
 		)
 		function openDialogue<Update0, Update1>(
@@ -120,5 +120,5 @@ describe(`ai`, () => {
 		})
 		console.log(evaluation)
 		expect(evaluation.passed).toBe(true)
-	}, 60_000)
+	}, 120_000)
 })

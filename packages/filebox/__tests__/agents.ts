@@ -315,7 +315,6 @@ export async function evaluateAgentResponse({
 			].join(`\n\n`),
 		} as const,
 	]
-	console.log(messages)
 	return completions
 		.get(statement, {
 			model: `gpt-4-turbo`,

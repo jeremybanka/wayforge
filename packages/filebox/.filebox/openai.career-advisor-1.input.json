@@ -20,7 +20,7 @@
 			},
 			{
 				"role": "system",
-				"content": "This is your current agenda:\n\n{\n  \"Complement the job seeker on their weird name\": true,\n  \"Give advice until the user has no more questions.\": null\n}\n\nYour current agenda item is a question: \"Give advice until the user has no more questions.\"\n\nReview the conversation to determine whether this question has been answered.\n\nIf it has, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": <answer, one or two sentences> }\n\notherwise, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": null }"
+				"content": "Your current agenda item is \"Give advice until the user has no more questions.\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
 			}
 		]
 	}
