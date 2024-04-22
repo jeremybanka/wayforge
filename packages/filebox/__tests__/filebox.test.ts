@@ -2,32 +2,9 @@ import * as fs from "node:fs"
 import * as http from "node:http"
 import path from "node:path"
 
-import { OpenAI } from "openai"
-import type * as OpenAICore from "openai/core"
-import type {
-	ChatCompletion,
-	ChatCompletionCreateParamsNonStreaming,
-} from "openai/resources/index"
 import * as tmp from "tmp"
 
 import { Filebox } from "../src"
-
-const openAiClient = new OpenAI({
-	apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-	dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
-})
-function aiComplete(
-	body: ChatCompletionCreateParamsNonStreaming,
-	options?: OpenAICore.RequestOptions,
-): OpenAICore.APIPromise<ChatCompletion> {
-	return openAiClient.chat.completions.create(
-		{
-			...body,
-			stream: false,
-		},
-		options,
-	)
-}
 
 let server: http.Server
 let tempDir: tmp.DirResult
@@ -94,25 +71,5 @@ describe(`Filebox`, () => {
 		const result = await get(`home`, `http://localhost:12500`)
 		expect(result).toBe(`The best way to predict the future is to invent it.`)
 		expect(utils.put).toHaveBeenCalledTimes(0)
-	})
-	test(`mode:read-write`, async () => {
-		const filebox = new Filebox(`read-write`)
-		const completions = filebox.add(`openai`, aiComplete)
-		const completion = await completions.get(`french-capital`, {
-			model: `gpt-3.5-turbo`,
-			messages: [
-				{
-					role: `system`,
-					content: `You are a helpful assistant.`,
-				},
-				{
-					role: `user`,
-					content: `What is the capital of France?`,
-				},
-			],
-		})
-		expect(completion.choices[0].message.content).toBe(
-			`The capital of France is Paris.`,
-		)
 	})
 })
