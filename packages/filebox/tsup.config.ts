@@ -11,7 +11,7 @@ export const OPTIONS = {
 	tsconfig: `tsconfig.json`,
 	dts: { only: true },
 	format: [`esm`],
-	entry: [`src/cli.ts`],
+	entry: [`src/index.ts`],
 	metafile: false,
 	outDir: `dist`,
 } satisfies Options

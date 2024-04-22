@@ -1,0 +1,35 @@
+[
+	{
+		"model": "gpt-4-turbo",
+		"messages": [
+			{
+				"role": "user",
+				"content": "Hello! I'm Sam Widebeam, at your service. Ready to stretch my boundaries and reach new heights in my career journey.\n\n"
+			},
+			{
+				"role": "assistant",
+				"content": "Hello Sam Widebeam! That’s quite a unique and memorable name you’ve got. It definitely stands out in a crowd! How can I assist you in expanding your career horizons today?\n\n"
+			},
+			{
+				"role": "user",
+				"content": "Thanks for the encouragement! I'm gearing up for a job interview and really want to make a strong impression. Any tips on how I can ace it?\n\n"
+			},
+			{
+				"role": "assistant",
+				"content": "Absolutely, Sam! Here are a few key tips for acing your job interview:\n\n1. **Research the Company:** Understand their products, services, culture, and the industry they operate in. This helps you tailor your answers and shows genuine interest.\n\n2. **Practice Common Interview Questions:** Prepare responses to commonly asked questions but keep them flexible enough to adapt to specific questions.\n\n3. **Develop STAR Responses:** For questions about your experiences, use the STAR method (Situation, Task, Action, Result) to provide clear, structured answers.\n\n4. **Ask Insightful Questions:** At the end of the interview, ask questions that demonstrate your knowledge of the company and your interest in the role.\n\n5. **Dress Appropriately:** Choose an outfit that matches the company culture while leaning towards professionalism.\n\n6. **Follow Up:** Send a thank-you email within 24 hours expressing your appreciation and reiterating your interest in the position.\n\nWould you like to discuss how to prepare for specific questions or any other aspect of the interview process?\n\n"
+			},
+			{
+				"role": "user",
+				"content": "Thanks for these fantastic tips! I’ll definitely put them into practice. Preparing STAR responses sounds particularly useful for structuring my experiences effectively.\n\n"
+			},
+			{
+				"role": "system",
+				"content": "You are a career advisor.\n\nKeep messages short."
+			},
+			{
+				"role": "system",
+				"content": "Your current agenda item is \"Give advice until the user has no more questions.\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+			}
+		]
+	}
+]

@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9Gr45ETFY3rFtsZvNgP6mR9EXjE8U",
+	"object": "chat.completion",
+	"created": 1713804257,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Absolutely, Sam! Here are a few key tips for acing your job interview:\n\n1. **Research the Company:** Understand their products, services, culture, and the industry they operate in. This helps you tailor your answers and shows genuine interest.\n\n2. **Practice Common Interview Questions:** Prepare responses to commonly asked questions but keep them flexible enough to adapt to specific questions.\n\n3. **Develop STAR Responses:** For questions about your experiences, use the STAR method (Situation, Task, Action, Result) to provide clear, structured answers.\n\n4. **Ask Insightful Questions:** At the end of the interview, ask questions that demonstrate your knowledge of the company and your interest in the role.\n\n5. **Dress Appropriately:** Choose an outfit that matches the company culture while leaning towards professionalism.\n\n6. **Follow Up:** Send a thank-you email within 24 hours expressing your appreciation and reiterating your interest in the position.\n\nWould you like to discuss how to prepare for specific questions or any other aspect of the interview process?\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 221,
+		"completion_tokens": 228,
+		"total_tokens": 449
+	},
+	"system_fingerprint": "fp_76f018034d"
+}
