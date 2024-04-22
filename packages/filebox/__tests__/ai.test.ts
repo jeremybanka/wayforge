@@ -11,24 +11,6 @@ const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
 let logger: Logger
-
-const openAiClient = new OpenAI({
-	apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-	dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
-})
-function aiComplete(
-	body: OpenAIResources.ChatCompletionCreateParamsNonStreaming,
-	options?: OpenAICore.RequestOptions,
-): OpenAICore.APIPromise<OpenAIResources.ChatCompletion> {
-	return openAiClient.chat.completions.create(
-		{
-			...body,
-			stream: false,
-		},
-		options,
-	)
-}
-
 beforeEach(() => {
 	// Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
