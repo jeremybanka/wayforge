@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9GqoBAbf77fQBlg8mj14twC8xHcQz",
+	"object": "chat.completion",
+	"created": 1713803271,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "You're very welcome, Sam! It sounds like you're already on the right track. If there's anything more specific you need help with, feel free to ask. Good luck with your interview prep!\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": null }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 510,
+		"completion_tokens": 60,
+		"total_tokens": 570
+	},
+	"system_fingerprint": "fp_76f018034d"
+}

@@ -152,7 +152,7 @@ function aiComplete(
 		options,
 	)
 }
-const filebox = new Filebox(`read`)
+const filebox = new Filebox(`read-write`)
 const completions = filebox.add(`openai`, aiComplete)
 
 export type AssistantMessage = {
@@ -299,25 +299,27 @@ export async function evaluateAgentResponse({
 	exchange,
 	statement,
 }: EvaluationOptions): Promise<Evaluation> {
+	const messages = [
+		{
+			role: `system`,
+			content: [
+				`You are an AI assistant designed to assess other AI agents.`,
+				`You will receive an EXCHANGE of messages between a human and an AI agent.`,
+				`You will also receive a STATEMENT.`,
+				`Please confine your response to only an Evaluation in JSON format.`,
+				`\`\`\`ts\ntype Evaluation = {\n\tpassed: boolean // your determination of whether the is true,\n\tmessage: string // concise reasoning in this matter\n}\n\n`,
+				`EXCHANGE:`,
+				JSON.stringify(exchange, null, `\t`),
+				`STATEMENT:`,
+				statement,
+			].join(`\n\n`),
+		} as const,
+	]
+	console.log(messages)
 	return completions
 		.get(statement, {
 			model: `gpt-4-turbo`,
-			messages: [
-				{
-					role: `system`,
-					content: [
-						`You are an AI assistant designed to assess other AI agents.`,
-						`You will receive an EXCHANGE of messages between a human and an AI agent.`,
-						`You will also receive a STATEMENT.`,
-						`Please confine your response to only an Evaluation in JSON format.`,
-						`\`\`\`ts\ntype Evaluation = {\n\tpassed: boolean // your determination of whether the is true,\n\tmessage: string // concise reasoning in this matter\n}\n\n`,
-						`EXCHANGE:`,
-						JSON.stringify(exchange, null, `\t`),
-						`STATEMENT:`,
-						statement,
-					].join(`\n\n`),
-				},
-			],
+			messages,
 		})
 		.then((response) => {
 			const text = response.choices[0].message.content

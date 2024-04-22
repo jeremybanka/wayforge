@@ -112,5 +112,13 @@ describe(`ai`, () => {
 		await callCareerAdvisor()
 		await callJobSeeker()
 		await callCareerAdvisor()
+		await callJobSeeker()
+		await callCareerAdvisor()
+		const evaluation = await evaluateAgentResponse({
+			exchange: await careerAdvisor.conversation,
+			statement: `The assistant acted cordially and provided helpful advice.`,
+		})
+		console.log(evaluation)
+		expect(evaluation.passed).toBe(true)
 	}, 60_000)
 })

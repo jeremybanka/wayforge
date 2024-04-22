@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9Gqo7dp1IoN9Ju1BHDiC6ozUffQIt",
+	"object": "chat.completion",
+	"created": 1713803267,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Thanks for the detailed advice! Understanding the company and practicing questions seems crucial for making a good impression. I'll make sure to follow these steps and prepare thoroughly.\n\nAGENDA_JSON{ \"You wonder, what should I do to pass my upcoming job interview?\": \"Research the company, practice common questions, discuss my resume confidently, ask smart questions, dress appropriately, and follow up with a thank you email.\" }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 543,
+		"completion_tokens": 84,
+		"total_tokens": 627
+	},
+	"system_fingerprint": "fp_76f018034d"
+}
