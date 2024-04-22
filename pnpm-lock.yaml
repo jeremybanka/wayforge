@@ -823,36 +823,6 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@types/node@20.12.7)
 
-  packages/filebox:
-    devDependencies:
-      '@types/node':
-        specifier: 20.12.7
-        version: 20.12.7
-      '@types/tmp':
-        specifier: 0.2.6
-        version: 0.2.6
-      concurrently:
-        specifier: 8.2.2
-        version: 8.2.2
-      openai:
-        specifier: 4.38.2
-        version: 4.38.2
-      tmp:
-        specifier: 0.2.3
-        version: 0.2.3
-      tsup:
-        specifier: 8.0.2
-        version: 8.0.2(typescript@5.4.5)
-      vite:
-        specifier: 5.2.10
-        version: 5.2.10(@types/node@20.12.7)
-      vitest:
-        specifier: 1.5.0
-        version: 1.5.0(@types/node@20.12.7)
-      zod:
-        specifier: 3.22.5
-        version: 3.22.5
-
   packages/hamr:
     dependencies:
       '@floating-ui/react':
@@ -1127,6 +1097,36 @@ importers:
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@types/node@20.12.7)
+
+  packages/varmint:
+    devDependencies:
+      '@types/node':
+        specifier: 20.12.7
+        version: 20.12.7
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
+      openai:
+        specifier: 4.38.2
+        version: 4.38.2
+      tmp:
+        specifier: 0.2.3
+        version: 0.2.3
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(typescript@5.4.5)
+      vite:
+        specifier: 5.2.10
+        version: 5.2.10(@types/node@20.12.7)
+      vitest:
+        specifier: 1.5.0
+        version: 1.5.0(@types/node@20.12.7)
+      zod:
+        specifier: 3.22.5
+        version: 3.22.5
 
 packages:
 
