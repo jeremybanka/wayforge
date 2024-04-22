@@ -136,14 +136,17 @@ export const openAIParamsSelectors = selectorFamily<
 		},
 })
 
-const openAiClient = new OpenAI({
-	apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-	dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
-})
+let openAiClient: OpenAI
 function aiComplete(
 	body: OpenAIResources.ChatCompletionCreateParamsNonStreaming,
 	options?: OpenAICore.RequestOptions,
 ): OpenAICore.APIPromise<OpenAIResources.ChatCompletion> {
+	if (!openAiClient) {
+		openAiClient = new OpenAI({
+			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+			dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
+		})
+	}
 	return openAiClient.chat.completions.create(
 		{
 			...body,
