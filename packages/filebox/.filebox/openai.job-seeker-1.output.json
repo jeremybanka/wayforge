@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9GhZh8ZDXgoYJl2Gz6vccyb5OLlCQ",
+	"object": "chat.completion",
+	"created": 1713767777,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Thanks for the encouragement! I'm gearing up for a job interview and really want to make a strong impression. Any tips on how I can ace it?\n\nAGENDA_JSON{ \"You wonder, what should I do to pass my upcoming job interview?\": null }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 295,
+		"completion_tokens": 54,
+		"total_tokens": 349
+	},
+	"system_fingerprint": "fp_76f018034d"
+}

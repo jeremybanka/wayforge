@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9Gr4IjpkAiCJ2oOcSN9YMyLr0moBp",
+	"object": "chat.completion",
+	"created": 1713804270,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "I'm glad you found the STAR method helpful! It's a great way to clearly showcase your contributions and their impacts in past roles. Do you need examples of how to frame a specific experience using the STAR method or anything else you're curious about?\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 466,
+		"completion_tokens": 69,
+		"total_tokens": 535
+	},
+	"system_fingerprint": "fp_a39722e138"
+}
