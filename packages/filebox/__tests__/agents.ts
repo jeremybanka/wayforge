@@ -152,7 +152,13 @@ function aiComplete(
 		options,
 	)
 }
-const filebox = new Filebox(`read-write`)
+const filebox = new Filebox(
+	process.env.CI
+		? `read`
+		: process.env.NODE_ENV === `production`
+			? `off`
+			: `read-write`,
+)
 const completions = filebox.add(`openai`, aiComplete)
 
 export type AssistantMessage = {
