@@ -14,7 +14,7 @@
 			"**/metafile-*",
 			"coverage",
 			"projects",
-			".filebox"
+			".varmint"
 		]
 	},
 	"javascript": {
