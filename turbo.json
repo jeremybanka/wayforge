@@ -3,7 +3,7 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*"],
+			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*", "bin/**"],
 			"inputs": [
 				"**/package.json",
 				"src/**/*.{ts,tsx,scss,mdx}",
