@@ -308,8 +308,8 @@ importers:
   apps/wayfarer.quest:
     dependencies:
       '@t3-oss/env-nextjs':
-        specifier: 0.9.2
-        version: 0.9.2(typescript@5.4.5)(zod@3.23.0)
+        specifier: 0.10.0
+        version: 0.10.0(typescript@5.4.5)(zod@3.23.0)
       '@vercel/analytics':
         specifier: 1.2.2
         version: 1.2.2(next@14.2.2)(react@18.2.0)
@@ -4853,8 +4853,8 @@ packages:
       zod: 3.23.0
     dev: false
 
-  /@t3-oss/env-core@0.9.2(typescript@5.4.5)(zod@3.23.0):
-    resolution: {integrity: sha512-KgWXljUTHgO3o7GMZQPAD5+P+HqpauMNNHowlm7V2b9IeMitSUpNKwG6xQrup/xARWHTdxRVIl0mSI4wCevQhQ==}
+  /@t3-oss/env-nextjs@0.10.0(typescript@5.4.5)(zod@3.23.0):
+    resolution: {integrity: sha512-JMpWF8dyI3ska1wFX92An7Y7AQicRn11be0z10c3TletATvdmFJzazb28VbgAX6fKuXJRRxBoiKNGIdLWVVsig==}
     peerDependencies:
       typescript: '>=5.0.0'
       zod: ^3.0.0
@@ -4862,20 +4862,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      typescript: 5.4.5
-      zod: 3.23.0
-    dev: false
-
-  /@t3-oss/env-nextjs@0.9.2(typescript@5.4.5)(zod@3.23.0):
-    resolution: {integrity: sha512-dklHrgKLESStNVB67Jdbu6osxDYA+xNKaPBRerlnkEvzbCccSKMvZENx6EZebJuR4snqB3/yRykNMn/bdIAyiQ==}
-    peerDependencies:
-      typescript: '>=5.0.0'
-      zod: ^3.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@t3-oss/env-core': 0.9.2(typescript@5.4.5)(zod@3.23.0)
+      '@t3-oss/env-core': 0.10.0(typescript@5.4.5)(zod@3.23.0)
       typescript: 5.4.5
       zod: 3.23.0
     dev: false
