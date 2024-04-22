@@ -1125,8 +1125,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@types/node@20.12.7)
       zod:
-        specifier: 3.22.5
-        version: 3.22.5
+        specifier: 3.23.0
+        version: 3.23.0
 
 packages:
 
@@ -13595,10 +13595,6 @@ packages:
     dependencies:
       zod: 3.23.0
     dev: false
-
-  /zod@3.22.5:
-    resolution: {integrity: sha512-HqnGsCdVZ2xc0qWPLdO25WnseXThh0kEYKIdV5F/hTHO75hNZFp8thxSeHhiPrHZKrFTo1SOgkAj9po5bexZlw==}
-    dev: true
 
   /zod@3.23.0:
     resolution: {integrity: sha512-OFLT+LTocvabn6q76BTwVB0hExEBS0IduTr3cqZyMqEDbOnYmcU+y0tUAYbND4uwclpBGi4I4UUBGzylWpjLGA==}
