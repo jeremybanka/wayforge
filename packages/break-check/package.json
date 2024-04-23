@@ -23,11 +23,11 @@
 		"zod": "3.23.1"
 	},
 	"scripts": {
-		"build": "concurrently \"bun:build:*\"",
-		"build:lib": "bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
-		"build:bin": "bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
+		"build": "concurrently \"bun:build:*\" && bun run schema",
+		"build:lib": "rimraf dist && bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
+		"build:bin": "rimraf bin && bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
 		"build:dts": "tsup",
-		"build:schema": "bun src/break-check.x.ts --testPattern --testCommand --certifyCommand -- schema",
+		"schema": "bun src/break-check.x.ts --testPattern --testCommand --certifyCommand -- schema && mv break-check.schema.json dist",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint:types": "tsc --noEmit",
@@ -40,6 +40,7 @@
 		"@types/bun": "1.1.0",
 		"@types/npmlog": "7.0.0",
 		"concurrently": "8.2.2",
+		"rimraf": "5.0.5",
 		"tmp": "0.2.3",
 		"tsup": "8.0.2"
 	}
