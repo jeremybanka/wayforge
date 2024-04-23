@@ -1,5 +1,11 @@
 # break-check
 
+## 0.6.2
+
+### Patch Changes
+
+- 5793f4d: 🐛 In previous versions, the executable build artifact was missing. Now it is included under bin/break-check.x.js. The prepacked break-check.schema.json file was also missing and now lives in dist/.
+
 ## 0.6.1
 
 ### Patch Changes
