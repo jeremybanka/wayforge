@@ -302,8 +302,8 @@ importers:
         specifier: 10.20.2
         version: 10.20.2
       typed-htmx:
-        specifier: 0.2.2
-        version: 0.2.2
+        specifier: 0.2.3
+        version: 0.2.3
 
   apps/wayfarer.quest:
     dependencies:
@@ -12630,8 +12630,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /typed-htmx@0.2.2:
-    resolution: {integrity: sha512-GYyu164X2HVvswUZVvkoHD6KNqLPGRGWZ4uoB+g6oPiB9p8aV2tUUkoh/6q2qBOGZF9Nh1QO+DV8wGFr/aD+3Q==}
+  /typed-htmx@0.2.3:
+    resolution: {integrity: sha512-nwMGCJLQy+cKg3qnHQDReztWWxBGpYSWKhHSxI+/ineNqdCYauaw1U1+esK+pY5AwnSz5D+sxJhiwXP/RusWJQ==}
     engines: {node: '>=12'}
     dependencies:
       typed-html: 3.0.1
