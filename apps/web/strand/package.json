@@ -35,7 +35,7 @@
 		"@babel/plugin-transform-react-jsx-source": "7.24.1",
 		"@preact/preset-vite": "2.8.2",
 		"@testing-library/jest-dom": "6.4.2",
-		"@testing-library/react": "15.0.2",
+		"@testing-library/react": "15.0.3",
 		"@types/react": "18.2.79",
 		"@vanilla-extract/vite-plugin": "4.0.7",
 		"cross-env": "7.0.3",
