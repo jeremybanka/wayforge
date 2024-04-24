@@ -69,6 +69,7 @@ export const evictCachedValue = (key: string, target: Store): void => {
 		if (selector) {
 			future.use(selector.get())
 		}
+		return
 	}
 	if (target.operation.open) {
 		target.operation.prev.set(key, currentValue)
