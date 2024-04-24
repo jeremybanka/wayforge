@@ -1,6 +1,7 @@
 import type { StateUpdate } from "atom.io"
 
-import { isChildStore, type ReadableState } from "."
+import type { ReadableState } from "."
+import { isChildStore } from "."
 import { Future } from "./future"
 import { copyMutableIfNeeded } from "./set-state/copy-mutable-if-needed"
 import type { Store } from "./store"
@@ -26,23 +27,19 @@ export function cacheValue<T>(
 ): Future<T> | T {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
-		currentValue.cancel()
+		const future = currentValue
+		future.use(value)
 	}
 	if (value instanceof Promise) {
 		const future = new Future<T>(value)
 		target.valueMap.set(key, future)
 		future
 			.then((resolved) => {
-				if (future.isCanceled) {
-					return
-				}
 				cacheValue(key, resolved, subject, target)
 				subject.next({ newValue: resolved, oldValue: future })
 			})
 			.catch((thrown) => {
-				if (thrown !== `canceled`) {
-					target.logger.error(`💥`, `state`, key, `rejected:`, thrown)
-				}
+				target.logger.error(`💥`, `state`, key, `rejected:`, thrown)
 			})
 		return future
 	}
@@ -66,7 +63,12 @@ export const readCachedValue = <T>(
 export const evictCachedValue = (key: string, target: Store): void => {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
-		currentValue.cancel()
+		const future = currentValue
+		const selector =
+			target.selectors.get(key) ?? target.readonlySelectors.get(key)
+		if (selector) {
+			future.use(selector.get())
+		}
 	}
 	if (target.operation.open) {
 		target.operation.prev.set(key, currentValue)

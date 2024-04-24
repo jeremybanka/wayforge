@@ -79,7 +79,7 @@ describe(`async atom`, async () => {
 		// biome-ignore lint/style/noNonNullAssertion: it's a test, so
 		resolveAtAnInconvenientTime!()
 		await new Promise((resolve) => setTimeout(resolve, 0))
-		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBe(undefined)
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBe(2)
 	})
 })
 
