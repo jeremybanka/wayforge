@@ -1,13 +1,6 @@
-import {
-	cacheValue,
-	evictCachedValue,
-	Future,
-	IMPLICIT,
-	Subject,
-} from "atom.io/internal"
+import { Future } from "atom.io/internal"
 import { vitest } from "vitest"
 
-import type { StateUpdate } from "../../src"
 import * as Utils from "../__util__"
 
 beforeEach(() => {
@@ -15,94 +8,83 @@ beforeEach(() => {
 })
 
 describe(`Future`, () => {
-	it(`is a cancellable promise`, async () => {
+	it(`is a Promise whose fate can change`, async () => {
 		const future = new Future<number>((resolve) =>
 			setImmediate(() => {
 				resolve(1)
 			}),
 		)
-		future.cancel()
-		let reason: unknown = null
-		try {
-			const number = await future
-			console.log(number)
-		} catch (thrown) {
-			reason = thrown
-		} finally {
-			expect(reason).toBe(`canceled`)
-		}
-	})
-	it(`does not call "then" if canceled`, async () => {
-		let caught: unknown = null
-		try {
-			const promise = new Promise<number>((resolve) =>
+		future.use(
+			new Promise((resolve) =>
 				setImmediate(() => {
-					resolve(1)
+					resolve(2)
 				}),
-			)
-			const future = new Future<number>(promise)
-			future.cancel()
-			await future.then(Utils.stdout)
-		} catch (thrown) {
-			caught = thrown
-		} finally {
-			expect(caught).toBeDefined()
-			expect(Utils.stdout).not.toHaveBeenCalled()
-		}
+			),
+		)
+		expect(await future.then((value) => value)).toBe(2)
 	})
-
-	it(`is used in cacheValue`, async () => {
-		const subject = new Subject<StateUpdate<number>>()
-		subject.subscribe(`example-watcher`, Utils.stdout)
-		const promise = new Promise<number>((resolve) =>
+	it(`can be resolved to a value immediately`, async () => {
+		const future = new Future<number>((resolve) =>
 			setImmediate(() => {
 				resolve(1)
 			}),
 		)
-		void cacheValue(`a`, promise, subject, IMPLICIT.STORE)
-		evictCachedValue(`a`, IMPLICIT.STORE)
-		await promise
-		expect(Utils.stdout).not.toHaveBeenCalled()
+		future.use(2)
+		expect(await future.then((value) => value)).toBe(2)
 	})
-})
-
-test(`when a future is cancelled during promise resolution, future still rejects`, async () => {
-	let future: Future<number> | null = null
-	const promise = new Promise<number>((resolve) =>
-		setImmediate(() => {
-			if (future) {
-				future.cancel()
-			}
-			resolve(1)
-		}),
-	)
-	future = new Future<number>(promise)
-	let reason: unknown = null
-	try {
-		await future.then((value) => {
-			Utils.stdout(value)
-		})
-	} catch (thrown) {
-		reason = thrown
-	} finally {
-		expect(reason).toBe(`canceled`)
-		expect(Utils.stdout).not.toHaveBeenCalled()
-	}
-})
-test(`when a future is created with a resolved promise, it can still be cancelled`, async () => {
-	try {
-		const promise = new Promise<number>((resolve) =>
+	it(`handles an initial executor that rejects`, async () => {
+		const future = new Future<number>((_, reject) =>
+			setImmediate(() => {
+				reject(new Error(`whoops`))
+			}),
+		)
+		await expect(async () => future.then((value) => value)).rejects.toThrow(
+			`whoops`,
+		)
+	})
+	it(`handles an initial promise that rejects`, async () => {
+		const future = new Future<number>(
+			new Promise((_, reject) =>
+				setImmediate(() => {
+					reject(new Error(`whoops`))
+				}),
+			),
+		)
+		await expect(async () => future.then((value) => value)).rejects.toThrow(
+			`whoops`,
+		)
+	})
+	it(`handles a new use-Promise that rejects`, async () => {
+		const future = new Future<number>((resolve) =>
 			setImmediate(() => {
 				resolve(1)
 			}),
 		)
-		await promise
-		const future = new Future<number>(promise)
-		future.cancel()
-		await future.then(Utils.stdout)
-	} catch (thrown) {
-		console.log(thrown)
-	} finally {
-		expect(Utils.stdout).not.toHaveBeenCalled()
-	}
+		future.use(
+			new Promise((_, reject) =>
+				setImmediate(() => {
+					reject(new Error(`whoops`))
+				}),
+			),
+		)
+		await expect(async () => future.then((value) => value)).rejects.toThrow(
+			`whoops`,
+		)
+	})
+	it(`does not care about a previous rejection, after a new use-static`, async () => {
+		const future = new Future<number>((resolve) =>
+			setImmediate(() => {
+				resolve(1)
+			}),
+		)
+		future.use(
+			new Promise((_, reject) =>
+				setImmediate(() => {
+					reject(new Error(`whoops`))
+				}),
+			),
+		)
+		future.use(2)
+		expect(await future.then((value) => value)).toBe(2)
+	})
 })
