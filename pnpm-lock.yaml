@@ -57,8 +57,8 @@ importers:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
       tsx:
-        specifier: 4.7.2
-        version: 4.7.2
+        specifier: 4.7.3
+        version: 4.7.3
       turbo:
         specifier: 1.13.2
         version: 1.13.2
@@ -213,8 +213,8 @@ importers:
         specifier: 7.0.3
         version: 7.0.3
       tsx:
-        specifier: 4.7.2
-        version: 4.7.2
+        specifier: 4.7.3
+        version: 4.7.3
       vitest:
         specifier: 1.5.2
         version: 1.5.2(@vitest/ui@1.5.2)(happy-dom@14.7.1)
@@ -250,8 +250,8 @@ importers:
         specifier: 4.7.5
         version: 4.7.5
       tsx:
-        specifier: 4.7.2
-        version: 4.7.2
+        specifier: 4.7.3
+        version: 4.7.3
       vite:
         specifier: 5.2.10
         version: 5.2.10(@types/node@20.12.7)
@@ -12452,8 +12452,8 @@ packages:
       - ts-node
     dev: true
 
-  /tsx@4.7.2:
-    resolution: {integrity: sha512-BCNd4kz6fz12fyrgCTEdZHGJ9fWTGeUzXmQysh0RVocDY3h4frk05ZNCXSy4kIenF7y/QnrdiVpTsyNRn6vlAw==}
+  /tsx@4.7.3:
+    resolution: {integrity: sha512-+fQnMqIp/jxZEXLcj6WzYy9FhcS5/Dfk8y4AtzJ6ejKcKqmfTF8Gso/jtrzDggCF2zTU20gJa6n8XqPYwDAUYQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
