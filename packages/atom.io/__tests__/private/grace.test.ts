@@ -1,5 +1,4 @@
 import type {
-	AtomFamily,
 	AtomFamilyToken,
 	Logger,
 	RegularAtomToken,
@@ -9,6 +8,7 @@ import {
 	atom,
 	atomFamily,
 	findState,
+	getState,
 	redo,
 	selector,
 	setState,
@@ -50,7 +50,7 @@ describe(`not found`, () => {
 
 describe(`graceful handling of improper usage`, () => {
 	describe(`a nested call to setState is a violation`, () => {
-		test(`the inner call results in a no-op and a logger(error)`, () => {
+		test(`the inner call results in a logger(warn) and enqueues the update`, () => {
 			const a = atom<number>({
 				key: `a`,
 				default: 0,
@@ -83,12 +83,15 @@ describe(`graceful handling of improper usage`, () => {
 				return n + 1
 			})
 
-			expect(logger.error).toHaveBeenCalledWith(
-				`❌`,
+			expect(logger.warn).toHaveBeenCalledWith(
+				`❗`,
 				`atom`,
 				`b`,
-				`failed to setState during a setState for "a"`,
+				`tried to setState, but must wait until setState for "a" completes`,
 			)
+
+			expect(getState(a)).toBe(1)
+			expect(getState(b)).toBe(true)
 		})
 	})
 	describe(`giving an atom to multiple timelines is a violation`, () => {

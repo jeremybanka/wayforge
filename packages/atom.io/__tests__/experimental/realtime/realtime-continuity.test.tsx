@@ -164,45 +164,4 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 3000 })
 		teardown()
 	})
-	test.skip(`recovery`, async () => {
-		const { clients, teardown } = scenario()
-
-		const jane = clients.jane.init()
-		const dave = clients.dave.init()
-
-		await waitFor(() => {
-			throwUntil(jane.socket.connected)
-		})
-		await waitFor(() => {
-			throwUntil(dave.socket.connected)
-		})
-
-		await act(() => jane.socket.disconnect())
-		await waitFor(() => {
-			throwUntil(!jane.socket.connected)
-		})
-
-		act(() => {
-			jane.renderResult.getByTestId(`increment`).click()
-		})
-
-		act(() => {
-			dave.renderResult.getByTestId(`increment`).click()
-		})
-		act(() => {
-			dave.renderResult.getByTestId(`increment`).click()
-		})
-
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		await waitFor(() => dave.renderResult.getByTestId(`2`))
-
-		await act(() => jane.socket.connect())
-		await waitFor(() => {
-			throwUntil(jane.socket.connected)
-		})
-
-		await waitFor(() => dave.renderResult.getByTestId(`3`))
-		await waitFor(() => jane.renderResult.getByTestId(`3`))
-		teardown()
-	}, 3000)
 })
