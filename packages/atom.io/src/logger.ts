@@ -8,6 +8,7 @@ const LoggerIconDictionary = {
 	"⏹️": `Time-travel complete`,
 	"✅": `Realtime transaction success`,
 	"✨": `Computation complete`,
+	"❗": `Must wait to proceed with attempted action`,
 	"❌": `Conflict prevents attempted action`,
 	"⭕": `Operation start`,
 	"🐞": `Possible bug in AtomIO`,

@@ -21,11 +21,11 @@ export const openOperation = (
 	store: Store,
 ): `rejection` | undefined => {
 	if (store.operation.open) {
-		store.logger.error(
-			`❌`,
+		store.logger.warn(
+			`❗`,
 			token.type,
 			token.key,
-			`failed to setState during a setState for "${store.operation.token.key}"`,
+			`tried to setState, but must wait until setState for "${store.operation.token.key}" completes`,
 		)
 		return `rejection`
 	}
