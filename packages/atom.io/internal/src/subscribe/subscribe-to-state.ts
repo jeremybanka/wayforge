@@ -21,8 +21,8 @@ export function subscribeToState<T>(
 		updateHandler = (update) => {
 			if (dependencyUnsubFunctions) {
 				dependencyUnsubFunctions.length = 0
+				dependencyUnsubFunctions.push(...subscribeToRootAtoms(state, store))
 			}
-			dependencyUnsubFunctions = subscribeToRootAtoms(state, store)
 			handleUpdate(update)
 		}
 	}

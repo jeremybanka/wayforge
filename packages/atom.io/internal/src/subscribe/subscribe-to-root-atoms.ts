@@ -8,7 +8,7 @@ import { recallState } from "./recall-state"
 export const subscribeToRootAtoms = <T>(
 	selector: Selector<T>,
 	store: Store,
-): (() => void)[] | null => {
+): (() => void)[] => {
 	const target = newest(store)
 	const dependencySubscriptions = traceAllSelectorAtoms(selector, store).map(
 		(atomKey) => {

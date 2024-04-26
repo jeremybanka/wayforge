@@ -18,6 +18,7 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
+	vitest.spyOn(Utils, `stdout0`)
 })
 
 describe(`atom`, () => {
@@ -183,6 +184,7 @@ describe(`selector`, () => {
 		const trackedCountSelector = selector<number | null>({
 			key: `trackedCount`,
 			get: ({ get }) => {
+				Utils.stdout0(`📝 trackedCountSelector`)
 				const countIsTracked = get(countIsTrackedAtom)
 				if (countIsTracked) {
 					const count = get(countAtom)
@@ -191,17 +193,23 @@ describe(`selector`, () => {
 				return null
 			},
 		})
-		subscribe(trackedCountSelector, Utils.stdout)
+		expect(Utils.stdout0).toHaveBeenCalledTimes(1)
+		const unsubscribe = subscribe(trackedCountSelector, Utils.stdout)
 		expect(getState(trackedCountSelector)).toBe(null)
 		setState(countIsTrackedAtom, true)
+		expect(Utils.stdout0).toHaveBeenCalledTimes(2)
 		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: 0,
 			oldValue: null,
 		})
 		setState(countAtom, 1)
+		expect(Utils.stdout0).toHaveBeenCalledTimes(3)
 		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: 1,
 			oldValue: 0,
 		})
+		unsubscribe()
+		setState(countAtom, 2)
+		expect(Utils.stdout0).toHaveBeenCalledTimes(3)
 	})
 })
