@@ -11,41 +11,36 @@ export function subscribeToState<T>(
 	store: Store,
 ): () => void {
 	const state = withdrawOrCreate(token, store)
-	if (state === undefined) {
-		throw new Error(
-			`State "${token.key}" not found in this store. Did you forget to initialize with the "atom" or "selector" function?`,
-		)
-	}
-	const unsubFunction = state.subject.subscribe(key, handleUpdate)
 	store.logger.info(`👀`, state.type, state.key, `Adding subscription "${key}"`)
-	const dependencyUnsubFunctions =
-		state.type !== `atom` && state.type !== `mutable_atom`
-			? subscribeToRootAtoms(state, store)
-			: null
-
-	const unsubscribe =
-		dependencyUnsubFunctions === null
-			? () => {
-					store.logger.info(
-						`🙈`,
-						state.type,
-						state.key,
-						`Removing subscription "${key}"`,
-					)
-					unsubFunction()
-				}
-			: () => {
-					store.logger.info(
-						`🙈`,
-						state.type,
-						state.key,
-						`Removing subscription "${key}"`,
-					)
-					unsubFunction()
-					for (const unsubFromDependency of dependencyUnsubFunctions) {
-						unsubFromDependency()
-					}
-				}
+	const isSelector =
+		state.type === `selector` || state.type === `readonly_selector`
+	let dependencyUnsubFunctions: (() => void)[] | null = null
+	let updateHandler: UpdateHandler<T> = handleUpdate
+	if (isSelector) {
+		dependencyUnsubFunctions = subscribeToRootAtoms(state, store)
+		updateHandler = (update) => {
+			if (dependencyUnsubFunctions) {
+				dependencyUnsubFunctions.length = 0
+			}
+			dependencyUnsubFunctions = subscribeToRootAtoms(state, store)
+			handleUpdate(update)
+		}
+	}
+	const mainUnsubFunction = state.subject.subscribe(key, updateHandler)
+	const unsubscribe = () => {
+		store.logger.info(
+			`🙈`,
+			state.type,
+			state.key,
+			`Removing subscription "${key}"`,
+		)
+		mainUnsubFunction()
+		if (dependencyUnsubFunctions) {
+			for (const unsubFromDependency of dependencyUnsubFunctions) {
+				unsubFromDependency()
+			}
+		}
+	}
 
 	return unsubscribe
 }
