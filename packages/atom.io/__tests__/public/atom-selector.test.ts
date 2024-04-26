@@ -171,18 +171,37 @@ describe(`selector`, () => {
 		setState(genderState, `female`)
 		expect(getState(greetingState)).toBe(`Dear Ms. Doe,`)
 	})
-	it(`can be verified whether a selector is its default value`, () => {
-		const count = atom<number>({
+	it(`may have conditional dependencies`, () => {
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const double = selector<number>({
-			key: `double`,
-			get: ({ get }) => get(count) * 2,
+		const countIsTrackedAtom = atom<boolean>({
+			key: `shouldConsiderCount`,
+			default: false,
 		})
-		expect(getState(double)).toBe(0)
-
-		setState(count, 1)
-		expect(getState(double)).toBe(2)
+		const trackedCountSelector = selector<number | null>({
+			key: `trackedCount`,
+			get: ({ get }) => {
+				const countIsTracked = get(countIsTrackedAtom)
+				if (countIsTracked) {
+					const count = get(countAtom)
+					return count
+				}
+				return null
+			},
+		})
+		subscribe(trackedCountSelector, Utils.stdout)
+		expect(getState(trackedCountSelector)).toBe(null)
+		setState(countIsTrackedAtom, true)
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			newValue: 0,
+			oldValue: null,
+		})
+		setState(countAtom, 1)
+		expect(Utils.stdout).toHaveBeenCalledWith({
+			newValue: 1,
+			oldValue: 0,
+		})
 	})
 })
