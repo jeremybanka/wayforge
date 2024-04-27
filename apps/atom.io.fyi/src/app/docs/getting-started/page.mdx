@@ -1,0 +1,17 @@
+# getting started
+
+## first things first
+
+`atom.io` owes its existence to [Recoil](https://recoiljs.org/).
+
+The [Recoil tutorial](https://recoiljs.org/docs) is generally applicable to `atom.io`, as long as keep in mind that
+
+- `atom.io` reimplements the model of [`atom`](/docs#atom) and [`selector`](/docs#selector) directly from Recoil.
+- Like Recoil, `atom.io` is great in React apps, but 
+  - [`useO`](/docs/react#use-o) `<-` `useRecoilValue` 
+  - [`useI`](/docs/react#use-i) `<-` `useSetRecoilState`
+  - There's no `useRecoilState`
+  - You don't need `<AtomIOProvider/>` to use `atom.io` in a React app.
+- Unlike Recoil, `atom.io` is not bound to React.
+  - You can use `getState` and `setState` anywhere, not just in React components.
+- [`transaction`](/docs#transaction) is its own thing in `atom.io` and it's a stable part of the API

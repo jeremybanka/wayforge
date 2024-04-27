@@ -157,6 +157,16 @@ export function SiteDirectory(): JSX.Element {
 			/>
 			<nav id="site-directory" data-user-has-toggled={userHasToggled}>
 				<section>
+					<header>Guide</header>
+					<main>
+						<section>
+							<Link id="-docs-getting-started-link" href="/docs/getting-started">
+								getting started
+							</Link>
+						</section>
+					</main>
+				</section>
+				<section>
 					<header>Interface</header>
 					<main>
 						<section>
