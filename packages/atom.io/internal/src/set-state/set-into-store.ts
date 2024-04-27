@@ -10,12 +10,18 @@ export function setIntoStore<T, New extends T>(
 	value: New | ((oldValue: T) => New),
 	store: Store,
 ): void {
-	const rejection = openOperation(token, store)
-	if (rejection) {
+	const rejectionTime = openOperation(token, store)
+	if (rejectionTime) {
 		const unsubscribe = store.on.operationClose.subscribe(
-			`waiting to set "${token.key}"`,
+			`waiting to set "${token.key}" at T-${rejectionTime}`,
 			() => {
 				unsubscribe()
+				store.logger.info(
+					`🟢`,
+					token.type,
+					token.key,
+					`resuming deferred setState from T-${rejectionTime}`,
+				)
 				setIntoStore(token, value, store)
 			},
 		)
