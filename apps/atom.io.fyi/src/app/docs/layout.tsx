@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
+import Head from "next/head"
 import * as React from "react"
 
 import scss from "./layout.module.scss"
 import * as nav from "./nav"
-import Head from "next/head"
 
 export const metadata: Metadata = {
 	title: `Docs • atom.io`,

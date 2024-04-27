@@ -1,6 +1,7 @@
 "use client"
 
 import Head from "next/head"
+
 import scss from "./page.module.scss"
 
 export default function Home(): JSX.Element {
