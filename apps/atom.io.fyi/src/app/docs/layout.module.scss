@@ -97,6 +97,7 @@ article.class {
       display: flex;
       flex-flow: column;
       border-radius: 1em;
+      gap: 1.33em;
       > section {
         display: flex;
         flex-flow: column;
@@ -116,7 +117,7 @@ article.class {
               padding-left: 1em;
             }
             > a {
-              padding: 0.2em 0.4em;
+              padding: 0.2em 0.4em 0.3em;
               user-select: none;
             }
           }
