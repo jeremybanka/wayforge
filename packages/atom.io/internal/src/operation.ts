@@ -19,15 +19,16 @@ export type OperationProgress =
 export const openOperation = (
 	token: WritableToken<any>,
 	store: Store,
-): `rejection` | undefined => {
+): number | undefined => {
 	if (store.operation.open) {
-		store.logger.warn(
+		const rejectionTime = performance.now()
+		store.logger.info(
 			`❗`,
 			token.type,
 			token.key,
-			`tried to setState, but must wait until setState for "${store.operation.token.key}" completes`,
+			`deferring setState at T-${rejectionTime} until setState for "${store.operation.token.key}" is done`,
 		)
-		return `rejection`
+		return rejectionTime
 	}
 	store.operation = {
 		open: true,
