@@ -21,7 +21,7 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 1
+const CHOOSE = 3
 let logger: Logger
 
 beforeEach(() => {
@@ -74,20 +74,21 @@ describe(`graceful handling of improper usage`, () => {
 					set(c, `bye`)
 				},
 			})
-			const tl_ab = timeline({
-				key: `a & b`,
-				atoms: [a, b],
-			})
+			let rejectionTime = ``
 			setState(a, (n) => {
 				setState(b, true)
+				rejectionTime =
+					[
+						...Internal.IMPLICIT.STORE.on.operationClose.subscribers.keys(),
+					][0].match(/(T-\d+\.\d+)/)?.[1] ?? `` // 😎👍
 				return n + 1
 			})
 
-			expect(logger.warn).toHaveBeenCalledWith(
+			expect(logger.info).toHaveBeenCalledWith(
 				`❗`,
 				`atom`,
 				`b`,
-				`tried to setState, but must wait until setState for "a" completes`,
+				`deferring setState at ${rejectionTime} until setState for "a" is done`,
 			)
 
 			expect(getState(a)).toBe(1)
