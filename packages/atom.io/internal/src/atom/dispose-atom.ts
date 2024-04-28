@@ -14,27 +14,28 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			key,
 			`Tried to delete atom, but it does not exist in the store.`,
 		)
-	}
-	atom?.cleanup?.()
-	target.atoms.delete(key)
-	target.valueMap.delete(key)
-	const selectorKeys = target.selectorAtoms.getRelatedKeys(key)
-	if (selectorKeys) {
-		for (const selectorKey of selectorKeys) {
-			const token =
-				target.selectors.get(selectorKey) ??
-				target.readonlySelectors.get(selectorKey)
-			if (token) {
-				disposeSelector(token, store)
+	} else {
+		atom.cleanup?.()
+		target.atoms.delete(key)
+		target.valueMap.delete(key)
+		const selectorKeys = target.selectorAtoms.getRelatedKeys(key)
+		if (selectorKeys) {
+			for (const selectorKey of selectorKeys) {
+				const token =
+					target.selectors.get(selectorKey) ??
+					target.readonlySelectors.get(selectorKey)
+				if (token) {
+					disposeSelector(token, store)
+				}
 			}
 		}
+		target.selectorAtoms.delete(key)
+		target.atomsThatAreDefault.delete(key)
+		target.timelineAtoms.delete(key)
+		if (atomToken.type === `mutable_atom`) {
+			const updateToken = getUpdateToken(atomToken)
+			disposeAtom(updateToken, store)
+		}
+		store.logger.info(`🔥`, `atom`, key, `deleted`)
 	}
-	target.selectorAtoms.delete(key)
-	target.atomsThatAreDefault.delete(key)
-	target.timelineAtoms.delete(key)
-	if (atomToken.type === `mutable_atom`) {
-		const updateToken = getUpdateToken(atomToken)
-		disposeAtom(updateToken, store)
-	}
-	store.logger.info(`🔥`, `atom`, key, `deleted`)
 }
