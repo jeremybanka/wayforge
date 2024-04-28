@@ -34,4 +34,5 @@ export function disposeSelector(
 	}
 	target.selectorGraph.delete(key)
 	store.logger.info(`🔥`, selectorToken.type, key, `deleted`)
+	store.on.selectorDisposal.next(selectorToken)
 }

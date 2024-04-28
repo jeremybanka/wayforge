@@ -37,5 +37,6 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			disposeAtom(updateToken, store)
 		}
 		store.logger.info(`🔥`, `atom`, key, `deleted`)
+		store.on.atomDisposal.next(atomToken)
 	}
 }
