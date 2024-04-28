@@ -1,5 +1,5 @@
 import type { Logger, RegularAtomOptions, RegularAtomToken } from "atom.io"
-import { atom, dispose, getState, selector } from "atom.io"
+import { atom, disposeState, getState, selector } from "atom.io"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -23,7 +23,7 @@ describe(`dispose`, () => {
 			default: 0,
 		})
 		expect(countState.key).toEqual(`count`)
-		dispose(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState, Internal.IMPLICIT.STORE)
 		expect(countState.key).toEqual(`count`)
 		let caught: Error
 		try {
@@ -49,7 +49,7 @@ describe(`dispose`, () => {
 			key: `doubled`,
 			get: ({ get }) => get(countState) * 2,
 		})
-		dispose(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState, Internal.IMPLICIT.STORE)
 		let caught: Error
 		try {
 			getState(doubledState)
@@ -70,8 +70,8 @@ describe(`dispose`, () => {
 			key: `count`,
 			default: 0,
 		})
-		dispose(countState, Internal.IMPLICIT.STORE)
-		dispose(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState, Internal.IMPLICIT.STORE)
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
@@ -90,7 +90,7 @@ describe(`dispose`, () => {
 			key: `doubled`,
 			get: ({ get }) => get(countState),
 		})
-		dispose(doubledState, Internal.IMPLICIT.STORE)
+		disposeState(doubledState, Internal.IMPLICIT.STORE)
 		let caught: Error
 		try {
 			getState(doubledState)
@@ -124,7 +124,7 @@ describe(`dispose`, () => {
 			key: `countPlusThree`,
 			get: ({ get }) => get(countPlusTwoState) + 1,
 		})
-		dispose(countPlusTwoState, Internal.IMPLICIT.STORE)
+		disposeState(countPlusTwoState, Internal.IMPLICIT.STORE)
 		expect(getState(countPlusOneState)).toEqual(1)
 		let caught: Error
 		try {
@@ -155,7 +155,7 @@ describe(`auto disposability concept (just for fun)`, () => {
 	): Disposable & RegularAtomToken<T> {
 		const atomToken = atom<T>(options)
 		return disposable(atomToken, () => {
-			dispose(atomToken)
+			disposeState(atomToken)
 		})
 	}
 	it(`automatically disposes of an atom when it is dereferenced`, () => {

@@ -1,9 +1,9 @@
 import type { AtomToken } from "atom.io"
 
 import type { Store } from ".."
-import { deleteSelector, getUpdateToken, newest } from ".."
+import { disposeSelector, getUpdateToken, newest } from ".."
 
-export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
+export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 	const target = newest(store)
 	const { key } = atomToken
 	const atom = target.atoms.get(key)
@@ -25,7 +25,7 @@ export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
 				target.selectors.get(selectorKey) ??
 				target.readonlySelectors.get(selectorKey)
 			if (token) {
-				deleteSelector(token, store)
+				disposeSelector(token, store)
 			}
 		}
 	}
@@ -34,7 +34,7 @@ export function deleteAtom(atomToken: AtomToken<unknown>, store: Store): void {
 	target.timelineAtoms.delete(key)
 	if (atomToken.type === `mutable_atom`) {
 		const updateToken = getUpdateToken(atomToken)
-		deleteAtom(updateToken, store)
+		disposeAtom(updateToken, store)
 	}
 	store.logger.info(`🔥`, `atom`, key, `deleted`)
 }

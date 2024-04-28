@@ -2,7 +2,7 @@ import type { Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
-	dispose,
+	disposeState,
 	getState,
 	redo,
 	runTransaction,
@@ -281,7 +281,7 @@ describe(`mutable atom effects`, () => {
 
 		setState(myMutableState, (prev) => prev.add(`a`))
 		expect(setSize).toBe(1)
-		dispose(myMutableState)
+		disposeState(myMutableState)
 		expect(setSize).toBe(0)
 	})
 	it(`can set a mutable atom in response to an external event`, () => {
@@ -309,7 +309,7 @@ describe(`mutable atom effects`, () => {
 
 		letterSubject.next({ letter: `B` })
 		expect(getState(myMutableState)).toEqual(new SetRTX([`A`, `B`]))
-		dispose(myMutableState)
+		disposeState(myMutableState)
 	})
 })
 

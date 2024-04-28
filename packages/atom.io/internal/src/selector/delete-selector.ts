@@ -3,7 +3,7 @@ import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
 import type { Store } from ".."
 import { newest } from ".."
 
-export function deleteSelector(
+export function disposeSelector(
 	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,
 	store: Store,
 ): void {
@@ -29,7 +29,7 @@ export function deleteSelector(
 		)
 	for (const downstreamToken of downstreamTokens) {
 		if (downstreamToken) {
-			deleteSelector(downstreamToken, store)
+			disposeSelector(downstreamToken, store)
 		}
 	}
 	target.selectorGraph.delete(key)
