@@ -41,7 +41,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react": "0.26.13",
-		"@floating-ui/react-dom": "2.0.8",
+		"@floating-ui/react-dom": "2.0.9",
 		"corners": "0.1.0",
 		"framer-motion": "11.1.7"
 	},
