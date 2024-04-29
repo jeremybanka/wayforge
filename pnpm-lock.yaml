@@ -552,8 +552,8 @@ importers:
         specifier: 0.10.1
         version: 0.10.1(typescript@5.4.5)(zod@3.23.4)
       '@vanilla-extract/css':
-        specifier: 1.14.2
-        version: 1.14.2
+        specifier: 1.15.0
+        version: 1.15.0
       corners:
         specifier: 0.1.0
         version: 0.1.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)
@@ -3911,6 +3911,17 @@ packages:
       '@floating-ui/utils': 0.2.1
     dev: false
 
+  /@floating-ui/react-dom@2.0.8(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@floating-ui/dom': 1.6.4
+      react: /@preact/compat@17.1.2(preact@10.20.2)
+      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
+    dev: false
+
   /@floating-ui/react-dom@2.0.8(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==}
     peerDependencies:
@@ -3920,17 +3931,6 @@ packages:
       '@floating-ui/dom': 1.6.4
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-    dev: false
-
-  /@floating-ui/react-dom@2.0.9(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-q0umO0+LQK4+p6aGyvzASqKbKOJcAHJ7ycE9CuUvfx3s9zTHWmGJTPOIlM/hmSBfUfg/XfY5YhLBLR/LHwShQQ==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-    dependencies:
-      '@floating-ui/dom': 1.6.4
-      react: /@preact/compat@17.1.2(preact@10.20.2)
-      react-dom: /@preact/compat@17.1.2(preact@10.20.2)
     dev: false
 
   /@floating-ui/react-dom@2.0.9(react-dom@18.3.1)(react@18.3.1):
@@ -3963,7 +3963,7 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@floating-ui/react-dom': 2.0.9(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+      '@floating-ui/react-dom': 2.0.8(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@floating-ui/utils': 0.2.1
       react: /@preact/compat@17.1.2(preact@10.20.2)
       react-dom: /@preact/compat@17.1.2(preact@10.20.2)
@@ -5453,8 +5453,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vanilla-extract/css@1.14.2:
-    resolution: {integrity: sha512-OasEW4ojGqqRiUpsyEDUMrSkLnmwbChtafkogpCZ1eDAgAZ9eY9CHLYodj2nB8aV5T25kQ5shm92k25ngjYhhg==}
+  /@vanilla-extract/css@1.15.0:
+    resolution: {integrity: sha512-B21dRQTiRJ9xMlW3RGOYMfGo11S2Bgcke6YrEJxGBovJFMsMwaex2mQC4XnVvreWMlYef+Na+zBUFDw7tfKMcw==}
     dependencies:
       '@emotion/hash': 0.9.1
       '@vanilla-extract/private': 1.0.4
@@ -5474,7 +5474,7 @@ packages:
       '@babel/core': 7.24.4
       '@babel/plugin-syntax-typescript': 7.24.1(@babel/core@7.24.4)
       '@vanilla-extract/babel-plugin-debug-ids': 1.0.5
-      '@vanilla-extract/css': 1.14.2
+      '@vanilla-extract/css': 1.15.0
       esbuild: 0.19.12
       eval: 0.1.8
       find-up: 5.0.0
