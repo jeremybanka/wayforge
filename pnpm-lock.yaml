@@ -601,8 +601,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
       '@vanilla-extract/vite-plugin':
-        specifier: 4.0.7
-        version: 4.0.7(sass@1.75.0)(vite@5.2.10)
+        specifier: 4.0.8
+        version: 4.0.8(sass@1.75.0)(vite@5.2.10)
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -5467,25 +5467,44 @@ packages:
       media-query-parser: 2.0.2
       modern-ahocorasick: 1.0.1
       outdent: 0.8.0
+    dev: false
 
-  /@vanilla-extract/integration@7.1.2(sass@1.75.0):
-    resolution: {integrity: sha512-jpjw0L3P1E+U9L8OAFVMGpPFbNPD+/Vpfew7oOKBYipCrRZEqShu3WLXuUxjXz/mcIH7KCS5nasIdy2VclbEaQ==}
+  /@vanilla-extract/css@1.15.1:
+    resolution: {integrity: sha512-puAfTKAUtsMr2+D+grQNjU5umsdw9zdVgQflUlbzS/tGORaAHdgaYz7jfKPmz1c4ZcpJ6uFNOiI50NDOAzzhyg==}
+    dependencies:
+      '@emotion/hash': 0.9.1
+      '@vanilla-extract/private': 1.0.4
+      css-what: 6.1.0
+      cssesc: 3.0.0
+      csstype: 3.1.3
+      dedent: 1.5.3
+      deep-object-diff: 1.1.9
+      deepmerge: 4.3.1
+      media-query-parser: 2.0.2
+      modern-ahocorasick: 1.0.1
+      picocolors: 1.0.0
+    transitivePeerDependencies:
+      - babel-plugin-macros
+    dev: true
+
+  /@vanilla-extract/integration@7.1.3(sass@1.75.0):
+    resolution: {integrity: sha512-2t4+BVGirmpQ4pJVgoRR1XbuUs/pl0Ie1eFdPvI1M4lKjqUgc1qC+t8L4aHYIp4EVncBuAcIJzlRJFSgAm2Aqg==}
     dependencies:
       '@babel/core': 7.24.4
       '@babel/plugin-syntax-typescript': 7.24.1(@babel/core@7.24.4)
       '@vanilla-extract/babel-plugin-debug-ids': 1.0.5
-      '@vanilla-extract/css': 1.15.0
+      '@vanilla-extract/css': 1.15.1
+      dedent: 1.5.3
       esbuild: 0.19.12
       eval: 0.1.8
       find-up: 5.0.0
       javascript-stringify: 2.1.0
-      lodash: 4.17.21
       mlly: 1.6.1
-      outdent: 0.8.0
       vite: 5.2.10(sass@1.75.0)
-      vite-node: 1.5.1(sass@1.75.0)
+      vite-node: 1.5.2(sass@1.75.0)
     transitivePeerDependencies:
       - '@types/node'
+      - babel-plugin-macros
       - less
       - lightningcss
       - sass
@@ -5498,15 +5517,16 @@ packages:
   /@vanilla-extract/private@1.0.4:
     resolution: {integrity: sha512-8FGD6AejeC/nXcblgNCM5rnZb9KXa4WNkR03HCWtdJBpANjTgjHEglNLFnhuvdQ78tC6afaxBPI+g7F2NX3tgg==}
 
-  /@vanilla-extract/vite-plugin@4.0.7(sass@1.75.0)(vite@5.2.10):
-    resolution: {integrity: sha512-uRAFWdq5Eq0ybpgW2P0LNOw8eW+MTg/OFo5K0Hsl2cKu/Tu2tabCsBf6vNjfhDrm4jBShHy1wJIVcYxf6sczVQ==}
+  /@vanilla-extract/vite-plugin@4.0.8(sass@1.75.0)(vite@5.2.10):
+    resolution: {integrity: sha512-EvMhiEUGULovqZMb/BTS2d5c1wfMl2icJ1PvUf20TMjJbk5aqMmU8SfFghHSG1RvY1QsoUOn4pANBIM2cJfq7g==}
     peerDependencies:
       vite: ^4.0.3 || ^5.0.0
     dependencies:
-      '@vanilla-extract/integration': 7.1.2(sass@1.75.0)
+      '@vanilla-extract/integration': 7.1.3(sass@1.75.0)
       vite: 5.2.10(sass@1.75.0)
     transitivePeerDependencies:
       - '@types/node'
+      - babel-plugin-macros
       - less
       - lightningcss
       - sass
@@ -6969,6 +6989,15 @@ packages:
     resolution: {integrity: sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==}
     dependencies:
       character-entities: 2.0.2
+    dev: true
+
+  /dedent@1.5.3:
+    resolution: {integrity: sha512-NHQtfOOW68WD8lgypbLA5oT+Bt0xXJhiYvoR6SmmNXZfpzOGXwdKWmcwG8N7PwVVWV3eF/68nmD9BaJSsTBhyQ==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
     dev: true
 
   /deep-eql@4.1.3:
@@ -10737,6 +10766,7 @@ packages:
 
   /outdent@0.8.0:
     resolution: {integrity: sha512-KiOAIsdpUTcAXuykya5fnVVT+/5uS0Q1mrkRHcF89tpieSmY33O/tmc54CqwA+bfhbtEfZUNLHaPUiB9X3jt1A==}
+    dev: false
 
   /p-filter@2.1.0:
     resolution: {integrity: sha512-ZBxxZ5sL2HghephhpGAQdoskxplTwr7ICaehZwLIlfL6acuVgZPm8yBNuRAFBGEqtD/hmUeq9eqLg2ys9Xr/yw==}
@@ -12836,27 +12866,6 @@ packages:
       '@types/unist': 3.0.2
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
-    dev: true
-
-  /vite-node@1.5.1(sass@1.75.0):
-    resolution: {integrity: sha512-HNpfV7BrAsjkYVNWIcPleJwvJmydJqqJRrRbpoQ/U7QDwJKyEzNa4g5aYg8MjXJyKsk29IUCcMLFRcsEvqUIsA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    dependencies:
-      cac: 6.7.14
-      debug: 4.3.4(supports-color@5.5.0)
-      pathe: 1.1.2
-      picocolors: 1.0.0
-      vite: 5.2.10(sass@1.75.0)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
     dev: true
 
   /vite-node@1.5.2(@types/node@20.12.7):
