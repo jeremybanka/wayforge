@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.20.3
+
+### Patch Changes
+
+- 7bac548: 🚀 Allocate only one array of dependency unsub functions for the life cycle of a selector subscription.
+- bc1e49b: 🔊 Add "info"-level log using the 🟢 icon for when a deferred `setState` is triggered.
+- bc1e49b: 🔇 Lowered the log level when a `setState` is deferred due to another `setState` in progress from "warn" to "info".
+
 ## 0.20.2
 
 ### Patch Changes
