@@ -29,7 +29,7 @@
 		"htmx.org": "1.9.12",
 		"lightningcss": "1.24.1",
 		"npmlog": "7.0.1",
-		"preact": "10.20.2",
+		"preact": "10.21.0",
 		"typed-htmx": "0.2.3"
 	},
 	"dependencies": {
