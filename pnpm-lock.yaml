@@ -400,8 +400,8 @@ importers:
         version: 3.23.5
     devDependencies:
       '@testing-library/react':
-        specifier: 15.0.5
-        version: 15.0.5(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.6
+        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -504,8 +504,8 @@ importers:
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.3)
       '@testing-library/react':
-        specifier: 15.0.5
-        version: 15.0.5(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.6
+        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -595,8 +595,8 @@ importers:
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.3)
       '@testing-library/react':
-        specifier: 15.0.5
-        version: 15.0.5(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 15.0.6
+        version: 15.0.6(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.1)
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -659,8 +659,8 @@ importers:
         version: 2.0.8(react-dom@18.3.1)(react@18.3.1)
     devDependencies:
       '@testing-library/react':
-        specifier: 15.0.5
-        version: 15.0.5(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.6
+        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/eslint':
         specifier: npm:@types/eslint@8.56.10
         version: 8.56.10
@@ -851,8 +851,8 @@ importers:
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.3)
       '@testing-library/react':
-        specifier: 15.0.5
-        version: 15.0.5(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.6
+        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/jsdom':
         specifier: 21.1.6
         version: 21.1.6
@@ -4963,29 +4963,39 @@ packages:
       vitest: 1.5.3(happy-dom@14.7.1)(jsdom@24.0.0)(sass@1.76.0)
     dev: true
 
-  /@testing-library/react@15.0.5(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-ttodVWYA2i2w4hRa6krKrmS1vKxAEkwDz34y+CwbcrbZUxFzUYN3a5xZyFKo+K6LBseCRCUkwcjATpaNn/UsIA==}
+  /@testing-library/react@15.0.6(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.1):
+    resolution: {integrity: sha512-UlbazRtEpQClFOiYp+1BapMT+xyqWMnE+hh9tn5DQ6gmlE7AIZWcGpzZukmDZuFk3By01oiqOf8lRedLS4k6xQ==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@types/react': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
+      '@types/react': 18.3.1
       '@types/react-dom': 18.3.0
       react: /@preact/compat@17.1.2(preact@10.21.0)
       react-dom: /@preact/compat@17.1.2(preact@10.21.0)
     dev: true
 
-  /@testing-library/react@15.0.5(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-ttodVWYA2i2w4hRa6krKrmS1vKxAEkwDz34y+CwbcrbZUxFzUYN3a5xZyFKo+K6LBseCRCUkwcjATpaNn/UsIA==}
+  /@testing-library/react@15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-UlbazRtEpQClFOiYp+1BapMT+xyqWMnE+hh9tn5DQ6gmlE7AIZWcGpzZukmDZuFk3By01oiqOf8lRedLS4k6xQ==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@types/react': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
+      '@types/react': 18.3.1
       '@types/react-dom': 18.3.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
