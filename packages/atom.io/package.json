@@ -92,7 +92,7 @@
 		"@vitest/ui": "1.5.3",
 		"concurrently": "8.2.2",
 		"drizzle-kit": "0.20.17",
-		"drizzle-orm": "0.30.9",
+		"drizzle-orm": "0.30.10",
 		"eslint": "npm:eslint@8.57.0",
 		"eslint-v9": "npm:eslint@9.1.1",
 		"framer-motion": "11.1.7",
