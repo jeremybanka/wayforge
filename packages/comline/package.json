@@ -31,7 +31,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "1.1.1",
-		"@types/node": "20.12.7",
+		"@types/node": "20.12.8",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
 		"tmp": "0.2.3",
