@@ -27,7 +27,7 @@
 		"react-router-dom": "6.23.0",
 		"recoil": "0.7.7",
 		"socket.io-client": "4.7.5",
-		"zod": "3.23.5"
+		"zod": "3.23.6"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "6.4.2",
