@@ -69,7 +69,15 @@ export const attachSelectorIndex = (
 									})
 								},
 							)
-						return unsubscribeFromSelectorCreation
+						const unsubscribeFromSelectorDisposal =
+							store.on.selectorDisposal.subscribe(
+								`introspection`,
+								(selectorToken) => {},
+							)
+						return () => {
+							unsubscribeFromSelectorCreation()
+							unsubscribeFromSelectorDisposal()
+						}
 					},
 				],
 			},

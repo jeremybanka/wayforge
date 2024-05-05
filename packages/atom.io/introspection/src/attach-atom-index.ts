@@ -63,7 +63,14 @@ export const attachAtomIndex = (
 							})
 						},
 					)
-					return unsubscribeFromAtomCreation
+					const unsubscribeFromAtomDisposal = store.on.atomDisposal.subscribe(
+						`introspection`,
+						(atomToken) => {},
+					)
+					return () => {
+						unsubscribeFromAtomCreation()
+						unsubscribeFromAtomDisposal()
+					}
 				},
 			],
 		},
