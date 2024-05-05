@@ -33,45 +33,34 @@ export const attachAtomIndex = (
 						if (atomToken.key.includes(`👁‍🗨`)) {
 							return
 						}
-						const set = () =>
-							setSelf((state) => {
-								const { key, family } = atomToken
-								if (family) {
-									const { key: familyKey, subKey } = family
-									const current = state[familyKey]
-									if (current === undefined || `familyMembers` in current) {
-										const familyKeyState = current || {
-											key: familyKey,
-											familyMembers: {},
-										}
-										return {
-											...state,
-											[familyKey]: {
-												...familyKeyState,
-												familyMembers: {
-													...familyKeyState.familyMembers,
-													[subKey]: atomToken,
-												},
+
+						setSelf((state) => {
+							const { key, family } = atomToken
+							if (family) {
+								const { key: familyKey, subKey } = family
+								const current = state[familyKey]
+								if (current === undefined || `familyMembers` in current) {
+									const familyKeyState = current ?? {
+										key: familyKey,
+										familyMembers: {},
+									}
+									return {
+										...state,
+										[familyKey]: {
+											...familyKeyState,
+											familyMembers: {
+												...familyKeyState.familyMembers,
+												[subKey]: atomToken,
 											},
-										}
+										},
 									}
 								}
-								return {
-									...state,
-									[key]: atomToken,
-								}
-							})
-						if (newest(store).operation.open) {
-							const unsubscribe = store.on.operationClose.subscribe(
-								`introspection: waiting to update atom index`,
-								() => {
-									unsubscribe()
-									set()
-								},
-							)
-						} else {
-							set()
-						}
+							}
+							return {
+								...state,
+								[key]: atomToken,
+							}
+						})
 					})
 				},
 			],
