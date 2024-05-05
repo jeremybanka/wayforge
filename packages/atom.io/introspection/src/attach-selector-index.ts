@@ -32,42 +32,44 @@ export const attachSelectorIndex = (
 					),
 				effects: [
 					({ setSelf }) => {
-						store.on.selectorCreation.subscribe(
-							`introspection`,
-							(selectorToken) => {
-								if (selectorToken.key.includes(`👁‍🗨`)) {
-									return
-								}
+						const unsubscribeFromSelectorCreation =
+							store.on.selectorCreation.subscribe(
+								`introspection`,
+								(selectorToken) => {
+									if (selectorToken.key.includes(`👁‍🗨`)) {
+										return
+									}
 
-								setSelf((state) => {
-									const { key, family } = selectorToken
-									if (family) {
-										const { key: familyKey, subKey } = family
-										const current = state[familyKey]
-										if (current === undefined || `familyMembers` in current) {
-											const familyKeyState = current ?? {
-												key: familyKey,
-												familyMembers: {},
-											}
-											return {
-												...state,
-												[familyKey]: {
-													...familyKeyState,
-													familyMembers: {
-														...familyKeyState.familyMembers,
-														[subKey]: selectorToken,
+									setSelf((state) => {
+										const { key, family } = selectorToken
+										if (family) {
+											const { key: familyKey, subKey } = family
+											const current = state[familyKey]
+											if (current === undefined || `familyMembers` in current) {
+												const familyKeyState = current ?? {
+													key: familyKey,
+													familyMembers: {},
+												}
+												return {
+													...state,
+													[familyKey]: {
+														...familyKeyState,
+														familyMembers: {
+															...familyKeyState.familyMembers,
+															[subKey]: selectorToken,
+														},
 													},
-												},
+												}
 											}
 										}
-									}
-									return {
-										...state,
-										[key]: selectorToken,
-									}
-								})
-							},
-						)
+										return {
+											...state,
+											[key]: selectorToken,
+										}
+									})
+								},
+							)
+						return unsubscribeFromSelectorCreation
 					},
 				],
 			},
