@@ -4,7 +4,6 @@ import {
 	createRegularAtom,
 	createStandaloneSelector,
 	IMPLICIT,
-	newest,
 } from "atom.io/internal"
 
 import type { WritableTokenIndex } from "."
