@@ -9,7 +9,7 @@
 	"private": true,
 	"packageManager": "pnpm@8.15.8",
 	"engines": {
-		"bun": "1.1.6",
+		"bun": "1.1.7",
 		"node": "20.12.2",
 		"pnpm": "8.15.8"
 	},
