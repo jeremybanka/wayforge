@@ -1,4 +1,4 @@
-import type { AtomToken } from "atom.io"
+import type { AtomToken, ReadableToken, SelectorToken } from "atom.io"
 import * as Internal from "atom.io/internal"
 
 import { getState } from "../../src/get-state"
@@ -6,11 +6,10 @@ import type { FamilyNode } from "."
 import { attachAtomIndex } from "./attach-atom-index"
 import { attachSelectorIndex } from "./attach-selector-index"
 
-export type AuditUtils = {
-	getResources: (store: Internal.Store) => void
+export type ListResourcesParam = {
+	atomFamilies: boolean
+	selectorFamilies: boolean
 }
-
-export type AuditProcedure = (store: Internal.Store, utils: AuditUtils) => void
 
 /**
  * @experimental
@@ -54,20 +53,44 @@ export class Auditor {
 		public readonly store: Internal.Store = Internal.IMPLICIT.STORE,
 	) {}
 
-	public listResources(): (readonly [AtomToken<unknown>, number])[] {
+	public static readonly DEFAULT_LIST_RESOURCES_PARAM = {
+		atomFamilies: true,
+		selectorFamilies: true,
+	} satisfies ListResourcesParam
+	public listResources(
+		param: ListResourcesParam = Auditor.DEFAULT_LIST_RESOURCES_PARAM,
+	): (readonly [ReadableToken<unknown>, number])[] {
 		const atoms = getState(this.atomIndex)
-		const familyNodes = Object.values(atoms).filter(
+		const selectors = getState(this.selectorIndex)
+		const atomFamilyNodes = Object.values(atoms).filter(
 			(node): node is FamilyNode<AtomToken<unknown>> => `familyMembers` in node,
 		)
+		const selectorFamilyNodes = Object.values(selectors).filter(
+			(node): node is FamilyNode<SelectorToken<unknown>> =>
+				`familyMembers` in node,
+		)
 		const currentTime = performance.now()
-		const resources: (readonly [AtomToken<unknown>, number])[] = []
-		for (const familyNode of familyNodes) {
-			const tokens = Object.values(familyNode.familyMembers)
-			for (const token of tokens) {
-				const storedTime = this.statesCreated.get(token.key)
-				const creationTime = storedTime ?? this.auditorCreatedAt
-				const age = currentTime - creationTime
-				resources.push([token, age])
+		const resources: (readonly [ReadableToken<unknown>, number])[] = []
+		if (param.atomFamilies) {
+			for (const familyNode of atomFamilyNodes) {
+				const tokens = Object.values(familyNode.familyMembers)
+				for (const token of tokens) {
+					const storedTime = this.statesCreated.get(token.key)
+					const creationTime = storedTime ?? this.auditorCreatedAt
+					const age = currentTime - creationTime
+					resources.push([token, age])
+				}
+			}
+		}
+		if (param.selectorFamilies) {
+			for (const familyNode of selectorFamilyNodes) {
+				const tokens = Object.values(familyNode.familyMembers)
+				for (const token of tokens) {
+					const storedTime = this.statesCreated.get(token.key)
+					const creationTime = storedTime ?? this.auditorCreatedAt
+					const age = currentTime - creationTime
+					resources.push([token, age])
+				}
 			}
 		}
 		return resources
