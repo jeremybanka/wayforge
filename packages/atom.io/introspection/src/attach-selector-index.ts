@@ -1,4 +1,4 @@
-import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
+import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
@@ -8,9 +8,7 @@ import {
 
 import type { WritableTokenIndex } from "."
 
-export type SelectorTokenIndex = WritableTokenIndex<
-	ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
->
+export type SelectorTokenIndex = WritableTokenIndex<SelectorToken<unknown>>
 
 export const attachSelectorIndex = (
 	store: Store = IMPLICIT.STORE,
