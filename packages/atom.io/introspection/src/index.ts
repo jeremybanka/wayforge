@@ -5,6 +5,7 @@ import type {
 } from "atom.io"
 
 export * from "./attach-introspection-states"
+export * from "./auditor"
 
 export type FamilyNode<
 	Token extends
