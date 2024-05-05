@@ -5,10 +5,10 @@ export * from "./auditor"
 
 export type FamilyNode<Token extends ReadableToken<unknown>> = {
 	key: string
-	familyMembers: Record<string, Token>
+	familyMembers: Map<string, Token>
 }
 
-export type WritableTokenIndex<Token extends ReadableToken<unknown>> = Record<
+export type WritableTokenIndex<Token extends ReadableToken<unknown>> = Map<
 	string,
 	FamilyNode<Token> | Token
 >
