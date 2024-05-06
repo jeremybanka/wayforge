@@ -1,5 +1,17 @@
 # atom.io
 
+## 0.21.0
+
+### Minor Changes
+
+- 7593a7a: 💥 BREAKING CHANGE: the `dispose` function has been renamed to `disposeState`. (Additionally, the internal functions `deleteAtom` and `deleteSelector` have been renamed to `disposeAtom` and `disposeSelector`, respectively.)
+
+### Patch Changes
+
+- 7593a7a: 🚀 `atom.io/react-devtools` uses more performant patterns in its state indexing.
+- 7593a7a: ✨ `atom.io/introspection` now includes a new experimental `Auditor` class. This is a tool for long-running instances, where there is a concern that the store may be holding onto resources that are no longer needed. By running `Auditor.listResources()`, you can get a list of all state tokens that belong to families in the store, along with their creation time.
+- 7593a7a: 🐛 `atom.io/react-devtools` now properly handles the case where a state is disposed. Previously, deleted states would be left in the state index. Now they are removed.
+
 ## 0.20.3
 
 ### Patch Changes
