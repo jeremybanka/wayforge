@@ -8,7 +8,7 @@
  * Can be constructed like a Promise, or from an existing Promise.
  */
 export class Future<T> extends Promise<T> {
-	private destiny: Promise<T> | undefined
+	private fate: Promise<T> | undefined
 	private resolve: (value: T) => void
 	private reject: (reason?: any) => void
 
@@ -29,12 +29,12 @@ export class Future<T> extends Promise<T> {
 	}
 
 	private pass(promise: Promise<T>, value: T) {
-		if (promise === this.destiny) {
+		if (promise === this.fate) {
 			this.resolve(value)
 		}
 	}
 	private fail(promise: Promise<T>, reason: any) {
-		if (promise === this.destiny) {
+		if (promise === this.fate) {
 			this.reject(reason)
 		}
 	}
@@ -42,7 +42,7 @@ export class Future<T> extends Promise<T> {
 	public use(value: Promise<T> | T): void {
 		if (value instanceof Promise) {
 			const promise = value
-			this.destiny = promise
+			this.fate = promise
 			promise.then(
 				(resolved) => {
 					this.pass(promise, resolved)
@@ -53,7 +53,7 @@ export class Future<T> extends Promise<T> {
 			)
 		} else {
 			this.resolve(value)
-			this.destiny = undefined
+			this.fate = undefined
 		}
 	}
 }
