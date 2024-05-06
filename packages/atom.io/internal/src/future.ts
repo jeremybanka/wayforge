@@ -17,29 +17,15 @@ export class Future<T> extends Promise<T> {
 			| Promise<T>
 			| ((resolve: (value: T) => void, reject: (reason?: any) => void) => void),
 	) {
-		let promise: Promise<T> | undefined
 		let superResolve: ((value: T) => void) | undefined
 		let superReject: ((reason?: any) => void) | undefined
 		super((resolve, reject) => {
 			superResolve = resolve
 			superReject = reject
-			promise = executor instanceof Promise ? executor : new Promise(executor)
-			promise.then(
-				(value) => {
-					if (promise) {
-						this.pass(promise, value)
-					}
-				},
-				(reason) => {
-					if (promise) {
-						this.fail(promise, reason)
-					}
-				},
-			)
 		})
-		this.destiny = promise
 		this.resolve = superResolve as (value: T) => void
 		this.reject = superReject as (reason?: any) => void
+		this.use(executor instanceof Promise ? executor : new Promise(executor))
 	}
 
 	private pass(promise: Promise<T>, value: T) {
