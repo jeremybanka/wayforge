@@ -35,19 +35,7 @@ export const attachTimelineFamily = (
 				({ setSelf }) => {
 					const tl = store.timelines.get(key)
 					tl?.subject.subscribe(`introspection`, (_) => {
-						if (store.operation.open === true) {
-							const unsubscribe = store.on.operationClose.subscribe(
-								`introspection`,
-								(operationClose) => {
-									if (operationClose.open === false) {
-										unsubscribe()
-										setSelf({ ...tl })
-									}
-								},
-							)
-						} else {
-							setSelf({ ...tl })
-						}
+						setSelf({ ...tl })
 					})
 				},
 			],
