@@ -1,9 +1,16 @@
-import type { AtomToken, ReadableToken, SelectorToken } from "atom.io"
+import type {
+	AtomToken,
+	ReadableToken,
+	ReadonlySelectorToken,
+	SelectorToken,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 
 import { getState } from "../../src/get-state"
 import type { FamilyNode } from "."
+import type { AtomTokenIndex } from "./attach-atom-index"
 import { attachAtomIndex } from "./attach-atom-index"
+import type { SelectorTokenIndex } from "./attach-selector-index"
 import { attachSelectorIndex } from "./attach-selector-index"
 
 export type ListResourcesParam = {
@@ -18,45 +25,53 @@ export type ListResourcesParam = {
 export class Auditor {
 	public auditorCreatedAt: number = performance.now()
 	public statesCreatedAt: Map<string, number> = new Map()
-	public readonly atomIndex = attachAtomIndex(this.store)
-	public readonly selectorIndex = attachSelectorIndex(this.store)
+	public readonly atomIndex: ReadonlySelectorToken<AtomTokenIndex>
+	public readonly selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
 	public disposed = false
 
-	private readonly unsubscribeFromAtomCreation =
-		this.store.on.atomCreation.subscribe(
-			`auditor-${this.auditorCreatedAt}`,
-			({ key }) => {
-				this.statesCreatedAt.set(key, performance.now() - this.auditorCreatedAt)
-			},
-		)
-	private readonly unsubscribeFromAtomDisposal =
-		this.store.on.atomDisposal.subscribe(
-			`auditor-${this.auditorCreatedAt}`,
-			({ key }) => {
-				this.statesCreatedAt.delete(key)
-			},
-		)
-	private readonly unsubscribeFromSelectorCreation =
-		this.store.on.selectorCreation.subscribe(
-			`auditor-${this.auditorCreatedAt}`,
-			({ key }) => {
-				this.statesCreatedAt.set(key, performance.now() - this.auditorCreatedAt)
-			},
-		)
-	private readonly unsubscribeFromSelectorDisposal =
-		this.store.on.selectorDisposal.subscribe(
-			`auditor-${this.auditorCreatedAt}`,
-			({ key }) => {
-				this.statesCreatedAt.delete(key)
-			},
-		)
+	private readonly unsubscribeFromAtomCreation: () => void
+	private readonly unsubscribeFromAtomDisposal: () => void
+	private readonly unsubscribeFromSelectorCreation: () => void
+	private readonly unsubscribeFromSelectorDisposal: () => void
 
 	/**
 	 * @param {Store} store - The store to audit.
 	 */
 	public constructor(
 		public readonly store: Internal.Store = Internal.IMPLICIT.STORE,
-	) {}
+	) {
+		this.atomIndex = attachAtomIndex(this.store)
+		this.selectorIndex = attachSelectorIndex(this.store)
+		this.unsubscribeFromAtomCreation = this.store.on.atomCreation.subscribe(
+			`auditor-${this.auditorCreatedAt}`,
+			({ key }) => {
+				this.statesCreatedAt.set(key, performance.now() - this.auditorCreatedAt)
+			},
+		)
+		this.unsubscribeFromAtomDisposal = this.store.on.atomDisposal.subscribe(
+			`auditor-${this.auditorCreatedAt}`,
+			({ key }) => {
+				this.statesCreatedAt.delete(key)
+			},
+		)
+		this.unsubscribeFromSelectorCreation =
+			this.store.on.selectorCreation.subscribe(
+				`auditor-${this.auditorCreatedAt}`,
+				({ key }) => {
+					this.statesCreatedAt.set(
+						key,
+						performance.now() - this.auditorCreatedAt,
+					)
+				},
+			)
+		this.unsubscribeFromSelectorDisposal =
+			this.store.on.selectorDisposal.subscribe(
+				`auditor-${this.auditorCreatedAt}`,
+				({ key }) => {
+					this.statesCreatedAt.delete(key)
+				},
+			)
+	}
 
 	public static readonly DEFAULT_LIST_RESOURCES_PARAM = {
 		atomFamilies: true,
