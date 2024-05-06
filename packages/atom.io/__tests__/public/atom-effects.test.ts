@@ -87,7 +87,7 @@ describe(`atom effect cleanup`, () => {
 			newValue: { x: 1, y: 1 },
 			oldValue: { x: 0, y: 0 },
 		})
-		Internal.deleteAtom(findCoordinateState(`a`), Internal.IMPLICIT.STORE)
+		Internal.disposeAtom(findCoordinateState(`a`), Internal.IMPLICIT.STORE)
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
 	})
 })

@@ -16,7 +16,7 @@ import { subscribeToState } from "../subscribe"
 import { markAtomAsDefault } from "./is-default"
 
 export function createRegularAtom<T>(
-	options: MutableAtomOptions<any, any> | RegularAtomOptions<T>,
+	options: RegularAtomOptions<T>,
 	family: FamilyMetadata | undefined,
 	store: Store,
 ): RegularAtomToken<T> {

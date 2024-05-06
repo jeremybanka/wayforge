@@ -82,11 +82,15 @@ export class Store implements Lineage {
 
 	public on = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
+		atomDisposal: new Subject<AtomToken<unknown>>(),
 		selectorCreation: new Subject<
 			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
 		>(),
-		transactionCreation: new Subject<TransactionToken<Func>>(),
+		selectorDisposal: new Subject<
+			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
+		>(),
 		timelineCreation: new Subject<TimelineToken<unknown>>(),
+		transactionCreation: new Subject<TransactionToken<Func>>(),
 		transactionApplying: new StatefulSubject<TransactionProgress<Func> | null>(
 			null,
 		),
