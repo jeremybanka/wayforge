@@ -10,7 +10,7 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import { dispose, findState, getState, setState } from "atom.io"
+import { disposeState, findState, getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,
@@ -343,7 +343,7 @@ export class Join<
 				set(find(contentAtoms, key), content)
 			}
 			const deleteContent: Write<(key: string) => void> = ({ find }, key) => {
-				dispose(find(contentAtoms, key))
+				disposeState(find(contentAtoms, key))
 			}
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {

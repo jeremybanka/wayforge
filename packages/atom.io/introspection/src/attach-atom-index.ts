@@ -3,8 +3,8 @@ import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
 	createStandaloneSelector,
+	deposit,
 	IMPLICIT,
-	newest,
 } from "atom.io/internal"
 
 import type { WritableTokenIndex } from "."
@@ -14,65 +14,86 @@ export type AtomTokenIndex = WritableTokenIndex<AtomToken<unknown>>
 export const attachAtomIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<AtomTokenIndex> => {
-	console.log(store.config)
 	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {
-				const defaultAtomIndex = [...store.atoms]
-					.filter(([key]) => !key.includes(`👁‍🗨`))
-					.reduce<AtomTokenIndex>((acc, [key, atom]) => {
-						acc[key] = { key, type: atom.type }
-						return acc
-					}, {})
-				return defaultAtomIndex
+				const base: AtomTokenIndex = new Map()
+				for (const [key, val] of store.atoms) {
+					if (!key.includes(`👁‍🗨`)) {
+						const token = deposit(val)
+						if (val.family) {
+							let familyNode = base.get(val.family.key)
+							if (!familyNode || !(`familyMembers` in familyNode)) {
+								familyNode = {
+									key: val.family.key,
+									familyMembers: new Map(),
+								}
+								base.set(val.family.key, familyNode)
+							}
+							familyNode.familyMembers.set(val.family.subKey, token)
+						} else {
+							base.set(key, token)
+						}
+					}
+				}
+				return base
 			},
 			effects: [
 				({ setSelf }) => {
-					store.on.atomCreation.subscribe(`introspection`, (atomToken) => {
-						if (atomToken.key.includes(`👁‍🗨`)) {
-							return
-						}
-						const set = () =>
-							setSelf((state) => {
-								const { key, family } = atomToken
-								if (family) {
-									const { key: familyKey, subKey } = family
-									const current = state[familyKey]
-									if (current === undefined || `familyMembers` in current) {
-										const familyKeyState = current || {
+					const unsubscribeFromAtomCreation = store.on.atomCreation.subscribe(
+						`introspection`,
+						(atomToken) => {
+							if (atomToken.key.includes(`👁‍🗨`)) {
+								return
+							}
+
+							setSelf((self) => {
+								if (atomToken.family) {
+									const { key: familyKey, subKey } = atomToken.family
+									let familyNode = self.get(familyKey)
+									if (
+										familyNode === undefined ||
+										!(`familyMembers` in familyNode)
+									) {
+										familyNode = {
 											key: familyKey,
-											familyMembers: {},
+											familyMembers: new Map(),
 										}
-										return {
-											...state,
-											[familyKey]: {
-												...familyKeyState,
-												familyMembers: {
-													...familyKeyState.familyMembers,
-													[subKey]: atomToken,
-												},
-											},
+										self.set(familyKey, familyNode)
+									}
+									familyNode.familyMembers.set(subKey, atomToken)
+								} else {
+									self.set(atomToken.key, atomToken)
+								}
+								return self
+							})
+						},
+					)
+					const unsubscribeFromAtomDisposal = store.on.atomDisposal.subscribe(
+						`introspection`,
+						(atomToken) => {
+							setSelf((self) => {
+								if (atomToken.family) {
+									const { key: familyKey, subKey } = atomToken.family
+									const familyNode = self.get(familyKey)
+									if (familyNode && `familyMembers` in familyNode) {
+										familyNode.familyMembers.delete(subKey)
+										if (familyNode.familyMembers.size === 0) {
+											self.delete(familyKey)
 										}
 									}
+								} else {
+									self.delete(atomToken.key)
 								}
-								return {
-									...state,
-									[key]: atomToken,
-								}
+								return self
 							})
-						if (newest(store).operation.open) {
-							const unsubscribe = store.on.operationClose.subscribe(
-								`introspection: waiting to update atom index`,
-								() => {
-									unsubscribe()
-									set()
-								},
-							)
-						} else {
-							set()
-						}
-					})
+						},
+					)
+					return () => {
+						unsubscribeFromAtomCreation()
+						unsubscribeFromAtomDisposal()
+					}
 				},
 			],
 		},

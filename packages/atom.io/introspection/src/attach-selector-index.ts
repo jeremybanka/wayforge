@@ -1,17 +1,15 @@
-import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
+import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
 	createStandaloneSelector,
+	deposit,
 	IMPLICIT,
-	newest,
 } from "atom.io/internal"
 
 import type { WritableTokenIndex } from "."
 
-export type SelectorTokenIndex = WritableTokenIndex<
-	ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
->
+export type SelectorTokenIndex = WritableTokenIndex<SelectorToken<unknown>>
 
 export const attachSelectorIndex = (
 	store: Store = IMPLICIT.STORE,
@@ -20,68 +18,87 @@ export const attachSelectorIndex = (
 		createRegularAtom<SelectorTokenIndex>(
 			{
 				key: `👁‍🗨 Selector Token Index (Internal)`,
-				default: () =>
-					Object.assign(
-						[...store.readonlySelectors]
-							.filter(([key]) => !key.includes(`👁‍🗨`))
-							.reduce<SelectorTokenIndex>((acc, [key]) => {
-								acc[key] = { key, type: `readonly_selector` }
-								return acc
-							}, {}),
-						[...store.selectors].reduce<SelectorTokenIndex>((acc, [key]) => {
-							acc[key] = { key, type: `selector` }
-							return acc
-						}, {}),
-					),
+				default: () => {
+					const base: SelectorTokenIndex = new Map()
+					for (const map of [store.readonlySelectors, store.selectors]) {
+						for (const [key, val] of map) {
+							if (!key.includes(`👁‍🗨`)) {
+								const token = deposit(val)
+								if (val.family) {
+									let familyNode = base.get(val.family.key)
+									if (!familyNode || !(`familyMembers` in familyNode)) {
+										familyNode = {
+											key: val.family.key,
+											familyMembers: new Map(),
+										}
+										base.set(val.family.key, familyNode)
+									}
+									familyNode.familyMembers.set(val.family.subKey, token)
+								} else {
+									base.set(key, token)
+								}
+							}
+						}
+					}
+					return base
+				},
 				effects: [
 					({ setSelf }) => {
-						store.on.selectorCreation.subscribe(
-							`introspection`,
-							(selectorToken) => {
-								if (selectorToken.key.includes(`👁‍🗨`)) {
-									return
-								}
-								const set = () =>
-									setSelf((state) => {
-										const { key, family } = selectorToken
-										if (family) {
-											const { key: familyKey, subKey } = family
-											const current = state[familyKey]
-											if (current === undefined || `familyMembers` in current) {
-												const familyKeyState = current || {
+						const unsubscribeFromSelectorCreation =
+							store.on.selectorCreation.subscribe(
+								`introspection`,
+								(selectorToken) => {
+									if (selectorToken.key.includes(`👁‍🗨`)) {
+										return
+									}
+
+									setSelf((self) => {
+										if (selectorToken.family) {
+											const { key: familyKey, subKey } = selectorToken.family
+											let familyNode = self.get(familyKey)
+											if (
+												familyNode === undefined ||
+												!(`familyMembers` in familyNode)
+											) {
+												familyNode = {
 													key: familyKey,
-													familyMembers: {},
+													familyMembers: new Map(),
 												}
-												return {
-													...state,
-													[familyKey]: {
-														...familyKeyState,
-														familyMembers: {
-															...familyKeyState.familyMembers,
-															[subKey]: selectorToken,
-														},
-													},
+												self.set(familyKey, familyNode)
+											}
+											familyNode.familyMembers.set(subKey, selectorToken)
+										} else {
+											self.set(selectorToken.key, selectorToken)
+										}
+										return self
+									})
+								},
+							)
+						const unsubscribeFromSelectorDisposal =
+							store.on.selectorDisposal.subscribe(
+								`introspection`,
+								(selectorToken) => {
+									setSelf((self) => {
+										if (selectorToken.family) {
+											const { key: familyKey, subKey } = selectorToken.family
+											const familyNode = self.get(familyKey)
+											if (familyNode && `familyMembers` in familyNode) {
+												familyNode.familyMembers.delete(subKey)
+												if (familyNode.familyMembers.size === 0) {
+													self.delete(familyKey)
 												}
 											}
+										} else {
+											self.delete(selectorToken.key)
 										}
-										return {
-											...state,
-											[key]: selectorToken,
-										}
+										return self
 									})
-								if (newest(store).operation.open) {
-									const unsubscribe = store.on.operationClose.subscribe(
-										`introspection: waiting to update selector index`,
-										() => {
-											unsubscribe()
-											set()
-										},
-									)
-								} else {
-									set()
-								}
-							},
-						)
+								},
+							)
+						return () => {
+							unsubscribeFromSelectorCreation()
+							unsubscribeFromSelectorDisposal()
+						}
 					},
 				],
 			},

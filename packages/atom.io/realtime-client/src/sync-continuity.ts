@@ -3,7 +3,7 @@ import type { Store } from "atom.io/internal"
 import {
 	actUponStore,
 	assignTransactionToContinuity,
-	deleteAtom,
+	disposeAtom,
 	getEpochNumberOfContinuity,
 	getFromStore,
 	getJsonToken,
@@ -353,7 +353,7 @@ export function syncContinuity<F extends AtomIO.Func>(
 		`conceal:${continuityKey}`,
 		(concealed: AtomIO.AtomToken<unknown>[]) => {
 			for (const token of concealed) {
-				deleteAtom(token, store)
+				disposeAtom(token, store)
 			}
 		},
 	)

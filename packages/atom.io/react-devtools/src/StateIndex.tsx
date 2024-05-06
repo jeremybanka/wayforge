@@ -1,15 +1,13 @@
 import type {
-	AtomToken,
+	ReadableToken,
 	ReadonlySelectorToken,
 	RegularAtomToken,
-	WritableSelectorToken,
 } from "atom.io"
 import { findState, getState, selectorFamily } from "atom.io"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { recordToEntries } from "~/packages/anvl/src/object"
 import { isJson, refineJsonType } from "~/packages/anvl/src/refinement"
 
 import { findViewIsOpenState, primitiveRefinery } from "."
@@ -34,10 +32,7 @@ const findStateTypeState = selectorFamily<string, { key: string }>({
 })
 
 export const StateIndexLeafNode: FC<{
-	node:
-		| AtomToken<unknown>
-		| ReadonlySelectorToken<unknown>
-		| WritableSelectorToken<unknown>
+	node: ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
@@ -80,16 +75,12 @@ export const StateIndexLeafNode: FC<{
 	)
 }
 export const StateIndexTreeNode: FC<{
-	node: FamilyNode<
-		| AtomToken<unknown>
-		| ReadonlySelectorToken<unknown>
-		| WritableSelectorToken<unknown>
-	>
+	node: FamilyNode<ReadableToken<unknown>>
 	isOpenState: RegularAtomToken<boolean>
 }> = ({ node, isOpenState }) => {
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
-	for (const [key, childNode] of recordToEntries(node.familyMembers)) {
+	for (const [key, childNode] of node.familyMembers) {
 		findState(findViewIsOpenState, key)
 		findState(findStateTypeState, childNode)
 	}
@@ -107,7 +98,7 @@ export const StateIndexTreeNode: FC<{
 				</label>
 			</header>
 			{isOpen
-				? Object.entries(node.familyMembers).map(([key, childNode]) => (
+				? [...node.familyMembers.entries()].map(([key, childNode]) => (
 						<StateIndexNode
 							key={key}
 							node={childNode}
@@ -121,11 +112,7 @@ export const StateIndexTreeNode: FC<{
 }
 
 export const StateIndexNode: FC<{
-	node: WritableTokenIndex<
-		| AtomToken<unknown>
-		| ReadonlySelectorToken<unknown>
-		| WritableSelectorToken<unknown>
-	>[string]
+	node: FamilyNode<ReadableToken<unknown>> | ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlySelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
@@ -145,18 +132,12 @@ export const StateIndexNode: FC<{
 }
 
 export const StateIndex: FC<{
-	tokenIndex: ReadonlySelectorToken<
-		WritableTokenIndex<
-			| AtomToken<unknown>
-			| ReadonlySelectorToken<unknown>
-			| WritableSelectorToken<unknown>
-		>
-	>
+	tokenIndex: ReadonlySelectorToken<WritableTokenIndex<ReadableToken<unknown>>>
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 	return (
 		<article className="index state_index" data-testid="state-index">
-			{Object.entries(tokenIds)
+			{[...tokenIds.entries()]
 				.filter(([key]) => !key.startsWith(`👁‍🗨`))
 				.sort()
 				.map(([key, node]) => {
