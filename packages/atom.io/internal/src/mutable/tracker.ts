@@ -66,18 +66,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
 			(update) => {
-				if (target.operation.open) {
-					const unsubscribe = target.on.operationClose.subscribe(
-						subscriptionKey,
-						() => {
-							unsubscribe()
-							setIntoStore(latestUpdateState, update, target)
-						},
-					)
-				} else {
-					setIntoStore(mutableState, (current) => current, target)
-					setIntoStore(latestUpdateState, update, target)
-				}
+				setIntoStore(latestUpdateState, update, target)
 			},
 		)
 		this.unsubscribeFromState = subscribeToState(
@@ -88,18 +77,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						subscriptionKey,
 						(transceiverUpdate) => {
-							if (target.operation.open) {
-								const unsubscribe = target.on.operationClose.subscribe(
-									subscriptionKey,
-									() => {
-										unsubscribe()
-										setIntoStore(latestUpdateState, transceiverUpdate, target)
-									},
-								)
-							} else {
-								setIntoStore(mutableState, (current) => current, target)
-								setIntoStore(latestUpdateState, transceiverUpdate, target)
-							}
+							setIntoStore(latestUpdateState, transceiverUpdate, target)
 						},
 					)
 				}
