@@ -17,19 +17,29 @@ export const attachSelectorIndex = (
 		createRegularAtom<SelectorTokenIndex>(
 			{
 				key: `👁‍🗨 Selector Token Index (Internal)`,
-				default: () =>
-					Object.assign(
-						[...store.readonlySelectors]
-							.filter(([key]) => !key.includes(`👁‍🗨`))
-							.reduce<SelectorTokenIndex>((acc, [key]) => {
-								acc[key] = { key, type: `readonly_selector` }
-								return acc
-							}, {}),
-						[...store.selectors].reduce<SelectorTokenIndex>((acc, [key]) => {
-							acc[key] = { key, type: `selector` }
-							return acc
-						}, {}),
-					),
+				default: () => {
+					const base: SelectorTokenIndex = new Map()
+					for (const map of [store.readonlySelectors, store.selectors]) {
+						for (const [key, val] of map) {
+							if (!key.includes(`👁‍🗨`)) {
+								if (val.family) {
+									let familyNode = base.get(val.family.key)
+									if (!familyNode || !(`familyMembers` in familyNode)) {
+										familyNode = {
+											key: val.family.key,
+											familyMembers: new Map(),
+										}
+										base.set(val.family.key, familyNode)
+									}
+									familyNode.familyMembers.set(key, val)
+								} else {
+									base.set(key, val)
+								}
+							}
+						}
+					}
+					return base
+				},
 				effects: [
 					({ setSelf }) => {
 						const unsubscribeFromSelectorCreation =
@@ -40,32 +50,25 @@ export const attachSelectorIndex = (
 										return
 									}
 
-									setSelf((state) => {
-										const { key, family } = selectorToken
-										if (family) {
-											const { key: familyKey, subKey } = family
-											const current = state[familyKey]
-											if (current === undefined || `familyMembers` in current) {
-												const familyKeyState = current ?? {
+									setSelf((self) => {
+										if (selectorToken.family) {
+											const { key: familyKey, subKey } = selectorToken.family
+											let familyNode = self.get(familyKey)
+											if (
+												familyNode === undefined ||
+												!(`familyMembers` in familyNode)
+											) {
+												familyNode = {
 													key: familyKey,
-													familyMembers: {},
+													familyMembers: new Map(),
 												}
-												return {
-													...state,
-													[familyKey]: {
-														...familyKeyState,
-														familyMembers: {
-															...familyKeyState.familyMembers,
-															[subKey]: selectorToken,
-														},
-													},
-												}
+												self.set(familyKey, familyNode)
 											}
+											familyNode.familyMembers.set(subKey, selectorToken)
+										} else {
+											self.set(selectorToken.key, selectorToken)
 										}
-										return {
-											...state,
-											[key]: selectorToken,
-										}
+										return self
 									})
 								},
 							)

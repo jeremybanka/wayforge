@@ -62,10 +62,10 @@ export class Auditor {
 	): (readonly [ReadableToken<unknown>, number])[] {
 		const atoms = getState(this.atomIndex)
 		const selectors = getState(this.selectorIndex)
-		const atomFamilyNodes = Object.values(atoms).filter(
+		const atomFamilyNodes = [...atoms.values()].filter(
 			(node): node is FamilyNode<AtomToken<unknown>> => `familyMembers` in node,
 		)
-		const selectorFamilyNodes = Object.values(selectors).filter(
+		const selectorFamilyNodes = [...selectors.values()].filter(
 			(node): node is FamilyNode<SelectorToken<unknown>> =>
 				`familyMembers` in node,
 		)
@@ -73,7 +73,7 @@ export class Auditor {
 		const resources: (readonly [ReadableToken<unknown>, number])[] = []
 		if (param.atomFamilies) {
 			for (const familyNode of atomFamilyNodes) {
-				const tokens = Object.values(familyNode.familyMembers)
+				const tokens = familyNode.familyMembers.values()
 				for (const token of tokens) {
 					const storedTime = this.statesCreated.get(token.key)
 					const creationTime = storedTime ?? this.auditorCreatedAt
@@ -84,7 +84,7 @@ export class Auditor {
 		}
 		if (param.selectorFamilies) {
 			for (const familyNode of selectorFamilyNodes) {
-				const tokens = Object.values(familyNode.familyMembers)
+				const tokens = familyNode.familyMembers.values()
 				for (const token of tokens) {
 					const storedTime = this.statesCreated.get(token.key)
 					const creationTime = storedTime ?? this.auditorCreatedAt
