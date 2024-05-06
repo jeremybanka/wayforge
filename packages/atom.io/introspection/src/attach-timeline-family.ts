@@ -1,7 +1,4 @@
-import type {
-	ReadonlySelectorFamily,
-	ReadonlySelectorFamilyToken,
-} from "atom.io"
+import type { ReadonlySelectorFamilyToken } from "atom.io"
 import type { Store, Timeline } from "atom.io/internal"
 import {
 	createRegularAtomFamily,
