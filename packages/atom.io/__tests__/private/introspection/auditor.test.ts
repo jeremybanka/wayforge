@@ -55,7 +55,9 @@ describe(`Auditor practical tests`, () => {
 		}
 		resources = auditor.listResources()
 		expect(resources.length).toBe(0)
-    auditor[Symbol.dispose]()
-    expect(auditor.listResources.bind(auditor)).toThrowError(`This Auditor has been disposed`)
+		auditor[Symbol.dispose]()
+		expect(auditor.listResources.bind(auditor)).toThrowError(
+			`This Auditor has been disposed`,
+		)
 	})
 })

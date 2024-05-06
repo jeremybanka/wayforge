@@ -13,7 +13,6 @@ export type ListResourcesParam = {
 
 /**
  * Auditor is a tool for identifying lingering resources in your store that may result in memory leaks.
- * 
  * @experimental
  */
 export class Auditor {
@@ -53,7 +52,7 @@ export class Auditor {
 		)
 
 	/**
- 	 * @param {Store} store - The store to audit.
+	 * @param {Store} store - The store to audit.
 	 */
 	public constructor(
 		public readonly store: Internal.Store = Internal.IMPLICIT.STORE,
@@ -65,7 +64,7 @@ export class Auditor {
 	} satisfies ListResourcesParam
 	/**
 	 * Lists all resources in the store, along with their creation time.
-	 * 
+	 *
 	 * @param {ListResourcesParam} [param] - Optional parameters for filtering the list of resources.
 	 * @returns {readonly [ReadableToken<unknown>, number]}[] - An array of tuples, where each tuple contains a state token belonging to a family in the store and that state's creation time.
 	 */
