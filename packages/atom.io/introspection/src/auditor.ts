@@ -12,43 +12,49 @@ export type ListResourcesParam = {
 }
 
 /**
+ * Auditor is a tool for identifying lingering resources in your store that may result in memory leaks.
+ * 
  * @experimental
  */
 export class Auditor {
 	public auditorCreatedAt: number = performance.now()
-	public statesCreated: Map<string, number> = new Map()
+	public statesCreatedAt: Map<string, number> = new Map()
 	public readonly atomIndex = attachAtomIndex(this.store)
 	public readonly selectorIndex = attachSelectorIndex(this.store)
+	public disposed = false
 
 	private readonly unsubscribeFromAtomCreation =
 		this.store.on.atomCreation.subscribe(
 			`auditor-${this.auditorCreatedAt}`,
 			({ key }) => {
-				this.statesCreated.set(key, performance.now() - this.auditorCreatedAt)
+				this.statesCreatedAt.set(key, performance.now() - this.auditorCreatedAt)
 			},
 		)
 	private readonly unsubscribeFromAtomDisposal =
 		this.store.on.atomDisposal.subscribe(
 			`auditor-${this.auditorCreatedAt}`,
 			({ key }) => {
-				this.statesCreated.delete(key)
+				this.statesCreatedAt.delete(key)
 			},
 		)
 	private readonly unsubscribeFromSelectorCreation =
 		this.store.on.selectorCreation.subscribe(
 			`auditor-${this.auditorCreatedAt}`,
 			({ key }) => {
-				this.statesCreated.set(key, performance.now() - this.auditorCreatedAt)
+				this.statesCreatedAt.set(key, performance.now() - this.auditorCreatedAt)
 			},
 		)
 	private readonly unsubscribeFromSelectorDisposal =
 		this.store.on.selectorDisposal.subscribe(
 			`auditor-${this.auditorCreatedAt}`,
 			({ key }) => {
-				this.statesCreated.delete(key)
+				this.statesCreatedAt.delete(key)
 			},
 		)
 
+	/**
+ 	 * @param {Store} store - The store to audit.
+	 */
 	public constructor(
 		public readonly store: Internal.Store = Internal.IMPLICIT.STORE,
 	) {}
@@ -57,9 +63,18 @@ export class Auditor {
 		atomFamilies: true,
 		selectorFamilies: true,
 	} satisfies ListResourcesParam
+	/**
+	 * Lists all resources in the store, along with their creation time.
+	 * 
+	 * @param {ListResourcesParam} [param] - Optional parameters for filtering the list of resources.
+	 * @returns {readonly [ReadableToken<unknown>, number]}[] - An array of tuples, where each tuple contains a state token belonging to a family in the store and that state's creation time.
+	 */
 	public listResources(
 		param: ListResourcesParam = Auditor.DEFAULT_LIST_RESOURCES_PARAM,
 	): (readonly [ReadableToken<unknown>, number])[] {
+		if (this.disposed) {
+			throw new Error(`This Auditor has been disposed`)
+		}
 		const atoms = getState(this.atomIndex)
 		const selectors = getState(this.selectorIndex)
 		const atomFamilyNodes = [...atoms.values()].filter(
@@ -75,7 +90,7 @@ export class Auditor {
 			for (const familyNode of atomFamilyNodes) {
 				const tokens = familyNode.familyMembers.values()
 				for (const token of tokens) {
-					const storedTime = this.statesCreated.get(token.key)
+					const storedTime = this.statesCreatedAt.get(token.key)
 					const creationTime = storedTime ?? this.auditorCreatedAt
 					const age = currentTime - creationTime
 					resources.push([token, age])
@@ -86,7 +101,7 @@ export class Auditor {
 			for (const familyNode of selectorFamilyNodes) {
 				const tokens = familyNode.familyMembers.values()
 				for (const token of tokens) {
-					const storedTime = this.statesCreated.get(token.key)
+					const storedTime = this.statesCreatedAt.get(token.key)
 					const creationTime = storedTime ?? this.auditorCreatedAt
 					const age = currentTime - creationTime
 					resources.push([token, age])
@@ -101,5 +116,6 @@ export class Auditor {
 		this.unsubscribeFromAtomDisposal()
 		this.unsubscribeFromSelectorCreation()
 		this.unsubscribeFromSelectorDisposal()
+		this.disposed = true
 	}
 }

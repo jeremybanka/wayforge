@@ -3,6 +3,7 @@ import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
 	createStandaloneSelector,
+	deposit,
 	IMPLICIT,
 } from "atom.io/internal"
 
@@ -20,6 +21,7 @@ export const attachAtomIndex = (
 				const base: AtomTokenIndex = new Map()
 				for (const [key, val] of store.atoms) {
 					if (!key.includes(`👁‍🗨`)) {
+						const token = deposit(val)
 						if (val.family) {
 							let familyNode = base.get(val.family.key)
 							if (!familyNode || !(`familyMembers` in familyNode)) {
@@ -29,9 +31,9 @@ export const attachAtomIndex = (
 								}
 								base.set(val.family.key, familyNode)
 							}
-							familyNode.familyMembers.set(key, val)
+							familyNode.familyMembers.set(val.family.subKey, token)
 						} else {
-							base.set(key, val)
+							base.set(key, token)
 						}
 					}
 				}
@@ -70,7 +72,23 @@ export const attachAtomIndex = (
 					)
 					const unsubscribeFromAtomDisposal = store.on.atomDisposal.subscribe(
 						`introspection`,
-						(atomToken) => {},
+						(atomToken) => {
+							setSelf((self) => {
+								if (atomToken.family) {
+									const { key: familyKey, subKey } = atomToken.family
+									const familyNode = self.get(familyKey)
+									if (familyNode && `familyMembers` in familyNode) {
+										familyNode.familyMembers.delete(subKey)
+										if (familyNode.familyMembers.size === 0) {
+											self.delete(familyKey)
+										}
+									}
+								} else {
+									self.delete(atomToken.key)
+								}
+								return self
+							})
+						},
 					)
 					return () => {
 						unsubscribeFromAtomCreation()

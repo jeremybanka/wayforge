@@ -1,4 +1,5 @@
 import type {
+	AtomToken,
 	Func,
 	MutableAtomToken,
 	ReadableToken,
@@ -11,10 +12,12 @@ import type {
 } from "atom.io"
 
 import type {
+	Atom,
 	MutableAtom,
 	ReadableState,
 	ReadonlySelector,
 	RegularAtom,
+	Selector,
 	Transceiver,
 	WritableSelector,
 	WritableState,
@@ -25,8 +28,10 @@ export function deposit<T>(state: RegularAtom<T>): RegularAtomToken<T>
 export function deposit<T extends Transceiver<any>>(
 	state: MutableAtom<T, any>,
 ): MutableAtomToken<T, any>
+export function deposit<T>(state: Atom<T>): AtomToken<T>
 export function deposit<T>(state: WritableSelector<T>): WritableSelectorToken<T>
 export function deposit<T>(state: ReadonlySelector<T>): ReadonlySelectorToken<T>
+export function deposit<T>(state: Selector<T>): SelectorToken<T>
 export function deposit<T>(state: WritableState<T>): WritableToken<T>
 export function deposit<T extends Func>(
 	state: Transaction<T>,
