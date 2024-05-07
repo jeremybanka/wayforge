@@ -4,8 +4,8 @@ import type { Store } from "../store"
 
 export const recallState = <T>(state: ReadableState<T>, store: Store): T => {
 	const target = newest(store)
-	if (!target.operation.open) {
-		return target.valueMap.get(state.key)
+	if (target.operation.open) {
+		return target.operation.prev.get(state.key)
 	}
-	return target.operation.prev.get(state.key)
+	return target.valueMap.get(state.key)
 }

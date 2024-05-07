@@ -1,7 +1,6 @@
 import { atomFamily, disposeState, findState, selectorFamily } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { Auditor } from "atom.io/introspection"
-import { Component } from "react"
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)

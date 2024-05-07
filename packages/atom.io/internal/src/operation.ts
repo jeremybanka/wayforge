@@ -1,6 +1,5 @@
 import type { WritableToken } from "atom.io"
 
-import { newest } from "./lineage"
 import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
 

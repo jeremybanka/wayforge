@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
+	findState,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -10,7 +11,7 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import { disposeState, findState, getState, setState } from "atom.io"
+import { disposeState, getState, setState } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,
@@ -36,12 +37,6 @@ import type {
 } from "~/packages/rel8/junction/src"
 import { Junction } from "~/packages/rel8/junction/src"
 import type * as Rel8 from "~/packages/rel8/types/src"
-
-const TRANSACTORS: Transactors = {
-	get: getState,
-	set: setState,
-	find: findState,
-}
 
 function capitalize<S extends string>(string: S): Capitalize<S> {
 	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
