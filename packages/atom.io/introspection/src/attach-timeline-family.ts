@@ -1,7 +1,4 @@
-import type {
-	ReadonlySelectorFamily,
-	ReadonlySelectorFamilyToken,
-} from "atom.io"
+import type { ReadonlySelectorFamilyToken } from "atom.io"
 import type { Store, Timeline } from "atom.io/internal"
 import {
 	createRegularAtomFamily,
@@ -35,19 +32,7 @@ export const attachTimelineFamily = (
 				({ setSelf }) => {
 					const tl = store.timelines.get(key)
 					tl?.subject.subscribe(`introspection`, (_) => {
-						if (store.operation.open === true) {
-							const unsubscribe = store.on.operationClose.subscribe(
-								`introspection`,
-								(operationClose) => {
-									if (operationClose.open === false) {
-										unsubscribe()
-										setSelf({ ...tl })
-									}
-								},
-							)
-						} else {
-							setSelf({ ...tl })
-						}
+						setSelf({ ...tl })
 					})
 				},
 			],

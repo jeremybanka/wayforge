@@ -1,4 +1,4 @@
-import { readFile, readFileSync, writeFile, writeFileSync } from "node:fs"
+import { readFileSync, writeFileSync } from "node:fs"
 
 import type { Logger } from "atom.io"
 import { atom, atomFamily, getState, setState } from "atom.io"

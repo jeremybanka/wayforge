@@ -1,6 +1,5 @@
 import type {
 	Func,
-	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
 	TimelineToken,
