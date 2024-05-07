@@ -400,8 +400,8 @@ importers:
         version: 3.23.6
     devDependencies:
       '@testing-library/react':
-        specifier: 15.0.6
-        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -504,8 +504,8 @@ importers:
         specifier: 6.4.5
         version: 6.4.5(vitest@1.6.0)
       '@testing-library/react':
-        specifier: 15.0.6
-        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -595,8 +595,8 @@ importers:
         specifier: 6.4.5
         version: 6.4.5(vitest@1.6.0)
       '@testing-library/react':
-        specifier: 15.0.6
-        version: 15.0.6(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.1)
+        specifier: 15.0.7
+        version: 15.0.7(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.1)
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
@@ -659,8 +659,8 @@ importers:
         version: 2.0.8(react-dom@18.3.1)(react@18.3.1)
     devDependencies:
       '@testing-library/react':
-        specifier: 15.0.6
-        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/eslint':
         specifier: npm:@types/eslint@8.56.10
         version: 8.56.10
@@ -851,8 +851,8 @@ importers:
         specifier: 6.4.5
         version: 6.4.5(vitest@1.6.0)
       '@testing-library/react':
-        specifier: 15.0.6
-        version: 15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
       '@types/jsdom':
         specifier: 21.1.6
         version: 21.1.6
@@ -4963,8 +4963,8 @@ packages:
       vitest: 1.6.0(happy-dom@14.10.1)(jsdom@24.0.0)(sass@1.77.0)
     dev: true
 
-  /@testing-library/react@15.0.6(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.1):
-    resolution: {integrity: sha512-UlbazRtEpQClFOiYp+1BapMT+xyqWMnE+hh9tn5DQ6gmlE7AIZWcGpzZukmDZuFk3By01oiqOf8lRedLS4k6xQ==}
+  /@testing-library/react@15.0.7(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.1):
+    resolution: {integrity: sha512-cg0RvEdD1TIhhkm1IeYMQxrzy0MtUNfa3minv4MjbgcYzJAZ7yD0i0lwoPOTPr+INtiXFezt2o8xMSnyHhEn2Q==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/react': ^18.0.0
@@ -4982,8 +4982,8 @@ packages:
       react-dom: /@preact/compat@17.1.2(preact@10.21.0)
     dev: true
 
-  /@testing-library/react@15.0.6(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-UlbazRtEpQClFOiYp+1BapMT+xyqWMnE+hh9tn5DQ6gmlE7AIZWcGpzZukmDZuFk3By01oiqOf8lRedLS4k6xQ==}
+  /@testing-library/react@15.0.7(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-cg0RvEdD1TIhhkm1IeYMQxrzy0MtUNfa3minv4MjbgcYzJAZ7yD0i0lwoPOTPr+INtiXFezt2o8xMSnyHhEn2Q==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/react': ^18.0.0
