@@ -20,7 +20,7 @@
 		"minimatch": "9.0.4",
 		"npmlog": "7.0.1",
 		"simple-git": "3.24.0",
-		"zod": "3.23.6"
+		"zod": "3.23.7"
 	},
 	"scripts": {
 		"build": "concurrently \"bun:build:*\" && bun run schema",
