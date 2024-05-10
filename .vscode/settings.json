@@ -39,7 +39,7 @@
 	"json.schemas": [
 		{
 			"fileMatch": ["**/break-check.config.json"],
-			"url": "./packages/break-check/break-check.schema.json"
+			"url": "./packages/break-check/dist/break-check.schema.json"
 		}
 	],
 	"editor.formatOnSave": true,
