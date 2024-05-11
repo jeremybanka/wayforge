@@ -73,7 +73,7 @@
 		"react-dom": "18.3.1",
 		"react-router-dom": "6.23.0",
 		"recoil": "0.7.7",
-		"sass": "1.77.0",
+		"sass": "1.77.1",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
 		"vite-plugin-dts": "3.9.1",
