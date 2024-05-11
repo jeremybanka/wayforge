@@ -3,7 +3,8 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomToken,
 } from "atom.io"
-import { findState, getState, selectorFamily } from "atom.io"
+import { getState, selectorFamily } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"

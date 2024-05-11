@@ -1,4 +1,5 @@
-import type { findState, Func } from "atom.io"
+import type { Func } from "atom.io"
+import type { findState } from "atom.io/ephemeral"
 
 import { Junction } from "~/packages/rel8/junction/src"
 

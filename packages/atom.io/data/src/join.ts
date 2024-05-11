@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
-	findState,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
-	MutableAtomToken,
 	Read,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -11,7 +9,8 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import { disposeState, getState, setState } from "atom.io"
+import { disposeState } from "atom.io"
+import type { findState } from "atom.io/ephemeral"
 import type { Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,

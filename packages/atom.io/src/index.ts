@@ -10,8 +10,7 @@ import type {
 } from "./selector"
 
 export * from "./atom"
-export * from "./dispose"
-export * from "./find-state"
+export * from "./dispose-state"
 export * from "./get-state"
 export * from "./logger"
 export * from "./selector"

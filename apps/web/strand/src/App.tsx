@@ -1,5 +1,5 @@
 import type { MutableAtomFamilyToken } from "atom.io"
-import { findState } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import { useI, useJSON } from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import {
