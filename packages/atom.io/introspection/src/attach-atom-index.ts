@@ -41,59 +41,49 @@ export const attachAtomIndex = (
 			},
 			effects: [
 				({ setSelf }) => {
-					const unsubscribeFromAtomCreation = store.on.atomCreation.subscribe(
-						`introspection`,
-						(atomToken) => {
-							if (atomToken.key.includes(`👁‍🗨`)) {
-								return
-							}
+					store.on.atomCreation.subscribe(`introspection`, (atomToken) => {
+						if (atomToken.key.includes(`👁‍🗨`)) {
+							return
+						}
 
-							setSelf((self) => {
-								if (atomToken.family) {
-									const { key: familyKey, subKey } = atomToken.family
-									let familyNode = self.get(familyKey)
-									if (
-										familyNode === undefined ||
-										!(`familyMembers` in familyNode)
-									) {
-										familyNode = {
-											key: familyKey,
-											familyMembers: new Map(),
-										}
-										self.set(familyKey, familyNode)
+						setSelf((self) => {
+							if (atomToken.family) {
+								const { key: familyKey, subKey } = atomToken.family
+								let familyNode = self.get(familyKey)
+								if (
+									familyNode === undefined ||
+									!(`familyMembers` in familyNode)
+								) {
+									familyNode = {
+										key: familyKey,
+										familyMembers: new Map(),
 									}
-									familyNode.familyMembers.set(subKey, atomToken)
-								} else {
-									self.set(atomToken.key, atomToken)
+									self.set(familyKey, familyNode)
 								}
-								return self
-							})
-						},
-					)
-					const unsubscribeFromAtomDisposal = store.on.atomDisposal.subscribe(
-						`introspection`,
-						(atomToken) => {
-							setSelf((self) => {
-								if (atomToken.family) {
-									const { key: familyKey, subKey } = atomToken.family
-									const familyNode = self.get(familyKey)
-									if (familyNode && `familyMembers` in familyNode) {
-										familyNode.familyMembers.delete(subKey)
-										if (familyNode.familyMembers.size === 0) {
-											self.delete(familyKey)
-										}
+								familyNode.familyMembers.set(subKey, atomToken)
+							} else {
+								self.set(atomToken.key, atomToken)
+							}
+							return self
+						})
+					})
+					store.on.atomDisposal.subscribe(`introspection`, (atomToken) => {
+						setSelf((self) => {
+							if (atomToken.family) {
+								const { key: familyKey, subKey } = atomToken.family
+								const familyNode = self.get(familyKey)
+								if (familyNode && `familyMembers` in familyNode) {
+									familyNode.familyMembers.delete(subKey)
+									if (familyNode.familyMembers.size === 0) {
+										self.delete(familyKey)
 									}
-								} else {
-									self.delete(atomToken.key)
 								}
-								return self
-							})
-						},
-					)
-					return () => {
-						unsubscribeFromAtomCreation()
-						unsubscribeFromAtomDisposal()
-					}
+							} else {
+								self.delete(atomToken.key)
+							}
+							return self
+						})
+					})
 				},
 			],
 		},

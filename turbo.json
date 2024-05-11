@@ -32,6 +32,7 @@
 		},
 		"test:semver": {
 			"inputs": [
+				"../../.changeset/**",
 				"../break-check/src/**/*.ts",
 				"break-check.config.json",
 				"**/package.json",

@@ -12,8 +12,10 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			`❌`,
 			`atom`,
 			key,
-			`Tried to delete atom, but it does not exist in the store.`,
+			`Tried to dispose atom, but it does not exist in the store.`,
 		)
+	} else if (!atom.family) {
+		store.logger.error(`❌`, `atom`, key, `Standalone atoms cannot be disposed.`)
 	} else {
 		atom.cleanup?.()
 		target.atoms.delete(key)
