@@ -1,7 +1,8 @@
 import path from "node:path"
 
-import { findState, getState, runTransaction, setState } from "atom.io"
+import { getState, runTransaction, setState } from "atom.io"
 import { editRelations, findRelations, getInternalRelations } from "atom.io/data"
+import { findState } from "atom.io/ephemeral"
 import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"

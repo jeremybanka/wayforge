@@ -1,3 +1,4 @@
+import type { findState } from "atom.io/ephemeral"
 import type { Transceiver } from "atom.io/internal"
 import {
 	createAtomFamily,
@@ -16,7 +17,6 @@ import type { Json } from "atom.io/json"
 
 import type {
 	AtomToken,
-	findState,
 	getState,
 	MutableAtomFamily,
 	MutableAtomFamilyOptions,

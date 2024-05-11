@@ -1,17 +1,12 @@
 import * as crypto from "node:crypto"
 
-import {
-	atomFamily,
-	findState,
-	getState,
-	selectorFamily,
-	setState,
-} from "atom.io"
+import { atomFamily, getState, selectorFamily, setState } from "atom.io"
 import type { Loadable } from "atom.io/data"
+import { findState } from "atom.io/ephemeral"
 import OpenAI from "openai"
 import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
-import { set, z } from "zod"
+import { z } from "zod"
 
 import { Squirrel } from "../src"
 

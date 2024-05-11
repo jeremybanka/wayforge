@@ -1,11 +1,11 @@
-import {
-	findState,
-	type Func,
-	type ReadonlySelectorToken,
-	type RegularAtomToken,
-	type TransactionToken,
-	type TransactionUpdate,
+import type {
+	Func,
+	ReadonlySelectorToken,
+	RegularAtomToken,
+	TransactionToken,
+	TransactionUpdate,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
