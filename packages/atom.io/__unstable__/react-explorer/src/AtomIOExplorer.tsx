@@ -1,4 +1,5 @@
-import { findState, runTransaction, setState } from "atom.io"
+import { runTransaction, setState } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import { useI, useO } from "atom.io/react"
 import type { FC, ReactNode } from "react"
 import { useEffect } from "react"

@@ -3,7 +3,8 @@ import type {
 	RegularAtomToken,
 	TimelineToken,
 } from "atom.io"
-import { findState, redo, undo } from "atom.io"
+import { redo, undo } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import type { Timeline } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
 import { type FC, Fragment } from "react"

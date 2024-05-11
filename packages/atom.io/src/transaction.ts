@@ -1,3 +1,4 @@
+import type { findState } from "atom.io/ephemeral"
 import type { EnvironmentData } from "atom.io/internal"
 import {
 	actUponStore,
@@ -7,7 +8,6 @@ import {
 } from "atom.io/internal"
 
 import type {
-	findState,
 	Func,
 	KeyedStateUpdate,
 	ReadonlySelectorToken,

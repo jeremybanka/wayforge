@@ -1,14 +1,14 @@
-import type { Logger, RegularAtomOptions, RegularAtomToken } from "atom.io"
+import type { Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	disposeState,
-	findState,
 	getState,
 	selector,
 	selectorFamily,
 	setState,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

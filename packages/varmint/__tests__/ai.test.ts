@@ -1,10 +1,7 @@
-import { findState, getState, type Logger, setState } from "atom.io"
+import type { Logger } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { OpenAI } from "openai"
-import type * as OpenAICore from "openai/core"
-import type OpenAIResources from "openai/resources/index"
 
-import type { Agenda, Agent, AgentCompletion } from "./agents"
+import type { Agent, AgentCompletion } from "./agents"
 import { evaluateAgentResponse, Grunt } from "./agents"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

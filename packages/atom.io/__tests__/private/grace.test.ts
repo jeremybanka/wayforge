@@ -7,7 +7,6 @@ import type {
 import {
 	atom,
 	atomFamily,
-	findState,
 	getState,
 	redo,
 	selector,
@@ -15,6 +14,7 @@ import {
 	timeline,
 	undo,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 

@@ -1,5 +1,6 @@
-import { findState, getState, setState } from "atom.io"
+import { getState, setState } from "atom.io"
 import { struct, structFamily } from "atom.io/data"
+import { findState } from "atom.io/ephemeral"
 
 describe(`struct`, () => {
 	it(`breaks a flat object structure into separate atoms`, () => {

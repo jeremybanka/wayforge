@@ -1,8 +1,7 @@
-import { AsyncLocalStorage } from "node:async_hooks"
-
 import type { LoggerIcon, TokenDenomination } from "atom.io"
-import { AtomIOLogger, findState, setState } from "atom.io"
+import { AtomIOLogger, setState } from "atom.io"
 import { editRelations } from "atom.io/data"
+import { findState } from "atom.io/ephemeral"
 import * as RTS from "atom.io/realtime-server"
 
 import { IMPLICIT } from "../../../internal/src/store"
