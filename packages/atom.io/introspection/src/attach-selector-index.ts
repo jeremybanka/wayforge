@@ -44,61 +44,56 @@ export const attachSelectorIndex = (
 				},
 				effects: [
 					({ setSelf }) => {
-						const unsubscribeFromSelectorCreation =
-							store.on.selectorCreation.subscribe(
-								`introspection`,
-								(selectorToken) => {
-									if (selectorToken.key.includes(`👁‍🗨`)) {
-										return
-									}
+						store.on.selectorCreation.subscribe(
+							`introspection`,
+							(selectorToken) => {
+								if (selectorToken.key.includes(`👁‍🗨`)) {
+									return
+								}
 
-									setSelf((self) => {
-										if (selectorToken.family) {
-											const { key: familyKey, subKey } = selectorToken.family
-											let familyNode = self.get(familyKey)
-											if (
-												familyNode === undefined ||
-												!(`familyMembers` in familyNode)
-											) {
-												familyNode = {
-													key: familyKey,
-													familyMembers: new Map(),
-												}
-												self.set(familyKey, familyNode)
+								setSelf((self) => {
+									if (selectorToken.family) {
+										const { key: familyKey, subKey } = selectorToken.family
+										let familyNode = self.get(familyKey)
+										if (
+											familyNode === undefined ||
+											!(`familyMembers` in familyNode)
+										) {
+											familyNode = {
+												key: familyKey,
+												familyMembers: new Map(),
 											}
-											familyNode.familyMembers.set(subKey, selectorToken)
-										} else {
-											self.set(selectorToken.key, selectorToken)
+											self.set(familyKey, familyNode)
 										}
-										return self
-									})
-								},
-							)
-						const unsubscribeFromSelectorDisposal =
-							store.on.selectorDisposal.subscribe(
-								`introspection`,
-								(selectorToken) => {
-									setSelf((self) => {
-										if (selectorToken.family) {
-											const { key: familyKey, subKey } = selectorToken.family
-											const familyNode = self.get(familyKey)
-											if (familyNode && `familyMembers` in familyNode) {
-												familyNode.familyMembers.delete(subKey)
-												if (familyNode.familyMembers.size === 0) {
-													self.delete(familyKey)
-												}
+										familyNode.familyMembers.set(subKey, selectorToken)
+									} else {
+										self.set(selectorToken.key, selectorToken)
+									}
+									return self
+								})
+							},
+						)
+
+						store.on.selectorDisposal.subscribe(
+							`introspection`,
+							(selectorToken) => {
+								setSelf((self) => {
+									if (selectorToken.family) {
+										const { key: familyKey, subKey } = selectorToken.family
+										const familyNode = self.get(familyKey)
+										if (familyNode && `familyMembers` in familyNode) {
+											familyNode.familyMembers.delete(subKey)
+											if (familyNode.familyMembers.size === 0) {
+												self.delete(familyKey)
 											}
-										} else {
-											self.delete(selectorToken.key)
 										}
-										return self
-									})
-								},
-							)
-						return () => {
-							unsubscribeFromSelectorCreation()
-							unsubscribeFromSelectorDisposal()
-						}
+									} else {
+										self.delete(selectorToken.key)
+									}
+									return self
+								})
+							},
+						)
 					},
 				],
 			},
