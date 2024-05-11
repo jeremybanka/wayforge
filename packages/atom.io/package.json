@@ -122,6 +122,9 @@
 		"data/dist",
 		"data/package.json",
 		"data/src",
+		"ephemeral/dist",
+		"ephemeral/package.json",
+		"ephemeral/src",
 		"eslint-plugin/dist",
 		"eslint-plugin/package.json",
 		"eslint-plugin/src",
@@ -173,6 +176,13 @@
 			"browser": "./data/dist/index.js",
 			"import": "./data/dist/index.js",
 			"require": "./data/dist/index.cjs"
+		},
+		"./ephemeral/package.json": "./ephemeral/package.json",
+		"./ephemeral": {
+			"types": "./ephemeral/dist/index.d.ts",
+			"browser": "./ephemeral/dist/index.js",
+			"import": "./ephemeral/dist/index.js",
+			"require": "./ephemeral/dist/index.cjs"
 		},
 		"./eslint-plugin/package.json": "./eslint-plugin/package.json",
 		"./eslint-plugin": {
