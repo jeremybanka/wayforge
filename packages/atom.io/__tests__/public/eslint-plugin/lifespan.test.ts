@@ -9,6 +9,12 @@ const rule = Rules.lifespan
 ruleTester.run(`lifespan`, rule, {
 	valid: [
 		{
+			name: `import from some other package`,
+			code: `
+        import * as SomeOtherPackage from "some-other-package"
+      `,
+		},
+		{
 			name: `import from ephemeral with no option set`,
 			code: `
         import * as Ephemeral from "atom.io/ephemeral"

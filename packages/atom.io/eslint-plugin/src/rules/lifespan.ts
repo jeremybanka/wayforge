@@ -29,9 +29,6 @@ export const lifespan = {
 					return
 				}
 				const [_, subPackageName] = importSource.split(`/`)
-				if (!subPackageName) {
-					return
-				}
 				if (
 					(storeLifespan === `ephemeral` && subPackageName === `immortal`) ||
 					(storeLifespan === `immortal` && subPackageName === `ephemeral`)
