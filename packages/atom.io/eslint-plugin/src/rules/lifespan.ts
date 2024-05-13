@@ -79,6 +79,7 @@ export const lifespan = {
 															prop.value.type === `FunctionExpression` ||
 															prop.value.type === `ArrowFunctionExpression`
 														) {
+															console.log(prop.value)
 															storeProcedures.push(prop.value)
 														}
 													}
@@ -105,6 +106,11 @@ export const lifespan = {
 																		storeProcedures.push(statement.argument)
 																	}
 																}
+															} else if (
+																value.body.type === `FunctionExpression` ||
+																value.body.type === `ArrowFunctionExpression`
+															) {
+																storeProcedures.push(value.body)
 															}
 														}
 													}
@@ -145,8 +151,34 @@ export const lifespan = {
 						transactorsParam && `name` in transactorsParam
 							? transactorsParam.name
 							: undefined
-					walk(transactorsParam, (n, depth) => {
+					walk(storeProcedure.body, (n) => {
 						// console.log(`${`\t`.repeat(depth)}${n.type} ${n.name ?? ``}`)
+						if (n.type === `CallExpression`) {
+							let willReport = false
+							switch (n.callee.type) {
+								case `MemberExpression`:
+									if (
+										n.callee.object.type === `Identifier` &&
+										n.callee.object.name === nonDestructuredTransactorsName &&
+										n.callee.property.type === `Identifier` &&
+										n.callee.property.name === `find`
+									) {
+										willReport = true
+									}
+									break
+								case `Identifier`:
+									if (n.callee.name === `find`) {
+										willReport = true
+									}
+									break
+							}
+							if (willReport) {
+								context.report({
+									node: n,
+									message: `Using find in a transactor is not allowed in an immortal store.`,
+								})
+							}
+						}
 					})
 				}
 			},

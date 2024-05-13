@@ -63,5 +63,11 @@ export function walk(
 			walk(node.object, callback, depth)
 			walk(node.property, callback, depth)
 			break
+		case `CallExpression`:
+			walk(node.callee, callback, depth)
+			for (const argument of node.arguments) {
+				walk(argument, callback, depth)
+			}
+			break
 	}
 }
