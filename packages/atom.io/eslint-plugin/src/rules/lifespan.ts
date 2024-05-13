@@ -31,10 +31,7 @@ export const lifespan = {
 					return
 				}
 				const [_, subPackageName] = importSource.split(`/`)
-				if (
-					(storeLifespan === `ephemeral` && subPackageName === `immortal`) ||
-					(storeLifespan === `immortal` && subPackageName === `ephemeral`)
-				) {
+				if (storeLifespan === `immortal` && subPackageName === `ephemeral`) {
 					context.report({
 						node,
 						message: `do not import from "${importSource}" in an ${storeLifespan} store`,

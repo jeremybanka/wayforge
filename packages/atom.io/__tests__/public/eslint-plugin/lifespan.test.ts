@@ -34,18 +34,17 @@ ruleTester.run(`lifespan: don't import the wrong toolkit for your store`, rule, 
         import * as Immortal from "atom.io/immortal"
       `,
 		},
+		{
+			name: `import from immortal with ephemeral option set`,
+			options: [`ephemeral`],
+			code: `
+        import * as Immortal from "atom.io/immortal"
+      `,
+		},
 	],
 	invalid: [
 		{
 			name: `import from immortal with no option set`,
-			code: `
-        import * as Immortal from "atom.io/immortal"
-      `,
-			errors: 1,
-		},
-		{
-			name: `import from immortal with ephemeral option set`,
-			options: [`ephemeral`],
 			code: `
         import * as Immortal from "atom.io/immortal"
       `,
