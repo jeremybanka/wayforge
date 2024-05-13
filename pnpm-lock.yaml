@@ -1113,8 +1113,8 @@ importers:
         specifier: 8.2.2
         version: 8.2.2
       openai:
-        specifier: 4.46.0
-        version: 4.46.0
+        specifier: 4.46.1
+        version: 4.46.1
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -10647,8 +10647,8 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
-  /openai@4.46.0:
-    resolution: {integrity: sha512-l0Betzsx3WIjdagqQiH14hWmwYouUzUCcB1ENvKyfG5XOqh6YC2XT7OukzEBTnweutMC91pW2ToddWn8uyD4SA==}
+  /openai@4.46.1:
+    resolution: {integrity: sha512-YILOwSwyg6h4FqDCehzZ/vu0hI6eQWXv7BQ/nNNyRHbprerZmkiRYBzq2h4iiJKUOrIw66APE46ZW/iP8y8Fiw==}
     hasBin: true
     dependencies:
       '@types/node': 18.19.31
