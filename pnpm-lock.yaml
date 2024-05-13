@@ -161,8 +161,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       vite:
         specifier: 5.2.11
         version: 5.2.11(@types/node@20.12.11)
@@ -275,8 +275,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -777,8 +777,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -805,8 +805,8 @@ importers:
         version: 3.23.0(zod@3.23.8)
     devDependencies:
       '@types/bun':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       '@types/node':
         specifier: 20.12.11
         version: 20.12.11
@@ -5034,10 +5034,10 @@ packages:
       '@babel/types': 7.24.0
     dev: true
 
-  /@types/bun@1.1.1:
-    resolution: {integrity: sha512-lUe9rLMhgDCViciZtgDj5CMl2u7uTq/IP149kSZH/Si6FWkCioximABFf+baRQgbm8QlH4bzT0qJRteQFNqeGA==}
+  /@types/bun@1.1.2:
+    resolution: {integrity: sha512-pRBDD3EDqPf83qe95i3EpYu5G2J8bbb78a3736vnCm2K8YWtEE5cvJUq2jkKvJhW07YTfQtbImywIwRhWL8z3Q==}
     dependencies:
-      bun-types: 1.1.6
+      bun-types: 1.1.8
     dev: true
 
   /@types/cookie@0.4.1:
@@ -5147,12 +5147,6 @@ packages:
 
   /@types/node@18.19.31:
     resolution: {integrity: sha512-ArgCD39YpyyrtFKIqMDvjz79jto5fcI/SVUs2HwB+f0dAzq68yqOdyaSivLiLugSziTpNXLQrVb7RZFmdZzbhA==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
-
-  /@types/node@20.11.30:
-    resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -6298,10 +6292,10 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /bun-types@1.1.6:
-    resolution: {integrity: sha512-LK2aaJdBBTUkDyN+kRiJHLF3VGrAcdkEHrbBvbmTkccShPw6ZalxxKjWSBJwn4UkikhZdrdA87bZWmfUgkRUYg==}
+  /bun-types@1.1.8:
+    resolution: {integrity: sha512-dwhfuUKSGK8hm5Llcvb5+ejRh+4mIt8ibObJVKhZBsi0ScpXmt+AlaS1eDW6uRXCHj084Qt0kIqAJ08/7ZGC9Q==}
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.11
       '@types/ws': 8.5.10
     dev: true
 
