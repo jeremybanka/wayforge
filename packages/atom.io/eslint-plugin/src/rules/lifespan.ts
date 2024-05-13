@@ -1,6 +1,8 @@
 import type { Rule } from "eslint"
 import type * as ESTree from "estree"
 
+import { walk } from "../walk"
+
 export const lifespan = {
 	meta: {
 		type: `problem`,
@@ -39,6 +41,116 @@ export const lifespan = {
 					})
 				}
 			},
+			// don't allow use of the `find` transactor in selector get/set or transaction do
+			CallExpression(node) {
+				if (storeLifespan === `ephemeral`) {
+					return
+				}
+				const storeProcedures: (
+					| ESTree.ArrowFunctionExpression
+					| ESTree.FunctionExpression
+				)[] = []
+				if (`name` in node.callee) {
+					if (
+						node.callee.name === `selector` ||
+						node.callee.name === `selectorFamily` ||
+						node.callee.name === `transaction`
+					) {
+						if (node.arguments[0].type === `ObjectExpression`) {
+							const argProperties = node.arguments[0].properties
+							switch (node.callee.name) {
+								case `selector`:
+								case `selectorFamily`:
+									{
+										const getAndSetProps = argProperties.filter(
+											(prop): prop is ESTree.Property => {
+												return (
+													`key` in prop &&
+													`name` in prop.key &&
+													(prop.key.name === `get` || prop.key.name === `set`)
+												)
+											},
+										)
+										switch (node.callee.name) {
+											case `selector`:
+												{
+													for (const prop of getAndSetProps) {
+														if (
+															prop.value.type === `FunctionExpression` ||
+															prop.value.type === `ArrowFunctionExpression`
+														) {
+															storeProcedures.push(prop.value)
+														}
+													}
+												}
+												break
+											case `selectorFamily`:
+												{
+													for (const prop of getAndSetProps) {
+														const { value } = prop
+														if (
+															value.type === `FunctionExpression` ||
+															value.type === `ArrowFunctionExpression`
+														) {
+															if (value.body.type === `BlockStatement`) {
+																for (const statement of value.body.body) {
+																	if (
+																		statement.type === `ReturnStatement` &&
+																		statement.argument &&
+																		(statement.argument.type ===
+																			`FunctionExpression` ||
+																			statement.argument.type ===
+																				`ArrowFunctionExpression`)
+																	) {
+																		storeProcedures.push(statement.argument)
+																	}
+																}
+															}
+														}
+													}
+												}
+												break
+										}
+									}
+									break
+
+								case `transaction`:
+									{
+										const doProp = argProperties.find(
+											(prop): prop is ESTree.Property => {
+												return (
+													`key` in prop &&
+													`name` in prop.key &&
+													prop.key.name === `do`
+												)
+											},
+										)
+										if (doProp) {
+											if (
+												doProp.value.type === `FunctionExpression` ||
+												doProp.value.type === `ArrowFunctionExpression`
+											) {
+												storeProcedures.push(doProp.value)
+											}
+										}
+									}
+									break
+							}
+						}
+					}
+				}
+				for (const storeProcedure of storeProcedures) {
+					const transactorsParam = storeProcedure.params[0]
+					const nonDestructuredTransactorsName =
+						transactorsParam && `name` in transactorsParam
+							? transactorsParam.name
+							: undefined
+					walk(transactorsParam, (n, depth) => {
+						// console.log(`${`\t`.repeat(depth)}${n.type} ${n.name ?? ``}`)
+					})
+				}
+			},
+			// don't allow use of any function or method called `findState`
 		}
 	},
 } satisfies Rule.RuleModule
