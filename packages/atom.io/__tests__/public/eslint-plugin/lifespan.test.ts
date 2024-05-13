@@ -6,60 +6,63 @@ const ruleTester = new RuleTester({ languageOptions: { parser } })
 Object.assign(ruleTester, { describe, it })
 const rule = Rules.lifespan
 
-ruleTester.run(`lifespan: don't import the wrong toolkit for your store`, rule, {
-	valid: [
-		{
-			name: `import from some other package`,
-			code: `
+ruleTester.run(
+	`lifespan: don't import ephemeral tools for an immortal store`,
+	rule,
+	{
+		valid: [
+			{
+				name: `import from some other package`,
+				code: `
         import * as SomeOtherPackage from "some-other-package"
       `,
-		},
-		{
-			name: `import from ephemeral with no option set`,
-			code: `
+			},
+			{
+				name: `import from ephemeral with no option set`,
+				code: `
         import * as Ephemeral from "atom.io/ephemeral"
       `,
-		},
-		{
-			name: `import from ephemeral with ephemeral option set`,
-			options: [`ephemeral`],
-			code: `
+			},
+			{
+				name: `import from immortal with no option set`,
+				code: `
+        import * as Immortal from "atom.io/immortal"
+      `,
+			},
+			{
+				name: `import from ephemeral with ephemeral option set`,
+				options: [`ephemeral`],
+				code: `
         import * as Ephemeral from "atom.io/ephemeral"
       `,
-		},
-		{
-			name: `import from immortal with immortal option set`,
-			options: [`immortal`],
-			code: `
+			},
+			{
+				name: `import from immortal with immortal option set`,
+				options: [`immortal`],
+				code: `
         import * as Immortal from "atom.io/immortal"
       `,
-		},
-		{
-			name: `import from immortal with ephemeral option set`,
-			options: [`ephemeral`],
-			code: `
+			},
+			{
+				name: `import from immortal with ephemeral option set`,
+				options: [`ephemeral`],
+				code: `
         import * as Immortal from "atom.io/immortal"
       `,
-		},
-	],
-	invalid: [
-		{
-			name: `import from immortal with no option set`,
-			code: `
-        import * as Immortal from "atom.io/immortal"
-      `,
-			errors: 1,
-		},
-		{
-			name: `import from ephemeral with immortal option set`,
-			options: [`immortal`],
-			code: `
+			},
+		],
+		invalid: [
+			{
+				name: `import from ephemeral with immortal option set`,
+				options: [`immortal`],
+				code: `
         import * as Ephemeral from "atom.io/ephemeral"
       `,
-			errors: 1,
-		},
-	],
-})
+				errors: 1,
+			},
+		],
+	},
+)
 
 ruleTester.run(`lifespan: don't use the find transactor`, rule, {
 	valid: [
@@ -170,6 +173,49 @@ ruleTester.run(`lifespan: don't use the find transactor`, rule, {
 						set(countState, (c) => c + increment)
 					}
 				})
+			`,
+			errors: 1,
+		},
+	],
+})
+
+ruleTester.run(`lifespan: don't use findState in an immortal store`, rule, {
+	valid: [
+		{
+			name: `use findState global with no option set`,
+			code: `
+				const doubleState = findState(doubleSelectors, "my-key")
+			`,
+		},
+		{
+			name: `use findState global with ephemeral option set`,
+			options: [`ephemeral`],
+			code: `
+				const doubleState = findState(doubleSelectors, "my-key")
+			`,
+		},
+		{
+			name: `[edge case]: iife bails early`,
+			options: [`immortal`],
+			code: `
+					(() => {})()
+				`,
+		},
+	],
+	invalid: [
+		{
+			name: `use findState global with immortal option set`,
+			options: [`immortal`],
+			code: `
+				const doubleState = findState(doubleSelectors, "my-key")
+			`,
+			errors: 1,
+		},
+		{
+			name: `use findState Silo method with immortal option set`,
+			options: [`immortal`],
+			code: `
+				const doubleState = Silo("my-key").findState(doubleSelectors)
 			`,
 			errors: 1,
 		},

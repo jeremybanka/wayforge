@@ -38,110 +38,130 @@ export const lifespan = {
 					})
 				}
 			},
-			// don't allow use of the `find` transactor in selector get/set or transaction do
+
 			CallExpression(node) {
 				if (storeLifespan === `ephemeral`) {
 					return
 				}
+
+				const functionCallee =
+					node.callee.type === `Identifier` ? node.callee : undefined
+				const methodCallee =
+					node.callee.type === `MemberExpression` &&
+					node.callee.property.type === `Identifier`
+						? node.callee.property
+						: undefined
+				const callee = functionCallee ?? methodCallee
+
+				if (callee === undefined) {
+					return
+				}
+
+				if (callee.name === `findState`) {
+					context.report({
+						node,
+						message: `do not use findState in an ${storeLifespan} store`,
+					})
+				}
+
 				const storeProcedures: (
 					| ESTree.ArrowFunctionExpression
 					| ESTree.FunctionExpression
 				)[] = []
-				if (`name` in node.callee) {
-					if (
-						node.callee.name === `selector` ||
-						node.callee.name === `selectorFamily` ||
-						node.callee.name === `transaction`
-					) {
-						if (node.arguments[0].type === `ObjectExpression`) {
-							const argProperties = node.arguments[0].properties
-							switch (node.callee.name) {
-								case `selector`:
-								case `selectorFamily`:
-									{
-										const getAndSetProps = argProperties.filter(
-											(prop): prop is ESTree.Property => {
-												return (
-													`key` in prop &&
-													`name` in prop.key &&
-													(prop.key.name === `get` || prop.key.name === `set`)
-												)
-											},
-										)
-										switch (node.callee.name) {
-											case `selector`:
-												{
-													for (const prop of getAndSetProps) {
-														if (
-															prop.value.type === `FunctionExpression` ||
-															prop.value.type === `ArrowFunctionExpression`
-														) {
-															console.log(prop.value)
-															storeProcedures.push(prop.value)
-														}
+				if (
+					callee.name === `selector` ||
+					callee.name === `selectorFamily` ||
+					callee.name === `transaction`
+				) {
+					if (node.arguments[0].type === `ObjectExpression`) {
+						const argProperties = node.arguments[0].properties
+						switch (callee.name) {
+							case `selector`:
+							case `selectorFamily`:
+								{
+									const getAndSetProps = argProperties.filter(
+										(prop): prop is ESTree.Property => {
+											return (
+												`key` in prop &&
+												`name` in prop.key &&
+												(prop.key.name === `get` || prop.key.name === `set`)
+											)
+										},
+									)
+									switch (callee.name) {
+										case `selector`:
+											{
+												for (const prop of getAndSetProps) {
+													if (
+														prop.value.type === `FunctionExpression` ||
+														prop.value.type === `ArrowFunctionExpression`
+													) {
+														console.log(prop.value)
+														storeProcedures.push(prop.value)
 													}
 												}
-												break
-											case `selectorFamily`:
-												{
-													for (const prop of getAndSetProps) {
-														const { value } = prop
-														if (
-															value.type === `FunctionExpression` ||
-															value.type === `ArrowFunctionExpression`
-														) {
-															if (value.body.type === `BlockStatement`) {
-																for (const statement of value.body.body) {
-																	if (
-																		statement.type === `ReturnStatement` &&
-																		statement.argument &&
-																		(statement.argument.type ===
-																			`FunctionExpression` ||
-																			statement.argument.type ===
-																				`ArrowFunctionExpression`)
-																	) {
-																		storeProcedures.push(statement.argument)
-																	}
-																}
-															} else if (
-																value.body.type === `FunctionExpression` ||
-																value.body.type === `ArrowFunctionExpression`
-															) {
-																storeProcedures.push(value.body)
-															}
-														}
-													}
-												}
-												break
-										}
-									}
-									break
-
-								case `transaction`:
-									{
-										const doProp = argProperties.find(
-											(prop): prop is ESTree.Property => {
-												return (
-													`key` in prop &&
-													`name` in prop.key &&
-													prop.key.name === `do`
-												)
-											},
-										)
-										if (doProp) {
-											if (
-												doProp.value.type === `FunctionExpression` ||
-												doProp.value.type === `ArrowFunctionExpression`
-											) {
-												storeProcedures.push(doProp.value)
 											}
+											break
+										case `selectorFamily`:
+											{
+												for (const prop of getAndSetProps) {
+													const { value } = prop
+													if (
+														value.type === `FunctionExpression` ||
+														value.type === `ArrowFunctionExpression`
+													) {
+														if (value.body.type === `BlockStatement`) {
+															for (const statement of value.body.body) {
+																if (
+																	statement.type === `ReturnStatement` &&
+																	statement.argument &&
+																	(statement.argument.type ===
+																		`FunctionExpression` ||
+																		statement.argument.type ===
+																			`ArrowFunctionExpression`)
+																) {
+																	storeProcedures.push(statement.argument)
+																}
+															}
+														} else if (
+															value.body.type === `FunctionExpression` ||
+															value.body.type === `ArrowFunctionExpression`
+														) {
+															storeProcedures.push(value.body)
+														}
+													}
+												}
+											}
+											break
+									}
+								}
+								break
+
+							case `transaction`:
+								{
+									const doProp = argProperties.find(
+										(prop): prop is ESTree.Property => {
+											return (
+												`key` in prop &&
+												`name` in prop.key &&
+												prop.key.name === `do`
+											)
+										},
+									)
+									if (doProp) {
+										if (
+											doProp.value.type === `FunctionExpression` ||
+											doProp.value.type === `ArrowFunctionExpression`
+										) {
+											storeProcedures.push(doProp.value)
 										}
 									}
-									break
-							}
+								}
+								break
 						}
 					}
 				}
+
 				for (const storeProcedure of storeProcedures) {
 					const transactorsParam = storeProcedure.params[0]
 					const nonDestructuredTransactorsName =
@@ -179,7 +199,6 @@ export const lifespan = {
 					})
 				}
 			},
-			// don't allow use of any function or method called `findState`
 		}
 	},
 } satisfies Rule.RuleModule
