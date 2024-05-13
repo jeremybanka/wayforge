@@ -37,7 +37,7 @@
 		"test:coverage": "echo no test coverage yet"
 	},
 	"devDependencies": {
-		"@types/bun": "1.1.1",
+		"@types/bun": "1.1.2",
 		"@types/npmlog": "7.0.0",
 		"concurrently": "8.2.2",
 		"rimraf": "5.0.7",
