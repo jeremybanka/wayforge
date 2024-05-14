@@ -64,9 +64,7 @@ export function createMutableAtomFamily<
 			fromJson: options.fromJson,
 		} as const,
 	) satisfies MutableAtomFamily<T, J, K>
-
-	const target = newest(store)
-	target.families.set(options.key, atomFamily)
+	store.families.set(options.key, atomFamily)
 	selectJsonFamily(atomFamily, options, store)
 	new FamilyTracker(atomFamily, store)
 	return atomFamily
