@@ -6,7 +6,7 @@ import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
-import { withdrawOrCreate } from "../store"
+import { withdraw } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
@@ -16,7 +16,7 @@ export const registerSelector = (
 	get: (dependency) => {
 		const target = newest(store)
 
-		const dependencyState = withdrawOrCreate(dependency, store)
+		const dependencyState = withdraw(dependency, store)
 		const dependencyValue = readOrComputeValue(dependencyState, store)
 
 		store.logger.info(
@@ -41,7 +41,7 @@ export const registerSelector = (
 		return dependencyValue
 	},
 	set: (WritableToken, newValue) => {
-		const state = withdrawOrCreate(WritableToken, store)
+		const state = withdraw(WritableToken, store)
 		setAtomOrSelector(state, newValue, store)
 	},
 	find: ((token, key) => findInStore(token, key, store)) as typeof findState,

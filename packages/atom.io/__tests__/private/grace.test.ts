@@ -197,7 +197,7 @@ describe(`findState`, () => {
 		expect(() =>
 			findState(token, `whatever`),
 		).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom_family "does not exist" not found in store "IMPLICIT_STORE".]`,
+			`[Error: Atom Family "does not exist" not found in store "IMPLICIT_STORE".]`,
 		)
 	})
 })
