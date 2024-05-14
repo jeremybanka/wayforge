@@ -21,6 +21,7 @@ import type { Json } from "atom.io/json"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
+import { seekInStore } from "./seek-in-store"
 
 export function findInStore<
 	T extends Transceiver<any>,
@@ -85,6 +86,10 @@ export function findInStore(
 	if (family === undefined) {
 		throw new NotFoundError(token, store)
 	}
-	const state = family(key)
+	let state = seekInStore(family, key, store)
+	if (state) {
+		return state
+	}
+	state = family(key)
 	return state
 }

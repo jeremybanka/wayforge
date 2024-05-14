@@ -1,6 +1,6 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { createSelectorFamily, IMPLICIT } from "atom.io/internal"
+import { createSelectorFamily, findInStore, IMPLICIT } from "atom.io/internal"
 
 import type { Json, JsonInterface } from "."
 import { parseJson } from "."
@@ -39,12 +39,12 @@ export function selectJsonFamily<
 			key: `${family.key}:JSON`,
 			get:
 				(key) =>
-				({ get }) =>
-					transform.toJson(get(family(key))),
+				({ find, get }) =>
+					transform.toJson(get(find(family, key))),
 			set:
 				(key) =>
-				({ set }, newValue) => {
-					set(family(key), transform.fromJson(newValue))
+				({ find, set }, newValue) => {
+					set(find(family, key), transform.fromJson(newValue))
 				},
 		},
 		store,
@@ -53,7 +53,7 @@ export function selectJsonFamily<
 		`store=${store.config.name}::json-selector-family`,
 		(token) => {
 			if (token.family) {
-				jsonFamily(parseJson(token.family.subKey) as K)
+				findInStore(jsonFamily, parseJson(token.family.subKey) as K, store)
 			}
 		},
 	)

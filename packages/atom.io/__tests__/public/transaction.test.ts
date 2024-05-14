@@ -10,6 +10,7 @@ import {
 	subscribe,
 	transaction,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -87,7 +88,7 @@ describe(`transaction`, () => {
 		expect(getState(countState)).toEqual(1)
 	})
 	it(`creates an atom in a transaction`, () => {
-		const findPointState = atomFamily<{ x: number; y: number }, number>({
+		const pointStates = atomFamily<{ x: number; y: number }, number>({
 			key: `point`,
 			default: { x: 0, y: 0 },
 		})
@@ -95,9 +96,9 @@ describe(`transaction`, () => {
 			(key: number, x: number, y: number) => { x: number; y: number }
 		>({
 			key: `add_point`,
-			do: ({ set }, pointKey: number, x: number, y: number) => {
+			do: ({ find, set }, pointKey: number, x: number, y: number) => {
 				const point = { x, y }
-				set(findPointState(pointKey), point)
+				set(find(pointStates, pointKey), point)
 				return point
 			},
 		})
@@ -109,7 +110,7 @@ describe(`transaction`, () => {
 			key: `count`,
 			default: 0,
 		})
-		const findCountPlusSomeValueState = selectorFamily<number, number>({
+		const countPlusSomeValueStates = selectorFamily<number, number>({
 			key: `countPlusSomeValue`,
 			get:
 				(someValue) =>
@@ -123,20 +124,20 @@ describe(`transaction`, () => {
 		})
 		const addCountPlusSomeValue = transaction<(someValue: number) => void>({
 			key: `add_count_plus_some_value`,
-			do: ({ get, set }, someValue: number) => {
-				const countPlusSomeValue = get(findCountPlusSomeValueState(someValue))
-				set(findCountPlusSomeValueState(someValue), countPlusSomeValue + 1)
+			do: ({ find, get, set }, someValue: number) => {
+				const countPlusSomeValue = get(find(countPlusSomeValueStates, someValue))
+				set(find(countPlusSomeValueStates, someValue), countPlusSomeValue + 1)
 			},
 		})
 		runTransaction(addCountPlusSomeValue)(777)
-		expect(getState(findCountPlusSomeValueState(777))).toEqual(778)
+		expect(getState(findState(countPlusSomeValueStates, 777))).toEqual(778)
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
 		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()
 	})
 
 	it(`gets and sets state`, () => {
-		const findBeingState = atomFamily<$<Being>, string>({
+		const beingStates = atomFamily<$<Being>, string>({
 			key: `Being`,
 			default: {
 				name: ``,
@@ -145,7 +146,7 @@ describe(`transaction`, () => {
 				...DEFAULT_CORE_STATS,
 			},
 		})
-		const findItemState = atomFamily<$<Item>, string>({
+		const itemStates = atomFamily<$<Item>, string>({
 			key: `Item`,
 			default: {
 				name: ``,
@@ -158,7 +159,7 @@ describe(`transaction`, () => {
 			key: `GlobalInventory`,
 			default: new Join({ relationType: `1:n` }).from(`beingKey`).to(`itemKey`),
 		})
-		const findBeingInventoryState = selectorFamily<string[], string>({
+		const beingInventoryStates = selectorFamily<string[], string>({
 			key: `BeingInventory`,
 			get:
 				(beingKey) =>
@@ -170,8 +171,8 @@ describe(`transaction`, () => {
 		})
 		const stealTX = transaction<(thiefKey: string, victimKey: string) => void>({
 			key: `steal`,
-			do: ({ get, set }, thiefKey, victimKey) => {
-				const victimInventory = get(findBeingInventoryState(victimKey))
+			do: ({ find, get, set }, thiefKey, victimKey) => {
+				const victimInventory = get(find(beingInventoryStates, victimKey))
 				const itemKey = victimInventory[0]
 				if (itemKey === undefined) throw new Error(`No items to steal!`)
 				set(globalInventoryState, (current) => {
@@ -180,7 +181,7 @@ describe(`transaction`, () => {
 				})
 			},
 		})
-		const thiefState = findBeingState(`Thief`)
+		const thiefState = findState(beingStates, `Thief`)
 		setState(thiefState, {
 			name: `Tarvis Rink`,
 			species: `Ave`,
@@ -188,7 +189,7 @@ describe(`transaction`, () => {
 			...DEFAULT_CORE_STATS,
 			deft: 2,
 		})
-		const victimState = findBeingState(`Victim`)
+		const victimState = findState(beingStates, `Victim`)
 		setState(victimState, {
 			name: `Roader`,
 			species: `Cat`,
@@ -196,8 +197,8 @@ describe(`transaction`, () => {
 			...DEFAULT_CORE_STATS,
 			tough: 1,
 		})
-		const prizeState = findItemState(`Prize`)
-		setState(findItemState(`Prize`), {
+		const prizeState = findState(itemStates, `Prize`)
+		setState(findState(itemStates, `Prize`), {
 			name: `Chocolate Coin`,
 			desc: `A chocolate coin with a hole in the middle.`,
 			value: 1,
@@ -207,8 +208,8 @@ describe(`transaction`, () => {
 		setState(globalInventoryState, (current) =>
 			current.set({ beingKey: victimState.key, itemKey: prizeState.key }),
 		)
-		const thiefInvState = findBeingInventoryState(thiefState.key)
-		const victimInvState = findBeingInventoryState(victimState.key)
+		const thiefInvState = findState(beingInventoryStates, thiefState.key)
+		const victimInvState = findState(beingInventoryStates, victimState.key)
 		expect(getState(thiefInvState)).toEqual([])
 		expect(getState(victimInvState)).toEqual([prizeState.key])
 		const steal = runTransaction(stealTX)

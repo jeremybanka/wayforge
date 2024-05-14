@@ -20,12 +20,12 @@ beforeEach(() => {
 
 describe(`atom families`, () => {
 	it(`can be modified and retrieved`, () => {
-		const findCoordinateState = atomFamily<{ x: number; y: number }, string>({
+		const coordinateStates = atomFamily<{ x: number; y: number }, string>({
 			key: `coordinate`,
 			default: { x: 0, y: 0 },
 		})
-		setState(findCoordinateState(`a`), { x: 1, y: 1 })
-		expect(getState(findCoordinateState(`a`))).toEqual({ x: 1, y: 1 })
+		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
+		expect(getState(findState(coordinateStates, `a`))).toEqual({ x: 1, y: 1 })
 	})
 })
 

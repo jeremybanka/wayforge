@@ -125,15 +125,15 @@ describe(`graceful handling of improper usage`, () => {
 			expect(countTimeline1Data?.history).toHaveLength(0)
 		})
 		test(`if a family is tracked by a timeline, a member of that family cannot be tracked by another timeline`, () => {
-			const findCountState = atomFamily<number, string>({
+			const countStates = atomFamily<number, string>({
 				key: `counts`,
 				default: 0,
 			})
 			const countTimeline = timeline({
 				key: `counts_history`,
-				atoms: [findCountState],
+				atoms: [countStates],
 			})
-			const aCount = findCountState(`a`)
+			const aCount = findState(countStates, `a`)
 			const aCountTimeline = timeline({
 				key: `a_count_history`,
 				atoms: [aCount],

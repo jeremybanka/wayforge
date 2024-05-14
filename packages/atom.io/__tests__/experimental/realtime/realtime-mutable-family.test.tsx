@@ -35,10 +35,10 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 	(collectionKey: string) => void
 >({
 	key: `addToNumbersCollection`,
-	do: ({ get, set }, collectionKey) => {
+	do: ({ find, get, set }, collectionKey) => {
 		const store = get(storeState)
 		const collectionFamily = getFamily(findNumbersCollectionState, store)
-		set(collectionFamily(collectionKey), (ns) => {
+		set(find(collectionFamily, collectionKey), (ns) => {
 			ns.add(ns.size)
 			return ns
 		})
@@ -81,7 +81,7 @@ describe(`running transactions`, () => {
 				jane: () => {
 					const findNCState = useFamily(findNumbersCollectionState)
 					RTR.usePullMutableAtomFamilyMember(findNCState, `foo`)
-					const numbers = AR.useJSON(findNCState(`foo`))
+					const numbers = AR.useJSON(findNCState, `foo`)
 					return (
 						<>
 							{numbers.members.map((n) => (

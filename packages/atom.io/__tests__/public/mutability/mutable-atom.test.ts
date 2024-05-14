@@ -12,6 +12,7 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -196,7 +197,7 @@ describe(`mutable time traveling`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const myMutableState = myMutableStates(`example`)
+		const myMutableState = findState(myMutableStates, `example`)
 		const myTL = timeline({
 			key: `myTimeline`,
 			atoms: [myMutableStates],
@@ -292,7 +293,7 @@ describe(`mutable atom effects`, () => {
 				},
 			],
 		})
-		const myMutableState = myMutableAtoms(`myMutableState`)
+		const myMutableState = findState(myMutableAtoms, `myMutableState`)
 
 		setState(myMutableState, (prev) => prev.add(`a`))
 		expect(setSize).toBe(1)
@@ -324,7 +325,6 @@ describe(`mutable atom effects`, () => {
 
 		letterSubject.next({ letter: `B` })
 		expect(getState(myMutableState)).toEqual(new SetRTX([`A`, `B`]))
-		disposeState(myMutableState)
 	})
 })
 

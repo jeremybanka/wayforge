@@ -32,10 +32,7 @@ export function createMutableAtomFamily<
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
 			const target = newest(store)
-			const existing = target.atoms.get(fullKey)
-			if (existing) {
-				return deposit(existing) as MutableAtomToken<T, J>
-			}
+
 			const individualOptions: MutableAtomOptions<T, J> = {
 				key: fullKey,
 				default: () => options.default(key),
@@ -46,11 +43,8 @@ export function createMutableAtomFamily<
 			if (options.effects) {
 				individualOptions.effects = options.effects(key)
 			}
-			const token = createMutableAtom(individualOptions, family, target)
 
-			if (target.config.lifespan === `immortal`) {
-				throw new NotFoundError(token, target)
-			}
+			const token = createMutableAtom(individualOptions, family, target)
 
 			subject.next(token)
 			return token

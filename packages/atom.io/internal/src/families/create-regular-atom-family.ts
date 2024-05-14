@@ -26,10 +26,7 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
 			const target = newest(store)
-			const existing = target.atoms.get(fullKey)
-			if (existing) {
-				return deposit(existing) as RegularAtomToken<T>
-			}
+
 			const def = options.default
 			const individualOptions: RegularAtomOptions<T> = {
 				key: fullKey,
@@ -38,11 +35,8 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			if (options.effects) {
 				individualOptions.effects = options.effects(key)
 			}
-			const token = createRegularAtom(individualOptions, family, target)
 
-			if (target.config.lifespan === `immortal`) {
-				throw new NotFoundError(token, target)
-			}
+			const token = createRegularAtom(individualOptions, family, target)
 
 			subject.next(token)
 			return token

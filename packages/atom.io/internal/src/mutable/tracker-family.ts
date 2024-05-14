@@ -1,4 +1,5 @@
 import type { MutableAtomFamily, RegularAtomFamily } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
@@ -15,43 +16,43 @@ export class FamilyTracker<
 		? Signal
 		: never
 
-	public readonly findLatestUpdateState: RegularAtomFamily<
+	public readonly latestUpdateAtoms: RegularAtomFamily<
 		typeof this.Update | null,
 		FamilyMemberKey
 	>
-	public readonly findMutableState: MutableAtomFamily<Core, any, FamilyMemberKey>
+	public readonly mutableAtoms: MutableAtomFamily<Core, any, FamilyMemberKey>
 
 	public constructor(
-		findMutableState: MutableAtomFamily<Core, any, FamilyMemberKey>,
+		mutableAtoms: MutableAtomFamily<Core, any, FamilyMemberKey>,
 		store: Store,
 	) {
-		this.findLatestUpdateState = createRegularAtomFamily<
+		this.latestUpdateAtoms = createRegularAtomFamily<
 			typeof this.Update | null,
 			FamilyMemberKey
 		>(
 			{
-				key: `*${findMutableState.key}`,
+				key: `*${mutableAtoms.key}`,
 				default: null,
 			},
 			store,
 		)
-		this.findMutableState = findMutableState
-		this.findMutableState.subject.subscribe(
+		this.mutableAtoms = mutableAtoms
+		this.mutableAtoms.subject.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,
 			(atomToken) => {
 				if (atomToken.family) {
 					const key = parseJson(atomToken.family.subKey) as FamilyMemberKey
-					this.findLatestUpdateState(key)
+					findState(this.latestUpdateAtoms, key)
 					new Tracker<Core>(atomToken, store)
 				}
 			},
 		)
-		this.findLatestUpdateState.subject.subscribe(
+		this.latestUpdateAtoms.subject.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,
 			(atomToken) => {
 				if (atomToken.family) {
 					const key = parseJson(atomToken.family.subKey) as FamilyMemberKey
-					const mutableAtomToken = this.findMutableState(key)
+					const mutableAtomToken = findState(this.mutableAtoms, key)
 					new Tracker<Core>(mutableAtomToken, store)
 				}
 			},
