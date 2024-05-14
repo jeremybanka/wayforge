@@ -7,6 +7,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import { newest } from "../lineage"
 import { NotFoundError } from "../not-found-error"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
@@ -24,7 +25,8 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = store.selectors.get(fullKey)
+			const target = newest(store)
+			const existing = target.selectors.get(fullKey)
 			if (existing) {
 				return deposit(existing)
 			}
@@ -35,11 +37,11 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 					set: options.set(key),
 				},
 				family,
-				store,
+				target,
 			)
 
-			if (store.config.lifespan === `immortal`) {
-				throw new NotFoundError(token, store)
+			if (target.config.lifespan === `immortal`) {
+				throw new NotFoundError(token, target)
 			}
 
 			subject.next(token)

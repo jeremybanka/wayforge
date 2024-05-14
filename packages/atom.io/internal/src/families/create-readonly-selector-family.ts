@@ -22,10 +22,10 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 
 	const readonlySelectorFamily = Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
-			const target = newest(store)
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
+			const target = newest(store)
 			const existing = target.readonlySelectors.get(fullKey)
 			if (existing) {
 				return deposit(existing)
@@ -36,11 +36,11 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 					get: options.get(key),
 				},
 				family,
-				store,
+				target,
 			)
 
-			if (store.config.lifespan === `immortal`) {
-				throw new NotFoundError(token, store)
+			if (target.config.lifespan === `immortal`) {
+				throw new NotFoundError(token, target)
 			}
 
 			subject.next(token)

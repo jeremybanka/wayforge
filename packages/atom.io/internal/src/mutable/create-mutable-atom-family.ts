@@ -46,10 +46,10 @@ export function createMutableAtomFamily<
 			if (options.effects) {
 				individualOptions.effects = options.effects(key)
 			}
-			const token = createMutableAtom(individualOptions, family, store)
+			const token = createMutableAtom(individualOptions, family, target)
 
 			if (target.config.lifespan === `immortal`) {
-				throw new NotFoundError(token, store)
+				throw new NotFoundError(token, target)
 			}
 
 			subject.next(token)
