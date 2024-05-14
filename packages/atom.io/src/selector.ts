@@ -53,8 +53,11 @@ export type WritableSelectorFamilyTokenWithCall<
 	K extends Json.Serializable,
 > = 
 	& WritableSelectorFamilyToken<T, K>
-	& /** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
-((key: K) => WritableSelectorToken<T>)
+	& {
+		/** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
+		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
+		(key: K): WritableSelectorToken<T>
+	}
 // biome-ignore format: intersection
 export type WritableSelectorFamily<T, K extends Json.Serializable> = 
 	& WritableSelectorFamilyToken<T, K> 
@@ -76,8 +79,11 @@ export type ReadonlySelectorFamilyTokenWithCall<
 	K extends Json.Serializable,
 > = 
 	& ReadonlySelectorFamilyToken<T, K>
-	& /** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
-((key: K) => ReadonlySelectorToken<T>)
+	& {
+		/** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
+		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
+		(key: K): ReadonlySelectorToken<T>
+	}
 // biome-ignore format: intersection
 export type ReadonlySelectorFamily<T, K extends Json.Serializable> = 
 	& ((key: K) => ReadonlySelectorToken<T>)
