@@ -9,7 +9,7 @@ import { parseJson } from "atom.io/json"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 0
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
