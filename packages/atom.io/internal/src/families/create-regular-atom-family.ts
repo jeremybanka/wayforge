@@ -9,9 +9,8 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { createRegularAtom } from "../atom"
-import { newest } from "../lineage"
 import { NotFoundError } from "../not-found-error"
-import type { Store } from "../store"
+import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 
 export function createRegularAtomFamily<T, K extends Json.Serializable>(
@@ -19,37 +18,31 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 	store: Store,
 ): RegularAtomFamily<T, K> {
 	const subject = new Subject<RegularAtomToken<T>>()
+
 	const atomFamily: RegularAtomFamily<T, K> = Object.assign(
 		(key: K): RegularAtomToken<any> => {
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const target = newest(store)
-			const atomAlreadyCreated = target.atoms.has(fullKey)
-			const token: RegularAtomToken<any> = {
-				type: `atom`,
+			const existing = store.atoms.get(fullKey)
+			if (existing) {
+				return deposit(existing) as RegularAtomToken<T>
+			}
+			const def = options.default
+			const individualOptions: RegularAtomOptions<T> = {
 				key: fullKey,
-				family,
+				default: def instanceof Function ? def(key) : def,
 			}
-			if (!atomAlreadyCreated) {
-				if (target.config.lifespan === `immortal`) {
-					throw new NotFoundError(token, store)
-				}
-				const individualOptions: RegularAtomOptions<T> = {
-					key: fullKey,
-					default:
-						options.default instanceof Function
-							? options.default(key)
-							: options.default,
-				}
-				if (options.effects) {
-					individualOptions.effects = options.effects(key)
-				}
-
-				createRegularAtom(individualOptions, family, store)
-
-				subject.next(token)
+			if (options.effects) {
+				individualOptions.effects = options.effects(key)
 			}
+			const token = createRegularAtom(individualOptions, family, store)
+
+			if (store.config.lifespan === `immortal`) {
+				throw new NotFoundError(token, store)
+			}
+
+			subject.next(token)
 			return token
 		},
 		{
@@ -58,8 +51,7 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			subject,
 			install: (s: Store) => createRegularAtomFamily(options, s),
 		} as const,
-	)
-	const target = newest(store)
-	target.families.set(options.key, atomFamily)
+	) satisfies RegularAtomFamily<T, K>
+	store.families.set(options.key, atomFamily)
 	return atomFamily
 }

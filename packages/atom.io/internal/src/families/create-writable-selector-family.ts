@@ -7,6 +7,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import { NotFoundError } from "../not-found-error"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
 import { deposit } from "../store"
@@ -36,6 +37,11 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 				family,
 				store,
 			)
+
+			if (store.config.lifespan === `immortal`) {
+				throw new NotFoundError(token, store)
+			}
+
 			subject.next(token)
 			return token
 		},
@@ -45,7 +51,7 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 			subject,
 			install: (s: Store) => createWritableSelectorFamily(options, s),
 		} as const,
-	) as WritableSelectorFamily<T, K>
+	) satisfies WritableSelectorFamily<T, K>
 	store.families.set(options.key, selectorFamily)
 	return selectorFamily
 }
