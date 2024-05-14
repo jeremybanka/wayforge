@@ -41,6 +41,7 @@ export const JS_OPTIONS: Options = {
 		"data/dist/index": `data/src/index.ts`,
 		"ephemeral/dist/index": `ephemeral/src/index.ts`,
 		"eslint-plugin/dist/index": `eslint-plugin/src/index.ts`,
+		"immortal/dist/index": `immortal/src/index.ts`,
 		"internal/dist/index": `internal/src/index.ts`,
 		"introspection/dist/index": `introspection/src/index.ts`,
 		"json/dist/index": `json/src/index.ts`,
