@@ -10,6 +10,7 @@ import { selectJsonFamily, stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
+import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
@@ -31,10 +32,15 @@ export function createMutableAtomFamily<
 			const fullKey = `${options.key}(${subKey})`
 			const target = newest(store)
 			const atomAlreadyCreated = target.atoms.has(fullKey)
-			let token: MutableAtomToken<T, J>
-			if (atomAlreadyCreated) {
-				token = { type: `mutable_atom`, key: fullKey, family }
-			} else {
+			const token: MutableAtomToken<T, J> = {
+				type: `mutable_atom`,
+				key: fullKey,
+				family,
+			}
+			if (!atomAlreadyCreated) {
+				if (target.config.lifespan === `immortal`) {
+					throw new NotFoundError(token, store)
+				}
 				const individualOptions: MutableAtomOptions<T, J> = {
 					key: fullKey,
 					default: () => options.default(key),
@@ -46,7 +52,7 @@ export function createMutableAtomFamily<
 					individualOptions.effects = options.effects(key)
 				}
 
-				token = createMutableAtom(individualOptions, family, store)
+				createMutableAtom(individualOptions, family, store)
 
 				subject.next(token)
 			}

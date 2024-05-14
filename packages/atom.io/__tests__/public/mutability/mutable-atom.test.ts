@@ -46,7 +46,10 @@ describe(`mutable atomic state`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myJsonState = Internal.getJsonToken(
+			myMutableState,
+			Internal.IMPLICIT.STORE,
+		)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout0)
 		subscribe(myJsonState, Utils.stdout1)
@@ -95,7 +98,10 @@ describe(`mutable atomic state`, () => {
 		)
 
 		const myFlagsState = findFlagsStateByUserId(`my-user-id`)
-		const findFlagsByUserIdJSON = Internal.getJsonToken(myFlagsState)
+		const findFlagsByUserIdJSON = Internal.getJsonToken(
+			myFlagsState,
+			Internal.IMPLICIT.STORE,
+		)
 		const findFlagsByUserIdTracker = Internal.getUpdateToken(myFlagsState)
 
 		subscribe(myFlagsState, Utils.stdout0)
@@ -155,7 +161,10 @@ describe(`mutable atomic state`, () => {
 			},
 		})
 
-		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myJsonState = Internal.getJsonToken(
+			myMutableState,
+			Internal.IMPLICIT.STORE,
+		)
 		subscribe(myJsonState, Utils.stdout)
 
 		let caught: unknown
@@ -192,7 +201,10 @@ describe(`mutable time traveling`, () => {
 			key: `myTimeline`,
 			atoms: [myMutableStates],
 		})
-		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myJsonState = Internal.getJsonToken(
+			myMutableState,
+			Internal.IMPLICIT.STORE,
+		)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout0)
 		subscribe(myJsonState, Utils.stdout1)
@@ -231,7 +243,10 @@ describe(`mutable time traveling`, () => {
 			},
 		})
 
-		const myJsonState = Internal.getJsonToken(myMutableState)
+		const myJsonState = Internal.getJsonToken(
+			myMutableState,
+			Internal.IMPLICIT.STORE,
+		)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout0)
 		subscribe(myJsonState, Utils.stdout1)
