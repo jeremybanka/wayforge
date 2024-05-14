@@ -10,6 +10,7 @@ import { stringifyJson } from "atom.io/json"
 
 import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
+import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
@@ -25,11 +26,16 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 			const fullKey = `${options.key}(${subKey})`
 			const target = newest(store)
 			const atomAlreadyCreated = target.atoms.has(fullKey)
-			let token: RegularAtomToken<any>
-			if (atomAlreadyCreated) {
-				token = { type: `atom`, key: fullKey, family }
-			} else {
-				const individualOptions: RegularAtomOptions<any> = {
+			const token: RegularAtomToken<any> = {
+				type: `atom`,
+				key: fullKey,
+				family,
+			}
+			if (!atomAlreadyCreated) {
+				if (target.config.lifespan === `immortal`) {
+					throw new NotFoundError(token, store)
+				}
+				const individualOptions: RegularAtomOptions<T> = {
 					key: fullKey,
 					default:
 						options.default instanceof Function
@@ -39,7 +45,9 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 				if (options.effects) {
 					individualOptions.effects = options.effects(key)
 				}
-				token = createRegularAtom(individualOptions, family, store)
+
+				createRegularAtom(individualOptions, family, store)
+
 				subject.next(token)
 			}
 			return token
