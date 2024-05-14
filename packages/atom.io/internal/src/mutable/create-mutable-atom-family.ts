@@ -11,7 +11,7 @@ import { selectJsonFamily, stringifyJson } from "atom.io/json"
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
 import { NotFoundError } from "../not-found-error"
-import type { Store } from "../store"
+import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
 import type { Transceiver } from "./transceiver"
@@ -25,37 +25,34 @@ export function createMutableAtomFamily<
 	store: Store,
 ): MutableAtomFamily<T, J, K> {
 	const subject = new Subject<MutableAtomToken<T, J>>()
-	const atomFamily: MutableAtomFamily<T, J, K> = Object.assign(
+
+	const atomFamily = Object.assign(
 		(key: K): MutableAtomToken<T, J> => {
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
 			const target = newest(store)
-			const atomAlreadyCreated = target.atoms.has(fullKey)
-			const token: MutableAtomToken<T, J> = {
-				type: `mutable_atom`,
+			const existing = target.atoms.get(fullKey)
+			if (existing) {
+				return deposit(existing) as MutableAtomToken<T, J>
+			}
+			const individualOptions: MutableAtomOptions<T, J> = {
 				key: fullKey,
-				family,
+				default: () => options.default(key),
+				toJson: options.toJson,
+				fromJson: options.fromJson,
+				mutable: true,
 			}
-			if (!atomAlreadyCreated) {
-				if (target.config.lifespan === `immortal`) {
-					throw new NotFoundError(token, store)
-				}
-				const individualOptions: MutableAtomOptions<T, J> = {
-					key: fullKey,
-					default: () => options.default(key),
-					toJson: options.toJson,
-					fromJson: options.fromJson,
-					mutable: true,
-				}
-				if (options.effects) {
-					individualOptions.effects = options.effects(key)
-				}
-
-				createMutableAtom(individualOptions, family, store)
-
-				subject.next(token)
+			if (options.effects) {
+				individualOptions.effects = options.effects(key)
 			}
+			const token = createMutableAtom(individualOptions, family, store)
+
+			if (target.config.lifespan === `immortal`) {
+				throw new NotFoundError(token, store)
+			}
+
+			subject.next(token)
 			return token
 		},
 		{
@@ -66,7 +63,7 @@ export function createMutableAtomFamily<
 			toJson: options.toJson,
 			fromJson: options.fromJson,
 		} as const,
-	)
+	) satisfies MutableAtomFamily<T, J, K>
 
 	const target = newest(store)
 	target.families.set(options.key, atomFamily)
