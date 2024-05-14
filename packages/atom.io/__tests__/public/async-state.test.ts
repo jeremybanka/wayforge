@@ -157,7 +157,10 @@ describe(`async selector`, () => {
 	})
 	server.listen(PORT)
 	test(`selector as a caching mechanism for async data`, async () => {
-		const { atom, selector, getState, store } = new AtomIO.Silo(`math`)
+		const { atom, selector, getState, store } = new AtomIO.Silo({
+			name: `math`,
+			lifespan: `ephemeral`,
+		})
 		// AtomIO.setLogLevel(`info`, store)
 		const dividendState = atom<number>({
 			key: `dividend`,

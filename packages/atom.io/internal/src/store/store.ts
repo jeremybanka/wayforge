@@ -107,8 +107,10 @@ export class Store implements Lineage {
 
 	public config: {
 		name: string
+		lifespan: `ephemeral` | `immortal`
 	} = {
 		name: `IMPLICIT_STORE`,
+		lifespan: `ephemeral`,
 	}
 
 	public loggers: AtomIOLogger[] = [
@@ -126,7 +128,7 @@ export class Store implements Lineage {
 		},
 	}
 
-	public constructor(name: string, store: Store | null = null) {
+	public constructor(config: Store[`config`], store: Store | null = null) {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
@@ -141,7 +143,7 @@ export class Store implements Lineage {
 
 			this.config = {
 				...store?.config,
-				name,
+				...config,
 			}
 			for (const [, family] of store.families) {
 				family.install(this)
@@ -182,13 +184,17 @@ export const IMPLICIT = {
 	STORE_INTERNAL: undefined as Store | undefined,
 	get STORE(): Store {
 		return (
-			this.STORE_INTERNAL ?? (this.STORE_INTERNAL = new Store(`IMPLICIT_STORE`))
+			this.STORE_INTERNAL ??
+			(this.STORE_INTERNAL = new Store({
+				name: `IMPLICIT_STORE`,
+				lifespan: `ephemeral`,
+			}))
 		)
 	},
 }
 
 export const clearStore = (store: Store): void => {
 	const { config } = store
-	Object.assign(store, new Store(config.name))
+	Object.assign(store, new Store(config))
 	store.config = config
 }
