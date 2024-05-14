@@ -54,7 +54,7 @@ export type WritableSelectorFamilyTokenWithCall<
 > = 
 	& WritableSelectorFamilyToken<T, K>
 	& {
-		/** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
+		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
 		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
 		(key: K): WritableSelectorToken<T>
 	}
@@ -80,7 +80,7 @@ export type ReadonlySelectorFamilyTokenWithCall<
 > = 
 	& ReadonlySelectorFamilyToken<T, K>
 	& {
-		/** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
+		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
 		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
 		(key: K): ReadonlySelectorToken<T>
 	}
