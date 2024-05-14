@@ -8,6 +8,7 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
+import { NotFoundError } from "../not-found-error"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
 import { deposit } from "../store"
@@ -18,6 +19,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	store: Store,
 ): ReadonlySelectorFamily<T, K> {
 	const subject = new Subject<ReadonlySelectorToken<T>>()
+
 	const readonlySelectorFamily = Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
 			const target = newest(store)
@@ -28,7 +30,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 			if (existing) {
 				return deposit(existing)
 			}
-			return createReadonlySelector(
+			const token = createReadonlySelector(
 				{
 					key: fullKey,
 					get: options.get(key),
@@ -36,6 +38,13 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 				family,
 				store,
 			)
+
+			if (store.config.lifespan === `immortal`) {
+				throw new NotFoundError(token, store)
+			}
+
+			subject.next(token)
+			return token
 		},
 		{
 			key: options.key,
@@ -43,7 +52,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 			subject,
 			install: (s: Store) => createReadonlySelectorFamily(options, s),
 		} as const,
-	) as ReadonlySelectorFamily<T, K>
+	) satisfies ReadonlySelectorFamily<T, K>
 	store.families.set(options.key, readonlySelectorFamily)
 	return readonlySelectorFamily
 }
