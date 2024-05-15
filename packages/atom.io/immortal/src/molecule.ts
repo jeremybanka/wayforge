@@ -16,6 +16,8 @@ import type { Store, Transceiver } from "atom.io/internal"
 import { findInStore, IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
+import { initFamilyMember } from "../../internal/src/families/init-family-member"
+
 export class Molecule {
 	public readonly children: Molecule[] = []
 	public readonly tokens: ReadableToken<any>[] = []
@@ -54,7 +56,7 @@ export class Molecule {
 		token: ReadableFamilyToken<any, any>,
 		key: Json.Serializable,
 	): ReadableToken<any> {
-		const state = findInStore(token, key, IMPLICIT.STORE)
+		const state = initFamilyMember(token, key, this.store)
 		this.tokens.push(state)
 		return state
 	}
