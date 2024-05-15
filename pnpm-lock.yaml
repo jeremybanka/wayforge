@@ -369,8 +369,8 @@ importers:
         specifier: 1.6.5
         version: 1.6.5
       '@floating-ui/react':
-        specifier: 0.26.14
-        version: 0.26.14(react-dom@18.3.1)(react@18.3.1)
+        specifier: 0.26.15
+        version: 0.26.15(react-dom@18.3.1)(react@18.3.1)
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1)(react@18.3.1)
@@ -467,8 +467,8 @@ importers:
         specifier: 1.6.5
         version: 1.6.5
       '@floating-ui/react':
-        specifier: 0.26.14
-        version: 0.26.14(react-dom@18.3.1)(react@18.3.1)
+        specifier: 0.26.15
+        version: 0.26.15(react-dom@18.3.1)(react@18.3.1)
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1)(react@18.3.1)
@@ -546,8 +546,8 @@ importers:
         specifier: 1.6.5
         version: 1.6.5
       '@floating-ui/react':
-        specifier: 0.26.14
-        version: 0.26.14(@preact/compat@17.1.2)(@preact/compat@17.1.2)
+        specifier: 0.26.15
+        version: 0.26.15(@preact/compat@17.1.2)(@preact/compat@17.1.2)
       '@t3-oss/env-core':
         specifier: 0.10.1
         version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
@@ -829,8 +829,8 @@ importers:
   packages/hamr:
     dependencies:
       '@floating-ui/react':
-        specifier: 0.26.14
-        version: 0.26.14(react-dom@18.3.1)(react@18.3.1)
+        specifier: 0.26.15
+        version: 0.26.15(react-dom@18.3.1)(react@18.3.1)
       '@floating-ui/react-dom':
         specifier: 2.0.9
         version: 2.0.9(react-dom@18.3.1)(react@18.3.1)
@@ -3957,8 +3957,8 @@ packages:
       tabbable: 6.2.0
     dev: false
 
-  /@floating-ui/react@0.26.14(@preact/compat@17.1.2)(@preact/compat@17.1.2):
-    resolution: {integrity: sha512-I2EhfezC+H0WfkMEkCcF9+++PU1Wq08bDKhHHGIoBZVCciiftEQHgrSI4dTUTsa7446SiIVW0gWATliIlVNgfg==}
+  /@floating-ui/react@0.26.15(@preact/compat@17.1.2)(@preact/compat@17.1.2):
+    resolution: {integrity: sha512-WKmfLkxTwCm09Dxq4LpjL3EPbZVSp5wvnap1jmculsfnzg2Ag/pCkP+OPyjE5dFMXqX97hsLIqJehboZ5XAHXw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -3970,8 +3970,8 @@ packages:
       tabbable: 6.2.0
     dev: false
 
-  /@floating-ui/react@0.26.14(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-I2EhfezC+H0WfkMEkCcF9+++PU1Wq08bDKhHHGIoBZVCciiftEQHgrSI4dTUTsa7446SiIVW0gWATliIlVNgfg==}
+  /@floating-ui/react@0.26.15(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-WKmfLkxTwCm09Dxq4LpjL3EPbZVSp5wvnap1jmculsfnzg2Ag/pCkP+OPyjE5dFMXqX97hsLIqJehboZ5XAHXw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
