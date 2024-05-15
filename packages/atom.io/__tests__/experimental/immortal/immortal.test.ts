@@ -1,0 +1,107 @@
+import type { Logger } from "atom.io"
+import { atomFamily, getState, setState } from "atom.io"
+import { findState } from "atom.io/ephemeral"
+import { seekState } from "atom.io/immortal"
+import * as Internal from "atom.io/internal"
+
+import { Molecule } from "~/packages/atom.io/immortal/src/molecule"
+
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 2
+
+let logger: Logger
+
+beforeEach(() => {
+	Internal.clearStore(Internal.IMPLICIT.STORE)
+	Internal.IMPLICIT.STORE.config.lifespan = `immortal`
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = Internal.IMPLICIT.STORE.logger
+	vitest.spyOn(logger, `error`)
+	vitest.spyOn(logger, `warn`)
+	vitest.spyOn(logger, `info`)
+})
+
+describe(`immortal mode`, () => {
+	test(`implicit initialization with findState is illegal in immortal mode`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		expect(() =>
+			findState(countStates, `count`),
+		).toThrowErrorMatchingInlineSnapshot(
+			// eslint-disable-next-line quotes
+			"[Error: Do not use `find` or `findState` in an immortal store. Prefer `seek` or `seekState`.]",
+		)
+	})
+	test(`safe initialization of state with Molecule`, () => {
+		const world = new Molecule()
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const countState = world.bond(countStates, `my-key`)
+		expect(getState(countState)).toBe(0)
+		setState(countState, 1)
+		expect(getState(countState)).toBe(1)
+		world.dispose()
+		expect(() => getState(countState)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Atom "count("my-key")" not found in store "IMPLICIT_STORE".]`,
+		)
+	})
+	test(`safe retrieval of state with seekState`, () => {
+		const world = new Molecule()
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		world.bond(countStates, `my-key`)
+		let countState = seekState(countStates, `my-key`)
+		expect(countState).toStrictEqual({
+			key: `count("my-key")`,
+			type: `atom`,
+			family: {
+				key: `count`,
+				subKey: `"my-key"`,
+			},
+		})
+		world.dispose()
+		countState = seekState(countStates, `my-key`)
+		expect(countState).toBeUndefined()
+	})
+	test(`hierarchical ownership of molecules`, () => {
+		const world = new Molecule()
+		const expStates = atomFamily<number, string>({
+			key: `exp`,
+			default: 0,
+		})
+		const myCharacter = world.spawn()
+		const expState = myCharacter.bond(expStates, `my-char`)
+		expect(getState(expState)).toBe(0)
+		setState(expState, 1)
+		expect(getState(expState)).toBe(1)
+		world.dispose()
+		expect(() => getState(expState)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Atom "exp("my-char")" not found in store "IMPLICIT_STORE".]`,
+		)
+	})
+	test(`transfer of ownership of molecules`, () => {
+		const world = new Molecule()
+		const dmgStates = atomFamily<number, string>({
+			key: `dmg`,
+			default: 0,
+		})
+		const character0 = world.spawn()
+		const character1 = world.spawn()
+		const weaponA = character0.spawn()
+		const dmgState = weaponA.bond(dmgStates, `weapon-a`)
+		character1.claim(weaponA)
+		character0.dispose()
+		expect(getState(dmgState)).toBe(0)
+	})
+	test(`won't make a molecule a child of itself`, () => {
+		const world = new Molecule()
+		world.claim(world)
+		expect(world.children.length).toBe(0)
+	})
+})

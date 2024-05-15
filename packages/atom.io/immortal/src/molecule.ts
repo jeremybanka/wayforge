@@ -1,19 +1,20 @@
-import type {
-	MutableAtomFamilyToken,
-	MutableAtomToken,
-	ReadableFamilyToken,
-	ReadableToken,
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
-	RegularAtomFamilyToken,
-	RegularAtomToken,
-	WritableFamilyToken,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
-	WritableToken,
+import {
+	disposeState,
+	type MutableAtomFamilyToken,
+	type MutableAtomToken,
+	type ReadableFamilyToken,
+	type ReadableToken,
+	type ReadonlySelectorFamilyToken,
+	type ReadonlySelectorToken,
+	type RegularAtomFamilyToken,
+	type RegularAtomToken,
+	type WritableFamilyToken,
+	type WritableSelectorFamilyToken,
+	type WritableSelectorToken,
+	type WritableToken,
 } from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { findInStore, IMPLICIT } from "atom.io/internal"
+import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import { initFamilyMember } from "../../internal/src/families/init-family-member"
@@ -22,7 +23,7 @@ export class Molecule {
 	public readonly children: Molecule[] = []
 	public readonly tokens: ReadableToken<any>[] = []
 	public constructor(
-		public readonly parent: Molecule,
+		public readonly parent: Molecule | null = null,
 		public readonly store: Store = IMPLICIT.STORE,
 	) {}
 
@@ -67,12 +68,37 @@ export class Molecule {
 		return child
 	}
 
-	private [Symbol.dispose](): void {
+	public detach(child: Molecule): void {
+		const index = this.children.indexOf(child)
+		if (index !== undefined) {
+			this.children.splice(index, 1)
+		}
+	}
+
+	public claim(child: Molecule): void {
+		if (child === this) {
+			return
+		}
+		child.parent?.detach(child)
+		this.children.push(child)
+	}
+
+	public clear(): void {
 		while (this.children.length > 0) {
-			this.children.pop()?.[Symbol.dispose]()
+			this.children.pop()?.dispose()
 		}
 		while (this.tokens.length > 0) {
-			this.tokens.pop()?.[Symbol.dispose]()
+			const token = this.tokens.pop()
+			if (token) {
+				disposeState(token, this.store)
+			}
+		}
+	}
+
+	private [Symbol.dispose](): void {
+		this.clear()
+		if (this.parent) {
+			this.parent.detach(this)
 		}
 	}
 	public dispose = this[Symbol.dispose]
