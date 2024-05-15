@@ -18,9 +18,10 @@ import type {
 } from "atom.io"
 import { type Json, stringifyJson } from "atom.io/json"
 
+import type { ReadableState } from ".."
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
-import type { Store } from "../store"
+import { deposit, type Store } from "../store"
 
 export function seekInStore<
 	T extends Transceiver<any>,
@@ -83,7 +84,7 @@ export function seekInStore(
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const target = newest(store)
-	let state: ReadableToken<any> | undefined
+	let state: ReadableState<any> | undefined
 	switch (token.type) {
 		case `atom_family`:
 		case `mutable_atom_family`:
@@ -97,6 +98,9 @@ export function seekInStore(
 		case `readonly_selector_family`:
 			state = target.readonlySelectors.get(fullKey)
 			break
+	}
+	if (state) {
+		return deposit(state)
 	}
 	return state
 }
