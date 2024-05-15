@@ -1,77 +1,77 @@
-import {
-	disposeState,
-	type MutableAtomFamilyToken,
-	type MutableAtomToken,
-	type ReadableFamilyToken,
-	type ReadableToken,
-	type ReadonlySelectorFamilyToken,
-	type ReadonlySelectorToken,
-	type RegularAtomFamilyToken,
-	type RegularAtomToken,
-	type WritableFamilyToken,
-	type WritableSelectorFamilyToken,
-	type WritableSelectorToken,
-	type WritableToken,
+import type {
+	MutableAtomFamilyToken,
+	MutableAtomToken,
+	ReadableFamilyToken,
+	ReadableToken,
+	ReadonlySelectorFamilyToken,
+	ReadonlySelectorToken,
+	RegularAtomFamilyToken,
+	RegularAtomToken,
+	WritableFamilyToken,
+	WritableSelectorFamilyToken,
+	WritableSelectorToken,
+	WritableToken,
 } from "atom.io"
+import { disposeState } from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
 import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import { initFamilyMember } from "../../internal/src/families/init-family-member"
 
+export function compositeKey(...keys: string[]): string {
+	return keys.sort().join(`:`)
+}
+
 export class Molecule {
-	public readonly children: Molecule[] = []
+	public readonly below: Molecule[] = []
 	public readonly tokens: ReadableToken<any>[] = []
 	public constructor(
-		public readonly parent: Molecule | null = null,
+		public readonly key: string,
+		public readonly above: Molecule[] = [],
 		public readonly store: Store = IMPLICIT.STORE,
-	) {}
+	) {
+		for (const parent of above) {
+			parent.below.push(this)
+		}
+	}
 
 	public bond<
 		T extends Transceiver<any>,
 		J extends Json.Serializable,
-		K extends Json.Serializable,
-		Key extends K,
-	>(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
-	public bond<T, K extends Json.Serializable, Key extends K>(
+		K extends string,
+	>(token: MutableAtomFamilyToken<T, J, K>): MutableAtomToken<T, J>
+	public bond<T, K extends string>(
 		token: RegularAtomFamilyToken<T, K>,
-		key: Key,
 	): RegularAtomToken<T>
-	public bond<T, K extends Json.Serializable, Key extends K>(
+	public bond<T, K extends string>(
 		token: WritableSelectorFamilyToken<T, K>,
-		key: Key,
 	): WritableSelectorToken<T>
-	public bond<T, K extends Json.Serializable, Key extends K>(
+	public bond<T, K extends string>(
 		token: ReadonlySelectorFamilyToken<T, K>,
-		key: Key,
 	): ReadonlySelectorToken<T>
-	public bond<T, K extends Json.Serializable, Key extends K>(
+	public bond<T, K extends string>(
 		token: WritableFamilyToken<T, K>,
-		key: Key,
 	): WritableToken<T>
-	public bond<T, K extends Json.Serializable, Key extends K>(
+	public bond<T, K extends string>(
 		token: ReadableFamilyToken<T, K>,
-		key: Key,
 	): ReadableToken<T>
-	public bond(
-		token: ReadableFamilyToken<any, any>,
-		key: Json.Serializable,
-	): ReadableToken<any> {
-		const state = initFamilyMember(token, key, this.store)
+	public bond(token: ReadableFamilyToken<any, any>): ReadableToken<any> {
+		const state = initFamilyMember(token, this.key, this.store)
 		this.tokens.push(state)
 		return state
 	}
 
-	public spawn(): Molecule {
-		const child = new Molecule(this)
-		this.children.push(child)
+	public spawn(key: string): Molecule {
+		const child = new Molecule(key, [this])
+		this.below.push(child)
 		return child
 	}
 
 	public detach(child: Molecule): void {
-		const index = this.children.indexOf(child)
+		const index = this.below.indexOf(child)
 		if (index !== undefined) {
-			this.children.splice(index, 1)
+			this.below.splice(index, 1)
 		}
 	}
 
@@ -79,13 +79,15 @@ export class Molecule {
 		if (child === this) {
 			return
 		}
-		child.parent?.detach(child)
-		this.children.push(child)
+		for (const parent of child.above) {
+			parent.detach(child)
+		}
+		this.below.push(child)
 	}
 
 	public clear(): void {
-		while (this.children.length > 0) {
-			this.children.pop()?.dispose()
+		while (this.below.length > 0) {
+			this.below.pop()?.dispose()
 		}
 		while (this.tokens.length > 0) {
 			const token = this.tokens.pop()
@@ -97,8 +99,8 @@ export class Molecule {
 
 	private [Symbol.dispose](): void {
 		this.clear()
-		if (this.parent) {
-			this.parent.detach(this)
+		for (const parent of this.above) {
+			parent.detach(this)
 		}
 	}
 	public dispose = this[Symbol.dispose]

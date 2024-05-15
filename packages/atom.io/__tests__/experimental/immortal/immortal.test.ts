@@ -36,74 +36,74 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`safe initialization of state with Molecule`, () => {
-		const world = new Molecule()
+		const world = new Molecule(`world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const countState = world.bond(countStates, `my-key`)
+		const countState = world.bond(countStates)
 		expect(getState(countState)).toBe(0)
 		setState(countState, 1)
 		expect(getState(countState)).toBe(1)
 		world.dispose()
 		expect(() => getState(countState)).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom "count("my-key")" not found in store "IMPLICIT_STORE".]`,
+			`[Error: Atom "count("world")" not found in store "IMPLICIT_STORE".]`,
 		)
 	})
 	test(`safe retrieval of state with seekState`, () => {
-		const world = new Molecule()
+		const world = new Molecule(`world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		world.bond(countStates, `my-key`)
-		let countState = seekState(countStates, `my-key`)
+		world.bond(countStates)
+		let countState = seekState(countStates, `world`)
 		expect(countState).toStrictEqual({
-			key: `count("my-key")`,
+			key: `count("world")`,
 			type: `atom`,
 			family: {
 				key: `count`,
-				subKey: `"my-key"`,
+				subKey: `"world"`,
 			},
 		})
 		world.dispose()
-		countState = seekState(countStates, `my-key`)
+		countState = seekState(countStates, `world`)
 		expect(countState).toBeUndefined()
 	})
 	test(`hierarchical ownership of molecules`, () => {
-		const world = new Molecule()
+		const world = new Molecule(`world`)
 		const expStates = atomFamily<number, string>({
 			key: `exp`,
 			default: 0,
 		})
-		const myCharacter = world.spawn()
-		const expState = myCharacter.bond(expStates, `my-char`)
+		const myCharacter = world.spawn(`my-character`)
+		const expState = myCharacter.bond(expStates)
 		expect(getState(expState)).toBe(0)
 		setState(expState, 1)
 		expect(getState(expState)).toBe(1)
 		world.dispose()
 		expect(() => getState(expState)).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom "exp("my-char")" not found in store "IMPLICIT_STORE".]`,
+			`[Error: Atom "exp("my-character")" not found in store "IMPLICIT_STORE".]`,
 		)
 	})
 	test(`transfer of ownership of molecules`, () => {
-		const world = new Molecule()
+		const world = new Molecule(`world`)
 		const dmgStates = atomFamily<number, string>({
 			key: `dmg`,
 			default: 0,
 		})
-		const character0 = world.spawn()
-		const character1 = world.spawn()
-		const weaponA = character0.spawn()
-		const dmgState = weaponA.bond(dmgStates, `weapon-a`)
+		const character0 = world.spawn(`character-0`)
+		const character1 = world.spawn(`character-1`)
+		const weaponA = character0.spawn(`weapon-a`)
+		const dmgState = weaponA.bond(dmgStates)
 		character1.claim(weaponA)
 		character0.dispose()
 		expect(getState(dmgState)).toBe(0)
 	})
 	test(`won't make a molecule a child of itself`, () => {
-		const world = new Molecule()
+		const world = new Molecule(`world`)
 		world.claim(world)
-		expect(world.children.length).toBe(0)
+		expect(world.below.length).toBe(0)
 	})
 })
 

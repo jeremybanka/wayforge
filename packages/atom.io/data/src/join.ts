@@ -3,6 +3,8 @@ import type {
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	Read,
+	ReadableFamilyToken,
+	ReadableToken,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
 	RegularAtomFamily,
@@ -11,7 +13,7 @@ import type {
 } from "atom.io"
 import { disposeState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
+import type { Molecule, seekState } from "atom.io/immortal"
 import type { Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,
@@ -131,6 +133,8 @@ export class Join<
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
 	private transactors: Transactors
+	private retrieve: typeof findState
+	public molecules: Map<string, Molecule> = new Map()
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
 	public core: {
@@ -179,6 +183,17 @@ export class Join<
 			},
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
+		}
+		this.retrieve = (token: ReadableFamilyToken<any, any>, key: string) => {
+			const maybeToken = this.transactors.seek(token, key)
+			if (maybeToken) {
+				return maybeToken
+			}
+			const molecule = this.molecules.get(key)
+			if (!molecule) {
+				throw new Error(`No molecule found for key "${key}"`)
+			}
+			return molecule.bond(token) as any
 		}
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
