@@ -20,7 +20,7 @@
 		"@floating-ui/react": "0.26.15",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.5",
-		"framer-motion": "11.2.0",
+		"framer-motion": "11.2.2",
 		"hamr": "workspace:*",
 		"io-ts": "2.2.21",
 		"react": "18.3.1",
