@@ -1,7 +1,8 @@
 import type { Transactors } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 
-import { findInStore } from "../families"
+import { findInStore, seekInStore } from "../families"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { setAtomOrSelector } from "../set-state"
@@ -45,4 +46,5 @@ export const registerSelector = (
 		setAtomOrSelector(state, newValue, store)
 	},
 	find: ((token, key) => findInStore(token, key, store)) as typeof findState,
+	seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
 })

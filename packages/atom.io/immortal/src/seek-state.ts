@@ -13,10 +13,8 @@ import type {
 	WritableToken,
 } from "atom.io"
 import type { Transceiver } from "atom.io/internal"
-import { IMPLICIT } from "atom.io/internal"
+import { IMPLICIT, seekInStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-
-import { seekInStore } from "../../internal/src/families/seek-in-store"
 
 export function seekState<
 	T extends Transceiver<any>,

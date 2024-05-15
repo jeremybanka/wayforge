@@ -11,6 +11,7 @@ import type {
 } from "atom.io"
 import { disposeState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 import type { Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,
@@ -22,6 +23,7 @@ import {
 	IMPLICIT,
 	isChildStore,
 	newest,
+	seekInStore,
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -176,6 +178,7 @@ export class Join<
 				setIntoStore(token, value, store)
 			},
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
+			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
 		}
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
