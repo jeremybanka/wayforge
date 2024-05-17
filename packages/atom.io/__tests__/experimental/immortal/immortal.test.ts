@@ -1,6 +1,6 @@
 import type { Logger } from "atom.io"
 import { atomFamily, getState, setState } from "atom.io"
-import { editRelations, join } from "atom.io/data"
+import { editRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
@@ -109,11 +109,14 @@ describe(`immortal mode`, () => {
 
 describe(`immortal integrations`, () => {
 	test(`join`, () => {
-		const holdersOfItems = join({
-			key: `holdersOfItems`,
-			between: [`holder`, `item`],
-			cardinality: `1:n`,
-		})
+		const holdersOfItems = join(
+			{
+				key: `holdersOfItems`,
+				between: [`holder`, `item`],
+				cardinality: `1:n`,
+			},
+			{ hi: 0 } satisfies { hi: number },
+		)
 
 		const world = new Molecule(`world`)
 		const holder = world.spawn(`character-0`)
@@ -122,7 +125,15 @@ describe(`immortal integrations`, () => {
 		item.join(holdersOfItems)
 
 		editRelations(holdersOfItems, (relations) => {
-			relations.set({ holder: `character-0`, item: `item-0` })
+			relations.set({ holder: `character-0`, item: `item-0` }, { hi: 1 })
 		})
+
+		editRelations(holdersOfItems, (relations) => {
+			relations.delete(`item-0`)
+		})
+
+		const internalJoin = getJoin(holdersOfItems, world.store)
+
+		expect(internalJoin.molecules.size).toBe(0)
 	})
 })

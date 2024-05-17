@@ -62,13 +62,13 @@ export class Molecule {
 	}
 
 	public spawn(key: string): Molecule {
-		const child = new Molecule(key, [this])
+		const child = new Molecule(key, [this], this.store)
 		return child
 	}
 
 	public with(molecule: Molecule): (key: string) => Molecule {
 		return (key) => {
-			const child = new Molecule(key, [this, molecule])
+			const child = new Molecule(key, [this, molecule], this.store)
 			return child
 		}
 	}

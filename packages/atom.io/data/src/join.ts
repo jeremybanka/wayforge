@@ -247,8 +247,26 @@ export class Join<
 			const { set } = transactors
 			const aKeysState = this.retrieve(relatedKeysAtoms, a)
 			const bKeysState = this.retrieve(relatedKeysAtoms, b)
-			set(aKeysState, (aKeys) => (aKeys.delete(b), aKeys))
-			set(bKeysState, (bKeys) => (bKeys.delete(a), bKeys))
+			let shouldClearA = false
+			let shouldClearB = false
+			set(aKeysState, (aKeys) => {
+				aKeys.delete(b)
+				shouldClearA = aKeys.size === 0
+				return aKeys
+			})
+			set(bKeysState, (bKeys) => {
+				bKeys.delete(a)
+				shouldClearB = bKeys.size === 0
+				return bKeys
+			})
+			if (shouldClearA && this.molecules.has(a)) {
+				this.molecules.get(a)?.clear()
+				this.molecules.delete(a)
+			}
+			if (shouldClearB && this.molecules.has(b)) {
+				this.molecules.get(b)?.clear()
+				this.molecules.delete(b)
+			}
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
@@ -277,6 +295,7 @@ export class Join<
 						const relationsOfB = getRelatedKeys(transactors, newRelationB)
 						const newRelationBIsAlreadyRelated = relationsOfB.has(a)
 						if (this.relations.cardinality === `1:n`) {
+							const previousOwnersToDispose: string[] = []
 							for (const previousOwner of relationsOfB) {
 								if (previousOwner === a) {
 									continue
@@ -286,9 +305,20 @@ export class Join<
 									previousOwner,
 								)
 								previousOwnerRelations.delete(newRelationB)
+								if (previousOwnerRelations.size === 0) {
+									previousOwnersToDispose.push(previousOwner)
+								}
 							}
 							if (!newRelationBIsAlreadyRelated && relationsOfB.size > 0) {
 								relationsOfB.clear()
+							}
+							for (const previousOwner of previousOwnersToDispose) {
+								const molecule = this.molecules.get(previousOwner)
+								molecule?.clear()
+								this.molecules.delete(previousOwner)
+								const sorted = [newRelationB, previousOwner].sort()
+								const compositeKey = `${sorted[0]}:${sorted[1]}`
+								this.molecules.delete(compositeKey)
 							}
 						}
 						if (!newRelationBIsAlreadyRelated) {
@@ -358,19 +388,18 @@ export class Join<
 				},
 				store,
 			)
-			const getContent: Read<(key: string) => Content | null> = (
-				{ find, get },
-				key,
-			) => get(find(contentAtoms, key))
+			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
+				get(this.retrieve(contentAtoms, key))
 			const setContent: Write<(key: string, content: Content) => void> = (
-				{ find, set },
+				{ set },
 				key,
 				content,
 			) => {
-				set(find(contentAtoms, key), content)
+				set(this.retrieve(contentAtoms, key), content)
 			}
-			const deleteContent: Write<(key: string) => void> = ({ find }, key) => {
-				disposeState(find(contentAtoms, key))
+			const deleteContent: Write<(key: string) => void> = (_, key) => {
+				disposeState(this.retrieve(contentAtoms, key))
+				this.molecules.delete(key)
 			}
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {
