@@ -22,6 +22,7 @@ import {
 	getFromStore,
 	getJsonFamily,
 	IMPLICIT,
+	initFamilyMember,
 	isChildStore,
 	newest,
 	seekInStore,
@@ -202,7 +203,7 @@ export class Join<
 				if (store.config.lifespan === `immortal`) {
 					throw new Error(`No molecule found for key "${key}"`)
 				}
-				return findInStore(token, key, store)
+				return initFamilyMember(token, key, store)
 			}
 			return molecule.bond(token) as any
 		}
@@ -393,7 +394,16 @@ export class Join<
 		}
 		const relations = new Junction<ASide, BSide, Content>(options, {
 			externalStore,
-			makeContentKey: (...args) => args.sort().join(`:`),
+			makeContentKey: (...args) => {
+				const sorted = args.sort()
+				const compositeKey = `${sorted[0]}:${sorted[1]}`
+				const [m0, m1] = sorted.map((key) => this.molecules.get(key))
+				if (store.config.lifespan === `immortal` && m0 && m1) {
+					const composite = m0.with(m1)(compositeKey)
+					this.molecules.set(compositeKey, composite)
+				}
+				return compositeKey
+			},
 		})
 
 		const createSingleKeyStateFamily = () =>

@@ -66,6 +66,13 @@ export class Molecule {
 		return child
 	}
 
+	public with(molecule: Molecule): (key: string) => Molecule {
+		return (key) => {
+			const child = new Molecule(key, [this, molecule])
+			return child
+		}
+	}
+
 	public detach(child: Molecule): void {
 		const childIndex = this.below.indexOf(child)
 		if (childIndex !== undefined) {
