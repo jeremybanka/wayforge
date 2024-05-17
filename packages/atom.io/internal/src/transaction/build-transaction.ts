@@ -45,6 +45,7 @@ export const buildTransaction = (
 		}),
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
+		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)
 	const transactionMeta: TransactionProgress<Func> = {
