@@ -13,11 +13,10 @@ import type {
 	WritableToken,
 } from "atom.io"
 import { disposeState } from "atom.io"
+import { getJoin, type JoinToken } from "atom.io/data"
 import type { Store, Transceiver } from "atom.io/internal"
-import { IMPLICIT } from "atom.io/internal"
+import { IMPLICIT, initFamilyMember } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-
-import { initFamilyMember } from "../../internal/src/families/init-family-member"
 
 export function compositeKey(...keys: string[]): string {
 	return keys.sort().join(`:`)
@@ -64,14 +63,17 @@ export class Molecule {
 
 	public spawn(key: string): Molecule {
 		const child = new Molecule(key, [this])
-		this.below.push(child)
 		return child
 	}
 
 	public detach(child: Molecule): void {
-		const index = this.below.indexOf(child)
-		if (index !== undefined) {
-			this.below.splice(index, 1)
+		const childIndex = this.below.indexOf(child)
+		if (childIndex !== undefined) {
+			this.below.splice(childIndex, 1)
+		}
+		const parentIndex = child.above.indexOf(this)
+		if (parentIndex !== undefined) {
+			child.above.splice(parentIndex, 1)
 		}
 	}
 
@@ -83,6 +85,7 @@ export class Molecule {
 			parent.detach(child)
 		}
 		this.below.push(child)
+		child.above.push(this)
 	}
 
 	public clear(): void {
@@ -95,6 +98,11 @@ export class Molecule {
 				disposeState(token, this.store)
 			}
 		}
+	}
+
+	public join(token: JoinToken<any, any, any, any>): void {
+		const join = getJoin(token, this.store)
+		join.molecules.set(this.key, this)
 	}
 
 	private [Symbol.dispose](): void {

@@ -4,7 +4,6 @@ import type {
 	MutableAtomFamilyToken,
 	Read,
 	ReadableFamilyToken,
-	ReadableToken,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
 	RegularAtomFamily,
@@ -133,7 +132,7 @@ export class Join<
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
 	private transactors: Transactors
-	private retrieve: typeof findState
+	public retrieve: typeof findState
 	public molecules: Map<string, Molecule> = new Map()
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
@@ -154,7 +153,12 @@ export class Join<
 		this.transactors = originalTransactors
 	}
 
+	public store: Store
 	public alternates: Map<string, Join<ASide, BSide, Cardinality, Content>>
+	public [Symbol.dispose](): void {
+		this.alternates.delete(this.store.config.name)
+	}
+
 	public in(store: Store): Join<ASide, BSide, Cardinality, Content> {
 		const key = store.config.name
 		const alternate = this.alternates.get(key)
@@ -172,10 +176,14 @@ export class Join<
 		defaultContent: Content | undefined,
 		store: Store = IMPLICIT.STORE,
 	) {
+		this.store = store
 		this.options = options
 		this.defaultContent = defaultContent
 		this.alternates = new Map()
 		this.alternates.set(store.config.name, this)
+
+		this.store.miscResources.set(`join:${options.key}`, this)
+
 		this.transactors = {
 			get: (token) => getFromStore(token, store),
 			set: (token, value) => {
@@ -191,7 +199,10 @@ export class Join<
 			}
 			const molecule = this.molecules.get(key)
 			if (!molecule) {
-				throw new Error(`No molecule found for key "${key}"`)
+				if (store.config.lifespan === `immortal`) {
+					throw new Error(`No molecule found for key "${key}"`)
+				}
+				return findInStore(token, key, store)
 			}
 			return molecule.bond(token) as any
 		}
@@ -213,17 +224,17 @@ export class Join<
 		)
 		this.core = { findRelatedKeysState: relatedKeysAtoms }
 		const getRelatedKeys: Read<(key: string) => SetRTX<string>> = (
-			{ find, get },
+			{ get },
 			key,
-		) => get(find(relatedKeysAtoms, key))
+		) => get(this.retrieve(relatedKeysAtoms, key))
 		const addRelation: Write<(a: string, b: string) => void> = (
 			transactors,
 			a,
 			b,
 		) => {
-			const { set, find } = transactors
-			const aKeysState = find(relatedKeysAtoms, a)
-			const bKeysState = find(relatedKeysAtoms, b)
+			const { set } = transactors
+			const aKeysState = this.retrieve(relatedKeysAtoms, a)
+			const bKeysState = this.retrieve(relatedKeysAtoms, b)
 			set(aKeysState, (aKeys) => aKeys.add(b))
 			set(bKeysState, (bKeys) => bKeys.add(a))
 		}
@@ -232,24 +243,27 @@ export class Join<
 			a,
 			b,
 		) => {
-			const { find, set } = transactors
-			const aKeysState = find(relatedKeysAtoms, a)
-			const bKeysState = find(relatedKeysAtoms, b)
+			const { set } = transactors
+			const aKeysState = this.retrieve(relatedKeysAtoms, a)
+			const bKeysState = this.retrieve(relatedKeysAtoms, b)
 			set(aKeysState, (aKeys) => (aKeys.delete(b), aKeys))
 			set(bKeysState, (bKeys) => (bKeys.delete(a), bKeys))
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (transactors, a, newRelationsOfA) => {
-			const { find, get, set } = transactors
-			const relationsOfAState = find(relatedKeysAtoms, a)
+			const { get, set } = transactors
+			const relationsOfAState = this.retrieve(relatedKeysAtoms, a)
 			const currentRelationsOfA = get(relationsOfAState)
 			for (const currentRelationB of currentRelationsOfA) {
 				const remainsRelated = newRelationsOfA.includes(currentRelationB)
 				if (remainsRelated) {
 					continue
 				}
-				const relationsOfBState = find(relatedKeysAtoms, currentRelationB)
+				const relationsOfBState = this.retrieve(
+					relatedKeysAtoms,
+					currentRelationB,
+				)
 				set(relationsOfBState, (relationsOfB) => {
 					relationsOfB.delete(a)
 					return relationsOfB
@@ -289,8 +303,8 @@ export class Join<
 		const replaceRelationsUnsafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (transactors, a, newRelationsOfA) => {
-			const { find, set } = transactors
-			const relationsOfAState = find(relatedKeysAtoms, a)
+			const { set } = transactors
+			const relationsOfAState = this.retrieve(relatedKeysAtoms, a)
 			set(relationsOfAState, (relationsOfA) => {
 				relationsOfA.transaction((nextRelationsOfA) => {
 					for (const newRelationB of newRelationsOfA) {
@@ -301,7 +315,7 @@ export class Join<
 				return relationsOfA
 			})
 			for (const newRelationB of newRelationsOfA) {
-				const newRelationsBState = find(relatedKeysAtoms, newRelationB)
+				const newRelationsBState = this.retrieve(relatedKeysAtoms, newRelationB)
 				set(newRelationsBState, (newRelationsB) => {
 					newRelationsB.add(a)
 					return newRelationsB
@@ -388,8 +402,8 @@ export class Join<
 					key: `${options.key}/singleRelatedKey`,
 					get:
 						(key) =>
-						({ find, get }) => {
-							const relatedKeysState = find(relatedKeysAtoms, key)
+						({ get }) => {
+							const relatedKeysState = this.retrieve(relatedKeysAtoms, key)
 							const relatedKeys = get(relatedKeysState)
 							for (const relatedKey of relatedKeys) {
 								return relatedKey
@@ -405,9 +419,9 @@ export class Join<
 					key: `${options.key}/multipleRelatedKeys`,
 					get:
 						(key) =>
-						({ find, get }) => {
+						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const jsonState = find(jsonFamily, key)
+							const jsonState = this.retrieve(jsonFamily, key)
 							const json = get(jsonState)
 							return json.members
 						},
@@ -421,12 +435,12 @@ export class Join<
 					key: `${options.key}/singleRelatedEntry`,
 					get:
 						(key) =>
-						({ find, get }) => {
-							const relatedKeysState = find(relatedKeysAtoms, key)
+						({ get }) => {
+							const relatedKeysState = this.retrieve(relatedKeysAtoms, key)
 							const relatedKeys = get(relatedKeysState)
 							for (const relatedKey of relatedKeys) {
 								const contentKey = relations.makeContentKey(key, relatedKey)
-								const contentState = find(contentAtoms, contentKey)
+								const contentState = this.retrieve(contentAtoms, contentKey)
 								const content = get(contentState)
 								return [relatedKey, content]
 							}
@@ -441,12 +455,12 @@ export class Join<
 					key: `${options.key}/multipleRelatedEntries`,
 					get:
 						(key) =>
-						({ find, get }) => {
+						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
 							const json = get(jsonFamily(key))
 							return json.members.map((relatedKey) => {
 								const contentKey = relations.makeContentKey(key, relatedKey)
-								const contentState = find(contentAtoms, contentKey)
+								const contentState = this.retrieve(contentAtoms, contentKey)
 								const content = get(contentState)
 								return [relatedKey, content]
 							})
@@ -705,12 +719,12 @@ export function findRelationsInStore<
 			relations = {
 				get [keyAB]() {
 					const familyAB = myJoin.states[keyAB as any]
-					const state = findInStore(familyAB, key, store)
+					const state = myJoin.retrieve(familyAB, key)
 					return state
 				},
 				get [keyBA]() {
 					const familyBA = myJoin.states[keyBA as any]
-					const state = findInStore(familyBA, key, store)
+					const state = myJoin.retrieve(familyBA, key)
 					return state
 				},
 			} as JoinStates<ASide, BSide, Cardinality, Content>
@@ -720,12 +734,12 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entryAB]() {
 						const familyAB = myJoin.states[entryAB as any]
-						const state = findInStore(familyAB, key, store)
+						const state = myJoin.retrieve(familyAB, key)
 						return state
 					},
 					get [entryBA]() {
 						const familyBA = myJoin.states[entryBA as any]
-						const state = findInStore(familyBA, key, store)
+						const state = myJoin.retrieve(familyBA, key)
 						return state
 					},
 				})
@@ -738,12 +752,12 @@ export function findRelationsInStore<
 			relations = {
 				get [keyAB]() {
 					const familyAB = myJoin.states[keyAB as any]
-					const state = findInStore(familyAB, key, store)
+					const state = myJoin.retrieve(familyAB, key)
 					return state
 				},
 				get [keysBA]() {
 					const familyBA = myJoin.states[keysBA as any]
-					const state = findInStore(familyBA, key, store)
+					const state = myJoin.retrieve(familyBA, key)
 					return state
 				},
 			} as JoinStates<ASide, BSide, Cardinality, Content>
@@ -753,12 +767,14 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entryAB]() {
 						const familyAB = myJoin.states[entryAB as any]
-						const state = findInStore(familyAB, key, store)
+						console.log(myJoin.alternates.keys())
+						console.log(store.families)
+						const state = myJoin.retrieve(familyAB, key)
 						return state
 					},
 					get [entriesBA]() {
 						const familyBA = myJoin.states[entriesBA as any]
-						const state = findInStore(familyBA, key, store)
+						const state = myJoin.retrieve(familyBA, key)
 						return state
 					},
 				})
@@ -771,12 +787,12 @@ export function findRelationsInStore<
 			relations = {
 				get [keysAB]() {
 					const familyAB = myJoin.states[keysAB as any]
-					const state = findInStore(familyAB, key, store)
+					const state = myJoin.retrieve(familyAB, key)
 					return state
 				},
 				get [keysBA]() {
 					const familyBA = myJoin.states[keysBA as any]
-					const state = findInStore(familyBA, key, store)
+					const state = myJoin.retrieve(familyBA, key)
 					return state
 				},
 			} as JoinStates<ASide, BSide, Cardinality, Content>
@@ -786,12 +802,12 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entriesAB]() {
 						const familyAB = myJoin.states[entriesAB as any]
-						const state = findInStore(familyAB, key, store)
+						const state = myJoin.retrieve(familyAB, key)
 						return state
 					},
 					get [entriesBA]() {
 						const familyBA = myJoin.states[entriesBA as any]
-						const state = findInStore(familyBA, key, store)
+						const state = myJoin.retrieve(familyBA, key)
 						return state
 					},
 				})

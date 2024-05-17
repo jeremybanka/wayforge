@@ -1,9 +1,8 @@
 import type { MutableAtomFamily, RegularAtomFamily } from "atom.io"
-import { findState } from "atom.io/ephemeral"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import { createRegularAtomFamily } from "../families"
+import { createRegularAtomFamily, seekInStore } from "../families"
 import type { Store } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
@@ -42,7 +41,7 @@ export class FamilyTracker<
 			(atomToken) => {
 				if (atomToken.family) {
 					const key = parseJson(atomToken.family.subKey) as FamilyMemberKey
-					findState(this.latestUpdateAtoms, key)
+					seekInStore(this.latestUpdateAtoms, key, store)
 					new Tracker<Core>(atomToken, store)
 				}
 			},
@@ -52,8 +51,10 @@ export class FamilyTracker<
 			(atomToken) => {
 				if (atomToken.family) {
 					const key = parseJson(atomToken.family.subKey) as FamilyMemberKey
-					const mutableAtomToken = findState(this.mutableAtoms, key)
-					new Tracker<Core>(mutableAtomToken, store)
+					const mutableAtomToken = seekInStore(this.mutableAtoms, key, store)
+					if (mutableAtomToken) {
+						new Tracker<Core>(mutableAtomToken, store)
+					}
 				}
 			},
 		)

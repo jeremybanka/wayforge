@@ -115,6 +115,12 @@ describe(`immortal integrations`, () => {
 			cardinality: `1:n`,
 		})
 
+		const world = new Molecule(`world`)
+		const holder = world.spawn(`character-0`)
+		const item = world.spawn(`item-0`)
+		holder.join(holdersOfItems)
+		item.join(holdersOfItems)
+
 		editRelations(holdersOfItems, (relations) => {
 			relations.set({ holder: `character-0`, item: `item-0` })
 		})

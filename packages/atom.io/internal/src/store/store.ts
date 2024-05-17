@@ -80,6 +80,8 @@ export class Store implements Lineage {
 		},
 	)
 
+	public miscResources = new Map<string, Disposable>()
+
 	public on = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
 		atomDisposal: new Subject<AtomToken<unknown>>(),
@@ -195,6 +197,9 @@ export const IMPLICIT = {
 
 export const clearStore = (store: Store): void => {
 	const { config } = store
+	for (const disposable of store.miscResources.values()) {
+		disposable[Symbol.dispose]()
+	}
 	Object.assign(store, new Store(config))
 	store.config = config
 }

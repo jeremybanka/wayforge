@@ -1,6 +1,6 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { createSelectorFamily, findInStore, IMPLICIT } from "atom.io/internal"
+import { createSelectorFamily, IMPLICIT, seekInStore } from "atom.io/internal"
 
 import type { Json, JsonInterface } from "."
 import { parseJson } from "."
@@ -53,7 +53,7 @@ export function selectJsonFamily<
 		`store=${store.config.name}::json-selector-family`,
 		(token) => {
 			if (token.family) {
-				findInStore(jsonFamily, parseJson(token.family.subKey) as K, store)
+				seekInStore(jsonFamily, parseJson(token.family.subKey) as K, store)
 			}
 		},
 	)
