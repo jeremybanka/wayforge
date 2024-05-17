@@ -1,4 +1,4 @@
-import type { MutableAtomFamily, WritableSelectorFamily } from "atom.io"
+import type { MutableAtomFamilyToken, WritableSelectorFamily } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import { newest } from "../lineage"
@@ -10,7 +10,7 @@ export const getJsonFamily = <
 	SerializableCore extends Json.Serializable,
 	Key extends string,
 >(
-	mutableAtomFamily: MutableAtomFamily<Core, SerializableCore, Key>,
+	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
 	store: Store,
 ): WritableSelectorFamily<SerializableCore, Key> => {
 	const target = newest(store)

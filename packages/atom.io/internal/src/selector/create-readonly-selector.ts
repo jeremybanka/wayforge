@@ -19,9 +19,9 @@ export const createReadonlySelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 
-	const { get, find } = registerSelector(options.key, target)
+	const { get, find, seek } = registerSelector(options.key, target)
 	const getSelf = () => {
-		const value = options.get({ get, find })
+		const value = options.get({ get, find, seek })
 		cacheValue(options.key, value, subject, newest(store))
 		return value
 	}

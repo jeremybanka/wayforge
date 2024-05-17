@@ -496,7 +496,8 @@ export class Join<
 						(key) =>
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const json = get(jsonFamily(key))
+							const jsonState = this.retrieve(jsonFamily, key)
+							const json = get(jsonState)
 							return json.members.map((relatedKey) => {
 								const contentKey = relations.makeContentKey(key, relatedKey)
 								const contentState = this.retrieve(contentAtoms, contentKey)

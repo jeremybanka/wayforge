@@ -54,7 +54,7 @@ export type TransactorsWithRunAndEnv = Readonly<{
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>
-export type ReadonlyTransactors = Pick<Transactors, `find` | `get`>
+export type ReadonlyTransactors = Pick<Transactors, `find` | `get` | `seek`>
 
 export type Read<F extends Func> = (
 	transactors: ReadonlyTransactors,

@@ -45,6 +45,7 @@ export const buildTransaction = (
 		}),
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
+		molecules: new LazyMap(parent.molecules),
 		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)

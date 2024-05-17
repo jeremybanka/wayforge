@@ -15,7 +15,7 @@ import type {
 import { disposeState } from "atom.io"
 import { getJoin, type JoinToken } from "atom.io/data"
 import type { Store, Transceiver } from "atom.io/internal"
-import { IMPLICIT, initFamilyMember } from "atom.io/internal"
+import { getJsonFamily, IMPLICIT, initFamilyMember } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 export function compositeKey(...keys: string[]): string {
@@ -30,6 +30,7 @@ export class Molecule {
 		public readonly above: Molecule[] = [],
 		public readonly store: Store = IMPLICIT.STORE,
 	) {
+		store.molecules.set(`"${key}"`, this)
 		for (const parent of above) {
 			parent.below.push(this)
 		}
@@ -57,6 +58,12 @@ export class Molecule {
 	): ReadableToken<T>
 	public bond(token: ReadableFamilyToken<any, any>): ReadableToken<any> {
 		const state = initFamilyMember(token, this.key, this.store)
+		if (token.type === `mutable_atom_family`) {
+			const jsonFamily = getJsonFamily(token, this.store)
+			console.log(jsonFamily)
+			const jsonState = initFamilyMember(jsonFamily, this.key, this.store)
+			this.tokens.push(jsonState)
+		}
 		this.tokens.push(state)
 		return state
 	}
@@ -114,6 +121,7 @@ export class Molecule {
 
 	private [Symbol.dispose](): void {
 		this.clear()
+		this.store.molecules.delete(this.key)
 		for (const parent of this.above) {
 			parent.detach(this)
 		}

@@ -8,10 +8,8 @@ import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
-import { NotFoundError } from "../not-found-error"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
-import { deposit } from "../store"
 import { Subject } from "../subject"
 
 export function createReadonlySelectorFamily<T, K extends Json.Serializable>(

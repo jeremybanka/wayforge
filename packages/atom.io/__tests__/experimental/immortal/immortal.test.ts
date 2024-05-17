@@ -1,6 +1,6 @@
-import type { Logger } from "atom.io"
+import type { AtomToken, Logger } from "atom.io"
 import { atomFamily, getState, setState } from "atom.io"
-import { editRelations, getJoin, join } from "atom.io/data"
+import { editRelations, findRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
@@ -135,5 +135,42 @@ describe(`immortal integrations`, () => {
 		const internalJoin = getJoin(holdersOfItems, world.store)
 
 		expect(internalJoin.molecules.size).toBe(0)
+	})
+})
+
+describe(`practical example of immortal`, () => {
+	test(`RPG`, () => {
+		const world = new Molecule(`world`)
+		const $$maxHealth = atomFamily<number, string>({
+			key: `maxHealth`,
+			default: 100,
+		})
+		const $$health = atomFamily<number, string>({
+			key: `health`,
+			default: 0,
+		})
+		const $$armor = atomFamily<number, string>({
+			key: `armor`,
+			default: 0,
+		})
+		const holdersOfItems = join({
+			key: `holdersOfItems`,
+			between: [`holder`, `item`],
+			cardinality: `1:n`,
+		})
+		class Being extends Molecule {
+			public $maxHealth: AtomToken<number>
+			public $health: AtomToken<number>
+			public $armor: AtomToken<number>
+			public constructor(public readonly id: string) {
+				super(id, [world])
+				this.$maxHealth = this.bond($$maxHealth)
+				this.$health = this.bond($$health)
+				this.$armor = this.bond($$armor)
+				this.join(holdersOfItems)
+			}
+		}
+		const me = new Being(`me`)
+		const itemsIHold = findRelations(holdersOfItems, `me`).itemKeysOfHolder
 	})
 })

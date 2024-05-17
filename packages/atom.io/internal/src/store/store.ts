@@ -12,6 +12,7 @@ import type {
 	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
+import type { Molecule } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
@@ -80,6 +81,7 @@ export class Store implements Lineage {
 		},
 	)
 
+	public molecules = new Map<string, Molecule>()
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {

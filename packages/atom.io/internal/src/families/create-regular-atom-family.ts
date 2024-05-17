@@ -10,8 +10,7 @@ import { stringifyJson } from "atom.io/json"
 
 import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
-import { NotFoundError } from "../not-found-error"
-import { deposit, type Store } from "../store"
+import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createRegularAtomFamily<T, K extends Json.Serializable>(
