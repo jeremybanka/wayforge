@@ -1,5 +1,25 @@
 # atom.io
 
+## 0.22.0
+
+### Minor Changes
+
+- bd2cb19: 🎁 New subpackage: `atom.io/immortal` contains utilities for managing environments with indefinite lifespans where memory leaks must not occur.
+- bd2cb19: ✨ `atom.io/immortal` adds the new `Molecule` class. This class can be used to create a chain of ownership for members of your store, making the process of de-initialization more ergonomic.
+- bd2cb19: 💥 BREAKING CHANGE: Calling an atom family directly (deprecated; use `seekState` or `findState` instead) always attempts to create a new state now.
+- bd2cb19: 💥 BREAKING CHANGE: The `Store` and `Silo` constructors now require an object config including `name` and `lifespan` for the first parameter rather than just a `name`.
+- 21b31a1: 💥 BREAKING CHANGE: `findState` is now exported from `atom.io/ephemeral`.
+- 78b958f: 💥 BREAKING CHANGE: `disposeState` now only disposes of states that belong to atom families or selector families. An error will be logged when attempting to dispose of standalone states.
+
+### Patch Changes
+
+- bd2cb19: ✨ Transactions and Selectors now include the `seek` transactor, which behaves like `seekState`.
+- 21b31a1: 🎁 New subpackage: `atom.io/ephemeral` contains utilities for short-lived environments.
+- bd2cb19: 🐛 Restore deprecation notice to directly calling state families to retrive state.
+- bd2cb19: 🐛 `disposeState` now properly removes trackers created for mutable atoms.
+- bd2cb19: ✨ `atom.io/immortal` adds the `seekState` function. This is an alternative to `findState`, which is not allowed in `immortal` stores. Instead of implicitly initializing a state that doesn't exist as `findState` does, `seekState` will simply return `undefined` in this case.
+- bd2cb19: ✨ `atom.io/eslint-plugin` adds a new rule `lifespan` that disallows use of the `findState` function and the `find` transactor when using the `"immortal"` setting.
+
 ## 0.21.1
 
 ### Patch Changes
