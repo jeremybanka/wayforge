@@ -18,6 +18,7 @@ import { getJoin } from "atom.io/data"
 import type { Store, Transceiver } from "atom.io/internal"
 import { getJsonFamily, IMPLICIT, initFamilyMember } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
+import { J } from "vitest/dist/reporters-yx5ZTtEV.js"
 
 export class Molecule<Key extends Json.Serializable> {
 	public readonly below: Molecule<any>[] = []
@@ -42,16 +43,16 @@ export class Molecule<Key extends Json.Serializable> {
 	public bond<T, K extends Key>(
 		token: RegularAtomFamilyToken<T, K>,
 	): RegularAtomToken<T>
-	public bond<T, K extends string>(
+	public bond<T, K extends Json.Serializable>(
 		token: WritableSelectorFamilyToken<T, K>,
 	): WritableSelectorToken<T>
-	public bond<T, K extends string>(
+	public bond<T, K extends Json.Serializable>(
 		token: ReadonlySelectorFamilyToken<T, K>,
 	): ReadonlySelectorToken<T>
-	public bond<T, K extends string>(
+	public bond<T, K extends Json.Serializable>(
 		token: WritableFamilyToken<T, K>,
 	): WritableToken<T>
-	public bond<T, K extends string>(
+	public bond<T, K extends Json.Serializable>(
 		token: ReadableFamilyToken<T, K>,
 	): ReadableToken<T>
 	public bond(token: ReadableFamilyToken<any, any>): ReadableToken<any> {
