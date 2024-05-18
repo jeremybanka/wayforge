@@ -81,7 +81,7 @@ export class Store implements Lineage {
 		},
 	)
 
-	public molecules = new Map<string, Molecule>()
+	public molecules = new Map<string, Molecule<any>>()
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {
