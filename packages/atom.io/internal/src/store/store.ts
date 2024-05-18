@@ -12,6 +12,7 @@ import type {
 	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
+import type { Molecule } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
@@ -80,6 +81,9 @@ export class Store implements Lineage {
 		},
 	)
 
+	public molecules = new Map<string, Molecule<any>>()
+	public miscResources = new Map<string, Disposable>()
+
 	public on = {
 		atomCreation: new Subject<AtomToken<unknown>>(),
 		atomDisposal: new Subject<AtomToken<unknown>>(),
@@ -107,8 +111,10 @@ export class Store implements Lineage {
 
 	public config: {
 		name: string
+		lifespan: `ephemeral` | `immortal`
 	} = {
 		name: `IMPLICIT_STORE`,
+		lifespan: `ephemeral`,
 	}
 
 	public loggers: AtomIOLogger[] = [
@@ -126,7 +132,7 @@ export class Store implements Lineage {
 		},
 	}
 
-	public constructor(name: string, store: Store | null = null) {
+	public constructor(config: Store[`config`], store: Store | null = null) {
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
@@ -141,7 +147,7 @@ export class Store implements Lineage {
 
 			this.config = {
 				...store?.config,
-				name,
+				...config,
 			}
 			for (const [, family] of store.families) {
 				family.install(this)
@@ -153,7 +159,7 @@ export class Store implements Lineage {
 				}
 				atom.install(this)
 				if (atom.type === `mutable_atom`) {
-					const originalJsonToken = getJsonToken(atom)
+					const originalJsonToken = getJsonToken(atom, store)
 					const originalUpdateToken = getUpdateToken(atom)
 					mutableHelpers.add(originalJsonToken.key)
 					mutableHelpers.add(originalUpdateToken.key)
@@ -182,13 +188,20 @@ export const IMPLICIT = {
 	STORE_INTERNAL: undefined as Store | undefined,
 	get STORE(): Store {
 		return (
-			this.STORE_INTERNAL ?? (this.STORE_INTERNAL = new Store(`IMPLICIT_STORE`))
+			this.STORE_INTERNAL ??
+			(this.STORE_INTERNAL = new Store({
+				name: `IMPLICIT_STORE`,
+				lifespan: `ephemeral`,
+			}))
 		)
 	},
 }
 
 export const clearStore = (store: Store): void => {
 	const { config } = store
-	Object.assign(store, new Store(config.name))
+	for (const disposable of store.miscResources.values()) {
+		disposable[Symbol.dispose]()
+	}
+	Object.assign(store, new Store(config))
 	store.config = config
 }

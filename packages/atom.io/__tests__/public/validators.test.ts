@@ -39,9 +39,6 @@ describe(`validators`, () => {
 			}
 			const result = belongsTo(family, unknownToken)
 			expect(result).toBe(true)
-			if (result) {
-				setState(unknownToken, 5)
-			}
 		})
 		it(`returns false for a mismatch`, () => {
 			const family = atomFamily<number, string>({

@@ -44,10 +44,10 @@ export function structFamily<
 				key: options.key,
 				get:
 					(id) =>
-					({ get }) => {
+					({ find, get }) => {
 						return Object.keys(options.default).reduce((acc, subKey) => {
 							acc[subKey] = get(
-								(atoms as any)[nameFamily(options.key, subKey)](id),
+								find((atoms as any)[nameFamily(options.key, subKey)], id),
 							)
 							return acc
 						}, {} as any)

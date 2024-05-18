@@ -12,6 +12,7 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -268,7 +269,7 @@ describe(`timeline`, () => {
 			key: `find count`,
 			default: 0,
 		})
-		const myCountState = findCountState(`foo`)
+		const myCountState = findState(findCountState, `foo`)
 		const countsTL = timeline({
 			key: `counts`,
 			atoms: [findCountState],

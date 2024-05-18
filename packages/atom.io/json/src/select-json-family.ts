@@ -1,9 +1,14 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { createSelectorFamily, IMPLICIT } from "atom.io/internal"
+import {
+	createSelectorFamily,
+	IMPLICIT,
+	initFamilyMember,
+	seekInStore,
+} from "atom.io/internal"
 
 import type { Json, JsonInterface } from "."
-import { parseJson } from "."
+import { parseJson, stringifyJson } from "."
 
 export function selectJsonFamily<
 	T extends Transceiver<any>,
@@ -39,12 +44,46 @@ export function selectJsonFamily<
 			key: `${family.key}:JSON`,
 			get:
 				(key) =>
-				({ get }) =>
-					transform.toJson(get(family(key))),
+				({ seek, get }) => {
+					const existingState = seek(family, key)
+					if (existingState) {
+						return transform.toJson(get(existingState))
+					}
+					const stringKey = stringifyJson(key)
+					const molecule = store.molecules.get(stringKey)
+					if (molecule) {
+						const atom = molecule.bond(family)
+						return transform.toJson(get(atom))
+					}
+					if (store.config.lifespan === `immortal`) {
+						throw new Error(`No molecule found for key "${stringKey}"`)
+					}
+					const newToken = initFamilyMember(family, key, store)
+					return transform.toJson(get(newToken))
+				},
 			set:
 				(key) =>
-				({ set }, newValue) => {
-					set(family(key), transform.fromJson(newValue))
+				({ seek, set }, newValue) => {
+					// set(seek(family, key), transform.fromJson(newValue))
+					const existingState = seek(family, key)
+					if (existingState) {
+						set(existingState, transform.fromJson(newValue))
+					} else {
+						const stringKey = stringifyJson(key)
+						const molecule = store.molecules.get(stringKey)
+						if (molecule) {
+							const atom = molecule.bond(family)
+							set(atom, transform.fromJson(newValue))
+						} else {
+							if (store.config.lifespan === `immortal`) {
+								throw new Error(`No molecule found for key "${stringKey}"`)
+							}
+							set(
+								initFamilyMember(family, key, store),
+								transform.fromJson(newValue),
+							)
+						}
+					}
 				},
 		},
 		store,
@@ -53,7 +92,7 @@ export function selectJsonFamily<
 		`store=${store.config.name}::json-selector-family`,
 		(token) => {
 			if (token.family) {
-				jsonFamily(parseJson(token.family.subKey) as K)
+				seekInStore(jsonFamily, parseJson(token.family.subKey) as K, store)
 			}
 		},
 	)

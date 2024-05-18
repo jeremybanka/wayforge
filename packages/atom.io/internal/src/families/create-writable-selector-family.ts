@@ -7,9 +7,9 @@ import type {
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import { newest } from "../lineage"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
-import { deposit } from "../store"
 import { Subject } from "../subject"
 
 export function createWritableSelectorFamily<T, K extends Json.Serializable>(
@@ -23,10 +23,8 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = store.selectors.get(fullKey)
-			if (existing) {
-				return deposit(existing)
-			}
+			const target = newest(store)
+
 			const token = createWritableSelector(
 				{
 					key: fullKey,
@@ -34,8 +32,9 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 					set: options.set(key),
 				},
 				family,
-				store,
+				target,
 			)
+
 			subject.next(token)
 			return token
 		},
@@ -45,7 +44,7 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 			subject,
 			install: (s: Store) => createWritableSelectorFamily(options, s),
 		} as const,
-	) as WritableSelectorFamily<T, K>
+	) satisfies WritableSelectorFamily<T, K>
 	store.families.set(options.key, selectorFamily)
 	return selectorFamily
 }

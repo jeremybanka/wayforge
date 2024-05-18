@@ -10,8 +10,8 @@ afterEach(() => {
 
 describe(`silo`, () => {
 	it(`creates stores with independent states`, () => {
-		const Uno = new Silo(`uno`)
-		const Dos = new Silo(`dos`)
+		const Uno = new Silo({ name: `uno`, lifespan: `ephemeral` })
+		const Dos = new Silo({ name: `dos`, lifespan: `ephemeral` })
 
 		const DEFAULT_COUNT_CONFIG: RegularAtomOptions<number> = {
 			key: `count`,
@@ -39,8 +39,8 @@ describe(`silo`, () => {
 		)
 	})
 	it(`creates stores with independent state families`, () => {
-		const Uno = new Silo(`uno`)
-		const Dos = new Silo(`dos`)
+		const Uno = new Silo({ name: `uno`, lifespan: `ephemeral` })
+		const Dos = new Silo({ name: `dos`, lifespan: `ephemeral` })
 
 		const DEFAULT_COUNT_ATOMS_CONFIG: RegularAtomFamilyOptions<number, string> =
 			{
@@ -72,7 +72,7 @@ describe(`silo`, () => {
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(
-			`Atom_family "counts" not found in store "IMPLICIT_STORE".`,
+			`Atom "counts("a")" not found in store "IMPLICIT_STORE".`,
 		)
 	})
 })

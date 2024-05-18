@@ -76,7 +76,10 @@ export const setupRealtimeTestServer = (
 	options: TestSetupOptions,
 ): RealtimeTestServer => {
 	++testNumber
-	const silo = new AtomIO.Silo(`SERVER-${testNumber}`, IMPLICIT.STORE)
+	const silo = new AtomIO.Silo(
+		{ name: `SERVER-${testNumber}`, lifespan: `ephemeral` },
+		IMPLICIT.STORE,
+	)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen(options.port).address()
@@ -139,7 +142,7 @@ export const setupRealtimeTestClient = (
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
 			auth: { token: `test`, username: `${name}-${testNumber}` },
 		})
-		const silo = new AtomIO.Silo(name, IMPLICIT.STORE)
+		const silo = new AtomIO.Silo({ name, lifespan: `ephemeral` }, IMPLICIT.STORE)
 		for (const [key, value] of silo.store.valueMap.entries()) {
 			if (Array.isArray(value)) {
 				silo.store.valueMap.set(key, [...value])

@@ -42,11 +42,11 @@ describe(`disposeState`, () => {
 		)
 	})
 	it(`deletes atoms that belong to a family`, () => {
-		const findCountState = atomFamily<number, string>({
+		const countStates = atomFamily<number, string>({
 			key: `findCount`,
 			default: 0,
 		})
-		const countState = findCountState(`count`)
+		const countState = findState(countStates, `count`)
 		disposeState(countState, Internal.IMPLICIT.STORE)
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)

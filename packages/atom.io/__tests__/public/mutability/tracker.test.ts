@@ -7,6 +7,7 @@ import {
 	setState,
 	transaction,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { FamilyTracker, Tracker } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -81,20 +82,20 @@ describe(`tracker`, () => {
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
 		const setAtoms = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
-			key: `findSetState`,
+			key: `sets`,
 			default: () => new SetRTX(),
 			mutable: true,
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const findSetState = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
-		const { findLatestUpdateState } = new FamilyTracker(
-			findSetState,
+		const setRTXStates = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
+		const { latestUpdateAtoms: latestUpdateStates } = new FamilyTracker(
+			setRTXStates,
 			Internal.IMPLICIT.STORE,
 		)
 
-		expect(getState(findSetState(`a`))).toEqual(new SetRTX())
-		expect(getState(findLatestUpdateState(`a`))).toEqual(null)
+		expect(getState(findState(setRTXStates, `a`))).toEqual(new SetRTX())
+		expect(getState(findState(latestUpdateStates, `a`))).toEqual(null)
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
 		const setAtoms = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
@@ -104,24 +105,24 @@ describe(`trackerFamily`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const findSetState = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
-		const { findLatestUpdateState } = new FamilyTracker(
-			findSetState,
+		const setRTXStates = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
+		const { latestUpdateAtoms: latestUpdateStates } = new FamilyTracker(
+			setRTXStates,
 			Internal.IMPLICIT.STORE,
 		)
 		const updateTrackerTX = transaction<(key: string) => void>({
 			key: `updateTrackerTX`,
 			do: ({ set }, key) => {
-				const trackerState = findLatestUpdateState(key)
+				const trackerState = findState(latestUpdateStates, key)
 				set(trackerState, `0=add:"x"`)
 			},
 		})
 
-		expect(getState(findSetState(`a`))).toEqual(new SetRTX())
-		expect(getState(findLatestUpdateState(`a`))).toEqual(null)
+		expect(getState(findState(setRTXStates, `a`))).toEqual(new SetRTX())
+		expect(getState(findState(latestUpdateStates, `a`))).toEqual(null)
 		runTransaction(updateTrackerTX)(`a`)
 
-		expect(getState(findSetState(`a`))).toEqual(new SetRTX([`x`]))
-		expect(getState(findSetState(`b`))).toEqual(new SetRTX())
+		expect(getState(findState(setRTXStates, `a`))).toEqual(new SetRTX([`x`]))
+		expect(getState(findState(setRTXStates, `b`))).toEqual(new SetRTX())
 	})
 })

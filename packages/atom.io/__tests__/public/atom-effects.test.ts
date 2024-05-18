@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs"
 
 import type { Logger } from "atom.io"
 import { atom, atomFamily, getState, setState } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import tmp from "tmp"
 import { vitest } from "vitest"
@@ -29,7 +30,7 @@ beforeEach(() => {
 
 describe(`atom effects`, () => {
 	it(`runs a function onSet`, () => {
-		const findCoordinateState = atomFamily<{ x: number; y: number }, string>({
+		const coordinateStates = atomFamily<{ x: number; y: number }, string>({
 			key: `coordinate`,
 			default: { x: 0, y: 0 },
 			effects: (key) => [
@@ -40,7 +41,7 @@ describe(`atom effects`, () => {
 				},
 			],
 		})
-		setState(findCoordinateState(`a`), { x: 1, y: 1 })
+		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
 			oldValue: { x: 0, y: 0 },
@@ -68,7 +69,7 @@ describe(`atom effects`, () => {
 
 describe(`atom effect cleanup`, () => {
 	test(`an effect can return a cleanup function`, () => {
-		const findCoordinateState = atomFamily<{ x: number; y: number }, string>({
+		const coordinateStates = atomFamily<{ x: number; y: number }, string>({
 			key: `coordinate`,
 			default: { x: 0, y: 0 },
 			effects: (key) => [
@@ -82,12 +83,15 @@ describe(`atom effect cleanup`, () => {
 				},
 			],
 		})
-		setState(findCoordinateState(`a`), { x: 1, y: 1 })
+		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
 			oldValue: { x: 0, y: 0 },
 		})
-		Internal.disposeAtom(findCoordinateState(`a`), Internal.IMPLICIT.STORE)
+		Internal.disposeAtom(
+			findState(coordinateStates, `a`),
+			Internal.IMPLICIT.STORE,
+		)
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
 	})
 })

@@ -21,6 +21,8 @@ import type { Json } from "atom.io/json"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
+import { initFamilyMember } from "./init-family-member"
+import { seekInStore } from "./seek-in-store"
 
 export function findInStore<
 	T extends Transceiver<any>,
@@ -80,11 +82,15 @@ export function findInStore(
 	key: Json.Serializable,
 	store: Store,
 ): ReadableToken<any> {
-	const familyKey = token.key
-	const family = store.families.get(familyKey)
-	if (family === undefined) {
-		throw new NotFoundError(token, store)
+	if (store.config.lifespan === `immortal`) {
+		throw new Error(
+			`Do not use \`find\` or \`findState\` in an immortal store. Prefer \`seek\` or \`seekState\`.`,
+		)
 	}
-	const state = family(key)
+	let state = seekInStore(token, key, store)
+	if (state) {
+		return state
+	}
+	state = initFamilyMember(token, key, store)
 	return state
 }

@@ -21,7 +21,7 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 0
 let logger: Logger
 
 beforeEach(() => {
@@ -125,15 +125,15 @@ describe(`graceful handling of improper usage`, () => {
 			expect(countTimeline1Data?.history).toHaveLength(0)
 		})
 		test(`if a family is tracked by a timeline, a member of that family cannot be tracked by another timeline`, () => {
-			const findCountState = atomFamily<number, string>({
+			const countStates = atomFamily<number, string>({
 				key: `counts`,
 				default: 0,
 			})
 			const countTimeline = timeline({
 				key: `counts_history`,
-				atoms: [findCountState],
+				atoms: [countStates],
 			})
-			const aCount = findCountState(`a`)
+			const aCount = findState(countStates, `a`)
 			const aCountTimeline = timeline({
 				key: `a_count_history`,
 				atoms: [aCount],
@@ -197,7 +197,7 @@ describe(`findState`, () => {
 		expect(() =>
 			findState(token, `whatever`),
 		).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom_family "does not exist" not found in store "IMPLICIT_STORE".]`,
+			`[Error: Atom Family "does not exist" not found in store "IMPLICIT_STORE".]`,
 		)
 	})
 })
