@@ -52,9 +52,8 @@ export function selectJsonFamily<
 					const stringKey = stringifyJson(key)
 					const molecule = store.molecules.get(stringKey)
 					if (molecule) {
-						const atom = molecule.bond(family as any) // ❗ support other key types in molecules
-						console.log({ atom })
-						return transform.toJson(get(atom) as any)
+						const atom = molecule.bond(family)
+						return transform.toJson(get(atom))
 					}
 					if (store.config.lifespan === `immortal`) {
 						throw new Error(`No molecule found for key "${stringKey}"`)
@@ -73,8 +72,8 @@ export function selectJsonFamily<
 						const stringKey = stringifyJson(key)
 						const molecule = store.molecules.get(stringKey)
 						if (molecule) {
-							const atom = molecule.bond(family as any) // ❗ support other key types in molecules
-							set(atom, transform.fromJson(newValue) as any)
+							const atom = molecule.bond(family)
+							set(atom, transform.fromJson(newValue))
 						} else {
 							if (store.config.lifespan === `immortal`) {
 								throw new Error(`No molecule found for key "${stringKey}"`)

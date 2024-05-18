@@ -4,6 +4,7 @@ import { editRelations, findRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
+import { i } from "vitest/dist/reporters-yx5ZTtEV.js"
 
 import { Molecule } from "~/packages/atom.io/immortal/src/molecule"
 
@@ -153,24 +154,77 @@ describe(`practical example of immortal`, () => {
 			key: `armor`,
 			default: 0,
 		})
+		const $$damage = atomFamily<number, string>({
+			key: `damage`,
+			default: 0,
+		})
 		const holdersOfItems = join({
 			key: `holdersOfItems`,
 			between: [`holder`, `item`],
 			cardinality: `1:n`,
 		})
-		class Being extends Molecule {
+		class Being extends Molecule<string> {
 			public $maxHealth: AtomToken<number>
 			public $health: AtomToken<number>
 			public $armor: AtomToken<number>
-			public constructor(public readonly id: string) {
+			public constructor(
+				public readonly id: string,
+				public readonly baseHealth: number,
+				public readonly baseArmor: number,
+			) {
 				super(id, [world])
 				this.$maxHealth = this.bond($$maxHealth)
 				this.$health = this.bond($$health)
 				this.$armor = this.bond($$armor)
 				this.join(holdersOfItems)
+
+				setState(this.$health, this.baseHealth)
+				setState(this.$maxHealth, this.baseHealth)
+				setState(this.$armor, this.baseArmor)
 			}
 		}
-		const me = new Being(`me`)
+		class Item extends Molecule<string> {
+			public $damage: AtomToken<number>
+			public constructor(
+				public readonly id: string,
+				public readonly baseDamage: number,
+			) {
+				super(id, [world])
+				this.join(holdersOfItems)
+				this.$damage = this.bond($$damage)
+				setState(this.$damage, this.baseDamage)
+			}
+		}
+		const me = new Being(`me`, 100, 10)
 		const itemsIHold = findRelations(holdersOfItems, `me`).itemKeysOfHolder
+		expect(getState(itemsIHold)).toEqual([])
+		const sword = new Item(`sword`, 10)
+		editRelations(holdersOfItems, (relations) => {
+			relations.set({ holder: `me`, item: `sword` })
+			me.claim(sword)
+		})
+		expect(getState(itemsIHold)).toEqual([`sword`])
+		const holderOfSword = findRelations(holdersOfItems, `sword`).holderKeyOfItem
+		expect(getState(holderOfSword)).toEqual(`me`)
+		setState(sword.$damage, 5)
+		expect(getState(sword.$damage)).toEqual(5)
+		expect(getState(me.$health)).toEqual(100)
+		me.dispose()
+		console.log(
+			`MOLECULES--------------------------------------------------------`,
+		)
+		console.log(Internal.IMPLICIT.STORE.molecules)
+		console.log(
+			`ATOMS------------------------------------------------------------`,
+		)
+		console.log(Internal.IMPLICIT.STORE.atoms)
+		console.log(
+			`VALUE MAP--------------------------------------------------------`,
+		)
+		console.log(Internal.IMPLICIT.STORE.valueMap)
+		console.log(
+			`JOIN-------------------------------------------------------------`,
+		)
+		console.log(getJoin(holdersOfItems, Internal.IMPLICIT.STORE))
 	})
 })

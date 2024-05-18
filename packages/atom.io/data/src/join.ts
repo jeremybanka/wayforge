@@ -28,7 +28,7 @@ import {
 	seekInStore,
 	setIntoStore,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import { type Json, stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -134,7 +134,7 @@ export class Join<
 	private defaultContent: Content | undefined
 	private transactors: Transactors
 	public retrieve: typeof findState
-	public molecules: Map<string, Molecule> = new Map()
+	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
 	public core: {
@@ -193,15 +193,18 @@ export class Join<
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
 		}
-		this.retrieve = (token: ReadableFamilyToken<any, any>, key: string) => {
+		this.retrieve = (
+			token: ReadableFamilyToken<any, any>,
+			key: Json.Serializable,
+		) => {
 			const maybeToken = this.transactors.seek(token, key)
 			if (maybeToken) {
 				return maybeToken
 			}
-			const molecule = this.molecules.get(key)
+			const molecule = this.molecules.get(stringifyJson(key))
 			if (!molecule) {
 				if (store.config.lifespan === `immortal`) {
-					throw new Error(`No molecule found for key "${key}"`)
+					throw new Error(`No molecule found for key "${stringifyJson(key)}"`)
 				}
 				return initFamilyMember(token, key, store)
 			}
@@ -247,25 +250,30 @@ export class Join<
 			const { set } = transactors
 			const aKeysState = this.retrieve(relatedKeysAtoms, a)
 			const bKeysState = this.retrieve(relatedKeysAtoms, b)
-			let shouldClearA = false
-			let shouldClearB = false
+			let stringA: string | undefined
+			let stringB: string | undefined
 			set(aKeysState, (aKeys) => {
 				aKeys.delete(b)
-				shouldClearA = aKeys.size === 0
+				if (aKeys.size === 0) {
+					stringA = `"${a}"`
+				}
 				return aKeys
 			})
 			set(bKeysState, (bKeys) => {
 				bKeys.delete(a)
-				shouldClearB = bKeys.size === 0
+				if (bKeys.size === 0) {
+					stringB = `"${b}"`
+				}
 				return bKeys
 			})
-			if (shouldClearA && this.molecules.has(a)) {
-				this.molecules.get(a)?.clear()
-				this.molecules.delete(a)
+
+			if (stringA && this.molecules.has(stringA)) {
+				this.molecules.get(stringA)?.clear()
+				this.molecules.delete(stringA)
 			}
-			if (shouldClearB && this.molecules.has(b)) {
-				this.molecules.get(b)?.clear()
-				this.molecules.delete(b)
+			if (stringB && this.molecules.has(stringB)) {
+				this.molecules.get(stringB)?.clear()
+				this.molecules.delete(stringB)
 			}
 		}
 		const replaceRelationsSafely: Write<
@@ -317,7 +325,7 @@ export class Join<
 								molecule?.clear()
 								this.molecules.delete(previousOwner)
 								const sorted = [newRelationB, previousOwner].sort()
-								const compositeKey = `${sorted[0]}:${sorted[1]}`
+								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
 								this.molecules.delete(compositeKey)
 							}
 						}
@@ -397,9 +405,12 @@ export class Join<
 			) => {
 				set(this.retrieve(contentAtoms, key), content)
 			}
-			const deleteContent: Write<(key: string) => void> = (_, key) => {
-				disposeState(this.retrieve(contentAtoms, key))
-				this.molecules.delete(key)
+			const deleteContent: Write<(compositeKey: string) => void> = (
+				_,
+				compositeKey,
+			) => {
+				disposeState(this.retrieve(contentAtoms, compositeKey))
+				this.molecules.delete(`"${compositeKey}"`)
 			}
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {
@@ -426,10 +437,12 @@ export class Join<
 			makeContentKey: (...args) => {
 				const sorted = args.sort()
 				const compositeKey = `${sorted[0]}:${sorted[1]}`
-				const [m0, m1] = sorted.map((key) => this.molecules.get(key))
+				const [m0, m1] = sorted.map((key) =>
+					this.molecules.get(stringifyJson(key)),
+				)
 				if (store.config.lifespan === `immortal` && m0 && m1) {
 					const composite = m0.with(m1)(compositeKey)
-					this.molecules.set(compositeKey, composite)
+					this.molecules.set(`"${compositeKey}"`, composite)
 				}
 				return compositeKey
 			},
@@ -807,8 +820,6 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entryAB]() {
 						const familyAB = myJoin.states[entryAB as any]
-						console.log(myJoin.alternates.keys())
-						console.log(store.families)
 						const state = myJoin.retrieve(familyAB, key)
 						return state
 					},
