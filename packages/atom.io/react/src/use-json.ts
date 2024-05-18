@@ -33,6 +33,6 @@ export function useJSON<
 		token.type === `mutable_atom_family`
 			? findInStore(token, key as Key, store)
 			: token
-	const jsonToken = getJsonToken(stateToken)
+	const jsonToken = getJsonToken(stateToken, store)
 	return useO(jsonToken)
 }

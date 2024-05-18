@@ -170,7 +170,6 @@ describe(`join with content`, () => {
 		subscribe(joshuaRoomsEntriesState, Utils.stdout3)
 
 		const joinedAt = Date.now()
-
 		editRelations(roomPlayers, (relations) => {
 			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
 			expect(relations.has(`josh`)).toBe(false)

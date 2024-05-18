@@ -1,7 +1,7 @@
 import type { ReadableToken, StateUpdate, UpdateHandler } from "atom.io"
 
 import type { Store } from "../store"
-import { withdrawOrCreate } from "../store"
+import { withdraw } from "../store"
 import { subscribeToRootAtoms } from "./subscribe-to-root-atoms"
 
 export function subscribeToState<T>(
@@ -23,7 +23,7 @@ export function subscribeToState<T>(
 			handleUpdate(update)
 		}
 	}
-	const state = withdrawOrCreate(token, store)
+	const state = withdraw(token, store)
 	store.logger.info(`👀`, state.type, state.key, `Adding subscription "${key}"`)
 	const isSelector =
 		state.type === `selector` || state.type === `readonly_selector`

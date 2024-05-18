@@ -1,6 +1,14 @@
-import type { MutableAtomToken, WritableSelectorToken } from "atom.io"
+import type {
+	MutableAtomToken,
+	WritableSelectorFamily,
+	WritableSelectorFamilyToken,
+	WritableSelectorToken,
+} from "atom.io"
 import type { Json } from "atom.io/json"
 
+import { findInStore } from "../families"
+import { newest } from "../lineage"
+import { type Store, withdraw } from "../store"
 import type { Transceiver } from "./transceiver"
 
 export const getJsonToken = <
@@ -8,19 +16,26 @@ export const getJsonToken = <
 	SerializableCore extends Json.Serializable,
 >(
 	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
+	store: Store,
 ): WritableSelectorToken<SerializableCore> => {
-	const key = mutableAtomToken.family
-		? `${mutableAtomToken.family.key}:JSON(${mutableAtomToken.family.subKey})`
-		: `${mutableAtomToken.key}:JSON`
-	const jsonToken: WritableSelectorToken<SerializableCore> = {
-		type: `selector`,
-		key,
-	}
 	if (mutableAtomToken.family) {
-		jsonToken.family = {
-			key: `${mutableAtomToken.family.key}:JSON`,
-			subKey: mutableAtomToken.family.subKey,
+		const target = newest(store)
+		const jsonFamilyKey = `${mutableAtomToken.family.key}:JSON`
+		const jsonFamilyToken: WritableSelectorFamilyToken<
+			SerializableCore,
+			string
+		> = {
+			key: jsonFamilyKey,
+			type: `selector_family`,
 		}
+		const family = withdraw(jsonFamilyToken, target)
+		const subKey = JSON.parse(mutableAtomToken.family.subKey)
+		const jsonToken = findInStore(family, subKey, store)
+		return jsonToken
 	}
-	return jsonToken
+	const token: WritableSelectorToken<SerializableCore> = {
+		type: `selector`,
+		key: `${mutableAtomToken.key}:JSON`,
+	}
+	return token
 }

@@ -40,9 +40,8 @@ export function syncContinuity<F extends AtomIO.Func>(
 				k = x
 			} else {
 				v = x
-				// console.log(`❗❗❗❗❗`, k, v)
 				if (`type` in k && k.type === `mutable_atom`) {
-					k = getJsonToken(k)
+					k = getJsonToken(k, store)
 				}
 				setIntoStore(k, v, store)
 			}

@@ -20,7 +20,7 @@ export function pullMutableAtomFamilyMember<
 	const { key: familyKey, subKey: serializedSubKey } = token.family
 	const subKey = parseJson(serializedSubKey)
 	socket.on(`init:${token.key}`, (data: J) => {
-		const jsonToken = getJsonToken(token)
+		const jsonToken = getJsonToken(token, store)
 		setIntoStore(jsonToken, data, store)
 	})
 	socket.on(

@@ -4,7 +4,8 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"types": ["vitest/globals"],
-		"noEmit": true
+		"noEmit": true,
+		"declaration": true
 	},
 	"include": [
 		"src",

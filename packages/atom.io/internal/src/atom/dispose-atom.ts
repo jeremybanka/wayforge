@@ -37,6 +37,7 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		if (atomToken.type === `mutable_atom`) {
 			const updateToken = getUpdateToken(atomToken)
 			disposeAtom(updateToken, store)
+			store.trackers.delete(key)
 		}
 		store.logger.info(`🔥`, `atom`, key, `deleted`)
 		store.on.atomDisposal.next(atomToken)

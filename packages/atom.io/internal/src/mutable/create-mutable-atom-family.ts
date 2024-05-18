@@ -24,32 +24,28 @@ export function createMutableAtomFamily<
 	store: Store,
 ): MutableAtomFamily<T, J, K> {
 	const subject = new Subject<MutableAtomToken<T, J>>()
-	const atomFamily: MutableAtomFamily<T, J, K> = Object.assign(
+
+	const atomFamily = Object.assign(
 		(key: K): MutableAtomToken<T, J> => {
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
 			const target = newest(store)
-			const atomAlreadyCreated = target.atoms.has(fullKey)
-			let token: MutableAtomToken<T, J>
-			if (atomAlreadyCreated) {
-				token = { type: `mutable_atom`, key: fullKey, family }
-			} else {
-				const individualOptions: MutableAtomOptions<T, J> = {
-					key: fullKey,
-					default: () => options.default(key),
-					toJson: options.toJson,
-					fromJson: options.fromJson,
-					mutable: true,
-				}
-				if (options.effects) {
-					individualOptions.effects = options.effects(key)
-				}
 
-				token = createMutableAtom(individualOptions, family, store)
-
-				subject.next(token)
+			const individualOptions: MutableAtomOptions<T, J> = {
+				key: fullKey,
+				default: () => options.default(key),
+				toJson: options.toJson,
+				fromJson: options.fromJson,
+				mutable: true,
 			}
+			if (options.effects) {
+				individualOptions.effects = options.effects(key)
+			}
+
+			const token = createMutableAtom(individualOptions, family, target)
+
+			subject.next(token)
 			return token
 		},
 		{
@@ -60,10 +56,8 @@ export function createMutableAtomFamily<
 			toJson: options.toJson,
 			fromJson: options.fromJson,
 		} as const,
-	)
-
-	const target = newest(store)
-	target.families.set(options.key, atomFamily)
+	) satisfies MutableAtomFamily<T, J, K>
+	store.families.set(options.key, atomFamily)
 	selectJsonFamily(atomFamily, options, store)
 	new FamilyTracker(atomFamily, store)
 	return atomFamily

@@ -2,7 +2,7 @@ import type { WritableToken } from "atom.io"
 
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
-import { withdrawOrCreate } from "../store"
+import { withdraw } from "../store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
 export function setIntoStore<T, New extends T>(
@@ -27,7 +27,7 @@ export function setIntoStore<T, New extends T>(
 		)
 		return
 	}
-	const state = withdrawOrCreate(token, store)
+	const state = withdraw(token, store)
 	setAtomOrSelector(state, value, store)
 	closeOperation(store)
 }

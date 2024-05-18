@@ -9,7 +9,7 @@ import { parseJson } from "atom.io/json"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 0
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
@@ -157,7 +157,10 @@ describe(`async selector`, () => {
 	})
 	server.listen(PORT)
 	test(`selector as a caching mechanism for async data`, async () => {
-		const { atom, selector, getState, store } = new AtomIO.Silo(`math`)
+		const { atom, selector, getState, store } = new AtomIO.Silo({
+			name: `math`,
+			lifespan: `ephemeral`,
+		})
 		// AtomIO.setLogLevel(`info`, store)
 		const dividendState = atom<number>({
 			key: `dividend`,

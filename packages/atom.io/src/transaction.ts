@@ -7,6 +7,7 @@ import {
 	IMPLICIT,
 } from "atom.io/internal"
 
+import type { seekState } from "../immortal/src/seek-state"
 import type {
 	Func,
 	KeyedStateUpdate,
@@ -40,6 +41,7 @@ export type Transactors = Readonly<{
 		newValue: New | ((oldValue: S) => New),
 	) => void
 	find: typeof findState
+	seek: typeof seekState
 }>
 export type TransactorsWithRunAndEnv = Readonly<{
 	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
@@ -48,10 +50,11 @@ export type TransactorsWithRunAndEnv = Readonly<{
 		newValue: New | ((oldValue: S) => New),
 	) => void
 	find: typeof findState
+	seek: typeof seekState
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>
-export type ReadonlyTransactors = Pick<Transactors, `find` | `get`>
+export type ReadonlyTransactors = Pick<Transactors, `find` | `get` | `seek`>
 
 export type Read<F extends Func> = (
 	transactors: ReadonlyTransactors,

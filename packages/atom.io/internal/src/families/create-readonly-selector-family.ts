@@ -10,7 +10,6 @@ import { stringifyJson } from "atom.io/json"
 import { newest } from "../lineage"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
-import { deposit } from "../store"
 import { Subject } from "../subject"
 
 export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
@@ -18,24 +17,25 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	store: Store,
 ): ReadonlySelectorFamily<T, K> {
 	const subject = new Subject<ReadonlySelectorToken<T>>()
+
 	const readonlySelectorFamily = Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
-			const target = newest(store)
 			const subKey = stringifyJson(key)
 			const family: FamilyMetadata = { key: options.key, subKey }
 			const fullKey = `${options.key}(${subKey})`
-			const existing = target.readonlySelectors.get(fullKey)
-			if (existing) {
-				return deposit(existing)
-			}
-			return createReadonlySelector(
+			const target = newest(store)
+
+			const token = createReadonlySelector(
 				{
 					key: fullKey,
 					get: options.get(key),
 				},
 				family,
-				store,
+				target,
 			)
+
+			subject.next(token)
+			return token
 		},
 		{
 			key: options.key,
@@ -43,7 +43,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 			subject,
 			install: (s: Store) => createReadonlySelectorFamily(options, s),
 		} as const,
-	) as ReadonlySelectorFamily<T, K>
+	) satisfies ReadonlySelectorFamily<T, K>
 	store.families.set(options.key, readonlySelectorFamily)
 	return readonlySelectorFamily
 }

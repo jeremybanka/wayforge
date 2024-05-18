@@ -16,10 +16,18 @@ type AtomIOToken =
 	| TransactionToken<any>
 
 function prettyPrintTokenType(token: AtomIOToken) {
-	if (token.type === `readonly_selector`) {
-		return `Readonly Selector`
+	switch (token.type) {
+		case `atom_family`:
+			return `Atom Family`
+		case `readonly_selector`:
+			return `Readonly Selector`
+		case `readonly_selector_family`:
+			return `Readonly Selector Family`
+		case `selector_family`:
+			return `Selector Family`
+		default:
+			return capitalize(token.type)
 	}
-	return capitalize(token.type)
 }
 
 export class NotFoundError extends Error {

@@ -57,8 +57,11 @@ export type RegularAtomFamilyTokenWithCall<
 	K extends Json.Serializable,
 > = 
 	& RegularAtomFamilyToken<T, K>
-	& /** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
-((key: K) => RegularAtomToken<T>)
+	& {
+		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
+		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
+		(key: K): RegularAtomToken<T>
+	}
 // biome-ignore format: intersection
 export type RegularAtomFamily<T, K extends Json.Serializable> = 
 	& RegularAtomFamilyToken<T, K>
@@ -100,8 +103,11 @@ export type MutableAtomFamilyTokenWithCall<
 	K extends Json.Serializable,
 > = 
 	& MutableAtomFamilyToken<T, J, K>
-	& /** @deprecated Prefer the `findState`, `findInStore`, or `find` functions. */
-((key: K) => MutableAtomToken<T, J>)
+	& {
+		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
+		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */	
+		(key: K): MutableAtomToken<T, J>
+	}
 // biome-ignore format: intersection
 export type MutableAtomFamily<
 	T extends Transceiver<any>,

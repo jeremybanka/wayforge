@@ -88,7 +88,9 @@ export function createMutableAtom<
 	}
 
 	new Tracker(token, store)
-	selectJson(token, options, store)
+	if (!family) {
+		selectJson(token, options, store)
+	}
 
 	store.on.atomCreation.next(token)
 

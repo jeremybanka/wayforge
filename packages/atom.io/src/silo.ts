@@ -50,8 +50,8 @@ export class Silo {
 	public subscribe: typeof subscribe
 	public undo: typeof undo
 	public redo: typeof redo
-	public constructor(name: string, fromStore: Store | null = null) {
-		const s = new Store(name, fromStore)
+	public constructor(config: Store[`config`], fromStore: Store | null = null) {
+		const s = new Store(config, fromStore)
 		function _atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
 		function _atom<T extends Transceiver<any>, J extends Json.Serializable>(
 			options: MutableAtomOptions<T, J>,

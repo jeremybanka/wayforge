@@ -128,6 +128,9 @@
 		"eslint-plugin/dist",
 		"eslint-plugin/package.json",
 		"eslint-plugin/src",
+		"immortal/dist",
+		"immortal/package.json",
+		"immortal/src",
 		"internal/dist",
 		"internal/package.json",
 		"internal/src",
@@ -190,6 +193,13 @@
 			"browser": "./eslint-plugin/dist/index.js",
 			"import": "./eslint-plugin/dist/index.js",
 			"require": "./eslint-plugin/dist/index.cjs"
+		},
+		"./immortal/package.json": "./immortal/package.json",
+		"./immortal": {
+			"types": "./immortal/dist/index.d.ts",
+			"browser": "./immortal/dist/index.js",
+			"import": "./immortal/dist/index.js",
+			"require": "./immortal/dist/index.cjs"
 		},
 		"./internal/package.json": "./internal/package.json",
 		"./internal": {

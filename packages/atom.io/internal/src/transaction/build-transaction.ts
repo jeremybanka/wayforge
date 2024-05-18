@@ -1,10 +1,11 @@
 import type { Func } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
 import { arbitrary } from "../arbitrary"
-import { findInStore } from "../families"
+import { findInStore, seekInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
@@ -44,6 +45,8 @@ export const buildTransaction = (
 		}),
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
+		molecules: new LazyMap(parent.molecules),
+		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)
 	const transactionMeta: TransactionProgress<Func> = {
@@ -64,6 +67,7 @@ export const buildTransaction = (
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(token, identifier, child),
 			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
+			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
 			env: () => getEnvironmentData(child),
 		},
 	}
