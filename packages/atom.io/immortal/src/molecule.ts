@@ -18,7 +18,6 @@ import { getJoin } from "atom.io/data"
 import type { Store, Transceiver } from "atom.io/internal"
 import { getJsonFamily, IMPLICIT, initFamilyMember } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
-import { J } from "vitest/dist/reporters-yx5ZTtEV.js"
 
 export class Molecule<Key extends Json.Serializable> {
 	public readonly below: Molecule<any>[] = []

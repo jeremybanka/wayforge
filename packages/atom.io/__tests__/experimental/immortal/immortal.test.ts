@@ -2,11 +2,8 @@ import type { AtomToken, Logger } from "atom.io"
 import { atomFamily, getState, setState } from "atom.io"
 import { editRelations, findRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
-import { seekState } from "atom.io/immortal"
+import { Molecule, seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
-import { i } from "vitest/dist/reporters-yx5ZTtEV.js"
-
-import { Molecule } from "~/packages/atom.io/immortal/src/molecule"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
