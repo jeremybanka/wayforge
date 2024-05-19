@@ -19,6 +19,7 @@ import { vitest } from "vitest"
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
+import { seekState } from "../../immortal/src/seek-state"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -131,6 +132,25 @@ describe(`transaction`, () => {
 		})
 		runTransaction(addCountPlusSomeValue)(777)
 		expect(getState(findState(countPlusSomeValueStates, 777))).toEqual(778)
+	})
+	it(`disposes of a state in a transaction`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ find, get, set, dispose }) => {
+				const countState = find(countStates, `my-key`)
+				const count = get(countState)
+				set(countState, count + 1)
+				dispose(countState)
+			},
+		})
+		findState(countStates, `my-key`)
+		runTransaction(incrementTX)()
+		console.log(Internal.IMPLICIT.STORE)
+		expect(seekState(countStates, `my-key`)).toBeUndefined()
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
 		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()
@@ -401,5 +421,42 @@ describe(`precise scope of transactions`, () => {
 		expect(validate.update).toHaveBeenCalledTimes(1)
 		expect(getState(countState)).toEqual(1)
 		expect(getState(favoriteWordState)).toEqual(`cheese`)
+	})
+})
+
+describe(`reversibility of transactions`, () => {
+	test(`a transaction that fails does does not create a state`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ find, get, set }) => {
+				const countState = find(countStates, `my-key`)
+				const count = get(countState)
+				set(countState, count + 1)
+				throw new Error(`fail`)
+			},
+		})
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`count("my-key")`)).toBe(
+			undefined,
+		)
+	})
+	test(`a transaction that fails does does not dispose of a state`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		findState(countStates, `my-key`)
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ find, dispose }) => {
+				const countState = find(countStates, `my-key`)
+				dispose(countState)
+				throw new Error(`fail`)
+			},
+		})
+		expect(seekState(countStates, `my-key`)).toBeDefined()
 	})
 })

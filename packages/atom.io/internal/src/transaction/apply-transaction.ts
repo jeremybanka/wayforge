@@ -1,6 +1,8 @@
 import type { Func } from "atom.io"
 
+import { disposeAtom } from "../atom"
 import { ingestTransactionUpdate } from "../ingest-updates"
+import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -59,6 +61,17 @@ export const applyTransaction = <F extends Func>(
 		}
 	}
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
+	if (child.atoms instanceof LazyMap) {
+		console.log(`child.atoms instanceof LazyMap`, child.atoms)
+		for (const deleted of child.atoms.deleted) {
+			console.log(`deleted`, deleted)
+			const atom = parent.atoms.get(deleted)
+			if (atom) {
+				console.log(`disposing`, atom)
+				disposeAtom(atom, parent)
+			}
+		}
+	}
 	if (isRootStore(parent)) {
 		setEpochNumberOfAction(
 			child.transactionMeta.update.key,
