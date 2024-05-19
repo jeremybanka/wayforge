@@ -16,7 +16,10 @@ import type { seekState } from "../immortal/src/seek-state"
 import type {
 	Func,
 	KeyedStateUpdate,
+<<<<<<< HEAD
 	MutableAtomToken,
+=======
+>>>>>>> 814194ac1 (✨ dispose transactor)
 	ReadableToken,
 	ReadonlySelectorToken,
 	WritableSelectorToken,
@@ -65,6 +68,7 @@ export type TransactorsWithRunAndEnv = Readonly<{
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
+	dispose: (token: ReadableToken<any>) => void
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>

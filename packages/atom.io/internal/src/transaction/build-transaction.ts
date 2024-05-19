@@ -5,7 +5,7 @@ import type { seekState } from "atom.io/immortal"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import { arbitrary } from "../arbitrary"
-import { findInStore, seekInStore } from "../families"
+import { disposeFromStore, findInStore, seekInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
@@ -70,6 +70,9 @@ export const buildTransaction = (
 			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
 			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
 			json: (token) => getJsonToken(token, child),
+			dispose: (token) => {
+				disposeFromStore(token, child)
+			},
 			env: () => getEnvironmentData(child),
 		},
 	}

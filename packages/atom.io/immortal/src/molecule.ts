@@ -12,11 +12,15 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import { disposeState } from "atom.io"
 import type { Join, JoinToken } from "atom.io/data"
 import { getJoin } from "atom.io/data"
 import type { Store, Transceiver } from "atom.io/internal"
-import { getJsonFamily, IMPLICIT, initFamilyMember } from "atom.io/internal"
+import {
+	disposeFromStore,
+	getJsonFamily,
+	IMPLICIT,
+	initFamilyMember,
+} from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 export class Molecule<Key extends Json.Serializable> {
@@ -106,7 +110,7 @@ export class Molecule<Key extends Json.Serializable> {
 		while (this.tokens.length > 0) {
 			const token = this.tokens.pop()
 			if (token) {
-				disposeState(token, this.store)
+				disposeFromStore(token, this.store)
 			}
 		}
 		while (this.joins.length > 0) {

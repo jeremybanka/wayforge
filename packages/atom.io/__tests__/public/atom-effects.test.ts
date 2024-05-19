@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs"
 
 import type { Logger } from "atom.io"
-import { atom, atomFamily, getState, setState } from "atom.io"
+import { atom, atomFamily, disposeState, getState, setState } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import tmp from "tmp"
@@ -88,10 +88,7 @@ describe(`atom effect cleanup`, () => {
 			newValue: { x: 1, y: 1 },
 			oldValue: { x: 0, y: 0 },
 		})
-		Internal.disposeAtom(
-			findState(coordinateStates, `a`),
-			Internal.IMPLICIT.STORE,
-		)
+		disposeState(findState(coordinateStates, `a`))
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
 	})
 })
