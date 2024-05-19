@@ -34,7 +34,7 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`safe initialization of state with Molecule`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -49,7 +49,7 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`safe retrieval of state with seekState`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -69,7 +69,7 @@ describe(`immortal mode`, () => {
 		expect(countState).toBeUndefined()
 	})
 	test(`hierarchical ownership of molecules`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		const expStates = atomFamily<number, string>({
 			key: `exp`,
 			default: 0,
@@ -85,7 +85,7 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`transfer of ownership of molecules`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		const dmgStates = atomFamily<number, string>({
 			key: `dmg`,
 			default: 0,
@@ -99,7 +99,7 @@ describe(`immortal mode`, () => {
 		expect(getState(dmgState)).toBe(0)
 	})
 	test(`won't make a molecule a child of itself`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		world.claim(world)
 		expect(world.below.length).toBe(0)
 	})
@@ -116,7 +116,7 @@ describe(`immortal integrations`, () => {
 			{ hi: 0 } satisfies { hi: number },
 		)
 
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		const holder = world.spawn(`character-0`)
 		const item = world.spawn(`item-0`)
 		holder.join(holdersOfItems)
@@ -138,7 +138,7 @@ describe(`immortal integrations`, () => {
 
 describe(`practical example of immortal`, () => {
 	test(`RPG`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
 		const $$maxHealth = atomFamily<number, string>({
 			key: `maxHealth`,
 			default: 100,
@@ -169,7 +169,7 @@ describe(`practical example of immortal`, () => {
 				public readonly baseHealth: number,
 				public readonly baseArmor: number,
 			) {
-				super(id, [world])
+				super(world.store, world, id)
 				this.$maxHealth = this.bond($$maxHealth)
 				this.$health = this.bond($$health)
 				this.$armor = this.bond($$armor)
@@ -186,7 +186,7 @@ describe(`practical example of immortal`, () => {
 				public readonly id: string,
 				public readonly baseDamage: number,
 			) {
-				super(id, [world])
+				super(world.store, world, id)
 				this.join(holdersOfItems)
 				this.$damage = this.bond($$damage)
 				setState(this.$damage, this.baseDamage)

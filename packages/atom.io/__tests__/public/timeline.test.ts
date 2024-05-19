@@ -314,3 +314,20 @@ describe(`timeline`, () => {
 		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 	})
 })
+
+describe(`timeline state lifecycle`, () => {
+	test(`states may be disposed via undo`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const countsTL = timeline({
+			key: `counts`,
+			atoms: [countStates],
+		})
+		const countState = findState(countStates, `my-key`)
+		setState(countState, 1)
+		expect(getState(countState)).toBe(1)
+		undo(countsTL)
+	})
+})

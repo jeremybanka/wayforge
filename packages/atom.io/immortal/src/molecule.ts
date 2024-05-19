@@ -18,23 +18,31 @@ import type { Store, Transceiver } from "atom.io/internal"
 import {
 	disposeFromStore,
 	getJsonFamily,
-	IMPLICIT,
 	initFamilyMember,
 } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 export class Molecule<Key extends Json.Serializable> {
+	public readonly above: Molecule<any>[]
 	public readonly below: Molecule<any>[] = []
 	public readonly tokens: ReadableToken<any>[] = []
 	public readonly joins: Join<any, any, any, any>[] = []
 	public constructor(
+		public readonly store: Store,
+		above: Molecule<any> | Molecule<any>[] | undefined,
 		public readonly key: Key,
-		public readonly above: Molecule<any>[] = [],
-		public readonly store: Store = IMPLICIT.STORE,
 	) {
 		store.molecules.set(stringifyJson(key), this)
-		for (const parent of above) {
-			parent.below.push(this)
+		if (above) {
+			if (Array.isArray(above)) {
+				this.above = above
+				for (const parent of above) {
+					parent.below.push(this)
+				}
+			} else {
+				this.above = [above]
+				above.below.push(this)
+			}
 		}
 	}
 
@@ -70,13 +78,13 @@ export class Molecule<Key extends Json.Serializable> {
 	}
 
 	public spawn<K extends Json.Serializable>(key: K): Molecule<K> {
-		const child = new Molecule(key, [this], this.store)
+		const child = new Molecule(this.store, this, key)
 		return child
 	}
 
 	public with(molecule: Molecule<any>): (key: string) => Molecule<any> {
 		return (key) => {
-			const child = new Molecule(key, [this, molecule], this.store)
+			const child = new Molecule(this.store, [this, molecule], key)
 			return child
 		}
 	}
