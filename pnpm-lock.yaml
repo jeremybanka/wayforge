@@ -832,8 +832,8 @@ importers:
         specifier: 0.26.16
         version: 0.26.16(react-dom@18.3.1)(react@18.3.1)
       '@floating-ui/react-dom':
-        specifier: 2.0.9
-        version: 2.0.9(react-dom@18.3.1)(react@18.3.1)
+        specifier: 2.1.0
+        version: 2.1.0(react-dom@18.3.1)(react@18.3.1)
       ajv:
         specifier: ^8.12.0
         version: 8.12.0
@@ -3912,17 +3912,6 @@ packages:
 
   /@floating-ui/react-dom@2.0.8(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-    dependencies:
-      '@floating-ui/dom': 1.6.5
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    dev: false
-
-  /@floating-ui/react-dom@2.0.9(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-q0umO0+LQK4+p6aGyvzASqKbKOJcAHJ7ycE9CuUvfx3s9zTHWmGJTPOIlM/hmSBfUfg/XfY5YhLBLR/LHwShQQ==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
