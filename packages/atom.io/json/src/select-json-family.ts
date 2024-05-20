@@ -90,9 +90,9 @@ export function selectJsonFamily<
 	)
 	family.subject.subscribe(
 		`store=${store.config.name}::json-selector-family`,
-		(token) => {
-			if (token.family) {
-				seekInStore(jsonFamily, parseJson(token.family.subKey) as K, store)
+		(event) => {
+			if (event.token.family) {
+				seekInStore(jsonFamily, parseJson(event.token.family.subKey) as K, store)
 			}
 		},
 	)

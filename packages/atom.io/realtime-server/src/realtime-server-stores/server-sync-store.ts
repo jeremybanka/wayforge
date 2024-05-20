@@ -1,5 +1,5 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
-import { atomFamily, selectorFamily } from "atom.io"
+import { atomFamily } from "atom.io"
 
 // export const completeUpdateAtoms = atomFamily<
 // 	TransactionUpdate<any> | null,
@@ -31,8 +31,9 @@ export function redactTransactionUpdateContent(
 			switch (update.type) {
 				case `atom_update`:
 				case `selector_update`:
-				case `state_creation`:
 					return visibleStateKeys.includes(update.key)
+				case `state_creation`:
+					return visibleStateKeys.includes(update.token.key)
 				case `molecule_creation`:
 					return true
 				case `transaction_update`:

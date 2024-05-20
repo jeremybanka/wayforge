@@ -91,7 +91,7 @@ const TransactionUpdateFC: React.FC<{
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
 					{transactionUpdate.updates
-						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
@@ -123,7 +123,7 @@ export const TimelineUpdateFC: React.FC<{
 	timelineUpdate: TimelineUpdate<any>
 	serialNumber: number
 }> = ({ timelineUpdate, serialNumber }) => {
-	return (
+	return `key` in timelineUpdate ? (
 		<article
 			className="node timeline_update"
 			data-testid={`timeline-update-${timelineUpdate.key}-${serialNumber}`}
@@ -137,7 +137,7 @@ export const TimelineUpdateFC: React.FC<{
 			<main>
 				{timelineUpdate.type === `transaction_update` ? (
 					timelineUpdate.updates
-						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
@@ -179,7 +179,7 @@ export const TimelineUpdateFC: React.FC<{
 				) : null}
 			</main>
 		</article>
-	)
+	) : null
 }
 
 export const article = {

@@ -2,6 +2,8 @@ import type {
 	Timeline,
 	TimelineAtomUpdate,
 	TimelineSelectorUpdate,
+	TimelineStateCreation,
+	TimelineStateDisposal,
 	TimelineTransactionUpdate,
 } from "atom.io/internal"
 import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
@@ -9,6 +11,14 @@ import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 import type { AtomFamilyToken, AtomToken } from "."
 
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
+export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
+	any,
+	any
+>
+	? AtomToken<any>
+	: M extends AtomToken<any>
+		? M
+		: never
 
 export type TimelineToken<M> = {
 	key: string
@@ -28,6 +38,8 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 	| TimelineAtomUpdate<ManagedAtom>
 	| TimelineSelectorUpdate<ManagedAtom>
+	| TimelineStateCreation<AtomOnly<ManagedAtom>>
+	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
 	| TimelineTransactionUpdate
 
 export const timeline = <ManagedAtom extends TimelineManageable>(

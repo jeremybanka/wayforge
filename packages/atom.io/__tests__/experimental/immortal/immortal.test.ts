@@ -207,21 +207,21 @@ describe(`practical example of immortal`, () => {
 		expect(getState(sword.$damage)).toEqual(5)
 		expect(getState(me.$health)).toEqual(100)
 		me.dispose()
-		console.log(
-			`MOLECULES--------------------------------------------------------`,
-		)
-		console.log(Internal.IMPLICIT.STORE.molecules)
-		console.log(
-			`ATOMS------------------------------------------------------------`,
-		)
-		console.log(Internal.IMPLICIT.STORE.atoms)
-		console.log(
-			`VALUE MAP--------------------------------------------------------`,
-		)
-		console.log(Internal.IMPLICIT.STORE.valueMap)
-		console.log(
-			`JOIN-------------------------------------------------------------`,
-		)
+		// console.log(
+		// 	`MOLECULES--------------------------------------------------------`,
+		// )
+		// console.log(Internal.IMPLICIT.STORE.molecules)
+		// console.log(
+		// 	`ATOMS------------------------------------------------------------`,
+		// )
+		// console.log(Internal.IMPLICIT.STORE.atoms)
+		// console.log(
+		// 	`VALUE MAP--------------------------------------------------------`,
+		// )
+		// console.log(Internal.IMPLICIT.STORE.valueMap)
+		// console.log(
+		// 	`JOIN-------------------------------------------------------------`,
+		// )
 		console.log(getJoin(holdersOfItems, Internal.IMPLICIT.STORE))
 	})
 })

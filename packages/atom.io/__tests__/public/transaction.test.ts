@@ -413,7 +413,10 @@ describe(`precise scope of transactions`, () => {
 		const validate = {
 			update: (update: TransactionUpdate<any>) => {
 				expect(update.updates).toHaveLength(1)
-				expect(update.updates[0].key).toEqual(`count`)
+				expect(`key` in update.updates[0]).toBe(true)
+				if (`key` in update.updates[0]) {
+					expect(update.updates[0].key).toEqual(`count`)
+				}
 			},
 		}
 		vitest.spyOn(validate, `update`)

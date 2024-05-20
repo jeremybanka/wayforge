@@ -13,6 +13,7 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
+import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -329,5 +330,7 @@ describe(`timeline state lifecycle`, () => {
 		setState(countState, 1)
 		expect(getState(countState)).toBe(1)
 		undo(countsTL)
+		undo(countsTL)
+		expect(seekState(countStates, `my-key`)).toBe(undefined)
 	})
 })

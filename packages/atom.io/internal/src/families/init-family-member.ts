@@ -93,9 +93,9 @@ export function initFamilyMember(
 		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
 			target.transactionMeta.update.updates.push({
 				type: `state_creation`,
-				key: state.key,
-				family: state.family,
+				token: state,
 			})
+		} else {
 		}
 	}
 	return state

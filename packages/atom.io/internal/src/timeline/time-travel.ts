@@ -5,6 +5,10 @@ import {
 	ingestSelectorUpdate,
 	ingestTransactionUpdate,
 } from "../ingest-updates"
+import {
+	ingestCreationEvent,
+	ingestDisposalEvent,
+} from "../ingest-updates/ingest-creation-disposal"
 import type { Store } from "../store"
 
 export const timeTravel = (
@@ -62,6 +66,15 @@ export const timeTravel = (
 		}
 		case `transaction_update`: {
 			ingestTransactionUpdate(applying, update, store)
+			break
+		}
+		case `state_creation`: {
+			console.log(`📦`, `state creation`, update)
+			ingestCreationEvent(update, applying, store)
+			break
+		}
+		case `state_disposal`: {
+			ingestDisposalEvent(update, applying, store)
 			break
 		}
 	}

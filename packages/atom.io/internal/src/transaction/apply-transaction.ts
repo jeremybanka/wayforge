@@ -1,6 +1,7 @@
 import type { Func } from "atom.io"
 
 import { disposeAtom } from "../atom"
+import { initFamilyMember } from "../families"
 import { ingestTransactionUpdate } from "../ingest-updates"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"

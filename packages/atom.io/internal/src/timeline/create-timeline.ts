@@ -3,6 +3,9 @@ import type {
 	FamilyMetadata,
 	Flat,
 	Func,
+	ReadableToken,
+	StateCreation,
+	StateDisposal,
 	StateUpdate,
 	TimelineManageable,
 	TimelineOptions,
@@ -39,13 +42,23 @@ export type TimelineTransactionUpdate = Flat<
 		timestamp: number
 	}
 >
+export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
+	StateCreation<T> & {
+		timestamp: number
+	}
+>
+export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
+	StateDisposal<T> & {
+		timestamp: number
+	}
+>
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`
 	key: string
 	at: number
 	shouldCapture?: (
-		update: TimelineUpdate<TimelineManageable>,
+		update: TimelineUpdate<ManagedAtom>,
 		timeline: Timeline<ManagedAtom>,
 	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
@@ -53,13 +66,7 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: Store) => void
-	subject: Subject<
-		| TimelineAtomUpdate<ManagedAtom>
-		| TimelineSelectorUpdate<ManagedAtom>
-		| TimelineTransactionUpdate
-		| `redo`
-		| `undo`
-	>
+	subject: Subject<TimelineUpdate<ManagedAtom> | `redo` | `undo`>
 }
 
 export function createTimeline<ManagedAtom extends TimelineManageable>(
@@ -94,9 +101,21 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			const family = withdraw(familyToken, store)
 			const familyKey = family.key
 			target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
-			family.subject.subscribe(`timeline:${options.key}`, (token) => {
-				addAtomToTimeline(token, tl, store)
-			})
+			family.subject.subscribe(
+				`timeline:${options.key}`,
+				(creationOrDisposal) => {
+					const timestamp = Date.now()
+					const timelineEvent = Object.assign(creationOrDisposal, {
+						timestamp,
+					}) as TimelineUpdate<ManagedAtom>
+					tl.history.push(timelineEvent)
+					tl.at = tl.history.length
+					tl.subject.next(timelineEvent)
+					if (creationOrDisposal.type === `state_creation`) {
+						addAtomToTimeline(creationOrDisposal.token, tl, store)
+					}
+				},
+			)
 			for (const atom of target.atoms.values()) {
 				if (atom.family?.key === familyKey) {
 					addAtomToTimeline(atom, tl, store)

@@ -38,19 +38,19 @@ export class FamilyTracker<
 		this.mutableAtoms = mutableAtoms
 		this.mutableAtoms.subject.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,
-			(atomToken) => {
-				if (atomToken.family) {
-					const key = parseJson(atomToken.family.subKey) as FamilyMemberKey
+			(event) => {
+				if (event.token.family) {
+					const key = parseJson(event.token.family.subKey) as FamilyMemberKey
 					seekInStore(this.latestUpdateAtoms, key, store)
-					new Tracker<Core>(atomToken, store)
+					new Tracker<Core>(event.token, store)
 				}
 			},
 		)
 		this.latestUpdateAtoms.subject.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,
-			(atomToken) => {
-				if (atomToken.family) {
-					const key = parseJson(atomToken.family.subKey) as FamilyMemberKey
+			(event) => {
+				if (event.token.family) {
+					const key = parseJson(event.token.family.subKey) as FamilyMemberKey
 					const mutableAtomToken = seekInStore(this.mutableAtoms, key, store)
 					if (mutableAtomToken) {
 						new Tracker<Core>(mutableAtomToken, store)

@@ -109,13 +109,32 @@ export const addAtomToTimeline = (
 											if (!atomOrFamilyKeys) {
 												return false
 											}
-											if (
-												`family` in updateFromTx &&
-												atomOrFamilyKeys.has(updateFromTx.family.key)
-											) {
+											let key: string | undefined
+											let familyKey: string | undefined
+											switch (updateFromTx.type) {
+												case `state_creation`:
+												case `state_disposal`:
+													key = updateFromTx.token.key
+													familyKey = updateFromTx.token.family?.key
+													break
+												case `molecule_creation`:
+												case `molecule_disposal`:
+													break
+												default:
+													key = updateFromTx.key
+													familyKey = updateFromTx.family?.key
+													break
+											}
+											if (key === undefined) {
+												return false
+											}
+											if (atomOrFamilyKeys.has(key)) {
 												return true
 											}
-											return atomOrFamilyKeys.has(updateFromTx.key)
+											if (familyKey !== undefined) {
+												return atomOrFamilyKeys.has(familyKey)
+											}
+											return false
 										})
 										.map((updateFromTx) => {
 											if (`updates` in updateFromTx) {
