@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Codium
         id: codium-pr-agent
-        uses: Codium-ai/pr-agent@v0.21
+        uses: Codium-ai/pr-agent@v0.22
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
