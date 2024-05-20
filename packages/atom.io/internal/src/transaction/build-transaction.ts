@@ -10,6 +10,7 @@ import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
+import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import type { TransactionProgress } from "."
@@ -68,6 +69,7 @@ export const buildTransaction = (
 				actUponStore(token, identifier, child),
 			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
 			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
+			json: (token) => getJsonToken(token, child),
 			env: () => getEnvironmentData(child),
 		},
 	}
