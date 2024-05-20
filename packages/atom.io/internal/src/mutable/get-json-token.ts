@@ -1,6 +1,5 @@
 import type {
 	MutableAtomToken,
-	WritableSelectorFamily,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 } from "atom.io"
