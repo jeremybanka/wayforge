@@ -5,6 +5,7 @@ import type { seekState } from "atom.io/immortal"
 import { findInStore, seekInStore } from "../families"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
+import { getJsonToken } from "../mutable"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -47,4 +48,5 @@ export const registerSelector = (
 	},
 	find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 	seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
+	json: (token) => getJsonToken(token, store),
 })

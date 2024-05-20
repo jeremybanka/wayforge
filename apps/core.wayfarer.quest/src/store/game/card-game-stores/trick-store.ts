@@ -1,6 +1,5 @@
 import { atom, selector, selectorFamily } from "atom.io"
 import { findRelations, join } from "atom.io/data"
-import { getJsonToken, IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -53,19 +52,18 @@ export const trickIsCompleteState = selectorFamily<boolean, string>({
 	key: `trickIsComplete`,
 	get:
 		(trickId) =>
-		({ get }) => {
-			const trickContents = get(trickContentsStates(trickId))
+		({ find, get }) => {
+			const trickContents = get(find(trickContentsStates, trickId))
 			return trickContents.every(([, cardId]) => cardId !== undefined)
 		},
 })
 
 export const completeTrickIndex = selector<string[]>({
 	key: `completeTrickIndex`,
-	get: ({ get }) => {
-		const trickIdJson = getJsonToken(trickIndex)
-		const trickIds = get(trickIdJson)
+	get: ({ find, get, json }) => {
+		const trickIds = get(json(trickIndex))
 		const completeTrickIds = trickIds.members.filter((trickId) =>
-			get(trickIsCompleteState(trickId)),
+			get(find(trickIsCompleteState, trickId)),
 		)
 		return completeTrickIds
 	},
@@ -73,10 +71,9 @@ export const completeTrickIndex = selector<string[]>({
 
 export const currentTrickIdState = selector<string | null>({
 	key: `currentTrick`,
-	get: ({ get }) => {
+	get: ({ get, json }) => {
 		const completeTrickIds = get(completeTrickIndex)
-		const trickIdJson = getJsonToken(trickIndex)
-		const trickIds = get(trickIdJson)
+		const trickIds = get(json(trickIndex))
 
 		const currentTrickId = trickIds.members.at(-1)
 		if (!currentTrickId || completeTrickIds.includes(currentTrickId)) {

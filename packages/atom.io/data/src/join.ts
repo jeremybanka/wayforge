@@ -21,6 +21,7 @@ import {
 	findInStore,
 	getFromStore,
 	getJsonFamily,
+	getJsonToken,
 	IMPLICIT,
 	initFamilyMember,
 	isChildStore,
@@ -192,6 +193,7 @@ export class Join<
 			},
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
+			json: (token) => getJsonToken(token, store),
 		}
 		this.retrieve = (
 			token: ReadableFamilyToken<any, any>,

@@ -1,17 +1,25 @@
 import type { findState } from "atom.io/ephemeral"
-import type { EnvironmentData } from "atom.io/internal"
+import type {
+	EnvironmentData,
+	Transceiver,
+	WritableSelector,
+} from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
 	createTransaction,
 	IMPLICIT,
 } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
 import type { seekState } from "../immortal/src/seek-state"
 import type {
 	Func,
 	KeyedStateUpdate,
+	MutableAtomToken,
+	ReadableToken,
 	ReadonlySelectorToken,
+	WritableSelectorToken,
 	WritableToken,
 } from "."
 
@@ -35,13 +43,16 @@ export type TransactionUpdate<F extends Func> = {
 }
 
 export type Transactors = Readonly<{
-	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
+	get: <S>(state: ReadableToken<S>) => S
 	set: <S, New extends S>(
 		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
 	) => void
 	find: typeof findState
 	seek: typeof seekState
+	json: <T extends Transceiver<any>, J extends Json.Serializable>(
+		state: MutableAtomToken<T, J>,
+	) => WritableSelectorToken<J>
 }>
 export type TransactorsWithRunAndEnv = Readonly<{
 	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
@@ -51,10 +62,16 @@ export type TransactorsWithRunAndEnv = Readonly<{
 	) => void
 	find: typeof findState
 	seek: typeof seekState
+	json: <T extends Transceiver<any>, J extends Json.Serializable>(
+		state: MutableAtomToken<T, J>,
+	) => WritableSelectorToken<J>
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>
-export type ReadonlyTransactors = Pick<Transactors, `find` | `get` | `seek`>
+export type ReadonlyTransactors = Pick<
+	Transactors,
+	`find` | `get` | `json` | `seek`
+>
 
 export type Read<F extends Func> = (
 	transactors: ReadonlyTransactors,

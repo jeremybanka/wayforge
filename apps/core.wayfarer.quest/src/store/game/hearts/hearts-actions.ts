@@ -22,10 +22,9 @@ export type StartGameInput = {
 export const startGameTX = transaction<(input: StartGameInput) => void>({
 	key: `startGame`,
 	do: (transactors, { handIds, trickId, deckId, cardIds, txId, shuffle }) => {
-		const { get, set, run } = transactors
+		const { get, set, run, json } = transactors
 		run(spawnClassicDeckTX, `${txId}:spawnDeck`)(deckId, cardIds)
-		const usersInThisRoomJsonIndex = getJsonToken(usersInThisRoomIndex)
-		const { members } = get(usersInThisRoomJsonIndex)
+		const { members } = get(json(usersInThisRoomIndex))
 		set(gamePlayerIndex, members)
 		let i = 0
 		for (const playerId of members) {

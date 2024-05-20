@@ -22,8 +22,8 @@ export const createWritableSelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const transactors = registerSelector(options.key, target)
-	const { find, get, seek } = transactors
-	const readonlyTransactors = { find, get, seek }
+	const { find, get, seek, json } = transactors
+	const readonlyTransactors = { find, get, seek, json }
 
 	const getSelf = () => {
 		const value = options.get(readonlyTransactors)
