@@ -76,16 +76,19 @@ export function makeMoleculeInStore<
 	key: Key,
 	...params: Params
 ): MoleculeToken<Key, Struct, Params> {
+	const token = {
+		key,
+		type: `molecule`,
+	} as const
+	store.on.moleculeCreationStart.next(token)
 	const Formula = store.moleculeFamilies.get(family.key)
 	if (!Formula) {
 		throw new Error(`No Formula found for key "${family.key}"`)
 	}
 	const molecule = new Formula(context, key, ...params)
 	store.molecules.set(stringifyJson(key), molecule)
-	return {
-		key,
-		type: `molecule`,
-	} as const
+	store.on.moleculeCreationDone.next(token)
+	return token
 }
 export function makeMolecule<
 	Key extends Json.Serializable,

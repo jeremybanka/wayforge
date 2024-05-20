@@ -32,7 +32,7 @@ export class Molecule<Key extends Json.Serializable> {
 		above: Molecule<any> | Molecule<any>[] | undefined,
 		public readonly key: Key,
 	) {
-		store.molecules.set(stringifyJson(key), this)
+		store.molecules.set(stringifyJson(key), this) // consider removing this
 		if (above) {
 			if (Array.isArray(above)) {
 				this.above = above

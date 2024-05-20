@@ -108,7 +108,7 @@ export class Store implements Lineage {
 		),
 		operationClose: new Subject<OperationProgress>(),
 		moleculeCreationStart: new Subject<MoleculeToken<any, any, any>>(),
-		moleculeCreationDone: new Subject<Json.Serializable>(),
+		moleculeCreationDone: new Subject<MoleculeToken<any, any, any>>(),
 		moleculeDisposal: new Subject<MoleculeToken<any, any, any>>(),
 	}
 	public operation: OperationProgress = { open: false }
