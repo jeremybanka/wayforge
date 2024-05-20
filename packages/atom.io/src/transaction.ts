@@ -50,7 +50,6 @@ export type MoleculeDisposal = {
 	type: `molecule_disposal`
 	key: string
 	subKey: Json.Serializable
-	familyKeys: string[]
 	aboveKeys: string[]
 }
 

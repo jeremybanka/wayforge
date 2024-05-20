@@ -1,6 +1,7 @@
 import * as Internal from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
+import type { MoleculeCreation } from "../../src/transaction"
 import { Molecule } from "./molecule"
 
 export type MoleculeFamilyToken<
@@ -76,18 +77,36 @@ export function makeMoleculeInStore<
 	key: Key,
 	...params: Params
 ): MoleculeToken<Key, Struct, Params> {
+	const target = Internal.newest(store)
+	const isTransaction =
+		Internal.isChildStore(target) && target.transactionMeta.phase === `building`
 	const token = {
 		key,
 		type: `molecule`,
 	} as const
-	store.on.moleculeCreationStart.next(token)
+	if (!isTransaction) {
+		store.on.moleculeCreationStart.next(token)
+	}
 	const Formula = store.moleculeFamilies.get(family.key)
 	if (!Formula) {
 		throw new Error(`No Formula found for key "${family.key}"`)
 	}
+	const update = {
+		type: `molecule_creation`,
+		key: family.key,
+		subKey: key,
+		aboveKeys: [context.key],
+	} satisfies MoleculeCreation
+
+	if (isTransaction) {
+		target.transactionMeta.update.updates.push(update)
+	}
 	const molecule = new Formula(context, key, ...params)
-	store.molecules.set(stringifyJson(key), molecule)
-	store.on.moleculeCreationDone.next(token)
+
+	target.molecules.set(stringifyJson(key), molecule)
+	if (!isTransaction) {
+		store.on.moleculeCreationDone.next(token)
+	}
 	return token
 }
 export function makeMolecule<

@@ -16,12 +16,13 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import { type Json, stringifyJson } from "atom.io/json"
 
+import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
-import { seekInStore } from "./seek-in-store"
+import { isChildStore } from "../transaction"
 
 export function initFamilyMember<
 	T extends Transceiver<any>,
@@ -87,5 +88,15 @@ export function initFamilyMember(
 		throw new NotFoundError(token, store)
 	}
 	const state = family(key)
+	const target = newest(store)
+	if (state.family) {
+		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
+			target.transactionMeta.update.updates.push({
+				type: `state_creation`,
+				key: state.key,
+				family: state.family,
+			})
+		}
+	}
 	return state
 }

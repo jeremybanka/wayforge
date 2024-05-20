@@ -149,7 +149,6 @@ describe(`transaction`, () => {
 		})
 		findState(countStates, `my-key`)
 		runTransaction(incrementTX)()
-		console.log(Internal.IMPLICIT.STORE)
 		expect(seekState(countStates, `my-key`)).toBeUndefined()
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
@@ -441,6 +440,13 @@ describe(`reversibility of transactions`, () => {
 				throw new Error(`fail`)
 			},
 		})
+		let caught: unknown
+		try {
+			runTransaction(incrementTX)()
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`count("my-key")`)).toBe(
 			undefined,
 		)
@@ -459,6 +465,13 @@ describe(`reversibility of transactions`, () => {
 				throw new Error(`fail`)
 			},
 		})
+		let caught: unknown
+		try {
+			runTransaction(incrementTX)()
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
 		expect(seekState(countStates, `my-key`)).toBeDefined()
 	})
 })
