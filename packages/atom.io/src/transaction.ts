@@ -1,9 +1,5 @@
 import type { findState } from "atom.io/ephemeral"
-import type {
-	EnvironmentData,
-	Transceiver,
-	WritableSelector,
-} from "atom.io/internal"
+import type { EnvironmentData, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -16,10 +12,7 @@ import type { seekState } from "../immortal/src/seek-state"
 import type {
 	Func,
 	KeyedStateUpdate,
-<<<<<<< HEAD
 	MutableAtomToken,
-=======
->>>>>>> 814194ac1 (✨ dispose transactor)
 	ReadableToken,
 	ReadonlySelectorToken,
 	WritableSelectorToken,
