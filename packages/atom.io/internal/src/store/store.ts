@@ -13,7 +13,9 @@ import type {
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Molecule } from "atom.io/immortal"
+import type { Json } from "atom.io/json"
 
+import type { MoleculeToken } from "~/packages/atom.io/immortal/src/make-molecule"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type {
@@ -105,6 +107,9 @@ export class Store implements Lineage {
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
+		moleculeCreationStart: new Subject<MoleculeToken<any, any, any>>(),
+		moleculeCreationDone: new Subject<Json.Serializable>(),
+		moleculeDisposal: new Subject<MoleculeToken<any, any, any>>(),
 	}
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
