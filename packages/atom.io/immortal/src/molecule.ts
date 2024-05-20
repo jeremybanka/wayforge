@@ -43,6 +43,8 @@ export class Molecule<Key extends Json.Serializable> {
 				this.above = [above]
 				above.below.push(this)
 			}
+		} else {
+			this.above = []
 		}
 	}
 

@@ -13,10 +13,18 @@ export function ingestTransactionUpdate(
 			? transactionUpdate.updates
 			: [...transactionUpdate.updates].reverse()
 	for (const updateFromTransaction of updates) {
-		if (`newValue` in updateFromTransaction) {
-			ingestAtomUpdate(applying, updateFromTransaction, store)
-		} else {
-			ingestTransactionUpdate(applying, updateFromTransaction, store)
+		switch (updateFromTransaction.type) {
+			case `atom_update`:
+			case `selector_update`:
+				ingestAtomUpdate(applying, updateFromTransaction, store)
+				break
+			case `state_creation`:
+				break
+			case `molecule_creation`:
+				break
+			case `transaction_update`:
+				ingestTransactionUpdate(applying, updateFromTransaction, store)
+				break
 		}
 	}
 }

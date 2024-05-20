@@ -106,13 +106,16 @@ export const addAtomToTimeline = (
 											const atomOrFamilyKeys =
 												newestStore.timelineAtoms.getRelatedKeys(tl.key)
 
-											return atomOrFamilyKeys
-												? [...atomOrFamilyKeys].some(
-														(key) =>
-															key === updateFromTx.key ||
-															key === updateFromTx.family?.key,
-													)
-												: false
+											if (!atomOrFamilyKeys) {
+												return false
+											}
+											if (
+												`family` in updateFromTx &&
+												atomOrFamilyKeys.has(updateFromTx.family.key)
+											) {
+												return true
+											}
+											return atomOrFamilyKeys.has(updateFromTx.key)
 										})
 										.map((updateFromTx) => {
 											if (`updates` in updateFromTx) {
@@ -127,7 +130,6 @@ export const addAtomToTimeline = (
 								const updates = filterUpdates(transactionUpdate.updates)
 
 								const timelineTransactionUpdate: TimelineTransactionUpdate = {
-									type: `transaction_update`,
 									timestamp: Date.now(),
 									...transactionUpdate,
 									updates,

@@ -15,20 +15,29 @@ export function redactTransactionUpdateContent(
 ): TransactionUpdateContent[] {
 	return updates
 		.map((update): TransactionUpdateContent => {
-			if (`newValue` in update) {
-				return update
+			switch (update.type) {
+				case `transaction_update`: {
+					const redacted = redactTransactionUpdateContent(
+						visibleStateKeys,
+						update.updates,
+					)
+					return { ...update, updates: redacted }
+				}
+				default:
+					return update
 			}
-			const redacted = redactTransactionUpdateContent(
-				visibleStateKeys,
-				update.updates,
-			)
-			return { ...update, updates: redacted }
 		})
 		.filter((update) => {
-			if (`newValue` in update) {
-				return visibleStateKeys.includes(update.key)
+			switch (update.type) {
+				case `atom_update`:
+				case `selector_update`:
+				case `state_creation`:
+					return visibleStateKeys.includes(update.key)
+				case `molecule_creation`:
+					return true
+				case `transaction_update`:
+					return true
 			}
-			return true
 		})
 }
 

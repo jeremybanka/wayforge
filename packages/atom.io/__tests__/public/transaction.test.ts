@@ -299,18 +299,20 @@ describe(`transaction`, () => {
 			newValue: 6,
 		})
 		expect(Utils.stdout0).toHaveBeenCalledWith(`Transaction update:`, {
+			type: `transaction_update`,
 			key: `setAllCounts`,
 			epoch: Number.NaN,
 			params: [3],
 			output: undefined,
 			updates: [
 				{
+					type: `atom_update`,
 					key: `count1`,
 					oldValue: 2,
 					newValue: 3,
 				},
-
 				{
+					type: `atom_update`,
 					key: `count2`,
 					oldValue: 2,
 					newValue: 3,

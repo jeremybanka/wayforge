@@ -1,6 +1,7 @@
 import type {
 	AtomFamilyToken,
 	FamilyMetadata,
+	Flat,
 	Func,
 	StateUpdate,
 	TimelineManageable,
@@ -10,6 +11,7 @@ import type {
 	TokenType,
 	TransactionUpdate,
 } from "atom.io"
+import type { Json } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { getUpdateToken, isMutable } from "../mutable"
@@ -17,24 +19,27 @@ import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { addAtomToTimeline } from "./add-atom-to-timeline"
 
-export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> =
+export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
 	StateUpdate<TokenType<ManagedAtom>> & {
 		key: string
 		type: `atom_update`
 		timestamp: number
 		family?: FamilyMetadata
 	}
+>
 export type TimelineSelectorUpdate<ManagedAtom extends TimelineManageable> = {
 	key: string
 	type: `selector_update`
 	timestamp: number
 	atomUpdates: Omit<TimelineAtomUpdate<ManagedAtom>, `timestamp`>[]
 }
-export type TimelineTransactionUpdate = TransactionUpdate<Func> & {
-	key: string
-	type: `transaction_update`
-	timestamp: number
-}
+export type TimelineTransactionUpdate = Flat<
+	TransactionUpdate<Func> & {
+		key: string
+		type: `transaction_update`
+		timestamp: number
+	}
+>
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`

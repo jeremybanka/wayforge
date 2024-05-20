@@ -38,7 +38,11 @@ export const stowUpdate = <T>(
 	if (!shouldStow) {
 		return
 	}
-	const atomUpdate: KeyedStateUpdate<T> = { key, ...update }
+	const atomUpdate: KeyedStateUpdate<T> = {
+		type: `atom_update`,
+		key,
+		...update,
+	}
 	if (state.family) {
 		atomUpdate.family = state.family
 	}

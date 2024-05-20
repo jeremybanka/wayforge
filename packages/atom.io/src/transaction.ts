@@ -10,6 +10,7 @@ import type { Json } from "atom.io/json"
 
 import type { seekState } from "../immortal/src/seek-state"
 import type {
+	FamilyMetadata,
 	Func,
 	KeyedStateUpdate,
 	MutableAtomToken,
@@ -25,11 +26,42 @@ export type TransactionToken<F extends Func> = {
 	__F?: F
 }
 
+export type StateCreation = {
+	type: `state_creation`
+	key: string
+	family: FamilyMetadata
+}
+
+export type MoleculeCreation = {
+	type: `molecule_creation`
+	key: string
+	subKey: Json.Serializable
+	familyKeys: string[]
+	aboveKeys: string[]
+}
+
+export type StateDisposal = {
+	type: `state_disposal`
+	key: string
+	family: FamilyMetadata
+}
+
+export type MoleculeDisposal = {
+	type: `molecule_disposal`
+	key: string
+	subKey: Json.Serializable
+	familyKeys: string[]
+	aboveKeys: string[]
+}
+
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
+	| MoleculeCreation
+	| StateCreation
 	| TransactionUpdate<Func>
 
 export type TransactionUpdate<F extends Func> = {
+	type: `transaction_update`
 	key: string
 	id: string
 	epoch: number
