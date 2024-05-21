@@ -15,6 +15,7 @@ import type {
 	MutableAtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
+	TokenType,
 	WritableSelectorToken,
 	WritableToken,
 } from "."
@@ -40,7 +41,7 @@ export type MoleculeCreation = {
 export type StateDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	token: Token
-	value?: Token
+	value?: TokenType<Token>
 }
 
 export type MoleculeDisposal = {
