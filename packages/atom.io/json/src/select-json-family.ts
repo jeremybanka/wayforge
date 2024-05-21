@@ -64,7 +64,6 @@ export function selectJsonFamily<
 			set:
 				(key) =>
 				({ seek, set }, newValue) => {
-					// set(seek(family, key), transform.fromJson(newValue))
 					const existingState = seek(family, key)
 					if (existingState) {
 						set(existingState, transform.fromJson(newValue))
