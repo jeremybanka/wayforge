@@ -1,3 +1,4 @@
+import { stringifyJson } from "anvl/json"
 import type { ReadableToken, StateCreation, StateDisposal } from "atom.io"
 
 import { disposeFromStore, initFamilyMember } from "../families"
@@ -42,6 +43,16 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 	if (token.family) {
 		const family = store.families.get(token.family.key)
 		if (family) {
+			const molecule = store.molecules.get(stringifyJson(token.family.subKey))
+			if (molecule) {
+				molecule.bond(family)
+				return
+			}
+			if (store.config.lifespan === `immortal`) {
+				throw new Error(
+					`No molecule found for key "${stringifyJson(token.family.subKey)}"`,
+				)
+			}
 			initFamilyMember(family, token.family.subKey, store)
 		}
 	}
