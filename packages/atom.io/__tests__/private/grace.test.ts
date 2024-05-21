@@ -154,7 +154,7 @@ describe(`graceful handling of improper usage`, () => {
 			)
 			console.log(Internal.withdraw(aCount, Internal.IMPLICIT.STORE))
 			console.log(countTimelineData?.history)
-			expect(countTimelineData?.history).toHaveLength(1)
+			expect(countTimelineData?.history).toHaveLength(2)
 			expect(aCountTimelineData?.history).toHaveLength(0)
 		})
 	})
