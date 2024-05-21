@@ -5,6 +5,8 @@ import { ingestAtomUpdate } from "./ingest-atom-update"
 import {
 	ingestCreationEvent,
 	ingestDisposalEvent,
+	ingestMoleculeCreationEvent,
+	ingestMoleculeDisposalEvent,
 } from "./ingest-creation-disposal"
 
 export function ingestTransactionUpdate(
@@ -29,8 +31,10 @@ export function ingestTransactionUpdate(
 				ingestDisposalEvent(updateFromTransaction, applying, store)
 				break
 			case `molecule_creation`:
+				ingestMoleculeCreationEvent(updateFromTransaction, applying, store)
 				break
 			case `molecule_disposal`:
+				ingestMoleculeDisposalEvent(updateFromTransaction, applying, store)
 				break
 			case `transaction_update`:
 				ingestTransactionUpdate(applying, updateFromTransaction, store)

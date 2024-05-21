@@ -1,4 +1,4 @@
-import type { Logger, WritableToken } from "atom.io"
+import type { AtomToken, Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -14,7 +14,13 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
-import { seekState } from "atom.io/immortal"
+import {
+	makeMolecule,
+	makeRootMolecule,
+	Molecule,
+	moleculeFamily,
+	seekState,
+} from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -346,5 +352,36 @@ describe(`timeline state lifecycle`, () => {
 		})
 		redo(countsTL)
 		redo(countsTL)
+	})
+	test(`molecules may be disposed via undo/redo`, () => {
+		const hpAtoms = atomFamily<number, string>({
+			key: `hp`,
+			default: 0,
+		})
+		const unitMolecules = moleculeFamily({
+			key: `unit`,
+			new: (store) =>
+				class Unit extends Molecule<string> {
+					public hpState: AtomToken<number>
+					public constructor(
+						context: Molecule<any>,
+						public readonly id: string,
+					) {
+						super(store, context, id)
+						this.hpState = this.bond(hpAtoms)
+					}
+				},
+		})
+		const gameTL = timeline({
+			key: `game`,
+			scope: [unitMolecules],
+		})
+		const game = makeRootMolecule(`world`)
+		makeMolecule(game, unitMolecules, `captain`)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(1)
+		undo(gameTL)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
 	})
 })

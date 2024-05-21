@@ -2,6 +2,8 @@ import type { MoleculeFamilyToken } from "atom.io/immortal"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
+	TimelineMoleculeCreation,
+	TimelineMoleculeDisposal,
 	TimelineSelectorUpdate,
 	TimelineStateCreation,
 	TimelineStateDisposal,
@@ -38,6 +40,8 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 
 export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 	| TimelineAtomUpdate<ManagedAtom>
+	| TimelineMoleculeCreation<any>
+	| TimelineMoleculeDisposal<any>
 	| TimelineSelectorUpdate<ManagedAtom>
 	| TimelineStateCreation<AtomOnly<ManagedAtom>>
 	| TimelineStateDisposal<AtomOnly<ManagedAtom>>

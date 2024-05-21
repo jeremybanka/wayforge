@@ -17,7 +17,10 @@ import { AtomIOLogger } from "atom.io"
 import type { Molecule } from "atom.io/immortal"
 import type { Json } from "atom.io/json"
 
-import type { MoleculeToken } from "~/packages/atom.io/immortal/src/make-molecule"
+import type {
+	MoleculeFamily,
+	MoleculeToken,
+} from "~/packages/atom.io/immortal/src/make-molecule"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type {
@@ -86,14 +89,7 @@ export class Store implements Lineage {
 	)
 
 	public molecules = new Map<string, Molecule<any>>()
-	public moleculeFamilies = new Map<
-		string,
-		(new (
-			...args: any[]
-		) => Molecule<any>) & {
-			subject: Subject<MoleculeCreation | MoleculeDisposal>
-		}
-	>()
+	public moleculeFamilies = new Map<string, MoleculeFamily<any, any, any>>()
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {

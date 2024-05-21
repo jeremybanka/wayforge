@@ -1,4 +1,5 @@
 import type { findState } from "atom.io/ephemeral"
+import type { MoleculeFamilyToken, MoleculeToken } from "atom.io/immortal"
 import type { EnvironmentData, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
@@ -7,6 +8,7 @@ import {
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import { Key } from "react"
 
 import type { seekState } from "../immortal/src/seek-state"
 import type {
@@ -30,32 +32,30 @@ export type StateCreation<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-
-export type MoleculeCreation = {
-	type: `molecule_creation`
-	key: string
-	subKey: Json.Serializable
-	aboveKeys: string[]
-}
-
 export type StateDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	token: Token
 	value?: TokenType<Token>
 }
 
-export type MoleculeDisposal = {
+export type MoleculeCreation<Key extends Json.Serializable> = {
+	type: `molecule_creation`
+	token: MoleculeToken<Key, any, any>
+	family: MoleculeFamilyToken<Key, any, any>
+	context: MoleculeToken<any, any, any>[]
+}
+export type MoleculeDisposal<Key extends Json.Serializable> = {
 	type: `molecule_disposal`
-	key: string
-	subKey: Json.Serializable
+	token: MoleculeToken<Key, any, any>
+	family: MoleculeFamilyToken<any, any, any>
+	context: MoleculeToken<any, any, any>[]
 	familyKeys: string[]
-	aboveKeys: string[]
 }
 
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
-	| MoleculeCreation
-	| MoleculeDisposal
+	| MoleculeCreation<any>
+	| MoleculeDisposal<any>
 	| StateCreation<ReadableToken<unknown>>
 	| StateDisposal<ReadableToken<unknown>>
 	| TransactionUpdate<Func>

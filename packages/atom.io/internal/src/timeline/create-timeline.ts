@@ -3,6 +3,8 @@ import type {
 	FamilyMetadata,
 	Flat,
 	Func,
+	MoleculeCreation,
+	MoleculeDisposal,
 	ReadableToken,
 	StateCreation,
 	StateDisposal,
@@ -14,6 +16,7 @@ import type {
 	TokenType,
 	TransactionUpdate,
 } from "atom.io"
+import { type Json, stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { getUpdateToken, isMutable } from "../mutable"
@@ -43,14 +46,16 @@ export type TimelineTransactionUpdate = Flat<
 	}
 >
 export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
-	StateCreation<T> & {
-		timestamp: number
-	}
+	StateCreation<T> & { timestamp: number }
 >
 export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
-	StateDisposal<T> & {
-		timestamp: number
-	}
+	StateDisposal<T> & { timestamp: number }
+>
+export type TimelineMoleculeCreation<Key extends Json.Serializable> = Flat<
+	MoleculeCreation<Key> & { timestamp: number }
+>
+export type TimelineMoleculeDisposal<Key extends Json.Serializable> = Flat<
+	MoleculeDisposal<Key> & { timestamp: number }
 >
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
@@ -67,6 +72,7 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	transactionKey: string | null
 	install: (store: Store) => void
 	subject: Subject<TimelineUpdate<ManagedAtom> | `redo` | `undo`>
+	subscriptions: Map<string, () => void>
 }
 
 export function createTimeline<ManagedAtom extends TimelineManageable>(
@@ -78,6 +84,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		type: `timeline`,
 		key: options.key,
 		at: 0,
+
 		timeTraveling: null,
 		selectorTime: null,
 		transactionKey: null,
@@ -85,6 +92,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		history: data?.history.map((update) => ({ ...update })) ?? [],
 		install: (s) => createTimeline(options, s, tl),
 		subject: new Subject(),
+		subscriptions: new Map(),
 	}
 	if (options.shouldCapture) {
 		tl.shouldCapture = options.shouldCapture
@@ -101,22 +109,14 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 					const family = withdraw(familyToken, store)
 					const familyKey = family.key
 					target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
-					family.subject.subscribe(
-						`timeline:${options.key}`,
-						(creationOrDisposal) => {
-							const timestamp = Date.now()
-							const timelineEvent = Object.assign(creationOrDisposal, {
-								timestamp,
-							}) as TimelineUpdate<ManagedAtom>
-							if (!tl.timeTraveling) {
-								tl.history.push(timelineEvent)
-								tl.at = tl.history.length
-								tl.subject.next(timelineEvent)
-							}
-							if (creationOrDisposal.type === `state_creation`) {
-								addAtomToTimeline(creationOrDisposal.token, tl, store)
-							}
-						},
+					tl.subscriptions.set(
+						family.key,
+						family.subject.subscribe(
+							`timeline:${options.key}`,
+							(creationOrDisposal) => {
+								handleStateLifecycleEvent(creationOrDisposal, tl, store)
+							},
+						),
 					)
 					for (const atom of target.atoms.values()) {
 						if (atom.family?.key === familyKey) {
@@ -163,6 +163,67 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				break
 			case `molecule_family`:
 				{
+					const family = store.moleculeFamilies.get(tokenOrFamily.key)
+					if (family) {
+						tl.subscriptions.set(
+							tokenOrFamily.key,
+							family.subject.subscribe(
+								`timeline:${options.key}`,
+								(creationOrDisposal) => {
+									switch (creationOrDisposal.type) {
+										case `molecule_creation`:
+											{
+												const molecule = store.molecules.get(
+													stringifyJson(creationOrDisposal.token.key),
+												)
+												if (molecule) {
+													const event = Object.assign(creationOrDisposal, {
+														timestamp: Date.now(),
+													})
+													tl.history.push(event)
+													tl.at = tl.history.length
+													tl.subject.next(event)
+
+													for (const token of molecule.tokens) {
+														switch (token.type) {
+															case `atom`:
+															case `mutable_atom`:
+																addAtomToTimeline(token, tl, store)
+																break
+														}
+													}
+													tl.subscriptions.set(
+														molecule.key,
+														molecule.subject.subscribe(
+															`timeline:${options.key}`,
+															(stateCreationOrDisposal) => {
+																handleStateLifecycleEvent(
+																	stateCreationOrDisposal,
+																	tl,
+																	store,
+																)
+															},
+														),
+													)
+												}
+											}
+											break
+										case `molecule_disposal`:
+											tl.subscriptions.get(creationOrDisposal.token.key)?.()
+											tl.subscriptions.delete(creationOrDisposal.token.key)
+											for (const familyKey of creationOrDisposal.familyKeys) {
+												const stateKey = `${familyKey}(${stringifyJson(
+													creationOrDisposal.token.key,
+												)})`
+												tl.subscriptions.get(stateKey)?.()
+												tl.subscriptions.delete(stateKey)
+											}
+											break
+									}
+								},
+							),
+						)
+					}
 				}
 				break
 		}
@@ -175,4 +236,29 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 	}
 	store.on.timelineCreation.next(token)
 	return token
+}
+
+function handleStateLifecycleEvent(
+	event: StateCreation<any> | StateDisposal<any>,
+	tl: Timeline<any>,
+	store: Store,
+): void {
+	const timestamp = Date.now()
+	const timelineEvent = Object.assign(event, {
+		timestamp,
+	}) as TimelineUpdate<any>
+	if (!tl.timeTraveling) {
+		tl.history.push(timelineEvent)
+		tl.at = tl.history.length
+		tl.subject.next(timelineEvent)
+	}
+	switch (event.type) {
+		case `state_creation`:
+			addAtomToTimeline(event.token, tl, store)
+			break
+		case `state_disposal`:
+			tl.subscriptions.get(event.token.key)?.()
+			tl.subscriptions.delete(event.token.key)
+			break
+	}
 }

@@ -1,8 +1,19 @@
+import type { Flat } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 import type { MoleculeCreation, MoleculeDisposal } from "../../src/transaction"
 import { Molecule } from "./molecule"
+
+export type MoleculeConstructor<
+	Key extends Json.Serializable,
+	Struct extends { [key: string]: any },
+	Params extends any[],
+> = new (
+	context: Molecule<any>,
+	key: Key,
+	...params: Params
+) => Molecule<Key> & Struct
 
 export type MoleculeFamilyToken<
 	Key extends Json.Serializable,
@@ -15,6 +26,17 @@ export type MoleculeFamilyToken<
 	__S?: Struct
 	__P?: Params
 }
+export type MoleculeFamily<
+	Key extends Json.Serializable,
+	Struct extends { [key: string]: any },
+	Params extends any[],
+> = Flat<
+	MoleculeFamilyToken<Key, Struct, Params> & {
+		subject: Internal.Subject<MoleculeCreation<Key> | MoleculeDisposal<Key>>
+	}
+> &
+	MoleculeConstructor<Key, Struct, Params>
+
 export type MoleculeToken<
 	Key extends Json.Serializable,
 	Struct extends { [key: string]: any },
@@ -22,6 +44,7 @@ export type MoleculeToken<
 > = {
 	key: Key
 	type: `molecule`
+	family?: MoleculeFamilyToken<Key, Struct, Params>
 	__S?: Struct
 	__P?: Params
 }
@@ -32,13 +55,7 @@ export type MoleculeFamilyOptions<
 	Params extends any[],
 > = {
 	key: string
-	new: (
-		store: Internal.Store,
-	) => new (
-		context: Molecule<any>,
-		key: Key,
-		...params: Params
-	) => Molecule<Key> & Struct
+	new: (store: Internal.Store) => MoleculeConstructor<Key, Struct, Params>
 }
 
 export function createMoleculeFamily<
@@ -49,13 +66,16 @@ export function createMoleculeFamily<
 	options: MoleculeFamilyOptions<Key, Struct, Params>,
 	store: Internal.Store,
 ): MoleculeFamilyToken<Key, Struct, Params> {
-	const subject = new Internal.Subject<MoleculeCreation | MoleculeDisposal>()
-	const family = Object.assign(options.new(store), { subject })
-	store.moleculeFamilies.set(options.key, family)
-	return {
+	const subject = new Internal.Subject<
+		MoleculeCreation<Key> | MoleculeDisposal<Key>
+	>()
+	const token = {
 		key: options.key,
 		type: `molecule_family`,
-	} as const
+	} as const satisfies MoleculeFamilyToken<Key, Struct, Params>
+	const family = Object.assign(options.new(store), { ...token, subject })
+	store.moleculeFamilies.set(options.key, family)
+	return token
 }
 
 export function moleculeFamily<
@@ -80,11 +100,11 @@ export function makeMoleculeInStore<
 	...params: Params
 ): MoleculeToken<Key, Struct, Params> {
 	const target = Internal.newest(store)
-	const isTransaction =
-		Internal.isChildStore(target) && target.transactionMeta.phase === `building`
+
 	const token = {
-		key,
 		type: `molecule`,
+		key,
+		family,
 	} as const
 
 	const owner = store.molecules.get(stringifyJson(context.key))
@@ -96,21 +116,22 @@ export function makeMoleculeInStore<
 		throw new Error(`No Formula found for key "${family.key}"`)
 	}
 	const molecule = new Formula(owner, key, ...params)
+	target.molecules.set(stringifyJson(key), molecule)
 
 	const update = {
 		type: `molecule_creation`,
-		key: family.key,
-		subKey: key,
-		aboveKeys: [context.key],
-	} satisfies MoleculeCreation
+		token,
+		family,
+		context: [context],
+	} satisfies MoleculeCreation<Key>
 
+	const isTransaction =
+		Internal.isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
 		target.transactionMeta.update.updates.push(update)
 	} else {
 		Formula.subject.next(update)
 	}
-
-	target.molecules.set(stringifyJson(key), molecule)
 
 	return token
 }
@@ -152,6 +173,43 @@ export function useMolecule<
 	token: MoleculeToken<Key, Struct, Params>,
 ): (Molecule<Key> & Struct) | undefined {
 	return useMoleculeFromStore(token, Internal.IMPLICIT.STORE)
+}
+
+export function disposeMolecule<
+	Key extends Json.Serializable,
+	Struct extends { [key: string]: any },
+	Params extends any[],
+>(token: MoleculeToken<Key, Struct, Params>, store: Internal.Store): void {
+	const mole = useMoleculeFromStore(token, store)
+	if (!mole || !token.family) {
+		return // add error log
+	}
+	const { family } = token
+	const Formula = store.moleculeFamilies.get(family.key)
+	if (!Formula) {
+		throw new Error(`No Formula found for key "${family.key}"`)
+	}
+	const disposalEvent: MoleculeDisposal<Key> = {
+		type: `molecule_disposal`,
+		token,
+		family,
+		context: mole.above,
+		familyKeys: mole.tokens
+			.map((t) => t.family?.key)
+			.filter((k): k is string => typeof k === `string`),
+	}
+	if (token.family) {
+		disposalEvent.family = token.family
+	}
+	const isTransaction =
+		Internal.isChildStore(store) && store.transactionMeta.phase === `building`
+	if (isTransaction) {
+		store.transactionMeta.update.updates.push(disposalEvent)
+	} else {
+		Formula.subject.next(disposalEvent)
+	}
+
+	mole.dispose()
 }
 
 export type MoleculeType<M extends MoleculeFamilyToken<any, any, any>> =

@@ -1,5 +1,16 @@
 import { parseJson } from "anvl/json"
-import type { ReadableToken, StateCreation, StateDisposal } from "atom.io"
+import type {
+	MoleculeCreation,
+	MoleculeDisposal,
+	ReadableToken,
+	StateCreation,
+	StateDisposal,
+} from "atom.io"
+import {
+	disposeMolecule,
+	makeMoleculeInStore,
+	useMoleculeFromStore,
+} from "atom.io/immortal"
 
 import { disposeFromStore, initFamilyMember } from "../families"
 import type { Store } from "../store"
@@ -53,5 +64,44 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 			}
 			initFamilyMember(family, parseJson(token.family.subKey), store)
 		}
+	}
+}
+
+export function ingestMoleculeCreationEvent(
+	update: MoleculeCreation<any>,
+	applying: `newValue` | `oldValue`,
+	store: Store,
+): void {
+	switch (applying) {
+		case `newValue`:
+			makeMoleculeInStore(
+				store,
+				update.context[0],
+				update.family,
+				update.token.key,
+			)
+			break
+		case `oldValue`:
+			disposeMolecule(update.token, store)
+			break
+	}
+}
+export function ingestMoleculeDisposalEvent(
+	update: MoleculeDisposal<any>,
+	applying: `newValue` | `oldValue`,
+	store: Store,
+): void {
+	switch (applying) {
+		case `newValue`:
+			disposeMolecule(update.token, store)
+			break
+		case `oldValue`:
+			makeMoleculeInStore(
+				store,
+				update.context[0],
+				update.family,
+				update.token.key,
+			)
+			break
 	}
 }

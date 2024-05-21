@@ -7,6 +7,8 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
+	StateCreation,
+	StateDisposal,
 	WritableFamilyToken,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -19,18 +21,27 @@ import {
 	disposeFromStore,
 	getJsonFamily,
 	initFamilyMember,
+	Subject,
 } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
+import type { MoleculeFamilyToken } from "./make-molecule"
+
 export class Molecule<Key extends Json.Serializable> {
+	public readonly type = `molecule`
+	public readonly family?: MoleculeFamilyToken<Key, any, any>
 	public readonly above: Molecule<any>[]
 	public readonly below: Molecule<any>[] = []
 	public readonly tokens: ReadableToken<any>[] = []
 	public readonly joins: Join<any, any, any, any>[] = []
+	public readonly subject = new Subject<
+		StateCreation<any> | StateDisposal<any>
+	>()
 	public constructor(
 		public readonly store: Store,
 		above: Molecule<any> | Molecule<any>[] | undefined,
 		public readonly key: Key,
+		family?: MoleculeFamilyToken<Key, any, any>,
 	) {
 		store.molecules.set(stringifyJson(key), this) // consider removing this
 		if (above) {
@@ -41,12 +52,13 @@ export class Molecule<Key extends Json.Serializable> {
 				}
 			} else {
 				this.above = [above]
-				console.log(`adding ${stringifyJson(this.key)} to ${above.key}'s below`)
-				console.log(above)
 				above.below.push(this)
 			}
 		} else {
 			this.above = []
+		}
+		if (family) {
+			this.family = family
 		}
 	}
 
@@ -78,6 +90,7 @@ export class Molecule<Key extends Json.Serializable> {
 			this.tokens.push(jsonState)
 		}
 		this.tokens.push(state)
+		this.subject.next({ type: `state_creation`, token: state })
 		return state
 	}
 

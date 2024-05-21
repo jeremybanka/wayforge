@@ -4,6 +4,8 @@ import {
 	ingestAtomUpdate,
 	ingestCreationEvent,
 	ingestDisposalEvent,
+	ingestMoleculeCreationEvent,
+	ingestMoleculeDisposalEvent,
 	ingestSelectorUpdate,
 	ingestTransactionUpdate,
 } from "../ingest-updates"
@@ -67,12 +69,19 @@ export const timeTravel = (
 			break
 		}
 		case `state_creation`: {
-			console.log(`📦`, `state creation`, action, update)
 			ingestCreationEvent(update, applying, store)
 			break
 		}
 		case `state_disposal`: {
 			ingestDisposalEvent(update, applying, store)
+			break
+		}
+		case `molecule_creation`: {
+			ingestMoleculeCreationEvent(update, applying, store)
+			break
+		}
+		case `molecule_disposal`: {
+			ingestMoleculeDisposalEvent(update, applying, store)
 			break
 		}
 	}
