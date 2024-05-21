@@ -364,7 +364,7 @@ describe(`timeline state lifecycle`, () => {
 				class Unit extends Molecule<string> {
 					public hpState: AtomToken<number>
 					public constructor(
-						context: Molecule<any>,
+						context: Molecule<any>[],
 						public readonly id: string,
 					) {
 						super(store, context, id)

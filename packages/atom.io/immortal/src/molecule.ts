@@ -41,9 +41,8 @@ export class Molecule<Key extends Json.Serializable> {
 		public readonly store: Store,
 		above: Molecule<any> | Molecule<any>[] | undefined,
 		public readonly key: Key,
-		family?: MoleculeFamilyToken<Key, any, any>,
 	) {
-		store.molecules.set(stringifyJson(key), this) // consider removing this
+		// store.molecules.set(stringifyJson(key), this) // consider removing this
 		if (above) {
 			if (Array.isArray(above)) {
 				this.above = above
@@ -56,9 +55,6 @@ export class Molecule<Key extends Json.Serializable> {
 			}
 		} else {
 			this.above = []
-		}
-		if (family) {
-			this.family = family
 		}
 	}
 

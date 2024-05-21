@@ -10,7 +10,7 @@ export type MoleculeConstructor<
 	Struct extends { [key: string]: any },
 	Params extends any[],
 > = new (
-	context: Molecule<any>,
+	context: Molecule<any>[],
 	key: Key,
 	...params: Params
 ) => Molecule<Key> & Struct
@@ -80,8 +80,8 @@ export function createMoleculeFamily<
 
 export function moleculeFamily<
 	Key extends Json.Serializable,
-	Params extends any[],
 	Struct extends { [key: string]: any },
+	Params extends any[],
 >(
 	options: MoleculeFamilyOptions<Key, Struct, Params>,
 ): MoleculeFamilyToken<Key, Struct, Params> {
@@ -94,7 +94,7 @@ export function makeMoleculeInStore<
 	Params extends any[],
 >(
 	store: Internal.Store,
-	context: MoleculeToken<any, any, any>,
+	context: MoleculeToken<any, any, any> | MoleculeToken<any, any, any>[],
 	family: MoleculeFamilyToken<Key, Struct, Params>,
 	key: Key,
 	...params: Params
@@ -105,24 +105,24 @@ export function makeMoleculeInStore<
 		type: `molecule`,
 		key,
 		family,
-	} as const
+	} as const satisfies MoleculeToken<Key, Struct, Params>
 
-	const owner = store.molecules.get(stringifyJson(context.key))
-	if (!owner) {
-		throw new Error(`No owner found for key "${family.key}"`)
-	}
+	const contextArray = Array.isArray(context) ? context : [context]
+	const owners = contextArray
+		.map((ctx) => store.molecules.get(stringifyJson(ctx.key)))
+		.filter((m): m is Molecule<Key> => m !== undefined)
 	const Formula = store.moleculeFamilies.get(family.key)
 	if (!Formula) {
 		throw new Error(`No Formula found for key "${family.key}"`)
 	}
-	const molecule = new Formula(owner, key, ...params)
+	const molecule = new Formula(owners, key, ...params)
 	target.molecules.set(stringifyJson(key), molecule)
 
 	const update = {
 		type: `molecule_creation`,
 		token,
 		family,
-		context: [context],
+		context: contextArray,
 	} satisfies MoleculeCreation<Key>
 
 	const isTransaction =
@@ -133,6 +133,12 @@ export function makeMoleculeInStore<
 		Formula.subject.next(update)
 	}
 
+	console.log({ hasParent: Boolean(store.parent) })
+	console.log(`parent atoms`, store.parent?.atoms.keys())
+	console.log(`parent moles`, store.parent?.molecules.keys())
+	console.log(`child atoms`, store.atoms.keys())
+	console.log(`child moles`, store.molecules.keys())
+
 	return token
 }
 export function makeMolecule<
@@ -140,7 +146,7 @@ export function makeMolecule<
 	Struct extends { [key: string]: any },
 	Params extends any[],
 >(
-	context: MoleculeToken<any, any, any>,
+	context: MoleculeToken<any, any, any> | MoleculeToken<any, any, any>[],
 	family: MoleculeFamilyToken<Key, Struct, Params>,
 	key: Key,
 	...params: Params

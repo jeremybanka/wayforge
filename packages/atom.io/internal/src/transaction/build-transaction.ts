@@ -1,6 +1,6 @@
 import type { Func } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
+import { makeMoleculeInStore, type seekState } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
@@ -72,6 +72,8 @@ export const buildTransaction = (
 			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
 			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
 			json: (token) => getJsonToken(token, child),
+			make: (context, family, k, ...args) =>
+				makeMoleculeInStore(child, context, family, k, ...args),
 			dispose: (token) => {
 				disposeFromStore(token, child)
 			},

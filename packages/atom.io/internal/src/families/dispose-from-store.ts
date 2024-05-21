@@ -1,8 +1,9 @@
 import type { ReadableToken } from "atom.io"
+import { disposeMolecule, type MoleculeToken } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 
 export function disposeFromStore(
-	token: ReadableToken<any>,
+	token: MoleculeToken<any, any, any> | ReadableToken<any>,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): void {
 	switch (token.type) {
@@ -13,6 +14,9 @@ export function disposeFromStore(
 		case `selector`:
 		case `readonly_selector`:
 			Internal.disposeSelector(token, store)
+			break
+		case `molecule`:
+			disposeMolecule(token, store)
 			break
 	}
 }

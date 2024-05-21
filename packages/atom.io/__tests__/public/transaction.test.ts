@@ -1,4 +1,4 @@
-import type { Logger, TransactionUpdate } from "atom.io"
+import type { AtomToken, Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -11,6 +11,13 @@ import {
 	transaction,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
+import type { MoleculeToken, MoleculeType } from "atom.io/immortal"
+import {
+	makeRootMolecule,
+	Molecule,
+	moleculeFamily,
+	seekState,
+} from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -19,7 +26,6 @@ import { vitest } from "vitest"
 import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 
-import { seekState } from "../../immortal/src/seek-state"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -476,5 +482,49 @@ describe(`reversibility of transactions`, () => {
 		}
 		expect(caught).toBeInstanceOf(Error)
 		expect(seekState(countStates, `my-key`)).toBeDefined()
+	})
+	test(`a transaction that fails does does not create a molecule`, () => {
+		const hpAtoms = atomFamily<number, string>({
+			key: `hp`,
+			default: 0,
+		})
+		const unitMolecules = moleculeFamily({
+			key: `unit`,
+			new: (store) =>
+				class Unit extends Molecule<string> {
+					public hpState: AtomToken<number>
+					public constructor(
+						context: Molecule<any>[],
+						public readonly id: string,
+						public readonly hp: number,
+					) {
+						super(store, context, id)
+						this.hpState = this.bond(hpAtoms)
+						setState(this.hpState, this.hp)
+					}
+				},
+		})
+		type Unit = MoleculeType<typeof unitMolecules>
+		const world = makeRootMolecule(`world`)
+		const spawnUnitsTX = transaction<
+			(...args: number[]) => MoleculeToken<string, Unit, [hp: number]>[]
+		>({
+			key: `spawnUnits`,
+			do: ({ make }, ...args: number[]) => {
+				const units = args.map((hp) =>
+					make(world, unitMolecules, Internal.arbitrary(), hp),
+				)
+				throw new Error(`fail`)
+				// return units
+			},
+		})
+		let caught: unknown
+		try {
+			runTransaction(spawnUnitsTX)(1, 2, 3)
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
 	})
 })

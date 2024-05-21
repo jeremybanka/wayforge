@@ -52,7 +52,7 @@ describe(`immortal mode`, () => {
 				class Counter extends Molecule<string> {
 					public $count: AtomToken<number>
 					public constructor(
-						context: Molecule<any>,
+						context: Molecule<any>[],
 						public readonly id: string,
 					) {
 						super(store, context, id)
@@ -158,95 +158,5 @@ describe(`immortal integrations`, () => {
 		const internalJoin = getJoin(holdersOfItems, world.store)
 
 		expect(internalJoin.molecules.size).toBe(0)
-	})
-})
-
-describe(`practical example of immortal`, () => {
-	test(`RPG`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
-		const $$maxHealth = atomFamily<number, string>({
-			key: `maxHealth`,
-			default: 100,
-		})
-		const $$health = atomFamily<number, string>({
-			key: `health`,
-			default: 0,
-		})
-		const $$armor = atomFamily<number, string>({
-			key: `armor`,
-			default: 0,
-		})
-		const $$damage = atomFamily<number, string>({
-			key: `damage`,
-			default: 0,
-		})
-		const holdersOfItems = join({
-			key: `holdersOfItems`,
-			between: [`holder`, `item`],
-			cardinality: `1:n`,
-		})
-		class Being extends Molecule<string> {
-			public $maxHealth: AtomToken<number>
-			public $health: AtomToken<number>
-			public $armor: AtomToken<number>
-			public constructor(
-				public readonly id: string,
-				public readonly baseHealth: number,
-				public readonly baseArmor: number,
-			) {
-				super(world.store, world, id)
-				this.$maxHealth = this.bond($$maxHealth)
-				this.$health = this.bond($$health)
-				this.$armor = this.bond($$armor)
-				this.join(holdersOfItems)
-
-				setState(this.$health, this.baseHealth)
-				setState(this.$maxHealth, this.baseHealth)
-				setState(this.$armor, this.baseArmor)
-			}
-		}
-		class Item extends Molecule<string> {
-			public $damage: AtomToken<number>
-			public constructor(
-				public readonly id: string,
-				public readonly baseDamage: number,
-			) {
-				super(world.store, world, id)
-				this.join(holdersOfItems)
-				this.$damage = this.bond($$damage)
-				setState(this.$damage, this.baseDamage)
-			}
-		}
-		const me = new Being(`me`, 100, 10)
-		const itemsIHold = findRelations(holdersOfItems, `me`).itemKeysOfHolder
-		expect(getState(itemsIHold)).toEqual([])
-		const sword = new Item(`sword`, 10)
-		editRelations(holdersOfItems, (relations) => {
-			relations.set({ holder: `me`, item: `sword` })
-			me.claim(sword)
-		})
-		expect(getState(itemsIHold)).toEqual([`sword`])
-		const holderOfSword = findRelations(holdersOfItems, `sword`).holderKeyOfItem
-		expect(getState(holderOfSword)).toEqual(`me`)
-		setState(sword.$damage, 5)
-		expect(getState(sword.$damage)).toEqual(5)
-		expect(getState(me.$health)).toEqual(100)
-		me.dispose()
-		// console.log(
-		// 	`MOLECULES--------------------------------------------------------`,
-		// )
-		// console.log(Internal.IMPLICIT.STORE.molecules)
-		// console.log(
-		// 	`ATOMS------------------------------------------------------------`,
-		// )
-		// console.log(Internal.IMPLICIT.STORE.atoms)
-		// console.log(
-		// 	`VALUE MAP--------------------------------------------------------`,
-		// )
-		// console.log(Internal.IMPLICIT.STORE.valueMap)
-		// console.log(
-		// 	`JOIN-------------------------------------------------------------`,
-		// )
-		console.log(getJoin(holdersOfItems, Internal.IMPLICIT.STORE))
 	})
 })

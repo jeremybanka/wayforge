@@ -1,5 +1,9 @@
 import type { findState } from "atom.io/ephemeral"
-import type { MoleculeFamilyToken, MoleculeToken } from "atom.io/immortal"
+import type {
+	makeMolecule,
+	MoleculeFamilyToken,
+	MoleculeToken,
+} from "atom.io/immortal"
 import type { EnvironmentData, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
@@ -8,10 +12,10 @@ import {
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import { Key } from "react"
 
 import type { seekState } from "../immortal/src/seek-state"
 import type {
+	disposeState,
 	Func,
 	KeyedStateUpdate,
 	MutableAtomToken,
@@ -93,7 +97,8 @@ export type TransactorsWithRunAndEnv = Readonly<{
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
-	dispose: (token: ReadableToken<any>) => void
+	make: typeof makeMolecule
+	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>
