@@ -5,6 +5,13 @@ import { findState } from "atom.io/ephemeral"
 import { Molecule, seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 
+import {
+	makeMolecule,
+	makeRootMolecule,
+	moleculeFamily,
+	useMolecule,
+} from "~/packages/atom.io/immortal/src/make-molecule"
+
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
@@ -34,19 +41,37 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`safe initialization of state with Molecule`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
+		const world = makeRootMolecule(`world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const countState = world.bond(countStates)
-		expect(getState(countState)).toBe(0)
-		setState(countState, 1)
-		expect(getState(countState)).toBe(1)
-		world.dispose()
-		expect(() => getState(countState)).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom "count("world")" not found in store "IMPLICIT_STORE".]`,
+		const counters = moleculeFamily({
+			key: `counters`,
+			new: (store) =>
+				class Counter extends Molecule<string> {
+					public $count: AtomToken<number>
+					public constructor(
+						context: Molecule<any>,
+						public readonly id: string,
+					) {
+						super(store, context, id)
+						this.$count = this.bond(countStates)
+					}
+				},
+		})
+		const myCounterMolecule = makeMolecule(world, counters, `my-counter`)
+		const myCounter = useMolecule(myCounterMolecule)
+		if (!myCounter) {
+			throw new Error(`myCounter is undefined`)
+		}
+		setState(myCounter.$count, 1)
+		expect(getState(myCounter.$count)).toBe(1)
+		myCounter.dispose()
+		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Atom "count("my-counter")" not found in store "IMPLICIT_STORE".]`,
 		)
+		expect(useMolecule(myCounterMolecule)).toBeUndefined()
 	})
 	test(`safe retrieval of state with seekState`, () => {
 		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)

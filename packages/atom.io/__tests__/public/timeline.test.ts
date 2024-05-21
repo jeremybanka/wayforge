@@ -2,6 +2,7 @@ import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	disposeState,
 	getState,
 	redo,
 	runTransaction,
@@ -317,7 +318,7 @@ describe(`timeline`, () => {
 })
 
 describe(`timeline state lifecycle`, () => {
-	test(`states may be disposed via undo`, () => {
+	test(`states may be disposed via undo/redo`, () => {
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -329,8 +330,21 @@ describe(`timeline state lifecycle`, () => {
 		const countState = findState(countStates, `my-key`)
 		setState(countState, 1)
 		expect(getState(countState)).toBe(1)
+		disposeState(countState)
+		undo(countsTL)
 		undo(countsTL)
 		undo(countsTL)
 		expect(seekState(countStates, `my-key`)).toBe(undefined)
+		redo(countsTL)
+		expect(seekState(countStates, `my-key`)).toEqual({
+			family: {
+				key: `count`,
+				subKey: `"my-key"`,
+			},
+			key: `count("my-key")`,
+			type: `atom`,
+		})
+		redo(countsTL)
+		redo(countsTL)
 	})
 })

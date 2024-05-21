@@ -87,6 +87,10 @@ export function makeMoleculeInStore<
 	if (!isTransaction) {
 		store.on.moleculeCreationStart.next(token)
 	}
+	const owner = store.molecules.get(stringifyJson(context.key))
+	if (!owner) {
+		throw new Error(`No owner found for key "${family.key}"`)
+	}
 	const Formula = store.moleculeFamilies.get(family.key)
 	if (!Formula) {
 		throw new Error(`No Formula found for key "${family.key}"`)
@@ -101,7 +105,7 @@ export function makeMoleculeInStore<
 	if (isTransaction) {
 		target.transactionMeta.update.updates.push(update)
 	}
-	const molecule = new Formula(context, key, ...params)
+	const molecule = new Formula(owner, key, ...params)
 
 	target.molecules.set(stringifyJson(key), molecule)
 	if (!isTransaction) {
@@ -128,39 +132,31 @@ export function makeMolecule<
 	)
 }
 
+export function useMoleculeFromStore<
+	Key extends Json.Serializable,
+	Struct extends { [key: string]: any },
+	Params extends any[],
+>(
+	token: MoleculeToken<Key, Struct, Params>,
+	store: Internal.Store,
+): (Molecule<Key> & Struct) | undefined {
+	const molecule = store.molecules.get(stringifyJson(token.key))
+	return molecule as Molecule<Key> & Struct
+}
 export function useMolecule<
 	Key extends Json.Serializable,
 	Struct extends { [key: string]: any },
 	Params extends any[],
->(token: MoleculeToken<Key, Struct, Params>): Molecule<Key> & Struct {
-	const store = Internal.IMPLICIT.STORE
-	const molecule = store.molecules.get(stringifyJson(token.key))
-	if (!molecule) {
-		throw new Error(`No molecule found for key "${stringifyJson(token.key)}"`)
-	}
-	return molecule as Molecule<Key> & Struct
+>(
+	token: MoleculeToken<Key, Struct, Params>,
+): (Molecule<Key> & Struct) | undefined {
+	return useMoleculeFromStore(token, Internal.IMPLICIT.STORE)
 }
 
 export type MoleculeType<M extends MoleculeFamilyToken<any, any, any>> =
 	M extends MoleculeFamilyToken<any, infer T, any> ? T : never
 
-const beings = moleculeFamily({
-	key: `being`,
-	new: (store) =>
-		class Being extends Molecule<string> {
-			public readonly data: number
-			public constructor(
-				context: Molecule<any>,
-				public readonly id: string,
-				data: number,
-			) {
-				super(store, context, id)
-				this.data = data
-			}
-		},
-})
-
-export function createRootMolecule(
+export function makeRootMolecule(
 	key: Json.Serializable,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): MoleculeToken<Json.Serializable, { [key: string]: unknown }, []> {
@@ -171,7 +167,3 @@ export function createRootMolecule(
 		type: `molecule`,
 	} as const
 }
-
-const world = createRootMolecule(`world`)
-
-const being = makeMolecule(world, beings, `me`, 1)

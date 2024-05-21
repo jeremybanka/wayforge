@@ -2,13 +2,11 @@ import type { TimelineToken } from "atom.io"
 
 import {
 	ingestAtomUpdate,
+	ingestCreationEvent,
+	ingestDisposalEvent,
 	ingestSelectorUpdate,
 	ingestTransactionUpdate,
 } from "../ingest-updates"
-import {
-	ingestCreationEvent,
-	ingestDisposalEvent,
-} from "../ingest-updates/ingest-creation-disposal"
 import type { Store } from "../store"
 
 export const timeTravel = (
@@ -69,7 +67,7 @@ export const timeTravel = (
 			break
 		}
 		case `state_creation`: {
-			console.log(`📦`, `state creation`, update)
+			console.log(`📦`, `state creation`, action, update)
 			ingestCreationEvent(update, applying, store)
 			break
 		}

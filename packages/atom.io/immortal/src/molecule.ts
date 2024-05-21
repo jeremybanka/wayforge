@@ -41,6 +41,8 @@ export class Molecule<Key extends Json.Serializable> {
 				}
 			} else {
 				this.above = [above]
+				console.log(`adding ${stringifyJson(this.key)} to ${above.key}'s below`)
+				console.log(above)
 				above.below.push(this)
 			}
 		} else {

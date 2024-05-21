@@ -108,9 +108,11 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 					const timelineEvent = Object.assign(creationOrDisposal, {
 						timestamp,
 					}) as TimelineUpdate<ManagedAtom>
-					tl.history.push(timelineEvent)
-					tl.at = tl.history.length
-					tl.subject.next(timelineEvent)
+					if (!tl.timeTraveling) {
+						tl.history.push(timelineEvent)
+						tl.at = tl.history.length
+						tl.subject.next(timelineEvent)
+					}
 					if (creationOrDisposal.type === `state_creation`) {
 						addAtomToTimeline(creationOrDisposal.token, tl, store)
 					}
