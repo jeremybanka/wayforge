@@ -12,7 +12,12 @@ import type {
 } from "atom.io"
 import { disposeState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { Molecule, seekState } from "atom.io/immortal"
+import type { MoleculeFamilyToken, seekState } from "atom.io/immortal"
+import {
+	createMoleculeFamily,
+	makeMoleculeInStore,
+	Molecule,
+} from "atom.io/immortal"
 import type { Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,
@@ -390,11 +395,27 @@ export class Join<
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
 		let contentAtoms: RegularAtomFamily<Content, string>
+		let contentMolecules: MoleculeFamilyToken<string, any, any>
 		if (defaultContent) {
 			contentAtoms = createRegularAtomFamily<Content, string>(
 				{
 					key: `${options.key}/content`,
 					default: defaultContent,
+				},
+				store,
+			)
+			contentMolecules = createMoleculeFamily(
+				{
+					key: `${options.key}/content-molecules`,
+					new: (s) =>
+						class ContentMolecule extends Molecule<string> {
+							public constructor(
+								context: Molecule<any>[],
+								public readonly id: string,
+							) {
+								super(s, context, id)
+							}
+						},
 				},
 				store,
 			)
@@ -445,6 +466,8 @@ export class Join<
 				if (store.config.lifespan === `immortal` && m0 && m1) {
 					const composite = m0.with(m1)(compositeKey)
 					this.molecules.set(`"${compositeKey}"`, composite)
+					const target = newest(store)
+					makeMoleculeInStore(target, [m0, m1], contentMolecules, compositeKey)
 				}
 				return compositeKey
 			},
