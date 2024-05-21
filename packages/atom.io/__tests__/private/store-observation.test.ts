@@ -77,7 +77,7 @@ describe(`store observation`, () => {
 		)
 		const tl = timeline({
 			key: `tl`,
-			atoms: [],
+			scope: [],
 		})
 		expect(Utils.stdout).toHaveBeenCalledWith(tl)
 	})

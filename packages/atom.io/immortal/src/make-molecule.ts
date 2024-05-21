@@ -1,7 +1,7 @@
 import * as Internal from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
-import type { MoleculeCreation } from "../../src/transaction"
+import type { MoleculeCreation, MoleculeDisposal } from "../../src/transaction"
 import { Molecule } from "./molecule"
 
 export type MoleculeFamilyToken<
@@ -49,7 +49,9 @@ export function createMoleculeFamily<
 	options: MoleculeFamilyOptions<Key, Struct, Params>,
 	store: Internal.Store,
 ): MoleculeFamilyToken<Key, Struct, Params> {
-	store.moleculeFamilies.set(options.key, options.new(store))
+	const subject = new Internal.Subject<MoleculeCreation | MoleculeDisposal>()
+	const family = Object.assign(options.new(store), { subject })
+	store.moleculeFamilies.set(options.key, family)
 	return {
 		key: options.key,
 		type: `molecule_family`,
@@ -84,9 +86,7 @@ export function makeMoleculeInStore<
 		key,
 		type: `molecule`,
 	} as const
-	if (!isTransaction) {
-		store.on.moleculeCreationStart.next(token)
-	}
+
 	const owner = store.molecules.get(stringifyJson(context.key))
 	if (!owner) {
 		throw new Error(`No owner found for key "${family.key}"`)
@@ -95,6 +95,8 @@ export function makeMoleculeInStore<
 	if (!Formula) {
 		throw new Error(`No Formula found for key "${family.key}"`)
 	}
+	const molecule = new Formula(owner, key, ...params)
+
 	const update = {
 		type: `molecule_creation`,
 		key: family.key,
@@ -104,13 +106,12 @@ export function makeMoleculeInStore<
 
 	if (isTransaction) {
 		target.transactionMeta.update.updates.push(update)
+	} else {
+		Formula.subject.next(update)
 	}
-	const molecule = new Formula(owner, key, ...params)
 
 	target.molecules.set(stringifyJson(key), molecule)
-	if (!isTransaction) {
-		store.on.moleculeCreationDone.next(token)
-	}
+
 	return token
 }
 export function makeMolecule<

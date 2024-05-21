@@ -58,7 +58,7 @@ describe(`react-devtools`, () => {
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
-			atoms: [letterState],
+			scope: [letterState],
 		})
 		const selectionsState = atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `selections`,

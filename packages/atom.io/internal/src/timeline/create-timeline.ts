@@ -91,70 +91,80 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 	}
 	const timelineKey = options.key
 	const target = newest(store)
-	for (const tokenOrFamily of options.atoms) {
+	for (const tokenOrFamily of options.scope) {
 		let atomKey = tokenOrFamily.key
-		if (
-			tokenOrFamily.type === `atom_family` ||
-			tokenOrFamily.type === `mutable_atom_family`
-		) {
-			const familyToken: AtomFamilyToken<any> = tokenOrFamily
-			const family = withdraw(familyToken, store)
-			const familyKey = family.key
-			target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
-			family.subject.subscribe(
-				`timeline:${options.key}`,
-				(creationOrDisposal) => {
-					const timestamp = Date.now()
-					const timelineEvent = Object.assign(creationOrDisposal, {
-						timestamp,
-					}) as TimelineUpdate<ManagedAtom>
-					if (!tl.timeTraveling) {
-						tl.history.push(timelineEvent)
-						tl.at = tl.history.length
-						tl.subject.next(timelineEvent)
+		switch (tokenOrFamily.type) {
+			case `atom_family`:
+			case `mutable_atom_family`:
+				{
+					const familyToken: AtomFamilyToken<any> = tokenOrFamily
+					const family = withdraw(familyToken, store)
+					const familyKey = family.key
+					target.timelineAtoms.set({ atomKey: familyKey, timelineKey })
+					family.subject.subscribe(
+						`timeline:${options.key}`,
+						(creationOrDisposal) => {
+							const timestamp = Date.now()
+							const timelineEvent = Object.assign(creationOrDisposal, {
+								timestamp,
+							}) as TimelineUpdate<ManagedAtom>
+							if (!tl.timeTraveling) {
+								tl.history.push(timelineEvent)
+								tl.at = tl.history.length
+								tl.subject.next(timelineEvent)
+							}
+							if (creationOrDisposal.type === `state_creation`) {
+								addAtomToTimeline(creationOrDisposal.token, tl, store)
+							}
+						},
+					)
+					for (const atom of target.atoms.values()) {
+						if (atom.family?.key === familyKey) {
+							addAtomToTimeline(atom, tl, store)
+						}
 					}
-					if (creationOrDisposal.type === `state_creation`) {
-						addAtomToTimeline(creationOrDisposal.token, tl, store)
+				}
+				break
+			case `atom`:
+			case `mutable_atom`:
+				{
+					let atom = withdraw(tokenOrFamily, store)
+					if (isMutable(atom)) {
+						const updateAtom = withdraw(getUpdateToken(atom), store)
+						atom = updateAtom
+						atomKey = atom.key
 					}
-				},
-			)
-			for (const atom of target.atoms.values()) {
-				if (atom.family?.key === familyKey) {
+					if (`family` in atom) {
+						const familyTimelineKey = target.timelineAtoms.getRelatedKey(
+							atom.family.key,
+						)
+						if (familyTimelineKey) {
+							store.logger.error(
+								`❌`,
+								`timeline`,
+								options.key,
+								`Failed to add atom "${atom.key}" because its family "${atom.family.key}" already belongs to timeline "${familyTimelineKey}"`,
+							)
+							continue
+						}
+					}
+					const existingTimelineKey = target.timelineAtoms.getRelatedKey(atomKey)
+					if (existingTimelineKey) {
+						store.logger.error(
+							`❌`,
+							`timeline`,
+							options.key,
+							`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
+						)
+						continue
+					}
 					addAtomToTimeline(atom, tl, store)
 				}
-			}
-		} else {
-			let atom = withdraw(tokenOrFamily, store)
-			if (isMutable(atom)) {
-				const updateAtom = withdraw(getUpdateToken(atom), store)
-				atom = updateAtom
-				atomKey = atom.key
-			}
-			if (`family` in atom) {
-				const familyTimelineKey = target.timelineAtoms.getRelatedKey(
-					atom.family.key,
-				)
-				if (familyTimelineKey) {
-					store.logger.error(
-						`❌`,
-						`timeline`,
-						options.key,
-						`Failed to add atom "${atom.key}" because its family "${atom.family.key}" already belongs to timeline "${familyTimelineKey}"`,
-					)
-					continue
+				break
+			case `molecule_family`:
+				{
 				}
-			}
-			const existingTimelineKey = target.timelineAtoms.getRelatedKey(atomKey)
-			if (existingTimelineKey) {
-				store.logger.error(
-					`❌`,
-					`timeline`,
-					options.key,
-					`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
-				)
-				continue
-			}
-			addAtomToTimeline(atom, tl, store)
+				break
 		}
 	}
 

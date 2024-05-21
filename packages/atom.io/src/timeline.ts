@@ -1,3 +1,4 @@
+import type { MoleculeFamilyToken } from "atom.io/immortal"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
@@ -28,7 +29,7 @@ export type TimelineToken<M> = {
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	key: string
-	atoms: ManagedAtom[]
+	scope: (ManagedAtom | MoleculeFamilyToken<any, any, any>)[]
 	shouldCapture?: (
 		update: TimelineUpdate<ManagedAtom>,
 		timeline: Timeline<TimelineManageable>,

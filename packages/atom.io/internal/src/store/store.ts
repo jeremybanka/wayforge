@@ -2,6 +2,8 @@ import type {
 	AtomToken,
 	Func,
 	Logger,
+	MoleculeCreation,
+	MoleculeDisposal,
 	MutableAtomFamily,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -86,9 +88,11 @@ export class Store implements Lineage {
 	public molecules = new Map<string, Molecule<any>>()
 	public moleculeFamilies = new Map<
 		string,
-		new (
+		(new (
 			...args: any[]
-		) => Molecule<any>
+		) => Molecule<any>) & {
+			subject: Subject<MoleculeCreation | MoleculeDisposal>
+		}
 	>()
 	public miscResources = new Map<string, Disposable>()
 

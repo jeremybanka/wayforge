@@ -37,7 +37,7 @@ beforeEach(() => {
 })
 
 describe(`timeline`, () => {
-	it(`tracks the state of a group of atoms`, () => {
+	it(`tracks the state of a group of scope`, () => {
 		const a = atom<number>({
 			key: `a`,
 			default: 5,
@@ -60,7 +60,7 @@ describe(`timeline`, () => {
 
 		const tl_abc = timeline({
 			key: `a, b, & c`,
-			atoms: [a, b, c],
+			scope: [a, b, c],
 		})
 
 		const tx_ab = transaction<() => void>({
@@ -150,7 +150,7 @@ describe(`timeline`, () => {
 
 		const aTL = timeline({
 			key: `a`,
-			atoms: [a],
+			scope: [a],
 		})
 		const incrementTimesTX = transaction<
 			(state: WritableToken<number>, times: number) => void
@@ -192,7 +192,7 @@ describe(`timeline`, () => {
 
 		const timeline_ab = timeline({
 			key: `a & b`,
-			atoms: [a, b],
+			scope: [a, b],
 		})
 
 		subscribe(a, Utils.stdout)
@@ -228,7 +228,7 @@ describe(`timeline`, () => {
 
 		const nameHistory = timeline({
 			key: `name history`,
-			atoms: [nameState],
+			scope: [nameState],
 		})
 
 		expect(getState(nameState)).toBe(`josie`)
@@ -274,7 +274,7 @@ describe(`timeline`, () => {
 		const myCountState = findState(findCountState, `foo`)
 		const countsTL = timeline({
 			key: `counts`,
-			atoms: [findCountState],
+			scope: [findCountState],
 		})
 		expect(getState(myCountState)).toBe(0)
 		setState(myCountState, 1)
@@ -290,7 +290,7 @@ describe(`timeline`, () => {
 
 		const countTL = timeline({
 			key: `count`,
-			atoms: [count],
+			scope: [count],
 			shouldCapture: (update) => {
 				if (update.type === `atom_update`) {
 					const atomKey = update.key
@@ -325,7 +325,7 @@ describe(`timeline state lifecycle`, () => {
 		})
 		const countsTL = timeline({
 			key: `counts`,
-			atoms: [countStates],
+			scope: [countStates],
 		})
 		const countState = findState(countStates, `my-key`)
 		setState(countState, 1)

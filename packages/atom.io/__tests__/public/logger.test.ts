@@ -30,7 +30,7 @@ describe(`setLogLevel`, () => {
 		Internal.IMPLICIT.STORE.loggers[0].logLevel = `error`
 		const countTL = timeline({
 			key: `count`,
-			atoms: [countState],
+			scope: [countState],
 		})
 		undo(countTL)
 		expect(logger.warn).not.toHaveBeenCalled()
