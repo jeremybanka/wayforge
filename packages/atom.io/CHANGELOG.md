@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.23.2
+
+### Patch Changes
+
+- af6d2e0: 🐛 `atom.io/eslint-plugin` was not exporting the `lifespan` rule advertised in 0.22.0. Now it's properly exported.
+
 ## 0.23.1
 
 ### Patch Changes
