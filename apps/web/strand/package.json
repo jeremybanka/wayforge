@@ -37,7 +37,7 @@
 		"@testing-library/jest-dom": "6.4.5",
 		"@testing-library/react": "15.0.7",
 		"@types/react": "18.3.2",
-		"@vanilla-extract/vite-plugin": "4.0.9",
+		"@vanilla-extract/vite-plugin": "4.0.10",
 		"cross-env": "7.0.3",
 		"eslint": "9.3.0",
 		"happy-dom": "14.11.0",
