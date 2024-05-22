@@ -50,7 +50,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1.2.1
         with:
-          bun-version: 1.1.8
+          bun-version: 1.1.9
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.0.0
