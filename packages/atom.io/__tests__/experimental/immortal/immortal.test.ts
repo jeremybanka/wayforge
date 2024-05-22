@@ -2,15 +2,16 @@ import type { AtomToken, Logger } from "atom.io"
 import { atomFamily, getState, setState } from "atom.io"
 import { editRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
-import { Molecule, seekState } from "atom.io/immortal"
-import * as Internal from "atom.io/internal"
-
+import type { MoleculeToken } from "atom.io/immortal"
 import {
 	makeMolecule,
 	makeRootMolecule,
+	Molecule,
 	moleculeFamily,
+	seekState,
 	useMolecule,
-} from "~/packages/atom.io/immortal/src/make-molecule"
+} from "atom.io/immortal"
+import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -53,9 +54,9 @@ describe(`immortal mode`, () => {
 					public $count: AtomToken<number>
 					public constructor(
 						context: Molecule<any>[],
-						public readonly id: string,
+						token: MoleculeToken<string, any, any>,
 					) {
-						super(store, context, id)
+						super(store, context, token)
 						this.$count = this.bond(countStates)
 					}
 				},
@@ -74,7 +75,10 @@ describe(`immortal mode`, () => {
 		expect(useMolecule(myCounterMolecule)).toBeUndefined()
 	})
 	test(`safe retrieval of state with seekState`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -94,7 +98,10 @@ describe(`immortal mode`, () => {
 		expect(countState).toBeUndefined()
 	})
 	test(`hierarchical ownership of molecules`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const expStates = atomFamily<number, string>({
 			key: `exp`,
 			default: 0,
@@ -110,7 +117,10 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`transfer of ownership of molecules`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const dmgStates = atomFamily<number, string>({
 			key: `dmg`,
 			default: 0,
@@ -124,7 +134,10 @@ describe(`immortal mode`, () => {
 		expect(getState(dmgState)).toBe(0)
 	})
 	test(`won't make a molecule a child of itself`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		world.claim(world)
 		expect(world.below.length).toBe(0)
 	})
@@ -141,7 +154,10 @@ describe(`immortal integrations`, () => {
 			{ hi: 0 } satisfies { hi: number },
 		)
 
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, `world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const holder = world.spawn(`character-0`)
 		const item = world.spawn(`item-0`)
 		holder.join(holdersOfItems)

@@ -21,14 +21,18 @@ import {
 	disposeFromStore,
 	getJsonFamily,
 	initFamilyMember,
+	newest,
 	Subject,
 } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
-import type { MoleculeFamilyToken } from "./make-molecule"
+import type { MoleculeFamilyToken, MoleculeToken } from "./make-molecule"
 
 export class Molecule<Key extends Json.Serializable> {
 	public readonly type = `molecule`
+	public get key(): Key {
+		return this.token.key
+	}
 	public readonly family?: MoleculeFamilyToken<Key, any, any>
 	public readonly above: Molecule<any>[]
 	public readonly below: Molecule<any>[] = []
@@ -40,7 +44,7 @@ export class Molecule<Key extends Json.Serializable> {
 	public constructor(
 		public readonly store: Store,
 		above: Molecule<any> | Molecule<any>[] | undefined,
-		public readonly key: Key,
+		public readonly token: MoleculeToken<Key, any, any>,
 	) {
 		// store.molecules.set(stringifyJson(key), this) // consider removing this
 		if (above) {
@@ -79,10 +83,10 @@ export class Molecule<Key extends Json.Serializable> {
 		token: ReadableFamilyToken<T, K>,
 	): ReadableToken<T>
 	public bond(token: ReadableFamilyToken<any, any>): ReadableToken<any> {
-		const state = initFamilyMember(token, this.key, this.store)
+		const state = initFamilyMember(token, this.token.key, this.store)
 		if (token.type === `mutable_atom_family`) {
 			const jsonFamily = getJsonFamily(token, this.store)
-			const jsonState = initFamilyMember(jsonFamily, this.key, this.store)
+			const jsonState = initFamilyMember(jsonFamily, this.token.key, this.store)
 			this.tokens.push(jsonState)
 		}
 		this.tokens.push(state)
@@ -91,13 +95,16 @@ export class Molecule<Key extends Json.Serializable> {
 	}
 
 	public spawn<K extends Json.Serializable>(key: K): Molecule<K> {
-		const child = new Molecule(this.store, this, key)
+		const child = new Molecule(this.store, this, { key, type: `molecule` })
 		return child
 	}
 
 	public with(molecule: Molecule<any>): (key: string) => Molecule<any> {
 		return (key) => {
-			const child = new Molecule(this.store, [this, molecule], key)
+			const child = new Molecule(this.store, [this, molecule], {
+				key,
+				type: `molecule`,
+			})
 			return child
 		}
 	}
@@ -137,20 +144,21 @@ export class Molecule<Key extends Json.Serializable> {
 		while (this.joins.length > 0) {
 			const join = this.joins.pop()
 			if (join) {
-				join.molecules.delete(stringifyJson(this.key))
+				join.molecules.delete(stringifyJson(this.token.key))
 			}
 		}
 	}
 
 	public join(token: JoinToken<any, any, any, any>): void {
 		const join = getJoin(token, this.store)
-		join.molecules.set(stringifyJson(this.key), this)
+		join.molecules.set(stringifyJson(this.token.key), this)
 		this.joins.push(join)
 	}
 
 	private [Symbol.dispose](): void {
 		this.clear()
-		this.store.molecules.delete(stringifyJson(this.key))
+		const target = newest(this.store)
+		target.molecules.delete(stringifyJson(this.token.key))
 		for (const parent of this.above) {
 			parent.detach(this)
 		}

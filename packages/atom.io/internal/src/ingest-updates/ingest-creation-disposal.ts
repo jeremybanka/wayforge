@@ -75,6 +75,7 @@ export function ingestMoleculeCreationEvent(
 				update.context[0],
 				update.family,
 				update.token.key,
+				...update.params,
 			)
 			break
 		case `oldValue`:

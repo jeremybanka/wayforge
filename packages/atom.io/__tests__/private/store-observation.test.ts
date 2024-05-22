@@ -1,9 +1,9 @@
 import type { Logger } from "atom.io"
 import { atomFamily, selectorFamily, timeline, transaction } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
-import { findState } from "../../ephemeral/src/find-state"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const

@@ -12,7 +12,11 @@ import type {
 } from "atom.io"
 import { disposeState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { MoleculeFamilyToken, seekState } from "atom.io/immortal"
+import type {
+	MoleculeFamilyToken,
+	MoleculeToken,
+	seekState,
+} from "atom.io/immortal"
 import {
 	createMoleculeFamily,
 	makeMoleculeInStore,
@@ -411,9 +415,9 @@ export class Join<
 						class ContentMolecule extends Molecule<string> {
 							public constructor(
 								context: Molecule<any>[],
-								public readonly id: string,
+								token: MoleculeToken<string, any, any>,
 							) {
-								super(s, context, id)
+								super(s, context, token)
 							}
 						},
 				},

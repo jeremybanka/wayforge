@@ -1,4 +1,4 @@
-import type { AtomToken, Logger, WritableToken } from "atom.io"
+import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -14,6 +14,7 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
+import type { MoleculeToken } from "atom.io/immortal"
 import {
 	makeMolecule,
 	makeRootMolecule,
@@ -362,13 +363,12 @@ describe(`timeline state lifecycle`, () => {
 			key: `unit`,
 			new: (store) =>
 				class Unit extends Molecule<string> {
-					public hpState: AtomToken<number>
+					public hpState = this.bond(hpAtoms)
 					public constructor(
 						context: Molecule<any>[],
-						public readonly id: string,
+						token: MoleculeToken<string, Unit, []>,
 					) {
-						super(store, context, id)
-						this.hpState = this.bond(hpAtoms)
+						super(store, context, token)
 					}
 				},
 		})

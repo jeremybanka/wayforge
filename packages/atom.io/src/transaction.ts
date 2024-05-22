@@ -3,6 +3,7 @@ import type {
 	makeMolecule,
 	MoleculeFamilyToken,
 	MoleculeToken,
+	seekState,
 } from "atom.io/immortal"
 import type { EnvironmentData, Transceiver } from "atom.io/internal"
 import {
@@ -13,7 +14,6 @@ import {
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import type { seekState } from "../immortal/src/seek-state"
 import type {
 	disposeState,
 	Func,
@@ -47,6 +47,7 @@ export type MoleculeCreation<Key extends Json.Serializable> = {
 	token: MoleculeToken<Key, any, any>
 	family: MoleculeFamilyToken<Key, any, any>
 	context: MoleculeToken<any, any, any>[]
+	params: any[]
 }
 export type MoleculeDisposal<Key extends Json.Serializable> = {
 	type: `molecule_disposal`

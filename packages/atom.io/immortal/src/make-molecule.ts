@@ -1,8 +1,7 @@
-import type { Flat } from "atom.io"
+import type { Flat, MoleculeCreation, MoleculeDisposal } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
-import type { MoleculeCreation, MoleculeDisposal } from "../../src/transaction"
 import { Molecule } from "./molecule"
 
 export type MoleculeConstructor<
@@ -11,7 +10,7 @@ export type MoleculeConstructor<
 	Params extends any[],
 > = new (
 	context: Molecule<any>[],
-	key: Key,
+	token: MoleculeToken<Key, Struct, Params>,
 	...params: Params
 ) => Molecule<Key> & Struct
 
@@ -112,7 +111,7 @@ export function makeMoleculeInStore<
 		.map((ctx) => store.molecules.get(stringifyJson(ctx.key)))
 		.filter((m): m is Molecule<Key> => m !== undefined)
 	const Formula = Internal.withdraw(family, store)
-	const molecule = new Formula(owners, key, ...params)
+	const molecule = new Formula(owners, token, ...params)
 	target.molecules.set(stringifyJson(key), molecule)
 
 	const update = {
@@ -120,6 +119,7 @@ export function makeMoleculeInStore<
 		token,
 		family,
 		context: contextArray,
+		params,
 	} satisfies MoleculeCreation<Key>
 
 	const isTransaction =
@@ -213,7 +213,7 @@ export function makeRootMolecule(
 	key: Json.Serializable,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): MoleculeToken<Json.Serializable, { [key: string]: unknown }, []> {
-	const molecule = new Molecule(store, undefined, key)
+	const molecule = new Molecule(store, undefined, { key, type: `molecule` })
 	store.molecules.set(stringifyJson(key), molecule)
 	return {
 		key,
