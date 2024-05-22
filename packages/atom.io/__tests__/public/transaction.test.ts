@@ -1,4 +1,4 @@
-import type { Logger, TransactionUpdate } from "atom.io"
+import type { AtomToken, Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -11,6 +11,13 @@ import {
 	transaction,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
+import type { MoleculeToken, MoleculeType } from "atom.io/immortal"
+import {
+	makeRootMolecule,
+	Molecule,
+	moleculeFamily,
+	seekState,
+} from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -131,6 +138,35 @@ describe(`transaction`, () => {
 		})
 		runTransaction(addCountPlusSomeValue)(777)
 		expect(getState(findState(countPlusSomeValueStates, 777))).toEqual(778)
+	})
+	it(`disposes of states in a transaction`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const doubleStates = selectorFamily<number, string>({
+			key: `double`,
+			get:
+				(id) =>
+				({ find, get }) =>
+					get(find(countStates, id)) * 2,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ find, get, set, dispose }) => {
+				const countState = find(countStates, `my-key`)
+				const doubleState = find(doubleStates, `my-key`)
+				const double = get(doubleState)
+				set(countState, double)
+				dispose(doubleState)
+				dispose(countState)
+			},
+		})
+		findState(countStates, `my-key`)
+		findState(doubleStates, `my-key`)
+		runTransaction(incrementTX)()
+		expect(seekState(countStates, `my-key`)).toBeUndefined()
+		expect(seekState(doubleStates, `my-key`)).toBeUndefined()
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
 		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()
@@ -279,18 +315,20 @@ describe(`transaction`, () => {
 			newValue: 6,
 		})
 		expect(Utils.stdout0).toHaveBeenCalledWith(`Transaction update:`, {
+			type: `transaction_update`,
 			key: `setAllCounts`,
 			epoch: Number.NaN,
 			params: [3],
 			output: undefined,
 			updates: [
 				{
+					type: `atom_update`,
 					key: `count1`,
 					oldValue: 2,
 					newValue: 3,
 				},
-
 				{
+					type: `atom_update`,
 					key: `count2`,
 					oldValue: 2,
 					newValue: 3,
@@ -392,7 +430,10 @@ describe(`precise scope of transactions`, () => {
 		const validate = {
 			update: (update: TransactionUpdate<any>) => {
 				expect(update.updates).toHaveLength(1)
-				expect(update.updates[0].key).toEqual(`count`)
+				expect(`key` in update.updates[0]).toBe(true)
+				if (`key` in update.updates[0]) {
+					expect(update.updates[0].key).toEqual(`count`)
+				}
 			},
 		}
 		vitest.spyOn(validate, `update`)
@@ -401,5 +442,178 @@ describe(`precise scope of transactions`, () => {
 		expect(validate.update).toHaveBeenCalledTimes(1)
 		expect(getState(countState)).toEqual(1)
 		expect(getState(favoriteWordState)).toEqual(`cheese`)
+	})
+})
+
+describe(`reversibility of transactions`, () => {
+	test(`a transaction that fails does does not create a state`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ find, get, set }) => {
+				const countState = find(countStates, `my-key`)
+				const count = get(countState)
+				set(countState, count + 1)
+				throw new Error(`fail`)
+			},
+		})
+		let caught: unknown
+		try {
+			runTransaction(incrementTX)()
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`count("my-key")`)).toBe(
+			undefined,
+		)
+	})
+	test(`a transaction that fails does does not dispose of a state`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		findState(countStates, `my-key`)
+		const incrementTX = transaction({
+			key: `increment`,
+			do: ({ find, dispose }) => {
+				const countState = find(countStates, `my-key`)
+				dispose(countState)
+				throw new Error(`fail`)
+			},
+		})
+		let caught: unknown
+		try {
+			runTransaction(incrementTX)()
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
+		expect(seekState(countStates, `my-key`)).toBeDefined()
+	})
+})
+
+describe(`transaction.make`, () => {
+	function setup() {
+		const hpAtoms = atomFamily<number, string>({
+			key: `hp`,
+			default: 0,
+		})
+		const unitIds = new Set<string>()
+		const unitMolecules = moleculeFamily({
+			key: `unit`,
+			new: (store) =>
+				class Unit extends Molecule<string> {
+					public hpState: AtomToken<number>
+					public constructor(
+						context: Molecule<any>[],
+						token: MoleculeToken<string, Unit, [hp: number]>,
+						public readonly hp: number,
+					) {
+						super(store, context, token)
+						this.hpState = this.bond(hpAtoms)
+						setState(this.hpState, this.hp)
+					}
+				},
+		})
+		type Unit = MoleculeType<typeof unitMolecules>
+		const world = makeRootMolecule(`world`)
+		const spawnUnitsTX = transaction<
+			(
+				willThrow: boolean,
+				...args: number[]
+			) => MoleculeToken<string, Unit, [hp: number]>[]
+		>({
+			key: `spawnUnits`,
+			do: ({ make }, willThrow: boolean, ...args: number[]) => {
+				const units = args.map((hp) =>
+					make(world, unitMolecules, Internal.arbitrary(), hp),
+				)
+				for (const unit of units) {
+					unitIds.add(unit.key)
+				}
+				if (willThrow) {
+					throw new Error(`fail`)
+				}
+				return units
+			},
+		})
+		const destroyUnitTX = transaction<(id: string, willThrow: boolean) => void>({
+			key: `destroyUnit`,
+			do: ({ get, seek, dispose }, id, willThrow) => {
+				const unit = seek(unitMolecules, id)
+				const hpState = seek(hpAtoms, id)
+				if (unit && hpState) {
+					const hp = get(hpState)
+					if (hp === 0) {
+						dispose(unit)
+						unitIds.delete(id)
+					}
+				}
+				if (willThrow) {
+					throw new Error(`fail`)
+				}
+			},
+		})
+		return {
+			spawnUnitsTX,
+			destroyUnitTX,
+			hpAtoms,
+			unitMolecules,
+			world,
+			unitIds,
+		}
+	}
+
+	test(`a transaction that passes creates a molecule`, () => {
+		const { spawnUnitsTX } = setup()
+
+		runTransaction(spawnUnitsTX)(false, 1, 2, 3)
+
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
+	})
+
+	test(`a transaction that fails does not create a molecule`, () => {
+		const { spawnUnitsTX } = setup()
+		let caught: unknown
+		try {
+			runTransaction(spawnUnitsTX)(true, 1, 23)
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
+	})
+
+	test(`a transaction that passes may dispose of a molecule`, () => {
+		const { spawnUnitsTX, destroyUnitTX, unitIds } = setup()
+
+		runTransaction(spawnUnitsTX)(false, 0, 0, 0)
+
+		for (const id of unitIds) {
+			runTransaction(destroyUnitTX)(id, false)
+		}
+
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
+	})
+
+	test(`a transaction that fails will not dispose of a molecule`, () => {
+		const { spawnUnitsTX, destroyUnitTX, unitIds } = setup()
+
+		runTransaction(spawnUnitsTX)(false, 0, 0, 0)
+
+		let caught: unknown
+		try {
+			for (const id of unitIds) {
+				runTransaction(destroyUnitTX)(id, true)
+			}
+		} catch (thrown) {
+			caught = thrown
+		}
+		expect(caught).toBeInstanceOf(Error)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
 	})
 })

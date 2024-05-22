@@ -2,6 +2,7 @@ import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	disposeState,
 	getState,
 	redo,
 	runTransaction,
@@ -13,6 +14,14 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
+import type { MoleculeToken } from "atom.io/immortal"
+import {
+	makeMolecule,
+	makeRootMolecule,
+	Molecule,
+	moleculeFamily,
+	seekState,
+} from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -35,7 +44,7 @@ beforeEach(() => {
 })
 
 describe(`timeline`, () => {
-	it(`tracks the state of a group of atoms`, () => {
+	it(`tracks the state of a group of scope`, () => {
 		const a = atom<number>({
 			key: `a`,
 			default: 5,
@@ -58,7 +67,7 @@ describe(`timeline`, () => {
 
 		const tl_abc = timeline({
 			key: `a, b, & c`,
-			atoms: [a, b, c],
+			scope: [a, b, c],
 		})
 
 		const tx_ab = transaction<() => void>({
@@ -148,7 +157,7 @@ describe(`timeline`, () => {
 
 		const aTL = timeline({
 			key: `a`,
-			atoms: [a],
+			scope: [a],
 		})
 		const incrementTimesTX = transaction<
 			(state: WritableToken<number>, times: number) => void
@@ -190,7 +199,7 @@ describe(`timeline`, () => {
 
 		const timeline_ab = timeline({
 			key: `a & b`,
-			atoms: [a, b],
+			scope: [a, b],
 		})
 
 		subscribe(a, Utils.stdout)
@@ -226,7 +235,7 @@ describe(`timeline`, () => {
 
 		const nameHistory = timeline({
 			key: `name history`,
-			atoms: [nameState],
+			scope: [nameState],
 		})
 
 		expect(getState(nameState)).toBe(`josie`)
@@ -272,7 +281,7 @@ describe(`timeline`, () => {
 		const myCountState = findState(findCountState, `foo`)
 		const countsTL = timeline({
 			key: `counts`,
-			atoms: [findCountState],
+			scope: [findCountState],
 		})
 		expect(getState(myCountState)).toBe(0)
 		setState(myCountState, 1)
@@ -288,7 +297,7 @@ describe(`timeline`, () => {
 
 		const countTL = timeline({
 			key: `count`,
-			atoms: [count],
+			scope: [count],
 			shouldCapture: (update) => {
 				if (update.type === `atom_update`) {
 					const atomKey = update.key
@@ -312,5 +321,67 @@ describe(`timeline`, () => {
 		undo(countTL)
 		expect(getState(count)).toBe(1)
 		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+	})
+})
+
+describe(`timeline state lifecycle`, () => {
+	test(`states may be disposed via undo/redo`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const countsTL = timeline({
+			key: `counts`,
+			scope: [countStates],
+		})
+		const countState = findState(countStates, `my-key`)
+		setState(countState, 1)
+		expect(getState(countState)).toBe(1)
+		disposeState(countState)
+		undo(countsTL)
+		undo(countsTL)
+		undo(countsTL)
+		expect(seekState(countStates, `my-key`)).toBe(undefined)
+		redo(countsTL)
+		expect(seekState(countStates, `my-key`)).toEqual({
+			family: {
+				key: `count`,
+				subKey: `"my-key"`,
+			},
+			key: `count("my-key")`,
+			type: `atom`,
+		})
+		redo(countsTL)
+		redo(countsTL)
+	})
+	test(`molecules may be disposed via undo/redo`, () => {
+		const hpAtoms = atomFamily<number, string>({
+			key: `hp`,
+			default: 0,
+		})
+		const unitMolecules = moleculeFamily({
+			key: `unit`,
+			new: (store) =>
+				class Unit extends Molecule<string> {
+					public hpState = this.bond(hpAtoms)
+					public constructor(
+						context: Molecule<any>[],
+						token: MoleculeToken<string, Unit, []>,
+					) {
+						super(store, context, token)
+					}
+				},
+		})
+		const gameTL = timeline({
+			key: `game`,
+			scope: [unitMolecules],
+		})
+		const game = makeRootMolecule(`world`)
+		makeMolecule(game, unitMolecules, `captain`)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(1)
+		undo(gameTL)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
 	})
 })

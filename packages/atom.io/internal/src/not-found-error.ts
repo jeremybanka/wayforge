@@ -4,12 +4,15 @@ import type {
 	TimelineToken,
 	TransactionToken,
 } from "atom.io"
+import type { MoleculeFamilyToken, MoleculeToken } from "atom.io/immortal"
 
 import type { Store } from "./store"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
 type AtomIOToken =
+	| MoleculeFamilyToken<any, any, any>
+	| MoleculeToken<any, any, any>
 	| ReadableFamilyToken<any, any>
 	| ReadableToken<any>
 	| TimelineToken<any>
@@ -19,6 +22,8 @@ function prettyPrintTokenType(token: AtomIOToken) {
 	switch (token.type) {
 		case `atom_family`:
 			return `Atom Family`
+		case `molecule_family`:
+			return `Molecule Family`
 		case `readonly_selector`:
 			return `Readonly Selector`
 		case `readonly_selector_family`:

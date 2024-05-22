@@ -1,5 +1,7 @@
 import type {
 	FamilyMetadata,
+	StateCreation,
+	StateDisposal,
 	WritableSelectorFamily,
 	WritableSelectorFamilyOptions,
 	WritableSelectorToken,
@@ -16,7 +18,10 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 ): WritableSelectorFamily<T, K> {
-	const subject = new Subject<WritableSelectorToken<T>>()
+	const subject = new Subject<
+		| StateCreation<WritableSelectorToken<T>>
+		| StateDisposal<WritableSelectorToken<T>>
+	>()
 
 	const selectorFamily = Object.assign(
 		(key: K): WritableSelectorToken<T> => {
@@ -35,7 +40,7 @@ export function createWritableSelectorFamily<T, K extends Json.Serializable>(
 				target,
 			)
 
-			subject.next(token)
+			subject.next({ type: `state_creation`, token })
 			return token
 		},
 		{

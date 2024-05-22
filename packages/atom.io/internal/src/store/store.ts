@@ -2,6 +2,8 @@ import type {
 	AtomToken,
 	Func,
 	Logger,
+	MoleculeCreation,
+	MoleculeDisposal,
 	MutableAtomFamily,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -13,7 +15,12 @@ import type {
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Molecule } from "atom.io/immortal"
+import type { Json } from "atom.io/json"
 
+import type {
+	MoleculeFamily,
+	MoleculeToken,
+} from "~/packages/atom.io/immortal/src/make-molecule"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type {
@@ -82,6 +89,7 @@ export class Store implements Lineage {
 	)
 
 	public molecules = new Map<string, Molecule<any>>()
+	public moleculeFamilies = new Map<string, MoleculeFamily<any, any, any>>()
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {
@@ -99,6 +107,9 @@ export class Store implements Lineage {
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
+		moleculeCreationStart: new Subject<MoleculeToken<any, any, any>>(),
+		moleculeCreationDone: new Subject<MoleculeToken<any, any, any>>(),
+		moleculeDisposal: new Subject<MoleculeToken<any, any, any>>(),
 	}
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {

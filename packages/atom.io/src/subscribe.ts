@@ -9,6 +9,7 @@ import {
 
 import type {
 	FamilyMetadata,
+	Flat,
 	Func,
 	ReadableToken,
 	TimelineManageable,
@@ -19,10 +20,13 @@ import type {
 } from "."
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
-export type KeyedStateUpdate<T> = StateUpdate<T> & {
-	key: string
-	family?: FamilyMetadata
-}
+export type KeyedStateUpdate<T> = Flat<
+	StateUpdate<T> & {
+		key: string
+		type: `atom_update` | `selector_update`
+		family?: FamilyMetadata
+	}
+>
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 
 export type TransactionUpdateHandler<F extends Func> = (

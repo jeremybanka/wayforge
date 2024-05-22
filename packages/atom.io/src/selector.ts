@@ -7,7 +7,7 @@ import {
 import type { Json } from "atom.io/json"
 
 import type { ReadonlySelectorToken, WritableSelectorToken } from "."
-import type { Read, Write } from "./transaction"
+import type { Read, StateCreation, StateDisposal, Write } from "./transaction"
 
 export type WritableSelectorOptions<T> = {
 	key: string
@@ -63,7 +63,7 @@ export type WritableSelectorFamily<T, K extends Json.Serializable> =
 	& WritableSelectorFamilyToken<T, K> 
 	& {
 		(key: K): WritableSelectorToken<T>
-		subject: Subject<WritableSelectorToken<T>>
+		subject: Subject<StateCreation<WritableSelectorToken<T>> | StateDisposal<WritableSelectorToken<T>>>
 		install: (store: Store) => void
 	}
 
@@ -90,7 +90,7 @@ export type ReadonlySelectorFamily<T, K extends Json.Serializable> =
 	& {
 		key: string
 		type: `readonly_selector_family`
-		subject: Subject<ReadonlySelectorToken<T>>
+		subject: Subject<StateCreation<ReadonlySelectorToken<T>> | StateDisposal<ReadonlySelectorToken<T>>>
 		install: (store: Store) => void
 		__T?: T
 		__K?: K

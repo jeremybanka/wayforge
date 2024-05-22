@@ -27,6 +27,7 @@ export const attachTimelineFamily = (
 					transactionKey: null,
 					install: () => {},
 					subject: new Subject(),
+					subscriptions: new Map(),
 				},
 			effects: (key) => [
 				({ setSelf }) => {

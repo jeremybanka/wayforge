@@ -14,7 +14,7 @@ describe(`Auditor unit tests`, () => {
 			key: `count`,
 			default: 0,
 		})
-		countAtoms(`foo`)
+		findState(countAtoms, `foo`)
 		const resources = auditor.listResources()
 		expect(resources.length).toBe(1)
 		expect(resources[0][0].key).toEqual(`count("foo")`)
@@ -25,7 +25,7 @@ describe(`Auditor unit tests`, () => {
 			key: `count`,
 			get: () => () => 0,
 		})
-		countSelectors(`bar`)
+		findState(countSelectors, `bar`)
 		const resources = auditor.listResources()
 		expect(resources.length).toBe(1)
 		expect(resources[0][0].key).toEqual(`count("bar")`)

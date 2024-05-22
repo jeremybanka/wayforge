@@ -4,6 +4,8 @@ import type {
 	MutableAtomFamilyOptions,
 	MutableAtomOptions,
 	MutableAtomToken,
+	StateCreation,
+	StateDisposal,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 import { selectJsonFamily, stringifyJson } from "atom.io/json"
@@ -23,7 +25,9 @@ export function createMutableAtomFamily<
 	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
 ): MutableAtomFamily<T, J, K> {
-	const subject = new Subject<MutableAtomToken<T, J>>()
+	const subject = new Subject<
+		StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>
+	>()
 
 	const atomFamily = Object.assign(
 		(key: K): MutableAtomToken<T, J> => {
@@ -45,7 +49,7 @@ export function createMutableAtomFamily<
 
 			const token = createMutableAtom(individualOptions, family, target)
 
-			subject.next(token)
+			subject.next({ type: `state_creation`, token })
 			return token
 		},
 		{

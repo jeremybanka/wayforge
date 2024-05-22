@@ -27,7 +27,11 @@ export function createStandaloneAtom<T>(
 	const isMutable = `mutable` in options
 
 	if (isMutable) {
-		return createMutableAtom(options, undefined, store)
+		const state = createMutableAtom(options, undefined, store)
+		store.on.atomCreation.next(state)
+		return state
 	}
-	return createRegularAtom(options, undefined, store)
+	const state = createRegularAtom(options, undefined, store)
+	store.on.atomCreation.next(state)
+	return state
 }

@@ -64,7 +64,6 @@ export function selectJsonFamily<
 			set:
 				(key) =>
 				({ seek, set }, newValue) => {
-					// set(seek(family, key), transform.fromJson(newValue))
 					const existingState = seek(family, key)
 					if (existingState) {
 						set(existingState, transform.fromJson(newValue))
@@ -90,9 +89,9 @@ export function selectJsonFamily<
 	)
 	family.subject.subscribe(
 		`store=${store.config.name}::json-selector-family`,
-		(token) => {
-			if (token.family) {
-				seekInStore(jsonFamily, parseJson(token.family.subKey) as K, store)
+		(event) => {
+			if (event.token.family) {
+				seekInStore(jsonFamily, parseJson(event.token.family.subKey) as K, store)
 			}
 		},
 	)

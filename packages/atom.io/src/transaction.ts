@@ -1,9 +1,11 @@
 import type { findState } from "atom.io/ephemeral"
 import type {
-	EnvironmentData,
-	Transceiver,
-	WritableSelector,
-} from "atom.io/internal"
+	makeMolecule,
+	MoleculeFamilyToken,
+	MoleculeToken,
+	seekState,
+} from "atom.io/immortal"
+import type { EnvironmentData, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -12,13 +14,14 @@ import {
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import type { seekState } from "../immortal/src/seek-state"
 import type {
+	disposeState,
 	Func,
 	KeyedStateUpdate,
 	MutableAtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
+	TokenType,
 	WritableSelectorToken,
 	WritableToken,
 } from "."
@@ -29,11 +32,41 @@ export type TransactionToken<F extends Func> = {
 	__F?: F
 }
 
+export type StateCreation<Token extends ReadableToken<any>> = {
+	type: `state_creation`
+	token: Token
+}
+export type StateDisposal<Token extends ReadableToken<any>> = {
+	type: `state_disposal`
+	token: Token
+	value?: TokenType<Token>
+}
+
+export type MoleculeCreation<Key extends Json.Serializable> = {
+	type: `molecule_creation`
+	token: MoleculeToken<Key, any, any>
+	family: MoleculeFamilyToken<Key, any, any>
+	context: MoleculeToken<any, any, any>[]
+	params: any[]
+}
+export type MoleculeDisposal<Key extends Json.Serializable> = {
+	type: `molecule_disposal`
+	token: MoleculeToken<Key, any, any>
+	family: MoleculeFamilyToken<any, any, any>
+	context: MoleculeToken<any, any, any>[]
+	familyKeys: string[]
+}
+
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
+	| MoleculeCreation<any>
+	| MoleculeDisposal<any>
+	| StateCreation<ReadableToken<unknown>>
+	| StateDisposal<ReadableToken<unknown>>
 	| TransactionUpdate<Func>
 
 export type TransactionUpdate<F extends Func> = {
+	type: `transaction_update`
 	key: string
 	id: string
 	epoch: number
@@ -65,6 +98,8 @@ export type TransactorsWithRunAndEnv = Readonly<{
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
+	make: typeof makeMolecule
+	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>

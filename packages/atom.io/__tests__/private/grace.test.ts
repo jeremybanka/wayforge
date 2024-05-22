@@ -103,11 +103,11 @@ describe(`graceful handling of improper usage`, () => {
 			})
 			const countTimeline000 = timeline({
 				key: `count_history`,
-				atoms: [countState],
+				scope: [countState],
 			})
 			const countTimeline001 = timeline({
 				key: `count_history_too`,
-				atoms: [countState],
+				scope: [countState],
 			})
 			setState(countState, 1)
 			const countTimeline0Data =
@@ -131,12 +131,12 @@ describe(`graceful handling of improper usage`, () => {
 			})
 			const countTimeline = timeline({
 				key: `counts_history`,
-				atoms: [countStates],
+				scope: [countStates],
 			})
 			const aCount = findState(countStates, `a`)
 			const aCountTimeline = timeline({
 				key: `a_count_history`,
-				atoms: [aCount],
+				scope: [aCount],
 			})
 			setState(aCount, 1)
 
@@ -154,7 +154,7 @@ describe(`graceful handling of improper usage`, () => {
 			)
 			console.log(Internal.withdraw(aCount, Internal.IMPLICIT.STORE))
 			console.log(countTimelineData?.history)
-			expect(countTimelineData?.history).toHaveLength(1)
+			expect(countTimelineData?.history).toHaveLength(2)
 			expect(aCountTimelineData?.history).toHaveLength(0)
 		})
 	})
@@ -173,7 +173,7 @@ describe(`recipes`, () => {
 				const WritableToken = f(key)
 				const timelineToken = timeline({
 					key: `timeline for ${WritableToken.key}`,
-					atoms: [WritableToken],
+					scope: [WritableToken],
 				})
 				return [WritableToken, timelineToken]
 			}

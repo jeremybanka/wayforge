@@ -1,6 +1,5 @@
 import type {
 	FamilyMetadata,
-	MutableAtomOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
 	UpdateHandler,
@@ -85,6 +84,5 @@ export function createRegularAtom<T>(
 			}
 		}
 	}
-	store.on.atomCreation.next(token)
 	return token
 }

@@ -200,7 +200,7 @@ describe(`mutable time traveling`, () => {
 		const myMutableState = findState(myMutableStates, `example`)
 		const myTL = timeline({
 			key: `myTimeline`,
-			atoms: [myMutableStates],
+			scope: [myMutableStates],
 		})
 		const myJsonState = Internal.getJsonToken(
 			myMutableState,
@@ -235,7 +235,7 @@ describe(`mutable time traveling`, () => {
 		})
 		const myTL = timeline({
 			key: `myTimeline`,
-			atoms: [myMutableState],
+			scope: [myMutableState],
 		})
 		const myTX = transaction<(newItem: string) => void>({
 			key: `myTransaction`,

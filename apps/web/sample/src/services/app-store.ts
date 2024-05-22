@@ -43,5 +43,5 @@ export const resetEquationTX = transaction<() => void>({
 
 export const divisionTimeline = timeline({
 	key: `division`,
-	atoms: [dividendState, divisorState],
+	scope: [dividendState, divisorState],
 })

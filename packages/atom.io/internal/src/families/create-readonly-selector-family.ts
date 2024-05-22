@@ -3,6 +3,8 @@ import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyOptions,
 	ReadonlySelectorToken,
+	StateCreation,
+	StateDisposal,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -16,7 +18,10 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K> {
-	const subject = new Subject<ReadonlySelectorToken<T>>()
+	const subject = new Subject<
+		| StateCreation<ReadonlySelectorToken<T>>
+		| StateDisposal<ReadonlySelectorToken<T>>
+	>()
 
 	const readonlySelectorFamily = Object.assign(
 		(key: K): ReadonlySelectorToken<T> => {
@@ -34,7 +39,7 @@ export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
 				target,
 			)
 
-			subject.next(token)
+			subject.next({ type: `state_creation`, token })
 			return token
 		},
 		{

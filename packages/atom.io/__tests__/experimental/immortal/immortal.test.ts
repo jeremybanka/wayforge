@@ -1,8 +1,16 @@
 import type { AtomToken, Logger } from "atom.io"
 import { atomFamily, getState, setState } from "atom.io"
-import { editRelations, findRelations, getJoin, join } from "atom.io/data"
+import { editRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
-import { Molecule, seekState } from "atom.io/immortal"
+import type { MoleculeToken } from "atom.io/immortal"
+import {
+	makeMolecule,
+	makeRootMolecule,
+	Molecule,
+	moleculeFamily,
+	seekState,
+	useMolecule,
+} from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -34,22 +42,43 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`safe initialization of state with Molecule`, () => {
-		const world = new Molecule(`world`)
+		const world = makeRootMolecule(`world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const countState = world.bond(countStates)
-		expect(getState(countState)).toBe(0)
-		setState(countState, 1)
-		expect(getState(countState)).toBe(1)
-		world.dispose()
-		expect(() => getState(countState)).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom "count("world")" not found in store "IMPLICIT_STORE".]`,
+		const counters = moleculeFamily({
+			key: `counters`,
+			new: (store) =>
+				class Counter extends Molecule<string> {
+					public $count: AtomToken<number>
+					public constructor(
+						context: Molecule<any>[],
+						token: MoleculeToken<string, any, any>,
+					) {
+						super(store, context, token)
+						this.$count = this.bond(countStates)
+					}
+				},
+		})
+		const myCounterMolecule = makeMolecule(world, counters, `my-counter`)
+		const myCounter = useMolecule(myCounterMolecule)
+		if (!myCounter) {
+			throw new Error(`myCounter is undefined`)
+		}
+		setState(myCounter.$count, 1)
+		expect(getState(myCounter.$count)).toBe(1)
+		myCounter.dispose()
+		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Atom "count("my-counter")" not found in store "IMPLICIT_STORE".]`,
 		)
+		expect(useMolecule(myCounterMolecule)).toBeUndefined()
 	})
 	test(`safe retrieval of state with seekState`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -69,7 +98,10 @@ describe(`immortal mode`, () => {
 		expect(countState).toBeUndefined()
 	})
 	test(`hierarchical ownership of molecules`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const expStates = atomFamily<number, string>({
 			key: `exp`,
 			default: 0,
@@ -85,7 +117,10 @@ describe(`immortal mode`, () => {
 		)
 	})
 	test(`transfer of ownership of molecules`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const dmgStates = atomFamily<number, string>({
 			key: `dmg`,
 			default: 0,
@@ -99,7 +134,10 @@ describe(`immortal mode`, () => {
 		expect(getState(dmgState)).toBe(0)
 	})
 	test(`won't make a molecule a child of itself`, () => {
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		world.claim(world)
 		expect(world.below.length).toBe(0)
 	})
@@ -116,7 +154,10 @@ describe(`immortal integrations`, () => {
 			{ hi: 0 } satisfies { hi: number },
 		)
 
-		const world = new Molecule(`world`)
+		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
+			key: `world`,
+			type: `molecule`,
+		})
 		const holder = world.spawn(`character-0`)
 		const item = world.spawn(`item-0`)
 		holder.join(holdersOfItems)
@@ -133,95 +174,5 @@ describe(`immortal integrations`, () => {
 		const internalJoin = getJoin(holdersOfItems, world.store)
 
 		expect(internalJoin.molecules.size).toBe(0)
-	})
-})
-
-describe(`practical example of immortal`, () => {
-	test(`RPG`, () => {
-		const world = new Molecule(`world`)
-		const $$maxHealth = atomFamily<number, string>({
-			key: `maxHealth`,
-			default: 100,
-		})
-		const $$health = atomFamily<number, string>({
-			key: `health`,
-			default: 0,
-		})
-		const $$armor = atomFamily<number, string>({
-			key: `armor`,
-			default: 0,
-		})
-		const $$damage = atomFamily<number, string>({
-			key: `damage`,
-			default: 0,
-		})
-		const holdersOfItems = join({
-			key: `holdersOfItems`,
-			between: [`holder`, `item`],
-			cardinality: `1:n`,
-		})
-		class Being extends Molecule<string> {
-			public $maxHealth: AtomToken<number>
-			public $health: AtomToken<number>
-			public $armor: AtomToken<number>
-			public constructor(
-				public readonly id: string,
-				public readonly baseHealth: number,
-				public readonly baseArmor: number,
-			) {
-				super(id, [world])
-				this.$maxHealth = this.bond($$maxHealth)
-				this.$health = this.bond($$health)
-				this.$armor = this.bond($$armor)
-				this.join(holdersOfItems)
-
-				setState(this.$health, this.baseHealth)
-				setState(this.$maxHealth, this.baseHealth)
-				setState(this.$armor, this.baseArmor)
-			}
-		}
-		class Item extends Molecule<string> {
-			public $damage: AtomToken<number>
-			public constructor(
-				public readonly id: string,
-				public readonly baseDamage: number,
-			) {
-				super(id, [world])
-				this.join(holdersOfItems)
-				this.$damage = this.bond($$damage)
-				setState(this.$damage, this.baseDamage)
-			}
-		}
-		const me = new Being(`me`, 100, 10)
-		const itemsIHold = findRelations(holdersOfItems, `me`).itemKeysOfHolder
-		expect(getState(itemsIHold)).toEqual([])
-		const sword = new Item(`sword`, 10)
-		editRelations(holdersOfItems, (relations) => {
-			relations.set({ holder: `me`, item: `sword` })
-			me.claim(sword)
-		})
-		expect(getState(itemsIHold)).toEqual([`sword`])
-		const holderOfSword = findRelations(holdersOfItems, `sword`).holderKeyOfItem
-		expect(getState(holderOfSword)).toEqual(`me`)
-		setState(sword.$damage, 5)
-		expect(getState(sword.$damage)).toEqual(5)
-		expect(getState(me.$health)).toEqual(100)
-		me.dispose()
-		console.log(
-			`MOLECULES--------------------------------------------------------`,
-		)
-		console.log(Internal.IMPLICIT.STORE.molecules)
-		console.log(
-			`ATOMS------------------------------------------------------------`,
-		)
-		console.log(Internal.IMPLICIT.STORE.atoms)
-		console.log(
-			`VALUE MAP--------------------------------------------------------`,
-		)
-		console.log(Internal.IMPLICIT.STORE.valueMap)
-		console.log(
-			`JOIN-------------------------------------------------------------`,
-		)
-		console.log(getJoin(holdersOfItems, Internal.IMPLICIT.STORE))
 	})
 })

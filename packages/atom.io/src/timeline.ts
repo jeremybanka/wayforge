@@ -1,7 +1,12 @@
+import type { MoleculeFamilyToken } from "atom.io/immortal"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
+	TimelineMoleculeCreation,
+	TimelineMoleculeDisposal,
 	TimelineSelectorUpdate,
+	TimelineStateCreation,
+	TimelineStateDisposal,
 	TimelineTransactionUpdate,
 } from "atom.io/internal"
 import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
@@ -9,6 +14,14 @@ import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 import type { AtomFamilyToken, AtomToken } from "."
 
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
+export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
+	any,
+	any
+>
+	? AtomToken<any>
+	: M extends AtomToken<any>
+		? M
+		: never
 
 export type TimelineToken<M> = {
 	key: string
@@ -18,7 +31,7 @@ export type TimelineToken<M> = {
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	key: string
-	atoms: ManagedAtom[]
+	scope: (ManagedAtom | MoleculeFamilyToken<any, any, any>)[]
 	shouldCapture?: (
 		update: TimelineUpdate<ManagedAtom>,
 		timeline: Timeline<TimelineManageable>,
@@ -27,7 +40,11 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 
 export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 	| TimelineAtomUpdate<ManagedAtom>
+	| TimelineMoleculeCreation<any>
+	| TimelineMoleculeDisposal<any>
 	| TimelineSelectorUpdate<ManagedAtom>
+	| TimelineStateCreation<AtomOnly<ManagedAtom>>
+	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
 	| TimelineTransactionUpdate
 
 export const timeline = <ManagedAtom extends TimelineManageable>(
