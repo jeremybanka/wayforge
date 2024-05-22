@@ -1,5 +1,17 @@
 # atom.io
 
+## 0.23.0
+
+### Minor Changes
+
+- 8bdbabd: 💥 BREAKING CHANGE: The `timeline` option key `atoms` has been renamed `scope`. This is because it now supports `MoleculeFamilyToken`s in addition to `AtomToken`s and `AtomFamilyToken`s.
+
+### Patch Changes
+
+- 8bdbabd: ✨ The `make` transactor lets you create a molecule during a transaction.
+- 8bdbabd: ✨ The `dispose` transactor lets you get rid of a state or molecule during a transaction.
+- beb1b49: ✨ The `json` transactor allows you to retrieve the JSON token for a mutable atom during a `transaction.do` or a `selector.get`, or `selector.set` procedure.
+
 ## 0.22.0
 
 ### Minor Changes
