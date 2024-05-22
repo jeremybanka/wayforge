@@ -698,8 +698,8 @@ importers:
         specifier: 8.2.2
         version: 8.2.2
       drizzle-kit:
-        specifier: 0.21.3
-        version: 0.21.3
+        specifier: 0.21.4
+        version: 0.21.4
       drizzle-orm:
         specifier: 0.30.10
         version: 0.30.10(@types/react@18.3.2)(postgres@3.4.4)(react@18.3.1)
@@ -7117,8 +7117,8 @@ packages:
       wordwrap: 1.0.0
     dev: true
 
-  /drizzle-kit@0.21.3:
-    resolution: {integrity: sha512-BqLkHBucr32OOZ/16mMSUFKGBcoBYwZnOLkLMbaSVmd8shTVAjOdh2mleI7c/iw70ZcKlL53n3SFlUlKLzy2lQ==}
+  /drizzle-kit@0.21.4:
+    resolution: {integrity: sha512-Nxcc1ONJLRgbhmR+azxjNF9Ly9privNLEIgW53c92whb4xp8jZLH1kMCh/54ci1mTMuYxPdOukqLwJ8wRudNwA==}
     hasBin: true
     dependencies:
       '@esbuild-kit/esm-loader': 2.6.5
