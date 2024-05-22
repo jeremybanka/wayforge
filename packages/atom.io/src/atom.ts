@@ -6,7 +6,13 @@ import {
 } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
 
-import type { AtomToken, MutableAtomToken, RegularAtomToken } from "."
+import type {
+	AtomToken,
+	MutableAtomToken,
+	RegularAtomToken,
+	StateCreation,
+	StateDisposal,
+} from "."
 
 export type Effectors<T> = {
 	setSelf: <V extends T>(next: V | ((oldValue: T) => V)) => void
@@ -67,7 +73,7 @@ export type RegularAtomFamily<T, K extends Json.Serializable> =
 	& RegularAtomFamilyToken<T, K>
 	& {
 		(key: K): RegularAtomToken<T>
-		subject: Subject<RegularAtomToken<T>>
+		subject: Subject<StateCreation<AtomToken<T>> | StateDisposal<AtomToken<T>>>
 		install: (store: Store) => void
 	}
 
@@ -118,7 +124,7 @@ export type MutableAtomFamily<
 	& MutableAtomFamilyToken<T, J, K>
 	& {
 			(key: K): MutableAtomToken<T, J>
-			subject: Subject<MutableAtomToken<T, J>>
+			subject: Subject<StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>>
 			install: (store: Store) => void
 		}
 

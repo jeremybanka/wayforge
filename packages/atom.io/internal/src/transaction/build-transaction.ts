@@ -1,11 +1,11 @@
 import type { Func } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
+import { makeMoleculeInStore, type seekState } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
 import { arbitrary } from "../arbitrary"
-import { findInStore, seekInStore } from "../families"
+import { disposeFromStore, findInStore, seekInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
@@ -47,12 +47,14 @@ export const buildTransaction = (
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
 		molecules: new LazyMap(parent.molecules),
+		moleculeFamilies: new LazyMap(parent.moleculeFamilies),
 		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)
 	const transactionMeta: TransactionProgress<Func> = {
 		phase: `building`,
 		update: {
+			type: `transaction_update`,
 			key,
 			id,
 			epoch: epoch === undefined ? Number.NaN : epoch + 1,
@@ -70,6 +72,11 @@ export const buildTransaction = (
 			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
 			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
 			json: (token) => getJsonToken(token, child),
+			make: (context, family, k, ...args) =>
+				makeMoleculeInStore(child, context, family, k, ...args),
+			dispose: (token) => {
+				disposeFromStore(token, child)
+			},
 			env: () => getEnvironmentData(child),
 		},
 	}

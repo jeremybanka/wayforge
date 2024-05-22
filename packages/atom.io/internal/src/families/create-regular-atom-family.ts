@@ -4,6 +4,8 @@ import type {
 	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
+	StateCreation,
+	StateDisposal,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -17,7 +19,9 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
 ): RegularAtomFamily<T, K> {
-	const subject = new Subject<RegularAtomToken<T>>()
+	const subject = new Subject<
+		StateCreation<RegularAtomToken<T>> | StateDisposal<RegularAtomToken<T>>
+	>()
 
 	const atomFamily: RegularAtomFamily<T, K> = Object.assign(
 		(key: K): RegularAtomToken<any> => {
@@ -37,7 +41,7 @@ export function createRegularAtomFamily<T, K extends Json.Serializable>(
 
 			const token = createRegularAtom(individualOptions, family, target)
 
-			subject.next(token)
+			subject.next({ type: `state_creation`, token })
 			return token
 		},
 		{

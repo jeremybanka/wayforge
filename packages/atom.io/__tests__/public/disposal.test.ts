@@ -32,7 +32,7 @@ describe(`disposeState`, () => {
 			default: 0,
 		})
 		expect(countState.key).toEqual(`count`)
-		disposeState(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState)
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
@@ -47,7 +47,7 @@ describe(`disposeState`, () => {
 			default: 0,
 		})
 		const countState = findState(countStates, `count`)
-		disposeState(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState)
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
@@ -68,7 +68,7 @@ describe(`disposeState`, () => {
 		const doubledState = findState(doubleSelectors, `my-key`)
 		setState(countState, 2)
 		expect(getState(doubledState)).toBe(4)
-		disposeState(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState)
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
@@ -83,8 +83,8 @@ describe(`disposeState`, () => {
 			default: 0,
 		})
 		const countState = findState(countAtoms, `my-key`)
-		disposeState(countState, Internal.IMPLICIT.STORE)
-		disposeState(countState, Internal.IMPLICIT.STORE)
+		disposeState(countState)
+		disposeState(countState)
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
@@ -103,7 +103,7 @@ describe(`disposeState`, () => {
 			key: `doubled`,
 			get: ({ get }) => get(countState),
 		})
-		disposeState(doubledState, Internal.IMPLICIT.STORE)
+		disposeState(doubledState)
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
@@ -126,7 +126,7 @@ describe(`disposeState`, () => {
 					get(find(countAtoms, id)) * 2,
 		})
 		const doubledState = findState(doubledSelectors, `my-key`)
-		disposeState(doubledState, Internal.IMPLICIT.STORE)
+		disposeState(doubledState)
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.selectors.has(doubledState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
@@ -166,7 +166,7 @@ describe(`disposeState`, () => {
 		const countPlusOneState = findState(countPlusOneSelectors, `my-key`)
 		const countPlusTwoState = findState(countPlusTwoSelectors, `my-key`)
 		const countPlusThreeState = findState(countPlusThreeSelectors, `my-key`)
-		disposeState(countPlusTwoState, Internal.IMPLICIT.STORE)
+		disposeState(countPlusTwoState)
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(
 			Internal.IMPLICIT.STORE.readonlySelectors.has(countPlusOneState.key),

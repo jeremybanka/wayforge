@@ -64,19 +64,21 @@ export const TimelineLog: FC<{
 			</header>
 			{isOpen ? (
 				<main>
-					{timeline.history.map((update, index) => (
-						<Fragment key={update.key + index + timeline.at}>
-							{index === timeline.at ? <YouAreHere /> : null}
-							<article.TimelineUpdate
-								timelineUpdate={update}
-								serialNumber={index}
-							/>
-							{index === timeline.history.length - 1 &&
-							timeline.at === timeline.history.length ? (
-								<YouAreHere />
-							) : null}
-						</Fragment>
-					))}
+					{timeline.history.map((update, index) =>
+						`key` in update ? (
+							<Fragment key={update.key + index + timeline.at}>
+								{index === timeline.at ? <YouAreHere /> : null}
+								<article.TimelineUpdate
+									timelineUpdate={update}
+									serialNumber={index}
+								/>
+								{index === timeline.history.length - 1 &&
+								timeline.at === timeline.history.length ? (
+									<YouAreHere />
+								) : null}
+							</Fragment>
+						) : null,
+					)}
 				</main>
 			) : null}
 		</section>

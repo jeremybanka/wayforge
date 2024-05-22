@@ -91,24 +91,27 @@ const TransactionUpdateFC: React.FC<{
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
 					{transactionUpdate.updates
-						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
 						.map((update, index) => {
-							if (`newValue` in update) {
-								return (
-									<article.AtomUpdate
-										key={`${transactionUpdate.key}:${index}:${update.key}`}
-										serialNumber={index}
-										atomUpdate={update}
-									/>
-								)
+							switch (update.type) {
+								case `atom_update`:
+								case `selector_update`:
+									return (
+										<article.AtomUpdate
+											key={`${transactionUpdate.key}:${index}:${update.key}`}
+											serialNumber={index}
+											atomUpdate={update}
+										/>
+									)
+								case `transaction_update`:
+									return (
+										<TransactionUpdateFC
+											key={`${transactionUpdate.key}:${index}:${update.key}`}
+											serialNumber={index}
+											transactionUpdate={update}
+										/>
+									)
 							}
-							return (
-								<TransactionUpdateFC
-									key={`${transactionUpdate.key}:${index}:${update.key}`}
-									serialNumber={index}
-									transactionUpdate={update}
-								/>
-							)
 						})}
 				</section>
 			</main>
@@ -120,7 +123,7 @@ export const TimelineUpdateFC: React.FC<{
 	timelineUpdate: TimelineUpdate<any>
 	serialNumber: number
 }> = ({ timelineUpdate, serialNumber }) => {
-	return (
+	return `key` in timelineUpdate ? (
 		<article
 			className="node timeline_update"
 			data-testid={`timeline-update-${timelineUpdate.key}-${serialNumber}`}
@@ -134,21 +137,27 @@ export const TimelineUpdateFC: React.FC<{
 			<main>
 				{timelineUpdate.type === `transaction_update` ? (
 					timelineUpdate.updates
-						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
 						.map((update, index) => {
-							return `newValue` in update ? (
-								<article.AtomUpdate
-									key={`${timelineUpdate.key}:${index}:${update.key}`}
-									serialNumber={index}
-									atomUpdate={update}
-								/>
-							) : (
-								<TransactionUpdateFC
-									key={`${timelineUpdate.key}:${index}:${update.key}`}
-									serialNumber={index}
-									transactionUpdate={update}
-								/>
-							)
+							switch (update.type) {
+								case `atom_update`:
+								case `selector_update`:
+									return (
+										<article.AtomUpdate
+											key={`${timelineUpdate.key}:${index}:${update.key}`}
+											serialNumber={index}
+											atomUpdate={update}
+										/>
+									)
+								case `transaction_update`:
+									return (
+										<TransactionUpdateFC
+											key={`${timelineUpdate.key}:${index}:${update.key}`}
+											serialNumber={index}
+											transactionUpdate={update}
+										/>
+									)
+							}
 						})
 				) : timelineUpdate.type === `selector_update` ? (
 					timelineUpdate.atomUpdates
@@ -170,7 +179,7 @@ export const TimelineUpdateFC: React.FC<{
 				) : null}
 			</main>
 		</article>
-	)
+	) : null
 }
 
 export const article = {

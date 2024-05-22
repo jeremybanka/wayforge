@@ -19,7 +19,6 @@ import type {
 import type { Json } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
-import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { initFamilyMember } from "./init-family-member"
 import { seekInStore } from "./seek-in-store"

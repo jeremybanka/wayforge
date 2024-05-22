@@ -8,6 +8,7 @@ import {
 	timeline,
 	transaction,
 } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
@@ -21,15 +22,8 @@ const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
 
 let logger: Logger
-// let iteration = 0
-
-// const templateStore = new Internal.Store(`template`, Internal.IMPLICIT.STORE)
 
 beforeEach(() => {
-	// Internal.IMPLICIT.STORE_INTERNAL = new Internal.Store(
-	// 	`default_${iteration++}`,
-	// 	templateStore,
-	// )
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
@@ -58,7 +52,7 @@ describe(`react-devtools`, () => {
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
-			atoms: [letterState],
+			scope: [letterState],
 		})
 		const selectionsState = atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `selections`,
@@ -80,7 +74,7 @@ describe(`react-devtools`, () => {
 			key: `count`,
 			default: 0,
 		})
-		const countState = countAtoms(`count`)
+		const countState = findState(countAtoms, `count`)
 		const Letter: FC = () => {
 			const setLetter = AR.useI(letterState)
 			const letter = AR.useO(letterState)

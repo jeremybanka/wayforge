@@ -1,7 +1,13 @@
 import type { AtomToken } from "atom.io"
 
 import type { Store } from ".."
-import { disposeSelector, getUpdateToken, newest } from ".."
+import {
+	disposeSelector,
+	getUpdateToken,
+	isChildStore,
+	newest,
+	withdraw,
+} from ".."
 
 export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 	const target = newest(store)
@@ -18,6 +24,13 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		store.logger.error(`❌`, `atom`, key, `Standalone atoms cannot be disposed.`)
 	} else {
 		atom.cleanup?.()
+		const lastValue = store.valueMap.get(atom.key)
+		const family = withdraw({ key: atom.family.key, type: `atom_family` }, store)
+		family.subject.next({
+			type: `state_disposal`,
+			token: atomToken,
+			value: lastValue,
+		})
 		target.atoms.delete(key)
 		target.valueMap.delete(key)
 		const selectorKeys = target.selectorAtoms.getRelatedKeys(key)
@@ -40,6 +53,13 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			store.trackers.delete(key)
 		}
 		store.logger.info(`🔥`, `atom`, key, `deleted`)
-		store.on.atomDisposal.next(atomToken)
+		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
+			target.transactionMeta.update.updates.push({
+				type: `state_disposal`,
+				token: atomToken,
+			})
+		} else {
+			store.on.atomDisposal.next(atomToken)
+		}
 	}
 }

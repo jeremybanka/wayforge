@@ -16,6 +16,11 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
+import type {
+	Molecule,
+	MoleculeFamilyToken,
+	MoleculeToken,
+} from "atom.io/immortal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 import type { ReadableState } from ".."
@@ -76,28 +81,40 @@ export function seekInStore<T, K extends Json.Serializable, Key extends K>(
 	store: Store,
 ): ReadableToken<T> | undefined
 
+export function seekInStore<
+	K extends Json.Serializable,
+	S extends { [key: string]: any },
+>(
+	token: MoleculeFamilyToken<K, S, any[]>,
+	key: K,
+	store: Store,
+): MoleculeToken<K, S, any[]> | undefined
+
 export function seekInStore(
-	token: ReadableFamilyToken<any, any>,
+	token: MoleculeFamilyToken<any, any, any> | ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
 	store: Store,
-): ReadableToken<any> | undefined {
+): MoleculeToken<any, any, any> | ReadableToken<any> | undefined {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const target = newest(store)
-	let state: ReadableState<any> | undefined
+	let state: Molecule<any> | ReadableState<any> | undefined
 	switch (token.type) {
 		case `atom_family`:
 		case `mutable_atom_family`:
 			state = target.atoms.get(fullKey)
 			break
-
-		case `selector_family`: {
+		case `selector_family`:
 			state = target.selectors.get(fullKey)
 			break
-		}
 		case `readonly_selector_family`:
 			state = target.readonlySelectors.get(fullKey)
 			break
+		case `molecule_family`:
+			state = target.molecules.get(stringifyJson(key))
+			if (state) {
+				return deposit(state)
+			}
 	}
 	if (state) {
 		return deposit(state)

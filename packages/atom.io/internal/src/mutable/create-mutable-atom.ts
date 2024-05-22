@@ -92,7 +92,5 @@ export function createMutableAtom<
 		selectJson(token, options, store)
 	}
 
-	store.on.atomCreation.next(token)
-
 	return token
 }

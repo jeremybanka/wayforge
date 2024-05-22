@@ -75,7 +75,7 @@ describe(`timeline`, () => {
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
-			atoms: [letterState],
+			scope: [letterState],
 		})
 		const Letter: FC = () => {
 			const setLetter = AR.useI(letterState)
@@ -174,11 +174,11 @@ describe(`timeline (dynamic)`, () => {
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
-			atoms: [letterState],
+			scope: [letterState],
 		})
 		const numberTL = timeline({
 			key: `numberTL`,
-			atoms: [numberState],
+			scope: [numberState],
 		})
 		const whichTimelineState = atom<string>({
 			key: `whichTimeline`,
