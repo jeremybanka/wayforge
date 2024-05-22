@@ -1,6 +1,5 @@
 import type {
 	FamilyMetadata,
-	MutableAtomOptions,
 	RegularAtomOptions,
 	RegularAtomToken,
 	UpdateHandler,

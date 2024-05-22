@@ -1,9 +1,6 @@
 import type { Func } from "atom.io"
 
-import { disposeAtom } from "../atom"
-import { initFamilyMember } from "../families"
 import { ingestTransactionUpdate } from "../ingest-updates"
-import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -49,27 +46,9 @@ export const applyTransaction = <F extends Func>(
 		}
 		tracker.dispose()
 	}
-	// for (const atom of child.atoms.values()) {
-	// 	if (!parent.atoms.has(atom.key)) {
-	// 		parent.atoms.set(atom.key, atom)
-	// 		parent.valueMap.set(atom.key, atom.default)
-	// 		parent.logger.info(
-	// 			`🔨`,
-	// 			`transaction`,
-	// 			child.transactionMeta.update.key,
-	// 			`Adding atom "${atom.key}"`,
-	// 		)
-	// 	}
-	// }
+
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
-	// if (child.atoms instanceof LazyMap) {
-	// 	for (const deleted of child.atoms.deleted) {
-	// 		const atom = parent.atoms.get(deleted)
-	// 		if (atom) {
-	// 			disposeAtom(atom, parent)
-	// 		}
-	// 	}
-	// }
+
 	if (isRootStore(parent)) {
 		setEpochNumberOfAction(
 			child.transactionMeta.update.key,

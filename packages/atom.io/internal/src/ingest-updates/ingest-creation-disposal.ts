@@ -6,11 +6,7 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import {
-	disposeMolecule,
-	makeMoleculeInStore,
-	useMoleculeFromStore,
-} from "atom.io/immortal"
+import { disposeMolecule, makeMoleculeInStore } from "atom.io/immortal"
 
 import { disposeFromStore, initFamilyMember } from "../families"
 import type { Store } from "../store"

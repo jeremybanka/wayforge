@@ -1,6 +1,6 @@
 import type { AtomToken, Logger } from "atom.io"
 import { atomFamily, getState, setState } from "atom.io"
-import { editRelations, findRelations, getJoin, join } from "atom.io/data"
+import { editRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { Molecule, seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"

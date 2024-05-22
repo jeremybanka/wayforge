@@ -1,12 +1,5 @@
 import type { Logger } from "atom.io"
-import {
-	atom,
-	atomFamily,
-	selector,
-	selectorFamily,
-	timeline,
-	transaction,
-} from "atom.io"
+import { atomFamily, selectorFamily, timeline, transaction } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
