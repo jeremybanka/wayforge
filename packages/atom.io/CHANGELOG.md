@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.23.3
+
+### Patch Changes
+
+- 6305e3d: 🐛 It is now possible to override the `[Symbol.dispose]()` method when extending the `Molecule` class.
+
 ## 0.23.2
 
 ### Patch Changes
