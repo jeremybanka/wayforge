@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.23.1
+
+### Patch Changes
+
+- 91543b9: 🐛 `atom.io/ephemeral` and `atom.io/immortal` were missing `.d.ts` files. These are now included.
+
 ## 0.23.0
 
 ### Minor Changes
