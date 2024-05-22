@@ -133,12 +133,6 @@ export function makeMoleculeInStore<
 		Formula.subject.next(update)
 	}
 
-	console.log({ hasParent: Boolean(store.parent) })
-	console.log(`parent atoms`, store.parent?.atoms.keys())
-	console.log(`parent moles`, store.parent?.molecules.keys())
-	console.log(`child atoms`, store.atoms.keys())
-	console.log(`child moles`, store.molecules.keys())
-
 	return token
 }
 export function makeMolecule<

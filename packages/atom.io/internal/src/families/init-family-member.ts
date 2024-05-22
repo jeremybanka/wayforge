@@ -96,6 +96,16 @@ export function initFamilyMember(
 				token: state,
 			})
 		} else {
+			switch (state.type) {
+				case `atom`:
+				case `mutable_atom`:
+					store.on.atomCreation.next(state)
+					break
+				case `selector`:
+				case `readonly_selector`:
+					store.on.selectorCreation.next(state)
+					break
+			}
 		}
 	}
 	return state

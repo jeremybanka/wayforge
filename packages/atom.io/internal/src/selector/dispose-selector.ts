@@ -1,7 +1,7 @@
 import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
 
 import type { Store } from ".."
-import { newest, withdraw } from ".."
+import { isChildStore, newest, withdraw } from ".."
 
 export function disposeSelector(
 	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,
@@ -11,7 +11,7 @@ export function disposeSelector(
 	const { key } = selectorToken
 	const selector = target.selectors.get(key) ?? target.readonlySelectors.get(key)
 	if (!selector) {
-		store.logger.error(
+		store.logger.info(
 			`❌`,
 			`selector`,
 			key,
@@ -70,6 +70,13 @@ export function disposeSelector(
 		}
 		target.selectorGraph.delete(key)
 		store.logger.info(`🔥`, selectorToken.type, key, `deleted`)
-		store.on.selectorDisposal.next(selectorToken)
+		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
+			target.transactionMeta.update.updates.push({
+				type: `state_disposal`,
+				token: selectorToken,
+			})
+		} else {
+			store.on.selectorDisposal.next(selectorToken)
+		}
 	}
 }

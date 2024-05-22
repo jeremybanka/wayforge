@@ -139,23 +139,34 @@ describe(`transaction`, () => {
 		runTransaction(addCountPlusSomeValue)(777)
 		expect(getState(findState(countPlusSomeValueStates, 777))).toEqual(778)
 	})
-	it(`disposes of a state in a transaction`, () => {
+	it(`disposes of states in a transaction`, () => {
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
+		})
+		const doubleStates = selectorFamily<number, string>({
+			key: `double`,
+			get:
+				(id) =>
+				({ find, get }) =>
+					get(find(countStates, id)) * 2,
 		})
 		const incrementTX = transaction({
 			key: `increment`,
 			do: ({ find, get, set, dispose }) => {
 				const countState = find(countStates, `my-key`)
-				const count = get(countState)
-				set(countState, count + 1)
+				const doubleState = find(doubleStates, `my-key`)
+				const double = get(doubleState)
+				set(countState, double)
+				dispose(doubleState)
 				dispose(countState)
 			},
 		})
 		findState(countStates, `my-key`)
+		findState(doubleStates, `my-key`)
 		runTransaction(incrementTX)()
 		expect(seekState(countStates, `my-key`)).toBeUndefined()
+		expect(seekState(doubleStates, `my-key`)).toBeUndefined()
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
 		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()

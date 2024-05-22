@@ -1,8 +1,16 @@
 import type { Logger } from "atom.io"
-import { atom, selector, timeline, transaction } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	selector,
+	selectorFamily,
+	timeline,
+	transaction,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
+import { findState } from "../../ephemeral/src/find-state"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -25,14 +33,12 @@ describe(`store observation`, () => {
 		Internal.IMPLICIT.STORE.on.atomCreation.subscribe(`test`, (atomToken) => {
 			Utils.stdout(atomToken)
 		})
-		const a = atom<null>({
-			key: `a`,
-			default: null,
+		const atoms = atomFamily<number, string>({
+			key: `atoms`,
+			default: 0,
 		})
-		const b = atom<null>({
-			key: `b`,
-			default: null,
-		})
+		const a = findState(atoms, `a`)
+		const b = findState(atoms, `b`)
 		expect(Utils.stdout).toHaveBeenCalledWith(a)
 		expect(Utils.stdout).toHaveBeenCalledWith(b)
 	})
@@ -43,15 +49,12 @@ describe(`store observation`, () => {
 				Utils.stdout(selectorToken)
 			},
 		)
-		const c = selector<null>({
-			key: `c`,
-			get: () => null,
+		const selectors = selectorFamily<number, string>({
+			key: `selectors`,
+			get: () => () => 0,
 		})
-		const d = selector<null>({
-			key: `d`,
-			get: () => null,
-			set: () => null,
-		})
+		const c = findState(selectors, `c`)
+		const d = findState(selectors, `d`)
 		expect(Utils.stdout).toHaveBeenCalledWith(c)
 		expect(Utils.stdout).toHaveBeenCalledWith(d)
 	})

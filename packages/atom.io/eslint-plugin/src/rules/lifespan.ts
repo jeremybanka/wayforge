@@ -96,7 +96,6 @@ export const lifespan = {
 														prop.value.type === `FunctionExpression` ||
 														prop.value.type === `ArrowFunctionExpression`
 													) {
-														console.log(prop.value)
 														storeProcedures.push(prop.value)
 													}
 												}

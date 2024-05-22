@@ -24,7 +24,11 @@ export function createStandaloneSelector<T>(
 	const isWritable = `set` in options
 
 	if (isWritable) {
-		return createWritableSelector(options, undefined, store)
+		const state = createWritableSelector(options, undefined, store)
+		store.on.selectorCreation.next(state)
+		return state
 	}
-	return createReadonlySelector(options, undefined, store)
+	const state = createReadonlySelector(options, undefined, store)
+	store.on.selectorCreation.next(state)
+	return state
 }

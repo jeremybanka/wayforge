@@ -70,6 +70,5 @@ export const createWritableSelector = <T>(
 	if (family) {
 		token.family = family
 	}
-	store.on.selectorCreation.next(token)
 	return token
 }

@@ -19,6 +19,7 @@ export const attachAtomIndex = (
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {
 				const base: AtomTokenIndex = new Map()
+				console.log(store)
 				for (const [key, val] of store.atoms) {
 					if (!key.includes(`👁‍🗨`)) {
 						const token = deposit(val)
@@ -37,6 +38,7 @@ export const attachAtomIndex = (
 						}
 					}
 				}
+				console.log(base)
 				return base
 			},
 			effects: [
