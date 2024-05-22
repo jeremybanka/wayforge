@@ -24,7 +24,13 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type {
+	Molecule,
+	MoleculeFamily,
+	MoleculeFamilyToken,
+	MoleculeToken,
+} from "atom.io/immortal"
+import { type Json, stringifyJson } from "atom.io/json"
 
 import type {
 	Atom,
@@ -45,6 +51,8 @@ import type { Store } from "./store"
 export type Withdrawable =
 	| Atom<any>
 	| AtomFamily<any, any>
+	| Molecule<any>
+	| MoleculeFamily<any, any, any>
 	| MutableAtom<any, any>
 	| MutableAtomFamily<any, any, any>
 	| ReadableState<any>
@@ -116,6 +124,17 @@ export function withdraw<T, K extends Json.Serializable>(
 	store: Store,
 ): SelectorFamily<T, any>
 
+export function withdraw<
+	K extends Json.Serializable,
+	S extends { [key: string]: any },
+	P extends any[],
+>(token: MoleculeToken<K, S, P>, store: Store): Molecule<K> & S
+export function withdraw<
+	K extends Json.Serializable,
+	S extends { [key: string]: any },
+	P extends any[],
+>(token: MoleculeFamilyToken<K, S, P>, store: Store): MoleculeFamily<K, S, P>
+
 export function withdraw<T extends Func>(
 	token: TransactionToken<T>,
 	store: Store,
@@ -126,6 +145,8 @@ export function withdraw<T>(
 ): Timeline<T extends TimelineManageable ? T : never>
 export function withdraw<T>(
 	token:
+		| MoleculeFamilyToken<any, any, any>
+		| MoleculeToken<any, any, any>
 		| RegularAtomFamilyToken<T, any>
 		| RegularAtomToken<T>
 		| SelectorFamilyToken<T, any>
@@ -162,6 +183,12 @@ export function withdraw<T>(
 				break
 			case `transaction`:
 				withdrawn = target.transactions.get(token.key)
+				break
+			case `molecule`:
+				withdrawn = target.molecules.get(stringifyJson(token.key))
+				break
+			case `molecule_family`:
+				withdrawn = target.moleculeFamilies.get(token.key)
 				break
 		}
 		if (withdrawn) {

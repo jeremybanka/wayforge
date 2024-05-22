@@ -111,10 +111,7 @@ export function makeMoleculeInStore<
 	const owners = contextArray
 		.map((ctx) => store.molecules.get(stringifyJson(ctx.key)))
 		.filter((m): m is Molecule<Key> => m !== undefined)
-	const Formula = store.moleculeFamilies.get(family.key)
-	if (!Formula) {
-		throw new Error(`No Formula found for key "${family.key}"`)
-	}
+	const Formula = Internal.withdraw(family, store)
 	const molecule = new Formula(owners, key, ...params)
 	target.molecules.set(stringifyJson(key), molecule)
 
@@ -185,10 +182,7 @@ export function disposeMolecule<
 		return // add error log
 	}
 	const { family } = token
-	const Formula = store.moleculeFamilies.get(family.key)
-	if (!Formula) {
-		throw new Error(`No Formula found for key "${family.key}"`)
-	}
+	const Formula = Internal.withdraw(family, store)
 	const disposalEvent: MoleculeDisposal<Key> = {
 		type: `molecule_disposal`,
 		token,
