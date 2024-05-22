@@ -155,7 +155,7 @@ export class Molecule<Key extends Json.Serializable> {
 		this.joins.push(join)
 	}
 
-	private [Symbol.dispose](): void {
+	protected [Symbol.dispose](): void {
 		this.clear()
 		const target = newest(this.store)
 		target.molecules.delete(stringifyJson(this.token.key))
