@@ -2,4 +2,4 @@
 "atom.io": patch
 ---
 
-✨ `json` transactor allows you to retrieve the JSON tokens for mutable states in your store during a transaction or a selector procedure.
+✨ The `json` transactor allows you to retrieve the JSON token for a mutable atom during a `transaction.do` or a `selector.get`, or `selector.set` procedure.
