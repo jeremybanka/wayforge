@@ -111,11 +111,11 @@ export class Molecule<Key extends Json.Serializable> {
 
 	public detach(child: Molecule<any>): void {
 		const childIndex = this.below.indexOf(child)
-		if (childIndex !== undefined) {
+		if (childIndex !== -1) {
 			this.below.splice(childIndex, 1)
 		}
 		const parentIndex = child.above.indexOf(this)
-		if (parentIndex !== undefined) {
+		if (parentIndex !== -1) {
 			child.above.splice(parentIndex, 1)
 		}
 	}
