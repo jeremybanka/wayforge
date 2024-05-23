@@ -8,6 +8,7 @@ import {
 	moleculeFamily,
 	useMolecule,
 } from "atom.io/immortal"
+import { IMPLICIT } from "atom.io/internal"
 
 describe(`moleculeFamily`, () => {
 	test(`molecule hierarchy`, () => {
@@ -49,6 +50,7 @@ describe(`moleculeFamily`, () => {
 
 		const howdyMolecule = makeMolecule(worldMolecule, topMolecules, `howdy`)
 		const howdy = useMolecule(howdyMolecule)
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
 
 		expect(howdy?.below.length).toBe(2)
 		expect(howdy?.below[0].below.length).toBe(0)
@@ -58,6 +60,9 @@ describe(`moleculeFamily`, () => {
 		expect(world?.below.length).toBe(1)
 
 		disposeState(howdyMolecule)
+		expect(howdy?.below.length).toBe(0)
+		console.log(IMPLICIT.STORE.molecules.keys())
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
 
 		expect(useMolecule(howdyMolecule)).toBeUndefined()
 

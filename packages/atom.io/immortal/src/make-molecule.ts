@@ -189,34 +189,57 @@ export function disposeMolecule<
 	Struct extends { [key: string]: any },
 	Params extends any[],
 >(token: MoleculeToken<Key, Struct, Params>, store: Internal.Store): void {
-	const mole = useMoleculeFromStore(token, store)
-	if (!mole || !token.family) {
+	const molecule = useMoleculeFromStore(token, store)
+	if (!molecule) {
 		return // add error log
 	}
 	const { family } = token
-	const Formula = Internal.withdraw(family, store)
-	const disposalEvent: MoleculeDisposal<Key> = {
-		type: `molecule_disposal`,
-		token,
-		family,
-		context: mole.above,
-		familyKeys: mole.tokens
-			.map((t) => t.family?.key)
-			.filter((k): k is string => typeof k === `string`),
-	}
-	if (token.family) {
-		disposalEvent.family = token.family
-	}
-	const isTransaction =
-		Internal.isChildStore(store) && store.transactionMeta.phase === `building`
-	if (isTransaction) {
-		store.transactionMeta.update.updates.push(disposalEvent)
-	} else {
-		Formula.subject.next(disposalEvent)
+	if (family) {
+		const Formula = Internal.withdraw(family, store)
+		const disposalEvent: MoleculeDisposal<Key> = {
+			type: `molecule_disposal`,
+			token,
+			family,
+			context: molecule.above,
+			familyKeys: molecule.tokens
+				.map((t) => t.family?.key)
+				.filter((k): k is string => typeof k === `string`),
+		}
+		if (token.family) {
+			disposalEvent.family = token.family
+		}
+		const isTransaction =
+			Internal.isChildStore(store) && store.transactionMeta.phase === `building`
+		if (isTransaction) {
+			store.transactionMeta.update.updates.push(disposalEvent)
+		} else {
+			Formula.subject.next(disposalEvent)
+		}
+		store.molecules.delete(stringifyJson(token.key))
 	}
 
-	store.molecules.delete(stringifyJson(token.key))
-	mole[Symbol.dispose]()
+	for (const state of molecule.tokens) {
+		Internal.disposeFromStore(state, store)
+	}
+	for (const child of [...molecule.below]) {
+		if (child.sponsorship === `all`) {
+			disposeMolecule(child.token, store)
+		} else {
+			const thisIndex = child.above.indexOf(molecule)
+			if (thisIndex !== -1) {
+				child.above.splice(thisIndex, 1)
+			}
+			if (child.above.length === 0) {
+				disposeMolecule(child.token, store)
+			}
+		}
+	}
+	for (const join of molecule.joins) {
+		join.molecules.delete(stringifyJson(token.key))
+	}
+	for (const parent of molecule.above) {
+		parent.detach(molecule)
+	}
 }
 
 export type MoleculeType<M extends MoleculeFamilyToken<any, any, any>> =

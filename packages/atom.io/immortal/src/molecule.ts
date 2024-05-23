@@ -33,6 +33,7 @@ export class Molecule<Key extends Json.Serializable> {
 		return this.token.key
 	}
 	public readonly family?: MoleculeFamilyToken<Key, any, any>
+	public readonly sponsorship: `all` | `any` = `all`
 	public readonly above: Molecule<any>[]
 	public readonly below: Molecule<any>[] = []
 	public readonly tokens: ReadableToken<any>[] = []
@@ -110,12 +111,9 @@ export class Molecule<Key extends Json.Serializable> {
 
 	public detach(child: Molecule<any>): void {
 		const childIndex = this.below.indexOf(child)
+		console.log(child.token.key, childIndex)
 		if (childIndex !== -1) {
 			this.below.splice(childIndex, 1)
-		}
-		const parentIndex = child.above.indexOf(this)
-		if (parentIndex !== -1) {
-			child.above.splice(parentIndex, 1)
 		}
 	}
 
@@ -134,27 +132,5 @@ export class Molecule<Key extends Json.Serializable> {
 		const join = getJoin(token, this.store)
 		join.molecules.set(stringifyJson(this.token.key), this)
 		this.joins.push(join)
-	}
-
-	protected [Symbol.dispose](): void {
-		while (this.below.length > 0) {
-			const below = this.below.at(-1)
-			if (below) {
-				this.detach(below)
-				below[Symbol.dispose]()
-			}
-		}
-		while (this.tokens.length > 0) {
-			const token = this.tokens.pop()
-			if (token) {
-				disposeFromStore(token, this.store)
-			}
-		}
-		while (this.joins.length > 0) {
-			const join = this.joins.pop()
-			if (join) {
-				join.molecules.delete(stringifyJson(this.token.key))
-			}
-		}
 	}
 }

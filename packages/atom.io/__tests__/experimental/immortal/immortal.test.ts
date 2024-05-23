@@ -75,15 +75,12 @@ describe(`immortal mode`, () => {
 		expect(useMolecule(myCounterMolecule)).toBeUndefined()
 	})
 	test(`safe retrieval of state with seekState`, () => {
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
-			key: `world`,
-			type: `molecule`,
-		})
+		const world = makeRootMolecule(`world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		world.bond(countStates)
+		useMolecule(world)?.bond(countStates)
 		let countState = seekState(countStates, `world`)
 		expect(countState).toStrictEqual({
 			key: `count("world")`,
@@ -93,7 +90,7 @@ describe(`immortal mode`, () => {
 				subKey: `"world"`,
 			},
 		})
-		world[Symbol.dispose]()
+		disposeState(world)
 		countState = seekState(countStates, `world`)
 		expect(countState).toBeUndefined()
 	})
@@ -106,13 +103,36 @@ describe(`immortal mode`, () => {
 			key: `exp`,
 			default: 0,
 		})
-		const myCharacter = world.spawn(`my-character`)
-		const expState = myCharacter.bond(expStates)
-		expect(getState(expState)).toBe(0)
-		setState(expState, 1)
-		expect(getState(expState)).toBe(1)
-		world[Symbol.dispose]()
-		expect(() => getState(expState)).toThrowErrorMatchingInlineSnapshot(
+		const characterMolecules = moleculeFamily({
+			key: `character`,
+			new: (store) =>
+				class Character extends Molecule<string> {
+					public expState: AtomToken<number>
+					public constructor(
+						context: Molecule<any>[],
+						token: MoleculeToken<string, Character, []>,
+					) {
+						super(store, context, token)
+						this.expState = this.bond(expStates)
+					}
+				},
+		})
+		const myCharacterMolecule = makeMolecule(
+			world,
+			characterMolecules,
+			`my-character`,
+		)
+		const myCharacter = useMolecule(myCharacterMolecule)
+		if (!myCharacter) {
+			throw new Error(`myCharacter is undefined`)
+		}
+		expect(getState(myCharacter.expState)).toBe(0)
+		setState(myCharacter.expState, 1)
+		expect(getState(myCharacter.expState)).toBe(1)
+		disposeState(myCharacter.token)
+		expect(() =>
+			getState(myCharacter.expState),
+		).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Atom "exp("my-character")" not found in store "IMPLICIT_STORE".]`,
 		)
 	})
@@ -130,7 +150,7 @@ describe(`immortal mode`, () => {
 		const weaponA = character0.spawn(`weapon-a`)
 		const dmgState = weaponA.bond(dmgStates)
 		character1.claim(weaponA)
-		character0[Symbol.dispose]()
+		disposeState(character0.token)
 		expect(getState(dmgState)).toBe(0)
 	})
 	test(`won't make a molecule a child of itself`, () => {
