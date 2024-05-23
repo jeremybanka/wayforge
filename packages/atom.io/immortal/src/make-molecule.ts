@@ -215,6 +215,7 @@ export function disposeMolecule<
 		Formula.subject.next(disposalEvent)
 	}
 
+	store.molecules.delete(stringifyJson(token.key))
 	mole.dispose()
 }
 

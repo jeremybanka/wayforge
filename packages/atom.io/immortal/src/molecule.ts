@@ -21,7 +21,6 @@ import {
 	disposeFromStore,
 	getJsonFamily,
 	initFamilyMember,
-	newest,
 	Subject,
 } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
@@ -131,9 +130,19 @@ export class Molecule<Key extends Json.Serializable> {
 		child.above.push(this)
 	}
 
-	public clear(): void {
+	public join(token: JoinToken<any, any, any, any>): void {
+		const join = getJoin(token, this.store)
+		join.molecules.set(stringifyJson(this.token.key), this)
+		this.joins.push(join)
+	}
+
+	protected [Symbol.dispose](): void {
 		while (this.below.length > 0) {
-			this.below.pop()?.dispose()
+			const below = this.below.at(-1)
+			if (below) {
+				this.detach(below)
+				below.dispose()
+			}
 		}
 		while (this.tokens.length > 0) {
 			const token = this.tokens.pop()
@@ -146,21 +155,6 @@ export class Molecule<Key extends Json.Serializable> {
 			if (join) {
 				join.molecules.delete(stringifyJson(this.token.key))
 			}
-		}
-	}
-
-	public join(token: JoinToken<any, any, any, any>): void {
-		const join = getJoin(token, this.store)
-		join.molecules.set(stringifyJson(this.token.key), this)
-		this.joins.push(join)
-	}
-
-	protected [Symbol.dispose](): void {
-		this.clear()
-		const target = newest(this.store)
-		target.molecules.delete(stringifyJson(this.token.key))
-		for (const parent of this.above) {
-			parent.detach(this)
 		}
 	}
 	public dispose = this[Symbol.dispose]

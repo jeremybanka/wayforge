@@ -1,5 +1,5 @@
 import type { AtomToken, Logger } from "atom.io"
-import { atomFamily, getState, setState } from "atom.io"
+import { atomFamily, disposeState, getState, setState } from "atom.io"
 import { editRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import type { MoleculeToken } from "atom.io/immortal"
@@ -68,7 +68,7 @@ describe(`immortal mode`, () => {
 		}
 		setState(myCounter.$count, 1)
 		expect(getState(myCounter.$count)).toBe(1)
-		myCounter.dispose()
+		disposeState(myCounterMolecule)
 		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Atom "count("my-counter")" not found in store "IMPLICIT_STORE".]`,
 		)

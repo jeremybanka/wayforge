@@ -1,3 +1,4 @@
+import { disposeState } from "atom.io"
 import type { MoleculeToken } from "atom.io/immortal"
 import {
 	makeMolecule,
@@ -56,7 +57,7 @@ describe(`moleculeFamily`, () => {
 		const world = useMolecule(worldMolecule)
 		expect(world?.below.length).toBe(1)
 
-		howdy?.dispose()
+		disposeState(howdyMolecule)
 
 		expect(useMolecule(howdyMolecule)).toBeUndefined()
 

@@ -279,11 +279,11 @@ export class Join<
 			})
 
 			if (stringA && this.molecules.has(stringA)) {
-				this.molecules.get(stringA)?.clear()
+				this.molecules.get(stringA)?.dispose()
 				this.molecules.delete(stringA)
 			}
 			if (stringB && this.molecules.has(stringB)) {
-				this.molecules.get(stringB)?.clear()
+				this.molecules.get(stringB)?.dispose()
 				this.molecules.delete(stringB)
 			}
 		}
@@ -333,8 +333,11 @@ export class Join<
 							}
 							for (const previousOwner of previousOwnersToDispose) {
 								const molecule = this.molecules.get(previousOwner)
-								molecule?.clear()
-								this.molecules.delete(previousOwner)
+								if (molecule) {
+									disposeState(molecule.token)
+								}
+								// molecule?.dispose()
+								// this.molecules.delete(previousOwner)
 								const sorted = [newRelationB, previousOwner].sort()
 								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
 								this.molecules.delete(compositeKey)
