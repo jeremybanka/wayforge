@@ -10,7 +10,7 @@ import {
 
 describe(`moleculeFamily`, () => {
 	test(`molecule hierarchy`, () => {
-		const world = makeRootMolecule(`world`)
+		const worldMolecule = makeRootMolecule(`world`)
 
 		const bottomMolecules = moleculeFamily({
 			key: `bottom`,
@@ -18,7 +18,7 @@ describe(`moleculeFamily`, () => {
 				class Bottom extends Molecule<string> {
 					public constructor(
 						context: Molecule<any>[],
-						token: MoleculeToken<string, any, any>,
+						token: MoleculeToken<string, Bottom, []>,
 					) {
 						super(store, context, token)
 					}
@@ -31,7 +31,7 @@ describe(`moleculeFamily`, () => {
 				class Top extends Molecule<string> {
 					public constructor(
 						context: Molecule<any>[],
-						token: MoleculeToken<string, any, any>,
+						token: MoleculeToken<string, Top, []>,
 					) {
 						super(store, context, token)
 						for (const childName of [`one`, `two`]) {
@@ -46,7 +46,22 @@ describe(`moleculeFamily`, () => {
 				},
 		})
 
-		const howdy = makeMolecule(world, topMolecules, `howdy`)
-		console.log(useMolecule(howdy))
+		const howdyMolecule = makeMolecule(worldMolecule, topMolecules, `howdy`)
+		const howdy = useMolecule(howdyMolecule)
+
+		expect(howdy?.below.length).toBe(2)
+		expect(howdy?.below[0].below.length).toBe(0)
+		expect(howdy?.below[1].below.length).toBe(0)
+
+		const world = useMolecule(worldMolecule)
+		expect(world?.below.length).toBe(1)
+
+		howdy?.dispose()
+
+		expect(useMolecule(howdyMolecule)).toBeUndefined()
+
+		expect(() =>
+			makeMolecule({ type: `molecule`, key: `fake` }, topMolecules, `hello`),
+		).toThrow()
 	})
 })
