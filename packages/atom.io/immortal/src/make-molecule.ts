@@ -113,6 +113,7 @@ export function makeMoleculeInStore<
 		}
 		const stringKey = stringifyJson(ctx.key)
 		const molecule = store.molecules.get(stringKey)
+
 		if (!molecule) {
 			throw new Error(
 				`Molecule ${stringKey} not found in store "${store.config.name}"`,
