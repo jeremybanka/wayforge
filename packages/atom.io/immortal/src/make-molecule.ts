@@ -107,9 +107,21 @@ export function makeMoleculeInStore<
 	} as const satisfies MoleculeToken<Key, Struct, Params>
 
 	const contextArray = Array.isArray(context) ? context : [context]
-	const owners = contextArray
-		.map((ctx) => store.molecules.get(stringifyJson(ctx.key)))
-		.filter((m): m is Molecule<Key> => m !== undefined)
+	const owners = contextArray.map<Molecule<any>>((ctx) => {
+		if (ctx instanceof Molecule) {
+			return ctx
+		}
+		const stringKey = stringifyJson(ctx.key)
+		const molecule = store.molecules.get(stringKey)
+
+		if (!molecule) {
+			throw new Error(
+				`Molecule ${stringKey} not found in store "${store.config.name}"`,
+			)
+		}
+		return molecule
+	})
+
 	const Formula = Internal.withdraw(family, store)
 	const molecule = new Formula(owners, token, ...params)
 	target.molecules.set(stringifyJson(key), molecule)
