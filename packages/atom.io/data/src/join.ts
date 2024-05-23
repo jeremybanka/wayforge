@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
+	disposeState,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	Read,
@@ -10,7 +11,6 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import { disposeState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type {
 	MoleculeFamilyToken,
@@ -27,6 +27,7 @@ import {
 	createMutableAtomFamily,
 	createRegularAtomFamily,
 	createSelectorFamily,
+	disposeFromStore,
 	findInStore,
 	getFromStore,
 	getJsonFamily,
@@ -142,7 +143,7 @@ export class Join<
 > {
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
-	private transactors: Transactors
+	private transactors: Transactors & { dispose: typeof disposeState }
 	public retrieve: typeof findState
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
@@ -155,7 +156,7 @@ export class Join<
 		>
 	}
 	public transact(
-		transactors: Transactors,
+		transactors: Transactors & { dispose: typeof disposeState },
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
 	): void {
 		const originalTransactors = this.transactors
@@ -203,6 +204,9 @@ export class Join<
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
 			json: (token) => getJsonToken(token, store),
+			dispose: (token) => {
+				disposeFromStore(token, store)
+			},
 		}
 		this.retrieve = (
 			token: ReadableFamilyToken<any, any>,
@@ -278,13 +282,17 @@ export class Join<
 				return bKeys
 			})
 
-			if (stringA && this.molecules.has(stringA)) {
-				this.molecules.get(stringA)?.dispose()
-				this.molecules.delete(stringA)
+			if (stringA) {
+				const molecule = this.molecules.get(stringA)
+				if (molecule) {
+					this.transactors.dispose(molecule.token)
+				}
 			}
-			if (stringB && this.molecules.has(stringB)) {
-				this.molecules.get(stringB)?.dispose()
-				this.molecules.delete(stringB)
+			if (stringB) {
+				const molecule = this.molecules.get(stringB)
+				if (molecule) {
+					this.transactors.dispose(molecule.token)
+				}
 			}
 		}
 		const replaceRelationsSafely: Write<
@@ -334,10 +342,8 @@ export class Join<
 							for (const previousOwner of previousOwnersToDispose) {
 								const molecule = this.molecules.get(previousOwner)
 								if (molecule) {
-									disposeState(molecule.token)
+									this.transactors.dispose(molecule.token)
 								}
-								// molecule?.dispose()
-								// this.molecules.delete(previousOwner)
 								const sorted = [newRelationB, previousOwner].sort()
 								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
 								this.molecules.delete(compositeKey)
@@ -411,6 +417,13 @@ export class Join<
 				},
 				store,
 			)
+			const joinToken = {
+				key: options.key,
+				type: `join`,
+				a: options.between[0],
+				b: options.between[1],
+				cardinality: options.cardinality,
+			} as const satisfies JoinToken<ASide, BSide, Cardinality, Content>
 			contentMolecules = createMoleculeFamily(
 				{
 					key: `${options.key}/content-molecules`,
@@ -421,6 +434,7 @@ export class Join<
 								token: MoleculeToken<string, any, any>,
 							) {
 								super(s, context, token)
+								this.join(joinToken)
 							}
 						},
 				},
@@ -439,8 +453,11 @@ export class Join<
 				_,
 				compositeKey,
 			) => {
-				disposeState(this.retrieve(contentAtoms, compositeKey))
-				this.molecules.delete(`"${compositeKey}"`)
+				const contentMolecule = store.molecules.get(`"${compositeKey}"`)
+				if (contentMolecule) {
+					this.transactors.dispose(contentMolecule.token)
+					this.molecules.delete(`"${compositeKey}"`)
+				}
 			}
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {
@@ -472,7 +489,7 @@ export class Join<
 				)
 				if (store.config.lifespan === `immortal` && m0 && m1) {
 					const composite = m0.with(m1)(compositeKey)
-					this.molecules.set(`"${compositeKey}"`, composite)
+					// this.molecules.set(`"${compositeKey}"`, composite)
 					const target = newest(store)
 					makeMoleculeInStore(target, [m0, m1], contentMolecules, compositeKey)
 				}

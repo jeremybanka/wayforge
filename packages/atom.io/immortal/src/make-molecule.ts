@@ -216,7 +216,7 @@ export function disposeMolecule<
 	}
 
 	store.molecules.delete(stringifyJson(token.key))
-	mole.dispose()
+	mole[Symbol.dispose]()
 }
 
 export type MoleculeType<M extends MoleculeFamilyToken<any, any, any>> =

@@ -141,7 +141,7 @@ export class Molecule<Key extends Json.Serializable> {
 			const below = this.below.at(-1)
 			if (below) {
 				this.detach(below)
-				below.dispose()
+				below[Symbol.dispose]()
 			}
 		}
 		while (this.tokens.length > 0) {
@@ -157,5 +157,4 @@ export class Molecule<Key extends Json.Serializable> {
 			}
 		}
 	}
-	public dispose = this[Symbol.dispose]
 }

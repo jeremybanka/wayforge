@@ -93,7 +93,7 @@ describe(`immortal mode`, () => {
 				subKey: `"world"`,
 			},
 		})
-		world.dispose()
+		world[Symbol.dispose]()
 		countState = seekState(countStates, `world`)
 		expect(countState).toBeUndefined()
 	})
@@ -111,7 +111,7 @@ describe(`immortal mode`, () => {
 		expect(getState(expState)).toBe(0)
 		setState(expState, 1)
 		expect(getState(expState)).toBe(1)
-		world.dispose()
+		world[Symbol.dispose]()
 		expect(() => getState(expState)).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Atom "exp("my-character")" not found in store "IMPLICIT_STORE".]`,
 		)
@@ -130,7 +130,7 @@ describe(`immortal mode`, () => {
 		const weaponA = character0.spawn(`weapon-a`)
 		const dmgState = weaponA.bond(dmgStates)
 		character1.claim(weaponA)
-		character0.dispose()
+		character0[Symbol.dispose]()
 		expect(getState(dmgState)).toBe(0)
 	})
 	test(`won't make a molecule a child of itself`, () => {
@@ -154,25 +154,52 @@ describe(`immortal integrations`, () => {
 			{ hi: 0 } satisfies { hi: number },
 		)
 
-		const world = new Molecule(Internal.IMPLICIT.STORE, undefined, {
-			key: `world`,
-			type: `molecule`,
+		const itemMolecules = moleculeFamily({
+			key: `item`,
+			new: (store) =>
+				class Item extends Molecule<string> {
+					public constructor(
+						context: Molecule<any>[],
+						token: MoleculeToken<string, Item, []>,
+					) {
+						super(store, context, token)
+						this.join(holdersOfItems)
+					}
+				},
 		})
-		const holder = world.spawn(`character-0`)
-		const item = world.spawn(`item-0`)
-		holder.join(holdersOfItems)
-		item.join(holdersOfItems)
+
+		const characterMolecules = moleculeFamily({
+			key: `character`,
+			new: (store) =>
+				class Character extends Molecule<string> {
+					public constructor(
+						context: Molecule<any>[],
+						token: MoleculeToken<string, Character, []>,
+					) {
+						super(store, context, token)
+						this.join(holdersOfItems)
+					}
+				},
+		})
+
+		const world = makeRootMolecule(`world`)
+
+		const holderMolecule = makeMolecule(world, characterMolecules, `holder-0`)
+		const itemMolecule = makeMolecule(world, itemMolecules, `item-0`)
 
 		editRelations(holdersOfItems, (relations) => {
-			relations.set({ holder: `character-0`, item: `item-0` }, { hi: 1 })
+			relations.set({ holder: `holder-0`, item: `item-0` }, { hi: 1 })
 		})
+		const internalJoin = getJoin(holdersOfItems, Internal.IMPLICIT.STORE)
+		expect(internalJoin.molecules.size).toBe(3)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
 
 		editRelations(holdersOfItems, (relations) => {
 			relations.delete(`item-0`)
 		})
 
-		const internalJoin = getJoin(holdersOfItems, world.store)
-
 		expect(internalJoin.molecules.size).toBe(0)
+		console.log(Internal.IMPLICIT.STORE.molecules.keys())
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
 	})
 })
