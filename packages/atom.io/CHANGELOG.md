@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.23.5
+
+### Patch Changes
+
+- fa5943e: 🐛 Fix issue where some molecules could be missed during the disposal process.
+
 ## 0.23.4
 
 ### Patch Changes
