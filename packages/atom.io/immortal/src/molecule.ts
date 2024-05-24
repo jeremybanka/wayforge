@@ -17,12 +17,7 @@ import type {
 import type { Join, JoinToken } from "atom.io/data"
 import { getJoin } from "atom.io/data"
 import type { Store, Transceiver } from "atom.io/internal"
-import {
-	disposeFromStore,
-	getJsonFamily,
-	initFamilyMember,
-	Subject,
-} from "atom.io/internal"
+import { getJsonFamily, initFamilyMember, Subject } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 import type { MoleculeFamilyToken, MoleculeToken } from "./make-molecule"
@@ -46,7 +41,6 @@ export class Molecule<Key extends Json.Serializable> {
 		above: Molecule<any> | Molecule<any>[] | undefined,
 		public readonly token: MoleculeToken<Key, any, any>,
 	) {
-		// store.molecules.set(stringifyJson(key), this) // consider removing this
 		if (above) {
 			if (Array.isArray(above)) {
 				this.above = above
