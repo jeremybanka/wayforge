@@ -31,7 +31,7 @@ export type TimelineToken<M> = {
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	key: string
-	scope: (ManagedAtom | MoleculeFamilyToken<any, any, any>)[]
+	scope: (ManagedAtom | MoleculeFamilyToken<any, any>)[]
 	shouldCapture?: (
 		update: TimelineUpdate<ManagedAtom>,
 		timeline: Timeline<TimelineManageable>,

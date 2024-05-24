@@ -3,7 +3,7 @@ import { disposeMolecule, type MoleculeToken } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 
 export function disposeFromStore(
-	token: MoleculeToken<any, any, any> | ReadableToken<any>,
+	token: MoleculeToken<any, any> | ReadableToken<any>,
 	store: Internal.Store = Internal.IMPLICIT.STORE,
 ): void {
 	switch (token.type) {

@@ -8,7 +8,7 @@ import type {
 } from "atom.io"
 import { disposeMolecule, makeMoleculeInStore } from "atom.io/immortal"
 
-import { disposeFromStore, initFamilyMember } from "../families"
+import { disposeFromStore, initFamilyMemberInStore } from "../families"
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
@@ -58,7 +58,7 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 			if (store.config.lifespan === `immortal`) {
 				throw new Error(`No molecule found for key "${token.family.subKey}"`)
 			}
-			initFamilyMember(family, parseJson(token.family.subKey), store)
+			initFamilyMemberInStore(family, parseJson(token.family.subKey), store)
 		}
 	}
 }

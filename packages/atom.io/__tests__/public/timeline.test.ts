@@ -14,7 +14,7 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
-import type { MoleculeToken } from "atom.io/immortal"
+import type { MoleculeToken, MoleculeTransactors } from "atom.io/immortal"
 import {
 	makeMolecule,
 	makeRootMolecule,
@@ -361,16 +361,10 @@ describe(`timeline state lifecycle`, () => {
 		})
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
-			new: (store) =>
-				class Unit extends Molecule<string> {
-					public hpState = this.bond(hpAtoms)
-					public constructor(
-						context: Molecule<any>[],
-						token: MoleculeToken<string, Unit, []>,
-					) {
-						super(store, context, token)
-					}
-				},
+			new: class Unit {
+				public hpState = this.transactors.bond(hpAtoms)
+				public constructor(public transactors: MoleculeTransactors<string>) {}
+			},
 		})
 		const gameTL = timeline({
 			key: `game`,

@@ -52,7 +52,7 @@ export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
 	StateDisposal<T> & { timestamp: number }
 >
 export type TimelineMoleculeCreation<Key extends Json.Serializable> = Flat<
-	MoleculeCreation<Key> & { timestamp: number }
+	MoleculeCreation<Key, any> & { timestamp: number }
 >
 export type TimelineMoleculeDisposal<Key extends Json.Serializable> = Flat<
 	MoleculeDisposal<Key> & { timestamp: number }
@@ -184,7 +184,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 													tl.at = tl.history.length
 													tl.subject.next(event)
 
-													for (const token of molecule.tokens) {
+													for (const token of molecule.tokens.values()) {
 														switch (token.type) {
 															case `atom`:
 															case `mutable_atom`:

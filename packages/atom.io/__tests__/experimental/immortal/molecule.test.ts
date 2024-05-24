@@ -1,14 +1,12 @@
 import { disposeState } from "atom.io"
-import type { MoleculeToken } from "atom.io/immortal"
+import type { MoleculeTransactors } from "atom.io/immortal"
 import {
 	makeMolecule,
-	makeMoleculeInStore,
 	makeRootMolecule,
-	Molecule,
 	moleculeFamily,
 	useMolecule,
 } from "atom.io/immortal"
-import { IMPLICIT } from "atom.io/internal"
+import { IMPLICIT, withdraw } from "atom.io/internal"
 
 describe(`moleculeFamily`, () => {
 	test(`molecule hierarchy`, () => {
@@ -16,52 +14,38 @@ describe(`moleculeFamily`, () => {
 
 		const bottomMolecules = moleculeFamily({
 			key: `bottom`,
-			new: (store) =>
-				class Bottom extends Molecule<string> {
-					public constructor(
-						context: Molecule<any>[],
-						token: MoleculeToken<string, Bottom, []>,
-					) {
-						super(store, context, token)
-					}
-				},
+			new: class Bottom {},
 		})
 
 		const topMolecules = moleculeFamily({
 			key: `top`,
-			new: (store) =>
-				class Top extends Molecule<string> {
-					public constructor(
-						context: Molecule<any>[],
-						token: MoleculeToken<string, Top, []>,
-					) {
-						super(store, context, token)
-						for (const childName of [`one`, `two`]) {
-							makeMoleculeInStore(
-								store,
-								this,
-								bottomMolecules,
-								`${token.key}-bottom-${childName}`,
-							)
-						}
+			new: class Top {
+				public constructor(transactors: MoleculeTransactors<string>) {
+					for (const childName of [`one`, `two`]) {
+						transactors.spawn(
+							bottomMolecules,
+							`${transactors.ctx.token.key}-bottom-${childName}`,
+						)
 					}
-				},
+				}
+			},
 		})
 
 		const howdyMolecule = makeMolecule(worldMolecule, topMolecules, `howdy`)
-		const howdy = useMolecule(howdyMolecule)
+		const howdy = withdraw(howdyMolecule, IMPLICIT.STORE)
 		expect(IMPLICIT.STORE.molecules.size).toBe(4)
 
-		expect(howdy?.below.length).toBe(2)
-		expect(howdy?.below[0].below.length).toBe(0)
-		expect(howdy?.below[1].below.length).toBe(0)
+		expect(howdy.below.size).toBe(2)
+		expect([...howdy.below.values()][0].below.size).toBe(0)
+		expect([...howdy.below.values()][1].below.size).toBe(0)
 
-		const world = useMolecule(worldMolecule)
-		expect(world?.below.length).toBe(1)
+		const world = withdraw(worldMolecule, IMPLICIT.STORE)
+		expect(world.below.size).toBe(1)
 
+		console.log(IMPLICIT.STORE.molecules)
 		disposeState(howdyMolecule)
-		expect(howdy?.below.length).toBe(0)
-		console.log(IMPLICIT.STORE.molecules.keys())
+		expect(howdy.below.size).toBe(0)
+		console.log(IMPLICIT.STORE.molecules)
 		expect(IMPLICIT.STORE.molecules.size).toBe(1)
 
 		expect(useMolecule(howdyMolecule)).toBeUndefined()

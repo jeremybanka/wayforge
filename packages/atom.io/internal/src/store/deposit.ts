@@ -44,20 +44,20 @@ export function deposit<
 	K extends Json.Serializable,
 	S extends { [key: string]: any },
 	P extends any[],
->(state: Molecule<K>): MoleculeToken<K, S, P>
+>(state: Molecule<any, any>): MoleculeToken<any, any>
 export function deposit<
 	K extends Json.Serializable,
 	S extends { [key: string]: any },
 	P extends any[],
->(state: MoleculeFamily<K, S, P>): MoleculeFamilyToken<K, S, P>
+>(state: MoleculeFamily<any, any>): MoleculeFamilyToken<any, any>
 export function deposit<T extends Func>(
 	state: Transaction<T>,
 ): TransactionToken<T>
 export function deposit<T>(state: ReadableState<T>): ReadableToken<T>
 export function deposit<T>(
 	state:
-		| Molecule<any>
-		| MoleculeFamily<any, any, any>
+		| Molecule<any, any>
+		| MoleculeFamily<any, any>
 		| ReadableState<T>
 		| ReadonlySelector<T>
 		| RegularAtom<T>
@@ -65,30 +65,18 @@ export function deposit<T>(
 		| WritableSelector<T>
 		| (T extends Transceiver<any> ? MutableAtom<T, any> : never),
 ):
-	| MoleculeFamilyToken<any, any, any>
-	| MoleculeToken<any, any, any>
+	| MoleculeFamilyToken<any, any>
+	| MoleculeToken<any, any>
 	| MutableAtomToken<T extends Transceiver<any> ? T : never, any>
 	| RegularAtomToken<T>
 	| SelectorToken<T>
 	| TransactionToken<T extends Func ? T : never> {
-	const { type } = state
-	switch (type) {
-		case `atom`:
-		case `molecule_family`:
-		case `mutable_atom`:
-		case `selector`:
-		case `readonly_selector`:
-		case `transaction`: {
-			const token = {
-				key: state.key,
-				type: state.type,
-			} as any
-			if (`family` in state) {
-				token.family = state.family
-			}
-			return token
-		}
-		case `molecule`:
-			return state.token
+	const token = {
+		key: state.key,
+		type: state.type,
+	} as any
+	if (`family` in state) {
+		token.family = state.family
 	}
+	return token
 }

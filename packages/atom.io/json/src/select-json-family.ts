@@ -3,7 +3,7 @@ import type { Store, Transceiver } from "atom.io/internal"
 import {
 	createSelectorFamily,
 	IMPLICIT,
-	initFamilyMember,
+	initFamilyMemberInStore,
 	seekInStore,
 } from "atom.io/internal"
 
@@ -58,7 +58,7 @@ export function selectJsonFamily<
 					if (store.config.lifespan === `immortal`) {
 						throw new Error(`No molecule found for key "${stringKey}"`)
 					}
-					const newToken = initFamilyMember(family, key, store)
+					const newToken = initFamilyMemberInStore(family, key, store)
 					return transform.toJson(get(newToken))
 				},
 			set:
@@ -78,7 +78,7 @@ export function selectJsonFamily<
 								throw new Error(`No molecule found for key "${stringKey}"`)
 							}
 							set(
-								initFamilyMember(family, key, store),
+								initFamilyMemberInStore(family, key, store),
 								transform.fromJson(newValue),
 							)
 						}

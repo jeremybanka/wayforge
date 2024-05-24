@@ -88,8 +88,8 @@ export class Store implements Lineage {
 		},
 	)
 
-	public molecules = new Map<string, Molecule<any>>()
-	public moleculeFamilies = new Map<string, MoleculeFamily<any, any, any>>()
+	public molecules = new Map<string, Molecule<any, any>>()
+	public moleculeFamilies = new Map<string, MoleculeFamily<any, any>>()
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {
@@ -107,9 +107,9 @@ export class Store implements Lineage {
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
-		moleculeCreationStart: new Subject<MoleculeToken<any, any, any>>(),
-		moleculeCreationDone: new Subject<MoleculeToken<any, any, any>>(),
-		moleculeDisposal: new Subject<MoleculeToken<any, any, any>>(),
+		moleculeCreationStart: new Subject<MoleculeToken<any, any>>(),
+		moleculeCreationDone: new Subject<MoleculeToken<any, any>>(),
+		moleculeDisposal: new Subject<MoleculeToken<any, any>>(),
 	}
 	public operation: OperationProgress = { open: false }
 	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {

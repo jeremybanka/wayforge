@@ -1,4 +1,4 @@
-import type { AtomToken, Logger, TransactionUpdate } from "atom.io"
+import type { Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -11,13 +11,12 @@ import {
 	transaction,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
-import type { MoleculeToken, MoleculeType } from "atom.io/immortal"
-import {
-	makeRootMolecule,
-	Molecule,
-	moleculeFamily,
-	seekState,
+import type {
+	MoleculeToken,
+	MoleculeTransactors,
+	MoleculeType,
 } from "atom.io/immortal"
+import { makeRootMolecule, moleculeFamily, seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -505,27 +504,21 @@ describe(`transaction.make`, () => {
 		const unitIds = new Set<string>()
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
-			new: (store) =>
-				class Unit extends Molecule<string> {
-					public hpState: AtomToken<number>
-					public constructor(
-						context: Molecule<any>[],
-						token: MoleculeToken<string, Unit, [hp: number]>,
-						public readonly hp: number,
-					) {
-						super(store, context, token)
-						this.hpState = this.bond(hpAtoms)
-						setState(this.hpState, this.hp)
-					}
-				},
+			new: class Unit {
+				public hpState = this.transactors.bond(hpAtoms)
+				public constructor(
+					public transactors: MoleculeTransactors<string>,
+					public key: string,
+					public readonly hp: number,
+				) {
+					setState(this.hpState, this.hp)
+				}
+			},
 		})
 		type Unit = MoleculeType<typeof unitMolecules>
 		const world = makeRootMolecule(`world`)
 		const spawnUnitsTX = transaction<
-			(
-				willThrow: boolean,
-				...args: number[]
-			) => MoleculeToken<string, Unit, [hp: number]>[]
+			(willThrow: boolean, ...args: number[]) => MoleculeToken<string, Unit>[]
 		>({
 			key: `spawnUnits`,
 			do: ({ make }, willThrow: boolean, ...args: number[]) => {

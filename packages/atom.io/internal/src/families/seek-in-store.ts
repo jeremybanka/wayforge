@@ -18,6 +18,7 @@ import type {
 } from "atom.io"
 import type {
 	Molecule,
+	MoleculeConstructor,
 	MoleculeFamilyToken,
 	MoleculeToken,
 } from "atom.io/immortal"
@@ -83,22 +84,22 @@ export function seekInStore<T, K extends Json.Serializable, Key extends K>(
 
 export function seekInStore<
 	K extends Json.Serializable,
-	S extends { [key: string]: any },
+	C extends MoleculeConstructor<K>,
 >(
-	token: MoleculeFamilyToken<K, S, any[]>,
+	token: MoleculeFamilyToken<K, C>,
 	key: K,
 	store: Store,
-): MoleculeToken<K, S, any[]> | undefined
+): MoleculeToken<K, C> | undefined
 
 export function seekInStore(
-	token: MoleculeFamilyToken<any, any, any> | ReadableFamilyToken<any, any>,
+	token: MoleculeFamilyToken<any, any> | ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
 	store: Store,
-): MoleculeToken<any, any, any> | ReadableToken<any> | undefined {
+): MoleculeToken<any, any> | ReadableToken<any> | undefined {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const target = newest(store)
-	let state: Molecule<any> | ReadableState<any> | undefined
+	let state: Molecule<any, any> | ReadableState<any> | undefined
 	switch (token.type) {
 		case `atom_family`:
 		case `mutable_atom_family`:

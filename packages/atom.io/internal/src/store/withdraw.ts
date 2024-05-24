@@ -6,6 +6,8 @@ import type {
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
+	ReadableFamily,
+	ReadableFamilyToken,
 	ReadableToken,
 	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
@@ -19,6 +21,8 @@ import type {
 	TimelineManageable,
 	TimelineToken,
 	TransactionToken,
+	WritableFamily,
+	WritableFamilyToken,
 	WritableSelectorFamily,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -26,6 +30,7 @@ import type {
 } from "atom.io"
 import type {
 	Molecule,
+	MoleculeConstructor,
 	MoleculeFamily,
 	MoleculeFamilyToken,
 	MoleculeToken,
@@ -51,10 +56,11 @@ import type { Store } from "./store"
 export type Withdrawable =
 	| Atom<any>
 	| AtomFamily<any, any>
-	| Molecule<any>
-	| MoleculeFamily<any, any, any>
+	| Molecule<any, any>
+	| MoleculeFamily<any, any>
 	| MutableAtom<any, any>
 	| MutableAtomFamily<any, any, any>
+	| ReadableFamily<any, any>
 	| ReadableState<any>
 	| ReadonlySelector<any>
 	| ReadonlySelectorFamily<any, any>
@@ -64,6 +70,7 @@ export type Withdrawable =
 	| SelectorFamily<any, any>
 	| Timeline<any>
 	| Transaction<any>
+	| WritableFamily<any, any>
 	| WritableSelector<any>
 	| WritableSelectorFamily<any, any>
 	| WritableState<any>
@@ -123,17 +130,23 @@ export function withdraw<T, K extends Json.Serializable>(
 	token: SelectorFamilyToken<T, K>,
 	store: Store,
 ): SelectorFamily<T, any>
+export function withdraw<T, K extends Json.Serializable>(
+	token: ReadableFamilyToken<T, K>,
+	store: Store,
+): ReadableFamily<T, any>
+export function withdraw<T, K extends Json.Serializable>(
+	token: WritableFamilyToken<T, K>,
+	store: Store,
+): WritableFamily<T, any>
 
 export function withdraw<
 	K extends Json.Serializable,
-	S extends { [key: string]: any },
-	P extends any[],
->(token: MoleculeToken<K, S, P>, store: Store): Molecule<K> & S
+	C extends MoleculeConstructor<K>,
+>(token: MoleculeToken<K, C>, store: Store): Molecule<K, C>
 export function withdraw<
 	K extends Json.Serializable,
-	S extends { [key: string]: any },
-	P extends any[],
->(token: MoleculeFamilyToken<K, S, P>, store: Store): MoleculeFamily<K, S, P>
+	C extends MoleculeConstructor<K>,
+>(token: MoleculeFamilyToken<K, C>, store: Store): MoleculeFamily<K, C>
 
 export function withdraw<T extends Func>(
 	token: TransactionToken<T>,
@@ -145,8 +158,8 @@ export function withdraw<T>(
 ): Timeline<T extends TimelineManageable ? T : never>
 export function withdraw<T>(
 	token:
-		| MoleculeFamilyToken<any, any, any>
-		| MoleculeToken<any, any, any>
+		| MoleculeFamilyToken<any, any>
+		| MoleculeToken<any, any>
 		| RegularAtomFamilyToken<T, any>
 		| RegularAtomToken<T>
 		| SelectorFamilyToken<T, any>
