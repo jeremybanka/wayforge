@@ -20,12 +20,12 @@ describe(`moleculeFamily`, () => {
 		const topMolecules = moleculeFamily({
 			key: `top`,
 			new: class Top {
-				public constructor(transactors: MoleculeTransactors<string>) {
+				public constructor(
+					transactors: MoleculeTransactors<string>,
+					public key: string,
+				) {
 					for (const childName of [`one`, `two`]) {
-						transactors.spawn(
-							bottomMolecules,
-							`${transactors.ctx.token.key}-bottom-${childName}`,
-						)
+						transactors.spawn(bottomMolecules, `${key}-bottom-${childName}`)
 					}
 				}
 			},

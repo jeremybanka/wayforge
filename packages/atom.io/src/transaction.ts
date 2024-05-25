@@ -44,28 +44,25 @@ export type StateDisposal<Token extends ReadableToken<any>> = {
 	value?: TokenType<Token>
 }
 
-export type MoleculeCreation<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
-> = {
+export type MoleculeCreation<M extends MoleculeConstructor> = {
 	type: `molecule_creation`
-	token: MoleculeToken<K, C>
-	family: MoleculeFamilyToken<K, C>
-	context: MoleculeToken<K, C>[]
-	params: MoleculeParams<C>
+	token: MoleculeToken<M>
+	family: MoleculeFamilyToken<M>
+	context: MoleculeToken<any>[]
+	params: MoleculeParams<M>
 }
-export type MoleculeDisposal<K extends Json.Serializable> = {
+export type MoleculeDisposal = {
 	type: `molecule_disposal`
-	token: MoleculeToken<K, MoleculeConstructor<K>>
-	family: MoleculeFamilyToken<K, MoleculeConstructor<K>>
-	context: MoleculeToken<K, MoleculeConstructor<K>>[]
+	token: MoleculeToken<any>
+	family: MoleculeFamilyToken<any>
+	context: MoleculeToken<any>[]
 	familyKeys: string[]
 }
 
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
-	| MoleculeCreation<any, any>
-	| MoleculeDisposal<any>
+	| MoleculeCreation<any>
+	| MoleculeDisposal
 	| StateCreation<ReadableToken<unknown>>
 	| StateDisposal<ReadableToken<unknown>>
 	| TransactionUpdate<Func>

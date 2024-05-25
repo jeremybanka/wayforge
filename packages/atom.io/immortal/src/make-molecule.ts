@@ -64,63 +64,48 @@ export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 
 		join(joinToken: JoinToken<any, any, any, any>): void
 
-		spawn<Key extends Json.Serializable, Ctor extends MoleculeConstructor<Key>>(
-			family: MoleculeFamilyToken<Key, Ctor>,
+		spawn<Key extends Json.Serializable, Ctor extends MoleculeConstructor>(
+			family: MoleculeFamilyToken<Ctor>,
 			key: Key,
 			...params: MoleculeParams<Ctor>
-		): MoleculeToken<Key, Ctor>
-
-		ctx: { token: MoleculeToken<K, any> }
+		): MoleculeToken<Ctor>
 	}
 >
-export type MoleculeConstructor<K extends Json.Serializable> = new (
-	transactors: MoleculeTransactors<K>,
-	key: K,
+export type MoleculeConstructor = new (
+	transactors: MoleculeTransactors<any>,
+	key: Json.Serializable,
 	...params: any
 ) => any
 
 type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : any[]
 
-export type MoleculeParams<C extends MoleculeConstructor<any>> = Tail<
-	Tail<ConstructorParameters<C>>
+export type MoleculeParams<M extends MoleculeConstructor> = Tail<
+	Tail<ConstructorParameters<M>>
 >
 
-export type MoleculeFamilyOptions<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
-> = {
+export type MoleculeFamilyOptions<M extends MoleculeConstructor> = {
 	key: string
 	dependsOn?: `all` | `any`
-	new: C
+	new: M
 }
-export type MoleculeFamilyToken<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
-> = {
+export type MoleculeFamilyToken<M extends MoleculeConstructor> = {
 	key: string
 	type: `molecule_family`
 	dependsOn: `all` | `any`
-	__K?: K
-	__C?: C
+	__M?: M
 }
-export type MoleculeFamily<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
-> = Flat<
-	MoleculeFamilyToken<K, C> & {
-		subject: Subject<MoleculeCreation<K, C> | MoleculeDisposal<K>>
+export type MoleculeFamily<M extends MoleculeConstructor> = Flat<
+	MoleculeFamilyToken<M> & {
+		subject: Subject<MoleculeCreation<M> | MoleculeDisposal>
 		dependsOn: `all` | `any`
-		new: C
+		new: M
 	}
 >
-export type MoleculeToken<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
-> = {
-	key: K
+export type MoleculeToken<M extends MoleculeConstructor> = {
+	key: MK<M>
 	type: `molecule`
-	family?: MoleculeFamilyToken<K, C>
-	__C?: C
+	family?: MoleculeFamilyToken<M>
+	__M?: M
 }
 
 export function growMoleculeInStore<
@@ -128,106 +113,108 @@ export function growMoleculeInStore<
 	J extends Json.Serializable,
 	K extends Json.Serializable,
 >(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: MutableAtomFamily<T, J, K>,
 	store: Store,
 ): MutableAtomToken<T, J>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: RegularAtomFamily<T, K>,
 	store: Store,
 ): RegularAtomToken<T>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: AtomFamily<T, K>,
 	store: Store,
 ): AtomToken<T>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: WritableSelectorFamily<T, K>,
 	store: Store,
 ): WritableSelectorToken<T>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: ReadonlySelectorFamily<T, K>,
 	store: Store,
 ): ReadonlySelectorToken<T>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: SelectorFamily<T, K>,
 	store: Store,
 ): SelectorToken<T>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: WritableFamily<T, K>,
 	store: Store,
 ): WritableToken<T>
 export function growMoleculeInStore<T, K extends Json.Serializable>(
-	molecule: Molecule<K, MoleculeConstructor<K>>,
+	molecule: Molecule<any>,
 	family: ReadableFamily<T, K>,
 	store: Store,
 ): ReadableToken<T>
 export function growMoleculeInStore(
-	molecule: Molecule<any, any>,
+	molecule: Molecule<any>,
 	family: ReadableFamily<any, any>,
 	store: Store,
 ): ReadableToken<any> {
 	const stateToken = initFamilyMemberInStore(family, molecule.key, store)
 	molecule.tokens.set(stateToken.key, stateToken)
-	molecule.subject.next({ type: `state_creation`, token: stateToken })
+	const isTransaction =
+		isChildStore(store) && store.transactionMeta.phase === `building`
+	if (isTransaction) {
+		store.transactionMeta.update.updates.push({
+			type: `state_creation`,
+			token: stateToken,
+		})
+	} else {
+		molecule.subject.next({ type: `state_creation`, token: stateToken })
+	}
 	return stateToken
 }
 
-export function createMoleculeFamily<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(
-	options: MoleculeFamilyOptions<K, C>,
+export function createMoleculeFamily<M extends MoleculeConstructor>(
+	options: MoleculeFamilyOptions<M>,
 	store: Store,
-): MoleculeFamilyToken<K, C> {
-	const subject = new Subject<MoleculeCreation<K, C> | MoleculeDisposal<K>>()
+): MoleculeFamilyToken<M> {
+	const subject = new Subject<MoleculeCreation<M>>()
 
 	const token = {
 		type: `molecule_family`,
 		key: options.key,
 		dependsOn: options.dependsOn ?? `all`,
-	} as const satisfies MoleculeFamilyToken<K, C>
+	} as const satisfies MoleculeFamilyToken<M>
 	const family = {
 		...token,
 		subject,
 		new: options.new,
-	} satisfies MoleculeFamily<K, C>
+	} satisfies MoleculeFamily<M>
 	store.moleculeFamilies.set(options.key, family)
 	return token
 }
 
-export function moleculeFamily<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(options: MoleculeFamilyOptions<K, C>): MoleculeFamilyToken<K, C> {
+export function moleculeFamily<M extends MoleculeConstructor>(
+	options: MoleculeFamilyOptions<M>,
+): MoleculeFamilyToken<M> {
 	return createMoleculeFamily(options, IMPLICIT.STORE)
 }
 
-export function makeMoleculeInStore<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(
+export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	store: Store,
-	context: MoleculeToken<K, C> | MoleculeToken<K, C>[],
-	familyToken: MoleculeFamilyToken<K, C>,
-	key: K,
-	...params: MoleculeParams<C>
-): MoleculeToken<K, C> {
+	context: MoleculeToken<M> | MoleculeToken<M>[],
+	familyToken: MoleculeFamilyToken<M>,
+	key: MK<M>,
+	...params: MoleculeParams<M>
+): MoleculeToken<M> {
 	const target = newest(store)
 
 	const token = {
 		type: `molecule`,
 		key,
 		family: familyToken,
-	} as const satisfies MoleculeToken<K, C>
+	} as const satisfies MoleculeToken<M>
 
 	const contextArray = Array.isArray(context) ? context : [context]
-	const owners = contextArray.map<Molecule<K, C>>((ctx) => {
+	const owners = contextArray.map<Molecule<M>>((ctx) => {
 		if (ctx instanceof Molecule) {
 			return ctx
 		}
@@ -268,13 +255,13 @@ export function makeMoleculeInStore<
 				molecule,
 				withdraw(f, store),
 				newest(store),
-			)) as MoleculeTransactors<K>[`bond`],
+			)) as MoleculeTransactors<MK<M>>[`bond`],
 		join: (joinToken: JoinToken<any, any, any, any>) => {
 			const join = getJoin(joinToken, store)
 			join.molecules.set(stringifyJson(key), molecule)
 			molecule.joins.set(joinToken.key, join)
 		},
-		spawn: (f: MoleculeFamilyToken<any, any>, k: any, ...p: any[]) =>
+		spawn: (f: MoleculeFamilyToken<any>, k: any, ...p: any[]) =>
 			makeMoleculeInStore(
 				newest(store),
 				[molecule],
@@ -282,8 +269,7 @@ export function makeMoleculeInStore<
 				k,
 				...p,
 			),
-		ctx: { token },
-	} satisfies MoleculeTransactors<K>
+	} satisfies MoleculeTransactors<MK<M>>
 	const Constructor = family.new
 
 	molecule.instance = new Constructor(transactors, token.key, ...params)
@@ -294,7 +280,7 @@ export function makeMoleculeInStore<
 		family,
 		context: contextArray,
 		params,
-	} satisfies MoleculeCreation<K, C>
+	} satisfies MoleculeCreation<M>
 
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
@@ -306,38 +292,34 @@ export function makeMoleculeInStore<
 
 	return token
 }
-export function makeMolecule<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(
-	context: MoleculeToken<any, any> | MoleculeToken<any, any>[],
-	family: MoleculeFamilyToken<K, C>,
-	key: K,
-	...params: MoleculeParams<C>
-): MoleculeToken<K, C> {
+export function makeMolecule<M extends MoleculeConstructor>(
+	context: MoleculeToken<any> | MoleculeToken<any>[],
+	family: MoleculeFamilyToken<M>,
+	key: MoleculeKey<M>,
+	...params: MoleculeParams<M>
+): MoleculeToken<M> {
 	return makeMoleculeInStore(IMPLICIT.STORE, context, family, key, ...params)
 }
 
-export function useMoleculeFromStore<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(token: MoleculeToken<K, C>, store: Store): InstanceType<C> | undefined {
+export function useMoleculeFromStore<M extends MoleculeConstructor>(
+	token: MoleculeToken<M>,
+	store: Store,
+): InstanceType<M> | undefined {
 	const molecule = store.molecules.get(stringifyJson(token.key))
 	return molecule?.instance
 }
-export function useMolecule<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(token: MoleculeToken<K, C>): InstanceType<C> | undefined {
+export function useMolecule<M extends MoleculeConstructor>(
+	token: MoleculeToken<M>,
+): InstanceType<M> | undefined {
 	return useMoleculeFromStore(token, IMPLICIT.STORE)
 }
 
-export function disposeMolecule<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(token: MoleculeToken<K, C>, store: Store): void {
+export function disposeMolecule<M extends MoleculeConstructor>(
+	token: MoleculeToken<M>,
+	store: Store,
+): void {
 	const stringKey = stringifyJson(token.key)
-	let molecule: Molecule<K, C>
+	let molecule: Molecule<M>
 	try {
 		molecule = withdraw(token, store)
 	} catch (thrown) {
@@ -355,7 +337,7 @@ export function disposeMolecule<
 	const { family } = token
 	if (family) {
 		const Formula = withdraw(family, store)
-		const disposalEvent: MoleculeDisposal<K> = {
+		const disposalEvent: MoleculeDisposal = {
 			type: `molecule_disposal`,
 			token,
 			family,
@@ -398,18 +380,19 @@ export function disposeMolecule<
 	}
 }
 
-export type MoleculeType<
-	M extends MoleculeFamilyToken<any, any> | MoleculeToken<any, any>,
-> = M extends MoleculeFamilyToken<any, infer C>
-	? C
-	: M extends MoleculeToken<any, infer C>
-		? C
-		: never
+export type MoleculeType<T extends MoleculeFamilyToken<any>> =
+	T extends MoleculeFamilyToken<infer M>
+		? M
+		: T extends MoleculeToken<infer M>
+			? M
+			: never
+export type MoleculeKey<M extends MoleculeConstructor> = InstanceType<M>[`key`]
+export type MK<M extends MoleculeConstructor> = MoleculeKey<M>
 
 export function makeRootMolecule(
 	key: string,
 	store: Store = IMPLICIT.STORE,
-): MoleculeToken<string, ObjectConstructor> {
+): MoleculeToken<ObjectConstructor> {
 	const molecule = new Molecule(undefined, key)
 	store.molecules.set(stringifyJson(key), molecule)
 	return {

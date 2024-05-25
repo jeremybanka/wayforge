@@ -56,8 +56,8 @@ import type { Store } from "./store"
 export type Withdrawable =
 	| Atom<any>
 	| AtomFamily<any, any>
-	| Molecule<any, any>
-	| MoleculeFamily<any, any>
+	| Molecule<any>
+	| MoleculeFamily<any>
 	| MutableAtom<any, any>
 	| MutableAtomFamily<any, any, any>
 	| ReadableFamily<any, any>
@@ -139,14 +139,14 @@ export function withdraw<T, K extends Json.Serializable>(
 	store: Store,
 ): WritableFamily<T, any>
 
-export function withdraw<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(token: MoleculeToken<K, C>, store: Store): Molecule<K, C>
-export function withdraw<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(token: MoleculeFamilyToken<K, C>, store: Store): MoleculeFamily<K, C>
+export function withdraw<M extends MoleculeConstructor>(
+	token: MoleculeToken<M>,
+	store: Store,
+): Molecule<M>
+export function withdraw<M extends MoleculeConstructor>(
+	token: MoleculeFamilyToken<M>,
+	store: Store,
+): MoleculeFamily<M>
 
 export function withdraw<T extends Func>(
 	token: TransactionToken<T>,
@@ -158,8 +158,8 @@ export function withdraw<T>(
 ): Timeline<T extends TimelineManageable ? T : never>
 export function withdraw<T>(
 	token:
-		| MoleculeFamilyToken<any, any>
-		| MoleculeToken<any, any>
+		| MoleculeFamilyToken<any>
+		| MoleculeToken<any>
 		| RegularAtomFamilyToken<T, any>
 		| RegularAtomToken<T>
 		| SelectorFamilyToken<T, any>

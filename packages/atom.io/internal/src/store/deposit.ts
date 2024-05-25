@@ -44,20 +44,20 @@ export function deposit<
 	K extends Json.Serializable,
 	S extends { [key: string]: any },
 	P extends any[],
->(state: Molecule<any, any>): MoleculeToken<any, any>
+>(state: Molecule<any>): MoleculeToken<any>
 export function deposit<
 	K extends Json.Serializable,
 	S extends { [key: string]: any },
 	P extends any[],
->(state: MoleculeFamily<any, any>): MoleculeFamilyToken<any, any>
+>(state: MoleculeFamily<any>): MoleculeFamilyToken<any>
 export function deposit<T extends Func>(
 	state: Transaction<T>,
 ): TransactionToken<T>
 export function deposit<T>(state: ReadableState<T>): ReadableToken<T>
 export function deposit<T>(
 	state:
-		| Molecule<any, any>
-		| MoleculeFamily<any, any>
+		| Molecule<any>
+		| MoleculeFamily<any>
 		| ReadableState<T>
 		| ReadonlySelector<T>
 		| RegularAtom<T>
@@ -65,8 +65,8 @@ export function deposit<T>(
 		| WritableSelector<T>
 		| (T extends Transceiver<any> ? MutableAtom<T, any> : never),
 ):
-	| MoleculeFamilyToken<any, any>
-	| MoleculeToken<any, any>
+	| MoleculeFamilyToken<any>
+	| MoleculeToken<any>
 	| MutableAtomToken<T extends Transceiver<any> ? T : never, any>
 	| RegularAtomToken<T>
 	| SelectorToken<T>

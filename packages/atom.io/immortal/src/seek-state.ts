@@ -19,6 +19,7 @@ import type { Json } from "atom.io/json"
 import type {
 	MoleculeConstructor,
 	MoleculeFamilyToken,
+	MoleculeKey,
 	MoleculeToken,
 } from "./make-molecule"
 
@@ -57,15 +58,15 @@ export function seekState<T, K extends Json.Serializable, Key extends K>(
 	key: Key,
 ): ReadableToken<T> | undefined
 
-export function seekState<
-	K extends Json.Serializable,
-	C extends MoleculeConstructor<K>,
->(token: MoleculeFamilyToken<K, C>, key: K): MoleculeToken<K, C> | undefined
+export function seekState<M extends MoleculeConstructor>(
+	token: MoleculeFamilyToken<M>,
+	key: MoleculeKey<M>,
+): MoleculeToken<M> | undefined
 
 export function seekState(
-	token: MoleculeFamilyToken<any, any> | ReadableFamilyToken<any, any>,
+	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
-): MoleculeToken<any, any> | ReadableToken<any> | undefined {
+): MoleculeToken<any> | ReadableToken<any> | undefined {
 	if (token.type === `molecule_family`) {
 		return seekInStore(token, key, IMPLICIT.STORE)
 	}

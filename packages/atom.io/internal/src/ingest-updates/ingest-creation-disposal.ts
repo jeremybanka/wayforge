@@ -6,7 +6,11 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import { disposeMolecule, makeMoleculeInStore } from "atom.io/immortal"
+import {
+	disposeMolecule,
+	growMoleculeInStore,
+	makeMoleculeInStore,
+} from "atom.io/immortal"
 
 import { disposeFromStore, initFamilyMemberInStore } from "../families"
 import type { Store } from "../store"
@@ -52,7 +56,7 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 		if (family) {
 			const molecule = store.molecules.get(token.family.subKey)
 			if (molecule) {
-				molecule.bond(family)
+				growMoleculeInStore(molecule, family, store)
 				return
 			}
 			if (store.config.lifespan === `immortal`) {
@@ -84,7 +88,7 @@ export function ingestMoleculeCreationEvent(
 	}
 }
 export function ingestMoleculeDisposalEvent(
-	update: MoleculeDisposal<any>,
+	update: MoleculeDisposal,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {

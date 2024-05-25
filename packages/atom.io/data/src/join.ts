@@ -150,7 +150,7 @@ export class Join<
 	private defaultContent: Content | undefined
 	private transactors: Transactors & { dispose: typeof disposeState }
 	public retrieve: typeof findState
-	public molecules: Map<string, Molecule<any, any>> = new Map()
+	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
 	public core: {
@@ -414,7 +414,11 @@ export class Join<
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
 		let contentAtoms: RegularAtomFamily<Content, string>
-		let contentMolecules: MoleculeFamilyToken<string, any>
+		let contentMolecules: MoleculeFamilyToken<
+			new (
+				..._: any[]
+			) => { key: string }
+		>
 		if (defaultContent) {
 			contentAtoms = createRegularAtomFamily<Content, string>(
 				{
@@ -434,7 +438,10 @@ export class Join<
 				{
 					key: `${options.key}/content-molecules`,
 					new: class ContentMolecule {
-						public constructor(transactors: MoleculeTransactors<string>) {
+						public constructor(
+							transactors: MoleculeTransactors<string>,
+							public key: string,
+						) {
 							transactors.join(joinToken)
 						}
 					},

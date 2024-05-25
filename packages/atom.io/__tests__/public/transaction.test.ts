@@ -509,7 +509,7 @@ describe(`transaction.make`, () => {
 				public constructor(
 					public transactors: MoleculeTransactors<string>,
 					public key: string,
-					public readonly hp: number,
+					public hp: number,
 				) {
 					setState(this.hpState, this.hp)
 				}
@@ -517,8 +517,9 @@ describe(`transaction.make`, () => {
 		})
 		type Unit = MoleculeType<typeof unitMolecules>
 		const world = makeRootMolecule(`world`)
+
 		const spawnUnitsTX = transaction<
-			(willThrow: boolean, ...args: number[]) => MoleculeToken<string, Unit>[]
+			(willThrow: boolean, ...args: number[]) => MoleculeToken<Unit>[]
 		>({
 			key: `spawnUnits`,
 			do: ({ make }, willThrow: boolean, ...args: number[]) => {

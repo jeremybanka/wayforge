@@ -16,6 +16,7 @@ import type {
 	TokenType,
 	TransactionUpdate,
 } from "atom.io"
+import type { MoleculeConstructor } from "atom.io/immortal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
@@ -51,11 +52,11 @@ export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
 export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
 	StateDisposal<T> & { timestamp: number }
 >
-export type TimelineMoleculeCreation<Key extends Json.Serializable> = Flat<
-	MoleculeCreation<Key, any> & { timestamp: number }
+export type TimelineMoleculeCreation<M extends MoleculeConstructor> = Flat<
+	MoleculeCreation<M> & { timestamp: number }
 >
-export type TimelineMoleculeDisposal<Key extends Json.Serializable> = Flat<
-	MoleculeDisposal<Key> & { timestamp: number }
+export type TimelineMoleculeDisposal = Flat<
+	MoleculeDisposal & { timestamp: number }
 >
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {

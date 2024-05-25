@@ -11,8 +11,8 @@ import type { Store } from "./store"
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
 type AtomIOToken =
-	| MoleculeFamilyToken<any, any, any>
-	| MoleculeToken<any, any, any>
+	| MoleculeFamilyToken<any>
+	| MoleculeToken<any>
 	| ReadableFamilyToken<any, any>
 	| ReadableToken<any>
 	| TimelineToken<any>
