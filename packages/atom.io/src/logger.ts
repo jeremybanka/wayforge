@@ -54,6 +54,8 @@ export type LoggerIcon = keyof typeof LoggerIconDictionary
 export type TokenDenomination =
 	| `atom`
 	| `continuity`
+	| `molecule_family`
+	| `molecule`
 	| `mutable_atom`
 	| `readonly_selector`
 	| `selector`

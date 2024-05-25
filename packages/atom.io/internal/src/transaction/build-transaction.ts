@@ -1,6 +1,6 @@
 import type { Func } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import { makeMoleculeInStore, type seekState } from "atom.io/immortal"
+import type { seekState } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 
@@ -10,6 +10,7 @@ import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
+import { makeMoleculeInStore } from "../molecule"
 import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"

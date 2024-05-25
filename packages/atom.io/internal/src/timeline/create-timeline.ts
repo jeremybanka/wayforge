@@ -3,6 +3,7 @@ import type {
 	FamilyMetadata,
 	Flat,
 	Func,
+	MoleculeConstructor,
 	MoleculeCreation,
 	MoleculeDisposal,
 	ReadableToken,
@@ -16,7 +17,7 @@ import type {
 	TokenType,
 	TransactionUpdate,
 } from "atom.io"
-import { type Json, stringifyJson } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { getUpdateToken, isMutable } from "../mutable"
@@ -51,11 +52,11 @@ export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
 export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
 	StateDisposal<T> & { timestamp: number }
 >
-export type TimelineMoleculeCreation<Key extends Json.Serializable> = Flat<
-	MoleculeCreation<Key> & { timestamp: number }
+export type TimelineMoleculeCreation<M extends MoleculeConstructor> = Flat<
+	MoleculeCreation<M> & { timestamp: number }
 >
-export type TimelineMoleculeDisposal<Key extends Json.Serializable> = Flat<
-	MoleculeDisposal<Key> & { timestamp: number }
+export type TimelineMoleculeDisposal = Flat<
+	MoleculeDisposal & { timestamp: number }
 >
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
@@ -184,7 +185,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 													tl.at = tl.history.length
 													tl.subject.next(event)
 
-													for (const token of molecule.tokens) {
+													for (const token of molecule.tokens.values()) {
 														switch (token.type) {
 															case `atom`:
 															case `mutable_atom`:

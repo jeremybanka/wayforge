@@ -1,9 +1,12 @@
-import type { Logger, WritableToken } from "atom.io"
+import type { Logger, MoleculeTransactors, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	disposeState,
 	getState,
+	makeMolecule,
+	makeRootMolecule,
+	moleculeFamily,
 	redo,
 	runTransaction,
 	selector,
@@ -14,14 +17,7 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
-import type { MoleculeToken } from "atom.io/immortal"
-import {
-	makeMolecule,
-	makeRootMolecule,
-	Molecule,
-	moleculeFamily,
-	seekState,
-} from "atom.io/immortal"
+import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -361,16 +357,10 @@ describe(`timeline state lifecycle`, () => {
 		})
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
-			new: (store) =>
-				class Unit extends Molecule<string> {
-					public hpState = this.bond(hpAtoms)
-					public constructor(
-						context: Molecule<any>[],
-						token: MoleculeToken<string, Unit, []>,
-					) {
-						super(store, context, token)
-					}
-				},
+			new: class Unit {
+				public hpState = this.transactors.bond(hpAtoms)
+				public constructor(public transactors: MoleculeTransactors<string>) {}
+			},
 		})
 		const gameTL = timeline({
 			key: `game`,

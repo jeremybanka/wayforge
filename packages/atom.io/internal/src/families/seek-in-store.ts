@@ -1,6 +1,10 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
+	MoleculeConstructor,
+	MoleculeFamilyToken,
+	MoleculeKey,
+	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -16,14 +20,9 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type {
-	Molecule,
-	MoleculeFamilyToken,
-	MoleculeToken,
-} from "atom.io/immortal"
 import { type Json, stringifyJson } from "atom.io/json"
 
-import type { ReadableState } from ".."
+import type { Molecule, ReadableState } from ".."
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { deposit, type Store } from "../store"
@@ -81,20 +80,17 @@ export function seekInStore<T, K extends Json.Serializable, Key extends K>(
 	store: Store,
 ): ReadableToken<T> | undefined
 
-export function seekInStore<
-	K extends Json.Serializable,
-	S extends { [key: string]: any },
->(
-	token: MoleculeFamilyToken<K, S, any[]>,
-	key: K,
+export function seekInStore<M extends MoleculeConstructor>(
+	token: MoleculeFamilyToken<M>,
+	key: MoleculeKey<M>,
 	store: Store,
-): MoleculeToken<K, S, any[]> | undefined
+): MoleculeKey<M> | undefined
 
 export function seekInStore(
-	token: MoleculeFamilyToken<any, any, any> | ReadableFamilyToken<any, any>,
+	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
 	store: Store,
-): MoleculeToken<any, any, any> | ReadableToken<any> | undefined {
+): MoleculeToken<any> | ReadableToken<any> | undefined {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const target = newest(store)

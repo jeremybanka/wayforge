@@ -20,7 +20,7 @@ import type { Json } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
 import type { Store } from "../store"
-import { initFamilyMember } from "./init-family-member"
+import { initFamilyMemberInStore } from "./init-family-member"
 import { seekInStore } from "./seek-in-store"
 
 export function findInStore<
@@ -90,6 +90,6 @@ export function findInStore(
 	if (state) {
 		return state
 	}
-	state = initFamilyMember(token, key, store)
+	state = initFamilyMemberInStore(token, key, store)
 	return state
 }

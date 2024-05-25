@@ -58,7 +58,7 @@ export const shuffleDeckTX = transaction<
 		// 	shuffledCardIds.join(` `),
 		// 	rngOut.join(` `),
 		// )
-		if (env().global) {
+		if (typeof global !== `undefined`) {
 			// process.stderr.write(`Shuffled deck "${deckId}"`)
 			// process.stderr.write(`🎲 ${rngOut.join(` `)}`)
 		}

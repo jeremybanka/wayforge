@@ -1,12 +1,12 @@
-import type {
-	AtomToken,
-	ReadableToken,
-	ReadonlySelectorToken,
-	SelectorToken,
+import {
+	type AtomToken,
+	getState,
+	type ReadableToken,
+	type ReadonlySelectorToken,
+	type SelectorToken,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 
-import { getState } from "../../src/get-state"
 import type { FamilyNode } from "."
 import type { AtomTokenIndex } from "./attach-atom-index"
 import { attachAtomIndex } from "./attach-atom-index"

@@ -36,7 +36,7 @@ export const shuffleDeckTX = transaction<
 		editRelations(groupsOfCards, (relations) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
-		if (env().global) {
+		if (typeof global !== `undefined`) {
 			console.log(`Shuffled deck "${deckId}"`)
 		}
 	},
