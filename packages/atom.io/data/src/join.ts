@@ -489,8 +489,6 @@ export class Join<
 					this.molecules.get(stringifyJson(key)),
 				)
 				if (store.config.lifespan === `immortal` && m0 && m1) {
-					// const composite = m0.with(m1)(compositeKey)
-					// this.molecules.set(`"${compositeKey}"`, composite)
 					const target = newest(store)
 					const moleculeToken = makeMoleculeInStore(
 						target,

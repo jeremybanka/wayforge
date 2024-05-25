@@ -14,7 +14,6 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 	token: MoleculeToken<M>,
 	store: Store,
 ): void {
-	// const stringKey = stringifyJson(token.key)
 	let molecule: Molecule<M>
 	try {
 		molecule = withdraw(token, store)
