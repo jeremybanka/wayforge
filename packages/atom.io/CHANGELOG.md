@@ -1,5 +1,16 @@
 # atom.io
 
+## 0.24.0
+
+### Minor Changes
+
+- 46fbac4: 💥 BREAKING CHANGE: Simplified API for the `moleculeFamily` function. Now it receives a class directly.
+- 46fbac4: 💥 BREAKING CHANGE: `moleculeFamily` and associated utilities and types are now exported from `atom.io` (Previously they were exported from `atom.io/immortal`.)
+
+### Patch Changes
+
+- 46fbac4: ✨ `moleculeFamily` adds the `dependsOn: "any" | "all"` option. `"any"` means molecules created by this family will not dispose until all molecules above have been disposed. `"all"` means that any disposal above this molecule will dispose it.
+
 ## 0.23.5
 
 ### Patch Changes
