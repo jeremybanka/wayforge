@@ -18,6 +18,15 @@ const findNumbersCollectionState = AtomIO.atomFamily<number[], string>({
 	key: `numbersCollection`,
 	default: [0],
 })
+const findCollectionSumState = AtomIO.selectorFamily<number, string>({
+	key: `collectionSum`,
+	get:
+		(id) =>
+		({ find, get }) => {
+			const numbers = get(find(findNumbersCollectionState, id))
+			return numbers.reduce((a, b) => a + b, 0)
+		},
+})
 const numbersCollectionIndex = AtomIO.atom<Set<string>>({
 	key: `numbersCollectionIndex`,
 	default: new Set([`foo`]),
@@ -38,7 +47,10 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 function RealtimeDisplay(): JSX.Element {
 	const findNCState = useFamily(findNumbersCollectionState)
 	RTR.usePullAtomFamilyMember(findNCState, `foo`)
+	RTR.usePullSelectorFamilyMember(findCollectionSumState, `foo`)
 	const numbers = AR.useO(findNCState, `foo`)
+	const sum = AR.useO(findCollectionSumState, `foo`)
+	console.log({ numbers, sum })
 	return (
 		<>
 			{numbers.map((n) => (
