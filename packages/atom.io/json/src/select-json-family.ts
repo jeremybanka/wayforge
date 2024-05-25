@@ -1,7 +1,8 @@
-import * as AtomIO from "atom.io"
+import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
 import {
 	createSelectorFamily,
+	growMoleculeInStore,
 	IMPLICIT,
 	initFamilyMemberInStore,
 	seekInStore,
@@ -52,7 +53,7 @@ export function selectJsonFamily<
 					const stringKey = stringifyJson(key)
 					const molecule = store.molecules.get(stringKey)
 					if (molecule) {
-						const atom = AtomIO.growMoleculeInStore(molecule, family, store)
+						const atom = growMoleculeInStore(molecule, family, store)
 						return transform.toJson(get(atom))
 					}
 					if (store.config.lifespan === `immortal`) {
@@ -71,7 +72,7 @@ export function selectJsonFamily<
 						const stringKey = stringifyJson(key)
 						const molecule = store.molecules.get(stringKey)
 						if (molecule) {
-							const atom = AtomIO.growMoleculeInStore(molecule, family, store)
+							const atom = growMoleculeInStore(molecule, family, store)
 							set(atom, transform.fromJson(newValue))
 						} else {
 							if (store.config.lifespan === `immortal`) {

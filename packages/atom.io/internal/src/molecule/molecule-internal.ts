@@ -8,8 +8,9 @@ import type {
 	StateDisposal,
 } from "atom.io"
 import type { Join } from "atom.io/data"
-import { Subject } from "atom.io/internal"
 import { stringifyJson } from "atom.io/json"
+
+import { Subject } from "../subject"
 
 export class Molecule<M extends MoleculeConstructor>
 	implements MoleculeToken<M>

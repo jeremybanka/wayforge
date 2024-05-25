@@ -1,4 +1,4 @@
-import { type Func, makeMoleculeInStore } from "atom.io"
+import type { Func } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 
@@ -10,6 +10,7 @@ import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
+import { makeMoleculeInStore } from "../molecule"
 import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"

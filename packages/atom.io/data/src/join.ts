@@ -14,14 +14,11 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import {
-	createMoleculeFamily,
-	growMoleculeInStore,
-	makeMoleculeInStore,
-} from "atom.io"
 import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 import type { Molecule, Store } from "atom.io/internal"
 import {
+	createMoleculeFamily,
 	createMutableAtomFamily,
 	createRegularAtomFamily,
 	createSelectorFamily,
@@ -30,9 +27,11 @@ import {
 	getFromStore,
 	getJsonFamily,
 	getJsonToken,
+	growMoleculeInStore,
 	IMPLICIT,
 	initFamilyMemberInStore,
 	isChildStore,
+	makeMoleculeInStore,
 	newest,
 	seekInStore,
 	setIntoStore,
@@ -50,8 +49,6 @@ import type {
 } from "~/packages/rel8/junction/src"
 import { Junction } from "~/packages/rel8/junction/src"
 import type * as Rel8 from "~/packages/rel8/types/src"
-
-import type { seekState } from "../../immortal/src/seek-state"
 
 function capitalize<S extends string>(string: S): Capitalize<S> {
 	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>

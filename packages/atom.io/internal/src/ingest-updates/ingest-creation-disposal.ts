@@ -5,14 +5,10 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import {
-	disposeMolecule,
-	growMoleculeInStore,
-	makeMoleculeInStore,
-} from "atom.io"
 import { parseJson } from "atom.io/json"
 
 import { disposeFromStore, initFamilyMemberInStore } from "../families"
+import { growMoleculeInStore, makeMoleculeInStore } from "../molecule"
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
@@ -83,7 +79,7 @@ export function ingestMoleculeCreationEvent(
 			)
 			break
 		case `oldValue`:
-			disposeMolecule(update.token, store)
+			disposeFromStore(update.token, store)
 			break
 	}
 }
@@ -94,7 +90,7 @@ export function ingestMoleculeDisposalEvent(
 ): void {
 	switch (applying) {
 		case `newValue`:
-			disposeMolecule(update.token, store)
+			disposeFromStore(update.token, store)
 			break
 		case `oldValue`:
 			makeMoleculeInStore(

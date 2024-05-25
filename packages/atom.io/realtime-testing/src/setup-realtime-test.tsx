@@ -3,6 +3,7 @@ import * as http from "node:http"
 import type { RenderResult } from "@testing-library/react"
 import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
+import { editRelationsInStore } from "atom.io/data"
 import {
 	clearStore,
 	findInStore,
@@ -12,6 +13,7 @@ import {
 } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
+import { myUsernameState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as Happy from "happy-dom"
@@ -21,9 +23,6 @@ import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
 import { recordToEntries } from "~/packages/anvl/src/object"
-
-import { editRelationsInStore } from "../../data/src/join"
-import { myUsernameState } from "../../realtime-client/src/realtime-client-stores"
 
 let testNumber = 0
 

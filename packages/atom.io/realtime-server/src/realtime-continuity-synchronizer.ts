@@ -1,4 +1,5 @@
 import type * as AtomIO from "atom.io"
+import { findRelationsInStore } from "atom.io/data"
 import {
 	actUponStore,
 	findInStore,
@@ -12,7 +13,6 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import { findRelationsInStore } from "../../data/src/join"
 import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
 import {
