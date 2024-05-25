@@ -1,8 +1,8 @@
 import { StoreContext } from "atom.io/react"
+import type { ContinuityToken } from "atom.io/realtime"
+import { syncContinuity } from "atom.io/realtime-client"
 import * as React from "react"
 
-import type { ContinuityToken } from "../../realtime/src/realtime-continuity"
-import { syncContinuity } from "../../realtime-client/src/sync-continuity"
 import { useRealtimeService } from "./use-realtime-service"
 
 export function useSyncContinuity(token: ContinuityToken): void {

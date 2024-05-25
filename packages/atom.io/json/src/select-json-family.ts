@@ -2,8 +2,9 @@ import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
 import {
 	createSelectorFamily,
+	growMoleculeInStore,
 	IMPLICIT,
-	initFamilyMember,
+	initFamilyMemberInStore,
 	seekInStore,
 } from "atom.io/internal"
 
@@ -52,13 +53,13 @@ export function selectJsonFamily<
 					const stringKey = stringifyJson(key)
 					const molecule = store.molecules.get(stringKey)
 					if (molecule) {
-						const atom = molecule.bond(family)
+						const atom = growMoleculeInStore(molecule, family, store)
 						return transform.toJson(get(atom))
 					}
 					if (store.config.lifespan === `immortal`) {
 						throw new Error(`No molecule found for key "${stringKey}"`)
 					}
-					const newToken = initFamilyMember(family, key, store)
+					const newToken = initFamilyMemberInStore(family, key, store)
 					return transform.toJson(get(newToken))
 				},
 			set:
@@ -71,14 +72,14 @@ export function selectJsonFamily<
 						const stringKey = stringifyJson(key)
 						const molecule = store.molecules.get(stringKey)
 						if (molecule) {
-							const atom = molecule.bond(family)
+							const atom = growMoleculeInStore(molecule, family, store)
 							set(atom, transform.fromJson(newValue))
 						} else {
 							if (store.config.lifespan === `immortal`) {
 								throw new Error(`No molecule found for key "${stringKey}"`)
 							}
 							set(
-								initFamilyMember(family, key, store),
+								initFamilyMemberInStore(family, key, store),
 								transform.fromJson(newValue),
 							)
 						}

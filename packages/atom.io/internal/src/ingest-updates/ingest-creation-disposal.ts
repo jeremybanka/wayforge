@@ -1,4 +1,3 @@
-import { parseJson } from "anvl/json"
 import type {
 	MoleculeCreation,
 	MoleculeDisposal,
@@ -6,9 +5,10 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import { disposeMolecule, makeMoleculeInStore } from "atom.io/immortal"
+import { parseJson } from "atom.io/json"
 
-import { disposeFromStore, initFamilyMember } from "../families"
+import { disposeFromStore, initFamilyMemberInStore } from "../families"
+import { growMoleculeInStore, makeMoleculeInStore } from "../molecule"
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
@@ -52,13 +52,13 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 		if (family) {
 			const molecule = store.molecules.get(token.family.subKey)
 			if (molecule) {
-				molecule.bond(family)
+				growMoleculeInStore(molecule, family, store)
 				return
 			}
 			if (store.config.lifespan === `immortal`) {
 				throw new Error(`No molecule found for key "${token.family.subKey}"`)
 			}
-			initFamilyMember(family, parseJson(token.family.subKey), store)
+			initFamilyMemberInStore(family, parseJson(token.family.subKey), store)
 		}
 	}
 }
@@ -79,18 +79,18 @@ export function ingestMoleculeCreationEvent(
 			)
 			break
 		case `oldValue`:
-			disposeMolecule(update.token, store)
+			disposeFromStore(update.token, store)
 			break
 	}
 }
 export function ingestMoleculeDisposalEvent(
-	update: MoleculeDisposal<any>,
+	update: MoleculeDisposal,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
 	switch (applying) {
 		case `newValue`:
-			disposeMolecule(update.token, store)
+			disposeFromStore(update.token, store)
 			break
 		case `oldValue`:
 			makeMoleculeInStore(

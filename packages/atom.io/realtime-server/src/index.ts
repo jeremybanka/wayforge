@@ -10,8 +10,6 @@ export * from "./realtime-mutable-provider"
 export * from "./realtime-server-stores"
 export * from "./realtime-state-provider"
 export * from "./realtime-state-receiver"
-export * from "./realtime-state-synchronizer"
-// export * from "./realtime-action-synchronizer.txt"
 
 export type Socket = {
 	id: string

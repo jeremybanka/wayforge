@@ -1,4 +1,8 @@
 import type {
+	MoleculeConstructor,
+	MoleculeFamilyToken,
+	MoleculeKey,
+	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -15,8 +19,6 @@ import type {
 import type { Transceiver } from "atom.io/internal"
 import { IMPLICIT, seekInStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-
-import type { MoleculeFamilyToken, MoleculeToken } from "./make-molecule"
 
 export function seekState<
 	T extends Transceiver<any>,
@@ -53,18 +55,15 @@ export function seekState<T, K extends Json.Serializable, Key extends K>(
 	key: Key,
 ): ReadableToken<T> | undefined
 
-export function seekState<
-	K extends Json.Serializable,
-	S extends { [key: string]: any },
->(
-	token: MoleculeFamilyToken<K, S, any[]>,
-	key: K,
-): MoleculeToken<K, S, any[]> | undefined
+export function seekState<M extends MoleculeConstructor>(
+	token: MoleculeFamilyToken<M>,
+	key: MoleculeKey<M>,
+): MoleculeToken<M> | undefined
 
 export function seekState(
-	token: MoleculeFamilyToken<any, any, any> | ReadableFamilyToken<any, any>,
+	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
-): MoleculeToken<any, any, any> | ReadableToken<any> | undefined {
+): MoleculeToken<any> | ReadableToken<any> | undefined {
 	if (token.type === `molecule_family`) {
 		return seekInStore(token, key, IMPLICIT.STORE)
 	}
