@@ -1,10 +1,11 @@
 import type {
+	MoleculeFamilyToken,
+	MoleculeToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	TimelineToken,
 	TransactionToken,
 } from "atom.io"
-import type { MoleculeFamilyToken, MoleculeToken } from "atom.io/immortal"
 
 import type { Store } from "./store"
 

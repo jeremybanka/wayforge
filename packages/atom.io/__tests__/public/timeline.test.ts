@@ -1,9 +1,12 @@
-import type { Logger, WritableToken } from "atom.io"
+import type { Logger, MoleculeTransactors, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	disposeState,
 	getState,
+	makeMolecule,
+	makeRootMolecule,
+	moleculeFamily,
 	redo,
 	runTransaction,
 	selector,
@@ -14,14 +17,7 @@ import {
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
-import type { MoleculeToken, MoleculeTransactors } from "atom.io/immortal"
-import {
-	makeMolecule,
-	makeRootMolecule,
-	Molecule,
-	moleculeFamily,
-	seekState,
-} from "atom.io/immortal"
+import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 

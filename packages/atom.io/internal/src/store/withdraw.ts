@@ -3,6 +3,10 @@ import type {
 	AtomFamilyToken,
 	AtomToken,
 	Func,
+	MoleculeConstructor,
+	MoleculeFamily,
+	MoleculeFamilyToken,
+	MoleculeToken,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -28,17 +32,11 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type {
-	Molecule,
-	MoleculeConstructor,
-	MoleculeFamily,
-	MoleculeFamilyToken,
-	MoleculeToken,
-} from "atom.io/immortal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 import type {
 	Atom,
+	Molecule,
 	MutableAtom,
 	ReadableState,
 	ReadonlySelector,

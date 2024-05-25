@@ -1,6 +1,9 @@
 import type {
 	AtomToken,
 	Func,
+	MoleculeFamily,
+	MoleculeFamilyToken,
+	MoleculeToken,
 	MutableAtomToken,
 	ReadableToken,
 	ReadonlySelectorToken,
@@ -10,16 +13,11 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type {
-	Molecule,
-	MoleculeFamily,
-	MoleculeFamilyToken,
-	MoleculeToken,
-} from "atom.io/immortal"
 import type { Json } from "atom.io/json"
 
 import type {
 	Atom,
+	Molecule,
 	MutableAtom,
 	ReadableState,
 	ReadonlySelector,

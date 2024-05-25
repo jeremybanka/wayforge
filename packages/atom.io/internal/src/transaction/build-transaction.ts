@@ -1,6 +1,6 @@
-import type { Func } from "atom.io"
+import { type Func, makeMoleculeInStore } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import { makeMoleculeInStore, type seekState } from "atom.io/immortal"
+import type { seekState } from "atom.io/immortal"
 
 import { Junction } from "~/packages/rel8/junction/src"
 

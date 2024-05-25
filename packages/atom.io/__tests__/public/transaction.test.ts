@@ -1,8 +1,16 @@
-import type { Logger, TransactionUpdate } from "atom.io"
+import type {
+	Logger,
+	MoleculeToken,
+	MoleculeTransactors,
+	MoleculeType,
+	TransactionUpdate,
+} from "atom.io"
 import {
 	atom,
 	atomFamily,
 	getState,
+	makeRootMolecule,
+	moleculeFamily,
 	runTransaction,
 	selector,
 	selectorFamily,
@@ -11,12 +19,7 @@ import {
 	transaction,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
-import type {
-	MoleculeToken,
-	MoleculeTransactors,
-	MoleculeType,
-} from "atom.io/immortal"
-import { makeRootMolecule, moleculeFamily, seekState } from "atom.io/immortal"
+import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"

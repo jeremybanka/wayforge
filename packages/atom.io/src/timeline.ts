@@ -1,4 +1,4 @@
-import type { MoleculeFamilyToken } from "atom.io/immortal"
+import type { MoleculeFamilyToken } from "atom.io"
 import type {
 	Timeline,
 	TimelineAtomUpdate,

@@ -1,4 +1,3 @@
-import { parseJson } from "anvl/json"
 import type {
 	MoleculeCreation,
 	MoleculeDisposal,
@@ -10,7 +9,8 @@ import {
 	disposeMolecule,
 	growMoleculeInStore,
 	makeMoleculeInStore,
-} from "atom.io/immortal"
+} from "atom.io"
+import { parseJson } from "atom.io/json"
 
 import { disposeFromStore, initFamilyMemberInStore } from "../families"
 import type { Store } from "../store"

@@ -1,5 +1,5 @@
-import type { ReadableToken } from "atom.io"
-import { disposeMolecule, type MoleculeToken } from "atom.io/immortal"
+import type { MoleculeToken, ReadableToken } from "atom.io"
+import { disposeMolecule } from "atom.io"
 import * as Internal from "atom.io/internal"
 
 export function disposeFromStore(

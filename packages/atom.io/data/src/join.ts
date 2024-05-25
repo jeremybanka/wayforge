@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
 	disposeState,
+	MoleculeFamilyToken,
+	MoleculeTransactors,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	Read,
@@ -12,25 +14,17 @@ import type {
 	Transactors,
 	Write,
 } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
-import type {
-	Molecule,
-	MoleculeFamilyToken,
-	MoleculeToken,
-	MoleculeTransactors,
-	seekState,
-} from "atom.io/immortal"
 import {
 	createMoleculeFamily,
 	growMoleculeInStore,
 	makeMoleculeInStore,
-} from "atom.io/immortal"
-import type { Store } from "atom.io/internal"
+} from "atom.io"
+import type { findState } from "atom.io/ephemeral"
+import type { Molecule, Store } from "atom.io/internal"
 import {
 	createMutableAtomFamily,
 	createRegularAtomFamily,
 	createSelectorFamily,
-	deposit,
 	disposeFromStore,
 	findInStore,
 	getFromStore,
@@ -56,6 +50,8 @@ import type {
 } from "~/packages/rel8/junction/src"
 import { Junction } from "~/packages/rel8/junction/src"
 import type * as Rel8 from "~/packages/rel8/types/src"
+
+import type { seekState } from "../../immortal/src/seek-state"
 
 function capitalize<S extends string>(string: S): Capitalize<S> {
 	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>

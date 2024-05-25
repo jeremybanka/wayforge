@@ -1,4 +1,8 @@
 import type {
+	MoleculeConstructor,
+	MoleculeFamilyToken,
+	MoleculeKey,
+	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -15,13 +19,6 @@ import type {
 import type { Transceiver } from "atom.io/internal"
 import { IMPLICIT, seekInStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-
-import type {
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
-} from "./make-molecule"
 
 export function seekState<
 	T extends Transceiver<any>,

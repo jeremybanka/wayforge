@@ -27,6 +27,7 @@ import type {
 	WritableToken,
 } from "atom.io"
 import { getJoin, type JoinToken } from "atom.io/data"
+import type { seekState } from "atom.io/immortal"
 import {
 	actUponStore,
 	arbitrary,
@@ -46,10 +47,8 @@ import {
 	type Transceiver,
 	withdraw,
 } from "atom.io/internal"
+import { Molecule } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
-
-import { Molecule } from "./molecule"
-import type { seekState } from "./seek-state"
 
 export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 	Omit<TransactorsWithRunAndEnv, `find`> & {

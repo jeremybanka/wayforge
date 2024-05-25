@@ -2,8 +2,8 @@ import type {
 	AtomToken,
 	Func,
 	Logger,
-	MoleculeCreation,
-	MoleculeDisposal,
+	MoleculeFamily,
+	MoleculeToken,
 	MutableAtomFamily,
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
@@ -14,17 +14,12 @@ import type {
 	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
-import type { Molecule } from "atom.io/immortal"
-import type { Json } from "atom.io/json"
 
-import type {
-	MoleculeFamily,
-	MoleculeToken,
-} from "~/packages/atom.io/immortal/src/make-molecule"
 import { Junction } from "~/packages/rel8/junction/src"
 
 import type {
 	Atom,
+	Molecule,
 	ReadonlySelector,
 	Tracker,
 	Transceiver,

@@ -3,6 +3,7 @@ import type {
 	FamilyMetadata,
 	Flat,
 	Func,
+	MoleculeConstructor,
 	MoleculeCreation,
 	MoleculeDisposal,
 	ReadableToken,
@@ -16,8 +17,7 @@ import type {
 	TokenType,
 	TransactionUpdate,
 } from "atom.io"
-import type { MoleculeConstructor } from "atom.io/immortal"
-import { type Json, stringifyJson } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { getUpdateToken, isMutable } from "../mutable"

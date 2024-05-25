@@ -1,14 +1,15 @@
-import type { ReadableToken, StateCreation, StateDisposal } from "atom.io"
-import type { Join } from "atom.io/data"
-import { Subject } from "atom.io/internal"
-import { stringifyJson } from "atom.io/json"
-
 import type {
 	MK,
 	MoleculeConstructor,
 	MoleculeFamilyToken,
 	MoleculeToken,
-} from "./make-molecule"
+	ReadableToken,
+	StateCreation,
+	StateDisposal,
+} from "atom.io"
+import type { Join } from "atom.io/data"
+import { Subject } from "atom.io/internal"
+import { stringifyJson } from "atom.io/json"
 
 export class Molecule<M extends MoleculeConstructor>
 	implements MoleculeToken<M>

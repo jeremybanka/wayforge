@@ -1,11 +1,11 @@
-import { disposeState } from "atom.io"
-import type { MoleculeTransactors } from "atom.io/immortal"
+import type { MoleculeTransactors } from "atom.io"
 import {
+	disposeState,
 	makeMolecule,
 	makeRootMolecule,
 	moleculeFamily,
 	useMolecule,
-} from "atom.io/immortal"
+} from "atom.io"
 import { IMPLICIT, withdraw } from "atom.io/internal"
 
 describe(`moleculeFamily`, () => {

@@ -1,6 +1,10 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
+	MoleculeConstructor,
+	MoleculeFamilyToken,
+	MoleculeKey,
+	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -16,16 +20,9 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type {
-	Molecule,
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
-} from "atom.io/immortal"
 import { type Json, stringifyJson } from "atom.io/json"
 
-import type { ReadableState } from ".."
+import type { Molecule, ReadableState } from ".."
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { deposit, type Store } from "../store"

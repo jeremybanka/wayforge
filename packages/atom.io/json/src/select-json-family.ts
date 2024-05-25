@@ -1,14 +1,12 @@
-import type * as AtomIO from "atom.io"
+import * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
 import {
 	createSelectorFamily,
 	IMPLICIT,
 	initFamilyMemberInStore,
-	isChildStore,
 	seekInStore,
 } from "atom.io/internal"
 
-import { growMoleculeInStore } from "../../immortal/src/make-molecule"
 import type { Json, JsonInterface } from "."
 import { parseJson, stringifyJson } from "."
 
@@ -54,7 +52,7 @@ export function selectJsonFamily<
 					const stringKey = stringifyJson(key)
 					const molecule = store.molecules.get(stringKey)
 					if (molecule) {
-						const atom = growMoleculeInStore(molecule, family, store)
+						const atom = AtomIO.growMoleculeInStore(molecule, family, store)
 						return transform.toJson(get(atom))
 					}
 					if (store.config.lifespan === `immortal`) {
@@ -73,7 +71,7 @@ export function selectJsonFamily<
 						const stringKey = stringifyJson(key)
 						const molecule = store.molecules.get(stringKey)
 						if (molecule) {
-							const atom = growMoleculeInStore(molecule, family, store)
+							const atom = AtomIO.growMoleculeInStore(molecule, family, store)
 							set(atom, transform.fromJson(newValue))
 						} else {
 							if (store.config.lifespan === `immortal`) {
