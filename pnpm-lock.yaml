@@ -268,8 +268,8 @@ importers:
         specifier: 3.14.2
         version: 3.14.2
       preact-render-to-string:
-        specifier: 6.5.2
-        version: 6.5.2(preact@10.22.0)
+        specifier: 6.5.3
+        version: 6.5.3(preact@10.22.0)
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -11095,13 +11095,12 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /preact-render-to-string@6.5.2(preact@10.22.0):
-    resolution: {integrity: sha512-zxmF4knV5XDk5ABm26Tvmi3Xoayedt9RmV/EuVYEm2/WVjFEYqf4w1zV7QC2bxFuSO8pu+T07KbNKeRbhMkYrw==}
+  /preact-render-to-string@6.5.3(preact@10.22.0):
+    resolution: {integrity: sha512-TWRSivNYMB3DMcFvrhwdGFkfSvPhUkd5r1q5q+1oQA21wnfEaxJe2X5U1BqLsuOA/v79sFRkg+qSeDkMHOqdvQ==}
     peerDependencies:
       preact: '>=10'
     dependencies:
       preact: 10.22.0
-      pretty-format: 3.8.0
     dev: false
 
   /preact@10.22.0:
@@ -11151,10 +11150,6 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
-
-  /pretty-format@3.8.0:
-    resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
-    dev: false
 
   /prismjs@1.27.0:
     resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}
