@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.2
+
+### Patch Changes
+
+- 4326095: ✨ `moleculeFamily` passes the `claim` transactor to the constructor of the molecule instance. This transactor allows your molecule to place itself above another molecule.
+
 ## 0.24.1
 
 ### Patch Changes
