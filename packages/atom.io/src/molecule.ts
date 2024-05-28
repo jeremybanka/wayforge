@@ -37,6 +37,8 @@ export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 		bond<T>(family: WritableFamilyToken<T, K>): WritableToken<T>
 		bond<T>(family: ReadableFamilyToken<T, K>): ReadableToken<T>
 
+		claim(below: MoleculeToken<any>, options: { exclusive: boolean })
+
 		join(joinToken: JoinToken<any, any, any, any>): void
 
 		spawn<Key extends Json.Serializable, Ctor extends MoleculeConstructor>(
