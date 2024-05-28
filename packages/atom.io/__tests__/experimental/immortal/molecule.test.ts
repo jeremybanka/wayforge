@@ -1,4 +1,4 @@
-import type { MoleculeTransactors } from "atom.io"
+import type { Logger, MoleculeTransactors } from "atom.io"
 import {
 	disposeState,
 	makeMolecule,
@@ -6,14 +6,29 @@ import {
 	moleculeFamily,
 	useMolecule,
 } from "atom.io"
-import { IMPLICIT, withdraw } from "atom.io/internal"
+import { clearStore, IMPLICIT, withdraw } from "atom.io/internal"
 
+const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
+const CHOOSE = 2
+
+let logger: Logger
+
+beforeEach(() => {
+	clearStore(IMPLICIT.STORE)
+	IMPLICIT.STORE.config.lifespan = `immortal`
+	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = IMPLICIT.STORE.logger
+	vitest.spyOn(logger, `error`)
+	vitest.spyOn(logger, `warn`)
+	vitest.spyOn(logger, `info`)
+})
 describe(`moleculeFamily`, () => {
-	test(`molecule hierarchy`, () => {
+	test(`exclusive molecule hierarchy`, () => {
 		const worldMolecule = makeRootMolecule(`world`)
 
 		const bottomMolecules = moleculeFamily({
 			key: `bottom`,
+			dependsOn: `any`,
 			new: class Bottom {},
 		})
 
@@ -23,35 +38,94 @@ describe(`moleculeFamily`, () => {
 				public constructor(
 					transactors: MoleculeTransactors<string>,
 					public key: string,
+					childKeys: string[],
 				) {
-					for (const childName of [`one`, `two`]) {
-						transactors.spawn(bottomMolecules, `${key}-bottom-${childName}`)
+					for (const childKey of childKeys) {
+						const child = transactors.seek(bottomMolecules, childKey)
+						if (child) {
+							transactors.claim(child, { exclusive: true })
+						} else {
+							transactors.spawn(bottomMolecules, childKey)
+						}
 					}
 				}
 			},
 		})
 
-		const howdyMolecule = makeMolecule(worldMolecule, topMolecules, `howdy`)
-		const howdy = withdraw(howdyMolecule, IMPLICIT.STORE)
-		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+		const aMolecule0 = makeMolecule(worldMolecule, topMolecules, `a0`, [`a`])
 
-		expect(howdy.below.size).toBe(2)
-		expect([...howdy.below.values()][0].below.size).toBe(0)
-		expect([...howdy.below.values()][1].below.size).toBe(0)
+		const aMolecule1 = makeMolecule(worldMolecule, topMolecules, `a1`, [`a`])
+
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+		const a0 = withdraw(aMolecule0, IMPLICIT.STORE)
+		const a1 = withdraw(aMolecule1, IMPLICIT.STORE)
+		expect(a0?.below.size).toBe(0)
+		expect(a1?.below.size).toBe(1)
+
+		disposeState(aMolecule0)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+
+		disposeState(aMolecule1)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+	})
+	test(`nonexclusive molecule hierarchy`, () => {
+		const worldMolecule = makeRootMolecule(`world`)
+
+		const bottomMolecules = moleculeFamily({
+			key: `bottom`,
+			dependsOn: `any`,
+			new: class Bottom {},
+		})
+
+		const topMolecules = moleculeFamily({
+			key: `top`,
+			new: class Top {
+				public constructor(
+					transactors: MoleculeTransactors<string>,
+					public key: string,
+					childKeys: string[],
+				) {
+					for (const childKey of childKeys) {
+						const child = transactors.seek(bottomMolecules, childKey)
+						if (child) {
+							transactors.claim(child, { exclusive: false })
+						} else {
+							transactors.spawn(bottomMolecules, childKey)
+						}
+					}
+				}
+			},
+		})
+
+		const abMolecule = makeMolecule(worldMolecule, topMolecules, `ab`, [
+			`a`,
+			`b`,
+		])
+		const bcMolecule = makeMolecule(worldMolecule, topMolecules, `bc`, [
+			`b`,
+			`c`,
+		])
+		const ab = withdraw(abMolecule, IMPLICIT.STORE)
+		expect(IMPLICIT.STORE.molecules.size).toBe(6)
+		expect(ab.below.size).toBe(2)
+		expect([...ab.below.values()][0].below.size).toBe(0)
+		expect([...ab.below.values()][1].below.size).toBe(0)
 
 		const world = withdraw(worldMolecule, IMPLICIT.STORE)
-		expect(world.below.size).toBe(1)
+		expect(world.below.size).toBe(2)
 
-		console.log(IMPLICIT.STORE.molecules)
-		disposeState(howdyMolecule)
-		expect(howdy.below.size).toBe(0)
-		console.log(IMPLICIT.STORE.molecules)
+		disposeState(ab)
+		expect(ab.below.size).toBe(0)
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+
+		expect(useMolecule(abMolecule)).toBeUndefined()
+
+		disposeState(bcMolecule)
+
 		expect(IMPLICIT.STORE.molecules.size).toBe(1)
 
-		expect(useMolecule(howdyMolecule)).toBeUndefined()
-
 		expect(() =>
-			makeMolecule({ type: `molecule`, key: `fake` }, topMolecules, `hello`),
+			makeMolecule({ type: `molecule`, key: `fake` }, topMolecules, `hello`, []),
 		).toThrow()
 	})
 })

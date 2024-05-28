@@ -84,6 +84,23 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				withdraw(f, store),
 				newest(store),
 			)) as MoleculeTransactors<MK<M>>[`bond`],
+		claim: (below, options) => {
+			const { exclusive } = options
+			const belowMolecule = newest(store).molecules.get(stringifyJson(below.key))
+			if (belowMolecule) {
+				if (exclusive) {
+					for (const value of belowMolecule.above.values()) {
+						value.below.delete(belowMolecule.stringKey)
+					}
+					belowMolecule.above.clear()
+					belowMolecule.above.set(molecule.stringKey, molecule)
+					molecule.below.set(belowMolecule.stringKey, belowMolecule)
+				} else {
+					belowMolecule.above.set(molecule.stringKey, molecule)
+					molecule.below.set(belowMolecule.stringKey, belowMolecule)
+				}
+			}
+		},
 		join: (joinToken: JoinToken<any, any, any, any>) => {
 			const join = getJoin(joinToken, store)
 			join.molecules.set(stringifyJson(key), molecule)

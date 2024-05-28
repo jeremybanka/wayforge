@@ -30,6 +30,21 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 		return
 	}
 	const { family } = token
+
+	for (const state of molecule.tokens.values()) {
+		disposeFromStore(state, store)
+	}
+	for (const child of molecule.below.values()) {
+		if (child.family?.dependsOn === `all`) {
+			disposeMolecule(child, store)
+		} else {
+			child.above.delete(molecule.stringKey)
+			if (child.above.size === 0) {
+				disposeMolecule(child, store)
+			}
+		}
+	}
+	molecule.below.clear()
 	if (family) {
 		const Formula = withdraw(family, store)
 		const disposalEvent: MoleculeDisposal = {
@@ -54,19 +69,6 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 		store.molecules.delete(molecule.stringKey)
 	}
 
-	for (const state of molecule.tokens.values()) {
-		disposeFromStore(state, store)
-	}
-	for (const child of molecule.below.values()) {
-		if (child.family?.dependsOn === `all`) {
-			disposeMolecule(child, store)
-		} else {
-			child.above.delete(molecule.stringKey)
-			if (child.above.size === 0) {
-				disposeMolecule(child, store)
-			}
-		}
-	}
 	for (const join of molecule.joins.values()) {
 		join.molecules.delete(molecule.stringKey)
 	}
