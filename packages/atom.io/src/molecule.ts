@@ -48,7 +48,7 @@ export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 >
 export type MoleculeConstructor = new (
 	transactors: MoleculeTransactors<any>,
-	key: Json.Serializable,
+	key: any,
 	...params: any
 ) => any
 
