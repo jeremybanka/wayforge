@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.1
+
+### Patch Changes
+
+- c38ac4c: 🏷️ The `MoleculeConstructor` type becomes more permissive to prevent a type error when setting up a `moleculeFamily`.
+
 ## 0.24.0
 
 ### Minor Changes
