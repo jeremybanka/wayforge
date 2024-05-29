@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.3
+
+### Patch Changes
+
+- aed426f: ✨ `getState` and the `get` transactor can now get the Instance for a `MoleculeToken`.
+
 ## 0.24.2
 
 ### Patch Changes
