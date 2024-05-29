@@ -1,10 +1,10 @@
 import type { Logger, MoleculeTransactors } from "atom.io"
 import {
 	disposeState,
+	getState,
 	makeMolecule,
 	makeRootMolecule,
 	moleculeFamily,
-	useMolecule,
 } from "atom.io"
 import { clearStore, IMPLICIT, withdraw } from "atom.io/internal"
 
@@ -118,7 +118,7 @@ describe(`moleculeFamily`, () => {
 		expect(ab.below.size).toBe(0)
 		expect(IMPLICIT.STORE.molecules.size).toBe(4)
 
-		expect(useMolecule(abMolecule)).toBeUndefined()
+		expect(getState(abMolecule)).toBeUndefined()
 
 		disposeState(bcMolecule)
 
