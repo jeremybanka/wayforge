@@ -7,7 +7,6 @@ import {
 	makeRootMolecule,
 	moleculeFamily,
 	setState,
-	useMolecule,
 } from "atom.io"
 import { editRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
@@ -58,7 +57,7 @@ describe(`immortal mode`, () => {
 			},
 		})
 		const myCounterMolecule = makeMolecule(world, counters, `my-counter`)
-		const myCounter = useMolecule(myCounterMolecule)
+		const myCounter = getState(myCounterMolecule)
 		if (!myCounter) {
 			throw new Error(`myCounter is undefined`)
 		}
@@ -68,7 +67,7 @@ describe(`immortal mode`, () => {
 		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Atom "count("my-counter")" not found in store "IMPLICIT_STORE".]`,
 		)
-		expect(useMolecule(myCounterMolecule)).toBeUndefined()
+		expect(getState(myCounterMolecule)).toBeUndefined()
 	})
 	test(`safe retrieval of state with seekState`, () => {
 		const countStates = atomFamily<number, string>({

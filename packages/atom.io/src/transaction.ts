@@ -1,4 +1,5 @@
 import type {
+	getState,
 	makeMolecule,
 	MoleculeConstructor,
 	MoleculeFamilyToken,
@@ -78,7 +79,7 @@ export type TransactionUpdate<F extends Func> = {
 }
 
 export type Transactors = Readonly<{
-	get: <S>(state: ReadableToken<S>) => S
+	get: typeof getState
 	set: <S, New extends S>(
 		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
@@ -90,7 +91,7 @@ export type Transactors = Readonly<{
 	) => WritableSelectorToken<J>
 }>
 export type TransactorsWithRunAndEnv = Readonly<{
-	get: <S>(state: ReadonlySelectorToken<S> | WritableToken<S>) => S
+	get: typeof getState
 	set: <S, New extends S>(
 		state: WritableToken<S>,
 		newValue: New | ((oldValue: S) => New),
