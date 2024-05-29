@@ -100,19 +100,6 @@ export function makeMolecule<M extends MoleculeConstructor>(
 	return makeMoleculeInStore(IMPLICIT.STORE, context, family, key, ...params)
 }
 
-export function useMoleculeFromStore<M extends MoleculeConstructor>(
-	token: MoleculeToken<M>,
-	store: Store,
-): InstanceType<M> | undefined {
-	const molecule = store.molecules.get(stringifyJson(token.key))
-	return molecule?.instance
-}
-export function useMolecule<M extends MoleculeConstructor>(
-	token: MoleculeToken<M>,
-): InstanceType<M> | undefined {
-	return useMoleculeFromStore(token, IMPLICIT.STORE)
-}
-
 export type MoleculeType<T extends MoleculeFamilyToken<any>> =
 	T extends MoleculeFamilyToken<infer M>
 		? M
