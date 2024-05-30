@@ -56,6 +56,9 @@ export class Squirrel {
 			fs.mkdirSync(this.baseDir)
 		}
 		fs.writeFileSync(pathToInputFile, inputStringified)
+		if (fs.existsSync(pathToOutputFile)) {
+			fs.unlinkSync(pathToOutputFile)
+		}
 		const output = await get(...args)
 		fs.writeFileSync(pathToOutputFile, JSON.stringify(output, null, `\t`))
 		return output
