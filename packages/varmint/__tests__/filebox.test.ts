@@ -39,18 +39,18 @@ describe(`Filebox`, () => {
 		const responses = squirrel.add(`responses`, async (url: string) => {
 			return fetch(url).then((response) => response.text())
 		})
-		const result = await responses.get(`home`, `http://localhost:12500`)
+		const result = await responses.for(`home`).get(`http://localhost:12500`)
 		expect(result).toBe(`The best way to predict the future is to invent it.`)
 		expect(utils.put).toHaveBeenCalledTimes(1)
 	})
 	test(`mode:read`, async () => {
 		const squirrel = new Squirrel(`read`, tempDir.name)
-		const { get } = squirrel.add(`hello`, async (url: string) => {
+		const fetcher = squirrel.add(`hello`, async (url: string) => {
 			return fetch(url).then((response) => response.text())
 		})
 		let caught: Error | undefined
 		try {
-			await get(`home`, `http://localhost:12500`)
+			await fetcher.for(`home`).get(`http://localhost:12500`)
 		} catch (thrown) {
 			if (thrown instanceof Error) {
 				caught = thrown
@@ -68,7 +68,7 @@ describe(`Filebox`, () => {
 			`"The best way to predict the future is to invent it."`,
 		)
 
-		const result = await get(`home`, `http://localhost:12500`)
+		const result = await fetcher.for(`home`).get(`http://localhost:12500`)
 		expect(result).toBe(`The best way to predict the future is to invent it.`)
 		expect(utils.put).toHaveBeenCalledTimes(0)
 	})

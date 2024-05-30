@@ -125,17 +125,18 @@ export const openAIParamsSelectors = selectorFamily<
 
 			const params = {
 				model: `gpt-4-turbo`,
+				stream: false,
 				messages,
-			}
+			} as const
 			return params
 		},
 })
 
 let openAiClient: OpenAI
-function aiComplete(
-	body: OpenAIResources.ChatCompletionCreateParamsNonStreaming,
+const aiComplete = (async (
+	body: OpenAIResources.ChatCompletionCreateParams,
 	options?: OpenAICore.RequestOptions,
-): OpenAICore.APIPromise<OpenAIResources.ChatCompletion> {
+) => {
 	if (!openAiClient) {
 		openAiClient = new OpenAI({
 			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -149,7 +150,7 @@ function aiComplete(
 		},
 		options,
 	)
-}
+}) as typeof openAiClient.chat.completions.create
 const squirrel = new Squirrel(
 	process.env.CI
 		? `read`
@@ -157,6 +158,7 @@ const squirrel = new Squirrel(
 			? `off`
 			: `read-write`,
 )
+
 const completions = squirrel.add(`openai`, aiComplete)
 
 export type AssistantMessage = {
@@ -236,7 +238,8 @@ export class Grunt<State extends Agenda>
 		const paramsLoadable = getState(findState(openAIParamsSelectors, this.id))
 		const params = await paramsLoadable
 		const assistance = completions
-			.get(`${this.id}-${this.index}`, params)
+			.for(`${this.id}-${this.index}`)
+			.get(params)
 			.then((completion) => {
 				const [text, stateUpdateRaw] =
 					completion.choices[0].message.content?.split(`AGENDA_JSON`) ?? ``
@@ -320,7 +323,8 @@ export async function evaluateAgentResponse({
 		} as const,
 	]
 	return completions
-		.get(statement, {
+		.for(statement)
+		.get({
 			model: `gpt-4-turbo`,
 			messages,
 		})
