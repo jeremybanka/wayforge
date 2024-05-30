@@ -1,6 +1,7 @@
 [
 	{
 		"model": "gpt-4-turbo",
+		"stream": false,
 		"messages": [
 			{
 				"role": "system",

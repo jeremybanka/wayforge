@@ -1,5 +1,5 @@
 ---
-"varmint": patch
+"varmint": minor
 ---
 
-🏷️ Squirrel is now implemented with a generic on the Function, which should make it more convenient to use with overloaded functions.
+🏷️ Squirrel, instead of the completions object having a `get` method, it now has a `for` method that take the key and returns an object with a `get` method. This method matches the original function signature.

@@ -65,34 +65,35 @@ export class Squirrel {
 		key: string,
 		get: F,
 	): {
-		get: (key: string, ...args: Parameters<F>) => Promise<Awaited<ReturnType<F>>>
+		for: (subKey: string) => { get: F }
 	} {
 		return {
-			get: async (
-				subKey: string,
-				...args: Parameters<F>
-			): Promise<Awaited<ReturnType<F>>> => {
-				switch (this.mode) {
-					case `off`:
-						return get(...args)
-					case `read`: {
-						return this.read<F>(key, subKey, args)
-					}
-					case `write`: {
-						return this.write(key, subKey, args, get)
-					}
-					case `read-write`: {
-						try {
+			for: (subKey: string) => ({
+				get: (async (
+					...args: Parameters<F>
+				): Promise<Awaited<ReturnType<F>>> => {
+					switch (this.mode) {
+						case `off`:
+							return get(...args)
+						case `read`: {
 							return this.read<F>(key, subKey, args)
-						} catch (thrown) {
-							if (thrown instanceof Error) {
-								return this.write(key, subKey, args, get)
+						}
+						case `write`: {
+							return this.write(key, subKey, args, get)
+						}
+						case `read-write`: {
+							try {
+								return this.read<F>(key, subKey, args)
+							} catch (thrown) {
+								if (thrown instanceof Error) {
+									return this.write(key, subKey, args, get)
+								}
+								throw thrown
 							}
-							throw thrown
 						}
 					}
-				}
-			},
+				}) as F,
+			}),
 		}
 	}
 }
