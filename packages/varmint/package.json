@@ -13,10 +13,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"module": "dist/index.js",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"scripts": {
 		"build:js": "bun build --outdir dist --target node -- src/index.ts",
 		"build:dts": "tsup",
