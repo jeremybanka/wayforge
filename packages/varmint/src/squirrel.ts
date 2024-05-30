@@ -3,13 +3,19 @@ import * as path from "node:path"
 
 export type SquirrelMode = `off` | `read-write` | `read` | `write`
 
+export type AsyncFunc = (...args: any[]) => Promise<any>
+
 export class Squirrel {
 	public constructor(
 		public mode: SquirrelMode = `off`,
 		public baseDir: string = path.join(process.cwd(), `.varmint`),
 	) {}
 
-	private read<I extends any[], O>(key: string, subKey: string, args: I): O {
+	private read<F extends AsyncFunc>(
+		key: string,
+		subKey: string,
+		args: Parameters<F>,
+	): Awaited<ReturnType<F>> {
 		const pathToInputFile = path.join(
 			this.baseDir,
 			`${key}.${subKey}.input.json`,
@@ -55,35 +61,39 @@ export class Squirrel {
 		return output
 	}
 
-	public add<I extends any[], O>(
+	public add<F extends AsyncFunc>(
 		key: string,
-		get: (...args: I) => Promise<O>,
+		get: F,
 	): {
-		get: (key: string, ...args: I) => Promise<O>
+		for: (subKey: string) => { get: F }
 	} {
 		return {
-			get: async (subKey: string, ...args: I): Promise<O> => {
-				switch (this.mode) {
-					case `off`:
-						return get(...args)
-					case `read`: {
-						return this.read<I, O>(key, subKey, args)
-					}
-					case `write`: {
-						return this.write(key, subKey, args, get)
-					}
-					case `read-write`: {
-						try {
-							return this.read<I, O>(key, subKey, args)
-						} catch (thrown) {
-							if (thrown instanceof Error) {
-								return this.write(key, subKey, args, get)
+			for: (subKey: string) => ({
+				get: (async (
+					...args: Parameters<F>
+				): Promise<Awaited<ReturnType<F>>> => {
+					switch (this.mode) {
+						case `off`:
+							return get(...args)
+						case `read`: {
+							return this.read<F>(key, subKey, args)
+						}
+						case `write`: {
+							return this.write(key, subKey, args, get)
+						}
+						case `read-write`: {
+							try {
+								return this.read<F>(key, subKey, args)
+							} catch (thrown) {
+								if (thrown instanceof Error) {
+									return this.write(key, subKey, args, get)
+								}
+								throw thrown
 							}
-							throw thrown
 						}
 					}
-				}
-			},
+				}) as F,
+			}),
 		}
 	}
 }
