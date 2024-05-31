@@ -6,6 +6,8 @@ export type SquirrelMode = `off` | `read-write` | `read` | `write`
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
 export class Squirrel {
+	public filesTouched = new Map<string, Set<string>>()
+
 	public constructor(
 		public mode: SquirrelMode = `off`,
 		public baseDir: string = path.join(process.cwd(), `.varmint`),
@@ -18,7 +20,7 @@ export class Squirrel {
 	): Awaited<ReturnType<F>> {
 		const pathToInputFile = path.join(
 			this.baseDir,
-			`${key}.${subKey}.input.json`,
+			`${key}/${subKey}.input.json`,
 		)
 		if (!fs.existsSync(pathToInputFile)) {
 			throw new Error(`Squirrel: input file for key "${key}" does not exist`)
@@ -32,7 +34,7 @@ export class Squirrel {
 		}
 		const pathToOutputFile = path.join(
 			this.baseDir,
-			`${key}.${subKey}.output.json`,
+			`${key}/${subKey}.output.json`,
 		)
 		return JSON.parse(fs.readFileSync(pathToOutputFile, `utf-8`))
 	}
@@ -43,17 +45,15 @@ export class Squirrel {
 		args: I,
 		get: (...args: I) => Promise<O>,
 	): Promise<O> {
-		const pathToInputFile = path.join(
-			this.baseDir,
-			`${key}.${subKey}.input.json`,
-		)
-		const pathToOutputFile = path.join(
-			this.baseDir,
-			`${key}.${subKey}.output.json`,
-		)
+		const subDir = path.join(this.baseDir, key)
+		const pathToInputFile = path.join(subDir, `${subKey}.input.json`)
+		const pathToOutputFile = path.join(subDir, `${subKey}.output.json`)
 		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (!fs.existsSync(this.baseDir)) {
 			fs.mkdirSync(this.baseDir)
+		}
+		if (!fs.existsSync(subDir)) {
+			fs.mkdirSync(subDir)
 		}
 		fs.writeFileSync(pathToInputFile, inputStringified)
 		if (fs.existsSync(pathToOutputFile)) {
@@ -71,32 +71,51 @@ export class Squirrel {
 		for: (subKey: string) => { get: F }
 	} {
 		return {
-			for: (subKey: string) => ({
-				get: (async (
-					...args: Parameters<F>
-				): Promise<Awaited<ReturnType<F>>> => {
-					switch (this.mode) {
-						case `off`:
-							return get(...args)
-						case `read`: {
-							return this.read<F>(key, subKey, args)
+			for: (subKey: string) => {
+				this.filesTouched.set(key, new Set())
+				return {
+					get: (async (
+						...args: Parameters<F>
+					): Promise<Awaited<ReturnType<F>>> => {
+						if (this.mode !== `off`) {
+							this.filesTouched.get(key)?.add(subKey)
 						}
-						case `write`: {
-							return this.write(key, subKey, args, get)
-						}
-						case `read-write`: {
-							try {
+						switch (this.mode) {
+							case `off`:
+								return get(...args)
+							case `read`: {
 								return this.read<F>(key, subKey, args)
-							} catch (thrown) {
-								if (thrown instanceof Error) {
-									return this.write(key, subKey, args, get)
+							}
+							case `write`: {
+								return this.write(key, subKey, args, get)
+							}
+							case `read-write`: {
+								try {
+									return this.read<F>(key, subKey, args)
+								} catch (thrown) {
+									if (thrown instanceof Error) {
+										return this.write(key, subKey, args, get)
+									}
+									throw thrown
 								}
-								throw thrown
 							}
 						}
-					}
-				}) as F,
-			}),
+					}) as F,
+				}
+			},
+		}
+	}
+
+	public flush(): void {
+		for (const [key, filesTouched] of this.filesTouched.entries()) {
+			const subDir = path.join(this.baseDir, key)
+			const subDirFiles = fs.readdirSync(subDir)
+			for (const subDirFile of subDirFiles) {
+				const [subKey] = subDirFile.split(`.`)
+				if (!filesTouched.has(subKey)) {
+					fs.unlinkSync(path.join(subDir, subDirFile))
+				}
+			}
 		}
 	}
 }
