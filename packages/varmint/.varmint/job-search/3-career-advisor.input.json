@@ -1,14 +1,15 @@
 [
 	{
 		"model": "gpt-4-turbo",
+		"stream": false,
 		"messages": [
 			{
 				"role": "user",
-				"content": "Hello! I'm Barton Broadbelt, a uniquely proportioned individual on the lookout for new career opportunities. Excited to explore avenues where my distinct dimensions can be an asset!\n\n"
+				"content": "Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.  \n\n"
 			},
 			{
 				"role": "system",
-				"content": "You are a career advisor."
+				"content": "You are a career advisor.\n\nKeep messages short."
 			},
 			{
 				"role": "system",

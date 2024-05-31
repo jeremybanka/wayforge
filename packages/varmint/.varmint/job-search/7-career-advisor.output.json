@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9V1n6B1HLnCpXsWSOnVC2E3O2ztuU",
+	"object": "chat.completion",
+	"created": 1717182080,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "It's fantastic that you're focusing on preparation! Alongside researching the company and understanding the job role, tailor your resume and cover letter to highlight your skills and experiences that align closely with the job description. Also, practice a confident, professional demeanor for the interview. Do you have specific questions about these preparation steps or any other concerns regarding your interview?\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 370,
+		"completion_tokens": 89,
+		"total_tokens": 459
+	},
+	"system_fingerprint": "fp_31a6c0accf"
+}

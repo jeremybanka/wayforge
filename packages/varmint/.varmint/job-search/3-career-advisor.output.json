@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9V1mqcH5BboBnmTrJ5b985nelF6B8",
+	"object": "chat.completion",
+	"created": 1717182064,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Hello, Max Voluminous! That's quite a distinctive name you have there—it definitely stands out in a memorable way! How can I assist you with your job interview preparations today?\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": true }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 140,
+		"completion_tokens": 55,
+		"total_tokens": 195
+	},
+	"system_fingerprint": "fp_31a6c0accf"
+}

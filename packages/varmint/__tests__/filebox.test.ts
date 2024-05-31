@@ -59,12 +59,13 @@ describe(`Filebox`, () => {
 			expect(caught).toBeInstanceOf(Error)
 			expect(utils.put).toHaveBeenCalledTimes(0)
 		}
+		fs.mkdirSync(path.join(tempDir.name, `hello`))
 		fs.writeFileSync(
-			path.join(tempDir.name, `hello.home.input.json`),
+			path.join(tempDir.name, `hello/home.input.json`),
 			`[\n\t"http://localhost:12500"\n]`,
 		)
 		fs.writeFileSync(
-			path.join(tempDir.name, `hello.home.output.json`),
+			path.join(tempDir.name, `hello/home.output.json`),
 			`"The best way to predict the future is to invent it."`,
 		)
 

@@ -5,15 +5,15 @@
 		"messages": [
 			{
 				"role": "user",
-				"content": "Hello! I'm Sam Widebeam, at your service. Ready to stretch my boundaries and reach new heights in my career journey.\n\n"
+				"content": "Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.  \n\n"
 			},
 			{
 				"role": "assistant",
-				"content": "Hello Sam Widebeam! That’s quite a unique and memorable name you’ve got. It definitely stands out in a crowd! How can I assist you in expanding your career horizons today?\n\n"
+				"content": "Hello, Max Voluminous! That's quite a distinctive name you have there—it definitely stands out in a memorable way! How can I assist you with your job interview preparations today?\n\n"
 			},
 			{
 				"role": "user",
-				"content": "Thanks for the encouragement! I'm gearing up for a job interview and really want to make a strong impression. Any tips on how I can ace it?\n\n"
+				"content": "Great to meet you, Max! Preparing for a job interview can be quite the task. Can you tell me more about the position you're interviewing for and what aspects of the interview process you're most concerned about? This will help me give you the most relevant advice.\n\n"
 			},
 			{
 				"role": "system",

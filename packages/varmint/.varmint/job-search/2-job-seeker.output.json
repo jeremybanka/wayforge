@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9V1mnMUrpkgL0WeN3Yua8RGxkr1C8",
+	"object": "chat.completion",
+	"created": 1717182061,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.  \n\nAGENDA_JSON{ \"Introduce yourself, taking creative liberties with your name.\": \"Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.\" }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 189,
+		"completion_tokens": 69,
+		"total_tokens": 258
+	},
+	"system_fingerprint": "fp_31a6c0accf"
+}

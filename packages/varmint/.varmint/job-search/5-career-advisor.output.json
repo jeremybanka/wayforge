@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9V1mx2elCQdc8uHcbdX5TcjD0LWwO",
+	"object": "chat.completion",
+	"created": 1717182071,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "It seems there might have been a mix-up in the conversation flow. To assist you effectively, could you please tell me about the position you're applying for and any specific areas of the interview process where you might need guidance? This will help me provide the most appropriate and useful advice.\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 243,
+		"completion_tokens": 76,
+		"total_tokens": 319
+	},
+	"system_fingerprint": "fp_31a6c0accf"
+}
