@@ -159,7 +159,7 @@ const squirrel = new Squirrel(
 			: `read-write`,
 )
 
-const completions = squirrel.add(`openai`, aiComplete)
+// const completions = squirrel.add(`openai`, aiComplete)
 
 export type AssistantMessage = {
 	role: `assistant`
@@ -194,12 +194,13 @@ export type Agent<State = null, Update = null> = {
 export class Grunt<State extends Agenda>
 	implements Agent<State, Partial<State>>
 {
-	public index = 0
+	private completions = squirrel.add(this.testId ?? this.id, aiComplete)
 	public constructor(
 		public id: string,
 		role: string,
 		initialState?: State,
 		initialConversation?: Message[],
+		public testId?: string,
 	) {
 		setState(findState(orientationAtoms, this.id), role)
 		if (initialConversation) {
@@ -237,8 +238,8 @@ export class Grunt<State extends Agenda>
 		const agendaAtom = findState(agendaAtoms, this.id)
 		const paramsLoadable = getState(findState(openAIParamsSelectors, this.id))
 		const params = await paramsLoadable
-		const assistance = completions
-			.for(`${this.id}-${this.index}`)
+		const assistance = this.completions
+			.for(`${(await this.conversation).length.toString()}-${this.id}`)
 			.get(params)
 			.then((completion) => {
 				const [text, stateUpdateRaw] =
@@ -255,7 +256,6 @@ export class Grunt<State extends Agenda>
 					},
 				} as const
 			})
-		this.index++
 		setState(
 			messageAtom,
 			assistance.then(({ message }) => message),
@@ -285,6 +285,10 @@ export class Grunt<State extends Agenda>
 			content,
 		})
 	}
+
+	public flushTestFiles(): void {
+		this.completions.flush()
+	}
 }
 
 export type TestTools = {
@@ -299,10 +303,12 @@ export const evaluationSchema = z.object({
 export type Evaluation = z.infer<typeof evaluationSchema>
 
 export type EvaluationOptions = {
+	testId: string
 	exchange: (Message | SystemMessage | UserMessage)[]
 	statement: string
 }
 export async function evaluateAgentResponse({
+	testId,
 	exchange,
 	statement,
 }: EvaluationOptions): Promise<Evaluation> {
@@ -322,6 +328,7 @@ export async function evaluateAgentResponse({
 			].join(`\n\n`),
 		} as const,
 	]
+	const completions = squirrel.add(testId, aiComplete)
 	return completions
 		.for(statement)
 		.get({

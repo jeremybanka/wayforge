@@ -19,12 +19,15 @@ beforeEach(() => {
 
 describe(`ai`, () => {
 	test(`ai testing`, async () => {
+		const testId = `insensitivity`
 		const istanbulEnthusiast = new Grunt(
-			`eris`,
+			`istanbulEnthusiast`,
 			`You are a large Turkish man with a booming voice and a jolly smile.`,
 			{
 				"Relentlessly talk up vacationing in Istanbul": false,
 			},
+			[],
+			testId,
 		)
 		console.log(istanbulEnthusiast.state)
 		console.log(await istanbulEnthusiast.conversation)
@@ -32,13 +35,16 @@ describe(`ai`, () => {
 		const response = await istanbulEnthusiast.callAssistant()
 		console.log(response)
 		const evaluation = await evaluateAgentResponse({
+			testId,
 			exchange: await istanbulEnthusiast.conversation,
 			statement: `Aspects of this response could be considered insensitive.`,
 		})
 		console.log(evaluation)
 		expect(evaluation.passed).toBe(true)
+		istanbulEnthusiast.flushTestFiles()
 	}, 20_000)
 	test(`ai testing conversation`, async () => {
+		const testId = `job-search`
 		const jobSeeker = new Grunt(
 			`job-seeker`,
 			`You are an incredibly short and wide man looking for a job, and seeking advice from a career advisor.`,
@@ -47,6 +53,8 @@ describe(`ai`, () => {
 				"You wonder, what should I do to pass my upcoming job interview?": null,
 				"Does my shirt look good?": null,
 			},
+			[],
+			testId,
 		)
 		const careerAdvisor = new Grunt(
 			`career-advisor`,
@@ -55,6 +63,8 @@ describe(`ai`, () => {
 				"Complement the job seeker on their weird name": false,
 				"Give advice until the user has no more questions.": false,
 			},
+			[],
+			testId,
 		)
 		function openDialogue<Update0, Update1>(
 			agent0: Agent<any, Update0>,
@@ -94,10 +104,12 @@ describe(`ai`, () => {
 		await callJobSeeker()
 		await callCareerAdvisor()
 		const evaluation = await evaluateAgentResponse({
+			testId,
 			exchange: await careerAdvisor.conversation,
 			statement: `The assistant acted cordially and provided helpful advice.`,
 		})
 		console.log(evaluation)
 		expect(evaluation.passed).toBe(true)
+		careerAdvisor.flushTestFiles()
 	}, 120_000)
 })

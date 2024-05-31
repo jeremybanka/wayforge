@@ -1,0 +1,23 @@
+{
+	"id": "chatcmpl-9V1nAMHwX2XwKR9BgeLX4Za2nmo02",
+	"object": "chat.completion",
+	"created": 1717182084,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "{\n\t\"passed\": true,\n\t\"message\": \"The assistant's responses were polite, addressed the user by their chosen name, and focused on offering meaningful advice for job interview preparation. The overall interaction maintained a helpful and supportive tone.\"\n}"
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 538,
+		"completion_tokens": 49,
+		"total_tokens": 587
+	},
+	"system_fingerprint": "fp_31a6c0accf"
+}
