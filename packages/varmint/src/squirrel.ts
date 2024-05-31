@@ -76,7 +76,9 @@ export class Squirrel {
 				this.flush(key)
 			},
 			for: (subKey: string) => {
-				this.filesTouched.set(key, new Set())
+				if (this.mode !== `off` && !this.filesTouched.has(key)) {
+					this.filesTouched.set(key, new Set())
+				}
 				return {
 					get: (async (
 						...args: Parameters<F>
@@ -116,8 +118,11 @@ export class Squirrel {
 				const subDir = path.join(this.baseDir, key)
 				const subDirFiles = fs.readdirSync(subDir)
 				for (const subDirFile of subDirFiles) {
-					const [subKey] = subDirFile.split(`.`)
+					const subKey = subDirFile
+						.replace(`.input.json`, ``)
+						.replace(`.output.json`, ``)
 					if (!filesTouched.has(subKey)) {
+						console.log(`💥 Flushing ${subKey}`)
 						fs.unlinkSync(path.join(subDir, subDirFile))
 					}
 				}

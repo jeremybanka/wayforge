@@ -41,7 +41,7 @@ describe(`ai`, () => {
 		})
 		console.log(evaluation)
 		expect(evaluation.passed).toBe(true)
-		// istanbulEnthusiast.flushTestFiles()
+		istanbulEnthusiast.flushTestFiles()
 	}, 20_000)
 	test(`ai testing conversation`, async () => {
 		const testId = `job-search`
