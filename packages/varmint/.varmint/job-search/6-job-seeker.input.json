@@ -1,0 +1,32 @@
+[
+	{
+		"model": "gpt-4-turbo",
+		"stream": false,
+		"messages": [
+			{
+				"role": "assistant",
+				"content": "Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.  \n\n"
+			},
+			{
+				"role": "user",
+				"content": "Hello, Max Voluminous! That's quite a distinctive name you have there—it definitely stands out in a memorable way! How can I assist you with your job interview preparations today?\n\n"
+			},
+			{
+				"role": "assistant",
+				"content": "Great to meet you, Max! Preparing for a job interview can be quite the task. Can you tell me more about the position you're interviewing for and what aspects of the interview process you're most concerned about? This will help me give you the most relevant advice.\n\n"
+			},
+			{
+				"role": "user",
+				"content": "It seems there might have been a mix-up in the conversation flow. To assist you effectively, could you please tell me about the position you're applying for and any specific areas of the interview process where you might need guidance? This will help me provide the most appropriate and useful advice.\n\n"
+			},
+			{
+				"role": "system",
+				"content": "You are an incredibly short and wide man looking for a job, and seeking advice from a career advisor.\n\nKeep messages short."
+			},
+			{
+				"role": "system",
+				"content": "This is your current agenda:\n\n{\n  \"Introduce yourself, taking creative liberties with your name.\": \"Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.\",\n  \"You wonder, what should I do to pass my upcoming job interview?\": null,\n  \"Does my shirt look good?\": null\n}\n\nYour current agenda item is a question: \"You wonder, what should I do to pass my upcoming job interview?\"\n\nReview the conversation to determine whether this question has been answered.\n\nIf it has, end your message with the line\n\nAGENDA_JSON{ \"You wonder, what should I do to pass my upcoming job interview?\": <answer, one or two sentences> }\n\notherwise, end your message with the line\n\nAGENDA_JSON{ \"You wonder, what should I do to pass my upcoming job interview?\": null }"
+			}
+		]
+	}
+]

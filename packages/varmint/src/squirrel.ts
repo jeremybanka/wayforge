@@ -68,9 +68,13 @@ export class Squirrel {
 		key: string,
 		get: F,
 	): {
+		flush: () => void
 		for: (subKey: string) => { get: F }
 	} {
 		return {
+			flush: () => {
+				this.flush(key)
+			},
 			for: (subKey: string) => {
 				this.filesTouched.set(key, new Set())
 				return {
@@ -106,14 +110,16 @@ export class Squirrel {
 		}
 	}
 
-	public flush(): void {
+	public flush(...args: string[]): void {
 		for (const [key, filesTouched] of this.filesTouched.entries()) {
-			const subDir = path.join(this.baseDir, key)
-			const subDirFiles = fs.readdirSync(subDir)
-			for (const subDirFile of subDirFiles) {
-				const [subKey] = subDirFile.split(`.`)
-				if (!filesTouched.has(subKey)) {
-					fs.unlinkSync(path.join(subDir, subDirFile))
+			if (args.length === 0 || args.includes(key)) {
+				const subDir = path.join(this.baseDir, key)
+				const subDirFiles = fs.readdirSync(subDir)
+				for (const subDirFile of subDirFiles) {
+					const [subKey] = subDirFile.split(`.`)
+					if (!filesTouched.has(subKey)) {
+						fs.unlinkSync(path.join(subDir, subDirFile))
+					}
 				}
 			}
 		}

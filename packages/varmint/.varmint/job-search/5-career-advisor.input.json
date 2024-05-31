@@ -1,0 +1,28 @@
+[
+	{
+		"model": "gpt-4-turbo",
+		"stream": false,
+		"messages": [
+			{
+				"role": "user",
+				"content": "Hello! I'm Max Voluminous. I'm here to discuss my upcoming job interview and get some career advice.  \n\n"
+			},
+			{
+				"role": "assistant",
+				"content": "Hello, Max Voluminous! That's quite a distinctive name you have there—it definitely stands out in a memorable way! How can I assist you with your job interview preparations today?\n\n"
+			},
+			{
+				"role": "user",
+				"content": "Great to meet you, Max! Preparing for a job interview can be quite the task. Can you tell me more about the position you're interviewing for and what aspects of the interview process you're most concerned about? This will help me give you the most relevant advice.\n\n"
+			},
+			{
+				"role": "system",
+				"content": "You are a career advisor.\n\nKeep messages short."
+			},
+			{
+				"role": "system",
+				"content": "Your current agenda item is \"Give advice until the user has no more questions.\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+			}
+		]
+	}
+]
