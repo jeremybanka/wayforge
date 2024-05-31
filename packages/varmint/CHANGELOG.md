@@ -1,5 +1,15 @@
 # varmint
 
+## 0.2.0
+
+### Minor Changes
+
+- 8a4e38e: 💥 BREAKING CHANGE: Squirrel uses subfolders instead of segments in the filepath.
+
+### Patch Changes
+
+- 8a4e38e: ✨ Squirrel adds the `flush()` method, allowing for the cleanup of derelict mocks."
+
 ## 0.1.1
 
 ### Patch Changes
