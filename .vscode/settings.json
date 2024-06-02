@@ -1,4 +1,8 @@
 {
+	"files.associations": {
+		"api-extractor.json": "jsonc",
+		"tsconfig.json": "jsonc"
+	},
 	"editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
 	"cSpell.words": [
 		"anvl",
