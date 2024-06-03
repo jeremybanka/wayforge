@@ -1,0 +1,59 @@
+[
+	{
+		"name": "AtomicPropertyDeclaration",
+		"type": "composite",
+		"kind": "class",
+		"sections": [
+			{
+				"type": "section",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "plainText",
+								"text": "Here a class is declared with a single atomic property."
+							},
+							{
+								"type": "softBreak"
+							}
+						]
+					}
+				]
+			}
+		],
+		"modifierTags": [],
+		"blocks": [],
+		"properties": [
+			{
+				"name": "hello",
+				"type": "atomic",
+				"kind": "type",
+				"sections": [
+					{
+						"type": "section",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "softBreak"
+									},
+									{
+										"type": "plainText",
+										"text": "The property is called \"hello\"."
+									},
+									{
+										"type": "softBreak"
+									}
+								]
+							}
+						]
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": []
+			}
+		]
+	}
+]

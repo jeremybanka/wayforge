@@ -635,7 +635,7 @@ importers:
     devDependencies:
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -658,6 +658,9 @@ importers:
         specifier: '>=2.0.0'
         version: 2.0.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
+      '@microsoft/api-extractor':
+        specifier: 7.46.2
+        version: 7.46.2(@types/node@20.14.9)
       '@testing-library/react':
         specifier: 16.0.0
         version: 16.0.0(@testing-library/dom@10.0.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -694,6 +697,9 @@ importers:
       '@vitest/ui':
         specifier: 1.6.0
         version: 1.6.0(vitest@1.6.0)
+      atom.io:
+        specifier: workspace:*
+        version: 'link:'
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
@@ -747,7 +753,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -760,6 +766,9 @@ importers:
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@types/node@20.14.9)(@vitest/ui@1.6.0)(happy-dom@14.12.3)(jsdom@24.1.0)(lightningcss@1.25.1)(sass@1.77.6)(terser@5.30.3)
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/break-check:
     dependencies:
@@ -793,7 +802,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
 
   packages/comline:
     dependencies:
@@ -821,7 +830,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@types/node@20.14.9)(@vitest/ui@1.6.0)(happy-dom@14.12.3)(jsdom@24.1.0)(lightningcss@1.25.1)(sass@1.77.6)(terser@5.30.3)
@@ -897,7 +906,7 @@ importers:
         version: 1.77.6
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -925,7 +934,7 @@ importers:
         version: 20.14.9
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -946,7 +955,7 @@ importers:
         version: 20.14.9
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -974,7 +983,7 @@ importers:
     devDependencies:
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -995,7 +1004,7 @@ importers:
         version: 8.2.2
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -1038,7 +1047,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -1087,7 +1096,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -1120,7 +1129,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
+        version: 8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3)
       vite:
         specifier: 5.3.2
         version: 5.3.2(@types/node@20.14.9)(lightningcss@1.25.1)(sass@1.77.6)(terser@5.30.3)
@@ -2869,15 +2878,28 @@ packages:
   '@microsoft/api-extractor-model@7.28.13':
     resolution: {integrity: sha512-39v/JyldX4MS9uzHcdfmjjfS6cYGAoXV+io8B5a338pkHiSt+gy2eXQ0Q7cGFJ7quSa1VqqlMdlPrB6sLR/cAw==}
 
+  '@microsoft/api-extractor-model@7.29.2':
+    resolution: {integrity: sha512-hAYajOjQan3uslhKJRwvvHIdLJ+ZByKqdSsJ/dgHFxPtEbdKpzMDO8zuW4K5gkSMYl5D0LbNwxkhxr51P2zsmw==}
+
   '@microsoft/api-extractor@7.43.0':
     resolution: {integrity: sha512-GFhTcJpB+MI6FhvXEI9b2K0snulNLWHqC/BbcJtyNYcKUiw7l3Lgis5ApsYncJ0leALX7/of4XfmXk+maT111w==}
+    hasBin: true
+
+  '@microsoft/api-extractor@7.46.2':
+    resolution: {integrity: sha512-s3HjYoXKMVNmYO5rQl+z7MpRngGg9OugWgmGMIBlAeOaE0Lk7/CKX+UYt7Mk9pihV8DZWg/qCf+4Yega9IZMmQ==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.16.2':
     resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}
 
+  '@microsoft/tsdoc-config@0.17.0':
+    resolution: {integrity: sha512-v/EYRXnCAIHxOHW+Plb6OWuUoMotxTN0GLatnpOb1xq0KuTNw/WI3pamJx/UbsoJP5k9MCw1QxvvhPcF9pH3Zg==}
+
   '@microsoft/tsdoc@0.14.2':
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
+
+  '@microsoft/tsdoc@0.15.0':
+    resolution: {integrity: sha512-HZpPoABogPvjeJOdzCOSJsXeL/SMCBgBZMVC3X3d7YYp2gf31MfxhUoYUNwf1ERPJOnQc0wkFn9trqI6ZEdZuA==}
 
   '@motionone/animation@10.17.0':
     resolution: {integrity: sha512-ANfIN9+iq1kGgsZxs+Nz96uiNcPLGTXwfNo2Xz/fcJXniPYpaz/Uyrfa+7I5BPLxCP82sh7quVDudf1GABqHbg==}
@@ -3133,6 +3155,14 @@ packages:
       '@types/node':
         optional: true
 
+  '@rushstack/node-core-library@5.4.1':
+    resolution: {integrity: sha512-WNnwdS8r9NZ/2K3u29tNoSRldscFa7SxU0RT+82B6Dy2I4Hl2MeCSKm4EXLXPKeNzLGvJ1cqbUhTLviSF8E6iA==}
+    peerDependencies:
+      '@types/node': '*'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   '@rushstack/rig-package@0.5.2':
     resolution: {integrity: sha512-mUDecIJeH3yYGZs2a48k+pbhM6JYwWlgjs2Ca5f2n1G2/kgdgP9D/07oglEGf6mRyXEnazhEENeYTSNDRCwdqA==}
 
@@ -3144,8 +3174,19 @@ packages:
       '@types/node':
         optional: true
 
+  '@rushstack/terminal@0.13.0':
+    resolution: {integrity: sha512-Ou44Q2s81BqJu3dpYedAX54am9vn245F0HzqVrfJCMQk5pGgoKKOBOjkbfZC9QKcGNaECh6pwH2s5noJt7X6ew==}
+    peerDependencies:
+      '@types/node': '*'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   '@rushstack/ts-command-line@4.19.1':
     resolution: {integrity: sha512-J7H768dgcpG60d7skZ5uSSwyCZs/S2HrWP1Ds8d1qYAyaaeJmpmmLr9BVw97RjFzmQPOYnoXcKA4GkqDCkduQg==}
+
+  '@rushstack/ts-command-line@4.22.0':
+    resolution: {integrity: sha512-Qj28t6MO3HRgAZ72FDeFsrpdE6wBWxF3VENgvrXh7JF2qIT+CrXiOJIesW80VFZB9QwObSpkB1ilx794fGQg6g==}
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -3723,6 +3764,22 @@ packages:
     resolution: {integrity: sha512-5GG/5IbQQpC9FpkRGsSvZI5QYeSCzlJHdpBQntCsuTOxhKD8lqKhrleg2Yi7yvMIf82Ycmmqln9U8V9qwEiJew==}
     engines: {node: '>= 8.0.0'}
 
+  ajv-draft-04@1.0.0:
+    resolution: {integrity: sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw==}
+    peerDependencies:
+      ajv: ^8.5.0
+    peerDependenciesMeta:
+      ajv:
+        optional: true
+
+  ajv-formats@3.0.1:
+    resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}
+    peerDependencies:
+      ajv: ^8.0.0
+    peerDependenciesMeta:
+      ajv:
+        optional: true
+
   ajv-keywords@3.5.2:
     resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
     peerDependencies:
@@ -3733,6 +3790,9 @@ packages:
 
   ajv@8.12.0:
     resolution: {integrity: sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==}
+
+  ajv@8.13.0:
+    resolution: {integrity: sha512-PRA911Blj99jR5RMeTunVbNXMF6Lp4vZXnk5GQjcnUWUTsrXtekg/pnmFFI2u/I36Y/2bITGS30GZCXei6uNkA==}
 
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -9293,6 +9353,14 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
+  '@microsoft/api-extractor-model@7.29.2(@types/node@20.14.9)':
+    dependencies:
+      '@microsoft/tsdoc': 0.15.0
+      '@microsoft/tsdoc-config': 0.17.0
+      '@rushstack/node-core-library': 5.4.1(@types/node@20.14.9)
+    transitivePeerDependencies:
+      - '@types/node'
+
   '@microsoft/api-extractor@7.43.0(@types/node@20.14.9)':
     dependencies:
       '@microsoft/api-extractor-model': 7.28.13(@types/node@20.14.9)
@@ -9311,6 +9379,24 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
+  '@microsoft/api-extractor@7.46.2(@types/node@20.14.9)':
+    dependencies:
+      '@microsoft/api-extractor-model': 7.29.2(@types/node@20.14.9)
+      '@microsoft/tsdoc': 0.15.0
+      '@microsoft/tsdoc-config': 0.17.0
+      '@rushstack/node-core-library': 5.4.1(@types/node@20.14.9)
+      '@rushstack/rig-package': 0.5.2
+      '@rushstack/terminal': 0.13.0(@types/node@20.14.9)
+      '@rushstack/ts-command-line': 4.22.0(@types/node@20.14.9)
+      lodash: 4.17.21
+      minimatch: 3.0.8
+      resolve: 1.22.8
+      semver: 7.5.4
+      source-map: 0.6.1
+      typescript: 5.4.2
+    transitivePeerDependencies:
+      - '@types/node'
+
   '@microsoft/tsdoc-config@0.16.2':
     dependencies:
       '@microsoft/tsdoc': 0.14.2
@@ -9318,7 +9404,16 @@ snapshots:
       jju: 1.4.0
       resolve: 1.19.0
 
+  '@microsoft/tsdoc-config@0.17.0':
+    dependencies:
+      '@microsoft/tsdoc': 0.15.0
+      ajv: 8.12.0
+      jju: 1.4.0
+      resolve: 1.22.8
+
   '@microsoft/tsdoc@0.14.2': {}
+
+  '@microsoft/tsdoc@0.15.0': {}
 
   '@motionone/animation@10.17.0':
     dependencies:
@@ -9560,6 +9655,19 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.9
 
+  '@rushstack/node-core-library@5.4.1(@types/node@20.14.9)':
+    dependencies:
+      ajv: 8.13.0
+      ajv-draft-04: 1.0.0(ajv@8.13.0)
+      ajv-formats: 3.0.1(ajv@8.13.0)
+      fs-extra: 7.0.1
+      import-lazy: 4.0.0
+      jju: 1.4.0
+      resolve: 1.22.8
+      semver: 7.5.4
+    optionalDependencies:
+      '@types/node': 20.14.9
+
   '@rushstack/rig-package@0.5.2':
     dependencies:
       resolve: 1.22.8
@@ -9572,9 +9680,25 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.9
 
+  '@rushstack/terminal@0.13.0(@types/node@20.14.9)':
+    dependencies:
+      '@rushstack/node-core-library': 5.4.1(@types/node@20.14.9)
+      supports-color: 8.1.1
+    optionalDependencies:
+      '@types/node': 20.14.9
+
   '@rushstack/ts-command-line@4.19.1(@types/node@20.14.9)':
     dependencies:
       '@rushstack/terminal': 0.10.0(@types/node@20.14.9)
+      '@types/argparse': 1.0.38
+      argparse: 1.0.10
+      string-argv: 0.3.2
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@rushstack/ts-command-line@4.22.0(@types/node@20.14.9)':
+    dependencies:
+      '@rushstack/terminal': 0.13.0(@types/node@20.14.9)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -10355,6 +10479,14 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
+  ajv-draft-04@1.0.0(ajv@8.13.0):
+    optionalDependencies:
+      ajv: 8.13.0
+
+  ajv-formats@3.0.1(ajv@8.13.0):
+    optionalDependencies:
+      ajv: 8.13.0
+
   ajv-keywords@3.5.2(ajv@6.12.6):
     dependencies:
       ajv: 6.12.6
@@ -10367,6 +10499,13 @@ snapshots:
       uri-js: 4.4.1
 
   ajv@8.12.0:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
+      uri-js: 4.4.1
+
+  ajv@8.13.0:
     dependencies:
       fast-deep-equal: 3.1.3
       json-schema-traverse: 1.0.0
@@ -14215,12 +14354,12 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  tsup@8.1.0(@microsoft/api-extractor@7.43.0(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3):
+  tsup@8.1.0(@microsoft/api-extractor@7.46.2(@types/node@20.14.9))(postcss@8.4.38)(typescript@5.5.3):
     dependencies:
       bundle-require: 4.0.2(esbuild@0.21.4)
       cac: 6.7.14
       chokidar: 3.6.0
-      debug: 4.3.4
+      debug: 4.3.5(supports-color@5.5.0)
       esbuild: 0.21.4
       execa: 5.1.1
       globby: 11.1.0
@@ -14232,7 +14371,7 @@ snapshots:
       sucrase: 3.35.0
       tree-kill: 1.2.2
     optionalDependencies:
-      '@microsoft/api-extractor': 7.43.0(@types/node@20.14.9)
+      '@microsoft/api-extractor': 7.46.2(@types/node@20.14.9)
       postcss: 8.4.38
       typescript: 5.5.3
     transitivePeerDependencies:
@@ -14513,12 +14652,12 @@ snapshots:
       '@vitest/utils': 1.6.0
       acorn-walk: 8.3.2
       chai: 4.4.1
-      debug: 4.3.4
+      debug: 4.3.5(supports-color@5.5.0)
       execa: 8.0.1
       local-pkg: 0.5.0
       magic-string: 0.30.8
       pathe: 1.1.2
-      picocolors: 1.0.0
+      picocolors: 1.0.1
       std-env: 3.7.0
       strip-literal: 2.1.0
       tinybench: 2.6.0
