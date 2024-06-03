@@ -81,7 +81,7 @@
 		}
 	},
 	"devDependencies": {
-		"@testing-library/react": "15.0.7",
+		"@testing-library/react": "16.0.0",
 		"@types/eslint": "npm:@types/eslint@8.56.10",
 		"@types/eslint-v9": "npm:@types/eslint@8.56.10",
 		"@types/estree": "1.0.5",

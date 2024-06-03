@@ -400,8 +400,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@testing-library/react':
-        specifier: 15.0.7
-        version: 15.0.7(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 16.0.0
+        version: 16.0.0(@testing-library/dom@10.0.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -504,8 +504,8 @@ importers:
         specifier: 6.4.5
         version: 6.4.5(vitest@1.6.0)
       '@testing-library/react':
-        specifier: 15.0.7
-        version: 15.0.7(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 16.0.0
+        version: 16.0.0(@testing-library/dom@10.0.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -595,8 +595,8 @@ importers:
         specifier: 6.4.5
         version: 6.4.5(vitest@1.6.0)
       '@testing-library/react':
-        specifier: 15.0.7
-        version: 15.0.7(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.3)
+        specifier: 16.0.0
+        version: 16.0.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@testing-library/dom@10.0.0)(@types/react@18.3.3)
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -659,8 +659,8 @@ importers:
         version: 2.0.8(react-dom@18.3.1)(react@18.3.1)
     devDependencies:
       '@testing-library/react':
-        specifier: 15.0.7
-        version: 15.0.7(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 16.0.0
+        version: 16.0.0(@testing-library/dom@10.0.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
       '@types/eslint':
         specifier: npm:@types/eslint@8.56.10
         version: 8.56.10
@@ -851,8 +851,8 @@ importers:
         specifier: 6.4.5
         version: 6.4.5(vitest@1.6.0)
       '@testing-library/react':
-        specifier: 15.0.7
-        version: 15.0.7(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+        specifier: 16.0.0
+        version: 16.0.0(@testing-library/dom@10.0.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
       '@types/jsdom':
         specifier: 21.1.7
         version: 21.1.7
@@ -5326,40 +5326,46 @@ packages:
       vitest: 1.6.0(happy-dom@14.12.0)(jsdom@24.1.0)(sass@1.77.4)
     dev: true
 
-  /@testing-library/react@15.0.7(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@types/react@18.3.3):
-    resolution: {integrity: sha512-cg0RvEdD1TIhhkm1IeYMQxrzy0MtUNfa3minv4MjbgcYzJAZ7yD0i0lwoPOTPr+INtiXFezt2o8xMSnyHhEn2Q==}
+  /@testing-library/react@16.0.0(@preact/compat@17.1.2)(@preact/compat@17.1.2)(@testing-library/dom@10.0.0)(@types/react@18.3.3):
+    resolution: {integrity: sha512-guuxUKRWQ+FgNX0h0NS0FIq3Q3uLtWVpBzcLOggmfMoUpgBnzBzvLLd4fbm6yS8ydJd94cIfY4yP9qUQjM2KwQ==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@testing-library/dom': ^10.0.0
       '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
+      '@types/react-dom':
+        optional: true
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
       '@types/react': 18.3.3
-      '@types/react-dom': 18.3.0
       react: /@preact/compat@17.1.2(preact@10.22.0)
       react-dom: /@preact/compat@17.1.2(preact@10.22.0)
     dev: true
 
-  /@testing-library/react@15.0.7(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-cg0RvEdD1TIhhkm1IeYMQxrzy0MtUNfa3minv4MjbgcYzJAZ7yD0i0lwoPOTPr+INtiXFezt2o8xMSnyHhEn2Q==}
+  /@testing-library/react@16.0.0(@testing-library/dom@10.0.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-guuxUKRWQ+FgNX0h0NS0FIq3Q3uLtWVpBzcLOggmfMoUpgBnzBzvLLd4fbm6yS8ydJd94cIfY4yP9qUQjM2KwQ==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@testing-library/dom': ^10.0.0
       '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
+      '@types/react-dom':
+        optional: true
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
       '@types/react': 18.3.3
-      '@types/react-dom': 18.3.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     dev: true
