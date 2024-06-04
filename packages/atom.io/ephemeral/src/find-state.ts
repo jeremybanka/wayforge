@@ -18,10 +18,10 @@ import type { Json } from "atom.io/json"
 
 /**
  * Finds a state in the store.
- *
- * @param token - The token of the state family.
+ * @param token - A {@link MutableAtomFamilyToken}.
  * @param key - The key of the state.
- * @returns The state.
+ * @returns
+ * The current value of the state.
  */
 export function findState<
 	T extends Transceiver<any>,
@@ -29,27 +29,57 @@ export function findState<
 	K extends Json.Serializable,
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
-
+/**
+ * Finds a state in the store.
+ * @param token - The token of the state family.
+ * @param key - The key of the state.
+ * @returns
+ * The current value of the state.
+ */
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
 ): RegularAtomToken<T>
-
+/**
+ * Finds a state in the store.
+ * @param token - The token of the state family.
+ * @param key - The key of the state.
+ * @returns
+ * The current value of the state.
+ */
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
 ): WritableSelectorToken<T>
-
+/**
+ * Finds a state in the store.
+ * @param token - The token of the state family.
+ * @param key - The key of the state.
+ * @returns
+ * The current value of the state.
+ */
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
 ): ReadonlySelectorToken<T>
-
+/**
+ * Finds a state in the store.
+ * @param token - The token of the state family.
+ * @param key - The key of the state.
+ * @returns
+ * The current value of the state.
+ */
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
 ): WritableToken<T>
-
+/**
+ * Finds a state in the store.
+ * @param token - A {@link ReadableFamilyToken}.
+ * @param key - The key of the state.
+ * @returns
+ * The current value of the state.
+ */
 export function findState<T, K extends Json.Serializable, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
