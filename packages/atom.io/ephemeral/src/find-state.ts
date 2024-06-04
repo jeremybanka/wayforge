@@ -92,3 +92,16 @@ export function findState(
 	const state = findInStore(token, key, IMPLICIT.STORE)
 	return state
 }
+
+/**
+ * Whatever
+ */
+export class Example {
+	/**
+	 * What's this?
+	 */
+	public hi = `hi`
+	public constructor() {
+		console.log(`📝 Example`)
+	}
+}
