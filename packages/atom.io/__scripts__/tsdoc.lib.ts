@@ -367,5 +367,6 @@ export function advancedDemo(subPackageName: string): void {
 	} else {
 		// For the purposes of this demo, only analyze the first comment that we found
 		parseTSDoc(foundComments[0])
+		return foundComments
 	}
 }
