@@ -108,7 +108,7 @@ function walkCompilerAstAndFindComments(
 		const possibleExport: TS.Node | undefined = node.getFirstToken()
 		const isExported = possibleExport?.kind === TS.SyntaxKind.ExportKeyword
 
-		if (isExported) {
+		if (isExported || isNested) {
 			// Find "/** */" style comments associated with this node.
 			// Note that this reinvokes the compiler's scanner -- the result is not cached.
 			const comments: TS.CommentRange[] = getJSDocCommentRanges(node, buffer)
@@ -122,50 +122,61 @@ function walkCompilerAstAndFindComments(
 					)
 				}
 			}
+			console.log(`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`)
 
 			const name =
 				// @ts-expect-error TS is not smart enough to know that node.name is a TS.Identifier
 				`name` in node && TS.isIdentifier(node.name) ? node.name.text : null
-			console.log(colors.cyan(`${name}:`) + colors.magenta(` (EXPORTED)`))
+			console.log(
+				colors.cyan(`${indent}^ ${name} `) +
+					colors.magenta(`(${isExported ? `EXPORTED` : `NESTED`})`),
+			)
 
 			if (name) {
 				for (const comment of comments) {
-					packageExports.set(name, {
+					const packageExport = {
 						compilerNode: node,
 						textRange: tsdoc.TextRange.fromStringRange(
 							buffer,
 							comment.pos,
 							comment.end,
 						),
-					})
+					}
+					if (node.kind === TS.SyntaxKind.ClassDeclaration) {
+						const members = new Map<string, Kit>()
+						Object.assign(packageExport, { members })
+						node.forEachChild((child) => {
+							walkCompilerAstAndFindComments(child, indent + `  `, members, true)
+						})
+					}
+					packageExports.set(name, packageExport)
 				}
 			}
 		}
 	}
-
-	console.log(`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`)
-
-	node.forEachChild((child) => {
-		walkCompilerAstAndFindComments(child, indent + `  `, packageExports)
-	})
+	if (node.kind === TS.SyntaxKind.SourceFile) {
+		node.forEachChild((child) => {
+			walkCompilerAstAndFindComments(child, indent + `  `, packageExports)
+		})
+	}
 }
 
-type Flat<
-	T extends
-		| T[]
-		| {
-				[K in keyof T]: T[K]
-		  },
-> = T extends T[]
-	? T[number]
-	: T extends object
-		? {
-				[K in keyof T]: Flat<T[K]>
-			}
-		: T
-
 // eslint-disable-next-line @typescript-eslint/no-namespace
-namespace TSD {
+export namespace TSD {
+	type Flat<
+		T extends
+			| T[]
+			| {
+					[K in keyof T]: T[K]
+			  },
+	> = T extends T[]
+		? Flat<T[number]>
+		: T extends object
+			? {
+					[K in keyof T]: Flat<T[K]>
+				}
+			: T
+
 	export type PlainText = {
 		type: `plainText`
 		text: string
@@ -175,10 +186,10 @@ namespace TSD {
 		text: string
 		url: string
 	}
-	export type SoftBreak = {
+	export type Break = {
 		type: `softBreak`
 	}
-	export type ParagraphContent = LinkTag | PlainText | SoftBreak
+	export type ParagraphContent = Break | LinkTag | PlainText
 	export type Paragraph = {
 		type: `paragraph`
 		content: ParagraphContent[]
@@ -199,10 +210,17 @@ namespace TSD {
 		modifierTags: string[]
 	}
 
+	export type ParamBlock = {
+		type: `paramBlock`
+		name: string
+		desc: Paragraph
+	}
+
 	export type DocContent = {
 		sections: DocSection[]
 		modifierTags: string[]
 		blocks: DocBlock[]
+		params: ParamBlock[]
 	}
 
 	export type TypeDoc = {
@@ -210,8 +228,8 @@ namespace TSD {
 		name: string
 	}
 
-	export type ConstantDoc = {
-		type: `constant`
+	export type VariableDoc = {
+		type: `variable`
 		name: string
 	}
 
@@ -219,18 +237,40 @@ namespace TSD {
 		type: `function`
 	}
 
-	export type ClassMemberDoc = ConstantDoc | FunctionDoc
-
-	export type ClassDoc = {
-		type: `class`
+	export type RecordDoc = {
+		type: `record`
 		name: string
-		members: ClassMemberDoc[]
-		modifierTags: string[]
+		members: MemberDoc[]
 	}
-	export type Doc = ClassDoc | FunctionDoc
+
+	export type MemberDoc = FunctionDoc | RecordDoc | VariableDoc
+
+	export type ClassDoc = Flat<
+		Omit<DocContent, `params`> & {
+			type: `class`
+			name: string
+			members: MemberDoc[]
+		}
+	>
+
+	export type Doc = ClassDoc | FunctionDoc | RecordDoc | VariableDoc
 }
 
-function getTSDocJson(foundComment: Kit): TSD.Doc {}
+function getTSDocJson(parser: tsdoc.TSDocParser, kit: Kit): TSD.Doc {
+	// const parserContext: tsdoc.ParserContext = parser.parseRange(kit.textRange)
+	// const docComment: tsdoc.DocComment = parserContext.docComment
+	const docType = kit.compilerNode.kind
+	switch (docType) {
+		case TS.SyntaxKind.ClassDeclaration:
+			console.log(`ClassDeclaration`)
+			break
+		case TS.SyntaxKind.FunctionDeclaration:
+			console.log(`FunctionDeclaration`)
+			break
+		default:
+			console.log(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
+	}
+}
 
 function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
 	let dumpText = ``
@@ -442,7 +482,11 @@ export function advancedDemo(subPackageName: string): Map<string, Kit> {
 	const subPackageSourceFilenames = program
 		.getSourceFiles()
 		.map((f) => f.fileName)
-		.filter((f) => f.includes(path.join(`atom.io`, subPackageName)))
+		.filter(
+			(f) =>
+				f.includes(path.join(`atom.io`, subPackageName)) &&
+				!f.includes(path.join(`atom.io`, subPackageName, `src/index.ts`)),
+		)
 
 	console.log(
 		os.EOL +
@@ -470,10 +514,17 @@ export function advancedDemo(subPackageName: string): Map<string, Kit> {
 	}
 	// For the purposes of this demo, only analyze the first comment that we found
 	// parseTSDoc(foundComments[0])
-	for (const value of [...foundComments.values()].toReversed()) {
+	for (const value of [...foundComments.values()]) {
 		parseTSDoc(value)
+		if (value.members) {
+			for (const member of value.members.values()) {
+				parseTSDoc(member)
+			}
+		}
 		break
 	}
 	console.log(foundComments.keys())
+	const parser = new tsdoc.TSDocParser()
+	getTSDocJson(parser, foundComments.get(`findState`)!)
 	return foundComments
 }

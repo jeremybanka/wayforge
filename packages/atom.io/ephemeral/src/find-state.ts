@@ -101,6 +101,10 @@ export class Example {
 	 * What's this?
 	 */
 	public hi = `hi`
+	/**
+	 * Method???
+	 */
+	public method(): void {}
 	public constructor() {
 		console.log(`📝 Example`)
 	}
