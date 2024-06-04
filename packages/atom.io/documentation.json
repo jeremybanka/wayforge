@@ -1,0 +1,21 @@
+[
+    {
+        "kind": "package",
+        "longname": "package:undefined",
+        "files": [
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/atom.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/dispose-state.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/get-state.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/index.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/logger.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/molecule.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/selector.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/set-state.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/silo.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/subscribe.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/timeline.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/transaction.ts",
+            "/Users/jem/dojo/wayforge/packages/atom.io/src/validators.ts"
+        ]
+    }
+]

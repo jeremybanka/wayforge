@@ -16,6 +16,13 @@ import type { Transceiver } from "atom.io/internal"
 import { findInStore, IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
+/**
+ * Finds a state in the store.
+ *
+ * @param token - The token of the state family.
+ * @param key - The key of the state.
+ * @returns The state.
+ */
 export function findState<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,

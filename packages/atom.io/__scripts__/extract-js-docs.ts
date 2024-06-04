@@ -1,10 +1,12 @@
 import path from "node:path"
 
-import type { ExtractorResult } from "@microsoft/api-extractor"
-import { Extractor, ExtractorConfig } from "@microsoft/api-extractor"
+import { $ } from "bun"
+// import type { ExtractorResult } from "@microsoft/api-extractor"
+// import { Extractor, ExtractorConfig } from "@microsoft/api-extractor"
 import z from "zod"
 
 import { ATOM_IO_ROOT, PACKAGE_JSON_PATH } from "./constants"
+import { advancedDemo } from "./tsdoc-utls"
 
 const packageJson = Bun.file(PACKAGE_JSON_PATH)
 const packageJsonDataRaw = await packageJson.json()
@@ -23,22 +25,30 @@ await Promise.all(
 					key,
 					`api-extractor.json`,
 				)
+				const jsdocJsonPath = path.join(ATOM_IO_ROOT, key, `jsdoc.json`)
 
 				console.log(`📝 Extracting ${apiExtractorJsonPath}`)
 				if (key === `./ephemeral`) {
-					const extractorConfig: ExtractorConfig =
-						ExtractorConfig.loadFileAndPrepare(apiExtractorJsonPath)
-					// console.log(`🔧 ExtractorConfig`, extractorConfig)
-					const extractorResult: ExtractorResult = Extractor.invoke(
-						extractorConfig,
-						{
-							// Equivalent to the "--local" command-line parameter
-							// localBuild: true,
+					try {
+						// await $`pnpm jsdoc -c ${jsdocJsonPath} -X > documentation.json`
 
-							// Equivalent to the "--verbose" command-line parameter
-							showVerboseMessages: true,
-						},
-					)
+						console.log({ key })
+						advancedDemo(key)
+					} catch (error) {
+						console.error(error)
+					}
+					// const extractorConfig: ExtractorConfig =
+					// 	ExtractorConfig.loadFileAndPrepare(apiExtractorJsonPath)
+					// // console.log(`🔧 ExtractorConfig`, extractorConfig)
+					// const extractorResult: ExtractorResult = Extractor.invoke(
+					// 	extractorConfig,
+					// 	{
+					// 		// Equivalent to the "--local" command-line parameter
+					// 		// localBuild: true,
+					// 		// Equivalent to the "--verbose" command-line parameter
+					// 		showVerboseMessages: true,
+					// 	},
+					// )
 				}
 			}
 		}
