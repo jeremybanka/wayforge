@@ -80,15 +80,17 @@ function getJSDocCommentRanges(node: TS.Node, text: string): TS.CommentRange[] {
 	)
 }
 
-interface Export {
+interface Kit {
 	compilerNode: TS.Node
 	textRange?: tsdoc.TextRange
+	members?: Map<string, Kit>
 }
 
 function walkCompilerAstAndFindComments(
 	node: TS.Node,
 	indent: string,
-	packageExports: Map<string, Export>,
+	packageExports: Map<string, Kit>,
+	isNested = false,
 ): void {
 	// The TypeScript AST doesn't store code comments directly.  If you want to find *every* comment,
 	// you would need to rescan the SourceFile tokens similar to how tsutils.forEachComment() works:
@@ -183,7 +185,6 @@ namespace TSD {
 	}
 	export type FencedCode = {
 		type: `fencedCode`
-		language: string
 		content: string
 	}
 	export type SectionContent = FencedCode | Paragraph
@@ -226,10 +227,10 @@ namespace TSD {
 		members: ClassMemberDoc[]
 		modifierTags: string[]
 	}
-	export type Doc = ClassDoc | ConstantDoc | FunctionDoc | TypeDoc
+	export type Doc = ClassDoc | FunctionDoc
 }
 
-function getTSDocJson(foundComment: Export): TSD.Doc {}
+function getTSDocJson(foundComment: Kit): TSD.Doc {}
 
 function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
 	let dumpText = ``
@@ -248,7 +249,7 @@ function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
 	}
 }
 
-function parseTSDoc(foundComment: Export): void {
+function parseTSDoc(foundComment: Kit): void {
 	if (!foundComment.textRange) {
 		console.log(
 			os.EOL +
@@ -347,7 +348,7 @@ function parseTSDoc(foundComment: Export): void {
  * The advanced demo invokes the TypeScript compiler and extracts the comment from the AST.
  * It also illustrates how to define custom TSDoc tags using TSDocConfiguration.
  */
-export function advancedDemo(subPackageName: string): Map<string, Export> {
+export function advancedDemo(subPackageName: string): Map<string, Kit> {
 	console.log(
 		colors.yellow(`*** TSDoc API demo: Advanced Scenario ***`) + os.EOL,
 	)
@@ -435,7 +436,7 @@ export function advancedDemo(subPackageName: string): Map<string, Export> {
 			os.EOL,
 	)
 
-	const foundComments = new Map<string, Export>()
+	const foundComments = new Map<string, Kit>()
 
 	walkCompilerAstAndFindComments(sourceFile, ``, foundComments)
 	const subPackageSourceFilenames = program
@@ -469,7 +470,7 @@ export function advancedDemo(subPackageName: string): Map<string, Export> {
 	}
 	// For the purposes of this demo, only analyze the first comment that we found
 	// parseTSDoc(foundComments[0])
-	for (const value of foundComments.values()) {
+	for (const value of [...foundComments.values()].toReversed()) {
 		parseTSDoc(value)
 		break
 	}
