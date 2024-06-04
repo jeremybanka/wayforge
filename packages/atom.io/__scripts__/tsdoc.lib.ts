@@ -80,15 +80,15 @@ function getJSDocCommentRanges(node: TS.Node, text: string): TS.CommentRange[] {
 	)
 }
 
-interface IFoundComment {
+interface Export {
 	compilerNode: TS.Node
-	textRange: tsdoc.TextRange
+	textRange?: tsdoc.TextRange
 }
 
 function walkCompilerAstAndFindComments(
 	node: TS.Node,
 	indent: string,
-	foundComments: IFoundComment[],
+	packageExports: Map<string, Export>,
 ): void {
 	// The TypeScript AST doesn't store code comments directly.  If you want to find *every* comment,
 	// you would need to rescan the SourceFile tokens similar to how tsutils.forEachComment() works:
@@ -103,28 +103,40 @@ function walkCompilerAstAndFindComments(
 	// Only consider nodes that are part of a declaration form.  Without this, we could discover
 	// the same comment twice (e.g. for a MethodDeclaration and its PublicKeyword).
 	if (isDeclarationKind(node.kind)) {
-		// Find "/** */" style comments associated with this node.
-		// Note that this reinvokes the compiler's scanner -- the result is not cached.
-		const comments: TS.CommentRange[] = getJSDocCommentRanges(node, buffer)
+		const possibleExport: TS.Node | undefined = node.getFirstToken()
+		const isExported = possibleExport?.kind === TS.SyntaxKind.ExportKeyword
 
-		if (comments.length > 0) {
-			if (comments.length === 1) {
-				foundCommentsSuffix = colors.cyan(`  (FOUND 1 COMMENT)`)
-			} else {
-				foundCommentsSuffix = colors.cyan(
-					`  (FOUND ${comments.length} COMMENTS)`,
-				)
+		if (isExported) {
+			// Find "/** */" style comments associated with this node.
+			// Note that this reinvokes the compiler's scanner -- the result is not cached.
+			const comments: TS.CommentRange[] = getJSDocCommentRanges(node, buffer)
+
+			if (comments.length > 0) {
+				if (comments.length === 1) {
+					foundCommentsSuffix = colors.cyan(`  (FOUND 1 COMMENT)`)
+				} else {
+					foundCommentsSuffix = colors.cyan(
+						`  (FOUND ${comments.length} COMMENTS)`,
+					)
+				}
 			}
 
-			for (const comment of comments) {
-				foundComments.push({
-					compilerNode: node,
-					textRange: tsdoc.TextRange.fromStringRange(
-						buffer,
-						comment.pos,
-						comment.end,
-					),
-				})
+			const name =
+				// @ts-expect-error TS is not smart enough to know that node.name is a TS.Identifier
+				`name` in node && TS.isIdentifier(node.name) ? node.name.text : null
+			console.log(colors.cyan(`${name}:`) + colors.magenta(` (EXPORTED)`))
+
+			if (name) {
+				for (const comment of comments) {
+					packageExports.set(name, {
+						compilerNode: node,
+						textRange: tsdoc.TextRange.fromStringRange(
+							buffer,
+							comment.pos,
+							comment.end,
+						),
+					})
+				}
 			}
 		}
 	}
@@ -132,9 +144,92 @@ function walkCompilerAstAndFindComments(
 	console.log(`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`)
 
 	node.forEachChild((child) => {
-		walkCompilerAstAndFindComments(child, indent + `  `, foundComments)
+		walkCompilerAstAndFindComments(child, indent + `  `, packageExports)
 	})
 }
+
+type Flat<
+	T extends
+		| T[]
+		| {
+				[K in keyof T]: T[K]
+		  },
+> = T extends T[]
+	? T[number]
+	: T extends object
+		? {
+				[K in keyof T]: Flat<T[K]>
+			}
+		: T
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace TSD {
+	export type PlainText = {
+		type: `plainText`
+		text: string
+	}
+	export type LinkTag = {
+		type: `link`
+		text: string
+		url: string
+	}
+	export type SoftBreak = {
+		type: `softBreak`
+	}
+	export type ParagraphContent = LinkTag | PlainText | SoftBreak
+	export type Paragraph = {
+		type: `paragraph`
+		content: ParagraphContent[]
+	}
+	export type FencedCode = {
+		type: `fencedCode`
+		language: string
+		content: string
+	}
+	export type SectionContent = FencedCode | Paragraph
+	export type DocSection = {
+		type: `section`
+		content: SectionContent[]
+	}
+	export type DocBlock = {
+		type: `block`
+		name: string
+		sections: DocSection[]
+		modifierTags: string[]
+	}
+
+	export type DocContent = {
+		sections: DocSection[]
+		modifierTags: string[]
+		blocks: DocBlock[]
+	}
+
+	export type TypeDoc = {
+		type: `type`
+		name: string
+	}
+
+	export type ConstantDoc = {
+		type: `constant`
+		name: string
+	}
+
+	export type FunctionDoc = {
+		type: `function`
+	}
+
+	export type ClassMemberDoc = ConstantDoc | FunctionDoc
+
+	export type ClassDoc = {
+		type: `class`
+		name: string
+		members: ClassMemberDoc[]
+		modifierTags: string[]
+	}
+	export type Doc = ClassDoc | ConstantDoc | FunctionDoc | TypeDoc
+}
+
+function getTSDocJson(foundComment: Export): TSD.Doc {}
 
 function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
 	let dumpText = ``
@@ -153,7 +248,15 @@ function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
 	}
 }
 
-function parseTSDoc(foundComment: IFoundComment): void {
+function parseTSDoc(foundComment: Export): void {
+	if (!foundComment.textRange) {
+		console.log(
+			os.EOL +
+				colors.red(`Error: No code comments were found in the input file`) +
+				os.EOL,
+		)
+		return
+	}
 	console.log(os.EOL + colors.green(`Comment to be parsed:`) + os.EOL)
 	console.log(colors.gray(`<<<<<<`))
 	console.log(foundComment.textRange.toString())
@@ -244,7 +347,7 @@ function parseTSDoc(foundComment: IFoundComment): void {
  * The advanced demo invokes the TypeScript compiler and extracts the comment from the AST.
  * It also illustrates how to define custom TSDoc tags using TSDocConfiguration.
  */
-export function advancedDemo(subPackageName: string): void {
+export function advancedDemo(subPackageName: string): Map<string, Export> {
 	console.log(
 		colors.yellow(`*** TSDoc API demo: Advanced Scenario ***`) + os.EOL,
 	)
@@ -332,7 +435,7 @@ export function advancedDemo(subPackageName: string): void {
 			os.EOL,
 	)
 
-	const foundComments: IFoundComment[] = []
+	const foundComments = new Map<string, Export>()
 
 	walkCompilerAstAndFindComments(sourceFile, ``, foundComments)
 	const subPackageSourceFilenames = program
@@ -340,33 +443,36 @@ export function advancedDemo(subPackageName: string): void {
 		.map((f) => f.fileName)
 		.filter((f) => f.includes(path.join(`atom.io`, subPackageName)))
 
+	console.log(
+		os.EOL +
+			colors.cyan(`Files Found:`) +
+			os.EOL +
+			` - ` +
+			subPackageSourceFilenames.join(os.EOL + ` - `) +
+			os.EOL,
+	)
+
 	for (const subPackageSourceFilename of subPackageSourceFilenames) {
-		const moreComments: IFoundComment[] = []
 		const subPackageSourceFile: TS.SourceFile | undefined =
 			program.getSourceFile(subPackageSourceFilename)
 		if (!subPackageSourceFile) {
 			throw new Error(`Error retrieving source file`)
 		}
-		walkCompilerAstAndFindComments(subPackageSourceFile, ``, moreComments)
-		foundComments.push(...moreComments)
-
-		if (moreComments.length === 0) {
-			console.log(
-				colors.red(`Error: No code comments were found in the input file`),
-			)
-		} else {
-			// For the purposes of this demo, only analyze the first comment that we found
-			parseTSDoc(moreComments[0])
-		}
+		walkCompilerAstAndFindComments(subPackageSourceFile, ``, foundComments)
 	}
 
-	if (foundComments.length === 0) {
+	if (foundComments.size === 0) {
 		console.log(
 			colors.red(`Error: No code comments were found in the input file`),
 		)
-	} else {
-		// For the purposes of this demo, only analyze the first comment that we found
-		parseTSDoc(foundComments[0])
 		return foundComments
 	}
+	// For the purposes of this demo, only analyze the first comment that we found
+	// parseTSDoc(foundComments[0])
+	for (const value of foundComments.values()) {
+		parseTSDoc(value)
+		break
+	}
+	console.log(foundComments.keys())
+	return foundComments
 }

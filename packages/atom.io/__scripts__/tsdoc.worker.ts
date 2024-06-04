@@ -4,6 +4,7 @@ declare const self: Worker
 
 self.onmessage = ({ data }: MessageEvent) => {
 	console.log(`📝 Extracting ${data}`)
-	advancedDemo(data)
+	const foundComments = advancedDemo(data)
+
 	self.postMessage(`Done`)
 }
