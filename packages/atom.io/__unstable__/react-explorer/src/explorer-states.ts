@@ -125,18 +125,19 @@ export const attachExplorerState = (key: string) => {
 		},
 	})
 
-	const writeOperationAddSpace: Write<(options?: SplitSpaceOptions) => string> =
-		(transactors, { parentId = `root` } = {}) => {
-			const { find, set } = transactors
-			const k = `s-${now()}`
-			addToIndex(transactors, { indexAtom: spaceIndexState, id: k })
-			set(spaceLayoutState, (current) =>
-				current.set({ parent: `parent:${parentId}`, child: k }, { size: 1 }),
-			)
-			const spaceState = find(findSpaceState, k)
-			set(spaceState, 1)
-			return k
-		}
+	const writeOperationAddSpace: Write<
+		(options?: SplitSpaceOptions) => string
+	> = (transactors, { parentId = `root` } = {}) => {
+		const { find, set } = transactors
+		const k = `s-${now()}`
+		addToIndex(transactors, { indexAtom: spaceIndexState, id: k })
+		set(spaceLayoutState, (current) =>
+			current.set({ parent: `parent:${parentId}`, child: k }, { size: 1 }),
+		)
+		const spaceState = find(findSpaceState, k)
+		set(spaceState, 1)
+		return k
+	}
 
 	const writeOperationRemoveSpace: Write<(id: string) => void> = (
 		transactors,
