@@ -30,7 +30,7 @@
 		"lint:eslint": "turbo run lint:eslint",
 		"lint:eslint:build": "turbo run lint:eslint:build",
 		"lint:types": "turbo run lint:types",
-		"lint:fix:biome": "biome check --apply *",
+		"lint:fix:biome": "biome check --write *",
 		"lint:fix:eslint": "eslint --fix .",
 		"fmt": "biome format .",
 		"fmt:fix": "biome format --write .",
