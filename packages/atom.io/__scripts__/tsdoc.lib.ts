@@ -217,38 +217,35 @@ export namespace TSD {
 	}
 
 	export type DocContent = {
+		name: string
 		sections: DocSection[]
 		modifierTags: string[]
 		blocks: DocBlock[]
-		params: ParamBlock[]
 	}
 
-	export type TypeDoc = {
-		type: `type`
-		name: string
-	}
+	export type TypeDoc = Flat<DocContent & { type: `type` }>
 
-	export type VariableDoc = {
-		type: `variable`
-		name: string
-	}
+	export type VariableDoc = Flat<DocContent & { type: `variable` }>
 
-	export type FunctionDoc = {
-		type: `function`
-	}
+	export type FunctionDoc = Flat<
+		DocContent & {
+			type: `function`
+			params: ParamBlock[]
+		}
+	>
 
-	export type RecordDoc = {
-		type: `record`
-		name: string
-		members: MemberDoc[]
-	}
+	export type RecordDoc = Flat<
+		DocContent & {
+			type: `record`
+			members: MemberDoc[]
+		}
+	>
 
 	export type MemberDoc = FunctionDoc | RecordDoc | VariableDoc
 
 	export type ClassDoc = Flat<
-		Omit<DocContent, `params`> & {
+		DocContent & {
 			type: `class`
-			name: string
 			members: MemberDoc[]
 		}
 	>
@@ -256,16 +253,61 @@ export namespace TSD {
 	export type Doc = ClassDoc | FunctionDoc | RecordDoc | VariableDoc
 }
 
-function getTSDocJson(parser: tsdoc.TSDocParser, kit: Kit): TSD.Doc {
-	// const parserContext: tsdoc.ParserContext = parser.parseRange(kit.textRange)
-	// const docComment: tsdoc.DocComment = parserContext.docComment
+function collectDoc(
+	doc: TSD.Doc,
+	docNode: tsdoc.DocNode,
+	indent: string,
+): TSD.Doc {
+	let dumpText = ``
+	if (docNode instanceof tsdoc.DocExcerpt) {
+		const content: string = docNode.content.toString()
+		dumpText +=
+			colors.gray(`${indent}* ${docNode.excerptKind}=`) +
+			colors.cyan(JSON.stringify(content))
+	} else {
+		dumpText += `${indent}- ${docNode.kind}`
+	}
+	console.log(dumpText)
+	switch (docNode.kind) {
+		case `class`:
+	}
+
+	for (const child of docNode.getChildNodes()) {
+		collectDoc(doc, child, indent + `  `)
+	}
+	return doc
+}
+
+function getTSDocJson(
+	parser: tsdoc.TSDocParser,
+	kit: Kit,
+	name: string,
+): TSD.Doc {
+	const parserContext: tsdoc.ParserContext = parser.parseRange(kit.textRange)
+	const docComment: tsdoc.DocComment = parserContext.docComment
 	const docType = kit.compilerNode.kind
+	let doc: TSD.Doc
 	switch (docType) {
 		case TS.SyntaxKind.ClassDeclaration:
 			console.log(`ClassDeclaration`)
 			break
 		case TS.SyntaxKind.FunctionDeclaration:
 			console.log(`FunctionDeclaration`)
+			console.log(
+				collectDoc(
+					{
+						type: `function`,
+						name,
+						params: [],
+						sections: [],
+						blocks: [],
+						modifierTags: [],
+					},
+					docComment,
+					``,
+				),
+			)
+
 			break
 		default:
 			console.log(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
@@ -525,6 +567,6 @@ export function advancedDemo(subPackageName: string): Map<string, Kit> {
 	}
 	console.log(foundComments.keys())
 	const parser = new tsdoc.TSDocParser()
-	getTSDocJson(parser, foundComments.get(`findState`)!)
+	getTSDocJson(parser, foundComments.get(`findState`)!, `findState`)
 	return foundComments
 }
