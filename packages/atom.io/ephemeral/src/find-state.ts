@@ -17,7 +17,7 @@ import { findInStore, IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 /**
- * Finds a state in the store.
+ * Finds a {@link MutableAtomToken} in the store.
  * @param token - A {@link MutableAtomFamilyToken}.
  * @param key - The key of the state.
  * @returns
@@ -74,7 +74,8 @@ export function findState<T, K extends Json.Serializable, Key extends K>(
 	key: Key,
 ): WritableToken<T>
 /**
- * Finds a state in the store.
+ * @public
+ * Finds a {@link ReadableToken} in the store.
  * @param token - A {@link ReadableFamilyToken}.
  * @param key - The key of the state.
  * @returns

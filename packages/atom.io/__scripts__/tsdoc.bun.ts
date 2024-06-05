@@ -1,3 +1,5 @@
+#! bun
+
 import path from "node:path"
 import { Worker } from "node:worker_threads"
 

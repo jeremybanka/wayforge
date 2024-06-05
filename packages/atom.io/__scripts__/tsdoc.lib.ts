@@ -82,8 +82,8 @@ function getJSDocCommentRanges(node: TS.Node, text: string): TS.CommentRange[] {
 
 interface Kit {
 	compilerNode: TS.Node
-	textRange?: tsdoc.TextRange
-	members?: Map<string, Kit>
+	textRange: tsdoc.TextRange
+	properties?: Map<string, Kit>
 }
 
 function walkCompilerAstAndFindComments(
@@ -183,8 +183,8 @@ export namespace TSD {
 	}
 	export type LinkTag = {
 		type: `link`
+		linkType: `MemberIdentifier`
 		text: string
-		url: string
 	}
 	export type Break = {
 		type: `softBreak`
@@ -206,14 +206,13 @@ export namespace TSD {
 	export type DocBlock = {
 		type: `block`
 		name: string
-		sections: DocSection[]
-		modifierTags: string[]
+		desc?: Paragraph
 	}
 
 	export type ParamBlock = {
 		type: `paramBlock`
 		name: string
-		desc: Paragraph
+		desc?: Paragraph
 	}
 
 	export type DocContent = {
@@ -223,10 +222,6 @@ export namespace TSD {
 		blocks: DocBlock[]
 	}
 
-	export type TypeDoc = Flat<DocContent & { type: `type` }>
-
-	export type VariableDoc = Flat<DocContent & { type: `variable` }>
-
 	export type FunctionDoc = Flat<
 		DocContent & {
 			type: `function`
@@ -234,46 +229,186 @@ export namespace TSD {
 		}
 	>
 
-	export type RecordDoc = Flat<
+	export type AtomicEntity = `constant` | `type` | `variable`
+	export type AtomicDoc = Flat<
 		DocContent & {
-			type: `record`
-			members: MemberDoc[]
+			type: `atomic`
+			kind: AtomicEntity
 		}
 	>
 
-	export type MemberDoc = FunctionDoc | RecordDoc | VariableDoc
-
-	export type ClassDoc = Flat<
+	export type CompositeEntity = `class` | `interface` | `object` | `type`
+	export type CompositeDoc = Flat<
 		DocContent & {
-			type: `class`
-			members: MemberDoc[]
+			type: `composite`
+			kind: CompositeEntity
+			members: Doc[]
 		}
 	>
 
-	export type Doc = ClassDoc | FunctionDoc | RecordDoc | VariableDoc
+	export type Doc = AtomicDoc | CompositeDoc | FunctionDoc
 }
 
-function collectDoc(
-	doc: TSD.Doc,
-	docNode: tsdoc.DocNode,
-	indent: string,
-): TSD.Doc {
-	let dumpText = ``
-	if (docNode instanceof tsdoc.DocExcerpt) {
-		const content: string = docNode.content.toString()
-		dumpText +=
-			colors.gray(`${indent}* ${docNode.excerptKind}=`) +
-			colors.cyan(JSON.stringify(content))
-	} else {
-		dumpText += `${indent}- ${docNode.kind}`
+function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
+	console.log(colors.blue(` Paragraph`))
+	const paragraph: TSD.Paragraph = {
+		type: `paragraph`,
+		content: [],
 	}
-	console.log(dumpText)
-	switch (docNode.kind) {
-		case `class`:
-	}
+	for (const paragraphChild of node.getChildNodes()) {
+		console.log(`  ` + paragraphChild.kind)
+		switch (paragraphChild.kind) {
+			case `PlainText`:
+				console.log(colors.blue(`  PlainText`))
+				for (const textChild of paragraphChild.getChildNodes()) {
+					if (textChild instanceof tsdoc.DocExcerpt) {
+						const text: string = textChild.content.toString()
+						paragraph.content.push({
+							type: `plainText`,
+							text,
+						})
+					}
+				}
+				break
+			case `LinkTag`:
+				for (const linkChild of paragraphChild.getChildNodes()) {
+					console.log(`  ` + linkChild.kind)
+					if (linkChild.kind === `DeclarationReference`) {
+						let excerpt: tsdoc.DocExcerpt | undefined
+						console.log(colors.blue(`   DeclarationReference`))
 
-	for (const child of docNode.getChildNodes()) {
-		collectDoc(doc, child, indent + `  `)
+						let currentNode = linkChild
+						while (!excerpt) {
+							if (currentNode instanceof tsdoc.DocExcerpt) {
+								excerpt = currentNode
+							} else {
+								currentNode = currentNode.getChildNodes()[0]
+							}
+						}
+
+						const link: TSD.LinkTag = {
+							type: `link`,
+							linkType: `MemberIdentifier`,
+							text: excerpt.content.toString(),
+						}
+						paragraph.content.push(link)
+					}
+				}
+				break
+			case `SoftBreak`:
+				console.log(colors.blue(`  SoftBreak`))
+				paragraph.content.push({
+					type: `softBreak`,
+				})
+				break
+		}
+	}
+	return paragraph
+}
+
+function documentFunction(
+	base: TSD.DocContent,
+	docComment: tsdoc.DocComment,
+): TSD.Doc {
+	const doc: TSD.FunctionDoc = Object.assign(base, {
+		type: `function` as const,
+		params: [],
+	})
+	for (const child of docComment.getChildNodes()) {
+		console.log(child.kind)
+		switch (child.kind) {
+			case `Section`:
+				{
+					console.log(colors.blue(`Section`))
+					const section: TSD.DocSection = {
+						type: `section`,
+						content: [],
+					}
+					doc.sections.push(section)
+					for (const sectionChild of child.getChildNodes()) {
+						console.log(` ` + sectionChild.kind)
+						switch (sectionChild.kind) {
+							case `Paragraph`: {
+								const paragraph = makeParagraph(sectionChild)
+								section.content.push(paragraph)
+							}
+						}
+					}
+				}
+				break
+			case `ParamCollection`:
+				for (const paramChild of child.getChildNodes()) {
+					console.log(` ` + paramChild.kind)
+					if (paramChild.kind === `ParamBlock`) {
+						console.log(colors.blue(` ParamBlock`))
+						const param: TSD.ParamBlock = {
+							type: `paramBlock`,
+							name: `???`,
+						}
+						let nameSet = false
+						for (const paramBlockChild of paramChild.getChildNodes()) {
+							if (
+								!nameSet &&
+								paramBlockChild instanceof tsdoc.DocExcerpt &&
+								paramBlockChild.excerptKind === `ParamBlock_ParameterName`
+							) {
+								console.log(colors.blue(`  ParamBlock_ParameterName`))
+								param.name = paramBlockChild.content.toString()
+								nameSet = true
+							}
+							if (paramBlockChild.kind === `Section`) {
+								if (paramBlockChild.getChildNodes()[0]?.kind === `Paragraph`) {
+									param.desc = makeParagraph(paramBlockChild.getChildNodes()[0])
+								}
+							}
+						}
+						doc.params.push(param)
+					}
+				}
+				break
+			case `Block`:
+				{
+					console.log(colors.blue(` Block`))
+					const block: TSD.DocBlock = {
+						type: `block`,
+						name: `???`,
+					}
+					for (const blockChild of child.getChildNodes()) {
+						console.log(` ` + blockChild.kind)
+						switch (blockChild.kind) {
+							case `BlockTag`:
+								{
+									console.log(colors.blue(`  BlockTag`))
+									const blockTag = blockChild.getChildNodes()[0]
+									if (blockTag instanceof tsdoc.DocExcerpt) {
+										block.name = blockTag.content.toString()
+									}
+								}
+								break
+							case `Section`:
+								{
+									console.log(colors.blue(`  Section`))
+									const paragraph = blockChild.getChildNodes()[0]
+									const desc = makeParagraph(paragraph)
+									block.desc = desc
+								}
+								break
+						}
+					}
+					doc.blocks.push(block)
+				}
+				break
+			case `BlockTag`:
+				{
+					console.log(colors.blue(` BlockTag`))
+					const blockTag = child.getChildNodes()[0]
+					if (blockTag instanceof tsdoc.DocExcerpt) {
+						const tagName = blockTag.content.toString()
+						doc.modifierTags.push(tagName)
+					}
+				}
+				break
+		}
 	}
 	return doc
 }
@@ -286,32 +421,33 @@ function getTSDocJson(
 	const parserContext: tsdoc.ParserContext = parser.parseRange(kit.textRange)
 	const docComment: tsdoc.DocComment = parserContext.docComment
 	const docType = kit.compilerNode.kind
+	const content: TSD.DocContent = {
+		name,
+		sections: [],
+		modifierTags: [],
+		blocks: [],
+	}
 	let doc: TSD.Doc
 	switch (docType) {
 		case TS.SyntaxKind.ClassDeclaration:
 			console.log(`ClassDeclaration`)
+			doc = Object.assign(content, {
+				type: `composite` as const,
+				kind: `class` as const,
+				members: [],
+			})
 			break
 		case TS.SyntaxKind.FunctionDeclaration:
-			console.log(`FunctionDeclaration`)
-			console.log(
-				collectDoc(
-					{
-						type: `function`,
-						name,
-						params: [],
-						sections: [],
-						blocks: [],
-						modifierTags: [],
-					},
-					docComment,
-					``,
-				),
-			)
+			{
+				console.log(`FunctionDeclaration`)
+				doc = documentFunction(content, docComment)
+			}
 
 			break
 		default:
-			console.log(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
+			throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
 	}
+	return doc
 }
 
 function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
@@ -430,7 +566,7 @@ function parseTSDoc(foundComment: Kit): void {
  * The advanced demo invokes the TypeScript compiler and extracts the comment from the AST.
  * It also illustrates how to define custom TSDoc tags using TSDocConfiguration.
  */
-export function advancedDemo(subPackageName: string): Map<string, Kit> {
+export function advancedDemo(subPackageName: string): TSD.Doc[] {
 	console.log(
 		colors.yellow(`*** TSDoc API demo: Advanced Scenario ***`) + os.EOL,
 	)
@@ -549,17 +685,14 @@ export function advancedDemo(subPackageName: string): Map<string, Kit> {
 	}
 
 	if (foundComments.size === 0) {
-		console.log(
-			colors.red(`Error: No code comments were found in the input file`),
-		)
-		return foundComments
+		throw new Error(`No code comments were found in the input file`)
 	}
 	// For the purposes of this demo, only analyze the first comment that we found
 	// parseTSDoc(foundComments[0])
 	for (const value of [...foundComments.values()]) {
 		parseTSDoc(value)
-		if (value.members) {
-			for (const member of value.members.values()) {
+		if (value.properties) {
+			for (const member of value.properties.values()) {
 				parseTSDoc(member)
 			}
 		}
@@ -567,6 +700,9 @@ export function advancedDemo(subPackageName: string): Map<string, Kit> {
 	}
 	console.log(foundComments.keys())
 	const parser = new tsdoc.TSDocParser()
-	getTSDocJson(parser, foundComments.get(`findState`)!, `findState`)
-	return foundComments
+	const jsonDocs: TSD.Doc[] = []
+	for (const [key, value] of foundComments) {
+		jsonDocs.push(getTSDocJson(parser, value, key))
+	}
+	return jsonDocs
 }
