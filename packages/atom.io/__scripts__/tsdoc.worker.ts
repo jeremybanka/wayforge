@@ -9,7 +9,7 @@ self.onmessage = tsDocWorkerJob
 
 export async function tsDocWorkerJob({
 	data: subPackageName,
-}: MessageEvent): Promise<void> {
+}: { data: string }): Promise<void> {
 	console.log(`📝 Extracting ${subPackageName}`)
 	const filename = path.join(ATOM_IO_ROOT, subPackageName, `src`, `index.ts`)
 	const doc = compileDocs(filename)
