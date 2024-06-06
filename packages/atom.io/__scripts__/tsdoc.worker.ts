@@ -1,13 +1,18 @@
 import path from "node:path"
 
+import { compileDocs } from "~/packages/tsdoc.json/src/library"
+
 import { ATOM_IO_ROOT } from "./constants"
-import { advancedDemo } from "./tsdoc.lib"
 
 declare const self: Worker
+self.onmessage = tsDocWorkerJob
 
-self.onmessage = async ({ data: subPackageName }: MessageEvent) => {
+export async function tsDocWorkerJob({
+	data: subPackageName,
+}: MessageEvent): Promise<void> {
 	console.log(`📝 Extracting ${subPackageName}`)
-	const doc = advancedDemo(subPackageName)
+	const filename = path.join(ATOM_IO_ROOT, subPackageName, `src`, `index.ts`)
+	const doc = compileDocs(filename)
 	await Bun.write(
 		path.join(ATOM_IO_ROOT, `gen`, `${subPackageName}.tsdoc.json`),
 		JSON.stringify(doc, null, `\t`),

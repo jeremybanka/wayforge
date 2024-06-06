@@ -13,7 +13,7 @@
 							},
 							{
 								"type": "plainText",
-								"text": "Finds a "
+								"text": "Finds a"
 							},
 							{
 								"type": "link",
@@ -22,7 +22,7 @@
 							},
 							{
 								"type": "plainText",
-								"text": " in the store."
+								"text": "in the store."
 							},
 							{
 								"type": "softBreak"
@@ -54,6 +54,22 @@
 						}
 					]
 				}
+			},
+			{
+				"type": "block",
+				"name": "@overload",
+				"desc": {
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "plainText",
+							"text": "Unknown"
+						},
+						{
+							"type": "softBreak"
+						}
+					]
+				}
 			}
 		],
 		"type": "function",
@@ -66,7 +82,7 @@
 					"content": [
 						{
 							"type": "plainText",
-							"text": "A "
+							"text": "A"
 						},
 						{
 							"type": "link",
@@ -108,6 +124,6 @@
 		"blocks": [],
 		"type": "composite",
 		"kind": "class",
-		"members": []
+		"properties": []
 	}
 ]

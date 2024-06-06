@@ -13,6 +13,7 @@
 		"__tests__",
 		"__scripts__",
 		"__unstable__",
-		"**/*.config.ts"
+		"**/*.config.ts",
+		"../tsdoc.json/src/tsdoc.lib.ts"
 	]
 }
