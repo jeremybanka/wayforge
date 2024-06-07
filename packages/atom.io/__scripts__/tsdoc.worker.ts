@@ -11,8 +11,9 @@ export async function tsDocWorkerJob({
 	data: subPackageName,
 }: { data: string }): Promise<void> {
 	console.log(`📝 Extracting ${subPackageName}`)
-	const filename = path.join(ATOM_IO_ROOT, subPackageName, `src`, `index.ts`)
-	const doc = compileDocs(filename)
+	const entrypoint = path.join(ATOM_IO_ROOT, subPackageName, `src`, `index.ts`)
+	const tsconfigPath = path.join(ATOM_IO_ROOT, `tsconfig.json`)
+	const doc = compileDocs({ entrypoint, tsconfigPath })
 	await Bun.write(
 		path.join(ATOM_IO_ROOT, `gen`, `${subPackageName}.tsdoc.json`),
 		JSON.stringify(doc, null, `\t`),

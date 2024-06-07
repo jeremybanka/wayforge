@@ -385,45 +385,39 @@ export function createCustomConfiguration(): tsdoc.TSDocConfiguration {
 	return customConfiguration
 }
 
-export function compileDocs(filename: string): TSD.Doc[] {
-	console.log(
-		colors.yellow(`*** TSDoc API demo: Advanced Scenario ***`) + os.EOL,
-	)
+export type CompileDocsOptions = {
+	entrypoint: string
+	tsconfigPath: string
+}
+export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
+	console.log(colors.yellow(`*** Compiling Docs ***`) + os.EOL, options)
 
-	const compilerOptions: TS.CompilerOptions = {
-		module: TS.ModuleKind.Preserve,
-		lib: [`DOM`, `es2023`, `ES2023.Array`],
-		moduleResolution: TS.ModuleResolutionKind.Bundler,
-		target: TS.ScriptTarget.ES2017,
-		paths: {
-			"~/*": [`../../*`],
-			"atom.io": [`./src`],
-			"atom.io/*": [`./*/src`],
-			rel8: [`../rel8/types/src`],
-			"rel8/*": [`../rel8/*/src`],
-		},
-		jsx: TS.JsxEmit.ReactJSX,
-		jsxImportSource: `react`,
-		noEmit: true,
-		declaration: true,
-		include: [
-			`src`,
-			`**/src`,
-			`__tests__`,
-			`__scripts__`,
-			`__unstable__`,
-			`**/*.config.ts`,
-		],
-		forceConsistentCasingInFileNames: true,
-		strictNullChecks: true,
-		exactOptionalPropertyTypes: true,
-		useUnknownInCatchVariables: true,
+	const configFile = TS.readConfigFile(options.tsconfigPath, TS.sys.readFile)
+
+	if (configFile.error) {
+		throw new Error(
+			TS.formatDiagnosticsWithColorAndContext([configFile.error], {
+				getCurrentDirectory: TS.sys.getCurrentDirectory,
+				getNewLine: () => TS.sys.newLine,
+				getCanonicalFileName: (fileName: string) => fileName,
+			}),
+		)
 	}
 
-	// Compile the input
-	console.log(`Invoking the TypeScript compiler to analyze ${filename}...`)
+	const parsedConfig = TS.parseJsonConfigFileContent(
+		configFile.config,
+		TS.sys,
+		path.dirname(options.tsconfigPath),
+	)
+	const compilerOptions: TS.CompilerOptions = parsedConfig.options
 
-	const program: TS.Program = TS.createProgram([filename], compilerOptions)
+	// Compile the input
+	console.log(`Invoking TSC to analyze ${options.entrypoint}...`)
+
+	const program: TS.Program = TS.createProgram(
+		[options.entrypoint],
+		compilerOptions,
+	)
 
 	// Report any compiler errors
 	const compilerDiagnostics: ReadonlyArray<TS.Diagnostic> =
@@ -451,7 +445,9 @@ export function compileDocs(filename: string): TSD.Doc[] {
 		console.log(`No compiler errors or warnings.`)
 	}
 
-	const sourceFile: TS.SourceFile | undefined = program.getSourceFile(filename)
+	const sourceFile: TS.SourceFile | undefined = program.getSourceFile(
+		options.entrypoint,
+	)
 	if (!sourceFile) {
 		throw new Error(`Error retrieving source file`)
 	}
@@ -469,7 +465,9 @@ export function compileDocs(filename: string): TSD.Doc[] {
 		.getSourceFiles()
 		.map((f) => f.fileName)
 		.filter(
-			(f) => f.includes(path.join(filename, `..`)) && !f.includes(filename),
+			(f) =>
+				f.includes(path.join(options.entrypoint, `..`)) &&
+				!f.includes(options.entrypoint),
 		)
 
 	console.log(
