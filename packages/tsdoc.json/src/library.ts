@@ -335,7 +335,7 @@ function documentFunction(
 	return doc
 }
 
-function getTSDocJson(
+function assembleJsonDocForResource(
 	parser: tsdoc.TSDocParser,
 	kit: DiscoveredResource,
 	name: string,
@@ -494,7 +494,7 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 	const parser = new tsdoc.TSDocParser(customConfiguration)
 	const jsonDocs: TSD.Doc[] = []
 	for (const [key, value] of discoveredResources) {
-		jsonDocs.push(getTSDocJson(parser, value, key))
+		jsonDocs.push(assembleJsonDocForResource(parser, value, key))
 	}
 	return jsonDocs
 }
