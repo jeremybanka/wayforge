@@ -113,9 +113,7 @@ function walkCompilerAstAndDiscoverResources(
 	// Only consider nodes that are part of a declaration form.  Without this, we could discover
 	// the same comment twice (e.g. for a MethodDeclaration and its PublicKeyword).
 	if (isDeclarationKind(node.kind)) {
-		const nodeIsExported = isExported(node)
-
-		if (nodeIsExported || isNested) {
+		if (isNested || isExported(node)) {
 			// Find "/** */" style comments associated with this node.
 			// Note that this reinvokes the compiler's scanner -- the result is not cached.
 			const comments: TS.CommentRange[] = getJSDocCommentRanges(node, buffer)
@@ -136,7 +134,7 @@ function walkCompilerAstAndDiscoverResources(
 				`name` in node && TS.isIdentifier(node.name) ? node.name.text : null
 			console.log(
 				colors.cyan(`${indent}^ ${name} `) +
-					colors.magenta(`(${nodeIsExported ? `EXPORTED` : `NESTED`})`),
+					colors.magenta(`(${isNested ? `NESTED` : `EXPORTED`})`),
 			)
 
 			if (name) {
