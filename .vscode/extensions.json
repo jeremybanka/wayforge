@@ -1,17 +1,24 @@
 {
 	"recommendations": [
+		"bierner.color-info",
+		"bierner.markdown-preview-github-styles",
+		"biomejs.biome",
+		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"github.vscode-github-actions",
 		"kuscamara.remove-unused-imports",
+		"oven.bun-vscode",
+		"redhat.vscode-yaml",
+		"ryanluker.vscode-coverage-gutters",
 		"streetsidesoftware.code-spell-checker",
+		"tamasfe.even-better-toml",
 		"timonwong.shellcheck",
 		"tyriar.sort-lines",
 		"vunguyentuan.vscode-css-variables",
 		"wallabyjs.console-ninja",
 		"yoavbls.pretty-ts-errors",
-		"arcanis.vscode-zipfs",
-		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode",
-		"ryanluker.vscode-coverage-gutters",
-		"oven.bun-vscode"
+		"yutengjing.open-in-external-app"
 	]
 }
