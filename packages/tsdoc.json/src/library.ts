@@ -147,17 +147,22 @@ function walkCompilerAstAndDiscoverResources(
 							comment.end,
 						),
 					}
-					if (node.kind === TS.SyntaxKind.ClassDeclaration) {
-						const properties = new Map<string, DiscoveredResource>()
-						Object.assign(packageExport, { properties })
-						node.forEachChild((child) => {
-							walkCompilerAstAndDiscoverResources(
-								child,
-								indent + `  `,
-								properties,
-								true,
-							)
-						})
+					switch (node.kind) {
+						case TS.SyntaxKind.InterfaceDeclaration:
+						case TS.SyntaxKind.VariableDeclaration:
+						case TS.SyntaxKind.TypeAliasDeclaration:
+						case TS.SyntaxKind.ClassDeclaration: {
+							const properties = new Map<string, DiscoveredResource>()
+							Object.assign(packageExport, { properties })
+							node.forEachChild((child) => {
+								walkCompilerAstAndDiscoverResources(
+									child,
+									indent + `  `,
+									properties,
+									true,
+								)
+							})
+						}
 					}
 					packageExports.set(name, packageExport)
 				}
@@ -228,10 +233,124 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 	return paragraph
 }
 
+function makeDocSection(docNode: tsdoc.DocNode): TSD.DocSection {
+	console.log(colors.blue(`Section`))
+	const section: TSD.DocSection = {
+		type: `section`,
+		content: [],
+	}
+	for (const sectionChild of docNode.getChildNodes()) {
+		console.log(` ` + sectionChild.kind)
+		switch (sectionChild.kind) {
+			case `Paragraph`: {
+				const paragraph = makeParagraph(sectionChild)
+				section.content.push(paragraph)
+			}
+		}
+	}
+	return section
+}
+
+function makeFunctionDocParameter(
+	paramBlockNode: tsdoc.DocNode,
+): TSD.ParamBlock {
+	console.log(colors.blue(` ParamBlock`))
+	const param: TSD.ParamBlock = {
+		type: `paramBlock`,
+		name: `???`,
+	}
+	let nameSet = false
+	for (const paramBlockChild of paramBlockNode.getChildNodes()) {
+		if (
+			!nameSet &&
+			paramBlockChild instanceof tsdoc.DocExcerpt &&
+			paramBlockChild.excerptKind === `ParamBlock_ParameterName`
+		) {
+			console.log(colors.blue(`  ParamBlock_ParameterName`))
+			param.name = paramBlockChild.content.toString()
+			nameSet = true
+		}
+		if (paramBlockChild.kind === `Section`) {
+			if (paramBlockChild.getChildNodes()[0]?.kind === `Paragraph`) {
+				param.desc = makeParagraph(paramBlockChild.getChildNodes()[0])
+			}
+		}
+	}
+	return param
+}
+
+function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
+	console.log(colors.blue(` Block`))
+	const block: TSD.DocBlock = {
+		type: `block`,
+		name: `???`,
+	}
+	for (const blockChild of docBlockNode.getChildNodes()) {
+		console.log(` ` + blockChild.kind)
+		switch (blockChild.kind) {
+			case `BlockTag`:
+				{
+					console.log(colors.blue(`  BlockTag`))
+					const blockTag = blockChild.getChildNodes()[0]
+					if (blockTag instanceof tsdoc.DocExcerpt) {
+						block.name = blockTag.content.toString()
+					}
+				}
+				break
+			case `Section`:
+				{
+					console.log(colors.blue(`  Section`))
+					const paragraph = blockChild.getChildNodes()[0]
+					const desc = makeParagraph(paragraph)
+					block.desc = desc
+				}
+				break
+		}
+	}
+	return block
+}
+
+function makeModifierTag(modifierTagNode: tsdoc.DocNode): string | undefined {
+	console.log(colors.blue(` BlockTag`))
+	const blockTag = modifierTagNode.getChildNodes()[0]
+	if (blockTag instanceof tsdoc.DocExcerpt) {
+		const tagName = blockTag.content.toString()
+		return tagName
+	}
+}
+
+function documentGeneralContent(
+	content: TSD.DocContent,
+	docNode: tsdoc.DocNode,
+): void {
+	switch (docNode.kind) {
+		case `Section`:
+			{
+				const section = makeDocSection(docNode)
+				content.sections.push(section)
+			}
+			break
+		case `Block`:
+			{
+				const block = makeDocBlock(docNode)
+				content.blocks.push(block)
+			}
+			break
+		case `BlockTag`:
+			{
+				const tagName = makeModifierTag(docNode)
+				if (tagName) {
+					content.modifierTags.push(tagName)
+				}
+			}
+			break
+	}
+}
+
 function documentFunction(
 	base: TSD.DocContent,
 	docComment: tsdoc.DocComment,
-): TSD.Doc {
+): TSD.FunctionDoc {
 	const doc: TSD.FunctionDoc = Object.assign(base, {
 		type: `function` as const,
 		params: [],
@@ -239,132 +358,69 @@ function documentFunction(
 	for (const child of docComment.getChildNodes()) {
 		console.log(child.kind)
 		switch (child.kind) {
-			case `Section`:
-				{
-					console.log(colors.blue(`Section`))
-					const section: TSD.DocSection = {
-						type: `section`,
-						content: [],
-					}
-					doc.sections.push(section)
-					for (const sectionChild of child.getChildNodes()) {
-						console.log(` ` + sectionChild.kind)
-						switch (sectionChild.kind) {
-							case `Paragraph`: {
-								const paragraph = makeParagraph(sectionChild)
-								section.content.push(paragraph)
-							}
-						}
-					}
-				}
-				break
 			case `ParamCollection`:
 				for (const paramChild of child.getChildNodes()) {
 					console.log(` ` + paramChild.kind)
 					if (paramChild.kind === `ParamBlock`) {
-						console.log(colors.blue(` ParamBlock`))
-						const param: TSD.ParamBlock = {
-							type: `paramBlock`,
-							name: `???`,
-						}
-						let nameSet = false
-						for (const paramBlockChild of paramChild.getChildNodes()) {
-							if (
-								!nameSet &&
-								paramBlockChild instanceof tsdoc.DocExcerpt &&
-								paramBlockChild.excerptKind === `ParamBlock_ParameterName`
-							) {
-								console.log(colors.blue(`  ParamBlock_ParameterName`))
-								param.name = paramBlockChild.content.toString()
-								nameSet = true
-							}
-							if (paramBlockChild.kind === `Section`) {
-								if (paramBlockChild.getChildNodes()[0]?.kind === `Paragraph`) {
-									param.desc = makeParagraph(paramBlockChild.getChildNodes()[0])
-								}
-							}
-						}
+						const param = makeFunctionDocParameter(paramChild)
 						doc.params.push(param)
 					}
 				}
 				break
-			case `Block`:
-				{
-					console.log(colors.blue(` Block`))
-					const block: TSD.DocBlock = {
-						type: `block`,
-						name: `???`,
-					}
-					for (const blockChild of child.getChildNodes()) {
-						console.log(` ` + blockChild.kind)
-						switch (blockChild.kind) {
-							case `BlockTag`:
-								{
-									console.log(colors.blue(`  BlockTag`))
-									const blockTag = blockChild.getChildNodes()[0]
-									if (blockTag instanceof tsdoc.DocExcerpt) {
-										block.name = blockTag.content.toString()
-									}
-								}
-								break
-							case `Section`:
-								{
-									console.log(colors.blue(`  Section`))
-									const paragraph = blockChild.getChildNodes()[0]
-									const desc = makeParagraph(paragraph)
-									block.desc = desc
-								}
-								break
-						}
-					}
-					doc.blocks.push(block)
-				}
-				break
-			case `BlockTag`:
-				{
-					console.log(colors.blue(` BlockTag`))
-					const blockTag = child.getChildNodes()[0]
-					if (blockTag instanceof tsdoc.DocExcerpt) {
-						const tagName = blockTag.content.toString()
-						doc.modifierTags.push(tagName)
-					}
-				}
-				break
+			default:
+				documentGeneralContent(doc, child)
 		}
+	}
+	return doc
+}
+
+function documentCompositeResource(
+	content: TSD.DocContent,
+	docComment: tsdoc.DocComment,
+	kind: TSD.CompositeEntity,
+): TSD.CompositeDoc {
+	const doc: TSD.CompositeDoc = Object.assign(content, {
+		type: `composite` as const,
+		kind,
+		properties: [],
+	})
+	for (const child of docComment.getChildNodes()) {
+		console.log(child.kind)
+		documentGeneralContent(doc, child)
 	}
 	return doc
 }
 
 function assembleJsonDocForResource(
 	parser: tsdoc.TSDocParser,
-	kit: DiscoveredResource,
+	resource: DiscoveredResource,
 	name: string,
 ): TSD.Doc {
-	const parserContext: tsdoc.ParserContext = parser.parseRange(kit.textRange)
-	const docComment: tsdoc.DocComment = parserContext.docComment
-	const docType = kit.compilerNode.kind
+	const parserContext = parser.parseRange(resource.textRange)
+	const docComment = parserContext.docComment
+	const docType = resource.compilerNode.kind
 	const content: TSD.DocContent = {
 		name,
 		sections: [],
 		modifierTags: [],
 		blocks: [],
 	}
+
 	let doc: TSD.Doc
 	switch (docType) {
 		case TS.SyntaxKind.ClassDeclaration:
 			console.log(`ClassDeclaration`)
-			doc = Object.assign(content, {
-				type: `composite` as const,
-				kind: `class` as const,
-				properties: [],
-			})
+			doc = documentCompositeResource(content, docComment, `class`)
+			if (resource.properties) {
+				for (const [pKey, pVal] of resource.properties) {
+					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
+					doc.properties.push(pDoc)
+				}
+			}
 			break
 		case TS.SyntaxKind.FunctionDeclaration:
-			{
-				console.log(`FunctionDeclaration`)
-				doc = documentFunction(content, docComment)
-			}
-
+			console.log(`FunctionDeclaration`)
+			doc = documentFunction(content, docComment)
 			break
 		default:
 			throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)

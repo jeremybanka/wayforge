@@ -119,7 +119,25 @@
 	},
 	{
 		"name": "Example",
-		"sections": [],
+		"sections": [
+			{
+				"type": "section",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "plainText",
+								"text": "Whatever"
+							},
+							{
+								"type": "softBreak"
+							}
+						]
+					}
+				]
+			}
+		],
 		"modifierTags": [],
 		"blocks": [],
 		"type": "composite",
