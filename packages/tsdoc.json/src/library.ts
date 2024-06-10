@@ -409,7 +409,7 @@ function assembleJsonDocForResource(
 	let doc: TSD.Doc
 	switch (docType) {
 		case TS.SyntaxKind.ClassDeclaration:
-			console.log(`ClassDeclaration`)
+			console.log(TS.SyntaxKind[docType])
 			doc = documentCompositeResource(content, docComment, `class`)
 			if (resource.properties) {
 				for (const [pKey, pVal] of resource.properties) {
@@ -419,8 +419,18 @@ function assembleJsonDocForResource(
 			}
 			break
 		case TS.SyntaxKind.FunctionDeclaration:
-			console.log(`FunctionDeclaration`)
+		case TS.SyntaxKind.MethodDeclaration:
+			console.log(TS.SyntaxKind[docType])
 			doc = documentFunction(content, docComment)
+			break
+		case TS.SyntaxKind.PropertyDeclaration:
+			{
+				console.log(TS.SyntaxKind[docType], Object.keys(resource.compilerNode))
+				console.log(
+					resource.compilerNode.getChildren().map((c) => TS.SyntaxKind[c.kind]),
+				)
+				// const propertyIsComposite = resource.compilerNode.getC
+			}
 			break
 		default:
 			throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)

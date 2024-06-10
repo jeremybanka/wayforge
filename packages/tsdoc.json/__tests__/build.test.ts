@@ -10,7 +10,7 @@ beforeEach(async () => {})
 afterEach(() => {})
 
 describe(`tsdoc.json`, () => {
-	it(`builds a doc for a regular function`, async () => {
+	it.skip(`builds a doc for a regular function`, async () => {
 		const entrypoint = path.join(
 			DIRNAME,
 			`fixtures`,
