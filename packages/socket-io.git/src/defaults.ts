@@ -71,6 +71,16 @@ export const DEFAULT_SIMPLE_GIT_RETURN_VALUES: SimpleGitReturnValues = {
 			deletions: 0,
 		},
 	},
+	countObjects: {
+		count: 0,
+		size: 0,
+		inPack: 0,
+		packs: 0,
+		sizePack: 0,
+		prunePackable: 0,
+		garbage: 0,
+		sizeGarbage: 0,
+	},
 	cwd: FILLER,
 	deleteLocalBranch: {
 		branch: FILLER,

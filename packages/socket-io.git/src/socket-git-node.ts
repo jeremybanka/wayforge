@@ -89,6 +89,7 @@ export const serveSimpleGit =
 					clean: makeHandler(`clean`),
 					clone: makeHandler(`clone`),
 					commit: makeHandler(`commit`),
+					countObjects: makeHandler(`countObjects`),
 					cwd: makeHandler(`cwd`),
 					deleteLocalBranch: makeHandler(`deleteLocalBranch`),
 					deleteLocalBranches: makeHandler(`deleteLocalBranches`),
