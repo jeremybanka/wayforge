@@ -10,9 +10,32 @@ beforeEach(async () => {})
 afterEach(() => {})
 
 describe(`tsdoc.json`, () => {
-	it(`builds docs for atom.io`, () => {
-		const entrypoint = path.join(DIRNAME, `fixtures`, `src`, `index.ts`)
+	it(`builds a doc for a regular function`, async () => {
+		const entrypoint = path.join(
+			DIRNAME,
+			`fixtures`,
+			`src`,
+			`function-declaration.ts`,
+		)
 		const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
 		const doc = compileDocs({ entrypoint, tsconfigPath })
+		await Bun.write(
+			path.join(DIRNAME, `fixtures`, `src`, `function-declaration.json`),
+			JSON.stringify(doc, null, `\t`),
+		)
+	})
+	it(`builds a doc for a class`, async () => {
+		const entrypoint = path.join(
+			DIRNAME,
+			`fixtures`,
+			`src`,
+			`class-declaration.ts`,
+		)
+		const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
+		const doc = compileDocs({ entrypoint, tsconfigPath })
+		await Bun.write(
+			path.join(DIRNAME, `fixtures`, `src`, `class-declaration.json`),
+			JSON.stringify(doc, null, `\t`),
+		)
 	})
 })
