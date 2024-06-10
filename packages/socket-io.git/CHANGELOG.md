@@ -1,5 +1,11 @@
 # socket-io.git
 
+## 0.2.2
+
+### Patch Changes
+
+- 05d6ed2: ✨ Support `countObjects` (downstream of simple-git https://github.com/steveukx/git-js/pull/1002).
+
 ## 0.2.1
 
 ### Patch Changes
