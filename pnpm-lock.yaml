@@ -30,8 +30,8 @@ importers:
         specifier: 7.13.0
         version: 7.13.0(eslint@8.57.0)(typescript@5.4.5)
       c8:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: 10.1.0
+        version: 10.1.0(monocart-coverage-reports@2.8.3)
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -6618,10 +6618,12 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /c8@10.0.0:
-    resolution: {integrity: sha512-rdQecjxw16P8kwgMBjruaQyfF+R2o/mucCCK4VPktwq2HFMWLOHGyUasb46+WlUOVJX94d6dZolcJxzjCzWmXg==}
+  /c8@10.1.0(monocart-coverage-reports@2.8.3):
+    resolution: {integrity: sha512-ZI4PfC9AXU0AMyxROY06/0mM/Bi6KGMj1sWu0iqeUQpOCNk+hMWnZqYIEGZlZlUK3Hpb/HfIdYcvd50En0tYsA==}
     engines: {node: '>=18'}
     hasBin: true
+    peerDependencies:
+      monocart-coverage-reports: ^2.8.3
     dependencies:
       '@bcoe/v8-coverage': 0.2.3
       '@istanbuljs/schema': 0.1.3
@@ -6630,6 +6632,7 @@ packages:
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-reports: 3.1.7
+      monocart-coverage-reports: 2.8.3
       test-exclude: 7.0.1
       v8-to-istanbul: 9.2.0
       yargs: 17.7.2
@@ -6927,6 +6930,10 @@ packages:
 
   /console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
+
+  /console-grid@2.2.2:
+    resolution: {integrity: sha512-ohlgXexdDTKLNsZz7DSJuCAwmRc8omSS61txOk39W3NOthgKGr1a1jJpZ5BCQe4PlrwMw01OvPQ1Bl3G7Y/uFg==}
+    dev: true
 
   /content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
@@ -7519,6 +7526,10 @@ packages:
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
+
+  /eight-colors@1.3.0:
+    resolution: {integrity: sha512-hVoK898cR71ADj7L1LZWaECLaSkzzPtqGXIaKv4K6Pzb72QgjLVsQaNI+ELDQQshzFvgp5xTPkaYkPGqw3YR+g==}
+    dev: true
 
   /electron-to-chromium@1.4.796:
     resolution: {integrity: sha512-NglN/xprcM+SHD2XCli4oC6bWe6kHoytcyLKCWXmRL854F0qhPhaYgUswUsglnPxYaNQIg2uMY4BvaomIf3kLA==}
@@ -10020,6 +10031,10 @@ packages:
     hasBin: true
     dev: true
 
+  /lz-utils@2.0.2:
+    resolution: {integrity: sha512-i1PJN4hNEevkrvLMqNWCCac1BcB5SRaghywG7HVzWOyVkFOasLCG19ND1sY1F/ZEsM6SnGtoXyBWnmfqOM5r6g==}
+    dev: true
+
   /magic-string@0.30.5:
     resolution: {integrity: sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==}
     engines: {node: '>=12'}
@@ -10603,6 +10618,34 @@ packages:
 
   /modern-ahocorasick@1.0.1:
     resolution: {integrity: sha512-yoe+JbhTClckZ67b2itRtistFKf8yPYelHLc7e5xAwtNAXxM6wJTUx2C7QeVSJFDzKT7bCIFyBVybPMKvmB9AA==}
+
+  /monocart-code-viewer@1.1.3:
+    resolution: {integrity: sha512-v1dbT8fDr9vjyjEYE035JSC4JXBA/Z034mogVJWRO3khX0/guVwGb69iSIYSzTbR9+KpRKV/C/AscRAkUwP32w==}
+    dev: true
+
+  /monocart-coverage-reports@2.8.3:
+    resolution: {integrity: sha512-F6SK6VqKofrnjGtM0Cu9BLgp1ZZPMJhHq8rd8l0vudj3amrVRb+H9UH5X9Xxp4JuGVSODg0XfTDpFOxVjIGjUw==}
+    hasBin: true
+    dependencies:
+      console-grid: 2.2.2
+      eight-colors: 1.3.0
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.1.7
+      lz-utils: 2.0.2
+      monocart-code-viewer: 1.1.3
+      monocart-formatter: 3.0.0
+      monocart-locator: 1.0.0
+      turbogrid: 3.1.0
+    dev: true
+
+  /monocart-formatter@3.0.0:
+    resolution: {integrity: sha512-91OQpUb/9iDqvrblUv6ki11Jxi1d3Fp5u2jfVAPl3UdNp9TM+iBleLzXntUS51W0o+zoya3CJjZZ01z2XWn25g==}
+    dev: true
+
+  /monocart-locator@1.0.0:
+    resolution: {integrity: sha512-qIHJ7f99miF2HbVUWAFKR93SfgGYpFPUCQPmW9q1VXU9onxMUFJxhQDdG3HkEteogUbsKB7Gr5MRgjzcIxwTaQ==}
+    dev: true
 
   /mrmime@2.0.0:
     resolution: {integrity: sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw==}
@@ -12724,6 +12767,10 @@ packages:
       turbo-linux-arm64: 2.0.3
       turbo-windows-64: 2.0.3
       turbo-windows-arm64: 2.0.3
+    dev: true
+
+  /turbogrid@3.1.0:
+    resolution: {integrity: sha512-IpNYGO26pJkd8c0qSOWVHfg8lYuVhbweaWboy7Xvg/KTI3WjhgYzPS6szPMoxXLEGAhykXagaQCRYl9pGapN6g==}
     dev: true
 
   /type-check@0.4.0:
