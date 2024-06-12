@@ -417,6 +417,7 @@ function assembleJsonDocForResource(
 					doc.properties.push(pDoc)
 				}
 			}
+
 			break
 		case TS.SyntaxKind.FunctionDeclaration:
 		case TS.SyntaxKind.MethodDeclaration:
