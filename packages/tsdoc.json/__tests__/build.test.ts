@@ -18,10 +18,15 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`function--classic-regular.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
-				path.join(DIRNAME, `fixtures`, `src`, `function--classic-regular.json`),
+				path.join(
+					DIRNAME,
+					`fixtures`,
+					`src`,
+					`function--classic-regular.tsdoc.json`,
+				),
 				JSON.stringify(docs, null, `\t`),
 			)
 			const doc = docs[0]
@@ -47,14 +52,14 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`class--atomic-property-declaration.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
 					DIRNAME,
 					`fixtures`,
 					`src`,
-					`class--atomic-property-declaration.json`,
+					`class--atomic-property-declaration.tsdoc.json`,
 				),
 				JSON.stringify(docs, null, `\t`),
 			)
@@ -78,14 +83,14 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`class--composite-property-declaration.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
 					DIRNAME,
 					`fixtures`,
 					`src`,
-					`class--composite-property-declaration.json`,
+					`class--composite-property-declaration.tsdoc.json`,
 				),
 				JSON.stringify(docs, null, `\t`),
 			)
@@ -114,14 +119,14 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`class--method-classic-regular-definition.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
 					DIRNAME,
 					`fixtures`,
 					`src`,
-					`class--method-classic-regular-definition.json`,
+					`class--method-classic-regular-definition.tsdoc.json`,
 				),
 				JSON.stringify(docs, null, `\t`),
 			)
