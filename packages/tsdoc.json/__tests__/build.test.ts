@@ -53,7 +53,27 @@ describe(`tsdoc.json`, () => {
 		})
 	})
 
-	describe(`interfaces`, () => {})
+	describe(`interfaces`, () => {
+		test(`interface declaration`, async () => {
+			await testDocCompiler(`interface`, ([doc]) => {
+				expect(doc.name).toBe(`InterfaceDeclaration`)
+				expect(doc.sections.length).toBe(1)
+				expect(doc.modifierTags.length).toBe(1)
+				expect(doc.blocks.length).toBe(0)
+				if (doc.type !== `composite`) {
+					throw new Error(`Expected type to be composite`)
+				}
+				if (doc.kind !== `interface`) {
+					throw new Error(`Expected kind to be interface`)
+				}
+				expect(doc.properties.length).toBe(2)
+				expect(doc.properties[0].name).toBe(`%CALL_SIGNATURE%`)
+				expect(doc.properties[0].type).toBe(`function`)
+				expect(doc.properties[1].name).toBe(`[Symbol.dispose]`)
+				expect(doc.properties[1].type).toBe(`atomic`)
+			})
+		})
+	})
 
 	describe(`variables`, () => {
 		test(`atomic variable declaration`, async () => {})

@@ -23,6 +23,7 @@ function isDeclarationKind(kind: TS.SyntaxKind): boolean {
 	return (
 		kind === TS.SyntaxKind.ArrowFunction ||
 		kind === TS.SyntaxKind.BindingElement ||
+		kind === TS.SyntaxKind.CallSignature || // 😈
 		kind === TS.SyntaxKind.ClassDeclaration ||
 		kind === TS.SyntaxKind.ClassExpression ||
 		kind === TS.SyntaxKind.Constructor ||
@@ -88,6 +89,29 @@ function getJSDocCommentRanges(node: TS.Node, text: string): TS.CommentRange[] {
 	)
 }
 
+export const CALL_SIGNATURE_BRAND = `%CALL_SIGNATURE%`
+function nameNode(node: TS.Node): string {
+	let name: string | null = null
+	if (`name` in node) {
+		const nodeName = node.name as TS.Node
+		if (TS.isIdentifier(nodeName)) {
+			name = nodeName.getText()
+		}
+		if (nodeName.kind === TS.SyntaxKind.ComputedPropertyName) {
+			name = nodeName.getText()
+		}
+	}
+	switch (node.kind) {
+		case TS.SyntaxKind.CallSignature:
+			name = CALL_SIGNATURE_BRAND
+			break
+	}
+	if (name === null) {
+		throw new Error(`Could not find name for node`)
+	}
+	return name
+}
+
 export interface DiscoveredResource {
 	compilerNode: TS.Node
 	textRange?: tsdoc.TextRange
@@ -133,9 +157,7 @@ function walkCompilerAstAndDiscoverResources(
 			}
 			console.log(`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`)
 
-			const name =
-				// @ts-expect-error TS is not smart enough to know that node.name is a TS.Identifier
-				`name` in node && TS.isIdentifier(node.name) ? node.name.text : null
+			const name = nameNode(node)
 			console.log(
 				colors.cyan(`${indent}^ ${name} `) +
 					colors.magenta(`(${isNested ? `NESTED` : `EXPORTED`})`),
@@ -218,9 +240,9 @@ function walkCompilerAstAndDiscoverResources(
 								.filter(
 									(child) => child.kind === TS.SyntaxKind.PropertySignature,
 								)
-							const properties = new Map<string, DiscoveredResource>()
-							Object.assign(packageExport, { properties })
 							if (propertySignatures) {
+								const properties = new Map<string, DiscoveredResource>()
+								Object.assign(packageExport, { properties })
 								for (const propertySignature of propertySignatures) {
 									walkCompilerAstAndDiscoverResources(
 										propertySignature,
@@ -236,6 +258,8 @@ function walkCompilerAstAndDiscoverResources(
 				}
 			}
 		}
+	} else {
+		console.log(TS.SyntaxKind[node.kind], `not declaration type`)
 	}
 	if (node.kind === TS.SyntaxKind.SourceFile) {
 		node.forEachChild((child) => {
@@ -511,6 +535,7 @@ function assembleJsonDocForResource(
 
 	let doc: TSD.Doc
 	switch (docType) {
+		case TS.SyntaxKind.CallSignature:
 		case TS.SyntaxKind.FunctionDeclaration:
 		case TS.SyntaxKind.MethodDeclaration:
 			doc = documentFunction(resourceName, comment)
@@ -518,6 +543,10 @@ function assembleJsonDocForResource(
 
 		case TS.SyntaxKind.ClassDeclaration:
 			doc = documentCompositeResource(resourceName, `class`, comment)
+			break
+
+		case TS.SyntaxKind.InterfaceDeclaration:
+			doc = documentCompositeResource(resourceName, `interface`, comment)
 			break
 
 		case TS.SyntaxKind.PropertyDeclaration:
