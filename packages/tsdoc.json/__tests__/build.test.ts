@@ -18,7 +18,7 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`function--classic-regular.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
@@ -52,7 +52,7 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`class--atomic-property-declaration.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
@@ -83,7 +83,7 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`class--composite-property-declaration.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
@@ -119,7 +119,7 @@ describe(`tsdoc.json`, () => {
 				`src`,
 				`class--method-classic-regular-definition.ts`,
 			)
-			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.tsdoc.json`)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
 			const docs = compileDocs({ entrypoint, tsconfigPath })
 			await Bun.write(
 				path.join(
