@@ -167,9 +167,9 @@ function walkCompilerAstAndDiscoverResources(
 									.filter(
 										(child) => child.kind === TS.SyntaxKind.PropertySignature,
 									)
-								const properties = new Map<string, DiscoveredResource>()
-								Object.assign(packageExport, { properties })
 								if (propertySignatures) {
+									const properties = new Map<string, DiscoveredResource>()
+									Object.assign(packageExport, { properties })
 									for (const propertySignature of propertySignatures) {
 										walkCompilerAstAndDiscoverResources(
 											propertySignature,
@@ -494,51 +494,50 @@ function documentCompositeResource(
 
 function assembleJsonDocForResource(
 	parser: tsdoc.TSDocParser,
+	resourceName: string,
 	resource: DiscoveredResource,
-	name: string,
 ): TSD.Doc {
 	let comment: tsdoc.DocComment | undefined
 	if (resource.textRange) {
 		comment = parser.parseRange(resource.textRange).docComment
 	}
+
 	const docType = resource.compilerNode.kind
 	console.log(
 		TS.SyntaxKind[docType],
-		`"${name}"`,
+		`"${resourceName}"`,
 		`properties: ${resource.properties ? `[${[...resource.properties.keys()].join(`, `)}]` : `none`}`,
 	)
 
 	let doc: TSD.Doc
 	switch (docType) {
-		case TS.SyntaxKind.ClassDeclaration:
-			doc = documentCompositeResource(name, `class`, comment)
-			if (resource.properties) {
-				for (const [pKey, pVal] of resource.properties) {
-					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
-					doc.properties.push(pDoc)
-				}
-			}
-			break
 		case TS.SyntaxKind.FunctionDeclaration:
 		case TS.SyntaxKind.MethodDeclaration:
-			doc = documentFunction(name, comment)
+			doc = documentFunction(resourceName, comment)
 			break
+
+		case TS.SyntaxKind.ClassDeclaration:
+			doc = documentCompositeResource(resourceName, `class`, comment)
+			break
+
 		case TS.SyntaxKind.PropertyDeclaration:
 		case TS.SyntaxKind.PropertySignature:
 		case TS.SyntaxKind.TypeAliasDeclaration:
 			if (resource.properties) {
-				doc = documentCompositeResource(name, `type`, comment)
-				for (const [pKey, pVal] of resource.properties) {
-					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
-					doc.properties.push(pDoc)
-				}
+				doc = documentCompositeResource(resourceName, `type`, comment)
 			} else {
-				doc = documentAtomicResource(name, `type`, comment)
+				doc = documentAtomicResource(resourceName, `type`, comment)
 			}
-
 			break
+
 		default:
 			throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
+	}
+	if (resource.properties && doc.type === `composite`) {
+		for (const [pKey, pVal] of resource.properties) {
+			const pDoc = assembleJsonDocForResource(parser, pKey, pVal)
+			doc.properties.push(pDoc)
+		}
 	}
 	return doc
 }
@@ -665,7 +664,7 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 	const parser = new tsdoc.TSDocParser(customConfiguration)
 	const jsonDocs: TSD.Doc[] = []
 	for (const [key, value] of discoveredResources) {
-		jsonDocs.push(assembleJsonDocForResource(parser, value, key))
+		jsonDocs.push(assembleJsonDocForResource(parser, key, value))
 	}
 	return jsonDocs
 }
