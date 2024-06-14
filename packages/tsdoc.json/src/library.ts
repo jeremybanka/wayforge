@@ -90,7 +90,7 @@ function getJSDocCommentRanges(node: TS.Node, text: string): TS.CommentRange[] {
 
 export interface DiscoveredResource {
 	compilerNode: TS.Node
-	textRange: tsdoc.TextRange
+	textRange?: tsdoc.TextRange
 	properties?: Map<string, DiscoveredResource>
 }
 
@@ -118,14 +118,18 @@ function walkCompilerAstAndDiscoverResources(
 			// Note that this reinvokes the compiler's scanner -- the result is not cached.
 			const comments: TS.CommentRange[] = getJSDocCommentRanges(node, buffer)
 
-			if (comments.length > 0) {
-				if (comments.length === 1) {
+			switch (comments.length) {
+				case 0:
+					foundCommentsSuffix = colors.cyan(`  (NO COMMENTS)`)
+					break
+				case 1:
 					foundCommentsSuffix = colors.cyan(`  (FOUND 1 COMMENT)`)
-				} else {
+					break
+				default:
 					foundCommentsSuffix = colors.cyan(
 						`  (FOUND ${comments.length} COMMENTS)`,
 					)
-				}
+					break
 			}
 			console.log(`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`)
 
@@ -412,60 +416,78 @@ function documentGeneralContent(
 }
 
 function documentFunction(
-	base: TSD.DocContent,
-	docComment: tsdoc.DocComment,
+	name: string,
+	comment?: tsdoc.DocComment,
 ): TSD.FunctionDoc {
-	const doc: TSD.FunctionDoc = Object.assign(base, {
+	const doc: TSD.FunctionDoc = {
+		name,
 		type: `function` as const,
 		params: [],
-	})
-	for (const child of docComment.getChildNodes()) {
-		console.log(child.kind)
-		switch (child.kind) {
-			case `ParamCollection`:
-				for (const paramChild of child.getChildNodes()) {
-					console.log(` ` + paramChild.kind)
-					if (paramChild.kind === `ParamBlock`) {
-						const param = makeFunctionDocParameter(paramChild)
-						doc.params.push(param)
+		sections: [],
+		modifierTags: [],
+		blocks: [],
+	}
+	if (comment) {
+		for (const child of comment.getChildNodes()) {
+			console.log(child.kind)
+			switch (child.kind) {
+				case `ParamCollection`:
+					for (const paramChild of child.getChildNodes()) {
+						console.log(` ` + paramChild.kind)
+						if (paramChild.kind === `ParamBlock`) {
+							const param = makeFunctionDocParameter(paramChild)
+							doc.params.push(param)
+						}
 					}
-				}
-				break
-			default:
-				documentGeneralContent(doc, child)
+					break
+				default:
+					documentGeneralContent(doc, child)
+			}
 		}
 	}
 	return doc
 }
 
 function documentAtomicResource(
-	content: TSD.DocContent,
-	docComment: tsdoc.DocComment,
+	name: string,
 	kind: TSD.AtomicEntity,
+	comment?: tsdoc.DocComment,
 ): TSD.AtomicDoc {
-	const doc: TSD.AtomicDoc = Object.assign(content, {
+	const doc: TSD.AtomicDoc = {
+		name,
 		type: `atomic` as const,
 		kind,
-	})
-	for (const child of docComment.getChildNodes()) {
-		console.log(child.kind)
-		documentGeneralContent(doc, child)
+		sections: [],
+		modifierTags: [],
+		blocks: [],
+	}
+	if (comment) {
+		for (const child of comment.getChildNodes()) {
+			console.log(child.kind)
+			documentGeneralContent(doc, child)
+		}
 	}
 	return doc
 }
 function documentCompositeResource(
-	content: TSD.DocContent,
-	docComment: tsdoc.DocComment,
+	name: string,
 	kind: TSD.CompositeEntity,
+	comment?: tsdoc.DocComment,
 ): TSD.CompositeDoc {
-	const doc: TSD.CompositeDoc = Object.assign(content, {
+	const doc: TSD.CompositeDoc = {
+		name,
 		type: `composite` as const,
 		kind,
+		sections: [],
+		modifierTags: [],
+		blocks: [],
 		properties: [],
-	})
-	for (const child of docComment.getChildNodes()) {
-		console.log(child.kind)
-		documentGeneralContent(doc, child)
+	}
+	if (comment) {
+		for (const child of comment.getChildNodes()) {
+			console.log(child.kind)
+			documentGeneralContent(doc, child)
+		}
 	}
 	return doc
 }
@@ -475,62 +497,45 @@ function assembleJsonDocForResource(
 	resource: DiscoveredResource,
 	name: string,
 ): TSD.Doc {
-	const parserContext = parser.parseRange(resource.textRange)
-	const docComment = parserContext.docComment
-	const docType = resource.compilerNode.kind
-	const content: TSD.DocContent = {
-		name,
-		sections: [],
-		modifierTags: [],
-		blocks: [],
+	let comment: tsdoc.DocComment | undefined
+	if (resource.textRange) {
+		comment = parser.parseRange(resource.textRange).docComment
 	}
+	const docType = resource.compilerNode.kind
 	console.log(
-		name,
-		TS.SyntaxKind[resource.compilerNode.kind],
-		resource.properties?.keys(),
+		TS.SyntaxKind[docType],
+		`"${name}"`,
+		`properties: ${resource.properties ? `[${[...resource.properties.keys()].join(`, `)}]` : `none`}`,
 	)
 
-	console.log(TS.SyntaxKind[docType])
 	let doc: TSD.Doc
 	switch (docType) {
+		case TS.SyntaxKind.ClassDeclaration:
+			doc = documentCompositeResource(name, `class`, comment)
+			if (resource.properties) {
+				for (const [pKey, pVal] of resource.properties) {
+					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
+					doc.properties.push(pDoc)
+				}
+			}
+			break
+		case TS.SyntaxKind.FunctionDeclaration:
+		case TS.SyntaxKind.MethodDeclaration:
+			doc = documentFunction(name, comment)
+			break
+		case TS.SyntaxKind.PropertyDeclaration:
+		case TS.SyntaxKind.PropertySignature:
 		case TS.SyntaxKind.TypeAliasDeclaration:
 			if (resource.properties) {
-				doc = documentCompositeResource(content, docComment, `type`)
+				doc = documentCompositeResource(name, `type`, comment)
 				for (const [pKey, pVal] of resource.properties) {
 					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
 					doc.properties.push(pDoc)
 				}
 			} else {
-				doc = documentAtomicResource(content, docComment, `type`)
-			}
-			break
-		case TS.SyntaxKind.ClassDeclaration:
-			doc = documentCompositeResource(content, docComment, `class`)
-			if (resource.properties) {
-				for (const [pKey, pVal] of resource.properties) {
-					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
-					doc.properties.push(pDoc)
-				}
+				doc = documentAtomicResource(name, `type`, comment)
 			}
 
-			break
-		case TS.SyntaxKind.FunctionDeclaration:
-		case TS.SyntaxKind.MethodDeclaration:
-			doc = documentFunction(content, docComment)
-			break
-		case TS.SyntaxKind.PropertyDeclaration:
-		case TS.SyntaxKind.PropertySignature:
-			{
-				if (resource.properties) {
-					doc = documentCompositeResource(content, docComment, `type`)
-					for (const [pKey, pVal] of resource.properties) {
-						const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
-						doc.properties.push(pDoc)
-					}
-				} else {
-					doc = documentAtomicResource(content, docComment, `type`)
-				}
-			}
 			break
 		default:
 			throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
