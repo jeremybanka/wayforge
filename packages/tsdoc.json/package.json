@@ -13,19 +13,14 @@
 	"files": ["bin", "dist", "src", "tsdj.schema.json"],
 	"main": "dist/tsdj.js",
 	"types": "dist/tsdj.d.ts",
-	"bin": {
-		"tsdj": "./bin/tsdj.x.js"
-	},
 	"dependencies": {
 		"@microsoft/tsdoc": "0.15.0",
 		"colors": "1.4.0"
 	},
 	"scripts": {
-		"build": "concurrently \"bun:build:*\" && bun run schema",
-		"build:lib": "rimraf dist && bun build --outdir dist --target node --external tsdj --external glob --external npmlog --external simple-git -- src/tsdj.ts ",
-		"build:bin": "rimraf bin && bun build --outdir bin --target node --external tsdj --external glob --external npmlog --external simple-git -- src/tsdj.x.ts",
+		"build": "concurrently \"bun:build:*\"",
+		"build:lib": "rimraf dist && bun build --outdir dist --target node --external @microsoft/tsdoc --external colors -- src/index.ts ",
 		"build:dts": "tsup",
-		"schema": "bun src/tsdj.x.ts --testPattern --testCommand --certifyCommand -- schema && mv tsdj.schema.json dist",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint .",
 		"lint:types": "tsc --noEmit",
