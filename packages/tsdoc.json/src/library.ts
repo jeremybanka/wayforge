@@ -148,10 +148,36 @@ function walkCompilerAstAndDiscoverResources(
 						),
 					}
 					switch (node.kind) {
-						case TS.SyntaxKind.InterfaceDeclaration:
-						case TS.SyntaxKind.VariableDeclaration:
 						case TS.SyntaxKind.TypeAliasDeclaration:
-						case TS.SyntaxKind.TypeLiteral:
+							{
+								const typeAlias = node
+									.getChildren()
+									.find((child) => child.kind === TS.SyntaxKind.TypeLiteral)
+
+								const syntaxList = typeAlias
+									?.getChildren()
+									.find((child) => child.kind === TS.SyntaxKind.SyntaxList)
+
+								const propertySignatures = syntaxList
+									?.getChildren()
+									.filter(
+										(child) => child.kind === TS.SyntaxKind.PropertySignature,
+									)
+								const properties = new Map<string, DiscoveredResource>()
+								Object.assign(packageExport, { properties })
+								if (propertySignatures) {
+									for (const propertySignature of propertySignatures) {
+										walkCompilerAstAndDiscoverResources(
+											propertySignature,
+											indent + `  `,
+											properties,
+											true,
+										)
+									}
+								}
+							}
+							break
+						case TS.SyntaxKind.InterfaceDeclaration:
 						case TS.SyntaxKind.ClassDeclaration:
 							{
 								const properties = new Map<string, DiscoveredResource>()
@@ -166,51 +192,39 @@ function walkCompilerAstAndDiscoverResources(
 								})
 							}
 							break
+						case TS.SyntaxKind.PropertySignature:
 						case TS.SyntaxKind.PropertyDeclaration: {
-							console.log(`😽 PropertyDeclaration`)
 							const typeLiteral = node
 								.getChildren()
 								.find((child) => child.kind === TS.SyntaxKind.TypeLiteral)
-							console.log(
-								`😽 TypeLiteral -`,
-								typeLiteral?.getFullText(),
-								`\n\tcontains ${typeLiteral
-									?.getChildren()
-									.map((c) => TS.SyntaxKind[c.kind])
-									.join(`, `)}`,
-							)
+							// console.log(
+							// 	`😽 TypeLiteral -`,
+							// 	typeLiteral?.getFullText(),
+							// 	`\n\tcontains ${typeLiteral
+							// 		?.getChildren()
+							// 		.map((c) => TS.SyntaxKind[c.kind])
+							// 		.join(`, `)}`,
+							// )
 							const syntaxList = typeLiteral
 								?.getChildren()
 								.find((child) => child.kind === TS.SyntaxKind.SyntaxList)
-							console.log(
-								`😽 SyntaxList -`,
-								syntaxList?.getFullText(),
-								`\n\tcontains ${syntaxList
-									?.getChildren()
-									.map((c) => TS.SyntaxKind[c.kind])
-									.join(`, `)}`,
-							)
-							const propertySignature = syntaxList
-								?.getChildren()
-								.find((child) => child.kind === TS.SyntaxKind.PropertySignature)
-							console.log(
-								`😽 PropertySignature -`,
-								propertySignature?.getFullText(),
-								`\n\tcontains ${propertySignature
-									?.getChildren()
-									.map((c) => TS.SyntaxKind[c.kind])
-									.join(`, `)}`,
-							)
 
-							if (propertySignature) {
-								const properties = new Map<string, DiscoveredResource>()
-								Object.assign(packageExport, { properties })
-								walkCompilerAstAndDiscoverResources(
-									propertySignature,
-									indent + `  `,
-									properties,
-									true,
+							const propertySignatures = syntaxList
+								?.getChildren()
+								.filter(
+									(child) => child.kind === TS.SyntaxKind.PropertySignature,
 								)
+							const properties = new Map<string, DiscoveredResource>()
+							Object.assign(packageExport, { properties })
+							if (propertySignatures) {
+								for (const propertySignature of propertySignatures) {
+									walkCompilerAstAndDiscoverResources(
+										propertySignature,
+										indent + `  `,
+										properties,
+										true,
+									)
+								}
 							}
 						}
 					}
@@ -479,6 +493,17 @@ function assembleJsonDocForResource(
 	console.log(TS.SyntaxKind[docType])
 	let doc: TSD.Doc
 	switch (docType) {
+		case TS.SyntaxKind.TypeAliasDeclaration:
+			if (resource.properties) {
+				doc = documentCompositeResource(content, docComment, `type`)
+				for (const [pKey, pVal] of resource.properties) {
+					const pDoc = assembleJsonDocForResource(parser, pVal, pKey)
+					doc.properties.push(pDoc)
+				}
+			} else {
+				doc = documentAtomicResource(content, docComment, `type`)
+			}
+			break
 		case TS.SyntaxKind.ClassDeclaration:
 			doc = documentCompositeResource(content, docComment, `class`)
 			if (resource.properties) {

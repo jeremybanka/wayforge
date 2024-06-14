@@ -10,6 +10,46 @@ beforeEach(async () => {})
 afterEach(() => {})
 
 describe(`tsdoc.json`, () => {
+	describe(`types`, () => {
+		test(`atomic type declaration`, async () => {})
+		test(`composite type declaration`, async () => {
+			const entrypoint = path.join(
+				DIRNAME,
+				`fixtures`,
+				`src`,
+				`type--composite.ts`,
+			)
+			const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
+			const docs = compileDocs({ entrypoint, tsconfigPath })
+			await Bun.write(
+				path.join(DIRNAME, `fixtures`, `src`, `type--composite.tsdoc.json`),
+				JSON.stringify(docs, null, `\t`),
+			)
+			expect(docs[0].name).toBe(`CompositeType`)
+			expect(docs[0].sections.length).toBe(1)
+			expect(docs[0].modifierTags.length).toBe(1)
+			expect(docs[0].blocks.length).toBe(0)
+			if (docs[0].type !== `composite`) {
+				throw new Error(`Expected type to be composite`)
+			}
+			if (docs[0].kind !== `type`) {
+				throw new Error(`Expected kind to be type`)
+			}
+			expect(docs[0].properties.length).toBe(2)
+			expect(docs[0].properties[0].name).toBe(`nestedCompositeType`)
+			if (docs[0].properties[0].type !== `composite`) {
+				throw new Error(`Expected type to be composite`)
+			}
+		})
+	})
+
+	describe(`interfaces`, () => {})
+
+	describe(`variables`, () => {
+		test(`atomic variable declaration`, async () => {})
+		test(`composite variable declaration`, async () => {})
+	})
+
 	describe(`regular functions`, () => {
 		it(`builds a doc for a regular function`, async () => {
 			const entrypoint = path.join(
