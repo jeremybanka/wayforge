@@ -98,19 +98,22 @@ describe(`tsdoc.json`, () => {
 		})
 		test(`overloaded function`, async () => {
 			await testDocCompiler(`function--classic-overloaded`, ([doc]) => {
-				if (doc.type !== `function` || !(`params` in doc)) {
+				if (doc.type !== `function`) {
 					throw new Error(`Expected type to be function`)
 				}
+				if (!(`overloads` in doc)) {
+					throw new Error(`Expected overloads to be defined`)
+				}
+				expect(doc.overloads.length).toBe(2)
 				expect(doc.name).toBe(`myFunction`)
-				expect(doc.sections.length).toBe(1)
-				expect(doc.modifierTags.length).toBe(1)
-				expect(doc.blocks.length).toBe(1)
+				const overload0 = doc.overloads[0]
+				expect(overload0.sections.length).toBe(1)
+				expect(overload0.modifierTags.length).toBe(1)
+				expect(overload0.blocks.length).toBe(2)
 
-				expect(doc.params.length).toBe(2)
-				expect(doc.params[0].name).toBe(`myParam`)
-				expect(doc.params[0].desc?.content[0].type).toBe(`plainText`)
-				expect(doc.params[1].name).toBe(`myParam2`)
-				expect(doc.params[1].desc?.content[0].type).toBe(`plainText`)
+				expect(overload0.params.length).toBe(1)
+				expect(overload0.params[0].name).toBe(`myParam`)
+				expect(overload0.params[0].desc?.content[0].type).toBe(`plainText`)
 			})
 		})
 	})
