@@ -17,7 +17,13 @@ export function logResources(
 		parseTSDoc(value)
 		if (value.properties) {
 			for (const member of value.properties.values()) {
-				parseTSDoc(member)
+				if (Array.isArray(member)) {
+					for (const subMember of member) {
+						parseTSDoc(subMember)
+					}
+				} else {
+					parseTSDoc(member)
+				}
 			}
 		}
 		break
