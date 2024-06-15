@@ -66,12 +66,11 @@ export namespace TSD {
 		}
 	>
 
-	export type OverloadedFunctionDoc = Flat<
-		DocContent & {
-			type: `function`
-			overloads: FunctionDoc[]
-		}
-	>
+	export type OverloadedFunctionDoc = Flat<{
+		name: string
+		type: `function`
+		overloads: FunctionDoc[]
+	}>
 
 	export type AtomicEntity = `constant` | `type` | `variable`
 	export type AtomicDoc = Flat<

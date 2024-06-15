@@ -35,15 +35,15 @@ describe(`tsdoc.json`, () => {
 		test(`composite type declaration`, async () => {
 			await testDocCompiler(`type--composite`, ([doc]) => {
 				expect(doc.name).toBe(`CompositeType`)
-				expect(doc.sections.length).toBe(1)
-				expect(doc.modifierTags.length).toBe(1)
-				expect(doc.blocks.length).toBe(0)
 				if (doc.type !== `composite`) {
 					throw new Error(`Expected type to be composite`)
 				}
 				if (doc.kind !== `type`) {
 					throw new Error(`Expected kind to be type`)
 				}
+				expect(doc.sections.length).toBe(1)
+				expect(doc.modifierTags.length).toBe(1)
+				expect(doc.blocks.length).toBe(0)
 				expect(doc.properties.length).toBe(2)
 				expect(doc.properties[0].name).toBe(`nestedCompositeType`)
 				if (doc.properties[0].type !== `composite`) {
@@ -57,15 +57,15 @@ describe(`tsdoc.json`, () => {
 		test(`interface declaration`, async () => {
 			await testDocCompiler(`interface`, ([doc]) => {
 				expect(doc.name).toBe(`InterfaceDeclaration`)
-				expect(doc.sections.length).toBe(1)
-				expect(doc.modifierTags.length).toBe(1)
-				expect(doc.blocks.length).toBe(0)
 				if (doc.type !== `composite`) {
 					throw new Error(`Expected type to be composite`)
 				}
 				if (doc.kind !== `interface`) {
 					throw new Error(`Expected kind to be interface`)
 				}
+				expect(doc.sections.length).toBe(1)
+				expect(doc.modifierTags.length).toBe(1)
+				expect(doc.blocks.length).toBe(0)
 				expect(doc.properties.length).toBe(2)
 				expect(doc.properties[0].name).toBe(`%CALL_SIGNATURE%`)
 				expect(doc.properties[0].type).toBe(`function`)
@@ -80,8 +80,8 @@ describe(`tsdoc.json`, () => {
 		test(`composite variable declaration`, async () => {})
 	})
 
-	describe(`regular functions`, () => {
-		it(`builds a doc for a regular function`, async () => {
+	describe(`classic functions`, () => {
+		test(`regular function`, async () => {
 			await testDocCompiler(`function--classic-regular`, ([doc]) => {
 				if (doc.type !== `function` || !(`params` in doc)) {
 					throw new Error(`Expected type to be function`)
@@ -96,21 +96,38 @@ describe(`tsdoc.json`, () => {
 				expect(doc.params[0].desc?.content[0].type).toBe(`plainText`)
 			})
 		})
+		test(`overloaded function`, async () => {
+			await testDocCompiler(`function--classic-overloaded`, ([doc]) => {
+				if (doc.type !== `function` || !(`params` in doc)) {
+					throw new Error(`Expected type to be function`)
+				}
+				expect(doc.name).toBe(`myFunction`)
+				expect(doc.sections.length).toBe(1)
+				expect(doc.modifierTags.length).toBe(1)
+				expect(doc.blocks.length).toBe(1)
+
+				expect(doc.params.length).toBe(2)
+				expect(doc.params[0].name).toBe(`myParam`)
+				expect(doc.params[0].desc?.content[0].type).toBe(`plainText`)
+				expect(doc.params[1].name).toBe(`myParam2`)
+				expect(doc.params[1].desc?.content[0].type).toBe(`plainText`)
+			})
+		})
 	})
 
 	describe(`class declarations`, () => {
 		test(`atomic property declaration`, async () => {
 			await testDocCompiler(`class--atomic-property-declaration`, ([doc]) => {
 				expect(doc.name).toBe(`AtomicPropertyDeclaration`)
-				expect(doc.sections.length).toBe(1)
-				expect(doc.modifierTags.length).toBe(0)
-				expect(doc.blocks.length).toBe(0)
 				if (doc.type !== `composite`) {
 					throw new Error(`Expected type to be composite`)
 				}
 				if (doc.kind !== `class`) {
 					throw new Error(`Expected kind to be class`)
 				}
+				expect(doc.sections.length).toBe(1)
+				expect(doc.modifierTags.length).toBe(0)
+				expect(doc.blocks.length).toBe(0)
 				expect(doc.properties.length).toBe(1)
 				expect(doc.properties[0].name).toBe(`hello`)
 			})
@@ -118,15 +135,15 @@ describe(`tsdoc.json`, () => {
 		test(`composite property declaration`, async () => {
 			await testDocCompiler(`class--composite-property-declaration`, ([doc]) => {
 				expect(doc.name).toBe(`CompositePropertyDeclaration`)
-				expect(doc.sections.length).toBe(1)
-				expect(doc.modifierTags.length).toBe(0)
-				expect(doc.blocks.length).toBe(0)
 				if (doc.type !== `composite`) {
 					throw new Error(`Expected type to be composite`)
 				}
 				if (doc.kind !== `class`) {
 					throw new Error(`Expected kind to be class`)
 				}
+				expect(doc.sections.length).toBe(1)
+				expect(doc.modifierTags.length).toBe(0)
+				expect(doc.blocks.length).toBe(0)
 				expect(doc.properties.length).toBe(1)
 				expect(doc.properties[0].name).toBe(`compositeProperty`)
 				if (doc.properties[0].type !== `composite`) {
@@ -141,15 +158,15 @@ describe(`tsdoc.json`, () => {
 				`class--method-classic-regular-definition`,
 				([doc]) => {
 					expect(doc.name).toBe(`MethodClass`)
-					expect(doc.sections.length).toBe(1)
-					expect(doc.modifierTags.length).toBe(1)
-					expect(doc.blocks.length).toBe(0)
 					if (doc.type !== `composite`) {
 						throw new Error(`Expected type to be composite`)
 					}
 					if (doc.kind !== `class`) {
 						throw new Error(`Expected kind to be class`)
 					}
+					expect(doc.sections.length).toBe(1)
+					expect(doc.modifierTags.length).toBe(1)
+					expect(doc.blocks.length).toBe(0)
 					expect(doc.properties.length).toBe(1)
 					expect(doc.properties[0].name).toBe(`method`)
 				},

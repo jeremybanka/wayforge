@@ -115,13 +115,13 @@ function nameNode(node: TS.Node): string {
 export interface DiscoveredResource {
 	compilerNode: TS.Node
 	textRange?: tsdoc.TextRange
-	properties?: Map<string, DiscoveredResource>
+	properties?: Map<string, DiscoveredResource | DiscoveredResource[]>
 }
 
 function walkCompilerAstAndDiscoverResources(
 	node: TS.Node,
 	indent: string,
-	packageExports: Map<string, DiscoveredResource>,
+	packageExports: Map<string, DiscoveredResource | DiscoveredResource[]>,
 	isNested = false,
 ): void {
 	// The TypeScript AST doesn't store code comments directly.  If you want to find *every* comment,
@@ -163,75 +163,23 @@ function walkCompilerAstAndDiscoverResources(
 					colors.magenta(`(${isNested ? `NESTED` : `EXPORTED`})`),
 			)
 
-			if (name) {
-				for (const comment of comments) {
-					const packageExport = {
-						compilerNode: node,
-						textRange: tsdoc.TextRange.fromStringRange(
-							buffer,
-							comment.pos,
-							comment.end,
-						),
-					}
-					switch (node.kind) {
-						case TS.SyntaxKind.TypeAliasDeclaration:
-							{
-								const typeAlias = node
-									.getChildren()
-									.find((child) => child.kind === TS.SyntaxKind.TypeLiteral)
-
-								const syntaxList = typeAlias
-									?.getChildren()
-									.find((child) => child.kind === TS.SyntaxKind.SyntaxList)
-
-								const propertySignatures = syntaxList
-									?.getChildren()
-									.filter(
-										(child) => child.kind === TS.SyntaxKind.PropertySignature,
-									)
-								if (propertySignatures) {
-									const properties = new Map<string, DiscoveredResource>()
-									Object.assign(packageExport, { properties })
-									for (const propertySignature of propertySignatures) {
-										walkCompilerAstAndDiscoverResources(
-											propertySignature,
-											indent + `  `,
-											properties,
-											true,
-										)
-									}
-								}
-							}
-							break
-						case TS.SyntaxKind.InterfaceDeclaration:
-						case TS.SyntaxKind.ClassDeclaration:
-							{
-								const properties = new Map<string, DiscoveredResource>()
-								Object.assign(packageExport, { properties })
-								node.forEachChild((child) => {
-									walkCompilerAstAndDiscoverResources(
-										child,
-										indent + `  `,
-										properties,
-										true,
-									)
-								})
-							}
-							break
-						case TS.SyntaxKind.PropertySignature:
-						case TS.SyntaxKind.PropertyDeclaration: {
-							const typeLiteral = node
+			for (const comment of comments) {
+				const packageExport = {
+					compilerNode: node,
+					textRange: tsdoc.TextRange.fromStringRange(
+						buffer,
+						comment.pos,
+						comment.end,
+					),
+				}
+				switch (node.kind) {
+					case TS.SyntaxKind.TypeAliasDeclaration:
+						{
+							const typeAlias = node
 								.getChildren()
 								.find((child) => child.kind === TS.SyntaxKind.TypeLiteral)
-							// console.log(
-							// 	`😽 TypeLiteral -`,
-							// 	typeLiteral?.getFullText(),
-							// 	`\n\tcontains ${typeLiteral
-							// 		?.getChildren()
-							// 		.map((c) => TS.SyntaxKind[c.kind])
-							// 		.join(`, `)}`,
-							// )
-							const syntaxList = typeLiteral
+
+							const syntaxList = typeAlias
 								?.getChildren()
 								.find((child) => child.kind === TS.SyntaxKind.SyntaxList)
 
@@ -253,7 +201,64 @@ function walkCompilerAstAndDiscoverResources(
 								}
 							}
 						}
+						break
+					case TS.SyntaxKind.InterfaceDeclaration:
+					case TS.SyntaxKind.ClassDeclaration:
+						{
+							const properties = new Map<string, DiscoveredResource>()
+							Object.assign(packageExport, { properties })
+							node.forEachChild((child) => {
+								walkCompilerAstAndDiscoverResources(
+									child,
+									indent + `  `,
+									properties,
+									true,
+								)
+							})
+						}
+						break
+					case TS.SyntaxKind.PropertySignature:
+					case TS.SyntaxKind.PropertyDeclaration: {
+						const typeLiteral = node
+							.getChildren()
+							.find((child) => child.kind === TS.SyntaxKind.TypeLiteral)
+						// console.log(
+						// 	`😽 TypeLiteral -`,
+						// 	typeLiteral?.getFullText(),
+						// 	`\n\tcontains ${typeLiteral
+						// 		?.getChildren()
+						// 		.map((c) => TS.SyntaxKind[c.kind])
+						// 		.join(`, `)}`,
+						// )
+						const syntaxList = typeLiteral
+							?.getChildren()
+							.find((child) => child.kind === TS.SyntaxKind.SyntaxList)
+
+						const propertySignatures = syntaxList
+							?.getChildren()
+							.filter((child) => child.kind === TS.SyntaxKind.PropertySignature)
+						if (propertySignatures) {
+							const properties = new Map<string, DiscoveredResource>()
+							Object.assign(packageExport, { properties })
+							for (const propertySignature of propertySignatures) {
+								walkCompilerAstAndDiscoverResources(
+									propertySignature,
+									indent + `  `,
+									properties,
+									true,
+								)
+							}
+						}
 					}
+				}
+				const existing = packageExports.get(name)
+				if (existing) {
+					if (Array.isArray(existing)) {
+						existing.push(packageExport)
+					} else {
+						packageExports.set(name, [existing, packageExport])
+					}
+				} else {
 					packageExports.set(name, packageExport)
 				}
 			}
@@ -519,53 +524,86 @@ function documentCompositeResource(
 function assembleJsonDocForResource(
 	parser: tsdoc.TSDocParser,
 	resourceName: string,
-	resource: DiscoveredResource,
+	resources: DiscoveredResource | DiscoveredResource[],
 ): TSD.Doc {
-	let comment: tsdoc.DocComment | undefined
-	if (resource.textRange) {
-		comment = parser.parseRange(resource.textRange).docComment
-	}
-
-	const docType = resource.compilerNode.kind
-	console.log(
-		TS.SyntaxKind[docType],
-		`"${resourceName}"`,
-		`properties: ${resource.properties ? `[${[...resource.properties.keys()].join(`, `)}]` : `none`}`,
-	)
-
 	let doc: TSD.Doc
-	switch (docType) {
-		case TS.SyntaxKind.CallSignature:
-		case TS.SyntaxKind.FunctionDeclaration:
-		case TS.SyntaxKind.MethodDeclaration:
-			doc = documentFunction(resourceName, comment)
-			break
+	const isOverload = Array.isArray(resources)
+	if (isOverload) {
+		const kind = resources[0].compilerNode.kind
+		const isCallable =
+			kind === TS.SyntaxKind.CallSignature ||
+			kind === TS.SyntaxKind.FunctionDeclaration ||
+			kind === TS.SyntaxKind.MethodDeclaration
+		const allFunctions = resources.every(
+			(resource) => resource.compilerNode.kind === kind,
+		)
+		if (!allFunctions || !isCallable) {
+			throw new Error(
+				`Absurd: Expected all resources to be functions, but got ${resources
+					.map((resource) => resource.compilerNode.kind)
+					.join(`, `)}`,
+			)
+		}
+		doc = {
+			type: `function` as const,
+			name: resourceName,
+			overloads: [],
+		}
+		for (const resource of resources) {
+			const signatureDoc = assembleJsonDocForResource(
+				parser,
+				resourceName,
+				resource,
+			) as TSD.FunctionDoc
+			doc.overloads.push(signatureDoc)
+		}
+	} else {
+		const resource = resources
+		let comment: tsdoc.DocComment | undefined
+		if (resource.textRange) {
+			comment = parser.parseRange(resource.textRange).docComment
+		}
 
-		case TS.SyntaxKind.ClassDeclaration:
-			doc = documentCompositeResource(resourceName, `class`, comment)
-			break
+		const docType = resource.compilerNode.kind
+		console.log(
+			TS.SyntaxKind[docType],
+			`"${resourceName}"`,
+			`properties: ${resource.properties ? `[${[...resource.properties.keys()].join(`, `)}]` : `none`}`,
+		)
 
-		case TS.SyntaxKind.InterfaceDeclaration:
-			doc = documentCompositeResource(resourceName, `interface`, comment)
-			break
+		switch (docType) {
+			case TS.SyntaxKind.CallSignature:
+			case TS.SyntaxKind.FunctionDeclaration:
+			case TS.SyntaxKind.MethodDeclaration:
+				doc = documentFunction(resourceName, comment)
+				break
 
-		case TS.SyntaxKind.PropertyDeclaration:
-		case TS.SyntaxKind.PropertySignature:
-		case TS.SyntaxKind.TypeAliasDeclaration:
-			if (resource.properties) {
-				doc = documentCompositeResource(resourceName, `type`, comment)
-			} else {
-				doc = documentAtomicResource(resourceName, `type`, comment)
+			case TS.SyntaxKind.ClassDeclaration:
+				doc = documentCompositeResource(resourceName, `class`, comment)
+				break
+
+			case TS.SyntaxKind.InterfaceDeclaration:
+				doc = documentCompositeResource(resourceName, `interface`, comment)
+				break
+
+			case TS.SyntaxKind.PropertyDeclaration:
+			case TS.SyntaxKind.PropertySignature:
+			case TS.SyntaxKind.TypeAliasDeclaration:
+				if (resource.properties) {
+					doc = documentCompositeResource(resourceName, `type`, comment)
+				} else {
+					doc = documentAtomicResource(resourceName, `type`, comment)
+				}
+				break
+
+			default:
+				throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
+		}
+		if (resource.properties && doc.type === `composite`) {
+			for (const [pKey, pVal] of resource.properties) {
+				const pDoc = assembleJsonDocForResource(parser, pKey, pVal)
+				doc.properties.push(pDoc)
 			}
-			break
-
-		default:
-			throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
-	}
-	if (resource.properties && doc.type === `composite`) {
-		for (const [pKey, pVal] of resource.properties) {
-			const pDoc = assembleJsonDocForResource(parser, pKey, pVal)
-			doc.properties.push(pDoc)
 		}
 	}
 	return doc
@@ -655,7 +693,10 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 			os.EOL,
 	)
 
-	const discoveredResources = new Map<string, DiscoveredResource>()
+	const discoveredResources = new Map<
+		string,
+		DiscoveredResource | DiscoveredResource[]
+	>()
 
 	walkCompilerAstAndDiscoverResources(sourceFile, ``, discoveredResources)
 	const subPackageSourceFilenames = program
