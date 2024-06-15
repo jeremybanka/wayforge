@@ -7,7 +7,7 @@ import { ATOM_IO_ROOT } from "./constants"
 import discoverSubmodules from "./discover-submodules.node"
 
 function runWorker(submodule: string) {
-	if (submodule === `ephemeral`) {
+	if (submodule === `.`) {
 		return new Promise((resolve, reject) => {
 			const worker = new Worker(
 				path.join(ATOM_IO_ROOT, `__scripts__`, `tsdoc.worker.ts`),

@@ -44,7 +44,7 @@ describe(`tsdoc.json`, () => {
 				expect(doc.sections.length).toBe(1)
 				expect(doc.modifierTags.length).toBe(1)
 				expect(doc.blocks.length).toBe(0)
-				expect(doc.properties.length).toBe(2)
+				expect(doc.properties.length).toBe(3)
 				expect(doc.properties[0].name).toBe(`nestedCompositeType`)
 				if (doc.properties[0].type !== `composite`) {
 					throw new Error(`Expected type to be composite`)
@@ -104,7 +104,7 @@ describe(`tsdoc.json`, () => {
 				if (!(`overloads` in doc)) {
 					throw new Error(`Expected overloads to be defined`)
 				}
-				expect(doc.overloads.length).toBe(2)
+				expect(doc.overloads.length).toBe(3)
 				expect(doc.name).toBe(`myFunction`)
 				const overload0 = doc.overloads[0]
 				expect(overload0.sections.length).toBe(1)
