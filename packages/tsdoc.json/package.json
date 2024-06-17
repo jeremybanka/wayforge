@@ -10,13 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src",
-		"react/dist",
-		"react/package.json",
-		"react/src"
-	],
+	"files": ["dist", "src", "react/dist", "react/package.json", "react/src"],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
