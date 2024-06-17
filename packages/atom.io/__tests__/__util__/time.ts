@@ -1,4 +1,4 @@
-import type { Func } from "atom.io"
+import type { Func } from "atom.io/internal"
 
 // wrap a callback in performance.measure
 export function time(key: string, callback: Func): PerformanceMeasure {

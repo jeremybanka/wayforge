@@ -1,7 +1,7 @@
 import type {
-	MoleculeKey,
 	MoleculeConstructor,
 	MoleculeFamilyToken,
+	MoleculeKey,
 	MoleculeToken,
 	ReadableToken,
 	StateCreation,

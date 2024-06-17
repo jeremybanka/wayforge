@@ -1,6 +1,5 @@
 import type {
 	AtomToken,
-	Func,
 	Logger,
 	MoleculeFamily,
 	MoleculeToken,
@@ -19,6 +18,7 @@ import { Junction } from "~/packages/rel8/junction/src"
 
 import type {
 	Atom,
+	Func,
 	Molecule,
 	ReadonlySelector,
 	Tracker,

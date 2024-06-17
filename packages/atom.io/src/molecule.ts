@@ -1,6 +1,5 @@
 import type {
 	ActorToolkit,
-	Flat,
 	MoleculeCreation,
 	MoleculeDisposal,
 	MutableAtomFamilyToken,
@@ -17,7 +16,7 @@ import type {
 	WritableToken,
 } from "atom.io"
 import type { JoinToken } from "atom.io/data"
-import type { Store, Subject, Transceiver } from "atom.io/internal"
+import type { Flat, Store, Subject, Transceiver } from "atom.io/internal"
 import {
 	createMoleculeFamily,
 	IMPLICIT,
