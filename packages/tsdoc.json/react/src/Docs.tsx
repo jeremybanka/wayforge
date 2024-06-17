@@ -10,6 +10,7 @@ export function Docs({ docs, className = `` }: DocsProps): JSX.Element {
 			{docs.map((doc) => (
 				<Doc key={doc.name} doc={doc} />
 			))}
+			<span>{docs.length}</span>
 		</div>
 	)
 }

@@ -1,7 +1,6 @@
 import type {
 	CtorToolkit,
 	getState,
-	MK,
 	MoleculeConstructor,
 	MoleculeCreation,
 	MoleculeFamilyToken,
@@ -128,7 +127,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				withdraw(token, rootStore),
 				newest(rootStore),
 			)
-		}) as CtorToolkit<MK<M>>[`bond`],
+		}) as CtorToolkit<MoleculeKey<M>>[`bond`],
 		claim: (below, options) => {
 			const { exclusive } = options
 			const belowMolecule = newest(store).molecules.get(stringifyJson(below.key))
@@ -154,7 +153,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				k,
 				...p,
 			),
-	} satisfies CtorToolkit<MK<M>>
+	} satisfies CtorToolkit<MoleculeKey<M>>
 
 	const family = withdraw(familyToken, store)
 	const Constructor = family.new
