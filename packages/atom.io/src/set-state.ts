@@ -3,6 +3,12 @@ import type { Json } from "rel8"
 
 import type { WritableFamilyToken, WritableToken } from "."
 
+/**
+ * @public
+ * Set the value of a state into the implicit store.
+ * @param token - The unique identifier of the state to set.
+ * @param value - The new value of the state.
+ */
 export function setState<T, New extends T>(
 	token: WritableToken<T>,
 	value: New | ((oldValue: T) => New),

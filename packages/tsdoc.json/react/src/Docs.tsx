@@ -19,5 +19,25 @@ export type DocProps = {
 	doc: TSD.Doc
 }
 export function Doc({ doc }: DocProps): JSX.Element {
-	return <div>{doc.name}</div>
+	return (
+		<article>
+			<header>
+				<span>{doc.name}</span>
+				<span>
+					{` `}({`kind` in doc ? doc.kind : doc.type})
+				</span>
+			</header>
+			<main>
+				{doc.type === `function` && !(`overloads` in doc)
+					? doc.sections.map((section) => (
+							<div key={JSON.stringify(section)}>
+								{section.content.map((p) => (
+									<p key={p.content}>{p.content.map((c) => c.text)}</p>
+								))}
+							</div>
+						))
+					: null}
+			</main>
+		</article>
+	)
 }
