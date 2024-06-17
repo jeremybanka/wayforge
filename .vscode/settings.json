@@ -35,6 +35,7 @@
 		"svgr",
 		"testid",
 		"treeshake",
+		"tsdoc",
 		"tsup",
 		"unsub",
 		"wayforge",
