@@ -1,10 +1,10 @@
-#! bun
+#!bun
 
 import path from "node:path"
 import { Worker } from "node:worker_threads"
 
-import { ATOM_IO_ROOT } from "./constants"
-import discoverSubmodules from "./discover-submodules.node"
+import { ATOM_IO_ROOT } from "~/packages/atom.io/__scripts__/constants"
+import discoverSubmodules from "~/packages/atom.io/__scripts__/discover-submodules.node"
 
 function runWorker(submodule: string) {
 	if (submodule === `.`) {

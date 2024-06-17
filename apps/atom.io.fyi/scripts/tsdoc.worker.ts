@@ -2,7 +2,7 @@ import path from "node:path"
 
 import { compileDocs } from "~/packages/tsdoc.json/src/library"
 
-import { ATOM_IO_ROOT } from "./constants"
+import { ATOM_IO_ROOT } from "../../../packages/atom.io/__scripts__/constants"
 
 declare const self: Worker
 self.onmessage = tsDocWorkerJob
