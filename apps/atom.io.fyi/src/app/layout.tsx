@@ -1,13 +1,20 @@
 import "./code.scss"
 import "./globals.scss"
 
+import fs from "node:fs"
+
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { ATOM_IO_ROOT } from "~/packages/atom.io/__scripts__/constants"
+
 import scss from "./layout.module.scss"
 import { Theme } from "./Theme"
+
+const packageJsonText = fs.readFileSync(`${ATOM_IO_ROOT}/package.json`, `utf-8`)
+const packageJson = JSON.parse(packageJsonText)
 
 export const metadata: Metadata = {
 	title: `Reactive Data • atom.io`,
@@ -41,7 +48,12 @@ export default function RootLayout({
 					<span>🕊️ Free Palestine 🇵🇸</span>
 				</aside>
 				<main>{children}</main>
-				<footer>♥️ jeremybanka</footer>
+				<footer>
+					<span>
+						<code>{packageJson.version}</code>
+					</span>
+					<span>♥️ jeremybanka</span>
+				</footer>
 				<Analytics />
 				<SpeedInsights />
 			</body>
