@@ -3,14 +3,15 @@
 import path from "node:path"
 import { Worker } from "node:worker_threads"
 
-import { ATOM_IO_ROOT } from "~/packages/atom.io/__scripts__/constants"
 import discoverSubmodules from "~/packages/atom.io/__scripts__/discover-submodules.node"
+
+import { ATOM_IO_FYI_ROOT } from "./constants"
 
 function runWorker(submodule: string) {
 	if (submodule === `.`) {
 		return new Promise((resolve, reject) => {
 			const worker = new Worker(
-				path.join(ATOM_IO_ROOT, `__scripts__`, `tsdoc.worker.ts`),
+				path.join(ATOM_IO_FYI_ROOT, `scripts`, `tsdoc.worker.ts`),
 			)
 			worker.postMessage(submodule)
 			worker.on(`message`, (...params) => {
