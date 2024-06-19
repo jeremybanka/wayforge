@@ -1,4 +1,4 @@
-#!bun
+#!/usr/bin/env bun
 
 import path from "node:path"
 import { Worker } from "node:worker_threads"
@@ -11,7 +11,7 @@ function runWorker(submodule: string) {
 	if (submodule === `.`) {
 		return new Promise((resolve, reject) => {
 			const worker = new Worker(
-				path.join(ATOM_IO_FYI_ROOT, `scripts`, `tsdoc.worker.ts`),
+				path.join(ATOM_IO_FYI_ROOT, `scripts`, `tsdoc.bun.worker.ts`),
 			)
 			worker.postMessage(submodule)
 			worker.on(`message`, (...params) => {
