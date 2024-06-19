@@ -19,9 +19,9 @@ export function ModuleDocs({ module }: { module: string }): JSX.Element {
 			className="tsdoc-styles"
 			docs={docs.filter(
 				(doc) =>
-					doc.name === `setState` /* ❗ */ &&
-					(doc.type === `function` ||
-						(doc.type === `composite` && doc.kind === `class`)),
+					// doc.name === `setState` /* ❗ */ &&
+					doc.type === `function` ||
+					(doc.type === `composite` && doc.kind === `class`),
 			)}
 		/>
 	)

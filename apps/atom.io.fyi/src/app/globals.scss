@@ -18,8 +18,29 @@
   font-weight: 500;
   src: url("/Theia0.2.500-500.otf") format("opentype");
 }
+@font-face {
+  font-family: Uruz;
+  font-weight: 400;
+  src: url("/Uruz-4r.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 500;
+  src: url("/Uruz-5r.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 600;
+  src: url("/Uruz-6r.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 700;
+  src: url("/Uruz-7r.otf") format("opentype");
+}
 * {
   font-family:
+    Uruz,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -35,7 +56,8 @@
   padding: 0;
   margin: 0;
   color: var(--fg-color);
-  font-size: 18px;
+  font-size: 21px;
+  line-height: 28px;
 }
 // h1,
 // h2,
@@ -52,6 +74,22 @@
 //     mix-blend-mode: multiply;
 //   }
 // }
+
+code {
+  font-family: Theia, monospace !important;
+  font-size: 18px;
+  font-weight: 500;
+  box-sizing: border-box;
+  color: var(--function-color);
+}
+
+p code {
+  background-color: var(--bg-tint-2);
+  box-shadow: 0 0px 4px 0px var(--bg-shade-2);
+  border-radius: 3px;
+  padding: 2px 4px 4px;
+}
+
 h1 {
   font-size: 48px;
   line-height: 54px;

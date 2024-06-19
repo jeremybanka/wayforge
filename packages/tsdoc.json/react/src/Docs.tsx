@@ -18,19 +18,28 @@ export type DocProps = {
 	doc: TSD.Doc
 }
 export function Doc({ doc }: DocProps): JSX.Element {
+	const offset0 = stringToNumber(doc.name)
+	const offset1 = offset0 << 1
 	return (
-		<article className={`tsdoc-resource ${doc.type} ${doc.kind}`}>
+		<article
+			className={`tsdoc-resource ${doc.type} ${doc.kind}`}
+			style={{
+				backgroundPosition: offset0 / 100000 + `% ` + offset1 / 100000 + `%`,
+			}}
+		>
 			<header>
 				<main>
 					<code>{doc.name}</code>
 				</main>
-				<footer>{doc.type === `function` ? `function` : doc.kind}</footer>
+				<footer>
+					<span>{doc.type === `function` ? `function` : doc.kind}</span>
+				</footer>
 			</header>
 			<main>
 				{(() => {
 					switch (doc.type) {
 						case `function`:
-							return <FunctionDoc doc={doc} />
+							return <FunctionMainContent doc={doc} />
 					}
 				})()}
 			</main>
@@ -38,37 +47,39 @@ export function Doc({ doc }: DocProps): JSX.Element {
 	)
 }
 
-type FunctionDocProps = {
+type FunctionMainContentProps = {
 	doc: TSD.FunctionDoc
 }
-function FunctionDoc({ doc }: FunctionDocProps): JSX.Element {
+function FunctionMainContent({ doc }: FunctionMainContentProps): JSX.Element {
 	switch (doc.kind) {
 		case `regular`:
-			return <RegularFunctionDoc doc={doc} />
+			return <RegularFunctionMainContent doc={doc} />
 		case `overloaded`:
-			return <OverloadedFunctionDoc doc={doc} />
+			return <OverloadedFunctionMainContent doc={doc} />
 	}
 }
 
-type OverloadedFunctionDocProps = {
+type OverloadedFunctionMainContentProps = {
 	doc: TSD.OverloadedFunctionDoc
 }
-function OverloadedFunctionDoc({
+function OverloadedFunctionMainContent({
 	doc,
-}: OverloadedFunctionDocProps): JSX.Element {
+}: OverloadedFunctionMainContentProps): JSX.Element {
 	return (
 		<>
 			{doc.overloads.map((overload) => (
-				<RegularFunctionDoc key={overload.name} doc={overload} />
+				<RegularFunctionMainContent key={overload.name} doc={overload} />
 			))}
 		</>
 	)
 }
 
-type RegularFunctionDocProps = {
+type RegularFunctionMainContentProps = {
 	doc: TSD.RegularFunctionDoc
 }
-function RegularFunctionDoc({ doc }: RegularFunctionDocProps): JSX.Element {
+function RegularFunctionMainContent({
+	doc,
+}: RegularFunctionMainContentProps): JSX.Element {
 	const returnValue = doc.blocks.find((block) => block.name === `@returns`)
 	return (
 		<>
@@ -78,7 +89,11 @@ function RegularFunctionDoc({ doc }: RegularFunctionDocProps): JSX.Element {
 				))}
 			</div>
 			<div className="tsdoc-params">
-				<header>Parameters</header>
+				{doc.params.length ? (
+					<header>
+						<span>Parameters</span>
+					</header>
+				) : null}
 				<ol className="tsdoc-param-list" start={0}>
 					{doc.params.map((param, index) => (
 						<ParamBlock key={param.name} param={param} index={index} />
@@ -101,7 +116,9 @@ function ParamBlock({ param, index }: ParamBlockProps): JSX.Element {
 				<main>
 					<code>{param.name}</code>
 				</main>
-				<footer>{index}</footer>
+				<footer>
+					<span>{index}</span>
+				</footer>
 			</header>
 			<main>{param.desc ? <Paragraph paragraph={param.desc} /> : null}</main>
 		</li>
@@ -183,4 +200,15 @@ function ParagraphContent({
 		case `softBreak`:
 			return null
 	}
+}
+
+function stringToNumber(str: string): number {
+	let hash = 0
+	if (str.length === 0) return hash
+	for (let i = 0; i < str.length; i++) {
+		const char = str.charCodeAt(i)
+		hash = (hash << 5) - hash + char
+		hash |= 0 // Convert to 32bit integer
+	}
+	return hash
 }
