@@ -59,9 +59,10 @@ export namespace TSD {
 		blocks: DocBlock[]
 	}
 
-	export type FunctionDoc = Flat<
+	export type RegularFunctionDoc = Flat<
 		DocContent & {
 			type: `function`
+			kind: `regular`
 			params: ParamBlock[]
 		}
 	>
@@ -69,8 +70,11 @@ export namespace TSD {
 	export type OverloadedFunctionDoc = Flat<{
 		name: string
 		type: `function`
-		overloads: FunctionDoc[]
+		kind: `overloaded`
+		overloads: RegularFunctionDoc[]
 	}>
+
+	export type FunctionDoc = OverloadedFunctionDoc | RegularFunctionDoc
 
 	export type AtomicEntity = `constant` | `type` | `variable`
 	export type AtomicDoc = Flat<
@@ -89,9 +93,5 @@ export namespace TSD {
 		}
 	>
 
-	export type Doc =
-		| AtomicDoc
-		| CompositeDoc
-		| FunctionDoc
-		| OverloadedFunctionDoc
+	export type Doc = AtomicDoc | CompositeDoc | FunctionDoc
 }

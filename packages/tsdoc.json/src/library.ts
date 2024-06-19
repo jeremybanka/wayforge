@@ -452,6 +452,7 @@ function documentFunction(
 	const doc: TSD.FunctionDoc = {
 		name,
 		type: `function` as const,
+		kind: `regular` as const,
 		params: [],
 		sections: [],
 		modifierTags: [],
@@ -547,6 +548,7 @@ function assembleJsonDocForResource(
 		}
 		doc = {
 			type: `function` as const,
+			kind: `overloaded` as const,
 			name: resourceName,
 			overloads: [],
 		}
@@ -555,7 +557,7 @@ function assembleJsonDocForResource(
 				parser,
 				resourceName,
 				resource,
-			) as TSD.FunctionDoc
+			) as TSD.RegularFunctionDoc
 			doc.overloads.push(signatureDoc)
 		}
 	} else {
