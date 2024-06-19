@@ -66,9 +66,9 @@ function handleFile(filePath: string) {
 		relativeDirectory,
 		outputFilename,
 	)
-	npmlog.info(`write`, path.join(outputDir, relativeDirectory, outputFilename))
 	const wrappedCode = wrapCode(filename, code)
 	try {
+		npmlog.info(`writing`, outputFilePath)
 		fs.writeFileSync(outputFilePath, wrappedCode)
 	} catch (thrown) {
 		if (thrown instanceof Error && thrown.message.includes(`ENOENT`)) {
