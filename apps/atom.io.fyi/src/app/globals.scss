@@ -52,12 +52,13 @@
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
+  font-weight: 500;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
   color: var(--fg-color);
-  font-size: 21px;
-  line-height: 28px;
+  font-size: 17px;
+  line-height: 21px;
 }
 // h1,
 // h2,
@@ -74,21 +75,6 @@
 //     mix-blend-mode: multiply;
 //   }
 // }
-
-code {
-  font-family: Theia, monospace !important;
-  font-size: 18px;
-  font-weight: 500;
-  box-sizing: border-box;
-  color: var(--function-color);
-}
-
-p code {
-  background-color: var(--bg-tint-2);
-  box-shadow: 0 0px 4px 0px var(--bg-shade-2);
-  border-radius: 3px;
-  padding: 2px 4px 4px;
-}
 
 h1 {
   font-size: 48px;

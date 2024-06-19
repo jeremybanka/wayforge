@@ -1,11 +1,11 @@
 .tsdoc-styles {
-  code,
-  span {
-    mix-blend-mode: color-dodge;
-    @media (prefers-color-scheme: light) {
-      mix-blend-mode: multiply;
-    }
-  }
+  // code,
+  // span {
+  //   mix-blend-mode: color-dodge;
+  //   @media (prefers-color-scheme: light) {
+  //     mix-blend-mode: multiply;
+  //   }
+  // }
   span {
     color: var(--fg-color);
   }
@@ -58,6 +58,7 @@
       box-shadow: 0 0px 0px 3px #0001;
 
       > header span {
+        font-size: 18px;
         font-weight: 600;
         color: var(--fg-soft-2);
       }
@@ -92,7 +93,6 @@
             background-color: #aaa;
             box-shadow: 0 2px 1px 2px #ddd1;
           }
-          &::before,
           &::after {
             position: absolute;
             top: 0;
@@ -100,9 +100,6 @@
             width: 100%;
             height: 100%;
             content: "";
-          }
-
-          &::after {
             z-index: -2;
             background-color: #09090999;
             @media (prefers-color-scheme: light) {
@@ -124,7 +121,7 @@
     > header {
       position: relative;
       z-index: 0;
-      padding: 4px 10px 3px;
+      padding: 6px 10px 4px;
       display: flex;
       flex-flow: row;
       justify-content: space-between;
@@ -150,6 +147,11 @@
           background-color: #fffc;
         }
         z-index: -2;
+      }
+
+      > main code {
+        font-size: 17px;
+        font-weight: 400;
       }
 
       > footer span {
