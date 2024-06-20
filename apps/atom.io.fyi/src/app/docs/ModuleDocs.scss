@@ -9,6 +9,13 @@
   span {
     color: var(--fg-color);
   }
+  header > span,
+  header > main > span {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--fg-soft-2);
+  }
   display: flex;
   flex-flow: column;
   gap: 10px;
@@ -57,11 +64,6 @@
       padding-bottom: 13px;
       box-shadow: 0 0px 0px 3px #0001;
 
-      > header span {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--fg-soft-2);
-      }
       ol.tsdoc-param-list {
         width: 100%;
         margin: 0;
@@ -117,6 +119,9 @@
         }
       }
     }
+    .tsdoc-block {
+      padding-bottom: 10px;
+    }
 
     > header {
       position: relative;
@@ -127,11 +132,11 @@
       justify-content: space-between;
       background: url(/noise.svg) repeat;
       background-size: 200%;
-      background-color: #000;
+      background-color: #7777;
+      box-shadow: 0 1px 0px 2px #0001;
       @media (prefers-color-scheme: light) {
         background-color: #aaa;
       }
-      box-shadow: 0 1px 0px 2px #0001;
       &::after {
         position: absolute;
         top: 0;
@@ -139,23 +144,11 @@
         width: 100%;
         height: 100%;
         content: "";
-      }
-
-      &::after {
-        background-color: #09090999;
+        z-index: -2;
+        background-color: #1119;
         @media (prefers-color-scheme: light) {
           background-color: #fffc;
         }
-        z-index: -2;
-      }
-
-      > main code {
-        font-size: 17px;
-        font-weight: 400;
-      }
-
-      > footer span {
-        color: var(--fg-soft-1);
       }
     }
     > main {
@@ -163,9 +156,33 @@
       flex-flow: column;
       gap: 10px;
       padding: 0px 0px;
+      &:contains(article) {
+        padding: 100px;
+      }
 
-      > * {
+      > :not(article) {
         padding: 0px 10px;
+      }
+      > article.tsdoc-resource {
+        margin: 0 10px;
+        border-left: 3px solid var(--function-color);
+        border-bottom: 1px solid var(--function-color);
+        background-color: #222;
+        @media (prefers-color-scheme: light) {
+          background-color: #fff;
+        }
+        &::after {
+          background-color: #0007;
+          @media (prefers-color-scheme: light) {
+            background-color: #fff7;
+          }
+        }
+        &:first-of-type {
+          margin-top: 10px;
+        }
+        &:last-of-type {
+          margin-bottom: 13px;
+        }
       }
     }
   }

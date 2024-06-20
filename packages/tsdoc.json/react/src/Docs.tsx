@@ -65,11 +65,39 @@ type OverloadedFunctionMainContentProps = {
 function OverloadedFunctionMainContent({
 	doc,
 }: OverloadedFunctionMainContentProps): JSX.Element {
+	const withoutImplementation = doc.overloads.slice(0, -1)
 	return (
 		<>
-			{doc.overloads.map((overload) => (
-				<RegularFunctionMainContent key={overload.name} doc={overload} />
-			))}
+			{withoutImplementation.map((overload, idx) => {
+				const overloadBlock = overload.blocks.find(
+					(block) => block.name === `@overload`,
+				)
+				const overloadName =
+					overloadBlock?.desc?.content[0].type === `plainText`
+						? overloadBlock.desc.content[0].text
+						: idx.toString()
+				if (doc.name === `atom`) console.log(overloadName)
+				return (
+					<article
+						className={`tsdoc-resource ${overload.type} ${overload.kind}`}
+						key={overload.name}
+					>
+						<header>
+							<main>
+								<span>{overloadName}</span>
+							</main>
+							<footer>
+								<span>overload</span>
+							</footer>
+						</header>
+						<main>
+							<RegularFunctionMainContent
+								doc={{ ...overload, name: overloadName }}
+							/>
+						</main>
+					</article>
+				)
+			})}
 		</>
 	)
 }
@@ -129,9 +157,12 @@ type BlockProps = {
 	block: TSD.DocBlock
 }
 function Block({ block }: BlockProps): JSX.Element {
+	const blockName = block.name.split(`@`)[1]
 	return (
 		<div className={`tsdoc-block ${block.name}`}>
-			<header>{block.name}</header>
+			<header>
+				<span>{blockName}</span>
+			</header>
 			<main>{block.desc ? <Paragraph paragraph={block.desc} /> : null}</main>
 		</div>
 	)
