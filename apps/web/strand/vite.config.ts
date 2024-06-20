@@ -8,6 +8,7 @@ import tsconfigPaths from "vite-tsconfig-paths"
 export default defineConfig({
 	plugins: [
 		preact(),
+		// @ts-expect-error stuff's a bit broken with ts 5.5
 		tsconfigPaths(),
 		svgrPlugin({
 			svgrOptions: {

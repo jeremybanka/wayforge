@@ -24,6 +24,7 @@ console.log(entry)
 export default defineConfig({
 	plugins: [
 		react(),
+		// @ts-expect-error stuff's a bit broken with ts 5.5
 		tsconfigPaths(),
 		dts({
 			outDir: `dist`,
