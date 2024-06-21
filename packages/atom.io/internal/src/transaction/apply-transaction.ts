@@ -38,14 +38,6 @@ export const applyTransaction = <F extends Func>(
 		`Applying transaction with ${updates.length} updates:`,
 		updates,
 	)
-	for (const tracker of child.trackers.values()) {
-		const mutableKey = tracker.mutableState.key
-		if (!parent.atoms.has(mutableKey)) {
-			const atom = child.atoms.get(mutableKey)
-			atom?.install(parent)
-		}
-		tracker.dispose()
-	}
 
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
 
