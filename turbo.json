@@ -10,6 +10,9 @@
 				"**/src/**/*.{ts,tsx,scss,mdx}"
 			]
 		},
+		"atom.io.fyi#build": {
+			"dependsOn": ["atom.io#build"]
+		},
 		"test:once": {
 			"dependsOn": ["build"],
 			"inputs": [
