@@ -11,7 +11,13 @@
 			]
 		},
 		"atom.io.fyi#build": {
-			"dependsOn": ["atom.io#build"]
+			"dependsOn": ["atom.io#build"],
+			"outputs": ["dist/**"],
+			"inputs": [
+				"**/package.json",
+				"src/**/*.{ts,tsx,scss,mdx}",
+				"**/src/**/*.{ts,tsx,scss,mdx}"
+			]
 		},
 		"test:once": {
 			"dependsOn": ["build"],
