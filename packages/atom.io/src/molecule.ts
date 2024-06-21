@@ -39,7 +39,7 @@ export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 
 		claim(below: MoleculeToken<any>, options: { exclusive: boolean })
 
-		join<J extends JoinToken<any, any, any, any>>(joinToken:J): J
+		join<J extends JoinToken<any, any, any, any>>(joinToken: J): J
 
 		spawn<Key extends Json.Serializable, Ctor extends MoleculeConstructor>(
 			family: MoleculeFamilyToken<Ctor>,
