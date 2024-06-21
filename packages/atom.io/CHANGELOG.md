@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.4
+
+### Patch Changes
+
+- 6ab042e: ✨ The `join` function from `MoleculeTransactors` now returns the original join for convenience.
+
 ## 0.24.3
 
 ### Patch Changes
