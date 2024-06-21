@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.5
+
+### Patch Changes
+
+- 84a0737: 🐛 Fixed an issue where, when applying a transaction in which a mutable atom was created, atom.io would attempt to re-create that atom twice, which led to a pesky error log.
+
 ## 0.24.4
 
 ### Patch Changes
