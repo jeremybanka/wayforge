@@ -101,10 +101,11 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				}
 			}
 		},
-		join: (joinToken: JoinToken<any, any, any, any>) => {
+		join: <J extends JoinToken<any, any, any, any>>(joinToken: J) => {
 			const join = getJoin(joinToken, store)
 			join.molecules.set(stringifyJson(key), molecule)
 			molecule.joins.set(joinToken.key, join)
+			return joinToken
 		},
 		spawn: (f: MoleculeFamilyToken<any>, k: any, ...p: any[]) =>
 			makeMoleculeInStore(
