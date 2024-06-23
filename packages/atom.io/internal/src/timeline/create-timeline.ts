@@ -487,7 +487,7 @@ function addMoleculeFamilyToTimeline(
 												tl.history.splice(tl.at)
 											}
 
-											// biome-ignore lint/style/noNonNullAssertion: <explanation>
+											// biome-ignore lint/style/noNonNullAssertion: we just created the timeline
 											const timelineTopics = store.timelineTopics.getRelatedKeys(
 												tl.key,
 											)!
