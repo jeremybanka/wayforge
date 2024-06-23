@@ -31,6 +31,10 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			token: atomToken,
 			value: lastValue,
 		})
+		const molecule = target.molecules.get(atom.family.subKey)
+		if (molecule) {
+			molecule.tokens.delete(key)
+		}
 		target.atoms.delete(key)
 		target.valueMap.delete(key)
 		const selectorKeys = target.selectorAtoms.getRelatedKeys(key)

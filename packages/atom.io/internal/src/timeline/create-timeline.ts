@@ -128,7 +128,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 								`❌`,
 								`timeline`,
 								options.key,
-								`Failed to add atom "${atomKey}" because its family "${familyKey}" already belongs to timeline "${familyTimelineKey}"`,
+								`Failed to add atom "${atomKey}" because its family "${familyKey}" already belongs to timeline "${existingTimelineKey}"`,
 							)
 							continue
 						}
@@ -159,6 +159,13 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 
 			case `molecule_family`:
 				{
+					console.log(
+						`🐞`,
+						`timeline`,
+						options.key,
+						`adding molecule family`,
+						initialTopic,
+					)
 					const familyToken: MoleculeFamilyToken<any> = initialTopic
 					const familyKey = familyToken.key
 					const existingTimelineKey =
@@ -430,6 +437,13 @@ function addMoleculeFamilyToTimeline(
 		tl.subscriptions.set(
 			familyToken.key,
 			family.subject.subscribe(`timeline:${tl.key}`, (creationOrDisposal) => {
+				store.logger.info(
+					`🐞`,
+					`timeline`,
+					tl.key,
+					`got a molecule creation or disposal`,
+					creationOrDisposal,
+				)
 				switch (creationOrDisposal.type) {
 					case `molecule_creation`:
 						{
@@ -473,8 +487,29 @@ function addMoleculeFamilyToTimeline(
 												tl.history.splice(tl.at)
 											}
 
-											// const filterUpdates = (
-											// 	update: TransactionUpdate<Func>[`updates`],
+											// biome-ignore lint/style/noNonNullAssertion: <explanation>
+											const timelineTopics = store.timelineTopics.getRelatedKeys(
+												tl.key,
+											)!
+
+											const updates = filterTransactionUpdates(
+												transactionUpdate.updates,
+												timelineTopics,
+											)
+
+											const timelineTransactionUpdate: TimelineTransactionUpdate =
+												{
+													timestamp: Date.now(),
+													...transactionUpdate,
+													updates,
+												}
+											const willCapture =
+												tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
+											if (willCapture) {
+												tl.history.push(timelineTransactionUpdate)
+												tl.at = tl.history.length
+												tl.subject.next(timelineTransactionUpdate)
+											}
 										}
 									},
 								)

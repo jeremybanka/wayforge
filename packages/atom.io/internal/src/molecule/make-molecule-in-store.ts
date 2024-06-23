@@ -125,7 +125,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	const update = {
 		type: `molecule_creation`,
 		token,
-		family,
+		family: familyToken,
 		context: contextArray,
 		params,
 	} satisfies MoleculeCreation<M>
