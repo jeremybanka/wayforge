@@ -98,7 +98,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		subscribeToState(
 			latestUpdateState,
 			({ newValue, oldValue }) => {
-				const timelineId = target.timelineAtoms.getRelatedKey(
+				const timelineId = target.timelineTopics.getRelatedKey(
 					latestUpdateState.key,
 				)
 

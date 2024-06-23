@@ -1,9 +1,8 @@
 import type {
 	AtomToken,
-	Func,
 	TimelineUpdate,
 	TransactionToken,
-	TransactionUpdate,
+	TransactionUpdateContent,
 } from "atom.io"
 
 import { newest } from "../lineage"
@@ -16,18 +15,40 @@ import type {
 	TimelineTransactionUpdate,
 } from "./create-timeline"
 
-export const addAtomToTimeline = (
+// ultimately a timeline is looking for atoms to subscribe to
+// there are basically three kinds of events that can happen:
+// - an atom is created - subscribe to it
+// - an atom's value is changed - update the timeline
+// - an atom is disposed - unsubscribe from it
+
+// there are many sources for these events:
+// - transaction.do
+//   - may set atoms, changing their values
+//   - may find atoms, creating them
+//   - may make molecules, creating atoms
+//   - may dispose atoms
+// - selector.set
+//   - may set atoms, changing their values
+// - makeMolecule
+
+function addAtomToTimeline(
 	atomToken: AtomToken<any>,
 	tl: Timeline<any>,
 	store: Store,
-): void => {
+): void {
 	let maybeAtom = withdraw(atomToken, store)
 	if (maybeAtom.type === `mutable_atom`) {
 		const updateToken = getUpdateToken(maybeAtom)
 		maybeAtom = withdraw(updateToken, store)
 	}
 	const atom = maybeAtom
-	store.timelineAtoms.set({ atomKey: atom.key, timelineKey: tl.key })
+	store.timelineTopics.set(
+		{ topicKey: atom.key, timelineKey: tl.key },
+		{ topicType: `atom` },
+	)
+
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
 	tl.subscriptions.set(
 		atom.key,
@@ -71,6 +92,7 @@ export const addAtomToTimeline = (
 						)
 					}
 				}
+
 				if (currentTransactionKey) {
 					const txToken: TransactionToken<any> = {
 						key: currentTransactionKey,
@@ -96,59 +118,10 @@ export const addAtomToTimeline = (
 										tl.history.splice(tl.at)
 									}
 
-									const filterUpdates = (
-										updates: TransactionUpdate<Func>[`updates`],
-									) =>
-										updates
-											.filter((updateFromTx) => {
-												const newestStore = newest(store)
-												if (`updates` in updateFromTx) {
-													return true
-												}
-												const atomOrFamilyKeys =
-													newestStore.timelineAtoms.getRelatedKeys(tl.key)
-
-												if (!atomOrFamilyKeys) {
-													return false
-												}
-												let key: string | undefined
-												let familyKey: string | undefined
-												switch (updateFromTx.type) {
-													case `state_creation`:
-													case `state_disposal`:
-														key = updateFromTx.token.key
-														familyKey = updateFromTx.token.family?.key
-														break
-													case `molecule_creation`:
-													case `molecule_disposal`:
-														break
-													default:
-														key = updateFromTx.key
-														familyKey = updateFromTx.family?.key
-														break
-												}
-												if (key === undefined) {
-													return false
-												}
-												if (atomOrFamilyKeys.has(key)) {
-													return true
-												}
-												if (familyKey !== undefined) {
-													return atomOrFamilyKeys.has(familyKey)
-												}
-												return false
-											})
-											.map((updateFromTx) => {
-												if (`updates` in updateFromTx) {
-													return {
-														...updateFromTx,
-														updates: filterUpdates(updateFromTx.updates),
-													}
-												}
-												return updateFromTx
-											})
-
-									const updates = filterUpdates(transactionUpdate.updates)
+									const updates = filterTransactionUpdates(
+										transactionUpdate.updates,
+										timelineTopics,
+									)
 
 									const timelineTransactionUpdate: TimelineTransactionUpdate = {
 										timestamp: Date.now(),
@@ -262,4 +235,54 @@ export const addAtomToTimeline = (
 			}
 		}),
 	)
+}
+
+function filterTransactionUpdates(
+	updates: TransactionUpdateContent[],
+	timelineTopics: Set<string>,
+): TransactionUpdateContent[] {
+	return updates
+		.filter((updateFromTx) => {
+			if (updateFromTx.type === `transaction_update`) {
+				return true
+			}
+
+			let key: string
+			let familyKey: string | undefined
+			switch (updateFromTx.type) {
+				case `state_creation`:
+				case `state_disposal`:
+					key = updateFromTx.token.key
+					familyKey = updateFromTx.token.family?.key
+					break
+				case `molecule_creation`:
+				case `molecule_disposal`:
+					key = updateFromTx.token.key
+					familyKey = updateFromTx.token.family?.key
+					break
+				default:
+					key = updateFromTx.key
+					familyKey = updateFromTx.family?.key
+					break
+			}
+			if (timelineTopics.has(key)) {
+				return true
+			}
+			if (familyKey !== undefined) {
+				return timelineTopics.has(familyKey)
+			}
+			return false
+		})
+		.map((updateFromTx) => {
+			if (`updates` in updateFromTx) {
+				return {
+					...updateFromTx,
+					updates: filterTransactionUpdates(
+						updateFromTx.updates,
+						timelineTopics,
+					),
+				}
+			}
+			return updateFromTx
+		})
 }

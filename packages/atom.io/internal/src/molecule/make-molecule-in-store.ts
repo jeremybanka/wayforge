@@ -22,7 +22,7 @@ import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import { actUponStore, isChildStore } from "../transaction"
+import { actUponStore, isChildStore, isRootStore } from "../transaction"
 import { growMoleculeInStore } from "./grow-molecule-in-store"
 import { Molecule } from "./molecule-internal"
 
@@ -34,6 +34,8 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	...params: MoleculeParams<M>
 ): MoleculeToken<M> {
 	const target = newest(store)
+
+	target.moleculeInProgress = key
 
 	const token = {
 		type: `molecule`,
@@ -128,13 +130,16 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		params,
 	} satisfies MoleculeCreation<M>
 
-	const isTransaction =
-		isChildStore(target) && target.transactionMeta.phase === `building`
-	if (isTransaction) {
-		target.transactionMeta.update.updates.push(update)
-	} else {
+	if (isRootStore(target)) {
 		family.subject.next(update)
+	} else if (
+		isChildStore(target) &&
+		target.on.transactionApplying.state === null
+	) {
+		target.transactionMeta.update.updates.push(update)
 	}
+
+	target.moleculeInProgress = null
 
 	return token
 }
