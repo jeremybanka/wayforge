@@ -379,7 +379,7 @@ describe(`timeline state lifecycle`, () => {
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
 		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
 	})
-	test.only(`molecules created in a transaction may be disposed via undo/redo`, () => {
+	test(`molecules created in a transaction may be disposed via undo/redo`, () => {
 		const hpAtoms = atomFamily<number, string>({
 			key: `hp`,
 			default: 0,
