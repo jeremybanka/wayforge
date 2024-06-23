@@ -213,7 +213,7 @@ describe(`timeline`, () => {
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
 	})
-	test(`history erasure from the past`, () => {
+	test.only(`history erasure from the past`, () => {
 		const nameState = atom<string>({
 			key: `name`,
 			default: `josie`,
@@ -420,12 +420,19 @@ describe(`timeline state lifecycle`, () => {
 		runTransaction(tx)(`captain`)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
 		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(2)
+		// biome-ignore lint/style/noNonNullAssertion: we just created it
+		const captainMolecule = seekState(unitMolecules, `captain`)!
+		disposeState(captainMolecule)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
+		undo(gameTL)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(2)
 		undo(gameTL)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
 		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
 		redo(gameTL)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
-		console.log(Internal.IMPLICIT.STORE.atoms)
 		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(2)
 	})
 })

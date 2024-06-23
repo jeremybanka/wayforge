@@ -37,12 +37,6 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 
 	target.moleculeInProgress = key
 
-	const token = {
-		type: `molecule`,
-		key,
-		family: familyToken,
-	} as const satisfies MoleculeToken<M>
-
 	const contextArray = Array.isArray(context) ? context : [context]
 	const owners = contextArray.map<Molecule<M>>((ctx) => {
 		if (ctx instanceof Molecule) {
@@ -59,8 +53,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		return molecule
 	})
 
-	const family = withdraw(familyToken, store)
-	const molecule = new Molecule(owners, key, family)
+	const molecule = new Molecule(owners, key, familyToken)
 	target.molecules.set(stringifyJson(key), molecule)
 	for (const owner of owners) {
 		owner.below.set(molecule.stringKey, molecule)
@@ -118,9 +111,17 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				...p,
 			),
 	} satisfies MoleculeTransactors<MK<M>>
+
+	const family = withdraw(familyToken, store)
 	const Constructor = family.new
 
-	molecule.instance = new Constructor(transactors, token.key, ...params)
+	molecule.instance = new Constructor(transactors, key, ...params)
+
+	const token = {
+		type: `molecule`,
+		key,
+		family: familyToken,
+	} as const satisfies MoleculeToken<M>
 
 	const update = {
 		type: `molecule_creation`,

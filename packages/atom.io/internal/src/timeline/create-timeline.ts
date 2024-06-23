@@ -159,13 +159,6 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 
 			case `molecule_family`:
 				{
-					console.log(
-						`🐞`,
-						`timeline`,
-						options.key,
-						`adding molecule family`,
-						initialTopic,
-					)
 					const familyToken: MoleculeFamilyToken<any> = initialTopic
 					const familyKey = familyToken.key
 					const existingTimelineKey =
@@ -225,9 +218,8 @@ function addAtomToTimeline(
 				store.operation.open && store.operation.token.type === `selector`
 					? store.operation.time
 					: null
-			const { transactionApplying } = target.on
-			const currentTransactionKey = transactionApplying.state?.update.key
-			const currentTransactionInstanceId = transactionApplying.state?.update.id
+
+			const txUpdateInProgress = target.on.transactionApplying.state?.update
 
 			store.logger.info(
 				`⏳`,
@@ -239,76 +231,15 @@ function addAtomToTimeline(
 				update.oldValue,
 				`->`,
 				update.newValue,
-				currentTransactionKey
-					? `in transaction "${currentTransactionKey}"`
+				txUpdateInProgress
+					? `in transaction "${txUpdateInProgress.key}"`
 					: currentSelectorKey
 						? `in selector "${currentSelectorKey}"`
 						: ``,
 			)
 			if (tl.timeTraveling === null) {
-				if (tl.selectorTime && tl.selectorTime !== currentSelectorTime) {
-					const mostRecentUpdate: TimelineUpdate<any> | undefined =
-						tl.history.at(-1)
-					if (mostRecentUpdate === undefined) {
-						throw new Error(
-							`Timeline "${tl.key}" has a selectorTime, but no history. This is most likely a bug in AtomIO.`,
-						)
-					}
-				}
-
-				if (currentTransactionKey) {
-					const txToken: TransactionToken<any> = {
-						key: currentTransactionKey,
-						type: `transaction`,
-					}
-					const currentTransaction = withdraw(txToken, store)
-					if (tl.transactionKey !== currentTransactionKey) {
-						if (tl.transactionKey) {
-							store.logger.error(
-								`🐞`,
-								`timeline`,
-								tl.key,
-								`unable to resolve transaction "${tl.transactionKey}. This is probably a bug in AtomIO.`,
-							)
-						}
-						tl.transactionKey = currentTransactionKey
-						const unsubscribe = currentTransaction.subject.subscribe(
-							`timeline:${tl.key}`,
-							(transactionUpdate) => {
-								unsubscribe()
-								if (tl.timeTraveling === null && currentTransactionInstanceId) {
-									if (tl.at !== tl.history.length) {
-										tl.history.splice(tl.at)
-									}
-
-									const updates = filterTransactionUpdates(
-										transactionUpdate.updates,
-										timelineTopics,
-									)
-
-									const timelineTransactionUpdate: TimelineTransactionUpdate = {
-										timestamp: Date.now(),
-										...transactionUpdate,
-										updates,
-									}
-									const willCapture =
-										tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
-									if (willCapture) {
-										tl.history.push(timelineTransactionUpdate)
-										tl.at = tl.history.length
-										tl.subject.next(timelineTransactionUpdate)
-									}
-								}
-								tl.transactionKey = null
-								store.logger.info(
-									`⌛`,
-									`timeline`,
-									tl.key,
-									`got a transaction_update "${transactionUpdate.key}"`,
-								)
-							},
-						)
-					}
+				if (txUpdateInProgress) {
+					joinTransaction(tl, txUpdateInProgress, store)
 				} else if (currentSelectorKey && currentSelectorTime) {
 					let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
 
@@ -454,110 +385,62 @@ function addMoleculeFamilyToTimeline(
 								},
 								{ topicType: `molecule` },
 							)
-							const { transactionApplying } = newest(store).on
-							const currentTransactionKey = transactionApplying.state?.update.key
-							const currentTransactionInstanceId =
-								transactionApplying.state?.update.id
-							if (currentTransactionKey) {
-								const txToken: TransactionToken<any> = {
-									key: currentTransactionKey,
-									type: `transaction`,
-								}
-								const currentTransaction = withdraw(txToken, store)
-								if (tl.transactionKey !== currentTransactionKey) {
-									if (tl.transactionKey) {
-										store.logger.error(
-											`🐞`,
-											`timeline`,
-											tl.key,
-											`unable to resolve transaction "${tl.transactionKey}. This is probably a bug in AtomIO.`,
-										)
-									}
-								}
-								tl.transactionKey = currentTransactionKey
-								const unsubscribe = currentTransaction.subject.subscribe(
-									`timeline:${tl.key}`,
-									(transactionUpdate) => {
-										unsubscribe()
-										if (
-											tl.timeTraveling === null &&
-											currentTransactionInstanceId
-										) {
-											if (tl.at !== tl.history.length) {
-												tl.history.splice(tl.at)
-											}
-
-											// biome-ignore lint/style/noNonNullAssertion: we just created the timeline
-											const timelineTopics = store.timelineTopics.getRelatedKeys(
-												tl.key,
-											)!
-
-											const updates = filterTransactionUpdates(
-												transactionUpdate.updates,
-												timelineTopics,
-											)
-
-											const timelineTransactionUpdate: TimelineTransactionUpdate =
-												{
-													timestamp: Date.now(),
-													...transactionUpdate,
-													updates,
-												}
-											const willCapture =
-												tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
-											if (willCapture) {
-												tl.history.push(timelineTransactionUpdate)
-												tl.at = tl.history.length
-												tl.subject.next(timelineTransactionUpdate)
-											}
-										}
-									},
-								)
-							}
-							const molecule = store.molecules.get(
-								stringifyJson(creationOrDisposal.token.key),
-							)
-							if (molecule) {
+							const txUpdateInProgress =
+								newest(store).on.transactionApplying.state?.update
+							if (txUpdateInProgress) {
+								joinTransaction(tl, txUpdateInProgress, store)
+							} else if (tl.timeTraveling === null) {
 								const event = Object.assign(creationOrDisposal, {
 									timestamp: Date.now(),
 								})
 								tl.history.push(event)
 								tl.at = tl.history.length
 								tl.subject.next(event)
-
-								for (const token of molecule.tokens.values()) {
-									switch (token.type) {
-										case `atom`:
-										case `mutable_atom`:
-											addAtomToTimeline(token, tl, store)
-											break
-									}
-								}
-								tl.subscriptions.set(
-									molecule.key,
-									molecule.subject.subscribe(
-										`timeline:${tl.key}`,
-										(stateCreationOrDisposal) => {
-											handleStateLifecycleEvent(
-												stateCreationOrDisposal,
-												tl,
-												store,
-											)
-										},
-									),
-								)
 							}
+							const molecule = withdraw(creationOrDisposal.token, store)
+
+							for (const token of molecule.tokens.values()) {
+								switch (token.type) {
+									case `atom`:
+									case `mutable_atom`:
+										addAtomToTimeline(token, tl, store)
+										break
+								}
+							}
+							tl.subscriptions.set(
+								molecule.key,
+								molecule.subject.subscribe(
+									`timeline:${tl.key}`,
+									(stateCreationOrDisposal) => {
+										handleStateLifecycleEvent(stateCreationOrDisposal, tl, store)
+									},
+								),
+							)
 						}
 						break
 					case `molecule_disposal`:
-						tl.subscriptions.get(creationOrDisposal.token.key)?.()
-						tl.subscriptions.delete(creationOrDisposal.token.key)
-						for (const familyKey of creationOrDisposal.familyKeys) {
-							const stateKey = `${familyKey}(${stringifyJson(
-								creationOrDisposal.token.key,
-							)})`
-							tl.subscriptions.get(stateKey)?.()
-							tl.subscriptions.delete(stateKey)
+						{
+							const txUpdateInProgress =
+								newest(store).on.transactionApplying.state?.update
+							if (txUpdateInProgress) {
+								joinTransaction(tl, txUpdateInProgress, store)
+							} else if (tl.timeTraveling === null) {
+								const event = Object.assign(creationOrDisposal, {
+									timestamp: Date.now(),
+								})
+								tl.history.push(event)
+								tl.at = tl.history.length
+								tl.subject.next(event)
+							}
+							const moleculeKey = creationOrDisposal.token.key
+							tl.subscriptions.get(moleculeKey)?.()
+							tl.subscriptions.delete(moleculeKey)
+							for (const [familyKey] of creationOrDisposal.values) {
+								const stateKey = `${familyKey}(${stringifyJson(moleculeKey)})`
+								tl.subscriptions.get(stateKey)?.()
+								tl.subscriptions.delete(stateKey)
+								store.timelineTopics.delete(stateKey)
+							}
 						}
 						break
 				}
@@ -566,29 +449,61 @@ function addMoleculeFamilyToTimeline(
 	}
 }
 
-function handleStateLifecycleEvent(
-	event: StateCreation<any> | StateDisposal<any>,
+function joinTransaction(
 	tl: Timeline<any>,
+	txUpdateInProgress: TransactionUpdate<Func>,
 	store: Store,
-): void {
-	const timestamp = Date.now()
-	const timelineEvent = Object.assign(event, {
-		timestamp,
-	}) as TimelineUpdate<any>
-	if (!tl.timeTraveling) {
-		tl.history.push(timelineEvent)
-		tl.at = tl.history.length
-		tl.subject.next(timelineEvent)
+) {
+	const currentTxKey = txUpdateInProgress.key
+	const currentTxInstanceId = txUpdateInProgress.id
+	const currentTxToken: TransactionToken<any> = {
+		key: currentTxKey,
+		type: `transaction`,
 	}
-	switch (event.type) {
-		case `state_creation`:
-			addAtomToTimeline(event.token, tl, store)
-			break
-		case `state_disposal`:
-			tl.subscriptions.get(event.token.key)?.()
-			tl.subscriptions.delete(event.token.key)
-			break
+	const currentTransaction = withdraw(currentTxToken, store)
+	if (tl.transactionKey !== currentTxKey) {
+		if (tl.transactionKey) {
+			store.logger.error(
+				`🐞`,
+				`timeline`,
+				tl.key,
+				`unable to resolve transaction "${tl.transactionKey}. This is probably a bug in AtomIO.`,
+			)
+		}
 	}
+	tl.transactionKey = currentTxKey
+	const unsubscribe = currentTransaction.subject.subscribe(
+		`timeline:${tl.key}`,
+		(transactionUpdate) => {
+			unsubscribe()
+			if (tl.timeTraveling === null && currentTxInstanceId) {
+				if (tl.at !== tl.history.length) {
+					tl.history.splice(tl.at)
+				}
+
+				// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
+				const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
+
+				const updates = filterTransactionUpdates(
+					transactionUpdate.updates,
+					timelineTopics,
+				)
+
+				const timelineTransactionUpdate: TimelineTransactionUpdate = {
+					timestamp: Date.now(),
+					...transactionUpdate,
+					updates,
+				}
+				const willCapture =
+					tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
+				if (willCapture) {
+					tl.history.push(timelineTransactionUpdate)
+					tl.at = tl.history.length
+					tl.subject.next(timelineTransactionUpdate)
+				}
+			}
+		},
+	)
 }
 
 function filterTransactionUpdates(
@@ -602,30 +517,18 @@ function filterTransactionUpdates(
 			}
 
 			let key: string
-			let familyKey: string | undefined
 			switch (updateFromTx.type) {
 				case `state_creation`:
 				case `state_disposal`:
-					key = updateFromTx.token.key
-					familyKey = updateFromTx.token.family?.key
-					break
 				case `molecule_creation`:
 				case `molecule_disposal`:
 					key = updateFromTx.token.key
-					familyKey = updateFromTx.token.family?.key
 					break
 				default:
 					key = updateFromTx.key
-					familyKey = updateFromTx.family?.key
 					break
 			}
-			if (timelineTopics.has(key)) {
-				return true
-			}
-			if (familyKey !== undefined) {
-				return timelineTopics.has(familyKey)
-			}
-			return false
+			return timelineTopics.has(key)
 		})
 		.map((updateFromTx) => {
 			if (`updates` in updateFromTx) {
@@ -639,4 +542,34 @@ function filterTransactionUpdates(
 			}
 			return updateFromTx
 		})
+}
+
+function handleStateLifecycleEvent(
+	event: StateCreation<any> | StateDisposal<any>,
+	tl: Timeline<any>,
+	store: Store,
+): void {
+	const timestamp = Date.now()
+	const timelineEvent = Object.assign(event, {
+		timestamp,
+	}) as TimelineUpdate<any>
+	if (!tl.timeTraveling) {
+		const txUpdateInProgress = newest(store).on.transactionApplying.state?.update
+		if (txUpdateInProgress) {
+			joinTransaction(tl, txUpdateInProgress, store)
+		} else {
+			tl.history.push(timelineEvent)
+			tl.at = tl.history.length
+			tl.subject.next(timelineEvent)
+		}
+	}
+	switch (event.type) {
+		case `state_creation`:
+			addAtomToTimeline(event.token, tl, store)
+			break
+		case `state_disposal`:
+			tl.subscriptions.get(event.token.key)?.()
+			tl.subscriptions.delete(event.token.key)
+			break
+	}
 }

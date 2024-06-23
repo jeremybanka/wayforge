@@ -8,10 +8,10 @@ import type { WritableSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
-import { become } from "../set-state/become"
+import { become } from "../set-state"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { isRootStore } from "../transaction/is-root-store"
+import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
