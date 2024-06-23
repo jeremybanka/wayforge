@@ -111,15 +111,6 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 					const atomToken: AtomToken<ManagedAtom> = initialTopic
 					const atomKey = atomToken.key
 					let existingTimelineKey = target.timelineTopics.getRelatedKey(atomKey)
-					if (existingTimelineKey) {
-						store.logger.error(
-							`❌`,
-							`timeline`,
-							options.key,
-							`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
-						)
-						continue
-					}
 					if (`family` in atomToken) {
 						const familyKey = atomToken.family.key
 						existingTimelineKey = target.timelineTopics.getRelatedKey(familyKey)
@@ -132,6 +123,15 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 							)
 							continue
 						}
+					}
+					if (existingTimelineKey) {
+						store.logger.error(
+							`❌`,
+							`timeline`,
+							options.key,
+							`Failed to add atom "${atomKey}" because it already belongs to timeline "${existingTimelineKey}"`,
+						)
+						continue
 					}
 					addAtomToTimeline(atomToken, tl, store)
 				}
