@@ -27,7 +27,7 @@
 		"preact": "10.22.0",
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat",
-		"react-router-dom": "6.23.1",
+		"react-router-dom": "6.24.0",
 		"socket.io-client": "4.7.5",
 		"zod": "3.23.8"
 	},
