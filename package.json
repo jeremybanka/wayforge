@@ -46,7 +46,7 @@
 	"trustedDependencies": ["@biomejs/biome"],
 	"devDependencies": {
 		"@biomejs/biome": "1.8.2",
-		"@changesets/cli": "2.27.5",
+		"@changesets/cli": "2.27.6",
 		"@eslint/eslintrc": "3.1.0",
 		"@eslint/js": "9.5.0",
 		"@next/eslint-plugin-next": "14.2.4",
