@@ -213,7 +213,7 @@ describe(`timeline`, () => {
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
 	})
-	test.only(`history erasure from the past`, () => {
+	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
 			key: `name`,
 			default: `josie`,
