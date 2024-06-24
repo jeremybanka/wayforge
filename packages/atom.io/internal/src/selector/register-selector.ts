@@ -43,8 +43,9 @@ export const registerSelector = (
 		return dependencyValue
 	},
 	set: (WritableToken, newValue) => {
-		const state = withdraw(WritableToken, store)
-		setAtomOrSelector(state, newValue, store)
+		const target = newest(store)
+		const state = withdraw(WritableToken, target)
+		setAtomOrSelector(state, newValue, target)
 	},
 	find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 	seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,

@@ -77,12 +77,8 @@ export function growMoleculeInStore(
 	molecule.tokens.set(stateToken.key, stateToken)
 	const isTransaction =
 		isChildStore(store) && store.transactionMeta.phase === `building`
-	if (isTransaction) {
-		store.transactionMeta.update.updates.push({
-			type: `state_creation`,
-			token: stateToken,
-		})
-	} else {
+	const moleculeInProgress = store.moleculeInProgress === molecule.key
+	if (!isTransaction && !moleculeInProgress) {
 		molecule.subject.next({ type: `state_creation`, token: stateToken })
 	}
 	return stateToken

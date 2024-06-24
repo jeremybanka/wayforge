@@ -31,6 +31,10 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			token: atomToken,
 			value: lastValue,
 		})
+		const molecule = target.molecules.get(atom.family.subKey)
+		if (molecule) {
+			molecule.tokens.delete(key)
+		}
 		target.atoms.delete(key)
 		target.valueMap.delete(key)
 		const selectorKeys = target.selectorAtoms.getRelatedKeys(key)
@@ -46,7 +50,7 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		}
 		target.selectorAtoms.delete(key)
 		target.atomsThatAreDefault.delete(key)
-		target.timelineAtoms.delete(key)
+		target.timelineTopics.delete(key)
 		if (atomToken.type === `mutable_atom`) {
 			const updateToken = getUpdateToken(atomToken)
 			disposeAtom(updateToken, store)

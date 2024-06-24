@@ -57,7 +57,7 @@ export type MoleculeDisposal = {
 	token: MoleculeToken<any>
 	family: MoleculeFamilyToken<any>
 	context: MoleculeToken<any>[]
-	familyKeys: string[]
+	values: [key: string, value: any][]
 }
 
 export type TransactionUpdateContent =

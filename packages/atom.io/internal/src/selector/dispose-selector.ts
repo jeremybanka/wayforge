@@ -25,6 +25,10 @@ export function disposeSelector(
 			`Standalone selectors cannot be disposed.`,
 		)
 	} else {
+		const molecule = target.molecules.get(selector.family.subKey)
+		if (molecule) {
+			molecule.tokens.delete(key)
+		}
 		switch (selectorToken.type) {
 			case `selector`:
 				{

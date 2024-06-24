@@ -22,7 +22,7 @@ import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
-import { isChildStore } from "../transaction"
+import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
 	T extends Transceiver<any>,
@@ -101,13 +101,8 @@ export function initFamilyMemberInStore(
 	}
 	const state = family(key)
 	const target = newest(store)
-	if (state.family) {
-		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
-			target.transactionMeta.update.updates.push({
-				type: `state_creation`,
-				token: state,
-			})
-		} else {
+	if (state.family && target.moleculeInProgress === null) {
+		if (isRootStore(target)) {
 			switch (state.type) {
 				case `atom`:
 				case `mutable_atom`:
@@ -118,6 +113,14 @@ export function initFamilyMemberInStore(
 					store.on.selectorCreation.next(state)
 					break
 			}
+		} else if (
+			isChildStore(target) &&
+			target.on.transactionApplying.state === null
+		) {
+			target.transactionMeta.update.updates.push({
+				type: `state_creation`,
+				token: state,
+			})
 		}
 	}
 	return state

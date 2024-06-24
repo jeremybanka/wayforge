@@ -38,7 +38,7 @@ export const buildTransaction = (
 		operation: { open: false },
 		readonlySelectors: new LazyMap(parent.readonlySelectors),
 		timelines: new LazyMap(parent.timelines),
-		timelineAtoms: new Junction(parent.timelineAtoms.toJSON()),
+		timelineTopics: new Junction(parent.timelineTopics.toJSON()),
 		trackers: new Map(),
 		transactions: new LazyMap(parent.transactions),
 		selectorAtoms: new Junction(parent.selectorAtoms.toJSON()),
@@ -49,6 +49,7 @@ export const buildTransaction = (
 		valueMap: new LazyMap(parent.valueMap),
 		molecules: new LazyMap(parent.molecules),
 		moleculeFamilies: new LazyMap(parent.moleculeFamilies),
+		moleculeInProgress: parent.moleculeInProgress,
 		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)

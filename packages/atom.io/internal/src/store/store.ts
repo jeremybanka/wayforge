@@ -35,7 +35,7 @@ import type {
 	TransactionEpoch,
 	TransactionProgress,
 } from "../transaction"
-import { isRootStore } from "../transaction/is-root-store"
+import { isRootStore } from "../transaction"
 
 export class Store implements Lineage {
 	public parent: Store | null = null
@@ -47,24 +47,7 @@ export class Store implements Lineage {
 	public selectors = new Map<string, WritableSelector<any>>()
 	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
 
-	public trackers = new Map<string, Tracker<Transceiver<any>>>()
-	public families = new Map<
-		string,
-		| MutableAtomFamily<any, any, any>
-		| ReadonlySelectorFamily<any, any>
-		| RegularAtomFamily<any, any>
-		| WritableSelectorFamily<any, any>
-	>()
-
-	public timelines = new Map<string, Timeline<any>>()
-	public transactions = new Map<string, Transaction<Func>>()
-
 	public atomsThatAreDefault = new Set<string>()
-
-	public timelineAtoms = new Junction({
-		between: [`timelineKey`, `atomKey`],
-		cardinality: `1:n`,
-	})
 	public selectorAtoms = new Junction({
 		between: [`selectorKey`, `atomKey`],
 		cardinality: `n:n`,
@@ -82,9 +65,37 @@ export class Store implements Lineage {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
+	public trackers = new Map<string, Tracker<Transceiver<any>>>()
+	public families = new Map<
+		string,
+		| MutableAtomFamily<any, any, any>
+		| ReadonlySelectorFamily<any, any>
+		| RegularAtomFamily<any, any>
+		| WritableSelectorFamily<any, any>
+	>()
+
+	public transactions = new Map<string, Transaction<Func>>()
+	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
+		epoch: new Map<string, number>(),
+		actionContinuities: new Junction({
+			between: [`continuity`, `action`],
+			cardinality: `1:n`,
+		}),
+	}
+
+	public timelines = new Map<string, Timeline<any>>()
+	public timelineTopics = new Junction<
+		`timelineKey`,
+		`topicKey`,
+		{ topicType: `atom_family` | `atom` | `molecule_family` | `molecule` }
+	>({
+		between: [`timelineKey`, `topicKey`],
+		cardinality: `1:n`,
+	})
 
 	public molecules = new Map<string, Molecule<any>>()
 	public moleculeFamilies = new Map<string, MoleculeFamily<any>>()
+	public moleculeInProgress: string | null = null
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {
@@ -107,13 +118,6 @@ export class Store implements Lineage {
 		moleculeDisposal: new Subject<MoleculeToken<any>>(),
 	}
 	public operation: OperationProgress = { open: false }
-	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
-		epoch: new Map<string, number>(),
-		actionContinuities: new Junction({
-			between: [`continuity`, `action`],
-			cardinality: `1:n`,
-		}),
-	}
 
 	public config: {
 		name: string

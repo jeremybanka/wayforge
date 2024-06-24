@@ -1,3 +1,4 @@
+import { stringifyJson } from "anvl/json"
 import type {
 	MoleculeConstructor,
 	MoleculeDisposal,
@@ -31,34 +32,44 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 	}
 	const { family } = token
 
-	for (const state of molecule.tokens.values()) {
-		disposeFromStore(state, store)
+	const context: MoleculeToken<any>[] = []
+	for (const above of molecule.above.values()) {
+		context.push(deposit(above))
 	}
-	for (const child of molecule.below.values()) {
-		if (child.family?.dependsOn === `all`) {
-			disposeMolecule(child, store)
-		} else {
-			child.above.delete(molecule.stringKey)
-			if (child.above.size === 0) {
-				disposeMolecule(child, store)
-			}
-		}
+	const values: [string, any][] = []
+	for (const stateToken of molecule.tokens.values()) {
+		// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
+		const tokenFamily = stateToken.family!
+		values.push([tokenFamily.key, store.valueMap.get(stateToken.key)])
 	}
-	molecule.below.clear()
+
 	if (family) {
 		const Formula = withdraw(family, store)
 		const disposalEvent: MoleculeDisposal = {
 			type: `molecule_disposal`,
 			token,
 			family,
-			context: [...molecule.above.values()].map((m) => deposit(m)),
-			familyKeys: [...molecule.tokens.values()]
-				.map((t) => t.family?.key)
-				.filter((k): k is string => typeof k === `string`),
+			context,
+			values,
 		}
 		if (token.family) {
 			disposalEvent.family = token.family
 		}
+		for (const state of molecule.tokens.values()) {
+			disposeFromStore(state, store)
+		}
+		for (const child of molecule.below.values()) {
+			if (child.family?.dependsOn === `all`) {
+				disposeMolecule(child, store)
+			} else {
+				child.above.delete(molecule.stringKey)
+				if (child.above.size === 0) {
+					disposeMolecule(child, store)
+				}
+			}
+		}
+		molecule.below.clear()
+
 		const isTransaction =
 			isChildStore(store) && store.transactionMeta.phase === `building`
 		if (isTransaction) {
