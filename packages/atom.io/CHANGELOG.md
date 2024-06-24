@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.7
+
+### Patch Changes
+
+- e4d32db: 🐛 Fixed bug where, when getting a molecule in a selector, the get operation would throw.
+
 ## 0.24.6
 
 ### Patch Changes
