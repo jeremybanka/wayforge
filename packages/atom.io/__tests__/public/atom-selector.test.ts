@@ -1,5 +1,17 @@
-import type { Logger } from "atom.io"
-import { atom, getState, selector, setState, subscribe } from "atom.io"
+import type { AtomToken, Logger, MoleculeTransactors } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	getState,
+	makeMolecule,
+	makeRootMolecule,
+	moleculeFamily,
+	selector,
+	selectorFamily,
+	setState,
+	subscribe,
+} from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -211,5 +223,43 @@ describe(`selector`, () => {
 		unsubscribe()
 		setState(countAtom, 2)
 		expect(Utils.stdout0).toHaveBeenCalledTimes(3)
+	})
+	it(`may get molecules`, () => {
+		const root = makeRootMolecule(`root`)
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const counterMolecules = moleculeFamily({
+			key: `counter`,
+			new: class Molecule {
+				public count: AtomToken<number>
+				public constructor(tools: MoleculeTransactors<string>) {
+					this.count = tools.bond(countAtoms)
+				}
+			},
+		})
+
+		const doubles = selectorFamily<number, string>({
+			key: `doubles`,
+			get:
+				(key) =>
+				({ get, seek }) => {
+					const counterMolecule = seek(counterMolecules, key)
+					if (!counterMolecule) {
+						return 0
+					}
+					const counter = get(counterMolecule)
+					if (!counter) {
+						return 0
+					}
+					const count = get(counter.count)
+					return count * 2
+				},
+		})
+
+		makeMolecule(root, counterMolecules, `root`)
+
+		expect(getState(findState(doubles, `root`))).toBe(0)
 	})
 })
