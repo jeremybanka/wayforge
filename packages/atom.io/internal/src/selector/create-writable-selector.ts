@@ -8,10 +8,10 @@ import type { WritableSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
-import { become } from "../set-state/become"
+import { become } from "../set-state"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { isRootStore } from "../transaction/is-root-store"
+import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
@@ -25,14 +25,15 @@ export const createWritableSelector = <T>(
 	const { find, get, seek, json } = transactors
 	const readonlyTransactors = { find, get, seek, json }
 
-	const getSelf = () => {
+	const getSelf = (innerTarget = newest(store)): T => {
 		const value = options.get(readonlyTransactors)
-		cacheValue(options.key, value, subject, newest(store))
+		cacheValue(options.key, value, subject, innerTarget)
 		return value
 	}
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
-		const oldValue = getSelf()
+		const innerTarget = newest(store)
+		const oldValue = getSelf(innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(
 			`📝`,
@@ -44,9 +45,9 @@ export const createWritableSelector = <T>(
 			newValue,
 			`)`,
 		)
-		cacheValue(options.key, newValue, subject, store)
-		markDone(options.key, store)
-		if (isRootStore(target)) {
+		cacheValue(options.key, newValue, subject, innerTarget)
+		markDone(options.key, innerTarget)
+		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })
 		}
 		options.set(transactors, newValue)

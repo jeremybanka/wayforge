@@ -5,11 +5,12 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import { parseJson } from "atom.io/json"
+import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore, initFamilyMemberInStore } from "../families"
 import { growMoleculeInStore, makeMoleculeInStore } from "../molecule"
-import type { Store } from "../store"
+import { setIntoStore } from "../set-state"
+import { type Store, withdraw } from "../store"
 
 export function ingestCreationEvent(
 	update: StateCreation<any>,
@@ -72,7 +73,7 @@ export function ingestMoleculeCreationEvent(
 		case `newValue`:
 			makeMoleculeInStore(
 				store,
-				update.context[0],
+				update.context,
 				update.family,
 				update.token.key,
 				...update.params,
@@ -93,12 +94,24 @@ export function ingestMoleculeDisposalEvent(
 			disposeFromStore(update.token, store)
 			break
 		case `oldValue`:
-			makeMoleculeInStore(
-				store,
-				update.context[0],
-				update.family,
-				update.token.key,
-			)
+			{
+				const moleculeToken = makeMoleculeInStore(
+					store,
+					update.context,
+					update.family,
+					update.token.key,
+				)
+				for (const [familyKey, value] of update.values) {
+					const memberKey = `${familyKey}(${stringifyJson(moleculeToken.key)})`
+					const molecule = withdraw(moleculeToken, store)
+					const alreadyCreated = molecule.tokens.has(memberKey)
+					const family = store.families.get(familyKey)
+					if (family && !alreadyCreated) {
+						growMoleculeInStore(molecule, family, store)
+					}
+					store.valueMap.set(memberKey, value)
+				}
+			}
 			break
 	}
 }

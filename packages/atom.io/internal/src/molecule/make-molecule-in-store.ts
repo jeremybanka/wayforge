@@ -22,7 +22,7 @@ import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import { actUponStore, isChildStore } from "../transaction"
+import { actUponStore, isChildStore, isRootStore } from "../transaction"
 import { growMoleculeInStore } from "./grow-molecule-in-store"
 import { Molecule } from "./molecule-internal"
 
@@ -35,11 +35,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 ): MoleculeToken<M> {
 	const target = newest(store)
 
-	const token = {
-		type: `molecule`,
-		key,
-		family: familyToken,
-	} as const satisfies MoleculeToken<M>
+	target.moleculeInProgress = key
 
 	const contextArray = Array.isArray(context) ? context : [context]
 	const owners = contextArray.map<Molecule<M>>((ctx) => {
@@ -57,8 +53,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		return molecule
 	})
 
-	const family = withdraw(familyToken, store)
-	const molecule = new Molecule(owners, key, family)
+	const molecule = new Molecule(owners, key, familyToken)
 	target.molecules.set(stringifyJson(key), molecule)
 	for (const owner of owners) {
 		owner.below.set(molecule.stringKey, molecule)
@@ -116,25 +111,36 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				...p,
 			),
 	} satisfies MoleculeTransactors<MK<M>>
+
+	const family = withdraw(familyToken, store)
 	const Constructor = family.new
 
-	molecule.instance = new Constructor(transactors, token.key, ...params)
+	molecule.instance = new Constructor(transactors, key, ...params)
+
+	const token = {
+		type: `molecule`,
+		key,
+		family: familyToken,
+	} as const satisfies MoleculeToken<M>
 
 	const update = {
 		type: `molecule_creation`,
 		token,
-		family,
+		family: familyToken,
 		context: contextArray,
 		params,
 	} satisfies MoleculeCreation<M>
 
-	const isTransaction =
-		isChildStore(target) && target.transactionMeta.phase === `building`
-	if (isTransaction) {
-		target.transactionMeta.update.updates.push(update)
-	} else {
+	if (isRootStore(target)) {
 		family.subject.next(update)
+	} else if (
+		isChildStore(target) &&
+		target.on.transactionApplying.state === null
+	) {
+		target.transactionMeta.update.updates.push(update)
 	}
+
+	target.moleculeInProgress = null
 
 	return token
 }
