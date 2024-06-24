@@ -203,9 +203,6 @@ function addAtomToTimeline(
 		{ topicType: `atom` },
 	)
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
-
 	tl.subscriptions.set(
 		atom.key,
 		atom.subject.subscribe(`timeline`, (update) => {
@@ -461,49 +458,42 @@ function joinTransaction(
 		type: `transaction`,
 	}
 	const currentTransaction = withdraw(currentTxToken, store)
-	if (tl.transactionKey !== currentTxKey) {
-		if (tl.transactionKey) {
-			store.logger.error(
-				`🐞`,
-				`timeline`,
-				tl.key,
-				`unable to resolve transaction "${tl.transactionKey}. This is probably a bug in AtomIO.`,
-			)
-		}
+	if (currentTxKey && tl.transactionKey === null) {
+		tl.transactionKey = currentTxKey
+		const unsubscribe = currentTransaction.subject.subscribe(
+			`timeline:${tl.key}`,
+			(transactionUpdate) => {
+				unsubscribe()
+				tl.transactionKey = null
+				if (tl.timeTraveling === null && currentTxInstanceId) {
+					if (tl.at !== tl.history.length) {
+						tl.history.splice(tl.at)
+					}
+
+					// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
+					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
+
+					const updates = filterTransactionUpdates(
+						transactionUpdate.updates,
+						timelineTopics,
+					)
+
+					const timelineTransactionUpdate: TimelineTransactionUpdate = {
+						timestamp: Date.now(),
+						...transactionUpdate,
+						updates,
+					}
+					const willCapture =
+						tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
+					if (willCapture) {
+						tl.history.push(timelineTransactionUpdate)
+						tl.at = tl.history.length
+						tl.subject.next(timelineTransactionUpdate)
+					}
+				}
+			},
+		)
 	}
-	tl.transactionKey = currentTxKey
-	const unsubscribe = currentTransaction.subject.subscribe(
-		`timeline:${tl.key}`,
-		(transactionUpdate) => {
-			unsubscribe()
-			if (tl.timeTraveling === null && currentTxInstanceId) {
-				if (tl.at !== tl.history.length) {
-					tl.history.splice(tl.at)
-				}
-
-				// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
-				const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
-
-				const updates = filterTransactionUpdates(
-					transactionUpdate.updates,
-					timelineTopics,
-				)
-
-				const timelineTransactionUpdate: TimelineTransactionUpdate = {
-					timestamp: Date.now(),
-					...transactionUpdate,
-					updates,
-				}
-				const willCapture =
-					tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
-				if (willCapture) {
-					tl.history.push(timelineTransactionUpdate)
-					tl.at = tl.history.length
-					tl.subject.next(timelineTransactionUpdate)
-				}
-			}
-		},
-	)
 }
 
 function filterTransactionUpdates(
