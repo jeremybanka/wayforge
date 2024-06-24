@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.24.6
+
+### Patch Changes
+
+- 44a1d5a: 🐛 Fixed a bug where, when setting a selector in a transaction, that selector would leak to the outer store.
+- 44a1d5a: 🐛 Fixed a bug where, when creating a molecule in a transaction, the molecule creation event wouldn't be nested into the transaction update.
+- 44a1d5a: 🐛 Fixed a bug where, when creating a molecule which `bond`s atoms, the atom creations would be redundantly captured on transactions/timelines, leading to noisy warnings in the console.
+
 ## 0.24.5
 
 ### Patch Changes
