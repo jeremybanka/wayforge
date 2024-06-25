@@ -262,7 +262,7 @@ describe(`selector`, () => {
 
 		expect(getState(findState(doubles, `root`))).toBe(0)
 	})
-	it.only(`(covers "covered" in trace-selector-atoms) won't trace the same node twice`, () => {
+	it(`(covers "covered" in trace-selector-atoms) won't trace the same node twice`, () => {
 		const countSelector = atom<number>({
 			key: `count`,
 			default: 0,
