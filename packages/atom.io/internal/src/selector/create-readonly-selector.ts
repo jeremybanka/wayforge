@@ -18,11 +18,16 @@ export const createReadonlySelector = <T>(
 ): ReadonlySelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
-
-	const { get, find, seek, json } = registerSelector(options.key, target)
+	const covered = new Set<string>()
+	const { get, find, seek, json } = registerSelector(
+		options.key,
+		covered,
+		target,
+	)
 	const getSelf = () => {
 		const value = options.get({ get, find, seek, json })
 		cacheValue(options.key, value, subject, newest(store))
+		covered.clear()
 		return value
 	}
 
