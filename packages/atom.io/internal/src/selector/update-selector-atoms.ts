@@ -10,7 +10,9 @@ export const updateSelectorAtoms = (
 	store: Store,
 ): void => {
 	const target = newest(store)
+	const covered = new Set<string>()
 	if (dependency.type === `atom` || dependency.type === `mutable_atom`) {
+		covered.add(dependency.key)
 		target.selectorAtoms.set({
 			selectorKey,
 			atomKey: dependency.key,
@@ -22,7 +24,12 @@ export const updateSelectorAtoms = (
 			`discovers root atom "${dependency.key}"`,
 		)
 	} else {
-		const rootKeys = traceSelectorAtoms(selectorKey, dependency.key, store)
+		const rootKeys = traceSelectorAtoms(
+			selectorKey,
+			dependency.key,
+			covered,
+			store,
+		)
 		store.logger.info(
 			`🔍`,
 			`selector`,
