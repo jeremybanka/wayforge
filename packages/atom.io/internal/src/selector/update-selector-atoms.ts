@@ -7,6 +7,7 @@ import { traceSelectorAtoms } from "./trace-selector-atoms"
 export const updateSelectorAtoms = (
 	selectorKey: string,
 	dependency: ReadonlySelectorToken<unknown> | WritableToken<unknown>,
+	covered: Set<string>,
 	store: Store,
 ): void => {
 	const target = newest(store)
@@ -22,7 +23,7 @@ export const updateSelectorAtoms = (
 			`discovers root atom "${dependency.key}"`,
 		)
 	} else {
-		const rootKeys = traceSelectorAtoms(selectorKey, dependency.key, store)
+		const rootKeys = traceSelectorAtoms(dependency.key, covered, store)
 		store.logger.info(
 			`🔍`,
 			`selector`,
@@ -38,4 +39,5 @@ export const updateSelectorAtoms = (
 			})
 		}
 	}
+	covered.add(dependency.key)
 }

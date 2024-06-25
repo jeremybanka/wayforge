@@ -19,6 +19,7 @@ import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
 	selectorKey: string,
+	covered: Set<string>,
 	store: Store,
 ): Transactors => ({
 	get: (dependency: MoleculeToken<MoleculeConstructor> | ReadableToken<any>) => {
@@ -49,7 +50,7 @@ export const registerSelector = (
 				source: dependency.key,
 			},
 		)
-		updateSelectorAtoms(selectorKey, dependency, store)
+		updateSelectorAtoms(selectorKey, dependency, covered, store)
 		return dependencyValue
 	},
 	set: (WritableToken, newValue) => {
