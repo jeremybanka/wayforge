@@ -4,7 +4,6 @@ import { isAtomKey } from "../keys"
 import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
 
 export const traceSelectorAtoms = (
-	selectorKey: string,
 	directDependencyKey: StateKey<unknown>,
 	covered: Set<string>,
 	store: Store,
@@ -15,7 +14,6 @@ export const traceSelectorAtoms = (
 		directDependencyKey,
 		store,
 	)
-	let depth = 0
 	while (indirectDependencyKeys.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
 		const indirectDependencyKey = indirectDependencyKeys.shift()!
@@ -23,12 +21,6 @@ export const traceSelectorAtoms = (
 			continue
 		}
 		covered.add(indirectDependencyKey)
-		++depth
-		if (depth > 99999) {
-			throw new Error(
-				`Maximum selector dependency depth exceeded (> 99999) in selector "${selectorKey}". This is likely due to a circular dependency.`,
-			)
-		}
 
 		if (!isAtomKey(indirectDependencyKey, store)) {
 			indirectDependencyKeys.push(
@@ -52,6 +44,6 @@ export const traceAllSelectorAtoms = (
 	return directDependencyKeys.flatMap((depKey) =>
 		isAtomKey(depKey, store)
 			? depKey
-			: traceSelectorAtoms(selectorKey, depKey, covered, store),
+			: traceSelectorAtoms(depKey, covered, store),
 	)
 }

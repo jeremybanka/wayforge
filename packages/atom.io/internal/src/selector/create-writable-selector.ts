@@ -21,13 +21,15 @@ export const createWritableSelector = <T>(
 ): WritableSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
-	const transactors = registerSelector(options.key, target)
+	const covered = new Set<string>()
+	const transactors = registerSelector(options.key, covered, target)
 	const { find, get, seek, json } = transactors
 	const readonlyTransactors = { find, get, seek, json }
 
 	const getSelf = (innerTarget = newest(store)): T => {
 		const value = options.get(readonlyTransactors)
 		cacheValue(options.key, value, subject, innerTarget)
+		covered.clear()
 		return value
 	}
 

@@ -262,4 +262,40 @@ describe(`selector`, () => {
 
 		expect(getState(findState(doubles, `root`))).toBe(0)
 	})
+	it.only(`(covers "covered" in trace-selector-atoms) won't trace the same node twice`, () => {
+		const countSelector = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+
+		const countPlusTenSelector = selector<number>({
+			key: `countPlusTen`,
+			get: ({ get }) => get(countSelector) + 10,
+		})
+		const countPlusFiveSelector = selector<number>({
+			key: `countPlusFive`,
+			get: ({ get }) => get(countSelector) + 5,
+		})
+		const doubleCountPlusFifteenSelector = selector<number>({
+			key: `countPlusFifteen`,
+			get: ({ get }) => {
+				const plusTen = get(countPlusTenSelector)
+				const plusFive = get(countPlusFiveSelector)
+				return plusTen + plusFive
+			},
+		})
+		const tripleCountPlusTwentySelector = selector<number>({
+			key: `countPlusTwenty`,
+			get: ({ get }) => {
+				const doublePlusFifteen = get(doubleCountPlusFifteenSelector)
+				const plusFive = get(countPlusFiveSelector)
+				return doublePlusFifteen + plusFive
+			},
+		})
+
+		expect(getState(countPlusTenSelector)).toBe(10)
+		expect(getState(countPlusFiveSelector)).toBe(5)
+		expect(getState(doubleCountPlusFifteenSelector)).toBe(15)
+		expect(getState(tripleCountPlusTwentySelector)).toBe(20)
+	})
 })
