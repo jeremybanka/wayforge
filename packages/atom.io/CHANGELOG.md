@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.24.8
+
+### Patch Changes
+
+- cf66736: 🚀 Greatly improve performance for selectors with deep dependency trees. Redundant work is now avoided when discovering a selector's root atoms.
+
 ## 0.24.7
 
 ### Patch Changes
