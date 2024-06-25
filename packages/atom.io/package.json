@@ -98,7 +98,7 @@
 		"drizzle-orm": "0.31.2",
 		"eslint": "npm:eslint@8.57.0",
 		"eslint-v9": "npm:eslint@9.5.0",
-		"framer-motion": "11.2.11",
+		"framer-motion": "11.2.12",
 		"happy-dom": "14.12.3",
 		"http-proxy": "1.18.1",
 		"npmlog": "7.0.1",
