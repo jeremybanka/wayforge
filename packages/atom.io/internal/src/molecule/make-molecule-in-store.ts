@@ -124,7 +124,6 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				}
 			}
 		},
-		// join: <J extends JoinToken<any, any, any, any>>(joinToken: J) => {},
 		spawn: (f: MoleculeFamilyToken<any>, k: any, ...p: any[]) =>
 			makeMoleculeInStore(
 				newest(store),
