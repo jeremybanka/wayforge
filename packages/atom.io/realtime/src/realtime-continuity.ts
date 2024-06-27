@@ -51,7 +51,6 @@ export type ContinuityToken = {
 }
 
 export class SyncGroup {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 	protected type = `continuity` as const
 
 	protected globals: AtomToken<any>[] = []
