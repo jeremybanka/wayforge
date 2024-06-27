@@ -95,7 +95,7 @@ describe(`immortal integrations`, () => {
 			key: `item`,
 			new: class Item {
 				public constructor(transactors: MoleculeTransactors<string>) {
-					transactors.join(holdersOfItems)
+					transactors.bond(holdersOfItems, { as: `item` })
 				}
 			},
 		})
@@ -104,7 +104,7 @@ describe(`immortal integrations`, () => {
 			key: `character`,
 			new: class Character {
 				public constructor(transactors: MoleculeTransactors<string>) {
-					transactors.join(holdersOfItems)
+					transactors.bond(holdersOfItems, { as: `holder` })
 				}
 			},
 		})

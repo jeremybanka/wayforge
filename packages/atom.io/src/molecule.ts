@@ -36,10 +36,23 @@ export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 		bond<T>(family: ReadonlySelectorFamilyToken<T, K>): ReadonlySelectorToken<T>
 		bond<T>(family: WritableFamilyToken<T, K>): WritableToken<T>
 		bond<T>(family: ReadableFamilyToken<T, K>): ReadableToken<T>
+		bond<J extends JoinToken<any, any, any, any>>(
+			joinToken: J,
+			role: {
+				as: J extends JoinToken<infer A, infer B, any, any> ? A | B : never
+			},
+		): J extends JoinToken<any, any, any, infer Content>
+			? Content extends null
+				? { relatedKeys: ReadonlySelectorToken<string[]> }
+				: {
+						relatedKeys: ReadonlySelectorToken<string[]>
+						relatedEntries: ReadonlySelectorToken<
+							[key: string, value: Content][]
+						>
+					}
+			: never
 
-		claim(below: MoleculeToken<any>, options: { exclusive: boolean })
-
-		join<J extends JoinToken<any, any, any, any>>(joinToken: J): J
+		claim(below: MoleculeToken<any>, options: { exclusive: boolean }): void
 
 		spawn<Key extends Json.Serializable, Ctor extends MoleculeConstructor>(
 			family: MoleculeFamilyToken<Ctor>,
