@@ -435,7 +435,7 @@ export class Join<
 							transactors: MoleculeTransactors<string>,
 							public key: string,
 						) {
-							transactors.join(joinToken)
+							transactors.bond(joinToken, { as: null } as any)
 						}
 					},
 				},

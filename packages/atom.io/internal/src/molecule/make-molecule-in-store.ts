@@ -9,7 +9,7 @@ import type {
 	MoleculeTransactors,
 	ReadableFamilyToken,
 } from "atom.io"
-import { getJoin, type JoinToken } from "atom.io/data"
+import { findRelations, getJoin, type JoinToken } from "atom.io/data"
 import type { seekState } from "atom.io/immortal"
 import { stringifyJson } from "atom.io/json"
 
@@ -25,6 +25,10 @@ import { withdraw } from "../store"
 import { actUponStore, isChildStore, isRootStore } from "../transaction"
 import { growMoleculeInStore } from "./grow-molecule-in-store"
 import { Molecule } from "./molecule-internal"
+
+function capitalize<S extends string>(string: S): Capitalize<S> {
+	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
+}
 
 export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	store: Store,
@@ -73,12 +77,36 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 			disposeFromStore(t, newest(store))
 		},
 		env: () => getEnvironmentData(newest(store)),
-		bond: ((f: ReadableFamilyToken<any, any>) =>
-			growMoleculeInStore(
-				molecule,
-				withdraw(f, store),
-				newest(store),
-			)) as MoleculeTransactors<MK<M>>[`bond`],
+		bond: ((
+			token: JoinToken<any, any, any, any> | ReadableFamilyToken<any, any>,
+			maybeRole,
+		) => {
+			if (token.type === `join`) {
+				const { as: role } = maybeRole
+				const join = getJoin(token, store)
+				join.molecules.set(stringifyJson(key), molecule)
+				molecule.joins.set(token.key, join)
+				if (role === null) {
+					return
+				}
+				const otherRole = token.a === role ? token.b : token.a
+				const relations = findRelations(token, key)
+				const relatedKeys =
+					relations[
+						`${otherRole}KeysOf${capitalize(role)}` as keyof typeof relations
+					]
+				const relatedEntries =
+					relations[
+						`${otherRole}EntriesOf${capitalize(role)}` as keyof typeof relations
+					]
+				let tokens = { relatedKeys }
+				if (relatedEntries) {
+					tokens = Object.assign(tokens, { relatedEntries })
+				}
+				return tokens
+			}
+			return growMoleculeInStore(molecule, withdraw(token, store), newest(store))
+		}) as MoleculeTransactors<MK<M>>[`bond`],
 		claim: (below, options) => {
 			const { exclusive } = options
 			const belowMolecule = newest(store).molecules.get(stringifyJson(below.key))
@@ -96,12 +124,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				}
 			}
 		},
-		join: <J extends JoinToken<any, any, any, any>>(joinToken: J) => {
-			const join = getJoin(joinToken, store)
-			join.molecules.set(stringifyJson(key), molecule)
-			molecule.joins.set(joinToken.key, join)
-			return joinToken
-		},
+		// join: <J extends JoinToken<any, any, any, any>>(joinToken: J) => {},
 		spawn: (f: MoleculeFamilyToken<any>, k: any, ...p: any[]) =>
 			makeMoleculeInStore(
 				newest(store),
