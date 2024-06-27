@@ -161,8 +161,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.6
+        version: 1.1.6
       vite:
         specifier: 5.3.1
         version: 5.3.1(@types/node@20.14.9)
@@ -275,8 +275,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.6
+        version: 1.1.6
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -777,8 +777,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.6
+        version: 1.1.6
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -805,8 +805,8 @@ importers:
         version: 3.23.1(zod@3.23.8)
     devDependencies:
       '@types/bun':
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.6
+        version: 1.1.6
       '@types/node':
         specifier: 20.14.9
         version: 20.14.9
@@ -5149,10 +5149,10 @@ packages:
       '@babel/types': 7.24.5
     dev: true
 
-  /@types/bun@1.1.5:
-    resolution: {integrity: sha512-7RprVDMF+1o+EWSo7F1+iJpkfNz+Ikw9K//vwambcY+D1QHXfb9l7jWY1hSBfuFEkW9yFAhkMzP2uTi1pQXoqw==}
+  /@types/bun@1.1.6:
+    resolution: {integrity: sha512-uJgKjTdX0GkWEHZzQzFsJkWp5+43ZS7HC8sZPFnOwnSo1AsNl2q9o2bFeS23disNDqbggEgyFkKCHl/w8iZsMA==}
     dependencies:
-      bun-types: 1.1.14
+      bun-types: 1.1.17
     dev: true
 
   /@types/cookie@0.4.1:
@@ -6372,8 +6372,8 @@ packages:
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
-  /bun-types@1.1.14:
-    resolution: {integrity: sha512-esfxOvECTkjEuUEHBOoOo590Qggf4b9cz5h29AOB2SKt3yZwG3LbAX4iIYwWZX7GnO7vaY5hIdcQygwN0xGdNw==}
+  /bun-types@1.1.17:
+    resolution: {integrity: sha512-Z4+OplcSd/YZq7ZsrfD00DKJeCwuNY96a1IDJyR73+cTBaFIS7SC6LhpY/W3AMEXO9iYq5NJ58WAwnwL1p5vKg==}
     dependencies:
       '@types/node': 20.12.13
       '@types/ws': 8.5.10
