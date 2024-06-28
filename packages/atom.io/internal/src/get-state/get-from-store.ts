@@ -1,6 +1,7 @@
 import type {
 	MoleculeConstructor,
 	MoleculeFamilyToken,
+	MoleculeKey,
 	MoleculeToken,
 	ReadableFamilyToken,
 	ReadableToken,
@@ -33,7 +34,7 @@ export function getFromStore<T, K extends Json.Serializable>(
 
 export function getFromStore<M extends MoleculeConstructor>(
 	token: MoleculeFamilyToken<M>,
-	key: Json.Serializable,
+	key: MoleculeKey<M>,
 	store: Store,
 ): InstanceType<M>
 

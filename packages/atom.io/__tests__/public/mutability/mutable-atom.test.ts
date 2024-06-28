@@ -295,7 +295,7 @@ describe(`mutable atom effects`, () => {
 		})
 		const myMutableState = findState(myMutableAtoms, `myMutableState`)
 
-		setState(myMutableState, (prev) => prev.add(`a`))
+		setState(myMutableAtoms, `myMutableState`, (prev) => prev.add(`a`))
 		expect(setSize).toBe(1)
 		disposeState(myMutableState)
 		expect(setSize).toBe(0)

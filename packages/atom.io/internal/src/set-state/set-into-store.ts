@@ -1,7 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import { seekInStore } from "../families"
+import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
@@ -47,7 +47,10 @@ export function setIntoStore<T, New extends T>(
 		const key = params[1]
 		value = params[2]
 		store = params[3]
-		const maybeToken = seekInStore(family, key, store)
+		const maybeToken =
+			store.config.lifespan === `ephemeral`
+				? findInStore(family, key, store)
+				: seekInStore(family, key, store)
 		if (!maybeToken) {
 			throw new NotFoundError(family, key, store)
 		}
