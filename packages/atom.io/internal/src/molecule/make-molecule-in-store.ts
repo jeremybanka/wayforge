@@ -64,7 +64,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	}
 
 	const transactors = {
-		get: (t) => getFromStore(t, newest(store)),
+		get: (t) => getFromStore(t, undefined, newest(store)),
 		set: (t, newValue) => {
 			setIntoStore(t, newValue, newest(store))
 		},

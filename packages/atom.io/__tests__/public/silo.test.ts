@@ -1,5 +1,5 @@
 import type { RegularAtomFamilyOptions, RegularAtomOptions } from "atom.io"
-import { getState, Silo } from "atom.io"
+import { disposeState, getState, Silo } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
 const hasImplicitStoreBeenCreated = () => IMPLICIT.STORE_INTERNAL !== undefined
@@ -69,6 +69,16 @@ describe(`silo`, () => {
 
 		expect(Uno.getState(countState__Uno)).toBe(1)
 		expect(Dos.getState(countState__Dos)).toBe(2)
+
+		Uno.disposeState(countState__Uno)
+		Dos.disposeState(countState__Dos)
+
+		expect(() => {
+			Uno.getState(countState__Uno)
+		}).toThrowError(`Atom "counts("a")" not found in store "uno".`)
+		expect(() => Dos.getState(countState__Dos)).toThrowError(
+			`Atom "counts("b")" not found in store "dos".`,
+		)
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(

@@ -67,7 +67,9 @@ describe(`immortal mode`, () => {
 		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Atom "count("my-counter")" not found in store "IMPLICIT_STORE".]`,
 		)
-		expect(getState(myCounterMolecule)).toBeUndefined()
+		expect(() => getState(myCounterMolecule)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Molecule "my-counter" not found in store "IMPLICIT_STORE".]`,
+		)
 	})
 	test(`safe retrieval of state with seekState`, () => {
 		const countStates = atomFamily<number, string>({
@@ -77,6 +79,52 @@ describe(`immortal mode`, () => {
 
 		const countState = seekState(countStates, `world`)
 		expect(countState).toBeUndefined()
+	})
+	test(`unsafe retrieval of state without seekState`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		expect(() => getState(countStates, `nonexistent`)).toThrowError(
+			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		)
+		expect(() => {
+			setState(countStates, `nonexistent`, 1)
+		}).toThrowError(
+			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		)
+		expect(() => {
+			disposeState(countStates, `nonexistent`)
+		}).toThrowError(
+			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		)
+
+		const counterMolecules = moleculeFamily({
+			key: `counter`,
+			new: class Counter {
+				public $count: AtomToken<number>
+				public constructor(
+					transactors: MoleculeTransactors<string>,
+					public key: string,
+				) {
+					this.$count = transactors.bond(countStates)
+				}
+			},
+		})
+
+		expect(() => getState(counterMolecules, `nonexistent`)).toThrowError(
+			`Molecule Family "counter" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		)
+		expect(() => {
+			disposeState(counterMolecules, `nonexistent`)
+		}).toThrowError(
+			`Molecule Family "counter" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		)
+
+		const root = makeRootMolecule(`root`)
+		makeMolecule(root, counterMolecules, `does exist`)
+		expect(() => getState(counterMolecules, `does exist`)).not.toThrowError()
 	})
 })
 

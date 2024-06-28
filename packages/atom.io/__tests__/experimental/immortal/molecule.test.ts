@@ -118,7 +118,9 @@ describe(`moleculeFamily`, () => {
 		expect(ab.below.size).toBe(0)
 		expect(IMPLICIT.STORE.molecules.size).toBe(4)
 
-		expect(getState(abMolecule)).toBeUndefined()
+		expect(() => getState(abMolecule)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Molecule "ab" not found in store "IMPLICIT_STORE".]`,
+		)
 
 		disposeState(bcMolecule)
 

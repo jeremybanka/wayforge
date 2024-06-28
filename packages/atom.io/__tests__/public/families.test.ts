@@ -39,21 +39,19 @@ describe(`selector families`, () => {
 			key: `distance`,
 			get:
 				([keyA, keyB]) =>
-				({ find, get }) => {
-					const pointA = get(find(pointAtoms, keyA))
-					const pointB = get(find(pointAtoms, keyB))
+				({ get }) => {
+					const pointA = get(pointAtoms, keyA)
+					const pointB = get(pointAtoms, keyB)
 					return Math.sqrt(
 						(pointA.x - pointB.x) ** 2 + (pointA.y - pointB.y) ** 2,
 					)
 				},
 		})
-		setState(findState(pointAtoms, `a`), { x: 1, y: 1 })
-		setState(findState(pointAtoms, `b`), { x: 2, y: 2 })
-		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(Math.SQRT2)
+		setState(pointAtoms, `a`, { x: 1, y: 1 })
+		setState(pointAtoms, `b`, { x: 2, y: 2 })
+		expect(getState(distanceSelectors, [`a`, `b`])).toBe(Math.SQRT2)
 
-		setState(findState(pointAtoms, `b`), { x: 11, y: 11 })
-		expect(getState(findState(distanceSelectors, [`a`, `b`]))).toBe(
-			14.142135623730951,
-		)
+		setState(pointAtoms, `b`, { x: 11, y: 11 })
+		expect(getState(distanceSelectors, [`a`, `b`])).toBe(14.142135623730951)
 	})
 })

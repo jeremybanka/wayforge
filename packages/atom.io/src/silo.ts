@@ -7,6 +7,7 @@ import {
 	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
+	disposeFromStore,
 	findInStore,
 	getFromStore,
 	setIntoStore,
@@ -17,6 +18,7 @@ import type { Json } from "atom.io/json"
 
 import type {
 	AtomToken,
+	disposeState,
 	getState,
 	MutableAtomFamily,
 	MutableAtomFamilyOptions,
@@ -47,6 +49,7 @@ export class Silo {
 	public findState: typeof findState
 	public getState: typeof getState
 	public setState: typeof setState
+	public disposeState: typeof disposeState
 	public subscribe: typeof subscribe
 	public undo: typeof undo
 	public redo: typeof redo
@@ -84,10 +87,14 @@ export class Silo {
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
 		this.findState = (token, key) => findInStore(token, key, s) as any
-		this.getState = (token) => getFromStore(token, s)
-		this.setState = (token, newValue) => {
-			setIntoStore(token, newValue, s)
-		}
+		this.getState = ((...params: Parameters<typeof getState>) =>
+			getFromStore(...params, s)) as typeof getState
+		this.setState = ((...params: Parameters<typeof setState>) => {
+			setIntoStore(...params, s)
+		}) as typeof setState
+		this.disposeState = ((...params: Parameters<typeof disposeState>) => {
+			disposeFromStore(...params, s)
+		}) as typeof disposeState
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
 		this.undo = (token) => {
 			timeTravel(`undo`, token, s)
