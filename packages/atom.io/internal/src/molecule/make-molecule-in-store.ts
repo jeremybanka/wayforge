@@ -1,4 +1,5 @@
 import type {
+	CtorToolkit,
 	MK,
 	MoleculeConstructor,
 	MoleculeCreation,
@@ -6,7 +7,6 @@ import type {
 	MoleculeKey,
 	MoleculeParams,
 	MoleculeToken,
-	MoleculeTransactors,
 	ReadableFamilyToken,
 } from "atom.io"
 import { findRelations, getJoin, type JoinToken } from "atom.io/data"
@@ -38,32 +38,33 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	...params: MoleculeParams<M>
 ): MoleculeToken<M> {
 	const target = newest(store)
+	const stringKey = stringifyJson(key)
 
-	target.moleculeInProgress = key
+	target.moleculeInProgress = stringKey
 
 	const contextArray = Array.isArray(context) ? context : [context]
 	const owners = contextArray.map<Molecule<M>>((ctx) => {
 		if (ctx instanceof Molecule) {
 			return ctx
 		}
-		const stringKey = stringifyJson(ctx.key)
-		const molecule = store.molecules.get(stringKey)
+		const ctxStringKey = stringifyJson(ctx.key)
+		const molecule = store.molecules.get(ctxStringKey)
 
 		if (!molecule) {
 			throw new Error(
-				`Molecule ${stringKey} not found in store "${store.config.name}"`,
+				`Molecule ${ctxStringKey} not found in store "${store.config.name}"`,
 			)
 		}
 		return molecule
 	})
 
 	const molecule = new Molecule(owners, key, familyToken)
-	target.molecules.set(stringifyJson(key), molecule)
+	target.molecules.set(stringKey, molecule)
 	for (const owner of owners) {
 		owner.below.set(molecule.stringKey, molecule)
 	}
 
-	const transactors = {
+	const toolkit = {
 		get: (t) => getFromStore(t, undefined, newest(store)),
 		set: (t, newValue) => {
 			setIntoStore(t, newValue, newest(store))
@@ -84,8 +85,21 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 			if (token.type === `join`) {
 				const { as: role } = maybeRole
 				const join = getJoin(token, store)
-				join.molecules.set(stringifyJson(key), molecule)
+				join.molecules.set(stringKey, molecule)
 				molecule.joins.set(token.key, join)
+				const unsubFromFamily = family.subject.subscribe(
+					`join:${token.key}-${stringKey}`,
+					(event) => {
+						if (
+							event.type === `molecule_disposal` &&
+							stringifyJson(event.token.key) === stringKey
+						) {
+							unsubFromFamily()
+							join.molecules.delete(stringKey)
+						}
+					},
+				)
+
 				if (role === null) {
 					return
 				}
@@ -106,7 +120,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				return tokens
 			}
 			return growMoleculeInStore(molecule, withdraw(token, store), newest(store))
-		}) as MoleculeTransactors<MK<M>>[`bond`],
+		}) as CtorToolkit<MK<M>>[`bond`],
 		claim: (below, options) => {
 			const { exclusive } = options
 			const belowMolecule = newest(store).molecules.get(stringifyJson(below.key))
@@ -132,12 +146,12 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				k,
 				...p,
 			),
-	} satisfies MoleculeTransactors<MK<M>>
+	} satisfies CtorToolkit<MK<M>>
 
 	const family = withdraw(familyToken, store)
 	const Constructor = family.new
 
-	molecule.instance = new Constructor(transactors, key, ...params)
+	molecule.instance = new Constructor(toolkit, key, ...params)
 
 	const token = {
 		type: `molecule`,

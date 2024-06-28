@@ -127,10 +127,10 @@ export const attachExplorerState = (key: string) => {
 
 	const writeOperationAddSpace: Write<
 		(options?: SplitSpaceOptions) => string
-	> = (transactors, { parentId = `root` } = {}) => {
-		const { find, set } = transactors
+	> = (tools, { parentId = `root` } = {}) => {
+		const { find, set } = tools
 		const k = `s-${now()}`
-		addToIndex(transactors, { indexAtom: spaceIndexState, id: k })
+		addToIndex(tools, { indexAtom: spaceIndexState, id: k })
 		set(spaceLayoutState, (current) =>
 			current.set({ parent: `parent:${parentId}`, child: k }, { size: 1 }),
 		)
@@ -139,21 +139,18 @@ export const attachExplorerState = (key: string) => {
 		return k
 	}
 
-	const writeOperationRemoveSpace: Write<(id: string) => void> = (
-		transactors,
-		id,
-	) => {
-		removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
+	const writeOperationRemoveSpace: Write<(id: string) => void> = (tools, id) => {
+		removeFromIndex(tools, { indexAtom: spaceIndexState, id })
 	}
 
 	const writeOperationAddView: Write<(options?: AddViewOptions) => void> = (
-		transactors,
+		tools,
 		{ spaceId: maybeSpaceId, path } = {},
 	) => {
-		const { find, get, set } = transactors
+		const { find, get, set } = tools
 		const id = `v-${now()}`
 
-		addToIndex(transactors, { indexAtom: viewIndexState, id })
+		addToIndex(tools, { indexAtom: viewIndexState, id })
 		const viewState = find(findViewState, id)
 		set(
 			viewState,
@@ -168,7 +165,7 @@ export const attachExplorerState = (key: string) => {
 		const spaceId =
 			maybeSpaceId ??
 			lastOf([...get(spaceIndexState)]) ??
-			writeOperationAddSpace(transactors)
+			writeOperationAddSpace(tools)
 		const viewFocusedState = find(findViewFocusedState, id)
 		set(viewFocusedState, Date.now())
 		set(viewsPerSpaceState, (current) => current.set({ spaceId, viewId: id }))
@@ -176,11 +173,11 @@ export const attachExplorerState = (key: string) => {
 	}
 
 	const writeOperationRemoveView: Write<(viewId: string) => void> = (
-		transactors,
+		tools,
 		viewId,
 	) => {
-		const { set } = transactors
-		removeFromIndex(transactors, { indexAtom: viewIndexState, id: viewId })
+		const { set } = tools
+		removeFromIndex(tools, { indexAtom: viewIndexState, id: viewId })
 		set(viewsPerSpaceState, (current) => current.remove({ viewId }))
 	}
 

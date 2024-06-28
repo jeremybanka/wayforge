@@ -1,4 +1,4 @@
-import type { AtomToken, Logger, MoleculeTransactors } from "atom.io"
+import type { AtomToken, CtorToolkit, Logger } from "atom.io"
 import {
 	atomFamily,
 	disposeState,
@@ -8,7 +8,7 @@ import {
 	moleculeFamily,
 	setState,
 } from "atom.io"
-import { editRelations, getJoin, join } from "atom.io/data"
+import { editRelations, findRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
@@ -51,8 +51,8 @@ describe(`immortal mode`, () => {
 			key: `counters`,
 			new: class Counter {
 				public $count: AtomToken<number>
-				public constructor(public transactors: MoleculeTransactors<string>) {
-					this.$count = this.transactors.bond(countStates)
+				public constructor(public tools: CtorToolkit<string>) {
+					this.$count = this.tools.bond(countStates)
 				}
 			},
 		})
@@ -105,10 +105,10 @@ describe(`immortal mode`, () => {
 			new: class Counter {
 				public $count: AtomToken<number>
 				public constructor(
-					transactors: MoleculeTransactors<string>,
+					tools: CtorToolkit<string>,
 					public key: string,
 				) {
-					this.$count = transactors.bond(countStates)
+					this.$count = tools.bond(countStates)
 				}
 			},
 		})
@@ -136,14 +136,14 @@ describe(`immortal integrations`, () => {
 				between: [`holder`, `item`],
 				cardinality: `1:n`,
 			},
-			{ hi: 0 } satisfies { hi: number },
+			{ affinity: 0 } satisfies { affinity: number },
 		)
 
 		const itemMolecules = moleculeFamily({
 			key: `item`,
 			new: class Item {
-				public constructor(transactors: MoleculeTransactors<string>) {
-					transactors.bond(holdersOfItems, { as: `item` })
+				public constructor(tools: CtorToolkit<string>) {
+					tools.bond(holdersOfItems, { as: `item` })
 				}
 			},
 		})
@@ -151,8 +151,8 @@ describe(`immortal integrations`, () => {
 		const characterMolecules = moleculeFamily({
 			key: `character`,
 			new: class Character {
-				public constructor(transactors: MoleculeTransactors<string>) {
-					transactors.bond(holdersOfItems, { as: `holder` })
+				public constructor(tools: CtorToolkit<string>) {
+					tools.bond(holdersOfItems, { as: `holder` })
 				}
 			},
 		})
@@ -163,7 +163,7 @@ describe(`immortal integrations`, () => {
 		const itemMolecule = makeMolecule(world, itemMolecules, `item-0`)
 
 		editRelations(holdersOfItems, (relations) => {
-			relations.set({ holder: `holder-0`, item: `item-0` }, { hi: 1 })
+			relations.set({ holder: `holder-0`, item: `item-0` }, { affinity: 1 })
 		})
 		const internalJoin = getJoin(holdersOfItems, Internal.IMPLICIT.STORE)
 		expect(internalJoin.molecules.size).toBe(3)
@@ -172,6 +172,26 @@ describe(`immortal integrations`, () => {
 		editRelations(holdersOfItems, (relations) => {
 			relations.delete(`item-0`)
 		})
+		expect(() => findRelations(holdersOfItems, `item-1`)).toThrowError(
+			`Readonly Selector Family "holdersOfItems/singleRelatedEntry" member "item-1" not found in store "IMPLICIT_STORE".`,
+		)
+
+		expect(internalJoin.molecules.size).toBe(2)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(3)
+
+		editRelations(holdersOfItems, (relations) => {
+			relations.replaceRelations(`item-0`, { "holder-0": { affinity: 1 } })
+		})
+
+		expect(internalJoin.molecules.size).toBe(3)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
+
+		disposeState(itemMolecule)
+
+		expect(internalJoin.molecules.size).toBe(1)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
+
+		disposeState(holderMolecule)
 
 		expect(internalJoin.molecules.size).toBe(0)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)

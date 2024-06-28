@@ -1,4 +1,4 @@
-import type { Logger, MoleculeTransactors } from "atom.io"
+import type { CtorToolkit, Logger } from "atom.io"
 import {
 	disposeState,
 	getState,
@@ -36,16 +36,16 @@ describe(`moleculeFamily`, () => {
 			key: `top`,
 			new: class Top {
 				public constructor(
-					transactors: MoleculeTransactors<string>,
+					tools: CtorToolkit<string>,
 					public key: string,
 					childKeys: string[],
 				) {
 					for (const childKey of childKeys) {
-						const child = transactors.seek(bottomMolecules, childKey)
+						const child = tools.seek(bottomMolecules, childKey)
 						if (child) {
-							transactors.claim(child, { exclusive: true })
+							tools.claim(child, { exclusive: true })
 						} else {
-							transactors.spawn(bottomMolecules, childKey)
+							tools.spawn(bottomMolecules, childKey)
 						}
 					}
 				}
@@ -81,16 +81,16 @@ describe(`moleculeFamily`, () => {
 			key: `top`,
 			new: class Top {
 				public constructor(
-					transactors: MoleculeTransactors<string>,
+					tools: CtorToolkit<string>,
 					public key: string,
 					childKeys: string[],
 				) {
 					for (const childKey of childKeys) {
-						const child = transactors.seek(bottomMolecules, childKey)
+						const child = tools.seek(bottomMolecules, childKey)
 						if (child) {
-							transactors.claim(child, { exclusive: false })
+							tools.claim(child, { exclusive: false })
 						} else {
-							transactors.spawn(bottomMolecules, childKey)
+							tools.spawn(bottomMolecules, childKey)
 						}
 					}
 				}

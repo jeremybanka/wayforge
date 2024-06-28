@@ -1,6 +1,6 @@
 import type {
+	CtorToolkit,
 	Logger,
-	MoleculeTransactors,
 	RegularAtomToken,
 	WritableToken,
 } from "atom.io"
@@ -363,8 +363,8 @@ describe(`timeline state lifecycle`, () => {
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
 			new: class Unit {
-				public hpState = this.transactors.bond(hpAtoms)
-				public constructor(public transactors: MoleculeTransactors<string>) {}
+				public hpState = this.tools.bond(hpAtoms)
+				public constructor(public tools: CtorToolkit<string>) {}
 			},
 		})
 		const gameTL = timeline({
@@ -391,13 +391,13 @@ describe(`timeline state lifecycle`, () => {
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
 			new: class Unit {
-				public hpState = this.transactors.bond(hpAtoms)
+				public hpState = this.tools.bond(hpAtoms)
 				public armorState: RegularAtomToken<number> | undefined
-				public constructor(public transactors: MoleculeTransactors<string>) {}
+				public constructor(public tools: CtorToolkit<string>) {}
 				public addArmor = transaction<(armor: number) => void>({
 					key: `addArmor`,
 					do: ({ set }, armor) => {
-						this.armorState = this.transactors.bond(armorAtoms)
+						this.armorState = this.tools.bond(armorAtoms)
 						set(this.armorState, armor)
 					},
 				})
