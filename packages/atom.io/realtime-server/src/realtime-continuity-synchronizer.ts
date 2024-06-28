@@ -36,7 +36,7 @@ export function realtimeContinuitySynchronizer({
 			socket.id,
 			store,
 		).userKeyOfSocket
-		const userKey = getFromStore(userKeyState, store)
+		const userKey = getFromStore(userKeyState, undefined, store)
 		if (!userKey) {
 			store.logger.error(
 				`❌`,
@@ -71,7 +71,7 @@ export function realtimeContinuitySynchronizer({
 					return
 				}
 				const newSocketState = findInStore(socketAtoms, newSocketKey, store)
-				const newSocket = getFromStore(newSocketState, store)
+				const newSocket = getFromStore(newSocketState, undefined, store)
 				socket = newSocket
 			},
 			`sync-continuity:${continuityKey}:${userKey}`,
@@ -85,6 +85,7 @@ export function realtimeContinuitySynchronizer({
 		)
 		const userUnacknowledgedUpdates = getFromStore(
 			userUnacknowledgedQueue,
+			undefined,
 			store,
 		)
 		const unsubscribeFunctions: (() => void)[] = []
@@ -109,7 +110,7 @@ export function realtimeContinuitySynchronizer({
 									token.type === `mutable_atom`
 										? getJsonToken(token, store)
 										: token
-								const resource = getFromStore(resourceToken, store)
+								const resource = getFromStore(resourceToken, undefined, store)
 								return [resourceToken, resource]
 							})
 						store.logger.info(
@@ -142,12 +143,12 @@ export function realtimeContinuitySynchronizer({
 			for (const atom of continuity.globals) {
 				const resourceToken =
 					atom.type === `mutable_atom` ? getJsonToken(atom, store) : atom
-				initialPayload.push(resourceToken, getFromStore(atom, store))
+				initialPayload.push(resourceToken, getFromStore(atom, undefined, store))
 			}
 			for (const perspective of continuity.perspectives) {
 				const { viewAtoms, resourceAtoms } = perspective
 				const userViewState = findInStore(viewAtoms, userKey, store)
-				const userView = getFromStore(userViewState, store)
+				const userView = getFromStore(userViewState, undefined, store)
 				store.logger.info(`👁`, `atom`, resourceAtoms.key, `${userKey} can see`, {
 					viewAtoms,
 					resourceAtoms,
@@ -158,7 +159,7 @@ export function realtimeContinuitySynchronizer({
 						visibleToken.type === `mutable_atom`
 							? getJsonToken(visibleToken, store)
 							: visibleToken
-					const resource = getFromStore(resourceToken, store)
+					const resource = getFromStore(resourceToken, undefined, store)
 
 					initialPayload.push(resourceToken, resource)
 				}
@@ -187,6 +188,7 @@ export function realtimeContinuitySynchronizer({
 										)
 										const visibleTokens = getFromStore(
 											userPerspectiveTokenState,
+											undefined,
 											store,
 										)
 										return visibleTokens.map((token) => {

@@ -27,8 +27,8 @@ export function syncContinuity<F extends AtomIO.Func>(
 	store: Store,
 ): () => void {
 	const continuityKey = continuity.key
-	const optimisticUpdates = getFromStore(optimisticUpdateQueue, store)
-	const confirmedUpdates = getFromStore(confirmedUpdateQueue, store)
+	const optimisticUpdates = getFromStore(optimisticUpdateQueue, undefined, store)
+	const confirmedUpdates = getFromStore(confirmedUpdateQueue, undefined, store)
 
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
 		socket.off(`continuity-init:${continuityKey}`, initializeContinuity)

@@ -67,7 +67,9 @@ describe(`immortal mode`, () => {
 		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Atom "count("my-counter")" not found in store "IMPLICIT_STORE".]`,
 		)
-		expect(getState(myCounterMolecule)).toBeUndefined()
+		expect(() => getState(myCounterMolecule)).toThrowErrorMatchingInlineSnapshot(
+			`[Error: Molecule "my-counter" not found in store "IMPLICIT_STORE".]`,
+		)
 	})
 	test(`safe retrieval of state with seekState`, () => {
 		const countStates = atomFamily<number, string>({

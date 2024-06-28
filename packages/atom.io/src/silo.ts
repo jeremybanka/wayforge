@@ -84,7 +84,7 @@ export class Silo {
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
 		this.findState = (token, key) => findInStore(token, key, s) as any
-		this.getState = (token) => getFromStore(token, s)
+		this.getState = (token) => getFromStore(token, undefined, s)
 		this.setState = (token, newValue) => {
 			setIntoStore(token, newValue, s)
 		}

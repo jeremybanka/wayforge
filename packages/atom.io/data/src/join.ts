@@ -195,7 +195,7 @@ export class Join<
 		this.store.miscResources.set(`join:${options.key}`, this)
 
 		this.transactors = {
-			get: (token) => getFromStore(token, store),
+			get: (token) => getFromStore(token, undefined, store),
 			set: (token, value) => {
 				setIntoStore(token, value, store)
 			},

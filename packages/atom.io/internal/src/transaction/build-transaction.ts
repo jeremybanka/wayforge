@@ -1,4 +1,4 @@
-import type { Func } from "atom.io"
+import type { Func, getState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 
@@ -65,7 +65,7 @@ export const buildTransaction = (
 			output: undefined,
 		},
 		transactors: {
-			get: (token) => getFromStore(token, child),
+			get: ((token, k) => getFromStore(token, k, child)) as typeof getState,
 			set: (token, value) => {
 				setIntoStore(token, value, child)
 			},

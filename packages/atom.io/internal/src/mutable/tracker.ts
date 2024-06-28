@@ -62,7 +62,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		const subscriptionKey = `tracker:${target.config.name}:${
 			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
-		const originalInnerValue = getFromStore(mutableState, target)
+		const originalInnerValue = getFromStore(mutableState, undefined, target)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
 			(update) => {
@@ -133,7 +133,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					subscriptionKey,
 					() => {
 						unsubscribe()
-						const mutable = getFromStore(mutableState, target)
+						const mutable = getFromStore(mutableState, undefined, target)
 						const updateNumber =
 							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
