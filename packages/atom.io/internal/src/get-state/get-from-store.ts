@@ -54,20 +54,19 @@ export function getFromStore<
 			case `molecule`:
 				return withdraw(token, store).instance
 		}
-	if (key)
-		switch (token.type) {
-			case `atom_family`:
-			case `mutable_atom_family`:
-			case `selector_family`:
-			case `readonly_selector_family`: {
-				const member = seekInStore(token, key, store)
-				if (!member) throw new NotFoundError(token, store)
-				return getFromStore(member, undefined, store)
-			}
-			case `molecule_family`: {
-				const member = seekInStore(token, key, store)
-				if (!member) throw new NotFoundError(token, store)
-				return getFromStore(member, undefined, store)
-			}
+	switch (token.type) {
+		case `atom_family`:
+		case `mutable_atom_family`:
+		case `selector_family`:
+		case `readonly_selector_family`: {
+			const member = seekInStore(token, key, store)
+			if (!member) throw new NotFoundError(token, store)
+			return getFromStore(member, undefined, store)
 		}
+		case `molecule_family`: {
+			const member = seekInStore(token, key, store)
+			if (!member) throw new NotFoundError(token, store)
+			return getFromStore(member, undefined, store)
+		}
+	}
 }
