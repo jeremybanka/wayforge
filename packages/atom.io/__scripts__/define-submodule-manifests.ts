@@ -3,8 +3,8 @@ import url from "node:url"
 
 import type { Json } from "atom.io/json"
 
-import discoverSubmodules from "./discover-submodules.node"
-import { createLogger } from "./logger.node"
+import discoverSubmodules from "./discover-submodules"
+import { createLogger } from "./logger"
 
 const FILEPATH = url.fileURLToPath(import.meta.url)
 const SCRIPT_NAME = FILEPATH.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`

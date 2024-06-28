@@ -1,6 +1,6 @@
-import defineIntegrationScope from "./define-integration-scope.node"
-import definePackageExports from "./define-package-exports.node"
-import defineSubmoduleManifests from "./define-submodule-manifests.node"
+import defineIntegrationScope from "./define-integration-scope"
+import definePackageExports from "./define-package-exports"
+import defineSubmoduleManifests from "./define-submodule-manifests"
 
 definePackageExports(`test`)
 defineIntegrationScope(`test`)
