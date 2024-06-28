@@ -54,7 +54,7 @@ export class NotFoundError extends Error {
 
 		if (params.length === 2) {
 			super(
-				`${prettyPrintTokenType(token)} "${token.key}" not found in store "${
+				`${prettyPrintTokenType(token)} ${stringifyJson(token.key)} not found in store "${
 					store.config.name
 				}".`,
 			)
