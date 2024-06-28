@@ -1,4 +1,4 @@
-import type { AtomToken, Logger, CtorToolkit } from "atom.io"
+import type { AtomToken, CtorToolkit, Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
