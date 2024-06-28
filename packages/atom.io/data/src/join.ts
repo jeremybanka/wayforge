@@ -35,6 +35,7 @@ import {
 	isChildStore,
 	makeMoleculeInStore,
 	newest,
+	NotFoundError,
 	seekInStore,
 	setIntoStore,
 	withdraw,
@@ -223,7 +224,7 @@ export class Join<
 				return growMoleculeInStore(molecule, family, store)
 			}
 			if (store.config.lifespan === `immortal`) {
-				throw new Error(`No molecule found for key "${stringifyJson(key)}"`)
+				throw new NotFoundError(token, key, store)
 			}
 			return initFamilyMemberInStore(token, key, store)
 		}) as typeof findState
@@ -283,19 +284,6 @@ export class Join<
 				}
 				return bKeys
 			})
-
-			if (stringA) {
-				const molecule = this.molecules.get(stringA)
-				if (molecule) {
-					this.toolkit.dispose(molecule)
-				}
-			}
-			if (stringB) {
-				const molecule = this.molecules.get(stringB)
-				if (molecule) {
-					this.toolkit.dispose(molecule)
-				}
-			}
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
@@ -342,10 +330,6 @@ export class Join<
 								relationsOfB.clear()
 							}
 							for (const previousOwner of previousOwnersToDispose) {
-								const molecule = this.molecules.get(previousOwner)
-								if (molecule) {
-									this.toolkit.dispose(molecule)
-								}
 								const sorted = [newRelationB, previousOwner].sort()
 								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
 								this.molecules.delete(compositeKey)

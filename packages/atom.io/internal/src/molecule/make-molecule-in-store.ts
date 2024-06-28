@@ -38,27 +38,28 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	...params: MoleculeParams<M>
 ): MoleculeToken<M> {
 	const target = newest(store)
+	const stringKey = stringifyJson(key)
 
-	target.moleculeInProgress = key
+	target.moleculeInProgress = stringKey
 
 	const contextArray = Array.isArray(context) ? context : [context]
 	const owners = contextArray.map<Molecule<M>>((ctx) => {
 		if (ctx instanceof Molecule) {
 			return ctx
 		}
-		const stringKey = stringifyJson(ctx.key)
-		const molecule = store.molecules.get(stringKey)
+		const ctxStringKey = stringifyJson(ctx.key)
+		const molecule = store.molecules.get(ctxStringKey)
 
 		if (!molecule) {
 			throw new Error(
-				`Molecule ${stringKey} not found in store "${store.config.name}"`,
+				`Molecule ${ctxStringKey} not found in store "${store.config.name}"`,
 			)
 		}
 		return molecule
 	})
 
 	const molecule = new Molecule(owners, key, familyToken)
-	target.molecules.set(stringifyJson(key), molecule)
+	target.molecules.set(stringKey, molecule)
 	for (const owner of owners) {
 		owner.below.set(molecule.stringKey, molecule)
 	}
@@ -84,8 +85,21 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 			if (token.type === `join`) {
 				const { as: role } = maybeRole
 				const join = getJoin(token, store)
-				join.molecules.set(stringifyJson(key), molecule)
+				join.molecules.set(stringKey, molecule)
 				molecule.joins.set(token.key, join)
+				const unsubFromFamily = family.subject.subscribe(
+					`join:${token.key}-${stringKey}`,
+					(event) => {
+						if (
+							event.type === `molecule_disposal` &&
+							stringifyJson(event.token.key) === stringKey
+						) {
+							unsubFromFamily()
+							join.molecules.delete(stringKey)
+						}
+					},
+				)
+
 				if (role === null) {
 					return
 				}

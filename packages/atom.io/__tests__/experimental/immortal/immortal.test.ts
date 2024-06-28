@@ -8,7 +8,7 @@ import {
 	moleculeFamily,
 	setState,
 } from "atom.io"
-import { editRelations, getJoin, join } from "atom.io/data"
+import { editRelations, findRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
@@ -136,7 +136,7 @@ describe(`immortal integrations`, () => {
 				between: [`holder`, `item`],
 				cardinality: `1:n`,
 			},
-			{ hi: 0 } satisfies { hi: number },
+			{ affinity: 0 } satisfies { affinity: number },
 		)
 
 		const itemMolecules = moleculeFamily({
@@ -163,7 +163,7 @@ describe(`immortal integrations`, () => {
 		const itemMolecule = makeMolecule(world, itemMolecules, `item-0`)
 
 		editRelations(holdersOfItems, (relations) => {
-			relations.set({ holder: `holder-0`, item: `item-0` }, { hi: 1 })
+			relations.set({ holder: `holder-0`, item: `item-0` }, { affinity: 1 })
 		})
 		const internalJoin = getJoin(holdersOfItems, Internal.IMPLICIT.STORE)
 		expect(internalJoin.molecules.size).toBe(3)
@@ -172,6 +172,26 @@ describe(`immortal integrations`, () => {
 		editRelations(holdersOfItems, (relations) => {
 			relations.delete(`item-0`)
 		})
+		expect(() => findRelations(holdersOfItems, `item-1`)).toThrowError(
+			`Readonly Selector Family "holdersOfItems/singleRelatedEntry" member "item-1" not found in store "IMPLICIT_STORE".`,
+		)
+
+		expect(internalJoin.molecules.size).toBe(2)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(3)
+
+		editRelations(holdersOfItems, (relations) => {
+			relations.replaceRelations(`item-0`, { "holder-0": { affinity: 1 } })
+		})
+
+		expect(internalJoin.molecules.size).toBe(3)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
+
+		disposeState(itemMolecule)
+
+		expect(internalJoin.molecules.size).toBe(1)
+		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
+
+		disposeState(holderMolecule)
 
 		expect(internalJoin.molecules.size).toBe(0)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
