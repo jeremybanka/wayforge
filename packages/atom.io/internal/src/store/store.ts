@@ -143,6 +143,10 @@ export class Store implements Lineage {
 	}
 
 	public constructor(config: Store[`config`], store: Store | null = null) {
+		this.config = {
+			...store?.config,
+			...config,
+		}
 		if (store !== null) {
 			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
@@ -155,10 +159,6 @@ export class Store implements Lineage {
 				}
 			}
 
-			this.config = {
-				...store?.config,
-				...config,
-			}
 			for (const [, family] of store.families) {
 				family.install(this)
 			}
