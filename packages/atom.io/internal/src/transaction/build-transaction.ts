@@ -1,4 +1,4 @@
-import type { Func, getState } from "atom.io"
+import type { disposeState, Func, getState, setState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 
@@ -65,10 +65,11 @@ export const buildTransaction = (
 			output: undefined,
 		},
 		transactors: {
-			get: ((token, k) => getFromStore(token, k, child)) as typeof getState,
-			set: (token, value) => {
-				setIntoStore(token, value, child)
-			},
+			get: ((...ps: Parameters<typeof getState>) =>
+				getFromStore(...ps, child)) as typeof getState,
+			set: ((...ps: Parameters<typeof setState>) => {
+				setIntoStore(...ps, child)
+			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(token, identifier, child),
 			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
@@ -76,9 +77,9 @@ export const buildTransaction = (
 			json: (token) => getJsonToken(token, child),
 			make: (context, family, k, ...args) =>
 				makeMoleculeInStore(child, context, family, k, ...args),
-			dispose: (token) => {
-				disposeFromStore(token, child)
-			},
+			dispose: ((...ps: Parameters<typeof disposeState>) => {
+				disposeFromStore(...ps, child)
+			}) as typeof disposeState,
 			env: () => getEnvironmentData(child),
 		},
 	}

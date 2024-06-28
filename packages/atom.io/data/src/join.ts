@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
 	disposeState,
+	getState,
 	MoleculeFamilyToken,
 	MoleculeTransactors,
 	MutableAtomFamily,
@@ -11,6 +12,7 @@ import type {
 	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
 	RegularAtomFamily,
+	setState,
 	Transactors,
 	Write,
 } from "atom.io"
@@ -195,16 +197,17 @@ export class Join<
 		this.store.miscResources.set(`join:${options.key}`, this)
 
 		this.transactors = {
-			get: (token) => getFromStore(token, undefined, store),
-			set: (token, value) => {
-				setIntoStore(token, value, store)
-			},
+			get: ((...ps: Parameters<typeof getState>) =>
+				getFromStore(...ps, store)) as typeof getState,
+			set: ((...ps: Parameters<typeof setState>) => {
+				setIntoStore(...ps, store)
+			}) as typeof setState,
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
 			json: (token) => getJsonToken(token, store),
-			dispose: (token) => {
-				disposeFromStore(token, store)
-			},
+			dispose: ((...ps: Parameters<typeof disposeState>) => {
+				disposeFromStore(...ps, store)
+			}) as typeof disposeState,
 		}
 		this.retrieve = ((
 			token: ReadableFamilyToken<any, any>,

@@ -8,21 +8,16 @@ import type {
 } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import { seekInStore } from "../families"
+import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
-export function getFromStore<T>(
-	token: ReadableToken<T>,
-	key: undefined,
-	store: Store,
-): T
+export function getFromStore<T>(token: ReadableToken<T>, store: Store): T
 
 export function getFromStore<M extends MoleculeConstructor>(
 	token: MoleculeToken<M>,
-	key: undefined,
 	store: Store,
 ): InstanceType<M> | undefined
 
@@ -38,37 +33,40 @@ export function getFromStore<M extends MoleculeConstructor>(
 	store: Store,
 ): InstanceType<M>
 
-export function getFromStore<
-	Token extends
-		| MoleculeFamilyToken<any>
-		| MoleculeToken<any>
-		| ReadableFamilyToken<any, any>
-		| ReadableToken<any>,
->(token: Token, key: Json.Serializable | undefined, store: Store): any {
-	if (key === undefined)
-		switch (token.type) {
-			case `atom`:
-			case `mutable_atom`:
-			case `selector`:
-			case `readonly_selector`:
-				return readOrComputeValue(withdraw(token, store), store)
-			case `molecule`:
-				return withdraw(token, store).instance
+export function getFromStore<T>(
+	...params:
+		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>, store: Store]
+		| [token: MoleculeToken<any>, store: Store]
+		| [token: ReadableFamilyToken<T, any>, key: Json.Serializable, store: Store]
+		| [token: ReadableToken<T>, store: Store]
+): any {
+	let token: MoleculeToken<any> | ReadableToken<T>
+	let store: Store
+	if (params.length === 2) {
+		token = params[0]
+		store = params[1]
+	} else {
+		const family = params[0]
+		const key = params[1]
+		store = params[2]
+		const maybeToken =
+			family.type === `molecule_family`
+				? seekInStore(family, key, store)
+				: store.config.lifespan === `immortal`
+					? seekInStore(family, key, store)
+					: findInStore(family, key, store)
+		if (!maybeToken) {
+			throw new NotFoundError(family, key, store)
 		}
-	if (key)
-		switch (token.type) {
-			case `atom_family`:
-			case `mutable_atom_family`:
-			case `selector_family`:
-			case `readonly_selector_family`: {
-				const member = seekInStore(token, key, store)
-				if (!member) throw new NotFoundError(token, key, store)
-				return getFromStore(member, undefined, store)
-			}
-			case `molecule_family`: {
-				const member = seekInStore(token, key, store)
-				if (!member) throw new NotFoundError(token, key, store)
-				return getFromStore(member, undefined, store)
-			}
-		}
+		token = maybeToken
+	}
+	switch (token.type) {
+		case `atom`:
+		case `mutable_atom`:
+		case `selector`:
+		case `readonly_selector`:
+			return readOrComputeValue(withdraw(token, store), store)
+		case `molecule`:
+			return withdraw(token, store).instance
+	}
 }

@@ -33,9 +33,12 @@ export function getState(
 		| ReadableToken<any>,
 	key?: Json.Serializable,
 ): any {
-	return Internal.getFromStore(
-		token as Parameters<typeof Internal.getFromStore>[0],
-		key as Parameters<typeof Internal.getFromStore>[1],
-		Internal.IMPLICIT.STORE,
-	)
+	if (key) {
+		return Internal.getFromStore(
+			token as any,
+			key as any,
+			Internal.IMPLICIT.STORE,
+		)
+	}
+	return Internal.getFromStore(token as any, Internal.IMPLICIT.STORE)
 }

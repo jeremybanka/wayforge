@@ -113,10 +113,10 @@ export const setupRealtimeTestServer = (
 
 	const dispose = () => {
 		server.close()
-		const roomKeys = getFromStore(RT.roomIndex, undefined, silo.store)
+		const roomKeys = getFromStore(RT.roomIndex, silo.store)
 		for (const roomKey of roomKeys) {
 			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
-			const room = getFromStore(roomState, undefined, silo.store)
+			const room = getFromStore(roomState, silo.store)
 			if (room && !(room instanceof Promise)) {
 				room.process.kill()
 			}

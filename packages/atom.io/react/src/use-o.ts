@@ -35,7 +35,7 @@ export function useO<T, K extends Json.Serializable>(
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
 		(dispatch) => subscribeToState(stateToken, dispatch, `use-o:${id}`, store),
-		() => getFromStore(stateToken, undefined, store),
-		() => getFromStore(stateToken, undefined, store),
+		() => getFromStore(stateToken, store),
+		() => getFromStore(stateToken, store),
 	)
 }
