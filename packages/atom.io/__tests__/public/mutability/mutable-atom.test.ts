@@ -293,11 +293,10 @@ describe(`mutable atom effects`, () => {
 				},
 			],
 		})
-		const myMutableState = findState(myMutableAtoms, `myMutableState`)
 
-		setState(myMutableState, (prev) => prev.add(`a`))
+		setState(myMutableAtoms, `myMutableState`, (prev) => prev.add(`a`))
 		expect(setSize).toBe(1)
-		disposeState(myMutableState)
+		disposeState(myMutableAtoms, `myMutableState`)
 		expect(setSize).toBe(0)
 	})
 	it(`can set a mutable atom in response to an external event`, () => {

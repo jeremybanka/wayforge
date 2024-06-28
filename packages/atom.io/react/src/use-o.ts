@@ -1,5 +1,10 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
-import { findInStore, getFromStore, subscribeToState } from "atom.io/internal"
+import {
+	getFromStore,
+	NotFoundError,
+	seekInStore,
+	subscribeToState,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as React from "react"
 
@@ -17,13 +22,16 @@ export function useO<T, K extends Json.Serializable>(
 	key?: K,
 ): T {
 	const store = React.useContext(StoreContext)
-	const stateToken: ReadableToken<any> =
+	const stateToken: ReadableToken<any> | undefined =
 		token.type === `atom_family` ||
 		token.type === `mutable_atom_family` ||
 		token.type === `selector_family` ||
 		token.type === `readonly_selector_family`
-			? findInStore(token, key as K, store)
+			? seekInStore(token, key as K, store)
 			: token
+	if (!stateToken) {
+		throw new NotFoundError(token, store)
+	}
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
 		(dispatch) => subscribeToState(stateToken, dispatch, `use-o:${id}`, store),

@@ -5,6 +5,7 @@ import type {
 	MoleculeFamilyToken,
 	MoleculeParams,
 	MoleculeToken,
+	setState,
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
@@ -80,10 +81,7 @@ export type TransactionUpdate<F extends Func> = {
 
 export type Transactors = Readonly<{
 	get: typeof getState
-	set: <S, New extends S>(
-		state: WritableToken<S>,
-		newValue: New | ((oldValue: S) => New),
-	) => void
+	set: typeof setState
 	find: typeof findState
 	seek: typeof seekState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
@@ -92,10 +90,7 @@ export type Transactors = Readonly<{
 }>
 export type TransactorsWithRunAndEnv = Readonly<{
 	get: typeof getState
-	set: <S, New extends S>(
-		state: WritableToken<S>,
-		newValue: New | ((oldValue: S) => New),
-	) => void
+	set: typeof setState
 	find: typeof findState
 	seek: typeof seekState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
