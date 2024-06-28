@@ -46,8 +46,8 @@ export class NotFoundError extends Error {
 	)
 	public constructor(
 		...params:
-			| [p0: AtomIOToken, p1: Json.Serializable, p2: Store]
-			| [p0: AtomIOToken, p1: Store]
+			| [token: AtomIOToken, key: Json.Serializable, store: Store]
+			| [token: AtomIOToken, store: Store]
 	) {
 		const token: AtomIOToken = params[0]
 		const store: Store = params.length === 2 ? params[1] : params[2]
@@ -61,7 +61,7 @@ export class NotFoundError extends Error {
 		} else {
 			const key = params[1]
 			super(
-				`${prettyPrintTokenType(token)} Member ${stringifyJson(key)} not found in store "${
+				`${prettyPrintTokenType(token)} member ${stringifyJson(key)} not found in store "${
 					store.config.name
 				}".`,
 			)
