@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.25.1
+
+### Patch Changes
+
+- 166625e: 🐛 Fixed bug where, when attempting to retrive states with `CtorToolkit["get"]`, the states would be fail to be found.
+- 166625e: 🐛 Fixed bug where, when a molecule could not be found, its key would not be properly error-logged.
+
 ## 0.25.0
 
 ### Minor Changes
