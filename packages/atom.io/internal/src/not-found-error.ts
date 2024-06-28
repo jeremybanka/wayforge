@@ -61,7 +61,7 @@ export class NotFoundError extends Error {
 		} else {
 			const key = params[1]
 			super(
-				`${prettyPrintTokenType(token)} member ${stringifyJson(key)} not found in store "${
+				`${prettyPrintTokenType(token)} "${token.key}" member ${stringifyJson(key)} not found in store "${
 					store.config.name
 				}".`,
 			)
