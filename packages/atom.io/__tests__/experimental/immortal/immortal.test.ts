@@ -1,4 +1,4 @@
-import type { AtomToken, Logger, MoleculeTransactors } from "atom.io"
+import type { AtomToken, CtorToolkit, Logger } from "atom.io"
 import {
 	atomFamily,
 	disposeState,
@@ -51,8 +51,8 @@ describe(`immortal mode`, () => {
 			key: `counters`,
 			new: class Counter {
 				public $count: AtomToken<number>
-				public constructor(public transactors: MoleculeTransactors<string>) {
-					this.$count = this.transactors.bond(countStates)
+				public constructor(public tools: CtorToolkit<string>) {
+					this.$count = this.tools.bond(countStates)
 				}
 			},
 		})
@@ -105,10 +105,10 @@ describe(`immortal mode`, () => {
 			new: class Counter {
 				public $count: AtomToken<number>
 				public constructor(
-					transactors: MoleculeTransactors<string>,
+					tools: CtorToolkit<string>,
 					public key: string,
 				) {
-					this.$count = transactors.bond(countStates)
+					this.$count = tools.bond(countStates)
 				}
 			},
 		})
@@ -142,8 +142,8 @@ describe(`immortal integrations`, () => {
 		const itemMolecules = moleculeFamily({
 			key: `item`,
 			new: class Item {
-				public constructor(transactors: MoleculeTransactors<string>) {
-					transactors.bond(holdersOfItems, { as: `item` })
+				public constructor(tools: CtorToolkit<string>) {
+					tools.bond(holdersOfItems, { as: `item` })
 				}
 			},
 		})
@@ -151,8 +151,8 @@ describe(`immortal integrations`, () => {
 		const characterMolecules = moleculeFamily({
 			key: `character`,
 			new: class Character {
-				public constructor(transactors: MoleculeTransactors<string>) {
-					transactors.bond(holdersOfItems, { as: `holder` })
+				public constructor(tools: CtorToolkit<string>) {
+					tools.bond(holdersOfItems, { as: `holder` })
 				}
 			},
 		})

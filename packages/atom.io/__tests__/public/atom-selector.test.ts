@@ -1,4 +1,4 @@
-import type { AtomToken, Logger, MoleculeTransactors } from "atom.io"
+import type { AtomToken, Logger, CtorToolkit } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -234,7 +234,7 @@ describe(`selector`, () => {
 			key: `counter`,
 			new: class Molecule {
 				public count: AtomToken<number>
-				public constructor(tools: MoleculeTransactors<string>) {
+				public constructor(tools: CtorToolkit<string>) {
 					this.count = tools.bond(countAtoms)
 				}
 			},

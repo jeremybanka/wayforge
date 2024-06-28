@@ -1,4 +1,5 @@
 import type {
+	ActorToolkit,
 	Flat,
 	MoleculeCreation,
 	MoleculeDisposal,
@@ -10,7 +11,6 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
-	TransactorsWithRunAndEnv,
 	WritableFamilyToken,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -26,8 +26,8 @@ import {
 } from "atom.io/internal"
 import { type Json, stringifyJson } from "atom.io/json"
 
-export type MoleculeTransactors<K extends Json.Serializable> = Flat<
-	Omit<TransactorsWithRunAndEnv, `find`> & {
+export type CtorToolkit<K extends Json.Serializable> = Flat<
+	Omit<ActorToolkit, `find`> & {
 		bond<T extends Transceiver<any>, J extends Json.Serializable>(
 			family: MutableAtomFamilyToken<T, J, K>,
 		): MutableAtomToken<T, J>
@@ -62,7 +62,7 @@ export type MoleculeTransactors<K extends Json.Serializable> = Flat<
 	}
 >
 export type MoleculeConstructor = new (
-	transactors: MoleculeTransactors<any>,
+	toolkit: CtorToolkit<any>,
 	key: any,
 	...params: any
 ) => any

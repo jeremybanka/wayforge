@@ -1,7 +1,7 @@
 import type {
+	CtorToolkit,
 	Logger,
 	MoleculeToken,
-	MoleculeTransactors,
 	MoleculeType,
 	TransactionUpdate,
 } from "atom.io"
@@ -508,9 +508,9 @@ describe(`transaction.make`, () => {
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
 			new: class Unit {
-				public hpState = this.transactors.bond(hpAtoms)
+				public hpState = this.tools.bond(hpAtoms)
 				public constructor(
-					public transactors: MoleculeTransactors<string>,
+					public tools: CtorToolkit<string>,
 					public key: string,
 					public hp: number,
 				) {

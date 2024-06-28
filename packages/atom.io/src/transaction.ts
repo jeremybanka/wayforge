@@ -79,7 +79,8 @@ export type TransactionUpdate<F extends Func> = {
 	output: ReturnType<F>
 }
 
-export type Transactors = Readonly<{
+export type GetterToolkit = Pick<SetterToolkit, `find` | `get` | `json` | `seek`>
+export type SetterToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
 	find: typeof findState
@@ -88,7 +89,7 @@ export type Transactors = Readonly<{
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
 }>
-export type TransactorsWithRunAndEnv = Readonly<{
+export type ActorToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
 	find: typeof findState
@@ -101,23 +102,19 @@ export type TransactorsWithRunAndEnv = Readonly<{
 	run: typeof runTransaction
 	env: () => EnvironmentData
 }>
-export type ReadonlyTransactors = Pick<
-	Transactors,
-	`find` | `get` | `json` | `seek`
->
 
 export type Read<F extends Func> = (
-	transactors: ReadonlyTransactors,
+	toolkit: GetterToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
 
 export type Write<F extends Func> = (
-	transactors: Transactors,
+	toolkit: SetterToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
 
 export type Transact<F extends Func> = (
-	transactors: TransactorsWithRunAndEnv,
+	toolkit: ActorToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
 

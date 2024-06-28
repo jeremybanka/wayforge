@@ -1,4 +1,5 @@
 import type {
+	CtorToolkit,
 	MK,
 	MoleculeConstructor,
 	MoleculeCreation,
@@ -6,7 +7,6 @@ import type {
 	MoleculeKey,
 	MoleculeParams,
 	MoleculeToken,
-	MoleculeTransactors,
 	ReadableFamilyToken,
 } from "atom.io"
 import { findRelations, getJoin, type JoinToken } from "atom.io/data"
@@ -63,7 +63,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		owner.below.set(molecule.stringKey, molecule)
 	}
 
-	const transactors = {
+	const toolkit = {
 		get: (t) => getFromStore(t, undefined, newest(store)),
 		set: (t, newValue) => {
 			setIntoStore(t, newValue, newest(store))
@@ -106,7 +106,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				return tokens
 			}
 			return growMoleculeInStore(molecule, withdraw(token, store), newest(store))
-		}) as MoleculeTransactors<MK<M>>[`bond`],
+		}) as CtorToolkit<MK<M>>[`bond`],
 		claim: (below, options) => {
 			const { exclusive } = options
 			const belowMolecule = newest(store).molecules.get(stringifyJson(below.key))
@@ -132,12 +132,12 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				k,
 				...p,
 			),
-	} satisfies MoleculeTransactors<MK<M>>
+	} satisfies CtorToolkit<MK<M>>
 
 	const family = withdraw(familyToken, store)
 	const Constructor = family.new
 
-	molecule.instance = new Constructor(transactors, key, ...params)
+	molecule.instance = new Constructor(toolkit, key, ...params)
 
 	const token = {
 		type: `molecule`,
