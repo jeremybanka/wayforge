@@ -3,7 +3,7 @@ import fs from "node:fs"
 import url from "node:url"
 
 import { PACKAGE_JSON_PATH, TSCONFIG_JSON_PATH } from "./constants"
-import { createLogger } from "./logger.node"
+import { createLogger } from "./logger"
 
 const FILENAME = url.fileURLToPath(import.meta.url)
 const SCRIPT_NAME = FILENAME.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
