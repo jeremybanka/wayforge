@@ -1,5 +1,31 @@
 # atom.io
 
+## 0.25.0
+
+### Minor Changes
+
+- a308896: 💥 BREAKING CHANGE: The method `join` from `MoleculeToolkit` has been absorbed into the `bond` method; it now returns tokens for the relations of the entity bonded to the join in question.
+- 3c495a7: 🎨 All attributes and types called `Transactors` have been renamed `Toolkit` to reflect the broader role of this pattern in selector evaluations and molecule constructors.
+- 091c5de: ✨ `getState` and `setState` can now be used for family members without requiring `findState`. Simply pass the family member and key.
+
+  ```ts
+  const countAtoms = atomFamily<number, string>({
+    key: `count`,
+    default: 0,
+  });
+
+  getState(countAtoms, `find-me`); // -> 0
+  setState(countAtoms, `find-me`, 1);
+  getState(countAtoms, `find-me`); // -> 1
+  ```
+
+  ⚠️ Note that, if the family member is not found, this will throw a `NotFoundError` in `immortal` stores.
+
+### Patch Changes
+
+- 091c5de: 🐛 Fixed bug where, when creating a new `Store`, unless that store was copied from an existing store, its configuration options would not be set.
+- 091c5de: ✨ `Silo` receives the `disposeState` method.
+
 ## 0.24.8
 
 ### Patch Changes
