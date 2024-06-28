@@ -1,5 +1,6 @@
 import type {
 	CtorToolkit,
+	getState,
 	MK,
 	MoleculeConstructor,
 	MoleculeCreation,
@@ -8,6 +9,7 @@ import type {
 	MoleculeParams,
 	MoleculeToken,
 	ReadableFamilyToken,
+	setState,
 } from "atom.io"
 import { findRelations, getJoin, type JoinToken } from "atom.io/data"
 import type { seekState } from "atom.io/immortal"
@@ -17,7 +19,7 @@ import { arbitrary } from "../arbitrary"
 import { disposeFromStore, seekInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
-import { newest } from "../lineage"
+import { eldest, newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
@@ -37,6 +39,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	key: MoleculeKey<M>,
 	...params: MoleculeParams<M>
 ): MoleculeToken<M> {
+	const rootStore = eldest(store)
 	const target = newest(store)
 	const stringKey = stringifyJson(key)
 
@@ -65,26 +68,27 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 	}
 
 	const toolkit = {
-		get: (t) => getFromStore(t, undefined, newest(store)),
-		set: (t, newValue) => {
-			setIntoStore(t, newValue, newest(store))
-		},
-		seek: ((t, k) => seekInStore(t, k, newest(store))) as typeof seekState,
-		json: (t) => getJsonToken(t, newest(store)),
+		get: ((...ps: Parameters<typeof getState>) =>
+			getFromStore(...ps, newest(rootStore))) as typeof getState,
+		set: ((...ps: Parameters<typeof setState>) => {
+			setIntoStore(...ps, newest(rootStore))
+		}) as typeof setState,
+		seek: ((t, k) => seekInStore(t, k, newest(rootStore))) as typeof seekState,
+		json: (t) => getJsonToken(t, newest(rootStore)),
 		run: (t, i = arbitrary()) => actUponStore(t, i, newest(store)),
 		make: (ctx, f, k, ...args) =>
-			makeMoleculeInStore(newest(store), ctx, f, k, ...args),
+			makeMoleculeInStore(newest(rootStore), ctx, f, k, ...args),
 		dispose: (t) => {
-			disposeFromStore(t, newest(store))
+			disposeFromStore(t, newest(rootStore))
 		},
-		env: () => getEnvironmentData(newest(store)),
+		env: () => getEnvironmentData(newest(rootStore)),
 		bond: ((
 			token: JoinToken<any, any, any, any> | ReadableFamilyToken<any, any>,
 			maybeRole,
 		) => {
 			if (token.type === `join`) {
 				const { as: role } = maybeRole
-				const join = getJoin(token, store)
+				const join = getJoin(token, rootStore)
 				join.molecules.set(stringKey, molecule)
 				molecule.joins.set(token.key, join)
 				const unsubFromFamily = family.subject.subscribe(
@@ -119,7 +123,11 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				}
 				return tokens
 			}
-			return growMoleculeInStore(molecule, withdraw(token, store), newest(store))
+			return growMoleculeInStore(
+				molecule,
+				withdraw(token, rootStore),
+				newest(rootStore),
+			)
 		}) as CtorToolkit<MK<M>>[`bond`],
 		claim: (below, options) => {
 			const { exclusive } = options
