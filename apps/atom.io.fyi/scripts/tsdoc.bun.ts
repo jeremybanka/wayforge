@@ -3,7 +3,7 @@
 import path from "node:path"
 import { Worker } from "node:worker_threads"
 
-import discoverSubmodules from "~/packages/atom.io/__scripts__/discover-submodules.node"
+import discoverSubmodules from "~/packages/atom.io/__scripts__/discover-submodules"
 
 import { ATOM_IO_FYI_ROOT } from "./constants"
 
