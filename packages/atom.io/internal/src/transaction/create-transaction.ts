@@ -32,8 +32,8 @@ export function createTransaction<F extends Func>(
 			const childStore = buildTransaction(options.key, params, store, id)
 			try {
 				const target = newest(store)
-				const { transactors } = childStore.transactionMeta
-				const output = options.do(transactors, ...params)
+				const { toolkit } = childStore.transactionMeta
+				const output = options.do(toolkit, ...params)
 				applyTransaction(output, target)
 				return output
 			} catch (thrown) {

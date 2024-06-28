@@ -64,7 +64,7 @@ export const buildTransaction = (
 			params,
 			output: undefined,
 		},
-		transactors: {
+		toolkit: {
 			get: ((...ps: Parameters<typeof getState>) =>
 				getFromStore(...ps, child)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {

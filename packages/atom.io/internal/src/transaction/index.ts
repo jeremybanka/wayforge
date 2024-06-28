@@ -1,4 +1,4 @@
-import type { Func, TransactionUpdate, TransactorsWithRunAndEnv } from "atom.io"
+import type { ActorToolkit, Func, TransactionUpdate } from "atom.io"
 import type { Junction } from "rel8/junction"
 
 export * from "./abort-transaction"
@@ -17,7 +17,7 @@ export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 export type TransactionProgress<F extends Func> = {
 	phase: `applying` | `building`
 	update: TransactionUpdate<F>
-	transactors: TransactorsWithRunAndEnv
+	toolkit: ActorToolkit
 }
 
 export type TransactionEpoch = {

@@ -31,14 +31,14 @@ export const joinRoomTX = AtomIO.transaction<
 	(roomId: string, userId: string, enteredAtEpoch: number) => UserInRoomMeta
 >({
 	key: `joinRoom`,
-	do: (transactors, roomId, userId, enteredAtEpoch) => {
+	do: (tools, roomId, userId, enteredAtEpoch) => {
 		const meta = { enteredAtEpoch }
 		editRelationsInStore(
 			usersInRooms,
 			(relations) => {
 				relations.set({ room: roomId, user: userId }, meta)
 			},
-			transactors.env().store,
+			tools.env().store,
 		)
 		return meta
 	},
@@ -49,13 +49,13 @@ export const leaveRoomTX = AtomIO.transaction<
 	(roomId: string, userId: string) => void
 >({
 	key: `leaveRoom`,
-	do: (transactors, roomId, userId) => {
+	do: (tools, roomId, userId) => {
 		editRelationsInStore(
 			usersInRooms,
 			(relations) => {
 				relations.delete({ room: roomId, user: userId })
 			},
-			transactors.env().store,
+			tools.env().store,
 		)
 	},
 })
@@ -63,14 +63,14 @@ export type LeaveRoomIO = AtomIO.TransactionIO<typeof leaveRoomTX>
 
 export const destroyRoomTX = AtomIO.transaction<(roomId: string) => void>({
 	key: `destroyRoom`,
-	do: (transactors, roomId) => {
+	do: (tools, roomId) => {
 		editRelationsInStore(
 			usersInRooms,
 			(relations) => {
 				relations.delete({ room: roomId })
 			},
-			transactors.env().store,
+			tools.env().store,
 		)
-		transactors.set(roomIndex, (s) => (s.delete(roomId), s))
+		tools.set(roomIndex, (s) => (s.delete(roomId), s))
 	},
 })

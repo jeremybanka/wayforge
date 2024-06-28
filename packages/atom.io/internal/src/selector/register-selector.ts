@@ -5,7 +5,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 	setState,
-	Transactors,
+	SetterToolkit,
 	WritableSelectorFamilyToken,
 	WritableToken,
 } from "atom.io"
@@ -28,7 +28,7 @@ export const registerSelector = (
 	selectorKey: string,
 	covered: Set<string>,
 	store: Store,
-): Transactors => ({
+): SetterToolkit => ({
 	get: (
 		dependency:
 			| MoleculeFamilyToken<any>

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type {
+	CtorToolkit,
 	disposeState,
 	getState,
 	MoleculeFamilyToken,
-	MoleculeTransactors,
 	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	Read,
@@ -13,7 +13,7 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomFamily,
 	setState,
-	Transactors,
+	SetterToolkit,
 	Write,
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
@@ -35,6 +35,7 @@ import {
 	isChildStore,
 	makeMoleculeInStore,
 	newest,
+	NotFoundError,
 	seekInStore,
 	setIntoStore,
 	withdraw,
@@ -143,7 +144,7 @@ export class Join<
 > {
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
-	private transactors: Transactors & { dispose: typeof disposeState }
+	private toolkit: SetterToolkit & { dispose: typeof disposeState }
 	public retrieve: typeof findState
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
@@ -156,13 +157,13 @@ export class Join<
 		>
 	}
 	public transact(
-		transactors: Transactors & { dispose: typeof disposeState },
+		toolkit: SetterToolkit & { dispose: typeof disposeState },
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
 	): void {
-		const originalTransactors = this.transactors
-		this.transactors = transactors
+		const originalToolkit = this.toolkit
+		this.toolkit = toolkit
 		run(this)
-		this.transactors = originalTransactors
+		this.toolkit = originalToolkit
 	}
 
 	public store: Store
@@ -196,7 +197,7 @@ export class Join<
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
-		this.transactors = {
+		this.toolkit = {
 			get: ((...ps: Parameters<typeof getState>) =>
 				getFromStore(...ps, store)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
@@ -213,7 +214,7 @@ export class Join<
 			token: ReadableFamilyToken<any, any>,
 			key: Json.Serializable,
 		): ReadableToken<any> => {
-			const maybeToken = this.transactors.seek(token, key)
+			const maybeToken = this.toolkit.seek(token, key)
 			if (maybeToken) {
 				return maybeToken
 			}
@@ -223,7 +224,7 @@ export class Join<
 				return growMoleculeInStore(molecule, family, store)
 			}
 			if (store.config.lifespan === `immortal`) {
-				throw new Error(`No molecule found for key "${stringifyJson(key)}"`)
+				throw new NotFoundError(token, key, store)
 			}
 			return initFamilyMemberInStore(token, key, store)
 		}) as typeof findState
@@ -249,22 +250,22 @@ export class Join<
 			key,
 		) => get(this.retrieve(relatedKeysAtoms, key))
 		const addRelation: Write<(a: string, b: string) => void> = (
-			transactors,
+			toolkit,
 			a,
 			b,
 		) => {
-			const { set } = transactors
+			const { set } = toolkit
 			const aKeysState = this.retrieve(relatedKeysAtoms, a)
 			const bKeysState = this.retrieve(relatedKeysAtoms, b)
 			set(aKeysState, (aKeys) => aKeys.add(b))
 			set(bKeysState, (bKeys) => bKeys.add(a))
 		}
 		const deleteRelation: Write<(a: string, b: string) => void> = (
-			transactors,
+			toolkit,
 			a,
 			b,
 		) => {
-			const { set } = transactors
+			const { set } = toolkit
 			const aKeysState = this.retrieve(relatedKeysAtoms, a)
 			const bKeysState = this.retrieve(relatedKeysAtoms, b)
 			let stringA: string | undefined
@@ -283,24 +284,11 @@ export class Join<
 				}
 				return bKeys
 			})
-
-			if (stringA) {
-				const molecule = this.molecules.get(stringA)
-				if (molecule) {
-					this.transactors.dispose(molecule)
-				}
-			}
-			if (stringB) {
-				const molecule = this.molecules.get(stringB)
-				if (molecule) {
-					this.transactors.dispose(molecule)
-				}
-			}
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
-		> = (transactors, a, newRelationsOfA) => {
-			const { get, set } = transactors
+		> = (toolkit, a, newRelationsOfA) => {
+			const { get, set } = toolkit
 			const relationsOfAState = this.retrieve(relatedKeysAtoms, a)
 			const currentRelationsOfA = get(relationsOfAState)
 			for (const currentRelationB of currentRelationsOfA) {
@@ -321,7 +309,7 @@ export class Join<
 				relationsOfA.transaction((nextRelationsOfA) => {
 					nextRelationsOfA.clear()
 					for (const newRelationB of newRelationsOfA) {
-						const relationsOfB = getRelatedKeys(transactors, newRelationB)
+						const relationsOfB = getRelatedKeys(toolkit, newRelationB)
 						const newRelationBIsAlreadyRelated = relationsOfB.has(a)
 						if (this.relations.cardinality === `1:n`) {
 							const previousOwnersToDispose: string[] = []
@@ -330,7 +318,7 @@ export class Join<
 									continue
 								}
 								const previousOwnerRelations = getRelatedKeys(
-									transactors,
+									toolkit,
 									previousOwner,
 								)
 								previousOwnerRelations.delete(newRelationB)
@@ -342,10 +330,6 @@ export class Join<
 								relationsOfB.clear()
 							}
 							for (const previousOwner of previousOwnersToDispose) {
-								const molecule = this.molecules.get(previousOwner)
-								if (molecule) {
-									this.transactors.dispose(molecule)
-								}
 								const sorted = [newRelationB, previousOwner].sort()
 								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
 								this.molecules.delete(compositeKey)
@@ -363,8 +347,8 @@ export class Join<
 		}
 		const replaceRelationsUnsafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
-		> = (transactors, a, newRelationsOfA) => {
-			const { set } = transactors
+		> = (toolkit, a, newRelationsOfA) => {
+			const { set } = toolkit
 			const relationsOfAState = this.retrieve(relatedKeysAtoms, a)
 			set(relationsOfAState, (relationsOfA) => {
 				relationsOfA.transaction((nextRelationsOfA) => {
@@ -384,29 +368,25 @@ export class Join<
 			}
 			return true
 		}
-		const has: Read<(a: string, b?: string) => boolean> = (
-			transactors,
-			a,
-			b,
-		) => {
-			const aKeys = getRelatedKeys(transactors, a)
+		const has: Read<(a: string, b?: string) => boolean> = (toolkit, a, b) => {
+			const aKeys = getRelatedKeys(toolkit, a)
 			return b ? aKeys.has(b) : aKeys.size > 0
 		}
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
-			getRelatedKeys: (key) => getRelatedKeys(this.transactors, key),
+			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
 			addRelation: (a, b) => {
-				addRelation(this.transactors, a, b)
+				addRelation(this.toolkit, a, b)
 			},
 			deleteRelation: (a, b) => {
-				deleteRelation(this.transactors, a, b)
+				deleteRelation(this.toolkit, a, b)
 			},
 			replaceRelationsSafely: (a, bs) => {
-				replaceRelationsSafely(this.transactors, a, bs)
+				replaceRelationsSafely(this.toolkit, a, bs)
 			},
 			replaceRelationsUnsafely: (a, bs) => {
-				replaceRelationsUnsafely(this.transactors, a, bs)
+				replaceRelationsUnsafely(this.toolkit, a, bs)
 			},
-			has: (a, b) => has(this.transactors, a, b),
+			has: (a, b) => has(this.toolkit, a, b),
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
 		let contentAtoms: RegularAtomFamily<Content, string>
@@ -435,10 +415,10 @@ export class Join<
 					key: `${options.key}/content-molecules`,
 					new: class ContentMolecule {
 						public constructor(
-							transactors: MoleculeTransactors<string>,
+							toolkit: CtorToolkit<string>,
 							public key: string,
 						) {
-							transactors.bond(joinToken, { as: null } as any)
+							toolkit.bond(joinToken, { as: null } as any)
 						}
 					},
 				},
@@ -459,20 +439,20 @@ export class Join<
 			) => {
 				const contentMolecule = store.molecules.get(`"${compositeKey}"`)
 				if (contentMolecule) {
-					this.transactors.dispose(contentMolecule)
+					this.toolkit.dispose(contentMolecule)
 					this.molecules.delete(`"${compositeKey}"`)
 				}
 			}
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: string) => {
-					const content = getContent(this.transactors, contentKey)
+					const content = getContent(this.toolkit, contentKey)
 					return content
 				},
 				setContent: (contentKey: string, content: Content) => {
-					setContent(this.transactors, contentKey, content)
+					setContent(this.toolkit, contentKey, content)
 				},
 				deleteContent: (contentKey: string) => {
-					deleteContent(this.transactors, contentKey)
+					deleteContent(this.toolkit, contentKey)
 				},
 			}
 			externalStore = Object.assign(
@@ -953,8 +933,8 @@ export function editRelationsInStore<
 	const myJoin = getJoin(token, store)
 	const target = newest(store)
 	if (isChildStore(target)) {
-		const { transactors } = target.transactionMeta
-		myJoin.transact(transactors, ({ relations }) => {
+		const { toolkit } = target.transactionMeta
+		myJoin.transact(toolkit, ({ relations }) => {
 			change(relations)
 		})
 	} else {
