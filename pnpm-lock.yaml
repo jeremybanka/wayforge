@@ -51,8 +51,8 @@ importers:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.7)
       json-schema-to-zod:
-        specifier: 2.1.1
-        version: 2.1.1
+        specifier: 2.2.0
+        version: 2.2.0
       next:
         specifier: 14.2.4
         version: 14.2.4(@babel/core@7.24.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.6)
@@ -188,8 +188,8 @@ importers:
         specifier: 0.4.0
         version: 0.4.0
       json-schema-to-zod:
-        specifier: 2.1.1
-        version: 2.1.1
+        specifier: 2.2.0
+        version: 2.2.0
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -5499,8 +5499,8 @@ packages:
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
-  json-schema-to-zod@2.1.1:
-    resolution: {integrity: sha512-IyIhb2k3fIy0UPA46SEmcRpHyGpmf4Fr7pOTtqC3VM0BuLMLH4GeGbW6kx4p2HGJhN23UdrxRc2HlwzGNWGnBg==}
+  json-schema-to-zod@2.2.0:
+    resolution: {integrity: sha512-d4o5SGi5mIhj3cQb6tR2Wfp5rZhwFTR5o4zi6g/CDt0OgOy98fp2mgumLIVCBi3E+0UCe6CevtndORbTNkFZsA==}
     hasBin: true
 
   json-schema-traverse@0.4.1:
@@ -12491,7 +12491,7 @@ snapshots:
 
   json-parse-even-better-errors@2.3.1: {}
 
-  json-schema-to-zod@2.1.1: {}
+  json-schema-to-zod@2.2.0: {}
 
   json-schema-traverse@0.4.1: {}
 
