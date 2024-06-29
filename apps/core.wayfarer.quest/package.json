@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.10.1",
-		"fp-ts": "2.16.6",
+		"fp-ts": "2.16.7",
 		"nanoid": "5.0.7",
 		"npmlog": "7.0.1",
 		"socket.io": "4.7.5",
