@@ -6,7 +6,7 @@ import type {
 	ReadableToken,
 	setState,
 	SetterToolkit,
-	WritableSelectorFamilyToken,
+	WritableFamilyToken,
 	WritableToken,
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
@@ -30,29 +30,32 @@ export const registerSelector = (
 	store: Store,
 ): SetterToolkit => ({
 	get: (
-		dependency:
-			| MoleculeFamilyToken<any>
-			| MoleculeToken<MoleculeConstructor>
-			| ReadableFamilyToken<any, any>
-			| ReadableToken<any>,
-		key?: Json.Serializable,
+		...params:
+			| [MoleculeFamilyToken<any>, Json.Serializable]
+			| [MoleculeToken<MoleculeConstructor>]
+			| [ReadableFamilyToken<any, any>, Json.Serializable]
+			| [ReadableToken<any>]
 	) => {
 		const target = newest(store)
+		let dependency: MoleculeToken<MoleculeConstructor> | ReadableToken<any>
 
-		if (key) {
-			switch (dependency.type) {
+		if (params.length === 2) {
+			const [family, key] = params
+			switch (family.type) {
 				case `molecule_family`:
-					return getFromStore(dependency, key, store)
-				case `atom_family`:
-					dependency = seekInStore(dependency, key, store) as any
+					return getFromStore(family, key, store)
+				default:
+					dependency = seekInStore(family, key, store) as any
 			}
+		} else {
+			;[dependency] = params
 		}
 
 		if (dependency.type === `molecule`) {
 			return getFromStore(dependency, store)
 		}
 
-		const dependencyState = withdraw(dependency as ReadableToken<any>, store)
+		const dependencyState = withdraw(dependency, store)
 		const dependencyValue = readOrComputeValue(dependencyState, store)
 
 		store.logger.info(
@@ -79,7 +82,7 @@ export const registerSelector = (
 	set: (<T, New extends T>(
 		...params:
 			| [
-					token: WritableSelectorFamilyToken<T, any>,
+					token: WritableFamilyToken<T, any>,
 					key: Json.Serializable,
 					value: New | ((oldValue: any) => New),
 			  ]
