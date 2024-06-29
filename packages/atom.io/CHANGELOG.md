@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.25.2
+
+### Patch Changes
+
+- a9da731: 🐛 Fix bug where, `GetterToolkit`'s and `SetterToolkit`'s `get` method would error when retrieving state from a family that wasn't an `AtomFamily`.
+
 ## 0.25.1
 
 ### Patch Changes
