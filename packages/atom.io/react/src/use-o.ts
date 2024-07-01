@@ -1,5 +1,6 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import {
+	findInStore,
 	getFromStore,
 	NotFoundError,
 	seekInStore,
@@ -27,7 +28,9 @@ export function useO<T, K extends Json.Serializable>(
 		token.type === `mutable_atom_family` ||
 		token.type === `selector_family` ||
 		token.type === `readonly_selector_family`
-			? seekInStore(token, key as K, store)
+			? store.config.lifespan === `immortal`
+				? seekInStore(token, key as K, store)
+				: findInStore(token, key as K, store)
 			: token
 	if (!stateToken) {
 		throw new NotFoundError(token, store)
