@@ -1,5 +1,10 @@
 import type { ReadableToken, WritableFamilyToken, WritableToken } from "atom.io"
-import { findInStore, setIntoStore } from "atom.io/internal"
+import {
+	findInStore,
+	NotFoundError,
+	seekInStore,
+	setIntoStore,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as React from "react"
 
@@ -19,12 +24,17 @@ export function useI<T, K extends Json.Serializable>(
 	key?: K,
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
-	const stateToken: ReadableToken<any> =
+	const stateToken: ReadableToken<any> | undefined =
 		token.type === `atom_family` ||
 		token.type === `mutable_atom_family` ||
 		token.type === `selector_family`
-			? findInStore(token, key as K, store)
+			? store.config.lifespan === `immortal`
+				? seekInStore(token, key as K, store)
+				: findInStore(token, key as K, store)
 			: token
+	if (!stateToken) {
+		throw new NotFoundError(token, key, store)
+	}
 	const setter: React.MutableRefObject<
 		(<New extends T>(next: New | ((old: T) => New)) => void) | null
 	> = React.useRef(null)

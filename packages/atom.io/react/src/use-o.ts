@@ -21,6 +21,9 @@ export function useO<T, K extends Json.Serializable>(
 export function useO<T, K extends Json.Serializable>(
 	token: ReadableFamilyToken<T, K> | ReadableToken<T>,
 	key?: K,
+	// ...params:
+	// 	| [ReadableFamilyToken<T, K>, K]
+	// 	| [ReadableToken<T>]
 ): T {
 	const store = React.useContext(StoreContext)
 	const stateToken: ReadableToken<any> | undefined =
@@ -33,7 +36,7 @@ export function useO<T, K extends Json.Serializable>(
 				: findInStore(token, key as K, store)
 			: token
 	if (!stateToken) {
-		throw new NotFoundError(token, store)
+		throw new NotFoundError(token, key, store)
 	}
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
