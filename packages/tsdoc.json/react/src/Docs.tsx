@@ -8,7 +8,7 @@ export function Mod({ docs, className = `` }: ModProps): JSX.Element {
 	return (
 		<div className={`tsdoc-module ${className}`}>
 			{docs.map((doc) => (
-				<Doc key={doc.name} doc={doc} />
+				<Doc key={doc.name} doc={doc} isRoot />
 			))}
 		</div>
 	)
@@ -16,13 +16,14 @@ export function Mod({ docs, className = `` }: ModProps): JSX.Element {
 
 export type DocProps = {
 	doc: TSD.Doc
+	isRoot?: boolean
 }
-export function Doc({ doc }: DocProps): JSX.Element {
+export function Doc({ doc, isRoot }: DocProps): JSX.Element {
 	const offset0 = stringToNumber(doc.name)
 	const offset1 = offset0 << 1
 	return (
 		<article
-			className={`tsdoc-resource ${doc.type} ${doc.kind}`}
+			className={`tsdoc-resource ${doc.type} ${doc.kind}${isRoot ? ` root` : ``}`}
 			style={{
 				backgroundPosition: offset0 / 100000 + `% ` + offset1 / 100000 + `%`,
 			}}
