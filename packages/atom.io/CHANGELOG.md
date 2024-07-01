@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.25.3
+
+### Patch Changes
+
+- a6283c4: 🐛 Fix bug where, when using `useO` in `ephemeral` stores, a state would not be created as needed in React components.
+
 ## 0.25.2
 
 ### Patch Changes
