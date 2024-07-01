@@ -19,29 +19,32 @@ export function useO<T, K extends Json.Serializable>(
 ): T
 
 export function useO<T, K extends Json.Serializable>(
-	token: ReadableFamilyToken<T, K> | ReadableToken<T>,
-	key?: K,
-	// ...params:
-	// 	| [ReadableFamilyToken<T, K>, K]
-	// 	| [ReadableToken<T>]
+	...params: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
 ): T {
 	const store = React.useContext(StoreContext)
-	const stateToken: ReadableToken<any> | undefined =
-		token.type === `atom_family` ||
-		token.type === `mutable_atom_family` ||
-		token.type === `selector_family` ||
-		token.type === `readonly_selector_family`
-			? store.config.lifespan === `immortal`
-				? seekInStore(token, key as K, store)
-				: findInStore(token, key as K, store)
-			: token
-	if (!stateToken) {
-		throw new NotFoundError(token, key, store)
+
+	let token: ReadableToken<any>
+	if (params.length === 2) {
+		const family = params[0]
+		const key = params[1]
+
+		if (store.config.lifespan === `immortal`) {
+			const maybeToken = seekInStore(family, key, store)
+			if (!maybeToken) {
+				throw new NotFoundError(family, key, store)
+			}
+			token = maybeToken
+		} else {
+			token = findInStore(family, key, store)
+		}
+	} else {
+		token = params[0]
 	}
+
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(dispatch) => subscribeToState(stateToken, dispatch, `use-o:${id}`, store),
-		() => getFromStore(stateToken, store),
-		() => getFromStore(stateToken, store),
+		(dispatch) => subscribeToState(token, dispatch, `use-o:${id}`, store),
+		() => getFromStore(token, store),
+		() => getFromStore(token, store),
 	)
 }
