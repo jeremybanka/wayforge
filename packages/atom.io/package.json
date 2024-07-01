@@ -1,6 +1,6 @@
 {
 	"name": "atom.io",
-	"version": "0.25.2",
+	"version": "0.25.3",
 	"description": "Composable and testable reactive data library.",
 	"homepage": "https://atom.io.fyi",
 	"sideEffects": false,
