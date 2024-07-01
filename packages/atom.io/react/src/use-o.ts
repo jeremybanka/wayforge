@@ -1,13 +1,9 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
-import {
-	getFromStore,
-	NotFoundError,
-	seekInStore,
-	subscribeToState,
-} from "atom.io/internal"
+import { getFromStore, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as React from "react"
 
+import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
 
 export function useO<T>(token: ReadableToken<T>): T
@@ -18,24 +14,14 @@ export function useO<T, K extends Json.Serializable>(
 ): T
 
 export function useO<T, K extends Json.Serializable>(
-	token: ReadableFamilyToken<T, K> | ReadableToken<T>,
-	key?: K,
+	...params: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
 ): T {
 	const store = React.useContext(StoreContext)
-	const stateToken: ReadableToken<any> | undefined =
-		token.type === `atom_family` ||
-		token.type === `mutable_atom_family` ||
-		token.type === `selector_family` ||
-		token.type === `readonly_selector_family`
-			? seekInStore(token, key as K, store)
-			: token
-	if (!stateToken) {
-		throw new NotFoundError(token, store)
-	}
+	const token = parseStateOverloads(store, ...params)
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(dispatch) => subscribeToState(stateToken, dispatch, `use-o:${id}`, store),
-		() => getFromStore(stateToken, store),
-		() => getFromStore(stateToken, store),
+		(dispatch) => subscribeToState(token, dispatch, `use-o:${id}`, store),
+		() => getFromStore(token, store),
+		() => getFromStore(token, store),
 	)
 }
