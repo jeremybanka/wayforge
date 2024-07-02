@@ -26,7 +26,7 @@ import type {
 	WritableSelector,
 } from ".."
 import type { Lineage } from "../lineage"
-import { getJsonToken, getUpdateToken } from "../mutable"
+import { getJsonTokenFromStore, getUpdateToken } from "../mutable"
 import type { OperationProgress } from "../operation"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
@@ -169,7 +169,7 @@ export class Store implements Lineage {
 				}
 				atom.install(this)
 				if (atom.type === `mutable_atom`) {
-					const originalJsonToken = getJsonToken(atom, store)
+					const originalJsonToken = getJsonTokenFromStore(atom, store)
 					const originalUpdateToken = getUpdateToken(atom)
 					mutableHelpers.add(originalJsonToken.key)
 					mutableHelpers.add(originalUpdateToken.key)

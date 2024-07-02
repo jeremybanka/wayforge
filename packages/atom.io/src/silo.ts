@@ -1,6 +1,12 @@
 import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 import type { Transceiver } from "atom.io/internal"
 import {
+	composeDisposeState,
+	composeFindState,
+	composeGetState,
+	composeSeekState,
+	composeSetState,
 	createAtomFamily,
 	createSelectorFamily,
 	createStandaloneAtom,
@@ -47,6 +53,7 @@ export class Silo {
 	public transaction: typeof transaction
 	public timeline: typeof timeline
 	public findState: typeof findState
+	public seekState: typeof seekState
 	public getState: typeof getState
 	public setState: typeof setState
 	public disposeState: typeof disposeState
@@ -86,15 +93,11 @@ export class Silo {
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
-		this.findState = (token, key) => findInStore(token, key, s) as any
-		this.getState = ((...params: Parameters<typeof getState>) =>
-			getFromStore(...params, s)) as typeof getState
-		this.setState = ((...params: Parameters<typeof setState>) => {
-			setIntoStore(...params, s)
-		}) as typeof setState
-		this.disposeState = ((...params: Parameters<typeof disposeState>) => {
-			disposeFromStore(...params, s)
-		}) as typeof disposeState
+		this.findState = composeFindState(s)
+		this.seekState = composeSeekState(s)
+		this.getState = composeGetState(s)
+		this.setState = composeSetState(s)
+		this.disposeState = composeDisposeState(s)
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
 		this.undo = (token) => {
 			timeTravel(`undo`, token, s)

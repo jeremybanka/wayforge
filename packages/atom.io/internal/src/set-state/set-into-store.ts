@@ -1,4 +1,4 @@
-import type { WritableFamilyToken, WritableToken } from "atom.io"
+import type { setState, WritableFamilyToken, WritableToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
@@ -77,4 +77,10 @@ export function setIntoStore<T, New extends T>(
 	const state = withdraw(token, store)
 	setAtomOrSelector(state, value, store)
 	closeOperation(store)
+}
+
+export function composeSetState(store: Store): typeof setState {
+	return function set(...params: Parameters<typeof setState>) {
+		setIntoStore(...params, store)
+	} as typeof setState
 }

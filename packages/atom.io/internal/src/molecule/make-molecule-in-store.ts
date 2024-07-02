@@ -19,7 +19,7 @@ import { disposeFromStore, seekInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { eldest, newest } from "../lineage"
-import { getJsonToken } from "../mutable"
+import { getJsonTokenFromStore } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -73,7 +73,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 			setIntoStore(...ps, newest(rootStore))
 		}) as typeof setState,
 		seek: ((t, k) => seekInStore(t, k, newest(rootStore))) as typeof seekState,
-		json: (t) => getJsonToken(t, newest(rootStore)),
+		json: (t) => getJsonTokenFromStore(t, newest(rootStore)),
 		run: (t, i = arbitrary()) => actUponStore(t, i, newest(store)),
 		make: (ctx, f, k, ...args) =>
 			makeMoleculeInStore(newest(rootStore), ctx, f, k, ...args),

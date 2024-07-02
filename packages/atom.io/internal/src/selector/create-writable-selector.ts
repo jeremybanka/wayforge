@@ -12,7 +12,10 @@ import { become } from "../set-state"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
-import { registerSelector } from "./register-selector"
+import {
+	ReadonlySelectorToolkit,
+	WritableSelectorToolkit,
+} from "./register-selector"
 
 export const createWritableSelector = <T>(
 	options: WritableSelectorOptions<T>,
@@ -22,12 +25,11 @@ export const createWritableSelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const toolkit = registerSelector(options.key, covered, target)
-	const { find, get, seek, json } = toolkit
-	const getterToolkit = { find, get, seek, json }
+	const readerToolkit = new ReadonlySelectorToolkit(options.key, covered, target)
+	const writerToolkit = new WritableSelectorToolkit(options.key, covered, target)
 
 	const getSelf = (innerTarget = newest(store)): T => {
-		const value = options.get(getterToolkit)
+		const value = options.get(readerToolkit)
 		cacheValue(options.key, value, subject, innerTarget)
 		covered.clear()
 		return value
@@ -52,7 +54,7 @@ export const createWritableSelector = <T>(
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })
 		}
-		options.set(toolkit, newValue)
+		options.set(writerToolkit, newValue)
 	}
 	const mySelector: WritableSelector<T> = {
 		...options,

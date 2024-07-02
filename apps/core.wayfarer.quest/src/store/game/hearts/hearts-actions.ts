@@ -1,5 +1,5 @@
 import { transaction } from "atom.io"
-import { getJsonToken } from "atom.io/internal"
+import { getJsonTokenFromStore } from "atom.io/internal"
 import { usersInThisRoomIndex } from "atom.io/realtime"
 
 import {

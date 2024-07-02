@@ -13,8 +13,8 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomFamily,
 	setState,
-	SetterToolkit,
 	Write,
+	WriterToolkit,
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
@@ -28,7 +28,7 @@ import {
 	findInStore,
 	getFromStore,
 	getJsonFamily,
-	getJsonToken,
+	getJsonTokenFromStore,
 	growMoleculeInStore,
 	IMPLICIT,
 	initFamilyMemberInStore,
@@ -144,7 +144,7 @@ export class Join<
 > {
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
-	private toolkit: SetterToolkit & { dispose: typeof disposeState }
+	private toolkit: WriterToolkit & { dispose: typeof disposeState }
 	public retrieve: typeof findState
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
@@ -157,7 +157,7 @@ export class Join<
 		>
 	}
 	public transact(
-		toolkit: SetterToolkit & { dispose: typeof disposeState },
+		toolkit: WriterToolkit & { dispose: typeof disposeState },
 		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
 	): void {
 		const originalToolkit = this.toolkit
@@ -205,7 +205,7 @@ export class Join<
 			}) as typeof setState,
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
-			json: (token) => getJsonToken(token, store),
+			json: (token) => getJsonTokenFromStore(token, store),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(...ps, store)
 			}) as typeof disposeState,

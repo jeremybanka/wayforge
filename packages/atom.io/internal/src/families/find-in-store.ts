@@ -16,6 +16,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
+import type { findState } from "atom.io/ephemeral"
 import type { Json } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
@@ -92,4 +93,10 @@ export function findInStore(
 	}
 	state = initFamilyMemberInStore(token, key, store)
 	return state
+}
+
+export function composeFindState(store: Store): typeof findState {
+	return function find(...params: Parameters<typeof findState>) {
+		return findInStore(...params, store)
+	} as typeof findState
 }
