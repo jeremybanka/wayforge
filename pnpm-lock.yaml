@@ -103,8 +103,8 @@ importers:
         specifier: 14.2.4
         version: 14.2.4(@mdx-js/loader@3.0.1(webpack@5.91.0))(@mdx-js/react@3.0.1(@types/react@18.3.3)(react@18.3.1))
       '@types/bun':
-        specifier: 1.1.4
-        version: 1.1.4
+        specifier: 1.1.6
+        version: 1.1.6
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -1114,8 +1114,8 @@ importers:
         version: 1.4.0
     devDependencies:
       '@types/bun':
-        specifier: 1.1.4
-        version: 1.1.4
+        specifier: 1.1.6
+        version: 1.1.6
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -3392,9 +3392,6 @@ packages:
   '@types/babel__traverse@7.20.5':
     resolution: {integrity: sha512-WXCyOcRtH37HAUkpXhUduaxdm82b4GSlyTqajXviN4EfiuPgNYR109xMCKvpl6zPIpua0DGlMEDCq+g8EdoheQ==}
 
-  '@types/bun@1.1.4':
-    resolution: {integrity: sha512-ejSuv/3s0hTHj/nkkLzBlHxm4JxOPygbLNi0kzM6ooq8rOiQvIUCv7RRErTaWSfb+QVnKz6x7qlp8N86bGDiIg==}
-
   '@types/bun@1.1.6':
     resolution: {integrity: sha512-uJgKjTdX0GkWEHZzQzFsJkWp5+43ZS7HC8sZPFnOwnSo1AsNl2q9o2bFeS23disNDqbggEgyFkKCHl/w8iZsMA==}
 
@@ -4020,9 +4017,6 @@ packages:
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
-
-  bun-types@1.1.13:
-    resolution: {integrity: sha512-G/TqF0SsMQGLr4g7K3B2BK8BrPEA1EqCNwxZbyRdj5M4t54zvwyaqvRJOW34kuPqc2IvNNalRU3swc8B4oc4FA==}
 
   bun-types@1.1.17:
     resolution: {integrity: sha512-Z4+OplcSd/YZq7ZsrfD00DKJeCwuNY96a1IDJyR73+cTBaFIS7SC6LhpY/W3AMEXO9iYq5NJ58WAwnwL1p5vKg==}
@@ -9949,10 +9943,6 @@ snapshots:
     dependencies:
       '@babel/types': 7.24.5
 
-  '@types/bun@1.1.4':
-    dependencies:
-      bun-types: 1.1.13
-
   '@types/bun@1.1.6':
     dependencies:
       bun-types: 1.1.17
@@ -10803,11 +10793,6 @@ snapshots:
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
 
   buffer-from@1.1.2: {}
-
-  bun-types@1.1.13:
-    dependencies:
-      '@types/node': 20.12.13
-      '@types/ws': 8.5.10
 
   bun-types@1.1.17:
     dependencies:
