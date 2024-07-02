@@ -2,6 +2,7 @@ import type { Store, Subject, Transceiver } from "atom.io/internal"
 import {
 	createAtomFamily,
 	createStandaloneAtom,
+	getJsonTokenFromStore,
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Json, JsonInterface } from "atom.io/json"
@@ -12,6 +13,7 @@ import type {
 	RegularAtomToken,
 	StateCreation,
 	StateDisposal,
+	WritableSelectorToken,
 } from "."
 
 export type Effectors<T> = {
@@ -170,4 +172,11 @@ export function atomFamily<T, K extends Json.Serializable>(
 	| MutableAtomFamilyTokenWithCall<any, any, any>
 	| RegularAtomFamilyTokenWithCall<T, K> {
 	return createAtomFamily(options, IMPLICIT.STORE)
+}
+
+export function getJsonToken<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+>(token: MutableAtomToken<T, J>): WritableSelectorToken<J> {
+	return getJsonTokenFromStore(token, IMPLICIT.STORE)
 }

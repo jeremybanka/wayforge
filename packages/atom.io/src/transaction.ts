@@ -77,8 +77,15 @@ export type TransactionUpdate<F extends Func> = {
 	output: ReturnType<F>
 }
 
-export type GetterToolkit = Pick<SetterToolkit, `find` | `get` | `json` | `seek`>
-export type SetterToolkit = Readonly<{
+export type ReaderToolkit = {
+	get: typeof getState
+	find: typeof findState
+	seek: typeof seekState
+	json: <T extends Transceiver<any>, J extends Json.Serializable>(
+		state: MutableAtomToken<T, J>,
+	) => WritableSelectorToken<J>
+}
+export type WriterToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
 	find: typeof findState
@@ -102,12 +109,12 @@ export type ActorToolkit = Readonly<{
 }>
 
 export type Read<F extends Func> = (
-	toolkit: GetterToolkit,
+	toolkit: ReaderToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
 
 export type Write<F extends Func> = (
-	toolkit: SetterToolkit,
+	toolkit: WriterToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
 

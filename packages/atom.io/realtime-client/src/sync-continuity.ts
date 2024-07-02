@@ -6,7 +6,7 @@ import {
 	disposeAtom,
 	getEpochNumberOfContinuity,
 	getFromStore,
-	getJsonToken,
+	getJsonTokenFromStore,
 	ingestTransactionUpdate,
 	isRootStore,
 	setEpochNumberOfContinuity,
@@ -41,7 +41,7 @@ export function syncContinuity<F extends Func>(
 			} else {
 				v = x
 				if (`type` in k && k.type === `mutable_atom`) {
-					k = getJsonToken(k, store)
+					k = getJsonTokenFromStore(k, store)
 				}
 				setIntoStore(k, v, store)
 			}

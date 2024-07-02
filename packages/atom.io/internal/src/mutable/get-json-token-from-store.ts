@@ -1,4 +1,5 @@
 import type {
+	getJsonToken,
 	MutableAtomToken,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -10,7 +11,7 @@ import { newest } from "../lineage"
 import { type Store, withdraw } from "../store"
 import type { Transceiver } from "./transceiver"
 
-export const getJsonToken = <
+export const getJsonTokenFromStore = <
 	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 >(
@@ -37,4 +38,10 @@ export const getJsonToken = <
 		key: `${mutableAtomToken.key}:JSON`,
 	}
 	return token
+}
+
+export function composeGetJsonToken(store: Store): typeof getJsonToken {
+	return function json(...params: Parameters<typeof getJsonToken>) {
+		return getJsonTokenFromStore(...params, store)
+	} as typeof getJsonToken
 }

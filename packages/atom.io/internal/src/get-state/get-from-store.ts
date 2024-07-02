@@ -1,4 +1,5 @@
 import type {
+	getState,
 	MoleculeConstructor,
 	MoleculeFamilyToken,
 	MoleculeKey,
@@ -11,7 +12,7 @@ import type { Json } from "atom.io/json"
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
-import { withdraw } from "../store"
+import { IMPLICIT, withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
 export function getFromStore<T>(token: ReadableToken<T>, store: Store): T
@@ -69,4 +70,10 @@ export function getFromStore<T>(
 		case `molecule`:
 			return withdraw(token, store).instance
 	}
+}
+
+export function composeGetState(store: Store): typeof getState {
+	return function get(...params: Parameters<typeof getState>) {
+		return getFromStore(...params, store)
+	} as typeof getState
 }

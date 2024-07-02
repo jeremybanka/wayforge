@@ -3,7 +3,7 @@ import type {
 	MutableAtomToken,
 	ReadableToken,
 } from "atom.io"
-import { findInStore, getJsonToken } from "atom.io/internal"
+import { findInStore, getJsonTokenFromStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as React from "react"
 
@@ -33,6 +33,6 @@ export function useJSON<
 		token.type === `mutable_atom_family`
 			? findInStore(token, key as Key, store)
 			: token
-	const jsonToken = getJsonToken(stateToken, store)
+	const jsonToken = getJsonTokenFromStore(stateToken, store)
 	return useO(jsonToken)
 }

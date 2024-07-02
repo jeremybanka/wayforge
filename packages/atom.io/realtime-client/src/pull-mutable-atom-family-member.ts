@@ -1,6 +1,10 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { getJsonToken, getUpdateToken, setIntoStore } from "atom.io/internal"
+import {
+	getJsonTokenFromStore,
+	getUpdateToken,
+	setIntoStore,
+} from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
@@ -20,7 +24,7 @@ export function pullMutableAtomFamilyMember<
 	const { key: familyKey, subKey: serializedSubKey } = token.family
 	const subKey = parseJson(serializedSubKey)
 	socket.on(`init:${token.key}`, (data: J) => {
-		const jsonToken = getJsonToken(token, store)
+		const jsonToken = getJsonTokenFromStore(token, store)
 		setIntoStore(jsonToken, data, store)
 	})
 	socket.on(

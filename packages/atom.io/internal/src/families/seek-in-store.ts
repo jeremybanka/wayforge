@@ -20,6 +20,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
+import type { seekState } from "atom.io/immortal"
 import { type Json, stringifyJson } from "atom.io/json"
 
 import type { Molecule, ReadableState } from ".."
@@ -116,4 +117,10 @@ export function seekInStore(
 		return deposit(state)
 	}
 	return state
+}
+
+export function composeSeekState(store: Store): typeof seekState {
+	return function seek(...params: Parameters<typeof seekState>) {
+		return seekInStore(...params, store)
+	} as typeof seekState
 }

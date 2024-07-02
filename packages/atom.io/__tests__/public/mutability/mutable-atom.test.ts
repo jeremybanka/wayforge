@@ -47,7 +47,7 @@ describe(`mutable atomic state`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const myJsonState = Internal.getJsonToken(
+		const myJsonState = Internal.getJsonTokenFromStore(
 			myMutableState,
 			Internal.IMPLICIT.STORE,
 		)
@@ -99,7 +99,7 @@ describe(`mutable atomic state`, () => {
 		)
 
 		const myFlagsState = findFlagsStateByUserId(`my-user-id`)
-		const findFlagsByUserIdJSON = Internal.getJsonToken(
+		const findFlagsByUserIdJSON = Internal.getJsonTokenFromStore(
 			myFlagsState,
 			Internal.IMPLICIT.STORE,
 		)
@@ -162,7 +162,7 @@ describe(`mutable atomic state`, () => {
 			},
 		})
 
-		const myJsonState = Internal.getJsonToken(
+		const myJsonState = Internal.getJsonTokenFromStore(
 			myMutableState,
 			Internal.IMPLICIT.STORE,
 		)
@@ -202,7 +202,7 @@ describe(`mutable time traveling`, () => {
 			key: `myTimeline`,
 			scope: [myMutableStates],
 		})
-		const myJsonState = Internal.getJsonToken(
+		const myJsonState = Internal.getJsonTokenFromStore(
 			myMutableState,
 			Internal.IMPLICIT.STORE,
 		)
@@ -244,7 +244,7 @@ describe(`mutable time traveling`, () => {
 			},
 		})
 
-		const myJsonState = Internal.getJsonToken(
+		const myJsonState = Internal.getJsonTokenFromStore(
 			myMutableState,
 			Internal.IMPLICIT.STORE,
 		)

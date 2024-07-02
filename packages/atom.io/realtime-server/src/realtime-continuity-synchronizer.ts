@@ -4,7 +4,7 @@ import {
 	actUponStore,
 	findInStore,
 	getFromStore,
-	getJsonToken,
+	getJsonTokenFromStore,
 	IMPLICIT,
 	isRootStore,
 	subscribeToState,
@@ -107,7 +107,7 @@ export function realtimeContinuitySynchronizer({
 							.flatMap((token) => {
 								const resourceToken =
 									token.type === `mutable_atom`
-										? getJsonToken(token, store)
+										? getJsonTokenFromStore(token, store)
 										: token
 								const resource = getFromStore(resourceToken, store)
 								return [resourceToken, resource]
@@ -141,7 +141,9 @@ export function realtimeContinuitySynchronizer({
 			const initialPayload: Json.Serializable[] = []
 			for (const atom of continuity.globals) {
 				const resourceToken =
-					atom.type === `mutable_atom` ? getJsonToken(atom, store) : atom
+					atom.type === `mutable_atom`
+						? getJsonTokenFromStore(atom, store)
+						: atom
 				initialPayload.push(resourceToken, getFromStore(atom, store))
 			}
 			for (const perspective of continuity.perspectives) {
@@ -156,7 +158,7 @@ export function realtimeContinuitySynchronizer({
 				for (const visibleToken of userView) {
 					const resourceToken =
 						visibleToken.type === `mutable_atom`
-							? getJsonToken(visibleToken, store)
+							? getJsonTokenFromStore(visibleToken, store)
 							: visibleToken
 					const resource = getFromStore(resourceToken, store)
 

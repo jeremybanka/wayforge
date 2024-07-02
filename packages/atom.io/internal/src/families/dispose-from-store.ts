@@ -1,4 +1,5 @@
 import type {
+	disposeState,
 	MoleculeConstructor,
 	MoleculeFamilyToken,
 	MoleculeKey,
@@ -76,4 +77,10 @@ export function disposeFromStore(
 			disposeMolecule(token, store)
 			break
 	}
+}
+
+export function composeDisposeState(store: Store): typeof disposeState {
+	return function dispose(...params: Parameters<typeof disposeState>) {
+		disposeFromStore(...params, store)
+	} as typeof disposeState
 }
