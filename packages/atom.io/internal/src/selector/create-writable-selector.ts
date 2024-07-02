@@ -26,7 +26,7 @@ export const createWritableSelector = <T>(
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
 	const readerToolkit = new ReadonlySelectorToolkit(options.key, covered, target)
-	const writerToolkit = new WritableSelectorToolkit(options.key, covered, target)
+	const writerToolkit = new WritableSelectorToolkit(readerToolkit, target)
 
 	const getSelf = (innerTarget = newest(store)): T => {
 		const value = options.get(readerToolkit)

@@ -18,7 +18,7 @@ import {
 	findInStore,
 	seekInStore,
 } from "../families"
-import { getFromStore } from "../get-state"
+import { composeGetState, getFromStore } from "../get-state"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { composeGetJsonToken } from "../mutable"
@@ -33,10 +33,10 @@ export class ReadonlySelectorToolkit implements ReaderToolkit {
 		selectorKey: string,
 		covered: Set<string>,
 		store: Store,
-		public find = composeFindState(store),
-		public seek = composeSeekState(store),
-		public json = composeGetJsonToken(store),
-		public get = (
+		public readonly find = composeFindState(store),
+		public readonly seek = composeSeekState(store),
+		public readonly json = composeGetJsonToken(store),
+		public readonly get = (
 			...params:
 				| [MoleculeFamilyToken<any>, Json.Serializable]
 				| [MoleculeToken<MoleculeConstructor>]
@@ -89,14 +89,14 @@ export class ReadonlySelectorToolkit implements ReaderToolkit {
 	) {}
 }
 
-export class WritableSelectorToolkit
-	extends ReadonlySelectorToolkit
-	implements WriterToolkit
-{
+export class WritableSelectorToolkit implements WriterToolkit {
 	public constructor(
-		selectorKey: string,
-		covered: Set<string>,
+		readerToolkit: ReadonlySelectorToolkit,
 		store: Store,
+		public readonly find = readerToolkit.find,
+		public readonly seek = readerToolkit.seek,
+		public readonly json = readerToolkit.json,
+		public readonly get = composeGetState(store),
 		public set = <T, New extends T>(
 			...params:
 				| [
@@ -128,7 +128,5 @@ export class WritableSelectorToolkit
 			const state = withdraw(token, target)
 			setAtomOrSelector(state, value, target)
 		},
-	) {
-		super(selectorKey, covered, store)
-	}
+	) {}
 }
