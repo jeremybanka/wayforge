@@ -30,6 +30,9 @@ export function subscribeToState<T>(
 	let dependencyUnsubFunctions: (() => void)[] | null = null
 	let updateHandler: UpdateHandler<T> = safelyHandleUpdate
 	if (isSelector) {
+		if (!store.selectorAtoms.has(state.key)) {
+			state.get()
+		}
 		dependencyUnsubFunctions = subscribeToRootAtoms(state, store)
 		updateHandler = (update) => {
 			if (dependencyUnsubFunctions) {
