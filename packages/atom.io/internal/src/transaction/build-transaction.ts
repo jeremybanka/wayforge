@@ -1,4 +1,4 @@
-import type { disposeState, Func, getState, setState } from "atom.io"
+import type { disposeState, getState, setState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 
@@ -14,6 +14,7 @@ import { makeMoleculeInStore } from "../molecule"
 import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
+import type { Func } from "../utility-types"
 import type { TransactionProgress } from "."
 import { actUponStore, getEpochNumberOfAction } from "."
 import type { ChildStore, RootStore } from "./is-root-store"

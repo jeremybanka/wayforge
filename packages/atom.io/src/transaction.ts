@@ -9,7 +9,7 @@ import type {
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
-import type { EnvironmentData, Transceiver } from "atom.io/internal"
+import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -20,11 +20,9 @@ import type { Json } from "atom.io/json"
 
 import type {
 	disposeState,
-	Func,
 	KeyedStateUpdate,
 	MutableAtomToken,
 	ReadableToken,
-	ReadonlySelectorToken,
 	TokenType,
 	WritableSelectorToken,
 	WritableToken,

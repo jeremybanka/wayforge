@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/react"
-import type { CtorToolkit, Func, Logger } from "atom.io"
+import type { CtorToolkit, Logger } from "atom.io"
 import {
 	atomFamily,
 	makeMolecule,
@@ -29,7 +29,7 @@ beforeEach(() => {
 })
 
 describe(`family usage`, () => {
-	const setters: Func[] = []
+	const setters: Internal.Func[] = []
 	const scenario = () => {
 		const letterAtoms = atomFamily<string, string>({
 			key: `letter`,

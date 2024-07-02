@@ -1,0 +1,31 @@
+[
+	{
+		"name": "AtomicType",
+		"type": "atomic",
+		"kind": "type",
+		"sections": [
+			{
+				"type": "section",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "softBreak"
+							},
+							{
+								"type": "plainText",
+								"text": "A type."
+							},
+							{
+								"type": "softBreak"
+							}
+						]
+					}
+				]
+			}
+		],
+		"modifierTags": ["@public"],
+		"blocks": []
+	}
+]

@@ -1,0 +1,90 @@
+[
+	{
+		"name": "CompositePropertyDeclaration",
+		"type": "composite",
+		"kind": "class",
+		"sections": [
+			{
+				"type": "section",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "plainText",
+								"text": "Whatever"
+							},
+							{
+								"type": "softBreak"
+							}
+						]
+					}
+				]
+			}
+		],
+		"modifierTags": [],
+		"blocks": [],
+		"properties": [
+			{
+				"name": "compositeProperty",
+				"type": "composite",
+				"kind": "type",
+				"sections": [
+					{
+						"type": "section",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "softBreak"
+									},
+									{
+										"type": "plainText",
+										"text": "Hey how are you?"
+									},
+									{
+										"type": "softBreak"
+									}
+								]
+							}
+						]
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": [],
+				"properties": [
+					{
+						"name": "deeperNested",
+						"type": "atomic",
+						"kind": "type",
+						"sections": [
+							{
+								"type": "section",
+								"content": [
+									{
+										"type": "paragraph",
+										"content": [
+											{
+												"type": "softBreak"
+											},
+											{
+												"type": "plainText",
+												"text": "Nested in composite property."
+											},
+											{
+												"type": "softBreak"
+											}
+										]
+									}
+								]
+							}
+						],
+						"modifierTags": ["@public"],
+						"blocks": []
+					}
+				]
+			}
+		]
+	}
+]

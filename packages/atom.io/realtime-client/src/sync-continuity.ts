@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import type { Store } from "atom.io/internal"
+import type { Func, Store } from "atom.io/internal"
 import {
 	actUponStore,
 	assignTransactionToContinuity,
@@ -21,7 +21,7 @@ import {
 } from "atom.io/realtime-client"
 import type { Socket } from "socket.io-client"
 
-export function syncContinuity<F extends AtomIO.Func>(
+export function syncContinuity<F extends Func>(
 	continuity: ContinuityToken,
 	socket: Socket,
 	store: Store,

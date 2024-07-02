@@ -35,10 +35,27 @@ export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serial
 			mutable: true
 		}
 
+/**
+ * @public
+ * Declare a mutable global reactive variable.
+ * @param options - Configuration for this mutable atom.
+ * @returns
+ * The token for your mutable atom.
+ * @overload Mutable
+ */
 export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
 	options: MutableAtomOptions<T, J>,
 ): MutableAtomToken<T, J>
+/**
+ * @public
+ * Declare a regular global reactive variable.
+ * @param options - Configuration for this regular atom.
+ * @returns
+ * The token for your regular atom.
+ * @overload Regular
+ */
 export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
+
 export function atom(
 	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
 ): AtomToken<any> {

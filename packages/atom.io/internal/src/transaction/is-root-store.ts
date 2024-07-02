@@ -1,6 +1,5 @@
-import type { Func } from "atom.io"
-
 import type { Store } from "../store"
+import type { Func } from "../utility-types"
 import type { TransactionEpoch, TransactionProgress } from "."
 
 export interface RootStore extends Store {
