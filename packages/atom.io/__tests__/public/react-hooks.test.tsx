@@ -1,5 +1,5 @@
 import { act, fireEvent, render } from "@testing-library/react"
-import type { Func, Logger, TimelineToken } from "atom.io"
+import type { Logger, TimelineToken } from "atom.io"
 import { atom, redo, selector, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
@@ -24,7 +24,7 @@ beforeEach(() => {
 const onChange = [() => undefined, console.log][0]
 
 describe(`single atom`, () => {
-	const setters: Func[] = []
+	const setters: Internal.Func[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,
@@ -67,7 +67,7 @@ describe(`single atom`, () => {
 	})
 })
 describe(`timeline`, () => {
-	const setters: Func[] = []
+	const setters: Internal.Func[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,

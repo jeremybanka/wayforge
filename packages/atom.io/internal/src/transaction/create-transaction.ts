@@ -1,5 +1,4 @@
 import type {
-	Func,
 	TransactionOptions,
 	TransactionToken,
 	TransactionUpdate,
@@ -9,6 +8,7 @@ import { newest } from "../lineage"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
+import type { Func } from "../utility-types"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
 import { buildTransaction } from "./build-transaction"

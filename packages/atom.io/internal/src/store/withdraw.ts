@@ -2,7 +2,6 @@ import type {
 	AtomFamily,
 	AtomFamilyToken,
 	AtomToken,
-	Func,
 	MoleculeConstructor,
 	MoleculeFamily,
 	MoleculeFamilyToken,
@@ -36,6 +35,7 @@ import { type Json, stringifyJson } from "atom.io/json"
 
 import type {
 	Atom,
+	Func,
 	Molecule,
 	MutableAtom,
 	ReadableState,

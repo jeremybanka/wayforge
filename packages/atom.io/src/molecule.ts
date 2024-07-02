@@ -1,6 +1,5 @@
 import type {
 	ActorToolkit,
-	Flat,
 	MoleculeCreation,
 	MoleculeDisposal,
 	MutableAtomFamilyToken,
@@ -17,7 +16,7 @@ import type {
 	WritableToken,
 } from "atom.io"
 import type { JoinToken } from "atom.io/data"
-import type { Store, Subject, Transceiver } from "atom.io/internal"
+import type { Flat, Store, Subject, Transceiver } from "atom.io/internal"
 import {
 	createMoleculeFamily,
 	IMPLICIT,
@@ -92,7 +91,7 @@ export type MoleculeFamily<M extends MoleculeConstructor> = Flat<
 	}
 >
 export type MoleculeToken<M extends MoleculeConstructor> = {
-	key: MK<M>
+	key: MoleculeKey<M>
 	type: `molecule`
 	family?: MoleculeFamilyToken<M>
 	__M?: M
@@ -120,7 +119,6 @@ export type MoleculeType<T extends MoleculeFamilyToken<any>> =
 			? M
 			: never
 export type MoleculeKey<M extends MoleculeConstructor> = InstanceType<M>[`key`]
-export type MK<M extends MoleculeConstructor> = MoleculeKey<M>
 
 export function makeRootMolecule(
 	key: string,

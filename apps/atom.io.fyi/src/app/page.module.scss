@@ -12,14 +12,21 @@ main.class {
     margin-top: 36vh;
     > span {
       font-size: 144px;
-      line-height: 0.69;
+      line-height: 0.4;
       font-weight: 900;
       &:first-of-type {
         color: var(--fg-soft-1);
+        @media screen and (max-width: 463px) {
+          color: var(--fg-soft-3);
+        }
       }
     }
     @media screen and (max-width: 370px) {
-      transform: rotate(-90deg) translateX(30px);
+      transform: rotate(-90deg) translateY(calc(100vw - 50px));
+      transform-origin: left bottom;
     }
+  }
+  > section {
+    margin-top: 1em;
   }
 }

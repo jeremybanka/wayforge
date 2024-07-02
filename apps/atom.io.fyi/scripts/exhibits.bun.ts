@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import fs from "node:fs"
 import path from "node:path"
 
@@ -64,12 +66,15 @@ function handleFile(filePath: string) {
 		relativeDirectory,
 		outputFilename,
 	)
-	npmlog.info(`write`, path.join(outputDir, relativeDirectory, outputFilename))
 	const wrappedCode = wrapCode(filename, code)
 	try {
+		npmlog.info(`writing`, outputFilePath)
 		fs.writeFileSync(outputFilePath, wrappedCode)
 	} catch (thrown) {
-		if (thrown instanceof Error && thrown.message.includes(`ENOENT`)) {
+		if (
+			thrown instanceof Error &&
+			thrown.message.includes(`No such file or directory`)
+		) {
 			npmlog.info(`directory`, path.dirname(outputFilePath))
 			fs.mkdirSync(path.dirname(outputFilePath), { recursive: true })
 			fs.writeFileSync(outputFilePath, wrappedCode)

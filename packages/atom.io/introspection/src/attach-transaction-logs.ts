@@ -1,9 +1,5 @@
-import type {
-	Func,
-	ReadonlySelectorFamilyToken,
-	TransactionUpdate,
-} from "atom.io"
-import type { Store } from "atom.io/internal"
+import type { ReadonlySelectorFamilyToken, TransactionUpdate } from "atom.io"
+import type { Func, Store } from "atom.io/internal"
 import {
 	createRegularAtomFamily,
 	createSelectorFamily,

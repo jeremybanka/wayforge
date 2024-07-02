@@ -1,0 +1,99 @@
+[
+	{
+		"name": "MethodClass",
+		"type": "composite",
+		"kind": "class",
+		"sections": [
+			{
+				"type": "section",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "softBreak"
+							},
+							{
+								"type": "plainText",
+								"text": "This class defines a method in the classic style."
+							},
+							{
+								"type": "softBreak"
+							}
+						]
+					}
+				]
+			}
+		],
+		"modifierTags": ["@beta"],
+		"blocks": [],
+		"properties": [
+			{
+				"name": "method",
+				"type": "function",
+				"params": [
+					{
+						"type": "paramBlock",
+						"name": "myParam",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "plainText",
+									"text": "A parameter this method requires."
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					}
+				],
+				"sections": [
+					{
+						"type": "section",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "softBreak"
+									},
+									{
+										"type": "plainText",
+										"text": "This is a cool method."
+									},
+									{
+										"type": "softBreak"
+									}
+								]
+							}
+						]
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": [
+					{
+						"type": "block",
+						"name": "@returns",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "softBreak"
+								},
+								{
+									"type": "plainText",
+									"text": "An output value."
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					}
+				]
+			}
+		]
+	}
+]

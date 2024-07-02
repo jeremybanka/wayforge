@@ -1,6 +1,6 @@
-import type { Func, TransactionToken, TransactionUpdateHandler } from "atom.io"
+import type { TransactionToken, TransactionUpdateHandler } from "atom.io"
 
-import type { Store } from ".."
+import type { Func, Store } from ".."
 import { withdraw } from ".."
 
 export const subscribeToTransaction = <F extends Func>(

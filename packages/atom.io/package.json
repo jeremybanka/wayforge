@@ -18,7 +18,7 @@
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node.ts",
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "bun run clean:build && concurrently \"npm:build:*\"",
+		"build": "bun run clean:build && concurrently \"bun:build:*\"",
 		"build:main": "tsup",
 		"build:types": "tsup --dts",
 		"build:data": "cd data && tsup",
@@ -118,7 +118,6 @@
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"module": "dist/index.mjs",
 	"files": [
 		"dist",
 		"src",

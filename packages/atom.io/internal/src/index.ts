@@ -27,6 +27,7 @@ export * from "./subject"
 export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
+export * from "./utility-types"
 
 export type AtomIOState = {
 	key: string

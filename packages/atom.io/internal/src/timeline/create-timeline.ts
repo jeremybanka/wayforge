@@ -2,8 +2,6 @@ import type {
 	AtomFamilyToken,
 	AtomToken,
 	FamilyMetadata,
-	Flat,
-	Func,
 	MoleculeConstructor,
 	MoleculeCreation,
 	MoleculeDisposal,
@@ -27,6 +25,7 @@ import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
+import type { Flat, Func } from "../utility-types"
 
 export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
 	StateUpdate<TokenType<ManagedAtom>> & {

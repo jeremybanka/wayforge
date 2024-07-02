@@ -1,0 +1,154 @@
+[
+	{
+		"type": "function",
+		"name": "myFunction",
+		"overloads": [
+			{
+				"name": "myFunction",
+				"type": "function",
+				"params": [
+					{
+						"type": "paramBlock",
+						"name": "myParam",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "plainText",
+									"text": "A parameter this function requires."
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					}
+				],
+				"sections": [
+					{
+						"type": "section",
+						"content": []
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": [
+					{
+						"type": "block",
+						"name": "@returns",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "softBreak"
+								},
+								{
+									"type": "plainText",
+									"text": "An output value."
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					},
+					{
+						"type": "block",
+						"name": "@overload",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "plainText",
+									"text": "MyFunction Overload 0"
+								},
+								{
+									"type": "softBreak"
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					}
+				]
+			},
+			{
+				"name": "myFunction",
+				"type": "function",
+				"params": [
+					{
+						"type": "paramBlock",
+						"name": "myParam",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "plainText",
+									"text": "A parameter this function requires."
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					}
+				],
+				"sections": [
+					{
+						"type": "section",
+						"content": []
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": [
+					{
+						"type": "block",
+						"name": "@returns",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "softBreak"
+								},
+								{
+									"type": "plainText",
+									"text": "An output value."
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					},
+					{
+						"type": "block",
+						"name": "@overload",
+						"desc": {
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "plainText",
+									"text": "MyFunction Overload 1"
+								},
+								{
+									"type": "softBreak"
+								},
+								{
+									"type": "softBreak"
+								}
+							]
+						}
+					}
+				]
+			},
+			{
+				"name": "myFunction",
+				"type": "function",
+				"params": [],
+				"sections": [],
+				"modifierTags": [],
+				"blocks": []
+			}
+		]
+	}
+]

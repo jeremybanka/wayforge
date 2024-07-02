@@ -1,5 +1,5 @@
-import type { Func, ReadonlySelectorToken, TransactionToken } from "atom.io"
-import type { Store } from "atom.io/internal"
+import type { ReadonlySelectorToken, TransactionToken } from "atom.io"
+import type { Func, Store } from "atom.io/internal"
 import {
 	createRegularAtom,
 	createStandaloneSelector,

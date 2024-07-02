@@ -27,7 +27,9 @@
 			"anvl/*": ["./packages/anvl/src/*"],
 			"hamr/*": ["./packages/hamr/*/src"],
 			"rel8": ["./packages/rel8/types/src"],
-			"rel8/*": ["./packages/rel8/*/src"]
+			"rel8/*": ["./packages/rel8/*/src"],
+			"tsdoc.json": ["./packages/tsdoc.json/src"],
+			"tsdoc.json/*": ["./packages/tsdoc.json/*/src"]
 		},
 		"strict": false
 	},

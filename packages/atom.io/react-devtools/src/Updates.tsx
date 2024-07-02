@@ -1,9 +1,9 @@
 import type {
-	Func,
 	KeyedStateUpdate,
 	TimelineUpdate,
 	TransactionUpdate,
 } from "atom.io"
+import type { Func } from "atom.io/internal"
 import * as React from "react"
 
 import { discoverType } from "~/packages/anvl/src/refinement/refinery"

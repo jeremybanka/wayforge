@@ -19,6 +19,7 @@
 		"vunguyentuan.vscode-css-variables",
 		"wallabyjs.console-ninja",
 		"yoavbls.pretty-ts-errors",
-		"yutengjing.open-in-external-app"
+		"yutengjing.open-in-external-app",
+		"unifiedjs.vscode-mdx"
 	]
 }

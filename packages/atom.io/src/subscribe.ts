@@ -1,4 +1,4 @@
-import type { Store } from "atom.io/internal"
+import type { Flat, Func, Store } from "atom.io/internal"
 import {
 	arbitrary,
 	IMPLICIT,
@@ -9,8 +9,6 @@ import {
 
 import type {
 	FamilyMetadata,
-	Flat,
-	Func,
 	ReadableToken,
 	TimelineManageable,
 	TimelineToken,

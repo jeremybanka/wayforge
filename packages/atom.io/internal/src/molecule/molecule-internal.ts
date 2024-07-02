@@ -1,7 +1,7 @@
 import type {
-	MK,
 	MoleculeConstructor,
 	MoleculeFamilyToken,
+	MoleculeKey,
 	MoleculeToken,
 	ReadableToken,
 	StateCreation,
@@ -28,7 +28,7 @@ export class Molecule<M extends MoleculeConstructor>
 	public instance: InstanceType<M>
 	public constructor(
 		ctx: Molecule<any> | Molecule<any>[] | undefined,
-		public readonly key: MK<M>,
+		public readonly key: MoleculeKey<M>,
 		family?: MoleculeFamilyToken<M>,
 	) {
 		this.stringKey = stringifyJson(key)

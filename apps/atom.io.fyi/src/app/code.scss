@@ -26,16 +26,22 @@
 code {
   font-family: Theia, monospace !important;
   font-weight: 500;
+  font-size: 15px;
+  box-sizing: border-box;
+  color: var(--function-color);
 }
 p,
 table {
   code {
     box-sizing: border-box;
     color: var(--function-color);
-    background-color: var(--bg-tint-2);
+    background-color: var(--bg-soft-1);
     box-shadow: 0 0px 4px 0px var(--bg-shade-2);
     border-radius: 3px;
-    padding: 2px 4px 4px;
+    padding: 4px 4px 4px;
+    @-moz-document url-prefix() {
+      padding: 8px 4px 4px; /* Your Firefox-specific padding */
+    }
   }
 }
 
@@ -60,17 +66,21 @@ table {
     padding: 2px 8px;
   }
 
-  > .prismjs {
+  > pre.prismjs {
     background-color: var(--bg-hard-1);
     padding: 1em;
     overflow: auto;
+    line-height: 1em;
     * {
       font-family: Theia;
       font-weight: 500;
       font-size: 15px;
     }
     > code {
-      line-height: 1.25 !important;
+      line-height: 1em !important;
+      span {
+        line-height: 22px !important;
+      }
     }
   }
 

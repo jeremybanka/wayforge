@@ -1,0 +1,130 @@
+[
+	{
+		"name": "CompositeType",
+		"type": "composite",
+		"kind": "type",
+		"sections": [
+			{
+				"type": "section",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "softBreak"
+							},
+							{
+								"type": "plainText",
+								"text": "A composite type."
+							},
+							{
+								"type": "softBreak"
+							}
+						]
+					}
+				]
+			}
+		],
+		"modifierTags": ["@public"],
+		"blocks": [],
+		"properties": [
+			{
+				"name": "nestedCompositeType",
+				"type": "composite",
+				"kind": "type",
+				"sections": [
+					{
+						"type": "section",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "softBreak"
+									},
+									{
+										"type": "plainText",
+										"text": "A nested composite type."
+									},
+									{
+										"type": "softBreak"
+									}
+								]
+							}
+						]
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": [],
+				"properties": [
+					{
+						"name": "deeplyNestedCompositeType",
+						"type": "atomic",
+						"kind": "type",
+						"sections": [
+							{
+								"type": "section",
+								"content": [
+									{
+										"type": "paragraph",
+										"content": [
+											{
+												"type": "softBreak"
+											},
+											{
+												"type": "plainText",
+												"text": "A deeply nested composite type."
+											},
+											{
+												"type": "softBreak"
+											}
+										]
+									}
+								]
+							}
+						],
+						"modifierTags": ["@public"],
+						"blocks": []
+					}
+				]
+			},
+			{
+				"name": "nestedAtomicType",
+				"type": "atomic",
+				"kind": "type",
+				"sections": [
+					{
+						"type": "section",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "softBreak"
+									},
+									{
+										"type": "plainText",
+										"text": "A nested atomic type."
+									},
+									{
+										"type": "softBreak"
+									}
+								]
+							}
+						]
+					}
+				],
+				"modifierTags": ["@public"],
+				"blocks": []
+			},
+			{
+				"name": "anotherNestedType",
+				"type": "atomic",
+				"kind": "type",
+				"sections": [],
+				"modifierTags": [],
+				"blocks": []
+			}
+		]
+	}
+]

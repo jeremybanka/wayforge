@@ -1,4 +1,5 @@
 import type * as AtomIO from "atom.io"
+import type { Func } from "atom.io/internal"
 import { actUponStore, arbitrary } from "atom.io/internal"
 import { StoreContext } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
@@ -6,7 +7,7 @@ import * as React from "react"
 
 import { useRealtimeService } from "./use-realtime-service"
 
-export function useServerAction<F extends AtomIO.Func>(
+export function useServerAction<F extends Func>(
 	token: AtomIO.TransactionToken<F>,
 ): (...parameters: Parameters<F>) => ReturnType<F> {
 	const store = React.useContext(StoreContext)

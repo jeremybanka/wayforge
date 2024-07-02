@@ -5,21 +5,52 @@
 }
 @font-face {
   font-family: Theia;
+  font-weight: 100;
+  src: url("/Theia0.2-100.otf") format("opentype");
+}
+@font-face {
+  font-family: Theia;
+  font-weight: 200;
+  src: url("/Theia0.2-200.otf") format("opentype");
+}
+@font-face {
+  font-family: Theia;
   font-weight: 300;
-  src: url("/Theia0.2.300-300.otf") format("opentype");
+  src: url("/Theia0.2-300.otf") format("opentype");
 }
 @font-face {
   font-family: Theia;
   font-weight: 400;
-  src: url("/Theia0.2.400-400.otf") format("opentype");
+  src: url("/Theia0.2-400.otf") format("opentype");
 }
 @font-face {
   font-family: Theia;
   font-weight: 500;
-  src: url("/Theia0.2.500-500.otf") format("opentype");
+  src: url("/Theia0.2-500.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 400;
+  src: url("/Uruz-4r.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 500;
+  src: url("/Uruz-5r.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 600;
+  src: url("/Uruz-6r.otf") format("opentype");
+}
+@font-face {
+  font-family: Uruz;
+  font-weight: 700;
+  src: url("/Uruz-7r.otf") format("opentype");
 }
 * {
   font-family:
+    Uruz,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -31,11 +62,13 @@
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
+  font-weight: 500;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
   color: var(--fg-color);
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 21px;
 }
 // h1,
 // h2,
@@ -52,6 +85,7 @@
 //     mix-blend-mode: multiply;
 //   }
 // }
+
 h1 {
   font-size: 48px;
   line-height: 54px;

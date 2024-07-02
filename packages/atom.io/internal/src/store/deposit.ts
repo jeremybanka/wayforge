@@ -1,6 +1,5 @@
 import type {
 	AtomToken,
-	Func,
 	MoleculeFamily,
 	MoleculeFamilyToken,
 	MoleculeToken,
@@ -17,6 +16,7 @@ import type { Json } from "atom.io/json"
 
 import type {
 	Atom,
+	Func,
 	Molecule,
 	MutableAtom,
 	ReadableState,
