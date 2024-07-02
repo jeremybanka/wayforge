@@ -55,6 +55,7 @@ export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
  * @overload Regular
  */
 export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
+
 export function atom(
 	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
 ): AtomToken<any> {

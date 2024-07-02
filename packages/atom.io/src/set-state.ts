@@ -8,12 +8,22 @@ import type { WritableFamilyToken, WritableToken } from "."
  * Set the value of a state into the implicit store.
  * @param token - The unique identifier of the state to set.
  * @param value - The new value of the state.
+ * @overload Default
+ * @default
  */
 export function setState<T, New extends T>(
 	token: WritableToken<T>,
 	value: New | ((oldValue: T) => New),
 ): void
 
+/**
+ * @public
+ * Set the value of a state into the implicit store.
+ * @param token - The unique identifier of a state family.
+ * @param key - The key of the state to set.
+ * @param value - The new value of the state.
+ * @overload Streamlined
+ */
 export function setState<T, K extends Json.Serializable, New extends T>(
 	token: WritableFamilyToken<T, K>,
 	key: K,

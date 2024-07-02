@@ -10,11 +10,17 @@
     color: var(--fg-color);
   }
 
-  article > header > main > span {
-    font-size: 18px;
-    font-weight: 500;
-    text-transform: capitalize;
-    color: var(--function-color);
+  article > header > main {
+    > code {
+      font-size: 18px;
+      font-weight: 400;
+    }
+    > span {
+      font-size: 18px;
+      font-weight: 500;
+      text-transform: capitalize;
+      color: var(--function-color);
+    }
   }
   article > main > div > header > span {
     font-size: 12px;
@@ -76,10 +82,10 @@
         gap: 2px;
         border-radius: 6px;
         background-color: #0003;
-        box-shadow: 0 0px 0px 3px #0003;
+        box-shadow: 0 0 1px 3px #0003;
         @media (prefers-color-scheme: light) {
           background-color: #0001;
-          box-shadow: 0 0px 0px 3px #0001;
+          box-shadow: 0 0 1px 3px #0001;
         }
         li.tsdoc-param-block {
           flex-grow: 1;
@@ -91,13 +97,13 @@
           z-index: 0;
           overflow: hidden;
           border-radius: 5px;
-          box-shadow: 0 2px 1px 2px #0001;
+          box-shadow: 0 2px 1px 2px #0006;
           background: url(/noise.svg) repeat;
           background-size: 200%;
           background-color: #000;
           @media (prefers-color-scheme: light) {
             background-color: #aaa;
-            box-shadow: 0 2px 1px 2px #ddd1;
+            box-shadow: 0 1px 1px 2px #ccc9;
           }
           &::after {
             position: absolute;
