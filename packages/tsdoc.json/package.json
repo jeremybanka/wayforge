@@ -52,6 +52,6 @@
 		"rimraf": "5.0.7",
 		"tmp": "0.2.3",
 		"tsup": "8.1.0",
-		"typescript": "5.4.5"
+		"typescript": "5.5.3"
 	}
 }
