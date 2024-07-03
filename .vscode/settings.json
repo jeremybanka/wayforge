@@ -34,6 +34,7 @@
 		"Selectables",
 		"svgr",
 		"testid",
+		"toolkits",
 		"treeshake",
 		"tsdoc",
 		"tsup",
