@@ -15,7 +15,7 @@ import { isRootStore } from "../transaction"
 import {
 	ReadonlySelectorToolkit,
 	WritableSelectorToolkit,
-} from "./register-selector"
+} from "./selector-toolkits"
 
 export const createWritableSelector = <T>(
 	options: WritableSelectorOptions<T>,
