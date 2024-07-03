@@ -1,9 +1,12 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
-import { getFromStore, subscribeToState } from "atom.io/internal"
+import {
+	getFromStore,
+	parseStateOverloads,
+	subscribeToState,
+} from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import * as React from "react"
 
-import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
 
 export function useO<T>(token: ReadableToken<T>): T

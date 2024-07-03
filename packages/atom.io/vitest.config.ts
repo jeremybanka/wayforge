@@ -1,5 +1,6 @@
 import { resolve } from "node:path"
 
+import solid from "vite-plugin-solid"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
@@ -14,6 +15,7 @@ export default defineConfig({
 		tsconfigPaths({
 			projects: [project],
 		}),
+		solid(),
 	],
 	resolve: {
 		alias: [

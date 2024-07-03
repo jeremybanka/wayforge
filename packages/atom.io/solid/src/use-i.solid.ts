@@ -1,31 +1,25 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { parseStateOverloads, setIntoStore } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
-import * as React from "react"
+import type { Json } from "atom.io/json"
+import { useContext } from "solid-js"
 
-import { StoreContext } from "./store-context"
+import { StoreContext } from "./store-context-provider.solid"
 
 export function useI<T>(
 	token: WritableToken<T>,
 ): <New extends T>(next: New | ((old: T) => New)) => void
 
-export function useI<T, K extends Canonical>(
+export function useI<T, K extends Json.Serializable>(
 	token: WritableFamilyToken<T, K>,
 	key: K,
 ): <New extends T>(next: New | ((old: T) => New)) => void
 
-export function useI<T, K extends Canonical>(
+export function useI<T, K extends Json.Serializable>(
 	...params: [WritableFamilyToken<T, K>, K] | [WritableToken<T>]
 ): <New extends T>(next: New | ((old: T) => New)) => void {
-	const store = React.useContext(StoreContext)
+	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
-	const setter: React.MutableRefObject<
-		(<New extends T>(next: New | ((old: T) => New)) => void) | null
-	> = React.useRef(null)
-	if (setter.current === null) {
-		setter.current = (next) => {
-			setIntoStore(store, token, next)
-		}
+	return (next) => {
+		setIntoStore(token, next, store)
 	}
-	return setter.current
 }
