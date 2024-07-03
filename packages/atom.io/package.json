@@ -35,6 +35,7 @@
 		"build:realtime-react": "cd realtime-react && tsup",
 		"build:realtime-server": "cd realtime-server && tsup",
 		"build:realtime-testing": "cd realtime-testing && tsup",
+		"build:solid": "cd solid && tsup",
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
 		"build:web": "cd web && tsup",
 		"lint:biome": "biome check -- .",
@@ -89,6 +90,7 @@
 	"devDependencies": {
 		"@testing-library/react": "16.0.1",
 		"@types/eslint": "9.6.1",
+		"@solidjs/testing-library": "0.8.8",
 		"@types/estree": "1.0.5",
 		"@types/http-proxy": "1.17.15",
 		"@types/npmlog": "7.0.0",
@@ -113,11 +115,13 @@
 		"react-router-dom": "6.26.1",
 		"socket.io": "4.7.5",
 		"socket.io-client": "4.7.5",
+		"solid-js": "1.8.18",
 		"tmp": "0.2.3",
 		"tsup": "8.2.4",
 		"tsx": "4.19.0",
 		"typescript": "5.5.4",
 		"vite": "5.4.3",
+		"vite-plugin-solid": "2.10.2",
 		"vite-tsconfig-paths": "5.0.1",
 		"vitest": "2.0.5"
 	},
@@ -168,6 +172,9 @@
 		"realtime-testing/dist",
 		"realtime-testing/package.json",
 		"realtime-testing/src",
+		"solid/dist",
+		"solid/package.json",
+		"solid/src",
 		"transceivers/set-rtx/dist",
 		"transceivers/set-rtx/package.json",
 		"transceivers/set-rtx/src",
@@ -250,6 +257,13 @@
 		"./realtime-testing": {
 			"import": "./realtime-testing/dist/index.js",
 			"types": "./realtime-testing/dist/index.d.ts"
+		},
+		"./solid/package.json": "./solid/package.json",
+		"./solid": {
+			"types": "./solid/dist/index.d.ts",
+			"browser": "./solid/dist/index.js",
+			"import": "./solid/dist/index.js",
+			"require": "./solid/dist/index.cjs"
 		},
 		"./transceivers/set-rtx/package.json": "./transceivers/set-rtx/package.json",
 		"./transceivers/set-rtx": {
