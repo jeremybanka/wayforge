@@ -5,7 +5,7 @@ import {
 	subscribeToState,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import * as React from "react"
+import { useContext, useId, useSyncExternalStore } from "react"
 
 import { StoreContext } from "./store-context"
 
@@ -19,10 +19,10 @@ export function useO<T, K extends Canonical>(
 export function useO<T, K extends Canonical>(
 	...params: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
 ): T {
-	const store = React.useContext(StoreContext)
+	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
-	const id = React.useId()
-	return React.useSyncExternalStore<T>(
+	const id = useId()
+	return useSyncExternalStore<T>(
 		(dispatch) => subscribeToState(token, dispatch, `use-o:${id}`, store),
 		() => getFromStore(store, token),
 		() => getFromStore(store, token),
