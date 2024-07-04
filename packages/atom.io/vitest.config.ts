@@ -15,7 +15,9 @@ export default defineConfig({
 		tsconfigPaths({
 			projects: [project],
 		}),
-		solid(),
+		solid({
+			include: [`__tests__/public/**/*.solid.test.tsx`, `solid/**`],
+		}),
 	],
 	resolve: {
 		alias: [
