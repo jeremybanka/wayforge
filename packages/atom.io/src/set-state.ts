@@ -1,5 +1,5 @@
 import * as Internal from "atom.io/internal"
-import type { Json } from "rel8"
+import type { Json } from "atom.io/json"
 
 import type { WritableFamilyToken, WritableToken } from "."
 

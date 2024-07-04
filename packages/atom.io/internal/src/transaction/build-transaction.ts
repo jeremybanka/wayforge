@@ -2,12 +2,11 @@ import type { disposeState, getState, setState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 
-import { Junction } from "~/packages/rel8/junction/src"
-
 import { arbitrary } from "../arbitrary"
 import { disposeFromStore, findInStore, seekInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
+import { Junction } from "../junction"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import { makeMoleculeInStore } from "../molecule"

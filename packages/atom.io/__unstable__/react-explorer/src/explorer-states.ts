@@ -6,12 +6,12 @@ import type {
 	Write,
 } from "atom.io"
 import { atom, selector, selectorFamily, transaction } from "atom.io"
+import { persistAtomToBrowserStorage } from "atom.io/browser"
 
 import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object"
-import { persistAtom } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { addToIndex, removeFromIndex } from "."
 import {
@@ -34,14 +34,17 @@ export const makeViewsPerSpaceState = (
 		key: `${key}:views_per_space`,
 		default: new Join({ relationType: `1:n` }).from(`viewId`).to(`spaceId`),
 		effects: [
-			persistAtom<Join<null, `viewId`, `spaceId`>>(localStorage)({
-				stringify: (index) => JSON.stringify(index.toJSON()),
-				parse: (json) =>
-					Join.fromJSON(JSON.parse(json), {
-						from: `viewId`,
-						to: `spaceId`,
-					}),
-			})(`${key}:views_per_space`),
+			persistAtomToBrowserStorage<Join<null, `viewId`, `spaceId`>>(
+				localStorage,
+				{
+					stringify: (index) => JSON.stringify(index.toJSON()),
+					parse: (json) =>
+						Join.fromJSON(JSON.parse(json), {
+							from: `viewId`,
+							to: `spaceId`,
+						}),
+				},
+			)(`${key}:views_per_space`),
 		],
 	})
 

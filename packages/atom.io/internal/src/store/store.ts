@@ -14,8 +14,6 @@ import type {
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 
-import { Junction } from "~/packages/rel8/junction/src"
-
 import type {
 	Atom,
 	Func,
@@ -25,6 +23,7 @@ import type {
 	Transceiver,
 	WritableSelector,
 } from ".."
+import { Junction } from "../junction"
 import type { Lineage } from "../lineage"
 import { getJsonToken, getUpdateToken } from "../mutable"
 import type { OperationProgress } from "../operation"

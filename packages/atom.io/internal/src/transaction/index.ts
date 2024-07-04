@@ -1,6 +1,6 @@
 import type { ActorToolkit, TransactionUpdate } from "atom.io"
-import type { Junction } from "rel8/junction"
 
+import type { Junction } from "../junction"
 import type { Func } from "../utility-types"
 
 export * from "./abort-transaction"
