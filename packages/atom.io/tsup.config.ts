@@ -37,38 +37,14 @@ export const JS_OPTIONS: Options = {
 	clean: false,
 	dts: false,
 	entry: {
-		"dist/index": `src/index.ts`,
-		"data/dist/index": `data/src/index.ts`,
-		"ephemeral/dist/index": `ephemeral/src/index.ts`,
 		"eslint-plugin/dist/index": `eslint-plugin/src/index.ts`,
-		"immortal/dist/index": `immortal/src/index.ts`,
-		"internal/dist/index": `internal/src/index.ts`,
-		"introspection/dist/index": `introspection/src/index.ts`,
-		"json/dist/index": `json/src/index.ts`,
-		"react-devtools/dist/index": `react-devtools/src/index.ts`,
-		"react/dist/index": `react/src/index.ts`,
-		"realtime/dist/index": `realtime/src/index.ts`,
-		"realtime-client/dist/index": `realtime-client/src/index.ts`,
-		"realtime-react/dist/index": `realtime-react/src/index.ts`,
-		"realtime-server/dist/index": `realtime-server/src/index.ts`,
-		"realtime-testing/dist/index": `realtime-testing/src/index.ts`,
-		"transceivers/set-rtx/dist/index": `transceivers/set-rtx/src/index.ts`,
 	},
 	outDir: `.`,
 }
 
-export const DTS_OPTIONS: Options = {
-	...BASE_OPTIONS,
-	dts: { only: true },
-	format: [`esm`],
-	entry: [`src/index.ts`],
-	metafile: false,
-	outDir: `dist`,
-}
-
 export default defineConfig((options) => {
 	console.log(options)
-	const using = options.dts ? DTS_OPTIONS : JS_OPTIONS
+	const using = JS_OPTIONS
 	console.log({ using })
 	console.log(`bundle exclude list: ${discoverSubmodules().join(`, `)}`)
 	return using

@@ -20,24 +20,6 @@
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
 		"build": "bun run clean:build && concurrently \"bun:build:*\"",
 		"build:main": "tsup",
-		"build:types": "tsup --dts",
-		"build:data": "cd data && tsup",
-		"build:ephemeral": "cd ephemeral && tsup",
-		"build:eslint-plugin": "cd eslint-plugin && tsup",
-		"build:immortal": "cd immortal && tsup",
-		"build:internal": "cd internal && tsup",
-		"build:introspection": "cd introspection && tsup",
-		"build:json": "cd json && tsup",
-		"build:react": "cd react && tsup",
-		"build:react-devtools": "cd react-devtools && tsup",
-		"build:realtime": "cd realtime && tsup",
-		"build:realtime-client": "cd realtime-client && tsup",
-		"build:realtime-react": "cd realtime-react && tsup",
-		"build:realtime-server": "cd realtime-server && tsup",
-		"build:realtime-testing": "cd realtime-testing && tsup",
-		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
-		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint .",
 		"lint:eslint:build": "bun run build:main",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
@@ -119,166 +101,119 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
-		"dist",
 		"src",
-		"data/dist",
 		"data/package.json",
 		"data/src",
-		"ephemeral/dist",
 		"ephemeral/package.json",
 		"ephemeral/src",
-		"eslint-plugin/dist",
 		"eslint-plugin/package.json",
 		"eslint-plugin/src",
-		"immortal/dist",
 		"immortal/package.json",
 		"immortal/src",
-		"internal/dist",
 		"internal/package.json",
 		"internal/src",
-		"introspection/dist",
 		"introspection/package.json",
 		"introspection/src",
-		"json/dist",
 		"json/package.json",
 		"json/src",
-		"react/dist",
 		"react/package.json",
 		"react/src",
-		"react-devtools/dist",
 		"react-devtools/package.json",
 		"react-devtools/src",
-		"realtime/dist",
 		"realtime/package.json",
 		"realtime/src",
-		"realtime-client/dist",
 		"realtime-client/package.json",
 		"realtime-client/src",
-		"realtime-react/dist",
 		"realtime-react/package.json",
 		"realtime-react/src",
-		"realtime-server/dist",
 		"realtime-server/package.json",
 		"realtime-server/src",
-		"realtime-testing/dist",
 		"realtime-testing/package.json",
 		"realtime-testing/src",
-		"transceivers/set-rtx/dist",
 		"transceivers/set-rtx/package.json",
-		"transceivers/set-rtx/src"
+		"transceivers/set-rtx/src",
+		"eslint-plugin/dist"
 	],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
-			"types": "./dist/index.d.ts",
-			"browser": "./dist/index.js",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
+			"types": "./src/index.ts",
+			"import": "./src/index.ts"
 		},
 		"./data/package.json": "./data/package.json",
 		"./data": {
-			"types": "./data/dist/index.d.ts",
-			"browser": "./data/dist/index.js",
-			"import": "./data/dist/index.js",
-			"require": "./data/dist/index.cjs"
+			"types": "./data/src/index.ts",
+			"import": "./data/src/index.ts"
 		},
 		"./ephemeral/package.json": "./ephemeral/package.json",
 		"./ephemeral": {
-			"types": "./ephemeral/dist/index.d.ts",
-			"browser": "./ephemeral/dist/index.js",
-			"import": "./ephemeral/dist/index.js",
-			"require": "./ephemeral/dist/index.cjs"
+			"types": "./ephemeral/src/index.ts",
+			"import": "./ephemeral/src/index.ts"
 		},
 		"./eslint-plugin/package.json": "./eslint-plugin/package.json",
 		"./eslint-plugin": {
-			"types": "./eslint-plugin/dist/index.d.ts",
-			"browser": "./eslint-plugin/dist/index.js",
 			"import": "./eslint-plugin/dist/index.js",
 			"require": "./eslint-plugin/dist/index.cjs"
 		},
 		"./immortal/package.json": "./immortal/package.json",
 		"./immortal": {
-			"types": "./immortal/dist/index.d.ts",
-			"browser": "./immortal/dist/index.js",
-			"import": "./immortal/dist/index.js",
-			"require": "./immortal/dist/index.cjs"
+			"types": "./immortal/src/index.ts",
+			"import": "./immortal/src/index.ts"
 		},
 		"./internal/package.json": "./internal/package.json",
 		"./internal": {
-			"types": "./internal/dist/index.d.ts",
-			"browser": "./internal/dist/index.js",
-			"import": "./internal/dist/index.js",
-			"require": "./internal/dist/index.cjs"
+			"types": "./internal/src/index.ts",
+			"import": "./internal/src/index.ts"
 		},
 		"./introspection/package.json": "./introspection/package.json",
 		"./introspection": {
-			"types": "./introspection/dist/index.d.ts",
-			"browser": "./introspection/dist/index.js",
-			"import": "./introspection/dist/index.js",
-			"require": "./introspection/dist/index.cjs"
+			"types": "./introspection/src/index.ts",
+			"import": "./introspection/src/index.ts"
 		},
 		"./json/package.json": "./json/package.json",
 		"./json": {
-			"types": "./json/dist/index.d.ts",
-			"browser": "./json/dist/index.js",
-			"import": "./json/dist/index.js",
-			"require": "./json/dist/index.cjs"
+			"types": "./json/src/index.ts",
+			"import": "./json/src/index.ts"
 		},
 		"./react/package.json": "./react/package.json",
 		"./react": {
-			"types": "./react/dist/index.d.ts",
-			"browser": "./react/dist/index.js",
-			"import": "./react/dist/index.js",
-			"require": "./react/dist/index.cjs"
+			"types": "./react/src/index.ts",
+			"import": "./react/src/index.ts"
 		},
 		"./react-devtools/package.json": "./react-devtools/package.json",
 		"./react-devtools": {
-			"types": "./react-devtools/dist/index.d.ts",
-			"browser": "./react-devtools/dist/index.js",
-			"import": "./react-devtools/dist/index.js",
-			"require": "./react-devtools/dist/index.cjs"
+			"types": "./react-devtools/src/index.ts",
+			"import": "./react-devtools/src/index.ts"
 		},
 		"./realtime/package.json": "./realtime/package.json",
 		"./realtime": {
-			"types": "./realtime/dist/index.d.ts",
-			"browser": "./realtime/dist/index.js",
-			"import": "./realtime/dist/index.js",
-			"require": "./realtime/dist/index.cjs"
+			"types": "./realtime/src/index.ts",
+			"import": "./realtime/src/index.ts"
 		},
 		"./realtime-client/package.json": "./realtime-client/package.json",
 		"./realtime-client": {
-			"types": "./realtime-client/dist/index.d.ts",
-			"browser": "./realtime-client/dist/index.js",
-			"import": "./realtime-client/dist/index.js",
-			"require": "./realtime-client/dist/index.cjs"
+			"types": "./realtime-client/src/index.ts",
+			"import": "./realtime-client/src/index.ts"
 		},
 		"./realtime-react/package.json": "./realtime-react/package.json",
 		"./realtime-react": {
-			"types": "./realtime-react/dist/index.d.ts",
-			"browser": "./realtime-react/dist/index.js",
-			"import": "./realtime-react/dist/index.js",
-			"require": "./realtime-react/dist/index.cjs"
+			"types": "./realtime-react/src/index.ts",
+			"import": "./realtime-react/src/index.ts"
 		},
 		"./realtime-server/package.json": "./realtime-server/package.json",
 		"./realtime-server": {
-			"types": "./realtime-server/dist/index.d.ts",
-			"browser": "./realtime-server/dist/index.js",
-			"import": "./realtime-server/dist/index.js",
-			"require": "./realtime-server/dist/index.cjs"
+			"types": "./realtime-server/src/index.ts",
+			"import": "./realtime-server/src/index.ts"
 		},
 		"./realtime-testing/package.json": "./realtime-testing/package.json",
 		"./realtime-testing": {
-			"types": "./realtime-testing/dist/index.d.ts",
-			"browser": "./realtime-testing/dist/index.js",
-			"import": "./realtime-testing/dist/index.js",
-			"require": "./realtime-testing/dist/index.cjs"
+			"types": "./realtime-testing/src/index.ts",
+			"import": "./realtime-testing/src/index.ts"
 		},
 		"./transceivers/set-rtx/package.json": "./transceivers/set-rtx/package.json",
 		"./transceivers/set-rtx": {
-			"types": "./transceivers/set-rtx/dist/index.d.ts",
-			"browser": "./transceivers/set-rtx/dist/index.js",
-			"import": "./transceivers/set-rtx/dist/index.js",
-			"require": "./transceivers/set-rtx/dist/index.cjs"
+			"types": "./transceivers/set-rtx/src/index.ts",
+			"import": "./transceivers/set-rtx/src/index.ts"
 		}
 	}
 }
