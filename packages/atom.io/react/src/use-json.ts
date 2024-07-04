@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 import { findInStore, getJsonToken } from "atom.io/internal"
 import type { Canonical, Json } from "atom.io/json"
-import * as React from "react"
+import { useContext } from "react"
 
 import { StoreContext } from "./store-context"
 import { useO } from "./use-o"
@@ -28,7 +28,7 @@ export function useJSON<
 		| MutableAtomToken<any, Serializable>,
 	key?: Key,
 ): Serializable {
-	const store = React.useContext(StoreContext)
+	const store = useContext(StoreContext)
 	const stateToken: ReadableToken<any> =
 		token.type === `mutable_atom_family`
 			? findInStore(store, token, key as Key)
