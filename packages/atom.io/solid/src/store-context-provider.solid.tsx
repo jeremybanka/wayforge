@@ -1,5 +1,4 @@
 /** @jsxImportSource solid-js */
-/** @jsx preserve */
 
 import type { Store } from "atom.io/internal"
 import { IMPLICIT } from "atom.io/internal"
