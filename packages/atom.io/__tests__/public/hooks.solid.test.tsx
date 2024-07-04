@@ -2,12 +2,12 @@
 /** @jsx preserve */
 /** @jsxFrag Fragment */
 
-import { fireEvent, prettyDOM, render } from "@solidjs/testing-library"
+import { fireEvent, prettyDOM, render, waitFor } from "@solidjs/testing-library"
 import type { Logger, TimelineToken } from "atom.io"
 import { atom, redo, selector, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AS from "atom.io/solid"
-import type { JSX } from "solid-js"
+import { type Component, createMemo, type JSX } from "solid-js"
 
 import * as Utils from "../__util__"
 
@@ -25,9 +25,8 @@ beforeEach(() => {
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
 })
-const onChange = [() => undefined, console.log][0]
 
-describe.only(`single atom`, () => {
+describe(`single atom`, () => {
 	const setters: Internal.Func[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
@@ -80,16 +79,16 @@ describe(`timeline`, () => {
 			key: `letterTL`,
 			scope: [letterState],
 		})
-		const Letter: FC = () => {
+		const Letter: Component = () => {
 			const setLetter = AS.useI(letterState)
 			const letter = AS.useO(letterState)
 			const letterTimeline = AS.useTL(letterTL)
 			setters.push(setLetter)
 			return (
 				<>
-					<div data-testid={letter}>{letter}</div>
-					<div data-testid="timelineAt">{letterTimeline.at}</div>
-					<div data-testid="timelineLength">{letterTimeline.length}</div>
+					<div data-testid={letter()}>{letter()}</div>
+					<div data-testid="timelineAt">{letterTimeline.at()}</div>
+					<div data-testid="timelineLength">{letterTimeline.length()}</div>
 					<button
 						type="button"
 						onClick={() => {
@@ -121,22 +120,22 @@ describe(`timeline`, () => {
 				</>
 			)
 		}
-		const utils = render(
+		const utils = render(() => (
 			<AS.StoreProvider>
-				<Utils.Observer node={letterState} onChange={onChange} />
 				<Letter />
-			</AS.StoreProvider>,
-		)
+			</AS.StoreProvider>
+		))
 		return { ...utils, letterTL }
 	}
 
-	it(`displays metadata`, () => {
+	it(`displays metadata`, async () => {
 		const { getByTestId, letterTL } = scenario()
 		const changeStateButtonB = getByTestId(`changeStateButtonB`)
 		const changeStateButtonC = getByTestId(`changeStateButtonC`)
 		fireEvent.click(changeStateButtonB)
 		const option = getByTestId(`B`)
 		expect(option).toBeTruthy()
+		await waitFor(() => getByTestId(`timelineAt`).textContent === `1`)
 		const timelineAt = getByTestId(`timelineAt`)
 		expect(timelineAt.textContent).toEqual(`1`)
 		const timelineLength = getByTestId(`timelineLength`)
@@ -145,14 +144,10 @@ describe(`timeline`, () => {
 		const option2 = getByTestId(`C`)
 		expect(option2).toBeTruthy()
 		expect(timelineAt.textContent).toEqual(`2`)
-		act(() => {
-			undo(letterTL)
-		})
+		undo(letterTL)
 		expect(timelineAt.textContent).toEqual(`1`)
 		expect(timelineLength.textContent).toEqual(`2`)
-		act(() => {
-			redo(letterTL)
-		})
+		redo(letterTL)
 		expect(timelineAt.textContent).toEqual(`2`)
 		expect(timelineLength.textContent).toEqual(`2`)
 		const undoButton = getByTestId(`undoButton`)
@@ -194,19 +189,19 @@ describe(`timeline (dynamic)`, () => {
 				return whichTimeline === `letter` ? letterTL : numberTL
 			},
 		})
-		const Letter: FC = () => {
+		const Letter: Component = () => {
 			const setLetter = AS.useI(letterState)
 			const setNumber = AS.useI(numberState)
 			const setWhichTimeline = AS.useI(whichTimelineState)
 			const letter = AS.useO(letterState)
 			const number = AS.useO(numberState)
-			const tl = AS.useTL(AS.useO(timelineState))
+			const tl = createMemo(() => AS.useTL(AS.useO(timelineState)()))
 			return (
 				<>
-					<div data-testid={letter}>{letter}</div>
-					<div data-testid={number}>{number}</div>
-					<div data-testid="timelineAt">{tl.at}</div>
-					<div data-testid="timelineLength">{tl.length}</div>
+					<div data-testid={letter()}>{letter()}</div>
+					<div data-testid={number()}>{number()}</div>
+					<div data-testid="timelineAt">{tl().at()}</div>
+					<div data-testid="timelineLength">{tl().length()}</div>
 					<button
 						type="button"
 						onClick={() => {
@@ -233,26 +228,26 @@ describe(`timeline (dynamic)`, () => {
 					<button
 						type="button"
 						onClick={() => {
-							tl.undo()
+							tl().undo()
 						}}
 						data-testid="undoButton"
 					/>
 					<button
 						type="button"
 						onClick={() => {
-							tl.redo()
+							tl().redo()
 						}}
 						data-testid="redoButton"
 					/>
 				</>
 			)
 		}
-		const utils = render(
+		// const TimelineData: Component<{ timeline: TimelineData } = () => {}
+		const utils = render(() => (
 			<AS.StoreProvider>
-				<Utils.Observer node={letterState} onChange={onChange} />
 				<Letter />
-			</AS.StoreProvider>,
-		)
+			</AS.StoreProvider>
+		))
 		return { ...utils, letterTL }
 	}
 
@@ -276,9 +271,7 @@ describe(`timeline (dynamic)`, () => {
 		expect(option2).toBeTruthy()
 		expect(timelineAt.textContent).toEqual(`1`)
 		expect(timelineLength.textContent).toEqual(`1`)
-		act(() => {
-			undo(letterTL)
-		})
+		undo(letterTL)
 		fireEvent.click(changeTimelineButton)
 		expect(timelineAt.textContent).toEqual(`0`)
 		expect(timelineLength.textContent).toEqual(`1`)
