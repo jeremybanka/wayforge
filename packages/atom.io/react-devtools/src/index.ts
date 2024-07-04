@@ -1,4 +1,5 @@
 import { atom, atomFamily } from "atom.io"
+import { createJsonLocalStorageEffect } from "atom.io/browser"
 import { attachIntrospectionStates } from "atom.io/introspection"
 
 import { isPlainObject } from "~/packages/anvl/src/object"
@@ -11,7 +12,6 @@ import {
 	diffObject,
 	diffString,
 } from "~/packages/anvl/src/tree/differ"
-import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 export * from "./AtomIODevtools"
 
@@ -27,7 +27,7 @@ export const {
 export const devtoolsAreOpenState = atom<boolean>({
 	key: `👁‍🗨 Devtools Are Open`,
 	default: true,
-	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools Are Open`)],
+	effects: [createJsonLocalStorageEffect(`👁‍🗨 Devtools Are Open`)],
 })
 
 type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
@@ -35,19 +35,19 @@ type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
 export const devtoolsViewSelectionState = atom<DevtoolsView>({
 	key: `👁‍🗨 Devtools View Selection`,
 	default: `atoms`,
-	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View`)],
+	effects: [createJsonLocalStorageEffect(`👁‍🗨 Devtools View`)],
 })
 
 export const devtoolsViewOptionsState = atom<DevtoolsView[]>({
 	key: `👁‍🗨 Devtools View Options`,
 	default: [`atoms`, `selectors`, `transactions`, `timelines`],
-	effects: [lazyLocalStorageEffect(`👁‍🗨 Devtools View Options`)],
+	effects: [createJsonLocalStorageEffect(`👁‍🗨 Devtools View Options`)],
 })
 
 export const findViewIsOpenState = atomFamily<boolean, string>({
 	key: `👁‍🗨 Devtools View Is Open`,
 	default: false,
-	effects: (key) => [lazyLocalStorageEffect(key + `:view-is-open`)],
+	effects: (key) => [createJsonLocalStorageEffect(key + `:view-is-open`)],
 })
 
 export const primitiveRefinery = new Refinery({

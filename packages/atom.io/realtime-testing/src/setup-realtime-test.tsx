@@ -22,7 +22,11 @@ import * as SocketIO from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
 
-import { recordToEntries } from "~/packages/anvl/src/object"
+export type Entries<K extends keyof any, V> = [key: K, value: V][]
+
+export const recordToEntries = <K extends keyof any, V>(
+	obj: Record<K, V>,
+): Entries<K, V> => Object.entries(obj) as Entries<K, V>
 
 let testNumber = 0
 

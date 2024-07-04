@@ -1,19 +1,17 @@
 import type {
-	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
-	RegularAtomFamily,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 } from "atom.io"
 import { atom, atomFamily, selectorFamily } from "atom.io"
+import {
+	createJsonLocalStorageEffect,
+	persistAtomToBrowserStorage,
+} from "atom.io/browser"
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import { Join } from "~/packages/anvl/src/join"
 import { hasExactProperties } from "~/packages/anvl/src/object"
-import {
-	lazyLocalStorageEffect,
-	persistAtom,
-} from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { persistStringSetAtom } from "./explorer-effects"
 
@@ -33,25 +31,28 @@ export const makeSpaceLayoutState = (
 			.from(`parent`)
 			.to(`child`),
 		effects: [
-			persistAtom<Join<{ size: number }, `parent`, `child`>>(localStorage)({
-				stringify: (join) => stringifyJson(join.toJSON()),
-				parse: (string) => {
-					try {
-						const json = parseJson(string)
-						const join = Join.fromJSON(json, {
-							isContent: hasExactProperties({
-								size: (v): v is number => typeof v === `number`,
-							}),
-							from: `parent`,
-							to: `child`,
-						})
-						return join
-					} catch (thrown) {
-						console.error(`Error parsing spaceLayoutState from localStorage`)
-						return new Join({ relationType: `1:n` })
-					}
+			persistAtomToBrowserStorage<Join<{ size: number }, `parent`, `child`>>(
+				localStorage,
+				{
+					stringify: (join) => stringifyJson(join.toJSON()),
+					parse: (string) => {
+						try {
+							const json = parseJson(string)
+							const join = Join.fromJSON(json, {
+								isContent: hasExactProperties({
+									size: (v): v is number => typeof v === `number`,
+								}),
+								from: `parent`,
+								to: `child`,
+							})
+							return join
+						} catch (thrown) {
+							console.error(`Error parsing spaceLayoutState from localStorage`)
+							return new Join({ relationType: `1:n` })
+						}
+					},
 				},
-			})(`${key}:space_layout`),
+			)(`${key}:space_layout`),
 		],
 	})
 
@@ -83,5 +84,5 @@ export const makeSpaceFamily = (
 	atomFamily<number, string>({
 		key: `${key}:space`,
 		default: 1,
-		effects: (subKey) => [lazyLocalStorageEffect(`${key}:${subKey}`)],
+		effects: (subKey) => [createJsonLocalStorageEffect(`${key}:${subKey}`)],
 	})

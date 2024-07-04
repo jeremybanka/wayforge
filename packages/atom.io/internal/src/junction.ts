@@ -1,4 +1,10 @@
-import type { Cardinality, Json, Refinement } from "rel8"
+import type { Json } from "atom.io/json"
+
+export type Refinement<Unrefined, Refined extends Unrefined> = (
+	value: Unrefined,
+) => value is Refined
+
+export type Cardinality = `1:1` | `1:n` | `n:n`
 
 export interface JunctionEntries<Content extends Json.Object | null>
 	extends Json.Object {

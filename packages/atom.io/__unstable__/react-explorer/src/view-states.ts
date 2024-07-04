@@ -1,12 +1,7 @@
-import type {
-	RegularAtomFamily,
-	RegularAtomFamilyToken,
-	RegularAtomToken,
-} from "atom.io"
+import type { RegularAtomFamilyToken, RegularAtomToken } from "atom.io"
 import { atom, atomFamily } from "atom.io"
+import { createJsonLocalStorageEffect } from "atom.io/browser"
 import type { Location } from "react-router-dom"
-
-import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src"
 
 import { persistStringSetAtom } from "./explorer-effects"
 
@@ -29,7 +24,7 @@ export const makeViewFamily = (
 				key: ``,
 			},
 		},
-		effects: (subKey) => [lazyLocalStorageEffect(`${key}:${subKey}`)],
+		effects: (subKey) => [createJsonLocalStorageEffect(`${key}:${subKey}`)],
 	})
 
 export const makeViewIndex = (key: string): RegularAtomToken<Set<string>> =>
@@ -45,5 +40,5 @@ export const makeViewFocusedFamily = (
 	atomFamily<number, string>({
 		key: `${key}:view_focused`,
 		default: 0,
-		effects: (subKey) => [lazyLocalStorageEffect(`${key}:${subKey}`)],
+		effects: (subKey) => [createJsonLocalStorageEffect(`${key}:${subKey}`)],
 	})

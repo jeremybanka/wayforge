@@ -6,9 +6,8 @@ export type StringInterface<T> = {
 	parse: (s: string) => T
 }
 
-export const persistAtom =
-	<T>(storage: Storage) =>
-	({ stringify, parse }: StringInterface<T>) =>
+export const persistAtomToBrowserStorage =
+	<T>(storage: Storage, { stringify, parse }: StringInterface<T>) =>
 	(key: string): AtomEffect<T> =>
 	({ setSelf, onSet }) => {
 		const savedValue = storage.getItem(key)
@@ -23,6 +22,6 @@ export const persistAtom =
 		})
 	}
 
-export const lazyLocalStorageEffect: <J extends Json.Serializable>(
+export const createJsonLocalStorageEffect: <J extends Json.Serializable>(
 	key: string,
-) => AtomEffect<J> = persistAtom(window.localStorage)(JSON)
+) => AtomEffect<J> = persistAtomToBrowserStorage(window.localStorage, JSON)

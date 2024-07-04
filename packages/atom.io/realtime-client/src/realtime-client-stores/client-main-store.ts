@@ -1,6 +1,5 @@
 import * as AtomIO from "atom.io"
-
-import { lazyLocalStorageEffect } from "~/packages/atom.io/__unstable__/web-effects/src/storage"
+import { createJsonLocalStorageEffect } from "atom.io/browser"
 
 export const myIdState__INTERNAL = AtomIO.atom<string | undefined>({
 	key: `mySocketId__INTERNAL`,
@@ -12,7 +11,9 @@ export const myIdState = AtomIO.selector<string | undefined>({
 })
 
 const usernameEffects =
-	typeof window === `undefined` ? [] : [lazyLocalStorageEffect(`myUsername`)]
+	typeof window === `undefined`
+		? []
+		: [createJsonLocalStorageEffect(`myUsername`)]
 export const myUsernameState = AtomIO.atom<string | null>({
 	key: `myUsername`,
 	default: null,
