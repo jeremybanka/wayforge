@@ -29,30 +29,32 @@ export default function main(mode: string): void {
 	const submodules = discoverSubmodules()
 
 	newPackageJson.files = [
-		`dist`,
 		`src`,
 		...submodules.flatMap((folder) => [
-			`${folder}/dist`,
 			`${folder}/package.json`,
 			`${folder}/src`,
 		]),
+		`eslint-plugin/dist`,
 	]
 
 	newPackageJson.exports = {
 		"./package.json": `./package.json`,
 		".": {
-			types: `./dist/index.d.ts`,
-			browser: `./dist/index.js`,
-			import: `./dist/index.js`,
-			require: `./dist/index.cjs`,
+			types: `./src/index.ts`,
+			import: `./src/index.ts`,
 		},
 		...submodules.reduce((acc, folder) => {
 			acc[`./${folder}/package.json`] = `./${folder}/package.json`
-			acc[`./${folder}`] = {
-				types: `./${folder}/dist/index.d.ts`,
-				browser: `./${folder}/dist/index.js`,
-				import: `./${folder}/dist/index.js`,
-				require: `./${folder}/dist/index.cjs`,
+			if (folder === `eslint-plugin`) {
+				acc[`./${folder}`] = {
+					import: `./${folder}/dist/index.js`,
+					require: `./${folder}/dist/index.cjs`,
+				}
+			} else {
+				acc[`./${folder}`] = {
+					types: `./${folder}/src/index.ts`,
+					import: `./${folder}/src/index.ts`,
+				}
 			}
 			return acc
 		}, {}),

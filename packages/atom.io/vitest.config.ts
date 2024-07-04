@@ -4,10 +4,8 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
 const DEVELOPMENT_TSCONFIG = `./tsconfig.json`
-const PRODUCTION_TSCONFIG = `./tsconfig.prod.json`
 
-const shouldTestDistFolder = process.env.IMPORT === `dist`
-const project = shouldTestDistFolder ? PRODUCTION_TSCONFIG : DEVELOPMENT_TSCONFIG
+const project = DEVELOPMENT_TSCONFIG
 
 export default defineConfig({
 	plugins: [

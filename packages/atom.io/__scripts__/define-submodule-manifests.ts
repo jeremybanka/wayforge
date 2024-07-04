@@ -111,16 +111,20 @@ function defineSubmoduleManifest(submoduleName: string): Json.Object {
 		name: manifestName,
 		type: `module`,
 		private: true,
-		main: `dist/index.cjs`,
-		module: `dist/index.js`,
-		types: `dist/index.d.ts`,
-		exports: {
-			".": {
-				import: `./dist/index.js`,
-				browser: `./dist/index.js`,
-				require: `./dist/index.cjs`,
-				types: `./dist/index.d.ts`,
-			},
-		},
+		main: `src/index.ts`,
+		exports:
+			submoduleName === `eslint-plugin`
+				? {
+						".": {
+							import: `./dist/index.js`,
+							require: `./dist/index.cjs`,
+						},
+					}
+				: {
+						".": {
+							import: `./src/index.ts`,
+							types: `./src/index.ts`,
+						},
+					},
 	}
 }
