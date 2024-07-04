@@ -18,7 +18,8 @@
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node.ts",
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "bun run clean:build && concurrently \"bun:build:*\"",
+		"finish:build": "bun __scripts__/finish-solid-build.node.ts",
+		"build": "bun run clean:build && concurrently \"bun:build:*\" && bun run finish:build",
 		"build:main": "tsup",
 		"build:types": "tsup --dts",
 		"build:data": "cd data && tsup",
