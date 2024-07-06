@@ -25,16 +25,17 @@ export const StateEditor: FC<{
 		<div className="json_editor">
 			<ElasticInput
 				value={
-					data !== null &&
-					typeof data === `object` &&
-					`toJson` in data &&
-					typeof data.toJson === `function`
-						? JSON.stringify(data.toJson())
-						: data instanceof Set
-							? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
-							: Object.getPrototypeOf(data).constructor.name +
-								` ` +
-								fallback(() => JSON.stringify(data), `?`)
+					data === undefined || data === null
+						? ``
+						: typeof data === `object` &&
+								`toJson` in data &&
+								typeof data.toJson === `function`
+							? JSON.stringify(data.toJson())
+							: data instanceof Set
+								? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
+								: Object.getPrototypeOf(data).constructor.name +
+									` ` +
+									fallback(() => JSON.stringify(data), `?`)
 				}
 				disabled={true}
 			/>
