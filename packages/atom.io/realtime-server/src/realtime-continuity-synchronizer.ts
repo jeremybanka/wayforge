@@ -5,6 +5,7 @@ import {
 	findInStore,
 	getFromStore,
 	getJsonToken,
+	getUpdateToken,
 	IMPLICIT,
 	isRootStore,
 	subscribeToState,
@@ -142,7 +143,8 @@ export function realtimeContinuitySynchronizer({
 			for (const atom of continuity.globals) {
 				const resourceToken =
 					atom.type === `mutable_atom` ? getJsonToken(store, atom) : atom
-				initialPayload.push(resourceToken, getFromStore(store, atom))
+				const resource = getFromStore(store, resourceToken)
+				initialPayload.push(resourceToken, resource)
 			}
 			for (const perspective of continuity.perspectives) {
 				const { viewAtoms, resourceAtoms } = perspective
@@ -176,7 +178,12 @@ export function realtimeContinuitySynchronizer({
 					(update) => {
 						try {
 							const visibleKeys = continuity.globals
-								.map((atom) => atom.key)
+								.map((atom) => {
+									if (atom.type === `atom`) {
+										return atom.key
+									}
+									return getUpdateToken(atom).key
+								})
 								.concat(
 									continuity.perspectives.flatMap((perspective) => {
 										const { viewAtoms } = perspective
