@@ -16,7 +16,7 @@
 		"test:once": "vitest run"
 	},
 	"dependencies": {
-		"fp-ts": "2.16.7",
+		"fp-ts": "2.16.8",
 		"io-ts": "2.2.21",
 		"nanoid": "5.0.7"
 	},
