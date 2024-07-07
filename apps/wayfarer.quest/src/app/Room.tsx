@@ -21,13 +21,14 @@ import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 import scss from "./page.module.scss"
 import { UsersInRoom } from "./PlayersInRoom"
 
-export default function Room({ roomId }: { roomId: string }): JSX.Element {
+export default function Room({
+	roomId,
+	myUsername,
+}: { roomId: string; myUsername: string }): JSX.Element {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 
-	const myUsername = useO(myUsernameState)
 	const myRoomKey = useO(findRelations(usersInRooms, myUsername).roomKeyOfUser)
 	const setRoomState = useI(roomViewState)
-	console.log({ myUsername, myRoomKey, roomId })
 
 	const usersInRoomsInternal = getInternalRelations(usersInRooms)
 	RTR.usePullMutableAtomFamilyMember(usersInRoomsInternal, roomId)

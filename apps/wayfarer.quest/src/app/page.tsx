@@ -1,6 +1,7 @@
 "use client"
 
 import { useO } from "atom.io/react"
+import { myUsernameState } from "atom.io/realtime-client"
 import dynamic from "next/dynamic"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
@@ -29,9 +30,14 @@ const AtomIODevtools = dynamic(
 
 export default function SPA(): JSX.Element {
 	const roomView = useO(roomViewState)
+	const myUsername = useO(myUsernameState)
 	return (
 		<main className={scss.class}>
-			{roomView === null ? <Lobby /> : <Room roomId={roomView} />}
+			{roomView === null || myUsername === null ? (
+				<Lobby />
+			) : (
+				<Room roomId={roomView} myUsername={myUsername} />
+			)}
 			<AtomIODevtools />
 		</main>
 	)
