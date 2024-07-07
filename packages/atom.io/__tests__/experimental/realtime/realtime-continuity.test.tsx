@@ -1,16 +1,10 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { findRelations, findRelationsInStore, join } from "atom.io/data"
+import { findRelationsInStore } from "atom.io/data"
 import type { Store } from "atom.io/internal"
-import {
-	actUponStore,
-	arbitrary,
-	findInStore,
-	getFromStore,
-} from "atom.io/internal"
+import { actUponStore, arbitrary, getFromStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
-import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
