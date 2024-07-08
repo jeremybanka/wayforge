@@ -67,14 +67,6 @@ describe(`synchronizing transactions`, () => {
 					const count = AR.useO(countState)
 					const store = React.useContext(AR.StoreContext)
 					const increment = actUponStore(incrementTX, arbitrary(), store)
-					// prefixLogger(store, `dave`)
-					// const { socket } = React.useContext(RTR.RealtimeContext)
-					// socket?.onAny((event, ...args) => {
-					// 	console.log(`📡 DAVE`, event, ...args)
-					// })
-					// socket?.onAnyOutgoing((event, ...args) => {
-					// 	console.log(`📡 DAVE >>`, event, ...args)
-					// })
 					return (
 						<>
 							<button
