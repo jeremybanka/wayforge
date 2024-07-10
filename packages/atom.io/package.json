@@ -94,7 +94,7 @@
 		"@vitest/coverage-v8": "2.0.1",
 		"@vitest/ui": "2.0.1",
 		"concurrently": "8.2.2",
-		"drizzle-kit": "0.22.8",
+		"drizzle-kit": "0.23.0",
 		"drizzle-orm": "0.31.4",
 		"eslint": "npm:eslint@8.57.0",
 		"eslint-v9": "npm:eslint@9.6.0",
