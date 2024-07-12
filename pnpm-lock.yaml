@@ -293,8 +293,8 @@ importers:
         specifier: 8.2.2
         version: 8.2.2
       htmx.org:
-        specifier: 1.9.12
-        version: 1.9.12
+        specifier: 2.0.1
+        version: 2.0.1
       lightningcss:
         specifier: 1.25.1
         version: 1.25.1
@@ -5286,8 +5286,8 @@ packages:
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
-  htmx.org@1.9.12:
-    resolution: {integrity: sha512-VZAohXyF7xPGS52IM8d1T1283y+X4D+Owf3qY1NZ9RuBypyu9l8cGsxUMAG5fEAb/DhT7rDoJ9Hpu5/HxFD3cw==}
+  htmx.org@2.0.1:
+    resolution: {integrity: sha512-wO/rWlveSLD2mzRS9Em0v5hlsi6r21iUvaS17GPMgehBbM7eoQmqGQCkscsM67poF24zONgq3gQv+q/cgCHn2w==}
 
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
@@ -12451,7 +12451,7 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
-  htmx.org@1.9.12: {}
+  htmx.org@2.0.1: {}
 
   http-errors@2.0.0:
     dependencies:
