@@ -71,7 +71,7 @@
 		"preact": "10.22.1",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
-		"react-router-dom": "6.24.1",
+		"react-router-dom": "6.25.0",
 		"recoil": "0.7.7",
 		"sass": "1.77.8",
 		"tsup": "8.1.0",
