@@ -271,8 +271,8 @@ importers:
         specifier: 3.17.3
         version: 3.17.3
       preact-render-to-string:
-        specifier: 6.5.5
-        version: 6.5.5(preact@10.22.1)
+        specifier: 6.5.6
+        version: 6.5.6(preact@10.22.1)
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -6339,8 +6339,8 @@ packages:
     resolution: {integrity: sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==}
     engines: {node: '>=12'}
 
-  preact-render-to-string@6.5.5:
-    resolution: {integrity: sha512-KiMFTKNTmT/ccE79BURR/r6XRc2I2TCTZ0MpeWqHW2XnllbeghXvwGsdAfF/MzMilUcTfODtSmMxgoRFL9TM5g==}
+  preact-render-to-string@6.5.6:
+    resolution: {integrity: sha512-msFdv7/ooTV6OIodAnU87V4ct+m2DA1rwaRYV+DNvTYpm/ZInQfoGrcHmbTkV7TOcJaHh5wt1NjiALA46Jyxhw==}
     peerDependencies:
       preact: '>=10'
 
@@ -13605,7 +13605,7 @@ snapshots:
 
   postgres@3.4.4: {}
 
-  preact-render-to-string@6.5.5(preact@10.22.1):
+  preact-render-to-string@6.5.6(preact@10.22.1):
     dependencies:
       preact: 10.22.1
 
