@@ -320,8 +320,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       framer-motion:
-        specifier: 11.3.7
-        version: 11.3.7(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.3.8
+        version: 11.3.8(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nanoid:
         specifier: 5.0.7
         version: 5.0.7
@@ -381,8 +381,8 @@ importers:
         specifier: 2.16.8
         version: 2.16.8
       framer-motion:
-        specifier: 11.3.7
-        version: 11.3.7(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.3.8
+        version: 11.3.8(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       hamr:
         specifier: workspace:*
         version: link:../../../packages/hamr
@@ -479,8 +479,8 @@ importers:
         specifier: 2.16.8
         version: 2.16.8
       framer-motion:
-        specifier: 11.3.7
-        version: 11.3.7(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.3.8
+        version: 11.3.8(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       io-ts:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.8)
@@ -564,8 +564,8 @@ importers:
         specifier: 2.16.8
         version: 2.16.8
       framer-motion:
-        specifier: 11.3.7
-        version: 11.3.7(@emotion/is-prop-valid@1.3.0)(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))
+        specifier: 11.3.8
+        version: 11.3.8(@emotion/is-prop-valid@1.3.0)(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))
       nanoid:
         specifier: 5.0.7
         version: 5.0.7
@@ -713,8 +713,8 @@ importers:
         specifier: npm:eslint@9.7.0
         version: eslint@9.7.0
       framer-motion:
-        specifier: 11.3.7
-        version: 11.3.7(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.3.8
+        version: 11.3.8(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       happy-dom:
         specifier: 14.12.3
         version: 14.12.3
@@ -844,8 +844,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       framer-motion:
-        specifier: 11.3.7
-        version: 11.3.7(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.3.8
+        version: 11.3.8(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@emotion/styled':
         specifier: 11.12.0
@@ -5000,8 +5000,8 @@ packages:
   fp-ts@2.16.8:
     resolution: {integrity: sha512-nmDtNqmMZkOxu0M5hkrS9YA15/KPkYkILb6Axg9XBAoUoYEtzg+LFmVWqZrl9FNttsW0qIUpx9RCA9INbv+Bxw==}
 
-  framer-motion@11.3.7:
-    resolution: {integrity: sha512-wolMesg8ruYgZX8nMELY2a/ZgMMpYhggLNIexx1blaYN0yb2+SdQ78sEkGDKde+3LTCeFy/wCi97i5Br4yT0GQ==}
+  framer-motion@11.3.8:
+    resolution: {integrity: sha512-1D+RDTsIp4Rz2dq/oToqSEc9idEQwgBRQyBq4rGpFba+0Z+GCbj9z1s0+ikFbanWe3YJ0SqkNlDe08GcpFGj5A==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -12084,7 +12084,7 @@ snapshots:
 
   fp-ts@2.16.8: {}
 
-  framer-motion@11.3.7(@emotion/is-prop-valid@1.3.0)(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1)):
+  framer-motion@11.3.8(@emotion/is-prop-valid@1.3.0)(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1)):
     dependencies:
       tslib: 2.6.2
     optionalDependencies:
@@ -12092,7 +12092,7 @@ snapshots:
       react: '@preact/compat@17.1.2(preact@10.22.1)'
       react-dom: '@preact/compat@17.1.2(preact@10.22.1)'
 
-  framer-motion@11.3.7(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.3.8(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.6.2
     optionalDependencies:
