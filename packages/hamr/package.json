@@ -57,7 +57,7 @@
 		"recoil": "^0.7.6"
 	},
 	"devDependencies": {
-		"@emotion/styled": "11.12.0",
+		"@emotion/styled": "11.13.0",
 		"@testing-library/jest-dom": "6.4.6",
 		"@testing-library/react": "16.0.0",
 		"@types/jsdom": "21.1.7",
