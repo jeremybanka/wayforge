@@ -372,8 +372,8 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
       '@floating-ui/react':
-        specifier: 0.26.19
-        version: 0.26.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.26.20
+        version: 0.26.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -470,8 +470,8 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
       '@floating-ui/react':
-        specifier: 0.26.19
-        version: 0.26.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.26.20
+        version: 0.26.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -549,8 +549,8 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
       '@floating-ui/react':
-        specifier: 0.26.19
-        version: 0.26.19(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))
+        specifier: 0.26.20
+        version: 0.26.20(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))
       '@t3-oss/env-core':
         specifier: 0.10.1
         version: 0.10.1(typescript@5.5.3)(zod@3.23.8)
@@ -832,8 +832,8 @@ importers:
   packages/hamr:
     dependencies:
       '@floating-ui/react':
-        specifier: 0.26.19
-        version: 0.26.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.26.20
+        version: 0.26.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/react-dom':
         specifier: 2.1.1
         version: 2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2704,17 +2704,14 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@floating-ui/react@0.26.19':
-    resolution: {integrity: sha512-Jk6zITdjjIvjO/VdQFvpRaD3qPwOHH6AoDHxjhpy+oK4KFgaSP871HYWUAPdnLmx1gQ+w/pB312co3tVml+BXA==}
+  '@floating-ui/react@0.26.20':
+    resolution: {integrity: sha512-RixKJJG92fcIsVoqrFr4Onpzh7hlOx4U7NV4aLhMLmtvjZ5oTB/WzXaANYUZATKqXvvW7t9sCxtzejip26N5Ag==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
   '@floating-ui/utils@0.2.1':
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
-
-  '@floating-ui/utils@0.2.4':
-    resolution: {integrity: sha512-dWO2pw8hhi+WrXq1YJy2yCuWoL20PddgGaqTgVe4cOS9Q6qklXCiA1tJEqX6BEwRNSCP84/afac9hd4MS+zEUA==}
 
   '@floating-ui/utils@0.2.5':
     resolution: {integrity: sha512-sTcG+QZ6fdEUObICavU+aB3Mp8HY4n14wYHdxK4fXjPmv3PXZZeY5RaguJmGyeH/CJQhX3fqKUtS4qc1LoHwhQ==}
@@ -9199,25 +9196,23 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       tabbable: 6.2.0
 
-  '@floating-ui/react@0.26.19(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))':
+  '@floating-ui/react@0.26.20(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))':
     dependencies:
       '@floating-ui/react-dom': 2.1.1(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))
-      '@floating-ui/utils': 0.2.4
+      '@floating-ui/utils': 0.2.5
       react: '@preact/compat@17.1.2(preact@10.22.1)'
       react-dom: '@preact/compat@17.1.2(preact@10.22.1)'
       tabbable: 6.2.0
 
-  '@floating-ui/react@0.26.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@floating-ui/react@0.26.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/react-dom': 2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@floating-ui/utils': 0.2.4
+      '@floating-ui/utils': 0.2.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tabbable: 6.2.0
 
   '@floating-ui/utils@0.2.1': {}
-
-  '@floating-ui/utils@0.2.4': {}
 
   '@floating-ui/utils@0.2.5': {}
 
