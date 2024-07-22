@@ -504,8 +504,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@testing-library/jest-dom':
-        specifier: 6.4.6
-        version: 6.4.6(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
+        specifier: 6.4.7
+        version: 6.4.7(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
       '@testing-library/react':
         specifier: 16.0.0
         version: 16.0.0(@testing-library/dom@10.0.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -595,8 +595,8 @@ importers:
         specifier: 2.9.0
         version: 2.9.0(@babel/core@7.24.5)(preact@10.22.1)(vite@5.3.4(@types/node@20.14.11)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
       '@testing-library/jest-dom':
-        specifier: 6.4.6
-        version: 6.4.6(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
+        specifier: 6.4.7
+        version: 6.4.7(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
       '@testing-library/react':
         specifier: 16.0.0
         version: 16.0.0(@preact/compat@17.1.2(preact@10.22.1))(@preact/compat@17.1.2(preact@10.22.1))(@testing-library/dom@10.0.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)
@@ -851,8 +851,8 @@ importers:
         specifier: 11.13.0
         version: 11.13.0(@emotion/react@11.11.4(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1)
       '@testing-library/jest-dom':
-        specifier: 6.4.6
-        version: 6.4.6(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
+        specifier: 6.4.7
+        version: 6.4.7(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))
       '@testing-library/react':
         specifier: 16.0.0
         version: 16.0.0(@testing-library/dom@10.0.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3293,8 +3293,8 @@ packages:
     resolution: {integrity: sha512-PmJPnogldqoVFf+EwbHvbBJ98MmqASV8kLrBYgsDNxQcFMeIS7JFL48sfyXvuMtgmWO/wMhh25odr+8VhDmn4g==}
     engines: {node: '>=18'}
 
-  '@testing-library/jest-dom@6.4.6':
-    resolution: {integrity: sha512-8qpnGVincVDLEcQXWaHOf6zmlbwTKc6Us6PPu4CRnPXCzo2OGBS5cwgMMOWdxDpEz1mkbvXHpEy99M5Yvt682w==}
+  '@testing-library/jest-dom@6.4.7':
+    resolution: {integrity: sha512-GaKJ0nijoNf30dWSOOzQEBkWBRk4rG3C/efw8zKrimNuZpnS/6/AEwo0WvZHgJxG84cNCgxt+mtbe1fsvfLp2A==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
     peerDependencies:
       '@jest/globals': '>= 28'
@@ -3368,9 +3368,6 @@ packages:
 
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
-
-  '@types/eslint@8.56.11':
-    resolution: {integrity: sha512-sVBpJMf7UPo/wGecYOpk2aQya2VUGeHhe38WG7/mN5FufNSubf5VT9Uh9Uyp8/eLJpu1/tuhJ/qTo4mhSB4V4Q==}
 
   '@types/eslint@9.6.0':
     resolution: {integrity: sha512-gi6WQJ7cHRgZxtkQEoyHMppPjq9Kxo5Tjn2prSKDSmZrCz8TZ3jSRCeTJm+WoM+oB0WG37bRqLzaaU3q7JypGg==}
@@ -9874,7 +9871,7 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@6.4.6(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))':
+  '@testing-library/jest-dom@6.4.7(vitest@2.0.4(@types/node@20.14.11)(@vitest/ui@2.0.4)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3))':
     dependencies:
       '@adobe/css-tools': 4.4.0
       '@babel/runtime': 7.24.4
@@ -9954,13 +9951,8 @@ snapshots:
 
   '@types/eslint-scope@3.7.7':
     dependencies:
-      '@types/eslint': 8.56.11
+      '@types/eslint': 9.6.0
       '@types/estree': 1.0.5
-
-  '@types/eslint@8.56.11':
-    dependencies:
-      '@types/estree': 1.0.5
-      '@types/json-schema': 7.0.15
 
   '@types/eslint@9.6.0':
     dependencies:
