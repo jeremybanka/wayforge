@@ -1,11 +1,11 @@
 import type { RegularAtomFamilyOptions, RegularAtomOptions } from "atom.io"
-import { disposeState, getState, Silo } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
+import { getState, Silo } from "atom.io"
 
-const hasImplicitStoreBeenCreated = () => IMPLICIT.STORE_INTERNAL !== undefined
+const hasImplicitStoreBeenCreated = () =>
+	globalThis.ATOM_IO_IMPLICIT_STORE !== undefined
 
 afterEach(() => {
-	IMPLICIT.STORE_INTERNAL = undefined
+	globalThis.ATOM_IO_IMPLICIT_STORE = undefined
 })
 
 describe(`silo`, () => {
