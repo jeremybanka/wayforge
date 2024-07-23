@@ -30,7 +30,7 @@
 		"zod": "3.23.8"
 	},
 	"devDependencies": {
-		"@testing-library/jest-dom": "6.4.7",
+		"@testing-library/jest-dom": "6.4.8",
 		"@testing-library/react": "16.0.0",
 		"@types/react": "18.3.3",
 		"@vitejs/plugin-react": "4.3.1",
