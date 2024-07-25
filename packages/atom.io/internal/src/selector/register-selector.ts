@@ -45,7 +45,11 @@ export const registerSelector = (
 				case `molecule_family`:
 					return getFromStore(family, key, store)
 				default:
-					dependency = seekInStore(family, key, store) as any
+					if (store.config.lifespan === `ephemeral`) {
+						dependency = findInStore(family, key, store) as any
+					} else {
+						dependency = seekInStore(family, key, store) as any
+					}
 			}
 		} else {
 			;[dependency] = params
