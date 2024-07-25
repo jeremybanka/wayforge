@@ -1,5 +1,12 @@
-import type { Logger } from "atom.io"
-import { atomFamily, getState, selectorFamily, setState, Silo } from "atom.io"
+import type { CtorToolkit, Logger } from "atom.io"
+import {
+	atomFamily,
+	getState,
+	makeRootMolecule,
+	selectorFamily,
+	setState,
+	Silo,
+} from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
@@ -85,8 +92,31 @@ describe(`selector families`, () => {
 					return array.length
 				},
 		})
-		expect(() => $.getState(lengthSelectors, `hi`)).toThrowError(
-			`Readonly Selector Family "length" member "hi" not found in store "IMMORTAL".`,
+		const root = makeRootMolecule(`root`, $.store)
+		const myMoleculeFamily = $.moleculeFamily({
+			key: `myMoleculeFamily`,
+			new: class MyMolecule {
+				public constructor(
+					tools: CtorToolkit<string>,
+					public key: string,
+					bondAtom: boolean,
+				) {
+					if (bondAtom) {
+						tools.bond(arrayAtoms)
+					}
+					tools.bond(lengthSelectors)
+				}
+			},
+		})
+
+		expect(() =>
+			$.makeMolecule(root, myMoleculeFamily, `hi`, false),
+		).toThrowError(
+			`Atom Family "array" member "hi" not found in store "IMMORTAL".`,
 		)
+
+		expect(() =>
+			$.makeMolecule(root, myMoleculeFamily, `hi`, true),
+		).not.toThrowError()
 	})
 })

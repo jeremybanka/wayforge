@@ -2,6 +2,7 @@ import type { findState } from "atom.io/ephemeral"
 import type { Transceiver } from "atom.io/internal"
 import {
 	createAtomFamily,
+	createMoleculeFamily,
 	createSelectorFamily,
 	createStandaloneAtom,
 	createStandaloneSelector,
@@ -10,6 +11,7 @@ import {
 	disposeFromStore,
 	findInStore,
 	getFromStore,
+	makeMoleculeInStore,
 	setIntoStore,
 	Store,
 	timeTravel,
@@ -20,6 +22,8 @@ import type {
 	AtomToken,
 	disposeState,
 	getState,
+	makeMolecule,
+	moleculeFamily,
 	MutableAtomFamily,
 	MutableAtomFamilyOptions,
 	MutableAtomOptions,
@@ -53,6 +57,8 @@ export class Silo {
 	public subscribe: typeof subscribe
 	public undo: typeof undo
 	public redo: typeof redo
+	public moleculeFamily: typeof moleculeFamily
+	public makeMolecule: typeof makeMolecule
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
 		const s = new Store(config, fromStore)
 		function _atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
@@ -102,5 +108,11 @@ export class Silo {
 		this.redo = (token) => {
 			timeTravel(`redo`, token, s)
 		}
+		this.moleculeFamily = ((...params: Parameters<typeof moleculeFamily>) => {
+			return createMoleculeFamily(...params, s)
+		}) as any
+		this.makeMolecule = ((...params: Parameters<typeof makeMolecule>) => {
+			return makeMoleculeInStore(s, ...params)
+		}) as any
 	}
 }
