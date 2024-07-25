@@ -46,9 +46,14 @@ export const registerSelector = (
 					return getFromStore(family, key, store)
 				default:
 					if (store.config.lifespan === `ephemeral`) {
-						dependency = findInStore(family, key, store) as any
+						dependency = findInStore(family, key, store)
 					} else {
-						dependency = seekInStore(family, key, store) as any
+						const maybeDependency = seekInStore(family, key, store)
+						if (maybeDependency) {
+							dependency = maybeDependency
+						} else {
+							throw new NotFoundError(family, key, store)
+						}
 					}
 			}
 		} else {
