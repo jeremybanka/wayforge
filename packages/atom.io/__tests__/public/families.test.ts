@@ -1,5 +1,5 @@
 import type { Logger } from "atom.io"
-import { atomFamily, getState, selectorFamily, setState } from "atom.io"
+import { atomFamily, getState, selectorFamily, setState, Silo } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
@@ -53,5 +53,40 @@ describe(`selector families`, () => {
 
 		setState(pointAtoms, `b`, { x: 11, y: 11 })
 		expect(getState(distanceSelectors, [`a`, `b`])).toBe(14.142135623730951)
+	})
+	it(`implicitly creates in an ephemeral store`, () => {
+		const arrayAtoms = atomFamily<number[], string>({
+			key: `array`,
+			default: [],
+		})
+		const lengthSelectors = selectorFamily<number, string>({
+			key: `length`,
+			get:
+				(key) =>
+				({ get }) => {
+					const array = get(arrayAtoms, key)
+					return array.length
+				},
+		})
+		expect(getState(lengthSelectors, `hi`)).toBe(0)
+	})
+	it(`won't implicitly create in an immortal store`, () => {
+		const $ = new Silo({ name: `IMMORTAL`, lifespan: `immortal` })
+		const arrayAtoms = $.atomFamily<number[], string>({
+			key: `array`,
+			default: [],
+		})
+		const lengthSelectors = $.selectorFamily<number, string>({
+			key: `length`,
+			get:
+				(key) =>
+				({ get }) => {
+					const array = get(arrayAtoms, key)
+					return array.length
+				},
+		})
+		expect(() => $.getState(lengthSelectors, `hi`)).toThrowError(
+			`Readonly Selector Family "length" member "hi" not found in store "IMMORTAL".`,
+		)
 	})
 })
