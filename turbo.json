@@ -4,39 +4,31 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*", "bin/**"],
-			"inputs": [
-				"**/package.json",
-				"src/**/*.{ts,tsx,scss,mdx}",
-				"**/src/**/*.{ts,tsx,scss,mdx}"
-			]
+			"inputs": ["**/package.json", "src/**", "**/src/**"]
 		},
 		"atom.io.fyi#build": {
 			"dependsOn": ["atom.io#build"],
 			"outputs": ["dist/**"],
-			"inputs": [
-				"**/package.json",
-				"src/**/*.{ts,tsx,scss,mdx}",
-				"**/src/**/*.{ts,tsx,scss,mdx}"
-			]
+			"inputs": ["**/package.json", "src/**"]
 		},
 		"test:once": {
 			"dependsOn": ["build"],
 			"inputs": [
 				"**/package.json",
-				"src/**/*.{ts,tsx,scss,mdx}",
-				"**/src/**/*.{ts,tsx,scss,mdx}",
-				"__tests__/**/*.{ts?x}",
-				"__scripts__/**/*.ts"
+				"src/**",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**"
 			]
 		},
 		"test:coverage": {
-			"outputs": ["coverage/**", "**/coverage/*", "**/coverage/**/*"],
+			"outputs": ["coverage/**", "**/coverage/**"],
 			"inputs": [
 				"**/package.json",
-				"src/**/*.{ts,tsx,scss,mdx}",
-				"**/src/**/*.{ts,tsx,scss,mdx}",
-				"__tests__/**/*.{ts,tsx}",
-				"__scripts__/**/*.ts"
+				"src/**/*",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**"
 			]
 		},
 		"test:semver": {
@@ -63,10 +55,10 @@
 			"inputs": [
 				"**/package.json",
 				"tsconfig.json",
-				"src/**/*.{ts,tsx}",
-				"**/src/**/*.{ts,tsx}",
-				"__tests__/**/*.{ts?x}",
-				"__scripts__/**/*.{ts?x}",
+				"src/**",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**",
 				"../../eslint.config.js"
 			]
 		},
@@ -75,10 +67,10 @@
 			"inputs": [
 				"**/package.json",
 				"tsconfig.json",
-				"src/**/*.{ts,tsx}",
-				"**/src/**/*.{ts,tsx}",
-				"__tests__/**/*.{ts?x}",
-				"__scripts__/**/*.{ts?x}"
+				"src/**",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**"
 			]
 		},
 		"lint": {
@@ -89,10 +81,10 @@
 			"inputs": [
 				"**/package.json",
 				"tsconfig.json",
-				"src/**/*.{ts,tsx}",
-				"**/src/**/*.{ts,tsx}",
-				"__tests__/**/*.{ts?x}",
-				"__scripts__/**/*.{ts?x}"
+				"src/**",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**"
 			]
 		},
 		"globalDependencies": {
