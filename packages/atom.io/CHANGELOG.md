@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.25.5
+
+### Patch Changes
+
+- 97e69f0: 🐛 Fixed issue with the `get` function in `SelectorToolkit` where, if getting a state that's not present in an ephemeral store, the state would not be initialized but an error would be thrown instead.
+- 97e69f0: ✨ `Silo` adds the `moleculeFamily` and `makeMolecule` methods.
+
 ## 0.25.4
 
 ### Patch Changes
