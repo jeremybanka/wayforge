@@ -1153,8 +1153,8 @@ importers:
         specifier: 8.2.2
         version: 8.2.2
       openai:
-        specifier: 4.53.0
-        version: 4.53.0
+        specifier: 4.53.1
+        version: 4.53.1
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -6070,8 +6070,8 @@ packages:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
 
-  openai@4.53.0:
-    resolution: {integrity: sha512-XoMaJsSLuedW5eoMEMmZbdNoXgML3ujcU5KfwRnC6rnbmZkHE2Q4J/SArwhqCxQRqJwHnQUj1LpiROmKPExZJA==}
+  openai@4.53.1:
+    resolution: {integrity: sha512-BFj9e0jfzqd2GAGRY9hj6PU7VrGyl3LPhUdji7QvZCVxlqusoLR5qBzH5wjrJZ4d1BBDic/t5yvTdk023fM7+w==}
     hasBin: true
 
   optionator@0.9.3:
@@ -7303,10 +7303,6 @@ packages:
   watchpack@2.4.1:
     resolution: {integrity: sha512-8wrBCMtVhqcXP2Sup1ctSkga6uc2Bx0IIvKyT7yTFier5AXHooSI+QyQQAtTb7+E0IUCCKyTFmXqdqgum2XWGg==}
     engines: {node: '>=10.13.0'}
-
-  web-streams-polyfill@3.3.3:
-    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
-    engines: {node: '>= 8'}
 
   web-streams-polyfill@4.0.0-beta.3:
     resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
@@ -13278,7 +13274,7 @@ snapshots:
     dependencies:
       mimic-fn: 4.0.0
 
-  openai@4.53.0:
+  openai@4.53.1:
     dependencies:
       '@types/node': 18.19.31
       '@types/node-fetch': 2.6.11
@@ -13287,7 +13283,6 @@ snapshots:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
-      web-streams-polyfill: 3.3.3
     transitivePeerDependencies:
       - encoding
 
@@ -14667,8 +14662,6 @@ snapshots:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
-
-  web-streams-polyfill@3.3.3: {}
 
   web-streams-polyfill@4.0.0-beta.3: {}
 
