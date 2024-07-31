@@ -1,7 +1,5 @@
-import path from "node:path"
-import { fileURLToPath } from "node:url"
+// @ts-check
 
-import { FlatCompat } from "@eslint/eslintrc"
 import NextPlugin from "@next/eslint-plugin-next"
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
 import parser from "@typescript-eslint/parser"
@@ -9,14 +7,6 @@ import ImportPlugin from "eslint-plugin-import"
 import SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
 
 import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-/** @type {import("@eslint/eslintrc").FlatCompat} */
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-})
 
 const ERROR = 2
 
@@ -168,7 +158,7 @@ const commonRules = {
 	quotes: [ERROR, `backtick`],
 }
 
-/** @type {(import("eslint").Linter.FlatConfig)[]} */
+/** @type {(import("eslint").Linter.Config)[]} */
 const configs = [
 	{
 		ignores: [
