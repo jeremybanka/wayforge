@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.25.6
+
+### Patch Changes
+
+- 39c2f18: ⬆️ Patching for semantic-versioning compatibility with the new typescript eslint patterns.
+
 ## 0.25.5
 
 ### Patch Changes
