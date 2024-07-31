@@ -25,7 +25,9 @@
 				]
 			}
 		],
-		"modifierTags": ["@public"],
+		"modifierTags": [
+			"@public"
+		],
 		"blocks": [],
 		"properties": [
 			{
@@ -54,7 +56,9 @@
 						]
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": [],
 				"properties": [
 					{
@@ -83,7 +87,9 @@
 								]
 							}
 						],
-						"modifierTags": ["@public"],
+						"modifierTags": [
+							"@public"
+						],
 						"blocks": []
 					}
 				]
@@ -114,7 +120,9 @@
 						]
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": []
 			},
 			{

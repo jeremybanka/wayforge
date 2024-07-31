@@ -1,11 +1,13 @@
 [
 	{
 		"type": "function",
+		"kind": "overloaded",
 		"name": "myFunction",
 		"overloads": [
 			{
 				"name": "myFunction",
 				"type": "function",
+				"kind": "regular",
 				"params": [
 					{
 						"type": "paramBlock",
@@ -30,7 +32,9 @@
 						"content": []
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": [
 					{
 						"type": "block",
@@ -75,6 +79,7 @@
 			{
 				"name": "myFunction",
 				"type": "function",
+				"kind": "regular",
 				"params": [
 					{
 						"type": "paramBlock",
@@ -99,7 +104,9 @@
 						"content": []
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": [
 					{
 						"type": "block",
@@ -144,6 +151,7 @@
 			{
 				"name": "myFunction",
 				"type": "function",
+				"kind": "regular",
 				"params": [],
 				"sections": [],
 				"modifierTags": [],

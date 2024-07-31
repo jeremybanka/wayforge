@@ -19,7 +19,7 @@ async function testDocCompiler(
 	const docs = compileDocs({ entrypoint, tsconfigPath })
 	await Bun.write(
 		path.join(DIRNAME, `fixtures`, `src`, `${name}.tsdoc.json`),
-		JSON.stringify(docs, null, `\t`),
+		JSON.stringify(docs, null, `\t`) + `\n`,
 	)
 	expectation(docs)
 }

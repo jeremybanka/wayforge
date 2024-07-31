@@ -8,6 +8,8 @@
 		"ignore": [
 			"*.gen.tsx",
 			"*.gen.ts",
+			"*.tsdoc.json",
+			"heap.json",
 			"bin/**/*",
 			"dist/**/*",
 			"node_modules/**/*",
