@@ -733,6 +733,9 @@ importers:
       tsup:
         specifier: 8.2.3
         version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+      tsx:
+        specifier: 4.16.3
+        version: 4.16.3
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -11619,7 +11622,7 @@ snapshots:
 
   eslint@9.8.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@9.8.0)
+      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       '@eslint-community/regexpp': 4.11.0
       '@eslint/config-array': 0.17.1
       '@eslint/eslintrc': 3.1.0
