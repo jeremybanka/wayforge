@@ -51,7 +51,9 @@
 						]
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": []
 			}
 		]

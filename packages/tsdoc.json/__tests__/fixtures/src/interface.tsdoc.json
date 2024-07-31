@@ -25,12 +25,15 @@
 				]
 			}
 		],
-		"modifierTags": ["@public"],
+		"modifierTags": [
+			"@public"
+		],
 		"blocks": [],
 		"properties": [
 			{
 				"name": "%CALL_SIGNATURE%",
 				"type": "function",
+				"kind": "regular",
 				"params": [],
 				"sections": [
 					{
@@ -54,7 +57,9 @@
 						]
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": []
 			},
 			{

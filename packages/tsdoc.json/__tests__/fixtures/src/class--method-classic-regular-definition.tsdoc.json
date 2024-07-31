@@ -25,12 +25,15 @@
 				]
 			}
 		],
-		"modifierTags": ["@beta"],
+		"modifierTags": [
+			"@beta"
+		],
 		"blocks": [],
 		"properties": [
 			{
 				"name": "method",
 				"type": "function",
+				"kind": "regular",
 				"params": [
 					{
 						"type": "paramBlock",
@@ -71,7 +74,9 @@
 						]
 					}
 				],
-				"modifierTags": ["@public"],
+				"modifierTags": [
+					"@public"
+				],
 				"blocks": [
 					{
 						"type": "block",

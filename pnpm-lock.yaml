@@ -41,24 +41,6 @@ importers:
       eslint-plugin-simple-import-sort:
         specifier: 12.1.1
         version: 12.1.1(eslint@9.8.0)
-      fp-ts:
-        specifier: 2.16.9
-        version: 2.16.9
-      hamt_plus:
-        specifier: 1.0.2
-        version: 1.0.2
-      io-ts:
-        specifier: 2.2.21
-        version: 2.2.21(fp-ts@2.16.9)
-      json-schema-to-zod:
-        specifier: 2.3.1
-        version: 2.3.1
-      next:
-        specifier: 14.2.5
-        version: 14.2.5(@babel/core@7.24.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.8)
-      tsx:
-        specifier: 4.16.3
-        version: 4.16.3
       turbo:
         specifier: 2.0.10
         version: 2.0.10
@@ -751,6 +733,9 @@ importers:
       tsup:
         specifier: 8.2.3
         version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+      tsx:
+        specifier: 4.16.3
+        version: 4.16.3
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -996,6 +981,9 @@ importers:
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
+      fp-ts:
+        specifier: 2.16.9
+        version: 2.16.9
       tsup:
         specifier: 8.2.3
         version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
@@ -11634,7 +11622,7 @@ snapshots:
 
   eslint@9.8.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@9.8.0)
+      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       '@eslint-community/regexpp': 4.11.0
       '@eslint/config-array': 0.17.1
       '@eslint/eslintrc': 3.1.0

@@ -2,6 +2,7 @@
 	{
 		"name": "myFunction",
 		"type": "function",
+		"kind": "regular",
 		"params": [
 			{
 				"type": "paramBlock",
@@ -51,7 +52,9 @@
 				]
 			}
 		],
-		"modifierTags": ["@public"],
+		"modifierTags": [
+			"@public"
+		],
 		"blocks": [
 			{
 				"type": "block",

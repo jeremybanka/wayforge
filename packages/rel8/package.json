@@ -38,6 +38,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "8.2.2",
+		"fp-ts": "2.16.9",
 		"tsup": "8.2.3",
 		"typescript": "5.5.4",
 		"vite": "5.3.5",
