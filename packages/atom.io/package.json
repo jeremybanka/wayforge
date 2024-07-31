@@ -91,8 +91,8 @@
 		"@types/tmp": "0.2.6",
 		"@typescript-eslint/parser": "7.18.0",
 		"@typescript-eslint/rule-tester": "7.18.0",
-		"@vitest/coverage-v8": "2.0.4",
-		"@vitest/ui": "2.0.4",
+		"@vitest/coverage-v8": "2.0.5",
+		"@vitest/ui": "2.0.5",
 		"concurrently": "8.2.2",
 		"drizzle-kit": "0.23.1",
 		"drizzle-orm": "0.32.1",
@@ -114,7 +114,7 @@
 		"typescript": "5.5.4",
 		"vite": "5.3.5",
 		"vite-tsconfig-paths": "4.3.2",
-		"vitest": "2.0.4"
+		"vitest": "2.0.5"
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

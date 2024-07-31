@@ -78,7 +78,7 @@
 		"typescript": "5.5.4",
 		"vite-plugin-dts": "3.9.1",
 		"vite-tsconfig-paths": "4.3.2",
-		"vitest": "2.0.4"
+		"vitest": "2.0.5"
 	},
 	"files": [
 		"react-click-handlers/dist",
