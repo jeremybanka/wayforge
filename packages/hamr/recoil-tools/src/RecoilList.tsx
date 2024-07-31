@@ -4,8 +4,6 @@ import type { RecoilState } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-/* eslint-disable @typescript-eslint/ban-types */
-
 export type RecoilListItemProps<DATA, META = {}> = {
 	label: Identified & META
 	findState: (key: string) => RecoilState<DATA>
