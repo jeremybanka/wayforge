@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.26.0
+
+### Minor Changes
+
+- 8ac767b: ✨ `atom.io` Packages are now built targeting ES2023, providing access to the newer features used in writing the library, for those who desire them.
+
 ## 0.25.6
 
 ### Patch Changes
