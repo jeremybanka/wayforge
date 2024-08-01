@@ -198,8 +198,8 @@ importers:
         specifier: 7.0.3
         version: 7.0.3
       tsx:
-        specifier: 4.16.3
-        version: 4.16.3
+        specifier: 4.16.4
+        version: 4.16.4
       vitest:
         specifier: 2.0.5
         version: 2.0.5(@types/node@20.14.13)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3)
@@ -235,8 +235,8 @@ importers:
         specifier: 4.7.5
         version: 4.7.5
       tsx:
-        specifier: 4.16.3
-        version: 4.16.3
+        specifier: 4.16.4
+        version: 4.16.4
       vite:
         specifier: 5.3.5
         version: 5.3.5(@types/node@20.14.13)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3)
@@ -620,7 +620,7 @@ importers:
     devDependencies:
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -732,10 +732,10 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       tsx:
-        specifier: 4.16.3
-        version: 4.16.3
+        specifier: 4.16.4
+        version: 4.16.4
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -781,7 +781,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
 
   packages/comline:
     dependencies:
@@ -809,7 +809,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       vitest:
         specifier: 2.0.5
         version: 2.0.5(@types/node@20.14.13)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3)
@@ -885,7 +885,7 @@ importers:
         version: 1.77.8
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -913,7 +913,7 @@ importers:
         version: 20.14.13
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -934,7 +934,7 @@ importers:
         version: 20.14.13
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -962,7 +962,7 @@ importers:
     devDependencies:
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -986,7 +986,7 @@ importers:
         version: 2.16.9
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -1029,7 +1029,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -1078,7 +1078,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -1124,7 +1124,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -1148,7 +1148,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.3
-        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4)
+        version: 8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4)
       vite:
         specifier: 5.3.5
         version: 5.3.5(@types/node@20.14.13)(lightningcss@1.25.1)(sass@1.77.8)(terser@5.30.3)
@@ -7003,8 +7003,8 @@ packages:
       typescript:
         optional: true
 
-  tsx@4.16.3:
-    resolution: {integrity: sha512-MP8AEUxVnboD2rCC6kDLxnpDBNWN9k3BSVU/0/nNxgm70bPBnfn+yCKcnOsIVPQwdkbKYoFOlKjjWZWJ2XCXUg==}
+  tsx@4.16.4:
+    resolution: {integrity: sha512-E0EDobc7FtOxdNtG0ZQWztLa9PK/TqC5QvdV0heyIMJySwcJ8vyvziOznzO1MIM2IDfacLGBgfiCUmba6mvI7Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -13427,12 +13427,12 @@ snapshots:
 
   possible-typed-array-names@1.0.0: {}
 
-  postcss-load-config@6.0.1(postcss@8.4.39)(tsx@4.16.3):
+  postcss-load-config@6.0.1(postcss@8.4.39)(tsx@4.16.4):
     dependencies:
       lilconfig: 3.1.1
     optionalDependencies:
       postcss: 8.4.39
-      tsx: 4.16.3
+      tsx: 4.16.4
 
   postcss-value-parser@4.2.0: {}
 
@@ -14281,7 +14281,7 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  tsup@8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.3)(typescript@5.5.4):
+  tsup@8.2.3(@microsoft/api-extractor@7.46.2(@types/node@20.14.13))(postcss@8.4.39)(tsx@4.16.4)(typescript@5.5.4):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.0)
       cac: 6.7.14
@@ -14293,7 +14293,7 @@ snapshots:
       globby: 11.1.0
       joycon: 3.1.1
       picocolors: 1.0.1
-      postcss-load-config: 6.0.1(postcss@8.4.39)(tsx@4.16.3)
+      postcss-load-config: 6.0.1(postcss@8.4.39)(tsx@4.16.4)
       resolve-from: 5.0.0
       rollup: 4.19.0
       source-map: 0.8.0-beta.0
@@ -14309,7 +14309,7 @@ snapshots:
       - tsx
       - yaml
 
-  tsx@4.16.3:
+  tsx@4.16.4:
     dependencies:
       esbuild: 0.21.5
       get-tsconfig: 4.7.5
