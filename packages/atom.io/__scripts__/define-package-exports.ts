@@ -41,18 +41,14 @@ export default function main(mode: string): void {
 	newPackageJson.exports = {
 		"./package.json": `./package.json`,
 		".": {
-			types: `./dist/index.d.ts`,
-			browser: `./dist/index.js`,
 			import: `./dist/index.js`,
-			require: `./dist/index.cjs`,
+			types: `./dist/index.d.ts`,
 		},
 		...submodules.reduce((acc, folder) => {
 			acc[`./${folder}/package.json`] = `./${folder}/package.json`
 			acc[`./${folder}`] = {
-				types: `./${folder}/dist/index.d.ts`,
-				browser: `./${folder}/dist/index.js`,
 				import: `./${folder}/dist/index.js`,
-				require: `./${folder}/dist/index.cjs`,
+				types: `./${folder}/dist/index.d.ts`,
 			}
 			return acc
 		}, {}),

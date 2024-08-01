@@ -363,8 +363,10 @@ describe(`timeline state lifecycle`, () => {
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
 			new: class Unit {
-				public hpState = this.tools.bond(hpAtoms)
-				public constructor(public tools: CtorToolkit<string>) {}
+				public constructor(
+					public tools: CtorToolkit<string>,
+					public hpState = this.tools.bond(hpAtoms),
+				) {}
 			},
 		})
 		const gameTL = timeline({
@@ -374,7 +376,7 @@ describe(`timeline state lifecycle`, () => {
 		const game = makeRootMolecule(`world`)
 		makeMolecule(game, unitMolecules, `captain`)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(1)
+		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
 		undo(gameTL)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
 		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
@@ -391,9 +393,12 @@ describe(`timeline state lifecycle`, () => {
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
 			new: class Unit {
-				public hpState = this.tools.bond(hpAtoms)
 				public armorState: RegularAtomToken<number> | undefined
-				public constructor(public tools: CtorToolkit<string>) {}
+				public constructor(
+					public tools: CtorToolkit<string>,
+					public key: string,
+					public hpState = tools.bond(hpAtoms),
+				) {}
 				public addArmor = transaction<(armor: number) => void>({
 					key: `addArmor`,
 					do: ({ set }, armor) => {

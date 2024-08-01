@@ -23,7 +23,7 @@ export const BASE_OPTIONS: Options = {
 		options.assetNames = `dist/[name]-[hash]`
 	},
 	external: BUNDLE_EXCLUDE_LIST,
-	format: [`esm`, `cjs`],
+	format: [`esm`],
 	jsxFactory: `React.createElement`,
 	loader: { ".scss": `css` },
 	metafile: true,
