@@ -508,11 +508,11 @@ describe(`transaction.make`, () => {
 		const unitMolecules = moleculeFamily({
 			key: `unit`,
 			new: class Unit {
-				public hpState = this.tools.bond(hpAtoms)
 				public constructor(
 					public tools: CtorToolkit<string>,
 					public key: string,
 					public hp: number,
+					public hpState = tools.bond(hpAtoms),
 				) {
 					setState(this.hpState, this.hp)
 				}
