@@ -35,7 +35,7 @@
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
 		"tmp": "0.2.3",
-		"tsup": "8.2.3",
+		"tsup": "8.2.4",
 		"vitest": "2.0.5"
 	}
 }
