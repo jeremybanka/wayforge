@@ -18,7 +18,7 @@
 		"fp-ts": "2.16.9",
 		"io-ts": "2.2.21",
 		"json-schema": "0.4.0",
-		"json-schema-to-zod": "2.3.1",
+		"json-schema-to-zod": "2.4.0",
 		"npmlog": "7.0.1",
 		"prettier": "3.3.3",
 		"simple-git": "3.25.0",
