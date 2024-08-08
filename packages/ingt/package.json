@@ -1,6 +1,7 @@
 {
 	"name": "ingt",
 	"version": "0.0.0",
+	"type": "module",
 	"description": "json filestore",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

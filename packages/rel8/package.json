@@ -1,6 +1,7 @@
 {
 	"name": "rel8",
 	"version": "0.1.0",
+	"type": "module",
 	"description": "Utilities for managing relations between data.",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",

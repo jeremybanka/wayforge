@@ -1,6 +1,7 @@
 {
 	"name": "core.wayfarer.quest",
 	"description": "cards and dice server",
+	"type": "module",
 	"private": true,
 	"scripts": {
 		"dev": "bun --watch src/system.server.ts",

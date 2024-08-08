@@ -1,6 +1,7 @@
 {
 	"name": "occlusion",
 	"version": "0.0.1",
+	"type": "module",
 	"description": "it's a matter of perspective",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
