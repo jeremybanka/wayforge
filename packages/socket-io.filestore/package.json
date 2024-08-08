@@ -1,6 +1,7 @@
 {
 	"name": "socket-io.filestore",
 	"version": "0.0.0",
+	"type": "module",
 	"description": "save json to the filesystem over socket.io",
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
@@ -33,7 +34,7 @@
 		"tsup": "8.2.4",
 		"typescript": "5.5.4",
 		"vite": "5.4.0",
-		"vite-tsconfig-paths": "4.3.2",
+		"vite-tsconfig-paths": "5.0.0",
 		"vitest": "2.0.5"
 	},
 	"repository": {

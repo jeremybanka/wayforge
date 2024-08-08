@@ -1,6 +1,7 @@
 {
 	"name": "anvl",
 	"version": "0.3.0",
+	"type": "module",
 	"description": "core typescript utilities for wayforge",
 	"files": [
 		"dist",
@@ -34,7 +35,7 @@
 		"tsup": "8.2.4",
 		"typescript": "5.5.4",
 		"vite": "5.4.0",
-		"vite-tsconfig-paths": "4.3.2",
+		"vite-tsconfig-paths": "5.0.0",
 		"vitest": "2.0.5"
 	},
 	"repository": {

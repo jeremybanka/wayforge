@@ -1,6 +1,7 @@
 {
 	"name": "occlusion",
 	"version": "0.0.1",
+	"type": "module",
 	"description": "it's a matter of perspective",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -24,7 +25,7 @@
 		"tsup": "8.2.4",
 		"typescript": "5.5.4",
 		"vite": "5.4.0",
-		"vite-tsconfig-paths": "4.3.2",
+		"vite-tsconfig-paths": "5.0.0",
 		"vitest": "2.0.5"
 	},
 	"peerDependencies": {
