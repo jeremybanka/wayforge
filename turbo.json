@@ -59,7 +59,7 @@
 				"**/src/**",
 				"__tests__/**",
 				"__scripts__/**",
-				"../../eslint.config.js"
+				"../../eslint.config.ts"
 			]
 		},
 		"lint:types": {

@@ -1,5 +1,3 @@
-// @ts-check
-
 import NextPlugin from "@next/eslint-plugin-next"
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
 import parser from "@typescript-eslint/parser"
@@ -171,7 +169,7 @@ const configs = [
 	{
 		languageOptions: { parser, parserOptions },
 		ignores: [`apps/tempest.games/**`],
-		files: [`**/*.ts{,x}`, `eslint.config.js`],
+		files: [`**/*.ts{,x}`, `eslint.config.ts`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin,
