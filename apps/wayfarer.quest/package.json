@@ -11,7 +11,7 @@
 		"build:next": "next build",
 		"start": "next start -p 4545",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "echo no tests yet",

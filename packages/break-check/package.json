@@ -29,7 +29,7 @@
 		"build:dts": "tsup",
 		"schema": "bun src/break-check.x.ts --testPattern --testCommand --certifyCommand -- schema && mv break-check.schema.json dist",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint",
 		"test": "bun test --watch -- **/*.test.ts",

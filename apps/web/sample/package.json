@@ -11,7 +11,7 @@
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint": "bun run lint:biome && bun run lint:eslint"
 	},
 	"dependencies": {
