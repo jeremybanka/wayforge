@@ -1,8 +1,6 @@
 *.js
 *.js.map
 *.wasm
-!eslint.config.js
-!.eslintrc.js
 .DS_STORE
 .env
 .turbo
