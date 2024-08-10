@@ -1,13 +1,13 @@
 import NextPlugin from "@next/eslint-plugin-next"
 import * as TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
-import { type Linter } from "eslint"
 import * as parser from "@typescript-eslint/parser"
+import type { Linter } from "eslint"
 import * as ImportPlugin from "eslint-plugin-import"
 import * as SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
 
 import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
 
-const ERROR = 2 as const
+const ERROR = 2
 
 const parserOptions = {
 	project: [`./tsconfig.json`],
@@ -151,7 +151,7 @@ const commonRules = {
 
 	"no-mixed-spaces-and-tabs": 0,
 	quotes: [ERROR, `backtick`],
-} satisfies Linter.Config["rules"]
+} satisfies Linter.Config[`rules`]
 
 const configs = [
 	{
