@@ -37,7 +37,7 @@
 		"build:realtime-testing": "cd realtime-testing && tsup",
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:eslint:build": "bun run build:main",
 		"lint:types": "tsc --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
@@ -52,6 +52,7 @@
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
 		"@testing-library/react": ">=14.0.0",
+		"eslint": ">=9.0.0",
 		"framer-motion": ">=10.0.0",
 		"react": ">=18.0.0",
 		"socket.io": ">=4.0.0",
@@ -70,6 +71,9 @@
 		"@floating-ui/react-dom": {
 			"optional": true
 		},
+		"eslint": {
+			"optional": true
+		},
 		"framer-motion": {
 			"optional": true
 		},
@@ -82,8 +86,7 @@
 	},
 	"devDependencies": {
 		"@testing-library/react": "16.0.0",
-		"@types/eslint": "npm:@types/eslint@9.6.0",
-		"@types/eslint-v9": "npm:@types/eslint@9.6.0",
+		"@types/eslint": "9.6.0",
 		"@types/estree": "1.0.5",
 		"@types/http-proxy": "1.17.15",
 		"@types/npmlog": "7.0.0",
@@ -96,8 +99,7 @@
 		"concurrently": "8.2.2",
 		"drizzle-kit": "0.24.0",
 		"drizzle-orm": "0.33.0",
-		"eslint": "npm:eslint@8.57.0",
-		"eslint-v9": "npm:eslint@9.8.0",
+		"eslint": "9.9.0",
 		"framer-motion": "11.3.24",
 		"happy-dom": "14.12.3",
 		"http-proxy": "1.18.1",

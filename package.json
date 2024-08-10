@@ -42,19 +42,22 @@
 		"notes": "changeset",
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml"
 	},
-	"trustedDependencies": ["@biomejs/biome"],
+	"trustedDependencies": [
+		"@biomejs/biome"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@changesets/cli": "2.27.7",
 		"@eslint/eslintrc": "3.1.0",
-		"@eslint/js": "9.8.0",
+		"@eslint/js": "9.9.0",
 		"@next/eslint-plugin-next": "14.2.5",
 		"@typescript-eslint/eslint-plugin": "8.0.1",
 		"@typescript-eslint/parser": "8.0.1",
 		"c8": "10.1.2",
 		"cross-env": "7.0.3",
-		"eslint-plugin-simple-import-sort": "12.1.1",
 		"eslint-plugin-import": "2.29.1",
+		"eslint-plugin-simple-import-sort": "12.1.1",
+		"jiti": "1.21.6",
 		"turbo": "2.0.12",
 		"typescript": "5.5.4",
 		"vite-tsconfig-paths": "5.0.1",

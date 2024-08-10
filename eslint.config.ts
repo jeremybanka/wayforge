@@ -1,22 +1,19 @@
-// @ts-check
-
 import NextPlugin from "@next/eslint-plugin-next"
-import TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
-import parser from "@typescript-eslint/parser"
-import ImportPlugin from "eslint-plugin-import"
-import SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
+import * as TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
+import * as parser from "@typescript-eslint/parser"
+import type { Linter } from "eslint"
+import * as ImportPlugin from "eslint-plugin-import"
+import * as SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
 
 import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
 
 const ERROR = 2
 
-/** @type {import("@typescript-eslint/parser").ParserOptions} */
 const parserOptions = {
 	project: [`./tsconfig.json`],
 	sourceType: `module`,
-}
+} satisfies parser.ParserOptions
 
-/** @type {import("eslint").Linter.Config["rules"]} */
 const commonRules = {
 	"@typescript-eslint/adjacent-overload-signatures": ERROR,
 	"@typescript-eslint/array-type": 0,
@@ -154,9 +151,8 @@ const commonRules = {
 
 	"no-mixed-spaces-and-tabs": 0,
 	quotes: [ERROR, `backtick`],
-}
+} satisfies Linter.Config[`rules`]
 
-/** @type {(import("eslint").Linter.Config)[]} */
 const configs = [
 	{
 		ignores: [
@@ -171,7 +167,7 @@ const configs = [
 	{
 		languageOptions: { parser, parserOptions },
 		ignores: [`apps/tempest.games/**`],
-		files: [`**/*.ts{,x}`, `eslint.config.js`],
+		files: [`**/*.ts{,x}`, `eslint.config.ts`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin,
@@ -225,6 +221,6 @@ const configs = [
 		},
 		rules: commonRules,
 	},
-]
+] satisfies Linter.Config[]
 
 export default configs
