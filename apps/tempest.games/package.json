@@ -34,7 +34,7 @@
 	},
 	"dependencies": {
 		"@fastly/js-compute": "3.20.0",
-		"preact-render-to-string": "6.5.7",
+		"preact-render-to-string": "6.5.8",
 		"zod": "3.23.8"
 	}
 }
