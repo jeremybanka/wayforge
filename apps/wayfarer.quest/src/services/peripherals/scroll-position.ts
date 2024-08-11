@@ -28,7 +28,7 @@ export const windowScrollPositionState = AtomIO.atom<Point2d>({
 	],
 })
 
-export const findScrollPositionState = AtomIO.atomFamily<Point2d, string>({
+export const scrollPositionAtoms = AtomIO.atomFamily<Point2d, string>({
 	key: `scrollPosition`,
 	default: { x: 0, y: 0 },
 })
@@ -49,8 +49,10 @@ export const useScrollPosition = <T extends HTMLElement>(
 				if (now - lastEmitTime > throttleTime) {
 					emitTimes.set(key, now)
 					const { scrollLeft, scrollTop } = capturedRef.current
-					const scrollPositionState = findScrollPositionState(key)
-					AtomIO.setState(scrollPositionState, { x: scrollLeft, y: scrollTop })
+					AtomIO.setState(scrollPositionAtoms, key, {
+						x: scrollLeft,
+						y: scrollTop,
+					})
 				}
 			}
 

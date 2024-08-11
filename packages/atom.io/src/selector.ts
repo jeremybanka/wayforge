@@ -47,17 +47,7 @@ export type WritableSelectorFamilyToken<T, K extends Json.Serializable> = {
 	__T?: T
 	__K?: K
 }
-// biome-ignore format: intersection
-export type WritableSelectorFamilyTokenWithCall<
-	T,
-	K extends Json.Serializable,
-> = 
-	& WritableSelectorFamilyToken<T, K>
-	& {
-		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
-		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
-		(key: K): WritableSelectorToken<T>
-	}
+
 // biome-ignore format: intersection
 export type WritableSelectorFamily<T, K extends Json.Serializable> = 
 	& WritableSelectorFamilyToken<T, K> 
@@ -73,17 +63,7 @@ export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
 	__T?: T
 	__K?: K
 }
-// biome-ignore format: intersection
-export type ReadonlySelectorFamilyTokenWithCall<
-	T,
-	K extends Json.Serializable,
-> = 
-	& ReadonlySelectorFamilyToken<T, K>
-	& {
-		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
-		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
-		(key: K): ReadonlySelectorToken<T>
-	}
+
 // biome-ignore format: intersection
 export type ReadonlySelectorFamily<T, K extends Json.Serializable> = 
 	& ((key: K) => ReadonlySelectorToken<T>)
@@ -105,16 +85,14 @@ export type SelectorFamilyToken<T, K extends Json.Serializable> =
 
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: WritableSelectorFamilyOptions<T, K>,
-): WritableSelectorFamilyTokenWithCall<T, K>
+): WritableSelectorFamilyToken<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
-): ReadonlySelectorFamilyTokenWithCall<T, K>
+): ReadonlySelectorFamilyToken<T, K>
 export function selectorFamily<T, K extends Json.Serializable>(
 	options:
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,
-):
-	| ReadonlySelectorFamilyTokenWithCall<T, K>
-	| WritableSelectorFamilyTokenWithCall<T, K> {
+): ReadonlySelectorFamilyToken<T, K> | WritableSelectorFamilyToken<T, K> {
 	return createSelectorFamily(options, IMPLICIT.STORE)
 }

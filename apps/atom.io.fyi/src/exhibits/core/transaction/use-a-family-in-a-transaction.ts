@@ -5,7 +5,7 @@ export type PublicUser = {
 	displayName: string
 }
 
-export const findPublicUserState = atomFamily<PublicUser, string>({
+export const publicUserAtoms = atomFamily<PublicUser, string>({
 	key: `publicUser`,
 	default: (id) => ({ id, displayName: `` }),
 })
@@ -18,8 +18,7 @@ export const userIndex = atom<string[]>({
 export const addUserTX = transaction<(user: PublicUser) => void>({
 	key: `addUser`,
 	do: ({ get, set }, user) => {
-		const userState = findPublicUserState(user.id)
-		set(userState, user)
+		set(publicUserAtoms, user.id, user)
 		if (!get(userIndex).includes(user.id)) {
 			set(userIndex, (current) => [...current, user.id])
 		}
