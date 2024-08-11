@@ -7,7 +7,7 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { createRegularAtom } from "../atom"
@@ -15,7 +15,7 @@ import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createRegularAtomFamily<T, K extends Json.Serializable>(
+export function createRegularAtomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
 ): RegularAtomFamily<T, K> {

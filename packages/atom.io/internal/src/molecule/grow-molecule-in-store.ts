@@ -16,7 +16,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import { initFamilyMemberInStore } from "../families"
 import type { Transceiver } from "../mutable"
@@ -27,43 +27,43 @@ import type { Molecule } from "./molecule-internal"
 export function growMoleculeInStore<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 >(
 	molecule: Molecule<any>,
 	family: MutableAtomFamily<T, J, K>,
 	store: Store,
 ): MutableAtomToken<T, J>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: RegularAtomFamily<T, K>,
 	store: Store,
 ): RegularAtomToken<T>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: AtomFamily<T, K>,
 	store: Store,
 ): AtomToken<T>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: WritableSelectorFamily<T, K>,
 	store: Store,
 ): WritableSelectorToken<T>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: ReadonlySelectorFamily<T, K>,
 	store: Store,
 ): ReadonlySelectorToken<T>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: SelectorFamily<T, K>,
 	store: Store,
 ): SelectorToken<T>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: WritableFamily<T, K>,
 	store: Store,
 ): WritableToken<T>
-export function growMoleculeInStore<T, K extends Json.Serializable>(
+export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
 	family: ReadableFamily<T, K>,
 	store: Store,

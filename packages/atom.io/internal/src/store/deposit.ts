@@ -12,7 +12,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type {
 	Atom,
@@ -39,12 +39,12 @@ export function deposit<T>(state: ReadonlySelector<T>): ReadonlySelectorToken<T>
 export function deposit<T>(state: Selector<T>): SelectorToken<T>
 export function deposit<T>(state: WritableState<T>): WritableToken<T>
 export function deposit<
-	K extends Json.Serializable,
+	K extends Canonical,
 	S extends { [key: string]: any },
 	P extends any[],
 >(state: Molecule<any>): MoleculeToken<any>
 export function deposit<
-	K extends Json.Serializable,
+	K extends Canonical,
 	S extends { [key: string]: any },
 	P extends any[],
 >(state: MoleculeFamily<any>): MoleculeFamilyToken<any>

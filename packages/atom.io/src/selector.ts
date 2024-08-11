@@ -4,7 +4,7 @@ import {
 	createStandaloneSelector,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { ReadonlySelectorToken, WritableSelectorToken } from "."
 import type { Read, StateCreation, StateDisposal, Write } from "./transaction"
@@ -31,17 +31,17 @@ export function selector<T>(
 	return createStandaloneSelector(options, IMPLICIT.STORE)
 }
 
-export type WritableSelectorFamilyOptions<T, K extends Json.Serializable> = {
+export type WritableSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
 	set: (key: K) => Write<(newValue: T) => void>
 }
-export type ReadonlySelectorFamilyOptions<T, K extends Json.Serializable> = {
+export type ReadonlySelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
 }
 
-export type WritableSelectorFamilyToken<T, K extends Json.Serializable> = {
+export type WritableSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
 	type: `selector_family`
 	__T?: T
@@ -49,7 +49,7 @@ export type WritableSelectorFamilyToken<T, K extends Json.Serializable> = {
 }
 
 // biome-ignore format: intersection
-export type WritableSelectorFamily<T, K extends Json.Serializable> = 
+export type WritableSelectorFamily<T, K extends Canonical> = 
 	& WritableSelectorFamilyToken<T, K> 
 	& {
 		(key: K): WritableSelectorToken<T>
@@ -57,7 +57,7 @@ export type WritableSelectorFamily<T, K extends Json.Serializable> =
 		install: (store: Store) => void
 	}
 
-export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
+export type ReadonlySelectorFamilyToken<T, K extends Canonical> = {
 	key: string
 	type: `readonly_selector_family`
 	__T?: T
@@ -65,7 +65,7 @@ export type ReadonlySelectorFamilyToken<T, K extends Json.Serializable> = {
 }
 
 // biome-ignore format: intersection
-export type ReadonlySelectorFamily<T, K extends Json.Serializable> = 
+export type ReadonlySelectorFamily<T, K extends Canonical> = 
 	& ((key: K) => ReadonlySelectorToken<T>)
 	& {
 		key: string
@@ -76,20 +76,20 @@ export type ReadonlySelectorFamily<T, K extends Json.Serializable> =
 		__K?: K
 	}
 
-export type SelectorFamily<T, K extends Json.Serializable> =
+export type SelectorFamily<T, K extends Canonical> =
 	| ReadonlySelectorFamily<T, K>
 	| WritableSelectorFamily<T, K>
-export type SelectorFamilyToken<T, K extends Json.Serializable> =
+export type SelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlySelectorFamilyToken<T, K>
 	| WritableSelectorFamilyToken<T, K>
 
-export function selectorFamily<T, K extends Json.Serializable>(
+export function selectorFamily<T, K extends Canonical>(
 	options: WritableSelectorFamilyOptions<T, K>,
 ): WritableSelectorFamilyToken<T, K>
-export function selectorFamily<T, K extends Json.Serializable>(
+export function selectorFamily<T, K extends Canonical>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamilyToken<T, K>
-export function selectorFamily<T, K extends Json.Serializable>(
+export function selectorFamily<T, K extends Canonical>(
 	options:
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,

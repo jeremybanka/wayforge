@@ -6,7 +6,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
@@ -21,7 +21,7 @@ export function getFromStore<M extends MoleculeConstructor>(
 	store: Store,
 ): InstanceType<M> | undefined
 
-export function getFromStore<T, K extends Json.Serializable>(
+export function getFromStore<T, K extends Canonical>(
 	token: ReadableFamilyToken<T, K>,
 	key: K,
 	store: Store,
@@ -37,7 +37,7 @@ export function getFromStore<T>(
 	...params:
 		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>, store: Store]
 		| [token: MoleculeToken<any>, store: Store]
-		| [token: ReadableFamilyToken<T, any>, key: Json.Serializable, store: Store]
+		| [token: ReadableFamilyToken<T, any>, key: Canonical, store: Store]
 		| [token: ReadableToken<T>, store: Store]
 ): any {
 	let token: MoleculeToken<any> | ReadableToken<T>

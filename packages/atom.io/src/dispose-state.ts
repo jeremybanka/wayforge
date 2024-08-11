@@ -1,5 +1,5 @@
 import * as Internal from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import type { ReadableFamilyToken, ReadableToken } from "."
 import type {
@@ -13,7 +13,7 @@ export function disposeState(
 	token: MoleculeToken<any> | ReadableToken<any>,
 ): void
 
-export function disposeState<K extends Json.Serializable>(
+export function disposeState<K extends Canonical>(
 	token: ReadableFamilyToken<any, K>,
 	key: K,
 ): void

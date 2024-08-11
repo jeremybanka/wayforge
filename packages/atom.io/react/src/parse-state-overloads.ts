@@ -6,19 +6,19 @@ import type {
 } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { findInStore, NotFoundError, seekInStore } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
-export function parseStateOverloads<T, K extends Json.Serializable>(
+export function parseStateOverloads<T, K extends Canonical>(
 	store: Store,
 	...rest: [WritableFamilyToken<T, K>, K] | [WritableToken<T>]
 ): WritableToken<T>
 
-export function parseStateOverloads<T, K extends Json.Serializable>(
+export function parseStateOverloads<T, K extends Canonical>(
 	store: Store,
 	...rest: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
 ): ReadableToken<T>
 
-export function parseStateOverloads<T, K extends Json.Serializable>(
+export function parseStateOverloads<T, K extends Canonical>(
 	store: Store,
 	...rest: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
 ): ReadableToken<T> {

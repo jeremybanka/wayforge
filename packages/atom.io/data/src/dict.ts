@@ -5,9 +5,9 @@ import {
 	findInStore,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Json, Stringified } from "atom.io/json"
+import type { Canonical, stringified } from "atom.io/json"
 
-export function dict<State, Key extends Json.Serializable>(
+export function dict<State, Key extends Canonical>(
 	findState:
 		| AtomIO.ReadonlySelectorFamilyToken<State, Key>
 		| AtomIO.RegularAtomFamilyToken<State, Key>
@@ -17,7 +17,7 @@ export function dict<State, Key extends Json.Serializable>(
 		| AtomIO.RegularAtomToken<Key[]>
 		| AtomIO.WritableSelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
-): AtomIO.ReadonlySelectorToken<{ [K in Stringified<Key>]: State }> {
+): AtomIO.ReadonlySelectorToken<{ [K in stringified<Key>]: State }> {
 	return createStandaloneSelector(
 		{
 			key: `${findState.key}Dict`,
