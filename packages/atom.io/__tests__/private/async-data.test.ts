@@ -136,13 +136,13 @@ describe(`complex async setup`, () => {
 			AtomIO.setState(letterIndex, Object.keys(letters))
 			AtomIO.setState(statusIndex, Object.keys(statuses))
 			for (const [key, value] of Object.entries(counts)) {
-				AtomIO.setState(findCountState(key), value)
+				AtomIO.setState(findCountState, key, value)
 			}
 			for (const [key, value] of Object.entries(letters)) {
-				AtomIO.setState(findLetterState(key), value)
+				AtomIO.setState(findLetterState, key, value)
 			}
 			for (const [key, value] of Object.entries(statuses)) {
-				AtomIO.setState(findStatusState(key), value)
+				AtomIO.setState(findStatusState, key, value)
 			}
 		})
 		const designDeltaState = AtomIO.selector<Loadable<Partial<Design>>>({
@@ -174,8 +174,8 @@ describe(`complex async setup`, () => {
 
 		const designDelta = await AtomIO.getState(designDeltaState)
 		expect(designDelta).toEqual({ id: DESIGN_ID })
-		AtomIO.setState(findCountState(`foo`), 4)
-		AtomIO.setState(findCountState(`bar`), 13)
+		AtomIO.setState(findCountState, `foo`, 4)
+		AtomIO.setState(findCountState, `bar`, 13)
 		const designDelta2 = await AtomIO.getState(designDeltaState)
 		expect(designDelta2).toEqual({
 			id: DESIGN_ID,
