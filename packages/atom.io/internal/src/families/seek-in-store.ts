@@ -20,7 +20,8 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import { type Json, stringifyJson } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import type { Molecule, ReadableState } from ".."
 import { newest } from "../lineage"
@@ -30,7 +31,7 @@ import { deposit, type Store } from "../store"
 export function seekInStore<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 	Key extends K,
 >(
 	token: MutableAtomFamilyToken<T, J, K>,
@@ -38,43 +39,43 @@ export function seekInStore<
 	store: Store,
 ): MutableAtomToken<T, J> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): RegularAtomToken<T> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: AtomFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): AtomToken<T> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): WritableSelectorToken<T> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): ReadonlySelectorToken<T> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): SelectorToken<T> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): WritableToken<T> | undefined
 
-export function seekInStore<T, K extends Json.Serializable, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
 	store: Store,
@@ -88,7 +89,7 @@ export function seekInStore<M extends MoleculeConstructor>(
 
 export function seekInStore(
 	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
-	key: Json.Serializable,
+	key: Canonical,
 	store: Store,
 ): MoleculeToken<any> | ReadableToken<any> | undefined {
 	const subKey = stringifyJson(key)

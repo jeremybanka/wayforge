@@ -1,4 +1,5 @@
 import * as Internal from "atom.io/internal"
+import type { Canonical } from "atom.io/json"
 import type { Json } from "rel8"
 
 import type { WritableFamilyToken, WritableToken } from "."
@@ -24,14 +25,14 @@ export function setState<T, New extends T>(
  * @param value - The new value of the state.
  * @overload Streamlined
  */
-export function setState<T, K extends Json.Serializable, New extends T>(
+export function setState<T, K extends Canonical, New extends T>(
 	token: WritableFamilyToken<T, K>,
 	key: K,
 	value: New | ((oldValue: T) => New),
 ): void
 
 export function setState<T, New extends T>(
-	token: WritableFamilyToken<T, Json.Serializable> | WritableToken<T>,
+	token: WritableFamilyToken<T, Canonical> | WritableToken<T>,
 	p1: Json.Serializable | New | ((oldValue: T) => New),
 	p2?: New | ((oldValue: T) => New),
 ): void {

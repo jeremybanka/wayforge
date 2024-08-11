@@ -1,4 +1,4 @@
-import type { Json, Stringified } from "atom.io/json"
+import type { Json, stringified } from "atom.io/json"
 
 import type { Socket } from ".."
 
@@ -7,7 +7,7 @@ export type Events = Json.Object<string, Json.Serializable[]>
 export type StringifiedEvent<
 	Key extends string,
 	Params extends Json.Serializable[],
-> = Stringified<[Key, ...Params]>
+> = stringified<[Key, ...Params]>
 
 export interface EventBuffer<
 	Key extends string,

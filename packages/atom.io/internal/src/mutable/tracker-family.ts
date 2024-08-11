@@ -1,5 +1,5 @@
 import type { MutableAtomFamily, RegularAtomFamily } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
 import { createRegularAtomFamily, seekInStore } from "../families"
@@ -9,7 +9,7 @@ import type { Transceiver } from "./transceiver"
 
 export class FamilyTracker<
 	Core extends Transceiver<any>,
-	FamilyMemberKey extends Json.Serializable,
+	FamilyMemberKey extends Canonical,
 > {
 	private readonly Update: Core extends Transceiver<infer Signal>
 		? Signal

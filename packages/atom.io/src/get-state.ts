@@ -1,5 +1,5 @@
 import * as Internal from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import type {
 	MoleculeConstructor,
@@ -15,14 +15,14 @@ export function getState<M extends MoleculeConstructor>(
 	token: MoleculeToken<M>,
 ): InstanceType<M>
 
-export function getState<T, K extends Json.Serializable>(
+export function getState<T, K extends Canonical>(
 	token: ReadableFamilyToken<T, K>,
 	key: K,
 ): T
 
 export function getState<M extends MoleculeConstructor>(
 	token: MoleculeFamilyToken<M>,
-	key: Json.Serializable,
+	key: Canonical,
 ): InstanceType<M>
 
 export function getState(
@@ -31,7 +31,7 @@ export function getState(
 		| MoleculeToken<any>
 		| ReadableFamilyToken<any, any>
 		| ReadableToken<any>,
-	key?: Json.Serializable,
+	key?: Canonical,
 ): any {
 	if (key) {
 		return Internal.getFromStore(

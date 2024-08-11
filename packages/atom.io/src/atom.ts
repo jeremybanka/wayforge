@@ -4,7 +4,7 @@ import {
 	createStandaloneAtom,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Json, JsonInterface } from "atom.io/json"
+import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
 import type {
 	AtomToken,
@@ -62,20 +62,20 @@ export function atom(
 	return createStandaloneAtom(options, IMPLICIT.STORE)
 }
 
-export type RegularAtomFamilyOptions<T, K extends Json.Serializable> = {
+export type RegularAtomFamilyOptions<T, K extends Canonical> = {
 	key: string
 	default: T | ((key: K) => T)
 	effects?: (key: K) => AtomEffect<T>[]
 }
 
-export type RegularAtomFamilyToken<T, K extends Json.Serializable> = {
+export type RegularAtomFamilyToken<T, K extends Canonical> = {
 	key: string
 	type: `atom_family`
 	__T?: T
 	__K?: K
 }
 // biome-ignore format: intersection
-export type RegularAtomFamily<T, K extends Json.Serializable> = 
+export type RegularAtomFamily<T, K extends Canonical> = 
 	& RegularAtomFamilyToken<T, K>
 	& {
 		(key: K): RegularAtomToken<T>
@@ -87,7 +87,7 @@ export type RegularAtomFamily<T, K extends Json.Serializable> =
 export type MutableAtomFamilyOptions<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 > = 
 	& JsonInterface<T, J>
 	& { 
@@ -100,7 +100,7 @@ export type MutableAtomFamilyOptions<
 export type MutableAtomFamilyToken<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 > = {
 	key: string
 	type: `mutable_atom_family`
@@ -112,7 +112,7 @@ export type MutableAtomFamilyToken<
 export type MutableAtomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 > = 
 	& JsonInterface<T, J>
 	& MutableAtomFamilyToken<T, J, K>
@@ -122,22 +122,22 @@ export type MutableAtomFamily<
 			install: (store: Store) => void
 		}
 
-export type AtomFamily<T, K extends Json.Serializable = Json.Serializable> =
+export type AtomFamily<T, K extends Canonical = Canonical> =
 	| MutableAtomFamily<T extends Transceiver<any> ? T : never, any, K>
 	| RegularAtomFamily<T, K>
-export type AtomFamilyToken<T, K extends Json.Serializable = Json.Serializable> =
+export type AtomFamilyToken<T, K extends Canonical = Canonical> =
 	| MutableAtomFamilyToken<T extends Transceiver<any> ? T : never, any, K>
 	| RegularAtomFamilyToken<T, K>
 
 export function atomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 >(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K>
-export function atomFamily<T, K extends Json.Serializable>(
+export function atomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 ): RegularAtomFamilyToken<T, K>
-export function atomFamily<T, K extends Json.Serializable>(
+export function atomFamily<T, K extends Canonical>(
 	options:
 		| MutableAtomFamilyOptions<any, any, any>
 		| RegularAtomFamilyOptions<T, K>,

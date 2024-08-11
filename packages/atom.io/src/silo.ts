@@ -16,7 +16,7 @@ import {
 	Store,
 	timeTravel,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import type {
 	AtomToken,
@@ -73,12 +73,12 @@ export class Silo {
 		function _atomFamily<
 			T extends Transceiver<any>,
 			J extends Json.Serializable,
-			K extends Json.Serializable,
+			K extends Canonical,
 		>(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamily<T, J, K>
-		function _atomFamily<T, K extends Json.Serializable>(
+		function _atomFamily<T, K extends Canonical>(
 			options: RegularAtomFamilyOptions<T, K>,
 		): RegularAtomFamily<T, K>
-		function _atomFamily<T, K extends Json.Serializable>(
+		function _atomFamily<T, K extends Canonical>(
 			options:
 				| MutableAtomFamilyOptions<any, any, any>
 				| RegularAtomFamilyOptions<T, K>,

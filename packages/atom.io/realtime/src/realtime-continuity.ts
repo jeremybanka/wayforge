@@ -11,7 +11,7 @@ import {
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 export class InvariantMap<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {
@@ -45,7 +45,7 @@ export type ContinuityToken = {
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<any>[]
 	readonly perspectives: PerspectiveToken<
-		AtomFamilyToken<any, Json.Serializable>,
+		AtomFamilyToken<any, Canonical>,
 		Json.Serializable
 	>[]
 }
