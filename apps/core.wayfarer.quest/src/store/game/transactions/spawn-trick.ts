@@ -8,7 +8,7 @@ export const spawnTrickTX = transaction<
 	key: `spawnTrick`,
 	do: (transactors, gameId, trickId) => {
 		const { set, find } = transactors
-		set(CardGroups.trickStates(trickId), {
+		set(CardGroups.trickStates, trickId, {
 			type: `trick`,
 			name: ``,
 		})

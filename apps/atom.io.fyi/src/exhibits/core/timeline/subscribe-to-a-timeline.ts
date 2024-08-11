@@ -1,13 +1,13 @@
 import { setState, subscribe } from "atom.io"
 
-import { findXState } from "../families/declare-a-family"
+import { xAtoms } from "../families/declare-a-family"
 import { coordinatesTL } from "./create-a-timeline"
 
 subscribe(coordinatesTL, (value) => {
 	console.log(value)
 })
 
-setState(findXState(`sample_key`), 1)
+setState(xAtoms, `sample_key`, 1)
 /* {
   newValue: 1,
   oldValue: 0,

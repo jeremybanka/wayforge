@@ -34,8 +34,8 @@ const findTimerRemainingState = selectorFamily<number, string>({
 		(id) =>
 		({ get }) => {
 			const now = get(nowState)
-			const started = get(findTimerStartedState(id))
-			const length = get(findTimerLengthState(id))
+			const started = get(findTimerStartedState, id)
+			const length = get(findTimerLengthState, id)
 			return Math.max(0, length - (now - started))
 		},
 })
@@ -45,8 +45,8 @@ export const addOneMinuteToAllRunningTimersTX = transaction({
 	do: ({ get, set }) => {
 		const timerIds = get(timerIndex)
 		for (const timerId of timerIds) {
-			if (get(findTimerRemainingState(timerId)) > 0) {
-				set(findTimerLengthState(timerId), (current) => current + 60_000)
+			if (get(findTimerRemainingState, timerId) > 0) {
+				set(findTimerLengthState, timerId, (current) => current + 60_000)
 			}
 		}
 	},
