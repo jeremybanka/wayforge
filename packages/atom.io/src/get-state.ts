@@ -1,5 +1,5 @@
 import * as Internal from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type {
 	MoleculeConstructor,
