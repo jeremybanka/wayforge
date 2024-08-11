@@ -23,9 +23,10 @@ import {
 	makeMoleculeInStore,
 	Molecule,
 } from "atom.io/internal"
-import { type Json, stringifyJson } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
-export type CtorToolkit<K extends Json.Serializable> = Flat<
+export type CtorToolkit<K extends Canonical> = Flat<
 	Omit<ActorToolkit, `find`> & {
 		bond<T extends Transceiver<any>, J extends Json.Serializable>(
 			family: MutableAtomFamilyToken<T, J, K>,
@@ -53,7 +54,7 @@ export type CtorToolkit<K extends Json.Serializable> = Flat<
 
 		claim(below: MoleculeToken<any>, options: { exclusive: boolean }): void
 
-		spawn<Key extends Json.Serializable, Ctor extends MoleculeConstructor>(
+		spawn<Key extends Canonical, Ctor extends MoleculeConstructor>(
 			family: MoleculeFamilyToken<Ctor>,
 			key: Key,
 			...params: MoleculeParams<Ctor>

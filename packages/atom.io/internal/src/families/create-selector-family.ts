@@ -4,21 +4,21 @@ import type {
 	WritableSelectorFamily,
 	WritableSelectorFamilyOptions,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { Store } from "../store"
 import { createReadonlySelectorFamily } from "./create-readonly-selector-family"
 import { createWritableSelectorFamily } from "./create-writable-selector-family"
 
-export function createSelectorFamily<T, K extends Json.Serializable>(
+export function createSelectorFamily<T, K extends Canonical>(
 	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 ): WritableSelectorFamily<T, K>
-export function createSelectorFamily<T, K extends Json.Serializable>(
+export function createSelectorFamily<T, K extends Canonical>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K>
-export function createSelectorFamily<T, K extends Json.Serializable>(
+export function createSelectorFamily<T, K extends Canonical>(
 	options:
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,

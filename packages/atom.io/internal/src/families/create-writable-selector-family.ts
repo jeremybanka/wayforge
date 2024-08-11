@@ -6,7 +6,7 @@ import type {
 	WritableSelectorFamilyOptions,
 	WritableSelectorToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
@@ -14,7 +14,7 @@ import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createWritableSelectorFamily<T, K extends Json.Serializable>(
+export function createWritableSelectorFamily<T, K extends Canonical>(
 	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 ): WritableSelectorFamily<T, K> {

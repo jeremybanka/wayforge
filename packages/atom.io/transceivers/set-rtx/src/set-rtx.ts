@@ -1,6 +1,6 @@
 import type { Lineage, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { Json, primitive, Stringified } from "atom.io/json"
+import type { Json, primitive, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
 export type SetUpdate =
@@ -145,13 +145,13 @@ export class SetRTX<P extends primitive>
 		const value = update.substring(typeValueBreak + 1)
 		switch (type) {
 			case `add`:
-				this.add(parseJson(value as Stringified<P>))
+				this.add(parseJson(value as stringified<P>))
 				break
 			case `clear`:
 				this.clear()
 				break
 			case `del`:
-				this.delete(parseJson(value as Stringified<P>))
+				this.delete(parseJson(value as stringified<P>))
 				break
 			case `tx`:
 				for (const subUpdate of value.split(`;`)) {
@@ -214,10 +214,10 @@ export class SetRTX<P extends primitive>
 		const value = update.substring(breakpoint + 1)
 		switch (type) {
 			case `add`:
-				this.delete(parseJson(value as Stringified<P>))
+				this.delete(parseJson(value as stringified<P>))
 				break
 			case `del`:
-				this.add(parseJson(value as Stringified<P>))
+				this.add(parseJson(value as stringified<P>))
 				break
 			case `clear`: {
 				const values = JSON.parse(value) as P[]

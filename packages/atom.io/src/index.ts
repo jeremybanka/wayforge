@@ -1,5 +1,5 @@
 import type { Transceiver } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import type { AtomFamily, AtomFamilyToken } from "./atom"
 import type {
@@ -61,17 +61,17 @@ export type SelectorToken<T> =
 export type WritableToken<T> = AtomToken<T> | WritableSelectorToken<T>
 export type ReadableToken<T> = AtomToken<T> | SelectorToken<T>
 
-export type WritableFamily<T, K extends Json.Serializable> =
+export type WritableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
 	| WritableSelectorFamily<T, K>
-export type ReadableFamily<T, K extends Json.Serializable> =
+export type ReadableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
 	| SelectorFamily<T, K>
 
-export type WritableFamilyToken<T, K extends Json.Serializable> =
+export type WritableFamilyToken<T, K extends Canonical> =
 	| AtomFamilyToken<T, K>
 	| WritableSelectorFamilyToken<T, K>
-export type ReadableFamilyToken<T, K extends Json.Serializable> =
+export type ReadableFamilyToken<T, K extends Canonical> =
 	| AtomFamilyToken<T, K>
 	| SelectorFamilyToken<T, K>
 

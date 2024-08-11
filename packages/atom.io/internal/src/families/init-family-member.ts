@@ -16,7 +16,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
@@ -27,7 +27,7 @@ import { isChildStore, isRootStore } from "../transaction"
 export function initFamilyMemberInStore<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 	Key extends K,
 >(
 	token: MutableAtomFamilyToken<T, J, K>,
@@ -35,59 +35,47 @@ export function initFamilyMemberInStore<
 	store: Store,
 ): MutableAtomToken<T, J>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): RegularAtomToken<T>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(token: AtomFamilyToken<T, K>, key: Key, store: Store): AtomToken<T>
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	token: AtomFamilyToken<T, K>,
+	key: Key,
+	store: Store,
+): AtomToken<T>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): WritableSelectorToken<T>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
 	store: Store,
 ): ReadonlySelectorToken<T>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(token: SelectorFamilyToken<T, K>, key: Key, store: Store): SelectorToken<T>
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	token: SelectorFamilyToken<T, K>,
+	key: Key,
+	store: Store,
+): SelectorToken<T>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(token: WritableFamilyToken<T, K>, key: Key, store: Store): WritableToken<T>
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	token: WritableFamilyToken<T, K>,
+	key: Key,
+	store: Store,
+): WritableToken<T>
 
-export function initFamilyMemberInStore<
-	T,
-	K extends Json.Serializable,
-	Key extends K,
->(token: ReadableFamilyToken<T, K>, key: Key, store: Store): ReadableToken<T>
+export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	token: ReadableFamilyToken<T, K>,
+	key: Key,
+	store: Store,
+): ReadableToken<T>
 
 export function initFamilyMemberInStore(
 	token: ReadableFamilyToken<any, any>,

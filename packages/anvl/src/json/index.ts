@@ -2,15 +2,15 @@ export * from "./json-interface"
 import type * as Json from "./json"
 export type { Json }
 
-export const parseJson = <S extends Stringified<Json.Serializable>>(
+export const parseJson = <S extends stringified<Json.Serializable>>(
 	str: S | string,
-): S extends Stringified<infer J> ? J : Json.Serializable => JSON.parse(str)
+): S extends stringified<infer J> ? J : Json.Serializable => JSON.parse(str)
 
-export type Stringified<J extends Json.Serializable> = string & { __json: J }
+export type stringified<J extends Json.Serializable> = string & { __json: J }
 
 export const stringifyJson = <J extends Json.Serializable>(
 	json: J,
-): Stringified<J> => JSON.stringify(json) as Stringified<J>
+): stringified<J> => JSON.stringify(json) as stringified<J>
 
 export type Empty = Record<string, never>
 

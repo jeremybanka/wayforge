@@ -6,7 +6,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
 import { disposeMolecule } from "../molecule/dispose-molecule"
@@ -21,7 +21,7 @@ export function disposeFromStore(
 	store: Store,
 ): void
 
-export function disposeFromStore<K extends Json.Serializable>(
+export function disposeFromStore<K extends Canonical>(
 	token: ReadableFamilyToken<any, K>,
 	key: K,
 	store: Store,
@@ -35,13 +35,9 @@ export function disposeFromStore<M extends MoleculeConstructor>(
 
 export function disposeFromStore(
 	...params:
-		| [
-				token: ReadableFamilyToken<any, any>,
-				key: Json.Serializable,
-				store: Store,
-		  ]
 		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>, store: Store]
 		| [token: MoleculeToken<any> | ReadableToken<any>, store: Store]
+		| [token: ReadableFamilyToken<any, any>, key: Canonical, store: Store]
 ): void {
 	let token: MoleculeToken<any> | ReadableToken<any>
 	let store: Store

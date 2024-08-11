@@ -31,7 +31,8 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import { type Json, stringifyJson } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
 import type {
 	Atom,
@@ -100,39 +101,39 @@ export function withdraw<T>(
 	store: Store,
 ): ReadableState<T>
 
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: RegularAtomFamilyToken<T, K>,
 	store: Store,
 ): RegularAtomFamily<T, K>
 export function withdraw<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 >(
 	token: MutableAtomFamilyToken<T, J, K>,
 	store: Store,
 ): MutableAtomFamily<T, J, K>
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: AtomFamilyToken<T>,
 	store: Store,
 ): AtomFamily<T, any>
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, any>
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: WritableSelectorFamilyToken<T, K>,
 	store: Store,
 ): WritableSelectorFamily<T, any>
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: SelectorFamilyToken<T, K>,
 	store: Store,
 ): SelectorFamily<T, any>
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: ReadableFamilyToken<T, K>,
 	store: Store,
 ): ReadableFamily<T, any>
-export function withdraw<T, K extends Json.Serializable>(
+export function withdraw<T, K extends Canonical>(
 	token: WritableFamilyToken<T, K>,
 	store: Store,
 ): WritableFamily<T, any>

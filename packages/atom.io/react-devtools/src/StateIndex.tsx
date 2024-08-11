@@ -6,6 +6,7 @@ import type {
 import { getState, selectorFamily } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
+import type { Canonical } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
@@ -15,7 +16,7 @@ import { findViewIsOpenState, primitiveRefinery } from "."
 import { button } from "./Button"
 import { StoreEditor } from "./StateEditor"
 
-const findStateTypeState = selectorFamily<string, { key: string }>({
+const findStateTypeState = selectorFamily<string, Canonical>({
 	key: `👁‍🗨 State Type`,
 	get:
 		(token) =>
@@ -83,7 +84,7 @@ export const StateIndexTreeNode: FC<{
 	const isOpen = useO(isOpenState)
 	for (const [key, childNode] of node.familyMembers) {
 		findState(findViewIsOpenState, key)
-		findState(findStateTypeState, childNode)
+		findState(findStateTypeState, childNode.key)
 	}
 	return (
 		<>
@@ -104,7 +105,7 @@ export const StateIndexTreeNode: FC<{
 							key={key}
 							node={childNode}
 							isOpenState={findState(findViewIsOpenState, childNode.key)}
-							typeState={findState(findStateTypeState, childNode)}
+							typeState={findState(findStateTypeState, childNode.key)}
 						/>
 					))
 				: null}
@@ -147,7 +148,7 @@ export const StateIndex: FC<{
 							key={key}
 							node={node}
 							isOpenState={findState(findViewIsOpenState, node.key)}
-							typeState={findState(findStateTypeState, node)}
+							typeState={findState(findStateTypeState, node.key)}
 						/>
 					)
 				})}

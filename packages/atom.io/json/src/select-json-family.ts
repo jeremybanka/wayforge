@@ -8,13 +8,13 @@ import {
 	seekInStore,
 } from "atom.io/internal"
 
-import type { Json, JsonInterface } from "."
+import type { Canonical, Json, JsonInterface } from "."
 import { parseJson, stringifyJson } from "."
 
 export function selectJsonFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 >(
 	atomFamily: AtomIO.MutableAtomFamily<T, J, K>,
 	transform: JsonInterface<T, J>,
@@ -23,7 +23,7 @@ export function selectJsonFamily<
 export function selectJsonFamily<
 	T,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 >(
 	atomFamily: AtomIO.RegularAtomFamily<T, K>,
 	transform: JsonInterface<T, J>,
@@ -32,7 +32,7 @@ export function selectJsonFamily<
 export function selectJsonFamily<
 	T,
 	J extends Json.Serializable,
-	K extends Json.Serializable,
+	K extends Canonical,
 >(
 	family:
 		| AtomIO.MutableAtomFamily<T extends Transceiver<any> ? T : never, J, K>

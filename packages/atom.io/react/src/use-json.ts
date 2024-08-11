@@ -4,7 +4,7 @@ import type {
 	ReadableToken,
 } from "atom.io"
 import { findInStore, getJsonToken } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 import * as React from "react"
 
 import { StoreContext } from "./store-context"
@@ -16,12 +16,12 @@ export function useJSON<Serializable extends Json.Serializable>(
 
 export function useJSON<
 	Serializable extends Json.Serializable,
-	Key extends Json.Serializable,
+	Key extends Canonical,
 >(token: MutableAtomFamilyToken<any, Serializable, Key>, key: Key): Serializable
 
 export function useJSON<
 	Serializable extends Json.Serializable,
-	Key extends Serializable,
+	Key extends Canonical,
 >(
 	token:
 		| MutableAtomFamilyToken<any, Serializable, Key>

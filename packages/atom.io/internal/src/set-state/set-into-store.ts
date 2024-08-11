@@ -1,5 +1,5 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
@@ -14,7 +14,7 @@ export function setIntoStore<T, New extends T>(
 	store: Store,
 ): void
 
-export function setIntoStore<T, K extends Json.Serializable, New extends T>(
+export function setIntoStore<T, K extends Canonical, New extends T>(
 	token: WritableFamilyToken<T, K>,
 	key: K,
 	value: New | ((oldValue: T) => New),
@@ -24,8 +24,8 @@ export function setIntoStore<T, K extends Json.Serializable, New extends T>(
 export function setIntoStore<T, New extends T>(
 	...params:
 		| [
-				token: WritableFamilyToken<T, Json.Serializable>,
-				key: Json.Serializable,
+				token: WritableFamilyToken<T, Canonical>,
+				key: Canonical,
 				value: New | ((oldValue: T) => New),
 				store: Store,
 		  ]

@@ -8,7 +8,7 @@ import {
 	IMPLICIT,
 	subscribeToState,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
@@ -23,7 +23,7 @@ export function realtimeMutableFamilyProvider({
 	return function mutableFamilyProvider<
 		T extends Transceiver<any>,
 		J extends Json.Serializable,
-		K extends Json.Serializable,
+		K extends Canonical,
 	>(
 		family: AtomIO.MutableAtomFamilyToken<T, J, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,

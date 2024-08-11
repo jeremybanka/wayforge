@@ -6,7 +6,7 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
@@ -14,7 +14,7 @@ import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createReadonlySelectorFamily<T, K extends Json.Serializable>(
+export function createReadonlySelectorFamily<T, K extends Canonical>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
 ): ReadonlySelectorFamily<T, K> {
