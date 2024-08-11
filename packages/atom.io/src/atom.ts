@@ -75,17 +75,6 @@ export type RegularAtomFamilyToken<T, K extends Json.Serializable> = {
 	__K?: K
 }
 // biome-ignore format: intersection
-export type RegularAtomFamilyTokenWithCall<
-	T,
-	K extends Json.Serializable,
-> = 
-	& RegularAtomFamilyToken<T, K>
-	& {
-		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
-		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */
-		(key: K): RegularAtomToken<T>
-	}
-// biome-ignore format: intersection
 export type RegularAtomFamily<T, K extends Json.Serializable> = 
 	& RegularAtomFamilyToken<T, K>
 	& {
@@ -120,18 +109,6 @@ export type MutableAtomFamilyToken<
 	__K?: K
 }
 // biome-ignore format: intersection
-export type MutableAtomFamilyTokenWithCall<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
-	K extends Json.Serializable,
-> = 
-	& MutableAtomFamilyToken<T, J, K>
-	& {
-		/** @deprecated In ephemeral stores, prefer the `findState`, `findInStore`, or `find` functions. In immortal stores, prefer the `seekState`, `seekInStore`, or `seek` functions. */
-		/* eslint-disable-next-line @typescript-eslint/prefer-function-type */	
-		(key: K): MutableAtomToken<T, J>
-	}
-// biome-ignore format: intersection
 export type MutableAtomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
@@ -156,18 +133,14 @@ export function atomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 	K extends Json.Serializable,
->(
-	options: MutableAtomFamilyOptions<T, J, K>,
-): MutableAtomFamilyTokenWithCall<T, J, K>
+>(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K>
 export function atomFamily<T, K extends Json.Serializable>(
 	options: RegularAtomFamilyOptions<T, K>,
-): RegularAtomFamilyTokenWithCall<T, K>
+): RegularAtomFamilyToken<T, K>
 export function atomFamily<T, K extends Json.Serializable>(
 	options:
 		| MutableAtomFamilyOptions<any, any, any>
 		| RegularAtomFamilyOptions<T, K>,
-):
-	| MutableAtomFamilyTokenWithCall<any, any, any>
-	| RegularAtomFamilyTokenWithCall<T, K> {
+): MutableAtomFamilyToken<any, any, any> | RegularAtomFamilyToken<T, K> {
 	return createAtomFamily(options, IMPLICIT.STORE)
 }

@@ -73,6 +73,18 @@
 				"__scripts__/**"
 			]
 		},
+		"lint:types:watch": {
+			"persistent": true,
+			"dependsOn": ["gen"],
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				"src/**",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**"
+			]
+		},
 		"lint": {
 			"dependsOn": ["lint:biome", "lint:eslint", "lint:types"]
 		},

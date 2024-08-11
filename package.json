@@ -29,6 +29,7 @@
 		"lint:eslint": "turbo run lint:eslint",
 		"lint:eslint:build": "turbo run lint:eslint:build",
 		"lint:types": "turbo run lint:types",
+		"lint:types:watch": "turbo run lint:types:watch --concurrency=20",
 		"lint:fix:biome": "biome check --write *",
 		"lint:fix:eslint": "eslint --fix .",
 		"fmt": "biome format .",
@@ -42,9 +43,7 @@
 		"notes": "changeset",
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml"
 	},
-	"trustedDependencies": [
-		"@biomejs/biome"
-	],
+	"trustedDependencies": ["@biomejs/biome"],
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@changesets/cli": "2.27.7",

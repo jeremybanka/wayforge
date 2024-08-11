@@ -13,7 +13,7 @@ export const myIdState = atom<Loadable<string>>({
 	},
 })
 
-export const findPlayerInventoryState = atomFamily<Inventory, string>({
+export const playerInventoryAtoms = atomFamily<Inventory, string>({
 	key: `inventory`,
 	default: {},
 })
@@ -24,8 +24,7 @@ export const giveCoinsTX = transaction<
 	key: `giveCoins`,
 	do: async ({ get, set }, playerId, amount) => {
 		const myId = await get(myIdState)
-		const myInventoryState = findPlayerInventoryState(myId)
-		const myInventory = get(myInventoryState)
+		const myInventory = get(playerInventoryAtoms, myId)
 		if (!myInventory.coins) {
 			throw new Error(`Your inventory is missing coins`)
 		}
@@ -33,10 +32,16 @@ export const giveCoinsTX = transaction<
 		if (myCoins < amount) {
 			throw new Error(`You don't have enough coins`)
 		}
-		const theirInventoryState = findPlayerInventoryState(playerId)
-		const theirInventory = get(theirInventoryState)
+		const theirInventory = get(playerInventoryAtoms, playerId)
 		const theirCoins = theirInventory.coins ?? 0
-		set(findPlayerInventoryState(myId), { coins: myCoins - amount })
+		set(playerInventoryAtoms, myId, (previous) => ({
+			...previous,
+			coins: myCoins - amount,
+		}))
+		set(playerInventoryAtoms, playerId, (previous) => ({
+			...previous,
+			coins: theirCoins + amount,
+		}))
 	},
 })
 ;async () => {

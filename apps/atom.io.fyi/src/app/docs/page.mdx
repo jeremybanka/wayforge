@@ -175,7 +175,7 @@ Keen readers may recognize that collections generally extend `Object`, and that 
 
 ## transaction
 
-import CallAFamilyInATransaction from "x/core/transaction/call-a-family-in-a-transaction.gen"
+import CallAFamilyInATransaction from "x/core/transaction/use-a-family-in-a-transaction.gen"
 import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "x/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
 import TryCatchAFailedTransaction from "x/core/transaction/try-catch-a-failed-transaction.gen"
 
@@ -183,7 +183,7 @@ Transactions allow you to batch multiple atom changes into a single update. This
 
 <CallAFamilyInATransaction />
 
-A common use case is creating some new state using a family function and adding it to an index tracking members of that family.
+A common use case is creating some new state using a family and adding it to an index tracking members of that family.
 
 <IterateThroughAnIndexChangingTheValueOfSomeAtoms />
 

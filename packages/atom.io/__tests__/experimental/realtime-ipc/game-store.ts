@@ -1,5 +1,6 @@
 import type { RegularAtomToken } from "atom.io"
 import { atomFamily } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import { continuity } from "atom.io/realtime"
 
 export const letterAtoms = atomFamily<string | null, number>({
@@ -9,7 +10,7 @@ export const letterAtoms = atomFamily<string | null, number>({
 export const letterIndex = atomFamily<RegularAtomToken<string | null>[], string>(
 	{
 		key: `letterIndex`,
-		default: Array.from({ length: 5 }).map((_, i) => letterAtoms(i)),
+		default: Array.from({ length: 5 }).map((_, i) => findState(letterAtoms, i)),
 	},
 )
 

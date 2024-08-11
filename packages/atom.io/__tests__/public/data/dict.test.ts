@@ -22,7 +22,7 @@ describe(`dict`, () => {
 		})
 		const userDict = dict(findUserState, userIndex)
 		setState(userIndex, [`1`, `2`, `3`])
-		setState(findUserState(`1`), { name: `Bob`, age: 42, email: `` })
+		setState(findUserState, `1`, { name: `Bob`, age: 42, email: `` })
 		const users = getState(userDict)
 		expect(users).toEqual({
 			"1": { name: `Bob`, age: 42, email: `` },

@@ -31,7 +31,8 @@
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
-		"lint": "bun run lint:biome && bun run lint:eslint",
+		"lint:types:watch": "tsc --watch --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "bun test --watch -- **/*.test.ts",
 		"test:once": "bun test -- **/*.test.ts",
 		"test:coverage": "echo no test coverage yet"

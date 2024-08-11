@@ -1,8 +1,8 @@
 import { timeline } from "atom.io"
 
-import { findXState, findYState } from "../families/declare-a-family"
+import { xAtoms, yAtoms } from "../families/declare-a-family"
 
 export const coordinatesTL = timeline({
 	key: `timeline`,
-	scope: [findXState, findYState],
+	scope: [xAtoms, yAtoms],
 })
