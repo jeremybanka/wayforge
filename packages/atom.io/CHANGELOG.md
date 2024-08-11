@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.27.0
+
+### Minor Changes
+
+- 663cdd4: ➕ `atom.io` requires `eslint>=9.0.0` as an optional peer dependency. This is due to the fact that eslint versions `<9.0.0` are no longer being tested in `atom.io`'s test suite, as maintenance for them will conclude in coming months.
+- cb6912e: 💥 BREAKING CHANGE: (types only) Calling an `atomFamily` or `selectorFamily` directly, a feature previously marked deprecated, now gives a TypeScript error. Documentation has been updated on [atom.io.fyi/docs](https://atom.io.fyi/docs) to reflect this change.
+- 9b4470e: 💥 BREAKING CHANGE: `Json.Object` is no longer permitted as a key for `atomFamilies` or `selectorFamilies`. This due to the fact that objects may include extraneous properties that not official to their type, and that property-order is not guaranteed anyway.
+
 ## 0.26.0
 
 ### Minor Changes
