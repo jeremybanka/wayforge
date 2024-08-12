@@ -15,9 +15,9 @@ export function getState<M extends MoleculeConstructor>(
 	token: MoleculeToken<M>,
 ): InstanceType<M>
 
-export function getState<T, K extends Canonical>(
+export function getState<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
-	key: K,
+	key: Key,
 ): T
 
 export function getState<M extends MoleculeConstructor>(
