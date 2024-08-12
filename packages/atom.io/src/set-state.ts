@@ -25,9 +25,9 @@ export function setState<T, New extends T>(
  * @param value - The new value of the state.
  * @overload Streamlined
  */
-export function setState<T, K extends Canonical, New extends T>(
+export function setState<T, K extends Canonical, New extends T, Key extends K>(
 	token: WritableFamilyToken<T, K>,
-	key: K,
+	key: Key,
 	value: New | ((oldValue: T) => New),
 ): void
 
