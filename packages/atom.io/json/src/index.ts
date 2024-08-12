@@ -2,6 +2,7 @@ import type { Json, JsonInterface, stringified } from "~/packages/anvl/src/json"
 import { parseJson, stringifyJson } from "~/packages/anvl/src/json"
 import type { primitive } from "~/packages/anvl/src/primitive"
 
+export * from "./entries"
 export * from "./select-json"
 export * from "./select-json-family"
 
