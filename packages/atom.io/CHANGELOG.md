@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.27.2
+
+### Patch Changes
+
+- 17c1e67: 🏷️ The streamlined mode of `getState` and `setState` now require a `Key` extending the type of the family's `Key`.
+
 ## 0.27.1
 
 ### Patch Changes
