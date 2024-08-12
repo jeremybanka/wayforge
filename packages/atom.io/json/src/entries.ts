@@ -6,7 +6,7 @@ export type KeyOfEntries<E extends Entries> = E extends [infer K, any][]
 	? K
 	: never
 
-type Range<N extends number, A extends any[] = []> = A[`length`] extends N
+export type Range<N extends number, A extends any[] = []> = A[`length`] extends N
 	? A[`length`]
 	: A[`length`] | Range<N, [...A, any]>
 
