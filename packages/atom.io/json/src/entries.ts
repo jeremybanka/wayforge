@@ -6,11 +6,13 @@ export type KeyOfEntries<E extends Entries> = E extends [infer K, any][]
 	? K
 	: never
 
-export type UpToTen = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+type Range<N extends number, A extends any[] = []> = A[`length`] extends N
+	? A[`length`]
+	: A[`length`] | Range<N, [...A, any]>
 
 export type CertainEntry<E extends Entries, K extends KeyOfEntries<E>> = {
-	[P in UpToTen]: E[P] extends [K, infer V] ? V : never
-}[UpToTen]
+	[P in Range<E[`length`]>]: E[P] extends [K, infer V] ? V : never
+}[Range<E[`length`]>]
 
 export type FromEntries<E extends Entries> = Flat<{
 	[K in KeyOfEntries<E>]: CertainEntry<E, K>
