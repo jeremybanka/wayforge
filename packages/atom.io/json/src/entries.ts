@@ -1,14 +1,10 @@
-import type { Flat } from "atom.io/internal"
+import type { Flat, Range } from "atom.io/internal"
 
 export type Entries<K extends keyof any = keyof any, V = any> = [K, V][]
 
 export type KeyOfEntries<E extends Entries> = E extends [infer K, any][]
 	? K
 	: never
-
-export type Range<N extends number, A extends any[] = []> = A[`length`] extends N
-	? A[`length`]
-	: A[`length`] | Range<N, [...A, any]>
 
 export type CertainEntry<E extends Entries, K extends KeyOfEntries<E>> = {
 	[P in Range<E[`length`]>]: E[P] extends [K, infer V] ? V : never
