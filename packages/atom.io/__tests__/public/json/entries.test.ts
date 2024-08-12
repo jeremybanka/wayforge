@@ -7,7 +7,7 @@ describe(`fromEntries`, () => {
 			[`a`, 1],
 			[`b`, 1],
 			[`c`, 1],
-		] satisfies Entries
+		] as const satisfies Entries
 		const { a, b, c } = fromEntries(myEntries)
 		expect(a + b + c).toBe(3)
 	})
