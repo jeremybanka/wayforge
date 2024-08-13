@@ -164,10 +164,8 @@ export class Store implements Lineage {
 					family.internalRoles?.includes(`mutable`) ||
 					family.internalRoles?.includes(`join`)
 				) {
-					console.log(`skipping`, family.key)
 					continue
 				}
-				console.log(`installing`, family.key)
 				family.install(this)
 			}
 			const mutableHelpers = new Set<string>()
