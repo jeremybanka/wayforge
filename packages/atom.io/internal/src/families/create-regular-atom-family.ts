@@ -20,6 +20,7 @@ import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-f
 export function createRegularAtomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
+	internalRoles?: string[],
 ): RegularAtomFamily<T, K> {
 	const familyToken = {
 		key: options.key,
@@ -59,6 +60,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		{
 			subject,
 			install: (s: Store) => createRegularAtomFamily(options, s),
+			internalRoles,
 		},
 	) satisfies RegularAtomFamily<T, K>
 

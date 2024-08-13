@@ -19,6 +19,7 @@ import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-f
 export function createWritableSelectorFamily<T, K extends Canonical>(
 	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
+	internalRoles?: string[],
 ): WritableSelectorFamily<T, K> {
 	const familyToken = {
 		key: options.key,
@@ -55,6 +56,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		subject,
 		install: (s: Store) => createWritableSelectorFamily(options, s),
+		internalRoles,
 	}) satisfies WritableSelectorFamily<T, K>
 
 	store.families.set(options.key, selectorFamily)

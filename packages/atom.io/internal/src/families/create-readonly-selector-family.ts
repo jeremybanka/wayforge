@@ -19,6 +19,7 @@ import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-f
 export function createReadonlySelectorFamily<T, K extends Canonical>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
+	internalRoles?: string[],
 ): ReadonlySelectorFamily<T, K> {
 	const familyToken = {
 		key: options.key,
@@ -54,6 +55,7 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		subject,
 		install: (s: Store) => createReadonlySelectorFamily(options, s),
+		internalRoles,
 	}) satisfies ReadonlySelectorFamily<T, K>
 
 	store.families.set(options.key, readonlySelectorFamily)

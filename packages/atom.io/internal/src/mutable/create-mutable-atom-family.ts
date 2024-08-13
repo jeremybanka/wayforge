@@ -26,6 +26,7 @@ export function createMutableAtomFamily<
 >(
 	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
+	internalRoles?: string[],
 ): MutableAtomFamily<T, J, K> {
 	const familyToken = {
 		key: options.key,
@@ -66,6 +67,7 @@ export function createMutableAtomFamily<
 		install: (s: Store) => createMutableAtomFamily(options, s),
 		toJson: options.toJson,
 		fromJson: options.fromJson,
+		internalRoles,
 	}) satisfies MutableAtomFamily<T, J, K>
 
 	store.families.set(options.key, atomFamily)

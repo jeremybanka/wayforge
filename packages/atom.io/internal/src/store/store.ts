@@ -163,7 +163,7 @@ export class Store implements Lineage {
 				if (
 					family.key.startsWith(`*`) ||
 					family.key.endsWith(`:JSON`) ||
-					family.key.includes(`/`)
+					family.internalRole === `representing relations`
 				) {
 					console.log(`skipping`, family.key)
 					continue

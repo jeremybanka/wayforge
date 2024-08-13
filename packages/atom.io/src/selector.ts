@@ -55,6 +55,7 @@ export type WritableSelectorFamily<T, K extends Canonical> =
 		(key: K): WritableSelectorToken<T>
 		subject: Subject<StateCreation<WritableSelectorToken<T>> | StateDisposal<WritableSelectorToken<T>>>
 		install: (store: Store) => void
+		internalRoles : string[] | undefined
 	}
 
 export type ReadonlySelectorFamilyToken<T, K extends Canonical> = {
@@ -72,8 +73,7 @@ export type ReadonlySelectorFamily<T, K extends Canonical> =
 		type: `readonly_selector_family`
 		subject: Subject<StateCreation<ReadonlySelectorToken<T>> | StateDisposal<ReadonlySelectorToken<T>>>
 		install: (store: Store) => void
-		__T?: T
-		__K?: K
+		internalRoles : string[] | undefined
 	}
 
 export type SelectorFamily<T, K extends Canonical> =
