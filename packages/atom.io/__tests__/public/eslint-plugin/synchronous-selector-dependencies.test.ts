@@ -304,5 +304,23 @@ ruleTester.run(`synchronous-selector-dependencies (selectorFamily)`, rule, {
       `,
 			errors: 1,
 		},
+		{
+			name: `get in a ternary expression after an await`,
+			code: `
+        const myRecordState = atom<Record<string, number>>({
+          key: "myRecordState",
+          default: {},
+        })
+        const mySelector = selector<number>({
+          key: "mySelector",
+          get: async ({ get }) => {
+            const record = await get(myRecordState)
+            const result = record.foo ? await get(myRecordState).foo : 0
+            return result
+          },
+        })
+      `,
+			errors: 1,
+		},
 	],
 })
