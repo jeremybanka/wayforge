@@ -5,6 +5,7 @@ import {
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
+import { int } from "drizzle-orm/mysql-core"
 
 import type {
 	AtomToken,
@@ -81,6 +82,7 @@ export type RegularAtomFamily<T, K extends Canonical> =
 		(key: K): RegularAtomToken<T>
 		subject: Subject<StateCreation<AtomToken<T>> | StateDisposal<AtomToken<T>>>
 		install: (store: Store) => void
+		internalRoles: string[] | undefined
 	}
 
 // biome-ignore format: intersection
@@ -120,6 +122,7 @@ export type MutableAtomFamily<
 			(key: K): MutableAtomToken<T, J>
 			subject: Subject<StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>>
 			install: (store: Store) => void
+			internalRoles: string[] | undefined
 		}
 
 export type AtomFamily<T, K extends Canonical = Canonical> =

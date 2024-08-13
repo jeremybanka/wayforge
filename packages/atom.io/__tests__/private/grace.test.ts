@@ -10,12 +10,15 @@ import {
 	getState,
 	redo,
 	selector,
+	selectorFamily,
 	setState,
 	timeline,
 	undo,
 } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -156,6 +159,60 @@ describe(`graceful handling of improper usage`, () => {
 			console.log(countTimelineData?.history)
 			expect(countTimelineData?.history).toHaveLength(2)
 			expect(aCountTimelineData?.history).toHaveLength(0)
+		})
+	})
+	describe(`creating two families with the same key is a violation`, () => {
+		it(`throws an error when creating two families with the same key`, () => {
+			const countAtoms = atomFamily<number, string>({
+				key: `count`,
+				default: 0,
+			})
+			expect(() => {
+				atomFamily<number, string>({
+					key: `count`,
+					default: 0,
+				})
+			}).toThrowError(
+				`Tried to create an Atom Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+			)
+			expect(() => {
+				selectorFamily<number, string>({
+					key: `count`,
+					get:
+						(key) =>
+						({ get }) =>
+							get(findState(countAtoms, key)),
+				})
+			}).toThrowError(
+				`Tried to create a Readonly Selector Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+			)
+			expect(() => {
+				atomFamily<SetRTX<number>, SetRTXJson<number>, string>({
+					key: `count`,
+					mutable: true,
+					default: () => new SetRTX<number>(),
+					toJson: (set) => set.toJSON(),
+					fromJson: (json) => SetRTX.fromJSON(json),
+				})
+			}).toThrowError(
+				`Tried to create a Mutable Atom Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+			)
+			expect(() => {
+				selectorFamily<number, string>({
+					key: `count`,
+					get:
+						(key) =>
+						({ get }) =>
+							get(findState(countAtoms, key)),
+					set:
+						(key) =>
+						({ set }, newValue) => {
+							set(findState(countAtoms, key), newValue)
+						},
+				})
+			}).toThrowError(
+				`Tried to create a Selector Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+			)
 		})
 	})
 })

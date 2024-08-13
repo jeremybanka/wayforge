@@ -14,7 +14,7 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
-import * as Utils from "../../__util__"
+import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -88,14 +88,14 @@ describe(`trackerFamily`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const setRTXStates = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
-		const { latestUpdateAtoms: latestUpdateStates } = new FamilyTracker(
-			setRTXStates,
+
+		const latestUpdateStates = Internal.getUpdateFamily(
+			setAtoms,
 			Internal.IMPLICIT.STORE,
 		)
 
-		expect(getState(findState(setRTXStates, `a`))).toEqual(new SetRTX())
-		expect(getState(findState(latestUpdateStates, `a`))).toEqual(null)
+		expect(getState(setAtoms, `a`)).toEqual(new SetRTX())
+		expect(getState(latestUpdateStates, `a`)).toEqual(null)
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
 		const setAtoms = atomFamily<SetRTX<string>, SetRTXJson<string>, string>({
@@ -105,9 +105,9 @@ describe(`trackerFamily`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const setRTXStates = Internal.withdraw(setAtoms, Internal.IMPLICIT.STORE)
-		const { latestUpdateAtoms: latestUpdateStates } = new FamilyTracker(
-			setRTXStates,
+
+		const latestUpdateStates = Internal.getUpdateFamily(
+			setAtoms,
 			Internal.IMPLICIT.STORE,
 		)
 		const updateTrackerTX = transaction<(key: string) => void>({
@@ -118,11 +118,11 @@ describe(`trackerFamily`, () => {
 			},
 		})
 
-		expect(getState(findState(setRTXStates, `a`))).toEqual(new SetRTX())
+		expect(getState(findState(setAtoms, `a`))).toEqual(new SetRTX())
 		expect(getState(findState(latestUpdateStates, `a`))).toEqual(null)
 		runTransaction(updateTrackerTX)(`a`)
 
-		expect(getState(findState(setRTXStates, `a`))).toEqual(new SetRTX([`x`]))
-		expect(getState(findState(setRTXStates, `b`))).toEqual(new SetRTX())
+		expect(getState(findState(setAtoms, `a`))).toEqual(new SetRTX([`x`]))
+		expect(getState(findState(setAtoms, `b`))).toEqual(new SetRTX())
 	})
 })
