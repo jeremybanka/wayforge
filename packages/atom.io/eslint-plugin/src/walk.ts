@@ -8,6 +8,9 @@ export function walk(
 	callback(node, depth)
 
 	switch (node.type) {
+		case `AwaitExpression`:
+			walk(node.argument, callback, depth + 1)
+			break
 		case `FunctionDeclaration`:
 		case `FunctionExpression`:
 		case `ArrowFunctionExpression`:
@@ -58,6 +61,11 @@ export function walk(
 		case `BinaryExpression`:
 			walk(node.left, callback, depth)
 			walk(node.right, callback, depth)
+			break
+		case `ConditionalExpression`:
+			walk(node.test, callback, depth + 1)
+			walk(node.consequent, callback, depth + 1)
+			walk(node.alternate, callback, depth + 1)
 			break
 		case `MemberExpression`:
 			walk(node.object, callback, depth)

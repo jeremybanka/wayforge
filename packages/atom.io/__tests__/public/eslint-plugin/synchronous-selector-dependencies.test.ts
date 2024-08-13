@@ -314,8 +314,8 @@ ruleTester.run(`synchronous-selector-dependencies (selectorFamily)`, rule, {
         const mySelector = selector<number>({
           key: "mySelector",
           get: async ({ get }) => {
-            const record = await get(myRecordState)
-            const result = record.foo ? await get(myRecordState).foo : 0
+            const record = await someAsyncFunction()
+            const result = record.foo ? get(myRecordState).foo : 0
             return result
           },
         })

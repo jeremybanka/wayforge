@@ -77,7 +77,7 @@ export const synchronousSelectorDependencies = {
 					let awaited: number | undefined
 					let awaitNode: ESTree.AwaitExpression | undefined
 					walk(selectorComputation, (n, depth) => {
-						// console.log(`${`\t`.repeat(depth)}${n.type} ${n.name ?? ``}`)
+						console.log(`${`\t`.repeat(depth)}${n.type} ${n.name ?? ``}`)
 						if (typeof awaited === `number`) {
 							if (awaited > depth) {
 								awaited = undefined
