@@ -8,6 +8,7 @@ import {
 	seekInStore,
 } from "atom.io/internal"
 
+import { createWritableSelectorFamily } from "../../internal/src/families/create-writable-selector-family"
 import type { Canonical, Json, JsonInterface } from "."
 import { parseJson, stringifyJson } from "."
 
@@ -40,7 +41,7 @@ export function selectJsonFamily<
 	transform: JsonInterface<T, J>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.WritableSelectorFamily<J, K> {
-	const jsonFamily = createSelectorFamily<J, K>(
+	const jsonFamily = createWritableSelectorFamily<J, K>(
 		{
 			key: `${family.key}:JSON`,
 			get:
@@ -87,6 +88,7 @@ export function selectJsonFamily<
 				},
 		},
 		store,
+		[`mutable`, `json`],
 	)
 	family.subject.subscribe(
 		`store=${store.config.name}::json-selector-family`,

@@ -21,8 +21,8 @@ import type { Molecule, Store } from "atom.io/internal"
 import {
 	createMoleculeFamily,
 	createMutableAtomFamily,
+	createReadonlySelectorFamily,
 	createRegularAtomFamily,
-	createSelectorFamily,
 	disposeFromStore,
 	findInStore,
 	getFromStore,
@@ -242,6 +242,7 @@ export class Join<
 				toJson: (set) => set.toJSON(),
 			},
 			store,
+			[`join`, `relations`],
 		)
 		this.core = { findRelatedKeysState: relatedKeysAtoms }
 		const getRelatedKeys: Read<(key: string) => SetRTX<string>> = (
@@ -401,6 +402,7 @@ export class Join<
 					default: defaultContent,
 				},
 				store,
+				[`join`, `content`],
 			)
 			const joinToken = {
 				key: options.key,
@@ -488,7 +490,7 @@ export class Join<
 		})
 
 		const createSingleKeyStateFamily = () =>
-			createSelectorFamily<string | null, string>(
+			createReadonlySelectorFamily<string | null, string>(
 				{
 					key: `${options.key}/singleRelatedKey`,
 					get:
@@ -503,9 +505,10 @@ export class Join<
 						},
 				},
 				store,
+				[`join`, `keys`],
 			)
 		const getMultipleKeyStateFamily = () => {
-			return createSelectorFamily<string[], string>(
+			return createReadonlySelectorFamily<string[], string>(
 				{
 					key: `${options.key}/multipleRelatedKeys`,
 					get:
@@ -518,10 +521,11 @@ export class Join<
 						},
 				},
 				store,
+				[`join`, `keys`],
 			)
 		}
 		const createSingleEntryStateFamily = () =>
-			createSelectorFamily<[string, Content] | null, string>(
+			createReadonlySelectorFamily<[string, Content] | null, string>(
 				{
 					key: `${options.key}/singleRelatedEntry`,
 					get:
@@ -539,9 +543,10 @@ export class Join<
 						},
 				},
 				store,
+				[`join`, `entries`],
 			)
 		const getMultipleEntryStateFamily = () =>
-			createSelectorFamily<[string, Content][], string>(
+			createReadonlySelectorFamily<[string, Content][], string>(
 				{
 					key: `${options.key}/multipleRelatedEntries`,
 					get:
@@ -559,6 +564,7 @@ export class Join<
 						},
 				},
 				store,
+				[`join`, `entries`],
 			)
 
 		switch (options.cardinality) {

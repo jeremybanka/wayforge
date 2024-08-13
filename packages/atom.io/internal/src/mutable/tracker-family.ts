@@ -34,6 +34,7 @@ export class FamilyTracker<
 				default: null,
 			},
 			store,
+			[`mutable`, `updates`],
 		)
 		this.mutableAtoms = mutableAtoms
 		this.mutableAtoms.subject.subscribe(
