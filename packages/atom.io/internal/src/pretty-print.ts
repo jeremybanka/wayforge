@@ -23,6 +23,8 @@ export function prettyPrintTokenType(token: AtomIOToken): string {
 			return `Atom Family`
 		case `molecule_family`:
 			return `Molecule Family`
+		case `mutable_atom_family`:
+			return `Mutable Atom Family`
 		case `readonly_selector`:
 			return `Readonly Selector`
 		case `readonly_selector_family`:
