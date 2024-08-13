@@ -35,7 +35,7 @@ describe(`structFamily`, () => {
 				email: ``,
 			},
 		})
-		setState(piecemealStates.findUserAgeState(`a`), 42)
+		setState(piecemealStates.findUserAgeState, `a`, 42)
 		expect(piecemealStates.findUserAgeState.key).toEqual(`user.age`)
 		expect(piecemealStates.findUserEmailState.key).toEqual(`user.email`)
 		expect(piecemealStates.findUserNameState.key).toEqual(`user.name`)

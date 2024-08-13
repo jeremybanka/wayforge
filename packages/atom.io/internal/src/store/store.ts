@@ -3,13 +3,9 @@ import type {
 	Logger,
 	MoleculeFamily,
 	MoleculeToken,
-	MutableAtomFamily,
-	ReadonlySelectorFamily,
 	ReadonlySelectorToken,
-	RegularAtomFamily,
 	TimelineToken,
 	TransactionToken,
-	WritableSelectorFamily,
 	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
@@ -20,10 +16,14 @@ import type {
 	Atom,
 	Func,
 	Molecule,
+	MutableAtomFamily,
 	ReadonlySelector,
+	ReadonlySelectorFamily,
+	RegularAtomFamily,
 	Tracker,
 	Transceiver,
 	WritableSelector,
+	WritableSelectorFamily,
 } from ".."
 import type { Lineage } from "../lineage"
 import { getJsonToken, getUpdateToken } from "../mutable"

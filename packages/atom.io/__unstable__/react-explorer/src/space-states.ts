@@ -1,7 +1,5 @@
 import type {
-	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyToken,
-	RegularAtomFamily,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 } from "atom.io"

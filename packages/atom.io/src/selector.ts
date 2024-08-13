@@ -1,4 +1,3 @@
-import type { Store, Subject } from "atom.io/internal"
 import {
 	createSelectorFamily,
 	createStandaloneSelector,
@@ -7,7 +6,7 @@ import {
 import type { Canonical } from "atom.io/json"
 
 import type { ReadonlySelectorToken, WritableSelectorToken } from "."
-import type { Read, StateCreation, StateDisposal, Write } from "./transaction"
+import type { Read, Write } from "./transaction"
 
 export type WritableSelectorOptions<T> = {
 	key: string
@@ -48,16 +47,6 @@ export type WritableSelectorFamilyToken<T, K extends Canonical> = {
 	__K?: K
 }
 
-// biome-ignore format: intersection
-export type WritableSelectorFamily<T, K extends Canonical> = 
-	& WritableSelectorFamilyToken<T, K> 
-	& {
-		(key: K): WritableSelectorToken<T>
-		subject: Subject<StateCreation<WritableSelectorToken<T>> | StateDisposal<WritableSelectorToken<T>>>
-		install: (store: Store) => void
-		internalRoles : string[] | undefined
-	}
-
 export type ReadonlySelectorFamilyToken<T, K extends Canonical> = {
 	key: string
 	type: `readonly_selector_family`
@@ -65,20 +54,6 @@ export type ReadonlySelectorFamilyToken<T, K extends Canonical> = {
 	__K?: K
 }
 
-// biome-ignore format: intersection
-export type ReadonlySelectorFamily<T, K extends Canonical> = 
-	& ((key: K) => ReadonlySelectorToken<T>)
-	& {
-		key: string
-		type: `readonly_selector_family`
-		subject: Subject<StateCreation<ReadonlySelectorToken<T>> | StateDisposal<ReadonlySelectorToken<T>>>
-		install: (store: Store) => void
-		internalRoles : string[] | undefined
-	}
-
-export type SelectorFamily<T, K extends Canonical> =
-	| ReadonlySelectorFamily<T, K>
-	| WritableSelectorFamily<T, K>
 export type SelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlySelectorFamilyToken<T, K>
 	| WritableSelectorFamilyToken<T, K>
