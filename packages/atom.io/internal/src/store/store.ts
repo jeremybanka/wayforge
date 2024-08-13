@@ -160,6 +160,15 @@ export class Store implements Lineage {
 			}
 
 			for (const [, family] of store.families) {
+				if (
+					family.key.startsWith(`*`) ||
+					family.key.endsWith(`:JSON`) ||
+					family.key.includes(`/`)
+				) {
+					console.log(`skipping`, family.key)
+					continue
+				}
+				console.log(`installing`, family.key)
 				family.install(this)
 			}
 			const mutableHelpers = new Set<string>()
