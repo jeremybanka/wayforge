@@ -161,8 +161,7 @@ export class Store implements Lineage {
 
 			for (const [, family] of store.families) {
 				if (
-					family.key.startsWith(`*`) ||
-					family.key.endsWith(`:JSON`) ||
+					family.internalRoles?.includes(`mutable`) ||
 					family.internalRoles?.includes(`join`)
 				) {
 					console.log(`skipping`, family.key)
