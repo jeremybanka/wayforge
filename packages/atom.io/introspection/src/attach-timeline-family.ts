@@ -46,7 +46,7 @@ export const attachTimelineFamily = (
 			get:
 				(key) =>
 				({ get }) =>
-					get(findTimelineLogState__INTERNAL(key)),
+					get(findTimelineLogState__INTERNAL, key),
 		},
 		store,
 	)

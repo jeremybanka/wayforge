@@ -24,13 +24,13 @@ import type {
 	getState,
 	makeMolecule,
 	moleculeFamily,
-	MutableAtomFamily,
 	MutableAtomFamilyOptions,
+	MutableAtomFamilyToken,
 	MutableAtomOptions,
 	MutableAtomToken,
 	redo,
-	RegularAtomFamily,
 	RegularAtomFamilyOptions,
+	RegularAtomFamilyToken,
 	RegularAtomOptions,
 	RegularAtomToken,
 	setState,
@@ -74,15 +74,17 @@ export class Silo {
 			T extends Transceiver<any>,
 			J extends Json.Serializable,
 			K extends Canonical,
-		>(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamily<T, J, K>
+		>(
+			options: MutableAtomFamilyOptions<T, J, K>,
+		): MutableAtomFamilyToken<T, J, K>
 		function _atomFamily<T, K extends Canonical>(
 			options: RegularAtomFamilyOptions<T, K>,
-		): RegularAtomFamily<T, K>
+		): RegularAtomFamilyToken<T, K>
 		function _atomFamily<T, K extends Canonical>(
 			options:
 				| MutableAtomFamilyOptions<any, any, any>
 				| RegularAtomFamilyOptions<T, K>,
-		): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
+		): MutableAtomFamilyToken<any, any, any> | RegularAtomFamilyToken<T, K> {
 			return createAtomFamily(options, s)
 		}
 		this.store = s

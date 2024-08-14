@@ -9,7 +9,7 @@ import {
 export const attachTransactionLogs = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorFamilyToken<TransactionUpdate<Func>[], string> => {
-	const findTransactionUpdateLog = createRegularAtomFamily<
+	const transactionUpdateLogAtoms = createRegularAtomFamily<
 		TransactionUpdate<Func>[],
 		string
 	>(
@@ -38,7 +38,7 @@ export const attachTransactionLogs = (
 			get:
 				(key) =>
 				({ get }) =>
-					get(findTransactionUpdateLog(key)),
+					get(transactionUpdateLogAtoms, key),
 		},
 		store,
 	)

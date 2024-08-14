@@ -53,6 +53,18 @@ describe(`selector families`, () => {
 						(pointA.x - pointB.x) ** 2 + (pointA.y - pointB.y) ** 2,
 					)
 				},
+			set:
+				([keyA, keyB]) =>
+				({ set }, newValue) => {
+					const pointA = getState(pointAtoms, keyA)
+					const pointB = getState(pointAtoms, keyB)
+					const angle = Math.atan2(pointB.y - pointA.y, pointB.x - pointA.x)
+					const vector = { x: Math.cos(angle), y: Math.sin(angle) }
+					set(pointAtoms, keyB, {
+						x: pointA.x + vector.x * newValue,
+						y: pointA.y + vector.y * newValue,
+					})
+				},
 		})
 		setState(pointAtoms, `a`, { x: 1, y: 1 })
 		setState(pointAtoms, `b`, { x: 2, y: 2 })
@@ -60,6 +72,13 @@ describe(`selector families`, () => {
 
 		setState(pointAtoms, `b`, { x: 11, y: 11 })
 		expect(getState(distanceSelectors, [`a`, `b`])).toBe(14.142135623730951)
+
+		setState(distanceSelectors, [`a`, `b`], 1)
+		expect(getState(pointAtoms, `a`)).toEqual({ x: 1, y: 1 })
+		expect(getState(pointAtoms, `b`)).toEqual({
+			x: Math.SQRT2 / 2 + 1,
+			y: Math.SQRT2 / 2 + 1,
+		})
 	})
 	it(`implicitly creates in an ephemeral store`, () => {
 		const arrayAtoms = atomFamily<number[], string>({

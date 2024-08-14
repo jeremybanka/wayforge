@@ -2,7 +2,6 @@ import type {
 	FamilyMetadata,
 	StateCreation,
 	StateDisposal,
-	WritableSelectorFamily,
 	WritableSelectorFamilyOptions,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
@@ -10,6 +9,7 @@ import type {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import type { WritableSelectorFamily } from ".."
 import { newest } from "../lineage"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
@@ -20,7 +20,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
 	internalRoles?: string[],
-): WritableSelectorFamily<T, K> {
+): WritableSelectorFamilyToken<T, K> {
 	const familyToken = {
 		key: options.key,
 		type: `selector_family`,
@@ -60,5 +60,5 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	}) satisfies WritableSelectorFamily<T, K>
 
 	store.families.set(options.key, selectorFamily)
-	return selectorFamily
+	return familyToken
 }

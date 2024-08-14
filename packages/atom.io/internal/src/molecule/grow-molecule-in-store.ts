@@ -1,23 +1,33 @@
 import type {
-	AtomFamily,
+	AtomFamilyToken,
 	AtomToken,
-	MutableAtomFamily,
+	MutableAtomFamilyToken,
 	MutableAtomToken,
-	ReadableFamily,
+	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlySelectorFamily,
+	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
-	RegularAtomFamily,
+	RegularAtomFamilyToken,
 	RegularAtomToken,
-	SelectorFamily,
+	SelectorFamilyToken,
 	SelectorToken,
-	WritableFamily,
-	WritableSelectorFamily,
+	WritableFamilyToken,
+	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
+import type {
+	AtomFamily,
+	MutableAtomFamily,
+	ReadableFamily,
+	ReadonlySelectorFamily,
+	RegularAtomFamily,
+	SelectorFamily,
+	WritableFamily,
+	WritableSelectorFamily,
+} from ".."
 import { initFamilyMemberInStore } from "../families"
 import type { Transceiver } from "../mutable"
 import type { Store } from "../store"
@@ -30,47 +40,47 @@ export function growMoleculeInStore<
 	K extends Canonical,
 >(
 	molecule: Molecule<any>,
-	family: MutableAtomFamily<T, J, K>,
+	family: MutableAtomFamilyToken<T, J, K>,
 	store: Store,
 ): MutableAtomToken<T, J>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: RegularAtomFamily<T, K>,
+	family: RegularAtomFamilyToken<T, K>,
 	store: Store,
 ): RegularAtomToken<T>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: AtomFamily<T, K>,
+	family: AtomFamilyToken<T, K>,
 	store: Store,
 ): AtomToken<T>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: WritableSelectorFamily<T, K>,
+	family: WritableSelectorFamilyToken<T, K>,
 	store: Store,
 ): WritableSelectorToken<T>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: ReadonlySelectorFamily<T, K>,
+	family: ReadonlySelectorFamilyToken<T, K>,
 	store: Store,
 ): ReadonlySelectorToken<T>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: SelectorFamily<T, K>,
+	family: SelectorFamilyToken<T, K>,
 	store: Store,
 ): SelectorToken<T>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: WritableFamily<T, K>,
+	family: WritableFamilyToken<T, K>,
 	store: Store,
 ): WritableToken<T>
 export function growMoleculeInStore<T, K extends Canonical>(
 	molecule: Molecule<any>,
-	family: ReadableFamily<T, K>,
+	family: ReadableFamilyToken<T, K>,
 	store: Store,
 ): ReadableToken<T>
 export function growMoleculeInStore(
 	molecule: Molecule<any>,
-	family: ReadableFamily<any, any>,
+	family: ReadableFamilyToken<any, any>,
 	store: Store,
 ): ReadableToken<any> {
 	const stateToken = initFamilyMemberInStore(family, molecule.key, store)

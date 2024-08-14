@@ -1,6 +1,7 @@
-import type { MutableAtomFamilyToken, WritableSelectorFamily } from "atom.io"
+import type { MutableAtomFamilyToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
+import type { WritableSelectorFamily } from ".."
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import type { Transceiver } from "./transceiver"

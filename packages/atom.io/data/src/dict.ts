@@ -8,10 +8,10 @@ import {
 import type { Canonical, stringified } from "atom.io/json"
 
 export function dict<State, Key extends Canonical>(
-	findState:
+	family:
 		| AtomIO.ReadonlySelectorFamilyToken<State, Key>
 		| AtomIO.RegularAtomFamilyToken<State, Key>
-		| AtomIO.WritableSelectorFamily<State, Key>,
+		| AtomIO.WritableSelectorFamilyToken<State, Key>,
 	index:
 		| AtomIO.ReadonlySelectorToken<Key[]>
 		| AtomIO.RegularAtomToken<Key[]>
@@ -20,11 +20,11 @@ export function dict<State, Key extends Canonical>(
 ): AtomIO.ReadonlySelectorToken<{ [K in stringified<Key>]: State }> {
 	return createStandaloneSelector(
 		{
-			key: `${findState.key}Dict`,
+			key: `${family.key}Dict`,
 			get: ({ get }) => {
 				const keys = get(index)
 				return keys.reduce((acc, key) => {
-					acc[key] = get(findInStore(findState, key, store))
+					acc[key] = get(findInStore(family, key, store))
 					return acc
 				}, {} as any)
 			},

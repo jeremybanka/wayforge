@@ -3,14 +3,13 @@ import type {
 	disposeState,
 	getState,
 	MoleculeFamilyToken,
-	MutableAtomFamily,
 	MutableAtomFamilyToken,
 	Read,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlySelectorFamily,
+	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
-	RegularAtomFamily,
+	RegularAtomFamilyToken,
 	setState,
 	SetterToolkit,
 	Write,
@@ -78,7 +77,7 @@ export type JoinStateFamilies<
 			? {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}EntryOf${Capitalize<BSide>}`
-						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
+						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 						[string, Content] | null,
 						string
 					>
@@ -86,7 +85,7 @@ export type JoinStateFamilies<
 			: {}) & {
 			readonly [AB in ASide | BSide as AB extends ASide
 				? `${AB}KeyOf${Capitalize<BSide>}`
-				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
+				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 				string | null,
 				string
 			>
@@ -94,23 +93,23 @@ export type JoinStateFamilies<
 	: Cardinality extends `1:n`
 		? (Content extends Json.Object
 				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamily<
+						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
 							[string, Content] | null,
 							string
 						>
 					} & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
+						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 							[string, Content][],
 							string
 						>
 					}
 				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamily<
+				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
 					string | null,
 					string
 				>
 			} & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
+				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 					string[],
 					string
 				>
@@ -120,7 +119,7 @@ export type JoinStateFamilies<
 					? {
 							readonly [AB in ASide | BSide as AB extends ASide
 								? `${AB}EntriesOf${Capitalize<BSide>}`
-								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
+								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 								[string, Content][],
 								string
 							>
@@ -128,7 +127,7 @@ export type JoinStateFamilies<
 					: {}) & {
 					readonly [AB in ASide | BSide as AB extends ASide
 						? `${AB}KeysOf${Capitalize<BSide>}`
-						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamily<
+						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 						string[],
 						string
 					>
@@ -149,7 +148,7 @@ export class Join<
 	public relations: Junction<ASide, BSide, Content>
 	public states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
 	public core: {
-		findRelatedKeysState: MutableAtomFamily<
+		findRelatedKeysState: MutableAtomFamilyToken<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
@@ -389,7 +388,7 @@ export class Join<
 			has: (a, b) => has(this.toolkit, a, b),
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
-		let contentAtoms: RegularAtomFamily<Content, string>
+		let contentAtoms: RegularAtomFamilyToken<Content, string>
 		let contentMolecules: MoleculeFamilyToken<
 			new (
 				..._: any[]

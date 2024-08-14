@@ -1,4 +1,4 @@
-import type { AtomFamily, AtomToken } from "atom.io"
+import type { AtomFamilyToken, AtomToken } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type {
 	ActionReceiver,
@@ -62,20 +62,20 @@ export class RealtimeServer {
 		subscribe: () => () => void
 	}
 	public provide<
-		F extends AtomFamily<any>,
-		K extends F extends AtomFamily<any, infer Key> ? Key : never,
+		F extends AtomFamilyToken<any>,
+		K extends F extends AtomFamilyToken<any, infer Key> ? Key : never,
 	>(
-		family: AtomFamily<any, K>,
+		family: AtomFamilyToken<any, K>,
 		index: AtomToken<Iterable<K>>,
 	): {
 		provide: RealtimeServer[`provide`]
 		subscribe: () => () => void
 	}
 	public provide<
-		F extends AtomFamily<any>,
-		K extends F extends AtomFamily<any, infer Key> ? Key : never,
+		F extends AtomFamilyToken<any>,
+		K extends F extends AtomFamilyToken<any, infer Key> ? Key : never,
 	>(
-		...args: AtomToken<any>[] | [AtomFamily<any, K>, AtomToken<Iterable<K>>]
+		...args: AtomToken<any>[] | [AtomFamilyToken<any, K>, AtomToken<Iterable<K>>]
 	): {
 		provide: RealtimeServer[`provide`]
 		subscribe: () => () => void
@@ -93,12 +93,14 @@ export class RealtimeServer {
 			return retract
 		}
 		const provide = <
-			Family extends AtomFamily<any>,
-			FamilyKey extends Family extends AtomFamily<any, infer Key> ? Key : never,
+			Family extends AtomFamilyToken<any>,
+			FamilyKey extends Family extends AtomFamilyToken<any, infer Key>
+				? Key
+				: never,
 		>(
 			...params:
 				| AtomToken<any>[]
-				| [AtomFamily<any, FamilyKey>, AtomToken<Iterable<FamilyKey>>]
+				| [AtomFamilyToken<any, FamilyKey>, AtomToken<Iterable<FamilyKey>>]
 		): {
 			provide: RealtimeServer[`provide`]
 			subscribe: () => () => void
