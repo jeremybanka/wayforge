@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.27.3
+
+### Patch Changes
+
+- 5a73363: 🐛 `atom.io/eslint-plugin` previously wouldn't catch cases of a selector calling its `get` toolkit function after an `await`, if that `get` was nested in a ternary. Now, it will catch these cases.
+- fe6e090: ✨ For ergonomic purposes, `atom.io` now throws an error when an `atomFamily` or `selectorFamily` is created using a key used for another family in the store.
+- 4da50d6: ♻️ For safety, only tokens are now returned from the functions `atomFamily` and `selectorFamily`, in accordance with their TypeScript representations.
+
 ## 0.27.2
 
 ### Patch Changes
