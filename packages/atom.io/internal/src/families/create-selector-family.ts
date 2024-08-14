@@ -1,8 +1,9 @@
 import type {
-	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyOptions,
-	WritableSelectorFamily,
+	ReadonlySelectorFamilyToken,
+	SelectorFamilyToken,
 	WritableSelectorFamilyOptions,
+	WritableSelectorFamilyToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
@@ -13,17 +14,17 @@ import { createWritableSelectorFamily } from "./create-writable-selector-family"
 export function createSelectorFamily<T, K extends Canonical>(
 	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
-): WritableSelectorFamily<T, K>
+): WritableSelectorFamilyToken<T, K>
 export function createSelectorFamily<T, K extends Canonical>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
-): ReadonlySelectorFamily<T, K>
+): ReadonlySelectorFamilyToken<T, K>
 export function createSelectorFamily<T, K extends Canonical>(
 	options:
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,
 	store: Store,
-): ReadonlySelectorFamily<T, K> | WritableSelectorFamily<T, K> {
+): SelectorFamilyToken<T, K> {
 	const isWritable = `set` in options
 
 	if (isWritable) {

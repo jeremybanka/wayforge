@@ -1,6 +1,5 @@
 import type {
 	FamilyMetadata,
-	MutableAtomFamily,
 	MutableAtomFamilyOptions,
 	MutableAtomFamilyToken,
 	MutableAtomOptions,
@@ -11,6 +10,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { selectJsonFamily, stringifyJson } from "atom.io/json"
 
+import type { MutableAtomFamily } from ".."
 import { throwInCaseOfConflictingFamily } from "../families/throw-in-case-of-conflicting-family"
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
@@ -27,7 +27,7 @@ export function createMutableAtomFamily<
 	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
 	internalRoles?: string[],
-): MutableAtomFamily<T, J, K> {
+): MutableAtomFamilyToken<T, J, K> {
 	const familyToken = {
 		key: options.key,
 		type: `mutable_atom_family`,
@@ -73,5 +73,5 @@ export function createMutableAtomFamily<
 	store.families.set(options.key, atomFamily)
 	selectJsonFamily(atomFamily, options, store)
 	new FamilyTracker(atomFamily, store)
-	return atomFamily
+	return familyToken
 }

@@ -1,8 +1,4 @@
-import type {
-	RegularAtomFamily,
-	RegularAtomFamilyToken,
-	RegularAtomToken,
-} from "atom.io"
+import type { RegularAtomFamilyToken, RegularAtomToken } from "atom.io"
 import { atom, atomFamily } from "atom.io"
 import type { Location } from "react-router-dom"
 

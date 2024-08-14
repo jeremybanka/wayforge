@@ -1,9 +1,9 @@
-import type { MutableAtomFamily, RegularAtomFamily } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
+import type { MutableAtomFamily, RegularAtomFamily } from ".."
 import { createRegularAtomFamily, seekInStore } from "../families"
-import type { Store } from "../store"
+import { type Store, withdraw } from "../store"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
@@ -25,7 +25,7 @@ export class FamilyTracker<
 		mutableAtoms: MutableAtomFamily<Core, any, FamilyMemberKey>,
 		store: Store,
 	) {
-		this.latestUpdateAtoms = createRegularAtomFamily<
+		const updateAtoms = createRegularAtomFamily<
 			typeof this.Update | null,
 			FamilyMemberKey
 		>(
@@ -36,6 +36,7 @@ export class FamilyTracker<
 			store,
 			[`mutable`, `updates`],
 		)
+		this.latestUpdateAtoms = withdraw(updateAtoms, store)
 		this.mutableAtoms = mutableAtoms
 		this.mutableAtoms.subject.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,

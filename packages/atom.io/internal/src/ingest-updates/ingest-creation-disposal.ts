@@ -9,7 +9,6 @@ import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore, initFamilyMemberInStore } from "../families"
 import { growMoleculeInStore, makeMoleculeInStore } from "../molecule"
-import { setIntoStore } from "../set-state"
 import { type Store, withdraw } from "../store"
 
 export function ingestCreationEvent(

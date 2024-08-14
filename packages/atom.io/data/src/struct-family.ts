@@ -19,14 +19,14 @@ export function structFamily<
 	{
 		[K in keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
 			K & string
-		>}State`]: AtomIO.RegularAtomFamily<Struct[K], string>
+		>}State`]: AtomIO.RegularAtomFamilyToken<Struct[K], string>
 	},
 	AtomIO.ReadonlySelectorFamilyToken<Struct, string>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
 			K & string
-		>}State`]: AtomIO.RegularAtomFamily<Struct[K], string>
+		>}State`]: AtomIO.RegularAtomFamilyToken<Struct[K], string>
 	} = Object.keys(options.default).reduce((acc, subKey) => {
 		const atomFamilyName = nameFamily(options.key, subKey)
 		acc[atomFamilyName] = createRegularAtomFamily(

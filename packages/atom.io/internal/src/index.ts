@@ -1,5 +1,17 @@
-import type { FamilyMetadata } from "atom.io"
-import type { Json, JsonInterface } from "atom.io/json"
+import type {
+	AtomToken,
+	FamilyMetadata,
+	MutableAtomFamilyToken,
+	MutableAtomToken,
+	ReadonlySelectorToken,
+	RegularAtomFamilyToken,
+	RegularAtomToken,
+	StateCreation,
+	StateDisposal,
+	WritableSelectorFamilyToken,
+	WritableSelectorToken,
+} from "atom.io"
+import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
 import type { Transceiver } from "./mutable"
 import type { Store } from "./store"
@@ -68,3 +80,64 @@ export type Selector<T> = ReadonlySelector<T> | WritableSelector<T>
 
 export type WritableState<T> = Atom<T> | WritableSelector<T>
 export type ReadableState<T> = Atom<T> | Selector<T>
+
+// biome-ignore format: intersection
+export type RegularAtomFamily<T, K extends Canonical> = 
+	& RegularAtomFamilyToken<T, K>
+	& {
+		(key: K): RegularAtomToken<T>
+		subject: Subject<StateCreation<AtomToken<T>> | StateDisposal<AtomToken<T>>>
+		install: (store: Store) => void
+		internalRoles: string[] | undefined
+	}
+
+// biome-ignore format: intersection
+export type MutableAtomFamily<
+T extends Transceiver<any>,
+J extends Json.Serializable,
+K extends Canonical,
+> = 
+& JsonInterface<T, J>
+& MutableAtomFamilyToken<T, J, K>
+& {
+		(key: K): MutableAtomToken<T, J>
+		subject: Subject<StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>>
+		install: (store: Store) => void
+		internalRoles: string[] | undefined
+	}
+
+export type AtomFamily<T, K extends Canonical = Canonical> =
+	| MutableAtomFamily<T extends Transceiver<any> ? T : never, any, K>
+	| RegularAtomFamily<T, K>
+
+// biome-ignore format: intersection
+export type WritableSelectorFamily<T, K extends Canonical> = 
+	& WritableSelectorFamilyToken<T, K> 
+	& {
+		(key: K): WritableSelectorToken<T>
+		subject: Subject<StateCreation<WritableSelectorToken<T>> | StateDisposal<WritableSelectorToken<T>>>
+		install: (store: Store) => void
+		internalRoles : string[] | undefined
+	}
+
+// biome-ignore format: intersection
+export type ReadonlySelectorFamily<T, K extends Canonical> = 
+	& ((key: K) => ReadonlySelectorToken<T>)
+	& {
+		key: string
+		type: `readonly_selector_family`
+		subject: Subject<StateCreation<ReadonlySelectorToken<T>> | StateDisposal<ReadonlySelectorToken<T>>>
+		install: (store: Store) => void
+		internalRoles : string[] | undefined
+	}
+
+export type SelectorFamily<T, K extends Canonical> =
+	| ReadonlySelectorFamily<T, K>
+	| WritableSelectorFamily<T, K>
+
+export type WritableFamily<T, K extends Canonical> =
+	| AtomFamily<T, K>
+	| WritableSelectorFamily<T, K>
+export type ReadableFamily<T, K extends Canonical> =
+	| AtomFamily<T, K>
+	| SelectorFamily<T, K>

@@ -10,7 +10,7 @@ export function ingestSelectorUpdate(
 	const updates =
 		applying === `newValue`
 			? selectorUpdate.atomUpdates
-			: [...selectorUpdate.atomUpdates].reverse()
+			: selectorUpdate.atomUpdates.toReversed()
 	for (const atomUpdate of updates) {
 		ingestAtomUpdate(applying, atomUpdate, store)
 	}

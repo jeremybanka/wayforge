@@ -1,6 +1,5 @@
 import type {
 	FamilyMetadata,
-	RegularAtomFamily,
 	RegularAtomFamilyOptions,
 	RegularAtomFamilyToken,
 	RegularAtomOptions,
@@ -11,6 +10,7 @@ import type {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import type { RegularAtomFamily } from ".."
 import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -21,7 +21,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
 	internalRoles?: string[],
-): RegularAtomFamily<T, K> {
+): RegularAtomFamilyToken<T, K> {
 	const familyToken = {
 		key: options.key,
 		type: `atom_family`,
@@ -54,16 +54,12 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		return token
 	}
 
-	const atomFamily: RegularAtomFamily<T, K> = Object.assign(
-		familyFunction,
-		familyToken,
-		{
-			subject,
-			install: (s: Store) => createRegularAtomFamily(options, s),
-			internalRoles,
-		},
-	) satisfies RegularAtomFamily<T, K>
+	const atomFamily = Object.assign(familyFunction, familyToken, {
+		subject,
+		install: (s: Store) => createRegularAtomFamily(options, s),
+		internalRoles,
+	}) satisfies RegularAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
-	return atomFamily
+	return familyToken
 }

@@ -1,8 +1,9 @@
 import type {
-	MutableAtomFamily,
+	AtomFamilyToken,
 	MutableAtomFamilyOptions,
-	RegularAtomFamily,
+	MutableAtomFamilyToken,
 	RegularAtomFamilyOptions,
+	RegularAtomFamilyToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
@@ -17,17 +18,17 @@ export function createAtomFamily<
 >(
 	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
-): MutableAtomFamily<T, J, K>
+): MutableAtomFamilyToken<T, J, K>
 export function createAtomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
-): RegularAtomFamily<T, K>
+): RegularAtomFamilyToken<T, K>
 export function createAtomFamily<T, K extends Canonical>(
 	options:
 		| MutableAtomFamilyOptions<any, any, any>
 		| RegularAtomFamilyOptions<T, K>,
 	store: Store,
-): MutableAtomFamily<any, any, any> | RegularAtomFamily<T, K> {
+): AtomFamilyToken<any, any> {
 	const isMutable = `mutable` in options
 
 	if (isMutable) {

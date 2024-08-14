@@ -1,6 +1,5 @@
 import type {
 	FamilyMetadata,
-	ReadonlySelectorFamily,
 	ReadonlySelectorFamilyOptions,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
@@ -10,6 +9,7 @@ import type {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import type { ReadonlySelectorFamily } from ".."
 import { newest } from "../lineage"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
@@ -20,7 +20,7 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
 	internalRoles?: string[],
-): ReadonlySelectorFamily<T, K> {
+): ReadonlySelectorFamilyToken<T, K> {
 	const familyToken = {
 		key: options.key,
 		type: `readonly_selector_family`,
@@ -59,5 +59,5 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 	}) satisfies ReadonlySelectorFamily<T, K>
 
 	store.families.set(options.key, readonlySelectorFamily)
-	return readonlySelectorFamily
+	return familyToken
 }
