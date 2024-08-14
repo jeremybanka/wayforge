@@ -1,4 +1,3 @@
-import { stringifyJson } from "anvl/json"
 import type {
 	MoleculeConstructor,
 	MoleculeDisposal,
