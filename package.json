@@ -9,7 +9,7 @@
 	"private": true,
 	"packageManager": "pnpm@9.7.1",
 	"engines": {
-		"bun": "1.1.21",
+		"bun": "1.1.24",
 		"node": "20.16.0"
 	},
 	"workspaces": [
