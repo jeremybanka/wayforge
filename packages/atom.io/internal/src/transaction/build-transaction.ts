@@ -68,7 +68,7 @@ export const buildTransaction = (
 		},
 		toolkit: {
 			get: ((...ps: Parameters<typeof getState>) =>
-				getFromStore(...ps, child)) as typeof getState,
+				getFromStore(child, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(...ps, child)
 			}) as typeof setState,

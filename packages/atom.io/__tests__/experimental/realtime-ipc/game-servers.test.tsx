@@ -53,7 +53,7 @@ describe(`multi-process realtime server`, () => {
 			`room-1`,
 			server.silo.store,
 		)
-		const roomSocket = await getFromStore(roomSocketState, server.silo.store)
+		const roomSocket = await getFromStore(server.silo.store, roomSocketState)
 
 		teardown()
 

@@ -67,7 +67,7 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: (token) => getFromStore(token, store),
+				get: (...args: [any]) => getFromStore(store, ...args),
 				find: ((token, k) => findInStore(token, k, store)) as typeof findState,
 				seek: ((token, k) => seekInStore(token, k, store)) as typeof seekState,
 				json: (token) => getJsonToken(token, store),

@@ -68,7 +68,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: (...params: [any]) => getFromStore(...params, store), // TODO: make store zero-arg
+				get: (...params: [any]) => getFromStore(store, ...params), // TODO: make store zero-arg
 				find: ((token, k) => findInStore(token, k, store)) as typeof findState,
 				seek: ((token, k) => seekInStore(token, k, store)) as typeof seekState,
 				json: (token) => getJsonToken(token, store),

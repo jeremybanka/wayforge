@@ -14,41 +14,39 @@ import type { Store } from "../store"
 import { withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
-export function getFromStore<T>(token: ReadableToken<T>, store: Store): T
+export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
 
 export function getFromStore<M extends MoleculeConstructor>(
-	token: MoleculeToken<M>,
 	store: Store,
+	token: MoleculeToken<M>,
 ): InstanceType<M> | undefined
 
 export function getFromStore<T, K extends Canonical>(
+	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: K,
-	store: Store,
 ): T
 
 export function getFromStore<M extends MoleculeConstructor>(
+	store: Store,
 	token: MoleculeFamilyToken<M>,
 	key: MoleculeKey<M>,
-	store: Store,
 ): InstanceType<M>
 
 export function getFromStore<T>(
+	store: Store,
 	...params:
-		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>, store: Store]
-		| [token: MoleculeToken<any>, store: Store]
-		| [token: ReadableFamilyToken<T, any>, key: Canonical, store: Store]
-		| [token: ReadableToken<T>, store: Store]
+		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>]
+		| [token: MoleculeToken<any>]
+		| [token: ReadableFamilyToken<T, any>, key: Canonical]
+		| [token: ReadableToken<T>]
 ): any {
 	let token: MoleculeToken<any> | ReadableToken<T>
-	let store: Store
-	if (params.length === 2) {
+	if (params.length === 1) {
 		token = params[0]
-		store = params[1]
 	} else {
 		const family = params[0]
 		const key = params[1]
-		store = params[2]
 		const maybeToken =
 			family.type === `molecule_family`
 				? seekInStore(family, key, store)

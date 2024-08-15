@@ -197,7 +197,7 @@ export class Join<
 
 		this.toolkit = {
 			get: ((...ps: Parameters<typeof getState>) =>
-				getFromStore(...ps, store)) as typeof getState,
+				getFromStore(store, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(...ps, store)
 			}) as typeof setState,

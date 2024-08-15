@@ -40,5 +40,5 @@ export function getState(
 			Internal.IMPLICIT.STORE,
 		)
 	}
-	return Internal.getFromStore(token as any, Internal.IMPLICIT.STORE)
+	return Internal.getFromStore(Internal.IMPLICIT.STORE, token as any)
 }

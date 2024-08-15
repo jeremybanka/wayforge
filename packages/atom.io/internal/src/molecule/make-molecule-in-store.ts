@@ -68,7 +68,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 
 	const toolkit = {
 		get: ((...ps: Parameters<typeof getState>) =>
-			getFromStore(...ps, newest(rootStore))) as typeof getState,
+			getFromStore(newest(rootStore), ...ps)) as typeof getState,
 		set: ((...ps: Parameters<typeof setState>) => {
 			setIntoStore(...ps, newest(rootStore))
 		}) as typeof setState,

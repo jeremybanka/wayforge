@@ -96,7 +96,7 @@ export class Silo {
 		this.timeline = (options) => createTimeline(options, s)
 		this.findState = (token, key) => findInStore(token, key, s) as any
 		this.getState = ((...params: Parameters<typeof getState>) =>
-			getFromStore(...params, s)) as typeof getState
+			getFromStore(s, ...params)) as typeof getState
 		this.setState = ((...params: Parameters<typeof setState>) => {
 			setIntoStore(...params, s)
 		}) as typeof setState

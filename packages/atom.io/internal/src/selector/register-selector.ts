@@ -43,7 +43,7 @@ export const registerSelector = (
 			const [family, key] = params
 			switch (family.type) {
 				case `molecule_family`:
-					return getFromStore(family, key, store)
+					return getFromStore(store, family, key)
 				default:
 					if (store.config.lifespan === `ephemeral`) {
 						dependency = findInStore(family, key, store)
@@ -61,7 +61,7 @@ export const registerSelector = (
 		}
 
 		if (dependency.type === `molecule`) {
-			return getFromStore(dependency, store)
+			return getFromStore(store, dependency)
 		}
 
 		const dependencyState = withdraw(dependency, store)

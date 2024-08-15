@@ -27,8 +27,8 @@ export function syncContinuity<F extends Func>(
 	store: Store,
 ): () => void {
 	const continuityKey = continuity.key
-	const optimisticUpdates = getFromStore(optimisticUpdateQueue, store)
-	const confirmedUpdates = getFromStore(confirmedUpdateQueue, store)
+	const optimisticUpdates = getFromStore(store, optimisticUpdateQueue)
+	const confirmedUpdates = getFromStore(store, confirmedUpdateQueue)
 
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
 		socket.off(`continuity-init:${continuityKey}`, initializeContinuity)
