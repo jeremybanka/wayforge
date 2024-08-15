@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.27.5
+
+### Patch Changes
+
+- 3e592a6: ♻️ `atom.io/internal` refactors many internal store functions to place `Store` as the zeroth param.
+- 69bb0c8: 🐛 No longer throws when overwriting an existing family, as this is a normal part of the development workflow with hot module replacement.
+
 ## 0.27.4
 
 ### Patch Changes
