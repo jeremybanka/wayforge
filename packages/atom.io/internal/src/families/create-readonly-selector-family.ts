@@ -16,6 +16,7 @@ import {
 	findInStore,
 	getFromStore,
 	getJsonToken,
+	prettyPrintTokenType,
 	type ReadonlySelectorFamily,
 	seekInStore,
 } from ".."
@@ -23,7 +24,6 @@ import { newest } from "../lineage"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createReadonlySelectorFamily<T, K extends Canonical>(
 	store: Store,
@@ -35,7 +35,17 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 		type: `readonly_selector_family`,
 	} as const satisfies ReadonlySelectorFamilyToken<T, K>
 
-	throwInCaseOfConflictingFamily(familyToken, store)
+	const existing = store.families.get(options.key)
+	if (existing) {
+		store.logger.error(
+			`❗`,
+			`readonly_selector_family`,
+			options.key,
+			`Overwriting  ${existing.type === `atom_family` ? `an` : `a`} ${prettyPrintTokenType(
+				existing,
+			)} in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
+	}
 
 	const subject = new Subject<
 		| StateCreation<ReadonlySelectorToken<T>>

@@ -16,6 +16,7 @@ import {
 	findInStore,
 	getFromStore,
 	getJsonToken,
+	prettyPrintTokenType,
 	seekInStore,
 	type WritableSelectorFamily,
 } from ".."
@@ -23,7 +24,6 @@ import { newest } from "../lineage"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createWritableSelectorFamily<T, K extends Canonical>(
 	store: Store,
@@ -35,8 +35,17 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 		type: `selector_family`,
 	} as const satisfies WritableSelectorFamilyToken<T, K>
 
-	throwInCaseOfConflictingFamily(familyToken, store)
-
+	const existing = store.families.get(options.key)
+	if (existing) {
+		store.logger.error(
+			`❗`,
+			`readonly_selector_family`,
+			options.key,
+			`Overwriting  ${existing.type === `atom_family` ? `an` : `a`} ${prettyPrintTokenType(
+				existing,
+			)} in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
+	}
 	const subject = new Subject<
 		| StateCreation<WritableSelectorToken<T>>
 		| StateDisposal<WritableSelectorToken<T>>
