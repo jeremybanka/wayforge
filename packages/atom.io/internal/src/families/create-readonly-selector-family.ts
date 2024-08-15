@@ -41,9 +41,9 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 			`❗`,
 			`readonly_selector_family`,
 			options.key,
-			`Overwriting  ${existing.type === `atom_family` ? `an` : `a`} ${prettyPrintTokenType(
+			`Overwriting an existing ${prettyPrintTokenType(
 				existing,
-			)} in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
 
