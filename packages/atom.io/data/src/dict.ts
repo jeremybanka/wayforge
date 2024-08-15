@@ -18,17 +18,14 @@ export function dict<State, Key extends Canonical>(
 		| AtomIO.WritableSelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.ReadonlySelectorToken<{ [K in stringified<Key>]: State }> {
-	return createStandaloneSelector(
-		{
-			key: `${family.key}Dict`,
-			get: ({ get }) => {
-				const keys = get(index)
-				return keys.reduce((acc, key) => {
-					acc[key] = get(findInStore(family, key, store))
-					return acc
-				}, {} as any)
-			},
+	return createStandaloneSelector(store, {
+		key: `${family.key}Dict`,
+		get: ({ get }) => {
+			const keys = get(index)
+			return keys.reduce((acc, key) => {
+				acc[key] = get(findInStore(store, family, key))
+				return acc
+			}, {} as any)
 		},
-		store,
-	)
+	})
 }

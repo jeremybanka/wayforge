@@ -24,8 +24,8 @@ export function createMutableAtomFamily<
 	J extends Json.Serializable,
 	K extends string,
 >(
-	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
+	options: MutableAtomFamilyOptions<T, J, K>,
 	internalRoles?: string[],
 ): MutableAtomFamilyToken<T, J, K> {
 	const familyToken = {
@@ -56,7 +56,7 @@ export function createMutableAtomFamily<
 			individualOptions.effects = options.effects(key)
 		}
 
-		const token = createMutableAtom(individualOptions, family, target)
+		const token = createMutableAtom(target, individualOptions, family)
 
 		subject.next({ type: `state_creation`, token })
 		return token
@@ -64,7 +64,7 @@ export function createMutableAtomFamily<
 
 	const atomFamily = Object.assign(familyFunction, familyToken, {
 		subject,
-		install: (s: Store) => createMutableAtomFamily(options, s),
+		install: (s: Store) => createMutableAtomFamily(s, options),
 		toJson: options.toJson,
 		fromJson: options.fromJson,
 		internalRoles,

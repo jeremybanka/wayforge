@@ -29,11 +29,11 @@ export class FamilyTracker<
 			typeof this.Update | null,
 			FamilyMemberKey
 		>(
+			store,
 			{
 				key: `*${mutableAtoms.key}`,
 				default: null,
 			},
-			store,
 			[`mutable`, `updates`],
 		)
 		this.latestUpdateAtoms = withdraw(updateAtoms, store)
@@ -43,7 +43,7 @@ export class FamilyTracker<
 			(event) => {
 				if (event.token.family) {
 					const key = parseJson(event.token.family.subKey) as FamilyMemberKey
-					seekInStore(this.latestUpdateAtoms, key, store)
+					seekInStore(store, this.latestUpdateAtoms, key)
 					new Tracker<Core>(event.token, store)
 				}
 			},
@@ -53,7 +53,7 @@ export class FamilyTracker<
 			(event) => {
 				if (event.token.family) {
 					const key = parseJson(event.token.family.subKey) as FamilyMemberKey
-					const mutableAtomToken = seekInStore(this.mutableAtoms, key, store)
+					const mutableAtomToken = seekInStore(store, this.mutableAtoms, key)
 					if (mutableAtomToken) {
 						new Tracker<Core>(mutableAtomToken, store)
 					}

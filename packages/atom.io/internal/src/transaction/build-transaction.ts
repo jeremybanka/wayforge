@@ -68,19 +68,19 @@ export const buildTransaction = (
 		},
 		toolkit: {
 			get: ((...ps: Parameters<typeof getState>) =>
-				getFromStore(...ps, child)) as typeof getState,
+				getFromStore(child, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
-				setIntoStore(...ps, child)
+				setIntoStore(child, ...ps)
 			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(token, identifier, child),
-			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
-			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
-			json: (token) => getJsonToken(token, child),
+			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
+			seek: ((token, k) => seekInStore(child, token, k)) as typeof seekState,
+			json: (token) => getJsonToken(child, token),
 			make: (context, family, k, ...args) =>
 				makeMoleculeInStore(child, context, family, k, ...args),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(...ps, child)
+				disposeFromStore(child, ...ps)
 			}) as typeof disposeState,
 			env: () => getEnvironmentData(child),
 		},

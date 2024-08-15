@@ -14,8 +14,8 @@ export const getJsonToken = <
 	Core extends Transceiver<any>,
 	SerializableCore extends Json.Serializable,
 >(
-	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
 	store: Store,
+	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
 ): WritableSelectorToken<SerializableCore> => {
 	if (mutableAtomToken.family) {
 		const target = newest(store)
@@ -29,7 +29,7 @@ export const getJsonToken = <
 		}
 		const family = withdraw(jsonFamilyToken, target)
 		const subKey = JSON.parse(mutableAtomToken.family.subKey)
-		const jsonToken = findInStore(family, subKey, store)
+		const jsonToken = findInStore(store, family, subKey)
 		return jsonToken
 	}
 	const token: WritableSelectorToken<SerializableCore> = {

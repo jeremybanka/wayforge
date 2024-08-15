@@ -29,67 +29,67 @@ export function findInStore<
 	K extends Canonical,
 	Key extends K,
 >(
+	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-	store: Store,
 ): MutableAtomToken<T, J>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): RegularAtomToken<T>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: AtomFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): AtomToken<T>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): WritableSelectorToken<T>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): ReadonlySelectorToken<T>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): SelectorToken<T>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): WritableToken<T>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): ReadableToken<T>
 
 export function findInStore(
+	store: Store,
 	token: ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
-	store: Store,
 ): ReadableToken<any> {
 	if (store.config.lifespan === `immortal`) {
 		throw new Error(
 			`Do not use \`find\` or \`findState\` in an immortal store. Prefer \`seek\` or \`seekState\`.`,
 		)
 	}
-	let state = seekInStore(token, key, store)
+	let state = seekInStore(store, token, key)
 	if (state) {
 		return state
 	}
-	state = initFamilyMemberInStore(token, key, store)
+	state = initFamilyMemberInStore(store, token, key)
 	return state
 }

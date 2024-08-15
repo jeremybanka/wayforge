@@ -22,7 +22,7 @@ export function ingestCreationEvent(
 			break
 		}
 		case `oldValue`: {
-			disposeFromStore(update.token, store)
+			disposeFromStore(store, update.token)
 			break
 		}
 	}
@@ -35,7 +35,7 @@ export function ingestDisposalEvent(
 ): void {
 	switch (applying) {
 		case `newValue`: {
-			disposeFromStore(update.token, store)
+			disposeFromStore(store, update.token)
 			break
 		}
 		case `oldValue`: {
@@ -58,7 +58,7 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 			if (store.config.lifespan === `immortal`) {
 				throw new Error(`No molecule found for key "${token.family.subKey}"`)
 			}
-			initFamilyMemberInStore(family, parseJson(token.family.subKey), store)
+			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
 		}
 	}
 }
@@ -79,7 +79,7 @@ export function ingestMoleculeCreationEvent(
 			)
 			break
 		case `oldValue`:
-			disposeFromStore(update.token, store)
+			disposeFromStore(store, update.token)
 			break
 	}
 }
@@ -90,7 +90,7 @@ export function ingestMoleculeDisposalEvent(
 ): void {
 	switch (applying) {
 		case `newValue`:
-			disposeFromStore(update.token, store)
+			disposeFromStore(store, update.token)
 			break
 		case `oldValue`:
 			{

@@ -12,15 +12,15 @@ export function pullMutableAtom<
 	socket: Socket,
 	store: Store,
 ): () => void {
-	const jsonToken = getJsonToken(token, store)
+	const jsonToken = getJsonToken(store, token)
 	const updateToken = getUpdateToken(token)
 	socket.on(`init:${token.key}`, (data: J) => {
-		setIntoStore(jsonToken, data, store)
+		setIntoStore(store, jsonToken, data)
 	})
 	socket.on(
 		`next:${token.key}`,
 		(data: T extends Transceiver<infer Update> ? Update : never) => {
-			setIntoStore(updateToken, data, store)
+			setIntoStore(store, updateToken, data)
 		},
 	)
 	socket.emit(`sub:${token.key}`)

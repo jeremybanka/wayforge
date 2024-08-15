@@ -48,8 +48,8 @@ describe(`mutable atomic state`, () => {
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
 		const myJsonState = Internal.getJsonToken(
-			myMutableState,
 			Internal.IMPLICIT.STORE,
+			myMutableState,
 		)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout0)
@@ -87,21 +87,18 @@ describe(`mutable atomic state`, () => {
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
-		>(
-			{
-				key: `flagsByUserId::mutable`,
-				mutable: true,
-				default: () => new SetRTX(),
-				toJson: (set) => set.toJSON(),
-				fromJson: (array) => SetRTX.fromJSON(array),
-			},
-			Internal.IMPLICIT.STORE,
-		)
+		>(Internal.IMPLICIT.STORE, {
+			key: `flagsByUserId::mutable`,
+			mutable: true,
+			default: () => new SetRTX(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (array) => SetRTX.fromJSON(array),
+		})
 
 		const myFlagsState = findState(findFlagsStateByUserId, `my-user-id`)
 		const findFlagsByUserIdJSON = Internal.getJsonToken(
-			myFlagsState,
 			Internal.IMPLICIT.STORE,
+			myFlagsState,
 		)
 		const findFlagsByUserIdTracker = Internal.getUpdateToken(myFlagsState)
 
@@ -163,8 +160,8 @@ describe(`mutable atomic state`, () => {
 		})
 
 		const myJsonState = Internal.getJsonToken(
-			myMutableState,
 			Internal.IMPLICIT.STORE,
+			myMutableState,
 		)
 		subscribe(myJsonState, Utils.stdout)
 
@@ -203,8 +200,8 @@ describe(`mutable time traveling`, () => {
 			scope: [myMutableStates],
 		})
 		const myJsonState = Internal.getJsonToken(
-			myMutableState,
 			Internal.IMPLICIT.STORE,
+			myMutableState,
 		)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout0)
@@ -245,8 +242,8 @@ describe(`mutable time traveling`, () => {
 		})
 
 		const myJsonState = Internal.getJsonToken(
-			myMutableState,
 			Internal.IMPLICIT.STORE,
+			myMutableState,
 		)
 		const myTrackerState = Internal.getUpdateToken(myMutableState)
 		subscribe(myMutableState, Utils.stdout0)

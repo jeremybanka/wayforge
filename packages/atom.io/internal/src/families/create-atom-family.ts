@@ -16,23 +16,23 @@ export function createAtomFamily<
 	J extends Json.Serializable,
 	K extends Canonical,
 >(
-	options: MutableAtomFamilyOptions<T, J, K>,
 	store: Store,
+	options: MutableAtomFamilyOptions<T, J, K>,
 ): MutableAtomFamilyToken<T, J, K>
 export function createAtomFamily<T, K extends Canonical>(
-	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
+	options: RegularAtomFamilyOptions<T, K>,
 ): RegularAtomFamilyToken<T, K>
 export function createAtomFamily<T, K extends Canonical>(
+	store: Store,
 	options:
 		| MutableAtomFamilyOptions<any, any, any>
 		| RegularAtomFamilyOptions<T, K>,
-	store: Store,
 ): AtomFamilyToken<any, any> {
 	const isMutable = `mutable` in options
 
 	if (isMutable) {
-		return createMutableAtomFamily(options, store)
+		return createMutableAtomFamily(store, options)
 	}
-	return createRegularAtomFamily<T, K>(options, store)
+	return createRegularAtomFamily<T, K>(store, options)
 }

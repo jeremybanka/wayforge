@@ -15,7 +15,7 @@ export function usePullMutableAtomFamilyMember<
 	Key extends K,
 >(familyToken: AtomIO.MutableAtomFamilyToken<T, J, K>, key: Key): T {
 	const store = React.useContext(StoreContext)
-	const token = findInStore(familyToken, key, store)
+	const token = findInStore(store, familyToken, key)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
 		RTC.pullMutableAtomFamilyMember(token, socket, store),
 	)

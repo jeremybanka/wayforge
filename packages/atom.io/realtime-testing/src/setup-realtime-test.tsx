@@ -89,8 +89,8 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const socketState = findInStore(RTS.socketAtoms, socket.id, silo.store)
-			setIntoStore(socketState, socket, silo.store)
+			const socketState = findInStore(silo.store, RTS.socketAtoms, socket.id)
+			setIntoStore(silo.store, socketState, socket)
 			editRelationsInStore(
 				RTS.usersOfSockets,
 				(relations) => {
@@ -98,8 +98,8 @@ export const setupRealtimeTestServer = (
 				},
 				silo.store,
 			)
-			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)
-			setIntoStore(RTS.socketIndex, (index) => index.add(socket.id), silo.store)
+			setIntoStore(silo.store, RTS.userIndex, (index) => index.add(username))
+			setIntoStore(silo.store, RTS.socketIndex, (index) => index.add(socket.id))
 			console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {
@@ -113,10 +113,10 @@ export const setupRealtimeTestServer = (
 
 	const dispose = () => {
 		server.close()
-		const roomKeys = getFromStore(RT.roomIndex, silo.store)
+		const roomKeys = getFromStore(silo.store, RT.roomIndex)
 		for (const roomKey of roomKeys) {
-			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
-			const room = getFromStore(roomState, silo.store)
+			const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
+			const room = getFromStore(silo.store, roomState)
 			if (room && !(room instanceof Promise)) {
 				room.process.kill()
 			}

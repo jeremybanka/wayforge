@@ -13,7 +13,7 @@ export function realtimeStateReceiver({
 		token: WritableToken<J>,
 	): () => void {
 		const publish = (newValue: J) => {
-			setIntoStore(token, newValue, store)
+			setIntoStore(store, token, newValue)
 		}
 
 		const fillPubUnclaim = () => {

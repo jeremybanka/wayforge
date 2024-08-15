@@ -14,47 +14,61 @@ import type { Store } from "../store"
 import { withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
-export function getFromStore<T>(token: ReadableToken<T>, store: Store): T
+export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
 
 export function getFromStore<M extends MoleculeConstructor>(
-	token: MoleculeToken<M>,
 	store: Store,
-): InstanceType<M> | undefined
+	token: MoleculeToken<M>,
+): InstanceType<M>
 
 export function getFromStore<T, K extends Canonical>(
+	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: K,
-	store: Store,
 ): T
 
 export function getFromStore<M extends MoleculeConstructor>(
+	store: Store,
 	token: MoleculeFamilyToken<M>,
 	key: MoleculeKey<M>,
-	store: Store,
 ): InstanceType<M>
 
-export function getFromStore<T>(
+export function getFromStore(
+	store: Store,
+	token: MoleculeToken<any> | ReadableToken<any>,
+): any
+
+export function getFromStore(
+	store: Store,
+	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+	key: Canonical,
+): any
+
+export function getFromStore(
+	store: Store,
 	...params:
-		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>, store: Store]
-		| [token: MoleculeToken<any>, store: Store]
-		| [token: ReadableFamilyToken<T, any>, key: Canonical, store: Store]
-		| [token: ReadableToken<T>, store: Store]
+		| [
+				token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+				key: Canonical,
+		  ]
+		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>]
+		| [token: MoleculeToken<any> | ReadableToken<any>]
+		| [token: MoleculeToken<any>]
+		| [token: ReadableFamilyToken<any, any>, key: Canonical]
+		| [token: ReadableToken<any>]
 ): any {
-	let token: MoleculeToken<any> | ReadableToken<T>
-	let store: Store
-	if (params.length === 2) {
+	let token: MoleculeToken<any> | ReadableToken<any>
+	if (params.length === 1) {
 		token = params[0]
-		store = params[1]
 	} else {
 		const family = params[0]
 		const key = params[1]
-		store = params[2]
 		const maybeToken =
 			family.type === `molecule_family`
-				? seekInStore(family, key, store)
+				? seekInStore(store, family, key)
 				: store.config.lifespan === `immortal`
-					? seekInStore(family, key, store)
-					: findInStore(family, key, store)
+					? seekInStore(store, family, key)
+					: findInStore(store, family, key)
 		if (!maybeToken) {
 			store.logger.error(
 				`❗`,

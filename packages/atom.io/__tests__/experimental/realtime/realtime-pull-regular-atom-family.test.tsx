@@ -65,7 +65,7 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			port: 4915,
 			server: ({ socket, silo: { store } }) => {
-				setIntoStore(storeState, store, store)
+				setIntoStore(store, storeState, store)
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
 					store,
@@ -81,7 +81,7 @@ describe(`running transactions`, () => {
 						addToNumbersCollectionTX,
 					)
 					const store = React.useContext(AR.StoreContext)
-					setIntoStore(storeState, store, store)
+					setIntoStore(store, storeState, store)
 
 					return (
 						<button

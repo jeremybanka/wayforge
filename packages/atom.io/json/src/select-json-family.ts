@@ -42,6 +42,7 @@ export function selectJsonFamily<
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.WritableSelectorFamilyToken<J, K> {
 	const jsonFamily = createWritableSelectorFamily<J, K>(
+		store,
 		{
 			key: `${atomFamilyToken.key}:JSON`,
 			get:
@@ -60,7 +61,7 @@ export function selectJsonFamily<
 					if (store.config.lifespan === `immortal`) {
 						throw new Error(`No molecule found for key "${stringKey}"`)
 					}
-					const newToken = initFamilyMemberInStore(atomFamilyToken, key, store)
+					const newToken = initFamilyMemberInStore(store, atomFamilyToken, key)
 					return transform.toJson(get(newToken))
 				},
 			set:
@@ -80,14 +81,13 @@ export function selectJsonFamily<
 								throw new Error(`No molecule found for key "${stringKey}"`)
 							}
 							set(
-								initFamilyMemberInStore(atomFamilyToken, key, store),
+								initFamilyMemberInStore(store, atomFamilyToken, key),
 								transform.fromJson(newValue),
 							)
 						}
 					}
 				},
 		},
-		store,
 		[`mutable`, `json`],
 	)
 	const atomFamily = withdraw(atomFamilyToken, store)
@@ -95,7 +95,7 @@ export function selectJsonFamily<
 		`store=${store.config.name}::json-selector-family`,
 		(event) => {
 			if (event.token.family) {
-				seekInStore(jsonFamily, parseJson(event.token.family.subKey) as K, store)
+				seekInStore(store, jsonFamily, parseJson(event.token.family.subKey) as K)
 			}
 		},
 	)

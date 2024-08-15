@@ -12,9 +12,9 @@ import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
 export const createReadonlySelector = <T>(
+	store: Store,
 	options: ReadonlySelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-	store: Store,
 ): ReadonlySelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
@@ -34,7 +34,7 @@ export const createReadonlySelector = <T>(
 	const readonlySelector: ReadonlySelector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => createReadonlySelector(options, family, s),
+		install: (s: Store) => createReadonlySelector(s, options, family),
 		get: getSelf,
 		type: `readonly_selector`,
 		...(family && { family }),

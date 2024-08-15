@@ -14,5 +14,5 @@ export function ingestAtomUpdate(
 	if (atomUpdate.family) {
 		Object.assign(token, { family: atomUpdate.family })
 	}
-	setIntoStore(token, value, store)
+	setIntoStore(store, token, value)
 }

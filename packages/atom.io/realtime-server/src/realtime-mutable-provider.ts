@@ -22,7 +22,7 @@ export function realtimeMutableProvider({
 	>(token: AtomIO.MutableAtomToken<Core, SerializableCore>): () => void {
 		let unsubscribeFromStateUpdates: (() => void) | null = null
 
-		const jsonToken = getJsonToken(token, store)
+		const jsonToken = getJsonToken(store, token)
 		const trackerToken = getUpdateToken(token)
 
 		const fillUnsubRequest = () => {
@@ -32,7 +32,7 @@ export function realtimeMutableProvider({
 		}
 
 		const fillSubRequest = () => {
-			socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))
+			socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
 			unsubscribeFromStateUpdates = subscribeToState(
 				trackerToken,
 				({ newValue }) => {

@@ -15,9 +15,9 @@ import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
+	store: Store,
 	options: WritableSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-	store: Store,
 ): WritableSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
@@ -57,7 +57,7 @@ export const createWritableSelector = <T>(
 	const mySelector: WritableSelector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => createWritableSelector(options, family, s),
+		install: (s: Store) => createWritableSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
 		type: `selector`,
