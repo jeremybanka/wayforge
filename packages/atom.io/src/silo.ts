@@ -13,6 +13,7 @@ import {
 	makeMoleculeInStore,
 	setIntoStore,
 	Store,
+	subscribeInStore,
 	timeTravel,
 } from "atom.io/internal"
 
@@ -27,7 +28,6 @@ import type {
 	timeline,
 	undo,
 } from "."
-import { subscribeInStore } from "."
 import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
