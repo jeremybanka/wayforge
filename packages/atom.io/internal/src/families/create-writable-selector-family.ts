@@ -26,8 +26,8 @@ import { Subject } from "../subject"
 import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createWritableSelectorFamily<T, K extends Canonical>(
-	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
+	options: WritableSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): WritableSelectorFamilyToken<T, K> {
 	const familyToken = {
@@ -49,13 +49,13 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 		const target = newest(store)
 
 		const token = createWritableSelector(
+			target,
 			{
 				key: fullKey,
 				get: options.get(key),
 				set: options.set(key),
 			},
 			family,
-			target,
 		)
 
 		subject.next({ type: `state_creation`, token })
@@ -65,7 +65,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritableSelectorFamily(options, s),
+		install: (s: Store) => createWritableSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({

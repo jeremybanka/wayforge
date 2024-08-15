@@ -42,6 +42,7 @@ export function selectJsonFamily<
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.WritableSelectorFamilyToken<J, K> {
 	const jsonFamily = createWritableSelectorFamily<J, K>(
+		store,
 		{
 			key: `${atomFamilyToken.key}:JSON`,
 			get:
@@ -87,7 +88,6 @@ export function selectJsonFamily<
 					}
 				},
 		},
-		store,
 		[`mutable`, `json`],
 	)
 	const atomFamily = withdraw(atomFamilyToken, store)

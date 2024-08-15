@@ -101,7 +101,7 @@ export type MoleculeToken<M extends MoleculeConstructor> = {
 export function moleculeFamily<M extends MoleculeConstructor>(
 	options: MoleculeFamilyOptions<M>,
 ): MoleculeFamilyToken<M> {
-	return createMoleculeFamily(options, IMPLICIT.STORE)
+	return createMoleculeFamily(IMPLICIT.STORE, options)
 }
 
 export function makeMolecule<M extends MoleculeConstructor>(

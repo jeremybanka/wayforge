@@ -29,15 +29,12 @@ export const attachTransactionLogs = (
 	const findTransactionUpdateLogState = createSelectorFamily<
 		TransactionUpdate<Func>[],
 		string
-	>(
-		{
-			key: `👁‍🗨 Transaction Update Log`,
-			get:
-				(key) =>
-				({ get }) =>
-					get(transactionUpdateLogAtoms, key),
-		},
-		store,
-	)
+	>(store, {
+		key: `👁‍🗨 Transaction Update Log`,
+		get:
+			(key) =>
+			({ get }) =>
+				get(transactionUpdateLogAtoms, key),
+	})
 	return findTransactionUpdateLogState
 }

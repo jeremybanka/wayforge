@@ -62,12 +62,14 @@ export class Silo {
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
 		const s = new Store(config, fromStore)
 		this.store = s
-		this.atom = ((...params: Parameters<typeof atom>) =>
-			createStandaloneAtom(s, ...params)) as typeof atom
-		this.atomFamily = ((...params: Parameters<typeof atomFamily>) =>
-			createAtomFamily(s, ...params)) as typeof atomFamily
-		this.selector = (options) => createStandaloneSelector(options, s) as any
-		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
+		this.atom = ((options: Parameters<typeof atom>[0]) =>
+			createStandaloneAtom(s, options)) as typeof atom
+		this.atomFamily = ((options: Parameters<typeof atomFamily>[0]) =>
+			createAtomFamily(s, options)) as typeof atomFamily
+		this.selector = ((options: Parameters<typeof selector>[0]) =>
+			createStandaloneSelector(s, options)) as typeof selector
+		this.selectorFamily = ((options: Parameters<typeof selectorFamily>[0]) =>
+			createSelectorFamily(s, options)) as typeof selectorFamily
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
 		this.findState = ((...params: Parameters<typeof findState>) =>
@@ -87,8 +89,8 @@ export class Silo {
 		this.redo = (token) => {
 			timeTravel(`redo`, token, s)
 		}
-		this.moleculeFamily = ((...params: Parameters<typeof moleculeFamily>) => {
-			return createMoleculeFamily(...params, s)
+		this.moleculeFamily = ((options: Parameters<typeof moleculeFamily>[0]) => {
+			return createMoleculeFamily(s, options)
 		}) as any
 		this.makeMolecule = ((...params: Parameters<typeof makeMolecule>) => {
 			return makeMoleculeInStore(s, ...params)

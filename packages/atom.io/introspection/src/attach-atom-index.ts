@@ -90,11 +90,8 @@ export const attachAtomIndex = (
 		},
 		undefined,
 	)
-	return createStandaloneSelector(
-		{
-			key: `👁‍🗨 Atom Token Index`,
-			get: ({ get }) => get(atomTokenIndexState__INTERNAL),
-		},
-		store,
-	)
+	return createStandaloneSelector(store, {
+		key: `👁‍🗨 Atom Token Index`,
+		get: ({ get }) => get(atomTokenIndexState__INTERNAL),
+	})
 }

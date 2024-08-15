@@ -32,12 +32,9 @@ export const attachTransactionIndex = (
 		},
 		undefined,
 	)
-	const transactionTokenIndex = createStandaloneSelector(
-		{
-			key: `👁‍🗨 Transaction Token Index`,
-			get: ({ get }) => get(transactionTokenIndexState__INTERNAL),
-		},
-		store,
-	)
+	const transactionTokenIndex = createStandaloneSelector(store, {
+		key: `👁‍🗨 Transaction Token Index`,
+		get: ({ get }) => get(transactionTokenIndexState__INTERNAL),
+	})
 	return transactionTokenIndex
 }

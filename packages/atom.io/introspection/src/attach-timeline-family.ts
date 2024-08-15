@@ -38,6 +38,7 @@ export const attachTimelineFamily = (
 		],
 	})
 	const findTimelineLogState = createSelectorFamily<Timeline<any>, string>(
+		store,
 		{
 			key: `👁‍🗨 Timeline Update Log`,
 			get:
@@ -45,7 +46,6 @@ export const attachTimelineFamily = (
 				({ get }) =>
 					get(findTimelineLogState__INTERNAL, key),
 		},
-		store,
 	)
 	return findTimelineLogState
 }

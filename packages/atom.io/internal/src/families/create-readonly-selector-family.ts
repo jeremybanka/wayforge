@@ -26,8 +26,8 @@ import { Subject } from "../subject"
 import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createReadonlySelectorFamily<T, K extends Canonical>(
-	options: ReadonlySelectorFamilyOptions<T, K>,
 	store: Store,
+	options: ReadonlySelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): ReadonlySelectorFamilyToken<T, K> {
 	const familyToken = {
@@ -49,12 +49,12 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 		const target = newest(store)
 
 		const token = createReadonlySelector(
+			target,
 			{
 				key: fullKey,
 				get: options.get(key),
 			},
 			family,
-			target,
 		)
 
 		subject.next({ type: `state_creation`, token })
@@ -64,7 +64,7 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createReadonlySelectorFamily(options, s),
+		install: (s: Store) => createReadonlySelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({

@@ -32,12 +32,9 @@ export const attachTimelineIndex = (
 		},
 		undefined,
 	)
-	const timelineTokenIndex = createStandaloneSelector(
-		{
-			key: `👁‍🗨 Timeline Token Index`,
-			get: ({ get }) => get(timelineTokenIndexState__INTERNAL),
-		},
-		store,
-	)
+	const timelineTokenIndex = createStandaloneSelector(store, {
+		key: `👁‍🗨 Timeline Token Index`,
+		get: ({ get }) => get(timelineTokenIndexState__INTERNAL),
+	})
 	return timelineTokenIndex
 }

@@ -36,21 +36,18 @@ export function structFamily<
 		return acc
 	}, {} as any)
 	const findStructState: AtomIO.ReadonlySelectorFamilyToken<Struct, string> =
-		createSelectorFamily(
-			{
-				key: options.key,
-				get:
-					(id) =>
-					({ find, get }) => {
-						return Object.keys(options.default).reduce((acc, subKey) => {
-							acc[subKey] = get(
-								find((atoms as any)[nameFamily(options.key, subKey)], id),
-							)
-							return acc
-						}, {} as any)
-					},
-			},
-			IMPLICIT.STORE,
-		)
+		createSelectorFamily(IMPLICIT.STORE, {
+			key: options.key,
+			get:
+				(id) =>
+				({ find, get }) => {
+					return Object.keys(options.default).reduce((acc, subKey) => {
+						acc[subKey] = get(
+							find((atoms as any)[nameFamily(options.key, subKey)], id),
+						)
+						return acc
+					}, {} as any)
+				},
+		})
 	return [atoms, findStructState]
 }

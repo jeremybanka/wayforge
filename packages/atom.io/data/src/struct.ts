@@ -41,17 +41,14 @@ export function struct<
 		)
 		return acc
 	}, {} as any)
-	const structState = createStandaloneSelector(
-		{
-			key: options.key,
-			get: ({ get }) => {
-				return Object.keys(options.default).reduce((acc, key) => {
-					acc[key] = get(atoms[options.key + capitalize(key) + `State`])
-					return acc
-				}, {} as any)
-			},
+	const structState = createStandaloneSelector(store, {
+		key: options.key,
+		get: ({ get }) => {
+			return Object.keys(options.default).reduce((acc, key) => {
+				acc[key] = get(atoms[options.key + capitalize(key) + `State`])
+				return acc
+			}, {} as any)
 		},
-		store,
-	)
+	})
 	return [atoms, structState]
 }

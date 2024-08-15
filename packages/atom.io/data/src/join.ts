@@ -412,20 +412,17 @@ export class Join<
 				b: options.between[1],
 				cardinality: options.cardinality,
 			} as const satisfies JoinToken<ASide, BSide, Cardinality, Content>
-			contentMolecules = createMoleculeFamily(
-				{
-					key: `${options.key}/content-molecules`,
-					new: class ContentMolecule {
-						public constructor(
-							toolkit: CtorToolkit<string>,
-							public key: string,
-						) {
-							toolkit.bond(joinToken, { as: null } as any)
-						}
-					},
+			contentMolecules = createMoleculeFamily(store, {
+				key: `${options.key}/content-molecules`,
+				new: class ContentMolecule {
+					public constructor(
+						toolkit: CtorToolkit<string>,
+						public key: string,
+					) {
+						toolkit.bond(joinToken, { as: null } as any)
+					}
 				},
-				store,
-			)
+			})
 			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
 				get(this.retrieve(contentAtoms, key))
 			const setContent: Write<(key: string, content: Content) => void> = (
@@ -492,6 +489,7 @@ export class Join<
 
 		const createSingleKeyStateFamily = () =>
 			createReadonlySelectorFamily<string | null, string>(
+				store,
 				{
 					key: `${options.key}/singleRelatedKey`,
 					get:
@@ -505,11 +503,11 @@ export class Join<
 							return null
 						},
 				},
-				store,
 				[`join`, `keys`],
 			)
 		const getMultipleKeyStateFamily = () => {
 			return createReadonlySelectorFamily<string[], string>(
+				store,
 				{
 					key: `${options.key}/multipleRelatedKeys`,
 					get:
@@ -521,12 +519,12 @@ export class Join<
 							return json.members
 						},
 				},
-				store,
 				[`join`, `keys`],
 			)
 		}
 		const createSingleEntryStateFamily = () =>
 			createReadonlySelectorFamily<[string, Content] | null, string>(
+				store,
 				{
 					key: `${options.key}/singleRelatedEntry`,
 					get:
@@ -543,11 +541,11 @@ export class Join<
 							return null
 						},
 				},
-				store,
 				[`join`, `entries`],
 			)
 		const getMultipleEntryStateFamily = () =>
 			createReadonlySelectorFamily<[string, Content][], string>(
+				store,
 				{
 					key: `${options.key}/multipleRelatedEntries`,
 					get:
@@ -564,7 +562,6 @@ export class Join<
 							})
 						},
 				},
-				store,
 				[`join`, `entries`],
 			)
 
