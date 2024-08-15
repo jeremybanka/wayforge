@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	getState,
 	StateCreation,
 	StateDisposal,
 	WritableSelectorFamilyOptions,
@@ -25,8 +26,8 @@ import { Subject } from "../subject"
 import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createWritableSelectorFamily<T, K extends Canonical>(
-	options: WritableSelectorFamilyOptions<T, K>,
 	store: Store,
+	options: WritableSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): WritableSelectorFamilyToken<T, K> {
 	const familyToken = {
@@ -48,13 +49,13 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 		const target = newest(store)
 
 		const token = createWritableSelector(
+			target,
 			{
 				key: fullKey,
 				get: options.get(key),
 				set: options.set(key),
 			},
 			family,
-			target,
 		)
 
 		subject.next({ type: `state_creation`, token })
@@ -64,14 +65,14 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritableSelectorFamily(options, s),
+		install: (s: Store) => createWritableSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: (...params: [any]) => getFromStore(...params, store), // TODO: make store zero-arg
-				find: ((token, k) => findInStore(token, k, store)) as typeof findState,
-				seek: ((token, k) => seekInStore(token, k, store)) as typeof seekState,
-				json: (token) => getJsonToken(token, store),
+				get: ((...ps: [any]) => getFromStore(store, ...ps)) as typeof getState,
+				find: ((token, k) => findInStore(store, token, k)) as typeof findState,
+				seek: ((token, k) => seekInStore(store, token, k)) as typeof seekState,
+				json: (token) => getJsonToken(store, token),
 			})
 		},
 	}) satisfies WritableSelectorFamily<T, K>

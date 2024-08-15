@@ -30,57 +30,57 @@ export function initFamilyMemberInStore<
 	K extends Canonical,
 	Key extends K,
 >(
+	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-	store: Store,
 ): MutableAtomToken<T, J>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): RegularAtomToken<T>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: AtomFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): AtomToken<T>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): WritableSelectorToken<T>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): ReadonlySelectorToken<T>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): SelectorToken<T>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): WritableToken<T>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): ReadableToken<T>
 
 export function initFamilyMemberInStore(
+	store: Store,
 	token: ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
-	store: Store,
 ): ReadableToken<any> {
 	const familyKey = token.key
 	const family = store.families.get(familyKey)

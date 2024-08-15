@@ -15,7 +15,7 @@ export function realtimeStateProvider({
 		let unsubscribeFromStateUpdates: (() => void) | undefined
 
 		const fillSubRequest = () => {
-			socket.emit(`serve:${token.key}`, getFromStore(token, store))
+			socket.emit(`serve:${token.key}`, getFromStore(store, token))
 
 			unsubscribeFromStateUpdates = subscribeToState(
 				token,

@@ -25,7 +25,7 @@ export function useI<T, K extends Canonical>(
 	> = React.useRef(null)
 	if (setter.current === null) {
 		setter.current = (next) => {
-			setIntoStore(token, next, store)
+			setIntoStore(store, token, next)
 		}
 	}
 	return setter.current

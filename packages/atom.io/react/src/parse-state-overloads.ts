@@ -28,13 +28,13 @@ export function parseStateOverloads<T, K extends Canonical>(
 		const key = rest[1]
 
 		if (store.config.lifespan === `immortal`) {
-			const maybeToken = seekInStore(family, key, store)
+			const maybeToken = seekInStore(store, family, key)
 			if (!maybeToken) {
 				throw new NotFoundError(family, key, store)
 			}
 			token = maybeToken
 		} else {
-			token = findInStore(family, key, store)
+			token = findInStore(store, family, key)
 		}
 	} else {
 		token = rest[0]

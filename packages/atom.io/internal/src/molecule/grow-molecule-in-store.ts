@@ -83,7 +83,7 @@ export function growMoleculeInStore(
 	family: ReadableFamilyToken<any, any>,
 	store: Store,
 ): ReadableToken<any> {
-	const stateToken = initFamilyMemberInStore(family, molecule.key, store)
+	const stateToken = initFamilyMemberInStore(store, family, molecule.key)
 	molecule.tokens.set(stateToken.key, stateToken)
 	const isTransaction =
 		isChildStore(store) && store.transactionMeta.phase === `building`

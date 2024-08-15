@@ -16,7 +16,7 @@ export function pullAtomFamilyMember<J extends Json.Serializable>(
 	const { key: familyKey, subKey: serializedSubKey } = token.family
 	const subKey = parseJson(serializedSubKey)
 	socket?.on(`serve:${token.key}`, (data: J) => {
-		setIntoStore(token, data, store)
+		setIntoStore(store, token, data)
 	})
 	socket?.emit(`sub:${familyKey}`, subKey)
 	return () => {

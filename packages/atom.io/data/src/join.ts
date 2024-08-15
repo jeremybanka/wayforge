@@ -197,15 +197,17 @@ export class Join<
 
 		this.toolkit = {
 			get: ((...ps: Parameters<typeof getState>) =>
-				getFromStore(...ps, store)) as typeof getState,
+				getFromStore(store, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
-				setIntoStore(...ps, store)
+				setIntoStore(store, ...ps)
 			}) as typeof setState,
-			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
-			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
-			json: (token) => getJsonToken(token, store),
+			find: ((...ps: Parameters<typeof findState>) =>
+				findInStore(store, ...ps)) as typeof findState,
+			seek: ((...ps: Parameters<typeof seekState>) =>
+				seekInStore(store, ...ps)) as typeof seekState,
+			json: (token) => getJsonToken(store, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(...ps, store)
+				disposeFromStore(store, ...ps)
 			}) as typeof disposeState,
 		}
 		this.retrieve = ((
@@ -224,7 +226,7 @@ export class Join<
 			if (store.config.lifespan === `immortal`) {
 				throw new NotFoundError(token, key, store)
 			}
-			return initFamilyMemberInStore(token, key, store)
+			return initFamilyMemberInStore(store, token, key)
 		}) as typeof findState
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
@@ -233,6 +235,7 @@ export class Join<
 			SetRTXJson<string>,
 			string
 		>(
+			store,
 			{
 				key: `${options.key}/relatedKeys`,
 				default: () => new SetRTX(),
@@ -240,7 +243,6 @@ export class Join<
 				fromJson: (json) => SetRTX.fromJSON(json),
 				toJson: (set) => set.toJSON(),
 			},
-			store,
 			[`join`, `relations`],
 		)
 		this.core = { findRelatedKeysState: relatedKeysAtoms }
@@ -396,11 +398,11 @@ export class Join<
 		>
 		if (defaultContent) {
 			contentAtoms = createRegularAtomFamily<Content, string>(
+				store,
 				{
 					key: `${options.key}/content`,
 					default: defaultContent,
 				},
-				store,
 				[`join`, `content`],
 			)
 			const joinToken = {
@@ -410,20 +412,17 @@ export class Join<
 				b: options.between[1],
 				cardinality: options.cardinality,
 			} as const satisfies JoinToken<ASide, BSide, Cardinality, Content>
-			contentMolecules = createMoleculeFamily(
-				{
-					key: `${options.key}/content-molecules`,
-					new: class ContentMolecule {
-						public constructor(
-							toolkit: CtorToolkit<string>,
-							public key: string,
-						) {
-							toolkit.bond(joinToken, { as: null } as any)
-						}
-					},
+			contentMolecules = createMoleculeFamily(store, {
+				key: `${options.key}/content-molecules`,
+				new: class ContentMolecule {
+					public constructor(
+						toolkit: CtorToolkit<string>,
+						public key: string,
+					) {
+						toolkit.bond(joinToken, { as: null } as any)
+					}
 				},
-				store,
-			)
+			})
 			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
 				get(this.retrieve(contentAtoms, key))
 			const setContent: Write<(key: string, content: Content) => void> = (
@@ -490,6 +489,7 @@ export class Join<
 
 		const createSingleKeyStateFamily = () =>
 			createReadonlySelectorFamily<string | null, string>(
+				store,
 				{
 					key: `${options.key}/singleRelatedKey`,
 					get:
@@ -503,11 +503,11 @@ export class Join<
 							return null
 						},
 				},
-				store,
 				[`join`, `keys`],
 			)
 		const getMultipleKeyStateFamily = () => {
 			return createReadonlySelectorFamily<string[], string>(
+				store,
 				{
 					key: `${options.key}/multipleRelatedKeys`,
 					get:
@@ -519,12 +519,12 @@ export class Join<
 							return json.members
 						},
 				},
-				store,
 				[`join`, `keys`],
 			)
 		}
 		const createSingleEntryStateFamily = () =>
 			createReadonlySelectorFamily<[string, Content] | null, string>(
+				store,
 				{
 					key: `${options.key}/singleRelatedEntry`,
 					get:
@@ -541,11 +541,11 @@ export class Join<
 							return null
 						},
 				},
-				store,
 				[`join`, `entries`],
 			)
 		const getMultipleEntryStateFamily = () =>
 			createReadonlySelectorFamily<[string, Content][], string>(
+				store,
 				{
 					key: `${options.key}/multipleRelatedEntries`,
 					get:
@@ -562,7 +562,6 @@ export class Join<
 							})
 						},
 				},
-				store,
 				[`join`, `entries`],
 			)
 

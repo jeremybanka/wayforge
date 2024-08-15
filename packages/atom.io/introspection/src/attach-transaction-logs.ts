@@ -12,35 +12,29 @@ export const attachTransactionLogs = (
 	const transactionUpdateLogAtoms = createRegularAtomFamily<
 		TransactionUpdate<Func>[],
 		string
-	>(
-		{
-			key: `👁‍🗨 Transaction Update Log (Internal)`,
-			default: () => [],
-			effects: (key) => [
-				({ setSelf }) => {
-					const tx = store.transactions.get(key)
-					tx?.subject.subscribe(`introspection`, (transactionUpdate) => {
-						if (transactionUpdate.key === key) {
-							setSelf((state) => [...state, transactionUpdate])
-						}
-					})
-				},
-			],
-		},
-		store,
-	)
+	>(store, {
+		key: `👁‍🗨 Transaction Update Log (Internal)`,
+		default: () => [],
+		effects: (key) => [
+			({ setSelf }) => {
+				const tx = store.transactions.get(key)
+				tx?.subject.subscribe(`introspection`, (transactionUpdate) => {
+					if (transactionUpdate.key === key) {
+						setSelf((state) => [...state, transactionUpdate])
+					}
+				})
+			},
+		],
+	})
 	const findTransactionUpdateLogState = createSelectorFamily<
 		TransactionUpdate<Func>[],
 		string
-	>(
-		{
-			key: `👁‍🗨 Transaction Update Log`,
-			get:
-				(key) =>
-				({ get }) =>
-					get(transactionUpdateLogAtoms, key),
-		},
-		store,
-	)
+	>(store, {
+		key: `👁‍🗨 Transaction Update Log`,
+		get:
+			(key) =>
+			({ get }) =>
+				get(transactionUpdateLogAtoms, key),
+	})
 	return findTransactionUpdateLogState
 }

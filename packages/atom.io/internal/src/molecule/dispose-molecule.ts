@@ -55,7 +55,7 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 			disposalEvent.family = token.family
 		}
 		for (const state of molecule.tokens.values()) {
-			disposeFromStore(state, store)
+			disposeFromStore(store, state)
 		}
 		for (const child of molecule.below.values()) {
 			if (child.family?.dependsOn === `all`) {

@@ -12,6 +12,7 @@ export const attachTransactionIndex = (
 	const transactionTokenIndexState__INTERNAL = createRegularAtom<
 		TransactionToken<Func>[]
 	>(
+		store,
 		{
 			key: `👁‍🗨 Transaction Token Index (Internal)`,
 			default: () =>
@@ -30,14 +31,10 @@ export const attachTransactionIndex = (
 			],
 		},
 		undefined,
-		store,
 	)
-	const transactionTokenIndex = createStandaloneSelector(
-		{
-			key: `👁‍🗨 Transaction Token Index`,
-			get: ({ get }) => get(transactionTokenIndexState__INTERNAL),
-		},
-		store,
-	)
+	const transactionTokenIndex = createStandaloneSelector(store, {
+		key: `👁‍🗨 Transaction Token Index`,
+		get: ({ get }) => get(transactionTokenIndexState__INTERNAL),
+	})
 	return transactionTokenIndex
 }

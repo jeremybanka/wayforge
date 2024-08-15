@@ -10,50 +10,47 @@ import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
 import { disposeMolecule } from "../molecule/dispose-molecule"
-import { NotFoundError } from "../not-found-error"
 import { disposeSelector } from "../selector"
 import type { Store } from "../store"
 import { findInStore } from "./find-in-store"
 import { seekInStore } from "./seek-in-store"
 
 export function disposeFromStore(
-	token: MoleculeToken<any> | ReadableToken<any>,
 	store: Store,
+	token: MoleculeToken<any> | ReadableToken<any>,
 ): void
 
 export function disposeFromStore<K extends Canonical>(
+	store: Store,
 	token: ReadableFamilyToken<any, K>,
 	key: K,
-	store: Store,
 ): void
 
 export function disposeFromStore<M extends MoleculeConstructor>(
+	store: Store,
 	token: MoleculeFamilyToken<M>,
 	key: MoleculeKey<M>,
-	store: Store,
 ): void
 
 export function disposeFromStore(
+	store: Store,
 	...params:
-		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>, store: Store]
-		| [token: MoleculeToken<any> | ReadableToken<any>, store: Store]
-		| [token: ReadableFamilyToken<any, any>, key: Canonical, store: Store]
+		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>]
+		| [token: MoleculeToken<any> | ReadableToken<any>]
+		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 ): void {
 	let token: MoleculeToken<any> | ReadableToken<any>
-	let store: Store
-	if (params.length === 2) {
+	if (params.length === 1) {
 		token = params[0]
-		store = params[1]
 	} else {
 		const family = params[0]
 		const key = params[1]
-		store = params[2]
 		const maybeToken =
 			family.type === `molecule_family`
-				? seekInStore(family, key, store)
+				? seekInStore(store, family, key)
 				: store.config.lifespan === `immortal`
-					? seekInStore(family, key, store)
-					: findInStore(family, key, store)
+					? seekInStore(store, family, key)
+					: findInStore(store, family, key)
 		if (!maybeToken) {
 			store.logger.error(
 				`❗`,

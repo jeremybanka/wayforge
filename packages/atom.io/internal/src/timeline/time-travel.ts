@@ -12,9 +12,9 @@ import {
 import type { Store } from "../store"
 
 export const timeTravel = (
+	store: Store,
 	action: `redo` | `undo`,
 	token: TimelineToken<any>,
-	store: Store,
 ): void => {
 	store.logger.info(
 		action === `redo` ? `⏩` : `⏪`,

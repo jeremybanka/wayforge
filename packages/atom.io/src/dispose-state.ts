@@ -32,8 +32,8 @@ export function disposeState(
 	key?: Json.Serializable,
 ): void {
 	if (key) {
-		Internal.disposeFromStore(token as any, key, Internal.IMPLICIT.STORE)
+		Internal.disposeFromStore(Internal.IMPLICIT.STORE, token as any, key)
 	} else {
-		Internal.disposeFromStore(token as any, Internal.IMPLICIT.STORE)
+		Internal.disposeFromStore(Internal.IMPLICIT.STORE, token as any)
 	}
 }

@@ -15,9 +15,9 @@ import { subscribeToState } from "../subscribe"
 import { markAtomAsDefault } from "./is-default"
 
 export function createRegularAtom<T>(
+	store: Store,
 	options: RegularAtomOptions<T>,
 	family: FamilyMetadata | undefined,
-	store: Store,
 ): RegularAtomToken<T> {
 	store.logger.info(
 		`🔨`,
@@ -47,7 +47,7 @@ export function createRegularAtom<T>(
 				options.key,
 				`installing in store "${s.config.name}"`,
 			)
-			return createRegularAtom(options, family, s)
+			return createRegularAtom(s, options, family)
 		},
 		subject,
 	} as const
@@ -68,7 +68,7 @@ export function createRegularAtom<T>(
 		for (const effect of options.effects) {
 			const cleanup = effect({
 				setSelf: (next) => {
-					setIntoStore(token, next, store)
+					setIntoStore(store, token, next)
 				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(token, handle, `effect[${effectIndex}]`, store),

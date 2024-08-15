@@ -2,55 +2,47 @@ import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
-import { NotFoundError } from "../not-found-error"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
 export function setIntoStore<T, New extends T>(
+	store: Store,
 	token: WritableToken<T>,
 	value: New | ((oldValue: T) => New),
-	store: Store,
 ): void
 
 export function setIntoStore<T, K extends Canonical, New extends T>(
+	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: K,
 	value: New | ((oldValue: T) => New),
-	store: Store,
 ): void
 
 export function setIntoStore<T, New extends T>(
+	store: Store,
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
 				key: Canonical,
 				value: New | ((oldValue: T) => New),
-				store: Store,
 		  ]
-		| [
-				token: WritableToken<T>,
-				value: New | ((oldValue: T) => New),
-				store: Store,
-		  ]
+		| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
 ): void {
 	let token: WritableToken<T>
 	let value: New | ((oldValue: T) => New)
-	let store: Store
-	if (params.length === 3) {
+	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
-		store = params[2]
 	} else {
 		const family = params[0]
 		const key = params[1]
 		value = params[2]
-		store = params[3]
 		const maybeToken =
 			store.config.lifespan === `ephemeral`
-				? findInStore(family, key, store)
-				: seekInStore(family, key, store)
+				? findInStore(store, family, key)
+				: seekInStore(store, family, key)
 		if (!maybeToken) {
 			store.logger.error(
 				`❗`,
@@ -80,7 +72,7 @@ export function setIntoStore<T, New extends T>(
 					token.key,
 					`resuming deferred setState from T-${rejectionTime}`,
 				)
-				setIntoStore(token, value, store)
+				setIntoStore(store, token, value)
 			},
 		)
 		return

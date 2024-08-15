@@ -13,25 +13,27 @@ import type { Store } from "../store"
 import { createRegularAtom } from "./create-regular-atom"
 
 export function createStandaloneAtom<T>(
-	options: RegularAtomOptions<T>,
 	store: Store,
+	options: RegularAtomOptions<T>,
 ): RegularAtomToken<T>
+
 export function createStandaloneAtom<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
->(options: MutableAtomOptions<T, J>, store: Store): MutableAtomToken<T, J>
+>(store: Store, options: MutableAtomOptions<T, J>): MutableAtomToken<T, J>
+
 export function createStandaloneAtom<T>(
-	options: MutableAtomOptions<any, any> | RegularAtomOptions<T>,
 	store: Store,
+	options: MutableAtomOptions<any, any> | RegularAtomOptions<T>,
 ): AtomToken<T> {
 	const isMutable = `mutable` in options
 
 	if (isMutable) {
-		const state = createMutableAtom(options, undefined, store)
+		const state = createMutableAtom(store, options, undefined)
 		store.on.atomCreation.next(state)
 		return state
 	}
-	const state = createRegularAtom(options, undefined, store)
+	const state = createRegularAtom(store, options, undefined)
 	store.on.atomCreation.next(state)
 	return state
 }

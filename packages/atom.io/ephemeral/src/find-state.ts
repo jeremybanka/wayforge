@@ -92,6 +92,6 @@ export function findState(
 	token: ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
 ): ReadableToken<any> {
-	const state = findInStore(token, key, IMPLICIT.STORE)
+	const state = findInStore(IMPLICIT.STORE, token, key)
 	return state
 }

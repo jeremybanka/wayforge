@@ -27,7 +27,7 @@ export function selector<T>(
 export function selector<T>(
 	options: ReadonlySelectorOptions<T> | WritableSelectorOptions<T>,
 ): ReadonlySelectorToken<T> | WritableSelectorToken<T> {
-	return createStandaloneSelector(options, IMPLICIT.STORE)
+	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
 export type WritableSelectorFamilyOptions<T, K extends Canonical> = {
@@ -69,5 +69,5 @@ export function selectorFamily<T, K extends Canonical>(
 		| ReadonlySelectorFamilyOptions<T, K>
 		| WritableSelectorFamilyOptions<T, K>,
 ): ReadonlySelectorFamilyToken<T, K> | WritableSelectorFamilyToken<T, K> {
-	return createSelectorFamily(options, IMPLICIT.STORE)
+	return createSelectorFamily(IMPLICIT.STORE, options)
 }

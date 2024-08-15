@@ -37,12 +37,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		const latestUpdateState = createRegularAtom<
 			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
 		>(
+			store,
 			{
 				key: latestUpdateStateKey,
 				default: null,
 			},
 			familyMetaData,
-			store,
 		)
 		if (store.parent?.valueMap.has(latestUpdateStateKey)) {
 			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)
@@ -62,11 +62,11 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		const subscriptionKey = `tracker:${target.config.name}:${
 			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
-		const originalInnerValue = getFromStore(mutableState, target)
+		const originalInnerValue = getFromStore(target, mutableState)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
 			(update) => {
-				setIntoStore(latestUpdateState, update, target)
+				setIntoStore(target, latestUpdateState, update)
 			},
 		)
 		this.unsubscribeFromState = subscribeToState(
@@ -77,7 +77,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						subscriptionKey,
 						(transceiverUpdate) => {
-							setIntoStore(latestUpdateState, transceiverUpdate, target)
+							setIntoStore(target, latestUpdateState, transceiverUpdate)
 						},
 					)
 				}
@@ -109,18 +109,14 @@ export class Tracker<Mutable extends Transceiver<any>> {
 							{ key: timelineId, type: `timeline` },
 							(update) => {
 								unsubscribe()
-								setIntoStore(
-									mutableState,
-									(transceiver) => {
-										if (update === `redo` && newValue) {
-											transceiver.do(newValue)
-										} else if (update === `undo` && oldValue) {
-											transceiver.undo(oldValue)
-										}
-										return transceiver
-									},
-									target,
-								)
+								setIntoStore(target, mutableState, (transceiver) => {
+									if (update === `redo` && newValue) {
+										transceiver.do(newValue)
+									} else if (update === `undo` && oldValue) {
+										transceiver.undo(oldValue)
+									}
+									return transceiver
+								})
 							},
 							subscriptionKey,
 							target,
@@ -133,15 +129,15 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					subscriptionKey,
 					() => {
 						unsubscribe()
-						const mutable = getFromStore(mutableState, target)
+						const mutable = getFromStore(target, mutableState)
 						const updateNumber =
 							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
 							setIntoStore(
+								target,
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
-								target,
 							)
 						} else {
 							target.logger.info(

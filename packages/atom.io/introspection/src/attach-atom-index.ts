@@ -15,6 +15,7 @@ export const attachAtomIndex = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorToken<AtomTokenIndex> => {
 	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
+		store,
 		{
 			key: `👁‍🗨 Atom Token Index (Internal)`,
 			default: () => {
@@ -88,13 +89,9 @@ export const attachAtomIndex = (
 			],
 		},
 		undefined,
-		store,
 	)
-	return createStandaloneSelector(
-		{
-			key: `👁‍🗨 Atom Token Index`,
-			get: ({ get }) => get(atomTokenIndexState__INTERNAL),
-		},
-		store,
-	)
+	return createStandaloneSelector(store, {
+		key: `👁‍🗨 Atom Token Index`,
+		get: ({ get }) => get(atomTokenIndexState__INTERNAL),
+	})
 }

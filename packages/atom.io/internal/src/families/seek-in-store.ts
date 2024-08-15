@@ -34,63 +34,63 @@ export function seekInStore<
 	K extends Canonical,
 	Key extends K,
 >(
+	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-	store: Store,
 ): MutableAtomToken<T, J> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): RegularAtomToken<T> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: AtomFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): AtomToken<T> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): WritableSelectorToken<T> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): ReadonlySelectorToken<T> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): SelectorToken<T> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): WritableToken<T> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-	store: Store,
 ): ReadableToken<T> | undefined
 
 export function seekInStore<M extends MoleculeConstructor>(
+	store: Store,
 	token: MoleculeFamilyToken<M>,
 	key: MoleculeKey<M>,
-	store: Store,
 ): MoleculeKey<M> | undefined
 
 export function seekInStore(
+	store: Store,
 	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
 	key: Canonical,
-	store: Store,
 ): MoleculeToken<any> | ReadableToken<any> | undefined {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`

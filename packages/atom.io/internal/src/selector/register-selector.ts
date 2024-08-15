@@ -43,12 +43,12 @@ export const registerSelector = (
 			const [family, key] = params
 			switch (family.type) {
 				case `molecule_family`:
-					return getFromStore(family, key, store)
+					return getFromStore(store, family, key)
 				default:
 					if (store.config.lifespan === `ephemeral`) {
-						dependency = findInStore(family, key, store)
+						dependency = findInStore(store, family, key)
 					} else {
-						const maybeDependency = seekInStore(family, key, store)
+						const maybeDependency = seekInStore(store, family, key)
 						if (maybeDependency) {
 							dependency = maybeDependency
 						} else {
@@ -61,7 +61,7 @@ export const registerSelector = (
 		}
 
 		if (dependency.type === `molecule`) {
-			return getFromStore(dependency, store)
+			return getFromStore(store, dependency)
 		}
 
 		const dependencyState = withdraw(dependency, store)
@@ -108,8 +108,8 @@ export const registerSelector = (
 			value = params[2]
 			const maybeToken =
 				store.config.lifespan === `ephemeral`
-					? findInStore(family, key, store)
-					: seekInStore(family, key, store)
+					? findInStore(store, family, key)
+					: seekInStore(store, family, key)
 			if (!maybeToken) {
 				throw new NotFoundError(family, key, store)
 			}
@@ -119,7 +119,7 @@ export const registerSelector = (
 		const state = withdraw(token, target)
 		setAtomOrSelector(state, value, target)
 	}) as typeof setState,
-	find: ((token, key) => findInStore(token, key, store)) as typeof findState,
-	seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
-	json: (token) => getJsonToken(token, store),
+	find: ((token, key) => findInStore(store, token, key)) as typeof findState,
+	seek: ((token, key) => seekInStore(store, token, key)) as typeof seekState,
+	json: (token) => getJsonToken(store, token),
 })

@@ -10,8 +10,8 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createMoleculeFamily<M extends MoleculeConstructor>(
-	options: MoleculeFamilyOptions<M>,
 	store: Store,
+	options: MoleculeFamilyOptions<M>,
 ): MoleculeFamilyToken<M> {
 	const subject = new Subject<MoleculeCreation<M>>()
 

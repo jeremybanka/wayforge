@@ -9,14 +9,11 @@ export const selectJson = <T, J extends Json.Serializable>(
 	transform: JsonInterface<T, J>,
 	store: Store = IMPLICIT.STORE,
 ): AtomIO.WritableSelectorToken<J> => {
-	return createStandaloneSelector(
-		{
-			key: `${atom.key}:JSON`,
-			get: ({ get }) => transform.toJson(get(atom)),
-			set: ({ set }, newValue) => {
-				set(atom, transform.fromJson(newValue))
-			},
+	return createStandaloneSelector(store, {
+		key: `${atom.key}:JSON`,
+		get: ({ get }) => transform.toJson(get(atom)),
+		set: ({ set }, newValue) => {
+			set(atom, transform.fromJson(newValue))
 		},
-		store,
-	)
+	})
 }

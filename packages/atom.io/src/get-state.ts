@@ -26,19 +26,15 @@ export function getState<M extends MoleculeConstructor>(
 ): InstanceType<M>
 
 export function getState(
-	token:
-		| MoleculeFamilyToken<any>
-		| MoleculeToken<any>
-		| ReadableFamilyToken<any, any>
-		| ReadableToken<any>,
-	key?: Canonical,
+	...params:
+		| [
+				token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+				key: Canonical,
+		  ]
+		| [token: MoleculeToken<any> | ReadableToken<any>]
 ): any {
-	if (key) {
-		return Internal.getFromStore(
-			token as any,
-			key as any,
-			Internal.IMPLICIT.STORE,
-		)
+	if (params.length === 2) {
+		return Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
 	}
-	return Internal.getFromStore(token as any, Internal.IMPLICIT.STORE)
+	return Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
 }

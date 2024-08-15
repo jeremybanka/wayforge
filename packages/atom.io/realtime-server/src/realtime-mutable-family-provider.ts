@@ -40,14 +40,14 @@ export function realtimeMutableFamilyProvider({
 		}
 
 		const fillSubRequest = (subKey: K) => {
-			const exposedSubKeys = getFromStore(index, store)
+			const exposedSubKeys = getFromStore(store, index)
 			for (const exposedSubKey of exposedSubKeys) {
 				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
-					const token = findInStore(family, subKey, store)
-					getFromStore(token, store)
-					const jsonToken = getJsonToken(token, store)
+					const token = findInStore(store, family, subKey)
+					getFromStore(store, token)
+					const jsonToken = getJsonToken(store, token)
 					const updateToken = getUpdateToken(token)
-					socket.emit(`init:${token.key}`, getFromStore(jsonToken, store))
+					socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
 					const unsubscribe = subscribeToState(
 						updateToken,
 						({ newValue }) => {

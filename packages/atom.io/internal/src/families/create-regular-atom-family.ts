@@ -18,8 +18,8 @@ import { Subject } from "../subject"
 import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createRegularAtomFamily<T, K extends Canonical>(
-	options: RegularAtomFamilyOptions<T, K>,
 	store: Store,
+	options: RegularAtomFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): RegularAtomFamilyToken<T, K> {
 	const familyToken = {
@@ -48,7 +48,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 			individualOptions.effects = options.effects(key)
 		}
 
-		const token = createRegularAtom(individualOptions, family, target)
+		const token = createRegularAtom(target, individualOptions, family)
 
 		subject.next({ type: `state_creation`, token })
 		return token
@@ -56,7 +56,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 
 	const atomFamily = Object.assign(familyFunction, familyToken, {
 		subject,
-		install: (s: Store) => createRegularAtomFamily(options, s),
+		install: (s: Store) => createRegularAtomFamily(s, options),
 		internalRoles,
 	}) satisfies RegularAtomFamily<T, K>
 
