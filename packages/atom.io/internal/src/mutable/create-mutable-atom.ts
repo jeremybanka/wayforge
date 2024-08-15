@@ -70,7 +70,7 @@ export function createMutableAtom<
 		for (const effect of options.effects) {
 			const cleanup = effect({
 				setSelf: (next) => {
-					setIntoStore(token, next, store)
+					setIntoStore(store, token, next)
 				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(token, handle, `effect[${effectIndex}]`, store),

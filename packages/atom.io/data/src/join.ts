@@ -199,7 +199,7 @@ export class Join<
 			get: ((...ps: Parameters<typeof getState>) =>
 				getFromStore(store, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
-				setIntoStore(...ps, store)
+				setIntoStore(store, ...ps)
 			}) as typeof setState,
 			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
 			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,

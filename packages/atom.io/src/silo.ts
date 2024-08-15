@@ -98,7 +98,7 @@ export class Silo {
 		this.getState = ((...params: Parameters<typeof getState>) =>
 			getFromStore(s, ...params)) as typeof getState
 		this.setState = ((...params: Parameters<typeof setState>) => {
-			setIntoStore(...params, s)
+			setIntoStore(s, ...params)
 		}) as typeof setState
 		this.disposeState = ((...params: Parameters<typeof disposeState>) => {
 			disposeFromStore(...params, s)

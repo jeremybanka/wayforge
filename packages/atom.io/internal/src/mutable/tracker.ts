@@ -66,7 +66,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
 			(update) => {
-				setIntoStore(latestUpdateState, update, target)
+				setIntoStore(target, latestUpdateState, update)
 			},
 		)
 		this.unsubscribeFromState = subscribeToState(
@@ -77,7 +77,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						subscriptionKey,
 						(transceiverUpdate) => {
-							setIntoStore(latestUpdateState, transceiverUpdate, target)
+							setIntoStore(target, latestUpdateState, transceiverUpdate)
 						},
 					)
 				}
@@ -109,18 +109,14 @@ export class Tracker<Mutable extends Transceiver<any>> {
 							{ key: timelineId, type: `timeline` },
 							(update) => {
 								unsubscribe()
-								setIntoStore(
-									mutableState,
-									(transceiver) => {
-										if (update === `redo` && newValue) {
-											transceiver.do(newValue)
-										} else if (update === `undo` && oldValue) {
-											transceiver.undo(oldValue)
-										}
-										return transceiver
-									},
-									target,
-								)
+								setIntoStore(target, mutableState, (transceiver) => {
+									if (update === `redo` && newValue) {
+										transceiver.do(newValue)
+									} else if (update === `undo` && oldValue) {
+										transceiver.undo(oldValue)
+									}
+									return transceiver
+								})
 							},
 							subscriptionKey,
 							target,
@@ -139,9 +135,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 						const eventOffset = updateNumber - mutable.cacheUpdateNumber
 						if (newValue && eventOffset === 1) {
 							setIntoStore(
+								target,
 								mutableState,
 								(transceiver) => (transceiver.do(newValue), transceiver),
-								target,
 							)
 						} else {
 							target.logger.info(

@@ -70,7 +70,7 @@ export const buildTransaction = (
 			get: ((...ps: Parameters<typeof getState>) =>
 				getFromStore(child, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
-				setIntoStore(...ps, child)
+				setIntoStore(child, ...ps)
 			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(token, identifier, child),

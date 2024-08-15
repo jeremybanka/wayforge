@@ -70,7 +70,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		get: ((...ps: Parameters<typeof getState>) =>
 			getFromStore(newest(rootStore), ...ps)) as typeof getState,
 		set: ((...ps: Parameters<typeof setState>) => {
-			setIntoStore(...ps, newest(rootStore))
+			setIntoStore(newest(rootStore), ...ps)
 		}) as typeof setState,
 		seek: ((t, k) => seekInStore(t, k, newest(rootStore))) as typeof seekState,
 		json: (t) => getJsonToken(t, newest(rootStore)),

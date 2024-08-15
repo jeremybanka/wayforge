@@ -59,7 +59,7 @@ export const SystemServer = ({
 		const roomSocket = await getFromStore(store, roomState)
 		logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
 		roomSocket.emit(`exit`, username)
-		setIntoStore(RT.roomIndex, (index) => (index.delete(roomId), index), store)
+		setIntoStore(store, RT.roomIndex, (index) => (index.delete(roomId), index))
 	})
 
 	socket.on(`join-room`, async (roomId) => {

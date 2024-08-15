@@ -9,7 +9,7 @@ export function pullAtom<J extends Json.Serializable>(
 	store: Store,
 ): () => void {
 	const setServedValue = (data: J) => {
-		setIntoStore(token, data, store)
+		setIntoStore(store, token, data)
 	}
 	socket.on(`serve:${token.key}`, setServedValue)
 	socket.emit(`sub:${token.key}`)

@@ -90,7 +90,7 @@ export const setupRealtimeTestServer = (
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
 			const socketState = findInStore(RTS.socketAtoms, socket.id, silo.store)
-			setIntoStore(socketState, socket, silo.store)
+			setIntoStore(silo.store, socketState, socket)
 			editRelationsInStore(
 				RTS.usersOfSockets,
 				(relations) => {
@@ -98,8 +98,8 @@ export const setupRealtimeTestServer = (
 				},
 				silo.store,
 			)
-			setIntoStore(RTS.userIndex, (index) => index.add(username), silo.store)
-			setIntoStore(RTS.socketIndex, (index) => index.add(socket.id), silo.store)
+			setIntoStore(silo.store, RTS.userIndex, (index) => index.add(username))
+			setIntoStore(silo.store, RTS.socketIndex, (index) => index.add(socket.id))
 			console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {

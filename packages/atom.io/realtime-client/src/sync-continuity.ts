@@ -65,14 +65,10 @@ export function syncContinuity<F extends Func>(
 				continuityKey,
 				`reconciling updates`,
 			)
-			setIntoStore(
-				optimisticUpdateQueue,
-				(queue) => {
-					queue.shift()
-					return queue
-				},
-				store,
-			)
+			setIntoStore(store, optimisticUpdateQueue, (queue) => {
+				queue.shift()
+				return queue
+			})
 			if (optimisticUpdate.id === confirmedUpdate.id) {
 				const clientResult = JSON.stringify(optimisticUpdate.updates)
 				const serverResult = JSON.stringify(confirmedUpdate.updates)
@@ -199,15 +195,11 @@ export function syncContinuity<F extends Func>(
 						`pushing confirmed update to queue`,
 						confirmed,
 					)
-					setIntoStore(
-						confirmedUpdateQueue,
-						(queue) => {
-							queue.push(confirmed)
-							queue.sort((a, b) => a.epoch - b.epoch)
-							return queue
-						},
-						store,
-					)
+					setIntoStore(store, confirmedUpdateQueue, (queue) => {
+						queue.push(confirmed)
+						queue.sort((a, b) => a.epoch - b.epoch)
+						return queue
+					})
 				}
 			}
 		} else {
@@ -260,15 +252,11 @@ export function syncContinuity<F extends Func>(
 						continuityKey,
 						`pushing confirmed update #${confirmed.epoch} to queue`,
 					)
-					setIntoStore(
-						confirmedUpdateQueue,
-						(queue) => {
-							queue.push(confirmed)
-							queue.sort((a, b) => a.epoch - b.epoch)
-							return queue
-						},
-						store,
-					)
+					setIntoStore(store, confirmedUpdateQueue, (queue) => {
+						queue.push(confirmed)
+						queue.sort((a, b) => a.epoch - b.epoch)
+						return queue
+					})
 				}
 			}
 		}
@@ -297,15 +285,11 @@ export function syncContinuity<F extends Func>(
 						continuityKey,
 						`enqueuing new optimistic update`,
 					)
-					setIntoStore(
-						optimisticUpdateQueue,
-						(queue) => {
-							queue.push(clientUpdate)
-							queue.sort((a, b) => a.epoch - b.epoch)
-							return queue
-						},
-						store,
-					)
+					setIntoStore(store, optimisticUpdateQueue, (queue) => {
+						queue.push(clientUpdate)
+						queue.sort((a, b) => a.epoch - b.epoch)
+						return queue
+					})
 				} else {
 					store.logger.info(
 						`🤞`,
@@ -313,14 +297,10 @@ export function syncContinuity<F extends Func>(
 						continuityKey,
 						`replacing existing optimistic update at index ${optimisticUpdateIndex}`,
 					)
-					setIntoStore(
-						optimisticUpdateQueue,
-						(queue) => {
-							queue[optimisticUpdateIndex] = clientUpdate
-							return queue
-						},
-						store,
-					)
+					setIntoStore(store, optimisticUpdateQueue, (queue) => {
+						queue[optimisticUpdateIndex] = clientUpdate
+						return queue
+					})
 				}
 				socket.emit(`tx-run:${continuityKey}`, {
 					id: clientUpdate.id,
