@@ -48,6 +48,7 @@ export const buildTransaction = (
 		}),
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
+		defaults: parent.defaults,
 		molecules: new LazyMap(parent.molecules),
 		moleculeFamilies: new LazyMap(parent.moleculeFamilies),
 		moleculeInProgress: parent.moleculeInProgress,

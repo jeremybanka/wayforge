@@ -6,7 +6,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import type { Canonical } from "atom.io/json"
+import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
@@ -56,7 +56,31 @@ export function getFromStore<T>(
 					? seekInStore(family, key, store)
 					: findInStore(family, key, store)
 		if (!maybeToken) {
-			throw new NotFoundError(family, key, store)
+			store.logger.error(
+				`❗`,
+				family.type,
+				family.key,
+				`tried to get member`,
+				stringifyJson(key),
+				`but it was not found in store`,
+				store.config.name,
+			)
+			switch (family.type) {
+				case `atom_family`:
+				case `mutable_atom_family`:
+					return store.defaults.get(family.key)
+				case `selector_family`:
+				case `readonly_selector_family`: {
+					if (store.defaults.has(family.key)) {
+						return store.defaults.get(family.key)
+					}
+					const defaultValue = withdraw(family, store).default(key)
+					store.defaults.set(family.key, defaultValue)
+					return defaultValue
+				}
+				case `molecule_family`:
+					throw new NotFoundError(family, key, store)
+			}
 		}
 		token = maybeToken
 	}

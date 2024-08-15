@@ -1,5 +1,6 @@
 import type {
 	AtomToken,
+	MoleculeConstructor,
 	MoleculeFamily,
 	MoleculeFamilyToken,
 	MoleculeToken,
@@ -38,20 +39,20 @@ export function deposit<T>(state: WritableSelector<T>): WritableSelectorToken<T>
 export function deposit<T>(state: ReadonlySelector<T>): ReadonlySelectorToken<T>
 export function deposit<T>(state: Selector<T>): SelectorToken<T>
 export function deposit<T>(state: WritableState<T>): WritableToken<T>
-export function deposit<
-	K extends Canonical,
-	S extends { [key: string]: any },
-	P extends any[],
->(state: Molecule<any>): MoleculeToken<any>
-export function deposit<
-	K extends Canonical,
-	S extends { [key: string]: any },
-	P extends any[],
->(state: MoleculeFamily<any>): MoleculeFamilyToken<any>
+export function deposit<M extends MoleculeConstructor>(
+	state: MoleculeFamily<M>,
+): MoleculeFamilyToken<M>
+export function deposit<M extends MoleculeConstructor>(
+	state: Molecule<M>,
+): MoleculeToken<M>
 export function deposit<T extends Func>(
 	state: Transaction<T>,
 ): TransactionToken<T>
 export function deposit<T>(state: ReadableState<T>): ReadableToken<T>
+export function deposit(
+	state: Molecule<any> | ReadableState<any>,
+): MoleculeToken<any> | ReadableToken<any>
+
 export function deposit<T>(
 	state:
 		| Molecule<any>

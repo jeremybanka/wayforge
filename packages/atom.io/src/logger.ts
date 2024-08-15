@@ -52,12 +52,16 @@ const LoggerIconDictionary = {
 } as const
 export type LoggerIcon = keyof typeof LoggerIconDictionary
 export type TokenDenomination =
+	| `atom_family`
 	| `atom`
 	| `continuity`
 	| `molecule_family`
 	| `molecule`
+	| `mutable_atom_family`
 	| `mutable_atom`
+	| `readonly_selector_family`
 	| `readonly_selector`
+	| `selector_family`
 	| `selector`
 	| `state`
 	| `timeline`
