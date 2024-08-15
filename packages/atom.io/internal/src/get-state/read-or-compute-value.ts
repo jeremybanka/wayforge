@@ -10,7 +10,7 @@ export const readOrComputeValue = <T>(
 		target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 		return readCachedValue(state, target)
 	}
-	if (state.type !== `atom` && state.type !== `mutable_atom`) {
+	if (state.type === `selector` || state.type === `readonly_selector`) {
 		target.logger.info(`🧮`, state.type, state.key, `computing value`)
 		return state.get()
 	}

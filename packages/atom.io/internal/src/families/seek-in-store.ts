@@ -109,9 +109,6 @@ export function seekInStore(
 			break
 		case `molecule_family`:
 			state = target.molecules.get(stringifyJson(key))
-			if (state) {
-				return deposit(state)
-			}
 	}
 	if (state) {
 		return deposit(state)

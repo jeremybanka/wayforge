@@ -3,6 +3,7 @@ import type {
 	FamilyMetadata,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
+	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
@@ -113,8 +114,9 @@ export type AtomFamily<T, K extends Canonical = Canonical> =
 // biome-ignore format: intersection
 export type WritableSelectorFamily<T, K extends Canonical> = 
 	& WritableSelectorFamilyToken<T, K> 
+	& ((key: K) => WritableSelectorToken<T>)
 	& {
-		(key: K): WritableSelectorToken<T>
+		default: (key: K) => T,
 		subject: Subject<StateCreation<WritableSelectorToken<T>> | StateDisposal<WritableSelectorToken<T>>>
 		install: (store: Store) => void
 		internalRoles : string[] | undefined
@@ -122,10 +124,10 @@ export type WritableSelectorFamily<T, K extends Canonical> =
 
 // biome-ignore format: intersection
 export type ReadonlySelectorFamily<T, K extends Canonical> = 
+	& ReadonlySelectorFamilyToken<T, K>
 	& ((key: K) => ReadonlySelectorToken<T>)
 	& {
-		key: string
-		type: `readonly_selector_family`
+		default: (key: K) => T,
 		subject: Subject<StateCreation<ReadonlySelectorToken<T>> | StateDisposal<ReadonlySelectorToken<T>>>
 		install: (store: Store) => void
 		internalRoles : string[] | undefined

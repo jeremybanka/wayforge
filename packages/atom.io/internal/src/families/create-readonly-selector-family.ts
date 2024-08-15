@@ -6,10 +6,18 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
+import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { ReadonlySelectorFamily } from ".."
+import {
+	findInStore,
+	getFromStore,
+	getJsonToken,
+	type ReadonlySelectorFamily,
+	seekInStore,
+} from ".."
 import { newest } from "../lineage"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
@@ -53,9 +61,18 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 	}
 
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
+		internalRoles,
 		subject,
 		install: (s: Store) => createReadonlySelectorFamily(options, s),
-		internalRoles,
+		default: (key: K) => {
+			const getFn = options.get(key)
+			return getFn({
+				get: (token) => getFromStore(token, store),
+				find: ((token, k) => findInStore(token, k, store)) as typeof findState,
+				seek: ((token, k) => seekInStore(token, k, store)) as typeof seekState,
+				json: (token) => getJsonToken(token, store),
+			})
+		},
 	}) satisfies ReadonlySelectorFamily<T, K>
 
 	store.families.set(options.key, readonlySelectorFamily)

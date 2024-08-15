@@ -22,12 +22,12 @@ export const createWritableSelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const toolkit = registerSelector(options.key, covered, target)
-	const { find, get, seek, json } = toolkit
+	const setterToolkit = registerSelector(options.key, covered, target)
+	const { find, get, seek, json } = setterToolkit
 	const getterToolkit = { find, get, seek, json }
 
-	const getSelf = (innerTarget = newest(store)): T => {
-		const value = options.get(getterToolkit)
+	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
+		const value = getFn(getterToolkit)
 		cacheValue(options.key, value, subject, innerTarget)
 		covered.clear()
 		return value
@@ -35,7 +35,7 @@ export const createWritableSelector = <T>(
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const innerTarget = newest(store)
-		const oldValue = getSelf(innerTarget)
+		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(
 			`📝`,
@@ -52,7 +52,7 @@ export const createWritableSelector = <T>(
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })
 		}
-		options.set(toolkit, newValue)
+		options.set(setterToolkit, newValue)
 	}
 	const mySelector: WritableSelector<T> = {
 		...options,

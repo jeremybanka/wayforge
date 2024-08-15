@@ -6,10 +6,18 @@ import type {
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 } from "atom.io"
+import type { findState } from "atom.io/ephemeral"
+import type { seekState } from "atom.io/immortal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { WritableSelectorFamily } from ".."
+import {
+	findInStore,
+	getFromStore,
+	getJsonToken,
+	seekInStore,
+	type WritableSelectorFamily,
+} from ".."
 import { newest } from "../lineage"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
@@ -54,9 +62,18 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	}
 
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
+		internalRoles,
 		subject,
 		install: (s: Store) => createWritableSelectorFamily(options, s),
-		internalRoles,
+		default: (key: K) => {
+			const getFn = options.get(key)
+			return getFn({
+				get: (...params: [any]) => getFromStore(...params, store), // TODO: make store zero-arg
+				find: ((token, k) => findInStore(token, k, store)) as typeof findState,
+				seek: ((token, k) => seekInStore(token, k, store)) as typeof seekState,
+				json: (token) => getJsonToken(token, store),
+			})
+		},
 	}) satisfies WritableSelectorFamily<T, K>
 
 	store.families.set(options.key, selectorFamily)

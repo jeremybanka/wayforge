@@ -42,6 +42,7 @@ export class Store implements Lineage {
 	public child: Store | null = null
 
 	public valueMap = new Map<string, any>()
+	public defaults = new Map<string, any>()
 
 	public atoms = new Map<string, Atom<any>>()
 	public selectors = new Map<string, WritableSelector<any>>()

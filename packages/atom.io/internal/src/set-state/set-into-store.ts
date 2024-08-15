@@ -1,5 +1,5 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
-import type { Canonical } from "atom.io/json"
+import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
@@ -52,7 +52,18 @@ export function setIntoStore<T, New extends T>(
 				? findInStore(family, key, store)
 				: seekInStore(family, key, store)
 		if (!maybeToken) {
-			throw new NotFoundError(family, key, store)
+			store.logger.error(
+				`❗`,
+				family.type,
+				family.key,
+				`tried to set member`,
+				stringifyJson(key),
+				`to`,
+				value,
+				`but it was not found in store`,
+				store.config.name,
+			)
+			return
 		}
 		token = maybeToken
 	}

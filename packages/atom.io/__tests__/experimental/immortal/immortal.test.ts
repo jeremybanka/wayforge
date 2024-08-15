@@ -6,6 +6,7 @@ import {
 	makeMolecule,
 	makeRootMolecule,
 	moleculeFamily,
+	selectorFamily,
 	setState,
 } from "atom.io"
 import { editRelations, findRelations, getJoin, join } from "atom.io/data"
@@ -86,18 +87,116 @@ describe(`immortal mode`, () => {
 			default: 0,
 		})
 
-		expect(() => getState(countStates, `nonexistent`)).toThrowError(
-			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		expect(getState(countStates, `nonexistent`)).toBe(0)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to get member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
-		expect(() => {
-			setState(countStates, `nonexistent`, 1)
-		}).toThrowError(
-			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		setState(countStates, `nonexistent`, 1)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to set member`,
+			`"nonexistent"`,
+			`to`,
+			1,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
-		expect(() => {
-			disposeState(countStates, `nonexistent`)
-		}).toThrowError(
-			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		expect(getState(countStates, `nonexistent`)).toBe(0)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to get member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
+		)
+		disposeState(countStates, `nonexistent`)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to dispose of member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
+		)
+
+		const doubleStates = selectorFamily<number, string>({
+			key: `double`,
+			get:
+				(key) =>
+				({ get }) =>
+					get(countStates, key) * 2,
+			set:
+				(key) =>
+				({ set }, newValue) => {
+					set(countStates, key, newValue / 2)
+				},
+		})
+
+		expect(getState(doubleStates, `nonexistent`)).toBe(0)
+		expect(logger.error).toHaveBeenCalledWith(
+			`❗`,
+			`selector_family`,
+			`double`,
+			`tried to get member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
+		)
+		disposeState(doubleStates, `nonexistent`)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`selector_family`,
+			`double`,
+			`tried to dispose of member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
+		)
+
+		const factorialStates = selectorFamily<number, string>({
+			key: `factorial`,
+			get:
+				(key) =>
+				({ get }) => {
+					const count = get(countStates, key)
+					let factorial = 1
+					for (let i = 1; i <= count; i++) {
+						factorial *= i
+					}
+					return factorial
+				},
+		})
+
+		expect(getState(factorialStates, `nonexistent`)).toBe(1)
+		expect(logger.error).toHaveBeenCalledWith(
+			`❗`,
+			`readonly_selector_family`,
+			`factorial`,
+			`tried to get member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
+		)
+		disposeState(factorialStates, `nonexistent`)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`readonly_selector_family`,
+			`factorial`,
+			`tried to dispose of member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
 
 		const counterMolecules = moleculeFamily({
@@ -116,10 +215,15 @@ describe(`immortal mode`, () => {
 		expect(() => getState(counterMolecules, `nonexistent`)).toThrowError(
 			`Molecule Family "counter" member "nonexistent" not found in store "IMPLICIT_STORE".`,
 		)
-		expect(() => {
-			disposeState(counterMolecules, `nonexistent`)
-		}).toThrowError(
-			`Molecule Family "counter" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		disposeState(counterMolecules, `nonexistent`)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`molecule_family`,
+			`counter`,
+			`tried to dispose of member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
 
 		const root = makeRootMolecule(`root`)
