@@ -61,35 +61,11 @@ export class Silo {
 	public makeMolecule: typeof makeMolecule
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
 		const s = new Store(config, fromStore)
-		function _atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
-		function _atom<T extends Transceiver<any>, J extends Json.Serializable>(
-			options: MutableAtomOptions<T, J>,
-		): MutableAtomToken<T, J>
-		function _atom<T>(
-			options: MutableAtomOptions<any, any> | RegularAtomOptions<T>,
-		): AtomToken<T> {
-			return createStandaloneAtom(options, s)
-		}
-		function _atomFamily<
-			T extends Transceiver<any>,
-			J extends Json.Serializable,
-			K extends Canonical,
-		>(
-			options: MutableAtomFamilyOptions<T, J, K>,
-		): MutableAtomFamilyToken<T, J, K>
-		function _atomFamily<T, K extends Canonical>(
-			options: RegularAtomFamilyOptions<T, K>,
-		): RegularAtomFamilyToken<T, K>
-		function _atomFamily<T, K extends Canonical>(
-			options:
-				| MutableAtomFamilyOptions<any, any, any>
-				| RegularAtomFamilyOptions<T, K>,
-		): MutableAtomFamilyToken<any, any, any> | RegularAtomFamilyToken<T, K> {
-			return createAtomFamily(options, s)
-		}
 		this.store = s
-		this.atom = _atom
-		this.atomFamily = _atomFamily
+		this.atom = ((...params: Parameters<typeof atom>) =>
+			createStandaloneAtom(s, ...params)) as typeof atom
+		this.atomFamily = ((...params: Parameters<typeof atomFamily>) =>
+			createAtomFamily(s, ...params)) as typeof atomFamily
 		this.selector = (options) => createStandaloneSelector(options, s) as any
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)

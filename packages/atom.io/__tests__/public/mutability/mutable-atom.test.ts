@@ -87,16 +87,13 @@ describe(`mutable atomic state`, () => {
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
-		>(
-			{
-				key: `flagsByUserId::mutable`,
-				mutable: true,
-				default: () => new SetRTX(),
-				toJson: (set) => set.toJSON(),
-				fromJson: (array) => SetRTX.fromJSON(array),
-			},
-			Internal.IMPLICIT.STORE,
-		)
+		>(Internal.IMPLICIT.STORE, {
+			key: `flagsByUserId::mutable`,
+			mutable: true,
+			default: () => new SetRTX(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (array) => SetRTX.fromJSON(array),
+		})
 
 		const myFlagsState = findState(findFlagsStateByUserId, `my-user-id`)
 		const findFlagsByUserIdJSON = Internal.getJsonToken(

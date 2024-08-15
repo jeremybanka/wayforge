@@ -32,12 +32,12 @@ export function struct<
 	} = Object.keys(options.default).reduce((acc, key) => {
 		const atomName = options.key + capitalize(key) + `State`
 		acc[atomName] = createRegularAtom(
+			store,
 			{
 				key: `${options.key}.${key}`,
 				default: options.default[key],
 			},
 			undefined,
-			store,
 		)
 		return acc
 	}, {} as any)

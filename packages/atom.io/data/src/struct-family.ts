@@ -29,13 +29,10 @@ export function structFamily<
 		>}State`]: AtomIO.RegularAtomFamilyToken<Struct[K], string>
 	} = Object.keys(options.default).reduce((acc, subKey) => {
 		const atomFamilyName = nameFamily(options.key, subKey)
-		acc[atomFamilyName] = createRegularAtomFamily(
-			{
-				key: `${options.key}.${subKey}`,
-				default: (options.default as any)[subKey],
-			},
-			IMPLICIT.STORE,
-		)
+		acc[atomFamilyName] = createRegularAtomFamily(IMPLICIT.STORE, {
+			key: `${options.key}.${subKey}`,
+			default: (options.default as any)[subKey],
+		})
 		return acc
 	}, {} as any)
 	const findStructState: AtomIO.ReadonlySelectorFamilyToken<Struct, string> =

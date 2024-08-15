@@ -16,6 +16,8 @@ export const attachSelectorIndex = (
 ): ReadonlySelectorToken<SelectorTokenIndex> => {
 	const readonlySelectorTokenIndexState__INTERNAL =
 		createRegularAtom<SelectorTokenIndex>(
+			store,
+
 			{
 				key: `👁‍🗨 Selector Token Index (Internal)`,
 				default: () => {
@@ -98,7 +100,6 @@ export const attachSelectorIndex = (
 				],
 			},
 			undefined,
-			store,
 		)
 	return createStandaloneSelector(
 		{

@@ -12,6 +12,7 @@ export const attachTimelineIndex = (
 	const timelineTokenIndexState__INTERNAL = createRegularAtom<
 		TimelineToken<any>[]
 	>(
+		store,
 		{
 			key: `👁‍🗨 Timeline Token Index (Internal)`,
 			default: () =>
@@ -30,7 +31,6 @@ export const attachTimelineIndex = (
 			],
 		},
 		undefined,
-		store,
 	)
 	const timelineTokenIndex = createStandaloneSelector(
 		{

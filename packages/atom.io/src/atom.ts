@@ -53,7 +53,7 @@ export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
 export function atom(
 	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
 ): AtomToken<any> {
-	return createStandaloneAtom(options, IMPLICIT.STORE)
+	return createStandaloneAtom(IMPLICIT.STORE, options)
 }
 
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {
@@ -112,5 +112,5 @@ export function atomFamily<T, K extends Canonical>(
 		| MutableAtomFamilyOptions<any, any, any>
 		| RegularAtomFamilyOptions<T, K>,
 ): MutableAtomFamilyToken<any, any, any> | RegularAtomFamilyToken<T, K> {
-	return createAtomFamily(options, IMPLICIT.STORE)
+	return createAtomFamily(IMPLICIT.STORE, options)
 }

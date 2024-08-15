@@ -20,9 +20,9 @@ export function createMutableAtom<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(
+	store: Store,
 	options: MutableAtomOptions<T, J>,
 	family: FamilyMetadata | undefined,
-	store: Store,
 ): MutableAtomToken<T, J> {
 	store.logger.info(
 		`🔨`,
@@ -52,7 +52,7 @@ export function createMutableAtom<
 				options.key,
 				`installing in store "${s.config.name}"`,
 			)
-			return createMutableAtom(options, family, s)
+			return createMutableAtom(s, options, family)
 		},
 		subject,
 	} as const

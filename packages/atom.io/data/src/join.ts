@@ -235,6 +235,7 @@ export class Join<
 			SetRTXJson<string>,
 			string
 		>(
+			store,
 			{
 				key: `${options.key}/relatedKeys`,
 				default: () => new SetRTX(),
@@ -242,7 +243,6 @@ export class Join<
 				fromJson: (json) => SetRTX.fromJSON(json),
 				toJson: (set) => set.toJSON(),
 			},
-			store,
 			[`join`, `relations`],
 		)
 		this.core = { findRelatedKeysState: relatedKeysAtoms }
@@ -398,11 +398,11 @@ export class Join<
 		>
 		if (defaultContent) {
 			contentAtoms = createRegularAtomFamily<Content, string>(
+				store,
 				{
 					key: `${options.key}/content`,
 					default: defaultContent,
 				},
-				store,
 				[`join`, `content`],
 			)
 			const joinToken = {

@@ -37,12 +37,12 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		const latestUpdateState = createRegularAtom<
 			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
 		>(
+			store,
 			{
 				key: latestUpdateStateKey,
 				default: null,
 			},
 			familyMetaData,
-			store,
 		)
 		if (store.parent?.valueMap.has(latestUpdateStateKey)) {
 			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)

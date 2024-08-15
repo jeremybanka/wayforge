@@ -29,11 +29,11 @@ export class FamilyTracker<
 			typeof this.Update | null,
 			FamilyMemberKey
 		>(
+			store,
 			{
 				key: `*${mutableAtoms.key}`,
 				default: null,
 			},
-			store,
 			[`mutable`, `updates`],
 		)
 		this.latestUpdateAtoms = withdraw(updateAtoms, store)
