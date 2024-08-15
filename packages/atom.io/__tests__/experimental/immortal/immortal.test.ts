@@ -86,18 +86,47 @@ describe(`immortal mode`, () => {
 			default: 0,
 		})
 
-		expect(() => getState(countStates, `nonexistent`)).toThrowError(
-			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		expect(getState(countStates, `nonexistent`)).toBe(0)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to get member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
-		expect(() => {
-			setState(countStates, `nonexistent`, 1)
-		}).toThrowError(
-			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		setState(countStates, `nonexistent`, 1)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to set member`,
+			`"nonexistent"`,
+			`to`,
+			1,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
-		expect(() => {
-			disposeState(countStates, `nonexistent`)
-		}).toThrowError(
-			`Atom Family "count" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		expect(getState(countStates, `nonexistent`)).toBe(0)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to get member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
+		)
+		disposeState(countStates, `nonexistent`)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to dispose of member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
 
 		const counterMolecules = moleculeFamily({
@@ -116,10 +145,15 @@ describe(`immortal mode`, () => {
 		expect(() => getState(counterMolecules, `nonexistent`)).toThrowError(
 			`Molecule Family "counter" member "nonexistent" not found in store "IMPLICIT_STORE".`,
 		)
-		expect(() => {
-			disposeState(counterMolecules, `nonexistent`)
-		}).toThrowError(
-			`Molecule Family "counter" member "nonexistent" not found in store "IMPLICIT_STORE".`,
+		disposeState(counterMolecules, `nonexistent`)
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`molecule_family`,
+			`counter`,
+			`tried to dispose of member`,
+			`"nonexistent"`,
+			`but it was not found in store`,
+			`IMPLICIT_STORE`,
 		)
 
 		const root = makeRootMolecule(`root`)

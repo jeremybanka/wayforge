@@ -61,5 +61,6 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 	}) satisfies RegularAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
+	store.defaults.set(options.key, options.default)
 	return familyToken
 }

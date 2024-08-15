@@ -6,7 +6,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import type { Canonical } from "atom.io/json"
+import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
 import { disposeMolecule } from "../molecule/dispose-molecule"
@@ -55,7 +55,16 @@ export function disposeFromStore(
 					? seekInStore(family, key, store)
 					: findInStore(family, key, store)
 		if (!maybeToken) {
-			throw new NotFoundError(family, key, store)
+			store.logger.error(
+				`❗`,
+				family.type,
+				family.key,
+				`tried to dispose of member`,
+				stringifyJson(key),
+				`but it was not found in store`,
+				store.config.name,
+			)
+			return
 		}
 		token = maybeToken
 	}
