@@ -31,29 +31,38 @@ export type TransactionUpdateHandler<F extends Func> = (
 	data: TransactionUpdate<F>,
 ) => void
 
-export function subscribe<T>(
+export function subscribeInStore<T>(
+	store: Store,
 	token: ReadableToken<T>,
 	handleUpdate: UpdateHandler<T>,
 	key?: string,
-	store?: Store,
 ): () => void
-export function subscribe<F extends Func>(
+export function subscribeInStore<F extends Func>(
+	store: Store,
 	token: TransactionToken<F>,
 	handleUpdate: TransactionUpdateHandler<F>,
 	key?: string,
-	store?: Store,
 ): () => void
-export function subscribe<M extends TimelineManageable>(
+export function subscribeInStore<M extends TimelineManageable>(
+	store: Store,
 	token: TimelineToken<M>,
 	handleUpdate: (update: TimelineUpdate<M> | `redo` | `undo`) => void,
 	key?: string,
-	store?: Store,
 ): () => void
-export function subscribe(
+export function subscribeInStore<M extends TimelineManageable>(
+	store: Store,
+	token: ReadableToken<any> | TimelineToken<M> | TransactionToken<any>,
+	handleUpdate:
+		| TransactionUpdateHandler<any>
+		| UpdateHandler<any>
+		| ((update: TimelineUpdate<M> | `redo` | `undo`) => void),
+	key?: string,
+): () => void
+export function subscribeInStore(
+	store: Store,
 	token: ReadableToken<any> | TimelineToken<any> | TransactionToken<any>,
 	handleUpdate: (update: any) => void,
 	key: string = arbitrary(),
-	store = IMPLICIT.STORE,
 ): () => void {
 	switch (token.type) {
 		case `atom`:
@@ -66,4 +75,27 @@ export function subscribe(
 		case `timeline`:
 			return subscribeToTimeline(token, handleUpdate, key, store)
 	}
+}
+
+export function subscribe<T>(
+	token: ReadableToken<T>,
+	handleUpdate: UpdateHandler<T>,
+	key?: string,
+): () => void
+export function subscribe<F extends Func>(
+	token: TransactionToken<F>,
+	handleUpdate: TransactionUpdateHandler<F>,
+	key?: string,
+): () => void
+export function subscribe<M extends TimelineManageable>(
+	token: TimelineToken<M>,
+	handleUpdate: (update: TimelineUpdate<M> | `redo` | `undo`) => void,
+	key?: string,
+): () => void
+export function subscribe(
+	token: ReadableToken<any> | TimelineToken<any> | TransactionToken<any>,
+	handleUpdate: (update: any) => void,
+	key: string = arbitrary(),
+): () => void {
+	return subscribeInStore(IMPLICIT.STORE, token, handleUpdate, key)
 }

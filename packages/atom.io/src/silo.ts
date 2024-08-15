@@ -1,5 +1,4 @@
 import type { findState } from "atom.io/ephemeral"
-import type { Transceiver } from "atom.io/internal"
 import {
 	createAtomFamily,
 	createMoleculeFamily,
@@ -16,28 +15,19 @@ import {
 	Store,
 	timeTravel,
 } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
 
 import type {
-	AtomToken,
 	disposeState,
 	getState,
 	makeMolecule,
 	moleculeFamily,
-	MutableAtomFamilyOptions,
-	MutableAtomFamilyToken,
-	MutableAtomOptions,
-	MutableAtomToken,
 	redo,
-	RegularAtomFamilyOptions,
-	RegularAtomFamilyToken,
-	RegularAtomOptions,
-	RegularAtomToken,
 	setState,
+	subscribe,
 	timeline,
 	undo,
 } from "."
-import { subscribe } from "."
+import { subscribeInStore } from "."
 import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
 import type { transaction } from "./transaction"
@@ -82,7 +72,8 @@ export class Silo {
 		this.disposeState = ((...params: Parameters<typeof disposeState>) => {
 			disposeFromStore(s, ...params)
 		}) as typeof disposeState
-		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
+		this.subscribe = ((...params: Parameters<typeof subscribe>) =>
+			subscribeInStore(s, ...params)) as typeof subscribe
 		this.undo = (token) => {
 			timeTravel(`undo`, token, s)
 		}
@@ -91,9 +82,9 @@ export class Silo {
 		}
 		this.moleculeFamily = ((options: Parameters<typeof moleculeFamily>[0]) => {
 			return createMoleculeFamily(s, options)
-		}) as any
+		}) as typeof moleculeFamily
 		this.makeMolecule = ((...params: Parameters<typeof makeMolecule>) => {
 			return makeMoleculeInStore(s, ...params)
-		}) as any
+		}) as typeof makeMolecule
 	}
 }
