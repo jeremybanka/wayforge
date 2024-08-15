@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.27.4
+
+### Patch Changes
+
+- ae2e4bc: ✨ `atom.io/immortal` No longer throws when a state can't be found.
+
 ## 0.27.3
 
 ### Patch Changes
