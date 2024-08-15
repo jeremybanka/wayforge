@@ -13,7 +13,7 @@ export function usePullSelectorFamilyMember<
 	Key extends K,
 >(familyToken: AtomIO.SelectorFamilyToken<T, K>, key: Key): T {
 	const store = React.useContext(StoreContext)
-	const token = findInStore(familyToken, key, store)
+	const token = findInStore(store, familyToken, key)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
 		RTC.pullSelectorFamilyMember(token, socket, store),
 	)

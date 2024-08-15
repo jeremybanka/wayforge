@@ -50,10 +50,10 @@ export function disposeFromStore(
 		store = params[2]
 		const maybeToken =
 			family.type === `molecule_family`
-				? seekInStore(family, key, store)
+				? seekInStore(store, family, key)
 				: store.config.lifespan === `immortal`
-					? seekInStore(family, key, store)
-					: findInStore(family, key, store)
+					? seekInStore(store, family, key)
+					: findInStore(store, family, key)
 		if (!maybeToken) {
 			store.logger.error(
 				`❗`,

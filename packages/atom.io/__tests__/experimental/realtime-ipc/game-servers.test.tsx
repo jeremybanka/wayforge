@@ -49,9 +49,9 @@ describe(`multi-process realtime server`, () => {
 		await app.renderResult.findByTestId(`join-room-1`)
 
 		const roomSocketState = findInStore(
+			server.silo.store,
 			roomSelectors,
 			`room-1`,
-			server.silo.store,
 		)
 		const roomSocket = await getFromStore(server.silo.store, roomSocketState)
 

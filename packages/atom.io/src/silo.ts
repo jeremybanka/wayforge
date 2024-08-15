@@ -94,7 +94,7 @@ export class Silo {
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
-		this.findState = (token, key) => findInStore(token, key, s) as any
+		this.findState = (token, key) => findInStore(s, token, key) as any
 		this.getState = ((...params: Parameters<typeof getState>) =>
 			getFromStore(s, ...params)) as typeof getState
 		this.setState = ((...params: Parameters<typeof setState>) => {

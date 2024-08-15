@@ -201,9 +201,9 @@ export class Join<
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(store, ...ps)
 			}) as typeof setState,
-			find: ((token, key) => findInStore(token, key, store)) as typeof findState,
-			seek: ((token, key) => seekInStore(token, key, store)) as typeof seekState,
-			json: (token) => getJsonToken(token, store),
+			find: ((token, key) => findInStore(store, token, key)) as typeof findState,
+			seek: ((token, key) => seekInStore(store, token, key)) as typeof seekState,
+			json: (token) => getJsonToken(store, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(...ps, store)
 			}) as typeof disposeState,
@@ -224,7 +224,7 @@ export class Join<
 			if (store.config.lifespan === `immortal`) {
 				throw new NotFoundError(token, key, store)
 			}
-			return initFamilyMemberInStore(token, key, store)
+			return initFamilyMemberInStore(store, token, key)
 		}) as typeof findState
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]

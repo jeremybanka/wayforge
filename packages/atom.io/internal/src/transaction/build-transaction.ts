@@ -74,9 +74,9 @@ export const buildTransaction = (
 			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(token, identifier, child),
-			find: ((token, k) => findInStore(token, k, child)) as typeof findState,
-			seek: ((token, k) => seekInStore(token, k, child)) as typeof seekState,
-			json: (token) => getJsonToken(token, child),
+			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
+			seek: ((token, k) => seekInStore(child, token, k)) as typeof seekState,
+			json: (token) => getJsonToken(child, token),
 			make: (context, family, k, ...args) =>
 				makeMoleculeInStore(child, context, family, k, ...args),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {

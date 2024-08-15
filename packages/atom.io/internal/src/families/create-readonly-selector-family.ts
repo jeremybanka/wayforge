@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	getState,
 	ReadonlySelectorFamilyOptions,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
@@ -67,10 +68,10 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: (...args: [any]) => getFromStore(store, ...args),
-				find: ((token, k) => findInStore(token, k, store)) as typeof findState,
-				seek: ((token, k) => seekInStore(token, k, store)) as typeof seekState,
-				json: (token) => getJsonToken(token, store),
+				get: ((...ps: [any]) => getFromStore(store, ...ps)) as typeof getState,
+				find: ((token, k) => findInStore(store, token, k)) as typeof findState,
+				seek: ((token, k) => seekInStore(store, token, k)) as typeof seekState,
+				json: (token) => getJsonToken(store, token),
 			})
 		},
 	}) satisfies ReadonlySelectorFamily<T, K>

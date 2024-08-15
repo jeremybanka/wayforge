@@ -65,8 +65,8 @@ export function seekState(
 	key: Canonical,
 ): MoleculeToken<any> | ReadableToken<any> | undefined {
 	if (token.type === `molecule_family`) {
-		return seekInStore(token, key, IMPLICIT.STORE)
+		return seekInStore(IMPLICIT.STORE, token, key)
 	}
-	const state = seekInStore(token, key, IMPLICIT.STORE)
+	const state = seekInStore(IMPLICIT.STORE, token, key)
 	return state
 }

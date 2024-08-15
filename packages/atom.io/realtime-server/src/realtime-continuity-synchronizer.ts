@@ -70,7 +70,7 @@ export function realtimeContinuitySynchronizer({
 					)
 					return
 				}
-				const newSocketState = findInStore(socketAtoms, newSocketKey, store)
+				const newSocketState = findInStore(store, socketAtoms, newSocketKey)
 				const newSocket = getFromStore(store, newSocketState)
 				socket = newSocket
 			},
@@ -79,9 +79,9 @@ export function realtimeContinuitySynchronizer({
 		)
 
 		const userUnacknowledgedQueue = findInStore(
+			store,
 			userUnacknowledgedQueues,
 			userKey,
-			store,
 		)
 		const userUnacknowledgedUpdates = getFromStore(
 			store,
@@ -93,7 +93,7 @@ export function realtimeContinuitySynchronizer({
 			const unsubFns: (() => void)[] = []
 			for (const perspective of continuity.perspectives) {
 				const { viewAtoms } = perspective
-				const userViewState = findInStore(viewAtoms, userKey, store)
+				const userViewState = findInStore(store, viewAtoms, userKey)
 				const unsubscribe = subscribeToState(
 					userViewState,
 					({ oldValue, newValue }) => {
@@ -107,7 +107,7 @@ export function realtimeContinuitySynchronizer({
 							.flatMap((token) => {
 								const resourceToken =
 									token.type === `mutable_atom`
-										? getJsonToken(token, store)
+										? getJsonToken(store, token)
 										: token
 								const resource = getFromStore(store, resourceToken)
 								return [resourceToken, resource]
@@ -141,12 +141,12 @@ export function realtimeContinuitySynchronizer({
 			const initialPayload: Json.Serializable[] = []
 			for (const atom of continuity.globals) {
 				const resourceToken =
-					atom.type === `mutable_atom` ? getJsonToken(atom, store) : atom
+					atom.type === `mutable_atom` ? getJsonToken(store, atom) : atom
 				initialPayload.push(resourceToken, getFromStore(store, atom))
 			}
 			for (const perspective of continuity.perspectives) {
 				const { viewAtoms, resourceAtoms } = perspective
-				const userViewState = findInStore(viewAtoms, userKey, store)
+				const userViewState = findInStore(store, viewAtoms, userKey)
 				const userView = getFromStore(store, userViewState)
 				store.logger.info(`👁`, `atom`, resourceAtoms.key, `${userKey} can see`, {
 					viewAtoms,
@@ -156,7 +156,7 @@ export function realtimeContinuitySynchronizer({
 				for (const visibleToken of userView) {
 					const resourceToken =
 						visibleToken.type === `mutable_atom`
-							? getJsonToken(visibleToken, store)
+							? getJsonToken(store, visibleToken)
 							: visibleToken
 					const resource = getFromStore(store, resourceToken)
 
@@ -181,9 +181,9 @@ export function realtimeContinuitySynchronizer({
 									continuity.perspectives.flatMap((perspective) => {
 										const { viewAtoms } = perspective
 										const userPerspectiveTokenState = findInStore(
+											store,
 											viewAtoms,
 											userKey,
-											store,
 										)
 										const visibleTokens = getFromStore(
 											store,

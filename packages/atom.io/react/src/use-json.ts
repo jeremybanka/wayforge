@@ -31,8 +31,8 @@ export function useJSON<
 	const store = React.useContext(StoreContext)
 	const stateToken: ReadableToken<any> =
 		token.type === `mutable_atom_family`
-			? findInStore(token, key as Key, store)
+			? findInStore(store, token, key as Key)
 			: token
-	const jsonToken = getJsonToken(stateToken, store)
+	const jsonToken = getJsonToken(store, stateToken)
 	return useO(jsonToken)
 }

@@ -41,8 +41,8 @@ export function setIntoStore<T, New extends T>(
 		value = params[2]
 		const maybeToken =
 			store.config.lifespan === `ephemeral`
-				? findInStore(family, key, store)
-				: seekInStore(family, key, store)
+				? findInStore(store, family, key)
+				: seekInStore(store, family, key)
 		if (!maybeToken) {
 			store.logger.error(
 				`❗`,

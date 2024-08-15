@@ -19,7 +19,7 @@ export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
 export function getFromStore<M extends MoleculeConstructor>(
 	store: Store,
 	token: MoleculeToken<M>,
-): InstanceType<M> | undefined
+): InstanceType<M>
 
 export function getFromStore<T, K extends Canonical>(
 	store: Store,
@@ -49,10 +49,10 @@ export function getFromStore<T>(
 		const key = params[1]
 		const maybeToken =
 			family.type === `molecule_family`
-				? seekInStore(family, key, store)
+				? seekInStore(store, family, key)
 				: store.config.lifespan === `immortal`
-					? seekInStore(family, key, store)
-					: findInStore(family, key, store)
+					? seekInStore(store, family, key)
+					: findInStore(store, family, key)
 		if (!maybeToken) {
 			store.logger.error(
 				`❗`,

@@ -89,7 +89,7 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const socketState = findInStore(RTS.socketAtoms, socket.id, silo.store)
+			const socketState = findInStore(silo.store, RTS.socketAtoms, socket.id)
 			setIntoStore(silo.store, socketState, socket)
 			editRelationsInStore(
 				RTS.usersOfSockets,
@@ -115,7 +115,7 @@ export const setupRealtimeTestServer = (
 		server.close()
 		const roomKeys = getFromStore(silo.store, RT.roomIndex)
 		for (const roomKey of roomKeys) {
-			const roomState = findInStore(RTS.roomSelectors, roomKey, silo.store)
+			const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
 			const room = getFromStore(silo.store, roomState)
 			if (room && !(room instanceof Promise)) {
 				room.process.kill()

@@ -24,7 +24,7 @@ export function dict<State, Key extends Canonical>(
 			get: ({ get }) => {
 				const keys = get(index)
 				return keys.reduce((acc, key) => {
-					acc[key] = get(findInStore(family, key, store))
+					acc[key] = get(findInStore(store, family, key))
 					return acc
 				}, {} as any)
 			},

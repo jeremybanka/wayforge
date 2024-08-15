@@ -45,7 +45,7 @@ export const SystemServer = ({
 	)
 	const usersInRoomsAtoms = getInternalRelationsFromStore(RT.usersInRooms, store)
 	exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
-	exposeMutable(findInStore(usersInRoomsAtoms, username, store))
+	exposeMutable(findInStore(store, usersInRoomsAtoms, username))
 
 	socket.on(`create-room`, async (roomId) => {
 		await actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
@@ -55,7 +55,7 @@ export const SystemServer = ({
 	})
 
 	socket.on(`delete-room`, async (roomId) => {
-		const roomState = findInStore(RTS.roomSelectors, roomId, store)
+		const roomState = findInStore(store, RTS.roomSelectors, roomId)
 		const roomSocket = await getFromStore(store, roomState)
 		logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
 		roomSocket.emit(`exit`, username)
@@ -76,7 +76,7 @@ export const SystemServer = ({
 
 		actUponStore(RTS.joinRoomTX, arbitrary(), store)(roomId, username, 0)
 
-		const roomSocketState = findInStore(RTS.roomSelectors, roomId, store)
+		const roomSocketState = findInStore(store, RTS.roomSelectors, roomId)
 		const roomSocket = await getFromStore(store, roomSocketState)
 		roomSocket.onAny((...payload) => socket.emit(...payload))
 		roomSocket.emit(`user-joins`, username)
@@ -118,7 +118,7 @@ export const SystemServer = ({
 		if (!roomKey) {
 			return
 		}
-		const roomSocketState = findInStore(RTS.roomSelectors, roomKey, store)
+		const roomSocketState = findInStore(store, RTS.roomSelectors, roomKey)
 		const roomSocket = await getFromStore(store, roomSocketState)
 		roomSocket?.emit(`leave-room`, username)
 		actUponStore(RTS.leaveRoomTX, arbitrary(), store)(`*`, username)

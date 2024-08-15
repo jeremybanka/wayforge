@@ -176,7 +176,7 @@ export class Store implements Lineage {
 				}
 				atom.install(this)
 				if (atom.type === `mutable_atom`) {
-					const originalJsonToken = getJsonToken(atom, store)
+					const originalJsonToken = getJsonToken(store, atom)
 					const originalUpdateToken = getUpdateToken(atom)
 					mutableHelpers.add(originalJsonToken.key)
 					mutableHelpers.add(originalUpdateToken.key)

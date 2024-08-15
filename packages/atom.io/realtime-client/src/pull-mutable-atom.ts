@@ -12,7 +12,7 @@ export function pullMutableAtom<
 	socket: Socket,
 	store: Store,
 ): () => void {
-	const jsonToken = getJsonToken(token, store)
+	const jsonToken = getJsonToken(store, token)
 	const updateToken = getUpdateToken(token)
 	socket.on(`init:${token.key}`, (data: J) => {
 		setIntoStore(store, jsonToken, data)
