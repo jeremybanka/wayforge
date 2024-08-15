@@ -34,7 +34,7 @@ export function getState(
 		| [token: MoleculeToken<any> | ReadableToken<any>]
 ): any {
 	if (params.length === 2) {
-		Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
+		return Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
 	}
 	return Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
 }

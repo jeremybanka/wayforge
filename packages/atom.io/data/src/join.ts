@@ -201,11 +201,13 @@ export class Join<
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(store, ...ps)
 			}) as typeof setState,
-			find: ((token, key) => findInStore(store, token, key)) as typeof findState,
-			seek: ((token, key) => seekInStore(store, token, key)) as typeof seekState,
+			find: ((...ps: Parameters<typeof findState>) =>
+				findInStore(store, ...ps)) as typeof findState,
+			seek: ((...ps: Parameters<typeof seekState>) =>
+				seekInStore(store, ...ps)) as typeof seekState,
 			json: (token) => getJsonToken(store, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(...ps, store)
+				disposeFromStore(store, ...ps)
 			}) as typeof disposeState,
 		}
 		this.retrieve = ((

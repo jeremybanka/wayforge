@@ -33,15 +33,31 @@ export function getFromStore<M extends MoleculeConstructor>(
 	key: MoleculeKey<M>,
 ): InstanceType<M>
 
-export function getFromStore<T>(
+export function getFromStore(
+	store: Store,
+	token: MoleculeToken<any> | ReadableToken<any>,
+): any
+
+export function getFromStore(
+	store: Store,
+	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+	key: Canonical,
+): any
+
+export function getFromStore(
 	store: Store,
 	...params:
+		| [
+				token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+				key: Canonical,
+		  ]
 		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>]
+		| [token: MoleculeToken<any> | ReadableToken<any>]
 		| [token: MoleculeToken<any>]
-		| [token: ReadableFamilyToken<T, any>, key: Canonical]
-		| [token: ReadableToken<T>]
+		| [token: ReadableFamilyToken<any, any>, key: Canonical]
+		| [token: ReadableToken<any>]
 ): any {
-	let token: MoleculeToken<any> | ReadableToken<T>
+	let token: MoleculeToken<any> | ReadableToken<any>
 	if (params.length === 1) {
 		token = params[0]
 	} else {

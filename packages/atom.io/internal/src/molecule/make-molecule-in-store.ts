@@ -78,7 +78,7 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		make: (ctx, f, k, ...args) =>
 			makeMoleculeInStore(newest(rootStore), ctx, f, k, ...args),
 		dispose: (t) => {
-			disposeFromStore(t, newest(rootStore))
+			disposeFromStore(newest(rootStore), t)
 		},
 		env: () => getEnvironmentData(newest(rootStore)),
 		bond: ((

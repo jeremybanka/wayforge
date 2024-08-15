@@ -80,7 +80,7 @@ export const buildTransaction = (
 			make: (context, family, k, ...args) =>
 				makeMoleculeInStore(child, context, family, k, ...args),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(...ps, child)
+				disposeFromStore(child, ...ps)
 			}) as typeof disposeState,
 			env: () => getEnvironmentData(child),
 		},

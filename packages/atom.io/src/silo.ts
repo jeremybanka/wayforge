@@ -94,14 +94,15 @@ export class Silo {
 		this.selectorFamily = (options) => createSelectorFamily(options, s) as any
 		this.transaction = (options) => createTransaction(options, s)
 		this.timeline = (options) => createTimeline(options, s)
-		this.findState = (token, key) => findInStore(s, token, key) as any
+		this.findState = ((...params: Parameters<typeof findState>) =>
+			findInStore(s, ...params)) as typeof findState
 		this.getState = ((...params: Parameters<typeof getState>) =>
 			getFromStore(s, ...params)) as typeof getState
 		this.setState = ((...params: Parameters<typeof setState>) => {
 			setIntoStore(s, ...params)
 		}) as typeof setState
 		this.disposeState = ((...params: Parameters<typeof disposeState>) => {
-			disposeFromStore(...params, s)
+			disposeFromStore(s, ...params)
 		}) as typeof disposeState
 		this.subscribe = (token, handler, key) => subscribe(token, handler, key, s)
 		this.undo = (token) => {
