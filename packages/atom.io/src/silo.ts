@@ -75,10 +75,10 @@ export class Silo {
 		this.subscribe = ((...params: Parameters<typeof subscribe>) =>
 			subscribeInStore(s, ...params)) as typeof subscribe
 		this.undo = (token) => {
-			timeTravel(`undo`, token, s)
+			timeTravel(s, `undo`, token)
 		}
 		this.redo = (token) => {
-			timeTravel(`redo`, token, s)
+			timeTravel(s, `redo`, token)
 		}
 		this.moleculeFamily = ((options: Parameters<typeof moleculeFamily>[0]) => {
 			return createMoleculeFamily(s, options)

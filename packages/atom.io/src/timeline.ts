@@ -54,9 +54,9 @@ export const timeline = <ManagedAtom extends TimelineManageable>(
 }
 
 export const redo = (tl: TimelineToken<any>): void => {
-	timeTravel(`redo`, tl, IMPLICIT.STORE)
+	timeTravel(IMPLICIT.STORE, `redo`, tl)
 }
 
 export const undo = (tl: TimelineToken<any>): void => {
-	timeTravel(`undo`, tl, IMPLICIT.STORE)
+	timeTravel(IMPLICIT.STORE, `undo`, tl)
 }
