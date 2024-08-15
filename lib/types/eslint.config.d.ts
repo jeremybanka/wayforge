@@ -1,22 +1,25 @@
-import type { ESLint } from "eslint"
-
-// eslint-disable-next-line quotes
-declare module "atom.io/eslint-plugin" {
-	const plugin: ESLint.Plugin
-	export default plugin
-}
 // eslint-disable-next-line quotes
 declare module "eslint-plugin-import" {
+	import type { ESLint } from "eslint"
 	const plugin: ESLint.Plugin
 	export = plugin
 }
 // eslint-disable-next-line quotes
 declare module "@next/eslint-plugin-next" {
-	const plugin: ESLint.Plugin
+	import type { ESLint, Linter } from "eslint"
+	const plugin: Omit<ESLint.Plugin, `configs`> & {
+		configs: Record<
+			`core-web-vitals` | `recommended`,
+			Omit<Linter.Config, `rules`> & {
+				rules: Record<string, ESLint.Rule.RuleModule>
+			}
+		>
+	}
 	export default plugin
 }
 // eslint-disable-next-line quotes
 declare module "@typescript-eslint/eslint-plugin" {
+	import type { ESLint } from "eslint"
 	const plugin: ESLint.Plugin
 	export = plugin
 }

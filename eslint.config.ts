@@ -5,7 +5,7 @@ import type { Linter } from "eslint"
 import * as ImportPlugin from "eslint-plugin-import"
 import * as SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
 
-import AtomIOPlugin from "./packages/atom.io/eslint-plugin/dist/index.js"
+import AtomIOPlugin from "./packages/atom.io/eslint-plugin"
 
 const ERROR = 2
 
