@@ -24,7 +24,7 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 0
+const CHOOSE = 1
 let logger: Logger
 
 beforeEach(() => {
@@ -167,51 +167,63 @@ describe(`graceful handling of improper usage`, () => {
 				key: `count`,
 				default: 0,
 			})
-			expect(() => {
-				atomFamily<number, string>({
-					key: `count`,
-					default: 0,
-				})
-			}).toThrowError(
-				`Tried to create an Atom Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+			atomFamily<number, string>({
+				key: `count`,
+				default: 0,
+			})
+			expect(logger.error).toHaveBeenLastCalledWith(
+				`❗`,
+				`atom_family`,
+				`count`,
+				`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 			)
-			expect(() => {
-				selectorFamily<number, string>({
-					key: `count`,
-					get:
-						(key) =>
-						({ get }) =>
-							get(findState(countAtoms, key)),
-				})
-			}).toThrowError(
-				`Tried to create a Readonly Selector Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+
+			selectorFamily<number, string>({
+				key: `count`,
+				get:
+					(key) =>
+					({ get }) =>
+						get(findState(countAtoms, key)),
+			})
+			expect(logger.error).toHaveBeenLastCalledWith(
+				`❗`,
+				`readonly_selector_family`,
+				`count`,
+				`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 			)
-			expect(() => {
-				atomFamily<SetRTX<number>, SetRTXJson<number>, string>({
-					key: `count`,
-					mutable: true,
-					default: () => new SetRTX<number>(),
-					toJson: (set) => set.toJSON(),
-					fromJson: (json) => SetRTX.fromJSON(json),
-				})
-			}).toThrowError(
-				`Tried to create a Mutable Atom Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+
+			atomFamily<SetRTX<number>, SetRTXJson<number>, string>({
+				key: `count`,
+				mutable: true,
+				default: () => new SetRTX<number>(),
+				toJson: (set) => set.toJSON(),
+				fromJson: (json) => SetRTX.fromJSON(json),
+			})
+
+			expect(logger.error).toHaveBeenLastCalledWith(
+				`❗`,
+				`mutable_atom_family`,
+				`count`,
+				`Overwriting an existing Readonly Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 			)
-			expect(() => {
-				selectorFamily<number, string>({
-					key: `count`,
-					get:
-						(key) =>
-						({ get }) =>
-							get(findState(countAtoms, key)),
-					set:
-						(key) =>
-						({ set }, newValue) => {
-							set(findState(countAtoms, key), newValue)
-						},
-				})
-			}).toThrowError(
-				`Tried to create a Selector Family with key "count", but "count" already exists in store "IMPLICIT_STORE" as an Atom Family`,
+			selectorFamily<number, string>({
+				key: `count`,
+				get:
+					(key) =>
+					({ get }) =>
+						get(findState(countAtoms, key)),
+				set:
+					(key) =>
+					({ set }, newValue) => {
+						set(findState(countAtoms, key), newValue)
+					},
+			})
+
+			expect(logger.error).toHaveBeenLastCalledWith(
+				`❗`,
+				`selector_family`,
+				`count`,
+				`Overwriting an existing Mutable Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 			)
 		})
 	})

@@ -10,12 +10,11 @@ import type {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { RegularAtomFamily } from ".."
+import { prettyPrintTokenType, type RegularAtomFamily } from ".."
 import { createRegularAtom } from "../atom"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { throwInCaseOfConflictingFamily } from "./throw-in-case-of-conflicting-family"
 
 export function createRegularAtomFamily<T, K extends Canonical>(
 	store: Store,
@@ -27,7 +26,17 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		type: `atom_family`,
 	} as const satisfies RegularAtomFamilyToken<T, K>
 
-	throwInCaseOfConflictingFamily(familyToken, store)
+	const existing = store.families.get(options.key)
+	if (existing) {
+		store.logger.error(
+			`❗`,
+			`atom_family`,
+			options.key,
+			`Overwriting an existing ${prettyPrintTokenType(
+				existing,
+			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
+	}
 
 	const subject = new Subject<
 		StateCreation<RegularAtomToken<T>> | StateDisposal<RegularAtomToken<T>>

@@ -10,8 +10,7 @@ import type {
 import type { Json } from "atom.io/json"
 import { selectJsonFamily, stringifyJson } from "atom.io/json"
 
-import type { MutableAtomFamily } from ".."
-import { throwInCaseOfConflictingFamily } from "../families/throw-in-case-of-conflicting-family"
+import { type MutableAtomFamily, prettyPrintTokenType } from ".."
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
@@ -33,7 +32,17 @@ export function createMutableAtomFamily<
 		type: `mutable_atom_family`,
 	} as const satisfies MutableAtomFamilyToken<T, J, K>
 
-	throwInCaseOfConflictingFamily(familyToken, store)
+	const existing = store.families.get(options.key)
+	if (existing) {
+		store.logger.error(
+			`❗`,
+			`mutable_atom_family`,
+			options.key,
+			`Overwriting an existing ${prettyPrintTokenType(
+				existing,
+			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
+	}
 
 	const subject = new Subject<
 		StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>
