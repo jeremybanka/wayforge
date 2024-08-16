@@ -6,6 +6,7 @@ import colors from "colors"
 import TS from "typescript"
 
 import type { TSD } from "./namespace"
+
 export type { TSD }
 
 function isExported(node: TS.Node): node is TS.Node & { $__exported?: boolean } {
