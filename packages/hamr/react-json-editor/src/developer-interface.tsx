@@ -1,6 +1,7 @@
+import type { Json } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
-import type { Json, JsonTypes } from "~/packages/anvl/src/json"
+import type { JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
 import type { JsonEditorComponents } from "./default-components"

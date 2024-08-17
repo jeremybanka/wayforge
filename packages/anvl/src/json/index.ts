@@ -1,17 +1,6 @@
 export * from "./json-interface"
-import type * as Json from "./json"
 
-export type { Json }
-
-export const parseJson = <S extends stringified<Json.Serializable>>(
-	str: S | string,
-): S extends stringified<infer J> ? J : Json.Serializable => JSON.parse(str)
-
-export type stringified<J extends Json.Serializable> = string & { __json: J }
-
-export const stringifyJson = <J extends Json.Serializable>(
-	json: J,
-): stringified<J> => JSON.stringify(json) as stringified<J>
+import type { Json } from "atom.io/json"
 
 export type Empty = Record<string, never>
 

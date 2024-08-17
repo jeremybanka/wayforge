@@ -1,9 +1,4 @@
-import type { Json } from "."
-
-export type JsonInterface<T, J extends Json.Serializable = Json.Serializable> = {
-	toJson: (t: T) => J
-	fromJson: (json: J) => T
-}
+import type { Json, JsonInterface } from "atom.io/json"
 
 export const stringSetJsonInterface: JsonInterface<
 	Set<string>,

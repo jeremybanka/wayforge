@@ -1,4 +1,4 @@
-import type * as Json from "./json"
+import type { Json } from "atom.io/json"
 
 export const stringToBoolean = (str: string): boolean => str === `true`
 export const stringToNumber = (str: string): number => Number(str)

@@ -1,6 +1,7 @@
+import type { Json } from "rel8"
+
 import { pipe } from "../function"
 import type { Identified } from "../id/identified"
-import type { Json } from "../json"
 import type { NullSafeRest } from "../nullish"
 import { isEmptyObject } from "../object/refinement"
 import type { RelationData } from "./core-relation-data"

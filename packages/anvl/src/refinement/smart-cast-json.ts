@@ -1,4 +1,5 @@
-import type { Json } from "../json"
+import type { Json } from "atom.io/json"
+
 import * as Cast from "../json/cast-json"
 import { refineJsonType } from "./refine-json"
 

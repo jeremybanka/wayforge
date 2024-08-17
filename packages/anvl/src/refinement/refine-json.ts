@@ -1,6 +1,7 @@
+import type { Json } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
+
 import { attempt, raiseError } from "../function"
-import type { Json } from "../json"
-import { stringifyJson } from "../json"
 import { isPlainObject } from "../object"
 import { isBoolean, isNumber, isString } from "../primitive"
 
