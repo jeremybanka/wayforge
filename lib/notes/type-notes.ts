@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 type StrictEquals<A, B> = A extends B ? (B extends A ? true : false) : false
 
 // How to extend a type without adding anything to it, so the original extends the extension

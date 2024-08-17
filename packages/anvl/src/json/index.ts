@@ -1,5 +1,6 @@
 export * from "./json-interface"
 import type * as Json from "./json"
+
 export type { Json }
 
 export const parseJson = <S extends stringified<Json.Serializable>>(
