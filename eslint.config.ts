@@ -2,7 +2,7 @@ import NextPlugin from "@next/eslint-plugin-next"
 import * as TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
 import type { Linter } from "eslint"
-import * as ImportPlugin from "eslint-plugin-import"
+import * as ImportPlugin from "eslint-plugin-import-x"
 import * as SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
 
 import AtomIOPlugin from "./packages/atom.io/eslint-plugin"
@@ -144,6 +144,7 @@ const commonRules = {
 	"atom.io/explicit-state-types": ERROR,
 	"atom.io/synchronous-selector-dependencies": ERROR,
 
+	"import/newline-after-import": ERROR,
 	"import/no-duplicates": ERROR,
 
 	"simple-import-sort/imports": ERROR,
