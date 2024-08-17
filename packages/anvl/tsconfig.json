@@ -1,4 +1,9 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": ["src", "**/*.config.ts"]
+	"include": [
+		"src",
+		"**/*.config.ts",
+		"../atom.io/__tests__/private/introspection/differ.test.ts",
+		"../atom.io/__tests__/private/introspection/refinery.test.ts"
+	]
 }

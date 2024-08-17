@@ -9,8 +9,8 @@ import type { Timeline } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
 import { type FC, Fragment } from "react"
 
-import { findTimelineState, findViewIsOpenState, timelineIndex } from "."
 import { button } from "./Button"
+import { timelineIndex, timelineSelectors, viewIsOpenAtoms } from "./store"
 import { article } from "./Updates"
 
 export const YouAreHere: FC = () => {
@@ -96,8 +96,8 @@ export const TimelineIndex: FC = () => {
 						<TimelineLog
 							key={token.key}
 							token={token}
-							isOpenState={findState(findViewIsOpenState, token.key)}
-							timelineState={findState(findTimelineState, token.key)}
+							isOpenState={findState(viewIsOpenAtoms, token.key)}
+							timelineState={findState(timelineSelectors, token.key)}
 						/>
 					)
 				})}

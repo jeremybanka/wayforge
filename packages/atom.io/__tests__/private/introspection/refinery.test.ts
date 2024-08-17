@@ -1,4 +1,4 @@
-import { Refinery } from "./refinery"
+import { Refinery } from "atom.io/introspection"
 
 const myRefinery = new Refinery({
 	Set,

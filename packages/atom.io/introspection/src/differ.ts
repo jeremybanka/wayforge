@@ -1,6 +1,7 @@
-import { sprawl } from "../object"
-import type { Refinery, Supported } from "../refinement/refinery"
-import { discoverType } from "../refinement/refinery"
+import { sprawl } from "anvl/object"
+
+import type { Refinery, Supported } from "./refinery"
+import { discoverType, jsonTreeRefinery, primitiveRefinery } from "./refinery"
 
 export function diffNumber(a: number, b: number): Delta {
 	const sign = a < b ? `+` : `-`
@@ -165,3 +166,12 @@ export class Differ<
 		}
 	}
 }
+
+export const prettyJson = new Differ(primitiveRefinery, jsonTreeRefinery, {
+	number: diffNumber,
+	string: diffString,
+	boolean: diffBoolean,
+	null: () => ({ summary: `No Change` }),
+	object: diffObject,
+	array: diffArray,
+})

@@ -1,6 +1,6 @@
-import { isPlainObject } from "../object"
-import type { Refinement } from "../refinement"
-import type { ClassSignature } from "./is-class"
+export type Refinement<A, B extends A> = (a: A) => a is B
+
+export type ClassSignature = abstract new (...args: any) => any
 
 export type RefinementStrategy = ClassSignature | Refinement<unknown, any>
 
@@ -37,7 +37,7 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 				) {
 					return { type: key, data: input } as any
 				}
-			} catch (e) {
+			} catch (_) {
 				try {
 					if (input instanceof refiner) {
 						return { type: key, data: input } as any
@@ -49,16 +49,34 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 	}
 }
 
-const jsonRefinery = new Refinery({
+export const primitiveRefinery = new Refinery({
 	number: (input: unknown): input is number => typeof input === `number`,
 	string: (input: unknown): input is string => typeof input === `string`,
 	boolean: (input: unknown): input is boolean => typeof input === `boolean`,
-	object: isPlainObject,
-	array: (input: unknown): input is unknown[] => Array.isArray(input),
 	null: (input: unknown): input is null => input === null,
 })
 
-export const discoverType = (input: unknown): string => {
+export const jsonTreeRefinery = new Refinery({
+	object: (input: unknown): input is { [key: string]: unknown } => {
+		if (!input) {
+			return false
+		}
+		const prototype = Object.getPrototypeOf(input)
+		return prototype === Object.prototype
+	},
+	array: (input: unknown): input is unknown[] => Array.isArray(input),
+})
+
+export const jsonRefinery = new Refinery({
+	...primitiveRefinery.supported,
+	...jsonTreeRefinery.supported,
+})
+
+export type JsonType = keyof typeof jsonRefinery.supported
+
+export const discoverType = (
+	input: unknown,
+): (JsonType | `undefined` | `Map` | `Set`) | (string & {}) => {
 	if (input === undefined) {
 		return `undefined`
 	}
