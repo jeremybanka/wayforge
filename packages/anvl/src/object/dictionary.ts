@@ -1,7 +1,8 @@
+import type { Json } from "~/packages/atom.io/json/src"
+
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { map } from "../array"
 import { pipe } from "../function"
-import type { Json } from "../json"
 import { entriesToRecord, recordToEntries } from "./entries"
 
 export const reverseRecord = <A extends keyof any, B extends keyof any>(

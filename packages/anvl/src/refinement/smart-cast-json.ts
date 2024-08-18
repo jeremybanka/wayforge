@@ -1,5 +1,5 @@
-import { jsonRefinery } from "atom.io/introspection"
-import type { Json } from "atom.io/json"
+import { jsonRefinery } from "~/packages/atom.io/introspection/src"
+import type { Json } from "~/packages/atom.io/json/src"
 
 import * as Cast from "../json/cast-json"
 
