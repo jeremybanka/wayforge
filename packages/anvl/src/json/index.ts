@@ -1,4 +1,4 @@
-import type { Json } from "atom.io/json"
+import type { Json } from "~/packages/atom.io/json/src"
 
 export * from "./json-interface"
 

@@ -5,6 +5,14 @@ export * from "./select-json-family"
 export type primitive = boolean | number | string | null
 
 export namespace Json {
+	export namespace Tree {
+		export type Array<Element = unknown> = ReadonlyArray<Element>
+		export type Object<K extends string = string, V = unknown> = Record<K, V>
+		export type Fork = Array | Object
+		export type Leaf = primitive
+		export type Node = Fork | Leaf
+	}
+
 	export type Serializable =
 		| primitive
 		| Readonly<{ [key: string]: Serializable }>
@@ -17,19 +25,6 @@ export namespace Json {
 
 	export type Array<Element extends Serializable = Serializable> =
 		ReadonlyArray<Element>
-
-	export namespace Tree {
-		export namespace Fork {
-			export type Arr<Element = unknown> = ReadonlyArray<Element>
-			export type Obj<Key extends string = string, Value = unknown> = Record<
-				Key,
-				Value
-			>
-			export type Any = Arr | Obj
-		}
-		export type Leaf = primitive
-		export type Any = Fork.Any | Leaf
-	}
 }
 
 export type stringified<J extends Json.Serializable> = string & { __json: J }
@@ -52,7 +47,7 @@ export type JsonInterface<T, J extends Json.Serializable = Json.Serializable> = 
 }
 
 const JSON_PROTOTYPES = [Array, Boolean, Number, Object, String] as const
-export const isJson = (input: unknown): input is Json.Serializable => {
+export const isJson = (input: unknown): input is Json.Tree.Node => {
 	if (input === null) return true
 	if (input === undefined) return false
 	const prototype = Object.getPrototypeOf(input)

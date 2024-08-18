@@ -69,14 +69,14 @@ export const primitiveRefinery = new Refinery({
 })
 
 export const jsonTreeRefinery = new Refinery({
-	object: (input: unknown): input is Json.Tree.Fork.Obj => {
+	object: (input: unknown): input is Json.Tree.Object => {
 		if (!input) {
 			return false
 		}
 		const prototype = Object.getPrototypeOf(input)
 		return prototype === Object.prototype
 	},
-	array: (input: unknown): input is Json.Tree.Fork.Arr => Array.isArray(input),
+	array: (input: unknown): input is Json.Tree.Array => Array.isArray(input),
 })
 
 export const jsonRefinery = new Refinery({

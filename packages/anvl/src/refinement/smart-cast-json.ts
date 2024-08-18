@@ -4,12 +4,12 @@ import type { Json } from "~/packages/atom.io/json/src"
 import * as Cast from "../json/cast-json"
 
 export const castToJson = (
-	input: Json.Tree.Any,
+	input: Json.Tree.Node,
 ): {
-	array: Json.Tree.Fork.Arr
+	array: Json.Tree.Array
 	boolean: boolean
 	number: number
-	object: Json.Tree.Fork.Obj
+	object: Json.Tree.Object
 	string: string
 	null: null
 } => {

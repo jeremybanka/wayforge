@@ -29,7 +29,7 @@ export const SubEditors: Record<
 	string: StringEditor,
 }
 
-export type JsonEditorProps<T extends Json.Serializable> = {
+export type JsonEditorProps<T extends Json.Tree.Node> = {
 	data: T
 	set: (valOrUpdater: T | ((currVal: T) => T)) => void
 	name?: string | undefined
@@ -45,7 +45,7 @@ export type JsonEditorProps<T extends Json.Serializable> = {
 	Components?: Partial<JsonEditorComponents>
 }
 
-export const JsonEditor = <T extends Json.Serializable>({
+export const JsonEditor = <T extends Json.Tree.Node>({
 	data,
 	set,
 	schema = true,
