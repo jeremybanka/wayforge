@@ -27,7 +27,7 @@ export namespace Json {
 			>
 			export type Any = Arr | Obj
 		}
-		export type Leaf = Serializable
+		export type Leaf = primitive
 		export type Any = Fork.Any | Leaf
 	}
 }
