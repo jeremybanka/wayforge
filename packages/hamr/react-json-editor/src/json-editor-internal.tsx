@@ -12,7 +12,7 @@ import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 
-export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
+export type JsonEditorProps_INTERNAL<T extends Json.Tree.Any> = {
 	data: T
 	set: SetterOrUpdater<T>
 	name?: string | undefined
@@ -29,7 +29,7 @@ export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	Components: JsonEditorComponents
 }
 
-export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
+export const JsonEditor_INTERNAL = <T extends Json.Tree.Any>({
 	data,
 	set,
 	schema,

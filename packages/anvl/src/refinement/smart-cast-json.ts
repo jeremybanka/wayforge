@@ -4,19 +4,19 @@ import type { Json } from "atom.io/json"
 import * as Cast from "../json/cast-json"
 
 export const castToJson = (
-	input: Json.Serializable,
+	input: Json.Tree.Any,
 ): {
-	array: Json.Array
+	array: Json.Tree.Fork.Arr
 	boolean: boolean
 	number: number
-	object: Json.Object
+	object: Json.Tree.Fork.Obj
 	string: string
 	null: null
 } => {
 	const refined = jsonRefinery.refine<unknown>(input)
 	switch (refined?.type) {
 		case `array`: {
-			const data = refined.data as Json.Array
+			const data = refined.data
 			return {
 				get array() {
 					return data
@@ -85,7 +85,7 @@ export const castToJson = (
 			}
 		}
 		case `object`: {
-			const data = refined.data as Json.Object
+			const data = refined.data
 			return {
 				get array() {
 					return Cast.objectToArray(data)
