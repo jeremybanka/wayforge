@@ -1,3 +1,5 @@
+import type { Flat } from "atom.io/internal"
+
 export type Refinement<A, B extends A> = (a: A) => a is B
 
 export type ClassSignature = abstract new (...args: any) => any
@@ -21,7 +23,7 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 	}
 
 	public refine<T>(input: T):
-		| {
+		| Flat<{
 				[K in keyof SupportedTypes]: T extends Supported<SupportedTypes[K]>
 					? {
 							type: K
@@ -33,7 +35,7 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 								data: Supported<SupportedTypes[K]>
 							}
 						: never
-		  }[keyof SupportedTypes]
+		  }>[keyof SupportedTypes]
 		| (T extends Supported<SupportedTypes[keyof SupportedTypes]>
 				? never
 				: null) {

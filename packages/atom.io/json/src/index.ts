@@ -17,6 +17,19 @@ export namespace Json {
 
 	export type Array<Element extends Serializable = Serializable> =
 		ReadonlyArray<Element>
+
+	export namespace Tree {
+		export namespace Fork {
+			export type Arr<Element = unknown> = ReadonlyArray<Element>
+			export type Obj<Key extends string = string, Value = unknown> = Record<
+				Key,
+				Value
+			>
+			export type Any = Arr | Obj
+		}
+		export type Leaf = Serializable
+		export type Any = Fork.Any | Leaf
+	}
 }
 
 export type stringified<J extends Json.Serializable> = string & { __json: J }

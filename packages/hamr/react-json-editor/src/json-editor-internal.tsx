@@ -1,3 +1,4 @@
+import { jsonRefinery } from "atom.io/introspection"
 import type { CSSProperties, FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"
 
@@ -45,7 +46,10 @@ export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 	Components,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
 	const dataIsJson = isJson(data)
-	const refined = dataIsJson ? refineJsonType(data) : { type: `non-json`, data }
+	const refined = jsonRefinery.refine<unknown>(data) ?? {
+		type: `non-json`,
+		data,
+	}
 	const SubEditor = dataIsJson ? SubEditors[refined.type] : NonJsonEditor
 
 	const disabled = isReadonly(path)
