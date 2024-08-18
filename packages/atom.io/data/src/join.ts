@@ -142,7 +142,7 @@ export class Join<
 > {
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
-	private toolkit: Omit<SetterToolkit, `find`> & { dispose: typeof disposeState }
+	private toolkit: SetterToolkit & { dispose: typeof disposeState }
 	public retrieve: typeof findState
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
@@ -195,19 +195,6 @@ export class Join<
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
-		this.toolkit = {
-			get: ((...ps: Parameters<typeof getState>) =>
-				getFromStore(store, ...ps)) as typeof getState,
-			set: ((...ps: Parameters<typeof setState>) => {
-				setIntoStore(store, ...ps)
-			}) as typeof setState,
-			seek: ((...ps: Parameters<typeof seekState>) =>
-				seekInStore(store, ...ps)) as typeof seekState,
-			json: (token) => getJsonToken(store, token),
-			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(store, ...ps)
-			}) as typeof disposeState,
-		}
 		this.retrieve = ((
 			token: ReadableFamilyToken<any, any>,
 			key: Json.Serializable,
@@ -226,6 +213,21 @@ export class Join<
 			}
 			return initFamilyMemberInStore(store, token, key)
 		}) as typeof findState
+		this.toolkit = {
+			get: ((...ps: Parameters<typeof getState>) =>
+				getFromStore(store, ...ps)) as typeof getState,
+			set: ((...ps: Parameters<typeof setState>) => {
+				setIntoStore(store, ...ps)
+			}) as typeof setState,
+			find: this.retrieve,
+			seek: ((...ps: Parameters<typeof seekState>) =>
+				seekInStore(store, ...ps)) as typeof seekState,
+			json: (token) => getJsonToken(store, token),
+			dispose: ((...ps: Parameters<typeof disposeState>) => {
+				disposeFromStore(store, ...ps)
+			}) as typeof disposeState,
+		}
+
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
 		const relatedKeysAtoms = createMutableAtomFamily<
