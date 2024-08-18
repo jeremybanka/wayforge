@@ -1,4 +1,5 @@
 import type { Flat } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 
 export type Refinement<A, B extends A> = (a: A) => a is B
 
@@ -68,14 +69,14 @@ export const primitiveRefinery = new Refinery({
 })
 
 export const jsonTreeRefinery = new Refinery({
-	object: (input: unknown): input is { [key: string]: unknown } => {
+	object: (input: unknown): input is Json.Tree.Fork.Obj => {
 		if (!input) {
 			return false
 		}
 		const prototype = Object.getPrototypeOf(input)
 		return prototype === Object.prototype
 	},
-	array: (input: unknown): input is unknown[] => Array.isArray(input),
+	array: (input: unknown): input is Json.Tree.Fork.Arr => Array.isArray(input),
 })
 
 export const jsonRefinery = new Refinery({
