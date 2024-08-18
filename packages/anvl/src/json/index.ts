@@ -1,6 +1,6 @@
-export * from "./json-interface"
-
 import type { Json } from "atom.io/json"
+
+export * from "./json-interface"
 
 export type Empty = Record<string, never>
 

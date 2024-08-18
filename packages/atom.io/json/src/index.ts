@@ -37,3 +37,11 @@ export type JsonInterface<T, J extends Json.Serializable = Json.Serializable> = 
 	toJson: (t: T) => J
 	fromJson: (json: J) => T
 }
+
+const JSON_PROTOTYPES = [Array, Boolean, Number, Object, String] as const
+export const isJson = (input: unknown): input is Json.Serializable => {
+	if (input === null) return true
+	if (input === undefined) return false
+	const prototype = Object.getPrototypeOf(input)
+	return JSON_PROTOTYPES.includes(prototype)
+}

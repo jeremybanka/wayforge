@@ -1,8 +1,8 @@
 import type { ReadonlySelectorToken, WritableToken } from "atom.io"
+import { isJson } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { isJson } from "~/packages/anvl/src/refinement"
 import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
 import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 

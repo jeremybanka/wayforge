@@ -4,11 +4,7 @@ import type { SetterOrUpdater } from "recoil"
 import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import {
-	isJson,
-	refineJsonType,
-} from "~/packages/anvl/src/refinement/refine-json"
-import type { Json } from "~/packages/atom.io/json/src"
+import { isJson, type Json } from "~/packages/atom.io/json/src"
 
 import { ElasticInput } from "../../react-elastic-input/src"
 import { SubEditors } from "."

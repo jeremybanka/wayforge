@@ -20,14 +20,23 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 		this.supported = supported
 	}
 
-	public refine(input: unknown):
+	public refine<T>(input: T):
 		| {
-				[K in keyof SupportedTypes]: {
-					type: K
-					data: Supported<SupportedTypes[K]>
-				}
+				[K in keyof SupportedTypes]: T extends Supported<SupportedTypes[K]>
+					? {
+							type: K
+							data: Supported<SupportedTypes[K]>
+						}
+					: Supported<SupportedTypes[K]> extends T
+						? {
+								type: K
+								data: Supported<SupportedTypes[K]>
+							}
+						: never
 		  }[keyof SupportedTypes]
-		| null {
+		| (T extends Supported<SupportedTypes[keyof SupportedTypes]>
+				? never
+				: null) {
 		for (const [key, refiner] of Object.entries(this.supported)) {
 			try {
 				if (
@@ -42,10 +51,10 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 					if (input instanceof refiner) {
 						return { type: key, data: input } as any
 					}
-				} catch (_) {}
+				} catch (__) {}
 			}
 		}
-		return null
+		return null as any
 	}
 }
 
@@ -76,7 +85,7 @@ export type JsonType = keyof typeof jsonRefinery.supported
 
 export const discoverType = (
 	input: unknown,
-): (JsonType | `undefined` | `Map` | `Set`) | (string & {}) => {
+): JsonType | `Map` | `Set` | `undefined` | (string & {}) => {
 	if (input === undefined) {
 		return `undefined`
 	}

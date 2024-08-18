@@ -63,7 +63,7 @@ export const makePropertyRecasters = <T extends Json.Object>(
 		(value, key) => (newType) => {
 			set(() => ({
 				...data,
-				[key]: castToJson(value).to[newType](),
+				[key]: castToJson(value)[newType],
 			}))
 		},
 	)
