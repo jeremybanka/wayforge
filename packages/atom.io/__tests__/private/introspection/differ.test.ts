@@ -29,4 +29,14 @@ describe(`differ`, () => {
 			removed: [],
 		})
 	})
+	it(`handles an unregistered type`, () => {
+		expect(prettyJson.diff(new Map(), new Map())).toEqual({
+			summary: `Map → Map`,
+		})
+	})
+	it(`handles a change of type`, () => {
+		expect(prettyJson.diff(new Map(), new Set())).toEqual({
+			summary: `Type change: Map → Set`,
+		})
+	})
 })

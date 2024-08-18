@@ -142,7 +142,7 @@ export class Join<
 > {
 	private options: JoinOptions<ASide, BSide, Cardinality, Content>
 	private defaultContent: Content | undefined
-	private toolkit: SetterToolkit & { dispose: typeof disposeState }
+	private toolkit: Omit<SetterToolkit, `find`> & { dispose: typeof disposeState }
 	public retrieve: typeof findState
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
@@ -201,8 +201,6 @@ export class Join<
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(store, ...ps)
 			}) as typeof setState,
-			find: ((...ps: Parameters<typeof findState>) =>
-				findInStore(store, ...ps)) as typeof findState,
 			seek: ((...ps: Parameters<typeof seekState>) =>
 				seekInStore(store, ...ps)) as typeof seekState,
 			json: (token) => getJsonToken(store, token),
