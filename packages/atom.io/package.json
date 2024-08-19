@@ -36,6 +36,7 @@
 		"build:realtime-server": "cd realtime-server && tsup",
 		"build:realtime-testing": "cd realtime-testing && tsup",
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup",
+		"build:web": "cd web && tsup",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:eslint:build": "bun run build:main",
@@ -169,7 +170,10 @@
 		"realtime-testing/src",
 		"transceivers/set-rtx/dist",
 		"transceivers/set-rtx/package.json",
-		"transceivers/set-rtx/src"
+		"transceivers/set-rtx/src",
+		"web/dist",
+		"web/package.json",
+		"web/src"
 	],
 	"exports": {
 		"./package.json": "./package.json",
@@ -251,6 +255,11 @@
 		"./transceivers/set-rtx": {
 			"import": "./transceivers/set-rtx/dist/index.js",
 			"types": "./transceivers/set-rtx/dist/index.d.ts"
+		},
+		"./web/package.json": "./web/package.json",
+		"./web": {
+			"import": "./web/dist/index.js",
+			"types": "./web/dist/index.d.ts"
 		}
 	}
 }
