@@ -22,7 +22,3 @@ export const persistAtom =
 			storage.setItem(key, stringify(newValue))
 		})
 	}
-
-export const lazyLocalStorageEffect: <J extends Json.Serializable>(
-	key: string,
-) => AtomEffect<J> = persistAtom(window.localStorage)(JSON)

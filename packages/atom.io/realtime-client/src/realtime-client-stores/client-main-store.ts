@@ -1,6 +1,5 @@
 import * as AtomIO from "atom.io"
-
-import { lazyLocalStorageEffect } from "~/packages/atom.io/react-devtools/src/lazy-local-storage-effect"
+import { persistAtom } from "atom.io/react-devtools"
 
 export const myIdState__INTERNAL = AtomIO.atom<string | undefined>({
 	key: `mySocketId__INTERNAL`,
@@ -11,10 +10,11 @@ export const myIdState = AtomIO.selector<string | undefined>({
 	get: ({ get }) => get(myIdState__INTERNAL),
 })
 
-const usernameEffects =
-	typeof window === `undefined` ? [] : [lazyLocalStorageEffect(`myUsername`)]
 export const myUsernameState = AtomIO.atom<string | null>({
-	key: `myUsername`,
+	key: `myName`,
 	default: null,
-	effects: usernameEffects,
+	effects:
+		typeof window === `undefined`
+			? []
+			: [persistAtom(window.localStorage)(JSON)(`myUsername`)],
 })
