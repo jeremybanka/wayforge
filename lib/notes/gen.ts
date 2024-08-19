@@ -1,4 +1,4 @@
-import { isString } from "fp-ts/string"
+import { isString } from "anvl/primitive"
 
 import { ifDefined } from "~/packages/anvl/src/nullish"
 

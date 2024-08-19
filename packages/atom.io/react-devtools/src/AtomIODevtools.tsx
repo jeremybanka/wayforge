@@ -4,14 +4,14 @@ import { useI, useO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
 import { useRef } from "react"
 
+import { StateIndex } from "./StateIndex"
 import {
 	atomIndex,
 	devtoolsAreOpenState,
 	devtoolsViewOptionsState,
 	devtoolsViewSelectionState,
 	selectorIndex,
-} from "."
-import { StateIndex } from "./StateIndex"
+} from "./store"
 import { TimelineIndex } from "./TimelineIndex"
 import { TransactionIndex } from "./TransactionIndex"
 

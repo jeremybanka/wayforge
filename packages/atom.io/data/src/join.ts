@@ -195,21 +195,6 @@ export class Join<
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
-		this.toolkit = {
-			get: ((...ps: Parameters<typeof getState>) =>
-				getFromStore(store, ...ps)) as typeof getState,
-			set: ((...ps: Parameters<typeof setState>) => {
-				setIntoStore(store, ...ps)
-			}) as typeof setState,
-			find: ((...ps: Parameters<typeof findState>) =>
-				findInStore(store, ...ps)) as typeof findState,
-			seek: ((...ps: Parameters<typeof seekState>) =>
-				seekInStore(store, ...ps)) as typeof seekState,
-			json: (token) => getJsonToken(store, token),
-			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(store, ...ps)
-			}) as typeof disposeState,
-		}
 		this.retrieve = ((
 			token: ReadableFamilyToken<any, any>,
 			key: Json.Serializable,
@@ -228,6 +213,21 @@ export class Join<
 			}
 			return initFamilyMemberInStore(store, token, key)
 		}) as typeof findState
+		this.toolkit = {
+			get: ((...ps: Parameters<typeof getState>) =>
+				getFromStore(store, ...ps)) as typeof getState,
+			set: ((...ps: Parameters<typeof setState>) => {
+				setIntoStore(store, ...ps)
+			}) as typeof setState,
+			find: this.retrieve,
+			seek: ((...ps: Parameters<typeof seekState>) =>
+				seekInStore(store, ...ps)) as typeof seekState,
+			json: (token) => getJsonToken(store, token),
+			dispose: ((...ps: Parameters<typeof disposeState>) => {
+				disposeFromStore(store, ...ps)
+			}) as typeof disposeState,
+		}
+
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
 		const relatedKeysAtoms = createMutableAtomFamily<

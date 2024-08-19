@@ -4,11 +4,8 @@ import type {
 	TransactionUpdate,
 } from "atom.io"
 import type { Func } from "atom.io/internal"
+import { discoverType, prettyJson } from "atom.io/introspection"
 import * as React from "react"
-
-import { discoverType } from "~/packages/anvl/src/refinement/refinery"
-
-import { prettyJson } from "."
 
 const AtomUpdateFC: React.FC<{
 	serialNumber: number

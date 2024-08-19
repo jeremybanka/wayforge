@@ -1,9 +1,9 @@
+import type { Json } from "atom.io/json"
 import { ElasticInput } from "hamr/react-elastic-input"
 import type { FC, ReactElement } from "react"
 import { useRef } from "react"
 
 import { doNothing } from "~/packages/anvl/src/function"
-import type { Json } from "~/packages/anvl/src/json"
 import { findSubSchema } from "~/packages/anvl/src/json-schema/find-sub-schema"
 import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"

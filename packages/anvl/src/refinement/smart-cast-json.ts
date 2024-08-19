@@ -1,103 +1,160 @@
-import type { Json } from "../json"
+import { jsonRefinery } from "~/packages/atom.io/introspection/src"
+import type { Json } from "~/packages/atom.io/json/src"
+
 import * as Cast from "../json/cast-json"
-import { refineJsonType } from "./refine-json"
 
 export const castToJson = (
-	input: Json.Serializable,
+	input: Json.Tree.Node,
 ): {
-	to: {
-		array: () => Json.Array
-		boolean: () => boolean
-		number: () => number
-		object: () => Json.Object
-		string: () => string
-		null: () => null
-	}
+	array: Json.Tree.Array
+	boolean: boolean
+	number: number
+	object: Json.Tree.Object
+	string: string
+	null: null
 } => {
-	const json = refineJsonType(input)
-	return {
-		to: {
-			array: () => {
-				switch (json.type) {
-					case `array`:
-						return json.data
-					case `object`:
-						return Cast.objectToArray(json.data)
-					case `string`:
-						return Cast.stringToArray(json.data)
-					case `boolean`:
-						return Cast.booleanToArray(json.data)
-					case `number`:
-						return Cast.numberToArray(json.data)
-					case `null`:
-						return Cast.nullToArray()
-				}
-			},
-			boolean: () => {
-				switch (json.type) {
-					case `array`:
-						return Cast.arrayToBoolean(json.data)
-					case `object`:
-						return Cast.objectToBoolean(json.data)
-					case `string`:
-						return Cast.stringToBoolean(json.data)
-					case `boolean`:
-						return json.data
-					case `number`:
-						return Cast.numberToBoolean(json.data)
-					case `null`:
-						return Cast.nullToBoolean()
-				}
-			},
-			number: () => {
-				switch (json.type) {
-					case `array`:
-						return Cast.arrayToNumber(json.data)
-					case `object`:
-						return Cast.objectToNumber(json.data)
-					case `string`:
-						return Cast.stringToNumber(json.data)
-					case `boolean`:
-						return Cast.booleanToNumber(json.data)
-					case `number`:
-						return json.data
-					case `null`:
-						return Cast.nullToNumber()
-				}
-			},
-			object: () => {
-				switch (json.type) {
-					case `array`:
-						return Cast.arrayToObject(json.data)
-					case `object`:
-						return json.data
-					case `string`:
-						return Cast.stringToObject(json.data)
-					case `boolean`:
-						return Cast.booleanToObject(json.data)
-					case `number`:
-						return Cast.numberToObject(json.data)
-					case `null`:
-						return Cast.nullToObject()
-				}
-			},
-			string: () => {
-				switch (json.type) {
-					case `array`:
-						return Cast.arrayToString(json.data)
-					case `object`:
-						return Cast.objectToString(json.data)
-					case `string`:
-						return json.data
-					case `boolean`:
-						return Cast.booleanToString(json.data)
-					case `number`:
-						return Cast.numberToString(json.data)
-					case `null`:
-						return Cast.nullToString()
-				}
-			},
-			null: () => null,
-		},
+	const refined = jsonRefinery.refine<unknown>(input)
+	switch (refined?.type) {
+		case `array`: {
+			const data = refined.data
+			return {
+				get array() {
+					return data
+				},
+				get boolean() {
+					return Cast.arrayToBoolean(data)
+				},
+				get number() {
+					return Cast.arrayToNumber(data)
+				},
+				get object() {
+					return Cast.arrayToObject(data)
+				},
+				get string() {
+					return Cast.arrayToString(data)
+				},
+				get null() {
+					return null
+				},
+			}
+		}
+		case `boolean`: {
+			const data = refined.data
+			return {
+				get array() {
+					return Cast.booleanToArray(data)
+				},
+				get boolean() {
+					return data
+				},
+				get number() {
+					return Cast.booleanToNumber(data)
+				},
+				get object() {
+					return Cast.booleanToObject(data)
+				},
+				get string() {
+					return Cast.booleanToString(data)
+				},
+				get null() {
+					return null
+				},
+			}
+		}
+		case `number`: {
+			const data = refined.data
+			return {
+				get array() {
+					return Cast.numberToArray(data)
+				},
+				get boolean() {
+					return Cast.numberToBoolean(data)
+				},
+				get number() {
+					return data
+				},
+				get object() {
+					return Cast.numberToObject(data)
+				},
+				get string() {
+					return Cast.numberToString(data)
+				},
+				get null() {
+					return null
+				},
+			}
+		}
+		case `object`: {
+			const data = refined.data
+			return {
+				get array() {
+					return Cast.objectToArray(data)
+				},
+				get boolean() {
+					return Cast.objectToBoolean(data)
+				},
+				get number() {
+					return Cast.objectToNumber(data)
+				},
+				get object() {
+					return data
+				},
+				get string() {
+					return Cast.objectToString(data)
+				},
+				get null() {
+					return null
+				},
+			}
+		}
+		case `string`: {
+			const data = refined.data
+			return {
+				get array() {
+					return Cast.stringToArray(data)
+				},
+				get boolean() {
+					return Cast.stringToBoolean(data)
+				},
+				get number() {
+					return Cast.stringToNumber(data)
+				},
+				get object() {
+					return Cast.stringToObject(data)
+				},
+				get string() {
+					return data
+				},
+				get null() {
+					return null
+				},
+			}
+		}
+		case `null`: {
+			const data = refined.data
+			return {
+				get array() {
+					return Cast.nullToArray()
+				},
+				get boolean() {
+					return Cast.nullToBoolean()
+				},
+				get number() {
+					return Cast.nullToNumber()
+				},
+				get object() {
+					return Cast.nullToObject()
+				},
+				get string() {
+					return Cast.nullToString()
+				},
+				get null() {
+					return null
+				},
+			}
+		}
+		default:
+			console.error(`Could not handle input given to castToJson`)
+			throw new Error(`Could not handle input given to castToJson`)
 	}
 }

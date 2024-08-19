@@ -4,10 +4,8 @@ import { isString } from "fp-ts/string"
 import { vitest } from "vitest"
 
 import { hasExactProperties } from "~/packages/anvl/src/object"
-import {
-	isJson,
-	refineJsonType,
-} from "~/packages/anvl/src/refinement/refine-json"
+import { jsonRefinery } from "~/packages/atom.io/introspection/src"
+import { isJson } from "~/packages/atom.io/json/src"
 
 import { Junction } from "../../junction/src"
 import type { Json } from "../../types/src"
@@ -231,7 +229,7 @@ describe(`Junction.prototype.getRelatedIdEntries`, () => {
 			{
 				isContent: (input): input is Json.Object => {
 					if (!isJson(input)) return false
-					const refined = refineJsonType(input)
+					const refined = jsonRefinery.refine(input)
 					return refined.type === `object`
 				},
 			},

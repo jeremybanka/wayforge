@@ -56,7 +56,16 @@ function createInStore(token: ReadableToken<any>, store: Store): void {
 				return
 			}
 			if (store.config.lifespan === `immortal`) {
-				throw new Error(`No molecule found for key "${token.family.subKey}"`)
+				store.logger.error(
+					`🐞`,
+					`atom`,
+					token.family.key,
+					`tried to create member`,
+					`"${token.family.subKey}"`,
+					`but a molecule with that key was not found in store`,
+					`"${store.config.name}"`,
+				)
+				return
 			}
 			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
 		}

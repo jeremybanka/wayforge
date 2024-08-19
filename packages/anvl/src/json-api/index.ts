@@ -1,4 +1,5 @@
-import type { Json } from "../json"
+import type { Json } from "~/packages/atom.io/json/src"
+
 import type { EmptyObject, PlainObject } from "../object"
 import { filterProperties } from "../object"
 import { cannotExist, isWithin } from "../refinement"

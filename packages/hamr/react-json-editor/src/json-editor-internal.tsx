@@ -2,19 +2,17 @@ import type { CSSProperties, FC, ReactElement } from "react"
 import type { SetterOrUpdater } from "recoil"
 
 import { doNothing } from "~/packages/anvl/src/function"
-import type { Json, JsonTypes } from "~/packages/anvl/src/json"
+import type { JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import {
-	isJson,
-	refineJsonType,
-} from "~/packages/anvl/src/refinement/refine-json"
+import { jsonRefinery } from "~/packages/atom.io/introspection/src"
+import { isJson, type Json } from "~/packages/atom.io/json/src"
 
 import { ElasticInput } from "../../react-elastic-input/src"
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 
-export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
+export type JsonEditorProps_INTERNAL<T extends Json.Tree.Node> = {
 	data: T
 	set: SetterOrUpdater<T>
 	name?: string | undefined
@@ -31,7 +29,7 @@ export type JsonEditorProps_INTERNAL<T extends Json.Serializable> = {
 	Components: JsonEditorComponents
 }
 
-export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
+export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 	data,
 	set,
 	schema,
@@ -48,7 +46,10 @@ export const JsonEditor_INTERNAL = <T extends Json.Serializable>({
 	Components,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
 	const dataIsJson = isJson(data)
-	const refined = dataIsJson ? refineJsonType(data) : { type: `non-json`, data }
+	const refined = jsonRefinery.refine<unknown>(data) ?? {
+		type: `non-json`,
+		data,
+	}
 	const SubEditor = dataIsJson ? SubEditors[refined.type] : NonJsonEditor
 
 	const disabled = isReadonly(path)

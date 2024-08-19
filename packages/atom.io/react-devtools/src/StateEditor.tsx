@@ -1,11 +1,18 @@
 import type { ReadonlySelectorToken, WritableToken } from "atom.io"
+import { isJson } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { fallback } from "~/packages/anvl/src/function"
-import { isJson } from "~/packages/anvl/src/refinement"
 import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
 import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
+
+export const fallback = <T,>(fn: () => T, fallbackValue: T): T => {
+	try {
+		return fn()
+	} catch (_) {
+		return fallbackValue
+	}
+}
 
 export const StateEditor: FC<{
 	token: WritableToken<unknown>

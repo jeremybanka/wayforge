@@ -1,6 +1,8 @@
-import { sprawl } from "../object"
-import type { Refinery, Supported } from "../refinement/refinery"
-import { discoverType } from "../refinement/refinery"
+import { sprawl } from "anvl/object"
+import type { Json } from "atom.io/json"
+
+import type { Refinery, Supported } from "./refinery"
+import { discoverType, jsonTreeRefinery, primitiveRefinery } from "./refinery"
 
 export function diffNumber(a: number, b: number): Delta {
 	const sign = a < b ? `+` : `-`
@@ -23,9 +25,9 @@ export function diffBoolean(a: boolean, b: boolean): Delta {
 }
 
 export function diffObject(
-	a: Record<string, unknown>,
-	b: Record<string, unknown>,
-	recurse: Differ<any, any>[`diff`],
+	a: Json.Tree.Object,
+	b: Json.Tree.Object,
+	recurse: Diff<unknown>,
 ): Delta {
 	let summary = ``
 	const added: Delta[`added`] = []
@@ -68,9 +70,9 @@ export function diffObject(
 }
 
 export function diffArray(
-	a: unknown[],
-	b: unknown[],
-	recurse: Differ<any, any>[`diff`],
+	a: Json.Tree.Array,
+	b: Json.Tree.Array,
+	recurse: Diff<unknown>,
 ): Delta {
 	return diffObject(a as any, b as any, recurse)
 }
@@ -119,20 +121,9 @@ export class Differ<
 		if (a === b) {
 			return { summary: `No Change` }
 		}
-		try {
-			if (JSON.stringify(a) === JSON.stringify(b)) {
-				return { summary: `No Change` }
-			}
-		} catch (thrown) {
-			console.error(`Error stringifying`, a, b)
-		}
 
 		const aRefined = this.leafRefinery.refine(a) ?? this.treeRefinery.refine(a)
 		const bRefined = this.leafRefinery.refine(b) ?? this.treeRefinery.refine(b)
-
-		// console.log({ leaf: this.leafRefinery, tree: this.treeRefinery })
-		// console.log({ a, b })
-		// console.log({ aRefined, bRefined })
 
 		if (aRefined !== null && bRefined !== null) {
 			if (aRefined.type === bRefined.type) {
@@ -165,3 +156,12 @@ export class Differ<
 		}
 	}
 }
+
+export const prettyJson = new Differ(primitiveRefinery, jsonTreeRefinery, {
+	number: diffNumber,
+	string: diffString,
+	boolean: diffBoolean,
+	null: () => ({ summary: `No Change` }),
+	object: diffObject,
+	array: diffArray,
+})

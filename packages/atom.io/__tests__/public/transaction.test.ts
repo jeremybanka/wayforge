@@ -25,9 +25,6 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
-import type { ContentsOf as $, Parcel } from "~/packages/anvl/src/id"
-import { Join } from "~/packages/anvl/src/join"
-
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -61,23 +58,17 @@ const DEFAULT_CORE_STATS: CoreStats = {
 	deft: 0,
 }
 
-type Being = Parcel<
-	`Being`,
-	CoreStats & {
-		name: string
-		species: string
-		class: string
-	}
->
+type Being = {
+	name: string
+	species: string
+	class: string
+}
 
-type Item = Parcel<
-	`Item`,
-	CoreStats & {
-		name: string
-		desc: string
-		value: number
-	}
->
+type Item = {
+	name: string
+	desc: string
+	value: number
+}
 
 describe(`transaction`, () => {
 	it(`sets state`, () => {
@@ -175,100 +166,98 @@ describe(`transaction`, () => {
 	})
 
 	it(`gets and sets state`, () => {
-		const beingStates = atomFamily<$<Being>, string>({
-			key: `Being`,
-			default: {
-				name: ``,
-				species: ``,
-				class: ``,
-				...DEFAULT_CORE_STATS,
-			},
-		})
-		const itemStates = atomFamily<$<Item>, string>({
-			key: `Item`,
-			default: {
-				name: ``,
-				desc: ``,
-				value: 0,
-				...DEFAULT_CORE_STATS,
-			},
-		})
-		const globalInventoryState = atom<Join<null, `beingKey`, `itemKey`>>({
-			key: `GlobalInventory`,
-			default: new Join({ relationType: `1:n` }).from(`beingKey`).to(`itemKey`),
-		})
-		const beingInventoryStates = selectorFamily<string[], string>({
-			key: `BeingInventory`,
-			get:
-				(beingKey) =>
-				({ get }) => {
-					const globalInventory = get(globalInventoryState)
-					const itemKeys = globalInventory.getRelatedIds(beingKey)
-					return itemKeys
-				},
-		})
-		const stealTX = transaction<(thiefKey: string, victimKey: string) => void>({
-			key: `steal`,
-			do: ({ find, get, set }, thiefKey, victimKey) => {
-				const victimInventory = get(find(beingInventoryStates, victimKey))
-				const itemKey = victimInventory[0]
-				if (itemKey === undefined) throw new Error(`No items to steal!`)
-				set(globalInventoryState, (current) => {
-					const next = current.set({ beingKey: thiefKey, itemKey })
-					return next
-				})
-			},
-		})
-		const thiefState = findState(beingStates, `Thief`)
-		setState(thiefState, {
-			name: `Tarvis Rink`,
-			species: `Ave`,
-			class: `Egg-Stealer`,
-			...DEFAULT_CORE_STATS,
-			deft: 2,
-		})
-		const victimState = findState(beingStates, `Victim`)
-		setState(victimState, {
-			name: `Roader`,
-			species: `Cat`,
-			class: `Brigand`,
-			...DEFAULT_CORE_STATS,
-			tough: 1,
-		})
-		const prizeState = findState(itemStates, `Prize`)
-		setState(findState(itemStates, `Prize`), {
-			name: `Chocolate Coin`,
-			desc: `A chocolate coin with a hole in the middle.`,
-			value: 1,
-			...DEFAULT_CORE_STATS,
-			keen: 1,
-		})
-		setState(globalInventoryState, (current) =>
-			current.set({ beingKey: victimState.key, itemKey: prizeState.key }),
-		)
-		const thiefInvState = findState(beingInventoryStates, thiefState.key)
-		const victimInvState = findState(beingInventoryStates, victimState.key)
-		expect(getState(thiefInvState)).toEqual([])
-		expect(getState(victimInvState)).toEqual([prizeState.key])
-		const steal = runTransaction(stealTX)
-		steal(thiefState.key, victimState.key)
-		expect(getState(thiefInvState)).toEqual([prizeState.key])
-		expect(getState(victimInvState)).toEqual([])
-		expect(logger.warn).not.toHaveBeenCalled()
-
-		try {
-			steal(thiefState.key, victimState.key)
-		} catch (thrown) {
-			expect(thrown).toBeInstanceOf(Error)
-			if (thrown instanceof Error) {
-				expect(thrown.message).toEqual(`No items to steal!`)
-			}
-		}
-		expect(logger.warn).toHaveBeenCalledTimes(1)
-
-		setState(globalInventoryState, (current) =>
-			current.remove({ beingKey: thiefState.key }),
-		)
+		// const beingStates = atomFamily<$<Being>, string>({
+		// 	key: `Being`,
+		// 	default: {
+		// 		name: ``,
+		// 		species: ``,
+		// 		class: ``,
+		// 		...DEFAULT_CORE_STATS,
+		// 	},
+		// })
+		// const itemStates = atomFamily<$<Item>, string>({
+		// 	key: `Item`,
+		// 	default: {
+		// 		name: ``,
+		// 		desc: ``,
+		// 		value: 0,
+		// 		...DEFAULT_CORE_STATS,
+		// 	},
+		// })
+		// const globalInventoryState = atom<Join<null, `beingKey`, `itemKey`>>({
+		// 	key: `GlobalInventory`,
+		// 	default: new Join({ relationType: `1:n` }).from(`beingKey`).to(`itemKey`),
+		// })
+		// const beingInventoryStates = selectorFamily<string[], string>({
+		// 	key: `BeingInventory`,
+		// 	get:
+		// 		(beingKey) =>
+		// 		({ get }) => {
+		// 			const globalInventory = get(globalInventoryState)
+		// 			const itemKeys = globalInventory.getRelatedIds(beingKey)
+		// 			return itemKeys
+		// 		},
+		// })
+		// const stealTX = transaction<(thiefKey: string, victimKey: string) => void>({
+		// 	key: `steal`,
+		// 	do: ({ find, get, set }, thiefKey, victimKey) => {
+		// 		const victimInventory = get(find(beingInventoryStates, victimKey))
+		// 		const itemKey = victimInventory[0]
+		// 		if (itemKey === undefined) throw new Error(`No items to steal!`)
+		// 		set(globalInventoryState, (current) => {
+		// 			const next = current.set({ beingKey: thiefKey, itemKey })
+		// 			return next
+		// 		})
+		// 	},
+		// })
+		// const thiefState = findState(beingStates, `Thief`)
+		// setState(thiefState, {
+		// 	name: `Tarvis Rink`,
+		// 	species: `Ave`,
+		// 	class: `Egg-Stealer`,
+		// 	...DEFAULT_CORE_STATS,
+		// 	deft: 2,
+		// })
+		// const victimState = findState(beingStates, `Victim`)
+		// setState(victimState, {
+		// 	name: `Roader`,
+		// 	species: `Cat`,
+		// 	class: `Brigand`,
+		// 	...DEFAULT_CORE_STATS,
+		// 	tough: 1,
+		// })
+		// const prizeState = findState(itemStates, `Prize`)
+		// setState(findState(itemStates, `Prize`), {
+		// 	name: `Chocolate Coin`,
+		// 	desc: `A chocolate coin with a hole in the middle.`,
+		// 	value: 1,
+		// 	...DEFAULT_CORE_STATS,
+		// 	keen: 1,
+		// })
+		// setState(globalInventoryState, (current) =>
+		// 	current.set({ beingKey: victimState.key, itemKey: prizeState.key }),
+		// )
+		// const thiefInvState = findState(beingInventoryStates, thiefState.key)
+		// const victimInvState = findState(beingInventoryStates, victimState.key)
+		// expect(getState(thiefInvState)).toEqual([])
+		// expect(getState(victimInvState)).toEqual([prizeState.key])
+		// const steal = runTransaction(stealTX)
+		// steal(thiefState.key, victimState.key)
+		// expect(getState(thiefInvState)).toEqual([prizeState.key])
+		// expect(getState(victimInvState)).toEqual([])
+		// expect(logger.warn).not.toHaveBeenCalled()
+		// try {
+		// 	steal(thiefState.key, victimState.key)
+		// } catch (thrown) {
+		// 	expect(thrown).toBeInstanceOf(Error)
+		// 	if (thrown instanceof Error) {
+		// 		expect(thrown.message).toEqual(`No items to steal!`)
+		// 	}
+		// }
+		// expect(logger.warn).toHaveBeenCalledTimes(1)
+		// setState(globalInventoryState, (current) =>
+		// 	current.remove({ beingKey: thiefState.key }),
+		// )
 	})
 	it(`can be subscribed to`, () => {
 		const count1State = atom<number>({

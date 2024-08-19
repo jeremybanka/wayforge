@@ -11,9 +11,10 @@ import {
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
+import { toEntries } from "atom.io/json"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
-import { myUsernameState } from "atom.io/realtime-client"
+import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as Happy from "happy-dom"
@@ -21,8 +22,6 @@ import * as React from "react"
 import * as SocketIO from "socket.io"
 import type { Socket as ClientSocket } from "socket.io-client"
 import { io } from "socket.io-client"
-
-import { recordToEntries } from "~/packages/anvl/src/object"
 
 let testNumber = 0
 
@@ -147,7 +146,7 @@ export const setupRealtimeTestClient = (
 				silo.store.valueMap.set(key, [...value])
 			}
 		}
-		silo.setState(myUsernameState, `${name}-${testNumber}`)
+		silo.setState(RTC.myUsernameState, `${name}-${testNumber}`)
 
 		const { document } = new Happy.Window()
 		document.body.innerHTML = `<div id="app"></div>`
@@ -204,7 +203,7 @@ export const multiClient = <ClientNames extends string>(
 	options: TestSetupOptions__MultiClient<ClientNames>,
 ): RealtimeTestAPI__MultiClient<ClientNames> => {
 	const server = setupRealtimeTestServer(options)
-	const clients = recordToEntries(options.clients).reduce(
+	const clients = toEntries(options.clients).reduce(
 		(clientRecord, [name, client]) => {
 			clientRecord[name] = setupRealtimeTestClient(
 				{ ...options, client },
@@ -221,7 +220,7 @@ export const multiClient = <ClientNames extends string>(
 		server,
 		teardown: () => {
 			server.dispose()
-			for (const [, client] of recordToEntries(clients)) {
+			for (const [, client] of toEntries(clients)) {
 				client.dispose()
 			}
 		},

@@ -17,3 +17,9 @@ export type FromEntries<E extends Entries> = Flat<{
 export function fromEntries<E extends Entries>(entries: E): FromEntries<E> {
 	return Object.fromEntries(entries) as FromEntries<E>
 }
+
+export function toEntries<T extends object>(
+	obj: T,
+): Entries<keyof T, T[keyof T]> {
+	return Object.entries(obj) as Entries<keyof T, T[keyof T]>
+}

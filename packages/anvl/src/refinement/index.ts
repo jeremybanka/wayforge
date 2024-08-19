@@ -8,7 +8,6 @@ export * from "./is-union"
 export * from "./refine-json"
 export * from "./refined"
 export * from "./refinement"
-export * from "./refinery"
 
 export const isLiteral =
 	<T extends boolean | number | string>(value: T): Refinement<unknown, T> =>
