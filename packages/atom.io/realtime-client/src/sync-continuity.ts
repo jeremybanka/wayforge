@@ -349,9 +349,9 @@ export function syncContinuity<F extends Func>(
 }
 
 function upsertState<T>(
+	store: Store,
 	token: AtomIO.WritableToken<T>,
 	value: T,
-	store: Store,
 ): void {
 	if (token.family) {
 		const family = store.families.get(token.family.key)
@@ -362,8 +362,8 @@ function upsertState<T>(
 			} else if (store.config.lifespan === `immortal`) {
 				throw new Error(`No molecule found for key "${token.family.subKey}"`)
 			}
-			initFamilyMemberInStore(family, parseJson(token.family.subKey), store)
+			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
 		}
 	}
-	setIntoStore(token, value, store)
+	setIntoStore(store, token, value)
 }

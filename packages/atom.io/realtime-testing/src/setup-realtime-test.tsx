@@ -133,7 +133,7 @@ export const setupRealtimeTestServer = (
 				socket.id,
 				silo.store,
 			).userKeyOfSocket
-			const userKey = getFromStore(userKeyState, silo.store)
+			const userKey = getFromStore(silo.store, userKeyState)
 			prefixLogger(silo.store, `server`)
 			socket.onAny((event, ...args) => {
 				console.log(`🛰 `, userKey, event, ...args)
