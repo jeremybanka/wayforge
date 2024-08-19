@@ -1,7 +1,7 @@
-import type { Logger } from "atom.io"
 import { vitest } from "vitest"
 
-import type { Json } from "../json"
+import type { Json } from "~/packages/atom.io/json/src"
+
 import { Join } from "."
 
 console.warn = () => undefined

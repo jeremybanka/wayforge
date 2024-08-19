@@ -15,6 +15,7 @@ import { attachTimelineFamily } from "./attach-timeline-family"
 import { attachTimelineIndex } from "./attach-timeline-index"
 import { attachTransactionIndex } from "./attach-transaction-index"
 import { attachTransactionLogs } from "./attach-transaction-logs"
+import { attachTypeSelectors } from "./attach-type-selectors"
 
 export const attachIntrospectionStates = (
 	store: Internal.Store = Internal.IMPLICIT.STORE,
@@ -22,19 +23,21 @@ export const attachIntrospectionStates = (
 	atomIndex: ReadonlySelectorToken<AtomTokenIndex>
 	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
 	transactionIndex: ReadonlySelectorToken<TransactionToken<Func>[]>
-	findTransactionLogState: ReadonlySelectorFamilyToken<
+	transactionLogSelectors: ReadonlySelectorFamilyToken<
 		TransactionUpdate<Func>[],
 		string
 	>
 	timelineIndex: ReadonlySelectorToken<TimelineToken<any>[]>
-	findTimelineState: ReadonlySelectorFamilyToken<Timeline<any>, string>
+	timelineSelectors: ReadonlySelectorFamilyToken<Timeline<any>, string>
+	typeSelectors: ReadonlySelectorFamilyToken<string, string>
 } => {
 	return {
 		atomIndex: attachAtomIndex(store),
 		selectorIndex: attachSelectorIndex(store),
 		transactionIndex: attachTransactionIndex(store),
-		findTransactionLogState: attachTransactionLogs(store),
+		transactionLogSelectors: attachTransactionLogs(store),
 		timelineIndex: attachTimelineIndex(store),
-		findTimelineState: attachTimelineFamily(store),
+		timelineSelectors: attachTimelineFamily(store),
+		typeSelectors: attachTypeSelectors(store),
 	}
 }

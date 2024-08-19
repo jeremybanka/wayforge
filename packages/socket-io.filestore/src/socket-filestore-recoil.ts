@@ -4,9 +4,9 @@ import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { Join } from "~/packages/anvl/src/join"
-import type { Json, JsonInterface } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
+import type { Json, JsonInterface } from "~/packages/atom.io/json/src"
 
 import type { FilestoreClientEvents, FilestoreServerEvents } from "./interface"
 

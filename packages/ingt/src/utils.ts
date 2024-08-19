@@ -1,11 +1,11 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs"
 
-import type { Json } from "~/packages/anvl/src/json"
-import { parseJson } from "~/packages/anvl/src/json"
 import type { ResourceIdentifierObject } from "~/packages/anvl/src/json-api"
 import type { Entries } from "~/packages/anvl/src/object/entries"
 import { entriesToRecord } from "~/packages/anvl/src/object/entries"
-import { refineJsonType } from "~/packages/anvl/src/refinement/refine-json"
+import { jsonRefinery } from "~/packages/atom.io/introspection/src"
+import type { Json } from "~/packages/atom.io/json/src"
+import { parseJson } from "~/packages/atom.io/json/src"
 
 export const getJsonFileNames = (dir: string): string[] => {
 	const fileNames = readdirSync(dir)
@@ -93,7 +93,7 @@ export const assignToJsonFile = ({
 }: AssignToJsonFileOptions): void => {
 	const fileContents = readFileSync(path, `utf8`)
 	const content = parseJson(fileContents)
-	const json = refineJsonType(content)
+	const json = jsonRefinery.refine(content)
 	if (json.type !== `object`) {
 		throw new Error(`The file ${path} does not hold a JSON object.`)
 	}

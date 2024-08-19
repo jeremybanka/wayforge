@@ -1,7 +1,6 @@
 import { pipe } from "anvl/function"
 import type { AtomEffect } from "recoil"
-
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "rel8"
 
 import type { SerializationInterface } from "."
 

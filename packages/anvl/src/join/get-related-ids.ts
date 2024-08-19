@@ -1,4 +1,5 @@
-import type { Json } from "../json"
+import type { Json } from "atom.io/json"
+
 import type { RelationData } from "./core-relation-data"
 
 export const getRelatedIds = <

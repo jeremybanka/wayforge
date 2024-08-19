@@ -1,4 +1,5 @@
-import type { Json, JsonInterface } from "../json"
+import type { Json, JsonInterface } from "atom.io/json"
+
 import { Join } from "."
 import type { IsRelationDataOptions, RelationData } from "./core-relation-data"
 

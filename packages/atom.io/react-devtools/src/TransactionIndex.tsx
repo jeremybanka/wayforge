@@ -9,12 +9,12 @@ import type { Func } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import {
-	findTransactionLogState,
-	findViewIsOpenState,
-	transactionIndex,
-} from "."
 import { button } from "./Button"
+import {
+	transactionIndex,
+	transactionLogSelectors,
+	viewIsOpenAtoms,
+} from "./store"
 import { article } from "./Updates"
 
 export const TransactionLog: FC<{
@@ -68,8 +68,8 @@ export const TransactionIndex: FC = () => {
 						<TransactionLog
 							key={token.key}
 							token={token}
-							isOpenState={findState(findViewIsOpenState, token.key)}
-							logState={findState(findTransactionLogState, token.key)}
+							isOpenState={findState(viewIsOpenAtoms, token.key)}
+							logState={findState(transactionLogSelectors, token.key)}
 						/>
 					)
 				})}

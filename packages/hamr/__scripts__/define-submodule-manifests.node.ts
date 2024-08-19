@@ -1,7 +1,7 @@
 import fs from "node:fs"
 import url from "node:url"
 
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "atom.io/json"
 
 import discoverSubmodules from "./discover-submodules.node"
 import { createLogger } from "./logger.node"

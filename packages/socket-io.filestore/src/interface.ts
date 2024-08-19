@@ -1,5 +1,5 @@
 import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/atom.io/json/src"
 
 import type {
 	InitResource,

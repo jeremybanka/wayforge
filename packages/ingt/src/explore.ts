@@ -2,7 +2,7 @@ import type { PathLike } from "node:fs"
 import { readdirSync } from "node:fs"
 import { join } from "node:path"
 
-import type { Json } from "~/packages/anvl/src/json"
+import type { Json } from "~/packages/atom.io/json/src"
 
 import type { FilestoreOptions } from "./options"
 

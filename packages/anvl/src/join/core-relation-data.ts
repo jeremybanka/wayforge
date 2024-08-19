@@ -1,5 +1,6 @@
+import type { Json } from "~/packages/atom.io/json/src"
+
 import { isArray } from "../array"
-import type { Json } from "../json"
 import { hasExactProperties, isRecord } from "../object/refinement"
 import { isString } from "../primitive"
 import { isLiteral } from "../refinement"

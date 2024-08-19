@@ -1,6 +1,5 @@
+import type { Json } from "atom.io/json"
 import type { ReactElement } from "react"
-
-import type { Json } from "~/packages/anvl/src/json"
 
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"

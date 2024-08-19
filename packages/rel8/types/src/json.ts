@@ -1,4 +1,16 @@
-import type * as Json from "~/packages/anvl/src/json/json"
-import type { primitive } from "~/packages/anvl/src/primitive"
+export type primitive = boolean | number | string | null
 
-export type { Json, primitive }
+export namespace Json {
+	export type Serializable =
+		| primitive
+		| Readonly<{ [key: string]: Serializable }>
+		| ReadonlyArray<Serializable>
+
+	export type Object<
+		Key extends string = string,
+		Value extends Serializable = Serializable,
+	> = Record<Key, Value>
+
+	export type Array<Element extends Serializable = Serializable> =
+		ReadonlyArray<Element>
+}

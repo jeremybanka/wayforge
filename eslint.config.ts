@@ -78,7 +78,7 @@ const commonRules = {
 	"@typescript-eslint/no-misused-new": ERROR,
 	"@typescript-eslint/no-misused-promises": 0,
 	"@typescript-eslint/no-mixed-enums": ERROR,
-	"@typescript-eslint/no-namespace": ERROR,
+	"@typescript-eslint/no-namespace": 0,
 	"@typescript-eslint/no-non-null-asserted-nullish-coalescing": ERROR,
 	"@typescript-eslint/no-non-null-asserted-optional-chain": ERROR,
 	"@typescript-eslint/no-non-null-assertion": 0,

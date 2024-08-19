@@ -1,7 +1,8 @@
+import type { Json } from "atom.io/json"
+
 import { isEmptyArray, isOneOf, map } from "../array"
 import { comprises } from "../array/venn"
 import { pipe } from "../function"
-import type { Json } from "../json"
 import { treeShake as removeProperties } from "../object"
 import { entriesToRecord, recordToEntries } from "../object/entries"
 import { isString } from "../primitive"

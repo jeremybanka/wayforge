@@ -6,32 +6,14 @@ import type {
 import { getState, selectorFamily } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
+import { primitiveRefinery } from "atom.io/introspection"
 import type { Canonical } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
-import { isJson, refineJsonType } from "~/packages/anvl/src/refinement"
-
-import { findViewIsOpenState, primitiveRefinery } from "."
 import { button } from "./Button"
 import { StoreEditor } from "./StateEditor"
-
-const findStateTypeState = selectorFamily<string, Canonical>({
-	key: `👁‍🗨 State Type`,
-	get:
-		(token) =>
-		({ get }) => {
-			let state: unknown
-			try {
-				state = get(token as any)
-			} catch (error) {
-				return `error`
-			}
-			if (state === undefined) return `undefined`
-			if (isJson(state)) return refineJsonType(state).type
-			return Object.getPrototypeOf(state).constructor.name
-		},
-})
+import { typeSelectors, viewIsOpenAtoms } from "./store"
 
 export const StateIndexLeafNode: FC<{
 	node: ReadableToken<unknown>
@@ -83,8 +65,8 @@ export const StateIndexTreeNode: FC<{
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 	for (const [key, childNode] of node.familyMembers) {
-		findState(findViewIsOpenState, key)
-		findState(findStateTypeState, childNode.key)
+		findState(viewIsOpenAtoms, key)
+		findState(typeSelectors, childNode.key)
 	}
 	return (
 		<>
@@ -104,8 +86,8 @@ export const StateIndexTreeNode: FC<{
 						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findState(findViewIsOpenState, childNode.key)}
-							typeState={findState(findStateTypeState, childNode.key)}
+							isOpenState={findState(viewIsOpenAtoms, childNode.key)}
+							typeState={findState(typeSelectors, childNode.key)}
 						/>
 					))
 				: null}
@@ -147,8 +129,8 @@ export const StateIndex: FC<{
 						<StateIndexNode
 							key={key}
 							node={node}
-							isOpenState={findState(findViewIsOpenState, node.key)}
-							typeState={findState(findStateTypeState, node.key)}
+							isOpenState={findState(viewIsOpenAtoms, node.key)}
+							typeState={findState(typeSelectors, node.key)}
 						/>
 					)
 				})}

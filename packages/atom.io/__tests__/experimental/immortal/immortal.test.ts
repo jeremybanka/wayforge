@@ -144,6 +144,8 @@ describe(`immortal mode`, () => {
 		})
 
 		expect(getState(doubleStates, `nonexistent`)).toBe(0)
+		expect(Internal.IMPLICIT.STORE.defaults.get(doubleStates.key)).toBe(0)
+		expect(getState(doubleStates, `nonexistent`)).toBe(0) // cover the cache
 		expect(logger.error).toHaveBeenCalledWith(
 			`❗`,
 			`selector_family`,

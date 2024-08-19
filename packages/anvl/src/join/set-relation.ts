@@ -1,5 +1,6 @@
+import type { Json } from "atom.io/json"
+
 import { addTo, isEmptyArray } from "../array"
-import type { Json } from "../json"
 import type { NullSafeRest } from "../nullish"
 import { treeShake as removeProperties } from "../object"
 import type { RelationData } from "./core-relation-data"
