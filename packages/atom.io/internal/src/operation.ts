@@ -16,8 +16,8 @@ export type OperationProgress =
 	  }
 
 export const openOperation = (
-	token: WritableToken<any>,
 	store: Store,
+	token: WritableToken<any>,
 ): number | undefined => {
 	if (store.operation.open) {
 		const rejectionTime = performance.now()
@@ -60,25 +60,25 @@ export const closeOperation = (store: Store): void => {
 	store.on.operationClose.next(store.operation)
 }
 
-export const isDone = (key: string, store: Store): boolean => {
+export const isDone = (store: Store, key: string): boolean => {
 	if (!store.operation.open) {
-		store.logger.warn(
+		store.logger.error(
 			`🐞`,
 			`unknown`,
 			key,
-			`isDone called outside of an operation. This is probably a bug.`,
+			`isDone called outside of an operation. This is probably a bug in AtomIO.`,
 		)
 		return true
 	}
 	return store.operation.done.has(key)
 }
-export const markDone = (key: string, store: Store): void => {
+export const markDone = (store: Store, key: string): void => {
 	if (!store.operation.open) {
-		store.logger.warn(
+		store.logger.error(
 			`🐞`,
 			`unknown`,
 			key,
-			`markDone called outside of an operation. This is probably a bug.`,
+			`markDone called outside of an operation. This is probably a bug in AtomIO.`,
 		)
 		return
 	}

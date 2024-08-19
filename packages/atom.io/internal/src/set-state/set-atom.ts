@@ -30,7 +30,7 @@ export const setAtom = <T>(
 	if (isAtomDefault(atom.key, target)) {
 		markAtomAsNotDefault(atom.key, target)
 	}
-	markDone(atom.key, target)
+	markDone(target, atom.key)
 	evictDownStream(atom, target)
 	const update = { oldValue, newValue }
 	if (isRootStore(target)) {

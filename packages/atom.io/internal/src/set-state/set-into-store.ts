@@ -58,7 +58,7 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 
-	const rejectionTime = openOperation(token, store)
+	const rejectionTime = openOperation(store, token)
 	if (rejectionTime) {
 		const unsubscribe = store.on.operationClose.subscribe(
 			`waiting to set "${token.key}" at T-${rejectionTime}`,
