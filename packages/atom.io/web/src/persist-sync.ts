@@ -1,12 +1,11 @@
 import type { AtomEffect } from "atom.io"
-import type { Json } from "atom.io/json"
 
 export type StringInterface<T> = {
 	stringify: (t: T) => string
 	parse: (s: string) => T
 }
 
-export const persistAtom =
+export const persistSync =
 	<T>(storage: Storage) =>
 	({ stringify, parse }: StringInterface<T>) =>
 	(key: string): AtomEffect<T> =>

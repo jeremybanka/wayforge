@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { persistAtom } from "atom.io/react-devtools"
+import { persistSync } from "atom.io/web"
 
 export const myIdState__INTERNAL = AtomIO.atom<string | undefined>({
 	key: `mySocketId__INTERNAL`,
@@ -16,5 +16,5 @@ export const myUsernameState = AtomIO.atom<string | null>({
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistAtom(window.localStorage)(JSON)(`myUsername`)],
+			: [persistSync(window.localStorage)(JSON)(`myUsername`)],
 })
