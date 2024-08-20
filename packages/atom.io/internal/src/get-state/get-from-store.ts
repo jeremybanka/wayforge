@@ -83,14 +83,19 @@ export function getFromStore(
 			}
 		}
 		if (!maybeToken) {
+			const disposed = store.disposalTraces.buffer.find(
+				(item) => item?.key === key,
+			)
 			store.logger.error(
 				`❗`,
 				family.type,
 				family.key,
 				`tried to get member`,
 				stringifyJson(key),
-				`but it was not found in store`,
-				store.config.name,
+				`but it was not found in store "${store.config.name}".`,
+				disposed
+					? `This state was previously disposed:\n${disposed.trace}`
+					: `No previous disposal trace was found.`,
 			)
 			switch (family.type) {
 				case `atom_family`:
