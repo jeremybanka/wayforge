@@ -16,5 +16,5 @@ export const myUsernameState = AtomIO.atom<string | null>({
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage)(JSON)(`myUsername`)],
+			: [persistSync(window.localStorage, JSON, `myUsername`)],
 })
