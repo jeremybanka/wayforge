@@ -18,7 +18,7 @@ export const devtoolsAreOpenState = atom<boolean>({
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage)(JSON)(`👁‍🗨 Devtools Are Open`)],
+			: [persistSync(window.localStorage, JSON, `👁‍🗨 Devtools Are Open`)],
 })
 
 type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
@@ -29,7 +29,7 @@ export const devtoolsViewSelectionState = atom<DevtoolsView>({
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage)(JSON)(`👁‍🗨 Devtools View`)],
+			: [persistSync(window.localStorage, JSON, `👁‍🗨 Devtools View`)],
 })
 
 export const devtoolsViewOptionsState = atom<DevtoolsView[]>({
@@ -38,7 +38,7 @@ export const devtoolsViewOptionsState = atom<DevtoolsView[]>({
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage)(JSON)(`👁‍🗨 Devtools View Options`)],
+			: [persistSync(window.localStorage, JSON, `👁‍🗨 Devtools View Options`)],
 })
 
 export const viewIsOpenAtoms = atomFamily<boolean, string>({
@@ -47,5 +47,5 @@ export const viewIsOpenAtoms = atomFamily<boolean, string>({
 	effects: (key) =>
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage)(JSON)(key + `:view-is-open`)],
+			: [persistSync(window.localStorage, JSON, key + `:view-is-open`)],
 })

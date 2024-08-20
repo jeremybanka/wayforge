@@ -36,6 +36,7 @@ import type {
 	TransactionProgress,
 } from "../transaction"
 import { isRootStore } from "../transaction"
+import { CircularBuffer } from "./circular-buffer"
 
 export class Store implements Lineage {
 	public parent: Store | null = null
@@ -93,6 +94,8 @@ export class Store implements Lineage {
 		between: [`timelineKey`, `topicKey`],
 		cardinality: `1:n`,
 	})
+
+	public disposalTraces = new CircularBuffer<{ key: string; trace: string }>(100)
 
 	public molecules = new Map<string, Molecule<any>>()
 	public moleculeFamilies = new Map<string, MoleculeFamily<any>>()

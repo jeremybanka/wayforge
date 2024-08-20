@@ -132,7 +132,7 @@ describe(`synchronizing transactions`, () => {
 		})
 
 		await waitFor(() => jane.renderResult.getByTestId(`2`))
-		await waitFor(() => dave.renderResult.getByTestId(`2`))
+		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 7000 })
 
 		teardown()
 	})

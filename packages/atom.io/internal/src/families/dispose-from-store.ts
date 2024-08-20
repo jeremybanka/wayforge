@@ -52,14 +52,19 @@ export function disposeFromStore(
 					? seekInStore(store, family, key)
 					: findInStore(store, family, key)
 		if (!maybeToken) {
+			const disposed = store.disposalTraces.buffer.find(
+				(item) => item?.key === key,
+			)
 			store.logger.error(
 				`❗`,
 				family.type,
 				family.key,
 				`tried to dispose of member`,
 				stringifyJson(key),
-				`but it was not found in store`,
-				store.config.name,
+				`but it was not found in store "${store.config.name}".`,
+				disposed
+					? `It was disposed at ${disposed.trace}`
+					: `No previous disposal trace was found.`,
 			)
 			return
 		}
@@ -77,5 +82,11 @@ export function disposeFromStore(
 		case `molecule`:
 			disposeMolecule(token, store)
 			break
+	}
+
+	const { stack } = new Error()
+	if (stack) {
+		const trace = stack?.split(`\n`)?.slice(3)?.join(`\n`)
+		store.disposalTraces.add({ key: token.key, trace })
 	}
 }
