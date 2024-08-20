@@ -9,7 +9,6 @@ import type {
 import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
-import { growMoleculeInStore } from "../molecule"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { withdraw } from "../store"

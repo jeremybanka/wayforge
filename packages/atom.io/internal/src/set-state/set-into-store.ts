@@ -1,7 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, stringifyJson } from "atom.io/json"
 
-import { findInStore, seekInStore } from "../families"
+import { findInStore } from "../families"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -39,12 +39,9 @@ export function setIntoStore<T, New extends T>(
 		const family = params[0]
 		const key = params[1]
 		value = params[2]
-		const maybeToken =
-			store.config.lifespan === `ephemeral`
-				? findInStore(store, family, key)
-				: seekInStore(store, family, key)
-		if (!maybeToken) {
-			const disposed = store.disposalTraces.buffer.find(
+		const maybeToken = findInStore(store, family, key)
+		if (`counterfeit` in maybeToken) {
+			const disposal = store.disposalTraces.buffer.find(
 				(item) => item?.key === key,
 			)
 			store.logger.error(
@@ -56,8 +53,8 @@ export function setIntoStore<T, New extends T>(
 				`to`,
 				value,
 				`but it was not found in store "${store.config.name}".`,
-				disposed
-					? `This state was previously disposed:\n${disposed.trace}`
+				disposal
+					? `This state was previously disposed:\n${disposal.trace}`
 					: `No previous disposal trace was found.`,
 			)
 			return

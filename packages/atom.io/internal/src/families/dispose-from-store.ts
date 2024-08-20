@@ -48,11 +48,9 @@ export function disposeFromStore(
 		const maybeToken =
 			family.type === `molecule_family`
 				? seekInStore(store, family, key)
-				: store.config.lifespan === `immortal`
-					? seekInStore(store, family, key)
-					: findInStore(store, family, key)
-		if (!maybeToken) {
-			const disposed = store.disposalTraces.buffer.find(
+				: findInStore(store, family, key)
+		if (!maybeToken || `counterfeit` in maybeToken) {
+			const disposal = store.disposalTraces.buffer.find(
 				(item) => item?.key === key,
 			)
 			store.logger.error(
@@ -62,8 +60,8 @@ export function disposeFromStore(
 				`tried to dispose of member`,
 				stringifyJson(key),
 				`but it was not found in store "${store.config.name}".`,
-				disposed
-					? `It was disposed at ${disposed.trace}`
+				disposal
+					? `This state was previously disposed:\n${disposal.trace}`
 					: `No previous disposal trace was found.`,
 			)
 			return
