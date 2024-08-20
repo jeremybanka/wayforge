@@ -53,6 +53,7 @@ export const JS_OPTIONS: Options = {
 		"realtime-server/dist/index": `realtime-server/src/index.ts`,
 		"realtime-testing/dist/index": `realtime-testing/src/index.ts`,
 		"transceivers/set-rtx/dist/index": `transceivers/set-rtx/src/index.ts`,
+		"web/dist/index": `web/src/index.ts`,
 	},
 	outDir: `.`,
 }

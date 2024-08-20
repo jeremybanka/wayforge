@@ -3,6 +3,7 @@ import type {
 	AtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
+	TokenType,
 	TransactionToken,
 } from "atom.io"
 import {
@@ -30,13 +31,10 @@ export class InvariantMap<K, V> extends Map<K, V> {
 	}
 }
 
-export type PerspectiveToken<
-	F extends AtomFamilyToken<any>,
-	T extends F extends AtomFamilyToken<infer U, any> ? U : never,
-> = {
+export type PerspectiveToken<F extends AtomFamilyToken<any>> = {
 	type: `realtime_perspective`
 	resourceAtoms: F
-	viewAtoms: ReadableFamilyToken<ReadableToken<T>[], string>
+	viewAtoms: ReadableFamilyToken<ReadableToken<TokenType<F>>[], string>
 }
 
 export type ContinuityToken = {
@@ -44,18 +42,15 @@ export type ContinuityToken = {
 	readonly key: string
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<any>[]
-	readonly perspectives: PerspectiveToken<
-		AtomFamilyToken<any, Canonical>,
-		Json.Serializable
-	>[]
+	readonly perspectives: PerspectiveToken<AtomFamilyToken<any, Canonical>>[]
 }
 
 export class SyncGroup {
-	protected type = `continuity` as const
+	public type = `continuity` as const
 
 	protected globals: AtomToken<any>[] = []
 	protected actions: TransactionToken<any>[] = []
-	protected perspectives: PerspectiveToken<any, any>[] = []
+	protected perspectives: PerspectiveToken<any>[] = []
 
 	protected constructor(protected readonly key: string) {}
 
@@ -88,32 +83,29 @@ export class SyncGroup {
 			| [AtomFamilyToken<any, any>, ReadableFamilyToken<Iterable<any>, string>]
 	): this {
 		const zeroth = args[0]
-		if (zeroth.type === `atom` || zeroth.type === `mutable_atom`) {
-			const globals = args as AtomToken<any>[]
-			for (const global of globals) {
-				switch (global.type) {
-					case `atom`:
-						this.globals.push(global)
-						break
-					case `mutable_atom`:
-						this.globals.push(getUpdateToken(global))
-						break
+		switch (zeroth.type) {
+			case `atom`:
+			case `mutable_atom`:
+				this.globals.push(...(args as AtomToken<any>[]))
+				break
+			case `transaction`:
+				this.actions.push(...(args as TransactionToken<any>[]))
+				break
+			case `atom_family`:
+				{
+					const [family, index] = args as [
+						AtomFamilyToken<any, any>,
+						ReadableFamilyToken<ReadableToken<any>[], string>,
+					]
+					this.perspectives.push({
+						type: `realtime_perspective`,
+						resourceAtoms: family,
+						viewAtoms: index,
+					})
 				}
-			}
-		} else if (zeroth.type === `transaction`) {
-			const actions = args as TransactionToken<any>[]
-			this.actions.push(...actions)
-		} else {
-			const [family, index] = args as [
-				AtomFamilyToken<any, any>,
-				ReadableFamilyToken<ReadableToken<any>[], string>,
-			]
-			this.perspectives.push({
-				type: `realtime_perspective`,
-				resourceAtoms: family,
-				viewAtoms: index,
-			})
+				break
 		}
+
 		return this
 	}
 }

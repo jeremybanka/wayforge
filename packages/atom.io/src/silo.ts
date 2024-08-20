@@ -1,5 +1,7 @@
 import type { findState } from "atom.io/ephemeral"
 import {
+	actUponStore,
+	arbitrary,
 	createAtomFamily,
 	createMoleculeFamily,
 	createSelectorFamily,
@@ -30,7 +32,7 @@ import type {
 } from "."
 import type { atom, atomFamily } from "./atom"
 import type { selector, selectorFamily } from "./selector"
-import type { transaction } from "./transaction"
+import type { runTransaction, transaction } from "./transaction"
 
 export class Silo {
 	public store: Store
@@ -49,6 +51,7 @@ export class Silo {
 	public redo: typeof redo
 	public moleculeFamily: typeof moleculeFamily
 	public makeMolecule: typeof makeMolecule
+	public runTransaction: typeof runTransaction
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
 		const s = new Store(config, fromStore)
 		this.store = s
@@ -83,8 +86,9 @@ export class Silo {
 		this.moleculeFamily = ((options: Parameters<typeof moleculeFamily>[0]) => {
 			return createMoleculeFamily(s, options)
 		}) as typeof moleculeFamily
-		this.makeMolecule = ((...params: Parameters<typeof makeMolecule>) => {
+		this.makeMolecule = (...params: Parameters<typeof makeMolecule>) => {
 			return makeMoleculeInStore(s, ...params)
-		}) as typeof makeMolecule
+		}
+		this.runTransaction = (token, id = arbitrary()) => actUponStore(token, id, s)
 	}
 }

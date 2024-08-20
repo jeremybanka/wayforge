@@ -10,14 +10,14 @@ export const myRoomKeyState = AtomIO.selector<string | null>({
 	get: ({ get }) => {
 		const roomView = get(roomViewState)
 		const myUsername = get(myUsernameState)
-		const myRoom =
-			roomView && myUsername
-				? get(findRelations(usersInRooms, myUsername).roomKeyOfUser)?.includes(
-						myUsername,
-					)
-					? roomView
-					: null ?? null
-				: null
+		let myRoom: string | null = null
+		if (roomView && myUsername) {
+			const state = findRelations(usersInRooms, myUsername).roomKeyOfUser
+			const myRoomKey = get(state)
+			if (myRoomKey?.includes(myUsername)) {
+				myRoom = roomView
+			}
+		}
 		return myRoom
 	},
 })

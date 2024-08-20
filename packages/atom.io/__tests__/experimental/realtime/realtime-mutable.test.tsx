@@ -27,12 +27,6 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			port: 5445,
 			server: ({ socket, silo: { store } }) => {
-				socket.onAny((event, ...args) => {
-					console.log(`🛰 `, event, ...args)
-				})
-				socket.onAnyOutgoing((event, ...args) => {
-					console.log(`🛰  >>`, event, ...args)
-				})
 				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
 				exposeMutable(numbersCollectionState)
@@ -43,13 +37,6 @@ describe(`running transactions`, () => {
 					const addToNumbersCollection = RTR.useServerAction(
 						addToNumbersCollectionTX,
 					)
-					const { socket } = React.useContext(RTR.RealtimeContext)
-					socket?.onAny((event, ...args) => {
-						console.log(`📡  DAVE`, event, ...args)
-					})
-					socket?.onAnyOutgoing((event, ...args) => {
-						console.log(`📡  DAVE >>`, event, ...args)
-					})
 					return (
 						<button
 							type="button"
@@ -61,13 +48,6 @@ describe(`running transactions`, () => {
 				jane: () => {
 					RTR.usePullMutable(numbersCollectionState)
 					const numbers = AR.useJSON(numbersCollectionState)
-					const { socket } = React.useContext(RTR.RealtimeContext)
-					socket?.onAny((event, ...args) => {
-						console.log(`📡 JANE`, event, ...args)
-					})
-					socket?.onAnyOutgoing((event, ...args) => {
-						console.log(`📡 JANE >>`, event, ...args)
-					})
 					return (
 						<>
 							{numbers.members.map((n) => (

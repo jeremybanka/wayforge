@@ -1,8 +1,10 @@
 "use client"
 
 import { findRelations, getInternalRelations } from "atom.io/data"
+import { findState } from "atom.io/ephemeral"
 import { useI, useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
+import { myUsernameState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"
@@ -14,21 +16,23 @@ import {
 	actionsState,
 	radialModeState,
 } from "wayfarer.quest/services/peripherals/radial"
-import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
 import scss from "./page.module.scss"
 import { UsersInRoom } from "./PlayersInRoom"
 
-export default function Room({ roomId }: { roomId: string }): JSX.Element {
+export default function Room({
+	roomId,
+	myUsername,
+}: { roomId: string; myUsername: string }): JSX.Element {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 
-	const myRoomKey = useO(myRoomKeyState)
+	const myRoomKey = useO(findRelations(usersInRooms, myUsername).roomKeyOfUser)
 	const setRoomState = useI(roomViewState)
-	const iAmInRoom = myRoomKey === roomId
 
-	const usersInThisRoomState = getInternalRelations(usersInRooms)
-	RTR.usePullMutableAtomFamilyMember(usersInThisRoomState, roomId)
+	const usersInRoomsInternal = getInternalRelations(usersInRooms)
+	RTR.usePullMutableAtomFamilyMember(usersInRoomsInternal, roomId)
+	RTR.usePullMutable(findState(usersInRoomsInternal, myUsername))
 
 	return (
 		<>
@@ -53,7 +57,7 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 									console.log(`socket is null`)
 								}
 							}}
-							disabled={iAmInRoom}
+							disabled={myRoomKey !== null}
 						>
 							+
 						</button>
@@ -66,7 +70,7 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 									console.log(`socket is null`)
 								}
 							}}
-							disabled={!iAmInRoom}
+							disabled={myRoomKey === null}
 						>
 							{`<-`}
 						</button>
@@ -75,7 +79,7 @@ export default function Room({ roomId }: { roomId: string }): JSX.Element {
 					<UsersInRoom roomId={roomId} />
 				</header.auspicious0>
 
-				{iAmInRoom ? <Game roomId={roomId} /> : null}
+				{myRoomKey === null ? null : <Game roomId={roomId} />}
 			</article>
 			<Radial
 				useMode={() => [useO(radialModeState), useI(radialModeState)]}

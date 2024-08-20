@@ -57,7 +57,9 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 		</button>
 	),
 	EditorWrapper: ({ children, className }) => (
-		<div className={`json_editor` + ` ` + className}>{children}</div>
+		<div className={`json_editor` + (className ? ` ${className}` : ``)}>
+			{children}
+		</div>
 	),
 	EditorLayout: ({
 		DeleteButton,

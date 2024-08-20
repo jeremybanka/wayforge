@@ -56,7 +56,10 @@
 		"realtime-testing/src",
 		"transceivers/set-rtx/dist",
 		"transceivers/set-rtx/package.json",
-		"transceivers/set-rtx/src"
+		"transceivers/set-rtx/src",
+		"web/dist",
+		"web/package.json",
+		"web/src"
 	],
 	"exclude": ["src", "**/src"]
 }
