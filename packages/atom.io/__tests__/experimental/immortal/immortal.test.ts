@@ -30,7 +30,7 @@ beforeEach(() => {
 })
 
 describe(`immortal mode`, () => {
-	test(`implicit initialization with findState is illegal in immortal mode`, () => {
+	test(`implicit initialization with findState cannot happen in immortal mode`, () => {
 		const countStates = atomFamily<number, number>({
 			key: `count`,
 			default: 0,
@@ -41,6 +41,14 @@ describe(`immortal mode`, () => {
 			family: { key: `count`, subKey: `0` },
 			counterfeit: true,
 		})
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom`,
+			`count(0)`,
+			`was not found in store "IMPLICIT_STORE"; returned a counterfeit token.`,
+		)
+		expect(Internal.IMPLICIT.STORE.atoms.get(`count(0)`)).toBeUndefined()
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`count(0)`)).toBeUndefined()
 	})
 	test(`safe initialization of state with Molecule`, () => {
 		const world = makeRootMolecule(`world`)
@@ -231,6 +239,9 @@ describe(`immortal mode`, () => {
 		const root = makeRootMolecule(`root`)
 		makeMolecule(root, counterMolecules, `does exist`)
 		expect(() => getState(counterMolecules, `does exist`)).not.toThrowError()
+		setState(countStates, `does exist`, 3)
+		expect(getState(countStates, `does exist`)).toBe(3)
+		expect(getState(factorialStates, `does exist`)).toBe(6)
 	})
 })
 

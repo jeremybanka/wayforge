@@ -96,7 +96,7 @@ export function findInStore(
 			`❗`,
 			fakeToken.type,
 			fakeToken.key,
-			`was not found in store "${store.config.name}"; returned a counterfeit token`,
+			`was not found in store "${store.config.name}"; returned a counterfeit token.`,
 		)
 		return fakeToken
 	}
