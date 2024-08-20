@@ -86,11 +86,11 @@ export function findInStore(
 	if (state) {
 		return state
 	}
+	const molecule = store.molecules.get(stringifyJson(key))
+	if (molecule) {
+		return growMoleculeInStore(molecule, token, store)
+	}
 	if (store.config.lifespan === `immortal`) {
-		const molecule = store.molecules.get(stringifyJson(key))
-		if (molecule) {
-			return growMoleculeInStore(molecule, token, store)
-		}
 		const fakeToken = counterfeit(token, key)
 		store.logger.error(
 			`❗`,

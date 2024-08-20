@@ -68,22 +68,10 @@ export function getFromStore(
 		if (family.type === `molecule_family`) {
 			maybeToken = seekInStore(store, family, key)
 		} else {
-			if (store.config.lifespan === `immortal`) {
-				maybeToken = seekInStore(store, family, key)
-			} else {
-				maybeToken = findInStore(store, family, key)
-			}
+			maybeToken = findInStore(store, family, key)
 		}
-		if (!maybeToken) {
-			if (family.type !== `molecule_family`) {
-				const molecule = store.molecules.get(stringifyJson(key))
-				if (molecule) {
-					maybeToken = growMoleculeInStore(molecule, family, store)
-				}
-			}
-		}
-		if (!maybeToken) {
-			const disposed = store.disposalTraces.buffer.find(
+		if (!maybeToken || `counterfeit` in maybeToken) {
+			const disposal = store.disposalTraces.buffer.find(
 				(item) => item?.key === key,
 			)
 			store.logger.error(
@@ -93,8 +81,8 @@ export function getFromStore(
 				`tried to get member`,
 				stringifyJson(key),
 				`but it was not found in store "${store.config.name}".`,
-				disposed
-					? `This state was previously disposed:\n${disposed.trace}`
+				disposal
+					? `This state was previously disposed:\n${disposal.trace}`
 					: `No previous disposal trace was found.`,
 			)
 			switch (family.type) {
