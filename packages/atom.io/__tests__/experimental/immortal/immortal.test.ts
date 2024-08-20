@@ -30,7 +30,7 @@ beforeEach(() => {
 })
 
 describe(`immortal mode`, () => {
-	test(`implicit initialization with findState cannot happen in immortal mode`, () => {
+	test(`implicit initialization with findState can't happen in immortal mode, if no molecule exists for that key`, () => {
 		const countStates = atomFamily<number, number>({
 			key: `count`,
 			default: 0,
@@ -49,6 +49,33 @@ describe(`immortal mode`, () => {
 		)
 		expect(Internal.IMPLICIT.STORE.atoms.get(`count(0)`)).toBeUndefined()
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`count(0)`)).toBeUndefined()
+	})
+	test(`implicit initialization with findState can happen in immortal mode, if a molecule exists for that key`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const counters = moleculeFamily({
+			key: `counters`,
+			new: class Counter {
+				public $count: AtomToken<number>
+				public constructor(
+					public tools: CtorToolkit<string>,
+					public key: string,
+				) {}
+			},
+		})
+		const root = makeRootMolecule(`root`)
+		makeMolecule(root, counters, `exists`)
+
+		expect(Internal.IMPLICIT.STORE.atoms.get(`count("exists")`)).toBeUndefined()
+		expect(
+			Internal.IMPLICIT.STORE.valueMap.get(`count("exists")`),
+		).toBeUndefined()
+
+		const countState = findState(countStates, `exists`)
+		expect(`counterfeit` in countState).toBe(false)
+		expect(getState(countState)).toBe(0)
 	})
 	test(`safe initialization of state with Molecule`, () => {
 		const world = makeRootMolecule(`world`)
