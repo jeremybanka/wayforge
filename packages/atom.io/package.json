@@ -92,7 +92,7 @@
 		"@types/estree": "1.0.5",
 		"@types/http-proxy": "1.17.15",
 		"@types/npmlog": "7.0.0",
-		"@types/react": "18.3.3",
+		"@types/react": "18.3.4",
 		"@types/tmp": "0.2.6",
 		"@typescript-eslint/parser": "8.2.0",
 		"@typescript-eslint/rule-tester": "8.2.0",
