@@ -1,132 +1,89 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import type { Store } from "atom.io/internal"
 import { actUponStore, arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
-import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
 
 import { throwUntil } from "../../__util__/waiting"
 
-function prefixLogger(store: Store, prefix: string) {
-	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
-		info: (...args) => {
-			console.info(prefix, ...args)
-		},
-		warn: (...args) => {
-			console.warn(prefix, ...args)
-		},
-		error: (...args) => {
-			console.error(prefix, ...args)
-		},
-	})
-}
-
-AtomIO.getState(RTC.myIdState)
-const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-const userActionCountServerState = AtomIO.atom<number>({
-	key: `server:userActionCount`,
-	default: 0,
-})
-
-const incrementTX = AtomIO.transaction({
-	key: `increment`,
-	do: ({ set, env }) => {
-		const { name } = env().store.config
-		if (name === `SERVER`) {
-			set(userActionCountServerState, (c) => c + 1)
-		}
-		set(countState, (c) => c + 1)
-	},
-})
-
-const countContinuity = RT.continuity({
-	key: `count`,
-	config: (group) => group.add(countState).add(incrementTX),
-})
-
 describe(`synchronizing transactions`, () => {
-	const scenario = () =>
-		RTTest.multiClient({
-			port: 5465,
-			server: ({ socket, silo: { store } }) => {
-				// const userKeyState = findInStore(
-				// 	RTS.usersOfSockets.states.userKeyOfSocket,
-				// 	socket.id,
-				// 	store,
-				// )
-				// const userKey = getFromStore(userKeyState, store)
-				// prefixLogger(store, `server`)
-				// socket.onAny((event, ...args) => {
-				// 	console.log(`🛰 `, userKey, event, ...args)
-				// })
-				// socket.onAnyOutgoing((event, ...args) => {
-				// 	console.log(`🛰  >>`, userKey, event, ...args)
-				// })
-
-				const syncContinuity = RTS.realtimeContinuitySynchronizer({
-					socket,
-					store,
-				})
-
-				syncContinuity(countContinuity)
-			},
-			clients: {
-				jane: () => {
-					RTR.useSyncContinuity(countContinuity)
-					const count = AR.useO(countState)
-					const store = React.useContext(AR.StoreContext)
-					const increment = actUponStore(incrementTX, arbitrary(), store)
-					// prefixLogger(store, `jane`)
-					// const { socket } = React.useContext(RTR.RealtimeContext)
-					// socket?.onAny((event, ...args) => {
-					// 	console.log(`📡 JANE`, event, ...args)
-					// })
-					// socket?.onAnyOutgoing((event, ...args) => {
-					// 	console.log(`📡 JANE >>`, event, ...args)
-					// })
-					return (
-						<>
-							<button
-								type="button"
-								onClick={() => increment()}
-								data-testid={`increment`}
-							/>
-							<i data-testid={count} />
-						</>
-					)
-				},
-				dave: () => {
-					RTR.useSyncContinuity(countContinuity)
-					const count = AR.useO(countState)
-					const store = React.useContext(AR.StoreContext)
-					const increment = actUponStore(incrementTX, arbitrary(), store)
-					// prefixLogger(store, `dave`)
-					// const { socket } = React.useContext(RTR.RealtimeContext)
-					// socket?.onAny((event, ...args) => {
-					// 	console.log(`📡 DAVE`, event, ...args)
-					// })
-					// socket?.onAnyOutgoing((event, ...args) => {
-					// 	console.log(`📡 DAVE >>`, event, ...args)
-					// })
-					return (
-						<>
-							<button
-								type="button"
-								onClick={() => increment()}
-								data-testid={`increment`}
-							/>
-							<i data-testid={count} />
-						</>
-					)
-				},
-			},
+	const scenario = () => {
+		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
+		const userActionCountServerState = AtomIO.atom<number>({
+			key: `server:userActionCount`,
+			default: 0,
 		})
 
+		const incrementTX = AtomIO.transaction({
+			key: `increment`,
+			do: ({ set, env }) => {
+				const { name } = env().store.config
+				if (name === `SERVER`) {
+					set(userActionCountServerState, (c) => c + 1)
+				}
+				set(countState, (c) => c + 1)
+			},
+		})
+		const countContinuity = RT.continuity({
+			key: `count`,
+			config: (group) => group.add(countState).add(incrementTX),
+		})
+
+		return Object.assign(
+			RTTest.multiClient({
+				port: 5465,
+				server: ({ socket, silo: { store } }) => {
+					const syncContinuity = RTS.realtimeContinuitySynchronizer({
+						socket,
+						store,
+					})
+					syncContinuity(countContinuity)
+				},
+				clients: {
+					jane: () => {
+						RTR.useSyncContinuity(countContinuity)
+						const count = AR.useO(countState)
+						const store = React.useContext(AR.StoreContext)
+						const increment = actUponStore(incrementTX, arbitrary(), store)
+
+						return (
+							<>
+								<button
+									type="button"
+									onClick={() => increment()}
+									data-testid={`increment`}
+								/>
+								<i data-testid={count} />
+							</>
+						)
+					},
+					dave: () => {
+						RTR.useSyncContinuity(countContinuity)
+						const count = AR.useO(countState)
+						const store = React.useContext(AR.StoreContext)
+						const increment = actUponStore(incrementTX, arbitrary(), store)
+						return (
+							<>
+								<button
+									type="button"
+									onClick={() => increment()}
+									data-testid={`increment`}
+								/>
+								<i data-testid={count} />
+							</>
+						)
+					},
+				},
+			}),
+			{ countState, incrementTX },
+		)
+	}
 	test(`client 1 -> server -> client 2`, async () => {
 		const { clients, teardown } = scenario()
 
@@ -141,10 +98,12 @@ describe(`synchronizing transactions`, () => {
 		teardown()
 	})
 	test(`rollback`, async () => {
-		const { clients, teardown } = scenario()
+		const { server, clients, teardown, countState } = scenario()
 
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
+
+		dave.enableLogging()
 
 		await waitFor(() => {
 			throwUntil(jane.socket.connected)
@@ -153,15 +112,128 @@ describe(`synchronizing transactions`, () => {
 			throwUntil(dave.socket.connected)
 		})
 
+		dave.socket.disconnect()
+
 		act(() => {
 			jane.renderResult.getByTestId(`increment`).click()
 		})
+		await waitFor(() => server.silo.getState(countState) === 1)
+
 		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
 
+		await waitFor(() => jane.renderResult.getByTestId(`1`))
+		await waitFor(() => dave.renderResult.getByTestId(`1`))
+
+		dave.socket.connect()
+		await waitFor(() => {
+			throwUntil(dave.socket.connected)
+		})
+
 		await waitFor(() => jane.renderResult.getByTestId(`2`))
-		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 7000 })
+		await waitFor(() => dave.renderResult.getByTestId(`2`))
+
 		teardown()
 	})
 })
+
+describe(`mutable atoms in continuity`, () => {
+	const scenario = () => {
+		const myListAtom = AtomIO.atom<SetRTX<string>, SetRTXJson<string>>({
+			key: `myList`,
+			default: () => new SetRTX<string>(),
+			mutable: true,
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+
+		const addItemTX = AtomIO.transaction<(item: string) => void>({
+			key: `addItem`,
+			do: ({ set }, item) => {
+				set(myListAtom, (list) => list.add(item))
+			},
+		})
+
+		const applicationContinuity = RT.continuity({
+			key: `application`,
+			config: (group) => group.add(myListAtom).add(addItemTX),
+		})
+
+		return Object.assign(
+			RTTest.singleClient({
+				port: 5475,
+				server: ({ socket, enableLogging, silo: { store } }) => {
+					enableLogging()
+					const exposeContinuity = RTS.realtimeContinuitySynchronizer({
+						socket,
+						store,
+					})
+					exposeContinuity(applicationContinuity)
+				},
+				client: () => {
+					RTR.useSyncContinuity(applicationContinuity)
+					const myList = AR.useJSON(myListAtom)
+
+					return <span data-testid={`state`}>{myList.members.length}</span>
+				},
+			}),
+			{ myListAtom, addItemTX },
+		)
+	}
+	test(`mutable initialization`, async () => {
+		const { client, server, teardown, addItemTX, myListAtom } = scenario()
+		const clientApp = client.init()
+		clientApp.enableLogging()
+		await waitFor(() => {
+			throwUntil(clientApp.socket.connected)
+		})
+		const clientState = clientApp.renderResult.getByTestId(`state`)
+		expect(clientState.textContent).toBe(`0`)
+		act(() => {
+			server.silo.runTransaction(addItemTX)(`hello`)
+		})
+		expect(clientApp.renderResult.getByTestId(`state`).textContent).toBe(`0`)
+		await waitFor(() => clientApp.renderResult.getByTestId(`state`).textContent)
+		expect(clientApp.renderResult.getByTestId(`state`).textContent).toBe(`1`)
+
+		const time = performance.now()
+		act(() => {
+			clientApp.silo.runTransaction(addItemTX)(`world`)
+		})
+		await waitFor(() => {
+			throwUntil(() => server.silo.getState(myListAtom).has(`world`))
+		})
+		console.log(`📝 took ${performance.now() - time}ms`)
+		teardown()
+	})
+})
+
+// describe(`join in perspective`, () => {
+// 	const scenario = () => {
+// 		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
+// 		const userActionCountServerState = AtomIO.atom<number>({
+// 			key: `server:userActionCount`,
+// 			default: 0,
+// 		})
+
+// 		const incrementTX = AtomIO.transaction({
+// 			key: `increment`,
+// 			do: ({ set, env }) => {
+// 				const { name } = env().store.config
+// 				if (name === `SERVER`) {
+// 					set(userActionCountServerState, (c) => c + 1)
+// 				}
+// 				set(countState, (c) => c + 1)
+// 			},
+// 		})
+// 		const countContinuity = RT.continuity({
+// 			key: `count`,
+// 			config: (group) => group.add(countState).add(incrementTX),
+// 		})
+
+// 		return RTTest.multiClient({
+// 			port: 5485,
+// 			server: ({ socket, silo: { store } }) => {}
+// 		})
+// })

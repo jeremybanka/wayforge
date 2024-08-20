@@ -7,13 +7,15 @@ import {
 	getEpochNumberOfContinuity,
 	getFromStore,
 	getJsonToken,
+	growMoleculeInStore,
 	ingestTransactionUpdate,
+	initFamilyMemberInStore,
 	isRootStore,
 	setEpochNumberOfContinuity,
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import { type Json, parseJson } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 import {
 	confirmedUpdateQueue,
@@ -33,8 +35,8 @@ export function syncContinuity<F extends Func>(
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
 		socket.off(`continuity-init:${continuityKey}`, initializeContinuity)
 		let i = 0
-		let k: any = ``
-		let v: any = null
+		let k: any
+		let v: any
 		for (const x of payload) {
 			if (i % 2 === 0) {
 				k = x
@@ -316,14 +318,14 @@ export function syncContinuity<F extends Func>(
 
 	socket.on(`reveal:${continuityKey}`, (revealed: Json.Array) => {
 		let i = 0
-		let k: any = ``
-		let v: any = null
+		let k: any
+		let v: any
 		for (const x of revealed) {
 			if (i % 2 === 0) {
 				k = x
 			} else {
 				v = x
-				setIntoStore(k, v, store)
+				upsertState(k, v, store)
 			}
 			i++
 		}
@@ -344,4 +346,24 @@ export function syncContinuity<F extends Func>(
 		for (const unsubscribe of unsubscribeFunctions) unsubscribe()
 		// socket.emit(`unsub:${continuityKey}`)
 	}
+}
+
+function upsertState<T>(
+	store: Store,
+	token: AtomIO.WritableToken<T>,
+	value: T,
+): void {
+	if (token.family) {
+		const family = store.families.get(token.family.key)
+		if (family) {
+			const molecule = store.molecules.get(token.family.subKey)
+			if (molecule) {
+				growMoleculeInStore(molecule, family, store)
+			} else if (store.config.lifespan === `immortal`) {
+				throw new Error(`No molecule found for key "${token.family.subKey}"`)
+			}
+			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
+		}
+	}
+	setIntoStore(store, token, value)
 }

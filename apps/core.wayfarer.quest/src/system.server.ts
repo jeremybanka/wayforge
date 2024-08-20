@@ -62,6 +62,7 @@ pipe(
 			exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
 			const usersInRoomsAtoms = getInternalRelations(RT.usersInRooms)
 			exposeMutableFamily(usersInRoomsAtoms, RT.roomIndex)
+			exposeMutable(findState(usersInRoomsAtoms, username))
 
 			socket.on(`create-room`, async (roomId) => {
 				await runTransaction(RTS.createRoomTX)(roomId, `bun`, [

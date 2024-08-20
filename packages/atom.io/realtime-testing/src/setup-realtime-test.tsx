@@ -3,7 +3,8 @@ import * as http from "node:http"
 import type { RenderResult } from "@testing-library/react"
 import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { editRelationsInStore } from "atom.io/data"
+import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
+import type { Store } from "atom.io/internal"
 import {
 	clearStore,
 	findInStore,
@@ -25,9 +26,27 @@ import { io } from "socket.io-client"
 
 let testNumber = 0
 
+function prefixLogger(store: Store, prefix: string) {
+	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
+		info: (...args) => {
+			console.info(prefix, ...args)
+		},
+		warn: (...args) => {
+			console.warn(prefix, ...args)
+		},
+		error: (...args) => {
+			console.error(prefix, ...args)
+		},
+	})
+}
+
 export type TestSetupOptions = {
 	port: number
-	server: (tools: { socket: SocketIO.Socket; silo: AtomIO.Silo }) => void
+	server: (tools: {
+		socket: SocketIO.Socket
+		silo: AtomIO.Silo
+		enableLogging: () => void
+	}) => void
 }
 export type TestSetupOptions__SingleClient = TestSetupOptions & {
 	client: React.FC
@@ -46,6 +65,7 @@ export type RealtimeTestTools = {
 export type RealtimeTestClient = RealtimeTestTools & {
 	renderResult: RenderResult
 	prettyPrint: () => void
+	enableLogging: () => void
 	socket: ClientSocket
 }
 export type RealtimeTestClientBuilder = {
@@ -56,6 +76,7 @@ export type RealtimeTestClientBuilder = {
 export type RealtimeTestServer = RealtimeTestTools & {
 	dispose: () => void
 	port: number
+	// enableLogging: () => void
 }
 
 export type RealtimeTestAPI = {
@@ -107,7 +128,26 @@ export const setupRealtimeTestServer = (
 	})
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
-		options.server({ socket, silo })
+		let userKey: string | null = null
+		function enableLogging() {
+			const userKeyState = findRelationsInStore(
+				RTS.usersOfSockets,
+				socket.id,
+				silo.store,
+			).userKeyOfSocket
+			userKey = getFromStore(silo.store, userKeyState)
+			prefixLogger(silo.store, `server`)
+			socket.onAny((event, ...args) => {
+				console.log(`🛰 `, userKey, event, ...args)
+			})
+			socket.onAnyOutgoing((event, ...args) => {
+				console.log(`🛰  >>`, userKey, event, ...args)
+			})
+		}
+		options.server({ socket, enableLogging, silo })
+		socket.on(`disconnect`, () => {
+			console.log(`${userKey} disconnected`)
+		})
 	})
 
 	const dispose = () => {
@@ -165,6 +205,16 @@ export const setupRealtimeTestClient = (
 			console.log(prettyDOM(renderResult.container))
 		}
 
+		const enableLogging = () => {
+			prefixLogger(silo.store, name)
+			socket.onAny((event, ...args) => {
+				console.log(`📡 `, name, event, ...args)
+			})
+			socket.onAnyOutgoing((event, ...args) => {
+				console.log(`📡  >>`, name, event, ...args)
+			})
+		}
+
 		const dispose = () => {
 			renderResult.unmount()
 			socket.disconnect()
@@ -178,6 +228,7 @@ export const setupRealtimeTestClient = (
 			socket,
 			renderResult,
 			prettyPrint,
+			enableLogging,
 		}
 	}
 	return Object.assign(testClient, { init })
