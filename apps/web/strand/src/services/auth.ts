@@ -1,8 +1,8 @@
 import * as AtomIO from "atom.io"
-import { lazyLocalStorageEffect } from "atom.io/react-devtools"
+import { persistSync } from "atom.io/web"
 
 export const secretState = AtomIO.atom<string>({
 	key: `secret`,
 	default: ``,
-	effects: [lazyLocalStorageEffect(`secret`)],
+	effects: [persistSync(window.localStorage)(JSON)(`secret`)],
 })
