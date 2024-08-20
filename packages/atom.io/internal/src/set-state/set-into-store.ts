@@ -44,6 +44,9 @@ export function setIntoStore<T, New extends T>(
 				? findInStore(store, family, key)
 				: seekInStore(store, family, key)
 		if (!maybeToken) {
+			const disposed = store.disposalTraces.buffer.find(
+				(item) => item?.key === key,
+			)
 			store.logger.error(
 				`❗`,
 				family.type,
@@ -52,8 +55,10 @@ export function setIntoStore<T, New extends T>(
 				stringifyJson(key),
 				`to`,
 				value,
-				`but it was not found in store`,
-				store.config.name,
+				`but it was not found in store "${store.config.name}".`,
+				disposed
+					? `This state was previously disposed:\n${disposed.trace}`
+					: `No previous disposal trace was found.`,
 			)
 			return
 		}

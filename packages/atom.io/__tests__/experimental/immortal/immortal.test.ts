@@ -30,17 +30,25 @@ beforeEach(() => {
 })
 
 describe(`immortal mode`, () => {
-	test(`implicit initialization with findState is illegal in immortal mode`, () => {
-		const countStates = atomFamily<number, string>({
+	test(`implicit initialization with findState cannot happen in immortal mode`, () => {
+		const countStates = atomFamily<number, number>({
 			key: `count`,
 			default: 0,
 		})
-		expect(() =>
-			findState(countStates, `count`),
-		).toThrowErrorMatchingInlineSnapshot(
-			// eslint-disable-next-line quotes
-			"[Error: Do not use `find` or `findState` in an immortal store. Prefer `seek` or `seekState`.]",
+		expect(findState(countStates, 0)).toStrictEqual({
+			key: `count(0)`,
+			type: `atom`,
+			family: { key: `count`, subKey: `0` },
+			counterfeit: true,
+		})
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom`,
+			`count(0)`,
+			`was not found in store "IMPLICIT_STORE"; returned a counterfeit token.`,
 		)
+		expect(Internal.IMPLICIT.STORE.atoms.get(`count(0)`)).toBeUndefined()
+		expect(Internal.IMPLICIT.STORE.valueMap.get(`count(0)`)).toBeUndefined()
 	})
 	test(`safe initialization of state with Molecule`, () => {
 		const world = makeRootMolecule(`world`)
@@ -94,8 +102,8 @@ describe(`immortal mode`, () => {
 			`count`,
 			`tried to get member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 		setState(countStates, `nonexistent`, 1)
 		expect(logger.error).toHaveBeenLastCalledWith(
@@ -106,8 +114,8 @@ describe(`immortal mode`, () => {
 			`"nonexistent"`,
 			`to`,
 			1,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 		expect(getState(countStates, `nonexistent`)).toBe(0)
 		expect(logger.error).toHaveBeenLastCalledWith(
@@ -116,8 +124,8 @@ describe(`immortal mode`, () => {
 			`count`,
 			`tried to get member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 		disposeState(countStates, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
@@ -126,8 +134,8 @@ describe(`immortal mode`, () => {
 			`count`,
 			`tried to dispose of member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 
 		const doubleStates = selectorFamily<number, string>({
@@ -152,8 +160,8 @@ describe(`immortal mode`, () => {
 			`double`,
 			`tried to get member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 		disposeState(doubleStates, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
@@ -162,8 +170,8 @@ describe(`immortal mode`, () => {
 			`double`,
 			`tried to dispose of member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 
 		const factorialStates = selectorFamily<number, string>({
@@ -187,8 +195,8 @@ describe(`immortal mode`, () => {
 			`factorial`,
 			`tried to get member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 		disposeState(factorialStates, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
@@ -197,8 +205,8 @@ describe(`immortal mode`, () => {
 			`factorial`,
 			`tried to dispose of member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 
 		const counterMolecules = moleculeFamily({
@@ -224,13 +232,43 @@ describe(`immortal mode`, () => {
 			`counter`,
 			`tried to dispose of member`,
 			`"nonexistent"`,
-			`but it was not found in store`,
-			`IMPLICIT_STORE`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+			`No previous disposal trace was found.`,
 		)
 
 		const root = makeRootMolecule(`root`)
 		makeMolecule(root, counterMolecules, `does exist`)
 		expect(() => getState(counterMolecules, `does exist`)).not.toThrowError()
+		setState(countStates, `does exist`, 3)
+		expect(getState(countStates, `does exist`)).toBe(3)
+		expect(getState(factorialStates, `does exist`)).toBe(6)
+
+		disposeState(counterMolecules, `does exist`)
+		expect(() => getState(counterMolecules, `does exist`)).toThrowError(
+			`Molecule Family "counter" member "does exist" not found in store "IMPLICIT_STORE".`,
+		)
+
+		expect(getState(countStates, `does exist`)).toBe(0)
+		expect((logger.error as any).mock.calls.at(-1).at(-1)).toContain(
+			import.meta.filename,
+		)
+		expect((logger.error as any).mock.calls.at(-1).slice(0, -1)).toEqual([
+			`❗`,
+			`atom_family`,
+			`count`,
+			`tried to get member`,
+			`"does exist"`,
+			`but it was not found in store "IMPLICIT_STORE".`,
+		])
+
+		setState(countStates, `does exist`, 3)
+		expect((logger.error as any).mock.calls.at(-1).at(-1)).toContain(
+			import.meta.filename,
+		)
+		disposeState(counterMolecules, `does exist`)
+		expect((logger.error as any).mock.calls.at(-1).at(-1)).toContain(
+			import.meta.filename,
+		)
 	})
 })
 

@@ -109,6 +109,20 @@ export function deposit(
 	| MoleculeToken<any>
 	| ReadableFamilyToken<any, any>
 	| ReadableToken<any>
+	| TransactionToken<Func>
+
+export function deposit(
+	state:
+		| Molecule<any>
+		| MoleculeFamily<any>
+		| ReadableFamily<any, any>
+		| ReadableState<any>
+		| Transaction<Func>,
+):
+	| MoleculeFamilyToken<any>
+	| MoleculeToken<any>
+	| ReadableFamilyToken<any, any>
+	| ReadableToken<any>
 	| TransactionToken<Func> {
 	const token = {
 		key: state.key,

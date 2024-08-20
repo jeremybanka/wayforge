@@ -9,6 +9,7 @@ import type {
 import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
+import { growMoleculeInStore } from "../molecule"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -63,21 +64,38 @@ export function getFromStore(
 	} else {
 		const family = params[0]
 		const key = params[1]
-		const maybeToken =
-			family.type === `molecule_family`
-				? seekInStore(store, family, key)
-				: store.config.lifespan === `immortal`
-					? seekInStore(store, family, key)
-					: findInStore(store, family, key)
+		let maybeToken: MoleculeToken<any> | ReadableToken<any> | undefined
+		if (family.type === `molecule_family`) {
+			maybeToken = seekInStore(store, family, key)
+		} else {
+			if (store.config.lifespan === `immortal`) {
+				maybeToken = seekInStore(store, family, key)
+			} else {
+				maybeToken = findInStore(store, family, key)
+			}
+		}
 		if (!maybeToken) {
+			if (family.type !== `molecule_family`) {
+				const molecule = store.molecules.get(stringifyJson(key))
+				if (molecule) {
+					maybeToken = growMoleculeInStore(molecule, family, store)
+				}
+			}
+		}
+		if (!maybeToken) {
+			const disposed = store.disposalTraces.buffer.find(
+				(item) => item?.key === key,
+			)
 			store.logger.error(
 				`❗`,
 				family.type,
 				family.key,
 				`tried to get member`,
 				stringifyJson(key),
-				`but it was not found in store`,
-				store.config.name,
+				`but it was not found in store "${store.config.name}".`,
+				disposed
+					? `This state was previously disposed:\n${disposed.trace}`
+					: `No previous disposal trace was found.`,
 			)
 			switch (family.type) {
 				case `atom_family`:
