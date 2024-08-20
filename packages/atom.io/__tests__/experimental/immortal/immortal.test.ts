@@ -31,16 +31,16 @@ beforeEach(() => {
 
 describe(`immortal mode`, () => {
 	test(`implicit initialization with findState is illegal in immortal mode`, () => {
-		const countStates = atomFamily<number, string>({
+		const countStates = atomFamily<number, number>({
 			key: `count`,
 			default: 0,
 		})
-		expect(() =>
-			findState(countStates, `count`),
-		).toThrowErrorMatchingInlineSnapshot(
-			// eslint-disable-next-line quotes
-			"[Error: Do not use `find` or `findState` in an immortal store. Prefer `seek` or `seekState`.]",
-		)
+		expect(findState(countStates, 0)).toStrictEqual({
+			key: `count(0)`,
+			type: `atom`,
+			family: { key: `count`, subKey: `0` },
+			counterfeit: true,
+		})
 	})
 	test(`safe initialization of state with Molecule`, () => {
 		const world = makeRootMolecule(`world`)
