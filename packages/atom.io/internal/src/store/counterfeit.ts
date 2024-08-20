@@ -25,6 +25,14 @@ import { stringifyJson } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
 
+export const FAMILY_MEMBER_TOKEN_TYPES = {
+	atom_family: `atom`,
+	mutable_atom_family: `mutable_atom`,
+	selector_family: `selector`,
+	readonly_selector_family: `readonly_selector`,
+	molecule_family: `molecule`,
+} as const
+
 export function counterfeit<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
@@ -78,29 +86,7 @@ export function counterfeit(
 ): MoleculeToken<any> | ReadableToken<any> {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
-	let type:
-		| `atom`
-		| `molecule`
-		| `mutable_atom`
-		| `readonly_selector`
-		| `selector`
-	switch (token.type) {
-		case `atom_family`:
-			type = `atom`
-			break
-		case `mutable_atom_family`:
-			type = `mutable_atom`
-			break
-		case `selector_family`:
-			type = `selector`
-			break
-		case `readonly_selector_family`:
-			type = `readonly_selector`
-			break
-		case `molecule_family`:
-			type = `molecule`
-			break
-	}
+	const type = FAMILY_MEMBER_TOKEN_TYPES[token.type]
 	const stateToken = {
 		key: fullKey,
 		type,
