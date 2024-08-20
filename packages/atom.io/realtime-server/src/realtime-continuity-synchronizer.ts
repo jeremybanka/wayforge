@@ -8,6 +8,7 @@ import {
 	getUpdateToken,
 	IMPLICIT,
 	isRootStore,
+	setIntoStore,
 	subscribeToState,
 	subscribeToTransaction,
 } from "atom.io/internal"
@@ -63,17 +64,23 @@ export function realtimeContinuitySynchronizer({
 					`seeing ${userKey} on new socket ${newSocketKey}`,
 				)
 				if (newSocketKey === null) {
-					store.logger.error(
+					store.logger.warn(
 						`❌`,
 						`continuity`,
 						continuityKey,
-						`Tried to create a synchronizer for a user (${userKey}) that is not connected to a socket.`,
+						`User (${userKey}) is not connected to a socket, waiting for them to reappear.`,
 					)
 					return
 				}
 				const newSocketState = findInStore(store, socketAtoms, newSocketKey)
 				const newSocket = getFromStore(store, newSocketState)
 				socket = newSocket
+				for (const unacknowledgedUpdate of userUnacknowledgedUpdates) {
+					socket?.emit(
+						`tx-new:${continuityKey}`,
+						unacknowledgedUpdate as Json.Serializable,
+					)
+				}
 			},
 			`sync-continuity:${continuityKey}:${userKey}`,
 			store,
@@ -213,17 +220,13 @@ export function realtimeContinuitySynchronizer({
 								...update,
 								updates: redactedUpdates,
 							}
-							// setIntoStore(
-							// 	userUnacknowledgedQueue,
-							// 	(updates) => {
-							// 		if (redactedUpdate) {
-							// 			updates.push(redactedUpdate)
-							// 			updates.sort((a, b) => a.epoch - b.epoch)
-							// 		}
-							// 		return updates
-							// 	},
-							// 	store,
-							// )
+							setIntoStore(store, userUnacknowledgedQueue, (updates) => {
+								if (redactedUpdate) {
+									updates.push(redactedUpdate)
+									updates.sort((a, b) => a.epoch - b.epoch)
+								}
+								return updates
+							})
 
 							socket?.emit(
 								`tx-new:${continuityKey}`,
@@ -311,73 +314,27 @@ export function realtimeContinuitySynchronizer({
 		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
 		socket.on(`tx-run:${continuityKey}`, fillTransactionRequest)
 
-		// let i = 0
-		// let n = 1
-		// let retryTimeout: NodeJS.Timeout | undefined
-		// const trackClientAcknowledgement = (epoch: number) => {
-		// 	store.logger.info(
-		// 		`👍`,
-		// 		`continuity`,
-		// 		continuityKey,
-		// 		`${userKey} acknowledged epoch ${epoch}`,
-		// 	)
-		// 	const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
-		// 	if (isUnacknowledged) {
-		// 		setIntoStore(
-		// 			userUnacknowledgedQueue,
-		// 			(updates) => {
-		// 				updates.shift()
-		// 				return updates
-		// 			},
-		// 			store,
-		// 		)
-		// 	}
-		// }
-		// subscribeToState(
-		// 	userUnacknowledgedQueue,
-		// 	({ newValue }) => {
-		// 		if (newValue.length === 0) {
-		// 			clearInterval(retryTimeout)
-		// 			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
-		// 			retryTimeout = undefined
-		// 		}
-		// 		if (newValue.length > 0) {
-		// 			if (retryTimeout) {
-		// 				return
-		// 			}
-
-		// 			socket?.on(`ack:${continuityKey}`, trackClientAcknowledgement)
-
-		// 			retryTimeout = setInterval(() => {
-		// 				i++
-		// 				if (i === n) {
-		// 					n += i
-		// 					const toEmit = newValue[0]
-		// 					if (!toEmit) return
-		// 					store.logger.info(
-		// 						`🔄`,
-		// 						`continuity`,
-		// 						continuityKey,
-		// 						`${store.config.name} retrying ${userKey}`,
-		// 						socket?.id,
-		// 						newValue,
-		// 					)
-		// 					socket?.emit(
-		// 						`tx-new:${continuityKey}`,
-		// 						toEmit as Json.Serializable,
-		// 					)
-		// 				}
-		// 			}, 250)
-		// 		}
-		// 	},
-		// 	`sync-continuity:${continuityKey}:${userKey}`,
-		// 	store,
-		// )
+		const trackClientAcknowledgement = (epoch: number) => {
+			store.logger.info(
+				`👍`,
+				`continuity`,
+				continuityKey,
+				`${userKey} acknowledged epoch ${epoch}`,
+			)
+			const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
+			if (isUnacknowledged) {
+				setIntoStore(store, userUnacknowledgedQueue, (updates) => {
+					updates.shift()
+					return updates
+				})
+			}
+		}
+		socket?.on(`ack:${continuityKey}`, trackClientAcknowledgement)
 
 		return () => {
 			// clearInterval(retryTimeout)
 			for (const unsubscribe of unsubscribeFunctions) unsubscribe()
-			// socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
+			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
 			unsubscribeFromPerspectives()
 			socket?.off(`get:${continuityKey}`, sendInitialPayload)
 			socket?.off(`tx-run:${continuityKey}`, fillTransactionRequest)

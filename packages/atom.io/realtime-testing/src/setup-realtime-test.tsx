@@ -76,6 +76,7 @@ export type RealtimeTestClientBuilder = {
 export type RealtimeTestServer = RealtimeTestTools & {
 	dispose: () => void
 	port: number
+	// enableLogging: () => void
 }
 
 export type RealtimeTestAPI = {
@@ -127,13 +128,14 @@ export const setupRealtimeTestServer = (
 	})
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
+		let userKey: string | null = null
 		function enableLogging() {
 			const userKeyState = findRelationsInStore(
 				RTS.usersOfSockets,
 				socket.id,
 				silo.store,
 			).userKeyOfSocket
-			const userKey = getFromStore(silo.store, userKeyState)
+			userKey = getFromStore(silo.store, userKeyState)
 			prefixLogger(silo.store, `server`)
 			socket.onAny((event, ...args) => {
 				console.log(`🛰 `, userKey, event, ...args)
@@ -143,6 +145,9 @@ export const setupRealtimeTestServer = (
 			})
 		}
 		options.server({ socket, enableLogging, silo })
+		socket.on(`disconnect`, () => {
+			console.log(`${userKey} disconnected`)
+		})
 	})
 
 	const dispose = () => {
