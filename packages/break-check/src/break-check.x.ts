@@ -3,6 +3,7 @@
 import * as path from "node:path"
 
 import { breakCheck } from "break-check"
+import { stdout } from "bun"
 import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
@@ -69,20 +70,29 @@ if (positionalArgs.length === 0) {
 		console: true,
 		stdout: true,
 	})
-	process.stdout.write(JSON.stringify(returnValue))
+	if (`testResult` in returnValue && returnValue.breakingChangesFound) {
+		process.stdout.write(returnValue.testResult)
+	}
 	if (`breakingChangesFound` in returnValue) {
 		if (returnValue.breakingChangesFound) {
 			if (returnValue.breakingChangesCertified) {
+				process.stdout.write(`👷 Breaking changes were found and certified.`)
 				process.exit(0)
 			} else {
+				process.stdout.write(
+					`❌ Breaking changes were found, but not certified.`,
+				)
 				process.exit(1)
 			}
 		} else {
+			process.stdout.write(`✅ No breaking changes were found.`)
 			process.exit(0)
 		}
 	} else {
+		process.stdout.write(`💥 Break check failed to determine breaking changes.`)
 		process.exit(2)
 	}
 } else if (positionalArgs[0] === `schema`) {
 	writeJsonSchema(`break-check.schema.json`)
+	process.stdout.write(`📝 Wrote schema to break-check.schema.json`)
 }
