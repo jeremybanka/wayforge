@@ -1,5 +1,5 @@
 ---
-"atom.io": patch
+"atom.io": minor
 ---
 
 ✨ `atom.io/immortal` now permits `findState`. Though, it may return a `counterfeit` token.
