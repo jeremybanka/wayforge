@@ -40,26 +40,22 @@ export function setIntoStore<T, New extends T>(
 		const key = params[1]
 		value = params[2]
 		const maybeToken = findInStore(store, family, key)
-		if (`counterfeit` in maybeToken) {
-			const disposal = store.disposalTraces.buffer.find(
-				(item) => item?.key === key,
-			)
-			store.logger.error(
-				`❗`,
-				family.type,
-				family.key,
-				`tried to set member`,
-				stringifyJson(key),
-				`to`,
-				value,
-				`but it was not found in store "${store.config.name}".`,
-				disposal
-					? `This state was previously disposed:\n${disposal.trace}`
-					: `No previous disposal trace was found.`,
-			)
-			return
-		}
 		token = maybeToken
+	}
+	if (`counterfeit` in token) {
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === token.key,
+		)
+		store.logger.error(
+			`❌`,
+			token.type,
+			token.key,
+			`could not be set because it was not found in the store "${store.config.name}".`,
+			disposal
+				? `This state was previously disposed:\n${disposal.trace}`
+				: `No previous disposal trace was found.`,
+		)
+		return
 	}
 
 	const rejectionTime = openOperation(token, store)

@@ -11,7 +11,7 @@ import { type Canonical, stringifyJson } from "atom.io/json"
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
-import { withdraw } from "../store"
+import { counterfeit, withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
 export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
@@ -63,45 +63,49 @@ export function getFromStore(
 	} else {
 		const family = params[0]
 		const key = params[1]
-		let maybeToken: MoleculeToken<any> | ReadableToken<any> | undefined
+		let maybeToken: MoleculeToken<any> | ReadableToken<any>
 		if (family.type === `molecule_family`) {
-			maybeToken = seekInStore(store, family, key)
+			maybeToken = seekInStore(store, family, key) ?? counterfeit(family, key)
 		} else {
 			maybeToken = findInStore(store, family, key)
 		}
-		if (!maybeToken || `counterfeit` in maybeToken) {
-			const disposal = store.disposalTraces.buffer.find(
-				(item) => item?.key === key,
-			)
-			store.logger.error(
-				`❗`,
-				family.type,
-				family.key,
-				`tried to get member`,
-				stringifyJson(key),
-				`but it was not found in store "${store.config.name}".`,
-				disposal
-					? `This state was previously disposed:\n${disposal.trace}`
-					: `No previous disposal trace was found.`,
-			)
-			switch (family.type) {
-				case `atom_family`:
-				case `mutable_atom_family`:
-					return store.defaults.get(family.key)
-				case `selector_family`:
-				case `readonly_selector_family`: {
-					if (store.defaults.has(family.key)) {
-						return store.defaults.get(family.key)
-					}
-					const defaultValue = withdraw(family, store).default(key)
-					store.defaults.set(family.key, defaultValue)
-					return defaultValue
-				}
-				case `molecule_family`:
-					throw new NotFoundError(family, key, store)
-			}
-		}
 		token = maybeToken
+	}
+	if (`counterfeit` in token && `family` in token) {
+		const family =
+			token.type === `molecule`
+				? withdraw(token.family, store)
+				: // biome-ignore lint/style/noNonNullAssertion: family must be present
+					store.families.get(token.family.key)!
+		const subKey = token.type === `molecule` ? token.key : token.family.subKey
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === token.key,
+		)
+		store.logger.error(
+			`❌`,
+			token.type,
+			token.key,
+			`could not be retrieved because it was not found in the store "${store.config.name}".`,
+			disposal
+				? `This state was previously disposed:\n${disposal.trace}`
+				: `No previous disposal trace was found.`,
+		)
+		switch (family.type) {
+			case `atom_family`:
+			case `mutable_atom_family`:
+				return store.defaults.get(family.key)
+			case `selector_family`:
+			case `readonly_selector_family`: {
+				if (store.defaults.has(family.key)) {
+					return store.defaults.get(token.family.key)
+				}
+				const defaultValue = withdraw(family, store).default(subKey)
+				store.defaults.set(family.key, defaultValue)
+				return defaultValue
+			}
+			case `molecule_family`:
+				throw new NotFoundError(family, subKey, store)
+		}
 	}
 	switch (token.type) {
 		case `atom`:

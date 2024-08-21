@@ -86,12 +86,6 @@ describe(`disposeState`, () => {
 		disposeState(countState)
 		disposeState(countState)
 		expect(logger.error).toHaveBeenCalledTimes(1)
-		expect(logger.error).toHaveBeenCalledWith(
-			`❌`,
-			`atom`,
-			`count("my-key")`,
-			`Tried to dispose atom, but it does not exist in the store.`,
-		)
 	})
 
 	it(`does not delete a standalone selector`, () => {

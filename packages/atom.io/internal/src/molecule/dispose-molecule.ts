@@ -3,7 +3,6 @@ import type {
 	MoleculeDisposal,
 	MoleculeToken,
 } from "atom.io"
-import { parseJson } from "atom.io/json"
 
 import { disposeFromStore } from "../families"
 import type { Store } from "../store"
@@ -16,20 +15,7 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 	store: Store,
 ): void {
 	let molecule: Molecule<M>
-	try {
-		molecule = withdraw(token, store)
-	} catch (thrown) {
-		if (thrown instanceof Error) {
-			store.logger.error(
-				`🐞`,
-				`molecule`,
-				JSON.stringify(token.key),
-				`Failed to dispose molecule, because it was not found in the store.`,
-				thrown.message,
-			)
-		}
-		return
-	}
+	molecule = withdraw(token, store)
 	const { family } = token
 
 	for (const join of molecule.joins.values()) {

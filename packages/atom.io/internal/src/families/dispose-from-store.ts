@@ -6,12 +6,12 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import { type Canonical, stringifyJson } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
 import { disposeMolecule } from "../molecule/dispose-molecule"
 import { disposeSelector } from "../selector"
-import type { Store } from "../store"
+import { counterfeit, type Store, withdraw } from "../store"
 import { findInStore } from "./find-in-store"
 import { seekInStore } from "./seek-in-store"
 
@@ -40,33 +40,40 @@ export function disposeFromStore(
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 ): void {
 	let token: MoleculeToken<any> | ReadableToken<any>
+	let fullKey: string
 	if (params.length === 1) {
 		token = params[0]
+		fullKey = token.key
 	} else {
 		const family = params[0]
 		const key = params[1]
 		const maybeToken =
 			family.type === `molecule_family`
-				? seekInStore(store, family, key)
+				? seekInStore(store, family, key) ?? counterfeit(family, key)
 				: findInStore(store, family, key)
-		if (!maybeToken || `counterfeit` in maybeToken) {
-			const disposal = store.disposalTraces.buffer.find(
-				(item) => item?.key === key,
-			)
-			store.logger.error(
-				`❗`,
-				family.type,
-				family.key,
-				`tried to dispose of member`,
-				stringifyJson(key),
-				`but it was not found in store "${store.config.name}".`,
-				disposal
-					? `This state was previously disposed:\n${disposal.trace}`
-					: `No previous disposal trace was found.`,
-			)
-			return
-		}
 		token = maybeToken
+	}
+	try {
+		withdraw(token, store)
+	} catch (thrown) {
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === token.key,
+		)
+		console.log(
+			`seeking disposal trace for`,
+			token,
+			store.disposalTraces.buffer.filter(Boolean),
+		)
+		store.logger.error(
+			`❌`,
+			token.type,
+			token.key,
+			`could not be disposed because it was not found in the store "${store.config.name}".`,
+			disposal
+				? `\n   This state was most recently disposed\n${disposal.trace}`
+				: `No previous disposal trace was found.`,
+		)
+		return
 	}
 	switch (token.type) {
 		case `atom`:
@@ -86,5 +93,6 @@ export function disposeFromStore(
 	if (stack) {
 		const trace = stack?.split(`\n`)?.slice(3)?.join(`\n`)
 		store.disposalTraces.add({ key: token.key, trace })
+		console.log(`added`, token)
 	}
 }

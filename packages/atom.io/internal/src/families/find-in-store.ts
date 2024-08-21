@@ -93,7 +93,7 @@ export function findInStore(
 	if (store.config.lifespan === `immortal`) {
 		const fakeToken = counterfeit(token, key)
 		store.logger.error(
-			`❗`,
+			`❌`,
 			fakeToken.type,
 			fakeToken.key,
 			`was not found in store "${store.config.name}"; returned a counterfeit token.`,
