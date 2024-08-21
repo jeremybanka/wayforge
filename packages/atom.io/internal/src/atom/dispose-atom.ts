@@ -12,15 +12,8 @@ import {
 export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 	const target = newest(store)
 	const { key } = atomToken
-	const atom = target.atoms.get(key)
-	if (!atom) {
-		store.logger.error(
-			`❌`,
-			`atom`,
-			key,
-			`Tried to dispose atom, but it does not exist in the store.`,
-		)
-	} else if (!atom.family) {
+	const atom = withdraw(atomToken, target)
+	if (!atom.family) {
 		store.logger.error(`❌`, `atom`, key, `Standalone atoms cannot be disposed.`)
 	} else {
 		atom.cleanup?.()
