@@ -3,6 +3,7 @@ import type {
 	MoleculeDisposal,
 	MoleculeToken,
 } from "atom.io"
+import { parseJson } from "atom.io/json"
 
 import { disposeFromStore } from "../families"
 import type { Store } from "../store"
@@ -30,6 +31,11 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 		return
 	}
 	const { family } = token
+
+	for (const join of molecule.joins.values()) {
+		join.relations.delete(molecule.key)
+		join.molecules.delete(molecule.stringKey)
+	}
 
 	const context: MoleculeToken<any>[] = []
 	for (const above of molecule.above.values()) {
@@ -79,9 +85,6 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 		store.molecules.delete(molecule.stringKey)
 	}
 
-	for (const join of molecule.joins.values()) {
-		join.molecules.delete(molecule.stringKey)
-	}
 	for (const parent of molecule.above.values()) {
 		parent.below.delete(molecule.stringKey)
 	}

@@ -359,6 +359,10 @@ describe(`immortal integrations`, () => {
 
 		disposeState(itemMolecule)
 
+		expect(
+			getState(findRelations(holdersOfItems, `holder-0`).itemKeysOfHolder),
+		).toEqual([])
+
 		expect(internalJoin.molecules.size).toBe(1)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
 
