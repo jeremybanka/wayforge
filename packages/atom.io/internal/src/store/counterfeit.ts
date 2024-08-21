@@ -91,7 +91,12 @@ export function counterfeit(
 		key: fullKey,
 		type,
 	} satisfies MoleculeToken<any> | ReadableToken<any>
-	if (type !== `molecule`) {
+	if (type === `molecule`) {
+		Object.assign(stateToken, {
+			key,
+			family: token,
+		})
+	} else {
 		Object.assign(stateToken, {
 			family: {
 				key: token.key,

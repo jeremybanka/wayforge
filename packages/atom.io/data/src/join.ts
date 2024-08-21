@@ -416,11 +416,9 @@ export class Join<
 				key: `${options.key}/content-molecules`,
 				new: class ContentMolecule {
 					public constructor(
-						toolkit: CtorToolkit<string>,
+						_: CtorToolkit<string>,
 						public key: string,
-					) {
-						toolkit.bond(joinToken, { as: null } as any)
-					}
+					) {}
 				},
 			})
 			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>

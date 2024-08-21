@@ -15,21 +15,13 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 	store: Store,
 ): void {
 	let molecule: Molecule<M>
-	try {
-		molecule = withdraw(token, store)
-	} catch (thrown) {
-		if (thrown instanceof Error) {
-			store.logger.error(
-				`🐞`,
-				`molecule`,
-				JSON.stringify(token.key),
-				`Failed to dispose molecule, because it was not found in the store.`,
-				thrown.message,
-			)
-		}
-		return
-	}
+	molecule = withdraw(token, store)
 	const { family } = token
+
+	for (const join of molecule.joins.values()) {
+		join.relations.delete(molecule.key)
+		join.molecules.delete(molecule.stringKey)
+	}
 
 	const context: MoleculeToken<any>[] = []
 	for (const above of molecule.above.values()) {
@@ -79,9 +71,6 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 		store.molecules.delete(molecule.stringKey)
 	}
 
-	for (const join of molecule.joins.values()) {
-		join.molecules.delete(molecule.stringKey)
-	}
 	for (const parent of molecule.above.values()) {
 		parent.below.delete(molecule.stringKey)
 	}

@@ -42,7 +42,7 @@ describe(`immortal mode`, () => {
 			counterfeit: true,
 		})
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
+			`❌`,
 			`atom`,
 			`count(0)`,
 			`was not found in store "IMPLICIT_STORE"; returned a counterfeit token.`,
@@ -97,44 +97,34 @@ describe(`immortal mode`, () => {
 
 		expect(getState(countStates, `nonexistent`)).toBe(0)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`atom_family`,
-			`count`,
-			`tried to get member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`atom`,
+			`count("nonexistent")`,
+			`could not be retrieved because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 		setState(countStates, `nonexistent`, 1)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`atom_family`,
-			`count`,
-			`tried to set member`,
-			`"nonexistent"`,
-			`to`,
-			1,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`atom`,
+			`count("nonexistent")`,
+			`could not be set because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 		expect(getState(countStates, `nonexistent`)).toBe(0)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`atom_family`,
-			`count`,
-			`tried to get member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`atom`,
+			`count("nonexistent")`,
+			`could not be retrieved because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 		disposeState(countStates, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`atom_family`,
-			`count`,
-			`tried to dispose of member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`atom`,
+			`count("nonexistent")`,
+			`could not be disposed because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 
@@ -155,22 +145,18 @@ describe(`immortal mode`, () => {
 		expect(Internal.IMPLICIT.STORE.defaults.get(doubleStates.key)).toBe(0)
 		expect(getState(doubleStates, `nonexistent`)).toBe(0) // cover the cache
 		expect(logger.error).toHaveBeenCalledWith(
-			`❗`,
-			`selector_family`,
-			`double`,
-			`tried to get member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`selector`,
+			`double("nonexistent")`,
+			`could not be retrieved because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 		disposeState(doubleStates, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`selector_family`,
-			`double`,
-			`tried to dispose of member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`selector`,
+			`double("nonexistent")`,
+			`could not be disposed because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 
@@ -190,22 +176,18 @@ describe(`immortal mode`, () => {
 
 		expect(getState(factorialStates, `nonexistent`)).toBe(1)
 		expect(logger.error).toHaveBeenCalledWith(
-			`❗`,
-			`readonly_selector_family`,
-			`factorial`,
-			`tried to get member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`readonly_selector`,
+			`factorial("nonexistent")`,
+			`could not be retrieved because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 		disposeState(factorialStates, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`readonly_selector_family`,
-			`factorial`,
-			`tried to dispose of member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`readonly_selector`,
+			`factorial("nonexistent")`,
+			`could not be disposed because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 
@@ -227,12 +209,10 @@ describe(`immortal mode`, () => {
 		)
 		disposeState(counterMolecules, `nonexistent`)
 		expect(logger.error).toHaveBeenLastCalledWith(
-			`❗`,
-			`molecule_family`,
-			`counter`,
-			`tried to dispose of member`,
-			`"nonexistent"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`molecule`,
+			`nonexistent`,
+			`could not be disposed because it was not found in the store "IMPLICIT_STORE".`,
 			`No previous disposal trace was found.`,
 		)
 
@@ -253,12 +233,10 @@ describe(`immortal mode`, () => {
 			import.meta.filename,
 		)
 		expect((logger.error as any).mock.calls.at(-1).slice(0, -1)).toEqual([
-			`❗`,
-			`atom_family`,
-			`count`,
-			`tried to get member`,
-			`"does exist"`,
-			`but it was not found in store "IMPLICIT_STORE".`,
+			`❌`,
+			`atom`,
+			`count("does exist")`,
+			`could not be retrieved because it was not found in the store "IMPLICIT_STORE".`,
 		])
 
 		setState(countStates, `does exist`, 3)

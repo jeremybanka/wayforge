@@ -155,19 +155,24 @@ export function withdraw<T>(
 	token: TimelineToken<T>,
 	store: Store,
 ): Timeline<T extends TimelineManageable ? T : never>
-export function withdraw<T>(
+
+export function withdraw<T, M extends MoleculeConstructor>(
+	token: MoleculeToken<M> | ReadableToken<T>,
+	store: Store,
+): Molecule<M> | ReadableState<T>
+
+export function withdraw(
 	token:
 		| MoleculeFamilyToken<any>
 		| MoleculeToken<any>
-		| RegularAtomFamilyToken<T, any>
-		| RegularAtomToken<T>
-		| SelectorFamilyToken<T, any>
-		| SelectorToken<T>
-		| TimelineToken<T>
-		| TransactionToken<T extends Func ? T : never>
-		| (T extends Transceiver<any>
-				? MutableAtomFamilyToken<T, any, any> | MutableAtomToken<T, any>
-				: never),
+		| MutableAtomFamilyToken<any, any, any>
+		| MutableAtomToken<any, any>
+		| RegularAtomFamilyToken<any, any>
+		| RegularAtomToken<any>
+		| SelectorFamilyToken<any, any>
+		| SelectorToken<any>
+		| TimelineToken<any>
+		| TransactionToken<any>,
 	store: Store,
 ): Withdrawable {
 	let withdrawn: Withdrawable | undefined

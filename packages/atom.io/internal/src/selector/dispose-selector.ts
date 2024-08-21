@@ -9,15 +9,8 @@ export function disposeSelector(
 ): void {
 	const target = newest(store)
 	const { key } = selectorToken
-	const selector = target.selectors.get(key) ?? target.readonlySelectors.get(key)
-	if (!selector) {
-		store.logger.info(
-			`❌`,
-			`selector`,
-			key,
-			`Tried to dispose selector, but it does not exist in the store.`,
-		)
-	} else if (!selector.family) {
+	const selector = withdraw(selectorToken, target)
+	if (!selector.family) {
 		store.logger.error(
 			`❌`,
 			`selector`,
