@@ -10,12 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"bin",
-		"dist",
-		"src",
-		"break-check.schema.json"
-	],
+	"files": ["bin", "dist", "src", "break-check.schema.json"],
 	"main": "dist/break-check.js",
 	"types": "dist/break-check.d.ts",
 	"bin": {
