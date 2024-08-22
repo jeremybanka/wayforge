@@ -1,5 +1,25 @@
 # atom.io
 
+## 0.28.0
+
+### Minor Changes
+
+- b10961b: ✨ `atom.io/immortal` now permits `findState`. Though, it may return a `counterfeit` token.
+
+  - A `counterfeit` token is a reference to a state that is not actually created in the store, but does belong to a real family that is known to the store.
+  - We create a counterfeit token when we attempt to `findState`, but we are not permitted to initialize the state we need to find. This can happen in `immortal` stores, where we cannot create free-floating states, but must have previously reserved space for them using the `moleculeFamily` function.
+  - Counterfeit is the best of several undesirable options where we cannot return a real token:
+    - We could throw an error. This is not preferred because it can lead to unstable production environments and frustrating developer environments.
+    - We could return `undefined`. This is not preferred because it overwhelms the developer with constant null checks in situations where the state is practically guaranteed to exist.
+    - We can return a functional facsimile (a counterfeit) and log a detailed warning. We prefer this option because it will bring undefined behavior to the developer's attention without demanding their immediate attention.
+
+### Patch Changes
+
+- 20b213f: 🐛 (experimental) `atom.io/realtime` upcoming `continuity` model handles mutable atoms better.
+- 20b213f: ✨ `Silo` adds the `runTransaction` method.
+- b10961b: ✨ Stack traces are now provided when attempting to get, set, or dispose a previously disposed state. These traces point to line of code responsible for last-known disposal of the state in question.
+- b10961b: 🎁 `atom.io/web` Provides platform-specific tools for the browser. ✨ The first such tool is the new `persistSync` function! This function returns an `AtomEffect` that can be used to sync your state to the browser's `window.localStorage` or `window.sessionStorage`.
+
 ## 0.27.5
 
 ### Patch Changes

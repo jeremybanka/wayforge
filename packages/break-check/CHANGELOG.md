@@ -1,5 +1,11 @@
 # break-check
 
+## 0.6.3
+
+### Patch Changes
+
+- d8749a8: 💬 The logged output from `break-check`'s CLI is now much easier to read.
+
 ## 0.6.2
 
 ### Patch Changes
