@@ -93,6 +93,5 @@ export function disposeFromStore(
 	if (stack) {
 		const trace = stack?.split(`\n`)?.slice(3)?.join(`\n`)
 		store.disposalTraces.add({ key: token.key, trace })
-		console.log(`added`, token)
 	}
 }
