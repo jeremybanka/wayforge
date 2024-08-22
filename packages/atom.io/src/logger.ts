@@ -85,6 +85,7 @@ export type Logger = Record<LogLevel, LogFn>
 export const simpleLog =
 	(logLevel: keyof Logger): LogFn =>
 	(icon, denomination, tokenKey, message, ...rest) => {
+		/* eslint-disable-next-line no-console */
 		console[logLevel](
 			`${icon} ${denomination} "${tokenKey}" ${message}`,
 			...rest,

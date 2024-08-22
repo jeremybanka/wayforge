@@ -26,6 +26,8 @@ import { io } from "socket.io-client"
 
 let testNumber = 0
 
+/* eslint-disable no-console */
+
 function prefixLogger(store: Store, prefix: string) {
 	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
 		info: (...args) => {

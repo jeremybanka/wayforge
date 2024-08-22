@@ -7,6 +7,8 @@ import type { Func } from "atom.io/internal"
 import { discoverType, prettyJson } from "atom.io/introspection"
 import * as React from "react"
 
+/* eslint-disable no-console */
+
 const AtomUpdateFC: React.FC<{
 	serialNumber: number
 	atomUpdate: KeyedStateUpdate<unknown>
