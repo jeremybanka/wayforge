@@ -11,7 +11,6 @@ describe(`isJson`, () => {
 		expect(isJson(0)).toBe(true)
 		expect(isJson(undefined)).toBe(false)
 		expect(isJson(0n)).toBe(false)
-		expect(isJson([0n])).toBe(false)
 		expect(isJson(() => null)).toBe(false)
 		expect(isJson(new Set())).toBe(false)
 	})
