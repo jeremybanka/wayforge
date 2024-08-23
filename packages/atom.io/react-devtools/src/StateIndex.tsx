@@ -3,17 +3,18 @@ import type {
 	ReadonlySelectorToken,
 	RegularAtomToken,
 } from "atom.io"
-import { getState, selectorFamily } from "atom.io"
+import { getState } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { primitiveRefinery } from "atom.io/introspection"
-import type { Canonical } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
 import { button } from "./Button"
 import { StoreEditor } from "./StateEditor"
 import { typeSelectors, viewIsOpenAtoms } from "./store"
+
+/* eslint-disable no-console */
 
 export const StateIndexLeafNode: FC<{
 	node: ReadableToken<unknown>

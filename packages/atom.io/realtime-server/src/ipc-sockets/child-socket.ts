@@ -6,6 +6,8 @@ import { parseJson } from "atom.io/json"
 import type { EventBuffer, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
 
+/* eslint-disable no-console */
+
 export class ChildSocket<
 	I extends Events,
 	O extends Events & {

@@ -110,6 +110,7 @@ export class SetRTX<P extends primitive>
 				this.emit(`tx:${this.transactionUpdates.join(`;`)}`)
 			}
 		} catch (thrown) {
+			/* eslint-disable-next-line no-console */
 			console.error(`Failed to apply transaction to SetRTX:`, thrown)
 			throw thrown
 		} finally {

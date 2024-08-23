@@ -8,11 +8,12 @@ import type {
 } from "atom.io"
 import {
 	assignTransactionToContinuity,
-	getUpdateToken,
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
+
+/* eslint-disable no-console */
 
 export class InvariantMap<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {

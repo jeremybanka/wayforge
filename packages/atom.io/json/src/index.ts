@@ -46,7 +46,13 @@ export type JsonInterface<T, J extends Json.Serializable = Json.Serializable> = 
 	fromJson: (json: J) => T
 }
 
-const JSON_PROTOTYPES = [Array, Boolean, Number, Object, String] as const
+const JSON_PROTOTYPES = [
+	Array.prototype,
+	Boolean.prototype,
+	Number.prototype,
+	Object.prototype,
+	String.prototype,
+] as const
 export const isJson = (input: unknown): input is Json.Tree.Node => {
 	if (input === null) return true
 	if (input === undefined) return false
