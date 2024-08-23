@@ -40,7 +40,7 @@
 		"@types/react": "18.3.4",
 		"@vanilla-extract/vite-plugin": "4.0.15",
 		"cross-env": "7.0.3",
-		"eslint": "9.9.0",
+		"eslint": "9.9.1",
 		"happy-dom": "15.0.0",
 		"sass": "1.77.8",
 		"typescript": "5.5.4",
