@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.28.1
+
+### Patch Changes
+
+- bda5f98: 🔇 Remove some extraneous logs that got shipped.
+
 ## 0.28.0
 
 ### Minor Changes
