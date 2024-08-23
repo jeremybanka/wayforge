@@ -69,5 +69,14 @@
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"coverage-gutters.coverageBaseDir": "**/coverage/"
+	"coverage-gutters.coverageBaseDir": "**/coverage/",
+	"workbench.editor.customLabels.patterns": {
+		"**/src/index.ts": "${dirname(1)}/${dirname}/index.ts",
+		"**/src/index.tsx": "${dirname(1)}/${dirname}/index.tsx",
+		"**/index.ts": "${dirname}/index.ts",
+		"**/index.tsx": "${dirname}/index.tsx",
+		"**/app/**/page.tsx": "${dirname}/page.tsx",
+		"**/app/**/page.mdx": "${dirname}/page.tsx",
+		"**/app/**/layout.tsx": "${dirname}/layout.tsx"
+	}
 }
