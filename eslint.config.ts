@@ -222,6 +222,12 @@ const configs = [
 		},
 		rules: commonRules,
 	},
+	{
+		files: [`packages/atom.io/**/src/**/*.ts{,x}`],
+		rules: {
+			"no-console": ERROR,
+		},
+	},
 ] satisfies Linter.Config[]
 
 export default configs

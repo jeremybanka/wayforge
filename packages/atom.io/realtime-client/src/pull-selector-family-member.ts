@@ -5,6 +5,8 @@ import type { Socket } from "socket.io-client"
 import { pullAtomFamilyMember } from "./pull-atom-family-member"
 import { pullMutableAtomFamilyMember } from "./pull-mutable-atom-family-member"
 
+/* eslint-disable no-console */
+
 export function pullSelectorFamilyMember<T>(
 	token: AtomIO.SelectorToken<T>,
 	socket: Socket,

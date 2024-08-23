@@ -5,6 +5,8 @@ import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
+/* eslint-disable no-console */
+
 export function pullMutableAtomFamilyMember<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,

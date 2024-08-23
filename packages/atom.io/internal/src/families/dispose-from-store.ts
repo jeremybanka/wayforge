@@ -59,11 +59,6 @@ export function disposeFromStore(
 		const disposal = store.disposalTraces.buffer.find(
 			(item) => item?.key === token.key,
 		)
-		console.log(
-			`seeking disposal trace for`,
-			token,
-			store.disposalTraces.buffer.filter(Boolean),
-		)
 		store.logger.error(
 			`❌`,
 			token.type,
@@ -93,6 +88,5 @@ export function disposeFromStore(
 	if (stack) {
 		const trace = stack?.split(`\n`)?.slice(3)?.join(`\n`)
 		store.disposalTraces.add({ key: token.key, trace })
-		console.log(`added`, token)
 	}
 }
