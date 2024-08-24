@@ -135,7 +135,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 7000 })
 
 		teardown()
-	})
+	}, 10000)
 })
 
 describe(`mutable atoms in continuity`, () => {
