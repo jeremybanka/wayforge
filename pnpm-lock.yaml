@@ -91,8 +91,8 @@ importers:
         specifier: 14.2.6
         version: 14.2.6(@mdx-js/loader@3.0.1(webpack@5.93.0))(@mdx-js/react@3.0.1(@types/react@18.3.4)(react@18.3.1))
       '@types/bun':
-        specifier: 1.1.6
-        version: 1.1.6
+        specifier: 1.1.7
+        version: 1.1.7
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -152,8 +152,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.6
-        version: 1.1.6
+        specifier: 1.1.7
+        version: 1.1.7
       vite:
         specifier: 5.4.2
         version: 5.4.2(@types/node@20.16.1)(lightningcss@1.26.0)(sass@1.77.8)(terser@5.31.5)
@@ -266,8 +266,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.6
-        version: 1.1.6
+        specifier: 1.1.7
+        version: 1.1.7
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -617,7 +617,7 @@ importers:
         version: 0.24.1
       drizzle-orm:
         specifier: 0.33.0
-        version: 0.33.0(@types/react@18.3.4)(bun-types@1.1.17)(postgres@3.4.4)(react@18.3.1)
+        version: 0.33.0(@types/react@18.3.4)(bun-types@1.1.25)(postgres@3.4.4)(react@18.3.1)
       eslint:
         specifier: 9.9.1
         version: 9.9.1(jiti@1.21.6)
@@ -692,8 +692,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@types/bun':
-        specifier: 1.1.6
-        version: 1.1.6
+        specifier: 1.1.7
+        version: 1.1.7
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -720,8 +720,8 @@ importers:
         version: 3.23.2(zod@3.23.8)
     devDependencies:
       '@types/bun':
-        specifier: 1.1.6
-        version: 1.1.6
+        specifier: 1.1.7
+        version: 1.1.7
       '@types/node':
         specifier: 20.16.1
         version: 20.16.1
@@ -1029,8 +1029,8 @@ importers:
         version: 1.4.0
     devDependencies:
       '@types/bun':
-        specifier: 1.1.6
-        version: 1.1.6
+        specifier: 1.1.7
+        version: 1.1.7
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -3195,8 +3195,8 @@ packages:
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
 
-  '@types/bun@1.1.6':
-    resolution: {integrity: sha512-uJgKjTdX0GkWEHZzQzFsJkWp5+43ZS7HC8sZPFnOwnSo1AsNl2q9o2bFeS23disNDqbggEgyFkKCHl/w8iZsMA==}
+  '@types/bun@1.1.7':
+    resolution: {integrity: sha512-iIIn26SOX8qI5E8Juh+0rUgBmFHvll1akscwerhp9O/fHZGdQBWNLJkkRg/3z2Mh6a3ZgWUIkXViLZZYg47TXw==}
 
   '@types/cookie@0.4.1':
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
@@ -3882,8 +3882,8 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
-  bun-types@1.1.17:
-    resolution: {integrity: sha512-Z4+OplcSd/YZq7ZsrfD00DKJeCwuNY96a1IDJyR73+cTBaFIS7SC6LhpY/W3AMEXO9iYq5NJ58WAwnwL1p5vKg==}
+  bun-types@1.1.25:
+    resolution: {integrity: sha512-WpRb8/N3S5IE8UYdIn39+0Is1XzxsC78+MCe5cIdaer0lfFs6+DREtQH9TM6KJNKTxBYDvbx81RwbvxS5+CkVQ==}
 
   bundle-require@5.0.0:
     resolution: {integrity: sha512-GuziW3fSSmopcx4KRymQEJVbZUfqlCqcq7dvs6TYwKRZiegK/2buMxQTPs6MGlNv50wms1699qYO54R8XfRX4w==}
@@ -9843,9 +9843,9 @@ snapshots:
     dependencies:
       '@babel/types': 7.25.2
 
-  '@types/bun@1.1.6':
+  '@types/bun@1.1.7':
     dependencies:
-      bun-types: 1.1.17
+      bun-types: 1.1.25
 
   '@types/cookie@0.4.1': {}
 
@@ -10749,7 +10749,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bun-types@1.1.17:
+  bun-types@1.1.25:
     dependencies:
       '@types/node': 20.12.14
       '@types/ws': 8.5.12
@@ -11249,10 +11249,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.33.0(@types/react@18.3.4)(bun-types@1.1.17)(postgres@3.4.4)(react@18.3.1):
+  drizzle-orm@0.33.0(@types/react@18.3.4)(bun-types@1.1.25)(postgres@3.4.4)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.4
-      bun-types: 1.1.17
+      bun-types: 1.1.25
       postgres: 3.4.4
       react: 18.3.1
 
