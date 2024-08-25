@@ -67,7 +67,7 @@
 		"concurrently": "8.2.2",
 		"eslint": "9.9.1",
 		"happy-dom": "15.0.0",
-		"jsdom": "24.1.1",
+		"jsdom": "24.1.3",
 		"npmlog": "7.0.1",
 		"preact": "10.23.2",
 		"react": "18.3.1",
