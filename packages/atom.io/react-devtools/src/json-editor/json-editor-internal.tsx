@@ -1,9 +1,9 @@
+import { jsonRefinery } from "atom.io/introspection"
+import { isJson, type Json } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
 import type { JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { jsonRefinery } from "~/packages/atom.io/introspection/src"
-import { isJson, type Json } from "~/packages/atom.io/json/src"
 import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
 
 import type { SetterOrUpdater } from "."
