@@ -8,7 +8,7 @@ import { castToJson } from "~/packages/anvl/src/refinement/smart-cast-json"
 
 import type { SetterOrUpdater } from "../.."
 
-export const makePropertySetters = <T extends Json.Object>(
+export const makePropertySetters = <T extends Json.Tree.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
@@ -21,7 +21,7 @@ export const makePropertySetters = <T extends Json.Object>(
 		]),
 	)
 
-export const makePropertyRenamers = <T extends Json.Object>(
+export const makePropertyRenamers = <T extends Json.Tree.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 	stableKeyMapRef: MutableRefObject<{ [Key in keyof T]: keyof T }>,
@@ -47,7 +47,7 @@ export const makePropertyRenamers = <T extends Json.Object>(
 		]),
 	)
 
-export const makePropertyRemovers = <T extends Json.Object>(
+export const makePropertyRemovers = <T extends Json.Tree.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: () => void } =>
@@ -63,7 +63,7 @@ export const makePropertyRemovers = <T extends Json.Object>(
 		]),
 	)
 
-export const makePropertyRecasters = <T extends Json.Object>(
+export const makePropertyRecasters = <T extends Json.Tree.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: (newType: JsonTypeName) => void } =>
@@ -80,7 +80,7 @@ export const makePropertyRecasters = <T extends Json.Object>(
 	)
 
 export const makePropertyCreationInterface =
-	<T extends Json.Object>(
+	<T extends Json.Tree.Object>(
 		data: T,
 		set: SetterOrUpdater<T>,
 	): ((
@@ -93,7 +93,7 @@ export const makePropertyCreationInterface =
 	}
 
 export const makePropertySorter =
-	<T extends Json.Object>(
+	<T extends Json.Tree.Object>(
 		data: T,
 		set: SetterOrUpdater<T>,
 		sortFn?: (a: string, b: string) => number,

@@ -5,14 +5,14 @@ import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
 import { makeElementSetters } from "./utilities/array-elements"
 
-export const ArrayEditor = <_ extends Json.Array>({
+export const ArrayEditor = ({
 	path = [],
 	isReadonly = () => false,
 	isHidden = () => false,
 	data,
 	set,
 	Components,
-}: JsonEditorProps_INTERNAL<Json.Array>): ReactElement => {
+}: JsonEditorProps_INTERNAL<Json.Tree.Array>): ReactElement => {
 	const setElement = makeElementSetters(data, set)
 	return (
 		<>

@@ -21,7 +21,7 @@ export const StateEditor: FC<{
 	const set = useI(token)
 	const data = useO(token)
 	return isJson(data) ? (
-		<JsonEditor data={data} set={set} schema={true} />
+		<JsonEditor data={data} set={set} />
 	) : (
 		<div className="json_editor">
 			<ElasticInput
@@ -49,12 +49,7 @@ export const ReadonlySelectorViewer: FC<{
 }> = ({ token }) => {
 	const data = useO(token)
 	return isJson(data) ? (
-		<JsonEditor
-			data={data}
-			set={() => null}
-			schema={true}
-			isReadonly={() => true}
-		/>
+		<JsonEditor data={data} set={() => null} isReadonly={() => true} />
 	) : (
 		<div className="json_editor">
 			<ElasticInput

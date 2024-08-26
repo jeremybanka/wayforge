@@ -10,7 +10,7 @@ import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 
-export type JsonEditorProps_INTERNAL<T extends Json.Tree.Node> = {
+export type JsonEditorProps_INTERNAL<T> = {
 	data: T
 	set: SetterOrUpdater<T>
 	name?: string | undefined
@@ -26,7 +26,7 @@ export type JsonEditorProps_INTERNAL<T extends Json.Tree.Node> = {
 	Components: JsonEditorComponents
 }
 
-export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
+export const JsonEditor_INTERNAL = <T,>({
 	data,
 	set,
 	name,

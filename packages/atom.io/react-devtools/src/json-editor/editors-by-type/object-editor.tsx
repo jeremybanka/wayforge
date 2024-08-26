@@ -3,9 +3,6 @@ import { ElasticInput } from "hamr/react-elastic-input"
 import type { FC, ReactElement } from "react"
 import { useRef } from "react"
 
-import { isPlainObject } from "~/packages/anvl/src/object/refinement"
-import { isLiteral } from "~/packages/anvl/src/refinement"
-
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
@@ -46,7 +43,7 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 	</Components.MissingPropertyWrapper>
 )
 
-export const ObjectEditor = <T extends Json.Object>({
+export const ObjectEditor = <T extends Json.Tree.Object>({
 	path = [],
 	isReadonly = () => false,
 	isHidden = () => false,

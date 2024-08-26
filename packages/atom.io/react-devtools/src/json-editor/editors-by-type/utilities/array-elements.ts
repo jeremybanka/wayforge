@@ -3,7 +3,7 @@ import type { Json } from "atom.io/json"
 
 import type { SetterOrUpdater } from "../.."
 
-export const makeElementSetters = <T extends Json.Array>(
+export const makeElementSetters = <T extends Json.Tree.Array>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): SetterOrUpdater<T[number]>[] =>
