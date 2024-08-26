@@ -4,9 +4,9 @@ import type { MutableRefObject } from "react"
 
 import type { JsonTypeName } from "~/packages/anvl/src/json"
 import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
-import { castToJson } from "~/packages/anvl/src/refinement/smart-cast-json"
 
 import type { SetterOrUpdater } from "../.."
+import { castToJson } from "./cast-to-json"
 
 export const makePropertySetters = <T extends Json.Tree.Object>(
 	data: T,

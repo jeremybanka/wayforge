@@ -1,5 +1,5 @@
 import { jsonRefinery } from "atom.io/introspection"
-import { isJson, type Json } from "atom.io/json"
+import { isJson } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
 import type { JsonTypes } from "~/packages/anvl/src/json"
