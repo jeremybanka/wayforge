@@ -1,11 +1,12 @@
 import type { FC } from "react"
 import { useId, useRef, useState } from "react"
 
-import { pipe } from "~/packages/anvl/src/function"
-import { clampInto } from "~/packages/anvl/src/number"
-
 import { ElasticInput } from "."
 
+export function clampInto(min: number, max: number) {
+	return (value: number): number =>
+		value < min ? min : value > max ? max : value
+}
 function round(value: number, decimalPlaces?: number): number {
 	if (decimalPlaces === undefined) return value
 	const factor = 10 ** decimalPlaces
@@ -71,9 +72,10 @@ const initRefinery =
 			...DEFAULT_NUMBER_CONSTRAINTS,
 			...constraints,
 		}
-		const constrained = pipe(input ?? 0, clampInto(min, max), (n) =>
-			decimalPlaces ? round(n, decimalPlaces) : n,
-		)
+		let constrained = clampInto(min, max)(input ?? 0)
+		if (decimalPlaces) {
+			constrained = round(constrained, decimalPlaces)
+		}
 		return constrained
 	}
 

@@ -1,8 +1,8 @@
 import type { Json } from "atom.io/json"
-import { ElasticInput } from "hamr/react-elastic-input"
 import type { FC, ReactElement } from "react"
 import { useRef } from "react"
 
+import { ElasticInput } from "../../elastic-input"
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"

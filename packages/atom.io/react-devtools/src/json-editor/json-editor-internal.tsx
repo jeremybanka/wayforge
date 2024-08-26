@@ -3,8 +3,7 @@ import type { JsonTypes } from "atom.io/json"
 import { isJson } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
-import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
-
+import { ElasticInput } from "../elastic-input"
 import type { SetterOrUpdater } from "."
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
