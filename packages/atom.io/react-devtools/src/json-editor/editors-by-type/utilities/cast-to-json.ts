@@ -1,7 +1,7 @@
-import { jsonRefinery } from "~/packages/atom.io/introspection/src"
-import type { Json } from "~/packages/atom.io/json/src"
+import { jsonRefinery } from "atom.io/introspection"
+import type { Json } from "atom.io/json"
 
-import * as Cast from "../../../../../../anvl/src/json/cast-json"
+import * as Cast from "./cast-json"
 
 export const castToJson = (
 	input: unknown,
