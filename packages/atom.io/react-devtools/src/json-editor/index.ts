@@ -1,6 +1,5 @@
+import type { JsonTypes } from "atom.io/json"
 import type { FC } from "react"
-
-import type { JsonTypes } from "~/packages/anvl/src/json"
 
 import { ArrayEditor } from "./editors-by-type/array-editor"
 import { ObjectEditor } from "./editors-by-type/object-editor"

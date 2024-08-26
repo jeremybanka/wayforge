@@ -1,9 +1,7 @@
 import { become } from "atom.io/internal"
-import { fromEntries, type Json, toEntries } from "atom.io/json"
+import type { Json, JsonTypeName } from "atom.io/json"
+import { fromEntries, JSON_DEFAULTS, toEntries } from "atom.io/json"
 import type { MutableRefObject } from "react"
-
-import type { JsonTypeName } from "~/packages/anvl/src/json"
-import { JSON_DEFAULTS } from "~/packages/anvl/src/json"
 
 import type { SetterOrUpdater } from "../.."
 import { castToJson } from "./cast-to-json"
