@@ -1,13 +1,12 @@
 import type { CSSProperties, FC, ReactElement } from "react"
-import type { SetterOrUpdater } from "recoil"
 
-import { doNothing } from "~/packages/anvl/src/function"
 import type { JsonTypes } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { jsonRefinery } from "~/packages/atom.io/introspection/src"
 import { isJson, type Json } from "~/packages/atom.io/json/src"
+import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
 
-import { ElasticInput } from "../../../../hamr/react-elastic-input/src"
+import type { SetterOrUpdater } from "."
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
@@ -57,14 +56,21 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 	return isHidden(path) ? null : (
 		<Components.ErrorBoundary>
 			<Components.EditorWrapper className={className} style={style}>
-				{remove && (
-					<Components.Button
-						onClick={disabled ? doNothing : remove}
-						disabled={disabled}
-					>
-						<Components.DeleteIcon />
-					</Components.Button>
-				)}
+				{remove ? (
+					disabled ? (
+						<Components.Button disabled>
+							<Components.DeleteIcon />
+						</Components.Button>
+					) : (
+						<Components.Button
+							onClick={() => {
+								remove()
+							}}
+						>
+							<Components.DeleteIcon />
+						</Components.Button>
+					)
+				) : null}
 				{HeaderDisplay && <HeaderDisplay data={data} schema={schema} />}
 				{rename && (
 					<Components.KeyWrapper>
@@ -72,7 +78,7 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 							value={name}
 							onChange={
 								disabled
-									? doNothing
+									? undefined
 									: (e) => {
 											rename(e.target.value)
 										}
@@ -96,7 +102,7 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 					<select
 						onChange={
 							disabled
-								? doNothing
+								? undefined
 								: (e) => {
 										recast(e.target.value as keyof JsonTypes)
 									}

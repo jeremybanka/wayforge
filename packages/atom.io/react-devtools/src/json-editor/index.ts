@@ -15,6 +15,10 @@ import type { JsonEditorProps_INTERNAL } from "./json-editor-internal"
 export * from "./default-components"
 export * from "./developer-interface"
 
+export type SetterOrUpdater<T> = <New extends T>(
+	next: New | ((old: T) => New),
+) => void
+
 export const SubEditors: Record<
 	keyof JsonTypes,
 	FC<JsonEditorProps_INTERNAL<any>>

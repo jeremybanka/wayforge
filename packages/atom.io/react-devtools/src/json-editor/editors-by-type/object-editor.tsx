@@ -3,7 +3,6 @@ import { ElasticInput } from "hamr/react-elastic-input"
 import type { FC, ReactElement } from "react"
 import { useRef } from "react"
 
-import { doNothing } from "~/packages/anvl/src/function"
 import { findSubSchema } from "~/packages/anvl/src/json-schema/find-sub-schema"
 import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isPlainObject } from "~/packages/anvl/src/object/refinement"
@@ -149,18 +148,17 @@ export const ObjectEditor = <T extends Json.Object>({
 						)
 					})}
 				</div>
-				<Components.Button
-					onClick={
-						disabled
-							? doNothing
-							: () => {
-									makePropertyAdder(`new_property`, `string`)()
-								}
-					}
-					disabled={disabled}
-				>
-					+
-				</Components.Button>
+				{disabled ? (
+					<Components.Button disabled>+</Components.Button>
+				) : (
+					<Components.Button
+						onClick={() => {
+							makePropertyAdder(`new_property`, `string`)()
+						}}
+					>
+						+
+					</Components.Button>
+				)}
 			</Components.ObjectWrapper>
 		</>
 	)
