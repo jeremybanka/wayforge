@@ -1,7 +1,11 @@
 import { render } from "@testing-library/react"
+import { ErrorBoundary } from "atom.io/react-devtools"
+import type { FunctionComponent } from "react"
 
-import { ErrorBoundary } from "./ReactErrorBoundary"
-import { ThrowOnRender } from "./test-utils"
+const NOT_A_FUNCTION = true
+// @ts-expect-error (that's the point)
+const throwTypeError = (): never => NOT_A_FUNCTION()
+const ThrowOnRender: FunctionComponent = () => throwTypeError()
 
 let expectedErrors = 0
 let actualErrors = 0

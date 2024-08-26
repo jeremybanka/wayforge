@@ -1,5 +1,4 @@
-import { ElasticInput } from "hamr/react-elastic-input"
-
+import { ElasticInput } from "../../elastic-input"
 import type { JsonEditorProps } from "../developer-interface"
 
 export const NonJsonEditor: React.FC<JsonEditorProps<never>> = ({ data }) => {
