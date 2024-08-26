@@ -1,6 +1,9 @@
 import type { ReactElement } from "react"
 
-import { NumberInput, TextInput } from "../../../react-elastic-input/src"
+import {
+	NumberInput,
+	TextInput,
+} from "../../../../../hamr/react-elastic-input/src"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 
 export const BooleanEditor = ({

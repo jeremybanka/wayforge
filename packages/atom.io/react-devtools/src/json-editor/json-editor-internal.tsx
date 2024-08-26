@@ -7,7 +7,7 @@ import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { jsonRefinery } from "~/packages/atom.io/introspection/src"
 import { isJson, type Json } from "~/packages/atom.io/json/src"
 
-import { ElasticInput } from "../../react-elastic-input/src"
+import { ElasticInput } from "../../../../hamr/react-elastic-input/src"
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
