@@ -3,7 +3,6 @@ import { isJson, type Json } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
 import type { JsonTypes } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { ElasticInput } from "~/packages/hamr/react-elastic-input/src"
 
 import type { SetterOrUpdater } from "."
@@ -18,20 +17,18 @@ export type JsonEditorProps_INTERNAL<T extends Json.Tree.Node> = {
 	rename?: ((newKey: string) => void) | undefined
 	remove?: (() => void) | undefined
 	recast?: (newType: keyof JsonTypes) => void
-	schema?: JsonSchema | undefined
 	path?: ReadonlyArray<number | string>
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
 	className?: string | undefined
 	style?: CSSProperties | undefined
-	Header?: FC<{ data: T; schema?: JsonSchema | undefined }> | undefined
+	Header?: FC<{ data: T }> | undefined
 	Components: JsonEditorComponents
 }
 
 export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 	data,
 	set,
-	schema,
 	name,
 	rename,
 	remove,
@@ -71,7 +68,7 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 						</Components.Button>
 					)
 				) : null}
-				{HeaderDisplay && <HeaderDisplay data={data} schema={schema} />}
+				{HeaderDisplay && <HeaderDisplay data={data} />}
 				{rename && (
 					<Components.KeyWrapper>
 						<ElasticInput
@@ -90,7 +87,6 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 				<SubEditor
 					data={refined.data}
 					set={set}
-					schema={schema}
 					remove={remove}
 					rename={rename}
 					path={path}

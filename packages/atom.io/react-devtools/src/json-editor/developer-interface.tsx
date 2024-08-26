@@ -2,7 +2,6 @@ import type { Json } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
 import type { JsonTypes } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
 import type { JsonEditorComponents } from "./default-components"
 import { DEFAULT_JSON_EDITOR_COMPONENTS } from "./default-components"
@@ -35,26 +34,23 @@ export type JsonEditorProps<T extends Json.Tree.Node> = {
 	name?: string | undefined
 	rename?: ((newKey: string) => void) | undefined
 	remove?: () => void
-	schema?: JsonSchema
 	path?: ReadonlyArray<number | string>
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
 	className?: string
 	style?: CSSProperties
-	Header?: FC<{ data: T; schema?: JsonSchema }>
+	Header?: FC<{ data: T }>
 	Components?: Partial<JsonEditorComponents>
 }
 
 export const JsonEditor = <T extends Json.Tree.Node>({
 	data,
 	set,
-	schema = true,
 	name,
 	rename,
 	remove,
 	isReadonly = () => false,
 	isHidden = () => false,
-	// isIllegal = () => false,
 	className,
 	Header,
 	style,
@@ -70,7 +66,6 @@ export const JsonEditor = <T extends Json.Tree.Node>({
 			data={data}
 			set={set}
 			name={name}
-			schema={schema}
 			rename={rename}
 			remove={remove}
 			path={[]}
