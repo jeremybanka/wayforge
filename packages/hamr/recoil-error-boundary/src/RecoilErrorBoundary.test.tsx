@@ -1,8 +1,11 @@
 import { prettyDOM, render } from "@testing-library/react"
-import { ThrowOnRender } from "hamr/react-error-boundary"
 import { RecoilRoot } from "recoil"
 
 import { RecoverableErrorBoundary } from "./RecoilErrorBoundary"
+
+const NOT_A_FUNCTION = true
+// @ts-expect-error (that's the point)
+const ThrowOnRender: FunctionComponent = () => NOT_A_FUNCTION()
 
 let expectedErrors = 0
 let actualErrors = 0
