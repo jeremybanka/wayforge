@@ -88,7 +88,7 @@
 	},
 	"devDependencies": {
 		"@testing-library/react": "16.0.0",
-		"@types/eslint": "9.6.0",
+		"@types/eslint": "9.6.1",
 		"@types/estree": "1.0.5",
 		"@types/http-proxy": "1.17.15",
 		"@types/npmlog": "7.0.0",
