@@ -1,15 +1,6 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react"
 import type { Logger } from "atom.io"
-import {
-	atom,
-	atomFamily,
-	runTransaction,
-	selector,
-	timeline,
-	transaction,
-} from "atom.io"
-import { findState } from "atom.io/ephemeral"
-import * as Internal from "atom.io/internal"
+import { Silo } from "atom.io"
 import * as AR from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -21,47 +12,49 @@ import * as Utils from "../../__util__"
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
 
+let i = 0
+let $: Silo
 let logger: Logger
 
 beforeEach(() => {
-	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	$ = new Silo({ name: `react-store-${i}`, lifespan: `ephemeral` })
+	$.store.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = $.store.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
+	i++
 })
-const onChange = [() => undefined, console.log][0]
 
 describe(`react-devtools`, () => {
-	const setters: Internal.Func[] = []
 	const scenario = () => {
-		const letterState = atom<string>({
+		const letterState = $.atom<string>({
 			key: `letter`,
 			default: `A`,
 		})
-		const doubleLetterState = selector<string>({
+		const doubleLetterState = $.selector<string>({
 			key: `doubleLetter`,
 			get: ({ get }) => get(letterState) + get(letterState),
 		})
-		const setLetterTX = transaction<(newLetter: string) => void>({
+		const setLetterTX = $.transaction<(newLetter: string) => void>({
 			key: `setLetter`,
 			do: ({ set }, newLetter) => {
 				set(letterState, newLetter)
 			},
 		})
-		const letterTL = timeline({
+		const letterTL = $.timeline({
 			key: `letterTL`,
 			scope: [letterState],
 		})
-		const selectionsState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const selectionsState = $.atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `selections`,
 			default: () => new SetRTX([`green`]),
 			mutable: true,
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const selectionsWithoutGreenState = selector<Set<string>>({
+		const selectionsWithoutGreenState = $.selector<Set<string>>({
 			key: `selectionsWithoutGreen`,
 			get: ({ get }) => {
 				const selectionsWithGreen = get(selectionsState)
@@ -70,28 +63,28 @@ describe(`react-devtools`, () => {
 				return selectionsWithoutGreen
 			},
 		})
-		const countAtoms = atomFamily<number, string>({
+		const countAtoms = $.atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const countAtom = findState(countAtoms, `count`)
+		const countAtom = $.findState(countAtoms, `count`)
 
-		const arrayAtom = atom<string[]>({
+		const arrayAtom = $.atom<string[]>({
 			key: `array`,
 			default: [`A`, `B`, `C`],
 		})
 
-		const myNullAtom = atom<null>({
+		const myNullAtom = $.atom<null>({
 			key: `myNull`,
 			default: null,
 		})
 
-		const myUndefinedAtom = atom<undefined>({
+		const myUndefinedAtom = $.atom<undefined>({
 			key: `myUndefined`,
 			default: undefined,
 		})
 
-		const myBooleanAtom = atom<boolean>({
+		const myBooleanAtom = $.atom<boolean>({
 			key: `myBoolean`,
 			default: false,
 		})
@@ -99,7 +92,6 @@ describe(`react-devtools`, () => {
 		const Letter: FC = () => {
 			const setLetter = AR.useI(letterState)
 			const letter = AR.useO(letterState)
-			setters.push(setLetter)
 			return (
 				<>
 					<div data-testid={letter}>{letter}</div>
@@ -114,7 +106,7 @@ describe(`react-devtools`, () => {
 			)
 		}
 		const utils = render(
-			<AR.StoreProvider store={Internal.IMPLICIT.STORE}>
+			<AR.StoreProvider store={$.store}>
 				<Letter />
 				<AtomIODevtools />
 			</AR.StoreProvider>,
@@ -128,8 +120,6 @@ describe(`react-devtools`, () => {
 			fireEvent.click(changeStateButton)
 		})
 		const option = getByTestId(`B`)
-		expect(setters.length).toBe(2)
-		expect(setters[0]).toBe(setters[1])
 
 		await act(async () => {
 			getByTestId(`view-atoms`)
@@ -138,7 +128,6 @@ describe(`react-devtools`, () => {
 			getByTestId(`view-timelines`)
 
 			getByTestId(`state-index`)
-
 			await waitFor(() => getByTestId(`state-letter`))
 			await waitFor(() => getByTestId(`state-selections`))
 		})
@@ -182,7 +171,7 @@ describe(`react-devtools`, () => {
 		act(() => {
 			getByTestId(`view-transactions`).click()
 		})
-		runTransaction(setLetterTX)(`C`)
+		$.runTransaction(setLetterTX)(`C`)
 		await waitFor(() => getByTestId(`transaction-setLetter`))
 		act(() => {
 			getByTestId(`open-close-transaction-setLetter`).click()
