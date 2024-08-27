@@ -96,7 +96,7 @@ type NumberInputProps = Partial<NumberConstraints> & {
 	onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 	placeholder?: string
 	set?: ((newValue: number | null) => void) | undefined
-	testId?: string
+	testid?: string
 	value?: number | null
 }
 
@@ -112,7 +112,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 	onClick,
 	placeholder = ``,
 	set = () => null,
-	testId,
+	testid,
 	value = null,
 }) => {
 	const id = useId()
@@ -178,7 +178,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 					name={name ?? id}
 					id={id}
 					onClick={onClick}
-					data-testid={`number-input-${testId ?? id}`}
+					data-testid={testid}
 				/>
 			) : (
 				<input
@@ -191,7 +191,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 					name={name ?? id}
 					id={id}
 					onClick={onClick}
-					data-testid={`number-input-${testId ?? id}`}
+					data-testid={testid}
 				/>
 			)}
 		</span>

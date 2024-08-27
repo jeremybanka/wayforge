@@ -23,6 +23,7 @@ export type JsonEditorProps_INTERNAL<T> = {
 	style?: CSSProperties | undefined
 	Header?: FC<{ data: T }> | undefined
 	Components: JsonEditorComponents
+	testid?: string | undefined
 }
 
 export const JsonEditor_INTERNAL = <T,>({
@@ -39,6 +40,7 @@ export const JsonEditor_INTERNAL = <T,>({
 	style,
 	Header: HeaderDisplay,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
 	const dataIsJson = isJson(data)
 	const refined = jsonRefinery.refine<unknown>(data) ?? {
@@ -51,7 +53,11 @@ export const JsonEditor_INTERNAL = <T,>({
 
 	return isHidden(path) ? null : (
 		<Components.ErrorBoundary>
-			<Components.EditorWrapper className={className} style={style}>
+			<Components.EditorWrapper
+				className={className}
+				style={style}
+				testid={testid}
+			>
 				{remove ? (
 					disabled ? (
 						<Components.Button disabled>
@@ -92,6 +98,7 @@ export const JsonEditor_INTERNAL = <T,>({
 					isReadonly={isReadonly}
 					isHidden={isHidden}
 					Components={Components}
+					testid={testid}
 				/>
 				{recast && dataIsJson ? (
 					<select

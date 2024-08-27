@@ -27,6 +27,7 @@ export type JsonEditorComponents = {
 	EditorWrapper: WC<{
 		style?: CSSProperties | undefined
 		className?: string | undefined
+		testid?: string | undefined
 	}>
 
 	ArrayWrapper: WC
@@ -34,7 +35,7 @@ export type JsonEditorComponents = {
 	StringWrapper: WC
 	NumberWrapper: WC
 	BooleanWrapper: WC
-	NullWrapper: WC
+	Null: FC<{ testid?: string | undefined }>
 
 	MiscastPropertyWrapper: WC
 	MissingPropertyWrapper: WC
@@ -56,8 +57,11 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 			{children}
 		</button>
 	),
-	EditorWrapper: ({ children, className }) => (
-		<div className={`json_editor` + (className ? ` ${className}` : ``)}>
+	EditorWrapper: ({ children, className, testid }) => (
+		<div
+			className={`json_editor` + (className ? ` ${className}` : ``)}
+			data-testid={testid}
+		>
 			{children}
 		</div>
 	),
@@ -94,8 +98,8 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 	BooleanWrapper: ({ children }) => (
 		<span className="json_editor_boolean">{children}</span>
 	),
-	NullWrapper: ({ children }) => (
-		<span className="json_editor_null">{children}</span>
+	Null: ({ testid }) => (
+		<span className="json_editor_null" data-testid={testid} />
 	),
 	MissingPropertyWrapper: ({ children }) => (
 		<div className="json_editor_property json_editor_missing">{children}</div>

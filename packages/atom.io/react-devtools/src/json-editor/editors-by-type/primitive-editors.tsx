@@ -7,9 +7,11 @@ export const BooleanEditor = ({
 	data,
 	set,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<boolean>): ReactElement => (
 	<Components.BooleanWrapper>
 		<input
+			data-testid={`${testid}-boolean-input`}
 			type="checkbox"
 			checked={data}
 			onChange={(event) => {
@@ -21,8 +23,9 @@ export const BooleanEditor = ({
 
 export const NullEditor = ({
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<null>): ReactElement => (
-	<Components.NullWrapper> </Components.NullWrapper>
+	<Components.Null testid={`${testid}-null`} />
 )
 
 export const NumberEditor = ({
@@ -31,9 +34,11 @@ export const NumberEditor = ({
 	data,
 	set,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<number>): ReactElement => (
 	<Components.NumberWrapper>
 		<NumberInput
+			testid={`${testid}-number-input`}
 			value={data}
 			set={
 				isReadonly(path)
@@ -53,10 +58,12 @@ export const StringEditor = ({
 	data,
 	set,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<string>): ReactElement => {
 	return (
 		<Components.StringWrapper>
 			<TextInput
+				testid={`${testid}-string-input`}
 				value={data}
 				set={isReadonly(path) ? undefined : set}
 				autoSize={true}

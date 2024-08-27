@@ -39,6 +39,7 @@ export type JsonEditorProps<T> = {
 	style?: CSSProperties
 	Header?: FC<{ data: T }>
 	Components?: Partial<JsonEditorComponents>
+	testid?: string
 }
 
 export const JsonEditor = <T,>({
@@ -53,6 +54,7 @@ export const JsonEditor = <T,>({
 	Header,
 	style,
 	Components: CustomComponents = {},
+	testid,
 }: JsonEditorProps<T>): ReactElement => {
 	const Components = {
 		...DEFAULT_JSON_EDITOR_COMPONENTS,
@@ -73,6 +75,7 @@ export const JsonEditor = <T,>({
 			Header={Header}
 			style={style}
 			Components={Components}
+			testid={testid}
 		/>
 	)
 }

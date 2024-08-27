@@ -9,14 +9,23 @@ export const StateEditor: FC<{
 }> = ({ token }) => {
 	const set = useI(token)
 	const data = useO(token)
-	return <JsonEditor data={data} set={set} />
+	return (
+		<JsonEditor testid={`${token.key}-state-editor`} data={data} set={set} />
+	)
 }
 
 export const ReadonlySelectorViewer: FC<{
 	token: ReadonlySelectorToken<unknown>
 }> = ({ token }) => {
 	const data = useO(token)
-	return <JsonEditor data={data} set={() => null} isReadonly={() => true} />
+	return (
+		<JsonEditor
+			testid={`${token.key}-state-editor`}
+			data={data}
+			set={() => null}
+			isReadonly={() => true}
+		/>
+	)
 }
 
 export const StoreEditor: FC<{
