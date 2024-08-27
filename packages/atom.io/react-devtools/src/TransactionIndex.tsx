@@ -4,17 +4,12 @@ import type {
 	TransactionToken,
 	TransactionUpdate,
 } from "atom.io"
-import { findState } from "atom.io/ephemeral"
-import type { Func } from "atom.io/internal"
+import { findInStore, type Func } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
-import type { FC } from "react"
+import { type FC, useContext } from "react"
 
 import { button } from "./Button"
-import {
-	transactionIndex,
-	transactionLogSelectors,
-	viewIsOpenAtoms,
-} from "./store"
+import { DevtoolsContext } from "./store"
 import { article } from "./Updates"
 
 export const TransactionLog: FC<{
@@ -58,6 +53,9 @@ export const TransactionLog: FC<{
 }
 
 export const TransactionIndex: FC = () => {
+	const { transactionIndex, transactionLogSelectors, viewIsOpenAtoms, store } =
+		useContext(DevtoolsContext)
+
 	const tokenIds = useO(transactionIndex)
 	return (
 		<article className="index transaction_index" data-testid="transaction-index">
@@ -68,8 +66,8 @@ export const TransactionIndex: FC = () => {
 						<TransactionLog
 							key={token.key}
 							token={token}
-							isOpenState={findState(viewIsOpenAtoms, token.key)}
-							logState={findState(transactionLogSelectors, token.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, token.key)}
+							logState={findInStore(store, transactionLogSelectors, token.key)}
 						/>
 					)
 				})}

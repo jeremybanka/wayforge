@@ -4,13 +4,12 @@ import type {
 	TimelineToken,
 } from "atom.io"
 import { redo, undo } from "atom.io"
-import { findState } from "atom.io/ephemeral"
-import type { Timeline } from "atom.io/internal"
+import { findInStore, type Timeline } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
-import { type FC, Fragment } from "react"
+import { type FC, Fragment, useContext } from "react"
 
 import { button } from "./Button"
-import { timelineIndex, timelineSelectors, viewIsOpenAtoms } from "./store"
+import { DevtoolsContext } from "./store"
 import { article } from "./Updates"
 
 export const YouAreHere: FC = () => {
@@ -86,7 +85,11 @@ export const TimelineLog: FC<{
 }
 
 export const TimelineIndex: FC = () => {
+	const { timelineIndex, timelineSelectors, viewIsOpenAtoms, store } =
+		useContext(DevtoolsContext)
+
 	const tokenIds = useO(timelineIndex)
+
 	return (
 		<article className="index timeline_index" data-testid="timeline-index">
 			{tokenIds
@@ -96,8 +99,8 @@ export const TimelineIndex: FC = () => {
 						<TimelineLog
 							key={token.key}
 							token={token}
-							isOpenState={findState(viewIsOpenAtoms, token.key)}
-							timelineState={findState(timelineSelectors, token.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, token.key)}
+							timelineState={findInStore(store, timelineSelectors, token.key)}
 						/>
 					)
 				})}
