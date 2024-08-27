@@ -101,7 +101,7 @@ export const attachSelectorIndex = (
 			},
 			undefined,
 		)
-	return createStandaloneSelector(IMPLICIT.STORE, {
+	return createStandaloneSelector(store, {
 		key: `🔍 Selector Token Index`,
 		get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
 	})
