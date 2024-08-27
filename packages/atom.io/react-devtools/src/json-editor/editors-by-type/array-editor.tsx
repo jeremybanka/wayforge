@@ -12,6 +12,7 @@ export const ArrayEditor = ({
 	data,
 	set,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<Json.Tree.Array>): ReactElement => {
 	const setElement = makeElementSetters(data, set)
 	return (
@@ -27,6 +28,8 @@ export const ArrayEditor = ({
 						data={element}
 						set={setElement[index]}
 						Components={Components}
+						className="json_editor_element"
+						testid={`${testid}-element-${index}`}
 					/>
 				)
 			})}

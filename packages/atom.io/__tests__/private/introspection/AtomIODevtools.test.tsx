@@ -131,6 +131,27 @@ describe(`editing an object atom`, () => {
 	})
 })
 
+describe(`editing arrays`, () => {
+	test(`array`, async () => {
+		const arrayAtom = $.atom<string[]>({ key: `myArray`, default: [`A`] })
+
+		const { getByTestId, debug } = scenario()
+
+		await waitFor(() => getByTestId(`myArray-state-editor-element-0`))
+
+		act(() => {
+			fireEvent.change(
+				getByTestId(`myArray-state-editor-element-0-string-input`),
+				{
+					target: { value: `B` },
+				},
+			)
+		})
+
+		expect($.getState(arrayAtom)).toEqual([`B`])
+	})
+})
+
 describe(`editing selectors`, () => {
 	test(`selector that depends on an atom`, async () => {
 		const letterState = $.atom<string>({ key: `letter`, default: `A` })
