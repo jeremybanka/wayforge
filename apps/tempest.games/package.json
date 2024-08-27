@@ -34,7 +34,7 @@
 		"typed-htmx": "0.3.1"
 	},
 	"dependencies": {
-		"@fastly/js-compute": "3.20.0",
+		"@fastly/js-compute": "3.21.1",
 		"preact-render-to-string": "6.5.9",
 		"zod": "3.23.8"
 	}
