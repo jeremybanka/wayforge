@@ -104,27 +104,3 @@ export const makePropertySorter =
 		}
 		set(sortedObj as T)
 	}
-
-// export const sortPropertiesAlphabetically = <T extends Json.Object>(data: T): T =>
-//   sortProperties(data, (a, b) => a.localeCompare(b))
-
-export const deleteProperty =
-	<T extends Json.Object>(
-		data: T,
-		set: SetterOrUpdater<T>,
-	): ((key: keyof T) => void) =>
-	(key) => {
-		const { [key]: _, ...rest } = data
-		set(rest as T)
-	}
-
-export const addProperty =
-	<T extends Json.Object>(
-		data: T,
-		set: SetterOrUpdater<T>,
-	): ((key?: string, value?: Json.Serializable) => void) =>
-	(key, value) => {
-		const newKey = key ?? `newProperty`
-		const newValue = value ?? ``
-		set({ ...data, [newKey]: newValue })
-	}

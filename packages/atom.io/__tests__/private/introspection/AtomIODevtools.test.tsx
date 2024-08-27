@@ -128,6 +128,36 @@ describe(`editing an object atom`, () => {
 			getByTestId(`myObject-state-editor-sort-properties`).click()
 		})
 		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
+
+		act(() => {
+			getByTestId(`myObject-state-editor-property-c-delete`).click()
+		})
+
+		expect($.getState(objectAtom)).toEqual({ b: 2 })
+
+		act(() => {
+			getByTestId(`myObject-state-editor-add-property`).click()
+		})
+
+		act(() => {
+			fireEvent.change(
+				getByTestId(`myObject-state-editor-property-new_property-rename`),
+				{
+					target: { value: `e` },
+				},
+			)
+		})
+
+		await waitFor(() => getByTestId(`myObject-state-editor-property-e`))
+		expect($.getState(objectAtom)).toEqual({ b: 2, e: `` })
+
+		act(() => {
+			fireEvent.change(getByTestId(`myObject-state-editor-property-e-recast`), {
+				target: { value: `number` },
+			})
+		})
+
+		expect($.getState(objectAtom)).toEqual({ b: 2, e: 0 })
 	})
 })
 
