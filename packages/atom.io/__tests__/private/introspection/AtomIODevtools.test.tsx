@@ -90,6 +90,47 @@ describe(`editing primitive atoms of a variety of types`, () => {
 	})
 })
 
+describe(`editing an object atom`, () => {
+	test(`object`, async () => {
+		const objectAtom = $.atom<Record<string, number>>({
+			key: `myObject`,
+			default: { a: 1, b: 2 },
+		})
+
+		const { getByTestId, debug } = scenario()
+
+		await waitFor(() => getByTestId(`myObject-state-editor-property-a`))
+		await waitFor(() => getByTestId(`myObject-state-editor-property-b`))
+
+		act(() => {
+			fireEvent.change(getByTestId(`myObject-state-editor-property-a-rename`), {
+				target: { value: `c` },
+			})
+		})
+
+		await waitFor(() => getByTestId(`myObject-state-editor-property-c`))
+
+		expect($.getState(objectAtom)).toEqual({ b: 2, c: 1 })
+
+		act(() => {
+			fireEvent.change(
+				getByTestId(`myObject-state-editor-property-c-number-input`),
+				{
+					target: { value: `3` },
+				},
+			)
+		})
+
+		expect($.getState(objectAtom)).toEqual({ b: 2, c: 3 })
+
+		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"c":3,"b":2}`)
+		act(() => {
+			getByTestId(`myObject-state-editor-sort-properties`).click()
+		})
+		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
+	})
+})
+
 describe(`editing selectors`, () => {
 	test(`selector that depends on an atom`, async () => {
 		const letterState = $.atom<string>({ key: `letter`, default: `A` })
