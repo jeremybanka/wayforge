@@ -143,6 +143,9 @@ describe(`react-devtools`, () => {
 			getByTestId(`open-close-state-family-count`).click()
 		})
 		act(() => {
+			getByTestId(`open-close-state-selections`).click()
+		})
+		act(() => {
 			getByTestId(`open-close-state-count("count")`).click()
 		})
 		act(() => {
@@ -156,7 +159,9 @@ describe(`react-devtools`, () => {
 			getByTestId(`view-selectors`).click()
 		})
 		await waitFor(() => getByTestId(`state-doubleLetter`))
-		await waitFor(() => getByTestId(`state-selectionsWithoutGreen`))
+		act(() => {
+			getByTestId(`state-selectionsWithoutGreen`).click()
+		})
 		act(() => {
 			getByTestId(`view-transactions`).click()
 		})
