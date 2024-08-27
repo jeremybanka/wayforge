@@ -13,36 +13,36 @@ export const {
 } = attachIntrospectionStates()
 
 export const devtoolsAreOpenState = atom<boolean>({
-	key: `👁‍🗨 Devtools Are Open`,
+	key: `🔍 Devtools Are Open`,
 	default: true,
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage, JSON, `👁‍🗨 Devtools Are Open`)],
+			: [persistSync(window.localStorage, JSON, `🔍 Devtools Are Open`)],
 })
 
 type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
 
 export const devtoolsViewSelectionState = atom<DevtoolsView>({
-	key: `👁‍🗨 Devtools View Selection`,
+	key: `🔍 Devtools View Selection`,
 	default: `atoms`,
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage, JSON, `👁‍🗨 Devtools View`)],
+			: [persistSync(window.localStorage, JSON, `🔍 Devtools View`)],
 })
 
 export const devtoolsViewOptionsState = atom<DevtoolsView[]>({
-	key: `👁‍🗨 Devtools View Options`,
+	key: `🔍 Devtools View Options`,
 	default: [`atoms`, `selectors`, `transactions`, `timelines`],
 	effects:
 		typeof window === `undefined`
 			? []
-			: [persistSync(window.localStorage, JSON, `👁‍🗨 Devtools View Options`)],
+			: [persistSync(window.localStorage, JSON, `🔍 Devtools View Options`)],
 })
 
 export const viewIsOpenAtoms = atomFamily<boolean, string>({
-	key: `👁‍🗨 Devtools View Is Open`,
+	key: `🔍 Devtools View Is Open`,
 	default: false,
 	effects: (key) =>
 		typeof window === `undefined`

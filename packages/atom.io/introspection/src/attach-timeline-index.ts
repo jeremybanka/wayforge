@@ -14,7 +14,7 @@ export const attachTimelineIndex = (
 	>(
 		store,
 		{
-			key: `👁‍🗨 Timeline Token Index (Internal)`,
+			key: `🔍 Timeline Token Index (Internal)`,
 			default: () =>
 				[...store.timelines].map(([key]): TimelineToken<any> => {
 					return { key, type: `timeline` }
@@ -33,7 +33,7 @@ export const attachTimelineIndex = (
 		undefined,
 	)
 	const timelineTokenIndex = createStandaloneSelector(store, {
-		key: `👁‍🗨 Timeline Token Index`,
+		key: `🔍 Timeline Token Index`,
 		get: ({ get }) => get(timelineTokenIndexState__INTERNAL),
 	})
 	return timelineTokenIndex

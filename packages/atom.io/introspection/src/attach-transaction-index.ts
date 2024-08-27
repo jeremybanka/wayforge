@@ -14,7 +14,7 @@ export const attachTransactionIndex = (
 	>(
 		store,
 		{
-			key: `👁‍🗨 Transaction Token Index (Internal)`,
+			key: `🔍 Transaction Token Index (Internal)`,
 			default: () =>
 				[...store.transactions].map(([key]): TransactionToken<Func> => {
 					return { key, type: `transaction` }
@@ -33,7 +33,7 @@ export const attachTransactionIndex = (
 		undefined,
 	)
 	const transactionTokenIndex = createStandaloneSelector(store, {
-		key: `👁‍🗨 Transaction Token Index`,
+		key: `🔍 Transaction Token Index`,
 		get: ({ get }) => get(transactionTokenIndexState__INTERNAL),
 	})
 	return transactionTokenIndex

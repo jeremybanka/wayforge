@@ -62,7 +62,7 @@ export const TransactionIndex: FC = () => {
 	return (
 		<article className="index transaction_index" data-testid="transaction-index">
 			{tokenIds
-				.filter((token) => !token.key.startsWith(`👁‍🗨`))
+				.filter((token) => !token.key.startsWith(`🔍`))
 				.map((token) => {
 					return (
 						<TransactionLog

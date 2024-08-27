@@ -13,7 +13,7 @@ export const attachTransactionLogs = (
 		TransactionUpdate<Func>[],
 		string
 	>(store, {
-		key: `👁‍🗨 Transaction Update Log (Internal)`,
+		key: `🔍 Transaction Update Log (Internal)`,
 		default: () => [],
 		effects: (key) => [
 			({ setSelf }) => {
@@ -30,7 +30,7 @@ export const attachTransactionLogs = (
 		TransactionUpdate<Func>[],
 		string
 	>(store, {
-		key: `👁‍🗨 Transaction Update Log`,
+		key: `🔍 Transaction Update Log`,
 		get:
 			(key) =>
 			({ get }) =>

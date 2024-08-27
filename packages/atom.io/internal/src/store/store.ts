@@ -132,7 +132,7 @@ export class Store implements Lineage {
 	}
 
 	public loggers: AtomIOLogger[] = [
-		new AtomIOLogger(`warn`, (_, __, key) => !key.includes(`👁‍🗨`)),
+		new AtomIOLogger(`warn`, (_, __, key) => !key.includes(`🔍`)),
 	]
 	public logger: Logger = {
 		error: (...messages) => {

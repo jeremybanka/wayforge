@@ -17,11 +17,11 @@ export const attachAtomIndex = (
 	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
 		store,
 		{
-			key: `👁‍🗨 Atom Token Index (Internal)`,
+			key: `🔍 Atom Token Index (Internal)`,
 			default: () => {
 				const base: AtomTokenIndex = new Map()
 				for (const [key, val] of store.atoms) {
-					if (!key.includes(`👁‍🗨`)) {
+					if (!key.includes(`🔍`)) {
 						const token = deposit(val)
 						if (val.family) {
 							let familyNode = base.get(val.family.key)
@@ -43,7 +43,7 @@ export const attachAtomIndex = (
 			effects: [
 				({ setSelf }) => {
 					store.on.atomCreation.subscribe(`introspection`, (atomToken) => {
-						if (atomToken.key.includes(`👁‍🗨`)) {
+						if (atomToken.key.includes(`🔍`)) {
 							return
 						}
 
@@ -91,7 +91,7 @@ export const attachAtomIndex = (
 		undefined,
 	)
 	return createStandaloneSelector(store, {
-		key: `👁‍🗨 Atom Token Index`,
+		key: `🔍 Atom Token Index`,
 		get: ({ get }) => get(atomTokenIndexState__INTERNAL),
 	})
 }

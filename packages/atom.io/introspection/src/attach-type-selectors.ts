@@ -8,7 +8,7 @@ export const attachTypeSelectors = (
 	store: Store = IMPLICIT.STORE,
 ): ReadonlySelectorFamilyToken<string, string> => {
 	const typeSelectors = createReadonlySelectorFamily<string, string>(store, {
-		key: `👁‍🗨 State Type`,
+		key: `🔍 State Type`,
 		get:
 			(token) =>
 			({ get }) => {

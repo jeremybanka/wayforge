@@ -19,12 +19,12 @@ export const attachSelectorIndex = (
 			store,
 
 			{
-				key: `👁‍🗨 Selector Token Index (Internal)`,
+				key: `🔍 Selector Token Index (Internal)`,
 				default: () => {
 					const base: SelectorTokenIndex = new Map()
 					for (const map of [store.readonlySelectors, store.selectors]) {
 						for (const [key, val] of map) {
-							if (!key.includes(`👁‍🗨`)) {
+							if (!key.includes(`🔍`)) {
 								const token = deposit(val)
 								if (val.family) {
 									let familyNode = base.get(val.family.key)
@@ -49,7 +49,7 @@ export const attachSelectorIndex = (
 						store.on.selectorCreation.subscribe(
 							`introspection`,
 							(selectorToken) => {
-								if (selectorToken.key.includes(`👁‍🗨`)) {
+								if (selectorToken.key.includes(`🔍`)) {
 									return
 								}
 
@@ -102,7 +102,7 @@ export const attachSelectorIndex = (
 			undefined,
 		)
 	return createStandaloneSelector(IMPLICIT.STORE, {
-		key: `👁‍🗨 Selector Token Index`,
+		key: `🔍 Selector Token Index`,
 		get: ({ get }) => get(readonlySelectorTokenIndexState__INTERNAL),
 	})
 }

@@ -14,7 +14,7 @@ export const attachTimelineFamily = (
 		Timeline<any>,
 		string
 	>(store, {
-		key: `👁‍🗨 Timeline Update Log (Internal)`,
+		key: `🔍 Timeline Update Log (Internal)`,
 		default: (key) =>
 			store.timelines.get(key) ?? {
 				type: `timeline`,
@@ -40,7 +40,7 @@ export const attachTimelineFamily = (
 	const findTimelineLogState = createSelectorFamily<Timeline<any>, string>(
 		store,
 		{
-			key: `👁‍🗨 Timeline Update Log`,
+			key: `🔍 Timeline Update Log`,
 			get:
 				(key) =>
 				({ get }) =>

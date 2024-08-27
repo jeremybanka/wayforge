@@ -11,8 +11,8 @@ function shouldUpdateBeStowed(key: string, update: StateUpdate<any>): boolean {
 	if (isTransceiver(update.newValue)) {
 		return false
 	}
-	// do not stow updates where the key contains 👁‍🗨
-	if (key.includes(`👁‍🗨`)) {
+	// do not stow updates where the key contains 🔍
+	if (key.includes(`🔍`)) {
 		return false
 	}
 	return true
