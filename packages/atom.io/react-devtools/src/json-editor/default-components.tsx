@@ -5,7 +5,7 @@ import { ErrorBoundary } from "../error-boundary"
 export type Dict<T> = Record<string, T>
 
 export type WrapperComponent<T extends Dict<unknown> = Dict<unknown>> = FC<
-	T & { children: ReactNode }
+	T & { children: ReactNode; testid?: string | undefined }
 >
 
 export type WC<T extends Dict<unknown> = Dict<unknown>> = WrapperComponent<T>
@@ -13,7 +13,10 @@ export type WC<T extends Dict<unknown> = Dict<unknown>> = WrapperComponent<T>
 export type JsonEditorComponents = {
 	ErrorBoundary: WC
 
-	Button: WC<{ onClick?: () => void; disabled?: boolean }>
+	Button: WC<{
+		onClick?: () => void
+		disabled?: boolean
+	}>
 	DeleteIcon: FC
 
 	EditorLayout: FC<{
@@ -47,12 +50,13 @@ export type JsonEditorComponents = {
 
 export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 	ErrorBoundary: ({ children }) => <ErrorBoundary>{children}</ErrorBoundary>,
-	Button: ({ onClick, children, disabled }) => (
+	Button: ({ onClick, children, disabled, testid }) => (
 		<button
 			type="button"
 			className="json_editor_button"
 			onClick={onClick}
 			disabled={disabled}
+			data-testid={testid}
 		>
 			{children}
 		</button>
@@ -83,45 +87,80 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 			</Wrapper>
 		)
 	},
-	ArrayWrapper: ({ children }) => (
-		<div className="json_editor_array">{children}</div>
+	ArrayWrapper: ({ children, testid }) => (
+		<div className="json_editor_array" data-testid={testid}>
+			{children}
+		</div>
 	),
-	ObjectWrapper: ({ children }) => (
-		<div className="json_editor_object">{children}</div>
+	ObjectWrapper: ({ children, testid }) => (
+		<div className="json_editor_object" data-testid={testid}>
+			{children}
+		</div>
 	),
-	StringWrapper: ({ children }) => (
-		<span className="json_editor_string">{children}</span>
+	StringWrapper: ({ children, testid }) => (
+		<span className="json_editor_string" data-testid={testid}>
+			{children}
+		</span>
 	),
-	NumberWrapper: ({ children }) => (
-		<span className="json_editor_number">{children}</span>
+	NumberWrapper: ({ children, testid }) => (
+		<span className="json_editor_number" data-testid={testid}>
+			{children}
+		</span>
 	),
-	BooleanWrapper: ({ children }) => (
-		<span className="json_editor_boolean">{children}</span>
+	BooleanWrapper: ({ children, testid }) => (
+		<span className="json_editor_boolean" data-testid={testid}>
+			{children}
+		</span>
 	),
 	Null: ({ testid }) => (
 		<span className="json_editor_null" data-testid={testid} />
 	),
-	MissingPropertyWrapper: ({ children }) => (
-		<div className="json_editor_property json_editor_missing">{children}</div>
+	MissingPropertyWrapper: ({ children, testid }) => (
+		<div
+			className="json_editor_property json_editor_missing"
+			data-testid={testid}
+		>
+			{children}
+		</div>
 	),
-	MiscastPropertyWrapper: ({ children }) => (
-		<div className="json_editor_property json_editor_miscast">{children}</div>
+	MiscastPropertyWrapper: ({ children, testid }) => (
+		<div
+			className="json_editor_property json_editor_miscast"
+			data-testid={testid}
+		>
+			{children}
+		</div>
 	),
-	IllegalPropertyWrapper: ({ children }) => (
-		<span className="json_editor_property json_editor_illegal">{children}</span>
+	IllegalPropertyWrapper: ({ children, testid }) => (
+		<span
+			className="json_editor_property json_editor_illegal"
+			data-testid={testid}
+		>
+			{children}
+		</span>
 	),
-	OfficialPropertyWrapper: ({ children }) => (
-		<span className="json_editor_property json_editor_official">{children}</span>
+	OfficialPropertyWrapper: ({ children, testid }) => (
+		<span
+			className="json_editor_property json_editor_official"
+			data-testid={testid}
+		>
+			{children}
+		</span>
 	),
-	UnofficialPropertyWrapper: ({ children }) => (
-		<span className="json_editor_property json_editor_unofficial">
+	UnofficialPropertyWrapper: ({ children, testid }) => (
+		<span
+			className="json_editor_property json_editor_unofficial"
+			data-testid={testid}
+		>
 			{children}
 		</span>
 	),
 	DeleteIcon: () => (
 		<span className="json_editor_icon json_editor_delete">x</span>
 	),
-	KeyWrapper: ({ children }) => (
-		<span className="json_editor_key">{children}</span>
+	KeyWrapper: ({ children, testid }) => (
+		<span className="json_editor_key" data-testid={testid}>
+			{children}
+		</span>
 	),
 }

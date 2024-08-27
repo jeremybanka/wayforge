@@ -50,6 +50,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 	data,
 	set,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement => {
 	const disabled = isReadonly(path)
 
@@ -73,6 +74,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 	return (
 		<>
 			<Components.Button
+				testid={`${testid}-sort-properties`}
 				onClick={() => {
 					sortProperties()
 				}}
@@ -101,15 +103,18 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 								recast={recastProperty[key as keyof T]}
 								className="json_editor_property"
 								Components={Components}
+								testid={`${testid}-property-${key}`}
 							/>
 						)
 					})}
 				</div>
 				{disabled ? (
-					<Components.Button disabled>+</Components.Button>
+					<Components.Button disabled testid={`${testid}-add-property`}>
+						+
+					</Components.Button>
 				) : (
 					<Components.Button
-						data-testid="add-property"
+						testid={`${testid}-add-property`}
 						onClick={() => {
 							makePropertyAdder(`new_property`, `string`)()
 						}}

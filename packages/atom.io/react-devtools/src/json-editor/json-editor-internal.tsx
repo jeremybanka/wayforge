@@ -60,11 +60,12 @@ export const JsonEditor_INTERNAL = <T,>({
 			>
 				{remove ? (
 					disabled ? (
-						<Components.Button disabled>
+						<Components.Button disabled testid={`${testid}-delete`}>
 							<Components.DeleteIcon />
 						</Components.Button>
 					) : (
 						<Components.Button
+							testid={`${testid}-delete`}
 							onClick={() => {
 								remove()
 							}}
@@ -86,6 +87,7 @@ export const JsonEditor_INTERNAL = <T,>({
 										}
 							}
 							disabled={disabled}
+							data-testid={`${testid}-rename`}
 						/>
 					</Components.KeyWrapper>
 				)}
@@ -111,6 +113,7 @@ export const JsonEditor_INTERNAL = <T,>({
 						}
 						value={refined.type}
 						disabled={disabled}
+						data-testid={`${testid}-recast`}
 					>
 						{Object.keys(SubEditors).map((type) => (
 							<option key={type} value={type}>
