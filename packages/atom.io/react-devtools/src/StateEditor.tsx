@@ -19,50 +19,14 @@ export const StateEditor: FC<{
 }> = ({ token }) => {
 	const set = useI(token)
 	const data = useO(token)
-	return isJson(data) ? (
-		<JsonEditor data={data} set={set} />
-	) : (
-		<div className="json_editor">
-			<ElasticInput
-				value={
-					data === undefined || data === null
-						? ``
-						: typeof data === `object` &&
-								`toJson` in data &&
-								typeof data.toJson === `function`
-							? JSON.stringify(data.toJson())
-							: data instanceof Set
-								? `Set { ${JSON.stringify([...data]).slice(1, -1)} }`
-								: Object.getPrototypeOf(data).constructor.name +
-									` ` +
-									fallback(() => JSON.stringify(data), `?`)
-				}
-				disabled={true}
-			/>
-		</div>
-	)
+	return <JsonEditor data={data} set={set} />
 }
 
 export const ReadonlySelectorViewer: FC<{
 	token: ReadonlySelectorToken<unknown>
 }> = ({ token }) => {
 	const data = useO(token)
-	return isJson(data) ? (
-		<JsonEditor data={data} set={() => null} isReadonly={() => true} />
-	) : (
-		<div className="json_editor">
-			<ElasticInput
-				value={
-					data instanceof Set
-						? `Set ` + JSON.stringify([...data])
-						: Object.getPrototypeOf(data).constructor.name +
-							` ` +
-							JSON.stringify(data)
-				}
-				disabled={true}
-			/>
-		</div>
-	)
+	return <JsonEditor data={data} set={() => null} isReadonly={() => true} />
 }
 
 export const StoreEditor: FC<{

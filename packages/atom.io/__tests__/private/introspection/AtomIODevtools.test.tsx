@@ -76,9 +76,19 @@ describe(`react-devtools`, () => {
 		})
 		const countAtom = findState(countAtoms, `count`)
 
+		const arrayAtom = atom<string[]>({
+			key: `array`,
+			default: [`A`, `B`, `C`],
+		})
+
 		const myNullAtom = atom<null>({
 			key: `myNull`,
 			default: null,
+		})
+
+		const myUndefinedAtom = atom<undefined>({
+			key: `myUndefined`,
+			default: undefined,
 		})
 
 		const myBooleanAtom = atom<boolean>({
@@ -143,14 +153,21 @@ describe(`react-devtools`, () => {
 			getByTestId(`open-close-state-family-count`).click()
 		})
 		act(() => {
-			getByTestId(`open-close-state-selections`).click()
+			getByTestId(`open-close-state-count("count")`).click()
 		})
 		act(() => {
-			getByTestId(`open-close-state-count("count")`).click()
+			getByTestId(`open-close-state-array`).click()
+		})
+		act(() => {
+			getByTestId(`open-close-state-selections`).click()
 		})
 		act(() => {
 			getByTestId(`open-close-state-myNull`).click()
 		})
+		act(() => {
+			getByTestId(`open-close-state-myUndefined`).click()
+		})
+
 		act(() => {
 			getByTestId(`open-close-state-myBoolean`).click()
 		})

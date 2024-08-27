@@ -26,7 +26,7 @@ export const SubEditors: Record<
 	string: StringEditor,
 }
 
-export type JsonEditorProps<T extends Json.Tree.Node> = {
+export type JsonEditorProps<T> = {
 	data: T
 	set: (valOrUpdater: T | ((currVal: T) => T)) => void
 	name?: string | undefined
@@ -41,7 +41,7 @@ export type JsonEditorProps<T extends Json.Tree.Node> = {
 	Components?: Partial<JsonEditorComponents>
 }
 
-export const JsonEditor = <T extends Json.Tree.Node>({
+export const JsonEditor = <T,>({
 	data,
 	set,
 	name,
