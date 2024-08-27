@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react"
-import { ErrorBoundary, RecoverableErrorBoundary } from "atom.io/react-devtools"
+import { ErrorBoundary } from "atom.io/react-devtools"
 import type { FunctionComponent } from "react"
 
 const NOT_A_FUNCTION = true
@@ -12,18 +12,6 @@ const scenarios = {
 			<ErrorBoundary>
 				<ThrowOnRender />
 			</ErrorBoundary>,
-		)
-		const errorBoundary = utils.getByTestId(`error-boundary`) as HTMLDivElement
-		return {
-			errorBoundary,
-			...utils,
-		}
-	},
-	recoverable: () => {
-		const utils = render(
-			<RecoverableErrorBoundary>
-				<ThrowOnRender />
-			</RecoverableErrorBoundary>,
 		)
 		const errorBoundary = utils.getByTestId(`error-boundary`) as HTMLDivElement
 		return {
