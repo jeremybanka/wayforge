@@ -2,7 +2,7 @@ import { castToJson } from "atom.io/react-devtools"
 
 describe(`castToJson`, () => {
 	it(`should cast data to various json`, () => {
-		expect(castToJson({}).array).toEqual([])
+		expect(castToJson({ 0: `__` }).array).toEqual([[`0`, `__`]])
 		expect(castToJson([]).array).toEqual([])
 		expect(castToJson(`__`).array).toEqual([`__`])
 		expect(castToJson(2).array).toEqual([null, null])
@@ -13,7 +13,7 @@ describe(`castToJson`, () => {
 		expect(castToJson(99n / 99n).array).toEqual([])
 
 		expect(castToJson({}).object).toEqual({})
-		expect(castToJson([]).object).toEqual({})
+		expect(castToJson([`__`]).object).toEqual({ 0: `__` })
 		expect(castToJson(`__`).object).toEqual({ __: `__` })
 		expect(castToJson(2).object).toEqual({ number: 2 })
 		expect(castToJson(true).object).toEqual({ true: true })
