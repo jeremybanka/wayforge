@@ -10,8 +10,6 @@ import {
 	ErrorBoundary,
 } from "~/packages/atom.io/react-devtools/src/error-boundary"
 
-export * from "~/packages/atom.io/react-devtools/src/error-boundary"
-
 export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	children,
 	Fallback = DefaultFallback,
