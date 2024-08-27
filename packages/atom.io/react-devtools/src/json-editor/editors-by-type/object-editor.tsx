@@ -109,6 +109,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					<Components.Button disabled>+</Components.Button>
 				) : (
 					<Components.Button
+						data-testid="add-property"
 						onClick={() => {
 							makePropertyAdder(`new_property`, `string`)()
 						}}

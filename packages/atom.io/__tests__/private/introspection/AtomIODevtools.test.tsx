@@ -74,7 +74,18 @@ describe(`react-devtools`, () => {
 			key: `count`,
 			default: 0,
 		})
-		const countState = findState(countAtoms, `count`)
+		const countAtom = findState(countAtoms, `count`)
+
+		const myNullAtom = atom<null>({
+			key: `myNull`,
+			default: null,
+		})
+
+		const myBooleanAtom = atom<boolean>({
+			key: `myBoolean`,
+			default: false,
+		})
+
 		const Letter: FC = () => {
 			const setLetter = AR.useI(letterState)
 			const letter = AR.useO(letterState)
@@ -101,25 +112,46 @@ describe(`react-devtools`, () => {
 		return { setLetterTX, ...utils }
 	}
 	it(`shows states`, async () => {
-		const { setLetterTX, getByTestId } = scenario()
-		const changeStateButton = getByTestId(`changeStateButton`)
-		fireEvent.click(changeStateButton)
+		const { setLetterTX, getByTestId, debug } = scenario()
+		act(() => {
+			const changeStateButton = getByTestId(`changeStateButton`)
+			fireEvent.click(changeStateButton)
+		})
 		const option = getByTestId(`B`)
 		expect(setters.length).toBe(2)
 		expect(setters[0]).toBe(setters[1])
 
-		getByTestId(`view-atoms`)
-		getByTestId(`view-selectors`)
-		getByTestId(`view-transactions`)
-		getByTestId(`view-timelines`)
+		await act(async () => {
+			getByTestId(`view-atoms`)
+			getByTestId(`view-selectors`)
+			getByTestId(`view-transactions`)
+			getByTestId(`view-timelines`)
 
-		getByTestId(`state-index`)
+			getByTestId(`state-index`)
 
-		await waitFor(() => getByTestId(`state-letter`))
-		await waitFor(() => getByTestId(`state-selections`))
+			await waitFor(() => getByTestId(`state-letter`))
+			await waitFor(() => getByTestId(`state-selections`))
+		})
+
 		act(() => {
 			getByTestId(`open-close-state-letter`).click()
 		})
+		act(() => {
+			getByTestId(`open-close-state-letter`).click()
+		})
+		act(() => {
+			getByTestId(`open-close-state-family-count`).click()
+		})
+		act(() => {
+			getByTestId(`open-close-state-count("count")`).click()
+		})
+		act(() => {
+			getByTestId(`open-close-state-myNull`).click()
+		})
+		act(() => {
+			getByTestId(`open-close-state-myBoolean`).click()
+		})
+
 		act(() => {
 			getByTestId(`view-selectors`).click()
 		})
