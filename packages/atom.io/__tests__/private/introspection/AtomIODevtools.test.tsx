@@ -5,7 +5,6 @@ import * as AR from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import type { FC } from "react"
 
 import * as Utils from "../../__util__"
 
@@ -30,26 +29,84 @@ beforeEach(() => {
 	willClearLocalStorage = true
 })
 
-describe(`react-devtools`, () => {
-	const scenario = () => {
-		const letterState = $.atom<string>({
-			key: `letter`,
-			default: `A`,
+const scenario = () =>
+	render(
+		<AR.StoreProvider store={$.store}>
+			<AtomIODevtools />
+		</AR.StoreProvider>,
+	)
+
+describe(`editing primitive atoms of a variety of types`, () => {
+	test(`string`, () => {
+		const stringAtom = $.atom<string>({ key: `myString`, default: `A` })
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			const myStringInput = getByTestId(`myString-state-editor-string-input`)
+			fireEvent.change(myStringInput, { target: { value: `hello` } })
 		})
+
+		expect($.getState(stringAtom)).toBe(`hello`)
+	})
+
+	test(`number`, () => {
+		const numberAtom = $.atom<number>({ key: `myNumber`, default: 0 })
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			const myNumberInput = getByTestId(`myNumber-state-editor-number-input`)
+			fireEvent.change(myNumberInput, { target: { value: `1` } })
+		})
+
+		expect($.getState(numberAtom)).toBe(1)
+	})
+
+	test(`boolean`, () => {
+		const booleanAtom = $.atom<boolean>({ key: `myBoolean`, default: false })
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			const myBooleanInput = getByTestId(`myBoolean-state-editor-boolean-input`)
+			fireEvent.click(myBooleanInput)
+		})
+
+		expect($.getState(booleanAtom)).toBe(true)
+	})
+
+	test(`null`, () => {
+		const nullAtom = $.atom<null>({ key: `myNull`, default: null })
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			const myNullInput = getByTestId(`myNull-state-editor-null`)
+			fireEvent.click(myNullInput)
+		})
+
+		expect($.getState(nullAtom)).toBe(null)
+	})
+})
+
+describe(`editing selectors`, () => {
+	test(`selector that depends on an atom`, async () => {
+		const letterState = $.atom<string>({ key: `letter`, default: `A` })
 		const doubleLetterState = $.selector<string>({
 			key: `doubleLetter`,
 			get: ({ get }) => get(letterState) + get(letterState),
 		})
-		const setLetterTX = $.transaction<(newLetter: string) => void>({
-			key: `setLetter`,
-			do: ({ set }, newLetter) => {
-				set(letterState, newLetter)
-			},
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			getByTestId(`view-selectors`).click()
 		})
-		const letterTL = $.timeline({
-			key: `letterTL`,
-			scope: [letterState],
-		})
+		await waitFor(() => getByTestId(`state-doubleLetter`))
+	})
+
+	test(`selector that filters a SetRTX`, async () => {
 		const selectionsState = $.atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `selections`,
 			default: () => new SetRTX([`green`]),
@@ -66,155 +123,94 @@ describe(`react-devtools`, () => {
 				return selectionsWithoutGreen
 			},
 		})
-		const countAtoms = $.atomFamily<number, string>({
-			key: `count`,
-			default: 0,
-		})
-		const countAtom = $.findState(countAtoms, `count`)
 
-		const arrayAtom = $.atom<string[]>({
-			key: `array`,
-			default: [`A`, `B`, `C`],
-		})
-
-		const myNullAtom = $.atom<null>({
-			key: `myNull`,
-			default: null,
-		})
-
-		const myUndefinedAtom = $.atom<undefined>({
-			key: `myUndefined`,
-			default: undefined,
-		})
-
-		const myBooleanAtom = $.atom<boolean>({
-			key: `myBoolean`,
-			default: false,
-		})
-
-		const Letter: FC = () => {
-			const setLetter = AR.useI(letterState)
-			const letter = AR.useO(letterState)
-			return (
-				<>
-					<div data-testid={letter}>{letter}</div>
-					<button
-						type="button"
-						onClick={() => {
-							setLetter(`B`)
-						}}
-						data-testid="changeStateButton"
-					/>
-				</>
-			)
-		}
-		const utils = render(
-			<AR.StoreProvider store={$.store}>
-				<Letter />
-				<AtomIODevtools />
-			</AR.StoreProvider>,
-		)
-		return { setLetterTX, ...utils }
-	}
-	it(`shows states`, async () => {
-		const { setLetterTX, getByTestId, debug } = scenario()
-		act(() => {
-			const changeStateButton = getByTestId(`changeStateButton`)
-			fireEvent.click(changeStateButton)
-		})
-		const option = getByTestId(`B`)
-
-		await act(async () => {
-			getByTestId(`view-atoms`)
-			getByTestId(`view-selectors`)
-			getByTestId(`view-transactions`)
-			getByTestId(`view-timelines`)
-
-			getByTestId(`state-index`)
-			await waitFor(() => getByTestId(`state-letter`))
-			await waitFor(() => getByTestId(`state-selections`))
-		})
-
-		act(() => {
-			getByTestId(`open-close-state-letter`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-letter`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-family-count`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-count("count")`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-array`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-selections`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-myNull`).click()
-		})
-		act(() => {
-			getByTestId(`open-close-state-myUndefined`).click()
-		})
-
-		act(() => {
-			getByTestId(`open-close-state-myBoolean`).click()
-		})
+		const { getByTestId } = scenario()
 
 		act(() => {
 			getByTestId(`view-selectors`).click()
 		})
-		await waitFor(() => getByTestId(`state-doubleLetter`))
-		act(() => {
-			getByTestId(`state-selectionsWithoutGreen`).click()
-		})
-		act(() => {
-			getByTestId(`view-transactions`).click()
-		})
-		act(() => {
-			$.runTransaction(setLetterTX)(`C`)
-		})
-		await waitFor(() => getByTestId(`transaction-setLetter`))
-		act(() => {
-			getByTestId(`open-close-transaction-setLetter`).click()
-		})
-		await waitFor(() => getByTestId(`transaction-update-setLetter-0`))
-		act(() => {
-			getByTestId(`view-timelines`).click()
-		})
-		await waitFor(() => getByTestId(`timeline-letterTL`))
-		act(() => {
-			getByTestId(`open-close-timeline-letterTL`).click()
-		})
-		await waitFor(() => getByTestId(`timeline-update-letter-0`))
+		await waitFor(() => getByTestId(`state-selectionsWithoutGreen`))
 	})
 })
 
-describe(`editing primitive atoms of a variety of types`, () => {
-	const scenario = () => {
-		$.atom<string>({ key: `myString`, default: `A` })
-		$.atom<number>({ key: `myNumber`, default: 0 })
-		$.atom<boolean>({ key: `myBoolean`, default: false })
-		$.atom<null>({ key: `myNull`, default: null })
-		$.atom<undefined>({ key: `myUndefined`, default: undefined })
+describe(`working with families`, () => {
+	test(`atom family`, async () => {
+		const countAtoms = $.atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const countAtomA = $.findState(countAtoms, `A`)
+		const countAtomB = $.findState(countAtoms, `B`)
 
-		const utils = render(
-			<AR.StoreProvider store={$.store}>
-				<AtomIODevtools />
-			</AR.StoreProvider>,
-		)
-		return { ...utils }
-	}
-	it(`shows states`, async () => {
-		const { getByTestId, debug } = scenario()
+		const { getByTestId } = scenario()
 
 		act(() => {
-			getByTestId(`open-close-state-myString`).click()
+			getByTestId(`open-close-state-family-count`).click()
 		})
-		await waitFor(() => getByTestId(`state-myString`))
-		debug()
+		await waitFor(() => getByTestId(`state-count("A")`))
+		await waitFor(() => getByTestId(`state-count("B")`))
+
+		act(() => {
+			fireEvent.change(getByTestId(`count("A")-state-editor-number-input`), {
+				target: { value: `1` },
+			})
+		})
+	})
+})
+
+describe(`working with transactions`, () => {
+	test(`simple transaction`, async () => {
+		const letterState = $.atom<string>({ key: `letter`, default: `A` })
+		const setLetterTX = $.transaction<(newLetter: string) => void>({
+			key: `setLetter`,
+			do: ({ set }, newLetter) => {
+				set(letterState, newLetter)
+			},
+		})
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			getByTestId(`view-transactions`).click()
+		})
+		await waitFor(() => getByTestId(`transaction-setLetter`))
+
+		act(() => {
+			getByTestId(`open-close-transaction-setLetter`).click()
+		})
+
+		act(() => {
+			$.runTransaction(setLetterTX)(`B`)
+		})
+
+		await waitFor(() => getByTestId(`transaction-update-setLetter-0`))
+	})
+})
+
+describe(`working with timelines`, () => {
+	test(`basic timeline`, async () => {
+		const letterState = $.atom<string>({ key: `letter`, default: `A` })
+		const letterTL = $.timeline({
+			key: `letterTL`,
+			scope: [letterState],
+		})
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			getByTestId(`view-timelines`).click()
+		})
+
+		await waitFor(() => getByTestId(`timeline-letterTL`))
+
+		act(() => {
+			getByTestId(`open-close-timeline-letterTL`).click()
+		})
+
+		act(() => {
+			$.setState(letterState, `C`)
+		})
+
+		await waitFor(() => getByTestId(`timeline-update-letter-0`))
 	})
 })
