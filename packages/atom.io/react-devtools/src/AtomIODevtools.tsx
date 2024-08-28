@@ -1,22 +1,33 @@
 import "./devtools.scss"
 
-import { useI, useO } from "atom.io/react"
+import { StoreContext, useI, useO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "framer-motion"
-import { useRef } from "react"
+import { useContext, useRef } from "react"
 
 import { StateIndex } from "./StateIndex"
-import {
-	atomIndex,
-	devtoolsAreOpenState,
-	devtoolsViewOptionsState,
-	devtoolsViewSelectionState,
-	selectorIndex,
-} from "./store"
+import { attachDevtoolsStates, DevtoolsContext } from "./store"
 import { TimelineIndex } from "./TimelineIndex"
 import { TransactionIndex } from "./TransactionIndex"
 
-export const AtomIODevtools = (): JSX.Element => {
+export const AtomIODevtools: React.FC = () => {
+	const store = useContext(StoreContext)
+	return (
+		<DevtoolsContext.Provider value={attachDevtoolsStates(store)}>
+			<AtomIODevtoolsInternal />
+		</DevtoolsContext.Provider>
+	)
+}
+
+const AtomIODevtoolsInternal = (): JSX.Element => {
 	const constraintsRef = useRef(null)
+
+	const {
+		atomIndex,
+		selectorIndex,
+		devtoolsAreOpenState,
+		devtoolsViewSelectionState,
+		devtoolsViewOptionsState,
+	} = useContext(DevtoolsContext)
 
 	const setDevtoolsAreOpen = useI(devtoolsAreOpenState)
 	const devtoolsAreOpen = useO(devtoolsAreOpenState)
@@ -85,9 +96,9 @@ export const AtomIODevtools = (): JSX.Element => {
 									<StateIndex tokenIndex={selectorIndex} />
 								) : devtoolsView === `transactions` ? (
 									<TransactionIndex />
-								) : devtoolsView === `timelines` ? (
+								) : (
 									<TimelineIndex />
-								) : null}
+								)}
 							</LayoutGroup>
 						</motion.main>
 					</>
@@ -103,7 +114,7 @@ export const AtomIODevtools = (): JSX.Element => {
 							}
 						}}
 					>
-						👁‍🗨
+						🔍
 					</button>
 				</footer>
 			</motion.main>

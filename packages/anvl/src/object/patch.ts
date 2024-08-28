@@ -1,6 +1,7 @@
+import { sprawl } from "~/packages/atom.io/introspection/src/sprawl"
+
 import { key } from "./access"
 import { isPlainObject } from "./refinement"
-import { sprawl } from "./sprawl"
 
 export type Fragment<T> = Partial<{
 	[K in keyof T]: T[K] extends (infer Item)[]

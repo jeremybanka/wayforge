@@ -1,38 +1,34 @@
+import { jsonRefinery } from "atom.io/introspection"
+import type { JsonTypes } from "atom.io/json"
+import { isJson } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
-import type { SetterOrUpdater } from "recoil"
 
-import { doNothing } from "~/packages/anvl/src/function"
-import type { JsonTypes } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { jsonRefinery } from "~/packages/atom.io/introspection/src"
-import { isJson, type Json } from "~/packages/atom.io/json/src"
-
-import { ElasticInput } from "../../react-elastic-input/src"
+import { ElasticInput } from "../elastic-input"
+import type { SetterOrUpdater } from "."
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
 import { NonJsonEditor } from "./editors-by-type/non-json"
 
-export type JsonEditorProps_INTERNAL<T extends Json.Tree.Node> = {
+export type JsonEditorProps_INTERNAL<T> = {
 	data: T
 	set: SetterOrUpdater<T>
 	name?: string | undefined
 	rename?: ((newKey: string) => void) | undefined
 	remove?: (() => void) | undefined
 	recast?: (newType: keyof JsonTypes) => void
-	schema?: JsonSchema | undefined
 	path?: ReadonlyArray<number | string>
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
 	className?: string | undefined
 	style?: CSSProperties | undefined
-	Header?: FC<{ data: T; schema?: JsonSchema | undefined }> | undefined
+	Header?: FC<{ data: T }> | undefined
 	Components: JsonEditorComponents
+	testid?: string | undefined
 }
 
-export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
+export const JsonEditor_INTERNAL = <T,>({
 	data,
 	set,
-	schema,
 	name,
 	rename,
 	remove,
@@ -44,6 +40,7 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 	style,
 	Header: HeaderDisplay,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
 	const dataIsJson = isJson(data)
 	const refined = jsonRefinery.refine<unknown>(data) ?? {
@@ -56,53 +53,67 @@ export const JsonEditor_INTERNAL = <T extends Json.Tree.Node>({
 
 	return isHidden(path) ? null : (
 		<Components.ErrorBoundary>
-			<Components.EditorWrapper className={className} style={style}>
-				{remove && (
-					<Components.Button
-						onClick={disabled ? doNothing : remove}
-						disabled={disabled}
-					>
-						<Components.DeleteIcon />
-					</Components.Button>
-				)}
-				{HeaderDisplay && <HeaderDisplay data={data} schema={schema} />}
+			<Components.EditorWrapper
+				className={className}
+				style={style}
+				testid={testid}
+			>
+				{remove ? (
+					disabled ? (
+						<Components.Button disabled testid={`${testid}-delete`}>
+							<Components.DeleteIcon />
+						</Components.Button>
+					) : (
+						<Components.Button
+							testid={`${testid}-delete`}
+							onClick={() => {
+								remove()
+							}}
+						>
+							<Components.DeleteIcon />
+						</Components.Button>
+					)
+				) : null}
+				{HeaderDisplay && <HeaderDisplay data={data} />}
 				{rename && (
 					<Components.KeyWrapper>
 						<ElasticInput
 							value={name}
 							onChange={
 								disabled
-									? doNothing
+									? undefined
 									: (e) => {
 											rename(e.target.value)
 										}
 							}
 							disabled={disabled}
+							data-testid={`${testid}-rename`}
 						/>
 					</Components.KeyWrapper>
 				)}
 				<SubEditor
 					data={refined.data}
 					set={set}
-					schema={schema}
 					remove={remove}
 					rename={rename}
 					path={path}
 					isReadonly={isReadonly}
 					isHidden={isHidden}
 					Components={Components}
+					testid={testid}
 				/>
 				{recast && dataIsJson ? (
 					<select
 						onChange={
 							disabled
-								? doNothing
+								? undefined
 								: (e) => {
 										recast(e.target.value as keyof JsonTypes)
 									}
 						}
 						value={refined.type}
 						disabled={disabled}
+						data-testid={`${testid}-recast`}
 					>
 						{Object.keys(SubEditors).map((type) => (
 							<option key={type} value={type}>

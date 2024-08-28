@@ -1,14 +1,8 @@
 import type { Json } from "atom.io/json"
-import { ElasticInput } from "hamr/react-elastic-input"
 import type { FC, ReactElement } from "react"
 import { useRef } from "react"
 
-import { doNothing } from "~/packages/anvl/src/function"
-import { findSubSchema } from "~/packages/anvl/src/json-schema/find-sub-schema"
-import { isObjectSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { isPlainObject } from "~/packages/anvl/src/object/refinement"
-import { isLiteral } from "~/packages/anvl/src/refinement"
-
+import { ElasticInput } from "../../elastic-input"
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
@@ -49,14 +43,14 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 	</Components.MissingPropertyWrapper>
 )
 
-export const ObjectEditor = <T extends Json.Object>({
-	schema,
+export const ObjectEditor = <T extends Json.Tree.Object>({
 	path = [],
 	isReadonly = () => false,
 	isHidden = () => false,
 	data,
 	set,
 	Components,
+	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement => {
 	const disabled = isReadonly(path)
 
@@ -77,30 +71,10 @@ export const ObjectEditor = <T extends Json.Object>({
 	const sortProperties = makePropertySorter(data, set)
 	const makePropertyAdder = makePropertyCreationInterface(data, set)
 
-	const subSchema = isPlainObject(schema) ? findSubSchema(schema)(path) : true
-	const schemaKeys: ReadonlyArray<string> | true = isLiteral(true)(subSchema)
-		? true
-		: isObjectSchema(subSchema)
-			? Object.keys(subSchema.properties ?? {})
-			: []
-	const dataKeys: ReadonlyArray<string> = Object.keys(data)
-	const [unofficialKeys, officialKeys] = dataKeys.reduce(
-		([unofficial, official], key) => {
-			const isOfficial = schemaKeys === true || schemaKeys.includes(key)
-			return isOfficial
-				? [unofficial, [...official, key]]
-				: [[...unofficial, key], official]
-		},
-		[[], []] as [string[], string[]],
-	)
-	const missingKeys: ReadonlyArray<string> =
-		schemaKeys === true
-			? []
-			: schemaKeys.filter((key) => !dataKeys.includes(key))
-
 	return (
 		<>
 			<Components.Button
+				testid={`${testid}-sort-properties`}
 				onClick={() => {
 					sortProperties()
 				}}
@@ -110,28 +84,14 @@ export const ObjectEditor = <T extends Json.Object>({
 			</Components.Button>
 			<Components.ObjectWrapper>
 				<div className="json_editor_properties">
-					{[...missingKeys, ...officialKeys, ...unofficialKeys].map((key) => {
+					{Object.keys(data).map((key) => {
 						const originalKey = stableKeyMap.current[key]
 						const newPath = [...path, key]
 						const originalPath = [...path, originalKey]
-						const isOfficial = schemaKeys === true || schemaKeys.includes(key)
-						const isMissing = missingKeys.includes(key)
 
-						if (isMissing) {
-							return (
-								<PropertyAdder
-									key={key + `IsMissing`}
-									propertyKey={key}
-									addProperty={makePropertyAdder(key, `string`)}
-									disabled={disabled}
-									Components={Components}
-								/>
-							)
-						}
 						return (
 							<JsonEditor_INTERNAL
 								key={originalPath.join(`.`)}
-								schema={schema}
 								path={newPath}
 								name={key}
 								isReadonly={isReadonly}
@@ -141,26 +101,27 @@ export const ObjectEditor = <T extends Json.Object>({
 								rename={renameProperty[key as keyof T]}
 								remove={removeProperty[key as keyof T]}
 								recast={recastProperty[key as keyof T]}
-								className={`json_editor_property ${
-									isOfficial ? `json_editor_official` : `json_editor_unofficial`
-								}`}
+								className="json_editor_property"
 								Components={Components}
+								testid={`${testid}-property-${key}`}
 							/>
 						)
 					})}
 				</div>
-				<Components.Button
-					onClick={
-						disabled
-							? doNothing
-							: () => {
-									makePropertyAdder(`new_property`, `string`)()
-								}
-					}
-					disabled={disabled}
-				>
-					+
-				</Components.Button>
+				{disabled ? (
+					<Components.Button disabled testid={`${testid}-add-property`}>
+						+
+					</Components.Button>
+				) : (
+					<Components.Button
+						testid={`${testid}-add-property`}
+						onClick={() => {
+							makePropertyAdder(`new_property`, `string`)()
+						}}
+					>
+						+
+					</Components.Button>
+				)}
 			</Components.ObjectWrapper>
 		</>
 	)

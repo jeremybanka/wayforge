@@ -26,11 +26,11 @@ export const evictDownStream = <T>(atom: Atom<T>, store: Store): void => {
 			)
 		}
 		for (const key of downstreamKeys) {
-			if (isDone(key, target)) {
+			if (isDone(target, key)) {
 				continue
 			}
 			evictCachedValue(key, target)
-			markDone(key, target)
+			markDone(target, key)
 		}
 	}
 }

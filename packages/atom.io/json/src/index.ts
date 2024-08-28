@@ -59,3 +59,32 @@ export const isJson = (input: unknown): input is Json.Tree.Node => {
 	const prototype = Object.getPrototypeOf(input)
 	return JSON_PROTOTYPES.includes(prototype)
 }
+
+export const JSON_TYPE_NAMES = [
+	`array`,
+	`boolean`,
+	`null`,
+	`number`,
+	`object`,
+	`string`,
+] as const
+
+export type JsonTypeName = (typeof JSON_TYPE_NAMES)[number]
+
+export interface JsonTypes extends Record<JsonTypeName, Json.Serializable> {
+	array: Json.Array
+	boolean: boolean
+	null: null
+	number: number
+	object: Json.Object
+	string: string
+}
+
+export const JSON_DEFAULTS: JsonTypes = {
+	array: [],
+	boolean: false,
+	null: null,
+	number: 0,
+	object: {},
+	string: ``,
+}

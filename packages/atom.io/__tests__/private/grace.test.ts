@@ -270,3 +270,26 @@ describe(`findState`, () => {
 		)
 	})
 })
+
+describe(`internal debugging`, () => {
+	describe(`warnings for misuse of the operation module`, () => {
+		test(`markDone`, () => {
+			Internal.markDone(Internal.IMPLICIT.STORE, `a`)
+			expect(logger.error).toHaveBeenLastCalledWith(
+				`🐞`,
+				`unknown`,
+				`a`,
+				`markDone called outside of an operation. This is probably a bug in AtomIO.`,
+			)
+		})
+		test(`isDone`, () => {
+			Internal.isDone(Internal.IMPLICIT.STORE, `a`)
+			expect(logger.error).toHaveBeenLastCalledWith(
+				`🐞`,
+				`unknown`,
+				`a`,
+				`isDone called outside of an operation. This is probably a bug in AtomIO.`,
+			)
+		})
+	})
+})

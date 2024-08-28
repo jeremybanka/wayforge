@@ -1,0 +1,106 @@
+import { become } from "atom.io/internal"
+import type { Json, JsonTypeName } from "atom.io/json"
+import { fromEntries, JSON_DEFAULTS, toEntries } from "atom.io/json"
+import type { MutableRefObject } from "react"
+
+import type { SetterOrUpdater } from "../.."
+import { castToJson } from "./cast-to-json"
+
+export const makePropertySetters = <T extends Json.Tree.Object>(
+	data: T,
+	set: SetterOrUpdater<T>,
+): { [K in keyof T]: SetterOrUpdater<T[K]> } =>
+	fromEntries(
+		toEntries(data).map(([key, value]) => [
+			key,
+			(newValue) => {
+				set({ ...data, [key]: become(newValue)(value) })
+			},
+		]),
+	)
+
+export const makePropertyRenamers = <T extends Json.Tree.Object>(
+	data: T,
+	set: SetterOrUpdater<T>,
+	stableKeyMapRef: MutableRefObject<{ [Key in keyof T]: keyof T }>,
+): { [K in keyof T]: (newKey: string) => void } =>
+	fromEntries(
+		toEntries(data).map(([key, value]) => [
+			key,
+			(newKey: string) => {
+				if (!Object.hasOwn(data, newKey)) {
+					set(() => {
+						const entries = Object.entries(data)
+						const index = entries.findIndex(([k]) => k === key)
+						entries[index] = [newKey, value]
+						const stableKeyMap = stableKeyMapRef.current
+						stableKeyMapRef.current = {
+							...stableKeyMap,
+							[newKey]: stableKeyMap[key],
+						}
+						return Object.fromEntries(entries) as T
+					})
+				}
+			},
+		]),
+	)
+
+export const makePropertyRemovers = <T extends Json.Tree.Object>(
+	data: T,
+	set: SetterOrUpdater<T>,
+): { [K in keyof T]: () => void } =>
+	fromEntries(
+		toEntries(data).map(([key]) => [
+			key,
+			() => {
+				set(() => {
+					const { [key]: _, ...rest } = data
+					return rest as T
+				})
+			},
+		]),
+	)
+
+export const makePropertyRecasters = <T extends Json.Tree.Object>(
+	data: T,
+	set: SetterOrUpdater<T>,
+): { [K in keyof T]: (newType: JsonTypeName) => void } =>
+	fromEntries(
+		toEntries(data).map(([key, value]) => [
+			key,
+			(newType: JsonTypeName) => {
+				set(() => ({
+					...data,
+					[key]: castToJson(value)[newType],
+				}))
+			},
+		]),
+	)
+
+export const makePropertyCreationInterface =
+	<T extends Json.Tree.Object>(
+		data: T,
+		set: SetterOrUpdater<T>,
+	): ((
+		key: string,
+		type: JsonTypeName,
+	) => (value?: Json.Serializable) => void) =>
+	(key, type) =>
+	(value) => {
+		set({ ...data, [key]: value ?? JSON_DEFAULTS[type] })
+	}
+
+export const makePropertySorter =
+	<T extends Json.Tree.Object>(
+		data: T,
+		set: SetterOrUpdater<T>,
+		sortFn?: (a: string, b: string) => number,
+	): (() => void) =>
+	() => {
+		const sortedKeys = Object.keys(data).sort(sortFn)
+		const sortedObj = {} as Record<string, unknown>
+		for (const key of sortedKeys) {
+			sortedObj[key] = data[key]
+		}
+		set(sortedObj as T)
+	}

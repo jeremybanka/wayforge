@@ -1,4 +1,4 @@
-import { sprawl } from "./sprawl"
+import { sprawl } from "atom.io/introspection"
 
 describe(`sprawl`, () => {
 	it(`should walk a tree`, () => {

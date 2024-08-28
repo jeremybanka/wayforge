@@ -4,6 +4,7 @@ export * from "./attach-introspection-states"
 export * from "./auditor"
 export * from "./differ"
 export * from "./refinery"
+export * from "./sprawl"
 
 export type FamilyNode<Token extends ReadableToken<unknown>> = {
 	key: string

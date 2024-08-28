@@ -11,7 +11,6 @@ export function walk(
 		case `AwaitExpression`:
 			walk(node.argument, callback, depth + 1)
 			break
-		case `FunctionDeclaration`:
 		case `FunctionExpression`:
 		case `ArrowFunctionExpression`:
 			for (const param of node.params) {
