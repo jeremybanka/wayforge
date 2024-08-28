@@ -96,9 +96,9 @@ const AtomIODevtoolsInternal = (): JSX.Element => {
 									<StateIndex tokenIndex={selectorIndex} />
 								) : devtoolsView === `transactions` ? (
 									<TransactionIndex />
-								) : devtoolsView === `timelines` ? (
+								) : (
 									<TimelineIndex />
-								) : null}
+								)}
 							</LayoutGroup>
 						</motion.main>
 					</>

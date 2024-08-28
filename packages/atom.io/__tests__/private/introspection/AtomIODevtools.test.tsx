@@ -7,6 +7,7 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../../__util__"
+import { throwUntil, throwWhile } from "../../__util__/waiting"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0
@@ -161,7 +162,7 @@ describe(`editing an object atom`, () => {
 	})
 })
 
-describe(`editing arrays`, () => {
+describe(`editing an array atom`, () => {
 	test(`array`, async () => {
 		const arrayAtom = $.atom<string[]>({ key: `myArray`, default: [`A`] })
 
@@ -179,6 +180,16 @@ describe(`editing arrays`, () => {
 		})
 
 		expect($.getState(arrayAtom)).toEqual([`B`])
+	})
+})
+
+describe(`displaying non-JSON`, () => {
+	test(`undefined`, () => {
+		$.atom<undefined>({ key: `myUndefined`, default: undefined })
+
+		const { getByTestId } = scenario()
+
+		getByTestId(`myUndefined-state-editor-undefined`)
 	})
 })
 
@@ -281,28 +292,101 @@ describe(`working with transactions`, () => {
 
 describe(`working with timelines`, () => {
 	test(`basic timeline`, async () => {
-		const letterState = $.atom<string>({ key: `letter`, default: `A` })
+		const countAtom = $.atom<number>({ key: `count`, default: 0 })
+		const doubleSelector = $.selector<number>({
+			key: `double`,
+			get: ({ get }) => get(countAtom) * 2,
+			set: ({ set }, newValue) => {
+				set(countAtom, newValue / 2)
+			},
+		})
+		const decrementTX = $.transaction<() => void>({
+			key: `reset`,
+			do: ({ set }) => {
+				set(countAtom, (c) => c - 1)
+			},
+		})
+		const tripleAndDecrementTX = $.transaction<() => void>({
+			key: `tripleAndDecrement`,
+			do: ({ get, set, run }) => {
+				set(countAtom, (c) => c + get(doubleSelector))
+				run(decrementTX)()
+			},
+		})
 		const letterTL = $.timeline({
-			key: `letterTL`,
-			scope: [letterState],
+			key: `countTL`,
+			scope: [countAtom],
 		})
 
-		const { getByTestId } = scenario()
+		const { getByTestId, debug } = scenario()
 
 		act(() => {
 			getByTestId(`view-timelines`).click()
 		})
 
-		await waitFor(() => getByTestId(`timeline-letterTL`))
+		await waitFor(() => getByTestId(`timeline-countTL`))
 
 		act(() => {
-			getByTestId(`open-close-timeline-letterTL`).click()
+			getByTestId(`open-close-timeline-countTL`).click()
 		})
 
 		act(() => {
-			$.setState(letterState, `C`)
+			$.setState(countAtom, 1)
 		})
 
-		await waitFor(() => getByTestId(`timeline-update-letter-0`))
+		await waitFor(() => getByTestId(`timeline-update-count-0`))
+
+		act(() => {
+			$.setState(doubleSelector, 2)
+		})
+
+		await waitFor(() => getByTestId(`timeline-update-double-1`))
+
+		act(() => {
+			$.runTransaction(tripleAndDecrementTX)()
+		})
+
+		await waitFor(() => getByTestId(`timeline-update-tripleAndDecrement-2`))
+
+		debug()
+	})
+})
+
+describe(`miscellaneous tool behavior`, () => {
+	test(`closing the devtools`, async () => {
+		willClearLocalStorage = false
+
+		$.atom<boolean>({ key: `example`, default: true })
+
+		const { getByTestId } = scenario()
+
+		await waitFor(() => getByTestId(`example-state-editor-boolean-input`))
+
+		act(() => {
+			$.setState({ type: `atom`, key: `🔍 Devtools Are Open` }, false)
+		})
+
+		await waitFor(() => {
+			try {
+				getByTestId(`example-state-editor-boolean-input`)
+			} catch (_) {
+				return
+			}
+			throw new Error(`Expected element to not be found`)
+		})
+	})
+	test(`stays closed between reloads`, async () => {
+		$.atom<boolean>({ key: `example`, default: true })
+
+		const { getByTestId } = scenario()
+
+		await waitFor(() => {
+			try {
+				getByTestId(`example-state-editor-boolean-input`)
+			} catch (_) {
+				return
+			}
+			throw new Error(`Expected element to not be found`)
+		})
 	})
 })

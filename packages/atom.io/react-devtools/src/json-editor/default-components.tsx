@@ -19,14 +19,6 @@ export type JsonEditorComponents = {
 	}>
 	DeleteIcon: FC
 
-	EditorLayout: FC<{
-		DeleteButton?: FC
-		Header?: FC
-		KeyInput?: FC
-		TypeSelect?: FC
-		ValueEditor: FC
-		Wrapper: WC
-	}>
 	EditorWrapper: WC<{
 		style?: CSSProperties | undefined
 		className?: string | undefined
@@ -40,11 +32,6 @@ export type JsonEditorComponents = {
 	BooleanWrapper: WC
 	Null: FC<{ testid?: string | undefined }>
 
-	MiscastPropertyWrapper: WC
-	MissingPropertyWrapper: WC
-	OfficialPropertyWrapper: WC
-	UnofficialPropertyWrapper: WC
-	IllegalPropertyWrapper: WC
 	KeyWrapper: WC
 }
 
@@ -69,24 +56,6 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 			{children}
 		</div>
 	),
-	EditorLayout: ({
-		DeleteButton,
-		Header,
-		KeyInput,
-		TypeSelect,
-		ValueEditor,
-		Wrapper,
-	}) => {
-		return (
-			<Wrapper>
-				{DeleteButton && <DeleteButton />}
-				{Header && <Header />}
-				{KeyInput && <KeyInput />}
-				{TypeSelect && <TypeSelect />}
-				<ValueEditor />
-			</Wrapper>
-		)
-	},
 	ArrayWrapper: ({ children, testid }) => (
 		<div className="json_editor_array" data-testid={testid}>
 			{children}
@@ -114,46 +83,6 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 	),
 	Null: ({ testid }) => (
 		<span className="json_editor_null" data-testid={testid} />
-	),
-	MissingPropertyWrapper: ({ children, testid }) => (
-		<div
-			className="json_editor_property json_editor_missing"
-			data-testid={testid}
-		>
-			{children}
-		</div>
-	),
-	MiscastPropertyWrapper: ({ children, testid }) => (
-		<div
-			className="json_editor_property json_editor_miscast"
-			data-testid={testid}
-		>
-			{children}
-		</div>
-	),
-	IllegalPropertyWrapper: ({ children, testid }) => (
-		<span
-			className="json_editor_property json_editor_illegal"
-			data-testid={testid}
-		>
-			{children}
-		</span>
-	),
-	OfficialPropertyWrapper: ({ children, testid }) => (
-		<span
-			className="json_editor_property json_editor_official"
-			data-testid={testid}
-		>
-			{children}
-		</span>
-	),
-	UnofficialPropertyWrapper: ({ children, testid }) => (
-		<span
-			className="json_editor_property json_editor_unofficial"
-			data-testid={testid}
-		>
-			{children}
-		</span>
 	),
 	DeleteIcon: () => (
 		<span className="json_editor_icon json_editor_delete">x</span>
