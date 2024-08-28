@@ -20,11 +20,11 @@ export type Claim<K extends Canonical> = {
 	type: `molecule`
 }
 
-export function allocateIntoStore<K extends Canonical>(
+export function allocateIntoStore<H extends Hierarchy, TK extends TypedKey>(
 	store: Store,
-	provenance: Claim<Canonical>[] | `root`,
-	key: K,
-): Claim<K> {
+	provenance: Above<TK, H>,
+	key: TK,
+): Claim<TK> {
 	const ctx =
 		provenance === `root`
 			? undefined
@@ -81,42 +81,31 @@ type TypedKey<
 	B extends string = string,
 	C extends string = string,
 > = CompoundTypedKey<A, B, C> | SingularTypedKey<A>
-type Scope = TypedKey[] | `root`
-type Purview = { above: Scope; below: Scope }
-type Hierarchy = { purviews: Record<number, Purview> }
+type Scope = TypedKey[]
+type Purview = { above: Scope | `root`; below: Scope }
+type Hierarchy<K extends keyof any> = { [key in K]: Purview }
 
-interface GameHierarchy extends Hierarchy {
-	purviews: {
-		0: { above: `root`; below: [GameKey, UserKey] }
-		1: { above: [GameKey, UserKey]; below: [PlayerKey] }
-		2: { above: [GameKey]; below: [ItemKey] }
-		3: { above: [PlayerKey]; below: [ItemKey] }
-	}
+interface GameHierarchy extends Hierarchy<0 | 1 | 2 | 3> {
+	0: { above: `root`; below: [GameKey, UserKey] }
+	1: { above: [GameKey, UserKey]; below: [PlayerKey] }
+	2: { above: [GameKey]; below: [ItemKey] }
+	3: { above: [PlayerKey]; below: [ItemKey] }
 }
 
-type Above<TK extends TypedKey[], H extends Hierarchy> = {
-	[K in keyof H[`purviews`]]: H[`purviews`][K] extends {
-		above: infer A
-		below: TK
-	}
-		? A
-		: never
-}[keyof H[`purviews`]]
+type Above<TK extends TypedKey, H extends Hierarchy<keyof any>> = {
+	[K in keyof H]: TK extends H[K][`below`][number] ? H[K][`above`] : never
+}[]
 
-type AboveRoot = Above<[], GameHierarchy>
-type AboveGame = Above<[GameKey], GameHierarchy>
-type AboveUser = Above<[UserKey], GameHierarchy>
-type AboveGameUser = Above<[GameKey, UserKey], GameHierarchy>
-type AbovePlayer = Above<[PlayerKey], GameHierarchy>
+type AboveGame = Above<GameKey, GameHierarchy>
 
-type Below<TK extends TypedKey[], H extends Hierarchy> = {
-	[K in keyof H[`purviews`]]: H[`purviews`][K] extends {
+type Below<TK extends TypedKey[], H extends Hierarchy<any>> = {
+	[K in keyof H]: H[K] extends {
 		above: TK
 		below: infer B
 	}
 		? B
 		: never
-}[keyof H[`purviews`]]
+}[keyof H]
 
 type BelowGame = Below<[GameKey], GameHierarchy>
 type BelowUser = Below<[UserKey], GameHierarchy>
