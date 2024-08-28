@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.28.2
+
+### Patch Changes
+
+- 9e91132: 🐛 `atom.io/react-devtools` Previously, state types were only displayed as `(error)`, now they are displayed as the correct type.
+- 9e91132: 🐛 `atom.io/devtools` The selector index would previously only be created on the `IMPLICIT.STORE`, not the passed store, which could result in the state being unavailable when using a custom `Silo`. Now, that state will be created on whichever store `atom.io/introspection`'s `attachIntrospectionStates` function is called.
+
 ## 0.28.1
 
 ### Patch Changes
