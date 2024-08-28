@@ -32,6 +32,7 @@ export type JsonEditorComponents = {
 	BooleanWrapper: WC
 	Null: FC<{ testid?: string | undefined }>
 
+	MissingPropertyWrapper: WC
 	KeyWrapper: WC
 }
 
@@ -86,6 +87,11 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 	),
 	DeleteIcon: () => (
 		<span className="json_editor_icon json_editor_delete">x</span>
+	),
+	MissingPropertyWrapper: ({ children, testid }) => (
+		<span className="json_editor_missing_property" data-testid={testid}>
+			{children}
+		</span>
 	),
 	KeyWrapper: ({ children, testid }) => (
 		<span className="json_editor_key" data-testid={testid}>
