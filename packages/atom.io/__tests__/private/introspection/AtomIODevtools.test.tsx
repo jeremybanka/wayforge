@@ -7,7 +7,6 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../../__util__"
-import { throwUntil, throwWhile } from "../../__util__/waiting"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 0

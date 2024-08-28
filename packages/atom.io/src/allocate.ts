@@ -21,8 +21,8 @@ export type Claim<K extends Canonical> = {
 }
 
 export function allocateIntoStore<K extends Canonical>(
-	store: Store = IMPLICIT.STORE,
-	provenance: Claim<Canonical> | Claim<Canonical>[] | `root`,
+	store: Store,
+	provenance: Claim<Canonical>[] | `root`,
 	key: K,
 ): Claim<K> {
 	const ctx =
@@ -64,13 +64,69 @@ export function allocateIntoStore<K extends Canonical>(
 	}
 }
 
-const gameKey = [`game`, `xxx`] as [`game`, string]
-const userKey = [`user`, `yyy`] as [`user`, string]
-const playerKey = [
-	[`type`, `player`],
-	[`game`, `xxx`],
-	[`user`, `yyy`],
-] as [[`type`, `player`], [`game`, string], [`user`, string]]
+type GameKey = [`game`, string]
+type UserKey = [`user`, string]
+type PlayerKey = [[`type`, `player`], GameKey, UserKey]
+type ItemKey = [`item`, string]
+
+type TypeTag<T extends string> = [`type`, T]
+type SingularTypedKey<T extends string> = [T, string]
+type CompoundTypedKey<A extends string, B extends string, C extends string> = [
+	TypeTag<A>,
+	SingularTypedKey<B>,
+	SingularTypedKey<C>,
+]
+type TypedKey<
+	A extends string = string,
+	B extends string = string,
+	C extends string = string,
+> = CompoundTypedKey<A, B, C> | SingularTypedKey<A>
+type Scope = TypedKey[] | `root`
+type Purview = { above: Scope; below: Scope }
+type Hierarchy = { purviews: Record<number, Purview> }
+
+interface GameHierarchy extends Hierarchy {
+	purviews: {
+		0: { above: `root`; below: [GameKey, UserKey] }
+		1: { above: [GameKey, UserKey]; below: [PlayerKey] }
+		2: { above: [GameKey]; below: [ItemKey] }
+		3: { above: [PlayerKey]; below: [ItemKey] }
+	}
+}
+
+type Above<TK extends TypedKey[], H extends Hierarchy> = {
+	[K in keyof H[`purviews`]]: H[`purviews`][K] extends {
+		above: infer A
+		below: TK
+	}
+		? A
+		: never
+}[keyof H[`purviews`]]
+
+type AboveRoot = Above<[], GameHierarchy>
+type AboveGame = Above<[GameKey], GameHierarchy>
+type AboveUser = Above<[UserKey], GameHierarchy>
+type AboveGameUser = Above<[GameKey, UserKey], GameHierarchy>
+type AbovePlayer = Above<[PlayerKey], GameHierarchy>
+
+type Below<TK extends TypedKey[], H extends Hierarchy> = {
+	[K in keyof H[`purviews`]]: H[`purviews`][K] extends {
+		above: TK
+		below: infer B
+	}
+		? B
+		: never
+}[keyof H[`purviews`]]
+
+type BelowGame = Below<[GameKey], GameHierarchy>
+type BelowUser = Below<[UserKey], GameHierarchy>
+type BelowGameUser = Below<[GameKey, UserKey], GameHierarchy>
+type BelowPlayer = Below<[PlayerKey], GameHierarchy>
+type BelowItem = Below<[ItemKey], GameHierarchy>
+
+const gameKey = [`game`, `xxx`] satisfies GameKey
+const userKey = [`user`, `yyy`] satisfies UserKey
+const playerKey = [[`type`, `player`], gameKey, userKey] satisfies PlayerKey
 const gameClaim = allocateIntoStore(IMPLICIT.STORE, `root`, gameKey)
 const userClaim = allocateIntoStore(IMPLICIT.STORE, `root`, userKey)
 const playerClaim = allocateIntoStore(
@@ -78,17 +134,14 @@ const playerClaim = allocateIntoStore(
 	[gameClaim, userClaim],
 	playerKey,
 )
+
 const itemKey = [`item`, `xxx`] as [`item`, string]
-const itemClaim = allocateIntoStore(
-	IMPLICIT.STORE
-	playerClaim, 
-	itemKey, 
-)
+const itemClaim = allocateIntoStore(IMPLICIT.STORE, [playerClaim], itemKey)
 
 export function bondWithinStore<K extends Canonical>(
+	store: Store,
 	provenance: Claim<Canonical> | Claim<Canonical>[] | `root`,
 	key: K,
-	store: Store = IMPLICIT.STORE,
 ) {}
 
 export function deallocateFromStore<K extends Canonical>() {}

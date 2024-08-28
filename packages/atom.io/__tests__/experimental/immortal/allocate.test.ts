@@ -26,11 +26,11 @@ beforeEach(() => {
 })
 describe(`moleculeFamily`, () => {
 	test(`exclusive molecule hierarchy`, () => {
-		allocateIntoStore(`root`, `a`, IMPLICIT.STORE)
-		allocateIntoStore(`root`, `b`, IMPLICIT.STORE)
-		allocateIntoStore(`root`, `c`, IMPLICIT.STORE)
-		allocateIntoStore(`root`, `d`, IMPLICIT.STORE)
-		allocateIntoStore(`root`, `e`, IMPLICIT.STORE)
-		allocateIntoStore(`root`, `f`, IMPLICIT.STORE)
+		allocateIntoStore(IMPLICIT.STORE, `root`, `a`)
+		allocateIntoStore(IMPLICIT.STORE, `root`, `b`)
+		allocateIntoStore(IMPLICIT.STORE, `root`, `c`)
+		allocateIntoStore(IMPLICIT.STORE, `root`, `d`)
+		allocateIntoStore(IMPLICIT.STORE, `root`, `e`)
+		allocateIntoStore(IMPLICIT.STORE, `root`, `f`)
 	})
 })
