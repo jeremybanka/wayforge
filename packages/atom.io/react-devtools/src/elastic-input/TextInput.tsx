@@ -9,6 +9,7 @@ export type TextInputProps = {
 	placeholder?: string
 	autoSize?: boolean
 	readOnly?: boolean
+	testid?: string
 }
 
 export const TextInput: FC<TextInputProps> = ({
@@ -17,6 +18,7 @@ export const TextInput: FC<TextInputProps> = ({
 	label,
 	placeholder,
 	autoSize = false,
+	testid,
 }) => {
 	return (
 		<span>
@@ -28,6 +30,7 @@ export const TextInput: FC<TextInputProps> = ({
 					onChange={(e) => set?.(e.target.value)}
 					disabled={set === undefined}
 					placeholder={placeholder}
+					data-testid={testid}
 				/>
 			) : (
 				<input
@@ -36,6 +39,7 @@ export const TextInput: FC<TextInputProps> = ({
 					onChange={(e) => set?.(e.target.value)}
 					disabled={set === undefined}
 					placeholder={placeholder}
+					data-testid={testid}
 				/>
 			)}
 		</span>

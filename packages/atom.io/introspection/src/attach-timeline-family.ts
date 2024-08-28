@@ -3,18 +3,17 @@ import type { Store, Timeline } from "atom.io/internal"
 import {
 	createRegularAtomFamily,
 	createSelectorFamily,
-	IMPLICIT,
 	Subject,
 } from "atom.io/internal"
 
 export const attachTimelineFamily = (
-	store: Store = IMPLICIT.STORE,
+	store: Store,
 ): ReadonlySelectorFamilyToken<Timeline<any>, string> => {
 	const findTimelineLogState__INTERNAL = createRegularAtomFamily<
 		Timeline<any>,
 		string
 	>(store, {
-		key: `👁‍🗨 Timeline Update Log (Internal)`,
+		key: `🔍 Timeline Update Log (Internal)`,
 		default: (key) =>
 			store.timelines.get(key) ?? {
 				type: `timeline`,
@@ -40,7 +39,7 @@ export const attachTimelineFamily = (
 	const findTimelineLogState = createSelectorFamily<Timeline<any>, string>(
 		store,
 		{
-			key: `👁‍🗨 Timeline Update Log`,
+			key: `🔍 Timeline Update Log`,
 			get:
 				(key) =>
 				({ get }) =>

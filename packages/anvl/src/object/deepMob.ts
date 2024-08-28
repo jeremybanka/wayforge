@@ -1,7 +1,8 @@
+import type { InspectionResult } from "~/packages/atom.io/introspection/src/sprawl"
+import { sprawl } from "~/packages/atom.io/introspection/src/sprawl"
+
 import { reduce, slice } from "../array"
 import { pipe } from "../function"
-import type { InspectionResult } from "./sprawl"
-import { sprawl } from "./sprawl"
 
 export const deepMob = <Tree extends Array<unknown> | object>(
 	tree: Tree,

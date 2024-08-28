@@ -27,11 +27,19 @@ describe(`silo`, () => {
 		expect(UnoCountValue).toBe(0)
 		expect(DosCountValue).toBe(0)
 
+		const subUno = vitest.fn()
+		const subDos = vitest.fn()
+		Uno.subscribe(countState__Uno, subUno)
+		Dos.subscribe(countState__Dos, subDos)
+
 		Uno.setState(countState__Uno, 1)
 		Dos.setState(countState__Dos, 2)
 
 		expect(Uno.getState(countState__Uno)).toBe(1)
 		expect(Dos.getState(countState__Dos)).toBe(2)
+
+		expect(subUno).toHaveBeenCalledWith({ newValue: 1, oldValue: 0 })
+		expect(subDos).toHaveBeenCalledWith({ newValue: 2, oldValue: 0 })
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(

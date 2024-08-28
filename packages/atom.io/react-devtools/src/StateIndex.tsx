@@ -4,15 +4,15 @@ import type {
 	RegularAtomToken,
 } from "atom.io"
 import { getState } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import { findInStore } from "atom.io/internal"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { primitiveRefinery } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
-import type { FC } from "react"
+import { type FC, useContext } from "react"
 
 import { button } from "./Button"
 import { StoreEditor } from "./StateEditor"
-import { typeSelectors, viewIsOpenAtoms } from "./store"
+import { DevtoolsContext } from "./store"
 
 /* eslint-disable no-console */
 
@@ -65,9 +65,12 @@ export const StateIndexTreeNode: FC<{
 }> = ({ node, isOpenState }) => {
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
+
+	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
+
 	for (const [key, childNode] of node.familyMembers) {
-		findState(viewIsOpenAtoms, key)
-		findState(typeSelectors, childNode.key)
+		findInStore(store, viewIsOpenAtoms, key)
+		findInStore(store, typeSelectors, childNode.key)
 	}
 	return (
 		<>
@@ -87,8 +90,8 @@ export const StateIndexTreeNode: FC<{
 						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findState(viewIsOpenAtoms, childNode.key)}
-							typeState={findState(typeSelectors, childNode.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, childNode.key)}
+							typeState={findInStore(store, typeSelectors, childNode.key)}
 						/>
 					))
 				: null}
@@ -120,6 +123,9 @@ export const StateIndex: FC<{
 	tokenIndex: ReadonlySelectorToken<WritableTokenIndex<ReadableToken<unknown>>>
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
+
+	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
+
 	return (
 		<article className="index state_index" data-testid="state-index">
 			{[...tokenIds.entries()]
@@ -130,8 +136,8 @@ export const StateIndex: FC<{
 						<StateIndexNode
 							key={key}
 							node={node}
-							isOpenState={findState(viewIsOpenAtoms, node.key)}
-							typeState={findState(typeSelectors, node.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, node.key)}
+							typeState={findInStore(store, typeSelectors, node.key)}
 						/>
 					)
 				})}

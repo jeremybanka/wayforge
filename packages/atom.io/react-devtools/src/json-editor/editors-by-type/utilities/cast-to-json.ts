@@ -1,10 +1,10 @@
-import { jsonRefinery } from "~/packages/atom.io/introspection/src"
-import type { Json } from "~/packages/atom.io/json/src"
+import { jsonRefinery } from "atom.io/introspection"
+import type { Json } from "atom.io/json"
 
-import * as Cast from "../json/cast-json"
+import * as Cast from "./cast-json"
 
 export const castToJson = (
-	input: Json.Tree.Node,
+	input: unknown,
 ): {
 	array: Json.Tree.Array
 	boolean: boolean
@@ -13,7 +13,7 @@ export const castToJson = (
 	string: string
 	null: null
 } => {
-	const refined = jsonRefinery.refine<unknown>(input)
+	const refined = jsonRefinery.refine(input)
 	switch (refined?.type) {
 		case `array`: {
 			const data = refined.data
@@ -130,8 +130,7 @@ export const castToJson = (
 				},
 			}
 		}
-		case `null`: {
-			const data = refined.data
+		default: {
 			return {
 				get array() {
 					return Cast.nullToArray()
@@ -153,8 +152,5 @@ export const castToJson = (
 				},
 			}
 		}
-		default:
-			console.error(`Could not handle input given to castToJson`)
-			throw new Error(`Could not handle input given to castToJson`)
 	}
 }

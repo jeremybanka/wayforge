@@ -1,3 +1,1 @@
-export * from "./ElasticInput"
-export * from "./NumberInput"
-export * from "./TextInput"
+export * from "~/packages/atom.io/react-devtools/src/elastic-input"

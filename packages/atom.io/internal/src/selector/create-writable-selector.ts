@@ -48,7 +48,7 @@ export const createWritableSelector = <T>(
 			`)`,
 		)
 		cacheValue(options.key, newValue, subject, innerTarget)
-		markDone(options.key, innerTarget)
+		markDone(innerTarget, options.key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })
 		}

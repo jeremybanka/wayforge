@@ -13,7 +13,6 @@ export * from "./mapObject"
 export * from "./modify"
 export * from "./patch"
 export * from "./refinement"
-export * from "./sprawl"
 
 export const redact =
 	<K extends keyof any>(...args: K[]) =>

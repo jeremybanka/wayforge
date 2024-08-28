@@ -1,11 +1,12 @@
 import type { FC } from "react"
 import { useId, useRef, useState } from "react"
 
-import { pipe } from "~/packages/anvl/src/function"
-import { clampInto } from "~/packages/anvl/src/number"
-
 import { ElasticInput } from "."
 
+export function clampInto(min: number, max: number) {
+	return (value: number): number =>
+		value < min ? min : value > max ? max : value
+}
 function round(value: number, decimalPlaces?: number): number {
 	if (decimalPlaces === undefined) return value
 	const factor = 10 ** decimalPlaces
@@ -71,9 +72,10 @@ const initRefinery =
 			...DEFAULT_NUMBER_CONSTRAINTS,
 			...constraints,
 		}
-		const constrained = pipe(input ?? 0, clampInto(min, max), (n) =>
-			decimalPlaces ? round(n, decimalPlaces) : n,
-		)
+		let constrained = clampInto(min, max)(input ?? 0)
+		if (decimalPlaces) {
+			constrained = round(constrained, decimalPlaces)
+		}
 		return constrained
 	}
 
@@ -94,7 +96,7 @@ type NumberInputProps = Partial<NumberConstraints> & {
 	onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 	placeholder?: string
 	set?: ((newValue: number | null) => void) | undefined
-	testId?: string
+	testid?: string
 	value?: number | null
 }
 
@@ -110,7 +112,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 	onClick,
 	placeholder = ``,
 	set = () => null,
-	testId,
+	testid,
 	value = null,
 }) => {
 	const id = useId()
@@ -176,7 +178,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 					name={name ?? id}
 					id={id}
 					onClick={onClick}
-					data-testid={`number-input-${testId ?? id}`}
+					data-testid={testid}
 				/>
 			) : (
 				<input
@@ -189,7 +191,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 					name={name ?? id}
 					id={id}
 					onClick={onClick}
-					data-testid={`number-input-${testId ?? id}`}
+					data-testid={testid}
 				/>
 			)}
 		</span>

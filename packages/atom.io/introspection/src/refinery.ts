@@ -68,14 +68,16 @@ export const primitiveRefinery = new Refinery({
 	null: (input: unknown): input is null => input === null,
 })
 
+export function isPlainObject(input: unknown): input is Json.Tree.Object {
+	if (!input) {
+		return false
+	}
+	const prototype = Object.getPrototypeOf(input)
+	return prototype === Object.prototype
+}
+
 export const jsonTreeRefinery = new Refinery({
-	object: (input: unknown): input is Json.Tree.Object => {
-		if (!input) {
-			return false
-		}
-		const prototype = Object.getPrototypeOf(input)
-		return prototype === Object.prototype
-	},
+	object: isPlainObject,
 	array: (input: unknown): input is Json.Tree.Array => Array.isArray(input),
 })
 

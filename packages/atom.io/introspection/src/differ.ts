@@ -1,8 +1,8 @@
-import { sprawl } from "anvl/object"
 import type { Json } from "atom.io/json"
 
 import type { Refinery, Supported } from "./refinery"
 import { discoverType, jsonTreeRefinery, primitiveRefinery } from "./refinery"
+import { sprawl } from "./sprawl"
 
 export function diffNumber(a: number, b: number): Delta {
 	const sign = a < b ? `+` : `-`
