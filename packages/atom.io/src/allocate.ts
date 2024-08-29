@@ -1,6 +1,5 @@
 import type { Count, Store } from "atom.io/internal"
 import { IMPLICIT, Molecule } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 export const $provenance = Symbol(`provenance`)
@@ -166,19 +165,3 @@ const playerClaim = gameAllocator([gameClaim, userClaim], playerKey)
 
 const itemKey = [`item`, `xxx`] as [`item`, string]
 const itemClaim = allocateIntoStore(IMPLICIT.STORE, [playerClaim], itemKey)
-
-export function bondWithinStore<K extends Canonical>(
-	store: Store,
-	provenance: Claim<Canonical> | Claim<Canonical>[] | `root`,
-	key: K,
-) {}
-
-export function deallocateFromStore<K extends Canonical>() {}
-
-type MergeArrays<A, B> = A extends Array<unknown>
-	? B extends Array<unknown>
-		? [...A, ...B]
-		: [...A]
-	: B extends Array<unknown>
-		? [...B]
-		: never[]
