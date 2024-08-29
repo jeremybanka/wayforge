@@ -87,7 +87,7 @@ export type CompoundTypedKey<
 	A extends string = string,
 	B extends string = string,
 	C extends string = string,
-> = [TypeTag<A>, SingularTypedKey<B>, SingularTypedKey<C>]
+> = [TypeTag<A>, TypedKey<B>, TypedKey<C>]
 export type TypedKey<
 	A extends string = string,
 	B extends string = string,

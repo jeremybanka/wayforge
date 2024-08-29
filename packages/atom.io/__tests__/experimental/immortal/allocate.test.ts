@@ -1,4 +1,4 @@
-import type { Logger } from "atom.io"
+import { atomFamily, disposeState, getState, type Logger } from "atom.io"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 
 import type {
@@ -71,10 +71,17 @@ describe(`allocate`, () => {
 		type PlayerMutuals = Mutuals<PlayerKey, GameHierarchy>
 		type ItemMutuals = Mutuals<ItemKey, GameHierarchy>
 
+		const durabilityAtoms = atomFamily<number, ItemKey>({
+			key: `durability`,
+			default: 0,
+		})
+
 		const gameKey = [`game`, `xxx`] satisfies GameKey
 		const userKey = [`user`, `yyy`] satisfies UserKey
 		const playerKey = [[T$, `player`], gameKey, userKey] satisfies PlayerKey
 		const itemKey = [`item`, `zzz`] as [`item`, string]
+
+		const myItemDurability0 = getState(durabilityAtoms, itemKey)
 
 		const gameAllocator = createAllocator<GameHierarchy>(IMPLICIT.STORE)
 
@@ -84,5 +91,11 @@ describe(`allocate`, () => {
 		const itemClaim = gameAllocator(playerClaim, itemKey)
 
 		console.log(IMPLICIT.STORE.molecules)
+
+		const myItemDurability = getState(durabilityAtoms, itemClaim)
+
+		disposeState(durabilityAtoms, itemClaim)
+
+		console.log(myItemDurability)
 	})
 })
