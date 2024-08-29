@@ -4,17 +4,11 @@ import { clearStore, IMPLICIT } from "atom.io/internal"
 import type {
 	Above,
 	Below,
-	Claim,
 	Hierarchy,
-	SingularTypedKey,
-	TypedKey,
+	Mutuals,
 	Vassal,
 } from "~/packages/atom.io/src/allocate"
-import {
-	allocateIntoStore,
-	createAllocator,
-	T$,
-} from "~/packages/atom.io/src/allocate"
+import { createAllocator, T$ } from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -71,6 +65,11 @@ describe(`allocate`, () => {
 		type BelowGameUser = Below<[GameKey, UserKey], GameHierarchy>
 		type BelowPlayer = Below<PlayerKey, GameHierarchy>
 		type BelowItem = Below<ItemKey, GameHierarchy>
+
+		type GameMutuals = Mutuals<GameKey, GameHierarchy>
+		type UserMutuals = Mutuals<UserKey, GameHierarchy>
+		type PlayerMutuals = Mutuals<PlayerKey, GameHierarchy>
+		type ItemMutuals = Mutuals<ItemKey, GameHierarchy>
 
 		const gameKey = [`game`, `xxx`] satisfies GameKey
 		const userKey = [`user`, `yyy`] satisfies UserKey

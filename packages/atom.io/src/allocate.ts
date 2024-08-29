@@ -113,7 +113,7 @@ export type Above<TK extends TypedKey, H extends Hierarchy> = {
 			: never
 }[keyof H]
 
-export type Below<TK extends TypedKey | TypedKey[], H> = {
+export type Below<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 	[K in keyof H]: H[K] extends MutualFealty
 		? TK extends H[K][`above`]
 			? H[K][`below`]
@@ -127,4 +127,12 @@ export type Below<TK extends TypedKey | TypedKey[], H> = {
 					: never
 				: never
 			: never
+}[keyof H]
+
+export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
+	[K in keyof H]: H[K] extends MutualFealty
+		? TK extends H[K][`above`][number]
+			? [mutual: Exclude<H[K][`above`][number], TK>, below: H[K][`below`]]
+			: never
+		: never
 }[keyof H]
