@@ -1,30 +1,24 @@
-import type { Store } from "atom.io/internal"
+import type { Count, Store } from "atom.io/internal"
 import { IMPLICIT, Molecule } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-// export type CtorToolkit<K extends Canonical> = Flat<
-// 	Omit<ActorToolkit, `find`> & {
-// 		claim(below: MoleculeToken<any>, options: { exclusive: boolean }): void
-
-// 		spawn<Key extends Canonical, Ctor extends MoleculeConstructor>(
-// 			family: MoleculeFamilyToken<Ctor>,
-// 			key: Key,
-// 			...params: MoleculeParams<Ctor>
-// 		): MoleculeToken<Ctor>
-// 	}
-// >
-
-export type Claim<K extends Canonical> = {
-	key: K
-	type: `molecule`
+export const $provenance = Symbol(`provenance`)
+export type Claim<
+	H extends Hierarchy,
+	V extends Vassal<H>,
+	A extends Above<V, H>,
+> = V & {
+	[$provenance]?: A
 }
 
-export function allocateIntoStore<H extends Hierarchy, TK extends TypedKey>(
-	store: Store,
-	provenance: Above<TK, H>,
-	key: TK,
-): Claim<TK> {
+type myClaim = Claim<Hierarchy, TypedKey, []>
+
+export function allocateIntoStore<
+	H extends Hierarchy,
+	V extends Vassal<H>,
+	A extends Above<V, H>,
+>(store: Store, provenance: A, key: V): Claim<H, V, A> {
 	const ctx =
 		provenance === `root`
 			? undefined
@@ -58,9 +52,15 @@ export function allocateIntoStore<H extends Hierarchy, TK extends TypedKey>(
 		}
 	}
 
-	return {
-		key,
-		type: `molecule`,
+	return key
+}
+
+export function createAllocator<H extends Hierarchy>(store: Store) {
+	return <V extends Vassal<H>, A extends Above<V, H>>(
+		provenance: A,
+		key: V,
+	): Claim<H, V, A> => {
+		return allocateIntoStore(store, provenance, key)
 	}
 }
 
@@ -83,22 +83,56 @@ type TypedKey<
 > = CompoundTypedKey<A, B, C> | SingularTypedKey<A>
 type Scope = TypedKey[]
 type Purview = { above: Scope | `root`; below: Scope }
-type Hierarchy<K extends keyof any> = { [key in K]: Purview }
-
-interface GameHierarchy extends Hierarchy<0 | 1 | 2 | 3> {
-	0: { above: `root`; below: [GameKey, UserKey] }
-	1: { above: [GameKey, UserKey]; below: [PlayerKey] }
-	2: { above: [GameKey]; below: [ItemKey] }
-	3: { above: [PlayerKey]; below: [ItemKey] }
+type Each<E extends any[]> = {
+	[P in Count<E[`length`]>]: E[P]
 }
+type Hierarchy<P extends Purview[] = Purview[]> = Each<P>
 
-type Above<TK extends TypedKey, H extends Hierarchy<keyof any>> = {
-	[K in keyof H]: TK extends H[K][`below`][number] ? H[K][`above`] : never
-}[]
+type GameHierarchy = Hierarchy<
+	[
+		{
+			above: `root`
+			below: [GameKey, UserKey]
+		},
+		{
+			above: [GameKey, UserKey]
+			below: [PlayerKey]
+		},
+		{
+			above: [GameKey]
+			below: [ItemKey]
+		},
+		{
+			above: [PlayerKey]
+			below: [ItemKey]
+		},
+	]
+>
+
+type Vassal<H extends Hierarchy> = {
+	[K in keyof H]: H[K] extends { below: Array<infer V> }
+		? V extends TypedKey
+			? V
+			: never
+		: never
+}[keyof H]
+
+type GameVassal = Vassal<GameHierarchy>
+
+type Above<TK extends TypedKey, H extends Hierarchy> = {
+	[K in keyof H]: H[K] extends Purview
+		? TK extends H[K][`below`][number]
+			? H[K][`above`]
+			: never
+		: never
+}[keyof H]
 
 type AboveGame = Above<GameKey, GameHierarchy>
+type AboveUser = Above<UserKey, GameHierarchy>
+type AbovePlayer = Above<PlayerKey, GameHierarchy>
+type AboveItem = Above<ItemKey, GameHierarchy>
 
-type Below<TK extends TypedKey[], H extends Hierarchy<any>> = {
+type Below<TK extends TypedKey[], H> = {
 	[K in keyof H]: H[K] extends {
 		above: TK
 		below: infer B
@@ -116,13 +150,19 @@ type BelowItem = Below<[ItemKey], GameHierarchy>
 const gameKey = [`game`, `xxx`] satisfies GameKey
 const userKey = [`user`, `yyy`] satisfies UserKey
 const playerKey = [[`type`, `player`], gameKey, userKey] satisfies PlayerKey
-const gameClaim = allocateIntoStore(IMPLICIT.STORE, `root`, gameKey)
-const userClaim = allocateIntoStore(IMPLICIT.STORE, `root`, userKey)
-const playerClaim = allocateIntoStore(
+const gameClaim0 = allocateIntoStore(IMPLICIT.STORE, `root`, gameKey)
+const userClaim0 = allocateIntoStore(IMPLICIT.STORE, `root`, userKey)
+const playerClaim0 = allocateIntoStore(
 	IMPLICIT.STORE,
-	[gameClaim, userClaim],
+	[gameClaim0, userClaim0],
 	playerKey,
 )
+
+const gameAllocator = createAllocator<GameHierarchy>(IMPLICIT.STORE)
+
+const gameClaim = gameAllocator(`root`, gameKey)
+const userClaim = gameAllocator(`root`, userKey)
+const playerClaim = gameAllocator([gameClaim, userClaim], playerKey)
 
 const itemKey = [`item`, `xxx`] as [`item`, string]
 const itemClaim = allocateIntoStore(IMPLICIT.STORE, [playerClaim], itemKey)
