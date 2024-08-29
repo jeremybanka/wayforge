@@ -31,7 +31,7 @@
 		"@types/node": "20.16.2",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
-		"openai": "4.56.2",
+		"openai": "4.57.0",
 		"tmp": "0.2.3",
 		"tsup": "8.2.4",
 		"vite": "5.4.2",
