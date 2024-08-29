@@ -6,6 +6,7 @@ import type {
 	Below,
 	Claim,
 	Hierarchy,
+	SingularTypedKey,
 	TypedKey,
 	Vassal,
 } from "~/packages/atom.io/src/allocate"
@@ -31,8 +32,6 @@ beforeEach(() => {
 })
 describe(`allocate`, () => {
 	test(`the Hierarchy + allocate + claim pattern`, () => {
-		type myClaim = Claim<Hierarchy, TypedKey, []>
-
 		type GameKey = [`game`, string]
 		type UserKey = [`user`, string]
 		type PlayerKey = [[T$, `player`], GameKey, UserKey]
@@ -46,14 +45,15 @@ describe(`allocate`, () => {
 				},
 				{
 					above: [GameKey, UserKey]
-					below: [PlayerKey]
+					style: `all`
+					below: PlayerKey
 				},
 				{
-					above: [GameKey]
+					above: GameKey
 					below: [ItemKey]
 				},
 				{
-					above: [PlayerKey]
+					above: PlayerKey
 					below: [ItemKey]
 				},
 			]
@@ -66,30 +66,22 @@ describe(`allocate`, () => {
 		type AbovePlayer = Above<PlayerKey, GameHierarchy>
 		type AboveItem = Above<ItemKey, GameHierarchy>
 
-		type BelowGame = Below<[GameKey], GameHierarchy>
-		type BelowUser = Below<[UserKey], GameHierarchy>
+		type BelowGame = Below<GameKey, GameHierarchy>
+		type BelowUser = Below<UserKey, GameHierarchy>
 		type BelowGameUser = Below<[GameKey, UserKey], GameHierarchy>
-		type BelowPlayer = Below<[PlayerKey], GameHierarchy>
-		type BelowItem = Below<[ItemKey], GameHierarchy>
+		type BelowPlayer = Below<PlayerKey, GameHierarchy>
+		type BelowItem = Below<ItemKey, GameHierarchy>
 
 		const gameKey = [`game`, `xxx`] satisfies GameKey
 		const userKey = [`user`, `yyy`] satisfies UserKey
 		const playerKey = [[T$, `player`], gameKey, userKey] satisfies PlayerKey
-		const gameClaim0 = allocateIntoStore(IMPLICIT.STORE, `root`, gameKey)
-		const userClaim0 = allocateIntoStore(IMPLICIT.STORE, `root`, userKey)
-		const playerClaim0 = allocateIntoStore(
-			IMPLICIT.STORE,
-			[gameClaim0, userClaim0],
-			playerKey,
-		)
+		const itemKey = [`item`, `zzz`] as [`item`, string]
 
 		const gameAllocator = createAllocator<GameHierarchy>(IMPLICIT.STORE)
 
 		const gameClaim = gameAllocator(`root`, gameKey)
 		const userClaim = gameAllocator(`root`, userKey)
 		const playerClaim = gameAllocator([gameClaim, userClaim], playerKey)
-
-		const itemKey = [`item`, `xxx`] as [`item`, string]
-		const itemClaim = allocateIntoStore(IMPLICIT.STORE, [playerClaim], itemKey)
+		const itemClaim = gameAllocator(playerClaim, itemKey)
 	})
 })

@@ -1,5 +1,5 @@
-import type { Count, Each, Store } from "atom.io/internal"
-import { IMPLICIT, Molecule } from "atom.io/internal"
+import type { Each, Store } from "atom.io/internal"
+import { Molecule } from "atom.io/internal"
 import { stringifyJson } from "atom.io/json"
 
 export const $provenance = Symbol(`provenance`)
@@ -49,7 +49,7 @@ export function allocateIntoStore<
 		}
 	}
 
-	return key
+	return key as Claim<H, V, A>
 }
 
 export function createAllocator<H extends Hierarchy>(store: Store) {
@@ -64,43 +64,67 @@ export function createAllocator<H extends Hierarchy>(store: Store) {
 export const T$ = `T$`
 export type T$ = typeof T$
 export type TypeTag<T extends string> = [T$, T]
-export type SingularTypedKey<T extends string> = [T, string]
+export type SingularTypedKey<T extends string = string> = [T, string]
 export type CompoundTypedKey<
-	A extends string,
-	B extends string,
-	C extends string,
+	A extends string = string,
+	B extends string = string,
+	C extends string = string,
 > = [TypeTag<A>, SingularTypedKey<B>, SingularTypedKey<C>]
 export type TypedKey<
 	A extends string = string,
 	B extends string = string,
 	C extends string = string,
 > = CompoundTypedKey<A, B, C> | SingularTypedKey<A>
-type Scope = TypedKey[]
-type Purview = { above: Scope | `root`; below: Scope }
+type Scope = SingularTypedKey[]
+type MutualFealty = {
+	above: Scope
+	below: CompoundTypedKey
+	style: `all` | `any`
+}
+type ExclusiveFealty = {
+	above: TypedKey | `root`
+	below: Scope
+}
+type Fealty = ExclusiveFealty | MutualFealty
 
-export type Hierarchy<P extends Purview[] = Purview[]> = Each<P>
+export type Hierarchy<F extends Fealty[] = Fealty[]> = Each<F>
 
 export type Vassal<H extends Hierarchy> = {
-	[K in keyof H]: H[K] extends { below: Array<infer V> }
-		? V extends TypedKey
-			? V
+	[K in keyof H]: H[K] extends MutualFealty
+		? H[K][`below`]
+		: H[K] extends { below: Array<infer V> }
+			? V extends TypedKey
+				? V
+				: never
 			: never
-		: never
 }[keyof H]
 
 export type Above<TK extends TypedKey, H extends Hierarchy> = {
-	[K in keyof H]: H[K] extends Purview
-		? TK extends H[K][`below`][number]
+	[K in keyof H]: H[K] extends MutualFealty
+		? TK extends H[K][`below`]
 			? H[K][`above`]
 			: never
-		: never
+		: H[K] extends { below: Array<infer V> }
+			? TK extends V
+				? H[K] extends ExclusiveFealty
+					? H[K][`above`]
+					: never
+				: never
+			: never
 }[keyof H]
 
-export type Below<TK extends TypedKey[], H> = {
-	[K in keyof H]: H[K] extends {
-		above: TK
-		below: infer B
-	}
-		? B
-		: never
+export type Below<TK extends TypedKey | TypedKey[], H> = {
+	[K in keyof H]: H[K] extends MutualFealty
+		? TK extends H[K][`above`]
+			? H[K][`below`]
+			: TK extends H[K][`above`][number]
+				? H[K][`below`]
+				: never
+		: H[K] extends { above: infer V }
+			? TK extends V
+				? H[K] extends ExclusiveFealty
+					? H[K][`below`][number]
+					: never
+				: never
+			: never
 }[keyof H]
