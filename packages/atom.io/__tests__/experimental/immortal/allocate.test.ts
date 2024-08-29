@@ -82,5 +82,7 @@ describe(`allocate`, () => {
 		const userClaim = gameAllocator(`root`, userKey)
 		const playerClaim = gameAllocator([gameClaim, userClaim], playerKey)
 		const itemClaim = gameAllocator(playerClaim, itemKey)
+
+		console.log(IMPLICIT.STORE.molecules)
 	})
 })

@@ -1,6 +1,9 @@
 import type { Each, Store } from "atom.io/internal"
-import { Molecule } from "atom.io/internal"
+import { Molecule, NotFoundError } from "atom.io/internal"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
+
+import { makeRootMolecule } from "./molecule"
 
 export const $provenance = Symbol(`provenance`)
 export type Claim<
@@ -16,43 +19,58 @@ export function allocateIntoStore<
 	V extends Vassal<H>,
 	A extends Above<V, H>,
 >(store: Store, provenance: A, key: V): Claim<H, V, A> {
-	const ctx =
-		provenance === `root`
-			? undefined
-			: Array.isArray(provenance)
-				? provenance
-				: [provenance]
+	const above: Molecule<any>[] = []
 
-	const above = ctx
-		? ctx.map<Molecule<any>>((claim) => {
-				if (ctx instanceof Molecule) {
-					return ctx
-				}
-				const ctxStringKey = stringifyJson(claim.key)
-				const molecule = store.molecules.get(ctxStringKey)
-
-				if (!molecule) {
+	if (provenance === `root`) {
+		// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
+		above.push(store.molecules.get(`"root"`)!)
+	} else if (provenance[0][0] === T$) {
+		const provenanceKey = stringifyJson(provenance as Canonical)
+		const provenanceMolecule = store.molecules.get(provenanceKey)
+		if (!provenanceMolecule) {
+			throw new Error(
+				`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+			)
+		}
+		above.push(provenanceMolecule)
+	} else {
+		if (key[0][0] === T$) {
+			for (const claim of provenance as SingularTypedKey[]) {
+				const provenanceKey = stringifyJson(claim)
+				const provenanceMolecule = store.molecules.get(provenanceKey)
+				if (!provenanceMolecule) {
 					throw new Error(
-						`Molecule ${ctxStringKey} not found in store "${store.config.name}"`,
+						`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
 					)
 				}
-				return molecule
-			})
-		: undefined
+				above.push(provenanceMolecule)
+			}
+		} else {
+			const provenanceKey = stringifyJson(provenance as Canonical)
+			const provenanceMolecule = store.molecules.get(provenanceKey)
+			if (!provenanceMolecule) {
+				throw new Error(
+					`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+				)
+			}
+			above.push(provenanceMolecule)
+		}
+	}
+
 	const molecule = new Molecule(above, key)
+
 	const stringKey = stringifyJson(key)
 	store.molecules.set(stringKey, molecule)
 
-	if (above) {
-		for (const aboveMolecule of above) {
-			aboveMolecule.below.set(molecule.stringKey, molecule)
-		}
+	for (const aboveMolecule of above) {
+		aboveMolecule.below.set(molecule.stringKey, molecule)
 	}
 
 	return key as Claim<H, V, A>
 }
 
 export function createAllocator<H extends Hierarchy>(store: Store) {
+	const root = makeRootMolecule(`root`, store)
 	return <V extends Vassal<H>, A extends Above<V, H>>(
 		provenance: A,
 		key: V,
