@@ -10,3 +10,7 @@ export type Count<N extends number, A extends any[] = []> = [
 ][`length`] extends N
 	? A[`length`]
 	: A[`length`] | Count<N, [...A, any]>
+
+export type Each<E extends any[]> = {
+	[P in Count<E[`length`]>]: E[P]
+}
