@@ -19,7 +19,7 @@
 	"dependencies": {
 		"minimatch": "10.0.1",
 		"npmlog": "7.0.1",
-		"simple-git": "3.25.0",
+		"simple-git": "3.26.0",
 		"zod": "3.23.8"
 	},
 	"scripts": {
