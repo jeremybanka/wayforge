@@ -23,7 +23,7 @@
 	},
 	"dependencies": {
 		"fp-ts": "2.16.9",
-		"simple-git": "3.25.0"
+		"simple-git": "3.26.0"
 	},
 	"devDependencies": {
 		"@types/node": "20.16.2",
