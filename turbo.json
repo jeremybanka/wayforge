@@ -14,6 +14,7 @@
 		"test:once": {
 			"dependsOn": ["build"],
 			"inputs": [
+				"../../.nvmrc",
 				"**/package.json",
 				"src/**",
 				"**/src/**",
@@ -34,7 +35,7 @@
 		"test:semver": {
 			"inputs": [
 				"../../.changeset/**",
-				"../break-check/src/**/*.ts",
+				"../../packages/break-check/src/**/*.ts",
 				"break-check.config.json",
 				"**/package.json",
 				"src/**/*.{ts,tsx,scss,mdx}",
@@ -53,18 +54,19 @@
 		"lint:eslint": {
 			"dependsOn": ["lint:eslint:build"],
 			"inputs": [
+				"../../eslint.config.ts",
 				"**/package.json",
 				"tsconfig.json",
 				"src/**",
 				"**/src/**",
 				"__tests__/**",
-				"__scripts__/**",
-				"../../eslint.config.ts"
+				"__scripts__/**"
 			]
 		},
 		"lint:types": {
 			"dependsOn": ["gen"],
 			"inputs": [
+				"../../tsconfig.json",
 				"**/package.json",
 				"tsconfig.json",
 				"src/**",
