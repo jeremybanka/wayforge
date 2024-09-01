@@ -8,7 +8,7 @@ import type {
 	Mutuals,
 	Vassal,
 } from "~/packages/atom.io/src/allocate"
-import { createAllocator, T$ } from "~/packages/atom.io/src/allocate"
+import { createWorld, T$ } from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -83,12 +83,12 @@ describe(`allocate`, () => {
 
 		const myItemDurability0 = getState(durabilityAtoms, itemKey)
 
-		const gameAllocator = createAllocator<GameHierarchy>(IMPLICIT.STORE)
+		const gameWorld = createWorld<GameHierarchy>(IMPLICIT.STORE, `gameWorld`)
 
-		const gameClaim = gameAllocator(`root`, gameKey)
-		const userClaim = gameAllocator(`root`, userKey)
-		const playerClaim = gameAllocator([gameClaim, userClaim], playerKey)
-		const itemClaim = gameAllocator(playerClaim, itemKey)
+		const gameClaim = gameWorld.allocate(`root`, gameKey)
+		const userClaim = gameWorld.allocate(`root`, userKey)
+		const playerClaim = gameWorld.allocate([gameClaim, userClaim], playerKey)
+		const itemClaim = gameWorld.allocate(playerClaim, itemKey)
 
 		console.log(IMPLICIT.STORE.molecules)
 

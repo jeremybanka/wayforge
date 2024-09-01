@@ -3,7 +3,7 @@ import type { CtorToolkit, Logger } from "atom.io"
 import {
 	atomFamily,
 	makeMolecule,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	moleculeFamily,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
@@ -75,7 +75,7 @@ describe(`family usage`, () => {
 
 	it(`successfully finds a state preexisting in the store`, () => {
 		const { run, componentMolecules } = scenario()
-		const rootMolecule = makeRootMolecule(`root`)
+		const rootMolecule = makeRootMoleculeInStore(`root`)
 		makeMolecule(rootMolecule, componentMolecules, `letter`)
 		const { getByTestId } = run()
 		const changeStateButton = getByTestId(`changeStateButton`)

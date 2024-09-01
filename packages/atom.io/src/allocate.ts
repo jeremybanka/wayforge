@@ -3,7 +3,7 @@ import { Molecule, NotFoundError } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { makeRootMolecule } from "./molecule"
+import { makeRootMoleculeInStore } from "./molecule"
 
 export const $provenance = Symbol(`provenance`)
 export type Claim<
@@ -18,12 +18,12 @@ export function allocateIntoStore<
 	H extends Hierarchy,
 	V extends Vassal<H>,
 	A extends Above<V, H>,
->(store: Store, provenance: A, key: V): Claim<H, V, A> {
+>(store: Store, rootKey: string, provenance: A, key: V): Claim<H, V, A> {
 	const above: Molecule<any>[] = []
 
 	if (provenance === `root`) {
 		// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
-		above.push(store.molecules.get(`"root"`)!)
+		above.push(store.molecules.get(rootKey)!)
 	} else if (provenance[0][0] === T$) {
 		const provenanceKey = stringifyJson(provenance as Canonical)
 		const provenanceMolecule = store.molecules.get(provenanceKey)
@@ -69,13 +69,19 @@ export function allocateIntoStore<
 	return key as Claim<H, V, A>
 }
 
-export function createAllocator<H extends Hierarchy>(store: Store) {
-	const root = makeRootMolecule(`root`, store)
-	return <V extends Vassal<H>, A extends Above<V, H>>(
-		provenance: A,
-		key: V,
-	): Claim<H, V, A> => {
-		return allocateIntoStore(store, provenance, key)
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function createWorld<H extends Hierarchy>(
+	store: Store,
+	worldKey: string,
+) {
+	const root = makeRootMoleculeInStore(worldKey, store)
+	return {
+		allocate: <V extends Vassal<H>, A extends Above<V, H>>(
+			provenance: A,
+			key: V,
+		): Claim<H, V, A> => {
+			return allocateIntoStore(store, worldKey, provenance, key)
+		},
 	}
 }
 

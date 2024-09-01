@@ -121,7 +121,7 @@ export type MoleculeType<T extends MoleculeFamilyToken<any>> =
 			: never
 export type MoleculeKey<M extends MoleculeConstructor> = InstanceType<M>[`key`]
 
-export function makeRootMolecule(
+export function makeRootMoleculeInStore(
 	key: string,
 	store: Store = IMPLICIT.STORE,
 ): MoleculeToken<ObjectConstructor> {
