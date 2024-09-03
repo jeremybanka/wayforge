@@ -1,0 +1,49 @@
+{
+	"name": "metaserver",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": ["dist", "src"],
+	"main": "dist/lib.js",
+	"types": "dist/lib.d.ts",
+	"bin": {
+		"break-check": "./bin/metaserver.x.js"
+	},
+	"dependencies": {
+		"comline": "0.0.4",
+		"minimatch": "10.0.1",
+		"npmlog": "7.0.1",
+		"simple-git": "3.26.0",
+		"zod": "3.23.8"
+	},
+	"scripts": {
+		"build": "concurrently \"bun:build:*\" && bun run schema",
+		"build:lib": "rimraf lib && bun build --outdir lib --target node --external metaserver -- src/lib.ts ",
+		"build:bin": "rimraf bin && bun build --outdir bin --target node --external metaserver -- src/bin.ts",
+		"build:dts": "tsup",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
+		"lint:types": "tsc --noEmit",
+		"lint:types:watch": "tsc --watch --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"test:coverage": "echo no test coverage yet"
+	},
+	"devDependencies": {
+		"@types/bun": "1.1.8",
+		"@types/node": "20.16.3",
+		"@types/tmp": "0.2.6",
+		"concurrently": "8.2.2",
+		"tmp": "0.2.3",
+		"tsup": "8.2.4",
+		"vitest": "2.0.5"
+	}
+}
