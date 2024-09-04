@@ -52,19 +52,6 @@ export function disposeSelector(
 		}
 		target.valueMap.delete(key)
 		target.selectorAtoms.delete(key)
-		const downstreamTokens = target.selectorGraph
-			.getRelationEntries({ upstreamSelectorKey: key })
-			.filter(([_, { source }]) => source === key)
-			.map(
-				([downstreamSelectorKey]) =>
-					target.selectors.get(downstreamSelectorKey) ??
-					target.readonlySelectors.get(downstreamSelectorKey),
-			)
-		for (const downstreamToken of downstreamTokens) {
-			if (downstreamToken) {
-				disposeSelector(downstreamToken, store)
-			}
-		}
 		target.selectorGraph.delete(key)
 		store.logger.info(`🔥`, selectorToken.type, key, `deleted`)
 		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
