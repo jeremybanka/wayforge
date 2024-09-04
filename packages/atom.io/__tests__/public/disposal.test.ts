@@ -54,32 +54,45 @@ describe(`disposeState`, () => {
 	})
 	it(`does not delete downstream selectors from atom`, () => {
 		const countIndex = atom<string[]>({
-			key: `count`,
+			key: `countIdx`,
 			default: [],
 		})
 		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const allCountsSelector = selector<number[]>({
-			key: `allCounts`,
-			get: ({ get }) => get(countIndex).map((key) => get(countAtoms, key)),
+		const doubleSelectors = selectorFamily<number, string>({
+			key: `double`,
+			get:
+				(id) =>
+				({ find, get }) =>
+					get(find(countAtoms, id)) * 2,
+		})
+		const allDoublesSelector = selector<number[]>({
+			key: `allDoubles`,
+			get: ({ get }) => get(countIndex).map((key) => get(doubleSelectors, key)),
 		})
 		const countAtom = findState(countAtoms, `my-key`)
+		const doubleSelector = findState(doubleSelectors, `my-key`)
 		setState(countAtom, 2)
 		setState(countIndex, (current) => [...current, `my-key`])
-		expect(getState(allCountsSelector)).toEqual([2])
+		expect(getState(allDoublesSelector)).toEqual([4])
 		disposeState(countAtoms, `my-key`)
 		setState(countIndex, (current) => [...current, `my-key`])
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.atoms.has(countAtom.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countAtom.key)).toBe(false)
 		expect(
-			Internal.IMPLICIT.STORE.readonlySelectors.has(allCountsSelector.key),
+			Internal.IMPLICIT.STORE.readonlySelectors.has(doubleSelector.key),
 		).toBe(true)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(allCountsSelector.key)).toBe(
+		expect(Internal.IMPLICIT.STORE.valueMap.has(doubleSelector.key)).toBe(true)
+		expect(
+			Internal.IMPLICIT.STORE.readonlySelectors.has(allDoublesSelector.key),
+		).toBe(true)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(allDoublesSelector.key)).toBe(
 			false,
 		)
+		expect(getState(doubleSelector)).toBe(4)
 	})
 	it(`logs an error if the atom is not in the store`, () => {
 		const countAtoms = atomFamily<number, string>({
