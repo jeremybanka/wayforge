@@ -7,7 +7,11 @@ import type {
 } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
 
-import { disposeFromStore, initFamilyMemberInStore } from "../families"
+import {
+	disposeFromStore,
+	findInStore,
+	initFamilyMemberInStore,
+} from "../families"
 import { growMoleculeInStore, makeMoleculeInStore } from "../molecule"
 import { type Store, withdraw } from "../store"
 
@@ -18,7 +22,7 @@ export function ingestCreationEvent(
 ): void {
 	switch (applying) {
 		case `newValue`: {
-			createInStore(update.token, store)
+			createInStore(update, store)
 			break
 		}
 		case `oldValue`: {
@@ -29,7 +33,7 @@ export function ingestCreationEvent(
 }
 
 export function ingestDisposalEvent(
-	update: StateDisposal<any>,
+	update: StateDisposal<ReadableToken<any>>,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -39,35 +43,22 @@ export function ingestDisposalEvent(
 			break
 		}
 		case `oldValue`: {
-			createInStore(update.token, store)
+			createInStore(update, store)
 			store.valueMap.set(update.token.key, update.value)
 			break
 		}
 	}
 }
 
-function createInStore(token: ReadableToken<any>, store: Store): void {
-	if (token.family) {
-		const family = store.families.get(token.family.key)
+function createInStore(
+	update: StateCreation<any> | StateDisposal<any>,
+	store: Store,
+): void {
+	const { family: familyMeta } = update.token
+	if (familyMeta) {
+		const family = store.families.get(familyMeta.key)
 		if (family) {
-			const molecule = store.molecules.get(token.family.subKey)
-			if (molecule) {
-				growMoleculeInStore(molecule, family, store)
-				return
-			}
-			if (store.config.lifespan === `immortal`) {
-				store.logger.error(
-					`🐞`,
-					`atom`,
-					token.family.key,
-					`tried to create member`,
-					`"${token.family.subKey}"`,
-					`but a molecule with that key was not found in store`,
-					`"${store.config.name}"`,
-				)
-				return
-			}
-			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
+			findInStore(store, family, parseJson(familyMeta.subKey))
 		}
 	}
 }
