@@ -28,7 +28,7 @@
 		"test:coverage": "echo no test coverage yet"
 	},
 	"devDependencies": {
-		"@types/node": "22.5.3",
+		"@types/node": "22.5.4",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
 		"openai": "4.57.2",
