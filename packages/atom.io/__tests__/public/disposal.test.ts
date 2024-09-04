@@ -52,30 +52,34 @@ describe(`disposeState`, () => {
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
 	})
-	it(`deletes downstream selectors from atom`, () => {
+	it(`does not delete downstream selectors from atom`, () => {
+		const countIndex = atom<string[]>({
+			key: `count`,
+			default: [],
+		})
 		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const doubleSelectors = selectorFamily<number, string>({
-			key: `doubled`,
-			get:
-				(key) =>
-				({ find, get }) =>
-					get(find(countAtoms, key)) * 2,
+		const allCountsSelector = selector<number[]>({
+			key: `allCounts`,
+			get: ({ get }) => get(countIndex).map((key) => get(countAtoms, key)),
 		})
-		const countState = findState(countAtoms, `my-key`)
-		const doubledState = findState(doubleSelectors, `my-key`)
-		setState(countState, 2)
-		expect(getState(doubledState)).toBe(4)
-		disposeState(countState)
+		const countAtom = findState(countAtoms, `my-key`)
+		setState(countAtom, 2)
+		setState(countIndex, (current) => [...current, `my-key`])
+		expect(getState(allCountsSelector)).toEqual([2])
+		disposeState(countAtoms, `my-key`)
+		setState(countIndex, (current) => [...current, `my-key`])
 		expect(logger.error).toHaveBeenCalledTimes(0)
-		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
-		expect(Internal.IMPLICIT.STORE.readonlySelectors.has(doubledState.key)).toBe(
+		expect(Internal.IMPLICIT.STORE.atoms.has(countAtom.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(countAtom.key)).toBe(false)
+		expect(
+			Internal.IMPLICIT.STORE.readonlySelectors.has(allCountsSelector.key),
+		).toBe(true)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(allCountsSelector.key)).toBe(
 			false,
 		)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
 	})
 	it(`logs an error if the atom is not in the store`, () => {
 		const countAtoms = atomFamily<number, string>({
