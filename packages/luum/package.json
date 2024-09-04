@@ -19,7 +19,7 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@types/node": "22.5.2",
+		"@types/node": "22.5.3",
 		"tsup": "8.2.4",
 		"typescript": "5.5.4",
 		"vite": "5.4.3",
