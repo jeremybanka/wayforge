@@ -17,7 +17,8 @@
 		"break-check": "./bin/metaserver.x.js"
 	},
 	"dependencies": {
-		"comline": "0.0.4",
+		"atom.io": "workspace:*",
+		"comline": "workspace:*",
 		"minimatch": "10.0.1",
 		"npmlog": "7.0.1",
 		"simple-git": "3.26.0",

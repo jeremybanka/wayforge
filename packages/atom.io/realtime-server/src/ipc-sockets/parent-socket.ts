@@ -37,15 +37,15 @@ export class SubjectSocket<
 
 export class ParentSocket<
 	I extends Events & {
+		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
+	},
+	O extends Events & {
 		[id in string as `user:${id}`]: [string, ...Json.Serializable[]]
 	} & {
 		/* eslint-disable quotes */
 		"user-joins": [string]
 		"user-leaves": [string]
 		/* eslint-enable quotes */
-	},
-	O extends Events & {
-		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
 	},
 > extends CustomSocket<I, O> {
 	protected incompleteData = ``
@@ -167,7 +167,7 @@ export class ParentSocket<
 				relay.in.next(data)
 			})
 			relay.out.subscribe(`socket`, (data) => {
-				this.emit(...(data as [string, ...O[keyof O]]))
+				this.emit(...(data as [string, ...I[keyof I]]))
 			})
 		})
 

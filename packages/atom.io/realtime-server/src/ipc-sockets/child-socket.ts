@@ -10,11 +10,7 @@ import { CustomSocket } from "./custom-socket"
 
 export class ChildSocket<
 	I extends Events,
-	O extends Events & {
-		/* eslint-disable quotes */
-		"setup-relay": [string]
-		/* eslint-enable quotes */
-	},
+	O extends Events,
 > extends CustomSocket<I, O> {
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
