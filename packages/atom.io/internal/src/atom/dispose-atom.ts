@@ -30,17 +30,6 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		}
 		target.atoms.delete(key)
 		target.valueMap.delete(key)
-		const selectorKeys = target.selectorAtoms.getRelatedKeys(key)
-		if (selectorKeys) {
-			for (const selectorKey of selectorKeys) {
-				const token =
-					target.selectors.get(selectorKey) ??
-					target.readonlySelectors.get(selectorKey)
-				if (token) {
-					disposeSelector(token, store)
-				}
-			}
-		}
 		target.selectorAtoms.delete(key)
 		target.atomsThatAreDefault.delete(key)
 		target.timelineTopics.delete(key)

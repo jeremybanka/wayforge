@@ -52,30 +52,47 @@ describe(`disposeState`, () => {
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
 	})
-	it(`deletes downstream selectors from atom`, () => {
+	it(`does not delete downstream selectors from atom`, () => {
+		const countIndex = atom<string[]>({
+			key: `countIdx`,
+			default: [],
+		})
 		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
 		const doubleSelectors = selectorFamily<number, string>({
-			key: `doubled`,
+			key: `double`,
 			get:
-				(key) =>
+				(id) =>
 				({ find, get }) =>
-					get(find(countAtoms, key)) * 2,
+					get(find(countAtoms, id)) * 2,
 		})
-		const countState = findState(countAtoms, `my-key`)
-		const doubledState = findState(doubleSelectors, `my-key`)
-		setState(countState, 2)
-		expect(getState(doubledState)).toBe(4)
-		disposeState(countState)
+		const allDoublesSelector = selector<number[]>({
+			key: `allDoubles`,
+			get: ({ get }) => get(countIndex).map((key) => get(doubleSelectors, key)),
+		})
+		const countAtom = findState(countAtoms, `my-key`)
+		const doubleSelector = findState(doubleSelectors, `my-key`)
+		setState(countAtom, 2)
+		setState(countIndex, (current) => [...current, `my-key`])
+		expect(getState(allDoublesSelector)).toEqual([4])
+		disposeState(countAtoms, `my-key`)
+		setState(countIndex, (current) => [...current, `my-key`])
 		expect(logger.error).toHaveBeenCalledTimes(0)
-		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
-		expect(Internal.IMPLICIT.STORE.readonlySelectors.has(doubledState.key)).toBe(
+		expect(Internal.IMPLICIT.STORE.atoms.has(countAtom.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(countAtom.key)).toBe(false)
+		expect(
+			Internal.IMPLICIT.STORE.readonlySelectors.has(doubleSelector.key),
+		).toBe(true)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(doubleSelector.key)).toBe(true)
+		expect(
+			Internal.IMPLICIT.STORE.readonlySelectors.has(allDoublesSelector.key),
+		).toBe(true)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(allDoublesSelector.key)).toBe(
 			false,
 		)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
+		expect(getState(doubleSelector)).toBe(4)
 	})
 	it(`logs an error if the atom is not in the store`, () => {
 		const countAtoms = atomFamily<number, string>({
@@ -124,61 +141,5 @@ describe(`disposeState`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.selectors.has(doubledState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
-	})
-
-	it(`deletes downstream, but not upstream, selectors from selector`, () => {
-		const countAtoms = atomFamily<number, string>({
-			key: `count`,
-			default: 0,
-		})
-		const countPlusOneSelectors = selectorFamily<number, string>({
-			key: `countPlusOne`,
-			get:
-				(id) =>
-				({ find, get }) =>
-					get(find(countAtoms, id)) + 1,
-		})
-		const countPlusTwoSelectors = selectorFamily<number, string>({
-			key: `countPlusTwo`,
-			get:
-				(id) =>
-				({ find, get }) =>
-					get(find(countPlusOneSelectors, id)) + 1,
-			set:
-				(id) =>
-				({ find, set }, newValue) => {
-					set(find(countAtoms, id), newValue - 2)
-				},
-		})
-		const countPlusThreeSelectors = selectorFamily<number, string>({
-			key: `countPlusThree`,
-			get:
-				(id) =>
-				({ find, get }) =>
-					get(find(countPlusTwoSelectors, id)) + 1,
-		})
-		const countPlusOneState = findState(countPlusOneSelectors, `my-key`)
-		const countPlusTwoState = findState(countPlusTwoSelectors, `my-key`)
-		const countPlusThreeState = findState(countPlusThreeSelectors, `my-key`)
-		disposeState(countPlusTwoState)
-		expect(logger.error).toHaveBeenCalledTimes(0)
-		expect(
-			Internal.IMPLICIT.STORE.readonlySelectors.has(countPlusOneState.key),
-		).toBe(true)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(countPlusOneState.key)).toBe(
-			true,
-		)
-		expect(Internal.IMPLICIT.STORE.selectors.has(countPlusTwoState.key)).toBe(
-			false,
-		)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(countPlusTwoState.key)).toBe(
-			false,
-		)
-		expect(Internal.IMPLICIT.STORE.selectors.has(countPlusThreeState.key)).toBe(
-			false,
-		)
-		expect(Internal.IMPLICIT.STORE.valueMap.has(countPlusThreeState.key)).toBe(
-			false,
-		)
 	})
 })
