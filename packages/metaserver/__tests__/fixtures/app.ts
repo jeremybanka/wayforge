@@ -1,13 +1,16 @@
+#!/usr/bin/env bun
+
+import { ParentSocket } from "atom.io/realtime-server"
 import { serve } from "bun"
 
-const PORT = 3000
-
+const PORT = 4444
+const parentSocket = new ParentSocket()
 serve({
 	port: PORT,
 	fetch(req) {
-		console.log(req)
+		parentSocket.logger.info(`🚀`, req.method, req.url)
 		return new Response(`Hello World!`)
 	},
 })
 
-console.log(`Now listening on http://localhost:${PORT}`)
+parentSocket.emit(`alive`)

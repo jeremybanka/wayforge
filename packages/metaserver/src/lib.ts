@@ -1,35 +1,30 @@
+import { execSync, spawn } from "node:child_process"
 import { existsSync, mkdirSync, renameSync } from "node:fs"
+import type { Http2Server } from "node:http2"
+import { createServer } from "node:http2"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
 
-import { $, spawn } from "bun"
-import { serve, type Server, type Subprocess } from "bun"
+import { Future } from "atom.io/internal"
+import type { Json } from "atom.io/json"
+import { ChildSocket } from "atom.io/realtime-server"
 
-import * as Internal from "./internal"
-
-export * from "./start"
-export { Internal }
-
-export const SERVICES_DIR = resolve(homedir(), `services`)
-export const UPDATES_DIR = resolve(homedir(), `services/.updates`)
-export const BACKUPS_DIR = resolve(homedir(), `services/.backups`)
-
-export type ServiceRef = {
-	process: Subprocess | null
-}
-
-export type RestartRef = {
-	restartTimes: number[]
-}
-
+let safety = 0
+const PORT = process.env.PORT ?? 8080
+const ORIGIN = `http://localhost:${PORT}`
 export class ServiceManager {
 	public get serviceName(): string {
 		return `${this.repo}/${this.app}`
 	}
 
-	protected webhookServer: Server
-	protected service: Subprocess | null = null
+	protected webhookServer: Http2Server
+	protected service: ChildSocket<
+		{ updatesReady: [] },
+		{ readyToUpdate: []; alive: [] }
+	> | null = null
 	protected restartTimes: number[] = []
+
+	public alive = new Future(() => {})
 
 	public readonly currentServiceDir: string
 	public readonly updateServiceDir: string
@@ -46,135 +41,139 @@ export class ServiceManager {
 			this.app,
 			`current`,
 		),
-		public readonly mockRetrieveService?: (destination: string) => Promise<void>,
+		public readonly mockRetrieveService?: (
+			destination: string,
+		) => Promise<void> | void,
 	) {
 		this.currentServiceDir = resolve(this.serviceDir, `current`)
 		this.backupServiceDir = resolve(this.serviceDir, `backup`)
 		this.updateServiceDir = resolve(this.serviceDir, `update`)
 
-		for (const dir of [
-			this.currentServiceDir,
-			this.updateServiceDir,
-			this.backupServiceDir,
-		]) {
-			if (!existsSync(dir)) {
-				mkdirSync(dir, { recursive: true })
-			}
-		}
+		createServer((req, res) => {
+			let data: Uint8Array[] = []
+			req
+				.on(`data`, (chunk) => {
+					data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
+				})
+				.on(`end`, async () => {
+					const authHeader = req.headers.authorization
+					try {
+						if (authHeader !== `Bearer ${import.meta.env.SECRET}`) throw 401
+						const url = new URL(req.url, ORIGIN)
+						console.log(req.method, url.pathname)
+						switch (req.method) {
+							case `POST`:
+								{
+									const text = Buffer.concat(data).toString()
+									const json: Json.Serializable = JSON.parse(text)
+									console.log({ json })
+									switch (url.pathname) {
+										case `/`:
+											{
+												res.writeHead(200)
+												res.end()
+												await this.fetchLatestRelease()
+												if (this.service) {
+													this.service.emit(`updatesReady`)
+												} else {
+													this.applyUpdate()
+													this.startService()
+												}
+											}
+											break
 
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
-		const manager = this
-
-		this.webhookServer = serve({
-			port: 8080,
-			async fetch(request: Request): Promise<Response> {
-				try {
-					let response: Response
-					switch (request.method) {
-						case `POST`:
-							{
-								const webhook = await request.json()
-								if (webhook.action === `published`) {
-									response = new Response(null, { status: 200 })
-									await Internal.fetchLatestRelease(UPDATES_DIR, repo, app)
-									if (manager.service) {
-										manager.service.send(`updates are ready!`)
-									} else {
-										manager.applyUpdate()
-										manager.startService()
+										default:
+											throw 404
 									}
-									response = new Response(null, { status: 200 })
-								} else {
-									throw 404
 								}
-							}
-							break
-						default:
-							throw 405
+								break
+
+							default:
+								throw 405
+						}
+					} catch (thrown) {
+						console.error(thrown, req.url)
+						if (typeof thrown === `number`) {
+							res.writeHead(thrown)
+							res.end()
+						}
+					} finally {
+						data = []
 					}
-					return response
-				} catch (thrown) {
-					if (typeof thrown === `number`) {
-						const status = thrown
-						return new Response(null, { status })
-					}
-					console.error(thrown)
-					return new Response(null, { status: 500 })
-				}
-			},
+				})
+		}).listen(PORT, () => {
+			console.log(`Server started on port ${PORT}`)
 		})
 
-		void this.fetchLatestRelease().then(async () => {
-			console.log(
-				`0 current:`,
-				(await $`ls ${this.currentServiceDir}`).stdout.toString(),
-			)
-			console.log(
-				`0 update:`,
-				(await $`ls ${this.updateServiceDir}`).stdout.toString(),
-			)
-			this.applyUpdate()
-			console.log(
-				`1 current:`,
-				(await $`ls ${this.currentServiceDir}`).stdout.toString(),
-			)
-			// console.log(`1 update:`, (await $`ls ${this.updateServiceDir}`).stdout)
-			this.startService()
-		})
+		this.startService()
 	}
 
-	protected async startService(): void {
+	protected startService(): void {
+		safety++
+		if (safety > 10) {
+			throw new Error(`safety exceeded`)
+		}
 		if (!existsSync(this.currentServiceDir)) {
 			console.log(
 				`Tried to start service but failed: Service ${this.serviceName} is not yet installed.`,
 			)
+			void this.fetchLatestRelease().then(() => {
+				this.applyUpdate()
+				this.startService()
+			})
+			return
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
-		const manager = this
-		await $`PATH=$PATH:${this.currentServiceDir}`
-
-		console.log((await $`echo $PATH`).stdout.toString())
-		this.service = spawn(this.runCmd, {
+		const [executable, ...args] = this.runCmd
+		const program = executable.startsWith(`./`)
+			? resolve(this.currentServiceDir, executable)
+			: executable
+		const serviceProcess = spawn(program, args, {
 			cwd: this.currentServiceDir,
 			env: import.meta.env,
-			onExit(_, exitCode) {
-				console.log(
-					`Service ${manager.serviceName} exited with code ${exitCode}`,
-				)
-				manager.service = null
-				if (exitCode !== 0) {
+		})
+		this.service = new ChildSocket(serviceProcess, this.serviceName, console)
+		this.service.onAny((...messages) => {
+			console.log(`🛰 `, ...messages)
+		})
+		this.service.on(`readyToUpdate`, () => {
+			this.service?.process.kill()
+		})
+		this.service.on(`alive`, () => {
+			this.alive.use(Promise.resolve())
+		})
+		this.service.process.on(`close`, (exitCode) => {
+			console.log(`Service ${this.serviceName} exited with code ${exitCode}`)
+			this.service = null
+			if (exitCode !== 0) {
+				const updatesAreReady = existsSync(this.updateServiceDir)
+				if (updatesAreReady) {
+					this.restartTimes = []
+					this.applyUpdate()
+					this.startService()
+				} else {
 					const now = Date.now()
 					const fiveMinutesAgo = now - 5 * 60 * 1000
-					manager.restartTimes = manager.restartTimes.filter(
+					this.restartTimes = this.restartTimes.filter(
 						(time) => time > fiveMinutesAgo,
 					)
-					manager.restartTimes.push(now)
+					this.restartTimes.push(now)
 
-					if (manager.restartTimes.length < 5) {
-						console.log(`Service ${manager.serviceName} crashed. Restarting...`)
-						manager.startService()
+					if (this.restartTimes.length < 5) {
+						console.log(`Service ${this.serviceName} crashed. Restarting...`)
+						this.startService()
 					} else {
 						console.log(
-							`Service ${manager.serviceName} crashed too many times. Not restarting.`,
+							`Service ${this.serviceName} crashed too many times. Not restarting.`,
 						)
 					}
 				}
-			},
-			async ipc(message) {
-				if (message === `ready to update!` && manager.service) {
-					manager.service.kill()
-					await manager.service.exited
-					manager.service = null
-					manager.applyUpdate()
-					manager.startService()
-				}
-			},
+			}
 		})
 	}
 
 	protected applyUpdate(): void {
-		console.log(`Updating service ${this.serviceName}...`)
+		console.log(`Installing latest version of service ${this.serviceName}...`)
 
 		if (existsSync(this.updateServiceDir)) {
 			if (this.service) {
@@ -199,13 +198,16 @@ export class ServiceManager {
 	}
 
 	protected async fetchLatestRelease(): Promise<void> {
+		console.log(`Downloading latest version of service ${this.serviceName}...`)
+
 		if (this.mockRetrieveService) {
 			await this.mockRetrieveService(this.updateServiceDir)
 			return
 		}
 		try {
-			const assetUrl =
-				await $`gh release view --repo ${this.repo} --json tagName,assets --jq '.assets[] | select(.name | test("${this.app}")) | .url'`
+			const assetUrl = execSync(
+				`gh release view --repo ${this.repo} --json tagName,assets --jq '.assets[] | select(.name | test("${this.app}")) | .url'`,
+			)
 			if (!assetUrl) {
 				console.log(`No matching release found for ${this.serviceName}.`)
 				return
@@ -217,7 +219,9 @@ export class ServiceManager {
 
 			console.log(`Downloading release for ${this.serviceName}...`)
 
-			await $`gh release download --repo ${this.repo} --dir ${this.currentServiceDir} --pattern "*${this.app}*"`
+			execSync(
+				`gh release download --repo ${this.repo} --dir ${this.currentServiceDir} --pattern "*${this.app}*"`,
+			)
 
 			return
 		} catch (thrown) {
@@ -225,6 +229,13 @@ export class ServiceManager {
 				console.error(`Failed to fetch the latest release: ${thrown.message}`)
 			}
 			return
+		}
+	}
+
+	public stopService(): void {
+		if (this.service) {
+			this.service.process.kill()
+			this.service = null
 		}
 	}
 }

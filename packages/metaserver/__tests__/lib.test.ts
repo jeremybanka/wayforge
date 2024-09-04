@@ -1,28 +1,41 @@
-import path, { resolve } from "node:path"
+import { execSync } from "node:child_process"
+import { resolve } from "node:path"
 
-import { $ } from "bun"
-import { describe, it } from "bun:test"
 import tmp from "tmp"
 
 import { ServiceManager } from "../src/lib"
 
-const testDirname = import.meta.dir
+const testDirname = import.meta.dirname
+
+let serviceManager: ServiceManager
+let tmpDir: tmp.DirResult
+
+beforeEach(() => {
+	vitest.spyOn(console, `error`)
+	vitest.spyOn(console, `warn`)
+	vitest.spyOn(console, `log`)
+	tmpDir = tmp.dirSync({ unsafeCleanup: true })
+	tmp.setGracefulCleanup()
+})
+
+afterEach(() => {
+	serviceManager.stopService()
+})
 
 describe(`ServiceManager`, () => {
-	it(`should start a service`, () => {
-		const tmpDir = tmp.dirSync()
-		const manager = new ServiceManager(
+	it(`should start a service`, async () => {
+		serviceManager = new ServiceManager(
 			`sample/repo`,
 			`my-app`,
-			`app`,
+			[`./app`],
 			tmpDir.name,
-			async (destination) => {
-				console.log(`❗❗❗❗❗❗`, destination)
-				console.log(resolve(destination, `app`))
-				await $`bun build ${testDirname}/fixtures/app.ts --compile --outfile ${resolve(destination, `app`)}`
-				console.log((await $`ls ${destination}`).stdout)
+			function fetchLatestRelease(destination) {
+				execSync(
+					`bun build ${testDirname}/fixtures/app.ts --bundle --outfile ${resolve(destination, `app`)}`,
+				)
 			},
 		)
-		// console.log(manager)
-	})
+		await serviceManager.alive
+		const data = await fetch(`http://localhost:4444/`)
+	}, 30000)
 })
