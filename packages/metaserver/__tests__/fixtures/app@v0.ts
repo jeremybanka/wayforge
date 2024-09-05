@@ -14,3 +14,6 @@ serve({
 })
 
 parentSocket.emit(`alive`)
+parentSocket.on(`updatesReady`, () => {
+	parentSocket.emit(`readyToUpdate`)
+})
