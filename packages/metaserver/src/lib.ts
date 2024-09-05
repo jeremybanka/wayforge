@@ -25,12 +25,14 @@ export class ServiceManager {
 	protected restartTimes: number[] = []
 
 	public alive = new Future(() => {})
+	public dead = new Future(() => {})
 
 	public readonly currentServiceDir: string
 	public readonly updateServiceDir: string
 	public readonly backupServiceDir: string
 
 	public constructor(
+		public readonly secret: string,
 		public readonly repo: string,
 		public readonly app: string,
 		public readonly runCmd: string[],
@@ -56,17 +58,19 @@ export class ServiceManager {
 					data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
 				})
 				.on(`end`, async () => {
+					console.log(req.headers)
 					const authHeader = req.headers.authorization
 					try {
-						if (authHeader !== `Bearer ${import.meta.env.SECRET}`) throw 401
+						if (authHeader !== `Bearer ${secret}`) throw 401
 						const url = new URL(req.url, ORIGIN)
 						console.log(req.method, url.pathname)
 						switch (req.method) {
 							case `POST`:
 								{
-									const text = Buffer.concat(data).toString()
-									const json: Json.Serializable = JSON.parse(text)
-									console.log({ json })
+									console.log(`received post, url is ${url.pathname}`)
+									// const text = Buffer.concat(data).toString()
+									// const json: Json.Serializable = JSON.parse(text)
+									// console.log({ json, url })
 									switch (url.pathname) {
 										case `/`:
 											{
@@ -137,21 +141,23 @@ export class ServiceManager {
 			console.log(`🛰 `, ...messages)
 		})
 		this.service.on(`readyToUpdate`, () => {
-			this.service?.process.kill()
+			this.stopService()
 		})
 		this.service.on(`alive`, () => {
 			this.alive.use(Promise.resolve())
+			this.dead = new Future(() => {})
 		})
 		this.service.process.on(`close`, (exitCode) => {
 			console.log(`Service ${this.serviceName} exited with code ${exitCode}`)
 			this.service = null
-			if (exitCode !== 0) {
-				const updatesAreReady = existsSync(this.updateServiceDir)
-				if (updatesAreReady) {
-					this.restartTimes = []
-					this.applyUpdate()
-					this.startService()
-				} else {
+			const updatesAreReady = existsSync(this.updateServiceDir)
+			if (updatesAreReady) {
+				console.log(`Updates are ready; applying and restarting...`)
+				this.restartTimes = []
+				this.applyUpdate()
+				this.startService()
+			} else {
+				if (exitCode !== 0) {
 					const now = Date.now()
 					const fiveMinutesAgo = now - 5 * 60 * 1000
 					this.restartTimes = this.restartTimes.filter(
@@ -234,8 +240,15 @@ export class ServiceManager {
 
 	public stopService(): void {
 		if (this.service) {
+			console.log(`Stopping service ${this.serviceName}...`)
 			this.service.process.kill()
 			this.service = null
+			this.dead.use(Promise.resolve())
+			this.alive = new Future(() => {})
+		} else {
+			console.error(
+				`Failed to stop service ${this.serviceName}: Service is not running.`,
+			)
 		}
 	}
 }
