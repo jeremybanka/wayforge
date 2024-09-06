@@ -41,16 +41,16 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 
 export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flat<
 	Readonly<{
-		[K in keyof CLI[`pathOptions`]]: K extends string
+		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
-					type: K
+					case: K
 					path: ToPath<K, `/`>
-					opts: CLI[`pathOptions`][K] extends { optionsSchema: any }
-						? z.infer<CLI[`pathOptions`][K][`optionsSchema`]>
+					opts: CLI[`routeOptions`][K] extends { optionsSchema: any }
+						? z.infer<CLI[`routeOptions`][K][`optionsSchema`]>
 						: null
 				}>
 			: never
-	}>[keyof CLI[`pathOptions`]]
+	}>[keyof CLI[`routeOptions`]]
 >
 
 export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> =
@@ -63,11 +63,11 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 
 export type CommandLineInterface<PositionalArgTree extends Tree> = {
 	cliName: string
+	routes?: PositionalArgTree
+	routeOptions: TreeMap<PositionalArgTree, OptionsGroup<any>>
 	discoverConfigPath?: (
 		positionalArgs: TreePath<PositionalArgTree>,
 	) => string | undefined
-	positionalArgTree?: PositionalArgTree
-	pathOptions: TreeMap<PositionalArgTree, OptionsGroup<any>>
 }
 
 function retrieveArgValue(argument: string, flag?: string): string {
@@ -95,8 +95,8 @@ export function cli<
 >(
 	{
 		cliName,
-		positionalArgTree,
-		pathOptions,
+		routes,
+		routeOptions,
 		discoverConfigPath = () =>
 			path.join(process.cwd(), `${cliName}.config.json`),
 	}: CLI,

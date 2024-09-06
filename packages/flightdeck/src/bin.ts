@@ -67,7 +67,12 @@ const optGroup0 = {
 const parse = cli(
 	{
 		cliName: `flightdeck`,
-		positionalArgTree: optional({ schema: null, $configPath: null }),
+		routes: optional({ schema: null, $configPath: null }),
+		routeOptions: {
+			"": optGroup0,
+			$configPath: null,
+			schema: null,
+		},
 		discoverConfigPath: (args) => {
 			if (args[0] === `schema`) {
 				return
@@ -76,20 +81,18 @@ const parse = cli(
 				args[0] ?? path.join(process.cwd(), `flightdeck.config.json`)
 			return configPath
 		},
-		pathOptions: {
-			"": optGroup0,
-			$configPath: null,
-			schema: null,
-		},
 	},
 	console,
 )
 const { inputs, writeJsonSchema } = parse(process.argv)
 // const { secret, repo, app, runCmd, serviceDir, updateCmd } = suppliedOptions
 
-switch (inputs.type) {
+switch (inputs.case) {
 	case `schema`:
 		inputs.opts
+		break
+	case `$configPath`:
+		inputs.path
 		break
 	default:
 		console.log(`🚀 flightdeck`)
