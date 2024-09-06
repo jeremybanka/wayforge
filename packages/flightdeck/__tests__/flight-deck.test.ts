@@ -5,11 +5,11 @@ import { resolve } from "node:path"
 
 import tmp from "tmp"
 
-import { ServiceManager } from "../src/lib"
+import { FlightDeck } from "../src/flight-deck"
 
 const testDirname = import.meta.dirname
 
-let serviceManager: ServiceManager
+let flightDeck: FlightDeck
 let tmpDir: tmp.DirResult
 
 beforeEach(() => {
@@ -21,13 +21,13 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-	serviceManager.stopService()
+	flightDeck.stopService()
 })
 
-describe(`ServiceManager`, () => {
-	it(`should start a service`, async () => {
+describe(`FlightDeck`, () => {
+	it(`should start a service and keep it up to date`, async () => {
 		let version = 0
-		serviceManager = new ServiceManager(
+		flightDeck = new FlightDeck(
 			`secret`,
 			`sample/repo`,
 			`my-app`,
@@ -41,7 +41,7 @@ describe(`ServiceManager`, () => {
 				version++
 			},
 		)
-		await serviceManager.alive
+		await flightDeck.alive
 		const data = await fetch(`http://localhost:4444/`)
 		console.log(await data.text())
 
@@ -67,7 +67,7 @@ describe(`ServiceManager`, () => {
 		console.log(response)
 		expect(response.headers[`:status`]).toBe(200)
 
-		await serviceManager.dead
-		await serviceManager.alive
+		await flightDeck.dead
+		await flightDeck.alive
 	}, 5000)
 })

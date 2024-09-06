@@ -6,13 +6,12 @@ import { homedir } from "node:os"
 import { resolve } from "node:path"
 
 import { Future } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 
 let safety = 0
 const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
-export class ServiceManager {
+export class FlightDeck {
 	public get serviceName(): string {
 		return `${this.repo}/${this.app}`
 	}

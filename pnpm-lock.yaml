@@ -741,6 +741,40 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(@types/node@22.5.4)(@vitest/ui@2.0.5)(happy-dom@15.7.3)(jsdom@25.0.0)(lightningcss@1.26.0)(sass@1.78.0)(terser@5.31.5)
 
+  packages/flightdeck:
+    dependencies:
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
+      comline:
+        specifier: workspace:*
+        version: link:../comline
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/bun':
+        specifier: 1.1.8
+        version: 1.1.8
+      '@types/node':
+        specifier: 20.16.3
+        version: 20.16.3
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
+      tmp:
+        specifier: 0.2.3
+        version: 0.2.3
+      tsup:
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.47.4(@types/node@20.16.3))(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(typescript@5.5.4)
+      vitest:
+        specifier: 2.0.5
+        version: 2.0.5(@types/node@20.16.3)(@vitest/ui@2.0.5)(happy-dom@15.7.3)(jsdom@25.0.0)(lightningcss@1.26.0)(sass@1.78.0)(terser@5.31.5)
+
   packages/hamr:
     dependencies:
       '@floating-ui/react':
@@ -874,49 +908,6 @@ importers:
       vitest:
         specifier: 2.0.5
         version: 2.0.5(@types/node@22.5.4)(@vitest/ui@2.0.5)(happy-dom@15.7.3)(jsdom@25.0.0)(lightningcss@1.26.0)(sass@1.78.0)(terser@5.31.5)
-
-  packages/metaserver:
-    dependencies:
-      atom.io:
-        specifier: workspace:*
-        version: link:../atom.io
-      comline:
-        specifier: workspace:*
-        version: link:../comline
-      minimatch:
-        specifier: 10.0.1
-        version: 10.0.1
-      npmlog:
-        specifier: 7.0.1
-        version: 7.0.1
-      simple-git:
-        specifier: 3.26.0
-        version: 3.26.0
-      zod:
-        specifier: 3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@types/bun':
-        specifier: 1.1.8
-        version: 1.1.8
-      '@types/node':
-        specifier: 20.16.3
-        version: 20.16.3
-      '@types/tmp':
-        specifier: 0.2.6
-        version: 0.2.6
-      concurrently:
-        specifier: 8.2.2
-        version: 8.2.2
-      tmp:
-        specifier: 0.2.3
-        version: 0.2.3
-      tsup:
-        specifier: 8.2.4
-        version: 8.2.4(@microsoft/api-extractor@7.47.4(@types/node@20.16.3))(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(typescript@5.5.4)
-      vitest:
-        specifier: 2.0.5
-        version: 2.0.5(@types/node@20.16.3)(@vitest/ui@2.0.5)(happy-dom@15.7.3)(jsdom@25.0.0)(lightningcss@1.26.0)(sass@1.78.0)(terser@5.31.5)
 
   packages/occlusion:
     dependencies:
@@ -14543,7 +14534,7 @@ snapshots:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      picocolors: 1.0.1
+      picocolors: 1.1.0
       postcss-load-config: 6.0.1(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)
       resolve-from: 5.0.0
       rollup: 4.20.0
@@ -14571,7 +14562,7 @@ snapshots:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      picocolors: 1.0.1
+      picocolors: 1.1.0
       postcss-load-config: 6.0.1(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)
       resolve-from: 5.0.0
       rollup: 4.20.0
