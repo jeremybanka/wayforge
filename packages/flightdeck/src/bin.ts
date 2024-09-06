@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
-import { homedir } from "node:os"
 import * as path from "node:path"
 
-import { cli, encapsulate, optional, parseBooleanOption } from "comline"
+import { cli, optional, parseArrayOption } from "comline"
 import { FlightDeck } from "flightdeck"
-import logger from "npmlog"
 import { z } from "zod"
 
 const parse = cli(
@@ -21,60 +19,84 @@ const parse = cli(
 			return configPath
 		},
 		optionsSchema: z.object({
-			tagPattern: z.string().optional(),
-			testPattern: z.string(),
-			testCommand: z.string(),
-			certifyCommand: z.string(),
-			verbose: z.boolean().optional(),
+			secret: z.string().optional(),
+			repo: z.string().optional(),
+			app: z.string().optional(),
+			runCmd: z.array(z.string()).optional(),
+			serviceDir: z.string().optional(),
+			updateCmd: z.string().optional(),
 		}),
 		options: {
-			tagPattern: {
-				flag: `v`,
+			secret: {
+				flag: `s`,
 				required: false,
-				description: `String which, if found in a git tag, will be considered a release tag for your library.`,
-				example: `--tagPattern=\"my-library\"`,
+				description: `Secret used to authenticate with the service.`,
+				example: `--secret=\"secret\"`,
 			},
-			testPattern: {
-				flag: `p`,
-				required: true,
-				description: `The pattern to match test files that test the public API of the library.`,
-				example: `--pattern=\"*__public.test.ts\"`,
-			},
-			testCommand: {
-				flag: `t`,
-				required: true,
-				description: `Complete bash command that runs the tests for the library's public API.`,
-				example: `--testCommand=\"npm run test\"`,
-			},
-			certifyCommand: {
-				flag: `c`,
-				required: true,
-				description: `Complete bash command that determines whether a major version bump for your package is indicated in the workspace. Exit code 0 indicates that a major version bump is indicated, and exit code 1 indicates that no major version bump is indicated.`,
-				example: `--certifyCommand=\tsx scripts/certify-major-version-bump.node`,
-			},
-			verbose: {
-				flag: `v`,
+			repo: {
+				flag: `r`,
 				required: false,
-				description: `Prints out more information about the process.`,
-				example: `--verbose`,
-				parse: parseBooleanOption,
+				description: `Name of the repository.`,
+				example: `--repo=\"sample/repo\"`,
+			},
+			app: {
+				flag: `a`,
+				required: false,
+				description: `Name of the application.`,
+				example: `--app=\"my-app\"`,
+			},
+			runCmd: {
+				flag: `r`,
+				required: false,
+				description: `Command to run the application.`,
+				example: `--runCmd=\"./app\"`,
+				parse: parseArrayOption,
+			},
+			serviceDir: {
+				flag: `d`,
+				required: false,
+				description: `Directory where the service is stored.`,
+				example: `--serviceDir=\"./services/sample/repo/my-app/current\"`,
+			},
+			updateCmd: {
+				flag: `u`,
+				required: false,
+				description: `Command to update the service.`,
+				example: `--updateCmd=\"./app\"`,
 			},
 		},
 	},
-	logger,
+	console,
 )
 const { positionalArgs, suppliedOptions, writeJsonSchema } = parse(process.argv)
+const { secret, repo, app, runCmd, serviceDir, updateCmd } = suppliedOptions
+
+if (secret === undefined) {
+	console.error(`secret is required`)
+	process.exit(1)
+}
+if (repo === undefined) {
+	console.error(`repo is required`)
+	process.exit(1)
+}
+if (app === undefined) {
+	console.error(`app is required`)
+	process.exit(1)
+}
+if (runCmd === undefined) {
+	console.error(`runCmd is required`)
+	process.exit(1)
+}
 
 const flightDeck = new FlightDeck({
-	secret: `secret`,
-	repo: `sample/repo`,
-	app: `my-app`,
-	runCmd: [`./app`],
-	serviceDir: path.resolve(
-		homedir(),
-		`services`,
-		`sample/repo`,
-		`my-app`,
-		`current`,
-	),
+	secret,
+	repo,
+	app,
+	runCmd,
+	serviceDir,
+})
+
+process.on(`close`, async () => {
+	flightDeck.stopService()
+	await flightDeck.dead
 })

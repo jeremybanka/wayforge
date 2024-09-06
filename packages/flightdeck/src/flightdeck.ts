@@ -13,7 +13,7 @@ export type FlightDeckOptions = {
 	repo: string
 	app: string
 	runCmd: string[]
-	serviceDir?: string
+	serviceDir?: string | undefined
 	mockRetrieveService?: (destination: string) => Promise<void> | void
 }
 
