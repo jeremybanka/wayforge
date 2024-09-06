@@ -33,12 +33,15 @@ describe(`FlightDeck`, () => {
 			app: `my-app`,
 			runCmd: [`./app`],
 			serviceDir: tmpDir.name,
-			mockRetrieveService: function fetchLatestRelease(destination) {
-				console.log(`fetching latest release`)
-				execSync(
-					`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(destination, `app`)}`,
-				)
-				version++
+			get updateCmd() {
+				return [
+					`bun`,
+					`build`,
+					`${testDirname}/fixtures/app@v${version}.ts`,
+					`--bundle`,
+					`--outfile`,
+					`${resolve(tmpDir.name, `update`, `app`)}`,
+				]
 			},
 		})
 		await flightDeck.alive
@@ -47,6 +50,7 @@ describe(`FlightDeck`, () => {
 
 		const client = connect(`http://localhost:8080/`)
 
+		version++
 		const req = client.request({
 			":method": `POST`,
 			":path": `/`,

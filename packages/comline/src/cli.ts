@@ -1,7 +1,8 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { z, ZodSchema } from "zod"
+import type { ZodSchema } from "zod"
+import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
 import type { Flag } from "./flag"
@@ -106,19 +107,36 @@ export function cli<
 		},
 	},
 ): (args: string[]) => {
-	// positionalArgs: TreePath<PositionalArgs>
-	// suppliedOptions: Options
 	inputs: CliParseOutput<CLI>
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {
+		type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]
+
 		let failedValidation = false
 		let optionsFromConfig: Options | undefined
-		const positionalArgs = positionalArgTree
-			? retrievePositionalArgs(cliName, positionalArgTree, passed)
-			: ([] as any)
+		const positionalArgs = routes
+			? retrievePositionalArgs(cliName, routes, passed)
+			: { path: [] as TreePath<PositionalArgs>, route: `` }
+
+		const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
+
+		// if (route === null) {
+
+		// }
+		// console.log({ routeOptions, positionalArgs, options, optionsSchema })
+
+		const options = route?.options ?? {}
+		const optionsSchema = route?.optionsSchema ?? z.object({})
+
+		if (route === undefined) {
+			throw new Error(
+				`Could not find options for route "${positionalArgs.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
+			)
+		}
+
 		if (discoverConfigPath) {
-			const configFilePath = discoverConfigPath(positionalArgs)
+			const configFilePath = discoverConfigPath(positionalArgs.path)
 			if (configFilePath) {
 				if (fs.existsSync(configFilePath)) {
 					const configText = fs.readFileSync(configFilePath, `utf-8`)
@@ -179,8 +197,11 @@ export function cli<
 		)
 		const suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed)
 		return {
-			positionalArgs,
-			suppliedOptions,
+			inputs: {
+				case: positionalArgs.route,
+				path: positionalArgs.path,
+				opts: suppliedOptions,
+			} as unknown as CliParseOutput<CLI>,
 			writeJsonSchema: (filepath) => {
 				const jsonSchema = zodToJsonSchema(optionsSchema)
 				fs.writeFileSync(filepath, JSON.stringify(jsonSchema, null, `\t`))

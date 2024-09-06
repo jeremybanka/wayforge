@@ -9,22 +9,26 @@ import { parseStringOption } from "../../src/option-parsers"
 
 const parser = cli({
 	cliName: `read-file-length`,
-	optionsSchema: z.object({
-		file: z.string(),
-	}),
-	options: {
-		file: {
-			description: `file`,
-			example: `--file="./example-file.md"`,
-			flag: `f`,
-			parse: parseStringOption,
-			required: true,
+	routeOptions: {
+		"": {
+			optionsSchema: z.object({
+				file: z.string(),
+			}),
+			options: {
+				file: {
+					description: `file`,
+					example: `--file="./example-file.md"`,
+					flag: `f`,
+					parse: parseStringOption,
+					required: true,
+				},
+			},
 		},
 	},
 })
 
 const parsed = parser(process.argv)
 
-const fileContent = fs.readFileSync(parsed.suppliedOptions.file, `utf-8`)
+const fileContent = fs.readFileSync(parsed.inputs.opts.file, `utf-8`)
 
 process.stdout.write(fileContent.length.toString())

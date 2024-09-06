@@ -8,12 +8,7 @@ import type { FlightDeckOptions } from "flightdeck"
 import { FlightDeck } from "flightdeck"
 import { z } from "zod"
 
-// const noOptions = {
-// 	optionsSchema: z.object({}),
-// 	options: {},
-// } satisfies OptionsGroup<Record<string, never>>
-
-const optGroup0 = {
+const FLIGHT_DECK_MANUAL = {
 	optionsSchema: z.object({
 		secret: z.string(),
 		repo: z.string(),
@@ -69,8 +64,8 @@ const parse = cli(
 		cliName: `flightdeck`,
 		routes: optional({ schema: null, $configPath: null }),
 		routeOptions: {
-			"": optGroup0,
-			$configPath: null,
+			"": FLIGHT_DECK_MANUAL,
+			$configPath: FLIGHT_DECK_MANUAL,
 			schema: null,
 		},
 		discoverConfigPath: (args) => {
@@ -84,46 +79,26 @@ const parse = cli(
 	},
 	console,
 )
+
 const { inputs, writeJsonSchema } = parse(process.argv)
-// const { secret, repo, app, runCmd, serviceDir, updateCmd } = suppliedOptions
 
 switch (inputs.case) {
 	case `schema`:
-		inputs.opts
+		writeJsonSchema(`flightdeck.schema.json`)
 		break
-	case `$configPath`:
-		inputs.path
-		break
-	default:
-		console.log(`🚀 flightdeck`)
-		break
+	default: {
+		const { secret, repo, app, runCmd, serviceDir, updateCmd } = inputs.opts
+		const flightDeck = new FlightDeck({
+			secret,
+			repo,
+			app,
+			runCmd,
+			serviceDir,
+			updateCmd,
+		})
+		process.on(`close`, async () => {
+			flightDeck.stopService()
+			await flightDeck.dead
+		})
+	}
 }
-if (secret === undefined) {
-	console.error(`secret is required`)
-	process.exit(1)
-}
-if (repo === undefined) {
-	console.error(`repo is required`)
-	process.exit(1)
-}
-if (app === undefined) {
-	console.error(`app is required`)
-	process.exit(1)
-}
-if (runCmd === undefined) {
-	console.error(`runCmd is required`)
-	process.exit(1)
-}
-
-const flightDeck = new FlightDeck({
-	secret,
-	repo,
-	app,
-	runCmd,
-	serviceDir,
-})
-
-process.on(`close`, async () => {
-	flightDeck.stopService()
-	await flightDeck.dead
-})

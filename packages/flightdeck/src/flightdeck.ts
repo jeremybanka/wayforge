@@ -42,9 +42,6 @@ export class FlightDeck {
 	public constructor(public readonly options: FlightDeckOptions) {
 		const {
 			secret,
-			repo,
-			app,
-			runCmd,
 			serviceDir = resolve(
 				homedir(),
 				`services`,
@@ -64,7 +61,7 @@ export class FlightDeck {
 				.on(`data`, (chunk) => {
 					data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
 				})
-				.on(`end`, async () => {
+				.on(`end`, () => {
 					console.log(req.headers)
 					const authHeader = req.headers.authorization
 					try {
@@ -83,7 +80,7 @@ export class FlightDeck {
 											{
 												res.writeHead(200)
 												res.end()
-												await this.fetchLatestRelease()
+												this.fetchLatestRelease()
 												if (this.service) {
 													this.service.emit(`updatesReady`)
 												} else {
@@ -128,10 +125,10 @@ export class FlightDeck {
 			console.log(
 				`Tried to start service but failed: Service ${this.serviceName} is not yet installed.`,
 			)
-			void this.fetchLatestRelease().then(() => {
-				this.applyUpdate()
-				this.startService()
-			})
+			this.fetchLatestRelease()
+			this.applyUpdate()
+			this.startService()
+
 			return
 		}
 
@@ -210,11 +207,12 @@ export class FlightDeck {
 		}
 	}
 
-	protected async fetchLatestRelease(): Promise<void> {
+	protected fetchLatestRelease(): void {
 		console.log(`Downloading latest version of service ${this.serviceName}...`)
 
 		if (this.options.updateCmd) {
-			await this.options.updateCmd(this.updateServiceDir)
+			console.log(`fetching latest release`)
+			execSync(this.options.updateCmd.join(` `))
 			return
 		}
 		try {
