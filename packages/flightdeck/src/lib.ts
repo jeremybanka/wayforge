@@ -1,1 +1,1 @@
-export * from "./flight-deck"
+export * from "./flightdeck"

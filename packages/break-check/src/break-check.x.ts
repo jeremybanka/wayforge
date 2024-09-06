@@ -3,7 +3,6 @@
 import * as path from "node:path"
 
 import { breakCheck } from "break-check"
-import { stdout } from "bun"
 import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"
 import { z } from "zod"

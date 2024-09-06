@@ -8,6 +8,15 @@ import { resolve } from "node:path"
 import { Future } from "atom.io/internal"
 import { ChildSocket } from "atom.io/realtime-server"
 
+export type FlightDeckOptions = {
+	secret: string
+	repo: string
+	app: string
+	runCmd: string[]
+	serviceDir?: string
+	mockRetrieveService?: (destination: string) => Promise<void> | void
+}
+
 let safety = 0
 const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`

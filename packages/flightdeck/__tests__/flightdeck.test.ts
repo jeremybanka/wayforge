@@ -5,7 +5,7 @@ import { resolve } from "node:path"
 
 import tmp from "tmp"
 
-import { FlightDeck } from "../src/flight-deck"
+import { FlightDeck } from "../src/flightdeck"
 
 const testDirname = import.meta.dirname
 

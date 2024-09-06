@@ -1,5 +1,5 @@
 {
-	"name": "flight-deck",
+	"name": "flightdeck",
 	"version": "0.0.0",
 	"license": "MIT",
 	"author": {
@@ -23,10 +23,10 @@
 	},
 	"scripts": {
 		"build": "concurrently \"bun:build:*\" && bun run schema",
-		"build:lib": "rimraf lib && bun build --outdir lib --target node --external flight-deck -- src/lib.ts ",
-		"build:bin": "rimraf bin && bun build --outdir bin --target node --external flight-deck -- src/bin.ts",
+		"build:lib": "rimraf lib && bun build --outdir lib --target node --external flightdeck -- src/lib.ts ",
+		"build:bin": "rimraf bin && bun build --outdir bin --target node --external flightdeck -- src/bin.ts",
 		"build:dts": "tsup",
-		"schema": "bun src/bin.ts schema && mv flight-deck.schema.json dist",
+		"schema": "bun src/bin.ts schema && mv flightdeck.schema.json dist",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
