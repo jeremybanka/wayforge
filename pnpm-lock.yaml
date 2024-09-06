@@ -256,8 +256,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@fastly/js-compute':
-        specifier: 3.21.3
-        version: 3.21.3
+        specifier: 3.21.4
+        version: 3.21.4
       preact-render-to-string:
         specifier: 6.5.10
         version: 6.5.10(preact@10.23.2)
@@ -1843,8 +1843,8 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
-  '@cfallin/weval@0.2.12':
-    resolution: {integrity: sha512-zZbucRBDDm3V7LtvfVHqTJXtOQHJT7EoVKAe3zNXZFCVulIu7gZAZFuDNrVSrz9TPNwhvOevhYq5+XrgC4+7Fg==}
+  '@cfallin/weval@0.2.14':
+    resolution: {integrity: sha512-MHw8kT7qWH7/budVH/ky9TLnX17GTB7PN15Nnb+IoZFH1outxV9S36gyhcKouI5pGa70FVLbh9A/4WR4znKBIA==}
     engines: {node: '>=16'}
 
   '@changesets/apply-release-plan@7.0.5':
@@ -2572,8 +2572,8 @@ packages:
       react-dom: '>=17'
       recoil: '>=0.7.6'
 
-  '@fastly/js-compute@3.21.3':
-    resolution: {integrity: sha512-bmRiwlo96qNPONje190hEIFtRC2kf8p6hP2Au4k6GkKy2T+w7R+yw+KxZ9nV2fDojpMJNOkd2ZgQoVB/tu9g7w==}
+  '@fastly/js-compute@3.21.4':
+    resolution: {integrity: sha512-QzZlQUF0ovqd9KqAHmgvuaIuwtGbKhC+Nxki9LNJyFMMi0mJ48iGGb3rJgeAHcFKAXuHb/9KsoKjGkW/KVFajg==}
     hasBin: true
 
   '@floating-ui/core@1.6.7':
@@ -8480,7 +8480,7 @@ snapshots:
       '@bytecodealliance/wizer-linux-x64': 3.0.1
       '@bytecodealliance/wizer-win32-x64': 3.0.1
 
-  '@cfallin/weval@0.2.12':
+  '@cfallin/weval@0.2.14':
     dependencies:
       '@napi-rs/lzma': 1.3.1
       decompress: 4.2.1
@@ -9111,11 +9111,11 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
 
-  '@fastly/js-compute@3.21.3':
+  '@fastly/js-compute@3.21.4':
     dependencies:
       '@bytecodealliance/jco': 1.4.0
       '@bytecodealliance/wizer': 3.0.1
-      '@cfallin/weval': 0.2.12
+      '@cfallin/weval': 0.2.14
       acorn: 8.12.1
       acorn-walk: 8.3.3
       esbuild: 0.23.0
