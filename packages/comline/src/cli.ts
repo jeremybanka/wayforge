@@ -62,13 +62,11 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 			}
 		: null
 
-export type CommandLineInterface<PositionalArgTree extends Tree> = {
+export type CommandLineInterface<Routes extends Tree = Tree> = {
 	cliName: string
-	routes?: PositionalArgTree
-	routeOptions: TreeMap<PositionalArgTree, OptionsGroup<any>>
-	discoverConfigPath?: (
-		positionalArgs: TreePath<PositionalArgTree>,
-	) => string | undefined
+	routes?: Routes
+	routeOptions: TreeMap<NoInfer<Routes>, OptionsGroup<any>>
+	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 
 function retrieveArgValue(argument: string, flag?: string): string {
@@ -90,9 +88,11 @@ function retrieveArgValue(argument: string, flag?: string): string {
 	return retrievedValue
 }
 
+export type CliRoutes<CLI extends CommandLineInterface<any>> = CLI[`routes`]
+
 export function cli<
-	PositionalArgs extends Tree,
-	CLI extends CommandLineInterface<PositionalArgs>,
+	CLI extends CommandLineInterface<Routes>,
+	Routes extends Tree = Exclude<CLI[`routes`], undefined>,
 >(
 	{
 		cliName,
@@ -117,14 +117,9 @@ export function cli<
 		let optionsFromConfig: Options | undefined
 		const positionalArgs = routes
 			? retrievePositionalArgs(cliName, routes, passed)
-			: { path: [] as TreePath<PositionalArgs>, route: `` }
+			: { path: [] as TreePath<Routes>, route: `` }
 
 		const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
-
-		// if (route === null) {
-
-		// }
-		// console.log({ routeOptions, positionalArgs, options, optionsSchema })
 
 		const options = route?.options ?? {}
 		const optionsSchema = route?.optionsSchema ?? z.object({})

@@ -1,4 +1,3 @@
-import { execSync } from "node:child_process"
 import type { IncomingHttpHeaders, IncomingHttpStatusHeader } from "node:http2"
 import { connect } from "node:http2"
 import { resolve } from "node:path"

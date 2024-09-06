@@ -5,7 +5,7 @@ import { z } from "zod"
 
 import { cli } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
-import { optional } from "../src/tree"
+import { required } from "../src/tree"
 
 let tempDir: tmp.DirResult
 
@@ -20,7 +20,7 @@ afterEach(() => {
 describe(`options from file`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
-		routes: optional({ $config: null }),
+		routes: required({ $config: null }),
 		routeOptions: {
 			$config: {
 				optionsSchema: z.object({ foo: z.string() }),

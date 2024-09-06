@@ -9,7 +9,7 @@ import { cli, encapsulate, optional, parseBooleanOption } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
 
-const optGroup0 = {
+const BREAK_CHECK_MANUAL = {
 	optionsSchema: z.object({
 		tagPattern: z.string().optional(),
 		testPattern: z.string(),
@@ -51,13 +51,14 @@ const optGroup0 = {
 		},
 	},
 } satisfies OptionsGroup<BreakCheckOptions>
+
 const parse = cli(
 	{
 		cliName: `break-check`,
 		routes: optional({ schema: null, $configPath: null }),
 		routeOptions: {
-			"": optGroup0,
-			$configPath: optGroup0,
+			"": BREAK_CHECK_MANUAL,
+			$configPath: BREAK_CHECK_MANUAL,
 			schema: null,
 		},
 		discoverConfigPath: (args) => {
@@ -74,6 +75,10 @@ const parse = cli(
 const { inputs, writeJsonSchema } = parse(process.argv)
 
 switch (inputs.case) {
+	case `schema`:
+		writeJsonSchema(`break-check.schema.json`)
+		process.stdout.write(`📝 Wrote schema to break-check.schema.json`)
+		break
 	case ``:
 	case `$configPath`: {
 		const { returnValue } = await encapsulate(() => breakCheck(inputs.opts), {
@@ -104,10 +109,5 @@ switch (inputs.case) {
 			)
 			process.exit(2)
 		}
-		break
 	}
-
-	case `schema`:
-		writeJsonSchema(`break-check.schema.json`)
-		process.stdout.write(`📝 Wrote schema to break-check.schema.json`)
 }
