@@ -1,7 +1,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { ZodSchema } from "zod"
+import type { z, ZodSchema } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
 import type { Flag } from "./flag"
@@ -39,17 +39,19 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 	example: string
 }
 
-export type CliInputs<
-	PositionalArgs extends Tree,
-	CLI extends CommandLineInterface<PositionalArgs>,
-> = {
-	[K in keyof CLI[`pathOptions`]]: {
-		args: K extends string ? ToPath<K, `/`> : never
-		opts: CLI[`pathOptions`][K] extends Record<string, CliOptionValue>
-			? CLI[`pathOptions`][K][`options`]
-			: null
-	}
-}[keyof CLI[`pathOptions`]]
+export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flat<
+	Readonly<{
+		[K in keyof CLI[`pathOptions`]]: K extends string
+			? Readonly<{
+					type: K
+					path: ToPath<K, `/`>
+					opts: CLI[`pathOptions`][K] extends { optionsSchema: any }
+						? z.infer<CLI[`pathOptions`][K][`optionsSchema`]>
+						: null
+				}>
+			: never
+	}>[keyof CLI[`pathOptions`]]
+>
 
 export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> =
 	Options extends Record<string, CliOptionValue>
@@ -89,7 +91,7 @@ function retrieveArgValue(argument: string, flag?: string): string {
 
 export function cli<
 	PositionalArgs extends Tree,
-	// CLI extends ,
+	CLI extends CommandLineInterface<PositionalArgs>,
 >(
 	{
 		cliName,
@@ -97,7 +99,7 @@ export function cli<
 		pathOptions,
 		discoverConfigPath = () =>
 			path.join(process.cwd(), `${cliName}.config.json`),
-	}: CommandLineInterface<PositionalArgs>,
+	}: CLI,
 	logger = {
 		error: (...args: any[]) => {
 			console.error(...args)
@@ -106,7 +108,7 @@ export function cli<
 ): (args: string[]) => {
 	// positionalArgs: TreePath<PositionalArgs>
 	// suppliedOptions: Options
-	inputs: CliInputs<PositionalArgs, CommandLineInterface<PositionalArgs>>
+	inputs: CliParseOutput<CLI>
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {

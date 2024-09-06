@@ -8,10 +8,10 @@ import type { FlightDeckOptions } from "flightdeck"
 import { FlightDeck } from "flightdeck"
 import { z } from "zod"
 
-const noOptions = {
-	optionsSchema: z.object({}),
-	options: {},
-} satisfies OptionsGroup<Record<string, never>>
+// const noOptions = {
+// 	optionsSchema: z.object({}),
+// 	options: {},
+// } satisfies OptionsGroup<Record<string, never>>
 
 const optGroup0 = {
 	optionsSchema: z.object({
@@ -78,8 +78,8 @@ const parse = cli(
 		},
 		pathOptions: {
 			"": optGroup0,
-			$configPath: noOptions,
-			schema: noOptions,
+			$configPath: null,
+			schema: null,
 		},
 	},
 	console,
@@ -87,8 +87,13 @@ const parse = cli(
 const { inputs, writeJsonSchema } = parse(process.argv)
 // const { secret, repo, app, runCmd, serviceDir, updateCmd } = suppliedOptions
 
-if (inputs.args[0] === `schema`) {
-	const b = inputs.opts.secret
+switch (inputs.type) {
+	case `schema`:
+		inputs.opts
+		break
+	default:
+		console.log(`🚀 flightdeck`)
+		break
 }
 if (secret === undefined) {
 	console.error(`secret is required`)
