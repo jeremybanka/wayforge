@@ -22,7 +22,7 @@ const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
 export class FlightDeck {
 	public get serviceName(): string {
-		return `${this.repo}/${this.app}`
+		return `${this.options.repo}/${this.options.app}`
 	}
 
 	protected webhookServer: Http2Server
@@ -39,25 +39,24 @@ export class FlightDeck {
 	public readonly updateServiceDir: string
 	public readonly backupServiceDir: string
 
-	public constructor(
-		public readonly secret: string,
-		public readonly repo: string,
-		public readonly app: string,
-		public readonly runCmd: string[],
-		public readonly serviceDir: string = resolve(
-			homedir(),
-			`services`,
-			this.repo,
-			this.app,
-			`current`,
-		),
-		public readonly mockRetrieveService?: (
-			destination: string,
-		) => Promise<void> | void,
-	) {
-		this.currentServiceDir = resolve(this.serviceDir, `current`)
-		this.backupServiceDir = resolve(this.serviceDir, `backup`)
-		this.updateServiceDir = resolve(this.serviceDir, `update`)
+	public constructor(public readonly options: FlightDeckOptions) {
+		const {
+			secret,
+			repo,
+			app,
+			runCmd,
+			serviceDir = resolve(
+				homedir(),
+				`services`,
+				`sample/repo`,
+				`my-app`,
+				`current`,
+			),
+		} = options
+
+		this.currentServiceDir = resolve(serviceDir, `current`)
+		this.backupServiceDir = resolve(serviceDir, `backup`)
+		this.updateServiceDir = resolve(serviceDir, `update`)
 
 		createServer((req, res) => {
 			let data: Uint8Array[] = []
@@ -136,7 +135,7 @@ export class FlightDeck {
 			return
 		}
 
-		const [executable, ...args] = this.runCmd
+		const [executable, ...args] = this.options.runCmd
 		const program = executable.startsWith(`./`)
 			? resolve(this.currentServiceDir, executable)
 			: executable
@@ -214,13 +213,13 @@ export class FlightDeck {
 	protected async fetchLatestRelease(): Promise<void> {
 		console.log(`Downloading latest version of service ${this.serviceName}...`)
 
-		if (this.mockRetrieveService) {
-			await this.mockRetrieveService(this.updateServiceDir)
+		if (this.options.mockRetrieveService) {
+			await this.options.mockRetrieveService(this.updateServiceDir)
 			return
 		}
 		try {
 			const assetUrl = execSync(
-				`gh release view --repo ${this.repo} --json tagName,assets --jq '.assets[] | select(.name | test("${this.app}")) | .url'`,
+				`gh release view --repo ${this.options.repo} --json tagName,assets --jq '.assets[] | select(.name | test("${this.options.app}")) | .url'`,
 			)
 			if (!assetUrl) {
 				console.log(`No matching release found for ${this.serviceName}.`)
@@ -234,7 +233,7 @@ export class FlightDeck {
 			console.log(`Downloading release for ${this.serviceName}...`)
 
 			execSync(
-				`gh release download --repo ${this.repo} --dir ${this.currentServiceDir} --pattern "*${this.app}*"`,
+				`gh release download --repo ${this.options.repo} --dir ${this.currentServiceDir} --pattern "*${this.options.app}*"`,
 			)
 
 			return

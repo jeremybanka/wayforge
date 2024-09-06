@@ -27,20 +27,20 @@ afterEach(() => {
 describe(`FlightDeck`, () => {
 	it(`should start a service and keep it up to date`, async () => {
 		let version = 0
-		flightDeck = new FlightDeck(
-			`secret`,
-			`sample/repo`,
-			`my-app`,
-			[`./app`],
-			tmpDir.name,
-			function fetchLatestRelease(destination) {
+		flightDeck = new FlightDeck({
+			secret: `secret`,
+			repo: `sample/repo`,
+			app: `my-app`,
+			runCmd: [`./app`],
+			serviceDir: tmpDir.name,
+			mockRetrieveService: function fetchLatestRelease(destination) {
 				console.log(`fetching latest release`)
 				execSync(
 					`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(destination, `app`)}`,
 				)
 				version++
 			},
-		)
+		})
 		await flightDeck.alive
 		const data = await fetch(`http://localhost:4444/`)
 		console.log(await data.text())

@@ -65,10 +65,16 @@ const parse = cli(
 )
 const { positionalArgs, suppliedOptions, writeJsonSchema } = parse(process.argv)
 
-const flightDeck = new FlightDeck(
-	`secret`,
-	`sample/repo`,
-	`my-app`,
-	[`./app`],
-	path.resolve(homedir(), `services`, `sample/repo`, `my-app`, `current`),
-)
+const flightDeck = new FlightDeck({
+	secret: `secret`,
+	repo: `sample/repo`,
+	app: `my-app`,
+	runCmd: [`./app`],
+	serviceDir: path.resolve(
+		homedir(),
+		`services`,
+		`sample/repo`,
+		`my-app`,
+		`current`,
+	),
+})
