@@ -13,8 +13,8 @@ export type FlightDeckOptions = {
 	repo: string
 	app: string
 	runCmd: string[]
+	updateCmd: string[]
 	serviceDir?: string | undefined
-	mockRetrieveService?: (destination: string) => Promise<void> | void
 }
 
 let safety = 0
@@ -213,8 +213,8 @@ export class FlightDeck {
 	protected async fetchLatestRelease(): Promise<void> {
 		console.log(`Downloading latest version of service ${this.serviceName}...`)
 
-		if (this.options.mockRetrieveService) {
-			await this.options.mockRetrieveService(this.updateServiceDir)
+		if (this.options.updateCmd) {
+			await this.options.updateCmd(this.updateServiceDir)
 			return
 		}
 		try {

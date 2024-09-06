@@ -7,7 +7,7 @@ import { zodToJsonSchema } from "zod-to-json-schema"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
-import type { Tree, TreePath } from "./tree"
+import type { Flat, ToPath, Tree, TreeMap, TreePath } from "./tree"
 
 export * from "./encapsulate"
 export * from "./flag"
@@ -39,17 +39,33 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 	example: string
 }
 
-export type CommandLineInterface<
-	PositionalArgTree extends Tree,
-	Options extends Record<string, CliOptionValue>,
+export type CliInputs<
+	PositionalArgs extends Tree,
+	CLI extends CommandLineInterface<PositionalArgs>,
 > = {
+	[K in keyof CLI[`pathOptions`]]: {
+		args: K extends string ? ToPath<K, `/`> : never
+		opts: CLI[`pathOptions`][K] extends Record<string, CliOptionValue>
+			? CLI[`pathOptions`][K][`options`]
+			: null
+	}
+}[keyof CLI[`pathOptions`]]
+
+export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> =
+	Options extends Record<string, CliOptionValue>
+		? {
+				options: { [K in keyof Options]: CliOption<Options[K]> }
+				optionsSchema: ZodSchema<Options>
+			}
+		: null
+
+export type CommandLineInterface<PositionalArgTree extends Tree> = {
 	cliName: string
 	discoverConfigPath?: (
 		positionalArgs: TreePath<PositionalArgTree>,
 	) => string | undefined
 	positionalArgTree?: PositionalArgTree
-	options: { [K in keyof Options]: CliOption<Options[K]> }
-	optionsSchema: ZodSchema<Options>
+	pathOptions: TreeMap<PositionalArgTree, OptionsGroup<any>>
 }
 
 function retrieveArgValue(argument: string, flag?: string): string {
@@ -73,24 +89,24 @@ function retrieveArgValue(argument: string, flag?: string): string {
 
 export function cli<
 	PositionalArgs extends Tree,
-	Options extends Record<string, CliOptionValue>,
+	// CLI extends ,
 >(
 	{
 		cliName,
 		positionalArgTree,
-		options,
-		optionsSchema,
+		pathOptions,
 		discoverConfigPath = () =>
 			path.join(process.cwd(), `${cliName}.config.json`),
-	}: CommandLineInterface<PositionalArgs, Options>,
+	}: CommandLineInterface<PositionalArgs>,
 	logger = {
 		error: (...args: any[]) => {
 			console.error(...args)
 		},
 	},
 ): (args: string[]) => {
-	positionalArgs: TreePath<PositionalArgs>
-	suppliedOptions: Options
+	// positionalArgs: TreePath<PositionalArgs>
+	// suppliedOptions: Options
+	inputs: CliInputs<PositionalArgs, CommandLineInterface<PositionalArgs>>
 	writeJsonSchema: (path: string) => void
 } {
 	return (passed = process.argv) => {

@@ -2,9 +2,67 @@
 
 import * as path from "node:path"
 
+import type { OptionsGroup } from "comline"
 import { cli, optional, parseArrayOption } from "comline"
+import type { FlightDeckOptions } from "flightdeck"
 import { FlightDeck } from "flightdeck"
 import { z } from "zod"
+
+const noOptions = {
+	optionsSchema: z.object({}),
+	options: {},
+} satisfies OptionsGroup<Record<string, never>>
+
+const optGroup0 = {
+	optionsSchema: z.object({
+		secret: z.string(),
+		repo: z.string(),
+		app: z.string(),
+		runCmd: z.array(z.string()),
+		serviceDir: z.string(),
+		updateCmd: z.array(z.string()),
+	}),
+	options: {
+		secret: {
+			flag: `s`,
+			required: true,
+			description: `Secret used to authenticate with the service.`,
+			example: `--secret=\"secret\"`,
+		},
+		repo: {
+			flag: `r`,
+			required: true,
+			description: `Name of the repository.`,
+			example: `--repo=\"sample/repo\"`,
+		},
+		app: {
+			flag: `a`,
+			required: true,
+			description: `Name of the application.`,
+			example: `--app=\"my-app\"`,
+		},
+		runCmd: {
+			flag: `r`,
+			required: true,
+			description: `Command to run the application.`,
+			example: `--runCmd=\"./app\"`,
+			parse: parseArrayOption,
+		},
+		serviceDir: {
+			flag: `d`,
+			required: true,
+			description: `Directory where the service is stored.`,
+			example: `--serviceDir=\"./services/sample/repo/my-app/current\"`,
+		},
+		updateCmd: {
+			flag: `u`,
+			required: true,
+			description: `Command to update the service.`,
+			example: `--updateCmd=\"./app\"`,
+			parse: parseArrayOption,
+		},
+	},
+} satisfies OptionsGroup<FlightDeckOptions>
 
 const parse = cli(
 	{
@@ -15,62 +73,23 @@ const parse = cli(
 				return
 			}
 			const configPath =
-				args[0] ?? path.join(process.cwd(), `break-check.config.json`)
+				args[0] ?? path.join(process.cwd(), `flightdeck.config.json`)
 			return configPath
 		},
-		optionsSchema: z.object({
-			secret: z.string().optional(),
-			repo: z.string().optional(),
-			app: z.string().optional(),
-			runCmd: z.array(z.string()).optional(),
-			serviceDir: z.string().optional(),
-			updateCmd: z.string().optional(),
-		}),
-		options: {
-			secret: {
-				flag: `s`,
-				required: false,
-				description: `Secret used to authenticate with the service.`,
-				example: `--secret=\"secret\"`,
-			},
-			repo: {
-				flag: `r`,
-				required: false,
-				description: `Name of the repository.`,
-				example: `--repo=\"sample/repo\"`,
-			},
-			app: {
-				flag: `a`,
-				required: false,
-				description: `Name of the application.`,
-				example: `--app=\"my-app\"`,
-			},
-			runCmd: {
-				flag: `r`,
-				required: false,
-				description: `Command to run the application.`,
-				example: `--runCmd=\"./app\"`,
-				parse: parseArrayOption,
-			},
-			serviceDir: {
-				flag: `d`,
-				required: false,
-				description: `Directory where the service is stored.`,
-				example: `--serviceDir=\"./services/sample/repo/my-app/current\"`,
-			},
-			updateCmd: {
-				flag: `u`,
-				required: false,
-				description: `Command to update the service.`,
-				example: `--updateCmd=\"./app\"`,
-			},
+		pathOptions: {
+			"": optGroup0,
+			$configPath: noOptions,
+			schema: noOptions,
 		},
 	},
 	console,
 )
-const { positionalArgs, suppliedOptions, writeJsonSchema } = parse(process.argv)
-const { secret, repo, app, runCmd, serviceDir, updateCmd } = suppliedOptions
+const { inputs, writeJsonSchema } = parse(process.argv)
+// const { secret, repo, app, runCmd, serviceDir, updateCmd } = suppliedOptions
 
+if (inputs.args[0] === `schema`) {
+	const b = inputs.opts.secret
+}
 if (secret === undefined) {
 	console.error(`secret is required`)
 	process.exit(1)

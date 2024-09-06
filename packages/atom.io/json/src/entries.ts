@@ -1,6 +1,6 @@
 import type { Flat, Range } from "atom.io/internal"
 
-export type Entries<K extends keyof any = keyof any, V = any> = [K, V][]
+export type Entries<K extends PropertyKey = keyof any, V = any> = [K, V][]
 
 export type KeyOfEntries<E extends Entries> = E extends [infer K, any][]
 	? K
