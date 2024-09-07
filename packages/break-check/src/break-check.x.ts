@@ -52,6 +52,20 @@ const BREAK_CHECK_MANUAL = {
 	},
 } satisfies OptionsGroup<BreakCheckOptions>
 
+const SCHEMA_MANUAL = {
+	optionsSchema: z.object({
+		outdir: z.string().optional(),
+	}),
+	options: {
+		outdir: {
+			flag: `o`,
+			required: false,
+			description: `Directory to write the schema to.`,
+			example: `--outdir=./dist`,
+		},
+	},
+} satisfies OptionsGroup<{ outdir?: string | undefined }>
+
 const parse = cli(
 	{
 		cliName: `break-check`,
@@ -59,7 +73,7 @@ const parse = cli(
 		routeOptions: {
 			"": BREAK_CHECK_MANUAL,
 			$configPath: BREAK_CHECK_MANUAL,
-			schema: null,
+			schema: SCHEMA_MANUAL,
 		},
 		discoverConfigPath: (args) => {
 			if (args[0] === `schema`) {
@@ -76,8 +90,11 @@ const { inputs, writeJsonSchema } = parse(process.argv)
 
 switch (inputs.case) {
 	case `schema`:
-		writeJsonSchema(`break-check.schema.json`)
-		process.stdout.write(`📝 Wrote schema to break-check.schema.json`)
+		{
+			const { outdir } = inputs.opts
+			writeJsonSchema(outdir ?? `.`)
+			process.stdout.write(`📝 Wrote json.schema.`)
+		}
 		break
 	case ``:
 	case `$configPath`: {
