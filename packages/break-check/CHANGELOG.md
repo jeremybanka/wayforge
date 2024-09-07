@@ -1,5 +1,11 @@
 # break-check
 
+## 0.6.4
+
+### Patch Changes
+
+- 05f66ce: ✨ Options are no longer required for schema generation.
+
 ## 0.6.3
 
 ### Patch Changes
