@@ -1,0 +1,49 @@
+{
+	"name": "flightdeck",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": ["dist", "src"],
+	"main": "dist/lib.js",
+	"types": "dist/lib.d.ts",
+	"bin": {
+		"flightdeck": "./dist/bin.js"
+	},
+	"dependencies": {
+		"atom.io": "workspace:*",
+		"comline": "workspace:*",
+		"zod": "3.23.8"
+	},
+	"scripts": {
+		"build": "rimraf dist && concurrently \"bun:build:*\" && bun run schema",
+		"build:lib": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/lib.ts ",
+		"build:bin": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/bin.ts",
+		"build:dts": "tsup",
+		"schema": "bun ./src/bin.ts --outdir=dist -- schema",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
+		"lint:types": "tsc --noEmit",
+		"lint:types:watch": "tsc --watch --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"test:coverage": "echo no test coverage yet"
+	},
+	"devDependencies": {
+		"@types/bun": "1.1.8",
+		"@types/node": "20.16.3",
+		"@types/tmp": "0.2.6",
+		"concurrently": "8.2.2",
+		"tmp": "0.2.3",
+		"tsup": "8.2.4",
+		"rimraf": "6.0.1",
+		"vitest": "2.0.5"
+	}
+}

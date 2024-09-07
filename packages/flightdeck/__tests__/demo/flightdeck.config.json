@@ -1,0 +1,15 @@
+{
+	"app": "my-app",
+	"repo": "repo",
+	"runCmd": ["./repo/my-app"],
+	"secret": "secret",
+	"serviceDir": ".",
+	"updateCmd": [
+		"bun",
+		"build",
+		"./app.ts",
+		"--bundle",
+		"--outfile",
+		"update/repo/my-app"
+	]
+}

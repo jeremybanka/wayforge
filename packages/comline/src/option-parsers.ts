@@ -13,3 +13,7 @@ export function parseNumberOption(arg: string): number {
 export function parseStringOption(arg: string): string {
 	return arg
 }
+
+export function parseArrayOption(arg: string): string[] {
+	return arg.split(` `)
+}

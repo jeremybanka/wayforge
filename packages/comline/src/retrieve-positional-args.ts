@@ -1,16 +1,20 @@
-import type { Tree, TreePath } from "./tree"
+import type { Join, Tree, TreePath, TreePathName } from "./tree"
 
 export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	cliName: string,
 	positionalArgTree: PositionalArgTree,
 	passed: string[],
-): TreePath<PositionalArgTree> {
+): {
+	path: TreePath<PositionalArgTree>
+	route: Join<TreePathName<PositionalArgTree>>
+} {
 	const endOfOptionsDelimiterIndex = passed.indexOf(`--`)
 	const positionalArgs =
 		endOfOptionsDelimiterIndex === -1
 			? undefined
 			: passed.slice(endOfOptionsDelimiterIndex + 1)
 
+	const namedPositionalArgs: string[] = []
 	const validPositionalArgs: string[] = []
 	let treePointer: object = positionalArgTree
 	let argumentIndex = -1
@@ -27,7 +31,10 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 			]
 			throw new Error(errorReport.join(`\n`))
 		}
-		return [] as TreePath<PositionalArgTree>
+		return {
+			path: [] as TreePath<PositionalArgTree>,
+			route: `` as Join<TreePathName<PositionalArgTree>>,
+		}
 	}
 	for (const positionalArg of positionalArgs) {
 		argumentIndex++
@@ -47,6 +54,7 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 		}
 		if (positionalArg in treePointer[1]) {
 			treePointer = treePointer[1][positionalArg]
+			namedPositionalArgs.push(positionalArg)
 			validPositionalArgs.push(positionalArg)
 		} else if (Object.keys(treePointer[1]).length > 0) {
 			const variablePath = Object.keys(treePointer[1]).find((key) =>
@@ -54,6 +62,7 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 			)
 			if (variablePath) {
 				treePointer = treePointer[1][variablePath]
+				namedPositionalArgs.push(variablePath)
 				validPositionalArgs.push(positionalArg)
 				continue
 			}
@@ -86,5 +95,10 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 			throw new Error(errorReport.join(`\n`))
 		}
 	}
-	return validPositionalArgs as TreePath<PositionalArgTree>
+	return {
+		path: validPositionalArgs as TreePath<PositionalArgTree>,
+		route: namedPositionalArgs.join(`/`) as Join<
+			TreePathName<PositionalArgTree>
+		>,
+	}
 }
