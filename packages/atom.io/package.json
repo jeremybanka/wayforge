@@ -262,10 +262,8 @@
 		},
 		"./solid/package.json": "./solid/package.json",
 		"./solid": {
-			"types": "./solid/dist/index.d.ts",
-			"browser": "./solid/dist/index.js",
 			"import": "./solid/dist/index.js",
-			"require": "./solid/dist/index.cjs"
+			"types": "./solid/dist/index.d.ts"
 		},
 		"./transceivers/set-rtx/package.json": "./transceivers/set-rtx/package.json",
 		"./transceivers/set-rtx": {
