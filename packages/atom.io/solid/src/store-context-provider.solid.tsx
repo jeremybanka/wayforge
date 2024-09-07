@@ -3,7 +3,6 @@ import { IMPLICIT } from "atom.io/internal"
 import type { JSX } from "solid-js"
 import { createContext } from "solid-js"
 import h from "solid-js/h"
-import type { HyperScript } from "solid-js/h/types/hyperscript.js"
 
 export const StoreContext = createContext<Store>(IMPLICIT.STORE)
 
@@ -14,6 +13,7 @@ export type StoreProviderProps = {
 export function StoreProvider({
 	children,
 	store = IMPLICIT.STORE,
-}: StoreProviderProps): ReturnType<HyperScript> {
+}: StoreProviderProps): JSX.Element {
+	// @ts-expect-error solid js doesn't make h and JSX.Element compatible
 	return h(StoreContext.Provider, { value: store }, children)
 }
