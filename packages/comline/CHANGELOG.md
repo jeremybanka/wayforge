@@ -1,5 +1,11 @@
 # comline
 
+## 0.1.0
+
+### Minor Changes
+
+- 05f66ce: 💥 BREAKING CHANGE: Options passed via switch or flag are no longer globally defined, but must be explicitly bound to each route.
+
 ## 0.0.4
 
 ### Patch Changes
