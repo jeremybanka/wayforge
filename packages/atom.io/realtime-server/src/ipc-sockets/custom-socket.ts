@@ -17,7 +17,7 @@ export interface EventBuffer<
 }
 
 export class CustomSocket<I extends Events, O extends Events> implements Socket {
-	protected listeners: Map<keyof I, Set<(...args: Json.Array) => void>>
+	protected listeners: Map<keyof O, Set<(...args: Json.Array) => void>>
 	protected globalListeners: Set<(event: string, ...args: Json.Array) => void>
 	protected handleEvent<Event extends keyof I>(
 		event: string,
@@ -37,18 +37,18 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 	public id = `no_id_retrieved`
 
 	public constructor(
-		public emit: <Event extends keyof O>(
+		public emit: <Event extends keyof I>(
 			event: Event,
-			...args: O[Event]
+			...args: I[Event]
 		) => CustomSocket<I, O>,
 	) {
 		this.listeners = new Map()
 		this.globalListeners = new Set()
 	}
 
-	public on<Event extends keyof I>(
+	public on<Event extends keyof O>(
 		event: Event,
-		listener: (...args: I[Event]) => void,
+		listener: (...args: O[Event]) => void,
 	): this {
 		const listeners = this.listeners.get(event)
 		if (listeners) {
@@ -64,9 +64,9 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 		return this
 	}
 
-	public off<Event extends keyof I>(
+	public off<Event extends keyof O>(
 		event: Event,
-		listener?: (...args: I[Event]) => void,
+		listener?: (...args: O[Event]) => void,
 	): this {
 		const listeners = this.listeners.get(event)
 		if (listeners) {

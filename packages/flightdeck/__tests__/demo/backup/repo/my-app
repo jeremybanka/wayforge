@@ -1,0 +1,3828 @@
+#!/usr/bin/env bun
+// @bun
+// ../../../atom.io/internal/src/arbitrary.ts
+function arbitrary(random = Math.random) {
+  return random().toString(36).slice(2);
+}
+// ../../../atom.io/internal/src/future.ts
+class Future extends Promise {
+  fate;
+  resolve;
+  reject;
+  constructor(executor) {
+    let superResolve;
+    let superReject;
+    super((resolve, reject) => {
+      superResolve = resolve;
+      superReject = reject;
+    });
+    this.resolve = superResolve;
+    this.reject = superReject;
+    this.use(executor instanceof Promise ? executor : new Promise(executor));
+  }
+  pass(promise, value) {
+    if (promise === this.fate) {
+      this.resolve(value);
+    }
+  }
+  fail(promise, reason) {
+    if (promise === this.fate) {
+      this.reject(reason);
+    }
+  }
+  use(value) {
+    if (value instanceof Promise) {
+      const promise = value;
+      this.fate = promise;
+      promise.then((resolved) => {
+        this.pass(promise, resolved);
+      }, (reason) => {
+        this.fail(promise, reason);
+      });
+    } else {
+      this.resolve(value);
+      this.fate = undefined;
+    }
+  }
+}
+
+// ../../../atom.io/internal/src/lineage.ts
+function newest(scion) {
+  while (scion.child !== null) {
+    scion = scion.child;
+  }
+  return scion;
+}
+function eldest(scion) {
+  while (scion.parent !== null) {
+    scion = scion.parent;
+  }
+  return scion;
+}
+
+// ../../../atom.io/internal/src/store/counterfeit.ts
+function counterfeit(token, key) {
+  const subKey = stringifyJson(key);
+  const fullKey = `${token.key}(${subKey})`;
+  const type = FAMILY_MEMBER_TOKEN_TYPES[token.type];
+  const stateToken = {
+    key: fullKey,
+    type
+  };
+  if (type === `molecule`) {
+    Object.assign(stateToken, {
+      key,
+      family: token
+    });
+  } else {
+    Object.assign(stateToken, {
+      family: {
+        key: token.key,
+        subKey
+      }
+    });
+  }
+  Object.assign(stateToken, { counterfeit: true });
+  return stateToken;
+}
+var FAMILY_MEMBER_TOKEN_TYPES = {
+  atom_family: `atom`,
+  mutable_atom_family: `mutable_atom`,
+  selector_family: `selector`,
+  readonly_selector_family: `readonly_selector`,
+  molecule_family: `molecule`
+};
+// ../../../atom.io/internal/src/store/deposit.ts
+function deposit(state) {
+  const token = {
+    key: state.key,
+    type: state.type
+  };
+  if (`family` in state) {
+    token.family = state.family;
+  }
+  return token;
+}
+// ../../../atom.io/src/atom.ts
+function atom(options) {
+  return createStandaloneAtom(IMPLICIT.STORE, options);
+}
+function atomFamily(options) {
+  return createAtomFamily(IMPLICIT.STORE, options);
+}
+
+// ../../../atom.io/src/logger.ts
+var simpleLog = (logLevel) => (icon, denomination, tokenKey, message, ...rest) => {
+  console[logLevel](`${icon} ${denomination} "${tokenKey}" ${message}`, ...rest);
+};
+var simpleLogger = {
+  error: simpleLog(`error`),
+  info: simpleLog(`info`),
+  warn: simpleLog(`warn`)
+};
+
+class AtomIOLogger {
+  logLevel;
+  filter;
+  logger;
+  constructor(logLevel, filter, logger = simpleLogger) {
+    this.logLevel = logLevel;
+    this.filter = filter;
+    this.logger = logger;
+  }
+  error = (...args) => {
+    if ((this.filter?.(...args) ?? true) && this.logLevel !== null) {
+      this.logger.error(...args);
+    }
+  };
+  info = (...args) => {
+    if ((this.filter?.(...args) ?? true) && this.logLevel === `info`) {
+      this.logger.info(...args);
+    }
+  };
+  warn = (...args) => {
+    if ((this.filter?.(...args) ?? true) && this.logLevel !== `error` && this.logLevel !== null) {
+      this.logger.warn(...args);
+    }
+  };
+}
+
+// ../../../atom.io/src/selector.ts
+function selectorFamily(options) {
+  return createSelectorFamily(IMPLICIT.STORE, options);
+}
+
+// ../../../atom.io/src/transaction.ts
+function transaction(options) {
+  return createTransaction(options, IMPLICIT.STORE);
+}
+
+// ../../../rel8/junction/src/junction.ts
+class Junction {
+  a;
+  b;
+  cardinality;
+  relations = new Map;
+  contents = new Map;
+  isContent;
+  makeContentKey = (a, b) => `${a}:${b}`;
+  getRelatedKeys(key) {
+    return this.relations.get(key);
+  }
+  addRelation(a, b) {
+    let aRelations = this.relations.get(a);
+    let bRelations = this.relations.get(b);
+    if (aRelations) {
+      aRelations.add(b);
+    } else {
+      aRelations = new Set([b]);
+      this.relations.set(a, aRelations);
+    }
+    if (bRelations) {
+      bRelations.add(a);
+    } else {
+      bRelations = new Set([a]);
+      this.relations.set(b, bRelations);
+    }
+  }
+  deleteRelation(a, b) {
+    const aRelations = this.relations.get(a);
+    if (aRelations) {
+      aRelations.delete(b);
+      if (aRelations.size === 0) {
+        this.relations.delete(a);
+      }
+      const bRelations = this.relations.get(b);
+      if (bRelations) {
+        bRelations.delete(a);
+        if (bRelations.size === 0) {
+          this.relations.delete(b);
+        }
+      }
+    }
+  }
+  replaceRelationsUnsafely(a, bs) {
+    this.relations.set(a, new Set(bs));
+    for (const b of bs) {
+      const bRelations = new Set([a]);
+      this.relations.set(b, bRelations);
+    }
+  }
+  replaceRelationsSafely(a, bs) {
+    const aRelationsPrev = this.relations.get(a);
+    if (aRelationsPrev) {
+      for (const b of aRelationsPrev) {
+        const bRelations = this.relations.get(b);
+        if (bRelations) {
+          if (bRelations.size === 1) {
+            this.relations.delete(b);
+          } else {
+            bRelations.delete(a);
+          }
+          this.contents.delete(this.makeContentKey(a, b));
+        }
+      }
+    }
+    this.relations.set(a, new Set(bs));
+    for (const b of bs) {
+      let bRelations = this.relations.get(b);
+      if (bRelations) {
+        bRelations.add(a);
+      } else {
+        bRelations = new Set([a]);
+        this.relations.set(b, bRelations);
+      }
+    }
+  }
+  getContentInternal(contentKey) {
+    return this.contents.get(contentKey);
+  }
+  setContent(contentKey, content) {
+    this.contents.set(contentKey, content);
+  }
+  deleteContent(contentKey) {
+    this.contents.delete(contentKey);
+  }
+  constructor(data, config) {
+    this.a = data.between[0];
+    this.b = data.between[1];
+    this.cardinality = data.cardinality;
+    if (!config?.externalStore) {
+      this.relations = new Map(data.relations?.map(([a, b]) => [a, new Set(b)]));
+      this.contents = new Map(data.contents);
+    }
+    this.isContent = config?.isContent ?? null;
+    if (config?.makeContentKey) {
+      this.makeContentKey = config.makeContentKey;
+    }
+    if (config?.externalStore) {
+      const externalStore = config.externalStore;
+      this.has = (a, b) => externalStore.has(a, b);
+      this.addRelation = (a, b) => {
+        externalStore.addRelation(a, b);
+      };
+      this.deleteRelation = (a, b) => {
+        externalStore.deleteRelation(a, b);
+      };
+      this.replaceRelationsSafely = (a, bs) => {
+        externalStore.replaceRelationsSafely(a, bs);
+      };
+      this.replaceRelationsUnsafely = (a, bs) => {
+        externalStore.replaceRelationsUnsafely(a, bs);
+      };
+      this.getRelatedKeys = (key) => externalStore.getRelatedKeys(key);
+      if (externalStore.getContent) {
+        this.getContentInternal = (contentKey) => {
+          return externalStore.getContent(contentKey);
+        };
+        this.setContent = (contentKey, content) => {
+          externalStore.setContent(contentKey, content);
+        };
+        this.deleteContent = (contentKey) => {
+          externalStore.deleteContent(contentKey);
+        };
+      }
+      for (const [x, ys] of data.relations ?? []) {
+        for (const y of ys)
+          this.addRelation(x, y);
+      }
+      for (const [contentKey, content] of data.contents ?? []) {
+        this.setContent(contentKey, content);
+      }
+    }
+  }
+  toJSON() {
+    return {
+      between: [this.a, this.b],
+      cardinality: this.cardinality,
+      relations: [...this.relations.entries()].map(([a, b]) => [a, [...b]]),
+      contents: [...this.contents.entries()]
+    };
+  }
+  set(a, ...rest) {
+    const b = typeof rest[0] === `string` ? rest[0] : a[this.b];
+    const content = rest[1] ?? typeof rest[0] === `string` ? undefined : rest[0];
+    a = typeof a === `string` ? a : a[this.a];
+    switch (this.cardinality) {
+      case `1:1`: {
+        const bPrev = this.getRelatedKey(a);
+        if (bPrev && bPrev !== b)
+          this.delete(bPrev, a);
+      }
+      case `1:n`: {
+        const aPrev = this.getRelatedKey(b);
+        if (aPrev && aPrev !== a)
+          this.delete(aPrev, b);
+      }
+    }
+    if (content) {
+      const contentKey = this.makeContentKey(a, b);
+      this.setContent(contentKey, content);
+    }
+    this.addRelation(a, b);
+    return this;
+  }
+  delete(x, b) {
+    b = typeof b === `string` ? b : x[this.b];
+    const a = typeof x === `string` ? x : x[this.a];
+    if (a === undefined && typeof b === `string`) {
+      const bRelations = this.getRelatedKeys(b);
+      if (bRelations) {
+        for (const bRelation of bRelations) {
+          this.delete(bRelation, b);
+        }
+      }
+    }
+    if (typeof a === `string` && b === undefined) {
+      const aRelations = this.getRelatedKeys(a);
+      if (aRelations) {
+        for (const aRelation of aRelations) {
+          this.delete(a, aRelation);
+        }
+      }
+    }
+    if (typeof a === `string` && typeof b === `string`) {
+      this.deleteRelation(a, b);
+      const contentKey = this.makeContentKey(a, b);
+      this.deleteContent(contentKey);
+    }
+    return this;
+  }
+  getRelatedKey(key) {
+    const relations = this.getRelatedKeys(key);
+    if (relations) {
+      if (relations.size > 1) {
+        console.warn(`${relations.size} related keys were found for key "${key}": (${[
+          ...relations
+        ].map((k) => `"${k}"`).join(`, `)}). Only one related key was expected.`);
+      }
+      for (const relation of relations) {
+        return relation;
+      }
+    }
+  }
+  replaceRelations(a, relations, config) {
+    const hasContent = !Array.isArray(relations);
+    const bs = hasContent ? Object.keys(relations) : relations;
+    if (config?.reckless) {
+      this.replaceRelationsUnsafely(a, bs);
+    } else {
+      this.replaceRelationsSafely(a, bs);
+    }
+    if (hasContent) {
+      for (const b of bs) {
+        const contentKey = this.makeContentKey(a, b);
+        const content = relations[b];
+        this.setContent(contentKey, content);
+      }
+    }
+    return this;
+  }
+  getContent(a, b) {
+    const contentKey = this.makeContentKey(a, b);
+    return this.getContentInternal(contentKey);
+  }
+  getRelationEntries(input) {
+    const a = input[this.a];
+    const b = input[this.b];
+    if (a !== undefined && b === undefined) {
+      const aRelations = this.getRelatedKeys(a);
+      if (aRelations) {
+        return [...aRelations].map((aRelation) => {
+          return [aRelation, this.getContent(a, aRelation) ?? null];
+        });
+      }
+    }
+    if (a === undefined && b !== undefined) {
+      const bRelations = this.getRelatedKeys(b);
+      if (bRelations) {
+        return [...bRelations].map((bRelation) => {
+          return [bRelation, this.getContent(bRelation, b) ?? null];
+        });
+      }
+    }
+    return [];
+  }
+  has(a, b) {
+    if (b) {
+      const setA = this.getRelatedKeys(a);
+      return setA?.has(b) ?? false;
+    }
+    return this.relations.has(a);
+  }
+}
+// ../../../atom.io/internal/src/subject.ts
+class Subject {
+  Subscriber;
+  subscribers = new Map;
+  subscribe(key, subscriber) {
+    this.subscribers.set(key, subscriber);
+    const unsubscribe = () => {
+      this.unsubscribe(key);
+    };
+    return unsubscribe;
+  }
+  unsubscribe(key) {
+    this.subscribers.delete(key);
+  }
+  next(value) {
+    const subscribers = this.subscribers.values();
+    for (const subscriber of subscribers) {
+      subscriber(value);
+    }
+  }
+}
+
+class StatefulSubject extends Subject {
+  state;
+  constructor(initialState) {
+    super();
+    this.state = initialState;
+  }
+  next(value) {
+    this.state = value;
+    super.next(value);
+  }
+}
+
+// ../../../atom.io/internal/src/transaction/is-root-store.ts
+function isRootStore(store) {
+  return `epoch` in store.transactionMeta;
+}
+function isChildStore(store) {
+  return `phase` in store.transactionMeta;
+}
+
+// ../../../atom.io/internal/src/transaction/abort-transaction.ts
+var abortTransaction = (store) => {
+  const target = newest(store);
+  if (!isChildStore(target)) {
+    store.logger.warn(`\uD83D\uDC1E`, `transaction`, `???`, `abortTransaction called outside of a transaction. This is probably a bug in AtomIO.`);
+    return;
+  }
+  store.logger.info(`\uD83E\uDE82`, `transaction`, target.transactionMeta.update.key, `Aborting transaction`);
+  target.parent.child = null;
+};
+// ../../../atom.io/internal/src/pretty-print.ts
+function prettyPrintTokenType(token) {
+  return token.type.split(`_`).map(capitalize).join(` `);
+}
+var capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+
+// ../../../atom.io/internal/src/not-found-error.ts
+class NotFoundError extends Error {
+  constructor(...params) {
+    const token = params[0];
+    const store = params.length === 2 ? params[1] : params[2];
+    if (params.length === 2) {
+      super(`${prettyPrintTokenType(token)} ${stringifyJson(token.key)} not found in store "${store.config.name}".`);
+    } else {
+      const key = params[1];
+      super(`${prettyPrintTokenType(token)} "${token.key}" member ${stringifyJson(key)} not found in store "${store.config.name}".`);
+    }
+  }
+}
+
+// ../../../atom.io/internal/src/transaction/act-upon-store.ts
+function actUponStore(token, id, store2) {
+  return (...parameters) => {
+    const tx = withdraw(token, store2);
+    if (tx) {
+      return tx.run(parameters, id);
+    }
+    throw new NotFoundError(token, store2);
+  };
+}
+// ../../../atom.io/internal/src/set-state/become.ts
+var become = (nextVersionOfThing) => (originalThing) => nextVersionOfThing instanceof Function ? nextVersionOfThing(originalThing) : nextVersionOfThing;
+// ../../../atom.io/internal/src/get-state/read-or-compute-value.ts
+var readOrComputeValue = (state, target) => {
+  if (target.valueMap.has(state.key)) {
+    target.logger.info(`\uD83D\uDCD6`, state.type, state.key, `reading cached value`);
+    return readCachedValue(state, target);
+  }
+  if (state.type === `selector` || state.type === `readonly_selector`) {
+    target.logger.info(`\uD83E\uDDEE`, state.type, state.key, `computing value`);
+    return state.get();
+  }
+  const fallback = state.default instanceof Function ? state.default() : state.default;
+  target.logger.info(`\uD83D\uDC81`, `atom`, state.key, `could not find cached value; using default`, fallback);
+  return state.default instanceof Function ? state.default() : state.default;
+};
+
+// ../../../atom.io/internal/src/operation.ts
+var openOperation = (store2, token) => {
+  if (store2.operation.open) {
+    const rejectionTime = performance.now();
+    store2.logger.info(`\u2757`, token.type, token.key, `deferring setState at T-${rejectionTime} until setState for "${store2.operation.token.key}" is done`);
+    return rejectionTime;
+  }
+  store2.operation = {
+    open: true,
+    done: new Set,
+    prev: new Map,
+    time: Date.now(),
+    token
+  };
+  store2.logger.info(`\u2B55`, token.type, token.key, `operation start in store "${store2.config.name}"${!isChildStore(store2) ? `` : ` ${store2.transactionMeta.phase} "${store2.transactionMeta.update.key}"`}`);
+};
+var closeOperation = (store2) => {
+  if (store2.operation.open) {
+    store2.logger.info(`\uD83D\uDD34`, store2.operation.token.type, store2.operation.token.key, `operation done in store "${store2.config.name}"`);
+  }
+  store2.operation = { open: false };
+  store2.on.operationClose.next(store2.operation);
+};
+var isDone = (store2, key) => {
+  if (!store2.operation.open) {
+    store2.logger.error(`\uD83D\uDC1E`, `unknown`, key, `isDone called outside of an operation. This is probably a bug in AtomIO.`);
+    return true;
+  }
+  return store2.operation.done.has(key);
+};
+var markDone = (store2, key) => {
+  if (!store2.operation.open) {
+    store2.logger.error(`\uD83D\uDC1E`, `unknown`, key, `markDone called outside of an operation. This is probably a bug in AtomIO.`);
+    return;
+  }
+  store2.operation.done.add(key);
+};
+
+// ../../../atom.io/internal/src/set-state/emit-update.ts
+var emitUpdate = (state, update, store2) => {
+  switch (state.type) {
+    case `mutable_atom`:
+      store2.logger.info(`\uD83D\uDCE2`, state.type, state.key, `is now (`, update.newValue, `) subscribers:`, state.subject.subscribers);
+      break;
+    default:
+      store2.logger.info(`\uD83D\uDCE2`, state.type, state.key, `went (`, update.oldValue, `->`, update.newValue, `) subscribers:`, state.subject.subscribers);
+  }
+  state.subject.next(update);
+};
+
+// ../../../atom.io/internal/src/set-state/evict-downstream.ts
+var evictDownStream = (atom2, store2) => {
+  const target = newest(store2);
+  const downstreamKeys = target.selectorAtoms.getRelatedKeys(atom2.key);
+  target.logger.info(`\uD83E\uDDF9`, atom2.type, atom2.key, downstreamKeys ? `evicting ${downstreamKeys.size} states downstream:` : `no downstream states`, downstreamKeys ?? `to evict`);
+  if (downstreamKeys) {
+    if (target.operation.open) {
+      target.logger.info(`\uD83E\uDDF9`, atom2.type, atom2.key, `[ ${[...target.operation.done].join(`, `)} ] already done`);
+    }
+    for (const key of downstreamKeys) {
+      if (isDone(target, key)) {
+        continue;
+      }
+      evictCachedValue(key, target);
+      markDone(target, key);
+    }
+  }
+};
+
+// ../../../atom.io/internal/src/set-state/stow-update.ts
+function shouldUpdateBeStowed(key, update) {
+  if (isTransceiver(update.newValue)) {
+    return false;
+  }
+  if (key.includes(`\uD83D\uDD0D`)) {
+    return false;
+  }
+  return true;
+}
+var stowUpdate = (state, update, store2) => {
+  const { key } = state;
+  const target = newest(store2);
+  if (!isChildStore(target) || target.transactionMeta.phase !== `building`) {
+    store2.logger.error(`\uD83D\uDC1E`, `atom`, key, `stowUpdate called outside of a transaction. This is probably a bug.`);
+    return;
+  }
+  const shouldStow = shouldUpdateBeStowed(key, update);
+  if (!shouldStow) {
+    return;
+  }
+  const atomUpdate = {
+    type: `atom_update`,
+    key,
+    ...update
+  };
+  if (state.family) {
+    atomUpdate.family = state.family;
+  }
+  target.transactionMeta.update.updates.push(atomUpdate);
+  store2.logger.info(`\uD83D\uDCC1`, `atom`, key, `stowed (`, update.oldValue, `->`, update.newValue, `)`);
+};
+
+// ../../../atom.io/internal/src/set-state/set-atom.ts
+var setAtom = (atom3, next, target) => {
+  const oldValue = readOrComputeValue(atom3, target);
+  let newValue = oldValue;
+  if (atom3.type === `mutable_atom` && isChildStore(target)) {
+    const { parent } = target;
+    const copiedValue = copyMutableIfNeeded(atom3, parent, target);
+    newValue = copiedValue;
+  }
+  newValue = become(next)(newValue);
+  target.logger.info(`\uD83D\uDCDD`, `atom`, atom3.key, `set to`, newValue);
+  newValue = cacheValue(atom3.key, newValue, atom3.subject, target);
+  if (isAtomDefault(atom3.key, target)) {
+    markAtomAsNotDefault(atom3.key, target);
+  }
+  markDone(target, atom3.key);
+  evictDownStream(atom3, target);
+  const update = { oldValue, newValue };
+  if (isRootStore(target)) {
+    emitUpdate(atom3, update, target);
+  } else if (target.parent) {
+    if (target.on.transactionApplying.state === null) {
+      stowUpdate(atom3, update, target);
+    } else if (atom3.key.startsWith(`*`)) {
+      const mutableKey = atom3.key.slice(1);
+      const mutableAtom = target.atoms.get(mutableKey);
+      let transceiver = target.valueMap.get(mutableKey);
+      if (mutableAtom.type === `mutable_atom` && isChildStore(target)) {
+        const { parent } = target;
+        const copiedValue = copyMutableIfNeeded(mutableAtom, parent, target);
+        transceiver = copiedValue;
+      }
+      const accepted = transceiver.do(update.newValue) === null;
+      if (accepted)
+        evictDownStream(mutableAtom, target);
+    }
+  }
+};
+
+// ../../../atom.io/internal/src/set-state/set-atom-or-selector.ts
+var setAtomOrSelector = (state, value, store2) => {
+  switch (state.type) {
+    case `atom`:
+    case `mutable_atom`:
+      setAtom(state, value, store2);
+      break;
+    case `selector`:
+      state.set(value);
+      break;
+  }
+};
+// ../../../atom.io/internal/src/families/create-regular-atom-family.ts
+function createRegularAtomFamily(store2, options, internalRoles) {
+  const familyToken = {
+    key: options.key,
+    type: `atom_family`
+  };
+  const existing = store2.families.get(options.key);
+  if (existing) {
+    store2.logger.error(`\u2757`, `atom_family`, options.key, `Overwriting an existing ${prettyPrintTokenType(existing)} "${existing.key}" in store "${store2.config.name}". You can safely ignore this warning if it is due to hot module replacement.`);
+  }
+  const subject2 = new Subject;
+  const familyFunction = (key) => {
+    const subKey = stringifyJson(key);
+    const family = { key: options.key, subKey };
+    const fullKey = `${options.key}(${subKey})`;
+    const target = newest(store2);
+    const def = options.default;
+    const individualOptions = {
+      key: fullKey,
+      default: def instanceof Function ? def(key) : def
+    };
+    if (options.effects) {
+      individualOptions.effects = options.effects(key);
+    }
+    const token = createRegularAtom(target, individualOptions, family);
+    subject2.next({ type: `state_creation`, token });
+    return token;
+  };
+  const atomFamily2 = Object.assign(familyFunction, familyToken, {
+    subject: subject2,
+    install: (s) => createRegularAtomFamily(s, options),
+    internalRoles
+  });
+  store2.families.set(options.key, atomFamily2);
+  store2.defaults.set(options.key, options.default);
+  return familyToken;
+}
+
+// ../../../atom.io/internal/src/families/create-atom-family.ts
+function createAtomFamily(store2, options) {
+  const isMutable = `mutable` in options;
+  if (isMutable) {
+    return createMutableAtomFamily(store2, options);
+  }
+  return createRegularAtomFamily(store2, options);
+}
+// ../../../atom.io/internal/src/get-state/get-from-store.ts
+function getFromStore(store3, ...params) {
+  let token;
+  if (params.length === 1) {
+    token = params[0];
+  } else {
+    const family = params[0];
+    const key = params[1];
+    let maybeToken;
+    if (family.type === `molecule_family`) {
+      maybeToken = seekInStore(store3, family, key) ?? counterfeit(family, key);
+    } else {
+      maybeToken = findInStore(store3, family, key);
+    }
+    token = maybeToken;
+  }
+  if (`counterfeit` in token && `family` in token) {
+    const family = token.type === `molecule` ? withdraw(token.family, store3) : store3.families.get(token.family.key);
+    const subKey = token.type === `molecule` ? token.key : token.family.subKey;
+    const disposal = store3.disposalTraces.buffer.find((item) => item?.key === token.key);
+    store3.logger.error(`\u274C`, token.type, token.key, `could not be retrieved because it was not found in the store "${store3.config.name}".`, disposal ? `This state was previously disposed:\n${disposal.trace}` : `No previous disposal trace was found.`);
+    switch (family.type) {
+      case `atom_family`:
+      case `mutable_atom_family`:
+        return store3.defaults.get(family.key);
+      case `selector_family`:
+      case `readonly_selector_family`: {
+        if (store3.defaults.has(family.key)) {
+          return store3.defaults.get(token.family.key);
+        }
+        const defaultValue = withdraw(family, store3).default(subKey);
+        store3.defaults.set(family.key, defaultValue);
+        return defaultValue;
+      }
+      case `molecule_family`:
+        throw new NotFoundError(family, subKey, store3);
+    }
+  }
+  switch (token.type) {
+    case `atom`:
+    case `mutable_atom`:
+    case `selector`:
+    case `readonly_selector`:
+      return readOrComputeValue(withdraw(token, store3), store3);
+    case `molecule`:
+      return withdraw(token, store3).instance;
+  }
+}
+// ../../../atom.io/internal/src/keys.ts
+var isAtomKey = (key, store3) => newest(store3).atoms.has(key);
+var isSelectorKey = (key, store3) => newest(store3).selectors.has(key);
+var isReadonlySelectorKey = (key, store3) => newest(store3).readonlySelectors.has(key);
+var isStateKey = (key, store3) => isAtomKey(key, store3) || isSelectorKey(key, store3) || isReadonlySelectorKey(key, store3);
+
+// ../../../atom.io/internal/src/selector/get-selector-dependency-keys.ts
+var getSelectorDependencyKeys = (key, store3) => {
+  const sources = newest(store3).selectorGraph.getRelationEntries({ downstreamSelectorKey: key }).filter(([_, { source }]) => source !== key).map(([_, { source }]) => source).filter((source) => isStateKey(source, store3));
+  return sources;
+};
+
+// ../../../atom.io/internal/src/selector/trace-selector-atoms.ts
+var traceSelectorAtoms = (directDependencyKey, covered, store3) => {
+  const rootKeys = [];
+  const indirectDependencyKeys = getSelectorDependencyKeys(directDependencyKey, store3);
+  while (indirectDependencyKeys.length > 0) {
+    const indirectDependencyKey = indirectDependencyKeys.shift();
+    if (covered.has(indirectDependencyKey)) {
+      continue;
+    }
+    covered.add(indirectDependencyKey);
+    if (!isAtomKey(indirectDependencyKey, store3)) {
+      indirectDependencyKeys.push(...getSelectorDependencyKeys(indirectDependencyKey, store3));
+    } else if (!rootKeys.includes(indirectDependencyKey)) {
+      rootKeys.push(indirectDependencyKey);
+    }
+  }
+  return rootKeys;
+};
+var traceAllSelectorAtoms = (selector, store3) => {
+  const selectorKey = selector.key;
+  const directDependencyKeys = getSelectorDependencyKeys(selectorKey, store3);
+  const covered = new Set;
+  return directDependencyKeys.flatMap((depKey) => isAtomKey(depKey, store3) ? depKey : traceSelectorAtoms(depKey, covered, store3));
+};
+
+// ../../../atom.io/internal/src/selector/update-selector-atoms.ts
+var updateSelectorAtoms = (selectorKey, dependency, covered, store3) => {
+  const target = newest(store3);
+  if (dependency.type === `atom` || dependency.type === `mutable_atom`) {
+    target.selectorAtoms.set({
+      selectorKey,
+      atomKey: dependency.key
+    });
+    store3.logger.info(`\uD83D\uDD0D`, `selector`, selectorKey, `discovers root atom "${dependency.key}"`);
+  } else {
+    const rootKeys = traceSelectorAtoms(dependency.key, covered, store3);
+    store3.logger.info(`\uD83D\uDD0D`, `selector`, selectorKey, `discovers root atoms: [ ${rootKeys.map((key) => `"${key}"`).join(`, `)} ]`);
+    for (const atomKey of rootKeys) {
+      target.selectorAtoms = target.selectorAtoms.set({
+        selectorKey,
+        atomKey
+      });
+    }
+  }
+  covered.add(dependency.key);
+};
+
+// ../../../atom.io/internal/src/selector/register-selector.ts
+var registerSelector = (selectorKey, covered, store4) => ({
+  get: (...params) => {
+    const target = newest(store4);
+    let dependency;
+    if (params.length === 2) {
+      const [family, key] = params;
+      switch (family.type) {
+        case `molecule_family`:
+          return getFromStore(store4, family, key);
+        default:
+          if (store4.config.lifespan === `ephemeral`) {
+            dependency = findInStore(store4, family, key);
+          } else {
+            const maybeDependency = seekInStore(store4, family, key);
+            if (maybeDependency) {
+              dependency = maybeDependency;
+            } else {
+              throw new NotFoundError(family, key, store4);
+            }
+          }
+      }
+    } else {
+      [dependency] = params;
+    }
+    if (dependency.type === `molecule`) {
+      return getFromStore(store4, dependency);
+    }
+    const dependencyState = withdraw(dependency, store4);
+    const dependencyValue = readOrComputeValue(dependencyState, store4);
+    store4.logger.info(`\uD83D\uDD0C`, `selector`, selectorKey, `registers dependency ( "${dependency.key}" =`, dependencyValue, `)`);
+    target.selectorGraph.set({
+      upstreamSelectorKey: dependency.key,
+      downstreamSelectorKey: selectorKey
+    }, {
+      source: dependency.key
+    });
+    updateSelectorAtoms(selectorKey, dependency, covered, store4);
+    return dependencyValue;
+  },
+  set: (...params) => {
+    let token;
+    let value;
+    if (params.length === 2) {
+      token = params[0];
+      value = params[1];
+    } else {
+      const family = params[0];
+      const key = params[1];
+      value = params[2];
+      const maybeToken = store4.config.lifespan === `ephemeral` ? findInStore(store4, family, key) : seekInStore(store4, family, key);
+      if (!maybeToken) {
+        throw new NotFoundError(family, key, store4);
+      }
+      token = maybeToken;
+    }
+    const target = newest(store4);
+    const state = withdraw(token, target);
+    setAtomOrSelector(state, value, target);
+  },
+  find: (token, key) => findInStore(store4, token, key),
+  seek: (token, key) => seekInStore(store4, token, key),
+  json: (token) => getJsonToken(store4, token)
+});
+
+// ../../../atom.io/internal/src/selector/create-readonly-selector.ts
+var createReadonlySelector = (store4, options, family) => {
+  const target = newest(store4);
+  const subject3 = new Subject;
+  const covered = new Set;
+  const { get, find, seek, json: json4 } = registerSelector(options.key, covered, target);
+  const getSelf = () => {
+    const value = options.get({ get, find, seek, json: json4 });
+    cacheValue(options.key, value, subject3, newest(store4));
+    covered.clear();
+    return value;
+  };
+  const readonlySelector = {
+    ...options,
+    subject: subject3,
+    install: (s) => createReadonlySelector(s, options, family),
+    get: getSelf,
+    type: `readonly_selector`,
+    ...family && { family }
+  };
+  target.readonlySelectors.set(options.key, readonlySelector);
+  const initialValue = getSelf();
+  store4.logger.info(`\u2728`, readonlySelector.type, readonlySelector.key, `=`, initialValue);
+  const token = {
+    key: options.key,
+    type: `readonly_selector`
+  };
+  if (family) {
+    token.family = family;
+  }
+  return token;
+};
+// ../../../atom.io/internal/src/selector/create-writable-selector.ts
+var createWritableSelector = (store4, options, family) => {
+  const target = newest(store4);
+  const subject4 = new Subject;
+  const covered = new Set;
+  const setterToolkit = registerSelector(options.key, covered, target);
+  const { find, get, seek, json: json4 } = setterToolkit;
+  const getterToolkit = { find, get, seek, json: json4 };
+  const getSelf = (getFn = options.get, innerTarget = newest(store4)) => {
+    const value = getFn(getterToolkit);
+    cacheValue(options.key, value, subject4, innerTarget);
+    covered.clear();
+    return value;
+  };
+  const setSelf = (next) => {
+    const innerTarget = newest(store4);
+    const oldValue = getSelf(options.get, innerTarget);
+    const newValue = become(next)(oldValue);
+    store4.logger.info(`\uD83D\uDCDD`, `selector`, options.key, `set (`, oldValue, `->`, newValue, `)`);
+    cacheValue(options.key, newValue, subject4, innerTarget);
+    markDone(innerTarget, options.key);
+    if (isRootStore(innerTarget)) {
+      subject4.next({ newValue, oldValue });
+    }
+    options.set(setterToolkit, newValue);
+  };
+  const mySelector = {
+    ...options,
+    subject: subject4,
+    install: (s) => createWritableSelector(s, options, family),
+    get: getSelf,
+    set: setSelf,
+    type: `selector`,
+    ...family && { family }
+  };
+  target.selectors.set(options.key, mySelector);
+  const initialValue = getSelf();
+  store4.logger.info(`\u2728`, mySelector.type, mySelector.key, `=`, initialValue);
+  const token = {
+    key: options.key,
+    type: `selector`
+  };
+  if (family) {
+    token.family = family;
+  }
+  return token;
+};
+
+// ../../../atom.io/internal/src/selector/create-standalone-selector.ts
+function createStandaloneSelector(store4, options) {
+  const isWritable = `set` in options;
+  if (isWritable) {
+    const state2 = createWritableSelector(store4, options, undefined);
+    store4.on.selectorCreation.next(state2);
+    return state2;
+  }
+  const state = createReadonlySelector(store4, options, undefined);
+  store4.on.selectorCreation.next(state);
+  return state;
+}
+// ../../../atom.io/internal/src/selector/dispose-selector.ts
+function disposeSelector(selectorToken, store4) {
+  const target = newest(store4);
+  const { key } = selectorToken;
+  const selector = withdraw(selectorToken, target);
+  if (!selector.family) {
+    store4.logger.error(`\u274C`, `selector`, key, `Standalone selectors cannot be disposed.`);
+  } else {
+    const molecule = target.molecules.get(selector.family.subKey);
+    if (molecule) {
+      molecule.tokens.delete(key);
+    }
+    switch (selectorToken.type) {
+      case `selector`:
+        {
+          target.selectors.delete(key);
+          const family = withdraw({ key: selector.family.key, type: `selector_family` }, store4);
+          family.subject.next({
+            type: `state_disposal`,
+            token: selectorToken
+          });
+        }
+        break;
+      case `readonly_selector`:
+        {
+          target.readonlySelectors.delete(key);
+          const family = withdraw({ key: selector.family.key, type: `readonly_selector_family` }, store4);
+          family.subject.next({
+            type: `state_disposal`,
+            token: selectorToken
+          });
+        }
+        break;
+    }
+    target.valueMap.delete(key);
+    target.selectorAtoms.delete(key);
+    target.selectorGraph.delete(key);
+    store4.logger.info(`\uD83D\uDD25`, selectorToken.type, key, `deleted`);
+    if (isChildStore(target) && target.transactionMeta.phase === `building`) {
+      target.transactionMeta.update.updates.push({
+        type: `state_disposal`,
+        token: selectorToken
+      });
+    } else {
+      store4.on.selectorDisposal.next(selectorToken);
+    }
+  }
+}
+// ../../../atom.io/internal/src/families/create-readonly-selector-family.ts
+function createReadonlySelectorFamily(store4, options, internalRoles) {
+  const familyToken = {
+    key: options.key,
+    type: `readonly_selector_family`
+  };
+  const existing = store4.families.get(options.key);
+  if (existing) {
+    store4.logger.error(`\u2757`, `readonly_selector_family`, options.key, `Overwriting an existing ${prettyPrintTokenType(existing)} "${existing.key}" in store "${store4.config.name}". You can safely ignore this warning if it is due to hot module replacement.`);
+  }
+  const subject5 = new Subject;
+  const familyFunction = (key) => {
+    const subKey = stringifyJson(key);
+    const family = { key: options.key, subKey };
+    const fullKey = `${options.key}(${subKey})`;
+    const target = newest(store4);
+    const token = createReadonlySelector(target, {
+      key: fullKey,
+      get: options.get(key)
+    }, family);
+    subject5.next({ type: `state_creation`, token });
+    return token;
+  };
+  const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
+    internalRoles,
+    subject: subject5,
+    install: (s) => createReadonlySelectorFamily(s, options),
+    default: (key) => {
+      const getFn = options.get(key);
+      return getFn({
+        get: (...ps) => getFromStore(store4, ...ps),
+        find: (token, k) => findInStore(store4, token, k),
+        seek: (token, k) => seekInStore(store4, token, k),
+        json: (token) => getJsonToken(store4, token)
+      });
+    }
+  });
+  store4.families.set(options.key, readonlySelectorFamily);
+  return familyToken;
+}
+// ../../../atom.io/internal/src/families/create-writable-selector-family.ts
+function createWritableSelectorFamily(store4, options, internalRoles) {
+  const familyToken = {
+    key: options.key,
+    type: `selector_family`
+  };
+  const existing = store4.families.get(options.key);
+  if (existing) {
+    store4.logger.error(`\u2757`, `selector_family`, options.key, `Overwriting an existing ${prettyPrintTokenType(existing)} "${existing.key}" in store "${store4.config.name}". You can safely ignore this warning if it is due to hot module replacement.`);
+  }
+  const subject6 = new Subject;
+  const familyFunction = (key) => {
+    const subKey = stringifyJson(key);
+    const family = { key: options.key, subKey };
+    const fullKey = `${options.key}(${subKey})`;
+    const target = newest(store4);
+    const token = createWritableSelector(target, {
+      key: fullKey,
+      get: options.get(key),
+      set: options.set(key)
+    }, family);
+    subject6.next({ type: `state_creation`, token });
+    return token;
+  };
+  const selectorFamily2 = Object.assign(familyFunction, familyToken, {
+    internalRoles,
+    subject: subject6,
+    install: (s) => createWritableSelectorFamily(s, options),
+    default: (key) => {
+      const getFn = options.get(key);
+      return getFn({
+        get: (...ps) => getFromStore(store4, ...ps),
+        find: (token, k) => findInStore(store4, token, k),
+        seek: (token, k) => seekInStore(store4, token, k),
+        json: (token) => getJsonToken(store4, token)
+      });
+    }
+  });
+  store4.families.set(options.key, selectorFamily2);
+  return familyToken;
+}
+
+// ../../../atom.io/internal/src/families/create-selector-family.ts
+function createSelectorFamily(store4, options) {
+  const isWritable = `set` in options;
+  if (isWritable) {
+    return createWritableSelectorFamily(store4, options);
+  }
+  return createReadonlySelectorFamily(store4, options);
+}
+// ../../../atom.io/internal/src/molecule/dispose-molecule.ts
+function disposeMolecule(token, store5) {
+  let molecule;
+  molecule = withdraw(token, store5);
+  const { family } = token;
+  for (const join of molecule.joins.values()) {
+    join.relations.delete(molecule.key);
+    join.molecules.delete(molecule.stringKey);
+  }
+  const context = [];
+  for (const above of molecule.above.values()) {
+    context.push(deposit(above));
+  }
+  const values = [];
+  for (const stateToken of molecule.tokens.values()) {
+    const tokenFamily = stateToken.family;
+    values.push([tokenFamily.key, store5.valueMap.get(stateToken.key)]);
+  }
+  if (family) {
+    const Formula = withdraw(family, store5);
+    const disposalEvent = {
+      type: `molecule_disposal`,
+      token,
+      family,
+      context,
+      values
+    };
+    if (token.family) {
+      disposalEvent.family = token.family;
+    }
+    for (const state of molecule.tokens.values()) {
+      disposeFromStore(store5, state);
+    }
+    for (const child of molecule.below.values()) {
+      if (child.family?.dependsOn === `all`) {
+        disposeMolecule(child, store5);
+      } else {
+        child.above.delete(molecule.stringKey);
+        if (child.above.size === 0) {
+          disposeMolecule(child, store5);
+        }
+      }
+    }
+    molecule.below.clear();
+    const isTransaction = isChildStore(store5) && store5.transactionMeta.phase === `building`;
+    if (isTransaction) {
+      store5.transactionMeta.update.updates.push(disposalEvent);
+    } else {
+      Formula.subject.next(disposalEvent);
+    }
+    store5.molecules.delete(molecule.stringKey);
+  }
+  for (const parent of molecule.above.values()) {
+    parent.below.delete(molecule.stringKey);
+  }
+}
+
+// ../../../atom.io/internal/src/molecule/create-molecule-family.ts
+function createMoleculeFamily(store5, options) {
+  const subject7 = new Subject;
+  const token = {
+    type: `molecule_family`,
+    key: options.key,
+    dependsOn: options.dependsOn ?? `all`
+  };
+  const family = {
+    ...token,
+    subject: subject7,
+    new: options.new
+  };
+  store5.moleculeFamilies.set(options.key, family);
+  return token;
+}
+// ../../../atom.io/internal/src/molecule/grow-molecule-in-store.ts
+function growMoleculeInStore(molecule, family, store5) {
+  const stateToken = initFamilyMemberInStore(store5, family, molecule.key);
+  molecule.tokens.set(stateToken.key, stateToken);
+  const isTransaction = isChildStore(store5) && store5.transactionMeta.phase === `building`;
+  const moleculeInProgress = store5.moleculeInProgress === molecule.key;
+  if (!isTransaction && !moleculeInProgress) {
+    molecule.subject.next({ type: `state_creation`, token: stateToken });
+  }
+  return stateToken;
+}
+// ../../../atom.io/transceivers/set-rtx/src/set-rtx.ts
+class SetRTX extends Set {
+  mode = `record`;
+  subject = new Subject;
+  cacheLimit = 0;
+  cache = [];
+  cacheIdx = -1;
+  cacheUpdateNumber = -1;
+  constructor(values, cacheLimit = 0) {
+    super(values);
+    if (values instanceof SetRTX) {
+      this.parent = values;
+      this.cacheUpdateNumber = values.cacheUpdateNumber;
+    }
+    if (cacheLimit) {
+      this.cacheLimit = cacheLimit;
+      this.cache = new Array(cacheLimit);
+      this.subscribe(`auto cache`, (update) => {
+        this.cacheIdx++;
+        this.cacheIdx %= this.cacheLimit;
+        this.cache[this.cacheIdx] = update;
+      });
+    }
+  }
+  toJSON() {
+    return {
+      members: [...this],
+      cache: this.cache,
+      cacheLimit: this.cacheLimit,
+      cacheIdx: this.cacheIdx,
+      cacheUpdateNumber: this.cacheUpdateNumber
+    };
+  }
+  static fromJSON(json7) {
+    const set = new SetRTX(json7.members, json7.cacheLimit);
+    set.cache = json7.cache;
+    set.cacheIdx = json7.cacheIdx;
+    set.cacheUpdateNumber = json7.cacheUpdateNumber;
+    return set;
+  }
+  add(value) {
+    const result = super.add(value);
+    if (this.mode === `record`) {
+      this.cacheUpdateNumber++;
+      this.emit(`add:${stringifyJson(value)}`);
+    }
+    return result;
+  }
+  clear() {
+    const capturedContents = this.mode === `record` ? [...this] : null;
+    super.clear();
+    if (capturedContents) {
+      this.cacheUpdateNumber++;
+      this.emit(`clear:${JSON.stringify(capturedContents)}`);
+    }
+  }
+  delete(value) {
+    const result = super.delete(value);
+    if (this.mode === `record`) {
+      this.cacheUpdateNumber++;
+      this.emit(`del:${stringifyJson(value)}`);
+    }
+    return result;
+  }
+  parent;
+  child = null;
+  transactionUpdates = null;
+  transaction(run) {
+    this.mode = `transaction`;
+    this.transactionUpdates = [];
+    this.child = new SetRTX(this);
+    const unsubscribe = this.child._subscribe(`transaction`, (update) => {
+      this.transactionUpdates?.push(update);
+    });
+    try {
+      const shouldCommit = run(this.child);
+      if (shouldCommit) {
+        for (const update of this.transactionUpdates) {
+          this.doStep(update);
+        }
+        this.cacheUpdateNumber++;
+        this.emit(`tx:${this.transactionUpdates.join(`;`)}`);
+      }
+    } catch (thrown) {
+      console.error(`Failed to apply transaction to SetRTX:`, thrown);
+      throw thrown;
+    } finally {
+      unsubscribe();
+      this.child = null;
+      this.transactionUpdates = null;
+      this.mode = `record`;
+    }
+  }
+  _subscribe(key, fn) {
+    return this.subject.subscribe(key, fn);
+  }
+  subscribe(key, fn) {
+    return this.subject.subscribe(key, (update) => {
+      fn(`${this.cacheUpdateNumber}=${update}`);
+    });
+  }
+  emit(update) {
+    this.subject.next(update);
+  }
+  doStep(update) {
+    const typeValueBreak = update.indexOf(`:`);
+    const type = update.substring(0, typeValueBreak);
+    const value = update.substring(typeValueBreak + 1);
+    switch (type) {
+      case `add`:
+        this.add(parseJson(value));
+        break;
+      case `clear`:
+        this.clear();
+        break;
+      case `del`:
+        this.delete(parseJson(value));
+        break;
+      case `tx`:
+        for (const subUpdate of value.split(`;`)) {
+          this.doStep(subUpdate);
+        }
+    }
+  }
+  getUpdateNumber(update) {
+    const breakpoint = update.indexOf(`=`);
+    return Number(update.substring(0, breakpoint));
+  }
+  do(update) {
+    const breakpoint = update.indexOf(`=`);
+    const updateNumber = Number(update.substring(0, breakpoint));
+    const eventOffset = updateNumber - this.cacheUpdateNumber;
+    const isFuture = eventOffset > 0;
+    if (isFuture) {
+      if (eventOffset === 1) {
+        this.mode = `playback`;
+        const innerUpdate = update.substring(breakpoint + 1);
+        this.doStep(innerUpdate);
+        this.mode = `record`;
+        this.cacheUpdateNumber = updateNumber;
+        return null;
+      }
+      return this.cacheUpdateNumber + 1;
+    }
+    if (Math.abs(eventOffset) < this.cacheLimit) {
+      const eventIdx = this.cacheIdx + eventOffset;
+      const cachedUpdate = this.cache[eventIdx];
+      if (cachedUpdate === update) {
+        return null;
+      }
+      this.mode = `playback`;
+      let done = false;
+      while (!done) {
+        this.cacheIdx %= this.cacheLimit;
+        const u = this.cache[this.cacheIdx];
+        this.cacheIdx--;
+        if (!u) {
+          return `OUT_OF_RANGE`;
+        }
+        this.undo(u);
+        done = this.cacheIdx === eventIdx - 1;
+      }
+      const innerUpdate = update.substring(breakpoint + 1);
+      this.doStep(innerUpdate);
+      this.mode = `record`;
+      this.cacheUpdateNumber = updateNumber;
+      return null;
+    }
+    return `OUT_OF_RANGE`;
+  }
+  undoStep(update) {
+    const breakpoint = update.indexOf(`:`);
+    const type = update.substring(0, breakpoint);
+    const value = update.substring(breakpoint + 1);
+    switch (type) {
+      case `add`:
+        this.delete(parseJson(value));
+        break;
+      case `del`:
+        this.add(parseJson(value));
+        break;
+      case `clear`: {
+        const values = JSON.parse(value);
+        for (const v of values)
+          this.add(v);
+        break;
+      }
+      case `tx`: {
+        const updates = value.split(`;`);
+        for (let i = updates.length - 1;i >= 0; i--) {
+          this.undoStep(updates[i]);
+        }
+      }
+    }
+  }
+  undo(update) {
+    const breakpoint = update.indexOf(`=`);
+    const updateNumber = Number(update.substring(0, breakpoint));
+    if (updateNumber === this.cacheUpdateNumber) {
+      this.mode = `playback`;
+      const innerUpdate = update.substring(breakpoint + 1);
+      this.undoStep(innerUpdate);
+      this.mode = `record`;
+      this.cacheUpdateNumber--;
+      return null;
+    }
+    return this.cacheUpdateNumber;
+  }
+}
+// ../../../atom.io/data/src/join.ts
+function capitalize2(string) {
+  return string[0].toUpperCase() + string.slice(1);
+}
+function join(options, defaultContent, store5 = IMPLICIT.STORE) {
+  const joins = getJoinMap(store5);
+  joins.set(options.key, new Join(options, defaultContent, store5));
+  const token = {
+    key: options.key,
+    type: `join`,
+    a: options.between[0],
+    b: options.between[1],
+    cardinality: options.cardinality
+  };
+  return token;
+}
+function getJoinMap(store5) {
+  if (`joins` in store5 && store5.joins instanceof Map) {
+    return store5.joins;
+  }
+  const joins = new Map;
+  store5.joins = joins;
+  return joins;
+}
+function getJoin(token, store5) {
+  const joinMap = getJoinMap(store5);
+  let myJoin = joinMap.get(token.key);
+  if (myJoin === undefined) {
+    const rootJoinMap = getJoinMap(IMPLICIT.STORE);
+    myJoin = rootJoinMap.get(token.key)?.in(store5);
+    if (myJoin === undefined) {
+      throw new Error(`Join "${token.key}" not found in store "${store5.config.name}"`);
+    }
+    joinMap.set(token.key, myJoin);
+  }
+  return myJoin;
+}
+function findRelationsInStore(token, key, store5) {
+  const myJoin = getJoin(token, store5);
+  let relations;
+  switch (token.cardinality) {
+    case `1:1`: {
+      const keyAB = `${token.a}KeyOf${capitalize2(token.b)}`;
+      const keyBA = `${token.b}KeyOf${capitalize2(token.a)}`;
+      relations = {
+        get [keyAB]() {
+          const familyAB = myJoin.states[keyAB];
+          const state = myJoin.retrieve(familyAB, key);
+          return state;
+        },
+        get [keyBA]() {
+          const familyBA = myJoin.states[keyBA];
+          const state = myJoin.retrieve(familyBA, key);
+          return state;
+        }
+      };
+      const entryAB = `${token.a}EntryOf${capitalize2(token.b)}`;
+      if (entryAB in myJoin.states) {
+        const entryBA = `${token.b}EntryOf${capitalize2(token.a)}`;
+        Object.assign(relations, {
+          get [entryAB]() {
+            const familyAB = myJoin.states[entryAB];
+            const state = myJoin.retrieve(familyAB, key);
+            return state;
+          },
+          get [entryBA]() {
+            const familyBA = myJoin.states[entryBA];
+            const state = myJoin.retrieve(familyBA, key);
+            return state;
+          }
+        });
+      }
+      break;
+    }
+    case `1:n`: {
+      const keyAB = `${token.a}KeyOf${capitalize2(token.b)}`;
+      const keysBA = `${token.b}KeysOf${capitalize2(token.a)}`;
+      relations = {
+        get [keyAB]() {
+          const familyAB = myJoin.states[keyAB];
+          const state = myJoin.retrieve(familyAB, key);
+          return state;
+        },
+        get [keysBA]() {
+          const familyBA = myJoin.states[keysBA];
+          const state = myJoin.retrieve(familyBA, key);
+          return state;
+        }
+      };
+      const entryAB = `${token.a}EntryOf${capitalize2(token.b)}`;
+      if (entryAB in myJoin.states) {
+        const entriesBA = `${token.b}EntriesOf${capitalize2(token.a)}`;
+        Object.assign(relations, {
+          get [entryAB]() {
+            const familyAB = myJoin.states[entryAB];
+            const state = myJoin.retrieve(familyAB, key);
+            return state;
+          },
+          get [entriesBA]() {
+            const familyBA = myJoin.states[entriesBA];
+            const state = myJoin.retrieve(familyBA, key);
+            return state;
+          }
+        });
+      }
+      break;
+    }
+    case `n:n`: {
+      const keysAB = `${token.a}KeysOf${capitalize2(token.b)}`;
+      const keysBA = `${token.b}KeysOf${capitalize2(token.a)}`;
+      relations = {
+        get [keysAB]() {
+          const familyAB = myJoin.states[keysAB];
+          const state = myJoin.retrieve(familyAB, key);
+          return state;
+        },
+        get [keysBA]() {
+          const familyBA = myJoin.states[keysBA];
+          const state = myJoin.retrieve(familyBA, key);
+          return state;
+        }
+      };
+      const entriesAB = `${token.a}EntriesOf${capitalize2(token.b)}`;
+      if (entriesAB in myJoin.states) {
+        const entriesBA = `${token.b}EntriesOf${capitalize2(token.a)}`;
+        Object.assign(relations, {
+          get [entriesAB]() {
+            const familyAB = myJoin.states[entriesAB];
+            const state = myJoin.retrieve(familyAB, key);
+            return state;
+          },
+          get [entriesBA]() {
+            const familyBA = myJoin.states[entriesBA];
+            const state = myJoin.retrieve(familyBA, key);
+            return state;
+          }
+        });
+      }
+    }
+  }
+  return relations;
+}
+function findRelations(token, key) {
+  return findRelationsInStore(token, key, IMPLICIT.STORE);
+}
+function editRelationsInStore(token, change, store5) {
+  const myJoin = getJoin(token, store5);
+  const target = newest(store5);
+  if (isChildStore(target)) {
+    const { toolkit } = target.transactionMeta;
+    myJoin.transact(toolkit, ({ relations }) => {
+      change(relations);
+    });
+  } else {
+    change(myJoin.relations);
+  }
+}
+function getInternalRelationsFromStore(token, store5) {
+  const myJoin = getJoin(token, store5);
+  const family = myJoin.core.findRelatedKeysState;
+  return family;
+}
+function getInternalRelations(token) {
+  return getInternalRelationsFromStore(token, IMPLICIT.STORE);
+}
+
+class Join {
+  options;
+  defaultContent;
+  toolkit;
+  retrieve;
+  molecules = new Map;
+  relations;
+  states;
+  core;
+  transact(toolkit, run) {
+    const originalToolkit = this.toolkit;
+    this.toolkit = toolkit;
+    run(this);
+    this.toolkit = originalToolkit;
+  }
+  store;
+  alternates;
+  [Symbol.dispose]() {
+    this.alternates.delete(this.store.config.name);
+  }
+  in(store5) {
+    const key = store5.config.name;
+    const alternate = this.alternates.get(key);
+    if (alternate) {
+      return alternate;
+    }
+    const join2 = new Join(this.options, this.defaultContent, store5);
+    this.alternates.set(key, join2);
+    join2.alternates = this.alternates;
+    return join2;
+  }
+  constructor(options, defaultContent, store5 = IMPLICIT.STORE) {
+    this.store = store5;
+    this.options = options;
+    this.defaultContent = defaultContent;
+    this.alternates = new Map;
+    this.alternates.set(store5.config.name, this);
+    this.store.miscResources.set(`join:${options.key}`, this);
+    this.retrieve = (token, key) => {
+      const maybeToken = this.toolkit.seek(token, key);
+      if (maybeToken) {
+        return maybeToken;
+      }
+      const molecule = this.molecules.get(stringifyJson(key));
+      if (molecule) {
+        const family = withdraw(token, store5);
+        return growMoleculeInStore(molecule, family, store5);
+      }
+      if (store5.config.lifespan === `immortal`) {
+        throw new NotFoundError(token, key, store5);
+      }
+      return initFamilyMemberInStore(store5, token, key);
+    };
+    this.toolkit = {
+      get: (...ps) => getFromStore(store5, ...ps),
+      set: (...ps) => {
+        setIntoStore(store5, ...ps);
+      },
+      find: this.retrieve,
+      seek: (...ps) => seekInStore(store5, ...ps),
+      json: (token) => getJsonToken(store5, token),
+      dispose: (...ps) => {
+        disposeFromStore(store5, ...ps);
+      }
+    };
+    const aSide = options.between[0];
+    const bSide = options.between[1];
+    const relatedKeysAtoms = createMutableAtomFamily(store5, {
+      key: `${options.key}/relatedKeys`,
+      default: () => new SetRTX,
+      mutable: true,
+      fromJson: (json8) => SetRTX.fromJSON(json8),
+      toJson: (set) => set.toJSON()
+    }, [`join`, `relations`]);
+    this.core = { findRelatedKeysState: relatedKeysAtoms };
+    const getRelatedKeys = ({ get }, key) => get(this.retrieve(relatedKeysAtoms, key));
+    const addRelation = (toolkit, a, b) => {
+      const { set } = toolkit;
+      const aKeysState = this.retrieve(relatedKeysAtoms, a);
+      const bKeysState = this.retrieve(relatedKeysAtoms, b);
+      set(aKeysState, (aKeys) => aKeys.add(b));
+      set(bKeysState, (bKeys) => bKeys.add(a));
+    };
+    const deleteRelation = (toolkit, a, b) => {
+      const { set } = toolkit;
+      const aKeysState = this.retrieve(relatedKeysAtoms, a);
+      const bKeysState = this.retrieve(relatedKeysAtoms, b);
+      let stringA;
+      let stringB;
+      set(aKeysState, (aKeys) => {
+        aKeys.delete(b);
+        if (aKeys.size === 0) {
+          stringA = `"${a}"`;
+        }
+        return aKeys;
+      });
+      set(bKeysState, (bKeys) => {
+        bKeys.delete(a);
+        if (bKeys.size === 0) {
+          stringB = `"${b}"`;
+        }
+        return bKeys;
+      });
+    };
+    const replaceRelationsSafely = (toolkit, a, newRelationsOfA) => {
+      const { get, set } = toolkit;
+      const relationsOfAState = this.retrieve(relatedKeysAtoms, a);
+      const currentRelationsOfA = get(relationsOfAState);
+      for (const currentRelationB of currentRelationsOfA) {
+        const remainsRelated = newRelationsOfA.includes(currentRelationB);
+        if (remainsRelated) {
+          continue;
+        }
+        const relationsOfBState = this.retrieve(relatedKeysAtoms, currentRelationB);
+        set(relationsOfBState, (relationsOfB) => {
+          relationsOfB.delete(a);
+          return relationsOfB;
+        });
+      }
+      set(relationsOfAState, (relationsOfA) => {
+        relationsOfA.transaction((nextRelationsOfA) => {
+          nextRelationsOfA.clear();
+          for (const newRelationB of newRelationsOfA) {
+            const relationsOfB = getRelatedKeys(toolkit, newRelationB);
+            const newRelationBIsAlreadyRelated = relationsOfB.has(a);
+            if (this.relations.cardinality === `1:n`) {
+              const previousOwnersToDispose = [];
+              for (const previousOwner of relationsOfB) {
+                if (previousOwner === a) {
+                  continue;
+                }
+                const previousOwnerRelations = getRelatedKeys(toolkit, previousOwner);
+                previousOwnerRelations.delete(newRelationB);
+                if (previousOwnerRelations.size === 0) {
+                  previousOwnersToDispose.push(previousOwner);
+                }
+              }
+              if (!newRelationBIsAlreadyRelated && relationsOfB.size > 0) {
+                relationsOfB.clear();
+              }
+              for (const previousOwner of previousOwnersToDispose) {
+                const sorted = [newRelationB, previousOwner].sort();
+                const compositeKey = `"${sorted[0]}:${sorted[1]}"`;
+                this.molecules.delete(compositeKey);
+              }
+            }
+            if (!newRelationBIsAlreadyRelated) {
+              relationsOfB.add(a);
+            }
+            nextRelationsOfA.add(newRelationB);
+          }
+          return true;
+        });
+        return relationsOfA;
+      });
+    };
+    const replaceRelationsUnsafely = (toolkit, a, newRelationsOfA) => {
+      const { set } = toolkit;
+      const relationsOfAState = this.retrieve(relatedKeysAtoms, a);
+      set(relationsOfAState, (relationsOfA) => {
+        relationsOfA.transaction((nextRelationsOfA) => {
+          for (const newRelationB of newRelationsOfA) {
+            nextRelationsOfA.add(newRelationB);
+          }
+          return true;
+        });
+        return relationsOfA;
+      });
+      for (const newRelationB of newRelationsOfA) {
+        const newRelationsBState = this.retrieve(relatedKeysAtoms, newRelationB);
+        set(newRelationsBState, (newRelationsB) => {
+          newRelationsB.add(a);
+          return newRelationsB;
+        });
+      }
+      return true;
+    };
+    const has = (toolkit, a, b) => {
+      const aKeys = getRelatedKeys(toolkit, a);
+      return b ? aKeys.has(b) : aKeys.size > 0;
+    };
+    const baseExternalStoreConfiguration = {
+      getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
+      addRelation: (a, b) => {
+        addRelation(this.toolkit, a, b);
+      },
+      deleteRelation: (a, b) => {
+        deleteRelation(this.toolkit, a, b);
+      },
+      replaceRelationsSafely: (a, bs) => {
+        replaceRelationsSafely(this.toolkit, a, bs);
+      },
+      replaceRelationsUnsafely: (a, bs) => {
+        replaceRelationsUnsafely(this.toolkit, a, bs);
+      },
+      has: (a, b) => has(this.toolkit, a, b)
+    };
+    let externalStore;
+    let contentAtoms;
+    let contentMolecules;
+    if (defaultContent) {
+      contentAtoms = createRegularAtomFamily(store5, {
+        key: `${options.key}/content`,
+        default: defaultContent
+      }, [`join`, `content`]);
+      const joinToken = {
+        key: options.key,
+        type: `join`,
+        a: options.between[0],
+        b: options.between[1],
+        cardinality: options.cardinality
+      };
+      contentMolecules = createMoleculeFamily(store5, {
+        key: `${options.key}/content-molecules`,
+        new: class ContentMolecule {
+          key;
+          constructor(_, key) {
+            this.key = key;
+          }
+        }
+      });
+      const getContent = ({ get }, key) => get(this.retrieve(contentAtoms, key));
+      const setContent = ({ set }, key, content) => {
+        set(this.retrieve(contentAtoms, key), content);
+      };
+      const deleteContent = (_, compositeKey) => {
+        const contentMolecule = store5.molecules.get(`"${compositeKey}"`);
+        if (contentMolecule) {
+          this.toolkit.dispose(contentMolecule);
+          this.molecules.delete(`"${compositeKey}"`);
+        }
+      };
+      const externalStoreWithContentConfiguration = {
+        getContent: (contentKey) => {
+          const content = getContent(this.toolkit, contentKey);
+          return content;
+        },
+        setContent: (contentKey, content) => {
+          setContent(this.toolkit, contentKey, content);
+        },
+        deleteContent: (contentKey) => {
+          deleteContent(this.toolkit, contentKey);
+        }
+      };
+      externalStore = Object.assign(baseExternalStoreConfiguration, externalStoreWithContentConfiguration);
+    } else {
+      externalStore = baseExternalStoreConfiguration;
+    }
+    const relations = new Junction(options, {
+      externalStore,
+      makeContentKey: (...args) => {
+        const sorted = args.sort();
+        const compositeKey = `${sorted[0]}:${sorted[1]}`;
+        const [m0, m1] = sorted.map((key) => this.molecules.get(stringifyJson(key)));
+        if (store5.config.lifespan === `immortal` && m0 && m1) {
+          const target = newest(store5);
+          const moleculeToken = makeMoleculeInStore(target, [m0, m1], contentMolecules, compositeKey);
+          this.molecules.set(`"${compositeKey}"`, withdraw(moleculeToken, target));
+        }
+        return compositeKey;
+      }
+    });
+    const createSingleKeyStateFamily = () => createReadonlySelectorFamily(store5, {
+      key: `${options.key}/singleRelatedKey`,
+      get: (key) => ({ get }) => {
+        const relatedKeysState = this.retrieve(relatedKeysAtoms, key);
+        const relatedKeys = get(relatedKeysState);
+        for (const relatedKey of relatedKeys) {
+          return relatedKey;
+        }
+        return null;
+      }
+    }, [`join`, `keys`]);
+    const getMultipleKeyStateFamily = () => {
+      return createReadonlySelectorFamily(store5, {
+        key: `${options.key}/multipleRelatedKeys`,
+        get: (key) => ({ get }) => {
+          const jsonFamily = getJsonFamily(relatedKeysAtoms, store5);
+          const jsonState = this.retrieve(jsonFamily, key);
+          const json8 = get(jsonState);
+          return json8.members;
+        }
+      }, [`join`, `keys`]);
+    };
+    const createSingleEntryStateFamily = () => createReadonlySelectorFamily(store5, {
+      key: `${options.key}/singleRelatedEntry`,
+      get: (key) => ({ get }) => {
+        const relatedKeysState = this.retrieve(relatedKeysAtoms, key);
+        const relatedKeys = get(relatedKeysState);
+        for (const relatedKey of relatedKeys) {
+          const contentKey = relations.makeContentKey(key, relatedKey);
+          const contentState = this.retrieve(contentAtoms, contentKey);
+          const content = get(contentState);
+          return [relatedKey, content];
+        }
+        return null;
+      }
+    }, [`join`, `entries`]);
+    const getMultipleEntryStateFamily = () => createReadonlySelectorFamily(store5, {
+      key: `${options.key}/multipleRelatedEntries`,
+      get: (key) => ({ get }) => {
+        const jsonFamily = getJsonFamily(relatedKeysAtoms, store5);
+        const jsonState = this.retrieve(jsonFamily, key);
+        const json8 = get(jsonState);
+        return json8.members.map((relatedKey) => {
+          const contentKey = relations.makeContentKey(key, relatedKey);
+          const contentState = this.retrieve(contentAtoms, contentKey);
+          const content = get(contentState);
+          return [relatedKey, content];
+        });
+      }
+    }, [`join`, `entries`]);
+    switch (options.cardinality) {
+      case `1:1`: {
+        const findSingleRelatedKeyState = createSingleKeyStateFamily();
+        const stateKeyA = `${aSide}KeyOf${capitalize2(bSide)}`;
+        const stateKeyB = `${bSide}KeyOf${capitalize2(aSide)}`;
+        const baseStates = {
+          [stateKeyA]: findSingleRelatedKeyState,
+          [stateKeyB]: findSingleRelatedKeyState
+        };
+        let states;
+        if (defaultContent) {
+          const findSingleRelatedEntryState = createSingleEntryStateFamily();
+          const entriesStateKeyA = `${aSide}EntryOf${capitalize2(bSide)}`;
+          const entriesStateKeyB = `${bSide}EntryOf${capitalize2(aSide)}`;
+          const contentStates = {
+            [entriesStateKeyA]: findSingleRelatedEntryState,
+            [entriesStateKeyB]: findSingleRelatedEntryState
+          };
+          states = Object.assign(baseStates, contentStates);
+        } else {
+          states = baseStates;
+        }
+        this.relations = relations;
+        this.states = states;
+        break;
+      }
+      case `1:n`: {
+        const findSingleRelatedKeyState = createSingleKeyStateFamily();
+        const findMultipleRelatedKeysState = getMultipleKeyStateFamily();
+        const stateKeyA = `${aSide}KeyOf${capitalize2(bSide)}`;
+        const stateKeyB = `${bSide}KeysOf${capitalize2(aSide)}`;
+        const baseStates = {
+          [stateKeyA]: findSingleRelatedKeyState,
+          [stateKeyB]: findMultipleRelatedKeysState
+        };
+        let states;
+        if (defaultContent) {
+          const findSingleRelatedEntryState = createSingleEntryStateFamily();
+          const findMultipleRelatedEntriesState = getMultipleEntryStateFamily();
+          const entriesStateKeyA = `${aSide}EntryOf${capitalize2(bSide)}`;
+          const entriesStateKeyB = `${bSide}EntriesOf${capitalize2(aSide)}`;
+          const contentStates = {
+            [entriesStateKeyA]: findSingleRelatedEntryState,
+            [entriesStateKeyB]: findMultipleRelatedEntriesState
+          };
+          states = Object.assign(baseStates, contentStates);
+        } else {
+          states = baseStates;
+        }
+        this.relations = relations;
+        this.states = states;
+        break;
+      }
+      default: {
+        const findMultipleRelatedKeysState = getMultipleKeyStateFamily();
+        const stateKeyA = `${aSide}KeysOf${capitalize2(bSide)}`;
+        const stateKeyB = `${bSide}KeysOf${capitalize2(aSide)}`;
+        const baseStates = {
+          [stateKeyA]: findMultipleRelatedKeysState,
+          [stateKeyB]: findMultipleRelatedKeysState
+        };
+        let states;
+        if (defaultContent) {
+          const findMultipleRelatedEntriesState = getMultipleEntryStateFamily();
+          const entriesStateKeyA = `${aSide}EntriesOf${capitalize2(bSide)}`;
+          const entriesStateKeyB = `${bSide}EntriesOf${capitalize2(aSide)}`;
+          const contentStates = {
+            [entriesStateKeyA]: findMultipleRelatedEntriesState,
+            [entriesStateKeyB]: findMultipleRelatedEntriesState
+          };
+          states = Object.assign(baseStates, contentStates);
+        } else {
+          states = baseStates;
+        }
+        this.relations = relations;
+        this.states = states;
+      }
+    }
+  }
+}
+// ../../../atom.io/internal/src/get-environment-data.ts
+function getEnvironmentData(store5) {
+  return {
+    store: store5
+  };
+}
+
+// ../../../atom.io/internal/src/molecule/molecule-internal.ts
+class Molecule {
+  key;
+  type = `molecule`;
+  stringKey;
+  family;
+  subject = new Subject;
+  tokens = new Map;
+  above = new Map;
+  below = new Map;
+  joins = new Map;
+  instance;
+  constructor(ctx, key, family) {
+    this.key = key;
+    this.stringKey = stringifyJson(key);
+    if (family) {
+      this.family = family;
+    }
+    if (ctx) {
+      if (Array.isArray(ctx)) {
+        for (const molecule of ctx) {
+          this.above.set(molecule.stringKey, molecule);
+        }
+      } else {
+        this.above.set(ctx.stringKey, ctx);
+      }
+    }
+  }
+}
+
+// ../../../atom.io/internal/src/molecule/make-molecule-in-store.ts
+function capitalize3(string) {
+  return string[0].toUpperCase() + string.slice(1);
+}
+function makeMoleculeInStore(store6, context, familyToken, key, ...params) {
+  const rootStore = eldest(store6);
+  const target = newest(store6);
+  const stringKey = stringifyJson(key);
+  target.moleculeInProgress = stringKey;
+  const contextArray = Array.isArray(context) ? context : [context];
+  const owners = contextArray.map((ctx) => {
+    if (ctx instanceof Molecule) {
+      return ctx;
+    }
+    const ctxStringKey = stringifyJson(ctx.key);
+    const molecule2 = store6.molecules.get(ctxStringKey);
+    if (!molecule2) {
+      throw new Error(`Molecule ${ctxStringKey} not found in store "${store6.config.name}"`);
+    }
+    return molecule2;
+  });
+  const molecule = new Molecule(owners, key, familyToken);
+  target.molecules.set(stringKey, molecule);
+  for (const owner of owners) {
+    owner.below.set(molecule.stringKey, molecule);
+  }
+  const toolkit = {
+    get: (...ps) => getFromStore(newest(rootStore), ...ps),
+    set: (...ps) => {
+      setIntoStore(newest(rootStore), ...ps);
+    },
+    seek: (t, k) => seekInStore(newest(rootStore), t, k),
+    json: (t) => getJsonToken(newest(rootStore), t),
+    run: (t, i = arbitrary()) => actUponStore(t, i, newest(store6)),
+    make: (ctx, f, k, ...args) => makeMoleculeInStore(newest(rootStore), ctx, f, k, ...args),
+    dispose: (t) => {
+      disposeFromStore(newest(rootStore), t);
+    },
+    env: () => getEnvironmentData(newest(rootStore)),
+    bond: (token2, maybeRole) => {
+      if (token2.type === `join`) {
+        const { as: role } = maybeRole;
+        const join3 = getJoin(token2, rootStore);
+        join3.molecules.set(stringKey, molecule);
+        molecule.joins.set(token2.key, join3);
+        const unsubFromFamily = family.subject.subscribe(`join:${token2.key}-${stringKey}`, (event) => {
+          if (event.type === `molecule_disposal` && stringifyJson(event.token.key) === stringKey) {
+            unsubFromFamily();
+            join3.molecules.delete(stringKey);
+          }
+        });
+        if (role === null) {
+          return;
+        }
+        const otherRole = token2.a === role ? token2.b : token2.a;
+        const relations = findRelations(token2, key);
+        const relatedKeys = relations[`${otherRole}KeysOf${capitalize3(role)}`];
+        const relatedEntries = relations[`${otherRole}EntriesOf${capitalize3(role)}`];
+        let tokens = { relatedKeys };
+        if (relatedEntries) {
+          tokens = Object.assign(tokens, { relatedEntries });
+        }
+        return tokens;
+      }
+      return growMoleculeInStore(molecule, withdraw(token2, rootStore), newest(rootStore));
+    },
+    claim: (below, options) => {
+      const { exclusive } = options;
+      const belowMolecule = newest(store6).molecules.get(stringifyJson(below.key));
+      if (belowMolecule) {
+        if (exclusive) {
+          for (const value of belowMolecule.above.values()) {
+            value.below.delete(belowMolecule.stringKey);
+          }
+          belowMolecule.above.clear();
+          belowMolecule.above.set(molecule.stringKey, molecule);
+          molecule.below.set(belowMolecule.stringKey, belowMolecule);
+        } else {
+          belowMolecule.above.set(molecule.stringKey, molecule);
+          molecule.below.set(belowMolecule.stringKey, belowMolecule);
+        }
+      }
+    },
+    spawn: (f, k, ...p) => makeMoleculeInStore(newest(store6), [molecule], withdraw(f, store6), k, ...p)
+  };
+  const family = withdraw(familyToken, store6);
+  const Constructor = family.new;
+  molecule.instance = new Constructor(toolkit, key, ...params);
+  const token = {
+    type: `molecule`,
+    key,
+    family: familyToken
+  };
+  const update = {
+    type: `molecule_creation`,
+    token,
+    family: familyToken,
+    context: contextArray,
+    params
+  };
+  if (isRootStore(target)) {
+    family.subject.next(update);
+  } else if (isChildStore(target) && target.on.transactionApplying.state === null) {
+    target.transactionMeta.update.updates.push(update);
+  }
+  target.moleculeInProgress = null;
+  return token;
+}
+// ../../../atom.io/internal/src/families/init-family-member.ts
+function initFamilyMemberInStore(store6, token, key) {
+  const familyKey = token.key;
+  const family = store6.families.get(familyKey);
+  if (family === undefined) {
+    throw new NotFoundError(token, store6);
+  }
+  const state = family(key);
+  const target = newest(store6);
+  if (state.family && target.moleculeInProgress === null) {
+    if (isRootStore(target)) {
+      switch (state.type) {
+        case `atom`:
+        case `mutable_atom`:
+          store6.on.atomCreation.next(state);
+          break;
+        case `selector`:
+        case `readonly_selector`:
+          store6.on.selectorCreation.next(state);
+          break;
+      }
+    } else if (isChildStore(target) && target.on.transactionApplying.state === null) {
+      target.transactionMeta.update.updates.push({
+        type: `state_creation`,
+        token: state
+      });
+    }
+  }
+  return state;
+}
+
+// ../../../atom.io/internal/src/families/seek-in-store.ts
+function seekInStore(store7, token, key) {
+  const subKey = stringifyJson(key);
+  const fullKey = `${token.key}(${subKey})`;
+  const target = newest(store7);
+  let state;
+  switch (token.type) {
+    case `atom_family`:
+    case `mutable_atom_family`:
+      state = target.atoms.get(fullKey);
+      break;
+    case `selector_family`:
+      state = target.selectors.get(fullKey);
+      break;
+    case `readonly_selector_family`:
+      state = target.readonlySelectors.get(fullKey);
+      break;
+    case `molecule_family`:
+      state = target.molecules.get(stringifyJson(key));
+  }
+  if (state) {
+    return deposit(state);
+  }
+  return state;
+}
+
+// ../../../atom.io/internal/src/families/find-in-store.ts
+function findInStore(store8, token, key) {
+  let state = seekInStore(store8, token, key);
+  if (state) {
+    return state;
+  }
+  const molecule2 = store8.molecules.get(stringifyJson(key));
+  if (molecule2) {
+    return growMoleculeInStore(molecule2, token, store8);
+  }
+  if (store8.config.lifespan === `immortal`) {
+    const fakeToken = counterfeit(token, key);
+    store8.logger.error(`\u274C`, fakeToken.type, fakeToken.key, `was not found in store "${store8.config.name}"; returned a counterfeit token.`);
+    return fakeToken;
+  }
+  state = initFamilyMemberInStore(store8, token, key);
+  return state;
+}
+
+// ../../../atom.io/internal/src/families/dispose-from-store.ts
+function disposeFromStore(store9, ...params) {
+  let token;
+  let fullKey;
+  if (params.length === 1) {
+    token = params[0];
+    fullKey = token.key;
+  } else {
+    const family = params[0];
+    const key = params[1];
+    const maybeToken = family.type === `molecule_family` ? seekInStore(store9, family, key) ?? counterfeit(family, key) : findInStore(store9, family, key);
+    token = maybeToken;
+  }
+  try {
+    withdraw(token, store9);
+  } catch (thrown) {
+    const disposal = store9.disposalTraces.buffer.find((item) => item?.key === token.key);
+    store9.logger.error(`\u274C`, token.type, token.key, `could not be disposed because it was not found in the store "${store9.config.name}".`, disposal ? `\n   This state was most recently disposed\n${disposal.trace}` : `No previous disposal trace was found.`);
+    return;
+  }
+  switch (token.type) {
+    case `atom`:
+    case `mutable_atom`:
+      disposeAtom(token, store9);
+      break;
+    case `selector`:
+    case `readonly_selector`:
+      disposeSelector(token, store9);
+      break;
+    case `molecule`:
+      disposeMolecule(token, store9);
+      break;
+  }
+  const { stack } = new Error;
+  if (stack) {
+    const trace = stack?.split(`\n`)?.slice(3)?.join(`\n`);
+    store9.disposalTraces.add({ key: token.key, trace });
+  }
+}
+// ../../../atom.io/internal/src/set-state/set-into-store.ts
+function setIntoStore(store10, ...params) {
+  let token;
+  let value;
+  if (params.length === 2) {
+    token = params[0];
+    value = params[1];
+  } else {
+    const family = params[0];
+    const key = params[1];
+    value = params[2];
+    const maybeToken = findInStore(store10, family, key);
+    token = maybeToken;
+  }
+  if (`counterfeit` in token) {
+    const disposal = store10.disposalTraces.buffer.find((item) => item?.key === token.key);
+    store10.logger.error(`\u274C`, token.type, token.key, `could not be set because it was not found in the store "${store10.config.name}".`, disposal ? `This state was previously disposed:\n${disposal.trace}` : `No previous disposal trace was found.`);
+    return;
+  }
+  const rejectionTime = openOperation(store10, token);
+  if (rejectionTime) {
+    const unsubscribe = store10.on.operationClose.subscribe(`waiting to set "${token.key}" at T-${rejectionTime}`, () => {
+      unsubscribe();
+      store10.logger.info(`\uD83D\uDFE2`, token.type, token.key, `resuming deferred setState from T-${rejectionTime}`);
+      setIntoStore(store10, token, value);
+    });
+    return;
+  }
+  const state = withdraw(token, store10);
+  setAtomOrSelector(state, value, store10);
+  closeOperation(store10);
+}
+// ../../../atom.io/internal/src/ingest-updates/ingest-atom-update.ts
+function ingestAtomUpdate(applying, atomUpdate, store10) {
+  const { key, newValue, oldValue } = atomUpdate;
+  const value = applying === `newValue` ? newValue : oldValue;
+  const token = { key, type: `atom` };
+  if (atomUpdate.family) {
+    Object.assign(token, { family: atomUpdate.family });
+  }
+  setIntoStore(store10, token, value);
+}
+// ../../../atom.io/internal/src/ingest-updates/ingest-creation-disposal.ts
+function ingestCreationEvent(update, applying, store11) {
+  switch (applying) {
+    case `newValue`: {
+      createInStore(update, store11);
+      break;
+    }
+    case `oldValue`: {
+      disposeFromStore(store11, update.token);
+      break;
+    }
+  }
+}
+function ingestDisposalEvent(update, applying, store11) {
+  switch (applying) {
+    case `newValue`: {
+      disposeFromStore(store11, update.token);
+      break;
+    }
+    case `oldValue`: {
+      createInStore(update, store11);
+      store11.valueMap.set(update.token.key, update.value);
+      break;
+    }
+  }
+}
+function createInStore(update, store11) {
+  const { family: familyMeta } = update.token;
+  if (familyMeta) {
+    const family = store11.families.get(familyMeta.key);
+    if (family) {
+      findInStore(store11, family, parseJson(familyMeta.subKey));
+    }
+  }
+}
+function ingestMoleculeCreationEvent(update, applying, store11) {
+  switch (applying) {
+    case `newValue`:
+      makeMoleculeInStore(store11, update.context, update.family, update.token.key, ...update.params);
+      break;
+    case `oldValue`:
+      disposeFromStore(store11, update.token);
+      break;
+  }
+}
+function ingestMoleculeDisposalEvent(update, applying, store11) {
+  switch (applying) {
+    case `newValue`:
+      disposeFromStore(store11, update.token);
+      break;
+    case `oldValue`:
+      {
+        const moleculeToken = makeMoleculeInStore(store11, update.context, update.family, update.token.key);
+        for (const [familyKey, value] of update.values) {
+          const memberKey = `${familyKey}(${stringifyJson(moleculeToken.key)})`;
+          const molecule3 = withdraw(moleculeToken, store11);
+          const alreadyCreated = molecule3.tokens.has(memberKey);
+          const family = store11.families.get(familyKey);
+          if (family && !alreadyCreated) {
+            growMoleculeInStore(molecule3, family, store11);
+          }
+          store11.valueMap.set(memberKey, value);
+        }
+      }
+      break;
+  }
+}
+// ../../../atom.io/internal/src/ingest-updates/ingest-transaction-update.ts
+function ingestTransactionUpdate(applying, transactionUpdate, store11) {
+  const updates = applying === `newValue` ? transactionUpdate.updates : [...transactionUpdate.updates].reverse();
+  for (const updateFromTransaction of updates) {
+    switch (updateFromTransaction.type) {
+      case `atom_update`:
+      case `selector_update`:
+        ingestAtomUpdate(applying, updateFromTransaction, store11);
+        break;
+      case `state_creation`:
+        ingestCreationEvent(updateFromTransaction, applying, store11);
+        break;
+      case `state_disposal`:
+        ingestDisposalEvent(updateFromTransaction, applying, store11);
+        break;
+      case `molecule_creation`:
+        ingestMoleculeCreationEvent(updateFromTransaction, applying, store11);
+        break;
+      case `molecule_disposal`:
+        ingestMoleculeDisposalEvent(updateFromTransaction, applying, store11);
+        break;
+      case `transaction_update`:
+        ingestTransactionUpdate(applying, updateFromTransaction, store11);
+        break;
+    }
+  }
+}
+// ../../../atom.io/internal/src/transaction/set-epoch-number.ts
+function setEpochNumberOfAction(transactionKey, newEpoch, store11) {
+  const isRoot = isRootStore(store11);
+  if (!isRoot) {
+    return;
+  }
+  const continuityKey = store11.transactionMeta.actionContinuities.getRelatedKey(transactionKey);
+  if (continuityKey !== undefined) {
+    store11.transactionMeta.epoch.set(continuityKey, newEpoch);
+  }
+}
+
+// ../../../atom.io/internal/src/transaction/apply-transaction.ts
+var applyTransaction = (output, store12) => {
+  const child = newest(store12);
+  const { parent } = child;
+  if (parent === null || !isChildStore(child) || child.transactionMeta?.phase !== `building`) {
+    store12.logger.warn(`\uD83D\uDC1E`, `transaction`, `???`, `applyTransaction called outside of a transaction. This is probably a bug in AtomIO.`);
+    return;
+  }
+  child.transactionMeta.phase = `applying`;
+  child.transactionMeta.update.output = output;
+  parent.child = null;
+  parent.on.transactionApplying.next(child.transactionMeta);
+  const { updates } = child.transactionMeta.update;
+  store12.logger.info(`\uD83D\uDEC4`, `transaction`, child.transactionMeta.update.key, `Applying transaction with ${updates.length} updates:`, updates);
+  ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent);
+  if (isRootStore(parent)) {
+    setEpochNumberOfAction(child.transactionMeta.update.key, child.transactionMeta.update.epoch, parent);
+    const myTransaction = withdraw({ key: child.transactionMeta.update.key, type: `transaction` }, store12);
+    myTransaction?.subject.next(child.transactionMeta.update);
+    store12.logger.info(`\uD83D\uDEEC`, `transaction`, child.transactionMeta.update.key, `Finished applying transaction.`);
+  } else if (isChildStore(parent)) {
+    parent.transactionMeta.update.updates.push(child.transactionMeta.update);
+  }
+  parent.on.transactionApplying.next(null);
+};
+// ../../../atom.io/internal/src/lazy-map.ts
+class LazyMap extends Map {
+  source;
+  deleted = new Set;
+  constructor(source) {
+    super();
+    this.source = source;
+  }
+  get(key) {
+    const has = super.has(key);
+    if (has) {
+      return super.get(key);
+    }
+    if (!this.deleted.has(key) && this.source.has(key)) {
+      const value = this.source.get(key);
+      return value;
+    }
+    return;
+  }
+  set(key, value) {
+    this.deleted.delete(key);
+    return super.set(key, value);
+  }
+  hasOwn(key) {
+    return super.has(key);
+  }
+  has(key) {
+    return !this.deleted.has(key) && (super.has(key) || this.source.has(key));
+  }
+  delete(key) {
+    this.deleted.add(key);
+    return super.delete(key);
+  }
+}
+
+// ../../../atom.io/internal/src/transaction/build-transaction.ts
+var buildTransaction = (key, params, store12, id) => {
+  const parent = newest(store12);
+  const childBase = {
+    parent,
+    child: null,
+    on: parent.on,
+    loggers: parent.loggers,
+    logger: parent.logger,
+    config: parent.config,
+    atoms: new LazyMap(parent.atoms),
+    atomsThatAreDefault: new Set(parent.atomsThatAreDefault),
+    families: new LazyMap(parent.families),
+    operation: { open: false },
+    readonlySelectors: new LazyMap(parent.readonlySelectors),
+    timelines: new LazyMap(parent.timelines),
+    timelineTopics: new Junction(parent.timelineTopics.toJSON()),
+    trackers: new Map,
+    transactions: new LazyMap(parent.transactions),
+    selectorAtoms: new Junction(parent.selectorAtoms.toJSON()),
+    selectorGraph: new Junction(parent.selectorGraph.toJSON(), {
+      makeContentKey: (...keys3) => keys3.sort().join(`:`)
+    }),
+    selectors: new LazyMap(parent.selectors),
+    valueMap: new LazyMap(parent.valueMap),
+    defaults: parent.defaults,
+    disposalTraces: store12.disposalTraces.copy(),
+    molecules: new LazyMap(parent.molecules),
+    moleculeFamilies: new LazyMap(parent.moleculeFamilies),
+    moleculeInProgress: parent.moleculeInProgress,
+    miscResources: new LazyMap(parent.miscResources)
+  };
+  const epoch = getEpochNumberOfAction(key, store12);
+  const transactionMeta = {
+    phase: `building`,
+    update: {
+      type: `transaction_update`,
+      key,
+      id,
+      epoch: epoch === undefined ? Number.NaN : epoch + 1,
+      updates: [],
+      params,
+      output: undefined
+    },
+    toolkit: {
+      get: (...ps) => getFromStore(child, ...ps),
+      set: (...ps) => {
+        setIntoStore(child, ...ps);
+      },
+      run: (token, identifier = arbitrary()) => actUponStore(token, identifier, child),
+      find: (token, k) => findInStore(child, token, k),
+      seek: (token, k) => seekInStore(child, token, k),
+      json: (token) => getJsonToken(child, token),
+      make: (context, family, k, ...args) => makeMoleculeInStore(child, context, family, k, ...args),
+      dispose: (...ps) => {
+        disposeFromStore(child, ...ps);
+      },
+      env: () => getEnvironmentData(child)
+    }
+  };
+  const child = Object.assign(childBase, {
+    transactionMeta
+  });
+  parent.child = child;
+  store12.logger.info(`\uD83D\uDEEB`, `transaction`, key, `Building transaction with params:`, params);
+  return child;
+};
+// ../../../atom.io/internal/src/transaction/create-transaction.ts
+function createTransaction(options, store13) {
+  const newTransaction = {
+    key: options.key,
+    type: `transaction`,
+    run: (params, id) => {
+      const childStore = buildTransaction(options.key, params, store13, id);
+      try {
+        const target2 = newest(store13);
+        const { toolkit } = childStore.transactionMeta;
+        const output = options.do(toolkit, ...params);
+        applyTransaction(output, target2);
+        return output;
+      } catch (thrown) {
+        abortTransaction(target);
+        store13.logger.warn(`\uD83D\uDCA5`, `transaction`, options.key, `caught:`, thrown);
+        throw thrown;
+      }
+    },
+    install: (s) => createTransaction(options, s),
+    subject: new Subject
+  };
+  const target = newest(store13);
+  target.transactions.set(newTransaction.key, newTransaction);
+  const token = deposit(newTransaction);
+  store13.on.transactionCreation.next(token);
+  return token;
+}
+// ../../../atom.io/internal/src/transaction/get-epoch-number.ts
+function getEpochNumberOfAction(transactionKey, store13) {
+  const isRoot = isRootStore(store13);
+  const continuity = isRoot ? store13.transactionMeta.actionContinuities.getRelatedKey(transactionKey) : undefined;
+  const epoch = isRoot && continuity !== undefined ? store13.transactionMeta.epoch.get(continuity) : undefined;
+  return epoch;
+}
+// ../../../atom.io/internal/src/store/circular-buffer.ts
+class CircularBuffer {
+  _buffer;
+  _index = 0;
+  constructor(lengthOrArray) {
+    let length;
+    if (typeof lengthOrArray === `number`) {
+      length = lengthOrArray;
+    } else {
+      length = lengthOrArray.length;
+    }
+    this._buffer = Array.from({ length });
+  }
+  get buffer() {
+    return this._buffer;
+  }
+  get index() {
+    return this._index;
+  }
+  add(item) {
+    this._buffer[this._index] = item;
+    this._index = (this._index + 1) % this._buffer.length;
+  }
+  copy() {
+    const copy = new CircularBuffer([...this._buffer]);
+    copy._index = this._index;
+    return copy;
+  }
+}
+
+// ../../../atom.io/internal/src/store/store.ts
+class Store {
+  parent = null;
+  child = null;
+  valueMap = new Map;
+  defaults = new Map;
+  atoms = new Map;
+  selectors = new Map;
+  readonlySelectors = new Map;
+  atomsThatAreDefault = new Set;
+  selectorAtoms = new Junction({
+    between: [`selectorKey`, `atomKey`],
+    cardinality: `n:n`
+  });
+  selectorGraph = new Junction({
+    between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
+    cardinality: `n:n`
+  }, {
+    makeContentKey: (...keys3) => keys3.sort().join(`:`)
+  });
+  trackers = new Map;
+  families = new Map;
+  transactions = new Map;
+  transactionMeta = {
+    epoch: new Map,
+    actionContinuities: new Junction({
+      between: [`continuity`, `action`],
+      cardinality: `1:n`
+    })
+  };
+  timelines = new Map;
+  timelineTopics = new Junction({
+    between: [`timelineKey`, `topicKey`],
+    cardinality: `1:n`
+  });
+  disposalTraces = new CircularBuffer(100);
+  molecules = new Map;
+  moleculeFamilies = new Map;
+  moleculeInProgress = null;
+  miscResources = new Map;
+  on = {
+    atomCreation: new Subject,
+    atomDisposal: new Subject,
+    selectorCreation: new Subject,
+    selectorDisposal: new Subject,
+    timelineCreation: new Subject,
+    transactionCreation: new Subject,
+    transactionApplying: new StatefulSubject(null),
+    operationClose: new Subject,
+    moleculeCreationStart: new Subject,
+    moleculeCreationDone: new Subject,
+    moleculeDisposal: new Subject
+  };
+  operation = { open: false };
+  config = {
+    name: `IMPLICIT_STORE`,
+    lifespan: `ephemeral`
+  };
+  loggers = [
+    new AtomIOLogger(`warn`, (_, __, key) => !key.includes(`\uD83D\uDD0D`))
+  ];
+  logger = {
+    error: (...messages) => {
+      for (const logger of this.loggers)
+        logger.error(...messages);
+    },
+    info: (...messages) => {
+      for (const logger of this.loggers)
+        logger.info(...messages);
+    },
+    warn: (...messages) => {
+      for (const logger of this.loggers)
+        logger.warn(...messages);
+    }
+  };
+  constructor(config, store13 = null) {
+    this.config = {
+      ...store13?.config,
+      ...config
+    };
+    if (store13 !== null) {
+      this.valueMap = new Map(store13?.valueMap);
+      this.operation = { ...store13?.operation };
+      if (isRootStore(store13)) {
+        this.transactionMeta = {
+          epoch: new Map(store13?.transactionMeta.epoch),
+          actionContinuities: new Junction(store13?.transactionMeta.actionContinuities.toJSON())
+        };
+      }
+      for (const [, family] of store13.families) {
+        if (family.internalRoles?.includes(`mutable`) || family.internalRoles?.includes(`join`)) {
+          continue;
+        }
+        family.install(this);
+      }
+      const mutableHelpers = new Set;
+      for (const [, atom5] of store13.atoms) {
+        if (mutableHelpers.has(atom5.key)) {
+          continue;
+        }
+        atom5.install(this);
+        if (atom5.type === `mutable_atom`) {
+          const originalJsonToken = getJsonToken(store13, atom5);
+          const originalUpdateToken = getUpdateToken(atom5);
+          mutableHelpers.add(originalJsonToken.key);
+          mutableHelpers.add(originalUpdateToken.key);
+        }
+      }
+      for (const [, selector4] of store13.readonlySelectors) {
+        selector4.install(this);
+      }
+      for (const [, selector4] of store13.selectors) {
+        if (mutableHelpers.has(selector4.key)) {
+          continue;
+        }
+        selector4.install(this);
+      }
+      for (const [, tx] of store13.transactions) {
+        tx.install(this);
+      }
+      for (const [, timeline] of store13.timelines) {
+        timeline.install(this);
+      }
+    }
+  }
+}
+var IMPLICIT = {
+  get STORE() {
+    if (!globalThis.ATOM_IO_IMPLICIT_STORE) {
+      globalThis.ATOM_IO_IMPLICIT_STORE = new Store({
+        name: `IMPLICIT_STORE`,
+        lifespan: `ephemeral`
+      });
+    }
+    return globalThis.ATOM_IO_IMPLICIT_STORE;
+  }
+};
+// ../../../atom.io/internal/src/store/withdraw.ts
+function withdraw(token, store13) {
+  let withdrawn;
+  let target = store13;
+  while (target !== null) {
+    switch (token.type) {
+      case `atom`:
+      case `mutable_atom`:
+        withdrawn = target.atoms.get(token.key);
+        break;
+      case `selector`:
+        withdrawn = target.selectors.get(token.key);
+        break;
+      case `readonly_selector`:
+        withdrawn = target.readonlySelectors.get(token.key);
+        break;
+      case `atom_family`:
+      case `mutable_atom_family`:
+      case `selector_family`:
+      case `readonly_selector_family`:
+        withdrawn = target.families.get(token.key);
+        break;
+      case `timeline`:
+        withdrawn = target.timelines.get(token.key);
+        break;
+      case `transaction`:
+        withdrawn = target.transactions.get(token.key);
+        break;
+      case `molecule`:
+        withdrawn = target.molecules.get(stringifyJson(token.key));
+        break;
+      case `molecule_family`:
+        withdrawn = target.moleculeFamilies.get(token.key);
+        break;
+    }
+    if (withdrawn) {
+      return withdrawn;
+    }
+    target = target.child;
+  }
+  throw new NotFoundError(token, store13);
+}
+// ../../../atom.io/internal/src/subscribe/recall-state.ts
+var recallState = (state, store14) => {
+  const target = newest(store14);
+  if (target.operation.open) {
+    return target.operation.prev.get(state.key);
+  }
+  return target.valueMap.get(state.key);
+};
+// ../../../atom.io/internal/src/subscribe/subscribe-to-root-atoms.ts
+var subscribeToRootAtoms = (selector5, store14) => {
+  const target = newest(store14);
+  const dependencySubscriptions = traceAllSelectorAtoms(selector5, store14).map((atomKey) => {
+    const atom5 = target.atoms.get(atomKey);
+    if (atom5 === undefined) {
+      throw new Error(`Atom "${atomKey}", a dependency of selector "${selector5.key}", not found in store "${store14.config.name}".`);
+    }
+    return atom5.subject.subscribe(`${selector5.type}:${selector5.key}`, (atomChange) => {
+      store14.logger.info(`\uD83D\uDCE2`, selector5.type, selector5.key, `root`, atomKey, `went`, atomChange.oldValue, `->`, atomChange.newValue);
+      const oldValue = recallState(selector5, target);
+      const newValue = readOrComputeValue(selector5, target);
+      store14.logger.info(`\u2728`, selector5.type, selector5.key, `went`, oldValue, `->`, newValue);
+      selector5.subject.next({ newValue, oldValue });
+    });
+  });
+  return dependencySubscriptions;
+};
+// ../../../atom.io/internal/src/subscribe/subscribe-to-state.ts
+function subscribeToState(token, handleUpdate, key, store15) {
+  function safelyHandleUpdate(update) {
+    if (store15.operation.open) {
+      const unsubscribe2 = store15.on.operationClose.subscribe(`state subscription ${key}`, () => {
+        unsubscribe2();
+        handleUpdate(update);
+      });
+    } else {
+      handleUpdate(update);
+    }
+  }
+  const state = withdraw(token, store15);
+  store15.logger.info(`\uD83D\uDC40`, state.type, state.key, `Adding subscription "${key}"`);
+  const isSelector = state.type === `selector` || state.type === `readonly_selector`;
+  let dependencyUnsubFunctions = null;
+  let updateHandler = safelyHandleUpdate;
+  if (isSelector) {
+    dependencyUnsubFunctions = subscribeToRootAtoms(state, store15);
+    updateHandler = (update) => {
+      if (dependencyUnsubFunctions) {
+        dependencyUnsubFunctions.length = 0;
+        dependencyUnsubFunctions.push(...subscribeToRootAtoms(state, store15));
+      }
+      safelyHandleUpdate(update);
+    };
+  }
+  const mainUnsubFunction = state.subject.subscribe(key, updateHandler);
+  const unsubscribe = () => {
+    store15.logger.info(`\uD83D\uDE48`, state.type, state.key, `Removing subscription "${key}"`);
+    mainUnsubFunction();
+    if (dependencyUnsubFunctions) {
+      for (const unsubFromDependency of dependencyUnsubFunctions) {
+        unsubFromDependency();
+      }
+    }
+  };
+  return unsubscribe;
+}
+// ../../../atom.io/internal/src/subscribe/subscribe-to-timeline.ts
+var subscribeToTimeline = (token, handleUpdate, key, store15) => {
+  const tl = withdraw(token, store15);
+  store15.logger.info(`\uD83D\uDC40`, `timeline`, token.key, `Adding subscription "${key}"`);
+  const unsubscribe = tl.subject.subscribe(key, handleUpdate);
+  return () => {
+    store15.logger.info(`\uD83D\uDE48`, `timeline`, token.key, `Removing subscription "${key}" from timeline`);
+    unsubscribe();
+  };
+};
+// ../../../atom.io/internal/src/mutable/tracker.ts
+class Tracker {
+  Update;
+  initializeState(mutableState, store15) {
+    const latestUpdateStateKey = `*${mutableState.key}`;
+    store15.atoms.delete(latestUpdateStateKey);
+    store15.valueMap.delete(latestUpdateStateKey);
+    const familyMetaData = mutableState.family ? {
+      key: `*${mutableState.family.key}`,
+      subKey: mutableState.family.subKey
+    } : undefined;
+    const latestUpdateState = createRegularAtom(store15, {
+      key: latestUpdateStateKey,
+      default: null
+    }, familyMetaData);
+    if (store15.parent?.valueMap.has(latestUpdateStateKey)) {
+      const parentValue = store15.parent.valueMap.get(latestUpdateStateKey);
+      store15.valueMap.set(latestUpdateStateKey, parentValue);
+    }
+    return latestUpdateState;
+  }
+  unsubscribeFromInnerValue;
+  unsubscribeFromState;
+  observeCore(mutableState, latestUpdateState, target) {
+    const subscriptionKey = `tracker:${target.config.name}:${isChildStore(target) ? target.transactionMeta.update.key : `main`}:${mutableState.key}`;
+    const originalInnerValue = getFromStore(target, mutableState);
+    this.unsubscribeFromInnerValue = originalInnerValue.subscribe(subscriptionKey, (update) => {
+      setIntoStore(target, latestUpdateState, update);
+    });
+    this.unsubscribeFromState = subscribeToState(mutableState, (update) => {
+      if (update.newValue !== update.oldValue) {
+        this.unsubscribeFromInnerValue();
+        this.unsubscribeFromInnerValue = update.newValue.subscribe(subscriptionKey, (transceiverUpdate) => {
+          setIntoStore(target, latestUpdateState, transceiverUpdate);
+        });
+      }
+    }, subscriptionKey, target);
+  }
+  updateCore(mutableState, latestUpdateState, target) {
+    const subscriptionKey = `tracker:${target.config.name}:${isChildStore(target) ? target.transactionMeta.update.key : `main`}:${mutableState.key}`;
+    subscribeToState(latestUpdateState, ({ newValue, oldValue }) => {
+      const timelineId = target.timelineTopics.getRelatedKey(latestUpdateState.key);
+      if (timelineId) {
+        const timelineData = target.timelines.get(timelineId);
+        if (timelineData?.timeTraveling) {
+          const unsubscribe2 = subscribeToTimeline({ key: timelineId, type: `timeline` }, (update) => {
+            unsubscribe2();
+            setIntoStore(target, mutableState, (transceiver) => {
+              if (update === `redo` && newValue) {
+                transceiver.do(newValue);
+              } else if (update === `undo` && oldValue) {
+                transceiver.undo(oldValue);
+              }
+              return transceiver;
+            });
+          }, subscriptionKey, target);
+          return;
+        }
+      }
+      const unsubscribe = target.on.operationClose.subscribe(subscriptionKey, () => {
+        unsubscribe();
+        const mutable7 = getFromStore(target, mutableState);
+        const updateNumber = newValue === null ? -1 : mutable7.getUpdateNumber(newValue);
+        const eventOffset = updateNumber - mutable7.cacheUpdateNumber;
+        if (newValue && eventOffset === 1) {
+          setIntoStore(target, mutableState, (transceiver) => (transceiver.do(newValue), transceiver));
+        } else {
+          target.logger.info(`\u274C`, `mutable_atom`, mutableState.key, `could not be updated. Expected update number ${mutable7.cacheUpdateNumber + 1}, but got ${updateNumber}`);
+        }
+      });
+    }, subscriptionKey, target);
+  }
+  mutableState;
+  latestUpdateState;
+  dispose;
+  constructor(mutableState, store15) {
+    this.mutableState = mutableState;
+    const target = newest(store15);
+    this.latestUpdateState = this.initializeState(mutableState, target);
+    this.observeCore(mutableState, this.latestUpdateState, target);
+    this.updateCore(mutableState, this.latestUpdateState, target);
+    target.trackers.set(mutableState.key, this);
+    this.dispose = () => {
+      this.unsubscribeFromInnerValue();
+      this.unsubscribeFromState();
+      target.trackers.delete(mutableState.key);
+    };
+  }
+}
+
+// ../../../atom.io/internal/src/mutable/create-mutable-atom.ts
+function createMutableAtom(store16, options, family) {
+  store16.logger.info(`\uD83D\uDD28`, `atom`, options.key, `creating in store "${store16.config.name}"`);
+  const target = newest(store16);
+  const existing = target.atoms.get(options.key);
+  if (existing && existing.type === `mutable_atom`) {
+    store16.logger.error(`\u274C`, `atom`, options.key, `Tried to create atom, but it already exists in the store.`);
+    return deposit(existing);
+  }
+  const subject11 = new Subject;
+  const newAtom = {
+    ...options,
+    type: `mutable_atom`,
+    install: (s) => {
+      s.logger.info(`\uD83D\uDEE0\uFE0F`, `atom`, options.key, `installing in store "${s.config.name}"`);
+      return createMutableAtom(s, options, family);
+    },
+    subject: subject11
+  };
+  if (family) {
+    newAtom.family = family;
+  }
+  const initialValue = options.default();
+  target.atoms.set(newAtom.key, newAtom);
+  markAtomAsDefault(options.key, store16);
+  cacheValue(options.key, initialValue, subject11, target);
+  const token = deposit(newAtom);
+  if (options.effects) {
+    let effectIndex = 0;
+    const cleanupFunctions = [];
+    for (const effect of options.effects) {
+      const cleanup = effect({
+        setSelf: (next) => {
+          setIntoStore(store16, token, next);
+        },
+        onSet: (handle) => subscribeToState(token, handle, `effect[${effectIndex}]`, store16)
+      });
+      if (cleanup) {
+        cleanupFunctions.push(cleanup);
+      }
+      ++effectIndex;
+    }
+    newAtom.cleanup = () => {
+      for (const cleanup of cleanupFunctions) {
+        cleanup();
+      }
+    };
+  }
+  new Tracker(token, store16);
+  if (!family) {
+    selectJson(token, options, store16);
+  }
+  return token;
+}
+// ../../../atom.io/internal/src/mutable/tracker-family.ts
+class FamilyTracker {
+  Update;
+  latestUpdateAtoms;
+  mutableAtoms;
+  constructor(mutableAtoms, store17) {
+    const updateAtoms = createRegularAtomFamily(store17, {
+      key: `*${mutableAtoms.key}`,
+      default: null
+    }, [`mutable`, `updates`]);
+    this.latestUpdateAtoms = withdraw(updateAtoms, store17);
+    this.mutableAtoms = mutableAtoms;
+    this.mutableAtoms.subject.subscribe(`store=${store17.config.name}::tracker-atom-family`, (event) => {
+      if (event.token.family) {
+        const key = parseJson(event.token.family.subKey);
+        seekInStore(store17, this.latestUpdateAtoms, key);
+        new Tracker(event.token, store17);
+      }
+    });
+    this.latestUpdateAtoms.subject.subscribe(`store=${store17.config.name}::tracker-atom-family`, (event) => {
+      if (event.token.family) {
+        const key = parseJson(event.token.family.subKey);
+        const mutableAtomToken = seekInStore(store17, this.mutableAtoms, key);
+        if (mutableAtomToken) {
+          new Tracker(mutableAtomToken, store17);
+        }
+      }
+    });
+  }
+}
+
+// ../../../atom.io/internal/src/mutable/create-mutable-atom-family.ts
+function createMutableAtomFamily(store17, options, internalRoles) {
+  const familyToken = {
+    key: options.key,
+    type: `mutable_atom_family`
+  };
+  const existing = store17.families.get(options.key);
+  if (existing) {
+    store17.logger.error(`\u2757`, `mutable_atom_family`, options.key, `Overwriting an existing ${prettyPrintTokenType(existing)} "${existing.key}" in store "${store17.config.name}". You can safely ignore this warning if it is due to hot module replacement.`);
+  }
+  const subject12 = new Subject;
+  const familyFunction = (key) => {
+    const subKey = stringifyJson(key);
+    const family = { key: options.key, subKey };
+    const fullKey = `${options.key}(${subKey})`;
+    const target = newest(store17);
+    const individualOptions = {
+      key: fullKey,
+      default: () => options.default(key),
+      toJson: options.toJson,
+      fromJson: options.fromJson,
+      mutable: true
+    };
+    if (options.effects) {
+      individualOptions.effects = options.effects(key);
+    }
+    const token = createMutableAtom(target, individualOptions, family);
+    subject12.next({ type: `state_creation`, token });
+    return token;
+  };
+  const atomFamily2 = Object.assign(familyFunction, familyToken, {
+    subject: subject12,
+    install: (s) => createMutableAtomFamily(s, options),
+    toJson: options.toJson,
+    fromJson: options.fromJson,
+    internalRoles
+  });
+  store17.families.set(options.key, atomFamily2);
+  selectJsonFamily(atomFamily2, options, store17);
+  new FamilyTracker(atomFamily2, store17);
+  return familyToken;
+}
+// ../../../atom.io/internal/src/mutable/get-json-family.ts
+var getJsonFamily = (mutableAtomFamily, store17) => {
+  const target = newest(store17);
+  const key = `${mutableAtomFamily.key}:JSON`;
+  const jsonFamily = target.families.get(key);
+  return jsonFamily;
+};
+// ../../../atom.io/internal/src/mutable/get-json-token.ts
+var getJsonToken = (store18, mutableAtomToken) => {
+  if (mutableAtomToken.family) {
+    const target = newest(store18);
+    const jsonFamilyKey = `${mutableAtomToken.family.key}:JSON`;
+    const jsonFamilyToken = {
+      key: jsonFamilyKey,
+      type: `selector_family`
+    };
+    const family = withdraw(jsonFamilyToken, target);
+    const subKey = JSON.parse(mutableAtomToken.family.subKey);
+    const jsonToken = findInStore(store18, family, subKey);
+    return jsonToken;
+  }
+  const token = {
+    type: `selector`,
+    key: `${mutableAtomToken.key}:JSON`
+  };
+  return token;
+};
+// ../../../atom.io/internal/src/mutable/get-update-token.ts
+var getUpdateToken = (mutableAtomToken) => {
+  const key = `*${mutableAtomToken.key}`;
+  const updateToken = { type: `atom`, key };
+  if (mutableAtomToken.family) {
+    updateToken.family = {
+      key: `*${mutableAtomToken.family.key}`,
+      subKey: mutableAtomToken.family.subKey
+    };
+  }
+  return updateToken;
+};
+// ../../../atom.io/internal/src/mutable/transceiver.ts
+function isTransceiver(value) {
+  return typeof value === `object` && value !== null && `do` in value && `undo` in value && `subscribe` in value;
+}
+// ../../../atom.io/internal/src/set-state/copy-mutable-if-needed.ts
+function copyMutableIfNeeded(atom7, origin, target) {
+  const originValue = origin.valueMap.get(atom7.key);
+  const targetValue = target.valueMap.get(atom7.key);
+  if (originValue === targetValue) {
+    if (originValue === undefined) {
+      return typeof atom7.default === `function` ? atom7.default() : atom7.default;
+    }
+    origin.logger.info(`\uD83D\uDCC3`, `atom`, atom7.key, `copying`);
+    const jsonValue = atom7.toJson(originValue);
+    const copiedValue = atom7.fromJson(jsonValue);
+    target.valueMap.set(atom7.key, copiedValue);
+    new Tracker(atom7, origin);
+    return copiedValue;
+  }
+  return targetValue;
+}
+
+// ../../../atom.io/internal/src/caching.ts
+function cacheValue(key, value, subject12, target) {
+  const currentValue = target.valueMap.get(key);
+  if (currentValue instanceof Future) {
+    const future2 = currentValue;
+    future2.use(value);
+  }
+  if (value instanceof Promise) {
+    const future2 = new Future(value);
+    target.valueMap.set(key, future2);
+    future2.then((resolved) => {
+      cacheValue(key, resolved, subject12, target);
+      subject12.next({ newValue: resolved, oldValue: future2 });
+    }).catch((thrown) => {
+      target.logger.error(`\uD83D\uDCA5`, `state`, key, `rejected:`, thrown);
+    });
+    return future2;
+  }
+  target.valueMap.set(key, value);
+  return value;
+}
+var readCachedValue = (token, target) => {
+  let value = target.valueMap.get(token.key);
+  if (token.type === `mutable_atom` && isChildStore(target)) {
+    const { parent } = target;
+    const copiedValue = copyMutableIfNeeded(token, parent, target);
+    value = copiedValue;
+  }
+  return value;
+};
+var evictCachedValue = (key, target) => {
+  const currentValue = target.valueMap.get(key);
+  if (currentValue instanceof Future) {
+    const future2 = currentValue;
+    const selector5 = target.selectors.get(key) ?? target.readonlySelectors.get(key);
+    if (selector5) {
+      future2.use(selector5.get());
+    }
+    return;
+  }
+  if (target.operation.open) {
+    target.operation.prev.set(key, currentValue);
+  }
+  target.valueMap.delete(key);
+  target.logger.info(`\uD83D\uDDD1`, `state`, key, `evicted`);
+};
+
+// ../../../atom.io/internal/src/atom/is-default.ts
+var isAtomDefault = (key, store18) => {
+  const core = newest(store18);
+  return core.atomsThatAreDefault.has(key);
+};
+var markAtomAsDefault = (key, store18) => {
+  const core = newest(store18);
+  core.atomsThatAreDefault = new Set(core.atomsThatAreDefault).add(key);
+};
+var markAtomAsNotDefault = (key, store18) => {
+  const core = newest(store18);
+  core.atomsThatAreDefault = new Set(newest(store18).atomsThatAreDefault);
+  core.atomsThatAreDefault.delete(key);
+};
+
+// ../../../atom.io/internal/src/atom/create-regular-atom.ts
+function createRegularAtom(store19, options, family) {
+  store19.logger.info(`\uD83D\uDD28`, `atom`, options.key, `creating in store "${store19.config.name}"`);
+  const target = newest(store19);
+  const existing = target.atoms.get(options.key);
+  if (existing && existing.type === `atom`) {
+    store19.logger.error(`\u274C`, `atom`, options.key, `Tried to create atom, but it already exists in the store.`);
+    return deposit(existing);
+  }
+  const subject13 = new Subject;
+  const newAtom = {
+    ...options,
+    type: `atom`,
+    install: (s) => {
+      s.logger.info(`\uD83D\uDEE0\uFE0F`, `atom`, options.key, `installing in store "${s.config.name}"`);
+      return createRegularAtom(s, options, family);
+    },
+    subject: subject13
+  };
+  if (family) {
+    newAtom.family = family;
+  }
+  let initialValue = options.default;
+  if (options.default instanceof Function) {
+    initialValue = options.default();
+  }
+  target.atoms.set(newAtom.key, newAtom);
+  markAtomAsDefault(options.key, store19);
+  cacheValue(options.key, initialValue, subject13, target);
+  const token = deposit(newAtom);
+  if (options.effects) {
+    let effectIndex = 0;
+    const cleanupFunctions = [];
+    for (const effect of options.effects) {
+      const cleanup = effect({
+        setSelf: (next) => {
+          setIntoStore(store19, token, next);
+        },
+        onSet: (handle) => subscribeToState(token, handle, `effect[${effectIndex}]`, store19)
+      });
+      if (cleanup) {
+        cleanupFunctions.push(cleanup);
+      }
+      ++effectIndex;
+    }
+    newAtom.cleanup = () => {
+      for (const cleanup of cleanupFunctions) {
+        cleanup();
+      }
+    };
+  }
+  return token;
+}
+// ../../../atom.io/internal/src/atom/create-standalone-atom.ts
+function createStandaloneAtom(store19, options) {
+  const isMutable = `mutable` in options;
+  if (isMutable) {
+    const state2 = createMutableAtom(store19, options, undefined);
+    store19.on.atomCreation.next(state2);
+    return state2;
+  }
+  const state = createRegularAtom(store19, options, undefined);
+  store19.on.atomCreation.next(state);
+  return state;
+}
+// ../../../atom.io/internal/src/atom/dispose-atom.ts
+function disposeAtom(atomToken, store19) {
+  const target = newest(store19);
+  const { key } = atomToken;
+  const atom7 = withdraw(atomToken, target);
+  if (!atom7.family) {
+    store19.logger.error(`\u274C`, `atom`, key, `Standalone atoms cannot be disposed.`);
+  } else {
+    atom7.cleanup?.();
+    const lastValue = store19.valueMap.get(atom7.key);
+    const family = withdraw({ key: atom7.family.key, type: `atom_family` }, store19);
+    family.subject.next({
+      type: `state_disposal`,
+      token: atomToken,
+      value: lastValue
+    });
+    const molecule4 = target.molecules.get(atom7.family.subKey);
+    if (molecule4) {
+      molecule4.tokens.delete(key);
+    }
+    target.atoms.delete(key);
+    target.valueMap.delete(key);
+    target.selectorAtoms.delete(key);
+    target.atomsThatAreDefault.delete(key);
+    target.timelineTopics.delete(key);
+    if (atomToken.type === `mutable_atom`) {
+      const updateToken = getUpdateToken(atomToken);
+      disposeAtom(updateToken, store19);
+      store19.trackers.delete(key);
+    }
+    store19.logger.info(`\uD83D\uDD25`, `atom`, key, `deleted`);
+    if (isChildStore(target) && target.transactionMeta.phase === `building`) {
+      target.transactionMeta.update.updates.push({
+        type: `state_disposal`,
+        token: atomToken
+      });
+    } else {
+      store19.on.atomDisposal.next(atomToken);
+    }
+  }
+}
+// ../../../atom.io/json/src/select-json.ts
+var selectJson = (atom8, transform, store21 = IMPLICIT.STORE) => {
+  return createStandaloneSelector(store21, {
+    key: `${atom8.key}:JSON`,
+    get: ({ get }) => transform.toJson(get(atom8)),
+    set: ({ set }, newValue) => {
+      set(atom8, transform.fromJson(newValue));
+    }
+  });
+};
+// ../../../atom.io/json/src/select-json-family.ts
+function selectJsonFamily(atomFamilyToken, transform, store21 = IMPLICIT.STORE) {
+  const jsonFamily = createWritableSelectorFamily(store21, {
+    key: `${atomFamilyToken.key}:JSON`,
+    get: (key) => ({ seek, get }) => {
+      const existingState = seek(atomFamilyToken, key);
+      if (existingState) {
+        return transform.toJson(get(existingState));
+      }
+      const stringKey = stringifyJson(key);
+      const molecule5 = store21.molecules.get(stringKey);
+      if (molecule5) {
+        const atom8 = growMoleculeInStore(molecule5, atomFamilyToken, store21);
+        return transform.toJson(get(atom8));
+      }
+      if (store21.config.lifespan === `immortal`) {
+        throw new Error(`No molecule found for key "${stringKey}"`);
+      }
+      const newToken = initFamilyMemberInStore(store21, atomFamilyToken, key);
+      return transform.toJson(get(newToken));
+    },
+    set: (key) => ({ seek, set }, newValue) => {
+      const existingState = seek(atomFamilyToken, key);
+      if (existingState) {
+        set(existingState, transform.fromJson(newValue));
+      } else {
+        const stringKey = stringifyJson(key);
+        const molecule5 = store21.molecules.get(stringKey);
+        if (molecule5) {
+          const atom8 = growMoleculeInStore(molecule5, atomFamilyToken, store21);
+          set(atom8, transform.fromJson(newValue));
+        } else {
+          if (store21.config.lifespan === `immortal`) {
+            throw new Error(`No molecule found for key "${stringKey}"`);
+          }
+          set(initFamilyMemberInStore(store21, atomFamilyToken, key), transform.fromJson(newValue));
+        }
+      }
+    }
+  }, [`mutable`, `json`]);
+  const atomFamily2 = withdraw(atomFamilyToken, store21);
+  atomFamily2.subject.subscribe(`store=${store21.config.name}::json-selector-family`, (event) => {
+    if (event.token.family) {
+      seekInStore(store21, jsonFamily, parseJson(event.token.family.subKey));
+    }
+  });
+  return jsonFamily;
+}
+
+// ../../../atom.io/json/src/index.ts
+var parseJson = (str) => JSON.parse(str);
+var stringifyJson = (json18) => JSON.stringify(json18);
+var JSON_PROTOTYPES = [
+  Array.prototype,
+  Boolean.prototype,
+  Number.prototype,
+  Object.prototype,
+  String.prototype
+];
+
+// ../../../atom.io/realtime-server/src/ipc-sockets/custom-socket.ts
+class CustomSocket {
+  emit;
+  listeners;
+  globalListeners;
+  handleEvent(event, ...args) {
+    for (const listener of this.globalListeners) {
+      listener(event, ...args);
+    }
+    const listeners = this.listeners.get(event);
+    if (listeners) {
+      for (const listener of listeners) {
+        listener(...args);
+      }
+    }
+  }
+  id = `no_id_retrieved`;
+  constructor(emit) {
+    this.emit = emit;
+    this.listeners = new Map;
+    this.globalListeners = new Set;
+  }
+  on(event, listener) {
+    const listeners = this.listeners.get(event);
+    if (listeners) {
+      listeners.add(listener);
+    } else {
+      this.listeners.set(event, new Set([listener]));
+    }
+    return this;
+  }
+  onAny(listener) {
+    this.globalListeners.add(listener);
+    return this;
+  }
+  off(event, listener) {
+    const listeners = this.listeners.get(event);
+    if (listeners) {
+      if (listener) {
+        listeners.delete(listener);
+      } else {
+        this.listeners.delete(event);
+      }
+    }
+    return this;
+  }
+  offAny(listener) {
+    this.globalListeners.delete(listener);
+    return this;
+  }
+}
+
+// ../../../atom.io/realtime-server/src/ipc-sockets/child-socket.ts
+class ChildSocket extends CustomSocket {
+  process2;
+  key;
+  logger;
+  incompleteData = ``;
+  unprocessedEvents = [];
+  incompleteLog = ``;
+  unprocessedLogs = [];
+  id = `#####`;
+  handleLog(arg) {
+    if (Array.isArray(arg)) {
+      const [level, ...rest] = arg;
+      switch (level) {
+        case `i`:
+          this.logger.info(this.id, this.key, ...rest);
+          break;
+        case `w`:
+          this.logger.warn(this.id, this.key, ...rest);
+          break;
+        case `e`:
+          this.logger.error(this.id, this.key, ...rest);
+          break;
+      }
+    }
+  }
+  constructor(process2, key, logger = console) {
+    super((event, ...args) => {
+      const stringifiedEvent = JSON.stringify([event, ...args]) + `\x03`;
+      const errorHandler = (err) => {
+        if (err.code === `EPIPE`) {
+          console.error(`EPIPE error during write`, this.process.stdin);
+        }
+        this.process.stdin.removeListener(`error`, errorHandler);
+      };
+      this.process.stdin.once(`error`, errorHandler);
+      this.process.stdin.write(stringifiedEvent);
+      return this;
+    });
+    this.process = process2;
+    this.key = key;
+    this.logger = logger;
+    this.process = process2;
+    this.process.stdout.on(`data`, (buffer) => {
+      const chunk = buffer.toString();
+      if (chunk === `\u2728`) {
+        return;
+      }
+      this.unprocessedEvents.push(...chunk.split(`\x03`));
+      const newInput = this.unprocessedEvents.shift();
+      this.incompleteData += newInput ?? ``;
+      try {
+        if (this.incompleteData.startsWith(`error`)) {
+          console.log(`\u2757`, this.incompleteData);
+        }
+        let parsedEvent = parseJson(this.incompleteData);
+        this.handleEvent(...parsedEvent);
+        while (this.unprocessedEvents.length > 0) {
+          const event = this.unprocessedEvents.shift();
+          if (event) {
+            if (this.unprocessedEvents.length === 0) {
+              this.incompleteData = event;
+            }
+            parsedEvent = parseJson(event);
+            this.handleEvent(...parsedEvent);
+          }
+        }
+        this.incompleteData = ``;
+      } catch (error) {
+        console.warn(`\u26A0\uFE0F----------------\u26A0\uFE0F`);
+        console.warn(this.incompleteData);
+        console.warn(`\u26A0\uFE0F----------------\u26A0\uFE0F`);
+        console.error(error);
+      }
+    });
+    this.process.stderr.on(`data`, (buf) => {
+      const chunk = buf.toString();
+      this.unprocessedLogs.push(...chunk.split(`\x03`));
+      const newInput = this.unprocessedLogs.shift();
+      this.incompleteLog += newInput ?? ``;
+      try {
+        let parsedLog = parseJson(this.incompleteLog);
+        this.handleLog(parsedLog);
+        while (this.unprocessedLogs.length > 0) {
+          this.incompleteLog = this.unprocessedLogs.shift() ?? ``;
+          if (this.incompleteLog) {
+            parsedLog = parseJson(this.incompleteLog);
+            this.handleLog(parsedLog);
+          }
+        }
+      } catch (error) {
+        console.error(`\u274C\u274C\u274C`);
+        console.error(this.incompleteLog);
+        console.error(error);
+        console.error(`\u274C\u274C\u274C\uFE0F`);
+      }
+    });
+    if (process2.pid) {
+      this.id = process2.pid.toString();
+    }
+  }
+}
+// ../../../atom.io/realtime-server/src/ipc-sockets/parent-socket.ts
+class SubjectSocket extends CustomSocket {
+  in;
+  out;
+  id = `no_id_retrieved`;
+  disposalFunctions = [];
+  constructor(id) {
+    super((...args) => {
+      this.out.next(args);
+      return this;
+    });
+    this.id = id;
+    this.in = new Subject;
+    this.out = new Subject;
+    this.in.subscribe(`socket`, (event) => {
+      this.handleEvent(...event);
+    });
+  }
+  dispose() {
+    for (const dispose of this.disposalFunctions) {
+      dispose();
+    }
+  }
+}
+
+class ParentSocket extends CustomSocket {
+  incompleteData = ``;
+  unprocessedEvents = [];
+  relays;
+  relayServices;
+  process;
+  id = `#####`;
+  log(...args) {
+    this.process.stderr.write(stringifyJson(args.map((arg) => arg instanceof SetRTX ? `{ ${arg.toJSON().members.join(` | `)} }` : arg)) + `\x03`);
+  }
+  logger = {
+    info: (...args) => {
+      this.log(`i`, ...args);
+    },
+    warn: (...args) => {
+      this.log(`w`, ...args);
+    },
+    error: (...args) => {
+      this.log(`e`, ...args);
+    }
+  };
+  constructor() {
+    super((event, ...args) => {
+      const stringifiedEvent = JSON.stringify([event, ...args]);
+      this.process.stdout.write(stringifiedEvent + `\x03`);
+      return this;
+    });
+    this.process = process;
+    this.process.stdin.resume();
+    this.relays = new Map;
+    this.relayServices = [];
+    this.process.stdin.on(`data`, (buffer) => {
+      const chunk = buffer.toString();
+      this.unprocessedEvents.push(...chunk.split(`\x03`));
+      const newInput = this.unprocessedEvents.shift();
+      this.incompleteData += newInput ?? ``;
+      try {
+        const parsedData = parseJson(this.incompleteData);
+        this.logger.info(`\uD83C\uDFB0`, `received`, parsedData);
+        this.handleEvent(...parsedData);
+        while (this.unprocessedEvents.length > 0) {
+          const event = this.unprocessedEvents.shift();
+          if (event) {
+            if (this.unprocessedEvents.length === 0) {
+              this.incompleteData = event;
+            }
+            const parsedEvent = parseJson(event);
+            this.handleEvent(...parsedEvent);
+          }
+        }
+        this.incompleteData = ``;
+      } catch (thrown) {
+        if (thrown instanceof Error) {
+          this.logger.error(`\u2757`, thrown.message, thrown.cause, thrown.stack);
+        }
+      }
+    });
+    this.on(`exit`, () => {
+      this.logger.info(`\uD83D\uDD25`, this.id, `received "exit"`);
+      process.exit(0);
+    });
+    process.on(`exit`, (code) => {
+      this.logger.info(`\uD83D\uDD25`, this.id, `exited with code ${code}`);
+    });
+    process.on(`end`, () => {
+      this.logger.info(`\uD83D\uDD25`, this.id, `ended`);
+      process.exit(0);
+    });
+    process.on(`SIGTERM`, () => {
+      this.logger.error(`\uD83D\uDD25`, this.id, `terminated`);
+      process.exit(0);
+    });
+    process.on(`SIGINT`, () => {
+      this.logger.error(`\uD83D\uDD25`, this.id, `interrupted`);
+      process.exit(0);
+    });
+    if (process.pid) {
+      this.id = process.pid?.toString();
+    }
+    this.on(`user-joins`, (username) => {
+      this.logger.info(`\uD83D\uDC64`, `user`, username, `joined`);
+      const relay = new SubjectSocket(`user:${username}`);
+      this.relays.set(username, relay);
+      this.logger.info(`\uD83D\uDD17`, `attaching services:`, `[${[...this.relayServices.keys()].join(`, `)}]`);
+      for (const attachServices of this.relayServices) {
+        const cleanup = attachServices(relay);
+        if (cleanup) {
+          relay.disposalFunctions.push(cleanup);
+        }
+      }
+      this.on(`user:${username}`, (...data2) => {
+        relay.in.next(data2);
+      });
+      relay.out.subscribe(`socket`, (data2) => {
+        this.emit(...data2);
+      });
+    });
+    this.on(`user-leaves`, (username) => {
+      const relay = this.relays.get(username);
+      this.off(`relay:${username}`);
+      if (relay) {
+        relay.dispose();
+        this.relays.delete(username);
+      }
+    });
+    process.stdout.write(`\u2728`);
+  }
+  relay(attachServices) {
+    this.logger.info(`\uD83D\uDD17`, `running relay method`);
+    this.relayServices.push(attachServices);
+  }
+}
+// ../../../atom.io/realtime/src/realtime-continuity.ts
+class InvariantMap extends Map {
+  set(key, value) {
+    if (this.has(key)) {
+      console.warn(`Tried to set a key that already exists in an InvariantMap`, {
+        key,
+        value
+      });
+      return this;
+    }
+    return super.set(key, value);
+  }
+  clear() {
+    throw new Error(`Cannot clear an InvariantMap`);
+  }
+}
+
+class SyncGroup {
+  key;
+  type = `continuity`;
+  globals = [];
+  actions = [];
+  perspectives = [];
+  constructor(key) {
+    this.key = key;
+  }
+  static existing = new InvariantMap;
+  static create(key, builder) {
+    const group = new SyncGroup(key);
+    const { type, globals, actions, perspectives } = builder(group);
+    const token = { type, key, globals, actions, perspectives };
+    SyncGroup.existing.set(key, token);
+    return token;
+  }
+  add(...args) {
+    const zeroth = args[0];
+    switch (zeroth.type) {
+      case `atom`:
+      case `mutable_atom`:
+        this.globals.push(...args);
+        break;
+      case `transaction`:
+        this.actions.push(...args);
+        break;
+      case `atom_family`:
+        {
+          const [family, index] = args;
+          this.perspectives.push({
+            type: `realtime_perspective`,
+            resourceAtoms: family,
+            viewAtoms: index
+          });
+        }
+        break;
+    }
+    return this;
+  }
+}
+// ../../../atom.io/realtime/src/shared-room-store.ts
+var usersInThisRoomIndex = atom({
+  key: `usersInRoomIndex`,
+  mutable: true,
+  default: () => new SetRTX,
+  toJson: (set) => set.toJSON(),
+  fromJson: (json20) => SetRTX.fromJSON(json20)
+});
+var roomIndex = atom({
+  key: `roomIndex`,
+  default: () => new SetRTX,
+  mutable: true,
+  toJson: (set) => set.toJSON(),
+  fromJson: (json20) => SetRTX.fromJSON(json20)
+});
+var DEFAULT_USER_IN_ROOM_META = {
+  enteredAtEpoch: 0
+};
+var usersInRooms = join({
+  key: `usersInRooms`,
+  between: [`room`, `user`],
+  cardinality: `1:n`
+}, DEFAULT_USER_IN_ROOM_META);
+var usersInMyRoomView = selectorFamily({
+  key: `usersInMyRoomView`,
+  get: (myUsername) => ({ find }) => {
+    const usersInRoomsAtoms = getInternalRelations(usersInRooms);
+    const myRoomIndex = find(usersInRoomsAtoms, myUsername);
+    return [myRoomIndex];
+  }
+});
+// ../../../atom.io/realtime-server/src/realtime-server-stores/server-room-external-store.ts
+import {spawn} from "child_process";
+var roomArgumentsAtoms = atomFamily({
+  key: `roomArguments`,
+  default: [`echo`, [`Hello World!`]]
+});
+var roomSelectors = selectorFamily({
+  key: `room`,
+  get: (roomId) => async ({ get, find }) => {
+    const argumentsState = find(roomArgumentsAtoms, roomId);
+    const args = get(argumentsState);
+    const [script, options] = args;
+    const child = await new Promise((resolve) => {
+      const room = spawn(script, options, { env: process.env });
+      const resolver = (data3) => {
+        if (data3.toString() === `\u2728`) {
+          room.stdout.off(`data`, resolver);
+          resolve(room);
+        }
+      };
+      room.stdout.on(`data`, resolver);
+    });
+    return new ChildSocket(child, roomId);
+  }
+});
+
+// ../../../atom.io/realtime-server/src/realtime-server-stores/server-room-external-actions.ts
+var createRoomTX = transaction({
+  key: `createRoom`,
+  do: ({ get, set, find }, roomId, script, options) => {
+    const args = options ? [script, options] : [script];
+    const roomArgumentsState = find(roomArgumentsAtoms, roomId);
+    set(roomArgumentsState, args);
+    set(roomIndex, (s) => s.add(roomId));
+    const roomState = find(roomSelectors, roomId);
+    const room = get(roomState);
+    return room;
+  }
+});
+var joinRoomTX = transaction({
+  key: `joinRoom`,
+  do: (tools, roomId, userId, enteredAtEpoch) => {
+    const meta = { enteredAtEpoch };
+    editRelationsInStore(usersInRooms, (relations) => {
+      relations.set({ room: roomId, user: userId }, meta);
+    }, tools.env().store);
+    return meta;
+  }
+});
+var leaveRoomTX = transaction({
+  key: `leaveRoom`,
+  do: (tools, roomId, userId) => {
+    editRelationsInStore(usersInRooms, (relations) => {
+      relations.delete({ room: roomId, user: userId });
+    }, tools.env().store);
+  }
+});
+var destroyRoomTX = transaction({
+  key: `destroyRoom`,
+  do: (tools, roomId) => {
+    editRelationsInStore(usersInRooms, (relations) => {
+      relations.delete({ room: roomId });
+    }, tools.env().store);
+    tools.set(roomIndex, (s) => (s.delete(roomId), s));
+  }
+});
+// ../../../atom.io/realtime-server/src/realtime-server-stores/server-sync-store.ts
+var actionOcclusionAtoms = atomFamily({
+  key: `transactionRedactor`,
+  default: { occlude: (updates) => updates }
+});
+var userUnacknowledgedQueues = atomFamily({
+  key: `unacknowledgedUpdates`,
+  default: () => []
+});
+// ../../../atom.io/realtime-server/src/realtime-server-stores/server-user-store.ts
+var socketAtoms = atomFamily({
+  key: `sockets`,
+  default: null
+});
+var socketIndex = atom({
+  key: `socketsIndex`,
+  mutable: true,
+  default: () => new SetRTX,
+  toJson: (set) => set.toJSON(),
+  fromJson: (json20) => SetRTX.fromJSON(json20)
+});
+var userIndex = atom({
+  key: `usersIndex`,
+  mutable: true,
+  default: () => new SetRTX,
+  toJson: (set) => set.toJSON(),
+  fromJson: (json20) => SetRTX.fromJSON(json20)
+});
+var usersOfSockets = join({
+  key: `usersOfSockets`,
+  between: [`user`, `socket`],
+  cardinality: `1:1`
+});
+// app.ts
+var {serve } = globalThis.Bun;
+var PORT = 4444;
+var parentSocket = new ParentSocket;
+serve({
+  port: PORT,
+  fetch(req) {
+    parentSocket.logger.info(`\uD83D\uDE80`, req.method, req.url);
+    return new Response(`Hello everyone!`);
+  }
+});
+parentSocket.emit(`alive`);
+parentSocket.on(`updatesReady`, () => {
+  parentSocket.emit(`readyToUpdate`);
+});

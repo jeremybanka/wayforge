@@ -27,7 +27,7 @@
 		"build:lib": "rimraf dist && bun build --outdir dist --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.ts ",
 		"build:bin": "rimraf bin && bun build --outdir bin --target node --external break-check --external glob --external npmlog --external simple-git -- src/break-check.x.ts",
 		"build:dts": "tsup",
-		"schema": "bun src/break-check.x.ts --testPattern --testCommand --certifyCommand -- schema && mv break-check.schema.json dist",
+		"schema": "bun src/break-check.x.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
