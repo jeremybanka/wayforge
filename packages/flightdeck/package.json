@@ -14,7 +14,7 @@
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {
-		"break-check": "./dist/bin.js"
+		"flightdeck": "./dist/bin.js"
 	},
 	"dependencies": {
 		"atom.io": "workspace:*",
