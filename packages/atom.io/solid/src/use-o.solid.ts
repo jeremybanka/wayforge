@@ -5,7 +5,7 @@ import {
 	parseStateOverloads,
 	subscribeToState,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { useContext } from "solid-js"
 
 import { StoreContext } from "./store-context-provider.solid"
@@ -13,12 +13,12 @@ import { useSyncExternalStore } from "./use-sync-external-store.solid"
 
 export function useO<T>(token: ReadableToken<T>): () => T
 
-export function useO<T, K extends Json.Serializable>(
+export function useO<T, K extends Canonical>(
 	token: ReadableFamilyToken<T, K>,
 	key: K,
 ): () => T
 
-export function useO<T, K extends Json.Serializable>(
+export function useO<T, K extends Canonical>(
 	...params: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
 ): () => T {
 	const store = useContext(StoreContext)
@@ -26,6 +26,6 @@ export function useO<T, K extends Json.Serializable>(
 	const id = arbitrary()
 	return useSyncExternalStore<T>(
 		(dispatch) => subscribeToState(token, dispatch, `use-o:${id}`, store),
-		() => getFromStore(token, store),
+		() => getFromStore(store, token),
 	)
 }
