@@ -1,9 +1,9 @@
-/** @jsxImportSource solid-js */
-
 import type { Store } from "atom.io/internal"
 import { IMPLICIT } from "atom.io/internal"
 import type { JSX } from "solid-js"
 import { createContext } from "solid-js"
+import h from "solid-js/h"
+import type { HyperScript } from "solid-js/h/types/hyperscript.js"
 
 export const StoreContext = createContext<Store>(IMPLICIT.STORE)
 
@@ -14,6 +14,6 @@ export type StoreProviderProps = {
 export function StoreProvider({
 	children,
 	store = IMPLICIT.STORE,
-}: StoreProviderProps): JSX.Element {
-	return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+}: StoreProviderProps): ReturnType<HyperScript> {
+	return h(StoreContext.Provider, { value: store }, children)
 }
