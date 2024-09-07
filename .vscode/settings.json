@@ -26,6 +26,7 @@
 		"Luum",
 		"metafile",
 		"npmlog",
+		"outdir",
 		"outfile",
 		"preact",
 		"Recasters",
@@ -46,7 +47,7 @@
 		{
 			"fileMatch": ["**/break-check.config.json"],
 			"url": "./packages/break-check/dist/break-check.main.schema.json"
-		}
+		},
 		{
 			"fileMatch": ["**/flightdeck.config.json"],
 			"url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
