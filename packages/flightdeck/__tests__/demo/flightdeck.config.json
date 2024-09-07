@@ -1,9 +1,7 @@
 {
 	"app": "my-app",
 	"repo": "repo",
-	"runCmd": [
-		"./repo/my-app"
-	],
+	"runCmd": ["./repo/my-app"],
 	"secret": "secret",
 	"serviceDir": ".",
 	"updateCmd": [
