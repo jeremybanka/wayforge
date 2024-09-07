@@ -89,9 +89,10 @@
 		}
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "6.5.0",
 		"@testing-library/react": "16.0.1",
 		"@types/eslint": "9.6.1",
-		"@solidjs/testing-library": "0.8.8",
+		"@solidjs/testing-library": "0.8.9",
 		"@types/estree": "1.0.5",
 		"@types/http-proxy": "1.17.15",
 		"@types/npmlog": "7.0.0",
@@ -116,7 +117,7 @@
 		"react-router-dom": "6.26.1",
 		"socket.io": "4.7.5",
 		"socket.io-client": "4.7.5",
-		"solid-js": "1.8.18",
+		"solid-js": "1.8.22",
 		"tmp": "0.2.3",
 		"tsup": "8.2.4",
 		"tsx": "4.19.0",
