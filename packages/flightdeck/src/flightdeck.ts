@@ -1,5 +1,5 @@
 import { execSync, spawn } from "node:child_process"
-import { existsSync, mkdirSync, renameSync } from "node:fs"
+import { existsSync, mkdirSync, renameSync, rmSync, unlinkSync } from "node:fs"
 import type { Http2Server } from "node:http2"
 import { createServer } from "node:http2"
 import { homedir } from "node:os"
@@ -193,6 +193,8 @@ export class FlightDeck {
 			if (existsSync(this.currentServiceDir)) {
 				if (!existsSync(this.backupServiceDir)) {
 					mkdirSync(this.backupServiceDir, { recursive: true })
+				} else {
+					rmSync(this.backupServiceDir, { recursive: true })
 				}
 				renameSync(this.currentServiceDir, this.backupServiceDir)
 			}
