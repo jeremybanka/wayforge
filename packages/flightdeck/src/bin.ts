@@ -59,6 +59,20 @@ const FLIGHTDECK_MANUAL = {
 	},
 } satisfies OptionsGroup<FlightDeckOptions>
 
+const SCHEMA_MANUAL = {
+	optionsSchema: z.object({
+		outdir: z.string().optional(),
+	}),
+	options: {
+		outdir: {
+			flag: `o`,
+			required: false,
+			description: `Directory to write the schema to.`,
+			example: `--outdir=./dist`,
+		},
+	},
+} satisfies OptionsGroup<{ outdir?: string | undefined }>
+
 const parse = cli(
 	{
 		cliName: `flightdeck`,
@@ -66,7 +80,7 @@ const parse = cli(
 		routeOptions: {
 			"": FLIGHTDECK_MANUAL,
 			$configPath: FLIGHTDECK_MANUAL,
-			schema: null,
+			schema: SCHEMA_MANUAL,
 		},
 		discoverConfigPath: (args) => {
 			if (args[0] === `schema`) {
@@ -84,7 +98,10 @@ const { inputs, writeJsonSchema } = parse(process.argv)
 
 switch (inputs.case) {
 	case `schema`:
-		writeJsonSchema(`flightdeck.schema.json`)
+		{
+			const { outdir } = inputs.opts
+			writeJsonSchema(outdir ?? `.`)
+		}
 		break
 	default: {
 		const flightDeck = new FlightDeck(inputs.opts)

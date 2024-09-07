@@ -22,11 +22,11 @@
 		"zod": "3.23.8"
 	},
 	"scripts": {
-		"build": "concurrently \"bun:build:*\" && bun run schema",
-		"build:lib": "rimraf lib && bun build --outdir lib --target node --external flightdeck -- src/lib.ts ",
-		"build:bin": "rimraf bin && bun build --outdir bin --target node --external flightdeck -- src/bin.ts",
+		"build": "rimraf dist && concurrently \"bun:build:*\" && bun run schema",
+		"build:lib": "bun build --outdir dist --target node --external flightdeck -- src/lib.ts ",
+		"build:bin": "bun build --outdir dist --target node --external flightdeck -- src/bin.ts",
 		"build:dts": "tsup",
-		"schema": "bun src/bin.ts schema && mv flightdeck.schema.json dist",
+		"schema": "bun ./src/bin.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
@@ -43,6 +43,7 @@
 		"concurrently": "8.2.2",
 		"tmp": "0.2.3",
 		"tsup": "8.2.4",
+		"rimraf": "6.0.1",
 		"vitest": "2.0.5"
 	}
 }

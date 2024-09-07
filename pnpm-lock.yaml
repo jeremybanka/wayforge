@@ -765,6 +765,9 @@ importers:
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
+      rimraf:
+        specifier: 6.0.1
+        version: 6.0.1
       tmp:
         specifier: 0.2.3
         version: 0.2.3

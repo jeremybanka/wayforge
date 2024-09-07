@@ -9,7 +9,7 @@ serve({
 	port: PORT,
 	fetch(req) {
 		parentSocket.logger.info(`🚀`, req.method, req.url)
-		return new Response(`Hello World!`)
+		return new Response(`I can see my house from here!`)
 	},
 })
 

@@ -47,6 +47,10 @@
 			"fileMatch": ["**/break-check.config.json"],
 			"url": "./packages/break-check/dist/break-check.schema.json"
 		}
+		{
+			"fileMatch": ["**/flightdeck.config.json"],
+			"url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
+		}
 	],
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "biomejs.biome",

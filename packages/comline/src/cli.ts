@@ -23,6 +23,8 @@ export type CliOptionValue =
 	| string
 	| undefined
 
+const FILENAME_CHAR_ALLOWLIST = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-`
+
 export type CliOption<T extends CliOptionValue> = (T extends string
 	? {
 			parse?: (arg: string) => T
@@ -108,7 +110,7 @@ export function cli<
 	},
 ): (args: string[]) => {
 	inputs: CliParseOutput<CLI>
-	writeJsonSchema: (path: string) => void
+	writeJsonSchema: (outdir: string) => void
 } {
 	return (passed = process.argv) => {
 		type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]
@@ -197,9 +199,21 @@ export function cli<
 				path: positionalArgs.path,
 				opts: suppliedOptions,
 			} as unknown as CliParseOutput<CLI>,
-			writeJsonSchema: (filepath) => {
-				const jsonSchema = zodToJsonSchema(optionsSchema)
-				fs.writeFileSync(filepath, JSON.stringify(jsonSchema, null, `\t`))
+			writeJsonSchema: (outdir) => {
+				for (const [unsafeRoute, optionsGroup] of Object.entries(
+					routeOptions as Record<string, OptionsGroup<any> | null>,
+				)) {
+					if (optionsGroup === null) {
+						continue
+					}
+					const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
+					const jsonSchema = zodToJsonSchema(optionsGroup.optionsSchema)
+					const filepath = path.resolve(
+						outdir,
+						`${cliName}.${safeRoute || `main`}.schema.json`,
+					)
+					fs.writeFileSync(filepath, JSON.stringify(jsonSchema, null, `\t`))
+				}
 			},
 		}
 	}
