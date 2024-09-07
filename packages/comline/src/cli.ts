@@ -62,10 +62,10 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 			}
 		: null
 
-export type CommandLineInterface<Routes extends Tree = Tree> = {
+export type CommandLineInterface<Routes extends Tree> = {
 	cliName: string
+	routeOptions: TreeMap<Routes, OptionsGroup<any>>
 	routes?: Routes
-	routeOptions: TreeMap<NoInfer<Routes>, OptionsGroup<any>>
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 

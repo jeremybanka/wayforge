@@ -72,9 +72,6 @@ export class FlightDeck {
 							case `POST`:
 								{
 									console.log(`received post, url is ${url.pathname}`)
-									// const text = Buffer.concat(data).toString()
-									// const json: Json.Serializable = JSON.parse(text)
-									// console.log({ json, url })
 									switch (url.pathname) {
 										case `/`:
 											{
@@ -210,31 +207,8 @@ export class FlightDeck {
 	protected fetchLatestRelease(): void {
 		console.log(`Downloading latest version of service ${this.serviceName}...`)
 
-		if (this.options.updateCmd) {
-			console.log(`fetching latest release`)
-			execSync(this.options.updateCmd.join(` `))
-			return
-		}
 		try {
-			const assetUrl = execSync(
-				`gh release view --repo ${this.options.repo} --json tagName,assets --jq '.assets[] | select(.name | test("${this.options.app}")) | .url'`,
-			)
-			if (!assetUrl) {
-				console.log(`No matching release found for ${this.serviceName}.`)
-				return
-			}
-
-			if (!existsSync(this.currentServiceDir)) {
-				mkdirSync(this.currentServiceDir, { recursive: true })
-			}
-
-			console.log(`Downloading release for ${this.serviceName}...`)
-
-			execSync(
-				`gh release download --repo ${this.options.repo} --dir ${this.currentServiceDir} --pattern "*${this.options.app}*"`,
-			)
-
-			return
+			execSync(this.options.updateCmd.join(` `))
 		} catch (thrown) {
 			if (thrown instanceof Error) {
 				console.error(`Failed to fetch the latest release: ${thrown.message}`)

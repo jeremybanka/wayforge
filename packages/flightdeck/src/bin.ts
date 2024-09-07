@@ -8,7 +8,7 @@ import type { FlightDeckOptions } from "flightdeck"
 import { FlightDeck } from "flightdeck"
 import { z } from "zod"
 
-const FLIGHT_DECK_MANUAL = {
+const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
 		secret: z.string(),
 		repo: z.string(),
@@ -64,8 +64,8 @@ const parse = cli(
 		cliName: `flightdeck`,
 		routes: optional({ schema: null, $configPath: null }),
 		routeOptions: {
-			"": FLIGHT_DECK_MANUAL,
-			$configPath: FLIGHT_DECK_MANUAL,
+			"": FLIGHTDECK_MANUAL,
+			$configPath: FLIGHTDECK_MANUAL,
 			schema: null,
 		},
 		discoverConfigPath: (args) => {
@@ -87,15 +87,7 @@ switch (inputs.case) {
 		writeJsonSchema(`flightdeck.schema.json`)
 		break
 	default: {
-		const { secret, repo, app, runCmd, serviceDir, updateCmd } = inputs.opts
-		const flightDeck = new FlightDeck({
-			secret,
-			repo,
-			app,
-			runCmd,
-			serviceDir,
-			updateCmd,
-		})
+		const flightDeck = new FlightDeck(inputs.opts)
 		process.on(`close`, async () => {
 			flightDeck.stopService()
 			await flightDeck.dead
