@@ -80,9 +80,9 @@ describe(`creating a config schema`, () => {
 	})
 	test(`happy: export a schema`, () => {
 		const { writeJsonSchema } = testCli([`--foo=hello`])
-		writeJsonSchema(`${tempDir.name}/schema.json`)
+		writeJsonSchema(`${tempDir.name}`)
 		const jsonSchemaContents = JSON.parse(
-			fs.readFileSync(`${tempDir.name}/schema.json`, `utf-8`),
+			fs.readFileSync(`${tempDir.name}/my-cli.main.schema.json`, `utf-8`),
 		)
 		expect(jsonSchemaContents).toEqual({
 			$schema: `http://json-schema.org/draft-07/schema#`,
