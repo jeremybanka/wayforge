@@ -258,7 +258,7 @@ export class Junction<
 			| Record<ASide, string>
 			| Record<BSide, string>
 			| string,
-		b?: string | undefined,
+		b?: string,
 	): this {
 		// @ts-expect-error we deduce that this.b may index x
 		b = typeof b === `string` ? b : (x[this.b] as string | undefined)
