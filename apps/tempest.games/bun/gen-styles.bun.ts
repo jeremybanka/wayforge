@@ -15,7 +15,10 @@ if (!lastArgument) {
 async function gen() {
 	npmlog.info(`reading`, INPUT_FILE)
 	const scss = await Bun.file(INPUT_FILE).arrayBuffer()
-	const { code } = transform({ filename: INPUT_FILE, code: Buffer.from(scss) })
+	const { code } = transform({
+		filename: INPUT_FILE,
+		code: new Uint8Array(scss),
+	})
 	npmlog.info(`writing`, OUTPUT_FILE)
 	await Bun.write(
 		OUTPUT_FILE,
