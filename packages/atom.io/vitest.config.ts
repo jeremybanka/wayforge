@@ -1,5 +1,6 @@
 import { resolve } from "node:path"
 
+import solid from "vite-plugin-solid"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
@@ -13,6 +14,9 @@ export default defineConfig({
 	plugins: [
 		tsconfigPaths({
 			projects: [project],
+		}),
+		solid({
+			include: [`__tests__/public/**/*.solid.test.tsx`, `solid/**`],
 		}),
 	],
 	resolve: {

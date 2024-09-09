@@ -14,6 +14,19 @@
 			"console": "integratedTerminal"
 		},
 		{
+			"type": "node",
+			"request": "launch",
+			"name": "Debug Current Test File [Built]",
+			"autoAttachChildProcesses": true,
+			"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+			"cwd": "${workspaceRoot}/packages/atom.io",
+			"program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+			"env": { "IMPORT": "dist" },
+			"args": ["run", "${fileBasenameNoExtension}"],
+			"smartStep": true,
+			"console": "integratedTerminal"
+		},
+		{
 			"type": "bun",
 			"request": "launch",
 			"name": "Debug Bun",
