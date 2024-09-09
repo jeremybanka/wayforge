@@ -34,7 +34,7 @@ export const initConnectionState = (
 			},
 		],
 	})
-	return selector({
+	return selector<ClienteleError | `Connected` | `Disconnected` | `Searching`>({
 		key: `connection`,
 		get: ({ get }) => get(connectionState_INTERNAL),
 	})
