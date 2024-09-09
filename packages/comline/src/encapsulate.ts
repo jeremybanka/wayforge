@@ -3,22 +3,16 @@ import type * as net from "node:net"
 class FakeOut implements Pick<net.Socket, `write`> {
 	public captured: string[] = []
 
-	public write(
-		buffer: Uint8Array | string,
-		cb?: ((err?: Error | undefined) => void) | undefined,
-	): boolean
+	public write(buffer: Uint8Array | string, cb?: (err?: Error) => void): boolean
 	public write(
 		str: Uint8Array | string,
-		encoding?: BufferEncoding | undefined,
-		cb?: ((err?: Error | undefined) => void) | undefined,
+		encoding?: BufferEncoding,
+		cb?: (err?: Error) => void,
 	): boolean
 	public write(
 		output: Uint8Array | string,
-		encodingOrCallback?:
-			| BufferEncoding
-			| ((err?: Error | undefined) => void)
-			| undefined,
-		callback?: ((err?: Error | undefined) => void) | undefined,
+		encodingOrCallback?: BufferEncoding | ((err?: Error) => void),
+		callback?: (err?: Error) => void,
 	): boolean {
 		let err: Error | undefined
 		const refinedCallback =
