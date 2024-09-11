@@ -6,7 +6,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import { type Canonical, stringifyJson } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
 import { NotFoundError } from "../not-found-error"
