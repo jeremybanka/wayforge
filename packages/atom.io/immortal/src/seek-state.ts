@@ -28,32 +28,32 @@ export function seekState<
 >(
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-): MutableAtomToken<T, J> | undefined
+): MutableAtomToken<T, J, Key> | undefined
 
 export function seekState<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): RegularAtomToken<T> | undefined
+): RegularAtomToken<T, Key> | undefined
 
 export function seekState<T, K extends Canonical, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T> | undefined
+): WritableSelectorToken<T, Key> | undefined
 
 export function seekState<T, K extends Canonical, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T> | undefined
+): ReadonlySelectorToken<T, Key> | undefined
 
 export function seekState<T, K extends Canonical, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-): WritableToken<T> | undefined
+): WritableToken<T, Key> | undefined
 
 export function seekState<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-): ReadableToken<T> | undefined
+): ReadableToken<T, Key> | undefined
 
 export function seekState<M extends MoleculeConstructor>(
 	token: MoleculeFamilyToken<M>,
