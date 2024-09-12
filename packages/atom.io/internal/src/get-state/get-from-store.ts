@@ -6,9 +6,11 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 } from "atom.io"
-import type { Canonical } from "atom.io/json"
+import { type Canonical, parseJson } from "atom.io/json"
+import { M } from "vitest/dist/chunks/environment.0M5R1SX_.js"
 
 import { findInStore, seekInStore } from "../families"
+import { getFamilyOfToken } from "../families/get-family-of-token"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { counterfeit, withdraw } from "../store"
@@ -58,11 +60,23 @@ export function getFromStore(
 		| [token: ReadableToken<any>]
 ): any {
 	let token: MoleculeToken<any> | ReadableToken<any>
+	let family:
+		| MoleculeFamilyToken<any>
+		| ReadableFamilyToken<any, Canonical>
+		| null
+	let key: Canonical | null
 	if (params.length === 1) {
 		token = params[0]
+		if (token.type !== `molecule`) {
+			family = getFamilyOfToken(store, token) ?? null
+			if (family) {
+				key = token.family ? parseJson(token.family.subKey) : null
+				token = findInStore(store, family, key)
+			}
+		}
 	} else {
-		const family = params[0]
-		const key = params[1]
+		family = params[0]
+		key = params[1]
 		let maybeToken: MoleculeToken<any> | ReadableToken<any>
 		if (family.type === `molecule_family`) {
 			maybeToken = seekInStore(store, family, key) ?? counterfeit(family, key)
@@ -72,7 +86,7 @@ export function getFromStore(
 		token = maybeToken
 	}
 	if (`counterfeit` in token && `family` in token) {
-		const family =
+		family =
 			token.type === `molecule`
 				? withdraw(token.family, store)
 				: // biome-ignore lint/style/noNonNullAssertion: family must be present

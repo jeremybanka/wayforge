@@ -1,7 +1,8 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
-import { type Canonical, stringifyJson } from "atom.io/json"
+import { type Canonical, parseJson, stringifyJson } from "atom.io/json"
 
 import { findInStore } from "../families"
+import { getFamilyOfToken } from "../families/get-family-of-token"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -37,6 +38,11 @@ export function setIntoStore<T, New extends T>(
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
+		family = getFamilyOfToken(store, token) ?? null
+		if (family) {
+			key = token.family ? parseJson(token.family.subKey) : null
+			token = findInStore(store, family, key)
+		}
 	} else {
 		family = params[0]
 		key = params[1]
