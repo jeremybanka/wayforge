@@ -7,7 +7,6 @@ import type {
 	ReadableToken,
 } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
-import { M } from "vitest/dist/chunks/environment.0M5R1SX_.js"
 
 import { findInStore, seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"

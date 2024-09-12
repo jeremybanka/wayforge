@@ -115,7 +115,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 	testid,
 	value = null,
 }) => {
-	const id = useId()
+	const htmlId = useId()
 	const [temporaryEntry, setTemporaryEntry] = useState<
 		DecimalInProgress | ValidNonNumber | null
 	>(null)
@@ -142,7 +142,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 			setTemporaryEntry(input)
 			const textInterpretation = isDecimalInProgress(input)
 				? input
-				: min?.toString() ?? `0`
+				: (min?.toString() ?? `0`)
 			const newValue = textToValue(textInterpretation, allowDecimal)
 			set(refine(newValue))
 			return
@@ -166,7 +166,8 @@ export const NumberInput: FC<NumberInputProps> = ({
 
 	return (
 		<span>
-			{label && <label htmlFor={id}>{label}</label>}
+			{/* biome-ignore lint/a11y/noLabelWithoutControl: it's associated via htmlFor */}
+			{label ? <label htmlFor={htmlId}>{label}</label> : null}
 			{autoSize ? (
 				<ElasticInput
 					type="text"
@@ -175,8 +176,8 @@ export const NumberInput: FC<NumberInputProps> = ({
 					onChange={handleChange}
 					onBlur={handleBlur}
 					disabled={disabled}
-					name={name ?? id}
-					id={id}
+					name={name ?? htmlId}
+					id={htmlId}
 					onClick={onClick}
 					data-testid={testid}
 				/>
@@ -188,8 +189,8 @@ export const NumberInput: FC<NumberInputProps> = ({
 					onChange={handleChange}
 					onBlur={handleBlur}
 					disabled={disabled}
-					name={name ?? id}
-					id={id}
+					name={name ?? htmlId}
+					id={htmlId}
 					onClick={onClick}
 					data-testid={testid}
 				/>

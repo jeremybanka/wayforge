@@ -49,7 +49,7 @@ export function disposeFromStore(
 		const key = params[1]
 		const maybeToken =
 			family.type === `molecule_family`
-				? seekInStore(store, family, key) ?? counterfeit(family, key)
+				? (seekInStore(store, family, key) ?? counterfeit(family, key))
 				: findInStore(store, family, key)
 		token = maybeToken
 	}

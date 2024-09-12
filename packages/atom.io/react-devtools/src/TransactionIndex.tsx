@@ -32,10 +32,10 @@ export const TransactionLog: FC<{
 					testid={`open-close-transaction-${token.key}`}
 					setIsOpen={setIsOpen}
 				/>
-				<label>
+				<main>
 					<h2>{token.key}</h2>
 					<span className="detail length">({log.length})</span>
-				</label>
+				</main>
 			</header>
 			{isOpen ? (
 				<main>
