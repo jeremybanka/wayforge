@@ -33,49 +33,49 @@ export function findInStore<
 	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-): MutableAtomToken<T, J>
+): MutableAtomToken<T, J, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): RegularAtomToken<T>
+): RegularAtomToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: AtomFamilyToken<T, K>,
 	key: Key,
-): AtomToken<T>
+): AtomToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T>
+): WritableSelectorToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T>
+): ReadonlySelectorToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
-): SelectorToken<T>
+): SelectorToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-): WritableToken<T>
+): WritableToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-): ReadableToken<T>
+): ReadableToken<T, K>
 
 export function findInStore(
 	store: Store,

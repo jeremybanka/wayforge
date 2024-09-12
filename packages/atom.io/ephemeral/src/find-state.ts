@@ -29,7 +29,7 @@ export function findState<
 	J extends Json.Serializable,
 	K extends Canonical,
 	Key extends K,
->(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
+>(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J, K>
 /**
  * Finds a state in the store.
  * @param token - The token of the state family.
@@ -40,7 +40,7 @@ export function findState<
 export function findState<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): RegularAtomToken<T>
+): RegularAtomToken<T, K>
 /**
  * Finds a state in the store.
  * @param token - The token of the state family.
@@ -51,7 +51,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T>
+): WritableSelectorToken<T, K>
 /**
  * Finds a state in the store.
  * @param token - The token of the state family.
@@ -62,7 +62,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T>
+): ReadonlySelectorToken<T, K>
 /**
  * Finds a state in the store.
  * @param token - The token of the state family.
@@ -73,7 +73,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-): WritableToken<T>
+): WritableToken<T, K>
 /**
  * @public
  * Finds a {@link ReadableToken} in the store.
@@ -86,7 +86,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-): ReadableToken<T>
+): ReadableToken<T, K>
 
 export function findState(
 	token: ReadableFamilyToken<any, any>,

@@ -1,6 +1,5 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { IMPLICIT, setIntoStore, type Store } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -9,14 +8,7 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
 
-import { getFamily, useFamily } from "../../__util__/use-family"
-
-const storeState = AtomIO.atom<Store>({
-	key: `store`,
-	default: IMPLICIT.STORE,
-})
-
-const findNumbersCollectionState = AtomIO.atomFamily<
+const numberCollectionAtoms = AtomIO.atomFamily<
 	SetRTX<number>,
 	SetRTXJson<number>,
 	string
@@ -35,10 +27,8 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 	(collectionKey: string) => void
 >({
 	key: `addToNumbersCollection`,
-	do: ({ find, get, set }, collectionKey) => {
-		const store = get(storeState)
-		const collectionFamily = getFamily(findNumbersCollectionState, store)
-		set(find(collectionFamily, collectionKey), (ns) => {
+	do: ({ set }, collectionKey) => {
+		set(numberCollectionAtoms, collectionKey, (ns) => {
 			ns.add(ns.size)
 			return ns
 		})
@@ -50,14 +40,12 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			port: 2775,
 			server: ({ socket, silo: { store } }) => {
-				setIntoStore(store, storeState, store)
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,
 					store,
 				})
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				const findNCState = getFamily(findNumbersCollectionState, store)
-				exposeMutableFamily(findNCState, numbersCollectionIndex)
+				exposeMutableFamily(numberCollectionAtoms, numbersCollectionIndex)
 				receiveTransaction(addToNumbersCollectionTX)
 			},
 			clients: {
@@ -66,7 +54,6 @@ describe(`running transactions`, () => {
 						addToNumbersCollectionTX,
 					)
 					const store = React.useContext(AR.StoreContext)
-					setIntoStore(store, storeState, store)
 
 					return (
 						<button
@@ -79,9 +66,8 @@ describe(`running transactions`, () => {
 					)
 				},
 				jane: () => {
-					const findNCState = useFamily(findNumbersCollectionState)
-					RTR.usePullMutableAtomFamilyMember(findNCState, `foo`)
-					const numbers = AR.useJSON(findNCState, `foo`)
+					RTR.usePullMutableAtomFamilyMember(numberCollectionAtoms, `foo`)
+					const numbers = AR.useJSON(numberCollectionAtoms, `foo`)
 					return (
 						<>
 							{numbers.members.map((n) => (

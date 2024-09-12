@@ -1,20 +1,12 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { IMPLICIT, setIntoStore, type Store } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 
-import { getFamily, useFamily } from "../../__util__/use-family"
-
-const storeState = AtomIO.atom<Store>({
-	key: `store`,
-	default: IMPLICIT.STORE,
-})
-
-const findNumbersCollectionState = AtomIO.atomFamily<number[], string>({
+const numberCollectionAtoms = AtomIO.atomFamily<number[], string>({
 	key: `numbersCollection`,
 	default: [0],
 })
@@ -23,7 +15,7 @@ const findCollectionSumState = AtomIO.selectorFamily<number, string>({
 	get:
 		(id) =>
 		({ find, get }) => {
-			const numbers = get(find(findNumbersCollectionState, id))
+			const numbers = get(find(numberCollectionAtoms, id))
 			return numbers.reduce((a, b) => a + b, 0)
 		},
 })
@@ -35,20 +27,17 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 	(collectionKey: string) => void
 >({
 	key: `addToNumbersCollection`,
-	do: ({ find, get, set }, collectionKey) => {
-		const store = get(storeState)
-		const collectionFamily = getFamily(findNumbersCollectionState, store)
-		set(find(collectionFamily, collectionKey), (ns) => {
+	do: ({ set }, collectionKey) => {
+		set(numberCollectionAtoms, collectionKey, (ns) => {
 			return [...ns, ns.length]
 		})
 	},
 })
 
 function RealtimeDisplay(): JSX.Element {
-	const findNCState = useFamily(findNumbersCollectionState)
-	RTR.usePullAtomFamilyMember(findNCState, `foo`)
+	RTR.usePullAtomFamilyMember(numberCollectionAtoms, `foo`)
 	RTR.usePullSelectorFamilyMember(findCollectionSumState, `foo`)
-	const numbers = AR.useO(findNCState, `foo`)
+	const numbers = AR.useO(numberCollectionAtoms, `foo`)
 	const sum = AR.useO(findCollectionSumState, `foo`)
 	console.log({ numbers, sum })
 	return (
@@ -65,14 +54,12 @@ describe(`running transactions`, () => {
 		RTTest.multiClient({
 			port: 4915,
 			server: ({ socket, silo: { store } }) => {
-				setIntoStore(store, storeState, store)
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
 					store,
 				})
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				const findNCState = getFamily(findNumbersCollectionState, store)
-				exposeFamily(findNCState, numbersCollectionIndex)
+				exposeFamily(numberCollectionAtoms, numbersCollectionIndex)
 				receiveTransaction(addToNumbersCollectionTX)
 			},
 			clients: {
@@ -81,7 +68,6 @@ describe(`running transactions`, () => {
 						addToNumbersCollectionTX,
 					)
 					const store = React.useContext(AR.StoreContext)
-					setIntoStore(store, storeState, store)
 
 					return (
 						<button
