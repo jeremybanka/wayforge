@@ -174,7 +174,7 @@ export function realtimeContinuitySynchronizer({
 			}
 
 			const epoch = isRootStore(store)
-				? store.transactionMeta.epoch.get(continuityKey) ?? null
+				? (store.transactionMeta.epoch.get(continuityKey) ?? null)
 				: null
 
 			socket?.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)

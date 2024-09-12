@@ -142,7 +142,7 @@ export const NumberInput: FC<NumberInputProps> = ({
 			setTemporaryEntry(input)
 			const textInterpretation = isDecimalInProgress(input)
 				? input
-				: min?.toString() ?? `0`
+				: (min?.toString() ?? `0`)
 			const newValue = textToValue(textInterpretation, allowDecimal)
 			set(refine(newValue))
 			return
