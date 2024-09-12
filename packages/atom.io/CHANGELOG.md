@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.29.1
+
+### Patch Changes
+
+- d9e8e77: 🐛 Fix bug where an error could be thrown when getting or setting a state that was previously disposed, in the case where the exact token was used, instead of the family token and key. Now an error will be logged but no error will be thrown.
+- d9e8e77: 🏷️ ReadableTokens<T, K> may now bear the full type information of their respective families.
+
 ## 0.29.0
 
 ### Minor Changes
