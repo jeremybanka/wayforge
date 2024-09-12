@@ -37,49 +37,49 @@ export function seekInStore<
 	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-): MutableAtomToken<T, J> | undefined
+): MutableAtomToken<T, J, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): RegularAtomToken<T> | undefined
+): RegularAtomToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: AtomFamilyToken<T, K>,
 	key: Key,
-): AtomToken<T> | undefined
+): AtomToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T> | undefined
+): WritableSelectorToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T> | undefined
+): ReadonlySelectorToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
-): SelectorToken<T> | undefined
+): SelectorToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-): WritableToken<T> | undefined
+): WritableToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-): ReadableToken<T> | undefined
+): ReadableToken<T, K> | undefined
 
 export function seekInStore<M extends MoleculeConstructor>(
 	store: Store,

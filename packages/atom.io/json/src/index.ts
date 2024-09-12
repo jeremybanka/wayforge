@@ -27,7 +27,19 @@ export namespace Json {
 		ReadonlyArray<Element>
 }
 
-export type stringified<J extends Json.Serializable> = string & { __json: J }
+export type stringified<J extends Json.Serializable> = J extends string
+	? `"${J}"`
+	: J extends number
+		? `${J}`
+		: J extends true
+			? `true`
+			: J extends false
+				? `false`
+				: J extends boolean
+					? `false` | `true`
+					: J extends null
+						? `null`
+						: string & { __json?: J }
 
 export const parseJson = <S extends stringified<Json.Serializable>>(
 	str: S | string,

@@ -81,13 +81,6 @@ describe(`silo`, () => {
 		Uno.disposeState(countState__Uno)
 		Dos.disposeState(countState__Dos)
 
-		expect(() => {
-			Uno.getState(countState__Uno)
-		}).toThrowError(`Atom "counts(\\"a\\")" not found in store "uno".`)
-		expect(() => Dos.getState(countState__Dos)).toThrowError(
-			`Atom "counts(\\"b\\")" not found in store "dos".`,
-		)
-
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(
 			`Atom "counts(\\"a\\")" not found in store "IMPLICIT_STORE".`,

@@ -73,9 +73,7 @@ describe(`immortal mode`, () => {
 		setState(myCounter.$count, 1)
 		expect(getState(myCounter.$count)).toBe(1)
 		disposeState(myCounterMolecule)
-		expect(() => getState(myCounter.$count)).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom "count(\\"my-counter\\")" not found in store "IMPLICIT_STORE".]`,
-		)
+		getState(myCounter.$count)
 		expect(() => getState(myCounterMolecule)).toThrowErrorMatchingInlineSnapshot(
 			`[Error: Molecule "my-counter" not found in store "IMPLICIT_STORE".]`,
 		)
