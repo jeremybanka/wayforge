@@ -1,5 +1,5 @@
 import type { Each, Store } from "atom.io/internal"
-import { Molecule, NotFoundError } from "atom.io/internal"
+import { Molecule } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
