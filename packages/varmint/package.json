@@ -30,7 +30,7 @@
 	"devDependencies": {
 		"@types/node": "22.5.4",
 		"@types/tmp": "0.2.6",
-		"concurrently": "9.0.0",
+		"concurrently": "9.0.1",
 		"openai": "4.59.0",
 		"tmp": "0.2.3",
 		"tsup": "8.2.4",
