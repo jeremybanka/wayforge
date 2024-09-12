@@ -1,4 +1,4 @@
-import type { FC } from "react"
+import { type FC, useId } from "react"
 
 import { ElasticInput } from "."
 
@@ -20,11 +20,14 @@ export const TextInput: FC<TextInputProps> = ({
 	autoSize = false,
 	testid,
 }) => {
+	const htmlId = useId()
 	return (
 		<span>
-			<label>{label}</label>
+			{/* biome-ignore lint/a11y/noLabelWithoutControl: it's associated via htmlFor */}
+			{label ? <label htmlFor={htmlId}>{label}</label> : null}
 			{autoSize ? (
 				<ElasticInput
+					id={htmlId}
 					type="text"
 					value={value}
 					onChange={(e) => set?.(e.target.value)}
@@ -34,6 +37,7 @@ export const TextInput: FC<TextInputProps> = ({
 				/>
 			) : (
 				<input
+					id={htmlId}
 					type="text"
 					value={value}
 					onChange={(e) => set?.(e.target.value)}

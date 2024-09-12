@@ -38,7 +38,7 @@ export const StateIndexLeafNode: FC<{
 					setIsOpen={setIsOpen}
 					disabled={isPrimitive}
 				/>
-				<label
+				<main
 					onClick={() => {
 						console.log(node, getState(node))
 					}}
@@ -48,7 +48,7 @@ export const StateIndexLeafNode: FC<{
 				>
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
-				</label>
+				</main>
 				<StoreEditor token={node} />
 			</header>
 			{isOpen && !isPrimitive ? (
@@ -80,10 +80,10 @@ export const StateIndexTreeNode: FC<{
 					testid={`open-close-state-family-${node.key}`}
 					setIsOpen={setIsOpen}
 				/>
-				<label>
+				<main>
 					<h2>{node.key}</h2>
 					<span className="type detail"> (family)</span>
-				</label>
+				</main>
 			</header>
 			{isOpen
 				? [...node.familyMembers.entries()].map(([key, childNode]) => (

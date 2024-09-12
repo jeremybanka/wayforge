@@ -223,7 +223,7 @@ export class Junction<
 				? rest[0]
 				: (a[this.b as keyof typeof a] as string)
 		const content: Content | undefined =
-			rest[1] ?? typeof rest[0] === `string` ? undefined : (rest[0] as Content)
+			(rest[1] ?? typeof rest[0] === `string`) ? undefined : (rest[0] as Content)
 		a = typeof a === `string` ? a : a[this.a]
 		switch (this.cardinality) {
 			// biome-ignore lint/suspicious/noFallthroughSwitchClause: perfect here

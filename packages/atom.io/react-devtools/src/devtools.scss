@@ -107,7 +107,7 @@ main.atom_io_devtools {
               cursor: default;
             }
           }
-          label {
+          > main {
             display: flex;
             flex-flow: row;
             gap: 5px;
@@ -185,7 +185,7 @@ main.atom_io_devtools {
       section.timeline_log {
         header {
           display: flex;
-          label {
+          > main {
             display: flex;
             width: 100%;
             flex-grow: 1;
