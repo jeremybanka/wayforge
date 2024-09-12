@@ -33,7 +33,7 @@ export const TimelineLog: FC<{
 					testid={`open-close-timeline-${token.key}`}
 					setIsOpen={setIsOpen}
 				/>
-				<label>
+				<main>
 					<h2>{token.key}</h2>
 					<span className="detail length">
 						({timeline.at}/{timeline.history.length})
@@ -59,7 +59,7 @@ export const TimelineLog: FC<{
 							redo
 						</button>
 					</nav>
-				</label>
+				</main>
 			</header>
 			{isOpen ? (
 				<main>
