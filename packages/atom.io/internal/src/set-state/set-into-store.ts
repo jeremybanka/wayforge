@@ -31,17 +31,19 @@ export function setIntoStore<T, New extends T>(
 		| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
 ): void {
 	let token: WritableToken<T>
+	let family: WritableFamilyToken<T, Canonical> | null
+	let key: Canonical | null
 	let value: New | ((oldValue: T) => New)
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
 	} else {
-		const family = params[0]
-		const key = params[1]
+		family = params[0]
+		key = params[1]
 		value = params[2]
-		const maybeToken = findInStore(store, family, key)
-		token = maybeToken
+		token = findInStore(store, family, key)
 	}
+
 	if (`counterfeit` in token) {
 		const disposal = store.disposalTraces.buffer.find(
 			(item) => item?.key === token.key,
