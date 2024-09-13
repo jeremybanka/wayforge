@@ -1,9 +1,10 @@
 import type { Each, Store } from "atom.io/internal"
-import { Molecule } from "atom.io/internal"
+import { disposeFromStore, isChildStore, Molecule } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { makeRootMoleculeInStore } from "./molecule"
+import type { MoleculeDisposalModern } from "./transaction"
 
 export const $provenance = Symbol(`provenance`)
 export type Claim<
@@ -19,33 +20,16 @@ export function allocateIntoStore<
 	V extends Vassal<H>,
 	A extends Above<V, H>,
 >(store: Store, provenance: A, key: V): Claim<H, V, A> {
-	const above: Molecule<any>[] = []
+	const stringKey = stringifyJson(key)
 
-	if (provenance === `root`) {
-		// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
-		above.push(store.molecules.get(`"root"`)!)
-	} else if (provenance[0][0] === T$) {
-		const provenanceKey = stringifyJson(provenance as Canonical)
-		const provenanceMolecule = store.molecules.get(provenanceKey)
-		if (!provenanceMolecule) {
-			throw new Error(
-				`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
-			)
-		}
-		above.push(provenanceMolecule)
-	} else {
-		if (key[0][0] === T$) {
-			for (const claim of provenance as SingularTypedKey[]) {
-				const provenanceKey = stringifyJson(claim)
-				const provenanceMolecule = store.molecules.get(provenanceKey)
-				if (!provenanceMolecule) {
-					throw new Error(
-						`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
-					)
-				}
-				above.push(provenanceMolecule)
-			}
-		} else {
+	try {
+		const above: Molecule<any>[] = []
+
+		const isAllocatedToRoot = provenance === `root`
+		if (isAllocatedToRoot) {
+			// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
+			above.push(store.molecules.get(`"root"`)!)
+		} else if (provenance[0][0] === T$) {
 			const provenanceKey = stringifyJson(provenance as Canonical)
 			const provenanceMolecule = store.molecules.get(provenanceKey)
 			if (!provenanceMolecule) {
@@ -54,19 +38,115 @@ export function allocateIntoStore<
 				)
 			}
 			above.push(provenanceMolecule)
+		} else {
+			const allocationIsCompound = key[0][0] === T$
+			if (allocationIsCompound) {
+				for (const claim of provenance as SingularTypedKey[]) {
+					const provenanceKey = stringifyJson(claim)
+					const provenanceMolecule = store.molecules.get(provenanceKey)
+					if (!provenanceMolecule) {
+						throw new Error(
+							`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+						)
+					}
+					above.push(provenanceMolecule)
+				}
+			} else {
+				const provenanceKey = stringifyJson(provenance as Canonical)
+				const provenanceMolecule = store.molecules.get(provenanceKey)
+				if (!provenanceMolecule) {
+					throw new Error(
+						`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+					)
+				}
+				above.push(provenanceMolecule)
+			}
+		}
+
+		const molecule = new Molecule(above, key)
+
+		store.molecules.set(stringKey, molecule)
+
+		for (const aboveMolecule of above) {
+			aboveMolecule.below.set(molecule.stringKey, molecule)
+		}
+	} catch (thrown) {
+		if (thrown instanceof Error) {
+			store.logger.error(
+				`❌`,
+				`molecule`,
+				stringKey,
+				`allocation failed:`,
+				thrown.message,
+			)
 		}
 	}
 
-	const molecule = new Molecule(above, key)
+	return key as Claim<H, V, A>
+}
 
-	const stringKey = stringifyJson(key)
-	store.molecules.set(stringKey, molecule)
-
-	for (const aboveMolecule of above) {
-		aboveMolecule.below.set(molecule.stringKey, molecule)
+export function deallocateFromStore<
+	H extends Hierarchy,
+	V extends Vassal<H>,
+	A extends Above<V, H>,
+>(store: Store, claim: Claim<H, V, A>): void {
+	const stringKey = stringifyJson(claim)
+	const molecule = store.molecules.get(stringKey)
+	if (!molecule) {
+		throw new Error(
+			`Molecule ${stringKey} not found in store "${store.config.name}"`,
+		)
 	}
 
-	return key as Claim<H, V, A>
+	for (const join of molecule.joins.values()) {
+		join.relations.delete(molecule.key)
+		join.molecules.delete(molecule.stringKey)
+	}
+
+	const provenance: Canonical[] = []
+	for (const above of molecule.above.values()) {
+		provenance.push(above.key)
+	}
+	const values: [string, any][] = []
+	for (const stateToken of molecule.tokens.values()) {
+		// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
+		const tokenFamily = stateToken.family!
+		values.push([tokenFamily.key, store.valueMap.get(stateToken.key)])
+	}
+
+	const disposalEvent: MoleculeDisposalModern = {
+		type: `molecule_disposal`,
+		subType: `modern`,
+		key: molecule.key,
+		values,
+		provenance,
+	}
+
+	for (const state of molecule.tokens.values()) {
+		disposeFromStore(store, state)
+	}
+	for (const child of molecule.below.values()) {
+		// if (child.family?.dependsOn === `all`) {
+		deallocateFromStore(store, child.key)
+		// } else {
+		// 	child.above.delete(molecule.stringKey)
+		// 	if (child.above.size === 0) {
+		// 		disposeMolecule(child, store)
+		// 	}
+		// }
+	}
+	molecule.below.clear()
+
+	const isTransaction =
+		isChildStore(store) && store.transactionMeta.phase === `building`
+	if (isTransaction) {
+		store.transactionMeta.update.updates.push(disposalEvent)
+	}
+	store.molecules.delete(molecule.stringKey)
+
+	for (const parent of molecule.above.values()) {
+		parent.below.delete(molecule.stringKey)
+	}
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -79,6 +159,11 @@ export function createWorld<H extends Hierarchy>(store: Store) {
 			key: V,
 		): Claim<H, V, A> => {
 			return allocateIntoStore(store, provenance, key)
+		},
+		deallocate: <V extends Vassal<H>, A extends Above<V, H>>(
+			claim: Claim<H, V, A>,
+		): void => {
+			deallocateFromStore(store, claim)
 		},
 	}
 }

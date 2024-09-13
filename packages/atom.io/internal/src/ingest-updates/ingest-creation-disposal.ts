@@ -94,6 +94,7 @@ export function ingestMoleculeDisposalEvent(
 			break
 		case `oldValue`:
 			{
+				// TODO: Handle classic vs modern molecules
 				const moleculeToken = makeMoleculeInStore(
 					store,
 					update.context,

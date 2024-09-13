@@ -9,14 +9,19 @@ import type {
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
-import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
+import type {
+	EnvironmentData,
+	Func,
+	Molecule,
+	Transceiver,
+} from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
 	createTransaction,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import type {
 	disposeState,
@@ -27,6 +32,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "."
+import { Above, Hierarchy, Vassal } from "./allocate"
 
 export type TransactionToken<F extends Func> = {
 	key: string
@@ -44,20 +50,39 @@ export type StateDisposal<Token extends ReadableToken<any>> = {
 	value?: TokenType<Token>
 }
 
-export type MoleculeCreation<M extends MoleculeConstructor> = {
+export type MoleculeCreationClassic<M extends MoleculeConstructor> = {
 	type: `molecule_creation`
+	subType: `classic`
 	token: MoleculeToken<M>
 	family: MoleculeFamilyToken<M>
 	context: MoleculeToken<any>[]
 	params: MoleculeParams<M>
 }
-export type MoleculeDisposal = {
+export type MoleculeCreationModern = {
+	type: `molecule_creation`
+	subType: `modern`
+	key: Canonical
+	provenance: Canonical[]
+}
+export type MoleculeCreation<M extends MoleculeConstructor> =
+	| MoleculeCreationClassic<M>
+	| MoleculeCreationModern
+export type MoleculeDisposalClassic = {
 	type: `molecule_disposal`
+	subType: `classic`
 	token: MoleculeToken<any>
 	family: MoleculeFamilyToken<any>
 	context: MoleculeToken<any>[]
 	values: [key: string, value: any][]
 }
+export type MoleculeDisposalModern = {
+	type: `molecule_disposal`
+	subType: `modern`
+	key: Canonical
+	provenance: Canonical[]
+	values: [key: string, value: any][]
+}
+export type MoleculeDisposal = MoleculeDisposalClassic | MoleculeDisposalModern
 
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>

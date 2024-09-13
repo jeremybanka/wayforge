@@ -18,6 +18,16 @@ export class Molecule<M extends MoleculeConstructor>
 	public readonly type = `molecule`
 	public stringKey: string
 	public family?: MoleculeFamilyToken<M>
+	private _dependsOn?: `all` | `any`
+	public get dependsOn(): `all` | `any` {
+		if (this._dependsOn) {
+			return this._dependsOn
+		}
+		if (this.family) {
+			return this.family.dependsOn
+		}
+		return `any`
+	}
 	public readonly subject = new Subject<
 		StateCreation<any> | StateDisposal<any>
 	>()
