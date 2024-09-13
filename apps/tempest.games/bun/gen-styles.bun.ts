@@ -32,7 +32,7 @@ switch (lastArgument) {
 	case `watch`:
 		void gen()
 		npmlog.info(`watch`, INPUT_FILE)
-		chokidar.watch(INPUT_FILE).on(`change`, () => {
+		chokidar.watch(INPUT_FILE, {}).on(`change`, () => {
 			npmlog.info(`changed`, INPUT_FILE)
 			void gen()
 		})
