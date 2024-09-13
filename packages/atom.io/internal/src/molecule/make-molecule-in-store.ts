@@ -3,6 +3,7 @@ import type {
 	getState,
 	MoleculeConstructor,
 	MoleculeCreation,
+	MoleculeCreationClassic,
 	MoleculeFamilyToken,
 	MoleculeKey,
 	MoleculeParams,
@@ -13,6 +14,9 @@ import type {
 import { findRelations, getJoin, type JoinToken } from "atom.io/data"
 import type { seekState } from "atom.io/immortal"
 import { stringifyJson } from "atom.io/json"
+import { s } from "framer-motion/client"
+
+import { deallocateFromStore } from "~/packages/atom.io/src/allocate"
 
 import { arbitrary } from "../arbitrary"
 import { disposeFromStore, seekInStore } from "../families"
@@ -93,12 +97,21 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				const unsubFromFamily = family.subject.subscribe(
 					`join:${token.key}-${stringKey}`,
 					(event) => {
-						if (
-							event.type === `molecule_disposal` &&
-							stringifyJson(event.token.key) === stringKey
-						) {
-							unsubFromFamily()
-							join.molecules.delete(stringKey)
+						if (event.type === `molecule_disposal`) {
+							switch (event.subType) {
+								case `classic`:
+									if (stringifyJson(event.token.key) === stringKey) {
+										unsubFromFamily()
+										join.molecules.delete(stringKey)
+									}
+									break
+								case `modern`:
+									if (stringifyJson(event.key) === stringKey) {
+										unsubFromFamily()
+										join.molecules.delete(stringKey)
+									}
+									break
+							}
 						}
 					},
 				)
@@ -168,11 +181,12 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 
 	const update = {
 		type: `molecule_creation`,
+		subType: `classic`,
 		token,
 		family: familyToken,
 		context: contextArray,
 		params,
-	} satisfies MoleculeCreation<M>
+	} satisfies MoleculeCreationClassic<M>
 
 	if (isRootStore(target)) {
 		family.subject.next(update)

@@ -90,7 +90,14 @@ const TransactionUpdateFC: React.FC<{
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
 					{transactionUpdate.updates
-						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
+						.filter(
+							(token) =>
+								token.type !== `molecule_creation` &&
+								token.type !== `molecule_disposal` &&
+								token.type !== `state_creation` &&
+								token.type !== `state_disposal` &&
+								!token.key.startsWith(`👁‍🗨`),
+						)
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
@@ -136,7 +143,14 @@ export const TimelineUpdateFC: React.FC<{
 			<main>
 				{timelineUpdate.type === `transaction_update` ? (
 					timelineUpdate.updates
-						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
+						.filter(
+							(token) =>
+								token.type !== `molecule_creation` &&
+								token.type !== `molecule_disposal` &&
+								token.type !== `state_creation` &&
+								token.type !== `state_disposal` &&
+								!token.key.startsWith(`👁‍🗨`),
+						)
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:

@@ -22,6 +22,7 @@ import type {
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
+import type { Molecule } from "../molecule"
 import { getUpdateToken } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
@@ -374,9 +375,18 @@ function addMoleculeFamilyToTimeline(
 				switch (creationOrDisposal.type) {
 					case `molecule_creation`:
 						{
+							let topicKey: string
+							switch (creationOrDisposal.subType) {
+								case `classic`:
+									topicKey = stringifyJson(creationOrDisposal.token.key)
+									break
+								case `modern`:
+									topicKey = stringifyJson(creationOrDisposal.key)
+									break
+							}
 							store.timelineTopics.set(
 								{
-									topicKey: creationOrDisposal.token.key,
+									topicKey,
 									timelineKey: tl.key,
 								},
 								{ topicType: `molecule` },
@@ -393,7 +403,23 @@ function addMoleculeFamilyToTimeline(
 								tl.at = tl.history.length
 								tl.subject.next(event)
 							}
-							const molecule = withdraw(creationOrDisposal.token, store)
+							let molecule: Molecule<any>
+							switch (creationOrDisposal.subType) {
+								case `classic`:
+									molecule = withdraw(creationOrDisposal.token, store)
+									break
+								case `modern`:
+									{
+										const maybeMolecule = store.molecules.get(topicKey)
+										if (!maybeMolecule) {
+											throw new Error(
+												`Molecule ${topicKey} not found in store "${store.config.name}".`,
+											)
+										}
+										molecule = maybeMolecule
+									}
+									break
+							}
 
 							for (const token of molecule.tokens.values()) {
 								switch (token.type) {
@@ -428,7 +454,15 @@ function addMoleculeFamilyToTimeline(
 								tl.at = tl.history.length
 								tl.subject.next(event)
 							}
-							const moleculeKey = creationOrDisposal.token.key
+							let moleculeKey: string
+							switch (creationOrDisposal.subType) {
+								case `classic`:
+									moleculeKey = stringifyJson(creationOrDisposal.token.key)
+									break
+								case `modern`:
+									moleculeKey = stringifyJson(creationOrDisposal.key)
+									break
+							}
 							tl.subscriptions.get(moleculeKey)?.()
 							tl.subscriptions.delete(moleculeKey)
 							for (const [familyKey] of creationOrDisposal.values) {
@@ -509,9 +543,18 @@ function filterTransactionUpdates(
 			switch (updateFromTx.type) {
 				case `state_creation`:
 				case `state_disposal`:
+					key = updateFromTx.token.key
+					break
 				case `molecule_creation`:
 				case `molecule_disposal`:
-					key = updateFromTx.token.key
+					switch (updateFromTx.subType) {
+						case `classic`:
+							key = updateFromTx.token.key
+							break
+						case `modern`:
+							key = stringifyJson(updateFromTx.key)
+							break
+					}
 					break
 				default:
 					key = updateFromTx.key
