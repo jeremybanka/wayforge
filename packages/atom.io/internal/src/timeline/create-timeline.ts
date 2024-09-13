@@ -22,7 +22,6 @@ import type {
 import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
-import type { Molecule } from "../molecule"
 import { getUpdateToken } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
