@@ -1,5 +1,15 @@
-import { atomFamily, disposeState, getState, type Logger } from "atom.io"
-import { clearStore, IMPLICIT } from "atom.io/internal"
+import type { CtorToolkit, Logger } from "atom.io"
+import {
+	atomFamily,
+	disposeState,
+	getState,
+	makeMolecule,
+	makeRootMoleculeInStore,
+	moleculeFamily,
+	RegularAtomToken,
+	transaction,
+} from "atom.io"
+import { clearStore, IMPLICIT, withdraw } from "atom.io/internal"
 
 import type {
 	Above,
@@ -83,7 +93,7 @@ describe(`allocate`, () => {
 
 		const myItemDurability0 = getState(durabilityAtoms, itemKey)
 
-		const gameWorld = createWorld<GameHierarchy>(IMPLICIT.STORE, `gameWorld`)
+		const gameWorld = createWorld<GameHierarchy>(IMPLICIT.STORE)
 
 		const gameClaim = gameWorld.allocate(`root`, gameKey)
 		const userClaim = gameWorld.allocate(`root`, userKey)
@@ -99,3 +109,134 @@ describe(`allocate`, () => {
 		console.log(myItemDurability)
 	})
 })
+
+// describe(`integration with the molecule family pattern`, () => {
+// 	test(`stage 0: all molecules from families`, () => {
+// 		const root = makeRootMoleculeInStore(`root`)
+
+// 		const nameState = atomFamily<string, string>({
+// 			key: `name`,
+// 			default: `NO_NAME`,
+// 		})
+
+// 		class GameState {
+// 			public constructor(
+// 				bond: CtorToolkit<string>[`bond`],
+// 				public name = bond(nameState),
+// 			) {}
+// 		}
+// 		const gameMolecules = moleculeFamily({
+// 			key: `game`,
+// 			new: class Game {
+// 				public state: GameState
+// 				public constructor(
+// 					public tools: CtorToolkit<string>,
+// 					public key: string,
+// 				) {
+// 					this.state = new GameState(tools.bond)
+// 				}
+// 			},
+// 		})
+
+// 		class UserState {
+// 			public constructor(
+// 				bond: CtorToolkit<string>[`bond`],
+// 				public name = bond(nameState),
+// 			) {}
+// 		}
+// 		const userMolecules = moleculeFamily({
+// 			key: `user`,
+// 			new: class User {
+// 				public state: UserState
+// 				public constructor(
+// 					public tools: CtorToolkit<string>,
+// 					public key: string,
+// 				) {
+// 					this.state = new UserState(tools.bond)
+// 				}
+
+// 				public joinGame(gameKey: string) {
+// 					const game = getState(gameMolecules, gameKey)
+// 					if (!game) {
+// 						throw new Error(`Game ${gameKey} not found`)
+// 					}
+// 					const player = game.tools.spawn(playerMolecules, this.key)
+// 					this.tools.claim(player, { exclusive: false })
+// 				}
+// 			},
+// 		})
+
+// 		class PlayerState {
+// 			public constructor(
+// 				bond: CtorToolkit<string>[`bond`],
+// 				public name = bond(nameState),
+// 			) {}
+// 		}
+// 		const playerMolecules = moleculeFamily({
+// 			key: `player`,
+// 			new: class Player {
+// 				public state: PlayerState
+// 				public constructor(
+// 					tools: CtorToolkit<string>,
+// 					public key: string,
+// 				) {
+// 					this.state = new PlayerState(tools.bond)
+// 				}
+// 			},
+// 		})
+// 	})
+// 	test(`stage 1: all molecules from families`, () => {
+// 		const gameWorld = createWorld<
+// 			[
+// 				{
+// 					above: any
+// 					below: any[]
+// 				},
+// 			]
+// 		>(IMPLICIT.STORE, `game`)
+
+// 		const bottomMolecules = moleculeFamily({
+// 			key: `bottom`,
+// 			dependsOn: `any`,
+// 			new: class Bottom {},
+// 		})
+
+// 		const topMolecules = moleculeFamily({
+// 			key: `top`,
+// 			new: class Top {
+// 				public constructor(
+// 					tools: CtorToolkit<string>,
+// 					public key: string,
+// 					childKeys: string[],
+// 				) {
+// 					for (const childKey of childKeys) {
+// 						const child = tools.seek(bottomMolecules, childKey)
+// 						if (child) {
+// 							tools.claim(child, { exclusive: true })
+// 						} else {
+// 							tools.spawn(bottomMolecules, childKey)
+// 						}
+// 					}
+// 				}
+// 			},
+// 		})
+
+// 		const aMolecule0 = makeMolecule(gameWorld.root, topMolecules, `a0`, [`a`])
+
+// 		const aMolecule1 = makeMolecule(gameWorld.root, topMolecules, `a1`, [`a`])
+
+// 		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+// 		const a0 = withdraw(aMolecule0, IMPLICIT.STORE)
+// 		const a1 = withdraw(aMolecule1, IMPLICIT.STORE)
+// 		expect(a0?.below.size).toBe(0)
+// 		expect(a1?.below.size).toBe(1)
+
+// 		gameWorld.allocate(`root`, [`a0`, `a1`])
+
+// 		disposeState(aMolecule0)
+// 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+
+// 		disposeState(aMolecule1)
+// 		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+// 	})
+// })

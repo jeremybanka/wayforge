@@ -18,12 +18,12 @@ export function allocateIntoStore<
 	H extends Hierarchy,
 	V extends Vassal<H>,
 	A extends Above<V, H>,
->(store: Store, rootKey: string, provenance: A, key: V): Claim<H, V, A> {
+>(store: Store, provenance: A, key: V): Claim<H, V, A> {
 	const above: Molecule<any>[] = []
 
 	if (provenance === `root`) {
 		// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
-		above.push(store.molecules.get(rootKey)!)
+		above.push(store.molecules.get(`"root"`)!)
 	} else if (provenance[0][0] === T$) {
 		const provenanceKey = stringifyJson(provenance as Canonical)
 		const provenanceMolecule = store.molecules.get(provenanceKey)
@@ -70,17 +70,15 @@ export function allocateIntoStore<
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function createWorld<H extends Hierarchy>(
-	store: Store,
-	worldKey: string,
-) {
-	const root = makeRootMoleculeInStore(worldKey, store)
+export function createWorld<H extends Hierarchy>(store: Store) {
+	const root = makeRootMoleculeInStore(`root`, store)
 	return {
+		root,
 		allocate: <V extends Vassal<H>, A extends Above<V, H>>(
 			provenance: A,
 			key: V,
 		): Claim<H, V, A> => {
-			return allocateIntoStore(store, worldKey, provenance, key)
+			return allocateIntoStore(store, provenance, key)
 		},
 	}
 }
