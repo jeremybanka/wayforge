@@ -167,7 +167,7 @@ const configs = [
 	},
 	{
 		languageOptions: { parser, parserOptions },
-		ignores: [`apps/tempest.games/**`],
+		ignores: [`apps/edge/viceroy-htmx/**`],
 		files: [`**/*.ts{,x}`, `eslint.config.ts`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
@@ -207,12 +207,12 @@ const configs = [
 			parserOptions: {
 				project:
 					process.cwd().split(`/`)[process.cwd().split(`/`).length - 1] ===
-					`tempest.games`
+					`viceroy-htmx`
 						? `./tsconfig.json`
-						: `./apps/tempest.games/tsconfig.json`,
+						: `./apps/edge/viceroy-htmx/tsconfig.json`,
 			},
 		},
-		files: [`apps/tempest.games/**/*.ts{,x}`],
+		files: [`apps/edge/viceroy-htmx/**/*.ts{,x}`],
 		ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
