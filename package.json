@@ -12,16 +12,6 @@
 		"bun": "1.1.26",
 		"node": "22.8.0"
 	},
-	"workspaces": [
-		"apps/edge/*",
-		"apps/node/*",
-		"apps/web/*",
-		"apps/atom.io.fyi",
-		"apps/core.wayfarer.quest",
-		"apps/",
-		"apps/wayfarer.quest",
-		"packages/*"
-	],
 	"scripts": {
 		"dev": "tsc --watch",
 		"gen": "turbo run gen",
