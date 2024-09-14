@@ -1,5 +1,5 @@
 {
-	"extends": "../../tsconfig.json",
+	"extends": "../../../tsconfig.json",
 	"compilerOptions": {
 		"types": ["typed-htmx", "bun", "@fastly/js-compute"],
 		"jsx": "react-jsx",
