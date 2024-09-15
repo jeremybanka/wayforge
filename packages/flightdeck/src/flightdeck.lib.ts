@@ -17,7 +17,7 @@ export type FlightDeckOptions = {
 	serviceDir?: string | undefined
 }
 
-let safety = 0
+let safety = -3
 const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
 export class FlightDeck {
@@ -115,7 +115,7 @@ export class FlightDeck {
 
 	protected startService(): void {
 		safety++
-		if (safety > 10) {
+		if (safety >= 0) {
 			throw new Error(`safety exceeded`)
 		}
 		if (!existsSync(this.currentServiceDir)) {
