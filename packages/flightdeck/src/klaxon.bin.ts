@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --experimental-strip-types
+#!/usr/bin/env node
 
 import { cli, required } from "comline"
 import { z } from "zod"
@@ -17,8 +17,8 @@ const changesetsPublishedPackagesSchema: z.ZodSchema<Klaxon.ScrambleOptions> =
 		),
 	})
 
-const deploy = cli({
-	cliName: `deploy`,
+const klaxon = cli({
+	cliName: `klaxon`,
 	routes: required({
 		scramble: null,
 	}),
@@ -26,22 +26,22 @@ const deploy = cli({
 		scramble: {
 			options: {
 				packageConfig: {
-					description: `Package name to { endpoint } mappings.`,
-					example: `packageConfig="{\"@wayforge/flightdeck\":{\"endpoint\":\"https://flightdeck.wayforge.dev\"}}"`,
+					description: `Maps the names of your packages to the endpoints that klaxon will POST to.`,
+					example: `--packageConfig="{\\"my-app\\":{\\"endpoint\\":\\"https://my-app.com\\"}}"`,
 					flag: `c`,
 					parse: JSON.parse,
 					required: true,
 				},
 				secretsConfig: {
-					description: `Package name to secret mappings.`,
-					example: `secretsConfig="{\"@wayforge/flightdeck\":\"XXXX-XXXX-XXXX\"}"`,
+					description: `Maps the names of your packages to the secrets that klaxon will use to authenticate with their respective endpoints.`,
+					example: `--secretsConfig="{\\"my-app\\":\\"XXXX-XXXX-XXXX\\"}"`,
 					flag: `s`,
 					parse: JSON.parse,
 					required: true,
 				},
 				publishedPackages: {
-					description: `The result of the "Publish" step in Changesets.`,
-					example: `publishedPackages="[{\"name\":\"@wayforge/flightdeck\",\"version\":\"0.0.0\"}]"`,
+					description: `The output of the "Publish" step in Changesets.`,
+					example: `--publishedPackages="[{\\"name\\":\\"my-app\\",\\"version\\":\\"0.0.0\\"}]"`,
 					flag: `p`,
 					parse: JSON.parse,
 					required: true,
@@ -52,7 +52,7 @@ const deploy = cli({
 	},
 })
 
-const { inputs } = deploy(process.argv)
+const { inputs } = klaxon(process.argv)
 await Klaxon.scramble(inputs.opts).then((scrambleResult) => {
 	console.log(scrambleResult)
 })
