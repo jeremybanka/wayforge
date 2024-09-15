@@ -115,6 +115,7 @@ export class FlightDeck {
 
 	protected startService(): void {
 		safety++
+		console.log(`safety is ${safety}`)
 		if (safety >= 0) {
 			throw new Error(`safety exceeded`)
 		}
@@ -177,6 +178,7 @@ export class FlightDeck {
 				}
 			}
 		})
+		safety = -3
 	}
 
 	protected applyUpdate(): void {
