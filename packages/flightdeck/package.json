@@ -14,7 +14,8 @@
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {
-		"flightdeck": "./dist/bin.js"
+		"flightdeck": "./dist/flightdeck.bin.js",
+		"klaxon": "./dist/klaxon.bin.js"
 	},
 	"dependencies": {
 		"atom.io": "workspace:*",
@@ -22,11 +23,12 @@
 		"zod": "3.23.8"
 	},
 	"scripts": {
-		"build": "rimraf dist && concurrently \"bun:build:*\" && bun run schema",
+		"build": "rimraf dist && concurrently \"bun:build:*\" && concurrently \"bun:schema:*\"",
+		"build:bin:flightdeck": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/flightdeck.bin.ts",
+		"build:bin:klaxon": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/klaxon.bin.ts",
 		"build:lib": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/lib.ts ",
-		"build:bin": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/bin.ts",
 		"build:dts": "tsup",
-		"schema": "bun ./src/bin.ts --outdir=dist -- schema",
+		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",

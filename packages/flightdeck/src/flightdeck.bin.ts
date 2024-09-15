@@ -4,9 +4,10 @@ import * as path from "node:path"
 
 import type { OptionsGroup } from "comline"
 import { cli, optional, parseArrayOption } from "comline"
-import type { FlightDeckOptions } from "flightdeck"
-import { FlightDeck } from "flightdeck"
 import { z } from "zod"
+
+import type { FlightDeckOptions } from "~/packages/flightdeck/src/flightdeck.lib"
+import { FlightDeck } from "~/packages/flightdeck/src/flightdeck.lib"
 
 const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({

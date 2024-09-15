@@ -1,41 +1,33 @@
 {
 	"name": "tempest.games",
+	"private": true,
+	"version": "0.0.0",
 	"type": "module",
-	"private": "true",
 	"scripts": {
-		"dev": "concurrently --kill-others --raw \"bun run dev:*\"",
-		"dev:scss": "bun ./bun/gen-styles.bun.ts watch",
-		"dev:fastly": "fastly compute serve --watch-dir=./src --addr=\"0.0.0.0:7676\" --watch",
-		"gen:css": "bun ./bun/gen-styles.bun.ts once",
-		"gen:scripts": "bun ./bun/gen-scripts.bun.ts",
-		"gen": "bun run gen:css && bun run gen:scripts",
-		"bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
-		"build": "bun gen && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
-		"test": "hurl ./__tests__/*",
-		"test:coverage": "echo no test coverage yet",
-		"test:once": "echo no tests yet",
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "echo no tests yet",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "bun run gen && eslint --flag unstable_ts_config -- .",
+		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
-		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
-		"deploy": "fastly compute publish"
-	},
-	"devDependencies": {
-		"@types/bun": "1.1.9",
-		"@types/npmlog": "7.0.0",
-		"browserslist": "4.23.3",
-		"chokidar": "4.0.0",
-		"concurrently": "9.0.1",
-		"htmx.org": "2.0.2",
-		"lightningcss": "1.27.0",
-		"npmlog": "7.0.1",
-		"preact": "10.24.0",
-		"typed-htmx": "0.3.1"
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
-		"@fastly/js-compute": "3.22.4",
-		"preact-render-to-string": "6.5.11",
-		"zod": "3.23.8"
+		"react": "18.3.1",
+		"react-dom": "18.3.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "9.10.0",
+		"@types/react": "18.3.5",
+		"@types/react-dom": "18.3.0",
+		"@vitejs/plugin-react-swc": "3.7.0",
+		"eslint": "9.10.0",
+		"eslint-plugin-react-refresh": "0.4.11",
+		"globals": "15.9.0",
+		"typescript": "5.6.2",
+		"typescript-eslint": "8.5.0",
+		"vite": "5.4.5"
 	}
 }

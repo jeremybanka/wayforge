@@ -160,9 +160,9 @@ export function cli<
 					case 0:
 						if (required && !optionsFromConfig) {
 							logger.error(
-								`parsing`,
+								`Missed:`,
 								key,
-								`\n\t[Required]: ${description}\n\tExample usage: ${example}`,
+								`\n\t${description} (required)\n\tExample usage:\n\t\t${example}`,
 							)
 							failedValidation = true
 						}

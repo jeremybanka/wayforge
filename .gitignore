@@ -12,7 +12,7 @@ package-lock.json
 projects
 metafile-*
 pkg
-**/tempest.games/**/*.gen.ts
+**/htmx-concept/**/*.gen.ts
 **/core.wayfarer.quest/logs/*.txt
 heap.json
 !**/break-check/__tests__/fixtures/**/*.js
