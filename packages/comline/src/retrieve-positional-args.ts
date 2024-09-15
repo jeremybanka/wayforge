@@ -23,10 +23,10 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 			const currentPath = []
 			const command =
 				cliName + (currentPath.length > 0 ? ` -- ${currentPath.join(` `)}` : ``)
+			const possiblePositionalArgs = Object.keys(treePointer[1])
 			const errorReport = [
-				`${command} does not have any positional arguments.`,
-				``,
-				`There are no positional arguments for ${command}.`,
+				`${command} requires one of the following positional arguments:`,
+				possiblePositionalArgs.map((arg) => `\t- ${arg}`).join(`\n`),
 				``,
 			]
 			throw new Error(errorReport.join(`\n`))

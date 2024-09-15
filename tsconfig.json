@@ -14,7 +14,7 @@
 			"atom.io/*": ["./packages/atom.io/*/src"],
 			"break-check": ["./packages/break-check/src/break-check.ts"],
 			"comline": ["./packages/comline/src/cli.ts"],
-			"flightdeck": ["./packages/flightdeck/src/flightdeck.ts"],
+			"flightdeck": ["packages/flightdeck/src/flightdeck.lib.ts"],
 			"hamr/*": ["./packages/hamr/*/src"],
 			"luum": ["packages/luum/src"],
 			"rel8": ["packages/rel8/types/src"],
@@ -45,5 +45,5 @@
 		"**/*.schema.json.ts",
 		"**/*.js"
 	],
-	"exclude": ["*/**/node_modules", "*/**/dist", "apps/tempest.games"]
+	"exclude": ["*/**/node_modules", "*/**/dist", "apps/edge/viceroy-htmx"]
 }
