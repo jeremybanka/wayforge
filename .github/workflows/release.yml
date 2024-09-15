@@ -23,6 +23,9 @@ jobs:
     env:
       NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
 
+    # outputs:
+    #   package_published: ${{ steps.check_published.outputs.package_published }}
+      
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4.1.7
@@ -52,3 +55,22 @@ jobs:
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: bun release
+      
+      - name: Check if a specific package was published
+        id: check_published
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          echo "Published packages: ${{ steps.changesets.outputs.publishedPackages }}"
+          echo "${{ steps.changesets.outputs.publishedPackages }}" | jq '.[] | select(.name == "tempest.games")' > result.json
+          if [ -s result.json ]; then
+            echo "Package was published"
+            echo "::set-output name=package_published::true"
+          else
+            echo "Package was not published"
+            echo "::set-output name=package_published::false"
+          fi
+
+      - name: Run Additional Functionality if Package Was Published
+        if: steps.check_published.outputs.package_published == 'true'
+        run: |
+          

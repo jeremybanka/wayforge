@@ -4,7 +4,7 @@ import { resolve } from "node:path"
 
 import tmp from "tmp"
 
-import { FlightDeck } from "../src/flightdeck"
+import { FlightDeck } from "../src"
 
 const testDirname = import.meta.dirname
 
@@ -72,5 +72,7 @@ describe(`FlightDeck`, () => {
 
 		await flightDeck.dead
 		await flightDeck.alive
+
+		client.close()
 	}, 5000)
 })
