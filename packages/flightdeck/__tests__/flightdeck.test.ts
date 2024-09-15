@@ -1,10 +1,11 @@
+import { error } from "node:console"
 import type { IncomingHttpHeaders, IncomingHttpStatusHeader } from "node:http2"
 import { connect } from "node:http2"
 import { resolve } from "node:path"
 
 import tmp from "tmp"
 
-import { FlightDeck } from "../src"
+import { FlightDeck, Klaxon } from "../src/lib"
 
 const testDirname = import.meta.dirname
 
@@ -47,32 +48,18 @@ describe(`FlightDeck`, () => {
 		const data = await fetch(`http://localhost:4444/`)
 		console.log(await data.text())
 
-		const client = connect(`http://localhost:8080/`)
-
 		version++
-		const req = client.request({
-			":method": `POST`,
-			":path": `/`,
-			authorization: `Bearer secret`,
-		})
-
-		const response = await new Promise<{
-			headers: IncomingHttpHeaders & IncomingHttpStatusHeader
-			flags: number
-		}>((pass) => {
-			req.on(`response`, (headers, flags) => {
-				console.log(headers)
-				pass({ headers, flags })
-			})
-			req.on(`error`, pass)
-			req.end()
+		const response = await Klaxon.alert({
+			secret: `secret`,
+			endpoint: `http://localhost:8080/`,
 		})
 		console.log(response)
+		if (`error` in response) {
+			throw new Error(response.error.join(`\n`))
+		}
 		expect(response.headers[`:status`]).toBe(200)
 
 		await flightDeck.dead
 		await flightDeck.alive
-
-		client.close()
 	}, 5000)
 })
