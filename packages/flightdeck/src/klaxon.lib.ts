@@ -13,7 +13,10 @@ export type AlertResult =
 	  }
 	| { error: unknown[] }
 
-async function alert({ secret, endpoint }: AlertOptions): Promise<AlertResult> {
+export async function alert({
+	secret,
+	endpoint,
+}: AlertOptions): Promise<AlertResult> {
 	const client = connect(endpoint)
 	const req = client.request({
 		":method": `POST`,
@@ -34,7 +37,10 @@ async function alert({ secret, endpoint }: AlertOptions): Promise<AlertResult> {
 		req.on(`error`, (...error) => {
 			pass({ error })
 		})
+		req.end()
 	})
+
+	client.close()
 
 	return response
 }
