@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@emotion/styled": "11.13.0",
 		"@eyecuelab/recoil-devtools": "0.1.7",
-		"@floating-ui/dom": "1.6.10",
+		"@floating-ui/dom": "1.6.11",
 		"@floating-ui/react": "0.26.23",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.9",
