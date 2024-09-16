@@ -34,12 +34,17 @@ export class FlightDeck<S extends string = string> {
 	public servicesReadyToUpdate: { [service in S]: boolean }
 	public servicesShouldRestart: boolean
 
-	protected restartTimes: number[] = []
+	protected logger: Pick<Console, `error` | `info` | `warn`>
+	protected serviceLoggers: {
+		readonly [service in S]: Pick<Console, `error` | `info` | `warn`>
+	}
 
 	public servicesLive: Future<void>[]
 	public servicesDead: Future<void>[]
 	public live = new Future(() => {})
 	public dead = new Future(() => {})
+
+	protected restartTimes: number[] = []
 
 	public readonly currentServiceDir: string
 	public readonly updateServiceDir: string
@@ -64,6 +69,38 @@ export class FlightDeck<S extends string = string> {
 		)
 		this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
 		this.servicesShouldRestart = true
+
+		this.logger = {
+			info: (...args: any[]) => {
+				console.log(`${this.options.packageName}:`, ...args)
+			},
+			warn: (...args: any[]) => {
+				console.warn(`${this.options.packageName}:`, ...args)
+			},
+			error: (...args: any[]) => {
+				console.error(`${this.options.packageName}:`, ...args)
+			},
+		}
+		this.serviceLoggers = fromEntries(
+			servicesEntries.map(([serviceName]) => [
+				serviceName,
+				{
+					info: (...args: any[]) => {
+						console.log(`${this.options.packageName}::${serviceName}:`, ...args)
+					},
+					warn: (...args: any[]) => {
+						console.warn(`${this.options.packageName}::${serviceName}:`, ...args)
+					},
+					error: (...args: any[]) => {
+						console.error(
+							`${this.options.packageName}::${serviceName}:`,
+							...args,
+						)
+					},
+				},
+			]),
+		)
+
 		this.servicesLive = servicesEntries.map(() => new Future(() => {}))
 		this.servicesDead = servicesEntries.map(() => new Future(() => {}))
 		this.live.use(Promise.all(this.servicesLive))
@@ -92,29 +129,27 @@ export class FlightDeck<S extends string = string> {
 					data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
 				})
 				.on(`end`, () => {
-					console.log(req.headers)
 					const authHeader = req.headers.authorization
 					try {
 						if (typeof req.url === `undefined`) throw 400
 						if (authHeader !== `Bearer ${secret}`) throw 401
 						const url = new URL(req.url, ORIGIN)
-						console.log(req.method, url.pathname)
+						this.logger.info(req.method, url.pathname)
 						switch (req.method) {
 							case `POST`:
 								{
-									console.log(`received post, url is ${url.pathname}`)
 									switch (url.pathname) {
 										case `/`:
 											{
 												res.writeHead(200)
 												res.end()
-												this.fetchLatestRelease()
+												this.getLatestRelease()
 												if (
 													toEntries(this.servicesReadyToUpdate).every(
 														([, isReady]) => isReady,
 													)
 												) {
-													console.log(`All services are ready to update!`)
+													this.logger.info(`All services are ready to update!`)
 													this.stopAllServices()
 													return
 												}
@@ -141,7 +176,7 @@ export class FlightDeck<S extends string = string> {
 								throw 405
 						}
 					} catch (thrown) {
-						console.error(thrown, req.url)
+						this.logger.error(thrown, req.url)
 						if (typeof thrown === `number`) {
 							res.writeHead(thrown)
 							res.end()
@@ -151,32 +186,32 @@ export class FlightDeck<S extends string = string> {
 					}
 				})
 		}).listen(PORT, () => {
-			console.log(`Server started on port ${PORT}`)
+			this.logger.info(`Server started on port ${PORT}`)
 		})
 
 		this.startAllServices()
 	}
 
 	protected startAllServices(): void {
-		console.log(`Starting all services...`)
+		this.logger.info(`Starting all services...`)
 		for (const [serviceName] of toEntries(this.services)) {
 			this.startService(serviceName)
 		}
 	}
 
 	protected startService(serviceName: S): void {
-		console.log(
+		this.logger.info(
 			`Starting service ${this.options.packageName}::${serviceName}, try ${this.safety}/2...`,
 		)
-		if (this.safety > 2) {
+		if (this.safety >= 2) {
 			throw new Error(`Out of tries...`)
 		}
 		this.safety++
 		if (!existsSync(this.currentServiceDir)) {
-			console.log(
-				`Tried to start service but failed: Service ${this.options.packageName} is not yet installed.`,
+			this.logger.info(
+				`Tried to start service but failed: could not find ${this.currentServiceDir}`,
 			)
-			this.fetchLatestRelease()
+			this.getLatestRelease()
 			this.applyUpdate()
 			this.startService(serviceName)
 
@@ -197,17 +232,15 @@ export class FlightDeck<S extends string = string> {
 			console,
 		)
 		this.services[serviceName].onAny((...messages) => {
-			console.log(`${this.options.packageName}::${serviceName} 💬`, ...messages)
+			this.logger.info(`💬`, ...messages)
 		})
 		this.services[serviceName].on(`readyToUpdate`, () => {
-			console.log(
-				`Service ${this.options.packageName}::${serviceName} is ready to update.`,
-			)
+			this.serviceLoggers[serviceName].info(`Ready to update.`)
 			this.servicesReadyToUpdate[serviceName] = true
 			if (
 				toEntries(this.servicesReadyToUpdate).every(([, isReady]) => isReady)
 			) {
-				console.log(`All services are ready to update!`)
+				this.logger.info(`All services are ready to update.`)
 				this.stopAllServices()
 			}
 		})
@@ -220,21 +253,15 @@ export class FlightDeck<S extends string = string> {
 			this.dead.use(Promise.all(this.servicesDead))
 		})
 		this.services[serviceName].process.on(`close`, (exitCode) => {
-			console.log(
-				`${this.options.packageName}::${serviceName} exited with code ${exitCode}`,
-			)
+			this.serviceLoggers[serviceName].info(`Exited with code ${exitCode}`)
 			this.services[serviceName] = null
 			if (!this.servicesShouldRestart) {
-				console.log(
-					`Service ${this.options.packageName}::${serviceName} will not be restarted.`,
-				)
+				this.serviceLoggers[serviceName].info(`Will not be restarted.`)
 				return
 			}
 			const updatesAreReady = existsSync(this.updateServiceDir)
 			if (updatesAreReady) {
-				console.log(
-					`${this.options.packageName}::${serviceName} will be updated before startup...`,
-				)
+				this.serviceLoggers[serviceName].info(`Updating before startup...`)
 				this.restartTimes = []
 				this.applyUpdate()
 				this.startService(serviceName)
@@ -247,13 +274,11 @@ export class FlightDeck<S extends string = string> {
 				this.restartTimes.push(now)
 
 				if (this.restartTimes.length < 5) {
-					console.log(
-						`Service ${this.options.packageName}::${serviceName} crashed. Restarting...`,
-					)
+					this.serviceLoggers[serviceName].info(`Crashed. Restarting...`)
 					this.startService(serviceName)
 				} else {
-					console.log(
-						`Service ${this.options.packageName}::${serviceName} crashed too many times. Not restarting.`,
+					this.serviceLoggers[serviceName].info(
+						`Crashed 5 times in 5 minutes. Not restarting.`,
 					)
 				}
 			}
@@ -262,17 +287,14 @@ export class FlightDeck<S extends string = string> {
 	}
 
 	protected applyUpdate(): void {
-		console.log(
-			`Installing latest version of service ${this.options.packageName}...`,
-		)
-
+		this.logger.info(`Applying update...`)
 		if (existsSync(this.updateServiceDir)) {
 			const runningServices = toEntries(this.services).filter(
 				([, service]) => service,
 			)
 			if (runningServices.length > 0) {
-				console.log(
-					`Tried to apply update to ${this.options.packageName} but failed. The following services are currently running: [${runningServices.map(([serviceName]) => serviceName).join(`, `)}]`,
+				this.logger.error(
+					`Tried to apply update but failed. The following services are currently running: [${runningServices.map(([serviceName]) => serviceName).join(`, `)}]`,
 				)
 				return
 			}
@@ -290,27 +312,27 @@ export class FlightDeck<S extends string = string> {
 			this.restartTimes = []
 			this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
 		} else {
-			console.log(`Service ${this.options.packageName} is already up to date.`)
+			this.logger.error(
+				`Tried to apply update but failed: could not find update directory ${this.updateServiceDir}`,
+			)
 		}
 	}
 
-	protected fetchLatestRelease(): void {
-		console.log(
-			`Downloading latest version of service ${this.options.packageName}...`,
-		)
+	protected getLatestRelease(): void {
+		this.logger.info(`Getting latest release...`)
 
 		try {
 			execSync(this.options.downloadPackageToUpdatesCmd.join(` `))
 		} catch (thrown) {
 			if (thrown instanceof Error) {
-				console.error(`Failed to fetch the latest release: ${thrown.message}`)
+				this.logger.error(`Failed to get the latest release: ${thrown.message}`)
 			}
 			return
 		}
 	}
 
 	public stopAllServices(): void {
-		console.log(`Stopping all services...`)
+		this.logger.info(`Stopping all services...`)
 		for (const [serviceName] of toEntries(this.services)) {
 			this.stopService(serviceName)
 		}
@@ -318,9 +340,7 @@ export class FlightDeck<S extends string = string> {
 
 	public stopService(serviceName: S): void {
 		if (this.services[serviceName]) {
-			console.log(
-				`Stopping service ${this.options.packageName}::${serviceName}...`,
-			)
+			this.serviceLoggers[serviceName].info(`Stopping service...`)
 			this.services[serviceName].process.kill()
 			this.services[serviceName] = null
 			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
@@ -330,8 +350,8 @@ export class FlightDeck<S extends string = string> {
 			}
 			this.live.use(Promise.all(this.servicesLive))
 		} else {
-			console.error(
-				`Failed to stop service ${this.options.packageName}::${serviceName}: Service is not running.`,
+			this.serviceLoggers[serviceName].error(
+				`Tried to stop service, but it wasn't running.`,
 			)
 		}
 	}
