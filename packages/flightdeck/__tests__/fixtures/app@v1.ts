@@ -3,7 +3,7 @@
 import { ParentSocket } from "atom.io/realtime-server"
 import { serve } from "bun"
 
-const PORT = 4444
+const PORT = process.argv[2] ?? 4444
 const parentSocket = new ParentSocket()
 serve({
 	port: PORT,

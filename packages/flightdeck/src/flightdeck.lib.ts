@@ -30,12 +30,14 @@ export class FlightDeck<S extends string = string> {
 		> | null
 	}
 	protected serviceIdx: { readonly [service in S]: number }
+	public defaultServicesReadyToUpdate: { readonly [service in S]: boolean }
+	public servicesReadyToUpdate: { [service in S]: boolean }
 
 	protected restartTimes: number[] = []
 
-	public servicesAlive: Future<void>[]
+	public servicesLive: Future<void>[]
 	public servicesDead: Future<void>[]
-	public alive = new Future(() => {})
+	public live = new Future(() => {})
 	public dead = new Future(() => {})
 
 	public readonly currentServiceDir: string
@@ -46,18 +48,20 @@ export class FlightDeck<S extends string = string> {
 		const { secret, flightdeckRootDir = resolve(homedir(), `services`) } =
 			options
 
+		const executablesEntries = toEntries(options.executables)
 		this.services = fromEntries(
-			toEntries(options.executables).map(([serviceName]) => [serviceName, null]),
+			executablesEntries.map(([serviceName]) => [serviceName, null]),
 		)
 		this.serviceIdx = fromEntries(
-			toEntries(options.executables).map(([serviceName], idx) => [
-				serviceName,
-				idx,
-			]),
+			executablesEntries.map(([serviceName], idx) => [serviceName, idx]),
 		)
-		this.servicesAlive = toEntries(this.services).map(() => new Future(() => {}))
-		this.servicesDead = toEntries(this.services).map(() => new Future(() => {}))
-		this.alive.use(Promise.all(this.servicesAlive))
+		this.defaultServicesReadyToUpdate = fromEntries(
+			executablesEntries.map(([serviceName]) => [serviceName, false]),
+		)
+		this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
+		this.servicesLive = executablesEntries.map(() => new Future(() => {}))
+		this.servicesDead = executablesEntries.map(() => new Future(() => {}))
+		this.live.use(Promise.all(this.servicesLive))
 		this.dead.use(Promise.all(this.servicesDead))
 
 		this.currentServiceDir = resolve(
@@ -139,6 +143,7 @@ export class FlightDeck<S extends string = string> {
 	}
 
 	protected startAllServices(): void {
+		console.log(`Starting all services...`)
 		for (const [serviceName] of toEntries(this.services)) {
 			this.startService(serviceName)
 		}
@@ -178,10 +183,19 @@ export class FlightDeck<S extends string = string> {
 			console.log(`${this.options.packageName}::${serviceName} 💬`, ...messages)
 		})
 		this.services[serviceName].on(`readyToUpdate`, () => {
-			this.stopService(serviceName)
+			console.log(
+				`Service ${this.options.packageName}::${serviceName} is ready to update.`,
+			)
+			this.servicesReadyToUpdate[serviceName] = true
+			if (
+				toEntries(this.servicesReadyToUpdate).every(([, isReady]) => isReady)
+			) {
+				console.log(`All services are ready to update!`)
+				this.stopAllServices()
+			}
 		})
 		this.services[serviceName].on(`alive`, () => {
-			this.servicesAlive[this.serviceIdx[serviceName]].use(Promise.resolve())
+			this.servicesLive[this.serviceIdx[serviceName]].use(Promise.resolve())
 			this.servicesDead[this.serviceIdx[serviceName]] = new Future(() => {})
 			if (this.dead.done) {
 				this.dead = new Future(() => {})
@@ -202,24 +216,22 @@ export class FlightDeck<S extends string = string> {
 				this.applyUpdate()
 				this.startService(serviceName)
 			} else {
-				if (exitCode !== 0) {
-					const now = Date.now()
-					const fiveMinutesAgo = now - 5 * 60 * 1000
-					this.restartTimes = this.restartTimes.filter(
-						(time) => time > fiveMinutesAgo,
-					)
-					this.restartTimes.push(now)
+				const now = Date.now()
+				const fiveMinutesAgo = now - 5 * 60 * 1000
+				this.restartTimes = this.restartTimes.filter(
+					(time) => time > fiveMinutesAgo,
+				)
+				this.restartTimes.push(now)
 
-					if (this.restartTimes.length < 5) {
-						console.log(
-							`Service ${this.options.packageName}::${serviceName} crashed. Restarting...`,
-						)
-						this.startService(serviceName)
-					} else {
-						console.log(
-							`Service ${this.options.packageName}::${serviceName} crashed too many times. Not restarting.`,
-						)
-					}
+				if (this.restartTimes.length < 5) {
+					console.log(
+						`Service ${this.options.packageName}::${serviceName} crashed. Restarting...`,
+					)
+					this.startService(serviceName)
+				} else {
+					console.log(
+						`Service ${this.options.packageName}::${serviceName} crashed too many times. Not restarting.`,
+					)
 				}
 			}
 		})
@@ -274,6 +286,7 @@ export class FlightDeck<S extends string = string> {
 	}
 
 	public stopAllServices(): void {
+		console.log(`Stopping all services...`)
 		for (const [serviceName] of toEntries(this.services)) {
 			this.stopService(serviceName)
 		}
@@ -287,11 +300,11 @@ export class FlightDeck<S extends string = string> {
 			this.services[serviceName].process.kill()
 			this.services[serviceName] = null
 			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
-			this.servicesAlive[this.serviceIdx[serviceName]] = new Future(() => {})
-			if (this.alive.done) {
-				this.alive = new Future(() => {})
+			this.servicesLive[this.serviceIdx[serviceName]] = new Future(() => {})
+			if (this.live.done) {
+				this.live = new Future(() => {})
 			}
-			this.alive.use(Promise.all(this.servicesAlive))
+			this.live.use(Promise.all(this.servicesLive))
 		} else {
 			console.error(
 				`Failed to stop service ${this.options.packageName}::${serviceName}: Service is not running.`,

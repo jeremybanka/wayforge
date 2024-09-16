@@ -18,6 +18,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+	console.log(`---------------------TEST: cleaning up`)
 	flightDeck.stopAllServices()
 })
 
@@ -50,7 +51,7 @@ describe(`FlightDeck`, () => {
 				]
 			},
 		})
-		await flightDeck.alive
+		await flightDeck.live
 		const data = await fetch(`http://localhost:7777/`)
 		console.log(await data.text())
 		const data0 = await fetch(`http://localhost:8888/`)
@@ -64,9 +65,29 @@ describe(`FlightDeck`, () => {
 		console.log(response)
 		expect(response.status).toBe(200)
 
+		console.log(`before dead`, {
+			servicesAlive: flightDeck.servicesLive.map((f) => f.done),
+			servicesDead: flightDeck.servicesDead.map((f) => f.done),
+			alive: flightDeck.live.done,
+			dead: flightDeck.dead.done,
+		})
 		await flightDeck.dead
-		console.log(`👷 FlightDeck is dead`)
-		await flightDeck.alive
-		console.log(`👷 FlightDeck is alive`)
+		console.log(`👷 flightdeck: all services are dead`)
+		console.log(`after dead`, {
+			servicesAlive: flightDeck.servicesLive.map((f) => f.done),
+			servicesDead: flightDeck.servicesDead.map((f) => f.done),
+			alive: flightDeck.live.done,
+			dead: flightDeck.dead.done,
+		})
+		await flightDeck.live
+		console.log(`👷 flightdeck: all services are alive`)
+		console.log(`after alive`, {
+			servicesAlive: flightDeck.servicesLive.map((f) => f.done),
+			servicesDead: flightDeck.servicesDead.map((f) => f.done),
+			alive: flightDeck.live.done,
+			dead: flightDeck.dead.done,
+		})
+		// throw new Error(`here`)
+		// await new Promise((res) => setTimeout(res, 1000))
 	}, 5000)
 })
