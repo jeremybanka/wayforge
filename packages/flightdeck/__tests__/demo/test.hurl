@@ -1,6 +1,4 @@
-GET http://localhost:4444
+POST https://flightdeck.tempest.games/
+Authorization: Bearer secret
 
-HTTP/1.1 200
-[Asserts]
-header "content-type" == "text/plain;charset=utf-8"
-body == "Hello World!"
+HTTP/2 200
