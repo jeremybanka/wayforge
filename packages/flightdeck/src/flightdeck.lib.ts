@@ -1,59 +1,89 @@
 import { execSync, spawn } from "node:child_process"
-import { existsSync, mkdirSync, renameSync, rmSync, unlinkSync } from "node:fs"
+import { existsSync, mkdirSync, renameSync, rmSync } from "node:fs"
 import type { Server } from "node:http"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
 
 import { Future } from "atom.io/internal"
+import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 
-export type FlightDeckOptions = {
+export type FlightDeckOptions<S extends string = string> = {
 	secret: string
-	repo: string
-	app: string
-	runCmd: string[]
-	updateCmd: string[]
-	serviceDir?: string | undefined
+	packageName: string
+	services: { [service in S]: { run: string[]; waitFor: boolean } }
+	downloadPackageToUpdatesCmd: string[]
+	flightdeckRootDir?: string | undefined
 }
 
-let safety = -3
 const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
-export class FlightDeck {
-	public get serviceName(): string {
-		return `${this.options.repo}/${this.options.app}`
-	}
+export class FlightDeck<S extends string = string> {
+	protected safety = 0
 
 	protected webhookServer: Server
-	protected service: ChildSocket<
-		{ updatesReady: [] },
-		{ readyToUpdate: []; alive: [] }
-	> | null = null
+	protected services: {
+		[service in S]: ChildSocket<
+			{ updatesReady: [] },
+			{ readyToUpdate: []; alive: [] }
+		> | null
+	}
+	protected serviceIdx: { readonly [service in S]: number }
+	public defaultServicesReadyToUpdate: { readonly [service in S]: boolean }
+	public servicesReadyToUpdate: { [service in S]: boolean }
+	public servicesShouldRestart: boolean
+
 	protected restartTimes: number[] = []
 
-	public alive = new Future(() => {})
+	public servicesLive: Future<void>[]
+	public servicesDead: Future<void>[]
+	public live = new Future(() => {})
 	public dead = new Future(() => {})
 
 	public readonly currentServiceDir: string
 	public readonly updateServiceDir: string
 	public readonly backupServiceDir: string
 
-	public constructor(public readonly options: FlightDeckOptions) {
-		const {
-			secret,
-			serviceDir = resolve(
-				homedir(),
-				`services`,
-				`sample/repo`,
-				`my-app`,
-				`current`,
-			),
-		} = options
+	public constructor(public readonly options: FlightDeckOptions<S>) {
+		const { secret, flightdeckRootDir = resolve(homedir(), `services`) } =
+			options
 
-		this.currentServiceDir = resolve(serviceDir, `current`)
-		this.backupServiceDir = resolve(serviceDir, `backup`)
-		this.updateServiceDir = resolve(serviceDir, `update`)
+		const servicesEntries = toEntries(options.services)
+		this.services = fromEntries(
+			servicesEntries.map(([serviceName]) => [serviceName, null]),
+		)
+		this.serviceIdx = fromEntries(
+			servicesEntries.map(([serviceName], idx) => [serviceName, idx]),
+		)
+		this.defaultServicesReadyToUpdate = fromEntries(
+			servicesEntries.map(([serviceName, { waitFor }]) => [
+				serviceName,
+				!waitFor,
+			]),
+		)
+		this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
+		this.servicesShouldRestart = true
+		this.servicesLive = servicesEntries.map(() => new Future(() => {}))
+		this.servicesDead = servicesEntries.map(() => new Future(() => {}))
+		this.live.use(Promise.all(this.servicesLive))
+		this.dead.use(Promise.all(this.servicesDead))
+
+		this.currentServiceDir = resolve(
+			flightdeckRootDir,
+			options.packageName,
+			`current`,
+		)
+		this.backupServiceDir = resolve(
+			flightdeckRootDir,
+			options.packageName,
+			`backup`,
+		)
+		this.updateServiceDir = resolve(
+			flightdeckRootDir,
+			options.packageName,
+			`update`,
+		)
 
 		createServer((req, res) => {
 			let data: Uint8Array[] = []
@@ -79,11 +109,24 @@ export class FlightDeck {
 												res.writeHead(200)
 												res.end()
 												this.fetchLatestRelease()
-												if (this.service) {
-													this.service.emit(`updatesReady`)
-												} else {
-													this.applyUpdate()
-													this.startService()
+												if (
+													toEntries(this.servicesReadyToUpdate).every(
+														([, isReady]) => isReady,
+													)
+												) {
+													console.log(`All services are ready to update!`)
+													this.stopAllServices()
+													return
+												}
+												for (const entry of toEntries(this.services)) {
+													const [serviceName, service] = entry
+													if (service) {
+														if (this.options.services[serviceName].waitFor) {
+															service.emit(`updatesReady`)
+														}
+													} else {
+														this.startService(serviceName)
+													}
 												}
 											}
 											break
@@ -111,27 +154,36 @@ export class FlightDeck {
 			console.log(`Server started on port ${PORT}`)
 		})
 
-		this.startService()
+		this.startAllServices()
 	}
 
-	protected startService(): void {
-		safety++
-		console.log(`safety is ${safety}`)
-		if (safety >= 0) {
-			throw new Error(`safety exceeded`)
+	protected startAllServices(): void {
+		console.log(`Starting all services...`)
+		for (const [serviceName] of toEntries(this.services)) {
+			this.startService(serviceName)
 		}
+	}
+
+	protected startService(serviceName: S): void {
+		console.log(
+			`Starting service ${this.options.packageName}::${serviceName}, try ${this.safety}/2...`,
+		)
+		if (this.safety > 2) {
+			throw new Error(`Out of tries...`)
+		}
+		this.safety++
 		if (!existsSync(this.currentServiceDir)) {
 			console.log(
-				`Tried to start service but failed: Service ${this.serviceName} is not yet installed.`,
+				`Tried to start service but failed: Service ${this.options.packageName} is not yet installed.`,
 			)
 			this.fetchLatestRelease()
 			this.applyUpdate()
-			this.startService()
+			this.startService(serviceName)
 
 			return
 		}
 
-		const [executable, ...args] = this.options.runCmd
+		const [executable, ...args] = this.options.services[serviceName].run
 		const program = executable.startsWith(`./`)
 			? resolve(this.currentServiceDir, executable)
 			: executable
@@ -139,56 +191,88 @@ export class FlightDeck {
 			cwd: this.currentServiceDir,
 			env: import.meta.env,
 		})
-		this.service = new ChildSocket(serviceProcess, this.serviceName, console)
-		this.service.onAny((...messages) => {
-			console.log(`🛰 `, ...messages)
+		this.services[serviceName] = new ChildSocket(
+			serviceProcess,
+			`${this.options.packageName}::${serviceName}`,
+			console,
+		)
+		this.services[serviceName].onAny((...messages) => {
+			console.log(`${this.options.packageName}::${serviceName} 💬`, ...messages)
 		})
-		this.service.on(`readyToUpdate`, () => {
-			this.stopService()
+		this.services[serviceName].on(`readyToUpdate`, () => {
+			console.log(
+				`Service ${this.options.packageName}::${serviceName} is ready to update.`,
+			)
+			this.servicesReadyToUpdate[serviceName] = true
+			if (
+				toEntries(this.servicesReadyToUpdate).every(([, isReady]) => isReady)
+			) {
+				console.log(`All services are ready to update!`)
+				this.stopAllServices()
+			}
 		})
-		this.service.on(`alive`, () => {
-			this.alive.use(Promise.resolve())
-			this.dead = new Future(() => {})
+		this.services[serviceName].on(`alive`, () => {
+			this.servicesLive[this.serviceIdx[serviceName]].use(Promise.resolve())
+			this.servicesDead[this.serviceIdx[serviceName]] = new Future(() => {})
+			if (this.dead.done) {
+				this.dead = new Future(() => {})
+			}
+			this.dead.use(Promise.all(this.servicesDead))
 		})
-		this.service.process.on(`close`, (exitCode) => {
-			console.log(`Service ${this.serviceName} exited with code ${exitCode}`)
-			this.service = null
+		this.services[serviceName].process.on(`close`, (exitCode) => {
+			console.log(
+				`${this.options.packageName}::${serviceName} exited with code ${exitCode}`,
+			)
+			this.services[serviceName] = null
+			if (!this.servicesShouldRestart) {
+				console.log(
+					`Service ${this.options.packageName}::${serviceName} will not be restarted.`,
+				)
+				return
+			}
 			const updatesAreReady = existsSync(this.updateServiceDir)
 			if (updatesAreReady) {
-				console.log(`Updates are ready; applying and restarting...`)
+				console.log(
+					`${this.options.packageName}::${serviceName} will be updated before startup...`,
+				)
 				this.restartTimes = []
 				this.applyUpdate()
-				this.startService()
+				this.startService(serviceName)
 			} else {
-				if (exitCode !== 0) {
-					const now = Date.now()
-					const fiveMinutesAgo = now - 5 * 60 * 1000
-					this.restartTimes = this.restartTimes.filter(
-						(time) => time > fiveMinutesAgo,
-					)
-					this.restartTimes.push(now)
+				const now = Date.now()
+				const fiveMinutesAgo = now - 5 * 60 * 1000
+				this.restartTimes = this.restartTimes.filter(
+					(time) => time > fiveMinutesAgo,
+				)
+				this.restartTimes.push(now)
 
-					if (this.restartTimes.length < 5) {
-						console.log(`Service ${this.serviceName} crashed. Restarting...`)
-						this.startService()
-					} else {
-						console.log(
-							`Service ${this.serviceName} crashed too many times. Not restarting.`,
-						)
-					}
+				if (this.restartTimes.length < 5) {
+					console.log(
+						`Service ${this.options.packageName}::${serviceName} crashed. Restarting...`,
+					)
+					this.startService(serviceName)
+				} else {
+					console.log(
+						`Service ${this.options.packageName}::${serviceName} crashed too many times. Not restarting.`,
+					)
 				}
 			}
 		})
-		safety = -3
+		this.safety = 0
 	}
 
 	protected applyUpdate(): void {
-		console.log(`Installing latest version of service ${this.serviceName}...`)
+		console.log(
+			`Installing latest version of service ${this.options.packageName}...`,
+		)
 
 		if (existsSync(this.updateServiceDir)) {
-			if (this.service) {
+			const runningServices = toEntries(this.services).filter(
+				([, service]) => service,
+			)
+			if (runningServices.length > 0) {
 				console.log(
-					`Tried to apply update but failed: Service ${this.serviceName} is currently running.`,
+					`Tried to apply update to ${this.options.packageName} but failed. The following services are currently running: [${runningServices.map(([serviceName]) => serviceName).join(`, `)}]`,
 				)
 				return
 			}
@@ -204,16 +288,19 @@ export class FlightDeck {
 
 			renameSync(this.updateServiceDir, this.currentServiceDir)
 			this.restartTimes = []
+			this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
 		} else {
-			console.log(`Service ${this.serviceName} is already up to date.`)
+			console.log(`Service ${this.options.packageName} is already up to date.`)
 		}
 	}
 
 	protected fetchLatestRelease(): void {
-		console.log(`Downloading latest version of service ${this.serviceName}...`)
+		console.log(
+			`Downloading latest version of service ${this.options.packageName}...`,
+		)
 
 		try {
-			execSync(this.options.updateCmd.join(` `))
+			execSync(this.options.downloadPackageToUpdatesCmd.join(` `))
 		} catch (thrown) {
 			if (thrown instanceof Error) {
 				console.error(`Failed to fetch the latest release: ${thrown.message}`)
@@ -222,17 +309,35 @@ export class FlightDeck {
 		}
 	}
 
-	public stopService(): void {
-		if (this.service) {
-			console.log(`Stopping service ${this.serviceName}...`)
-			this.service.process.kill()
-			this.service = null
-			this.dead.use(Promise.resolve())
-			this.alive = new Future(() => {})
+	public stopAllServices(): void {
+		console.log(`Stopping all services...`)
+		for (const [serviceName] of toEntries(this.services)) {
+			this.stopService(serviceName)
+		}
+	}
+
+	public stopService(serviceName: S): void {
+		if (this.services[serviceName]) {
+			console.log(
+				`Stopping service ${this.options.packageName}::${serviceName}...`,
+			)
+			this.services[serviceName].process.kill()
+			this.services[serviceName] = null
+			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
+			this.servicesLive[this.serviceIdx[serviceName]] = new Future(() => {})
+			if (this.live.done) {
+				this.live = new Future(() => {})
+			}
+			this.live.use(Promise.all(this.servicesLive))
 		} else {
 			console.error(
-				`Failed to stop service ${this.serviceName}: Service is not running.`,
+				`Failed to stop service ${this.options.packageName}::${serviceName}: Service is not running.`,
 			)
 		}
+	}
+
+	public shutdown(): void {
+		this.servicesShouldRestart = false
+		this.stopAllServices()
 	}
 }

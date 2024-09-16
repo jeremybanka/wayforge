@@ -12,6 +12,8 @@ export class Future<T> extends Promise<T> {
 	private resolve: (value: T) => void
 	private reject: (reason?: any) => void
 
+	public done = false
+
 	public constructor(
 		executor:
 			| Promise<T>
@@ -31,11 +33,13 @@ export class Future<T> extends Promise<T> {
 	private pass(promise: Promise<T>, value: T) {
 		if (promise === this.fate) {
 			this.resolve(value)
+			this.done = true
 		}
 	}
 	private fail(promise: Promise<T>, reason: any) {
 		if (promise === this.fate) {
 			this.reject(reason)
+			this.done = true
 		}
 	}
 
