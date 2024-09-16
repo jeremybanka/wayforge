@@ -1,6 +1,3 @@
-import { error } from "node:console"
-import type { IncomingHttpHeaders, IncomingHttpStatusHeader } from "node:http2"
-import { connect } from "node:http2"
 import { resolve } from "node:path"
 
 import tmp from "tmp"
@@ -54,10 +51,7 @@ describe(`FlightDeck`, () => {
 			endpoint: `http://localhost:8080/`,
 		})
 		console.log(response)
-		if (`error` in response) {
-			throw new Error(response.error.join(`\n`))
-		}
-		expect(response.headers[`:status`]).toBe(200)
+		expect(response.status).toBe(200)
 
 		await flightDeck.dead
 		await flightDeck.alive

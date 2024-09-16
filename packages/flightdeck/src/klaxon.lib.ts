@@ -1,46 +1,19 @@
-import type { IncomingHttpHeaders, IncomingHttpStatusHeader } from "node:http2"
-import { connect } from "node:http2"
-
 export type AlertOptions = {
 	secret: string
 	endpoint: string
 }
 
-export type AlertResult =
-	| {
-			headers: IncomingHttpHeaders & IncomingHttpStatusHeader
-			flags: number
-	  }
-	| { error: unknown[] }
-
 export async function alert({
 	secret,
 	endpoint,
-}: AlertOptions): Promise<AlertResult> {
-	const client = connect(endpoint)
-	const req = client.request({
-		":method": `POST`,
-		":path": `/`,
-		authorization: `Bearer ${secret}`,
+}: AlertOptions): Promise<Response> {
+	const response = await fetch(endpoint, {
+		method: `POST`,
+		headers: {
+			"Content-Type": `application/json`,
+			Authorization: `Bearer ${secret}`,
+		},
 	})
-
-	const response = await new Promise<
-		| {
-				headers: IncomingHttpHeaders & IncomingHttpStatusHeader
-				flags: number
-		  }
-		| { error: unknown[] }
-	>((pass) => {
-		req.on(`response`, (headers, flags) => {
-			pass({ headers, flags })
-		})
-		req.on(`error`, (...error) => {
-			pass({ error })
-		})
-		req.end()
-	})
-
-	client.close()
 
 	return response
 }
@@ -77,7 +50,7 @@ export type ScrambleOptions<K extends string = string> = {
 }
 
 export type ScrambleResult<K extends string = string> = {
-	[key in K]: AlertResult
+	[key in K]: Response
 }
 
 export async function scramble<K extends string = string>({
@@ -85,7 +58,7 @@ export async function scramble<K extends string = string>({
 	secretsConfig,
 	publishedPackages,
 }: ScrambleOptions<K>): Promise<ScrambleResult<K>> {
-	const alertResults: Promise<readonly [K, AlertResult]>[] = []
+	const alertResults: Promise<readonly [K, Response]>[] = []
 	for (const publishedPackage of publishedPackages) {
 		if (publishedPackage.name in packageConfig) {
 			const name = publishedPackage.name as K
