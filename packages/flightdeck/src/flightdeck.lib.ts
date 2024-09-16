@@ -1,7 +1,7 @@
 import { execSync, spawn } from "node:child_process"
 import { existsSync, mkdirSync, renameSync, rmSync, unlinkSync } from "node:fs"
-import type { Http2Server } from "node:http2"
-import { createServer } from "node:http2"
+import type { Server } from "node:http"
+import { createServer } from "node:http"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
 
@@ -25,7 +25,7 @@ export class FlightDeck {
 		return `${this.options.repo}/${this.options.app}`
 	}
 
-	protected webhookServer: Http2Server
+	protected webhookServer: Server
 	protected service: ChildSocket<
 		{ updatesReady: [] },
 		{ readyToUpdate: []; alive: [] }
@@ -65,6 +65,7 @@ export class FlightDeck {
 					console.log(req.headers)
 					const authHeader = req.headers.authorization
 					try {
+						if (typeof req.url === `undefined`) throw 400
 						if (authHeader !== `Bearer ${secret}`) throw 401
 						const url = new URL(req.url, ORIGIN)
 						console.log(req.method, url.pathname)
