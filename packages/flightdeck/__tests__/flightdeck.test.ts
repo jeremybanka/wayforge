@@ -1,4 +1,3 @@
-import { readdir } from "node:fs/promises"
 import { resolve } from "node:path"
 
 import tmp from "tmp"
@@ -39,17 +38,11 @@ describe(`FlightDeck`, () => {
 					`${testDirname}/fixtures/app@v${version}.ts`,
 					`--bundle`,
 					`--outfile`,
-					`${resolve(tmpDir.name, `update`, `app`)}`,
+					`${resolve(tmpDir.name, `my-app`, `update`, `app`)}`,
 				]
 			},
 		})
 		await flightDeck.alive
-		// list files in the flightdeckRootDir
-		console.log({
-			root: await readdir(tmpDir.name),
-			// current: await readdir(resolve(tmpDir.name, `current`, `app`)),
-			currentApp: await readdir(flightDeck.currentServiceDir),
-		})
 		const data = await fetch(`http://localhost:4444/`)
 		console.log(await data.text())
 

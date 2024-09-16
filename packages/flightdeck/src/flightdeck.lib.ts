@@ -1,5 +1,5 @@
 import { execSync, spawn } from "node:child_process"
-import { existsSync, mkdirSync, renameSync, rmSync, unlinkSync } from "node:fs"
+import { existsSync, mkdirSync, renameSync, rmSync } from "node:fs"
 import type { Server } from "node:http"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
@@ -60,9 +60,21 @@ export class FlightDeck<S extends string = string> {
 		this.alive.use(Promise.all(this.servicesAlive))
 		this.dead.use(Promise.all(this.servicesDead))
 
-		this.currentServiceDir = resolve(flightdeckRootDir, `current`)
-		this.backupServiceDir = resolve(flightdeckRootDir, `backup`)
-		this.updateServiceDir = resolve(flightdeckRootDir, `update`)
+		this.currentServiceDir = resolve(
+			flightdeckRootDir,
+			options.packageName,
+			`current`,
+		)
+		this.backupServiceDir = resolve(
+			flightdeckRootDir,
+			options.packageName,
+			`backup`,
+		)
+		this.updateServiceDir = resolve(
+			flightdeckRootDir,
+			options.packageName,
+			`update`,
+		)
 
 		createServer((req, res) => {
 			let data: Uint8Array[] = []
