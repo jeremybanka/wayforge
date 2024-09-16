@@ -1,5 +1,13 @@
 # flightdeck
 
+## 0.0.4
+
+### Patch Changes
+
+- 4f49c6b: ✏️ Fix inconsistent casing of the word "flightdeck" in the option "flightdeckRootDir".
+- 4f49c6b: 🐛 Only allow 3 retries, inadvertently allowed 4 previously by a on OBO error.
+- 4f49c6b: 🔊 Greatly improved the consistency of flightdeck's logs.
+
 ## 0.0.3
 
 ### Patch Changes
