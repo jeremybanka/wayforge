@@ -13,13 +13,15 @@ const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
 		secret: z.string(),
 		packageName: z.string(),
-		executables: z.record(z.array(z.string())),
+		services: z.record(
+			z.object({ run: z.array(z.string()), waitFor: z.boolean() }),
+		),
 		flightDeckRootDir: z.string(),
 		downloadPackageToUpdatesCmd: z.array(z.string()),
 	}),
 	options: {
 		secret: {
-			flag: `s`,
+			flag: `x`,
 			required: true,
 			description: `Secret used to authenticate with the service.`,
 			example: `--secret=\"secret\"`,
@@ -30,11 +32,11 @@ const FLIGHTDECK_MANUAL = {
 			description: `Name of the package.`,
 			example: `--packageName=\"my-app\"`,
 		},
-		executables: {
-			flag: `e`,
+		services: {
+			flag: `s`,
 			required: true,
 			description: `Map of service names to executables.`,
-			example: `--executables="{\\"frontend\\":[\\"./app\\"]}"`,
+			example: `--services="{\\"frontend\\":{\\"run\\":[\\"./app\\"],\\"waitFor\\":false},\\"backend\\":{\\"run\\":[\\"./backend\\"],\\"waitFor\\":true}}"`,
 			parse: JSON.parse,
 		},
 		flightdeckRootDir: {
