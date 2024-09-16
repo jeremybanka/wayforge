@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.29.2
+
+### Patch Changes
+
+- fb286da: ✨ `atom.io/internal` Future gains the `done` property, a way to synchronously observe whether it should still be `use()`-d.
+
 ## 0.29.1
 
 ### Patch Changes
