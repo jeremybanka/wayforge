@@ -5,10 +5,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"CHANGELOG.md"
-	],
+	"files": ["dist", "CHANGELOG.md"],
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
