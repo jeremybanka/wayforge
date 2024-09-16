@@ -1,6 +1,9 @@
 {
 	"name": "tempest.games",
 	"version": "0.0.2",
+	"publishConfig": {
+		"access": "public"
+	},
 	"type": "module",
 	"files": ["dist", "CHANGELOG.md"],
 	"scripts": {
