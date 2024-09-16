@@ -53,6 +53,8 @@ describe(`FlightDeck`, () => {
 		await flightDeck.alive
 		const data = await fetch(`http://localhost:7777/`)
 		console.log(await data.text())
+		const data0 = await fetch(`http://localhost:8888/`)
+		console.log(await data0.text())
 
 		version++
 		const response = await Klaxon.alert({

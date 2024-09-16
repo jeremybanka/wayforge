@@ -171,11 +171,11 @@ export class FlightDeck<S extends string = string> {
 		})
 		this.services[serviceName] = new ChildSocket(
 			serviceProcess,
-			this.options.packageName,
+			`${this.options.packageName}::${serviceName}`,
 			console,
 		)
 		this.services[serviceName].onAny((...messages) => {
-			console.log(`🛰 `, ...messages)
+			console.log(`${this.options.packageName}::${serviceName} 💬`, ...messages)
 		})
 		this.services[serviceName].on(`readyToUpdate`, () => {
 			this.stopService(serviceName)
@@ -190,12 +190,14 @@ export class FlightDeck<S extends string = string> {
 		})
 		this.services[serviceName].process.on(`close`, (exitCode) => {
 			console.log(
-				`Service ${this.options.packageName} exited with code ${exitCode}`,
+				`${this.options.packageName}::${serviceName} exited with code ${exitCode}`,
 			)
 			this.services[serviceName] = null
 			const updatesAreReady = existsSync(this.updateServiceDir)
 			if (updatesAreReady) {
-				console.log(`Updates are ready; applying and restarting...`)
+				console.log(
+					`${this.options.packageName}::${serviceName} will be updated before startup...`,
+				)
 				this.restartTimes = []
 				this.applyUpdate()
 				this.startService(serviceName)
@@ -210,12 +212,12 @@ export class FlightDeck<S extends string = string> {
 
 					if (this.restartTimes.length < 5) {
 						console.log(
-							`Service ${this.options.packageName} crashed. Restarting...`,
+							`Service ${this.options.packageName}::${serviceName} crashed. Restarting...`,
 						)
 						this.startService(serviceName)
 					} else {
 						console.log(
-							`Service ${this.options.packageName} crashed too many times. Not restarting.`,
+							`Service ${this.options.packageName}::${serviceName} crashed too many times. Not restarting.`,
 						)
 					}
 				}
@@ -279,7 +281,9 @@ export class FlightDeck<S extends string = string> {
 
 	public stopService(serviceName: S): void {
 		if (this.services[serviceName]) {
-			console.log(`Stopping service ${this.options.packageName}...`)
+			console.log(
+				`Stopping service ${this.options.packageName}::${serviceName}...`,
+			)
 			this.services[serviceName].process.kill()
 			this.services[serviceName] = null
 			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
@@ -290,7 +294,7 @@ export class FlightDeck<S extends string = string> {
 			this.alive.use(Promise.all(this.servicesAlive))
 		} else {
 			console.error(
-				`Failed to stop service ${this.options.packageName}: Service is not running.`,
+				`Failed to stop service ${this.options.packageName}::${serviceName}: Service is not running.`,
 			)
 		}
 	}
