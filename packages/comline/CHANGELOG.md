@@ -1,5 +1,11 @@
 # comline
 
+## 0.1.1
+
+### Patch Changes
+
+- b88e7eb: ✨ Improve logs and errors to be more clear and specific when missing required arguments.
+
 ## 0.1.0
 
 ### Minor Changes
