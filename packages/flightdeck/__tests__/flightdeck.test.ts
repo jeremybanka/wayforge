@@ -17,9 +17,9 @@ beforeEach(() => {
 	tmp.setGracefulCleanup()
 })
 
-afterEach(() => {
-	console.log(`---------------------TEST: cleaning up`)
-	flightDeck.stopAllServices()
+afterEach(async () => {
+	flightDeck.shutdown()
+	await flightDeck.dead
 })
 
 describe(`FlightDeck`, () => {
@@ -28,9 +28,9 @@ describe(`FlightDeck`, () => {
 		flightDeck = new FlightDeck({
 			secret: `secret`,
 			packageName: `my-app`,
-			executables: {
-				frontend: [`./frontend`, `7777`],
-				backend: [`./backend`, `8888`],
+			services: {
+				frontend: { run: [`./frontend`, `7777`], waitFor: false },
+				backend: { run: [`./backend`, `8888`], waitFor: true },
 			},
 			flightdeckRootDir: tmpDir.name,
 			get downloadPackageToUpdatesCmd() {
@@ -52,42 +52,35 @@ describe(`FlightDeck`, () => {
 			},
 		})
 		await flightDeck.live
-		const data = await fetch(`http://localhost:7777/`)
-		console.log(await data.text())
-		const data0 = await fetch(`http://localhost:8888/`)
-		console.log(await data0.text())
+		const [res0, res1] = await Promise.all([
+			fetch(`http://localhost:7777/`),
+			fetch(`http://localhost:8888/`),
+		])
+		const [data0, data1] = await Promise.all([res0.text(), res1.text()])
+		expect(data0).toEqual(`Hello World!`)
+		expect(data1).toEqual(`Hello World!`)
 
 		version++
 		const response = await Klaxon.alert({
 			secret: `secret`,
 			endpoint: `http://localhost:8080/`,
 		})
-		console.log(response)
+
 		expect(response.status).toBe(200)
 
-		console.log(`before dead`, {
-			servicesAlive: flightDeck.servicesLive.map((f) => f.done),
-			servicesDead: flightDeck.servicesDead.map((f) => f.done),
-			alive: flightDeck.live.done,
-			dead: flightDeck.dead.done,
-		})
 		await flightDeck.dead
 		console.log(`👷 flightdeck: all services are dead`)
-		console.log(`after dead`, {
-			servicesAlive: flightDeck.servicesLive.map((f) => f.done),
-			servicesDead: flightDeck.servicesDead.map((f) => f.done),
-			alive: flightDeck.live.done,
-			dead: flightDeck.dead.done,
-		})
+
 		await flightDeck.live
-		console.log(`👷 flightdeck: all services are alive`)
-		console.log(`after alive`, {
-			servicesAlive: flightDeck.servicesLive.map((f) => f.done),
-			servicesDead: flightDeck.servicesDead.map((f) => f.done),
-			alive: flightDeck.live.done,
-			dead: flightDeck.dead.done,
-		})
-		// throw new Error(`here`)
-		// await new Promise((res) => setTimeout(res, 1000))
+		console.log(`👷 flightdeck: all services are live`)
+
+		const [res2, res3] = await Promise.all([
+			fetch(`http://localhost:7777/`),
+			fetch(`http://localhost:8888/`),
+		])
+
+		const [data2, data3] = await Promise.all([res2.text(), res3.text()])
+		expect(data2).toEqual(`I can see my house from here!`)
+		expect(data3).toEqual(`I can see my house from here!`)
 	}, 5000)
 })

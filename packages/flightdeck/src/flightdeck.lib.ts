@@ -12,7 +12,7 @@ import { ChildSocket } from "atom.io/realtime-server"
 export type FlightDeckOptions<S extends string = string> = {
 	secret: string
 	packageName: string
-	executables: { [service in S]: string[] }
+	services: { [service in S]: { run: string[]; waitFor: boolean } }
 	downloadPackageToUpdatesCmd: string[]
 	flightdeckRootDir?: string | undefined
 }
@@ -20,7 +20,7 @@ export type FlightDeckOptions<S extends string = string> = {
 const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
 export class FlightDeck<S extends string = string> {
-	protected safety = -3
+	protected safety = 0
 
 	protected webhookServer: Server
 	protected services: {
@@ -32,6 +32,7 @@ export class FlightDeck<S extends string = string> {
 	protected serviceIdx: { readonly [service in S]: number }
 	public defaultServicesReadyToUpdate: { readonly [service in S]: boolean }
 	public servicesReadyToUpdate: { [service in S]: boolean }
+	public servicesShouldRestart: boolean
 
 	protected restartTimes: number[] = []
 
@@ -48,19 +49,23 @@ export class FlightDeck<S extends string = string> {
 		const { secret, flightdeckRootDir = resolve(homedir(), `services`) } =
 			options
 
-		const executablesEntries = toEntries(options.executables)
+		const servicesEntries = toEntries(options.services)
 		this.services = fromEntries(
-			executablesEntries.map(([serviceName]) => [serviceName, null]),
+			servicesEntries.map(([serviceName]) => [serviceName, null]),
 		)
 		this.serviceIdx = fromEntries(
-			executablesEntries.map(([serviceName], idx) => [serviceName, idx]),
+			servicesEntries.map(([serviceName], idx) => [serviceName, idx]),
 		)
 		this.defaultServicesReadyToUpdate = fromEntries(
-			executablesEntries.map(([serviceName]) => [serviceName, false]),
+			servicesEntries.map(([serviceName, { waitFor }]) => [
+				serviceName,
+				!waitFor,
+			]),
 		)
 		this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
-		this.servicesLive = executablesEntries.map(() => new Future(() => {}))
-		this.servicesDead = executablesEntries.map(() => new Future(() => {}))
+		this.servicesShouldRestart = true
+		this.servicesLive = servicesEntries.map(() => new Future(() => {}))
+		this.servicesDead = servicesEntries.map(() => new Future(() => {}))
 		this.live.use(Promise.all(this.servicesLive))
 		this.dead.use(Promise.all(this.servicesDead))
 
@@ -104,12 +109,22 @@ export class FlightDeck<S extends string = string> {
 												res.writeHead(200)
 												res.end()
 												this.fetchLatestRelease()
+												if (
+													toEntries(this.servicesReadyToUpdate).every(
+														([, isReady]) => isReady,
+													)
+												) {
+													console.log(`All services are ready to update!`)
+													this.stopAllServices()
+													return
+												}
 												for (const entry of toEntries(this.services)) {
 													const [serviceName, service] = entry
 													if (service) {
-														service.emit(`updatesReady`)
+														if (this.options.services[serviceName].waitFor) {
+															service.emit(`updatesReady`)
+														}
 													} else {
-														this.applyUpdate()
 														this.startService(serviceName)
 													}
 												}
@@ -150,11 +165,13 @@ export class FlightDeck<S extends string = string> {
 	}
 
 	protected startService(serviceName: S): void {
-		this.safety++
-		console.log(`safety is ${this.safety}`)
-		if (this.safety >= 0) {
-			throw new Error(`safety exceeded`)
+		console.log(
+			`Starting service ${this.options.packageName}::${serviceName}, try ${this.safety}/2...`,
+		)
+		if (this.safety > 2) {
+			throw new Error(`Out of tries...`)
 		}
+		this.safety++
 		if (!existsSync(this.currentServiceDir)) {
 			console.log(
 				`Tried to start service but failed: Service ${this.options.packageName} is not yet installed.`,
@@ -166,7 +183,7 @@ export class FlightDeck<S extends string = string> {
 			return
 		}
 
-		const [executable, ...args] = this.options.executables[serviceName]
+		const [executable, ...args] = this.options.services[serviceName].run
 		const program = executable.startsWith(`./`)
 			? resolve(this.currentServiceDir, executable)
 			: executable
@@ -207,6 +224,12 @@ export class FlightDeck<S extends string = string> {
 				`${this.options.packageName}::${serviceName} exited with code ${exitCode}`,
 			)
 			this.services[serviceName] = null
+			if (!this.servicesShouldRestart) {
+				console.log(
+					`Service ${this.options.packageName}::${serviceName} will not be restarted.`,
+				)
+				return
+			}
 			const updatesAreReady = existsSync(this.updateServiceDir)
 			if (updatesAreReady) {
 				console.log(
@@ -235,7 +258,7 @@ export class FlightDeck<S extends string = string> {
 				}
 			}
 		})
-		this.safety = -3
+		this.safety = 0
 	}
 
 	protected applyUpdate(): void {
@@ -265,6 +288,7 @@ export class FlightDeck<S extends string = string> {
 
 			renameSync(this.updateServiceDir, this.currentServiceDir)
 			this.restartTimes = []
+			this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
 		} else {
 			console.log(`Service ${this.options.packageName} is already up to date.`)
 		}
@@ -310,5 +334,10 @@ export class FlightDeck<S extends string = string> {
 				`Failed to stop service ${this.options.packageName}::${serviceName}: Service is not running.`,
 			)
 		}
+	}
+
+	public shutdown(): void {
+		this.servicesShouldRestart = false
+		this.stopAllServices()
 	}
 }
