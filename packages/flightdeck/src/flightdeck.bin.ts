@@ -16,7 +16,7 @@ const FLIGHTDECK_MANUAL = {
 		services: z.record(
 			z.object({ run: z.array(z.string()), waitFor: z.boolean() }),
 		),
-		flightDeckRootDir: z.string(),
+		flightdeckRootDir: z.string(),
 		downloadPackageToUpdatesCmd: z.array(z.string()),
 	}),
 	options: {
