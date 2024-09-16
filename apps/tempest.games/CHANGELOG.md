@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.3
+
+### Patch Changes
+
+- d73aa4b: 🔧 Access: Public
+
 ## 0.0.2
 
 ### Patch Changes
