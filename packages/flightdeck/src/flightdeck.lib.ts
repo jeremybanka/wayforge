@@ -183,7 +183,9 @@ export class FlightDeck<S extends string = string> {
 		this.services[serviceName].on(`alive`, () => {
 			this.servicesAlive[this.serviceIdx[serviceName]].use(Promise.resolve())
 			this.servicesDead[this.serviceIdx[serviceName]] = new Future(() => {})
-			this.dead = new Future(() => {})
+			if (this.dead.done) {
+				this.dead = new Future(() => {})
+			}
 			this.dead.use(Promise.all(this.servicesDead))
 		})
 		this.services[serviceName].process.on(`close`, (exitCode) => {
@@ -282,7 +284,9 @@ export class FlightDeck<S extends string = string> {
 			this.services[serviceName] = null
 			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
 			this.servicesAlive[this.serviceIdx[serviceName]] = new Future(() => {})
-			this.alive = new Future(() => {})
+			if (this.alive.done) {
+				this.alive = new Future(() => {})
+			}
 			this.alive.use(Promise.all(this.servicesAlive))
 		} else {
 			console.error(

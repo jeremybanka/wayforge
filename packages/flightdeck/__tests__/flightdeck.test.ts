@@ -28,7 +28,8 @@ describe(`FlightDeck`, () => {
 			secret: `secret`,
 			packageName: `my-app`,
 			executables: {
-				frontend: [`./app`],
+				frontend: [`./frontend`, `7777`],
+				backend: [`./backend`, `8888`],
 			},
 			flightdeckRootDir: tmpDir.name,
 			get downloadPackageToUpdatesCmd() {
@@ -38,12 +39,19 @@ describe(`FlightDeck`, () => {
 					`${testDirname}/fixtures/app@v${version}.ts`,
 					`--bundle`,
 					`--outfile`,
-					`${resolve(tmpDir.name, `my-app`, `update`, `app`)}`,
+					`${resolve(tmpDir.name, `my-app`, `update`, `frontend`)}`,
+					`&&`,
+					`bun`,
+					`build`,
+					`${testDirname}/fixtures/app@v${version}.ts`,
+					`--bundle`,
+					`--outfile`,
+					`${resolve(tmpDir.name, `my-app`, `update`, `backend`)}`,
 				]
 			},
 		})
 		await flightDeck.alive
-		const data = await fetch(`http://localhost:4444/`)
+		const data = await fetch(`http://localhost:7777/`)
 		console.log(await data.text())
 
 		version++
@@ -55,6 +63,8 @@ describe(`FlightDeck`, () => {
 		expect(response.status).toBe(200)
 
 		await flightDeck.dead
+		console.log(`👷 FlightDeck is dead`)
 		await flightDeck.alive
+		console.log(`👷 FlightDeck is alive`)
 	}, 5000)
 })
