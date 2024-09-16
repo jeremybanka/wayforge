@@ -12,49 +12,44 @@ import { FlightDeck } from "~/packages/flightdeck/src/flightdeck.lib"
 const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
 		secret: z.string(),
-		repo: z.string(),
-		app: z.string(),
-		runCmd: z.array(z.string()),
-		serviceDir: z.string(),
-		updateCmd: z.array(z.string()),
+		packageName: z.string(),
+		services: z.record(
+			z.object({ run: z.array(z.string()), waitFor: z.boolean() }),
+		),
+		flightDeckRootDir: z.string(),
+		downloadPackageToUpdatesCmd: z.array(z.string()),
 	}),
 	options: {
 		secret: {
-			flag: `s`,
+			flag: `x`,
 			required: true,
 			description: `Secret used to authenticate with the service.`,
 			example: `--secret=\"secret\"`,
 		},
-		repo: {
-			flag: `r`,
+		packageName: {
+			flag: `p`,
 			required: true,
-			description: `Name of the repository.`,
-			example: `--repo=\"sample/repo\"`,
+			description: `Name of the package.`,
+			example: `--packageName=\"my-app\"`,
 		},
-		app: {
-			flag: `a`,
+		services: {
+			flag: `s`,
 			required: true,
-			description: `Name of the application.`,
-			example: `--app=\"my-app\"`,
+			description: `Map of service names to executables.`,
+			example: `--services="{\\"frontend\\":{\\"run\\":[\\"./app\\"],\\"waitFor\\":false},\\"backend\\":{\\"run\\":[\\"./backend\\"],\\"waitFor\\":true}}"`,
+			parse: JSON.parse,
 		},
-		runCmd: {
-			flag: `r`,
-			required: true,
-			description: `Command to run the application.`,
-			example: `--runCmd=\"./app\"`,
-			parse: parseArrayOption,
-		},
-		serviceDir: {
+		flightdeckRootDir: {
 			flag: `d`,
 			required: true,
 			description: `Directory where the service is stored.`,
-			example: `--serviceDir=\"./services/sample/repo/my-app/current\"`,
+			example: `--flightdeckRootDir=\"./services/sample/repo/my-app/current\"`,
 		},
-		updateCmd: {
+		downloadPackageToUpdatesCmd: {
 			flag: `u`,
 			required: true,
 			description: `Command to update the service.`,
-			example: `--updateCmd=\"./app\"`,
+			example: `--downloadPackageToUpdatesCmd=\"./app\"`,
 			parse: parseArrayOption,
 		},
 	},
@@ -107,7 +102,7 @@ switch (inputs.case) {
 	default: {
 		const flightDeck = new FlightDeck(inputs.opts)
 		process.on(`close`, async () => {
-			flightDeck.stopService()
+			flightDeck.stopAllServices()
 			await flightDeck.dead
 		})
 	}
