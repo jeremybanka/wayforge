@@ -1,3 +1,4 @@
+import { readdir } from "node:fs/promises"
 import { resolve } from "node:path"
 
 import tmp from "tmp"
@@ -18,7 +19,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-	flightDeck.stopService()
+	flightDeck.stopAllServices()
 })
 
 describe(`FlightDeck`, () => {
@@ -26,11 +27,12 @@ describe(`FlightDeck`, () => {
 		let version = 0
 		flightDeck = new FlightDeck({
 			secret: `secret`,
-			repo: `sample/repo`,
-			app: `my-app`,
-			runCmd: [`./app`],
-			serviceDir: tmpDir.name,
-			get updateCmd() {
+			packageName: `my-app`,
+			executables: {
+				frontend: [`./app`],
+			},
+			flightdeckRootDir: tmpDir.name,
+			get downloadPackageToUpdatesCmd() {
 				return [
 					`bun`,
 					`build`,
@@ -42,6 +44,12 @@ describe(`FlightDeck`, () => {
 			},
 		})
 		await flightDeck.alive
+		// list files in the flightdeckRootDir
+		console.log({
+			root: await readdir(tmpDir.name),
+			// current: await readdir(resolve(tmpDir.name, `current`, `app`)),
+			currentApp: await readdir(flightDeck.currentServiceDir),
+		})
 		const data = await fetch(`http://localhost:4444/`)
 		console.log(await data.text())
 
