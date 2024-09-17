@@ -7,17 +7,17 @@
 	"type": "module",
 	"bin": {
 		"frontend": "./bin/frontend.bun.js",
-		"backend": "./bin/backend.node.js"
+		"backend": "./bin/backend.bun.js"
 	},
 	"files": ["app", "bin", "CHANGELOG.md", "index.html"],
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
-		"dev:backend": "cross-env MODE=development PORT=4444 tsx --watch ./src/backend.node.ts",
+		"dev:backend": "cross-env MODE=development PORT=4444 bun --hot ./src/backend.bun.ts",
 		"build": "rimraf ./bin && concurrently \"bun:build:*\"",
 		"build:vite": "vite build --outDir ./app",
 		"build:frontend": "bun build ./src/frontend.bun.ts --outdir ./bin --bundle --minify --target bun",
-		"build:backend": "bun build ./src/backend.node.ts --outdir ./bin --bundle --minify --target node",
+		"build:backend": "bun build ./src/backend.bun.ts --outdir ./bin --bundle --minify --target bun",
 		"build:backend:game": "bun build ./src/backend.worker.game.bun.ts --outdir ./bin --bundle --minify --target bun",
 		"preview": "concurrently \"bun:preview:*\"",
 		"preview:frontend": "bun ./bin/frontend.bun.js",
