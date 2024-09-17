@@ -33,22 +33,15 @@ describe(`FlightDeck`, () => {
 				backend: { run: [`./backend`, `8888`], waitFor: true },
 			},
 			flightdeckRootDir: tmpDir.name,
-			get downloadPackageToUpdatesCmd() {
-				return [
-					`bun`,
-					`build`,
-					`${testDirname}/fixtures/app@v${version}.ts`,
-					`--bundle`,
-					`--outfile`,
-					`${resolve(tmpDir.name, `my-app`, `update`, `frontend`)}`,
-					`&&`,
-					`bun`,
-					`build`,
-					`${testDirname}/fixtures/app@v${version}.ts`,
-					`--bundle`,
-					`--outfile`,
-					`${resolve(tmpDir.name, `my-app`, `update`, `backend`)}`,
-				]
+			get scripts() {
+				return {
+					download: [
+						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir.name, `frontend`)}`,
+						`&&`,
+						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir.name, `backend`)}`,
+					].join(` `),
+					install: `echo "installed!"`,
+				}
 			},
 		})
 		await flightDeck.live

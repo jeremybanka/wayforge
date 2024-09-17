@@ -5,11 +5,23 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist", "CHANGELOG.md"],
+	"bin": {
+		"frontend": "./bin/frontend.bun.js",
+		"backend": "./bin/backend.node.js"
+	},
+	"files": ["app", "bin", "CHANGELOG.md", "index.html"],
 	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
+		"dev": "concurrently \"bun:dev:*\"",
+		"dev:vite": "vite --port 3333",
+		"dev:backend": "cross-env MODE=development PORT=4444 tsx --watch ./src/backend.node.ts",
+		"build": "rimraf ./bin && concurrently \"bun:build:*\"",
+		"build:vite": "vite build --outDir ./app",
+		"build:frontend": "bun build ./src/frontend.bun.ts --outdir ./bin --bundle --minify --target bun",
+		"build:backend": "bun build ./src/backend.node.ts --outdir ./bin --bundle --minify --target node",
+		"build:backend:game": "bun build ./src/backend.worker.game.bun.ts --outdir ./bin --bundle --minify --target bun",
+		"preview": "concurrently \"bun:preview:*\"",
+		"preview:frontend": "bun ./bin/frontend.bun.js",
+		"preview:backend": "bun ./bin/backend.node.js",
 		"test": "echo no tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
@@ -18,17 +30,24 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
+		"atom.io": "workspace:*",
 		"react": "18.3.1",
 		"react-dom": "18.3.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.10.0",
+		"@types/bun": "1.1.9",
+		"@types/node": "22.5.5",
 		"@types/react": "18.3.6",
 		"@types/react-dom": "18.3.0",
 		"@vitejs/plugin-react-swc": "3.7.0",
+		"concurrently": "9.0.1",
+		"cross-env": "7.0.3",
 		"eslint": "9.10.0",
 		"eslint-plugin-react-refresh": "0.4.12",
 		"globals": "15.9.0",
+		"rimraf": "6.0.1",
+		"tsx": "4.19.1",
 		"typescript": "5.6.2",
 		"typescript-eslint": "8.6.0",
 		"vite": "5.4.6"
