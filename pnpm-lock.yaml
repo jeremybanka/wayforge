@@ -298,6 +298,9 @@ importers:
 
   apps/tempest.games:
     dependencies:
+      atom.io:
+        specifier: workspace:*
+        version: link:../../packages/atom.io
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -308,6 +311,12 @@ importers:
       '@eslint/js':
         specifier: 9.10.0
         version: 9.10.0
+      '@types/bun':
+        specifier: 1.1.9
+        version: 1.1.9
+      '@types/node':
+        specifier: 22.5.5
+        version: 22.5.5
       '@types/react':
         specifier: 18.3.6
         version: 18.3.6
@@ -317,6 +326,12 @@ importers:
       '@vitejs/plugin-react-swc':
         specifier: 3.7.0
         version: 3.7.0(@swc/helpers@0.5.5)(vite@5.4.6(@types/node@22.5.5)(lightningcss@1.27.0)(sass@1.78.0)(terser@5.31.5))
+      concurrently:
+        specifier: 9.0.1
+        version: 9.0.1
+      cross-env:
+        specifier: 7.0.3
+        version: 7.0.3
       eslint:
         specifier: 9.10.0
         version: 9.10.0(jiti@1.21.6)
@@ -326,6 +341,12 @@ importers:
       globals:
         specifier: 15.9.0
         version: 15.9.0
+      rimraf:
+        specifier: 6.0.1
+        version: 6.0.1
+      tsx:
+        specifier: 4.19.1
+        version: 4.19.1
       typescript:
         specifier: 5.6.2
         version: 5.6.2
