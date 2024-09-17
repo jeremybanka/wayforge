@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.4
+
+### Patch Changes
+
+- 60d6508: ♻️ Split application into parts.
+
 ## 0.0.3
 
 ### Patch Changes
