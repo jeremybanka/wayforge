@@ -62,6 +62,6 @@ jobs:
           bun ./packages/flightdeck/src/klaxon.bin.ts \
           --packageConfig="{\"tempest.games\":{\"endpoint\":\"https://flightdeck.tempest.games/\"}}" \
           --secretsConfig="${{ secrets.FLIGHTDECK_SECRETS }}" \
-          --publishedPackages="${{ steps.changesets.outputs.publishedPackages }}" \
+          --publishedPackages="$(${{ steps.changesets.outputs.publishedPackages }} | sed 's/"/\\"/g')" \
           -- scramble
           
