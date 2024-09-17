@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.5
+
+### Patch Changes
+
+- 8cf0e94: ♻️ Bun
+
 ## 0.0.4
 
 ### Patch Changes
