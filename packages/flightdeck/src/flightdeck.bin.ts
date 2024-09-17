@@ -17,7 +17,10 @@ const FLIGHTDECK_MANUAL = {
 			z.object({ run: z.array(z.string()), waitFor: z.boolean() }),
 		),
 		flightdeckRootDir: z.string(),
-		downloadPackageToUpdatesCmd: z.array(z.string()),
+		scripts: z.object({
+			download: z.string(),
+			install: z.string(),
+		}),
 	}),
 	options: {
 		secret: {
@@ -45,12 +48,12 @@ const FLIGHTDECK_MANUAL = {
 			description: `Directory where the service is stored.`,
 			example: `--flightdeckRootDir=\"./services/sample/repo/my-app/current\"`,
 		},
-		downloadPackageToUpdatesCmd: {
-			flag: `u`,
+		scripts: {
+			flag: `r`,
 			required: true,
-			description: `Command to update the service.`,
-			example: `--downloadPackageToUpdatesCmd=\"./app\"`,
-			parse: parseArrayOption,
+			description: `Map of scripts to run.`,
+			example: `--scripts="{\\"download\\":\\"npm i",\\"install\\":\\"npm run build\\"}"`,
+			parse: JSON.parse,
 		},
 	},
 } satisfies OptionsGroup<FlightDeckOptions>
