@@ -4,6 +4,6 @@
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"types": ["vitest/globals", "bun"]
+		"types": ["vitest/globals", "bun-types"]
 	}
 }

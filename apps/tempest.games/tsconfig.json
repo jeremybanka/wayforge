@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"types": ["vitest/globals", "bun", "node"]
+		"types": ["vitest/globals", "bun-types", "node"]
 	},
 	"include": ["src", "__tests__", "**/*.config.ts"],
 	"exclude": []

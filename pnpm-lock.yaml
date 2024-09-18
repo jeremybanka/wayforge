@@ -90,9 +90,6 @@ importers:
       '@next/mdx':
         specifier: 14.2.12
         version: 14.2.12(@mdx-js/loader@3.0.1(webpack@5.94.0))(@mdx-js/react@3.0.1(@types/react@18.3.7)(react@18.3.1))
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -111,6 +108,9 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: 15.5.13
         version: 15.5.13
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       chokidar:
         specifier: 4.0.0
         version: 4.0.0
@@ -151,9 +151,9 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       vite:
         specifier: 5.4.6
         version: 5.4.6(@types/node@22.5.5)(lightningcss@1.27.0)(sass@1.79.1)(terser@5.33.0)
@@ -176,15 +176,15 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
       browserslist:
         specifier: 4.23.3
         version: 4.23.3
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       chokidar:
         specifier: 4.0.0
         version: 4.0.0
@@ -317,9 +317,6 @@ importers:
       '@eslint/js':
         specifier: 9.10.0
         version: 9.10.0
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/node':
         specifier: 22.5.5
         version: 22.5.5
@@ -332,6 +329,9 @@ importers:
       '@vitejs/plugin-react-swc':
         specifier: 3.7.0
         version: 3.7.0(@swc/helpers@0.5.5)(vite@5.4.6(@types/node@22.5.5)(lightningcss@1.27.0)(sass@1.79.1)(terser@5.33.0))
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -687,7 +687,7 @@ importers:
         version: 0.24.2
       drizzle-orm:
         specifier: 0.33.0
-        version: 0.33.0(@types/react@18.3.7)(bun-types@1.1.27)(postgres@3.4.4)(react@18.3.1)
+        version: 0.33.0(@types/react@18.3.7)(bun-types@1.1.28)(postgres@3.4.4)(react@18.3.1)
       eslint:
         specifier: 9.10.0
         version: 9.10.0(jiti@1.21.6)
@@ -761,12 +761,12 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -789,15 +789,15 @@ importers:
         specifier: 3.23.3
         version: 3.23.3(zod@3.23.8)
     devDependencies:
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/node':
         specifier: 22.5.5
         version: 22.5.5
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -823,15 +823,15 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/node':
         specifier: 20.16.5
         version: 20.16.5
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -1135,15 +1135,15 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
     devDependencies:
-      '@types/bun':
-        specifier: 1.1.9
-        version: 1.1.9
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
       '@types/react':
         specifier: 18.3.7
         version: 18.3.7
+      bun-types:
+        specifier: 1.1.28
+        version: 1.1.28
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -3417,9 +3417,6 @@ packages:
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
 
-  '@types/bun@1.1.9':
-    resolution: {integrity: sha512-SXJRejXpmAc3qxyN/YS4/JGWEzLf4dDBa5fLtRDipQXHqNccuMU4EUYCooXNTsylG0DmwFQsGgEDHxZF+3DqRw==}
-
   '@types/cookie@0.4.1':
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
 
@@ -4066,8 +4063,8 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
-  bun-types@1.1.27:
-    resolution: {integrity: sha512-rHXAiIDefeMS/fleNM1rRDYqolJGNRdch3+AuCRwcZWaqTa1vjGBNsahH/HVV7Y82frllYhJomCVSEiHzLzkgg==}
+  bun-types@1.1.28:
+    resolution: {integrity: sha512-XiWHzHZIxkgssHSUwJVrkUDHvwhHzE9mrFUMXZ3BKqNiGzL0n/fB/XUQZibcHjg0SvW/Tt5WUNeKmiM9njuy/w==}
 
   bundle-require@5.0.0:
     resolution: {integrity: sha512-GuziW3fSSmopcx4KRymQEJVbZUfqlCqcq7dvs6TYwKRZiegK/2buMxQTPs6MGlNv50wms1699qYO54R8XfRX4w==}
@@ -10164,10 +10161,6 @@ snapshots:
     dependencies:
       '@babel/types': 7.25.6
 
-  '@types/bun@1.1.9':
-    dependencies:
-      bun-types: 1.1.27
-
   '@types/cookie@0.4.1': {}
 
   '@types/cors@2.8.17':
@@ -10995,7 +10988,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bun-types@1.1.27:
+  bun-types@1.1.28:
     dependencies:
       '@types/node': 20.12.14
       '@types/ws': 8.5.12
@@ -11493,10 +11486,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.33.0(@types/react@18.3.7)(bun-types@1.1.27)(postgres@3.4.4)(react@18.3.1):
+  drizzle-orm@0.33.0(@types/react@18.3.7)(bun-types@1.1.28)(postgres@3.4.4)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.7
-      bun-types: 1.1.27
+      bun-types: 1.1.28
       postgres: 3.4.4
       react: 18.3.1
 
