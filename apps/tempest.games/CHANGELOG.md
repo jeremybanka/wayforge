@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.6
+
+### Patch Changes
+
+- f36d18f: 🐛 Use ParentSocket for logging.
+
 ## 0.0.5
 
 ### Patch Changes
