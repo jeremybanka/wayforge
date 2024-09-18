@@ -12,13 +12,25 @@ const gameWorker = worker(parent, `backend.worker.game.bun`)
 
 serve({
 	port: BACKEND_PORT ?? 4444,
-	async fetch(req) {
-		parent.logger.info(`🚀`, req.method, req.url)
+	async fetch(req, server) {
+		const ip = server.requestIP(req)?.address ?? `??`
+		parent.logger.info(`🚀`, ip, Date.now(), `<-`, req.method, req.url)
 		const text = await req.text()
 		if (text) {
 			parent.logger.info(`📬`, { text })
 		}
-		return new Response(`Welcome!`)
+		switch (req.method) {
+			case `GET`:
+				if (req.url.endsWith(`/.env`)) {
+					// researching what attackers will try for moira
+					return new Response(`PASSWORD="I am a silly, silly robot."`, {
+						status: 200,
+					})
+				}
+				return new Response(null, { status: 404 })
+			default:
+				return new Response(null, { status: 405 })
+		}
 	},
 })
 
