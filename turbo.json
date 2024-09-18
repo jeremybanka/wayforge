@@ -6,6 +6,11 @@
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*", "bin/**"],
 			"inputs": ["**/package.json", "src/**", "**/src/**"]
 		},
+		"tempest.games#build": {
+			"dependsOn": ["^build"],
+			"outputs": ["app/**", "bin/**"],
+			"inputs": ["**/package.json", "src/**"]
+		},
 		"atom.io.fyi#build": {
 			"dependsOn": ["atom.io#build"],
 			"outputs": ["dist/**"],
