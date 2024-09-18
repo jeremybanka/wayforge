@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.9
+
+### Patch Changes
+
+- 28a83df: ✨ Redirect /index.html to /
+
 ## 0.0.8
 
 ### Patch Changes
