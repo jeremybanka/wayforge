@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.0.7
+
+### Patch Changes
+
+- e9e479d: 🐛 FlightDeck now sends a "SIGINT" to the processes it kills.
+
 ## 0.0.6
 
 ### Patch Changes
