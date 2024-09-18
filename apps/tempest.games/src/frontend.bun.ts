@@ -13,19 +13,18 @@ const appDir = resolve(import.meta.dir, `..`, `app`)
 
 serve({
 	port: FRONTEND_PORT ?? 3333,
-	static: {
-		"/": new Response(await Bun.file(resolve(appDir, `index.html`)).bytes(), {
-			headers: {
-				"Content-Type": `text/html`,
-			},
-		}),
-	},
 	async fetch(req, server) {
 		const url = new URL(req.url)
 
 		const ip = server.requestIP(req)?.address ?? `??`
 		parent.logger.info(`[${ip}]`, req.method, url.pathname)
 
+		if (url.pathname === `/`) {
+			return new Response(Bun.file(resolve(appDir, `index.html`)))
+		}
+		if (url.pathname === `/index.html`) {
+			return Response.redirect(`/`)
+		}
 		// Normalize the requested path and prevent path traversal
 		const filePath = join(appDir, url.pathname)
 		const normalizedPath = normalize(filePath)
