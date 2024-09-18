@@ -9,12 +9,7 @@
 		"frontend": "./bin/frontend.bun.js",
 		"backend": "./bin/backend.bun.js"
 	},
-	"files": [
-		"app",
-		"bin",
-		"CHANGELOG.md",
-		"index.html"
-	],
+	"files": ["app", "bin", "CHANGELOG.md", "index.html"],
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
@@ -35,6 +30,7 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
+		"atom.io": "workspace:*",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
 		"socket.io": "4.7.5",
