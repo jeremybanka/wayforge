@@ -21,7 +21,7 @@
 		"build:backend:game": "bun build ./src/backend.worker.game.bun.ts --outdir ./bin --bundle --minify --target bun",
 		"preview": "concurrently \"bun:preview:*\"",
 		"preview:frontend": "bun ./bin/frontend.bun.js",
-		"preview:backend": "bun ./bin/backend.node.js",
+		"preview:backend": "bun ./bin/backend.bun.js",
 		"test": "echo no tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
