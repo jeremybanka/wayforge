@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.8
+
+### Patch Changes
+
+- 306e3a8: 🐛 Fix bug where frontend would start on the wrong port.
+
 ## 0.0.7
 
 ### Patch Changes
