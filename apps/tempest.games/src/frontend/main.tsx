@@ -7,12 +7,26 @@ import { io } from "socket.io-client"
 
 import App from "./App.tsx"
 
+let localId: string
+try {
+	const rawId = localStorage.getItem(`myId`)
+	if (rawId) {
+		localId = JSON.parse(rawId)
+	} else {
+		localId = Math.random().toString()
+		localStorage.setItem(`myId`, JSON.stringify(localId))
+	}
+} catch (_) {
+	localId = Math.random().toString()
+	localStorage.setItem(`myId`, JSON.stringify(localId))
+}
+
 export const socket = io(
 	import.meta.env.MODE === `development`
 		? `http://localhost:4444/`
 		: `https://realtime.tempest.games/`,
 	{
-		auth: { token: `test`, username: Math.random().toString() },
+		auth: { token: `test`, username: localId },
 	},
 )
 
