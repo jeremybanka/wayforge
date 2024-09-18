@@ -1,13 +1,16 @@
+#!/usr/bin/env bun
+
 import { join, normalize, resolve } from "node:path"
 
 import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 
+import { FRONTEND_PORT } from "./library/const"
+
 const parent = new ParentSocket()
 parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
-// Create the HTTP server using Bun
 serve({
 	port: process.env.PORT ?? 8080,
 	static: {
@@ -43,5 +46,5 @@ process.on(`exit`, () => {
 	parent.logger.info(`🛬 frontend server exiting`)
 })
 parent.logger.info(
-	`🛫 frontend server running at http://localhost:${process.env.FRONTEND_PORT ?? 3333}/`,
+	`🛫 frontend server running at http://localhost:${FRONTEND_PORT ?? 3333}/`,
 )
