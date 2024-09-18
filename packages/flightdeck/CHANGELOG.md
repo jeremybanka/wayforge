@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.0.6
+
+### Patch Changes
+
+- 64adab0: 💥 Only pass a string to spawn a process.
+
 ## 0.0.5
 
 ### Patch Changes
