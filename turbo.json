@@ -7,7 +7,7 @@
 			"inputs": ["**/package.json", "src/**", "**/src/**"]
 		},
 		"tempest.games#build": {
-			"dependsOn": ["build"],
+			"dependsOn": ["^build"],
 			"outputs": ["app/**", "bin/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},
