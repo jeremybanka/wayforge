@@ -1,1 +1,1 @@
-export const { MODE, FRONTEND_PORT } = process.env
+export const { MODE, FRONTEND_PORT, BACKEND_PORT } = process.env
