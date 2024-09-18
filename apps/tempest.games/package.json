@@ -38,11 +38,11 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.10.0",
-		"@types/bun": "1.1.9",
 		"@types/node": "22.5.5",
 		"@types/react": "18.3.7",
 		"@types/react-dom": "18.3.0",
 		"@vitejs/plugin-react-swc": "3.7.0",
+		"bun-types": "1.1.28",
 		"concurrently": "9.0.1",
 		"cross-env": "7.0.3",
 		"eslint": "9.10.0",
