@@ -347,7 +347,7 @@ export class FlightDeck<S extends string = string> {
 	public stopService(serviceName: S): void {
 		if (this.services[serviceName]) {
 			this.serviceLoggers[serviceName].info(`Stopping service...`)
-			this.services[serviceName].process.kill()
+			this.services[serviceName].process.kill(`SIGINT`)
 			this.services[serviceName] = null
 			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
 			this.servicesLive[this.serviceIdx[serviceName]] = new Future(() => {})
