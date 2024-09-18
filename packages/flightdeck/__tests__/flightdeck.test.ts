@@ -29,8 +29,8 @@ describe(`FlightDeck`, () => {
 			secret: `secret`,
 			packageName: `my-app`,
 			services: {
-				frontend: { run: [`./frontend`, `7777`], waitFor: false },
-				backend: { run: [`./backend`, `8888`], waitFor: true },
+				frontend: { run: `./frontend 7777`, waitFor: false },
+				backend: { run: `./backend 8888`, waitFor: true },
 			},
 			flightdeckRootDir: tmpDir.name,
 			get scripts() {

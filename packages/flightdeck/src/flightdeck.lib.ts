@@ -18,7 +18,7 @@ import { ChildSocket } from "atom.io/realtime-server"
 export type FlightDeckOptions<S extends string = string> = {
 	secret: string
 	packageName: string
-	services: { [service in S]: { run: string[]; waitFor: boolean } }
+	services: { [service in S]: { run: string; waitFor: boolean } }
 	scripts: {
 		download: string
 		install: string
@@ -237,8 +237,8 @@ export class FlightDeck<S extends string = string> {
 			return
 		}
 
-		const [executable, ...args] = this.options.services[serviceName].run
-		const serviceProcess = spawn(executable, args, {
+		const [exe, ...args] = this.options.services[serviceName].run.split(` `)
+		const serviceProcess = spawn(exe, args, {
 			cwd: this.options.flightdeckRootDir,
 			env: import.meta.env,
 		})
