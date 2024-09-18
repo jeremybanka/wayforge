@@ -167,8 +167,8 @@ importers:
   apps/edge/viceroy-htmx:
     dependencies:
       '@fastly/js-compute':
-        specifier: 3.22.4
-        version: 3.22.4
+        specifier: 3.23.0
+        version: 3.23.0
       preact-render-to-string:
         specifier: 6.5.11
         version: 6.5.11(preact@10.24.0)
@@ -1923,6 +1923,10 @@ packages:
   '@bytecodealliance/preview2-shim@0.16.7':
     resolution: {integrity: sha512-YxfbzaykY6iVCSmeHPwOqO4fnWGj6awQ5pCK3UyI0zOg9Okp7pvK4J5BkQUC5QpPdFC9vUmWdqx5QSLt9k3iyQ==}
 
+  '@bytecodealliance/weval@0.3.2':
+    resolution: {integrity: sha512-yH28sdq0Y0Oc29LbbWCEx2PvRFi0D7CEhWdNHPovl/L7thzlNlFWCRcOLanB0XgXQ5rygTpVVBFH0/50tWMg2w==}
+    engines: {node: '>=16'}
+
   '@bytecodealliance/wizer-darwin-arm64@7.0.5':
     resolution: {integrity: sha512-Tp0SgVQR568SVPvSfyWDT00yL4ry/w9FS2qy8ZwaP0EauYyjFSZojj6mESX6x9fpYkEnQdprgfdvhw5h1hTwCQ==}
     cpu: [arm64]
@@ -2697,8 +2701,8 @@ packages:
       react-dom: '>=17'
       recoil: '>=0.7.6'
 
-  '@fastly/js-compute@3.22.4':
-    resolution: {integrity: sha512-3oLgKJDWfkk341WoqmSzE8m1UH1mINEaAedNk2kKE7rrZR99uhfJrsqmnndXDcTaPb0W+s9SCuX4q1iASIhDjw==}
+  '@fastly/js-compute@3.23.0':
+    resolution: {integrity: sha512-DZ1rLBMm2veeDF+8oiVgC54cBx/SuqUH2ov7f3K7EtbZJx5C9bSTg9fBhzD/hbJkucSfveu7oIOyqXQWP4cASw==}
     hasBin: true
 
   '@floating-ui/core@1.6.8':
@@ -8657,6 +8661,13 @@ snapshots:
 
   '@bytecodealliance/preview2-shim@0.16.7': {}
 
+  '@bytecodealliance/weval@0.3.2':
+    dependencies:
+      '@napi-rs/lzma': 1.4.0
+      decompress: 4.2.1
+      decompress-tar: 4.1.1
+      decompress-unzip: 4.0.1
+
   '@bytecodealliance/wizer-darwin-arm64@7.0.5':
     optional: true
 
@@ -9319,11 +9330,11 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
 
-  '@fastly/js-compute@3.22.4':
+  '@fastly/js-compute@3.23.0':
     dependencies:
       '@bytecodealliance/jco': 1.6.0
+      '@bytecodealliance/weval': 0.3.2
       '@bytecodealliance/wizer': 7.0.5
-      '@cfallin/weval': 0.2.14
       acorn: 8.12.1
       acorn-walk: 8.3.4
       esbuild: 0.23.1
@@ -9556,7 +9567,7 @@ snapshots:
   '@motionone/easing@10.18.0':
     dependencies:
       '@motionone/utils': 10.18.0
-      tslib: 2.4.0
+      tslib: 2.7.0
 
   '@motionone/generators@10.18.0':
     dependencies:
