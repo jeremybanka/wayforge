@@ -1,6 +1,6 @@
 import * as React from "react"
 
-const { NODE_ENV } = process.env
+const { NODE_ENV } = globalThis.env ?? {}
 const IN_DEV = NODE_ENV === `development`
 
 function noop() {}
