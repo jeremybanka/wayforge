@@ -1,8 +1,10 @@
 import { join, normalize, resolve } from "node:path"
 
+import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 
-// Set the directory of your Vite app build
+const parent = new ParentSocket()
+parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
 // Create the HTTP server using Bun
@@ -19,7 +21,7 @@ serve({
 		const url = new URL(req.url)
 
 		const ip = server.requestIP(req)?.address ?? `??`
-		console.log(`[${ip}]`, req.method, url.pathname)
+		parent.logger.info(`[${ip}]`, req.method, url.pathname)
 
 		// Normalize the requested path and prevent path traversal
 		const filePath = join(appDir, url.pathname)
@@ -37,4 +39,9 @@ serve({
 	},
 })
 
-console.log(`Server running at http://localhost:${process.env.PORT ?? 8080}/`)
+process.on(`exit`, () => {
+	parent.logger.info(`🛬 frontend server exiting`)
+})
+parent.logger.info(
+	`🛫 frontend server running at http://localhost:${process.env.FRONTEND_PORT ?? 3333}/`,
+)

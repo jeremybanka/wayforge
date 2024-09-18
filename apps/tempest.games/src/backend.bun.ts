@@ -1,9 +1,16 @@
 #!/usr/bin/env bun
 
+import { ParentSocket } from "atom.io/realtime-server"
+
 import { worker } from "./backend.worker.ts"
 
-console.log(`hello world`)
+const parent = new ParentSocket()
 
-const gameWorker = worker(`backend.worker.game.bun`)
+const gameWorker = worker(parent, `backend.worker.game.bun`)
 
-process.on(`exit`, () => gameWorker.process.kill())
+process.on(`exit`, () => {
+	gameWorker.process.kill()
+	parent.logger.info(`🛬 backend server exiting`)
+})
+
+parent.logger.info(`🛫 backend server ready`)

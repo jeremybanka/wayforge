@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process"
 import { resolve } from "node:path"
 
+import type { ParentSocket } from "atom.io/realtime-server"
 import { ChildSocket } from "atom.io/realtime-server"
 
 export type Role = `backend` | `frontend`
@@ -9,6 +10,7 @@ export type Extension = `js` | `ts`
 export type Runner = `bun` | `node`
 
 export function worker(
+	from: ParentSocket<any, any>,
 	name: `${Role}.worker.${string}.${Runner}`,
 ): ChildSocket<any, any> {
 	const isDev = process.env.MODE === `development`
@@ -20,5 +22,5 @@ export function worker(
 		args.push(`--experimental-strip-types`)
 	}
 	const child = spawn(runner, args)
-	return new ChildSocket(child, name, console)
+	return new ChildSocket(child, name, from.logger)
 }

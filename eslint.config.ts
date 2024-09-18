@@ -223,7 +223,10 @@ const configs = [
 		rules: commonRules,
 	},
 	{
-		files: [`packages/atom.io/**/src/**/*.ts{,x}`],
+		files: [
+			`packages/atom.io/**/src/**/*.ts{,x}`,
+			`apps/tempest.games/src/**/*.ts{,x}`,
+		],
 		rules: {
 			"no-console": ERROR,
 		},
