@@ -13,9 +13,7 @@ const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
 		secret: z.string(),
 		packageName: z.string(),
-		services: z.record(
-			z.object({ run: z.array(z.string()), waitFor: z.boolean() }),
-		),
+		services: z.record(z.object({ run: z.string(), waitFor: z.boolean() })),
 		flightdeckRootDir: z.string(),
 		scripts: z.object({
 			download: z.string(),
@@ -39,7 +37,7 @@ const FLIGHTDECK_MANUAL = {
 			flag: `s`,
 			required: true,
 			description: `Map of service names to executables.`,
-			example: `--services="{\\"frontend\\":{\\"run\\":[\\"./app\\"],\\"waitFor\\":false},\\"backend\\":{\\"run\\":[\\"./backend\\"],\\"waitFor\\":true}}"`,
+			example: `--services="{\\"frontend\\":{\\"run\\":\\"./frontend\\",\\"waitFor\\":false},\\"backend\\":{\\"run\\":\\"./backend\\",\\"waitFor\\":true}}"`,
 			parse: JSON.parse,
 		},
 		flightdeckRootDir: {
