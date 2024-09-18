@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.0.10
+
+### Patch Changes
+
+- 072a7fb: ✨ Realtime continuities demo.
+- Updated dependencies [072a7fb]
+  - atom.io@0.29.3
+
 ## 0.0.9
 
 ### Patch Changes
