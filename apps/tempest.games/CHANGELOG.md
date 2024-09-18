@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.7
+
+### Patch Changes
+
+- 1c064f9: 🐛 Fix bug where application assets were missing.
+
 ## 0.0.6
 
 ### Patch Changes
