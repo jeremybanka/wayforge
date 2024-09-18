@@ -12,7 +12,7 @@ parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
 serve({
-	port: process.env.PORT ?? 8080,
+	port: FRONTEND_PORT ?? 3333,
 	static: {
 		"/": new Response(await Bun.file(resolve(appDir, `index.html`)).bytes(), {
 			headers: {
