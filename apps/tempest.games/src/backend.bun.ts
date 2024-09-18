@@ -107,24 +107,25 @@ parent.on(`updatesReady`, () => {
 	parent.emit(`readyToUpdate`)
 })
 
-function gracefulExit() {
+async function gracefulExit() {
 	parent.logger.info(`🧹 dispatching SIGINT to workers`)
 	gameWorker.process.kill(`SIGINT`)
+	await new Promise((resolve) => gameWorker.process.once(`exit`, resolve))
 	parent.logger.info(`🛬 backend server exiting`)
 	process.exit(0)
 }
 
-process.on(`SIGINT`, () => {
+process.on(`SIGINT`, async () => {
 	parent.logger.info(`❗ received SIGINT; exiting gracefully`)
-	gracefulExit()
+	await gracefulExit()
 })
-process.on(`SIGTERM`, () => {
+process.on(`SIGTERM`, async () => {
 	parent.logger.info(`❗ received SIGTERM; exiting gracefully`)
-	gracefulExit()
+	await gracefulExit()
 })
-process.on(`exit`, () => {
+process.on(`exit`, async () => {
 	parent.logger.info(`❗ received exit; exiting gracefully`)
-	gracefulExit()
+	await gracefulExit()
 })
 
 parent.logger.info(`🛫 backend server ready`)
