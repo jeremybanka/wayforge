@@ -41,8 +41,22 @@ serve({
 	},
 })
 
-process.on(`exit`, () => {
+function gracefulExit() {
 	parent.logger.info(`🛬 frontend server exiting`)
+	process.exit(0)
+}
+
+process.on(`SIGINT`, () => {
+	parent.logger.info(`❗ received SIGINT; exiting gracefully`)
+	gracefulExit()
+})
+process.on(`SIGTERM`, () => {
+	parent.logger.info(`❗ received SIGTERM; exiting gracefully`)
+	gracefulExit()
+})
+process.on(`exit`, () => {
+	parent.logger.info(`❗ received exit; exiting gracefully`)
+	gracefulExit()
 })
 parent.logger.info(
 	`🛫 frontend server running at http://localhost:${FRONTEND_PORT ?? 3333}/`,

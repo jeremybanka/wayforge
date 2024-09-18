@@ -107,9 +107,24 @@ parent.on(`updatesReady`, () => {
 	parent.emit(`readyToUpdate`)
 })
 
-process.on(`exit`, () => {
-	gameWorker.process.kill()
+function gracefulExit() {
+	parent.logger.info(`🧹 dispatching SIGINT to workers`)
+	gameWorker.process.kill(`SIGINT`)
 	parent.logger.info(`🛬 backend server exiting`)
+	process.exit(0)
+}
+
+process.on(`SIGINT`, () => {
+	parent.logger.info(`❗ received SIGINT; exiting gracefully`)
+	gracefulExit()
+})
+process.on(`SIGTERM`, () => {
+	parent.logger.info(`❗ received SIGTERM; exiting gracefully`)
+	gracefulExit()
+})
+process.on(`exit`, () => {
+	parent.logger.info(`❗ received exit; exiting gracefully`)
+	gracefulExit()
 })
 
 parent.logger.info(`🛫 backend server ready`)
