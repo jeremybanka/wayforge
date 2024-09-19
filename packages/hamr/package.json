@@ -38,7 +38,8 @@
 		"test": "vitest",
 		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",
-		"test:manifest": "tsx __scripts__/manifest-test.node"
+		"test:manifest": "tsx __scripts__/manifest-test.node",
+		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
 		"@floating-ui/react": "0.26.24",

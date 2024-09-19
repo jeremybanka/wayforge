@@ -27,7 +27,8 @@
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
-		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
+		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
 		"atom.io": "workspace:*",
