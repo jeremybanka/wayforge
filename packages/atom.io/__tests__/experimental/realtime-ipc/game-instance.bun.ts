@@ -21,7 +21,7 @@ const ipcLog = {
 }
 
 const atomIOSubprocessLogger = new AtomIOLogger(
-	`info`,
+	`warn`,
 	(_, tokenType, tokenKey, message) => {
 		const allowedIcons: LoggerIcon[] = [`🛄`]
 		const ignoredTokenTypes: TokenDenomination[] = []
