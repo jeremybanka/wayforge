@@ -29,6 +29,7 @@
 		"npmlog",
 		"outdir",
 		"outfile",
+		"postversion",
 		"preact",
 		"Recasters",
 		"Renamers",
