@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.0.11
+
+### Patch Changes
+
+- 4270cd7: ✨ Add explicit teardown functions.
+
 ## 0.0.10
 
 ### Patch Changes
