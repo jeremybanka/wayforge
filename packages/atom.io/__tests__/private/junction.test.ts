@@ -1,14 +1,9 @@
-import { isBoolean } from "fp-ts/boolean"
-import { isNumber } from "fp-ts/number"
-import { isString } from "fp-ts/string"
+import { Junction } from "atom.io/internal"
+import { jsonRefinery } from "atom.io/introspection"
+import type { Json } from "atom.io/json"
+import { isJson } from "atom.io/json"
 import { vitest } from "vitest"
-
-import { hasExactProperties } from "~/packages/anvl/src/object"
-import { jsonRefinery } from "~/packages/atom.io/introspection/src"
-import { isJson } from "~/packages/atom.io/json/src"
-
-import { Junction } from "../../junction/src"
-import type { Json } from "../../types/src"
+import { z } from "zod"
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)
@@ -37,11 +32,14 @@ describe(`Junction.prototype.getRelatedKey`, () => {
 		const player = `Helena`
 		const roomA = `Shrine`
 		const roomB = `Loft`
-		const playersInRooms = new Junction({
-			between: [`player`, `room`],
-			cardinality: `1:n`,
-			relations: [[player, [roomA, roomB]]],
-		})
+		const playersInRooms = new Junction(
+			{
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+				relations: [[player, [roomA, roomB]]],
+			},
+			{ warn: console.warn },
+		)
 		const roomKey = playersInRooms.getRelatedKey(player)
 		expect(roomKey).toEqual(roomA)
 		expect(warn).toHaveBeenCalledWith(
@@ -69,7 +67,10 @@ describe(`Junction.prototype.set`, () => {
 				between: [`reagent`, `reaction`],
 				cardinality: `n:n`,
 			},
-			{ isContent: hasExactProperties({ amount: isNumber }) },
+			{
+				isContent: (input): input is { amount: number } =>
+					z.object({ amount: z.number() }).safeParse(input).success,
+			},
 		).set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
 		const amountOfFire = reactionReagents.getContent(
 			fire,
@@ -83,7 +84,10 @@ describe(`Junction.prototype.set`, () => {
 				between: [`reagent`, `reaction`],
 				cardinality: `n:n`,
 			},
-			{ isContent: hasExactProperties({ amount: isNumber }) },
+			{
+				isContent: (input): input is { amount: number } =>
+					z.object({ amount: z.number() }).safeParse(input).success,
+			},
 		)
 		const fire = `03`
 		const fireAndWaterBecomeSteam = `486`
@@ -145,7 +149,10 @@ describe(`Junction.prototype.set1ToMany`, () => {
 				between: [`reagent`, `reaction`],
 				cardinality: `1:n`,
 			},
-			{ isContent: hasExactProperties({ amount: isNumber }) },
+			{
+				isContent: (input): input is { amount: number } =>
+					z.object({ amount: z.number() }).safeParse(input).success,
+			},
 		)
 		const newReagents = reactionReagents
 			.set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
@@ -194,7 +201,10 @@ describe(`Junction.prototype.delete`, () => {
 				between: [`celebrity0`, `celebrity1`],
 				cardinality: `n:n`,
 			},
-			{ isContent: hasExactProperties({ name: isString }) },
+			{
+				isContent: (input): input is { name: string } =>
+					z.object({ name: z.string() }).safeParse(input).success,
+			},
 		)
 			.set({ celebrity0: snad, celebrity1: cassilda }, { name: `snassilda` })
 			.delete({ celebrity0: snad, celebrity1: cassilda })
@@ -253,7 +263,10 @@ describe(`Junction.prototype.toJSON`, () => {
 				between: [`type`, `pokémon`],
 				cardinality: `1:n`,
 			},
-			{ isContent: hasExactProperties({ isDelta: isBoolean }) },
+			{
+				isContent: (input): input is { isDelta: boolean } =>
+					z.object({ isDelta: z.boolean() }).safeParse(input).success,
+			},
 		)
 			.set({ type: `grass`, pokémon: `bulbasaur` }, { isDelta: true })
 			.set({ type: `grass`, pokémon: `oddish` }, { isDelta: true })
@@ -306,7 +319,8 @@ describe(`Junction with external storage`, () => {
 				cardinality: `1:n`,
 			},
 			{
-				isContent: hasExactProperties({ joinedAt: isNumber }),
+				isContent: (input): input is { joinedAt: number } =>
+					z.object({ joinedAt: z.number() }).safeParse(input).success,
 				externalStore: {
 					getContent: (key: string) => contentMap.get(key),
 					setContent: (key: string, content: { joinedAt: number }) =>
