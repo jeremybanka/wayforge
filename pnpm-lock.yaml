@@ -378,8 +378,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       framer-motion:
-        specifier: 11.5.4
-        version: 11.5.4(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.5.5
+        version: 11.5.5(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nanoid:
         specifier: 5.0.7
         version: 5.0.7
@@ -464,8 +464,8 @@ importers:
         specifier: 2.16.9
         version: 2.16.9
       framer-motion:
-        specifier: 11.5.4
-        version: 11.5.4(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.5.5
+        version: 11.5.5(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       io-ts:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.9)
@@ -549,8 +549,8 @@ importers:
         specifier: 2.16.9
         version: 2.16.9
       framer-motion:
-        specifier: 11.5.4
-        version: 11.5.4(@emotion/is-prop-valid@1.3.0)(@preact/compat@18.3.1(preact@10.24.0))(@preact/compat@18.3.1(preact@10.24.0))
+        specifier: 11.5.5
+        version: 11.5.5(@emotion/is-prop-valid@1.3.0)(@preact/compat@18.3.1(preact@10.24.0))(@preact/compat@18.3.1(preact@10.24.0))
       nanoid:
         specifier: 5.0.7
         version: 5.0.7
@@ -692,8 +692,8 @@ importers:
         specifier: 9.10.0
         version: 9.10.0(jiti@1.21.6)
       framer-motion:
-        specifier: 11.5.4
-        version: 11.5.4(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.5.5
+        version: 11.5.5(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       happy-dom:
         specifier: 15.7.4
         version: 15.7.4
@@ -863,8 +863,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       framer-motion:
-        specifier: 11.5.4
-        version: 11.5.4(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.5.5
+        version: 11.5.5(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@emotion/styled':
         specifier: 11.13.0
@@ -5102,8 +5102,8 @@ packages:
   fp-ts@2.16.9:
     resolution: {integrity: sha512-+I2+FnVB+tVaxcYyQkHUq7ZdKScaBlX53A41mxQtpIccsfyv8PzdzP7fzp2AY832T4aoK6UZ5WRX/ebGd8uZuQ==}
 
-  framer-motion@11.5.4:
-    resolution: {integrity: sha512-E+tb3/G6SO69POkdJT+3EpdMuhmtCh9EWuK4I1DnIC23L7tFPrl8vxP+LSovwaw6uUr73rUbpb4FgK011wbRJQ==}
+  framer-motion@11.5.5:
+    resolution: {integrity: sha512-4srkT940jYA3bdQRglxod0KoqDvcghYri1A6bTjT02IXvq/EAd6A0tgUnJc5Q2ahhf8n959aLD3yO+XmLmE8OQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -9553,7 +9553,7 @@ snapshots:
       '@motionone/easing': 10.18.0
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.4.0
+      tslib: 2.7.0
 
   '@motionone/dom@10.18.0':
     dependencies:
@@ -9562,7 +9562,7 @@ snapshots:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.7.0
 
   '@motionone/easing@10.18.0':
     dependencies:
@@ -9573,7 +9573,7 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.4.0
+      tslib: 2.7.0
 
   '@motionone/types@10.17.1': {}
 
@@ -9581,7 +9581,7 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.7.0
 
   '@napi-rs/lzma-android-arm-eabi@1.4.0':
     optional: true
@@ -12243,7 +12243,7 @@ snapshots:
 
   fp-ts@2.16.9: {}
 
-  framer-motion@11.5.4(@emotion/is-prop-valid@1.3.0)(@preact/compat@18.3.1(preact@10.24.0))(@preact/compat@18.3.1(preact@10.24.0)):
+  framer-motion@11.5.5(@emotion/is-prop-valid@1.3.0)(@preact/compat@18.3.1(preact@10.24.0))(@preact/compat@18.3.1(preact@10.24.0)):
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
@@ -12251,7 +12251,7 @@ snapshots:
       react: '@preact/compat@18.3.1(preact@10.24.0)'
       react-dom: '@preact/compat@18.3.1(preact@10.24.0)'
 
-  framer-motion@11.5.4(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.5.5(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
