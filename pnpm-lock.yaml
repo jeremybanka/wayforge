@@ -745,6 +745,9 @@ importers:
       vitest:
         specifier: 2.1.1
         version: 2.1.1(@types/node@22.5.5)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(jsdom@25.0.0)(lightningcss@1.27.0)(sass@1.79.2)(terser@5.33.0)
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/break-check:
     dependencies:

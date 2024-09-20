@@ -16,14 +16,21 @@ import type {
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
-import type { Molecule, Store } from "atom.io/internal"
+import type {
+	BaseExternalStoreConfiguration,
+	ExternalStoreConfiguration,
+	JunctionEntries,
+	JunctionSchema,
+	Molecule,
+	// RelationCardinality,
+	Store,
+} from "atom.io/internal"
 import {
 	createMoleculeFamily,
 	createMutableAtomFamily,
 	createReadonlySelectorFamily,
 	createRegularAtomFamily,
 	disposeFromStore,
-	findInStore,
 	getFromStore,
 	getJsonFamily,
 	getJsonToken,
@@ -31,6 +38,7 @@ import {
 	IMPLICIT,
 	initFamilyMemberInStore,
 	isChildStore,
+	Junction,
 	makeMoleculeInStore,
 	newest,
 	NotFoundError,
@@ -42,15 +50,6 @@ import { type Json, stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type {
-	BaseExternalStoreConfiguration,
-	ExternalStoreConfiguration,
-	JunctionEntries,
-	JunctionSchema,
-} from "~/packages/rel8/junction/src"
-import { Junction } from "~/packages/rel8/junction/src"
-import type * as Rel8 from "~/packages/rel8/types/src"
-
 function capitalize<S extends string>(string: S): Capitalize<S> {
 	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
 }
@@ -58,7 +57,7 @@ function capitalize<S extends string>(string: S): Capitalize<S> {
 export interface JoinOptions<
 	ASide extends string,
 	BSide extends string,
-	Cardinality extends Rel8.Cardinality,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > extends Json.Object,
 		JunctionSchema<ASide, BSide>,
@@ -70,7 +69,7 @@ export interface JoinOptions<
 export type JoinStateFamilies<
 	ASide extends string,
 	BSide extends string,
-	Cardinality extends Rel8.Cardinality,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
 	? (Content extends Json.Object
@@ -742,7 +741,7 @@ export function getJoin<
 export type JoinStates<
 	ASide extends string,
 	BSide extends string,
-	Cardinality extends Rel8.Cardinality,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
 	? (Content extends Json.Object
