@@ -5,14 +5,14 @@ import { join, normalize, resolve } from "node:path"
 import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 
-import { FRONTEND_PORT } from "./library/const"
+import { env } from "./library/env"
 
 const parent = new ParentSocket()
 parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
 serve({
-	port: FRONTEND_PORT ?? 3333,
+	port: env.FRONTEND_PORT ?? 3333,
 	async fetch(req, server) {
 		const url = new URL(req.url)
 
@@ -59,5 +59,5 @@ process.on(`exit`, () => {
 	gracefulExit()
 })
 parent.logger.info(
-	`🛫 frontend server running at http://localhost:${FRONTEND_PORT ?? 3333}/`,
+	`🛫 frontend server running at http://localhost:${env.FRONTEND_PORT ?? 3333}/`,
 )
