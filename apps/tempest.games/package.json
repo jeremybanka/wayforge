@@ -32,6 +32,8 @@
 	},
 	"dependencies": {
 		"atom.io": "workspace:*",
+		"drizzle-orm": "0.33.0",
+		"postgres": "3.4.4",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
 		"socket.io": "4.8.0",
@@ -46,6 +48,7 @@
 		"bun-types": "1.1.29",
 		"concurrently": "9.0.1",
 		"cross-env": "7.0.3",
+		"drizzle-kit": "0.24.2",
 		"eslint": "9.11.1",
 		"eslint-plugin-react-refresh": "0.4.12",
 		"globals": "15.9.0",
