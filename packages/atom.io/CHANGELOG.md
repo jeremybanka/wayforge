@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.29.4
+
+### Patch Changes
+
+- 8731eb0: ♻️ This update fully consolidates `atom.io`'s internal dependencies under the atom.io root, making its coverage report a true reflection of all the code that belongs to it.
+
 ## 0.29.3
 
 ### Patch Changes
