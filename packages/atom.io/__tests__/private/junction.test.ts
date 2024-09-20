@@ -221,15 +221,19 @@ describe(`Junction.prototype.delete`, () => {
 			.set({ type: `grass`, pokémon: `bulbasaur` })
 			.set({ type: `grass`, pokémon: `oddish` })
 			.set({ type: `grass`, pokémon: `bellsprout` })
-			.delete({ type: `grass` })
+			.delete({ pokémon: `oddish` })
+		expect(pokemonPrimaryTypes.getRelatedKey(`oddish`)).toBeUndefined()
+		expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(
+			new Set([`bulbasaur`, `bellsprout`]),
+		)
+		pokemonPrimaryTypes.delete({ type: `grass` })
 		expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(undefined)
 		expect(pokemonPrimaryTypes.getRelatedKey(`bulbasaur`)).toBeUndefined()
-		expect(pokemonPrimaryTypes.getRelatedKey(`oddish`)).toBeUndefined()
 		expect(pokemonPrimaryTypes.getRelatedKey(`bellsprout`)).toBeUndefined()
 	})
 })
 
-describe(`Junction.prototype.getRelatedIdEntries`, () => {
+describe(`Junction.prototype.getRelationEntries`, () => {
 	it(`gets all content entries for a given id`, () => {
 		const friendships = new Junction(
 			{
@@ -253,6 +257,11 @@ describe(`Junction.prototype.getRelatedIdEntries`, () => {
 			[`kel`, { brothers: true }],
 			[`omori`, { agreeThat: `mari is very nice` }],
 		])
+		expect(friendships.getRelationEntries({ to: `kel` })).toEqual([
+			[`omori`, { trust: 1 }],
+			[`hero`, { brothers: true }],
+		])
+		expect(friendships.getRelationEntries({ from: `aubrey` })).toEqual([])
 	})
 })
 
@@ -291,20 +300,65 @@ describe(`Junction.prototype.toJSON`, () => {
 })
 
 describe(`Junction.prototype.replaceRelations`, () => {
-	it(`replaces all relations for a given id`, () => {
-		const pokemonPrimaryTypes = new Junction({
-			between: [`type`, `pokémon`],
-			cardinality: `1:n`,
-		})
+	describe(`safely`, () => {
+		it(`replaces all relations for a given id`, () => {
+			const pokemonPrimaryTypes = new Junction({
+				between: [`type`, `pokémon`],
+				cardinality: `1:n`,
+			})
 
-			.set({ type: `grass`, pokémon: `bulbasaur` })
-			.set({ type: `grass`, pokémon: `oddish` })
-			.set({ type: `grass`, pokémon: `bellsprout` })
-			.replaceRelations(`grass`, [`bulbasaur`, `oddish`])
-		expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(
-			new Set([`bulbasaur`, `oddish`]),
-		)
-		expect(pokemonPrimaryTypes.getRelatedKey(`bellsprout`)).toBeUndefined()
+				.set({ type: `grass`, pokémon: `bulbasaur` })
+				.set({ type: `grass`, pokémon: `oddish` })
+				.set({ type: `grass`, pokémon: `bellsprout` })
+				.replaceRelations(`grass`, [`bulbasaur`, `oddish`])
+			expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(
+				new Set([`bulbasaur`, `oddish`]),
+			)
+			expect(pokemonPrimaryTypes.getRelatedKey(`bellsprout`)).toBeUndefined()
+		})
+	})
+	describe(`unsafely`, () => {
+		it(`replaces all relations for a given id`, () => {
+			const candyIngredients = new Junction(
+				{
+					between: [`ingredient`, `candy`],
+					cardinality: `n:n`,
+				},
+				{
+					makeContentKey: (...keys) => keys.sort().join(`:`),
+					isContent: (input: unknown): input is { quantity: number } =>
+						z.object({ quantity: z.number() }).safeParse(input).success,
+				},
+			)
+				.set({ ingredient: `sugar`, candy: `gummi bears` }, { quantity: 1 })
+				.set({ ingredient: `sugar`, candy: `chocolate` }, { quantity: 1 })
+				.set({ ingredient: `butter`, candy: `gummi bears` }, { quantity: 1 })
+				.set({ ingredient: `butter`, candy: `chocolate` }, { quantity: 2 })
+				.set({ ingredient: `flour`, candy: `gummi bears` }, { quantity: 1 })
+				.set({ ingredient: `flour`, candy: `chocolate` }, { quantity: 0.5 })
+			expect(candyIngredients.getRelatedKeys(`sugar`)).toEqual(
+				new Set([`gummi bears`, `chocolate`]),
+			)
+			expect(candyIngredients.getRelatedKeys(`butter`)).toEqual(
+				new Set([`gummi bears`, `chocolate`]),
+			)
+			expect(candyIngredients.getRelatedKeys(`flour`)).toEqual(
+				new Set([`gummi bears`, `chocolate`]),
+			)
+			candyIngredients.replaceRelations(
+				`maple flake`,
+				{ "maple syrup": { quantity: 12 } },
+				{
+					reckless: true,
+				},
+			)
+			expect(candyIngredients.getRelatedKeys(`maple flake`)).toEqual(
+				new Set([`maple syrup`]),
+			)
+			expect(candyIngredients.getContent(`maple flake`, `maple syrup`)).toEqual({
+				quantity: 12,
+			})
+		})
 	})
 })
 
@@ -407,5 +461,59 @@ describe(`Junction with external storage`, () => {
 		playersInRooms.delete({ player, room })
 		expect(playersInRooms.getRelatedKeys(player)).toBeUndefined()
 		expect(playersInRooms.getContent(player, room)).toBeUndefined()
+	})
+})
+
+describe(`Junction.prototype.has`, () => {
+	describe(`single param`, () => {
+		it(`returns true if the relation exists`, () => {
+			const player = `Helena`
+			const room = `Shrine`
+			const playersInRooms = new Junction({
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+				relations: [[player, [room]]],
+			})
+			expect(playersInRooms.has(player)).toBe(true)
+		})
+		it(`returns false if the relation does not exist`, () => {
+			const player = `Helena`
+			const room = `Shrine`
+			const playersInRooms = new Junction({
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+				relations: [[player, [room]]],
+			})
+			expect(playersInRooms.has(`other player`)).toBe(false)
+		})
+	})
+	describe(`dual param`, () => {
+		it(`returns true if the relation exists`, () => {
+			const player = `Helena`
+			const room = `Shrine`
+			const playersInRooms = new Junction({
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+				relations: [[player, [room]]],
+			})
+			expect(playersInRooms.has(player, room)).toBe(true)
+		})
+		it(`returns false if the relation does not exist`, () => {
+			const player = `Helena`
+			const room = `Shrine`
+			const playersInRooms = new Junction({
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+				relations: [[player, [room]]],
+			})
+			expect(playersInRooms.has(player, `other room`)).toBe(false)
+		})
+		it(`returns false if neither thing exists`, () => {
+			const playersInRooms = new Junction({
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+			})
+			expect(playersInRooms.has(`other player`, `other room`)).toBe(false)
+		})
 	})
 })
