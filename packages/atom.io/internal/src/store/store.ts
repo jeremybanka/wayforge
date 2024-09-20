@@ -10,22 +10,19 @@ import type {
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 
-import { Junction } from "~/packages/rel8/junction/src"
-
 import type {
 	Atom,
-	Func,
-	Molecule,
 	MutableAtomFamily,
 	ReadonlySelector,
 	ReadonlySelectorFamily,
 	RegularAtomFamily,
-	Tracker,
-	Transceiver,
 	WritableSelector,
 	WritableSelectorFamily,
 } from ".."
+import { Junction } from "../junction"
 import type { Lineage } from "../lineage"
+import type { Molecule } from "../molecule"
+import type { Tracker, Transceiver } from "../mutable"
 import { getJsonToken, getUpdateToken } from "../mutable"
 import type { OperationProgress } from "../operation"
 import { StatefulSubject, Subject } from "../subject"
@@ -36,6 +33,7 @@ import type {
 	TransactionProgress,
 } from "../transaction"
 import { isRootStore } from "../transaction"
+import type { Func } from "../utility-types"
 import { CircularBuffer } from "./circular-buffer"
 
 export class Store implements Lineage {

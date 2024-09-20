@@ -103,7 +103,7 @@ describe(`synchronizing transactions`, () => {
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
 
-		dave.enableLogging()
+		// dave.enableLogging()
 
 		await waitFor(() => {
 			throwUntil(jane.socket.connected)
@@ -163,8 +163,8 @@ describe(`mutable atoms in continuity`, () => {
 		return Object.assign(
 			RTTest.singleClient({
 				port: 5475,
-				server: ({ socket, enableLogging, silo: { store } }) => {
-					enableLogging()
+				server: ({ socket, silo: { store } }) => {
+					// enableLogging()
 					const exposeContinuity = RTS.realtimeContinuitySynchronizer({
 						socket,
 						store,

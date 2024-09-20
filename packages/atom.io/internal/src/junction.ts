@@ -1,4 +1,5 @@
-import type { Cardinality, Json, Refinement } from "rel8"
+import type { Refinement } from "atom.io/introspection"
+import type { Json } from "atom.io/json"
 
 export interface JunctionEntries<Content extends Json.Object | null>
 	extends Json.Object {
@@ -8,7 +9,7 @@ export interface JunctionEntries<Content extends Json.Object | null>
 export interface JunctionSchema<ASide extends string, BSide extends string>
 	extends Json.Object {
 	readonly between: [a: ASide, b: BSide]
-	readonly cardinality: Cardinality
+	readonly cardinality: `1:1` | `1:n` | `n:n`
 }
 
 export type BaseExternalStoreConfiguration = {
@@ -39,6 +40,7 @@ export type ExternalStoreConfiguration<Content extends Json.Object | null> =
 				Empty<ExternalStoreWithContentConfiguration<Json.Object>>
 
 export type JunctionAdvancedConfiguration<Content extends Json.Object | null> = {
+	warn?: (...args: any[]) => void
 	externalStore?: ExternalStoreConfiguration<Content>
 	isContent?: Refinement<unknown, Content>
 	makeContentKey?: (a: string, b: string) => string
@@ -57,12 +59,14 @@ export class Junction<
 > {
 	public readonly a: ASide
 	public readonly b: BSide
-	public readonly cardinality: Cardinality
+	public readonly cardinality: `1:1` | `1:n` | `n:n`
 	public readonly relations = new Map<string, Set<string>>()
 	public readonly contents = new Map<string, Content>()
 
 	public isContent: Refinement<unknown, Content> | null
 	public makeContentKey = (a: string, b: string): string => `${a}:${b}`
+
+	public warn?: (...args: any[]) => void
 
 	public getRelatedKeys(key: string): Set<string> | undefined {
 		return this.relations.get(key)
@@ -194,6 +198,9 @@ export class Junction<
 				this.setContent(contentKey, content)
 			}
 		}
+		if (config?.warn) {
+			this.warn = config.warn
+		}
 	}
 	public toJSON(): JunctionJSON<ASide, BSide, Content> {
 		return {
@@ -293,7 +300,7 @@ export class Junction<
 		const relations = this.getRelatedKeys(key)
 		if (relations) {
 			if (relations.size > 1) {
-				console.warn(
+				this.warn?.(
 					`${relations.size} related keys were found for key "${key}": (${[
 						...relations,
 					]
