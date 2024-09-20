@@ -24,7 +24,7 @@
 	"devDependencies": {
 		"@types/npmlog": "7.0.0",
 		"browserslist": "4.23.3",
-		"bun-types": "1.1.28",
+		"bun-types": "1.1.29",
 		"chokidar": "4.0.0",
 		"concurrently": "9.0.1",
 		"htmx.org": "2.0.2",
