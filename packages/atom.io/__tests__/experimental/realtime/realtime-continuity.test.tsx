@@ -184,7 +184,7 @@ describe(`mutable atoms in continuity`, () => {
 	test(`mutable initialization`, async () => {
 		const { client, server, teardown, addItemTX, myListAtom } = scenario()
 		const clientApp = client.init()
-		// clientApp.enableLogging()
+		clientApp.enableLogging()
 		await waitFor(() => {
 			throwUntil(clientApp.socket.connected)
 		})
