@@ -55,7 +55,7 @@ describe(`multi-process realtime server`, () => {
 		)
 		const roomSocket = await getFromStore(server.silo.store, roomSocketState)
 
-		teardown()
+		await teardown()
 
 		expect(roomSocket.process.killed).toBe(true)
 	})
@@ -72,7 +72,7 @@ describe(`multi-process realtime server`, () => {
 		})
 		await app.renderResult.findByTestId(`no-rooms`)
 
-		teardown()
+		await teardown()
 	})
 	it(`permits join and leave`, async () => {
 		const { client, teardown } = scenario(6362)
@@ -93,6 +93,6 @@ describe(`multi-process realtime server`, () => {
 		})
 		await app.renderResult.findByTestId(`create-room`)
 
-		teardown()
+		await teardown()
 	})
 })

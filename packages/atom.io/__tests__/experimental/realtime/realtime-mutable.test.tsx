@@ -72,6 +72,6 @@ describe(`running transactions`, () => {
 			console.log(`retrieving...`)
 			jane.renderResult.getByTestId(`1`)
 		})
-		teardown()
+		await teardown()
 	})
 })

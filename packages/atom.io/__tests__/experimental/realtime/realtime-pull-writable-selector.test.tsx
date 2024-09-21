@@ -48,7 +48,7 @@ describe(`pull atom, observe selector`, () => {
 		})
 		await waitFor(() => client.renderResult.getByTestId(`plusTen:11`))
 		await waitFor(() => client.renderResult.getByTestId(`hundredfold:100`))
-		teardown()
+		await teardown()
 	})
 })
 
@@ -82,6 +82,6 @@ describe(`pull selector, observe atom`, () => {
 		})
 		await waitFor(() => client.renderResult.getByTestId(`count:20`))
 		await waitFor(() => client.renderResult.getByTestId(`countPlusTen:30`))
-		teardown()
+		await teardown()
 	})
 })

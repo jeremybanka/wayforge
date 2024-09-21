@@ -76,14 +76,13 @@ export type RealtimeTestClientBuilder = {
 }
 
 export type RealtimeTestServer = RealtimeTestTools & {
-	dispose: () => void
+	dispose: () => Promise<void>
 	port: number
-	// enableLogging: () => void
 }
 
 export type RealtimeTestAPI = {
 	server: RealtimeTestServer
-	teardown: () => void
+	teardown: () => Promise<void>
 }
 export type RealtimeTestAPI__SingleClient = RealtimeTestAPI & {
 	client: RealtimeTestClientBuilder
@@ -152,8 +151,8 @@ export const setupRealtimeTestServer = (
 		})
 	})
 
-	const dispose = () => {
-		server.close()
+	const dispose = async () => {
+		await server.close()
 		const roomKeys = getFromStore(silo.store, RT.roomIndex)
 		for (const roomKey of roomKeys) {
 			const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
@@ -245,8 +244,8 @@ export const singleClient = (
 	return {
 		client,
 		server,
-		teardown: () => {
-			server.dispose()
+		teardown: async () => {
+			await server.dispose()
 			client.dispose()
 		},
 	}
@@ -271,8 +270,8 @@ export const multiClient = <ClientNames extends string>(
 	return {
 		clients,
 		server,
-		teardown: () => {
-			server.dispose()
+		teardown: async () => {
+			await server.dispose()
 			for (const [, client] of toEntries(clients)) {
 				client.dispose()
 			}

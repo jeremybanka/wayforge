@@ -38,6 +38,6 @@ describe(`undo/redo`, () => {
 			server.silo.redo(countTL)
 		})
 		await waitFor(() => app.renderResult.getByTestId(`count:1`))
-		teardown()
+		await teardown()
 	})
 })
