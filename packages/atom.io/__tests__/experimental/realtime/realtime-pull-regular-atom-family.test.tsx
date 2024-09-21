@@ -122,6 +122,6 @@ describe(`running transactions`, () => {
 			jane.renderResult.getByTestId(`toggleRealtimeDisplay`).click()
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`noRealtimeDisplay`))
-		teardown()
+		await teardown()
 	})
 })

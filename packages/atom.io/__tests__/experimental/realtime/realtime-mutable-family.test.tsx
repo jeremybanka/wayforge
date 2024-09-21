@@ -90,6 +90,6 @@ describe(`running transactions`, () => {
 			dave.renderResult.getByTestId(`addNumber`).click()
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		teardown()
+		await teardown()
 	})
 })

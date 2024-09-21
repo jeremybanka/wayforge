@@ -95,7 +95,7 @@ describe(`synchronizing transactions`, () => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		teardown()
+		await teardown()
 	})
 	test(`rollback`, async () => {
 		const { server, clients, teardown, countState } = scenario()
@@ -134,7 +134,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => jane.renderResult.getByTestId(`2`))
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 30000 })
 
-		teardown()
+		await teardown()
 	}, 30000)
 })
 
@@ -205,7 +205,7 @@ describe(`mutable atoms in continuity`, () => {
 			throwUntil(() => server.silo.getState(myListAtom).has(`world`))
 		})
 		console.log(`📝 took ${performance.now() - time}ms`)
-		teardown()
+		await teardown()
 	})
 })
 
