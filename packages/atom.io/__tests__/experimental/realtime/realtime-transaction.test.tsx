@@ -53,7 +53,7 @@ describe(`running transactions`, () => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		teardown()
+		await teardown()
 	})
 
 	test(`client 2 disconnects/reconnects, gets update`, async () => {
@@ -73,7 +73,7 @@ describe(`running transactions`, () => {
 		jane.socket.connect()
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 
-		teardown()
+		await teardown()
 	})
 
 	test(`client 1 disconnects, makes update, reconnects`, async () => {
@@ -92,6 +92,6 @@ describe(`running transactions`, () => {
 		dave.socket.connect()
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 
-		teardown()
+		await teardown()
 	})
 })

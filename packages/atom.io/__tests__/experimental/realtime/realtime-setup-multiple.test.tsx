@@ -42,6 +42,6 @@ describe(`multi-client scenario`, () => {
 		})
 		await waitFor(() => jim.renderResult.getByTestId(`1`))
 		await waitFor(() => lee.renderResult.getByTestId(`1`))
-		teardown()
+		await teardown()
 	})
 })

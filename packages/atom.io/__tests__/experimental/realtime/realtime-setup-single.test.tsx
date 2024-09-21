@@ -33,6 +33,6 @@ describe(`single-client scenario`, () => {
 			server.silo.setState(countState, 1)
 		})
 		await waitFor(() => app.renderResult.getByTestId(`1`))
-		teardown()
+		await teardown()
 	})
 })
