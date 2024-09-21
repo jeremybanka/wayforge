@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.0.10
+
+### Patch Changes
+
+- Updated dependencies [fda0419]
+  - atom.io@0.29.5
+
 ## 0.0.9
 
 ### Patch Changes

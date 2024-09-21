@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.29.5
+
+### Patch Changes
+
+- fda0419: `atom.io/realtime-testing` The `teardown()` function for tests now returns a Promise<void>, carried through from awaiting `Server.close(): Promise<void>` in `socket.io@4.8.0`.
+
 ## 0.29.4
 
 ### Patch Changes
