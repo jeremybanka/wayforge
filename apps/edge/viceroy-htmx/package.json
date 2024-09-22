@@ -25,7 +25,7 @@
 		"@types/npmlog": "7.0.0",
 		"browserslist": "4.23.3",
 		"bun-types": "1.1.29",
-		"chokidar": "4.0.0",
+		"chokidar": "4.0.1",
 		"concurrently": "9.0.1",
 		"htmx.org": "2.0.2",
 		"lightningcss": "1.27.0",
