@@ -11,7 +11,7 @@ import { retrievePositionalArgs } from "./retrieve-positional-args"
 import type { Flat, ToPath, Tree, TreeMap, TreePath } from "./tree"
 
 export * from "./encapsulate"
-export * from "./flag"
+export type * from "./flag"
 export * from "./option-parsers"
 export * from "./tree"
 

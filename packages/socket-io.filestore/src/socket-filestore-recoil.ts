@@ -10,7 +10,7 @@ import type { Json, JsonInterface } from "~/packages/atom.io/json/src"
 
 import type { FilestoreClientEvents, FilestoreServerEvents } from "./interface"
 
-export * from "./interface"
+export type * from "./interface"
 
 export type FilestoreClientSocket = Socket<
 	FilestoreServerEvents,

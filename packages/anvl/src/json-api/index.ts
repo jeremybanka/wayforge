@@ -11,8 +11,8 @@ import type {
 	ResourceObject,
 } from "./resource"
 
-export * from "./document"
-export * from "./errors"
+export type * from "./document"
+export type * from "./errors"
 export * from "./resource"
 
 const filterOutIdentifier = filterProperties(
