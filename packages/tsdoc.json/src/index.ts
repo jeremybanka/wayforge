@@ -1,3 +1,3 @@
 export * from "./library"
-export * from "./namespace"
+export type * from "./namespace"
 export * from "./verbose"

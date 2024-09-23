@@ -5,9 +5,9 @@ export * from "./cannot-exist"
 export * from "./is-class"
 export * from "./is-intersection"
 export * from "./is-union"
-export * from "./refine-json"
-export * from "./refined"
-export * from "./refinement"
+export type * from "./refine-json"
+export type * from "./refined"
+export type * from "./refinement"
 
 export const isLiteral =
 	<T extends boolean | number | string>(value: T): Refinement<unknown, T> =>

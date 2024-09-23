@@ -19,7 +19,7 @@ import type {
 	FilestoreServerEvents,
 } from "./interface"
 
-export * from "./interface"
+export type * from "./interface"
 
 export type WebSocketServer<
 	ClientEvents extends Record<string, any>,

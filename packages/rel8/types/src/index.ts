@@ -1,4 +1,4 @@
-export * from "./json"
+export type * from "./json"
 
 export type Refinement<Unrefined, Refined extends Unrefined> = (
 	value: Unrefined,
