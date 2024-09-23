@@ -52,7 +52,7 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 			disposeFromStore(store, state)
 		}
 		for (const child of molecule.below.values()) {
-			if (child.family?.dependsOn === `all`) {
+			if (child.dependsOn === `all`) {
 				disposeMolecule(child, store)
 			} else {
 				child.above.delete(molecule.stringKey)

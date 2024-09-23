@@ -25,11 +25,13 @@ export function allocateIntoStore<
 	try {
 		const above: Molecule<any>[] = []
 
-		const isAllocatedToRoot = provenance === `root`
-		if (isAllocatedToRoot) {
+		let allocationAttachmentStyle: `all` | `any`
+		if (provenance === `root`) {
 			// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
 			above.push(store.molecules.get(`"root"`)!)
+			allocationAttachmentStyle = `all`
 		} else if (provenance[0][0] === T$) {
+			allocationAttachmentStyle = `any`
 			const provenanceKey = stringifyJson(provenance as Canonical)
 			const provenanceMolecule = store.molecules.get(provenanceKey)
 			if (!provenanceMolecule) {
@@ -41,6 +43,7 @@ export function allocateIntoStore<
 		} else {
 			const allocationIsCompound = key[0][0] === T$
 			if (allocationIsCompound) {
+				allocationAttachmentStyle = `all`
 				for (const claim of provenance as SingularTypedKey[]) {
 					const provenanceKey = stringifyJson(claim)
 					const provenanceMolecule = store.molecules.get(provenanceKey)
@@ -52,6 +55,7 @@ export function allocateIntoStore<
 					above.push(provenanceMolecule)
 				}
 			} else {
+				allocationAttachmentStyle = `any`
 				const provenanceKey = stringifyJson(provenance as Canonical)
 				const provenanceMolecule = store.molecules.get(provenanceKey)
 				if (!provenanceMolecule) {
@@ -64,6 +68,7 @@ export function allocateIntoStore<
 		}
 
 		const molecule = new Molecule(above, key)
+		molecule._dependsOn = allocationAttachmentStyle
 
 		store.molecules.set(stringKey, molecule)
 
@@ -126,14 +131,14 @@ export function deallocateFromStore<
 		disposeFromStore(store, state)
 	}
 	for (const child of molecule.below.values()) {
-		// if (child.family?.dependsOn === `all`) {
-		deallocateFromStore(store, child.key)
-		// } else {
-		// 	child.above.delete(molecule.stringKey)
-		// 	if (child.above.size === 0) {
-		// 		disposeMolecule(child, store)
-		// 	}
-		// }
+		if (child.dependsOn === `all`) {
+			deallocateFromStore(store, child.key)
+		} else {
+			child.above.delete(molecule.stringKey)
+			if (child.above.size === 0) {
+				deallocateFromStore(store, child.key)
+			}
+		}
 	}
 	molecule.below.clear()
 

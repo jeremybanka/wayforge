@@ -9,12 +9,7 @@ import type {
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
-import type {
-	EnvironmentData,
-	Func,
-	Molecule,
-	Transceiver,
-} from "atom.io/internal"
+import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -30,9 +25,7 @@ import type {
 	ReadableToken,
 	TokenType,
 	WritableSelectorToken,
-	WritableToken,
 } from "."
-import { Above, Hierarchy, Vassal } from "./allocate"
 
 export type TransactionToken<F extends Func> = {
 	key: string
