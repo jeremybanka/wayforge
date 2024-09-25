@@ -32,7 +32,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@types/node": "22.6.1",
+		"@types/node": "22.6.2",
 		"@types/tmp": "0.2.6",
 		"bun-types": "1.1.29",
 		"concurrently": "9.0.1",
