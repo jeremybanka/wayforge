@@ -34,7 +34,7 @@
 		"@mdx-js/react": "3.0.1",
 		"@next/mdx": "14.2.13",
 		"@types/mdx": "2.0.13",
-		"@types/node": "22.7.1",
+		"@types/node": "22.7.2",
 		"@types/npmlog": "7.0.0",
 		"@types/react": "18.3.9",
 		"@types/react-dom": "18.3.0",
