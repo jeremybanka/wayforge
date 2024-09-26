@@ -1,9 +1,9 @@
 [phases.setup]
-nixPkgs = ['bun']
+nixPkgs = ['bun', 'nodejs_22', 'pnpm',]
 aptPkgs = ['unzip']
 
 [phases.install]
-cmds = ['bun upgrade', 'bun i']
+cmds = ['bun upgrade', 'pnpm i']
 
 [phases.build]
 cmds = ['cd apps/core.wayfarer.quest && bun run build']
