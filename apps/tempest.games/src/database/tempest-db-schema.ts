@@ -1,34 +1,48 @@
 import {
 	integer,
-	pgEnum,
 	pgTable,
-	serial,
+	primaryKey,
 	uniqueIndex,
+	uuid,
 	varchar,
 } from "drizzle-orm/pg-core"
 
-export const popularityEnum = pgEnum(`popularity`, [
-	`unknown`,
-	`known`,
-	`popular`,
-])
-
-export const countries = pgTable(
-	`countries`,
+/** Users Table */
+export const users = pgTable(
+	`users`,
 	{
-		id: serial(`id`).primaryKey(),
-		name: varchar(`name`, { length: 256 }),
+		id: uuid(`id`).primaryKey().defaultRandom(),
+		username: varchar(`username`, { length: 255 }).notNull(),
+		email: varchar(`email`, { length: 255 }).notNull(),
+		hash: varchar(`hash`, { length: 255 }).notNull(),
+		salt: varchar(`salt`, { length: 255 }).notNull(),
 	},
-	(col) => {
-		return {
-			nameIndex: uniqueIndex(`name_idx`).on(col.name),
-		}
-	},
+	(table) => ({
+		usernameIdx: uniqueIndex(`users_username_unique`).on(table.username),
+		emailIdx: uniqueIndex(`users_email_unique`).on(table.email),
+	}),
 )
 
-export const cities = pgTable(`cities`, {
-	id: serial(`id`).primaryKey(),
-	name: varchar(`name`, { length: 256 }),
-	countryId: integer(`country_id`).references(() => countries.id),
-	popularity: popularityEnum(`popularity`),
+/** Games Table */
+export const games = pgTable(`games`, {
+	id: uuid(`id`).primaryKey().defaultRandom(),
 })
+
+/** Players Table (Join Table for Users and Games) */
+export const players = pgTable(
+	`players`,
+	{
+		userId: uuid(`user_id`)
+			.notNull()
+			.references(() => users.id),
+		gameId: uuid(`game_id`)
+			.notNull()
+			.references(() => games.id),
+		score: integer(`score`).notNull(),
+	},
+	(table) => ({
+		pk: primaryKey({
+			columns: [table.userId, table.gameId],
+		}),
+	}),
+)

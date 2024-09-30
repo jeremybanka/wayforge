@@ -1,89 +1,42 @@
 import path from "node:path"
 
+import type { Subject } from "atom.io/internal"
+import { getTableName } from "drizzle-orm"
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 import { drizzle } from "drizzle-orm/postgres-js"
+import type { Options } from "postgres"
 import postgres from "postgres"
 
 import { env } from "../library/env"
-import { cities, countries } from "./tempest-db-schema"
+import { games, players, users } from "./tempest-db-schema"
 
 export class DatabaseManager {
-	public dbName = `test_db_` + Date.now()
-	private config = {
-		user: env.POSTGRES_USER,
-		host: env.POSTGRES_HOST,
-		database: env.POSTGRES_DATABASE,
-		password: env.POSTGRES_PASSWORD,
-		port: env.POSTGRES_PORT,
-	}
-	private sql = postgres(this.config)
-	private drizzle = drizzle(this.sql)
-
-	public async createDatabase(): Promise<void> {
-		await this.sql`CREATE DATABASE ${this.sql(this.dbName)}`
-		await this.sql.end()
-		this.config.database = this.dbName
-		this.sql = postgres(this.config)
-		this.drizzle = drizzle(this.sql)
-	}
+	public options: Options<{}>
+	public sql: postgres.Sql
+	public drizzle: PostgresJsDatabase
+	public observers: Map<string, Subject<null>> = new Map()
 
 	public async setupTriggersAndNotifications(): Promise<void> {
-		await this.sql.file(path.join(__dirname, `notify_update.sql`))
+		await this.sql.file(path.resolve(__dirname, `notify_update.sql`))
+		const tableNames = [
+			getTableName(users),
+			getTableName(games),
+			getTableName(players),
+		]
+		await this.sql`SELECT create_notify_triggers(${this.sql.array(tableNames)})`
 	}
 
-	public async dropDatabase(): Promise<void> {
-		await this.sql.end()
-		const adminSql = postgres({
-			...this.config,
-			database: `postgres`,
-		})
-		await adminSql`DROP DATABASE ${this.sql(this.dbName)}`
-		await adminSql.end()
-	}
-
-	public async createSampleTables(): Promise<void> {
-		await this.sql`
-		  CREATE TABLE countries (
-				id SERIAL PRIMARY KEY,
-				name TEXT
-		  );
-		`
-		await this.sql`
-		  CREATE TYPE popularity AS ENUM (
-				'unknown',
-				'known',
-				'popular'
-		  );
-		`
-		await this.sql`
-		  CREATE TABLE cities (
-				id SERIAL PRIMARY KEY,
-				name TEXT,
-				country_id INTEGER REFERENCES countries(id),
-				popularity popularity
-		  );
-		`
-	}
-
-	public async insertSampleData(): Promise<void> {
-		await this.drizzle
-			.insert(countries)
-			.values([{ name: `USA` }, { name: `Canada` }, { name: `Mexico` }])
-		await this.drizzle.insert(cities).values([
-			{ name: `New York`, countryId: 1, popularity: `popular` },
-			{ name: `Los Angeles`, countryId: 1, popularity: `popular` },
-			{ name: `Chicago`, countryId: 1, popularity: `known` },
-			{ name: `Toronto`, countryId: 2, popularity: `known` },
-			{ name: `Montreal`, countryId: 2, popularity: `known` },
-			{ name: `Vancouver`, countryId: 2, popularity: `known` },
-			{ name: `Mexico City`, countryId: 3, popularity: `popular` },
-			{ name: `Guadalajara`, countryId: 3, popularity: `known` },
-			{ name: `Monterrey`, countryId: 3, popularity: `known` },
-		])
-	}
-
-	public async dropSampleTables(): Promise<void> {
-		await this.sql`DROP TABLE cities`
-		await this.sql`DROP TYPE popularity`
-		await this.sql`DROP TABLE countries`
+	public constructor(
+		options: Options<{}> = {
+			host: env.POSTGRES_HOST,
+			port: env.POSTGRES_PORT,
+			user: env.POSTGRES_USER,
+			password: env.POSTGRES_PASSWORD,
+			database: env.POSTGRES_DATABASE,
+		},
+	) {
+		this.options = options
+		this.sql = postgres(options)
+		this.drizzle = drizzle(this.sql)
 	}
 }
