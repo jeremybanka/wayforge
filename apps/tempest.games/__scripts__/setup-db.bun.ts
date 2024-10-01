@@ -11,6 +11,7 @@ const user = osUser === `unknown` ? `postgres` : osUser
 
 const sql = postgres({
 	user,
+	password: env.POSTGRES_PASSWORD,
 	database: `postgres`,
 	host: env.POSTGRES_HOST,
 	port: env.POSTGRES_PORT,
