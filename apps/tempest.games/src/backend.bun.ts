@@ -31,7 +31,7 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`warn`, undefined, parent.logger)
 const gameWorker = worker(parent, `backend.worker.game.bun`)
 
 const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
-const address = httpServer.listen(4444).address()
+const address = httpServer.listen(env.BACKEND_PORT).address()
 const port =
 	typeof address === `string` ? null : address === null ? null : address.port
 if (port === null) throw new Error(`Could not determine port for test server`)

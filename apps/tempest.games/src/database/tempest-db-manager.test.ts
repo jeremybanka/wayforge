@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { execSync } from "node:child_process"
 import { createHash } from "node:crypto"
 
 import { eq } from "drizzle-orm"
