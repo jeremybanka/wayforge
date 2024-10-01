@@ -24,7 +24,7 @@
 		"preview:backend": "cross-env MODE=production ./bin/backend.bun.js",
 		"env": "[ ! -f .env ] && cp .env.defaults .env",
 		"test": "vitest",
-		"test:once": "bun run env && ./__scripts__/setup-db.bun.ts && vitest run",
+		"test:once": "bun run env && vitest run",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
