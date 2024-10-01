@@ -23,16 +23,6 @@ jobs:
     name: Coveralls
     runs-on: ubuntu-latest
     timeout-minutes: 7
-    env:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
-      POSTGRES_DATABASE: testdb
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: 5432
-      BACKEND_PORT: 4444
-      FRONTEND_PORT: 3333
-      FRONTEND_ORIGINS: "[\"http://localhost:3333\"]"
-      VITE_BACKEND_ORIGIN: "http://localhost:4444"
 
     services:
       postgres:
