@@ -13,8 +13,11 @@ if (!PRETTY_PLEASE) {
 	process.exit(1)
 }
 
+const osUser = os.userInfo().username
+const user = osUser === `unknown` ? `postgres` : osUser
+
 const sql = postgres({
-	user: os.userInfo().username,
+	user,
 	database: `postgres`,
 	host: env.POSTGRES_HOST,
 	port: env.POSTGRES_PORT,
