@@ -10,6 +10,6 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
-		globalSetup: `./setup.vitest.ts`,
+		globalSetup: `./__scripts__/setup.vitest.ts`,
 	},
 })
