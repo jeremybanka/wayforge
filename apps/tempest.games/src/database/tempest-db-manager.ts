@@ -1,6 +1,6 @@
 import path from "node:path"
 
-import type { Subject } from "atom.io/internal"
+import { Subject } from "atom.io/internal"
 import { getTableName } from "drizzle-orm"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 import { drizzle } from "drizzle-orm/postgres-js"
@@ -14,7 +14,7 @@ export class DatabaseManager {
 	public options: Options<{}>
 	public sql: postgres.Sql
 	public drizzle: PostgresJsDatabase
-	public observers: Map<string, Subject<null>> = new Map()
+	public observers: Map<string, Subject<string>> = new Map()
 
 	public async setupTriggersAndNotifications(): Promise<void> {
 		await this.sql.file(path.resolve(__dirname, `notify_update.sql`))
@@ -24,6 +24,16 @@ export class DatabaseManager {
 			getTableName(players),
 		]
 		await this.sql`SELECT create_notify_triggers(${this.sql.array(tableNames)})`
+		await this.sql.listen(`table_update`, (message) => {
+			const messageParts = message.split(`,`)
+			const tableName = messageParts[0]
+			const recordId = messageParts[1]
+			const completeKey = `${tableName}("${recordId}")`
+			if (this.observers.has(completeKey)) {
+				// biome-ignore lint/style/noNonNullAssertion: has
+				this.observers.get(completeKey)!.next(completeKey)
+			}
+		})
 	}
 
 	public constructor(
@@ -38,5 +48,13 @@ export class DatabaseManager {
 		this.options = options
 		this.sql = postgres(options)
 		this.drizzle = drizzle(this.sql)
+	}
+
+	public observe(completeKey: string, callback: () => void): void {
+		if (!this.observers.has(completeKey)) {
+			this.observers.set(completeKey, new Subject<string>())
+		}
+		// biome-ignore lint/style/noNonNullAssertion: has
+		this.observers.get(completeKey)!.subscribe(`SINGLETON`, callback)
 	}
 }

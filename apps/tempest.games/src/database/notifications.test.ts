@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { createHash } from "node:crypto"
 
-import { eq } from "drizzle-orm"
+import { eq, getTableName } from "drizzle-orm"
 
 import { DatabaseManager } from "./tempest-db-manager"
 import { games } from "./tempest-db-schema"
@@ -23,15 +23,13 @@ describe(`database notifications`, () => {
 		const db = new DatabaseManager()
 		await db.setupTriggersAndNotifications()
 
-		await db.sql.listen(`table_update`, (message) => {
-			console.log(`Received notification: ${message}`)
+		const game1Id = asUUID(`game_1`)
+
+		db.observe(`games("${game1Id}")`, () => {
+			console.log(`Received notification`)
 		})
 
-		const gamesCreated = await db.drizzle
-			.insert(games)
-			.values({ id: asUUID(`game_1`) })
-
-		console.log(gamesCreated[0])
+		await db.drizzle.insert(games).values({ id: asUUID(`game_1`) })
 
 		await db.drizzle.delete(games).where(eq(games.id, asUUID(`game_1`)))
 	})
