@@ -6,8 +6,10 @@ import postgres from "postgres"
 
 import { env } from "../src/library/env.ts"
 
+console.log(`USERNAME:`, os.userInfo().username)
+
 const sql = postgres({
-	user: os.userInfo().username,
+	user: os.userInfo().username ?? `postgres`,
 	database: `postgres`,
 	host: env.POSTGRES_HOST,
 	port: env.POSTGRES_PORT,
