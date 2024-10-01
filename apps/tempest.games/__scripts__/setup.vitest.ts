@@ -1,3 +1,3 @@
 import { execSync } from "node:child_process"
 
-execSync(`./__scripts__/setup-db.bun.ts`)
+export default (): void => void execSync(`./__scripts__/setup-db.bun.ts`)
