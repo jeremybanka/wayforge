@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
+import { execSync } from "node:child_process"
 import { createHash } from "node:crypto"
 
-import { eq, getTableName } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 import { DatabaseManager } from "./tempest-db-manager"
 import { games } from "./tempest-db-schema"
@@ -11,6 +12,10 @@ function asUUID(input: string): string {
 	const uuid = `${hash.substring(0, 8)}-${hash.substring(8, 12)}-${hash.substring(12, 16)}-${hash.substring(16, 20)}-${hash.substring(20, 32)}`
 	return uuid
 }
+
+beforeAll(() => {
+	execSync(`bun run __scripts__/setup-db.bun`)
+})
 
 beforeEach(() => {
 	vitest.spyOn(console, `error`)
