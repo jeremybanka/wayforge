@@ -13,10 +13,6 @@ function asUUID(input: string): string {
 	return uuid
 }
 
-beforeAll(() => {
-	execSync(`bun run __scripts__/setup-db.bun`)
-})
-
 beforeEach(() => {
 	vitest.spyOn(console, `error`)
 	vitest.spyOn(console, `warn`)
