@@ -2,42 +2,58 @@
 
 import { join, normalize, resolve } from "node:path"
 
+import { discoverType } from "atom.io/introspection"
 import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 
-import { FRONTEND_PORT } from "./library/const"
+import { env } from "./library/env"
+import { RESPONSE_DICTIONARY } from "./library/response-dictionary"
 
 const parent = new ParentSocket()
 parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
 serve({
-	port: FRONTEND_PORT ?? 3333,
+	port: env.FRONTEND_PORT ?? 3333,
 	async fetch(req, server) {
-		const url = new URL(req.url)
+		try {
+			const url = new URL(req.url)
 
-		const ip = server.requestIP(req)?.address ?? `??`
-		parent.logger.info(`[${ip}]`, req.method, url.pathname)
+			const ip = server.requestIP(req)?.address ?? `??`
+			parent.logger.info(`[${ip}]`, req.method, url.pathname)
 
-		if (url.pathname === `/`) {
-			return new Response(Bun.file(resolve(appDir, `index.html`)))
+			if (url.pathname === `/`) {
+				return new Response(Bun.file(resolve(appDir, `index.html`)))
+			}
+			if (url.pathname === `/index.html`) {
+				return Response.redirect(`/`)
+			}
+			// Normalize the requested path and prevent path traversal
+			const filePath = join(appDir, url.pathname)
+			const normalizedPath = normalize(filePath)
+
+			// Ensure the requested path is still within distDir
+			if (!normalizedPath.startsWith(appDir)) {
+				throw 403
+			}
+
+			const fileExists = await file(normalizedPath).exists()
+			if (!fileExists) {
+				throw 404
+			}
+			return new Response(file(normalizedPath))
+		} catch (thrown) {
+			if (typeof thrown === `number`) {
+				return new Response(RESPONSE_DICTIONARY[thrown], { status: thrown })
+			}
+			if (thrown instanceof Error) {
+				parent.logger.error(thrown.message)
+			} else {
+				const thrownType = discoverType(thrown)
+				parent.logger.error(`frontend server threw`, thrownType)
+			}
+			return new Response(RESPONSE_DICTIONARY[500], { status: 500 })
 		}
-		if (url.pathname === `/index.html`) {
-			return Response.redirect(`/`)
-		}
-		// Normalize the requested path and prevent path traversal
-		const filePath = join(appDir, url.pathname)
-		const normalizedPath = normalize(filePath)
-
-		// Ensure the requested path is still within distDir
-		if (!normalizedPath.startsWith(appDir)) {
-			return new Response(`403: Forbidden`, { status: 403 })
-		}
-
-		const exists = await file(normalizedPath).exists()
-		return exists
-			? new Response(file(normalizedPath))
-			: new Response(`404: Not Found`, { status: 404 })
 	},
 })
 
@@ -59,5 +75,5 @@ process.on(`exit`, () => {
 	gracefulExit()
 })
 parent.logger.info(
-	`🛫 frontend server running at http://localhost:${FRONTEND_PORT ?? 3333}/`,
+	`🛫 frontend server running at http://localhost:${env.FRONTEND_PORT ?? 3333}/`,
 )

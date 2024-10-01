@@ -22,7 +22,7 @@ import {
 import * as SocketIO from "socket.io"
 
 import { worker } from "./backend.worker"
-import { MODE } from "./library/const"
+import { env } from "./library/env"
 import { countContinuity } from "./library/store"
 
 const parent = new ParentSocket()
@@ -38,8 +38,7 @@ if (port === null) throw new Error(`Could not determine port for test server`)
 
 new SocketIO.Server(httpServer, {
 	cors: {
-		origin:
-			MODE === `development` ? `http://localhost:3333` : `https://tempest.games`,
+		origin: env.FRONTEND_ORIGINS,
 		methods: [`GET`, `POST`],
 	},
 })

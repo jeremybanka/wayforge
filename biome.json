@@ -16,7 +16,8 @@
 			"**/metafile-*",
 			"coverage",
 			"projects",
-			".varmint"
+			".varmint",
+			"drizzle/meta"
 		]
 	},
 	"javascript": {
