@@ -3,6 +3,6 @@
 	"compilerOptions": {
 		"types": ["vitest/globals", "bun-types", "node"]
 	},
-	"include": ["src", "__tests__", "**/*.config.ts"],
+	"include": ["src", "__tests__", "__scripts__", "**/*.config.ts"],
 	"exclude": []
 }

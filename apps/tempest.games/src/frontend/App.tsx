@@ -3,7 +3,6 @@ import "./App.css"
 import { runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
 import { useSyncContinuity } from "atom.io/realtime-react"
-import { io } from "socket.io-client"
 
 import { countAtom, countContinuity, incrementTX } from "../library/store"
 import * as svg from "./<svg>"

@@ -5,6 +5,7 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { io } from "socket.io-client"
 
+import { env } from "../library/env.ts"
 import App from "./App.tsx"
 
 let localId: string
@@ -21,14 +22,9 @@ try {
 	localStorage.setItem(`myId`, JSON.stringify(localId))
 }
 
-export const socket = io(
-	import.meta.env.MODE === `development`
-		? `http://localhost:4444/`
-		: `https://realtime.tempest.games/`,
-	{
-		auth: { token: `test`, username: localId },
-	},
-)
+export const socket = io(env.VITE_BACKEND_ORIGIN, {
+	auth: { token: `test`, username: localId },
+})
 
 // biome-ignore lint/style/noNonNullAssertion: I believe we will find the root
 createRoot(document.getElementById(`root`)!).render(

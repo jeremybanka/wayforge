@@ -298,9 +298,18 @@ importers:
 
   apps/tempest.games:
     dependencies:
+      '@t3-oss/env-core':
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.6.2)(zod@3.23.8)
       atom.io:
         specifier: workspace:*
         version: link:../../packages/atom.io
+      drizzle-orm:
+        specifier: 0.33.0
+        version: 0.33.0(@types/react@18.3.10)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1)
+      postgres:
+        specifier: 3.4.4
+        version: 3.4.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -313,6 +322,9 @@ importers:
       socket.io-client:
         specifier: 4.8.0
         version: 4.8.0
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@eslint/js':
         specifier: 9.11.1
@@ -338,6 +350,12 @@ importers:
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
+      dotenv:
+        specifier: 16.4.5
+        version: 16.4.5
+      drizzle-kit:
+        specifier: 0.24.2
+        version: 0.24.2
       eslint:
         specifier: 9.11.1
         version: 9.11.1(jiti@1.21.6)
@@ -365,6 +383,9 @@ importers:
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(lightningcss@1.27.0)(sass@1.79.4)(terser@5.33.0))
+      vitest:
+        specifier: 2.1.1
+        version: 2.1.1(@types/node@22.7.4)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass@1.79.4)(terser@5.33.0)
 
   apps/wayfarer.quest:
     dependencies:
