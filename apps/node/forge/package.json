@@ -30,6 +30,6 @@
 		"@types/npmlog": "7.0.0",
 		"cross-env": "7.0.3",
 		"tsx": "4.19.1",
-		"vitest": "2.1.1"
+		"vitest": "2.1.2"
 	}
 }
