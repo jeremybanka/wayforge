@@ -28,7 +28,7 @@ import { z } from "zod"
 import { worker } from "./backend.worker"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import { users } from "./database/tempest-db-schema"
-import { asUUID } from "./library/as-uuid"
+import { asUUID } from "./library/as-uuid-node"
 import { env } from "./library/env"
 import {
 	RESPONSE_DICTIONARY,
@@ -48,6 +48,12 @@ const credentialsSchema = z
 	})
 	.strict()
 
+const signupSchema = z.object({
+	email: z.string(),
+	username: z.string(),
+	password: z.string(),
+})
+
 const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])
 
 const db = new DatabaseManager()
@@ -63,13 +69,54 @@ const httpServer = http.createServer((req, res) => {
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
+				console.log(req.method, url.pathname)
+				console.log({
+					signup: asUUID(`signup`),
+					login: asUUID(`login`),
+				})
 				switch (req.method) {
 					case `POST`:
 						switch (url.pathname) {
+							case `/signup-${asUUID(`signup`)}`:
+								{
+									console.log(`signup`)
+									const text = Buffer.concat(data).toString()
+									const json: Json.Serializable = JSON.parse(text)
+									const parsed = signupSchema.safeParse(json)
+									console.log(`signup parsed`, parsed)
+									if (parsed.success) {
+										console.log(`signup parsed`)
+										const { username, password, email } = parsed.data
+										const [maybeUser] = await db.drizzle
+											.select()
+											.from(users)
+											.where(eq(users.email, email))
+											.limit(1)
+										console.log(`signup maybeUser`, maybeUser)
+										if (maybeUser) {
+											throw [400, `User already exists`]
+										}
+										const salt = crypto.randomUUID()
+										const hash = createHash(`sha256`)
+											.update(password + salt)
+											.digest(`hex`)
+										await db.drizzle
+											.insert(users)
+											.values({ username, email, hash, salt })
+										console.log(`signup done`)
+										res.writeHead(201, {
+											"Content-Type": `text/plain`,
+											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+										})
+										res.end(RESPONSE_DICTIONARY[201])
+									}
+								}
+								break
 							case `/login-${asUUID(`login`)}`: {
 								const text = Buffer.concat(data).toString()
 								const json: Json.Serializable = JSON.parse(text)
 								const parsed = credentialsSchema.safeParse(json)
+								console.log(`login parsed`, parsed)
 								if (parsed.success) {
 									const { username, password } = parsed.data
 									const [maybeUser] = await db.drizzle
@@ -80,11 +127,13 @@ const httpServer = http.createServer((req, res) => {
 										.from(users)
 										.where(eq(users.username, username))
 										.limit(1)
+									console.log(`login maybeUser`, maybeUser)
 									if (maybeUser) {
 										const { hash: trueHash, salt } = maybeUser
 										const hash = createHash(`sha256`)
 											.update(password + salt)
 											.digest(`hex`)
+										console.log(`login hash`, hash, `vs`, trueHash)
 										if (hash === trueHash) {
 											const sessionKey = crypto.randomUUID()
 											let userSessions = userSessionMap.get(username)
@@ -93,13 +142,26 @@ const httpServer = http.createServer((req, res) => {
 												userSessionMap.set(username, userSessions)
 											}
 											userSessions.add(sessionKey)
-											res.writeHead(204, { "Content-Type": `text/plain` })
-											res.write(
-												`Set-Cookie: username=${username}; HttpOnly; SameSite=Strict; Path=/`,
-											)
-											res.end(
-												`Set-Cookie: sessionKey=${sessionKey}; HttpOnly; SameSite=Strict; Path=/`,
-											)
+											console.log(sessionKey, userSessions)
+
+											res.setHeader(`Access-Control-Allow-Credentials`, `true`) // Allow cookies to be sent and received
+											res.setHeader(
+												`Access-Control-Allow-Methods`,
+												`GET,POST,OPTIONS`,
+											) // Allow the methods used by your client
+											res.setHeader(
+												`Access-Control-Allow-Headers`,
+												`Content-Type`,
+											) // Allow required headers
+											res.setHeader(`Set-Cookie`, [
+												`username=${username}; HttpOnly; Secure; SameSite=None; Path=/`,
+												`sessionKey=${sessionKey}; HttpOnly; Secure; SameSite=None; Path=/`,
+											])
+											res.writeHead(204, {
+												"Content-Type": `text/plain`,
+												"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+											})
+											res.end(RESPONSE_DICTIONARY[204])
 										}
 									}
 								}
@@ -108,14 +170,22 @@ const httpServer = http.createServer((req, res) => {
 				}
 			} catch (thrown) {
 				const result = serverIssueSchema.safeParse(thrown)
+				console.log(`serverIssueSchema`, result)
 				if (result.success) {
 					const [code, message] = result.data
 					const codeMeaning = RESPONSE_DICTIONARY[code]
-					res.writeHead(code, { "Content-Type": `text/plain` })
+					res.writeHead(code, {
+						"Content-Type": `text/plain`,
+						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+					})
 					res.end(`${codeMeaning}: ${message}`)
 				} else {
 					parent.logger.error(thrown)
-					res.writeHead(500, { "Content-Type": `text/plain` })
+					console.log(`serverIssueSchema`, result.error)
+					res.writeHead(500, {
+						"Content-Type": `text/plain`,
+						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+					})
 					res.end(`Internal Server Error`)
 				}
 			}
@@ -130,11 +200,13 @@ new SocketIO.Server(httpServer, {
 	cors: {
 		origin: env.FRONTEND_ORIGINS,
 		methods: [`GET`, `POST`],
+		credentials: true,
 	},
 })
 	.use((socket, next) => {
 		const cookieHeader = socket.handshake.headers.cookie
 		if (!cookieHeader) {
+			console.log(`No cookie header provided`)
 			next(new Error(`No cookie header provided`))
 			return
 		}

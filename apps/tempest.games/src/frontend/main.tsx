@@ -22,9 +22,7 @@ try {
 	localStorage.setItem(`myId`, JSON.stringify(localId))
 }
 
-export const socket = io(env.VITE_BACKEND_ORIGIN, {
-	auth: { token: `test`, username: localId },
-})
+export const socket = io(env.VITE_BACKEND_ORIGIN, { withCredentials: true })
 
 // biome-ignore lint/style/noNonNullAssertion: I believe we will find the root
 createRoot(document.getElementById(`root`)!).render(

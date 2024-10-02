@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm"
 
-import { asUUID } from "../library/as-uuid"
+import { asUUID } from "../library/as-uuid-node"
 import { DatabaseManager } from "./tempest-db-manager"
 import { games } from "./tempest-db-schema"
 

@@ -68,7 +68,7 @@ export const RESPONSE_DICTIONARY = {
 } as const satisfies Record<number, string>
 
 export const responseCodeSchemas = toEntries(RESPONSE_DICTIONARY).map(([code]) =>
-	z.literal(code),
+	z.literal(Number(code)),
 )
 export const responseCodeUnion = z.union([
 	responseCodeSchemas[0],
