@@ -5,6 +5,7 @@ import {
 	atomFamily,
 	disposeState,
 	getState,
+	redo,
 	runTransaction,
 	setState,
 	timeline,
@@ -186,8 +187,10 @@ describe(`allocate`, () => {
 
 		documentWorld.allocate(`root`, [`userGroup`, `homies`])
 		createDocument([`userGroup`, `homies`])
-		console.log(IMPLICIT.STORE.molecules)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		undo(documentTimeline)
-		console.log(IMPLICIT.STORE.molecules)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		redo(documentTimeline)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 	})
 })
