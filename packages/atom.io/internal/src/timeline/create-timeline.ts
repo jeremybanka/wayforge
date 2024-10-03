@@ -25,6 +25,7 @@ import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
+import { isChildStore } from "../transaction"
 import type { Flat, Func } from "../utility-types"
 
 export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
@@ -525,8 +526,7 @@ function filterTransactionUpdates(
 							key = updateFromTx.token.key
 							break
 						case `modern`:
-							key = stringifyJson(updateFromTx.key)
-							break
+							return true // always include
 					}
 					break
 				default:
@@ -559,13 +559,18 @@ function handleStateLifecycleEvent(
 		timestamp,
 	}) as TimelineUpdate<any>
 	if (!tl.timeTraveling) {
-		const txUpdateInProgress = newest(store).on.transactionApplying.state?.update
-		if (txUpdateInProgress) {
-			joinTransaction(tl, txUpdateInProgress, store)
+		const target = newest(store)
+		if (isChildStore(target)) {
+			// we don't want to update the true timeline while we are in a transaction
 		} else {
-			tl.history.push(timelineEvent)
-			tl.at = tl.history.length
-			tl.subject.next(timelineEvent)
+			const txUpdateInProgress = target.on.transactionApplying.state
+			if (txUpdateInProgress) {
+				joinTransaction(tl, txUpdateInProgress.update, store)
+			} else {
+				tl.history.push(timelineEvent)
+				tl.at = tl.history.length
+				tl.subject.next(timelineEvent)
+			}
 		}
 	}
 	switch (event.type) {

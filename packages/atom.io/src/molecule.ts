@@ -1,7 +1,9 @@
 import type {
 	ActorToolkit,
 	MoleculeCreation,
+	MoleculeCreationClassic,
 	MoleculeDisposal,
+	MoleculeDisposalClassic,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -86,7 +88,7 @@ export type MoleculeFamilyToken<M extends MoleculeConstructor> = {
 }
 export type MoleculeFamily<M extends MoleculeConstructor> = Flat<
 	MoleculeFamilyToken<M> & {
-		subject: Subject<MoleculeCreation<M> | MoleculeDisposal>
+		subject: Subject<MoleculeCreationClassic<M> | MoleculeDisposalClassic>
 		dependsOn: `all` | `any`
 		new: M
 	}

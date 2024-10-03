@@ -94,19 +94,9 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 					`join:${token.key}-${stringKey}`,
 					(event) => {
 						if (event.type === `molecule_disposal`) {
-							switch (event.subType) {
-								case `classic`:
-									if (stringifyJson(event.token.key) === stringKey) {
-										unsubFromFamily()
-										join.molecules.delete(stringKey)
-									}
-									break
-								case `modern`:
-									if (stringifyJson(event.key) === stringKey) {
-										unsubFromFamily()
-										join.molecules.delete(stringKey)
-									}
-									break
+							if (stringifyJson(event.token.key) === stringKey) {
+								unsubFromFamily()
+								join.molecules.delete(stringKey)
 							}
 						}
 					},

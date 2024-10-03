@@ -1,16 +1,17 @@
-import type { CtorToolkit, Logger } from "atom.io"
+import { randomUUID } from "node:crypto"
+
+import type { Logger } from "atom.io"
 import {
 	atomFamily,
 	disposeState,
 	getState,
-	makeMolecule,
-	makeRootMoleculeInStore,
-	moleculeFamily,
-	RegularAtomToken,
+	runTransaction,
 	setState,
+	timeline,
 	transaction,
+	undo,
 } from "atom.io"
-import { clearStore, IMPLICIT, withdraw } from "atom.io/internal"
+import { clearStore, IMPLICIT } from "atom.io/internal"
 
 import type {
 	Above,
@@ -138,5 +139,55 @@ describe(`allocate`, () => {
 			[gameClaim, userClaim],
 			[[T$, `player`], gameKey, userKey],
 		)
+	})
+	test(`transaction support`, () => {
+		type DocumentKey = [`document`, string]
+		type UserKey = [`user`, string]
+		type UserGroupKey = [`userGroup`, string]
+		type DocumentHierarchy = Hierarchy<
+			[
+				{
+					above: `root`
+					below: [UserKey, UserGroupKey]
+				},
+				{
+					above: UserGroupKey
+					below: [DocumentKey]
+				},
+				{
+					above: UserKey
+					below: [DocumentKey]
+				},
+			]
+		>
+		const documentWorld = createWorld<DocumentHierarchy>(IMPLICIT.STORE)
+
+		const documentAtoms = atomFamily<string, DocumentKey>({
+			key: `doc`,
+			default: ``,
+		})
+
+		const createDocumentTX = transaction<
+			(owner: UserGroupKey | UserKey) => void
+		>({
+			key: `createDocument`,
+			do: ({ set }, owner) => {
+				const documentKey = [`document`, randomUUID()] satisfies DocumentKey
+				documentWorld.allocate(owner, documentKey)
+				set(documentAtoms, documentKey, ``)
+			},
+		})
+
+		const documentTimeline = timeline({
+			key: `documentTimeline`,
+			scope: [documentAtoms],
+		})
+		const createDocument = runTransaction(createDocumentTX)
+
+		documentWorld.allocate(`root`, [`userGroup`, `homies`])
+		createDocument([`userGroup`, `homies`])
+		console.log(IMPLICIT.STORE.molecules)
+		undo(documentTimeline)
+		console.log(IMPLICIT.STORE.molecules)
 	})
 })

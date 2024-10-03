@@ -1,10 +1,18 @@
 import type { Each, Store } from "atom.io/internal"
-import { disposeFromStore, isChildStore, Molecule } from "atom.io/internal"
+import {
+	disposeFromStore,
+	isChildStore,
+	Molecule,
+	newest,
+} from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { makeRootMoleculeInStore } from "./molecule"
-import type { MoleculeDisposalModern } from "./transaction"
+import type {
+	MoleculeCreationModern,
+	MoleculeDisposalModern,
+} from "./transaction"
 
 export const $provenance = Symbol(`provenance`)
 export type Claim<
@@ -75,6 +83,21 @@ export function allocateIntoStore<
 		for (const aboveMolecule of above) {
 			aboveMolecule.below.set(molecule.stringKey, molecule)
 		}
+
+		const creationEvent: MoleculeCreationModern = {
+			type: `molecule_creation`,
+			subType: `modern`,
+			key: molecule.key,
+			provenance: provenance as Canonical[],
+		}
+		const target = newest(store)
+		const isTransaction =
+			isChildStore(target) && target.transactionMeta.phase === `building`
+		if (isTransaction) {
+			target.transactionMeta.update.updates.push(creationEvent)
+		} else {
+			target.on.moleculeCreationStart.next(creationEvent)
+		}
 	} catch (thrown) {
 		if (thrown instanceof Error) {
 			store.logger.error(
@@ -119,14 +142,6 @@ export function deallocateFromStore<
 		values.push([tokenFamily.key, store.valueMap.get(stateToken.key)])
 	}
 
-	const disposalEvent: MoleculeDisposalModern = {
-		type: `molecule_disposal`,
-		subType: `modern`,
-		key: molecule.key,
-		values,
-		provenance,
-	}
-
 	for (const state of molecule.tokens.values()) {
 		disposeFromStore(store, state)
 	}
@@ -142,12 +157,22 @@ export function deallocateFromStore<
 	}
 	molecule.below.clear()
 
-	const isTransaction =
-		isChildStore(store) && store.transactionMeta.phase === `building`
-	if (isTransaction) {
-		store.transactionMeta.update.updates.push(disposalEvent)
+	const disposalEvent: MoleculeDisposalModern = {
+		type: `molecule_disposal`,
+		subType: `modern`,
+		key: molecule.key,
+		values,
+		provenance,
 	}
-	store.molecules.delete(molecule.stringKey)
+	const target = newest(store)
+	const isTransaction =
+		isChildStore(target) && target.transactionMeta.phase === `building`
+	if (isTransaction) {
+		target.transactionMeta.update.updates.push(disposalEvent)
+	} else {
+		target.on.moleculeDisposal.next(disposalEvent)
+	}
+	target.molecules.delete(molecule.stringKey)
 
 	for (const parent of molecule.above.values()) {
 		parent.below.delete(molecule.stringKey)
