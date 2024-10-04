@@ -1,9 +1,9 @@
-import NextPlugin from "@next/eslint-plugin-next"
-import * as TypeScriptPlugin from "@typescript-eslint/eslint-plugin"
+import { default as NextPlugin } from "@next/eslint-plugin-next"
+import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
 import type { Linter } from "eslint"
 import * as ImportPlugin from "eslint-plugin-import-x"
-import * as SimpleImportSortPlugin from "eslint-plugin-simple-import-sort"
+import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
 
 import AtomIOPlugin from "./packages/atom.io/eslint-plugin"
 
