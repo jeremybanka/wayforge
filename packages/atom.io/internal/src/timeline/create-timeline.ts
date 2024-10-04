@@ -587,7 +587,6 @@ function handleStateLifecycleEvent(
 		case `state_disposal`:
 			tl.subscriptions.get(event.token.key)?.()
 			tl.subscriptions.delete(event.token.key)
-			store.timelineTopics.delete(event.token.key)
 			break
 	}
 }
