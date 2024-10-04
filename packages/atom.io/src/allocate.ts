@@ -183,7 +183,7 @@ export function deallocateFromStore<
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function createWorld<H extends Hierarchy>(store: Store) {
+export function realm<H extends Hierarchy>(store: Store) {
 	const root = makeRootMoleculeInStore(`root`, store)
 	return {
 		root,

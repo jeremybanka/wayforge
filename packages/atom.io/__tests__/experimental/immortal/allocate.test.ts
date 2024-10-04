@@ -21,7 +21,7 @@ import type {
 	Mutuals,
 	Vassal,
 } from "~/packages/atom.io/src/allocate"
-import { createWorld, T$ } from "~/packages/atom.io/src/allocate"
+import { realm, T$ } from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -105,13 +105,13 @@ describe(`allocate`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
 
-		const gameWorld = createWorld<GameHierarchy>(IMPLICIT.STORE)
+		const gameRealm = realm<GameHierarchy>(IMPLICIT.STORE)
 
-		const gameClaim = gameWorld.allocate(`root`, gameKey)
-		const userClaim = gameWorld.allocate(`root`, userKey)
-		const playerClaim = gameWorld.allocate([gameClaim, userClaim], playerKey)
-		const swordClaim = gameWorld.allocate(playerClaim, swordKey)
-		const shieldClaim = gameWorld.allocate(gameClaim, shieldKey)
+		const gameClaim = gameRealm.allocate(`root`, gameKey)
+		const userClaim = gameRealm.allocate(`root`, userKey)
+		const playerClaim = gameRealm.allocate([gameClaim, userClaim], playerKey)
+		const swordClaim = gameRealm.allocate(playerClaim, swordKey)
+		const shieldClaim = gameRealm.allocate(gameClaim, shieldKey)
 
 		myItemDurability = getState(durabilityAtoms, swordClaim)
 		expect(logger.error).toHaveBeenCalledTimes(6)
@@ -128,15 +128,13 @@ describe(`allocate`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
 
-		// gameWorld.deallocate(itemClaim)
-		// gameWorld.deallocate(userClaim)
-		gameWorld.deallocate(gameClaim)
+		gameRealm.deallocate(gameClaim)
 
 		console.log(IMPLICIT.STORE.molecules)
 
-		gameWorld.allocate(playerClaim, [`item`, `aaa`])
-		gameWorld.allocate(gameClaim, [`item`, `aaa`])
-		gameWorld.allocate(
+		gameRealm.allocate(playerClaim, [`item`, `aaa`])
+		gameRealm.allocate(gameClaim, [`item`, `aaa`])
+		gameRealm.allocate(
 			[gameClaim, userClaim],
 			[[T$, `player`], gameKey, userKey],
 		)
@@ -161,7 +159,7 @@ describe(`allocate`, () => {
 				},
 			]
 		>
-		const documentWorld = createWorld<DocumentHierarchy>(IMPLICIT.STORE)
+		const { allocate, deallocate } = realm<DocumentHierarchy>(IMPLICIT.STORE)
 
 		const documentAtoms = atomFamily<string, DocumentKey>({
 			key: `doc`,
@@ -174,7 +172,7 @@ describe(`allocate`, () => {
 			key: `createDocument`,
 			do: ({ set }, owner) => {
 				const documentKey = [`document`, randomUUID()] satisfies DocumentKey
-				documentWorld.allocate(owner, documentKey)
+				allocate(owner, documentKey)
 				set(documentAtoms, documentKey, `hello work!`)
 				return documentKey
 			},
@@ -182,7 +180,7 @@ describe(`allocate`, () => {
 		const deleteDocumentTX = transaction<(document: DocumentKey) => void>({
 			key: `deleteDocument`,
 			do: (_, document) => {
-				documentWorld.deallocate(document)
+				deallocate(document)
 			},
 		})
 
@@ -193,7 +191,7 @@ describe(`allocate`, () => {
 		const createDocument = runTransaction(createDocumentTX)
 		const deleteDocument = runTransaction(deleteDocumentTX)
 
-		documentWorld.allocate(`root`, [`userGroup`, `homies`])
+		allocate(`root`, [`userGroup`, `homies`])
 		const documentClaim = createDocument([`userGroup`, `homies`])
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		deleteDocument(documentClaim)
