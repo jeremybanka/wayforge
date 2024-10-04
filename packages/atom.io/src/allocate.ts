@@ -88,7 +88,7 @@ export function allocateIntoStore<
 			type: `molecule_creation`,
 			subType: `modern`,
 			key: molecule.key,
-			provenance: provenance as Canonical[],
+			provenance: provenance as Canonical,
 		}
 		const target = newest(store)
 		const isTransaction =
@@ -131,9 +131,12 @@ export function deallocateFromStore<
 		join.molecules.delete(molecule.stringKey)
 	}
 
-	const provenance: Canonical[] = []
-	for (const above of molecule.above.values()) {
-		provenance.push(above.key)
+	let provenance: Canonical
+	if (molecule.above.size === 1) {
+		const above = molecule.above.values().next().value
+		provenance = above.key
+	} else {
+		provenance = [...molecule.above.values()].map(({ key }) => key)
 	}
 	const values: [string, any][] = []
 	for (const stateToken of molecule.tokens.values()) {

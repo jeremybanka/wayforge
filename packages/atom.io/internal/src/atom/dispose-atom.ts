@@ -19,11 +19,7 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		atom.cleanup?.()
 		const lastValue = store.valueMap.get(atom.key)
 		const family = withdraw({ key: atom.family.key, type: `atom_family` }, store)
-		family.subject.next({
-			type: `state_disposal`,
-			token: atomToken,
-			value: lastValue,
-		})
+
 		const molecule = target.molecules.get(atom.family.subKey)
 		if (molecule) {
 			molecule.tokens.delete(key)
@@ -32,7 +28,6 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		target.valueMap.delete(key)
 		target.selectorAtoms.delete(key)
 		target.atomsThatAreDefault.delete(key)
-		target.timelineTopics.delete(key)
 		if (atomToken.type === `mutable_atom`) {
 			const updateToken = getUpdateToken(atomToken)
 			disposeAtom(updateToken, store)
@@ -46,6 +41,11 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 			})
 		} else {
 			store.on.atomDisposal.next(atomToken)
+			family.subject.next({
+				type: `state_disposal`,
+				token: atomToken,
+				value: lastValue,
+			})
 		}
 	}
 }

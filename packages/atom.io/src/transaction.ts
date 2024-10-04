@@ -55,7 +55,7 @@ export type MoleculeCreationModern = {
 	type: `molecule_creation`
 	subType: `modern`
 	key: Canonical
-	provenance: Canonical[]
+	provenance: Canonical
 }
 export type MoleculeCreation<M extends MoleculeConstructor> =
 	| MoleculeCreationClassic<M>
@@ -72,7 +72,7 @@ export type MoleculeDisposalModern = {
 	type: `molecule_disposal`
 	subType: `modern`
 	key: Canonical
-	provenance: Canonical[]
+	provenance: Canonical
 	values: [key: string, value: any][]
 }
 export type MoleculeDisposal = MoleculeDisposalClassic | MoleculeDisposalModern

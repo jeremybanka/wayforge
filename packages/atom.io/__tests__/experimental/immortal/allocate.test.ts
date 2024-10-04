@@ -17,11 +17,16 @@ import { clearStore, IMPLICIT } from "atom.io/internal"
 import type {
 	Above,
 	Below,
+	Claim,
 	Hierarchy,
 	Mutuals,
 	Vassal,
 } from "~/packages/atom.io/src/allocate"
-import { createWorld, T$ } from "~/packages/atom.io/src/allocate"
+import {
+	createWorld,
+	deallocateFromStore,
+	T$,
+} from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -141,7 +146,7 @@ describe(`allocate`, () => {
 			[[T$, `player`], gameKey, userKey],
 		)
 	})
-	test(`transaction support`, () => {
+	test(`transaction+timeline support`, () => {
 		type DocumentKey = [`document`, string]
 		type UserKey = [`user`, string]
 		type UserGroupKey = [`userGroup`, string]
@@ -169,13 +174,20 @@ describe(`allocate`, () => {
 		})
 
 		const createDocumentTX = transaction<
-			(owner: UserGroupKey | UserKey) => void
+			(owner: UserGroupKey | UserKey) => DocumentKey
 		>({
 			key: `createDocument`,
 			do: ({ set }, owner) => {
 				const documentKey = [`document`, randomUUID()] satisfies DocumentKey
 				documentWorld.allocate(owner, documentKey)
-				set(documentAtoms, documentKey, ``)
+				set(documentAtoms, documentKey, `hello work!`)
+				return documentKey
+			},
+		})
+		const deleteDocumentTX = transaction<(document: DocumentKey) => void>({
+			key: `deleteDocument`,
+			do: (_, document) => {
+				documentWorld.deallocate(document)
 			},
 		})
 
@@ -184,13 +196,20 @@ describe(`allocate`, () => {
 			scope: [documentAtoms],
 		})
 		const createDocument = runTransaction(createDocumentTX)
+		const deleteDocument = runTransaction(deleteDocumentTX)
 
 		documentWorld.allocate(`root`, [`userGroup`, `homies`])
-		createDocument([`userGroup`, `homies`])
+		const documentClaim = createDocument([`userGroup`, `homies`])
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		deleteDocument(documentClaim)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		redo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		redo(documentTimeline)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 	})
 })

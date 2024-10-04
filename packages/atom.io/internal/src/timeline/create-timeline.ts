@@ -514,10 +514,12 @@ function filterTransactionUpdates(
 			}
 
 			let key: string
+			let familyKey: string | undefined
 			switch (updateFromTx.type) {
 				case `state_creation`:
 				case `state_disposal`:
 					key = updateFromTx.token.key
+					familyKey = updateFromTx.token.family?.key
 					break
 				case `molecule_creation`:
 				case `molecule_disposal`:
@@ -531,7 +533,12 @@ function filterTransactionUpdates(
 					break
 				default:
 					key = updateFromTx.key
+					familyKey = updateFromTx.family?.key
 					break
+			}
+			timelineTopics.has(key)
+			if (familyKey && timelineTopics.has(familyKey)) {
+				return true
 			}
 			return timelineTopics.has(key)
 		})
@@ -580,6 +587,7 @@ function handleStateLifecycleEvent(
 		case `state_disposal`:
 			tl.subscriptions.get(event.token.key)?.()
 			tl.subscriptions.delete(event.token.key)
+			store.timelineTopics.delete(event.token.key)
 			break
 	}
 }
