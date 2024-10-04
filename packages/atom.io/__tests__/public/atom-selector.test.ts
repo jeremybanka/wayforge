@@ -4,7 +4,7 @@ import {
 	atomFamily,
 	getState,
 	makeMolecule,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	moleculeFamily,
 	selector,
 	selectorFamily,
@@ -225,7 +225,7 @@ describe(`selector`, () => {
 		expect(Utils.stdout0).toHaveBeenCalledTimes(3)
 	})
 	it(`may get molecules`, () => {
-		const root = makeRootMolecule(`root`)
+		const root = makeRootMoleculeInStore(`root`)
 		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,

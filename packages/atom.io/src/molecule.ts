@@ -1,7 +1,9 @@
 import type {
 	ActorToolkit,
 	MoleculeCreation,
+	MoleculeCreationClassic,
 	MoleculeDisposal,
+	MoleculeDisposalClassic,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -86,7 +88,7 @@ export type MoleculeFamilyToken<M extends MoleculeConstructor> = {
 }
 export type MoleculeFamily<M extends MoleculeConstructor> = Flat<
 	MoleculeFamilyToken<M> & {
-		subject: Subject<MoleculeCreation<M> | MoleculeDisposal>
+		subject: Subject<MoleculeCreationClassic<M> | MoleculeDisposalClassic>
 		dependsOn: `all` | `any`
 		new: M
 	}
@@ -121,7 +123,7 @@ export type MoleculeType<T extends MoleculeFamilyToken<any>> =
 			: never
 export type MoleculeKey<M extends MoleculeConstructor> = InstanceType<M>[`key`]
 
-export function makeRootMolecule(
+export function makeRootMoleculeInStore(
 	key: string,
 	store: Store = IMPLICIT.STORE,
 ): MoleculeToken<ObjectConstructor> {

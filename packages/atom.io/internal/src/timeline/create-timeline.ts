@@ -25,6 +25,7 @@ import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
+import { isChildStore } from "../transaction"
 import type { Flat, Func } from "../utility-types"
 
 export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
@@ -371,74 +372,81 @@ function addMoleculeFamilyToTimeline(
 					`got a molecule creation or disposal`,
 					creationOrDisposal,
 				)
-				switch (creationOrDisposal.type) {
-					case `molecule_creation`:
-						{
-							store.timelineTopics.set(
-								{
-									topicKey: creationOrDisposal.token.key,
-									timelineKey: tl.key,
-								},
-								{ topicType: `molecule` },
-							)
-							const txUpdateInProgress =
-								newest(store).on.transactionApplying.state?.update
-							if (txUpdateInProgress) {
-								joinTransaction(tl, txUpdateInProgress, store)
-							} else if (tl.timeTraveling === null) {
-								const event = Object.assign(creationOrDisposal, {
-									timestamp: Date.now(),
-								})
-								tl.history.push(event)
-								tl.at = tl.history.length
-								tl.subject.next(event)
-							}
-							const molecule = withdraw(creationOrDisposal.token, store)
+				if (creationOrDisposal.subType === `classic`) {
+					switch (creationOrDisposal.type) {
+						case `molecule_creation`:
+							{
+								store.timelineTopics.set(
+									{
+										topicKey: creationOrDisposal.token.key,
+										timelineKey: tl.key,
+									},
+									{ topicType: `molecule` },
+								)
+								const txUpdateInProgress =
+									newest(store).on.transactionApplying.state?.update
+								if (txUpdateInProgress) {
+									joinTransaction(tl, txUpdateInProgress, store)
+								} else if (tl.timeTraveling === null) {
+									const event = Object.assign(creationOrDisposal, {
+										timestamp: Date.now(),
+									})
+									tl.history.push(event)
+									tl.at = tl.history.length
+									tl.subject.next(event)
+								}
+								const molecule = withdraw(creationOrDisposal.token, store)
 
-							for (const token of molecule.tokens.values()) {
-								switch (token.type) {
-									case `atom`:
-									case `mutable_atom`:
-										addAtomToTimeline(token, tl, store)
-										break
+								for (const token of molecule.tokens.values()) {
+									switch (token.type) {
+										case `atom`:
+										case `mutable_atom`:
+											addAtomToTimeline(token, tl, store)
+											break
+									}
+								}
+								tl.subscriptions.set(
+									molecule.key,
+									molecule.subject.subscribe(
+										`timeline:${tl.key}`,
+										(stateCreationOrDisposal) => {
+											handleStateLifecycleEvent(
+												stateCreationOrDisposal,
+												tl,
+												store,
+											)
+										},
+									),
+								)
+							}
+							break
+						case `molecule_disposal`:
+							{
+								const txUpdateInProgress =
+									newest(store).on.transactionApplying.state?.update
+								if (txUpdateInProgress) {
+									joinTransaction(tl, txUpdateInProgress, store)
+								} else if (tl.timeTraveling === null) {
+									const event = Object.assign(creationOrDisposal, {
+										timestamp: Date.now(),
+									})
+									tl.history.push(event)
+									tl.at = tl.history.length
+									tl.subject.next(event)
+								}
+								const moleculeKey = stringifyJson(creationOrDisposal.token.key)
+
+								tl.subscriptions.get(moleculeKey)?.()
+								tl.subscriptions.delete(moleculeKey)
+								for (const [familyKey] of creationOrDisposal.values) {
+									const stateKey = `${familyKey}(${stringifyJson(moleculeKey)})`
+									tl.subscriptions.get(stateKey)?.()
+									tl.subscriptions.delete(stateKey)
+									store.timelineTopics.delete(stateKey)
 								}
 							}
-							tl.subscriptions.set(
-								molecule.key,
-								molecule.subject.subscribe(
-									`timeline:${tl.key}`,
-									(stateCreationOrDisposal) => {
-										handleStateLifecycleEvent(stateCreationOrDisposal, tl, store)
-									},
-								),
-							)
-						}
-						break
-					case `molecule_disposal`:
-						{
-							const txUpdateInProgress =
-								newest(store).on.transactionApplying.state?.update
-							if (txUpdateInProgress) {
-								joinTransaction(tl, txUpdateInProgress, store)
-							} else if (tl.timeTraveling === null) {
-								const event = Object.assign(creationOrDisposal, {
-									timestamp: Date.now(),
-								})
-								tl.history.push(event)
-								tl.at = tl.history.length
-								tl.subject.next(event)
-							}
-							const moleculeKey = creationOrDisposal.token.key
-							tl.subscriptions.get(moleculeKey)?.()
-							tl.subscriptions.delete(moleculeKey)
-							for (const [familyKey] of creationOrDisposal.values) {
-								const stateKey = `${familyKey}(${stringifyJson(moleculeKey)})`
-								tl.subscriptions.get(stateKey)?.()
-								tl.subscriptions.delete(stateKey)
-								store.timelineTopics.delete(stateKey)
-							}
-						}
-						break
+							break
+					}
 				}
 			}),
 		)
@@ -506,16 +514,31 @@ function filterTransactionUpdates(
 			}
 
 			let key: string
+			let familyKey: string | undefined
 			switch (updateFromTx.type) {
 				case `state_creation`:
 				case `state_disposal`:
+					key = updateFromTx.token.key
+					familyKey = updateFromTx.token.family?.key
+					break
 				case `molecule_creation`:
 				case `molecule_disposal`:
-					key = updateFromTx.token.key
+					switch (updateFromTx.subType) {
+						case `classic`:
+							key = updateFromTx.token.key
+							break
+						case `modern`:
+							return true // always include
+					}
 					break
 				default:
 					key = updateFromTx.key
+					familyKey = updateFromTx.family?.key
 					break
+			}
+			timelineTopics.has(key)
+			if (familyKey && timelineTopics.has(familyKey)) {
+				return true
 			}
 			return timelineTopics.has(key)
 		})
@@ -543,13 +566,18 @@ function handleStateLifecycleEvent(
 		timestamp,
 	}) as TimelineUpdate<any>
 	if (!tl.timeTraveling) {
-		const txUpdateInProgress = newest(store).on.transactionApplying.state?.update
-		if (txUpdateInProgress) {
-			joinTransaction(tl, txUpdateInProgress, store)
+		const target = newest(store)
+		if (isChildStore(target)) {
+			// we don't want to update the true timeline while we are in a transaction
 		} else {
-			tl.history.push(timelineEvent)
-			tl.at = tl.history.length
-			tl.subject.next(timelineEvent)
+			const txUpdateInProgress = target.on.transactionApplying.state
+			if (txUpdateInProgress) {
+				joinTransaction(tl, txUpdateInProgress.update, store)
+			} else {
+				tl.history.push(timelineEvent)
+				tl.at = tl.history.length
+				tl.subject.next(timelineEvent)
+			}
 		}
 	}
 	switch (event.type) {

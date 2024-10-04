@@ -1,6 +1,8 @@
 import type {
 	AtomToken,
 	Logger,
+	MoleculeCreationModern,
+	MoleculeDisposalModern,
 	MoleculeFamily,
 	MoleculeToken,
 	ReadonlySelectorToken,
@@ -115,9 +117,11 @@ export class Store implements Lineage {
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
-		moleculeCreationStart: new Subject<MoleculeToken<any>>(),
+		moleculeCreationStart: new Subject<
+			MoleculeCreationModern | MoleculeToken<any>
+		>(),
 		moleculeCreationDone: new Subject<MoleculeToken<any>>(),
-		moleculeDisposal: new Subject<MoleculeToken<any>>(),
+		moleculeDisposal: new Subject<MoleculeDisposalModern | MoleculeToken<any>>(),
 	}
 	public operation: OperationProgress = { open: false }
 

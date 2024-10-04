@@ -10,7 +10,7 @@ import {
 	disposeState,
 	getState,
 	makeMolecule,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	moleculeFamily,
 	redo,
 	runTransaction,
@@ -373,7 +373,7 @@ describe(`timeline state lifecycle`, () => {
 			key: `game`,
 			scope: [unitMolecules],
 		})
-		const game = makeRootMolecule(`world`)
+		const game = makeRootMoleculeInStore(`world`)
 		makeMolecule(game, unitMolecules, `captain`)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
 		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
@@ -412,7 +412,7 @@ describe(`timeline state lifecycle`, () => {
 			key: `game`,
 			scope: [unitMolecules],
 		})
-		const game = makeRootMolecule(`world`)
+		const game = makeRootMoleculeInStore(`world`)
 		const tx = transaction<(key: string) => void>({
 			key: `create unit`,
 			do: ({ get, make, run }, key) => {

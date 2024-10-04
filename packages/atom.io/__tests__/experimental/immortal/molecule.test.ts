@@ -3,7 +3,7 @@ import {
 	disposeState,
 	getState,
 	makeMolecule,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	moleculeFamily,
 } from "atom.io"
 import { clearStore, IMPLICIT, withdraw } from "atom.io/internal"
@@ -24,7 +24,7 @@ beforeEach(() => {
 })
 describe(`moleculeFamily`, () => {
 	test(`exclusive molecule hierarchy`, () => {
-		const worldMolecule = makeRootMolecule(`world`)
+		const worldMolecule = makeRootMoleculeInStore(`world`)
 
 		const bottomMolecules = moleculeFamily({
 			key: `bottom`,
@@ -69,7 +69,7 @@ describe(`moleculeFamily`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(1)
 	})
 	test(`nonexclusive molecule hierarchy`, () => {
-		const worldMolecule = makeRootMolecule(`world`)
+		const worldMolecule = makeRootMoleculeInStore(`world`)
 
 		const bottomMolecules = moleculeFamily({
 			key: `bottom`,
