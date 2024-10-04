@@ -17,7 +17,7 @@ declare module "@next/eslint-plugin-next" {
 			}
 		>
 	}
-	export default plugin
+	export = plugin
 }
 // eslint-disable-next-line quotes
 declare module "@typescript-eslint/eslint-plugin" {
