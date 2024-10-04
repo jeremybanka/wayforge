@@ -9,7 +9,7 @@ import {
 	atom,
 	atomFamily,
 	getState,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	moleculeFamily,
 	runTransaction,
 	selector,
@@ -508,7 +508,7 @@ describe(`transaction.make`, () => {
 			},
 		})
 		type Unit = MoleculeType<typeof unitMolecules>
-		const world = makeRootMolecule(`world`)
+		const world = makeRootMoleculeInStore(`world`)
 
 		const spawnUnitsTX = transaction<
 			(willThrow: boolean, ...args: number[]) => MoleculeToken<Unit>[]

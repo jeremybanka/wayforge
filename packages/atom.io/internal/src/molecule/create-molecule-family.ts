@@ -1,6 +1,6 @@
 import type {
 	MoleculeConstructor,
-	MoleculeCreation,
+	MoleculeCreationClassic,
 	MoleculeFamily,
 	MoleculeFamilyOptions,
 	MoleculeFamilyToken,
@@ -13,7 +13,7 @@ export function createMoleculeFamily<M extends MoleculeConstructor>(
 	store: Store,
 	options: MoleculeFamilyOptions<M>,
 ): MoleculeFamilyToken<M> {
-	const subject = new Subject<MoleculeCreation<M>>()
+	const subject = new Subject<MoleculeCreationClassic<M>>()
 
 	const token = {
 		type: `molecule_family`,

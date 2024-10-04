@@ -4,7 +4,7 @@ import {
 	disposeState,
 	getState,
 	makeMolecule,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	moleculeFamily,
 	selectorFamily,
 	setState,
@@ -51,7 +51,7 @@ describe(`immortal mode`, () => {
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`count(0)`)).toBeUndefined()
 	})
 	test(`safe initialization of state with Molecule`, () => {
-		const world = makeRootMolecule(`world`)
+		const world = makeRootMoleculeInStore(`world`)
 		const countStates = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -214,7 +214,7 @@ describe(`immortal mode`, () => {
 			`No previous disposal trace was found.`,
 		)
 
-		const root = makeRootMolecule(`root`)
+		const root = makeRootMoleculeInStore(`root`)
 		makeMolecule(root, counterMolecules, `does exist`)
 		expect(() => getState(counterMolecules, `does exist`)).not.toThrowError()
 		setState(countStates, `does exist`, 3)
@@ -277,7 +277,7 @@ describe(`immortal integrations`, () => {
 			},
 		})
 
-		const world = makeRootMolecule(`world`)
+		const world = makeRootMoleculeInStore(`world`)
 
 		const holderMolecule = makeMolecule(world, characterMolecules, `holder-0`)
 		const itemMolecule = makeMolecule(world, itemMolecules, `item-0`)

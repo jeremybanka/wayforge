@@ -1,6 +1,7 @@
 import type {
 	MoleculeConstructor,
 	MoleculeDisposal,
+	MoleculeDisposalClassic,
 	MoleculeToken,
 } from "atom.io"
 
@@ -36,8 +37,9 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 
 	if (family) {
 		const Formula = withdraw(family, store)
-		const disposalEvent: MoleculeDisposal = {
+		const disposalEvent: MoleculeDisposalClassic = {
 			type: `molecule_disposal`,
+			subType: `classic`,
 			token,
 			family,
 			context,
@@ -50,7 +52,7 @@ export function disposeMolecule<M extends MoleculeConstructor>(
 			disposeFromStore(store, state)
 		}
 		for (const child of molecule.below.values()) {
-			if (child.family?.dependsOn === `all`) {
+			if (child.dependsOn === `all`) {
 				disposeMolecule(child, store)
 			} else {
 				child.above.delete(molecule.stringKey)

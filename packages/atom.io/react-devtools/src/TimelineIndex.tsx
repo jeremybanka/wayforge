@@ -64,7 +64,10 @@ export const TimelineLog: FC<{
 			{isOpen ? (
 				<main>
 					{timeline.history.map((update, index) =>
-						`key` in update ? (
+						update.type !== `molecule_creation` &&
+						update.type !== `molecule_disposal` &&
+						update.type !== `state_creation` &&
+						update.type !== `state_disposal` ? (
 							<Fragment key={update.key + index + timeline.at}>
 								{index === timeline.at ? <YouAreHere /> : null}
 								<article.TimelineUpdate

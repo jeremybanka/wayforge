@@ -5,6 +5,7 @@ import type {
 } from "atom.io"
 import type { Func } from "atom.io/internal"
 import { discoverType, prettyJson } from "atom.io/introspection"
+import { stringifyJson } from "atom.io/json"
 import * as React from "react"
 
 /* eslint-disable no-console */
@@ -90,7 +91,14 @@ const TransactionUpdateFC: React.FC<{
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
 					{transactionUpdate.updates
-						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
+						.filter(
+							(token) =>
+								token.type !== `molecule_creation` &&
+								token.type !== `molecule_disposal` &&
+								token.type !== `state_creation` &&
+								token.type !== `state_disposal` &&
+								!token.key.startsWith(`👁‍🗨`),
+						)
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
@@ -125,7 +133,7 @@ export const TimelineUpdateFC: React.FC<{
 	return `key` in timelineUpdate ? (
 		<article
 			className="node timeline_update"
-			data-testid={`timeline-update-${timelineUpdate.key}-${serialNumber}`}
+			data-testid={`timeline-update-${typeof timelineUpdate.key === `string` ? timelineUpdate.key : stringifyJson(timelineUpdate.key)}-${serialNumber}`}
 		>
 			<header>
 				<h4>
@@ -136,7 +144,14 @@ export const TimelineUpdateFC: React.FC<{
 			<main>
 				{timelineUpdate.type === `transaction_update` ? (
 					timelineUpdate.updates
-						.filter((token) => `key` in token && !token.key.startsWith(`👁‍🗨`))
+						.filter(
+							(token) =>
+								token.type !== `molecule_creation` &&
+								token.type !== `molecule_disposal` &&
+								token.type !== `state_creation` &&
+								token.type !== `state_disposal` &&
+								!token.key.startsWith(`👁‍🗨`),
+						)
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:

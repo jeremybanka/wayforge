@@ -2,7 +2,7 @@ import type {
 	CtorToolkit,
 	getState,
 	MoleculeConstructor,
-	MoleculeCreation,
+	MoleculeCreationClassic,
 	MoleculeFamilyToken,
 	MoleculeKey,
 	MoleculeParams,
@@ -93,12 +93,11 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 				const unsubFromFamily = family.subject.subscribe(
 					`join:${token.key}-${stringKey}`,
 					(event) => {
-						if (
-							event.type === `molecule_disposal` &&
-							stringifyJson(event.token.key) === stringKey
-						) {
-							unsubFromFamily()
-							join.molecules.delete(stringKey)
+						if (event.type === `molecule_disposal`) {
+							if (stringifyJson(event.token.key) === stringKey) {
+								unsubFromFamily()
+								join.molecules.delete(stringKey)
+							}
 						}
 					},
 				)
@@ -168,11 +167,12 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 
 	const update = {
 		type: `molecule_creation`,
+		subType: `classic`,
 		token,
 		family: familyToken,
 		context: contextArray,
 		params,
-	} satisfies MoleculeCreation<M>
+	} satisfies MoleculeCreationClassic<M>
 
 	if (isRootStore(target)) {
 		family.subject.next(update)

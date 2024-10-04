@@ -2,7 +2,7 @@ import type { CtorToolkit, Logger } from "atom.io"
 import {
 	atomFamily,
 	getState,
-	makeRootMolecule,
+	makeRootMoleculeInStore,
 	selectorFamily,
 	setState,
 	Silo,
@@ -111,7 +111,7 @@ describe(`selector families`, () => {
 					return array.length
 				},
 		})
-		const root = makeRootMolecule(`root`, $.store)
+		const root = makeRootMoleculeInStore(`root`, $.store)
 		const myMoleculeFamily = $.moleculeFamily({
 			key: `myMoleculeFamily`,
 			new: class MyMolecule {
