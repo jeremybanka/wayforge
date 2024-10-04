@@ -1,13 +1,7 @@
 import type { AtomToken } from "atom.io"
 
 import type { Store } from ".."
-import {
-	disposeSelector,
-	getUpdateToken,
-	isChildStore,
-	newest,
-	withdraw,
-} from ".."
+import { getUpdateToken, isChildStore, newest, withdraw } from ".."
 
 export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 	const target = newest(store)

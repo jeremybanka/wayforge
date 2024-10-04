@@ -17,16 +17,11 @@ import { clearStore, IMPLICIT } from "atom.io/internal"
 import type {
 	Above,
 	Below,
-	Claim,
 	Hierarchy,
 	Mutuals,
 	Vassal,
 } from "~/packages/atom.io/src/allocate"
-import {
-	createWorld,
-	deallocateFromStore,
-	T$,
-} from "~/packages/atom.io/src/allocate"
+import { createWorld, T$ } from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
