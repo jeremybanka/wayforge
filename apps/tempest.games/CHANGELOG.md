@@ -1,5 +1,17 @@
 # tempest.games
 
+## 0.1.0
+
+### Minor Changes
+
+- 9f66128: ✨ Add database with user accounts and games.
+
+### Patch Changes
+
+- Updated dependencies [a8781d3]
+- Updated dependencies [a8781d3]
+  - atom.io@0.30.0
+
 ## 0.0.13
 
 ### Patch Changes
