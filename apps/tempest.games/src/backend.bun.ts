@@ -21,7 +21,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
-import { eq } from "drizzle-orm"
+import { eq, ne } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 import { z } from "zod"
 
@@ -70,10 +70,7 @@ const httpServer = http.createServer((req, res) => {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
 				console.log(req.method, url.pathname)
-				console.log({
-					signup: asUUID(`signup`),
-					login: asUUID(`login`),
-				})
+				console.log({ signup: asUUID(`signup`), login: asUUID(`login`) })
 				switch (req.method) {
 					case `POST`:
 						switch (url.pathname) {
@@ -146,16 +143,12 @@ const httpServer = http.createServer((req, res) => {
 
 											res.setHeader(`Access-Control-Allow-Credentials`, `true`) // Allow cookies to be sent and received
 											res.setHeader(
-												`Access-Control-Allow-Methods`,
-												`GET,POST,OPTIONS`,
-											) // Allow the methods used by your client
-											res.setHeader(
 												`Access-Control-Allow-Headers`,
 												`Content-Type`,
-											) // Allow required headers
+											)
 											res.setHeader(`Set-Cookie`, [
-												`username=${username}; HttpOnly; Secure; SameSite=None; Path=/`,
-												`sessionKey=${sessionKey}; HttpOnly; Secure; SameSite=None; Path=/`,
+												`username=${username}; HttpOnly; SameSite=Lax; Path=/; Domain=${env.FRONTEND_ORIGINS[0]}`,
+												`sessionKey=${sessionKey}; HttpOnly; SameSite=Lax; Path=/; Domain=${env.FRONTEND_ORIGINS[0]}`,
 											])
 											res.writeHead(204, {
 												"Content-Type": `text/plain`,
