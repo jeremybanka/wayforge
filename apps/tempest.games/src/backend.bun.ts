@@ -26,6 +26,7 @@ import * as SocketIO from "socket.io"
 import { z } from "zod"
 
 import { worker } from "./backend.worker"
+import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import { users } from "./database/tempest-db-schema"
 import { asUUID } from "./library/as-uuid-node"
@@ -39,9 +40,12 @@ import { countContinuity } from "./library/store"
 const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
 
 const parent = new ParentSocket()
-IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`warn`, undefined, parent.logger)
+const logger = (
+	env.VITE_BACKEND_ORIGIN.includes(`localhost`) ? console : parent.logger
+) satisfies Pick<Console, `error` | `info` | `warn`>
+IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`warn`, undefined, logger)
 
-const gameWorker = worker(parent, `backend.worker.game.bun`)
+const gameWorker = worker(parent, `backend.worker.game.bun`, logger)
 
 const credentialsSchema = z
 	.object({
@@ -60,8 +64,6 @@ const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])
 
 const db = new DatabaseManager()
 
-const userSessionMap = new Map<string, Set<string>>()
-
 const httpServer = http.createServer((req, res) => {
 	const data: Uint8Array[] = []
 	req
@@ -71,7 +73,7 @@ const httpServer = http.createServer((req, res) => {
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
-				parent.logger.info(req.method, url.pathname)
+				logger.info(req.method, url.pathname)
 				switch (req.method) {
 					case `POST`:
 						switch (url.pathname) {
@@ -79,15 +81,15 @@ const httpServer = http.createServer((req, res) => {
 								{
 									const text = Buffer.concat(data).toString()
 									const json: Json.Serializable = JSON.parse(text)
-									parent.logger.info(`signup json`, json)
+									logger.info(`signup json`, json)
 									const parsed = signupSchema.safeParse(json)
 									if (!parsed.success) {
-										parent.logger.warn(`signup parsed`, parsed.error.issues)
+										logger.warn(`signup parsed`, parsed.error.issues)
 										return
 									}
 									const { username, password, email } = parsed.data
 									if (!username.match(USERNAME_ALLOWED_CHARS)) {
-										parent.logger.warn(`login username not allowed`, username)
+										logger.warn(`login username not allowed`, username)
 										return
 									}
 									const [maybeUser] = await db.drizzle
@@ -115,15 +117,14 @@ const httpServer = http.createServer((req, res) => {
 							case `/login-${asUUID(`login`)}`: {
 								const text = Buffer.concat(data).toString()
 								const json: Json.Serializable = JSON.parse(text)
-								parent.logger.info(`login json`, json)
 								const parsed = credentialsSchema.safeParse(json)
 								if (!parsed.success) {
-									parent.logger.warn(`login parsed`, parsed.error.issues)
+									logger.warn(`login parsed`, parsed.error.issues)
 									return
 								}
 								const { username, password } = parsed.data
 								if (!username.match(USERNAME_ALLOWED_CHARS)) {
-									parent.logger.warn(`login username not allowed`, username)
+									logger.warn(`login username not allowed`, username)
 									return
 								}
 								const [maybeUser] = await db.drizzle
@@ -134,7 +135,9 @@ const httpServer = http.createServer((req, res) => {
 									.from(users)
 									.where(eq(users.username, username))
 									.limit(1)
+								logger.info(`🔑 maybeUser`, maybeUser)
 								if (maybeUser) {
+									logger.info(`🔑 login attempt`, username)
 									const { hash: trueHash, salt } = maybeUser
 									const hash = createHash(`sha256`)
 										.update(password + salt)
@@ -147,7 +150,13 @@ const httpServer = http.createServer((req, res) => {
 											userSessionMap.set(username, userSessions)
 										}
 										userSessions.add(sessionKey)
-										res.writeHead(201, {
+										logger.info(
+											`🔑 login successful`,
+											username,
+											`<-`,
+											sessionKey,
+										)
+										res.writeHead(200, {
 											"Content-Type": `text/plain`,
 											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
 										})
@@ -168,7 +177,7 @@ const httpServer = http.createServer((req, res) => {
 					})
 					res.end(`${codeMeaning}: ${message}`)
 				} else {
-					parent.logger.error(thrown)
+					logger.error(thrown)
 					res.writeHead(500, {
 						"Content-Type": `text/plain`,
 						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
@@ -187,23 +196,17 @@ new SocketIO.Server(httpServer, {
 	cors: {
 		origin: env.FRONTEND_ORIGINS,
 		methods: [`GET`, `POST`],
-		credentials: true,
 	},
 })
 	.use((socket, next) => {
-		const authHeaderRaw = socket.handshake.headers.auth
-		if (typeof authHeaderRaw !== `string`) {
+		const { username, sessionKey } = socket.handshake.auth
+		if (!(username && sessionKey)) {
 			next(new Error(`No auth header provided`))
 			return
 		}
-		const authHeader = authHeaderRaw.split(` `)
-		if (authHeader.length !== 2) {
-			next(new Error(`Malformed auth header provided`))
-			return
-		}
-		const [username, sessionKey] = authHeader
 		const userSessions = userSessionMap.get(username)
-		if (!userSessions?.has(sessionKey)) {
+		logger.info(`📝 userSessions`, userSessions)
+		if (userSessions?.has(sessionKey)) {
 			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socket.id)
 			setIntoStore(IMPLICIT.STORE, socketState, socket)
 			editRelationsInStore(
@@ -215,14 +218,15 @@ new SocketIO.Server(httpServer, {
 			)
 			setIntoStore(IMPLICIT.STORE, userIndex, (index) => index.add(username))
 			setIntoStore(IMPLICIT.STORE, socketIndex, (index) => index.add(socket.id))
-			parent.logger.info(`${username} connected on ${socket.id}`)
+			logger.info(`${username} connected on ${socket.id}`)
 			next()
 		} else {
-			parent.logger.info(`${username} couldn't authenticate`)
+			logger.info(`${username} couldn't authenticate`)
 			next(new Error(`Authentication error`))
 		}
 	})
 	.on(`connection`, (socket) => {
+		logger.info(`📝 connection`)
 		const syncContinuity = realtimeContinuitySynchronizer({
 			socket,
 			store: IMPLICIT.STORE,
@@ -255,7 +259,7 @@ new SocketIO.Server(httpServer, {
 				(index) => (index.delete(socket.id), index),
 			)
 			disposeFromStore(IMPLICIT.STORE, socketAtoms, socket.id)
-			parent.logger.info(`${socket.id} disconnected`)
+			logger.info(`${socket.id} disconnected`)
 			cleanup()
 		})
 	})
@@ -266,24 +270,24 @@ parent.on(`updatesReady`, () => {
 })
 
 async function gracefulExit() {
-	parent.logger.info(`🧹 dispatching SIGINT to workers`)
+	logger.info(`🧹 dispatching SIGINT to workers`)
 	gameWorker.process.kill(`SIGINT`)
 	await new Promise((resolve) => gameWorker.process.once(`exit`, resolve))
-	parent.logger.info(`🛬 backend server exiting`)
+	logger.info(`🛬 backend server exiting`)
 	process.exit(0)
 }
 
 process.on(`SIGINT`, async () => {
-	parent.logger.info(`❗ received SIGINT; exiting gracefully`)
+	logger.info(`❗ received SIGINT; exiting gracefully`)
 	await gracefulExit()
 })
 process.on(`SIGTERM`, async () => {
-	parent.logger.info(`❗ received SIGTERM; exiting gracefully`)
+	logger.info(`❗ received SIGTERM; exiting gracefully`)
 	await gracefulExit()
 })
 process.on(`exit`, async () => {
-	parent.logger.info(`❗ received exit; exiting gracefully`)
+	logger.info(`❗ received exit; exiting gracefully`)
 	await gracefulExit()
 })
 
-parent.logger.info(`🛫 backend server ready`)
+logger.info(`🛫 backend server ready on port ${env.BACKEND_PORT}`)

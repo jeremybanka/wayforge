@@ -10,11 +10,22 @@ import { env } from "../library/env.ts"
 import App from "./App.tsx"
 
 export const socket = io(env.VITE_BACKEND_ORIGIN, {
-	auth: () => getState(authAtom) ?? {},
+	auth: (pass) => {
+		const auth = getState(authAtom)
+		console.log(`auth`, auth)
+		if (auth) {
+			pass(auth)
+		}
+	},
 	autoConnect: false,
-}).on(`connect_error`, () => {
-	setState(authAtom, null)
 })
+	.on(`connection`, () => {
+		console.log(`connected`)
+	})
+	.on(`connect_error`, () => {
+		console.log(`connect_error`)
+		setState(authAtom, null)
+	})
 
 export const authAtom = atom<{ username: string; sessionKey: string } | null>({
 	key: `auth`,
@@ -26,8 +37,10 @@ export const authAtom = atom<{ username: string; sessionKey: string } | null>({
 				if (newValue) {
 					localStorage.setItem(`username`, newValue.username)
 					localStorage.setItem(`sessionKey`, newValue.sessionKey)
+					console.log(`connecting...`)
 					socket.connect()
 				} else {
+					console.log(`clearing session...`)
 					localStorage.removeItem(`sessionKey`)
 				}
 			})

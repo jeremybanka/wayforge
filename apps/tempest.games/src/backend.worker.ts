@@ -13,6 +13,7 @@ export type Runner = `bun` | `node`
 export function worker(
 	from: ParentSocket<any, any>,
 	name: `${Role}.worker.${string}.${Runner}`,
+	logger: Pick<Console, `error` | `info` | `warn`> = from.logger,
 ): ChildSocket<any, any> {
 	const extension: Extension = env.RUN_WORKERS_FROM_SOURCE ? `ts` : `js`
 	const runner: Runner = name.endsWith(`.bun`) ? `bun` : `node`
@@ -22,5 +23,5 @@ export function worker(
 		args.push(`--experimental-strip-types`)
 	}
 	const child = spawn(runner, args)
-	return new ChildSocket(child, name, from.logger)
+	return new ChildSocket(child, name, logger)
 }

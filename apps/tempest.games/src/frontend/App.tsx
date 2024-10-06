@@ -131,7 +131,7 @@ export function Login(): JSX.Element {
 							body: JSON.stringify({ username, password }),
 						},
 					)
-					if (response.status === 201) {
+					if (response.status === 200) {
 						setUsername(``)
 						setPassword(``)
 						setState(viewIntendedAtom, `game`)
