@@ -146,10 +146,10 @@ const httpServer = http.createServer((req, res) => {
 										const sessionKey = crypto.randomUUID()
 										let userSessions = userSessionMap.get(username)
 										if (!userSessions) {
-											userSessions = new Set()
+											userSessions = new Map()
 											userSessionMap.set(username, userSessions)
 										}
-										userSessions.add(sessionKey)
+										userSessions.set(sessionKey, Date.now())
 										logger.info(
 											`🔑 login successful`,
 											username,
