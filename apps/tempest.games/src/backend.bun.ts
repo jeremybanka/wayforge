@@ -3,7 +3,6 @@
 import { createHash } from "node:crypto"
 import * as http from "node:http"
 
-import { AtomIOLogger } from "atom.io"
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
 	disposeFromStore,
@@ -14,7 +13,6 @@ import {
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import {
-	ParentSocket,
 	realtimeContinuitySynchronizer,
 	socketAtoms,
 	socketIndex,
@@ -25,6 +23,7 @@ import { eq } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 import { z } from "zod"
 
+import { logger, parentSocket } from "./backend"
 import { worker } from "./backend.worker"
 import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
@@ -39,13 +38,7 @@ import { countContinuity } from "./library/store"
 
 const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
 
-const parent = new ParentSocket()
-const logger = (
-	env.VITE_BACKEND_ORIGIN.includes(`localhost`) ? console : parent.logger
-) satisfies Pick<Console, `error` | `info` | `warn`>
-IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`warn`, undefined, logger)
-
-const gameWorker = worker(parent, `backend.worker.game.bun`, logger)
+const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
 const credentialsSchema = z
 	.object({
@@ -264,9 +257,9 @@ new SocketIO.Server(httpServer, {
 		})
 	})
 
-parent.emit(`alive`)
-parent.on(`updatesReady`, () => {
-	parent.emit(`readyToUpdate`)
+parentSocket.emit(`alive`)
+parentSocket.on(`updatesReady`, () => {
+	parentSocket.emit(`readyToUpdate`)
 })
 
 async function gracefulExit() {
