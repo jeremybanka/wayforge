@@ -227,6 +227,7 @@ const configs = [
 			`packages/atom.io/**/src/**/*.ts{,x}`,
 			`apps/tempest.games/src/**/*.ts{,x}`,
 		],
+		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`],
 		rules: {
 			"no-console": ERROR,
 		},
