@@ -3,12 +3,12 @@ import "./App.css"
 import { atom, runTransaction, selector, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { useSyncContinuity } from "atom.io/realtime-react"
-import { useState } from "react"
 
 import { asUUID } from "../library/as-uuid-web"
 import { env } from "../library/env"
 import { countAtom, countContinuity, incrementTX } from "../library/store"
 import * as svg from "./<svg>"
+import { authAtom } from "./main"
 
 function App(): JSX.Element {
 	const setView = useI(viewIntendedAtom)
@@ -100,10 +100,10 @@ export function Game(): JSX.Element {
 }
 
 export function Login(): JSX.Element {
-	const setUsername = useI(usernameInputState)
-	const setPassword = useI(password0InputState)
-	const username = useO(usernameInputState)
-	const password = useO(password0InputState)
+	const setUsername = useI(usernameInputAtom)
+	const setPassword = useI(password0InputAtom)
+	const username = useO(usernameInputAtom)
+	const password = useO(password0InputAtom)
 	return (
 		<div className="card">
 			<input
@@ -131,8 +131,13 @@ export function Login(): JSX.Element {
 							body: JSON.stringify({ username, password }),
 						},
 					)
-					if (response.status === 204) {
+					if (response.status === 201) {
+						setUsername(``)
+						setPassword(``)
 						setState(viewIntendedAtom, `game`)
+						const responseText = await response.text()
+						const [user, sessionKey] = responseText.split(` `)
+						setState(authAtom, { username, sessionKey })
 					}
 				}}
 			>
@@ -142,32 +147,32 @@ export function Login(): JSX.Element {
 	)
 }
 
-const usernameInputState = atom<string>({
+const usernameInputAtom = atom<string>({
 	key: `username`,
 	default: ``,
 })
-const password0InputState = atom<string>({
+const password0InputAtom = atom<string>({
 	key: `password0`,
 	default: ``,
 })
-const password1InputState = atom<string>({
+const password1InputAtom = atom<string>({
 	key: `password1`,
 	default: ``,
 })
-const emailInputState = atom<string>({
+const emailInputAtom = atom<string>({
 	key: `email`,
 	default: ``,
 })
 
 export function SignUp(): JSX.Element {
-	const setUsername = useI(usernameInputState)
-	const setPassword0 = useI(password0InputState)
-	const setPassword1 = useI(password1InputState)
-	const setEmail = useI(emailInputState)
-	const username = useO(usernameInputState)
-	const password0 = useO(password0InputState)
-	const password1 = useO(password1InputState)
-	const email = useO(emailInputState)
+	const setUsername = useI(usernameInputAtom)
+	const setPassword0 = useI(password0InputAtom)
+	const setPassword1 = useI(password1InputAtom)
+	const setEmail = useI(emailInputAtom)
+	const username = useO(usernameInputAtom)
+	const password0 = useO(password0InputAtom)
+	const password1 = useO(password1InputAtom)
+	const email = useO(emailInputAtom)
 	return (
 		<div className="card">
 			<input

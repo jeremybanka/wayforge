@@ -21,7 +21,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
-import { eq, ne } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 import { z } from "zod"
 
@@ -36,6 +36,8 @@ import {
 } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
 
+const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
+
 const parent = new ParentSocket()
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`warn`, undefined, parent.logger)
 
@@ -49,7 +51,7 @@ const credentialsSchema = z
 	.strict()
 
 const signupSchema = z.object({
-	email: z.string(),
+	email: z.string().email(),
 	username: z.string(),
 	password: z.string(),
 })
@@ -69,93 +71,87 @@ const httpServer = http.createServer((req, res) => {
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
-				console.log(req.method, url.pathname)
-				console.log({ signup: asUUID(`signup`), login: asUUID(`login`) })
+				parent.logger.info(req.method, url.pathname)
 				switch (req.method) {
 					case `POST`:
 						switch (url.pathname) {
 							case `/signup-${asUUID(`signup`)}`:
 								{
-									console.log(`signup`)
 									const text = Buffer.concat(data).toString()
 									const json: Json.Serializable = JSON.parse(text)
+									parent.logger.info(`signup json`, json)
 									const parsed = signupSchema.safeParse(json)
-									console.log(`signup parsed`, parsed)
-									if (parsed.success) {
-										console.log(`signup parsed`)
-										const { username, password, email } = parsed.data
-										const [maybeUser] = await db.drizzle
-											.select()
-											.from(users)
-											.where(eq(users.email, email))
-											.limit(1)
-										console.log(`signup maybeUser`, maybeUser)
-										if (maybeUser) {
-											throw [400, `User already exists`]
-										}
-										const salt = crypto.randomUUID()
-										const hash = createHash(`sha256`)
-											.update(password + salt)
-											.digest(`hex`)
-										await db.drizzle
-											.insert(users)
-											.values({ username, email, hash, salt })
-										console.log(`signup done`)
-										res.writeHead(201, {
-											"Content-Type": `text/plain`,
-											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-										})
-										res.end(RESPONSE_DICTIONARY[201])
+									if (!parsed.success) {
+										parent.logger.warn(`signup parsed`, parsed.error.issues)
+										return
 									}
+									const { username, password, email } = parsed.data
+									if (!username.match(USERNAME_ALLOWED_CHARS)) {
+										parent.logger.warn(`login username not allowed`, username)
+										return
+									}
+									const [maybeUser] = await db.drizzle
+										.select()
+										.from(users)
+										.where(eq(users.email, email))
+										.limit(1)
+									if (maybeUser) {
+										throw [400, `User already exists`]
+									}
+									const salt = crypto.randomUUID()
+									const hash = createHash(`sha256`)
+										.update(password + salt)
+										.digest(`hex`)
+									await db.drizzle
+										.insert(users)
+										.values({ username, email, hash, salt })
+									res.writeHead(201, {
+										"Content-Type": `text/plain`,
+										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+									})
+									res.end(RESPONSE_DICTIONARY[201])
 								}
 								break
 							case `/login-${asUUID(`login`)}`: {
 								const text = Buffer.concat(data).toString()
 								const json: Json.Serializable = JSON.parse(text)
+								parent.logger.info(`login json`, json)
 								const parsed = credentialsSchema.safeParse(json)
-								console.log(`login parsed`, parsed)
-								if (parsed.success) {
-									const { username, password } = parsed.data
-									const [maybeUser] = await db.drizzle
-										.select({
-											hash: users.hash,
-											salt: users.salt,
-										})
-										.from(users)
-										.where(eq(users.username, username))
-										.limit(1)
-									console.log(`login maybeUser`, maybeUser)
-									if (maybeUser) {
-										const { hash: trueHash, salt } = maybeUser
-										const hash = createHash(`sha256`)
-											.update(password + salt)
-											.digest(`hex`)
-										console.log(`login hash`, hash, `vs`, trueHash)
-										if (hash === trueHash) {
-											const sessionKey = crypto.randomUUID()
-											let userSessions = userSessionMap.get(username)
-											if (!userSessions) {
-												userSessions = new Set()
-												userSessionMap.set(username, userSessions)
-											}
-											userSessions.add(sessionKey)
-											console.log(sessionKey, userSessions)
-
-											res.setHeader(`Access-Control-Allow-Credentials`, `true`) // Allow cookies to be sent and received
-											res.setHeader(
-												`Access-Control-Allow-Headers`,
-												`Content-Type`,
-											)
-											res.setHeader(`Set-Cookie`, [
-												`username=${username}; HttpOnly; SameSite=Lax; Path=/; Domain=${env.FRONTEND_ORIGINS[0]}`,
-												`sessionKey=${sessionKey}; HttpOnly; SameSite=Lax; Path=/; Domain=${env.FRONTEND_ORIGINS[0]}`,
-											])
-											res.writeHead(204, {
-												"Content-Type": `text/plain`,
-												"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-											})
-											res.end(RESPONSE_DICTIONARY[204])
+								if (!parsed.success) {
+									parent.logger.warn(`login parsed`, parsed.error.issues)
+									return
+								}
+								const { username, password } = parsed.data
+								if (!username.match(USERNAME_ALLOWED_CHARS)) {
+									parent.logger.warn(`login username not allowed`, username)
+									return
+								}
+								const [maybeUser] = await db.drizzle
+									.select({
+										hash: users.hash,
+										salt: users.salt,
+									})
+									.from(users)
+									.where(eq(users.username, username))
+									.limit(1)
+								if (maybeUser) {
+									const { hash: trueHash, salt } = maybeUser
+									const hash = createHash(`sha256`)
+										.update(password + salt)
+										.digest(`hex`)
+									if (hash === trueHash) {
+										const sessionKey = crypto.randomUUID()
+										let userSessions = userSessionMap.get(username)
+										if (!userSessions) {
+											userSessions = new Set()
+											userSessionMap.set(username, userSessions)
 										}
+										userSessions.add(sessionKey)
+										res.writeHead(201, {
+											"Content-Type": `text/plain`,
+											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+										})
+										res.end(`${username} ${sessionKey}`)
 									}
 								}
 							}
@@ -163,7 +159,6 @@ const httpServer = http.createServer((req, res) => {
 				}
 			} catch (thrown) {
 				const result = serverIssueSchema.safeParse(thrown)
-				console.log(`serverIssueSchema`, result)
 				if (result.success) {
 					const [code, message] = result.data
 					const codeMeaning = RESPONSE_DICTIONARY[code]
@@ -174,7 +169,6 @@ const httpServer = http.createServer((req, res) => {
 					res.end(`${codeMeaning}: ${message}`)
 				} else {
 					parent.logger.error(thrown)
-					console.log(`serverIssueSchema`, result.error)
 					res.writeHead(500, {
 						"Content-Type": `text/plain`,
 						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
@@ -197,50 +191,17 @@ new SocketIO.Server(httpServer, {
 	},
 })
 	.use((socket, next) => {
-		const cookieHeader = socket.handshake.headers.cookie
-		if (!cookieHeader) {
-			console.log(`No cookie header provided`)
-			next(new Error(`No cookie header provided`))
+		const authHeaderRaw = socket.handshake.headers.auth
+		if (typeof authHeaderRaw !== `string`) {
+			next(new Error(`No auth header provided`))
 			return
 		}
-
-		const cookies = cookieHeader
-			.split(`;`)
-			.map((cookie) => cookie.trim())
-			.reduce(
-				(acc, cookie) => {
-					// Check if the cookie contains an '=' character
-					const separatorIndex = cookie.indexOf(`=`)
-					if (separatorIndex < 0) {
-						// Malformed cookie, log and skip it
-						parent.logger.warn(`Malformed cookie: ${cookie}`)
-						return acc
-					}
-
-					const key = cookie.slice(0, separatorIndex).trim()
-					const value = cookie.slice(separatorIndex + 1).trim()
-
-					// Skip if key is empty
-					if (!key) {
-						parent.logger.warn(`Cookie with empty key: ${cookie}`)
-						return acc
-					}
-
-					// Decode URI components to handle encoded characters
-					const decodedKey = decodeURIComponent(key)
-					const decodedValue = decodeURIComponent(value)
-
-					acc[decodedKey] = decodedValue
-					return acc
-				},
-				{} as Partial<Record<`sessionKey` | `username`, string>>,
-			)
-
-		const { username, sessionKey } = cookies
-		if (!(username && sessionKey)) {
-			next(new Error(`No username or session key provided`))
+		const authHeader = authHeaderRaw.split(` `)
+		if (authHeader.length !== 2) {
+			next(new Error(`Malformed auth header provided`))
 			return
 		}
+		const [username, sessionKey] = authHeader
 		const userSessions = userSessionMap.get(username)
 		if (!userSessions?.has(sessionKey)) {
 			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socket.id)
