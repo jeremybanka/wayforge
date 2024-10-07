@@ -1,16 +1,32 @@
 import "./App.css"
 
-import { runTransaction } from "atom.io"
-import { useO } from "atom.io/react"
-import { useSyncContinuity } from "atom.io/realtime-react"
+import { atom, selector } from "atom.io"
+import { useI, useO } from "atom.io/react"
 
-import { countAtom, countContinuity, incrementTX } from "../library/store"
 import * as svg from "./<svg>"
+import { authAtom } from "./services/socket-auth"
+import { Game } from "./views/Game"
+import { Login } from "./views/Login"
+import { SignUp } from "./views/SignUp"
 
-function App(): JSX.Element {
-	const count = useO(countAtom)
-	const increment = runTransaction(incrementTX)
-	useSyncContinuity(countContinuity)
+export const viewIntendedAtom = atom<`game` | `login` | `sign-up`>({
+	key: `view`,
+	default: `login`,
+})
+export const viewSelector = selector<`game` | `login` | `sign-up`>({
+	key: `viewSelector`,
+	get: ({ get }) => {
+		const auth = get(authAtom)
+		if (auth) {
+			return `game`
+		}
+		return get(viewIntendedAtom)
+	},
+})
+
+export function App(): JSX.Element {
+	const setViewIntended = useI(viewIntendedAtom)
+	const view = useO(viewSelector)
 
 	return (
 		<>
@@ -21,15 +37,38 @@ function App(): JSX.Element {
 				<button
 					type="button"
 					onClick={() => {
-						increment()
+						setViewIntended(`login`)
 					}}
 				>
-					count is {count}
+					Login
 				</button>
-				<p>Let's see how high we can count!</p>
+				<button
+					type="button"
+					onClick={() => {
+						setViewIntended(`sign-up`)
+					}}
+				>
+					Sign Up
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						setViewIntended(`game`)
+					}}
+				>
+					Game
+				</button>
 			</div>
+			{(() => {
+				switch (view) {
+					case `game`:
+						return <Game />
+					case `login`:
+						return <Login />
+					case `sign-up`:
+						return <SignUp />
+				}
+			})()}
 		</>
 	)
 }
-
-export default App

@@ -1,9 +1,6 @@
 import { createEnv } from "@t3-oss/env-core"
 import { parseJson } from "atom.io/json"
-import dotenv from "dotenv"
 import { z } from "zod"
-
-dotenv.config()
 
 export const env = createEnv({
 	isServer: typeof window === `undefined`,
@@ -42,7 +39,7 @@ export const env = createEnv({
 	 * What object holds the environment variables at runtime. This is usually
 	 * `process.env` or `import.meta.env`.
 	 */
-	runtimeEnv: process.env,
+	runtimeEnv: import.meta.env,
 
 	/**
 	 * By default, this library will feed the environment variables directly to

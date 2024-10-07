@@ -1,17 +1,10 @@
 /* eslint-disable no-console */
-import { execSync } from "node:child_process"
-import { createHash } from "node:crypto"
 
 import { eq } from "drizzle-orm"
 
+import { asUUID } from "../library/as-uuid-node"
 import { DatabaseManager } from "./tempest-db-manager"
 import { games } from "./tempest-db-schema"
-
-function asUUID(input: string): string {
-	const hash = createHash(`sha256`).update(input).digest(`hex`)
-	const uuid = `${hash.substring(0, 8)}-${hash.substring(8, 12)}-${hash.substring(12, 16)}-${hash.substring(16, 20)}-${hash.substring(20, 32)}`
-	return uuid
-}
 
 beforeEach(() => {
 	vitest.spyOn(console, `error`)
