@@ -1,6 +1,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
+import type { Flat, ToPath, Tree, TreeMap, TreePath } from "treetrunks"
 import type { ZodSchema } from "zod"
 import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
@@ -8,12 +9,10 @@ import { zodToJsonSchema } from "zod-to-json-schema"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
-import type { Flat, ToPath, Tree, TreeMap, TreePath } from "./tree"
 
 export * from "./encapsulate"
 export type * from "./flag"
 export * from "./option-parsers"
-export * from "./tree"
 
 export type CliOptionValue =
 	| Readonly<{ [key: string]: CliOptionValue }>
