@@ -1,11 +1,5 @@
 import { execSync, spawn } from "node:child_process"
-import {
-	existsSync,
-	mkdirSync,
-	renameSync,
-	rmSync,
-	writeFileSync,
-} from "node:fs"
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs"
 import type { Server } from "node:http"
 import { createServer } from "node:http"
 import { homedir } from "node:os"

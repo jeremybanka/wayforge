@@ -1,3 +1,6 @@
+import { toEntries } from "atom.io/json"
+import { z } from "zod"
+
 export const RESPONSE_DICTIONARY = {
 	100: `Continue`,
 	101: `Switching Protocols`,
@@ -62,4 +65,13 @@ export const RESPONSE_DICTIONARY = {
 	508: `Loop Detected`,
 	510: `Not Extended`,
 	511: `Network Authentication Required`,
-}
+} as const satisfies Record<number, string>
+
+export const responseCodeSchemas = toEntries(RESPONSE_DICTIONARY).map(([code]) =>
+	z.literal(Number(code)),
+)
+export const responseCodeUnion = z.union([
+	responseCodeSchemas[0],
+	responseCodeSchemas[1],
+	...responseCodeSchemas,
+])

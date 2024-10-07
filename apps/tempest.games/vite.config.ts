@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react-swc"
+import { configDotenv } from "dotenv"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
@@ -11,5 +12,6 @@ export default defineConfig({
 	test: {
 		globals: true,
 		globalSetup: `./__scripts__/setup.vitest.ts`,
+		env: configDotenv().parsed ?? {},
 	},
 })
