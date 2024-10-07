@@ -308,8 +308,8 @@ importers:
         specifier: 3.1.7
         version: 3.1.7
       drizzle-orm:
-        specifier: 0.34.0
-        version: 0.34.0(@types/react@18.3.11)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1)
+        specifier: 0.34.1
+        version: 0.34.1(@types/react@18.3.11)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1)
       postgres:
         specifier: 3.4.4
         version: 3.4.4
@@ -710,8 +710,8 @@ importers:
         specifier: 0.25.0
         version: 0.25.0
       drizzle-orm:
-        specifier: 0.34.0
-        version: 0.34.0(@types/react@18.3.11)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1)
+        specifier: 0.34.1
+        version: 0.34.1(@types/react@18.3.11)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1)
       eslint:
         specifier: 9.12.0
         version: 9.12.0(jiti@2.3.3)
@@ -4636,8 +4636,8 @@ packages:
     resolution: {integrity: sha512-Rcf0nYCAKizwjWQCY+d3zytyuTbDb81NcaPor+8NebESlUz1+9W3uGl0+r9FhU4Qal5Zv9j/7neXCSCe7DHzjA==}
     hasBin: true
 
-  drizzle-orm@0.34.0:
-    resolution: {integrity: sha512-6l9v65YoCr53UOWjyPPNYYQsZYvtzgxMKxljQ5VlJcS3/zM81MXnWeSfqQFlrUHxoTNgyi9BWHysUE8+c0odzA==}
+  drizzle-orm@0.34.1:
+    resolution: {integrity: sha512-t+zCwyWWt8xTqtYV4doE/xYmT7hpv1L8pQ66zddEz+3VWyedBBtctjMAp22mAJPfyWurRQXUJ1nrTtqLq+DqNA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
@@ -11547,7 +11547,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.34.0(@types/react@18.3.11)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1):
+  drizzle-orm@0.34.1(@types/react@18.3.11)(bun-types@1.1.29)(postgres@3.4.4)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.11
       bun-types: 1.1.29
