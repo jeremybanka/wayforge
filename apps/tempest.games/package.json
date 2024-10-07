@@ -22,7 +22,7 @@
 		"preview": "nr build && concurrently \"bun:preview:*\"",
 		"preview:frontend": "./bin/frontend.bun.js",
 		"preview:backend": "./bin/backend.bun.js",
-		"env": "[ ! -f .env ] && cp .env.defaults .env",
+		"env": "[ -f .env ] && echo 'env already present' || cp .env.defaults .env",
 		"test": "vitest",
 		"test:once": "bun run env && vitest run",
 		"lint:biome": "biome check -- .",
