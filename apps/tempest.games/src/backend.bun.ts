@@ -198,7 +198,6 @@ new SocketIO.Server(httpServer, {
 			return
 		}
 		const userSessions = userSessionMap.get(username)
-		logger.info(`📝 userSessions`, userSessions)
 		if (userSessions?.has(sessionKey)) {
 			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socket.id)
 			setIntoStore(IMPLICIT.STORE, socketState, socket)
@@ -219,7 +218,6 @@ new SocketIO.Server(httpServer, {
 		}
 	})
 	.on(`connection`, (socket) => {
-		logger.info(`📝 connection`)
 		const syncContinuity = realtimeContinuitySynchronizer({
 			socket,
 			store: IMPLICIT.STORE,
