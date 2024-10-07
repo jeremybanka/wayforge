@@ -10,6 +10,7 @@
 			"*.gen.ts",
 			"*.tsdoc.json",
 			"heap.json",
+			"app/**/*",
 			"bin/**/*",
 			"dist/**/*",
 			"node_modules/**/*",
