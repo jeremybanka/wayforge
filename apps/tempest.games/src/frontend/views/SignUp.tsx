@@ -1,26 +1,14 @@
-import { atom, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
-import { viewIntendedAtom } from "../App"
-
-export const usernameInputAtom = atom<string>({
-	key: `username`,
-	default: window.localStorage.getItem(`username`) ?? ``,
-})
-export const password0InputAtom = atom<string>({
-	key: `password0`,
-	default: ``,
-})
-const password1InputAtom = atom<string>({
-	key: `password1`,
-	default: ``,
-})
-const emailInputAtom = atom<string>({
-	key: `email`,
-	default: ``,
-})
+import { navigate } from "../services/router-service"
+import {
+	emailInputAtom,
+	password0InputAtom,
+	password1InputAtom,
+	usernameInputAtom,
+} from "../services/socket-auth-service"
 
 export function SignUp(): JSX.Element {
 	const setUsername = useI(usernameInputAtom)
@@ -48,7 +36,7 @@ export function SignUp(): JSX.Element {
 				if (response.status === 200) {
 					setPassword1(``)
 					setEmail(``)
-					setState(viewIntendedAtom, `game`)
+					navigate(`/login`)
 				}
 			}}
 		>

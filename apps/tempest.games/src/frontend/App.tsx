@@ -1,74 +1,48 @@
-import "./App.css"
+import { useO } from "atom.io/react"
 
-import { atom, selector } from "atom.io"
-import { useI, useO } from "atom.io/react"
-
+import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
-import { authAtom } from "./services/socket-auth"
+import { Anchor } from "./Anchor"
+import scss from "./App.module.scss"
+import { routeSelector } from "./services/router-service"
 import { Game } from "./views/Game"
 import { Login } from "./views/Login"
 import { SignUp } from "./views/SignUp"
 
-export const viewIntendedAtom = atom<`game` | `login` | `sign-up`>({
-	key: `view`,
-	default: `login`,
-})
-export const viewSelector = selector<`game` | `login` | `sign-up`>({
-	key: `viewSelector`,
-	get: ({ get }) => {
-		const auth = get(authAtom)
-		if (auth) {
-			return `game`
-		}
-		return get(viewIntendedAtom)
-	},
-})
-
 export function App(): JSX.Element {
-	const setViewIntended = useI(viewIntendedAtom)
-	const view = useO(viewSelector)
+	const route = useO(routeSelector)
 
 	return (
-		<>
+		<main className={scss.class}>
 			<div>
 				<svg.tempest />
 			</div>
-			<div className="card">
-				<button
-					type="button"
-					onClick={() => {
-						setViewIntended(`login`)
-					}}
-				>
-					Login
-				</button>
-				<button
-					type="button"
-					onClick={() => {
-						setViewIntended(`sign-up`)
-					}}
-				>
-					Sign Up
-				</button>
-				<button
-					type="button"
-					onClick={() => {
-						setViewIntended(`game`)
-					}}
-				>
-					Game
-				</button>
-			</div>
+			<Anchor href="/login">Login</Anchor>
+			<Anchor href="/sign_up">Sign Up</Anchor>
+			<Anchor href="/game">Game</Anchor>
 			{(() => {
-				switch (view) {
-					case `game`:
-						return <Game />
-					case `login`:
-						return <Login />
-					case `sign-up`:
-						return <SignUp />
+				switch (route) {
+					case 401:
+					case 404:
+						return (
+							<article>
+								<h1>{route}</h1>
+								<h2>{RESPONSE_DICTIONARY[route]}</h2>
+							</article>
+						)
+					default: {
+						const [root, ...rest] = route
+						switch (root) {
+							case `login`:
+								return <Login />
+							case `sign_up`:
+								return <SignUp />
+							case `game`:
+								return <Game />
+						}
+					}
 				}
 			})()}
-		</>
+		</main>
 	)
 }

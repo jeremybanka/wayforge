@@ -3,9 +3,12 @@ import { useI, useO } from "atom.io/react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
-import { viewIntendedAtom } from "../App"
-import { authAtom } from "../services/socket-auth"
-import { password0InputAtom, usernameInputAtom } from "./SignUp"
+import { navigate } from "../services/router-service"
+import {
+	authAtom,
+	password0InputAtom,
+	usernameInputAtom,
+} from "../services/socket-auth-service"
 
 export function Login(): JSX.Element {
 	const setUsername = useI(usernameInputAtom)
@@ -25,10 +28,11 @@ export function Login(): JSX.Element {
 						body: JSON.stringify({ username, password }),
 					},
 				)
+				console.log(response)
 				if (response.status === 200) {
 					setUsername(``)
 					setPassword(``)
-					setState(viewIntendedAtom, `game`)
+					navigate(`/game`)
 					const responseText = await response.text()
 					const [, sessionKey] = responseText.split(` `)
 					setState(authAtom, { username, sessionKey })
@@ -41,6 +45,7 @@ export function Login(): JSX.Element {
 				onChange={(e) => {
 					setUsername(e.target.value)
 				}}
+				autoComplete="username"
 			/>
 			<input
 				type="password"
@@ -48,6 +53,7 @@ export function Login(): JSX.Element {
 				onChange={(e) => {
 					setPassword(e.target.value)
 				}}
+				autoComplete="current-password"
 			/>
 			<button type="submit">Login</button>
 		</form>
