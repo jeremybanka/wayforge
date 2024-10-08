@@ -10,6 +10,7 @@ export const ROUTES = required({
 	game: optional({
 		$gameId: null,
 	}),
+	admin: null,
 }) satisfies Tree
 export type Route = TreePath<typeof ROUTES>
 export type Pathname = `/${Join<Route, `/`>}`
