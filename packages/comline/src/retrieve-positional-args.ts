@@ -1,4 +1,4 @@
-import type { Join, Tree, TreePath, TreePathName } from "./tree"
+import type { Join, Tree, TreePath, TreePathName } from "treetrunks"
 
 export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	cliName: string,

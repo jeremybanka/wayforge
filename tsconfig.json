@@ -21,6 +21,7 @@
 			"rel8/*": ["packages/rel8/*/src"],
 			"socket-io.filestore/*": ["./packages/socket-io.filestore/src/*"],
 			"socket-io.git/*": ["./packages/socket-io.git/src/*"],
+			"treetrunks": ["./packages/treetrunks/src/treetrunks.ts"],
 			"tsdoc.json": ["packages/tsdoc.json/src"],
 			"tsdoc.json/*": ["packages/tsdoc.json/*/src"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],

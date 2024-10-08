@@ -1,11 +1,11 @@
 import * as fs from "node:fs"
 
 import * as tmp from "tmp"
+import { required } from "treetrunks"
 import { z } from "zod"
 
 import { cli } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
-import { required } from "../src/tree"
 
 let tempDir: tmp.DirResult
 
