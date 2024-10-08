@@ -12,10 +12,10 @@ export const users = pgTable(
 	`users`,
 	{
 		id: uuid(`id`).primaryKey().defaultRandom(),
-		username: varchar(`username`, { length: 255 }).notNull(),
-		email: varchar(`email`, { length: 255 }).notNull(),
-		hash: varchar(`hash`, { length: 255 }).notNull(),
-		salt: varchar(`salt`, { length: 255 }).notNull(),
+		username: varchar(`username`, { length: 16 }).notNull(),
+		email: varchar(`email`, { length: 254 }).notNull(),
+		hash: varchar(`hash`, { length: 64 }).notNull(),
+		salt: varchar(`salt`, { length: 36 }).notNull(),
 	},
 	(table) => ({
 		usernameIdx: uniqueIndex(`users_username_unique`).on(table.username),
