@@ -3,6 +3,7 @@ import { useI, useO } from "atom.io/react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
+import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
 import {
 	authAtom,
@@ -39,6 +40,7 @@ export function Login(): JSX.Element {
 				}
 			}}
 		>
+			<label htmlFor="username">Username</label>
 			<input
 				type="text"
 				value={username}
@@ -47,6 +49,7 @@ export function Login(): JSX.Element {
 				}}
 				autoComplete="username"
 			/>
+			<label htmlFor="password">Password</label>
 			<input
 				type="password"
 				value={password}
@@ -56,6 +59,9 @@ export function Login(): JSX.Element {
 				autoComplete="current-password"
 			/>
 			<button type="submit">Login</button>
+			<Anchor href="/sign_up">
+				New here? <u>Sign up</u> for an account.
+			</Anchor>
 		</form>
 	)
 }

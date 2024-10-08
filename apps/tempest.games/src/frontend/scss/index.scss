@@ -3,10 +3,12 @@
   color-scheme: light dark;
   --fg-color: #fff;
   --bg-color: #070707;
+  --hyperlink-color: #09f;
+  --hyperlink-hover-color: #0df;
   color: var(--fg-color);
   background-color: var(--bg-color);
   position: relative;
-    
+
   *,
   *::before,
   *::after {
@@ -35,6 +37,8 @@ a {
     --bg-color: #fff;
     color: var(--fg-color);
     background-color: var(--bg-color);
+    --hyperlink-color: #08f;
+    --hyperlink-hover-color: #04f;
   }
   a:hover {
     color: #08f;

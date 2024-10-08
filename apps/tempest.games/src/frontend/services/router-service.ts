@@ -71,7 +71,6 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				setSelf(pathname)
 			}
 			const redirect = (newValue: string) => {
-				console.log(`redirecting`, newValue)
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
@@ -89,7 +88,6 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 			}
 			redirect(window.location.pathname)
 			onSet(({ newValue }) => {
-				console.log(`pathnameAtom`, newValue)
 				redirect(newValue)
 			})
 		},

@@ -1,3 +1,25 @@
 .class {
   display: flex;
+  main {
+    form {
+      display: flex;
+      flex-flow: column;
+      gap: 1em;
+      > * {
+        flex-grow: 1;
+      }
+      > a {
+        color: var(--fg-color);
+        &:hover {
+          color: var(--hyperlink-hover-color);
+          > u {
+            color: var(--hyperlink-hover-color);
+          }
+        }
+        > u {
+          color: var(--hyperlink-color);
+        }
+      }
+    }
+  }
 }
