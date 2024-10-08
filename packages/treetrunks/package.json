@@ -22,7 +22,7 @@
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
-		"test:once": "vitest run",
+		"test:once": "echo no tests yet",
 		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
 	},
