@@ -1,43 +1,3 @@
-@media (prefers-color-scheme: light) {
-  :root {
-    --fg-tint-3: #666;
-    --fg-hard-3: var(--fg-tint-3);
-    --fg-tint-2: #555;
-    --fg-hard-2: var(--fg-tint-2);
-    --fg-tint-1: #444;
-    --fg-hard-1: var(--fg-tint-1);
-    --fg: #333;
-    --fg-dark-1: #222;
-    --fg-soft-1: var(--fg-dark-1);
-    --fg-dark-2: #111;
-    --fg-soft-2: var(--fg-dark-2);
-    --fg-dark-3: #000;
-    --fg-soft-3: var(--fg-dark-3);
-
-    --bg-tint-3: #fffefc;
-    --bg-soft-3: var(--bg-tint-3);
-    --bg-tint-2: #fdfcfa;
-    --bg-soft-2: var(--bg-tint-2);
-    --bg-tint-1: #f5f4f2;
-    --bg: #eeece8;
-    --bg-dark-1: #e9e7e3;
-    --bg-hard-1: var(--bg-dark-1);
-    --bg-dark-2: #e2e0dc;
-    --bg-hard-2: var(--bg-dark-2);
-    --bg-dark-3: #dad8d4;
-
-    color: var(--fg-color);
-    background-color: var(--bg-color);
-    --hyperlink-color: #08f;
-    --hyperlink-hover-color: #04f;
-  }
-  a:hover {
-    color: #08f;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
 :root {
   color-scheme: light dark;
 
@@ -87,6 +47,47 @@
   body {
     padding: 0;
     margin: 0;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --fg-tint-3: #666;
+    --fg-hard-3: var(--fg-tint-3);
+    --fg-tint-2: #555;
+    --fg-hard-2: var(--fg-tint-2);
+    --fg-tint-1: #444;
+    --fg-hard-1: var(--fg-tint-1);
+    --fg: #333;
+    --fg-dark-1: #222;
+    --fg-soft-1: var(--fg-dark-1);
+    --fg-dark-2: #111;
+    --fg-soft-2: var(--fg-dark-2);
+    --fg-dark-3: #000;
+    --fg-soft-3: var(--fg-dark-3);
+
+    --bg-tint-3: #fffefc;
+    --bg-soft-3: var(--bg-tint-3);
+    --bg-tint-2: #fdfcfa;
+    --bg-soft-2: var(--bg-tint-2);
+    --bg-tint-1: #f5f4f2;
+    --bg: #eeece8;
+    --bg-dark-1: #e9e7e3;
+    --bg-hard-1: var(--bg-dark-1);
+    --bg-dark-2: #e2e0dc;
+    --bg-hard-2: var(--bg-dark-2);
+    --bg-dark-3: #dad8d4;
+
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+    --hyperlink-color: #08f;
+    --hyperlink-hover-color: #04f;
+  }
+  a:hover {
+    color: #08f;
+  }
+  button {
+    background-color: #f9f9f9;
   }
 }
 
