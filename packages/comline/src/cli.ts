@@ -13,6 +13,7 @@ import { retrievePositionalArgs } from "./retrieve-positional-args"
 export * from "./encapsulate"
 export type * from "./flag"
 export * from "./option-parsers"
+export * from "treetrunks"
 
 export type CliOptionValue =
 	| Readonly<{ [key: string]: CliOptionValue }>
