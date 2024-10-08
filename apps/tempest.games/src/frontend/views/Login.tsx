@@ -18,7 +18,6 @@ export function Login(): JSX.Element {
 	const password = useO(password0InputAtom)
 	return (
 		<form
-			className="card"
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const signInUUID = await asUUID(`login`)
@@ -40,28 +39,38 @@ export function Login(): JSX.Element {
 				}
 			}}
 		>
-			<label htmlFor="username">Username</label>
-			<input
-				type="text"
-				value={username}
-				onChange={(e) => {
-					setUsername(e.target.value)
-				}}
-				autoComplete="username"
-			/>
-			<label htmlFor="password">Password</label>
-			<input
-				type="password"
-				value={password}
-				onChange={(e) => {
-					setPassword(e.target.value)
-				}}
-				autoComplete="current-password"
-			/>
-			<button type="submit">Login</button>
-			<Anchor href="/sign_up">
-				New here? <u>Sign up</u> for an account.
-			</Anchor>
+			<main>
+				<label htmlFor="username">
+					<span> Username</span>
+					<input
+						id="username"
+						type="text"
+						value={username}
+						onChange={(e) => {
+							setUsername(e.target.value)
+						}}
+						autoComplete="username"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span>Password</span>
+					<input
+						id="password"
+						type="password"
+						value={password}
+						onChange={(e) => {
+							setPassword(e.target.value)
+						}}
+						autoComplete="current-password"
+					/>
+				</label>
+				<button type="submit">{`->`}</button>
+			</main>
+			<footer>
+				<Anchor href="/sign_up">
+					New here? <u>Sign up</u> for an account.
+				</Anchor>
+			</footer>
 		</form>
 	)
 }

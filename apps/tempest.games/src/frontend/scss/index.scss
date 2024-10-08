@@ -1,12 +1,81 @@
+@media (prefers-color-scheme: light) {
+  :root {
+    --fg-tint-3: #666;
+    --fg-hard-3: var(--fg-tint-3);
+    --fg-tint-2: #555;
+    --fg-hard-2: var(--fg-tint-2);
+    --fg-tint-1: #444;
+    --fg-hard-1: var(--fg-tint-1);
+    --fg: #333;
+    --fg-dark-1: #222;
+    --fg-soft-1: var(--fg-dark-1);
+    --fg-dark-2: #111;
+    --fg-soft-2: var(--fg-dark-2);
+    --fg-dark-3: #000;
+    --fg-soft-3: var(--fg-dark-3);
+
+    --bg-tint-3: #fffefc;
+    --bg-soft-3: var(--bg-tint-3);
+    --bg-tint-2: #fdfcfa;
+    --bg-soft-2: var(--bg-tint-2);
+    --bg-tint-1: #f5f4f2;
+    --bg: #eeece8;
+    --bg-dark-1: #e9e7e3;
+    --bg-hard-1: var(--bg-dark-1);
+    --bg-dark-2: #e2e0dc;
+    --bg-hard-2: var(--bg-dark-2);
+    --bg-dark-3: #dad8d4;
+
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+    --hyperlink-color: #08f;
+    --hyperlink-hover-color: #04f;
+  }
+  a:hover {
+    color: #08f;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
 :root {
-  --PI: 3.14159265358979;
   color-scheme: light dark;
-  --fg-color: #fff;
-  --bg-color: #070707;
+
+  --fg-tint-3: #fff;
+  --fg-hard-3: var(--fg-tint-3);
+  --fg-tint-2: #fafafa;
+  --fg-hard-2: var(--fg-tint-2);
+  --fg-tint-1: #f5f5f5;
+  --fg-hard-1: var(--fg-tint-1);
+  --fg: #eee;
+  --fg-dark-1: #ddd;
+  --fg-soft-1: var(--fg-dark-1);
+  --fg-dark-2: #ccc;
+  --fg-soft-2: var(--fg-dark-2);
+  --fg-dark-3: #bbb;
+  --fg-soft-3: var(--fg-dark-3);
+
+  --bg-tint-3: #333;
+  --bg-soft-3: var(--bg-tint-3);
+  --bg-tint-2: #222;
+  --bg-soft-2: var(--bg-tint-2);
+  --bg-tint-1: #111;
+  --bg-soft-1: var(--bg-tint-1);
+  --bg: #090909;
+  --bg-dark-1: #060606;
+  --bg-hard-1: var(--bg-dark-1);
+  --bg-dark-2: #030303;
+  --bg-hard-2: var(--bg-dark-2);
+  --bg-dark-3: #000;
+  --bg-hard-3: var(--bg-dark-3);
+
   --hyperlink-color: #09f;
   --hyperlink-hover-color: #0df;
-  color: var(--fg-color);
-  background-color: var(--bg-color);
+
+  --PI: 3.14159265358979;
+
+  color: var(--fg);
+  background-color: var(--bg);
   position: relative;
 
   *,
@@ -23,27 +92,10 @@
 
 a {
   font-weight: 500;
-  color: #09f;
+  color: var(--hyperlink-color);
   text-decoration: inherit;
   &:hover {
-    color: #0df;
+    color: var(--hyperlink-hover-color);
     text-decoration: underline;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --fg-color: #333;
-    --bg-color: #fff;
-    color: var(--fg-color);
-    background-color: var(--bg-color);
-    --hyperlink-color: #08f;
-    --hyperlink-hover-color: #04f;
-  }
-  a:hover {
-    color: #08f;
-  }
-  button {
-    background-color: #f9f9f9;
   }
 }

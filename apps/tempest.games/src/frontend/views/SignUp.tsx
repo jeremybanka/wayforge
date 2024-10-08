@@ -22,7 +22,6 @@ export function SignUp(): JSX.Element {
 	const email = useO(emailInputAtom)
 	return (
 		<form
-			className="card"
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const password = password0
@@ -41,46 +40,62 @@ export function SignUp(): JSX.Element {
 				}
 			}}
 		>
-			<label htmlFor="username">Username</label>
-			<input
-				type="text"
-				value={username}
-				onChange={(e) => {
-					setUsername(e.target.value)
-				}}
-				autoComplete="username"
-			/>
-			<label htmlFor="password">Password</label>
-			<input
-				type="password"
-				value={password0}
-				onChange={(e) => {
-					setPassword0(e.target.value)
-				}}
-				autoComplete="new-password"
-			/>
-			<label htmlFor="password">Confirm Password</label>
-			<input
-				type="password"
-				value={password1}
-				onChange={(e) => {
-					setPassword1(e.target.value)
-				}}
-				autoComplete="new-password"
-			/>
-			<label htmlFor="email">Email</label>
-			<input
-				type="email"
-				value={email}
-				onChange={(e) => {
-					setEmail(e.target.value)
-				}}
-				autoComplete="email"
-			/>
-			<button type="submit">Sign Up</button>
-			<Anchor href="/login">
-				Already have an account? <u>Log in</u> instead.
-			</Anchor>
+			<main>
+				<label htmlFor="username">
+					<span>Username</span>
+					<input
+						id="username"
+						type="text"
+						value={username}
+						onChange={(e) => {
+							setUsername(e.target.value)
+						}}
+						autoComplete="username"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span>Password</span>
+					<input
+						id="password0"
+						type="password"
+						value={password0}
+						onChange={(e) => {
+							setPassword0(e.target.value)
+						}}
+						autoComplete="new-password"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span>Confirm Password</span>
+					<input
+						id="password1"
+						type="password"
+						value={password1}
+						onChange={(e) => {
+							setPassword1(e.target.value)
+						}}
+						autoComplete="new-password"
+					/>
+				</label>
+				<label htmlFor="email">
+					<span>Email</span>
+					<input
+						id="email"
+						type="email"
+						value={email}
+						onChange={(e) => {
+							setEmail(e.target.value)
+						}}
+						autoComplete="email"
+					/>
+				</label>
+				<button type="submit">{`->`}</button>
+			</main>
+			<footer>
+				<Anchor href="/login">
+					Already have an account? <u>Log in</u> instead.
+				</Anchor>
+			</footer>
 		</form>
 	)
 }
