@@ -19,7 +19,6 @@
 		"test:once": {
 			"dependsOn": ["build"],
 			"inputs": [
-				"../../.nvmrc",
 				"**/package.json",
 				"src/**",
 				"**/src/**",
@@ -107,7 +106,7 @@
 			]
 		},
 		"globalDependencies": {
-			"inputs": ["pnpm-lock.yaml", "tsconfig.json", ".nvmrc"]
+			"inputs": ["pnpm-lock.yaml", "tsconfig.json", ".node-version"]
 		}
 	}
 }
