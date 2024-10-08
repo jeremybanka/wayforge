@@ -46,3 +46,20 @@ export const authAtom = atom<{ username: string; sessionKey: string } | null>({
 		},
 	],
 })
+
+export const usernameInputAtom = atom<string>({
+	key: `username`,
+	default: window.localStorage.getItem(`username`) ?? ``,
+})
+export const password0InputAtom = atom<string>({
+	key: `password0`,
+	default: ``,
+})
+export const password1InputAtom = atom<string>({
+	key: `password1`,
+	default: ``,
+})
+export const emailInputAtom = atom<string>({
+	key: `email`,
+	default: ``,
+})

@@ -3,9 +3,13 @@ import { useI, useO } from "atom.io/react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
-import { viewIntendedAtom } from "../App"
-import { authAtom } from "../services/socket-auth"
-import { password0InputAtom, usernameInputAtom } from "./SignUp"
+import { Anchor } from "../Anchor"
+import { navigate } from "../services/router-service"
+import {
+	authAtom,
+	password0InputAtom,
+	usernameInputAtom,
+} from "../services/socket-auth-service"
 
 export function Login(): JSX.Element {
 	const setUsername = useI(usernameInputAtom)
@@ -14,7 +18,6 @@ export function Login(): JSX.Element {
 	const password = useO(password0InputAtom)
 	return (
 		<form
-			className="card"
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const signInUUID = await asUUID(`login`)
@@ -25,31 +28,49 @@ export function Login(): JSX.Element {
 						body: JSON.stringify({ username, password }),
 					},
 				)
+				console.log(response)
 				if (response.status === 200) {
 					setUsername(``)
 					setPassword(``)
-					setState(viewIntendedAtom, `game`)
+					navigate(`/game`)
 					const responseText = await response.text()
 					const [, sessionKey] = responseText.split(` `)
 					setState(authAtom, { username, sessionKey })
 				}
 			}}
 		>
-			<input
-				type="text"
-				value={username}
-				onChange={(e) => {
-					setUsername(e.target.value)
-				}}
-			/>
-			<input
-				type="password"
-				value={password}
-				onChange={(e) => {
-					setPassword(e.target.value)
-				}}
-			/>
-			<button type="submit">Login</button>
+			<main>
+				<label htmlFor="username">
+					<span> Username</span>
+					<input
+						id="username"
+						type="text"
+						value={username}
+						onChange={(e) => {
+							setUsername(e.target.value)
+						}}
+						autoComplete="username"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span>Password</span>
+					<input
+						id="password"
+						type="password"
+						value={password}
+						onChange={(e) => {
+							setPassword(e.target.value)
+						}}
+						autoComplete="current-password"
+					/>
+				</label>
+				<button type="submit">{`->`}</button>
+			</main>
+			<footer>
+				<Anchor href="/sign_up">
+					New here? <u>Sign up</u> for an account.
+				</Anchor>
+			</footer>
 		</form>
 	)
 }

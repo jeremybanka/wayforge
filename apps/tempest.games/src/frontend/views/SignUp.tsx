@@ -1,26 +1,15 @@
-import { atom, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
-import { viewIntendedAtom } from "../App"
-
-export const usernameInputAtom = atom<string>({
-	key: `username`,
-	default: window.localStorage.getItem(`username`) ?? ``,
-})
-export const password0InputAtom = atom<string>({
-	key: `password0`,
-	default: ``,
-})
-const password1InputAtom = atom<string>({
-	key: `password1`,
-	default: ``,
-})
-const emailInputAtom = atom<string>({
-	key: `email`,
-	default: ``,
-})
+import { Anchor } from "../Anchor"
+import { navigate } from "../services/router-service"
+import {
+	emailInputAtom,
+	password0InputAtom,
+	password1InputAtom,
+	usernameInputAtom,
+} from "../services/socket-auth-service"
 
 export function SignUp(): JSX.Element {
 	const setUsername = useI(usernameInputAtom)
@@ -33,7 +22,6 @@ export function SignUp(): JSX.Element {
 	const email = useO(emailInputAtom)
 	return (
 		<form
-			className="card"
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const password = password0
@@ -48,39 +36,66 @@ export function SignUp(): JSX.Element {
 				if (response.status === 200) {
 					setPassword1(``)
 					setEmail(``)
-					setState(viewIntendedAtom, `game`)
+					navigate(`/login`)
 				}
 			}}
 		>
-			<input
-				type="text"
-				value={username}
-				onChange={(e) => {
-					setUsername(e.target.value)
-				}}
-			/>
-			<input
-				type="password"
-				value={password0}
-				onChange={(e) => {
-					setPassword0(e.target.value)
-				}}
-			/>
-			<input
-				type="password"
-				value={password1}
-				onChange={(e) => {
-					setPassword1(e.target.value)
-				}}
-			/>
-			<input
-				type="email"
-				value={email}
-				onChange={(e) => {
-					setEmail(e.target.value)
-				}}
-			/>
-			<button type="submit">Sign Up</button>
+			<main>
+				<label htmlFor="username">
+					<span>Username</span>
+					<input
+						id="username"
+						type="text"
+						value={username}
+						onChange={(e) => {
+							setUsername(e.target.value)
+						}}
+						autoComplete="username"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span>Password</span>
+					<input
+						id="password0"
+						type="password"
+						value={password0}
+						onChange={(e) => {
+							setPassword0(e.target.value)
+						}}
+						autoComplete="new-password"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span>Confirm Password</span>
+					<input
+						id="password1"
+						type="password"
+						value={password1}
+						onChange={(e) => {
+							setPassword1(e.target.value)
+						}}
+						autoComplete="new-password"
+					/>
+				</label>
+				<label htmlFor="email">
+					<span>Email</span>
+					<input
+						id="email"
+						type="email"
+						value={email}
+						onChange={(e) => {
+							setEmail(e.target.value)
+						}}
+						autoComplete="email"
+					/>
+				</label>
+				<button type="submit">{`->`}</button>
+			</main>
+			<footer>
+				<Anchor href="/login">
+					Already have an account? <u>Log in</u> instead.
+				</Anchor>
+			</footer>
 		</form>
 	)
 }

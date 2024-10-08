@@ -58,9 +58,9 @@ const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])
 const db = new DatabaseManager()
 
 const httpServer = http.createServer((req, res) => {
-	const data: Uint8Array[] = []
+	let data: Uint8Array[]
 	req
-		.on(`data`, (chunk) => data.push(chunk))
+		.on(`data`, (chunk) => (data ??= []).push(chunk))
 		.on(`end`, async () => {
 			const authHeader = req.headers.authorization
 			try {
@@ -69,6 +69,9 @@ const httpServer = http.createServer((req, res) => {
 				logger.info(req.method, url.pathname)
 				switch (req.method) {
 					case `POST`:
+						if (!data) {
+							throw [400, `No data received`]
+						}
 						switch (url.pathname) {
 							case `/signup-${asUUID(`signup`)}`:
 								{
