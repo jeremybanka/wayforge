@@ -27,24 +27,38 @@ export const users = pgTable(
 		userRole: role().default(`user`),
 	},
 	(table) => ({
-		usernameIdx: uniqueIndex(`users_username_unique`).on(table.username),
-		emailIdx: uniqueIndex(`users_email_unique`).on(table.email),
+		usersUsernameUnique: uniqueIndex().on(table.username),
+		usersEmailUnique: uniqueIndex().on(table.email),
 	}),
 )
 
+export type UserColumnName = keyof typeof users._.columns
+export const nonTrackableUserColumnNames = [
+	`id`,
+	`createdAt`,
+	`createdIp`,
+	`isActive`,
+	`salt`,
+	`verifiedAt`,
+] as const satisfies UserColumnName[]
 export const trackableUserColumnNames = [
 	`username`,
 	`email`,
 	`hash`,
 	`userRole`,
-] as const satisfies (keyof typeof users._.columns)[]
+] as const satisfies UserColumnName[]
+const ALL_USER_COLUMNS_HANDLED: UserColumnName extends
+	| (typeof nonTrackableUserColumnNames)[number]
+	| (typeof trackableUserColumnNames)[number]
+	? true
+	: false = true
 
 export const trackedUserColumnName = pgEnum(
-	`tracked_user_columnName`,
+	`trackedUserColumnName`,
 	trackableUserColumnNames,
 )
 
-export const userChanges = pgTable(`user_changes`, {
+export const userChanges = pgTable(`userChanges`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
@@ -78,7 +92,7 @@ export const players = pgTable(
 	}),
 )
 
-export const loginHistory = pgTable(`login_history`, {
+export const loginHistory = pgTable(`loginHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
@@ -90,9 +104,9 @@ export const loginHistory = pgTable(`login_history`, {
 	successful: boolean().notNull().default(true),
 })
 
-export const twoFactorMethod = pgEnum(`two_factor_method`, [`email`, `phone`])
+export const twoFactorMethod = pgEnum(`twoFactorMethod`, [`email`, `phone`])
 
-export const passwordResetAttempts = pgTable(`password_reset_attempts`, {
+export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
@@ -104,9 +118,9 @@ export const passwordResetAttempts = pgTable(`password_reset_attempts`, {
 	verificationMethod: twoFactorMethod().notNull(),
 })
 
-export const banishedIps = pgTable(`banished_ips`, {
+export const banishedIps = pgTable(`banishedIps`, {
 	ip: varchar({ length: 45 }).notNull(),
 	reason: varchar({ length: 2048 }).notNull(),
 	banishedAt: timestamp().notNull().defaultNow(),
-	banishedUntil: timestamp().notNull(),
+	banishedUntil: timestamp(),
 })
