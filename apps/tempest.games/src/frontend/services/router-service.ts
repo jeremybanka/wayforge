@@ -1,5 +1,5 @@
 import { atom, getState, selector, setState } from "atom.io"
-import type { Join, Tree, TreeMap, TreePath } from "treetrunks"
+import type { Join, Tree, TreePath } from "treetrunks"
 import { optional, required } from "treetrunks"
 
 import { authAtom } from "./socket-auth-service"
@@ -111,7 +111,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 })
 
 export const routeSelector = selector<Route | 401 | 404>({
-	key: `viewSelector`,
+	key: `route`,
 	get: ({ get }) => {
 		const pathname = get(pathnameAtom)
 		const path = pathname.split(`/`).slice(1)
