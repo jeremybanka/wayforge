@@ -44,8 +44,12 @@ export function Login(): JSX.Element {
 							setState(authAtom, { username, sessionKey })
 						}
 						break
-					case 400: {
-					}
+					case 400:
+						{
+							const responseText = await response.text()
+							setError(responseText)
+						}
+						break
 				}
 				if (response.status >= 400) {
 					const responseText = await response.text()
@@ -53,6 +57,7 @@ export function Login(): JSX.Element {
 				}
 			}}
 		>
+			<header>{error}</header>
 			<main>
 				{error ? <aside>{error}</aside> : null}
 				<label htmlFor="username">
