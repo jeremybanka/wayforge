@@ -30,7 +30,11 @@
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
-		"postversion": "biome format --write package.json"
+		"postversion": "biome format --write package.json",
+		"db:dev": "drizzle-kit studio",
+		"db:gen": "drizzle-kit generate",
+		"db:nuke": "./__scripts__/destroy-db.bun.ts",
+		"db:up": "./__scripts__/setup-db.bun.ts && drizzle-kit migrate"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.11.1",
