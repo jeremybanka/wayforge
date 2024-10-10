@@ -1,5 +1,6 @@
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
+import { useState } from "react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
@@ -16,6 +17,9 @@ export function Login(): JSX.Element {
 	const setPassword = useI(password0InputAtom)
 	const username = useO(usernameInputAtom)
 	const password = useO(password0InputAtom)
+
+	const [error, setError] = useState<string | null>(null)
+
 	return (
 		<form
 			onSubmit={async (e) => {
@@ -40,11 +44,16 @@ export function Login(): JSX.Element {
 							setState(authAtom, { username, sessionKey })
 						}
 						break
-					case 400: {
-					}
+					case 400:
+						{
+							const responseText = await response.text()
+							setError(responseText)
+						}
+						break
 				}
 			}}
 		>
+			<header>{error}</header>
 			<main>
 				<label htmlFor="username">
 					<span> Username</span>

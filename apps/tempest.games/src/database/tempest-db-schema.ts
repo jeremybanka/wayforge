@@ -24,10 +24,10 @@ export const users = pgTable(
 		email: varchar({ length: 254 }).notNull(),
 		hash: varchar({ length: 64 }).notNull(),
 		salt: varchar({ length: 36 }).notNull(),
-		createdAt: timestamp().notNull().defaultNow(),
+		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
 		isActive: boolean().notNull().default(false),
-		verifiedAt: timestamp(),
+		verifiedAt: timestamp({ withTimezone: true }),
 		userRole: role().default(`user`),
 	},
 	(table) => ({
@@ -67,7 +67,7 @@ export const userChanges = pgTable(`userChanges`, {
 	userId: uuid()
 		.notNull()
 		.references(() => users.id),
-	changedAt: timestamp().notNull().defaultNow(),
+	changedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	changedIp: varchar({ length: 45 }).notNull(),
 	changedColumn: trackedUserColumnName().notNull(),
 	oldValue: varchar({ length: 255 }),
@@ -98,13 +98,11 @@ export const players = pgTable(
 
 export const loginHistory = pgTable(`loginHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
-	userId: uuid()
-		.notNull()
-		.references(() => users.id),
-	loginTime: timestamp().notNull().defaultNow(),
+	userId: uuid().references(() => users.id),
+	loginTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
-	successful: boolean().notNull().default(true),
+	successful: boolean().notNull().default(false),
 })
 
 export const twoFactorMethod = pgEnum(`twoFactorMethod`, [`email`, `phone`])
@@ -115,15 +113,15 @@ export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 		.notNull()
 		.references(() => users.id),
 	requestedIp: varchar({ length: 45 }).notNull(),
-	requestedAt: timestamp().notNull().defaultNow(),
+	requestedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	succeededIp: varchar({ length: 45 }),
-	succeededAt: timestamp(),
+	succeededAt: timestamp({ withTimezone: true }),
 	verificationMethod: twoFactorMethod().notNull(),
 })
 
 export const banishedIps = pgTable(`banishedIps`, {
 	ip: varchar({ length: 45 }).primaryKey(),
 	reason: varchar({ length: 2048 }).notNull(),
-	banishedAt: timestamp().notNull().defaultNow(),
-	banishedUntil: timestamp(),
+	banishedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+	banishedUntil: timestamp({ withTimezone: true }),
 })

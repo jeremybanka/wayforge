@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 
-import { log } from "node:console"
 import { createHash } from "node:crypto"
 import * as http from "node:http"
 
@@ -20,7 +19,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
-import { eq } from "drizzle-orm"
+import { and, eq, gt, lt, sql } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 import { z } from "zod"
 
@@ -77,7 +76,7 @@ const httpServer = http.createServer((req, res) => {
 				const ipAddress = req.socket.remoteAddress
 				if (!ipAddress) throw [400, `No IP address`]
 
-				const now = new Date().toISOString()
+				const now = new Date()
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
 				logger.info(now, ipAddress, req.method, url.pathname)
 
@@ -125,55 +124,95 @@ const httpServer = http.createServer((req, res) => {
 								}
 								break
 							case `/login-${asUUID(`login`)}`: {
-								const text = Buffer.concat(data).toString()
-								const json: Json.Serializable = JSON.parse(text)
-								const zodParsed = credentialsSchema.safeParse(json)
-								if (!zodParsed.success) {
-									logger.warn(`login parsed`, zodParsed.error.issues)
-									throw [400, `Could not log in.`]
-								}
-								const { username, password } = zodParsed.data
-								const [maybeUser] = await db.drizzle
-									.select({
-										id: users.id,
-										hash: users.hash,
-										salt: users.salt,
-									})
-									.from(users)
-									.where(eq(users.username, username))
-									.limit(1)
-								logger.info(`🔑 login attempt as user`, username)
-								if (!maybeUser) {
-									logger.info(`🔑 user ${username} does not exist`)
-									throw [400, `Could not log in.`]
-								}
 								let successful = false
-								const { hash: trueHash, salt } = maybeUser
-								const hash = createHash(`sha256`)
-									.update(password + salt)
-									.digest(`hex`)
-								if (hash === trueHash) {
-									const sessionKey = crypto.randomUUID()
-									let userSessions = userSessionMap.get(username)
-									if (!userSessions) {
-										userSessions = new Map()
-										userSessionMap.set(username, userSessions)
-									}
-									userSessions.set(sessionKey, Date.now())
-									successful = true
-									logger.info(`🔑 login successful as`, username)
-									res.writeHead(200, {
-										"Content-Type": `text/plain`,
-										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+								let userId: string | null = null
+								try {
+									const tenMinutesAgo = new Date(
+										+now - 1000 * 60 * 10,
+									).toISOString()
+									logger.info(`🔑 ten minutes ago`, {
+										tenMinutesAgo,
+										now,
 									})
-									res.end(`${username} ${sessionKey}`)
+									const recentLoginHistory = await db.drizzle
+										.select({
+											userId: loginHistory.userId,
+											successful: loginHistory.successful,
+										})
+										.from(loginHistory)
+										.where(
+											and(
+												eq(loginHistory.ipAddress, ipAddress),
+												eq(loginHistory.successful, false),
+												sql`${loginHistory.loginTime} > ${tenMinutesAgo}`, // Use raw SQL to handle the timestamp comparison
+											),
+										)
+										.limit(100)
+
+									logger.info(
+										`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
+									)
+
+									const attemptsRemaining = 10 - recentLoginHistory.length
+									if (attemptsRemaining < 1) {
+										logger.info(
+											`🔑 too many recent failed logins from ${ipAddress}`,
+										)
+										throw [429, `Too many recent login attempts.`]
+									}
+
+									const text = Buffer.concat(data).toString()
+									const json: Json.Serializable = JSON.parse(text)
+									const zodParsed = credentialsSchema.safeParse(json)
+									if (!zodParsed.success) {
+										logger.warn(`login parsed`, zodParsed.error.issues)
+										throw [400, `${attemptsRemaining} attempts remaining.`]
+									}
+									const { username, password } = zodParsed.data
+									const [maybeUser] = await db.drizzle
+										.select({
+											id: users.id,
+											hash: users.hash,
+											salt: users.salt,
+										})
+										.from(users)
+										.where(eq(users.username, username))
+										.limit(1)
+									logger.info(`🔑 login attempt as user`, username)
+									if (!maybeUser) {
+										logger.info(`🔑 user ${username} does not exist`)
+										throw [400, `${attemptsRemaining} attempts remaining.`]
+									}
+									const { hash: trueHash, salt } = maybeUser
+									userId = maybeUser.id
+									const hash = createHash(`sha256`)
+										.update(password + salt)
+										.digest(`hex`)
+									if (hash === trueHash) {
+										const sessionKey = crypto.randomUUID()
+										let userSessions = userSessionMap.get(username)
+										if (!userSessions) {
+											userSessions = new Map()
+											userSessionMap.set(username, userSessions)
+										}
+										userSessions.set(sessionKey, Number(now))
+										successful = true
+										logger.info(`🔑 login successful as`, username)
+										res.writeHead(200, {
+											"Content-Type": `text/plain`,
+											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+										})
+										res.end(`${username} ${sessionKey}`)
+									}
+								} finally {
+									await db.drizzle.insert(loginHistory).values({
+										userId,
+										successful,
+										ipAddress,
+										userAgent: req.headers[`user-agent`] ?? `Withheld`,
+									})
+									logger.info(`🔑 recorded login attempt from ${ipAddress}`)
 								}
-								db.drizzle.insert(loginHistory).values({
-									userId: maybeUser.id,
-									ipAddress: ipAddress,
-									successful,
-									userAgent: req.headers[`user-agent`] ?? `Withheld`,
-								})
 							}
 						}
 				}
@@ -182,12 +221,13 @@ const httpServer = http.createServer((req, res) => {
 				if (result.success) {
 					const [code, message] = result.data
 					const codeMeaning = RESPONSE_DICTIONARY[code]
-					logger.info(`❌ ${code}: ${message}`)
+					const responseText = `${codeMeaning}. ${message}`
+					logger.info(`❌ ${code}: ${responseText}`)
 					res.writeHead(code, {
 						"Content-Type": `text/plain`,
 						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
 					})
-					res.end(`${codeMeaning}: ${message}`)
+					res.end(responseText)
 				} else {
 					logger.error(thrown)
 					res.writeHead(500, {
