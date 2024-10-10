@@ -226,10 +226,10 @@ const httpServer = http.createServer((req, res) => {
 											and(
 												eq(loginHistory.ipAddress, ipAddress),
 												eq(loginHistory.successful, false),
-												sql`${loginHistory.loginTime} > ${tenMinutesAgo}`, // Use raw SQL to handle the timestamp comparison
+												gt(loginHistory.loginTime, tenMinutesAgo),
 											),
 										)
-										.limit(100)
+										.limit(10)
 
 									logger.info(
 										`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
@@ -240,6 +240,12 @@ const httpServer = http.createServer((req, res) => {
 										logger.info(
 											`🔑 too many recent failed logins from ${ipAddress}`,
 										)
+										await db.drizzle.insert(banishedIps).values({
+											ip: ipAddress,
+											reason: `Too many recent login attempts.`,
+											banishedAt: now,
+											banishedUntil: new Date(+now + 1000 * 60 * 60 * 24),
+										})
 										throw [429, `Too many recent login attempts.`]
 									}
 
