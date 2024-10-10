@@ -28,6 +28,7 @@ import { worker } from "./backend.worker"
 import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import {
+	banishedIps,
 	loginHistory,
 	USERNAME_ALLOWED_CHARS,
 	USERNAME_MAX_LENGTH,
@@ -80,6 +81,20 @@ const httpServer = http.createServer((req, res) => {
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
 				logger.info(now, ipAddress, req.method, url.pathname)
 
+				const [ban] = await db.drizzle
+					.select({
+						banishedUntil: banishedIps.banishedUntil,
+					})
+					.from(banishedIps)
+					.where(eq(banishedIps.ip, ipAddress))
+					.limit(1)
+				const ipBannedIndefinitely = ban?.banishedUntil === null
+				const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
+				if (ipBannedIndefinitely || ipBannedTemporarily) {
+					logger.info(`🙅 request from banned ip ${ipAddress}`)
+					return
+				}
+
 				switch (req.method) {
 					case `POST`:
 						if (!data) {
@@ -127,9 +142,7 @@ const httpServer = http.createServer((req, res) => {
 								let successful = false
 								let userId: string | null = null
 								try {
-									const tenMinutesAgo = new Date(
-										+now - 1000 * 60 * 10,
-									).toISOString()
+									const tenMinutesAgo = new Date(+now - 1000 * 60 * 10)
 									logger.info(`🔑 ten minutes ago`, {
 										tenMinutesAgo,
 										now,
@@ -144,10 +157,10 @@ const httpServer = http.createServer((req, res) => {
 											and(
 												eq(loginHistory.ipAddress, ipAddress),
 												eq(loginHistory.successful, false),
-												sql`${loginHistory.loginTime} > ${tenMinutesAgo}`, // Use raw SQL to handle the timestamp comparison
+												gt(loginHistory.loginTime, tenMinutesAgo),
 											),
 										)
-										.limit(100)
+										.limit(10)
 
 									logger.info(
 										`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
@@ -158,6 +171,12 @@ const httpServer = http.createServer((req, res) => {
 										logger.info(
 											`🔑 too many recent failed logins from ${ipAddress}`,
 										)
+										await db.drizzle.insert(banishedIps).values({
+											ip: ipAddress,
+											reason: `Too many recent login attempts.`,
+											banishedAt: now,
+											banishedUntil: new Date(+now + 1000 * 60 * 60 * 24),
+										})
 										throw [429, `Too many recent login attempts.`]
 									}
 
