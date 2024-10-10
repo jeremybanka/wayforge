@@ -44,12 +44,11 @@ export function Login(): JSX.Element {
 							setState(authAtom, { username, sessionKey })
 						}
 						break
-					case 400:
-						{
+					default:
+						if (response.status >= 400) {
 							const responseText = await response.text()
 							setError(responseText)
 						}
-						break
 				}
 			}}
 		>
