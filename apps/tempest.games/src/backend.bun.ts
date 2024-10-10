@@ -19,7 +19,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
-import { and, eq, gt, lt, sql } from "drizzle-orm"
+import { and, eq, gt } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 import { z } from "zod"
 
@@ -27,15 +27,9 @@ import { logger, parentSocket } from "./backend"
 import { worker } from "./backend.worker"
 import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
-import {
-	banishedIps,
-	loginHistory,
-	USERNAME_ALLOWED_CHARS,
-	USERNAME_MAX_LENGTH,
-	USERNAME_MIN_LENGTH,
-	users,
-} from "./database/tempest-db-schema"
+import { banishedIps, loginHistory, users } from "./database/tempest-db-schema"
 import { asUUID } from "./library/as-uuid-node"
+import { credentialsSchema, signupSchema } from "./library/data-constraints"
 import { env } from "./library/env"
 import {
 	RESPONSE_DICTIONARY,
@@ -44,23 +38,6 @@ import {
 import { countContinuity } from "./library/store"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
-
-const credentialsSchema = z
-	.object({
-		username: z.string(),
-		password: z.string(),
-	})
-	.strict()
-
-const signupSchema = z.object({
-	email: z.string().email(),
-	username: z
-		.string()
-		.min(USERNAME_MIN_LENGTH)
-		.max(USERNAME_MAX_LENGTH)
-		.regex(USERNAME_ALLOWED_CHARS),
-	password: z.string(),
-})
 
 const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])
 

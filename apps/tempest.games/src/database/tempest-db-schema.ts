@@ -12,10 +12,6 @@ import {
 
 export const role = pgEnum(`role`, [`admin`, `user`])
 
-export const USERNAME_MIN_LENGTH = 3
-export const USERNAME_MAX_LENGTH = 16
-export const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
-
 export const users = pgTable(
 	`users`,
 	{
