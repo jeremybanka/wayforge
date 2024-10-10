@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 
+import { log } from "node:console"
 import { createHash } from "node:crypto"
 import * as http from "node:http"
 
@@ -31,6 +32,7 @@ import {
 	loginHistory,
 	USERNAME_ALLOWED_CHARS,
 	USERNAME_MAX_LENGTH,
+	USERNAME_MIN_LENGTH,
 	users,
 } from "./database/tempest-db-schema"
 import { asUUID } from "./library/as-uuid-node"
@@ -52,7 +54,11 @@ const credentialsSchema = z
 
 const signupSchema = z.object({
 	email: z.string().email(),
-	username: z.string(),
+	username: z
+		.string()
+		.min(USERNAME_MIN_LENGTH)
+		.max(USERNAME_MAX_LENGTH)
+		.regex(USERNAME_ALLOWED_CHARS),
 	password: z.string(),
 })
 
@@ -68,12 +74,13 @@ const httpServer = http.createServer((req, res) => {
 			const authHeader = req.headers.authorization
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
-				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
 				const ipAddress = req.socket.remoteAddress
-				if (!ipAddress) {
-					return
-				}
-				logger.info(req.method, url.pathname)
+				if (!ipAddress) throw [400, `No IP address`]
+
+				const now = new Date().toISOString()
+				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
+				logger.info(now, ipAddress, req.method, url.pathname)
+
 				switch (req.method) {
 					case `POST`:
 						if (!data) {
@@ -91,13 +98,6 @@ const httpServer = http.createServer((req, res) => {
 										return
 									}
 									const { username, password, email } = parsed.data
-									const usernameIsValid =
-										username.match(USERNAME_ALLOWED_CHARS) &&
-										username.length <= USERNAME_MAX_LENGTH
-									if (!usernameIsValid) {
-										logger.warn(`signup username not allowed`, username)
-										return
-									}
 									const [maybeUser] = await db.drizzle
 										.select()
 										.from(users)
@@ -130,13 +130,9 @@ const httpServer = http.createServer((req, res) => {
 								const zodParsed = credentialsSchema.safeParse(json)
 								if (!zodParsed.success) {
 									logger.warn(`login parsed`, zodParsed.error.issues)
-									return
+									throw [400, `Could not log in.`]
 								}
 								const { username, password } = zodParsed.data
-								if (!username.match(USERNAME_ALLOWED_CHARS)) {
-									logger.warn(`login username not allowed`, username)
-									return
-								}
 								const [maybeUser] = await db.drizzle
 									.select({
 										id: users.id,
@@ -146,41 +142,38 @@ const httpServer = http.createServer((req, res) => {
 									.from(users)
 									.where(eq(users.username, username))
 									.limit(1)
-								if (maybeUser) {
-									let successful = false
-									logger.info(`🔑 login attempt`, username)
-									const { hash: trueHash, salt } = maybeUser
-									const hash = createHash(`sha256`)
-										.update(password + salt)
-										.digest(`hex`)
-									if (hash === trueHash) {
-										const sessionKey = crypto.randomUUID()
-										let userSessions = userSessionMap.get(username)
-										if (!userSessions) {
-											userSessions = new Map()
-											userSessionMap.set(username, userSessions)
-										}
-										userSessions.set(sessionKey, Date.now())
-										successful = true
-										logger.info(
-											`🔑 login successful`,
-											username,
-											`<-`,
-											sessionKey,
-										)
-										res.writeHead(200, {
-											"Content-Type": `text/plain`,
-											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-										})
-										res.end(`${username} ${sessionKey}`)
-									}
-									db.drizzle.insert(loginHistory).values({
-										userId: maybeUser.id,
-										ipAddress: ipAddress,
-										successful,
-										userAgent: req.headers[`user-agent`] ?? `Withheld`,
-									})
+								logger.info(`🔑 login attempt as user`, username)
+								if (!maybeUser) {
+									logger.info(`🔑 user ${username} does not exist`)
+									throw [400, `Could not log in.`]
 								}
+								let successful = false
+								const { hash: trueHash, salt } = maybeUser
+								const hash = createHash(`sha256`)
+									.update(password + salt)
+									.digest(`hex`)
+								if (hash === trueHash) {
+									const sessionKey = crypto.randomUUID()
+									let userSessions = userSessionMap.get(username)
+									if (!userSessions) {
+										userSessions = new Map()
+										userSessionMap.set(username, userSessions)
+									}
+									userSessions.set(sessionKey, Date.now())
+									successful = true
+									logger.info(`🔑 login successful as`, username)
+									res.writeHead(200, {
+										"Content-Type": `text/plain`,
+										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+									})
+									res.end(`${username} ${sessionKey}`)
+								}
+								db.drizzle.insert(loginHistory).values({
+									userId: maybeUser.id,
+									ipAddress: ipAddress,
+									successful,
+									userAgent: req.headers[`user-agent`] ?? `Withheld`,
+								})
 							}
 						}
 				}
@@ -189,6 +182,7 @@ const httpServer = http.createServer((req, res) => {
 				if (result.success) {
 					const [code, message] = result.data
 					const codeMeaning = RESPONSE_DICTIONARY[code]
+					logger.info(`❌ ${code}: ${message}`)
 					res.writeHead(code, {
 						"Content-Type": `text/plain`,
 						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
