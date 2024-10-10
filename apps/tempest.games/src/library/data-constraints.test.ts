@@ -1,3 +1,5 @@
+import { z } from "zod"
+
 import { passwordSchema } from "./data-constraints"
 
 describe(`password complexity`, () => {

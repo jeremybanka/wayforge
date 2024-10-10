@@ -73,7 +73,7 @@ export function Login(): JSX.Element {
 						autoComplete="current-password"
 					/>
 				</label>
-				<button type="submit">{`->`}</button>
+				<button type="submit" disabled={!username || !password}>{`->`}</button>
 			</main>
 			<footer>
 				<Anchor href="/sign_up">
