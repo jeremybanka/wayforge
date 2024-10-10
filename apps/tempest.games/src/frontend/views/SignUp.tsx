@@ -1,4 +1,5 @@
 import { useI, useO } from "atom.io/react"
+import { useState } from "react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
@@ -20,6 +21,9 @@ export function SignUp(): JSX.Element {
 	const password0 = useO(password0InputAtom)
 	const password1 = useO(password1InputAtom)
 	const email = useO(emailInputAtom)
+
+	const [error, setError] = useState<string | null>(null)
+
 	return (
 		<form
 			onSubmit={async (e) => {
@@ -37,6 +41,10 @@ export function SignUp(): JSX.Element {
 					setPassword1(``)
 					setEmail(``)
 					navigate(`/login`)
+				}
+				if (response.status >= 400) {
+					const responseText = await response.text()
+					setError(responseText)
 				}
 			}}
 		>
