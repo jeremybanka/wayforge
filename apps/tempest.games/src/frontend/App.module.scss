@@ -27,9 +27,17 @@ main.class {
       gap: 30px;
       align-items: end;
       > main {
+        width: 100%;
+        max-width: 200px;
         display: flex;
         flex-flow: column;
         gap: 10px;
+        > aside {
+          background-color: #f007;
+          color: var(--bg-hard-3);
+          font-size: 15px;
+          padding: 3px 6px 2px;
+        }
         > label {
           display: flex;
           flex-flow: column;
