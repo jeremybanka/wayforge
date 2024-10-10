@@ -57,7 +57,6 @@ export function Login(): JSX.Element {
 				}
 			}}
 		>
-			<header>{error}</header>
 			<main>
 				{error ? <aside>{error}</aside> : null}
 				<label htmlFor="username">
