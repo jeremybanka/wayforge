@@ -37,7 +37,7 @@ serve({
 			const ipBannedIndefinitely = ban?.banishedUntil === null
 			const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
 			if (ipBannedIndefinitely || ipBannedTemporarily) {
-				parent.logger.info(`🙅 banned ip ${ipAddress}`)
+				parent.logger.info(`🙅 request from banned ip ${ipAddress}`)
 				throw 403
 			}
 
