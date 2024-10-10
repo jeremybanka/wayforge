@@ -53,10 +53,10 @@ export function Login(): JSX.Element {
 				}
 			}}
 		>
-			<header>{error}</header>
 			<main>
+				{error ? <aside>{error}</aside> : null}
 				<label htmlFor="username">
-					<span> Username</span>
+					<span>Username</span>
 					<input
 						id="username"
 						type="text"
