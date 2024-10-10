@@ -5,7 +5,10 @@ import { join, normalize, resolve } from "node:path"
 import { discoverType } from "atom.io/introspection"
 import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
+import { eq } from "drizzle-orm"
 
+import { DatabaseManager } from "./database/tempest-db-manager"
+import { banishedIps } from "./database/tempest-db-schema"
 import { env } from "./library/env"
 import { RESPONSE_DICTIONARY } from "./library/response-dictionary"
 
@@ -13,14 +16,30 @@ const parent = new ParentSocket()
 parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
+const db = new DatabaseManager()
+
 serve({
 	port: env.FRONTEND_PORT ?? 3333,
 	async fetch(req, server) {
 		try {
+			const now = new Date()
 			const url = new URL(req.url)
+			const ipAddress = server.requestIP(req)?.address ?? `??`
+			parent.logger.info(now, ipAddress, req.method, url.pathname)
 
-			const ip = server.requestIP(req)?.address ?? `??`
-			parent.logger.info(`[${ip}]`, req.method, url.pathname)
+			const [ban] = await db.drizzle
+				.select({
+					banishedUntil: banishedIps.banishedUntil,
+				})
+				.from(banishedIps)
+				.where(eq(banishedIps.ip, ipAddress))
+				.limit(1)
+			const ipBannedIndefinitely = ban?.banishedUntil === null
+			const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
+			if (ipBannedIndefinitely || ipBannedTemporarily) {
+				parent.logger.info(`🙅 banned ip ${ipAddress}`)
+				throw 403
+			}
 
 			if (url.pathname === `/`) {
 				return new Response(Bun.file(resolve(appDir, `index.html`)))
@@ -39,7 +58,7 @@ serve({
 
 			const fileExists = await file(normalizedPath).exists()
 			if (!fileExists) {
-				throw 404
+				return Response.redirect(`/`)
 			}
 			return new Response(file(normalizedPath))
 		} catch (thrown) {
