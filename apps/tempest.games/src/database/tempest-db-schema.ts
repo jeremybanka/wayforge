@@ -12,6 +12,9 @@ import {
 
 export const role = pgEnum(`role`, [`admin`, `user`])
 
+export const USERNAME_MAX_LENGTH = 16
+export const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
+
 export const users = pgTable(
 	`users`,
 	{
@@ -21,8 +24,8 @@ export const users = pgTable(
 		hash: varchar({ length: 64 }).notNull(),
 		salt: varchar({ length: 36 }).notNull(),
 		createdAt: timestamp().notNull().defaultNow(),
-		createdIp: varchar({ length: 45 }), // IP address length can be up to 45 characters (for IPv6)
-		isActive: boolean().notNull().default(true),
+		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
+		isActive: boolean().notNull().default(false),
 		verifiedAt: timestamp(),
 		userRole: role().default(`user`),
 	},
@@ -33,7 +36,7 @@ export const users = pgTable(
 )
 
 export type UserColumnName = keyof typeof users._.columns
-export const nonTrackableUserColumnNames = [
+export const untrackedUserColumnNames = [
 	`id`,
 	`createdAt`,
 	`createdIp`,
@@ -47,11 +50,11 @@ export const trackableUserColumnNames = [
 	`hash`,
 	`userRole`,
 ] as const satisfies UserColumnName[]
-const ALL_USER_COLUMNS_HANDLED: UserColumnName extends
-	| (typeof nonTrackableUserColumnNames)[number]
+true satisfies UserColumnName extends
 	| (typeof trackableUserColumnNames)[number]
+	| (typeof untrackedUserColumnNames)[number]
 	? true
-	: false = true
+	: false
 
 export const trackedUserColumnName = pgEnum(
 	`trackedUserColumnName`,
@@ -100,7 +103,6 @@ export const loginHistory = pgTable(`loginHistory`, {
 	loginTime: timestamp().notNull().defaultNow(),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
-	geoLocation: varchar({ length: 255 }),
 	successful: boolean().notNull().default(true),
 })
 
@@ -119,7 +121,7 @@ export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 })
 
 export const banishedIps = pgTable(`banishedIps`, {
-	ip: varchar({ length: 45 }).notNull(),
+	ip: varchar({ length: 45 }).primaryKey(),
 	reason: varchar({ length: 2048 }).notNull(),
 	banishedAt: timestamp().notNull().defaultNow(),
 	banishedUntil: timestamp(),
