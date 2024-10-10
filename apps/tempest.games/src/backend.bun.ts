@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 
+import { log } from "node:console"
 import { createHash } from "node:crypto"
 import * as http from "node:http"
 
@@ -206,6 +207,33 @@ const httpServer = http.createServer((req, res) => {
 									})
 									logger.info(`🔑 recorded login attempt from ${ipAddress}`)
 								}
+								let successful = false
+								const { hash: trueHash, salt } = maybeUser
+								const hash = createHash(`sha256`)
+									.update(password + salt)
+									.digest(`hex`)
+								if (hash === trueHash) {
+									const sessionKey = crypto.randomUUID()
+									let userSessions = userSessionMap.get(username)
+									if (!userSessions) {
+										userSessions = new Map()
+										userSessionMap.set(username, userSessions)
+									}
+									userSessions.set(sessionKey, Date.now())
+									successful = true
+									logger.info(`🔑 login successful as`, username)
+									res.writeHead(200, {
+										"Content-Type": `text/plain`,
+										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+									})
+									res.end(`${username} ${sessionKey}`)
+								}
+								db.drizzle.insert(loginHistory).values({
+									userId: maybeUser.id,
+									ipAddress: ipAddress,
+									successful,
+									userAgent: req.headers[`user-agent`] ?? `Withheld`,
+								})
 							}
 						}
 				}
