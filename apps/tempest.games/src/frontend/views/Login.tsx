@@ -33,22 +33,17 @@ export function Login(): JSX.Element {
 					},
 				)
 				console.log(response)
-				switch (response.status) {
-					case 200:
-						{
-							setUsername(``)
-							setPassword(``)
-							navigate(`/game`)
-							const responseText = await response.text()
-							const [, sessionKey] = responseText.split(` `)
-							setState(authAtom, { username, sessionKey })
-						}
-						break
-					default:
-						if (response.status >= 400) {
-							const responseText = await response.text()
-							setError(responseText)
-						}
+				if (response.status === 200) {
+					setUsername(``)
+					setPassword(``)
+					navigate(`/game`)
+					const responseText = await response.text()
+					const [, sessionKey] = responseText.split(` `)
+					setState(authAtom, { username, sessionKey })
+				}
+				if (response.status >= 400) {
+					const responseText = await response.text()
+					setError(responseText)
 				}
 				if (response.status >= 400) {
 					const responseText = await response.text()
