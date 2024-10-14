@@ -19,41 +19,24 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
-import { eq } from "drizzle-orm"
+import { and, eq, gt } from "drizzle-orm"
 import * as SocketIO from "socket.io"
-import { z } from "zod"
 
 import { logger, parentSocket } from "./backend"
 import { worker } from "./backend.worker"
 import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
-import { users } from "./database/tempest-db-schema"
+import { banishedIps, loginHistory, users } from "./database/tempest-db-schema"
 import { asUUID } from "./library/as-uuid-node"
+import { credentialsSchema, signupSchema } from "./library/data-constraints"
 import { env } from "./library/env"
 import {
 	RESPONSE_DICTIONARY,
-	responseCodeUnion,
+	serverIssueSchema,
 } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
 
-const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
-
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
-
-const credentialsSchema = z
-	.object({
-		username: z.string(),
-		password: z.string(),
-	})
-	.strict()
-
-const signupSchema = z.object({
-	email: z.string().email(),
-	username: z.string(),
-	password: z.string(),
-})
-
-const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])
 
 const db = new DatabaseManager()
 
@@ -65,8 +48,27 @@ const httpServer = http.createServer((req, res) => {
 			const authHeader = req.headers.authorization
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
+				const ipAddress = req.socket.remoteAddress
+				if (!ipAddress) throw [400, `No IP address`]
+
+				const now = new Date()
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
-				logger.info(req.method, url.pathname)
+				logger.info(now, ipAddress, req.method, url.pathname)
+
+				const [ban] = await db.drizzle
+					.select({
+						banishedUntil: banishedIps.banishedUntil,
+					})
+					.from(banishedIps)
+					.where(eq(banishedIps.ip, ipAddress))
+					.limit(1)
+				const ipBannedIndefinitely = ban?.banishedUntil === null
+				const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
+				if (ipBannedIndefinitely || ipBannedTemporarily) {
+					logger.info(`🙅 request from banned ip ${ipAddress}`)
+					return
+				}
+
 				switch (req.method) {
 					case `POST`:
 						if (!data) {
@@ -84,10 +86,6 @@ const httpServer = http.createServer((req, res) => {
 										return
 									}
 									const { username, password, email } = parsed.data
-									if (!username.match(USERNAME_ALLOWED_CHARS)) {
-										logger.warn(`login username not allowed`, username)
-										return
-									}
 									const [maybeUser] = await db.drizzle
 										.select()
 										.from(users)
@@ -100,9 +98,13 @@ const httpServer = http.createServer((req, res) => {
 									const hash = createHash(`sha256`)
 										.update(password + salt)
 										.digest(`hex`)
-									await db.drizzle
-										.insert(users)
-										.values({ username, email, hash, salt })
+									await db.drizzle.insert(users).values({
+										username,
+										email,
+										hash,
+										salt,
+										createdIp: ipAddress,
+									})
 									res.writeHead(201, {
 										"Content-Type": `text/plain`,
 										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
@@ -111,30 +113,71 @@ const httpServer = http.createServer((req, res) => {
 								}
 								break
 							case `/login-${asUUID(`login`)}`: {
-								const text = Buffer.concat(data).toString()
-								const json: Json.Serializable = JSON.parse(text)
-								const parsed = credentialsSchema.safeParse(json)
-								if (!parsed.success) {
-									logger.warn(`login parsed`, parsed.error.issues)
-									return
-								}
-								const { username, password } = parsed.data
-								if (!username.match(USERNAME_ALLOWED_CHARS)) {
-									logger.warn(`login username not allowed`, username)
-									return
-								}
-								const [maybeUser] = await db.drizzle
-									.select({
-										hash: users.hash,
-										salt: users.salt,
+								let successful = false
+								let userId: string | null = null
+								try {
+									const tenMinutesAgo = new Date(+now - 1000 * 60 * 10)
+									logger.info(`🔑 ten minutes ago`, {
+										tenMinutesAgo,
+										now,
 									})
-									.from(users)
-									.where(eq(users.username, username))
-									.limit(1)
-								logger.info(`🔑 maybeUser`, maybeUser)
-								if (maybeUser) {
-									logger.info(`🔑 login attempt`, username)
+									const recentLoginHistory = await db.drizzle
+										.select({
+											userId: loginHistory.userId,
+											successful: loginHistory.successful,
+										})
+										.from(loginHistory)
+										.where(
+											and(
+												eq(loginHistory.ipAddress, ipAddress),
+												eq(loginHistory.successful, false),
+												gt(loginHistory.loginTime, tenMinutesAgo),
+											),
+										)
+										.limit(10)
+
+									logger.info(
+										`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
+									)
+
+									const attemptsRemaining = 10 - recentLoginHistory.length
+									if (attemptsRemaining < 1) {
+										logger.info(
+											`🔑 too many recent failed logins from ${ipAddress}`,
+										)
+										await db.drizzle.insert(banishedIps).values({
+											ip: ipAddress,
+											reason: `Too many recent login attempts.`,
+											banishedAt: now,
+											banishedUntil: new Date(+now + 1000 * 60 * 60 * 24),
+										})
+										throw [429, `Too many recent login attempts.`]
+									}
+
+									const text = Buffer.concat(data).toString()
+									const json: Json.Serializable = JSON.parse(text)
+									const zodParsed = credentialsSchema.safeParse(json)
+									if (!zodParsed.success) {
+										logger.warn(`login parsed`, zodParsed.error.issues)
+										throw [400, `${attemptsRemaining} attempts remaining.`]
+									}
+									const { username, password } = zodParsed.data
+									const [maybeUser] = await db.drizzle
+										.select({
+											id: users.id,
+											hash: users.hash,
+											salt: users.salt,
+										})
+										.from(users)
+										.where(eq(users.username, username))
+										.limit(1)
+									logger.info(`🔑 login attempt as user`, username)
+									if (!maybeUser) {
+										logger.info(`🔑 user ${username} does not exist`)
+										throw [400, `${attemptsRemaining} attempts remaining.`]
+									}
 									const { hash: trueHash, salt } = maybeUser
+									userId = maybeUser.id
 									const hash = createHash(`sha256`)
 										.update(password + salt)
 										.digest(`hex`)
@@ -145,19 +188,23 @@ const httpServer = http.createServer((req, res) => {
 											userSessions = new Map()
 											userSessionMap.set(username, userSessions)
 										}
-										userSessions.set(sessionKey, Date.now())
-										logger.info(
-											`🔑 login successful`,
-											username,
-											`<-`,
-											sessionKey,
-										)
+										userSessions.set(sessionKey, Number(now))
+										successful = true
+										logger.info(`🔑 login successful as`, username)
 										res.writeHead(200, {
 											"Content-Type": `text/plain`,
 											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
 										})
 										res.end(`${username} ${sessionKey}`)
 									}
+								} finally {
+									await db.drizzle.insert(loginHistory).values({
+										userId,
+										successful,
+										ipAddress,
+										userAgent: req.headers[`user-agent`] ?? `Withheld`,
+									})
+									logger.info(`🔑 recorded login attempt from ${ipAddress}`)
 								}
 							}
 						}
@@ -167,11 +214,13 @@ const httpServer = http.createServer((req, res) => {
 				if (result.success) {
 					const [code, message] = result.data
 					const codeMeaning = RESPONSE_DICTIONARY[code]
+					const responseText = `${codeMeaning}. ${message}`
+					logger.info(`❌ ${code}: ${responseText}`)
 					res.writeHead(code, {
 						"Content-Type": `text/plain`,
 						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
 					})
-					res.end(`${codeMeaning}: ${message}`)
+					res.end(responseText)
 				} else {
 					logger.error(thrown)
 					res.writeHead(500, {
