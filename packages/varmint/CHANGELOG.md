@@ -1,5 +1,15 @@
 # varmint
 
+## 0.3.0
+
+### Minor Changes
+
+- 1883903: 💥 BREAKING CHANGE: cache files created by varmint will now only contain characters matching "a-z", "A-Z", "0-9", "-", "+", and "\_". All characters aside from this will be replaced with "\_".
+
+### Patch Changes
+
+- 1883903: ✨ Excessively long cache file names will be truncated, prioritizing the end of the string, and suffixed with a hash of the full string in the form `<...truncated>+<hash>.json`.
+
 ## 0.2.0
 
 ### Minor Changes
