@@ -1,8 +1,6 @@
 import * as fs from "node:fs"
 import * as readline from "node:readline"
 
-import { encoding_for_model } from "tiktoken" // Install with `npm install tiktoken`
-
 // Function to get today's date in the format used in Nginx logs
 function getTodayDateStr(): string {
 	const today = new Date()
@@ -12,16 +10,17 @@ function getTodayDateStr(): string {
 	return `${dd}/${MMM}/${yyyy}` // e.g., '10/Oct/2023'
 }
 
-export function processLogs(
+export async function processLogs(
 	logger: Pick<Console, `error` | `info`>,
 	logFilePath = `/var/log/nginx/access.log`,
-): void {
+): Promise<Map<string, string[]>> {
 	const todayDateStr = getTodayDateStr()
+	const logsPerIpMap = new Map<string, string[]>()
 
 	// Check if the log file exists
 	if (!fs.existsSync(logFilePath)) {
 		logger.error(`Log file not found: ${logFilePath}`)
-		return
+		return logsPerIpMap
 	}
 
 	const fileStream = fs.createReadStream(logFilePath)
@@ -29,8 +28,6 @@ export function processLogs(
 		input: fileStream,
 		crlfDelay: Number.POSITIVE_INFINITY,
 	})
-
-	const ipLogs: { [ip: string]: string[] } = {}
 
 	rl.on(`line`, (line) => {
 		// Regular expression to extract IP and date-time from the log line
@@ -44,27 +41,23 @@ export function processLogs(
 			if (dateMatch?.groups) {
 				const dateStr = dateMatch.groups.date
 				if (dateStr === todayDateStr) {
-					// This line is from today
-					// Store the line under the IP
-					if (!ipLogs[ip]) {
-						ipLogs[ip] = []
+					let logs = logsPerIpMap.get(ip)
+					if (!logs) {
+						logs = []
+						logsPerIpMap.set(ip, logs)
 					}
-					ipLogs[ip].push(line)
+					logs.push(line)
 				}
 			}
 		}
 	})
 
-	rl.on(`close`, () => {
-		// After reading all lines, process the logs per IP
-		const encoding = encoding_for_model(`gpt-3.5-turbo`) // You can change the model if needed
-		for (const ip in ipLogs) {
-			const logs = ipLogs[ip]
-			const concatenatedLogs = logs.join(`\n`)
-			const tokens = encoding.encode(concatenatedLogs)
-			const tokenCount = tokens.length
-			logger.info(`IP: ${ip}, Token count: ${tokenCount}, Logs: ${logs.length}`)
-		}
-		encoding.free() // Free the encoding resources
+	return new Promise((resolve, reject) => {
+		rl.on(`error`, (error) => {
+			reject(error)
+		})
+		rl.on(`close`, () => {
+			resolve(logsPerIpMap)
+		})
 	})
 }
