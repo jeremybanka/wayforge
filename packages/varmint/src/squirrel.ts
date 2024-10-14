@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto"
 import * as fs from "node:fs"
 import * as path from "node:path"
 
@@ -5,7 +6,22 @@ export type SquirrelMode = `off` | `read-write` | `read` | `write`
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
+export const filenameAllowList = /[^a-zA-Z0-9\-._]/g
+
+export function sanitizeFilename(filename: string): string {
+	const onlyValidChars = filename.replace(filenameAllowList, `-`)
+
+	if (onlyValidChars.length <= 64) {
+		return onlyValidChars
+	}
+
+	const hash = createHash(`sha256`).update(filename).digest(`hex`)
+	// Otherwise, trim the beginning to fit within the max length
+	return onlyValidChars.slice(-64) + `+` + hash // Keep the last maxLen characters
+}
+
 export class Squirrel {
+	public filenameCache = new Map<string, string>()
 	public filesTouched = new Map<string, Set<string>>()
 
 	public constructor(
@@ -75,7 +91,7 @@ export class Squirrel {
 			flush: () => {
 				this.flush(key)
 			},
-			for: (subKey: string) => {
+			for: (unSafeSubKey: string) => {
 				if (this.mode !== `off` && !this.filesTouched.has(key)) {
 					this.filesTouched.set(key, new Set())
 				}
@@ -83,7 +99,14 @@ export class Squirrel {
 					get: (async (
 						...args: Parameters<F>
 					): Promise<Awaited<ReturnType<F>>> => {
+						let subKey = unSafeSubKey
 						if (this.mode !== `off`) {
+							let cachedSubKey = this.filenameCache.get(unSafeSubKey)
+							if (!cachedSubKey) {
+								cachedSubKey = sanitizeFilename(unSafeSubKey)
+								this.filenameCache.set(unSafeSubKey, subKey)
+								subKey = cachedSubKey
+							}
 							this.filesTouched.get(key)?.add(subKey)
 						}
 						switch (this.mode) {

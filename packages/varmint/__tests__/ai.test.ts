@@ -106,7 +106,7 @@ describe(`ai`, () => {
 		const evaluation = await evaluateAgentResponse({
 			testId,
 			exchange: await careerAdvisor.conversation,
-			statement: `The assistant acted cordially and provided helpful advice.`,
+			statement: `The assistant acted cordially and provided helpful advice, showing care in its interactions with the user.`,
 		})
 		console.log(evaluation)
 		expect(evaluation.passed).toBe(true)
