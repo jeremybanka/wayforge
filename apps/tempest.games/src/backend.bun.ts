@@ -21,7 +21,6 @@ import {
 } from "atom.io/realtime-server"
 import { and, eq, gt } from "drizzle-orm"
 import * as SocketIO from "socket.io"
-import { z } from "zod"
 
 import { logger, parentSocket } from "./backend"
 import { worker } from "./backend.worker"
@@ -33,13 +32,11 @@ import { credentialsSchema, signupSchema } from "./library/data-constraints"
 import { env } from "./library/env"
 import {
 	RESPONSE_DICTIONARY,
-	responseCodeUnion,
+	serverIssueSchema,
 } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
-
-const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])
 
 const db = new DatabaseManager()
 

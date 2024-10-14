@@ -83,10 +83,12 @@ export const credentialsSchema = z
 	})
 	.strict()
 
+export const emailSchema = z.string().email().brand(`email`)
+
 export const signupSchema = z
 	.object({
 		username: usernameSchema,
 		password: passwordSchema,
-		email: z.string().email().brand(`email`),
+		email: emailSchema,
 	})
 	.strict()

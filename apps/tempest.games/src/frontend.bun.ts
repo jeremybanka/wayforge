@@ -10,7 +10,10 @@ import { eq } from "drizzle-orm"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import { banishedIps } from "./database/tempest-db-schema"
 import { env } from "./library/env"
-import { RESPONSE_DICTIONARY } from "./library/response-dictionary"
+import {
+	RESPONSE_DICTIONARY,
+	serverIssueSchema,
+} from "./library/response-dictionary"
 
 const parent = new ParentSocket()
 parent.logger.info(` ready`)
@@ -38,7 +41,7 @@ serve({
 			const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
 			if (ipBannedIndefinitely || ipBannedTemporarily) {
 				parent.logger.info(`🙅 request from banned ip ${ipAddress}`)
-				throw 403
+				throw [403, ipAddress]
 			}
 
 			if (url.pathname === `/`) {
@@ -53,7 +56,7 @@ serve({
 
 			// Ensure the requested path is still within distDir
 			if (!normalizedPath.startsWith(appDir)) {
-				throw 403
+				throw [403, `Access Denied`]
 			}
 
 			const fileExists = await file(normalizedPath).exists()
@@ -62,8 +65,13 @@ serve({
 			}
 			return new Response(file(normalizedPath))
 		} catch (thrown) {
-			if (typeof thrown === `number`) {
-				return new Response(RESPONSE_DICTIONARY[thrown], { status: thrown })
+			const result = serverIssueSchema.safeParse(thrown)
+			if (result.success) {
+				const [code, message] = result.data
+				const codeMeaning = RESPONSE_DICTIONARY[code]
+				const responseText = `${codeMeaning}. ${message}`
+				parent.logger.info(`❌ ${code}: ${responseText}`)
+				return new Response(responseText, { status: code })
 			}
 			if (thrown instanceof Error) {
 				parent.logger.error(thrown.message)
