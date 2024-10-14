@@ -30,7 +30,7 @@
 		"htmx.org": "2.0.3",
 		"lightningcss": "1.27.0",
 		"npmlog": "7.0.1",
-		"preact": "10.24.2",
+		"preact": "10.24.3",
 		"typed-htmx": "0.3.1"
 	},
 	"dependencies": {
