@@ -1,5 +1,11 @@
 # comline
 
+## 0.1.2
+
+### Patch Changes
+
+- 0098170: ♻️ Externalized typesafe tree functionality as "treetrunks" library.
+
 ## 0.1.1
 
 ### Patch Changes
