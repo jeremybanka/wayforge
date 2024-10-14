@@ -8,6 +8,11 @@ export type AsyncFunc = (...args: any[]) => Promise<any>
 
 export const filenameAllowList = /[^a-zA-Z0-9\-._]/g
 
+export type Squirreled<F extends AsyncFunc> = {
+	flush: () => void
+	for: (subKey: string) => { get: F }
+}
+
 export function sanitizeFilename(filename: string): string {
 	const onlyValidChars = filename.replace(filenameAllowList, `-`)
 
@@ -80,13 +85,7 @@ export class Squirrel {
 		return output
 	}
 
-	public add<F extends AsyncFunc>(
-		key: string,
-		get: F,
-	): {
-		flush: () => void
-		for: (subKey: string) => { get: F }
-	} {
+	public add<F extends AsyncFunc>(key: string, get: F): Squirreled<F> {
 		return {
 			flush: () => {
 				this.flush(key)
