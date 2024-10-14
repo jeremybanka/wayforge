@@ -18,16 +18,40 @@ const sql = postgres({
 })
 
 try {
+	process.stdout.write(`🚀 Creating database ${env.POSTGRES_DATABASE}... `)
 	await sql`CREATE DATABASE ${sql(env.POSTGRES_DATABASE)}`
-	await sql`CREATE USER ${sql(env.POSTGRES_USER)} WITH PASSWORD ${env.POSTGRES_PASSWORD}`
+	console.log(`Done!`)
 } catch (thrown) {
 	if (thrown instanceof Error) {
-		console.error(thrown.message)
+		console.error(`💥 Failed:`, thrown.message)
 	}
 }
 
-await sql`
-  GRANT ALL PRIVILEGES ON DATABASE ${sql(env.POSTGRES_DATABASE)} TO ${sql(env.POSTGRES_USER)}
-`
+try {
+	process.stdout.write(`🚀 Creating user ${env.POSTGRES_USER}... `)
+	await sql.unsafe(
+		`CREATE USER ${env.POSTGRES_USER} WITH PASSWORD '${env.POSTGRES_PASSWORD}'`,
+	)
+	console.log(`Done!`)
+} catch (thrown) {
+	if (thrown instanceof Error) {
+		console.error(`💥 Failed:`, thrown.message)
+	}
+}
+
+try {
+	process.stdout.write(
+		`🚀 Granting privileges to ${env.POSTGRES_USER} on ${env.POSTGRES_DATABASE}... `,
+	)
+	await sql`GRANT ALL PRIVILEGES ON DATABASE ${sql(env.POSTGRES_DATABASE)} TO ${sql(
+		env.POSTGRES_USER,
+	)}`
+	console.log(`Done!`)
+} catch (thrown) {
+	if (thrown instanceof Error) {
+		console.error(`💥 Failed:`, thrown.message)
+	}
+}
 
 await sql.end()
+console.log(`🚀 Database connection closed`)

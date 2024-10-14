@@ -13,6 +13,9 @@ main.class {
     svg {
       width: 100%;
       max-width: 270px;
+      @media (prefers-color-scheme: light) {
+        mix-blend-mode: multiply;
+      }
     }
   }
   > main {
@@ -27,25 +30,60 @@ main.class {
       gap: 30px;
       align-items: end;
       > main {
+        width: 100%;
+        max-width: 200px;
         display: flex;
         flex-flow: column;
         gap: 10px;
+        > aside {
+          background-color: #f007;
+          color: var(--bg-hard-3);
+          font-size: 15px;
+          padding: 3px 6px;
+        }
         > label {
           display: flex;
           flex-flow: column;
+          position: relative;
           > span {
             flex-grow: 1;
             font-size: 15px;
           }
           > input {
+            --energy-color: var(--fg-soft-3);
+            box-sizing: border-box;
+            height: 34px;
             background: none;
-            border: 1px solid var(--fg-soft-3);
+            border: 1px solid var(--energy-color);
             font-family: Uruz;
             font-size: 21px;
+            &:focus {
+              outline: none;
+              border-width: 2px;
+            }
+          }
+          > aside {
+            display: none;
+          }
+          &:focus-within {
+            > aside {
+              position: absolute;
+              display: flex;
+              flex-flow: column-reverse;
+              bottom: calc(100% - 24px);
+              right: 0;
+              max-width: 160px;
+              font-size: 15px;
+              line-height: 1.2em;
+              text-align: right;
+              padding: 3px 4px 4px 4px;
+              background-color: red;
+              color: var(--bg);
+            }
           }
         }
         > button {
-          background-color: var(--bg-tint-3);
+          background-color: var(--bg-dark-3);
           color: var(--fg);
           width: 40px;
           height: 40px;
@@ -53,6 +91,15 @@ main.class {
           border: none;
           align-self: flex-end;
           margin-top: 10px;
+          cursor: pointer;
+          &:disabled {
+            background-color: var(--bg-hard-1);
+            border: 1px solid var(--bg-soft-1);
+            color: var(--bg-soft-3);
+            &:hover {
+              cursor: not-allowed;
+            }
+          }
         }
       }
       > footer {

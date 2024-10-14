@@ -75,3 +75,5 @@ export const responseCodeUnion = z.union([
 	responseCodeSchemas[1],
 	...responseCodeSchemas,
 ])
+
+export const serverIssueSchema = z.tuple([responseCodeUnion, z.string()])

@@ -1,14 +1,21 @@
 import { useI, useO } from "atom.io/react"
+import { useState } from "react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
+import { setCssVars } from "../../library/set-css-vars"
 import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
 import {
 	emailInputAtom,
+	emailIssuesSelector,
 	password0InputAtom,
+	password0IssuesSelector,
 	password1InputAtom,
+	password1IssuesSelector,
+	signUpReadySelector,
 	usernameInputAtom,
+	usernameIssuesSelector,
 } from "../services/socket-auth-service"
 
 export function SignUp(): JSX.Element {
@@ -20,6 +27,14 @@ export function SignUp(): JSX.Element {
 	const password0 = useO(password0InputAtom)
 	const password1 = useO(password1InputAtom)
 	const email = useO(emailInputAtom)
+	const usernameIssues = useO(usernameIssuesSelector)
+	const password0Issues = useO(password0IssuesSelector)
+	const password1Issues = useO(password1IssuesSelector)
+	const emailIssues = useO(emailIssuesSelector)
+	const signUpReady = useO(signUpReadySelector)
+
+	const [error, setError] = useState<string | null>(null)
+
 	return (
 		<form
 			onSubmit={async (e) => {
@@ -38,9 +53,14 @@ export function SignUp(): JSX.Element {
 					setEmail(``)
 					navigate(`/login`)
 				}
+				if (response.status >= 400) {
+					const responseText = await response.text()
+					setError(responseText)
+				}
 			}}
 		>
 			<main>
+				{error ? <aside>{error}</aside> : null}
 				<label htmlFor="username">
 					<span>Username</span>
 					<input
@@ -51,7 +71,21 @@ export function SignUp(): JSX.Element {
 							setUsername(e.target.value)
 						}}
 						autoComplete="username"
+						style={setCssVars({
+							"--energy-color": username
+								? usernameIssues
+									? `red`
+									: `green`
+								: undefined,
+						})}
 					/>
+					{username && usernameIssues ? (
+						<aside>
+							{usernameIssues.map((issue) => (
+								<span key={issue.path.join(`.`)}>{issue.message}</span>
+							))}
+						</aside>
+					) : null}
 				</label>
 				<label htmlFor="password">
 					<span>Password</span>
@@ -63,7 +97,21 @@ export function SignUp(): JSX.Element {
 							setPassword0(e.target.value)
 						}}
 						autoComplete="new-password"
+						style={setCssVars({
+							"--energy-color": password0
+								? password0Issues
+									? `red`
+									: `green`
+								: undefined,
+						})}
 					/>
+					{password0 && password0Issues ? (
+						<aside>
+							{password0Issues.map((issue) => (
+								<span key={issue.path.join(`.`)}>{issue.message}</span>
+							))}
+						</aside>
+					) : null}
 				</label>
 				<label htmlFor="password">
 					<span>Confirm Password</span>
@@ -75,7 +123,21 @@ export function SignUp(): JSX.Element {
 							setPassword1(e.target.value)
 						}}
 						autoComplete="new-password"
+						style={setCssVars({
+							"--energy-color": password1
+								? password1Issues
+									? `red`
+									: `green`
+								: undefined,
+						})}
 					/>
+					{password1 && password1Issues ? (
+						<aside>
+							{password1Issues.map((issue) => (
+								<span key={issue.path.join(`.`)}>{issue.message}</span>
+							))}
+						</aside>
+					) : null}
 				</label>
 				<label htmlFor="email">
 					<span>Email</span>
@@ -87,9 +149,23 @@ export function SignUp(): JSX.Element {
 							setEmail(e.target.value)
 						}}
 						autoComplete="email"
+						style={setCssVars({
+							"--energy-color": email
+								? emailIssues
+									? `red`
+									: `green`
+								: undefined,
+						})}
 					/>
+					{email && emailIssues ? (
+						<aside>
+							{emailIssues.map((issue) => (
+								<span key={issue.path.join(`.`)}>{issue.message}</span>
+							))}
+						</aside>
+					) : null}
 				</label>
-				<button type="submit">{`->`}</button>
+				<button type="submit" disabled={!signUpReady}>{`->`}</button>
 			</main>
 			<footer>
 				<Anchor href="/login">
