@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.1
+
+### Patch Changes
+
+- 460ada1: 🏷️ Squirreled type represents the interface to a function that is being cached via Squirrel.
+
 ## 0.3.0
 
 ### Minor Changes
