@@ -36,6 +36,8 @@ export async function tribunal({
 	let logsDone = 0
 	let notBanCount = 0
 	for (const [ip, logs] of logsPerIpMap) {
+		logger.info(`🔍 ruling on ${ip}. logs:`)
+		logger.info(...logs.map((log) => `\t${log}\n`))
 		if (generator.usdBudget > generator.usdFloor) {
 			const prompt = logsToPrompt(logs)
 			const ruling = await generateBanRuling(prompt)
@@ -74,12 +76,10 @@ export async function tribunal({
 			if (lastDay) {
 				const cacheDay = new Date(lastDay)
 				bansSinceLastFlush.push(
-					...(await db.drizzle
-						.select({
-							ip: banishedIps.ip,
-						})
-						.from(banishedIps)
-						.where(gt(banishedIps.banishedAt, cacheDay))),
+					...(await db.drizzle.query.banishedIps.findMany({
+						columns: { ip: true },
+						where: gt(banishedIps.banishedAt, cacheDay),
+					})),
 				)
 			}
 		} catch (thrown) {
