@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"veryConciseReason": "Attempted access to /phpmyadmin without authorization."
+	},
+	"usdPrice": 0.000117075
+}

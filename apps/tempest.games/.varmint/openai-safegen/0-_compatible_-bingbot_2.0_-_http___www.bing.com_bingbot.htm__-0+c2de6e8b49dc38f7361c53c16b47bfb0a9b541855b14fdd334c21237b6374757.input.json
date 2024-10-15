@@ -1,0 +1,15 @@
+[
+	{
+		"model": "gpt-4o-mini",
+		"messages": [
+			{
+				"role": "user",
+				"content": "Network security adjudicator, your job is to determine if an IP address should be banned.\nThe IP address in question created the following logs on our server today:\n```nginx.log\n198.51.100.40 - - [15/Oct/2024:15:02:40 +0000] \"POST /xmlrpc.php HTTP/1.1\" 200 345 \"-\" \"Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)\""
+			},
+			{
+				"role": "user",
+				"content": "Please generate a response in JSON that conforms to the following JSON Schema:\n{\n  \"anyOf\": [\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"type\": \"boolean\",\n          \"const\": false\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\"\n      ],\n      \"additionalProperties\": false\n    },\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"type\": \"boolean\",\n          \"const\": true\n        },\n        \"veryConciseReason\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\",\n        \"veryConciseReason\"\n      ],\n      \"additionalProperties\": false\n    }\n  ],\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\"\n}"
+			}
+		]
+	}
+]

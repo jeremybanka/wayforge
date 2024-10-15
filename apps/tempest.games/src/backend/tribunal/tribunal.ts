@@ -5,33 +5,38 @@ import { resolve } from "node:path"
 
 import { discoverType } from "atom.io/introspection"
 import { gt } from "drizzle-orm"
+import type { OpenAiSafeGenerator } from "safegen/openai"
 import { z } from "zod"
 
 import { DatabaseManager } from "../../database/tempest-db-manager"
 import { banishedIps } from "../../database/tempest-db-schema"
-import { banRulingSpec, gpt4Gen, logsToPrompt } from "./present-evidence"
-import { getLogs } from "./process-logs"
+import { getLogs } from "./get-logs"
+import { banRulingSpec, logsToPrompt } from "./prompt"
 
-export async function tribunal(
-	logFilePath: string,
-	logger: Pick<Console, `error` | `info` | `warn`>,
-): Promise<void> {
+export type TribunalOptions = {
+	generator: OpenAiSafeGenerator
+	logFilePath: string
+	logger: Pick<Console, `error` | `info` | `warn`>
+}
+
+export async function tribunal({
+	generator,
+	logFilePath,
+	logger,
+}: TribunalOptions): Promise<void> {
+	const initialUsdBudget = generator.usdBudget
 	const db = new DatabaseManager()
 
-	// get today's logs
-
-	// log to map
-
+	// get today's logs mapped by ip
 	const logsPerIpMap = await getLogs(logger, logFilePath)
 
 	// map to ban-decision
-
 	const banRulings: { ip: string; reason: string }[] = []
-	const generateBanRuling = gpt4Gen.from(banRulingSpec)
+	const generateBanRuling = generator.from(banRulingSpec)
 	let logsDone = 0
 	let notBanCount = 0
 	for (const [ip, logs] of logsPerIpMap) {
-		if (gpt4Gen.usdBudget > gpt4Gen.usdFloor) {
+		if (generator.usdBudget > generator.usdFloor) {
 			const prompt = logsToPrompt(logs)
 			const ruling = await generateBanRuling(prompt)
 			if (ruling.shouldBanIp) {
@@ -56,7 +61,6 @@ export async function tribunal(
 	}
 
 	// read cache file for current day
-
 	const bansSinceLastFlush: { ip: string }[] = []
 	const cacheSchema = z.object({ lastDay: z.string() })
 	const cacheFilePath = resolve(import.meta.dirname, `tribunal.cache.json`)
@@ -84,7 +88,6 @@ export async function tribunal(
 	}
 
 	// database to iptables
-
 	try {
 		await Promise.all(
 			bansSinceLastFlush.map(
@@ -109,9 +112,22 @@ export async function tribunal(
 			logger.error(`iptables exited with error`, thrownType)
 		}
 	}
-	// create cache file for current day
 
+	// create cache file for current day
 	await writeFile(cacheFilePath, JSON.stringify({ lastDay: today }), `utf-8`)
 
 	logger.info(`✨ banned ${banCount} ips, didn't ban ${notBanCount} ips`)
+
+	const usdSpent = initialUsdBudget - generator.usdBudget
+	// format to usd
+	const remainingUsdBudgetFormatted = usdSpent.toLocaleString(`en`, {
+		style: `currency`,
+		currency: `USD`,
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 6,
+	})
+	const percentageSpent = Math.round((usdSpent / initialUsdBudget) * 100)
+	logger.info(
+		`💸 spent ${remainingUsdBudgetFormatted}, ${percentageSpent}% of initial budget`,
+	)
 }

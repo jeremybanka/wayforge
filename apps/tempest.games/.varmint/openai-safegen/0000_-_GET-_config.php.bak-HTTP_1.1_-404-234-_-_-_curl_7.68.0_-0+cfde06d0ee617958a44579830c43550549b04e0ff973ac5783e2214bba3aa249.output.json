@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"veryConciseReason": "Attempted access to a potentially sensitive file ('config.php.bak')"
+	},
+	"usdPrice": 0.00008414999999999999
+}

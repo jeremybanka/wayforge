@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"veryConciseReason": "Attempted access to sensitive file (wp-config.php.bak)."
+	},
+	"usdPrice": 0.000091875
+}

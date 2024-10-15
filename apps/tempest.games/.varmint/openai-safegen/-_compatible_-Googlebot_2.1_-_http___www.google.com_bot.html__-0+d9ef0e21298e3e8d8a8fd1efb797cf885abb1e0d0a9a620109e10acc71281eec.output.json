@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"veryConciseReason": "Attempted access to sensitive file (.env)"
+	},
+	"usdPrice": 0.00008392500000000001
+}
