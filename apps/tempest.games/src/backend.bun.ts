@@ -206,12 +206,8 @@ const httpServer = http.createServer((req, res) => {
 									})
 									logger.info(`🔑 recorded login attempt from ${ipAddress}`)
 								}
-								let successful = false
-								let userId: string | null = null
 								try {
-									const tenMinutesAgo = new Date(
-										+now - 1000 * 60 * 10,
-									).toISOString()
+									const tenMinutesAgo = new Date(+now - 1000 * 60 * 10)
 									logger.info(`🔑 ten minutes ago`, {
 										tenMinutesAgo,
 										now,
