@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"rationale": "The IP 198.51.100.25 attempted to access a potentially sensitive directory used for plugin updates, which corresponds to a known pattern of probing for vulnerabilities or unauthorized access attempts."
+	},
+	"usdPrice": 0.00010335
+}

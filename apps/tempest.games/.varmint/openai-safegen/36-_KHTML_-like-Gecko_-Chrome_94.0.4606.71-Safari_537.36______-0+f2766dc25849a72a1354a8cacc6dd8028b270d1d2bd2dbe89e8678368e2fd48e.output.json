@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"rationale": "The IP address 203.0.113.50 attempted to access the phpMyAdmin index page, which could indicate a probing for vulnerabilities. Given the unauthorized access attempt (HTTP 401 status), this behavior is suspicious and warrants a ban to prevent potential unauthorized access in the future."
+	},
+	"usdPrice": 0.000143925
+}
