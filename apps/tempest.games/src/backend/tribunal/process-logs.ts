@@ -4,8 +4,8 @@ import * as readline from "node:readline"
 // Function to get today's date in the format used in Nginx logs
 function getTodayDateStr(): string {
 	const today = new Date()
-	const dd = String(today.getUTCDate()).padStart(2, `0`)
-	const MMM = today.toLocaleString(`en`, { month: `short`, timeZone: `UTC` })
+	const dd = String(today.getDate()).padStart(2, `0`)
+	const MMM = today.toLocaleString(`en`, { month: `short`, timeZone: `PST` })
 	const yyyy = today.getUTCFullYear()
 	return `${dd}/${MMM}/${yyyy}` // e.g., '10/Oct/2023'
 }
@@ -40,6 +40,7 @@ export async function processLogs(
 			const dateMatch = dateTime.match(/^(?<date>\d{2}\/\w{3}\/\d{4})/)
 			if (dateMatch?.groups) {
 				const dateStr = dateMatch.groups.date
+				console.log(dateStr, todayDateStr)
 				if (dateStr === todayDateStr) {
 					let logs = logsPerIpMap.get(ip)
 					if (!logs) {
