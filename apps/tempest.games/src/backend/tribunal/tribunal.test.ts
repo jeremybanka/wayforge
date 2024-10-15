@@ -14,8 +14,6 @@ describe(`tribunal`, () => {
 
 		for (const [ip, ipLogs] of allLogsFromToday) {
 			const ruling = await makeRulingOnLogs(logger, ipLogs)
-			logger.info({ ip, ruling })
-			break
 		}
-	})
+	}, 40_000)
 })
