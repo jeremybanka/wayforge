@@ -1,19 +1,16 @@
 import { resolve } from "node:path"
 
-import { makeRulingOnLogs } from "./present-evidence"
-import { processLogs } from "./process-logs"
+import { DatabaseManager } from "../../database/tempest-db-manager"
+import { banishedIps } from "../../database/tempest-db-schema"
+import { tribunal } from "./tribunal"
+
+afterAll(async () => {
+	const db = new DatabaseManager()
+	await db.drizzle.delete(banishedIps)
+})
 
 describe(`tribunal`, () => {
-	test(`makeRulingOnEvidence`, async () => {
-		const logger = console
-		const allLogsFromToday = await processLogs(
-			console,
-			resolve(import.meta.dirname, `sample.log`),
-		)
-		logger.info(allLogsFromToday)
-
-		for (const [ip, ipLogs] of allLogsFromToday) {
-			const ruling = await makeRulingOnLogs(logger, ipLogs)
-		}
+	test(`tribunal`, async () => {
+		await tribunal(resolve(import.meta.dirname, `sample.log`), console)
 	}, 40_000)
 })

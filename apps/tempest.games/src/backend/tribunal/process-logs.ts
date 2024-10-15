@@ -10,7 +10,7 @@ function getTodayDateStr(): string {
 	return `${dd}/${MMM}/${yyyy}` // e.g., '10/Oct/2023'
 }
 
-export async function processLogs(
+export async function getLogs(
 	logger: Pick<Console, `error` | `info`>,
 	logFilePath = `/var/log/nginx/access.log`,
 ): Promise<Map<string, string[]>> {
@@ -40,7 +40,6 @@ export async function processLogs(
 			const dateMatch = dateTime.match(/^(?<date>\d{2}\/\w{3}\/\d{4})/)
 			if (dateMatch?.groups) {
 				const dateStr = dateMatch.groups.date
-				console.log(dateStr, todayDateStr)
 				if (dateStr === todayDateStr) {
 					let logs = logsPerIpMap.get(ip)
 					if (!logs) {

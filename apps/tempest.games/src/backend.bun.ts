@@ -35,10 +35,27 @@ import {
 	serverIssueSchema,
 } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
+import { CronJob } from "cron"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
 const db = new DatabaseManager()
+
+export const tribunalDaily: CronJob = (() => {
+	let { __tribunalDaily } = globalThis as any
+	if (!__tribunalDaily) {
+		__tribunalDaily = new CronJob(`00 00 03 * * *`, () => {
+			worker(parentSocket, `backend.worker.tribunal.bun`, logger)
+		})
+		__tribunalDaily.start()
+		process.on(`exit`, () => {
+			__tribunalDaily.stop()
+			logger.info(`⌛ tribunal daily cronjob stopped`)
+		})
+		logger.info(`⏳ tribunal daily cronjob started`)
+	}
+	return __tribunalDaily
+})()
 
 const httpServer = http.createServer((req, res) => {
 	let data: Uint8Array[]
