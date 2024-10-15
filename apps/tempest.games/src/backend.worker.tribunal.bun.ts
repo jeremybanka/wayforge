@@ -4,6 +4,18 @@ import { ParentSocket } from "atom.io/realtime-server"
 
 const parent = new ParentSocket()
 
+// get today's logs
+
+// log to map
+
+// map to ban-decision
+
+// ban decisions to database
+
+// database to iptables
+
+// create cache file for current day
+
 function gracefulExit() {
 	parent.logger.info(`🛬 frontend server exiting`)
 	process.exit(0)
