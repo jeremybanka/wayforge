@@ -1,0 +1,15 @@
+[
+	{
+		"model": "gpt-4o-mini",
+		"messages": [
+			{
+				"role": "user",
+				"content": "As the chief network security adjudicator unit,your responsibility is to determine whether an IP address should be blocked.\n\nThe IP address in question created the following logs on our server today:\n```nginx.log\n192.168.1.35 - - [15/Oct/2024:15:03:25 +0000] \"GET /about.html HTTP/1.1\" 200 1123 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0\"\n```\n"
+			},
+			{
+				"role": "user",
+				"content": "Please generate a response in JSON that conforms to the following JSON Schema:\n{\n  \"anyOf\": [\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"type\": \"boolean\",\n          \"const\": false\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\"\n      ],\n      \"additionalProperties\": false\n    },\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"type\": \"boolean\",\n          \"const\": true\n        },\n        \"veryConciseReason\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\",\n        \"veryConciseReason\"\n      ],\n      \"additionalProperties\": false\n    }\n  ],\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\"\n}"
+			}
+		]
+	}
+]

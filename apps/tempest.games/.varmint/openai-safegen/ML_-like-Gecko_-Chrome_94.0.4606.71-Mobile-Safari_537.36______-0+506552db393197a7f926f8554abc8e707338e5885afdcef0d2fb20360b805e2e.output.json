@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"veryConciseReason": "Detected unauthorized access attempt to wp-login.php."
+	},
+	"usdPrice": 0.00009044999999999999
+}

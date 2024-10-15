@@ -1,7 +1,0 @@
-{
-	"data": {
-		"shouldBanIp": true,
-		"rationale": "The IP address attempted to access a sensitive file (.env), which could indicate malicious intent or probing for vulnerabilities. Blocking this IP address is recommended to protect server integrity and prevent potential data breaches."
-	},
-	"usdPrice": 0.000100575
-}

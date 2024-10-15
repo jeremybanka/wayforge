@@ -1,0 +1,7 @@
+{
+	"data": {
+		"shouldBanIp": true,
+		"veryConciseReason": "Attempted access to phpMyAdmin, a common target for attacks."
+	},
+	"usdPrice": 0.00012022500000000001
+}
