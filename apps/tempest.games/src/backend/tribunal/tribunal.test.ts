@@ -9,7 +9,7 @@ import { tribunal } from "./tribunal"
 
 const gpt4Gen = new OpenAiSafeGenerator({
 	usdBudget: 0.00_15,
-	usdFloor: 0,
+	usdMinimum: 0,
 	model: `gpt-4o-mini`,
 	// biome-ignore lint/style/noNonNullAssertion: We'll handle this on the following lines
 	apiKey: env.OPENAI_API_KEY!,
