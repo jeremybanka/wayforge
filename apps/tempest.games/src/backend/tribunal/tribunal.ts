@@ -140,8 +140,14 @@ export async function tribunal({
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 6,
 	})
+	const initialBudgetFormatted = initialUsdBudget.toLocaleString(`en`, {
+		style: `currency`,
+		currency: `USD`,
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 6,
+	})
 	const percentageSpent = Math.round((usdSpent / initialUsdBudget) * 100)
 	logger.info(
-		`💸 spent ${remainingUsdBudgetFormatted}, ${percentageSpent}% of initial budget`,
+		`💸 spent ${remainingUsdBudgetFormatted}, ${percentageSpent}% of ${initialBudgetFormatted} budget`,
 	)
 }
