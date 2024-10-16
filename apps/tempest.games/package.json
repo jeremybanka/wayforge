@@ -9,7 +9,7 @@
 		"frontend": "./bin/frontend.bun.js",
 		"backend": "./bin/backend.bun.js"
 	},
-	"files": ["app", "bin", "CHANGELOG.md", "index.html"],
+	"files": ["__scripts__", "app", "bin", "CHANGELOG.md", "index.html"],
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
