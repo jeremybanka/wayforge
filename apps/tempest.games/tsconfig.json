@@ -4,6 +4,12 @@
 		"target": "ES2020",
 		"types": ["vitest/globals", "bun-types", "node"]
 	},
-	"include": ["src", "__tests__", "__scripts__", "**/*.config.ts"],
+	"include": [
+		"src",
+		"__tests__",
+		"__scripts__",
+		"**/*.config.ts",
+		"**/*.bun.ts"
+	],
 	"exclude": []
 }
