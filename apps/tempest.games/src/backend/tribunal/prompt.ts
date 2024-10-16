@@ -7,11 +7,6 @@ const NETWORK_SECURITY_ADJUDICATOR_BRIEF = [
 	"```nginx.log\n",
 ].join(`\n`)
 
-console.log(
-	[`the official routes of our application are:`, `FRONTEND:`, `BACKEND:`].join(
-		`\n`,
-	),
-)
 export function logsToPrompt(logs: string[]): string {
 	return NETWORK_SECURITY_ADJUDICATOR_BRIEF + logs.join(`\n\n`)
 }
