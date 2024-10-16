@@ -13,6 +13,8 @@ import { banishedIps } from "../../database/tempest-db-schema"
 import { getLogs } from "./get-logs"
 import { banRulingSpec, logsToPrompt } from "./prompt"
 
+export const ALWAYS_BAN_THESE_PHRASES = [`.env`, `php`]
+
 export type TribunalOptions = {
 	generator: OpenAiSafeGenerator
 	logFilePath: string
@@ -37,21 +39,33 @@ export async function tribunal({
 	let notBanCount = 0
 	for (const [ip, logs] of logsPerIpMap) {
 		logger.info(`🔍 ruling on ${ip}. logs:`)
-		logger.info(...logs.map((log) => `\t${log}\n`))
+		logger.info(logs.map((log) => `\t${log}`).join(`\n`))
+		let earlyExit = false
+		for (const phrase of ALWAYS_BAN_THESE_PHRASES) {
+			if (logs.some((log) => log.includes(phrase))) {
+				banRulings.push({ ip, reason: `Always ban ${phrase}` })
+				logger.info(`\t🧑‍⚖️ banning ${ip}--always ban ${phrase}\n`)
+				earlyExit = true
+				break
+			}
+		}
+		if (earlyExit) {
+			continue
+		}
 		if (generator.usdBudget > generator.usdFloor) {
 			const prompt = logsToPrompt(logs)
 			const ruling = await generateBanRuling(prompt)
 			if (ruling.shouldBanIp) {
 				banRulings.push({ ip, reason: ruling.veryConciseReason })
-				logger.info(`🧑‍⚖️ banning ${ip}--${ruling.veryConciseReason}`)
+				logger.info(`\t🧑‍⚖️ banning ${ip}--${ruling.veryConciseReason}\n`)
 			} else {
 				notBanCount++
-				logger.info(`🕊️ not banning ${ip}`)
+				logger.info(`\t🕊️ not banning ${ip}\n`)
 			}
 			logsDone++
 		} else {
 			logger.warn(`💰 insufficient funds to process all logs`)
-			logger.warn(`💰 got through ${logsDone}/${logsPerIpMap.size} ips`)
+			logger.warn(`💰 got through ${logsDone}/${logsPerIpMap.size} ips\n`)
 			break
 		}
 	}
