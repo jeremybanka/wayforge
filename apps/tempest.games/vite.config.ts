@@ -18,4 +18,5 @@ export default defineConfig({
 		env: configDotenv().parsed ?? {},
 		include: [`src/**/*.test.ts`],
 	},
+	build: { outDir: `app` },
 })

@@ -1,5 +1,4 @@
 import { createEnv } from "@t3-oss/env-core"
-import { parseJson } from "atom.io/json"
 import { z } from "zod"
 
 export const env = createEnv({
@@ -20,7 +19,7 @@ export const env = createEnv({
 		FRONTEND_ORIGINS: z
 			.string()
 			// transform to array
-			.transform((s) => parseJson(s))
+			.transform((s) => JSON.parse(s))
 			// make sure transform worked
 			.pipe(z.array(z.string())),
 		OPENAI_API_KEY: z.string().optional(),
