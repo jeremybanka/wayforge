@@ -60,17 +60,31 @@ export type ToPath<
 		? [string & {}]
 		: [S]
 
-export type MySplit = ToPath<`hello/$world/good/morning`, `/`>
-
-const myTree = required({
-	hello: optional({
-		world: null,
-		$name: optional({ good: required({ morning: null }) }),
-	}),
-})
-
-type MyTreePath = TreePath<typeof myTree>
-type MyTreeMap = TreeMap<typeof myTree, null>
-
-type MyTreePathsJoined = Join<MyTreePath, `/`>
-// type MyTreePathsJoined$ = Join<MyTreePath$, `/`>
+export function isTreePath<T extends Tree>(
+	tree: T,
+	maybePath: unknown[],
+): maybePath is TreePath<T> {
+	let currentTreeNode: Tree | null = tree
+	for (const segment of maybePath) {
+		if (currentTreeNode === null) {
+			return false
+		}
+		if (typeof segment !== `string`) {
+			return false
+		}
+		if (segment in currentTreeNode[1]) {
+			currentTreeNode = currentTreeNode[1][segment]
+		} else {
+			return false
+		}
+	}
+	if (currentTreeNode === null) {
+		return true
+	}
+	switch (currentTreeNode[0]) {
+		case `required`:
+			return false
+		case `optional`:
+			return true
+	}
+}
