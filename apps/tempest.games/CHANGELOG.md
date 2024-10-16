@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.3
+
+### Patch Changes
+
+- 4970d8b: ✨ Include db setup script.
+
 ## 0.1.2
 
 ### Patch Changes
