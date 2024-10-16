@@ -7,7 +7,8 @@
 	"type": "module",
 	"bin": {
 		"frontend": "./bin/frontend.bun.js",
-		"backend": "./bin/backend.bun.js"
+		"backend": "./bin/backend.bun.js",
+		"setup-db": "./bin/setup-db.bun.js"
 	},
 	"files": ["__scripts__", "app", "bin", "CHANGELOG.md", "index.html"],
 	"scripts": {
