@@ -1,6 +1,6 @@
 import { atom, getState, selector, setState } from "atom.io"
 import type { Join, Tree, TreePath } from "treetrunks"
-import { optional, required } from "treetrunks"
+import { isTreePath, optional, required } from "treetrunks"
 
 import { authAtom } from "./socket-auth-service"
 
@@ -15,41 +15,16 @@ export const ROUTES = required({
 export type Route = TreePath<typeof ROUTES>
 export type Pathname = `/${Join<Route, `/`>}`
 
+export function isRoute(route: unknown[]): route is Route {
+	return isTreePath(ROUTES, route)
+}
+
 export const PUBLIC_ROUTES = [
 	[`login`],
 	[`sign_up`],
 ] as const satisfies TreePath<typeof ROUTES>[]
 export type PublicRoute = (typeof PUBLIC_ROUTES)[number]
 export type PublicPathname = `/${Join<PublicRoute, `/`>}`
-
-function isRoute<T extends Tree>(
-	routes: T,
-	route: unknown[],
-): route is TreePath<T> {
-	let currentTreeNode: Tree | null = routes
-	for (const routePart of route) {
-		if (currentTreeNode === null) {
-			return false
-		}
-		if (typeof routePart !== `string`) {
-			return false
-		}
-		if (routePart in currentTreeNode[1]) {
-			currentTreeNode = currentTreeNode[1][routePart]
-		} else {
-			return false
-		}
-	}
-	if (currentTreeNode === null) {
-		return true
-	}
-	switch (currentTreeNode[0]) {
-		case `required`:
-			return false
-		case `optional`:
-			return true
-	}
-}
 
 function isPublicRoute(route: unknown[]): route is PublicRoute {
 	return PUBLIC_ROUTES.some(
@@ -115,7 +90,7 @@ export const routeSelector = selector<Route | 401 | 404>({
 	get: ({ get }) => {
 		const pathname = get(pathnameAtom)
 		const path = pathname.split(`/`).slice(1)
-		const pathIsRoute = isRoute(ROUTES, path)
+		const pathIsRoute = isRoute(path)
 		if (!pathIsRoute) {
 			return 404
 		}
