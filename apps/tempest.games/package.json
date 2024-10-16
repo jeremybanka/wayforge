@@ -10,13 +10,7 @@
 		"backend": "./bin/backend.bun.js",
 		"setup-db": "./bin/setup-db.bun.js"
 	},
-	"files": [
-		"__scripts__",
-		"app",
-		"bin",
-		"CHANGELOG.md",
-		"index.html"
-	],
+	"files": ["__scripts__", "app", "bin", "CHANGELOG.md", "index.html"],
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
@@ -53,6 +47,7 @@
 		"safegen": "0.0.3",
 		"socket.io": "4.8.0",
 		"socket.io-client": "4.8.0",
+		"treetrunks": "workspace:*",
 		"zod": "3.23.8",
 		"zod-to-json-schema": "3.23.3"
 	},
