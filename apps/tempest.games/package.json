@@ -1,6 +1,6 @@
 {
 	"name": "tempest.games",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -10,7 +10,13 @@
 		"backend": "./bin/backend.bun.js",
 		"setup-db": "./bin/setup-db.bun.js"
 	},
-	"files": ["__scripts__", "app", "bin", "CHANGELOG.md", "index.html"],
+	"files": [
+		"__scripts__",
+		"app",
+		"bin",
+		"CHANGELOG.md",
+		"index.html"
+	],
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
