@@ -331,6 +331,9 @@ importers:
       socket.io-client:
         specifier: 4.8.0
         version: 4.8.0
+      treetrunks:
+        specifier: workspace:*
+        version: link:../../packages/treetrunks
       zod:
         specifier: 3.23.8
         version: 3.23.8
