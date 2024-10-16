@@ -10,7 +10,7 @@ function parseNginxDateTime(dateTimeStr: string): Date {
 	// Replace slashes with dashes and month names with numbers
 	const formattedDateStr = isoDateTimeStr.replace(
 		/(\d{2})\/(\w{3})\/(\d{4})T(.+)/,
-		(match, day, monthStr, year, timeZonePart) => {
+		(_, day, monthStr, year, timeZonePart) => {
 			const monthMap: { [key: string]: string } = {
 				Jan: `01`,
 				Feb: `02`,
