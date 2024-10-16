@@ -53,5 +53,21 @@ try {
 	}
 }
 
+import { resolve } from "node:path"
+
+import { drizzle } from "drizzle-orm/postgres-js"
+import { migrate } from "drizzle-orm/postgres-js/migrator"
+
+try {
+	process.stdout.write(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
+	const db = drizzle(sql)
+	await migrate(db, { migrationsFolder: resolve(import.meta.dir, `../drizzle`) })
+	console.log(`Done!`)
+} catch (thrown) {
+	if (thrown instanceof Error) {
+		console.error(`💥 Failed:`, thrown.message)
+	}
+}
+
 await sql.end()
 console.log(`🚀 Database connection closed`)
