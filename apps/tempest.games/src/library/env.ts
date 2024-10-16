@@ -23,6 +23,7 @@ export const env = createEnv({
 			.transform((s) => parseJson(s))
 			// make sure transform worked
 			.pipe(z.array(z.string())),
+		OPENAI_API_KEY: z.string().optional(),
 	},
 
 	/**

@@ -19,6 +19,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
+import { CronJob } from "cron"
 import { and, eq, gt } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 
@@ -40,6 +41,22 @@ const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
 const db = new DatabaseManager()
 
+export const tribunalDaily: CronJob = (() => {
+	let { __tribunalDaily } = globalThis as any
+	if (!__tribunalDaily) {
+		__tribunalDaily = new CronJob(`00 00 03 * * *`, () => {
+			worker(parentSocket, `backend.worker.tribunal.bun`, logger)
+		})
+		__tribunalDaily.start()
+		process.on(`exit`, () => {
+			__tribunalDaily.stop()
+			logger.info(`⌛ tribunal daily cronjob stopped`)
+		})
+		logger.info(`⏳ tribunal daily cronjob started`)
+	}
+	return __tribunalDaily
+})()
+
 const httpServer = http.createServer((req, res) => {
 	let data: Uint8Array[]
 	req
@@ -55,13 +72,10 @@ const httpServer = http.createServer((req, res) => {
 				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
 				logger.info(now, ipAddress, req.method, url.pathname)
 
-				const [ban] = await db.drizzle
-					.select({
-						banishedUntil: banishedIps.banishedUntil,
-					})
-					.from(banishedIps)
-					.where(eq(banishedIps.ip, ipAddress))
-					.limit(1)
+				const ban = await db.drizzle.query.banishedIps.findFirst({
+					columns: { banishedUntil: true },
+					where: eq(banishedIps.ip, ipAddress),
+				})
 				const ipBannedIndefinitely = ban?.banishedUntil === null
 				const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
 				if (ipBannedIndefinitely || ipBannedTemporarily) {
@@ -86,11 +100,10 @@ const httpServer = http.createServer((req, res) => {
 										return
 									}
 									const { username, password, email } = parsed.data
-									const [maybeUser] = await db.drizzle
-										.select()
-										.from(users)
-										.where(eq(users.email, email))
-										.limit(1)
+									const maybeUser = await db.drizzle.query.users.findFirst({
+										columns: { id: true },
+										where: eq(users.email, email),
+									})
 									if (maybeUser) {
 										throw [400, `User already exists`]
 									}
@@ -121,20 +134,19 @@ const httpServer = http.createServer((req, res) => {
 										tenMinutesAgo,
 										now,
 									})
-									const recentLoginHistory = await db.drizzle
-										.select({
-											userId: loginHistory.userId,
-											successful: loginHistory.successful,
-										})
-										.from(loginHistory)
-										.where(
-											and(
+									const recentLoginHistory =
+										await db.drizzle.query.loginHistory.findMany({
+											columns: {
+												userId: true,
+												successful: true,
+											},
+											where: and(
 												eq(loginHistory.ipAddress, ipAddress),
 												eq(loginHistory.successful, false),
 												gt(loginHistory.loginTime, tenMinutesAgo),
 											),
-										)
-										.limit(10)
+											limit: 10,
+										})
 
 									logger.info(
 										`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
@@ -162,15 +174,14 @@ const httpServer = http.createServer((req, res) => {
 										throw [400, `${attemptsRemaining} attempts remaining.`]
 									}
 									const { username, password } = zodParsed.data
-									const [maybeUser] = await db.drizzle
-										.select({
-											id: users.id,
-											hash: users.hash,
-											salt: users.salt,
-										})
-										.from(users)
-										.where(eq(users.username, username))
-										.limit(1)
+									const maybeUser = await db.drizzle.query.users.findFirst({
+										columns: {
+											id: true,
+											hash: true,
+											salt: true,
+										},
+										where: eq(users.username, username),
+									})
 									logger.info(`🔑 login attempt as user`, username)
 									if (!maybeUser) {
 										logger.info(`🔑 user ${username} does not exist`)

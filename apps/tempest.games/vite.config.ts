@@ -16,5 +16,6 @@ export default defineConfig({
 		globals: true,
 		globalSetup: `./__scripts__/setup.vitest.ts`,
 		env: configDotenv().parsed ?? {},
+		include: [`src/**/*.test.ts`],
 	},
 })

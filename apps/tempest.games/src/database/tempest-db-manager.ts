@@ -8,12 +8,13 @@ import type { Options } from "postgres"
 import postgres from "postgres"
 
 import { env } from "../library/env"
+import * as schema from "./tempest-db-schema"
 import { games, players, users } from "./tempest-db-schema"
 
 export class DatabaseManager {
 	public options: Options<{}>
 	public sql: postgres.Sql
-	public drizzle: PostgresJsDatabase
+	public drizzle: PostgresJsDatabase<typeof schema>
 	public observers: Map<string, Subject<string>> = new Map()
 
 	public async setupTriggersAndNotifications(): Promise<void> {
@@ -47,7 +48,7 @@ export class DatabaseManager {
 	) {
 		this.options = options
 		this.sql = postgres(options)
-		this.drizzle = drizzle(this.sql)
+		this.drizzle = drizzle(this.sql, { schema })
 	}
 
 	public observe(completeKey: string, callback: () => void): void {
