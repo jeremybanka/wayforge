@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.2
+
+### Patch Changes
+
+- 47c52e1: ✨ Automatically ban suspicious IPs at the network level.
+
 ## 0.1.1
 
 ### Patch Changes
