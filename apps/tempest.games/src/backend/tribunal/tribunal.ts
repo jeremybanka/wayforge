@@ -19,18 +19,20 @@ export type TribunalOptions = {
 	generator: OpenAiSafeGenerator
 	logFilePath: string
 	logger: Pick<Console, `error` | `info` | `warn`>
+	now?: Date
 }
 
 export async function tribunal({
 	generator,
 	logFilePath,
 	logger,
+	now,
 }: TribunalOptions): Promise<void> {
 	const initialUsdBudget = generator.usdBudget
 	const db = new DatabaseManager()
 
 	// get today's logs mapped by ip
-	const logsPerIpMap = await getLogs(logger, logFilePath)
+	const logsPerIpMap = await getLogs(logger, logFilePath, now)
 
 	// map to ban-decision
 	const banRulings: { ip: string; reason: string }[] = []
@@ -81,7 +83,6 @@ export async function tribunal({
 	const cacheSchema = z.object({ lastDay: z.string() })
 	const cacheFilePath = resolve(import.meta.dirname, `tribunal.cache.json`)
 	const cacheFileExists = existsSync(cacheFilePath)
-	const today = new Date()
 	if (cacheFileExists) {
 		const cacheFileContents = await readFile(cacheFilePath, `utf-8`)
 		try {
@@ -128,7 +129,7 @@ export async function tribunal({
 	}
 
 	// create cache file for current day
-	await writeFile(cacheFilePath, JSON.stringify({ lastDay: today }), `utf-8`)
+	await writeFile(cacheFilePath, JSON.stringify({ lastDay: now }), `utf-8`)
 
 	logger.info(`✨ banned ${banCount} ips, didn't ban ${notBanCount} ips`)
 
