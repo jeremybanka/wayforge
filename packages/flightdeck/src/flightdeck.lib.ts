@@ -126,7 +126,13 @@ export class FlightDeck<S extends string = string> {
 					const authHeader = req.headers.authorization
 					try {
 						if (typeof req.url === `undefined`) throw 400
-						if (authHeader !== `Bearer ${secret}`) throw 401
+						const expectedAuthHeader = `Bearer ${secret}`
+						if (authHeader !== `Bearer ${secret}`) {
+							this.logger.info(
+								`Unauthorized: needed \`${expectedAuthHeader}\`, got \`${authHeader}\``,
+							)
+							throw 401
+						}
 						const url = new URL(req.url, ORIGIN)
 						this.logger.info(req.method, url.pathname)
 						switch (req.method) {
