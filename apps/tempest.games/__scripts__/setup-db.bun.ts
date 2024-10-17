@@ -1,7 +1,10 @@
 #!/usr/bin/env bun
 
 import * as os from "node:os"
+import { resolve } from "node:path"
 
+import { drizzle } from "drizzle-orm/postgres-js"
+import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
 
 import { env } from "../src/library/env.ts"
@@ -52,11 +55,6 @@ try {
 		console.error(`💥 Failed:`, thrown.message)
 	}
 }
-
-import { resolve } from "node:path"
-
-import { drizzle } from "drizzle-orm/postgres-js"
-import { migrate } from "drizzle-orm/postgres-js/migrator"
 
 try {
 	process.stdout.write(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
