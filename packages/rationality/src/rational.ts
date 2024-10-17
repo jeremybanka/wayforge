@@ -69,7 +69,7 @@ export class Rational {
 	}
 
 	public sub(that: Rational): this
-	public sub(numerator: bigint, denominator?: bigint | undefined): this
+	public sub(numerator: bigint, denominator?: bigint): this
 	public sub(
 		...params:
 			| [numerator: bigint, denominator?: bigint | undefined]
@@ -87,7 +87,7 @@ export class Rational {
 	}
 
 	public mul(that: Rational): this
-	public mul(otherNumerator: bigint, otherDenominator?: bigint | undefined): this
+	public mul(otherNumerator: bigint, otherDenominator?: bigint): this
 	public mul(
 		...params:
 			| [otherNumerator: bigint, otherDenominator?: bigint | undefined]
@@ -112,7 +112,7 @@ export class Rational {
 	}
 
 	public div(that: Rational): this
-	public div(otherNumerator: bigint, otherDenominator?: bigint | undefined): this
+	public div(otherNumerator: bigint, otherDenominator?: bigint): this
 	public div(
 		...params:
 			| [otherNumerator: bigint, otherDenominator?: bigint | undefined]
@@ -162,10 +162,7 @@ export class Rational {
 	}
 
 	public isGreaterThan(that: Rational): boolean
-	public isGreaterThan(
-		numerator: bigint,
-		denominator?: bigint | undefined,
-	): boolean
+	public isGreaterThan(numerator: bigint, denominator?: bigint): boolean
 	public isGreaterThan(
 		...params:
 			| [numerator: bigint, denominator?: bigint | undefined]
