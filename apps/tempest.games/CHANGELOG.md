@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.6
+
+### Patch Changes
+
+- c706046: 🐛 Improved conditions for determining whether code is running on server or client.
+
 ## 0.1.5
 
 ### Patch Changes
