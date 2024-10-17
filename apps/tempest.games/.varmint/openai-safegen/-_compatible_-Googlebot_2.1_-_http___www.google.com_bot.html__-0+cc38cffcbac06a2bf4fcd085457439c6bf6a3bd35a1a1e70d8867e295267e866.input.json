@@ -4,7 +4,7 @@
 		"messages": [
 			{
 				"role": "user",
-				"content": "Network security adjudicator, your job is to determine if an IP address should be banned.\nThe IP address in question created the following logs on our server today:\n```nginx.log\n192.168.1.25 - - [15/Oct/2024:15:02:50 +0000] \"GET /robots.txt HTTP/1.1\" 200 55 \"-\" \"Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Mobile Safari/537.36\""
+				"content": "Network security adjudicator, your job is to determine if an IP address should be banned.\nThe IP address in question created the following logs on our server today:\n```nginx.log\n198.51.100.150 - - [16/Oct/2024:13:03:10 -0700] \"GET /wp-content/uploads/ HTTP/1.1\" 403 276 \"-\" \"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\""
 			},
 			{
 				"role": "user",

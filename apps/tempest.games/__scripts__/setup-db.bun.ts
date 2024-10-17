@@ -1,7 +1,10 @@
 #!/usr/bin/env bun
 
 import * as os from "node:os"
+import { resolve } from "node:path"
 
+import { drizzle } from "drizzle-orm/postgres-js"
+import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
 
 import { env } from "../src/library/env.ts"
@@ -52,6 +55,27 @@ try {
 		console.error(`💥 Failed:`, thrown.message)
 	}
 }
-
 await sql.end()
+
+const tempest = postgres({
+	user: env.POSTGRES_USER,
+	password: env.POSTGRES_PASSWORD,
+	database: env.POSTGRES_DATABASE,
+	host: env.POSTGRES_HOST,
+	port: env.POSTGRES_PORT,
+})
+try {
+	process.stdout.write(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
+	const db = drizzle(tempest)
+	await migrate(db, {
+		migrationsFolder: resolve(import.meta.dir, `../drizzle`),
+	})
+	console.log(`Done!`)
+} catch (thrown) {
+	if (thrown instanceof Error) {
+		console.error(`💥 Failed:`, thrown.message)
+	}
+}
+await tempest.end()
+
 console.log(`🚀 Database connection closed`)

@@ -31,6 +31,7 @@ describe(`tribunal`, () => {
 			generator: gpt4Gen,
 			logFilePath: resolve(import.meta.dirname, `sample.log`),
 			logger: console,
+			now: new Date(`2024-10-16T20:39:52.496Z`),
 		})
 	}, 40_000)
 })

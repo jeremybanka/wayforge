@@ -7,6 +7,7 @@ await build({
 		`./src/frontend.bun.ts`,
 		`./src/backend.bun.ts`,
 		`./src/backend.worker.game.bun.ts`,
+		`./src/backend.worker.tribunal.bun.ts`,
 	],
 	outdir: `./bin`,
 	packages: `bundle`,

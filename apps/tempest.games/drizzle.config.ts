@@ -1,8 +1,5 @@
-import dotenv from "dotenv"
 import { defineConfig } from "drizzle-kit"
 import { z } from "zod"
-
-dotenv.config()
 
 const dbCredentials = z
 	.object({
