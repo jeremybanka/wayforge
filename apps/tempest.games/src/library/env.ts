@@ -1,8 +1,11 @@
 import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
 
+const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
+const HAS_WINDOW = typeof window !== `undefined`
+
 export const env = createEnv({
-	isServer: `__vite_start_time` in globalThis === false,
+	isServer: !BUILDING_WITH_VITE && !HAS_WINDOW,
 
 	server: {
 		POSTGRES_USER: z.string(),
