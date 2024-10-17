@@ -2,7 +2,7 @@ import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
 
 export const env = createEnv({
-	isServer: typeof window === `undefined`,
+	isServer: `__vite_start_time` in globalThis === false,
 
 	server: {
 		POSTGRES_USER: z.string(),
