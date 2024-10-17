@@ -44,7 +44,7 @@ const db = new DatabaseManager()
 export const tribunalDaily: CronJob = (() => {
 	let { __tribunalDaily } = globalThis as any
 	if (!__tribunalDaily) {
-		__tribunalDaily = new CronJob(`00 00 03 * * *`, () => {
+		__tribunalDaily = new CronJob(`00 15 * * * *`, () => {
 			worker(parentSocket, `backend.worker.tribunal.bun`, logger)
 		})
 		__tribunalDaily.start()
