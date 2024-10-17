@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.4
+
+### Patch Changes
+
+- 1e65a15: 🗃️ Include database migrations.
+
 ## 0.1.3
 
 ### Patch Changes
