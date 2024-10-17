@@ -25,7 +25,7 @@
 		"env:test": "[ -f .env ] && echo 'env already present' || cp .env.defaults .env.test",
 		"env:prod": "[ -f .env ] && echo 'env already present' || echo 'VITE_BACKEND_ORIGIN=https://realtime.tempest.games' >> .env.production",
 		"test": "vitest",
-		"test:once": "bun run env && vitest run",
+		"test:once": "bun run env:test && vitest run",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint --flag unstable_ts_config -- .",
 		"lint:types": "tsc --noEmit",
