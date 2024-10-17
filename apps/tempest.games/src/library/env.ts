@@ -4,9 +4,6 @@ import { z } from "zod"
 const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
 const HAS_WINDOW = typeof window !== `undefined`
 
-console.log(`BUILDING_WITH_VITE`, BUILDING_WITH_VITE)
-console.log(`HAS_WINDOW`, HAS_WINDOW)
-
 export const env = createEnv({
 	isServer: !BUILDING_WITH_VITE && !HAS_WINDOW,
 
