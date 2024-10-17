@@ -1,2 +1,4 @@
 app
 tribunal.cache.json
+.env.*
+!.env.defaults
