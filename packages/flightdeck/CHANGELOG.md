@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.0.14
+
+### Patch Changes
+
+- c111c9a: 🔊 Added a log for when an unauthorized Klaxon request hits the flightdeck server.
+
 ## 0.0.13
 
 ### Patch Changes
