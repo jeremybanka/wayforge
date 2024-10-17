@@ -33,7 +33,7 @@
 		"db:dev": "drizzle-kit studio",
 		"db:gen": "drizzle-kit generate",
 		"db:nuke": "./__scripts__/destroy-db.bun.ts",
-		"db:up": "./__scripts__/setup-db.bun.ts && dotenv drizzle-kit migrate"
+		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.11.1",
