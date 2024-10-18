@@ -1,5 +1,11 @@
 # comline
 
+## 0.1.4
+
+### Patch Changes
+
+- 1534303: ✨ Add optional setting `debugOutput` to the CLI function that will write logs describing the CLI options retrieval process.
+
 ## 0.1.3
 
 ### Patch Changes

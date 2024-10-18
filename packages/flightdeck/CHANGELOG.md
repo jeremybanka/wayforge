@@ -1,5 +1,13 @@
 # flightdeck
 
+## 0.0.15
+
+### Patch Changes
+
+- 1534303: 🔊 Add command line logs.
+- Updated dependencies [1534303]
+  - comline@0.1.4
+
 ## 0.0.14
 
 ### Patch Changes
