@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.7
+
+### Patch Changes
+
+- e8e7a6a: 🐛 Fix bug where ban generator would look for cached responses that wouldn't/shouldn't exist.
+
 ## 0.1.6
 
 ### Patch Changes
