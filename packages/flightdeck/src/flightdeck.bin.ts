@@ -79,6 +79,7 @@ const parse = cli(
 			$configPath: FLIGHTDECK_MANUAL,
 			schema: SCHEMA_MANUAL,
 		},
+		debugOutput: true,
 		discoverConfigPath: (args) => {
 			if (args[0] === `schema`) {
 				return

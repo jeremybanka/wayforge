@@ -68,6 +68,7 @@ export type CommandLineInterface<Routes extends Tree> = {
 	cliName: string
 	routeOptions: TreeMap<Routes, OptionsGroup<any>>
 	routes?: Routes
+	debugOutput?: boolean
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 
@@ -100,12 +101,18 @@ export function cli<
 		cliName,
 		routes,
 		routeOptions,
+		debugOutput = false,
 		discoverConfigPath = () =>
 			path.join(process.cwd(), `${cliName}.config.json`),
 	}: CLI,
 	logger = {
+		info: debugOutput
+			? (...args: any[]) => {
+					console.log(`[${cliName}]:`, ...args)
+				}
+			: undefined,
 		error: (...args: any[]) => {
-			console.error(...args)
+			console.error(`[${cliName}]:`, ...args)
 		},
 	},
 ): (args: string[]) => {
@@ -113,6 +120,8 @@ export function cli<
 	writeJsonSchema: (outdir: string) => void
 } {
 	return (passed = process.argv) => {
+		logger.info?.(`passed args:`, passed)
+
 		type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]
 
 		let failedValidation = false
@@ -135,13 +144,16 @@ export function cli<
 		if (discoverConfigPath) {
 			const configFilePath = discoverConfigPath(positionalArgs.path)
 			if (configFilePath) {
+				logger.info?.(`looking for config file at:`, configFilePath)
 				if (fs.existsSync(configFilePath)) {
+					logger.info?.(`config file was found`)
 					const configText = fs.readFileSync(configFilePath, `utf-8`)
 					const optionsFromConfigJson = JSON.parse(configText)
 					optionsFromConfig = optionsSchema.parse(optionsFromConfigJson)
 				}
 			}
 		}
+		logger.info?.(`options from config:`, optionsFromConfig)
 		const argumentEntries = Object.entries(options)
 		const optionsFromCommandLineEntries = argumentEntries
 			.map((entry: [string & keyof Options, CliOption<any>]) => {
@@ -192,7 +204,9 @@ export function cli<
 			optionsFromConfig ?? {},
 			optionsFromCommandLine,
 		)
+		logger.info?.(`options from command line:`, optionsFromCommandLine)
 		const suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed)
+		logger.info?.(`final options parsed:`, suppliedOptions)
 		return {
 			inputs: {
 				case: positionalArgs.route,
