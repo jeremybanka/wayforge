@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.1.0
+
+### Minor Changes
+
+- 9bf38b2: 💥 BREAKING CHANGE: The secret the flightdeck server held for authentication with an update reporter (Klaxon) was previously sought as a config option "secret". Now it is an optional environment variable "FLIGHTDECK_SECRET". If the variable is not set, the server will not run and a warning will be logged.
+- 9bf38b2: 💥 BREAKING CHANGE: The port the flightdeck server ran on was previously sought as an environment variable "PORT". It is now an optional config option "port".
+
 ## 0.0.15
 
 ### Patch Changes
