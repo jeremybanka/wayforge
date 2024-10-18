@@ -10,10 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {
