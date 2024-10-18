@@ -4,7 +4,7 @@ import { ParentSocket } from "atom.io/realtime-server"
 import { OpenAiSafeGenerator } from "safegen/openai"
 
 import { tribunal } from "./backend/tribunal/tribunal"
-import { env } from "./library/env"
+import { env, IS_TEST } from "./library/env"
 
 const parent = new ParentSocket()
 
@@ -23,12 +23,13 @@ process.on(`exit`, () => {
 
 parent.logger.info(`🛫 tribunal worker ready`)
 
-export const gpt4Gen = new OpenAiSafeGenerator({
+const gpt4Gen = new OpenAiSafeGenerator({
 	usdBudget: 0.01,
 	usdMinimum: 0,
 	model: `gpt-4o-mini`,
 	// biome-ignore lint/style/noNonNullAssertion: We'll handle this on the following lines
 	apiKey: env.OPENAI_API_KEY!,
+	cachingMode: `off`,
 	logger: parent.logger,
 })
 if (env.OPENAI_API_KEY === undefined && !(`VITEST` in import.meta.env)) {
