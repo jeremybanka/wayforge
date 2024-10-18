@@ -9,19 +9,19 @@ import { Future } from "atom.io/internal"
 import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 
+import { env } from "./flightdeck.env"
+
 export type FlightDeckOptions<S extends string = string> = {
-	secret: string
 	packageName: string
 	services: { [service in S]: { run: string; waitFor: boolean } }
 	scripts: {
 		download: string
 		install: string
 	}
+	port?: number | undefined
 	flightdeckRootDir?: string | undefined
 }
 
-const PORT = process.env.PORT ?? 8080
-const ORIGIN = `http://localhost:${PORT}`
 export class FlightDeck<S extends string = string> {
 	protected safety = 0
 
@@ -52,8 +52,10 @@ export class FlightDeck<S extends string = string> {
 	protected persistentStateDir: string
 
 	public constructor(public readonly options: FlightDeckOptions<S>) {
-		const { secret, flightdeckRootDir = resolve(homedir(), `services`) } =
-			options
+		const { FLIGHTDECK_SECRET } = env
+		const { flightdeckRootDir = resolve(homedir(), `services`) } = options
+		const port = options.port ?? 8080
+		const origin = `http://localhost:${port}`
 
 		const servicesEntries = toEntries(options.services)
 		this.services = fromEntries(
@@ -126,14 +128,14 @@ export class FlightDeck<S extends string = string> {
 					const authHeader = req.headers.authorization
 					try {
 						if (typeof req.url === `undefined`) throw 400
-						const expectedAuthHeader = `Bearer ${secret}`
-						if (authHeader !== `Bearer ${secret}`) {
+						const expectedAuthHeader = `Bearer ${FLIGHTDECK_SECRET}`
+						if (authHeader !== `Bearer ${FLIGHTDECK_SECRET}`) {
 							this.logger.info(
 								`Unauthorized: needed \`${expectedAuthHeader}\`, got \`${authHeader}\``,
 							)
 							throw 401
 						}
-						const url = new URL(req.url, ORIGIN)
+						const url = new URL(req.url, origin)
 						this.logger.info(req.method, url.pathname)
 						switch (req.method) {
 							case `POST`:
@@ -203,8 +205,8 @@ export class FlightDeck<S extends string = string> {
 						data = []
 					}
 				})
-		}).listen(PORT, () => {
-			this.logger.info(`Server started on port ${PORT}`)
+		}).listen(port, () => {
+			this.logger.info(`Server started on port ${port}`)
 		})
 
 		this.startAllServices()
