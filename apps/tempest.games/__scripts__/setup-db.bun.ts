@@ -14,7 +14,7 @@ console.log({
 })
 
 const osUser = os.userInfo().username
-const user = osUser === `unknown` ? `postgres` : osUser
+const user = osUser === `runner` ? `postgres` : osUser
 
 const postgresSetupCredentials = {
 	user,
