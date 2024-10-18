@@ -9,19 +9,27 @@ import postgres from "postgres"
 
 import { env } from "../src/library/env.ts"
 
-const osUser = os.userInfo().username
-const user = osUser === `unknown` ? `postgres` : osUser
+console.log({
+	env,
+})
 
-const sql = postgres({
+const osUser = os.userInfo().username
+const user = osUser === `runner` ? `postgres` : osUser
+
+const postgresSetupCredentials = {
 	user,
 	password: env.POSTGRES_PASSWORD,
 	database: `postgres`,
 	host: env.POSTGRES_HOST,
 	port: env.POSTGRES_PORT,
-})
+}
+
+console.log({ postgresSetupCredentials })
+
+const sql = postgres(postgresSetupCredentials)
 
 try {
-	process.stdout.write(`🚀 Creating database ${env.POSTGRES_DATABASE}... `)
+	console.log(`🚀 Creating database ${env.POSTGRES_DATABASE}... `)
 	await sql`CREATE DATABASE ${sql(env.POSTGRES_DATABASE)}`
 	console.log(`Done!`)
 } catch (thrown) {
@@ -31,7 +39,7 @@ try {
 }
 
 try {
-	process.stdout.write(`🚀 Creating user ${env.POSTGRES_USER}... `)
+	console.log(`🚀 Creating user ${env.POSTGRES_USER}... `)
 	await sql.unsafe(
 		`CREATE USER ${env.POSTGRES_USER} WITH PASSWORD '${env.POSTGRES_PASSWORD}'`,
 	)
@@ -43,7 +51,7 @@ try {
 }
 
 try {
-	process.stdout.write(
+	console.log(
 		`🚀 Granting privileges to ${env.POSTGRES_USER} on ${env.POSTGRES_DATABASE}... `,
 	)
 	await sql`GRANT ALL PRIVILEGES ON DATABASE ${sql(env.POSTGRES_DATABASE)} TO ${sql(
@@ -65,7 +73,7 @@ const tempest = postgres({
 	port: env.POSTGRES_PORT,
 })
 try {
-	process.stdout.write(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
+	console.log(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
 	const db = drizzle(tempest)
 	await migrate(db, {
 		migrationsFolder: resolve(import.meta.dir, `../drizzle`),
