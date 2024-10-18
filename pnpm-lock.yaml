@@ -55,10 +55,10 @@ importers:
         version: 5.6.3
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   apps/atom.io.fyi:
     dependencies:
@@ -156,13 +156,13 @@ importers:
         version: 1.1.30
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   apps/edge/viceroy-htmx:
     dependencies:
@@ -251,7 +251,7 @@ importers:
         version: 4.19.1
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   apps/node/kite:
     dependencies:
@@ -288,13 +288,13 @@ importers:
         version: 4.19.1
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   apps/tempest.games:
     dependencies:
@@ -355,7 +355,7 @@ importers:
         version: 18.3.1
       '@vitejs/plugin-react-swc':
         specifier: 3.7.1
-        version: 3.7.1(@swc/helpers@0.5.5)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 3.7.1(@swc/helpers@0.5.5)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       bun-types:
         specifier: 1.1.30
         version: 1.1.30
@@ -387,8 +387,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       sass-embedded:
-        specifier: 1.80.1
-        version: 1.80.1
+        specifier: 1.80.2
+        version: 1.80.2
       tsx:
         specifier: 4.19.1
         version: 4.19.1
@@ -403,13 +403,13 @@ importers:
         version: link:../../packages/varmint
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   apps/wayfarer.quest:
     dependencies:
@@ -483,10 +483,10 @@ importers:
         version: 4.8.0
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
 
   apps/web/smithy:
     dependencies:
@@ -544,7 +544,7 @@ importers:
         version: 18.3.11
       '@vitejs/plugin-react':
         specifier: 4.3.2
-        version: 4.3.2(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 4.3.2(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -559,16 +559,16 @@ importers:
         version: 1.80.2
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-plugin-svgr:
         specifier: 4.2.0
-        version: 4.2.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 4.2.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   apps/web/strand:
     dependencies:
@@ -623,7 +623,7 @@ importers:
         version: 7.25.7(@babel/core@7.25.7)
       '@preact/preset-vite':
         specifier: 2.9.1
-        version: 2.9.1(@babel/core@7.25.7)(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 2.9.1(@babel/core@7.25.7)(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       '@testing-library/jest-dom':
         specifier: 6.6.2
         version: 6.6.2
@@ -635,7 +635,7 @@ importers:
         version: 18.3.11
       '@vanilla-extract/vite-plugin':
         specifier: 4.0.16
-        version: 4.0.16(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 4.0.16(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -653,16 +653,16 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-plugin-svgr:
         specifier: 4.2.0
-        version: 4.2.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 4.2.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/anvl:
     devDependencies:
@@ -674,13 +674,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/atom.io:
     dependencies:
@@ -783,13 +783,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -860,7 +860,7 @@ importers:
         version: 8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.6))(@swc/core@1.7.26(@swc/helpers@0.5.5))(jiti@2.3.3)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/flightdeck:
     dependencies:
@@ -897,7 +897,7 @@ importers:
         version: 8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.6))(@swc/core@1.7.26(@swc/helpers@0.5.5))(jiti@2.3.3)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/hamr:
     dependencies:
@@ -934,7 +934,7 @@ importers:
         version: 18.3.11
       '@vitejs/plugin-react':
         specifier: 4.3.2
-        version: 4.3.2(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 4.3.2(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -976,13 +976,13 @@ importers:
         version: 5.6.3
       vite-plugin-dts:
         specifier: 4.2.4
-        version: 4.2.4(@types/node@22.7.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 4.2.4(@types/node@22.7.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/ingt:
     dependencies:
@@ -1004,13 +1004,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/luum:
     devDependencies:
@@ -1025,13 +1025,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/occlusion:
     dependencies:
@@ -1053,13 +1053,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/rationality:
     devDependencies:
@@ -1074,13 +1074,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/rel8:
     devDependencies:
@@ -1098,13 +1098,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/socket-io.filestore:
     dependencies:
@@ -1141,13 +1141,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/socket-io.git:
     dependencies:
@@ -1190,13 +1190,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/treetrunks:
     devDependencies:
@@ -1211,7 +1211,7 @@ importers:
         version: 8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.6))(@swc/core@1.7.26(@swc/helpers@0.5.5))(jiti@2.3.3)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   packages/tsdoc.json:
     dependencies:
@@ -1272,10 +1272,10 @@ importers:
         version: 8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.6))(@swc/core@1.7.26(@swc/helpers@0.5.5))(jiti@2.3.3)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)
       vite:
         specifier: 5.4.9
-        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+        version: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -7200,128 +7200,128 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sass-embedded-android-arm64@1.80.1:
-    resolution: {integrity: sha512-AjWjEtyvOLs9fIVvR2mHtRy2/OB/IzUGBYjOqGozU2BUC6acnuRmqLrKwprmZxTL7DDgQRoT/gtoo9wdtHHoEg==}
+  sass-embedded-android-arm64@1.80.2:
+    resolution: {integrity: sha512-8s9q2ZKYgMk1TOgE/tsJ7gFNM0JmsohfuEisDD5sT8RI4QUtMQhu2iKhtPgqRtQUluYg4fZ2QtLDkXt6fhyG3g==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [android]
 
-  sass-embedded-android-arm@1.80.1:
-    resolution: {integrity: sha512-XvUHgUN98IZFu7tb1xc15Q/VdtaYXUnkse1n4xHQSohIOzm0TytJDmUpSkMAEFFd+iBQBxyWc40rj6IPXQH/RA==}
+  sass-embedded-android-arm@1.80.2:
+    resolution: {integrity: sha512-NfZpB1sVrksvF2QWUNmLE0yA1g4/lMIiBNiKZN7Kph3wKGbJfCNY6SjPrvR+Wa5q2SLgLpJw+l9/ZtJy537oBA==}
     engines: {node: '>=14.0.0'}
     cpu: [arm]
     os: [android]
 
-  sass-embedded-android-ia32@1.80.1:
-    resolution: {integrity: sha512-gzrlN2juF8F09zS3JqTBnc7Fq7ydIkXHeR8z4XVVpy2PTDLqOM0+HyVTJGOdRgJFWmMkl7BzD5c+pl8pW/EI7Q==}
+  sass-embedded-android-ia32@1.80.2:
+    resolution: {integrity: sha512-FB09M5YxFbKQn/La1wQDF/oCXFN1JOem13YN2YjcfJazUfCeRx4PBFde2oNpMuuRxadG3Bk9C+MFwUeJDlcoow==}
     engines: {node: '>=14.0.0'}
     cpu: [ia32]
     os: [android]
 
-  sass-embedded-android-riscv64@1.80.1:
-    resolution: {integrity: sha512-pFivqYfibQlno2Uc6I/YVeCFDpr4ltvv1mcIHQ0IL0u4+PqxKJXONGBOcRMAPFEQKDEiIUDml40HB+i5q9PUhg==}
+  sass-embedded-android-riscv64@1.80.2:
+    resolution: {integrity: sha512-8Fu4PQNz2WcQ1Ic1PiX6c8aFIGNWZm7cI8WIvnBrZu/U0Rd4VbvQkxG+1VTtwz7tDAIXqQC1WupySicn3+v15g==}
     engines: {node: '>=14.0.0'}
     cpu: [riscv64]
     os: [android]
 
-  sass-embedded-android-x64@1.80.1:
-    resolution: {integrity: sha512-v4wHQ/bNV/s/ZWe3eYkkW8cEUao0woW5EBIzRZLtY0MOdIPnomum8uH+rRP3YGOQrawegjiDP8O9Fb+nhWYXVw==}
+  sass-embedded-android-x64@1.80.2:
+    resolution: {integrity: sha512-iutMegquKDuZSs0EZwGDAcUbIsh37JjgZs0rucBJieqJjZY3/3cuewAWWhMXcnLLNbdq98G5ka+c7FjHxwR1sw==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [android]
 
-  sass-embedded-darwin-arm64@1.80.1:
-    resolution: {integrity: sha512-CcY0FfzrnEkmWWevTEaEfZTRzWGHpz3aGFqNoRmkqrWrZYdiRqnr6PFHQJLugM76IoX1SfU2r8lXz25WKOzEBw==}
+  sass-embedded-darwin-arm64@1.80.2:
+    resolution: {integrity: sha512-mYatMle8CJc5WRV6EopgYukjvuF/Q3OlKdz+ObFsJ0i3D/sVUYJMva7lB4SlXDhGBdZt/ge6uCU5WZ69SV7VFw==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [darwin]
 
-  sass-embedded-darwin-x64@1.80.1:
-    resolution: {integrity: sha512-kaoww70nI8/7dCGRY4JTMEZYGTxBvqGZni1CWhBOZBTE/w1GH+1z6XGw7klVzGyw0Ysxms+abAMd8fVdCzUTzg==}
+  sass-embedded-darwin-x64@1.80.2:
+    resolution: {integrity: sha512-8S67h8CFJwjs+bAFdvrE4zIEcBnsZpfCNiKRcEp3Gdnu+B1D0ft2Wh1Vzv0hoWTw/WU5VwABG2dUf37bZfyLdg==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [darwin]
 
-  sass-embedded-linux-arm64@1.80.1:
-    resolution: {integrity: sha512-jEn24I5MaVMgj6Tb3EzkIxIoKVvTE1lr0021N5Tv5zeG7cZCPrRO5+JplQnmwMm3i22PqYvJjhSCJ18URJPqrQ==}
+  sass-embedded-linux-arm64@1.80.2:
+    resolution: {integrity: sha512-CenqW3ZeLh8ecsKNTDkJFkCbK51tukFv8L8e8Fj60dbn5Ph2Pe4Zq+LWRWvwfYVtZ2Eh+KRBFd+bwKRrBHVmyg==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [linux]
 
-  sass-embedded-linux-arm@1.80.1:
-    resolution: {integrity: sha512-6WGgcO/3bw8s2yB0TP6V4S3tCTq94bhGiSM93Xw8mr0cVPxR/VoUBeIvGdAmRKBmJiGlcJcdAbNcLGtyr7eF6w==}
+  sass-embedded-linux-arm@1.80.2:
+    resolution: {integrity: sha512-LKLJ0tRPIuqwucqIUgZ4XOKXnuhFkXqG5XKelz+pHqJG0Q+afrgkQepWnRaoE6dvvCTSQMq9WOrRozq7qYhIPQ==}
     engines: {node: '>=14.0.0'}
     cpu: [arm]
     os: [linux]
 
-  sass-embedded-linux-ia32@1.80.1:
-    resolution: {integrity: sha512-EXjSErbGxlpRWfro1fjqTACA6y/AN39LeqyL9FdM7ImGozpHbTllMkciM7wj8mZ0Rk8XLDMnvB53kYfgnjtzRA==}
+  sass-embedded-linux-ia32@1.80.2:
+    resolution: {integrity: sha512-DqtRsnRnQPkKvu8zWGfkTF/f4YXnwL81Eej2i+wNWObcx3ykpnuSLda5d96K2G77wJyIblkm/fFl+4770uqROg==}
     engines: {node: '>=14.0.0'}
     cpu: [ia32]
     os: [linux]
 
-  sass-embedded-linux-musl-arm64@1.80.1:
-    resolution: {integrity: sha512-uONMRDG1VgZYoyezncPw8i8T93qUyIoNAGoKGO2ZnuAtXwjBGWtEAdN5Xf2LnmJTyTFlLHDUZs8OHLTA958oVg==}
+  sass-embedded-linux-musl-arm64@1.80.2:
+    resolution: {integrity: sha512-8PBJ7BWlJ3WUIszu7GwUaymcsh7/0j30mdgzIwjQ9pZ02T+HCswqmCxP4NYoXdt39DHRml73XsmFV+1u0F0YdA==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [linux]
 
-  sass-embedded-linux-musl-arm@1.80.1:
-    resolution: {integrity: sha512-XR75p54m/NLKEcFMfUacqDTcbjr0gB1KaVwCoTsk3knbtcDfQDJNVnp5A48gu32yZXcDpGjNX+g8pUzQrKof3g==}
+  sass-embedded-linux-musl-arm@1.80.2:
+    resolution: {integrity: sha512-+vn43xUfFHZ5/yl1mwVePsscj9joTP6cafUaMViQyxNqQ867HI41fV1ffPz5g98GLExvWu8c5P3owZ5igl6mzQ==}
     engines: {node: '>=14.0.0'}
     cpu: [arm]
     os: [linux]
 
-  sass-embedded-linux-musl-ia32@1.80.1:
-    resolution: {integrity: sha512-4/2UUcSXxmvlr/HlOwa9m/DcljNFs1pcuoIAlY53f1WCd1JYGrqPUqlqGYGHCV9wuRHs1Pi1FHSBXAezyg3++w==}
+  sass-embedded-linux-musl-ia32@1.80.2:
+    resolution: {integrity: sha512-m6JYl+DOwM2N2XJZ12ZqjE1WqQgb8PvaQiiMcMr4AovwYBIiSKTdkUOJ3MDB9bXNxUtNz70XByGhjP+ypdssfQ==}
     engines: {node: '>=14.0.0'}
     cpu: [ia32]
     os: [linux]
 
-  sass-embedded-linux-musl-riscv64@1.80.1:
-    resolution: {integrity: sha512-wrh98HrCQQIVI12P3NkeGFTRrK6SuIDUHsYrumK3yCR8GdYIjbt8/Ij3nvrkTTrh03/1dNJIAYi/2svAFenJoQ==}
+  sass-embedded-linux-musl-riscv64@1.80.2:
+    resolution: {integrity: sha512-6kNWpVkG7qqIA7sM4E17mnRSroIS45MG2i1dZ7/VcxpTwHaSGY9VUUw9pfKSUqa9/mlxO9Y7ayT2d4VbTAcqHA==}
     engines: {node: '>=14.0.0'}
     cpu: [riscv64]
     os: [linux]
 
-  sass-embedded-linux-musl-x64@1.80.1:
-    resolution: {integrity: sha512-JOF/SjJYY5rEjyozS0sTRiIqIDZKFaZiBfJYP/z9yU7VHT9cd6XAxQ2iOkGSNO7cWInSFSit1kmSK50k3Ghm9A==}
+  sass-embedded-linux-musl-x64@1.80.2:
+    resolution: {integrity: sha512-Fpb2aIwUvA6hFk3PQY1JjumoOL0GzXqHX1rDi2V9YXO480/PbDWg9ZfC1SOUzanwM50Dt5a3pukYff0jd6yqXA==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [linux]
 
-  sass-embedded-linux-riscv64@1.80.1:
-    resolution: {integrity: sha512-DSX54EubX7Jh00J/hQO8L3WXQ1ynTm0K06GE/iildyy7nxjvF2KUkWKZDLKv56pLwevcRZR1iLXkdJUG92GWyg==}
+  sass-embedded-linux-riscv64@1.80.2:
+    resolution: {integrity: sha512-O7YYDEMs6mTeUOv5TWqFeuH76sCLB+xqatZTgN1faen8uBLA7O6HeJa7caR8nMg6+xEE9TQQatCYDfNr6BRJIQ==}
     engines: {node: '>=14.0.0'}
     cpu: [riscv64]
     os: [linux]
 
-  sass-embedded-linux-x64@1.80.1:
-    resolution: {integrity: sha512-v/5UDLV7+g1x8EwfIMYAADfWL5aiuxjP+4hW/arMEU9DaXPofymvZOnpLhylYyVduIDAMsj4BgIn9g0vA5ErQw==}
+  sass-embedded-linux-x64@1.80.2:
+    resolution: {integrity: sha512-XcsHQN/X8dsAMOD7HY05diHjMVVhym/OpDCQRqY7AvJBXbJwURQAc84W5fVCEFjS6KUmV7ovGMb83VcDf7/huA==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [linux]
 
-  sass-embedded-win32-arm64@1.80.1:
-    resolution: {integrity: sha512-81f+X4sIsiQS8ynpYH0sARA0st1LzTuM88OU18Th19oNblSWcaXSQ8lxljwzNPvHcWx/FLPdgIoGW1Wzx3MeoA==}
+  sass-embedded-win32-arm64@1.80.2:
+    resolution: {integrity: sha512-OIRbUwc1Kzz8rfYlUl2ISExx31NMEDConfbUHcPI/UtKRT3bp3aQ31tjSvL/flnCTMkFgUf974xFaxgaz1WneQ==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [win32]
 
-  sass-embedded-win32-ia32@1.80.1:
-    resolution: {integrity: sha512-VYSQyySBj3excFUytRBXjAHww75810+dOYFcBkSRupx04nCQwQm0avYqcjQfYl+eNzS4oNeEAQvhTRk8HHNDGg==}
+  sass-embedded-win32-ia32@1.80.2:
+    resolution: {integrity: sha512-DY80FibfxYv0an/EVTNJ8tgy0sMSATPHBVEXK4PQxMJ+74wWpplESUsU8BUjeIsAvURuCH2uco6iFvM7/yVOJw==}
     engines: {node: '>=14.0.0'}
     cpu: [ia32]
     os: [win32]
 
-  sass-embedded-win32-x64@1.80.1:
-    resolution: {integrity: sha512-EtrqZckPgVSGH/rQxY7jdcX3wqltS1uzp2YEV7VAn27iwoDwThTmslQgpfWUFLVyaIjqgUjx58GJkHu020J19g==}
+  sass-embedded-win32-x64@1.80.2:
+    resolution: {integrity: sha512-GCgKYyNGDPAZMScQU3LI7IndBCwQMrnAuZjAWZLNi3j9HEcEVjYt5gTRyc4XTPALi76XpJEVzTL0tjt+87llOQ==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [win32]
 
-  sass-embedded@1.80.1:
-    resolution: {integrity: sha512-FQiaiA2Bc1a3/nXdl9cAz19cKKcW5uU+k1JUWx5Tt1UcSYmV0B+5V0GDHwtyF7UeCuoBMRl3B3LxQ6n317HLYQ==}
+  sass-embedded@1.80.2:
+    resolution: {integrity: sha512-L0Ny0m0C4B3Lz+h/2I4w9jJVkvSqgU4EAsqUhBlaf8iWaR67f1k/jI1CmtXfW39eiYb7TV/JWaDEWGQxlwremQ==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
@@ -10384,13 +10384,13 @@ snapshots:
     dependencies:
       preact: 10.24.3
 
-  '@preact/preset-vite@2.9.1(@babel/core@7.25.7)(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))':
+  '@preact/preset-vite@2.9.1(@babel/core@7.25.7)(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))':
     dependencies:
       '@babel/code-frame': 7.25.7
       '@babel/core': 7.25.7
       '@babel/plugin-transform-react-jsx': 7.25.7(@babel/core@7.25.7)
       '@babel/plugin-transform-react-jsx-development': 7.25.7(@babel/core@7.25.7)
-      '@prefresh/vite': 2.4.6(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+      '@prefresh/vite': 2.4.6(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.25.7)
       debug: 4.3.7(supports-color@5.5.0)
@@ -10399,7 +10399,7 @@ snapshots:
       node-html-parser: 6.1.13
       source-map: 0.7.4
       stack-trace: 1.0.0-pre2
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -10412,7 +10412,7 @@ snapshots:
 
   '@prefresh/utils@1.2.0': {}
 
-  '@prefresh/vite@2.4.6(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))':
+  '@prefresh/vite@2.4.6(preact@10.24.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))':
     dependencies:
       '@babel/core': 7.25.7
       '@prefresh/babel-plugin': 0.5.1
@@ -10420,7 +10420,7 @@ snapshots:
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
       preact: 10.24.3
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -11143,7 +11143,7 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  '@vanilla-extract/integration@7.1.10(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)':
+  '@vanilla-extract/integration@7.1.10(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)':
     dependencies:
       '@babel/core': 7.25.7
       '@babel/plugin-syntax-typescript': 7.25.7(@babel/core@7.25.7)
@@ -11155,8 +11155,8 @@ snapshots:
       find-up: 5.0.0
       javascript-stringify: 2.1.0
       mlly: 1.7.1
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
-      vite-node: 1.6.0(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
+      vite-node: 1.6.0(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -11171,10 +11171,10 @@ snapshots:
 
   '@vanilla-extract/private@1.0.6': {}
 
-  '@vanilla-extract/vite-plugin@4.0.16(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))':
+  '@vanilla-extract/vite-plugin@4.0.16(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))':
     dependencies:
-      '@vanilla-extract/integration': 7.1.10(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      '@vanilla-extract/integration': 7.1.10(@types/node@22.7.6)(babel-plugin-macros@3.1.0)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -11199,21 +11199,21 @@ snapshots:
       next: 14.2.15(@babel/core@7.25.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.80.2)
       react: 18.3.1
 
-  '@vitejs/plugin-react-swc@3.7.1(@swc/helpers@0.5.5)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))':
+  '@vitejs/plugin-react-swc@3.7.1(@swc/helpers@0.5.5)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))':
     dependencies:
       '@swc/core': 1.7.26(@swc/helpers@0.5.5)
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@4.3.2(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))':
+  '@vitejs/plugin-react@4.3.2(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))':
     dependencies:
       '@babel/core': 7.25.7
       '@babel/plugin-transform-react-jsx-self': 7.25.7(@babel/core@7.25.7)
       '@babel/plugin-transform-react-jsx-source': 7.25.7(@babel/core@7.25.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -11231,7 +11231,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vitest: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -11242,13 +11242,13 @@ snapshots:
       chai: 5.1.1
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.3(@vitest/spy@2.1.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))':
+  '@vitest/mocker@2.1.3(@vitest/spy@2.1.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))':
     dependencies:
       '@vitest/spy': 2.1.3
       estree-walker: 3.0.3
       magic-string: 0.30.12
     optionalDependencies:
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   '@vitest/pretty-format@2.1.3':
     dependencies:
@@ -11278,7 +11278,7 @@ snapshots:
       sirv: 2.0.4
       tinyglobby: 0.2.9
       tinyrainbow: 1.2.0
-      vitest: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vitest: 2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
 
   '@vitest/utils@2.1.3':
     dependencies:
@@ -14932,67 +14932,67 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sass-embedded-android-arm64@1.80.1:
+  sass-embedded-android-arm64@1.80.2:
     optional: true
 
-  sass-embedded-android-arm@1.80.1:
+  sass-embedded-android-arm@1.80.2:
     optional: true
 
-  sass-embedded-android-ia32@1.80.1:
+  sass-embedded-android-ia32@1.80.2:
     optional: true
 
-  sass-embedded-android-riscv64@1.80.1:
+  sass-embedded-android-riscv64@1.80.2:
     optional: true
 
-  sass-embedded-android-x64@1.80.1:
+  sass-embedded-android-x64@1.80.2:
     optional: true
 
-  sass-embedded-darwin-arm64@1.80.1:
+  sass-embedded-darwin-arm64@1.80.2:
     optional: true
 
-  sass-embedded-darwin-x64@1.80.1:
+  sass-embedded-darwin-x64@1.80.2:
     optional: true
 
-  sass-embedded-linux-arm64@1.80.1:
+  sass-embedded-linux-arm64@1.80.2:
     optional: true
 
-  sass-embedded-linux-arm@1.80.1:
+  sass-embedded-linux-arm@1.80.2:
     optional: true
 
-  sass-embedded-linux-ia32@1.80.1:
+  sass-embedded-linux-ia32@1.80.2:
     optional: true
 
-  sass-embedded-linux-musl-arm64@1.80.1:
+  sass-embedded-linux-musl-arm64@1.80.2:
     optional: true
 
-  sass-embedded-linux-musl-arm@1.80.1:
+  sass-embedded-linux-musl-arm@1.80.2:
     optional: true
 
-  sass-embedded-linux-musl-ia32@1.80.1:
+  sass-embedded-linux-musl-ia32@1.80.2:
     optional: true
 
-  sass-embedded-linux-musl-riscv64@1.80.1:
+  sass-embedded-linux-musl-riscv64@1.80.2:
     optional: true
 
-  sass-embedded-linux-musl-x64@1.80.1:
+  sass-embedded-linux-musl-x64@1.80.2:
     optional: true
 
-  sass-embedded-linux-riscv64@1.80.1:
+  sass-embedded-linux-riscv64@1.80.2:
     optional: true
 
-  sass-embedded-linux-x64@1.80.1:
+  sass-embedded-linux-x64@1.80.2:
     optional: true
 
-  sass-embedded-win32-arm64@1.80.1:
+  sass-embedded-win32-arm64@1.80.2:
     optional: true
 
-  sass-embedded-win32-ia32@1.80.1:
+  sass-embedded-win32-ia32@1.80.2:
     optional: true
 
-  sass-embedded-win32-x64@1.80.1:
+  sass-embedded-win32-x64@1.80.2:
     optional: true
 
-  sass-embedded@1.80.1:
+  sass-embedded@1.80.2:
     dependencies:
       '@bufbuild/protobuf': 2.1.0
       buffer-builder: 0.2.0
@@ -15002,26 +15002,26 @@ snapshots:
       supports-color: 8.1.1
       varint: 6.0.0
     optionalDependencies:
-      sass-embedded-android-arm: 1.80.1
-      sass-embedded-android-arm64: 1.80.1
-      sass-embedded-android-ia32: 1.80.1
-      sass-embedded-android-riscv64: 1.80.1
-      sass-embedded-android-x64: 1.80.1
-      sass-embedded-darwin-arm64: 1.80.1
-      sass-embedded-darwin-x64: 1.80.1
-      sass-embedded-linux-arm: 1.80.1
-      sass-embedded-linux-arm64: 1.80.1
-      sass-embedded-linux-ia32: 1.80.1
-      sass-embedded-linux-musl-arm: 1.80.1
-      sass-embedded-linux-musl-arm64: 1.80.1
-      sass-embedded-linux-musl-ia32: 1.80.1
-      sass-embedded-linux-musl-riscv64: 1.80.1
-      sass-embedded-linux-musl-x64: 1.80.1
-      sass-embedded-linux-riscv64: 1.80.1
-      sass-embedded-linux-x64: 1.80.1
-      sass-embedded-win32-arm64: 1.80.1
-      sass-embedded-win32-ia32: 1.80.1
-      sass-embedded-win32-x64: 1.80.1
+      sass-embedded-android-arm: 1.80.2
+      sass-embedded-android-arm64: 1.80.2
+      sass-embedded-android-ia32: 1.80.2
+      sass-embedded-android-riscv64: 1.80.2
+      sass-embedded-android-x64: 1.80.2
+      sass-embedded-darwin-arm64: 1.80.2
+      sass-embedded-darwin-x64: 1.80.2
+      sass-embedded-linux-arm: 1.80.2
+      sass-embedded-linux-arm64: 1.80.2
+      sass-embedded-linux-ia32: 1.80.2
+      sass-embedded-linux-musl-arm: 1.80.2
+      sass-embedded-linux-musl-arm64: 1.80.2
+      sass-embedded-linux-musl-ia32: 1.80.2
+      sass-embedded-linux-musl-riscv64: 1.80.2
+      sass-embedded-linux-musl-x64: 1.80.2
+      sass-embedded-linux-riscv64: 1.80.2
+      sass-embedded-linux-x64: 1.80.2
+      sass-embedded-win32-arm64: 1.80.2
+      sass-embedded-win32-ia32: 1.80.2
+      sass-embedded-win32-x64: 1.80.2
 
   sass@1.80.2:
     dependencies:
@@ -15782,13 +15782,13 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite-node@1.6.0(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1):
+  vite-node@1.6.0(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1):
     dependencies:
       cac: 6.7.14
       debug: 4.3.7(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.1.0
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -15800,12 +15800,12 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@2.1.3(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1):
+  vite-node@2.1.3(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1):
     dependencies:
       cac: 6.7.14
       debug: 4.3.7(supports-color@5.5.0)
       pathe: 1.1.2
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -15817,7 +15817,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@4.2.4(@types/node@22.7.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)):
+  vite-plugin-dts@4.2.4(@types/node@22.7.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)):
     dependencies:
       '@microsoft/api-extractor': 7.47.7(@types/node@22.7.6)
       '@rollup/pluginutils': 5.1.2(rollup@4.24.0)
@@ -15830,35 +15830,35 @@ snapshots:
       magic-string: 0.30.11
       typescript: 5.6.3
     optionalDependencies:
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-plugin-svgr@4.2.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)):
+  vite-plugin-svgr@4.2.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)):
     dependencies:
       '@rollup/pluginutils': 5.1.2(rollup@4.24.0)
       '@svgr/core': 8.1.0(typescript@5.6.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.6.3))
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - rollup
       - supports-color
       - typescript
 
-  vite-tsconfig-paths@5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)):
+  vite-tsconfig-paths@5.0.1(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)):
     dependencies:
       debug: 4.3.7(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.1.3(typescript@5.6.3)
     optionalDependencies:
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1):
+  vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
@@ -15868,13 +15868,13 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.27.0
       sass: 1.80.2
-      sass-embedded: 1.80.1
+      sass-embedded: 1.80.2
       terser: 5.34.1
 
-  vitest@2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1):
+  vitest@2.1.3(@types/node@22.7.6)(@vitest/ui@2.1.3)(happy-dom@15.7.4)(jsdom@25.0.1)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1):
     dependencies:
       '@vitest/expect': 2.1.3
-      '@vitest/mocker': 2.1.3(@vitest/spy@2.1.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1))
+      '@vitest/mocker': 2.1.3(@vitest/spy@2.1.3)(vite@5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1))
       '@vitest/pretty-format': 2.1.3
       '@vitest/runner': 2.1.3
       '@vitest/snapshot': 2.1.3
@@ -15889,8 +15889,8 @@ snapshots:
       tinyexec: 0.3.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
-      vite-node: 2.1.3(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.1)(sass@1.80.2)(terser@5.34.1)
+      vite: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
+      vite-node: 2.1.3(@types/node@22.7.6)(lightningcss@1.27.0)(sass-embedded@1.80.2)(sass@1.80.2)(terser@5.34.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.7.6
