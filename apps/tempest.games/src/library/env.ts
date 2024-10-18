@@ -1,13 +1,18 @@
 import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
 
-const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
-const HAS_WINDOW = typeof window !== `undefined`
+export const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
+export const HAS_WINDOW = typeof window !== `undefined`
+export const IS_TEST = `vitest` in globalThis
 
 export const env = createEnv({
 	isServer: !BUILDING_WITH_VITE && !HAS_WINDOW,
 
 	server: {
+		CI: z
+			.string()
+			.transform((_) => true as const)
+			.optional(),
 		POSTGRES_USER: z.string(),
 		POSTGRES_PASSWORD: z.string(),
 		POSTGRES_DATABASE: z.string(),
@@ -21,9 +26,7 @@ export const env = createEnv({
 		FRONTEND_PORT: z.string().transform((s) => Number.parseInt(s, 10)),
 		FRONTEND_ORIGINS: z
 			.string()
-			// transform to array
 			.transform((s) => JSON.parse(s))
-			// make sure transform worked
 			.pipe(z.array(z.string())),
 		OPENAI_API_KEY: z.string().optional(),
 	},
