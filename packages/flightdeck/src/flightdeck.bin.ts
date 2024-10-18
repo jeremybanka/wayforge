@@ -3,7 +3,7 @@
 import * as path from "node:path"
 
 import type { OptionsGroup } from "comline"
-import { cli, optional, parseArrayOption } from "comline"
+import { cli, optional, parseNumberOption } from "comline"
 import { z } from "zod"
 
 import type { FlightDeckOptions } from "./flightdeck.lib"
@@ -11,7 +11,7 @@ import { FlightDeck } from "./flightdeck.lib"
 
 const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
-		secret: z.string(),
+		port: z.number().optional(),
 		packageName: z.string(),
 		services: z.record(z.object({ run: z.string(), waitFor: z.boolean() })),
 		flightdeckRootDir: z.string(),
@@ -21,14 +21,15 @@ const FLIGHTDECK_MANUAL = {
 		}),
 	}),
 	options: {
-		secret: {
-			flag: `x`,
-			required: true,
-			description: `Secret used to authenticate with the service.`,
-			example: `--secret=\"secret\"`,
+		port: {
+			flag: `p`,
+			required: false,
+			description: `Port to run the flightdeck server on.`,
+			example: `--port=8080`,
+			parse: parseNumberOption,
 		},
 		packageName: {
-			flag: `p`,
+			flag: `n`,
 			required: true,
 			description: `Name of the package.`,
 			example: `--packageName=\"my-app\"`,

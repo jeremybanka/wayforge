@@ -26,7 +26,7 @@ describe(`FlightDeck`, () => {
 	it(`should start a service and keep it up to date`, async () => {
 		let version = 0
 		flightDeck = new FlightDeck({
-			secret: `secret`,
+			port: 8080,
 			packageName: `my-app`,
 			services: {
 				frontend: { run: `./frontend 7777`, waitFor: false },

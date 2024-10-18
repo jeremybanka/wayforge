@@ -9,19 +9,19 @@ import { Future } from "atom.io/internal"
 import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 
+import { env } from "./flightdeck.env"
+
 export type FlightDeckOptions<S extends string = string> = {
-	secret: string
 	packageName: string
 	services: { [service in S]: { run: string; waitFor: boolean } }
 	scripts: {
 		download: string
 		install: string
 	}
+	port?: number | undefined
 	flightdeckRootDir?: string | undefined
 }
 
-const PORT = process.env.PORT ?? 8080
-const ORIGIN = `http://localhost:${PORT}`
 export class FlightDeck<S extends string = string> {
 	protected safety = 0
 
@@ -52,8 +52,10 @@ export class FlightDeck<S extends string = string> {
 	protected persistentStateDir: string
 
 	public constructor(public readonly options: FlightDeckOptions<S>) {
-		const { secret, flightdeckRootDir = resolve(homedir(), `services`) } =
-			options
+		const { FLIGHTDECK_SECRET } = env
+		const { flightdeckRootDir = resolve(homedir(), `services`) } = options
+		const port = options.port ?? 8080
+		const origin = `http://localhost:${port}`
 
 		const servicesEntries = toEntries(options.services)
 		this.services = fromEntries(
@@ -116,96 +118,102 @@ export class FlightDeck<S extends string = string> {
 			mkdirSync(this.persistentStateDir, { recursive: true })
 		}
 
-		createServer((req, res) => {
-			let data: Uint8Array[] = []
-			req
-				.on(`data`, (chunk) => {
-					data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
-				})
-				.on(`end`, () => {
-					const authHeader = req.headers.authorization
-					try {
-						if (typeof req.url === `undefined`) throw 400
-						const expectedAuthHeader = `Bearer ${secret}`
-						if (authHeader !== `Bearer ${secret}`) {
-							this.logger.info(
-								`Unauthorized: needed \`${expectedAuthHeader}\`, got \`${authHeader}\``,
-							)
-							throw 401
-						}
-						const url = new URL(req.url, ORIGIN)
-						this.logger.info(req.method, url.pathname)
-						switch (req.method) {
-							case `POST`:
-								{
-									switch (url.pathname) {
-										case `/`:
-											{
-												res.writeHead(200)
-												res.end()
-												const installFile = resolve(
-													this.persistentStateDir,
-													`install`,
-												)
-												const readyFile = resolve(
-													this.persistentStateDir,
-													`ready`,
-												)
-												if (!existsSync(installFile)) {
-													this.logger.info(
-														`Install file does not exist yet. Creating...`,
+		if (FLIGHTDECK_SECRET === undefined) {
+			this.logger.warn(
+				`No FLIGHTDECK_SECRET environment variable found. FlightDeck will not run an update server.`,
+			)
+		} else {
+			createServer((req, res) => {
+				let data: Uint8Array[] = []
+				req
+					.on(`data`, (chunk) => {
+						data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
+					})
+					.on(`end`, () => {
+						const authHeader = req.headers.authorization
+						try {
+							if (typeof req.url === `undefined`) throw 400
+							const expectedAuthHeader = `Bearer ${FLIGHTDECK_SECRET}`
+							if (authHeader !== `Bearer ${FLIGHTDECK_SECRET}`) {
+								this.logger.info(
+									`Unauthorized: needed \`${expectedAuthHeader}\`, got \`${authHeader}\``,
+								)
+								throw 401
+							}
+							const url = new URL(req.url, origin)
+							this.logger.info(req.method, url.pathname)
+							switch (req.method) {
+								case `POST`:
+									{
+										switch (url.pathname) {
+											case `/`:
+												{
+													res.writeHead(200)
+													res.end()
+													const installFile = resolve(
+														this.persistentStateDir,
+														`install`,
 													)
-													writeFileSync(installFile, ``)
-												}
-												if (existsSync(readyFile)) {
-													this.logger.info(`Ready file exists. Removing...`)
-													rmSync(readyFile)
-												}
-												this.getLatestRelease()
-												if (
-													toEntries(this.servicesReadyToUpdate).every(
-														([, isReady]) => isReady,
+													const readyFile = resolve(
+														this.persistentStateDir,
+														`ready`,
 													)
-												) {
-													this.logger.info(`All services are ready to update!`)
-													this.stopAllServices()
-													return
-												}
-												for (const entry of toEntries(this.services)) {
-													const [serviceName, service] = entry
-													if (service) {
-														if (this.options.services[serviceName].waitFor) {
-															service.emit(`updatesReady`)
+													if (!existsSync(installFile)) {
+														this.logger.info(
+															`Install file does not exist yet. Creating...`,
+														)
+														writeFileSync(installFile, ``)
+													}
+													if (existsSync(readyFile)) {
+														this.logger.info(`Ready file exists. Removing...`)
+														rmSync(readyFile)
+													}
+													this.getLatestRelease()
+													if (
+														toEntries(this.servicesReadyToUpdate).every(
+															([, isReady]) => isReady,
+														)
+													) {
+														this.logger.info(`All services are ready to update!`)
+														this.stopAllServices()
+														return
+													}
+													for (const entry of toEntries(this.services)) {
+														const [serviceName, service] = entry
+														if (service) {
+															if (this.options.services[serviceName].waitFor) {
+																service.emit(`updatesReady`)
+															}
+														} else {
+															this.startService(serviceName)
 														}
-													} else {
-														this.startService(serviceName)
 													}
 												}
-											}
-											break
+												break
 
-										default:
-											throw 404
+											default:
+												throw 404
+										}
 									}
-								}
-								break
+									break
 
-							default:
-								throw 405
+								default:
+									throw 405
+							}
+						} catch (thrown) {
+							this.logger.error(thrown, req.url)
+							if (typeof thrown === `number`) {
+								res.writeHead(thrown)
+								res.end()
+							}
+						} finally {
+							data = []
 						}
-					} catch (thrown) {
-						this.logger.error(thrown, req.url)
-						if (typeof thrown === `number`) {
-							res.writeHead(thrown)
-							res.end()
-						}
-					} finally {
-						data = []
-					}
-				})
-		}).listen(PORT, () => {
-			this.logger.info(`Server started on port ${PORT}`)
-		})
+					})
+			}).listen(port, () => {
+				this.logger.info(`Server started on port ${port}`)
+			})
+		}
 
 		this.startAllServices()
 	}
