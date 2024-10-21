@@ -1,7 +1,7 @@
 import nextMDX from "@next/mdx"
+import type { NextConfig } from "next"
 import rehypeSlug from "rehype-slug"
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
 	distDir: `dist`,
 	pageExtensions: [`ts`, `tsx`, `js`, `jsx`, `md`, `mdx`],
@@ -12,16 +12,13 @@ const nextConfig = {
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
-}
+} satisfies NextConfig
 
-/** @type {import('@next/mdx').withMDX} */
 const withMDX = nextMDX({
 	extension: /\.mdx?$/,
 	options: {
 		rehypePlugins: [rehypeSlug],
 	},
-	// experimental: {
-	//   mdxRs: true,
-	// }
 })
+
 export default withMDX(nextConfig)
