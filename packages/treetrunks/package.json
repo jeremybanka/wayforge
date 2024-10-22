@@ -1,6 +1,6 @@
 {
 	"name": "treetrunks",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"license": "MIT",
 	"author": {
 		"name": "Jeremy Banka",
@@ -10,7 +10,10 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"main": "dist/treetrunks.js",
 	"scripts": {
 		"build:js": "bun build --outdir dist -- src/treetrunks.ts",
