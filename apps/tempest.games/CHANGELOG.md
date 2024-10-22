@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.1.8
+
+### Patch Changes
+
+- d191b75: 💄 Improved styles on mobile.
+- Updated dependencies [d191b75]
+  - treetrunks@0.0.2
+
 ## 0.1.7
 
 ### Patch Changes
