@@ -64,7 +64,7 @@ function createServer(requestListener: RequestListener) {
 	if (httpsDev) {
 		return createSecureServer(httpsDev, requestListener)
 	}
-	return createHttpServer(requestListener)
+	return createHttpServer({}, requestListener)
 }
 
 const httpServer = createServer((req, res) => {
@@ -109,6 +109,7 @@ const httpServer = createServer((req, res) => {
 										return
 									}
 									const { username, password, email } = parsed.data
+									logger.info(`🔑 attempting to sign up: ${username}`)
 									const maybeUser = await db.drizzle.query.users.findFirst({
 										columns: { id: true },
 										where: eq(users.email, email),
@@ -127,6 +128,7 @@ const httpServer = createServer((req, res) => {
 										salt,
 										createdIp: ipAddress,
 									})
+									logger.info(`🔑 user created: ${username}`)
 									res.writeHead(201, {
 										"Content-Type": `text/plain`,
 										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,

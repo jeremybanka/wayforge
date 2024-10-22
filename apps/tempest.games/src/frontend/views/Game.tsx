@@ -1,9 +1,10 @@
 import { runTransaction } from "atom.io"
+import { toEntries } from "atom.io/json"
 import { useO } from "atom.io/react"
 import { useSyncContinuity } from "atom.io/realtime-react"
 
 import { countAtom, countContinuity, incrementTX } from "../../library/store"
-import type { Route } from "../services/router-service"
+import { type Route, ROUTES } from "../services/router-service"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
 
@@ -20,8 +21,10 @@ export function GameIndex({ route: [gameId] }: GameIndexProps): JSX.Element {
 }
 
 export type GameProps = {
-	gameId: string
+	gameId: `clicker`
 }
+
+const GAMES = toEntries(ROUTES[1].game[1])
 
 export function Game({ gameId }: GameProps): JSX.Element {
 	console.log(gameId)
