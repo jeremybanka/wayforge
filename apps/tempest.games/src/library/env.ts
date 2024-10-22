@@ -23,10 +23,6 @@ export const env = createEnv({
 			.union([z.literal(`true`), z.literal(`false`)])
 			.optional()
 			.transform((s) => s === `true`),
-		USE_SELF_SIGNED_CERTIFICATE: z
-			.union([z.literal(`true`), z.literal(`false`)])
-			.optional()
-			.transform((s) => s === `true`),
 		FRONTEND_PORT: z.string().transform((s) => Number.parseInt(s, 10)),
 		FRONTEND_ORIGINS: z
 			.string()
@@ -43,6 +39,10 @@ export const env = createEnv({
 
 	client: {
 		VITE_BACKEND_ORIGIN: z.string(),
+		VITE_USE_SELF_SIGNED_CERTIFICATE: z
+			.union([z.literal(`true`), z.literal(`false`)])
+			.optional()
+			.transform((s) => s === `true`),
 	},
 
 	/**
