@@ -67,12 +67,12 @@
       flex-flow: column;
       gap: 6px;
       background-color: #8881;
-      @media (prefers-color-scheme: light) {
-        background-color: #eee3;
-      }
       padding-top: 5px;
       padding-bottom: 13px;
       box-shadow: 0 0px 0px 3px #0001;
+      @media (prefers-color-scheme: light) {
+        background-color: #eee3;
+      }
 
       ol.tsdoc-param-list {
         width: 100%;

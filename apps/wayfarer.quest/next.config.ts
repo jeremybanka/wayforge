@@ -1,4 +1,5 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next"
+
 const nextConfig = {
 	distDir: `dist`,
 	pageExtensions: [`ts`, `tsx`, `js`, `jsx`, `md`, `mdx`],
@@ -36,6 +37,6 @@ const nextConfig = {
 
 		return config
 	},
-}
+} satisfies NextConfig
 
 export default nextConfig
