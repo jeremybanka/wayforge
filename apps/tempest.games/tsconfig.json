@@ -9,7 +9,8 @@
 		"__tests__",
 		"__scripts__",
 		"**/*.config.ts",
-		"**/*.bun.ts"
+		"**/*.bun.ts",
+		"dev/https-dev.ts"
 	],
 	"exclude": []
 }
