@@ -99,11 +99,10 @@ const httpServer = createServer((req, res) => {
 							throw [400, `No data received`]
 						}
 						switch (url.pathname) {
-							case `/signup-${asUUID(`signup`)}`:
+							case `/sign-up-${asUUID(`sign-up`)}`:
 								{
 									const text = Buffer.concat(data).toString()
 									const json: Json.Serializable = JSON.parse(text)
-									logger.info(`signup json`, json)
 									const parsed = signupSchema.safeParse(json)
 									if (!parsed.success) {
 										logger.warn(`signup parsed`, parsed.error.issues)
