@@ -15,7 +15,11 @@ export default defineConfig(async ({ mode }) => {
 		plugins: [react(), tsconfigPaths()],
 		build: { outDir: `app` },
 		css: { preprocessorOptions: { scss: { api: `modern-compiler` } } },
-		server: { port: 3333, host: `0.0.0.0`, https: httpsDev },
+		server: {
+			port: 3333,
+			host: `0.0.0.0`,
+			...(httpsDev ? { https: httpsDev } : undefined),
+		},
 		test: {
 			env,
 			globals: true,

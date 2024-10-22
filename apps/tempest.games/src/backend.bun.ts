@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 
 import { createHash } from "node:crypto"
-import { createServer } from "node:https"
-import { resolve } from "node:path"
+import type { RequestListener } from "node:http"
+import { createServer as createHttpServer } from "node:http"
+import { createServer as createSecureServer } from "node:https"
 
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
@@ -22,7 +23,7 @@ import {
 } from "atom.io/realtime-server"
 import { CronJob } from "cron"
 import { and, eq, gt } from "drizzle-orm"
-import * as SocketIO from "socket.io"
+import { Server as WebSocketServer } from "socket.io"
 
 import { httpsDev } from "../dev/https-dev"
 import { logger, parentSocket } from "./backend"
@@ -59,12 +60,18 @@ export const tribunalDaily: CronJob = (() => {
 	return __tribunalDaily
 })()
 
-const httpServer = createServer(httpsDev, (req, res) => {
+function createServer(requestListener: RequestListener) {
+	if (httpsDev) {
+		return createSecureServer(httpsDev, requestListener)
+	}
+	return createHttpServer(requestListener)
+}
+
+const httpServer = createServer((req, res) => {
 	let data: Uint8Array[]
 	req
 		.on(`data`, (chunk) => (data ??= []).push(chunk))
 		.on(`end`, async () => {
-			logger.info(req.headers)
 			const authHeader = req.headers.authorization
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
@@ -251,7 +258,7 @@ const port =
 	typeof address === `string` ? null : address === null ? null : address.port
 if (port === null) throw new Error(`Could not determine port for test server`)
 
-new SocketIO.Server(httpServer, {
+new WebSocketServer(httpServer, {
 	cors: {
 		origin: env.FRONTEND_ORIGINS,
 		methods: [`GET`, `POST`],

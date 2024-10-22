@@ -25,7 +25,7 @@ const db = new DatabaseManager()
 serve({
 	hostname: `0.0.0.0`,
 	port: env.FRONTEND_PORT ?? 3333,
-	...httpsDev,
+	...(httpsDev ?? undefined),
 	async fetch(req, server) {
 		try {
 			const now = new Date()
