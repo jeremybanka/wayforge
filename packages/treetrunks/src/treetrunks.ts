@@ -65,6 +65,7 @@ export function isTreePath<T extends Tree>(
 	maybePath: unknown[],
 ): maybePath is TreePath<T> {
 	let currentTreeNode: Tree | null = tree
+	console.log(maybePath)
 	for (const segment of maybePath) {
 		if (currentTreeNode === null) {
 			return false
@@ -72,9 +73,15 @@ export function isTreePath<T extends Tree>(
 		if (typeof segment !== `string`) {
 			return false
 		}
-		if (segment in currentTreeNode[1]) {
-			currentTreeNode = currentTreeNode[1][segment]
+		const subPaths = currentTreeNode[1]
+		if (segment in subPaths) {
+			currentTreeNode = subPaths[segment]
 		} else {
+			const wildcard = Object.keys(subPaths).find((key) => key.startsWith(`$`))
+			if (wildcard) {
+				currentTreeNode = subPaths[wildcard]
+				continue
+			}
 			return false
 		}
 	}
