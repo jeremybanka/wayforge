@@ -39,6 +39,10 @@ export const env = createEnv({
 
 	client: {
 		VITE_BACKEND_ORIGIN: z.string(),
+		VITE_USE_SELF_SIGNED_CERTIFICATE: z
+			.union([z.literal(`true`), z.literal(`false`)])
+			.optional()
+			.transform((s) => s === `true`),
 	},
 
 	/**

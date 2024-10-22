@@ -2,3 +2,5 @@ app
 tribunal.cache.json
 .env.*
 !.env.defaults
+cert.pem
+key.pem
