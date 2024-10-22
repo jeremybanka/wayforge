@@ -2,7 +2,9 @@ $viewport-medium-width: 960px;
 $viewport-large-width: 1280px;
 
 @mixin min-width($min-width, $property, $default, $modified) {
-  #{$property}: $default;
+  & {
+    #{$property}: $default;
+  }
 
   @media screen and (min-width: $min-width) {
     #{$property}: $modified;
@@ -10,7 +12,9 @@ $viewport-large-width: 1280px;
 }
 
 @mixin max-width($max-width, $property, $default, $modified) {
-  #{$property}: $default;
+  & {
+    #{$property}: $default;
+  }
 
   @media screen and (max-width: $max-width) {
     #{$property}: $modified;

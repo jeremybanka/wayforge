@@ -170,6 +170,11 @@ table {
     --hyperlink-hover-color: #04f;
     --hyperlink-visited-color: #99f;
 
+    background-color: var(--bg-shade-2);
+    min-height: 100vh;
+    scroll-padding-top: 4.5em;
+    scroll-behavior: smooth;
+
     button {
       background-color: var(--bg-tint-1);
       &:hover,
@@ -182,10 +187,6 @@ table {
       }
     }
   }
-  background-color: var(--bg-shade-2);
-  min-height: 100vh;
-  scroll-padding-top: 4.5em;
-  scroll-behavior: smooth;
   body {
     background-color: var(--bg-shade-2);
   }

@@ -1,8 +1,6 @@
-@import "./_check";
+@use "_check";
 
 label.class {
-  @include check;
-
   --grid-area: none;
   --height: 1em;
   --width: 1em;
@@ -11,6 +9,7 @@ label.class {
   width: var(--width);
   position: relative;
   display: inline-flex;
+  @include check.check;
 
   > * {
     display: inline-flex;
