@@ -10,10 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"main": "dist/treetrunks.js",
 	"scripts": {
 		"build:js": "bun build --outdir dist -- src/treetrunks.ts",
