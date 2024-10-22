@@ -7,6 +7,7 @@ import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 import { eq } from "drizzle-orm"
 
+import { httpsDev } from "../dev/https-dev"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import { banishedIps } from "./database/tempest-db-schema"
 import { env } from "./library/env"
@@ -22,7 +23,9 @@ const appDir = resolve(import.meta.dir, `..`, `app`)
 const db = new DatabaseManager()
 
 serve({
+	hostname: `0.0.0.0`,
 	port: env.FRONTEND_PORT ?? 3333,
+	...httpsDev,
 	async fetch(req, server) {
 		try {
 			const now = new Date()

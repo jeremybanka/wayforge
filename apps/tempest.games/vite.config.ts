@@ -3,6 +3,8 @@ import { loadEnv } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
+import { httpsDev } from "./dev/https-dev"
+
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
 	const { dirname } = import.meta
@@ -13,7 +15,7 @@ export default defineConfig(async ({ mode }) => {
 		plugins: [react(), tsconfigPaths()],
 		build: { outDir: `app` },
 		css: { preprocessorOptions: { scss: { api: `modern-compiler` } } },
-		server: { port: 3333 },
+		server: { port: 3333, host: `0.0.0.0`, https: httpsDev },
 		test: {
 			env,
 			globals: true,

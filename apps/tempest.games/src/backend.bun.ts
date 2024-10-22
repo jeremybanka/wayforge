@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
 import { createHash } from "node:crypto"
-import * as http from "node:http"
+import { createServer } from "node:https"
+import { resolve } from "node:path"
 
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
@@ -23,6 +24,7 @@ import { CronJob } from "cron"
 import { and, eq, gt } from "drizzle-orm"
 import * as SocketIO from "socket.io"
 
+import { httpsDev } from "../dev/https-dev"
 import { logger, parentSocket } from "./backend"
 import { worker } from "./backend.worker"
 import { userSessionMap } from "./backend/user-session-map"
@@ -57,11 +59,12 @@ export const tribunalDaily: CronJob = (() => {
 	return __tribunalDaily
 })()
 
-const httpServer = http.createServer((req, res) => {
+const httpServer = createServer(httpsDev, (req, res) => {
 	let data: Uint8Array[]
 	req
 		.on(`data`, (chunk) => (data ??= []).push(chunk))
 		.on(`end`, async () => {
+			logger.info(req.headers)
 			const authHeader = req.headers.authorization
 			try {
 				if (typeof req.url === `undefined`) throw [400, `No URL`]
@@ -326,7 +329,7 @@ parentSocket.on(`updatesReady`, () => {
 async function gracefulExit() {
 	logger.info(`🧹 dispatching SIGINT to workers`)
 	gameWorker.process.kill(`SIGINT`)
-	await new Promise((resolve) => gameWorker.process.once(`exit`, resolve))
+	await new Promise((pass) => gameWorker.process.once(`exit`, pass))
 	logger.info(`🛬 backend server exiting`)
 	process.exit(0)
 }

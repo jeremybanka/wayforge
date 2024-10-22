@@ -23,6 +23,10 @@ export const env = createEnv({
 			.union([z.literal(`true`), z.literal(`false`)])
 			.optional()
 			.transform((s) => s === `true`),
+		USE_SELF_SIGNED_CERTIFICATE: z
+			.union([z.literal(`true`), z.literal(`false`)])
+			.optional()
+			.transform((s) => s === `true`),
 		FRONTEND_PORT: z.string().transform((s) => Number.parseInt(s, 10)),
 		FRONTEND_ORIGINS: z
 			.string()
