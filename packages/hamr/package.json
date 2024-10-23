@@ -63,7 +63,7 @@
 		"@testing-library/jest-dom": "6.6.2",
 		"@testing-library/react": "16.0.1",
 		"@types/jsdom": "21.1.7",
-		"@types/react": "18.3.11",
+		"@types/react": "18.3.12",
 		"@vitejs/plugin-react": "4.3.3",
 		"concurrently": "9.0.1",
 		"eslint": "9.13.0",
