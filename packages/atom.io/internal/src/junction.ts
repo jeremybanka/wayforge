@@ -1,6 +1,5 @@
 import type { Refinement } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
-import { B } from "vitest/dist/chunks/benchmark.JVlTzojj.js"
 
 export type JunctionEntriesBase<
 	AType extends string,
@@ -86,6 +85,8 @@ export class Junction<
 	public readonly relations = new Map<AType | BType, Set<AType> | Set<BType>>()
 	public readonly contents = new Map<string, Content>()
 
+	public isAType?: Refinement<string, AType> | null
+	public isBType?: Refinement<string, BType> | null
 	public isContent: Refinement<unknown, Content> | null
 	public makeContentKey = (a: AType, b: BType): string => `${a}:${b}`
 
@@ -151,8 +152,12 @@ export class Junction<
 		YType extends XType extends AType ? BType : AType,
 	>(x: XType, ys: YType[]): void {
 		const xRelationsPrev = this.relations.get(x)
+		let a: AType | undefined = this.isAType?.(x) ? x : undefined
+		let b: BType | undefined = a === undefined ? (x as BType) : undefined
 		if (xRelationsPrev) {
 			for (const y of xRelationsPrev) {
+				a ??= y as AType
+				b ??= y as BType
 				const yRelations = this.relations.get(y) as Set<XType> | undefined
 				if (yRelations) {
 					if (yRelations.size === 1) {
@@ -160,7 +165,7 @@ export class Junction<
 					} else {
 						yRelations.delete(x)
 					}
-					this.contents.delete(this.makeContentKey(x as any, y as any)) // sort XY to AB ❗
+					this.contents.delete(this.makeContentKey(a, b))
 				}
 			}
 		}
@@ -188,7 +193,7 @@ export class Junction<
 
 	public constructor(
 		data: JunctionSchema<ASide, BSide> &
-			Partial<JunctionEntries<AType, BType, Content>>,
+			Partial<JunctionEntries<NoInfer<AType>, NoInfer<BType>, Content>>,
 		config?: JunctionAdvancedConfiguration<AType, BType, Content>,
 	) {
 		this.a = data.between[0]
@@ -201,6 +206,8 @@ export class Junction<
 			)
 			this.contents = new Map(data.contents)
 		}
+		this.isAType = config?.isAType ?? null
+		this.isBType = config?.isBType ?? null
 		this.isContent = config?.isContent ?? null
 		if (config?.makeContentKey) {
 			this.makeContentKey = config.makeContentKey
@@ -236,7 +243,13 @@ export class Junction<
 				}
 			}
 			for (const [x, ys] of data.relations ?? []) {
-				for (const y of ys) this.addRelation(x as AType, y as BType) // sort XY to AB ❗
+				let a = this.isAType?.(x) ? x : undefined
+				let b = a === undefined ? (x as BType) : undefined
+				for (const y of ys) {
+					a ??= y as AType
+					b ??= y as BType
+					this.addRelation(a, b)
+				}
 			}
 			for (const [contentKey, content] of data.contents ?? []) {
 				this.setContent(contentKey, content)
@@ -359,9 +372,12 @@ export class Junction<
 						.join(`, `)}). Only one related key was expected.`,
 				)
 			}
+			let singleRelation: AType | BType | undefined
 			for (const relation of relations) {
-				return relation
+				singleRelation = relation
+				break
 			}
+			return singleRelation
 		}
 	}
 
@@ -416,7 +432,7 @@ export class Junction<
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
 				return [...aRelations].map((aRelation) => {
-					return [aRelation, this.getContent(a, aRelation) ?? (null as Content)]
+					return [aRelation, this.getContent(a, aRelation) as Content]
 				})
 			}
 		}
@@ -424,7 +440,7 @@ export class Junction<
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
 				return [...bRelations].map((bRelation) => {
-					return [bRelation, this.getContent(bRelation, b) ?? (null as Content)]
+					return [bRelation, this.getContent(bRelation, b) as Content]
 				})
 			}
 		}
