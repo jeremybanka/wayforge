@@ -19,6 +19,8 @@ export const cardOwners = join({
 	key: `ownersOfCards`,
 	between: [`owner`, `card`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })
 
 export const findPlayerPerspectiveState = atomFamily<Perspective, string>({
@@ -78,4 +80,6 @@ export const cardCycleGroupsAndZones = join({
 	key: `groupsAndZonesOfCardCycles`,
 	between: [`cardCycle`, `groupOrZone`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })

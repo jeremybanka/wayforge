@@ -24,17 +24,17 @@ export const socketAtoms = atomFamily<Socket | null, SocketKey>({
 	default: null,
 })
 
-export const socketIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const socketIndex = atom<SetRTX<SocketKey>, SetRTXJson<SocketKey>>({
 	key: `socketsIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
-export const userIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const userIndex = atom<SetRTX<UserKey>, SetRTXJson<UserKey>>({
 	key: `usersIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
