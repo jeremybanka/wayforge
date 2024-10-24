@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.30.2
+
+### Patch Changes
+
+- a9d15f3: 🐛 Always construct the content keys for relations in Join in A:B order.
+
 ## 0.30.1
 
 ### Patch Changes
