@@ -6,9 +6,9 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Socket } from ".."
 
-export type SocketKey = [`socket`, string]
-export type UserKey = [`user`, string]
-export type RoomKey = [`room`, string]
+export type SocketKey = `socket::${string}`
+export type UserKey = `user::${string}`
+export type RoomKey = `room::${string}`
 
 export type SocketSystemHierarchy = Hierarchy<
 	[

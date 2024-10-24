@@ -1,5 +1,5 @@
 import type { MutableAtomFamilyToken } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import type { WritableSelectorFamily } from ".."
 import { newest } from "../lineage"
@@ -9,7 +9,7 @@ import type { Transceiver } from "./transceiver"
 export const getJsonFamily = <
 	Core extends Transceiver<Json.Serializable>,
 	SerializableCore extends Json.Serializable,
-	Key extends string,
+	Key extends Canonical,
 >(
 	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
 	store: Store,

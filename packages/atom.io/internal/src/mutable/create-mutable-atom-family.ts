@@ -7,7 +7,7 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 import { selectJsonFamily, stringifyJson } from "atom.io/json"
 
 import { type MutableAtomFamily, prettyPrintTokenType } from ".."
@@ -21,7 +21,7 @@ import type { Transceiver } from "./transceiver"
 export function createMutableAtomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-	K extends string,
+	K extends Canonical,
 >(
 	store: Store,
 	options: MutableAtomFamilyOptions<T, J, K>,

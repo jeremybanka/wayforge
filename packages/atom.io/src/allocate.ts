@@ -49,7 +49,7 @@ export function allocateIntoStore<
 			}
 			above.push(provenanceMolecule)
 		} else {
-			const allocationIsCompound = key[0][0] === T$
+			const allocationIsCompound = key.startsWith(`T$--`)
 			if (allocationIsCompound) {
 				allocationAttachmentStyle = `all`
 				for (const claim of provenance as SingularTypedKey[]) {
@@ -150,11 +150,11 @@ export function deallocateFromStore<
 	}
 	for (const child of molecule.below.values()) {
 		if (child.dependsOn === `all`) {
-			deallocateFromStore(store, child.key)
+			deallocateFromStore<any, any, any>(store, child.key)
 		} else {
 			child.above.delete(molecule.stringKey)
 			if (child.above.size === 0) {
-				deallocateFromStore(store, child.key)
+				deallocateFromStore<any, any, any>(store, child.key)
 			}
 		}
 	}
@@ -203,13 +203,13 @@ export function realm<H extends Hierarchy>(store: Store) {
 
 export const T$ = `T$`
 export type T$ = typeof T$
-export type TypeTag<T extends string> = [T$, T]
-export type SingularTypedKey<T extends string = string> = [T, string]
+export type TypeTag<T extends string> = `${T$}--${T}`
+export type SingularTypedKey<T extends string = string> = `${T}::${string}`
 export type CompoundTypedKey<
 	A extends string = string,
 	B extends string = string,
 	C extends string = string,
-> = [TypeTag<A>, TypedKey<B>, TypedKey<C>]
+> = `${TypeTag<A>}==${SingularTypedKey<B>}++${SingularTypedKey<C>}`
 export type TypedKey<
 	A extends string = string,
 	B extends string = string,
