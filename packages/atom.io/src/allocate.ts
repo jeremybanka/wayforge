@@ -29,7 +29,6 @@ export function allocateIntoStore<
 	A extends Above<V, H>,
 >(store: Store, provenance: A, key: V): Claim<H, V, A> {
 	const stringKey = stringifyJson(key)
-
 	try {
 		const above: Molecule<any>[] = []
 
@@ -38,7 +37,7 @@ export function allocateIntoStore<
 			// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
 			above.push(store.molecules.get(`"root"`)!)
 			allocationAttachmentStyle = `all`
-		} else if (provenance[0][0] === T$) {
+		} else if (typeof provenance === `string` && provenance.startsWith(T$)) {
 			allocationAttachmentStyle = `any`
 			const provenanceKey = stringifyJson(provenance as Canonical)
 			const provenanceMolecule = store.molecules.get(provenanceKey)
