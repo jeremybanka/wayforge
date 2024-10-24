@@ -1,4 +1,5 @@
 import { Junction } from "atom.io/internal"
+import type { Refinement } from "atom.io/introspection"
 import { jsonRefinery } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { isJson } from "atom.io/json"
@@ -46,6 +47,14 @@ describe(`Junction.prototype.getRelatedKey`, () => {
 			`2 related keys were found for key "Helena": ("Shrine", "Loft"). Only one related key was expected.`,
 		)
 	})
+	it(`handles something totally unknown with grace`, () => {
+		const playersInRooms = new Junction({
+			between: [`room`, `player`],
+			cardinality: `1:n`,
+		})
+		const roomKey = playersInRooms.getRelatedKey(`unknown`)
+		expect(roomKey).toBeUndefined()
+	})
 })
 
 describe(`Junction.prototype.set`, () => {
@@ -56,7 +65,7 @@ describe(`Junction.prototype.set`, () => {
 			between: [`room`, `player`],
 			cardinality: `1:n`,
 		})
-		const roomKeys = playersInRooms.set({ player, room }).getRelatedKeys(player)
+		const roomKeys = playersInRooms.set(room, player).getRelatedKeys(player)
 		expect(roomKeys).toEqual(new Set([room]))
 	})
 	it(`sets data between two ids`, () => {
@@ -304,19 +313,42 @@ describe(`Junction.prototype.toJSON`, () => {
 describe(`Junction.prototype.replaceRelations`, () => {
 	describe(`safely`, () => {
 		it(`replaces all relations for a given id`, () => {
-			const pokemonPrimaryTypes = new Junction({
-				between: [`type`, `pokémon`],
-				cardinality: `1:n`,
-			})
+			const pokemonTypes = [`grass`, `poison`] as const
+			const pokedex = [`bulbasaur`, `oddish`, `chikorita`, `bellsprout`] as const
+			const pokemonPrimaryTypes = new Junction(
+				{
+					between: [`type`, `pokémon`],
+					cardinality: `n:n`,
+				},
+				{
+					isAType: (input): input is (typeof pokemonTypes)[number] =>
+						pokemonTypes.includes(input as any),
+					isBType: (input): input is (typeof pokedex)[number] =>
+						pokedex.includes(input as any),
+				},
+			)
 
 				.set({ type: `grass`, pokémon: `bulbasaur` })
+				.set({ type: `poison`, pokémon: `bulbasaur` })
 				.set({ type: `grass`, pokémon: `oddish` })
+				.set({ type: `grass`, pokémon: `chikorita` })
 				.set({ type: `grass`, pokémon: `bellsprout` })
+				.set({ type: `poison`, pokémon: `bellsprout` })
 				.replaceRelations(`grass`, [`bulbasaur`, `oddish`])
 			expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(
 				new Set([`bulbasaur`, `oddish`]),
 			)
-			expect(pokemonPrimaryTypes.getRelatedKey(`bellsprout`)).toBeUndefined()
+			expect(pokemonPrimaryTypes.getRelatedKeys(`bulbasaur`)).toEqual(
+				new Set([`grass`, `poison`]),
+			)
+			expect(pokemonPrimaryTypes.getRelatedKeys(`bellsprout`)).toEqual(
+				new Set().add(`poison`),
+			)
+			expect(pokemonPrimaryTypes.getRelatedKeys(`chikorita`)).toBeUndefined()
+			pokemonPrimaryTypes.replaceRelations(`chikorita`, [`grass`])
+			expect(pokemonPrimaryTypes.getRelatedKeys(`grass`)).toEqual(
+				new Set([`bulbasaur`, `oddish`, `chikorita`]),
+			)
 		})
 	})
 	describe(`unsafely`, () => {
@@ -328,38 +360,68 @@ describe(`Junction.prototype.replaceRelations`, () => {
 				},
 				{
 					makeContentKey: (...keys) => keys.sort().join(`:`),
+					isAType: ((input): input is `🫙 ${string}` =>
+						input.startsWith(`🫙 `)) satisfies Refinement<
+						string,
+						`🫙 ${string}`
+					>,
 					isContent: (input: unknown): input is { quantity: number } =>
 						z.object({ quantity: z.number() }).safeParse(input).success,
 				},
 			)
-				.set({ ingredient: `sugar`, candy: `gummi bears` }, { quantity: 1 })
-				.set({ ingredient: `sugar`, candy: `chocolate` }, { quantity: 1 })
-				.set({ ingredient: `butter`, candy: `gummi bears` }, { quantity: 1 })
-				.set({ ingredient: `butter`, candy: `chocolate` }, { quantity: 2 })
-				.set({ ingredient: `flour`, candy: `gummi bears` }, { quantity: 1 })
-				.set({ ingredient: `flour`, candy: `chocolate` }, { quantity: 0.5 })
-			expect(candyIngredients.getRelatedKeys(`sugar`)).toEqual(
+				.set({ ingredient: `🫙 sugar`, candy: `gummi bears` }, { quantity: 1 })
+				.set({ ingredient: `🫙 sugar`, candy: `chocolate` }, { quantity: 1 })
+				.set({ ingredient: `🫙 butter`, candy: `gummi bears` }, { quantity: 1 })
+				.set({ ingredient: `🫙 butter`, candy: `chocolate` }, { quantity: 2 })
+				.set({ ingredient: `🫙 flour`, candy: `gummi bears` }, { quantity: 1 })
+				.set({ ingredient: `🫙 flour`, candy: `chocolate` }, { quantity: 0.5 })
+			expect(candyIngredients.getRelatedKeys(`🫙 sugar`)).toEqual(
 				new Set([`gummi bears`, `chocolate`]),
 			)
-			expect(candyIngredients.getRelatedKeys(`butter`)).toEqual(
+			expect(candyIngredients.getRelatedKeys(`🫙 butter`)).toEqual(
 				new Set([`gummi bears`, `chocolate`]),
 			)
-			expect(candyIngredients.getRelatedKeys(`flour`)).toEqual(
+			expect(candyIngredients.getRelatedKeys(`🫙 flour`)).toEqual(
 				new Set([`gummi bears`, `chocolate`]),
 			)
 			candyIngredients.replaceRelations(
 				`maple flake`,
-				{ "maple syrup": { quantity: 12 } },
+				{ "🫙 maple syrup": { quantity: 12 } },
 				{
 					reckless: true,
 				},
 			)
 			expect(candyIngredients.getRelatedKeys(`maple flake`)).toEqual(
-				new Set([`maple syrup`]),
+				new Set([`🫙 maple syrup`]),
 			)
-			expect(candyIngredients.getContent(`maple flake`, `maple syrup`)).toEqual({
+			expect(
+				candyIngredients.getContent(`🫙 maple syrup`, `maple flake`),
+			).toEqual({
 				quantity: 12,
 			})
+			candyIngredients.replaceRelations(
+				`🫙 maple syrup`,
+				{
+					"canuck delight": { quantity: 100 },
+				},
+				{
+					reckless: true,
+				},
+			)
+			expect(candyIngredients.getRelatedKeys(`🫙 maple syrup`)).toEqual(
+				new Set([`canuck delight`]),
+			)
+			expect(
+				candyIngredients.getContent(`🫙 maple syrup`, `canuck delight`),
+			).toEqual({
+				quantity: 100,
+			})
+			expect(candyIngredients.getRelatedKeys(`canuck delight`)).toEqual(
+				new Set([`🫙 maple syrup`]),
+			)
+			expect(candyIngredients.getRelatedKeys(`maple flake`)).toEqual(
+				new Set([`🫙 maple syrup`]),
+			) // still contains the old relation; hence reckless
 		})
 	})
 })
@@ -373,8 +435,12 @@ describe(`Junction with external storage`, () => {
 			{
 				between: [`room`, `player`],
 				cardinality: `1:n`,
+				relations: [[`Lounge`, [`Gertrude`]]],
+				contents: [[`Lounge:Gertrude`, { joinedAt: Number.NaN }]],
 			},
 			{
+				isAType: (input): input is string => typeof input === `string`,
+				isBType: (input): input is string => typeof input === `string`,
 				isContent: (input): input is { joinedAt: number } =>
 					z.object({ joinedAt: z.number() }).safeParse(input).success,
 				externalStore: {

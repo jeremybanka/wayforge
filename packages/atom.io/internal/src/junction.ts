@@ -1,6 +1,5 @@
 import type { Refinement } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
-import { B } from "vitest/dist/chunks/benchmark.JVlTzojj.js"
 
 export type JunctionEntriesBase<
 	AType extends string,
@@ -194,7 +193,7 @@ export class Junction<
 
 	public constructor(
 		data: JunctionSchema<ASide, BSide> &
-			Partial<JunctionEntries<AType, BType, Content>>,
+			Partial<JunctionEntries<NoInfer<AType>, NoInfer<BType>, Content>>,
 		config?: JunctionAdvancedConfiguration<AType, BType, Content>,
 	) {
 		this.a = data.between[0]
@@ -373,9 +372,12 @@ export class Junction<
 						.join(`, `)}). Only one related key was expected.`,
 				)
 			}
+			let singleRelation: AType | BType | undefined
 			for (const relation of relations) {
-				return relation
+				singleRelation = relation
+				break
 			}
+			return singleRelation
 		}
 	}
 
@@ -430,7 +432,7 @@ export class Junction<
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
 				return [...aRelations].map((aRelation) => {
-					return [aRelation, this.getContent(a, aRelation) ?? (null as Content)]
+					return [aRelation, this.getContent(a, aRelation) as Content]
 				})
 			}
 		}
@@ -438,7 +440,7 @@ export class Junction<
 			const bRelations = this.getRelatedKeys(b)
 			if (bRelations) {
 				return [...bRelations].map((bRelation) => {
-					return [bRelation, this.getContent(bRelation, b) ?? (null as Content)]
+					return [bRelation, this.getContent(bRelation, b) as Content]
 				})
 			}
 		}
