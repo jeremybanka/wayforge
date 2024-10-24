@@ -5,6 +5,7 @@ import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
+import { AtomIOLogger } from "atom.io"
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
 	disposeFromStore,
@@ -43,6 +44,8 @@ import { countContinuity } from "./library/store"
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
 const db = new DatabaseManager()
+
+IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`info`, undefined, logger)
 
 export const tribunalDaily: CronJob = (() => {
 	let { __tribunalDaily } = globalThis as any

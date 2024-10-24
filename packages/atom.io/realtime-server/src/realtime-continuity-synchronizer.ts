@@ -15,7 +15,7 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type { ServerConfig, Socket } from "."
+import type { ServerConfig, Socket, SocketKey } from "."
 import { socketAtoms, usersOfSockets } from "."
 import {
 	redactTransactionUpdateContent,
@@ -56,14 +56,14 @@ export function realtimeContinuitySynchronizer({
 		).socketKeyOfUser
 		subscribeToState(
 			socketKeyState,
-			({ newValue: newSocketKey }) => {
+			({ newValue: newSocketId }) => {
 				store.logger.info(
 					`👋`,
 					`continuity`,
 					continuityKey,
-					`seeing ${userKey} on new socket ${newSocketKey}`,
+					`seeing ${userKey} on new socket ${newSocketId}`,
 				)
-				if (newSocketKey === null) {
+				if (newSocketId === null) {
 					store.logger.warn(
 						`❌`,
 						`continuity`,
@@ -72,6 +72,7 @@ export function realtimeContinuitySynchronizer({
 					)
 					return
 				}
+				const newSocketKey = [`socket`, newSocketId] satisfies SocketKey
 				const newSocketState = findInStore(store, socketAtoms, newSocketKey)
 				const newSocket = getFromStore(store, newSocketState)
 				socket = newSocket

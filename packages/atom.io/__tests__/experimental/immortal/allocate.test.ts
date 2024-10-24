@@ -1,27 +1,20 @@
 import { randomUUID } from "node:crypto"
 
-import type { Logger } from "atom.io"
+import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
 	atomFamily,
 	disposeState,
 	getState,
+	realm,
 	redo,
 	runTransaction,
 	setState,
+	T$,
 	timeline,
 	transaction,
 	undo,
 } from "atom.io"
 import { clearStore, IMPLICIT } from "atom.io/internal"
-
-import type {
-	Above,
-	Below,
-	Hierarchy,
-	Mutuals,
-	Vassal,
-} from "~/packages/atom.io/src/allocate"
-import { realm, T$ } from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2

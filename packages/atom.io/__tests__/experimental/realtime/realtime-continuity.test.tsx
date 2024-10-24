@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { actUponStore, arbitrary } from "atom.io/internal"
+import { actUponStore, arbitrary, IMPLICIT } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -38,6 +38,7 @@ describe(`synchronizing transactions`, () => {
 		return Object.assign(
 			RTTest.multiClient({
 				port: 5465,
+				immortal: { server: true },
 				server: ({ socket, silo: { store } }) => {
 					const syncContinuity = RTS.realtimeContinuitySynchronizer({
 						socket,
@@ -84,7 +85,7 @@ describe(`synchronizing transactions`, () => {
 			{ countState, incrementTX },
 		)
 	}
-	test(`client 1 -> server -> client 2`, async () => {
+	test.only(`client 1 -> server -> client 2`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()

@@ -46,7 +46,8 @@ import {
 	setIntoStore,
 	withdraw,
 } from "atom.io/internal"
-import { type Json, stringifyJson } from "atom.io/json"
+import type { Canonical, Json, stringified } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -56,7 +57,9 @@ function capitalize<S extends string>(string: S): Capitalize<S> {
 
 export interface JoinOptions<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > extends Json.Object,
@@ -64,88 +67,112 @@ export interface JoinOptions<
 		Partial<JunctionEntries<Content>> {
 	readonly key: string
 	readonly cardinality: Cardinality
+	readonly types: [AType, BType]
 }
 
 export type JoinStateFamilies<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
 	? (Content extends Json.Object
 			? {
-					readonly [AB in ASide | BSide as AB extends ASide
-						? `${AB}EntryOf${Capitalize<BSide>}`
-						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
-						[string, Content] | null,
-						string
+					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+						[AType, Content] | null,
+						BType
+					>
+				} & {
+					readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+						[BType, Content] | null,
+						AType
 					>
 				}
 			: {}) & {
-			readonly [AB in ASide | BSide as AB extends ASide
-				? `${AB}KeyOf${Capitalize<BSide>}`
-				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
-				string | null,
-				string
+			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+				AType | null,
+				BType
+			>
+		} & {
+			readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+				BType | null,
+				AType
 			>
 		}
 	: Cardinality extends `1:n`
 		? (Content extends Json.Object
 				? {
 						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
-							[string, Content] | null,
-							string
+							[AType, Content] | null,
+							BType
 						>
 					} & {
 						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
-							[string, Content][],
-							string
+							[BType, Content][],
+							AType
 						>
 					}
 				: {}) & {
 				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
-					string | null,
-					string
+					AType | null,
+					BType
 				>
 			} & {
 				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
-					string[],
-					string
+					BType[],
+					AType
 				>
 			}
 		: Cardinality extends `n:n`
 			? (Content extends Json.Object
 					? {
-							readonly [AB in ASide | BSide as AB extends ASide
-								? `${AB}EntriesOf${Capitalize<BSide>}`
-								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
-								[string, Content][],
-								string
+							readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+								[AType, Content][],
+								BType
+							>
+						} & {
+							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+								[BType, Content][],
+								AType
 							>
 						}
 					: {}) & {
-					readonly [AB in ASide | BSide as AB extends ASide
-						? `${AB}KeysOf${Capitalize<BSide>}`
-						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
-						string[],
-						string
+					readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+						AType[],
+						BType
+					>
+				} & {
+					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+						BType[],
+						AType
 					>
 				}
 			: never
 
 export class Join<
 	const ASide extends string,
+	const AType extends Canonical,
 	const BSide extends string,
+	const BType extends Canonical,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object | null = null,
 > {
-	private options: JoinOptions<ASide, BSide, Cardinality, Content>
+	private options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
 	private defaultContent: Content | undefined
 	private toolkit: SetterToolkit & { dispose: typeof disposeState }
 	public retrieve: typeof findState
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, BSide, Content>
-	public states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
+	public states: JoinStateFamilies<
+		ASide,
+		AType,
+		BSide,
+		BType,
+		Cardinality,
+		Content
+	>
 	public core: {
 		findRelatedKeysState: MutableAtomFamilyToken<
 			SetRTX<string>,
@@ -155,7 +182,7 @@ export class Join<
 	}
 	public transact(
 		toolkit: SetterToolkit & { dispose: typeof disposeState },
-		run: (join: Join<ASide, BSide, Cardinality, Content>) => void,
+		run: (join: Join<ASide, AType, BSide, BType, Cardinality, Content>) => void,
 	): void {
 		const originalToolkit = this.toolkit
 		this.toolkit = toolkit
@@ -164,12 +191,17 @@ export class Join<
 	}
 
 	public store: Store
-	public alternates: Map<string, Join<ASide, BSide, Cardinality, Content>>
+	public alternates: Map<
+		string,
+		Join<ASide, AType, BSide, BType, Cardinality, Content>
+	>
 	public [Symbol.dispose](): void {
 		this.alternates.delete(this.store.config.name)
 	}
 
-	public in(store: Store): Join<ASide, BSide, Cardinality, Content> {
+	public in(
+		store: Store,
+	): Join<ASide, AType, BSide, BType, Cardinality, Content> {
 		const key = store.config.name
 		const alternate = this.alternates.get(key)
 		if (alternate) {
@@ -182,7 +214,7 @@ export class Join<
 	}
 
 	public constructor(
-		options: JoinOptions<ASide, BSide, Cardinality, Content>,
+		options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 		defaultContent: Content | undefined,
 		store: Store = IMPLICIT.STORE,
 	) {
@@ -230,8 +262,8 @@ export class Join<
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
 		const relatedKeysAtoms = createMutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
+			SetRTX<stringified<Canonical>>,
+			SetRTXJson<stringified<Canonical>>,
 			string
 		>(
 			store,
@@ -410,7 +442,14 @@ export class Join<
 				a: options.between[0],
 				b: options.between[1],
 				cardinality: options.cardinality,
-			} as const satisfies JoinToken<ASide, BSide, Cardinality, Content>
+			} as const satisfies JoinToken<
+				ASide,
+				AType,
+				BSide,
+				BType,
+				Cardinality,
+				Content
+			>
 			contentMolecules = createMoleculeFamily(store, {
 				key: `${options.key}/content-molecules`,
 				new: class ContentMolecule {
@@ -485,14 +524,15 @@ export class Join<
 		})
 
 		const createSingleKeyStateFamily = () =>
-			createReadonlySelectorFamily<string | null, string>(
+			createReadonlySelectorFamily<Canonical | null, Canonical>(
 				store,
 				{
 					key: `${options.key}/singleRelatedKey`,
 					get:
 						(key) =>
 						({ get }) => {
-							const relatedKeysState = this.retrieve(relatedKeysAtoms, key)
+							const stringKey = stringifyJson(key)
+							const relatedKeysState = this.retrieve(relatedKeysAtoms, stringKey)
 							const relatedKeys = get(relatedKeysState)
 							for (const relatedKey of relatedKeys) {
 								return relatedKey
@@ -570,8 +610,15 @@ export class Join<
 				const baseStates = {
 					[stateKeyA]: findSingleRelatedKeyState,
 					[stateKeyB]: findSingleRelatedKeyState,
-				} as JoinStateFamilies<ASide, BSide, Cardinality, Content>
-				let states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
+				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
+				let states: JoinStateFamilies<
+					ASide,
+					AType,
+					BSide,
+					BType,
+					Cardinality,
+					Content
+				>
 				if (defaultContent) {
 					const findSingleRelatedEntryState = createSingleEntryStateFamily()
 					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
@@ -596,8 +643,15 @@ export class Join<
 				const baseStates = {
 					[stateKeyA]: findSingleRelatedKeyState,
 					[stateKeyB]: findMultipleRelatedKeysState,
-				} as JoinStateFamilies<ASide, BSide, Cardinality, Content>
-				let states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
+				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
+				let states: JoinStateFamilies<
+					ASide,
+					AType,
+					BSide,
+					BType,
+					Cardinality,
+					Content
+				>
 				if (defaultContent) {
 					const findSingleRelatedEntryState = createSingleEntryStateFamily()
 					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
@@ -624,8 +678,15 @@ export class Join<
 				const baseStates = {
 					[stateKeyA]: findMultipleRelatedKeysState,
 					[stateKeyB]: findMultipleRelatedKeysState,
-				} as JoinStateFamilies<ASide, BSide, Cardinality, Content>
-				let states: JoinStateFamilies<ASide, BSide, Cardinality, Content>
+				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
+				let states: JoinStateFamilies<
+					ASide,
+					AType,
+					BSide,
+					BType,
+					Cardinality,
+					Content
+				>
 				if (defaultContent) {
 					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
 					const entriesStateKeyA = `${aSide}EntriesOf${capitalize(
@@ -651,7 +712,9 @@ export class Join<
 
 export type JoinToken<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null = null,
 > = {
@@ -660,41 +723,49 @@ export type JoinToken<
 	cardinality: Cardinality
 	a: ASide
 	b: BSide
+	__aType?: AType
+	__bType?: BType
 	__content?: Content
 }
 
 export function join<
 	const ASide extends string,
+	const AType extends Canonical,
 	const BSide extends string,
+	const BType extends Canonical,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	options: JoinOptions<ASide, BSide, Cardinality, null>,
+	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
 	defaultContent?: undefined,
 	store?: Store,
-): JoinToken<ASide, BSide, Cardinality, null>
+): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
 export function join<
 	const ASide extends string,
+	const AType extends Canonical,
 	const BSide extends string,
+	const BType extends Canonical,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object,
 >(
-	options: JoinOptions<ASide, BSide, Cardinality, Content>,
+	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content,
 	store?: Store,
-): JoinToken<ASide, BSide, Cardinality, Content>
+): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
 export function join<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object,
 >(
-	options: JoinOptions<ASide, BSide, Cardinality, Content>,
+	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content | undefined,
 	store: Store = IMPLICIT.STORE,
-): JoinToken<ASide, BSide, Cardinality, Content> {
+): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
 	const joins = getJoinMap(store)
 	joins.set(options.key, new Join(options, defaultContent, store))
-	const token: JoinToken<ASide, BSide, Cardinality, Content> = {
+	const token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content> = {
 		key: options.key,
 		type: `join`,
 		a: options.between[0],
@@ -705,24 +776,26 @@ export function join<
 }
 
 export function getJoinMap(
-	store: Store & { joins?: Map<string, Join<any, any, any, any>> },
-): Map<string, Join<any, any, any, any>> {
+	store: Store & { joins?: Map<string, Join<any, any, any, any, any, any>> },
+): Map<string, Join<any, any, any, any, any, any>> {
 	if (`joins` in store && store.joins instanceof Map) {
 		return store.joins
 	}
-	const joins = new Map<string, Join<any, any, any, any>>()
+	const joins = new Map<string, Join<any, any, any, any, any, any>>()
 	store.joins = joins
 	return joins
 }
 export function getJoin<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	store: Store,
-): Join<ASide, BSide, Cardinality, Content> {
+): Join<ASide, AType, BSide, BType, Cardinality, Content> {
 	const joinMap = getJoinMap(store)
 	let myJoin = joinMap.get(token.key)
 	if (myJoin === undefined) {
@@ -795,11 +868,13 @@ export type JoinStates<
 
 export function findRelationsInStore<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	key: string,
 	store: Store,
 ): JoinStates<ASide, BSide, Cardinality, Content> {
@@ -910,11 +985,13 @@ export function findRelationsInStore<
 
 export function findRelations<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	key: string,
 ): JoinStates<ASide, BSide, Cardinality, Content> {
 	return findRelationsInStore(token, key, IMPLICIT.STORE)
@@ -922,11 +999,13 @@ export function findRelations<
 
 export function editRelationsInStore<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	change: (relations: Junction<ASide, BSide, Content>) => void,
 	store: Store,
 ): void {
@@ -944,18 +1023,20 @@ export function editRelationsInStore<
 
 export function editRelations<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	change: (relations: Junction<ASide, BSide, Content>) => void,
 ): void {
 	editRelationsInStore(token, change, IMPLICIT.STORE)
 }
 
 export function getInternalRelationsFromStore(
-	token: JoinToken<any, any, any, any>,
+	token: JoinToken<any, any, any, any, any, any>,
 	store: Store,
 ): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
 	const myJoin = getJoin(token, store)
@@ -965,11 +1046,13 @@ export function getInternalRelationsFromStore(
 
 export function getInternalRelations<
 	ASide extends string,
+	AType extends Canonical,
 	BSide extends string,
+	BType extends Canonical,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, BSide, Cardinality, Content>,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 ): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
 	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }
