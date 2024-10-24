@@ -556,18 +556,19 @@ export class Join<
 				{
 					key: `${options.key}/singleRelatedEntry`,
 					get:
-						(key) =>
+						(x) =>
 						({ get }) => {
-							const relatedKeysState = this.retrieve(relatedKeysAtoms, key)
+							const relatedKeysState = this.retrieve(relatedKeysAtoms, x)
 							const relatedKeys = get(relatedKeysState)
-							for (const relatedKey of relatedKeys) {
-								const contentKey = relations.makeContentKey(
-									key as any,
-									relatedKey as any,
-								) // sort XY to AB ❗
+							for (const y of relatedKeys) {
+								let a = relations.isAType?.(x) ? x : undefined
+								let b = a === undefined ? (x as BType) : undefined
+								a ??= y as AType
+								b ??= y as BType
+								const contentKey = relations.makeContentKey(a, b)
 								const contentState = this.retrieve(contentAtoms, contentKey)
 								const content = get(contentState)
-								return [relatedKey, content]
+								return [y, content]
 							}
 							return null
 						},
@@ -580,19 +581,20 @@ export class Join<
 				{
 					key: `${options.key}/multipleRelatedEntries`,
 					get:
-						(key) =>
+						(x) =>
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const jsonState = this.retrieve(jsonFamily, key)
+							const jsonState = this.retrieve(jsonFamily, x)
 							const json = get(jsonState)
-							return json.members.map((relatedKey) => {
-								const contentKey = relations.makeContentKey(
-									key as any,
-									relatedKey as any,
-								) // sort XY to AB ❗
+							return json.members.map((y) => {
+								let a = relations.isAType?.(x) ? x : undefined
+								let b = a === undefined ? (x as BType) : undefined
+								a ??= y as AType
+								b ??= y as BType
+								const contentKey = relations.makeContentKey(a, b)
 								const contentState = this.retrieve(contentAtoms, contentKey)
 								const content = get(contentState)
-								return [relatedKey, content]
+								return [y, content]
 							})
 						},
 				},
