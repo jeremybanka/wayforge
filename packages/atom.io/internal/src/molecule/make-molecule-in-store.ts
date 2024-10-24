@@ -82,7 +82,9 @@ export function makeMoleculeInStore<M extends MoleculeConstructor>(
 		},
 		env: () => getEnvironmentData(newest(rootStore)),
 		bond: ((
-			token: JoinToken<any, any, any, any> | ReadableFamilyToken<any, any>,
+			token:
+				| JoinToken<any, any, any, any, any, any>
+				| ReadableFamilyToken<any, any>,
 			maybeRole,
 		) => {
 			if (token.type === `join`) {

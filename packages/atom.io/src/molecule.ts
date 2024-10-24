@@ -38,12 +38,14 @@ export type CtorToolkit<K extends Canonical> = Flat<
 		bond<T>(family: ReadonlySelectorFamilyToken<T, K>): ReadonlySelectorToken<T>
 		bond<T>(family: WritableFamilyToken<T, K>): WritableToken<T>
 		bond<T>(family: ReadableFamilyToken<T, K>): ReadableToken<T>
-		bond<J extends JoinToken<any, any, any, any>>(
+		bond<J extends JoinToken<any, any, any, any, any, any>>(
 			joinToken: J,
 			role: {
-				as: J extends JoinToken<infer A, infer B, any, any> ? A | B : never
+				as: J extends JoinToken<infer A, string, infer B, string, any, any>
+					? A | B
+					: never
 			},
-		): J extends JoinToken<any, any, any, infer Content>
+		): J extends JoinToken<any, any, any, any, any, infer Content>
 			? Content extends null
 				? { relatedKeys: ReadonlySelectorToken<string[]> }
 				: {

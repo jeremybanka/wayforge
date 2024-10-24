@@ -1,3 +1,4 @@
+import { subscribe } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { useState } from "react"
 
@@ -48,7 +49,7 @@ export function SignUp(): JSX.Element {
 						body: JSON.stringify({ username, password, email }),
 					},
 				)
-				if (response.status === 200) {
+				if (response.status === 201) {
 					setPassword1(``)
 					setEmail(``)
 					navigate(`/login`)

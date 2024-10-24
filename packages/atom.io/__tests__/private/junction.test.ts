@@ -126,7 +126,9 @@ describe(`Junction.prototype.set1ToMany`, () => {
 	it(`sets data between a leader and a follower`, () => {
 		const followersOfLeaders = new Junction<
 			`leader`,
+			string,
 			`follower`,
+			string,
 			{ loyalty: number }
 		>({
 			cardinality: `1:n`,
@@ -484,7 +486,7 @@ describe(`Junction.prototype.has`, () => {
 				cardinality: `1:n`,
 				relations: [[player, [room]]],
 			})
-			expect(playersInRooms.has(`other player`)).toBe(false)
+			expect(playersInRooms.has(`other player` as any)).toBe(false)
 		})
 	})
 	describe(`dual param`, () => {
@@ -506,7 +508,7 @@ describe(`Junction.prototype.has`, () => {
 				cardinality: `1:n`,
 				relations: [[player, [room]]],
 			})
-			expect(playersInRooms.has(player, `other room`)).toBe(false)
+			expect(playersInRooms.has(player, `other room` as any)).toBe(false)
 		})
 		it(`returns false if neither thing exists`, () => {
 			const playersInRooms = new Junction({

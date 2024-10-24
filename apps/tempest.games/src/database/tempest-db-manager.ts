@@ -48,7 +48,7 @@ export class DatabaseManager {
 	) {
 		this.options = options
 		this.sql = postgres(options)
-		this.drizzle = drizzle(this.sql, { schema })
+		this.drizzle = drizzle(this.sql, { schema, logger: true })
 	}
 
 	public observe(completeKey: string, callback: () => void): void {

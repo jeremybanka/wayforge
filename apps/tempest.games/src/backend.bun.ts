@@ -5,6 +5,7 @@ import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
+import { AtomIOLogger } from "atom.io"
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
 	disposeFromStore,
@@ -14,6 +15,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
 	realtimeContinuitySynchronizer,
 	socketAtoms,
@@ -44,6 +46,8 @@ const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
 const db = new DatabaseManager()
 
+IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`info`, undefined, logger)
+
 export const tribunalDaily: CronJob = (() => {
 	let { __tribunalDaily } = globalThis as any
 	if (!__tribunalDaily) {
@@ -64,7 +68,7 @@ function createServer(requestListener: RequestListener) {
 	if (httpsDev) {
 		return createSecureServer(httpsDev, requestListener)
 	}
-	return createHttpServer(requestListener)
+	return createHttpServer({}, requestListener)
 }
 
 const httpServer = createServer((req, res) => {
@@ -109,6 +113,7 @@ const httpServer = createServer((req, res) => {
 										return
 									}
 									const { username, password, email } = parsed.data
+									logger.info(`🔑 attempting to sign up: ${username}`)
 									const maybeUser = await db.drizzle.query.users.findFirst({
 										columns: { id: true },
 										where: eq(users.email, email),
@@ -127,6 +132,7 @@ const httpServer = createServer((req, res) => {
 										salt,
 										createdIp: ipAddress,
 									})
+									logger.info(`🔑 user created: ${username}`)
 									res.writeHead(201, {
 										"Content-Type": `text/plain`,
 										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
@@ -269,14 +275,17 @@ new WebSocketServer(httpServer, {
 			next(new Error(`No auth header provided`))
 			return
 		}
+		const userKey = `user::${username}` satisfies UserKey
+		const socketKey = `socket::${socket.id}` satisfies SocketKey
+
 		const userSessions = userSessionMap.get(username)
 		if (userSessions?.has(sessionKey)) {
-			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socket.id)
+			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
 			setIntoStore(IMPLICIT.STORE, socketState, socket)
 			editRelationsInStore(
 				usersOfSockets,
 				(relations) => {
-					relations.set(socket.id, username)
+					relations.set(userKey, socketKey)
 				},
 				IMPLICIT.STORE,
 			)
@@ -296,16 +305,17 @@ new WebSocketServer(httpServer, {
 		})
 		const cleanup = syncContinuity(countContinuity)
 		socket.on(`disconnect`, () => {
+			const socketKey = `socket::${socket.id}` satisfies SocketKey
 			const userKeyState = findRelationsInStore(
 				usersOfSockets,
-				socket.id,
+				socketKey,
 				IMPLICIT.STORE,
 			).userKeyOfSocket
 			const userKey = getFromStore(IMPLICIT.STORE, userKeyState)
 			editRelationsInStore(
 				usersOfSockets,
 				(relations) => {
-					relations.delete(socket.id)
+					relations.delete(socketKey)
 				},
 				IMPLICIT.STORE,
 			)

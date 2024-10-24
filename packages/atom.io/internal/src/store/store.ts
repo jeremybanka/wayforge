@@ -56,7 +56,9 @@ export class Store implements Lineage {
 	})
 	public selectorGraph = new Junction<
 		`upstreamSelectorKey`,
+		string,
 		`downstreamSelectorKey`,
+		string,
 		{ source: string }
 	>(
 		{
@@ -88,7 +90,9 @@ export class Store implements Lineage {
 	public timelines = new Map<string, Timeline<any>>()
 	public timelineTopics = new Junction<
 		`timelineKey`,
+		string,
 		`topicKey`,
+		string,
 		{ topicType: `atom_family` | `atom` | `molecule_family` | `molecule` }
 	>({
 		between: [`timelineKey`, `topicKey`],

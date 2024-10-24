@@ -7,6 +7,7 @@ import type {
 	WritableSelectorFamilyToken,
 } from "./selector"
 
+export * from "./allocate"
 export * from "./atom"
 export * from "./dispose-state"
 export * from "./get-state"

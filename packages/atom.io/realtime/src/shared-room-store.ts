@@ -31,6 +31,8 @@ export const usersInRooms = join(
 		key: `usersInRooms`,
 		between: [`room`, `user`],
 		cardinality: `1:n`,
+		isAType: (input): input is string => typeof input === `string`,
+		isBType: (input): input is string => typeof input === `string`,
 	},
 	DEFAULT_USER_IN_ROOM_META,
 )

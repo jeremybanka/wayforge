@@ -31,7 +31,7 @@ export class Molecule<M extends MoleculeConstructor>
 	public tokens = new Map<string, ReadableToken<any>>()
 	public above = new Map<string, Molecule<any>>()
 	public below = new Map<string, Molecule<any>>()
-	public joins = new Map<string, Join<any, any, any, any>>()
+	public joins = new Map<string, Join<any, any, any, any, any, any>>()
 	public instance: InstanceType<M>
 	public constructor(
 		ctx: Molecule<any>[] | undefined,

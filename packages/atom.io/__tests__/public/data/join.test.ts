@@ -8,6 +8,7 @@ import {
 } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
+import { number } from "zod"
 
 import * as Utils from "../../__util__"
 
@@ -37,6 +38,9 @@ describe(`join with content`, () => {
 				key: `roomPlayers`,
 				between: [`room`, `player`],
 				cardinality: `1:1`,
+				isAType: (input): input is `arena` | `lobby` =>
+					[`lobby`, `arena`].includes(input),
+				isBType: (input): input is `joshua` => input === `joshua`,
 			},
 			{ joinedAt: Number.NaN },
 		)
@@ -92,6 +96,9 @@ describe(`join with content`, () => {
 				key: `playersInRooms`,
 				between: [`room`, `player`],
 				cardinality: `1:n`,
+				isAType: (input): input is `arena` | `lobby` =>
+					[`lobby`, `arena`].includes(input),
+				isBType: (input): input is `joshua` => input === `joshua`,
 			},
 			{ joinedAt: Number.NaN },
 		)
@@ -143,6 +150,10 @@ describe(`join with content`, () => {
 				key: `playersInRooms`,
 				between: [`room`, `player`],
 				cardinality: `n:n`,
+				isAType: (input): input is `arena` | `lobby` =>
+					[`lobby`, `arena`].includes(input),
+				isBType: (input): input is `josh` | `joshua` =>
+					[`josh`, `joshua`].includes(input),
 			},
 			{ joinedAt: Number.NaN },
 		)
@@ -176,7 +187,7 @@ describe(`join with content`, () => {
 			expect(relations.has(`josh`, `lobby`)).toBe(false)
 			expect(relations.has(`joshua`)).toBe(true)
 			expect(relations.has(`joshua`, `lobby`)).toBe(true)
-			expect(relations.getContent(`joshua`, `lobby`)).toEqual({
+			expect(relations.getContent(`lobby`, `joshua`)).toEqual({
 				joinedAt,
 			})
 		})
@@ -213,6 +224,9 @@ describe(`join with no content`, () => {
 			key: `roomPlayers`,
 			between: [`room`, `player`],
 			cardinality: `1:1`,
+			isAType: (input): input is `arena` | `lobby` =>
+				[`lobby`, `arena`].includes(input),
+			isBType: (input): input is `joshua` => input === `joshua`,
 		})
 		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
 		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
@@ -245,6 +259,9 @@ describe(`some practical use cases`, () => {
 			key: `cardValues`,
 			between: [`value`, `card`],
 			cardinality: `1:n`,
+			isAType: (input): input is string => typeof input === `number`,
+			isBType: (input): input is `${number}` =>
+				Number(input).toString() === input,
 		})
 		const failingTX = transaction<() => void>({
 			key: `I ALWAYS FAIL`,
@@ -279,6 +296,10 @@ describe(`some practical use cases`, () => {
 				[`b`, [`3`]],
 				[`c`, [`2`]],
 			],
+			isAType: (input): input is `a` | `b` | `c` =>
+				[`a`, `b`, `c`].includes(input),
+			isBType: (input): input is `1` | `2` | `3` =>
+				[`1`, `2`, `3`].includes(input),
 		})
 		expect(getState(findRelations(userGroups, `a`).groupKeysOfUser)).toEqual([
 			`1`,
@@ -310,6 +331,10 @@ describe(`some practical use cases`, () => {
 				[`b`, [`2`]],
 				[`c`, [`3`]],
 			],
+			isAType: (input): input is `a` | `b` | `c` =>
+				[`a`, `b`, `c`].includes(input),
+			isBType: (input): input is `1` | `2` | `3` =>
+				[`1`, `2`, `3`].includes(input),
 		})
 		editRelations(userGroups, (relations) => {
 			relations.replaceRelations(`a`, [`2`, `3`])
@@ -344,6 +369,9 @@ describe(`some practical use cases`, () => {
 				[`b`, [`2`]],
 				[`c`, [`3`]],
 			],
+			isAType: (input): input is string => typeof input === `number`,
+			isBType: (input): input is `${number}` =>
+				Number(input).toString() === input,
 		})
 		editRelations(cardValues, (relations) => {
 			relations.replaceRelations(`a`, [`1`, `2`, `3`])
@@ -364,6 +392,10 @@ describe(`some practical use cases`, () => {
 			key: `membersOfGroups`,
 			between: [`group`, `user`],
 			cardinality: `1:n`,
+			isAType: (input): input is `a` | `b` | `c` =>
+				[`a`, `b`, `c`].includes(input),
+			isBType: (input): input is `1` | `2` | `3` =>
+				[`1`, `2`, `3`].includes(input),
 		})
 		const membersOfGroupsAtoms = getInternalRelations(membersOfGroups)
 		expect(membersOfGroupsAtoms.key).toEqual(`membersOfGroups/relatedKeys`)
@@ -390,6 +422,9 @@ describe(`advanced performance tests`, () => {
 				key: `cardValues`,
 				between: [`value`, `card`],
 				cardinality: `1:n`,
+				isAType: (input): input is string => typeof input === `number`,
+				isBType: (input): input is `${number}` =>
+					Number(input).toString() === input,
 			})
 		}
 		function createBasicTX() {
@@ -409,9 +444,9 @@ describe(`advanced performance tests`, () => {
 			return transaction<(count: number) => void>({
 				key: `loopingSafeReplacement`,
 				do: (_, count) => {
-					const newRelationsOfA: string[] = []
+					const newRelationsOfA: `${number}`[] = []
 					for (let i = 0; i < count; i++) {
-						newRelationsOfA.push(String(i))
+						newRelationsOfA.push(`${i}`)
 					}
 					editRelations(cardValues, (relations) => {
 						relations.replaceRelations(`a`, newRelationsOfA)
@@ -423,9 +458,9 @@ describe(`advanced performance tests`, () => {
 			return transaction<(count: number) => void>({
 				key: `loopingUnsafeReplacement`,
 				do: (_, count) => {
-					const newRelationsOfA: string[] = []
+					const newRelationsOfA: `${number}`[] = []
 					for (let i = 0; i < count; i++) {
-						newRelationsOfA.push(String(i))
+						newRelationsOfA.push(`${i}`)
 					}
 					editRelations(cardValues, (relations) => {
 						relations.replaceRelations(`a`, newRelationsOfA, {
