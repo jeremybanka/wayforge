@@ -52,7 +52,7 @@
 		"socket.io-client": "4.8.0",
 		"treetrunks": "workspace:*",
 		"zod": "3.23.8",
-		"zod-to-json-schema": "3.23.3"
+		"zod-to-json-schema": "3.23.5"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.13.0",
