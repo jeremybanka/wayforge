@@ -49,7 +49,7 @@ setInterval(() => {
 
 parentSocket.relay((userSocket) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
-		relations.set(userSocket.id, `relay:${userSocket.id}`)
+		relations.set(`user::relay:${userSocket.id}`, `socket::${userSocket.id}`)
 	})
 	const continuitySynchronizer = RTS.realtimeContinuitySynchronizer({
 		socket: userSocket,

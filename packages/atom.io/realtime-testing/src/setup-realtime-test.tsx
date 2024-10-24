@@ -3,6 +3,7 @@ import * as http from "node:http"
 import type { RenderResult } from "@testing-library/react"
 import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
+import { realm } from "atom.io"
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import type { Store } from "atom.io/internal"
 import {
@@ -44,6 +45,7 @@ function prefixLogger(store: Store, prefix: string) {
 
 export type TestSetupOptions = {
 	port: number
+	immortal?: { server?: boolean }
 	server: (tools: {
 		socket: SocketIO.Socket
 		silo: AtomIO.Silo
@@ -97,9 +99,13 @@ export const setupRealtimeTestServer = (
 ): RealtimeTestServer => {
 	++testNumber
 	const silo = new AtomIO.Silo(
-		{ name: `SERVER-${testNumber}`, lifespan: `ephemeral` },
+		{
+			name: `SERVER-${testNumber}`,
+			lifespan: options.immortal?.server ? `immortal` : `ephemeral`,
+		},
 		IMPLICIT.STORE,
 	)
+	const socketRealm = realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen(options.port).address()
@@ -110,12 +116,14 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const socketState = findInStore(silo.store, RTS.socketAtoms, socket.id)
+			const userClaim = socketRealm.allocate(`root`, `user::${username}`)
+			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
+			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
 			setIntoStore(silo.store, socketState, socket)
 			editRelationsInStore(
 				RTS.usersOfSockets,
 				(relations) => {
-					relations.set(socket.id, username)
+					relations.set(userClaim, socketClaim)
 				},
 				silo.store,
 			)
@@ -133,7 +141,7 @@ export const setupRealtimeTestServer = (
 		function enableLogging() {
 			const userKeyState = findRelationsInStore(
 				RTS.usersOfSockets,
-				socket.id,
+				`socket::${socket.id}`,
 				silo.store,
 			).userKeyOfSocket
 			userKey = getFromStore(silo.store, userKeyState)

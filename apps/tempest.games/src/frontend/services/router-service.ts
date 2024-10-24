@@ -8,7 +8,7 @@ export const ROUTES = required({
 	login: null,
 	sign_up: null,
 	game: optional({
-		$gameId: null,
+		clicker: null,
 	}),
 	admin: null,
 }) satisfies Tree

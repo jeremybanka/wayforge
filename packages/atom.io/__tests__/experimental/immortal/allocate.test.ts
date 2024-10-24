@@ -1,27 +1,20 @@
 import { randomUUID } from "node:crypto"
 
-import type { Logger } from "atom.io"
+import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
 	atomFamily,
 	disposeState,
 	getState,
+	realm,
 	redo,
 	runTransaction,
 	setState,
+	T$,
 	timeline,
 	transaction,
 	undo,
 } from "atom.io"
 import { clearStore, IMPLICIT } from "atom.io/internal"
-
-import type {
-	Above,
-	Below,
-	Hierarchy,
-	Mutuals,
-	Vassal,
-} from "~/packages/atom.io/src/allocate"
-import { realm, T$ } from "~/packages/atom.io/src/allocate"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -39,10 +32,10 @@ beforeEach(() => {
 })
 describe(`allocate`, () => {
 	test(`the Hierarchy + allocate + claim pattern`, () => {
-		type GameKey = [`game`, string]
-		type UserKey = [`user`, string]
-		type PlayerKey = [[T$, `player`], GameKey, UserKey]
-		type ItemKey = [`item`, string]
+		type GameKey = `game::${string}`
+		type UserKey = `user::${string}`
+		type PlayerKey = `T$--player==${GameKey}++${UserKey}`
+		type ItemKey = `item::${string}`
 
 		type GameHierarchy = Hierarchy<
 			[
@@ -89,11 +82,11 @@ describe(`allocate`, () => {
 			default: 0,
 		})
 
-		const gameKey = [`game`, `xxx`] satisfies GameKey
-		const userKey = [`user`, `yyy`] satisfies UserKey
-		const playerKey = [[T$, `player`], gameKey, userKey] satisfies PlayerKey
-		const swordKey = [`item`, `sword`] as [`item`, string]
-		const shieldKey = [`item`, `shield`] as [`item`, string]
+		const gameKey = `game::xxx` satisfies GameKey
+		const userKey = `user::yyy` satisfies UserKey
+		const playerKey = `T$--player==${gameKey}++${userKey}` satisfies PlayerKey
+		const swordKey = `item::sword` satisfies ItemKey
+		const shieldKey = `item::shield` satisfies ItemKey
 
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		let myItemDurability = getState(durabilityAtoms, swordKey)
@@ -132,17 +125,17 @@ describe(`allocate`, () => {
 
 		console.log(IMPLICIT.STORE.molecules)
 
-		gameRealm.allocate(playerClaim, [`item`, `aaa`])
-		gameRealm.allocate(gameClaim, [`item`, `aaa`])
+		gameRealm.allocate(playerClaim, `item::aaa`)
+		gameRealm.allocate(gameClaim, `item::aaa`)
 		gameRealm.allocate(
 			[gameClaim, userClaim],
-			[[T$, `player`], gameKey, userKey],
+			`T$--player==${gameKey}++${userKey}`,
 		)
 	})
 	test(`transaction+timeline support`, () => {
-		type DocumentKey = [`document`, string]
-		type UserKey = [`user`, string]
-		type UserGroupKey = [`userGroup`, string]
+		type DocumentKey = `document::${string}`
+		type UserKey = `user::${string}`
+		type UserGroupKey = `userGroup::${string}`
 		type DocumentHierarchy = Hierarchy<
 			[
 				{
@@ -171,7 +164,7 @@ describe(`allocate`, () => {
 		>({
 			key: `createDocument`,
 			do: ({ set }, owner) => {
-				const documentKey = [`document`, randomUUID()] satisfies DocumentKey
+				const documentKey = `document::${randomUUID()}` satisfies DocumentKey
 				allocate(owner, documentKey)
 				set(documentAtoms, documentKey, `hello work!`)
 				return documentKey
@@ -191,8 +184,8 @@ describe(`allocate`, () => {
 		const createDocument = runTransaction(createDocumentTX)
 		const deleteDocument = runTransaction(deleteDocumentTX)
 
-		allocate(`root`, [`userGroup`, `homies`])
-		const documentClaim = createDocument([`userGroup`, `homies`])
+		allocate(`root`, `userGroup::homies`)
+		const documentClaim = createDocument(`userGroup::homies`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		deleteDocument(documentClaim)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)

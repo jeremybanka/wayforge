@@ -65,7 +65,6 @@ export function isTreePath<T extends Tree>(
 	maybePath: unknown[],
 ): maybePath is TreePath<T> {
 	let currentTreeNode: Tree | null = tree
-	console.log(maybePath)
 	for (const segment of maybePath) {
 		if (currentTreeNode === null) {
 			return false

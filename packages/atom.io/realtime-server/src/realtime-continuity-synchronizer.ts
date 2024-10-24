@@ -15,7 +15,7 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type { ServerConfig, Socket } from "."
+import type { ServerConfig, Socket, SocketKey } from "."
 import { socketAtoms, usersOfSockets } from "."
 import {
 	redactTransactionUpdateContent,
@@ -35,7 +35,7 @@ export function realtimeContinuitySynchronizer({
 		const continuityKey = continuity.key
 		const userKeyState = findRelationsInStore(
 			usersOfSockets,
-			socket.id,
+			`socket::${socket.id}`,
 			store,
 		).userKeyOfSocket
 		const userKey = getFromStore(store, userKeyState)

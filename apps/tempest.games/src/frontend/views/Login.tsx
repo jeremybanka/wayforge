@@ -9,6 +9,7 @@ import { navigate } from "../services/router-service"
 import {
 	authAtom,
 	password0InputAtom,
+	socket,
 	usernameInputAtom,
 } from "../services/socket-auth-service"
 
@@ -36,10 +37,12 @@ export function Login(): JSX.Element {
 				if (response.status === 200) {
 					setUsername(``)
 					setPassword(``)
-					navigate(`/game`)
 					const responseText = await response.text()
 					const [, sessionKey] = responseText.split(` `)
 					setState(authAtom, { username, sessionKey })
+					socket.once(`connect`, () => {
+						navigate(`/game`)
+					})
 				}
 				if (response.status >= 400) {
 					const responseText = await response.text()
