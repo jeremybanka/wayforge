@@ -1,5 +1,19 @@
 # tempest.games
 
+## 0.1.9
+
+### Patch Changes
+
+- 331800a: 🔊 Add atom.io logging.
+- 331800a: 🐛 Fixed broken redirect on signup.
+- 331800a: 🐛 Fixed flash of 401 on login.
+- 331800a: 🔊 Added database logging.
+- Updated dependencies [331800a]
+- Updated dependencies [331800a]
+- Updated dependencies [331800a]
+  - treetrunks@0.0.3
+  - atom.io@0.30.1
+
 ## 0.1.8
 
 ### Patch Changes
