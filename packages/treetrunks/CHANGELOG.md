@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.3
+
+### Patch Changes
+
+- 331800a: 🧹 Remove extra console.log
+
 ## 0.0.2
 
 ### Patch Changes

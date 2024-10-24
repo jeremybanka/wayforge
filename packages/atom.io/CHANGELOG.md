@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.30.1
+
+### Patch Changes
+
+- 331800a: ✨ Add type information to Join and Junction reflecting the subtypes of string used by the A- and B- sides of the relations.
+- 331800a: ♻️ Made changes to the expermental allocate API: instead of array-based keys like `["socket", <id>]` , the API is now oriented toward "tagged strings" such as `"socket::<id>"`. This should reduce the amount of serialization/deserialization needed to make use of this memory management strategy.
+
 ## 0.30.0
 
 ### Minor Changes
