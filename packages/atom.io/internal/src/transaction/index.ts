@@ -24,5 +24,5 @@ export type TransactionProgress<F extends Func> = {
 
 export type TransactionEpoch = {
 	epoch: Map<string, number>
-	actionContinuities: Junction<`continuity`, `action`>
+	actionContinuities: Junction<`continuity`, string, `action`, string>
 }

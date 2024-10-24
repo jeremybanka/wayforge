@@ -255,6 +255,8 @@ describe(`immortal integrations`, () => {
 				key: `holdersOfItems`,
 				between: [`holder`, `item`],
 				cardinality: `1:n`,
+				isAType: (a): a is string => typeof a === `string`,
+				isBType: (b): b is string => typeof b === `string`,
 			},
 			{ affinity: 0 } satisfies { affinity: number },
 		)
