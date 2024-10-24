@@ -19,8 +19,8 @@ import type { seekState } from "atom.io/immortal"
 import type {
 	BaseExternalStoreConfiguration,
 	ExternalStoreConfiguration,
-	JunctionEntries,
-	JunctionSchema,
+	JunctionEntriesBase,
+	JunctionSchemaBase,
 	Molecule,
 	Store,
 } from "atom.io/internal"
@@ -45,6 +45,7 @@ import {
 	setIntoStore,
 	withdraw,
 } from "atom.io/internal"
+import type { Refinement } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -61,12 +62,12 @@ export interface JoinOptions<
 	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
-> extends Json.Object,
-		JunctionSchema<ASide, BSide>,
-		Partial<JunctionEntries<AType, BType, Content>> {
+> extends JunctionSchemaBase<ASide, BSide>,
+		Partial<JunctionEntriesBase<AType, BType, Content>> {
 	readonly key: string
 	readonly cardinality: Cardinality
-	readonly types: [AType, BType]
+	readonly isAType: Refinement<string, AType>
+	readonly isBType: Refinement<string, BType>
 }
 
 export type JoinStateFamilies<
@@ -84,7 +85,7 @@ export type JoinStateFamilies<
 						BType
 					>
 				} & {
-					readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 						[BType, Content] | null,
 						AType
 					>
@@ -95,7 +96,7 @@ export type JoinStateFamilies<
 				BType
 			>
 		} & {
-			readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
 				BType | null,
 				AType
 			>
@@ -127,7 +128,7 @@ export type JoinStateFamilies<
 		: Cardinality extends `n:n`
 			? (Content extends Json.Object
 					? {
-							readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
 								[AType, Content][],
 								BType
 							>
@@ -138,7 +139,7 @@ export type JoinStateFamilies<
 							>
 						}
 					: {}) & {
-					readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
 						AType[],
 						BType
 					>
@@ -235,7 +236,7 @@ export class Join<
 			if (maybeToken) {
 				return maybeToken
 			}
-			const molecule = this.molecules.get(stringifyJson(key))
+			const molecule = this.store.molecules.get(stringifyJson(key))
 			if (molecule) {
 				const family = withdraw(token, store)
 				return growMoleculeInStore(molecule, family, store)
@@ -436,20 +437,6 @@ export class Join<
 				},
 				[`join`, `content`],
 			)
-			const joinToken = {
-				key: options.key,
-				type: `join`,
-				a: options.between[0],
-				b: options.between[1],
-				cardinality: options.cardinality,
-			} as const satisfies JoinToken<
-				ASide,
-				AType,
-				BSide,
-				BType,
-				Cardinality,
-				Content
-			>
 			contentMolecules = createMoleculeFamily(store, {
 				key: `${options.key}/content-molecules`,
 				new: class ContentMolecule {
@@ -499,9 +486,11 @@ export class Join<
 				baseExternalStoreConfiguration as ExternalStoreConfiguration<Content>
 		}
 		const relations = new Junction<ASide, AType, BSide, BType, Content>(
-			options,
+			options as any,
 			{
 				externalStore,
+				isAType: options.isAType,
+				isBType: options.isBType,
 				makeContentKey: (...args) => {
 					const sorted = args.sort()
 					const compositeKey = `${sorted[0]}:${sorted[1]}`
@@ -821,56 +810,82 @@ export function getJoin<
 
 export type JoinStates<
 	ASide extends string,
+	AType extends string,
 	BSide extends string,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
 	? (Content extends Json.Object
 			? {
-					readonly [AB in ASide | BSide as AB extends ASide
-						? `${AB}EntryOf${Capitalize<BSide>}`
-						: `${AB}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-						[string, Content] | null
+					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+						[AType, Content] | null,
+						BType
+					>
+				} & {
+					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+						[BType, Content] | null,
+						AType
 					>
 				}
 			: {}) & {
-			readonly [AB in ASide | BSide as AB extends ASide
-				? `${AB}KeyOf${Capitalize<BSide>}`
-				: `${AB}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorToken<string | null>
+			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+				AType | null,
+				BType
+			>
+		} & {
+			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+				BType | null,
+				AType
+			>
 		}
 	: Cardinality extends `1:n`
 		? (Content extends Json.Object
 				? {
 						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-							[string, Content] | null
+							[AType, Content] | null,
+							BType
 						>
 					} & {
 						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-							[string, Content][]
+							[BType, Content][],
+							AType
 						>
 					}
 				: {}) & {
 				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-					string | null
+					AType | null,
+					BType
 				>
 			} & {
 				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-					string[]
+					BType[],
+					AType
 				>
 			}
 		: Cardinality extends `n:n`
 			? (Content extends Json.Object
 					? {
-							readonly [AB in ASide | BSide as AB extends ASide
-								? `${AB}EntriesOf${Capitalize<BSide>}`
-								: `${AB}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-								[string, Content][]
+							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+								[AType, Content][],
+								BType
+							>
+						} & {
+							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+								[BType, Content][],
+								AType
 							>
 						}
 					: {}) & {
-					readonly [AB in ASide | BSide as AB extends ASide
-						? `${AB}KeysOf${Capitalize<BSide>}`
-						: `${AB}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<string[]>
+					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlySelectorFamilyToken<
+						AType[],
+						BType
+					>
+				} & {
+					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorFamilyToken<
+						BType[],
+						AType
+					>
 				}
 			: never
 
@@ -883,11 +898,11 @@ export function findRelationsInStore<
 	Content extends Json.Object | null,
 >(
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	key: string,
+	key: AType | BType,
 	store: Store,
-): JoinStates<ASide, BSide, Cardinality, Content> {
+): JoinStates<ASide, AType, BSide, BType, Cardinality, Content> {
 	const myJoin = getJoin(token, store)
-	let relations: JoinStates<ASide, BSide, Cardinality, Content>
+	let relations: JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
 	switch (token.cardinality satisfies `1:1` | `1:n` | `n:n`) {
 		case `1:1`: {
 			const keyAB = `${token.a}KeyOf${capitalize(token.b)}`
@@ -903,7 +918,7 @@ export function findRelationsInStore<
 					const state = myJoin.retrieve(familyBA, key)
 					return state
 				},
-			} as JoinStates<ASide, BSide, Cardinality, Content>
+			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
 			const entryAB = `${token.a}EntryOf${capitalize(token.b)}`
 			if (entryAB in myJoin.states) {
 				const entryBA = `${token.b}EntryOf${capitalize(token.a)}`
@@ -936,7 +951,7 @@ export function findRelationsInStore<
 					const state = myJoin.retrieve(familyBA, key)
 					return state
 				},
-			} as JoinStates<ASide, BSide, Cardinality, Content>
+			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
 			const entryAB = `${token.a}EntryOf${capitalize(token.b)}`
 			if (entryAB in myJoin.states) {
 				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
@@ -969,7 +984,7 @@ export function findRelationsInStore<
 					const state = myJoin.retrieve(familyBA, key)
 					return state
 				},
-			} as JoinStates<ASide, BSide, Cardinality, Content>
+			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
 			const entriesAB = `${token.a}EntriesOf${capitalize(token.b)}`
 			if (entriesAB in myJoin.states) {
 				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
@@ -1000,8 +1015,8 @@ export function findRelations<
 	Content extends Json.Object | null,
 >(
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	key: string,
-): JoinStates<ASide, BSide, Cardinality, Content> {
+	key: AType | BType,
+): JoinStates<ASide, AType, BSide, BType, Cardinality, Content> {
 	return findRelationsInStore(token, key, IMPLICIT.STORE)
 }
 

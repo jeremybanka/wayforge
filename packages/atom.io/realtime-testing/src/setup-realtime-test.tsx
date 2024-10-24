@@ -105,7 +105,7 @@ export const setupRealtimeTestServer = (
 		},
 		IMPLICIT.STORE,
 	)
-	const socketSystem = realm<RTS.SocketSystemHierarchy>(silo.store)
+	const socketRealm = realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen(options.port).address()
@@ -116,13 +116,14 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const socketToken = socketSystem.allocate(`root`, [`socket`, socket.id])
-			const socketState = findInStore(silo.store, RTS.socketAtoms, socketToken)
+			const userClaim = socketRealm.allocate(`root`, `user::${username}`)
+			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
+			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
 			setIntoStore(silo.store, socketState, socket)
 			editRelationsInStore(
 				RTS.usersOfSockets,
 				(relations) => {
-					relations.set(socket.id, username)
+					relations.set(userClaim, socketClaim)
 				},
 				silo.store,
 			)
@@ -140,7 +141,7 @@ export const setupRealtimeTestServer = (
 		function enableLogging() {
 			const userKeyState = findRelationsInStore(
 				RTS.usersOfSockets,
-				socket.id,
+				`socket::${socket.id}`,
 				silo.store,
 			).userKeyOfSocket
 			userKey = getFromStore(silo.store, userKeyState)

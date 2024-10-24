@@ -15,6 +15,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
 	realtimeContinuitySynchronizer,
 	socketAtoms,
@@ -274,14 +275,17 @@ new WebSocketServer(httpServer, {
 			next(new Error(`No auth header provided`))
 			return
 		}
+		const userKey = `user::${username}` satisfies UserKey
+		const socketKey = `socket::${socket.id}` satisfies SocketKey
+
 		const userSessions = userSessionMap.get(username)
 		if (userSessions?.has(sessionKey)) {
-			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socket.id)
+			const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
 			setIntoStore(IMPLICIT.STORE, socketState, socket)
 			editRelationsInStore(
 				usersOfSockets,
 				(relations) => {
-					relations.set(socket.id, username)
+					relations.set(userKey, socketKey)
 				},
 				IMPLICIT.STORE,
 			)
@@ -301,16 +305,17 @@ new WebSocketServer(httpServer, {
 		})
 		const cleanup = syncContinuity(countContinuity)
 		socket.on(`disconnect`, () => {
+			const socketKey = `socket::${socket.id}` satisfies SocketKey
 			const userKeyState = findRelationsInStore(
 				usersOfSockets,
-				socket.id,
+				socketKey,
 				IMPLICIT.STORE,
 			).userKeyOfSocket
 			const userKey = getFromStore(IMPLICIT.STORE, userKeyState)
 			editRelationsInStore(
 				usersOfSockets,
 				(relations) => {
-					relations.delete(socket.id)
+					relations.delete(socketKey)
 				},
 				IMPLICIT.STORE,
 			)

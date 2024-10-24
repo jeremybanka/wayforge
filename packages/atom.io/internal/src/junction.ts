@@ -2,19 +2,28 @@ import type { Refinement } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { B } from "vitest/dist/chunks/benchmark.JVlTzojj.js"
 
+export type JunctionEntriesBase<
+	AType extends string,
+	BType extends string,
+	Content extends Json.Object | null,
+> = {
+	readonly relations: ([AType, BType[]] | [BType, AType[]])[]
+	readonly contents: [string, Content][]
+}
 export interface JunctionEntries<
 	AType extends string,
 	BType extends string,
 	Content extends Json.Object | null,
-> extends Json.Object {
-	readonly relations: ([AType, BType[]] | [BType, AType[]])[]
-	readonly contents: [string, Content][]
-}
-export interface JunctionSchema<ASide extends string, BSide extends string>
-	extends Json.Object {
+> extends Json.Object,
+		JunctionEntriesBase<AType, BType, Content> {}
+
+export type JunctionSchemaBase<ASide extends string, BSide extends string> = {
 	readonly between: [a: ASide, b: BSide]
 	readonly cardinality: `1:1` | `1:n` | `n:n`
 }
+export interface JunctionSchema<ASide extends string, BSide extends string>
+	extends Json.Object,
+		JunctionSchemaBase<ASide, BSide> {}
 
 export type BaseExternalStoreConfiguration = {
 	addRelation: (a: string, b: string) => void
@@ -50,6 +59,8 @@ export type JunctionAdvancedConfiguration<
 > = {
 	warn?: (...args: any[]) => void
 	externalStore?: ExternalStoreConfiguration<Content>
+	isAType?: Refinement<string, AType>
+	isBType?: Refinement<string, BType>
 	isContent?: Refinement<unknown, Content>
 	makeContentKey?: (a: AType, b: BType) => string
 }
@@ -287,6 +298,7 @@ export class Junction<
 	}
 
 	public delete(a: AType, b?: BType): this
+	public delete(b: BType, a?: AType): this
 	public delete(
 		relation:
 			| { [Key in ASide]: AType }
@@ -297,18 +309,20 @@ export class Junction<
 	public delete(
 		x:
 			| AType
+			| BType
 			| Record<ASide | BSide, string>
 			| Record<ASide, string>
 			| Record<BSide, string>,
-		b?: BType,
+		b?: AType | BType,
 	): this {
 		// @ts-expect-error we deduce that this.b may index x
-		b = typeof b === `string` ? b : (x[this.b] as BType | undefined)
-		// @ts-expect-error we deduce that this.a may index x
-		const a = typeof x === `string` ? x : (x[this.a] as AType | undefined)
+		b = typeof b === `string` ? (b as BType) : (x[this.b] as BType | undefined)
+		const a =
+			// @ts-expect-error we deduce that this.a may index x
+			typeof x === `string` ? (x as AType) : (x[this.a] as AType | undefined)
 
 		if (a === undefined && typeof b === `string`) {
-			const bRelations = this.getRelatedKeys(b)
+			const bRelations = this.getRelatedKeys(b) as Set<AType>
 			if (bRelations) {
 				for (const bRelation of bRelations) {
 					this.delete(bRelation, b)

@@ -42,4 +42,6 @@ export const usersOfSockets = join({
 	key: `usersOfSockets`,
 	between: [`user`, `socket`],
 	cardinality: `1:1`,
+	isAType: (s): s is UserKey => s.startsWith(`user::`),
+	isBType: (s): s is SocketKey => s.startsWith(`socket::`),
 })

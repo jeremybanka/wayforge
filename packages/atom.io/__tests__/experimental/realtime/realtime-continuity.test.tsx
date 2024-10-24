@@ -85,7 +85,7 @@ describe(`synchronizing transactions`, () => {
 			{ countState, incrementTX },
 		)
 	}
-	test.only(`client 1 -> server -> client 2`, async () => {
+	test(`client 1 -> server -> client 2`, async () => {
 		const { clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
@@ -136,7 +136,7 @@ describe(`synchronizing transactions`, () => {
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 30000 })
 
 		await teardown()
-	}, 30000)
+	})
 })
 
 describe(`mutable atoms in continuity`, () => {

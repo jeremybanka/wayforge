@@ -35,7 +35,7 @@ export function realtimeContinuitySynchronizer({
 		const continuityKey = continuity.key
 		const userKeyState = findRelationsInStore(
 			usersOfSockets,
-			socket.id,
+			`socket::${socket.id}`,
 			store,
 		).userKeyOfSocket
 		const userKey = getFromStore(store, userKeyState)
@@ -56,14 +56,14 @@ export function realtimeContinuitySynchronizer({
 		).socketKeyOfUser
 		subscribeToState(
 			socketKeyState,
-			({ newValue: newSocketId }) => {
+			({ newValue: newSocketKey }) => {
 				store.logger.info(
 					`👋`,
 					`continuity`,
 					continuityKey,
-					`seeing ${userKey} on new socket ${newSocketId}`,
+					`seeing ${userKey} on new socket ${newSocketKey}`,
 				)
-				if (newSocketId === null) {
+				if (newSocketKey === null) {
 					store.logger.warn(
 						`❌`,
 						`continuity`,
@@ -72,7 +72,6 @@ export function realtimeContinuitySynchronizer({
 					)
 					return
 				}
-				const newSocketKey = [`socket`, newSocketId] satisfies SocketKey
 				const newSocketState = findInStore(store, socketAtoms, newSocketKey)
 				const newSocket = getFromStore(store, newSocketState)
 				socket = newSocket
