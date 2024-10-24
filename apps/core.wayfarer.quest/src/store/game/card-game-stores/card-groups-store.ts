@@ -171,6 +171,8 @@ export const groupsOfCards = join({
 	key: `groupsOfCards`,
 	between: [`group`, `card`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })
 export const groupsOfCardsGlobalView = selector<
 	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[]
@@ -206,6 +208,8 @@ export const ownersOfGroups = join({
 	key: `ownersOfGroups`,
 	between: [`player`, `group`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })
 export const ownersOfGroupsGlobalView = selector<
 	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[]

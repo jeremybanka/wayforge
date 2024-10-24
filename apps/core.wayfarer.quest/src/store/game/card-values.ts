@@ -22,4 +22,6 @@ export const valuesOfCards = join({
 	key: `valuesOfCards`,
 	between: [`value`, `card`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })
