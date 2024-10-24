@@ -10,11 +10,15 @@ export const trickContributions = join({
 	key: `trickContributions`,
 	between: [`player`, `card`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })
 export const trickWinners = join({
 	key: `trickWinners`,
 	between: [`player`, `trick`],
 	cardinality: `1:n`,
+	isAType: (input): input is string => typeof input === `string`,
+	isBType: (input): input is string => typeof input === `string`,
 })
 
 export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({

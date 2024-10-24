@@ -270,7 +270,10 @@ new WebSocketServer(httpServer, {
 	},
 })
 	.use((socket, next) => {
-		const { username, sessionKey } = socket.handshake.auth
+		const { username, sessionKey } = socket.handshake.auth as {
+			username: string
+			sessionKey: string
+		}
 		if (!(username && sessionKey)) {
 			next(new Error(`No auth header provided`))
 			return
@@ -289,8 +292,8 @@ new WebSocketServer(httpServer, {
 				},
 				IMPLICIT.STORE,
 			)
-			setIntoStore(IMPLICIT.STORE, userIndex, (index) => index.add(username))
-			setIntoStore(IMPLICIT.STORE, socketIndex, (index) => index.add(socket.id))
+			setIntoStore(IMPLICIT.STORE, userIndex, (index) => index.add(userKey))
+			setIntoStore(IMPLICIT.STORE, socketIndex, (index) => index.add(socketKey))
 			logger.info(`${username} connected on ${socket.id}`)
 			next()
 		} else {
@@ -329,9 +332,8 @@ new WebSocketServer(httpServer, {
 			setIntoStore(
 				IMPLICIT.STORE,
 				socketIndex,
-				(index) => (index.delete(socket.id), index),
+				(index) => (index.delete(socketKey), index),
 			)
-			disposeFromStore(IMPLICIT.STORE, socketAtoms, socket.id)
 			logger.info(`${socket.id} disconnected`)
 			cleanup()
 		})

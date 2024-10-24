@@ -68,6 +68,8 @@ parentSocket.relay((socket) => {
 	const snapshot = generateHeapSnapshot()
 	void Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
 	const username = socket.id.split(`:`)[1]
+	const userKey = `user::${username}` satisfies RTS.UserKey
+	const socketKey = `socket::${socket.id}` satisfies RTS.SocketKey
 	socket.onAny((event, ...args) => {
 		parentSocket.logger.info(username, `<< 🛰 `, event, ...args)
 	})
@@ -79,7 +81,7 @@ parentSocket.relay((socket) => {
 		)
 	})
 	editRelations(RTS.usersOfSockets, (relations) => {
-		relations.set(username, socket.id)
+		relations.set(userKey, socketKey)
 	})
 
 	const syncContinuity = RTS.realtimeContinuitySynchronizer({ socket })

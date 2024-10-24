@@ -25,13 +25,15 @@ pipe(
 			const { token, username } = socket.handshake.auth
 			const shortId = socket.id.slice(0, 3)
 			if (token === `test` && socket.id) {
-				const socketState = findState(RTS.socketAtoms, socket.id)
+				const socketKey = `socket::${socket.id}` satisfies RTS.SocketKey
+				const socketState = findState(RTS.socketAtoms, socketKey)
 				setState(socketState, socket)
+				const userKey = `user::${username}` satisfies RTS.UserKey
 				editRelations(RTS.usersOfSockets, (relations) => {
-					relations.set(socket.id, username)
+					relations.set(userKey, socketKey)
 				})
-				setState(RTS.userIndex, (index) => index.add(username))
-				setState(RTS.socketIndex, (index) => index.add(socket.id))
+				setState(RTS.userIndex, (index) => index.add(userKey))
+				setState(RTS.socketIndex, (index) => index.add(socketKey))
 				logger.info(`[${shortId}]:${username}`, `connected`)
 				next()
 			} else {
