@@ -15,7 +15,7 @@ import {
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type { ServerConfig, Socket, SocketKey } from "."
+import type { ServerConfig, Socket } from "."
 import { socketAtoms, usersOfSockets } from "."
 import {
 	redactTransactionUpdateContent,
@@ -224,6 +224,14 @@ export function realtimeContinuitySynchronizer({
 									if (redactedUpdate) {
 										updates.push(redactedUpdate)
 										updates.sort((a, b) => a.epoch - b.epoch)
+										store.logger.info(
+											`👍`,
+											`continuity`,
+											continuityKey,
+											`${userKey} unacknowledged update queue now has`,
+											updates.length,
+											`items`,
+										)
 									}
 									return updates
 								},
@@ -239,7 +247,7 @@ export function realtimeContinuitySynchronizer({
 									`❌`,
 									`continuity`,
 									continuityKey,
-									`failed to send update from transaction ${transaction.key} to ${userKey}`,
+									`${userKey} failed to send update from transaction ${transaction.key} to ${userKey}`,
 									thrown.message,
 								)
 							}
@@ -276,7 +284,7 @@ export function realtimeContinuitySynchronizer({
 						`❌`,
 						`continuity`,
 						continuityKey,
-						`failed to run transaction ${transactionKey} with update ${updateId}`,
+						`failed to run transaction ${transactionKey} from ${userKey} with update ${updateId}`,
 						thrown.message,
 					)
 				}
@@ -292,24 +300,8 @@ export function realtimeContinuitySynchronizer({
 				`transaction`,
 				transactionKey,
 				updateId,
+				userKey,
 				metric.duration,
-			)
-
-			const valuesOfCardsViewKey = `valuesOfCardsView("${userKey}")`
-			const rootsOfCardValueView =
-				store.selectorAtoms.getRelatedKeys(valuesOfCardsViewKey)
-			const myCardValueView = store.valueMap.get(valuesOfCardsViewKey)
-
-			store.logger.info(
-				`👁`,
-				`continuity`,
-				continuityKey,
-				`seeing ${userKey} card values`,
-				{
-					valuesOfCardsViewKey,
-					rootsOfCardValueView,
-					myCardValueView,
-				},
 			)
 		}
 		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
@@ -326,6 +318,14 @@ export function realtimeContinuitySynchronizer({
 			if (isUnacknowledged) {
 				setIntoStore(store, userUnacknowledgedQueues, userKey, (updates) => {
 					updates.shift()
+					store.logger.info(
+						`👍`,
+						`continuity`,
+						continuityKey,
+						`${userKey} unacknowledged update queue now has`,
+						updates.length,
+						`items`,
+					)
 					return updates
 				})
 			}
