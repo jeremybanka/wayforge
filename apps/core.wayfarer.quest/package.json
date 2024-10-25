@@ -21,7 +21,7 @@
 		"fp-ts": "2.16.9",
 		"nanoid": "5.0.7",
 		"npmlog": "7.0.1",
-		"socket.io": "4.8.0",
+		"socket.io": "4.8.1",
 		"zod": "3.23.8"
 	},
 	"devDependencies": {

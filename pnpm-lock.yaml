@@ -145,8 +145,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -234,8 +234,8 @@ importers:
         specifier: 3.27.0
         version: 3.27.0
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -274,15 +274,15 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       socketio-auth:
         specifier: 0.1.1
         version: 0.1.1
     devDependencies:
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       tsx:
         specifier: 4.19.1
         version: 4.19.1
@@ -324,13 +324,13 @@ importers:
         version: 18.3.1(react@18.3.1)
       safegen:
         specifier: 0.0.4
-        version: 0.0.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.68.4(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.0)(socket.io@4.8.0)
+        version: 0.0.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.68.4(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       treetrunks:
         specifier: workspace:*
         version: link:../../packages/treetrunks
@@ -438,8 +438,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -475,12 +475,12 @@ importers:
         specifier: 3.86.0
         version: 3.86.0
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
     devDependencies:
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       vite:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.7.9)(lightningcss@1.27.0)(sass-embedded@1.80.4)(sass@1.80.4)(terser@5.34.1)
@@ -527,8 +527,8 @@ importers:
         specifier: 0.7.7
         version: 0.7.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -612,8 +612,8 @@ importers:
         specifier: 6.27.0
         version: 6.27.0(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3))
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -764,11 +764,11 @@ importers:
         specifier: 6.27.0
         version: 6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -1128,11 +1128,11 @@ importers:
         specifier: 0.7.7
         version: 0.7.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -1177,11 +1177,11 @@ importers:
         specifier: 0.7.7
         version: 0.7.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       socket.io:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       socket.io-client:
-        specifier: 4.8.0
-        version: 4.8.0
+        specifier: 4.8.1
+        version: 4.8.1
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -7524,16 +7524,16 @@ packages:
   socket.io-adapter@2.5.5:
     resolution: {integrity: sha512-eLDQas5dzPgOWCk9GuuJC2lBqItuhKI4uxGgo9aIV7MYbk2h9Q6uULEh8WBzThoI7l+qU9Ast9fVUmkqPP9wYg==}
 
-  socket.io-client@4.8.0:
-    resolution: {integrity: sha512-C0jdhD5yQahMws9alf/yvtsMGTaIDBnZ8Rb5HU56svyq0l5LIrGzIDZZD5pHQlmzxLuU91Gz+VpQMKgCTNYtkw==}
+  socket.io-client@4.8.1:
+    resolution: {integrity: sha512-hJVXfu3E28NmzGk8o1sHhN3om52tRvwYeidbj7xKy2eIIse5IoKX3USlS6Tqt3BHAtflLIkCQBkzVrEEfWUyYQ==}
     engines: {node: '>=10.0.0'}
 
   socket.io-parser@4.2.4:
     resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
     engines: {node: '>=10.0.0'}
 
-  socket.io@4.8.0:
-    resolution: {integrity: sha512-8U6BEgGjQOfGz3HHTYaC/L1GaxDCJ/KM0XTkJly0EhZ5U/du9uNEZy4ZgYzEzIqlx2CMm25CrCqr1ck899eLNA==}
+  socket.io@4.8.1:
+    resolution: {integrity: sha512-oZ7iUCxph8WYRHHcjBEc9unw3adt5CmSNlppj/5Q4k2RIrhl8Z5yY2Xr4j9zj0+wzVZ0bxmYoGSzKJnRl6A4yg==}
     engines: {node: '>=10.2.0'}
 
   socketio-auth@0.1.1:
@@ -11721,7 +11721,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  atom.io@0.30.0(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.0)(socket.io@4.8.0):
+  atom.io@0.30.0(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
     optionalDependencies:
       '@floating-ui/react': 0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/react-dom': 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -11729,8 +11729,8 @@ snapshots:
       eslint: 9.13.0(jiti@2.3.3)
       framer-motion: 11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      socket.io: 4.8.0
-      socket.io-client: 4.8.0
+      socket.io: 4.8.1
+      socket.io-client: 4.8.1
 
   available-typed-arrays@1.0.7:
     dependencies:
@@ -15050,9 +15050,9 @@ snapshots:
       es-errors: 1.3.0
       is-regex: 1.1.4
 
-  safegen@0.0.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.68.4(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.0)(socket.io@4.8.0):
+  safegen@0.0.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.68.4(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
     dependencies:
-      atom.io: 0.30.0(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.0)(socket.io@4.8.0)
+      atom.io: 0.30.0(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.13.0(jiti@2.3.3))(framer-motion@11.11.9(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
       varmint: 0.3.1
       zod: 3.23.8
       zod-to-json-schema: 3.23.3(zod@3.23.8)
@@ -15340,7 +15340,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  socket.io-client@4.8.0:
+  socket.io-client@4.8.1:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
       debug: 4.3.7(supports-color@5.5.0)
@@ -15358,7 +15358,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  socket.io@4.8.0:
+  socket.io@4.8.1:
     dependencies:
       accepts: 1.3.8
       base64id: 2.0.0
