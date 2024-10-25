@@ -86,14 +86,10 @@ export function realtimeContinuitySynchronizer({
 			store,
 		)
 
-		const userUnacknowledgedQueue = findInStore(
+		const userUnacknowledgedUpdates = getFromStore(
 			store,
 			userUnacknowledgedQueues,
 			userKey,
-		)
-		const userUnacknowledgedUpdates = getFromStore(
-			store,
-			userUnacknowledgedQueue,
 		)
 		const unsubscribeFunctions: (() => void)[] = []
 
@@ -220,13 +216,18 @@ export function realtimeContinuitySynchronizer({
 								...update,
 								updates: redactedUpdates,
 							}
-							setIntoStore(store, userUnacknowledgedQueue, (updates) => {
-								if (redactedUpdate) {
-									updates.push(redactedUpdate)
-									updates.sort((a, b) => a.epoch - b.epoch)
-								}
-								return updates
-							})
+							setIntoStore(
+								store,
+								userUnacknowledgedQueues,
+								userKey,
+								(updates) => {
+									if (redactedUpdate) {
+										updates.push(redactedUpdate)
+										updates.sort((a, b) => a.epoch - b.epoch)
+									}
+									return updates
+								},
+							)
 
 							socket?.emit(
 								`tx-new:${continuityKey}`,
@@ -323,7 +324,7 @@ export function realtimeContinuitySynchronizer({
 			)
 			const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
 			if (isUnacknowledged) {
-				setIntoStore(store, userUnacknowledgedQueue, (updates) => {
+				setIntoStore(store, userUnacknowledgedQueues, userKey, (updates) => {
 					updates.shift()
 					return updates
 				})

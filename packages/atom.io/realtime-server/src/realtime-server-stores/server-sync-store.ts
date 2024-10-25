@@ -1,6 +1,8 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
 import { atomFamily } from "atom.io"
 
+import type { UserKey } from "./server-user-store"
+
 // export const completeUpdateAtoms = atomFamily<
 // 	TransactionUpdate<any> | null,
 // 	string
@@ -42,13 +44,13 @@ export function redactTransactionUpdateContent(
 		})
 }
 
-export const actionOcclusionAtoms = atomFamily<
+export const redactorAtoms = atomFamily<
 	{
 		occlude: (updates: TransactionUpdateContent[]) => TransactionUpdateContent[]
 	},
-	string
+	UserKey
 >({
-	key: `transactionRedactor`,
+	key: `redactor`,
 	default: { occlude: (updates) => updates },
 })
 // export const redactedUpdateSelectors = selectorFamily<
@@ -71,7 +73,7 @@ export const actionOcclusionAtoms = atomFamily<
 
 export const userUnacknowledgedQueues = atomFamily<
 	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
-	string
+	UserKey
 >({
 	key: `unacknowledgedUpdates`,
 	default: () => [],
