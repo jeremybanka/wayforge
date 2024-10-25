@@ -11,10 +11,10 @@
 	"dependencies": {
 		"fp-ts": "2.16.9",
 		"phaser": "3.86.0",
-		"socket.io-client": "4.8.0"
+		"socket.io-client": "4.8.1"
 	},
 	"devDependencies": {
-		"socket.io": "4.8.0",
+		"socket.io": "4.8.1",
 		"vite": "5.4.10",
 		"vite-tsconfig-paths": "5.0.1"
 	}

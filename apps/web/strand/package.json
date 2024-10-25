@@ -29,7 +29,7 @@
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat",
 		"react-router-dom": "6.27.0",
-		"socket.io-client": "4.8.0",
+		"socket.io-client": "4.8.1",
 		"zod": "3.23.8"
 	},
 	"devDependencies": {
