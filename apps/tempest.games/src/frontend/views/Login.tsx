@@ -25,9 +25,9 @@ export function Login(): JSX.Element {
 		<form
 			onSubmit={async (e) => {
 				e.preventDefault()
-				const signInUUID = await asUUID(`login`)
+				const loginUUID = await asUUID(`login`)
 				const response = await fetch(
-					`${env.VITE_BACKEND_ORIGIN}/login-${signInUUID}`,
+					`${env.VITE_BACKEND_ORIGIN}/login-${loginUUID}`,
 					{
 						method: `POST`,
 						body: JSON.stringify({ username, password }),

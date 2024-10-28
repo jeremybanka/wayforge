@@ -17,7 +17,7 @@ import {
 import type { Json } from "atom.io/json"
 import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
-	realtimeContinuitySynchronizer,
+	prepareToExposeRealtimeContinuity,
 	socketAtoms,
 	socketIndex,
 	userIndex,
@@ -302,7 +302,7 @@ new WebSocketServer(httpServer, {
 		}
 	})
 	.on(`connection`, (socket) => {
-		const syncContinuity = realtimeContinuitySynchronizer({
+		const syncContinuity = prepareToExposeRealtimeContinuity({
 			socket,
 			store: IMPLICIT.STORE,
 		})
