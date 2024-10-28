@@ -84,11 +84,11 @@ parentSocket.relay((socket) => {
 		relations.set(userKey, socketKey)
 	})
 
-	const syncContinuity = RTS.realtimeContinuitySynchronizer({ socket })
+	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({ socket })
 	const exposeMutable = RTS.realtimeMutableProvider({ socket })
 
 	const disposalFunctions = [
-		syncContinuity(heartsContinuity),
+		exposeContinuity(heartsContinuity),
 		exposeMutable(RT.usersInThisRoomIndex),
 	]
 	return () => {

@@ -12,6 +12,7 @@ import {
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
+import type { UserKey } from "atom.io/realtime-server"
 
 /* eslint-disable no-console */
 
@@ -35,7 +36,7 @@ export class InvariantMap<K, V> extends Map<K, V> {
 export type PerspectiveToken<F extends AtomFamilyToken<any>> = {
 	type: `realtime_perspective`
 	resourceAtoms: F
-	viewAtoms: ReadableFamilyToken<ReadableToken<TokenType<F>>[], string>
+	viewAtoms: ReadableFamilyToken<ReadableToken<TokenType<F>>[], UserKey>
 }
 
 export type ContinuityToken = {
@@ -96,7 +97,7 @@ export class SyncGroup {
 				{
 					const [family, index] = args as [
 						AtomFamilyToken<any, any>,
-						ReadableFamilyToken<ReadableToken<any>[], string>,
+						ReadableFamilyToken<ReadableToken<any>[], UserKey>,
 					]
 					this.perspectives.push({
 						type: `realtime_perspective`,

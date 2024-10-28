@@ -51,8 +51,8 @@ parentSocket.relay((userSocket) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
 		relations.set(`user::relay:${userSocket.id}`, `socket::${userSocket.id}`)
 	})
-	const continuitySynchronizer = RTS.realtimeContinuitySynchronizer({
+	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 		socket: userSocket,
 	})
-	continuitySynchronizer(gameContinuity)
+	exposeContinuity(gameContinuity)
 })

@@ -40,11 +40,11 @@ describe(`synchronizing transactions`, () => {
 				port: 5465,
 				immortal: { server: true },
 				server: ({ socket, silo: { store } }) => {
-					const syncContinuity = RTS.realtimeContinuitySynchronizer({
+					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
 					})
-					syncContinuity(countContinuity)
+					exposeContinuity(countContinuity)
 				},
 				clients: {
 					jane: () => {
@@ -166,7 +166,7 @@ describe(`mutable atoms in continuity`, () => {
 				port: 5475,
 				server: ({ socket, silo: { store } }) => {
 					// enableLogging()
-					const exposeContinuity = RTS.realtimeContinuitySynchronizer({
+					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
 					})
