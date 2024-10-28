@@ -71,8 +71,12 @@ export const redactorAtoms = atomFamily<
 // 		},
 // })
 
+export type ContinuitySyncTransactionUpdate = Pick<
+	TransactionUpdate<any>,
+	`epoch` | `id` | `key` | `output` | `updates`
+>
 export const userUnacknowledgedQueues = atomFamily<
-	Pick<TransactionUpdate<any>, `epoch` | `id` | `key` | `output` | `updates`>[],
+	ContinuitySyncTransactionUpdate[],
 	UserKey
 >({
 	key: `unacknowledgedUpdates`,
