@@ -2,6 +2,7 @@ import {
 	atom,
 	atomFamily,
 	type CompoundTypedKey,
+	decomposeCompoundKey,
 	getState,
 	selectorFamily,
 } from "atom.io"
@@ -17,7 +18,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type { UserKey } from "./server-user-store"
 
 export const VISIBILITY_CONDITIONS = [
-	`invisible`, // key cannot be emitted; data cannot be emitted
+	`secret`, // key cannot be emitted; data cannot be emitted
 	`masked`, // key is spoofed; data can be masked
 ] as const
 export type VisibilityCondition = (typeof VISIBILITY_CONDITIONS)[number]
@@ -80,16 +81,17 @@ export const itemPerspectiveIndices = selectorFamily<ItemKey[], UserKey>({
 					itemPerspectiveKey,
 				)
 				switch (itemVisibilityCondition) {
-					case `invisible`:
+					case `secret`:
 						break
 					case `masked`:
 						{
-							let spoofedKey = get(
+							let spoofedKey: ItemKey
+							const maybeSpoofedKey = get(
 								findRelations(itemKeySpoofs, itemPerspectiveKey)
 									.spoofedKeyOfItemPerspective,
 							)
-							if (spoofedKey) {
-								visibleItemKeys.push(spoofedKey)
+							if (maybeSpoofedKey) {
+								spoofedKey = maybeSpoofedKey
 							} else {
 								spoofedKey = `item::${crypto.randomUUID()}`
 								editRelations(itemKeySpoofs, (relations) => {
@@ -98,8 +100,8 @@ export const itemPerspectiveIndices = selectorFamily<ItemKey[], UserKey>({
 										spoofed: spoofedKey,
 									})
 								})
-								visibleItemKeys.push(spoofedItemKey)
 							}
+							visibleItemKeys.push(spoofedKey)
 						}
 						break
 				}
@@ -113,32 +115,17 @@ export const itemDurabilityAtoms = atomFamily<number, ItemKey>({
 	default: 0,
 })
 
-export const itemDurabilityMaskedSelectors = selectorFamily<
-	number | `???`,
-	ItemKey
->({
+export const itemDurabilityMasks = selectorFamily<number | `???`, ItemKey>({
 	key: `itemDurability`,
 	get:
 		(itemKey) =>
 		({ get }) => {
-			let itemPerspectiveKey = get(
+			const itemPerspectiveKey = get(
 				findRelations(itemKeySpoofs, itemKey).itemPerspectiveKeyOfSpoofed,
 			)
 			if (itemPerspectiveKey === null) {
-				itemPerspectiveKey =
-					`T$--perspective==${itemKey}++${userKey}` satisfies ItemPerspectiveKey
+				return `???`
 			}
-			const itemVisibilityCondition = get(
-				itemVisibilityConditionSelectors,
-				itemPerspectiveKey,
-			)
-			switch (itemVisibilityCondition) {
-				case `unlisted`:
-					return `???`
-				case `unspecified`:
-					return `???`
-				case `visible`:
-					return get(itemDurabilityAtoms, itemKey)
-			}
+			const [, singularB, singularC] = decomposeCompoundKey(itemPerspectiveKey)
 		},
 })
