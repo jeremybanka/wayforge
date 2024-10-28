@@ -20,7 +20,7 @@
 		"express": "4.21.1",
 		"fp-ts": "2.16.9",
 		"lodash": "4.17.21",
-		"nanoid": "5.0.7",
+		"nanoid": "5.0.8",
 		"npmlog": "7.0.1",
 		"socket.io": "4.8.1",
 		"socketio-auth": "0.1.1"
