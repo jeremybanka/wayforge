@@ -275,3 +275,13 @@ export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 			: never
 		: never
 }[keyof H]
+
+export function decomposeCompoundKey<K extends CompoundTypedKey>(
+	key: K,
+): K extends CompoundTypedKey<infer A, infer B, infer C>
+	? [A, SingularTypedKey<B>, SingularTypedKey<C>]
+	: never {
+	const [typeTag, content] = key.split(`==`)
+	const [singularB, singularC] = content.split(`++`)
+	return [typeTag, singularB, singularC] as any
+}
