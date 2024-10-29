@@ -1,4 +1,4 @@
-import type { CompoundTypedKey, TransactionUpdate } from "atom.io"
+import type { CompoundTypedKey } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -7,7 +7,7 @@ import {
 	selectorFamily,
 } from "atom.io"
 import { editRelations, findRelations, join } from "atom.io/data"
-import type { JsonIO, stringified } from "atom.io/json"
+import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -16,6 +16,8 @@ import type {
 	TransactionRequest,
 } from "../continuity/prepare-to-serve-transaction-request"
 import type { UserKey } from "./server-user-store"
+
+// CLEAN ////////////////////////////////////////////////////////////////////////
 
 export type Actual = `__${string}__`
 export type Proxy = `$$${string}$$`
@@ -31,54 +33,7 @@ export type TransactionUpdateProxy = JsonTxUpdate & { proxy?: true }
 export type TransactionRequestProxy = TransactionRequest & { proxy?: true }
 export type TransactionRequestActual = TransactionRequest & { proxy?: false }
 
-export type ItemKey<K extends Actual | Proxy = Actual | Proxy> = `item::${K}`
-export function isItemKey(key: unknown): key is ItemKey {
-	return typeof key === `string` && key.startsWith(`item::`)
-}
-export function isItemKeyProxy(key: unknown): key is ItemKey<Proxy> {
-	return typeof key === `string` && key.startsWith(`item::$$`)
-}
-export function isItemKeyActual(key: unknown): key is ItemKey<Actual> {
-	return typeof key === `string` && key.startsWith(`item::__`)
-}
-
-export type ItemPerspectiveKey = CompoundTypedKey<
-	`perspective`,
-	ItemKey<Actual>,
-	UserKey
->
-export function isItemPerspectiveKey(key: unknown): key is ItemPerspectiveKey {
-	return typeof key === `string` && key.startsWith(`T$--perspective==item::__`)
-}
-
-export const itemVisibilityConditionSelectors = selectorFamily<
-	VisibilityCondition,
-	ItemPerspectiveKey
->({
-	key: `itemVisibilityCondition`,
-	get: (_) => (__) => {
-		return `masked`
-	},
-})
-
-export const itemGlobalIndex = atom<
-	SetRTX<ItemKey<Actual>>,
-	SetRTXJson<ItemKey<Actual>>
->({
-	key: `itemGlobalIndex`,
-	mutable: true,
-	default: () => new SetRTX(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
-})
-
-export const itemKeyProxies = join({
-	key: `itemKeyProxies`,
-	between: [`itemPerspective`, `proxy`],
-	cardinality: `1:1`,
-	isAType: isItemPerspectiveKey,
-	isBType: isItemKeyProxy,
-})
+// MIXED ////////////////////////////////////////////////////////////////////////
 
 export const itemPerspectiveIndices = selectorFamily<ItemKey<Proxy>[], UserKey>({
 	key: `itemPerspectiveIndices`,
@@ -132,13 +87,14 @@ export function derefTransactionRequest(
 	let sub = false
 	for (let i = 0; i < segments.length; i++) {
 		if (sub) {
-			const segment = segments[i] as ItemKey<Proxy>
+			const segmentRaw = segments[i]
+			const proxyItemKey = `item::$$${segmentRaw}$$` satisfies ItemKey<Proxy>
 			const itemPerspectiveKey = getState(
-				findRelations(itemKeyProxies, segment).itemPerspectiveKeyOfProxy,
+				findRelations(itemKeyProxies, proxyItemKey).itemPerspectiveKeyOfProxy,
 			)
 			if (itemPerspectiveKey === null) {
 				return new Error(
-					`Attempted to dereference a transaction request with a proxy reference that does not exist.`,
+					`Attempted to dereference a transaction request with a proxy reference that does not exist: "${segmentRaw}".`,
 				)
 			}
 			const [, itemKeyActual, ownerKey] =
@@ -159,17 +115,94 @@ export function proxyTransactionUpdate(
 	userKey: UserKey,
 	update: TransactionUpdateActual,
 ): TransactionUpdateProxy {
-	const actualUpdate = {
+	const updatesInPerspective: TransactionUpdateProxy[`updates`] = []
+	for (const subUpdate of update.updates) {
+		switch (subUpdate.type) {
+			case `atom_update`:
+				updatesInPerspective.push(subUpdate)
+				if (subUpdate.key.includes(`__`)) {
+					const segments = subUpdate.key.split(`__`)
+					let sub = false
+					for (let i = 0; i < segments.length; i++) {
+						if (sub) {
+							const segmentRaw = segments[i]
+							const actualItemKey =
+								`item::__${segmentRaw}__` satisfies ItemKey<Actual>
+							const itemPerspectiveKey =
+								`T$--perspective==${actualItemKey}++${userKey}` satisfies ItemPerspectiveKey
+							const proxyItemKey = getState(
+								findRelations(itemKeyProxies, itemPerspectiveKey)
+									.proxyKeyOfItemPerspective,
+							)
+							if (proxyItemKey !== null) {
+								updatesInPerspective.push({
+									...subUpdate,
+								})
+							}
+						}
+						sub = !sub
+					}
+				}
+		}
+	}
+	const proxyUpdate = {
 		...update,
 		proxy: true,
-		updates: update.updates.map((subUpdate) => {
-			if (subUpdate.type === `atom_update` && subUpdate.key.includes(`__`)) {
-				const segments = subUpdate.key.split(`$$`)
-			}
-		}),
+		updates: updatesInPerspective,
 	} satisfies TransactionUpdateProxy
-	return actualUpdate
+	return proxyUpdate
 }
+
+// DIRTY ////////////////////////////////////////////////////////////////////////
+
+export type ItemKey<K extends Actual | Proxy = Actual | Proxy> = `item::${K}`
+export function isItemKey(key: unknown): key is ItemKey {
+	return typeof key === `string` && key.startsWith(`item::`)
+}
+export function isItemKeyProxy(key: unknown): key is ItemKey<Proxy> {
+	return typeof key === `string` && key.startsWith(`item::$$`)
+}
+export function isItemKeyActual(key: unknown): key is ItemKey<Actual> {
+	return typeof key === `string` && key.startsWith(`item::__`)
+}
+
+export type ItemPerspectiveKey = CompoundTypedKey<
+	`perspective`,
+	ItemKey<Actual>,
+	UserKey
+>
+export function isItemPerspectiveKey(key: unknown): key is ItemPerspectiveKey {
+	return typeof key === `string` && key.startsWith(`T$--perspective==item::__`)
+}
+
+export const itemVisibilityConditionSelectors = selectorFamily<
+	VisibilityCondition,
+	ItemPerspectiveKey
+>({
+	key: `itemVisibilityCondition`,
+	get: (_) => (__) => {
+		return `masked`
+	},
+})
+
+export const itemGlobalIndex = atom<
+	SetRTX<ItemKey<Actual>>,
+	SetRTXJson<ItemKey<Actual>>
+>({
+	key: `itemGlobalIndex`,
+	mutable: true,
+	default: () => new SetRTX(),
+	toJson: (set) => set.toJSON(),
+	fromJson: (json) => SetRTX.fromJSON(json),
+})
+
+export const itemKeyProxies = join({
+	key: `itemKeyProxies`,
+	between: [`itemPerspective`, `proxy`],
+	cardinality: `1:1`,
+	isAType: isItemPerspectiveKey,
+	isBType: isItemKeyProxy,
+})
 
 export const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
 	key: `itemDurability`,
