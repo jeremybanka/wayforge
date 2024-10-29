@@ -1,4 +1,4 @@
-import type { CompoundTypedKey, TransactionUpdate, TypedKey } from "atom.io"
+import type { CompoundTypedKey, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -6,14 +6,15 @@ import {
 	getState,
 	selectorFamily,
 } from "atom.io"
-import type { JoinToken } from "atom.io/data"
 import { editRelations, findRelations, join } from "atom.io/data"
-import { Refinement } from "atom.io/introspection"
 import type { JsonIO, stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type { TransactionRequest } from "../continuity/prepare-to-serve-transaction-request"
+import type {
+	JsonTxUpdate,
+	TransactionRequest,
+} from "../continuity/prepare-to-serve-transaction-request"
 import type { UserKey } from "./server-user-store"
 
 export type Actual = `__${string}__`
@@ -24,6 +25,11 @@ export const VISIBILITY_CONDITIONS = [
 	`masked`, // key is spoofed; data can be masked
 ] as const
 export type VisibilityCondition = (typeof VISIBILITY_CONDITIONS)[number]
+
+export type TransactionUpdateActual = JsonTxUpdate & { proxy?: false }
+export type TransactionUpdateProxy = JsonTxUpdate & { proxy?: true }
+export type TransactionRequestProxy = TransactionRequest & { proxy?: true }
+export type TransactionRequestActual = TransactionRequest & { proxy?: false }
 
 export type ItemKey<K extends Actual | Proxy = Actual | Proxy> = `item::${K}`
 export function isItemKey(key: unknown): key is ItemKey {
@@ -118,6 +124,53 @@ export const itemPerspectiveIndices = selectorFamily<ItemKey<Proxy>[], UserKey>(
 		},
 })
 
+export function derefTransactionRequest(
+	userKey: UserKey,
+	request: stringified<TransactionRequestProxy>,
+): Error | stringified<TransactionRequestActual> {
+	const segments = request.split(`$$`)
+	let sub = false
+	for (let i = 0; i < segments.length; i++) {
+		if (sub) {
+			const segment = segments[i] as ItemKey<Proxy>
+			const itemPerspectiveKey = getState(
+				findRelations(itemKeyProxies, segment).itemPerspectiveKeyOfProxy,
+			)
+			if (itemPerspectiveKey === null) {
+				return new Error(
+					`Attempted to dereference a transaction request with a proxy reference that does not exist.`,
+				)
+			}
+			const [, itemKeyActual, ownerKey] =
+				decomposeCompoundKey(itemPerspectiveKey)
+			if (ownerKey !== userKey) {
+				return new Error(
+					`Attempted to dereference a transaction request with a proxy reference from a different user.`,
+				)
+			}
+			segments[i] = itemKeyActual
+		}
+		sub = !sub
+	}
+	return segments.join(``)
+}
+
+export function proxyTransactionUpdate(
+	userKey: UserKey,
+	update: TransactionUpdateActual,
+): TransactionUpdateProxy {
+	const actualUpdate = {
+		...update,
+		proxy: true,
+		updates: update.updates.map((subUpdate) => {
+			if (subUpdate.type === `atom_update` && subUpdate.key.includes(`__`)) {
+				const segments = subUpdate.key.split(`$$`)
+			}
+		}),
+	} satisfies TransactionUpdateProxy
+	return actualUpdate
+}
+
 export const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
 	key: `itemDurability`,
 	default: 0,
@@ -151,65 +204,3 @@ export const itemDurabilityMasks = selectorFamily<
 			}
 		},
 })
-
-export type TransactionRequestWithProxyRefs = TransactionRequest & {
-	proxy?: true
-}
-export type TransactionRequestWithActualRefs = TransactionRequest & {
-	proxy?: false
-}
-
-export function derefTransactionRequest(
-	userKey: UserKey,
-	request: stringified<TransactionRequestWithProxyRefs>,
-): Error | stringified<TransactionRequestWithActualRefs> {
-	const segments = request.split(`$$`)
-	let sub = false
-	for (let i = 0; i < segments.length; i++) {
-		if (sub) {
-			const segment = segments[i] as ItemKey<Proxy>
-			const itemPerspectiveKey = getState(
-				findRelations(itemKeyProxies, segment).itemPerspectiveKeyOfProxy,
-			)
-			if (itemPerspectiveKey === null) {
-				return new Error(
-					`Attempted to dereference a transaction request with a proxy reference that does not exist.`,
-				)
-			}
-			const [, itemKeyActual, ownerKey] =
-				decomposeCompoundKey(itemPerspectiveKey)
-			if (ownerKey !== userKey) {
-				return new Error(
-					`Attempted to dereference a transaction request with a proxy reference from a different user.`,
-				)
-			}
-			segments[i] = itemKeyActual
-		}
-		sub = !sub
-	}
-	return segments.join(``)
-}
-
-export type TransactionUpdateWithProxyRefs = TransactionUpdate<JsonIO> & {
-	proxy?: true
-}
-export type TransactionUpdateWithActualRefs = TransactionUpdate<JsonIO> & {
-	proxy?: false
-}
-
-const PROXIES = [[isItemKeyProxy, itemKeyProxies] as const]
-export function proxyTransactionUpdate(
-	userKey: UserKey,
-	update: TransactionUpdateWithActualRefs,
-): TransactionUpdateWithProxyRefs {
-	const actualUpdate = {
-		...update,
-		proxy: true,
-		updates: update.updates.map((subUpdate) => {
-			if (subUpdate.type === `atom_update` && subUpdate.key.includes(`__`)) {
-				const segments = subUpdate.key.split(`$$`)
-			}
-		}),
-	} satisfies TransactionUpdateWithProxyRefs
-	return actualUpdate
-}
