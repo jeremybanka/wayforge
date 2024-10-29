@@ -22,7 +22,7 @@ jobs:
   Coverage:
     name: Coveralls
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 9
 
     services:
       postgres:
@@ -36,7 +36,6 @@ jobs:
         options: >-
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
 
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -46,12 +45,12 @@ jobs:
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4.0.0
-      
+
       - name: Set up Node
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: .node-version
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2.0.1
