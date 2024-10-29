@@ -1,21 +1,13 @@
-import {
-	atom,
-	atomFamily,
-	type CompoundTypedKey,
-	decomposeCompoundKey,
-	getState,
-	selectorFamily,
-} from "atom.io"
-import {
-	editRelations,
-	editRelationsInStore,
-	findRelations,
-	join,
-} from "atom.io/data"
+import type { CompoundTypedKey } from "atom.io"
+import { atom, atomFamily, decomposeCompoundKey, selectorFamily } from "atom.io"
+import { editRelations, findRelations, join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { UserKey } from "./server-user-store"
+
+export type Actual = `__${string}__`
+export type Proxy = `$$${string}$$`
 
 export const VISIBILITY_CONDITIONS = [
 	`secret`, // key cannot be emitted; data cannot be emitted
@@ -23,21 +15,24 @@ export const VISIBILITY_CONDITIONS = [
 ] as const
 export type VisibilityCondition = (typeof VISIBILITY_CONDITIONS)[number]
 
-export type ItemKey = `item::${string}`
+export type ItemKey<K extends Actual | Proxy = Actual | Proxy> = `item::${K}`
 export function isItemKey(key: unknown): key is ItemKey {
 	return typeof key === `string` && key.startsWith(`item::`)
 }
-export type Spoofed<T extends string> = T & { spoofed: true }
-export function isSpoofedItemKey(key: unknown): key is Spoofed<ItemKey> {
-	return (
-		isItemKey(key) &&
-		getState(findRelations(itemKeySpoofs, key).itemPerspectiveKeyOfSpoofed) !==
-			null
-	)
+export function isItemKeyProxy(key: unknown): key is ItemKey<Proxy> {
+	return typeof key === `string` && key.startsWith(`item::$$`)
 }
-export type ItemPerspectiveKey = CompoundTypedKey<`perspective`, `item`, `user`>
+export function isItemKeyActual(key: unknown): key is ItemKey<Actual> {
+	return typeof key === `string` && key.startsWith(`item::__`)
+}
+
+export type ItemPerspectiveKey = CompoundTypedKey<
+	`perspective`,
+	ItemKey<Actual>,
+	UserKey
+>
 export function isItemPerspectiveKey(key: unknown): key is ItemPerspectiveKey {
-	return typeof key === `string` && key.startsWith(`T$--perspective==item::`)
+	return typeof key === `string` && key.startsWith(`T$--perspective==item::__`)
 }
 
 export const itemVisibilityConditionSelectors = selectorFamily<
@@ -50,7 +45,10 @@ export const itemVisibilityConditionSelectors = selectorFamily<
 	},
 })
 
-export const itemGlobalIndex = atom<SetRTX<ItemKey>, SetRTXJson<ItemKey>>({
+export const itemGlobalIndex = atom<
+	SetRTX<ItemKey<Actual>>,
+	SetRTXJson<ItemKey<Actual>>
+>({
 	key: `itemGlobalIndex`,
 	mutable: true,
 	default: () => new SetRTX(),
@@ -58,21 +56,21 @@ export const itemGlobalIndex = atom<SetRTX<ItemKey>, SetRTXJson<ItemKey>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const itemKeySpoofs = join({
-	key: `itemKeySpoofs`,
-	between: [`itemPerspective`, `spoofed`],
+export const itemKeyProxies = join({
+	key: `itemKeyProxies`,
+	between: [`itemPerspective`, `proxy`],
 	cardinality: `1:1`,
 	isAType: isItemPerspectiveKey,
-	isBType: isItemKey,
+	isBType: isItemKeyProxy,
 })
 
-export const itemPerspectiveIndices = selectorFamily<ItemKey[], UserKey>({
+export const itemPerspectiveIndices = selectorFamily<ItemKey<Proxy>[], UserKey>({
 	key: `itemPerspectiveIndices`,
 	get:
 		(userKey) =>
 		({ get }) => {
 			const allItemKeys = get(itemGlobalIndex)
-			const visibleItemKeys: ItemKey[] = []
+			const visibleItemKeys: ItemKey<Proxy>[] = []
 			for (const realItemKey of allItemKeys) {
 				const itemPerspectiveKey =
 					`T$--perspective==${realItemKey}++${userKey}` satisfies ItemPerspectiveKey
@@ -85,23 +83,23 @@ export const itemPerspectiveIndices = selectorFamily<ItemKey[], UserKey>({
 						break
 					case `masked`:
 						{
-							let spoofedKey: ItemKey
-							const maybeSpoofedKey = get(
-								findRelations(itemKeySpoofs, itemPerspectiveKey)
-									.spoofedKeyOfItemPerspective,
+							let proxyKey: ItemKey<Proxy>
+							const maybeProxyKey = get(
+								findRelations(itemKeyProxies, itemPerspectiveKey)
+									.proxyKeyOfItemPerspective,
 							)
-							if (maybeSpoofedKey) {
-								spoofedKey = maybeSpoofedKey
+							if (maybeProxyKey) {
+								proxyKey = maybeProxyKey
 							} else {
-								spoofedKey = `item::${crypto.randomUUID()}`
-								editRelations(itemKeySpoofs, (relations) => {
+								proxyKey = `item::$$${crypto.randomUUID()}$$`
+								editRelations(itemKeyProxies, (relations) => {
 									relations.set({
 										itemPerspective: itemPerspectiveKey,
-										spoofed: spoofedKey,
+										proxy: proxyKey,
 									})
 								})
 							}
-							visibleItemKeys.push(spoofedKey)
+							visibleItemKeys.push(proxyKey)
 						}
 						break
 				}
@@ -110,22 +108,36 @@ export const itemPerspectiveIndices = selectorFamily<ItemKey[], UserKey>({
 		},
 })
 
-export const itemDurabilityAtoms = atomFamily<number, ItemKey>({
+export const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
 	key: `itemDurability`,
 	default: 0,
 })
 
-export const itemDurabilityMasks = selectorFamily<number | `???`, ItemKey>({
-	key: `itemDurability`,
+export const itemDurabilityMasks = selectorFamily<
+	number | `???`,
+	ItemKey<Proxy>
+>({
+	key: `itemDurabilityMask`,
 	get:
-		(itemKey) =>
+		(itemKeyProxy) =>
 		({ get }) => {
 			const itemPerspectiveKey = get(
-				findRelations(itemKeySpoofs, itemKey).itemPerspectiveKeyOfSpoofed,
+				findRelations(itemKeyProxies, itemKeyProxy).itemPerspectiveKeyOfProxy,
 			)
 			if (itemPerspectiveKey === null) {
 				return `???`
 			}
-			const [, singularB, singularC] = decomposeCompoundKey(itemPerspectiveKey)
+			const [, itemKeyActual] = decomposeCompoundKey(itemPerspectiveKey)
+
+			const itemVisibilityCondition = get(
+				itemVisibilityConditionSelectors,
+				itemPerspectiveKey,
+			)
+			switch (itemVisibilityCondition) {
+				case `secret`:
+					return `???`
+				case `masked`:
+					return get(itemDurabilityAtoms, itemKeyActual)
+			}
 		},
 })
