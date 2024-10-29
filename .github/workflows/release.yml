@@ -19,13 +19,13 @@ env:
 jobs:
   Release:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 9
     env:
       NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
 
     # outputs:
     #   package_published: ${{ steps.check_published.outputs.package_published }}
-      
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4.2.2
@@ -34,12 +34,12 @@ jobs:
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4.0.0
-      
+
       - name: Set up Node
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: .node-version
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2.0.1
@@ -64,4 +64,3 @@ jobs:
           --secretsConfig='${{ secrets.FLIGHTDECK_SECRETS }}' \
           --publishedPackages='${{ steps.changesets.outputs.publishedPackages }}' \
           -- scramble
-          
