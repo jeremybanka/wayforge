@@ -155,6 +155,17 @@ export function proxyTransactionUpdate(
 
 // DIRTY ////////////////////////////////////////////////////////////////////////
 
+export type UnitKey<K extends Actual | Proxy = Actual | Proxy> = `unit::${K}`
+export function isUnitKey(key: unknown): key is UnitKey {
+	return typeof key === `string` && key.startsWith(`unit::`)
+}
+export function isUnitKeyActual(key: unknown): key is UnitKey<Actual> {
+	return typeof key === `string` && key.startsWith(`unit::__`)
+}
+export function isUnitKeyProxy(key: unknown): key is UnitKey<Proxy> {
+	return typeof key === `string` && key.startsWith(`unit::$$`)
+}
+
 export type ItemKey<K extends Actual | Proxy = Actual | Proxy> = `item::${K}`
 export function isItemKey(key: unknown): key is ItemKey {
 	return typeof key === `string` && key.startsWith(`item::`)
