@@ -4,33 +4,44 @@ import { actUponStore } from "atom.io/internal"
 import type { JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
+export type TransactionRequest = Pick<
+	TransactionUpdate<JsonIO>,
+	`id` | `key` | `params`
+>
+
 export function prepareToServeTransactionRequest(
 	store: Store,
 	continuity: ContinuityToken,
 	userKey: string,
-): (update: Pick<TransactionUpdate<JsonIO>, `id` | `key` | `params`>) => void {
+): (request: TransactionRequest) => void {
 	const continuityKey = continuity.key
-	return function serveTransactionRequest(update) {
-		store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, update)
-		const transactionKey = update.key
-		const updateId = update.id
-		const performanceKey = `tx-run:${transactionKey}:${updateId}`
+	return function serveTransactionRequest(request) {
+		store.logger.info(
+			`🛎️`,
+			`continuity`,
+			continuityKey,
+			`transaction request`,
+			request,
+		)
+		const transactionKey = request.key
+		const requestId = request.id
+		const performanceKey = `tx-run:${transactionKey}:${requestId}`
 		const performanceKeyStart = `${performanceKey}:start`
 		const performanceKeyEnd = `${performanceKey}:end`
 		performance.mark(performanceKeyStart)
 		try {
 			actUponStore(
 				{ type: `transaction`, key: transactionKey },
-				updateId,
+				requestId,
 				store,
-			)(...update.params)
+			)(...request.params)
 		} catch (thrown) {
 			if (thrown instanceof Error) {
 				store.logger.error(
 					`❌`,
 					`continuity`,
 					continuityKey,
-					`failed to run transaction ${transactionKey} from ${userKey} with update ${updateId}`,
+					`failed to run transaction ${transactionKey} from ${userKey} from request ${requestId}`,
 					thrown.message,
 				)
 			}
@@ -45,7 +56,7 @@ export function prepareToServeTransactionRequest(
 			`🚀`,
 			`transaction`,
 			transactionKey,
-			updateId,
+			requestId,
 			userKey,
 			metric.duration,
 		)
