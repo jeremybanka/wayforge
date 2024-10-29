@@ -47,7 +47,7 @@ export type ContinuityToken = {
 	readonly perspectives: PerspectiveToken<AtomFamilyToken<any, Canonical>>[]
 }
 
-export class SyncGroup {
+export class Continuity {
 	public type = `continuity` as const
 
 	protected globals: AtomToken<any>[] = []
@@ -60,24 +60,24 @@ export class SyncGroup {
 		new InvariantMap()
 	public static create(
 		key: string,
-		builder: (group: SyncGroup) => SyncGroup,
+		builder: (group: Continuity) => Continuity,
 	): ContinuityToken {
-		const group = new SyncGroup(key)
+		const group = new Continuity(key)
 		const { type, globals, actions, perspectives } = builder(group)
 		const token = { type, key, globals, actions, perspectives }
-		SyncGroup.existing.set(key, token)
+		Continuity.existing.set(key, token)
 		return token
 	}
 
-	public add(...atoms: AtomToken<any>[]): SyncGroup
-	public add(...args: TransactionToken<any>[]): SyncGroup
+	public add(...atoms: AtomToken<any>[]): Continuity
+	public add(...args: TransactionToken<any>[]): Continuity
 	public add<
 		F extends AtomFamilyToken<any>,
 		T extends F extends AtomFamilyToken<infer U> ? U : never,
 	>(
 		family: AtomFamilyToken<T, any>,
-		index: ReadableFamilyToken<Iterable<AtomToken<T>>, string>,
-	): SyncGroup
+		index: ReadableFamilyToken<Iterable<AtomToken<T>>, UserKey>,
+	): Continuity
 	public add(
 		...args:
 			| readonly AtomToken<any>[]
@@ -114,12 +114,12 @@ export class SyncGroup {
 
 export type ContinuityOptions = {
 	key: string
-	config: (group: SyncGroup) => SyncGroup
+	config: (group: Continuity) => Continuity
 }
 
 export function continuity(options: ContinuityOptions): ContinuityToken {
 	const { key, config } = options
-	const token = SyncGroup.create(key, config)
+	const token = Continuity.create(key, config)
 	const { actions } = token
 	for (const action of actions) {
 		assignTransactionToContinuity(key, action.key, IMPLICIT.STORE)
