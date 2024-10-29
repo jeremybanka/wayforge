@@ -4,10 +4,8 @@ import { actUponStore } from "atom.io/internal"
 import type { JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-export type TransactionRequest = Pick<
-	TransactionUpdate<JsonIO>,
-	`id` | `key` | `params`
->
+export type JsonTxUpdate = TransactionUpdate<JsonIO>
+export type TransactionRequest = Pick<JsonTxUpdate, `id` | `key` | `params`>
 
 export function prepareToServeTransactionRequest(
 	store: Store,
