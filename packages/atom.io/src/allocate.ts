@@ -208,7 +208,7 @@ export type CompoundTypedKey<
 	A extends string = string,
 	B extends string = string,
 	C extends string = string,
-> = `${TypeTag<A>}==${SingularTypedKey<B>}++${SingularTypedKey<C>}`
+> = `${TypeTag<A>}==${B}++${C}`
 export type TypedKey<
 	A extends string = string,
 	B extends string = string,
@@ -279,7 +279,7 @@ export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 export function decomposeCompoundKey<K extends CompoundTypedKey>(
 	key: K,
 ): K extends CompoundTypedKey<infer A, infer B, infer C>
-	? [A, SingularTypedKey<B>, SingularTypedKey<C>]
+	? [TypeTag<A>, B, C]
 	: never {
 	const [typeTag, content] = key.split(`==`)
 	const [singularB, singularC] = content.split(`++`)
