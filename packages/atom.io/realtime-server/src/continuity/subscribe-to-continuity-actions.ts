@@ -2,9 +2,7 @@ import type { Store } from "atom.io/internal"
 import {
 	findInStore,
 	getFromStore,
-	getJsonToken,
 	getUpdateToken,
-	isRootStore,
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
