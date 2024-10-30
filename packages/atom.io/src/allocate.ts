@@ -209,6 +209,11 @@ export type CompoundTypedKey<
 	B extends string = string,
 	C extends string = string,
 > = `${TypeTag<A>}==${B}++${C}`
+export type Compound<
+	A extends string = string,
+	B extends string = string,
+	C extends string = string,
+> = `${TypeTag<A>}==${B}++${C}`
 export type TypedKey<
 	A extends string = string,
 	B extends string = string,
