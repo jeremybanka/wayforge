@@ -2,6 +2,7 @@ import type { Store } from "atom.io/internal"
 import {
 	findInStore,
 	getFromStore,
+	getJsonFamily,
 	getJsonToken,
 	isRootStore,
 } from "atom.io/internal"
@@ -25,23 +26,52 @@ export function prepareToSendInitialPayload(
 			const resource = getFromStore(store, resourceToken)
 			initialPayload.push(resourceToken, resource)
 		}
+		for (const dynamic of continuity.dynamics) {
+			const { viewAtom, resourceFamilies } = dynamic
+			const globalView = getFromStore(store, viewAtom)
+			store.logger.info(
+				`👁`,
+				`atom`,
+				resourceFamilies.map((f) => f.key).join(`, `),
+				`${userKey} can see`,
+				{
+					viewAtom,
+					resourceFamilies,
+					userView: globalView,
+				},
+			)
+			for (const key of globalView) {
+				for (const resourceFamily of resourceFamilies) {
+					const resourceFamilyToken =
+						resourceFamily.type === `mutable_atom_family`
+							? getJsonFamily(store, resourceFamily)
+							: resourceFamily
+					const resourceToken = findInStore(store, resourceFamilyToken, key)
+					const resource = getFromStore(store, resourceToken)
+					initialPayload.push(resourceToken, resource)
+				}
+			}
+		}
 		for (const perspective of continuity.perspectives) {
-			const { viewAtoms, resourceAtoms } = perspective
+			const { viewAtoms, resourceFamilies } = perspective
 			const userViewState = findInStore(store, viewAtoms, userKey)
 			const userView = getFromStore(store, userViewState)
-			store.logger.info(`👁`, `atom`, resourceAtoms.key, `${userKey} can see`, {
-				viewAtoms,
-				resourceAtoms,
-				userView,
-			})
-			for (const visibleToken of userView) {
-				const resourceToken =
-					visibleToken.type === `mutable_atom`
-						? getJsonToken(store, visibleToken)
-						: visibleToken
-				const resource = getFromStore(store, resourceToken)
+			for (const [, maskFamily] of resourceFamilies) {
+				store.logger.info(`👁`, `atom`, maskFamily.key, `${userKey} can see`, {
+					viewAtoms,
+					maskFamily,
+					userView,
+				})
+				for (const key of userView) {
+					const visibleToken = findInStore(store, maskFamily, key)
+					const resourceToken =
+						visibleToken.type === `mutable_atom`
+							? getJsonToken(store, visibleToken)
+							: visibleToken
+					const resource = getFromStore(store, resourceToken)
 
-				initialPayload.push(resourceToken, resource)
+					initialPayload.push(resourceToken, resource)
+				}
 			}
 		}
 
