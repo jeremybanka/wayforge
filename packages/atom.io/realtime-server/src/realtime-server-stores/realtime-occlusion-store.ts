@@ -6,6 +6,7 @@ import {
 	getState,
 	selectorFamily,
 } from "atom.io"
+import type { JoinToken } from "atom.io/data"
 import { editRelations, findRelations, join } from "atom.io/data"
 import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -32,6 +33,30 @@ export type TransactionUpdateActual = JsonTxUpdate & { proxy?: false }
 export type TransactionUpdateProxy = JsonTxUpdate & { proxy?: true }
 export type TransactionRequestProxy = TransactionRequest & { proxy?: true }
 export type TransactionRequestActual = TransactionRequest & { proxy?: false }
+
+export function perspectiveProxy<K extends string>(key: K): PerspectiveProxy<K> {
+	const keyCap = capitalize(key)
+	const isPerspectiveKey = (
+		input: unknown,
+	): input is CompoundTypedKey<`perspective`, `${K}::${Actual}`, UserKey> =>
+		typeof input === `string` && input.startsWith(`T$--perspective==${key}::__`)
+	const isKeyProxy = (input: unknown): input is `${K}::${Proxy}` =>
+		typeof input === `string` && input.startsWith(`${key}::$$`)
+	const isKeyActual = (input: unknown): input is `${K}::${Actual}` =>
+		typeof input === `string` && input.startsWith(`${key}::__`)
+	return {
+		[`${key}KeyProxies`]: join({
+			key: `${key}Perspective`,
+			between: [`${key}Perspective`, `proxy`],
+			cardinality: `1:1`,
+			isAType: isPerspectiveKey,
+			isBType: isKeyProxy,
+		}),
+		[`is${keyCap}KeyActual`]: isKeyActual,
+		[`is${keyCap}KeyProxy`]: isKeyProxy,
+		[`is${keyCap}PerspectiveKey`]: isPerspectiveKey,
+	} as any
+}
 
 // MIXED ////////////////////////////////////////////////////////////////////////
 
@@ -87,14 +112,14 @@ export function derefTransactionRequest(
 	let sub = false
 	for (let i = 0; i < segments.length; i++) {
 		if (sub) {
-			const segmentRaw = segments[i]
-			const proxyItemKey = `item::$$${segmentRaw}$$` satisfies ItemKey<Proxy>
+			const segment = segments[i]
+			const proxyItemKey = `item::$$${segment}$$` satisfies ItemKey<Proxy>
 			const itemPerspectiveKey = getState(
 				findRelations(itemKeyProxies, proxyItemKey).itemPerspectiveKeyOfProxy,
 			)
 			if (itemPerspectiveKey === null) {
 				return new Error(
-					`Attempted to dereference a transaction request with a proxy reference that does not exist: "${segmentRaw}".`,
+					`Attempted to dereference a transaction request with a proxy reference that does not exist: "${segment}".`,
 				)
 			}
 			const [, itemKeyActual, ownerKey] =
@@ -123,11 +148,10 @@ export function proxyTransactionUpdate(
 				if (subUpdate.key.includes(`__`)) {
 					const segments = subUpdate.key.split(`__`)
 					let sub = false
-					for (let i = 0; i < segments.length; i++) {
+					for (const segment of segments) {
 						if (sub) {
-							const segmentRaw = segments[i]
 							const actualItemKey =
-								`item::__${segmentRaw}__` satisfies ItemKey<Actual>
+								`item::__${segment}__` satisfies ItemKey<Actual>
 							const itemPerspectiveKey =
 								`T$--perspective==${actualItemKey}++${userKey}` satisfies ItemPerspectiveKey
 							const proxyItemKey = getState(
@@ -159,12 +183,11 @@ export type UnitKey<K extends Actual | Proxy = Actual | Proxy> = `unit::${K}`
 export function isUnitKey(key: unknown): key is UnitKey {
 	return typeof key === `string` && key.startsWith(`unit::`)
 }
-export function isUnitKeyActual(key: unknown): key is UnitKey<Actual> {
-	return typeof key === `string` && key.startsWith(`unit::__`)
-}
-export function isUnitKeyProxy(key: unknown): key is UnitKey<Proxy> {
-	return typeof key === `string` && key.startsWith(`unit::$$`)
-}
+export type UnitPerspectiveKey = CompoundTypedKey<
+	`perspective`,
+	UnitKey<Actual>,
+	UserKey
+>
 
 export type ItemKey<K extends Actual | Proxy = Actual | Proxy> = `item::${K}`
 export function isItemKey(key: unknown): key is ItemKey {
@@ -176,7 +199,6 @@ export function isItemKeyProxy(key: unknown): key is ItemKey<Proxy> {
 export function isItemKeyActual(key: unknown): key is ItemKey<Actual> {
 	return typeof key === `string` && key.startsWith(`item::__`)
 }
-
 export type ItemPerspectiveKey = CompoundTypedKey<
 	`perspective`,
 	ItemKey<Actual>,
@@ -207,6 +229,35 @@ export const itemGlobalIndex = atom<
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
+function capitalize<S extends string>(string: S): Capitalize<S> {
+	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
+}
+
+export type PerspectiveProxy<K extends string> = {
+	[Key in `${K}KeyProxies`]: JoinToken<
+		`${K}Perspective`,
+		CompoundTypedKey<`perspective`, `${K}::${Actual}`, UserKey>,
+		`proxy`,
+		`${K}::${Proxy}`,
+		`1:1`,
+		null
+	>
+} & {
+	[Key in `is${Capitalize<K>}KeyActual`]: (
+		input: unknown,
+	) => input is `${K}::${Actual}`
+} & {
+	[Key in `is${Capitalize<K>}KeyProxy`]: (
+		input: unknown,
+	) => input is `${K}::${Proxy}`
+} & {
+	[Key in `is${Capitalize<K>}PerspectiveKey`]: (
+		input: unknown,
+	) => input is `${K}::${Proxy}`
+}
+
+export const { unitKeyProxies, isUnitKeyProxy, isUnitPerspectiveKey } =
+	perspectiveProxy(`unit`)
 export const itemKeyProxies = join({
 	key: `itemKeyProxies`,
 	between: [`itemPerspective`, `proxy`],
