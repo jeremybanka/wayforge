@@ -541,7 +541,7 @@ export class Join<
 					get:
 						(key) =>
 						({ get }) => {
-							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
+							const jsonFamily = getJsonFamily(store, relatedKeysAtoms)
 							const jsonState = this.retrieve(jsonFamily, key)
 							const json = get(jsonState)
 							return json.members
@@ -583,7 +583,7 @@ export class Join<
 					get:
 						(x) =>
 						({ get }) => {
-							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
+							const jsonFamily = getJsonFamily(store, relatedKeysAtoms)
 							const jsonState = this.retrieve(jsonFamily, x)
 							const json = get(jsonState)
 							return json.members.map((y) => {
