@@ -1,11 +1,10 @@
 import { editRelations } from "atom.io/data"
 import { parseJson, stringifyJson } from "atom.io/json"
-
-import type { TransactionRequestActual } from "~/packages/atom.io/realtime-server/src/realtime-server-stores/realtime-occlusion-store"
+import type { TransactionRequestActual } from "atom.io/realtime-server"
 import {
 	derefTransactionRequest,
 	perspectiveAliases,
-} from "~/packages/atom.io/realtime-server/src/realtime-server-stores/realtime-occlusion-store"
+} from "atom.io/realtime-server"
 
 describe(`realtime occlusion`, () => {
 	it(`dereferences transaction updates`, () => {
