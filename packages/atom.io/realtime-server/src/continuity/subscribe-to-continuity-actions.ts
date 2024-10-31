@@ -77,16 +77,17 @@ export function aliasTransactionUpdate(
 								findRelations(perspectiveAliases, perspectiveKey)
 									.perspectiveKeyOfAlias,
 							)
-							let maskFamilyToken: WritableFamilyToken<any, any> | null = null
-							for (const perspective of continuity.perspectives) {
-								const { resourceFamilies } = perspective
-								for (const [resourceFamily, maskFamily] of resourceFamilies) {
-									if (resourceFamily.key === familyKey) {
-										maskFamilyToken = maskFamily
-										break
-									}
-								}
-							}
+							// let maskFamilyToken: WritableFamilyToken<any, any> | null = null
+							// for (const perspective of continuity.perspectives) {
+							// 	const { resourceFamilies } = perspective
+							// 	for (const [resourceFamily, maskFamily] of resourceFamilies) {
+							// 		if (resourceFamily.key === familyKey) {
+							// 			maskFamilyToken = maskFamily
+							// 			break
+							// 		}
+							// 	}
+							// }
+							const maskFamilyToken = continuity.masksPerFamily[familyKey]
 							if (aliasKey !== null && maskFamilyToken !== null) {
 								const newValue = getState(maskFamilyToken, subUpdate.key)
 								updatesInPerspective.push({

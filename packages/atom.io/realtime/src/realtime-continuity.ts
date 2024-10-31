@@ -12,7 +12,7 @@ import {
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
-import type { JsonIO } from "atom.io/json"
+import { fromEntries, type JsonIO } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
 
 import type {
@@ -61,6 +61,9 @@ export type ContinuityToken = {
 	readonly actions: TransactionToken<JsonIO>[]
 	readonly dynamics: DynamicToken<any>[]
 	readonly perspectives: PerspectiveToken<string>[]
+	readonly masksPerFamily: {
+		[key: string]: WritableSelectorFamilyToken<any, string>
+	}
 }
 
 export class Continuity {
@@ -83,7 +86,30 @@ export class Continuity {
 	): ContinuityToken {
 		const group = new Continuity(key)
 		const { type, globals, actions, dynamics, perspectives } = builder(group)
-		const token = { type, key, globals, actions, dynamics, perspectives }
+		const masksPerFamily = fromEntries(
+			perspectives.flatMap(
+				(perspective): [string, WritableSelectorFamilyToken<any, string>][] => {
+					const { resourceFamilies } = perspective
+					return resourceFamilies.map(
+						([baseFamily, maskedFamily]): [
+							string,
+							WritableSelectorFamilyToken<any, string>,
+						] => {
+							return [baseFamily.key, maskedFamily]
+						},
+					)
+				},
+			),
+		)
+		const token = {
+			type,
+			key,
+			globals,
+			actions,
+			dynamics,
+			perspectives,
+			masksPerFamily,
+		}
 		Continuity.existing.set(key, token)
 		return token
 	}
