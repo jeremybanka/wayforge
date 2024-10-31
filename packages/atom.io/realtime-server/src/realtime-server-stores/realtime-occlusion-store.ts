@@ -1,9 +1,11 @@
 import type {
+	AtomFamilyToken,
 	Compound,
 	CompoundTypedKey,
 	MutableAtomToken,
 	ReadonlySelectorFamilyToken,
 	SelectorFamilyToken,
+	WritableSelectorFamilyToken,
 } from "atom.io"
 import {
 	atom,
@@ -20,6 +22,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type {
 	JsonTxUpdate,
 	TransactionRequest,
+	TransactionResponse,
 } from "../continuity/prepare-to-serve-transaction-request"
 import type { UserKey } from "./server-user-store"
 
@@ -43,8 +46,8 @@ export const VISIBILITY_CONDITIONS = [
 ] as const
 export type VisibilityCondition = (typeof VISIBILITY_CONDITIONS)[number]
 
-export type TransactionUpdateActual = JsonTxUpdate & { alias?: false }
-export type TransactionUpdateAlias = JsonTxUpdate & { alias?: true }
+export type TransactionResponseActual = TransactionResponse & { alias?: false }
+export type TransactionResponseAlias = TransactionResponse & { alias?: true }
 export type TransactionRequestAlias = TransactionRequest & { alias?: true }
 export type TransactionRequestActual = TransactionRequest & { alias?: false }
 
@@ -181,37 +184,6 @@ export function view<KT extends string>({
 
 // MIXED ////////////////////////////////////////////////////////////////////////
 
-// DIRTY ////////////////////////////////////////////////////////////////////////
-
-export type UnitKey<K extends Actual | Alias = Actual | Alias> = `unit::${K}`
-export type UnitViewKey = Compound<`view`, UnitKey<Actual>, UserKey>
-
-export type ItemKey<K extends Actual | Alias = Actual | Alias> = `item::${K}`
-export type ItemViewKey = CompoundTypedKey<`view`, ItemKey<Actual>, UserKey>
-
-export const itemVisibilitySelectors = selectorFamily<
-	VisibilityCondition,
-	ItemViewKey
->({
-	key: `itemVisibility`,
-	get: (_) => (__) => {
-		return `masked`
-	},
-})
-
-export const {
-	globalIndex: itemGlobalIndex,
-	perspectiveIndices: itemPerspectiveIndices,
-} = view({
-	key: `item`,
-	selectors: itemVisibilitySelectors,
-})
-
-export const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
-	key: `itemDurability`,
-	default: 0,
-})
-
 export const itemDurabilityMasks = selectorFamily<
 	number | `???`,
 	ItemKey<Alias>
@@ -241,4 +213,41 @@ export const itemDurabilityMasks = selectorFamily<
 					return get(itemDurabilityAtoms, actualItemKey)
 			}
 		},
+})
+
+// export function mask<KT extends string>(
+// 	states: AtomFamilyToken<any, `KT::${Actual}`>,
+// ): WritableSelectorFamilyToken<any, `KT::${Alias}`> {
+
+// }
+
+// DIRTY ////////////////////////////////////////////////////////////////////////
+
+export type UnitKey<K extends Actual | Alias = Actual | Alias> = `unit::${K}`
+export type UnitViewKey = Compound<`view`, UnitKey<Actual>, UserKey>
+
+export type ItemKey<K extends Actual | Alias = Actual | Alias> = `item::${K}`
+export type ItemViewKey = CompoundTypedKey<`view`, ItemKey<Actual>, UserKey>
+
+export const itemVisibilitySelectors = selectorFamily<
+	VisibilityCondition,
+	ItemViewKey
+>({
+	key: `itemVisibility`,
+	get: (_) => (__) => {
+		return `masked`
+	},
+})
+
+export const {
+	globalIndex: itemGlobalIndex,
+	perspectiveIndices: itemPerspectiveIndices,
+} = view({
+	key: `item`,
+	selectors: itemVisibilitySelectors,
+})
+
+export const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
+	key: `itemDurability`,
+	default: 0,
 })

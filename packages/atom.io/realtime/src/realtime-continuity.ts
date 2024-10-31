@@ -4,6 +4,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 	TransactionToken,
+	WritableSelectorFamilyToken,
 	WritableToken,
 } from "atom.io"
 import {
@@ -47,8 +48,8 @@ export type DynamicToken<K extends string> = {
 export type PerspectiveToken<KT extends string> = {
 	type: `realtime_perspective`
 	resourceFamilies: [
-		AtomFamilyToken<any, `${KT}::${Actual}`>,
-		AtomFamilyToken<any, `${KT}::${Alias}`>,
+		AtomFamilyToken<any, `${KT}::${string}`>,
+		WritableSelectorFamilyToken<any, `${KT}::${string}`>,
 	][]
 	viewAtoms: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>
 }
@@ -74,6 +75,8 @@ export class Continuity {
 
 	public static existing: InvariantMap<string, ContinuityToken> =
 		new InvariantMap()
+
+	// public masks: InvariantMap<string
 	public static create(
 		key: string,
 		builder: (group: Continuity) => Continuity,
@@ -94,8 +97,8 @@ export class Continuity {
 	public add<KT extends string>(
 		index: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>,
 		...maskedFamilies: [
-			AtomFamilyToken<any, `${KT}::${Actual}`>,
-			AtomFamilyToken<any, `${KT}::${Alias}`>,
+			AtomFamilyToken<any, `${KT}::${string}`>,
+			WritableSelectorFamilyToken<any, `${KT}::${string}`>,
 		][]
 	): Continuity
 	public add(
@@ -104,7 +107,7 @@ export class Continuity {
 					index: ReadableFamilyToken<Iterable<any>, UserKey>,
 					...maskedFamilies: [
 						AtomFamilyToken<any, any>,
-						AtomFamilyToken<any, any>,
+						WritableSelectorFamilyToken<any, any>,
 					][],
 			  ]
 			| readonly [
@@ -120,7 +123,7 @@ export class Continuity {
 				index: ReadableFamilyToken<Iterable<any>, UserKey>,
 				...maskedFamilies: [
 					AtomFamilyToken<any, any>,
-					AtomFamilyToken<any, any>,
+					WritableSelectorFamilyToken<any, any>,
 				][],
 			]
 			this.perspectives.push({
