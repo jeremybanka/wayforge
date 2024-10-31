@@ -1,6 +1,7 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import { actUponStore, arbitrary } from "atom.io/internal"
+import type { Canonical } from "atom.io/json"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -211,31 +212,88 @@ describe(`mutable atoms in continuity`, () => {
 	})
 })
 
-// describe(`join in perspective`, () => {
-// 	const scenario = () => {
-// 		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-// 		const userActionCountServerState = AtomIO.atom<number>({
-// 			key: `server:userActionCount`,
-// 			default: 0,
-// 		})
+describe(`join in perspective`, () => {
+	const scenario = () => {
+		// HIERARCHY
+		type GameKey = `game::${string}`
+		type UserKey = `user::${string}`
+		type PlayerKey = `T$--player==${GameKey}++${UserKey}`
+		type CharKey<K extends RTS.Actual | RTS.Alias = RTS.Actual | RTS.Alias> =
+			`char::${K}`
+		type ItemKey = `item::${string}`
 
-// 		const incrementTX = AtomIO.transaction({
-// 			key: `increment`,
-// 			do: ({ set, env }) => {
-// 				const { name } = env().store.config
-// 				if (name === `SERVER`) {
-// 					set(userActionCountServerState, (c) => c + 1)
-// 				}
-// 				set(countState, (c) => c + 1)
-// 			},
-// 		})
-// 		const countContinuity = RT.continuity({
-// 			key: `count`,
-// 			config: (group) => group.add(countState).add(incrementTX),
-// 		})
+		type GameHierarchy = AtomIO.Hierarchy<
+			[
+				{
+					above: `root`
+					below: [GameKey, UserKey]
+				},
+				{
+					above: [GameKey, UserKey]
+					style: `all`
+					below: PlayerKey
+				},
+				{
+					above: GameKey
+					below: [ItemKey, CharKey]
+				},
+				{
+					above: PlayerKey
+					below: [ItemKey, CharKey]
+				},
+			]
+		>
 
-// 		return RTTest.multiClient({
-// 			port: 5485,
-// 			server: ({ socket, silo: { store } }) => {}
-// 		})
-// })
+		// STATES
+		type CharViewKey = AtomIO.Compound<`view`, CharKey<RTS.Actual>, UserKey>
+		const {
+			globalIndex: characterGlobalIndex,
+			perspectiveIndices: characterPerspectiveIndices,
+		} = RTS.view({
+			key: `character`,
+			selectors: AtomIO.selectorFamily<RTS.VisibilityCondition, CharViewKey>({
+				key: `characterVisibility`,
+				get: (_) => (__) => {
+					return `masked`
+				},
+			}),
+		})
+		const healthAtoms = AtomIO.atomFamily<number, CharKey>({
+			key: `health`,
+			default: 0,
+		})
+		const healthMasks = AtomIO.selectorFamily<number | `???`, CharKey>({
+			key: `healthMask`,
+			get: (_) => (__) => {
+				return 0
+			},
+			set: (_) => (__) => {},
+		})
+		function mask<T, K extends Canonical>(
+			actual: AtomIO.AtomFamilyToken<T, K>,
+			alias: AtomIO.WritableSelectorFamilyToken<T, K>,
+		): AtomIO.WritableFamilyToken<T, K> {
+			return actual
+		}
+
+		const attackTX = AtomIO.transaction<(defender: CharKey) => void>({
+			key: `increment`,
+			do: ({ set }, defenderKey) => {
+				set(mask(healthAtoms, healthMasks), defenderKey, (health) => health - 10)
+			},
+		})
+		const gameContinuity = RT.continuity({
+			key: `game`,
+			config: (group) =>
+				group
+					.add(characterPerspectiveIndices, [healthAtoms, healthMasks])
+					.add(attackTX),
+		})
+
+		return RTTest.multiClient({
+			port: 5485,
+			server: ({ socket, silo: { store } }) => {},
+			clients: {},
+		})
+	}
+})

@@ -1,6 +1,7 @@
 import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
 import { atomFamily } from "atom.io"
 
+import type { TransactionResponse } from "../continuity/prepare-to-serve-transaction-request"
 import type { UserKey } from "./server-user-store"
 
 // export const completeUpdateAtoms = atomFamily<
@@ -76,7 +77,7 @@ export type ContinuitySyncTransactionUpdate = Pick<
 	`epoch` | `id` | `key` | `output` | `updates`
 >
 export const userUnacknowledgedQueues = atomFamily<
-	ContinuitySyncTransactionUpdate[],
+	TransactionResponse[],
 	UserKey
 >({
 	key: `unacknowledgedUpdates`,

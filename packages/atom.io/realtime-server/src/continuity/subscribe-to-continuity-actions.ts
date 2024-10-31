@@ -1,4 +1,4 @@
-import type { KeyedStateUpdate } from "atom.io"
+import type { TransactionUpdate, WritableFamilyToken } from "atom.io"
 import { getState } from "atom.io"
 import { findRelations } from "atom.io/data"
 import type { Store } from "atom.io/internal"
@@ -8,7 +8,7 @@ import {
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
@@ -17,9 +17,8 @@ import {
 	type Actual,
 	perspectiveAliases,
 	type PerspectiveKey,
-	type TransactionUpdateActual,
-	type TransactionUpdateAlias,
 } from "../realtime-server-stores/realtime-occlusion-store"
+import type { TransactionResponse } from "./prepare-to-serve-transaction-request"
 
 // const visibleKeys = continuity.globals
 // 	.map((atom) => {
@@ -60,8 +59,8 @@ export function aliasTransactionUpdate(
 	store: Store,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	update: TransactionUpdateActual,
-): TransactionUpdateAlias {
+	update: TransactionUpdate<JsonIO>,
+): TransactionResponse {
 	const visibleGlobalKeys = continuity.globals
 		.map((atom) => {
 			if (atom.type === `atom`) {
@@ -91,18 +90,21 @@ export function aliasTransactionUpdate(
 		},
 	)
 
-	const updatesInPerspective: TransactionUpdateAlias[`updates`] = []
+	const updatesInPerspective: TransactionResponse[`updates`] = []
 	for (const subUpdate of update.updates) {
 		switch (subUpdate.type) {
 			case `atom_update`:
+				console.log(`👁---------------------------------------`, subUpdate)
 				if (visibleGlobalKeys.includes(subUpdate.key)) {
 					updatesInPerspective.push(subUpdate)
 				}
 				if (visibleFamilyKeys.includes(subUpdate.key)) {
 					updatesInPerspective.push(subUpdate)
 				}
-				if (subUpdate.key.includes(`__`)) {
+				if (subUpdate.key.includes(`__`) && subUpdate.key.includes(`(`)) {
 					const segments = subUpdate.key.split(`__`)
+					const familyKey = segments[0].split(`(`)[0]
+					console.log({ segments, familyKey })
 					let sub = false
 					for (const segment of segments) {
 						if (sub) {
@@ -112,6 +114,17 @@ export function aliasTransactionUpdate(
 								findRelations(perspectiveAliases, perspectiveKey)
 									.perspectiveKeyOfAlias,
 							)
+							console.log({ aliasKey })
+							let maskFamilyToken: WritableFamilyToken<any, any> | null = null
+							for (const perspective of continuity.perspectives) {
+								const { resourceFamilies } = perspective
+								for (const [resourceFamily, maskFamily] of resourceFamilies) {
+									if (resourceFamily.key === familyKey) {
+										maskFamilyToken = maskFamily
+										break
+									}
+								}
+							}
 							if (aliasKey !== null) {
 								updatesInPerspective.push({
 									...subUpdate,
@@ -133,36 +146,7 @@ export function aliasTransactionUpdate(
 				break
 			case `state_creation`:
 			case `state_disposal`:
-				if (visibleGlobalKeys.includes(subUpdate.token.key)) {
-					updatesInPerspective.push(subUpdate)
-				}
-				if (visibleFamilyKeys.includes(subUpdate.token.key)) {
-					updatesInPerspective.push(subUpdate)
-				}
-				if (subUpdate.token.key.includes(`__`)) {
-					const segments = subUpdate.token.key.split(`__`)
-					let sub = false
-					for (const segment of segments) {
-						if (sub) {
-							const actualKey: Actual = `__${segment}__`
-							const perspectiveKey: PerspectiveKey = `T$--perspective==${actualKey}++${userKey}`
-							const aliasKey = getState(
-								findRelations(perspectiveAliases, perspectiveKey)
-									.perspectiveKeyOfAlias,
-							)
-							if (aliasKey !== null) {
-								updatesInPerspective.push({
-									...subUpdate,
-									token: {
-										...subUpdate.token,
-										key: aliasKey,
-									},
-								})
-							}
-						}
-						sub = !sub
-					}
-				}
+				// these don't fundamentally matter as events and can be deprecated from atom.io
 				break
 			case `molecule_creation`:
 			case `molecule_disposal`:
@@ -195,13 +179,15 @@ export function aliasTransactionUpdate(
 				break
 		}
 	}
-	const aliasUpdate = {
-		...update,
-		alias: true,
+	const response = {
+		key: update.key,
+		id: update.id,
+		epoch: update.epoch,
+		type: `transaction_update`,
 		updates: updatesInPerspective,
-	} satisfies TransactionUpdateAlias
+	} satisfies TransactionResponse
 
-	return aliasUpdate
+	return response
 }
 
 export function subscribeToContinuityActions(
