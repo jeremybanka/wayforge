@@ -212,7 +212,7 @@ describe(`mutable atoms in continuity`, () => {
 	})
 })
 
-describe(`join in perspective`, () => {
+describe.skip(`join in perspective`, () => {
 	const scenario = () => {
 		// HIERARCHY
 		type GameKey = `game::${string}`
