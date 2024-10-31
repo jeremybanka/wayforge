@@ -1,22 +1,16 @@
-import type { RegularAtomToken } from "atom.io"
-import { atomFamily } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import { atom, atomFamily } from "atom.io"
 import { continuity } from "atom.io/realtime"
-import type { UserKey } from "atom.io/realtime-server"
 
-export const letterAtoms = atomFamily<string | null, number>({
+export const letterAtoms = atomFamily<string | null, `letter::${number}`>({
 	key: `letter`,
 	default: null,
 })
-export const letterIndex = atomFamily<
-	RegularAtomToken<string | null>[],
-	UserKey
->({
+export const letterIndex = atom<`letter::${number}`[]>({
 	key: `letterIndex`,
-	default: Array.from({ length: 5 }).map((_, i) => findState(letterAtoms, i)),
+	default: Array.from({ length: 5 }).map((_, i) => `letter::${i}` as const),
 })
 
 export const gameContinuity = continuity({
 	key: `game`,
-	config: (group) => group.add(letterAtoms, letterIndex),
+	config: (group) => group.add(letterIndex, letterAtoms),
 })
