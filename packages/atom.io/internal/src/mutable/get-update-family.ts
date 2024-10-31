@@ -11,8 +11,8 @@ export const getUpdateFamily = <
 	SerializableCore extends Json.Serializable,
 	Key extends string,
 >(
-	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
 	store: Store,
+	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
 ): AtomFamily<Signal<Core>, Key> => {
 	const target = newest(store)
 	const key = `*${mutableAtomFamily.key}`

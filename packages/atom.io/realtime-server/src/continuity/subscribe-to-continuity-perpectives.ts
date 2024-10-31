@@ -1,14 +1,16 @@
+import type { WritableToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	findInStore,
 	getFromStore,
-	getJsonToken,
+	getJsonFamily,
 	subscribeToState,
 } from "atom.io/internal"
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket } from ".."
 import type { UserKey } from "../realtime-server-stores"
+import type { Alias } from "../realtime-server-stores/realtime-occlusion-store"
 
 export function subscribeToContinuityPerspectives(
 	store: Store,
@@ -19,28 +21,37 @@ export function subscribeToContinuityPerspectives(
 	const continuityKey = continuity.key
 	const unsubFns: (() => void)[] = []
 	for (const perspective of continuity.perspectives) {
-		const { viewAtoms } = perspective
+		const { viewAtoms, resourceFamilies } = perspective
 		const userViewState = findInStore(store, viewAtoms, userKey)
 		const unsubscribeFromUserView = subscribeToState(
 			userViewState,
-			({ oldValue, newValue }) => {
-				const oldKeys = oldValue.map((token) => token.key)
-				const newKeys = newValue.map((token) => token.key)
-				const concealed = oldValue.filter(
-					(token) => !newKeys.includes(token.key),
-				)
-				const revealed = newValue
-					.filter((token) => !oldKeys.includes(token.key))
-					.flatMap((token) => {
-						const resourceToken =
-							token.type === `mutable_atom` ? getJsonToken(store, token) : token
-						const resource = getFromStore(store, resourceToken)
-						return [resourceToken, resource]
-					})
+			({ oldValue: oldKeys, newValue: newKeys }) => {
+				const newKeysSet = new Set(newKeys)
+				const oldKeysSet = new Set(oldKeys)
+				const concealed: `${string}::${Alias}`[] = []
+				for (const key of oldKeys) {
+					if (!newKeysSet.has(key)) {
+						concealed.push(key)
+					}
+				}
+				const revealed: [WritableToken<any, `${string}::${Alias}`>, any][] = []
+				for (const key of newKeys) {
+					if (!oldKeysSet.has(key)) {
+						for (const [, maskedFamily] of resourceFamilies) {
+							const familyToken =
+								maskedFamily.type === `mutable_atom_family`
+									? getJsonFamily(store, maskedFamily)
+									: maskedFamily
+							const resourceToken = findInStore(store, familyToken, key)
+							const resource = getFromStore(store, resourceToken)
+							revealed.push([resourceToken, resource])
+						}
+					}
+				}
 				store.logger.info(
 					`👁`,
 					`atom`,
-					perspective.resourceAtoms.key,
+					viewAtoms.key,
 					`${userKey} has a new perspective`,
 					{ oldKeys, newKeys, revealed, concealed },
 				)
@@ -51,7 +62,7 @@ export function subscribeToContinuityPerspectives(
 					socket?.emit(`conceal:${continuityKey}`, concealed)
 				}
 			},
-			`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.resourceAtoms.key}`,
+			`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.viewAtoms.key}`,
 			store,
 		)
 		unsubFns.push(unsubscribeFromUserView)

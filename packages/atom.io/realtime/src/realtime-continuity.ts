@@ -4,12 +4,14 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 	TransactionToken,
+	WritableToken,
 } from "atom.io"
 import {
 	assignTransactionToContinuity,
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
+import type { JsonIO } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
 
 import type {
@@ -39,7 +41,7 @@ export class InvariantMap<K, V> extends Map<K, V> {
 export type DynamicToken<K extends string> = {
 	type: `realtime_dynamic`
 	resourceFamilies: AtomFamilyToken<any, K>[]
-	viewAtom: ReadableToken<Iterable<K>>
+	viewState: WritableToken<Iterable<K>>
 }
 
 export type PerspectiveToken<KT extends string> = {
@@ -55,7 +57,7 @@ export type ContinuityToken = {
 	readonly type: `continuity`
 	readonly key: string
 	readonly globals: AtomToken<any>[]
-	readonly actions: TransactionToken<any>[]
+	readonly actions: TransactionToken<JsonIO>[]
 	readonly dynamics: DynamicToken<any>[]
 	readonly perspectives: PerspectiveToken<string>[]
 }
@@ -135,21 +137,23 @@ export class Continuity {
 			})
 			return this
 		}
-		switch (first.type) {
-			case `atom_family`:
-			case `mutable_atom_family`:
-				{
-					const [index, ...families] = args as [
-						index: ReadableToken<Iterable<any>>,
-						...families: AtomFamilyToken<any, any>[],
-					]
-					this.dynamics.push({
-						type: `realtime_dynamic`,
-						resourceFamilies: families,
-						viewAtom: index,
-					})
-				}
-				return this
+		if (first) {
+			switch (first.type) {
+				case `atom_family`:
+				case `mutable_atom_family`:
+					{
+						const [index, ...families] = args as [
+							index: WritableToken<Iterable<any>>,
+							...families: AtomFamilyToken<any, any>[],
+						]
+						this.dynamics.push({
+							type: `realtime_dynamic`,
+							resourceFamilies: families,
+							viewState: index,
+						})
+					}
+					return this
+			}
 		}
 		const zeroth = args[0]
 		switch (zeroth.type) {

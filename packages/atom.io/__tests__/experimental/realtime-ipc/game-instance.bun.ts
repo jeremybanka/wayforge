@@ -39,7 +39,7 @@ const atomIOSubprocessLogger = new AtomIOLogger(
 )
 IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 
-const letter0State = findState(letterAtoms, 0)
+const letter0State = findState(letterAtoms, `letter::0`)
 
 setState(letter0State, `A`)
 

@@ -90,8 +90,8 @@ describe(`trackerFamily`, () => {
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(
-			setAtoms,
 			Internal.IMPLICIT.STORE,
+			setAtoms,
 		)
 
 		expect(getState(setAtoms, `a`)).toEqual(new SetRTX())
@@ -107,8 +107,8 @@ describe(`trackerFamily`, () => {
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(
-			setAtoms,
 			Internal.IMPLICIT.STORE,
+			setAtoms,
 		)
 		const updateTrackerTX = transaction<(key: string) => void>({
 			key: `updateTrackerTX`,
