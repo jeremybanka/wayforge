@@ -63,14 +63,9 @@ export function prepareToSendInitialPayload(
 					userView,
 				})
 				for (const key of userView) {
-					const visibleToken = findInStore(store, maskFamily, key)
-					const resourceToken =
-						visibleToken.type === `mutable_atom`
-							? getJsonToken(store, visibleToken)
-							: visibleToken
-					const resource = getFromStore(store, resourceToken)
-
-					initialPayload.push(resourceToken, resource)
+					const maskToken = findInStore(store, maskFamily, key)
+					const resource = getFromStore(store, maskToken)
+					initialPayload.push(maskToken, resource)
 				}
 			}
 		}
