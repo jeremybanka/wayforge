@@ -27,7 +27,7 @@ export function prepareToSendInitialPayload(
 			initialPayload.push(resourceToken, resource)
 		}
 		for (const dynamic of continuity.dynamics) {
-			const { viewAtom, resourceFamilies } = dynamic
+			const { viewState: viewAtom, resourceFamilies } = dynamic
 			const globalView = getFromStore(store, viewAtom)
 			store.logger.info(
 				`👁`,

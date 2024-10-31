@@ -10,7 +10,7 @@ import { gameContinuity, letterAtoms } from "./game-store"
 function Room({ roomId }: { roomId: string }): React.ReactNode {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 	RTR.useSyncContinuity(gameContinuity)
-	const letter0 = AR.useO(letterAtoms, 0)
+	const letter0 = AR.useO(letterAtoms, `letter::0`)
 	return (
 		<main data-testid={roomId}>
 			<h1>{roomId}</h1>
