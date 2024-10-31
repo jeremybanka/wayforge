@@ -19,6 +19,8 @@ import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
+import { mark } from "~/packages/atom.io/__tests__/__util__"
+
 import type {
 	JsonTxUpdate,
 	TransactionRequest,
@@ -72,7 +74,7 @@ export function derefTransactionRequest(
 ): Error | stringified<TransactionRequestActual> {
 	const segments = request.split(`$$`)
 	let sub = false
-	let peekBehind: string
+
 	for (let i = 0; i < segments.length; i++) {
 		const segment = segments[i]
 		if (sub) {
@@ -92,8 +94,6 @@ export function derefTransactionRequest(
 				)
 			}
 			segments[i] = actualKey
-		} else {
-			peekBehind = segment
 		}
 		sub = !sub
 	}
