@@ -1,4 +1,4 @@
-import type { TransactionUpdate, WritableFamilyToken } from "atom.io"
+import type { TransactionUpdate } from "atom.io"
 import { getState } from "atom.io"
 import { findRelations } from "atom.io/data"
 import type { Store } from "atom.io/internal"
@@ -65,7 +65,7 @@ export function aliasTransactionUpdate(
 				if (visibleFamilyKeys.includes(subUpdate.key)) {
 					updatesInPerspective.push(subUpdate)
 				}
-				if (subUpdate.key.includes(`__`) && subUpdate.key.includes(`(`)) {
+				if (subUpdate.family && subUpdate.key.includes(`__`)) {
 					const segments = subUpdate.key.split(`__`)
 					const familyKey = segments[0].split(`(`)[0]
 					let sub = false
@@ -77,24 +77,13 @@ export function aliasTransactionUpdate(
 								findRelations(perspectiveAliases, perspectiveKey)
 									.perspectiveKeyOfAlias,
 							)
-							// let maskFamilyToken: WritableFamilyToken<any, any> | null = null
-							// for (const perspective of continuity.perspectives) {
-							// 	const { resourceFamilies } = perspective
-							// 	for (const [resourceFamily, maskFamily] of resourceFamilies) {
-							// 		if (resourceFamily.key === familyKey) {
-							// 			maskFamilyToken = maskFamily
-							// 			break
-							// 		}
-							// 	}
-							// }
 							const maskFamilyToken = continuity.masksPerFamily[familyKey]
 							if (aliasKey !== null && maskFamilyToken !== null) {
 								const newValue = getState(maskFamilyToken, subUpdate.key)
 								updatesInPerspective.push({
 									key: aliasKey,
 									type: `atom_update`,
-									// biome-ignore lint/style/noNonNullAssertion: <explanation>
-									family: subUpdate.family!,
+									family: subUpdate.family,
 									newValue,
 								})
 							}
