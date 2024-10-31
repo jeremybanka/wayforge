@@ -9,8 +9,7 @@ import {
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket } from ".."
-import type { UserKey } from "../realtime-server-stores"
-import type { Alias } from "../realtime-server-stores/realtime-occlusion-store"
+import type { Alias, UserKey } from "../realtime-server-stores"
 
 export function subscribeToContinuityPerspectives(
 	store: Store,
