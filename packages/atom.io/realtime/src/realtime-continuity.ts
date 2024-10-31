@@ -87,13 +87,6 @@ export class Continuity {
 
 	public add(...atoms: AtomToken<any>[]): Continuity
 	public add(...args: TransactionToken<any>[]): Continuity
-	// public add<
-	// 	F extends AtomFamilyToken<any>,
-	// 	T extends F extends AtomFamilyToken<infer U> ? U : never,
-	// >(
-	// 	family: AtomFamilyToken<T, any>,
-	// 	index: ReadableFamilyToken<Iterable<AtomToken<T>>, UserKey>,
-	// ): Continuity
 	public add<TK extends `${string}::${string}`>(
 		index: ReadableToken<Iterable<TK>>,
 		...families: AtomFamilyToken<any, TK>[]
@@ -164,19 +157,6 @@ export class Continuity {
 			case `transaction`:
 				this.actions.push(...(args as TransactionToken<any>[]))
 				break
-			// case `atom_family`:
-			// 	{
-			// 		const [family, index] = args as [
-			// 			AtomFamilyToken<any, any>,
-			// 			ReadableFamilyToken<ReadableToken<any>[], UserKey>,
-			// 		]
-			// 		this.perspectives.push({
-			// 			type: `realtime_perspective`,
-			// 			resourceAtoms: family,
-			// 			viewAtoms: index,
-			// 		})
-			// 	}
-			// 	break
 		}
 
 		return this
