@@ -271,7 +271,7 @@ describe(`join in perspective`, () => {
 		})
 		function mask<T, K extends Canonical>(
 			actual: AtomIO.AtomFamilyToken<T, K>,
-			alias: AtomIO.WritableSelectorFamilyToken<T, K>,
+			_: AtomIO.WritableSelectorFamilyToken<T, K>,
 		): AtomIO.WritableFamilyToken<T, K> {
 			return actual
 		}
@@ -279,7 +279,9 @@ describe(`join in perspective`, () => {
 		const attackTX = AtomIO.transaction<(defender: CharKey) => void>({
 			key: `increment`,
 			do: ({ set }, defenderKey) => {
-				set(mask(healthAtoms, healthMasks), defenderKey, (health) => health - 10)
+				set(mask(healthAtoms, healthMasks), defenderKey, (health) =>
+					health === `???` ? `???` : health - 10,
+				)
 			},
 		})
 		const gameContinuity = RT.continuity({
@@ -292,7 +294,7 @@ describe(`join in perspective`, () => {
 
 		return RTTest.multiClient({
 			port: 5485,
-			server: ({ socket, silo: { store } }) => {},
+			server: () => {},
 			clients: {},
 		})
 	}

@@ -20,41 +20,6 @@ import {
 } from "../realtime-server-stores/realtime-occlusion-store"
 import type { TransactionResponse } from "./prepare-to-serve-transaction-request"
 
-// const visibleKeys = continuity.globals
-// 	.map((atom) => {
-// 		if (atom.type === `atom`) {
-// 			return atom.key
-// 		}
-// 		return getUpdateToken(atom).key
-// 	})
-// 	.concat(
-// 		continuity.perspectives.flatMap((perspective) => {
-// 			const { viewAtoms } = perspective
-// 			const userPerspectiveTokenState = findInStore(
-// 				store,
-// 				viewAtoms,
-// 				userKey,
-// 			)
-// 			const visibleTokens = getFromStore(
-// 				store,
-// 				userPerspectiveTokenState,
-// 			)
-// 			return visibleTokens.map((token) => {
-// 				const key =
-// 					token.type === `mutable_atom` ? `*` + token.key : token.key
-// 				return key
-// 			})
-// 		}),
-// 	)
-// const redactedUpdates = redactTransactionUpdateContent(
-// 	visibleKeys,
-// 	update.updates,
-// )
-// const redactedUpdate = {
-// 	...update,
-// 	updates: redactedUpdates,
-// }
-
 export function aliasTransactionUpdate(
 	store: Store,
 	continuity: ContinuityToken,
@@ -94,7 +59,6 @@ export function aliasTransactionUpdate(
 	for (const subUpdate of update.updates) {
 		switch (subUpdate.type) {
 			case `atom_update`:
-				console.log(`👁---------------------------------------`, subUpdate)
 				if (visibleGlobalKeys.includes(subUpdate.key)) {
 					updatesInPerspective.push(subUpdate)
 				}
@@ -104,7 +68,6 @@ export function aliasTransactionUpdate(
 				if (subUpdate.key.includes(`__`) && subUpdate.key.includes(`(`)) {
 					const segments = subUpdate.key.split(`__`)
 					const familyKey = segments[0].split(`(`)[0]
-					console.log({ segments, familyKey })
 					let sub = false
 					for (const segment of segments) {
 						if (sub) {
@@ -114,7 +77,6 @@ export function aliasTransactionUpdate(
 								findRelations(perspectiveAliases, perspectiveKey)
 									.perspectiveKeyOfAlias,
 							)
-							console.log({ aliasKey })
 							let maskFamilyToken: WritableFamilyToken<any, any> | null = null
 							for (const perspective of continuity.perspectives) {
 								const { resourceFamilies } = perspective
@@ -125,10 +87,14 @@ export function aliasTransactionUpdate(
 									}
 								}
 							}
-							if (aliasKey !== null) {
+							if (aliasKey !== null && maskFamilyToken !== null) {
+								const newValue = getState(maskFamilyToken, subUpdate.key)
 								updatesInPerspective.push({
-									...subUpdate,
 									key: aliasKey,
+									type: `atom_update`,
+									// biome-ignore lint/style/noNonNullAssertion: <explanation>
+									family: subUpdate.family!,
+									newValue,
 								})
 							}
 						}

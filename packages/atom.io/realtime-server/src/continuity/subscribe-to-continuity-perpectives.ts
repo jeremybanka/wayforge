@@ -33,17 +33,17 @@ export function subscribeToContinuityPerspectives(
 						concealed.push(key)
 					}
 				}
-				const revealed: [WritableToken<any, `${string}::${Alias}`>, any][] = []
+				const revealed: [WritableToken<any, `${string}::${string}`>, any][] = []
 				for (const key of newKeys) {
 					if (!oldKeysSet.has(key)) {
-						for (const [, maskedFamily] of resourceFamilies) {
-							const familyToken =
-								maskedFamily.type === `mutable_atom_family`
-									? getJsonFamily(store, maskedFamily)
-									: maskedFamily
-							const resourceToken = findInStore(store, familyToken, key)
-							const resource = getFromStore(store, resourceToken)
-							revealed.push([resourceToken, resource])
+						for (const [, maskedResourceFamily] of resourceFamilies) {
+							const maskedResourceToken = findInStore(
+								store,
+								maskedResourceFamily,
+								key,
+							)
+							const maskedResource = getFromStore(store, maskedResourceToken)
+							revealed.push([maskedResourceToken, maskedResource])
 						}
 					}
 				}
