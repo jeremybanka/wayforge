@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { actUponStore, arbitrary, IMPLICIT } from "atom.io/internal"
+import { actUponStore, arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -164,8 +164,8 @@ describe(`mutable atoms in continuity`, () => {
 		return Object.assign(
 			RTTest.singleClient({
 				port: 5475,
-				server: ({ socket, silo: { store } }) => {
-					// enableLogging()
+				server: ({ socket, silo: { store }, enableLogging }) => {
+					enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -185,6 +185,7 @@ describe(`mutable atoms in continuity`, () => {
 	test(`mutable initialization`, async () => {
 		const { client, server, teardown, addItemTX, myListAtom } = scenario()
 		const clientApp = client.init()
+
 		clientApp.enableLogging()
 		await waitFor(() => {
 			throwUntil(clientApp.socket.connected)

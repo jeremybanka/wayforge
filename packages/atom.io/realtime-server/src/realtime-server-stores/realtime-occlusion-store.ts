@@ -55,8 +55,8 @@ export function isPerspectiveKey(key: unknown): key is PerspectiveKey {
 	return typeof key === `string` && key.startsWith(`T$--perspective==__`)
 }
 
-export const globalProxies = join({
-	key: `globalAlias`,
+export const perspectiveAliases = join({
+	key: `perspectiveAliases`,
 	between: [`perspective`, `alias`],
 	cardinality: `1:1`,
 	isAType: isPerspectiveKey,
@@ -75,7 +75,7 @@ export function derefTransactionRequest(
 		if (sub) {
 			const aliasItemKey = `$$${segment}$$` satisfies Alias
 			const perspectiveKey = getState(
-				findRelations(globalProxies, aliasItemKey).perspectiveKeyOfAlias,
+				findRelations(perspectiveAliases, aliasItemKey).perspectiveKeyOfAlias,
 			)
 			if (perspectiveKey === null) {
 				return new Error(
@@ -95,47 +95,6 @@ export function derefTransactionRequest(
 		sub = !sub
 	}
 	return segments.join(``)
-}
-
-export function aliasTransactionUpdate(
-	userKey: UserKey,
-	update: TransactionUpdateActual,
-): TransactionUpdateAlias {
-	const updatesInPerspective: TransactionUpdateAlias[`updates`] = []
-	for (const subUpdate of update.updates) {
-		switch (subUpdate.type) {
-			case `atom_update`:
-				updatesInPerspective.push(subUpdate)
-				if (subUpdate.key.includes(`__`)) {
-					const segments = subUpdate.key.split(`__`)
-					let sub = false
-					for (const segment of segments) {
-						if (sub) {
-							const actualKey = `__${segment}__` satisfies Actual
-							const perspectiveKey =
-								`T$--perspective==${actualKey}++${userKey}` satisfies PerspectiveKey
-							const aliasItemKey = getState(
-								findRelations(globalProxies, perspectiveKey)
-									.perspectiveKeyOfAlias,
-							)
-							if (aliasItemKey !== null) {
-								updatesInPerspective.push({
-									...subUpdate,
-									key: aliasItemKey,
-								})
-							}
-						}
-						sub = !sub
-					}
-				}
-		}
-	}
-	const aliasUpdate = {
-		...update,
-		alias: true,
-		updates: updatesInPerspective,
-	} satisfies TransactionUpdateAlias
-	return aliasUpdate
 }
 
 export type ViewOptions<K extends string> = {
@@ -191,7 +150,7 @@ export function view<KT extends string>({
 								const perspectiveKey: PerspectiveKey = `T$--perspective==${actualKey}++${userKey}`
 								let aliasKey: Alias
 								const aliasKeyState = findRelations(
-									globalProxies,
+									perspectiveAliases,
 									perspectiveKey,
 								).aliasKeyOfPerspective
 								const maybeAliasKey = get(aliasKeyState)
@@ -199,7 +158,7 @@ export function view<KT extends string>({
 									aliasKey = maybeAliasKey
 								} else {
 									aliasKey = `$$${crypto.randomUUID()}$$`
-									editRelations(globalProxies, (relations) =>
+									editRelations(perspectiveAliases, (relations) =>
 										relations.set({
 											perspective: perspectiveKey,
 											alias: aliasKey,
@@ -263,7 +222,7 @@ export const itemDurabilityMasks = selectorFamily<
 		({ get }) => {
 			const aliasKey = extractAliasKey(itemKeyAlias)
 			const perspectiveKey = get(
-				findRelations(globalProxies, aliasKey).perspectiveKeyOfAlias,
+				findRelations(perspectiveAliases, aliasKey).perspectiveKeyOfAlias,
 			)
 			if (perspectiveKey === null) {
 				return `???`
