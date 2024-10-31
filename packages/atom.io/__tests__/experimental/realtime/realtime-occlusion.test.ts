@@ -18,32 +18,41 @@ import {
 
 import { aliasTransactionUpdate } from "~/packages/atom.io/realtime-server/src/continuity/subscribe-to-continuity-actions"
 
+import { mark } from "../../__util__"
+
 describe(`realtime occlusion`, () => {
+	editRelations(perspectiveAliases, (relations) => {
+		relations.set({
+			perspective: `T$--perspective==__hi__++user::bob`,
+			alias: `$$yo$$`,
+		})
+	})
+
 	it(`dereferences transaction requests with aliases`, () => {
+		mark(`start`)
 		const update = {
 			id: `123`,
 			key: `myTransaction`,
 			params: [`item::$$yo$$`],
 		} satisfies TransactionRequestActual
 
-		editRelations(perspectiveAliases, (relations) => {
-			relations.set({
-				perspective: `T$--perspective==__hi__++user::bob`,
-				alias: `$$yo$$`,
-			})
-		})
+		console.log(`aliased update`, update)
 
-		const actualUpdate = derefTransactionRequest(
-			`user::bob`,
-			stringifyJson(update),
-		)
+		const updateStringified = stringifyJson(update)
+
+		mark(`update stringified`)
+
+		const actualUpdate = derefTransactionRequest(`user::bob`, updateStringified)
+		mark(`update dereferenced`)
 		if (actualUpdate instanceof Error) {
 			console.log(actualUpdate)
 		} else {
-			console.log(parseJson(actualUpdate))
+			console.log(`actual update`, parseJson(actualUpdate))
 		}
+		mark(`update parsed`)
 	})
 	it(`encodes aliases into completed transaction updates`, () => {
+		mark(`start encoding`)
 		type ItemKey = `item::${string}`
 		type ItemVisibilityKey = Compound<`view`, `${ItemKey}::${Actual}`, UserKey>
 		const itemWeightAtoms = atomFamily<number, ItemKey>({
@@ -76,13 +85,17 @@ describe(`realtime occlusion`, () => {
 			selectors: itemVisibilitySelectors,
 		})
 
+		mark(`states created`)
+
 		const itemContinuity = continuity({
 			key: `item`,
 			config: (group) =>
 				group.add(itemPerspectiveIndices, [itemWeightAtoms, itemWeightMasks]),
 		})
 
-		const update = {
+		mark(`continuity created`)
+
+		const actualUpdate = {
 			id: `123`,
 			key: `myTransaction`,
 			params: [`item::__hi__`],
@@ -103,23 +116,19 @@ describe(`realtime occlusion`, () => {
 			output: {},
 		} satisfies TransactionUpdate<any>
 
-		editRelations(perspectiveAliases, (relations) => {
-			relations.set({
-				perspective: `T$--perspective==__hi__++user::bob`,
-				alias: `$$yo$$`,
-			})
-		})
+		console.log(`actual update`, actualUpdate)
 
-		const actualUpdate = aliasTransactionUpdate(
+		mark(`update created`)
+
+		const aliasedUpdate = aliasTransactionUpdate(
 			IMPLICIT.STORE,
 			itemContinuity,
 			`user::bob`,
-			update,
+			actualUpdate,
 		)
-		if (actualUpdate instanceof Error) {
-			console.log(actualUpdate)
-		} else {
-			console.log(actualUpdate)
-		}
+
+		mark(`update encoded`)
+
+		console.log(`aliased update`, aliasedUpdate)
 	})
 })
