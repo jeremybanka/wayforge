@@ -50,14 +50,12 @@ describe(`realtime occlusion`, () => {
 			key: `weight`,
 			default: 0,
 		})
-		const itemWeightMasks = selectorFamily<number, ItemKey>({
+		const itemWeightMasks = selectorFamily<number | `???`, ItemKey>({
 			key: `weightMask`,
 			get: (_) => (__) => {
-				return 0
+				return `???`
 			},
-			set: (_) => (__) => {
-				return 0
-			},
+			set: (_) => (__) => {},
 		})
 
 		const itemVisibilitySelectors = selectorFamily<
