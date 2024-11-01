@@ -1,5 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
+import { getInternalRelations, join } from "atom.io/data"
 import { actUponStore, arbitrary } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import * as AR from "atom.io/react"
@@ -9,6 +10,7 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { is } from "drizzle-orm"
 import * as React from "react"
 
 import { throwUntil } from "../../__util__/waiting"
@@ -216,11 +218,17 @@ describe.skip(`join in perspective`, () => {
 	const scenario = () => {
 		// HIERARCHY
 		type GameKey = `game::${string}`
+		const isGameKey = (key: string): key is GameKey => key.startsWith(`game::`)
 		type UserKey = `user::${string}`
+		const isUserKey = (key: string): key is UserKey => key.startsWith(`user::`)
 		type PlayerKey = `T$--player==${GameKey}++${UserKey}`
+		const isPlayerKey = (key: string): key is PlayerKey =>
+			key.startsWith(`T$--player==game::`)
 		type CharKey<K extends RTS.Actual | RTS.Alias = RTS.Actual | RTS.Alias> =
 			`char::${K}`
+		const isCharKey = (key: string): key is CharKey => key.startsWith(`char::`)
 		type ItemKey = `item::${string}`
+		const isItemKey = (key: string): key is ItemKey => key.startsWith(`item::`)
 
 		type GameHierarchy = AtomIO.Hierarchy<
 			[
@@ -258,11 +266,57 @@ describe.skip(`join in perspective`, () => {
 				},
 			}),
 		})
+		const worldTimeAtom = AtomIO.atom<number>({ key: `worldTime`, default: 0 })
+
+		const players = join({
+			key: `players`,
+			between: [`game`, `user`],
+			cardinality: `1:n`,
+			isAType: isGameKey,
+			isBType: isUserKey,
+		})
+
+		const playerCharacters = join({
+			key: `playersOfCharacters`,
+			between: [`player`, `character`],
+			cardinality: `1:n`,
+			isAType: isPlayerKey,
+			isBType: isCharKey,
+		})
+		const playerCharacterRelationAtoms = getInternalRelations(playerCharacters)
+		const playerCharacterRelationMasks = AtomIO.selectorFamily<
+			{ player: PlayerKey; character: CharKey } | null,
+			PlayerKey
+		>({
+			key: `playerCharacterRelationMask`,
+			get: (_) => (__) => {
+				return null
+			},
+			set: (_) => (__) => {},
+		})
+
+		const characterPositionAtoms = AtomIO.atomFamily<
+			{ x: number; y: number },
+			CharKey
+		>({
+			key: `position`,
+			default: { x: 0, y: 0 },
+		})
+		const characterPositionMasks = AtomIO.selectorFamily<
+			{ x: number; y: number } | null,
+			CharKey
+		>({
+			key: `positionMask`,
+			get: (_) => (__) => {
+				return { x: 0, y: 0 }
+			},
+			set: (_) => (__) => {},
+		})
 		const healthAtoms = AtomIO.atomFamily<number, CharKey>({
 			key: `health`,
 			default: 0,
 		})
-		const healthMasks = AtomIO.selectorFamily<number | `???`, CharKey>({
+		const healthMasks = AtomIO.selectorFamily<number | null, CharKey>({
 			key: `healthMask`,
 			get: (_) => (__) => {
 				return 0
@@ -280,7 +334,7 @@ describe.skip(`join in perspective`, () => {
 			key: `increment`,
 			do: ({ set }, defenderKey) => {
 				set(mask(healthAtoms, healthMasks), defenderKey, (health) =>
-					health === `???` ? `???` : health - 10,
+					health === null ? null : health - 10,
 				)
 			},
 		})
@@ -288,7 +342,12 @@ describe.skip(`join in perspective`, () => {
 			key: `game`,
 			config: (group) =>
 				group
-					.add(characterPerspectiveIndices, [healthAtoms, healthMasks])
+					.add(worldTimeAtom)
+					.add(
+						characterPerspectiveIndices,
+						[healthAtoms, healthMasks],
+						[playerCharacterRelationAtoms, playerCharacterRelationMasks],
+					)
 					.add(attackTX),
 		})
 
