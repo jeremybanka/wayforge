@@ -14,27 +14,22 @@ import {
 	cardIndex,
 	cardValueAtoms,
 	cardValueIndex,
-	cardValueView,
-	cardView,
 	deckAtoms,
 	deckIndex,
-	deckView,
 	gamePlayerIndex,
 	groupsOfCards,
 	groupsOfCardsView,
 	handAtoms,
 	handIndex,
-	handView,
 	ownersOfGroups,
 	ownersOfGroupsView,
 	pileIndex,
 	pileStates,
-	pileView,
 	trickIndex,
 	trickStates,
-	trickView,
 	valuesOfCards,
 	valuesOfCardsView,
+	visibleCardIndices,
 } from "../card-game-stores"
 import { startGameTX } from "./hearts-actions"
 
@@ -61,15 +56,15 @@ export const heartsContinuity = continuity({
 				gamePlayerIndex,
 				usersInThisRoomIndex,
 			)
-			.add(cardAtoms, cardView)
-			.add(cardValueAtoms, cardValueView)
-			.add(deckAtoms, deckView)
-			.add(handAtoms, handView)
-			.add(pileStates, pileView)
-			.add(trickStates, trickView)
+			.add(cardIndex, cardAtoms)
+			.add(cardValueIndex, cardValueAtoms)
+			.add(deckIndex, deckAtoms)
+			.add(handIndex, handAtoms)
+			.add(pileIndex, pileStates)
+			.add(trickIndex, trickStates)
 
-			.add(getInternalRelations(valuesOfCards), valuesOfCardsView)
-			.add(getInternalRelations(groupsOfCards), groupsOfCardsView)
-			.add(getInternalRelations(ownersOfGroups), ownersOfGroupsView)
+			.add(visibleCardIndices, [getInternalRelations(valuesOfCards)])
+			.add(groupsOfCardsView, getInternalRelations(groupsOfCards))
+			.add(ownersOfGroupsView, getInternalRelations(ownersOfGroups))
 	},
 })

@@ -3,7 +3,8 @@ import { findRelations, join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import { groupsOfCards } from "./card-groups-store"
+import { groupsOfCards, isTrickKey, type TrickKey } from "./card-groups-store"
+import { isCardKey } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
 
 export const trickContributions = join({
@@ -11,33 +12,33 @@ export const trickContributions = join({
 	between: [`player`, `card`],
 	cardinality: `1:n`,
 	isAType: (input): input is string => typeof input === `string`,
-	isBType: (input): input is string => typeof input === `string`,
+	isBType: isCardKey,
 })
 export const trickWinners = join({
 	key: `trickWinners`,
 	between: [`player`, `trick`],
 	cardinality: `1:n`,
 	isAType: (input): input is string => typeof input === `string`,
-	isBType: (input): input is string => typeof input === `string`,
+	isBType: isTrickKey,
 })
 
-export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const trickIndex = atom<SetRTX<TrickKey>, SetRTXJson<TrickKey>>({
 	key: `trickIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX<TrickKey>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
 export type TrickContent = [playerId: string, cardId: string | undefined]
-export const trickContentsStates = selectorFamily<TrickContent[], string>({
+export const trickContentsStates = selectorFamily<TrickContent[], TrickKey>({
 	key: `trickContents`,
 	get:
-		(trickId) =>
+		(key) =>
 		({ get }) => {
 			const playerIdsInGame = get(gamePlayerIndex)
 			const cardIdsInTrick = get(
-				findRelations(groupsOfCards, trickId).cardKeysOfGroup,
+				findRelations(groupsOfCards, key).cardKeysOfGroup,
 			)
 			const trickContents = playerIdsInGame.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(
@@ -52,7 +53,7 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 		},
 })
 
-export const trickIsCompleteState = selectorFamily<boolean, string>({
+export const trickIsCompleteState = selectorFamily<boolean, TrickKey>({
 	key: `trickIsComplete`,
 	get:
 		(trickId) =>
@@ -73,7 +74,7 @@ export const completeTrickIndex = selector<string[]>({
 	},
 })
 
-export const currentTrickIdState = selector<string | null>({
+export const currentTrickIdState = selector<TrickKey | null>({
 	key: `currentTrick`,
 	get: ({ get, json }) => {
 		const completeTrickIds = get(completeTrickIndex)
