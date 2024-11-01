@@ -120,7 +120,7 @@ export class Continuity {
 		index: ReadableToken<Iterable<TK>>,
 		...families: AtomFamilyToken<any, TK>[]
 	): Continuity
-	public add<KT extends string>(
+	public add<KT extends string, KA extends `${KT}::${Alias}`>(
 		index: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>,
 		...maskedFamilies: [
 			AtomFamilyToken<any, `${KT}::${string}`>,
