@@ -24,13 +24,16 @@ export interface JunctionSchema<ASide extends string, BSide extends string>
 	extends Json.Object,
 		JunctionSchemaBase<ASide, BSide> {}
 
-export type BaseExternalStoreConfiguration = {
-	addRelation: (a: string, b: string) => void
-	deleteRelation: (a: string, b: string) => void
-	replaceRelationsSafely: (a: string, bs: string[]) => void
-	replaceRelationsUnsafely: (a: string, bs: string[]) => void
-	getRelatedKeys(key: string): Set<string> | undefined
-	has: (a: string, b?: string) => boolean
+export type BaseExternalStoreConfiguration<
+	AType extends string,
+	BType extends string,
+> = {
+	addRelation: (a: AType | BType, b: AType | BType) => void
+	deleteRelation: (a: AType | BType, b: AType | BType) => void
+	replaceRelationsSafely: (a: AType | BType, bs: AType[]) => void
+	replaceRelationsUnsafely: (a: AType | BType, bs: AType[]) => void
+	getRelatedKeys(key: AType | BType): Set<AType | BType> | undefined
+	has: (a: AType, b?: BType) => boolean
 }
 
 export type ExternalStoreWithContentConfiguration<Content extends Json.Object> =
@@ -44,12 +47,15 @@ export type Empty<Obj extends object> = {
 	[Key in keyof Obj]?: undefined
 }
 
-export type ExternalStoreConfiguration<Content extends Json.Object | null> =
-	Content extends Json.Object
-		? BaseExternalStoreConfiguration &
-				ExternalStoreWithContentConfiguration<Content>
-		: BaseExternalStoreConfiguration &
-				Empty<ExternalStoreWithContentConfiguration<Json.Object>>
+export type ExternalStoreConfiguration<
+	AType extends string,
+	BType extends string,
+	Content extends Json.Object | null,
+> = Content extends Json.Object
+	? BaseExternalStoreConfiguration<AType, BType> &
+			ExternalStoreWithContentConfiguration<Content>
+	: BaseExternalStoreConfiguration<AType, BType> &
+			Empty<ExternalStoreWithContentConfiguration<Json.Object>>
 
 export type JunctionAdvancedConfiguration<
 	AType extends string,
@@ -57,7 +63,7 @@ export type JunctionAdvancedConfiguration<
 	Content extends Json.Object | null,
 > = {
 	warn?: (...args: any[]) => void
-	externalStore?: ExternalStoreConfiguration<Content>
+	externalStore?: ExternalStoreConfiguration<AType, BType, Content>
 	isAType?: Refinement<string, AType>
 	isBType?: Refinement<string, BType>
 	isContent?: Refinement<unknown, Content>
