@@ -1,76 +1,68 @@
-import type { MutableAtomToken, RegularAtomToken } from "atom.io"
-import { atom, atomFamily, selector, selectorFamily } from "atom.io"
-import { getInternalRelations, join } from "atom.io/data"
+import type { RegularAtomToken } from "atom.io"
+import { atom, atomFamily, selector } from "atom.io"
+import { join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import { cardIndex } from "./cards-store"
-import { gamePlayerIndex } from "./game-players-store"
-import { trickIndex } from "./trick-store"
+import { isCardKey } from "./cards-store"
 
+export type CardGroupType = `deck` | `hand` | `pile` | `trick`
 export type CardGroup = {
-	type: `deck` | `hand` | `pile` | `trick`
+	type: CardGroupType
 	name: string
 }
 
+export type CardGroupKey = `card_group:${CardGroupType}::${string}`
+export const isCardGroupKey = (k: string): k is CardGroupKey =>
+	isDeckKey(k) || isHandKey(k) || isPileKey(k) || isTrickKey(k)
+
+export type DeckKey = `card_group:deck::${string}`
+export const isDeckKey = (k: string): k is DeckKey => k.startsWith(`deck::`)
 export type Deck = CardGroup & {
 	type: `deck`
 }
+export type HandKey = `card_group:hand::${string}`
+export const isHandKey = (k: string): k is HandKey => k.startsWith(`hand::`)
 export type Hand = CardGroup & {
 	type: `hand`
 }
+export type PileKey = `card_group:pile::${string}`
+export const isPileKey = (k: string): k is PileKey => k.startsWith(`pile::`)
 export type Pile = CardGroup & {
 	type: `pile`
 }
+export type TrickKey = `card_group:trick::${string}`
+export const isTrickKey = (k: string): k is TrickKey => k.startsWith(`trick::`)
 export type Trick = CardGroup & {
 	type: `trick`
 }
 
-export const deckAtoms = atomFamily<Deck, string>({
+export const deckAtoms = atomFamily<Deck, DeckKey>({
 	key: `deck`,
 	default: {
 		type: `deck`,
 		name: ``,
 	},
 })
-export const deckIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const deckIndex = atom<SetRTX<DeckKey>, SetRTXJson<DeckKey>>({
 	key: `deckIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX<DeckKey>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
-export const deckGlobalView = selector<RegularAtomToken<Deck>[]>({
-	key: `deckGlobalView`,
-	get: ({ get, find }) => {
-		const deckTokens: RegularAtomToken<Deck>[] = []
-		const deckValueIds = get(deckIndex)
-		for (const deckValueId of deckValueIds) {
-			const deckToken = find(deckAtoms, deckValueId)
-			deckTokens.push(deckToken)
-		}
-		return deckTokens
-	},
-})
-export const deckView = selectorFamily<RegularAtomToken<Deck>[], string>({
-	key: `deckView`,
-	get:
-		() =>
-		({ get }) =>
-			get(deckGlobalView),
-})
 
-export const handAtoms = atomFamily<Hand, string>({
+export const handAtoms = atomFamily<Hand, HandKey>({
 	key: `hand`,
 	default: {
 		type: `hand`,
 		name: ``,
 	},
 })
-export const handIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const handIndex = atom<SetRTX<HandKey>, SetRTXJson<HandKey>>({
 	key: `handIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX<HandKey>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
@@ -86,49 +78,23 @@ export const handGlobalView = selector<RegularAtomToken<Hand>[]>({
 		return handTokens
 	},
 })
-export const handView = selectorFamily<RegularAtomToken<Hand>[], string>({
-	key: `handView`,
-	get:
-		() =>
-		({ get }) =>
-			get(handGlobalView),
-})
 
-export const pileStates = atomFamily<Pile, string>({
+export const pileStates = atomFamily<Pile, PileKey>({
 	key: `pile`,
 	default: {
 		type: `pile`,
 		name: ``,
 	},
 })
-export const pileIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const pileIndex = atom<SetRTX<PileKey>, SetRTXJson<PileKey>>({
 	key: `pileIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX<PileKey>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
-export const pileGlobalView = selector<RegularAtomToken<Pile>[]>({
-	key: `pileGlobalView`,
-	get: ({ get, find }) => {
-		const pileTokens: RegularAtomToken<Pile>[] = []
-		const pileIds = get(pileIndex)
-		for (const pileId of pileIds) {
-			const pileToken = find(pileStates, pileId)
-			pileTokens.push(pileToken)
-		}
-		return pileTokens
-	},
-})
-export const pileView = selectorFamily<RegularAtomToken<Pile>[], string>({
-	key: `pileView`,
-	get:
-		() =>
-		({ get }) =>
-			get(pileGlobalView),
-})
 
-export const trickStates = atomFamily<Trick, string>({
+export const trickStates = atomFamily<Trick, TrickKey>({
 	key: `trick`,
 	default: {
 		type: `trick`,
@@ -136,72 +102,12 @@ export const trickStates = atomFamily<Trick, string>({
 	},
 })
 
-export const trickGlobalView = selector<RegularAtomToken<Trick>[]>({
-	key: `trickGlobalView`,
-	get: ({ get, find }) => {
-		const trickTokens: RegularAtomToken<Trick>[] = []
-		const trickIds = get(trickIndex)
-		for (const trickId of trickIds) {
-			const trickToken = find(trickStates, trickId)
-			trickTokens.push(trickToken)
-		}
-		return trickTokens
-	},
-})
-export const trickView = selectorFamily<RegularAtomToken<Trick>[], string>({
-	key: `trickView`,
-	get:
-		() =>
-		({ get }) =>
-			get(trickGlobalView),
-})
-
-export const cardGroupIndex = selector<string[]>({
-	key: `cardGroupIndex`,
-	get: ({ get }) => {
-		const deckIds = get(deckIndex)
-		const handIds = get(handIndex)
-		const pileIds = get(pileIndex)
-		const trickIds = get(trickIndex)
-		return [...deckIds, ...handIds, ...pileIds, ...trickIds]
-	},
-})
-
 export const groupsOfCards = join({
 	key: `groupsOfCards`,
 	between: [`group`, `card`],
 	cardinality: `1:n`,
-	isAType: (input): input is string => typeof input === `string`,
-	isBType: (input): input is string => typeof input === `string`,
-})
-export const groupsOfCardsGlobalView = selector<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[]
->({
-	key: `groupsOfCardsGlobalView`,
-	get: ({ find, get }) => {
-		const tokens: MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[] = []
-		const groupIds = get(cardGroupIndex)
-		for (const groupId of groupIds) {
-			const token = find(getInternalRelations(groupsOfCards), groupId)
-			tokens.push(token)
-		}
-		const cardIds = get(cardIndex)
-		for (const cardId of cardIds) {
-			const token = find(getInternalRelations(groupsOfCards), cardId)
-			tokens.push(token)
-		}
-		return tokens
-	},
-})
-export const groupsOfCardsView = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
-	string
->({
-	key: `groupsOfCardsView`,
-	get:
-		() =>
-		({ get }) =>
-			get(groupsOfCardsGlobalView),
+	isAType: isCardGroupKey,
+	isBType: isCardKey,
 })
 
 export const ownersOfGroups = join({
@@ -210,33 +116,4 @@ export const ownersOfGroups = join({
 	cardinality: `1:n`,
 	isAType: (input): input is string => typeof input === `string`,
 	isBType: (input): input is string => typeof input === `string`,
-})
-export const ownersOfGroupsGlobalView = selector<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[]
->({
-	key: `ownersOfGroupsGlobalView`,
-	get: ({ find, get }) => {
-		const tokens: MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[] = []
-		const groupIds = get(cardGroupIndex)
-		for (const groupId of groupIds) {
-			const token = find(getInternalRelations(ownersOfGroups), groupId)
-			tokens.push(token)
-		}
-		const playerIds = get(gamePlayerIndex)
-		for (const playerId of playerIds) {
-			const token = find(getInternalRelations(ownersOfGroups), playerId)
-			tokens.push(token)
-		}
-		return tokens
-	},
-})
-export const ownersOfGroupsView = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
-	string
->({
-	key: `ownersOfGroupsView`,
-	get:
-		() =>
-		({ get }) =>
-			get(ownersOfGroupsGlobalView),
 })
