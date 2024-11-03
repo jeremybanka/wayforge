@@ -1,7 +1,13 @@
 import { atom, atomFamily, selectorFamily } from "atom.io"
-import { findRelations, join } from "atom.io/data"
+import { findRelations, getInternalRelations, join } from "atom.io/data"
 import type { Json } from "atom.io/json"
-import type { Actual, Alias, UserKey } from "atom.io/realtime-server"
+import {
+	type Actual,
+	type Alias,
+	perspectiveAliases,
+	type PerspectiveKey,
+	type UserKey,
+} from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -21,6 +27,10 @@ export type CardValueKey<K extends Actual | Alias = Actual | Alias> =
 	`cardValue::${K}`
 export const isCardValueKey = (k: string): k is CardValueKey =>
 	k.startsWith(`cardValue::`)
+export const isActualCardValueKey = (k: string): k is CardValueKey<Actual> =>
+	k.startsWith(`cardValue::__`)
+export const isAliasCardValueKey = (k: string): k is CardValueKey<Alias> =>
+	k.startsWith(`cardValue::$$`)
 
 export const cardValueAtoms = atomFamily<Identified & Json.Object, CardValueKey>(
 	{
@@ -47,9 +57,23 @@ export const valuesOfCards = join({
 	isBType: isCardKey,
 })
 
-export const visibleCardValueIndices =
-	selectorFamily <
-	CardValueKey<[], UserKey>({
+export const cardValueRelationsMask = selectorFamily<
+	CardValueKey | null,
+	CardKey
+>({
+	key: `cardValueRelationsMask`,
+	get:
+		(cardKey) =>
+		({ get, find, json }) => {
+			const cardValueJson = json(
+				find(getInternalRelations(valuesOfCards), cardKey),
+			)
+			return get(cardValueJson)
+		},
+})
+
+export const visibleCardValueIndices = selectorFamily<CardKey<Alias>[], UserKey>(
+	{
 		key: `visibleCardIndices`,
 		get:
 			(username) =>
@@ -96,7 +120,24 @@ export const visibleCardValueIndices =
 						}
 					}
 				}
-
-				return cardIds
+				const cardAliases: CardKey<Alias>[] = []
+				for (const cardId of cardIds) {
+					const actual = cardId.split(`::`).pop() as Actual
+					const perspectiveKey: PerspectiveKey = `T$--perspective==${actual}++${username}`
+					const alias = get(
+						findRelations(perspectiveAliases, perspectiveKey)
+							.aliasKeyOfPerspective,
+					)
+					if (alias) {
+						cardAliases.push(`card::${alias}`)
+					}
+				}
+				return cardAliases
 			},
-	})
+	},
+)
+
+// val:_1H -> [card:GX]
+// val:_2H -> [card:BH]
+// card:GX -> [val:_1H]
+// card:BH -> [val:_2H]

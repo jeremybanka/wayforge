@@ -1,24 +1,25 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
+	MutableAtomFamilyToken,
 	ReadableFamilyToken,
 	ReadableToken,
+	RegularAtomFamilyToken,
 	TransactionToken,
 	WritableSelectorFamilyToken,
 	WritableToken,
 } from "atom.io"
+import type { Transceiver } from "atom.io/internal"
 import {
 	assignTransactionToContinuity,
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
-import { fromEntries, type JsonIO } from "atom.io/json"
+import type { Json, JsonIO } from "atom.io/json"
+import { fromEntries } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
 
-import type {
-	Actual,
-	Alias,
-} from "../../realtime-server/src/realtime-server-stores/realtime-occlusion-store"
+import type { Alias } from "../../realtime-server/src/realtime-server-stores/realtime-occlusion-store"
 
 /* eslint-disable no-console */
 
@@ -45,12 +46,12 @@ export type DynamicToken<K extends string> = {
 	viewState: WritableToken<Iterable<K>>
 }
 
-export type PerspectiveToken<KT extends string> = {
+export type PerspectiveToken<
+	KT extends string,
+	SIG extends Json.Serializable,
+> = {
 	type: `realtime_perspective`
-	resourceFamilies: [
-		AtomFamilyToken<any, `${KT}::${string}`>,
-		WritableSelectorFamilyToken<any, `${KT}::${string}`>,
-	][]
+	resourceFamilies: MaskToken<KT, SIG>[]
 	viewAtoms: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>
 }
 
@@ -60,11 +61,37 @@ export type ContinuityToken = {
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<JsonIO>[]
 	readonly dynamics: DynamicToken<any>[]
-	readonly perspectives: PerspectiveToken<string>[]
-	readonly masksPerFamily: {
-		[key: string]: WritableSelectorFamilyToken<any, string>
-	}
+	readonly perspectives: PerspectiveToken<string, any>[]
+	readonly masksPerFamily: { [key: string]: MaskData }
 }
+
+export type MaskToken<KT extends string, SIG extends Json.Serializable> =
+	| [
+			baseStates: MutableAtomFamilyToken<
+				Transceiver<SIG>,
+				Json.Serializable,
+				`${KT}::${string}`
+			>,
+			jsonMask: WritableSelectorFamilyToken<
+				Json.Serializable,
+				`${KT}::${string}`
+			>,
+			signalMask: WritableSelectorFamilyToken<SIG, `${KT}::${string}`>,
+	  ]
+	| [
+			baseStates: RegularAtomFamilyToken<any, `${KT}::${string}`>,
+			maskStates: WritableSelectorFamilyToken<any, `${KT}::${string}`>,
+	  ]
+export type MaskData =
+	| {
+			type: `mutable`
+			mask: WritableSelectorFamilyToken<any, string>
+			signal: WritableSelectorFamilyToken<any, string>
+	  }
+	| {
+			type: `regular`
+			mask: WritableSelectorFamilyToken<any, string>
+	  }
 
 export class Continuity {
 	public type = `continuity` as const
@@ -72,7 +99,7 @@ export class Continuity {
 	protected globals: AtomToken<any>[] = []
 	protected actions: TransactionToken<any>[] = []
 	protected dynamics: DynamicToken<any>[] = []
-	protected perspectives: PerspectiveToken<any>[] = []
+	protected perspectives: PerspectiveToken<any, any>[] = []
 
 	protected constructor(protected readonly key: string) {}
 
@@ -87,19 +114,20 @@ export class Continuity {
 		const group = new Continuity(key)
 		const { type, globals, actions, dynamics, perspectives } = builder(group)
 		const masksPerFamily = fromEntries(
-			perspectives.flatMap(
-				(perspective): [string, WritableSelectorFamilyToken<any, string>][] => {
-					const { resourceFamilies } = perspective
-					return resourceFamilies.map(
-						([baseFamily, maskedFamily]): [
-							string,
-							WritableSelectorFamilyToken<any, string>,
-						] => {
-							return [baseFamily.key, maskedFamily]
-						},
-					)
-				},
-			),
+			perspectives.flatMap((perspective): [string, MaskData][] => {
+				const { resourceFamilies } = perspective
+				return resourceFamilies.map(
+					([baseFamily, maskFamily, signalFamily]): [string, MaskData] => {
+						if (signalFamily) {
+							return [
+								baseFamily.key,
+								{ type: `mutable`, mask: maskFamily, signal: signalFamily },
+							]
+						}
+						return [baseFamily.key, { type: `regular`, mask: maskFamily }]
+					},
+				)
+			}),
 		)
 		const token = {
 			type,
@@ -120,21 +148,15 @@ export class Continuity {
 		index: ReadableToken<Iterable<TK>>,
 		...families: AtomFamilyToken<any, TK>[]
 	): Continuity
-	public add<KT extends string, KA extends `${KT}::${Alias}`>(
+	public add<KT extends string, SIG extends Json.Serializable>(
 		index: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>,
-		...maskedFamilies: [
-			AtomFamilyToken<any, `${KT}::${string}`>,
-			WritableSelectorFamilyToken<any, `${KT}::${string}`>,
-		][]
+		...maskedFamilies: MaskToken<KT, SIG>[]
 	): Continuity
 	public add(
 		...args:
 			| readonly [
 					index: ReadableFamilyToken<Iterable<any>, UserKey>,
-					...maskedFamilies: [
-						AtomFamilyToken<any, any>,
-						WritableSelectorFamilyToken<any, any>,
-					][],
+					...maskedFamilies: MaskToken<any, any>[],
 			  ]
 			| readonly [
 					index: ReadableToken<Iterable<any>>,
@@ -147,10 +169,7 @@ export class Continuity {
 		if (Array.isArray(first)) {
 			const [index, ...maskedFamilies] = args as readonly [
 				index: ReadableFamilyToken<Iterable<any>, UserKey>,
-				...maskedFamilies: [
-					AtomFamilyToken<any, any>,
-					WritableSelectorFamilyToken<any, any>,
-				][],
+				...maskedFamilies: MaskToken<any, any>[],
 			]
 			this.perspectives.push({
 				type: `realtime_perspective`,

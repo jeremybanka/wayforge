@@ -1,9 +1,10 @@
 import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
+import type { Actual, Alias } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-export type CardKey = `card::${string}`
+export type CardKey<K extends Actual | Alias = Actual | Alias> = `card::${K}`
 export const isCardKey = (k: string): k is CardKey => k.startsWith(`card::`)
 export type Card = {
 	rotation: number
