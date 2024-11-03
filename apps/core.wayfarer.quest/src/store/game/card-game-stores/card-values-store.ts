@@ -75,14 +75,14 @@ export const cardValueRelationsMask = selectorFamily<
 			) as SetRTXJson<CardValueKey>
 			return {
 				...cardValueJson,
-				members: cardValueJson.members,
+				members: cardValueJson.members, // 👀 IMPLEMENT ALIASING
 			}
 		},
 	set: () => () => {},
 })
 
 export const valuesOfCardsUpdateMask = selectorFamily<
-	Signal<SetRTX<CardKey>>,
+	Signal<SetRTX<CardValueKey>>,
 	CardKey
 >({
 	key: `valuesOfCardsUpdateMask`,
@@ -93,7 +93,7 @@ export const valuesOfCardsUpdateMask = selectorFamily<
 				find(getInternalRelations(valuesOfCards), cardKey),
 			)
 			const update = get(updateAtom)
-			return update
+			return update // 👀 IMPLEMENT ALIASING
 		},
 	set: () => () => {},
 })
