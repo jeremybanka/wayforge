@@ -17,9 +17,7 @@ import {
 } from "atom.io/internal"
 import type { Json, JsonIO } from "atom.io/json"
 import { fromEntries } from "atom.io/json"
-import type { UserKey } from "atom.io/realtime-server"
-
-import type { Alias } from "../../realtime-server/src/realtime-server-stores/realtime-occlusion-store"
+import type { Alias, UserKey } from "atom.io/realtime-server"
 
 /* eslint-disable no-console */
 
@@ -148,16 +146,16 @@ export class Continuity {
 
 	public add(...atoms: AtomToken<any>[]): Continuity
 	public add(...args: TransactionToken<any>[]): Continuity
-	public add<TK extends `${string}::${string}`>(
-		index: ReadableToken<Iterable<TK>>,
-		...families: AtomFamilyToken<any, TK>[]
+	public add<K extends string>(
+		index: ReadableToken<Iterable<K>>,
+		...families: AtomFamilyToken<any, K>[]
 	): Continuity
 	public add<
 		KeyType extends string,
 		JsonForm extends Json.Serializable,
 		JsonUpdate extends Json.Serializable,
 	>(
-		index: ReadableFamilyToken<Iterable<`${KeyType}::${Alias}`>, UserKey>,
+		index: ReadableFamilyToken<Iterable<`${KeyType}::${string}`>, UserKey>,
 		...maskedFamilies: MaskToken<KeyType, JsonForm, JsonUpdate>[]
 	): Continuity
 	public add(
