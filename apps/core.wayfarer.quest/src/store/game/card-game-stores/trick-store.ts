@@ -4,7 +4,7 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { groupsOfCards, isTrickKey, type TrickKey } from "./card-groups-store"
-import { isCardKey } from "./cards-store"
+import { type CardKey, isCardKey } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
 
 export const trickContributions = join({
@@ -30,7 +30,7 @@ export const trickIndex = atom<SetRTX<TrickKey>, SetRTXJson<TrickKey>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export type TrickContent = [playerId: string, cardId: string | undefined]
+export type TrickContent = [playerId: string, cardId: CardKey | undefined]
 export const trickContentsStates = selectorFamily<TrickContent[], TrickKey>({
 	key: `trickContents`,
 	get:

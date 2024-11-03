@@ -5,7 +5,7 @@ import { gamePlayerIndex } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const spawnHandTX = transaction<
-	(playerId: string, handId: string) => void
+	(playerId: string, handId: CardGroups.HandKey) => void
 >({
 	key: `spawnHand`,
 	do: (transactors, playerId, handId) => {

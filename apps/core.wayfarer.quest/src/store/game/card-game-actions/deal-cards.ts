@@ -1,10 +1,15 @@
 import { transaction } from "atom.io"
 import { editRelations, findRelations } from "atom.io/data"
 
+import type { CardKey } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const dealCardsTX = transaction<
-	(deckId: string, handId: string, count: number) => { cardIds: string[] }
+	(
+		deckKey: CardGroups.DeckKey,
+		handKey: CardGroups.HandKey,
+		count: number,
+	) => { cardIds: CardKey[] }
 >({
 	key: `dealCards`,
 	do: (transactors, deckId, handId, count) => {

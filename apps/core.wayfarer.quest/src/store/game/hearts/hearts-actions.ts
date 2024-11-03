@@ -1,5 +1,4 @@
 import { transaction } from "atom.io"
-import { getJsonToken } from "atom.io/internal"
 import { usersInThisRoomIndex } from "atom.io/realtime"
 
 import {
@@ -9,13 +8,19 @@ import {
 	spawnHandTX,
 	spawnTrickTX,
 } from "../card-game-actions"
-import { gamePlayerIndex } from "../card-game-stores"
+import {
+	type CardKey,
+	type DeckKey,
+	gamePlayerIndex,
+	type HandKey,
+	type TrickKey,
+} from "../card-game-stores"
 
 export type StartGameInput = {
-	handIds: string[]
-	trickId: string
-	deckId: string
-	cardIds: string[]
+	handIds: HandKey[]
+	trickId: TrickKey
+	deckId: DeckKey
+	cardIds: CardKey[]
 	txId: string
 	shuffle: number
 }

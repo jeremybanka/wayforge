@@ -22,8 +22,8 @@ import type { UserKey } from "./server-user-store"
 
 // CLEAN ////////////////////////////////////////////////////////////////////////
 
-export type Actual = `__${string}__`
-export type Alias = `$$${string}$$`
+export type Actual<S extends string = string> = `__${S}__`
+export type Alias<S extends string = string> = `$$${S}$$`
 
 export function extractAliasKey(key: `${string}::${Alias}`): Alias {
 	return key.split(`::`).pop() as Alias
