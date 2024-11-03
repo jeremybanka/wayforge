@@ -4,7 +4,11 @@ import { editRelations, findRelations } from "atom.io/data"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const dealCardsTX = transaction<
-	(deckId: string, handId: string, count: number) => { cardIds: string[] }
+	(
+		deckId: CardGroups.DeckKey,
+		handId: CardGroups.HandKey,
+		count: number,
+	) => { cardIds: string[] }
 >({
 	key: `dealCards`,
 	do: (transactors, deckId, handId, count) => {

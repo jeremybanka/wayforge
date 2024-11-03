@@ -14,6 +14,7 @@ import {
 	cardIndex,
 	cardValueAtoms,
 	cardValueIndex,
+	cardValueRelationsMask as valuesOfCardsJsonMask,
 	deckAtoms,
 	deckIndex,
 	gamePlayerIndex,
@@ -26,6 +27,7 @@ import {
 	trickIndex,
 	trickStates,
 	valuesOfCards,
+	valuesOfCardsUpdateMask,
 	visibleCardValueIndices,
 } from "../card-game-stores"
 import { startGameTX } from "./hearts-actions"
@@ -60,7 +62,11 @@ export const heartsContinuity = continuity({
 			.add(pileIndex, pileStates)
 			.add(trickIndex, trickStates)
 
-			.add(visibleCardValueIndices, [getInternalRelations(valuesOfCards)])
+			.add(visibleCardValueIndices, [
+				getInternalRelations(valuesOfCards),
+				valuesOfCardsJsonMask,
+				valuesOfCardsUpdateMask,
+			])
 			.add(groupsOfCardsView, getInternalRelations(groupsOfCards))
 			.add(ownersOfGroupsView, getInternalRelations(ownersOfGroups))
 	},

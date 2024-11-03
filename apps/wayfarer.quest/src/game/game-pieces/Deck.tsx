@@ -6,6 +6,7 @@ import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 
+import type { DeckKey } from "~/apps/core.wayfarer.quest/src/store/game"
 import {
 	groupsOfCards,
 	shuffleDeckTX,
@@ -16,7 +17,7 @@ import { Count } from "../labels/Count"
 import { CardBack } from "./Card"
 import scss from "./Deck.module.scss"
 
-export const Deck = memoize<{ id: string; detailed?: boolean }>(
+export const Deck = memoize<{ id: DeckKey; detailed?: boolean }>(
 	`Deck`,
 	({ id: deckId, detailed }) => {
 		const cardIds = useO(findRelations(groupsOfCards, deckId).cardKeysOfGroup)
