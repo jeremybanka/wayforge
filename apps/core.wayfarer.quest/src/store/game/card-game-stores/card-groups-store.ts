@@ -1,10 +1,15 @@
 import type { RegularAtomToken } from "atom.io"
-import { atom, atomFamily, selector } from "atom.io"
-import { join } from "atom.io/data"
+import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+import { getInternalRelations, join } from "atom.io/data"
+import { getUpdateToken, type Signal } from "atom.io/internal"
+import type { Alias, UserKey } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import { isCardKey } from "./cards-store"
+import { valuesOfCards } from "./card-values-store"
+import { type CardKey, isCardKey } from "./cards-store"
+import { gamePlayerIndex } from "./game-players-store"
+import { trickIndex } from "./trick-store"
 
 export type CardGroupType = `deck` | `hand` | `pile` | `trick`
 export type CardGroup = {
@@ -110,10 +115,73 @@ export const groupsOfCards = join({
 	isBType: isCardKey,
 })
 
+export const groupsOfCardsJsonMask = selectorFamily<
+	SetRTXJson<CardKey<Alias>>,
+	CardGroupKey
+>({
+	key: `cardValueRelationsMask`,
+	get:
+		(cardGroupKey) =>
+		({ get, find, json }) => {
+			const cardValueJsonSelector = json(
+				find(getInternalRelations(groupsOfCards), cardGroupKey),
+			)
+			const cardValueJson = get(cardValueJsonSelector) as SetRTXJson<
+				CardKey<Alias>
+			>
+			return {
+				...cardValueJson,
+				members: cardValueJson.members, // 👀 IMPLEMENT ALIASING
+			}
+		},
+	set: () => () => {},
+})
+
+export const groupsOfCardsUpdateMask = selectorFamily<
+	Signal<SetRTX<CardKey>>,
+	CardKey
+>({
+	key: `valuesOfCardsUpdateMask`,
+	get:
+		(cardKey) =>
+		({ get, find }) => {
+			const updateAtom = getUpdateToken(
+				find(getInternalRelations(valuesOfCards), cardKey),
+			)
+			const update = get(updateAtom)
+			return update // 👀 IMPLEMENT ALIASING
+		},
+	set: () => () => {},
+})
+
+export const groupsOfCardsView = selectorFamily<CardGroupKey[], UserKey>({
+	key: `groupsOfCardsView`,
+	get:
+		() =>
+		({ get }) => {
+			return [
+				...get(pileIndex),
+				...get(deckIndex),
+				...get(handIndex),
+				...get(trickIndex),
+			]
+		},
+})
+
 export const ownersOfGroups = join({
 	key: `ownersOfGroups`,
 	between: [`player`, `group`],
 	cardinality: `1:n`,
 	isAType: (input): input is string => typeof input === `string`,
 	isBType: (input): input is string => typeof input === `string`,
+})
+
+export const ownersAndGroupsIndex = selector<string[]>({
+	key: `ownersAndGroupsIndex`,
+	get: ({ get }) => {
+		const playerIds = get(gamePlayerIndex)
+		const groupIds = get(groupsOfCardsView, `user::`)
+		return [...playerIds, ...groupIds]
+	},
+	set: () => () => {},
 })

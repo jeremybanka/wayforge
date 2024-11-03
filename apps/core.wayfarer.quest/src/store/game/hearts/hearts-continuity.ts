@@ -19,8 +19,12 @@ import {
 	deckIndex,
 	gamePlayerIndex,
 	groupsOfCards,
+	groupsOfCardsJsonMask,
+	groupsOfCardsUpdateMask,
+	groupsOfCardsView,
 	handAtoms,
 	handIndex,
+	ownersAndGroupsIndex,
 	ownersOfGroups,
 	pileIndex,
 	pileStates,
@@ -57,17 +61,22 @@ export const heartsContinuity = continuity({
 			)
 			.add(cardIndex, cardAtoms)
 			.add(cardValueIndex, cardValueAtoms)
-			.add(deckIndex, deckAtoms)
-			.add(handIndex, handAtoms)
-			.add(pileIndex, pileStates)
-			.add(trickIndex, trickStates)
+			.add(deckIndex, deckAtoms, getInternalRelations(ownersOfGroups))
+			.add(handIndex, handAtoms, getInternalRelations(ownersOfGroups))
+			.add(pileIndex, pileStates, getInternalRelations(ownersOfGroups))
+			.add(trickIndex, trickStates, getInternalRelations(ownersOfGroups))
+
+			.add(gamePlayerIndex, getInternalRelations(ownersOfGroups))
 
 			.add(visibleCardValueIndices, [
 				getInternalRelations(valuesOfCards),
 				valuesOfCardsJsonMask,
 				valuesOfCardsUpdateMask,
 			])
-			.add(groupsOfCardsView, getInternalRelations(groupsOfCards))
-			.add(ownersOfGroupsView, getInternalRelations(ownersOfGroups))
+			.add(groupsOfCardsView, [
+				getInternalRelations(groupsOfCards),
+				groupsOfCardsJsonMask,
+				groupsOfCardsUpdateMask,
+			])
 	},
 })
