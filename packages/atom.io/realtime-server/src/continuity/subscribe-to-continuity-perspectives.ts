@@ -1,11 +1,6 @@
 import type { WritableToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import {
-	findInStore,
-	getFromStore,
-	getJsonFamily,
-	subscribeToState,
-} from "atom.io/internal"
+import { findInStore, getFromStore, subscribeToState } from "atom.io/internal"
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket } from ".."

@@ -15,7 +15,7 @@ import { prepareToSendInitialPayload } from "./prepare-to-send-initial-payload"
 import { prepareToServeTransactionRequest } from "./prepare-to-serve-transaction-request"
 import { prepareToTrackClientAcknowledgement } from "./prepare-to-track-client-acknowledgement"
 import { subscribeToContinuityActions } from "./subscribe-to-continuity-actions"
-import { subscribeToContinuityPerspectives } from "./subscribe-to-continuity-perpectives"
+import { subscribeToContinuityPerspectives } from "./subscribe-to-continuity-perspectives"
 
 export type ExposeRealtimeContinuity = (
 	continuity: ContinuityToken,

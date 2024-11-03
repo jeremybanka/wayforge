@@ -1,7 +1,7 @@
 import type { Store } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-export * from "./continuity/prepare-to-sync-realtime-continuity"
+export * from "./continuity"
 export * from "./ipc-sockets"
 export * from "./realtime-action-receiver"
 export * from "./realtime-family-provider"

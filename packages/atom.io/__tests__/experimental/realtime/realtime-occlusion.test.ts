@@ -11,12 +11,11 @@ import type {
 	VisibilityCondition,
 } from "atom.io/realtime-server"
 import {
+	aliasTransactionUpdate,
 	derefTransactionRequest,
 	perspectiveAliases,
 	view,
 } from "atom.io/realtime-server"
-
-import { aliasTransactionUpdate } from "~/packages/atom.io/realtime-server/src/continuity/subscribe-to-continuity-actions"
 
 import { mark } from "../../__util__"
 
@@ -102,8 +101,18 @@ describe(`realtime occlusion`, () => {
 			updates: [
 				{
 					type: `atom_update`,
-					key: `weight("item::__hi__)"`,
+					key: `weight("item::__hi__")`,
 					newValue: 10,
+					oldValue: 0,
+					family: {
+						key: `item`,
+						subKey: `__hi__`,
+					},
+				},
+				{
+					type: `atom_update`,
+					key: `*relatedKeys/characterItems("character:)`,
+					newValue: `add:"__item::__"`,
 					oldValue: 0,
 					family: {
 						key: `item`,

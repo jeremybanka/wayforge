@@ -12,12 +12,11 @@ import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
-import { userUnacknowledgedQueues } from "../realtime-server-stores"
+import type { Actual, PerspectiveKey } from "../realtime-server-stores"
 import {
-	type Actual,
 	perspectiveAliases,
-	type PerspectiveKey,
-} from "../realtime-server-stores/realtime-occlusion-store"
+	userUnacknowledgedQueues,
+} from "../realtime-server-stores"
 import type { TransactionResponse } from "./prepare-to-serve-transaction-request"
 
 export function aliasTransactionUpdate(
@@ -69,26 +68,45 @@ export function aliasTransactionUpdate(
 					const segments = subUpdate.key.split(`__`)
 					const familyKey = segments[0].split(`(`)[0]
 					let sub = false
-					for (const segment of segments) {
+					for (let i = 0; i < segments.length; i++) {
+						const segment = segments[i]
 						if (sub) {
 							const actualKey: Actual = `__${segment}__`
 							const perspectiveKey: PerspectiveKey = `T$--perspective==${actualKey}++${userKey}`
 							const aliasKey = getState(
 								findRelations(perspectiveAliases, perspectiveKey)
-									.perspectiveKeyOfAlias,
+									.aliasKeyOfPerspective,
 							)
-							const maskFamilyToken = continuity.masksPerFamily[familyKey]
-							if (aliasKey !== null && maskFamilyToken !== null) {
-								const newValue = getState(maskFamilyToken, subUpdate.key)
+							if (aliasKey) {
+								segments[i] = aliasKey
+							}
+						}
+						sub = !sub
+					}
+					const maskData = continuity.masksPerFamily[familyKey]
+					switch (maskData.type) {
+						case `mutable`:
+							{
+								const { signal } = maskData
+								const newValue = getState(signal, subUpdate.key)
 								updatesInPerspective.push({
-									key: aliasKey,
+									key: segments.join(``),
 									type: `atom_update`,
 									family: subUpdate.family,
 									newValue,
 								})
 							}
+							break
+						case `regular`: {
+							const maskFamilyToken = maskData.mask
+							const newValue = getState(maskFamilyToken, subUpdate.key)
+							updatesInPerspective.push({
+								key: segments.join(``),
+								type: `atom_update`,
+								family: subUpdate.family,
+								newValue,
+							})
 						}
-						sub = !sub
 					}
 				}
 				break

@@ -1,11 +1,9 @@
 import type {
-	AtomFamilyToken,
 	Compound,
 	CompoundTypedKey,
 	MutableAtomToken,
 	ReadonlySelectorFamilyToken,
 	SelectorFamilyToken,
-	WritableSelectorFamilyToken,
 } from "atom.io"
 import {
 	atom,
@@ -19,13 +17,7 @@ import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import { mark } from "~/packages/atom.io/__tests__/__util__"
-
-import type {
-	JsonTxUpdate,
-	TransactionRequest,
-	TransactionResponse,
-} from "../continuity/prepare-to-serve-transaction-request"
+import type { TransactionRequest, TransactionResponse } from "../continuity"
 import type { UserKey } from "./server-user-store"
 
 // CLEAN ////////////////////////////////////////////////////////////////////////
