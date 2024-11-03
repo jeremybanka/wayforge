@@ -18,6 +18,7 @@ import {
 } from "~/apps/core.wayfarer.quest/src/store/game"
 import { addPlayerToGameTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/add-player-to-game"
 import { startGameTX } from "~/apps/core.wayfarer.quest/src/store/game/hearts"
+import { CardId } from "~/apps/core.wayfarer.quest/src/store/game/playing-card-data"
 
 import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"
@@ -67,7 +68,7 @@ export function Public({ roomId }: GameProps): React.ReactNode {
 		{
 			label: `Create Trick`,
 			do: () => {
-				const trickId = nanoid()
+				const trickId = `card_group:trick::${nanoid()}` as const
 				createTrick(trickId)
 			},
 		},
@@ -75,10 +76,12 @@ export function Public({ roomId }: GameProps): React.ReactNode {
 			label: `Start Game`,
 			do: () => {
 				startGame({
-					handIds: cohorts.map(() => nanoid(5)),
-					trickId: nanoid(5),
-					cardIds: Array.from({ length: 52 }).map(() => nanoid(5)),
-					deckId: `DECK_ID`,
+					handIds: cohorts.map(() => `card_group:hand::${nanoid()}` as const),
+					trickId: `card_group:trick::${nanoid()}` as const,
+					cardIds: Array.from({ length: 52 }).map<CardKey<Alias>>(
+						() => `card::$$${nanoid()}$$`,
+					),
+					deckId: `card_group:deck::DECK_ID` as const,
 					txId: nanoid(5),
 					shuffle: Math.random(),
 				})

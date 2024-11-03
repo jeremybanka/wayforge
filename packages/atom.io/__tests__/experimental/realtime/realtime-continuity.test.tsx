@@ -1,7 +1,8 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import { getInternalRelations, join } from "atom.io/data"
-import { actUponStore, arbitrary } from "atom.io/internal"
+import type { Signal } from "atom.io/internal"
+import { actUponStore, arbitrary, getUpdateToken } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
@@ -283,15 +284,36 @@ describe.skip(`join in perspective`, () => {
 			isAType: isPlayerKey,
 			isBType: isCharKey,
 		})
-		const playerCharacterRelationAtoms = getInternalRelations(playerCharacters)
-		const playerCharacterRelationMasks = AtomIO.selectorFamily<
-			{ player: PlayerKey; character: CharKey } | null,
-			PlayerKey
+		const playerCharactersJsonMasks = AtomIO.selectorFamily<
+			SetRTXJson<CharKey | PlayerKey>,
+			CharKey | PlayerKey
 		>({
 			key: `playerCharacterRelationMask`,
-			get: (_) => (__) => {
-				return null
-			},
+			get:
+				(characterRelationKey) =>
+				({ find, get, json }) => {
+					return get(
+						json(
+							find(getInternalRelations(playerCharacters), characterRelationKey),
+						),
+					)
+				},
+			set: (_) => (__) => {},
+		})
+		const playerCharactersUpdateMasks = AtomIO.selectorFamily<
+			Signal<SetRTX<CharKey | PlayerKey>>,
+			CharKey | PlayerKey
+		>({
+			key: `playerCharacterRelationMask`,
+			get:
+				(characterRelationKey) =>
+				({ find, get }) => {
+					return get(
+						getUpdateToken(
+							find(getInternalRelations(playerCharacters), characterRelationKey),
+						),
+					)
+				},
 			set: (_) => (__) => {},
 		})
 
@@ -346,7 +368,11 @@ describe.skip(`join in perspective`, () => {
 					.add(
 						characterPerspectiveIndices,
 						[healthAtoms, healthMasks],
-						[playerCharacterRelationAtoms, playerCharacterRelationMasks],
+						[
+							getInternalRelations(playerCharacters),
+							playerCharactersJsonMasks,
+							playerCharactersUpdateMasks,
+						],
 					)
 					.add(attackTX),
 		})
