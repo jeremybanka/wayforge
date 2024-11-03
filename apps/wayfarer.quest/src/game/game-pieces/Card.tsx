@@ -6,11 +6,12 @@ import type { FC } from "react"
 import { article } from "wayfarer.quest/components/<article>"
 import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
 
+import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game"
 import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
 
 import scss from "./Card.module.scss"
 
-export const CardFace: FC<{ id: string }> = ({ id }) => {
+export const CardFace: FC<{ id: CardKey }> = ({ id }) => {
 	const valueKey =
 		useO(findRelations(valuesOfCards, id).valueKeyOfCard) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]

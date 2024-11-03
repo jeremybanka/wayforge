@@ -46,13 +46,10 @@ export type DynamicToken<K extends string> = {
 	viewState: WritableToken<Iterable<K>>
 }
 
-export type PerspectiveToken<
-	KT extends string,
-	SIG extends Json.Serializable,
-> = {
+export type PerspectiveToken<KeyType extends string> = {
 	type: `realtime_perspective`
-	resourceFamilies: MaskToken<KT, SIG>[]
-	viewAtoms: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>
+	resourceFamilies: MaskToken<KeyType, any, any>[]
+	viewAtoms: ReadableFamilyToken<Iterable<`${KeyType}::${Alias}`>, UserKey>
 }
 
 export type ContinuityToken = {
@@ -61,26 +58,33 @@ export type ContinuityToken = {
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<JsonIO>[]
 	readonly dynamics: DynamicToken<any>[]
-	readonly perspectives: PerspectiveToken<string, any>[]
+	readonly perspectives: PerspectiveToken<string>[]
 	readonly masksPerFamily: { [key: string]: MaskData }
 }
 
-export type MaskToken<KT extends string, SIG extends Json.Serializable> =
+export type MaskToken<
+	KeyType extends string,
+	JsonForm extends Json.Serializable,
+	JsonUpdate extends Json.Serializable,
+> =
 	| [
 			baseStates: MutableAtomFamilyToken<
-				Transceiver<SIG>,
-				Json.Serializable,
-				`${KT}::${string}`
+				Transceiver<JsonUpdate>,
+				JsonForm,
+				`${KeyType}::${string}`
 			>,
 			jsonMask: WritableSelectorFamilyToken<
-				Json.Serializable,
-				`${KT}::${string}`
+				NoInfer<JsonForm>,
+				`${KeyType}::${string}`
 			>,
-			signalMask: WritableSelectorFamilyToken<SIG, `${KT}::${string}`>,
+			signalMask: WritableSelectorFamilyToken<
+				NoInfer<JsonUpdate>,
+				`${KeyType}::${string}`
+			>,
 	  ]
 	| [
-			baseStates: RegularAtomFamilyToken<any, `${KT}::${string}`>,
-			maskStates: WritableSelectorFamilyToken<any, `${KT}::${string}`>,
+			baseStates: RegularAtomFamilyToken<any, `${KeyType}::${string}`>,
+			maskStates: WritableSelectorFamilyToken<any, `${KeyType}::${string}`>,
 	  ]
 export type MaskData =
 	| {
@@ -99,7 +103,7 @@ export class Continuity {
 	protected globals: AtomToken<any>[] = []
 	protected actions: TransactionToken<any>[] = []
 	protected dynamics: DynamicToken<any>[] = []
-	protected perspectives: PerspectiveToken<any, any>[] = []
+	protected perspectives: PerspectiveToken<any>[] = []
 
 	protected constructor(protected readonly key: string) {}
 
@@ -148,15 +152,19 @@ export class Continuity {
 		index: ReadableToken<Iterable<TK>>,
 		...families: AtomFamilyToken<any, TK>[]
 	): Continuity
-	public add<KT extends string, SIG extends Json.Serializable>(
-		index: ReadableFamilyToken<Iterable<`${KT}::${Alias}`>, UserKey>,
-		...maskedFamilies: MaskToken<KT, SIG>[]
+	public add<
+		KeyType extends string,
+		JsonForm extends Json.Serializable,
+		JsonUpdate extends Json.Serializable,
+	>(
+		index: ReadableFamilyToken<Iterable<`${KeyType}::${Alias}`>, UserKey>,
+		...maskedFamilies: MaskToken<KeyType, JsonForm, JsonUpdate>[]
 	): Continuity
 	public add(
 		...args:
 			| readonly [
 					index: ReadableFamilyToken<Iterable<any>, UserKey>,
-					...maskedFamilies: MaskToken<any, any>[],
+					...maskedFamilies: MaskToken<any, any, any>[],
 			  ]
 			| readonly [
 					index: ReadableToken<Iterable<any>>,
@@ -169,7 +177,7 @@ export class Continuity {
 		if (Array.isArray(first)) {
 			const [index, ...maskedFamilies] = args as readonly [
 				index: ReadableFamilyToken<Iterable<any>, UserKey>,
-				...maskedFamilies: MaskToken<any, any>[],
+				...maskedFamilies: MaskToken<any, any, any>[],
 			]
 			this.perspectives.push({
 				type: `realtime_perspective`,

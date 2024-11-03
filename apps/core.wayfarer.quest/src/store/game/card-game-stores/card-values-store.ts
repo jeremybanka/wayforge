@@ -1,5 +1,7 @@
 import { atom, atomFamily, selectorFamily } from "atom.io"
 import { findRelations, getInternalRelations, join } from "atom.io/data"
+import type { Signal } from "atom.io/internal"
+import { getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import {
 	type Actual,
@@ -58,18 +60,42 @@ export const valuesOfCards = join({
 })
 
 export const cardValueRelationsMask = selectorFamily<
-	CardValueKey | null,
+	SetRTXJson<CardValueKey>,
 	CardKey
 >({
 	key: `cardValueRelationsMask`,
 	get:
 		(cardKey) =>
 		({ get, find, json }) => {
-			const cardValueJson = json(
+			const cardValueJsonSelector = json(
 				find(getInternalRelations(valuesOfCards), cardKey),
 			)
-			return get(cardValueJson)
+			const cardValueJson = get(
+				cardValueJsonSelector,
+			) as SetRTXJson<CardValueKey>
+			return {
+				...cardValueJson,
+				members: cardValueJson.members,
+			}
 		},
+	set: () => () => {},
+})
+
+export const valuesOfCardsUpdateMask = selectorFamily<
+	Signal<SetRTX<CardKey>>,
+	CardKey
+>({
+	key: `valuesOfCardsUpdateMask`,
+	get:
+		(cardKey) =>
+		({ get, find }) => {
+			const updateAtom = getUpdateToken(
+				find(getInternalRelations(valuesOfCards), cardKey),
+			)
+			const update = get(updateAtom)
+			return update
+		},
+	set: () => () => {},
 })
 
 export const visibleCardValueIndices = selectorFamily<CardKey<Alias>[], UserKey>(

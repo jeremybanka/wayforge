@@ -4,11 +4,13 @@ import { useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
 import { myUsernameState } from "atom.io/realtime-client"
 import { RealtimeContext } from "atom.io/realtime-react"
+import type { Alias } from "atom.io/realtime-server"
 import { nanoid } from "nanoid"
 import { useContext } from "react"
 import { h3 } from "wayfarer.quest/components/<hX>"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 
+import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game"
 import {
 	spawnClassicDeckTX,
 	spawnHandTX,
@@ -34,8 +36,10 @@ export function Public({ roomId }: GameProps): React.ReactNode {
 		{
 			label: `Create Deck`,
 			do: () => {
-				const deckId = nanoid()
-				const cardIds = Array.from({ length: 52 }).map(() => nanoid())
+				const deckId = `card_group:deck::${nanoid()}` as const
+				const cardIds = Array.from({ length: 52 }).map<CardKey<Alias>>(
+					() => `card::$$${nanoid()}$$`,
+				)
 				spawnClassicDeck(deckId, cardIds)
 			},
 		},
@@ -56,7 +60,7 @@ export function Public({ roomId }: GameProps): React.ReactNode {
 					console.error(`Tried to join a game without being in a room.`)
 					return
 				}
-				const groupId = nanoid()
+				const groupId = `card_group:hand::${nanoid()}` as const
 				spawnHand(myUsername, groupId)
 			},
 		},
