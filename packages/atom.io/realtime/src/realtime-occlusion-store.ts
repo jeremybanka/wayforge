@@ -17,8 +17,11 @@ import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type { TransactionRequest, TransactionResponse } from "../continuity"
-import type { UserKey } from "./server-user-store"
+import type {
+	TransactionRequest,
+	TransactionResponse,
+} from "../../realtime-server/src/continuity"
+import type { UserKey } from "../../realtime-server/src/realtime-server-stores/server-user-store"
 
 // CLEAN ////////////////////////////////////////////////////////////////////////
 

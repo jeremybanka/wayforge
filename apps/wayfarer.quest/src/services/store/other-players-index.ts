@@ -1,7 +1,7 @@
 import * as AtomIO from "atom.io"
 import { myUsernameState } from "atom.io/realtime-client"
 
-import { gamePlayerIndex } from "~/apps/core.wayfarer.quest/src/store/game"
+import { gamePlayerIndex } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/game-players-store"
 
 export const otherPlayersIndex = AtomIO.selector<string[]>({
 	key: `otherPlayersIndex`,

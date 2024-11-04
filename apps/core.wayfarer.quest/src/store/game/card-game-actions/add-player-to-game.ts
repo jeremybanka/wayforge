@@ -1,6 +1,6 @@
 import { transaction } from "atom.io"
 
-import { gamePlayerIndex } from "../card-game-stores"
+import { gamePlayerIndex } from "../card-game-stores/game-players-store"
 
 export const addPlayerToGameTX = transaction<(playerId: string) => void>({
 	key: `addPlayerToGame`,

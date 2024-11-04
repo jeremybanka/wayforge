@@ -7,11 +7,9 @@ import { button } from "wayfarer.quest/components/<button>"
 import comic from "wayfarer.quest/components/comic.module.scss"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 
-import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game"
-import {
-	spawnClassicDeckTX,
-	spawnHandTX,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { spawnClassicDeckTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/spawn-classic-deck"
+import { spawnHandTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/spawn-hand"
+import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/cards-store"
 
 import scss from "./Controls.module.scss"
 

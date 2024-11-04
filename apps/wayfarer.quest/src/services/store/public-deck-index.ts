@@ -1,11 +1,11 @@
 import * as AtomIO from "atom.io"
 import { findRelations } from "atom.io/data"
 
-import type { DeckKey } from "~/apps/core.wayfarer.quest/src/store/game"
+import type { DeckKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
 import {
 	deckIndex,
 	ownersOfGroups,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+} from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
 
 import { myRoomKeyState } from "./my-room"
 

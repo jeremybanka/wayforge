@@ -8,22 +8,21 @@ import {
 	type Alias,
 	perspectiveAliases,
 	type PerspectiveKey,
-	type UserKey,
-} from "atom.io/realtime-server"
+} from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Identified } from "~/packages/anvl/src/id"
 
-import type { CardKey } from "."
 import {
-	currentTrickIdState,
 	groupsOfCards,
 	handIndex,
-	isCardKey,
 	ownersOfGroups,
 	pileIndex,
-} from "."
+} from "./card-groups-store"
+import { type CardKey, isCardKey } from "./cards-store"
+import { currentTrickIdState } from "./trick-store"
 
 export type CardValueKey<K extends Actual | Alias = Actual | Alias> =
 	`cardValue::${K}`
@@ -59,11 +58,11 @@ export const valuesOfCards = join({
 	isBType: isCardKey,
 })
 
-export const cardValueRelationsMask = selectorFamily<
+export const valuesOfCardsJsonMask = selectorFamily<
 	SetRTXJson<CardValueKey>,
 	CardKey
 >({
-	key: `cardValueRelationsMask`,
+	key: `valuesOfCardsJsonMask`,
 	get:
 		(cardKey) =>
 		({ get, find, json }) => {

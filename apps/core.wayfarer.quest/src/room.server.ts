@@ -5,7 +5,7 @@ import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import { generateHeapSnapshot } from "bun"
 
-import { heartsContinuity } from "./store/game/hearts"
+import { heartsContinuity } from "./store/game/hearts/hearts-continuity"
 
 const parentSocket = new RTS.ParentSocket()
 const TIMESTAMP = Date.now()
