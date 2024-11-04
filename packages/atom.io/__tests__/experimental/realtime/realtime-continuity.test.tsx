@@ -221,7 +221,7 @@ describe(`mutable atoms in continuity`, () => {
 	})
 })
 
-describe.only(`join in perspective`, () => {
+describe(`join in perspective`, () => {
 	const scenario = () => {
 		// HIERARCHY
 		type GameKey = `game::${string}`
