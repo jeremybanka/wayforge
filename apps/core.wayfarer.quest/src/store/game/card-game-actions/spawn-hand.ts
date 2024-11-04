@@ -1,8 +1,8 @@
 import { transaction } from "atom.io"
 import { editRelations } from "atom.io/data"
 
-import { gamePlayerIndex } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
+import { gamePlayerIndex } from "../card-game-stores/game-players-store"
 
 export const spawnHandTX = transaction<
 	(playerId: string, handKey: CardGroups.HandKey) => void

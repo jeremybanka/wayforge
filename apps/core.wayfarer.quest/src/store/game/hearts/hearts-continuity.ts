@@ -1,39 +1,36 @@
 import { getInternalRelations } from "atom.io/data"
 import { continuity, usersInThisRoomIndex } from "atom.io/realtime"
 
-import {
-	dealCardsTX,
-	shuffleDeckTX,
-	spawnClassicDeckTX,
-	spawnHandTX,
-	spawnTrickTX,
-} from "../card-game-actions"
 import { addPlayerToGameTX } from "../card-game-actions/add-player-to-game"
+import { dealCardsTX } from "../card-game-actions/deal-cards"
+import { shuffleDeckTX } from "../card-game-actions/shuffle-deck"
+import { spawnClassicDeckTX } from "../card-game-actions/spawn-classic-deck"
+import { spawnHandTX } from "../card-game-actions/spawn-hand"
+import { spawnTrickTX } from "../card-game-actions/spawn-trick"
 import {
-	cardAtoms,
-	cardIndex,
-	cardValueAtoms,
-	cardValueIndex,
-	cardValueRelationsMask as valuesOfCardsJsonMask,
 	deckAtoms,
 	deckIndex,
-	gamePlayerIndex,
 	groupsOfCards,
 	groupsOfCardsJsonMask,
 	groupsOfCardsUpdateMask,
 	groupsOfCardsView,
 	handAtoms,
 	handIndex,
-	ownersAndGroupsIndex,
 	ownersOfGroups,
 	pileIndex,
 	pileStates,
-	trickIndex,
-	trickStates,
+} from "../card-game-stores/card-groups-store"
+import {
+	cardValueAtoms,
+	cardValueIndex,
 	valuesOfCards,
+	valuesOfCardsJsonMask,
 	valuesOfCardsUpdateMask,
 	visibleCardValueIndices,
-} from "../card-game-stores"
+} from "../card-game-stores/card-values-store"
+import { cardAtoms, cardIndex } from "../card-game-stores/cards-store"
+import { gamePlayerIndex } from "../card-game-stores/game-players-store"
+import { trickIndex, trickStates } from "../card-game-stores/trick-store"
 import { startGameTX } from "./hearts-actions"
 
 export const heartsContinuity = continuity({

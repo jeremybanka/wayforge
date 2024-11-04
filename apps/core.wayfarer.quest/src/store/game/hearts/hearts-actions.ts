@@ -1,20 +1,15 @@
 import { transaction } from "atom.io"
 import { usersInThisRoomIndex } from "atom.io/realtime"
 
-import {
-	dealCardsTX,
-	shuffleDeckTX,
-	spawnClassicDeckTX,
-	spawnHandTX,
-	spawnTrickTX,
-} from "../card-game-actions"
-import {
-	type CardKey,
-	type DeckKey,
-	gamePlayerIndex,
-	type HandKey,
-	type TrickKey,
-} from "../card-game-stores"
+import { dealCardsTX } from "../card-game-actions/deal-cards"
+import { shuffleDeckTX } from "../card-game-actions/shuffle-deck"
+import { spawnClassicDeckTX } from "../card-game-actions/spawn-classic-deck"
+import { spawnHandTX } from "../card-game-actions/spawn-hand"
+import { spawnTrickTX } from "../card-game-actions/spawn-trick"
+import type { DeckKey, HandKey } from "../card-game-stores/card-groups-store"
+import type { CardKey } from "../card-game-stores/cards-store"
+import { gamePlayerIndex } from "../card-game-stores/game-players-store"
+import type { TrickKey } from "../card-game-stores/trick-store"
 
 export type StartGameInput = {
 	handIds: HandKey[]

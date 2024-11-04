@@ -1,6 +1,4 @@
-import type { Actual, Alias } from "atom.io/realtime-server"
-
-import type { CardValueKey } from "./card-game-stores"
+import type { Actual, Alias } from "atom.io/realtime"
 
 export const CARD_RANKS = [
 	`2`,

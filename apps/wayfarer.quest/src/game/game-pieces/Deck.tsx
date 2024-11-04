@@ -6,11 +6,9 @@ import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 
-import type { DeckKey } from "~/apps/core.wayfarer.quest/src/store/game"
-import {
-	groupsOfCards,
-	shuffleDeckTX,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { shuffleDeckTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/shuffle-deck"
+import type { DeckKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
+import { groupsOfCards } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { Count } from "../labels/Count"
