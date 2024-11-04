@@ -225,7 +225,7 @@ describe.skip(`join in perspective`, () => {
 		type PlayerKey = `T$--player==${GameKey}++${UserKey}`
 		const isPlayerKey = (key: string): key is PlayerKey =>
 			key.startsWith(`T$--player==game::`)
-		type CharKey<K extends RTS.Actual | RTS.Alias = RTS.Actual | RTS.Alias> =
+		type CharKey<K extends RT.Actual | RT.Alias = RT.Actual | RT.Alias> =
 			`char::${K}`
 		const isCharKey = (key: string): key is CharKey => key.startsWith(`char::`)
 		type ItemKey = `item::${string}`
@@ -254,13 +254,13 @@ describe.skip(`join in perspective`, () => {
 		>
 
 		// STATES
-		type CharViewKey = AtomIO.Compound<`view`, CharKey<RTS.Actual>, UserKey>
+		type CharViewKey = AtomIO.Compound<`view`, CharKey<RT.Actual>, UserKey>
 		const {
 			globalIndex: characterGlobalIndex,
 			perspectiveIndices: characterPerspectiveIndices,
-		} = RTS.view({
+		} = RT.view({
 			key: `character`,
-			selectors: AtomIO.selectorFamily<RTS.VisibilityCondition, CharViewKey>({
+			selectors: AtomIO.selectorFamily<RT.VisibilityCondition, CharViewKey>({
 				key: `characterVisibility`,
 				get: (_) => (__) => {
 					return `masked`

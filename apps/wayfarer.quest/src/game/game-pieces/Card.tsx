@@ -6,8 +6,8 @@ import type { FC } from "react"
 import { article } from "wayfarer.quest/components/<article>"
 import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
 
-import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game"
-import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
+import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-values-store"
+import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/cards-store"
 
 import scss from "./Card.module.scss"
 
