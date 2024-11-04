@@ -1,11 +1,17 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { getInternalRelations, join } from "atom.io/data"
+import {
+	editRelations,
+	getInternalRelations,
+	getInternalRelationsFromStore,
+	join,
+} from "atom.io/data"
 import type { Signal } from "atom.io/internal"
 import { actUponStore, arbitrary, getUpdateToken } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
+import { myUsernameState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
@@ -215,7 +221,7 @@ describe(`mutable atoms in continuity`, () => {
 	})
 })
 
-describe.skip(`join in perspective`, () => {
+describe.only(`join in perspective`, () => {
 	const scenario = () => {
 		// HIERARCHY
 		type GameKey = `game::${string}`
@@ -288,13 +294,18 @@ describe.skip(`join in perspective`, () => {
 			SetRTXJson<CharKey | PlayerKey>,
 			CharKey | PlayerKey
 		>({
-			key: `playerCharacterRelationMask`,
+			key: `playerCharacterJsonMask`,
 			get:
 				(characterRelationKey) =>
-				({ find, get, json }) => {
+				({ env, find, get, json }) => {
+					console.log(`AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`)
+					const { store } = env()
 					return get(
 						json(
-							find(getInternalRelations(playerCharacters), characterRelationKey),
+							find(
+								getInternalRelationsFromStore(playerCharacters, store),
+								characterRelationKey,
+							),
 						),
 					)
 				},
@@ -304,7 +315,7 @@ describe.skip(`join in perspective`, () => {
 			Signal<SetRTX<CharKey | PlayerKey>>,
 			CharKey | PlayerKey
 		>({
-			key: `playerCharacterRelationMask`,
+			key: `playerCharacterUpdateMask`,
 			get:
 				(characterRelationKey) =>
 				({ find, get }) => {
@@ -360,6 +371,7 @@ describe.skip(`join in perspective`, () => {
 				)
 			},
 		})
+
 		const gameContinuity = RT.continuity({
 			key: `game`,
 			config: (group) =>
@@ -379,8 +391,49 @@ describe.skip(`join in perspective`, () => {
 
 		return RTTest.multiClient({
 			port: 5485,
-			server: () => {},
-			clients: {},
+			server: ({ socket, silo, enableLogging }) => {
+				const { store } = silo
+				enableLogging()
+				silo.setState(characterGlobalIndex, (prev) =>
+					prev.add(`char::__janette__`),
+				)
+				editRelations(playerCharacters, (relations) => {
+					relations.set({
+						player: `T$--player==game::battle++user::jane`,
+						character: `char::__janette__`,
+					})
+				})
+				editRelations(playerCharacters, (relations) => {
+					relations.set({
+						player: `T$--player==game::battle++user::jane`,
+						character: `char::__janette__`,
+					})
+				})
+				const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
+					socket,
+					store,
+				})
+				exposeContinuity(gameContinuity)
+			},
+			clients: {
+				jane: () => {
+					RTR.useSyncContinuity(gameContinuity)
+					const myUsername = AR.useO(myUsernameState)
+					console.log(myUsername)
+
+					return <span data-testid={`state`}>{myUsername}</span>
+				},
+			},
 		})
 	}
+
+	test(`occlusion`, async () => {
+		const { clients, server, teardown } = scenario()
+		const jane = clients.jane.init()
+
+		jane.enableLogging()
+		await waitFor(() => {
+			throwUntil(jane.socket.connected)
+		})
+	})
 })

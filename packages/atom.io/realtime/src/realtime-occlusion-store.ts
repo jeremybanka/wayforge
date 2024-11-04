@@ -12,7 +12,12 @@ import {
 	getState,
 	selectorFamily,
 } from "atom.io"
-import { editRelations, findRelations, join } from "atom.io/data"
+import {
+	editRelations,
+	findRelations,
+	findRelationsInStore,
+	join,
+} from "atom.io/data"
 import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -131,14 +136,14 @@ export function view<KT extends string>({
 		key: `${key}Perspective`,
 		get:
 			(userKey) =>
-			({ get }) => {
+			({ env, find, get }) => {
+				const { store } = env()
 				const typedActualKeys = get(globalIndex)
 				const aliasKeys: `${KT}::${Alias}`[] = []
 				for (const actualTypedKey of typedActualKeys) {
 					const actualKey = extractActualKey(actualTypedKey)
 					const visibility = get(
-						visibilitySelectors,
-						`T$--view==${actualTypedKey}++${userKey}`,
+						find(visibilitySelectors, `T$--view==${actualTypedKey}++${userKey}`),
 					)
 					switch (visibility) {
 						case `secret`:
@@ -147,9 +152,10 @@ export function view<KT extends string>({
 							{
 								const perspectiveKey: PerspectiveKey = `T$--perspective==${actualKey}++${userKey}`
 								let aliasKey: Alias
-								const aliasKeyState = findRelations(
+								const aliasKeyState = findRelationsInStore(
 									perspectiveAliases,
 									perspectiveKey,
+									store,
 								).aliasKeyOfPerspective
 								const maybeAliasKey = get(aliasKeyState)
 								if (maybeAliasKey) {

@@ -10,7 +10,7 @@ export function time(key: string, callback: Func): PerformanceMeasure {
 
 function useMarks(logger: Pick<Console, `info`> = console) {
 	const markers: PerformanceMark[] = []
-	function mark(text: string) {
+	function mark(text: string, ...logs: any[]) {
 		const prev = markers.at(-1)
 		const next = performance.mark(text)
 		if (prev) {
@@ -19,7 +19,7 @@ function useMarks(logger: Pick<Console, `info`> = console) {
 				prev.name,
 				next.name,
 			)
-			logger.info(next.name, metric.duration)
+			logger.info(next.name, metric.duration, ...logs)
 		}
 		markers.push(next)
 	}

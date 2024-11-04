@@ -23,8 +23,8 @@ export const createWritableSelector = <T>(
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
 	const setterToolkit = registerSelector(options.key, covered, target)
-	const { find, get, seek, json } = setterToolkit
-	const getterToolkit = { find, get, seek, json }
+	const { find, get, seek, json, env } = setterToolkit
+	const getterToolkit = { find, get, seek, json, env }
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
 		const value = getFn(getterToolkit)
