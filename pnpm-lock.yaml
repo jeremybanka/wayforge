@@ -115,8 +115,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       eslint-config-next:
         specifier: 15.0.2
         version: 15.0.2(eslint-plugin-import-x@4.4.0(eslint@9.14.0(jiti@2.4.0))(typescript@5.6.3))(eslint@9.14.0(jiti@2.4.0))(typescript@5.6.3)
@@ -189,8 +189,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       htmx.org:
         specifier: 2.0.3
         version: 2.0.3
@@ -360,8 +360,8 @@ importers:
         specifier: 1.1.34
         version: 1.1.34
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -457,8 +457,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       eslint-config-next:
         specifier: 15.0.2
         version: 15.0.2(eslint-plugin-import-x@4.4.0(eslint@9.14.0(jiti@2.4.0))(typescript@5.6.3))(eslint@9.14.0(jiti@2.4.0))(typescript@5.6.3)
@@ -725,8 +725,8 @@ importers:
         specifier: 2.1.4
         version: 2.1.4(vitest@2.1.4)
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       drizzle-kit:
         specifier: 0.27.1
         version: 0.27.1
@@ -816,8 +816,8 @@ importers:
         specifier: 1.1.34
         version: 1.1.34
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -850,8 +850,8 @@ importers:
         specifier: 1.1.34
         version: 1.1.34
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -887,8 +887,8 @@ importers:
         specifier: 1.1.34
         version: 1.1.34
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -939,8 +939,8 @@ importers:
         specifier: 4.3.3
         version: 4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       eslint:
         specifier: 9.14.0
         version: 9.14.0(jiti@2.4.0)
@@ -1067,8 +1067,8 @@ importers:
   packages/rationality:
     devDependencies:
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.47.11(@types/node@22.8.7))(@swc/core@1.7.26(@swc/helpers@0.5.13))(jiti@2.4.0)(postcss@8.4.47)(tsx@4.19.2)(typescript@5.6.3)
@@ -1088,8 +1088,8 @@ importers:
   packages/rel8:
     devDependencies:
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
@@ -1204,8 +1204,8 @@ importers:
   packages/treetrunks:
     devDependencies:
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -1235,8 +1235,8 @@ importers:
         specifier: 1.1.34
         version: 1.1.34
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1262,8 +1262,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.1.0
+        version: 9.1.0
       openai:
         specifier: 4.70.3
         version: 4.70.3(zod@3.23.8)
@@ -4743,8 +4743,8 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  concurrently@9.0.1:
-    resolution: {integrity: sha512-wYKvCd/f54sTXJMSfV6Ln/B8UrfLBKOYa+lzc6CHay3Qek+LorVSBdMVfyewFhRbH0Rbabsk4D+3PL/VjQ5gzg==}
+  concurrently@9.1.0:
+    resolution: {integrity: sha512-VxkzwMAn4LP7WyMnJNbHN5mKV9L2IbyDjpzemKr99sXNR3GqRNMMHdm7prV1ws9wg7ETj6WUkNOigZVsptwbgg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11974,7 +11974,7 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  concurrently@9.0.1:
+  concurrently@9.1.0:
     dependencies:
       chalk: 4.1.2
       lodash: 4.17.21
