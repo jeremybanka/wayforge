@@ -53,12 +53,12 @@ export function prepareToSendInitialPayload(
 			}
 		}
 		for (const perspective of continuity.perspectives) {
-			const { viewAtoms, resourceFamilies } = perspective
-			const userViewState = findInStore(store, viewAtoms, userKey)
-			const userView = getFromStore(store, userViewState)
+			const { userViewAtoms, resourceFamilies } = perspective
+			const userViewAtom = findInStore(store, userViewAtoms, userKey)
+			const userView = getFromStore(store, userViewAtom)
 			for (const [, maskFamily] of resourceFamilies) {
 				store.logger.info(`👁`, `atom`, maskFamily.key, `${userKey} can see`, {
-					viewAtoms,
+					viewAtoms: userViewAtoms,
 					maskFamily,
 					userView,
 				})

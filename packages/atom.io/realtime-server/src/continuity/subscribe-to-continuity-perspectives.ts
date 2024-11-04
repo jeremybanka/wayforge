@@ -15,7 +15,7 @@ export function subscribeToContinuityPerspectives(
 	const continuityKey = continuity.key
 	const unsubFns: (() => void)[] = []
 	for (const perspective of continuity.perspectives) {
-		const { viewAtoms, resourceFamilies } = perspective
+		const { userViewAtoms: viewAtoms, resourceFamilies } = perspective
 		const userViewState = findInStore(store, viewAtoms, userKey)
 		const unsubscribeFromUserView = subscribeToState(
 			userViewState,
@@ -56,7 +56,7 @@ export function subscribeToContinuityPerspectives(
 					socket?.emit(`conceal:${continuityKey}`, concealed)
 				}
 			},
-			`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.viewAtoms.key}`,
+			`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.userViewAtoms.key}`,
 			store,
 		)
 		unsubFns.push(unsubscribeFromUserView)
