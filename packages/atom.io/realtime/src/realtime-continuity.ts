@@ -49,7 +49,7 @@ export type DynamicToken<K extends string> = {
 export type PerspectiveToken<KeyType extends string> = {
 	type: `realtime_perspective`
 	resourceFamilies: MaskToken<KeyType, any, any>[]
-	viewAtoms: ReadableFamilyToken<Iterable<`${KeyType}::${Alias}`>, UserKey>
+	userViewAtoms: ReadableFamilyToken<Iterable<`${KeyType}::${Alias}`>, UserKey>
 }
 
 export type ContinuityToken = {
@@ -182,7 +182,7 @@ export class Continuity {
 			this.perspectives.push({
 				type: `realtime_perspective`,
 				resourceFamilies: maskedFamilies,
-				viewAtoms: index,
+				userViewAtoms: index,
 			})
 			return this
 		}

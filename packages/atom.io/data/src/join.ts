@@ -259,6 +259,7 @@ export class Join<
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(store, ...ps)
 			}) as typeof disposeState,
+			env: () => ({ store }),
 		}
 
 		const aSide: ASide = options.between[0]
