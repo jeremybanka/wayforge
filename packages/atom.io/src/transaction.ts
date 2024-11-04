@@ -9,7 +9,7 @@ import type {
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
-import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
+import type { EnvironmentData, Func, Store, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -95,7 +95,10 @@ export type TransactionUpdate<F extends Func> = {
 	output: ReturnType<F>
 }
 
-export type GetterToolkit = Pick<SetterToolkit, `find` | `get` | `json` | `seek`>
+export type GetterToolkit = Pick<
+	SetterToolkit,
+	`env` | `find` | `get` | `json` | `seek`
+>
 export type SetterToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
@@ -104,6 +107,7 @@ export type SetterToolkit = Readonly<{
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
+	env: () => EnvironmentData
 }>
 export type ActorToolkit = Readonly<{
 	get: typeof getState
