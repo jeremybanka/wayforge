@@ -1,6 +1,7 @@
 import { transaction } from "atom.io"
 
-import { trickIndex, type TrickKey, trickStates } from "../card-game-stores"
+import type { TrickKey } from "../card-game-stores/trick-store"
+import { trickIndex, trickStates } from "../card-game-stores/trick-store"
 
 export const spawnTrickTX = transaction<(trickId: TrickKey) => void>({
 	key: `spawnTrick`,

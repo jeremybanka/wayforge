@@ -17,7 +17,9 @@ import {
 } from "atom.io/internal"
 import type { Json, JsonIO } from "atom.io/json"
 import { fromEntries } from "atom.io/json"
-import type { Alias, UserKey } from "atom.io/realtime-server"
+import type { UserKey } from "atom.io/realtime-server"
+
+import type { Alias } from "./realtime-occlusion-store"
 
 /* eslint-disable no-console */
 

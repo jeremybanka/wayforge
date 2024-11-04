@@ -1,10 +1,10 @@
 import type { WritableToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { findInStore, getFromStore, subscribeToState } from "atom.io/internal"
-import type { ContinuityToken } from "atom.io/realtime"
+import type { Alias, ContinuityToken } from "atom.io/realtime"
 
 import type { Socket } from ".."
-import type { Alias, UserKey } from "../realtime-server-stores"
+import type { UserKey } from "../realtime-server-stores"
 
 export function subscribeToContinuityPerspectives(
 	store: Store,

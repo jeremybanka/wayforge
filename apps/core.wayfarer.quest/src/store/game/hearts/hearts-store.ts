@@ -1,7 +1,5 @@
 import { atom, selector } from "atom.io"
 
-import { playerOrderState } from "../card-game-stores"
-import { trickContentsStates } from "../card-game-stores/trick-store"
 import type { CardId } from "../playing-card-data"
 
 export type HeartsPublicGameState<PlayerId extends string = string> = {

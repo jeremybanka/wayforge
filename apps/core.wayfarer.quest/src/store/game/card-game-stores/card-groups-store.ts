@@ -2,14 +2,15 @@ import type { RegularAtomToken } from "atom.io"
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
 import { getInternalRelations, join } from "atom.io/data"
 import { getUpdateToken, type Signal } from "atom.io/internal"
-import type { Alias, UserKey } from "atom.io/realtime-server"
+import type { Alias } from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { valuesOfCards } from "./card-values-store"
 import { type CardKey, isCardKey } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
-import { trickIndex } from "./trick-store"
+import { isTrickKey, trickIndex } from "./trick-store"
 
 export type CardGroupType = `deck` | `hand` | `pile` | `trick`
 export type CardGroup = {
@@ -35,11 +36,6 @@ export type PileKey = `card_group:pile::${string}`
 export const isPileKey = (k: string): k is PileKey => k.startsWith(`pile::`)
 export type Pile = CardGroup & {
 	type: `pile`
-}
-export type TrickKey = `card_group:trick::${string}`
-export const isTrickKey = (k: string): k is TrickKey => k.startsWith(`trick::`)
-export type Trick = CardGroup & {
-	type: `trick`
 }
 
 export const deckAtoms = atomFamily<Deck, DeckKey>({
@@ -99,14 +95,6 @@ export const pileIndex = atom<SetRTX<PileKey>, SetRTXJson<PileKey>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const trickStates = atomFamily<Trick, TrickKey>({
-	key: `trick`,
-	default: {
-		type: `trick`,
-		name: ``,
-	},
-})
-
 export const groupsOfCards = join({
 	key: `groupsOfCards`,
 	between: [`group`, `card`],
@@ -141,7 +129,7 @@ export const groupsOfCardsUpdateMask = selectorFamily<
 	Signal<SetRTX<CardKey>>,
 	CardKey
 >({
-	key: `valuesOfCardsUpdateMask`,
+	key: `groupsOfCardsUpdateMask`,
 	get:
 		(cardKey) =>
 		({ get, find }) => {

@@ -5,7 +5,7 @@ import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { useSyncContinuity } from "atom.io/realtime-react"
 
-import { heartsContinuity } from "~/apps/core.wayfarer.quest/src/store/game/hearts"
+import { heartsContinuity } from "~/apps/core.wayfarer.quest/src/store/game/hearts/hearts-continuity"
 
 import scss from "./Game.module.scss"
 import { MyDomain } from "./my-domain/MyDomain"

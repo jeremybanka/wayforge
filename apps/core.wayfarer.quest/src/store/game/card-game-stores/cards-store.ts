@@ -1,6 +1,6 @@
 import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
-import type { Actual, Alias } from "atom.io/realtime-server"
+import type { Actual, Alias } from "atom.io/realtime"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 

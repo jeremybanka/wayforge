@@ -3,12 +3,12 @@ import { findRelations } from "atom.io/data"
 import { IMPLICIT } from "atom.io/internal"
 import { myUsernameState } from "atom.io/realtime-client"
 
-import type { HandKey } from "~/apps/core.wayfarer.quest/src/store/game"
+import type { HandKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
 import {
 	handIndex,
 	isHandKey,
 	ownersOfGroups,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+} from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
 
 export const myHandsIndex = AtomIO.selector<HandKey[]>({
 	key: `myHands`,

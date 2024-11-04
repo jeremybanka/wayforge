@@ -9,14 +9,15 @@ import {
 	subscribeToTransaction,
 } from "atom.io/internal"
 import type { Json, JsonIO } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
+import {
+	type Actual,
+	type ContinuityToken,
+	perspectiveAliases,
+	type PerspectiveKey,
+} from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
-import type { Actual, PerspectiveKey } from "../realtime-server-stores"
-import {
-	perspectiveAliases,
-	userUnacknowledgedQueues,
-} from "../realtime-server-stores"
+import { userUnacknowledgedQueues } from "../realtime-server-stores"
 import type { TransactionResponse } from "./prepare-to-serve-transaction-request"
 
 export function aliasTransactionUpdate(

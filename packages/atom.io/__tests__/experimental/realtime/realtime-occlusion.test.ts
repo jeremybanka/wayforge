@@ -3,19 +3,19 @@ import { atomFamily, selectorFamily } from "atom.io"
 import { editRelations } from "atom.io/data"
 import { IMPLICIT } from "atom.io/internal"
 import { parseJson, stringifyJson } from "atom.io/json"
-import { continuity } from "atom.io/realtime"
 import type {
 	Actual,
 	TransactionRequestActual,
-	UserKey,
 	VisibilityCondition,
-} from "atom.io/realtime-server"
+} from "atom.io/realtime"
 import {
-	aliasTransactionUpdate,
+	continuity,
 	derefTransactionRequest,
 	perspectiveAliases,
 	view,
-} from "atom.io/realtime-server"
+} from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
+import { aliasTransactionUpdate } from "atom.io/realtime-server"
 
 import { mark } from "../../__util__"
 

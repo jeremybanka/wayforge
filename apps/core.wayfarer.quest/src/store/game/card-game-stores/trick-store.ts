@@ -1,11 +1,24 @@
-import { atom, selector, selectorFamily } from "atom.io"
+import { atom, atomFamily, selector, selectorFamily } from "atom.io"
 import { findRelations, join } from "atom.io/data"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import { groupsOfCards, isTrickKey, type TrickKey } from "./card-groups-store"
+import { type CardGroup, groupsOfCards } from "./card-groups-store"
 import { type CardKey, isCardKey } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
+
+export type TrickKey = `card_group:trick::${string}`
+export const isTrickKey = (k: string): k is TrickKey => k.startsWith(`trick::`)
+export type Trick = CardGroup & {
+	type: `trick`
+}
+export const trickStates = atomFamily<Trick, TrickKey>({
+	key: `trick`,
+	default: {
+		type: `trick`,
+		name: ``,
+	},
+})
 
 export const trickContributions = join({
 	key: `trickContributions`,
