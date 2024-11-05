@@ -69,8 +69,9 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 		},
 		({ setSelf }) => {
 			document.addEventListener(`click`, (e) => {
-				if (e.target instanceof HTMLAnchorElement) {
-					const url = e.target.getAttribute(`href`)
+				const anchor = (e.target as HTMLElement).closest(`a`)
+				if (anchor && anchor instanceof HTMLAnchorElement) {
+					const url = anchor.getAttribute(`href`)
 					if (url?.startsWith(`/`)) {
 						e.preventDefault()
 						history.pushState(null, ``, url)
