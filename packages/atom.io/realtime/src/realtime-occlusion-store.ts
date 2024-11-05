@@ -14,6 +14,7 @@ import {
 } from "atom.io"
 import {
 	editRelations,
+	editRelationsInStore,
 	findRelations,
 	findRelationsInStore,
 	join,
@@ -162,11 +163,14 @@ export function view<KT extends string>({
 									aliasKey = maybeAliasKey
 								} else {
 									aliasKey = `$$${crypto.randomUUID()}$$`
-									editRelations(perspectiveAliases, (relations) =>
-										relations.set({
-											perspective: perspectiveKey,
-											alias: aliasKey,
-										}),
+									editRelationsInStore(
+										perspectiveAliases,
+										(relations) =>
+											relations.set({
+												perspective: perspectiveKey,
+												alias: aliasKey,
+											}),
+										store,
 									)
 								}
 								aliasKeys.push(`${key}::${aliasKey}`)
@@ -185,37 +189,6 @@ export function view<KT extends string>({
 
 // MIXED ////////////////////////////////////////////////////////////////////////
 
-export const itemDurabilityMasks = selectorFamily<
-	number | `???`,
-	ItemKey<Alias>
->({
-	key: `itemDurabilityMask`,
-	get:
-		(itemKeyAlias) =>
-		({ get }) => {
-			const aliasKey = extractAliasKey(itemKeyAlias)
-			const perspectiveKey = get(
-				findRelations(perspectiveAliases, aliasKey).perspectiveKeyOfAlias,
-			)
-			if (perspectiveKey === null) {
-				return `???`
-			}
-			const [, actualKey, userKey] = decomposeCompoundKey(perspectiveKey)
-			const actualItemKey = `item::__${actualKey}__` satisfies ItemKey<Actual>
-
-			const itemVisibilityCondition = get(
-				itemVisibilitySelectors,
-				`T$--view==${actualItemKey}++${userKey}`,
-			)
-			switch (itemVisibilityCondition) {
-				case `secret`:
-					return `???`
-				case `masked`:
-					return get(itemDurabilityAtoms, actualItemKey)
-			}
-		},
-})
-
 // export function mask<KT extends string>(
 // 	states: AtomFamilyToken<any, `KT::${Actual}`>,
 // ): WritableSelectorFamilyToken<any, `KT::${Alias}`> {
@@ -224,31 +197,61 @@ export const itemDurabilityMasks = selectorFamily<
 
 // DIRTY ////////////////////////////////////////////////////////////////////////
 
-export type UnitKey<K extends Actual | Alias = Actual | Alias> = `unit::${K}`
-export type UnitViewKey = Compound<`view`, UnitKey<Actual>, UserKey>
+const example = () => {
+	type UnitKey<K extends Actual | Alias = Actual | Alias> = `unit::${K}`
+	type UnitViewKey = Compound<`view`, UnitKey<Actual>, UserKey>
 
-export type ItemKey<K extends Actual | Alias = Actual | Alias> = `item::${K}`
-export type ItemViewKey = CompoundTypedKey<`view`, ItemKey<Actual>, UserKey>
+	type ItemKey<K extends Actual | Alias = Actual | Alias> = `item::${K}`
+	type ItemViewKey = CompoundTypedKey<`view`, ItemKey<Actual>, UserKey>
 
-export const itemVisibilitySelectors = selectorFamily<
-	VisibilityCondition,
-	ItemViewKey
->({
-	key: `itemVisibility`,
-	get: (_) => (__) => {
-		return `masked`
-	},
-})
+	const itemVisibilitySelectors = selectorFamily<
+		VisibilityCondition,
+		ItemViewKey
+	>({
+		key: `itemVisibility`,
+		get: (_) => (__) => {
+			return `masked`
+		},
+	})
 
-export const {
-	globalIndex: itemGlobalIndex,
-	perspectiveIndices: itemPerspectiveIndices,
-} = view({
-	key: `item`,
-	selectors: itemVisibilitySelectors,
-})
+	const {
+		globalIndex: itemGlobalIndex,
+		perspectiveIndices: itemPerspectiveIndices,
+	} = view({
+		key: `item`,
+		selectors: itemVisibilitySelectors,
+	})
 
-export const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
-	key: `itemDurability`,
-	default: 0,
-})
+	const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
+		key: `itemDurability`,
+		default: 0,
+	})
+
+	const itemDurabilityMasks = selectorFamily<number | `???`, ItemKey<Alias>>({
+		key: `itemDurabilityMask`,
+		get:
+			(itemKeyAlias) =>
+			({ get }) => {
+				const aliasKey = extractAliasKey(itemKeyAlias)
+				const perspectiveKey = get(
+					findRelations(perspectiveAliases, aliasKey).perspectiveKeyOfAlias,
+				)
+				if (perspectiveKey === null) {
+					return `???`
+				}
+				const [, actualKey, userKey] = decomposeCompoundKey(perspectiveKey)
+				const actualItemKey = `item::__${actualKey}__` satisfies ItemKey<Actual>
+
+				const itemVisibilityCondition = get(
+					itemVisibilitySelectors,
+					`T$--view==${actualItemKey}++${userKey}`,
+				)
+				switch (itemVisibilityCondition) {
+					case `secret`:
+						return `???`
+					case `masked`:
+						return get(itemDurabilityAtoms, actualItemKey)
+				}
+			},
+	})
+}

@@ -8,7 +8,11 @@ import type { Socket } from ".."
 
 export type SocketKey = `socket::${string}`
 export type UserKey = `user::${string}`
+export const isUserKey = (key: string): key is UserKey =>
+	key.startsWith(`user::`)
 export type RoomKey = `room::${string}`
+export const isRoomKey = (key: string): key is RoomKey =>
+	key.startsWith(`room::`)
 
 export type SocketSystemHierarchy = Hierarchy<
 	[
