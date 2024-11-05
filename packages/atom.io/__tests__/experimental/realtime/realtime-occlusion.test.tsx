@@ -387,10 +387,7 @@ describe.only(`join in perspective`, () => {
 							store,
 						).characterKeysOfPlayer,
 					)
-					console.log(`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, {
-						myUsername,
-						myCharacter,
-					})
+					console.log({ myUsername, myCharacter })
 
 					return (
 						<span data-testid={`state`}>

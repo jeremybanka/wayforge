@@ -162,7 +162,7 @@ export function view<KT extends string>({
 								if (maybeAliasKey) {
 									aliasKey = maybeAliasKey
 								} else {
-									aliasKey = `$$${crypto.randomUUID()}$$`
+									aliasKey = `$$${Math.random().toString(36).slice(2, 10)}$$`
 									editRelationsInStore(
 										perspectiveAliases,
 										(relations) =>
