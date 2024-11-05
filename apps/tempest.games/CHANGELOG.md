@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.11
+
+### Patch Changes
+
+- 408497b: 🐛 Fix bug where sometimes internal links would hard-navigate when clicked.
+
 ## 0.1.10
 
 ### Patch Changes
