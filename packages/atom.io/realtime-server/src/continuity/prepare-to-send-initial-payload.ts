@@ -56,16 +56,21 @@ export function prepareToSendInitialPayload(
 			const { userViewAtoms, resourceFamilies } = perspective
 			const userViewAtom = findInStore(store, userViewAtoms, userKey)
 			const userView = getFromStore(store, userViewAtom)
-			for (const [, maskFamily] of resourceFamilies) {
+			for (const [baseFamily, maskFamily] of resourceFamilies) {
+				const resourceFamily =
+					baseFamily.type === `mutable_atom_family`
+						? getJsonFamily(store, baseFamily)
+						: baseFamily
 				store.logger.info(`👁`, `atom`, maskFamily.key, `${userKey} can see`, {
 					viewAtoms: userViewAtoms,
 					maskFamily,
 					userView,
 				})
 				for (const key of userView) {
+					const baseToken = findInStore(store, baseFamily, key)
 					const maskToken = findInStore(store, maskFamily, key)
 					const resource = getFromStore(store, maskToken)
-					initialPayload.push(maskToken, resource)
+					initialPayload.push(baseToken, resource)
 				}
 			}
 		}
