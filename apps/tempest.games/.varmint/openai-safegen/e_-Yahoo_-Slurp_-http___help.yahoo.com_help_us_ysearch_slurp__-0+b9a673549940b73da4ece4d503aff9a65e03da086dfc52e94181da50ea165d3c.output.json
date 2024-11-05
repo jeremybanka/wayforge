@@ -1,6 +1,7 @@
 {
 	"data": {
-		"shouldBanIp": false
+		"shouldBanIp": true,
+		"veryConciseReason": "Detected automated scraping activity"
 	},
-	"usdPrice": 0.00007259999999999999
+	"usdPrice": 0.00008219999999999999
 }
