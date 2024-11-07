@@ -1,24 +1,15 @@
 import type {
 	Compound,
-	CompoundTypedKey,
 	MutableAtomToken,
+	Original,
 	ReadonlySelectorFamilyToken,
 	SelectorFamilyToken,
+	Tag,
 } from "atom.io"
-import {
-	atom,
-	atomFamily,
-	decomposeCompoundKey,
-	getState,
-	selectorFamily,
-} from "atom.io"
-import {
-	editRelations,
-	editRelationsInStore,
-	findRelations,
-	findRelationsInStore,
-	join,
-} from "atom.io/data"
+import { atom, decomposeCompoundKey, selectorFamily } from "atom.io"
+import { editRelationsInStore, findRelationsInStore, join } from "atom.io/data"
+import type { Store } from "atom.io/internal"
+import { getFromStore } from "atom.io/internal"
 import type { stringified } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -34,14 +25,63 @@ import type { UserKey } from "../../realtime-server/src/realtime-server-stores/s
 export type Actual<S extends string = string> = `__${S}__`
 export type Alias<S extends string = string> = `$$${S}$$`
 
-export function extractAliasKey(key: `${string}::${Alias}`): Alias {
-	return key.split(`::`).pop() as Alias
+export function extractAliasKeys<K extends AnyTypedKeyWithAliases>(
+	key: K,
+): [Alias[], (actuals: Actual[]) => ToActual<K>] {
+	const aliases: Alias[] = []
+	const segments: (string | null)[] = key.split(`$$`)
+	for (let i = 0, sub = false; i < segments.length; i++, sub = !sub) {
+		const segment = segments[i]
+		if (sub) {
+			aliases.push(`$$${segment}$$`)
+			segments[i] = null
+		}
+	}
+	return [
+		aliases,
+		(actuals) => {
+			for (let i = 0; i < segments.length; i++) {
+				if (segments[i] === null) {
+					// biome-ignore lint/style/noNonNullAssertion: safe in this context
+					segments[i] = actuals.shift()!
+				}
+			}
+			return segments.join(``) as any
+		},
+	]
 }
-export function extractActualKey(key: `${string}::${Actual}`): Actual {
-	return key.split(`::`).pop() as Actual
+export function extractActualKeys<K extends AnyTypedKeyWithActuals>(
+	key: K,
+): [Actual[], (aliases: Alias[]) => ToAlias<K>] {
+	const actuals: Actual[] = []
+	const segments: (string | null)[] = key.split(`__`)
+	let sub = false
+	for (let i = 0; i < segments.length; i++, sub = !sub) {
+		if (sub) {
+			const segment = segments[i]
+			actuals.push(`__${segment}__`)
+			segments[i] = null
+		}
+	}
+	return [
+		actuals,
+		(aliases) => {
+			for (let i = 0; i < segments.length; i++) {
+				if (segments[i] === null) {
+					// biome-ignore lint/style/noNonNullAssertion: safe in this context
+					segments[i] = aliases.shift()!
+				}
+			}
+			return segments.join(``) as any
+		},
+	]
 }
 
-export type PerspectiveKey = CompoundTypedKey<`perspective`, Actual, UserKey>
+export type PerspectiveKey = Compound<
+	Tag<`perspective`>,
+	Actual,
+	UserKey<Actual>
+>
 
 export const VISIBILITY_CONDITIONS = [
 	`secret`, // key cannot be emitted; data cannot be emitted
@@ -54,11 +94,15 @@ export type TransactionResponseAlias = TransactionResponse & { alias?: true }
 export type TransactionRequestAlias = TransactionRequest & { alias?: true }
 export type TransactionRequestActual = TransactionRequest & { alias?: false }
 
-export function isAliasKey(key: unknown): key is Alias {
+export function isAlias(key: unknown): key is Alias {
 	return typeof key === `string` && key.startsWith(`$$`) && key.endsWith(`$$`)
 }
 export function isPerspectiveKey(key: unknown): key is PerspectiveKey {
-	return typeof key === `string` && key.startsWith(`T$--perspective==__`)
+	return (
+		typeof key === `string` &&
+		key.startsWith(`T$--perspective==__`) &&
+		key.endsWith(`__`)
+	)
 }
 
 export const perspectiveAliases = join({
@@ -66,13 +110,17 @@ export const perspectiveAliases = join({
 	between: [`perspective`, `alias`],
 	cardinality: `1:1`,
 	isAType: isPerspectiveKey,
-	isBType: isAliasKey,
+	isBType: isAlias,
 })
 
-export function derefTransactionRequest(
+export type Aliased<T> = T & { alias?: true }
+export type True<T> = T & { alias?: false }
+
+export function derefAliases(
+	store: Store,
 	userKey: UserKey,
-	request: stringified<TransactionRequestAlias>,
-): Error | stringified<TransactionRequestActual> {
+	request: string,
+): Error | string {
 	const segments = request.split(`$$`)
 	let sub = false
 
@@ -80,69 +128,123 @@ export function derefTransactionRequest(
 		const segment = segments[i]
 		if (sub) {
 			const aliasItemKey = `$$${segment}$$` satisfies Alias
-			const perspectiveKey = getState(
-				findRelations(perspectiveAliases, aliasItemKey).perspectiveKeyOfAlias,
+			const perspectiveKey = getFromStore(
+				store,
+				findRelationsInStore(perspectiveAliases, aliasItemKey, store)
+					.perspectiveKeyOfAlias,
 			)
 			if (perspectiveKey === null) {
 				return new Error(
-					`Attempted to dereference a transaction request with a alias reference that does not exist: "${segment}".`,
+					`Attempted to dereference a string with a alias reference that does not exist: "${segment}".`,
 				)
 			}
 			const [, actualKey, ownerKey] = decomposeCompoundKey(perspectiveKey)
 			if (ownerKey !== userKey) {
 				return new Error(
-					`Attempted to dereference a transaction request with a alias reference from a different user.`,
+					`Attempted to dereference a string for ${userKey} with a alias reference from ${ownerKey}.`,
 				)
 			}
 			segments[i] = actualKey
 		}
 		sub = !sub
 	}
-	return segments.join(``)
+	return segments.join(``) as any
+}
+export function derefTransactionRequest(
+	store: Store,
+	userKey: UserKey,
+	request: stringified<TransactionRequestAlias>,
+): Error | stringified<TransactionRequestActual> {
+	return derefAliases(store, userKey, request)
 }
 
-export type ViewOptions<K extends string> = {
-	key: K
+export type AnyTypedKeyWithActuals =
+	| Compound<Tag, Original<string, Actual>, Original<string, Actual>>
+	| Compound<Tag, Original<string, Actual>, string>
+	| Compound<Tag, string, Original<string, Actual>>
+	| Original<string, Actual>
+export type AnyTypedKeyWithAliases =
+	| Compound<Tag, Original<string, Alias>, Original<string, Alias>>
+	| Compound<Tag, Original<string, Alias>, string>
+	| Compound<Tag, string, Original<string, Alias>>
+	| Original<string, Alias>
+export type ToActual<K extends AnyTypedKeyWithAliases> = K extends Original<
+	infer X,
+	Alias<infer A>
+>
+	? Original<X, Actual<A>>
+	: K extends Compound<infer X, infer A, infer B>
+		? A extends AnyTypedKeyWithAliases
+			? B extends AnyTypedKeyWithAliases
+				? Compound<X, ToActual<A>, ToActual<B>>
+				: Compound<X, ToActual<A>, B>
+			: B extends AnyTypedKeyWithAliases
+				? Compound<X, A, ToActual<B>>
+				: Compound<X, A, B>
+		: K
+export type ToAlias<K extends AnyTypedKeyWithActuals> = K extends Original<
+	infer X,
+	Actual<infer A>
+>
+	? Original<X, Alias<A>>
+	: K extends Compound<infer X, infer A, infer B>
+		? A extends AnyTypedKeyWithActuals
+			? B extends AnyTypedKeyWithActuals
+				? Compound<X, ToAlias<A>, ToAlias<B>>
+				: Compound<X, ToAlias<A>, B>
+			: B extends AnyTypedKeyWithActuals
+				? Compound<X, A, ToAlias<B>>
+				: Compound<X, A, B>
+		: K
+
+export const holdsAliases = (
+	k: AnyTypedKeyWithActuals | AnyTypedKeyWithAliases,
+): k is AnyTypedKeyWithActuals => {
+	return k.includes(`__`)
+}
+
+export type UnwrapAlias<K extends AnyTypedKeyWithAliases> = K extends Original<
+	string,
+	Alias<infer A>
+>
+	? A
+	: never
+
+export type ViewOptions<K extends AnyTypedKeyWithActuals> = {
+	key: string
 	selectors: SelectorFamilyToken<
 		VisibilityCondition,
-		Compound<`view`, `${K}::${Actual}`, UserKey>
+		Compound<Tag<`view`>, K, UserKey<Actual>>
 	>
 }
 
-export function view<KT extends string>({
+export function view<K extends AnyTypedKeyWithActuals>({
 	key,
 	selectors: visibilitySelectors,
-}: ViewOptions<KT>): {
-	readonly globalIndex: MutableAtomToken<
-		SetRTX<`${KT}::${Actual}`>,
-		SetRTXJson<`${KT}::${Actual}`>,
-		UserKey
-	>
+}: ViewOptions<K>): {
+	readonly globalIndex: MutableAtomToken<SetRTX<K>, SetRTXJson<K>>
 	readonly perspectiveIndices: ReadonlySelectorFamilyToken<
-		`${KT}::${Alias}`[],
-		UserKey
+		ToAlias<K>[],
+		UserKey<Actual>
 	>
 } {
-	const globalIndex = atom<
-		SetRTX<`${KT}::${Actual}`>,
-		SetRTXJson<`${KT}::${Actual}`>
-	>({
+	const globalIndex = atom<SetRTX<K>, SetRTXJson<K>>({
 		key: `${key}GlobalIndex`,
 		mutable: true,
 		default: () => new SetRTX(),
 		toJson: (set) => set.toJSON(),
 		fromJson: (json) => SetRTX.fromJSON(json),
 	})
-	const perspectiveIndices = selectorFamily<`${KT}::${Alias}`[], UserKey>({
+	const perspectiveIndices = selectorFamily<ToAlias<K>[], UserKey<Actual>>({
 		key: `${key}Perspective`,
 		get:
 			(userKey) =>
 			({ env, find, get }) => {
 				const { store } = env()
 				const typedActualKeys = get(globalIndex)
-				const aliasKeys: `${KT}::${Alias}`[] = []
+				const aliasKeys: ToAlias<K>[] = []
 				for (const actualTypedKey of typedActualKeys) {
-					const actualKey = extractActualKey(actualTypedKey)
+					const [actuals, compileAliasKey] = extractActualKeys(actualTypedKey)
 					const visibility = get(
 						find(visibilitySelectors, `T$--view==${actualTypedKey}++${userKey}`),
 					)
@@ -151,29 +253,34 @@ export function view<KT extends string>({
 							break
 						case `masked`:
 							{
-								const perspectiveKey: PerspectiveKey = `T$--perspective==${actualKey}++${userKey}`
-								let aliasKey: Alias
-								const aliasKeyState = findRelationsInStore(
-									perspectiveAliases,
-									perspectiveKey,
-									store,
-								).aliasKeyOfPerspective
-								const maybeAliasKey = get(aliasKeyState)
-								if (maybeAliasKey) {
-									aliasKey = maybeAliasKey
-								} else {
-									aliasKey = `$$${Math.random().toString(36).slice(2, 10)}$$`
-									editRelationsInStore(
+								const aliases: Alias[] = []
+								for (const actual of actuals) {
+									const perspectiveKey: PerspectiveKey = `T$--perspective==${actual}++${userKey}`
+									const aliasKeyState = findRelationsInStore(
 										perspectiveAliases,
-										(relations) =>
-											relations.set({
-												perspective: perspectiveKey,
-												alias: aliasKey,
-											}),
+										perspectiveKey,
 										store,
-									)
+									).aliasKeyOfPerspective
+									const maybeAlias = get(aliasKeyState)
+									let alias: Alias
+									if (maybeAlias) {
+										alias = maybeAlias
+									} else {
+										alias = `$$${Math.random().toString(36).slice(2, 10)}$$`
+										editRelationsInStore(
+											perspectiveAliases,
+											(relations) =>
+												relations.set({
+													perspective: perspectiveKey,
+													alias: alias,
+												}),
+											store,
+										)
+									}
+									aliases.push(alias)
 								}
-								aliasKeys.push(`${key}::${aliasKey}`)
+								const aliasKey = compileAliasKey(aliases)
+								aliasKeys.push(aliasKey as unknown as ToAlias<K>)
 							}
 							break
 					}
@@ -199,10 +306,10 @@ export function view<KT extends string>({
 
 const example = () => {
 	type UnitKey<K extends Actual | Alias = Actual | Alias> = `unit::${K}`
-	type UnitViewKey = Compound<`view`, UnitKey<Actual>, UserKey>
+	type UnitViewKey = Compound<Tag<`view`>, UnitKey<Actual>, UserKey<Alias>>
 
 	type ItemKey<K extends Actual | Alias = Actual | Alias> = `item::${K}`
-	type ItemViewKey = CompoundTypedKey<`view`, ItemKey<Actual>, UserKey>
+	type ItemViewKey = Compound<Tag<`view`>, ItemKey<Actual>, UserKey<Alias>>
 
 	const itemVisibilitySelectors = selectorFamily<
 		VisibilityCondition,
@@ -214,44 +321,44 @@ const example = () => {
 		},
 	})
 
-	const {
-		globalIndex: itemGlobalIndex,
-		perspectiveIndices: itemPerspectiveIndices,
-	} = view({
-		key: `item`,
-		selectors: itemVisibilitySelectors,
-	})
+	// 	const {
+	// 		globalIndex: itemGlobalIndex,
+	// 		perspectiveIndices: itemPerspectiveIndices,
+	// 	} = view({
+	// 		key: `item`,
+	// 		selectors: itemVisibilitySelectors,
+	// 	})
 
-	const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
-		key: `itemDurability`,
-		default: 0,
-	})
+	// 	const itemDurabilityAtoms = atomFamily<number, ItemKey<Actual>>({
+	// 		key: `itemDurability`,
+	// 		default: 0,
+	// 	})
 
-	const itemDurabilityMasks = selectorFamily<number | `???`, ItemKey<Alias>>({
-		key: `itemDurabilityMask`,
-		get:
-			(itemKeyAlias) =>
-			({ get }) => {
-				const aliasKey = extractAliasKey(itemKeyAlias)
-				const perspectiveKey = get(
-					findRelations(perspectiveAliases, aliasKey).perspectiveKeyOfAlias,
-				)
-				if (perspectiveKey === null) {
-					return `???`
-				}
-				const [, actualKey, userKey] = decomposeCompoundKey(perspectiveKey)
-				const actualItemKey = `item::__${actualKey}__` satisfies ItemKey<Actual>
+	// 	const itemDurabilityMasks = selectorFamily<number | `???`, ItemKey<Alias>>({
+	// 		key: `itemDurabilityMask`,
+	// 		get:
+	// 			(itemKeyAlias) =>
+	// 			({ get }) => {
+	// 				const aliasKey = extractAliasKeys(itemKeyAlias)
+	// 				const perspectiveKey = get(
+	// 					findRelations(perspectiveAliases, aliasKey).perspectiveKeyOfAlias,
+	// 				)
+	// 				if (perspectiveKey === null) {
+	// 					return `???`
+	// 				}
+	// 				const [, actualKey, userKey] = decomposeCompoundKey(perspectiveKey)
+	// 				const actualItemKey = `item::__${actualKey}__` satisfies ItemKey<Actual>
 
-				const itemVisibilityCondition = get(
-					itemVisibilitySelectors,
-					`T$--view==${actualItemKey}++${userKey}`,
-				)
-				switch (itemVisibilityCondition) {
-					case `secret`:
-						return `???`
-					case `masked`:
-						return get(itemDurabilityAtoms, actualItemKey)
-				}
-			},
-	})
+	// 				const itemVisibilityCondition = get(
+	// 					itemVisibilitySelectors,
+	// 					`T$--view==${actualItemKey}++${userKey}`,
+	// 				)
+	// 				switch (itemVisibilityCondition) {
+	// 					case `secret`:
+	// 						return `???`
+	// 					case `masked`:
+	// 						return get(itemDurabilityAtoms, actualItemKey)
+	// 				}
+	// 			},
+	// 	})
 }

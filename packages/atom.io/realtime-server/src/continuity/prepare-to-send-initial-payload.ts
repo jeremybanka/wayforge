@@ -7,7 +7,12 @@ import {
 	isRootStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
+import {
+	Alias,
+	Aliased,
+	type ContinuityToken,
+	derefAliases,
+} from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
 
@@ -57,20 +62,21 @@ export function prepareToSendInitialPayload(
 			const userViewAtom = findInStore(store, userViewAtoms, userKey)
 			const userView = getFromStore(store, userViewAtom)
 			for (const [baseFamily, maskFamily] of resourceFamilies) {
-				const resourceFamily =
-					baseFamily.type === `mutable_atom_family`
-						? getJsonFamily(store, baseFamily)
-						: baseFamily
 				store.logger.info(`👁`, `atom`, maskFamily.key, `${userKey} can see`, {
 					viewAtoms: userViewAtoms,
 					maskFamily,
 					userView,
 				})
-				for (const key of userView) {
-					const baseToken = findInStore(store, baseFamily, key)
-					const maskToken = findInStore(store, maskFamily, key)
+				for (const alias of userView) {
+					const maskToken = findInStore(store, maskFamily, alias)
+					const fakeToken = {
+						key: `${baseFamily.key}("${alias}")`,
+						type: baseFamily.type,
+						family: { key: baseFamily.key, subKey: `"${alias}"` },
+					}
+					// const fakeToken = findInStore(store, resourceFamily, alias)
 					const resource = getFromStore(store, maskToken)
-					initialPayload.push(baseToken, resource)
+					initialPayload.push(fakeToken, resource)
 				}
 			}
 		}

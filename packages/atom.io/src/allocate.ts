@@ -51,7 +51,7 @@ export function allocateIntoStore<
 			const allocationIsCompound = key.startsWith(`T$--`)
 			if (allocationIsCompound) {
 				allocationAttachmentStyle = `all`
-				for (const claim of provenance as SingularTypedKey[]) {
+				for (const claim of provenance as Original[]) {
 					const provenanceKey = stringifyJson(claim)
 					const provenanceMolecule = store.molecules.get(provenanceKey)
 					if (!provenanceMolecule) {
@@ -202,31 +202,25 @@ export function realm<H extends Hierarchy>(store: Store) {
 
 export const T$ = `T$`
 export type T$ = typeof T$
-export type TypeTag<T extends string> = `${T$}--${T}`
-export type SingularTypedKey<T extends string = string> = `${T}::${string}`
-export type CompoundTypedKey<
-	A extends string = string,
-	B extends string = string,
-	C extends string = string,
-> = `${TypeTag<A>}==${B}++${C}`
+export type Tag<T extends string = string> = `T$--${T}`
+export type Original<
+	TypeTag extends string = string,
+	Unique extends string = string,
+> = `${TypeTag}::${Unique}`
 export type Compound<
-	A extends string = string,
-	B extends string = string,
-	C extends string = string,
-> = `${TypeTag<A>}==${B}++${C}`
-export type TypedKey<
-	A extends string = string,
-	B extends string = string,
-	C extends string = string,
-> = CompoundTypedKey<A, B, C> | SingularTypedKey<A>
-type Scope = SingularTypedKey[]
+	TypeTag extends Tag<string> = Tag<string>,
+	UniqueX extends string = string,
+	UniqueY extends string = string,
+> = `${TypeTag}==${UniqueX}++${UniqueY}`
+export type AnyTypedKey = Compound | Original
+type Scope = Original[]
 type MutualFealty = {
 	above: Scope
-	below: CompoundTypedKey
+	below: Compound
 	style: `all` | `any`
 }
 type ExclusiveFealty = {
-	above: TypedKey | `root`
+	above: AnyTypedKey | `root`
 	below: Scope
 }
 type Fealty = ExclusiveFealty | MutualFealty
@@ -237,13 +231,13 @@ export type Vassal<H extends Hierarchy> = {
 	[K in keyof H]: H[K] extends MutualFealty
 		? H[K][`below`]
 		: H[K] extends { below: Array<infer V> }
-			? V extends TypedKey
+			? V extends AnyTypedKey
 				? V
 				: never
 			: never
 }[keyof H]
 
-export type Above<TK extends TypedKey, H extends Hierarchy> = {
+export type Above<TK extends AnyTypedKey, H extends Hierarchy> = {
 	[K in keyof H]: H[K] extends MutualFealty
 		? TK extends H[K][`below`]
 			? H[K][`above`]
@@ -257,7 +251,10 @@ export type Above<TK extends TypedKey, H extends Hierarchy> = {
 			: never
 }[keyof H]
 
-export type Below<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
+export type Below<
+	TK extends AnyTypedKey | AnyTypedKey[],
+	H extends Hierarchy,
+> = {
 	[K in keyof H]: H[K] extends MutualFealty
 		? TK extends H[K][`above`]
 			? H[K][`below`]
@@ -273,7 +270,10 @@ export type Below<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 			: never
 }[keyof H]
 
-export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
+export type Mutuals<
+	TK extends AnyTypedKey | AnyTypedKey[],
+	H extends Hierarchy,
+> = {
 	[K in keyof H]: H[K] extends MutualFealty
 		? TK extends H[K][`above`][number]
 			? [mutual: Exclude<H[K][`above`][number], TK>, below: H[K][`below`]]
@@ -281,11 +281,9 @@ export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 		: never
 }[keyof H]
 
-export function decomposeCompoundKey<K extends CompoundTypedKey>(
+export function decomposeCompoundKey<K extends Compound>(
 	key: K,
-): K extends CompoundTypedKey<infer A, infer B, infer C>
-	? [TypeTag<A>, B, C]
-	: never {
+): K extends Compound<infer A, infer B, infer C> ? [A, B, C] : never {
 	const [typeTag, content] = key.split(`==`)
 	const [singularB, singularC] = content.split(`++`)
 	return [typeTag, singularB, singularC] as any
