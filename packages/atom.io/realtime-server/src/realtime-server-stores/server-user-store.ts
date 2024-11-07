@@ -1,13 +1,14 @@
 import type { Hierarchy } from "atom.io"
 import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
+import type { Actual, Alias } from "atom.io/realtime"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Socket } from ".."
 
 export type SocketKey = `socket::${string}`
-export type UserKey = `user::${string}`
+export type UserKey<K extends Actual | Alias = Actual | Alias> = `user::${K}`
 export const isUserKey = (key: string): key is UserKey =>
 	key.startsWith(`user::`)
 export type RoomKey = `room::${string}`
