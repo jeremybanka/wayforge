@@ -9,13 +9,15 @@ declare module "eslint-plugin-import-x" {
 declare module "@next/eslint-plugin-next" {
 	import type { ESLint, Linter } from "eslint"
 
+	type Patch<T, U> = Omit<T, keyof U> & U
+
 	const plugin: Omit<ESLint.Plugin, `configs`> & {
-		configs: Record<
-			`core-web-vitals` | `recommended`,
-			Omit<Linter.Config, `rules`> & {
-				rules: Record<string, ESLint.Rule.RuleModule>
-			}
-		>
+		configs: {
+			[Key in `core-web-vitals` | `recommended`]: Patch<
+				Linter.Config,
+				{ rules: Record<string, Linter.RuleEntry<any[]>> }
+			>
+		}
 	}
 	export = plugin
 }
