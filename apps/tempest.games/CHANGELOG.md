@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.12
+
+### Patch Changes
+
+- c853b23: 🐛 Fix bug where all logging was broken due to a database logger.
+
 ## 0.1.11
 
 ### Patch Changes
