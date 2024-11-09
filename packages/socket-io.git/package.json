@@ -23,6 +23,7 @@
 		"socket.io-client": "^4.6.0"
 	},
 	"dependencies": {
+		"anvl": "workspace:*",
 		"fp-ts": "2.16.9",
 		"simple-git": "3.27.0"
 	},

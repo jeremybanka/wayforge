@@ -1,9 +1,9 @@
 import { isString } from "fp-ts/string"
 import type { SimpleGit } from "simple-git"
 
-import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { ErrorObject } from "~/packages/anvl/src/json-api"
-import { hasExactProperties } from "~/packages/anvl/src/object/refinement"
+import type { Encapsulate } from "anvl/function"
+import type { ErrorObject } from "anvl/json-api"
+import { hasExactProperties } from "anvl/object"
 
 export const SIMPLE_GIT_FUNCTIONS_INACCESSIBLE_OVER_SOCKET = [
 	`clearQueue`,

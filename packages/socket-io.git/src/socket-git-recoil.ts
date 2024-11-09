@@ -2,9 +2,9 @@ import type { RecoilValueReadOnly } from "recoil"
 import { atom, selector } from "recoil"
 import type { Socket } from "socket.io-client"
 
-import { recordToEntries } from "~/packages/anvl/src/object/entries"
-import { capitalize } from "~/packages/anvl/src/string/capitalize"
-import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
+import { recordToEntries } from "anvl/object"
+import { capitalize } from "anvl/string"
+import type { Transact } from "hamr/recoil-tools"
 
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 import type {

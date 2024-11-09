@@ -1,8 +1,8 @@
 import type { Socket } from "socket.io-client"
 
-import { recordToEntries } from "~/packages/anvl/src/object/entries"
-import { capitalize } from "~/packages/anvl/src/string/capitalize"
-import * as A_IO from "~/packages/atom.io/src"
+import { recordToEntries } from "anvl/object"
+import { capitalize } from "anvl/string"
+import * as A_IO from "atom.io"
 
 import { DEFAULT_SIMPLE_GIT_RETURN_VALUES } from "./defaults"
 import type {
