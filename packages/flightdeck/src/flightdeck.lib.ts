@@ -307,7 +307,7 @@ export class FlightDeck<S extends string = string> {
 			}
 			this.dead.use(Promise.all(this.servicesDead))
 		})
-		this.services[serviceName].process.on(`close`, (exitCode) => {
+		this.services[serviceName].process.once(`close`, (exitCode) => {
 			this.serviceLoggers[serviceName].info(`Exited with code ${exitCode}`)
 			this.services[serviceName] = null
 			if (!this.servicesShouldRestart) {
@@ -392,7 +392,7 @@ export class FlightDeck<S extends string = string> {
 			this.servicesDead[this.serviceIdx[serviceName]].use(
 				new Promise((pass) => {
 					service.emit(`timeToStop`)
-					service.process.on(`close`, (exitCode) => {
+					service.process.once(`close`, (exitCode) => {
 						this.logger.info(
 							`🛬 service ${serviceName} exited with code ${exitCode}`,
 						)

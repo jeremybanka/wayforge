@@ -8,7 +8,6 @@ import { createServer as createSecureServer } from "node:https"
 import { AtomIOLogger } from "atom.io"
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
-	disposeFromStore,
 	findInStore,
 	getFromStore,
 	IMPLICIT,
@@ -346,27 +345,16 @@ new WebSocketServer(httpServer, {
 parentSocket.emit(`alive`)
 parentSocket.on(`updatesReady`, () => {
 	parentSocket.emit(`readyToUpdate`)
-})
-
-async function gracefulExit() {
-	logger.info(`🧹 dispatching SIGINT to workers`)
-	gameWorker.process.kill(`SIGINT`)
-	await new Promise((pass) => gameWorker.process.once(`exit`, pass))
-	logger.info(`🛬 backend server exiting`)
-	process.exit(0)
-}
-
-process.on(`SIGINT`, async () => {
-	logger.info(`❗ received SIGINT; exiting gracefully`)
-	await gracefulExit()
-})
-process.on(`SIGTERM`, async () => {
-	logger.info(`❗ received SIGTERM; exiting gracefully`)
-	await gracefulExit()
-})
-process.on(`exit`, async () => {
-	logger.info(`❗ received exit; exiting gracefully`)
-	await gracefulExit()
+	parentSocket.on(`timeToStop`, async function gracefulExit() {
+		logger.info(`🧹 closing workers`)
+		const gameWorkerExit = new Promise((pass) =>
+			gameWorker.process.once(`close`, pass),
+		)
+		gameWorker.process.emit(`timeToStop`)
+		await gameWorkerExit
+		logger.info(`🛬 backend server exiting`)
+		process.exit(0)
+	})
 })
 
 logger.info(`🛫 backend server ready on port ${env.BACKEND_PORT}`)

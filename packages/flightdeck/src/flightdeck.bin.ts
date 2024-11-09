@@ -105,8 +105,7 @@ switch (inputs.case) {
 	default: {
 		const flightDeck = new FlightDeck(inputs.opts)
 		process.on(`close`, async () => {
-			flightDeck.stopAllServices()
-			await flightDeck.dead
+			await flightDeck.stopAllServices()
 		})
 	}
 }
