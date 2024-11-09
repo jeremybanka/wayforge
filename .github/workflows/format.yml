@@ -1,4 +1,4 @@
-name: Coverage
+name: Format
 
 on:
   push:
@@ -19,8 +19,8 @@ defaults:
     shell: bash
 
 jobs:
-  Coverage:
-    name: Coveralls
+  Fix:
+    name: Fix
     runs-on: ubuntu-latest
     timeout-minutes: 9
 
