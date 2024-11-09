@@ -44,7 +44,11 @@ import { countContinuity } from "./library/store"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
-const db = new DatabaseManager()
+const db = new DatabaseManager({
+	logQuery(query, params) {
+		logger.info(`📝 query`, query, params)
+	},
+})
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`info`, undefined, logger)
 
