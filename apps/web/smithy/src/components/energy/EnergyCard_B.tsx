@@ -1,9 +1,9 @@
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
-import { setCssVars } from "~/packages/hamr/react-css-vars/src"
-import { ListItems } from "~/packages/hamr/recoil-tools/src/RecoilList"
-import { Luum } from "~/packages/luum/src"
+import { setCssVars } from "hamr/react-css-vars"
+import { ListItems } from "hamr/recoil-tools"
+import { Luum } from "luum"
 
 import { findEnergyWithRelationsState } from "../../services/energy"
 import { findReactionWithRelationsState } from "../../services/reaction"

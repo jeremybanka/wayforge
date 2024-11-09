@@ -4,16 +4,13 @@ import type { FC } from "react"
 import type { SetterOrUpdater } from "recoil"
 import { selector, useRecoilState, useRecoilValue } from "recoil"
 
-import { includesAny } from "~/packages/anvl/src/array/venn"
-import { become, raiseError } from "~/packages/anvl/src/function"
-import type { Json } from "~/packages/anvl/src/json"
-import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import type {
-	FromListItemProps,
-	RecoilEditorProps,
-} from "~/packages/hamr/recoil-tools/src"
-import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
+import { includesAny } from "anvl/array"
+import { become, raiseError } from "anvl/function"
+import type { Json } from "anvl/json"
+import { JsonEditor } from "hamr/react-json-editor"
+import { RecoverableErrorBoundary } from "hamr/recoil-error-boundary"
+import type { FromListItemProps, RecoilEditorProps } from "hamr/recoil-tools"
+import { RecoilEditor } from "hamr/recoil-tools"
 
 import { energyIndex, findEnergyState } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"

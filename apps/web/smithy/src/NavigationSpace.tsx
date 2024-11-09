@@ -10,8 +10,8 @@ import {
 } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import type { WC } from "~/packages/hamr/react-json-editor/src"
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
+import type { WC } from "hamr/react-json-editor"
+import { RecoverableErrorBoundary } from "hamr/recoil-error-boundary"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"

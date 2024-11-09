@@ -1,9 +1,15 @@
 {
 	"name": "socket-io.filestore",
 	"version": "0.0.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
+	"license": "MIT",
+	"sideEffects": false,
+	"author": "Jeremy Banka",
 	"type": "module",
 	"description": "save json to the filesystem over socket.io",
-	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
 	"scripts": {
 		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-recoil.ts --format cjs,esm --dts --external react,recoil,socket.io,socket.io-client",
 		"lint:biome": "biome check -- .",
@@ -39,11 +45,20 @@
 		"vite-tsconfig-paths": "5.1.1",
 		"vitest": "2.1.4"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
-	},
-	"license": "MIT",
-	"sideEffects": false,
-	"author": "Jeremy Banka"
+	"files": ["dist", "CHANGELOG.md", "README.md"],
+	"exports": {
+		"./package.json": "./package.json",
+		"./node": {
+			"types": "./dist/socket-filestore-node.d.ts",
+			"import": "./dist/socket-filestore-node.js",
+			"browser": "./dist/socket-filestore-node.js",
+			"require": "./dist/socket-filestore-node.cjs"
+		},
+		"./recoil": {
+			"types": "./dist/socket-filestore-recoil.d.ts",
+			"import": "./dist/socket-filestore-recoil.js",
+			"browser": "./dist/socket-filestore-recoil.js",
+			"require": "./dist/socket-filestore-recoil.cjs"
+		}
+	}
 }

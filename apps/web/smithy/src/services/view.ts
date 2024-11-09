@@ -10,19 +10,16 @@ import {
 	useSetRecoilState,
 } from "recoil"
 
-import { lastOf } from "~/packages/anvl/src/array"
-import { now } from "~/packages/anvl/src/id/now"
-import { Join } from "~/packages/anvl/src/join"
-import type { Entries } from "~/packages/anvl/src/object/entries"
+import { lastOf } from "anvl/array"
+import { now } from "anvl/id"
+import { Join } from "anvl/join"
+import type { Entries } from "anvl/object"
 import {
 	localStorageEffect,
 	localStorageSerializationEffect,
-} from "~/packages/hamr/recoil-effect-storage/src/local-storage"
-import {
-	addToIndex,
-	removeFromIndex,
-} from "~/packages/hamr/recoil-tools/src/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
+} from "hamr/recoil-effect-storage"
+import { addToIndex, removeFromIndex } from "hamr/recoil-tools"
+import type { Transact } from "hamr/recoil-tools"
 
 export const spaceIndexState = atom<Set<string>>({
 	key: `spaceIndex`,

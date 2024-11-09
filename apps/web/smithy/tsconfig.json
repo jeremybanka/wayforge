@@ -5,10 +5,5 @@
 		"jsx": "react-jsx",
 		"types": ["vite/client"]
 	},
-	"include": [
-		"./src",
-		"./lasertag.d.ts",
-		"./vite.config.ts",
-		"../../node/forge/gen"
-	]
+	"include": [".", "./lasertag.d.ts", "./vite.config.ts", "../../node/forge/gen"]
 }

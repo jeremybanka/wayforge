@@ -1,7 +1,7 @@
 import type { FC } from "react"
 
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
+import { RecoverableErrorBoundary } from "hamr/recoil-error-boundary"
+import type { RecoilListItemProps } from "hamr/recoil-tools"
 
 import type { Reaction } from "../../services/reaction"
 import { Div_ReactionIcon } from "./ReactionIcon"

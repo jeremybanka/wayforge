@@ -7,18 +7,18 @@ import {
 } from "recoil"
 import type z from "zod"
 
-import type reactionSchema from "~/apps/node/forge/gen/reaction.schema.json"
-import type { Identified } from "~/packages/anvl/src/id/identified"
-import { now } from "~/packages/anvl/src/id/now"
-import { stringSetJsonInterface } from "~/packages/anvl/src/json"
-import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { removeFromIndex } from "~/packages/hamr/recoil-tools/src/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
+import type reactionSchema from "../../../../node/forge/gen/reaction.schema.json"
+import type { Identified } from "anvl/id"
+import { now } from "anvl/id"
+import { stringSetJsonInterface } from "anvl/json"
+import type { JsonSchema } from "anvl/json-schema"
+import { removeFromIndex } from "hamr/recoil-tools"
+import type { Transact } from "hamr/recoil-tools"
 import {
 	socketIndex,
 	socketSchema,
 	socketSync,
-} from "~/packages/socket-io.filestore/src/socket-filestore-recoil"
+} from "socket-io.filestore/recoil"
 
 import type { Amount } from "./energy_reaction"
 import {

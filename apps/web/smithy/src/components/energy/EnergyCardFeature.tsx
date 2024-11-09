@@ -1,7 +1,7 @@
 import type { FC } from "react"
 import { useRecoilValue } from "recoil"
 
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
+import type { RecoilListItemProps } from "hamr/recoil-tools"
 
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { ReactionIcon_INTERNAL } from "../reaction/ReactionIcon"

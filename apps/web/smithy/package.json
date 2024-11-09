@@ -14,6 +14,12 @@
 		"lint": "bun run lint:biome"
 	},
 	"dependencies": {
+		"anvl": "workspace:*",
+		"atom.io": "workspace:*",
+		"hamr": "workspace:*",
+		"luum": "workspace:*",
+		"socket-io.git": "workspace:*",
+		"socket-io.filestore": "workspace:*",
 		"@emotion/styled": "11.13.0",
 		"@eyecuelab/recoil-devtools": "0.1.7",
 		"@floating-ui/dom": "1.6.12",

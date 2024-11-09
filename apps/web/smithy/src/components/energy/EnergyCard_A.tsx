@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { useId } from "react"
 import { useRecoilValue } from "recoil"
 
-import { setCssVars } from "~/packages/hamr/react-css-vars/src"
+import { setCssVars } from "hamr/react-css-vars"
 
 import { findEnergyState } from "../../services/energy"
 import { CARD_HEIGHT, CARD_PADDING, CARD_WIDTH } from "../Card"

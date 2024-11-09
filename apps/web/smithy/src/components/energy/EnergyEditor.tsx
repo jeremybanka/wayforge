@@ -4,12 +4,12 @@ import type { FC } from "react"
 import { useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import { includesAny } from "~/packages/anvl/src/array/venn"
-import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import type { RecoilEditorProps } from "~/packages/hamr/recoil-tools/src"
-import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
-import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
+import { includesAny } from "anvl/array"
+import { JsonEditor } from "hamr/react-json-editor"
+import { RecoverableErrorBoundary } from "hamr/recoil-error-boundary"
+import type { RecoilEditorProps } from "hamr/recoil-tools"
+import { RecoilEditor } from "hamr/recoil-tools"
+import { isGitSocketError } from "socket-io.git/recoil"
 
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {

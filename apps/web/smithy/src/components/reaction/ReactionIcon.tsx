@@ -4,8 +4,8 @@ import type { FC } from "react"
 import { useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 
-import { ListItems } from "~/packages/hamr/recoil-tools/src/RecoilList"
-import { Luum } from "~/packages/luum/src"
+import { ListItems } from "hamr/recoil-tools"
+import { Luum } from "luum"
 
 import { findEnergyState } from "../../services/energy"
 import { findReactionEnergyState } from "../../services/energy_reaction"

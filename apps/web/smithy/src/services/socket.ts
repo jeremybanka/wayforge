@@ -6,7 +6,7 @@ import { io } from "socket.io-client"
 import type {
 	Clientele,
 	ClienteleError,
-} from "~/apps/node/forge/src/services/clientele"
+} from "../../../../node/forge/src/services/clientele"
 
 export const socket = io(`http://localhost:3333/`)
 

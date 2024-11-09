@@ -1,10 +1,7 @@
 import { atom, useRecoilTransaction_UNSTABLE } from "recoil"
 
-import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
-import {
-	initGitClientTools,
-	isGitSocketError,
-} from "~/packages/socket-io.git/src/socket-git-recoil"
+import type { Transact } from "hamr/recoil-tools"
+import { initGitClientTools, isGitSocketError } from "socket-io.git/recoil"
 
 import { socket } from "./socket"
 

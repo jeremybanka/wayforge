@@ -1,25 +1,18 @@
 {
 	"name": "anvl",
 	"version": "0.3.0",
-	"type": "module",
 	"description": "core typescript utilities for wayforge",
-	"files": [
-		"dist",
-		"array",
-		"function",
-		"id",
-		"join",
-		"json",
-		"json-api",
-		"json-schema",
-		"nullish",
-		"number",
-		"object",
-		"primitive",
-		"refinement",
-		"string",
-		"tree"
-	],
+	"sideEffects": false,
+	"type": "module",
+	"license": "MIT",
+	"author": "Jeremy Banka",
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git"
+	},
 	"scripts": {
 		"build": "tsup",
 		"lint:biome": "biome check -- .",
@@ -40,14 +33,79 @@
 		"vite-tsconfig-paths": "5.1.1",
 		"vitest": "2.1.4"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
-	},
-	"license": "MIT",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
-	"publishConfig": {
-		"access": "public"
+	"files": [
+		"dist",
+		"array",
+		"function",
+		"id",
+		"join",
+		"json",
+		"json-api",
+		"json-schema",
+		"nullish",
+		"number",
+		"object",
+		"primitive",
+		"refinement",
+		"string",
+		"tree"
+	],
+	"exports": {
+		"./array": {
+			"types": "./dist/array/index.d.ts",
+			"import": "./dist/array/index.js"
+		},
+		"./function": {
+			"types": "./dist/function/index.d.ts",
+			"import": "./dist/function/index.js"
+		},
+		"./id": {
+			"types": "./dist/id/index.d.ts",
+			"import": "./dist/id/index.js"
+		},
+		"./join": {
+			"types": "./dist/join/index.d.ts",
+			"import": "./dist/join/index.js"
+		},
+		"./json": {
+			"types": "./dist/json/index.d.ts",
+			"import": "./dist/json/index.js"
+		},
+		"./json-api": {
+			"types": "./dist/json-api/index.d.ts",
+			"import": "./dist/json-api/index.js"
+		},
+		"./json-schema": {
+			"types": "./dist/json-schema/index.d.ts",
+			"import": "./dist/json-schema/index.js"
+		},
+		"./nullish": {
+			"types": "./dist/nullish/index.d.ts",
+			"import": "./dist/nullish/index.js"
+		},
+		"./number": {
+			"types": "./dist/number/index.d.ts",
+			"import": "./dist/number/index.js"
+		},
+		"./object": {
+			"types": "./dist/object/index.d.ts",
+			"import": "./dist/object/index.js"
+		},
+		"./primitive": {
+			"types": "./dist/primitive/index.d.ts",
+			"import": "./dist/primitive/index.js"
+		},
+		"./refinement": {
+			"types": "./dist/refinement/index.d.ts",
+			"import": "./dist/refinement/index.js"
+		},
+		"./string": {
+			"types": "./dist/string/index.d.ts",
+			"import": "./dist/string/index.js"
+		},
+		"./tree": {
+			"types": "./dist/tree/index.d.ts",
+			"import": "./dist/tree/index.js"
+		}
 	}
 }

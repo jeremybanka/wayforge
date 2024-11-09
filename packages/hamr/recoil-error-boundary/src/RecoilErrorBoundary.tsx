@@ -1,8 +1,8 @@
 import type {
 	ErrorBoundaryProps,
 	ErrorBoundaryState,
-} from "hamr/react-error-boundary"
-import { RecoverableErrorBoundary as ReactErrorBoundary } from "hamr/react-error-boundary"
+} from "../../react-error-boundary/src"
+import { RecoverableErrorBoundary as ReactErrorBoundary } from "../../react-error-boundary/src"
 import type { FC } from "react"
 import { useId } from "react"
 import { atomFamily, useRecoilState, useResetRecoilState } from "recoil"
