@@ -1,3 +1,4 @@
+import type { TokenDenomination } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	findInStore,
@@ -71,7 +72,7 @@ export function prepareToSendInitialPayload(
 					const maskToken = findInStore(store, maskFamily, alias)
 					const fakeToken = {
 						key: `${baseFamily.key}("${alias}")`,
-						type: baseFamily.type,
+						type: FAMILY_TYPES[baseFamily.type],
 						family: { key: baseFamily.key, subKey: `"${alias}"` },
 					}
 					// const fakeToken = findInStore(store, resourceFamily, alias)
@@ -87,4 +88,22 @@ export function prepareToSendInitialPayload(
 
 		socket?.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
 	}
+}
+
+const FAMILY_TYPES: Record<TokenDenomination, TokenDenomination> = {
+	atom_family: `atom`,
+	atom: `atom`,
+	continuity: `continuity`,
+	molecule_family: `molecule`,
+	molecule: `molecule`,
+	mutable_atom_family: `mutable_atom`,
+	mutable_atom: `mutable_atom`,
+	readonly_selector_family: `readonly_selector`,
+	readonly_selector: `readonly_selector`,
+	selector_family: `selector`,
+	selector: `selector`,
+	state: `state`,
+	timeline: `timeline`,
+	unknown: `unknown`,
+	transaction: `transaction`,
 }
