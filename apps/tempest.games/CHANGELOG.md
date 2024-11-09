@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.14
+
+### Patch Changes
+
+- 6361363: 💄 Logo is now readable in light mode.
+
 ## 0.1.13
 
 ### Patch Changes
