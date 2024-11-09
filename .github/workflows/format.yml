@@ -1,9 +1,9 @@
 name: Format
 
 on:
-  push:
-    branches: ["changeset-release/main"]
   pull_request:
+    branches:
+      - main
     types: [opened, synchronize]
 
 concurrency:
@@ -21,6 +21,7 @@ defaults:
 jobs:
   Fix:
     name: Fix
+    if: github.head_ref == 'changeset-release/main'
     runs-on: ubuntu-latest
     timeout-minutes: 9
 
