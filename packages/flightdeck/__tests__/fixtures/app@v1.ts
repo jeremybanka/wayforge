@@ -17,4 +17,7 @@ parentSocket.emit(`alive`)
 parentSocket.on(`updatesReady`, () => {
 	parentSocket.emit(`readyToUpdate`)
 })
+parentSocket.on(`timeToStop`, () => {
+	process.exit(0)
+})
 parentSocket.logger.info(`🚀 Server started on port ${PORT}`)
