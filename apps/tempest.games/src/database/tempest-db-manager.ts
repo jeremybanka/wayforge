@@ -1,6 +1,7 @@
 import path from "node:path"
 
 import { Subject } from "atom.io/internal"
+import type { Logger } from "drizzle-orm"
 import { getTableName } from "drizzle-orm"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 import { drizzle } from "drizzle-orm/postgres-js"
@@ -38,6 +39,7 @@ export class DatabaseManager {
 	}
 
 	public constructor(
+		logger: Logger | boolean = false,
 		options: Options<{}> = {
 			host: env.POSTGRES_HOST,
 			port: env.POSTGRES_PORT,
@@ -48,7 +50,7 @@ export class DatabaseManager {
 	) {
 		this.options = options
 		this.sql = postgres(options)
-		this.drizzle = drizzle(this.sql, { schema, logger: true })
+		this.drizzle = drizzle(this.sql, { schema, logger })
 	}
 
 	public observe(completeKey: string, callback: () => void): void {

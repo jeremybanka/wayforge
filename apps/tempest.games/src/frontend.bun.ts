@@ -20,7 +20,11 @@ const parent = new ParentSocket()
 parent.logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
-const db = new DatabaseManager()
+const db = new DatabaseManager({
+	logQuery(query, params) {
+		parent.logger.info(`📝 query`, query, params)
+	},
+})
 
 serve({
 	hostname: `0.0.0.0`,
