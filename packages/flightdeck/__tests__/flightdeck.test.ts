@@ -18,8 +18,7 @@ beforeEach(() => {
 })
 
 afterEach(async () => {
-	flightDeck.shutdown()
-	await flightDeck.dead
+	await flightDeck.stopAllServices()
 })
 
 describe(`FlightDeck`, () => {

@@ -16,13 +16,14 @@ import {
 	serverIssueSchema,
 } from "./library/response-dictionary"
 
-const parent = new ParentSocket()
-parent.logger.info(` ready`)
+const parentSocket = new ParentSocket()
+const { logger } = parentSocket
+logger.info(` ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
 const db = new DatabaseManager({
 	logQuery(query, params) {
-		parent.logger.info(`📝 query`, query, params)
+		logger.info(`📝 query`, query, params)
 	},
 })
 
@@ -35,7 +36,7 @@ serve({
 			const now = new Date()
 			const url = new URL(req.url)
 			const ipAddress = server.requestIP(req)?.address ?? `??`
-			parent.logger.info(now, ipAddress, req.method, url.pathname)
+			logger.info(now, ipAddress, req.method, url.pathname)
 
 			const [ban] = await db.drizzle
 				.select({
@@ -47,7 +48,7 @@ serve({
 			const ipBannedIndefinitely = ban?.banishedUntil === null
 			const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
 			if (ipBannedIndefinitely || ipBannedTemporarily) {
-				parent.logger.info(`🙅 request from banned ip ${ipAddress}`)
+				logger.info(`🙅 request from banned ip ${ipAddress}`)
 				throw [403, ipAddress]
 			}
 
@@ -77,14 +78,14 @@ serve({
 				const [code, message] = result.data
 				const codeMeaning = RESPONSE_DICTIONARY[code]
 				const responseText = `${codeMeaning}. ${message}`
-				parent.logger.info(`❌ ${code}: ${responseText}`)
+				logger.info(`❌ ${code}: ${responseText}`)
 				return new Response(responseText, { status: code })
 			}
 			if (thrown instanceof Error) {
-				parent.logger.error(thrown.message)
+				logger.error(thrown.message)
 			} else {
 				const thrownType = discoverType(thrown)
-				parent.logger.error(`frontend server threw`, thrownType)
+				logger.error(`frontend server threw`, thrownType)
 			}
 			return new Response(RESPONSE_DICTIONARY[500], { status: 500 })
 		}
@@ -92,22 +93,24 @@ serve({
 })
 
 function gracefulExit() {
-	parent.logger.info(`🛬 frontend server exiting`)
+	logger.info(`🛬 frontend server exiting`)
 	process.exit(0)
 }
 
 process.on(`SIGINT`, () => {
-	parent.logger.info(`❗ received SIGINT; exiting gracefully`)
+	logger.info(`❗ received SIGINT; exiting gracefully`)
 	gracefulExit()
 })
 process.on(`SIGTERM`, () => {
-	parent.logger.info(`❗ received SIGTERM; exiting gracefully`)
+	logger.info(`❗ received SIGTERM; exiting gracefully`)
 	gracefulExit()
 })
 process.on(`exit`, () => {
-	parent.logger.info(`❗ received exit; exiting gracefully`)
+	logger.info(`❗ received exit; exiting gracefully`)
 	gracefulExit()
 })
-parent.logger.info(
-	`🛫 frontend server running at http://localhost:${env.FRONTEND_PORT ?? 3333}/`,
+
+logger.info(
+	`🛫 frontend server running at http://localhost:${env.FRONTEND_PORT}/`,
 )
+parentSocket.emit(`alive`)

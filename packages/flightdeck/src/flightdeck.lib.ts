@@ -28,7 +28,7 @@ export class FlightDeck<S extends string = string> {
 	protected webhookServer: Server
 	protected services: {
 		[service in S]: ChildSocket<
-			{ updatesReady: [] },
+			{ timeToStop: []; updatesReady: [] },
 			{ readyToUpdate: []; alive: [] }
 		> | null
 	}
@@ -174,8 +174,7 @@ export class FlightDeck<S extends string = string> {
 															([, isReady]) => isReady,
 														)
 													) {
-														this.logger.info(`All services are ready to update!`)
-														this.stopAllServices()
+														this.tryUpdate()
 														return
 													}
 													for (const entry of toEntries(this.services)) {
@@ -216,13 +215,50 @@ export class FlightDeck<S extends string = string> {
 		}
 
 		this.startAllServices()
+			.then(() => {
+				this.logger.info(`All services started.`)
+			})
+			.catch((thrown) => {
+				if (thrown instanceof Error) {
+					this.logger.error(`Failed to start all services:`, thrown.message)
+				}
+			})
 	}
 
-	protected startAllServices(): void {
+	protected tryUpdate(): void {
+		if (toEntries(this.servicesReadyToUpdate).every(([, isReady]) => isReady)) {
+			this.logger.info(`All services are ready to update.`)
+			this.stopAllServices()
+				.then(() => {
+					this.logger.info(`All services stopped; starting up fresh...`)
+					this.startAllServices()
+						.then(() => {
+							this.logger.info(`All services started; we're back online.`)
+						})
+						.catch((thrown) => {
+							if (thrown instanceof Error) {
+								this.logger.error(
+									`Failed to start all services:`,
+									thrown.message,
+								)
+							}
+						})
+				})
+				.catch((thrown) => {
+					if (thrown instanceof Error) {
+						this.logger.error(`Failed to stop all services:`, thrown.message)
+					}
+				})
+		}
+	}
+
+	protected startAllServices(): Future<unknown> {
 		this.logger.info(`Starting all services...`)
+		this.servicesShouldRestart = true
 		for (const [serviceName] of toEntries(this.services)) {
 			this.startService(serviceName)
 		}
+		return this.live
 	}
 
 	protected startService(serviceName: S): void {
@@ -261,12 +297,7 @@ export class FlightDeck<S extends string = string> {
 		this.services[serviceName].on(`readyToUpdate`, () => {
 			this.serviceLoggers[serviceName].info(`Ready to update.`)
 			this.servicesReadyToUpdate[serviceName] = true
-			if (
-				toEntries(this.servicesReadyToUpdate).every(([, isReady]) => isReady)
-			) {
-				this.logger.info(`All services are ready to update.`)
-				this.stopAllServices()
-			}
+			this.tryUpdate()
 		})
 		this.services[serviceName].on(`alive`, () => {
 			this.servicesLive[this.serviceIdx[serviceName]].use(Promise.resolve())
@@ -276,7 +307,7 @@ export class FlightDeck<S extends string = string> {
 			}
 			this.dead.use(Promise.all(this.servicesDead))
 		})
-		this.services[serviceName].process.on(`close`, (exitCode) => {
+		this.services[serviceName].process.once(`close`, (exitCode) => {
 			this.serviceLoggers[serviceName].info(`Exited with code ${exitCode}`)
 			this.services[serviceName] = null
 			if (!this.servicesShouldRestart) {
@@ -345,19 +376,32 @@ export class FlightDeck<S extends string = string> {
 		}
 	}
 
-	public stopAllServices(): void {
+	public stopAllServices(): Future<unknown> {
 		this.logger.info(`Stopping all services...`)
+		this.servicesShouldRestart = false
 		for (const [serviceName] of toEntries(this.services)) {
 			this.stopService(serviceName)
 		}
+		return this.dead
 	}
 
 	public stopService(serviceName: S): void {
-		if (this.services[serviceName]) {
+		const service = this.services[serviceName]
+		if (service) {
 			this.serviceLoggers[serviceName].info(`Stopping service...`)
-			this.services[serviceName].process.kill(`SIGINT`)
-			this.services[serviceName] = null
-			this.servicesDead[this.serviceIdx[serviceName]].use(Promise.resolve())
+			this.servicesDead[this.serviceIdx[serviceName]].use(
+				new Promise((pass) => {
+					service.emit(`timeToStop`)
+					service.process.once(`close`, (exitCode) => {
+						this.logger.info(
+							`🛬 service ${serviceName} exited with code ${exitCode}`,
+						)
+						this.services[serviceName] = null
+						pass()
+					})
+				}),
+			)
+			this.dead.use(Promise.all(this.servicesDead))
 			this.servicesLive[this.serviceIdx[serviceName]] = new Future(() => {})
 			if (this.live.done) {
 				this.live = new Future(() => {})
@@ -368,11 +412,5 @@ export class FlightDeck<S extends string = string> {
 				`Tried to stop service, but it wasn't running.`,
 			)
 		}
-	}
-
-	public shutdown(): void {
-		this.logger.info(`Shutting down...`)
-		this.servicesShouldRestart = false
-		this.stopAllServices()
 	}
 }
