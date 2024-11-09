@@ -54,8 +54,8 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -158,8 +158,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -290,8 +290,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -405,8 +405,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -485,8 +485,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
 
   apps/web/smithy:
     dependencies:
@@ -564,8 +564,8 @@ importers:
         specifier: 4.3.0
         version: 4.3.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -658,8 +658,8 @@ importers:
         specifier: 4.3.0
         version: 4.3.0(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -676,8 +676,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -785,8 +785,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -981,8 +981,8 @@ importers:
         specifier: 4.3.0
         version: 4.3.0(@types/node@22.9.0)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1009,8 +1009,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1030,8 +1030,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1058,8 +1058,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1079,8 +1079,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1103,8 +1103,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1146,8 +1146,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -1195,8 +1195,8 @@ importers:
         specifier: 5.4.10
         version: 5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
       vite-tsconfig-paths:
-        specifier: 5.1.0
-        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
+        specifier: 5.1.1
+        version: 5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1))
       vitest:
         specifier: 2.1.4
         version: 2.1.4(@types/node@22.9.0)(@vitest/ui@2.1.4)(happy-dom@15.11.0)(jsdom@25.0.1)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)
@@ -8098,8 +8098,8 @@ packages:
     peerDependencies:
       vite: '>=2.6.0'
 
-  vite-tsconfig-paths@5.1.0:
-    resolution: {integrity: sha512-Y1PLGHCJfAq1Zf4YIGEsmuU/NCX1epoZx9zwSr32Gjn3aalwQHRKr5aUmbo6r0JHeHkqmWpmDg7WOynhYXw1og==}
+  vite-tsconfig-paths@5.1.1:
+    resolution: {integrity: sha512-0nLY3qQI4GlYw3We4rps16ntW+nAZYCUrJwsuvqxIUCY9Bk3VnSeJDm/VPCmjOcAJ9Kud4k+CK2ZEnf9pbzK9Q==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -15954,7 +15954,7 @@ snapshots:
       - supports-color
       - typescript
 
-  vite-tsconfig-paths@5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)):
+  vite-tsconfig-paths@5.1.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.9.0)(lightningcss@1.28.1)(sass-embedded@1.80.6)(sass@1.80.6)(terser@5.34.1)):
     dependencies:
       debug: 4.3.7(supports-color@5.5.0)
       globrex: 0.1.2
