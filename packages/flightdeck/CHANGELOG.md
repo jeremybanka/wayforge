@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.2.0
+
+### Minor Changes
+
+- 6ec8f2d: 💥 BREAKING CHANGE: Processes managed by flight-deck are now expected to self-close when sent the signal `"timeToStop"` via IPC.
+
 ## 0.1.3
 
 ### Patch Changes
