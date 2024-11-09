@@ -11,7 +11,12 @@ import {
 	join,
 } from "atom.io/data"
 import type { Signal } from "atom.io/internal"
-import { getFromStore, getUpdateToken, IMPLICIT } from "atom.io/internal"
+import {
+	findInStore,
+	getFromStore,
+	getUpdateToken,
+	IMPLICIT,
+} from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import * as AR from "atom.io/react"
@@ -38,137 +43,137 @@ import { useContext } from "react"
 import { mark } from "../../__util__"
 import { throwUntil } from "../../__util__/waiting"
 
-describe.skip(`realtime occlusion`, () => {
-	editRelations(perspectiveAliases, (relations) => {
-		relations.set({
-			perspective: `T$--perspective==__hi__++user::__bob__`,
-			alias: `$$yo$$`,
-		})
-	})
+// describe.skip(`realtime occlusion`, () => {
+// 	editRelations(perspectiveAliases, (relations) => {
+// 		relations.set({
+// 			perspective: `T$--perspective==__hi__++user::__bob__`,
+// 			alias: `$$yo$$`,
+// 		})
+// 	})
 
-	it(`dereferences transaction requests with aliases`, () => {
-		mark(`start`)
-		const update = {
-			id: `123`,
-			key: `myTransaction`,
-			params: [`item::$$yo$$`],
-		} satisfies TransactionRequestActual
+// 	it.skip(`dereferences transaction requests with aliases`, () => {
+// 		mark(`start`)
+// 		const update = {
+// 			id: `123`,
+// 			key: `myTransaction`,
+// 			params: [`item::$$yo$$`],
+// 		} satisfies TransactionRequestActual
 
-		console.log(`aliased update`, update)
+// 		console.log(`aliased update`, update)
 
-		const updateStringified = stringifyJson(update)
+// 		const updateStringified = stringifyJson(update)
 
-		mark(`update stringified`)
+// 		mark(`update stringified`)
 
-		const actualUpdate = derefTransactionRequest(
-			IMPLICIT.STORE,
-			`user::__bob__`,
-			updateStringified,
-		)
-		mark(`update dereferenced`)
-		if (actualUpdate instanceof Error) {
-			console.log(actualUpdate)
-		} else {
-			console.log(`actual update`, parseJson(actualUpdate))
-		}
-		mark(`update parsed`)
-	})
-	it(`encodes aliases into completed transaction updates`, () => {
-		mark(`start encoding`)
-		type ItemKey<K extends RT.Actual | RT.Alias = RT.Actual | RT.Alias> =
-			`item::${K}`
-		type ItemVisibilityKey = Compound<
-			AtomIO.Tag<`view`>,
-			ItemKey<RT.Actual>,
-			UserKey<RT.Actual>
-		>
-		const itemWeightAtoms = atomFamily<number, ItemKey>({
-			key: `weight`,
-			default: 0,
-		})
-		const itemWeightMasks = selectorFamily<number | `???`, ItemKey>({
-			key: `weightMask`,
-			get: (_) => (__) => {
-				return `???`
-			},
-			set: (_) => (__) => {},
-		})
+// 		const actualUpdate = derefTransactionRequest(
+// 			IMPLICIT.STORE,
+// 			`user::__bob__`,
+// 			updateStringified,
+// 		)
+// 		mark(`update dereferenced`)
+// 		if (actualUpdate instanceof Error) {
+// 			console.log(actualUpdate)
+// 		} else {
+// 			console.log(`actual update`, parseJson(actualUpdate))
+// 		}
+// 		mark(`update parsed`)
+// 	})
+// 	it.skip(`encodes aliases into completed transaction updates`, () => {
+// 		mark(`start encoding`)
+// 		type ItemKey<K extends RT.Actual | RT.Alias = RT.Actual | RT.Alias> =
+// 			`item::${K}`
+// 		type ItemVisibilityKey = Compound<
+// 			AtomIO.Tag<`view`>,
+// 			ItemKey<RT.Actual>,
+// 			UserKey<RT.Actual>
+// 		>
+// 		const itemWeightAtoms = atomFamily<number, ItemKey>({
+// 			key: `weight`,
+// 			default: 0,
+// 		})
+// 		const itemWeightMasks = selectorFamily<number | `???`, ItemKey>({
+// 			key: `weightMask`,
+// 			get: (_) => (__) => {
+// 				return `???`
+// 			},
+// 			set: (_) => (__) => {},
+// 		})
 
-		const itemVisibilitySelectors = selectorFamily<
-			VisibilityCondition,
-			ItemVisibilityKey
-		>({
-			key: `itemVisibility`,
-			get: (_) => (__) => {
-				return `masked`
-			},
-		})
+// 		const itemVisibilitySelectors = selectorFamily<
+// 			VisibilityCondition,
+// 			ItemVisibilityKey
+// 		>({
+// 			key: `itemVisibility`,
+// 			get: (_) => (__) => {
+// 				return `masked`
+// 			},
+// 		})
 
-		const {
-			globalIndex: itemGlobalIndex,
-			perspectiveIndices: itemPerspectiveIndices,
-		} = view({
-			key: `item`,
-			selectors: itemVisibilitySelectors,
-		})
+// 		const {
+// 			globalIndex: itemGlobalIndex,
+// 			perspectiveIndices: itemPerspectiveIndices,
+// 		} = view({
+// 			key: `item`,
+// 			selectors: itemVisibilitySelectors,
+// 		})
 
-		mark(`states created`)
+// 		mark(`states created`)
 
-		const itemContinuity = continuity({
-			key: `item`,
-			config: (group) =>
-				group.add(itemPerspectiveIndices, [itemWeightAtoms, itemWeightMasks]),
-		})
+// 		const itemContinuity = continuity({
+// 			key: `item`,
+// 			config: (group) =>
+// 				group.add(itemPerspectiveIndices, [itemWeightAtoms, itemWeightMasks]),
+// 		})
 
-		mark(`continuity created`)
+// 		mark(`continuity created`)
 
-		const actualUpdate = {
-			id: `123`,
-			key: `myTransaction`,
-			params: [`item::__hi__`],
-			updates: [
-				{
-					type: `atom_update`,
-					key: `weight("item::__hi__")`,
-					newValue: 10,
-					oldValue: 0,
-					family: {
-						key: `item`,
-						subKey: `__hi__`,
-					},
-				},
-				{
-					type: `atom_update`,
-					key: `*relatedKeys/characterItems("character:)`,
-					newValue: `add:"__item::__"`,
-					oldValue: 0,
-					family: {
-						key: `item`,
-						subKey: `__hi__`,
-					},
-				},
-			],
-			type: `transaction_update`,
-			epoch: 0,
-			output: {},
-		} satisfies TransactionUpdate<any>
+// 		const actualUpdate = {
+// 			id: `123`,
+// 			key: `myTransaction`,
+// 			params: [`item::__hi__`],
+// 			updates: [
+// 				{
+// 					type: `atom_update`,
+// 					key: `weight("item::__hi__")`,
+// 					newValue: 10,
+// 					oldValue: 0,
+// 					family: {
+// 						key: `item`,
+// 						subKey: `__hi__`,
+// 					},
+// 				},
+// 				{
+// 					type: `atom_update`,
+// 					key: `*relatedKeys/characterItems("character:)`,
+// 					newValue: `add:"__item::__"`,
+// 					oldValue: 0,
+// 					family: {
+// 						key: `item`,
+// 						subKey: `__hi__`,
+// 					},
+// 				},
+// 			],
+// 			type: `transaction_update`,
+// 			epoch: 0,
+// 			output: {},
+// 		} satisfies TransactionUpdate<any>
 
-		console.log(`actual update`, actualUpdate)
+// 		console.log(`actual update`, actualUpdate)
 
-		mark(`update created`)
+// 		mark(`update created`)
 
-		const aliasedUpdate = aliasTransactionUpdate(
-			IMPLICIT.STORE,
-			itemContinuity,
-			`user::__bob__`,
-			actualUpdate,
-		)
+// 		const aliasedUpdate = aliasTransactionUpdate(
+// 			IMPLICIT.STORE,
+// 			itemContinuity,
+// 			`user::__bob__`,
+// 			actualUpdate,
+// 		)
 
-		mark(`update encoded`)
+// 		mark(`update encoded`)
 
-		console.log(`aliased update`, aliasedUpdate)
-	})
-})
+// 		console.log(`aliased update`, aliasedUpdate)
+// 	})
+// })
 
 describe(`join in perspective`, () => {
 	const scenario = () => {
@@ -255,6 +260,55 @@ describe(`join in perspective`, () => {
 			isBType: RTS.isUserKey,
 		})
 
+		const playersOfGames = join(
+			{
+				key: `playersOfGames`,
+				between: [`game`, `user`],
+				cardinality: `n:n`,
+				isAType: isGameKey,
+				isBType: RTS.isUserKey,
+			},
+			{ defaultContent: `X` as PlayerKey },
+		)
+		const playersOfGamesJsonMasks = AtomIO.selectorFamily<
+			SetRTXJson<PlayerKey<RT.Alias>>,
+			GameKey | UserKey<RT.Actual>
+		>({
+			key: `playersOfGamesJsonMask`,
+			get:
+				(playerOfGamesRelationKey) =>
+				({ env, find, get }) => {
+					let owner: UserKey<RT.Actual> | undefined
+					const { store } = env()
+				},
+			set: (_) => (__) => {},
+		})
+
+		const userAliasSelectors = AtomIO.selectorFamily<
+			UserKey<RT.Alias> | null,
+			UserKey<RT.Actual>
+		>({
+			key: `playerSelectors`,
+			get:
+				(userKey) =>
+				({ env, find, get }) => {
+					const { store } = env()
+					const actual = RT.extractActualKeys(userKey)[0][0]
+					const perspectiveKey: RT.PerspectiveKey = `T$--perspective==${actual}++${userKey}`
+					const userAlias = get(
+						findRelationsInStore(perspectiveAliases, perspectiveKey, store)
+							.aliasKeyOfPerspective,
+					)
+					console.log(`✨✨✨✨✨✨ ${store.config.name} ✨✨✨✨✨✨`)
+					console.log({ actual, perspectiveKey, userAlias })
+					if (userAlias) {
+						return `user::${userAlias}`
+					}
+					return null
+				},
+			set: (_) => (__) => {},
+		})
+
 		const playerCharacters = join({
 			key: `playersOfCharacters`,
 			between: [`player`, `character`],
@@ -270,6 +324,8 @@ describe(`join in perspective`, () => {
 			get:
 				(playerCharacterRelationKey) =>
 				({ env, find, get, json }) => {
+					let owner: UserKey<RT.Actual> | undefined
+
 					console.log(`❗❗❗❗❗❗❗❗❗❗❗❗`, playerCharacterRelationKey)
 
 					const { store } = env()
@@ -277,7 +333,6 @@ describe(`join in perspective`, () => {
 						playerCharacterRelationKey,
 					)
 					console.log(`\t`, `aliases`, relationAliases)
-					let owner: UserKey<RT.Actual> | undefined
 					const relationActuals: RT.Actual[] = []
 					for (const alias of relationAliases) {
 						const perspectiveKey = get(
@@ -288,7 +343,7 @@ describe(`join in perspective`, () => {
 						if (perspectiveKey) {
 							const [, actual, userKey] =
 								AtomIO.decomposeCompoundKey(perspectiveKey)
-							owner = userKey
+							owner ??= userKey
 							relationActuals.push(actual)
 						}
 					}
@@ -376,6 +431,20 @@ describe(`join in perspective`, () => {
 			},
 			set: (_) => (__) => {},
 		})
+		// const healthAtoms = AtomIO.atomFamily<number, CharacterKey>({
+		// 	key: `health`,
+		// 	default: 0,
+		// })
+		// const healthMasks = AtomIO.selectorFamily<
+		// 	number | null,
+		// 	CharacterKey<RT.Alias>
+		// >({
+		// 	key: `healthMask`,
+		// 	get: (_) => (__) => {
+		// 		return 0
+		// 	},
+		// 	set: (_) => (__) => {},
+		// })
 		const healthAtoms = AtomIO.atomFamily<number, CharacterKey>({
 			key: `health`,
 			default: 0,
@@ -436,16 +505,27 @@ describe(`join in perspective`, () => {
 				silo.setState(characterGlobalIndex, (prev) =>
 					prev.add(`character::__janette__`),
 				)
-				silo.setState(playerGlobalIndex, (prev) => prev.add(`player::__jane__`))
+				silo.setState(playerGlobalIndex, (prev) =>
+					prev.add(`T$--player==game::battle++user::__jane-1__`),
+				)
 				editRelationsInStore(
 					playerCharacters,
 					(relations) => {
 						relations.set({
-							player: `T$--player==game::battle++user::__jane__`,
+							player: `T$--player==game::battle++user::__jane-1__`,
 							character: `character::__janette__`,
 						})
 					},
 					store,
+				)
+
+				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
+				exposeMutable(
+					findInStore(
+						store,
+						getInternalRelationsFromStore(perspectiveAliases, store),
+						`T$--perspective==__jane__++user::__jane-1__`,
+					),
 				)
 				const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 					socket,
@@ -457,15 +537,19 @@ describe(`join in perspective`, () => {
 				jane: () => {
 					RTR.useSyncContinuity(gameContinuity)
 					const store = useContext(AR.StoreContext)
+					RTR.usePullSelector(
+						findInStore(store, userAliasSelectors, `user::__jane-1__`),
+					)
+					const myAlias = AR.useO(userAliasSelectors, `user::__jane-1__`)
 					const myUsername = AR.useO(myUsernameState)
 					const myCharacter = AR.useO(
 						findRelationsInStore(
 							playerCharacters,
-							`T$--player==game::battle++user::$$${myUsername}$$`,
+							`T$--player==game::battle++user::$$${myAlias}$$`,
 							store,
 						).characterKeysOfPlayer,
 					)
-					console.log({ myUsername, myCharacter })
+					console.log({ myUsername, myAlias, myCharacter })
 
 					return (
 						<span data-testid={`state`}>
@@ -488,7 +572,12 @@ describe(`join in perspective`, () => {
 			throwUntil(jane.socket.connected)
 		})
 
+		let i = 0
 		await waitFor(() => {
+			if (i === 0) {
+				// console.log(server.silo.store.valueMap)
+			}
+			i++
 			expect(jane.renderResult.getByTestId(`character`).textContent).toBe(
 				`character::__janette__`,
 			)

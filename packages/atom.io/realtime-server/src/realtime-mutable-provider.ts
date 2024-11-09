@@ -32,7 +32,8 @@ export function realtimeMutableProvider({
 		}
 
 		const fillSubRequest = () => {
-			socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
+			const jsonValue = getFromStore(store, jsonToken)
+			socket.emit(`init:${token.key}`, jsonValue)
 			unsubscribeFromStateUpdates = subscribeToState(
 				trackerToken,
 				({ newValue }) => {
