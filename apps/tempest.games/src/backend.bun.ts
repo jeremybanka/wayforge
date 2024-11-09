@@ -342,19 +342,44 @@ new WebSocketServer(httpServer, {
 		})
 	})
 
-parentSocket.emit(`alive`)
+async function gracefulExit() {
+	logger.info(`🧹 closing workers`)
+	const gameWorkerExit = new Promise((pass) =>
+		gameWorker.process.once(`close`, pass),
+	)
+	gameWorker.process.emit(`timeToStop`)
+	await gameWorkerExit
+	logger.info(`🛬 backend server exiting`)
+	process.exit(0)
+}
+
+process.on(`SIGINT`, async () => {
+	logger.info(`❗ received SIGINT; exiting gracefully`)
+	await gracefulExit()
+})
+process.on(`SIGTERM`, async () => {
+	logger.info(`❗ received SIGTERM; exiting gracefully`)
+	await gracefulExit()
+})
+process.on(`exit`, async () => {
+	logger.info(`❗ received exit; exiting gracefully`)
+	await gracefulExit()
+})
+
 parentSocket.on(`updatesReady`, () => {
+	logger.info(`❗ backend server received signal "updatesReady"`)
 	parentSocket.emit(`readyToUpdate`)
-	parentSocket.on(`timeToStop`, async function gracefulExit() {
-		logger.info(`🧹 closing workers`)
-		const gameWorkerExit = new Promise((pass) =>
-			gameWorker.process.once(`close`, pass),
+	logger.info(
+		`❗ backend server has sent signal "readyToUpdate"; now awaits signal "timeToStop"`,
+	)
+	parentSocket.on(`timeToStop`, async () => {
+		logger.info(
+			`❗ backend server received signal "timeToStop"; exiting gracefully`,
 		)
-		gameWorker.process.emit(`timeToStop`)
-		await gameWorkerExit
-		logger.info(`🛬 backend server exiting`)
-		process.exit(0)
+		await gracefulExit()
 	})
 })
 
 logger.info(`🛫 backend server ready on port ${env.BACKEND_PORT}`)
+
+parentSocket.emit(`alive`)
