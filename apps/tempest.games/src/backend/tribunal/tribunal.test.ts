@@ -4,8 +4,10 @@ import { OpenAiSafeGenerator } from "safegen/openai"
 
 import { DatabaseManager } from "../../database/tempest-db-manager"
 import { banishedIps } from "../../database/tempest-db-schema"
-import { env, IS_TEST } from "../../library/env"
+import { env } from "../../library/env"
 import { tribunal } from "./tribunal"
+
+const logger = console
 
 const gpt4Gen = new OpenAiSafeGenerator({
 	usdBudget: 0.00_15,
@@ -14,14 +16,18 @@ const gpt4Gen = new OpenAiSafeGenerator({
 	// biome-ignore lint/style/noNonNullAssertion: We'll handle this on the following lines
 	apiKey: env.OPENAI_API_KEY!,
 	cachingMode: env.CI ? `read` : `read-write`,
-	logger: console,
+	logger,
 })
 if (env.OPENAI_API_KEY === undefined && !(`VITEST` in import.meta.env)) {
 	throw new Error(`OPENAI_API_KEY is not set and vitest is not running.`)
 }
 
 afterAll(async () => {
-	const db = new DatabaseManager()
+	const db = new DatabaseManager({
+		logQuery(query, params) {
+			logger.info(`📝 query`, query, params)
+		},
+	})
 	await db.drizzle.delete(banishedIps)
 	gpt4Gen.squirrel.flush()
 })
@@ -31,7 +37,7 @@ describe(`tribunal`, () => {
 		await tribunal({
 			generator: gpt4Gen,
 			logFilePath: resolve(import.meta.dirname, `sample.log`),
-			logger: console,
+			logger,
 			now: new Date(`2024-10-16T20:39:52.496Z`),
 		})
 	}, 40_000)

@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { eq } from "drizzle-orm"
 
 import { asUUID } from "../library/as-uuid-node"
@@ -14,7 +12,11 @@ beforeEach(() => {
 
 describe(`database notifications`, () => {
 	test(`updating rows notifies subscribers`, async () => {
-		const db = new DatabaseManager()
+		const db = new DatabaseManager({
+			logQuery(query, params) {
+				console.info(`📝 query`, query, params)
+			},
+		})
 		await db.setupTriggersAndNotifications()
 
 		const game1Id = asUUID(`game_1`)

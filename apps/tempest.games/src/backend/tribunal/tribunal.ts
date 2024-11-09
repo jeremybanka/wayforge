@@ -29,7 +29,11 @@ export async function tribunal({
 	now,
 }: TribunalOptions): Promise<void> {
 	const initialUsdBudget = generator.usdBudget
-	const db = new DatabaseManager()
+	const db = new DatabaseManager({
+		logQuery(query, params) {
+			logger.info(`📝 query`, query, params)
+		},
+	})
 
 	// get today's logs mapped by ip
 	const logsPerIpMap = await getLogs(logger, logFilePath, now)
