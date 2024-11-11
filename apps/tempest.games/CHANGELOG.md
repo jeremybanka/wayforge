@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.15
+
+### Patch Changes
+
+- d751bc4: 🐛 Improvements to capitalization handling for usernames and emails.
+
 ## 0.1.14
 
 ### Patch Changes
