@@ -1,3 +1,6 @@
+import type { SQL } from "drizzle-orm"
+import { sql } from "drizzle-orm"
+import type { AnyPgColumn } from "drizzle-orm/pg-core"
 import {
 	boolean,
 	integer,
@@ -9,6 +12,10 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core"
+
+function lower(email: AnyPgColumn): SQL {
+	return sql`lower(${email})`
+}
 
 export const role = pgEnum(`role`, [`admin`, `user`])
 
@@ -26,10 +33,10 @@ export const users = pgTable(
 		verifiedAt: timestamp({ withTimezone: true }),
 		userRole: role().default(`user`),
 	},
-	(table) => ({
-		usersUsernameUnique: uniqueIndex().on(table.username),
-		usersEmailUnique: uniqueIndex().on(table.email),
-	}),
+	(table) => [
+		uniqueIndex(`usernameUniqueIndex`).on(lower(table.username)),
+		uniqueIndex(`emailUniqueIndex`).on(lower(table.email)),
+	],
 )
 
 export type UserColumnName = keyof typeof users._.columns
@@ -71,7 +78,7 @@ export const userChanges = pgTable(`userChanges`, {
 })
 
 export const games = pgTable(`games`, {
-	id: uuid(`id`).primaryKey().defaultRandom(),
+	id: uuid().primaryKey().defaultRandom(),
 })
 
 export const players = pgTable(
@@ -85,11 +92,12 @@ export const players = pgTable(
 			.references(() => games.id),
 		score: integer().notNull(),
 	},
-	(table) => ({
-		pk: primaryKey({
+	(table) => [
+		primaryKey({
+			name: `players_userId_gameId_pk`,
 			columns: [table.userId, table.gameId],
 		}),
-	}),
+	],
 )
 
 export const loginHistory = pgTable(`loginHistory`, {

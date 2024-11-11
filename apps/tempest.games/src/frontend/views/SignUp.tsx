@@ -72,6 +72,7 @@ export function SignUp(): JSX.Element {
 							setUsername(e.target.value)
 						}}
 						autoComplete="username"
+						autoCapitalize="none"
 						style={setCssVars({
 							"--energy-color": username
 								? usernameIssues
@@ -98,6 +99,7 @@ export function SignUp(): JSX.Element {
 							setPassword0(e.target.value)
 						}}
 						autoComplete="new-password"
+						autoCapitalize="none"
 						style={setCssVars({
 							"--energy-color": password0
 								? password0Issues
@@ -124,6 +126,7 @@ export function SignUp(): JSX.Element {
 							setPassword1(e.target.value)
 						}}
 						autoComplete="new-password"
+						autoCapitalize="none"
 						style={setCssVars({
 							"--energy-color": password1
 								? password1Issues
@@ -150,6 +153,7 @@ export function SignUp(): JSX.Element {
 							setEmail(e.target.value)
 						}}
 						autoComplete="email"
+						autoCapitalize="none"
 						style={setCssVars({
 							"--energy-color": email
 								? emailIssues

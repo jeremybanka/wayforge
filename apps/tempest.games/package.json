@@ -33,8 +33,8 @@
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"postversion": "biome format --write package.json",
-		"db:dev": "drizzle-kit studio",
-		"db:gen": "drizzle-kit generate",
+		"db:dev": "dotenv -e .env.development -- drizzle-kit studio",
+		"db:gen": "dotenv -e .env.development -- drizzle-kit generate",
 		"db:nuke": "./__scripts__/destroy-db.bun.ts",
 		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
