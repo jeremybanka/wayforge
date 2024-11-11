@@ -150,6 +150,8 @@ export class FlightDeck<S extends string = string> {
 												{
 													res.writeHead(200)
 													res.end()
+													const text = Buffer.concat(data).toString()
+													console.log(`!!!!!!!!!!!!!!!!!!!!`, { text })
 													const installFile = resolve(
 														this.persistentStateDir,
 														`install`,

@@ -40,6 +40,7 @@ describe(`FlightDeck`, () => {
 						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir.name, `backend`)}`,
 					].join(` `),
 					install: `echo "installed!"`,
+					checkAvailability: `./${testDirname}/fixtures/check-available-version.ts`,
 				}
 			},
 		})
@@ -56,6 +57,7 @@ describe(`FlightDeck`, () => {
 		const response = await Klaxon.alert({
 			secret: `secret`,
 			endpoint: `http://localhost:8080/`,
+			version: `1`,
 		})
 
 		expect(response.status).toBe(200)
