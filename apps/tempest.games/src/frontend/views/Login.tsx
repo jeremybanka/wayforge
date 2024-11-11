@@ -62,6 +62,7 @@ export function Login(): JSX.Element {
 							setUsername(e.target.value)
 						}}
 						autoComplete="username"
+						autoCapitalize="none"
 					/>
 				</label>
 				<label htmlFor="password">
@@ -74,6 +75,7 @@ export function Login(): JSX.Element {
 							setPassword(e.target.value)
 						}}
 						autoComplete="current-password"
+						autoCapitalize="none"
 					/>
 				</label>
 				<button type="submit" disabled={!username || !password}>{`->`}</button>
