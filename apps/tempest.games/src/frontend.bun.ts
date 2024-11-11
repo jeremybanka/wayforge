@@ -110,6 +110,13 @@ process.on(`exit`, () => {
 	gracefulExit()
 })
 
+parentSocket.on(`timeToStop`, () => {
+	logger.info(
+		`❗ backend server received signal "timeToStop"; exiting gracefully`,
+	)
+	gracefulExit()
+})
+
 logger.info(
 	`🛫 frontend server running at http://localhost:${env.FRONTEND_PORT}/`,
 )
