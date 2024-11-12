@@ -10,9 +10,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
@@ -22,9 +19,6 @@ jobs:
     timeout-minutes: 9
     env:
       NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
-
-    # outputs:
-    #   package_published: ${{ steps.check_published.outputs.package_published }}
 
     steps:
       - name: Checkout Repo
@@ -55,6 +49,10 @@ jobs:
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: bun release
+          version: changeset version && bun fmt:fix
+        env:
+          GITHUB_TOKEN: ${{ secrets.RENOVATE_HELPER_GITHUB_PAT }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Klaxon
         if: steps.changesets.outputs.hasChangesets == 'false'

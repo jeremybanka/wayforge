@@ -10,7 +10,14 @@
 		"backend": "./bin/backend.bun.js",
 		"setup-db": "./bin/setup-db.bun.js"
 	},
-	"files": ["app", "bin", "CHANGELOG.md", "drizzle", "index.html"],
+	"files": [
+		"app",
+		"bin",
+		"CHANGELOG.md",
+		"drizzle",
+		"drizzle.config.ts",
+		"index.html"
+	],
 	"scripts": {
 		"dev": "bun run env:dev && concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
@@ -32,8 +39,7 @@
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
-		"postversion": "biome format --write package.json",
-		"db:dev": "dotenv -e .env.development -- drizzle-kit studio",
+		"db:dev": "dotenv -e .env.development -- ./__scripts__/interactive-db.bun.ts",
 		"db:gen": "dotenv -e .env.development -- drizzle-kit generate",
 		"db:nuke": "./__scripts__/destroy-db.bun.ts",
 		"db:setup": "./__scripts__/setup-db.bun.ts"
