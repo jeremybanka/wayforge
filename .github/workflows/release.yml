@@ -51,7 +51,7 @@ jobs:
           publish: bun release
           version: ./lib/version.sh
         env:
-          GITHUB_TOKEN: ${{ secrets.RENOVATE_HELPER_GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_GITHUB_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Klaxon
