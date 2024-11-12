@@ -135,11 +135,6 @@ export class FlightDeck<S extends string = string> {
 			path: resolve(flightdeckRootDir, `storage`, options.packageName),
 		})
 
-		const { checkAvailability } = options.scripts
-		if (checkAvailability) {
-			this.updateAvailabilityChecker = new CronJob(`30 * * * * *`, () => {})
-		}
-
 		if (FLIGHTDECK_SECRET === undefined) {
 			this.logger.warn(
 				`No FLIGHTDECK_SECRET environment variable found. FlightDeck will not run an update server.`,
@@ -175,11 +170,19 @@ export class FlightDeck<S extends string = string> {
 
 							this.storage.setItem(`updatePhase`, `notified`)
 							this.storage.setItem(`updateAwaitedVersion`, versionForeignInput)
-							if (this.updateAvailabilityChecker) {
+							const { checkAvailability } = options.scripts
+							if (checkAvailability) {
+								this.updateAvailabilityChecker?.stop()
 								this.seekUpdate(versionForeignInput)
 								const updatePhase = this.storage.getItem(`updatePhase`)
 								this.logger.info(`> storage("updatePhase") >`, updatePhase)
 								if (updatePhase === `notified`) {
+									this.updateAvailabilityChecker = new CronJob(
+										`30 * * * * *`,
+										() => {
+											this.seekUpdate(versionForeignInput)
+										},
+									)
 									this.updateAvailabilityChecker.start()
 								}
 							} else {
@@ -221,6 +224,7 @@ export class FlightDeck<S extends string = string> {
 		try {
 			const out = execSync(`${checkAvailability} ${version}`)
 			this.logger.info(`Check stdout:`, out.toString())
+			this.updateAvailabilityChecker?.stop()
 			this.storage.setItem(`updatePhase`, `confirmed`)
 			this.downloadPackage()
 			this.announceUpdate()
