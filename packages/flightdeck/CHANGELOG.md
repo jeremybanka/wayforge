@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.2.1
+
+### Patch Changes
+
+- 02617b1: ✨ Add an option `scripts.checkAvailablity` to FlightDeck which takes a single argument, the new package version. Exit code 0 to confirm that the version is available; exit code 1 to keep trying.
+
 ## 0.2.0
 
 ### Minor Changes
