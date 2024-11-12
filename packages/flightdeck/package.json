@@ -10,10 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {
@@ -24,7 +21,7 @@
 		"@t3-oss/env-core": "0.11.1",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
-		"cron": "3.1.9",
+		"cron": "3.2.0",
 		"zod": "3.23.8"
 	},
 	"scripts": {
