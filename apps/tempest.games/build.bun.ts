@@ -15,7 +15,10 @@ await build({
 	target: `bun`,
 })
 await build({
-	entrypoints: [`./__scripts__/setup-db.bun.ts`],
+	entrypoints: [
+		`./__scripts__/setup-db.bun.ts`,
+		`./__scripts__/interactive-db.bun.ts`,
+	],
 	outdir: `./bin`,
 	minify: false,
 	target: `bun`,
