@@ -50,7 +50,7 @@ jobs:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: bun release
           version: |
-            changeset version
+            bun changeset version
             bun fmt:fix
         env:
           GITHUB_TOKEN: ${{ secrets.RENOVATE_HELPER_GITHUB_PAT }}
