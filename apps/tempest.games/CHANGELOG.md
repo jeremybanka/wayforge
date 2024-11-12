@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.1.16
+
+### Patch Changes
+
+- 806a254: 🐛 Fix issue where the frontend would not shut down when updates are ready.
+- e4662c3: ✨ Added an entrypoint for using Drizzle Studio from the production instance.
+
 ## 0.1.15
 
 ### Patch Changes
