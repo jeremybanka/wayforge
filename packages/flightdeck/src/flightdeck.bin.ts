@@ -18,6 +18,7 @@ const FLIGHTDECK_MANUAL = {
 		scripts: z.object({
 			download: z.string(),
 			install: z.string(),
+			checkAvailability: z.string(),
 		}),
 	}),
 	options: {
