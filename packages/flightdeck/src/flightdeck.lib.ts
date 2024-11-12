@@ -1,15 +1,31 @@
 import { execSync, spawn } from "node:child_process"
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs"
 import type { Server } from "node:http"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
 
 import { Future } from "atom.io/internal"
+import { discoverType } from "atom.io/introspection"
 import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
+import { CronJob } from "cron"
 
+import { FilesystemStorage } from "./filesystem-storage"
 import { env } from "./flightdeck.env"
+
+export const FLIGHTDECK_SETUP_PHASES = [`downloaded`, `installed`] as const
+
+export type FlightDeckSetupPhase = (typeof FLIGHTDECK_SETUP_PHASES)[number]
+
+export const FLIGHTDECK_UPDATE_PHASES = [`notified`, `confirmed`] as const
+
+export type FlightDeckUpdatePhase = (typeof FLIGHTDECK_UPDATE_PHASES)[number]
+
+export function isVersionNumber(version: string): boolean {
+	return (
+		/^\d+\.\d+\.\d+$/.test(version) || !Number.isNaN(Number.parseFloat(version))
+	)
+}
 
 export type FlightDeckOptions<S extends string = string> = {
 	packageName: string
@@ -17,6 +33,7 @@ export type FlightDeckOptions<S extends string = string> = {
 	scripts: {
 		download: string
 		install: string
+		checkAvailability?: string
 	}
 	port?: number | undefined
 	flightdeckRootDir?: string | undefined
@@ -25,6 +42,11 @@ export type FlightDeckOptions<S extends string = string> = {
 export class FlightDeck<S extends string = string> {
 	protected safety = 0
 
+	protected storage: FilesystemStorage<{
+		setupPhase: FlightDeckSetupPhase
+		updatePhase: FlightDeckUpdatePhase
+		updateAwaitedVersion: string
+	}>
 	protected webhookServer: Server
 	protected services: {
 		[service in S]: ChildSocket<
@@ -35,12 +57,14 @@ export class FlightDeck<S extends string = string> {
 	protected serviceIdx: { readonly [service in S]: number }
 	public defaultServicesReadyToUpdate: { readonly [service in S]: boolean }
 	public servicesReadyToUpdate: { [service in S]: boolean }
-	public servicesShouldRestart: boolean
+	public autoRespawnDeadServices: boolean
 
 	protected logger: Pick<Console, `error` | `info` | `warn`>
 	protected serviceLoggers: {
 		readonly [service in S]: Pick<Console, `error` | `info` | `warn`>
 	}
+
+	protected updateAvailabilityChecker: CronJob | null = null
 
 	public servicesLive: Future<void>[]
 	public servicesDead: Future<void>[]
@@ -49,11 +73,9 @@ export class FlightDeck<S extends string = string> {
 
 	protected restartTimes: number[] = []
 
-	protected persistentStateDir: string
-
 	public constructor(public readonly options: FlightDeckOptions<S>) {
 		const { FLIGHTDECK_SECRET } = env
-		const { flightdeckRootDir = resolve(homedir(), `services`) } = options
+		const { flightdeckRootDir = resolve(homedir(), `.flightdeck`) } = options
 		const port = options.port ?? 8080
 		const origin = `http://localhost:${port}`
 
@@ -71,7 +93,7 @@ export class FlightDeck<S extends string = string> {
 			]),
 		)
 		this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
-		this.servicesShouldRestart = true
+		this.autoRespawnDeadServices = true
 
 		this.logger = {
 			info: (...args: any[]) => {
@@ -109,13 +131,13 @@ export class FlightDeck<S extends string = string> {
 		this.live.use(Promise.all(this.servicesLive))
 		this.dead.use(Promise.all(this.servicesDead))
 
-		this.persistentStateDir = resolve(
-			flightdeckRootDir,
-			`.state`,
-			options.packageName,
-		)
-		if (!existsSync(this.persistentStateDir)) {
-			mkdirSync(this.persistentStateDir, { recursive: true })
+		this.storage = new FilesystemStorage({
+			path: resolve(flightdeckRootDir, `storage`, options.packageName),
+		})
+
+		const { checkAvailability } = options.scripts
+		if (checkAvailability) {
+			this.updateAvailabilityChecker = new CronJob(`30 * * * * *`, () => {})
 		}
 
 		if (FLIGHTDECK_SECRET === undefined) {
@@ -142,64 +164,26 @@ export class FlightDeck<S extends string = string> {
 							}
 							const url = new URL(req.url, origin)
 							this.logger.info(req.method, url.pathname)
-							switch (req.method) {
-								case `POST`:
-									{
-										switch (url.pathname) {
-											case `/`:
-												{
-													res.writeHead(200)
-													res.end()
-													const text = Buffer.concat(data).toString()
-													console.log(`!!!!!!!!!!!!!!!!!!!!`, { text })
-													const installFile = resolve(
-														this.persistentStateDir,
-														`install`,
-													)
-													const readyFile = resolve(
-														this.persistentStateDir,
-														`ready`,
-													)
-													if (!existsSync(installFile)) {
-														this.logger.info(
-															`Install file does not exist yet. Creating...`,
-														)
-														writeFileSync(installFile, ``)
-													}
-													if (existsSync(readyFile)) {
-														this.logger.info(`Ready file exists. Removing...`)
-														rmSync(readyFile)
-													}
-													this.getLatestRelease()
-													if (
-														toEntries(this.servicesReadyToUpdate).every(
-															([, isReady]) => isReady,
-														)
-													) {
-														this.tryUpdate()
-														return
-													}
-													for (const entry of toEntries(this.services)) {
-														const [serviceName, service] = entry
-														if (service) {
-															if (this.options.services[serviceName].waitFor) {
-																service.emit(`updatesReady`)
-															}
-														} else {
-															this.startService(serviceName)
-														}
-													}
-												}
-												break
 
-											default:
-												throw 404
-										}
-									}
-									break
+							const versionForeignInput = Buffer.concat(data).toString()
+							if (!isVersionNumber(versionForeignInput)) {
+								throw 400
+							}
 
-								default:
-									throw 405
+							res.writeHead(200)
+							res.end()
+
+							this.storage.setItem(`updatePhase`, `notified`)
+							this.storage.setItem(`updateAwaitedVersion`, versionForeignInput)
+							if (this.updateAvailabilityChecker) {
+								this.seekUpdate(versionForeignInput)
+								const updatePhase = this.storage.getItem(`updatePhase`)
+								this.logger.info(`> storage("updatePhase") >`, updatePhase)
+								if (updatePhase === `notified`) {
+									this.updateAvailabilityChecker.start()
+								}
+							} else {
+								this.downloadPackage()
 							}
 						} catch (thrown) {
 							this.logger.error(thrown, req.url)
@@ -225,6 +209,42 @@ export class FlightDeck<S extends string = string> {
 					this.logger.error(`Failed to start all services:`, thrown.message)
 				}
 			})
+	}
+
+	protected seekUpdate(version: string): void {
+		this.logger.info(`Checking for updates...`)
+		const { checkAvailability } = this.options.scripts
+		if (!checkAvailability) {
+			this.logger.info(`No checkAvailability script found.`)
+			return
+		}
+		try {
+			const out = execSync(`${checkAvailability} ${version}`)
+			this.logger.info(`Check stdout:`, out.toString())
+			this.storage.setItem(`updatePhase`, `confirmed`)
+			this.downloadPackage()
+			this.announceUpdate()
+		} catch (thrown) {
+			if (thrown instanceof Error) {
+				this.logger.error(`Check failed:`, thrown.message)
+			} else {
+				const thrownType = discoverType(thrown)
+				this.logger.error(`Check threw`, thrownType, thrown)
+			}
+		}
+	}
+
+	protected announceUpdate(): void {
+		for (const entry of toEntries(this.services)) {
+			const [serviceName, service] = entry
+			if (service) {
+				if (this.options.services[serviceName].waitFor) {
+					service.emit(`updatesReady`)
+				}
+			} else {
+				this.startService(serviceName)
+			}
+		}
 	}
 
 	protected tryUpdate(): void {
@@ -256,11 +276,26 @@ export class FlightDeck<S extends string = string> {
 
 	protected startAllServices(): Future<unknown> {
 		this.logger.info(`Starting all services...`)
-		this.servicesShouldRestart = true
-		for (const [serviceName] of toEntries(this.services)) {
-			this.startService(serviceName)
+		this.autoRespawnDeadServices = true
+		const setupPhase = this.storage.getItem(`setupPhase`)
+		this.logger.info(`> storage("setupPhase") >`, setupPhase)
+		switch (setupPhase) {
+			case null:
+				this.logger.info(`Starting from scratch.`)
+				this.downloadPackage()
+				this.installPackage()
+				return this.startAllServices()
+			case `downloaded`:
+				this.logger.info(`Found package downloaded but not installed.`)
+				this.installPackage()
+				return this.startAllServices()
+			case `installed`: {
+				for (const [serviceName] of toEntries(this.services)) {
+					this.startService(serviceName)
+				}
+				return this.live
+			}
 		}
-		return this.live
 	}
 
 	protected startService(serviceName: S): void {
@@ -271,17 +306,6 @@ export class FlightDeck<S extends string = string> {
 			throw new Error(`Out of tries...`)
 		}
 		this.safety++
-		const readyFile = resolve(this.persistentStateDir, `ready`)
-		if (!existsSync(readyFile)) {
-			this.logger.info(
-				`Tried to start service but failed: could not find readyFile: ${readyFile}`,
-			)
-			this.getLatestRelease()
-			this.applyUpdate()
-			this.startService(serviceName)
-
-			return
-		}
 
 		const [exe, ...args] = this.options.services[serviceName].run.split(` `)
 		const serviceProcess = spawn(exe, args, {
@@ -294,10 +318,10 @@ export class FlightDeck<S extends string = string> {
 			console,
 		)
 		this.services[serviceName].onAny((...messages) => {
-			this.logger.info(`💬`, ...messages)
+			this.serviceLoggers[serviceName].info(`💬`, ...messages)
 		})
 		this.services[serviceName].on(`readyToUpdate`, () => {
-			this.serviceLoggers[serviceName].info(`Ready to update.`)
+			this.logger.info(`Service "${serviceName}" is ready to update.`)
 			this.servicesReadyToUpdate[serviceName] = true
 			this.tryUpdate()
 		})
@@ -310,18 +334,21 @@ export class FlightDeck<S extends string = string> {
 			this.dead.use(Promise.all(this.servicesDead))
 		})
 		this.services[serviceName].process.once(`close`, (exitCode) => {
-			this.serviceLoggers[serviceName].info(`Exited with code ${exitCode}`)
+			this.logger.info(
+				`Auto-respawn saw "${serviceName}" exit with code ${exitCode}`,
+			)
 			this.services[serviceName] = null
-			if (!this.servicesShouldRestart) {
-				this.serviceLoggers[serviceName].info(`Will not be restarted.`)
+			if (!this.autoRespawnDeadServices) {
+				this.logger.info(`Auto-respawn is off; "${serviceName}" rests.`)
 				return
 			}
-			const installFile = resolve(this.persistentStateDir, `install`)
-			const updatesAreReady = existsSync(installFile)
+			const updatePhase = this.storage.getItem(`updatePhase`)
+			this.logger.info(`> storage("updatePhase") >`, updatePhase)
+			const updatesAreReady = updatePhase === `confirmed`
 			if (updatesAreReady) {
 				this.serviceLoggers[serviceName].info(`Updating before startup...`)
 				this.restartTimes = []
-				this.applyUpdate()
+				this.installPackage()
 				this.startService(serviceName)
 			} else {
 				const now = Date.now()
@@ -344,31 +371,12 @@ export class FlightDeck<S extends string = string> {
 		this.safety = 0
 	}
 
-	protected applyUpdate(): void {
-		this.logger.info(`Installing...`)
-
-		try {
-			execSync(this.options.scripts.install)
-			const installFile = resolve(this.persistentStateDir, `install`)
-			if (existsSync(installFile)) {
-				rmSync(installFile)
-			}
-			const readyFile = resolve(this.persistentStateDir, `ready`)
-			writeFileSync(readyFile, ``)
-			this.logger.info(`Installed!`)
-		} catch (thrown) {
-			if (thrown instanceof Error) {
-				this.logger.error(`Failed to get the latest release: ${thrown.message}`)
-			}
-			return
-		}
-	}
-
-	protected getLatestRelease(): void {
+	protected downloadPackage(): void {
 		this.logger.info(`Downloading...`)
-
 		try {
-			execSync(this.options.scripts.download)
+			const out = execSync(this.options.scripts.download)
+			this.logger.info(`Download stdout:`, out.toString())
+			this.storage.setItem(`setupPhase`, `downloaded`)
 			this.logger.info(`Downloaded!`)
 		} catch (thrown) {
 			if (thrown instanceof Error) {
@@ -378,9 +386,25 @@ export class FlightDeck<S extends string = string> {
 		}
 	}
 
+	protected installPackage(): void {
+		this.logger.info(`Installing...`)
+
+		try {
+			const out = execSync(this.options.scripts.install)
+			this.logger.info(`Install stdout:`, out.toString())
+			this.storage.setItem(`setupPhase`, `installed`)
+			this.logger.info(`Installed!`)
+		} catch (thrown) {
+			if (thrown instanceof Error) {
+				this.logger.error(`Failed to get the latest release: ${thrown.message}`)
+			}
+			return
+		}
+	}
+
 	public stopAllServices(): Future<unknown> {
-		this.logger.info(`Stopping all services...`)
-		this.servicesShouldRestart = false
+		this.logger.info(`Stopping all services... auto-respawn disabled.`)
+		this.autoRespawnDeadServices = false
 		for (const [serviceName] of toEntries(this.services)) {
 			this.stopService(serviceName)
 		}
@@ -390,13 +414,13 @@ export class FlightDeck<S extends string = string> {
 	public stopService(serviceName: S): void {
 		const service = this.services[serviceName]
 		if (service) {
-			this.serviceLoggers[serviceName].info(`Stopping service...`)
+			this.logger.info(`Stopping service "${serviceName}"...`)
 			this.servicesDead[this.serviceIdx[serviceName]].use(
 				new Promise((pass) => {
 					service.emit(`timeToStop`)
 					service.process.once(`close`, (exitCode) => {
 						this.logger.info(
-							`🛬 service ${serviceName} exited with code ${exitCode}`,
+							`Stopped service "${serviceName}"; exited with code ${exitCode}`,
 						)
 						this.services[serviceName] = null
 						pass()
