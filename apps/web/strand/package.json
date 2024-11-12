@@ -23,7 +23,7 @@
 		"@vanilla-extract/css": "1.16.0",
 		"corners": "0.1.0",
 		"fp-ts": "2.16.9",
-		"framer-motion": "11.11.12",
+		"framer-motion": "11.11.13",
 		"nanoid": "5.0.8",
 		"preact": "10.24.3",
 		"react": "npm:@preact/compat",
