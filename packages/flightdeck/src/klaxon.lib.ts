@@ -1,18 +1,21 @@
 export type AlertOptions = {
 	secret: string
 	endpoint: string
+	version: string
 }
 
 export async function alert({
 	secret,
 	endpoint,
+	version,
 }: AlertOptions): Promise<Response> {
 	const response = await fetch(endpoint, {
 		method: `POST`,
 		headers: {
-			"Content-Type": `application/json`,
+			"Content-Type": `text/plain;charset=UTF-8`,
 			Authorization: `Bearer ${secret}`,
 		},
+		body: version,
 	})
 
 	return response
@@ -64,7 +67,8 @@ export async function scramble<K extends string = string>({
 			const name = publishedPackage.name as K
 			const { endpoint } = packageConfig[name]
 			const secret = secretsConfig[name]
-			const alertResultPromise = alert({ secret, endpoint }).then(
+			const version = publishedPackage.version
+			const alertResultPromise = alert({ secret, endpoint, version }).then(
 				(alertResult) => [name, alertResult] as const,
 			)
 			alertResults.push(alertResultPromise)
