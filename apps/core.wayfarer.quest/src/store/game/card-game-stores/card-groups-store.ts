@@ -1,8 +1,8 @@
-import type { RegularAtomToken } from "atom.io"
+import type { Compound, RegularAtomToken, Tag } from "atom.io"
 import { atom, atomFamily, selector, selectorFamily } from "atom.io"
-import { getInternalRelations, join } from "atom.io/data"
+import { findRelationsInStore, getInternalRelations, join } from "atom.io/data"
 import { getUpdateToken, type Signal } from "atom.io/internal"
-import type { Alias } from "atom.io/realtime"
+import type { Actual, Alias } from "atom.io/realtime"
 import type { UserKey } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -164,12 +164,19 @@ export const ownersOfGroups = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 
-export const ownersAndGroupsIndex = selector<string[]>({
+export const ownersAndGroupsGlobalIndex = selector<string[]>({
 	key: `ownersAndGroupsIndex`,
-	get: ({ get }) => {
+	get: ({ get, env }) => {
+		const { store } = env()
 		const playerIds = get(gamePlayerIndex)
-		const groupIds = get(groupsOfCardsView, `user::`)
-		return [...playerIds, ...groupIds]
+		const ownersAndGroupsKeys = [...playerIds]
+		for (const playerId of playerIds) {
+			const key = get(
+				findRelationsInStore(ownersOfGroups, playerId, store).groupKeysOfPlayer,
+			)
+			ownersAndGroupsKeys.push(...key)
+		}
+		return ownersAndGroupsKeys
 	},
 	set: () => () => {},
 })
