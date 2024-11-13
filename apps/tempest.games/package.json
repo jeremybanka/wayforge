@@ -83,6 +83,6 @@
 		"varmint": "workspace:*",
 		"vite": "5.4.11",
 		"vite-tsconfig-paths": "5.1.2",
-		"vitest": "2.1.4"
+		"vitest": "2.1.5"
 	}
 }

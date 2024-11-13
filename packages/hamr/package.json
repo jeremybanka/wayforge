@@ -80,7 +80,7 @@
 		"typescript": "5.6.3",
 		"vite-plugin-dts": "4.3.0",
 		"vite-tsconfig-paths": "5.1.2",
-		"vitest": "2.1.4"
+		"vitest": "2.1.5"
 	},
 	"files": [
 		"react-click-handlers/dist",
