@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 import { CurledLeft } from "./corners/factories"
 import { LAYER } from "./corners/layers"

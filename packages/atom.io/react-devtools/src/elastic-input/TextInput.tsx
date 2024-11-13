@@ -23,7 +23,6 @@ export const TextInput: FC<TextInputProps> = ({
 	const htmlId = useId()
 	return (
 		<span>
-			{/* biome-ignore lint/a11y/noLabelWithoutControl: it's associated via htmlFor */}
 			{label ? <label htmlFor={htmlId}>{label}</label> : null}
 			{autoSize ? (
 				<ElasticInput

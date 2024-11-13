@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 import { BackwardDiagonal10, ChamferedTop } from "./corners/factories"
 

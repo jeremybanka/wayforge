@@ -1,5 +1,5 @@
 import { rounded } from "corners"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 export const article = {
 	whiteCard: rounded(motion.article, {

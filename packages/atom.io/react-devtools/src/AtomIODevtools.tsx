@@ -1,7 +1,7 @@
 import "./devtools.scss"
 
 import { StoreContext, useI, useO } from "atom.io/react"
-import { LayoutGroup, motion, spring } from "framer-motion"
+import { LayoutGroup, motion, spring } from "motion/react"
 import { useContext, useRef } from "react"
 
 import { StateIndex } from "./StateIndex"
