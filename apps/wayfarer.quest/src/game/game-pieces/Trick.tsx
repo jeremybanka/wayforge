@@ -1,6 +1,6 @@
 import { useO } from "atom.io/react"
-import { AnimatePresence, motion } from "framer-motion"
 import { Id } from "hamr/react-id"
+import { AnimatePresence, motion } from "motion/react"
 import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"

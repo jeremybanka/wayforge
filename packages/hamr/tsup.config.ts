@@ -15,7 +15,7 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`@types/react`,
 	`@testing-library/react`,
 	`@floating-ui/react`,
-	`framer-motion`,
+	`motion`,
 	`happy-dom`,
 	`fp-ts`,
 ]

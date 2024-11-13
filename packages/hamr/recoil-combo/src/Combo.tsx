@@ -120,7 +120,6 @@ const Combo_INTERNAL = <State,>({
 
 	return (
 		<div aria-label="Multiple Choice">
-			{/* biome-ignore lint/a11y/noLabelWithoutControl: it's associated via htmlFor */}
 			{label ? <label htmlFor={domId}>{label}</label> : null}
 			<div>
 				<span>

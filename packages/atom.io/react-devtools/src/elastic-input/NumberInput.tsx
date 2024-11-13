@@ -166,7 +166,6 @@ export const NumberInput: FC<NumberInputProps> = ({
 
 	return (
 		<span>
-			{/* biome-ignore lint/a11y/noLabelWithoutControl: it's associated via htmlFor */}
 			{label ? <label htmlFor={htmlId}>{label}</label> : null}
 			{autoSize ? (
 				<ElasticInput

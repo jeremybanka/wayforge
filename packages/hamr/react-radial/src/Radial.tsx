@@ -1,8 +1,8 @@
 import "./react-radial-styles.scss"
 
-import { AnimatePresence } from "framer-motion"
 import { makeMouseHandlers } from "hamr/react-click-handlers"
 import { setCssVars } from "hamr/react-css-vars"
+import { AnimatePresence } from "motion/react"
 import * as React from "react"
 
 import type { RadialAction, RadialMode } from "."
