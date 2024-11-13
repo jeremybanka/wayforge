@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.30.3
+
+### Patch Changes
+
+- 8f6fc6c: ♻️ This release replaces the deprecated `framer-motion` package with `framer`.
+
 ## 0.30.2
 
 ### Patch Changes
