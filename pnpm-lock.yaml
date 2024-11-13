@@ -324,7 +324,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       safegen:
         specifier: 0.1.1
-        version: 0.1.1(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.72.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
+        version: 0.1.1(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.72.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -423,8 +423,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       framer-motion:
-        specifier: 11.11.13
-        version: 11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nanoid:
         specifier: 5.0.8
         version: 5.0.8
@@ -509,8 +509,8 @@ importers:
         specifier: 2.16.9
         version: 2.16.9
       framer-motion:
-        specifier: 11.11.13
-        version: 11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       io-ts:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.9)
@@ -594,8 +594,8 @@ importers:
         specifier: 2.16.9
         version: 2.16.9
       framer-motion:
-        specifier: 11.11.13
-        version: 11.11.13(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3))
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3))
       nanoid:
         specifier: 5.0.8
         version: 5.0.8
@@ -737,8 +737,8 @@ importers:
         specifier: 9.14.0
         version: 9.14.0(jiti@2.4.0)
       framer-motion:
-        specifier: 11.11.13
-        version: 11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       happy-dom:
         specifier: 15.11.4
         version: 15.11.4
@@ -920,8 +920,8 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       framer-motion:
-        specifier: 11.11.13
-        version: 11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@emotion/styled':
         specifier: 11.13.0
@@ -5683,8 +5683,8 @@ packages:
   fp-ts@2.16.9:
     resolution: {integrity: sha512-+I2+FnVB+tVaxcYyQkHUq7ZdKScaBlX53A41mxQtpIccsfyv8PzdzP7fzp2AY832T4aoK6UZ5WRX/ebGd8uZuQ==}
 
-  framer-motion@11.11.13:
-    resolution: {integrity: sha512-aoEA83gsqRRsnh4TN7S9YNcKVLrg+GtPNnxNMd9bGn23+pLmuKGQeccPnqffEKzlkgmy2MkMo0jRkK41S2LzWw==}
+  framer-motion@11.11.15:
+    resolution: {integrity: sha512-fib+OpUe4nap4W1vhaDohnPU+42B5s1q+jNkNkb6TfzmDYtRhDyvn4mkRCAD5a2cQKOI3nJZP7yqGYtxnlmleg==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -11790,13 +11790,13 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  atom.io@0.30.2(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
+  atom.io@0.30.2(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
     optionalDependencies:
       '@floating-ui/react': 0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/react-dom': 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/react': 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       eslint: 9.14.0(jiti@2.4.0)
-      framer-motion: 11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      framer-motion: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       socket.io: 4.8.1
       socket.io-client: 4.8.1
@@ -13236,7 +13236,7 @@ snapshots:
 
   fp-ts@2.16.9: {}
 
-  framer-motion@11.11.13(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3)):
+  framer-motion@11.11.15(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3)):
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
@@ -13244,7 +13244,7 @@ snapshots:
       react: '@preact/compat@18.3.1(preact@10.24.3)'
       react-dom: '@preact/compat@18.3.1(preact@10.24.3)'
 
-  framer-motion@11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
@@ -15079,9 +15079,9 @@ snapshots:
       es-errors: 1.3.0
       is-regex: 1.1.4
 
-  safegen@0.1.1(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.72.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
+  safegen@0.1.1(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.72.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
     dependencies:
-      atom.io: 0.30.2(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.13(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
+      atom.io: 0.30.2(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.14.0(jiti@2.4.0))(framer-motion@11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
       varmint: 0.3.1
       zod: 3.23.8
       zod-to-json-schema: 3.23.5(zod@3.23.8)
