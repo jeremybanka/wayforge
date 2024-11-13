@@ -1,6 +1,6 @@
 import { findRelations } from "atom.io/data"
 import { useO } from "atom.io/react"
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "motion/react"
 import Image from "next/image"
 import type { FC } from "react"
 import { article } from "wayfarer.quest/components/<article>"

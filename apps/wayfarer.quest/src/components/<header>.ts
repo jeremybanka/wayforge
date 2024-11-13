@@ -1,5 +1,5 @@
 import { rounded } from "corners"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 import { Auspicious0 } from "./corners/factories"
 

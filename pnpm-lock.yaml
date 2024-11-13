@@ -422,7 +422,7 @@ importers:
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      framer-motion:
+      motion:
         specifier: 11.11.15
         version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nanoid:
@@ -508,12 +508,12 @@ importers:
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
-      framer-motion:
-        specifier: 11.11.15
-        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       io-ts:
         specifier: 2.2.21
         version: 2.2.21(fp-ts@2.16.9)
+      motion:
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -593,7 +593,7 @@ importers:
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
-      framer-motion:
+      motion:
         specifier: 11.11.15
         version: 11.11.15(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3))
       nanoid:
@@ -736,15 +736,15 @@ importers:
       eslint:
         specifier: 9.14.0
         version: 9.14.0(jiti@2.4.0)
-      framer-motion:
-        specifier: 11.11.15
-        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       happy-dom:
         specifier: 15.11.4
         version: 15.11.4
       http-proxy:
         specifier: 1.18.1
         version: 1.18.1
+      motion:
+        specifier: 11.11.15
+        version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -919,7 +919,7 @@ importers:
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      framer-motion:
+      motion:
         specifier: 11.11.15
         version: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
@@ -6671,6 +6671,20 @@ packages:
 
   modern-ahocorasick@1.0.1:
     resolution: {integrity: sha512-yoe+JbhTClckZ67b2itRtistFKf8yPYelHLc7e5xAwtNAXxM6wJTUx2C7QeVSJFDzKT7bCIFyBVybPMKvmB9AA==}
+
+  motion@11.11.15:
+    resolution: {integrity: sha512-lWdAvCWe8eyPg23d46S+W+DHnduS4qJcaDeRzM+NfwdInKif40ElCdxevoXqwo7blAHMXPkRC6RJWn7DbfzrZQ==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
 
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -14417,6 +14431,24 @@ snapshots:
       ufo: 1.5.4
 
   modern-ahocorasick@1.0.1: {}
+
+  motion@11.11.15(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3)):
+    dependencies:
+      framer-motion: 11.11.15(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.24.3))(@preact/compat@18.3.1(preact@10.24.3))
+      tslib: 2.7.0
+    optionalDependencies:
+      '@emotion/is-prop-valid': 1.3.1
+      react: '@preact/compat@18.3.1(preact@10.24.3)'
+      react-dom: '@preact/compat@18.3.1(preact@10.24.3)'
+
+  motion@11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      framer-motion: 11.11.15(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      tslib: 2.7.0
+    optionalDependencies:
+      '@emotion/is-prop-valid': 1.3.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   mri@1.2.0: {}
 

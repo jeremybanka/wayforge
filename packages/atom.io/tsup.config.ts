@@ -13,7 +13,7 @@ export const BUNDLE_EXCLUDE_LIST = [
 	`@typescript-eslint/utils`,
 	`@testing-library/react`,
 	`@floating-ui/react`,
-	`framer-motion`,
+	`motion`,
 	`happy-dom`,
 ]
 
