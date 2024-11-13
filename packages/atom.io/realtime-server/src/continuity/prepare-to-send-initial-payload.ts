@@ -8,12 +8,7 @@ import {
 	isRootStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import {
-	Alias,
-	Aliased,
-	type ContinuityToken,
-	derefAliases,
-} from "atom.io/realtime"
+import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
 
