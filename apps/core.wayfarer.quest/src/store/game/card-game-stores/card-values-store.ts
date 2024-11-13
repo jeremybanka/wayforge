@@ -97,70 +97,71 @@ export const valuesOfCardsUpdateMask = selectorFamily<
 	set: () => () => {},
 })
 
-export const visibleCardValueIndices = selectorFamily<CardKey<Alias>[], UserKey>(
-	{
-		key: `visibleCardIndices`,
-		get:
-			(username) =>
-			({ get }) => {
-				const cardIds: CardKey[] = []
-				const pileIds = get(pileIndex)
-				for (const pileId of pileIds) {
-					const pileCardIndex = findRelations(
-						groupsOfCards,
-						pileId,
-					).cardKeysOfGroup
-					const pileCardIds = get(pileCardIndex)
-					for (const pileCardId of pileCardIds) {
-						cardIds.push(pileCardId)
-					}
+export const visibleCardValueIndices = selectorFamily<
+	CardKey<Alias>[],
+	UserKey<Actual>
+>({
+	key: `visibleCardIndices`,
+	get:
+		(username) =>
+		({ get }) => {
+			const cardIds: CardKey[] = []
+			const pileIds = get(pileIndex)
+			for (const pileId of pileIds) {
+				const pileCardIndex = findRelations(
+					groupsOfCards,
+					pileId,
+				).cardKeysOfGroup
+				const pileCardIds = get(pileCardIndex)
+				for (const pileCardId of pileCardIds) {
+					cardIds.push(pileCardId)
 				}
+			}
 
-				const currentTrickId = get(currentTrickIdState)
-				if (currentTrickId) {
-					const trickCardIndex = findRelations(
+			const currentTrickId = get(currentTrickIdState)
+			if (currentTrickId) {
+				const trickCardIndex = findRelations(
+					groupsOfCards,
+					currentTrickId,
+				).cardKeysOfGroup
+				const trickCardIds = get(trickCardIndex)
+				for (const trickCardId of trickCardIds) {
+					cardIds.push(trickCardId)
+				}
+			}
+			const handIds = get(handIndex)
+			for (const handId of handIds) {
+				const handOwnerIdState = findRelations(
+					ownersOfGroups,
+					handId,
+				).playerKeyOfGroup
+				const handOwnerId = get(handOwnerIdState)
+				if (handOwnerId === username) {
+					const handCardIndex = findRelations(
 						groupsOfCards,
-						currentTrickId,
-					).cardKeysOfGroup
-					const trickCardIds = get(trickCardIndex)
-					for (const trickCardId of trickCardIds) {
-						cardIds.push(trickCardId)
-					}
-				}
-				const handIds = get(handIndex)
-				for (const handId of handIds) {
-					const handOwnerIdState = findRelations(
-						ownersOfGroups,
 						handId,
-					).playerKeyOfGroup
-					const handOwnerId = get(handOwnerIdState)
-					if (handOwnerId === username) {
-						const handCardIndex = findRelations(
-							groupsOfCards,
-							handId,
-						).cardKeysOfGroup
-						const handCardIds = get(handCardIndex)
-						for (const handCardId of handCardIds) {
-							cardIds.push(handCardId)
-						}
+					).cardKeysOfGroup
+					const handCardIds = get(handCardIndex)
+					for (const handCardId of handCardIds) {
+						cardIds.push(handCardId)
 					}
 				}
-				const cardAliases: CardKey<Alias>[] = []
-				for (const cardId of cardIds) {
-					const actual = cardId.split(`::`).pop() as Actual
-					const perspectiveKey: PerspectiveKey = `T$--perspective==${actual}++${username}`
-					const alias = get(
-						findRelations(perspectiveAliases, perspectiveKey)
-							.aliasKeyOfPerspective,
-					)
-					if (alias) {
-						cardAliases.push(`card::${alias}`)
-					}
+			}
+			const cardAliases: CardKey<Alias>[] = []
+			for (const cardId of cardIds) {
+				const actual = cardId.split(`::`).pop() as Actual
+				const perspectiveKey: PerspectiveKey = `T$--perspective==${actual}++${username}`
+				const alias = get(
+					findRelations(perspectiveAliases, perspectiveKey)
+						.aliasKeyOfPerspective,
+				)
+				if (alias) {
+					cardAliases.push(`card::${alias}`)
 				}
-				return cardAliases
-			},
-	},
-)
+			}
+			return cardAliases
+		},
+})
 
 // val:_1H -> [card:GX]
 // val:_2H -> [card:BH]

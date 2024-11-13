@@ -68,7 +68,7 @@ parentSocket.relay((socket) => {
 	const snapshot = generateHeapSnapshot()
 	void Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
 	const username = socket.id.split(`:`)[1]
-	const userKey = `user::${username}` satisfies RTS.UserKey
+	const userKey = `user::__${username}__` satisfies RTS.UserKey<RT.Actual>
 	const socketKey = `socket::${socket.id}` satisfies RTS.SocketKey
 	socket.onAny((event, ...args) => {
 		parentSocket.logger.info(username, `<< 🛰 `, event, ...args)
