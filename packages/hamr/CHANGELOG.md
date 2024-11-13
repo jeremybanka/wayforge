@@ -1,5 +1,11 @@
 # hamr
 
+## 0.4.6
+
+### Patch Changes
+
+- 8f6fc6c: ♻️ This release replaces the deprecated `framer-motion` package with `framer`.
+
 ## 0.4.5
 
 ### Patch Changes
