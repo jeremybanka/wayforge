@@ -23,7 +23,7 @@ import type { TransactionResponse } from "./prepare-to-serve-transaction-request
 export function aliasTransactionUpdate(
 	store: Store,
 	continuity: ContinuityToken,
-	userKey: UserKey,
+	userKey: UserKey<Actual>,
 	update: TransactionUpdate<JsonIO>,
 ): TransactionResponse {
 	const visibleGlobalKeys = continuity.globals
@@ -72,7 +72,7 @@ export function aliasTransactionUpdate(
 					for (let i = 0; i < segments.length; i++) {
 						const segment = segments[i]
 						if (sub) {
-							const actualKey: Actual = `__${segment}__`
+							const actualKey: Actual = `__${segment}__` as const
 							const perspectiveKey: PerspectiveKey = `T$--perspective==${actualKey}++${userKey}`
 							const aliasKey = getState(
 								findRelations(perspectiveAliases, perspectiveKey)
@@ -168,7 +168,7 @@ export function aliasTransactionUpdate(
 export function subscribeToContinuityActions(
 	store: Store,
 	continuity: ContinuityToken,
-	userKey: UserKey,
+	userKey: UserKey<Actual>,
 	socket: Socket | null,
 ): (() => void)[] {
 	const continuityKey = continuity.key

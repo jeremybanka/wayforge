@@ -53,7 +53,7 @@ setInterval(() => {
 
 parentSocket.relay((userSocket) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
-		relations.set(`user::relay:${userSocket.id}`, `socket::${userSocket.id}`)
+		relations.set(`user::__relay:${userSocket.id}__`, `socket::${userSocket.id}`)
 	})
 	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 		socket: userSocket,
