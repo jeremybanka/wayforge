@@ -472,8 +472,8 @@ importers:
         specifier: 2.16.9
         version: 2.16.9
       phaser:
-        specifier: 3.86.0
-        version: 3.86.0
+        specifier: 3.87.0
+        version: 3.87.0
       socket.io-client:
         specifier: 4.8.1
         version: 4.8.1
@@ -6951,8 +6951,8 @@ packages:
   periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
 
-  phaser@3.86.0:
-    resolution: {integrity: sha512-A7rog3GhXYcWsPimteQmudyY6W0fx0eviOoo9Cwpzae1RPeJBDkhmWv5IFrQO9dL+T907E4dprQPnd2D4WhoEw==}
+  phaser@3.87.0:
+    resolution: {integrity: sha512-AyI1b3T5fp05gzf6WUmu2FNqaZL+Y7w88yBRLf7YZXF9bncUSHpnDrupnTGoPqy/RKHRLBcay7zWeqQ2wiMWcw==}
 
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
@@ -14730,7 +14730,7 @@ snapshots:
       estree-walker: 3.0.3
       is-reference: 3.0.2
 
-  phaser@3.86.0:
+  phaser@3.87.0:
     dependencies:
       eventemitter3: 5.0.1
 
