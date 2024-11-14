@@ -8,7 +8,8 @@
 	"bin": {
 		"frontend": "./bin/frontend.bun.js",
 		"backend": "./bin/backend.bun.js",
-		"setup-db": "./bin/setup-db.bun.js"
+		"setup-db": "./bin/setup-db.bun.js",
+		"interactive-db": "./bin/interactive-db.bun.js"
 	},
 	"files": [
 		"app",
