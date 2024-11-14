@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.1.19
+
+### Patch Changes
+
+- eee505e: 🐛 ixed bug where tribunal would throw when trying to ban an IP again.
+- eee505e: 🐛 Added missing `interactive-db` script to bin.
+
 ## 0.1.18
 
 ### Patch Changes
