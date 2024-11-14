@@ -10,3 +10,7 @@ export const logger = (
 	env.VITE_USE_SELF_SIGNED_CERTIFICATE ? console : parentSocket.logger
 ) satisfies Pick<Console, `error` | `info` | `warn`>
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`warn`, undefined, logger)
+
+if (logger !== console) {
+	Object.assign(console, logger, { log: logger.info })
+}

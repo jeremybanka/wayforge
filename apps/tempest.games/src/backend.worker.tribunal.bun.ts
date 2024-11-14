@@ -4,9 +4,10 @@ import { ParentSocket } from "atom.io/realtime-server"
 import { OpenAiSafeGenerator } from "safegen/openai"
 
 import { tribunal } from "./backend/tribunal/tribunal"
-import { env, IS_TEST } from "./library/env"
+import { env } from "./library/env"
 
 const parent = new ParentSocket()
+Object.assign(console, parent.logger, { log: parent.logger.info })
 
 process.on(`SIGINT`, () => {
 	parent.logger.info(`❗ received SIGINT; exiting gracefully`)
