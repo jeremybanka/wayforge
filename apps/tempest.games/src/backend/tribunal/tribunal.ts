@@ -79,7 +79,7 @@ export async function tribunal({
 
 	// ban decisions to database
 	if (banRulings.length > 0) {
-		await db.drizzle.insert(banishedIps).values(banRulings)
+		await db.drizzle.insert(banishedIps).values(banRulings).onConflictDoNothing()
 	}
 
 	// read cache file for current day
