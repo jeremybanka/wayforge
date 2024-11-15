@@ -188,8 +188,9 @@ export const setupRealtimeTestClient = (
 ): RealtimeTestClientBuilder => {
 	const testClient = { dispose: () => {} }
 	const init = () => {
+		const username = `${name}-${testNumber}`
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
-			auth: { token: `test`, username: `${name}-${testNumber}` },
+			auth: { token: `test`, username },
 		})
 		const silo = new AtomIO.Silo({ name, lifespan: `ephemeral` }, IMPLICIT.STORE)
 		for (const [key, value] of silo.store.valueMap.entries()) {
@@ -197,7 +198,7 @@ export const setupRealtimeTestClient = (
 				silo.store.valueMap.set(key, [...value])
 			}
 		}
-		silo.setState(RTC.myUsernameState, `${name}-${testNumber}`)
+		silo.setState(RTC.myUsernameState, username)
 
 		const { document } = new Happy.Window()
 		document.body.innerHTML = `<div id="app"></div>`
