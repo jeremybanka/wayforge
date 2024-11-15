@@ -38,6 +38,7 @@ import * as RTS from "atom.io/realtime-server"
 import { aliasTransactionUpdate } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
+import type { FC } from "react"
 import { useContext } from "react"
 
 import { mark } from "../../__util__"
@@ -479,6 +480,38 @@ describe(`join in perspective`, () => {
 					.add(attackTX),
 		})
 
+		const UserAliasSpace: FC<{ myUserAliasKey: UserKey<RT.Alias> }> = ({
+			myUserAliasKey,
+		}) => {
+			const store = useContext(AR.StoreContext)
+			const myPlayerKey = `T$--player==game::battle++${myUserAliasKey}` as const
+			const myCharacter = AR.useO(
+				findRelationsInStore(playerCharacters, myPlayerKey, store)
+					.characterKeysOfPlayer,
+			)
+			console.log({
+				myUserAliasKey,
+				myPlayerKey,
+				myCharacter,
+			})
+
+			return (
+				<span data-testid={`state`}>
+					<span data-testid={`character`}>{myCharacter[0]}</span>
+					<span data-testid={`userAlias`}>{myUserAliasKey}</span>
+				</span>
+			)
+		}
+
+		const UserSpace: FC<{ myUserKey: UserKey<RT.Actual> }> = ({ myUserKey }) => {
+			const store = useContext(AR.StoreContext)
+
+			RTR.usePullSelector(findInStore(store, userAliasSelectors, myUserKey))
+			const myAlias = AR.useO(userAliasSelectors, myUserKey)
+
+			return myAlias ? <UserAliasSpace myUserAliasKey={myAlias} /> : null
+		}
+
 		return Object.assign(
 			RTTest.multiClient({
 				port: 5485,
@@ -519,27 +552,10 @@ describe(`join in perspective`, () => {
 				clients: {
 					jane: () => {
 						RTR.useSyncContinuity(gameContinuity)
-						const store = useContext(AR.StoreContext)
-						RTR.usePullSelector(
-							findInStore(store, userAliasSelectors, `user::__jane-1__`),
-						)
-						const myAlias =
-							AR.useO(userAliasSelectors, `user::__jane-1__`) ??
-							(`user::$$???$$` as const)
-						const myPlayerKey = `T$--player==game::battle++${myAlias}` as const
-						const myUsername = AR.useO(myUserKeyActualState)
-						const myCharacter = AR.useO(
-							findRelationsInStore(playerCharacters, myPlayerKey, store)
-								.characterKeysOfPlayer,
-						)
-						console.log({ myUsername, myAlias, myPlayerKey, myCharacter })
-
-						return (
-							<span data-testid={`state`}>
-								<span data-testid={`character`}>{myCharacter[0]}</span>
-								<span data-testid={`username`}>{myUsername}</span>
-							</span>
-						)
+						const myUserKeyActual = AR.useO(myUserKeyActualState)
+						return myUserKeyActual ? (
+							<UserSpace myUserKey={myUserKeyActual} />
+						) : null
 					},
 				},
 			}),
