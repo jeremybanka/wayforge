@@ -250,6 +250,11 @@ describe(`join in perspective`, () => {
 			}),
 		})
 
+		const currentGameKeyAtom = AtomIO.atom<GameKey>({
+			key: `currentGameKey`,
+			default: `game::battle`,
+		})
+
 		const worldTimeAtom = AtomIO.atom<number>({ key: `worldTime`, default: 0 })
 
 		const players = join({
@@ -462,6 +467,7 @@ describe(`join in perspective`, () => {
 			key: `game`,
 			config: (group) =>
 				group
+					.add(currentGameKeyAtom)
 					.add(worldTimeAtom)
 					.add(
 						characterPerspectiveIndices,
@@ -480,25 +486,44 @@ describe(`join in perspective`, () => {
 					.add(attackTX),
 		})
 
-		const UserAliasSpace: FC<{ myUserAliasKey: UserKey<RT.Alias> }> = ({
-			myUserAliasKey,
+		const myPlayerKeySelector = AtomIO.selector<PlayerKey<RT.Alias> | null>({
+			key: `myPlayerKey`,
+			get: ({ get }) => {
+				const myUserKeyActual = get(myUserKeyActualState)
+				if (myUserKeyActual === null) {
+					return null
+				}
+				const myUserAliasKey = get(userAliasSelectors, myUserKeyActual)
+				if (!myUserAliasKey) {
+					return null
+				}
+				const currentGameKey = get(currentGameKeyAtom)
+				return `T$--player==${currentGameKey}++${myUserAliasKey}`
+			},
+		})
+
+		const GameSpace: FC<{ myPlayerKey: PlayerKey<RT.Alias> }> = ({
+			myPlayerKey,
 		}) => {
 			const store = useContext(AR.StoreContext)
-			const myPlayerKey = `T$--player==game::battle++${myUserAliasKey}` as const
-			const myCharacter = AR.useO(
+
+			const myCharacterKeys = AR.useO(
 				findRelationsInStore(playerCharacters, myPlayerKey, store)
 					.characterKeysOfPlayer,
 			)
 			console.log({
-				myUserAliasKey,
 				myPlayerKey,
-				myCharacter,
+				myCharacterKeys,
 			})
 
 			return (
 				<span data-testid={`state`}>
-					<span data-testid={`character`}>{myCharacter[0]}</span>
-					<span data-testid={`userAlias`}>{myUserAliasKey}</span>
+					{myCharacterKeys.map((characterKey) => (
+						<span key={characterKey} data-testid={`character`}>
+							{characterKey}
+						</span>
+					))}
+					<span data-testid={`userAlias`}>{myPlayerKey}</span>
 				</span>
 			)
 		}
@@ -507,9 +532,9 @@ describe(`join in perspective`, () => {
 			const store = useContext(AR.StoreContext)
 
 			RTR.usePullSelector(findInStore(store, userAliasSelectors, myUserKey))
-			const myAlias = AR.useO(userAliasSelectors, myUserKey)
+			const myPlayerKey = AR.useO(myPlayerKeySelector)
 
-			return myAlias ? <UserAliasSpace myUserAliasKey={myAlias} /> : null
+			return myPlayerKey ? <GameSpace myPlayerKey={myPlayerKey} /> : null
 		}
 
 		return Object.assign(
