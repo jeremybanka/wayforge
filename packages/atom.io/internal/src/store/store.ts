@@ -170,10 +170,7 @@ export class Store implements Lineage {
 			}
 
 			for (const [, family] of store.families) {
-				if (
-					family.internalRoles?.includes(`mutable`) ||
-					family.internalRoles?.includes(`join`)
-				) {
+				if (family.internalRoles?.includes(`mutable`)) {
 					continue
 				}
 				family.install(this)
