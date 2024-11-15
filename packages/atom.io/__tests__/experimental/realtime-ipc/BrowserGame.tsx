@@ -82,7 +82,7 @@ function View({ myUsername }: { myUsername: string }): React.ReactNode {
 
 export function BrowserGame(): React.ReactNode | null {
 	const socketId = AR.useO(RTC.myIdState)
-	const myUsername = AR.useO(RTC.myUsernameState)
+	const myUsername = AR.useO(RTC.myUserKeyActualState)
 
 	return socketId && myUsername ? <View myUsername={myUsername} /> : null
 }

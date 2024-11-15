@@ -31,7 +31,7 @@ import {
 	perspectiveAliases,
 	view,
 } from "atom.io/realtime"
-import { myUsernameState } from "atom.io/realtime-client"
+import { myUserKeyActualState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import type { UserKey } from "atom.io/realtime-server"
 import * as RTS from "atom.io/realtime-server"
@@ -527,7 +527,7 @@ describe(`join in perspective`, () => {
 							AR.useO(userAliasSelectors, `user::__jane-1__`) ??
 							(`user::$$???$$` as const)
 						const myPlayerKey = `T$--player==game::battle++${myAlias}` as const
-						const myUsername = AR.useO(myUsernameState)
+						const myUsername = AR.useO(myUserKeyActualState)
 						const myCharacter = AR.useO(
 							findRelationsInStore(playerCharacters, myPlayerKey, store)
 								.characterKeysOfPlayer,
