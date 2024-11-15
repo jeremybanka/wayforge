@@ -42,7 +42,7 @@ function Lobby(): React.ReactNode {
 							type="button"
 							data-testid={`join-${roomKey}`}
 							onClick={() => {
-								console.log(`🥋 JOIN ROOM CLICKED`, socket)
+								console.log(`🥋 JOIN ROOM CLICKED`)
 								socket?.emit(`join-room`, roomKey)
 							}}
 						/>
@@ -82,7 +82,7 @@ function View({ myUsername }: { myUsername: string }): React.ReactNode {
 
 export function BrowserGame(): React.ReactNode | null {
 	const socketId = AR.useO(RTC.myIdState)
-	const myUsername = AR.useO(RTC.myUserKeyActualState)
+	const myUsername = AR.useO(RTC.myUsernameState)
 
 	return socketId && myUsername ? <View myUsername={myUsername} /> : null
 }
