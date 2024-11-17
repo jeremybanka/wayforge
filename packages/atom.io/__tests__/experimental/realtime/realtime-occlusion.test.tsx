@@ -454,9 +454,15 @@ describe(`join in perspective`, () => {
 			return actual
 		}
 
-		const attackTX = AtomIO.transaction<(defender: CharacterKey) => void>({
+		const attackTX = AtomIO.transaction<
+			(
+				userKey: UserKey<RT.Actual>,
+				attackerKey: CharacterKey,
+				defenderKey: CharacterKey,
+			) => void
+		>({
 			key: `increment`,
-			do: ({ set }, defenderKey) => {
+			do: ({ set }, userKey, attackerKey, defenderKey) => {
 				set(mask(healthAtoms, healthMasks), defenderKey, (health) =>
 					health === null ? null : health - 10,
 				)
