@@ -37,7 +37,7 @@ export const heartsContinuity = continuity({
 	key: `hearts`,
 	config: (group) => {
 		return group
-			.add(
+			.actions(
 				startGameTX,
 				spawnTrickTX,
 				spawnClassicDeckTX,
@@ -46,7 +46,7 @@ export const heartsContinuity = continuity({
 				spawnHandTX,
 				addPlayerToGameTX,
 			)
-			.add(
+			.globals(
 				cardIndex,
 				cardValueIndex,
 				deckIndex,
@@ -56,21 +56,21 @@ export const heartsContinuity = continuity({
 				gamePlayerIndex,
 				usersInThisRoomIndex,
 			)
-			.add(cardIndex, cardAtoms)
-			.add(cardValueIndex, cardValueAtoms)
-			.add(deckIndex, deckAtoms, getInternalRelations(ownersOfGroups))
-			.add(handIndex, handAtoms, getInternalRelations(ownersOfGroups))
-			.add(pileIndex, pileStates, getInternalRelations(ownersOfGroups))
-			.add(trickIndex, trickStates, getInternalRelations(ownersOfGroups))
+			.dynamic(cardIndex, cardAtoms)
+			.dynamic(cardValueIndex, cardValueAtoms)
+			.dynamic(deckIndex, deckAtoms, getInternalRelations(ownersOfGroups))
+			.dynamic(handIndex, handAtoms, getInternalRelations(ownersOfGroups))
+			.dynamic(pileIndex, pileStates, getInternalRelations(ownersOfGroups))
+			.dynamic(trickIndex, trickStates, getInternalRelations(ownersOfGroups))
 
-			.add(gamePlayerIndex, getInternalRelations(ownersOfGroups))
+			.dynamic(gamePlayerIndex, getInternalRelations(ownersOfGroups))
 
-			.add(visibleCardValueIndices, [
+			.perspective(visibleCardValueIndices, [
 				getInternalRelations(valuesOfCards),
 				valuesOfCardsJsonMask,
 				valuesOfCardsUpdateMask,
 			])
-			.add(groupsOfCardsView, [
+			.perspective(groupsOfCardsView, [
 				getInternalRelations(groupsOfCards),
 				groupsOfCardsJsonMask,
 				groupsOfCardsUpdateMask,

@@ -43,7 +43,7 @@ export class InvariantMap<K, V> extends Map<K, V> {
 export type DynamicToken<K extends string> = {
 	type: `realtime_dynamic`
 	resourceFamilies: AtomFamilyToken<any, K>[]
-	viewState: WritableToken<Iterable<K>>
+	viewState: ReadableToken<Iterable<K>>
 }
 
 export type PerspectiveToken<KeyType extends string> = {
@@ -100,10 +100,10 @@ export type MaskData =
 export class Continuity {
 	public type = `continuity` as const
 
-	protected globals: AtomToken<any>[] = []
-	protected actions: TransactionToken<any>[] = []
-	protected dynamics: DynamicToken<any>[] = []
-	protected perspectives: PerspectiveToken<any>[] = []
+	protected _globals: AtomToken<any>[] = []
+	protected _actions: TransactionToken<any>[] = []
+	protected _dynamics: DynamicToken<any>[] = []
+	protected _perspectives: PerspectiveToken<any>[] = []
 
 	protected constructor(protected readonly key: string) {}
 
@@ -116,7 +116,13 @@ export class Continuity {
 		builder: (group: Continuity) => Continuity,
 	): ContinuityToken {
 		const group = new Continuity(key)
-		const { type, globals, actions, dynamics, perspectives } = builder(group)
+		const {
+			type,
+			_globals: globals,
+			_actions: actions,
+			_dynamics: dynamics,
+			_perspectives: perspectives,
+		} = builder(group)
 		const masksPerFamily = fromEntries(
 			perspectives.flatMap((perspective): [string, MaskData][] => {
 				const { resourceFamilies } = perspective
@@ -146,17 +152,35 @@ export class Continuity {
 		return token
 	}
 
-	public add(...atoms: AtomToken<any>[]): Continuity
-	public add(
-		...args: TransactionToken<
+	public globals(...atoms: AtomToken<any>[]): Continuity
+	public globals(...args: readonly AtomToken<any>[]): this {
+		this._globals.push(...(args as AtomToken<any>[]))
+		return this
+	}
+	public actions(
+		...args: readonly TransactionToken<
 			(userKey: UserKey<Actual>, ...rest: Json.Array) => any
 		>[]
 	): Continuity
-	public add<K extends string>(
+	public actions(...args: readonly TransactionToken<any>[]): this {
+		this._actions.push(...(args as TransactionToken<any>[]))
+		return this
+	}
+
+	public dynamic<K extends string>(
 		index: ReadableToken<Iterable<K>>,
 		...families: AtomFamilyToken<any, K>[]
-	): Continuity
-	public add<
+	): this {
+		this._dynamics.push({
+			type: `realtime_dynamic`,
+			resourceFamilies: families,
+			viewState: index,
+		})
+
+		return this
+	}
+
+	public perspective<
 		KeyType extends string,
 		JsonForm extends Json.Serializable,
 		JsonUpdate extends Json.Serializable,
@@ -164,63 +188,99 @@ export class Continuity {
 		index: ReadableFamilyToken<Iterable<`${KeyType}::${string}`>, UserKey>,
 		...maskedFamilies: MaskToken<KeyType, JsonForm, JsonUpdate>[]
 	): Continuity
-	public add(
-		...args:
-			| readonly [
-					index: ReadableFamilyToken<Iterable<any>, UserKey>,
-					...maskedFamilies: MaskToken<any, any, any>[],
-			  ]
-			| readonly [
-					index: ReadableToken<Iterable<any>>,
-					...families: AtomFamilyToken<any, any>[],
-			  ]
-			| readonly AtomToken<any>[]
-			| readonly TransactionToken<any>[]
+	public perspective(
+		...args: readonly [
+			index: ReadableFamilyToken<Iterable<any>, UserKey>,
+			...maskedFamilies: MaskToken<any, any, any>[],
+		]
 	): this {
-		const first = args[1]
-		if (Array.isArray(first)) {
-			const [index, ...maskedFamilies] = args as readonly [
-				index: ReadableFamilyToken<Iterable<any>, UserKey>,
-				...maskedFamilies: MaskToken<any, any, any>[],
-			]
-			this.perspectives.push({
-				type: `realtime_perspective`,
-				resourceFamilies: maskedFamilies,
-				userViewAtoms: index,
-			})
-			return this
-		}
-		if (first) {
-			switch (first.type) {
-				case `atom_family`:
-				case `mutable_atom_family`:
-					{
-						const [index, ...families] = args as [
-							index: WritableToken<Iterable<any>>,
-							...families: AtomFamilyToken<any, any>[],
-						]
-						this.dynamics.push({
-							type: `realtime_dynamic`,
-							resourceFamilies: families,
-							viewState: index,
-						})
-					}
-					return this
-			}
-		}
-		const zeroth = args[0]
-		switch (zeroth.type) {
-			case `atom`:
-			case `mutable_atom`:
-				this.globals.push(...(args as AtomToken<any>[]))
-				break
-			case `transaction`:
-				this.actions.push(...(args as TransactionToken<any>[]))
-				break
-		}
-
+		const [index, ...maskedFamilies] = args as readonly [
+			index: ReadableFamilyToken<Iterable<any>, UserKey>,
+			...maskedFamilies: MaskToken<any, any, any>[],
+		]
+		this._perspectives.push({
+			type: `realtime_perspective`,
+			resourceFamilies: maskedFamilies,
+			userViewAtoms: index,
+		})
 		return this
 	}
+
+	// public add(...atoms: AtomToken<any>[]): Continuity
+	// public add(
+	// 	...args: TransactionToken<
+	// 		(userKey: UserKey<Actual>, ...rest: Json.Array) => any
+	// 	>[]
+	// ): Continuity
+	// public add<K extends string>(
+	// 	index: ReadableToken<Iterable<K>>,
+	// 	...families: AtomFamilyToken<any, K>[]
+	// ): Continuity
+	// public add<
+	// 	KeyType extends string,
+	// 	JsonForm extends Json.Serializable,
+	// 	JsonUpdate extends Json.Serializable,
+	// >(
+	// 	index: ReadableFamilyToken<Iterable<`${KeyType}::${string}`>, UserKey>,
+	// 	...maskedFamilies: MaskToken<KeyType, JsonForm, JsonUpdate>[]
+	// ): Continuity
+	// public add(
+	// 	...args:
+	// 		| readonly [
+	// 				index: ReadableFamilyToken<Iterable<any>, UserKey>,
+	// 				...maskedFamilies: MaskToken<any, any, any>[],
+	// 		  ]
+	// 		| readonly [
+	// 				index: ReadableToken<Iterable<any>>,
+	// 				...families: AtomFamilyToken<any, any>[],
+	// 		  ]
+	// 		| readonly AtomToken<any>[]
+	// 		| readonly TransactionToken<any>[]
+	// ): this {
+	// 	const first = args[1]
+	// 	if (Array.isArray(first)) {
+	// 		const [index, ...maskedFamilies] = args as readonly [
+	// 			index: ReadableFamilyToken<Iterable<any>, UserKey>,
+	// 			...maskedFamilies: MaskToken<any, any, any>[],
+	// 		]
+	// 		this._perspectives.push({
+	// 			type: `realtime_perspective`,
+	// 			resourceFamilies: maskedFamilies,
+	// 			userViewAtoms: index,
+	// 		})
+	// 		return this
+	// 	}
+	// 	if (first) {
+	// 		switch (first.type) {
+	// 			case `atom_family`:
+	// 			case `mutable_atom_family`:
+	// 				{
+	// 					const [index, ...families] = args as [
+	// 						index: WritableToken<Iterable<any>>,
+	// 						...families: AtomFamilyToken<any, any>[],
+	// 					]
+	// 					this._dynamics.push({
+	// 						type: `realtime_dynamic`,
+	// 						resourceFamilies: families,
+	// 						viewState: index,
+	// 					})
+	// 				}
+	// 				return this
+	// 		}
+	// 	}
+	// 	const zeroth = args[0]
+	// 	switch (zeroth.type) {
+	// 		case `atom`:
+	// 		case `mutable_atom`:
+	// 			this._globals.push(...(args as AtomToken<any>[]))
+	// 			break
+	// 		case `transaction`:
+	// 			this._actions.push(...(args as TransactionToken<any>[]))
+	// 			break
+	// 	}
+
+	// 	return this
+	// }
 }
 
 export type ContinuityOptions = {

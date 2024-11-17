@@ -1,18 +1,21 @@
 import { transaction } from "atom.io"
 import { editRelations, findRelations } from "atom.io/data"
+import type { Actual } from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
 
 import * as CardGroups from "../card-game-stores/card-groups-store"
 import type { CardKey } from "../card-game-stores/cards-store"
 
 export const dealCardsTX = transaction<
 	(
+		userKey: UserKey<Actual>,
 		deckKey: CardGroups.DeckKey,
 		handKey: CardGroups.HandKey,
 		count: number,
 	) => { cardIds: CardKey[] }
 >({
 	key: `dealCards`,
-	do: (transactors, deckId, handId, count) => {
+	do: (transactors, _, deckId, handId, count) => {
 		const { get, find } = transactors
 		const deckIds = get(CardGroups.deckIndex)
 		const deckDoesExist = deckIds.has(deckId)

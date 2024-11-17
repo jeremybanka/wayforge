@@ -1,5 +1,7 @@
 import { transaction } from "atom.io"
 import { editRelations, findRelations } from "atom.io/data"
+import type { Actual } from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
 
 import {
 	deckIndex,
@@ -33,10 +35,10 @@ function fisherYatesShuffle<T>(array: T[], rng: () => number): T[] {
 }
 
 export const shuffleDeckTX = transaction<
-	(deckKey: DeckKey, shuffleSeed: number) => void
+	(userKey: UserKey<Actual>, deckKey: DeckKey, shuffleSeed: number) => void
 >({
 	key: `shuffleDeck`,
-	do: (transactors, deckId, shuffleSeed) => {
+	do: (transactors, _, deckId, shuffleSeed) => {
 		const { get, env } = transactors
 		const rng = new LCG(shuffleSeed)
 		const deckDoesExist = get(deckIndex).has(deckId)

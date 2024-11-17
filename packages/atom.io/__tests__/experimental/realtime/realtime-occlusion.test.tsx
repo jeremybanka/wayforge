@@ -123,7 +123,10 @@ describe(`realtime occlusion`, () => {
 		const itemContinuity = continuity({
 			key: `item`,
 			config: (group) =>
-				group.add(itemPerspectiveIndices, [itemWeightAtoms, itemWeightMasks]),
+				group.perspective(itemPerspectiveIndices, [
+					itemWeightAtoms,
+					itemWeightMasks,
+				]),
 		})
 
 		mark(`continuity created`)
@@ -473,9 +476,8 @@ describe(`join in perspective`, () => {
 			key: `game`,
 			config: (group) =>
 				group
-					.add(currentGameKeyAtom)
-					.add(worldTimeAtom)
-					.add(
+					.globals(currentGameKeyAtom, worldTimeAtom)
+					.perspective(
 						characterPerspectiveIndices,
 						[healthAtoms, healthMasks],
 						[
@@ -484,12 +486,12 @@ describe(`join in perspective`, () => {
 							playerCharactersUpdateMasks,
 						],
 					)
-					.add(playerPerspectiveIndices, [
+					.perspective(playerPerspectiveIndices, [
 						getInternalRelations(playerCharacters),
 						playerCharactersJsonMasks,
 						playerCharactersUpdateMasks,
 					])
-					.add(attackTX),
+					.actions(attackTX),
 		})
 
 		const myPlayerKeySelector = AtomIO.selector<PlayerKey<RT.Alias> | null>({
