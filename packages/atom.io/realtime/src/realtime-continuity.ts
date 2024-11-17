@@ -19,7 +19,7 @@ import type { Json, JsonIO } from "atom.io/json"
 import { fromEntries } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
 
-import type { Alias } from "./realtime-occlusion-store"
+import type { Actual, Alias } from "./realtime-occlusion-store"
 
 /* eslint-disable no-console */
 
@@ -147,7 +147,11 @@ export class Continuity {
 	}
 
 	public add(...atoms: AtomToken<any>[]): Continuity
-	public add(...args: TransactionToken<any>[]): Continuity
+	public add(
+		...args: TransactionToken<
+			(userKey: UserKey<Actual>, ...rest: Json.Array) => any
+		>[]
+	): Continuity
 	public add<K extends string>(
 		index: ReadableToken<Iterable<K>>,
 		...families: AtomFamilyToken<any, K>[]
