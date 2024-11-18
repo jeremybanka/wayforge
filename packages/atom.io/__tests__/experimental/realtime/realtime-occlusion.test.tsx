@@ -17,7 +17,7 @@ import {
 	getUpdateToken,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import * as AR from "atom.io/react"
 import type {
@@ -85,14 +85,17 @@ describe(`realtime occlusion`, () => {
 			`item::${K}`
 		type ItemVisibilityKey = Compound<
 			AtomIO.Tag<`view`>,
-			ItemKey<RT.Actual>,
-			UserKey<RT.Actual>
+			UserKey<RT.Actual>,
+			ItemKey<RT.Actual>
 		>
 		const itemWeightAtoms = atomFamily<number, ItemKey>({
 			key: `weight`,
 			default: 0,
 		})
-		const itemWeightMasks = selectorFamily<number | `???`, ItemKey>({
+		const itemWeightMasks = selectorFamily<
+			number | `???`,
+			Compound<AtomIO.Tag<`mask`>, UserKey<RT.Actual>, ItemKey<RT.Actual>>
+		>({
 			key: `weightMask`,
 			get: (_) => (__) => {
 				return `???`
@@ -220,8 +223,8 @@ describe(`join in perspective`, () => {
 		// STATES
 		type CharViewKey = AtomIO.Compound<
 			AtomIO.Tag<`view`>,
-			CharacterKey<RT.Actual>,
-			UserKey<RT.Actual>
+			UserKey<RT.Actual>,
+			CharacterKey<RT.Actual>
 		>
 		const {
 			globalIndex: characterGlobalIndex,
@@ -237,8 +240,8 @@ describe(`join in perspective`, () => {
 		})
 		type PlayerViewKey = AtomIO.Compound<
 			AtomIO.Tag<`view`>,
-			PlayerKey<RT.Actual>,
-			UserKey<RT.Actual>
+			UserKey<RT.Actual>,
+			PlayerKey<RT.Actual>
 		>
 		const {
 			globalIndex: playerGlobalIndex,
@@ -311,55 +314,50 @@ describe(`join in perspective`, () => {
 		})
 		const playerCharactersJsonMasks = AtomIO.selectorFamily<
 			SetRTXJson<CharacterKey<RT.Alias> | PlayerKey<RT.Alias>>,
-			CharacterKey<RT.Alias> | PlayerKey<RT.Alias>
+			Compound<
+				AtomIO.Tag<`mask`>,
+				UserKey<RT.Actual>,
+				CharacterKey<RT.Actual> | PlayerKey<RT.Actual>
+			>
 		>({
 			key: `playerCharacterJsonMask`,
 			get:
-				(playerCharacterRelationKey) =>
+				(maskKey) =>
 				({ env, find, get, json }) => {
-					let owner: UserKey<RT.Actual> | undefined
-
+					const [, ownerKey, playerCharacterRelationKey] =
+						AtomIO.decomposeCompoundKey(maskKey)
 					const { store } = env()
-					const [relationAliases, compileActualKey] = RT.extractAliasKeys(
-						playerCharacterRelationKey,
-					)
-					console.log(`\t`, `aliases`, relationAliases)
-					const relationActuals: RT.Actual[] = []
-					for (const alias of relationAliases) {
-						const perspectiveKey = get(
-							findRelationsInStore(perspectiveAliases, alias, store)
-								.perspectiveKeyOfAlias,
-						)
-
-						if (perspectiveKey) {
-							const [, actual, userKey] =
-								AtomIO.decomposeCompoundKey(perspectiveKey)
-							owner ??= userKey
-							relationActuals.push(actual)
-						}
-					}
-					const actualKey = compileActualKey(relationActuals)
-					const jsonMask = get(
+					const jsonUnmasked = get(
 						json(
 							find(
 								getInternalRelationsFromStore(playerCharacters, store),
-								actualKey,
+								playerCharacterRelationKey,
 							),
 						),
 					)
+					if (isPlayerKey(playerCharacterRelationKey)) {
+						const playerKey = playerCharacterRelationKey
+						const [, , userKey] = AtomIO.decomposeCompoundKey(playerKey)
+						if (userKey !== ownerKey) {
+							return {
+								...jsonUnmasked,
+								members: [],
+							}
+						}
+					}
 
 					const aliasedMembers: (
 						| CharacterKey<RT.Alias>
 						| PlayerKey<RT.Alias>
 					)[] = []
-					for (const memberKey of jsonMask.members) {
-						if (RT.holdsAliases(memberKey) && owner) {
+					for (const memberKey of jsonUnmasked.members) {
+						if (RT.holdsActuals(memberKey)) {
 							const [memberActuals, compileAliasedKeys] =
 								RT.extractActualKeys(memberKey)
 							const memberAliases: RT.Alias[] = []
 							for (const actual of memberActuals) {
 								const perspectiveKey =
-									`T$--perspective==${actual}++${owner}` as const
+									`T$--perspective==${actual}++${ownerKey}` as const
 								const alias = getFromStore(
 									store,
 									findRelationsInStore(perspectiveAliases, perspectiveKey, store)
@@ -374,28 +372,26 @@ describe(`join in perspective`, () => {
 						}
 					}
 
-					console.log(
-						`------------------------------------------------------------\n\n`,
-					)
-					console.log(`\t`, `characterRelationKey`, playerCharacterRelationKey)
-					console.log(`\t`, `relationAliases`, relationAliases)
-					console.log(`\t`, `relationActuals`, relationActuals)
-					console.log(`\t`, `actualKey`, actualKey)
-					console.log(
-						`\n\n------------------------------------------------------------`,
-					)
-					return { ...jsonMask, members: aliasedMembers }
+					return {
+						...jsonUnmasked,
+						members: aliasedMembers,
+					}
 				},
 			set: (_) => (__) => {},
 		})
 		const playerCharactersUpdateMasks = AtomIO.selectorFamily<
-			Signal<SetRTX<CharacterKey | PlayerKey>>,
-			CharacterKey<RT.Alias> | PlayerKey<RT.Alias>
+			Signal<SetRTX<CharacterKey<RT.Alias> | PlayerKey<RT.Alias>>>,
+			Compound<
+				AtomIO.Tag<`mask`>,
+				UserKey<RT.Actual>,
+				CharacterKey<RT.Actual> | PlayerKey<RT.Actual>
+			>
 		>({
 			key: `playerCharacterUpdateMask`,
 			get:
-				(characterRelationKey) =>
+				(maskKey) =>
 				({ find, get }) => {
+					const [, , characterRelationKey] = AtomIO.decomposeCompoundKey(maskKey)
 					return get(
 						getUpdateToken(
 							find(getInternalRelations(playerCharacters), characterRelationKey),
@@ -442,7 +438,7 @@ describe(`join in perspective`, () => {
 		})
 		const healthMasks = AtomIO.selectorFamily<
 			number | null,
-			CharacterKey<RT.Alias>
+			Compound<AtomIO.Tag<`mask`>, UserKey<RT.Actual>, CharacterKey<RT.Actual>>
 		>({
 			key: `healthMask`,
 			get: (_) => (__) => {
@@ -466,11 +462,17 @@ describe(`join in perspective`, () => {
 		>({
 			key: `increment`,
 			do: ({ set }, userKey, attackerKey, defenderKey) => {
+				console.log({ userKey, attackerKey, defenderKey })
 				set(mask(healthAtoms, healthMasks), defenderKey, (health) =>
 					health === null ? null : health - 10,
 				)
 			},
 		})
+
+		const a = [
+			healthAtoms,
+			healthMasks,
+		] satisfies RT.RegularMaskToken<`character::$$${string}$$`>
 
 		const gameContinuity = RT.continuity({
 			key: `game`,

@@ -12,5 +12,5 @@ export const letterIndex = atom<`letter::${number}`[]>({
 
 export const gameContinuity = continuity({
 	key: `game`,
-	config: (group) => group.add(letterIndex, letterAtoms),
+	config: (group) => group.dynamic(letterIndex, letterAtoms),
 })

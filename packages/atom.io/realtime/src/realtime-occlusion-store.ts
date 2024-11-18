@@ -25,7 +25,7 @@ import type { UserKey } from "../../realtime-server/src/realtime-server-stores/s
 export type Actual<S extends string = string> = `__${S}__`
 export type Alias<S extends string = string> = `$$${S}$$`
 
-export function extractAliasKeys<K extends AnyTypedKeyWithAliases>(
+export function extractAliasKeys<K extends AnyAliasKey>(
 	key: K,
 ): [Alias[], (actuals: Actual[]) => ToActual<K>] {
 	const aliases: Alias[] = []
@@ -50,7 +50,7 @@ export function extractAliasKeys<K extends AnyTypedKeyWithAliases>(
 		},
 	]
 }
-export function extractActualKeys<K extends AnyTypedKeyWithActuals>(
+export function extractActualKeys<K extends AnyActualKey>(
 	key: K,
 ): [Actual[], (aliases: Alias[]) => ToAlias<K>] {
 	const actuals: Actual[] = []
@@ -158,73 +158,75 @@ export function derefTransactionRequest(
 	return derefAliases(store, userKey, request)
 }
 
-export type AnyTypedKeyWithActuals =
-	| Compound<Tag, Original<string, Actual>, Original<string, Actual>>
-	| Compound<Tag, Original<string, Actual>, string>
-	| Compound<Tag, string, Original<string, Actual>>
-	| Original<string, Actual>
-export type AnyTypedKeyWithAliases =
-	| Compound<Tag, Original<string, Alias>, Original<string, Alias>>
-	| Compound<Tag, Original<string, Alias>, string>
-	| Compound<Tag, string, Original<string, Alias>>
-	| Original<string, Alias>
-export type ToActual<K extends AnyTypedKeyWithAliases> = K extends Original<
-	infer X,
-	Alias<infer A>
->
-	? Original<X, Actual<A>>
-	: K extends Compound<infer X, infer A, infer B>
-		? A extends AnyTypedKeyWithAliases
-			? B extends AnyTypedKeyWithAliases
-				? Compound<X, ToActual<A>, ToActual<B>>
-				: Compound<X, ToActual<A>, B>
-			: B extends AnyTypedKeyWithAliases
-				? Compound<X, A, ToActual<B>>
-				: Compound<X, A, B>
-		: K
-export type ToAlias<K extends AnyTypedKeyWithActuals> = K extends Original<
-	infer X,
-	Actual<infer A>
->
-	? Original<X, Alias<A>>
-	: K extends Compound<infer X, infer A, infer B>
-		? A extends AnyTypedKeyWithActuals
-			? B extends AnyTypedKeyWithActuals
-				? Compound<X, ToAlias<A>, ToAlias<B>>
-				: Compound<X, ToAlias<A>, B>
-			: B extends AnyTypedKeyWithActuals
-				? Compound<X, A, ToAlias<B>>
-				: Compound<X, A, B>
-		: K
+// let a: AnyTypedKeyWithActuals
+// const b: UserKey<Actual> = `user::__jane-1__`
+// const c: Compound<Tag<`haha`>, UserKey<Actual>, UserKey> = `user::__jane-1__`
+// a = b
+// a = c
 
-export const holdsAliases = (
-	k: AnyTypedKeyWithActuals | AnyTypedKeyWithAliases,
-): k is AnyTypedKeyWithActuals => {
-	return k.includes(`__`)
-}
+// type Y = ToAlias<UserKey<Actual>>
+// type Z = ToAlias<Compound<Tag<`haha`>, UserKey<Actual>, UserKey<Actual>>>
 
-export type UnwrapAlias<K extends AnyTypedKeyWithAliases> = K extends Original<
+export type AnyActualKey = `${string}__${string}__${string}`
+
+export type AnyAliasKey = `${string}$$${string}$$${string}`
+
+export type ToActual<K extends AnyAliasKey> = K extends Compound<
+	infer X,
+	infer A,
+	infer B
+>
+	? A extends AnyAliasKey
+		? B extends AnyAliasKey
+			? Compound<X, ToActual<A>, ToActual<B>>
+			: Compound<X, ToActual<A>, B>
+		: B extends AnyAliasKey
+			? Compound<X, A, ToActual<B>>
+			: Compound<X, A, B>
+	: K extends Original<infer X, Alias<infer A>>
+		? Original<X, Actual<A>>
+		: AnyActualKey
+export type ToAlias<K extends AnyActualKey> = K extends Compound<
+	infer X,
+	infer A,
+	infer B
+>
+	? A extends AnyActualKey
+		? B extends AnyActualKey
+			? Compound<X, ToAlias<A>, ToAlias<B>>
+			: Compound<X, ToAlias<A>, B>
+		: B extends AnyActualKey
+			? Compound<X, A, ToAlias<B>>
+			: Compound<X, A, B>
+	: K extends Original<infer X, Actual<infer A>>
+		? Original<X, Alias<A>>
+		: AnyAliasKey
+
+export const holdsActuals = (k: string): k is AnyActualKey => k.includes(`__`)
+export const holdsAliases = (k: string): k is AnyAliasKey => k.includes(`$$`)
+
+export type UnwrapAlias<K extends AnyAliasKey> = K extends Original<
 	string,
 	Alias<infer A>
 >
 	? A
 	: never
 
-export type ViewOptions<K extends AnyTypedKeyWithActuals> = {
+export type ViewOptions<K extends AnyActualKey> = {
 	key: string
 	selectors: SelectorFamilyToken<
 		VisibilityCondition,
-		Compound<Tag<`view`>, K, UserKey<Actual>>
+		Compound<Tag<`view`>, UserKey<Actual>, K>
 	>
 }
 
-export function view<K extends AnyTypedKeyWithActuals>({
+export function view<K extends AnyActualKey>({
 	key,
 	selectors: visibilitySelectors,
 }: ViewOptions<K>): {
 	readonly globalIndex: MutableAtomToken<SetRTX<K>, SetRTXJson<K>>
 	readonly perspectiveIndices: ReadonlySelectorFamilyToken<
-		ToAlias<K>[],
+		[actual: K, alias: ToAlias<K>][],
 		UserKey<Actual>
 	>
 } {
@@ -235,18 +237,21 @@ export function view<K extends AnyTypedKeyWithActuals>({
 		toJson: (set) => set.toJSON(),
 		fromJson: (json) => SetRTX.fromJSON(json),
 	})
-	const perspectiveIndices = selectorFamily<ToAlias<K>[], UserKey<Actual>>({
+	const perspectiveIndices = selectorFamily<
+		[actual: K, alias: ToAlias<K>][],
+		UserKey<Actual>
+	>({
 		key: `${key}Perspective`,
 		get:
 			(userKey) =>
 			({ env, find, get }) => {
 				const { store } = env()
 				const typedActualKeys = get(globalIndex)
-				const aliasKeys: ToAlias<K>[] = []
+				const aliasKeys: [actual: K, alias: ToAlias<K>][] = []
 				for (const actualTypedKey of typedActualKeys) {
 					const [actuals, compileAliasKey] = extractActualKeys(actualTypedKey)
 					const visibility = get(
-						find(visibilitySelectors, `T$--view==${actualTypedKey}++${userKey}`),
+						find(visibilitySelectors, `T$--view==${userKey}++${actualTypedKey}`),
 					)
 					switch (visibility) {
 						case `secret`:
@@ -280,7 +285,7 @@ export function view<K extends AnyTypedKeyWithActuals>({
 									aliases.push(alias)
 								}
 								const aliasKey = compileAliasKey(aliases)
-								aliasKeys.push(aliasKey as unknown as ToAlias<K>)
+								aliasKeys.push([actualTypedKey, aliasKey])
 							}
 							break
 					}
