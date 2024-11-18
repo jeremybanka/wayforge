@@ -284,7 +284,38 @@ export type Mutuals<
 export function decomposeCompoundKey<K extends Compound>(
 	key: K,
 ): K extends Compound<infer A, infer B, infer C> ? [A, B, C] : never {
-	const [typeTag, content] = key.split(`==`)
-	const [singularB, singularC] = content.split(`++`)
+	const [typeTag, ...contents] = key.split(`==`)
+	let content = contents[0]
+	if (contents.length > 1) {
+		content += `==` + contents.slice(1).join(`==`)
+	}
+	const constituents = content.split(`++`)
+	let [singularB, singularC] = constituents
+	if (constituents.length !== 2) {
+		singularB = ``
+		singularC = ``
+		let i = 0
+		let m = 0
+		while (constituents.length) {
+			const constituent = constituents.shift() as string
+			if (i === 0 && !constituent?.startsWith(`T$--`)) {
+				singularB = constituent
+				singularC = constituents.join(`++`)
+				break
+			}
+			if (constituent.startsWith(`T$--`)) {
+				m++
+				singularB += constituent
+			} else {
+				m--
+				singularB += `++` + constituent
+			}
+			if (m === 0) {
+				singularC = constituents.join(`++`)
+				break
+			}
+			i++
+		}
+	}
 	return [typeTag, singularB, singularC] as any
 }
