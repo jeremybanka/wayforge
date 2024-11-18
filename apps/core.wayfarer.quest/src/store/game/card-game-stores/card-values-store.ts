@@ -1,4 +1,11 @@
-import { atom, atomFamily, selectorFamily } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	type Compound,
+	decomposeCompoundKey,
+	selectorFamily,
+	type Tag,
+} from "atom.io"
 import { findRelations, getInternalRelations, join } from "atom.io/data"
 import type { Signal } from "atom.io/internal"
 import { getUpdateToken } from "atom.io/internal"
@@ -59,19 +66,20 @@ export const valuesOfCards = join({
 })
 
 export const valuesOfCardsJsonMask = selectorFamily<
-	SetRTXJson<CardValueKey>,
-	CardKey
+	SetRTXJson<CardValueKey<Alias>>,
+	Compound<Tag<`mask`>, UserKey<Actual>, CardKey<Actual>>
 >({
 	key: `valuesOfCardsJsonMask`,
 	get:
-		(cardKey) =>
+		(maskKey) =>
 		({ get, find, json }) => {
+			const [, , cardKey] = decomposeCompoundKey(maskKey)
 			const cardValueJsonSelector = json(
 				find(getInternalRelations(valuesOfCards), cardKey),
 			)
-			const cardValueJson = get(
-				cardValueJsonSelector,
-			) as SetRTXJson<CardValueKey>
+			const cardValueJson = get(cardValueJsonSelector) as SetRTXJson<
+				CardValueKey<Alias>
+			>
 			return {
 				...cardValueJson,
 				members: cardValueJson.members, // 👀 IMPLEMENT ALIASING
@@ -81,8 +89,8 @@ export const valuesOfCardsJsonMask = selectorFamily<
 })
 
 export const valuesOfCardsUpdateMask = selectorFamily<
-	Signal<SetRTX<CardValueKey>>,
-	CardKey
+	Signal<SetRTX<CardValueKey<Alias>>>,
+	CardKey<Alias>
 >({
 	key: `valuesOfCardsUpdateMask`,
 	get:
