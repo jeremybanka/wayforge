@@ -32,7 +32,7 @@ describe(`synchronizing transactions`, () => {
 		})
 		const countContinuity = RT.continuity({
 			key: `count`,
-			config: (group) => group.add(countState).add(incrementTX),
+			config: (group) => group.globals(countState).actions(incrementTX),
 		})
 
 		return Object.assign(
@@ -158,7 +158,7 @@ describe(`mutable atoms in continuity`, () => {
 
 		const applicationContinuity = RT.continuity({
 			key: `application`,
-			config: (group) => group.add(myListAtom).add(addItemTX),
+			config: (group) => group.globals(myListAtom).actions(addItemTX),
 		})
 
 		return Object.assign(

@@ -1,7 +1,7 @@
 import type { WritableToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { findInStore, getFromStore, subscribeToState } from "atom.io/internal"
-import type { Alias, ContinuityToken } from "atom.io/realtime"
+import type { Actual, AnyAliasKey, ContinuityToken } from "atom.io/realtime"
 
 import type { Socket } from ".."
 import type { UserKey } from "../realtime-server-stores"
@@ -9,7 +9,7 @@ import type { UserKey } from "../realtime-server-stores"
 export function subscribeToContinuityPerspectives(
 	store: Store,
 	continuity: ContinuityToken,
-	userKey: UserKey,
+	userKey: UserKey<Actual>,
 	socket: Socket | null,
 ): (() => void)[] {
 	const continuityKey = continuity.key
@@ -20,22 +20,22 @@ export function subscribeToContinuityPerspectives(
 		const unsubscribeFromUserView = subscribeToState(
 			userViewState,
 			({ oldValue: oldKeys, newValue: newKeys }) => {
-				const newKeysSet = new Set(newKeys)
-				const oldKeysSet = new Set(oldKeys)
-				const concealed: `${string}::${Alias}`[] = []
-				for (const key of oldKeys) {
-					if (!newKeysSet.has(key)) {
-						concealed.push(key)
+				const newAliasesSet = new Set(new Map(oldKeys).values())
+				const oldAliasesSet = new Set(new Map(newKeys).values())
+				const concealed: AnyAliasKey[] = []
+				for (const aliasKey of oldAliasesSet) {
+					if (!newAliasesSet.has(aliasKey)) {
+						concealed.push(aliasKey)
 					}
 				}
-				const revealed: [WritableToken<any, `${string}::${string}`>, any][] = []
-				for (const key of newKeys) {
-					if (!oldKeysSet.has(key)) {
+				const revealed: [WritableToken<any, string>, any][] = []
+				for (const [actualKey, aliasKey] of newKeys) {
+					if (!oldAliasesSet.has(aliasKey)) {
 						for (const [, maskedResourceFamily] of resourceFamilies) {
 							const maskedResourceToken = findInStore(
 								store,
 								maskedResourceFamily,
-								key,
+								`T$--mask==${userKey}++${actualKey}`,
 							)
 							const maskedResource = getFromStore(store, maskedResourceToken)
 							revealed.push([maskedResourceToken, maskedResource])
