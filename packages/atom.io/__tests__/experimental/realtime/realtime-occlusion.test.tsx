@@ -44,6 +44,27 @@ import { useContext } from "react"
 import { mark } from "../../__util__"
 import { throwUntil } from "../../__util__/waiting"
 
+test(`decomposeCompoundKey`, () => {
+	expect(
+		AtomIO.decomposeCompoundKey(
+			`T$--mask==user::__jane-1__++T$--player==game::battle++user::__jane-1__`,
+		),
+	).toEqual([
+		`T$--mask`,
+		`user::__jane-1__`,
+		`T$--player==game::battle++user::__jane-1__`,
+	])
+	expect(
+		AtomIO.decomposeCompoundKey(
+			`T$--mask==T$--player==game::battle++user::__jane-1__++user::__jane-1__`,
+		),
+	).toEqual([
+		`T$--mask`,
+		`T$--player==game::battle++user::__jane-1__`,
+		`user::__jane-1__`,
+	])
+})
+
 describe(`realtime occlusion`, () => {
 	editRelations(perspectiveAliases, (relations) => {
 		relations.set({

@@ -63,8 +63,9 @@ export function prepareToSendInitialPayload(
 					maskFamily,
 					userView,
 				})
-				for (const [, alias] of userView) {
-					const maskToken = findInStore(store, maskFamily, alias)
+				for (const [actual, alias] of userView) {
+					const maskKey = `T$--mask==${userKey}++${actual}` as const
+					const maskToken = findInStore(store, maskFamily, maskKey)
 					const fakeToken = {
 						key: `${baseFamily.key}("${alias}")`,
 						type: FAMILY_TYPES[baseFamily.type],
