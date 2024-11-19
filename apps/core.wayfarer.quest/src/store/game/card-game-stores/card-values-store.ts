@@ -1,11 +1,5 @@
-import {
-	atom,
-	atomFamily,
-	type Compound,
-	decomposeCompoundKey,
-	selectorFamily,
-	type Tag,
-} from "atom.io"
+import type { Compound, Tag } from "atom.io"
+import { atom, atomFamily, decomposeCompoundKey, selectorFamily } from "atom.io"
 import { findRelations, getInternalRelations, join } from "atom.io/data"
 import type { Signal } from "atom.io/internal"
 import { getUpdateToken } from "atom.io/internal"
@@ -85,7 +79,6 @@ export const valuesOfCardsJsonMask = selectorFamily<
 				members: cardValueJson.members, // 👀 IMPLEMENT ALIASING
 			}
 		},
-	set: () => () => {},
 })
 
 export const valuesOfCardsUpdateMask = selectorFamily<
@@ -102,11 +95,10 @@ export const valuesOfCardsUpdateMask = selectorFamily<
 			const update = get(updateAtom)
 			return update // 👀 IMPLEMENT ALIASING
 		},
-	set: () => () => {},
 })
 
 export const visibleCardValueIndices = selectorFamily<
-	CardKey<Alias>[],
+	[actual: CardKey<Actual>, alias: CardKey<Alias>][],
 	UserKey<Actual>
 >({
 	key: `visibleCardIndices`,
@@ -155,7 +147,7 @@ export const visibleCardValueIndices = selectorFamily<
 					}
 				}
 			}
-			const cardAliases: CardKey<Alias>[] = []
+			const cardAliases: [actual: CardKey<Actual>, alias: CardKey<Alias>][] = []
 			for (const cardId of cardIds) {
 				const actual = cardId.split(`::`).pop() as Actual
 				const perspectiveKey: PerspectiveKey = `T$--perspective==${actual}++${username}`
@@ -164,7 +156,7 @@ export const visibleCardValueIndices = selectorFamily<
 						.aliasKeyOfPerspective,
 				)
 				if (alias) {
-					cardAliases.push(`card::${alias}`)
+					cardAliases.push([`card::${actual}`, `card::${alias}`])
 				}
 			}
 			return cardAliases

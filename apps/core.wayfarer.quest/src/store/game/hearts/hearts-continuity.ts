@@ -70,10 +70,16 @@ export const heartsContinuity = continuity({
 				valuesOfCardsJsonMask,
 				valuesOfCardsUpdateMask,
 			])
-			.perspective(groupsOfCardsView, [
-				getInternalRelations(groupsOfCards),
-				groupsOfCardsJsonMask,
-				groupsOfCardsUpdateMask,
-			])
+			.dynamic(groupsOfCardsView, {
+				base: getInternalRelations(groupsOfCards),
+				jsonMask: groupsOfCardsJsonMask,
+				signalMask: groupsOfCardsUpdateMask,
+			})
+		// [
+		// 	getInternalRelations(groupsOfCards),
+		// 	groupsOfCardsJsonMask,
+		// 	groupsOfCardsUpdateMask,
+		// ]
+		// )
 	},
 })

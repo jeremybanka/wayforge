@@ -5,11 +5,10 @@ import type {
 	MutableAtomFamilyToken,
 	ReadableFamilyToken,
 	ReadableToken,
+	ReadonlySelectorFamilyToken,
 	RegularAtomFamilyToken,
 	Tag,
 	TransactionToken,
-	WritableSelectorFamilyToken,
-	WritableToken,
 } from "atom.io"
 import type { Transceiver } from "atom.io/internal"
 import {
@@ -21,14 +20,7 @@ import type { Json, JsonIO } from "atom.io/json"
 import { fromEntries } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
 
-import type {
-	Actual,
-	Alias,
-	AnyActualKey,
-	AnyAliasKey,
-	ToActual,
-	ToAlias,
-} from "./realtime-occlusion-store"
+import type { Actual, AnyAliasKey, ToActual } from "./realtime-occlusion-store"
 
 /* eslint-disable no-console */
 
@@ -47,12 +39,6 @@ export class InvariantMap<K, V> extends Map<K, V> {
 	public clear(): void {
 		throw new Error(`Cannot clear an InvariantMap`)
 	}
-}
-
-export type DynamicToken<K extends string> = {
-	type: `realtime_dynamic`
-	resourceFamilies: AtomFamilyToken<any, K>[]
-	viewState: ReadableToken<Iterable<K>>
 }
 
 export type ContinuityToken = {
@@ -74,14 +60,14 @@ export type MutableMaskToken<
 		J,
 		string
 	> = MutableAtomFamilyToken<Transceiver<S>, J, string>,
-	MaskedStates extends WritableSelectorFamilyToken<
+	MaskedStates extends ReadonlySelectorFamilyToken<
 		any,
 		string
-	> = WritableSelectorFamilyToken<any, string>,
-	SignalMaskedStates extends WritableSelectorFamilyToken<
+	> = ReadonlySelectorFamilyToken<any, string>,
+	SignalMaskedStates extends ReadonlySelectorFamilyToken<
 		any,
 		string
-	> = WritableSelectorFamilyToken<any, string>,
+	> = ReadonlySelectorFamilyToken<any, string>,
 > = [
 	baseStates: BaseStates extends MutableAtomFamilyToken<
 		Transceiver<S>,
@@ -92,12 +78,12 @@ export type MutableMaskToken<
 			? BaseStates
 			: never
 		: never,
-	jsonMask: MaskedStates extends WritableSelectorFamilyToken<any, infer JsonKey>
+	jsonMask: MaskedStates extends ReadonlySelectorFamilyToken<any, infer JsonKey>
 		? Compound<Tag<`mask`>, UserKey, ToActual<K>> extends JsonKey
 			? MaskedStates
 			: never
 		: never,
-	signalMask: SignalMaskedStates extends WritableSelectorFamilyToken<
+	signalMask: SignalMaskedStates extends ReadonlySelectorFamilyToken<
 		any,
 		infer SignalKey
 	>
@@ -112,10 +98,10 @@ export type RegularMaskToken<
 		any,
 		K | ToActual<K>
 	> = RegularAtomFamilyToken<any, K | ToActual<K>>,
-	MaskedStates extends WritableSelectorFamilyToken<
+	MaskedStates extends ReadonlySelectorFamilyToken<
 		any,
 		string
-	> = WritableSelectorFamilyToken<
+	> = ReadonlySelectorFamilyToken<
 		any,
 		Compound<Tag<`mask`>, UserKey<Actual>, ToActual<K>>
 	>,
@@ -125,7 +111,7 @@ export type RegularMaskToken<
 			? BaseStates
 			: never
 		: never,
-	maskStates: MaskedStates extends WritableSelectorFamilyToken<
+	maskStates: MaskedStates extends ReadonlySelectorFamilyToken<
 		any,
 		Compound<Tag<`mask`>, UserKey<Actual>, infer MaskKey>
 	>
@@ -141,12 +127,12 @@ export type AnyMaskToken<K extends AnyAliasKey> =
 export type MaskData =
 	| {
 			type: `mutable`
-			mask: WritableSelectorFamilyToken<any, string>
-			signal: WritableSelectorFamilyToken<any, string>
+			mask: ReadonlySelectorFamilyToken<any, string>
+			signal: ReadonlySelectorFamilyToken<any, string>
 	  }
 	| {
 			type: `regular`
-			mask: WritableSelectorFamilyToken<any, string>
+			mask: ReadonlySelectorFamilyToken<any, string>
 	  }
 
 export type PerspectiveToken<K extends AnyAliasKey> = {
@@ -156,6 +142,31 @@ export type PerspectiveToken<K extends AnyAliasKey> = {
 		Iterable<[actual: ToActual<K>, alias: K]>,
 		UserKey
 	>
+}
+
+export type MaskedMutableResourceToken<
+	K extends string,
+	J extends Json.Serializable,
+	S extends Json.Serializable,
+> = {
+	base: MutableAtomFamilyToken<Transceiver<S>, J, K>
+	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, K>
+	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, K>
+}
+export type MaskedRegularResourceToken<K extends string> = {
+	base: RegularAtomFamilyToken<any, K>
+	mask: ReadonlySelectorFamilyToken<any, K>
+}
+
+export type DynamicResourceToken<K extends string> =
+	| AtomFamilyToken<any, K>
+	| MaskedMutableResourceToken<K, any, any>
+	| MaskedRegularResourceToken<K>
+
+export type DynamicToken<K extends string> = {
+	type: `realtime_dynamic`
+	dynamicResources: DynamicResourceToken<K>[]
+	globalIndexToken: ReadableToken<Iterable<K>>
 }
 
 export class Continuity {
@@ -213,29 +224,28 @@ export class Continuity {
 		return token
 	}
 
-	public globals(...atoms: AtomToken<any>[]): Continuity
-	public globals(...args: readonly AtomToken<any>[]): this {
-		this._globals.push(...(args as AtomToken<any>[]))
+	public globals(...atoms: AtomToken<any>[]): this {
+		this._globals.push(...atoms)
 		return this
 	}
+
 	public actions(
-		...args: readonly TransactionToken<
+		...txTokens: readonly TransactionToken<
 			(userKey: UserKey<Actual>, ...rest: Json.Array) => any
 		>[]
-	): Continuity
-	public actions(...args: readonly TransactionToken<any>[]): this {
-		this._actions.push(...(args as TransactionToken<any>[]))
+	): this {
+		this._actions.push(...txTokens)
 		return this
 	}
 
 	public dynamic<K extends string>(
 		index: ReadableToken<Iterable<K>>,
-		...families: AtomFamilyToken<any, K>[]
+		...families: DynamicResourceToken<K>[]
 	): this {
 		this._dynamics.push({
 			type: `realtime_dynamic`,
-			resourceFamilies: families,
-			viewState: index,
+			dynamicResources: families,
+			globalIndexToken: index,
 		})
 
 		return this
