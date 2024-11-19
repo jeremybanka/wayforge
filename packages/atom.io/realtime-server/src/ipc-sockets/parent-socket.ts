@@ -180,7 +180,7 @@ export class ParentSocket<
 			}
 		})
 
-		process.stdout.write(`✨`)
+		process.stdout.write(`ALIVE`)
 	}
 
 	public relay(
