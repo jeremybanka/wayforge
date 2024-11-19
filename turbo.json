@@ -1,5 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": ["tsconfig.json", ".bun-version", ".node-version"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
@@ -58,6 +59,7 @@
 		"lint:eslint": {
 			"dependsOn": ["lint:eslint:build"],
 			"inputs": [
+				"../../package.json",
 				"../../eslint.config.ts",
 				"**/package.json",
 				"tsconfig.json",
@@ -70,6 +72,7 @@
 		"lint:types": {
 			"dependsOn": ["gen"],
 			"inputs": [
+				"../../package.json",
 				"../../tsconfig.json",
 				"**/package.json",
 				"tsconfig.json",
@@ -83,6 +86,7 @@
 			"persistent": true,
 			"dependsOn": ["gen"],
 			"inputs": [
+				"../../package.json",
 				"**/package.json",
 				"tsconfig.json",
 				"src/**",
@@ -104,9 +108,6 @@
 				"__tests__/**",
 				"__scripts__/**"
 			]
-		},
-		"globalDependencies": {
-			"inputs": ["pnpm-lock.yaml", "tsconfig.json", ".node-version"]
 		}
 	}
 }
