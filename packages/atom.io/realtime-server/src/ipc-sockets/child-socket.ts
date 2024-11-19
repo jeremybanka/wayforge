@@ -65,7 +65,7 @@ export class ChildSocket<
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
 				const chunk = buffer.toString()
 
-				if (chunk === `✨`) {
+				if (chunk === `ALIVE`) {
 					// console.log(chunk)
 					return
 				}
