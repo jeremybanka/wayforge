@@ -1,4 +1,4 @@
-import type { WritableToken } from "atom.io"
+import type { ReadableToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { findInStore, getFromStore, subscribeToState } from "atom.io/internal"
 import type { Actual, AnyAliasKey, ContinuityToken } from "atom.io/realtime"
@@ -28,7 +28,7 @@ export function subscribeToContinuityPerspectives(
 						concealed.push(aliasKey)
 					}
 				}
-				const revealed: [WritableToken<any, string>, any][] = []
+				const revealed: [ReadableToken<any, string>, any][] = []
 				for (const [actualKey, aliasKey] of newKeys) {
 					if (!oldAliasesSet.has(aliasKey)) {
 						for (const [, maskedResourceFamily] of resourceFamilies) {
