@@ -30,7 +30,7 @@ export const roomSelectors = selectorFamily<
 				(resolve) => {
 					const room = spawn(script, options, { env: process.env })
 					const resolver = (data: Buffer) => {
-						if (data.toString() === `✨`) {
+						if (data.toString() === `ALIVE`) {
 							room.stdout.off(`data`, resolver)
 							resolve(room)
 						}
