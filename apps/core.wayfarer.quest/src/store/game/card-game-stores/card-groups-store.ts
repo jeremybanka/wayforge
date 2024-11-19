@@ -122,7 +122,6 @@ export const groupsOfCardsJsonMask = selectorFamily<
 				members: cardValueJson.members, // 👀 IMPLEMENT ALIASING
 			}
 		},
-	set: () => () => {},
 })
 
 export const groupsOfCardsUpdateMask = selectorFamily<
@@ -139,21 +138,18 @@ export const groupsOfCardsUpdateMask = selectorFamily<
 			const update = get(updateAtom)
 			return update // 👀 IMPLEMENT ALIASING
 		},
-	set: () => () => {},
 })
 
-export const groupsOfCardsView = selectorFamily<CardGroupKey[], UserKey>({
+export const groupsOfCardsView = selector<CardGroupKey[]>({
 	key: `groupsOfCardsView`,
-	get:
-		() =>
-		({ get }) => {
-			return [
-				...get(pileIndex),
-				...get(deckIndex),
-				...get(handIndex),
-				...get(trickIndex),
-			]
-		},
+	get: ({ get }) => {
+		return [
+			...get(pileIndex),
+			...get(deckIndex),
+			...get(handIndex),
+			...get(trickIndex),
+		]
+	},
 })
 
 export const ownersOfGroups = join({
