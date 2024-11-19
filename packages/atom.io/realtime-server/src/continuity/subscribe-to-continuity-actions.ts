@@ -1,7 +1,7 @@
-import type { TransactionUpdate } from "atom.io"
+import type { ReadableFamilyToken, TransactionUpdate } from "atom.io"
 import { getState } from "atom.io"
 import { findRelations } from "atom.io/data"
-import type { Store } from "atom.io/internal"
+import type { ReadableFamily, Store } from "atom.io/internal"
 import {
 	getUpdateFamily,
 	getUpdateToken,
@@ -34,7 +34,7 @@ export function aliasTransactionUpdate(
 			return getUpdateToken(atom).key
 		})
 		.concat(
-			continuity.dynamics.map(({ viewState }) => {
+			continuity.dynamics.map(({ globalIndexToken: viewState }) => {
 				if (viewState.type === `mutable_atom`) {
 					return getUpdateToken(viewState).key
 				}
@@ -42,9 +42,19 @@ export function aliasTransactionUpdate(
 			}),
 		)
 	const visibleFamilyKeys = continuity.dynamics.flatMap(
-		({ resourceFamilies }) => {
+		({ dynamicResources }) => {
 			const familyKeys: string[] = []
-			for (const resourceFamily of resourceFamilies) {
+			for (const dynamicResource of dynamicResources) {
+				let resourceFamily: ReadableFamilyToken<any, string>
+				if (`base` in dynamicResource) {
+					if (`mask` in dynamicResource) {
+						resourceFamily = dynamicResource.mask
+					} else {
+						resourceFamily = dynamicResource.jsonMask
+					}
+				} else {
+					resourceFamily = dynamicResource
+				}
 				if (resourceFamily.type === `mutable_atom_family`) {
 					familyKeys.push(getUpdateFamily(store, resourceFamily).key)
 				} else {

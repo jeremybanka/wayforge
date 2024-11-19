@@ -121,7 +121,6 @@ describe(`realtime occlusion`, () => {
 			get: (_) => (__) => {
 				return `???`
 			},
-			set: (_) => (__) => {},
 		})
 
 		const itemVisibilitySelectors = selectorFamily<
@@ -323,7 +322,6 @@ describe(`join in perspective`, () => {
 					}
 					return null
 				},
-			set: (_) => (__) => {},
 		})
 
 		const playerCharacters = join({
@@ -398,7 +396,6 @@ describe(`join in perspective`, () => {
 						members: aliasedMembers,
 					}
 				},
-			set: (_) => (__) => {},
 		})
 		const playerCharactersUpdateMasks = AtomIO.selectorFamily<
 			Signal<SetRTX<CharacterKey<RT.Alias> | PlayerKey<RT.Alias>>>,
@@ -419,7 +416,6 @@ describe(`join in perspective`, () => {
 						),
 					)
 				},
-			set: (_) => (__) => {},
 		})
 
 		const characterPositionAtoms = AtomIO.atomFamily<
@@ -465,11 +461,10 @@ describe(`join in perspective`, () => {
 			get: (_) => (__) => {
 				return 0
 			},
-			set: (_) => (__) => {},
 		})
 		function mask<T, K extends Canonical>(
 			actual: AtomIO.AtomFamilyToken<T, K>,
-			_: AtomIO.WritableSelectorFamilyToken<T, K>,
+			_: AtomIO.ReadableFamilyToken<T, K>,
 		): AtomIO.WritableFamilyToken<T, K> {
 			return actual
 		}

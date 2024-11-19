@@ -1,4 +1,4 @@
-import type { TokenDenomination } from "atom.io"
+import type { ReadableFamilyToken, TokenDenomination } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	findInStore,
@@ -28,21 +28,35 @@ export function prepareToSendInitialPayload(
 			initialPayload.push(resourceToken, resource)
 		}
 		for (const dynamic of continuity.dynamics) {
-			const { viewState: viewAtom, resourceFamilies } = dynamic
+			const { globalIndexToken: viewAtom, dynamicResources } = dynamic
 			const globalView = getFromStore(store, viewAtom)
 			store.logger.info(
 				`👁`,
 				`atom`,
-				resourceFamilies.map((f) => f.key).join(`, `),
+				dynamicResources
+					.map((f) =>
+						`key` in f ? f.key : `mask` in f ? f.mask.key : f.jsonMask.key,
+					)
+					.join(`, `),
 				`${userKey} can see`,
 				{
 					viewAtom,
-					resourceFamilies,
+					dynamicResources,
 					userView: globalView,
 				},
 			)
 			for (const key of globalView) {
-				for (const resourceFamily of resourceFamilies) {
+				for (const dynamicResource of dynamicResources) {
+					let resourceFamily: ReadableFamilyToken<any, string>
+					if (`base` in dynamicResource) {
+						if (`mask` in dynamicResource) {
+							resourceFamily = dynamicResource.mask
+						} else {
+							resourceFamily = dynamicResource.jsonMask
+						}
+					} else {
+						resourceFamily = dynamicResource
+					}
 					const resourceFamilyToken =
 						resourceFamily.type === `mutable_atom_family`
 							? getJsonFamily(store, resourceFamily)
