@@ -1,7 +1,7 @@
 import type { ReadableFamilyToken, TransactionUpdate } from "atom.io"
 import { getState } from "atom.io"
 import { findRelations } from "atom.io/data"
-import type { ReadableFamily, Store } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
 import {
 	getUpdateFamily,
 	getUpdateToken,

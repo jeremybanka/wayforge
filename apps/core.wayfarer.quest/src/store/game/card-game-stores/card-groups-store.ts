@@ -1,8 +1,14 @@
 import type { Compound, RegularAtomToken, Tag } from "atom.io"
-import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	decomposeCompoundKey,
+	selector,
+	selectorFamily,
+} from "atom.io"
 import { findRelationsInStore, getInternalRelations, join } from "atom.io/data"
 import { getUpdateToken, type Signal } from "atom.io/internal"
-import type { Actual, Alias } from "atom.io/realtime"
+import type { Actual, Alias, MaskKey } from "atom.io/realtime"
 import type { UserKey } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -105,12 +111,13 @@ export const groupsOfCards = join({
 
 export const groupsOfCardsJsonMask = selectorFamily<
 	SetRTXJson<CardKey<Alias>>,
-	CardGroupKey
+	MaskKey<CardGroupKey>
 >({
 	key: `cardValueRelationsMask`,
 	get:
-		(cardGroupKey) =>
+		(maskKey) =>
 		({ get, find, json }) => {
+			const [, userKey, cardGroupKey] = decomposeCompoundKey(maskKey)
 			const cardValueJsonSelector = json(
 				find(getInternalRelations(groupsOfCards), cardGroupKey),
 			)
@@ -126,14 +133,15 @@ export const groupsOfCardsJsonMask = selectorFamily<
 
 export const groupsOfCardsUpdateMask = selectorFamily<
 	Signal<SetRTX<CardKey>>,
-	CardKey
+	MaskKey<CardGroupKey>
 >({
 	key: `groupsOfCardsUpdateMask`,
 	get:
-		(cardKey) =>
+		(maskKey) =>
 		({ get, find }) => {
+			const [, userKey, cardGroupKey] = decomposeCompoundKey(maskKey)
 			const updateAtom = getUpdateToken(
-				find(getInternalRelations(valuesOfCards), cardKey),
+				find(getInternalRelations(groupsOfCards), cardGroupKey),
 			)
 			const update = get(updateAtom)
 			return update // 👀 IMPLEMENT ALIASING

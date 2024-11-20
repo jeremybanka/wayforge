@@ -37,7 +37,8 @@ import type { UserKey } from "atom.io/realtime-server"
 import * as RTS from "atom.io/realtime-server"
 import { aliasTransactionUpdate } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type { FC } from "react"
 import { useContext } from "react"
 
@@ -105,7 +106,7 @@ describe(`realtime occlusion`, () => {
 		type ItemKey<K extends RT.Actual | RT.Alias = RT.Actual | RT.Alias> =
 			`item::${K}`
 		type ItemVisibilityKey = Compound<
-			AtomIO.Tag<`view`>,
+			AtomIO.Tag<`mask`>,
 			UserKey<RT.Actual>,
 			ItemKey<RT.Actual>
 		>
@@ -241,34 +242,31 @@ describe(`join in perspective`, () => {
 		>
 
 		// STATES
-		type CharViewKey = AtomIO.Compound<
-			AtomIO.Tag<`view`>,
-			UserKey<RT.Actual>,
-			CharacterKey<RT.Actual>
-		>
+
 		const {
 			globalIndex: characterGlobalIndex,
 			perspectiveIndices: characterPerspectiveIndices,
 		} = RT.view({
 			key: `character`,
-			selectors: AtomIO.selectorFamily<RT.VisibilityCondition, CharViewKey>({
+			selectors: AtomIO.selectorFamily<
+				RT.VisibilityCondition,
+				RT.MaskKey<CharacterKey<RT.Actual>>
+			>({
 				key: `characterVisibility`,
 				get: (_) => (__) => {
 					return `masked`
 				},
 			}),
 		})
-		type PlayerViewKey = AtomIO.Compound<
-			AtomIO.Tag<`view`>,
-			UserKey<RT.Actual>,
-			PlayerKey<RT.Actual>
-		>
 		const {
 			globalIndex: playerGlobalIndex,
 			perspectiveIndices: playerPerspectiveIndices,
 		} = RT.view({
 			key: `player`,
-			selectors: AtomIO.selectorFamily<RT.VisibilityCondition, PlayerViewKey>({
+			selectors: AtomIO.selectorFamily<
+				RT.VisibilityCondition,
+				RT.MaskKey<PlayerKey<RT.Actual>>
+			>({
 				key: `playerVisibility`,
 				get: (_) => (__) => {
 					return `masked`
@@ -283,24 +281,93 @@ describe(`join in perspective`, () => {
 
 		const worldTimeAtom = AtomIO.atom<number>({ key: `worldTime`, default: 0 })
 
-		const players = join({
-			key: `players`,
-			between: [`game`, `user`],
-			cardinality: `1:n`,
-			isAType: isGameKey,
-			isBType: RTS.isUserKey,
-		})
-
 		const playersOfGames = join(
 			{
-				key: `playersOfGames`,
+				key: `players`,
 				between: [`game`, `user`],
-				cardinality: `n:n`,
+				cardinality: `1:n`,
 				isAType: isGameKey,
 				isBType: RTS.isUserKey,
 			},
-			{ defaultContent: `X` as PlayerKey },
+			{ playerKey: `X` as PlayerKey },
 		)
+
+		const gameIndex = AtomIO.atom<SetRTX<GameKey>, SetRTXJson<GameKey>>({
+			key: `gameIndex`,
+			mutable: true,
+			default: () => new SetRTX<GameKey>(),
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+
+		const playersOfGamesJsonMasks = AtomIO.selectorFamily<
+			SetRTXJson<UserKey<RT.Alias>>,
+			RT.MaskKey<GameKey>
+		>({
+			key: `playersOfGamesJsonMask`,
+			get:
+				(maskKey) =>
+				({ env, find, get, json }) => {
+					const { store } = env()
+					const [, userKey, gameUserRelationKey] =
+						AtomIO.decomposeCompoundKey(maskKey)
+					const jsonRelationsUnmasked = get(
+						json(
+							find(
+								getInternalRelationsFromStore(playersOfGames, store),
+								gameUserRelationKey,
+							),
+						),
+					)
+					if (jsonRelationsUnmasked.members.includes(userKey)) {
+						const aliasedPlayerKeys: UserKey<RT.Alias>[] = []
+						for (const memberKey of jsonRelationsUnmasked.members) {
+							if (RTS.isActualUserKey(memberKey)) {
+								const [memberActuals, compileAliasedKeys] =
+									RT.extractActualKeys(memberKey)
+								const memberAliases: RT.Alias[] = []
+								for (const actual of memberActuals) {
+									const perspectiveKey: RT.PerspectiveKey = `T$--perspective==${actual}++${userKey}`
+									const alias = get(
+										findRelationsInStore(
+											perspectiveAliases,
+											perspectiveKey,
+											store,
+										).aliasKeyOfPerspective,
+									)
+									if (alias) {
+										memberAliases.push(alias)
+									}
+								}
+								const aliasKey = compileAliasedKeys(memberAliases)
+								aliasedPlayerKeys.push(aliasKey)
+							}
+						}
+						return {
+							...jsonRelationsUnmasked,
+							members: aliasedPlayerKeys,
+						}
+					}
+					return new SetRTX<UserKey<RT.Alias>>().toJSON()
+				},
+		})
+
+		const playersOfGamesUpdateMasks = AtomIO.selectorFamily<
+			Signal<SetRTX<UserKey<RT.Alias>>>,
+			RT.MaskKey<GameKey>
+		>({
+			key: `playersOfGamesUpdateMask`,
+			get:
+				(maskKey) =>
+				({ find, get }) => {
+					const [, , gameUserRelationKey] = AtomIO.decomposeCompoundKey(maskKey)
+					return get(
+						getUpdateToken(
+							find(getInternalRelations(playersOfGames), gameUserRelationKey),
+						),
+					)
+				},
+		})
 
 		const userAliasSelectors = AtomIO.selectorFamily<
 			UserKey<RT.Alias> | null,
@@ -333,19 +400,15 @@ describe(`join in perspective`, () => {
 		})
 		const playerCharactersJsonMasks = AtomIO.selectorFamily<
 			SetRTXJson<CharacterKey<RT.Alias> | PlayerKey<RT.Alias>>,
-			Compound<
-				AtomIO.Tag<`mask`>,
-				UserKey<RT.Actual>,
-				CharacterKey<RT.Actual> | PlayerKey<RT.Actual>
-			>
+			RT.MaskKey<CharacterKey<RT.Actual> | PlayerKey<RT.Actual>>
 		>({
 			key: `playerCharacterJsonMask`,
 			get:
 				(maskKey) =>
 				({ env, find, get, json }) => {
+					const { store } = env()
 					const [, ownerKey, playerCharacterRelationKey] =
 						AtomIO.decomposeCompoundKey(maskKey)
-					const { store } = env()
 					const jsonUnmasked = get(
 						json(
 							find(
@@ -377,8 +440,7 @@ describe(`join in perspective`, () => {
 							for (const actual of memberActuals) {
 								const perspectiveKey =
 									`T$--perspective==${actual}++${ownerKey}` as const
-								const alias = getFromStore(
-									store,
+								const alias = get(
 									findRelationsInStore(perspectiveAliases, perspectiveKey, store)
 										.aliasKeyOfPerspective,
 								)
@@ -435,20 +497,6 @@ describe(`join in perspective`, () => {
 			},
 			set: (_) => (__) => {},
 		})
-		// const healthAtoms = AtomIO.atomFamily<number, CharacterKey>({
-		// 	key: `health`,
-		// 	default: 0,
-		// })
-		// const healthMasks = AtomIO.selectorFamily<
-		// 	number | null,
-		// 	CharacterKey<RT.Alias>
-		// >({
-		// 	key: `healthMask`,
-		// 	get: (_) => (__) => {
-		// 		return 0
-		// 	},
-		// 	set: (_) => (__) => {},
-		// })
 		const healthAtoms = AtomIO.atomFamily<number, CharacterKey>({
 			key: `health`,
 			default: 0,
@@ -485,16 +533,17 @@ describe(`join in perspective`, () => {
 			},
 		})
 
-		const a = [
-			healthAtoms,
-			healthMasks,
-		] satisfies RT.RegularMaskToken<`character::$$${string}$$`>
-
 		const gameContinuity = RT.continuity({
 			key: `game`,
 			config: (group) =>
 				group
+					.actions(attackTX)
 					.globals(currentGameKeyAtom, worldTimeAtom)
+					.dynamic(gameIndex, {
+						base: getInternalRelations(playersOfGames),
+						jsonMask: playersOfGamesJsonMasks,
+						signalMask: playersOfGamesUpdateMasks,
+					})
 					.perspective(
 						characterPerspectiveIndices,
 						[healthAtoms, healthMasks],
@@ -508,8 +557,7 @@ describe(`join in perspective`, () => {
 						getInternalRelations(playerCharacters),
 						playerCharactersJsonMasks,
 						playerCharactersUpdateMasks,
-					])
-					.actions(attackTX),
+					]),
 		})
 
 		const myPlayerKeySelector = AtomIO.selector<PlayerKey<RT.Alias> | null>({
@@ -569,6 +617,20 @@ describe(`join in perspective`, () => {
 				server: ({ socket, silo }) => {
 					const { store } = silo
 
+					silo.setState(gameIndex, (prev) => prev.add(`game::battle`))
+					editRelationsInStore(
+						playersOfGames,
+						(relations) => {
+							relations.set(
+								{
+									user: `user::__jane-1__`,
+									game: `game::battle`,
+								},
+								{ playerKey: `T$--player==game::battle++user::__jane-1__` },
+							)
+						},
+						store,
+					)
 					silo.setState(characterGlobalIndex, (prev) =>
 						prev.add(`character::__janette__`),
 					)

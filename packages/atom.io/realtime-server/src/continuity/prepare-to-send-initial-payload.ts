@@ -8,14 +8,14 @@ import {
 	isRootStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
+import type { Actual, ContinuityToken, MaskKey } from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
 
 export function prepareToSendInitialPayload(
 	store: Store,
 	continuity: ContinuityToken,
-	userKey: UserKey,
+	userKey: UserKey<Actual>,
 	socket: Socket | null,
 ): () => void {
 	const continuityKey = continuity.key
@@ -45,10 +45,11 @@ export function prepareToSendInitialPayload(
 					userView: globalView,
 				},
 			)
-			for (const key of globalView) {
+			for (let key of globalView) {
 				for (const dynamicResource of dynamicResources) {
 					let resourceFamily: ReadableFamilyToken<any, string>
 					if (`base` in dynamicResource) {
+						key = `T$--mask==${userKey}++${key}` satisfies MaskKey<string>
 						if (`mask` in dynamicResource) {
 							resourceFamily = dynamicResource.mask
 						} else {
@@ -78,7 +79,8 @@ export function prepareToSendInitialPayload(
 					userView,
 				})
 				for (const [actual, alias] of userView) {
-					const maskKey = `T$--mask==${userKey}++${actual}` as const
+					const maskKey =
+						`T$--mask==${userKey}++${actual}` satisfies MaskKey<string>
 					const maskToken = findInStore(store, maskFamily, maskKey)
 					const fakeToken = {
 						key: `${baseFamily.key}("${alias}")`,
