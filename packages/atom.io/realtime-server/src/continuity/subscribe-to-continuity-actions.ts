@@ -16,8 +16,7 @@ import {
 	type PerspectiveKey,
 } from "atom.io/realtime"
 
-import type { Socket, UserKey } from ".."
-import { userUnacknowledgedQueues } from "../realtime-server-stores"
+import { type Socket, type UserKey, userUnacknowledgedQueues } from ".."
 import type { TransactionResponse } from "./prepare-to-serve-transaction-request"
 
 export function aliasTransactionUpdate(
