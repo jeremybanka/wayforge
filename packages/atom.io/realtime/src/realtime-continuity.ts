@@ -20,7 +20,12 @@ import type { Json, JsonIO } from "atom.io/json"
 import { fromEntries } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
 
-import type { Actual, AnyAliasKey, ToActual } from "./realtime-occlusion-store"
+import type {
+	Actual,
+	AnyAliasKey,
+	MaskKey,
+	ToActual,
+} from "./realtime-occlusion-store"
 
 /* eslint-disable no-console */
 
@@ -79,7 +84,7 @@ export type MutableMaskToken<
 			: never
 		: never,
 	jsonMask: MaskedStates extends ReadonlySelectorFamilyToken<any, infer JsonKey>
-		? Compound<Tag<`mask`>, UserKey, ToActual<K>> extends JsonKey
+		? MaskKey<ToActual<K>> extends JsonKey
 			? MaskedStates
 			: never
 		: never,
@@ -87,7 +92,7 @@ export type MutableMaskToken<
 		any,
 		infer SignalKey
 	>
-		? Compound<Tag<`mask`>, UserKey, ToActual<K>> extends SignalKey
+		? MaskKey<ToActual<K>> extends SignalKey
 			? SignalMaskedStates
 			: never
 		: never,
@@ -111,11 +116,8 @@ export type RegularMaskToken<
 			? BaseStates
 			: never
 		: never,
-	maskStates: MaskedStates extends ReadonlySelectorFamilyToken<
-		any,
-		Compound<Tag<`mask`>, UserKey<Actual>, infer MaskKey>
-	>
-		? ToActual<K> extends MaskKey
+	maskStates: MaskedStates extends ReadonlySelectorFamilyToken<any, infer Masked>
+		? MaskKey<ToActual<K>> extends Masked
 			? MaskedStates
 			: never
 		: never,
@@ -150,12 +152,12 @@ export type MaskedMutableResourceToken<
 	S extends Json.Serializable,
 > = {
 	base: MutableAtomFamilyToken<Transceiver<S>, J, K>
-	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, K>
-	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, K>
+	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, MaskKey<K>>
+	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, MaskKey<K>>
 }
 export type MaskedRegularResourceToken<K extends string> = {
 	base: RegularAtomFamilyToken<any, K>
-	mask: ReadonlySelectorFamilyToken<any, K>
+	mask: ReadonlySelectorFamilyToken<any, MaskKey<K>>
 }
 
 export type DynamicResourceToken<K extends string> =

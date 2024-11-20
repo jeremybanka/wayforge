@@ -1,4 +1,5 @@
 import type {
+	AnyTypedKey,
 	Compound,
 	MutableAtomToken,
 	Original,
@@ -212,15 +213,13 @@ export type UnwrapAlias<K extends AnyAliasKey> = K extends Original<
 	? A
 	: never
 
-export type ViewOptions<K extends AnyActualKey> = {
+export type MaskKey<K extends string> = Compound<Tag<`mask`>, UserKey<Actual>, K>
+export type ViewOptions<K extends AnyActualKey & AnyTypedKey> = {
 	key: string
-	selectors: SelectorFamilyToken<
-		VisibilityCondition,
-		Compound<Tag<`view`>, UserKey<Actual>, K>
-	>
+	selectors: SelectorFamilyToken<VisibilityCondition, MaskKey<K>>
 }
 
-export function view<K extends AnyActualKey>({
+export function view<K extends AnyActualKey & AnyTypedKey>({
 	key,
 	selectors: visibilitySelectors,
 }: ViewOptions<K>): {
@@ -251,7 +250,7 @@ export function view<K extends AnyActualKey>({
 				for (const actualTypedKey of typedActualKeys) {
 					const [actuals, compileAliasKey] = extractActualKeys(actualTypedKey)
 					const visibility = get(
-						find(visibilitySelectors, `T$--view==${userKey}++${actualTypedKey}`),
+						find(visibilitySelectors, `T$--mask==${userKey}++${actualTypedKey}`),
 					)
 					switch (visibility) {
 						case `secret`:
