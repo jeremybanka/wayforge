@@ -26,7 +26,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"dependencies": {
-		"@microsoft/tsdoc": "0.15.0",
+		"@microsoft/tsdoc": "0.15.1",
 		"colors": "1.4.0"
 	},
 	"scripts": {
