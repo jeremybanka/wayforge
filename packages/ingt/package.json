@@ -23,7 +23,7 @@
 		"io-ts": "2.2.21"
 	},
 	"devDependencies": {
-		"@types/node": "22.9.1",
+		"@types/node": "22.9.2",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",
 		"vite": "5.4.11",
