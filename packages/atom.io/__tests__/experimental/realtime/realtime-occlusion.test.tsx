@@ -6,6 +6,7 @@ import {
 	editRelations,
 	editRelationsInStore,
 	findRelationsInStore,
+	getInternalContentFromStore,
 	getInternalRelations,
 	getInternalRelationsFromStore,
 	join,
@@ -302,7 +303,7 @@ describe(`join in perspective`, () => {
 
 		const playersOfGamesJsonMasks = AtomIO.selectorFamily<
 			SetRTXJson<UserKey<RT.Alias>>,
-			RT.MaskKey<GameKey>
+			RT.MaskKey<GameKey> | RT.MaskKey<UserKey<RT.Actual>>
 		>({
 			key: `playersOfGamesJsonMask`,
 			get:
@@ -369,26 +370,45 @@ describe(`join in perspective`, () => {
 				},
 		})
 
-		const userAliasSelectors = AtomIO.selectorFamily<
-			UserKey<RT.Alias> | null,
-			UserKey<RT.Actual>
+		const myPlayerDataSelector = AtomIO.selector<
+			[GameKey, { playerKey: PlayerKey }] | null
 		>({
-			key: `playerSelectors`,
-			get:
-				(userKey) =>
-				({ env, get }) => {
-					const { store } = env()
-					const actual = RT.extractActualKeys(userKey)[0][0]
-					const perspectiveKey: RT.PerspectiveKey = `T$--perspective==${actual}++${userKey}`
-					const userAlias = get(
-						findRelationsInStore(perspectiveAliases, perspectiveKey, store)
-							.aliasKeyOfPerspective,
-					)
-					if (userAlias) {
-						return `user::${userAlias}`
-					}
+			key: `myPlayerData`,
+			get: ({ env, get }) => {
+				const { store } = env()
+				const myKey = get(myUserKeyActualState)
+				if (myKey === null) {
 					return null
-				},
+				}
+				const gameEntry = get(
+					findRelationsInStore(playersOfGames, myKey, store).gameEntryOfUser,
+				)
+				if (gameEntry === null) {
+					return null
+				}
+				return gameEntry
+			},
+		})
+
+		const myAliasSelector = AtomIO.selector<UserKey<RT.Alias> | null>({
+			key: `myAlias`,
+			get: ({ env, get }) => {
+				const { store } = env()
+				const myKey = get(myUserKeyActualState)
+				if (myKey === null) {
+					return null
+				}
+				const actual = RT.extractActualKeys(myKey)[0][0]
+				const perspectiveKey: RT.PerspectiveKey = `T$--perspective==${actual}++${myKey}`
+				const userAlias = get(
+					findRelationsInStore(perspectiveAliases, perspectiveKey, store)
+						.aliasKeyOfPerspective,
+				)
+				if (userAlias) {
+					return `user::${userAlias}`
+				}
+				return null
+			},
 		})
 
 		const playerCharacters = join({
@@ -533,11 +553,72 @@ describe(`join in perspective`, () => {
 			},
 		})
 
+		const createCharacterTX = AtomIO.transaction<
+			(userKey: UserKey<RT.Actual>, alias: RT.Alias) => void
+		>({
+			key: `createCharacter`,
+			do: ({ get, env, set }, userKey, alias) => {
+				const { store } = env()
+				let practicalCharacterKey: CharacterKey = `character::${alias}`
+				let practicalUserKey: UserKey = userKey
+				if (store.config.name === `SERVER`) {
+					// validations
+					// id must be 8 characters base 64
+					const idIsValid =
+						alias.length === 12 && /^\$\$[0-9a-zA-Z]+\$\$$/.test(alias)
+					if (!idIsValid) {
+						throw new Error(`Character ID must be 8 characters base 64`)
+					}
+					// id must not already exist as an alias to this user
+					if (
+						get(
+							findRelationsInStore(perspectiveAliases, alias, store)
+								.perspectiveKeyOfAlias,
+						)
+					) {
+						throw new Error(`Character ID already exists as an alias`)
+					}
+
+					const actualId: RT.Actual = `__${Math.random().toString(36).slice(2, 10)}__`
+					const actualCharacterKey: CharacterKey<RT.Actual> = `character::${actualId}`
+					practicalCharacterKey = actualCharacterKey
+				} else {
+					const aliasUserKey = get(myAliasSelector)
+					if (aliasUserKey === null) {
+						throw new Error(`You have not retrieved your user alias.`)
+					}
+					practicalUserKey = aliasUserKey
+				}
+
+				const gameEntry = get(
+					findRelationsInStore(playersOfGames, practicalUserKey, store)
+						.gameEntryOfUser,
+				)
+				if (gameEntry === null) {
+					throw new Error(`User is not in a game`)
+				}
+				const [, { playerKey }] = gameEntry
+
+				set(characterGlobalIndex, (prev) => prev.add(practicalCharacterKey))
+				editRelationsInStore(
+					playerCharacters,
+					(relations) => {
+						relations.set({
+							player: playerKey,
+							character: practicalCharacterKey,
+						})
+					},
+					store,
+				)
+			},
+		})
+
 		const gameContinuity = RT.continuity({
 			key: `game`,
 			config: (group) =>
 				group
 					.actions(attackTX)
+					.actions(createCharacterTX)
 					.globals(currentGameKeyAtom, worldTimeAtom)
 					.dynamic(gameIndex, {
 						base: getInternalRelations(playersOfGames),
@@ -560,25 +641,9 @@ describe(`join in perspective`, () => {
 					]),
 		})
 
-		const myPlayerKeySelector = AtomIO.selector<PlayerKey<RT.Alias> | null>({
-			key: `myPlayerKey`,
-			get: ({ get }) => {
-				const myUserKeyActual = get(myUserKeyActualState)
-				if (myUserKeyActual === null) {
-					return null
-				}
-				const myUserAliasKey = get(userAliasSelectors, myUserKeyActual)
-				if (!myUserAliasKey) {
-					return null
-				}
-				const currentGameKey = get(currentGameKeyAtom)
-				return `T$--player==${currentGameKey}++${myUserAliasKey}`
-			},
-		})
-
-		const GameSpace: FC<{ myPlayerKey: PlayerKey<RT.Alias> }> = ({
-			myPlayerKey,
-		}) => {
+		const GameSpace: FC<{
+			myPlayerData: [GameKey, { playerKey: PlayerKey }]
+		}> = ({ myPlayerData: [, { playerKey: myPlayerKey }] }) => {
 			const store = useContext(AR.StoreContext)
 
 			const myCharacterKeys = AR.useO(
@@ -602,28 +667,33 @@ describe(`join in perspective`, () => {
 			)
 		}
 
-		const UserSpace: FC<{ myUserKey: UserKey<RT.Actual> }> = ({ myUserKey }) => {
-			const store = useContext(AR.StoreContext)
-
-			RTR.usePullSelector(findInStore(store, userAliasSelectors, myUserKey))
-			const myPlayerKey = AR.useO(myPlayerKeySelector)
-
-			return myPlayerKey ? <GameSpace myPlayerKey={myPlayerKey} /> : null
-		}
-
 		return Object.assign(
 			RTTest.multiClient({
 				port: 5485,
 				server: ({ socket, silo }) => {
 					const { store } = silo
+					silo.setState(playerGlobalIndex, (prev) =>
+						prev.add(`T$--player==game::battle++user::__jane-1__`),
+					)
+					const socketUser = silo.getState(
+						findRelationsInStore(
+							RTS.usersOfSockets,
+							`socket::${socket.id}`,
+							store,
+						).userKeyOfSocket,
+					)
 
+					console.log(`😽`, socketUser)
+					if (socketUser === null) {
+						throw new Error(`No user found for socket`)
+					}
 					silo.setState(gameIndex, (prev) => prev.add(`game::battle`))
 					editRelationsInStore(
 						playersOfGames,
 						(relations) => {
 							relations.set(
 								{
-									user: `user::__jane-1__`,
+									user: socketUser,
 									game: `game::battle`,
 								},
 								{ playerKey: `T$--player==game::battle++user::__jane-1__` },
@@ -631,23 +701,15 @@ describe(`join in perspective`, () => {
 						},
 						store,
 					)
-					silo.setState(characterGlobalIndex, (prev) =>
-						prev.add(`character::__janette__`),
+					const userGame = silo.getState(
+						findRelationsInStore(playersOfGames, socketUser, store)
+							.gameKeyOfUser,
 					)
-					silo.setState(playerGlobalIndex, (prev) =>
-						prev.add(`T$--player==game::battle++user::__jane-1__`),
-					)
-					editRelationsInStore(
-						playerCharacters,
-						(relations) => {
-							relations.set({
-								player: `T$--player==game::battle++user::__jane-1__`,
-								character: `character::__janette__`,
-							})
-						},
-						store,
-					)
+					if (userGame === null) {
+						throw new Error(`No game found for user`)
+					}
 
+					const exposeRegular = RTS.realtimeStateProvider({ socket, store })
 					const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
 					const playerAlias = findInStore(
 						store,
@@ -655,7 +717,25 @@ describe(`join in perspective`, () => {
 						`T$--perspective==__jane-1__++user::__jane-1__`,
 					)
 					console.log(`playerAlias`, playerAlias)
+					const userGameAtom = findInStore(
+						store,
+						getInternalRelationsFromStore(playersOfGames, store),
+						socketUser,
+					)
+					console.log(`userGame`, userGame)
+					const gamePlayerContentAtoms = getInternalContentFromStore(
+						store,
+						playersOfGames,
+					)
+					const userGamePlayer = findInStore(
+						store,
+						gamePlayerContentAtoms,
+						`${userGame}:${socketUser}`,
+					)
+					exposeRegular(userGamePlayer)
 					exposeMutable(playerAlias)
+					exposeMutable(userGameAtom)
+
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -665,21 +745,26 @@ describe(`join in perspective`, () => {
 				clients: {
 					jane: () => {
 						RTR.useSyncContinuity(gameContinuity)
-						const myUserKeyActual = AR.useO(myUserKeyActualState)
-						return myUserKeyActual ? (
-							<UserSpace myUserKey={myUserKeyActual} />
+						RTR.usePullSelector(myAliasSelector)
+						RTR.usePullSelector(myPlayerDataSelector)
+						const myPlayerData = AR.useO(myPlayerDataSelector)
+
+						return myPlayerData ? (
+							<GameSpace myPlayerData={myPlayerData} />
 						) : null
 					},
 				},
 			}),
 			{
 				isCharacterKey,
+				createCharacterTX,
 			},
 		)
 	}
 
 	test(`occlusion`, async () => {
-		const { clients, server, teardown, isCharacterKey } = scenario()
+		const { clients, server, teardown, isCharacterKey, createCharacterTX } =
+			scenario()
 		const jane = clients.jane.init()
 
 		jane.enableLogging()
@@ -687,6 +772,11 @@ describe(`join in perspective`, () => {
 		await waitFor(() => {
 			throwUntil(jane.socket.connected)
 		})
+
+		jane.silo.runTransaction(createCharacterTX)(
+			`user::__jane-1__`,
+			`$$00000000$$`,
+		)
 
 		let i = 0
 		await waitFor(() => {

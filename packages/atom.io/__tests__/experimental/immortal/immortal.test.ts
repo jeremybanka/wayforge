@@ -13,6 +13,7 @@ import { editRelations, findRelations, getJoin, join } from "atom.io/data"
 import { findState } from "atom.io/ephemeral"
 import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
+import { string } from "zod"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
@@ -255,8 +256,8 @@ describe(`immortal integrations`, () => {
 				key: `holdersOfItems`,
 				between: [`holder`, `item`],
 				cardinality: `1:n`,
-				isAType: (a): a is string => typeof a === `string`,
-				isBType: (b): b is string => typeof b === `string`,
+				isAType: (a): a is `holder-${string}` => a.startsWith(`holder-`),
+				isBType: (b): b is `item-${string}` => b.startsWith(`item-`),
 			},
 			{ affinity: 0 } satisfies { affinity: number },
 		)
@@ -298,6 +299,7 @@ describe(`immortal integrations`, () => {
 			`Readonly Selector Family "holdersOfItems/singleRelatedEntry" member "item-1" not found in store "IMPLICIT_STORE".`,
 		)
 
+		console.log(internalJoin.molecules)
 		expect(internalJoin.molecules.size).toBe(2)
 		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(3)
 
