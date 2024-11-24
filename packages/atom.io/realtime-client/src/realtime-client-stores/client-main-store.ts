@@ -25,7 +25,7 @@ export const myUserKeyActualState = AtomIO.selector<UserKey<Actual> | null>({
 	key: `myUserKeyActual`,
 	get: ({ get }) => {
 		const myUsername = get(myUsernameState)
-		if (myUsername === undefined) return null
+		if (myUsername === null) return null
 		return `user::__${myUsername}__` satisfies UserKey<Actual>
 	},
 })

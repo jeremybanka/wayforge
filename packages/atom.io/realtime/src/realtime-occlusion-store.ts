@@ -223,7 +223,7 @@ export function view<K extends AnyActualKey & AnyTypedKey>({
 	key,
 	selectors: visibilitySelectors,
 }: ViewOptions<K>): {
-	readonly globalIndex: MutableAtomToken<SetRTX<K>, SetRTXJson<K>>
+	readonly globalIndex: MutableAtomToken<SetRTX<K | ToAlias<K>>, SetRTXJson<K>>
 	readonly perspectiveIndices: ReadonlySelectorFamilyToken<
 		[actual: K, alias: ToAlias<K>][],
 		UserKey<Actual>

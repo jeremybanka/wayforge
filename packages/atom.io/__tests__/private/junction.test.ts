@@ -1,5 +1,4 @@
 import { Junction } from "atom.io/internal"
-import type { Refinement } from "atom.io/introspection"
 import { jsonRefinery } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { isJson } from "atom.io/json"
@@ -296,9 +295,9 @@ describe(`Junction.prototype.toJSON`, () => {
 			cardinality: `1:n`,
 			between: [`type`, `pokémon`],
 			contents: [
-				[`grass:bulbasaur`, { isDelta: true }],
+				[`bulbasaur:grass`, { isDelta: true }],
 				[`grass:oddish`, { isDelta: true }],
-				[`grass:bellsprout`, { isDelta: false }],
+				[`bellsprout:grass`, { isDelta: false }],
 			],
 			relations: [
 				[`grass`, [`bulbasaur`, `oddish`, `bellsprout`]],
@@ -353,18 +352,15 @@ describe(`Junction.prototype.replaceRelations`, () => {
 	})
 	describe(`unsafely`, () => {
 		it(`replaces all relations for a given id`, () => {
+			const isIngredient = (input: string): input is `🫙 ${string}` =>
+				input.startsWith(`🫙 `)
 			const candyIngredients = new Junction(
 				{
 					between: [`ingredient`, `candy`],
 					cardinality: `n:n`,
 				},
 				{
-					makeContentKey: (...keys) => keys.sort().join(`:`),
-					isAType: ((input): input is `🫙 ${string}` =>
-						input.startsWith(`🫙 `)) satisfies Refinement<
-						string,
-						`🫙 ${string}`
-					>,
+					// isAType: isIngredient,
 					isContent: (input: unknown): input is { quantity: number } =>
 						z.object({ quantity: z.number() }).safeParse(input).success,
 				},
@@ -520,9 +516,6 @@ describe(`Junction with external storage`, () => {
 		const player = `Adelaide`
 		const joinedAt = 162
 		playersInRooms.set({ player, room }, { joinedAt })
-		console.log({ relationMap })
-		console.log({ contentMap })
-		console.log(playersInRooms)
 		expect(playersInRooms.has(room)).toBe(true)
 		expect(playersInRooms.getRelatedKeys(player)).toEqual(new Set([room]))
 		expect(playersInRooms.getContent(room, player)).toEqual({ joinedAt })

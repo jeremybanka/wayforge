@@ -151,6 +151,39 @@ export type JoinStateFamilies<
 				}
 			: never
 
+export type BaseJoinCore<AType extends string, BType extends string> = {
+	relatedKeysAtoms: MutableAtomFamilyToken<
+		SetRTX<AType | BType>,
+		SetRTXJson<AType | BType>,
+		AType | BType
+	>
+}
+export type ContentfulJoinCore<
+	AType extends string,
+	BType extends string,
+	Content extends Json.Object,
+> = BaseJoinCore<AType, BType> & {
+	contentAtoms: RegularAtomFamilyToken<Content, `${AType}:${BType}`>
+}
+
+export type JoinCore<
+	AType extends string,
+	BType extends string,
+	Content extends Json.Object | null,
+> = Content extends Json.Object
+	? ContentfulJoinCore<AType, BType, Content>
+	: BaseJoinCore<AType, BType>
+
+export function isContentful<
+	AType extends string,
+	BType extends string,
+	Content extends Json.Object | null,
+>(
+	input: BaseJoinCore<AType, BType>,
+): input is ContentfulJoinCore<AType, BType, Exclude<Content, null>> {
+	return `contentAtoms` in input
+}
+
 export class Join<
 	const ASide extends string,
 	const AType extends string,
@@ -173,13 +206,7 @@ export class Join<
 		Cardinality,
 		Content
 	>
-	public core: {
-		relatedKeysAtoms: MutableAtomFamilyToken<
-			SetRTX<AType | BType>,
-			SetRTXJson<AType | BType>,
-			AType | BType
-		>
-	}
+	public core: JoinCore<AType, BType, Content>
 	public transact(
 		toolkit: SetterToolkit & { dispose: typeof disposeState },
 		run: (join: Join<ASide, AType, BSide, BType, Cardinality, Content>) => void,
@@ -279,7 +306,10 @@ export class Join<
 			},
 			[`join`, `relations`],
 		)
-		this.core = { relatedKeysAtoms }
+		this.core = { relatedKeysAtoms } as any
+		if (defaultContent) {
+			Object.assign(this.core, { contentAtoms: null })
+		}
 		const getRelatedKeys: Read<(key: AType | BType) => SetRTX<AType | BType>> = (
 			{ get },
 			key,
@@ -433,12 +463,16 @@ export class Join<
 				..._: any[]
 			) => { key: string }
 		>
-		if (defaultContent) {
-			contentAtoms = createRegularAtomFamily<Content, string>(
+		if (isContentful(this.core)) {
+			type NonNullContent = Exclude<Content, null>
+			this.core.contentAtoms = contentAtoms = createRegularAtomFamily<
+				NonNullContent,
+				`${AType}:${BType}`
+			>(
 				store,
 				{
 					key: `${options.key}/content`,
-					default: defaultContent,
+					default: defaultContent as NonNullContent,
 				},
 				[`join`, `content`],
 			)
@@ -501,16 +535,17 @@ export class Join<
 				isAType: options.isAType,
 				isBType: options.isBType,
 				makeContentKey: (...args) => {
-					const sorted = args.sort()
-					const compositeKey = `${sorted[0]}:${sorted[1]}`
-					const [m0, m1] = sorted.map((key) =>
+					const a = options.isAType(args[0]) ? args[0] : args[1]
+					const b = options.isBType(args[1]) ? args[1] : args[0]
+					const compositeKey = `${a}:${b}` as `${AType}:${BType}`
+					const [ma, mb] = [a, b].map((key) =>
 						this.molecules.get(stringifyJson(key)),
 					)
-					if (store.config.lifespan === `immortal` && m0 && m1) {
+					if (store.config.lifespan === `immortal` && ma && mb) {
 						const target = newest(store)
 						const moleculeToken = makeMoleculeInStore(
 							target,
-							[m0, m1],
+							[ma, mb],
 							contentMolecules,
 							compositeKey,
 						)
@@ -1107,4 +1142,33 @@ export function getInternalRelations<
 	AType | BType
 > {
 	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
+}
+
+export function getInternalContentFromStore<
+	ASide extends string,
+	AType extends string,
+	BSide extends string,
+	BType extends string,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
+	Content extends Json.Object,
+>(
+	store: Store,
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
+): RegularAtomFamilyToken<Content, `${AType}:${BType}`> {
+	const myJoin = getJoin(token, store)
+	const { contentAtoms } = myJoin.core
+	return contentAtoms as any
+}
+
+export function getInternalContent<
+	ASide extends string,
+	AType extends string,
+	BSide extends string,
+	BType extends string,
+	Cardinality extends `1:1` | `1:n` | `n:n`,
+	Content extends Json.Object,
+>(
+	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
+): RegularAtomFamilyToken<Content, `${AType}:${BType}`> {
+	return getInternalContentFromStore(IMPLICIT.STORE, token)
 }
