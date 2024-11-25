@@ -28,7 +28,7 @@
 		"chokidar": "4.0.1",
 		"concurrently": "9.1.0",
 		"htmx.org": "2.0.3",
-		"lightningcss": "1.28.1",
+		"lightningcss": "1.28.2",
 		"npmlog": "7.0.1",
 		"preact": "10.25.0",
 		"typed-htmx": "0.3.1"
