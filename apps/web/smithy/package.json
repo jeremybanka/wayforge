@@ -33,7 +33,7 @@
 		"@testing-library/jest-dom": "6.6.3",
 		"@testing-library/react": "16.0.1",
 		"@types/react": "18.3.12",
-		"@vitejs/plugin-react": "4.3.3",
+		"@vitejs/plugin-react": "4.3.4",
 		"cross-env": "7.0.3",
 		"eslint": "9.15.0",
 		"happy-dom": "15.11.6",
