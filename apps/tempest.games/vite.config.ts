@@ -1,12 +1,11 @@
 import react from "@vitejs/plugin-react-swc"
 import { loadEnv } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
-import { defineConfig } from "vitest/config"
+import { defineConfig, UserConfigFn } from "vitest/config"
 
 // https://vitejs.dev/config/
-export default defineConfig(async ({ mode }) => {
-	const { dirname } = import.meta
-	const env = loadEnv(mode, dirname, mode === `test` ? `` : undefined)
+export default defineConfig((async ({ mode }) => {
+	const env = loadEnv(mode, `.`, mode === `test` ? `` : undefined)
 	Object.assign(import.meta, { env })
 	await import(`./src/library/env`)
 	const { httpsDev } = await import(`./dev/https-dev`)
@@ -26,4 +25,4 @@ export default defineConfig(async ({ mode }) => {
 			include: [`src/**/*.test.ts`],
 		},
 	}
-})
+}) satisfies UserConfigFn)
