@@ -39,6 +39,6 @@
 		"concurrently": "9.1.0",
 		"tmp": "0.2.3",
 		"tsup": "8.3.5",
-		"vitest": "2.1.5"
+		"vitest": "2.1.6"
 	}
 }
