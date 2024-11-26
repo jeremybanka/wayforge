@@ -58,7 +58,7 @@ export async function tribunal({
 		if (earlyExit) {
 			continue
 		}
-		if (generator.usdBudget > generator.usdFloor) {
+		if (generator.usdBudget > generator.usdMinimum) {
 			const prompt = logsToPrompt(logs)
 			const ruling = await generateBanRuling(prompt)
 			if (ruling.shouldBanIp) {
