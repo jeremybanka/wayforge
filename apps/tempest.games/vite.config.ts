@@ -5,8 +5,7 @@ import { defineConfig, UserConfigFn } from "vitest/config"
 
 // https://vitejs.dev/config/
 export default defineConfig((async ({ mode }) => {
-	const { dirname } = import.meta
-	const env = loadEnv(mode, dirname, mode === `test` ? `` : undefined)
+	const env = loadEnv(mode, `.`, mode === `test` ? `` : undefined)
 	Object.assign(import.meta, { env })
 	await import(`./src/library/env`)
 	const { httpsDev } = await import(`./dev/https-dev`)
