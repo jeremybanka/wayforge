@@ -24,7 +24,7 @@
 		"corners": "0.1.0",
 		"fp-ts": "2.16.9",
 		"motion": "11.11.17",
-		"nanoid": "5.0.8",
+		"nanoid": "5.0.9",
 		"preact": "10.25.0",
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat",
