@@ -622,8 +622,8 @@ importers:
         specifier: 7.25.9
         version: 7.25.9(@babel/core@7.26.0)
       '@preact/preset-vite':
-        specifier: 2.9.1
-        version: 2.9.1(@babel/core@7.26.0)(preact@10.25.0)(vite@6.0.1(@types/node@22.10.0)(jiti@2.4.0)(lightningcss@1.28.2)(sass-embedded@1.81.0)(sass@1.81.0)(terser@5.36.0)(tsx@4.19.2))
+        specifier: 2.9.2
+        version: 2.9.2(@babel/core@7.26.0)(preact@10.25.0)(vite@6.0.1(@types/node@22.10.0)(jiti@2.4.0)(lightningcss@1.28.2)(sass-embedded@1.81.0)(sass@1.81.0)(terser@5.36.0)(tsx@4.19.2))
       '@testing-library/jest-dom':
         specifier: 6.6.3
         version: 6.6.3
@@ -3387,11 +3387,11 @@ packages:
     peerDependencies:
       preact: '*'
 
-  '@preact/preset-vite@2.9.1':
-    resolution: {integrity: sha512-JecWzrOx7ogFhklSMhY+aH/24pajL0Vx+beEgau3WDMUUAo32cpUo/UqerPhLOyhCKXlxK9a3cRoa8g68ZAp5g==}
+  '@preact/preset-vite@2.9.2':
+    resolution: {integrity: sha512-Gtp0pPd4s/bZiPAvn4Lhd/on5YZXd/AaXoO03MMtLTmH7nsH3BuXFZnBqvXpqozBDthjxwDWwGEJcf129ctY+g==}
     peerDependencies:
       '@babel/core': 7.x
-      vite: 2.x || 3.x || 4.x || 5.x
+      vite: 2.x || 3.x || 4.x || 5.x || 6.x
 
   '@prefresh/babel-plugin@0.5.1':
     resolution: {integrity: sha512-uG3jGEAysxWoyG3XkYfjYHgaySFrSsaEb4GagLzYaxlydbuREtaX+FTxuIidp241RaLl85XoHg9Ej6E4+V1pcg==}
@@ -10289,7 +10289,7 @@ snapshots:
     dependencies:
       preact: 10.25.0
 
-  '@preact/preset-vite@2.9.1(@babel/core@7.26.0)(preact@10.25.0)(vite@6.0.1(@types/node@22.10.0)(jiti@2.4.0)(lightningcss@1.28.2)(sass-embedded@1.81.0)(sass@1.81.0)(terser@5.36.0)(tsx@4.19.2))':
+  '@preact/preset-vite@2.9.2(@babel/core@7.26.0)(preact@10.25.0)(vite@6.0.1(@types/node@22.10.0)(jiti@2.4.0)(lightningcss@1.28.2)(sass-embedded@1.81.0)(sass@1.81.0)(terser@5.36.0)(tsx@4.19.2))':
     dependencies:
       '@babel/code-frame': 7.26.2
       '@babel/core': 7.26.0
