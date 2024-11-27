@@ -1,7 +1,8 @@
 import react from "@vitejs/plugin-react-swc"
 import { loadEnv } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
-import { defineConfig, UserConfigFn } from "vitest/config"
+import type { UserConfigFn } from "vitest/config"
+import { defineConfig } from "vitest/config"
 
 // https://vitejs.dev/config/
 export default defineConfig((async ({ mode }) => {
