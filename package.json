@@ -32,7 +32,8 @@
 		"test:semver": "cross-env CI=true turbo run test:semver",
 		"release": "bun run build && changeset publish",
 		"notes": "changeset",
-		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml"
+		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
+		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
 	"trustedDependencies": ["@biomejs/biome"],
 	"devDependencies": {
