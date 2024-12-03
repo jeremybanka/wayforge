@@ -42,7 +42,7 @@
 		"cross-env": "7.0.3",
 		"eslint": "9.16.0",
 		"happy-dom": "15.11.7",
-		"sass": "1.81.0",
+		"sass": "1.81.1",
 		"typescript": "5.7.2",
 		"vite": "6.0.2",
 		"vite-plugin-svgr": "4.3.0",
