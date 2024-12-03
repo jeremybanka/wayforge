@@ -16,7 +16,7 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
-		"dotenv": "16.4.5",
+		"dotenv": "16.4.6",
 		"express": "4.21.1",
 		"fp-ts": "2.16.9",
 		"lodash": "4.17.21",
