@@ -47,7 +47,7 @@
 		"@typescript-eslint/parser": "8.17.0",
 		"c8": "10.1.2",
 		"cross-env": "7.0.3",
-		"eslint-plugin-import-x": "4.4.3",
+		"eslint-plugin-import-x": "4.5.0",
 		"eslint-plugin-simple-import-sort": "12.1.1",
 		"jiti": "2.4.1",
 		"turbo": "2.3.3",
