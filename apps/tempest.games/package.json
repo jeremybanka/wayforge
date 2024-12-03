@@ -72,7 +72,7 @@
 		"cross-env": "7.0.3",
 		"dotenv": "16.4.6",
 		"dotenv-cli": "7.4.4",
-		"drizzle-kit": "0.28.1",
+		"drizzle-kit": "0.29.0",
 		"eslint": "9.16.0",
 		"eslint-plugin-react-refresh": "0.4.16",
 		"globals": "15.13.0",
