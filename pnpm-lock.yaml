@@ -86,10 +86,10 @@ importers:
         version: 3.1.0(acorn@8.14.0)
       '@mdx-js/react':
         specifier: 3.1.0
-        version: 3.1.0(@types/react@18.3.12)(react@18.3.1)
+        version: 3.1.0(@types/react@18.3.13)(react@18.3.1)
       '@next/mdx':
         specifier: 15.0.3
-        version: 15.0.3(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
+        version: 15.0.3(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@18.3.13)(react@18.3.1))
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -100,8 +100,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@types/react-dom':
         specifier: 18.3.1
         version: 18.3.1
@@ -309,7 +309,7 @@ importers:
         version: 3.2.1
       drizzle-orm:
         specifier: 0.37.0
-        version: 0.37.0(@types/react@18.3.12)(bun-types@1.1.38)(postgres@3.4.5)(react@18.3.1)
+        version: 0.37.0(@types/react@18.3.13)(bun-types@1.1.38)(postgres@3.4.5)(react@18.3.1)
       openai:
         specifier: 4.75.0
         version: 4.75.0(zod@3.23.8)
@@ -324,7 +324,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       safegen:
         specifier: 0.1.4
-        version: 0.1.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.75.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
+        version: 0.1.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.75.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -348,8 +348,8 @@ importers:
         specifier: 22.10.1
         version: 22.10.1
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@types/react-dom':
         specifier: 18.3.1
         version: 18.3.1
@@ -451,8 +451,8 @@ importers:
         specifier: 22.10.1
         version: 22.10.1
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@types/react-dom':
         specifier: 18.3.1
         version: 18.3.1
@@ -492,7 +492,7 @@ importers:
     dependencies:
       '@emotion/styled':
         specifier: 11.13.5
-        version: 11.13.5(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1)
+        version: 11.13.5(@emotion/react@11.13.3(@types/react@18.3.13)(react@18.3.1))(@types/react@18.3.13)(react@18.3.1)
       '@eyecuelab/recoil-devtools':
         specifier: 0.1.7
         version: 0.1.7(@babel/core@7.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(recoil@0.7.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -538,10 +538,10 @@ importers:
         version: 6.6.3
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@vitejs/plugin-react':
         specifier: 4.3.4
         version: 4.3.4(vite@6.0.2(@types/node@22.10.1)(jiti@2.4.1)(lightningcss@1.28.2)(sass-embedded@1.82.0)(sass@1.82.0)(terser@5.36.0)(tsx@4.19.2))
@@ -574,7 +574,7 @@ importers:
     dependencies:
       '@emotion/styled':
         specifier: 11.13.5
-        version: 11.13.5(@emotion/react@11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.12))(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.12)
+        version: 11.13.5(@emotion/react@11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.13))(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.13)
       '@floating-ui/dom':
         specifier: 1.6.12
         version: 1.6.12
@@ -629,10 +629,10 @@ importers:
         version: 6.6.3
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@preact/compat@18.3.1(preact@10.25.1))(@preact/compat@18.3.1(preact@10.25.1))(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)
+        version: 16.0.1(@preact/compat@18.3.1(preact@10.25.1))(@preact/compat@18.3.1(preact@10.25.1))(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@vanilla-extract/vite-plugin':
         specifier: 4.0.18
         version: 4.0.18(@types/node@22.10.1)(babel-plugin-macros@3.1.0)(lightningcss@1.28.2)(sass-embedded@1.82.0)(sass@1.82.0)(terser@5.36.0)(vite@6.0.2(@types/node@22.10.1)(jiti@2.4.1)(lightningcss@1.28.2)(sass-embedded@1.82.0)(sass@1.82.0)(terser@5.36.0)(tsx@4.19.2))
@@ -693,7 +693,7 @@ importers:
     devDependencies:
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/eslint':
         specifier: 9.6.1
         version: 9.6.1
@@ -707,8 +707,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
@@ -732,7 +732,7 @@ importers:
         version: 0.29.1
       drizzle-orm:
         specifier: 0.37.0
-        version: 0.37.0(@types/react@18.3.12)(bun-types@1.1.38)(postgres@3.4.5)(react@18.3.1)
+        version: 0.37.0(@types/react@18.3.13)(bun-types@1.1.38)(postgres@3.4.5)(react@18.3.1)
       eslint:
         specifier: 9.16.0
         version: 9.16.0(jiti@2.4.1)
@@ -925,19 +925,19 @@ importers:
     devDependencies:
       '@emotion/styled':
         specifier: 11.13.5
-        version: 11.13.5(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1)
+        version: 11.13.5(@emotion/react@11.13.3(@types/react@18.3.13)(react@18.3.1))(@types/react@18.3.13)(react@18.3.1)
       '@testing-library/jest-dom':
         specifier: 6.6.3
         version: 6.6.3
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/jsdom':
         specifier: 21.1.7
         version: 21.1.7
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       '@vitejs/plugin-react':
         specifier: 4.3.4
         version: 4.3.4(vite@6.0.2(@types/node@22.10.1)(jiti@2.4.1)(lightningcss@1.28.2)(sass-embedded@1.82.0)(sass@1.82.0)(terser@5.36.0)(tsx@4.19.2))
@@ -1232,8 +1232,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.13
+        version: 18.3.13
       bun-types:
         specifier: 1.1.38
         version: 1.1.38
@@ -3868,8 +3868,8 @@ packages:
   '@types/react-syntax-highlighter@15.5.13':
     resolution: {integrity: sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA==}
 
-  '@types/react@18.3.12':
-    resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
+  '@types/react@18.3.13':
+    resolution: {integrity: sha512-ii/gswMmOievxAJed4PAHT949bpYjPKXvXo1v6cRB/kqc2ZR4n+SgyCyvyc5Fec5ez8VnUumI1Vk7j6fRyRogg==}
 
   '@types/tmp@0.2.6':
     resolution: {integrity: sha512-chhaNf2oKHlRkDGt+tiKE2Z5aJ6qalm7Z9rlLdBwmOiAAf09YQvvoLXjWK4HWPF1xU/fqvMgfNfpVoBscA/tKA==}
@@ -9242,7 +9242,7 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/react@11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.12)':
+  '@emotion/react@11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.13)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@emotion/babel-plugin': 11.13.5
@@ -9254,11 +9254,11 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: '@preact/compat@18.3.1(preact@10.25.1)'
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
     transitivePeerDependencies:
       - supports-color
 
-  '@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1)':
+  '@emotion/react@11.13.3(@types/react@18.3.13)(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@emotion/babel-plugin': 11.13.5
@@ -9270,7 +9270,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 18.3.1
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
     transitivePeerDependencies:
       - supports-color
 
@@ -9284,33 +9284,33 @@ snapshots:
 
   '@emotion/sheet@1.4.0': {}
 
-  '@emotion/styled@11.13.5(@emotion/react@11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.12))(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.12)':
+  '@emotion/styled@11.13.5(@emotion/react@11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.13))(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.13)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@emotion/babel-plugin': 11.13.5
       '@emotion/is-prop-valid': 1.3.1
-      '@emotion/react': 11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.12)
+      '@emotion/react': 11.13.3(@preact/compat@18.3.1(preact@10.25.1))(@types/react@18.3.13)
       '@emotion/serialize': 1.3.3
       '@emotion/use-insertion-effect-with-fallbacks': 1.1.0(@preact/compat@18.3.1(preact@10.25.1))
       '@emotion/utils': 1.4.2
       react: '@preact/compat@18.3.1(preact@10.25.1)'
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
     transitivePeerDependencies:
       - supports-color
 
-  '@emotion/styled@11.13.5(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1)':
+  '@emotion/styled@11.13.5(@emotion/react@11.13.3(@types/react@18.3.13)(react@18.3.1))(@types/react@18.3.13)(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@emotion/babel-plugin': 11.13.5
       '@emotion/is-prop-valid': 1.3.1
-      '@emotion/react': 11.13.3(@types/react@18.3.12)(react@18.3.1)
+      '@emotion/react': 11.13.3(@types/react@18.3.13)(react@18.3.1)
       '@emotion/serialize': 1.3.3
       '@emotion/use-insertion-effect-with-fallbacks': 1.1.0(react@18.3.1)
       '@emotion/utils': 1.4.2
       react: 18.3.1
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
     transitivePeerDependencies:
       - supports-color
 
@@ -9985,10 +9985,10 @@ snapshots:
       - acorn
       - supports-color
 
-  '@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1)':
+  '@mdx-js/react@3.1.0(@types/react@18.3.13)(react@18.3.1)':
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
       react: 18.3.1
 
   '@microsoft/api-extractor-model@7.29.8(@types/node@22.10.1)':
@@ -10149,12 +10149,12 @@ snapshots:
     dependencies:
       fast-glob: 3.3.1
 
-  '@next/mdx@15.0.3(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))':
+  '@next/mdx@15.0.3(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@18.3.13)(react@18.3.1))':
     dependencies:
       source-map: 0.7.4
     optionalDependencies:
       '@mdx-js/loader': 3.1.0(acorn@8.14.0)
-      '@mdx-js/react': 3.1.0(@types/react@18.3.12)(react@18.3.1)
+      '@mdx-js/react': 3.1.0(@types/react@18.3.13)(react@18.3.1)
 
   '@next/swc-darwin-arm64@15.0.3':
     optional: true
@@ -10625,24 +10625,24 @@ snapshots:
       lodash: 4.17.21
       redent: 3.0.0
 
-  '@testing-library/react@16.0.1(@preact/compat@18.3.1(preact@10.25.1))(@preact/compat@18.3.1(preact@10.25.1))(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)':
+  '@testing-library/react@16.0.1(@preact/compat@18.3.1(preact@10.25.1))(@preact/compat@18.3.1(preact@10.25.1))(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@testing-library/dom': 10.4.0
       react: '@preact/compat@18.3.1(preact@10.25.1)'
       react-dom: '@preact/compat@18.3.1(preact@10.25.1)'
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
       '@types/react-dom': 18.3.1
 
-  '@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@testing-library/dom': 10.4.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
       '@types/react-dom': 18.3.1
 
   '@trysound/sax@0.2.0': {}
@@ -10767,13 +10767,13 @@ snapshots:
 
   '@types/react-dom@18.3.1':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
 
   '@types/react-syntax-highlighter@15.5.13':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
 
-  '@types/react@18.3.12':
+  '@types/react@18.3.13':
     dependencies:
       '@types/prop-types': 15.7.13
       csstype: 3.1.3
@@ -11351,11 +11351,11 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  atom.io@0.30.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
+  atom.io@0.30.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
     optionalDependencies:
       '@floating-ui/react': 0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/react-dom': 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@testing-library/react': 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@testing-library/react': 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       eslint: 9.16.0(jiti@2.4.1)
       motion: 11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
@@ -11978,9 +11978,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.37.0(@types/react@18.3.12)(bun-types@1.1.38)(postgres@3.4.5)(react@18.3.1):
+  drizzle-orm@0.37.0(@types/react@18.3.13)(bun-types@1.1.38)(postgres@3.4.5)(react@18.3.1):
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.13
       bun-types: 1.1.38
       postgres: 3.4.5
       react: 18.3.1
@@ -14603,9 +14603,9 @@ snapshots:
       es-errors: 1.3.0
       is-regex: 1.1.4
 
-  safegen@0.1.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.75.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
+  safegen@0.1.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(openai@4.75.0(zod@3.23.8))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1):
     dependencies:
-      atom.io: 0.30.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
+      atom.io: 0.30.4(@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@9.16.0(jiti@2.4.1))(motion@11.13.1(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(socket.io-client@4.8.1)(socket.io@4.8.1)
       varmint: 0.3.1
       zod: 3.23.8
       zod-to-json-schema: 3.23.5(zod@3.23.8)
