@@ -3,7 +3,7 @@ import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
 import type { ChatCompletionChunk } from "openai/resources/index"
 
-import { Ferret } from "../src/ferret"
+import { Ferret } from "../src"
 
 test(`ferret`, async () => {
 	const myStreamFunction = () => {
