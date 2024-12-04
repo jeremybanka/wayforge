@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.3
+
+### Patch Changes
+
+- ddab8c7: 🐛 Fix bug where the `Ferret` class wasn't properly exported and neither was `CacheMode` (previously `SquirrelMode`).
+
 ## 0.3.2
 
 ### Patch Changes
