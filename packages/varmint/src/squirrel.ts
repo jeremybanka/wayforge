@@ -1,28 +1,14 @@
-import { createHash } from "node:crypto"
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-export type SquirrelMode = `off` | `read-write` | `read` | `write`
+import type { CacheMode } from "./cache-mode"
+import { sanitizeFilename } from "./sanitize-filename"
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
-
-export const filenameAllowList = /[^a-zA-Z0-9\-._]/g
 
 export type Squirreled<F extends AsyncFunc> = {
 	flush: () => void
 	for: (subKey: string) => { get: F }
-}
-
-export function sanitizeFilename(filename: string): string {
-	const onlyValidChars = filename.replace(filenameAllowList, `-`)
-
-	if (onlyValidChars.length <= 64) {
-		return onlyValidChars
-	}
-
-	const hash = createHash(`sha256`).update(filename).digest(`hex`)
-	// Otherwise, trim the beginning to fit within the max length
-	return onlyValidChars.slice(-64) + `+` + hash // Keep the last maxLen characters
 }
 
 export class Squirrel {
@@ -30,7 +16,7 @@ export class Squirrel {
 	public filesTouched = new Map<string, Set<string>>()
 
 	public constructor(
-		public mode: SquirrelMode = `off`,
+		public mode: CacheMode = `off`,
 		public baseDir: string = path.join(process.cwd(), `.varmint`),
 	) {}
 
