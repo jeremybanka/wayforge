@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.2
+
+### Patch Changes
+
+- e4d940b: ✨ New class, Ferret, provides a way to record and automatically play back streams.
+
 ## 0.3.1
 
 ### Patch Changes
