@@ -56,7 +56,7 @@
 		"motion": "^10.15.1 || ^11.0.0",
 		"react": "^18.2.0 || ^19.0.0",
 		"react-router-dom": "^6.8.1 || ^7.0.0",
-		"recoil": "^0.7.6"
+		"atom.io": "^0.30.0"
 	},
 	"devDependencies": {
 		"@emotion/styled": "11.13.5",
@@ -74,7 +74,7 @@
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"react-router-dom": "7.0.2",
-		"recoil": "0.7.7",
+		"atom.io": "workspace:*",
 		"sass": "1.82.0",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",

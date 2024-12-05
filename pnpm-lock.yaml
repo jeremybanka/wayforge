@@ -941,6 +941,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: 4.3.4
         version: 4.3.4(vite@6.0.3(@types/node@22.10.1)(jiti@2.4.1)(lightningcss@1.28.2)(sass-embedded@1.82.0)(sass@1.82.0)(terser@5.36.0)(tsx@4.19.2))
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
       concurrently:
         specifier: 9.1.0
         version: 9.1.0
@@ -968,9 +971,6 @@ importers:
       react-router-dom:
         specifier: 7.0.2
         version: 7.0.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      recoil:
-        specifier: 0.7.7
-        version: 0.7.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       sass:
         specifier: 1.82.0
         version: 1.82.0
