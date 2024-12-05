@@ -10,7 +10,7 @@ export function pullSelector<T>(
 	socket: Socket,
 	store: Store,
 ): () => void {
-	const atomUnsubFns = new Set<() => void>()
+	const atomUnsubFns = new Map<string, () => void>()
 	const unsubSelector = subscribeInStore(
 		store,
 		token,
@@ -29,11 +29,11 @@ export function pullSelector<T>(
 				}
 				switch (atom.type) {
 					case `atom`: {
-						atomUnsubFns.add(pullAtom(atom, socket, store))
+						atomUnsubFns.set(atomKey, pullAtom(atom, socket, store))
 						break
 					}
 					case `mutable_atom`: {
-						atomUnsubFns.add(pullMutableAtom(atom, socket, store))
+						atomUnsubFns.set(atomKey, pullMutableAtom(atom, socket, store))
 						break
 					}
 				}
@@ -43,7 +43,7 @@ export function pullSelector<T>(
 
 	function unloadSubscriptions(): void {
 		unsubSelector()
-		for (const unsub of atomUnsubFns) {
+		for (const [, unsub] of atomUnsubFns) {
 			unsub()
 		}
 	}
@@ -56,9 +56,49 @@ export function pullSelector<T>(
 			token.key,
 			update,
 		)
-		unloadSubscriptions()
-		atomUnsubFns.clear()
-		loadSubscriptions()
+		const atomKeys = store.selectorAtoms.getRelatedKeys(token.key)
+		if (atomKeys) {
+			for (const [key, unsub] of atomUnsubFns) {
+				if (!atomKeys.has(key)) {
+					console.log(
+						`🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍`,
+						store.config.name,
+						`unsubscribing from atom`,
+						key,
+						`no longer a dependency of selector`,
+						token.key,
+					)
+					unsub()
+					atomUnsubFns.delete(key)
+				}
+			}
+			for (const atomKey of atomKeys) {
+				if (!atomUnsubFns.has(atomKey)) {
+					console.log(
+						`🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍`,
+						store.config.name,
+						`pulling new subscriptions for selector`,
+						token.key,
+						`discovering new dependency`,
+						atomKey,
+					)
+					const atom = store.atoms.get(atomKey)
+					if (!atom) {
+						continue
+					}
+					switch (atom.type) {
+						case `atom`: {
+							atomUnsubFns.set(atomKey, pullAtom(atom, socket, store))
+							break
+						}
+						case `mutable_atom`: {
+							atomUnsubFns.set(atomKey, pullMutableAtom(atom, socket, store))
+							break
+						}
+					}
+				}
+			}
+		}
 	}
 
 	loadSubscriptions()

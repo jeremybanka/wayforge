@@ -21,22 +21,46 @@ export function prepareToSendInitialPayload(
 	const continuityKey = continuity.key
 	return function sendInitialPayload(): void {
 		const initialPayload: Json.Serializable[] = []
-		for (const atom of continuity.globals) {
+		for (const atom of continuity.singletonStates) {
 			const resourceToken =
 				atom.type === `mutable_atom` ? getJsonToken(store, atom) : atom
 			const resource = getFromStore(store, resourceToken)
 			initialPayload.push(resourceToken, resource)
 		}
-		for (const dynamic of continuity.dynamics) {
+		for (const dynamic of continuity.dynamicStates) {
 			const { globalIndexToken: viewAtom, dynamicResources } = dynamic
 			const globalView = getFromStore(store, viewAtom)
 			store.logger.info(
 				`👁`,
 				`atom`,
+				dynamicResources.map((f) => f.key).join(`, `),
+				`${userKey} can see`,
+				{
+					viewAtom,
+					dynamicResources,
+					userView: globalView,
+				},
+			)
+			for (const key of globalView) {
+				for (const dynamicResource of dynamicResources) {
+					const resourceFamilyToken =
+						dynamicResource.type === `mutable_atom_family`
+							? getJsonFamily(store, dynamicResource)
+							: dynamicResource
+					const resourceToken = findInStore(store, resourceFamilyToken, key)
+					const resource = getFromStore(store, resourceToken)
+					initialPayload.push(resourceToken, resource)
+				}
+			}
+		}
+		for (const maskedDynamic of continuity.dynamicStatesMasked) {
+			const { globalIndexToken: viewAtom, dynamicResources } = maskedDynamic
+			const globalView = getFromStore(store, viewAtom)
+			store.logger.info(
+				`👁`,
+				`atom`,
 				dynamicResources
-					.map((f) =>
-						`key` in f ? f.key : `mask` in f ? f.mask.key : f.jsonMask.key,
-					)
+					.map((f) => (`mask` in f ? f.mask.key : f.jsonMask.key))
 					.join(`, `),
 				`${userKey} can see`,
 				{
@@ -48,21 +72,13 @@ export function prepareToSendInitialPayload(
 			for (let key of globalView) {
 				for (const dynamicResource of dynamicResources) {
 					let resourceFamily: ReadableFamilyToken<any, string>
-					if (`base` in dynamicResource) {
-						key = `T$--mask==${userKey}++${key}` satisfies MaskKey<string>
-						if (`mask` in dynamicResource) {
-							resourceFamily = dynamicResource.mask
-						} else {
-							resourceFamily = dynamicResource.jsonMask
-						}
+					key = `T$--mask==${userKey}++${key}` satisfies MaskKey<string>
+					if (`mask` in dynamicResource) {
+						resourceFamily = dynamicResource.mask
 					} else {
-						resourceFamily = dynamicResource
+						resourceFamily = dynamicResource.jsonMask
 					}
-					const resourceFamilyToken =
-						resourceFamily.type === `mutable_atom_family`
-							? getJsonFamily(store, resourceFamily)
-							: resourceFamily
-					const resourceToken = findInStore(store, resourceFamilyToken, key)
+					const resourceToken = findInStore(store, resourceFamily, key)
 					const resource = getFromStore(store, resourceToken)
 					initialPayload.push(resourceToken, resource)
 				}
