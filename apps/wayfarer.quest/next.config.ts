@@ -4,6 +4,9 @@ const nextConfig = {
 	distDir: `dist`,
 	pageExtensions: [`ts`, `tsx`, `js`, `jsx`, `md`, `mdx`],
 	reactStrictMode: true,
+	sassOptions: {
+		implementation: `sass-embedded`,
+	},
 	typescript: {
 		ignoreBuildErrors: true,
 	},
