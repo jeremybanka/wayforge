@@ -3,10 +3,12 @@ import type {
 	AtomToken,
 	Compound,
 	MutableAtomFamilyToken,
+	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	ReadonlySelectorFamilyToken,
 	RegularAtomFamilyToken,
+	RegularAtomToken,
 	Tag,
 	TransactionToken,
 } from "atom.io"
@@ -49,9 +51,11 @@ export class InvariantMap<K, V> extends Map<K, V> {
 export type ContinuityToken = {
 	readonly type: `continuity`
 	readonly key: string
-	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<JsonIO>[]
-	readonly dynamics: DynamicToken<any>[]
+	readonly singletonStates: AtomToken<any, any>[]
+	readonly singletonStatesMasked: MaskedSingletonResourceToken[]
+	readonly dynamicStates: DynamicToken<any>[]
+	readonly dynamicStatesMasked: MaskedDynamicToken<any>[]
 	readonly perspectives: PerspectiveToken<AnyAliasKey>[]
 	readonly masksPerFamily: { [key: string]: MaskData }
 }
@@ -146,7 +150,23 @@ export type PerspectiveToken<K extends AnyAliasKey> = {
 	>
 }
 
-export type MaskedMutableResourceToken<
+export type MaskedSingletonTokensMutable<
+	J extends Json.Serializable,
+	S extends Json.Serializable,
+> = {
+	base: MutableAtomToken<Transceiver<S>, J>
+	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, UserKey<Actual>>
+	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, UserKey<Actual>>
+}
+export type MaskedSingletonTokensRegular = {
+	base: RegularAtomToken<any>
+	mask: ReadonlySelectorFamilyToken<any, UserKey<Actual>>
+}
+export type MaskedSingletonResourceToken =
+	| MaskedSingletonTokensMutable<any, any>
+	| MaskedSingletonTokensRegular
+
+export type MaskedDynamicResourceTokensMutable<
 	K extends string,
 	J extends Json.Serializable,
 	S extends Json.Serializable,
@@ -155,28 +175,34 @@ export type MaskedMutableResourceToken<
 	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, MaskKey<K>>
 	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, MaskKey<K>>
 }
-export type MaskedRegularResourceToken<K extends string> = {
+export type MaskedDynamicResourceTokensRegular<K extends string> = {
 	base: RegularAtomFamilyToken<any, K>
 	mask: ReadonlySelectorFamilyToken<any, MaskKey<K>>
 }
+export type MaskedDynamicResourceToken<K extends string> =
+	| MaskedDynamicResourceTokensMutable<K, any, any>
+	| MaskedDynamicResourceTokensRegular<K>
 
-export type DynamicResourceToken<K extends string> =
-	| AtomFamilyToken<any, K>
-	| MaskedMutableResourceToken<K, any, any>
-	| MaskedRegularResourceToken<K>
+export type MaskedDynamicToken<K extends string> = {
+	type: `realtime_dynamic_masked`
+	globalIndexToken: ReadableToken<Iterable<K>>
+	dynamicResources: MaskedDynamicResourceToken<K>[]
+}
 
 export type DynamicToken<K extends string> = {
 	type: `realtime_dynamic`
-	dynamicResources: DynamicResourceToken<K>[]
 	globalIndexToken: ReadableToken<Iterable<K>>
+	dynamicResources: AtomFamilyToken<any, K>[]
 }
 
 export class Continuity {
 	public type = `continuity` as const
 
-	protected _globals: AtomToken<any>[] = []
 	protected _actions: TransactionToken<any>[] = []
+	protected _singletons: AtomToken<any, any>[] = []
+	protected _singletonsMasked: MaskedSingletonResourceToken[] = []
 	protected _dynamics: DynamicToken<any>[] = []
+	protected _dynamicsMasked: MaskedDynamicToken<any>[] = []
 	protected _perspectives: PerspectiveToken<any>[] = []
 
 	protected constructor(protected readonly key: string) {}
@@ -192,9 +218,11 @@ export class Continuity {
 		const group = new Continuity(key)
 		const {
 			type,
-			_globals: globals,
 			_actions: actions,
-			_dynamics: dynamics,
+			_singletons: singletonStates,
+			_singletonsMasked: singletonStatesMasked,
+			_dynamics: dynamicStates,
+			_dynamicsMasked: dynamicStatesMasked,
 			_perspectives: perspectives,
 		} = builder(group)
 		const masksPerFamily = fromEntries(
@@ -213,22 +241,19 @@ export class Continuity {
 				)
 			}),
 		)
-		const token = {
+		const token: ContinuityToken = {
 			type,
 			key,
-			globals,
 			actions,
-			dynamics,
+			singletonStates,
+			singletonStatesMasked,
+			dynamicStates,
+			dynamicStatesMasked,
 			perspectives,
 			masksPerFamily,
 		}
 		Continuity.existing.set(key, token)
 		return token
-	}
-
-	public globals(...atoms: AtomToken<any>[]): this {
-		this._globals.push(...atoms)
-		return this
 	}
 
 	public actions(
@@ -240,14 +265,32 @@ export class Continuity {
 		return this
 	}
 
+	public globals(...atoms: AtomToken<any>[]): this {
+		this._singletons.push(...atoms)
+		return this
+	}
+
 	public dynamic<K extends string>(
-		index: ReadableToken<Iterable<K>>,
-		...families: DynamicResourceToken<K>[]
+		globalIndexToken: ReadableToken<Iterable<K>>,
+		...families: AtomFamilyToken<any, K>[]
 	): this {
 		this._dynamics.push({
 			type: `realtime_dynamic`,
+			globalIndexToken,
 			dynamicResources: families,
-			globalIndexToken: index,
+		})
+
+		return this
+	}
+
+	public maskedDynamic<K extends string>(
+		globalIndexToken: ReadableToken<Iterable<K>>,
+		...families: MaskedDynamicResourceToken<K>[]
+	): this {
+		this._dynamicsMasked.push({
+			type: `realtime_dynamic_masked`,
+			globalIndexToken,
+			dynamicResources: families,
 		})
 
 		return this

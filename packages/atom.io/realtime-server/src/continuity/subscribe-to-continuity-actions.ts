@@ -25,7 +25,7 @@ export function aliasTransactionUpdate(
 	userKey: UserKey<Actual>,
 	update: TransactionUpdate<JsonIO>,
 ): TransactionResponse {
-	const visibleGlobalKeys = continuity.globals
+	const visibleSingletonKeys = continuity.singletonStates
 		.map((atom) => {
 			if (atom.type === `atom`) {
 				return atom.key
@@ -33,27 +33,36 @@ export function aliasTransactionUpdate(
 			return getUpdateToken(atom).key
 		})
 		.concat(
-			continuity.dynamics.map(({ globalIndexToken: viewState }) => {
-				if (viewState.type === `mutable_atom`) {
-					return getUpdateToken(viewState).key
+			continuity.singletonStatesMasked.map(({ base }) => {
+				if (base.type === `atom`) {
+					return base.key
 				}
-				return viewState.key
+				return getUpdateToken(base).key
 			}),
 		)
-	const visibleFamilyKeys = continuity.dynamics.flatMap(
+		.concat(
+			continuity.dynamicStates.map(({ globalIndexToken }) => {
+				if (globalIndexToken.type === `mutable_atom`) {
+					return getUpdateToken(globalIndexToken).key
+				}
+				return globalIndexToken.key
+			}),
+		)
+		.concat(
+			continuity.dynamicStatesMasked.map(({ globalIndexToken }) => {
+				if (globalIndexToken.type === `mutable_atom`) {
+					return getUpdateToken(globalIndexToken).key
+				}
+				return globalIndexToken.key
+			}),
+		)
+
+	const visibleDynamicKeys = continuity.dynamicStates.flatMap(
 		({ dynamicResources }) => {
 			const familyKeys: string[] = []
 			for (const dynamicResource of dynamicResources) {
 				let resourceFamily: ReadableFamilyToken<any, string>
-				if (`base` in dynamicResource) {
-					if (`mask` in dynamicResource) {
-						resourceFamily = dynamicResource.mask
-					} else {
-						resourceFamily = dynamicResource.jsonMask
-					}
-				} else {
-					resourceFamily = dynamicResource
-				}
+				resourceFamily = dynamicResource
 				if (resourceFamily.type === `mutable_atom_family`) {
 					familyKeys.push(getUpdateFamily(store, resourceFamily).key)
 				} else {
@@ -63,15 +72,34 @@ export function aliasTransactionUpdate(
 			return familyKeys
 		},
 	)
+	const visibleDynamicMaskedKeys = continuity.dynamicStatesMasked.flatMap(
+		({ dynamicResources }) => {
+			const familyKeys: string[] = []
+			for (const dynamicResource of dynamicResources) {
+				let resourceFamily: ReadableFamilyToken<any, string>
+				if (`mask` in dynamicResource) {
+					resourceFamily = dynamicResource.mask
+				} else {
+					resourceFamily = dynamicResource.jsonMask
+				}
+				familyKeys.push(resourceFamily.key)
+			}
+			return familyKeys
+		},
+	)
 
 	const updatesInPerspective: TransactionResponse[`updates`] = []
 	for (const subUpdate of update.updates) {
 		switch (subUpdate.type) {
 			case `atom_update`:
-				if (visibleGlobalKeys.includes(subUpdate.key)) {
+				if (visibleSingletonKeys.includes(subUpdate.key)) {
 					updatesInPerspective.push(subUpdate)
 				}
-				if (visibleFamilyKeys.includes(subUpdate.key)) {
+				if (
+					subUpdate.family?.key &&
+					(visibleDynamicKeys.includes(subUpdate.family.key) ||
+						visibleDynamicMaskedKeys.includes(subUpdate.family.key))
+				) {
 					updatesInPerspective.push(subUpdate)
 				}
 				if (subUpdate.family && subUpdate.key.includes(`__`)) {

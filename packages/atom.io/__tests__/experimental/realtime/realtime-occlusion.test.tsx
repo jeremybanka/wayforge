@@ -12,13 +12,8 @@ import {
 	join,
 } from "atom.io/data"
 import type { Signal } from "atom.io/internal"
-import {
-	findInStore,
-	getFromStore,
-	getUpdateToken,
-	IMPLICIT,
-} from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import { findInStore, getUpdateToken, IMPLICIT } from "atom.io/internal"
+import type { Canonical } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import * as AR from "atom.io/react"
 import type {
@@ -204,7 +199,7 @@ describe(`realtime occlusion`, () => {
 	})
 })
 
-describe(`join in perspective`, () => {
+describe.only(`join in perspective`, () => {
 	const scenario = () => {
 		// HIERARCHY
 		type GameKey = `game::${string}`
@@ -370,23 +365,21 @@ describe(`join in perspective`, () => {
 				},
 		})
 
-		const myPlayerDataSelector = AtomIO.selector<
-			[GameKey, { playerKey: PlayerKey }] | null
-		>({
-			key: `myPlayerData`,
+		const myGameKeySelector = AtomIO.selector<GameKey | null>({
+			key: `myGameKey`,
 			get: ({ env, get }) => {
 				const { store } = env()
 				const myKey = get(myUserKeyActualState)
 				if (myKey === null) {
 					return null
 				}
-				const gameEntry = get(
-					findRelationsInStore(playersOfGames, myKey, store).gameEntryOfUser,
+				const gameKey = get(
+					findRelationsInStore(playersOfGames, myKey, store).gameKeyOfUser,
 				)
-				if (gameEntry === null) {
+				if (gameKey === null) {
 					return null
 				}
-				return gameEntry
+				return gameKey
 			},
 		})
 
@@ -561,7 +554,7 @@ describe(`join in perspective`, () => {
 				const { store } = env()
 				let practicalCharacterKey: CharacterKey = `character::${alias}`
 				let practicalUserKey: UserKey = userKey
-				if (store.config.name === `SERVER`) {
+				if (store.config.name === `SERVER-1`) {
 					// validations
 					// id must be 8 characters base 64
 					const idIsValid =
@@ -583,13 +576,13 @@ describe(`join in perspective`, () => {
 					const actualCharacterKey: CharacterKey<RT.Actual> = `character::${actualId}`
 					practicalCharacterKey = actualCharacterKey
 				} else {
-					const aliasUserKey = get(myAliasSelector)
-					if (aliasUserKey === null) {
-						throw new Error(`You have not retrieved your user alias.`)
-					}
-					practicalUserKey = aliasUserKey
+					// const aliasUserKey = get(myAliasSelector)
+					// if (aliasUserKey === null) {
+					// 	throw new Error(`You have not retrieved your user alias.`)
+					// }
+					// practicalUserKey = aliasUserKey
 				}
-
+				console.log(`💥 practicalUserKey`, practicalUserKey)
 				const gameEntry = get(
 					findRelationsInStore(playersOfGames, practicalUserKey, store)
 						.gameEntryOfUser,
@@ -620,7 +613,7 @@ describe(`join in perspective`, () => {
 					.actions(attackTX)
 					.actions(createCharacterTX)
 					.globals(currentGameKeyAtom, worldTimeAtom)
-					.dynamic(gameIndex, {
+					.maskedDynamic(gameIndex, {
 						base: getInternalRelations(playersOfGames),
 						jsonMask: playersOfGamesJsonMasks,
 						signalMask: playersOfGamesUpdateMasks,
@@ -642,10 +635,11 @@ describe(`join in perspective`, () => {
 		})
 
 		const GameSpace: FC<{
-			myPlayerData: [GameKey, { playerKey: PlayerKey }]
-		}> = ({ myPlayerData: [, { playerKey: myPlayerKey }] }) => {
+			myGameKey: GameKey
+			myAlias: UserKey<RT.Alias>
+		}> = ({ myGameKey, myAlias }) => {
 			const store = useContext(AR.StoreContext)
-
+			const myPlayerKey = `T$--player==${myGameKey}++${myAlias}` as const
 			const myCharacterKeys = AR.useO(
 				findRelationsInStore(playerCharacters, myPlayerKey, store)
 					.characterKeysOfPlayer,
@@ -670,7 +664,8 @@ describe(`join in perspective`, () => {
 		return Object.assign(
 			RTTest.multiClient({
 				port: 5485,
-				server: ({ socket, silo }) => {
+				server: ({ socket, silo, enableLogging }) => {
+					enableLogging({ ws: true })
 					const { store } = silo
 					silo.setState(playerGlobalIndex, (prev) =>
 						prev.add(`T$--player==game::battle++user::__jane-1__`),
@@ -746,11 +741,14 @@ describe(`join in perspective`, () => {
 					jane: () => {
 						RTR.useSyncContinuity(gameContinuity)
 						RTR.usePullSelector(myAliasSelector)
-						RTR.usePullSelector(myPlayerDataSelector)
-						const myPlayerData = AR.useO(myPlayerDataSelector)
+						RTR.usePullSelector(myGameKeySelector)
+						const myAlias = AR.useO(myAliasSelector)
+						const myGameKey = AR.useO(myGameKeySelector)
 
-						return myPlayerData ? (
-							<GameSpace myPlayerData={myPlayerData} />
+						console.log(`❗❗❗❗❗`, { myPlayerData: myGameKey })
+
+						return myGameKey && myAlias ? (
+							<GameSpace myAlias={myAlias} myGameKey={myGameKey} />
 						) : null
 					},
 				},
@@ -767,7 +765,7 @@ describe(`join in perspective`, () => {
 			scenario()
 		const jane = clients.jane.init()
 
-		jane.enableLogging()
+		jane.enableLogging({ ws: true })
 
 		await waitFor(() => {
 			throwUntil(jane.socket.connected)
