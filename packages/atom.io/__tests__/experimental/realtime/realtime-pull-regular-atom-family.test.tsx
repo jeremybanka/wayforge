@@ -34,7 +34,7 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 	},
 })
 
-function RealtimeDisplay(): JSX.Element {
+function RealtimeDisplay(): React.ReactNode {
 	RTR.usePullAtomFamilyMember(numberCollectionAtoms, `foo`)
 	RTR.usePullSelectorFamilyMember(findCollectionSumState, `foo`)
 	const numbers = AR.useO(numberCollectionAtoms, `foo`)
