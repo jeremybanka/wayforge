@@ -1,8 +1,9 @@
 import Head from "next/head"
+import type { ReactNode } from "react"
 
 import scss from "./page.module.scss"
 
-export default function Home(): JSX.Element {
+export default function Home(): ReactNode {
 	return (
 		<>
 			<Head>

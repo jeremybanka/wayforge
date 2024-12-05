@@ -1,6 +1,7 @@
 import type { RegularAtomToken } from "atom.io"
 import { atomFamily, getState } from "atom.io"
 import { useO } from "atom.io/react"
+import * as React from "react"
 
 export const xAtoms = atomFamily<number, string>({
 	key: `x`,
@@ -16,7 +17,7 @@ getState(xAtoms, `example`) // -> 0
 export function Point(props: {
 	xState: RegularAtomToken<number>
 	yState: RegularAtomToken<number>
-}): JSX.Element {
+}): React.ReactNode {
 	const x = useO(props.xState)
 	const y = useO(props.yState)
 
