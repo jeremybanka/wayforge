@@ -1,10 +1,11 @@
+import type { ReactNode } from "react"
 import type { TSD } from "tsdoc.json"
 
 export type ModProps = {
 	docs: TSD.Doc[]
 	className?: string
 }
-export function Mod({ docs, className = `` }: ModProps): JSX.Element {
+export function Mod({ docs, className = `` }: ModProps): ReactNode {
 	return (
 		<div className={`tsdoc-module ${className}`}>
 			{docs.map((doc) => (
@@ -18,7 +19,7 @@ export type DocProps = {
 	doc: TSD.Doc
 	isRoot?: boolean
 }
-export function Doc({ doc, isRoot }: DocProps): JSX.Element {
+export function Doc({ doc, isRoot }: DocProps): ReactNode {
 	const offset0 = stringToNumber(doc.name)
 	const offset1 = offset0 << 1
 	return (
@@ -51,7 +52,7 @@ export function Doc({ doc, isRoot }: DocProps): JSX.Element {
 type FunctionMainContentProps = {
 	doc: TSD.FunctionDoc
 }
-function FunctionMainContent({ doc }: FunctionMainContentProps): JSX.Element {
+function FunctionMainContent({ doc }: FunctionMainContentProps): ReactNode {
 	switch (doc.kind) {
 		case `regular`:
 			return <RegularFunctionMainContent doc={doc} />
@@ -65,7 +66,7 @@ type OverloadedFunctionMainContentProps = {
 }
 function OverloadedFunctionMainContent({
 	doc,
-}: OverloadedFunctionMainContentProps): JSX.Element {
+}: OverloadedFunctionMainContentProps): ReactNode {
 	const withoutImplementation = doc.overloads.slice(0, -1)
 	return (
 		<>
@@ -108,7 +109,7 @@ type RegularFunctionMainContentProps = {
 }
 function RegularFunctionMainContent({
 	doc,
-}: RegularFunctionMainContentProps): JSX.Element {
+}: RegularFunctionMainContentProps): ReactNode {
 	const returnValue = doc.blocks.find((block) => block.name === `@returns`)
 	return (
 		<>
@@ -138,7 +139,7 @@ type ParamBlockProps = {
 	param: TSD.ParamBlock
 	index: number
 }
-function ParamBlock({ param, index }: ParamBlockProps): JSX.Element {
+function ParamBlock({ param, index }: ParamBlockProps): ReactNode {
 	return (
 		<li className="tsdoc-param-block">
 			<header>
@@ -157,7 +158,7 @@ function ParamBlock({ param, index }: ParamBlockProps): JSX.Element {
 type BlockProps = {
 	block: TSD.DocBlock
 }
-function Block({ block }: BlockProps): JSX.Element {
+function Block({ block }: BlockProps): ReactNode {
 	const blockName = block.name.split(`@`)[1]
 	return (
 		<div className={`tsdoc-block ${block.name}`}>
@@ -172,7 +173,7 @@ function Block({ block }: BlockProps): JSX.Element {
 type SectionProps = {
 	section: TSD.DocSection
 }
-function DocSection({ section }: SectionProps): JSX.Element {
+function DocSection({ section }: SectionProps): ReactNode {
 	return (
 		<div className="tsdoc-section" key={JSON.stringify(section)}>
 			{section.content.map((content) => (
@@ -185,7 +186,7 @@ function DocSection({ section }: SectionProps): JSX.Element {
 type SectionContentProps = {
 	content: TSD.SectionContent
 }
-function SectionContent({ content }: SectionContentProps): JSX.Element {
+function SectionContent({ content }: SectionContentProps): ReactNode {
 	switch (content.type) {
 		case `paragraph`:
 			return <Paragraph paragraph={content} />
@@ -197,7 +198,7 @@ function SectionContent({ content }: SectionContentProps): JSX.Element {
 type FencedCodeProps = {
 	fencedCode: TSD.FencedCode
 }
-function FencedCode({ fencedCode }: FencedCodeProps): JSX.Element {
+function FencedCode({ fencedCode }: FencedCodeProps): ReactNode {
 	return (
 		<pre className="tsdoc-fenced-code">
 			<code>{fencedCode.content}</code>
@@ -208,7 +209,7 @@ function FencedCode({ fencedCode }: FencedCodeProps): JSX.Element {
 type ParagraphProps = {
 	paragraph: TSD.Paragraph
 }
-function Paragraph({ paragraph }: ParagraphProps): JSX.Element {
+function Paragraph({ paragraph }: ParagraphProps): ReactNode {
 	return (
 		<p className="tsdoc-paragraph" key={JSON.stringify(paragraph)}>
 			{paragraph.content.map((content) => (
@@ -221,9 +222,7 @@ function Paragraph({ paragraph }: ParagraphProps): JSX.Element {
 type ParagraphContentProps = {
 	content: TSD.ParagraphContent
 }
-function ParagraphContent({
-	content,
-}: ParagraphContentProps): JSX.Element | null {
+function ParagraphContent({ content }: ParagraphContentProps): ReactNode | null {
 	switch (content.type) {
 		case `link`:
 			return <code className="tsdoc-link">{content.text}</code>
