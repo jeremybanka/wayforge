@@ -1,8 +1,9 @@
 import { fireEvent, prettyDOM, render } from "@testing-library/react"
+import type { ReadableToken } from "atom.io"
+import { atom } from "atom.io"
+import { StoreProvider, useI, useO } from "atom.io/react"
 import type { FC } from "react"
 import { useEffect } from "react"
-import type { RecoilState, RecoilValueReadOnly } from "recoil"
-import { atom, RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import { vitest } from "vitest"
 
 import { Combo } from "./Combo"
@@ -10,11 +11,11 @@ import { Combo } from "./Combo"
 const handleChange = vitest.fn()
 
 type RecoilObserverProps = {
-	node: RecoilState<any> | RecoilValueReadOnly<any>
+	node: ReadableToken<any>
 	onChange: (value: any) => void
 }
 const RecoilObserver: FC<RecoilObserverProps> = ({ node, onChange }) => {
-	const value = useRecoilValue(node)
+	const value = useO(node)
 	useEffect(() => {
 		onChange(value)
 	}, [onChange, value])
@@ -28,7 +29,8 @@ const lettersState = atom<string[]>({
 
 const scenarioA_Managed = () => {
 	const Managed: FC = () => {
-		const [letters, setLetters] = useRecoilState(lettersState)
+		const letters = useO(lettersState)
+		const setLetters = useI(lettersState)
 		return (
 			<main>
 				<Combo options={[`a`]} selections={letters} setSelections={setLetters} />
@@ -36,10 +38,10 @@ const scenarioA_Managed = () => {
 		)
 	}
 	const utils = render(
-		<RecoilRoot>
+		<StoreProvider>
 			<RecoilObserver node={lettersState} onChange={handleChange} />
 			<Managed />
-		</RecoilRoot>,
+		</StoreProvider>,
 	)
 	const combo = utils.getByLabelText(`Multiple Choice`) as HTMLDivElement
 	const inputSearch = utils.getByLabelText(`Search`) as HTMLInputElement
@@ -66,10 +68,10 @@ const scenarioB_SelfManaged = () => {
 		<Combo options={[`a`]} selectionsState={lettersState} />
 	)
 	const utils = render(
-		<RecoilRoot>
+		<StoreProvider>
 			<RecoilObserver node={lettersState} onChange={handleChange} />
 			<SelfManaged />
-		</RecoilRoot>,
+		</StoreProvider>,
 	)
 	const combo = utils.getByLabelText(`Multiple Choice`) as HTMLDivElement
 	const inputSearch = utils.getByLabelText(`Search`) as HTMLInputElement

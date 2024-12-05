@@ -1,18 +1,18 @@
+import type { WritableToken } from "atom.io"
 import type { WC } from "hamr/react-json-editor"
 import type { FC, ReactElement } from "react"
-import type { RecoilState } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
 export type RecoilListItemProps<DATA, META = {}> = {
 	label: Identified & META
-	findState: (key: string) => RecoilState<DATA>
+	findState: (key: string) => WritableToken<DATA>
 	removeMe: () => void
 }
 
 export type RecoilListProps<DATA, META = {}> = {
 	labels: (Identified & META)[]
-	findState: (id: string) => RecoilState<DATA>
+	findState: (id: string) => WritableToken<DATA>
 	useCreate?: () => () => void
 	useRemove?: () => (id: string) => void
 	Components: {
