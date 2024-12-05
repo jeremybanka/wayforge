@@ -7,6 +7,8 @@ import { defineConfig } from "vitest/config"
 
 const entry = Object.fromEntries(
 	[
+		`atom.io-combo`,
+		`atom.io-tools`,
 		`react-click-handlers`,
 		`react-css-vars`,
 		`react-elastic-input`,
@@ -14,9 +16,6 @@ const entry = Object.fromEntries(
 		`react-json-editor`,
 		`react-radial`,
 		`react-rx`,
-		`recoil-combo`,
-		`recoil-effect-storage`,
-		`recoil-tools`,
 	].map((path) => [path, resolve(__dirname, `src/${path}/index.ts`)]),
 )
 console.log(entry)

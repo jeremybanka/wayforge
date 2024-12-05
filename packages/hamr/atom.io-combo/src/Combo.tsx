@@ -13,14 +13,14 @@ export type ComboPropsCore<T> = {
 	constrainMinMax?: boolean
 	placeholder?: string
 }
-export type ComboSelectionsRecoil<T> = {
+export type ComboSelectionsAtom<T> = {
 	selectionsState: WritableToken<T[]>
 }
 export type ComboSelections<T> = {
 	selections: T[]
 	setSelections: (setterOrUpdater: T[] | ((oldValue: T[]) => T[])) => void
 }
-export type ComboOptionsRecoil<T> = {
+export type ComboOptionsAtom<T> = {
 	optionsState: ReadableToken<T[]>
 }
 export type ComboOptions<T> = {
@@ -30,8 +30,8 @@ export type ComboOptions<T> = {
 /* eslint-disable @typescript-eslint/sort-type-constituents */
 export type ComboProps<T> = ComboPropsCore<T> &
 	(T extends string ? {} : { getName: (value: T) => string }) &
-	(ComboOptions<T> | ComboOptionsRecoil<T>) &
-	(ComboSelections<T> | ComboSelectionsRecoil<T>)
+	(ComboOptions<T> | ComboOptionsAtom<T>) &
+	(ComboSelections<T> | ComboSelectionsAtom<T>)
 export type ComboProps_INTERNAL<T> = ComboPropsCore<T> &
 	ComboOptions<T> &
 	ComboSelections<T> & { getName: (value: T) => string }

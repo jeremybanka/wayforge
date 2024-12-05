@@ -2,7 +2,7 @@ import type { WritableToken } from "atom.io"
 import type { FC, ReactElement } from "react"
 import { useParams } from "react-router-dom"
 
-import type { RecoilListItemProps } from "./RecoilList"
+import type { AtomListItemProps } from "./AtomList"
 
 export type AtomEditorProps<T> = {
 	id: string
@@ -28,7 +28,7 @@ export const IdFromRoute = <T,>({
 	return <Editor id={id} findState={findState} useRemove={useRemove} />
 }
 
-export type FromListItemProps<T> = RecoilListItemProps<T> & {
+export type FromListItemProps<T> = AtomListItemProps<T> & {
 	Editor: FC<AtomEditorProps<T>>
 }
 
@@ -43,7 +43,7 @@ export const ListItem = <T,>({
 	)
 }
 
-export const RecoilEditor = {
+export const AtomEditor = {
 	ListItem,
 	IdFromRoute,
 }

@@ -10,11 +10,11 @@ import { Combo } from "./Combo"
 
 const handleChange = vitest.fn()
 
-type RecoilObserverProps = {
+type AtomObserverProps = {
 	node: ReadableToken<any>
 	onChange: (value: any) => void
 }
-const RecoilObserver: FC<RecoilObserverProps> = ({ node, onChange }) => {
+const AtomObserver: FC<AtomObserverProps> = ({ node, onChange }) => {
 	const value = useO(node)
 	useEffect(() => {
 		onChange(value)
@@ -39,7 +39,7 @@ const scenarioA_Managed = () => {
 	}
 	const utils = render(
 		<StoreProvider>
-			<RecoilObserver node={lettersState} onChange={handleChange} />
+			<AtomObserver node={lettersState} onChange={handleChange} />
 			<Managed />
 		</StoreProvider>,
 	)
@@ -69,7 +69,7 @@ const scenarioB_SelfManaged = () => {
 	)
 	const utils = render(
 		<StoreProvider>
-			<RecoilObserver node={lettersState} onChange={handleChange} />
+			<AtomObserver node={lettersState} onChange={handleChange} />
 			<SelfManaged />
 		</StoreProvider>,
 	)
