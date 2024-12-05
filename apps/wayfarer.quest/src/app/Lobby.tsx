@@ -7,7 +7,7 @@ import { usePullMutable } from "atom.io/realtime-react"
 import * as React from "react"
 import { roomViewState } from "wayfarer.quest/services/store/room-view-state"
 
-export default function Lobby(): JSX.Element {
+export default function Lobby(): React.ReactNode {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 
 	const roomKeys = useJSON(roomIndex)
