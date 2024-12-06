@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.30.5
+
+### Patch Changes
+
+- b17d2d3: ✨ Now fully compatible with React ^19.
+
 ## 0.30.4
 
 ### Patch Changes
