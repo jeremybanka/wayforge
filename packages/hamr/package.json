@@ -1,6 +1,6 @@
 {
 	"name": "hamr",
-	"version": "0.4.6",
+	"version": "0.5.0",
 	"description": "core react and atom.io utilities for wayforge",
 	"type": "module",
 	"license": "MIT",
@@ -54,7 +54,7 @@
 		"motion": "^10.15.1 || ^11.0.0",
 		"react": "^18.2.0 || ^19.0.0",
 		"react-router-dom": "^6.8.1 || ^7.0.0",
-		"atom.io": "^0.30.0"
+		"atom.io": "^0.30.5"
 	},
 	"devDependencies": {
 		"@emotion/styled": "11.13.5",
