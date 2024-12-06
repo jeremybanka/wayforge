@@ -4,6 +4,9 @@
 	"type": "module",
 	"description": "save json to the filesystem over socket.io",
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-atom-cli.ts --format cjs,esm --dts --external atom.io,react,socket.io,socket.io-client",
 		"lint:biome": "biome check -- .",
