@@ -4,7 +4,7 @@ import { isNumber } from "fp-ts/number"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { Join } from "~/packages/anvl/src/join"
 import { isRecord } from "~/packages/anvl/src/object/refinement"
-import { socketRelations } from "~/packages/socket-io.filestore/src/socket-filestore-atom"
+import { socketRelations } from "~/packages/socket-io.filestore/src/socket-filestore-atom-client"
 
 import type { Energy } from "./energy"
 import { DEFAULT_ENERGY, energyAtoms } from "./energy"
@@ -76,6 +76,6 @@ export const findReactionEnergyState = selectorFamily<Energy, string>({
 		(id) =>
 		({ get }) => {
 			const energyId = get(energyFeaturesState).getRelatedId(id)
-			return energyId ? energyAtoms(energyId) : DEFAULT_ENERGY
+			return energyId ? get(energyAtoms, energyId) : DEFAULT_ENERGY
 		},
 })
