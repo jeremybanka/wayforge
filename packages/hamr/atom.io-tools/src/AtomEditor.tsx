@@ -35,7 +35,7 @@ export type FromListItemProps<T> = AtomListItemProps<T> & {
 export const ListItem = <T,>({
 	Editor,
 	label,
-	family: family,
+	family,
 	removeMe,
 }: FromListItemProps<T>): ReactElement => {
 	return <Editor id={label.id} family={family} useRemove={() => removeMe} />
