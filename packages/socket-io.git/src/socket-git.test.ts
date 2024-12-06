@@ -11,8 +11,8 @@ import { redact } from "~/packages/anvl/src/object"
 import { ensureAgainst } from "~/packages/anvl/src/refinement"
 
 import { isGitSocketError } from "./interface"
-import { serveSimpleGit } from "./socket-git-node"
 import type { GitClientSocket } from "./socket-git-atom-client"
+import { serveSimpleGit } from "./socket-git-node"
 
 const PORT = 2452
 
