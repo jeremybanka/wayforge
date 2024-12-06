@@ -24,7 +24,7 @@ export const Radial = ({
 	useMousePosition,
 	useMode,
 	size = 60,
-}: RadialProps): JSX.Element => {
+}: RadialProps): React.ReactNode => {
 	const actions = useActions()
 	const position = useMousePosition()
 	const [mode, setMode] = useMode()

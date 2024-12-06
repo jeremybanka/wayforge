@@ -1,0 +1,6 @@
+{
+	"name": "@socket-io.filestore/atom.io",
+	"main": "../dist/atom.io/index.js",
+	"types": "../dist/atom.io/index.d.ts",
+	"module": "../dist/atom.io/index.mjs"
+}

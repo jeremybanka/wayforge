@@ -1,29 +1,30 @@
 import "../styles/json-editor-skeletal.scss"
 
 import type { FC } from "react"
-import type { SetterOrUpdater } from "recoil"
-import { selector, useRecoilState, useRecoilValue } from "recoil"
+import { selector, setState } from "atom.io"
+import { useI, useO } from "atom.io/react"
 
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
-import type { Json } from "~/packages/anvl/src/json"
 import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
 import type {
 	FromListItemProps,
-	RecoilEditorProps,
-} from "~/packages/hamr/recoil-tools/src"
-import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
+	AtomEditorProps,
+} from "~/packages/hamr/atom.io-tools/src"
+import { AtomEditor } from "~/packages/hamr/atom.io-tools/src"
 
-import { energyIndex, findEnergyState } from "../../services/energy"
+import { energyIndex, energyAtoms } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import {
-	findReactionWithRelationsState,
+	reactionWithRelationsAtoms,
+	reactionIndex,
 	reactionSchemaState,
-	useRemoveReaction,
 } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon"
+import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
+import { Json } from "atom.io/json"
+import { findState } from "atom.io/ephemeral"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
 	key: `energyCatalog`,
@@ -31,10 +32,14 @@ export const energySelectState = selector<{ value: string; text: string }[]>({
 		const energyIds = get(energyIndex)
 		return [...energyIds].map((id) => ({
 			value: id,
-			text: get(findEnergyState(id)).name,
+			text: get(energyAtoms, id).name,
 		}))
 	},
 })
+
+export type SetterOrUpdater<T, N extends T = T> = (
+	newValue: N | ((currVal: T) => N),
+) => void
 
 export type Settable<T extends Json.Object> = T & { set: SetterOrUpdater<T> }
 
@@ -42,10 +47,11 @@ export const isFn = (x: unknown): x is CallableFunction =>
 	typeof x === `function`
 
 export const ReactionEditor: FC<
-	RecoilEditorProps<Reaction & ReactionRelations>
-> = ({ id: reactionId, findState, useRemove }) => {
-	const reactionState = findState(reactionId)
-	const [reaction, setReaction] = useRecoilState(reactionState)
+	AtomEditorProps<Reaction & ReactionRelations>
+> = ({ id: reactionId, family, useRemove }) => {
+	const reactionState = findState(family, reactionId)
+	const setReaction = useI(reactionState)
+	const reaction = useO(reactionState)
 
 	const set: {
 		[K in keyof Omit<Reaction & ReactionRelations, `id`>]: SetterOrUpdater<
@@ -133,9 +139,9 @@ export const ReactionEditor: FC<
 		remove(reactionId)
 	}
 
-	const reactionSchema = useRecoilValue(reactionSchemaState)
+	const reactionSchema = useO(reactionSchemaState)
 
-	const energySelectables = useRecoilValue(energySelectState)
+	const energySelectables = useO(energySelectState)
 	return (
 		<RecoverableErrorBoundary>
 			<JsonEditor
@@ -291,19 +297,25 @@ export const ReactionEditor: FC<
 
 export const ReactionEditorListItem: FC<
 	FromListItemProps<Reaction & ReactionRelations>
-> = ({ label, findState, removeMe }) => (
-	<RecoilEditor.ListItem
+> = ({ label, family, removeMe }) => (
+	<AtomEditor.ListItem
 		label={label}
-		findState={findState}
+		family={family}
 		removeMe={removeMe}
 		Editor={ReactionEditor}
 	/>
 )
 
 export const ReactionEditorFromRoute: FC = () => (
-	<RecoilEditor.IdFromRoute
+	<AtomEditor.IdFromRoute
 		Editor={ReactionEditor}
-		findState={findReactionWithRelationsState}
-		useRemove={useRemoveReaction}
+		family={reactionWithRelationsAtoms}
+		useRemove={() => (id) => {
+			setState(reactionIndex, (current) => {
+				const next = new Set<string>(current)
+				next.delete(id)
+				return next
+			})
+		}}
 	/>
 )

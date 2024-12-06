@@ -1,6 +1,5 @@
-import { subscribe } from "atom.io"
 import { useI, useO } from "atom.io/react"
-import { useState } from "react"
+import * as React from "react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
@@ -19,7 +18,7 @@ import {
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
 
-export function SignUp(): JSX.Element {
+export function SignUp(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
 	const setPassword0 = useI(password0InputAtom)
 	const setPassword1 = useI(password1InputAtom)
@@ -34,7 +33,7 @@ export function SignUp(): JSX.Element {
 	const emailIssues = useO(emailIssuesSelector)
 	const signUpReady = useO(signUpReadySelector)
 
-	const [error, setError] = useState<string | null>(null)
+	const [error, setError] = React.useState<string | null>(null)
 
 	return (
 		<form

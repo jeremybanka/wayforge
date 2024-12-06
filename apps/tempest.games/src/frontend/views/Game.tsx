@@ -2,6 +2,7 @@ import { runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
 import { useO } from "atom.io/react"
 import { useSyncContinuity } from "atom.io/realtime-react"
+import * as React from "react"
 
 import { countAtom, countContinuity, incrementTX } from "../../library/store"
 import { Anchor } from "../Anchor"
@@ -15,11 +16,11 @@ export type GameIndexProps = {
 	route: GameRoute
 }
 
-export function GameView({ route: [gameId] }: GameIndexProps): JSX.Element {
+export function GameView({ route: [gameId] }: GameIndexProps): React.ReactNode {
 	return <article>{gameId ? <Game gameId={gameId} /> : <GameIndex />}</article>
 }
 
-export function GameIndex(): JSX.Element {
+export function GameIndex(): React.ReactNode {
 	return (
 		<nav>
 			<Anchor href="/game/clicker">Clicker</Anchor>
@@ -33,7 +34,7 @@ export type GameProps = {
 
 const GAMES = toEntries(ROUTES[1].game[1])
 
-export function Game({ gameId }: GameProps): JSX.Element {
+export function Game({ gameId }: GameProps): React.ReactNode {
 	console.log(gameId)
 	const count = useO(countAtom)
 	const increment = runTransaction(incrementTX)

@@ -1,13 +1,13 @@
+import { atom, selectorFamily } from "atom.io"
 import { isNumber } from "fp-ts/number"
-import { atom, selectorFamily } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { Join } from "~/packages/anvl/src/join"
 import { isRecord } from "~/packages/anvl/src/object/refinement"
-import { socketRelations } from "~/packages/socket-io.filestore/src/socket-filestore-recoil"
+import { socketRelations } from "~/packages/socket-io.filestore/src/socket-filestore-atom-client"
 
 import type { Energy } from "./energy"
-import { DEFAULT_ENERGY, findEnergyState } from "./energy"
+import { DEFAULT_ENERGY, energyAtoms } from "./energy"
 import { socket } from "./socket"
 
 export const energyFeaturesState = atom<Join<null, `energyId`, `reactionId`>>({
@@ -76,6 +76,6 @@ export const findReactionEnergyState = selectorFamily<Energy, string>({
 		(id) =>
 		({ get }) => {
 			const energyId = get(energyFeaturesState).getRelatedId(id)
-			return energyId ? findEnergyState(energyId) : DEFAULT_ENERGY
+			return energyId ? get(energyAtoms, energyId) : DEFAULT_ENERGY
 		},
 })

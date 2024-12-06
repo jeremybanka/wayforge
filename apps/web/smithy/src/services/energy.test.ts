@@ -1,13 +1,11 @@
-import { snapshot_UNSTABLE } from "recoil"
+import { getState } from "atom.io"
+import { describe, expect, it } from "vitest"
 
-import { findEnergyState } from "./energy"
+import { energyAtoms } from "./energy"
 
 describe(`energy`, () => {
 	it(`should initialize default`, () => {
-		const tree = snapshot_UNSTABLE()
-		expect(
-			tree.getLoadable(findEnergyState(`0880057843761`)).contents,
-		).toStrictEqual({
+		expect(getState(energyAtoms, `0880057843761`)).toStrictEqual({
 			colorA: {
 				hue: 0,
 				lum: 0,

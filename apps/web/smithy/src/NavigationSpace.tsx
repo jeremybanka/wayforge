@@ -8,29 +8,27 @@ import {
 	Routes,
 	useLocation,
 } from "react-router-dom"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useO, useI } from "atom.io/react"
+import { runTransaction, setState } from "atom.io"
+import { ErrorBoundary } from "atom.io/react-devtools"
 
 import type { WC } from "~/packages/hamr/react-json-editor/src"
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
 
 import { EnergyEditor } from "./components/energy/EnergyEditor"
 import { EnergyHome } from "./components/energy/EnergyHome"
 import { Home } from "./components/Home"
 import { ReactionEditorFromRoute } from "./components/reaction/ReactionEditor"
 import { ReactionHome } from "./components/reaction/ReactionHome"
-import {
-	findViewState,
-	useAddView,
-	useRemoveView,
-	viewIndexState,
-} from "./services/view"
+import { addViewTX, viewAtoms, viewIndexState } from "./services/view"
+import { RecoverableErrorBoundary } from "./components/RecoverableErrorBoundary"
 
 export const InnerView: FC<{ viewId: string; close: () => void }> = ({
 	viewId,
 	close,
 }) => {
 	const location = useLocation()
-	const [view, setView] = useRecoilState(findViewState(viewId))
+	const setView = useI(viewAtoms, viewId)
+	const view = useO(viewAtoms, viewId)
 	useEffect(() => {
 		// console.log(location)
 		setView((v) => ({ ...v, location }))
@@ -78,7 +76,7 @@ export const View: FC<{ viewId: string; close: () => void }> = ({
 	viewId,
 	close,
 }) => {
-	const view = useRecoilValue(findViewState(viewId))
+	const view = useO(viewAtoms, viewId)
 	return (
 		<RecoverableErrorBoundary>
 			<MemoryRouter initialEntries={[view.location.pathname]}>
@@ -103,8 +101,8 @@ export type SpacesProps = {
 }
 
 export const Spaces: FC<SpacesProps> = ({ Components: CustomComponents }) => {
-	const [viewIds] = useRecoilState(viewIndexState)
-	const addView = useAddView()
+	const viewIds = useO(viewIndexState)
+	const addView = runTransaction(addViewTX)
 	// {
 	//   const id = `view-${now()}`
 	//   setViewIds((viewIds) => {
@@ -113,7 +111,6 @@ export const Spaces: FC<SpacesProps> = ({ Components: CustomComponents }) => {
 	//     return newViewIds
 	//   })
 	// }
-	const removeView = useRemoveView()
 
 	const Components = { ...DEFAULT_COMPONENTS, ...CustomComponents }
 	return (
@@ -123,7 +120,11 @@ export const Spaces: FC<SpacesProps> = ({ Components: CustomComponents }) => {
 					key={viewId}
 					viewId={viewId}
 					close={() => {
-						removeView(viewId)
+						setState(viewIndexState, (current) => {
+							const next = new Set<string>(current)
+							next.delete(viewId)
+							return next
+						})
 					}}
 				/>
 			))}

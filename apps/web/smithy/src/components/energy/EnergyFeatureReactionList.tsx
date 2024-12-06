@@ -2,13 +2,14 @@ import styled from "@emotion/styled"
 import type { FC } from "react"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
-import { ListItems } from "~/packages/hamr/recoil-tools/src/RecoilList"
 
 import {
-	findReactionWithRelationsState,
-	useRemoveReaction,
+	reactionIndex,
+	reactionWithRelationsAtoms,
 } from "../../services/reaction"
 import { ReactionEditorListItem } from "../reaction/ReactionEditor"
+import { setState } from "atom.io"
+import { ListItems } from "hamr/atom.io-tools"
 
 export const ReactionList: FC<{
 	labels: Identified[]
@@ -16,9 +17,15 @@ export const ReactionList: FC<{
 }> = ({ labels, useCreate }) => (
 	<ListItems
 		labels={labels}
-		findState={findReactionWithRelationsState}
+		family={reactionWithRelationsAtoms}
 		useCreate={useCreate}
-		useRemove={useRemoveReaction}
+		useRemove={() => (id: string) => {
+			setState(reactionIndex, (current) => {
+				const next = new Set<string>(current)
+				next.delete(id)
+				return next
+			})
+		}}
 		Components={{
 			Wrapper: styled.ul`
         list-style-type: none;

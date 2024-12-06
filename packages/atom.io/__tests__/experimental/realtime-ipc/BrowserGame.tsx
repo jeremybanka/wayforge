@@ -7,7 +7,7 @@ import * as React from "react"
 
 import { gameContinuity, letterAtoms } from "./game-store"
 
-function Room({ roomId }: { roomId: string }): JSX.Element {
+function Room({ roomId }: { roomId: string }): React.ReactNode {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
@@ -26,7 +26,7 @@ function Room({ roomId }: { roomId: string }): JSX.Element {
 	)
 }
 
-function Lobby(): JSX.Element {
+function Lobby(): React.ReactNode {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 	RTR.usePullMutable(RT.roomIndex)
 	const roomKeys = AR.useJSON(RT.roomIndex)
@@ -69,7 +69,7 @@ function Lobby(): JSX.Element {
 	)
 }
 
-function View({ myUsername }: { myUsername: string }): JSX.Element {
+function View({ myUsername }: { myUsername: string }): React.ReactNode {
 	const store = React.useContext(AR.StoreContext)
 	const myRoomKeyState = findRelationsInStore(
 		RT.usersInRooms,
@@ -80,7 +80,7 @@ function View({ myUsername }: { myUsername: string }): JSX.Element {
 	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
 }
 
-export function BrowserGame(): JSX.Element | null {
+export function BrowserGame(): React.ReactNode | null {
 	const socketId = AR.useO(RTC.myIdState)
 	const myUsername = AR.useO(RTC.myUsernameState)
 

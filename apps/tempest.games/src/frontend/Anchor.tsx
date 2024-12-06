@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 
 import type { Pathname } from "./services/router-service"
 
@@ -7,6 +7,6 @@ export type AnchorProps = Omit<
 	`href`
 > & { href: Pathname }
 
-export function Anchor(props: AnchorProps): JSX.Element {
+export function Anchor(props: AnchorProps): React.ReactNode {
 	return <a {...props} />
 }

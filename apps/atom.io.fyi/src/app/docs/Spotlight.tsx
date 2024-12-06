@@ -19,7 +19,7 @@ export function Spotlight({
 	},
 	padding = 0,
 	updateSignals = [],
-}: SpotlightProps): JSX.Element | null {
+}: SpotlightProps): React.ReactNode | null {
 	const [position, setPosition] = React.useState(startingPosition)
 	React.useEffect(() => {
 		if (!elementId) {

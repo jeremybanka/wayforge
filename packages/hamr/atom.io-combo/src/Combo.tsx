@@ -1,7 +1,7 @@
+import type { ReadableToken, WritableToken } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import type { KeyboardEventHandler, ReactElement } from "react"
 import { useEffect, useId, useRef, useState } from "react"
-import type { RecoilState, RecoilValueReadOnly, SetterOrUpdater } from "recoil"
-import { useRecoilValue, useSetRecoilState } from "recoil"
 
 export type ComboPropsCore<T> = {
 	onSetSelections?: (change: { added: T } | { removed: T }) => void
@@ -13,15 +13,15 @@ export type ComboPropsCore<T> = {
 	constrainMinMax?: boolean
 	placeholder?: string
 }
-export type ComboSelectionsRecoil<T> = {
-	selectionsState: RecoilState<T[]>
+export type ComboSelectionsAtom<T> = {
+	selectionsState: WritableToken<T[]>
 }
 export type ComboSelections<T> = {
 	selections: T[]
-	setSelections: SetterOrUpdater<T[]>
+	setSelections: (setterOrUpdater: T[] | ((oldValue: T[]) => T[])) => void
 }
-export type ComboOptionsRecoil<T> = {
-	optionsState: RecoilState<T[]> | RecoilValueReadOnly<T[]>
+export type ComboOptionsAtom<T> = {
+	optionsState: ReadableToken<T[]>
 }
 export type ComboOptions<T> = {
 	options: T[]
@@ -30,8 +30,8 @@ export type ComboOptions<T> = {
 /* eslint-disable @typescript-eslint/sort-type-constituents */
 export type ComboProps<T> = ComboPropsCore<T> &
 	(T extends string ? {} : { getName: (value: T) => string }) &
-	(ComboOptions<T> | ComboOptionsRecoil<T>) &
-	(ComboSelections<T> | ComboSelectionsRecoil<T>)
+	(ComboOptions<T> | ComboOptionsAtom<T>) &
+	(ComboSelections<T> | ComboSelectionsAtom<T>)
 export type ComboProps_INTERNAL<T> = ComboPropsCore<T> &
 	ComboOptions<T> &
 	ComboSelections<T> & { getName: (value: T) => string }
@@ -201,14 +201,14 @@ export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
 	if (`options` in props) {
 		options = props.options
 	} else if (`optionsState` in props) {
-		options = useRecoilValue(props.optionsState)
+		options = useO(props.optionsState)
 	}
 	if (`selections` in props) {
 		selections = props.selections
 		setSelections = props.setSelections
 	} else if (`selectionsState` in props) {
-		selections = useRecoilValue(props.selectionsState)
-		setSelections = useSetRecoilState(props.selectionsState)
+		selections = useO(props.selectionsState)
+		setSelections = useI(props.selectionsState)
 	}
 
 	return (

@@ -1,49 +1,47 @@
+import type { WritableFamilyToken, WritableToken } from "atom.io"
 import type { FC, ReactElement } from "react"
 import { useParams } from "react-router-dom"
-import type { RecoilState } from "recoil"
 
-import type { RecoilListItemProps } from "./RecoilList"
+import type { AtomListItemProps } from "./AtomList"
 
-export type RecoilEditorProps<T> = {
+export type AtomEditorProps<T> = {
 	id: string
-	findState: (key: string) => RecoilState<T>
+	family: WritableFamilyToken<T, string>
 	useRemove: () => (id: string) => void
 }
 
 export type IdFromRouteProps<T> = {
-	Editor: FC<RecoilEditorProps<T>>
-	findState: (key: string) => RecoilState<T>
+	Editor: FC<AtomEditorProps<T>>
+	family: WritableFamilyToken<T, string>
 	useRemove: () => (id: string) => void
 }
 
 export const IdFromRoute = <T,>({
 	Editor,
-	findState,
+	family,
 	useRemove,
 }: IdFromRouteProps<T>): ReactElement => {
 	const { id } = useParams<{ id: string }>()
 	if (!id) {
 		throw new Error(`RouterAdaptor must be used with a route that has an id`)
 	}
-	return <Editor id={id} findState={findState} useRemove={useRemove} />
+	return <Editor id={id} family={family} useRemove={useRemove} />
 }
 
-export type FromListItemProps<T> = RecoilListItemProps<T> & {
-	Editor: FC<RecoilEditorProps<T>>
+export type FromListItemProps<T> = AtomListItemProps<T> & {
+	Editor: FC<AtomEditorProps<T>>
 }
 
 export const ListItem = <T,>({
 	Editor,
 	label,
-	findState,
+	family,
 	removeMe,
 }: FromListItemProps<T>): ReactElement => {
-	return (
-		<Editor id={label.id} findState={findState} useRemove={() => removeMe} />
-	)
+	return <Editor id={label.id} family={family} useRemove={() => removeMe} />
 }
 
-export const RecoilEditor = {
+export const AtomEditor = {
 	ListItem,
 	IdFromRoute,
 }

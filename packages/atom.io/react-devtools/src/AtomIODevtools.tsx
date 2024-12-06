@@ -18,7 +18,7 @@ export const AtomIODevtools: React.FC = () => {
 	)
 }
 
-const AtomIODevtoolsInternal = (): JSX.Element => {
+const AtomIODevtoolsInternal = (): React.ReactNode => {
 	const constraintsRef = useRef(null)
 
 	const {
@@ -41,7 +41,7 @@ const AtomIODevtoolsInternal = (): JSX.Element => {
 		<>
 			<motion.span
 				ref={constraintsRef}
-				className="atom_io_devtools_zone"
+				data-css="atom_io_devtools_zone"
 				style={{
 					position: `fixed`,
 					top: 0,
@@ -54,7 +54,7 @@ const AtomIODevtoolsInternal = (): JSX.Element => {
 			<motion.main
 				drag
 				dragConstraints={constraintsRef}
-				className="atom_io_devtools"
+				data-css="atom_io_devtools"
 				transition={spring}
 				style={
 					devtoolsAreOpen

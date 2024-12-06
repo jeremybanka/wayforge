@@ -1,7 +1,7 @@
 import { atom } from "atom.io"
+import { findState } from "atom.io/ephemeral"
 import { useO } from "atom.io/react"
-
-import { findState } from "~/packages/atom.io/ephemeral/src"
+import * as React from "react"
 
 import { Point, xAtoms, yAtoms } from "./declare-a-family"
 
@@ -10,7 +10,7 @@ export const pointIndex = atom<string[]>({
 	default: [],
 })
 
-export function AllPoints(): JSX.Element {
+export function AllPoints(): React.ReactNode {
 	const pointIds = useO(pointIndex)
 	return (
 		<>

@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import type { ToggleProps } from "./Toggle"
 import label from "./Toggle.Button.module.scss"
 
@@ -9,7 +11,7 @@ export function Button({
 	children,
 	checked,
 	onChange,
-}: ToggleProps): JSX.Element {
+}: ToggleProps): React.ReactNode {
 	return (
 		<label
 			className={label.class}

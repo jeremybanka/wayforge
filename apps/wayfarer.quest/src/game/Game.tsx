@@ -50,7 +50,7 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 // 	usePullAtomFamilyMember(trickStates, props.id)
 // 	return null
 // }
-// function CoreSync(): JSX.Element {
+// function CoreSync(): React.ReactNode {
 // 	const deckIds = useJSON(deckIndex)
 // 	const handIds = useJSON(handIndex)
 // 	const trickIds = useJSON(trickIndex)
@@ -77,7 +77,7 @@ function CoreSync(): null {
 export type GameProps = {
 	roomId: string
 }
-export function Game({ roomId }: GameProps): JSX.Element {
+export function Game({ roomId }: GameProps): React.ReactNode {
 	return (
 		<>
 			<CoreSync />

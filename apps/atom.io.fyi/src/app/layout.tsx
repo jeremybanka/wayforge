@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
 import Link from "next/link"
+import * as React from "react"
 
 import { ATOM_IO_ROOT } from "~/packages/atom.io/__scripts__/constants"
 
@@ -25,7 +26,7 @@ export default function RootLayout({
 	children,
 }: {
 	children: React.ReactNode
-}): JSX.Element {
+}): React.ReactNode {
 	return (
 		<html lang="en">
 			<Theme />

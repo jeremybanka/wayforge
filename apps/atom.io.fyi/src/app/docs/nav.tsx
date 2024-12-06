@@ -19,9 +19,9 @@ const menuToggleState = atom<boolean>({
 })
 
 export type ContentsProps = {
-	observe: React.MutableRefObject<HTMLElement | null>
+	observe: React.RefObject<HTMLElement | null>
 }
-export function OnThisPage(): JSX.Element {
+export function OnThisPage(): React.ReactNode {
 	const userHasToggled = useO(menuToggleState)
 	const setUserHasToggled = useI(menuToggleState)
 
@@ -68,8 +68,8 @@ export function OnThisPage(): JSX.Element {
 	const renderHeadings = (
 		list: { id: string; content: string | null; level: number }[],
 		level: number,
-	): JSX.Element[] => {
-		const output: JSX.Element[] = []
+	): React.ReactNode[] => {
+		const output: React.ReactNode[] = []
 		let currentIndex = 0
 
 		while (currentIndex < list.length) {
@@ -138,7 +138,7 @@ export function OnThisPage(): JSX.Element {
 	)
 }
 
-export function SiteDirectory(): JSX.Element {
+export function SiteDirectory(): React.ReactNode {
 	const userHasToggled = useO(menuToggleState)
 
 	const pathname = usePathname()

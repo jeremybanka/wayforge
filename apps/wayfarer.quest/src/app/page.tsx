@@ -28,7 +28,7 @@ const AtomIODevtools = dynamic(
 	},
 )
 
-export default function SPA(): JSX.Element {
+export default function SPA(): React.ReactNode {
 	const roomView = useO(roomViewState)
 	const myUsername = useO(myUsernameState)
 	return (

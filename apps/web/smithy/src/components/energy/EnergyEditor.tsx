@@ -2,23 +2,21 @@ import "../styles/json-editor-skeletal.scss"
 
 import type { FC } from "react"
 import { useEffect } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useO, useI } from "atom.io/react"
 
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import type { RecoilEditorProps } from "~/packages/hamr/recoil-tools/src"
-import { RecoilEditor } from "~/packages/hamr/recoil-tools/src"
-import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
+import type { AtomEditorProps } from "~/packages/hamr/atom.io-tools/src"
+import { AtomEditor } from "~/packages/hamr/atom.io-tools/src"
+import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-atom-client"
 
 import type { Energy, EnergyRelations } from "../../services/energy"
 import {
+	energyIndex,
 	energySchemaState,
-	findEnergyWithRelationsState,
-	useRemoveEnergy,
+	energyWithRelationsSelectors,
 } from "../../services/energy"
 import { git } from "../../services/git"
-import { useAddReactionAsEnergyFeature } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { Data_EnergyCard_A } from "./EnergyCard_A"
 import { Data_EnergyCard_B } from "./EnergyCard_B"
@@ -26,16 +24,21 @@ import scss from "./EnergyEditor.module.scss"
 import { ReactionList } from "./EnergyFeatureReactionList"
 import { SVG_EnergyIcon } from "./EnergyIcon"
 import { Slot_PreviewCardSleeve } from "./PreviewCardSleeve"
+import { findState } from "atom.io/ephemeral"
+import { RecoverableErrorBoundary } from "hamr/react-error-boundary"
+import { runTransaction, setState } from "atom.io"
+import { addReactionAsEnergyFeatureTX } from "../../services/reaction"
 
 export const EnergyEditor_INTERNAL: FC<
-	RecoilEditorProps<Energy & EnergyRelations>
-> = ({ id, findState, useRemove }) => {
-	const gitBranch = useRecoilValue(git.branch.state)
+	AtomEditorProps<Energy & EnergyRelations>
+> = ({ id, family, useRemove }) => {
+	const gitBranch = useO(git.branch.state)
 	useEffect(() => {
 		git.branch()
 	}, [])
-	const energyState = findState(id)
-	const [energy, setEnergy] = useRecoilState(energyState)
+	const energyState = findState(family, id)
+	const setEnergy = useI(energyState)
+	const energy = useO(energyState)
 	const set = {
 		name: (name: string) => {
 			setEnergy((e) => ({ ...e, name }))
@@ -44,7 +47,7 @@ export const EnergyEditor_INTERNAL: FC<
 	const remove = useRemove()
 	useSetTitle(energy.name)
 
-	const energySchema = useRecoilValue(energySchemaState)
+	const energySchema = useO(energySchemaState)
 
 	return (
 		<div className={scss.class}>
@@ -75,16 +78,22 @@ export const EnergyEditor_INTERNAL: FC<
 			/>
 			<ReactionList
 				labels={energy.features}
-				useCreate={() => useAddReactionAsEnergyFeature(id)}
+				useCreate={() => () => runTransaction(addReactionAsEnergyFeatureTX)(id)}
 			/>
 		</div>
 	)
 }
 
 export const EnergyEditor: FC = () => (
-	<RecoilEditor.IdFromRoute
+	<AtomEditor.IdFromRoute
 		Editor={EnergyEditor_INTERNAL}
-		findState={findEnergyWithRelationsState}
-		useRemove={useRemoveEnergy}
+		family={energyWithRelationsSelectors}
+		useRemove={() => (id) => {
+			setState(energyIndex, (current) => {
+				const next = new Set<string>(current)
+				next.delete(id)
+				return next
+			})
+		}}
 	/>
 )

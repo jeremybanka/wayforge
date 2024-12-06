@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-export function Theme(): JSX.Element | null {
+export function Theme(): React.ReactNode | null {
 	React.useEffect(() => {
 		// const colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
 		// 	? "dark"

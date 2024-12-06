@@ -1,5 +1,5 @@
 {
-	"name": "hamr-recoil-tools",
+	"name": "hamr-atom.io-combo",
 	"type": "module",
 	"private": true,
 	"main": "dist/index.cjs",

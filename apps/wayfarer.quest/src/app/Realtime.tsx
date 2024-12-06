@@ -10,7 +10,7 @@ export default function Realtime({
 	children,
 }: {
 	children: React.ReactNode
-}): JSX.Element {
+}): React.ReactNode {
 	const id = useO(myIdState)
 	return (
 		<RealtimeProvider socket={SOCKET}>

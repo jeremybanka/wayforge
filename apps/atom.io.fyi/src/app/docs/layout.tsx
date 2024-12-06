@@ -14,7 +14,7 @@ export default function DocsLayout({
 	children,
 }: {
 	children: React.ReactNode
-}): JSX.Element {
+}): React.ReactNode {
 	return (
 		<>
 			<Head>
