@@ -40,13 +40,13 @@
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
-		"@floating-ui/react": "0.26.28",
+		"@floating-ui/react": "0.27.0",
 		"@floating-ui/react-dom": "2.1.2",
 		"corners": "0.1.0",
 		"motion": "11.13.1"
 	},
 	"peerDependencies": {
-		"@floating-ui/react": "^0.25.0 || ^0.26.0",
+		"@floating-ui/react": "^0.25.0 || ^0.26.0 || ^0.27.0",
 		"@floating-ui/react-dom": "^2.0.2",
 		"@vitejs/plugin-react": "^4.0.4",
 		"ajv": "^8.12.0",
