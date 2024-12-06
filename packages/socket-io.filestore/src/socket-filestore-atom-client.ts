@@ -1,6 +1,6 @@
+import type { AtomEffect } from "atom.io"
 import { identity } from "fp-ts/function"
 import type { Refinement } from "fp-ts/Refinement"
-import type { AtomEffect } from "recoil"
 import type { Socket } from "socket.io-client"
 
 import { Join } from "~/packages/anvl/src/join"
@@ -40,7 +40,9 @@ export const smartSocketSync = <T>(
 		socket.on(`read_${id}`, (json) => {
 			setSelf(fromJson(json))
 		})
-		onSet((v) => socket.emit(`write`, { id, type, value: toJson(v) }))
+		onSet(({ newValue }) =>
+			socket.emit(`write`, { id, type, value: toJson(newValue) }),
+		)
 	}
 }
 
@@ -59,7 +61,9 @@ export const socketIndex: <IDS extends Iterable<string>>(
 		socket.on(`indexRead_${type}`, (json) => {
 			setSelf(fromJson(json))
 		})
-		onSet((v) => socket.emit(`indexWrite`, { type, value: toJson(v) }))
+		onSet(({ newValue }) =>
+			socket.emit(`indexWrite`, { type, value: toJson(newValue) }),
+		)
 	}
 
 export type SocketRelationsOptions<CONTENT extends Json.Object | null = null> =
@@ -97,8 +101,8 @@ export const socketRelations =
 				}),
 			)
 		})
-		onSet((v: Join<CONTENT, A, B>) =>
-			socket.emit(`relationsWrite`, { id, type, value: v.toJSON() }),
+		onSet(({ newValue }) =>
+			socket.emit(`relationsWrite`, { id, type, value: newValue.toJSON() }),
 		)
 	}
 

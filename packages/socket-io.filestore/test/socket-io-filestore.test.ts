@@ -1,12 +1,11 @@
-import type { Logger } from "atom.io"
 import { pipe } from "fp-ts/function"
 import { Server as WebSocketServer } from "socket.io"
 import { io } from "socket.io-client"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
+import type { FilestoreClientSocket } from "../src/socket-filestore-atom-client"
 import { serveFilestore } from "../src/socket-filestore-node"
-import type { FilestoreClientSocket } from "../src/socket-filestore-recoil"
 
 const PORT = 2451
 

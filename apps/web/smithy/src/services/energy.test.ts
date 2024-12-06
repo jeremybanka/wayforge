@@ -1,13 +1,11 @@
-import { snapshot_UNSTABLE } from "atom.io"
+import { getState } from "atom.io"
+import { describe, expect, it } from "vitest"
 
 import { energyAtoms } from "./energy"
 
 describe(`energy`, () => {
 	it(`should initialize default`, () => {
-		const tree = snapshot_UNSTABLE()
-		expect(
-			tree.getLoadable(energyAtoms(`0880057843761`)).contents,
-		).toStrictEqual({
+		expect(getState(energyAtoms, `0880057843761`)).toStrictEqual({
 			colorA: {
 				hue: 0,
 				lum: 0,

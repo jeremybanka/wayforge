@@ -1124,6 +1124,9 @@ importers:
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
       react:
         specifier: 19.0.0
         version: 19.0.0
