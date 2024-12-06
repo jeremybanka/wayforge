@@ -1,11 +1,11 @@
 import { Luum } from "luum"
 import type { FC } from "react"
 import { useId } from "react"
-import { useRecoilValue } from "recoil"
+import { useO } from "atom.io/react"
 
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
-import { findEnergyState } from "../../services/energy"
+import { energyAtoms } from "../../services/energy"
 import { CARD_HEIGHT, CARD_PADDING, CARD_WIDTH } from "../Card"
 import scss from "../Card.module.scss"
 import scssA from "./EnergyCard_A.module.scss"
@@ -13,7 +13,7 @@ import { SVG_EnergyIcon } from "./EnergyIcon"
 
 export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
 	const domId = useId()
-	const energy = useRecoilValue(findEnergyState(energyId))
+	const energy = useO(energyAtoms, energyId)
 
 	const colorA = Luum.fromJSON(energy.colorA)
 	const colorB = Luum.fromJSON(energy.colorB)

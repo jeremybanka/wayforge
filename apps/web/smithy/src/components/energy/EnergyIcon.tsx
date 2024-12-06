@@ -1,14 +1,14 @@
 import type { FC } from "react"
 import { useId } from "react"
 import { useNavigate } from "react-router-dom"
-import { useRecoilValue } from "recoil"
+import { useO } from "atom.io/react"
 
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
 import { Luum } from "~/packages/luum/src"
 
 import type { Energy } from "../../services/energy"
-import { findEnergyState } from "../../services/energy"
+import { energyAtoms } from "../../services/energy"
 import type { Amount } from "../../services/energy_reaction"
+import { AtomListItemProps } from "hamr/atom.io-tools"
 
 export const SvgTSpan_Spacer: FC = () => (
 	<tspan fill="none" stroke="none" style={{ userSelect: `none` }}>{`-`}</tspan>
@@ -86,7 +86,7 @@ export const SVG_EnergyIcon: FC<{
 	size: number
 	clickable?: boolean
 }> = ({ energyId, size, clickable = true }) => {
-	const energy = useRecoilValue(findEnergyState(energyId))
+	const energy = useO(energyAtoms, energyId)
 	return (
 		<EnergyIcon_INTERNAL energy={energy} size={size} clickable={clickable} />
 	)
@@ -173,10 +173,10 @@ export const EnergyAmountTag: FC<{
 }
 
 export const Span_EnergyAmount: FC<
-	RecoilListItemProps<Energy, Amount> & { size: number; clickable?: boolean }
-> = ({ label, findState, size, clickable = true }) => {
+	AtomListItemProps<Energy, Amount> & { size: number; clickable?: boolean }
+> = ({ label, family, size, clickable = true }) => {
 	const { id, amount } = label
-	const energy = useRecoilValue(findState(id))
+	const energy = useO(family, id)
 	const domId = useId()
 	return (
 		<span

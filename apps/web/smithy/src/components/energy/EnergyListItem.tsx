@@ -1,12 +1,11 @@
 import type { FC } from "react"
 
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
-
 import type { Energy } from "../../services/energy"
 import { SVG_EnergyIcon } from "./EnergyIcon"
+import { AtomListItemProps } from "hamr/atom.io-tools"
+import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
 
-export const EnergyListItem: FC<RecoilListItemProps<Energy>> = ({ label }) => (
+export const EnergyListItem: FC<AtomListItemProps<Energy>> = ({ label }) => (
 	<RecoverableErrorBoundary>
 		<SVG_EnergyIcon energyId={label.id} size={30} />
 	</RecoverableErrorBoundary>

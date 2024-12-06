@@ -1,6 +1,5 @@
 import * as fs from "node:fs"
 
-import type { Logger } from "atom.io"
 import { pipe } from "fp-ts/function"
 import git from "simple-git"
 import { Server as WebSocketServer } from "socket.io"
@@ -13,7 +12,7 @@ import { ensureAgainst } from "~/packages/anvl/src/refinement"
 
 import { isGitSocketError } from "./interface"
 import { serveSimpleGit } from "./socket-git-node"
-import type { GitClientSocket } from "./socket-git-recoil"
+import type { GitClientSocket } from "./socket-git-atom-client"
 
 const PORT = 2452
 

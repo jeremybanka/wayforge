@@ -1,10 +1,4 @@
-import {
-	atom,
-	atomFamily,
-	DefaultValue,
-	selectorFamily,
-	useRecoilTransaction_UNSTABLE,
-} from "recoil"
+import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 import type z from "zod"
 
 import type reactionSchema from "~/apps/node/forge/gen/reaction.schema.json"
@@ -12,8 +6,7 @@ import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { removeFromIndex } from "~/packages/hamr/recoil-tools/src/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
+
 import {
 	socketIndex,
 	socketSchema,
@@ -51,23 +44,23 @@ export const reactionIndex = atom<Set<string>>({
 	key: `reactionIndex`,
 	default: new Set(),
 	effects: [
-		socketIndex({
-			type: `reaction`,
-			socket,
-			jsonInterface: stringSetJsonInterface,
-		}),
+		// socketIndex({
+		// 	type: `reaction`,
+		// 	socket,
+		// 	jsonInterface: stringSetJsonInterface,
+		// }),
 	],
 })
 
-export const findReactionState = atomFamily<Reaction, string>({
+export const reactionAtoms = atomFamily<Reaction, string>({
 	key: `reaction`,
 	default: DEFAULT_REACTION,
 	effects: (id) => [
-		socketSync({
-			id,
-			socket,
-			type: `reaction`,
-		}),
+		// socketSync({
+		// 	id,
+		// 	socket,
+		// 	type: `reaction`,
+		// }),
 	],
 })
 
@@ -77,7 +70,7 @@ export type ReactionRelations = {
 	featureOf: Identified | null
 }
 
-export const findReactionWithRelationsState = selectorFamily<
+export const reactionWithRelationsAtoms = selectorFamily<
 	Reaction & ReactionRelations,
 	string
 >({
@@ -85,7 +78,7 @@ export const findReactionWithRelationsState = selectorFamily<
 	get:
 		(id) =>
 		({ get }) => {
-			const reaction = get(findReactionState(id))
+			const reaction = get(reactionAtoms, id)
 			const reactionReagents = get(reactionReagentsState)
 			const reagents = reactionReagents.getRelations(id)
 			const reactionProducts = get(reactionProductsState)
@@ -97,12 +90,8 @@ export const findReactionWithRelationsState = selectorFamily<
 	set:
 		(reactionId) =>
 		({ set }, newValue) => {
-			if (newValue instanceof DefaultValue) {
-				console.warn(`cannot set default value for reaction`)
-				return
-			}
 			const { products, reagents, featureOf, ...reaction } = newValue
-			set(findReactionState(reactionId), reaction)
+			set(reactionAtoms, reactionId, reaction)
 			set(reactionProductsState, (j) => j.setRelations({ reactionId }, products))
 			set(reactionReagentsState, (j) => j.setRelations({ reactionId }, reagents))
 			if (featureOf !== null) {
@@ -118,51 +107,48 @@ export const findReactionWithRelationsState = selectorFamily<
 export const reactionSchemaState = atom<JsonSchema>({
 	key: `reactionSchema`,
 	default: true,
-	effects: [socketSchema({ type: `reaction`, socket })],
+	// effects: [socketSchema({ type: `reaction`, socket })],
 })
 
-const addReaction: Transact<() => string> = ({ set }) => {
-	const id = now()
-	set(findReactionState(id), (current) => {
-		return {
-			...current,
-			id,
-			name: `New Reaction`,
-		}
-	})
-	return id
-}
-export const useAddReaction = (): (() => void) =>
-	useRecoilTransaction_UNSTABLE((transactors) => () => addReaction(transactors))
+export const addReactionTX = transaction<() => string>({
+	key: `addReaction`,
+	do: ({ set }) => {
+		const id = now()
+		set(reactionAtoms, id, (current) => {
+			return {
+				...current,
+				id,
+				name: `New Reaction`,
+			}
+		})
+		return id
+	},
+})
 
-export const addReactionAsEnergyFeature: Transact<(id: string) => void> = (
-	transactors,
-	energyId,
-) => {
-	const { get, set } = transactors
-	const reactionId = addReaction(transactors)
-	const energyFeatures = get(energyFeaturesState)
-	set(energyFeaturesState, energyFeatures.set({ energyId, reactionId }))
-}
-export const useAddReactionAsEnergyFeature = (energyId: string): (() => void) =>
-	useRecoilTransaction_UNSTABLE((transactors) => () => {
-		addReactionAsEnergyFeature(transactors, energyId)
-	})
+export const addReactionAsEnergyFeatureTX = transaction<(id: string) => void>({
+	key: `addReactionAsEnergyFeature`,
+	do: ({ get, set, run }, energyId) => {
+		const reactionId = run(addReactionTX)()
+		const energyFeatures = get(energyFeaturesState)
+		set(energyFeaturesState, energyFeatures.set({ energyId, reactionId }))
+	},
+})
 
-export const removeReaction: Transact<(id: string) => void> = (
-	transactors,
-	reactionId,
-) => {
-	const { get, set } = transactors
-	const energyFeatures = get(energyFeaturesState)
-	const reactionReagents = get(reactionReagentsState)
-	const reactionProducts = get(reactionProductsState)
-	set(energyFeaturesState, energyFeatures.remove({ reactionId }))
-	set(reactionReagentsState, reactionReagents.remove({ reactionId }))
-	set(reactionProductsState, reactionProducts.remove({ reactionId }))
-	removeFromIndex(transactors, { id: reactionId, indexAtom: reactionIndex })
-}
-export const useRemoveReaction = (): ((id: string) => void) =>
-	useRecoilTransaction_UNSTABLE((transactors) => (id) => {
-		removeReaction(transactors, id)
-	})
+export const removeReactionTX = transaction<(id: string) => void>({
+	key: `removeReaction`,
+	do: ({ get, set }, reactionId) => {
+		const energyFeatures = get(energyFeaturesState)
+		const reactionReagents = get(reactionReagentsState)
+		const reactionProducts = get(reactionProductsState)
+		set(energyFeaturesState, energyFeatures.remove({ reactionId }))
+		set(reactionReagentsState, reactionReagents.remove({ reactionId }))
+		set(reactionProductsState, reactionProducts.remove({ reactionId }))
+		set(reactionAtoms, reactionId, (current) => {
+			return {
+				...current,
+				id: reactionId,
+				name: `New Reaction`,
+			}
+		})
+	},
+})

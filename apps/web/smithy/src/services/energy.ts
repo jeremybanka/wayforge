@@ -1,22 +1,10 @@
 import { pipe } from "fp-ts/function"
-import {
-	atom,
-	atomFamily,
-	DefaultValue,
-	selectorFamily,
-	useRecoilTransaction_UNSTABLE,
-} from "recoil"
+import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 import z, { string } from "zod"
 
 import type energySchema from "~/apps/node/forge/gen/energy.schema.json"
 import { now } from "~/packages/anvl/src/id/now"
-import type { Json } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import {
-	addToIndex,
-	removeFromIndex,
-} from "~/packages/hamr/recoil-tools/src/recoil-index"
-import type { Transact } from "~/packages/hamr/recoil-tools/src/recoil-transaction-tools"
 import {
 	socketIndex,
 	socketSchema,
@@ -25,6 +13,7 @@ import {
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
+import { Json } from "atom.io/json"
 
 export type Energy = z.infer<typeof energySchema>
 
@@ -64,32 +53,32 @@ const stringSetJsonInterface = {
 export const energyIndex = atom<Set<string>>({
 	key: `energyIndex`,
 	default: new Set(),
-	effects: [
-		socketIndex({
-			type: `energy`,
-			socket,
-			jsonInterface: stringSetJsonInterface,
-		}),
-	],
+	// [effects: [
+	// 	socketIndex({
+	// 		type: `energy`,
+	// 		socket,
+	// 		jsonInterface: stringSetJsonInterface,
+	// 	}),
+	// ],]
 })
 
-export const findEnergyState = atomFamily<Energy, string>({
+export const energyAtoms = atomFamily<Energy, string>({
 	key: `energy`,
 	default: DEFAULT_ENERGY,
-	effects: (id) => [
-		socketSync({
-			id,
-			socket,
-			type: `energy`,
-		}),
-	],
+	// effects: (id) => [
+	// 	socketSync({
+	// 		id,
+	// 		socket,
+	// 		type: `energy`,
+	// 	}),
+	// ],
 })
 
 export type EnergyRelations = {
 	features: { id: string }[]
 }
 
-export const findEnergyWithRelationsState = selectorFamily<
+export const energyWithRelationsSelectors = selectorFamily<
 	Energy & EnergyRelations,
 	string
 >({
@@ -97,19 +86,15 @@ export const findEnergyWithRelationsState = selectorFamily<
 	get:
 		(id) =>
 		({ get }) => {
-			const energy = get(findEnergyState(id))
+			const energy = get(energyAtoms, id)
 			const features = get(energyFeaturesState).getRelations(id)
 			return { ...energy, features }
 		},
 	set:
 		(energyId) =>
 		({ set }, newValue) => {
-			if (newValue instanceof DefaultValue) {
-				console.warn(`cannot set default value for energy`)
-				return
-			}
 			const { features, ...energy } = newValue
-			set(findEnergyState(energyId), energy)
+			set(energyAtoms, energyId, energy)
 			set(energyFeaturesState, (j) => j.setRelations({ energyId }, features))
 		},
 })
@@ -117,30 +102,19 @@ export const findEnergyWithRelationsState = selectorFamily<
 export const energySchemaState = atom<JsonSchema>({
 	key: `energySchema`,
 	default: true,
-	effects: [socketSchema({ type: `energy`, socket })],
+	// effects: [socketSchema({ type: `energy`, socket })],
 })
 
-const addEnergy: Transact = (transactors) => {
-	const { set } = transactors
-	const id = now()
-	addToIndex(transactors, { id, indexAtom: energyIndex })
-	set(findEnergyState(id), (current) => ({
-		...current,
-		id,
-		name: `New Energy`,
-	}))
-}
-
-const removeEnergy: Transact<(id: string) => void> = (transactors, id) => {
-	removeFromIndex(transactors, { id, indexAtom: energyIndex })
-}
-
-export const useAddEnergy = (): (() => void) =>
-	useRecoilTransaction_UNSTABLE((transactors) => () => {
-		addEnergy(transactors)
-	})
-
-export const useRemoveEnergy = (): ((id: string) => void) =>
-	useRecoilTransaction_UNSTABLE((transactors) => (id) => {
-		removeEnergy(transactors, id)
-	})
+export const addEnergyTX = transaction<() => void>({
+	key: `addEnergy`,
+	do: (transactors) => {
+		const { set } = transactors
+		const id = now()
+		set(energyIndex, (current) => new Set([...current, id]))
+		set(energyAtoms, id, (current) => ({
+			...current,
+			id,
+			name: `New Energy`,
+		}))
+	},
+})

@@ -502,6 +502,9 @@ importers:
       '@floating-ui/react':
         specifier: 0.26.28
         version: 0.26.28(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      atom.io:
+        specifier: workspace:*
+        version: link:../../../packages/atom.io
       corners:
         specifier: 0.1.0
         version: 0.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -523,9 +526,6 @@ importers:
       react-router-dom:
         specifier: 7.0.2
         version: 7.0.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      recoil:
-        specifier: 0.7.7
-        version: 0.7.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       socket.io-client:
         specifier: 4.8.1
         version: 4.8.1

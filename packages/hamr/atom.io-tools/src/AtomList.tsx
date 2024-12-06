@@ -1,4 +1,4 @@
-import type { WritableToken } from "atom.io"
+import type { WritableFamilyToken } from "atom.io"
 import type { WC } from "hamr/react-json-editor"
 import type { FC, ReactElement } from "react"
 
@@ -6,13 +6,13 @@ import type { Identified } from "~/packages/anvl/src/id/identified"
 
 export type AtomListItemProps<DATA, META = {}> = {
 	label: Identified & META
-	findState: (key: string) => WritableToken<DATA>
+	family: WritableFamilyToken<DATA, string>
 	removeMe: () => void
 }
 
 export type AtomListProps<DATA, META = {}> = {
 	labels: (Identified & META)[]
-	findState: (id: string) => WritableToken<DATA>
+	family: WritableFamilyToken<DATA, string>
 	useCreate?: () => () => void
 	useRemove?: () => (id: string) => void
 	Components: {
@@ -28,7 +28,7 @@ export type AtomListProps<DATA, META = {}> = {
 
 export const ListItems = <DATA, META = {}>({
 	labels,
-	findState,
+	family,
 	useCreate,
 	useRemove,
 	Components: {
@@ -51,7 +51,7 @@ export const ListItems = <DATA, META = {}>({
 					<ListItemWrapper key={label.id}>
 						<ListItem
 							label={label}
-							findState={findState}
+							family={family}
 							removeMe={() => {
 								remove(label.id)
 							}}

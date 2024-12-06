@@ -2,17 +2,17 @@ import corners, { chamfer, writePathPoint } from "corners"
 import { pipe } from "fp-ts/function"
 import type { FC } from "react"
 import { useNavigate } from "react-router-dom"
-import { useRecoilValue } from "recoil"
+import { useO } from "atom.io/react"
 
-import { ListItems } from "~/packages/hamr/recoil-tools/src/RecoilList"
 import { Luum } from "~/packages/luum/src"
 
-import { findEnergyState } from "../../services/energy"
+import { energyAtoms } from "../../services/energy"
 import { findReactionEnergyState } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
-import { findReactionWithRelationsState } from "../../services/reaction"
+import { reactionWithRelationsAtoms } from "../../services/reaction"
 import { Span_EnergyAmount, Span_VoidIcon } from "../energy/EnergyIcon"
 import scss from "./ReactionIcon.module.scss"
+import { ListItems } from "hamr/atom.io-tools"
 
 const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (
 	<svg
@@ -50,7 +50,7 @@ export const ReactionIcon_INTERNAL: FC<{
 	mode?: `basic` | `fancy`
 	clickable?: boolean
 }> = ({ reaction, size, mode = `basic`, clickable = true }) => {
-	const energy = useRecoilValue(findReactionEnergyState(reaction.id))
+	const energy = useO(findReactionEnergyState, reaction.id)
 	const colorA = Luum.fromJSON(energy.colorA)
 	const colorB = Luum.fromJSON(energy.colorB)
 	const energyPresentHex = colorB.tint(10).hex
@@ -77,7 +77,7 @@ export const ReactionIcon_INTERNAL: FC<{
 			className={scss.class}
 		>
 			<ListItems
-				findState={findEnergyState}
+				family={energyAtoms}
 				labels={reaction.reagents}
 				Components={{
 					Wrapper: pipe(
@@ -94,10 +94,10 @@ export const ReactionIcon_INTERNAL: FC<{
 							},
 						}),
 					),
-					ListItem: ({ label, findState }) => (
+					ListItem: ({ label, family }) => (
 						<Span_EnergyAmount
 							label={label}
-							findState={findState}
+							findState={family}
 							removeMe={() => null}
 							size={size}
 							clickable={false}
@@ -110,7 +110,7 @@ export const ReactionIcon_INTERNAL: FC<{
 			/>
 			<SvgArrow fillHex={colorA.hex} strokeHex={energyPresentHex} />
 			<ListItems
-				findState={findEnergyState}
+				family={energyAtoms}
 				labels={reaction.products}
 				Components={{
 					Wrapper: pipe(
@@ -126,10 +126,10 @@ export const ReactionIcon_INTERNAL: FC<{
 							},
 						}),
 					),
-					ListItem: ({ label, findState }) => (
+					ListItem: ({ label, family }) => (
 						<Span_EnergyAmount
 							label={label}
-							findState={findState}
+							findState={family}
 							removeMe={() => null}
 							size={size}
 							clickable={false}
@@ -152,6 +152,6 @@ export const Div_ReactionIcon: FC<{ reactionId: string; size: number }> = ({
 	reactionId,
 	size,
 }) => {
-	const reaction = useRecoilValue(findReactionWithRelationsState(reactionId))
+	const reaction = useO(reactionWithRelationsAtoms, reactionId)
 	return <ReactionIcon_INTERNAL reaction={reaction} size={size} />
 }
