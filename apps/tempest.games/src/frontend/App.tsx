@@ -1,4 +1,5 @@
 import { useO } from "atom.io/react"
+import * as React from "react"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
@@ -10,7 +11,7 @@ import { GameView } from "./views/Game"
 import { Login } from "./views/Login"
 import { SignUp } from "./views/SignUp"
 
-export function App(): JSX.Element {
+export function App(): React.ReactNode {
 	const route = useO(routeSelector)
 
 	return (

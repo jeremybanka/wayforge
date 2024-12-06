@@ -7,7 +7,7 @@ import { Deck } from "../game-pieces/Deck"
 import { Trick } from "../game-pieces/Trick"
 import scss from "./Hearts.module.scss"
 
-export function Hearts({ roomId }: GameProps): JSX.Element {
+export function Hearts({ roomId }: GameProps): React.ReactNode {
 	return (
 		<article className={scss.class}>
 			<section data-css="deck">
@@ -19,11 +19,11 @@ export function Hearts({ roomId }: GameProps): JSX.Element {
 		</article>
 	)
 }
-function GameDeck(): JSX.Element | null {
+function GameDeck(): React.ReactNode | null {
 	const deckId = useO(publicDeckIndex)[0]
 	return deckId ? <Deck id={deckId} /> : null
 }
-function CurrentTrick({ roomId }: GameProps): JSX.Element | null {
+function CurrentTrick({ roomId }: GameProps): React.ReactNode | null {
 	const trickId = useO(publicTrickIndex)[0]
 	return trickId ? <Trick id={trickId} gameId={roomId} /> : null
 }

@@ -10,6 +10,12 @@
 	},
 	"include": [
 		"__tests__",
+		"atom.io-combo/dist",
+		"atom.io-combo/package.json",
+		"atom.io-combo/src",
+		"atom.io-tools/dist",
+		"atom.io-tools/package.json",
+		"atom.io-tools/src",
 		"react-click-handlers/dist",
 		"react-click-handlers/package.json",
 		"react-click-handlers/src",
@@ -33,19 +39,7 @@
 		"react-json-editor/src",
 		"react-radial/dist",
 		"react-radial/package.json",
-		"react-radial/src",
-		"recoil-combo/dist",
-		"recoil-combo/package.json",
-		"recoil-combo/src",
-		"recoil-effect-storage/dist",
-		"recoil-effect-storage/package.json",
-		"recoil-effect-storage/src",
-		"recoil-error-boundary/dist",
-		"recoil-error-boundary/package.json",
-		"recoil-error-boundary/src",
-		"recoil-tools/dist",
-		"recoil-tools/package.json",
-		"recoil-tools/src"
+		"react-radial/src"
 	],
 	"exclude": ["src", "**/src"]
 }

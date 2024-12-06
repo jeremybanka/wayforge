@@ -1,14 +1,11 @@
 import type { FC } from "react"
 
-import { RecoverableErrorBoundary } from "~/packages/hamr/recoil-error-boundary/src"
-import type { RecoilListItemProps } from "~/packages/hamr/recoil-tools/src/RecoilList"
-
 import type { Reaction } from "../../services/reaction"
 import { Div_ReactionIcon } from "./ReactionIcon"
+import { AtomListItemProps } from "hamr/atom.io-tools"
+import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
 
-export const ReactionListItem: FC<RecoilListItemProps<Reaction>> = ({
-	label,
-}) => (
+export const ReactionListItem: FC<AtomListItemProps<Reaction>> = ({ label }) => (
 	<RecoverableErrorBoundary>
 		<Div_ReactionIcon reactionId={label.id} size={30} />
 	</RecoverableErrorBoundary>

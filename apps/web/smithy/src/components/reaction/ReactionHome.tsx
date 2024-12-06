@@ -1,17 +1,17 @@
 import styled from "@emotion/styled"
 import type { FC } from "react"
-import { useRecoilValue } from "recoil"
+import { useO } from "atom.io/react"
 
-import { ListItems } from "~/packages/hamr/recoil-tools/src/RecoilList"
+import { ListItems } from "~/packages/hamr/atom.io-tools/src/AtomList"
 
 import {
-	findReactionState,
+	addReactionTX,
+	reactionAtoms,
 	reactionIndex,
-	useAddReaction,
-	useRemoveReaction,
 } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { ReactionListItem } from "./ReactionListItem"
+import { runTransaction, setState } from "atom.io"
 
 const Wrapper = styled.ul`
 	padding: 20px;
@@ -25,15 +25,21 @@ const Wrapper = styled.ul`
 
 export const ReactionHome: FC = () => {
 	useSetTitle(`Reaction`)
-	const ids = useRecoilValue(reactionIndex)
+	const ids = useO(reactionIndex)
 
 	return (
 		<Wrapper>
 			<ListItems
 				labels={[...ids].map((id) => ({ id }))}
-				findState={findReactionState}
-				useCreate={useAddReaction}
-				useRemove={useRemoveReaction}
+				family={reactionAtoms}
+				useCreate={() => runTransaction(addReactionTX)}
+				useRemove={() => (id: string) => {
+					setState(reactionIndex, (current) => {
+						const next = new Set<string>(current)
+						next.delete(id)
+						return next
+					})
+				}}
 				Components={{
 					ListItemWrapper: ({ children }) => <li>{children}</li>,
 					ListItem: ReactionListItem,

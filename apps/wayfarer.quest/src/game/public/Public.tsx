@@ -21,7 +21,7 @@ import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"
 import scss from "./Public.module.scss"
 
-export function Public({ roomId }: GameProps): JSX.Element {
+export function Public({ roomId }: GameProps): React.ReactNode {
 	const { socket } = useContext(RealtimeContext)
 	const myUsername = useO(myUsernameState)
 	const addPlayerToGame = runTransaction(addPlayerToGameTX)

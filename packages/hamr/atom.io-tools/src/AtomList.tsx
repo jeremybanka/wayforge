@@ -1,18 +1,18 @@
+import type { WritableFamilyToken } from "atom.io"
 import type { WC } from "hamr/react-json-editor"
 import type { FC, ReactElement } from "react"
-import type { RecoilState } from "recoil"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
 
-export type RecoilListItemProps<DATA, META = {}> = {
+export type AtomListItemProps<DATA, META = {}> = {
 	label: Identified & META
-	findState: (key: string) => RecoilState<DATA>
+	family: WritableFamilyToken<DATA, string>
 	removeMe: () => void
 }
 
-export type RecoilListProps<DATA, META = {}> = {
+export type AtomListProps<DATA, META = {}> = {
 	labels: (Identified & META)[]
-	findState: (id: string) => RecoilState<DATA>
+	family: WritableFamilyToken<DATA, string>
 	useCreate?: () => () => void
 	useRemove?: () => (id: string) => void
 	Components: {
@@ -20,7 +20,7 @@ export type RecoilListProps<DATA, META = {}> = {
 		ItemCreator?: FC<{
 			useCreate: () => () => void
 		}>
-		ListItem: FC<RecoilListItemProps<DATA, META>>
+		ListItem: FC<AtomListItemProps<DATA, META>>
 		ListItemWrapper?: WC
 		NoItems?: FC
 	}
@@ -28,7 +28,7 @@ export type RecoilListProps<DATA, META = {}> = {
 
 export const ListItems = <DATA, META = {}>({
 	labels,
-	findState,
+	family,
 	useCreate,
 	useRemove,
 	Components: {
@@ -38,7 +38,7 @@ export const ListItems = <DATA, META = {}>({
 		ItemCreator,
 		NoItems,
 	},
-}: RecoilListProps<DATA, META>): ReactElement => {
+}: AtomListProps<DATA, META>): ReactElement => {
 	const remove =
 		useRemove?.() ??
 		((id) => {
@@ -51,7 +51,7 @@ export const ListItems = <DATA, META = {}>({
 					<ListItemWrapper key={label.id}>
 						<ListItem
 							label={label}
-							findState={findState}
+							family={family}
 							removeMe={() => {
 								remove(label.id)
 							}}

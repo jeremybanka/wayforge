@@ -1,25 +1,28 @@
 import type { FC } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useI, useO } from "atom.io/react"
 
-import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-recoil"
+import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-atom-client"
 
 import scss from "./Explorer.module.scss"
 import {
+	commitAllTX,
 	commitMessageState,
 	git,
+	makeNewBranchTX,
 	newBranchNameState,
-	useCommitAll,
-	useMakeNewBranch,
 } from "./services/git"
+import { runTransaction } from "atom.io"
 
 export const Explorer: FC = () => {
-	const gitStatus = useRecoilValue(git.status.state)
+	const gitStatus = useO(git.status.state)
 	// const gitLog = useRecoilValue(git.log.state)
-	const gitBranch = useRecoilValue(git.branch.state)
-	const commitAll = useCommitAll()
-	const makeNewBranch = useMakeNewBranch()
-	const [commitMessage, setCommitMessage] = useRecoilState(commitMessageState)
-	const [newBranchName, setNewBranchName] = useRecoilState(newBranchNameState)
+	const gitBranch = useO(git.branch.state)
+	const commitAll = runTransaction(commitAllTX)
+	const makeNewBranch = runTransaction(makeNewBranchTX)
+	const commitMessage = useO(commitMessageState)
+	const setCommitMessage = useI(commitMessageState)
+	const newBranchName = useO(newBranchNameState)
+	const setNewBranchName = useI(newBranchNameState)
 	return (
 		<div className={scss.class}>
 			Explorer -{` `}

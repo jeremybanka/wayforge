@@ -1,5 +1,5 @@
-import type { RecoilValueReadOnly } from "recoil"
-import { atom, selector } from "recoil"
+import type { RecoilValueReadOnly } from "atom.io"
+import { atom, selector } from "atom.io"
 import type { Socket } from "socket.io-client"
 import { io } from "socket.io-client"
 

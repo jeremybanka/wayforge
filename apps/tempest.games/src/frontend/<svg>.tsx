@@ -1,4 +1,6 @@
-export function tempest(): JSX.Element {
+import * as React from "react"
+
+export function tempest(): React.ReactNode {
 	return (
 		<svg
 			id="uuid-3d2d6be6-f179-42a3-9511-1e9ddeb8575f"

@@ -1,6 +1,6 @@
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
-import { useState } from "react"
+import * as React from "react"
 
 import { asUUID } from "../../library/as-uuid-web"
 import { env } from "../../library/env"
@@ -13,13 +13,13 @@ import {
 	usernameInputAtom,
 } from "../services/socket-auth-service"
 
-export function Login(): JSX.Element {
+export function Login(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
 	const setPassword = useI(password0InputAtom)
 	const username = useO(usernameInputAtom)
 	const password = useO(password0InputAtom)
 
-	const [error, setError] = useState<string | null>(null)
+	const [error, setError] = React.useState<string | null>(null)
 
 	return (
 		<form

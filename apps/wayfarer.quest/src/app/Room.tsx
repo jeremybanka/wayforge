@@ -24,7 +24,7 @@ import { UsersInRoom } from "./PlayersInRoom"
 export default function Room({
 	roomId,
 	myUsername,
-}: { roomId: string; myUsername: string }): JSX.Element {
+}: { roomId: string; myUsername: string }): React.ReactNode {
 	const { socket } = React.useContext(RTR.RealtimeContext)
 
 	const myRoomKey = useO(findRelations(usersInRooms, myUsername).roomKeyOfUser)

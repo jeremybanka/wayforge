@@ -26,16 +26,16 @@
 		"motion": "11.13.1",
 		"nanoid": "5.0.9",
 		"next": "15.0.3",
-		"react": "18.3.1",
-		"react-dom": "18.3.1",
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
 		"socket.io-client": "4.8.1",
 		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@svgr/webpack": "8.1.0",
 		"@types/node": "22.10.1",
-		"@types/react": "18.3.14",
-		"@types/react-dom": "18.3.2",
+		"@types/react": "19.0.1",
+		"@types/react-dom": "19.0.1",
 		"concurrently": "9.1.0",
 		"eslint-config-next": "15.0.3",
 		"typescript": "5.7.2"
