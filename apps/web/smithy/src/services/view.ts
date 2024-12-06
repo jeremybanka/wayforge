@@ -1,14 +1,14 @@
 import { useEffect } from "react"
 import type { Location } from "react-router-dom"
 import { useLocation } from "react-router-dom"
-import { atom, atomFamily, selector, runTransaction, transaction } from "atom.io"
+import { atom, atomFamily, selector, transaction } from "atom.io"
 import { persistSync } from "atom.io/web"
+import { useI, useO } from "atom.io/react"
 
 import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id/now"
 import { Join } from "~/packages/anvl/src/join"
 import type { Entries } from "~/packages/anvl/src/object/entries"
-import { useI, useO } from "atom.io/react"
 
 export const spaceIndexState = atom<Set<string>>({
 	key: `spaceIndex`,
@@ -39,13 +39,6 @@ const spaceAtoms = atomFamily<number, string>({
 	effects: (id) => [persistSync(localStorage, JSON, id)],
 })
 
-// export const addSpace: Transact<() => string> = (transactors) => {
-// 	const { set } = transactors
-// 	const id = `space-${now()}`
-// 	addToIndex(transactors, { indexAtom: spaceIndexState, id })
-// 	set(findSpaceState(id), 1)
-// 	return id
-// }
 export const addSpaceTX = transaction<() => string>({
 	key: `addSpace`,
 	do: (transactors) => {
@@ -57,9 +50,6 @@ export const addSpaceTX = transaction<() => string>({
 	},
 })
 
-// export const removeSpace: Transact<(id: string) => void> = (transactors, id) => {
-// 	removeFromIndex(transactors, { indexAtom: spaceIndexState, id })
-// }
 export const removeSpaceTX = transaction<(id: string) => void>({
 	key: `removeSpace`,
 	do: (transactors, id) => {
@@ -159,31 +149,6 @@ export const useSetTitle = (title: string): void => {
 
 type AddViewOptions = { spaceId?: string; path?: string }
 
-// const OP_addView: Transact<(options?: AddViewOptions) => void> = (
-// 	transactors,
-// 	{ spaceId: maybeSpaceId, path } = {},
-// ) => {
-// 	const { get, set } = transactors
-// 	const viewId = `view-${now()}`
-// 	addToIndex(transactors, { indexAtom: viewIndexState, id: viewId })
-// 	set(
-// 		viewAtoms(viewId),
-// 		(current): View => ({
-// 			...current,
-// 			location: {
-// 				...current.location,
-// 				pathname: path ?? `/`,
-// 				state: { id: viewId },
-// 			},
-// 		}),
-// 	)
-// 	const spaceId =
-// 		maybeSpaceId ?? lastOf([...get(spaceIndexState)]) ?? addSpace(transactors)
-// 	set(viewsPerSpaceState, (current) => {
-// 		current.set({ spaceId, viewId })
-// 		return current
-// 	})
-// }
 export const addViewTX = transaction<(options?: AddViewOptions) => void>({
 	key: `addView`,
 	do: (transactors, { spaceId: maybeSpaceId, path } = {}) => {
@@ -210,26 +175,3 @@ export const addViewTX = transaction<(options?: AddViewOptions) => void>({
 		})
 	},
 })
-
-// export const useOperation = <Options>(
-// 	operation: Transact<(options: Options) => void>,
-// ): ((param: Options) => void) =>
-// 	useRecoilTransaction((transactors) => (options) => {
-// 		operation(transactors, options)
-// 	})
-
-// export const useAddView = (): ((options?: AddViewOptions) => void) =>
-// 	useRecoilTransaction((transactors) => (options) => {
-// 		OP_addView(transactors, options)
-// 	})
-
-// const removeView: Transact<(viewId: string) => void> = (transactors, viewId) => {
-// 	const { set } = transactors
-// 	removeFromIndex(transactors, { indexAtom: viewIndexState, id: viewId })
-// 	set(viewsPerSpaceState, (current) => current.remove({ viewId }))
-// }
-
-// export const useRemoveView = (): ((id: string) => void) =>
-// 	useRecoilTransaction((transactors) => (id) => {
-// 		removeView(transactors, id)
-// 	})

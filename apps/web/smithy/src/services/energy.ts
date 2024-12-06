@@ -9,7 +9,7 @@ import {
 	socketIndex,
 	socketSchema,
 	socketSync,
-} from "~/packages/socket-io.filestore/src/socket-filestore-recoil"
+} from "~/packages/socket-io.filestore/src/socket-filestore-atom-client"
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
@@ -53,25 +53,25 @@ const stringSetJsonInterface = {
 export const energyIndex = atom<Set<string>>({
 	key: `energyIndex`,
 	default: new Set(),
-	// [effects: [
-	// 	socketIndex({
-	// 		type: `energy`,
-	// 		socket,
-	// 		jsonInterface: stringSetJsonInterface,
-	// 	}),
-	// ],]
+	effects: [
+		socketIndex({
+			type: `energy`,
+			socket,
+			jsonInterface: stringSetJsonInterface,
+		}),
+	],
 })
 
 export const energyAtoms = atomFamily<Energy, string>({
 	key: `energy`,
 	default: DEFAULT_ENERGY,
-	// effects: (id) => [
-	// 	socketSync({
-	// 		id,
-	// 		socket,
-	// 		type: `energy`,
-	// 	}),
-	// ],
+	effects: (id) => [
+		socketSync({
+			id,
+			socket,
+			type: `energy`,
+		}),
+	],
 })
 
 export type EnergyRelations = {
@@ -102,7 +102,7 @@ export const energyWithRelationsSelectors = selectorFamily<
 export const energySchemaState = atom<JsonSchema>({
 	key: `energySchema`,
 	default: true,
-	// effects: [socketSchema({ type: `energy`, socket })],
+	effects: [socketSchema({ type: `energy`, socket })],
 })
 
 export const addEnergyTX = transaction<() => void>({

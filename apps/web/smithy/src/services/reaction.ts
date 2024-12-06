@@ -4,14 +4,13 @@ import type z from "zod"
 import type reactionSchema from "~/apps/node/forge/gen/reaction.schema.json"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
-import { stringSetJsonInterface } from "~/packages/anvl/src/json"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 
 import {
 	socketIndex,
 	socketSchema,
 	socketSync,
-} from "~/packages/socket-io.filestore/src/socket-filestore-recoil"
+} from "~/packages/socket-io.filestore/src/socket-filestore-atom-client"
 
 import type { Amount } from "./energy_reaction"
 import {
@@ -20,6 +19,7 @@ import {
 	reactionReagentsState,
 } from "./energy_reaction"
 import { socket } from "./socket"
+import { stringSetJsonInterface } from "anvl/json"
 
 export const TIME_UNITS = {
 	ms: 1,
@@ -44,11 +44,11 @@ export const reactionIndex = atom<Set<string>>({
 	key: `reactionIndex`,
 	default: new Set(),
 	effects: [
-		// socketIndex({
-		// 	type: `reaction`,
-		// 	socket,
-		// 	jsonInterface: stringSetJsonInterface,
-		// }),
+		socketIndex({
+			type: `reaction`,
+			socket,
+			jsonInterface: stringSetJsonInterface,
+		}),
 	],
 })
 
@@ -56,11 +56,11 @@ export const reactionAtoms = atomFamily<Reaction, string>({
 	key: `reaction`,
 	default: DEFAULT_REACTION,
 	effects: (id) => [
-		// socketSync({
-		// 	id,
-		// 	socket,
-		// 	type: `reaction`,
-		// }),
+		socketSync({
+			id,
+			socket,
+			type: `reaction`,
+		}),
 	],
 })
 
@@ -107,7 +107,7 @@ export const reactionWithRelationsAtoms = selectorFamily<
 export const reactionSchemaState = atom<JsonSchema>({
 	key: `reactionSchema`,
 	default: true,
-	// effects: [socketSchema({ type: `reaction`, socket })],
+	effects: [socketSchema({ type: `reaction`, socket })],
 })
 
 export const addReactionTX = transaction<() => string>({
