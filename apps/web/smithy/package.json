@@ -19,7 +19,7 @@
 		"@floating-ui/dom": "1.6.12",
 		"@floating-ui/react": "0.27.0",
 		"atom.io": "workspace:*",
-		"corners": "0.1.0",
+		"corners": "0.1.1",
 		"fp-ts": "2.16.9",
 		"io-ts": "2.2.21",
 		"motion": "11.13.1",

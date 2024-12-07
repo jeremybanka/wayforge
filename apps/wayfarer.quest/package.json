@@ -22,7 +22,7 @@
 	"dependencies": {
 		"@t3-oss/env-nextjs": "0.11.1",
 		"@vercel/analytics": "1.4.1",
-		"corners": "0.1.0",
+		"corners": "0.1.1",
 		"motion": "11.13.1",
 		"nanoid": "5.0.9",
 		"next": "15.0.4",
