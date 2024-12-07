@@ -1,48 +1,43 @@
 import { getInternalRelations } from "atom.io/data"
 import { continuity, usersInThisRoomIndex } from "atom.io/realtime"
 
-import {
-	dealCardsTX,
-	shuffleDeckTX,
-	spawnClassicDeckTX,
-	spawnHandTX,
-	spawnTrickTX,
-} from "../card-game-actions"
 import { addPlayerToGameTX } from "../card-game-actions/add-player-to-game"
+import { dealCardsTX } from "../card-game-actions/deal-cards"
+import { shuffleDeckTX } from "../card-game-actions/shuffle-deck"
+import { spawnClassicDeckTX } from "../card-game-actions/spawn-classic-deck"
+import { spawnHandTX } from "../card-game-actions/spawn-hand"
+import { spawnTrickTX } from "../card-game-actions/spawn-trick"
 import {
-	cardAtoms,
-	cardIndex,
-	cardValueAtoms,
-	cardValueIndex,
-	cardValueView,
-	cardView,
 	deckAtoms,
 	deckIndex,
-	deckView,
-	gamePlayerIndex,
 	groupsOfCards,
+	groupsOfCardsJsonMask,
+	groupsOfCardsUpdateMask,
 	groupsOfCardsView,
 	handAtoms,
 	handIndex,
-	handView,
 	ownersOfGroups,
-	ownersOfGroupsView,
 	pileIndex,
 	pileStates,
-	pileView,
-	trickIndex,
-	trickStates,
-	trickView,
+} from "../card-game-stores/card-groups-store"
+import {
+	cardValueAtoms,
+	cardValueIndex,
 	valuesOfCards,
-	valuesOfCardsView,
-} from "../card-game-stores"
+	valuesOfCardsJsonMask,
+	valuesOfCardsUpdateMask,
+	visibleCardValueIndices,
+} from "../card-game-stores/card-values-store"
+import { cardAtoms, cardIndex } from "../card-game-stores/cards-store"
+import { gamePlayerIndex } from "../card-game-stores/game-players-store"
+import { trickIndex, trickStates } from "../card-game-stores/trick-store"
 import { startGameTX } from "./hearts-actions"
 
 export const heartsContinuity = continuity({
 	key: `hearts`,
 	config: (group) => {
 		return group
-			.add(
+			.actions(
 				startGameTX,
 				spawnTrickTX,
 				spawnClassicDeckTX,
@@ -51,7 +46,7 @@ export const heartsContinuity = continuity({
 				spawnHandTX,
 				addPlayerToGameTX,
 			)
-			.add(
+			.globals(
 				cardIndex,
 				cardValueIndex,
 				deckIndex,
@@ -61,15 +56,30 @@ export const heartsContinuity = continuity({
 				gamePlayerIndex,
 				usersInThisRoomIndex,
 			)
-			.add(cardAtoms, cardView)
-			.add(cardValueAtoms, cardValueView)
-			.add(deckAtoms, deckView)
-			.add(handAtoms, handView)
-			.add(pileStates, pileView)
-			.add(trickStates, trickView)
+			.dynamic(cardIndex, cardAtoms)
+			.dynamic(cardValueIndex, cardValueAtoms)
+			.dynamic(deckIndex, deckAtoms, getInternalRelations(ownersOfGroups))
+			.dynamic(handIndex, handAtoms, getInternalRelations(ownersOfGroups))
+			.dynamic(pileIndex, pileStates, getInternalRelations(ownersOfGroups))
+			.dynamic(trickIndex, trickStates, getInternalRelations(ownersOfGroups))
 
-			.add(getInternalRelations(valuesOfCards), valuesOfCardsView)
-			.add(getInternalRelations(groupsOfCards), groupsOfCardsView)
-			.add(getInternalRelations(ownersOfGroups), ownersOfGroupsView)
+			.dynamic(gamePlayerIndex, getInternalRelations(ownersOfGroups))
+
+			.perspective(visibleCardValueIndices, [
+				getInternalRelations(valuesOfCards),
+				valuesOfCardsJsonMask,
+				valuesOfCardsUpdateMask,
+			])
+			.dynamic(groupsOfCardsView, {
+				base: getInternalRelations(groupsOfCards),
+				jsonMask: groupsOfCardsJsonMask,
+				signalMask: groupsOfCardsUpdateMask,
+			})
+		// [
+		// 	getInternalRelations(groupsOfCards),
+		// 	groupsOfCardsJsonMask,
+		// 	groupsOfCardsUpdateMask,
+		// ]
+		// )
 	},
 })

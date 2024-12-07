@@ -1,70 +1,111 @@
-import type { MutableAtomToken, RegularAtomToken } from "atom.io"
-import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+import type { Compound, Tag } from "atom.io"
+import { atom, atomFamily, decomposeCompoundKey, selectorFamily } from "atom.io"
 import { findRelations, getInternalRelations, join } from "atom.io/data"
+import type { Signal } from "atom.io/internal"
+import { getUpdateToken } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import {
+	type Actual,
+	type Alias,
+	perspectiveAliases,
+	type PerspectiveKey,
+} from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Identified } from "~/packages/anvl/src/id"
 
 import {
-	currentTrickIdState,
 	groupsOfCards,
 	handIndex,
 	ownersOfGroups,
 	pileIndex,
-} from "."
+} from "./card-groups-store"
+import { type CardKey, isCardKey } from "./cards-store"
+import { currentTrickIdState } from "./trick-store"
 
-export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
-	key: `cardValue`,
-	default: () => ({ id: `` }),
-})
-export const cardValueIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export type CardValueKey<K extends Actual | Alias = Actual | Alias> =
+	`cardValue::${K}`
+export const isCardValueKey = (k: string): k is CardValueKey =>
+	k.startsWith(`cardValue::`)
+export const isActualCardValueKey = (k: string): k is CardValueKey<Actual> =>
+	k.startsWith(`cardValue::__`)
+export const isAliasCardValueKey = (k: string): k is CardValueKey<Alias> =>
+	k.startsWith(`cardValue::$$`)
+
+export const cardValueAtoms = atomFamily<Identified & Json.Object, CardValueKey>(
+	{
+		key: `cardValue`,
+		default: () => ({ id: `` }),
+	},
+)
+export const cardValueIndex = atom<
+	SetRTX<CardValueKey>,
+	SetRTXJson<CardValueKey>
+>({
 	key: `cardValuesIndex`,
 	mutable: true,
-	default: () => new SetRTX<string>(),
+	default: () => new SetRTX<CardValueKey>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
-})
-export const cardValueGlobalView = selector<
-	RegularAtomToken<Identified & Json.Object>[]
->({
-	key: `cardValueGlobalView`,
-	get: ({ get, find }) => {
-		const cardValueTokens: RegularAtomToken<Identified & Json.Object>[] = []
-		const cardValueIds = get(cardValueIndex)
-		for (const cardValueId of cardValueIds) {
-			const cardValueToken = find(cardValueAtoms, cardValueId)
-			cardValueTokens.push(cardValueToken)
-		}
-		return cardValueTokens
-	},
-})
-export const cardValueView = selectorFamily<
-	RegularAtomToken<Identified & Json.Object>[],
-	string
->({
-	key: `cardValueView`,
-	get:
-		() =>
-		({ get }) =>
-			get(cardValueGlobalView),
 })
 
 export const valuesOfCards = join({
 	key: `valuesOfCards`,
 	between: [`value`, `card`],
 	cardinality: `1:n`,
-	isAType: (input): input is string => typeof input === `string`,
-	isBType: (input): input is string => typeof input === `string`,
+	isAType: isCardValueKey,
+	isBType: isCardKey,
 })
 
-export const visibleCardIndices = selectorFamily<string[], string>({
+export const valuesOfCardsJsonMask = selectorFamily<
+	SetRTXJson<CardValueKey<Alias>>,
+	Compound<Tag<`mask`>, UserKey<Actual>, CardKey<Actual>>
+>({
+	key: `valuesOfCardsJsonMask`,
+	get:
+		(maskKey) =>
+		({ get, find, json }) => {
+			const [, , cardKey] = decomposeCompoundKey(maskKey)
+			const cardValueJsonSelector = json(
+				find(getInternalRelations(valuesOfCards), cardKey),
+			)
+			const cardValueJson = get(cardValueJsonSelector) as SetRTXJson<
+				CardValueKey<Alias>
+			>
+			return {
+				...cardValueJson,
+				members: cardValueJson.members, // 👀 IMPLEMENT ALIASING
+			}
+		},
+})
+
+export const valuesOfCardsUpdateMask = selectorFamily<
+	Signal<SetRTX<CardValueKey<Alias>>>,
+	CardKey<Alias>
+>({
+	key: `valuesOfCardsUpdateMask`,
+	get:
+		(cardKey) =>
+		({ get, find }) => {
+			const updateAtom = getUpdateToken(
+				find(getInternalRelations(valuesOfCards), cardKey),
+			)
+			const update = get(updateAtom)
+			return update // 👀 IMPLEMENT ALIASING
+		},
+})
+
+export const visibleCardValueIndices = selectorFamily<
+	[actual: CardKey<Actual>, alias: CardKey<Alias>][],
+	UserKey<Actual>
+>({
 	key: `visibleCardIndices`,
 	get:
 		(username) =>
 		({ get }) => {
-			const cardIds: string[] = []
+			const cardIds: CardKey[] = []
 			const pileIds = get(pileIndex)
 			for (const pileId of pileIds) {
 				const pileCardIndex = findRelations(
@@ -106,23 +147,23 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 					}
 				}
 			}
+			const cardAliases: [actual: CardKey<Actual>, alias: CardKey<Alias>][] = []
+			for (const cardId of cardIds) {
+				const actual = cardId.split(`::`).pop() as Actual
+				const perspectiveKey: PerspectiveKey = `T$--perspective==${actual}++${username}`
+				const alias = get(
+					findRelations(perspectiveAliases, perspectiveKey)
+						.aliasKeyOfPerspective,
+				)
+				if (alias) {
+					cardAliases.push([`card::${actual}`, `card::${alias}`])
+				}
+			}
+			return cardAliases
+		},
+})
 
-			return cardIds
-		},
-})
-export const valuesOfCardsView = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
-	string
->({
-	key: `valuesOfCardsView`,
-	get:
-		(username) =>
-		({ find, get }) => {
-			const visibleCardIndex = find(visibleCardIndices, username)
-			const visibleCardIds = get(visibleCardIndex)
-			const tokens = visibleCardIds.map((cardId) => {
-				return find(getInternalRelations(valuesOfCards), cardId)
-			})
-			return tokens
-		},
-})
+// val:_1H -> [card:GX]
+// val:_2H -> [card:BH]
+// card:GX -> [val:_1H]
+// card:BH -> [val:_2H]

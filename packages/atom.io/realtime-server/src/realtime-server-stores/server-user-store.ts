@@ -1,14 +1,25 @@
 import type { Hierarchy } from "atom.io"
 import { atom, atomFamily } from "atom.io"
 import { join } from "atom.io/data"
+import type { Actual, Alias } from "atom.io/realtime"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Socket } from ".."
 
 export type SocketKey = `socket::${string}`
-export type UserKey = `user::${string}`
+export const isSocketKey = (key: string): key is SocketKey =>
+	key.startsWith(`socket::`)
+export type UserKey<K extends Actual | Alias = Actual | Alias> = `user::${K}`
+export const isUserKey = (key: string): key is UserKey =>
+	key.startsWith(`user::`)
+export const isActualUserKey = (key: string): key is UserKey<Actual> =>
+	key.startsWith(`user::`)
+export const isAliasUserKey = (key: string): key is UserKey<Alias> =>
+	key.startsWith(`user::`)
 export type RoomKey = `room::${string}`
+export const isRoomKey = (key: string): key is RoomKey =>
+	key.startsWith(`room::`)
 
 export type SocketSystemHierarchy = Hierarchy<
 	[
@@ -42,6 +53,6 @@ export const usersOfSockets = join({
 	key: `usersOfSockets`,
 	between: [`user`, `socket`],
 	cardinality: `1:1`,
-	isAType: (s): s is UserKey => s.startsWith(`user::`),
-	isBType: (s): s is SocketKey => s.startsWith(`socket::`),
+	isAType: isActualUserKey,
+	isBType: isSocketKey,
 })

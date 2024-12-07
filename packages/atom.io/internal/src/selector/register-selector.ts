@@ -122,4 +122,5 @@ export const registerSelector = (
 	find: ((token, key) => findInStore(store, token, key)) as typeof findState,
 	seek: ((token, key) => seekInStore(store, token, key)) as typeof seekState,
 	json: (token) => getJsonToken(store, token),
+	env: () => ({ store }),
 })
