@@ -57,7 +57,7 @@
 		"atom.io": "^0.30.5"
 	},
 	"devDependencies": {
-		"@emotion/styled": "11.13.5",
+		"@emotion/styled": "11.14.0",
 		"@testing-library/jest-dom": "6.6.3",
 		"@testing-library/react": "16.1.0",
 		"@types/jsdom": "21.1.7",
