@@ -27,11 +27,11 @@ importers:
         specifier: 9.6.1
         version: 9.6.1
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.17.0
-        version: 8.17.0(@typescript-eslint/parser@8.17.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2))(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
+        specifier: 8.18.0
+        version: 8.18.0(@typescript-eslint/parser@8.18.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2))(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
       '@typescript-eslint/parser':
-        specifier: 8.17.0
-        version: 8.17.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
+        specifier: 8.18.0
+        version: 8.18.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
       c8:
         specifier: 10.1.2
         version: 10.1.2
@@ -713,11 +713,11 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript-eslint/parser':
-        specifier: 8.17.0
-        version: 8.17.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
+        specifier: 8.18.0
+        version: 8.18.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
       '@typescript-eslint/rule-tester':
-        specifier: 8.17.0
-        version: 8.17.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
+        specifier: 8.18.0
+        version: 8.18.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
       '@vitest/coverage-v8':
         specifier: 3.0.0-beta.1
         version: 3.0.0-beta.1(vitest@3.0.0-beta.1)
@@ -3922,8 +3922,8 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
 
-  '@typescript-eslint/rule-tester@8.17.0':
-    resolution: {integrity: sha512-8dfqTSRslT3O0DzcWYexO7gJV4ODV3mpyPnQXF0kKfzU7SOimEO7w/Ono4Yn+QP1T5cpj/VVqG+rK1PxI+88wQ==}
+  '@typescript-eslint/rule-tester@8.18.0':
+    resolution: {integrity: sha512-y3ZqVb6eMssPFJklplsQ+2MKcic7HqRgCkcu7MQryhRmqmhAgn+1hJnpqOipZIBTOWZeCiQ/X/XrbHdqjHFivQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
@@ -10840,10 +10840,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/rule-tester@8.17.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)':
+  '@typescript-eslint/rule-tester@8.18.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)':
     dependencies:
-      '@typescript-eslint/typescript-estree': 8.17.0(typescript@5.7.2)
-      '@typescript-eslint/utils': 8.17.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
+      '@typescript-eslint/typescript-estree': 8.18.0(typescript@5.7.2)
+      '@typescript-eslint/utils': 8.18.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
       ajv: 6.12.6
       eslint: 9.16.0(jiti@2.4.1)
       json-stable-stringify-without-jsonify: 1.0.1
