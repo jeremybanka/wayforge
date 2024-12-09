@@ -35,7 +35,7 @@
 		"@svgr/webpack": "8.1.0",
 		"@types/node": "22.10.1",
 		"@types/react": "19.0.1",
-		"@types/react-dom": "19.0.1",
+		"@types/react-dom": "19.0.2",
 		"concurrently": "9.1.0",
 		"eslint-config-next": "15.0.4",
 		"typescript": "5.7.2"
