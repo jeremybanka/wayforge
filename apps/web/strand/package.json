@@ -16,7 +16,7 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
-		"@emotion/styled": "11.13.5",
+		"@emotion/styled": "11.14.0",
 		"@floating-ui/dom": "1.6.12",
 		"@floating-ui/react": "0.27.0",
 		"@t3-oss/env-core": "0.11.1",
