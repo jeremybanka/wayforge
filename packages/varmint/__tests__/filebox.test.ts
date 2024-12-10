@@ -11,7 +11,7 @@ let tempDir: tmp.DirResult
 const utils = { put: (..._: unknown[]) => undefined }
 
 beforeEach(() => {
-	vitest.spyOn(utils, `put`)
+	vitest.spyOn(utils, `put`).mockReset()
 
 	server = http.createServer((req, res) => {
 		let data: Uint8Array[] = []
@@ -53,6 +53,7 @@ describe(`Filebox`, () => {
 			await fetcher.for(`home`).get(`http://localhost:12500`)
 		} catch (thrown) {
 			if (thrown instanceof Error) {
+				console.error(`💥`, thrown)
 				caught = thrown
 			}
 		} finally {
