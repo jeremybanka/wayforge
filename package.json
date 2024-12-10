@@ -27,7 +27,7 @@
 		"fmt:fix": "biome format --write .",
 		"build": "turbo run build",
 		"bench": "cd lib && vitest bench",
-		"test": "cross-env CI=true turbo run test:once",
+		"test": "cross-env CI=true turbo run test:once --concurrency=2",
 		"test:coverage": "cross-env CI=true turbo run test:coverage",
 		"test:semver": "cross-env CI=true turbo run test:semver",
 		"release": "bun run build && changeset publish",
