@@ -54,11 +54,11 @@
 		"postgres": "3.4.5",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
-		"safegen": "0.1.4",
+		"safegen": "0.1.5",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"treetrunks": "workspace:*",
-		"zod": "3.23.8",
+		"zod": "3.24.0",
 		"zod-to-json-schema": "3.23.5"
 	},
 	"devDependencies": {
