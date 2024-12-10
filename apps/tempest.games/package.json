@@ -58,7 +58,7 @@
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"treetrunks": "workspace:*",
-		"zod": "3.23.8",
+		"zod": "3.24.0",
 		"zod-to-json-schema": "3.23.5"
 	},
 	"devDependencies": {
