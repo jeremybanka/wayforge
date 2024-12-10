@@ -21,7 +21,7 @@
 		"atom.io": "workspace:*",
 		"corners": "0.1.1",
 		"fp-ts": "2.16.9",
-		"io-ts": "2.2.21",
+		"io-ts": "2.2.22",
 		"motion": "11.13.3",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
