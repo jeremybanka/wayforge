@@ -116,10 +116,10 @@ function defineSubmoduleManifest(submoduleName: string): Json.Object {
 		types: `dist/index.d.ts`,
 		exports: {
 			".": {
+				types: `./dist/index.d.ts`,
 				import: `./dist/index.js`,
 				browser: `./dist/index.js`,
 				require: `./dist/index.cjs`,
-				types: `./dist/index.d.ts`,
 			},
 		},
 	}
