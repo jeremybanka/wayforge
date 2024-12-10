@@ -50,7 +50,7 @@
 		"atom.io": "workspace:*",
 		"cron": "3.3.0",
 		"drizzle-orm": "0.38.0",
-		"openai": "4.76.0",
+		"openai": "4.76.1",
 		"postgres": "3.4.5",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
