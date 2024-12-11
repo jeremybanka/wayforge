@@ -214,7 +214,7 @@ export function subscribeToContinuityActions(
 	for (const transaction of continuity.actions) {
 		const unsubscribeFromTransaction = subscribeToTransaction(
 			transaction,
-			(update) => {
+			function continuityActionSubscriber(update) {
 				try {
 					const aliasedUpdate = aliasTransactionUpdate(
 						store,
