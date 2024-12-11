@@ -225,21 +225,66 @@ export class Continuity {
 			_dynamicsMasked: dynamicStatesMasked,
 			_perspectives: perspectives,
 		} = builder(group)
-		const masksPerFamily = fromEntries(
-			perspectives.flatMap((perspective): [string, MaskData][] => {
-				const { resourceFamilies } = perspective
-				return resourceFamilies.map(
-					([baseFamily, maskFamily, signalFamily]): [string, MaskData] => {
-						if (signalFamily) {
+		const masksPerFamily = Object.assign(
+			fromEntries(
+				singletonStatesMasked.map(
+					(singletonResourceToken): [string, MaskData] => {
+						if (`jsonMask` in singletonResourceToken) {
 							return [
-								baseFamily.key,
-								{ type: `mutable`, mask: maskFamily, signal: signalFamily },
+								singletonResourceToken.base.key,
+								{
+									type: `mutable`,
+									mask: singletonResourceToken.jsonMask,
+									signal: singletonResourceToken.signalMask,
+								},
 							]
 						}
-						return [baseFamily.key, { type: `regular`, mask: maskFamily }]
+						return [
+							singletonResourceToken.base.key,
+							{ type: `regular`, mask: singletonResourceToken.mask },
+						]
 					},
-				)
-			}),
+				),
+			),
+			fromEntries(
+				dynamicStatesMasked.flatMap((maskedDynamicResourceToken) => {
+					const { dynamicResources } = maskedDynamicResourceToken
+					return dynamicResources.map(
+						(dynamicResourceToken): [string, MaskData] => {
+							if (`jsonMask` in dynamicResourceToken) {
+								return [
+									dynamicResourceToken.base.key,
+									{
+										type: `mutable`,
+										mask: dynamicResourceToken.jsonMask,
+										signal: dynamicResourceToken.signalMask,
+									},
+								]
+							}
+							return [
+								dynamicResourceToken.base.key,
+								{ type: `regular`, mask: dynamicResourceToken.mask },
+							]
+						},
+					)
+				}),
+			),
+			fromEntries(
+				perspectives.flatMap((perspective): [string, MaskData][] => {
+					const { resourceFamilies } = perspective
+					return resourceFamilies.map(
+						([baseFamily, maskFamily, signalFamily]): [string, MaskData] => {
+							if (signalFamily) {
+								return [
+									baseFamily.key,
+									{ type: `mutable`, mask: maskFamily, signal: signalFamily },
+								]
+							}
+							return [baseFamily.key, { type: `regular`, mask: maskFamily }]
+						},
+					)
+				}),
+			),
 		)
 		const token: ContinuityToken = {
 			type,

@@ -78,9 +78,10 @@ export function prepareToSendInitialPayload(
 					} else {
 						resourceFamily = dynamicResource.jsonMask
 					}
+					const baseToken = findInStore(store, dynamicResource.base, key)
 					const resourceToken = findInStore(store, resourceFamily, key)
 					const resource = getFromStore(store, resourceToken)
-					initialPayload.push(resourceToken, resource)
+					initialPayload.push(baseToken, resource)
 				}
 			}
 		}
