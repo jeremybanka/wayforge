@@ -22,7 +22,7 @@
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"cron": "3.3.0",
-		"zod": "3.24.0"
+		"zod": "3.24.1"
 	},
 	"scripts": {
 		"build": "rimraf dist && concurrently \"bun:build:*\" && concurrently \"bun:schema:*\"",
