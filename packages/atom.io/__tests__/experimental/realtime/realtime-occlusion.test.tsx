@@ -745,7 +745,7 @@ describe.only(`join in perspective`, () => {
 						const myAlias = AR.useO(myAliasSelector)
 						const myGameKey = AR.useO(myGameKeySelector)
 
-						console.log(`❗❗❗❗❗`, { myPlayerData: myGameKey })
+						console.log(`❗❗❗❗❗`, { myGameKey })
 
 						return myGameKey && myAlias ? (
 							<GameSpace myAlias={myAlias} myGameKey={myGameKey} />
@@ -765,6 +765,14 @@ describe.only(`join in perspective`, () => {
 			scenario()
 		const jane = clients.jane.init()
 
+		/*
+		- jane retrieves her perspective on the game continuity
+		- jane retrieves her user alias from her true user key
+		- jane retrieves her game key from her true user key
+		- jane retrieves her aliased player key from her user alias and game key
+		- jane creates a character as herself (unaliased)
+		- the transaction results in a new character joined to her aliased player key
+		*/
 		jane.enableLogging({ ws: true })
 
 		await waitFor(() => {
