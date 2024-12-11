@@ -16,7 +16,7 @@
 	"dependencies": {
 		"treetrunks": "workspace:*",
 		"zod": "3.24.1",
-		"zod-to-json-schema": "3.23.5"
+		"zod-to-json-schema": "3.24.1"
 	},
 	"scripts": {
 		"build:js": "bun build --outdir dist --target node --external zod --external zod-to-json-schema -- src/cli.ts",
