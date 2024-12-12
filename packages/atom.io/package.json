@@ -108,7 +108,7 @@
 		"motion": "11.13.5",
 		"npmlog": "7.0.1",
 		"postgres": "3.4.5",
-		"preact": "10.25.1",
+		"preact": "10.25.2",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"react-router-dom": "7.0.2",
