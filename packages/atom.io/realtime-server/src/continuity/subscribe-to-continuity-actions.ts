@@ -125,8 +125,11 @@ export function aliasTransactionUpdate(
 					switch (maskData.type) {
 						case `mutable`:
 							{
-								const { signal } = maskData
-								const newValue = getState(signal, subUpdate.key)
+								const signalMaskFamilyToken = maskData.signal
+								const newValue = getState(
+									signalMaskFamilyToken,
+									subUpdate.family.subKey,
+								)
 								updatesInPerspective.push({
 									key: segments.join(``),
 									type: `atom_update`,
@@ -137,7 +140,7 @@ export function aliasTransactionUpdate(
 							break
 						case `regular`: {
 							const maskFamilyToken = maskData.mask
-							const newValue = getState(maskFamilyToken, subUpdate.key)
+							const newValue = getState(maskFamilyToken, subUpdate.family.subKey)
 							updatesInPerspective.push({
 								key: segments.join(``),
 								type: `atom_update`,
@@ -250,6 +253,7 @@ export function subscribeToContinuityActions(
 							continuityKey,
 							`${userKey} failed to send update from transaction ${transaction.key} to ${userKey}`,
 							thrown.message,
+							thrown.stack,
 						)
 					}
 				}
