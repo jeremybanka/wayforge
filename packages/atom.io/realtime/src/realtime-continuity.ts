@@ -15,6 +15,7 @@ import type {
 import type { Transceiver } from "atom.io/internal"
 import {
 	assignTransactionToContinuity,
+	getUpdateFamily,
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
@@ -252,8 +253,12 @@ export class Continuity {
 					return dynamicResources.map(
 						(dynamicResourceToken): [string, MaskData] => {
 							if (`jsonMask` in dynamicResourceToken) {
+								const updateToken = getUpdateFamily(
+									IMPLICIT.STORE,
+									dynamicResourceToken.base,
+								)
 								return [
-									dynamicResourceToken.base.key,
+									updateToken.key,
 									{
 										type: `mutable`,
 										mask: dynamicResourceToken.jsonMask,
@@ -274,9 +279,10 @@ export class Continuity {
 					const { resourceFamilies } = perspective
 					return resourceFamilies.map(
 						([baseFamily, maskFamily, signalFamily]): [string, MaskData] => {
-							if (signalFamily) {
+							if (signalFamily && baseFamily.type === `mutable_atom_family`) {
+								const updateToken = getUpdateFamily(IMPLICIT.STORE, baseFamily)
 								return [
-									baseFamily.key,
+									updateToken.key,
 									{ type: `mutable`, mask: maskFamily, signal: signalFamily },
 								]
 							}
