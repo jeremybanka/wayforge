@@ -40,7 +40,7 @@
 		"@types/react-dom": "19.0.2",
 		"@types/react-syntax-highlighter": "15.5.13",
 		"bun-types": "1.1.38",
-		"chokidar": "4.0.1",
+		"chokidar": "4.0.2",
 		"concurrently": "9.1.0",
 		"eslint-config-next": "15.1.0",
 		"npmlog": "7.0.1",
