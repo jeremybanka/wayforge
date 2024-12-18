@@ -1,15 +1,24 @@
+import { atomFamily } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { setIntoStore } from "atom.io/internal"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type { ContinuitySyncTransactionUpdate } from "../realtime-server-stores"
-import { userUnacknowledgedQueues } from "../realtime-server-stores"
+import type { TransactionResponse } from "../continuity/prepare-to-serve-transaction-request"
+import type { UserKey } from "../realtime-server-stores"
+
+export const userUnacknowledgedQueues = atomFamily<
+	TransactionResponse[],
+	UserKey
+>({
+	key: `unacknowledgedUpdates`,
+	default: () => [],
+})
 
 export function prepareToTrackClientAcknowledgement(
 	store: Store,
 	continuity: ContinuityToken,
 	userKey: string,
-	userUnacknowledgedUpdates: ContinuitySyncTransactionUpdate[],
+	userUnacknowledgedUpdates: TransactionResponse[],
 ): (epoch: number) => void {
 	const continuityKey = continuity.key
 	return function trackClientAcknowledgement(epoch) {

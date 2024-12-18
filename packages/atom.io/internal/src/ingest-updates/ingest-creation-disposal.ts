@@ -5,12 +5,8 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
+import { allocateIntoStore, deallocateFromStore } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
-
-import {
-	allocateIntoStore,
-	deallocateFromStore,
-} from "~/packages/atom.io/src/allocate"
 
 import { disposeFromStore, findInStore } from "../families"
 import { growMoleculeInStore, makeMoleculeInStore } from "../molecule"

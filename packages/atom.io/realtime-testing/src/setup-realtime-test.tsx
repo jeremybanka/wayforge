@@ -49,7 +49,7 @@ export type TestSetupOptions = {
 	server: (tools: {
 		socket: SocketIO.Socket
 		silo: AtomIO.Silo
-		enableLogging: () => void
+		enableLogging: (conf?: RealtimeTestLoggerConfig) => void
 	}) => void
 }
 export type TestSetupOptions__SingleClient = TestSetupOptions & {
@@ -69,7 +69,7 @@ export type RealtimeTestTools = {
 export type RealtimeTestClient = RealtimeTestTools & {
 	renderResult: RenderResult
 	prettyPrint: () => void
-	enableLogging: () => void
+	enableLogging: (conf?: RealtimeTestLoggerConfig) => void
 	socket: ClientSocket
 }
 export type RealtimeTestClientBuilder = {
@@ -116,7 +116,7 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const userClaim = socketRealm.allocate(`root`, `user::${username}`)
+			const userClaim = socketRealm.allocate(`root`, `user::__${username}__`)
 			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
 			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
 			setIntoStore(silo.store, socketState, socket)
@@ -140,20 +140,25 @@ export const setupRealtimeTestServer = (
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		let userKey: string | null = null
-		function enableLogging() {
-			const userKeyState = findRelationsInStore(
-				RTS.usersOfSockets,
-				`socket::${socket.id}`,
-				silo.store,
-			).userKeyOfSocket
-			userKey = getFromStore(silo.store, userKeyState)
-			prefixLogger(silo.store, `server`)
-			socket.onAny((event, ...args) => {
-				console.log(`🛰 `, userKey, event, ...args)
-			})
-			socket.onAnyOutgoing((event, ...args) => {
-				console.log(`🛰  >>`, userKey, event, ...args)
-			})
+		function enableLogging(conf?: RealtimeTestLoggerConfig) {
+			if (conf?.store) {
+				prefixLogger(silo.store, `server`)
+			}
+			if (conf?.ws) {
+				const userKeyState = findRelationsInStore(
+					RTS.usersOfSockets,
+					`socket::${socket.id}`,
+					silo.store,
+				).userKeyOfSocket
+				userKey = getFromStore(silo.store, userKeyState)
+
+				socket.onAny((event, ...args) => {
+					console.log(`🛰 `, userKey, event, ...args)
+				})
+				socket.onAnyOutgoing((event, ...args) => {
+					console.log(`🛰  >>`, userKey, event, ...args)
+				})
+			}
 		}
 		options.server({ socket, enableLogging, silo })
 		socket.on(`disconnect`, () => {
@@ -181,6 +186,12 @@ export const setupRealtimeTestServer = (
 		port,
 	}
 }
+
+export type RealtimeTestLoggerConfig = {
+	ws?: boolean
+	store?: boolean
+}
+
 export const setupRealtimeTestClient = (
 	options: TestSetupOptions__SingleClient,
 	name: string,
@@ -188,8 +199,9 @@ export const setupRealtimeTestClient = (
 ): RealtimeTestClientBuilder => {
 	const testClient = { dispose: () => {} }
 	const init = () => {
+		const username = `${name}-${testNumber}`
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
-			auth: { token: `test`, username: `${name}-${testNumber}` },
+			auth: { token: `test`, username },
 		})
 		const silo = new AtomIO.Silo({ name, lifespan: `ephemeral` }, IMPLICIT.STORE)
 		for (const [key, value] of silo.store.valueMap.entries()) {
@@ -197,7 +209,7 @@ export const setupRealtimeTestClient = (
 				silo.store.valueMap.set(key, [...value])
 			}
 		}
-		silo.setState(RTC.myUsernameState, `${name}-${testNumber}`)
+		silo.setState(RTC.myUsernameState, username)
 
 		const { document } = new Happy.Window()
 		document.body.innerHTML = `<div id="app"></div>`
@@ -216,14 +228,18 @@ export const setupRealtimeTestClient = (
 			console.log(prettyDOM(renderResult.container))
 		}
 
-		const enableLogging = () => {
-			prefixLogger(silo.store, name)
-			socket.onAny((event, ...args) => {
-				console.log(`📡 `, name, event, ...args)
-			})
-			socket.onAnyOutgoing((event, ...args) => {
-				console.log(`📡  >>`, name, event, ...args)
-			})
+		const enableLogging = (conf?: RealtimeTestLoggerConfig) => {
+			if (conf?.store) {
+				prefixLogger(silo.store, name)
+			}
+			if (conf?.ws) {
+				socket.onAny((event, ...args) => {
+					console.log(`📡 `, name, event, ...args)
+				})
+				socket.onAnyOutgoing((event, ...args) => {
+					console.log(`📡  >>`, name, event, ...args)
+				})
+			}
 		}
 
 		const dispose = () => {

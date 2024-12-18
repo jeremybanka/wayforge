@@ -36,6 +36,7 @@
 		"**/app/**/layout.tsx": "${dirname}/layout.tsx"
 	},
 	"cSpell.words": [
+		"actuals",
 		"anvl",
 		"biomejs",
 		"Cardstock",
