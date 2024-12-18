@@ -91,20 +91,12 @@ switch (lastArgument) {
 		const watcher = chokidar.watch(inputDir, { persistent: true })
 
 		watcher.on(`add`, (filePath) => {
-			if (filePath instanceof Error) {
-				npmlog.error(`add`, filePath)
-			} else {
-				npmlog.info(`add`, filePath)
-				handleFile(filePath)
-			}
+			npmlog.info(`add`, filePath)
+			handleFile(filePath)
 		})
 		watcher.on(`change`, (filePath) => {
-			if (filePath instanceof Error) {
-				npmlog.error(`change`, filePath)
-			} else {
-				npmlog.info(`change`, filePath)
-				handleFile(filePath)
-			}
+			npmlog.info(`change`, filePath)
+			handleFile(filePath)
 		})
 	}
 	case `once`: {
