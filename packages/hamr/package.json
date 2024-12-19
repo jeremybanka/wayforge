@@ -68,7 +68,7 @@
 		"happy-dom": "15.11.7",
 		"jsdom": "25.0.1",
 		"npmlog": "7.0.1",
-		"preact": "10.25.2",
+		"preact": "10.25.3",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"react-router-dom": "7.0.2",
