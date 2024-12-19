@@ -85,7 +85,7 @@ export class Ferret {
 		const pathToStreamFile = path.join(subDir, `${subKey}.stream.txt`)
 		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (!fs.existsSync(this.baseDir)) {
-			fs.mkdirSync(this.baseDir)
+			fs.mkdirSync(this.baseDir, { recursive: true })
 		}
 		if (!fs.existsSync(subDir)) {
 			fs.mkdirSync(subDir)
