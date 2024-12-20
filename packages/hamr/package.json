@@ -78,7 +78,7 @@
 		"typescript": "5.7.2",
 		"vite-plugin-dts": "4.4.0",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "3.0.0-beta.2"
+		"vitest": "3.0.0-beta.3"
 	},
 	"files": [
 		"atom.io-combo/dist",
