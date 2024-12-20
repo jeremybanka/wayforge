@@ -719,8 +719,8 @@ importers:
         specifier: 8.18.1
         version: 8.18.1(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2)
       '@vitest/coverage-v8':
-        specifier: 3.0.0-beta.2
-        version: 3.0.0-beta.2(vitest@3.0.0-beta.2)
+        specifier: 3.0.0-beta.3
+        version: 3.0.0-beta.3(vitest@3.0.0-beta.2)
       '@vitest/ui':
         specifier: 3.0.0-beta.2
         version: 3.0.0-beta.2(vitest@3.0.0-beta.2)
@@ -4034,11 +4034,11 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0
 
-  '@vitest/coverage-v8@3.0.0-beta.2':
-    resolution: {integrity: sha512-YLAJclfdHXSn+PCmkvrBgB9jHVsOG6edO16p0fFSMtob28L3X9JOgzW2aA84vtk9eywcFhJ4tL27Vhw1kO/nlg==}
+  '@vitest/coverage-v8@3.0.0-beta.3':
+    resolution: {integrity: sha512-jtlEKBuku+gOxhwAAswmNU6V+uPAMKg2zp6sNt+jUbD3+cgdjmYsiFrxHwGg8hiuYFrZwewid5AET8bjCdca/w==}
     peerDependencies:
-      '@vitest/browser': 3.0.0-beta.2
-      vitest: 3.0.0-beta.2
+      '@vitest/browser': 3.0.0-beta.3
+      vitest: 3.0.0-beta.3
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
@@ -10944,7 +10944,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.0.0-beta.2(vitest@3.0.0-beta.2)':
+  '@vitest/coverage-v8@3.0.0-beta.3(vitest@3.0.0-beta.2)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -10953,7 +10953,7 @@ snapshots:
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
       istanbul-reports: 3.1.7
-      magic-string: 0.30.14
+      magic-string: 0.30.17
       magicast: 0.3.5
       std-env: 3.8.0
       test-exclude: 7.0.1
