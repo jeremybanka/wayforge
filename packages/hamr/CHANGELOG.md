@@ -1,5 +1,11 @@
 # hamr
 
+## 0.5.1
+
+### Patch Changes
+
+- 4fcd106: 🐛 Improved the manifests for hamr's submodules to include types first.
+
 ## 0.5.0
 
 ### Minor Changes
