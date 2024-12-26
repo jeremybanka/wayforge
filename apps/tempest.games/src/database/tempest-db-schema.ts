@@ -54,11 +54,9 @@ export const trackableUserColumnNames = [
 	`hash`,
 	`userRole`,
 ] as const satisfies UserColumnName[]
-true satisfies UserColumnName extends
+;`` as UserColumnName satisfies
 	| (typeof trackableUserColumnNames)[number]
 	| (typeof untrackedUserColumnNames)[number]
-	? true
-	: false
 
 export const trackedUserColumnName = pgEnum(
 	`trackedUserColumnName`,
