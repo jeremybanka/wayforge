@@ -28,7 +28,7 @@
 	"devDependencies": {
 		"socket.io-client": "4.8.1",
 		"tsx": "4.19.2",
-		"vite": "6.0.5",
+		"vite": "6.0.6",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.0-beta.3"
 	}
