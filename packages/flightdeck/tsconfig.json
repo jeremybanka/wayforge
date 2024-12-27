@@ -1,6 +1,6 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": ["src", "__tests__", "**/*.config.ts"],
+	"include": ["src", "__scripts__", "__tests__", "**/*.config.ts"],
 	"compilerOptions": {
 		"types": ["vitest/globals", "bun-types"]
 	}

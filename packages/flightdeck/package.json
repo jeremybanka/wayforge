@@ -27,9 +27,7 @@
 	"scripts": {
 		"gen": "bun ./__scripts__/gen.bun.ts",
 		"build": "rimraf dist && concurrently \"bun:build:*\" && concurrently \"bun:schema:*\"",
-		"build:bin:flightdeck": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/flightdeck.bin.ts",
-		"build:bin:klaxon": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/klaxon.bin.ts",
-		"build:lib": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/lib.ts ",
+		"build:js": "bun ./__scripts__/build.bun.ts",
 		"build:dts": "tsup",
 		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
