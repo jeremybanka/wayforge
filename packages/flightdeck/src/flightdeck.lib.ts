@@ -9,7 +9,9 @@ import { discoverType } from "atom.io/introspection"
 import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
+import { z } from "zod"
 
+import type { LnavFormat } from "../gen/lnav-format-schema.gen"
 import { FilesystemStorage } from "./filesystem-storage"
 import { env } from "./flightdeck.env"
 
@@ -37,6 +39,7 @@ export type FlightDeckOptions<S extends string = string> = {
 	}
 	port?: number | undefined
 	flightdeckRootDir?: string | undefined
+	jsonLogging?: boolean | undefined
 }
 
 export class FlightDeck<S extends string = string> {
@@ -444,3 +447,86 @@ export class FlightDeck<S extends string = string> {
 		}
 	}
 }
+
+export const flightDeckLogSchema = z.object({
+	timestamp: z.number(),
+	package: z.string(),
+	service: z.string(),
+	process: z.number(),
+	message: z.string(),
+})
+export type FlightDeckLog = z.infer<typeof flightDeckLogSchema>
+
+const LINE_FORMAT = `line-format` satisfies keyof LnavFormat
+const VALUE = `value` satisfies keyof LnavFormat
+
+export type LnavFormatVisualComponent = Exclude<
+	Exclude<LnavFormat[`line-format`], undefined>[number],
+	string
+>
+
+export type LnavFormatBreakdown = Exclude<LnavFormat[`value`], undefined>
+export type MemberOf<T> = T[keyof T]
+export type LnavFormatValueDefinition = MemberOf<LnavFormatBreakdown>
+
+export type FlightDeckFormat = {
+	[LINE_FORMAT]: (LnavFormatVisualComponent & {
+		field: keyof FlightDeckLog | `__timestamp__`
+	})[]
+	[VALUE]: {
+		[K in keyof FlightDeckLog]: LnavFormatValueDefinition & {
+			kind: FlightDeckLog[K] extends number
+				? `integer`
+				: FlightDeckLog[K] extends string
+					? `string`
+					: never
+		}
+	}
+}
+
+export const FLIGHTDECK_LNAV_FORMAT = {
+	title: `FlightDeck Log`,
+	description: `Format for events logged by the FlightDeck process manager.`,
+	"file-type": `json`,
+	"timestamp-field": `timestamp`,
+	"opid-field": `service`,
+
+	[LINE_FORMAT]: [
+		{
+			field: `__timestamp__`,
+		},
+		{
+			prefix: ` `,
+			field: `package`,
+		},
+		{
+			prefix: `::`,
+			field: `service`,
+		},
+		{
+			field: `process`,
+			"min-width": 5,
+		},
+		{
+			field: `message`,
+		},
+	],
+
+	[VALUE]: {
+		timestamp: {
+			kind: `integer`,
+		},
+		package: {
+			kind: `string`,
+		},
+		service: {
+			kind: `string`,
+		},
+		process: {
+			kind: `integer`,
+		},
+		message: {
+			kind: `string`,
+		},
+	},
+} as const satisfies FlightDeckFormat & LnavFormat
