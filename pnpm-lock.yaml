@@ -892,6 +892,9 @@ importers:
       concurrently:
         specifier: 9.1.1
         version: 9.1.1
+      json-schema-to-zod:
+        specifier: 2.6.0
+        version: 2.6.0
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
