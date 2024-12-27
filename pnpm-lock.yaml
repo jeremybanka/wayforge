@@ -904,6 +904,9 @@ importers:
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.48.1(@types/node@22.10.2))(@swc/core@1.9.2(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)
+      varmint:
+        specifier: workspace:*
+        version: link:../varmint
       vitest:
         specifier: 3.0.0-beta.3
         version: 3.0.0-beta.3(@types/node@22.10.2)(@vitest/ui@3.0.0-beta.3)(happy-dom@16.0.1)(jiti@2.4.2)(jsdom@25.0.1)(lightningcss@1.28.2)(sass-embedded@1.83.0)(sass@1.83.0)(terser@5.36.0)(tsx@4.19.2)
