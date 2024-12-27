@@ -68,7 +68,7 @@
 		"@types/react-dom": "19.0.2",
 		"@vitejs/plugin-react-swc": "3.7.2",
 		"bun-types": "1.1.42",
-		"concurrently": "9.1.0",
+		"concurrently": "9.1.1",
 		"cross-env": "7.0.3",
 		"dotenv": "16.4.7",
 		"dotenv-cli": "8.0.0",
