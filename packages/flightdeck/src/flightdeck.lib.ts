@@ -98,34 +98,21 @@ export class FlightDeck<S extends string = string> {
 		this.servicesReadyToUpdate = { ...this.defaultServicesReadyToUpdate }
 		this.autoRespawnDeadServices = true
 
-		this.logger = {
-			info: (...args: any[]) => {
-				console.log(`${this.options.packageName}:`, ...args)
-			},
-			warn: (...args: any[]) => {
-				console.warn(`${this.options.packageName}:`, ...args)
-			},
-			error: (...args: any[]) => {
-				console.error(`${this.options.packageName}:`, ...args)
-			},
-		}
+		this.logger = new FlightDeckLogger(
+			this.options.packageName,
+			process.pid,
+			undefined,
+			{ jsonLogging: this.options.jsonLogging ?? false },
+		)
 		this.serviceLoggers = fromEntries(
 			servicesEntries.map(([serviceName]) => [
 				serviceName,
-				{
-					info: (...args: any[]) => {
-						console.log(`${this.options.packageName}::${serviceName}:`, ...args)
-					},
-					warn: (...args: any[]) => {
-						console.warn(`${this.options.packageName}::${serviceName}:`, ...args)
-					},
-					error: (...args: any[]) => {
-						console.error(
-							`${this.options.packageName}::${serviceName}:`,
-							...args,
-						)
-					},
-				},
+				new FlightDeckLogger(
+					this.options.packageName,
+					process.pid,
+					serviceName,
+					{ jsonLogging: this.options.jsonLogging ?? false },
+				),
 			]),
 		)
 
@@ -449,9 +436,10 @@ export class FlightDeck<S extends string = string> {
 }
 
 export const flightDeckLogSchema = z.object({
+	level: z.string(),
 	timestamp: z.number(),
 	package: z.string(),
-	service: z.string(),
+	service: z.string().optional(),
 	process: z.number(),
 	message: z.string(),
 })
@@ -475,9 +463,9 @@ export type FlightDeckFormat = {
 	})[]
 	[VALUE]: {
 		[K in keyof FlightDeckLog]: LnavFormatValueDefinition & {
-			kind: FlightDeckLog[K] extends number
+			kind: FlightDeckLog[K] extends number | undefined
 				? `integer`
-				: FlightDeckLog[K] extends string
+				: FlightDeckLog[K] extends string | undefined
 					? `string`
 					: never
 		}
@@ -490,6 +478,12 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	"file-type": `json`,
 	"timestamp-field": `timestamp`,
 	"opid-field": `service`,
+	"level-field": `level`,
+	level: {
+		info: `info`,
+		warning: `warn`,
+		error: `error`,
+	},
 
 	[LINE_FORMAT]: [
 		{
@@ -504,10 +498,12 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 			field: `service`,
 		},
 		{
+			prefix: ` `,
 			field: `process`,
 			"min-width": 5,
 		},
 		{
+			prefix: ` `,
 			field: `message`,
 		},
 	],
@@ -515,6 +511,9 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	[VALUE]: {
 		timestamp: {
 			kind: `integer`,
+		},
+		level: {
+			kind: `string`,
 		},
 		package: {
 			kind: `string`,
@@ -530,3 +529,85 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 		},
 	},
 } as const satisfies FlightDeckFormat & LnavFormat
+
+export class FlightDeckLogger {
+	public readonly packageName: string
+	public readonly serviceName?: string
+	public readonly processCode: number
+	public readonly jsonLogging: boolean
+	public constructor(
+		packageName: string,
+		processCode: number,
+		serviceName?: string,
+		options?: { jsonLogging: boolean },
+	) {
+		this.packageName = packageName
+		if (serviceName) {
+			this.serviceName = serviceName
+		}
+		this.processCode = processCode
+		this.jsonLogging = options?.jsonLogging ?? false
+	}
+	public info(message: string): void {
+		if (this.jsonLogging) {
+			const log: FlightDeckLog = {
+				timestamp: Date.now(),
+				level: `info`,
+				process: this.processCode,
+				package: this.packageName,
+				message,
+			}
+			if (this.serviceName) {
+				log.service = this.serviceName
+			}
+			process.stdout.write(JSON.stringify(log) + `\n`)
+		} else {
+			const source = this.serviceName
+				? `${this.packageName}::${this.serviceName}`
+				: this.packageName
+			console.log(`${source}:`, message)
+		}
+	}
+
+	public warn(message: string): void {
+		if (this.jsonLogging) {
+			const log: FlightDeckLog = {
+				timestamp: Date.now(),
+				level: `warn`,
+				process: this.processCode,
+				package: this.packageName,
+				message,
+			}
+			if (this.serviceName) {
+				log.service = this.serviceName
+			}
+			process.stdout.write(JSON.stringify(log) + `\n`)
+		} else {
+			const source = this.serviceName
+				? `${this.packageName}::${this.serviceName}`
+				: this.packageName
+			console.warn(`${source}:`, message)
+		}
+	}
+
+	public error(message: string): void {
+		if (this.jsonLogging) {
+			const log: FlightDeckLog = {
+				timestamp: Date.now(),
+				level: `error`,
+				process: this.processCode,
+				package: this.packageName,
+				message,
+			}
+			if (this.serviceName) {
+				log.service = this.serviceName
+			}
+			process.stdout.write(JSON.stringify(log) + `\n`)
+		} else {
+			const source = this.serviceName
+				? `${this.packageName}::${this.serviceName}`
+				: this.packageName
+			console.error(`${source}:`, message)
+		}
+	}
+}
