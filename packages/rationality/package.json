@@ -29,7 +29,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"concurrently": "9.1.0",
+		"concurrently": "9.1.1",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",
 		"vite": "6.0.6",
