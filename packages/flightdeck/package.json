@@ -25,6 +25,7 @@
 		"zod": "3.24.1"
 	},
 	"scripts": {
+		"gen": "bun ./__scripts__/gen.bun.ts",
 		"build": "rimraf dist && concurrently \"bun:build:*\" && concurrently \"bun:schema:*\"",
 		"build:bin:flightdeck": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/flightdeck.bin.ts",
 		"build:bin:klaxon": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/klaxon.bin.ts",
