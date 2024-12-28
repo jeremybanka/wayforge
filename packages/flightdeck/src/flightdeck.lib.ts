@@ -3,6 +3,7 @@ import type { Server } from "node:http"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
+import { inspect } from "node:util"
 
 import { Future } from "atom.io/internal"
 import { discoverType } from "atom.io/introspection"
@@ -64,7 +65,7 @@ export class FlightDeck<S extends string = string> {
 
 	protected logger: Pick<Console, `error` | `info` | `warn`>
 	protected serviceLoggers: {
-		readonly [service in S]: Pick<Console, `error` | `info` | `warn`>
+		readonly [service in S]: FlightDeckLogger
 	}
 
 	protected updateAvailabilityChecker: CronJob | null = null
@@ -306,13 +307,15 @@ export class FlightDeck<S extends string = string> {
 			cwd: this.options.flightdeckRootDir,
 			env: import.meta.env,
 		})
-		this.services[serviceName] = new ChildSocket(
+		const serviceLogger = this.serviceLoggers[serviceName]
+		const service = (this.services[serviceName] = new ChildSocket(
 			serviceProcess,
 			`${this.options.packageName}::${serviceName}`,
-			console,
-		)
+			serviceLogger,
+		))
+		serviceLogger.processCode = service.process.pid ?? -1
 		this.services[serviceName].onAny((...messages) => {
-			this.serviceLoggers[serviceName].info(`💬`, ...messages)
+			serviceLogger.info(`💬`, ...messages)
 		})
 		this.services[serviceName].on(`readyToUpdate`, () => {
 			this.logger.info(`Service "${serviceName}" is ready to update.`)
@@ -436,12 +439,12 @@ export class FlightDeck<S extends string = string> {
 }
 
 export const flightDeckLogSchema = z.object({
-	level: z.string(),
+	level: z.union([z.literal(`info`), z.literal(`warn`), z.literal(`ERR!`)]),
 	timestamp: z.number(),
 	package: z.string(),
 	service: z.string().optional(),
 	process: z.number(),
-	message: z.string(),
+	body: z.string(),
 })
 export type FlightDeckLog = z.infer<typeof flightDeckLogSchema>
 
@@ -458,9 +461,12 @@ export type MemberOf<T> = T[keyof T]
 export type LnavFormatValueDefinition = MemberOf<LnavFormatBreakdown>
 
 export type FlightDeckFormat = {
-	[LINE_FORMAT]: (LnavFormatVisualComponent & {
-		field: keyof FlightDeckLog | `__timestamp__`
-	})[]
+	[LINE_FORMAT]: (
+		| string
+		| (LnavFormatVisualComponent & {
+				field: keyof FlightDeckLog | `__level__` | `__timestamp__`
+		  })
+	)[]
 	[VALUE]: {
 		[K in keyof FlightDeckLog]: LnavFormatValueDefinition & {
 			kind: FlightDeckLog[K] extends number | undefined
@@ -477,17 +483,25 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	description: `Format for events logged by the FlightDeck process manager.`,
 	"file-type": `json`,
 	"timestamp-field": `timestamp`,
+	"subsecond-field": `subsecond`,
+	"subsecond-units": `milli`,
 	"opid-field": `service`,
 	"level-field": `level`,
 	level: {
 		info: `info`,
 		warning: `warn`,
-		error: `error`,
+		error: `err!`,
 	},
+	"ordered-by-time": true,
 
 	[LINE_FORMAT]: [
 		{
+			field: `__level__`,
+		},
+		{
+			prefix: ` `,
 			field: `__timestamp__`,
+			"timestamp-format": `%Y-%m-%dT%H:%M:%S.%L%Z`,
 		},
 		{
 			prefix: ` `,
@@ -496,15 +510,17 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 		{
 			prefix: `::`,
 			field: `service`,
+			"default-value": ``,
 		},
 		{
-			prefix: ` `,
+			prefix: `[`,
 			field: `process`,
+			suffix: `]`,
 			"min-width": 5,
 		},
 		{
-			prefix: ` `,
-			field: `message`,
+			prefix: `: `,
+			field: `body`,
 		},
 	],
 
@@ -524,17 +540,19 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 		process: {
 			kind: `integer`,
 		},
-		message: {
+		body: {
 			kind: `string`,
 		},
 	},
 } as const satisfies FlightDeckFormat & LnavFormat
 
-export class FlightDeckLogger {
+export class FlightDeckLogger
+	implements Pick<Console, `error` | `info` | `warn`>
+{
 	public readonly packageName: string
 	public readonly serviceName?: string
-	public readonly processCode: number
 	public readonly jsonLogging: boolean
+	public processCode: number
 	public constructor(
 		packageName: string,
 		processCode: number,
@@ -548,14 +566,20 @@ export class FlightDeckLogger {
 		this.processCode = processCode
 		this.jsonLogging = options?.jsonLogging ?? false
 	}
-	public info(message: string): void {
+	public info(...messages: unknown[]): void {
 		if (this.jsonLogging) {
 			const log: FlightDeckLog = {
 				timestamp: Date.now(),
 				level: `info`,
 				process: this.processCode,
 				package: this.packageName,
-				message,
+				body: messages
+					.map((message) =>
+						typeof message === `string`
+							? message
+							: inspect(message, false, null, true),
+					)
+					.join(` `),
 			}
 			if (this.serviceName) {
 				log.service = this.serviceName
@@ -565,18 +589,24 @@ export class FlightDeckLogger {
 			const source = this.serviceName
 				? `${this.packageName}::${this.serviceName}`
 				: this.packageName
-			console.log(`${source}:`, message)
+			console.log(`${source}:`, ...messages)
 		}
 	}
 
-	public warn(message: string): void {
+	public warn(...messages: unknown[]): void {
 		if (this.jsonLogging) {
 			const log: FlightDeckLog = {
 				timestamp: Date.now(),
 				level: `warn`,
 				process: this.processCode,
 				package: this.packageName,
-				message,
+				body: messages
+					.map((message) =>
+						typeof message === `string`
+							? message
+							: inspect(message, false, null, true),
+					)
+					.join(` `),
 			}
 			if (this.serviceName) {
 				log.service = this.serviceName
@@ -586,18 +616,24 @@ export class FlightDeckLogger {
 			const source = this.serviceName
 				? `${this.packageName}::${this.serviceName}`
 				: this.packageName
-			console.warn(`${source}:`, message)
+			console.warn(`${source}:`, ...messages)
 		}
 	}
 
-	public error(message: string): void {
+	public error(...messages: unknown[]): void {
 		if (this.jsonLogging) {
 			const log: FlightDeckLog = {
-				timestamp: Date.now(),
-				level: `error`,
+				timestamp: Date.now() + Math.floor(Math.random() * 1000),
+				level: `ERR!`,
 				process: this.processCode,
 				package: this.packageName,
-				message,
+				body: messages
+					.map((message) =>
+						typeof message === `string`
+							? message
+							: inspect(message, false, null, true),
+					)
+					.join(` `),
 			}
 			if (this.serviceName) {
 				log.service = this.serviceName
@@ -607,7 +643,7 @@ export class FlightDeckLogger {
 			const source = this.serviceName
 				? `${this.packageName}::${this.serviceName}`
 				: this.packageName
-			console.error(`${source}:`, message)
+			console.error(`${source}:`, ...messages)
 		}
 	}
 }
