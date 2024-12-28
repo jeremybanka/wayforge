@@ -43,6 +43,10 @@ const letter0State = findState(letterAtoms, 0)
 
 setState(letter0State, `A`)
 
+ipcLog.info(`This is just fyi`)
+ipcLog.warn(`This is a warning`)
+ipcLog.error(`This is an error`)
+
 setInterval(() => {
 	ipcLog.info(`letterAtoms`, letterAtoms)
 }, 1000)
