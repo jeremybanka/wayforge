@@ -1,4 +1,5 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
+import type { Console } from "node:console"
 
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
@@ -19,31 +20,31 @@ export class ChildSocket<
 
 	public id = `#####`
 
+	public process: ChildProcessWithoutNullStreams
+	public key: string
+	public logger: Pick<Console, `error` | `info` | `warn`>
+
 	protected handleLog(arg: Json.Serializable): void {
 		if (Array.isArray(arg)) {
 			const [level, ...rest] = arg
 			switch (level) {
 				case `i`:
-					this.logger.info(this.id, this.key, ...rest)
+					this.logger.info(...rest)
 					break
 				case `w`:
-					this.logger.warn(this.id, this.key, ...rest)
+					this.logger.warn(...rest)
 					break
 				case `e`:
-					this.logger.error(this.id, this.key, ...rest)
+					this.logger.error(...rest)
 					break
 			}
 		}
 	}
 
 	public constructor(
-		public process: ChildProcessWithoutNullStreams,
-		public key: string,
-		public logger: {
-			info: (prefix: string, message: string, ...args: unknown[]) => void
-			warn: (prefix: string, message: string, ...args: unknown[]) => void
-			error: (prefix: string, message: string, ...args: unknown[]) => void
-		} = console,
+		process: ChildProcessWithoutNullStreams,
+		key: string,
+		logger?: Pick<Console, `error` | `info` | `warn`>,
 	) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args]) + `\x03`
@@ -60,6 +61,18 @@ export class ChildSocket<
 			return this
 		})
 		this.process = process
+		this.key = key
+		this.logger = logger ?? {
+			info: (...args: unknown[]) => {
+				console.info(this.id, this.key, ...args)
+			},
+			warn: (...args: unknown[]) => {
+				console.warn(this.id, this.key, ...args)
+			},
+			error: (...args: unknown[]) => {
+				console.error(this.id, this.key, ...args)
+			},
+		}
 		this.process.stdout.on(
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
