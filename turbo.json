@@ -3,7 +3,7 @@
 	"globalDependencies": ["tsconfig.json", ".bun-version", ".node-version"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["gen", "^build"],
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*", "bin/**"],
 			"inputs": ["**/package.json", "src/**", "**/src/**"]
 		},
@@ -57,7 +57,7 @@
 			"inputs": ["eslint-plugin/src/**/*.ts", "tsup.config.ts"]
 		},
 		"lint:eslint": {
-			"dependsOn": ["lint:eslint:build"],
+			"dependsOn": ["lint:eslint:build", "gen"],
 			"inputs": [
 				"../../package.json",
 				"../../eslint.config.ts",
@@ -99,6 +99,7 @@
 			"dependsOn": ["lint:biome", "lint:eslint", "lint:types"]
 		},
 		"gen": {
+			"dependsOn": ["^build"],
 			"outputs": ["**/*.gen.ts", "**/*.gen.tsx"],
 			"inputs": [
 				"**/package.json",

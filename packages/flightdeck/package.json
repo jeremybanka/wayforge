@@ -10,7 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist", "src"],
+	"files": ["dist", "gen", "src"],
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {
@@ -25,10 +25,9 @@
 		"zod": "3.24.1"
 	},
 	"scripts": {
+		"gen": "bun ./__scripts__/gen.bun.ts",
 		"build": "rimraf dist && concurrently \"bun:build:*\" && concurrently \"bun:schema:*\"",
-		"build:bin:flightdeck": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/flightdeck.bin.ts",
-		"build:bin:klaxon": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/klaxon.bin.ts",
-		"build:lib": "bun build --outdir dist --target node --external flightdeck --external atom.io --external comline --external zod -- src/lib.ts ",
+		"build:js": "bun ./__scripts__/build.bun.ts",
 		"build:dts": "tsup",
 		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
@@ -42,13 +41,17 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
+		"@biomejs/js-api": "0.7.1",
+		"@biomejs/wasm-nodejs": "1.9.4",
 		"@types/node": "22.10.2",
 		"@types/tmp": "0.2.6",
 		"bun-types": "1.1.42",
 		"concurrently": "9.1.1",
+		"json-schema-to-zod": "2.6.0",
 		"rimraf": "6.0.1",
 		"tmp": "0.2.3",
 		"tsup": "8.3.5",
+		"varmint": "workspace:*",
 		"vitest": "3.0.0-beta.3"
 	}
 }

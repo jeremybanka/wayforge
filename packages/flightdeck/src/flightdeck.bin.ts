@@ -3,11 +3,21 @@
 import * as path from "node:path"
 
 import type { OptionsGroup } from "comline"
-import { cli, optional, parseNumberOption } from "comline"
+import { cli, optional, parseBooleanOption, parseNumberOption } from "comline"
 import { z } from "zod"
 
 import type { FlightDeckOptions } from "./flightdeck.lib"
-import { FlightDeck } from "./flightdeck.lib"
+import { FlightDeck, FlightDeckLogger } from "./flightdeck.lib"
+
+const CLI_LOGGER = new FlightDeckLogger(`comline`, process.pid, undefined, {
+	jsonLogging: true,
+})
+Object.assign(console, {
+	log: CLI_LOGGER.info.bind(CLI_LOGGER),
+	info: CLI_LOGGER.info.bind(CLI_LOGGER),
+	warn: CLI_LOGGER.warn.bind(CLI_LOGGER),
+	error: CLI_LOGGER.error.bind(CLI_LOGGER),
+})
 
 const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
@@ -20,6 +30,7 @@ const FLIGHTDECK_MANUAL = {
 			install: z.string(),
 			checkAvailability: z.string(),
 		}),
+		jsonLogging: z.boolean().optional(),
 	}),
 	options: {
 		port: {
@@ -54,6 +65,13 @@ const FLIGHTDECK_MANUAL = {
 			description: `Map of scripts to run.`,
 			example: `--scripts="{\\"download\\":\\"npm i",\\"install\\":\\"npm run build\\"}"`,
 			parse: JSON.parse,
+		},
+		jsonLogging: {
+			flag: `j`,
+			required: false,
+			description: `Enable json logging.`,
+			example: `--jsonLogging`,
+			parse: parseBooleanOption,
 		},
 	},
 } satisfies OptionsGroup<FlightDeckOptions>
