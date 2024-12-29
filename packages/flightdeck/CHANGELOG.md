@@ -1,5 +1,14 @@
 # flightdeck
 
+## 0.2.5
+
+### Patch Changes
+
+- 1c68bbb: ✨ FlightDeck now puts update from the command line parser into json log format. May add a variable that enables this mode in the future.
+- 1c68bbb: ✨ Include a new option when instantiating `new FlightDeck`, called `jsonLogging`. When enabled, logs are sent to stdout in jsonl format (JSON parsable lines). A flightdeck_log.json format for lnav is included in the dist folder and can be installed with `lnav -i node_modules/flightdeck/dist/flightdeck_log.json`.
+- Updated dependencies [1c68bbb]
+  - atom.io@0.30.6
+
 ## 0.2.4
 
 ### Patch Changes
