@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.30.6
+
+### Patch Changes
+
+- 1c68bbb: ♻️ Make logging more versatile for `ChildSocket`. Now the process code and key aren't hardcoded into the logger, but are included in the default logger.
+
 ## 0.30.5
 
 ### Patch Changes
