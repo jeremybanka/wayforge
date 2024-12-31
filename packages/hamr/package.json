@@ -65,7 +65,7 @@
 		"@vitejs/plugin-react": "4.3.4",
 		"concurrently": "9.1.1",
 		"eslint": "9.17.0",
-		"happy-dom": "16.2.4",
+		"happy-dom": "16.2.6",
 		"jsdom": "25.0.1",
 		"npmlog": "7.0.1",
 		"preact": "10.25.4",
