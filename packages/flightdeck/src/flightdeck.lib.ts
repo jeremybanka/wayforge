@@ -496,27 +496,28 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 
 	[LINE_FORMAT]: [
 		{
-			field: `__level__`,
-		},
-		{
 			prefix: ` `,
 			field: `__timestamp__`,
 			"timestamp-format": `%Y-%m-%dT%H:%M:%S.%L%Z`,
 		},
 		{
 			prefix: ` `,
+			field: `process`,
+			"min-width": 5,
+		},
+		{
+			prefix: `:`,
 			field: `package`,
 		},
 		{
-			prefix: `::`,
+			prefix: `:`,
 			field: `service`,
 			"default-value": ``,
 		},
 		{
 			prefix: `[`,
-			field: `process`,
+			field: `__level__`,
 			suffix: `]`,
-			"min-width": 5,
 		},
 		{
 			prefix: `: `,
