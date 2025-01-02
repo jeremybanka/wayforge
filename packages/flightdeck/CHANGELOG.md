@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.2.6
+
+### Patch Changes
+
+- 71de843: 🔊 Improved lnav format to read with a more regular pattern: `TIMESTAMP pid:package:service: [level] Message`
+
 ## 0.2.5
 
 ### Patch Changes

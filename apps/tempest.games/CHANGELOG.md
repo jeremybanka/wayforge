@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.23
+
+### Patch Changes
+
+- 71de843: ✏ Fix a typo in the ready log.
+
 ## 0.1.22
 
 ### Patch Changes
