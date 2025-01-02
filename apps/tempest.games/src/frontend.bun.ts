@@ -19,7 +19,7 @@ import {
 const parentSocket = new ParentSocket()
 const { logger } = parentSocket
 Object.assign(console, logger, { log: logger.info })
-logger.info(` ready`)
+logger.info(`ready`)
 const appDir = resolve(import.meta.dir, `..`, `app`)
 
 const db = new DatabaseManager({
