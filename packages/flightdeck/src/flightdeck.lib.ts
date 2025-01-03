@@ -485,6 +485,7 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	"timestamp-field": `timestamp`,
 	"subsecond-field": `subsecond`,
 	"subsecond-units": `milli`,
+	"module-field": `package`,
 	"opid-field": `service`,
 	"level-field": `level`,
 	level: {
@@ -513,11 +514,6 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 			prefix: `:`,
 			field: `service`,
 			"default-value": ``,
-		},
-		{
-			prefix: `[`,
-			field: `__level__`,
-			suffix: `]`,
 		},
 		{
 			prefix: `: `,
