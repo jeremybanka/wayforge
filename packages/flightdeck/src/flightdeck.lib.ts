@@ -574,9 +574,9 @@ export class FlightDeckLogger
 	}
 	protected log(
 		level:
+			| typeof FLIGHTDECK_ERROR
 			| typeof FLIGHTDECK_INFO
-			| typeof FLIGHTDECK_WARN
-			| typeof FLIGHTDECK_ERROR,
+			| typeof FLIGHTDECK_WARN,
 		...messages: unknown[]
 	): void {
 		if (this.jsonLogging) {
