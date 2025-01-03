@@ -438,8 +438,16 @@ export class FlightDeck<S extends string = string> {
 	}
 }
 
+export const FLIGHTDECK_INFO = `info`
+export const FLIGHTDECK_WARN = `warn`
+export const FLIGHTDECK_ERROR = `ERR!`
+
 export const flightDeckLogSchema = z.object({
-	level: z.union([z.literal(`info`), z.literal(`warn`), z.literal(`ERR!`)]),
+	level: z.union([
+		z.literal(FLIGHTDECK_INFO),
+		z.literal(FLIGHTDECK_WARN),
+		z.literal(FLIGHTDECK_ERROR),
+	]),
 	timestamp: z.number(),
 	package: z.string(),
 	service: z.string().optional(),
@@ -488,9 +496,9 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	"opid-field": `service`,
 	"level-field": `level`,
 	level: {
-		info: `info`,
-		warning: `warn`,
-		error: `ERR!`,
+		info: FLIGHTDECK_INFO,
+		warning: FLIGHTDECK_WARN,
+		error: FLIGHTDECK_ERROR,
 	},
 
 	[LINE_FORMAT]: [
@@ -564,7 +572,13 @@ export class FlightDeckLogger
 		this.processCode = processCode
 		this.jsonLogging = options?.jsonLogging ?? false
 	}
-	protected log(level: `info` | `warn` | `ERR!`, ...messages: unknown[]): void {
+	protected log(
+		level:
+			| typeof FLIGHTDECK_INFO
+			| typeof FLIGHTDECK_WARN
+			| typeof FLIGHTDECK_ERROR,
+		...messages: unknown[]
+	): void {
 		if (this.jsonLogging) {
 			let body = messages
 				.map((message) =>
@@ -574,7 +588,7 @@ export class FlightDeckLogger
 				)
 				.join(` `)
 			if (body.includes(`\n`)) {
-				body = `\n\t${body.split(`\n`).join(`\n\t`)}`
+				body = `\n  ${body.split(`\n`).join(`\n  `)}`
 			}
 			const log: FlightDeckLog = {
 				timestamp: Date.now(),
@@ -592,27 +606,27 @@ export class FlightDeckLogger
 				? `${this.packageName}:${this.serviceName}`
 				: this.packageName
 			switch (level) {
-				case `info`:
+				case FLIGHTDECK_INFO:
 					console.log(`${source}:`, ...messages)
 					break
-				case `warn`:
+				case FLIGHTDECK_WARN:
 					console.warn(`${source}:`, ...messages)
 					break
-				case `ERR!`:
+				case FLIGHTDECK_ERROR:
 					console.error(`${source}:`, ...messages)
 					break
 			}
 		}
 	}
 	public info(...messages: unknown[]): void {
-		this.log(`info`, ...messages)
+		this.log(FLIGHTDECK_INFO, ...messages)
 	}
 
 	public warn(...messages: unknown[]): void {
-		this.log(`warn`, ...messages)
+		this.log(FLIGHTDECK_WARN, ...messages)
 	}
 
 	public error(...messages: unknown[]): void {
-		this.log(`ERR!`, ...messages)
+		this.log(FLIGHTDECK_ERROR, ...messages)
 	}
 }
