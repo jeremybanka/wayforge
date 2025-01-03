@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.2.8
+
+### Patch Changes
+
+- 0fe95c6: 🔊 Add leftpad to multiline logs.
+- 0fe95c6: 🔊 Add clear log level of consistent lengths.
+
 ## 0.2.7
 
 ### Patch Changes
