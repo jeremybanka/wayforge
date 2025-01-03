@@ -30,7 +30,7 @@
 	},
 	"devDependencies": {
 		"atom.io": "workspace:*",
-		"@types/node": "22.10.4",
+		"@types/node": "22.10.5",
 		"@types/tmp": "0.2.6",
 		"react": "19.0.0",
 		"recoil": "0.7.7",

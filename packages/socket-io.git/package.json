@@ -27,7 +27,7 @@
 		"simple-git": "3.27.0"
 	},
 	"devDependencies": {
-		"@types/node": "22.10.4",
+		"@types/node": "22.10.5",
 		"@types/tmp": "0.2.6",
 		"eslint": "9.17.0",
 		"react": "19.0.0",
