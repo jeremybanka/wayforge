@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.2.7
+
+### Patch Changes
+
+- 37d43c5: 🔇 Remove log level from log.
+
 ## 0.2.6
 
 ### Patch Changes
