@@ -497,6 +497,9 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 
 	[LINE_FORMAT]: [
 		{
+			field: `level`,
+		},
+		{
 			prefix: ` `,
 			field: `__timestamp__`,
 			"timestamp-format": `%Y-%m-%dT%H:%M:%S.%L%Z`,
@@ -611,7 +614,7 @@ export class FlightDeckLogger
 			process.stdout.write(JSON.stringify(log) + `\n`)
 		} else {
 			const source = this.serviceName
-				? `${this.packageName}::${this.serviceName}`
+				? `${this.packageName}:${this.serviceName}`
 				: this.packageName
 			console.warn(`${source}:`, ...messages)
 		}
@@ -620,7 +623,7 @@ export class FlightDeckLogger
 	public error(...messages: unknown[]): void {
 		if (this.jsonLogging) {
 			const log: FlightDeckLog = {
-				timestamp: Date.now() + Math.floor(Math.random() * 1000),
+				timestamp: Date.now(),
 				level: `ERR!`,
 				process: this.processCode,
 				package: this.packageName,
@@ -638,7 +641,7 @@ export class FlightDeckLogger
 			process.stdout.write(JSON.stringify(log) + `\n`)
 		} else {
 			const source = this.serviceName
-				? `${this.packageName}::${this.serviceName}`
+				? `${this.packageName}:${this.serviceName}`
 				: this.packageName
 			console.error(`${source}:`, ...messages)
 		}
