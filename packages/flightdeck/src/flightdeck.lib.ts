@@ -438,8 +438,16 @@ export class FlightDeck<S extends string = string> {
 	}
 }
 
+export const FLIGHTDECK_INFO = `info`
+export const FLIGHTDECK_WARN = `warn`
+export const FLIGHTDECK_ERROR = `ERR!`
+
 export const flightDeckLogSchema = z.object({
-	level: z.union([z.literal(`info`), z.literal(`warn`), z.literal(`ERR!`)]),
+	level: z.union([
+		z.literal(FLIGHTDECK_INFO),
+		z.literal(FLIGHTDECK_WARN),
+		z.literal(FLIGHTDECK_ERROR),
+	]),
 	timestamp: z.number(),
 	package: z.string(),
 	service: z.string().optional(),
@@ -483,19 +491,20 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	description: `Format for events logged by the FlightDeck process manager.`,
 	"file-type": `json`,
 	"timestamp-field": `timestamp`,
-	"subsecond-field": `subsecond`,
-	"subsecond-units": `milli`,
+	"timestamp-divisor": 1000,
 	"module-field": `package`,
 	"opid-field": `service`,
 	"level-field": `level`,
 	level: {
-		info: `info`,
-		warning: `warn`,
-		error: `err!`,
+		info: FLIGHTDECK_INFO,
+		warning: FLIGHTDECK_WARN,
+		error: FLIGHTDECK_ERROR,
 	},
-	"ordered-by-time": true,
 
 	[LINE_FORMAT]: [
+		{
+			field: `level`,
+		},
 		{
 			prefix: ` `,
 			field: `__timestamp__`,
@@ -563,20 +572,30 @@ export class FlightDeckLogger
 		this.processCode = processCode
 		this.jsonLogging = options?.jsonLogging ?? false
 	}
-	public info(...messages: unknown[]): void {
+	protected log(
+		level:
+			| typeof FLIGHTDECK_ERROR
+			| typeof FLIGHTDECK_INFO
+			| typeof FLIGHTDECK_WARN,
+		...messages: unknown[]
+	): void {
 		if (this.jsonLogging) {
+			let body = messages
+				.map((message) =>
+					typeof message === `string`
+						? message
+						: inspect(message, false, null, true),
+				)
+				.join(` `)
+			if (body.includes(`\n`)) {
+				body = `\n  ${body.split(`\n`).join(`\n  `)}`
+			}
 			const log: FlightDeckLog = {
 				timestamp: Date.now(),
-				level: `info`,
+				level,
 				process: this.processCode,
 				package: this.packageName,
-				body: messages
-					.map((message) =>
-						typeof message === `string`
-							? message
-							: inspect(message, false, null, true),
-					)
-					.join(` `),
+				body,
 			}
 			if (this.serviceName) {
 				log.service = this.serviceName
@@ -584,63 +603,30 @@ export class FlightDeckLogger
 			process.stdout.write(JSON.stringify(log) + `\n`)
 		} else {
 			const source = this.serviceName
-				? `${this.packageName}::${this.serviceName}`
+				? `${this.packageName}:${this.serviceName}`
 				: this.packageName
-			console.log(`${source}:`, ...messages)
+			switch (level) {
+				case FLIGHTDECK_INFO:
+					console.log(`${source}:`, ...messages)
+					break
+				case FLIGHTDECK_WARN:
+					console.warn(`${source}:`, ...messages)
+					break
+				case FLIGHTDECK_ERROR:
+					console.error(`${source}:`, ...messages)
+					break
+			}
 		}
+	}
+	public info(...messages: unknown[]): void {
+		this.log(FLIGHTDECK_INFO, ...messages)
 	}
 
 	public warn(...messages: unknown[]): void {
-		if (this.jsonLogging) {
-			const log: FlightDeckLog = {
-				timestamp: Date.now(),
-				level: `warn`,
-				process: this.processCode,
-				package: this.packageName,
-				body: messages
-					.map((message) =>
-						typeof message === `string`
-							? message
-							: inspect(message, false, null, true),
-					)
-					.join(` `),
-			}
-			if (this.serviceName) {
-				log.service = this.serviceName
-			}
-			process.stdout.write(JSON.stringify(log) + `\n`)
-		} else {
-			const source = this.serviceName
-				? `${this.packageName}::${this.serviceName}`
-				: this.packageName
-			console.warn(`${source}:`, ...messages)
-		}
+		this.log(FLIGHTDECK_WARN, ...messages)
 	}
 
 	public error(...messages: unknown[]): void {
-		if (this.jsonLogging) {
-			const log: FlightDeckLog = {
-				timestamp: Date.now() + Math.floor(Math.random() * 1000),
-				level: `ERR!`,
-				process: this.processCode,
-				package: this.packageName,
-				body: messages
-					.map((message) =>
-						typeof message === `string`
-							? message
-							: inspect(message, false, null, true),
-					)
-					.join(` `),
-			}
-			if (this.serviceName) {
-				log.service = this.serviceName
-			}
-			process.stdout.write(JSON.stringify(log) + `\n`)
-		} else {
-			const source = this.serviceName
-				? `${this.packageName}::${this.serviceName}`
-				: this.packageName
-			console.error(`${source}:`, ...messages)
-		}
+		this.log(FLIGHTDECK_ERROR, ...messages)
 	}
 }
