@@ -515,11 +515,6 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 			"default-value": ``,
 		},
 		{
-			prefix: ` [`,
-			field: `__level__`,
-			suffix: `]`,
-		},
-		{
 			prefix: `: `,
 			field: `body`,
 		},
