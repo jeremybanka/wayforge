@@ -1,15 +1,12 @@
 import { exec } from "node:child_process"
-import { existsSync } from "node:fs"
-import { readFile, writeFile } from "node:fs/promises"
-import { resolve } from "node:path"
 
 import { discoverType } from "atom.io/introspection"
 import { gt } from "drizzle-orm"
 import type { OpenAiSafeGenerator } from "safegen/openai"
-import { z } from "zod"
 
 import { DatabaseManager } from "../../database/tempest-db-manager"
 import { banishedIps } from "../../database/tempest-db-schema"
+import { storage } from "../shared/storage"
 import { getLogs } from "./get-logs"
 import { banRulingSpec, logsToPrompt } from "./prompt"
 
@@ -26,7 +23,7 @@ export async function tribunal({
 	generator,
 	logFilePath,
 	logger,
-	now,
+	now = new Date(),
 }: TribunalOptions): Promise<void> {
 	const initialUsdBudget = generator.usdBudget
 	const db = new DatabaseManager({
@@ -84,45 +81,47 @@ export async function tribunal({
 
 	// read cache file for current day
 	const bansSinceLastFlush: { ip: string }[] = []
-	const cacheSchema = z.object({ lastDay: z.string() })
-	const cacheFilePath = resolve(import.meta.dirname, `tribunal.cache.json`)
-	const cacheFileExists = existsSync(cacheFilePath)
-	if (cacheFileExists) {
-		const cacheFileContents = await readFile(cacheFilePath, `utf-8`)
-		try {
-			const cacheUnsafe = JSON.parse(cacheFileContents)
-			const { lastDay } = cacheSchema.parse(cacheUnsafe)
-			if (lastDay) {
-				const cacheDay = new Date(lastDay)
-				bansSinceLastFlush.push(
-					...(await db.drizzle.query.banishedIps.findMany({
-						columns: { ip: true },
-						where: gt(banishedIps.banishedAt, cacheDay),
-					})),
-				)
-			}
-		} catch (thrown) {
-			logger.error(thrown)
-		}
+	const lastTribunalProcessedDateString = storage.getItem(
+		`lastTribunalProcessedDate`,
+	)
+	const lastTribunalProcessedDate = new Date(
+		lastTribunalProcessedDateString ?? `1970-01-01`,
+	)
+	try {
+		bansSinceLastFlush.push(
+			...(await db.drizzle.query.banishedIps.findMany({
+				columns: { ip: true },
+				where: gt(banishedIps.banishedAt, lastTribunalProcessedDate),
+			})),
+		)
+	} catch (thrown) {
+		logger.error(thrown)
 	}
 
 	// database to iptables
 	try {
-		await Promise.all(
-			bansSinceLastFlush.map(
-				(ban) =>
-					new Promise<void>((pass, fail) =>
-						exec(`iptables -D INPUT -s ${ban.ip} -j DROP`).on(`exit`, (code) => {
-							if (code === 0) {
-								logger.info(`🧑‍⚖️ banned ${ban.ip}`)
-								pass()
-							} else {
-								fail(new Error(`iptables exited with code ${code}`))
-							}
-						}),
-					),
-			),
-		)
+		if (process.env.EXPERIMENTAL_BAN_IPS) {
+			await Promise.all(
+				bansSinceLastFlush.map(
+					(ban) =>
+						new Promise<void>((pass, fail) =>
+							exec(`iptables -D INPUT -s ${ban.ip} -j DROP`).on(
+								`exit`,
+								(code) => {
+									if (code === 0) {
+										logger.info(`🧑‍⚖️ banned ${ban.ip}`)
+										pass()
+									} else {
+										fail(new Error(`iptables exited with code ${code}`))
+									}
+								},
+							),
+						),
+				),
+			)
+		} else {
+			logger.info(`🧑‍⚖️ skipping iptables update`)
+		}
 	} catch (thrown) {
 		if (thrown instanceof Error) {
 			logger.error(thrown.message)
@@ -133,7 +132,7 @@ export async function tribunal({
 	}
 
 	// create cache file for current day
-	await writeFile(cacheFilePath, JSON.stringify({ lastDay: now }), `utf-8`)
+	storage.setItem(`lastTribunalProcessedDate`, now.toISOString())
 
 	logger.info(`✨ banned ${banCount} ips, didn't ban ${notBanCount} ips`)
 
