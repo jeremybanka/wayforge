@@ -6,7 +6,7 @@ const parent = new ParentSocket()
 Object.assign(console, parent.logger, { log: parent.logger.info })
 
 parent.on(`timeToStop`, function gracefulExit() {
-	parent.logger.info(`🛬 frontend server exiting`)
+	parent.logger.info(`🛬 game worker exiting`)
 	process.exit(0)
 })
 
