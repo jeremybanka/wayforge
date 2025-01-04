@@ -347,7 +347,7 @@ async function gracefulExit() {
 	const gameWorkerExit = new Promise((pass) =>
 		gameWorker.process.once(`close`, pass),
 	)
-	gameWorker.process.emit(`timeToStop`)
+	gameWorker.emit(`timeToStop`)
 	await gameWorkerExit
 	logger.info(`🛬 backend server exiting`)
 	process.exit(0)
