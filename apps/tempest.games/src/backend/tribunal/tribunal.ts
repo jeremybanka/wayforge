@@ -100,21 +100,28 @@ export async function tribunal({
 
 	// database to iptables
 	try {
-		await Promise.all(
-			bansSinceLastFlush.map(
-				(ban) =>
-					new Promise<void>((pass, fail) =>
-						exec(`iptables -D INPUT -s ${ban.ip} -j DROP`).on(`exit`, (code) => {
-							if (code === 0) {
-								logger.info(`🧑‍⚖️ banned ${ban.ip}`)
-								pass()
-							} else {
-								fail(new Error(`iptables exited with code ${code}`))
-							}
-						}),
-					),
-			),
-		)
+		if (process.env.EXPERIMENTAL_BAN_IPS) {
+			await Promise.all(
+				bansSinceLastFlush.map(
+					(ban) =>
+						new Promise<void>((pass, fail) =>
+							exec(`iptables -D INPUT -s ${ban.ip} -j DROP`).on(
+								`exit`,
+								(code) => {
+									if (code === 0) {
+										logger.info(`🧑‍⚖️ banned ${ban.ip}`)
+										pass()
+									} else {
+										fail(new Error(`iptables exited with code ${code}`))
+									}
+								},
+							),
+						),
+				),
+			)
+		} else {
+			logger.info(`🧑‍⚖️ skipping iptables update`)
+		}
 	} catch (thrown) {
 		if (thrown instanceof Error) {
 			logger.error(thrown.message)
