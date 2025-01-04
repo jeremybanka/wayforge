@@ -73,7 +73,7 @@
 		"react-dom": "19.0.0",
 		"react-router-dom": "7.1.1",
 		"atom.io": "workspace:*",
-		"sass": "1.83.0",
+		"sass": "1.83.1",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",
 		"vite-plugin-dts": "4.4.0",
