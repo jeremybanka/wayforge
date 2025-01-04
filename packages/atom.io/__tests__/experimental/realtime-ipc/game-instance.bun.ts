@@ -39,7 +39,7 @@ const atomIOSubprocessLogger = new AtomIOLogger(
 )
 IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 
-const letter0State = findState(letterAtoms, 0)
+const letter0State = findState(letterAtoms, `letter::0`)
 
 setState(letter0State, `A`)
 
@@ -53,7 +53,7 @@ setInterval(() => {
 
 parentSocket.relay((userSocket) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
-		relations.set(`user::relay:${userSocket.id}`, `socket::${userSocket.id}`)
+		relations.set(`user::__relay:${userSocket.id}__`, `socket::${userSocket.id}`)
 	})
 	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 		socket: userSocket,
