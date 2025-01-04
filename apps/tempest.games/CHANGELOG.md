@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.24
+
+### Patch Changes
+
+- 5681cef: 🐛 Fix bug where no date would be written to the tribunal's cache.
+
 ## 0.1.23
 
 ### Patch Changes
