@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.25
+
+### Patch Changes
+
+- 2ffacd6: 🐛 Fix issue where stop signal was emitted to a worker's process directly, and not its actual socket.
+
 ## 0.1.24
 
 ### Patch Changes
