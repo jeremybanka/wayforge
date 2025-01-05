@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.1.26
+
+### Patch Changes
+
+- 31ccde2: 🚀 Limit redundant database accesses on the frontend.
+- Updated dependencies [31ccde2]
+  - atom.io@0.30.7
+
 ## 0.1.25
 
 ### Patch Changes
