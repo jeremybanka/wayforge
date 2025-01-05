@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.30.7
+
+### Patch Changes
+
+- 31ccde2: ✨ `atom.io/internal` exports `CircularBuffer`—a wrapper for a fixed-length Array that can be added to . Once it is full, the oldest entries will be overwritten with newly added entries.
+
 ## 0.30.6
 
 ### Patch Changes
