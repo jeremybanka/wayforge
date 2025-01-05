@@ -1,5 +1,12 @@
 # @wayforge/smithy
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [31ccde2]
+  - atom.io@0.30.7
+
 ## 0.0.2
 
 ### Patch Changes
