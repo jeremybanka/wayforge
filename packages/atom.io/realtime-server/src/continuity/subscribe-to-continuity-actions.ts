@@ -8,7 +8,7 @@ import {
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
-import type { Json, JsonIO } from "atom.io/json"
+import { type Json, type JsonIO, parseJson } from "atom.io/json"
 import {
 	type Actual,
 	type ContinuityToken,
@@ -126,10 +126,8 @@ export function aliasTransactionUpdate(
 						case `mutable`:
 							{
 								const signalMaskFamilyToken = maskData.signal
-								const newValue = getState(
-									signalMaskFamilyToken,
-									subUpdate.family.subKey,
-								)
+								const subKeyParsed = parseJson(subUpdate.family.subKey)
+								const newValue = getState(signalMaskFamilyToken, subKeyParsed)
 								updatesInPerspective.push({
 									key: segments.join(``),
 									type: `atom_update`,

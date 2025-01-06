@@ -474,16 +474,25 @@ describe.only(`join in perspective`, () => {
 		})
 		const playerCharactersUpdateMasks = AtomIO.selectorFamily<
 			Signal<SetRTX<CharacterKey<RT.Alias> | PlayerKey<RT.Alias>>>,
-			Compound<
-				AtomIO.Tag<`mask`>,
-				UserKey<RT.Actual>,
-				CharacterKey<RT.Actual> | PlayerKey<RT.Actual>
-			>
+			| CharacterKey<RT.Actual>
+			| Compound<
+					AtomIO.Tag<`mask`>,
+					UserKey<RT.Actual>,
+					CharacterKey<RT.Actual> | PlayerKey<RT.Actual>
+			  >
 		>({
 			key: `playerCharacterUpdateMask`,
 			get:
 				(maskKey) =>
 				({ find, get }) => {
+					console.log(`playerCharacterUpdateMask`, { maskKey })
+					if (isCharacterKey(maskKey)) {
+						return get(
+							getUpdateToken(
+								find(getInternalRelations(playerCharacters), maskKey),
+							),
+						)
+					}
 					const [, , characterRelationKey] = AtomIO.decomposeCompoundKey(maskKey)
 					return get(
 						getUpdateToken(
@@ -746,6 +755,7 @@ describe.only(`join in perspective`, () => {
 						const myGameKey = AR.useO(myGameKeySelector)
 
 						console.log(`❗❗❗❗❗`, { myGameKey })
+						console.log(`❗❗❗❗❗`, { myAlias })
 
 						return myGameKey && myAlias ? (
 							<GameSpace myAlias={myAlias} myGameKey={myGameKey} />
@@ -766,10 +776,12 @@ describe.only(`join in perspective`, () => {
 		const jane = clients.jane.init()
 
 		/*
+		- jane knows her true user key
 		- jane retrieves her perspective on the game continuity
 		- jane retrieves her user alias from her true user key
 		- jane retrieves her game key from her true user key
 		- jane retrieves her aliased player key from her user alias and game key
+
 		- jane creates a character as herself (unaliased)
 		- the transaction results in a new character joined to her aliased player key
 		*/
