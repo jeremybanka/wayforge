@@ -38,6 +38,6 @@
 		"@types/react-dom": "19.0.2",
 		"concurrently": "9.1.2",
 		"eslint-config-next": "15.1.4",
-		"typescript": "5.7.2"
+		"typescript": "5.7.3"
 	}
 }
