@@ -75,7 +75,7 @@
 		"atom.io": "workspace:*",
 		"sass": "1.83.1",
 		"tsup": "8.3.5",
-		"typescript": "5.7.2",
+		"typescript": "5.7.3",
 		"vite-plugin-dts": "4.4.0",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.0-beta.4"
