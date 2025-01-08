@@ -109,8 +109,8 @@ importers:
         specifier: 15.5.13
         version: 15.5.13
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       chokidar:
         specifier: 4.0.3
         version: 4.0.3
@@ -152,8 +152,8 @@ importers:
         version: 3.24.1
     devDependencies:
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       vite:
         specifier: 6.0.7
         version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.28.2)(sass-embedded@1.83.1)(sass@1.83.1)(terser@5.36.0)(tsx@4.19.2)
@@ -183,8 +183,8 @@ importers:
         specifier: 4.24.4
         version: 4.24.4
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       chokidar:
         specifier: 4.0.3
         version: 4.0.3
@@ -309,7 +309,7 @@ importers:
         version: 3.3.2
       drizzle-orm:
         specifier: 0.38.3
-        version: 0.38.3(@types/react@19.0.3)(bun-types@1.1.42)(postgres@3.4.5)(react@19.0.0)
+        version: 0.38.3(@types/react@19.0.3)(bun-types@1.1.43)(postgres@3.4.5)(react@19.0.0)
       openai:
         specifier: 4.77.4
         version: 4.77.4(zod@3.24.1)
@@ -357,8 +357,8 @@ importers:
         specifier: 3.7.2
         version: 3.7.2(@swc/helpers@0.5.15)(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.28.2)(sass-embedded@1.83.1)(sass@1.83.1)(terser@5.36.0)(tsx@4.19.2))
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -732,7 +732,7 @@ importers:
         version: 0.30.1
       drizzle-orm:
         specifier: 0.38.3
-        version: 0.38.3(@types/react@19.0.3)(bun-types@1.1.42)(postgres@3.4.5)(react@19.0.0)
+        version: 0.38.3(@types/react@19.0.3)(bun-types@1.1.43)(postgres@3.4.5)(react@19.0.0)
       eslint:
         specifier: 9.17.0
         version: 9.17.0(jiti@2.4.2)
@@ -813,8 +813,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -847,8 +847,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -893,8 +893,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -1250,8 +1250,8 @@ importers:
         specifier: 19.0.3
         version: 19.0.3
       bun-types:
-        specifier: 1.1.42
-        version: 1.1.42
+        specifier: 1.1.43
+        version: 1.1.43
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -4615,8 +4615,8 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
-  bun-types@1.1.42:
-    resolution: {integrity: sha512-beMbnFqWbbBQHll/bn3phSwmoOQmnX2nt8NI9iOQKFbgR5Z6rlH3YuaMdlid8vp5XGct3/W4QVQBmhoOEoe4nw==}
+  bun-types@1.1.43:
+    resolution: {integrity: sha512-W0wCtVH+bwFp7p3Zgs03CqxEDmXxEvmmUM/FBKgWIv9T8gyeotvIjIbHzuDScc2DphhRNtr7hJLCR5PspYL5qw==}
 
   bundle-require@5.0.0:
     resolution: {integrity: sha512-GuziW3fSSmopcx4KRymQEJVbZUfqlCqcq7dvs6TYwKRZiegK/2buMxQTPs6MGlNv50wms1699qYO54R8XfRX4w==}
@@ -11722,7 +11722,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bun-types@1.1.42:
+  bun-types@1.1.43:
     dependencies:
       '@types/node': 20.12.14
       '@types/ws': 8.5.13
@@ -12208,10 +12208,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.38.3(@types/react@19.0.3)(bun-types@1.1.42)(postgres@3.4.5)(react@19.0.0):
+  drizzle-orm@0.38.3(@types/react@19.0.3)(bun-types@1.1.43)(postgres@3.4.5)(react@19.0.0):
     optionalDependencies:
       '@types/react': 19.0.3
-      bun-types: 1.1.42
+      bun-types: 1.1.43
       postgres: 3.4.5
       react: 19.0.0
 
