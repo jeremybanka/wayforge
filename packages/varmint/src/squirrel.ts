@@ -25,13 +25,17 @@ export class Squirrel {
 		subKey: string,
 		args: Parameters<F>,
 	): Awaited<ReturnType<F>> {
-		const pathToInputFile = path.join(
-			this.baseDir,
-			`${key}/${subKey}.input.json`,
-		)
+		const groupDirectory = path.join(this.baseDir, key)
+		const pathToInputFile = path.join(groupDirectory, `${subKey}.input.json`)
 		if (!fs.existsSync(pathToInputFile)) {
+			const doesGroupDirectoryExist = fs.existsSync(groupDirectory)
+			if (!doesGroupDirectoryExist) {
+				throw new Error(
+					`Squirrel: input file for key "${key}" with "${subKey}" was not found. Directory "${groupDirectory}" does not exist.`,
+				)
+			}
 			throw new Error(
-				`Squirrel: input file for key "${key}" (${pathToInputFile}) does not exist`,
+				`Squirrel: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not.`,
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
