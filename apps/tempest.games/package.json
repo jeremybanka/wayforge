@@ -48,7 +48,7 @@
 	"dependencies": {
 		"@t3-oss/env-core": "0.11.1",
 		"atom.io": "workspace:*",
-		"cron": "3.3.2",
+		"cron": "3.4.0",
 		"drizzle-orm": "0.38.3",
 		"openai": "4.77.4",
 		"postgres": "3.4.5",
