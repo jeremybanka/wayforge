@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.5
+
+### Patch Changes
+
+- 3ec2c4b: 🔊 Improve error logs when an input file is determined to be missing.
+
 ## 0.3.4
 
 ### Patch Changes
