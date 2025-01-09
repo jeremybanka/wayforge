@@ -43,7 +43,7 @@ export class Ferret {
 		)
 		if (!fs.existsSync(pathToInputFile)) {
 			throw new Error(
-				`Squirrel: input file for key "${key}" (${pathToInputFile}) does not exist`,
+				`Ferret: input file for key "${key}" (${pathToInputFile}) does not exist`,
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)

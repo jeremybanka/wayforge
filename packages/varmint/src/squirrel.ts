@@ -30,7 +30,9 @@ export class Squirrel {
 			`${key}/${subKey}.input.json`,
 		)
 		if (!fs.existsSync(pathToInputFile)) {
-			throw new Error(`Squirrel: input file for key "${key}" does not exist`)
+			throw new Error(
+				`Squirrel: input file for key "${key}" (${pathToInputFile}) does not exist`,
+			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
 		const inputStringified = JSON.stringify(args, null, `\t`)
