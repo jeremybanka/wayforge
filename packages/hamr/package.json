@@ -29,7 +29,7 @@
 		"build:react-json-editor": "cd react-json-editor && tsup",
 		"build:react-radial": "cd react-radial && tsup",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint --flag unstable_ts_config -- .",
+		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",

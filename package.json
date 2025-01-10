@@ -22,7 +22,7 @@
 		"lint:types": "turbo run lint:types",
 		"lint:types:watch": "turbo run lint:types:watch --concurrency=30",
 		"lint:fix:biome": "biome check --write *",
-		"lint:fix:eslint": "eslint --fix --flag unstable_ts_config .",
+		"lint:fix:eslint": "eslint --fix .",
 		"fmt": "biome format .",
 		"fmt:fix": "biome format --write .",
 		"build": "turbo run build",
