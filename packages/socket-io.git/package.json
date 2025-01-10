@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsup",
 		"lint:biome": "biome check -- .",
-		"lint:eslint": "eslint --flag unstable_ts_config -- .",
+		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
@@ -29,7 +29,7 @@
 	"devDependencies": {
 		"@types/node": "22.10.5",
 		"@types/tmp": "0.2.6",
-		"eslint": "9.17.0",
+		"eslint": "9.18.0",
 		"react": "19.0.0",
 		"recoil": "0.7.7",
 		"socket.io": "4.8.1",
