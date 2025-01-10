@@ -23,7 +23,7 @@
 		"@t3-oss/env-nextjs": "0.11.1",
 		"@vercel/analytics": "1.4.1",
 		"corners": "0.1.1",
-		"motion": "11.16.4",
+		"motion": "11.17.0",
 		"nanoid": "5.0.9",
 		"next": "15.1.4",
 		"react": "19.0.0",
