@@ -305,8 +305,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/atom.io
       cron:
-        specifier: 3.4.0
-        version: 3.4.0
+        specifier: 3.5.0
+        version: 3.5.0
       drizzle-orm:
         specifier: 0.38.3
         version: 0.38.3(@types/react@19.0.4)(bun-types@1.1.43)(postgres@3.4.5)(react@19.0.0)
@@ -874,8 +874,8 @@ importers:
         specifier: workspace:*
         version: link:../comline
       cron:
-        specifier: 3.4.0
-        version: 3.4.0
+        specifier: 3.5.0
+        version: 3.5.0
       zod:
         specifier: 3.24.1
         version: 3.24.1
@@ -4899,8 +4899,8 @@ packages:
       typescript:
         optional: true
 
-  cron@3.4.0:
-    resolution: {integrity: sha512-YqLYLxAGFyxNF94wIqRFo5szUmEKgWXOoGa/5lwjKVvOXiipbDUyDtWR6XuYkHXou4pjbepgb3mij5YMfEOWcw==}
+  cron@3.5.0:
+    resolution: {integrity: sha512-0eYZqCnapmxYcV06uktql93wNWdlTmmBFP2iYz+JPVcQqlyFYcn1lFuIk4R54pkOmE7mcldTAPZv6X5XA4Q46A==}
 
   cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
@@ -12006,7 +12006,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  cron@3.4.0:
+  cron@3.5.0:
     dependencies:
       '@types/luxon': 3.4.2
       luxon: 3.5.0
