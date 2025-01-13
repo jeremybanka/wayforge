@@ -1,11 +1,11 @@
 import type { Json } from "atom.io/json"
 
-export interface Transceiver<Signal extends Json.Serializable> {
-	do: (update: Signal) => number | `OUT_OF_RANGE` | null
-	undo: (update: Signal) => void
-	subscribe: (key: string, fn: (update: Signal) => void) => () => void
+export interface Transceiver<S extends Json.Serializable> {
+	do: (update: S) => number | `OUT_OF_RANGE` | null
+	undo: (update: S) => void
+	subscribe: (key: string, fn: (update: S) => void) => () => void
 	cacheUpdateNumber: number
-	getUpdateNumber: (update: Signal) => number
+	getUpdateNumber: (update: S) => number
 }
 
 export function isTransceiver(
