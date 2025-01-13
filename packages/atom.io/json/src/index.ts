@@ -6,7 +6,9 @@ export type primitive = boolean | number | string | null
 
 export namespace Json {
 	export namespace Tree {
+		// eslint-disable-next-line @typescript-eslint/no-shadow
 		export type Array<Element = unknown> = ReadonlyArray<Element>
+		// eslint-disable-next-line @typescript-eslint/no-shadow
 		export type Object<K extends string = string, V = unknown> = Record<K, V>
 		export type Fork = Array | Object
 		export type Leaf = primitive
