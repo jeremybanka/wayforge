@@ -1,0 +1,22 @@
+name: Setup
+description: Download and install 3rd party software.
+runs:
+  using: composite
+  steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v4.0.0
+
+    - name: Set up Node
+      uses: actions/setup-node@v4.1.0
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2.0.1
+      with:
+        bun-version-file: .bun-version
+
+    - name: Install Dependencies
+      shell: bash
+      run: pnpm i
