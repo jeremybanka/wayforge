@@ -1,30 +1,31 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import {
+	arbitrary,
 	getFromStore,
 	parseStateOverloads,
 	subscribeToState,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useContext, useId, useSyncExternalStore } from "react"
+import { useContext } from "solid-js"
 
-import { StoreContext } from "./store-context"
+import { StoreContext } from "./store-context-provider.solid"
+import { useSyncExternalStore } from "./use-sync-external-store.solid"
 
-export function useO<T>(token: ReadableToken<T>): T
+export function useO<T>(token: ReadableToken<T>): () => T
 
 export function useO<T, K extends Canonical>(
 	token: ReadableFamilyToken<T, K>,
 	key: K,
-): T
+): () => T
 
 export function useO<T, K extends Canonical>(
 	...params: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
-): T {
+): () => T {
 	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
-	const id = useId()
+	const id = arbitrary()
 	return useSyncExternalStore<T>(
 		(dispatch) => subscribeToState(token, dispatch, `use-o:${id}`, store),
-		() => getFromStore(store, token),
 		() => getFromStore(store, token),
 	)
 }

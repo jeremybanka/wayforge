@@ -1,13 +1,19 @@
+/** @jsxImportSource solid-js */
+
 import type { Store } from "atom.io/internal"
 import { IMPLICIT } from "atom.io/internal"
-import type { ReactNode } from "react"
-import { createContext } from "react"
+import type { JSX } from "solid-js"
+import { createContext } from "solid-js"
 
 export const StoreContext = createContext<Store>(IMPLICIT.STORE)
-export type StoreProviderProps = { children: ReactNode; store?: Store }
+
+export type StoreProviderProps = {
+	children: JSX.Element
+	store?: Store
+}
 export function StoreProvider({
 	children,
 	store = IMPLICIT.STORE,
-}: StoreProviderProps): ReactNode {
+}: StoreProviderProps): JSX.Element {
 	return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
 }
