@@ -23,16 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: ./.github/workflows/setup.yml
+      - uses: ./.github/actions/setup
       - run: bun lint:biome
 
   ESLint:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: ./.github/workflows/setup.yml
+      - uses: ./.github/actions/setup
       - run: bun lint:eslint:build
       - run: bun lint:eslint
 
@@ -41,7 +39,7 @@ jobs:
     timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: ./.github/workflows/setup.yml
+      - uses: ./.github/actions/setup
       - run: bun lint:types
 
   Build:
@@ -49,7 +47,7 @@ jobs:
     timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: ./.github/workflows/setup.yml
+      - uses: ./.github/actions/setup
       - run: bun run build
 
   Test:
