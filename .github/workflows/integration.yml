@@ -19,41 +19,36 @@ defaults:
     shell: bash
 
 jobs:
-  Install:
-    uses: ./.github/workflows/install.yml
-
   Biome:
-    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: ./.github/workflows/setup.yml
       - run: bun lint:biome
 
   ESLint:
-    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: ./.github/workflows/setup.yml
       - run: bun lint:eslint:build
       - run: bun lint:eslint
 
   Types:
-    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: ./.github/workflows/setup.yml
       - run: bun lint:types
 
   Build:
-    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: ./.github/workflows/setup.yml
       - run: bun run build
 
   Test:
-    name: Build & Test
-    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     env:
@@ -72,10 +67,10 @@ jobs:
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
 
     steps:
+      - uses: ./.github/workflows/setup.yml
       - name: Set up Git
         run: |
           git config --global init.defaultBranch main
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
-
       - run: bun run test
