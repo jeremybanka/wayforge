@@ -51,6 +51,17 @@ jobs:
   Coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 9
+    services:
+      postgres:
+        image: postgres:17.2-alpine3.20
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: your_password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
@@ -63,6 +74,17 @@ jobs:
     name: Break Check
     runs-on: ubuntu-latest
     timeout-minutes: 9
+    services:
+      postgres:
+        image: postgres:17.2-alpine3.20
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: your_password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
