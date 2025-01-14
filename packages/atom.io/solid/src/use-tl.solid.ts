@@ -8,7 +8,6 @@ import {
 import { createEffect, createSignal, onCleanup, useContext } from "solid-js"
 
 import { StoreContext } from "./store-context-provider.solid"
-import { useSyncExternalStore } from "./use-sync-external-store.solid"
 
 export type TimelineMeta = {
 	at: () => number
@@ -22,10 +21,10 @@ export function useTL(token: TimelineToken<any>): TimelineMeta {
 	const id = arbitrary()
 	const tl = withdraw(token, store)
 	const undo = () => {
-		timeTravel(`undo`, token, store)
+		timeTravel(store, `undo`, token)
 	}
 	const redo = () => {
-		timeTravel(`redo`, token, store)
+		timeTravel(store, `redo`, token)
 	}
 
 	const [at, setAt] = createSignal(tl.at)
