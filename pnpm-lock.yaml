@@ -420,8 +420,8 @@ importers:
         specifier: 1.4.1
         version: 1.4.1(next@15.1.4(@babel/core@7.26.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.83.3))(react@19.0.0)
       corners:
-        specifier: 0.1.1
-        version: 0.1.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.2.0
+        version: 0.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       motion:
         specifier: 11.17.0
         version: 11.17.0(@emotion/is-prop-valid@1.3.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -506,8 +506,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/atom.io
       corners:
-        specifier: 0.1.1
-        version: 0.1.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.2.0
+        version: 0.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
@@ -588,8 +588,8 @@ importers:
         specifier: 1.17.0
         version: 1.17.0(babel-plugin-macros@3.1.0)
       corners:
-        specifier: 0.1.1
-        version: 0.1.1(@preact/compat@18.3.1(preact@10.25.4))(@preact/compat@18.3.1(preact@10.25.4))
+        specifier: 0.2.0
+        version: 0.2.0(@preact/compat@18.3.1(preact@10.25.4))(@preact/compat@18.3.1(preact@10.25.4))
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
@@ -929,8 +929,8 @@ importers:
         specifier: ^8.12.0
         version: 8.17.1
       corners:
-        specifier: 0.1.1
-        version: 0.1.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.2.0
+        version: 0.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       motion:
         specifier: 11.17.0
         version: 11.17.0(@emotion/is-prop-valid@1.3.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -4923,11 +4923,11 @@ packages:
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
 
-  corners@0.1.1:
-    resolution: {integrity: sha512-hbdd/AB4yQ5LRnq+oj+nKnf3gJzcZJrqm4enSxExvQyVx4qTFQenyUgDlJd3ok+NXhIpr51+Reg9CKFnCdTH6Q==}
+  corners@0.2.0:
+    resolution: {integrity: sha512-O5hzhQ8bxP86gF9xIZ0aNQuPV3WKqIo1WGSJpsJqWTZvIT6LMi0hvh40o+3pF8s4gE43aLgp8m6xUidipIwlNg==}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   cors@2.8.5:
     resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
@@ -12099,13 +12099,13 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  corners@0.1.1(@preact/compat@18.3.1(preact@10.25.4))(@preact/compat@18.3.1(preact@10.25.4)):
+  corners@0.2.0(@preact/compat@18.3.1(preact@10.25.4))(@preact/compat@18.3.1(preact@10.25.4)):
     dependencies:
       '@react-hook/resize-observer': 1.2.6(@preact/compat@18.3.1(preact@10.25.4))
       react: '@preact/compat@18.3.1(preact@10.25.4)'
       react-dom: '@preact/compat@18.3.1(preact@10.25.4)'
 
-  corners@0.1.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  corners@0.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@react-hook/resize-observer': 1.2.6(react@19.0.0)
       react: 19.0.0
