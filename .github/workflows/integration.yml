@@ -19,46 +19,41 @@ defaults:
     shell: bash
 
 jobs:
-  Lint:
+  Install:
+    uses: ./.github/workflows/install.yml
+
+  Biome:
+    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-        with:
-          fetch-depth: 2
+      - run: bun lint:biome
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4.0.0
+  ESLint:
+    needs: Install
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - run: bun lint:eslint:build
+      - run: bun lint:eslint
 
-      - name: Set up Node
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version-file: .node-version
-          cache: pnpm
+  Types:
+    needs: Install
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - run: bun lint:types
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.0.1
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install Dependencies
-        run: pnpm i
-
-      - name: Biome
-        run: bun lint:biome
-
-      - name: ESLint (Build Original Plugins)
-        run: bun lint:eslint:build
-
-      - name: ESLint
-        run: bun lint:eslint
-
-      - name: Type Check
-        run: bun lint:types
+  Build:
+    needs: Install
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - run: bun run build
 
   Test:
     name: Build & Test
+    needs: Install
     runs-on: ubuntu-latest
     timeout-minutes: 9
     env:
@@ -77,36 +72,10 @@ jobs:
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-        with:
-          fetch-depth: 2
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4.0.0
-
-      - name: Set up Node
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.0.1
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install Dependencies
-        run: pnpm i
-
       - name: Set up Git
         run: |
           git config --global init.defaultBranch main
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
 
-      - name: Build
-        run: bun run build
-
-      - name: Test
-        run: bun run test
+      - run: bun run test
