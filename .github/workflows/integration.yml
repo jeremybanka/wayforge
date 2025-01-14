@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
       - run: bun lint:biome
 
@@ -30,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
       - run: bun lint:eslint:build
       - run: bun lint:eslint
@@ -45,6 +47,8 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     timeout-minutes: 9
+    env:
+      NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
@@ -53,9 +57,6 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     timeout-minutes: 9
-    env:
-      NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
-
     services:
       postgres:
         image: postgres:17.2-alpine3.20
@@ -67,11 +68,10 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
-
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: ./.github/workflows/setup.yml
-      - name: Set up Git
+      - uses: ./.github/actions/setup
+      - name: Configure Git
         run: |
           git config --global init.defaultBranch main
           git config --global user.email "you@example.com"
