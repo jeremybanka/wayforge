@@ -1,0 +1,69 @@
+name: Test
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  _:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    services:
+      postgres:
+        image: postgres:17.2-alpine3.20
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: your_password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./.github/actions/setup
+
+      - run: bun run test
+
+  Build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./.github/actions/setup
+      - run: bun run build
+
+  Coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./.github/actions/setup
+      - run: bun test:coverage
+      - uses: coverallsapp/github-action@v2.3.4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  BreakCheck:
+    name: Break Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./.github/actions/setup
+      - run: bun test:semver
