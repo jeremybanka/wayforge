@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/workflows/setup.yml
       - run: bun lint:biome
 
@@ -30,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/workflows/setup.yml
       - run: bun lint:eslint:build
       - run: bun lint:eslint
@@ -38,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/workflows/setup.yml
       - run: bun lint:types
 
@@ -45,6 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/workflows/setup.yml
       - run: bun run build
 
@@ -67,6 +71,7 @@ jobs:
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
 
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: ./.github/workflows/setup.yml
       - name: Set up Git
         run: |
