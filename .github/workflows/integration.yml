@@ -13,6 +13,7 @@ concurrency:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
 
 defaults:
   run:
@@ -47,8 +48,6 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     timeout-minutes: 9
-    env:
-      NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
