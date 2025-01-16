@@ -29,7 +29,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@types/node": "22.10.6",
+		"@types/node": "22.10.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.2",
 		"openai": "4.78.1",
