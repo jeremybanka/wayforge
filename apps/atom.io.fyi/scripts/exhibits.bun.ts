@@ -71,7 +71,7 @@ function handleFile(filePath: string) {
 		npmlog.info(`writing`, outputFilePath)
 		fs.writeFileSync(outputFilePath, wrappedCode)
 	} catch (thrown) {
-		if (thrown instanceof Error && thrown.message.includes(`ENOENT`)) {
+		if (thrown instanceof Error) {
 			npmlog.info(`directory`, path.dirname(outputFilePath))
 			fs.mkdirSync(path.dirname(outputFilePath), { recursive: true })
 			fs.writeFileSync(outputFilePath, wrappedCode)
