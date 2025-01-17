@@ -28,6 +28,6 @@
 		"bun-types": "1.1.45",
 		"vite": "6.0.7",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "3.0.1"
+		"vitest": "3.0.2"
 	}
 }
