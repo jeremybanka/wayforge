@@ -22,7 +22,7 @@
 		"corners": "0.2.0",
 		"fp-ts": "2.16.9",
 		"io-ts": "2.2.22",
-		"motion": "11.18.0",
+		"motion": "11.18.1",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"react-router-dom": "7.1.2",
