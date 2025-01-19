@@ -34,7 +34,7 @@
 	},
 	"devDependencies": {
 		"@babel/plugin-transform-react-jsx-source": "7.25.9",
-		"@preact/preset-vite": "2.9.4",
+		"@preact/preset-vite": "2.10.0",
 		"@testing-library/jest-dom": "6.6.3",
 		"@testing-library/react": "16.2.0",
 		"@types/react": "19.0.7",
