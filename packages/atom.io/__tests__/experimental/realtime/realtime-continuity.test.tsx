@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { actUponStore, arbitrary, IMPLICIT } from "atom.io/internal"
+import { actUponStore, arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -32,7 +32,7 @@ describe(`synchronizing transactions`, () => {
 		})
 		const countContinuity = RT.continuity({
 			key: `count`,
-			config: (group) => group.add(countState).add(incrementTX),
+			config: (group) => group.globals(countState).actions(incrementTX),
 		})
 
 		return Object.assign(
@@ -158,14 +158,14 @@ describe(`mutable atoms in continuity`, () => {
 
 		const applicationContinuity = RT.continuity({
 			key: `application`,
-			config: (group) => group.add(myListAtom).add(addItemTX),
+			config: (group) => group.globals(myListAtom).actions(addItemTX),
 		})
 
 		return Object.assign(
 			RTTest.singleClient({
 				port: 5475,
-				server: ({ socket, silo: { store } }) => {
-					// enableLogging()
+				server: ({ socket, silo: { store }, enableLogging }) => {
+					enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -185,6 +185,7 @@ describe(`mutable atoms in continuity`, () => {
 	test(`mutable initialization`, async () => {
 		const { client, server, teardown, addItemTX, myListAtom } = scenario()
 		const clientApp = client.init()
+
 		clientApp.enableLogging()
 		await waitFor(() => {
 			throwUntil(clientApp.socket.connected)
@@ -209,32 +210,3 @@ describe(`mutable atoms in continuity`, () => {
 		await teardown()
 	})
 })
-
-// describe(`join in perspective`, () => {
-// 	const scenario = () => {
-// 		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-// 		const userActionCountServerState = AtomIO.atom<number>({
-// 			key: `server:userActionCount`,
-// 			default: 0,
-// 		})
-
-// 		const incrementTX = AtomIO.transaction({
-// 			key: `increment`,
-// 			do: ({ set, env }) => {
-// 				const { name } = env().store.config
-// 				if (name === `SERVER`) {
-// 					set(userActionCountServerState, (c) => c + 1)
-// 				}
-// 				set(countState, (c) => c + 1)
-// 			},
-// 		})
-// 		const countContinuity = RT.continuity({
-// 			key: `count`,
-// 			config: (group) => group.add(countState).add(incrementTX),
-// 		})
-
-// 		return RTTest.multiClient({
-// 			port: 5485,
-// 			server: ({ socket, silo: { store } }) => {}
-// 		})
-// })

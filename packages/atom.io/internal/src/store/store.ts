@@ -60,15 +60,10 @@ export class Store implements Lineage {
 		`downstreamSelectorKey`,
 		string,
 		{ source: string }
-	>(
-		{
-			between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
-			cardinality: `n:n`,
-		},
-		{
-			makeContentKey: (...keys) => keys.sort().join(`:`),
-		},
-	)
+	>({
+		between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
+		cardinality: `n:n`,
+	})
 	public trackers = new Map<string, Tracker<Transceiver<any>>>()
 	public families = new Map<
 		string,
@@ -170,10 +165,7 @@ export class Store implements Lineage {
 			}
 
 			for (const [, family] of store.families) {
-				if (
-					family.internalRoles?.includes(`mutable`) ||
-					family.internalRoles?.includes(`join`)
-				) {
+				if (family.internalRoles?.includes(`mutable`)) {
 					continue
 				}
 				family.install(this)
