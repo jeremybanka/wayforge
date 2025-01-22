@@ -32,7 +32,7 @@
 		"@types/node": "22.10.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.2",
-		"openai": "4.79.4",
+		"openai": "4.80.0",
 		"tmp": "0.2.3",
 		"tsup": "8.3.5",
 		"vite": "6.0.11",
