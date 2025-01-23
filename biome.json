@@ -6,19 +6,20 @@
 	"files": {
 		"ignoreUnknown": true,
 		"ignore": [
-			"*.gen.tsx",
+			"**/metafile-*",
 			"*.gen.ts",
+			"*.gen.tsx",
 			"*.tsdoc.json",
-			"heap.json",
+			".turbo",
+			".varmint",
 			"app/**/*",
 			"bin/**/*",
-			"dist/**/*",
-			"node_modules/**/*",
-			"**/metafile-*",
 			"coverage",
-			"projects",
-			".varmint",
-			"drizzle/meta"
+			"dist/**/*",
+			"drizzle/meta",
+			"heap.json",
+			"node_modules/**/*",
+			"projects"
 		]
 	},
 	"javascript": {
