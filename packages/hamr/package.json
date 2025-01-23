@@ -43,7 +43,7 @@
 		"@floating-ui/react": "0.27.3",
 		"@floating-ui/react-dom": "2.1.2",
 		"corners": "0.2.0",
-		"motion": "12.0.1"
+		"motion": "12.0.3"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": "^0.25.0 || ^0.26.0 || ^0.27.0",
