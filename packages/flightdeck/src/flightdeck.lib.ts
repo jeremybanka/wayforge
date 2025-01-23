@@ -12,7 +12,7 @@ import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
 import { z } from "zod"
 
-import type { LnavFormat } from "../gen/lnav-format.zod"
+import type { LnavFormat } from "../gen/lnav-format-schema.gen"
 import { FilesystemStorage } from "./filesystem-storage"
 import { env } from "./flightdeck.env"
 
