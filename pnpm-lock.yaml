@@ -167,8 +167,8 @@ importers:
   apps/edge/viceroy-htmx:
     dependencies:
       '@fastly/js-compute':
-        specifier: 3.28.0
-        version: 3.28.0
+        specifier: 3.29.2
+        version: 3.29.2
       preact-render-to-string:
         specifier: 6.5.13
         version: 6.5.13(preact@10.25.4)
@@ -3071,8 +3071,8 @@ packages:
       react-dom: '>=17'
       recoil: '>=0.7.6'
 
-  '@fastly/js-compute@3.28.0':
-    resolution: {integrity: sha512-oeWLbQmBbVa7+b26jYbQPnwkX7XDBAh/rNuiGAnMaXtRMPd02tOFtD7JKFCEM3FS2rEVqvdLhdYuoBtZQT0cWg==}
+  '@fastly/js-compute@3.29.2':
+    resolution: {integrity: sha512-FC0TEhOC0MO8M67+I+S7d/eipWPqqUYRNEsWDQeShpEsvWSMSRBX9HfRBVstGCSo2orPhpJy2UHcf4SUyhfE7A==}
     hasBin: true
 
   '@floating-ui/core@1.6.8':
@@ -6441,9 +6441,6 @@ packages:
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
-
-  magic-string@0.30.14:
-    resolution: {integrity: sha512-5c99P1WKTed11ZC0HMJOj6CDIue6F8ySu+bJL+85q1zBEIY8IklrJ1eiKC2NDRh3Ct3FcvmJPyQHb9erXMTJNw==}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -10074,15 +10071,15 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
 
-  '@fastly/js-compute@3.28.0':
+  '@fastly/js-compute@3.29.2':
     dependencies:
       '@bytecodealliance/jco': 1.7.2
       '@bytecodealliance/weval': 0.3.2
       '@bytecodealliance/wizer': 7.0.5
       acorn: 8.14.0
       acorn-walk: 8.3.4
-      esbuild: 0.24.0
-      magic-string: 0.30.14
+      esbuild: 0.24.2
+      magic-string: 0.30.17
       regexpu-core: 6.1.1
 
   '@floating-ui/core@1.6.8':
@@ -13813,10 +13810,6 @@ snapshots:
   luxon@3.5.0: {}
 
   lz-string@1.5.0: {}
-
-  magic-string@0.30.14:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
 
   magic-string@0.30.17:
     dependencies:
