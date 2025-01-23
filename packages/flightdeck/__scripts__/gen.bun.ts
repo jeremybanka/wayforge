@@ -45,7 +45,7 @@ const result = biome.lintContent(formatted.content, {
 	fixFileMode: `SafeAndUnsafeFixes`,
 })
 
-const html = biome.printDiagnostics(result.diagnostics, {
+biome.printDiagnostics(result.diagnostics, {
 	filePath: `lnav-format.zod.ts`,
 	fileSource: formatted.content,
 })
