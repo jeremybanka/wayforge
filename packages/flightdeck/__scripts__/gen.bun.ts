@@ -37,17 +37,17 @@ const content = [
 const biome = await Biome.create({ distribution: Distribution.NODE })
 
 const formatted = biome.formatContent(content, {
-	filePath: `lnav-format.zod.ts`,
+	filePath: `lnav-format-schema.gen.ts`,
 })
 
 const result = biome.lintContent(formatted.content, {
-	filePath: `lnav-format.zod.ts`,
+	filePath: `lnav-format-schema.gen.ts`,
 	fixFileMode: `SafeAndUnsafeFixes`,
 })
 
-const html = biome.printDiagnostics(result.diagnostics, {
-	filePath: `lnav-format.zod.ts`,
+biome.printDiagnostics(result.diagnostics, {
+	filePath: `lnav-format-schema.gen.ts`,
 	fileSource: formatted.content,
 })
 
-writeFileSync(`./gen/lnav-format.zod.ts`, result.content)
+writeFileSync(`./gen/lnav-format-schema.gen.ts`, result.content)
