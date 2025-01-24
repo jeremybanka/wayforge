@@ -80,7 +80,7 @@
 			]
 		},
 		"lint:types": {
-			"dependsOn": ["gen"],
+			"dependsOn": ["gen", "^gen"],
 			"inputs": [
 				"../../package.json",
 				"../../tsconfig.json",
@@ -94,7 +94,7 @@
 		},
 		"lint:types:watch": {
 			"persistent": true,
-			"dependsOn": ["gen"],
+			"dependsOn": ["gen", "^gen"],
 			"inputs": [
 				"../../package.json",
 				"**/package.json",
