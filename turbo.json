@@ -3,7 +3,7 @@
 	"globalDependencies": ["tsconfig.json", ".bun-version", ".node-version"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["gen", "^build"],
+			"dependsOn": ["gen", "^build", "^gen"],
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*", "bin/**"],
 			"inputs": ["**/package.json", "src/**", "**/src/**"]
 		},
@@ -80,7 +80,7 @@
 			]
 		},
 		"lint:types": {
-			"dependsOn": ["gen", "^gen"],
+			"dependsOn": ["gen", "^build", "^gen"],
 			"inputs": [
 				"../../package.json",
 				"../../tsconfig.json",
@@ -94,7 +94,7 @@
 		},
 		"lint:types:watch": {
 			"persistent": true,
-			"dependsOn": ["gen", "^gen"],
+			"dependsOn": ["gen", "^build", "^gen"],
 			"inputs": [
 				"../../package.json",
 				"**/package.json",
