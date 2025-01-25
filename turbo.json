@@ -80,7 +80,7 @@
 			]
 		},
 		"lint:types": {
-			"dependsOn": ["gen", "^build", "^gen"],
+			"dependsOn": ["gen", "^lint:types", "^build", "^gen"],
 			"inputs": [
 				"../../package.json",
 				"../../tsconfig.json",
