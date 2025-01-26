@@ -46,7 +46,7 @@
 		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "0.11.1",
+		"@t3-oss/env-core": "0.12.0",
 		"atom.io": "workspace:*",
 		"cron": "3.5.0",
 		"drizzle-orm": "0.38.4",
