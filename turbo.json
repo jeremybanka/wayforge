@@ -63,7 +63,7 @@
 			"cache": false
 		},
 		"lint:eslint:build": {
-			"outputs": ["eslint-plugin/dist/**/*", "dist/**/*"],
+			"outputs": ["eslint-plugin/dist/**/*"],
 			"inputs": ["eslint-plugin/src/**/*.ts", "tsup.config.ts"]
 		},
 		"lint:eslint": {
