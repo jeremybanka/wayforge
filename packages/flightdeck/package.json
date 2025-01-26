@@ -18,7 +18,7 @@
 		"klaxon": "./dist/klaxon.bin.js"
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "0.11.1",
+		"@t3-oss/env-core": "0.12.0",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"cron": "3.5.0",
