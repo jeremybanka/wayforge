@@ -38,7 +38,7 @@
 		"bun-types": "1.2.0",
 		"concurrently": "9.1.2",
 		"tmp": "0.2.3",
-		"tsup": "8.3.5",
+		"tsup": "8.3.6",
 		"vitest": "3.0.4"
 	}
 }
