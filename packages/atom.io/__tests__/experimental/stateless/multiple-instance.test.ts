@@ -45,7 +45,6 @@ beforeAll(async () => {
 
 	http
 		.createServer((req, res) => {
-			// @ts-expect-error known issue; http res and proxy.web res don't match
 			proxy.web(req, res, addresses[i])
 			i = (i + 1) % addresses.length // Round-robin
 		})
