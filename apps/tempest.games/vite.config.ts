@@ -17,6 +17,9 @@ export default defineConfig((async ({ mode }) => {
 		server: {
 			port: 3333,
 			host: `0.0.0.0`,
+			hmr: {
+				host: `localhost`,
+			},
 			...(httpsDev ? { https: httpsDev } : undefined),
 		},
 		test: {
