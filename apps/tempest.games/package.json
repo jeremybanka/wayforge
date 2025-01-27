@@ -49,7 +49,7 @@
 		"@t3-oss/env-core": "0.12.0",
 		"atom.io": "workspace:*",
 		"cron": "3.5.0",
-		"drizzle-orm": "0.38.4",
+		"drizzle-orm": "0.39.0",
 		"openai": "4.80.1",
 		"postgres": "3.4.5",
 		"react": "19.0.0",
