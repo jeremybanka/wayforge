@@ -1,11 +1,19 @@
 #!/usr/bin/env bun
 
-import { writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, writeFileSync } from "node:fs"
+import { resolve } from "node:path"
 
 import { Biome, Distribution } from "@biomejs/js-api"
 import type { Json } from "atom.io/json"
 import jsonSchemaToZod from "json-schema-to-zod"
 import { Squirrel } from "varmint"
+
+const GEN_DIR_PATH = resolve(import.meta.dirname, `../gen`)
+const LNAV_FORMAT_SCHEMA_FILENAME = `lnav-format-schema.gen.ts`
+const LNAV_FORMAT_SCHEMA_PATH = resolve(
+	GEN_DIR_PATH,
+	LNAV_FORMAT_SCHEMA_FILENAME,
+)
 
 const squirrel = new Squirrel(`read-write`)
 
@@ -37,17 +45,20 @@ const content = [
 const biome = await Biome.create({ distribution: Distribution.NODE })
 
 const formatted = biome.formatContent(content, {
-	filePath: `lnav-format-schema.gen.ts`,
+	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
 })
 
 const result = biome.lintContent(formatted.content, {
-	filePath: `lnav-format-schema.gen.ts`,
+	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
 	fixFileMode: `SafeAndUnsafeFixes`,
 })
 
 biome.printDiagnostics(result.diagnostics, {
-	filePath: `lnav-format-schema.gen.ts`,
+	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
 	fileSource: formatted.content,
 })
 
-writeFileSync(`./gen/lnav-format-schema.gen.ts`, result.content)
+if (!existsSync(GEN_DIR_PATH)) {
+	mkdirSync(GEN_DIR_PATH, { recursive: true })
+}
+writeFileSync(LNAV_FORMAT_SCHEMA_PATH, result.content)
