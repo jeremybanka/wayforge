@@ -380,6 +380,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: 0.4.18
         version: 0.4.18(eslint@9.19.0(jiti@2.4.2))
+      flightdeck:
+        specifier: workspace:*
+        version: link:../../packages/flightdeck
       globals:
         specifier: 15.14.0
         version: 15.14.0
