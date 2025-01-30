@@ -637,8 +637,8 @@ importers:
         specifier: 19.0.8
         version: 19.0.8
       '@vanilla-extract/vite-plugin':
-        specifier: 4.0.20
-        version: 4.0.20(@types/node@22.12.0)(babel-plugin-macros@3.1.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2))
+        specifier: 5.0.0
+        version: 5.0.0(@types/node@22.12.0)(babel-plugin-macros@3.1.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2))
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -3933,10 +3933,10 @@ packages:
   '@vanilla-extract/private@1.0.6':
     resolution: {integrity: sha512-ytsG/JLweEjw7DBuZ/0JCN4WAQgM9erfSTdS1NQY778hFQSZ6cfCDEZZ0sgVm4k54uNz6ImKB33AYvSR//fjxw==}
 
-  '@vanilla-extract/vite-plugin@4.0.20':
-    resolution: {integrity: sha512-IAK0oa+az95NxDQ0ooQ9QKV/mG7EdLYnc2ANRSzJPO81lu3K5Hw//VYNUiUGuKNigU13jCCoII7S0wVk6W/fVw==}
+  '@vanilla-extract/vite-plugin@5.0.0':
+    resolution: {integrity: sha512-ZbdxalIUZicTjXcFFcZV56aCixvkPZE8M9mUwa2nDCdpVo/BKuCPt08LvU5aNwZRDkuPOiaaPHcmw/+xxdM15A==}
     peerDependencies:
-      vite: ^4.0.3 || ^5.0.0
+      vite: ^5.0.0 || ^6.0.0
 
   '@vercel/analytics@1.4.1':
     resolution: {integrity: sha512-ekpL4ReX2TH3LnrRZTUKjHHNpNy9S1I7QmS+g/RQXoSUQ8ienzosuX7T9djZ/s8zPhBx1mpHP/Rw5875N+zQIQ==}
@@ -10882,7 +10882,7 @@ snapshots:
 
   '@vanilla-extract/private@1.0.6': {}
 
-  '@vanilla-extract/vite-plugin@4.0.20(@types/node@22.12.0)(babel-plugin-macros@3.1.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2))':
+  '@vanilla-extract/vite-plugin@5.0.0(@types/node@22.12.0)(babel-plugin-macros@3.1.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2))':
     dependencies:
       '@vanilla-extract/compiler': 0.1.1(@types/node@22.12.0)(babel-plugin-macros@3.1.0)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)
       '@vanilla-extract/integration': 8.0.0(babel-plugin-macros@3.1.0)
