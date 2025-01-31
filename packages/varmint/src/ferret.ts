@@ -66,7 +66,7 @@ export class Ferret {
 				allInputs.push(inputFileName, inputFileData)
 			}
 
-			const inputData = `\t\t${inspect(args, {
+			const inputData = `\t${subKey}.input.json\n\t\t${inspect(args, {
 				depth: Number.POSITIVE_INFINITY,
 				colors: true,
 			})
@@ -74,7 +74,7 @@ export class Ferret {
 				.join(`\n\t\t`)}`
 
 			throw new Error(
-				`Ferret: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}`,
+				`Ferret: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}\n`,
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
