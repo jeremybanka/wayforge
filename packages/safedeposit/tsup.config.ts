@@ -10,7 +10,7 @@ export const OPTIONS = {
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
 	dts: { only: true },
-	platform: "node",
+	platform: `node`,
 	format: [`esm`],
 	entry: [`src/safedeposit.ts`],
 	metafile: false,
