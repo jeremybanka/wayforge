@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.6
+
+### Patch Changes
+
+- 6e768e9: 🔊 Add detail error logs for when a cache miss occurs when squirrel or ferret are in read mode. Now, when a read fails, you can compare `YOUR INPUT DATA` against all `CACHED INPUT FILES` in the same folder.
+
 ## 0.3.5
 
 ### Patch Changes
