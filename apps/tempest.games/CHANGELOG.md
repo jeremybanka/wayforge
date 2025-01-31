@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.1.27
+
+### Patch Changes
+
+- 3e15317: ➕ Add dependency `safedeposit`, a type-hinted filesystem storage implementation.
+- Updated dependencies [3e15317]
+  - safedeposit@0.0.1
+
 ## 0.1.26
 
 ### Patch Changes
