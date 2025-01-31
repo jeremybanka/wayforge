@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.7
+
+### Patch Changes
+
+- 944e1f9: 🔊 Improved error message from v0.3.6, to now indicate the name of the file that wasn't found, along with its content.
+
 ## 0.3.6
 
 ### Patch Changes
