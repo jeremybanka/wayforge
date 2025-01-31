@@ -10,10 +10,10 @@ import { discoverType } from "atom.io/introspection"
 import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
+import { FilesystemStorage } from "safedeposit"
 import { z } from "zod"
 
 import type { LnavFormat } from "../gen/lnav-format-schema.gen"
-import { FilesystemStorage } from "./filesystem-storage"
 import { env } from "./flightdeck.env"
 
 export const FLIGHTDECK_SETUP_PHASES = [`downloaded`, `installed`] as const

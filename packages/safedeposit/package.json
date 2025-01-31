@@ -1,0 +1,38 @@
+{
+	"name": "safedeposit",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": ["dist", "src", "CHANGELOG.md"],
+	"main": "dist/safedeposit.js",
+	"scripts": {
+		"build:js": "bun build --outdir dist --target node -- src/safedeposit.ts",
+		"build:dts": "tsup",
+		"build": "rimraf dist && concurrently \"bun:build:*\"",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsc --noEmit",
+		"lint:types:watch": "tsc --watch --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
+		"test": "vitest",
+		"test:once": "echo no tests yet",
+		"test:coverage": "echo no test coverage yet",
+		"postversion": "biome format --write package.json"
+	},
+	"devDependencies": {
+		"@types/node": "22.12.0",
+		"@types/tmp": "0.2.6",
+		"concurrently": "9.1.2",
+		"rimraf": "6.0.1",
+		"tmp": "0.2.3",
+		"tsup": "8.3.6",
+		"vitest": "3.0.4"
+	}
+}

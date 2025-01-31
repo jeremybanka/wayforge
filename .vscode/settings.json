@@ -66,6 +66,8 @@
 		"Recasters",
 		"Renamers",
 		"revparse",
+		"safedeposit",
+		"safegen",
 		"Schemable",
 		"Selectables",
 		"svgr",
