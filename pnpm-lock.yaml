@@ -882,6 +882,9 @@ importers:
       cron:
         specifier: 3.5.0
         version: 3.5.0
+      safedeposit:
+        specifier: workspace:*
+        version: link:../safedeposit
       zod:
         specifier: 3.24.1
         version: 3.24.1
@@ -910,9 +913,6 @@ importers:
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
-      safedeposit:
-        specifier: workspace:*
-        version: link:../safedeposit
       tmp:
         specifier: 0.2.3
         version: 0.2.3

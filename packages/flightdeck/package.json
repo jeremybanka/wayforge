@@ -22,6 +22,7 @@
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"cron": "3.5.0",
+		"safedeposit": "workspace:*",
 		"zod": "3.24.1"
 	},
 	"scripts": {
@@ -49,7 +50,6 @@
 		"concurrently": "9.1.2",
 		"json-schema-to-zod": "2.6.0",
 		"rimraf": "6.0.1",
-		"safedeposit": "workspace:*",
 		"tmp": "0.2.3",
 		"tsup": "8.3.6",
 		"varmint": "workspace:*",
