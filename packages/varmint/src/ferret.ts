@@ -1,5 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
+import { inspect } from "node:util"
 
 import type { CacheMode } from "./cache-mode"
 import { sanitizeFilename } from "./sanitize-filename"
@@ -46,8 +47,34 @@ export class Ferret {
 					`Ferret: input file for key "${key}" with "${subKey}" was not found. Directory "${groupDirectory}" does not exist.`,
 				)
 			}
+			const directoryFilenames = fs.readdirSync(groupDirectory)
+			const directoryFiles = directoryFilenames
+				.map((filename) => [
+					filename,
+					fs.readFileSync(path.join(groupDirectory, filename), `utf-8`),
+				])
+				.filter(([filename]) => filename.endsWith(`.input.json`))
+			const allInputs: string[] = []
+			for (const [filename, contents] of directoryFiles) {
+				const inputFileName = `\t${filename}`
+				const inputFileData = `\t\t${inspect(JSON.parse(contents), {
+					depth: Number.POSITIVE_INFINITY,
+					colors: true,
+				})
+					.split(`\n`)
+					.join(`\n\t\t`)}`
+				allInputs.push(inputFileName, inputFileData)
+			}
+
+			const inputData = `\t\t${inspect(args, {
+				depth: Number.POSITIVE_INFINITY,
+				colors: true,
+			})
+				.split(`\n`)
+				.join(`\n\t\t`)}`
+
 			throw new Error(
-				`Ferret: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not.`,
+				`Ferret: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}`,
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
@@ -186,7 +213,7 @@ export class Ferret {
 						.replace(`.input.json`, ``)
 						.replace(`.stream.txt`, ``)
 					if (!filesTouched.has(subKey)) {
-						console.log(`💥 Flushing ${subKey}`)
+						console.info(`💥 Flushing ${subKey}`)
 						fs.unlinkSync(path.join(subDir, subDirFile))
 					}
 				}
