@@ -74,4 +74,28 @@ describe(`Filebox`, () => {
 		expect(result).toBe(`The best way to predict the future is to invent it.`)
 		expect(utils.put).toHaveBeenCalledTimes(0)
 	})
+	test(`mode:read (cache-miss)`, async () => {
+		const info: string[] = []
+		const squirrel = new Squirrel(`read`, tempDir.name)
+		fs.mkdirSync(path.join(tempDir.name, `hello`))
+		fs.writeFileSync(
+			path.join(tempDir.name, `hello/casa.input.json`),
+			`[\n\t"http://localhost:12500"\n]`,
+		)
+		const fetcher = squirrel.add(`hello`, async (url: string) => {
+			return fetch(url).then((response) => response.text())
+		})
+		let caught: Error | undefined
+		try {
+			await fetcher.for(`home`).get(`http://localhost:12500`)
+		} catch (thrown) {
+			if (thrown instanceof Error) {
+				console.error(`💥`, thrown)
+				caught = thrown
+			}
+		} finally {
+			expect(caught).toBeInstanceOf(Error)
+			expect(utils.put).toHaveBeenCalledTimes(0)
+		}
+	})
 })
