@@ -10,10 +10,7 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src", "CHANGELOG.md"],
 	"main": "dist/safedeposit.js",
 	"scripts": {
 		"build:js": "bun build --outdir dist -- src/safedeposit.ts",
