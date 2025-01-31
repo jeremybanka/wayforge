@@ -55,7 +55,7 @@
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"safedeposit": "workspace:*",
-		"safegen": "0.2.6",
+		"safegen": "0.2.7",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"treetrunks": "workspace:*",
