@@ -1,5 +1,13 @@
 # comline
 
+## 0.1.7
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+- Updated dependencies [635ef98]
+  - treetrunks@0.0.4
+
 ## 0.1.6
 
 ### Patch Changes

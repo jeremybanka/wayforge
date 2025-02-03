@@ -1,5 +1,11 @@
 # rel8
 
+## 0.1.1
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+
 ## 0.1.0
 
 ### Minor Changes

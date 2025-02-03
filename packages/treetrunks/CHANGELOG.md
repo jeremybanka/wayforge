@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.4
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+
 ## 0.0.3
 
 ### Patch Changes
