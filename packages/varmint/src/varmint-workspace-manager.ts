@@ -5,7 +5,7 @@ import { resolve } from "node:path"
 import cachedir from "cachedir"
 import { FilesystemStorage } from "safedeposit"
 
-import { sanitizeFilename } from "./sanitize-filename"
+import { sanitizeFilename } from "./sanitize-filename.ts"
 
 const GLOBAL_CACHE_FOLDER = cachedir(`varmint`)
 const CACHE_FOLDER = resolve(

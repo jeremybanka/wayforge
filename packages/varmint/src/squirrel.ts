@@ -2,9 +2,9 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
-import type { CacheMode } from "./cache-mode"
-import { sanitizeFilename } from "./sanitize-filename"
-import { varmintWorkspaceManager as mgr } from "./varmint-workspace-manager"
+import type { CacheMode } from "./cache-mode.ts"
+import { sanitizeFilename } from "./sanitize-filename.ts"
+import { varmintWorkspaceManager as mgr } from "./varmint-workspace-manager.ts"
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
