@@ -4,7 +4,7 @@ import path from "node:path"
 
 import * as tmp from "tmp"
 
-import { Squirrel } from "../src"
+import { Squirrel, storage } from "../src"
 
 let server: http.Server
 let tempDir: tmp.DirResult
@@ -97,5 +97,37 @@ describe(`Filebox`, () => {
 			expect(caught).toBeInstanceOf(Error)
 			expect(utils.put).toHaveBeenCalledTimes(0)
 		}
+	})
+	test(`flushing untouched files`, async () => {
+		function asyncRand() {
+			return new Promise((resolve) =>
+				setTimeout(() => {
+					resolve(Math.floor(Math.random() * 100))
+				}, 1),
+			)
+		}
+		Squirrel.startGlobalTracking()
+		const squirrel = new Squirrel(`read-write`, tempDir.name)
+		const rand = squirrel.add(`rand`, asyncRand)
+		const myRand = rand.for(`my-rand`)
+		await myRand.get()
+
+		fs.mkdirSync(path.join(tempDir.name, `other`))
+		fs.writeFileSync(
+			path.join(tempDir.name, `rand`, `some-random-file.whatever`),
+			`{}`,
+		)
+		expect(fs.readdirSync(tempDir.name)).toEqual([`other`, `rand`])
+		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+			`my-rand.input.json`,
+			`my-rand.output.json`,
+			`some-random-file.whatever`,
+		])
+		Squirrel.flushGlobal()
+		expect(fs.readdirSync(tempDir.name)).toEqual([`rand`])
+		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+			`my-rand.input.json`,
+			`my-rand.output.json`,
+		])
 	})
 })

@@ -33,6 +33,10 @@
 		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
 	},
+	"dependencies": {
+		"cachedir": "2.4.0",
+		"safedeposit": "workspace:*"
+	},
 	"devDependencies": {
 		"@types/node": "22.13.0",
 		"@types/tmp": "0.2.6",

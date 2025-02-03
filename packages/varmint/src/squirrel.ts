@@ -4,6 +4,7 @@ import { inspect } from "node:util"
 
 import type { CacheMode } from "./cache-mode"
 import { sanitizeFilename } from "./sanitize-filename"
+import { storage } from "./varmint-filesystem-state"
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
@@ -14,12 +15,17 @@ export type Squirreled<F extends AsyncFunc> = {
 
 export class Squirrel {
 	public filenameCache = new Map<string, string>()
+	public rootName = sanitizeFilename(this.baseDir)
 	public filesTouched = new Map<string, Set<string>>()
 
 	public constructor(
 		public mode: CacheMode = `off`,
 		public baseDir: string = path.join(process.cwd(), `.varmint`),
-	) {}
+	) {
+		if (storage.initialized && !storage.getItem(`root__${this.rootName}`)) {
+			storage.setItem(`root__${this.rootName}`, this.baseDir)
+		}
+	}
 
 	private read<F extends AsyncFunc>(
 		key: string,
@@ -100,7 +106,8 @@ export class Squirrel {
 			fs.unlinkSync(pathToOutputFile)
 		}
 		const output = await get(...args)
-		fs.writeFileSync(pathToOutputFile, JSON.stringify(output, null, `\t`))
+		const outputStringified = JSON.stringify(output, null, `\t`)
+		fs.writeFileSync(pathToOutputFile, outputStringified)
 		return output
 	}
 
@@ -110,8 +117,12 @@ export class Squirrel {
 				this.flush(key)
 			},
 			for: (unSafeSubKey: string) => {
-				if (this.mode !== `off` && !this.filesTouched.has(key)) {
-					this.filesTouched.set(key, new Set())
+				const listName = `${this.rootName}__${sanitizeFilename(key)}` as const
+				if (this.mode !== `off`) {
+					this.filesTouched.set(listName, new Set())
+					if (storage.initialized && !storage.getItem(`list__${listName}`)) {
+						storage.setItem(`list__${listName}`, `true`)
+					}
 				}
 				return {
 					get: (async (
@@ -125,7 +136,11 @@ export class Squirrel {
 								this.filenameCache.set(unSafeSubKey, subKey)
 								subKey = cachedSubKey
 							}
-							this.filesTouched.get(key)?.add(subKey)
+							const fileName = `${listName}__${subKey}` as const
+							this.filesTouched.get(listName)?.add(subKey)
+							if (storage.initialized && !storage.getItem(`file__${fileName}`)) {
+								storage.setItem(`file__${fileName}`, `true`)
+							}
 						}
 						switch (this.mode) {
 							case `off`:
@@ -170,4 +185,121 @@ export class Squirrel {
 			}
 		}
 	}
+
+	public static startGlobalTracking(): void {
+		if (storage.initialized) {
+			console.error(
+				`called startGlobalTracking, but the global cache was already initialized`,
+			)
+			return
+		}
+		storage.initialize()
+	}
+	public static flushGlobal(): void {
+		if (!storage.initialized) {
+			console.error(
+				`called flushGlobal, but the global cache wasn't initialized with startGlobalTracking`,
+			)
+			return
+		}
+		console.log(storage)
+		const n0 = performance.now()
+		const dirContents = fs.readdirSync(storage.rootDir)
+		const realRoots = new Map<string, string>()
+		const roots: string[] = []
+		const lists: string[] = []
+		const files: string[] = []
+		for (const dirContent of dirContents) {
+			if (startsWith(`root__`, dirContent)) {
+				roots.push(dirContent)
+			} else if (dirContent.startsWith(`list__`)) {
+				lists.push(dirContent)
+			} else if (dirContent.startsWith(`file__`)) {
+				files.push(dirContent)
+			}
+		}
+		const tree: Map<string, Map<string, Set<string>>> = new Map()
+		for (const root of roots) {
+			const rootName = root.replace(`root__`, ``)
+			tree.set(rootName, new Map())
+			const rootPath = storage.getItem(root as `root__${string}`)
+			if (root) {
+				realRoots.set(rootName, rootPath as string)
+			} else {
+				console.error(`💥 Could not find root ${root}`)
+			}
+		}
+		for (const list of lists) {
+			const listPath = list.replace(`list__`, ``)
+			const [listRootName, listName] = listPath.split(`__`)
+			const listRoot = tree.get(listRootName)
+			if (listRoot) {
+				listRoot.set(listName, new Set())
+			} else {
+				console.error(
+					`💥 Could not find root ${listRootName} for list ${listName}`,
+				)
+			}
+		}
+		for (const file of files) {
+			const filePath = file.replace(`file__`, ``)
+			const [listRootName, listName, subKey] = filePath.split(`__`)
+			const listRoot = tree.get(listRootName)
+			if (listRoot) {
+				const list = listRoot.get(listName)
+				if (list) {
+					list.add(subKey)
+				} else {
+					console.error(
+						`💥 Could not find list ${listName} for file ${filePath}`,
+					)
+				}
+			} else {
+				console.error(
+					`💥 Could not find root ${listRootName} for file ${filePath}`,
+				)
+			}
+		}
+		console.log(tree)
+		console.log({ realRoots })
+		for (const [rootName, rootMap] of tree.entries()) {
+			const realRoot = realRoots.get(rootName) as string
+			const realRootContents = fs.readdirSync(realRoot)
+			console.log(realRootContents)
+			for (const rootContent of realRootContents) {
+				if (!rootMap.has(rootContent)) {
+					console.log(
+						`🧹 removing directory ${path.join(realRoot, rootContent)}`,
+					)
+					fs.rmSync(path.join(realRoot, rootContent), { recursive: true })
+				}
+			}
+			for (const [listName, list] of rootMap.entries()) {
+				console.log(`checking list ${listName}`, list)
+				const realList = path.join(realRoot, listName)
+				const realListContents = fs.readdirSync(realList)
+				console.log(realListContents)
+				for (const realListContent of realListContents) {
+					const contentTrimmed = realListContent
+						.replace(`.input.json`, ``)
+						.replace(`.output.json`, ``)
+						.replace(`stream.txt`, ``)
+					if (!list.has(contentTrimmed)) {
+						console.log(
+							`🧹 removing file ${path.join(realList, realListContent)}`,
+						)
+						fs.rmSync(path.join(realList, realListContent))
+					}
+				}
+			}
+		}
+		fs.rmSync(storage.rootDir, { recursive: true })
+	}
+}
+
+function startsWith<T extends string>(
+	prefix: T,
+	str: string,
+): str is `${T}${string}` {
+	return str.startsWith(prefix)
 }
