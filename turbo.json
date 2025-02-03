@@ -67,7 +67,7 @@
 			"inputs": ["eslint-plugin/src/**/*.ts", "tsup.config.ts"]
 		},
 		"lint:eslint": {
-			"dependsOn": ["lint:eslint:build", "gen"],
+			"dependsOn": ["atom.io#lint:eslint:build", "gen"],
 			"inputs": [
 				"../../package.json",
 				"../../eslint.config.ts",
