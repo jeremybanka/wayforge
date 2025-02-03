@@ -9,6 +9,11 @@
 	"publishConfig": {
 		"access": "public"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/comline"
+	},
 	"type": "module",
 	"files": ["dist", "src"],
 	"main": "dist/cli.js",
