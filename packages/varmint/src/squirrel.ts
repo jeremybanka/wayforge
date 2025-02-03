@@ -127,7 +127,7 @@ export class Squirrel {
 			},
 			for: (unSafeSubKey: string) => {
 				if (this.mode !== `off`) {
-					this.filesTouched.set(listName, new Set())
+					this.filesTouched.set(key, new Set())
 					if (
 						mgr.storage.initialized &&
 						!mgr.storage.getItem(`list__${listName}`)
@@ -184,6 +184,7 @@ export class Squirrel {
 	}
 
 	public flush(...args: string[]): void {
+		console.log(this.filesTouched)
 		for (const [key, filesTouched] of this.filesTouched.entries()) {
 			if (args.length === 0 || args.includes(key)) {
 				const subDir = path.join(this.baseDir, key)

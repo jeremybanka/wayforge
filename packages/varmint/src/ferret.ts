@@ -173,7 +173,7 @@ export class Ferret {
 			},
 			for: (unSafeSubKey: string) => {
 				if (this.mode !== `off`) {
-					this.filesTouched.set(listName, new Set())
+					this.filesTouched.set(key, new Set())
 					if (
 						mgr.storage.initialized &&
 						!mgr.storage.getItem(`list__${listName}`)
