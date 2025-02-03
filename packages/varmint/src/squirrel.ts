@@ -100,7 +100,8 @@ export class Squirrel {
 			fs.unlinkSync(pathToOutputFile)
 		}
 		const output = await get(...args)
-		fs.writeFileSync(pathToOutputFile, JSON.stringify(output, null, `\t`))
+		const outputStringified = JSON.stringify(output, null, `\t`)
+		fs.writeFileSync(pathToOutputFile, outputStringified)
 		return output
 	}
 
