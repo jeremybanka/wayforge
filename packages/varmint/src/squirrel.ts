@@ -15,13 +15,14 @@ export type Squirreled<F extends AsyncFunc> = {
 
 export class Squirrel {
 	public filenameCache = new Map<string, string>()
-	public rootName = sanitizeFilename(this.baseDir)
 	public filesTouched = new Map<string, Set<string>>()
+	public rootName: string
 
 	public constructor(
 		public mode: CacheMode = `off`,
 		public baseDir: string = path.join(process.cwd(), `.varmint`),
 	) {
+		this.rootName = sanitizeFilename(this.baseDir)
 		if (storage.initialized && !storage.getItem(`root__${this.rootName}`)) {
 			storage.setItem(`root__${this.rootName}`, this.baseDir)
 		}
