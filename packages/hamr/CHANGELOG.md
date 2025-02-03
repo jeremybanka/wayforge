@@ -1,5 +1,11 @@
 # hamr
 
+## 0.5.2
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+
 ## 0.5.1
 
 ### Patch Changes

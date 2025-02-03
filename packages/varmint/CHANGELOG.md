@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.8
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+
 ## 0.3.7
 
 ### Patch Changes

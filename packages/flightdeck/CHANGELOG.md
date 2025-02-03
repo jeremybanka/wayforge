@@ -1,5 +1,14 @@
 # flightdeck
 
+## 0.2.11
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+- Updated dependencies [635ef98]
+  - safedeposit@0.0.2
+  - comline@0.1.7
+
 ## 0.2.10
 
 ### Patch Changes
