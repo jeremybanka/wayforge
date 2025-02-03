@@ -163,7 +163,7 @@ export class Squirrel {
 						.replace(`.input.json`, ``)
 						.replace(`.output.json`, ``)
 					if (!filesTouched.has(subKey)) {
-						console.info(`💥 Flushing ${subKey}`)
+						console.info(`🧹 Flushing ${subKey}`)
 						fs.unlinkSync(path.join(subDir, subDirFile))
 					}
 				}

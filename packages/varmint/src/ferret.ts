@@ -213,7 +213,7 @@ export class Ferret {
 						.replace(`.input.json`, ``)
 						.replace(`.stream.txt`, ``)
 					if (!filesTouched.has(subKey)) {
-						console.info(`💥 Flushing ${subKey}`)
+						console.info(`🧹 Flushing ${subKey}`)
 						fs.unlinkSync(path.join(subDir, subDirFile))
 					}
 				}
