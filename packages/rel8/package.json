@@ -49,7 +49,8 @@
 	"keywords": ["relation", "data", "relational", "join", "bridge", "junction"],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/rel8"
 	},
 	"license": "MIT",
 	"author": "Jeremy Banka",

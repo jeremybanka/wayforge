@@ -36,7 +36,8 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git"
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/occlusion"
 	},
 	"license": "MIT",
 	"sideEffects": false,
