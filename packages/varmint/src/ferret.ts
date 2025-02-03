@@ -28,12 +28,16 @@ export type Ferreted<F extends StreamFunc> = {
 export class Ferret {
 	public filenameCache = new Map<string, string>()
 	public filesTouched = new Map<string, Set<string>>()
+	public mode: CacheMode
+	public baseDir: string
 	public rootName: string
 
 	public constructor(
-		public mode: CacheMode = `off`,
-		public baseDir: string = path.join(process.cwd(), `.varmint`, `.ferret`),
+		mode: CacheMode = `off`,
+		baseDir: string = path.join(process.cwd(), `.varmint`, `.ferret`),
 	) {
+		this.mode = mode
+		this.baseDir = baseDir
 		this.rootName = sanitizeFilename(this.baseDir)
 		if (storage.initialized && !storage.getItem(`root__${this.rootName}`)) {
 			storage.setItem(`root__${this.rootName}`, this.baseDir)
