@@ -4,7 +4,7 @@ import { inspect } from "node:util"
 
 import type { CacheMode } from "./cache-mode"
 import { sanitizeFilename } from "./sanitize-filename"
-import { storage } from "./varmint-filesystem-state"
+import { varmintWorkspaceManager as mgr } from "./varmint-workspace-manager"
 
 export type Loadable<T> = Promise<T> | T
 
@@ -39,8 +39,11 @@ export class Ferret {
 		this.mode = mode
 		this.baseDir = baseDir
 		this.rootName = sanitizeFilename(this.baseDir)
-		if (storage.initialized && !storage.getItem(`root__${this.rootName}`)) {
-			storage.setItem(`root__${this.rootName}`, this.baseDir)
+		if (
+			mgr.storage.initialized &&
+			!mgr.storage.getItem(`root__${this.rootName}`)
+		) {
+			mgr.storage.setItem(`root__${this.rootName}`, this.baseDir)
 		}
 	}
 
@@ -171,8 +174,11 @@ export class Ferret {
 			for: (unSafeSubKey: string) => {
 				if (this.mode !== `off`) {
 					this.filesTouched.set(listName, new Set())
-					if (storage.initialized && !storage.getItem(`list__${listName}`)) {
-						storage.setItem(`list__${listName}`, `true`)
+					if (
+						mgr.storage.initialized &&
+						!mgr.storage.getItem(`list__${listName}`)
+					) {
+						mgr.storage.setItem(`list__${listName}`, `true`)
 					}
 				}
 				return {
@@ -188,8 +194,11 @@ export class Ferret {
 							this.filesTouched.get(key)?.add(subKey)
 							const fileName = `${listName}__${subKey}` as const
 							const fileNameTagged = `file__${fileName}` as const
-							if (storage.initialized && !storage.getItem(fileNameTagged)) {
-								storage.setItem(fileNameTagged, `true`)
+							if (
+								mgr.storage.initialized &&
+								!mgr.storage.getItem(fileNameTagged)
+							) {
+								mgr.storage.setItem(fileNameTagged, `true`)
 							}
 						}
 						switch (this.mode) {

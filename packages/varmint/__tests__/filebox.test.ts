@@ -4,7 +4,7 @@ import path from "node:path"
 
 import * as tmp from "tmp"
 
-import { Squirrel, storage } from "../src"
+import { Squirrel, varmintWorkspaceManager } from "../src"
 
 let server: http.Server
 let tempDir: tmp.DirResult
@@ -106,7 +106,7 @@ describe(`Filebox`, () => {
 				}, 1),
 			)
 		}
-		Squirrel.startGlobalTracking()
+		varmintWorkspaceManager.startGlobalTracking()
 		const squirrel = new Squirrel(`read-write`, tempDir.name)
 		const rand = squirrel.add(`rand`, asyncRand)
 		const myRand = rand.for(`my-rand`)
@@ -123,7 +123,7 @@ describe(`Filebox`, () => {
 			`my-rand.output.json`,
 			`some-random-file.whatever`,
 		])
-		Squirrel.flushGlobal()
+		varmintWorkspaceManager.endGlobalTrackingAndFlushUnusedFiles()
 		expect(fs.readdirSync(tempDir.name)).toEqual([`rand`])
 		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
 			`my-rand.input.json`,
