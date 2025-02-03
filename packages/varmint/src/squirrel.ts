@@ -4,6 +4,7 @@ import { inspect } from "node:util"
 
 import type { CacheMode } from "./cache-mode"
 import { sanitizeFilename } from "./sanitize-filename"
+import { storage } from "./varmint-filesystem-state"
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
@@ -14,12 +15,17 @@ export type Squirreled<F extends AsyncFunc> = {
 
 export class Squirrel {
 	public filenameCache = new Map<string, string>()
+	public rootName = sanitizeFilename(this.baseDir)
 	public filesTouched = new Map<string, Set<string>>()
 
 	public constructor(
 		public mode: CacheMode = `off`,
 		public baseDir: string = path.join(process.cwd(), `.varmint`),
-	) {}
+	) {
+		if (storage.initialized && !storage.getItem(`root__${this.rootName}`)) {
+			storage.setItem(`root__${this.rootName}`, this.baseDir)
+		}
+	}
 
 	private read<F extends AsyncFunc>(
 		key: string,
@@ -106,13 +112,17 @@ export class Squirrel {
 	}
 
 	public add<F extends AsyncFunc>(key: string, get: F): Squirreled<F> {
+		const listName = `${this.rootName}__${sanitizeFilename(key)}` as const
 		return {
 			flush: () => {
 				this.flush(key)
 			},
 			for: (unSafeSubKey: string) => {
-				if (this.mode !== `off` && !this.filesTouched.has(key)) {
-					this.filesTouched.set(key, new Set())
+				if (this.mode !== `off`) {
+					this.filesTouched.set(listName, new Set())
+					if (storage.initialized && !storage.getItem(`list__${listName}`)) {
+						storage.setItem(`list__${listName}`, `true`)
+					}
 				}
 				return {
 					get: (async (
@@ -127,6 +137,11 @@ export class Squirrel {
 								subKey = cachedSubKey
 							}
 							this.filesTouched.get(key)?.add(subKey)
+							const fileName = `${listName}__${subKey}` as const
+							const fileNameTagged = `file__${fileName}` as const
+							if (storage.initialized && !storage.getItem(fileNameTagged)) {
+								storage.setItem(fileNameTagged, `true`)
+							}
 						}
 						switch (this.mode) {
 							case `off`:
