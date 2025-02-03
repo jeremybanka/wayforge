@@ -1,5 +1,14 @@
 # tempest.games
 
+## 0.1.28
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+- Updated dependencies [635ef98]
+  - safedeposit@0.0.2
+  - treetrunks@0.0.4
+
 ## 0.1.27
 
 ### Patch Changes

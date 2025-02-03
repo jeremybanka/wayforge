@@ -1,6 +1,6 @@
 {
 	"name": "socket-io.filestore",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"type": "module",
 	"description": "save json to the filesystem over socket.io",
 	"files": ["dist", "node", "web", "CHANGELOG.md", "README.md"],

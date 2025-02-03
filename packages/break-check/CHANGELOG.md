@@ -1,5 +1,11 @@
 # break-check
 
+## 0.6.5
+
+### Patch Changes
+
+- 635ef98: 🔧 Add repository declaration to manifest.
+
 ## 0.6.4
 
 ### Patch Changes
