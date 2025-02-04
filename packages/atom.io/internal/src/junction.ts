@@ -1,5 +1,6 @@
-import type { Refinement } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
+
+import type { Refinement } from "./utility-types"
 
 export type JunctionEntriesBase<
 	AType extends string,
