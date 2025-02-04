@@ -1,5 +1,15 @@
 # varmint
 
+## 0.3.9
+
+### Patch Changes
+
+- 3057cd5: ✨ Add `varmintWorkspaceManager` tool. This allows for the global tracking of all resources accessed from `process.cwd()` using varmint.
+- Updated dependencies [3057cd5]
+- Updated dependencies [3057cd5]
+- Updated dependencies [3057cd5]
+  - safedeposit@0.1.0
+
 ## 0.3.8
 
 ### Patch Changes

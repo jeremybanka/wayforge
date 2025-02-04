@@ -1,5 +1,14 @@
 # tempest.games
 
+## 0.1.29
+
+### Patch Changes
+
+- Updated dependencies [3057cd5]
+- Updated dependencies [3057cd5]
+- Updated dependencies [3057cd5]
+  - safedeposit@0.1.0
+
 ## 0.1.28
 
 ### Patch Changes

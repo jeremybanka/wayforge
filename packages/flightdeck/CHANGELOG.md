@@ -1,5 +1,14 @@
 # flightdeck
 
+## 0.2.12
+
+### Patch Changes
+
+- Updated dependencies [3057cd5]
+- Updated dependencies [3057cd5]
+- Updated dependencies [3057cd5]
+  - safedeposit@0.1.0
+
 ## 0.2.11
 
 ### Patch Changes
