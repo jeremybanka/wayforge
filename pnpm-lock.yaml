@@ -117,6 +117,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       eslint-config-next:
         specifier: 15.1.6
         version: 15.1.6(eslint-plugin-import-x@4.6.1(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
@@ -154,6 +157,9 @@ importers:
       bun-types:
         specifier: 1.2.2
         version: 1.2.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       vite:
         specifier: 6.0.11
         version: 6.0.11(@types/node@22.13.1)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.83.4)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)
@@ -191,6 +197,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       htmx.org:
         specifier: 2.0.4
         version: 2.0.4
@@ -246,6 +255,9 @@ importers:
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tsx:
         specifier: 4.19.2
         version: 4.19.2
@@ -280,6 +292,9 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
     devDependencies:
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       socket.io-client:
         specifier: 4.8.1
         version: 4.8.1
@@ -465,6 +480,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       eslint-config-next:
         specifier: 15.1.6
         version: 15.1.6(eslint-plugin-import-x@4.6.1(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
@@ -672,6 +690,9 @@ importers:
 
   packages/anvl:
     devDependencies:
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tsup:
         specifier: 8.3.6
         version: 8.3.6(@microsoft/api-extractor@7.49.2(@types/node@22.13.1))(@swc/core@1.10.12(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.7.3)
@@ -827,6 +848,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -861,6 +885,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -910,6 +937,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       json-schema-to-zod:
         specifier: 2.6.0
         version: 2.6.0
@@ -1026,6 +1056,9 @@ importers:
       '@types/node':
         specifier: 22.13.1
         version: 22.13.1
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tsup:
         specifier: 8.3.6
         version: 8.3.6(@microsoft/api-extractor@7.49.2(@types/node@22.13.1))(@swc/core@1.10.12(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.7.3)
@@ -1047,6 +1080,9 @@ importers:
       '@types/node':
         specifier: 22.13.1
         version: 22.13.1
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tsup:
         specifier: 8.3.6
         version: 8.3.6(@microsoft/api-extractor@7.49.2(@types/node@22.13.1))(@swc/core@1.10.12(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.7.3)
@@ -1075,6 +1111,9 @@ importers:
         specifier: 5.0.9
         version: 5.0.9
     devDependencies:
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tsup:
         specifier: 8.3.6
         version: 8.3.6(@microsoft/api-extractor@7.49.2(@types/node@22.13.1))(@swc/core@1.10.12(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.7.3)
@@ -1096,6 +1135,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       tsup:
         specifier: 8.3.6
         version: 8.3.6(@microsoft/api-extractor@7.49.2(@types/node@22.13.1))(@swc/core@1.10.12(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.7.3)
@@ -1117,6 +1159,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
@@ -1147,6 +1192,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -1175,6 +1223,9 @@ importers:
       atom.io:
         specifier: workspace:*
         version: link:../atom.io
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -1260,6 +1311,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -1291,6 +1345,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -1325,6 +1382,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      eslint:
+        specifier: 9.19.0
+        version: 9.19.0(jiti@2.4.2)
       openai:
         specifier: 4.82.0
         version: 4.82.0(ws@8.18.0)(zod@3.24.1)
