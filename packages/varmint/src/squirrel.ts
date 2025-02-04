@@ -2,8 +2,9 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
-import type { CacheMode } from "./cache-mode"
-import { sanitizeFilename } from "./sanitize-filename"
+import type { CacheMode } from "./cache-mode.ts"
+import { sanitizeFilename } from "./sanitize-filename.ts"
+import { varmintWorkspaceManager as mgr } from "./varmint-workspace-manager.ts"
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
@@ -15,11 +16,24 @@ export type Squirreled<F extends AsyncFunc> = {
 export class Squirrel {
 	public filenameCache = new Map<string, string>()
 	public filesTouched = new Map<string, Set<string>>()
+	public mode: CacheMode
+	public baseDir: string
+	public rootName: string
 
 	public constructor(
-		public mode: CacheMode = `off`,
-		public baseDir: string = path.join(process.cwd(), `.varmint`),
-	) {}
+		mode: CacheMode = `off`,
+		baseDir: string = path.join(process.cwd(), `.varmint`),
+	) {
+		this.mode = mode
+		this.baseDir = baseDir
+		this.rootName = sanitizeFilename(this.baseDir)
+		if (
+			mgr.storage.initialized &&
+			!mgr.storage.getItem(`root__${this.rootName}`)
+		) {
+			mgr.storage.setItem(`root__${this.rootName}`, this.baseDir)
+		}
+	}
 
 	private read<F extends AsyncFunc>(
 		key: string,
@@ -100,18 +114,26 @@ export class Squirrel {
 			fs.unlinkSync(pathToOutputFile)
 		}
 		const output = await get(...args)
-		fs.writeFileSync(pathToOutputFile, JSON.stringify(output, null, `\t`))
+		const outputStringified = JSON.stringify(output, null, `\t`)
+		fs.writeFileSync(pathToOutputFile, outputStringified)
 		return output
 	}
 
 	public add<F extends AsyncFunc>(key: string, get: F): Squirreled<F> {
+		const listName = `${this.rootName}__${sanitizeFilename(key)}` as const
 		return {
 			flush: () => {
 				this.flush(key)
 			},
 			for: (unSafeSubKey: string) => {
-				if (this.mode !== `off` && !this.filesTouched.has(key)) {
+				if (this.mode !== `off`) {
 					this.filesTouched.set(key, new Set())
+					if (
+						mgr.storage.initialized &&
+						!mgr.storage.getItem(`list__${listName}`)
+					) {
+						mgr.storage.setItem(`list__${listName}`, `true`)
+					}
 				}
 				return {
 					get: (async (
@@ -126,6 +148,14 @@ export class Squirrel {
 								subKey = cachedSubKey
 							}
 							this.filesTouched.get(key)?.add(subKey)
+							const fileName = `${listName}__${subKey}` as const
+							const fileNameTagged = `file__${fileName}` as const
+							if (
+								mgr.storage.initialized &&
+								!mgr.storage.getItem(fileNameTagged)
+							) {
+								mgr.storage.setItem(fileNameTagged, `true`)
+							}
 						}
 						switch (this.mode) {
 							case `off`:
@@ -154,6 +184,7 @@ export class Squirrel {
 	}
 
 	public flush(...args: string[]): void {
+		console.log(this.filesTouched)
 		for (const [key, filesTouched] of this.filesTouched.entries()) {
 			if (args.length === 0 || args.includes(key)) {
 				const subDir = path.join(this.baseDir, key)
@@ -163,7 +194,7 @@ export class Squirrel {
 						.replace(`.input.json`, ``)
 						.replace(`.output.json`, ``)
 					if (!filesTouched.has(subKey)) {
-						console.info(`💥 Flushing ${subKey}`)
+						console.info(`🧹 Flushing ${subKey}`)
 						fs.unlinkSync(path.join(subDir, subDirFile))
 					}
 				}

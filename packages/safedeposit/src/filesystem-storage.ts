@@ -11,6 +11,7 @@ import { resolve } from "node:path"
 
 export type FilesystemStorageOptions = {
 	path: string
+	eagerInit?: boolean
 }
 
 export class FilesystemStorage<
@@ -18,11 +19,19 @@ export class FilesystemStorage<
 > implements Storage
 {
 	public rootDir: string
+	public get initialized(): boolean {
+		return existsSync(this.rootDir)
+	}
+	public initialize(): void {
+		if (!this.initialized) {
+			mkdirSync(this.rootDir, { recursive: true })
+		}
+	}
 
 	public constructor(options: FilesystemStorageOptions) {
 		this.rootDir = options.path
-		if (!existsSync(this.rootDir)) {
-			mkdirSync(this.rootDir, { recursive: true })
+		if (options.eagerInit) {
+			this.initialize()
 		}
 	}
 
@@ -35,6 +44,7 @@ export class FilesystemStorage<
 	}
 
 	public setItem<K extends string & keyof T>(key: K, value: T[K]): void {
+		this.initialize()
 		const filePath = resolve(this.rootDir, key)
 		writeFileSync(filePath, value)
 	}
@@ -42,6 +52,7 @@ export class FilesystemStorage<
 	public removeItem<K extends string & keyof T>(key: K): void {
 		const filePath = resolve(this.rootDir, key)
 		if (existsSync(filePath)) {
+			this.initialize()
 			rmSync(filePath)
 		}
 	}
