@@ -63,12 +63,8 @@
 		"lint:biome": {
 			"cache": false
 		},
-		"lint:eslint:build": {
-			"outputs": ["eslint-plugin/dist/**/*"],
-			"inputs": ["eslint-plugin/src/**/*.ts", "tsup.config.ts"]
-		},
 		"lint:eslint": {
-			"dependsOn": ["atom.io#lint:eslint:build", "gen"],
+			"dependsOn": ["atom.io#build", "gen"],
 			"inputs": [
 				"../../package.json",
 				"../../eslint.config.ts",

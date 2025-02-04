@@ -39,7 +39,6 @@
 		"build:web": "cd web && tsup",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:eslint:build": "bun run build:main",
 		"lint:types": "tsc --noEmit",
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
