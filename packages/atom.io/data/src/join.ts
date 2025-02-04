@@ -22,6 +22,7 @@ import type {
 	JunctionEntriesBase,
 	JunctionSchemaBase,
 	Molecule,
+	Refinement,
 	Store,
 } from "atom.io/internal"
 import {
@@ -45,7 +46,6 @@ import {
 	setIntoStore,
 	withdraw,
 } from "atom.io/internal"
-import type { Refinement } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"

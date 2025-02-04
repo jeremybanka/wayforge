@@ -37,8 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-
-      - run: bun run test
+      - run: pnpm run test
 
   Build:
     runs-on: ubuntu-latest
@@ -46,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: bun run build
+      - run: pnpm run build
 
   Coverage:
     runs-on: ubuntu-latest
@@ -65,7 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: bun test:coverage
+      - run: pnpm test:coverage
       - uses: coverallsapp/github-action@v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -88,4 +87,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: bun test:semver
+      - run: pnpm test:semver

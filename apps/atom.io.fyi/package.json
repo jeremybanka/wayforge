@@ -42,6 +42,7 @@
 		"bun-types": "1.2.2",
 		"chokidar": "4.0.3",
 		"concurrently": "9.1.2",
+		"eslint": "9.19.0",
 		"eslint-config-next": "15.1.6",
 		"npmlog": "7.0.1",
 		"rehype-slug": "6.0.0",

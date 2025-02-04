@@ -25,8 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: bun fmt
-      - run: bun lint:biome
+      - run: pnpm fmt
+      - run: pnpm lint:biome
 
   ESLint:
     runs-on: ubuntu-latest
@@ -34,8 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: bun lint:eslint:build
-      - run: bun lint:eslint
+      - run: pnpm lint:eslint
 
   Types:
     runs-on: ubuntu-latest
@@ -43,4 +42,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: bun lint:types
+      - run: pnpm lint:types
