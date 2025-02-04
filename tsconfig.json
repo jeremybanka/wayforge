@@ -27,7 +27,6 @@
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
 		},
-		"types": ["vitest/globals"],
 		"resolveJsonModule": true,
 		"allowJs": true,
 		"noEmit": true,
