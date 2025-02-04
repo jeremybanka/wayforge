@@ -1,5 +1,5 @@
+import type { Refinement } from "atom.io/internal"
 import { Junction } from "atom.io/internal"
-import type { Refinement } from "atom.io/introspection"
 import { jsonRefinery } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { isJson } from "atom.io/json"

@@ -14,3 +14,5 @@ export type Count<N extends number, A extends any[] = []> = [
 export type Each<E extends any[]> = {
 	[P in Count<E[`length`]>]: E[P]
 }
+
+export type Refinement<A, B extends A> = (a: A) => a is B

@@ -42,6 +42,7 @@
 		"@types/tmp": "0.2.6",
 		"bun-types": "1.2.2",
 		"concurrently": "9.1.2",
+		"eslint": "9.19.0",
 		"tmp": "0.2.3",
 		"tsup": "8.3.6",
 		"vitest": "3.0.5"

@@ -18,9 +18,9 @@
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
 	},
-	"dependencies": {},
 	"devDependencies": {
 		"@types/node": "22.13.1",
+		"eslint": "9.19.0",
 		"tsup": "8.3.6",
 		"typescript": "5.7.3",
 		"vite": "6.0.11",

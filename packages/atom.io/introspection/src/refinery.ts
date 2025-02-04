@@ -1,7 +1,5 @@
-import type { Flat } from "atom.io/internal"
+import type { Flat, Refinement } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-
-export type Refinement<A, B extends A> = (a: A) => a is B
 
 export type ClassSignature = abstract new (...args: any) => any
 

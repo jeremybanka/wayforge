@@ -19,7 +19,7 @@ runs:
 
     - name: Install Dependencies
       shell: bash
-      run: pnpm i
+      run: pnpm i --frozen-lockfile
 
     - name: Configure Git
       shell: bash
