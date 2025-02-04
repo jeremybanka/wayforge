@@ -4,6 +4,7 @@ import { inspect } from "node:util"
 
 import type { CacheMode } from "./cache-mode"
 import { sanitizeFilename } from "./sanitize-filename"
+import { varmintWorkspaceManager as mgr } from "./varmint-workspace-manager"
 
 export type Loadable<T> = Promise<T> | T
 
@@ -27,11 +28,24 @@ export type Ferreted<F extends StreamFunc> = {
 export class Ferret {
 	public filenameCache = new Map<string, string>()
 	public filesTouched = new Map<string, Set<string>>()
+	public mode: CacheMode
+	public baseDir: string
+	public rootName: string
 
 	public constructor(
-		public mode: CacheMode = `off`,
-		public baseDir: string = path.join(process.cwd(), `.varmint`, `.ferret`),
-	) {}
+		mode: CacheMode = `off`,
+		baseDir: string = path.join(process.cwd(), `.varmint`, `.ferret`),
+	) {
+		this.mode = mode
+		this.baseDir = baseDir
+		this.rootName = sanitizeFilename(this.baseDir)
+		if (
+			mgr.storage.initialized &&
+			!mgr.storage.getItem(`root__${this.rootName}`)
+		) {
+			mgr.storage.setItem(`root__${this.rootName}`, this.baseDir)
+		}
+	}
 
 	private read<F extends StreamFunc>(
 		key: string,
@@ -152,13 +166,20 @@ export class Ferret {
 	}
 
 	public add<F extends StreamFunc>(key: string, getStream: F): Ferreted<F> {
+		const listName = `${this.rootName}__${sanitizeFilename(key)}` as const
 		return {
 			flush: () => {
 				this.flush(key)
 			},
 			for: (unSafeSubKey: string) => {
-				if (this.mode !== `off` && !this.filesTouched.has(key)) {
+				if (this.mode !== `off`) {
 					this.filesTouched.set(key, new Set())
+					if (
+						mgr.storage.initialized &&
+						!mgr.storage.getItem(`list__${listName}`)
+					) {
+						mgr.storage.setItem(`list__${listName}`, `true`)
+					}
 				}
 				return {
 					get: (...args: Parameters<F>) => {
@@ -171,6 +192,14 @@ export class Ferret {
 								subKey = cachedSubKey
 							}
 							this.filesTouched.get(key)?.add(subKey)
+							const fileName = `${listName}__${subKey}` as const
+							const fileNameTagged = `file__${fileName}` as const
+							if (
+								mgr.storage.initialized &&
+								!mgr.storage.getItem(fileNameTagged)
+							) {
+								mgr.storage.setItem(fileNameTagged, `true`)
+							}
 						}
 						switch (this.mode) {
 							case `off`: {
@@ -213,7 +242,7 @@ export class Ferret {
 						.replace(`.input.json`, ``)
 						.replace(`.stream.txt`, ``)
 					if (!filesTouched.has(subKey)) {
-						console.info(`💥 Flushing ${subKey}`)
+						console.info(`🧹 Flushing ${subKey}`)
 						fs.unlinkSync(path.join(subDir, subDirFile))
 					}
 				}

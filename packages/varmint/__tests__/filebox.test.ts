@@ -1,3 +1,4 @@
+import { spawn } from "node:child_process"
 import * as fs from "node:fs"
 import * as http from "node:http"
 import path from "node:path"
@@ -97,5 +98,42 @@ describe(`Filebox`, () => {
 			expect(caught).toBeInstanceOf(Error)
 			expect(utils.put).toHaveBeenCalledTimes(0)
 		}
+	})
+	test(`flushing untouched files`, async () => {
+		const setup = spawn(
+			`node`,
+			[`--experimental-strip-types`, `global-setup.node.ts`, tempDir.name],
+			{
+				stdio: `inherit`,
+				cwd: path.join(import.meta.dirname, `isolation`),
+			},
+		)
+		await new Promise((resolve) => setup.on(`exit`, resolve))
+		fs.mkdirSync(path.join(tempDir.name, `other`))
+		console.log(`tempDir contents:`, fs.readdirSync(tempDir.name))
+		fs.writeFileSync(
+			path.join(tempDir.name, `rand`, `some-random-file.whatever`),
+			`{}`,
+		)
+		expect(fs.readdirSync(tempDir.name)).toEqual([`other`, `rand`])
+		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+			`my-rand.input.json`,
+			`my-rand.output.json`,
+			`some-random-file.whatever`,
+		])
+		const teardown = spawn(
+			`node`,
+			[`--experimental-strip-types`, `global-teardown.node.ts`],
+			{
+				stdio: `inherit`,
+				cwd: path.join(import.meta.dirname, `isolation`),
+			},
+		)
+		await new Promise((resolve) => teardown.on(`exit`, resolve))
+		expect(fs.readdirSync(tempDir.name)).toEqual([`rand`])
+		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+			`my-rand.input.json`,
+			`my-rand.output.json`,
+		])
 	})
 })
