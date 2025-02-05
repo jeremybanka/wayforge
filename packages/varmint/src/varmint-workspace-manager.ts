@@ -111,7 +111,7 @@ export const varmintWorkspaceManager = {
 			}
 			const realRootContents = fs.readdirSync(realRoot)
 			for (const rootContent of realRootContents) {
-				if (!rootMap.has(rootContent)) {
+				if (rootContent !== `.ferret` && !rootMap.has(rootContent)) {
 					const pathForRemoval = path.join(realRoot, rootContent)
 					console.log(`🧹 globalFlush: removing directory ${pathForRemoval}`)
 					fs.rmSync(pathForRemoval, { recursive: true })
