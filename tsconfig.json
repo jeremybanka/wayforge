@@ -24,6 +24,7 @@
 			"treetrunks": ["./packages/treetrunks/src/treetrunks.ts"],
 			"tsdoc.json": ["packages/tsdoc.json/src"],
 			"tsdoc.json/*": ["packages/tsdoc.json/*/src"],
+			"varmint": ["./packages/varmint/src/index.ts"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
 		},

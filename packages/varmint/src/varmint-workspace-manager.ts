@@ -8,10 +8,8 @@ import { FilesystemStorage } from "safedeposit"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 
 const GLOBAL_CACHE_FOLDER = cachedir(`varmint`)
-const CACHE_FOLDER = resolve(
-	GLOBAL_CACHE_FOLDER,
-	sanitizeFilename(process.cwd()),
-)
+const PROJECT_IDENTIFIER = sanitizeFilename(process.cwd())
+const CACHE_FOLDER = resolve(GLOBAL_CACHE_FOLDER, PROJECT_IDENTIFIER)
 
 export type FilesTouched = Record<`file__${string}`, `true`>
 export type ListsTouched = Record<`list__${string}`, `true`>
@@ -25,15 +23,21 @@ export const varmintWorkspaceManager = {
 		eagerInit: false,
 	}),
 	startGlobalTracking(): void {
+		console.log(
+			`🐿️  Starting global tracking of varmint files using project identifier "${PROJECT_IDENTIFIER}"`,
+		)
 		if (varmintWorkspaceManager.storage.initialized) {
 			console.error(
-				`💥 called startGlobalTracking, but the global cache was already initialized`,
+				`💥 The global cache for the project "${PROJECT_IDENTIFIER}" was found already initialized. Clearing it and starting fresh.`,
 			)
-			return
+			varmintWorkspaceManager.storage.clear()
 		}
 		varmintWorkspaceManager.storage.initialize()
 	},
 	endGlobalTrackingAndFlushUnusedFiles(): void {
+		console.log(
+			`🐿️  Ending global tracking of varmint files using project identifier "${PROJECT_IDENTIFIER}" and starting cleanup of untouched	 files.`,
+		)
 		if (!varmintWorkspaceManager.storage.initialized) {
 			console.error(
 				`💥 called flushGlobal, but the global cache wasn't initialized with startGlobalTracking`,
@@ -98,15 +102,23 @@ export const varmintWorkspaceManager = {
 				)
 			}
 		}
+		console.log(`🐿️ `, tree)
 		for (const [rootName, rootMap] of tree.entries()) {
 			const realRoot = realRoots.get(rootName)
 			if (!realRoot) {
 				console.error(`💥 Could not find root ${rootName}`)
 				continue
 			}
+			const realRootStillExists = fs.existsSync(realRoot)
+			if (!realRootStillExists) {
+				console.warn(
+					`💥 Root folder ${realRoot}, identified as being used during tracking, no longer exists during cleanup.`,
+				)
+				continue
+			}
 			const realRootContents = fs.readdirSync(realRoot)
 			for (const rootContent of realRootContents) {
-				if (!rootMap.has(rootContent)) {
+				if (rootContent !== `.ferret` && !rootMap.has(rootContent)) {
 					const pathForRemoval = path.join(realRoot, rootContent)
 					console.log(`🧹 globalFlush: removing directory ${pathForRemoval}`)
 					fs.rmSync(pathForRemoval, { recursive: true })
@@ -114,12 +126,19 @@ export const varmintWorkspaceManager = {
 			}
 			for (const [listName, list] of rootMap.entries()) {
 				const realList = path.join(realRoot, listName)
+				const realListStillExists = fs.existsSync(realList)
+				if (!realListStillExists) {
+					console.warn(
+						`💥 List folder ${realList}, identified as being used during tracking, no longer exists.`,
+					)
+					continue
+				}
 				const realListContents = fs.readdirSync(realList)
 				for (const realListContent of realListContents) {
 					const contentTrimmed = realListContent
 						.replace(`.input.json`, ``)
 						.replace(`.output.json`, ``)
-						.replace(`stream.txt`, ``)
+						.replace(`.stream.txt`, ``)
 					if (!list.has(contentTrimmed)) {
 						const pathForRemoval = path.join(realList, realListContent)
 						console.log(`🧹 globalFlush: removing file ${pathForRemoval}`)
