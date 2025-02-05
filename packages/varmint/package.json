@@ -33,7 +33,7 @@
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
-		"test:once": "vitest run",
+		"test:once": "bun ./__scripts__/varmint-track.node.ts && vitest run && bun ./__scripts__/varmint-clean.node.ts",
 		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
 	},
