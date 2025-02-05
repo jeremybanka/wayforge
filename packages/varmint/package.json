@@ -42,7 +42,7 @@
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.2",
 		"eslint": "9.19.0",
-		"openai": "4.82.0",
+		"openai": "4.83.0",
 		"tmp": "0.2.3",
 		"tsup": "8.3.6",
 		"vite": "6.1.0",
