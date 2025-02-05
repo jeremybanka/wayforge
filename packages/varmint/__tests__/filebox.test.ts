@@ -99,7 +99,7 @@ describe(`Filebox`, () => {
 			expect(utils.put).toHaveBeenCalledTimes(0)
 		}
 	})
-	test.only(`flushing untouched files`, async () => {
+	test(`flushing untouched files`, async () => {
 		const setup = spawn(
 			`node`,
 			[`--experimental-strip-types`, `global-setup.node.ts`, tempDir.name],
