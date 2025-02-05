@@ -36,7 +36,7 @@ export const varmintWorkspaceManager = {
 	},
 	endGlobalTrackingAndFlushUnusedFiles(): void {
 		console.log(
-			`🐿️  Ending global tracking of varmint files using project identifier "${PROJECT_IDENTIFIER}"`,
+			`🐿️  Ending global tracking of varmint files using project identifier "${PROJECT_IDENTIFIER}" and starting cleanup of untouched	 files.`,
 		)
 		if (!varmintWorkspaceManager.storage.initialized) {
 			console.error(
@@ -109,6 +109,13 @@ export const varmintWorkspaceManager = {
 				console.error(`💥 Could not find root ${rootName}`)
 				continue
 			}
+			const realRootStillExists = fs.existsSync(realRoot)
+			if (!realRootStillExists) {
+				console.warn(
+					`💥 Root folder ${realRoot}, identified as being used during tracking, no longer exists during cleanup.`,
+				)
+				continue
+			}
 			const realRootContents = fs.readdirSync(realRoot)
 			for (const rootContent of realRootContents) {
 				if (rootContent !== `.ferret` && !rootMap.has(rootContent)) {
@@ -119,6 +126,13 @@ export const varmintWorkspaceManager = {
 			}
 			for (const [listName, list] of rootMap.entries()) {
 				const realList = path.join(realRoot, listName)
+				const realListStillExists = fs.existsSync(realList)
+				if (!realListStillExists) {
+					console.warn(
+						`💥 List folder ${realList}, identified as being used during tracking, no longer exists.`,
+					)
+					continue
+				}
 				const realListContents = fs.readdirSync(realList)
 				for (const realListContent of realListContents) {
 					const contentTrimmed = realListContent
