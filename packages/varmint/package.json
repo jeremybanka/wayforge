@@ -20,7 +20,7 @@
 	"module": "dist/index.js",
 	"files": ["dist", "src"],
 	"scripts": {
-		"build:js": "bun build --outdir dist --target node -- src/index.ts",
+		"build:js": "./build.bun.ts",
 		"build:dts": "tsup",
 		"build": "concurrently \"bun:build:*\"",
 		"lint:biome": "biome check -- .",
