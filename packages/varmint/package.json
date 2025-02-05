@@ -18,7 +18,11 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"module": "dist/index.js",
-	"files": ["dist", "src"],
+	"bin": {
+		"varmint-clean": "bin/varmint-clean.node.js",
+		"varmint-track": "bin/varmint-track.node.js"
+	},
+	"files": ["bin", "dist", "src", "CHANGELOG.md"],
 	"scripts": {
 		"build:js": "./build.bun.ts",
 		"build:dts": "tsup",
