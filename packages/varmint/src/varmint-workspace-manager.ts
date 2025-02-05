@@ -124,7 +124,7 @@ export const varmintWorkspaceManager = {
 					const contentTrimmed = realListContent
 						.replace(`.input.json`, ``)
 						.replace(`.output.json`, ``)
-						.replace(`stream.txt`, ``)
+						.replace(`.stream.txt`, ``)
 					if (!list.has(contentTrimmed)) {
 						const pathForRemoval = path.join(realList, realListContent)
 						console.log(`🧹 globalFlush: removing file ${pathForRemoval}`)
