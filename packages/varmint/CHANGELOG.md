@@ -1,5 +1,15 @@
 # varmint
 
+## 0.3.10
+
+### Patch Changes
+
+- 80c6b5c: 🐛 Fix issue with `varmintWorkspaceManager`, where, on cleanup, the `.ferret` folder, if initialized in the default location (nested under `.varmint`) would be deleted.
+- 80c6b5c: ✨ Ship the `bin` files, `varmint-track` and `varmint-clean`. A nice way to use the varmint workspace manager from the command line.
+- 80c6b5c: 🐛 Fix issue with `varmintWorkspaceManager`, where, on initialization of tracking, the existing cache would not be properly cleared.
+- 80c6b5c: 🐛 Fix issue with `varmintWorkspaceManager`, where, on cleanup, all `.stream.txt` files would always be deleted.
+- 80c6b5c: 🔊 Improve logging in `varmintWorkspaceManager`.
+
 ## 0.3.9
 
 ### Patch Changes
