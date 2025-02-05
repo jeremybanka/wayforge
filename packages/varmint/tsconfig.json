@@ -1,7 +1,14 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": ["src", "__tests__", "**/*.config.ts", "./vite-env.d.ts"],
+	"include": [
+		"**/*.config.ts",
+		"./vite-env.d.ts",
+		"__scripts__",
+		"__tests__",
+		"build.bun.ts",
+		"src"
+	],
 	"compilerOptions": {
-		"types": ["vite/client", "vitest/globals"]
+		"types": ["vite/client", "vitest/globals", "bun-types"]
 	}
 }
