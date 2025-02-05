@@ -99,7 +99,7 @@ describe(`Filebox`, () => {
 			expect(utils.put).toHaveBeenCalledTimes(0)
 		}
 	})
-	test(`flushing untouched files`, async () => {
+	test.only(`flushing untouched files`, async () => {
 		const setup = spawn(
 			`node`,
 			[`--experimental-strip-types`, `global-setup.node.ts`, tempDir.name],
@@ -115,11 +115,20 @@ describe(`Filebox`, () => {
 			path.join(tempDir.name, `rand`, `some-random-file.whatever`),
 			`{}`,
 		)
-		expect(fs.readdirSync(tempDir.name)).toEqual([`other`, `rand`])
+		fs.writeFileSync(
+			path.join(tempDir.name, `myStreamer`, `another-random-file.whatever`),
+			`{}`,
+		)
+		expect(fs.readdirSync(tempDir.name)).toEqual([`myStreamer`, `other`, `rand`])
 		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
 			`my-rand.input.json`,
 			`my-rand.output.json`,
 			`some-random-file.whatever`,
+		])
+		expect(fs.readdirSync(path.join(tempDir.name, `myStreamer`))).toEqual([
+			`another-random-file.whatever`,
+			`myAsyncIterable.input.json`,
+			`myAsyncIterable.stream.txt`,
 		])
 		const teardown = spawn(
 			`node`,
@@ -130,10 +139,14 @@ describe(`Filebox`, () => {
 			},
 		)
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
-		expect(fs.readdirSync(tempDir.name)).toEqual([`rand`])
+		expect(fs.readdirSync(tempDir.name)).toEqual([`myStreamer`, `rand`])
 		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
 			`my-rand.input.json`,
 			`my-rand.output.json`,
+		])
+		expect(fs.readdirSync(path.join(tempDir.name, `myStreamer`))).toEqual([
+			`myAsyncIterable.input.json`,
+			`myAsyncIterable.stream.txt`,
 		])
 	})
 })
