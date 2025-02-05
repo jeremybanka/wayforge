@@ -30,7 +30,7 @@ export const varmintWorkspaceManager = {
 			console.error(
 				`💥 The global cache for the project "${PROJECT_IDENTIFIER}" was found already initialized. Clearing it and starting fresh.`,
 			)
-			return
+			varmintWorkspaceManager.storage.clear()
 		}
 		varmintWorkspaceManager.storage.initialize()
 	},
