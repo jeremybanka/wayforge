@@ -132,7 +132,12 @@ export const varmintWorkspaceManager = {
 		}
 		const didCacheMiss =
 			varmintWorkspaceManager.storage.getItem(`DID_CACHE_MISS`)
-		if (!didCacheMiss) {
+		if (didCacheMiss) {
+			console.log(
+				`🐿️ `,
+				`Cache miss detected. Since this likely prevented the cache from being fully utilized, we will not attempt to flush unused files.`,
+			)
+		} else {
 			const tree: Map<string, Map<string, Set<string>>> = new Map()
 			for (const root of roots) {
 				const rootName = root.replace(ROOT_TAG, ``)
