@@ -81,6 +81,7 @@ describe(`cache miss`, () => {
 			`my-rand.output.json`,
 		])
 
+		console.log(`process.env (cache miss test):`, process.env)
 		const teardown = spawn(
 			`node`,
 			[`--experimental-strip-types`, `global-teardown.node.ts`],

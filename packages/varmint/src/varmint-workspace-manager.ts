@@ -104,6 +104,7 @@ export const varmintWorkspaceManager = {
 			console.warn(
 				`💥 Skipping artifact upload because GITHUB_ACTIONS is not set.`,
 			)
+			console.log(`process.env (workspace manager):`, process.env)
 		}
 	},
 	endGlobalTrackingAndFlushUnusedFiles(): void {
