@@ -88,7 +88,7 @@ describe(`cache miss`, () => {
 			{
 				stdio: `inherit`,
 				cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
-				env: process.env,
+				env: process.env.CI ? { GITHUB_ACTIONS: `true` } : undefined,
 			},
 		)
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
