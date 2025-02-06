@@ -50,7 +50,6 @@ test(`ferret with openAI`, async () => {
 			...body,
 			stream: true,
 		}
-		console.log(`createParams`, createParams)
 		const stream = openAI.chat.completions.create(createParams, options)
 		return stream
 	}

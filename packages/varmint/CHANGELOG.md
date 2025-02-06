@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.11
+
+### Patch Changes
+
+- dcf4214: 🐛 Fix issue where certain filenames would always be purged if they contained the sequence "\_\_".
+
 ## 0.3.10
 
 ### Patch Changes
