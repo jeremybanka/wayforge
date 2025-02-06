@@ -4,7 +4,10 @@ import { inspect } from "node:util"
 
 import type { CacheMode } from "./cache-mode.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
-import { varmintWorkspaceManager as mgr } from "./varmint-workspace-manager.ts"
+import {
+	SPECIAL_BREAK_SEQ as SBS,
+	varmintWorkspaceManager as mgr,
+} from "./varmint-workspace-manager.ts"
 
 export type AsyncFunc = (...args: any[]) => Promise<any>
 
@@ -29,9 +32,9 @@ export class Squirrel {
 		this.rootName = sanitizeFilename(this.baseDir)
 		if (
 			mgr.storage.initialized &&
-			!mgr.storage.getItem(`root__${this.rootName}`)
+			!mgr.storage.getItem(`root${SBS}${this.rootName}`)
 		) {
-			mgr.storage.setItem(`root__${this.rootName}`, this.baseDir)
+			mgr.storage.setItem(`root${SBS}${this.rootName}`, this.baseDir)
 		}
 	}
 
@@ -120,7 +123,7 @@ export class Squirrel {
 	}
 
 	public add<F extends AsyncFunc>(key: string, get: F): Squirreled<F> {
-		const listName = `${this.rootName}__${sanitizeFilename(key)}` as const
+		const listName = `${this.rootName}${SBS}${sanitizeFilename(key)}` as const
 		return {
 			flush: () => {
 				this.flush(key)
@@ -130,9 +133,9 @@ export class Squirrel {
 					this.filesTouched.set(key, new Set())
 					if (
 						mgr.storage.initialized &&
-						!mgr.storage.getItem(`list__${listName}`)
+						!mgr.storage.getItem(`list${SBS}${listName}`)
 					) {
-						mgr.storage.setItem(`list__${listName}`, `true`)
+						mgr.storage.setItem(`list${SBS}${listName}`, `true`)
 					}
 				}
 				return {
@@ -148,8 +151,8 @@ export class Squirrel {
 								subKey = cachedSubKey
 							}
 							this.filesTouched.get(key)?.add(subKey)
-							const fileName = `${listName}__${subKey}` as const
-							const fileNameTagged = `file__${fileName}` as const
+							const fileName = `${listName}${SBS}${subKey}` as const
+							const fileNameTagged = `file${SBS}${fileName}` as const
 							if (
 								mgr.storage.initialized &&
 								!mgr.storage.getItem(fileNameTagged)
