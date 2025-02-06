@@ -23,6 +23,8 @@ jobs:
   _:
     runs-on: ubuntu-latest
     timeout-minutes: 9
+    env:
+      GITHUB_ACTIONS: true
     services:
       postgres:
         image: postgres:17.2-alpine3.20
