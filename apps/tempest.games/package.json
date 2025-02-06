@@ -60,7 +60,7 @@
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"safedeposit": "workspace:*",
-		"safegen": "0.2.9",
+		"safegen": "0.2.10",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"treetrunks": "workspace:*",
