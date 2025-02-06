@@ -67,7 +67,6 @@ describe(`cache miss`, () => {
 				{
 					stdio: `inherit`,
 					cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
-					env: process.env,
 				},
 			)
 		} catch (thrown) {
@@ -88,6 +87,7 @@ describe(`cache miss`, () => {
 			{
 				stdio: `inherit`,
 				cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
+				env: process.env,
 			},
 		)
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
