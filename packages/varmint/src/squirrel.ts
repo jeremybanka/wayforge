@@ -49,7 +49,7 @@ export class Squirrel {
 		if (!fs.existsSync(pathToInputFile)) {
 			const doesGroupDirectoryExist = fs.existsSync(groupDirectory)
 			if (!doesGroupDirectoryExist) {
-				if (mgr.storage.initialized) {
+				if (mgr.storage.initialized && this.mode === `read`) {
 					mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 				}
 				throw new Error(
@@ -82,7 +82,7 @@ export class Squirrel {
 				.split(`\n`)
 				.join(`\n\t\t`)}`
 
-			if (mgr.storage.initialized) {
+			if (mgr.storage.initialized && this.mode === `read`) {
 				mgr.storage.setItem(
 					`unmatched${SBS}${inputFilename}`,
 					JSON.stringify(args, null, `\t`),
@@ -96,7 +96,7 @@ export class Squirrel {
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
 		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (inputStringified !== inputFileContents) {
-			if (mgr.storage.initialized) {
+			if (mgr.storage.initialized && this.mode === `read`) {
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
 			throw new Error(
