@@ -11,9 +11,20 @@ const GLOBAL_CACHE_FOLDER = cachedir(`varmint`)
 const PROJECT_IDENTIFIER = sanitizeFilename(process.cwd())
 const CACHE_FOLDER = resolve(GLOBAL_CACHE_FOLDER, PROJECT_IDENTIFIER)
 
-export type FilesTouched = Record<`file__${string}`, `true`>
-export type ListsTouched = Record<`list__${string}`, `true`>
-export type RootsTouched = Record<`root__${string}`, string>
+export const SPECIAL_BREAK_SEQ = `_-$-_-$-_`
+export type SpecialBreakSequence = typeof SPECIAL_BREAK_SEQ
+export const FILE_TAG = `file${SPECIAL_BREAK_SEQ}`
+export const LIST_TAG = `list${SPECIAL_BREAK_SEQ}`
+export const ROOT_TAG = `root${SPECIAL_BREAK_SEQ}`
+export type FileTag = typeof FILE_TAG
+export type ListTag = typeof LIST_TAG
+export type RootTag = typeof ROOT_TAG
+export type FileSlug = `${FileTag}${string}`
+export type ListSlug = `${ListTag}${string}`
+export type RootSlug = `${RootTag}${string}`
+export type FilesTouched = Record<FileSlug, `true`>
+export type ListsTouched = Record<ListSlug, `true`>
+export type RootsTouched = Record<RootSlug, string>
 
 export type VarmintFileSystemState = FilesTouched & ListsTouched & RootsTouched
 
@@ -46,21 +57,21 @@ export const varmintWorkspaceManager = {
 		}
 		const dirContents = fs.readdirSync(varmintWorkspaceManager.storage.rootDir)
 		const realRoots = new Map<string, string>()
-		const roots: `root__${string}`[] = []
-		const lists: `list__${string}`[] = []
-		const files: `file__${string}`[] = []
+		const roots: RootSlug[] = []
+		const lists: ListSlug[] = []
+		const files: FileSlug[] = []
 		for (const dirContent of dirContents) {
-			if (startsWith(`root__`, dirContent)) {
+			if (startsWith(`root${SPECIAL_BREAK_SEQ}`, dirContent)) {
 				roots.push(dirContent)
-			} else if (startsWith(`list__`, dirContent)) {
+			} else if (startsWith(`list${SPECIAL_BREAK_SEQ}`, dirContent)) {
 				lists.push(dirContent)
-			} else if (startsWith(`file__`, dirContent)) {
+			} else if (startsWith(`file${SPECIAL_BREAK_SEQ}`, dirContent)) {
 				files.push(dirContent)
 			}
 		}
 		const tree: Map<string, Map<string, Set<string>>> = new Map()
 		for (const root of roots) {
-			const rootName = root.replace(`root__`, ``)
+			const rootName = root.replace(ROOT_TAG, ``)
 			tree.set(rootName, new Map())
 			const rootPath = varmintWorkspaceManager.storage.getItem(root)
 			if (rootPath) {
@@ -72,8 +83,8 @@ export const varmintWorkspaceManager = {
 			}
 		}
 		for (const list of lists) {
-			const listPath = list.replace(`list__`, ``)
-			const [listRootName, listName] = listPath.split(`__`)
+			const listPath = list.replace(LIST_TAG, ``)
+			const [listRootName, listName] = listPath.split(SPECIAL_BREAK_SEQ)
 			const listRoot = tree.get(listRootName)
 			if (listRoot) {
 				listRoot.set(listName, new Set())
@@ -84,8 +95,8 @@ export const varmintWorkspaceManager = {
 			}
 		}
 		for (const file of files) {
-			const filePath = file.replace(`file__`, ``)
-			const [listRootName, listName, subKey] = filePath.split(`__`)
+			const filePath = file.replace(FILE_TAG, ``)
+			const [listRootName, listName, subKey] = filePath.split(SPECIAL_BREAK_SEQ)
 			const listRoot = tree.get(listRootName)
 			if (listRoot) {
 				const list = listRoot.get(listName)
