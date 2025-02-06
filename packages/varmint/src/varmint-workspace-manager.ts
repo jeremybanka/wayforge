@@ -60,6 +60,9 @@ export const varmintWorkspaceManager = {
 		varmintWorkspaceManager.storage.initialize()
 	},
 	async uploadUnusedFilesToArtifacts(): Promise<void> {
+		console.log(
+			`🐿️  Uploading unused files to artifacts using project identifier "${PROJECT_IDENTIFIER}"`,
+		)
 		const unmatched: UnmatchedSlug[] = []
 		for (const dirContent of fs.readdirSync(
 			varmintWorkspaceManager.storage.rootDir,
@@ -68,25 +71,38 @@ export const varmintWorkspaceManager = {
 				unmatched.push(dirContent)
 			}
 		}
+		if (unmatched.length === 0) {
+			console.log(`🐿️ `, `No unmatched input files found.`)
+			return
+		}
+		console.log(
+			`🐿️ `,
+			`Found the following unmatched files:`,
+			`\n\t- ${unmatched.join(`\n\t`)}\n`,
+			`in root folder:\n\t`,
+			CACHE_FOLDER,
+		)
 		if (process.env.GITHUB_ACTIONS) {
 			if (isPackageExists(`@actions/artifact`)) {
 				const { DefaultArtifactClient } = await import(`@actions/artifact`)
 
 				const artifactClient = new DefaultArtifactClient()
-				await artifactClient.uploadArtifact(`varmint`, unmatched, CACHE_FOLDER, {
-					retentionDays: 1,
-				})
+				await artifactClient.uploadArtifact(
+					`Varmint: ${unmatched.length} Unmatched Inputs`,
+					unmatched,
+					CACHE_FOLDER,
+					{
+						retentionDays: 1,
+					},
+				)
 			} else {
 				console.warn(
-					`💬 Skipping artifact upload because @actions/artifact is not installed.`,
+					`💥 Skipping artifact upload because @actions/artifact is not installed.`,
 				)
 			}
 		} else {
 			console.warn(
-				`💬 Skipping artifact upload because GITHUB_ACTIONS is not set, but would have uploaded the following files:`,
-				unmatched,
-				`in root folder:`,
-				CACHE_FOLDER,
+				`💥 Skipping artifact upload because GITHUB_ACTIONS is not set.`,
 			)
 		}
 	},
