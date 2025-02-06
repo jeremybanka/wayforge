@@ -22,12 +22,7 @@
 		"varmint-clean": "bin/varmint-clean.node.js",
 		"varmint-track": "bin/varmint-track.node.js"
 	},
-	"files": [
-		"bin",
-		"dist",
-		"src",
-		"CHANGELOG.md"
-	],
+	"files": ["bin", "dist", "src", "CHANGELOG.md"],
 	"scripts": {
 		"build:js": "./build.bun.ts",
 		"build:dts": "tsup",
@@ -41,6 +36,14 @@
 		"test:once": "bun ./__scripts__/varmint-track.node.ts && vitest run && bun ./__scripts__/varmint-clean.node.ts",
 		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
+	},
+	"peerDependencies": {
+		"@actions/artifact": "2.2.1"
+	},
+	"peerDependenciesMeta": {
+		"@actions/artifact": {
+			"optional": true
+		}
 	},
 	"dependencies": {
 		"cachedir": "2.4.0",
