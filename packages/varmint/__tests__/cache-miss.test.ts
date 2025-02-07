@@ -61,14 +61,10 @@ describe(`cache miss`, () => {
 	test(`flushing untouched files`, async () => {
 		let setup: ChildProcess
 		try {
-			setup = spawn(
-				`node`,
-				[`--experimental-strip-types`, `global-setup.node.ts`, tempDir.name],
-				{
-					stdio: `inherit`,
-					cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
-				},
-			)
+			setup = spawn(`node`, [`global-setup.node.ts`, tempDir.name], {
+				stdio: `inherit`,
+				cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
+			})
 		} catch (thrown) {
 			console.error(`💥`, thrown)
 		}
@@ -81,16 +77,16 @@ describe(`cache miss`, () => {
 			`my-rand.output.json`,
 		])
 
-		console.log(`process.env (cache miss test):`, process.env)
+		// console.log(`process.env (cache miss test):`, process.env)
 		const teardown = spawn(
 			`node`,
 			[`--experimental-strip-types`, `global-teardown.node.ts`],
 			{
 				stdio: `inherit`,
 				cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
-				env: process.env.CI ? { GITHUB_ACTIONS: `true` } : undefined,
+				// env: { GITHUB_ACTIONS: `true` },
 			},
 		)
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
-	}, 120_000)
+	}, 5_000)
 })

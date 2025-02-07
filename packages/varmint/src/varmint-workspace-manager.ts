@@ -1,7 +1,9 @@
 import * as fs from "node:fs"
+import { copyFile } from "node:fs/promises"
 import * as path from "node:path"
 import { resolve } from "node:path"
 
+import { DefaultArtifactClient } from "@actions/artifact"
 import cachedir from "cachedir"
 import { isPackageExists } from "local-pkg"
 import { FilesystemStorage } from "safedeposit"
@@ -59,7 +61,7 @@ export const varmintWorkspaceManager = {
 		}
 		varmintWorkspaceManager.storage.initialize()
 	},
-	async uploadUnusedFilesToArtifacts(): Promise<void> {
+	async prepareUploads(): Promise<void> {
 		console.log(
 			`🐿️  Uploading unused files to artifacts using project identifier "${PROJECT_IDENTIFIER}"`,
 		)
@@ -83,28 +85,17 @@ export const varmintWorkspaceManager = {
 			CACHE_FOLDER,
 		)
 		if (process.env.GITHUB_ACTIONS) {
-			if (isPackageExists(`@actions/artifact`)) {
-				const { DefaultArtifactClient } = await import(`@actions/artifact`)
-
-				const artifactClient = new DefaultArtifactClient()
-				await artifactClient.uploadArtifact(
-					`Varmint: ${unmatched.length} Unmatched Inputs`,
-					unmatched,
-					CACHE_FOLDER,
-					{
-						retentionDays: 1,
-					},
-				)
-			} else {
-				console.warn(
-					`💥 Skipping artifact upload because @actions/artifact is not installed.`,
-				)
-			}
+			await Promise.all(
+				unmatched.map(async (unmatchedFile) => {
+					const srcPath = path.join(CACHE_FOLDER, unmatchedFile)
+					const dstPath = path.join(`/varmint-uploads`, unmatchedFile)
+					await copyFile(srcPath, dstPath)
+				}),
+			)
 		} else {
 			console.warn(
 				`💥 Skipping artifact upload because GITHUB_ACTIONS is not set.`,
 			)
-			console.log(`process.env (workspace manager):`, process.env)
 		}
 	},
 	endGlobalTrackingAndFlushUnusedFiles(): void {
