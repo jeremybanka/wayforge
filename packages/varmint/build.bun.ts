@@ -10,10 +10,7 @@ await Promise.all([
 		packages: `external`,
 	}),
 	build({
-		entrypoints: [
-			`__scripts__/varmint-track.node.ts`,
-			`__scripts__/varmint-clean.node.ts`,
-		],
+		entrypoints: [`__scripts__/varmint.node.ts`],
 		outdir: `./bin`,
 		target: `node`,
 		packages: `external`,
