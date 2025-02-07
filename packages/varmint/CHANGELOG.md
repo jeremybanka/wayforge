@@ -1,5 +1,15 @@
 # varmint
 
+## 0.4.0
+
+### Minor Changes
+
+- d925c91: 💥 BREAKING CHANGE: cli goes from `varmint-track` to `varmint -- track` and from `varmint-clean` to `varmint -- clean`.
+
+### Patch Changes
+
+- d925c91: ✨ Allow passing a `--ci-flag` option to `varmint -- clean`. If passed, this will place all unmatched files in `/tmp/varmint-uploads` for use github actions artifacts.
+
 ## 0.3.13
 
 ### Patch Changes
