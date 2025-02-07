@@ -44,10 +44,14 @@ export class Squirrel {
 		args: Parameters<F>,
 	): Awaited<ReturnType<F>> {
 		const groupDirectory = path.join(this.baseDir, key)
-		const pathToInputFile = path.join(groupDirectory, `${subKey}.input.json`)
+		const inputFilename = `${subKey}.input.json`
+		const pathToInputFile = path.join(groupDirectory, inputFilename)
 		if (!fs.existsSync(pathToInputFile)) {
 			const doesGroupDirectoryExist = fs.existsSync(groupDirectory)
 			if (!doesGroupDirectoryExist) {
+				if (mgr.storage.initialized && this.mode === `read`) {
+					mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
+				}
 				throw new Error(
 					`Squirrel: input file for key "${key}" with "${subKey}" was not found. Directory "${groupDirectory}" does not exist.`,
 				)
@@ -61,23 +65,30 @@ export class Squirrel {
 				.filter(([filename]) => filename.endsWith(`.input.json`))
 			const allInputs: string[] = []
 			for (const [filename, contents] of directoryFiles) {
-				const inputFileName = `\t${filename}`
-				const inputFileData = `\t\t${inspect(JSON.parse(contents), {
+				const otherInputFilename = `\t${filename}`
+				const otherInputFileData = `\t\t${inspect(JSON.parse(contents), {
 					depth: Number.POSITIVE_INFINITY,
 					colors: true,
 				})
 					.split(`\n`)
 					.join(`\n\t\t`)}`
-				allInputs.push(inputFileName, inputFileData)
+				allInputs.push(otherInputFilename, otherInputFileData)
 			}
 
-			const inputData = `\t${subKey}.input.json\n\t\t${inspect(args, {
+			const inputData = `\t${inputFilename}\n\t\t${inspect(args, {
 				depth: Number.POSITIVE_INFINITY,
 				colors: true,
 			})
 				.split(`\n`)
 				.join(`\n\t\t`)}`
 
+			if (mgr.storage.initialized && this.mode === `read`) {
+				mgr.storage.setItem(
+					`unmatched${SBS}${inputFilename}`,
+					JSON.stringify(args, null, `\t`),
+				)
+				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
+			}
 			throw new Error(
 				`Squirrel: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}\n`,
 			)
@@ -85,6 +96,9 @@ export class Squirrel {
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
 		const inputStringified = JSON.stringify(args, null, `\t`)
 		if (inputStringified !== inputFileContents) {
+			if (mgr.storage.initialized && this.mode === `read`) {
+				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
+			}
 			throw new Error(
 				`Squirrel: the content of the cached input file ${pathToInputFile} does not match the input provided.\n\nProvided:\n${inputStringified}\n\nCached:\n${inputFileContents}`,
 			)
