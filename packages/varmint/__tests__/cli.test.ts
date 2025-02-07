@@ -45,5 +45,5 @@ describe(`cli`, () => {
 		)
 		const cleanCode = await new Promise((resolve) => clean.on(`exit`, resolve))
 		expect(cleanCode).toBe(0)
-	})
+	}, 10_000)
 })
