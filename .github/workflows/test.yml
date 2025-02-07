@@ -42,7 +42,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: Varmint
-          path: /varmint-uploads
+          path: /tmp/varmint-uploads
           retention-days: 1
 
   Build:

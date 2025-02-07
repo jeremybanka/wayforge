@@ -85,11 +85,11 @@ export const varmintWorkspaceManager = {
 			CACHE_FOLDER,
 		)
 		if (process.env.CI) {
-			fs.mkdirSync(`/varmint-uploads`, { recursive: true })
+			fs.mkdirSync(`/tmp/varmint-uploads`, { recursive: true })
 			await Promise.all(
 				unmatched.map(async (unmatchedFile) => {
 					const srcPath = path.join(CACHE_FOLDER, unmatchedFile)
-					const dstPath = path.join(`/varmint-uploads`, unmatchedFile)
+					const dstPath = path.join(`/tmp/varmint-uploads`, unmatchedFile)
 					await copyFile(srcPath, dstPath)
 				}),
 			)
