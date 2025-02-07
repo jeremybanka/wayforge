@@ -3,13 +3,11 @@ import { copyFile } from "node:fs/promises"
 import * as path from "node:path"
 import { resolve } from "node:path"
 
-import { DefaultArtifactClient } from "@actions/artifact"
 import cachedir from "cachedir"
-import { isPackageExists } from "local-pkg"
 import { FilesystemStorage } from "safedeposit"
 
 import { sanitizeFilename } from "./sanitize-filename.ts"
-import { type Json, parseJson, type stringified } from "./typed-json.ts"
+import type { Json, stringified } from "./typed-json.ts"
 
 const GLOBAL_CACHE_FOLDER = cachedir(`varmint`)
 const PROJECT_IDENTIFIER = sanitizeFilename(process.cwd(), 150)
@@ -61,9 +59,9 @@ export const varmintWorkspaceManager = {
 		}
 		varmintWorkspaceManager.storage.initialize()
 	},
-	async prepareUploads(): Promise<void> {
+	async prepareUploads(ciFlag: string): Promise<void> {
 		console.log(
-			`🐿️  Uploading unused files to artifacts using project identifier "${PROJECT_IDENTIFIER}"`,
+			`🐿️  Moving unmatched inputs to /tmp/varmint-uploads using project identifier "${PROJECT_IDENTIFIER}"`,
 		)
 		const unmatched: UnmatchedSlug[] = []
 		for (const dirContent of fs.readdirSync(
@@ -84,7 +82,7 @@ export const varmintWorkspaceManager = {
 			`in root folder:\n\t`,
 			CACHE_FOLDER,
 		)
-		if (process.env.CI) {
+		if (process.env[ciFlag]) {
 			fs.mkdirSync(`/tmp/varmint-uploads`, { recursive: true })
 			await Promise.all(
 				unmatched.map(async (unmatchedFile) => {
@@ -101,7 +99,7 @@ export const varmintWorkspaceManager = {
 	},
 	endGlobalTrackingAndFlushUnusedFiles(): void {
 		console.log(
-			`🐿️  Ending global tracking of varmint files using project identifier "${PROJECT_IDENTIFIER}" and starting cleanup of untouched	 files.`,
+			`🐿️  Ending global tracking of varmint files using project identifier "${PROJECT_IDENTIFIER}" and starting cleanup of untouched files.`,
 		)
 		if (!varmintWorkspaceManager.storage.initialized) {
 			console.error(
