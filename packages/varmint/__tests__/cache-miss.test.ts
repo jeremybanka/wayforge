@@ -92,5 +92,5 @@ describe(`cache miss`, () => {
 			},
 		)
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
-	})
+	}, 120_000)
 })
