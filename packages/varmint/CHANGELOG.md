@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.12
+
+### Patch Changes
+
+- 324da01: ✨ Add a method to prepare upload artifacts with complete unmatched inputs to `varmintWorkspaceManager`.
+
 ## 0.3.11
 
 ### Patch Changes
