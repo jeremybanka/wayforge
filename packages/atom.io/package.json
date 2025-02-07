@@ -91,7 +91,7 @@
 		"@testing-library/react": "16.2.0",
 		"@types/eslint": "9.6.1",
 		"@types/estree": "1.0.6",
-		"@types/http-proxy": "1.17.15",
+		"@types/http-proxy": "1.17.16",
 		"@types/npmlog": "7.0.0",
 		"@types/react": "19.0.8",
 		"@types/tmp": "0.2.6",
