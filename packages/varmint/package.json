@@ -54,6 +54,7 @@
 		"vite": "6.1.0",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.5",
+		"yalc": "1.0.0-pre.53",
 		"zod": "3.24.1"
 	}
 }
