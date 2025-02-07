@@ -79,6 +79,7 @@
 		"tsup",
 		"unsub",
 		"wayforge",
+		"yalc",
 		"zustand"
 	]
 }
