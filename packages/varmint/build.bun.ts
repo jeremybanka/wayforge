@@ -7,6 +7,7 @@ await Promise.all([
 		entrypoints: [`src/index.ts`],
 		outdir: `./dist`,
 		target: `node`,
+		packages: `external`,
 	}),
 	build({
 		entrypoints: [
