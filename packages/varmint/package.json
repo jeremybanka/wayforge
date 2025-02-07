@@ -37,11 +37,21 @@
 		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
 	},
+	"peerDependencies": {
+		"@actions/artifact": "2.2.1"
+	},
+	"peerDependenciesMeta": {
+		"@actions/artifact": {
+			"optional": true
+		}
+	},
 	"dependencies": {
 		"cachedir": "2.4.0",
+		"local-pkg": "1.0.0",
 		"safedeposit": "workspace:*"
 	},
 	"devDependencies": {
+		"@actions/artifact": "2.2.1",
 		"@types/node": "22.13.1",
 		"@types/tmp": "0.2.6",
 		"bun-types": "1.2.2",
