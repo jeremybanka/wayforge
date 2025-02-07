@@ -1,7 +1,7 @@
 {
 	"name": "varmint",
 	"type": "module",
-	"version": "0.3.12",
+	"version": "0.3.13",
 	"license": "MIT",
 	"author": {
 		"name": "Jeremy Banka",

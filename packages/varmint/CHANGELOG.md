@@ -1,5 +1,11 @@
 # varmint
 
+## 0.3.13
+
+### Patch Changes
+
+- 71a1247: 🐛 Don't bundle dependencies.
+
 ## 0.3.12
 
 ### Patch Changes
