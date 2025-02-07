@@ -84,7 +84,7 @@ export const varmintWorkspaceManager = {
 			`in root folder:\n\t`,
 			CACHE_FOLDER,
 		)
-		if (process.env.GITHUB_ACTIONS) {
+		if (process.env.CI) {
 			await Promise.all(
 				unmatched.map(async (unmatchedFile) => {
 					const srcPath = path.join(CACHE_FOLDER, unmatchedFile)
@@ -94,7 +94,7 @@ export const varmintWorkspaceManager = {
 			)
 		} else {
 			console.warn(
-				`💥 Skipping artifact upload because GITHUB_ACTIONS is not set.`,
+				`💥 Skipping artifact upload because process.env.CI is not set.`,
 			)
 		}
 	},
