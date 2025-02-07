@@ -4,15 +4,10 @@ import { build } from "bun"
 
 await Promise.all([
 	build({
-		entrypoints: [`src/index.ts`],
+		entrypoints: [`src/index.ts`, `src/varmint.bin.ts`],
 		outdir: `./dist`,
 		target: `node`,
 		packages: `external`,
-	}),
-	build({
-		entrypoints: [`__scripts__/varmint.node.ts`],
-		outdir: `./bin`,
-		target: `node`,
-		packages: `external`,
+		splitting: true,
 	}),
 ])
