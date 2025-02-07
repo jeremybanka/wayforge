@@ -30,7 +30,6 @@ describe(`cli`, () => {
 		await new Promise((resolve) => install.on(`exit`, resolve))
 		expect(install.exitCode).toBe(0)
 
-		console.log(`before track`)
 		const track = spawn(
 			`./node_modules/varmint/dist/varmint.bin.js`,
 			[`--`, `track`],
@@ -39,7 +38,6 @@ describe(`cli`, () => {
 		const trackCode = await new Promise((resolve) => track.on(`exit`, resolve))
 		expect(trackCode).toBe(0)
 
-		console.log(`before clean`)
 		const clean = spawn(
 			`./node_modules/varmint/dist/varmint.bin.js`,
 			[`--ci-flag=CI`, `--`, `clean`],
