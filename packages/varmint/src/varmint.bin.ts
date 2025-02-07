@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { cli, required } from "comline"
-import { varmintWorkspaceManager } from "varmint"
 import { z } from "zod"
+
+import { varmintWorkspaceManager } from "./varmint-workspace-manager"
 
 const parse = cli(
 	{
