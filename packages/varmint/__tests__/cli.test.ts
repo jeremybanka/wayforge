@@ -32,7 +32,7 @@ describe(`cli`, () => {
 
 		console.log(`before track`)
 		const track = spawn(
-			`./node_modules/varmint/bin/varmint.node.js`,
+			`./node_modules/varmint/dist/varmint.bin.js`,
 			[`--`, `track`],
 			{ stdio: `inherit` },
 		)
@@ -41,7 +41,7 @@ describe(`cli`, () => {
 
 		console.log(`before clean`)
 		const clean = spawn(
-			`./node_modules/varmint/bin/varmint.node.js`,
+			`./node_modules/varmint/dist/varmint.bin.js`,
 			[`--ci-flag=CI`, `--`, `clean`],
 			{ stdio: `inherit`, env: { ...process.env, CI: `true` } },
 		)
