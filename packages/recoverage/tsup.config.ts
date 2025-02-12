@@ -3,8 +3,8 @@ import { defineConfig } from "tsup"
 
 export const OPTIONS = {
 	esbuildOptions: (options) => {
-		options.chunkNames = `dist/[name]-[hash]`
-		options.assetNames = `dist/[name]-[hash]`
+		options.chunkNames = `[name]-[hash]`
+		options.assetNames = `[name]-[hash]`
 	},
 	sourcemap: true,
 	treeshake: true,
