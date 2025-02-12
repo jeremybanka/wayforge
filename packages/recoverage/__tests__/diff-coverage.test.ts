@@ -93,21 +93,5 @@ describe(`cli`, () => {
 		})
 		await new Promise((resolve) => coverage2.on(`exit`, resolve))
 		expect(coverage2.exitCode).toBe(0)
-
-		// const track = spawn(
-		// 	`./node_modules/varmint/dist/varmint.bin.js`,
-		// 	[`--`, `track`],
-		// 	{ stdio: `inherit` },
-		// )
-		// const trackCode = await new Promise((resolve) => track.on(`exit`, resolve))
-		// expect(trackCode).toBe(0)
-
-		// const clean = spawn(
-		// 	`./node_modules/varmint/dist/varmint.bin.js`,
-		// 	[`--ci-flag=CI`, `--`, `clean`],
-		// 	{ stdio: `inherit`, env: { ...process.env, CI: `true` } },
-		// )
-		// const cleanCode = await new Promise((resolve) => clean.on(`exit`, resolve))
-		// expect(cleanCode).toBe(0)
 	}, 10_000)
 })
